@@ -534,6 +534,7 @@ canvas.spider-canvas{max-width:100%;height:auto}
               <div class="field" id="pc1-pos-f"><label>Position</label><select id="pc1pos" disabled><option value="">—</option><option>ST</option><option>CF</option><option>LW</option><option>RW</option><option>CAM</option><option>CM</option><option>CDM</option><option>LB</option><option>RB</option><option>CB</option><option>GK</option></select></div>
               <div class="field" id="pc1-rt-f"><label>Rating</label><input type="number" id="pc1rt" placeholder="—"></div>
             </div>
+            <div class="field" id="pc1-club-f"><label>Club</label><input type="text" id="pc1club" placeholder="—" disabled></div>
             <div class="field" id="pc1-lg-f"><label>League</label><select id="pc1lg" disabled><option value="">—</option><option value="PL">Premier League</option><option value="LL">La Liga</option><option value="BL">Bundesliga</option><option value="SA">Serie A</option><option value="L1">Ligue 1</option><option value="PRT">Primeira Liga</option><option value="ERE">Eredivisie</option><option value="BPL">Belgian Pro League</option><option value="CL">Champions League</option><option value="UEL">Europa League</option><option value="SPL">Saudi Pro League</option><option value="MLS">MLS</option><option value="SPM">Scottish Prem</option><option value="TSL">Turkish Süper Lig</option><option value="ARG">Argentine Liga</option><option value="BRZ">Brasileirão</option><option value="OTHER">Other</option></select></div>
           </div>
         </div>
@@ -564,6 +565,7 @@ canvas.spider-canvas{max-width:100%;height:auto}
               <div class="field" id="pc2-pos-f"><label>Position</label><select id="pc2pos" disabled><option value="">—</option><option>ST</option><option>CF</option><option>LW</option><option>RW</option><option>CAM</option><option>CM</option><option>CDM</option><option>LB</option><option>RB</option><option>CB</option><option>GK</option></select></div>
               <div class="field" id="pc2-rt-f"><label>Rating</label><input type="number" id="pc2rt" placeholder="—"></div>
             </div>
+            <div class="field" id="pc2-club-f"><label>Club</label><input type="text" id="pc2club" placeholder="—" disabled></div>
             <div class="field" id="pc2-lg-f"><label>League</label><select id="pc2lg" disabled><option value="">—</option><option value="PL">Premier League</option><option value="LL">La Liga</option><option value="BL">Bundesliga</option><option value="SA">Serie A</option><option value="L1">Ligue 1</option><option value="PRT">Primeira Liga</option><option value="ERE">Eredivisie</option><option value="BPL">Belgian Pro League</option><option value="CL">Champions League</option><option value="UEL">Europa League</option><option value="SPL">Saudi Pro League</option><option value="MLS">MLS</option><option value="SPM">Scottish Prem</option><option value="TSL">Turkish Süper Lig</option><option value="ARG">Argentine Liga</option><option value="BRZ">Brasileirão</option><option value="OTHER">Other</option></select></div>
           </div>
         </div>
@@ -1321,6 +1323,7 @@ function applySeasonData(n){
   document.getElementById('pc'+n+'rt').value=d.rt||75;
   if(document.getElementById('pc'+n+'pos')) document.getElementById('pc'+n+'pos').value=d.pos||'';
   if(document.getElementById('pc'+n+'lg')) document.getElementById('pc'+n+'lg').value=d.lg||'';
+  if(document.getElementById('pc'+n+'club')) document.getElementById('pc'+n+'club').value=d.club||'';
 }
 
 function setSeason(n,s){
@@ -1825,6 +1828,7 @@ function getPlayerData(tab,n){
     pos:document.getElementById(pfx+'pos')?document.getElementById(pfx+'pos').value||'':'',
     rt:document.getElementById(pfx+'rt')?document.getElementById(pfx+'rt').value||'':'',
     lg:document.getElementById(pfx+'lg')?document.getElementById(pfx+'lg').value||'':'',
+    club:document.getElementById(pfx+'club')?document.getElementById(pfx+'club').value||'':'',
     lgOn:isBB?(lgonEl?lgonEl.checked!==false:true):true,
     dbRef:tab==='pc'?pcSelected[n]:null,
     season:tab==='pc'?pcSeason[n]:'2324'
@@ -1911,10 +1915,11 @@ function renderVerdict(tab,p1,p2,t1,t2,ov,mode,same){
     var ctDef=TIER_DEFS[ct.lbl]||'';
     var combinedR='<div class="vcombined"><div class="vcombined-head"><span class="vcombined-lbl">Combined Review</span><span class="vcombined-total">'+combined+' G+A &nbsp;<span class="badge '+ct.cls+'">'+ct.lbl+'</span></span></div><div class="vcombined-def">'+ctDef+'</div></div>';
     var ageR=ai.lbl?'<div class="vrow"><span class="vrow-lbl">Age</span><span class="vrow-val"><span class="ac '+ai.cls+'">'+ai.lbl+'</span></span></div>':'';
+    var clubR=p.club?'<div class="vrow"><span class="vrow-lbl">Club</span><span class="vrow-val">'+p.club+'</span></div>':'';
     var lgR=(p.lg&&LGS[p.lg])?'<div class="vrow"><span class="vrow-lbl">League</span><span class="vrow-val">'+LGS[p.lg].n+((!p.lgOn)?' <span style="font-size:9px;color:#aaa">(not factored)</span>':'')+'</span></div>':'';
     var posR=p.pos?'<div class="vrow"><span class="vrow-lbl">Position</span><span class="vrow-val">'+p.pos+'</span></div>':'';
     var pName=p.name||(side==='p1'?'Player 1':'Player 2');
-    return '<div class="vp"><div class="vp-hd"><span class="vp-name">'+pName+seasonNote(p)+'</span>'+(isWin?'<span class="winner-tag">▲ Superior</span>':'')+'</div><div class="vp-bd"><div class="vrow"><span class="vrow-lbl">Goals</span><span class="vrow-val">'+p.g+' <span class="badge '+gt.cls+'">'+gt.lbl+'</span></span></div><div class="vrow"><span class="vrow-lbl">Assists</span><span class="vrow-val">'+p.a+' <span class="badge '+at.cls+'">'+at.lbl+'</span></span></div>'+combinedR+posR+lgR+ageR+'<div class="vanalysis">'+txt+'</div></div></div>';
+    return '<div class="vp"><div class="vp-hd"><span class="vp-name">'+pName+seasonNote(p)+'</span>'+(isWin?'<span class="winner-tag">▲ Superior</span>':'')+'</div><div class="vp-bd"><div class="vrow"><span class="vrow-lbl">Goals</span><span class="vrow-val">'+p.g+' <span class="badge '+gt.cls+'">'+gt.lbl+'</span></span></div><div class="vrow"><span class="vrow-lbl">Assists</span><span class="vrow-val">'+p.a+' <span class="badge '+at.cls+'">'+at.lbl+'</span></span></div>'+combinedR+posR+clubR+lgR+ageR+'<div class="vanalysis">'+txt+'</div></div></div>';
   }
 
   var sameNote=same?'<div style="font-size:11px;color:#888;font-style:italic;margin-bottom:10px;padding:5px 8px;background:#ede7d9;border-radius:2px;border-left:2px solid #c8b89a">Same player — cross-season career progression analysis</div>':'';
