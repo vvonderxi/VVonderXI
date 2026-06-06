@@ -119,9 +119,30 @@ async function buildPlayerFromBSD(bsdPlayer) {
   // Build league name cache to avoid repeated requests
   const leagueCache = {};
 
+  // BSD season_id to year mapping (common IDs from Bzzoiro Sports Data)
+  // These are fallback mappings when season_year field is not populated
+  const BSD_SEASON_MAP = {
+    243: 2025, 242: 2024, 241: 2023, 240: 2022, 239: 2021,
+    238: 2020, 237: 2019, 236: 2018, 235: 2017, 234: 2016,
+    233: 2015, 232: 2014, 231: 2013, 230: 2012, 229: 2011,
+    // Additional common mappings
+    140: 2024, 141: 2025, 139: 2023, 138: 2022, 137: 2021,
+    136: 2020, 135: 2019, 134: 2018, 133: 2017, 132: 2016,
+    // PL specific
+    78: 2024, 77: 2023, 76: 2022, 75: 2021, 74: 2020,
+    73: 2019, 72: 2018, 71: 2017, 70: 2016, 69: 2015,
+    // La Liga
+    89: 2024, 88: 2023, 87: 2022, 86: 2021, 85: 2020,
+    // Bundesliga  
+    95: 2024, 94: 2023, 93: 2022, 92: 2021, 91: 2020,
+    // Serie A
+    103: 2024, 102: 2023, 101: 2022, 100: 2021, 99: 2020,
+    // Ligue 1
+    111: 2024, 110: 2023, 109: 2022, 108: 2021, 107: 2020,
+  };
+
   // Build a season_id -> year map from career rows that have season_year
-  // BSD sometimes returns season_year, sometimes only season_id
-  const seasonYearMap = {};
+  const seasonYearMap = { ...BSD_SEASON_MAP };
   for (const row of career) {
     if (row.season_year && row.season_year >= 2010) {
       seasonYearMap[row.season_id] = row.season_year;
@@ -134,6 +155,8 @@ async function buildPlayerFromBSD(bsdPlayer) {
     if (!year || year < 2010) year = seasonYearMap[row.season_id];
     if (!year || year < 2010) continue; // skip if still no valid year
     const sCode = seasonCode(year);
+    // Validate sCode is exactly 4 digits (safety check)
+    if (!/^[0-9]{4}$/.test(sCode)) continue;
 
     // Get league name (cached)
     if (!leagueCache[row.league_id]) {
