@@ -1,45 +1,36 @@
-// /api/search-player.js — VVonderXI BSD Player Search
-// Architecture: BSD seasons map -> player career -> build seasons object -> cache in Supabase
+// /api/search-player.js — VVonderXI
+// BSD career endpoint returns: season_id, league_id, goals, assists (NO year/name)
+// Fix: fetch /seasons/{id}/ and /leagues/{id}/ individually per row
 
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-const BSD_BASE = 'https://sports.bzzoiro.com/api/v2';
+const BSD = 'https://sports.bzzoiro.com/api/v2';
 
-// League name -> internal code mapping
 const LEAGUE_MAP = {
-  'premier league': 'PL', 'la liga': 'LL', 'bundesliga': 'BL',
-  'serie a': 'SA', 'ligue 1': 'L1', 'primeira liga': 'PRT',
-  'liga portugal': 'PRT', 'eredivisie': 'ERE', 'belgian pro league': 'BPL',
-  'champions league': 'CL', 'uefa champions league': 'CL',
-  'europa league': 'UEL', 'saudi pro league': 'SPL', 'mls': 'MLS',
-  'scottish premiership': 'SPM', 'super lig': 'TSL', 'turkish super lig': 'TSL',
-  'argentine primera': 'ARG', 'liga profesional': 'ARG',
-  'brasileirao': 'BRZ', 'serie b': 'SB2', 'championship': 'ENG2',
+  'premier league':'PL','la liga':'LL','bundesliga':'BL','serie a':'SA',
+  'ligue 1':'L1','primeira liga':'PRT','liga portugal':'PRT','eredivisie':'ERE',
+  'belgian pro league':'BPL','champions league':'CL','uefa champions league':'CL',
+  'europa league':'UEL','saudi pro league':'SPL','mls':'MLS',
+  'scottish premiership':'SPM','super lig':'TSL','turkish super lig':'TSL',
+  'argentine primera':'ARG','liga profesional':'ARG','brasileirao':'BRZ',
 };
 
 const POS_MAP = {
-  'G': 'GK', 'GK': 'GK', 'Goalkeeper': 'GK',
-  'D': 'CB', 'CB': 'CB', 'LB': 'LB', 'RB': 'RB',
-  'Centre-Back': 'CB', 'Left Back': 'LB', 'Right Back': 'RB', 'Defender': 'CB',
-  'M': 'CM', 'CM': 'CM', 'CDM': 'CDM', 'CAM': 'CAM',
-  'Central Midfield': 'CM', 'Defensive Midfield': 'CDM', 'Attacking Midfield': 'CAM',
-  'Midfielder': 'CM', 'Right Midfield': 'CM', 'Left Midfield': 'CM',
-  'F': 'ST', 'ST': 'ST', 'CF': 'CF', 'LW': 'LW', 'RW': 'RW',
-  'Centre-Forward': 'ST', 'Striker': 'ST', 'Forward': 'ST',
-  'Left Winger': 'LW', 'Right Winger': 'RW', 'Left Wing': 'LW', 'Right Wing': 'RW',
+  'G':'GK','GK':'GK','Goalkeeper':'GK',
+  'D':'CB','CB':'CB','LB':'LB','RB':'RB','Centre-Back':'CB',
+  'Left Back':'LB','Right Back':'RB','Defender':'CB',
+  'M':'CM','CM':'CM','CDM':'CDM','CAM':'CAM','Midfielder':'CM',
+  'Central Midfield':'CM','Defensive Midfield':'CDM','Attacking Midfield':'CAM',
+  'F':'ST','ST':'ST','CF':'CF','LW':'LW','RW':'RW',
+  'Centre-Forward':'ST','Striker':'ST','Forward':'ST',
+  'Left Winger':'LW','Right Winger':'RW','Left Wing':'LW','Right Wing':'RW',
+  'Winger':'LW','Attacker':'ST',
 };
 
-const LGS = {
-  PL:{f:1.000}, LL:{f:0.978}, BL:{f:0.940}, SA:{f:0.935}, L1:{f:0.878},
-  PRT:{f:0.845}, ERE:{f:0.820}, BPL:{f:0.790}, CL:{f:1.050}, UEL:{f:0.950},
-  SPL:{f:0.720}, MLS:{f:0.700}, SPM:{f:0.740}, TSL:{f:0.760},
-  ARG:{f:0.750}, BRZ:{f:0.740},
-};
-
-function resolveLeague(name) {
+function lgCode(name) {
   if (!name) return 'OTHER';
   const l = name.toLowerCase();
-  for (const [k, v] of Object.entries(LEAGUE_MAP)) {
+  for (const [k,v] of Object.entries(LEAGUE_MAP)) {
     if (l.includes(k)) return v;
   }
   return 'OTHER';
@@ -47,207 +38,177 @@ function resolveLeague(name) {
 
 function seasonCode(year) {
   const y = parseInt(year);
-  const full = y < 100 ? 2000 + y : y;
-  if (full < 2008 || full > 2026) return null;
-  return String(full).slice(2) + String(full + 1).slice(2);
+  if (!y || y < 2008 || y > 2026) return null;
+  return String(y).slice(2) + String(y+1).slice(2);
 }
 
-function ageAtSeason(dob, year) {
+function ageAt(dob, year) {
   if (!dob || !year) return null;
-  const age = Math.floor((new Date(year, 7, 1) - new Date(dob)) / (365.25*24*60*60*1000));
-  return (age > 10 && age < 50) ? age : null;
+  const a = Math.floor((new Date(year,7,1) - new Date(dob)) / (365.25*24*3600*1000));
+  return (a>10 && a<50) ? a : null;
 }
 
-async function bsdFetch(path) {
-  const res = await fetch(`${BSD_BASE}${path}`, {
+async function bsd(path) {
+  const r = await fetch(`${BSD}${path}`, {
     headers: { 'Authorization': `Token ${process.env.BSD_API_KEY}` },
-    signal: AbortSignal.timeout(6000)
+    signal: AbortSignal.timeout(5000)
   });
-  if (!res.ok) throw new Error(`BSD ${res.status} ${path}`);
-  return res.json();
+  if (!r.ok) throw new Error(`BSD ${r.status} ${path}`);
+  return r.json();
 }
 
-// Cache BSD seasons globally (season_id -> year)
-let _seasonMap = null;
-let _seasonMapTime = 0;
+// Cache season_id -> year lookups in memory (persists for function lifetime)
+const seasonCache = {};
+const leagueCache = {};
 
-async function getBSDSeasonMap() {
-  // Refresh every hour
-  if (_seasonMap && Date.now() - _seasonMapTime < 3600000) return _seasonMap;
+async function getSeasonYear(seasonId) {
+  if (seasonCache[seasonId]) return seasonCache[seasonId];
   try {
-    const data = await bsdFetch('/seasons/?limit=200');
-    const rows = data.results || data.seasons || data || [];
-    const map = {};
-    for (const s of rows) {
-      // BSD season format: {id, name: "2023/24", start_date: "2023-08-01"}
-      const id = s.id || s.season_id;
-      const name = s.name || s.season_name || '';
-      // Parse year from name like "2023/24" or "2023-2024"
-      const m = name.match(/(\d{4})[\/\-]/);
-      if (m) {
-        map[id] = parseInt(m[1]);
-        continue;
-      }
-      // Try start_date
-      if (s.start_date) {
-        map[id] = new Date(s.start_date).getFullYear();
-        continue;
-      }
-      // Try year field
-      if (s.year >= 2008) map[id] = s.year;
+    const d = await bsd(`/seasons/${seasonId}/`);
+    // BSD season fields: name "2023/24", start_date, year, season_year
+    let year = null;
+    if (d.name) {
+      const m = d.name.match(/(\d{4})[\/\-]/);
+      if (m) year = parseInt(m[1]);
     }
-    console.log(`Season map built: ${Object.keys(map).length} seasons`);
-    if (Object.keys(map).length > 0) {
-      console.log('Sample:', JSON.stringify(Object.entries(map).slice(0, 5)));
-      _seasonMap = map;
-      _seasonMapTime = Date.now();
+    if (!year && d.start_date) year = new Date(d.start_date).getFullYear();
+    if (!year && d.year >= 2008) year = d.year;
+    if (!year && d.season_year >= 2008) year = d.season_year;
+    if (year) {
+      seasonCache[seasonId] = year;
+      console.log(`Season ${seasonId} = ${year} (from: ${JSON.stringify(d)})`);
     }
-    return map;
-  } catch (e) {
-    console.error('Season map error:', e.message);
-    return _seasonMap || {};
+    return year;
+  } catch(e) {
+    console.log(`Season ${seasonId} fetch failed: ${e.message}`);
+    return null;
   }
 }
 
-async function buildPlayer(bsdPlayer, seasonMap) {
-  // Get career stats
-  let careerRows = [];
+async function getLeagueCode(leagueId) {
+  if (leagueCache[leagueId]) return leagueCache[leagueId];
   try {
-    const career = await bsdFetch(`/players/${bsdPlayer.id}/career/`);
-    careerRows = career.results || career.seasons || (Array.isArray(career) ? career : []);
-  } catch (e) {
-    console.error(`Career failed for ${bsdPlayer.name}:`, e.message);
+    const d = await bsd(`/leagues/${leagueId}/`);
+    const name = d.name || d.league_name || '';
+    const code = lgCode(name);
+    leagueCache[leagueId] = code;
+    console.log(`League ${leagueId} = ${code} (${name})`);
+    return code;
+  } catch(e) {
+    return 'OTHER';
+  }
+}
+
+async function buildPlayer(p) {
+  let rows = [];
+  try {
+    const career = await bsd(`/players/${p.id}/career/`);
+    rows = career.seasons || career.results || (Array.isArray(career) ? career : []);
+  } catch(e) {
+    console.log(`Career failed for ${p.name}: ${e.message}`);
   }
 
-  console.log(`${bsdPlayer.name} (id:${bsdPlayer.id}): ${careerRows.length} career rows`);
-  if (careerRows.length > 0) {
-    console.log('Row[0]:', JSON.stringify(careerRows[0]));
-  }
+  console.log(`${p.name} (${p.id}): ${rows.length} rows`);
 
-  const pos = POS_MAP[bsdPlayer.position] || 'ST';
+  const pos = POS_MAP[p.specific_position] || POS_MAP[p.position] || 'ST';
   const seasons = {};
 
-  for (const row of careerRows) {
-    // Resolve year: try season map first, then direct fields
-    const sid = row.season_id || row.season;
-    let year = seasonMap[sid];
-
-    if (!year) {
-      // Try direct year fields on the row
-      if (row.season_year >= 2008 && row.season_year <= 2026) year = row.season_year;
-      else if (row.year >= 2008 && row.year <= 2026) year = row.year;
-    }
-
-    if (!year || year < 2008 || year > 2026) continue;
+  for (const row of rows) {
+    // Get year from season_id
+    const year = await getSeasonYear(row.season_id);
+    if (!year) continue;
 
     const sCode = seasonCode(year);
     if (!sCode) continue;
 
-    // Resolve league
-    const lgName = row.league_name || row.competition_name || row.league || '';
-    const lgCode = resolveLeague(lgName);
+    // Get league from league_id
+    const league = await getLeagueCode(row.league_id);
 
     const g = parseInt(row.goals) || 0;
     const a = parseInt(row.assists) || 0;
     const rt = row.avg_rating ? Math.round(row.avg_rating * 10) : 75;
-    const age = ageAtSeason(bsdPlayer.date_of_birth, year);
+    const age = ageAt(p.date_of_birth, year);
 
-    // Keep highest G+A per season
-    if (!seasons[sCode] || (g + a) > (seasons[sCode].g + seasons[sCode].a)) {
-      seasons[sCode] = {
-        pos, lg: lgCode, g, a, rt, age,
-        club: row.team_name || row.club || '',
-      };
+    if (!seasons[sCode] || (g+a) > (seasons[sCode].g+seasons[sCode].a)) {
+      seasons[sCode] = { pos, lg: league, g, a, rt, age, club: '' };
     }
   }
 
   console.log(`Seasons: ${Object.keys(seasons).sort().join(', ') || 'NONE'}`);
 
   return {
-    name: bsdPlayer.name,
-    api_id: bsdPlayer.id,
-    nationality: bsdPlayer.nationality || '',
-    dob: bsdPlayer.date_of_birth || null,
-    position: bsdPlayer.position || '',
-    photo: `https://sports.bzzoiro.com/img/player/${bsdPlayer.id}/`,
+    name: p.name,
+    api_id: p.id,
+    nationality: p.nationality || '',
+    dob: p.date_of_birth || null,
+    position: p.position || '',
+    photo: `${BSD.replace('/api/v2','')}/img/player/${p.id}/`,
     seasons,
     source: 'bsd'
   };
 }
 
-async function cachePlayer(p) {
+async function cache(p) {
   try {
-    const { data: player } = await supabase
-      .from('players')
+    const { data: pl } = await supabase.from('players')
       .upsert({ api_id: p.api_id, name: p.name, nationality: p.nationality, photo_url: p.photo, updated_at: new Date().toISOString() }, { onConflict: 'api_id' })
       .select().single();
-    if (!player) return;
-
-    const rows = Object.entries(p.seasons).map(([s, d]) => ({
-      player_id: player.id, api_id: p.api_id, season: s,
-      season_year: 2000 + parseInt(s.slice(0, 2)),
-      league_code: d.lg, league_name: d.lg, league_api_id: 0,
-      pos: d.pos, age: d.age, goals: d.g, assists: d.a, rt: d.rt, club: d.club || '',
-      appearances: 0, minutes: 0,
-    }));
-    if (rows.length) {
-      await supabase.from('player_seasons').upsert(rows, { onConflict: 'api_id,season,league_api_id' });
-    }
-  } catch (e) { console.error('Cache error:', e.message); }
+    if (!pl || !Object.keys(p.seasons).length) return;
+    await supabase.from('player_seasons').upsert(
+      Object.entries(p.seasons).map(([s,d]) => ({
+        player_id: pl.id, api_id: p.api_id, season: s,
+        season_year: 2000+parseInt(s.slice(0,2)),
+        league_code: d.lg, league_name: d.lg, league_api_id: 0,
+        pos: d.pos, age: d.age, goals: d.g, assists: d.a, rt: d.rt, club: d.club||'',
+        appearances: 0, minutes: 0,
+      })),
+      { onConflict: 'api_id,season,league_api_id' }
+    );
+  } catch(e) { console.log('Cache error:', e.message); }
 }
 
-function formatCached(player, seasons) {
+function fmt(p, seasons) {
   const s = {};
-  (seasons || []).forEach(r => {
-    if (r.season?.length === 4) {
-      s[r.season] = { pos: r.pos, lg: r.league_code, g: r.goals, a: r.assists, rt: r.rt || 75, age: r.age, club: r.club };
-    }
+  (seasons||[]).forEach(r => {
+    if (r.season?.length===4) s[r.season] = { pos:r.pos, lg:r.league_code, g:r.goals, a:r.assists, rt:r.rt||75, age:r.age, club:r.club };
   });
-  return { name: player.name, api_id: player.api_id, nationality: player.nationality, photo: player.photo_url, seasons: s, source: 'cache' };
+  return { name:p.name, api_id:p.api_id, nationality:p.nationality, photo:p.photo_url, seasons:s, source:'cache' };
 }
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
-
   const { q } = req.query;
   if (!q || q.length < 2) return res.status(400).json({ error: 'Query too short' });
 
   try {
     if (!process.env.BSD_API_KEY) {
-      const { data: cached } = await supabase.from('players').select('*, player_seasons(*)').ilike('name', `%${q}%`).limit(8);
-      return res.json({ results: (cached || []).map(p => formatCached(p, p.player_seasons)), source: 'cache-no-key' });
+      const { data } = await supabase.from('players').select('*,player_seasons(*)').ilike('name',`%${q}%`).limit(8);
+      return res.json({ results: (data||[]).map(p=>fmt(p,p.player_seasons)), source:'no-key' });
     }
 
-    // Get season map (cached in memory)
-    const seasonMap = await getBSDSeasonMap();
-    console.log(`Season map has ${Object.keys(seasonMap).length} entries`);
+    const data = await bsd(`/players/?name=${encodeURIComponent(q)}&limit=10`);
+    const players = data.results || [];
+    console.log(`Search "${q}": ${players.length} results`);
 
-    // Search BSD
-    const data = await bsdFetch(`/players/?name=${encodeURIComponent(q)}&limit=10`);
-    const bsdPlayers = data.results || [];
-    console.log(`BSD search "${q}": ${bsdPlayers.length} results`);
-
-    if (!bsdPlayers.length) {
-      // Fall back to Supabase cache
-      const { data: cached } = await supabase.from('players').select('*, player_seasons(*)').ilike('name', `%${q}%`).limit(8);
-      return res.json({ results: (cached || []).map(p => formatCached(p, p.player_seasons)), source: 'cache-fallback' });
+    if (!players.length) {
+      const { data: cached } = await supabase.from('players').select('*,player_seasons(*)').ilike('name',`%${q}%`).limit(8);
+      return res.json({ results: (cached||[]).map(p=>fmt(p,p.player_seasons)), source:'cache-fallback' });
     }
 
     const results = [];
-    for (const bp of bsdPlayers.slice(0, 5)) {
-      const player = await buildPlayer(bp, seasonMap);
-      await cachePlayer(player);
+    for (const p of players.slice(0,5)) {
+      const player = await buildPlayer(p);
+      await cache(player);
       results.push(player);
     }
 
-    return res.json({ results, source: 'bsd' });
+    return res.json({ results, source:'bsd' });
 
-  } catch (err) {
+  } catch(err) {
     console.error('Error:', err.message);
-    const { data: cached } = await supabase.from('players').select('*, player_seasons(*)').ilike('name', `%${q}%`).limit(8).catch(() => ({ data: [] }));
-    if (cached?.length) return res.json({ results: cached.map(p => formatCached(p, p.player_seasons)), source: 'cache-error' });
+    const { data } = await supabase.from('players').select('*,player_seasons(*)').ilike('name',`%${q}%`).limit(8).catch(()=>({data:[]}));
+    if (data?.length) return res.json({ results: data.map(p=>fmt(p,p.player_seasons)), source:'cache-error' });
     return res.status(500).json({ error: err.message });
   }
 };
