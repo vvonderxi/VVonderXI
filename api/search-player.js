@@ -62,7 +62,9 @@ function calcAge(dob) {
 
 function seasonCode(year) {
   const y = parseInt(year);
-  return `${String(y).slice(2)}${String(y + 1).slice(2)}`;
+  // Handle full year (2023) or short year (23)
+  const fullYear = y < 100 ? 2000 + y : y;
+  return String(fullYear).slice(2) + String(fullYear + 1).slice(2);
 }
 
 // Fetch BSD API with auth header
@@ -118,8 +120,11 @@ async function buildPlayerFromBSD(bsdPlayer) {
   const leagueCache = {};
 
   for (const row of career) {
-    const year = row.season_id;
-    const sCode = seasonCode(row.season_year || year);
+    // BSD career rows have season_year (e.g. 2023) and season_id (internal int)
+    // We must use season_year to generate our season code
+    const year = row.season_year;
+    if (!year || year < 2010) continue; // skip invalid/old seasons
+    const sCode = seasonCode(year);
 
     // Get league name (cached)
     if (!leagueCache[row.league_id]) {
