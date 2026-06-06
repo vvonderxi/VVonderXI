@@ -311,37 +311,22 @@ module.exports = async (req, res) => {
       .ilike('name', `%${q}%`)
       .limit(8);
 
-    if (cached?.length > 0 && refresh !== '1') {
-      // Only use cache if players have 4+ valid seasons
-      const allRich = cached.every(p => {
-        const validSeasons = (p.player_seasons || []).filter(
-          s => s.season?.length === 4
-        ).length;
-        return validSeasons >= 4;
-      });
-
-      if (allRich) {
-        return res.json({
-          results: cached.map(p => formatCached(p, p.player_seasons)),
-          source: 'cache'
-        });
-      }
-      console.log(`Cache stale (too few seasons) — refreshing from BSD`);
-    }
+    // Always try BSD first for fresh full career data
+    // Only fall back to cache if BSD fails or no API key
+    const cacheResults = cached?.length > 0
+      ? cached.map(p => formatCached(p, p.player_seasons))
+      : null;
 
     if (!process.env.BSD_API_KEY) {
-      if (cached?.length > 0) {
-        return res.json({
-          results: cached.map(p => formatCached(p, p.player_seasons)),
-          source: 'cache-fallback'
-        });
-      }
+      if (cacheResults) return res.json({ results: cacheResults, source: 'cache-fallback' });
       return res.json({ results: [], source: 'no-api-key' });
     }
 
     // ── BSD search ──
     const bsdPlayers = await searchBSD(q);
     if (!bsdPlayers.length) {
+      // Fall back to cache if BSD finds nothing
+      if (cacheResults) return res.json({ results: cacheResults, source: 'cache-fallback' });
       return res.json({ results: [], source: 'bsd', message: 'No players found' });
     }
 
@@ -367,6 +352,15 @@ module.exports = async (req, res) => {
 
   } catch (err) {
     console.error('search-player error:', err);
+    // If BSD fails for any reason, fall back to cache
+    try {
+      const { data: fallback } = await supabase
+        .from('players').select('*, player_seasons(*)')
+        .ilike('name', `%${q}%`).limit(8);
+      if (fallback?.length > 0) {
+        return res.json({ results: fallback.map(p => formatCached(p, p.player_seasons)), source: 'cache-error-fallback' });
+      }
+    } catch(e2) {}
     return res.status(500).json({ error: err.message });
   }
 };
