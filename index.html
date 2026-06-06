@@ -708,7 +708,7 @@ canvas.spider-canvas{max-width:100%;height:auto}
 </div>
 
 <script>
-const SEASON_LABELS={"2324":"23/24","2223":"22/23","2122":"21/22"};
+const SEASON_LABELS={"2526":"25/26","2425":"24/25","2324":"23/24","2223":"22/23","2122":"21/22","2021":"20/21","1920":"19/20","1819":"18/19","1718":"17/18","1617":"16/17","1516":"15/16"};
 const LGS={
   PL:{n:"Premier League",f:1.000},LL:{n:"La Liga",f:0.978},BL:{n:"Bundesliga",f:0.940},
   SA:{n:"Serie A",f:0.935},L1:{n:"Ligue 1",f:0.878},PRT:{n:"Primeira Liga",f:0.845},
@@ -1291,35 +1291,38 @@ function setSeason(n,s){
 }
 
 function updateSeasonBtns(n){
-  // Update the dropdown to show available seasons for this player
   var sel=document.getElementById('pc'+n+'-season-select');
   if(!sel) return;
   var p=pcSelected[n];
   if(!p||!p.seasons){
-    // Reset to defaults for Classic DB
     sel.innerHTML='<option value="2324">23/24</option><option value="2223">22/23</option><option value="2122">21/22</option>';
     sel.value=pcSeason[n]||'2324';
     return;
   }
-  // Build options from available seasons
   var SEASON_DISPLAY={
     '2526':'25/26','2425':'24/25','2324':'23/24','2223':'22/23','2122':'21/22',
     '2021':'20/21','1920':'19/20','1819':'18/19','1718':'17/18','1617':'16/17',
     '1516':'15/16','1415':'14/15','1314':'13/14','1213':'12/13','1112':'11/12',
     '1011':'10/11','0910':'09/10','0809':'08/09'
   };
-  var keys=Object.keys(p.seasons).sort().reverse();
-  // Map BSD season keys (may be like "2324" already or need conversion)
+  // Filter out BSD internal season IDs (short numbers like "78","89","103")
+  // Valid season codes are always 4 chars like "2324"
+  var keys=Object.keys(p.seasons).filter(function(k){
+    return k.length===4 && /^[0-9]{4}$/.test(k);
+  }).sort().reverse();
+  // If no valid keys, fall back to defaults
+  if(!keys.length){
+    sel.innerHTML='<option value="2324">23/24</option><option value="2223">22/23</option><option value="2122">21/22</option>';
+    sel.value='2324';
+    return;
+  }
   var opts=keys.map(function(k){
     var label=SEASON_DISPLAY[k]||(k.slice(0,2)+'/'+k.slice(2));
     return '<option value="'+k+'">'+label+'</option>';
   }).join('');
   sel.innerHTML=opts;
-  // Select most recent by default
-  if(keys.length>0){
-    pcSeason[n]=keys[0];
-    sel.value=keys[0];
-  }
+  pcSeason[n]=keys[0];
+  sel.value=keys[0];
 }
 
 function lockFields(n,lock){
@@ -1599,18 +1602,76 @@ function overallVerdict(n1,n2,s1,s2,mode,win,lg1on,lg2on){
   var f1=LGS[s1.lg]?LGS[s1.lg].f:0.85, f2=LGS[s2.lg]?LGS[s2.lg].f:0.85;
   var adj1=Math.round(c1*(lg1on?f1:1)), adj2=Math.round(c2*(lg2on?f2:1));
   var ld1=LGS[s1.lg]?LGS[s1.lg].n:'their league', ld2=LGS[s2.lg]?LGS[s2.lg].n:'their league';
-  var posNote=(s1.pos&&s2.pos&&s1.pos!==s2.pos)?' Note: different positions ('+s1.pos+' vs '+s2.pos+') — compare with that context in mind.':'';
+
+  // Age trajectory notes
+  var ageNote=function(age,name){
+    if(!age||age==='-'||age==='—') return '';
+    age=parseInt(age);
+    if(age<=20) return name+' is '+age+' — at this age, the trajectory premium is significant. A player producing at this level before 21 typically has 6-8 more years in their prime window ahead of them.';
+    if(age<=23) return name+' at '+age+' is approaching their peak years with the best still ahead of them.';
+    if(age<=27) return name+' at '+age+' is in their prime — expect this output level sustained for another 3-4 seasons minimum.';
+    if(age<=30) return name+' at '+age+' is in the final years of peak output. Production should remain strong but expect gradual decline from 31 onwards.';
+    return name+' at '+age+' is a veteran — resilience and intelligence sustaining their numbers, but output risk increases each year.';
+  };
+
+  // Position cross-comparison note
+  var posNote='';
+  if(s1.pos&&s2.pos&&s1.pos!==s2.pos){
+    posNote=' Note: comparing a '+s1.pos+' to a '+s2.pos+' — positional benchmarks differ, so raw G+A should be contextualised against role expectations rather than compared directly.';
+  }
+
+  // Transfer value signal
+  var transferNote=function(name,adj,age){
+    if(!age||age==='-') return '';
+    age=parseInt(age);
+    if(adj>=25&&age<=24) return name+' represents a high-value acquisition — elite output at a young age commands premium market value but offers the longest return window.';
+    if(adj>=25&&age<=28) return name+' is a proven elite performer in their prime — expect top-tier market valuation with 3-4 years of guaranteed high output.';
+    if(adj>=15&&age<=22) return name+' is an emerging asset — numbers trending towards elite with significant upside still to come.';
+    if(adj<10&&age<=21) return name+' is not yet producing at starting-level output but the age profile means patience is warranted before drawing firm conclusions.';
+    return '';
+  };
+
   if(win==='draw'){
-    return n1+' ('+adj1+' adj. G+A) and '+n2+' ('+adj2+' adj. G+A) are too close to separate on numbers alone. When two players are this evenly matched, the decision comes down to age trajectory, contract value, system fit, and footage. A scout would not commit without seeing both in action.'+posNote;
+    var a1Note=ageNote(s1.age,n1); var a2Note=ageNote(s2.age,n2);
+    return n1+' ('+adj1+' adj. G+A) and '+n2+' ('+adj2+' adj. G+A) are too close to separate on output alone — a margin of less than 1.5 adjusted contributions is within the margin of variance. '
+      +'When two players are this evenly matched statistically, the decision shifts to age trajectory, contract situation, system fit, and live footage. '
+      +(a1Note?a1Note+' ':''+(a2Note?a2Note+' ':''))
+      +'A scout would not commit based on numbers this close without additional context. Both players merit deeper investigation before a recommendation can be made with confidence.'+posNote;
   }
-  var lead,trail,lc,tc,lAdj,tAdj,ll,tl;
-  if(win==='p1'){lead=n1;trail=n2;lc=c1;tc=c2;lAdj=adj1;tAdj=adj2;ll=ld1;tl=ld2;}
-  else{lead=n2;trail=n1;lc=c2;tc=c1;lAdj=adj2;tAdj=adj1;ll=ld2;tl=ld1;}
+
+  var lead,trail,ls,ts,lc,tc,lAdj,tAdj,ll,tl;
+  if(win==='p1'){lead=n1;trail=n2;ls=s1;ts=s2;lc=c1;tc=c2;lAdj=adj1;tAdj=adj2;ll=ld1;tl=ld2;}
+  else{lead=n2;trail=n1;ls=s2;ts=s1;lc=c2;tc=c1;lAdj=adj2;tAdj=adj1;ll=ld2;tl=ld1;}
   var gap=lAdj-tAdj;
+  var leadAge=ageNote(ls.age,lead);
+  var trailAge=ageNote(ts.age,trail);
+  var transferSig=transferNote(lead,lAdj,ls.age);
+
   if(mode==='simple'){
-    return lead+' has the stronger raw output — '+lc+' G+A versus '+tc+' for '+trail+'. '+(Math.abs(lc-tc)>=5?'A clear gap that is difficult to argue against. The recommendation points firmly towards '+lead+'.':'A narrow margin — context could close it. League quality, position, and age should all factor into the final call.')+posNote;
+    return lead+' has the stronger raw output — '+lc+' G+A versus '+tc+' for '+trail+'. '
+      +(Math.abs(lc-tc)>=10
+        ?'A dominant gap of '+(lc-tc)+' contributions that is virtually impossible to explain away through circumstance alone. '+lead+' is the clear choice on these numbers. '
+        :Math.abs(lc-tc)>=5
+        ?'A clear gap of '+(Math.abs(lc-tc))+' contributions — meaningful at this level and difficult to argue against. '+lead+' holds the stronger hand. '
+        :'A narrow margin — context could close it. League quality, position, and age should all factor into the final call. ')
+      +(leadAge?leadAge+' ':'')
+      +(transferSig?transferSig+' ':'')
+      +posNote;
   }
-  return lead+' comes out ahead on league-adjusted output — '+lAdj+' weighted G+A vs '+tAdj+' for '+trail+'. Producing '+lc+' G+A in the '+ll+' carries more weight than '+tc+' in the '+tl+' when competitive standards are properly accounted for. '+(gap>=7?'The gap is substantial and the recommendation is clear: '+lead+' is the stronger output player by a meaningful margin.':gap>=4?'A notable margin of '+gap+' adjusted contributions. Unless '+trail+' offers significant advantages elsewhere, '+lead+' is the stronger signing on paper.':'A narrow gap of '+gap+' adjusted contributions — close enough that other factors could tip the balance, but '+lead+' edges it on the data.')+posNote;
+
+  return lead+' comes out ahead on league-adjusted output — '+lAdj+' weighted G+A versus '+tAdj+' for '+trail+'. '
+    +'Producing '+lc+' G+A in the '+ll+' carries more weight than '+tc+' in the '+tl+' when competitive standards are properly accounted for via UEFA difficulty weighting. '
+    +(gap>=10
+      ?'The gap is commanding — '+gap+' adjusted contributions is not a rounding error, it is a fundamental difference in output level. '+lead+' is the decisive choice here. '
+      :gap>=5
+      ?'A gap of '+gap+' adjusted contributions is significant at this level. '+lead+' is the stronger performer on a data basis and the recommendation points clearly in their direction. '
+      :gap>=3
+      ?'A notable margin of '+gap+' adjusted contributions. Unless '+trail+' offers compelling advantages in system fit, set-piece ability, or defensive contribution, '+lead+' edges this on the data. '
+      :'A narrow gap of '+gap+' adjusted contributions — close enough that other factors could tip the balance, but '+lead+' holds the statistical edge. ')
+    +(leadAge?leadAge+' ':'')
+    +(trailAge&&gap<5?'In contrast, '+trailAge+' ':'')
+    +(transferSig?transferSig+' ':'')
+    +'Scout recommendation: '+lead+(gap>=5?' — start them.':' — marginal edge, monitor before committing.')+posNote;
 }
 
 
