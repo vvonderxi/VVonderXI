@@ -30,14 +30,19 @@ const LEAGUE_NAME_MAP = {
 };
 
 const POS_MAP = {
-  'G':'GK','GK':'GK','Goalkeeper':'GK',
-  'D':'CB','CB':'CB','LB':'LB','RB':'RB','Centre-Back':'CB',
-  'Left Back':'LB','Right Back':'RB','Defender':'CB','Wing-Back':'RB',
-  'M':'CM','CM':'CM','CDM':'CDM','CAM':'CAM','Midfielder':'CM',
-  'Central Midfield':'CM','Defensive Midfield':'CDM','Attacking Midfield':'CAM',
-  'Right Midfield':'CM','Left Midfield':'CM','Box-to-box':'CM',
+  'G':'GK','GK':'GK','Goalkeeper':'GK','P':'GK',
+  'D':'CB','CB':'CB','LB':'LB','RB':'RB','WB':'LB',
+  'Centre-Back':'CB','Central Defender':'CB',
+  'Left Back':'LB','Right Back':'RB','Left Wing-Back':'LB','Right Wing-Back':'RB',
+  'Wing-Back':'LB','Wingback':'LB','Defender':'CB',
+  'Left Defender':'LB','Right Defender':'RB',
+  'M':'CM','CM':'CM','CDM':'CDM','CAM':'CAM','AM':'CAM',
+  'Midfielder':'CM','Central Midfield':'CM','Defensive Midfield':'CDM',
+  'Attacking Midfield':'CAM','Right Midfield':'CM','Left Midfield':'CM',
+  'Box-to-box':'CM','Defensive Midfielder':'CDM','Attacking Midfielder':'CAM',
   'F':'ST','ST':'ST','CF':'CF','LW':'LW','RW':'RW',
   'Centre-Forward':'ST','Striker':'ST','Forward':'ST','Attacker':'ST',
+  'Second Striker':'CF','False Nine':'CF',
   'Left Winger':'LW','Right Winger':'RW','Left Wing':'LW','Right Wing':'RW','Winger':'LW',
 };
 
@@ -71,22 +76,38 @@ async function bsd(path) {
   return r.json();
 }
 
-// Cache league names in memory
+// Cache league and team names in memory
 const leagueCache = {};
+const teamCache = {};
 
 async function getLeagueName(leagueId) {
-  if (leagueCache[leagueId]) return leagueCache[leagueId];
+  if (leagueCache[leagueId] !== undefined) return leagueCache[leagueId];
   try {
     const d = await bsd(`/leagues/${leagueId}/`);
     const name = d.name || d.league_name || d.title || '';
     leagueCache[leagueId] = name;
-    console.log(`League ${leagueId} = "${name}"`);
     return name;
   } catch(e) {
     leagueCache[leagueId] = '';
     return '';
   }
 }
+
+async function getTeamName(teamId) {
+  if (!teamId) return '';
+  if (teamCache[teamId] !== undefined) return teamCache[teamId];
+  try {
+    const d = await bsd(`/teams/${teamId}/`);
+    const name = d.name || d.team_name || d.short_name || '';
+    teamCache[teamId] = name;
+    console.log(`Team ${teamId} = "${name}"`);
+    return name;
+  } catch(e) {
+    teamCache[teamId] = '';
+    return '';
+  }
+}
+
 
 // Infer season years from season_id ordering
 // BSD season_ids are sequential — higher = more recent
@@ -149,7 +170,7 @@ async function buildPlayer(p) {
 
     // Keep best entry per season
     if (!seasons[sCode] || (g+a) > (seasons[sCode].g+seasons[sCode].a)) {
-      seasons[sCode] = { pos, lg: league, g, a, rt, age, club: '' };
+      seasons[sCode] = { pos, lg: league, g, a, rt, age, club: clubName };
     }
   }
 
