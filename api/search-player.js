@@ -18,10 +18,15 @@ const LEAGUE_NAME_MAP = {
   'ligue 1':'L1','ligue1':'L1','primeira liga':'PRT','liga portugal':'PRT',
   'eredivisie':'ERE','belgian pro league':'BPL','champions league':'CL',
   'uefa champions league':'CL','europa league':'UEL','conference league':'UECL',
-  'saudi pro league':'SPL','mls':'MLS','scottish premiership':'SPM',
-  'super lig':'TSL','turkish super lig':'TSL','argentine primera':'ARG',
-  'liga profesional':'ARG','brasileirao':'BRZ','serie b':'SB2',
+  'saudi pro league':'SPL','saudi':'SPL','roshn':'SPL',
+  'mls':'MLS','major league soccer':'MLS',
+  'scottish premiership':'SPM','scottish':'SPM',
+  'super lig':'TSL','turkish super lig':'TSL','turkish':'TSL',
+  'argentine primera':'ARG','liga profesional':'ARG','primera division':'ARG',
+  'brasileirao':'BRZ','campeonato brasileiro':'BRZ','serie a brasil':'BRZ',
   'championship':'ENG2','2. bundesliga':'BL2','serie b italia':'SA2',
+  'jupiler':'BPL','pro league':'BPL',
+  'allsvenskan':'SWE','ekstraklasa':'POL','liga nos':'PRT',
 };
 
 const POS_MAP = {
