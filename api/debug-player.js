@@ -12,14 +12,21 @@ module.exports = async (req, res) => {
     if (id) {
       const careerRes = await fetch(`${base}/players/${id}/career/`, { headers });
       const career = await careerRes.json();
-      const seasonsRes = await fetch(`${base}/seasons/?limit=50`, { headers });
-      const seasons = await seasonsRes.json();
-      return res.end(JSON.stringify({
-        career_raw: career,
-        first_row: Array.isArray(career) ? career[0] : (career.results||career.seasons||[])[0],
-        row_count: Array.isArray(career) ? career.length : (career.results||career.seasons||[]).length,
-        seasons_sample: Array.isArray(seasons) ? seasons.slice(0,10) : (seasons.results||seasons.seasons||[]).slice(0,10)
-      }, null, 2));
+      const rows = career.seasons || career.results || (Array.isArray(career) ? career : []);
+
+      const seasonDetails = {};
+      const leagueDetails = {};
+      for (const row of rows) {
+        if (row.season_id && !seasonDetails[row.season_id]) {
+          const sr = await fetch(`${base}/seasons/${row.season_id}/`, { headers });
+          seasonDetails[row.season_id] = await sr.json();
+        }
+        if (row.league_id && !leagueDetails[row.league_id]) {
+          const lr = await fetch(`${base}/leagues/${row.league_id}/`, { headers });
+          leagueDetails[row.league_id] = await lr.json();
+        }
+      }
+      return res.end(JSON.stringify({ rows, season_details: seasonDetails, league_details: leagueDetails }, null, 2));
     }
     return res.end(JSON.stringify({ error: 'Need ?id= or ?q=' }));
   } catch(e) {
