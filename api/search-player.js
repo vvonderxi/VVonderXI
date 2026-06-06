@@ -162,17 +162,26 @@ async function getLeagueName(leagueId) {
 
 async function buildPlayer(bsdPlayer) {
   const career = await getCareer(bsdPlayer.id);
-  console.log(`${bsdPlayer.name} (${bsdPlayer.id}): ${career.length} career rows`);
-  if (career.length > 0) {
-    console.log('Row sample:', JSON.stringify(career[0]).slice(0, 200));
+  const careerArr = Array.isArray(career) ? career : 
+    (career.seasons || career.results || []);
+  console.log(`PLAYER: ${bsdPlayer.name} | BSD_ID: ${bsdPlayer.id} | DOB: ${bsdPlayer.date_of_birth} | POS: ${bsdPlayer.position}`);
+  console.log(`CAREER: ${careerArr.length} rows`);
+  if (careerArr.length > 0) {
+    console.log(`SAMPLE_ROW: ${JSON.stringify(careerArr[0])}`);
+  } else {
+    console.log(`RAW_CAREER_RESPONSE: ${JSON.stringify(career).slice(0, 300)}`);
   }
 
   const seasons = {};
   const pos = POS_MAP[bsdPlayer.position] || bsdPlayer.position || 'ST';
 
+  // Unwrap career array (BSD returns { seasons: [] } or { results: [] } or [])
+  const careerRows = Array.isArray(career) ? career :
+    (career.seasons || career.results || []);
+  
   // Build season_year map from rows that have it (for rows that don't)
   const yearFromId = {};
-  for (const row of career) {
+  for (const row of careerRows) {
     if (row.season_year >= 2008 && row.season_id) {
       yearFromId[row.season_id] = row.season_year;
     }
@@ -181,7 +190,7 @@ async function buildPlayer(bsdPlayer) {
   // For unknown league IDs, fetch name lazily (only once per unique league)
   const unknownLeagues = {};
 
-  for (const row of career) {
+  for (const row of careerRows) {
     // Resolve season year
     let year = row.season_year;
     if (!year && row.season_id) year = yearFromId[row.season_id];
