@@ -84,6 +84,11 @@ body{background:#f5f0e8;font-family:'Source Sans 3',sans-serif;color:#111;font-s
 .season-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .season-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#aaa;font-weight:600}
 .season-grp{display:inline-flex;border:1px solid #d8d0c0;border-radius:3px;overflow:hidden}
+.season-dropdown-wrap{display:inline-flex;align-items:center}
+.season-select{font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:600;padding:4px 10px;background:#faf7f2;border:1px solid #d8d0c0;border-radius:3px;cursor:pointer;color:#111;outline:none;transition:border-color .15s;min-width:90px}
+.season-select:focus{border-color:#111}
+.season-select:disabled{color:#aaa;cursor:default;background:#f5f0e8}
+.season-select option{font-weight:500}
 .season-btn{font-family:'Source Sans 3',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.5px;padding:4px 10px;background:#faf7f2;border:none;border-right:1px solid #d8d0c0;cursor:pointer;color:#888;transition:all .15s}
 .season-btn:last-child{border-right:none}
 .season-btn.on{background:#111;color:#fff}
@@ -443,10 +448,12 @@ canvas.spider-canvas{max-width:100%;height:auto}
             <div class="locked-notice" id="pc1-notice">Player locked — stats from database.</div>
             <div class="season-row" id="pc1-season-row">
               <span class="season-lbl">Season:</span>
-              <div class="season-grp">
-                <button class="season-btn on" id="pc1-s2324" onclick="setSeason(1,'2324')">23/24</button>
-                <button class="season-btn" id="pc1-s2223" onclick="setSeason(1,'2223')">22/23</button>
-                <button class="season-btn" id="pc1-s2122" onclick="setSeason(1,'2122')">21/22</button>
+              <div class="season-dropdown-wrap">
+                <select class="season-select" id="pc1-season-select" onchange="setSeason(1,this.value)" disabled>
+                  <option value="2324">23/24</option>
+                  <option value="2223">22/23</option>
+                  <option value="2122">21/22</option>
+                </select>
               </div>
             </div>
             <div class="r2">
@@ -471,10 +478,12 @@ canvas.spider-canvas{max-width:100%;height:auto}
             <div class="locked-notice" id="pc2-notice">Player locked — stats from database.</div>
             <div class="season-row" id="pc2-season-row">
               <span class="season-lbl">Season:</span>
-              <div class="season-grp">
-                <button class="season-btn on" id="pc2-s2324" onclick="setSeason(2,'2324')">23/24</button>
-                <button class="season-btn" id="pc2-s2223" onclick="setSeason(2,'2223')">22/23</button>
-                <button class="season-btn" id="pc2-s2122" onclick="setSeason(2,'2122')">21/22</button>
+              <div class="season-dropdown-wrap">
+                <select class="season-select" id="pc2-season-select" onchange="setSeason(2,this.value)" disabled>
+                  <option value="2324">23/24</option>
+                  <option value="2223">22/23</option>
+                  <option value="2122">21/22</option>
+                </select>
               </div>
             </div>
             <div class="r2">
@@ -1084,15 +1093,39 @@ function applySeasonData(n){
 function setSeason(n,s){
   if(!pcSelected[n]) return;
   pcSeason[n]=s;
-  updateSeasonBtns(n);
   applySeasonData(n);
 }
 
 function updateSeasonBtns(n){
-  ['2324','2223','2122'].forEach(function(s){
-    var btn=document.getElementById('pc'+n+'-s'+s);
-    if(btn) btn.classList.toggle('on',pcSeason[n]===s);
-  });
+  // Update the dropdown to show available seasons for this player
+  var sel=document.getElementById('pc'+n+'-season-select');
+  if(!sel) return;
+  var p=pcSelected[n];
+  if(!p||!p.seasons){
+    // Reset to defaults for Classic DB
+    sel.innerHTML='<option value="2324">23/24</option><option value="2223">22/23</option><option value="2122">21/22</option>';
+    sel.value=pcSeason[n]||'2324';
+    return;
+  }
+  // Build options from available seasons
+  var SEASON_DISPLAY={
+    '2526':'25/26','2425':'24/25','2324':'23/24','2223':'22/23','2122':'21/22',
+    '2021':'20/21','1920':'19/20','1819':'18/19','1718':'17/18','1617':'16/17',
+    '1516':'15/16','1415':'14/15','1314':'13/14','1213':'12/13','1112':'11/12',
+    '1011':'10/11','0910':'09/10','0809':'08/09'
+  };
+  var keys=Object.keys(p.seasons).sort().reverse();
+  // Map BSD season keys (may be like "2324" already or need conversion)
+  var opts=keys.map(function(k){
+    var label=SEASON_DISPLAY[k]||(k.slice(0,2)+'/'+k.slice(2));
+    return '<option value="'+k+'">'+label+'</option>';
+  }).join('');
+  sel.innerHTML=opts;
+  // Select most recent by default
+  if(keys.length>0){
+    pcSeason[n]=keys[0];
+    sel.value=keys[0];
+  }
 }
 
 function lockFields(n,lock){
@@ -1102,6 +1135,9 @@ function lockFields(n,lock){
     var inp=document.getElementById('pc'+n+f);
     if(inp){ if(f==='pos'||f==='lg') inp.disabled=lock; else inp.readOnly=lock; }
   });
+  // Enable/disable season dropdown
+  var sel=document.getElementById('pc'+n+'-season-select');
+  if(sel) sel.disabled=!lock;
   var clr=document.getElementById('pc'+n+'-clear');
   if(clr) clr.classList.toggle('show',lock);
   var ntc=document.getElementById('pc'+n+'-notice');
