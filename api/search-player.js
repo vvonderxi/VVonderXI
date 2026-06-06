@@ -119,11 +119,20 @@ async function buildPlayerFromBSD(bsdPlayer) {
   // Build league name cache to avoid repeated requests
   const leagueCache = {};
 
+  // Build a season_id -> year map from career rows that have season_year
+  // BSD sometimes returns season_year, sometimes only season_id
+  const seasonYearMap = {};
   for (const row of career) {
-    // BSD career rows have season_year (e.g. 2023) and season_id (internal int)
-    // We must use season_year to generate our season code
-    const year = row.season_year;
-    if (!year || year < 2010) continue; // skip invalid/old seasons
+    if (row.season_year && row.season_year >= 2010) {
+      seasonYearMap[row.season_id] = row.season_year;
+    }
+  }
+
+  for (const row of career) {
+    // Try season_year first, fall back to seasonYearMap, then skip
+    let year = row.season_year;
+    if (!year || year < 2010) year = seasonYearMap[row.season_id];
+    if (!year || year < 2010) continue; // skip if still no valid year
     const sCode = seasonCode(year);
 
     // Get league name (cached)
