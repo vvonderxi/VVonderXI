@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1000 } = req.body;
+    const { messages, max_tokens = 1400 } = req.body;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -26,6 +26,11 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens,
+        system: `You are an elite football scout and data analyst with 20+ years of experience at top European clubs. 
+You think like the best minds in the game — Pep Guardiola's analytics team, Moneyball-style data departments, Ralf Rangnick's pressing philosophy meets cold hard numbers.
+You write scouting reports for sporting directors who need clear, evidence-based recommendations.
+Your reports are direct, specific, and always reference exact numbers. You never use vague phrases like "solid" or "impressive" — you say exactly WHY the output matters, what it means positionally, and what it predicts about the player's future.
+You always respond with valid JSON only — no markdown, no code blocks, no preamble.`,
         messages
       })
     });
