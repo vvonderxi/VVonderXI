@@ -1235,21 +1235,24 @@ function doLiveSearch(n,v){
 function fillPlayer(n,name){
   var decoded=name.replace(/&amp;/g,'&').replace(/&quot;/g,'"');
   var p=null;
-  // Check live results first (BSD data)
-  if(DATA_MODE==='live' && window._liveResults && window._liveResults[decoded]){
-    var lp=window._liveResults[decoded];
-    // Prefer domestic league seasons (filter out CL/international)
+  var DOMESTIC=['PL','LL','BL','SA','L1','PRT','ERE','BPL','SPL','MLS','SPM','TSL','ARG','BRZ','OTHER'];
+
+  function cleanLivePlayer(lp){
     var cleanSeasons={};
-    var DOMESTIC=['PL','LL','BL','SA','L1','PRT','ERE','BPL','SPL','MLS','SPM','TSL','ARG','BRZ','OTHER'];
     Object.keys(lp.seasons||{}).forEach(function(k){
       var s=lp.seasons[k];
       if(DOMESTIC.indexOf(s.lg)>=0) cleanSeasons[k]=s;
     });
-    // If no domestic seasons found, use all seasons
     if(Object.keys(cleanSeasons).length===0) cleanSeasons=lp.seasons||{};
-    p={name:lp.name, seasons:cleanSeasons, _live:true,
-       nationality:lp.nationality, photo:lp.photo};
+    return {name:lp.name, seasons:cleanSeasons, _live:true,
+            nationality:lp.nationality, photo:lp.photo};
   }
+
+  // Always prefer BSD live results (full career history)
+  if(window._liveResults && window._liveResults[decoded]){
+    p=cleanLivePlayer(window._liveResults[decoded]);
+  }
+
   // Fall back to Classic DB
   if(!p){
     for(var i=0;i<DB.length;i++){
@@ -1257,15 +1260,51 @@ function fillPlayer(n,name){
     }
   }
   if(!p) return;
+
+  // Apply immediately with what we have
   pcSelected[n]=p;
-  // Pick most recent season
-  var keys=Object.keys(p.seasons).sort().reverse();
+  var keys=Object.keys(p.seasons).filter(function(k){return k.length===4&&/^[0-9]{4}$/.test(k);}).sort().reverse();
   pcSeason[n]=keys[0]||'2324';
   updateSeasonBtns(n);
   applySeasonData(n);
   lockFields(n,true);
   var s=document.getElementById('s'+n);
   if(s) s.style.display='none';
+
+  // If we only have Classic DB data (<=3 seasons), fire BSD lookup in background
+  // to enrich with full career history
+  if(!p._live && keys.length<=3){
+    var noticeEl=document.getElementById('pc'+n+'-notice');
+    if(noticeEl) noticeEl.textContent='Loading full career from live data...';
+    fetch('/api/search-player?q='+encodeURIComponent(decoded))
+      .then(function(r){return r.json();})
+      .then(function(data){
+        var results=data.results||[];
+        // Find exact or closest name match
+        var match=null;
+        results.forEach(function(r){
+          if(r.name.toLowerCase()===decoded.toLowerCase()) match=r;
+        });
+        if(!match&&results.length) match=results[0];
+        if(match){
+          window._liveResults=window._liveResults||{};
+          window._liveResults[decoded]=match;
+          var enriched=cleanLivePlayer(match);
+          enriched.dbRef=p.dbRef||p; // keep DB ref for growth analysis
+          pcSelected[n]=enriched;
+          var newKeys=Object.keys(enriched.seasons).filter(function(k){return k.length===4&&/^[0-9]{4}$/.test(k);}).sort().reverse();
+          pcSeason[n]=newKeys[0]||keys[0]||'2324';
+          updateSeasonBtns(n);
+          applySeasonData(n);
+          if(noticeEl) noticeEl.textContent='Player locked — live data loaded ('+(newKeys.length)+' seasons).';
+        } else {
+          if(noticeEl) noticeEl.textContent='Player locked — stats from database.';
+        }
+      })
+      .catch(function(){
+        if(noticeEl) noticeEl.textContent='Player locked — stats from database.';
+      });
+  }
 }
 
 function applySeasonData(n){
@@ -1406,28 +1445,73 @@ function ageInfo(age){
 
 // ── ANALYSIS TEXT ──
 function simpleText(p,sdata){
-  var c=sdata.g+sdata.a, g=sdata.g, a=sdata.a;
-  var ai=ageInfo(sdata.age);
-  if(c===0 && !p.name) return 'No stats entered. Add goals and assists to generate a read.';
+  var combined=sdata.g+sdata.a, g=sdata.g, a=sdata.a;
+  var pos=sdata.pos||'', age=sdata.age, lgKey=sdata.lg;
+  var lgName=LGS[lgKey]?LGS[lgKey].n:'Unknown League';
+  var lgFactor=LGS[lgKey]?LGS[lgKey].f:0.85;
+  var adjCombined=Math.round(combined*lgFactor);
+  var ai=ageInfo(age);
+
+  // Position benchmarks
+  var POS_BENCH={
+    'ST':{g:20,a:6},'CF':{g:18,a:9},'LW':{g:12,a:12},'RW':{g:12,a:12},
+    'CAM':{g:10,a:14},'CM':{g:7,a:9},'CDM':{g:3,a:5},
+    'LB':{g:3,a:9},'RB':{g:3,a:9},'CB':{g:3,a:3},'GK':{g:0,a:1}
+  };
+  var bench=POS_BENCH[pos]||{g:10,a:8};
+  var gVsBench=g-bench.g, aVsBench=a-bench.a;
+
+  if(combined===0 && !p.name) return 'No stats entered. Add goals and assists to generate a read.';
+  if(combined===0) return (p.name||'This player')+' has no recorded output this season. Either injury-affected, limited minutes, or the data is incomplete.';
+
   var t='';
-  if(c>=30){
-    t=c+' combined G+A is a historically rare return — only a handful of players in any given season reach this level globally. '+g+' goals and '+a+' assists means this player is the decisive force in almost every match they play. Output like this wins leagues, defines careers, and commands nine-figure transfer fees.';
-  } else if(c>=25){
-    t=c+' combined G+A is a world-class season. '+g+' goals and '+a+' assists places this player firmly in the top tier of attackers or creators on the planet. Clubs at the highest level build squads around players who produce at this rate consistently.';
-  } else if(c>=20){
-    t=c+' combined G+A is an excellent return. '+g+' goals and '+a+' assists is the profile of a reliable, match-winning asset — the kind of player who justifies a starting spot at any top-six club in Europe and contributes meaningfully to title challenges.';
-  } else if(c>=15){
-    t=c+' combined G+A is a very good season. '+g+' goals and '+a+' assists signals a consistent, above-average contributor who delivers results week in, week out. Not the dominant force in the team, but a player who earns their place and adds real value in the final third.';
-  } else if(c>=10){
-    t=c+' combined G+A is a solid but unspectacular return. '+g+' goals and '+a+' assists puts this player in respectable territory — useful, dependable, but unlikely to be the primary match-winner. Role and system context matter here: for a wide midfielder or second striker, this is acceptable; for a first-choice striker it raises questions.';
-  } else if(c>=5){
-    t=c+' combined G+A is a modest output that needs context before drawing conclusions. '+g+' goals and '+a+' assists across a season is below expectations for any player with direct attacking responsibility — though injury disruption, a difficult system, or a positional role that limits end product could all be factors. A scout would not recommend on these numbers alone.';
-  } else {
-    t=c+' combined G+A is a very low direct contribution. '+g+' goals and '+a+' assists is difficult to justify for an attacking player regardless of system. Unless there is a clear and compelling explanation — serious injury, highly defensive role, limited minutes — these numbers represent a concern that needs addressing.';
+
+  // Opening line — output level
+  if(combined>=30) t=(p.name||'This player')+' produced '+g+' goals and '+a+' assists — '+combined+' combined G+A. This is a historically rare season. Only the very best players in world football reach this level. Generational output.';
+  else if(combined>=25) t=(p.name||'This player')+' recorded '+g+' goals and '+a+' assists ('+combined+' G+A). A world-class season by any measure — this level of output wins individual awards and drives title challenges.';
+  else if(combined>=20) t=(p.name||'This player')+' contributed '+g+' goals and '+a+' assists ('+combined+' G+A). An excellent return — firmly in the top tier of performers at this position in European football this season.';
+  else if(combined>=15) t=(p.name||'This player')+' delivered '+g+' goals and '+a+' assists ('+combined+' G+A). A very good season — the kind of numbers that justify a starting role at a top club.';
+  else if(combined>=10) t=(p.name||'This player')+' managed '+g+' goals and '+a+' assists ('+combined+' G+A). A decent return, though below the threshold expected of a proven starter at the highest level.';
+  else if(combined>=5) t=(p.name||'This player')+' registered '+g+' goals and '+a+' assists ('+combined+' G+A). Modest output for the position — functional in a squad role but not starting-quality numbers for a top club.';
+  else t=(p.name||'This player')+' produced just '+g+' goals and '+a+' assists ('+combined+' G+A). Poor output by any standard. Unless heavily injury-affected or used in a restricted role, these numbers are a serious concern.';
+
+  // Position benchmark comparison
+  if(pos){
+    if(gVsBench>=5 && aVsBench>=3) t+=' Both goals AND assists exceed the '+pos+' benchmark ('+bench.g+'G/'+bench.a+'A) — a complete performer for the position.';
+    else if(gVsBench>=5) t+=' Goal output of '+g+' exceeds the '+pos+' benchmark of '+bench.g+'. Assists ('+a+') are below the '+bench.a+' benchmark — more of a finisher than creator.';
+    else if(aVsBench>=5) t+=' Assist output of '+a+' significantly exceeds the '+pos+' benchmark of '+bench.a+'. Goals ('+g+') are below the '+bench.g+' benchmark — creative profile, needs a clinical partner.';
+    else if(gVsBench<-5 || aVsBench<-5) t+=' Both metrics fall short of the '+pos+' benchmark ('+bench.g+'G/'+bench.a+'A). A significant gap that is difficult to overlook at this level.';
+    else t+=' Output is broadly in line with the '+pos+' benchmark of '+bench.g+'G/'+bench.a+'A.';
   }
-  if(ai.txt) t+=' '+ai.txt;
+
+  // League context
+  if(lgKey&&lgKey!=='OTHER'){
+    t+=' Playing in the '+lgName+' (UEFA coefficient factor: '+lgFactor+'), so '+combined+' raw G+A translates to approximately '+adjCombined+' league-adjusted contributions.';
+  }
+
+  // Age trajectory
+  if(age){
+    var ageN=parseInt(age);
+    if(ageN<=19) t+=' At just '+ageN+', output at this level is extraordinary — the age premium here is enormous. Players producing like this as teenagers almost always reach the top level.';
+    else if(ageN<=21) t+=' At '+ageN+', these numbers carry a significant upside premium — still 3-5 years from statistical peak.';
+    else if(ageN<=24) t+=' At '+ageN+', approaching their prime. Expect improvement over the next 2-3 seasons.';
+    else if(ageN<=27) t+=' At '+ageN+', in peak years — this output level should be sustainable for another 3-4 seasons.';
+    else if(ageN<=30) t+=' At '+ageN+', these are the final peak years — output may begin declining from 31 onwards.';
+    else t+=' At '+ageN+', sustaining output at this level requires exceptional conditioning. Risk of decline is present.';
+  }
+
+  // G/A split insight
+  if(combined>0){
+    var gPct=Math.round((g/combined)*100);
+    if(gPct>=80) t+=' Heavily goal-focused ('+gPct+'% of output in goals) — a natural finisher profile.';
+    else if(gPct<=25) t+=' Heavily assist-focused ('+Math.round((a/combined)*100)+'% in assists) — a creator and facilitator rather than finisher.';
+    else t+=' Balanced output between goals and assists — versatile contributor.';
+  }
+
   return t;
 }
+
+
 function advancedText(p,sdata,lgOn){
   var c=sdata.g+sdata.a, g=sdata.g, a=sdata.a;
   var ld=LGS[sdata.lg]||{n:'Unknown',f:0.85};
@@ -1464,13 +1548,19 @@ function advancedText(p,sdata,lgOn){
 }
 function growthAnalysis(p){
   if(!p||!p.seasons) return null;
-  var seasons=['2324','2223','2122'].filter(function(s){return !!p.seasons[s];});
-  if(seasons.length<2) return null;
-  var data=seasons.map(function(s){
+  // Use all valid 4-digit season keys, sorted newest first
+  var allKeys=Object.keys(p.seasons).filter(function(k){
+    return k.length===4&&/^[0-9]{4}$/.test(k);
+  }).sort().reverse();
+  if(allKeys.length<2) return null;
+
+  var data=allKeys.map(function(s){
     var d=p.seasons[s];
     var f=LGS[d.lg]?LGS[d.lg].f:0.85;
-    return{s:s,g:d.g,a:d.a,combined:d.g+d.a,adj:(d.g+d.a)*f,pos:d.pos,lg:d.lg,age:d.age};
+    return{s:s,g:d.g||0,a:d.a||0,combined:(d.g||0)+(d.a||0),adj:((d.g||0)+(d.a||0))*f,
+           pos:d.pos,lg:d.lg,age:d.age};
   });
+
   var latest=data[0], earliest=data[data.length-1];
   var adjDiff=latest.adj-earliest.adj;
   var posChanged=data.some(function(d){return d.pos!==data[0].pos;});
@@ -1480,19 +1570,63 @@ function growthAnalysis(p){
   else if(adjDiff<=-8){trajectory='declining';badge='Declining ↓';badgeCls='gb-declining';}
   else if(adjDiff<=-3){trajectory='trending down';badge='Trending Down ↓';badgeCls='gb-declining';}
   else{trajectory='stable';badge='Stable →';badgeCls='gb-stable';}
+
   var peak=data.reduce(function(a,b){return b.adj>a.adj?b:a;});
-  var lbl1=SEASON_LABELS[latest.s], lbl0=SEASON_LABELS[earliest.s], lblPeak=SEASON_LABELS[peak.s];
-  var txt='Over '+seasons.length+' seasons, '+p.name+' shows a '+trajectory+' output trajectory. ';
-  txt+='From '+lbl0+' ('+earliest.combined+' G+A in '+(LGS[earliest.lg]?LGS[earliest.lg].n:earliest.lg)+') to '+lbl1+' ('+latest.combined+' G+A in '+(LGS[latest.lg]?LGS[latest.lg].n:latest.lg)+').';
-  if(peak.s!==latest.s) txt+=' Peak output: '+lblPeak+' ('+peak.combined+' G+A).';
+  var lbl=function(k){return SEASON_LABELS[k]||(k.slice(0,2)+'/'+k.slice(2));};
+  var lgn=function(k){return LGS[k]?LGS[k].n:k||'Unknown';};
+
+  // Build rich trajectory text
+  var txt='';
+  txt+='Over '+data.length+' season'+(data.length>1?'s':'')+', '+p.name+' shows a '+trajectory+' output trajectory. ';
+
+  // Season-by-season breakdown for up to 5 seasons
+  var shown=data.slice(0,5);
+  var breakdown=shown.map(function(d){
+    return lbl(d.s)+': '+d.combined+' G+A ('+d.g+'G/'+d.a+'A) in '+lgn(d.lg)+(d.age?' age '+d.age:'');
+  }).join(' → ');
+  txt+='Season log: '+breakdown+'. ';
+
+  // Trajectory insight
+  if(adjDiff>=10){
+    txt+=p.name+' has dramatically improved — league-adjusted output up '+Math.round(adjDiff)+' contributions from '+lbl(earliest.s)+' to '+lbl(latest.s)+'. This is a player on an elite upward curve.';
+  } else if(adjDiff>=4){
+    txt+='Consistent upward progression with '+Math.round(adjDiff)+' more league-adjusted contributions in '+lbl(latest.s)+' vs '+lbl(earliest.s)+'. Trajectory points towards a higher ceiling.';
+  } else if(adjDiff<=-10){
+    txt+='Significant output drop of '+Math.round(Math.abs(adjDiff))+' league-adjusted contributions — a red flag that warrants investigation before committing.';
+  } else if(adjDiff<=-4){
+    txt+='Downward trend over this period. Worth monitoring whether this is injury-related or a genuine plateau.';
+  } else {
+    txt+='Consistent producer across seasons — reliable output with no major spikes or drops.';
+  }
+
+  // Peak note
+  if(peak.s!==latest.s){
+    txt+=' Peak season: '+lbl(peak.s)+' ('+peak.combined+' G+A).';
+  }
+
+  // League progression note
+  var leagues=[...new Set(data.map(function(d){return d.lg;}))];
+  if(leagues.length>1){
+    txt+=' Has performed across '+leagues.length+' different leagues: '+leagues.map(lgn).join(', ')+'.';
+  }
+
+  // Position change note
   if(posChanged){
     var posHistory=[...new Set(data.map(function(d){return d.pos;}))].join(' → ');
-    txt+=' Position shifted: '+posHistory+'.';
+    txt+=' Positional evolution: '+posHistory+'.';
   }
-  // Add breakout/decline tags
+
+  // Age insight on latest season
+  if(latest.age){
+    var age=parseInt(latest.age);
+    if(age&&age<=21) txt+=' At '+age+' in their most recent season, peak years still ahead — significant upside remains.';
+    else if(age&&age<=24) txt+=' At '+age+', approaching statistical prime. Expect output to peak over the next 2-3 seasons.';
+  }
+
   var gTags=[];
   if(adjDiff>=8) gTags.push({cls:'vtag-breakout',lbl:'Breakout Season'});
   else if(adjDiff<=-8) gTags.push({cls:'vtag-decline',lbl:'Decline Flag'});
+  if(data.length>=5) gTags.push({cls:'vtag-breakout',lbl:data.length+' Seasons Data'});
   return{txt:txt,badge:badge,badgeCls:badgeCls,tags:gTags};
 }
 
