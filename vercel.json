@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/search-player", "dest": "/api/search-player.js" },
+    { "src": "/api/get-seasons",   "dest": "/api/get-seasons.js" },
+    { "src": "/api/analyse",       "dest": "/api/analyse.js" },
+    { "src": "/api/refresh-players", "dest": "/api/refresh-players.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/refresh-players",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
