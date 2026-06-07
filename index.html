@@ -119,21 +119,21 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .pcard{border:2px solid var(--border);border-radius:4px;overflow:hidden;background:var(--cream2);transition:border-color .2s,box-shadow .2s}
 
 /* Team Colour Identity System */
-.pcard[data-team="man-utd"]{border-color:#DA291C;box-shadow:0 0 0 1px rgba(218,41,28,.15)}
-.pcard[data-team="liverpool"]{border-color:#C8102E;box-shadow:0 0 0 1px rgba(200,16,46,.15)}
-.pcard[data-team="arsenal"]{border-color:#EF0107;box-shadow:0 0 0 1px rgba(239,1,7,.15)}
-.pcard[data-team="chelsea"]{border-color:#034694;box-shadow:0 0 0 1px rgba(3,70,148,.15)}
-.pcard[data-team="man-city"]{border-color:#6CABDD;box-shadow:0 0 0 1px rgba(108,171,221,.15)}
-.pcard[data-team="real-madrid"]{border-color:#00529F;box-shadow:0 0 0 1px rgba(0,82,159,.15)}
-.pcard[data-team="barcelona"]{border-color:#A50044;box-shadow:0 0 0 1px rgba(165,0,68,.15)}
-.pcard[data-team="juventus"]{border-color:#000;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-.pcard[data-team="bayern"]{border-color:#DC052D;box-shadow:0 0 0 1px rgba(220,5,45,.15)}
-.pcard[data-team="psg"]{border-color:#004170;box-shadow:0 0 0 1px rgba(0,65,112,.15)}
-.pcard[data-team="dortmund"]{border-color:#FDE100;box-shadow:0 0 0 1px rgba(253,225,0,.15)}
-.pcard[data-team="atletico"]{border-color:#CE3524;box-shadow:0 0 0 1px rgba(206,53,36,.15)}
-.pcard[data-team="inter"]{border-color:#010E80;box-shadow:0 0 0 1px rgba(1,14,128,.15)}
-.pcard[data-team="ac-milan"]{border-color:#FB0016;box-shadow:0 0 0 1px rgba(251,0,22,.15)}
-.pcard[data-team="tottenham"]{border-color:#132257;box-shadow:0 0 0 1px rgba(19,34,87,.15)}
+.pcard[data-team="man-utd"]{border-color:#DA291C!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(218,41,28,.12)!important}
+.pcard[data-team="liverpool"]{border-color:#C8102E!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(200,16,46,.15)!important}
+.pcard[data-team="arsenal"]{border-color:#EF0107!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(239,1,7,.15)!important}
+.pcard[data-team="chelsea"]{border-color:#034694!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(3,70,148,.15)!important}
+.pcard[data-team="man-city"]{border-color:#6CABDD!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(108,171,221,.15)!important}
+.pcard[data-team="real-madrid"]{border-color:#00529F!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(0,82,159,.15)!important}
+.pcard[data-team="barcelona"]{border-color:#A50044!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(165,0,68,.15)!important}
+.pcard[data-team="juventus"]{border-color:#000!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(0,0,0,.15)!important}
+.pcard[data-team="bayern"]{border-color:#DC052D!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(220,5,45,.15)!important}
+.pcard[data-team="psg"]{border-color:#004170!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(0,65,112,.15)!important}
+.pcard[data-team="dortmund"]{border-color:#FDE100!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(253,225,0,.15)!important}
+.pcard[data-team="atletico"]{border-color:#CE3524!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(206,53,36,.15)!important}
+.pcard[data-team="inter"]{border-color:#010E80!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(1,14,128,.15)!important}
+.pcard[data-team="ac-milan"]{border-color:#FB0016!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(251,0,22,.15)!important}
+.pcard[data-team="tottenham"]{border-color:#132257!important;border-width:3px!important;box-shadow:0 0 0 2px rgba(19,34,87,.15)!important}
 
 .pcard-hd{padding:8px 13px;border-bottom:1px solid var(--border);background:var(--cream3);display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#444}
 .pcard-num{width:17px;height:17px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -881,17 +881,60 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .gnav-legends-btn.open{color:#fff;border-bottom-color:var(--accent)}
 .gnav-legends-arrow{font-size:8px;transition:transform .2s}
 .gnav-legends-btn.open .gnav-legends-arrow{transform:rotate(180deg)}
-.gnav-legends-dropdown{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--ink);border:1px solid rgba(255,255,255,.12);border-top:none;border-radius:0 0 4px 4px;min-width:580px;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.gnav-legends-dropdown.open{display:block}
-.gld-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
-.gld-cell{padding:14px 16px;border-right:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .15s}
-.gld-cell:hover{background:rgba(255,255,255,.06)}
-.gld-cell:nth-child(3n){border-right:none}
-.gld-icon{font-size:14px;margin-bottom:4px}
-.gld-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:3px}
-.gld-desc{font-size:10px;color:rgba(255,255,255,.45);line-height:1.4}
-.gld-divider{grid-column:1/-1;padding:8px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07)}
-.gld-divider-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.gnav-legends-dropdown{
+  display:none;
+  position:fixed;
+  top:50px;
+  left:0;right:0;
+  z-index:400;
+  background:linear-gradient(135deg, #0d0b08 0%, #1a1208 60%, #0f0d0a 100%);
+  border-bottom:2px solid var(--accent);
+  box-shadow:0 16px 48px rgba(0,0,0,.6);
+  max-height:75vh;
+  overflow-y:auto;
+}
+.gnav-legends-dropdown::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 10% 50%, rgba(179,108,105,.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 20%, rgba(154,117,16,.06) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.02) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.02) 40px);
+  pointer-events:none;
+}
+.gnav-legends-dropdown.open{display:block;animation:legends-drop .2s ease}
+@keyframes legends-drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.gld-inner{max-width:1100px;margin:0 auto;padding:28px 40px 32px;position:relative}
+.gld-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.gld-header-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px}
+.gld-header-sub{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase}
+.gld-close{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:6px 14px;font-size:11px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all .15s;font-family:'Source Sans 3',sans-serif;text-transform:uppercase}
+.gld-close:hover{border-color:rgba(255,255,255,.4);color:#fff}
+.gld-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:768px){.gld-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.gld-grid{grid-template-columns:1fr}}
+.gld-cell{
+  padding:20px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:4px;
+  cursor:pointer;
+  transition:all .15s;
+  background:rgba(255,255,255,.03);
+  position:relative;
+  overflow:hidden;
+}
+.gld-cell::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none}
+.gld-cell:hover{background:rgba(255,255,255,.07);border-color:rgba(179,108,105,.3);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.gld-icon{font-size:24px;margin-bottom:10px;display:block}
+.gld-title{font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff;margin-bottom:6px;font-family:'Playfair Display',serif}
+.gld-desc{font-size:12px;color:rgba(255,255,255,.55);line-height:1.6}
+.gld-divider{grid-column:1/-1;padding:6px 0 14px;margin-bottom:4px}
+.gld-divider-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+/* Backdrop */
+.legends-backdrop{display:none;position:fixed;inset:0;z-index:399;background:rgba(0,0,0,.4);backdrop-filter:blur(2px)}
+.legends-backdrop.open{display:block}
 
 
 /* ── VV TAG TOOLTIPS ── */
@@ -1336,6 +1379,40 @@ aside{min-width:200px!important;max-width:220px!important}
 .dt-question{color:var(--ink)!important}
 .dt-context{color:var(--ink3)!important}
 
+
+/* ── TRAJECTORY SCALE ── */
+.traj-scale{position:relative;height:16px;margin-top:4px;margin-left:0;padding-left:calc(70px + 100px + 8px)}
+.traj-scale-mark{position:absolute;transform:translateX(-50%);font-size:9px;color:var(--ink4);letter-spacing:.5px}
+.traj-scale-mark::before{content:'';display:block;width:1px;height:4px;background:var(--border);margin:0 auto 1px}
+
+
+/* ── FONT SIZE BOOSTS — dark backgrounds ── */
+.vhd-title{font-size:20px!important;font-weight:900!important}
+.vhd-mode{font-size:11px!important;letter-spacing:2px!important;color:rgba(255,255,255,.5)!important}
+.gld-title{font-size:16px!important}
+.gld-desc{font-size:13px!important}
+.gld-header-title{font-size:26px!important}
+.gld-header-sub{font-size:13px!important}
+.gnav-btn{font-size:12px!important;letter-spacing:.5px!important}
+.gnav-legends-btn{font-size:13px!important;font-weight:700!important}
+.vv-verdict-winner{font-size:28px!important}
+.vv-verdict-factor{font-size:13px!important}
+.vv-story-name{font-size:20px!important}
+.vv-story-meta{font-size:12px!important}
+.vv-stat-n{font-size:22px!important}
+.vv-stat-l{font-size:10px!important}
+.overall p{font-size:14px!important;line-height:1.85!important}
+.cs-block-bd{font-size:14px!important;line-height:1.85!important}
+.vv-debate-point{font-size:13px!important}
+.vv-debate-col-title{font-size:10px!important;font-weight:800!important}
+.vv-debate-title{font-size:10px!important;font-weight:800!important}
+.traj-hd{font-size:15px!important}
+.lt-name{font-size:13px!important;font-weight:700!important}
+.lt-desc{font-size:12px!important;line-height:1.6!important}
+.sb-head-lbl{font-size:11px!important;font-weight:700!important}
+.hdr-site-title{font-size:34px!important}
+.hdr-tagline{font-size:15px!important}
+
 </style>
 </head>
 <body>
@@ -1353,40 +1430,49 @@ aside{min-width:200px!important;max-width:220px!important}
         👑 Legends <span class="gnav-legends-arrow">▼</span>
       </button>
       <div class="gnav-legends-dropdown" id="gnav-legends-dropdown">
-        <div class="gld-divider"><span class="gld-divider-label">VVonderXI Model</span></div>
-        <div class="gld-grid">
-          <div class="gld-cell" onclick="openLegendPanel('career-stage')">
-            <div class="gld-icon">📈</div>
-            <div class="gld-title">Career Stage</div>
-            <div class="gld-desc">Where is a player in their arc? Rising, peaking or declining?</div>
+        <div class="gld-inner">
+          <div class="gld-header">
+            <div>
+              <div class="gld-header-title">👑 Legends</div>
+              <div class="gld-header-sub">The VVonderXI Intelligence Model</div>
+            </div>
+            <button class="gld-close" onclick="closeLegendsDropdown()">✕ Close</button>
           </div>
-          <div class="gld-cell" onclick="openLegendPanel('trajectory')">
-            <div class="gld-icon">🚀</div>
-            <div class="gld-title">Trajectory</div>
-            <div class="gld-desc">Three-season momentum. The direction of travel matters as much as the destination.</div>
-          </div>
-          <div class="gld-cell" onclick="openLegendPanel('market-momentum')">
-            <div class="gld-icon">💹</div>
-            <div class="gld-title">Market Momentum</div>
-            <div class="gld-desc">Value rising or falling? Output versus transfer market perception.</div>
-          </div>
-          <div class="gld-cell" onclick="openLegendPanel('verdict-tags')">
-            <div class="gld-icon">🏷️</div>
-            <div class="gld-title">Verdict Tags</div>
-            <div class="gld-desc">Comparison outcomes. What the head-to-head reveals beyond the numbers.</div>
-          </div>
-          <div class="gld-cell" onclick="openLegendPanel('vv-tags')">
-            <div class="gld-icon">⭐</div>
-            <div class="gld-title">VV Tags</div>
-            <div class="gld-desc">Season-level player identity. What made this campaign unique in football history.</div>
-          </div>
-          <div class="gld-cell" onclick="closeLegendsDropdown();switchPage('legends',document.querySelectorAll('.gnav-btn')[2])">
-            <div class="gld-icon">🗂️</div>
-            <div class="gld-title">Icons</div>
-            <div class="gld-desc">The immortals. Historical peak seasons from football's greatest ever players.</div>
+          <div class="gld-grid">
+            <div class="gld-cell" onclick="openLegendPanel('career-stage')">
+              <span class="gld-icon">📈</span>
+              <div class="gld-title">Career Stage</div>
+              <div class="gld-desc">Where is a player in their arc? Wonderkid. Prospect. Prime. Veteran. Legend. Every career follows a path — the VV Engine maps it.</div>
+            </div>
+            <div class="gld-cell" onclick="openLegendPanel('trajectory')">
+              <span class="gld-icon">🚀</span>
+              <div class="gld-title">Trajectory</div>
+              <div class="gld-desc">Three seasons. One direction. Is the player rising, peaking, stable or declining? The destination matters. The journey to it matters more.</div>
+            </div>
+            <div class="gld-cell" onclick="openLegendPanel('market-momentum')">
+              <span class="gld-icon">💹</span>
+              <div class="gld-title">Market Momentum</div>
+              <div class="gld-desc">Output versus perceived value. Rising fast. Priced fairly. Undervalued by the market. The signal before the transfer window opens.</div>
+            </div>
+            <div class="gld-cell" onclick="openLegendPanel('verdict-tags')">
+              <span class="gld-icon">🏷️</span>
+              <div class="gld-title">Verdict Tags</div>
+              <div class="gld-desc">The nature of the comparison outcome. Clear Winner. VAR Close Call. Split Decision. League Strength Edge. What the head-to-head truly revealed.</div>
+            </div>
+            <div class="gld-cell" onclick="openLegendPanel('vv-tags')">
+              <span class="gld-icon">⭐</span>
+              <div class="gld-title">VV Tags</div>
+              <div class="gld-desc">Season-level player identity. Elite Finisher. Generational Season. Role Breaker. What made this campaign unique. The label that defines a year.</div>
+            </div>
+            <div class="gld-cell" onclick="closeLegendsDropdown();switchPage('legends',document.querySelectorAll('.gnav-btn')[2])">
+              <span class="gld-icon">🗂️</span>
+              <div class="gld-title">Icons Collection</div>
+              <div class="gld-desc">The immortals. Historical peak seasons from football greatest ever players. Emergence. Peak. Legacy. Three cards. One career arc.</div>
+            </div>
           </div>
         </div>
       </div>
+      <div class="legends-backdrop" id="legends-backdrop" onclick="closeLegendsDropdown()"></div>
     </div>
   </div>
 
@@ -1793,6 +1879,9 @@ aside{min-width:200px!important;max-width:220px!important}
 
     <!-- ── SCOUT RANKINGS TAB ── -->
     <div class="tab-content" id="tab-rt">
+      <div style="padding:10px 0 14px;font-size:12px;color:var(--ink3);line-height:1.6;border-bottom:1px solid var(--border);margin-bottom:12px">
+        <strong style="color:var(--ink);font-size:13px">Scout Rankings</strong> — Active players ranked by <strong>adjusted output</strong> (Goals + Assists × league strength factor) from their most recent season. League difficulty is weighted: Premier League ×1.000 down to Saudi Pro ×0.720. Updated automatically when new season data is added.
+      </div>
       <div class="filter-bar" id="rt-filter-bar">
         <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-right:4px">League:</span>
         <button class="filter-chip active" onclick="rtFilter('league','',this)">All</button>
@@ -3946,6 +4035,18 @@ function renderTrajectoryBars(traj, playerName){
       +'<span class="traj-adj">'+d.adj+'</span>'
       +'</div>';
   });
+
+  // Scale markers
+  var scaleMax = traj.maxOutput > 0 ? Math.ceil(traj.maxOutput/10)*10 : 40;
+  var markers = [];
+  for(var m=5; m<=scaleMax; m+=5) markers.push(m);
+  html += '<div class="traj-scale">';
+  markers.forEach(function(m) {
+    var pct = Math.round(m/scaleMax*100);
+    html += '<div class="traj-scale-mark" style="left:'+pct+'%"><span>'+m+'</span></div>';
+  });
+  html += '</div>';
+
   return html;
 }
 
@@ -4227,7 +4328,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     if (vtags.length) {
       html += '<div class="vv-verdict-tags-row">';
       vtags.forEach(function(t){
-        html += '<span class="vtag'+(t.primary?' vtag-primary':'')+'">'+t.emoji+' '+t.lbl+'</span>';
+        html += '<span class="vtag'+(t.primary?' vtag-primary':'')+'" title="Verdict Tag: '+t.lbl+'">'+t.emoji+' '+t.lbl+'</span>';
       });
       html += '</div>';
     }
@@ -6205,27 +6306,28 @@ lockerLogout = function() {
 
 // ── LEGENDS DROPDOWN ──────────────────────────────────
 function toggleLegendsDropdown() {
-  var wrap = document.getElementById('gnav-legends-wrap');
   var btn = document.getElementById('gnav-legends-btn');
   var dd = document.getElementById('gnav-legends-dropdown');
+  var backdrop = document.getElementById('legends-backdrop');
   var isOpen = dd.classList.contains('open');
   if (isOpen) {
     closeLegendsDropdown();
   } else {
     dd.classList.add('open');
     btn.classList.add('open');
-    // Close on outside click
-    setTimeout(function() {
-      document.addEventListener('click', closeLegendsOnOutside);
-    }, 10);
+    if (backdrop) backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 }
 
 function closeLegendsDropdown() {
   var btn = document.getElementById('gnav-legends-btn');
   var dd = document.getElementById('gnav-legends-dropdown');
+  var backdrop = document.getElementById('legends-backdrop');
   if (dd) dd.classList.remove('open');
   if (btn) btn.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('open');
+  document.body.style.overflow = '';
   document.removeEventListener('click', closeLegendsOnOutside);
 }
 
