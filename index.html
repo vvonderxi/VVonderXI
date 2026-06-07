@@ -4228,6 +4228,20 @@ function setLegacySeason(nOrEl, skOrEl) {
 // ══════════════════════════════════════════════════════
 //  PLAYER SEARCH & FILL
 // ══════════════════════════════════════════════════════
+
+// ── ACCENT-NORMALISED SEARCH ──────────────────────────
+function normaliseSearch(str) {
+  if (!str) return '';
+  return str.toLowerCase()
+    .replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e')
+    .replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o')
+    .replace(/[ùúûü]/g,'u').replace(/[ñ]/g,'n')
+    .replace(/[ç]/g,'c').replace(/[ý]/g,'y')
+    .replace(/[ß]/g,'ss').replace(/[ø]/g,'o')
+    .replace(/[æ]/g,'ae').replace(/[œ]/g,'oe')
+    .replace(/[ð]/g,'d').replace(/[þ]/g,'th');
+}
+
 function doSearch(n,v){
   if(!v||v.length<1){openSearch(n);return;}
   var q=v.toLowerCase();
