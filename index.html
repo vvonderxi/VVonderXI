@@ -922,6 +922,8 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .gnav-btn:hover{color:#fff}
 .gnav-btn.active{color:#fff;border-bottom-color:var(--accent)}
 .gnav-right{margin-left:auto;display:flex;align-items:center;gap:0}
+/* Mobile sidebar toggle: hidden on desktop, shown via media query on mobile */
+#sb-mobile-toggle{display:none}
 .gnav-locker{border:1px solid rgba(255,255,255,.25)!important;color:rgba(255,255,255,.9)!important;border-radius:2px!important;padding:7px 14px!important;margin-left:8px!important;font-size:12px!important}
 .gnav-locker:hover{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
 
@@ -936,7 +938,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .gnav-legends-dropdown{
   display:none;
   position:fixed;
-  top:50px;
+  top:48px;
   left:0;right:0;
   z-index:400;
   background:linear-gradient(135deg, #0d0b08 0%, #1a1208 60%, #0f0d0a 100%);
@@ -1583,10 +1585,13 @@ aside{min-width:200px!important;max-width:220px!important}
 /* ── 768px: Tablet ─────────────────────────────────── */
 @media(max-width:768px){
 
-  /* Nav */
-  .gnav{padding:0 10px;gap:0}
-  .gnav-brand{font-size:14px!important}
-  .gnav-btn{padding:10px 10px;font-size:9px;letter-spacing:.5px}
+  /* Nav — mobile layout */
+  .gnav{padding:0 8px;gap:0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .gnav-brand{font-size:13px!important;white-space:nowrap;flex-shrink:0;margin-right:4px}
+  .gnav-centre{flex-shrink:0}
+  .gnav-right{flex-shrink:0}
+  .gnav-btn{padding:10px 8px;font-size:8px;letter-spacing:.3px;white-space:nowrap}
+  .gnav-legends-btn{padding:10px 10px!important;font-size:10px!important;white-space:nowrap;min-height:44px}
 
   /* Header */
   .hdr{padding:14px 16px 12px!important}
@@ -1720,6 +1725,13 @@ aside{min-width:200px!important;max-width:220px!important}
   /* Tab buttons */
   .tab-btn{padding:8px 12px!important;font-size:9px!important;letter-spacing:1px!important}
 
+  /* Legends dropdown — mobile */
+  .gnav-legends-dropdown{top:44px!important;max-height:85vh!important}
+  .gld-inner{padding:16px!important}
+  .gld-header{margin-bottom:14px!important;padding-bottom:12px!important}
+  .gld-header-title{font-size:18px!important}
+  .gld-header-sub{font-size:10px!important}
+
   /* Guide grid */
   .guide-grid{grid-template-columns:1fr!important}
 
@@ -1810,7 +1822,28 @@ aside{min-width:200px!important;max-width:220px!important}
 /* ── Sidebar mobile fixes ─────────────────────────────── */
 @media(max-width:768px){
   /* Sidebar toggle button visible on mobile */
-  #sb-mobile-toggle{display:block!important}
+  /* Filters & Database toggle — visible on mobile */
+  #sb-mobile-toggle{
+    display:flex!important;
+    width:100%;
+    padding:13px 14px;
+    margin-bottom:10px;
+    background:var(--cream3);
+    border:1.5px solid var(--border);
+    border-radius:4px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--ink2);
+    cursor:pointer;
+    text-align:left;
+    align-items:center;
+    gap:8px;
+    min-height:48px;
+    -webkit-tap-highlight-color:rgba(0,0,0,.08);
+  }
+  #sb-mobile-toggle:active{background:var(--cream4)!important}
   /* When sidebar is hidden, content is hidden */
   #sb-mobile-content.sb-mobile-hidden{display:none}
   /* Sidebar blocks: all visible and collapsible */
@@ -2016,7 +2049,7 @@ aside{min-width:200px!important;max-width:220px!important}
 <div class="wrap">
   <!-- SIDEBAR -->
   <aside id="main-sidebar">
-  <button id="sb-mobile-toggle" onclick="toggleMobileSidebar()" style="display:none;width:100%;padding:10px;margin-bottom:10px;background:var(--cream3);border:1px solid var(--border);border-radius:3px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);cursor:pointer;text-align:left">⚙️ Filters &amp; Database ▼</button>
+  <button id="sb-mobile-toggle" onclick="toggleMobileSidebar()" aria-expanded="false" aria-controls="sb-mobile-content">⚙️ Filters &amp; Database ▼</button>
   <div id="sb-mobile-content">
     <!-- Database Panel -->
     <div class="sb-block collapsed" id="sb-db">
@@ -6303,6 +6336,27 @@ function buildRatingTable(){
 
 
 // ── Toggle league row in sidebar (accordion) ──────────
+// ── MOBILE SIDEBAR TOGGLE ─────────────────────────────
+function toggleMobileSidebar() {
+  var content = document.getElementById('sb-mobile-content');
+  var btn = document.getElementById('sb-mobile-toggle');
+  if (!content) return;
+  var isHidden = content.classList.contains('sb-mobile-hidden');
+  if (isHidden) {
+    content.classList.remove('sb-mobile-hidden');
+    if (btn) {
+      btn.innerHTML = '⚙️ Filters &amp; Database ▲';
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  } else {
+    content.classList.add('sb-mobile-hidden');
+    if (btn) {
+      btn.innerHTML = '⚙️ Filters &amp; Database ▼';
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  }
+}
+
 function dbToggleLg(row) {
   // Use data-league attribute to find paired list reliably
   var league = row.getAttribute('data-league');
@@ -6405,25 +6459,20 @@ function fillFromSidebar(nameOrEl) {
   // Set initial mode hints
   setPCMode('simple');
   setBBMode('simple');
-  // Mobile sidebar: initialise based on screen size
+  // Mobile sidebar content: start hidden, user opens via button
   (function initMobileSidebar() {
-    var toggle = document.getElementById('sb-mobile-toggle');
     var content = document.getElementById('sb-mobile-content');
-    if (!toggle || !content) return;
-    function applyMobileSidebar() {
-      if (window.innerWidth <= 768) {
-        toggle.style.display = 'block';
-        if (!content._mobileReady) {
-          content.classList.add('sb-mobile-hidden');
-          content._mobileReady = true;
-        }
-      } else {
-        toggle.style.display = 'none';
+    if (!content) return;
+    // On mobile, start collapsed. On desktop, always visible (CSS handles toggle visibility).
+    if (window.innerWidth <= 768) {
+      content.classList.add('sb-mobile-hidden');
+    }
+    // Update on resize
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
         content.classList.remove('sb-mobile-hidden');
       }
-    }
-    applyMobileSidebar();
-    window.addEventListener('resize', applyMobileSidebar);
+    });
   })();
 })();
 
