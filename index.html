@@ -74,6 +74,21 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .db-league-head-lbl{color:#444;font-size:12px}
 .db-lg-arrow{font-size:10px;color:#aaa}
 .db-league-players{padding:4px 12px 8px;background:#f0ebe0}
+/* ── New sidebar league rows ── */
+.db-lr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--cream4);transition:background .12s;user-select:none}
+.db-lr:hover{background:var(--cream3)}
+.db-lr--open{background:var(--cream3)}
+.db-lr--open .db-lr-arr{color:var(--accent)!important}
+.db-lr-name{font-size:11px;font-weight:600;color:var(--ink2);flex:1}
+.db-lr-count{font-size:10px;font-weight:700;color:var(--ink4);background:var(--cream3);padding:1px 6px;border-radius:10px;margin-right:6px}
+.db-lr--open .db-lr-count{background:var(--accent);color:#fff}
+.db-lr-arr{font-size:14px;color:var(--ink4);transition:transform .15s;line-height:1}
+.db-lr-list{display:none;background:var(--cream);border-bottom:1.5px solid var(--border)}
+.db-player-tap{cursor:pointer!important;transition:background .1s}
+.db-player-tap:hover{background:var(--cream3)!important;color:var(--accent)!important}
+.db-player-tap:hover span:first-child{color:var(--accent)}
+.db-lr-more{color:#aaa!important;font-style:italic;font-size:10px!important;cursor:default!important}
+.db-lr-more:hover{background:none!important;color:#aaa!important}
 .db-player{font-size:11px;color:#555;padding:3px 0;border-bottom:1px solid var(--cream4);display:flex;justify-content:space-between}
 .db-player:last-child{border-bottom:none}
 .db-pos{font-size:9px;color:#999;font-weight:600;letter-spacing:1px;text-transform:uppercase}
@@ -1959,9 +1974,9 @@ aside{min-width:200px!important;max-width:220px!important}
   <button id="sb-mobile-toggle" onclick="toggleMobileSidebar()" style="display:none;width:100%;padding:10px;margin-bottom:10px;background:var(--cream3);border:1px solid var(--border);border-radius:3px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);cursor:pointer;text-align:left">⚙️ Filters &amp; Database ▼</button>
   <div id="sb-mobile-content">
     <!-- Database Panel -->
-    <div class="sb-block" id="sb-db">
+    <div class="sb-block collapsed" id="sb-db">
       <div class="sb-head" onclick="toggleSb('sb-db')">
-        <span class="sb-head-lbl">⚽ Database</span>
+        <span class="sb-head-lbl">⚽ Database <span id="db-pill-inline" style="font-size:9px;font-weight:400;color:var(--ink4);letter-spacing:0;text-transform:none">— tap to browse</span></span>
         <span class="sb-arrow">▲</span>
       </div>
       <div class="sb-body" id="sb-db-body">
@@ -2041,7 +2056,7 @@ aside{min-width:200px!important;max-width:220px!important}
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🟢</span><span class="lt-name">Very Good</span></div><div class="lt-desc">Solid top-flight contribution. A player any manager would be pleased to have.</div></div>
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🔵</span><span class="lt-name" style="color:var(--ink3)">Good</span></div><div class="lt-desc">A competent professional season. Does the job. Context matters — position, age, system.</div></div>
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🟠</span><span class="lt-name" style="color:#c06010">Okay</span></div><div class="lt-desc">Below the level expected for serious comparison. Numbers suggest limited influence.</div></div>
-        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-top:1px solid var(--cream4);margin-top:6px">About the VV Score™</div>
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border-top:1px solid var(--cream4);margin-top:6px">⚡ VV Score™</div>
         <div style="padding:4px 12px 10px;font-size:11px;color:var(--ink3);line-height:1.6">The VV Score™ is VVonderXI's proprietary football intelligence metric. It combines attacking output, match ratings, availability, league strength and positional context. The same numbers in different leagues and different positions carry completely different weight.</div>
       </div>
     </div>
@@ -6167,43 +6182,125 @@ function buildRatingTable(){
 //  DATABASE SIDEBAR
 // ══════════════════════════════════════════════════════
 (function buildDBSidebar(){
-  var grouped={};
+  var MAIN = ['Premier League','La Liga','Serie A','Bundesliga','Ligue 1',
+               'Primeira Liga','Eredivisie','Scottish Premiership'];
+  var grouped = {};
+
   DB.forEach(function(p){
-    var s=p.seasons[SEASONS_ORDERED.find(function(k){return !!p.seasons[k];})||'']||{};
-    var lg=s.lg||'OTHER';
-    var ln=(LGS[lg]||{n:lg}).n;
-    if(!grouped[ln]) grouped[ln]=[];
-    grouped[ln].push(p);
+    var sk = SEASONS_ORDERED.find(function(k){ return !!p.seasons[k]; }) || '';
+    var s  = p.seasons[sk] || {};
+    var lg = s.lg || 'OTHER';
+    var ln = (LGS[lg]||{n:lg}).n;
+    // Retired or legacy players → Icons bucket regardless of league
+    var bucket = (p.legacy || p.retired) ? 'Icons' :
+                 (MAIN.indexOf(ln) >= 0 ? ln : 'Icons');
+    if (!grouped[bucket]) grouped[bucket] = [];
+    grouped[bucket].push(p);
   });
-  var sorted=Object.entries(grouped).sort(function(a,b){return b[1].length-a[1].length;});
-  var body=document.getElementById('sb-db-body');
-  if(!body) return;
-  var total=DB.length;
-  var innerHtml='';
-  sorted.forEach(function(entry,i){
-    var league=entry[0],players=entry[1];
-    var firstOpen=i<2;
-    innerHtml+='<div class="db-league-block">'
-      +'<div class="db-league-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">'
-      +'<span class="db-league-head-lbl">'+league+'</span><span class="db-cnt">'+players.length+'</span><span class="db-lg-arrow">▼</span>'
-      +'</div>'
-      +'<div class="db-league-players" style="display:'+(firstOpen?'block':'none')+'">';
-    players.slice(0,8).forEach(function(p){
-      var s=p.seasons[SEASONS_ORDERED.find(function(k){return !!p.seasons[k];})||'']||{};
-      var icons=(p.legacy?'👑':'')+(p.retired?'⭐':'');
-      innerHtml+='<div class="db-player"><span>'+icons+p.name+'</span><span class="db-pos">'+(s.pos||'—')+'</span></div>';
+
+  // Sort main leagues by size; Icons always last
+  var entries = Object.entries(grouped)
+    .filter(function(e){ return e[0] !== 'Icons'; })
+    .sort(function(a,b){ return b[1].length - a[1].length; });
+  if (grouped['Icons']) entries.push(['Icons', grouped['Icons']]);
+
+  var body = document.getElementById('sb-db-body');
+  if (!body) return;
+  var total = DB.length;
+  var h = '';
+
+  entries.forEach(function(entry){
+    var bucket = entry[0], players = entry[1];
+    var isIcons = bucket === 'Icons';
+    // Find flag for main leagues
+    var flag = '';
+    if (!isIcons) {
+      Object.keys(LGS).forEach(function(k){
+        if (LGS[k].n === bucket && LGS[k].flag) flag = LGS[k].flag + ' ';
+      });
+    }
+    var label = isIcons ? '👑 Icons Collection' : flag + bucket;
+
+    // Row — collapsed by default, click to expand
+    h += '<div class="db-lr" onclick="dbToggleLg(this)">';
+    h +=   '<span class="db-lr-name">' + label + '</span>';
+    h +=   '<span class="db-lr-count">' + players.length + '</span>';
+    h +=   '<span class="db-lr-arr">›</span>';
+    h += '</div>';
+    h += '<div class="db-lr-list">';
+    players.slice(0,14).forEach(function(p){
+      var sk2 = SEASONS_ORDERED.find(function(k){ return !!p.seasons[k]; }) || '';
+      var s2  = p.seasons[sk2] || {};
+      h += '<div class="db-player db-player-tap" onclick="fillFromSidebar(' + JSON.stringify(p.name) + ')" title="Add ' + p.name + '">';
+      h +=   '<span>' + p.name + '</span>';
+      h +=   '<span class="db-pos">' + (s2.pos||'—') + '</span>';
+      h += '</div>';
     });
-    if(players.length>8) innerHtml+='<div class="db-player" style="color:#aaa;font-style:italic">+ '+(players.length-8)+' more…</div>';
-    innerHtml+='</div></div>';
+    if (players.length > 14) {
+      h += '<div class="db-player db-lr-more">+' + (players.length-14) + ' more — type to search</div>';
+    }
+    h += '</div>';
   });
-  innerHtml+='<div class="db-total"><span>Total Players</span><span class="cnt">'+total+'</span></div>'
-    +'<div class="api-hint">Search worldwide players via Live API. Type any name to pull from BSD/API-Football. Supabase caches all results for instant recall.</div>';
-  body.innerHTML=innerHtml;
-  var pill=document.getElementById('db-pill');
-  if(pill) pill.textContent=total+' Players · 6 Seasons';
-  var cnt=document.getElementById('db-cnt');
-  if(cnt) cnt.textContent=total;
+
+  h += '<div class="db-total"><span>Total Players</span><span class="cnt">' + total + '</span></div>';
+  h += '<div class="api-hint">Tap any player to load them. Search by name for worldwide coverage.</div>';
+  body.innerHTML = h;
+
+  var pill = document.getElementById('db-pill');
+  if (pill) pill.textContent = total + ' Players · 6 Seasons';
+  var cnt = document.getElementById('db-cnt');
+  if (cnt) cnt.textContent = total;
+  // Update inline header hint with count
+  var inlinePill = document.getElementById('db-pill-inline');
+  if (inlinePill) inlinePill.textContent = '— ' + total + ' players';
 })();
+
+// ── Toggle league row in sidebar (accordion) ──────────
+function dbToggleLg(row) {
+  var list = row.nextElementSibling;
+  var arr  = row.querySelector('.db-lr-arr');
+  var open = list.style.display !== 'none';
+  // Close all
+  document.querySelectorAll('.db-lr-list').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.db-lr-arr').forEach(function(el){ el.textContent = '›'; });
+  document.querySelectorAll('.db-lr').forEach(function(el){ el.classList.remove('db-lr--open'); });
+  // Open clicked (toggle)
+  if (!open) {
+    list.style.display = 'block';
+    if (arr) arr.textContent = '⌄';
+    row.classList.add('db-lr--open');
+  }
+}
+
+// ── Click player in sidebar → fill search slot ────────
+function fillFromSidebar(name) {
+  var slots = [1, 2];
+  var filled = false;
+  for (var i = 0; i < slots.length; i++) {
+    var n = slots[i];
+    if (!pcSelected[n]) {
+      var inp = document.getElementById('pc'+n+'name');
+      if (inp) {
+        inp.value = name;
+        doSearch(n, name);
+        // Auto-pick first suggestion after results load
+        setTimeout((function(slot){
+          return function(){
+            var first = document.querySelector('#s'+slot+' .sugg-item');
+            if (first) first.click();
+          };
+        })(n), 350);
+        filled = true;
+        break;
+      }
+    }
+  }
+  // Both slots full — overwrite slot 1
+  if (!filled) {
+    var inp = document.getElementById('pc1name');
+    if (inp) { inp.value = name; doSearch(1, name); }
+  }
+}
 
 // ══════════════════════════════════════════════════════
 //  SCOUT GUIDE — League Weight Table
@@ -6279,22 +6376,64 @@ function buildShareBar(p1, p2, winnerName, verdictText, shareUrl, shareId) {
   var p1Tags = getVVTags(p1, p1.name, false).slice(0,2).map(function(t){return t.emoji+' '+t.key;}).join(' · ');
   var p2Tags = getVVTags(p2, p2.name, false).slice(0,2).map(function(t){return t.emoji+' '+t.key;}).join(' · ');
 
-  // Poetic share text — Drury/Winter style
-  var shortVerdict = verdictText ? verdictText.split('.').slice(0,3).join('.')+'. ' : '';
-  var poeticShare = '⚽ ' + label1 + ' vs ' + label2
-    + (p1Tags ? '\n\n' + p1.name + ' · ' + p1Tags : '')
-    + (p2Tags ? '\n' + p2.name + ' · ' + p2Tags : '')
-    + '\n\n🏆 VVerdict: ' + winnerName
-    + '\n\n' + shortVerdict
-    + '\n\n"Football\'s Greatest Stories Aren\'t Finished." VV.'
+  // ── TWITTER/X SHARE — strict 280 char limit ──────────────────
+  // Budget: URL = 23 chars (t.co), hashtag = 12, fixed text = ~60
+  // Available for names + hook: ~185 chars
+  // Strategy: hook line → winner → one tag each → URL → hashtag
+  // Never include verdict narrative (too long)
+
+  var twitterHooks = [
+    'The debate is settled.',
+    'Run it yourself.',
+    'The numbers speak for themselves.',
+    'Football intelligence, not opinion.',
+    'VV Engine says so.',
+    'Compare it yourself.'
+  ];
+  var twitterHook = twitterHooks[Math.floor(Math.random() * twitterHooks.length)];
+
+  // Truncate names if very long (>20 chars)
+  function twitterName(n) { return n.length > 20 ? n.split(' ').slice(-1)[0] : n; }
+  var tw1 = twitterName(p1.name);
+  var tw2 = twitterName(p2.name);
+
+  // One tag per player (first VV tag key only, no emoji to save chars)
+  var twTag1 = getVVTags(p1, p1.name, false).slice(0,1).map(function(t){return t.emoji+' '+t.key;}).join('');
+  var twTag2 = getVVTags(p2, p2.name, false).slice(0,1).map(function(t){return t.emoji+' '+t.key;}).join('');
+
+  // Build core tweet — guaranteed under 280 with URL
+  var tweetCore = tw1 + ' vs ' + tw2
+    + '\n\n🏆 ' + winnerName + ' wins the VVerdict'
+    + (twTag1 ? '\n' + p1.name.split(' ')[0] + ': ' + twTag1 : '')
+    + (twTag2 ? '\n' + p2.name.split(' ')[0] + ': ' + twTag2 : '')
+    + '\n\n' + twitterHook
+    + '\n\n#VVonderXI #Football'
     + '\n' + shareUrl;
 
-  var xShareText = encodeURIComponent(poeticShare);
+  // Safety trim — if over 280 remove tags line by line
+  var tweetFinal = tweetCore;
+  if (tweetFinal.length > 280) {
+    tweetFinal = tw1 + ' vs ' + tw2
+      + '\n\n🏆 ' + winnerName + ' wins the VVerdict'
+      + '\n\n' + twitterHook
+      + '\n\n#VVonderXI'
+      + '\n' + shareUrl;
+  }
+  if (tweetFinal.length > 280) {
+    tweetFinal = tw1 + ' vs ' + tw2 + ' — VVerdict: ' + winnerName
+      + '\n\n#VVonderXI'
+      + '\n' + shareUrl;
+  }
+
+  var xShareText = encodeURIComponent(tweetFinal);
+
+  // WhatsApp — more generous, can be longer
+  var shortVerdict = verdictText ? verdictText.split('.').slice(0,2).join('.')+'. ' : '';
   var waShareText = encodeURIComponent('⚽ *' + label1 + ' vs ' + label2 + '*'
     + (p1Tags ? '\n\n' + p1.name + ' · ' + p1Tags : '')
     + (p2Tags ? '\n' + p2.name + ' · ' + p2Tags : '')
     + '\n\n🏆 *VVerdict: ' + winnerName + '*'
-    + '\n\n' + shortVerdict
+    + (shortVerdict ? '\n\n_' + shortVerdict + '_' : '')
     + '\n\n_Football\'s Greatest Stories Aren\'t Finished. VV._'
     + '\n' + shareUrl);
 
