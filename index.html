@@ -4731,6 +4731,34 @@ function analyse(mode){
 // ══════════════════════════════════════════════════════
 //  RENDER VERDICT
 // ══════════════════════════════════════════════════════
+
+// ── VV INDEX MINI BARS ────────────────────────────────
+function vvIndexBarsHTML(vv) {
+  if (!vv || !vv.total) return '';
+  var dims = [
+    {l:'Output',      v:vv.output,      col:'var(--accent)'},
+    {l:'Influence',   v:vv.influence,   col:'#5a8a60'},
+    {l:'Consistency', v:vv.consistency, col:'#5a7aaa'},
+    {l:'League',      v:vv.league,      col:'#9a7510'},
+  ];
+  if (vv.rarity > 0) {
+    dims.push({l:'Rarity', v:vv.rarity, col:'var(--purple)'});
+  }
+  var html = '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">';
+  dims.forEach(function(d) {
+    var pct = Math.round(Math.min(100, (d.v/5)*100));
+    html += '<div style="flex:1;min-width:44px" title="'+d.l+': '+d.v+'/5">'+
+      '<div style="font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:2px">'+d.l+'</div>'+
+      '<div style="height:4px;background:var(--cream4);border-radius:2px;overflow:hidden">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+d.col+';border-radius:2px"></div>'+
+      '</div>'+
+      '<div style="font-size:9px;font-weight:700;color:var(--ink3);margin-top:1px">'+d.v+'</div>'+
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
 function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm1,mm2,vtags,adj1,adj2,winN,aiResult,same,curMode,vvd){
   var verdictEl=document.getElementById('v-'+mode);
   if(!verdictEl) return;
@@ -4948,7 +4976,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
   html += '<div class="vv-reveal vv-reveal-delay-2">'+vverdictHTML()+'</div>';
 
   // 5. Share bar
-  var verdictText = aiResult ? aiResult.verdict : generateSimpleVerdict(p1,p2,adj1,adj2,winN,same);
+  var verdictText = aiResult ? aiResult.verdict : generateSimpleVerdict(p1,p2,adj1,adj2,winN,same,sr1,sr2,vvd,vtags);
   var winnerName = winN===1?p1.name:(winN===2?p2.name:'Both players');
   var shareUrl = buildShareUrl(p1,p2);
   var shareId = 'share-'+mode+'-'+Date.now();
