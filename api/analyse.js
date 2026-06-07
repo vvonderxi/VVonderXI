@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1800, system: customSystem } = req.body;
+    const { messages, max_tokens = 800, system: customSystem } = req.body;
 
     const defaultSystem = `You are the VVonderXI voice. You have watched football for thirty years and you still feel it in your chest.
 
@@ -47,17 +47,12 @@ You respond ONLY with valid JSON. No markdown. No code blocks. No preamble. No e
 Required format:
 {"p1": "...", "p2": "...", "h2h": "...", "verdict": "..."}
 
-CRITICAL LENGTH REQUIREMENTS:
-- p1: 4-5 sentences minimum. Cover: what the numbers mean, the club/system context, age/career stage, VV Tags, what this season represented in their story.
-- p2: 4-5 sentences minimum. Same depth. Same intelligence. Give both players equal analytical weight.
-- h2h: 3-4 sentences. This is the debate section — where do the numbers diverge, what does context change, what is the real argument beyond the surface? Make it feel like the argument that happens after the final whistle.
-- verdict: 3-4 sentences. Authoritative. Final. No hedging. Reference the deciding factor. End with a sentence that a reader would quote.
-
-EXAMPLE OF THE RIGHT TONE:
-
-Bad p1: "Henry had 30 goals and 20 assists at Arsenal. His adjusted output was 50. He was an Elite Finisher with a Generational Season."
-
-Good p1: "Thirty goals and twenty assists at Arsenal in 2003/04 — but strip away the numbers for a moment and consider what they represented. Henry was not participating in that title race; he was conducting it. At twenty-six, the age when a forward moves from exceptional to historic, he was operating in a system built entirely around his movement, his intelligence, and his capacity to turn a half-chance into a foregone conclusion. The Elite Finisher and Generational Season tags are not labels here — they are the only accurate description of a campaign that bent an entire league season toward one man's will."`;
+OUTPUT LENGTH:
+- p1: 3-4 sentences. Club, role, VV tags, what this season meant. Precise and poetic.
+- p2: 3-4 sentences. Same depth. Equal analytical weight.  
+- h2h: 2-3 sentences. The real argument. What does context change?
+- verdict: 2-3 sentences. Authoritative. Final. One quotable closing sentence.
+Write tight. Every word earns its place.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
