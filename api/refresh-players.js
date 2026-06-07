@@ -1,155 +1,157 @@
-// /api/refresh-players.js
+// /api/refresh-players.js — VVonderXI BIGGER
 // Vercel Cron Job — runs daily at 3am UTC
-// Refreshes top 20 players by rating + most searched players
-// Free tier safe: stays within 100 API calls/day
+// Refreshes stale players in priority order:
+//   Tier 1: search_count >= 50 → daily refresh
+//   Tier 2: search_count >= 10 → weekly refresh
+//   Tier 3: all others → on-demand only
+// Uses BSD API (not RapidAPI). Table: player_season_cards.
 
 const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+const BSD = 'https://sports.bzzoiro.com/api/v2';
+const DELAY_MS = 350;
 
-const LEAGUE_MAP = {
-  39:{code:'PL',name:'Premier League',f:1.000},
-  140:{code:'LL',name:'La Liga',f:0.978},
-  78:{code:'BL',name:'Bundesliga',f:0.940},
-  135:{code:'SA',name:'Serie A',f:0.935},
-  61:{code:'L1',name:'Ligue 1',f:0.878},
-  94:{code:'PRT',name:'Primeira Liga',f:0.845},
-  88:{code:'ERE',name:'Eredivisie',f:0.820},
-  307:{code:'SPL',name:'Saudi Pro League',f:0.720},
-  253:{code:'MLS',name:'MLS',f:0.700},
-  179:{code:'SPM',name:'Scottish Premiership',f:0.740},
-  203:{code:'TSL',name:'Turkish Super Lig',f:0.760},
-  128:{code:'ARG',name:'Argentine Primera',f:0.750},
-  71:{code:'BRZ',name:'Brazilian Serie A',f:0.740},
-  2:{code:'CL',name:'Champions League',f:1.050},
-};
+const SEASON_CODE = y => `${String(y).slice(2)}${String(y+1).slice(2)}`;
 
-function seasonCode(year){ const y=parseInt(year); return `${String(y).slice(2)}${String(y+1).slice(2)}`; }
-function convertRating(r){ if(!r) return null; return Math.round(parseFloat(r)*10); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function fetchAndCachePlayer(apiId, headers) {
-  // Get available seasons
-  const seasonsRes = await fetch(
-    `https://api-football-v1.p.rapidapi.com/v3/players/seasons?player=${apiId}`,
-    { headers }
-  );
-  const seasonsData = await seasonsRes.json();
-  const available = (seasonsData.response || []).slice(-5); // last 5 seasons
+async function bsd(path) {
+  const r = await fetch(`${BSD}${path}`, {
+    headers: { 'Authorization': `Token ${process.env.BSD_API_KEY}` },
+    signal: AbortSignal.timeout(8000)
+  });
+  if (!r.ok) throw new Error(`BSD ${r.status} ${path}`);
+  return r.json();
+}
 
-  const allStats = [];
-  for (const year of available) {
-    const statsRes = await fetch(
-      `https://api-football-v1.p.rapidapi.com/v3/players?id=${apiId}&season=${year}`,
-      { headers }
-    );
-    const data = await statsRes.json();
-    const item = data.response?.[0];
-    if (!item) continue;
-    const player = item.player;
-    for (const stat of (item.statistics || [])) {
-      const lg = LEAGUE_MAP[stat.league?.id];
-      if (!lg) continue;
-      allStats.push({
-        api_id: apiId,
-        season: seasonCode(year),
+// Season/league ID caches
+const seasonCache = {};
+const leagueCache = {};
+
+async function getSeasonYear(seasonId) {
+  if (seasonCache[seasonId]) return seasonCache[seasonId];
+  try {
+    const d = await bsd(`/seasons/${seasonId}/`);
+    let year = null;
+    if (d.name) { const m = d.name.match(/(\d{4})[\/\-]/); if (m) year = parseInt(m[1]); }
+    if (!year && d.start_date) year = new Date(d.start_date).getFullYear();
+    if (!year && d.year >= 2008) year = d.year;
+    if (year) seasonCache[seasonId] = year;
+    return year;
+  } catch { return null; }
+}
+
+async function getLeagueCode(leagueId) {
+  if (leagueCache[leagueId]) return leagueCache[leagueId];
+  const LEAGUE_MAP = {
+    'premier league':'PL','la liga':'LL','bundesliga':'BL','serie a':'SA',
+    'ligue 1':'L1','primeira liga':'PRT','liga portugal':'PRT','eredivisie':'ERE',
+    'belgian pro league':'BPL','champions league':'CL','saudi pro league':'SPL','mls':'MLS',
+  };
+  try {
+    const d = await bsd(`/leagues/${leagueId}/`);
+    const name = (d.name || '').toLowerCase();
+    let code = 'OTHER';
+    for (const [k,v] of Object.entries(LEAGUE_MAP)) {
+      if (name.includes(k)) { code = v; break; }
+    }
+    leagueCache[leagueId] = code;
+    return code;
+  } catch { return 'OTHER'; }
+}
+
+async function refreshPlayer(player) {
+  try {
+    const career = await bsd(`/players/${player.api_player_id}/career/`);
+    await sleep(DELAY_MS);
+    const rows = career.seasons || career.results || (Array.isArray(career) ? career : []);
+
+    const cards = [];
+    for (const row of rows) {
+      const year = await getSeasonYear(row.season_id);
+      await sleep(DELAY_MS);
+      if (!year || year < 2019) continue; // Only refresh 6-season window
+      const sCode = SEASON_CODE(year);
+      if (!['2425','2324','2223','2122','2021','1920'].includes(sCode)) continue;
+      const league = await getLeagueCode(row.league_id);
+      await sleep(DELAY_MS);
+
+      cards.push({
+        player_id: player.id,
+        api_player_id: player.api_player_id,
+        season: sCode,
         season_year: year,
-        league_code: lg.code,
-        league_name: lg.name,
-        league_api_id: stat.league.id,
-        club: stat.team?.name || '',
-        pos: stat.games?.position?.slice(0,3).toUpperCase() || '',
-        age: player.age,
-        goals: stat.goals?.total || 0,
-        assists: stat.goals?.assists || 0,
-        appearances: stat.games?.appearences || 0,
-        minutes: stat.games?.minutes || 0,
-        rating: stat.games?.rating || null,
-        rt: convertRating(stat.games?.rating),
-        // Extended metrics for spider chart
-        shots_on_target: stat.shots?.on || 0,
-        key_passes: stat.passes?.key || 0,
-        dribbles_success: stat.dribbles?.success || 0,
-        tackles: stat.tackles?.total || 0,
-        interceptions: stat.tackles?.interceptions || 0,
-        progressive_carries: stat.carries?.progressive || 0,
-        aerial_won: stat.duels?.won || 0,
-        yellow_cards: stat.cards?.yellow || 0,
-        red_cards: stat.cards?.red || 0,
+        league_code: league,
+        team_name: row.team_name || '',
+        position: player.position || 'MID',
+        age: null, // recalculated below if dob available
+        goals: parseInt(row.goals) || 0,
+        assists: parseInt(row.assists) || 0,
+        rating: row.avg_rating ? parseFloat(row.avg_rating) : null,
+        rt: row.avg_rating ? Math.round(parseFloat(row.avg_rating) * 10) : null,
+        appearances: parseInt(row.appearances) || 0,
+        minutes: parseInt(row.minutes) || 0,
       });
     }
+
+    if (cards.length) {
+      await supabase.from('player_season_cards')
+        .upsert(cards, { onConflict: 'api_player_id,season,league_code' });
+    }
+
+    await supabase.from('players')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', player.id);
+
+    return cards.length;
+  } catch(e) {
+    console.error(`Refresh failed for ${player.name}: ${e.message}`);
+    return 0;
   }
-
-  if (allStats.length > 0) {
-    await supabase.from('player_seasons')
-      .upsert(allStats, { onConflict: 'api_id,season,league_api_id' });
-  }
-
-  // Update player updated_at
-  await supabase.from('players')
-    .update({ updated_at: new Date().toISOString() })
-    .eq('api_id', apiId);
-
-  return allStats.length;
 }
 
 module.exports = async (req, res) => {
-  // Verify this is called by Vercel cron (or manually with secret)
+  // Verify cron auth
   const authHeader = req.headers.authorization;
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorised' });
   }
 
-  if (!process.env.RAPIDAPI_KEY) {
-    return res.status(200).json({ message: 'No API key configured — skipping refresh' });
+  if (!process.env.BSD_API_KEY) {
+    return res.status(200).json({ message: 'No BSD_API_KEY configured — skipping refresh' });
   }
 
-  const headers = {
-    'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-    'x-rapidapi-key': process.env.RAPIDAPI_KEY
-  };
-
   try {
-    // Get top 20 by rating from cache
-    const { data: topPlayers } = await supabase
+    // Get Tier 1 + Tier 2 players that haven't been updated today
+    const cutoff = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+    const { data: players } = await supabase
       .from('players')
-      .select('api_id, name, updated_at')
-      .order('updated_at', { ascending: true })
-      .limit(20);
-
-    // Get top 5 most searched (bonus refresh if API calls allow)
-    const { data: mostSearched } = await supabase
-      .from('search_cache')
-      .select('search_term, result_count')
-      .order('result_count', { ascending: false })
-      .limit(5);
+      .select('id, api_player_id, name, position, search_count, updated_at')
+      .lte('updated_at', cutoff)
+      .in('refresh_tier', [1, 2])
+      .order('search_count', { ascending: false })
+      .limit(15); // Stay within 15 players × ~8 API calls each = 120 calls max
 
     const refreshed = [];
-    let apiCallsUsed = 0;
-    const MAX_CALLS = 80; // Leave 20 buffer for on-demand searches
+    let totalCards = 0;
 
-    // Refresh top 20
-    for (const player of (topPlayers || [])) {
-      if (apiCallsUsed >= MAX_CALLS) break;
-      const count = await fetchAndCachePlayer(player.api_id, headers);
-      refreshed.push({ name: player.name, seasons_updated: count });
-      apiCallsUsed += 2; // seasons call + stats call per player
-      // Small delay to be kind to the API
-      await new Promise(r => setTimeout(r, 300));
+    for (const player of (players || [])) {
+      const count = await refreshPlayer(player);
+      refreshed.push({ name: player.name, cards_updated: count });
+      totalCards += count;
+      await sleep(1000); // Pause between players
     }
 
-    console.log(`Refresh complete: ${refreshed.length} players, ~${apiCallsUsed} API calls used`);
-
+    console.log(`Refresh: ${refreshed.length} players, ${totalCards} cards updated`);
     return res.json({
       success: true,
       refreshed: refreshed.length,
-      api_calls_used: apiCallsUsed,
+      cards_updated: totalCards,
       players: refreshed
     });
 
-  } catch (err) {
+  } catch(err) {
     console.error('Refresh error:', err);
     return res.status(500).json({ error: err.message });
   }
