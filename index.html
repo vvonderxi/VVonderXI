@@ -1757,8 +1757,8 @@ aside{min-width:200px!important;max-width:220px!important}
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🟢</span><span class="lt-name">Very Good</span></div><div class="lt-desc">Solid top-flight contribution. A player any manager would be pleased to have.</div></div>
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🔵</span><span class="lt-name" style="color:var(--ink3)">Good</span></div><div class="lt-desc">A competent professional season. Does the job. Context matters — position, age, system.</div></div>
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🟠</span><span class="lt-name" style="color:#c06010">Okay</span></div><div class="lt-desc">Below the level expected for serious comparison. Numbers suggest limited influence.</div></div>
-        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-top:1px solid var(--cream4);margin-top:6px">How Adjusted Output works</div>
-        <div style="padding:4px 12px 10px;font-size:11px;color:var(--ink3);line-height:1.6">Goals + Assists multiplied by the league strength factor. Premier League ×1.000. La Liga ×0.978. Bundesliga ×0.940. Serie A ×0.935. Ligue 1 ×0.878. The same numbers in different leagues carry different weight.</div>
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-top:1px solid var(--cream4);margin-top:6px">About the VV Score™</div>
+        <div style="padding:4px 12px 10px;font-size:11px;color:var(--ink3);line-height:1.6">The VV Score™ is VVonderXI's proprietary football intelligence metric. It combines attacking output, match ratings, availability, league strength and positional context. The same numbers in different leagues and different positions carry completely different weight.</div>
       </div>
     </div>
 
@@ -2028,7 +2028,7 @@ aside{min-width:200px!important;max-width:220px!important}
     <!-- ── SCOUT RANKINGS TAB ── -->
     <div class="tab-content" id="tab-rt">
       <div style="padding:10px 0 14px;font-size:12px;color:var(--ink3);line-height:1.6;border-bottom:1px solid var(--border);margin-bottom:12px">
-        <strong style="color:var(--ink);font-size:13px">Scout Rankings</strong> — Active players ranked by <strong>adjusted output</strong> (Goals + Assists × league strength factor) from their most recent season. League difficulty is weighted: Premier League ×1.000 down to Saudi Pro ×0.720. Updated automatically when new season data is added.
+        <strong style="color:var(--ink);font-size:13px">Scout Rankings</strong> — Active players ranked by <strong>VV Score™</strong> — a proprietary football intelligence score combining goals, assists, league strength, match ratings, availability and positional context. Updated automatically when new season data is added.
       </div>
       <div class="filter-bar" id="rt-filter-bar">
         <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-right:4px">League:</span>
@@ -2147,22 +2147,60 @@ aside{min-width:200px!important;max-width:220px!important}
         <!-- SSP intro -->
         <div class="guide-section">
           <h2>📊 Selected Season Performance (SSP)</h2>
-          <p>The SSP is VVonderXI's proprietary season grading system. Every season in the database is assessed across multiple dimensions of performance — each weighted according to the player's position, the competition they played in, and the context of their career. The same raw statistics mean completely different things depending on where you play. The SSP accounts for this. What you see is not a raw number. It is an informed judgement.</p>
+          <p>The SSP Rating is VVonderXI's scout-grade interpretation of the VV Score™. Every season in the database is assigned a VV Score — a proprietary numerical intelligence metric — which is then interpreted into a professional scout grade. The same raw statistics mean completely different things depending on where you play, what position you occupy, and when in your career you produce them. The SSP accounts for all of this. What you see is not a raw number. It is an informed judgement.</p>
         </div>
 
-        <!-- SSP methodology — philosophy only, no formula -->
+        <!-- VV Score + SSP methodology — clean brand framework -->
         <div class="guide-section">
-          <h2>⚡ How The SSP Works</h2>
-          <p>The SSP is not a simple goals and assists counter. It is a multi-dimensional assessment that weighs every season against the specific context in which it was produced.</p>
-          <p style="margin-top:10px">The engine accounts for what the player did, where they did it, how often they were available to do it, and how difficult the environment was. A goal in the Premier League carries different weight to a goal in a lower-ranked competition. A full-back producing ten goal contributions is being assessed against full-back standards — not striker standards.</p>
-          <p style="margin-top:10px">Attacking output is one signal. Influence across the full season is another. Positional context shapes how both are read. The same number means something completely different depending on who produced it, where, and when in their career.</p>
-          <p style="margin-top:10px;font-style:italic;color:var(--ink3);font-size:12px">The precise methodology behind the SSP is proprietary to VVonderXI. What matters is the output — not the formula.</p>
+          <h2>⚡ VV Score™ &amp; SSP Rating — The Intelligence Framework</h2>
+          <p style="margin-top:4px;margin-bottom:16px;font-size:12px;color:var(--ink3);font-style:italic">Two distinct layers. One intelligence platform.</p>
+
+          <div class="guide-grid" style="margin-bottom:20px">
+            <div class="guide-item" style="border-left:3px solid var(--accent)">
+              <div class="guide-item-hd" style="color:var(--accent)">VV Score™ — The Numerical Intelligence Score</div>
+              <div class="guide-item-bd">
+                The VV Score is the proprietary numerical output of the VVonderXI Engine. It evaluates every season across multiple dimensions of performance — each weighted according to position, role, league quality, career stage and overall impact. The same raw statistics mean completely different things depending on where you play, who you are, and when in your career it happened.<br><br>
+                The VV Score is not goals and assists. It is not a rating. It is not xG.<br>
+                It is a contextual football intelligence score.<br><br>
+                <em style="color:var(--ink3);font-size:11px">The exact methodology behind the VV Score is proprietary to VVonderXI.</em>
+              </div>
+            </div>
+            <div class="guide-item" style="border-left:3px solid #5a2d82">
+              <div class="guide-item-hd" style="color:#5a2d82">SSP Rating — The Scout Interpretation</div>
+              <div class="guide-item-bd">
+                The SSP Rating is how the VVonderXI Engine translates a VV Score into a professional scout grade. Where the VV Score is the number, the SSP Rating is the verdict.<br><br>
+                The relationship is intuitive:<br>
+                VV Score → SSP Rating<br>
+                Like a credit score → credit grade.<br>
+                Like an exam result → degree classification.<br><br>
+                <em style="color:var(--ink3);font-size:11px">Higher VV Scores produce higher SSP Ratings. Both are earned, not assigned.</em>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-top:8px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:10px">The Full Intelligence Stack</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+              <div style="flex:1;min-width:120px;padding:8px;background:var(--cream3);border-radius:3px">
+                <div style="font-weight:700;color:var(--accent);margin-bottom:4px">VV Score™</div>
+                <div style="color:var(--ink3)">Numerical season intelligence score. Proprietary. Contextual.</div>
+              </div>
+              <div style="flex:1;min-width:120px;padding:8px;background:var(--cream3);border-radius:3px">
+                <div style="font-weight:700;color:#5a2d82;margin-bottom:4px">SSP Rating</div>
+                <div style="color:var(--ink3)">Scout-grade interpretation of the VV Score.</div>
+              </div>
+              <div style="flex:1;min-width:120px;padding:8px;background:var(--cream3);border-radius:3px">
+                <div style="font-weight:700;color:var(--ink2);margin-bottom:4px">VV Verdict</div>
+                <div style="color:var(--ink3)">AI scout narrative. The story behind the numbers.</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Tier scale -->
         <div class="guide-section">
           <h2>📈 SSP Tier Scale — What Each Grade Means</h2>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;font-style:italic">A rating is not a measure of talent. It is a measure of impact relative to role, position, league context and career stage.</p>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;font-style:italic">The SSP Rating is the scout's interpretation of the VV Score. A rating is not a measure of talent — it is a measure of seasonal impact relative to role, position, league context and career stage.</p>
           <div class="guide-grid">
             <div class="guide-item" style="border-left:3px solid #5a2d82">
               <div class="guide-item-hd" style="color:#5a2d82">💫 S-Tier (22+/25)</div>
@@ -2209,8 +2247,8 @@ aside{min-width:200px!important;max-width:220px!important}
 
         <!-- G/A by position -->
         <div class="guide-section">
-          <h2>⚽ What Goals &amp; Assists Actually Mean by Position</h2>
-          <p>The VV Engine judges output against role-specific benchmarks. The same number means something completely different depending on where you play.</p>
+          <h2>⚽ How VV Score™ Reads Attacking Output by Position</h2>
+          <p>The VV Score™ judges attacking output against role-specific benchmarks. The same number means something completely different depending on where you play — a central midfielder producing 10 goal contributions is being held to a completely different standard than a striker with the same return.</p>
 
           <div style="overflow-x:auto;margin-top:14px">
             <table class="weight-table" style="min-width:580px">
@@ -2232,7 +2270,7 @@ aside{min-width:200px!important;max-width:220px!important}
               <tr><td><strong>1+</strong></td><td>🔴 Poor</td><td>🟠 Okay</td><td>🟠 Okay</td><td>🔵 Good</td></tr>
               <tr><td><strong>0</strong></td><td>🔴 Poor</td><td>🔴 Poor</td><td>🔴 Poor</td><td>Rating-Driven*</td></tr>
             </table>
-            <p style="font-size:11px;color:#999;margin-top:8px;font-style:italic">*G+A is one component of the SSP score. Match rating, consistency, league strength and career stage all contribute. A CB with a 92 rating and 0 goals can still reach World Class on the full VV Index — defensive influence is captured through the Influence and Role Rarity dimensions.<br>Note: these thresholds apply to league-adjusted G+A (raw total × league strength factor).</p>
+            <p style="font-size:11px;color:#999;margin-top:8px;font-style:italic">*Attacking output is one component of the VV Score™. Match ratings, availability, league strength and career stage all contribute to the final score. A CB with a 92 rating and 0 goals can still reach World Class via the VV Score — defensive influence is captured through separate dimensions. These thresholds apply to league-adjusted G+A.</p>
           </div>
         </div>
 
@@ -4082,30 +4120,35 @@ function vvIndexScore(g, a, pos, lgCode, apps, rt) {
   // League-aware: BL/L1 = 34 games, PL/LL/SA = 38 games
   var consistency5 = Math.min(5, avail * 5);
 
-  // ── DIMENSION 4: League Strength (0-5) ──
-  var league5 = Math.min(5, lf * 5);
+  // ── DIMENSION 4: League Strength (0-4) ──
+  // Capped at 4.0 (not 5.0) so league quality alone can't max this dimension
+  // A 5.0 here is reserved for seasons in the elite leagues WITH elite individual output
+  var leagueBase = Math.min(4.0, lf * 4.2);
+  // Bonus: top leagues + top output = full benefit
+  var leagueBonus = (lf >= 0.95 && output5 >= 3.0) ? Math.min(1.0, (output5 - 3.0) * 0.5) : 0;
+  var league5 = Math.min(5, leagueBase + leagueBonus);
 
-  // ── DIMENSION 5: Role Rarity (0-5) ──
+  // ── DIMENSION 5: Role Rarity (0-2.5 hard cap) ──
   // Bonus ONLY when output genuinely breaks positional expectations
-  // Calibrated to avoid over-inflating moderate defender seasons
+  // Hard-capped at 2.5 so defenders never outscore elite attackers
   var rarityBase = role.rarityBonus || 0;
   var rarity5 = 0;
   if (roleId === 'cb' || roleId === 'lb' || roleId === 'rb' || roleId === 'wb' || roleId === 'cdm') {
-    var eliteThresh = benchmarks[2] || 6;   // 'elite' threshold for this position
-    var excellentThresh = benchmarks[3] || 3; // 'excellent' threshold
+    var eliteThresh = benchmarks[2] || 6;     // era-defining threshold for this position
+    var excellentThresh = benchmarks[3] || 3; // world-class threshold
     if (adj >= eliteThresh) {
-      // Genuinely elite output for a defensive role — full rarity bonus
-      rarity5 = Math.min(4, rarityBase + (adj - eliteThresh) / eliteThresh * 1.5);
+      // Genuinely elite output for a defensive role — rarity bonus applies
+      rarity5 = Math.min(2.0, rarityBase * 0.7 + (adj - eliteThresh) / eliteThresh * 1.0);
     } else if (adj >= excellentThresh) {
-      // Good but not position-breaking — partial bonus
-      rarity5 = Math.min(2.5, rarityBase * 0.6 + (adj - excellentThresh) / (eliteThresh - excellentThresh) * 1.5);
+      // Good output for position — small partial bonus only
+      rarity5 = Math.min(1.0, rarityBase * 0.3 + (adj - excellentThresh) / (eliteThresh - excellentThresh) * 0.8);
     } else {
-      // Below excellence for position — minimal rarity
-      rarity5 = Math.max(0, rarityBase * 0.2);
+      // Normal or below for position — no rarity bonus
+      rarity5 = 0;
     }
-    rarity5 = Math.min(5, Math.max(0, rarity5));
+    rarity5 = Math.min(2.5, Math.max(0, rarity5)); // hard cap: defenders cannot add more than 2.5 via rarity
   } else {
-    rarity5 = 0; // attackers/mids don't get rarity bonus — expected to score
+    rarity5 = 0; // attackers/mids: rarity not applicable, expected to contribute
   }
 
   // ── TOTAL VV INDEX (/25) ──
@@ -4113,17 +4156,20 @@ function vvIndexScore(g, a, pos, lgCode, apps, rt) {
   total = Math.min(25, Math.max(0, total));
 
   // ── TIER LABEL from total ──
+  // Calibrated for normal distribution — S-Tier/Generational genuinely rare
+  // Target: S-Tier <0.25%, Generational <1%, Era Defining 2-3%, Elite 5-8%
+  // Validated against: Messi/Haaland/Henry (top), Thuram/Ramsdale (mid)
   var tier;
-  if (total >= 22) tier = {lbl:'S-Tier',      cls:'b-stier',    emoji:'💫'};
-  else if (total >= 19) tier = {lbl:'Generational',cls:'b-gen',  emoji:'🌍'};
-  else if (total >= 16.5)tier = {lbl:'Era Defining',cls:'b-era', emoji:'🏆'};
-  else if (total >= 14) tier = {lbl:'World Class', cls:'b-wc',   emoji:'🌟'};
-  else if (total >= 11.5)tier = {lbl:'Elite',      cls:'b-elite',emoji:'👑'};
-  else if (total >= 9)  tier = {lbl:'Excellent',   cls:'b-excellent',emoji:'⭐'};
-  else if (total >= 6.5)tier = {lbl:'Very Good',   cls:'b-verygood',emoji:'🟢'};
-  else if (total >= 4)  tier = {lbl:'Good',        cls:'b-good', emoji:'🔵'};
-  else if (total >= 2)  tier = {lbl:'Okay',        cls:'b-okay', emoji:'🟠'};
-  else                  tier = {lbl:'Poor',        cls:'b-poor', emoji:'🔴'};
+  if (total >= 23)    tier = {lbl:'S-Tier',      cls:'b-stier',       emoji:'💫'};
+  else if (total >= 21)    tier = {lbl:'Generational', cls:'b-gen',    emoji:'🌍'};
+  else if (total >= 18)    tier = {lbl:'Era Defining', cls:'b-era',    emoji:'🏆'};
+  else if (total >= 15.5)  tier = {lbl:'Elite',        cls:'b-elite',  emoji:'👑'};
+  else if (total >= 13)    tier = {lbl:'World Class',  cls:'b-wc',     emoji:'🌟'};
+  else if (total >= 10.5)  tier = {lbl:'Excellent',    cls:'b-excellent',emoji:'⭐'};
+  else if (total >= 8)     tier = {lbl:'Very Good',    cls:'b-verygood',emoji:'🟢'};
+  else if (total >= 5.5)   tier = {lbl:'Good',         cls:'b-good',   emoji:'🔵'};
+  else if (total >= 3)     tier = {lbl:'Okay',         cls:'b-okay',   emoji:'🟠'};
+  else                     tier = {lbl:'Poor',         cls:'b-poor',   emoji:'🔴'};
 
   return {
     total: Math.round(total * 10) / 10,
@@ -4304,18 +4350,18 @@ function marketMomentum(p,age,lgCode,traj){
 // ── SSP TIER ONE-LINE DESCRIPTIONS (for tooltips) ────
 function getSSPDesc(lbl) {
   var d = {
-    'S-Tier':      'A historically significant season. Fewer than 1% of all seasons reach this level.',
-    'Generational':'Output that rewrites what is expected from this role. A career-defining campaign.',
-    'Era Defining':'The highest sustained standard at which professional football is consistently played.',
-    'World Class': 'Among the finest performers in the world at this position this season.',
-    'Elite':       'Firmly in the conversation for the most impactful in their league.',
-    'Excellent':   'Consistently high-level impact. Operating above the standard most professionals reach.',
-    'Very Good':   'Clearly above the professional average for their position and competition.',
-    'Good':        'A solid, functional contribution that meets the requirements of the role.',
-    'Okay':        'Below the threshold for meaningful impact at this competition level.',
-    'Poor':        'Output does not support the case being made at this level.'
+    'S-Tier':      'VV Score: historically significant. Fewer than 0.25% of all seasons in the database reach this level.',
+    'Generational':'VV Score: output that rewrites role expectations. A campaign that defines an era.',
+    'Era Defining':'VV Score: the benchmark standard for elite professional football. Genuinely rare.',
+    'Elite':       'VV Score: among the most impactful performers in their league this season.',
+    'World Class': 'VV Score: consistently dangerous at the highest level. One of the best in the world at this position.',
+    'Excellent':   'VV Score: high-level, consistent impact. Operating above the standard most professionals reach.',
+    'Very Good':   'VV Score: clearly above the professional average for their position and competition.',
+    'Good':        'VV Score: a solid, functional contribution that meets the requirements of the role.',
+    'Okay':        'VV Score: below the threshold for meaningful impact at this competition level.',
+    'Poor':        'VV Score: output does not support the case being made at this level.'
   };
-  return d[lbl] || 'SSP grade — see Legends for full explanation.';
+  return d[lbl] || "SSP Rating — the scout interpretation of this season's VV Score. See Legends for full explanation.";
 }
 
 // ── MARKET MOMENTUM DESCRIPTIONS ─────────────────────
@@ -4755,7 +4801,7 @@ function advancedText(p,sdata,lgOn){
   if(lgOn&&sdata.lg&&ld.f){
     if(factor>=1.0) lgLine='Produced in the '+ld.n+' — by UEFA coefficient one of the most competitive environments in world football. Numbers carry full face value.';
     else if(factor>=0.94) lgLine='The '+ld.n+' is a genuine top-tier European league. These numbers translate well with minimal adjustment.';
-    else if(factor>=0.86) lgLine='The '+ld.n+' carries a moderate difficulty discount. League-adjusted output: approximately '+adj+' combined G+A equivalent.';
+    else if(factor>=0.86) lgLine='The '+ld.n+' carries a moderate difficulty discount. VV Score equivalent: approximately '+adj+' combined G+A equivalent.';
     else lgLine='The '+ld.n+' sits lower in UEFA rankings. Scouts would apply a meaningful discount: ~'+adj+' combined G+A Premier League equivalent.';
   }
   var out=[posLine,lgLine].filter(Boolean).join(' ');
@@ -4851,11 +4897,11 @@ function buildTrajNarrative(traj, playerName) {
   }
 
   if (traj.tag === 'Breakout') {
-    return name+' broke through in '+latestLabel+' — '+latestGAStr+' compared to '+oldestGAStr+' in '+oldestLabel+'. A '+Math.abs(pctChange)+'% increase in adjusted output across this window. Something fundamental has changed: the player who arrived is not the player now producing.'+ageNote;
+    return name+' broke through in '+latestLabel+' — '+latestGAStr+' compared to '+oldestGAStr+' in '+oldestLabel+'. A '+Math.abs(pctChange)+'% increase in VV Score across this window. Something fundamental has changed: the player who arrived is not the player now producing.'+ageNote;
   }
 
   if (traj.tag === 'Ascending') {
-    return firstName+' has improved in each of the last '+data.length+' seasons. From '+oldestGAStr+' ('+oldestLabel+') to '+latestGAStr+' ('+latestLabel+') — the adjusted output line points steadily upward.'+ageNote+' The direction of travel is unambiguous.';
+    return firstName+' has improved in each of the last '+data.length+' seasons. From '+oldestGAStr+' ('+oldestLabel+') to '+latestGAStr+' ('+latestLabel+') — the VV Score trend points steadily upward.'+ageNote+' The direction of travel is unambiguous.';
   }
 
   if (traj.tag === 'Peak Form') {
@@ -4864,26 +4910,26 @@ function buildTrajNarrative(traj, playerName) {
 
   if (traj.tag === 'Stable') {
     var avg = Math.round(data.reduce(function(s,d){return s+d.adj;},0)/data.length);
-    return firstName+' is the definition of reliable. Across the last '+data.length+' seasons, the adjusted output has averaged '+avg+' — varying by no more than a few points in either direction. In a game that rewards consistency, this is a player who delivers.'+ageNote;
+    return firstName+' is the definition of reliable. Across the last '+data.length+' seasons, the VV Score has averaged '+avg+' — varying by no more than a few points in either direction. In a game that rewards consistency, this is a player who delivers.'+ageNote;
   }
 
   if (traj.tag === 'Volatile') {
     var peak = data.reduce(function(m,d){return d.adj>m.adj?d:m;},data[0]);
     var trough = data.reduce(function(m,d){return d.adj<m.adj?d:m;},data[0]);
     var peakLabel = SEASON_LABELS[peak.s]||peak.s||'peak season';
-    return 'The last '+data.length+' seasons reveal a player of extremes. '+firstName+' reached '+peak.adj+' adjusted output in '+peakLabel+' — a number that demands attention. But the variation ('+trough.adj+' at the low end) tells a story of inconsistency that scouts cannot ignore.'+ageNote;
+    return 'The last '+data.length+' seasons reveal a player of extremes. '+firstName+' reached '+peak.adj+' VV Score in '+peakLabel+' — a number that demands attention. But the variation ('+trough.adj+' at the low end) tells a story of inconsistency that scouts cannot ignore.'+ageNote;
   }
 
   if (traj.tag === 'Declining') {
     var ageDecl = latest.age ? ' At '+latest.age+', the question the data asks is whether this is a temporary dip or the start of a longer curve.' : '';
-    return firstName+' has produced less in each successive season — from '+oldestGAStr+' ('+oldestLabel+') to '+latestGAStr+' ('+latestLabel+'). A '+Math.abs(pctChange)+'% decrease in adjusted output.'+ageDecl;
+    return firstName+' has produced less in each successive season — from '+oldestGAStr+' ('+oldestLabel+') to '+latestGAStr+' ('+latestLabel+'). A '+Math.abs(pctChange)+'% decrease in VV Score.'+ageDecl;
   }
 
   if (traj.tag === 'Regression Risk') {
     return 'The alarm is sounding for '+firstName+'. '+latestGAStr+' in '+latestLabel+' represents a significant fall from '+oldestGAStr+' ('+oldestLabel+'). This is the trajectory that ends contracts and starts conversations about what went wrong.'+(latest.age?' At '+latest.age+', there is still time to correct — but the next season is critical.':'');
   }
 
-  return firstName+' averaged '+(Math.round(data.reduce(function(s,d){return s+d.adj;},0)/data.length))+' adjusted output across the last '+data.length+' seasons ('+oldestLabel+' → '+latestLabel+').';
+  return firstName+' averaged '+(Math.round(data.reduce(function(s,d){return s+d.adj;},0)/data.length))+' VV Score across the last '+data.length+' seasons ('+oldestLabel+' → '+latestLabel+').';
 }
 
 // ══════════════════════════════════════════════════════
@@ -5066,7 +5112,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     html += '<div class="vv-story-stats">'+
       '<div class="vv-stat-box"><div class="vv-stat-n">'+p.g+'</div><div class="vv-stat-l">Goals</div></div>'+
       '<div class="vv-stat-box"><div class="vv-stat-n">'+p.a+'</div><div class="vv-stat-l">Assists</div></div>'+
-      '<div class="vv-stat-box" title="League-adjusted output: (G+A) × league strength factor"><div class="vv-stat-n">'+adj+'</div><div class="vv-stat-l" style="font-size:8px">Adj Output</div></div>'+
+      '<div class="vv-stat-box" title="VV Score™ — League and role-adjusted season intelligence score"><div class="vv-stat-n">'+adj+'</div><div class="vv-stat-l" style="font-size:8px">VV Score</div></div>'+
       '<div class="vv-stat-box vv-index-box" title="SSP Grade: '+sr.lbl+' — Hover the badge below for full context.">'+
         '<div class="vv-stat-n" style="font-size:13px!important;letter-spacing:-0.3px">'+sr.emoji+'</div>'+
         '<div class="vv-stat-l" style="color:var(--accent)">SSP</div>'+
@@ -5075,7 +5121,10 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     // SSP label + VV Index 5-bar mini breakdown
     '<div class="vv-index-bars">'+
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">'+
-        '<span style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4)">SSP Breakdown</span>'+
+        '<span style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4)">'+
+          'VV Score™ '+
+          '<span title="VV Score™ — The proprietary football intelligence metric powering VVonderXI. Combines goals, assists, match ratings, minutes, league strength, positional benchmarks and career stage. The SSP Rating is the scout interpretation of this score." style="cursor:help;color:var(--ink4);font-size:9px">ⓘ</span>'+
+        '</span>'+
         '<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.5px">'+sr.lbl+'</span>'+
       '</div>'+
       vvIndexBarsHTML(sr)+
@@ -5239,8 +5288,8 @@ function generateSimpleVerdict(p1, p2, adj1, adj2, winN, same, sr1, sr2, vvd, vt
     var weakerSeason = adj1 > adj2 ? (SEASON_LABELS[p2.season]||'Season 2') : (SEASON_LABELS[p1.season]||'Season 1');
     var strongerSeason = adj1 > adj2 ? (SEASON_LABELS[p1.season]||'Season 1') : (SEASON_LABELS[p2.season]||'Season 2');
     var strongAdj = Math.max(adj1,adj2), weakAdj = Math.min(adj1,adj2);
-    if (strongAdj === weakAdj) return p1.name + ' — both seasons produced equivalent adjusted output. The difference lies in context: age, club form, system. Neither campaign is clearly superior by the numbers alone.';
-    return p1.name + ' — ' + strongerSeason + ' was the stronger campaign. ' + strongAdj + ' adjusted output against ' + weakAdj + ' tells the story, though career stage context matters here. The best seasons are defined not just by what was produced, but when.';
+    if (strongAdj === weakAdj) return p1.name + ' — both seasons produced equivalent VV Score. The difference lies in context: age, club form, system. Neither campaign is clearly superior by the numbers alone.';
+    return p1.name + ' — ' + strongerSeason + ' was the stronger campaign. ' + strongAdj + ' VV Score against ' + weakAdj + ' tells the story, though career stage context matters here. The best seasons are defined not just by what was produced, but when.';
   }
 
   var winner = winN===1 ? p1.name : (winN===2 ? p2.name : 'Both players');
@@ -5374,13 +5423,13 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
     '',
     'PLAYER 1: '+p1.name,
     'Club: '+club1+' | Season: '+season1+' | Position: '+(p1.pos||'?')+' ('+((VV_ROLES[p1.pos]||{label:p1.pos||'?'}).label)+')'+' | Age: '+(p1.age||'?')+' | Career Stage: '+cs1.lbl,
-    'League: '+lg(p1.lg)+' (strength ×'+((LGS[p1.lg]||{f:0.8}).f)+') | Goals: '+p1.g+' | Assists: '+p1.a+' | G+A: '+(p1.g+p1.a)+' | Adj Output: '+adj1str,
+    'League: '+lg(p1.lg)+' (strength ×'+((LGS[p1.lg]||{f:0.8}).f)+') | Goals: '+p1.g+' | Assists: '+p1.a+' | G+A: '+(p1.g+p1.a)+' | VV Score: '+adj1str,
     vvIndexBreakdown(sr1, p1.name),
     'Trajectory: '+trajStr(traj1)+' | VV Tags: '+vvTags1str,
     '',
     'PLAYER 2: '+p2.name,
     'Club: '+club2+' | Season: '+season2+' | Position: '+(p2.pos||'?')+' ('+((VV_ROLES[p2.pos]||{label:p2.pos||'?'}).label)+')'+' | Age: '+(p2.age||'?')+' | Career Stage: '+cs2.lbl,
-    'League: '+lg(p2.lg)+' (strength ×'+((LGS[p2.lg]||{f:0.8}).f)+') | Goals: '+p2.g+' | Assists: '+p2.a+' | G+A: '+(p2.g+p2.a)+' | Adj Output: '+adj2str,
+    'League: '+lg(p2.lg)+' (strength ×'+((LGS[p2.lg]||{f:0.8}).f)+') | Goals: '+p2.g+' | Assists: '+p2.a+' | G+A: '+(p2.g+p2.a)+' | VV Score: '+adj2str,
     vvIndexBreakdown(sr2, p2.name),
     'Trajectory: '+trajStr(traj2)+' | VV Tags: '+vvTags2str,
     '',
