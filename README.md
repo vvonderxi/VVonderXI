@@ -1,6 +1,6 @@
 # VVonderXI ⚽
 
-**Football Intelligence Platform — Compare careers. Predict greatness.**
+**Football Intelligence Platform — Compare Careers. Define Legacies.**
 
 A professional player analysis and comparison tool built with Claude AI. Compare players across leagues, seasons, and positions using UEFA coefficient-weighted data, FUT-style era cards, spider charts, and AI-powered scouting analysis.
 
