@@ -779,7 +779,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 /* Player Story Cards */
 .vv-stories{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 @media(max-width:600px){.vv-stories{grid-template-columns:1fr}}
-.vv-story{background:var(--cream2);border:1.5px solid var(--border);border-radius:4px;padding:14px;position:relative;overflow:hidden}
+.vv-story{background:var(--cream2);border:1.5px solid var(--border);border-radius:4px;padding:14px;position:relative;overflow:visible}
 .vv-story::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--ink)}
 /* Team colour strips — match pcard data-team system */
 .vv-story[data-team="man-utd"]::before{background:#DA291C}
@@ -923,7 +923,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
   transition:all .15s;
   background:rgba(255,255,255,.03);
   position:relative;
-  overflow:hidden;
+  overflow:visible;
 }
 .gld-cell::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none}
 .gld-cell:hover{background:rgba(255,255,255,.07);border-color:rgba(179,108,105,.3);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
@@ -939,7 +939,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 
 /* ── VV TAG TOOLTIPS ── */
 .vv-tag{position:relative;cursor:help}
-.vv-tag:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;padding:7px 12px;border-radius:3px;white-space:normal;z-index:200;pointer-events:none;line-height:1.5;max-width:220px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.vv-tag:hover::after{content:attr(title);position:fixed;bottom:auto;left:auto;transform:none;background:var(--ink);color:#fff;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;padding:7px 12px;border-radius:3px;white-space:normal;z-index:9999;pointer-events:none;line-height:1.5;max-width:220px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.35);margin-top:-60px;margin-left:-110px}
 .vv-tag:hover::before{content:'';position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink);z-index:200}
 
 
@@ -1486,10 +1486,10 @@ aside{min-width:200px!important;max-width:220px!important}
 .vtag,.cs-tag,.mm-tag,.traj-tag,.badge{position:relative}
 .vtag:hover::after,.cs-tag:hover::after,.mm-tag:hover::after,.traj-tag:hover::after,.badge:hover::after{
   content:attr(title);
-  position:absolute;
-  bottom:calc(100% + 8px);
-  left:50%;
-  transform:translateX(-50%);
+  position:fixed;
+  bottom:auto;
+  left:auto;
+  transform:none;
   background:var(--ink);
   color:#fff;
   font-size:11px;
@@ -1501,13 +1501,15 @@ aside{min-width:200px!important;max-width:220px!important}
   padding:7px 12px;
   border-radius:3px;
   white-space:normal;
-  z-index:300;
+  z-index:9999;
   pointer-events:none;
   line-height:1.5;
   max-width:220px;
   text-align:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.25);
+  box-shadow:0 4px 12px rgba(0,0,0,.35);
   min-width:140px;
+  margin-top:-60px;
+  margin-left:-110px;
 }
 .vtag:hover::before,.cs-tag:hover::before,.mm-tag:hover::before,.traj-tag:hover::before,.badge:hover::before{
   content:'';
@@ -1528,7 +1530,6 @@ aside{min-width:200px!important;max-width:220px!important}
 <nav class="gnav">
   <span class="gnav-brand">VVonder<span>XI</span></span>
   <button class="gnav-btn active" onclick="switchPage('compare',this)">⚡ Compare</button>
-  <button class="gnav-btn" onclick="switchPage('baller',this)">🎬 Baller Bio</button>
 
   <!-- Legends Centre Dropdown -->
   <div class="gnav-centre">
@@ -1566,12 +1567,22 @@ aside{min-width:200px!important;max-width:220px!important}
               <div class="gld-title">Verdict Tags</div>
               <div class="gld-desc">The nature of the comparison outcome. Clear Winner. VAR Close Call. Split Decision. League Strength Edge. What the head-to-head truly revealed.</div>
             </div>
+          <div class="gld-cell" onclick="openLegendsTab('baller')">
+              <span class="gld-icon">🎬</span>
+              <div class="gld-title">Baller Bio</div>
+              <div class="gld-desc">The VVonderXI player identity card. Style, role, career arc, tags. What the numbers mean — and what they say about who this footballer really is.</div>
+            </div>
+          <div class="gld-cell" onclick="openLegendsTab('tiers')">
+              <span class="gld-icon">📊</span>
+              <div class="gld-title">SSP — Performance Tiers</div>
+              <div class="gld-desc">Selected Season Performance. S-Tier through Poor. How the VV Engine grades every season across Output, Influence, Consistency, League Strength and Role Rarity.</div>
+            </div>
             <div class="gld-cell" onclick="openLegendPanel('vv-tags')">
               <span class="gld-icon">⭐</span>
               <div class="gld-title">VV Tags</div>
               <div class="gld-desc">Season-level player identity. Elite Finisher. Generational Season. Role Breaker. What made this campaign unique. The label that defines a year.</div>
             </div>
-            <div class="gld-cell" onclick="closeLegendsDropdown();switchPage('legends',document.querySelectorAll('.gnav-btn')[2])">
+            <div class="gld-cell" onclick="openLegendsTab('icons')">
               <span class="gld-icon">🗂️</span>
               <div class="gld-title">Icons Collection</div>
               <div class="gld-desc">The immortals. Historical peak seasons from football greatest ever players. Emergence. Peak. Legacy. Three cards. One career arc.</div>
@@ -2079,7 +2090,7 @@ aside{min-width:200px!important;max-width:220px!important}
       <div style="text-align:center;padding:40px 20px">
         <div style="font-size:32px;margin-bottom:12px">🎬</div>
         <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--ink);margin-bottom:8px">Baller Bio has moved</div>
-        <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.7">Baller Bio definitions, Career Stage explanations and the full Performance Tiers reference are now in the <strong>Legends</strong> section.</div>
+        <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.7">Baller Bio definitions, Career Stage explanations, SSP tiers and the full VVonderXI methodology are now in the <strong>Legends</strong> section — under the <strong>🎬 Baller Bio</strong> and <strong>📊 SSP</strong> tabs.</div>
         <button onclick="switchPage('legends',document.querySelector('.gnav-legends-btn'));setTimeout(function(){switchLegendTab('baller',document.querySelectorAll('#page-legends .tab-btn')[2])},100)" style="padding:10px 24px;background:var(--ink);color:#fff;border:none;font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px">Go to Legends →</button>
       </div>
     </main>
@@ -2102,9 +2113,9 @@ aside{min-width:200px!important;max-width:220px!important}
   <div class="legends-page">
 
     <!-- Legends sub-nav tabs -->
-    <div class="tab-bar" style="position:static;box-shadow:none;border-bottom:2px solid var(--border);margin-bottom:0">
+    <div class="tab-bar" style="position:static!important;box-shadow:none!important;border-bottom:2px solid var(--border);margin-bottom:0;background:#fff;display:flex">
       <button class="tab-btn active" onclick="switchLegendTab('icons',this)">👑 Icons</button>
-      <button class="tab-btn" onclick="switchLegendTab('tiers',this)">📊 Performance Tiers</button>
+      <button class="tab-btn" onclick="switchLegendTab('tiers',this)">📊 SSP</button>
       <button class="tab-btn" onclick="switchLegendTab('baller',this)">🎬 Baller Bio</button>
     </div>
 
@@ -2127,55 +2138,65 @@ aside{min-width:200px!important;max-width:220px!important}
     <div class="tab-content" id="legend-tab-tiers">
       <div class="guide-page" style="padding:24px 0">
 
-        <!-- VV Index explained -->
+        <!-- SSP intro -->
         <div class="guide-section">
-          <h2>⚡ The VV Index — How It Works</h2>
-          <p>Every season is scored across five dimensions. Total score is out of 25. The same raw stats mean very different things at different positions.</p>
-          <table class="weight-table">
-            <tr><th>Dimension</th><th>What It Measures</th><th>Max</th></tr>
-            <tr><td><strong>Output</strong></td><td>Goals + Assists judged against position-specific benchmarks</td><td>5</td></tr>
-            <tr><td><strong>Influence</strong></td><td>Season rating (68–100 range) — overall quality beyond G+A</td><td>5</td></tr>
-            <tr><td><strong>Consistency</strong></td><td>Availability — how many games played out of 34</td><td>5</td></tr>
-            <tr><td><strong>League Strength</strong></td><td>PL × 1.0 down to MLS × 0.70 — context matters</td><td>5</td></tr>
-            <tr><td><strong>Role Rarity</strong></td><td>Bonus for defenders/DMs who break positional expectations</td><td>5</td></tr>
-          </table>
+          <h2>📊 Selected Season Performance (SSP)</h2>
+          <p>The SSP is VVonderXI's proprietary season grading system. Every season in the database is assessed across multiple dimensions of performance — each weighted according to the player's position, the competition they played in, and the context of their career. The same raw statistics mean completely different things depending on where you play. The SSP accounts for this. What you see is not a raw number. It is an informed judgement.</p>
+        </div>
+
+        <!-- SSP methodology — philosophy only, no formula -->
+        <div class="guide-section">
+          <h2>⚡ How The SSP Works</h2>
+          <p>The SSP is not a simple goals and assists counter. It is a multi-dimensional assessment that weighs every season against the specific context in which it was produced.</p>
+          <p style="margin-top:10px">The engine accounts for what the player did, where they did it, how often they were available to do it, and how difficult the environment was. A goal in the Premier League carries different weight to a goal in a lower-ranked competition. A full-back producing ten goal contributions is being assessed against full-back standards — not striker standards.</p>
+          <p style="margin-top:10px">Attacking output is one signal. Influence across the full season is another. Positional context shapes how both are read. The same number means something completely different depending on who produced it, where, and when in their career.</p>
+          <p style="margin-top:10px;font-style:italic;color:var(--ink3);font-size:12px">The precise methodology behind the SSP is proprietary to VVonderXI. What matters is the output — not the formula.</p>
         </div>
 
         <!-- Tier scale -->
         <div class="guide-section">
-          <h2>📈 VV Index Tier Scale</h2>
+          <h2>📈 SSP Tier Scale — What Each Grade Means</h2>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;font-style:italic">A rating is not a measure of talent. It is a measure of impact relative to role, position, league context and career stage.</p>
           <div class="guide-grid">
             <div class="guide-item" style="border-left:3px solid #5a2d82">
               <div class="guide-item-hd" style="color:#5a2d82">💫 S-Tier (22+/25)</div>
-              <div class="guide-item-bd">Fewer than 1% of all seasons reach this level. Exceptional even when fully adjusted for role, position, league and career stage. A number that needs no defence.</div>
+              <div class="guide-item-bd">A season of genuine historical significance. When the VV Engine returns an S-Tier grade, it means the output is exceptional not merely in absolute terms, but after full contextual adjustment — role, position, league difficulty, career stage. Fewer than one in a hundred seasons across the entire database reach this threshold. These are not celebrated campaigns. They are reference points. The seasons against which everything else is measured.</div>
             </div>
             <div class="guide-item" style="border-left:3px solid #1a4070">
               <div class="guide-item-hd" style="color:#1a4070">🌍 Generational (19–22)</div>
-              <div class="guide-item-bd">Top 2% across all positions and eras. Rewrites what is expected from that role. The kind of season that gets referenced in arguments twenty years later.</div>
+              <div class="guide-item-bd">Exceptional output that transcends the immediate — a campaign that rewrites what is considered possible for that role. The VV Engine awards this grade only when adjusted impact clearly separates a player from all but a handful of contemporaries. These are the seasons that outlive the trophy cabinets they belong to. Scouts do not describe them. They quote them.</div>
             </div>
             <div class="guide-item" style="border-left:3px solid #9a3510">
               <div class="guide-item-hd" style="color:#9a3510">🏆 Era Defining (16.5–19)</div>
-              <div class="guide-item-bd">A historic campaign by any standard. Output that places the player in the conversation for the best in the world at their position, in their era.</div>
+              <div class="guide-item-bd">The highest sustained standard at which professional football is consistently played. A player carrying this grade has not merely performed well — they have shaped how their position is understood. Their output influences transfer valuations, tactical decisions and the benchmarks against which future players are measured. A genuinely rare classification that demands sustained excellence across every dimension.</div>
             </div>
             <div class="guide-item" style="border-left:3px solid #1a4070">
               <div class="guide-item-hd">🌟 World Class (14–16.5)</div>
-              <div class="guide-item-bd">Among the global elite for their position. The players other managers build systems to stop.</div>
+              <div class="guide-item-bd">Among the finest performers in the world for their position in this window. Not simply productive — positionally impactful, technically refined, and consistently influential at the highest level of competition. These players command attention in scouting meetings, in transfer negotiations and on the pitch. Other managers do not simply try to beat them. They plan specifically to stop them.</div>
             </div>
             <div class="guide-item" style="border-left:3px solid #9a7510">
               <div class="guide-item-hd">👑 Elite (11.5–14)</div>
-              <div class="guide-item-bd">Firmly in the conversation for best in their league. High-level, sustained quality that only the top tier consistently produces.</div>
+              <div class="guide-item-bd">Firmly within the conversation for the most impactful performers in their league. Elite is not a participation grade — it requires sustained quality across output, influence and availability. A player at this level changes matches, justifies their squad position and raises the ceiling of the teams they play in. They are the players clubs fight to keep and rivals scheme to acquire.</div>
             </div>
             <div class="guide-item" style="border-left:3px solid #1a6b3a">
               <div class="guide-item-hd">⭐ Excellent (9–11.5)</div>
-              <div class="guide-item-bd">Above the standard. Performing at a level most professionals never reach. A player any club would be pleased to have.</div>
+              <div class="guide-item-bd">High-level, consistent professional impact across the season. A player graded Excellent has contributed meaningfully above the baseline expected of their role. They are reliable, they are impactful and they perform at a standard most professional footballers across all levels never reach. Their contribution is felt most clearly in their absence.</div>
             </div>
-            <div class="guide-item">
+            <div class="guide-item" style="border-left:3px solid #2e7d96">
               <div class="guide-item-hd">🟢 Very Good (6.5–9)</div>
-              <div class="guide-item-bd">Solid top-flight contribution. Does the job well. Context still matters — position, age, system.</div>
+              <div class="guide-item-bd">Clearly above the professional average for their position and league. A player returning a Very Good SSP grade has delivered on what was asked of them — and then some. They may not command the headline, but in any objective squad assessment they improve the team they are part of. Dependable, purposeful, and operating above the median at their level.</div>
             </div>
-            <div class="guide-item">
+            <div class="guide-item" style="border-left:3px solid #555">
               <div class="guide-item-hd">🔵 Good (4–6.5)</div>
-              <div class="guide-item-bd">A competent professional season. Functional output that supports the team without commanding the narrative.</div>
+              <div class="guide-item-bd">A solid professional contribution that meets the functional requirements of the role. Good is not a consolation grade — squads are built on players who deliver this level of consistency. The output is present, the contribution is real, the influence is positive. Not every campaign needs to be historic. Good is the standard most professionals aspire to reach and many never do.</div>
+            </div>
+            <div class="guide-item" style="border-left:3px solid #c06010">
+              <div class="guide-item-hd">🟠 Okay (2–4)</div>
+              <div class="guide-item-bd">Below the threshold for meaningful impact at the competition level in question. The numbers are present but insufficient to support a strong positive assessment. Context matters enormously here — an Okay season from a teenager making their first starts reads differently to the same grade from an established international in their prime years. The grade reflects impact, not effort.</div>
+            </div>
+            <div class="guide-item" style="border-left:3px solid #c03030">
+              <div class="guide-item-hd">🔴 Poor (0–2)</div>
+              <div class="guide-item-bd">The output does not support the case being made for this player at this level. Across the five dimensions — output, influence, consistency, league context and positional expectation — the aggregate falls below the acceptable floor. This assessment is positional and contextual, not personal. Every player experiences these seasons. What a career is built on is the response.</div>
             </div>
           </div>
         </div>
@@ -2186,20 +2207,26 @@ aside{min-width:200px!important;max-width:220px!important}
           <p>The VV Engine judges output against role-specific benchmarks. The same number means something completely different depending on where you play.</p>
 
           <div style="overflow-x:auto;margin-top:14px">
-            <table class="weight-table" style="min-width:520px">
+            <table class="weight-table" style="min-width:580px">
               <tr><th>G+A Adj.</th><th>Striker / Winger</th><th>Central Mid</th><th>Full-back</th><th>Centre-back</th></tr>
               <tr><td><strong>40+</strong></td><td>💫 S-Tier</td><td>💫 S-Tier</td><td>💫 S-Tier</td><td>💫 S-Tier</td></tr>
               <tr><td><strong>30+</strong></td><td>🌍 Generational</td><td>💫 S-Tier</td><td>💫 S-Tier</td><td>💫 S-Tier</td></tr>
-              <tr><td><strong>20+</strong></td><td>🏆 Era Defining</td><td>🌍 Generational</td><td>💫 S-Tier</td><td>💫 S-Tier</td></tr>
-              <tr><td><strong>15+</strong></td><td>🌟 World Class</td><td>🏆 Era Defining</td><td>🌍 Generational</td><td>💫 S-Tier</td></tr>
-              <tr><td><strong>10+</strong></td><td>👑 Elite</td><td>🌟 World Class</td><td>🏆 Era Defining</td><td>💫 S-Tier</td></tr>
-              <tr><td><strong>7+</strong></td><td>⭐ Excellent</td><td>👑 Elite</td><td>🌟 World Class</td><td>🌍 Generational</td></tr>
-              <tr><td><strong>5+</strong></td><td>🟢 Very Good</td><td>⭐ Excellent</td><td>👑 Elite</td><td>🏆 Era Defining</td></tr>
-              <tr><td><strong>3+</strong></td><td>🔵 Good</td><td>🟢 Very Good</td><td>⭐ Excellent</td><td>🌟 World Class</td></tr>
-              <tr><td><strong>1+</strong></td><td>🟠 Okay</td><td>🔵 Good</td><td>🟢 Very Good</td><td>👑 Elite</td></tr>
-              <tr><td><strong>0</strong></td><td>🔴 Poor</td><td>🟠 Okay</td><td>🔵 Good</td><td>⭐ Excellent*</td></tr>
+              <tr><td><strong>25+</strong></td><td>🏆 Era Defining</td><td>💫 S-Tier</td><td>💫 S-Tier</td><td>💫 S-Tier</td></tr>
+              <tr><td><strong>20+</strong></td><td>🌟 World Class</td><td>🌍 Generational</td><td>💫 S-Tier</td><td>💫 S-Tier</td></tr>
+              <tr><td><strong>15+</strong></td><td>👑 Elite</td><td>🏆 Era Defining</td><td>🌍 Generational</td><td>💫 S-Tier</td></tr>
+              <tr><td><strong>12+</strong></td><td>👑 Elite</td><td>🌟 World Class</td><td>🏆 Era Defining</td><td>💫 S-Tier</td></tr>
+              <tr><td><strong>10+</strong></td><td>⭐ Excellent</td><td>👑 Elite</td><td>🌟 World Class</td><td>💫 S-Tier</td></tr>
+              <tr><td><strong>8+</strong></td><td>⭐ Excellent</td><td>👑 Elite</td><td>👑 Elite</td><td>🌍 Generational</td></tr>
+              <tr><td><strong>7+</strong></td><td>🟢 Very Good</td><td>⭐ Excellent</td><td>👑 Elite</td><td>🌍 Generational</td></tr>
+              <tr><td><strong>6+</strong></td><td>🟢 Very Good</td><td>⭐ Excellent</td><td>⭐ Excellent</td><td>🏆 Era Defining</td></tr>
+              <tr><td><strong>5+</strong></td><td>🔵 Good</td><td>🟢 Very Good</td><td>⭐ Excellent</td><td>🌟 World Class</td></tr>
+              <tr><td><strong>4+</strong></td><td>🔵 Good</td><td>🟢 Very Good</td><td>🟢 Very Good</td><td>👑 Elite</td></tr>
+              <tr><td><strong>3+</strong></td><td>🟠 Okay</td><td>🔵 Good</td><td>🔵 Good</td><td>⭐ Excellent</td></tr>
+              <tr><td><strong>2+</strong></td><td>🟠 Okay</td><td>🔵 Good</td><td>🔵 Good</td><td>🟢 Very Good</td></tr>
+              <tr><td><strong>1+</strong></td><td>🔴 Poor</td><td>🟠 Okay</td><td>🟠 Okay</td><td>🔵 Good</td></tr>
+              <tr><td><strong>0</strong></td><td>🔴 Poor</td><td>🔴 Poor</td><td>🔴 Poor</td><td>Rating-Driven*</td></tr>
             </table>
-            <p style="font-size:11px;color:#999;margin-top:6px;font-style:italic">*GKs and CBs with 0 G+A are judged entirely on their rating (rt). A CB with rt 92 and 0 goals still scores World Class on Influence.</p>
+            <p style="font-size:11px;color:#999;margin-top:8px;font-style:italic">*G+A is one component of the SSP score. Match rating, consistency, league strength and career stage all contribute. A CB with a 92 rating and 0 goals can still reach World Class on the full VV Index — defensive influence is captured through the Influence and Role Rarity dimensions.<br>Note: these thresholds apply to league-adjusted G+A (raw total × league strength factor).</p>
           </div>
         </div>
 
@@ -2242,10 +2269,7 @@ aside{min-width:200px!important;max-width:220px!important}
               <div class="guide-item-hd">Career Stage</div>
               <div class="guide-item-bd">Where they sit in their arc — Wonderkid, Prospect, Rising Star, Emerging Elite, Prime, Veteran, Legend. Age, output and trajectory all inform this.</div>
             </div>
-            <div class="guide-item">
-              <div class="guide-item-hd">VV Tags</div>
-              <div class="guide-item-bd">The season identity labels produced by the VV Engine. Not decorative — each tag reflects specific statistical thresholds for that position. Elite Finisher means something very specific.</div>
-            </div>
+
             <div class="guide-item">
               <div class="guide-item-hd">Trajectory</div>
               <div class="guide-item-bd">The 3-season momentum read. Is the player improving, peaking, stable or declining? The direction of travel often matters more than the current level.</div>
@@ -2254,10 +2278,7 @@ aside{min-width:200px!important;max-width:220px!important}
               <div class="guide-item-hd">Why It Matters in Comparisons</div>
               <div class="guide-item-bd">Baller Bio context changes how a comparison is read. A player at their Peak means something different from a player at Emergence with the same numbers.</div>
             </div>
-            <div class="guide-item">
-              <div class="guide-item-hd">The Writing Style</div>
-              <div class="guide-item-bd">Peter Drury for the poetry. Henry Winter for the authority. Every Baller Bio is written to feel like elite football journalism — not AI output, not a stat summary.</div>
-            </div>
+
           </div>
         </div>
 
@@ -3734,6 +3755,27 @@ var rtFilterLeague='';
 // ══════════════════════════════════════════════════════
 //  PAGE NAVIGATION
 // ══════════════════════════════════════════════════════
+
+// ── OPEN LEGENDS PAGE + SPECIFIC TAB ────────────────
+function openLegendsTab(tab) {
+  closeLegendsDropdown();
+  // Activate the legends page
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var legendsPage = document.getElementById('page-legends');
+  if (legendsPage) legendsPage.classList.add('active');
+  // Update nav active state
+  document.querySelectorAll('.gnav-btn').forEach(function(b){b.classList.remove('active');});
+  // Build legends content
+  buildLegacyGrid('all');
+  // Open the correct tab after a short delay
+  setTimeout(function(){
+    var tabs = document.querySelectorAll('#page-legends .tab-btn');
+    var tabMap = {icons:0, tiers:1, baller:2};
+    var idx = tabMap[tab] || 0;
+    if (tabs[idx]) switchLegendTab(tab, tabs[idx]);
+  }, 50);
+}
+
 function switchPage(page, btn){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   var el=document.getElementById('page-'+page);
@@ -3755,8 +3797,12 @@ function toggleSb(id){
 //  TAB SYSTEM
 // ══════════════════════════════════════════════════════
 function switchTab(tabId, btn){
-  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  // Only affect tabs WITHIN the compare page — never touch legends tabs
+  var comparePage = document.getElementById('page-compare');
+  if (comparePage) {
+    comparePage.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+    comparePage.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  }
   var el=document.getElementById(tabId);
   if(el) el.classList.add('active');
   if(btn) btn.classList.add('active');
@@ -3783,7 +3829,7 @@ function setBBMode(m){
     var b=document.getElementById('bb-'+x);
     if(b) b.classList.toggle('on',x===m);
   });
-  var hints={simple:'Goals & Assists only',advanced:'+ League · Level · Position context',ai:'Claude AI — Baller Bio Intelligence'};
+  var hints={simple:'Goals & Assists only',advanced:'+ League · Level · Position context',ai:'Claude AI — Full Intelligence Mode'};
   document.getElementById('bb-hint').textContent=hints[m]||'';
   var lb=document.getElementById('bb-live-badge');
   if(lb) lb.style.display=m==='ai'?'inline-flex':'none';
@@ -3847,16 +3893,20 @@ var VV_ROLES = {
 
 // Position-specific output benchmarks (per-season, in raw G+A before league factor)
 // [generational, s_tier, elite, excellent, very_good, good, okay]
+// VV_BENCHMARKS — positional G+A thresholds for Output dimension
+// Format: [S-Tier, Generational, Era Defining, World Class, Elite, Excellent, Very Good]
+// Calibrated per the SSP philosophy: "judge output relative to role expectation"
+// The further from goal, the more valuable each contribution becomes.
 var VV_BENCHMARKS = {
-  'gk':  [4, 3, 2, 1, 0.5, 0, 0],   // pure rating-based for GK
-  'cb':  [8, 6, 4, 3, 2, 1, 0.5],
-  'lb':  [18, 14, 10, 7, 5, 3, 1],
-  'rb':  [18, 14, 10, 7, 5, 3, 1],
-  'wb':  [20, 16, 12, 8, 5, 3, 1],
-  'cdm': [16, 12, 9, 6, 4, 2, 1],
-  'cm':  [22, 17, 13, 9, 6, 4, 2],
-  'cam': [26, 20, 15, 11, 8, 5, 3],
-  'att': [40, 32, 26, 20, 15, 10, 6],
+  'gk':  [4, 3, 2, 1, 0.5, 0, 0],    // GK: rating-based, G+A near irrelevant
+  'cb':  [10, 8, 6, 5, 4, 3, 2],      // CB: 10 G+A = historic, 3 = excellent
+  'lb':  [20, 15, 12, 10, 8, 6, 4],   // LB: creative output rewarded heavily
+  'rb':  [20, 15, 12, 10, 8, 6, 4],   // RB: same as LB
+  'wb':  [22, 17, 13, 11, 9, 6, 4],   // WB: more attacking licence than FB
+  'cdm': [16, 12, 9, 6, 4, 2, 1],     // CDM: 16 S-Tier, kept from original
+  'cm':  [25, 20, 15, 12, 10, 7, 5],  // CM: 25 S-Tier, 10 Elite
+  'cam': [28, 22, 17, 14, 11, 8, 5],  // CAM: between CM and attacker
+  'att': [40, 30, 25, 20, 15, 10, 7], // ST/LW/RW: 40 S-Tier, 10 Excellent
 };
 
 function getRoleId(pos) {
@@ -4144,6 +4194,38 @@ function marketMomentum(p,age,lgCode,traj){
 //  VERDICT TAGS
 // ══════════════════════════════════════════════════════
 
+
+
+
+// ── SSP TIER ONE-LINE DESCRIPTIONS (for tooltips) ────
+function getSSPDesc(lbl) {
+  var d = {
+    'S-Tier':      'A historically significant season. Fewer than 1% of all seasons reach this level.',
+    'Generational':'Output that rewrites what is expected from this role. A career-defining campaign.',
+    'Era Defining':'The highest sustained standard at which professional football is consistently played.',
+    'World Class': 'Among the finest performers in the world at this position this season.',
+    'Elite':       'Firmly in the conversation for the most impactful in their league.',
+    'Excellent':   'Consistently high-level impact. Operating above the standard most professionals reach.',
+    'Very Good':   'Clearly above the professional average for their position and competition.',
+    'Good':        'A solid, functional contribution that meets the requirements of the role.',
+    'Okay':        'Below the threshold for meaningful impact at this competition level.',
+    'Poor':        'Output does not support the case being made at this level.'
+  };
+  return d[lbl] || 'SSP grade — see Legends for full explanation.';
+}
+
+// ── MARKET MOMENTUM DESCRIPTIONS ─────────────────────
+var MM_DESCS = {
+  'Market Surging': 'Transfer value rising rapidly. Output and trajectory both signal upward market movement. Buy before the price catches up.',
+  'Market Rising': 'Value trending upward. Performance is improving and the market has not fully priced it in yet.',
+  'Market Stable': 'Value priced fairly for current output level. A reliable asset with a transparent market picture.',
+  'Market Uncertain': 'Output is inconsistent and the market is reflecting that uncertainty. High risk, potentially high reward.',
+  'Market Declining': 'Transfer value under pressure. Output has dipped and the market is beginning to take notice.',
+  'Market Falling': 'Significant downward pressure on value. The gap between reputation and current output is widening.'
+};
+function getMMDesc(lbl) {
+  return MM_DESCS[lbl] || 'Market Momentum indicator based on output trend, age and league context.';
+}
 
 // ── VERDICT TAG DESCRIPTIONS ─────────────────────────
 var VERDICT_TAG_DESCS = {
@@ -4615,46 +4697,75 @@ function renderTrajectoryBars(traj, playerName){
 function buildTrajNarrative(traj, playerName) {
   if (!traj || !traj.data || traj.data.length < 2) return '';
   var data = traj.data;
-  var first = data[0];
-  var last = data[data.length-1];
-  var mid = data.length > 2 ? data[Math.floor(data.length/2)] : null;
+  // data is newest-first from trajectoryAnalysis
+  var latest = data[0];
+  var oldest = data[data.length-1];
+  var prevSeason = data.length > 1 ? data[1] : null;
 
-  // Calculate trend
-  var firstAdj = first.adj;
-  var lastAdj = last.adj;
-  var diff = lastAdj - firstAdj;
-  var pctChange = firstAdj > 0 ? Math.round((diff/firstAdj)*100) : 0;
-
+  var latestAdj = latest.adj;
+  var oldestAdj = oldest.adj;
+  var diff = latestAdj - oldestAdj;
+  var pctChange = oldestAdj > 0 ? Math.round((diff/oldestAdj)*100) : 0;
   var firstName = playerName ? playerName.split(' ')[0] : 'The player';
   var name = playerName || 'The player';
 
-  // Build narrative based on trajectory type
-  if (traj.tag === 'Breakout' || traj.tag === 'Ascending') {
-    if (pctChange >= 40) {
-      return name+' is not the same player they were two seasons ago. The numbers tell a story of acceleration — from '+firstAdj+' adjusted output to '+lastAdj+'. At '+last.age+', this is the trajectory of someone heading somewhere significant.';
+  // Season labels
+  var latestLabel = SEASON_LABELS[latest.s] || latest.s || 'this season';
+  var oldestLabel = SEASON_LABELS[oldest.s] || oldest.s || 'previously';
+
+  // G/A breakdown for latest season
+  var latestGAStr = latest.g+'G '+latest.a+'A';
+  var oldestGAStr = oldest.g+'G '+oldest.a+'A';
+
+  // Age context
+  var ageNote = '';
+  if (latest.age) {
+    var cs = careerStage(latest.age);
+    if (cs.key === 'wonderkid' || cs.key === 'prospect') {
+      ageNote = ' For a player of '+latest.age+', this trajectory is extraordinary — the numbers are arriving ahead of schedule.';
+    } else if (cs.key === 'rising' || cs.key === 'emerging') {
+      ageNote = ' At '+latest.age+', this is exactly the trajectory profile scouts look for — improvement at the point of greatest development.';
+    } else if (cs.key === 'prime') {
+      ageNote = ' At '+latest.age+', the trajectory is meaningful — prime-age players should be at or near their ceiling.';
+    } else if (cs.key === 'veteran') {
+      ageNote = ' At '+latest.age+', sustaining or improving output is genuinely impressive — the body decline curve is being defied.';
     }
-    return firstName+' has improved consistently across the last '+data.length+' seasons. From '+firstAdj+' to '+lastAdj+' in adjusted output — a '+Math.abs(pctChange)+'% rise. The direction of travel is unambiguous.';
   }
 
-  if (traj.tag === 'Declining' || traj.tag === 'Regression Risk') {
-    var ageTxt = last.age ? ' At '+last.age+', the question is whether this is a temporary dip or the beginning of an irreversible trend.' : ' The numbers suggest something is changing.';
-    return firstName+' has produced less across successive seasons — '+firstAdj+' falling to '+lastAdj+' adjusted output.'+ageTxt;
+  if (traj.tag === 'Breakout') {
+    return name+' broke through in '+latestLabel+' — '+latestGAStr+' compared to '+oldestGAStr+' in '+oldestLabel+'. A '+Math.abs(pctChange)+'% increase in adjusted output across this window. Something fundamental has changed: the player who arrived is not the player now producing.'+ageNote;
+  }
+
+  if (traj.tag === 'Ascending') {
+    return firstName+' has improved in each of the last '+data.length+' seasons. From '+oldestGAStr+' ('+oldestLabel+') to '+latestGAStr+' ('+latestLabel+') — the adjusted output line points steadily upward.'+ageNote+' The direction of travel is unambiguous.';
   }
 
   if (traj.tag === 'Peak Form') {
-    return firstName+' is at the summit. '+lastAdj+' adjusted output this season represents their career best across this window. At '+last.age+', they are producing the football of their life.';
+    return firstName+' is producing the best football of their career across this window. '+latestGAStr+' in '+latestLabel+' is their peak — a number that places them at the top of the output chart for their position.'+ageNote;
   }
 
   if (traj.tag === 'Stable') {
-    return firstName+' delivers. Season after season, the output barely wavers — '+firstAdj+' to '+lastAdj+' adjusted. In a game obsessed with peaks, there is a quiet greatness in relentless consistency.';
+    var avg = Math.round(data.reduce(function(s,d){return s+d.adj;},0)/data.length);
+    return firstName+' is the definition of reliable. Across the last '+data.length+' seasons, the adjusted output has averaged '+avg+' — varying by no more than a few points in either direction. In a game that rewards consistency, this is a player who delivers.'+ageNote;
   }
 
   if (traj.tag === 'Volatile') {
-    var peak = data.reduce(function(m,d){ return d.adj>m.adj?d:m; }, data[0]);
-    return 'The '+data.length+'-season window reveals a player of extremes. '+firstName+' has peaked at '+peak.adj+' adjusted output — a number that demands attention — but the variation across seasons tells a more complicated story.';
+    var peak = data.reduce(function(m,d){return d.adj>m.adj?d:m;},data[0]);
+    var trough = data.reduce(function(m,d){return d.adj<m.adj?d:m;},data[0]);
+    var peakLabel = SEASON_LABELS[peak.s]||peak.s||'peak season';
+    return 'The last '+data.length+' seasons reveal a player of extremes. '+firstName+' reached '+peak.adj+' adjusted output in '+peakLabel+' — a number that demands attention. But the variation ('+trough.adj+' at the low end) tells a story of inconsistency that scouts cannot ignore.'+ageNote;
   }
 
-  return firstName+' has averaged '+(Math.round(traj.data.reduce(function(s,d){return s+d.adj;},0)/traj.data.length))+' adjusted output across the last '+data.length+' seasons.';
+  if (traj.tag === 'Declining') {
+    var ageDecl = latest.age ? ' At '+latest.age+', the question the data asks is whether this is a temporary dip or the start of a longer curve.' : '';
+    return firstName+' has produced less in each successive season — from '+oldestGAStr+' ('+oldestLabel+') to '+latestGAStr+' ('+latestLabel+'). A '+Math.abs(pctChange)+'% decrease in adjusted output.'+ageDecl;
+  }
+
+  if (traj.tag === 'Regression Risk') {
+    return 'The alarm is sounding for '+firstName+'. '+latestGAStr+' in '+latestLabel+' represents a significant fall from '+oldestGAStr+' ('+oldestLabel+'). This is the trajectory that ends contracts and starts conversations about what went wrong.'+(latest.age?' At '+latest.age+', there is still time to correct — but the next season is critical.':'');
+  }
+
+  return firstName+' averaged '+(Math.round(data.reduce(function(s,d){return s+d.adj;},0)/data.length))+' adjusted output across the last '+data.length+' seasons ('+oldestLabel+' → '+latestLabel+').';
 }
 
 // ══════════════════════════════════════════════════════
@@ -4736,23 +4847,23 @@ function analyse(mode){
 function vvIndexBarsHTML(vv) {
   if (!vv || !vv.total) return '';
   var dims = [
-    {l:'Output',      v:vv.output,      col:'var(--accent)'},
-    {l:'Influence',   v:vv.influence,   col:'#5a8a60'},
-    {l:'Consistency', v:vv.consistency, col:'#5a7aaa'},
-    {l:'League',      v:vv.league,      col:'#9a7510'},
+    {l:'Output',      v:vv.output,      col:'var(--accent)',    desc:'Goals+Assists judged against '+vv.roleLabel+' benchmark'},
+    {l:'Influence',   v:vv.influence,   col:'#5a8a60',         desc:'Season rating — overall quality beyond G+A'},
+    {l:'Consistency', v:vv.consistency, col:'#5a7aaa',         desc:'Availability — games played vs league total'},
+    {l:'League',      v:vv.league,      col:'#9a7510',         desc:'League strength — Premier League = 5.0'},
   ];
   if (vv.rarity > 0) {
-    dims.push({l:'Rarity', v:vv.rarity, col:'var(--purple)'});
+    dims.push({l:'Role Rarity', v:vv.rarity, col:'#5a2d82', desc:'Bonus: '+vv.roleLabel+' output breaks positional expectations'});
   }
-  var html = '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">';
+  var html = '<div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap">';
   dims.forEach(function(d) {
     var pct = Math.round(Math.min(100, (d.v/5)*100));
-    html += '<div style="flex:1;min-width:44px" title="'+d.l+': '+d.v+'/5">'+
-      '<div style="font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:2px">'+d.l+'</div>'+
-      '<div style="height:4px;background:var(--cream4);border-radius:2px;overflow:hidden">'+
-        '<div style="height:100%;width:'+pct+'%;background:'+d.col+';border-radius:2px"></div>'+
+    html += '<div style="flex:1;min-width:44px" title="'+d.l+' — '+d.desc+'">'+
+      '<div style="font-size:8px;letter-spacing:.3px;text-transform:uppercase;color:var(--ink4);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+d.l+'</div>'+
+      '<div style="height:5px;background:var(--cream4);border-radius:2px;overflow:hidden">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+d.col+';border-radius:2px;transition:width .4s ease"></div>'+
       '</div>'+
-      '<div style="font-size:9px;font-weight:700;color:var(--ink3);margin-top:1px">'+d.v+'</div>'+
+      '<div style="font-size:9px;font-weight:700;color:var(--ink3);margin-top:2px"></div>'+
     '</div>';
   });
   html += '</div>';
@@ -4837,14 +4948,18 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     html += '<div class="vv-story-stats">'+
       '<div class="vv-stat-box"><div class="vv-stat-n">'+p.g+'</div><div class="vv-stat-l">Goals</div></div>'+
       '<div class="vv-stat-box"><div class="vv-stat-n">'+p.a+'</div><div class="vv-stat-l">Assists</div></div>'+
-      '<div class="vv-stat-box"><div class="vv-stat-n">'+adj+'</div><div class="vv-stat-l">Adj G+A</div></div>'+
-      '<div class="vv-stat-box vv-index-box" title="VV Index: '+sr.total+'/25 — Output:'+sr.output+' Influence:'+sr.influence+' Consistency:'+sr.consistency+' League:'+sr.league+(sr.rarity>0?' RoleRarity:+'+sr.rarity:'')+'">'+
-        '<div class="vv-stat-n" style="font-size:16px!important">'+sr.total+'</div>'+
-        '<div class="vv-stat-l" style="color:var(--accent)">VV /25</div>'+
+      '<div class="vv-stat-box" title="League-adjusted output: (G+A) × league strength factor"><div class="vv-stat-n">'+adj+'</div><div class="vv-stat-l" style="font-size:8px">Adj Output</div></div>'+
+      '<div class="vv-stat-box vv-index-box" title="SSP Grade: '+sr.lbl+' — Hover the badge below for full context.">'+
+        '<div class="vv-stat-n" style="font-size:13px!important;letter-spacing:-0.3px">'+sr.emoji+'</div>'+
+        '<div class="vv-stat-l" style="color:var(--accent)">SSP</div>'+
       '</div>'+
     '</div>'+
-    // VV Index 5-bar mini breakdown
-    '<div class="vv-index-bars" title="VV Index breakdown by dimension">'+
+    // SSP label + VV Index 5-bar mini breakdown
+    '<div class="vv-index-bars">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">'+
+        '<span style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4)">SSP Breakdown</span>'+
+        '<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.5px">'+sr.lbl+'</span>'+
+      '</div>'+
       vvIndexBarsHTML(sr)+
     '</div>';
 
@@ -4857,8 +4972,8 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
 
     // Scout badges (existing system)
     html += '<div class="vrow-tags" style="margin-top:6px">'+
-      '<span class="badge '+sr.cls+'">'+sr.emoji+' '+sr.lbl+'</span>'+
-      (mm ? '<span class="mm-tag '+mm.cls+'" style="margin-left:4px">'+mm.emoji+' '+mm.lbl+'</span>' : '')+
+      '<span class="badge '+sr.cls+'" title="SSP: '+sr.lbl+' — '+getSSPDesc(sr.lbl)+'">'+sr.emoji+' '+sr.lbl+'</span>'+
+      (mm ? '<span class="mm-tag '+mm.cls+'" style="margin-left:4px" title="Market Momentum: '+mm.lbl+' — '+getMMDesc(mm.lbl)+'">'+mm.emoji+' '+mm.lbl+'</span>' : '')+
       '<span class="cs-tag '+cs.cls+'" style="margin-left:4px" title="'+(cs.desc||cs.lbl)+'">'+cs.emoji+' '+cs.lbl+'</span>'+
     '</div>';
 
@@ -4989,6 +5104,17 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
 }
 
 function generateSimpleVerdict(p1, p2, adj1, adj2, winN, same, sr1, sr2, vvd, vtags) {
+  // Guard: if vvd is missing, build a minimal version
+  if (!vvd) {
+    vvd = {
+      winN: adj1>=adj2?1:2, margin: Math.abs(adj1-adj2)*0.5,
+      decidingFactor: 'Output', samePos: p1.pos===p2.pos,
+      story: '', vv1: sr1?sr1.total:0, vv2: sr2?sr2.total:0
+    };
+  }
+  if (!sr1) sr1 = {total:0,output:0,influence:0,consistency:0,league:0,rarity:0,lbl:'Unknown',roleLabel:p1.pos||'Player'};
+  if (!sr2) sr2 = {total:0,output:0,influence:0,consistency:0,league:0,rarity:0,lbl:'Unknown',roleLabel:p2.pos||'Player'};
+
   // Same player — season comparison
   if (same) {
     var stronger = adj1 > adj2 ? p1 : p2;
@@ -5020,22 +5146,43 @@ function generateSimpleVerdict(p1, p2, adj1, adj2, winN, same, sr1, sr2, vvd, vt
     roleContext = 'Cross-position comparison — ' + (sr1.roleLabel||p1.pos) + ' against ' + (sr2.roleLabel||p2.pos) + ', each judged against their own role benchmark. ';
   }
 
-  // Margin narrative
-  var marginText = '';
-  if (vvMargin < 0.5) {
-    marginText = winner + ' takes the verdict by the finest of margins — ' + winSR.total + ' vs ' + losSR.total + ' on the VV Index. ' + loser + ' makes an equally compelling case; this debate does not end here.';
-  } else if (vvMargin < 2) {
-    marginText = winner + ' edges this comparison. VV Index: ' + winSR.total + ' vs ' + losSR.total + '. ' + tagDesc + (tagDesc?' — ':' ')+ loser + ' remains a serious argument.';
-  } else if (vvMargin < 4) {
-    marginText = winner + ' wins this with a meaningful advantage — ' + winSR.total + ' vs ' + losSR.total + ' on the VV Index. The deciding factor: ' + decidingFactor + '.';
-  } else {
-    marginText = winner + ' wins clearly — ' + winSR.total + ' vs ' + losSR.total + '. ' + (tagDesc||'The gap') + ' is large enough that context cannot close it.';
+  // Age context addition
+  var ageContext = '';
+  var winAge = parseInt(winN===1 ? p1.age : p2.age) || 25;
+  var losAge = parseInt(winN===1 ? p2.age : p1.age) || 25;
+  var csWin = careerStage(winAge);
+  if (csWin.key === 'wonderkid' || csWin.key === 'prospect') {
+    ageContext = ' At ' + winAge + ', this output carries an extraordinary age premium — the ceiling has not yet been reached.';
+  } else if (csWin.key === 'prime') {
+    ageContext = ' At ' + winAge + ', these numbers carry full face value — prime years, peak output.';
+  } else if (csWin.key === 'veteran' || csWin.key === 'legend') {
+    ageContext = ' At ' + winAge + ', producing at this level is a testament to sustained excellence at an age when most careers are winding down.';
   }
 
-  // Combine: role context + story + margin
+  // Trajectory addition
+  var trajContext = '';
+  if (decidingFactor === 'Trajectory Edge') {
+    trajContext = ' The trajectory dimension was the tiebreaker — direction of travel matters as much as current position.';
+  }
+
+  // Margin narrative — richer
+  var marginText = '';
+  if (vvMargin < 0.5) {
+    marginText = winner + ' takes the verdict by the narrowest of margins — ' + winSR.total + ' vs ' + losSR.total + ' on the VV Index. This is not a conclusion, it is the opening of a debate. ' + loser + ' has every right to argue back.';
+  } else if (vvMargin < 2) {
+    marginText = winner + ' edges this comparison on the VV Index: ' + winSR.total + ' against ' + losSR.total + '. ' + (tagDesc ? tagDesc + ' was the differentiator. ' : '') + loser + ' remains a serious argument in different contexts.';
+  } else if (vvMargin < 4) {
+    marginText = winner + ' takes this comparison with a meaningful advantage — VV Index ' + winSR.total + ' to ' + losSR.total + '. The deciding dimension was ' + decidingFactor + '. Not a landslide, but a verdict that holds.';
+  } else {
+    marginText = winner + ' wins this comparison clearly — VV Index ' + winSR.total + ' against ' + losSR.total + '. ' + (tagDesc ? tagDesc + '. ' : '') + 'The gap is large enough that context alone cannot close it.';
+  }
+
+  // Combine all elements
   var out = roleContext;
   if (story) out += story + ' ';
   out += marginText;
+  if (ageContext) out += ageContext;
+  if (trajContext) out += trajContext;
   return out;
 }
 
@@ -5079,7 +5226,7 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
     return fetch('/api/analyse',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({messages:[{role:'user',content:bbPrompt}],max_tokens:1800})
+      body:JSON.stringify({messages:[{role:'user',content:bbPrompt}],max_tokens:800})
     }).then(function(res){return res.json();})
     .then(function(d){
       var txt=(d.content||[]).map(function(i){return i.text||'';}).join('');
@@ -5135,7 +5282,7 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
   return fetch('/api/analyse',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:[{role:'user',content:prompt}],max_tokens:1800})
+    body:JSON.stringify({messages:[{role:'user',content:prompt}],max_tokens:800})
   }).then(function(res){return res.json();})
   .then(function(d){
     var txt=(d.content||[]).map(function(i){return i.text||'';}).join('');
@@ -5217,11 +5364,15 @@ function gsearchSelect(name){
     switchPage('compare',document.querySelector('.gnav-btn'));
   }
   // activate player comparison tab
-  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active');});
+  var comparePage2 = document.getElementById('page-compare');
+  if (comparePage2) {
+    comparePage2.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+    comparePage2.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active');});
+  }
   var pcTab=document.getElementById('tab-pc');
   if(pcTab) pcTab.classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(function(b){if(b.textContent.indexOf('Player Comparison')>=0) b.classList.add('active');});
+  var compareTabBtns = comparePage2 ? comparePage2.querySelectorAll('.tab-btn') : document.querySelectorAll('.tab-btn');
+  compareTabBtns.forEach(function(b){if(b.textContent.indexOf('Player Comparison')>=0) b.classList.add('active');});
   var slot=(!pcSelected[1])?1:(!pcSelected[2]?2:1);
   fillPlayer(slot,name);
   document.getElementById('gsearch-input').value='';
