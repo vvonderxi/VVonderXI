@@ -939,8 +939,8 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 
 /* ── VV TAG TOOLTIPS ── */
 .vv-tag{position:relative;cursor:help}
-.vv-tag:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;padding:5px 9px;border-radius:2px;white-space:nowrap;z-index:100;pointer-events:none;line-height:1.4;max-width:200px;white-space:normal;text-align:center}
-.vv-tag:hover::before{content:'';position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--ink);z-index:100}
+.vv-tag:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;padding:7px 12px;border-radius:3px;white-space:normal;z-index:200;pointer-events:none;line-height:1.5;max-width:220px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.vv-tag:hover::before{content:'';position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink);z-index:200}
 
 
 /* ── SHARE BAR REDESIGN ── */
@@ -1413,6 +1413,41 @@ aside{min-width:200px!important;max-width:220px!important}
 .hdr-site-title{font-size:34px!important}
 .hdr-tagline{font-size:15px!important}
 
+
+/* ── NATIONALITY COLOUR SYSTEM ── */
+/* Applied as subtle top stripe on player cards based on nationality */
+/* Tasteful, premium, football-native */
+
+/* France */
+.pcard[data-nat="France"]::after,
+.vv-story[data-nat="France"] .vv-story-nat-accent{background:linear-gradient(90deg,#002395 33%,#fff 33%,#fff 66%,#ED2939 66%)}
+
+/* Brazil */
+[data-nat="Brazil"] .nat-accent{background:#009C3B;border-color:#FFDF00}
+
+/* Nationality indicator — slim flag bar on card header */
+.pcard-nat-flag{width:20px;height:14px;border-radius:1px;overflow:hidden;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+
+/* Instead of complex flag rendering, use nationality-based glow on the card */
+.pcard[data-nat="France"]{box-shadow:0 0 0 2px rgba(0,35,149,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Brazil"]{box-shadow:0 0 0 2px rgba(0,156,59,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Argentina"]{box-shadow:0 0 0 2px rgba(116,172,224,.25),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="England"]{box-shadow:0 0 0 2px rgba(204,0,0,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Spain"]{box-shadow:0 0 0 2px rgba(170,21,27,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Germany"]{box-shadow:0 0 0 2px rgba(0,0,0,.12),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Portugal"]{box-shadow:0 0 0 2px rgba(6,134,20,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Netherlands"]{box-shadow:0 0 0 2px rgba(174,28,40,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Italy"]{box-shadow:0 0 0 2px rgba(0,82,179,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Belgium"]{box-shadow:0 0 0 2px rgba(239,46,35,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Croatia"]{box-shadow:0 0 0 2px rgba(171,14,14,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Norway"]{box-shadow:0 0 0 2px rgba(186,12,47,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Poland"]{box-shadow:0 0 0 2px rgba(220,20,60,.12),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Senegal"]{box-shadow:0 0 0 2px rgba(0,122,51,.15),0 2px 12px rgba(0,0,0,.06)!important}
+.pcard[data-nat="Morocco"]{box-shadow:0 0 0 2px rgba(193,23,43,.15),0 2px 12px rgba(0,0,0,.06)!important}
+
+/* Team colour takes priority when both present */
+.pcard[data-team][data-nat]{box-shadow:inherit!important}
+
 </style>
 </head>
 <body>
@@ -1611,6 +1646,28 @@ aside{min-width:200px!important;max-width:220px!important}
         <div class="lt"><div class="lt-top"><span style="font-size:13px">💎</span><span class="lt-name">Role Breaker</span></div><div class="lt-desc">Output that defies positional expectations. A defender who scores. A midfielder who rivals strikers.</div></div>
         <div class="lt"><div class="lt-top"><span style="font-size:13px">🏆</span><span class="lt-name">Big Game Player</span></div><div class="lt-desc">Performed in the UEFA Champions League. The biggest stage. They did not shrink.</div></div>
         <div class="lt"><div class="lt-top"><span style="font-size:13px">📖</span><span class="lt-name">Legacy Season</span></div><div class="lt-desc">Historical peak. A touchstone for their career. The season people reach for when the argument begins.</div></div>
+      </div>
+    </div>
+
+        <!-- Tier Reference + Scout Report Legend -->
+    <div class="sb-block collapsed" id="sb-tiers">
+      <div class="sb-head" onclick="toggleSb('sb-tiers')">
+        <span class="sb-head-lbl">📊 Scout Report Tiers</span>
+        <span class="sb-arrow">▲</span>
+      </div>
+      <div class="sb-body">
+        <div style="padding:6px 12px 10px;font-size:11px;color:var(--ink3);line-height:1.5;border-bottom:1px solid var(--cream4);margin-bottom:6px">
+          How the VV Engine grades a player's season based on output, league difficulty and position context.
+        </div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🏆</span><span class="lt-name" style="color:#9a3510">Era Defining</span></div><div class="lt-desc">The rarest grade. A season that sits outside normal elite standards — historic by any measure.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🌟</span><span class="lt-name" style="color:#1a4070">World Class</span></div><div class="lt-desc">Top of the global game for that position. The players other managers build systems to stop.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">👑</span><span class="lt-name" style="color:#9a7510">Elite</span></div><div class="lt-desc">Firmly in the conversation for best in their league or position. High-level, sustained quality.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">⭐</span><span class="lt-name" style="color:#1a6b3a">Excellent</span></div><div class="lt-desc">Above the standard. A player performing at a level that most professionals never reach.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🟢</span><span class="lt-name">Very Good</span></div><div class="lt-desc">Solid top-flight contribution. A player any manager would be pleased to have.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🔵</span><span class="lt-name" style="color:var(--ink3)">Good</span></div><div class="lt-desc">A competent professional season. Does the job. Context matters — position, age, system.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🟠</span><span class="lt-name" style="color:#c06010">Okay</span></div><div class="lt-desc">Below the level expected for serious comparison. Numbers suggest limited influence.</div></div>
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-top:1px solid var(--cream4);margin-top:6px">How Adjusted Output works</div>
+        <div style="padding:4px 12px 10px;font-size:11px;color:var(--ink3);line-height:1.6">Goals + Assists multiplied by the league strength factor. Premier League ×1.000. La Liga ×0.978. Bundesliga ×0.940. Serie A ×0.935. Ligue 1 ×0.878. The same numbers in different leagues carry different weight.</div>
       </div>
     </div>
 
@@ -2718,37 +2775,37 @@ var TEAM_COLOURS = {
 
 var VV_TAG_DEFS = {
   // ── ATTACKER TAGS ──────────────────────────────────
-  'Elite Finisher':     {emoji:'🎯', group:'attacker',  desc:'Top-tier striker output in a major league'},
-  'Goal Machine':       {emoji:'⚽', group:'attacker',  desc:'Elite goal return regardless of position'},
-  'Creative Genius':    {emoji:'🪄', group:'attacker',  desc:'Exceptional assist output and creative influence'},
-  'Complete Forward':   {emoji:'🌟', group:'attacker',  desc:'Goals and assists combined at the highest level'},
-  'Pressing Forward':   {emoji:'🔥', group:'attacker',  desc:'High output combined with positional pressing role'},
-  'Poacher':            {emoji:'🗡️', group:'attacker',  desc:'Lethal inside the box — goals dominate output'},
+  'Elite Finisher':     {emoji:'🎯', group:'attacker',  desc:'A striker whose goal output, conversion rate and final-action quality place them at the very top of their position. The penalty box is their office — and they never miss a meeting.'},
+  'Goal Machine':       {emoji:'⚽', group:'attacker',  desc:'20+ league goals regardless of position. The numbers do not lie and neither does this player. Clinical, consistent, and impossible to contain.'},
+  'Creative Genius':    {emoji:'🪄', group:'attacker',  desc:'Exceptional assist output and creative influence in the final third. The player whose team-mates score more simply because they are on the pitch.'},
+  'Complete Forward':   {emoji:'🌟', group:'attacker',  desc:'Goals and assists combined at the highest level. The total forward — equally dangerous scoring and creating. The most demanding profile in modern football.'},
+  'Pressing Forward':   {emoji:'🔥', group:'attacker',  desc:'High attacking output combined with defensive intensity from the front. The player who wins the ball back before the opposition can build.'},
+  'Poacher':            {emoji:'🗡️', group:'attacker',  desc:'Goals dominate the output profile. Assists minimal. Lives inside the box, exploits the half-chance, and makes the goalkeeper feel personally responsible.'},
 
   // ── MIDFIELDER TAGS ────────────────────────────────
-  'Playmaker':          {emoji:'🎭', group:'mid',       desc:'Exceptional assist rate from midfield'},
-  'Creative Engine':    {emoji:'⚡', group:'mid',       desc:'The creative heartbeat of the team'},
-  'Scoring Midfielder': {emoji:'💥', group:'mid',       desc:'Remarkable goal output from midfield'},
-  'Box-to-Box Force':   {emoji:'💪', group:'mid',       desc:'Goals and assists combined at high rate from CM'},
-  'Complete Midfielder':{emoji:'🧠', group:'mid',       desc:'Output and influence across all phases'},
-  'Defensive Anchor':   {emoji:'⚓', group:'mid',       desc:'Positional discipline with low but clean output'},
+  'Playmaker':          {emoji:'🎭', group:'mid',       desc:'10+ assists from midfield. The conductor — every attack runs through them, every creative moment traces back to their decision. Football most influential position.'},
+  'Creative Engine':    {emoji:'⚡', group:'mid',       desc:'8+ assists with an elite season rating. The heartbeat of everything beautiful about how the team plays. Not just creating chances — creating the conditions for football.'},
+  'Scoring Midfielder': {emoji:'💥', group:'mid',       desc:'10+ goals from midfield. A player who arrives late into spaces the opposition forgot to defend. The most dangerous type of scorer — the one nobody was watching.'},
+  'Box-to-Box Force':   {emoji:'💪', group:'mid',       desc:'Goals and assists combined at a remarkable rate for a central midfielder. They go everywhere, they improve everything, and they are never where the opposition expects.'},
+  'Complete Midfielder':{emoji:'🧠', group:'mid',       desc:'High output paired with an elite season rating. Influence across all phases of play. The rarest profile in football — the midfielder who does everything.'},
+  'Defensive Anchor':   {emoji:'⚓', group:'mid',       desc:'Positional discipline, clean output, high rating. The quiet foundation everything else is built upon. Not glamorous. Entirely necessary.'},
 
   // ── DEFENDER TAGS ──────────────────────────────────
-  'Defensive Monster':  {emoji:'🛡️', group:'def',      desc:'Commanding defensive presence — elite rating'},
-  'Attacking Fullback': {emoji:'🏃', group:'def',       desc:'Exceptional attacking output for a defender'},
-  'Creative Defender':  {emoji:'🎯', group:'def',       desc:'Assists and creative play from defensive position'},
-  'Wall':               {emoji:'🧱', group:'def',       desc:'Near-impenetrable defensive record'},
+  'Defensive Monster':  {emoji:'🛡️', group:'def',      desc:'Commanding defensive presence with an elite season rating. Makes the game simple by making the impossible look routine. The striker who faced them had a long, quiet afternoon.'},
+  'Attacking Fullback': {emoji:'🏃', group:'def',       desc:'Exceptional attacking output for a defensive position. The game has been rewritten and they are the proof — a defender who changes matches going forward.'},
+  'Creative Defender':  {emoji:'🎯', group:'def',       desc:'6+ assists from a defensive position. Reads the game forward as well as backward. A rarity — a defender whose attacking intelligence is as dangerous as their defending.'},
+  'Wall':               {emoji:'🧱', group:'def',       desc:'A central defender with an elite rating and near-impenetrable record. The most reassuring sight in football — a centre-back who makes clean sheets feel inevitable.'},
 
   // ── GOALKEEPER TAGS ────────────────────────────────
-  'Elite Keeper':       {emoji:'🧤', group:'gk',        desc:'Top-tier goalkeeper season rating'},
-  'Sweeper Keeper':     {emoji:'🔮', group:'gk',        desc:'Actively contributes beyond the box'},
+  'Elite Keeper':       {emoji:'🧤', group:'gk',        desc:'A goalkeeper season rating that places them at the very top of the position globally. The last line of defence — and the first reason the team believes they can win.'},
+  'Sweeper Keeper':     {emoji:'🔮', group:'gk',        desc:'A goalkeeper who actively contributes beyond the box. Reads the game like an outfield player. The modern interpretation of what a goalkeeper can be.'},
 
   // ── PRESTIGE TAGS ──────────────────────────────────
-  'Generational Season':{emoji:'🌍', group:'prestige',  desc:'Top 1% output — an era-defining campaign'},
-  'Iconic Campaign':    {emoji:'👑', group:'prestige',  desc:'Top 5% output — a season remembered forever'},
-  'Role Breaker':       {emoji:'💎', group:'prestige',  desc:'Output that defies positional expectations'},
-  'Big Game Player':    {emoji:'🏆', group:'prestige',  desc:'Performed in the UEFA Champions League'},
-  'Legacy Season':      {emoji:'📖', group:'prestige',  desc:'Historical peak — a touchstone for their career'},
+  'Generational Season':{emoji:'🌍', group:'prestige',  desc:'Top 1% output across the entire VVonderXI database. A season that sits in a different category from elite — this is historic. The kind of campaign that gets referenced for decades.'},
+  'Iconic Campaign':    {emoji:'👑', group:'prestige',  desc:'Top 5% output. A season remembered forever in the context of that player career and that league\'s history. The year people reach for when the argument begins.'},
+  'Role Breaker':       {emoji:'💎', group:'prestige',  desc:'Output that completely defies what is expected from that position. A defender who scores. A midfielder who rivals the top strikers. Football rewriting its own rules.'},
+  'Big Game Player':    {emoji:'🏆', group:'prestige',  desc:'Registered output in UEFA Champions League competition. The biggest stage in club football. They did not shrink from it.'},
+  'Legacy Season':      {emoji:'📖', group:'prestige',  desc:'A historical peak season — the touchstone campaign for this player career. The season people cite when they argue for their place among the greats.'},
 };
 
 // ── POSITION GROUPS ────────────────────────────────────
@@ -3856,6 +3913,9 @@ function fillPlayer(n,name){
   // update flag display
   var flagEl=document.getElementById('pc'+n+'-flag');
   if(flagEl) flagEl.textContent=natFlag(p.nat)||'';
+  // Set nationality attribute for flag colour
+  var natEl = document.getElementById('pcard'+n);
+  if (natEl && p.nat) natEl.setAttribute('data-nat', p.nat);
   // micro-interaction
   addCardSelectedEffect(n);
 }
@@ -4402,30 +4462,94 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same){
     if(!t) return 'No trajectory data';
     return t.data.map(function(d){return SEASON_LABELS[d.s]+': '+d.g+'G|'+d.a+'A|'+d.adj+'adj';}).join(', ')+' ['+t.tag+']';
   };
+
+  // Special path for Baller Bio mode — deeper single-player identity card
+  if(!isPC) {
+    var bbClub1 = p1.club ? p1.club.replace(/-/g,' ').replace(/\b\w/g,function(l){return l.toUpperCase();}) : 'Unknown Club';
+    var bbSeason1 = getSeasonLabel(p1.season, p1);
+    var bbAdj1 = Math.round((p1.g+p1.a)*((LGS[p1.lg]||{f:0.8}).f));
+    var bbTags1 = getVVTags(p1, p1.name, false).map(function(t){return t.emoji+' '+t.key;}).join(', ') || 'None';
+    var bbTags2 = getVVTags(p2, p2.name, false).map(function(t){return t.emoji+' '+t.key;}).join(', ') || 'None';
+
+    var bbPrompt = [
+      'Write a premium football identity comparison for two players. This is Baller Bio — a scout-style football intelligence overview.',
+      '',
+      'PLAYER 1: '+p1.name+' at '+bbClub1+' | '+bbSeason1+' | Age: '+(p1.age||'?')+' | '+cs1.lbl+' | '+p1.pos,
+      'G:'+p1.g+' A:'+p1.a+' | Adj:'+bbAdj1+' | League: '+lg(p1.lg)+' | Scout Report: '+sr1.lbl,
+      'Trajectory: '+trajStr(traj1)+' | VV Tags: '+bbTags1,
+      '',
+      'PLAYER 2: '+p2.name+' | Age: '+(p2.age||'?')+' | '+cs2.lbl+' | '+p2.pos,
+      'G:'+p2.g+' A:'+p2.a+' | League: '+lg(p2.lg)+' | Scout Report: '+sr2.lbl,
+      'VV Tags: '+bbTags2,
+      '',
+      'p1 (4-5 sentences): Who is '+p1.name+'? Describe their playing style, tactical role, best traits, career stage and what their VV profile reveals about them as a footballer. Write it like a scout presenting to a sporting director.',
+      'p2 (4-5 sentences): Same depth for '+p2.name+'. Their identity as a player, not just their numbers.',
+      'h2h (3-4 sentences): How do these two player profiles compare as football identities? Not just output — style, role, ceiling, context.',
+      'verdict (2-3 sentences): Which profile is more complete at this stage of their career, and why?',
+      '',
+      'JSON only: {"p1":"...","p2":"...","h2h":"...","verdict":"..."}'
+    ].filter(Boolean).join('\n');
+
+    return fetch('/api/analyse',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:bbPrompt}],max_tokens:1800})
+    }).then(function(res){return res.json();})
+    .then(function(d){
+      var txt=(d.content||[]).map(function(i){return i.text||'';}).join('');
+      try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}
+      catch(e){return{p1:'Bio unavailable.',p2:'Bio unavailable.',h2h:'',verdict:'Please try again.'};}
+    }).catch(function(){
+      return{p1:'Unavailable.',p2:'Unavailable.',h2h:'',verdict:'Switch to Simple mode.'};
+    });
+  }
+
   var sameNote=same?'SAME PLAYER different seasons — frame as career progression. State which season is better.':'';
   // Pass VV Tags into the prompt so Claude explains what the engine found
   var vvTags1str = getVVTags(p1, p1.name, false).map(function(t){return t.key;}).join(', ') || 'None';
   var vvTags2str = getVVTags(p2, p2.name, false).map(function(t){return t.key;}).join(', ') || 'None';
 
+  // Build club display names
+  var club1 = p1.club ? p1.club.replace(/-/g,' ').replace(/\b\w/g,function(l){return l.toUpperCase();}) : 'Unknown Club';
+  var club2 = p2.club ? p2.club.replace(/-/g,' ').replace(/\b\w/g,function(l){return l.toUpperCase();}) : 'Unknown Club';
+  var season1 = getSeasonLabel(p1.season, p1);
+  var season2 = getSeasonLabel(p2.season, p2);
+  var adj1str = Math.round((p1.g+p1.a)*((LGS[p1.lg]||{f:0.8}).f));
+  var adj2str = Math.round((p2.g+p2.a)*((LGS[p2.lg]||{f:0.8}).f));
+
   var prompt=[
     sameNote,
-    'The VV Engine has already determined the winner. Your job is to give it a story.',
-    'PLAYER 1: '+p1.name+' | Season: '+(getSeasonLabel(p1.season,p1))+' | Pos: '+(p1.pos||'?')+' | Age: '+(p1.age||'?')+' | Club: '+(p1.club||'?'),
-    'League: '+lg(p1.lg)+' (×'+((LGS[p1.lg]||{f:0.8}).f)+') | G:'+p1.g+' A:'+p1.a+' | Adj:'+Math.round((p1.g+p1.a)*((LGS[p1.lg]||{f:0.8}).f))+' | '+sr1.lbl+' | '+trajStr(traj1),
+    '=== COMPARISON DATA ===',
+    '',
+    'PLAYER 1: '+p1.name,
+    'Club: '+club1+' | Season: '+season1+' | Position: '+(p1.pos||'?')+' | Age: '+(p1.age||'?')+' | Career Stage: '+cs1.lbl,
+    'League: '+lg(p1.lg)+' (strength ×'+((LGS[p1.lg]||{f:0.8}).f)+') | Goals: '+p1.g+' | Assists: '+p1.a+' | G+A: '+(p1.g+p1.a)+' | Adjusted Output: '+adj1str,
+    'Scout Report: '+sr1.lbl+' | Trajectory: '+trajStr(traj1),
     'VV Tags: '+vvTags1str,
-    'PLAYER 2: '+p2.name+' | Season: '+(getSeasonLabel(p2.season,p2))+' | Pos: '+(p2.pos||'?')+' | Age: '+(p2.age||'?')+' | Club: '+(p2.club||'?'),
-    'League: '+lg(p2.lg)+' (×'+((LGS[p2.lg]||{f:0.8}).f)+') | G:'+p2.g+' A:'+p2.a+' | Adj:'+Math.round((p2.g+p2.a)*((LGS[p2.lg]||{f:0.8}).f))+' | '+sr2.lbl+' | '+trajStr(traj2),
+    '',
+    'PLAYER 2: '+p2.name,
+    'Club: '+club2+' | Season: '+season2+' | Position: '+(p2.pos||'?')+' | Age: '+(p2.age||'?')+' | Career Stage: '+cs2.lbl,
+    'League: '+lg(p2.lg)+' (strength ×'+((LGS[p2.lg]||{f:0.8}).f)+') | Goals: '+p2.g+' | Assists: '+p2.a+' | G+A: '+(p2.g+p2.a)+' | Adjusted Output: '+adj2str,
+    'Scout Report: '+sr2.lbl+' | Trajectory: '+trajStr(traj2),
     'VV Tags: '+vvTags2str,
-    'p1 and p2: 2-3 sentences each. Peter Drury — find the human truth in the numbers. Age, club, what this season meant.',
-    'h2h: 2 sentences. What is the real argument? What does this debate actually mean beyond the numbers?',
-    'verdict: 2-3 sentences. Henry Winter authority. Precise. Final. No vague words — say exactly what you mean.',
+    '',
+    '=== WRITING INSTRUCTIONS ===',
+    '',
+    'p1 (4-5 sentences): Write about '+p1.name+' at '+club1+' in '+season1+'. Interpret what the numbers mean in the context of their club, system, age ('+p1.age+'), league. Reference their VV Tags naturally as evidence. What did this season represent in their career story?',
+    '',
+    'p2 (4-5 sentences): Same depth for '+p2.name+' at '+club2+' in '+season2+'. Equal analytical weight. Do not compare to p1 here — this is their own story.',
+    '',
+    'h2h (3-4 sentences): Now put them in the same room. Where do the arguments diverge? What does club context, league strength, age trajectory and tactical role change about the comparison? Make it feel like the debate that happens after the final whistle.',
+    '',
+    'verdict (3-4 sentences): Authoritative. Final. Reference the deciding factor and explain why it mattered. End with a sentence the reader would quote — one that closes the argument without closing the debate.',
+    '',
     'JSON only: {"p1":"...","p2":"...","h2h":"...","verdict":"..."}'
   ].filter(Boolean).join('\n');
 
   return fetch('/api/analyse',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:[{role:'user',content:prompt}],max_tokens:1200})
+    body:JSON.stringify({messages:[{role:'user',content:prompt}],max_tokens:1800})
   }).then(function(res){return res.json();})
   .then(function(d){
     var txt=(d.content||[]).map(function(i){return i.text||'';}).join('');
@@ -4783,7 +4907,7 @@ function buildShareBar(p1, p2, winnerName, verdictText, shareUrl, shareId) {
     + (p2Tags ? '<br><span style="font-size:12px">' + p2.name + ' · ' + p2Tags + '</span>' : '')
     + '<br><br>🏆 <strong>VVerdict: ' + winnerName + '</strong>'
     + '<br><span style="font-size:12px">' + shortVerdict + '</span>'
-    + '<br><br><span style="font-size:11px;color:#999">Football&#39;s Greatest Stories Aren&#39;t Finished. VV.</span>'
+    + '<br><br><span style="font-size:11px;color:#999">Football&#39;s Greatest Stories Aren&#39;t Finished. Write Yours. VV.</span>'
     + '</div>';
 
   // Buttons — centred
