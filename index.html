@@ -485,10 +485,10 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .la-close-btn:hover{color:#fff}
 
 /* ── DASHBOARD (post-login) ── */
-.locker-dash{display:none;min-height:100vh;background:#0e0b08}
+.locker-dash{display:none;min-height:100vh;background:#f0ece4}
 .locker-dash.active{display:block}
 
-.ld-header{background:linear-gradient(135deg, #111 0%, #1a1208 100%);border-bottom:2px solid var(--accent);padding:16px 32px;display:flex;align-items:center;gap:16px}
+.ld-header{background:var(--ink);border-bottom:2px solid var(--accent);padding:16px 32px;display:flex;align-items:center;gap:16px}
 .ld-header-brand{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-right:auto}
 .ld-header-brand span{color:var(--accent)}
 .ld-user-info{display:flex;align-items:center;gap:10px}
@@ -504,7 +504,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .ld-nav-btn:hover{color:rgba(255,255,255,.7)}
 .ld-nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-.ld-body{max-width:1080px;margin:0 auto;padding:28px 32px}
+.ld-body{max-width:1080px;margin:0 auto;padding:28px 32px;min-height:calc(100vh - 120px)}
 @media(max-width:720px){.ld-body{padding:20px 16px}.ld-header{padding:12px 16px}.ld-nav{padding:0 16px}}
 
 /* ── DASHBOARD PANELS ── */
@@ -826,11 +826,11 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .vv-conf-label{font-size:10px;color:var(--ink4);letter-spacing:.5px}
 
 /* The Debate section */
-.vv-debate{background:var(--ink);color:#fff;border-radius:4px;padding:16px 18px;margin-bottom:12px}
-.vv-debate-title{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
-.vv-debate-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.vv-debate-col-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px}
-.vv-debate-point{font-size:12px;color:rgba(255,255,255,.85);line-height:1.6;margin-bottom:4px}
+.vv-debate{background:var(--cream2);border:1.5px solid var(--border);border-radius:4px;padding:16px 18px;margin-bottom:12px}
+.vv-debate-title{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.vv-debate-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.vv-debate-col-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;border-bottom:2px solid var(--accent);padding-bottom:4px;display:inline-block}
+.vv-debate-point{font-size:12px;color:var(--ink2);line-height:1.7;margin-bottom:6px}
 .vv-debate-point::before{content:'→ ';color:var(--accent)}
 @media(max-width:550px){.vv-debate-grid{grid-template-columns:1fr}}
 
@@ -845,6 +845,497 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .vv-verdict-tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .vv-verdict-conf{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:var(--ink3)}
 
+
+/* ── LEGACY SEASON SELECTOR ── */
+.legacy-season-grp{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.legacy-season-card{display:flex;flex-direction:column;align-items:center;padding:6px 10px;background:var(--cream3);border:1.5px solid var(--border);border-radius:3px;cursor:pointer;transition:all .15s;min-width:80px;text-align:center}
+.legacy-season-card:hover{border-color:var(--accent);background:var(--cream4)}
+.legacy-season-card.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.legacy-season-card.on .lsc-label,.legacy-season-card.on .lsc-club{color:rgba(255,255,255,.7)}
+.lsc-era{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:.5px}
+.lsc-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-top:2px}
+.lsc-club{font-size:10px;color:var(--ink4);margin-top:1px}
+.legacy-season-card.on .lsc-era{color:#fff}
+
+
+.suggs{max-height:320px!important;overflow-y:auto!important}
+.si-meta{font-size:10px;color:var(--ink3);margin-top:1px;letter-spacing:.3px}
+
+
+/* ── NAVBAR REDESIGN ── */
+.gnav{display:flex;align-items:center;background:var(--ink);padding:0 20px;gap:0;position:sticky;top:0;z-index:100;border-bottom:2px solid rgba(255,255,255,.08)}
+.gnav-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:-1px;margin-right:16px;white-space:nowrap;padding:10px 0}
+.gnav-brand span{color:var(--accent)}
+.gnav-btn{background:none;border:none;border-bottom:3px solid transparent;padding:12px 14px;font-family:'Source Sans 3',sans-serif;font-size:13px;font-weight:600;letter-spacing:.5px;color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s;white-space:nowrap}
+.gnav-btn:hover{color:#fff}
+.gnav-btn.active{color:#fff;border-bottom-color:var(--accent)}
+.gnav-right{margin-left:auto;display:flex;align-items:center;gap:0}
+.gnav-locker{border:1px solid rgba(255,255,255,.25)!important;color:rgba(255,255,255,.9)!important;border-radius:2px!important;padding:7px 14px!important;margin-left:8px!important;font-size:12px!important}
+.gnav-locker:hover{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+
+/* ── LEGENDS DROPDOWN ── */
+.gnav-centre{flex:1;display:flex;justify-content:center;align-items:center}
+.gnav-legends-wrap{position:relative}
+.gnav-legends-btn{background:none;border:none;border-bottom:3px solid transparent;padding:12px 16px;font-family:'Source Sans 3',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.gnav-legends-btn:hover,.gnav-legends-btn.active{color:#fff}
+.gnav-legends-btn.open{color:#fff;border-bottom-color:var(--accent)}
+.gnav-legends-arrow{font-size:8px;transition:transform .2s}
+.gnav-legends-btn.open .gnav-legends-arrow{transform:rotate(180deg)}
+.gnav-legends-dropdown{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--ink);border:1px solid rgba(255,255,255,.12);border-top:none;border-radius:0 0 4px 4px;min-width:580px;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.gnav-legends-dropdown.open{display:block}
+.gld-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.gld-cell{padding:14px 16px;border-right:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .15s}
+.gld-cell:hover{background:rgba(255,255,255,.06)}
+.gld-cell:nth-child(3n){border-right:none}
+.gld-icon{font-size:14px;margin-bottom:4px}
+.gld-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:3px}
+.gld-desc{font-size:10px;color:rgba(255,255,255,.45);line-height:1.4}
+.gld-divider{grid-column:1/-1;padding:8px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07)}
+.gld-divider-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+
+
+/* ── VV TAG TOOLTIPS ── */
+.vv-tag{position:relative;cursor:help}
+.vv-tag:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;padding:5px 9px;border-radius:2px;white-space:nowrap;z-index:100;pointer-events:none;line-height:1.4;max-width:200px;white-space:normal;text-align:center}
+.vv-tag:hover::before{content:'';position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--ink);z-index:100}
+
+
+/* ── SHARE BAR REDESIGN ── */
+.share-bar{border-top:2px solid var(--border);margin-top:20px;padding-top:20px;text-align:center}
+.share-bar-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px;letter-spacing:-.3px}
+.share-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.share-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:2px;font-family:'Source Sans 3',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;border:none}
+.share-btn-copy{background:var(--ink);color:#fff}
+.share-btn-copy:hover{background:#333}
+.share-btn-x{background:#000;color:#fff}
+.share-btn-x:hover{background:#333}
+.share-btn-wa{background:#25D366;color:#fff}
+.share-btn-wa:hover{background:#20BA5A}
+.share-preview{background:var(--cream2);border:1px solid var(--border);border-radius:3px;padding:14px 18px;font-size:13px;line-height:1.7;color:var(--ink2);text-align:left;font-style:italic;margin-top:10px;position:relative}
+.share-preview::before{content:'Preview';position:absolute;top:-8px;left:12px;background:var(--cream2);padding:0 6px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);font-style:normal}
+.share-copied{font-size:11px;color:var(--green);display:none;text-align:center;margin-top:6px;font-weight:600}
+
+
+/* ══════════════════════════════════════════════════════
+   PREMIUM UX ELEVATION — VVonderXI
+   Philosophy: Every element earns its place.
+   Every transition has meaning.
+   The moment of comparison is theatre.
+   ══════════════════════════════════════════════════════ */
+
+/* ── HEADER ELEVATION ── */
+.hdr{
+  border-bottom:none;
+  padding:22px 40px 20px;
+  background:linear-gradient(135deg, var(--ink) 0%, #1a1208 100%);
+  position:relative;
+  overflow:hidden;
+}
+.hdr::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 20% 50%, rgba(179,108,105,.12) 0%, transparent 60%),
+             radial-gradient(ellipse at 80% 30%, rgba(154,117,16,.06) 0%, transparent 50%);
+  pointer-events:none;
+}
+.hdr-inner{position:relative;z-index:1}
+.hdr-eyebrow{color:rgba(255,255,255,.4)!important;font-size:9px!important;letter-spacing:4px!important}
+.hdr-site-title{color:#fff!important;font-size:32px!important;letter-spacing:-1px!important}
+.hdr-xi{color:var(--accent)!important}
+.hdr-tagline{color:rgba(255,255,255,.65)!important;font-size:14px!important;font-style:italic}
+.hdr-right{text-align:right}
+.hdr-sub{color:rgba(255,255,255,.3)!important;font-size:10px!important}
+.data-pill{color:rgba(255,255,255,.7)!important;font-size:11px!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.15)!important;padding:4px 12px!important;border-radius:2px!important}
+
+/* ── TAB BAR ELEVATION ── */
+.tab-bar{border-bottom:1px solid var(--border);background:#fff;padding:0 20px;display:flex;position:sticky;top:50px;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.tab-btn{font-size:11px!important;font-weight:600!important;letter-spacing:1.5px!important;padding:13px 18px!important;color:var(--ink3)!important;border-bottom-width:2px!important}
+.tab-btn.active{color:var(--ink)!important;font-weight:700!important}
+
+/* ── PLAYER CARD ELEVATION ── */
+.pgrid{gap:16px!important;margin-bottom:20px!important}
+.pcard{
+  border-radius:6px!important;
+  border-width:1.5px!important;
+  box-shadow:0 2px 12px rgba(0,0,0,.06)!important;
+  transition:box-shadow .2s, transform .15s, border-color .2s!important;
+}
+.pcard:hover{
+  box-shadow:0 4px 24px rgba(0,0,0,.1)!important;
+  transform:translateY(-1px);
+}
+.pcard-hd{
+  padding:10px 14px!important;
+  background:linear-gradient(135deg, var(--cream3) 0%, var(--cream2) 100%)!important;
+  letter-spacing:1px!important;
+  font-size:10px!important;
+}
+.pcard-num{
+  width:20px!important;height:20px!important;
+  background:var(--ink)!important;
+  font-size:10px!important;
+}
+.pcard-bd{padding:15px!important}
+
+/* ── SEASON BUTTONS ELEVATION ── */
+.season-btn{
+  font-size:10px!important;font-weight:700!important;letter-spacing:.5px!important;
+  padding:5px 11px!important;border-radius:2px!important;
+  transition:all .15s!important;
+}
+.season-btn:not(.unavail):hover{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
+
+/* ── CTA BUTTON — THE MOMENT THAT MATTERS ── */
+.go-btn{
+  padding:14px 20px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  letter-spacing:3px!important;
+  background:var(--ink)!important;
+  border-radius:3px!important;
+  position:relative;
+  overflow:hidden;
+  margin-top:4px!important;
+  margin-bottom:24px!important;
+  transition:background .2s, transform .1s, box-shadow .2s!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.15)!important;
+}
+.go-btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 60%);
+  pointer-events:none;
+}
+.go-btn:hover{
+  background:var(--accent)!important;
+  transform:translateY(-1px)!important;
+  box-shadow:0 4px 16px rgba(179,108,105,.35)!important;
+}
+.go-btn:active{transform:translateY(0)!important}
+
+/* ── MODE TOGGLE ELEVATION ── */
+.tgl-grp{border-radius:3px!important;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)!important}
+.tgl-btn{font-size:10px!important;font-weight:600!important;letter-spacing:1px!important;padding:6px 14px!important}
+.tgl-btn.on{background:var(--ink)!important;letter-spacing:1.5px!important}
+
+/* ── LOADING STATE — DRAMATIC ── */
+.loading{
+  padding:32px 20px!important;
+  flex-direction:column!important;
+  gap:14px!important;
+  align-items:center!important;
+  text-align:center!important;
+  background:linear-gradient(135deg, var(--cream2) 0%, #fff 100%)!important;
+}
+.loading-text{font-family:'Playfair Display',serif!important;font-size:16px!important;color:var(--ink)!important;font-style:italic!important}
+.loading-sub{font-size:11px!important;color:var(--ink4)!important;letter-spacing:1px!important;text-transform:uppercase!important}
+.spin{
+  width:20px!important;height:20px!important;
+  border-width:2px!important;
+  border-color:var(--cream4)!important;
+  border-top-color:var(--accent)!important;
+}
+
+/* ── VERDICT HEADER ELEVATION ── */
+.vhd{
+  padding:14px 18px!important;
+  background:var(--ink)!important;
+  border-bottom:2px solid var(--accent)!important;
+}
+.vhd-title{color:#fff!important;font-size:18px!important;letter-spacing:-.3px!important}
+.vhd-mode{color:rgba(255,255,255,.4)!important;letter-spacing:2px!important}
+
+/* ── VERDICT REVEAL ANIMATION ── */
+.verdict{
+  border-radius:4px!important;
+  border:1.5px solid var(--border)!important;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,.08)!important;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .4s ease, transform .4s ease;
+}
+.verdict.show{
+  opacity:1!important;
+  transform:translateY(0)!important;
+}
+
+/* ── TRAJECTORY SECTION ELEVATION ── */
+.traj-section{
+  border-radius:4px!important;
+  border:1.5px solid var(--border)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.04)!important;
+  margin-bottom:16px!important;
+  overflow:hidden;
+}
+.traj-hd{
+  background:var(--ink)!important;
+  color:#fff!important;
+  padding:10px 16px!important;
+  font-size:14px!important;
+}
+.traj-hd>*{color:#fff!important}
+.traj-bar-wrap{height:6px!important;border-radius:3px!important;background:var(--cream4)!important}
+.traj-bar{border-radius:3px!important}
+
+/* ── ANALYSIS BLOCKS ELEVATION ── */
+.cs-block{
+  border-radius:4px!important;
+  border:1.5px solid var(--border)!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.04)!important;
+  transition:box-shadow .15s!important;
+}
+.cs-block:hover{box-shadow:0 4px 14px rgba(0,0,0,.08)!important}
+.cs-block-hd{
+  padding:10px 14px!important;
+  background:linear-gradient(135deg, var(--cream3) 0%, var(--cream2) 100%)!important;
+  font-size:10px!important;font-weight:700!important;letter-spacing:2px!important;
+  border-bottom:1px solid var(--border)!important;
+}
+.cs-block-bd{padding:14px!important;font-size:13px!important;line-height:1.8!important;color:var(--ink2)!important}
+
+/* ── OVERALL VERDICT ELEVATION ── */
+.overall{
+  border-radius:4px!important;
+  padding:18px 20px!important;
+  background:var(--ink)!important;
+  color:#fff!important;
+  margin-bottom:14px!important;
+  position:relative;
+  overflow:hidden;
+}
+.overall::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 30% 50%, rgba(179,108,105,.12) 0%, transparent 60%);
+  pointer-events:none;
+}
+.overall-title{color:rgba(255,255,255,.5)!important;font-size:10px!important;letter-spacing:3px!important;text-transform:uppercase!important;margin-bottom:10px!important;font-family:'Source Sans 3',sans-serif!important;font-weight:700!important}
+.overall p{color:rgba(255,255,255,.9)!important;font-size:14px!important;line-height:1.8!important;position:relative}
+
+/* ── SIDEBAR ELEVATION ── */
+.sb-block{
+  border-radius:4px!important;
+  overflow:hidden;
+  border:1px solid var(--border)!important;
+  margin-bottom:10px!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.04)!important;
+}
+.sb-head{
+  padding:10px 13px!important;
+  background:linear-gradient(135deg, var(--cream3) 0%, var(--cream2) 100%)!important;
+  transition:background .15s!important;
+}
+.sb-head:hover{background:var(--cream4)!important}
+.sb-head-lbl{font-size:10px!important;font-weight:700!important;letter-spacing:1.5px!important;text-transform:uppercase!important}
+
+/* ── WINNER TAG ELEVATION ── */
+.winner-tag{
+  background:linear-gradient(135deg, #1a6b3a 0%, #2c7a3a 100%)!important;
+  padding:3px 9px!important;
+  font-size:9px!important;
+  letter-spacing:1.5px!important;
+  box-shadow:0 1px 4px rgba(26,107,58,.3)!important;
+}
+
+/* ── SEARCH INPUT ELEVATION ── */
+.field input,.field select{
+  font-size:14px!important;
+  padding:8px 10px!important;
+  border-radius:3px!important;
+  transition:border-color .15s, box-shadow .15s!important;
+}
+.field input:focus,.field select:focus{
+  box-shadow:0 0 0 3px rgba(179,108,105,.12)!important;
+  border-color:var(--accent)!important;
+}
+.si{padding:9px 12px!important;transition:background .1s!important}
+.si-name{font-size:13px!important;font-weight:600!important;color:var(--ink)!important;margin-bottom:2px!important}
+.suggs{
+  border-radius:0 0 4px 4px!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
+  border:1.5px solid var(--border)!important;
+  border-top:none!important;
+  max-height:320px!important;
+}
+
+/* ── VV STORY CARDS ELEVATION ── */
+.vv-story{
+  border-radius:6px!important;
+  box-shadow:0 2px 12px rgba(0,0,0,.06)!important;
+  transition:box-shadow .2s, transform .15s!important;
+}
+.vv-story:hover{
+  box-shadow:0 6px 24px rgba(0,0,0,.1)!important;
+  transform:translateY(-2px);
+}
+.vv-story-name{letter-spacing:-.3px!important}
+.vv-stat-box{
+  border-radius:3px!important;
+  transition:background .15s!important;
+}
+.vv-stat-box:hover{background:var(--cream3)!important}
+.vv-stat-n{font-size:20px!important}
+
+/* ── VERDICT SECTION ELEVATION ── */
+.vv-verdict-section{
+  border-radius:6px!important;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.1)!important;
+}
+.vv-verdict-head{
+  padding:14px 20px!important;
+  background:linear-gradient(135deg, var(--ink) 0%, #1a1208 100%)!important;
+}
+.vv-verdict-winner{font-size:26px!important;letter-spacing:-.5px!important}
+
+/* ── SCROLL REVEAL ── */
+@keyframes vv-reveal{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.vv-reveal{opacity:0;animation:vv-reveal .4s ease forwards}
+.vv-reveal-delay-1{animation-delay:.08s}
+.vv-reveal-delay-2{animation-delay:.16s}
+.vv-reveal-delay-3{animation-delay:.24s}
+
+/* ── LEGACY SEASON CARDS ELEVATION ── */
+.legacy-season-card{
+  border-radius:4px!important;
+  transition:all .15s!important;
+  box-shadow:0 1px 3px rgba(0,0,0,.06)!important;
+}
+.legacy-season-card:hover{
+  box-shadow:0 3px 10px rgba(0,0,0,.1)!important;
+  transform:translateY(-1px);
+}
+.legacy-season-card.on{
+  box-shadow:0 2px 8px rgba(17,17,17,.2)!important;
+}
+
+/* ── VV TAGS ELEVATION ── */
+.vv-tag{
+  border-radius:3px!important;
+  transition:all .15s!important;
+  font-size:10px!important;
+}
+.vv-tag:hover{
+  transform:translateY(-1px);
+  box-shadow:0 2px 6px rgba(0,0,0,.1)!important;
+}
+
+/* ── VERDICT TAGS ELEVATION ── */
+.vtag{
+  border-radius:3px!important;
+  transition:all .15s!important;
+  font-size:10px!important;
+  letter-spacing:.8px!important;
+}
+.vtag-primary{
+  box-shadow:0 1px 4px rgba(0,0,0,.15)!important;
+  font-size:11px!important;
+}
+
+/* ── SHARE BAR ELEVATION ── */
+.share-bar{
+  border-top:2px solid var(--border)!important;
+  padding-top:22px!important;
+  margin-top:22px!important;
+}
+.share-btn{
+  border-radius:3px!important;
+  transition:all .15s!important;
+  font-size:11px!important;
+  letter-spacing:1.5px!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.1)!important;
+}
+.share-btn:hover{transform:translateY(-1px)!important;box-shadow:0 3px 10px rgba(0,0,0,.15)!important}
+
+/* ── RATING STARS ELEVATION ── */
+.rating-star{
+  font-size:24px!important;
+  transition:transform .1s, filter .1s!important;
+}
+.rating-star.on,.rating-star:hover{transform:scale(1.2)!important}
+
+/* ── FILTER CHIPS ELEVATION ── */
+.filter-chip{
+  border-radius:2px!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  letter-spacing:1px!important;
+  transition:all .15s!important;
+}
+.filter-chip.active{
+  box-shadow:0 1px 4px rgba(0,0,0,.12)!important;
+}
+.filter-chip:hover:not(.active){background:var(--cream3)!important}
+
+/* ── WRAP LAYOUT IMPROVEMENT ── */
+.wrap{max-width:1100px!important;gap:20px!important;padding:20px 20px!important}
+aside{min-width:200px!important;max-width:220px!important}
+.main{flex:1;min-width:0}
+
+/* ── PAGE TRANSITIONS ── */
+.page.active{animation:vv-reveal .25s ease forwards}
+
+/* ── RESPONSIVE POLISH ── */
+@media(max-width:768px){
+  .hdr{padding:16px 16px 14px!important}
+  .hdr-site-title{font-size:26px!important}
+  .wrap{padding:14px 12px!important;gap:14px!important}
+}
+
+
+@keyframes go-btn-pulse{
+  0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  50%{box-shadow:0 4px 20px rgba(179,108,105,.4),0 2px 8px rgba(0,0,0,.15)}
+}
+
+
+/* ── LOCKER ROOM LIGHT THEME ── */
+.locker-dash.active{background:#f0ece4!important}
+.ld-nav{background:#fff!important;border-bottom:2px solid var(--border)!important}
+.ld-nav-btn{color:var(--ink3)!important;font-size:11px!important;font-weight:600!important;letter-spacing:2px!important;padding:14px 18px!important}
+.ld-nav-btn.active{color:var(--ink)!important;border-bottom-color:var(--accent)!important}
+.ld-nav-btn:hover{color:var(--ink)!important}
+.ld-section-title{color:var(--ink)!important;font-size:22px!important}
+.ld-section-sub{color:var(--ink3)!important;font-size:13px!important}
+.ld-stats{margin-bottom:32px!important}
+.ld-stat{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:6px!important;box-shadow:0 2px 8px rgba(0,0,0,.06)!important;padding:20px!important}
+.ld-stat-n{color:var(--ink)!important;font-size:32px!important}
+.ld-stat-lbl{font-size:11px!important;color:var(--ink3)!important;letter-spacing:1.5px!important}
+.ld-debate-card{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:4px!important;box-shadow:0 1px 4px rgba(0,0,0,.04)!important}
+.ld-debate-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08)!important}
+.ld-dc-vs{font-size:16px!important;color:var(--ink)!important}
+.ld-dc-meta{font-size:11px!important;color:var(--ink3)!important}
+.ld-dc-verdict{color:var(--ink2)!important;font-size:12px!important}
+.ld-note-card{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:4px!important}
+.ld-note-text{color:var(--ink2)!important;font-size:13px!important;line-height:1.7!important}
+.ld-note-input{background:#fff!important;border:1.5px solid var(--border)!important;color:var(--ink)!important;border-radius:3px!important}
+.ld-follow-card{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:6px!important}
+.ld-follow-name{font-size:13px!important;color:var(--ink)!important}
+.ld-follow-meta{color:var(--ink3)!important;font-size:11px!important}
+.ld-col-card{background:linear-gradient(135deg,rgba(154,117,16,.08) 0%,rgba(255,255,255,.5) 100%)!important;border:1.5px solid rgba(154,117,16,.2)!important;border-radius:6px!important}
+.ld-xi-pitch{background:linear-gradient(180deg,#2d5a1b 0%,#3d7a28 40%,#3d7a28 60%,#2d5a1b 100%)!important}
+.ld-scout-chat{background:#fff!important;border:1.5px solid var(--border)!important}
+.ld-msg-ai .ld-msg-bubble{background:var(--cream2)!important;border:1px solid var(--border)!important;color:var(--ink)!important}
+.ld-msg-user .ld-msg-bubble{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important}
+.ld-scout-input{background:var(--cream2)!important;border:1.5px solid var(--border)!important;color:var(--ink)!important}
+.ld-scout-input:focus{border-color:var(--accent)!important}
+/* Read more expandable */
+.ld-read-more-btn{background:none;border:none;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);cursor:pointer;padding:4px 0;transition:color .15s}
+.ld-read-more-btn:hover{color:var(--ink)}
+.ld-read-more-content{display:none;font-size:12px;line-height:1.7;color:var(--ink3);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.ld-read-more-content.open{display:block}
+/* Daily thought on light bg */
+.daily-thought{background:linear-gradient(135deg,rgba(179,108,105,.08) 0%,rgba(154,117,16,.05) 100%)!important;border:1.5px solid rgba(179,108,105,.2)!important}
+.dt-question{color:var(--ink)!important}
+.dt-context{color:var(--ink3)!important}
+
 </style>
 </head>
 <body>
@@ -854,17 +1345,62 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
   <span class="gnav-brand">VVonder<span>XI</span></span>
   <button class="gnav-btn active" onclick="switchPage('compare',this)">⚡ Compare</button>
   <button class="gnav-btn" onclick="switchPage('baller',this)">🎬 Baller Bio</button>
-  <button class="gnav-btn" onclick="switchPage('legends',this)">👑 Legends</button>
-  <button class="gnav-btn" onclick="switchPage('wfactor',this)">🏆 W Factor</button>
-  <button class="gnav-btn" onclick="switchPage('guide',this)">📋 Scout Guide</button>
-  <button class="gnav-btn gnav-locker" onclick="openLocker()">🔐 Locker Room</button>
+
+  <!-- Legends Centre Dropdown -->
+  <div class="gnav-centre">
+    <div class="gnav-legends-wrap" id="gnav-legends-wrap">
+      <button class="gnav-legends-btn" id="gnav-legends-btn" onclick="toggleLegendsDropdown()">
+        👑 Legends <span class="gnav-legends-arrow">▼</span>
+      </button>
+      <div class="gnav-legends-dropdown" id="gnav-legends-dropdown">
+        <div class="gld-divider"><span class="gld-divider-label">VVonderXI Model</span></div>
+        <div class="gld-grid">
+          <div class="gld-cell" onclick="openLegendPanel('career-stage')">
+            <div class="gld-icon">📈</div>
+            <div class="gld-title">Career Stage</div>
+            <div class="gld-desc">Where is a player in their arc? Rising, peaking or declining?</div>
+          </div>
+          <div class="gld-cell" onclick="openLegendPanel('trajectory')">
+            <div class="gld-icon">🚀</div>
+            <div class="gld-title">Trajectory</div>
+            <div class="gld-desc">Three-season momentum. The direction of travel matters as much as the destination.</div>
+          </div>
+          <div class="gld-cell" onclick="openLegendPanel('market-momentum')">
+            <div class="gld-icon">💹</div>
+            <div class="gld-title">Market Momentum</div>
+            <div class="gld-desc">Value rising or falling? Output versus transfer market perception.</div>
+          </div>
+          <div class="gld-cell" onclick="openLegendPanel('verdict-tags')">
+            <div class="gld-icon">🏷️</div>
+            <div class="gld-title">Verdict Tags</div>
+            <div class="gld-desc">Comparison outcomes. What the head-to-head reveals beyond the numbers.</div>
+          </div>
+          <div class="gld-cell" onclick="openLegendPanel('vv-tags')">
+            <div class="gld-icon">⭐</div>
+            <div class="gld-title">VV Tags</div>
+            <div class="gld-desc">Season-level player identity. What made this campaign unique in football history.</div>
+          </div>
+          <div class="gld-cell" onclick="closeLegendsDropdown();switchPage('legends',document.querySelectorAll('.gnav-btn')[2])">
+            <div class="gld-icon">🗂️</div>
+            <div class="gld-title">Icons</div>
+            <div class="gld-desc">The immortals. Historical peak seasons from football's greatest ever players.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gnav-right">
+    <button class="gnav-btn" onclick="openGatedPage('guide',this)">📋 Scout Guide</button>
+    <button class="gnav-btn gnav-locker" onclick="openLocker()" id="gnav-locker-btn">🔐 Locker Room</button>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════ GLOBAL SEARCH BAR ═══════════════════════════ -->
 <div class="gsearch-bar">
   <div class="gsearch-inner">
-    <div class="gsearch-wrap">
-      <input id="gsearch-input" type="text" placeholder="Search any player…" oninput="gsearchFilter(this.value)" onfocus="gsearchOpen()" autocomplete="off">
+    <div class="gsearch-wrap" id="gsearch-wrap">
+      <input id="gsearch-input" type="text" placeholder="Search any player…" oninput="gsearchFilter(this.value)" onfocus="gsearchOpen()" onblur="gsearchBlur()" autocomplete="off">
       <div class="gsearch-dd" id="gsearch-dropdown"></div>
     </div>
     <div class="gf-wrap">
@@ -915,6 +1451,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
         <div class="hdr-eyebrow">Football Intelligence Platform</div>
         <div class="hdr-site-title">VVonder<span class="hdr-xi">XI</span></div>
         <div class="hdr-tagline">Compare careers. Uncover stories. Define legacies.</div>
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:4px">A product by <span style="color:var(--accent);font-weight:600;letter-spacing:1px">LiVVonderful</span></div>
       </div>
     </div>
     <div class="hdr-right">
@@ -957,7 +1494,41 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
       </div>
     </div>
 
-    <!-- Trajectory Legend -->
+    <!-- VV Tags Definition -->
+    <div class="sb-block collapsed" id="sb-vvtags">
+      <div class="sb-head" onclick="toggleSb('sb-vvtags')">
+        <span class="sb-head-lbl">⭐ VV Tags</span>
+        <span class="sb-arrow">▲</span>
+      </div>
+      <div class="sb-body" id="sb-vvtags-body">
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-bottom:1px solid var(--cream4);margin-bottom:6px">Attackers</div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🎯</span><span class="lt-name">Elite Finisher</span></div><div class="lt-desc">Top-tier striker output. The penalty box is their office and they never miss a meeting.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">⚽</span><span class="lt-name">Goal Machine</span></div><div class="lt-desc">20+ goals regardless of position. The numbers do not lie and neither does this player.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🪄</span><span class="lt-name">Creative Genius</span></div><div class="lt-desc">Exceptional assist output. The game sees things three seconds before anyone else.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🌟</span><span class="lt-name">Complete Forward</span></div><div class="lt-desc">Goals and assists combined at the highest level. The total footballer in the final third.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🔥</span><span class="lt-name">Pressing Forward</span></div><div class="lt-desc">High output with positional pressing intensity. The first line of defence and the first line of attack.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🗡️</span><span class="lt-name">Poacher</span></div><div class="lt-desc">Lethal inside the box. Goals dominate the output. Clinical, cold and completely devastating.</div></div>
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-bottom:1px solid var(--cream4);margin-bottom:6px;margin-top:4px">Midfielders</div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🎭</span><span class="lt-name">Playmaker</span></div><div class="lt-desc">10+ assists from midfield. The conductor. Every attack runs through them.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">⚡</span><span class="lt-name">Creative Engine</span></div><div class="lt-desc">8+ assists with elite rating. The heartbeat of everything that is beautiful about how the team plays.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">💥</span><span class="lt-name">Scoring Midfielder</span></div><div class="lt-desc">10+ goals from midfield. A player who arrives late into areas the opposition forgot to defend.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">💪</span><span class="lt-name">Box-to-Box Force</span></div><div class="lt-desc">Goals and assists combined at high rate. They go everywhere and they improve everything.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🧠</span><span class="lt-name">Complete Midfielder</span></div><div class="lt-desc">Output and influence across all phases. The most complete version of what a midfielder can be.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">⚓</span><span class="lt-name">Defensive Anchor</span></div><div class="lt-desc">Positional discipline with clean output. The quiet foundation everything else is built upon.</div></div>
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-bottom:1px solid var(--cream4);margin-bottom:6px;margin-top:4px">Defenders</div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🛡️</span><span class="lt-name">Defensive Monster</span></div><div class="lt-desc">Commanding presence, elite rating. They make the game simple by making the impossible look routine.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🏃</span><span class="lt-name">Attacking Fullback</span></div><div class="lt-desc">Exceptional attacking output for a defender. The game has been rewritten and they are the proof.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🧱</span><span class="lt-name">Wall</span></div><div class="lt-desc">Near-impenetrable. The striker who faced this player had a very long and quiet afternoon.</div></div>
+        <div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);border-bottom:1px solid var(--cream4);margin-bottom:6px;margin-top:4px">Prestige</div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🌍</span><span class="lt-name">Generational Season</span></div><div class="lt-desc">Top 1% output. An era-defining campaign. This is not football — this is art.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">👑</span><span class="lt-name">Iconic Campaign</span></div><div class="lt-desc">Top 5% output. A season remembered forever. The kind of year that redefines a career.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">💎</span><span class="lt-name">Role Breaker</span></div><div class="lt-desc">Output that defies positional expectations. A defender who scores. A midfielder who rivals strikers.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">🏆</span><span class="lt-name">Big Game Player</span></div><div class="lt-desc">Performed in the UEFA Champions League. The biggest stage. They did not shrink.</div></div>
+        <div class="lt"><div class="lt-top"><span style="font-size:13px">📖</span><span class="lt-name">Legacy Season</span></div><div class="lt-desc">Historical peak. A touchstone for their career. The season people reach for when the argument begins.</div></div>
+      </div>
+    </div>
+
+        <!-- Trajectory Legend -->
     <div class="sb-block collapsed" id="sb-traj">
       <div class="sb-head" onclick="toggleSb('sb-traj')">
         <span class="sb-head-lbl">📈 Trajectory</span>
@@ -1144,7 +1715,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
         </div>
       </div>
 
-      <button class="go-btn" onclick="analyse('pc')">⚡ Under the Lights — Compare</button>
+      <button class="go-btn" onclick="analyse('pc')">⚡ Under the Lights — Run Comparison</button>
       <div class="verdict" id="v-pc"></div>
     </div>
 
@@ -1323,7 +1894,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
     <div class="hdr-brand"><div class="hdr-brand-text">
       <div class="hdr-eyebrow">Football Intelligence Platform</div>
       <div class="hdr-site-title">VVonder<span class="hdr-xi">XI</span></div>
-      <div class="hdr-tagline">Legacy Collection — Yesterday's legends. Football's eternal debate.</div>
+      <div class="hdr-tagline">Icons — The immortals. Historical peak seasons. Football's greatest ever.</div>
     </div></div>
     <div class="hdr-right">
       <div class="data-pill">Legacy Collection</div>
@@ -1348,95 +1919,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 </div><!-- /page-legends -->
 
 <!-- ═══════════════════════════ PAGE: W FACTOR ═══════════════════════════ -->
-<div class="page" id="page-wfactor">
-  <div class="wf-page">
-    <div class="wf-section">
-      <div class="wf-big">THE<br>W<br>FACTOR</div>
-      <div class="wf-body">
-        <p>Football isn't played in spreadsheets.</p>
-        <p>It's played in moments.</p>
-        <p>A goal tells you what happened.</p>
-        <p>Context tells you why it mattered.</p>
-        <p>VVonderXI combines football intelligence, storytelling, and data to uncover the stories behind the numbers.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">BEYOND<br>THE<br>NUMBERS.</div>
-      <div class="wf-body">
-        <p>Anyone can compare goals and assists.</p>
-        <p>VVonderXI compares age, league strength, trajectory, impact, and legacy.</p>
-        <p>Because 20 goals at 18 years old means something different than 20 goals at 30.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">EVERY<br>SEASON<br>TELLS A<br>STORY.</div>
-      <div class="wf-body">
-        <p>Every player card represents a moment in time.</p>
-        <p>A wonderkid becoming a star.</p>
-        <p>A veteran extending greatness.</p>
-        <p>A legend writing their final chapter.</p>
-        <p>The numbers matter.</p>
-        <p>The story matters more.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">UNDER<br>THE<br>LIGHTS.</div>
-      <div class="wf-body">
-        <p>Compare careers.</p>
-        <p>Compare eras.</p>
-        <p>Compare players at the same age.</p>
-        <p>Compare reality against potential.</p>
-        <p>The debate starts with data.</p>
-        <p>The verdict comes from context.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">YESTERDAY'S<br>LEGENDS.<br>TOMORROW'S<br><span>ICONS.</span></div>
-      <div class="wf-body">
-        <p>Compare football's past against its future.</p>
-        <p>Measure a retired legend against a modern superstar.</p>
-        <p>See how today's wonderkids stack up against the icons who inspired them.</p>
-        <p>Football's greatest debates never truly end.</p>
-        <p>Now, you can explore them.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">THE<br>SCOUT<br>REPORT.</div>
-      <div class="wf-body">
-        <p>Goals and assists are only the beginning.</p>
-        <p>VVonderXI transforms raw performance into football intelligence.</p>
-        <p>Career Trajectories.</p>
-        <p>Market Momentum.</p>
-        <p>Season Scout Reports.</p>
-        <p>Verdicts.</p>
-        <p>Not just what happened.</p>
-        <p>Why it happened.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">BALLER<br>BIO.</div>
-      <div class="wf-body">
-        <p>Football isn't only for professionals.</p>
-        <p>Create your own player card.</p>
-        <p>Analyse your 5v5 masterclass.</p>
-        <p>Compare yourself against friends.</p>
-        <p>Build a future superstar.</p>
-        <p>Or scout the next signing for your club.</p>
-        <p>Every football story deserves context.</p>
-      </div>
-    </div>
-    <div class="wf-section">
-      <div class="wf-big">DEFINE<br><span>LEGACIES.</span></div>
-      <div class="wf-body">
-        <p>Football remembers more than statistics.</p>
-        <p>It remembers moments.</p>
-        <p>It remembers greatness.</p>
-        <p>It remembers legacy.</p>
-        <p>That's the W Factor.</p>
-      </div>
-    </div>
-  </div>
-</div><!-- /page-wfactor -->
+
 
 <!-- ═══════════════════════════ PAGE: SCOUT GUIDE ═══════════════════════════ -->
 <div class="page" id="page-guide">
@@ -1658,6 +2141,8 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
       <div class="ld-panel active" id="ld-panel-overview">
         <div class="ld-section-title" id="ld-welcome">Welcome back.</div>
         <div class="ld-section-sub">Your football intelligence. Your legacy.</div>
+        <button class="ld-read-more-btn" onclick="toggleReadMore(this)">Read more ↓</button>
+        <div class="ld-read-more-content">Your Locker Room is where football intelligence becomes personal. Every comparison you run is saved here. Every player you follow is tracked here. Every note you write, every debate you star, every position in your Greatest XI — this is your permanent record of football watched, argued and understood.</div>
 
         <!-- Daily Thought -->
         <div class="daily-thought" id="daily-thought-card">
@@ -1775,6 +2260,8 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
       <div class="ld-panel" id="ld-panel-debates">
         <div class="ld-section-title">Debate History</div>
         <div class="ld-section-sub">Every comparison tells a story. Return whenever football writes a new chapter.</div>
+        <button class="ld-read-more-btn" onclick="toggleReadMore(this)">Read more ↓</button>
+        <div class="ld-read-more-content">Every comparison you run on VVonderXI is automatically saved here. The verdicts, the context, the VV Tags — all stored so you can return, revisit and reopen the debate whenever the argument demands it.</div>
         <div id="ld-debates-list">
           <div class="ld-empty"><div class="ld-empty-icon">📚</div><div class="ld-empty-text">No debates saved yet.<br>Run a comparison — it saves here automatically.</div><button class="ld-empty-btn" onclick="closeLocker()">Start a Debate</button></div>
         </div>
@@ -1784,6 +2271,8 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
       <div class="ld-panel" id="ld-panel-notes">
         <div class="ld-section-title">Scout Notes</div>
         <div class="ld-section-sub">Your personal scouting notebook. Great debates deserve more than a passing thought.</div>
+        <button class="ld-read-more-btn" onclick="toggleReadMore(this)">Read more ↓</button>
+        <div class="ld-read-more-content">The greatest scouts in football history kept notebooks. This is yours. Write observations, capture arguments, preserve the moments when football made complete sense. Your notes are private, permanent and always here.</div>
 
         <div style="margin-bottom:16px">
           <textarea class="ld-note-input" id="ld-note-input" placeholder="Write your observation, opinion or analysis…"></textarea>
@@ -1946,7 +2435,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 //  VVONDERXI BIGGER — Full Intelligence Engine
 //  All systems: Trajectory · Market Momentum · Scout Report
 //  Career Stage · Verdict Tags · Team Colour Identity
-//  Legacy Collection · W Factor · Enhanced Filters
+//  Legacy Collection · Enhanced Filters
 // ═══════════════════════════════════════════════════════
 
 // ── CONSTANTS ──
@@ -2854,22 +3343,22 @@ var DB = [
   //  LEGACY COLLECTION — Historical Peak Seasons
   //  Peak era data from training knowledge (clearly labelled)
   // ═══════════════════════════════════════════════════════════════
-  {name:"Thierry Henry",nat:"France",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0304":{pos:"ST",lg:"PL",g:30,a:20,rt:97,age:26,club:"arsenal",label:"03/04"},"0203":{pos:"ST",lg:"PL",g:24,a:23,rt:95,age:25,club:"arsenal",label:"02/03"},"0506":{pos:"ST",lg:"PL",g:27,a:16,rt:96,age:28,club:"arsenal",label:"05/06"}}},
-  {name:"Ronaldinho",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0506":{pos:"CAM",lg:"LL",g:17,a:16,rt:98,age:26,club:"barcelona",label:"05/06"},"0405":{pos:"CAM",lg:"LL",g:14,a:18,rt:97,age:25,club:"barcelona",label:"04/05"},"0304":{pos:"CAM",lg:"LL",g:15,a:13,rt:95,age:24,club:"barcelona",label:"03/04"}}},
-  {name:"Ronaldo Nazario",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"9697":{pos:"ST",lg:"LL",g:34,a:8,rt:98,age:20,club:"barcelona",label:"96/97"},"0203":{pos:"ST",lg:"LL",g:23,a:7,rt:97,age:26,club:"real-madrid",label:"02/03"},"0102":{pos:"ST",lg:"SA",g:35,a:9,rt:97,age:25,club:"inter",label:"01/02"}}},
-  {name:"Zinedine Zidane",nat:"France",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0102":{pos:"CAM",lg:"LL",g:7,a:18,rt:98,age:29,club:"real-madrid",label:"01/02"},"0203":{pos:"CAM",lg:"LL",g:9,a:15,rt:96,age:30,club:"real-madrid",label:"02/03"},"0506":{pos:"CAM",lg:"LL",g:6,a:12,rt:95,age:33,club:"real-madrid",label:"05/06"}}},
-  {name:"Dennis Bergkamp",nat:"Netherlands",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"9798":{pos:"CAM",lg:"PL",g:16,a:14,rt:96,age:28,club:"arsenal",label:"97/98"},"0203":{pos:"CAM",lg:"PL",g:9,a:18,rt:93,age:33,club:"arsenal",label:"02/03"},"0405":{pos:"CAM",lg:"PL",g:8,a:16,rt:92,age:35,club:"arsenal",label:"04/05"}}},
-  {name:"Ronaldo Fenomeno",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"9697":{pos:"ST",lg:"LL",g:34,a:8,rt:98,age:20,club:"barcelona",label:"96/97"},"0203":{pos:"ST",lg:"LL",g:23,a:7,rt:96,age:26,club:"real-madrid",label:"02/03"},"9899":{pos:"ST",lg:"SA",g:25,a:6,rt:97,age:22,club:"inter",label:"98/99"}}},
-  {name:"Steven Gerrard",nat:"England",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0506":{pos:"CM",lg:"PL",g:23,a:14,rt:95,age:25,club:"liverpool",label:"05/06"},"0809":{pos:"CM",lg:"PL",g:16,a:12,rt:93,age:28,club:"liverpool",label:"08/09"},"1314":{pos:"CM",lg:"PL",g:13,a:10,rt:91,age:33,club:"liverpool",label:"13/14"}}},
-  {name:"Frank Lampard",nat:"England",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0405":{pos:"CM",lg:"PL",g:13,a:16,rt:93,age:26,club:"chelsea",label:"04/05"},"0506":{pos:"CM",lg:"PL",g:16,a:14,rt:93,age:27,club:"chelsea",label:"05/06"},"0910":{pos:"CM",lg:"PL",g:22,a:17,rt:91,age:31,club:"chelsea",label:"09/10"}}},
-  {name:"Didier Drogba",nat:"Ivory Coast",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0607":{pos:"ST",lg:"PL",g:20,a:10,rt:93,age:28,club:"chelsea",label:"06/07"},"0910":{pos:"ST",lg:"PL",g:29,a:8,rt:94,age:31,club:"chelsea",label:"09/10"},"1112":{pos:"ST",lg:"PL",g:11,a:7,rt:88,age:33,club:"chelsea",label:"11/12"}}},
-  {name:"Xabi Alonso",nat:"Spain",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0809":{pos:"CM",lg:"PL",g:4,a:12,rt:90,age:27,club:"liverpool",label:"08/09"},"1415":{pos:"CM",lg:"BL",g:3,a:10,rt:91,age:32,club:"bayern",label:"14/15"},"1011":{pos:"CM",lg:"LL",g:5,a:8,rt:89,age:29,club:"real-madrid",label:"10/11"}}},
-  {name:"Rio Ferdinand",nat:"England",retired:true,legacy:true,legacyTier:"fan-favourite",seasons:{"0607":{pos:"CB",lg:"PL",g:1,a:2,rt:91,age:28,club:"man utd",label:"06/07"},"0809":{pos:"CB",lg:"PL",g:2,a:1,rt:90,age:30,club:"man utd",label:"08/09"},"1011":{pos:"CB",lg:"PL",g:1,a:1,rt:88,age:32,club:"man utd",label:"10/11"}}},
-  {name:"Michael Carrick",nat:"England",retired:true,legacy:true,legacyTier:"fan-favourite",seasons:{"1213":{pos:"CM",lg:"PL",g:3,a:6,rt:86,age:31,club:"man utd",label:"12/13"},"1112":{pos:"CM",lg:"PL",g:2,a:5,rt:85,age:30,club:"man utd",label:"11/12"},"0910":{pos:"CM",lg:"PL",g:1,a:7,rt:84,age:28,club:"man utd",label:"09/10"}}},
-  {name:"Patrick Vieira",nat:"France",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0304":{pos:"CDM",lg:"PL",g:3,a:8,rt:93,age:27,club:"arsenal",label:"03/04"},"0102":{pos:"CDM",lg:"PL",g:5,a:9,rt:92,age:25,club:"arsenal",label:"01/02"},"0203":{pos:"CDM",lg:"PL",g:4,a:7,rt:91,age:26,club:"arsenal",label:"02/03"}}},
-  {name:"Riquelme",nat:"Argentina",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0506":{pos:"CAM",lg:"LL",g:14,a:16,rt:93,age:27,club:"villarreal",label:"05/06"},"0607":{pos:"CAM",lg:"LL",g:11,a:14,rt:91,age:28,club:"villarreal",label:"06/07"},"0708":{pos:"CAM",lg:"ARG",g:12,a:13,rt:90,age:29,club:"boca",label:"07/08"}}},
-  {name:"Roberto Carlos",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"0102":{pos:"LB",lg:"LL",g:7,a:11,rt:93,age:28,club:"real-madrid",label:"01/02"},"0203":{pos:"LB",lg:"LL",g:5,a:12,rt:92,age:29,club:"real-madrid",label:"02/03"},"9900":{pos:"LB",lg:"LL",g:8,a:10,rt:91,age:26,club:"real-madrid",label:"99/00"}}},
-  {name:"Wayne Rooney",nat:"England",retired:true,legacy:true,legacyTier:"fan-favourite",seasons:{"1112":{pos:"ST",lg:"PL",g:27,a:15,rt:92,age:26,club:"man utd",label:"11/12"},"0910":{pos:"ST",lg:"PL",g:26,a:9,rt:91,age:24,club:"man utd",label:"09/10"},"1314":{pos:"ST",lg:"PL",g:17,a:14,rt:88,age:28,club:"man utd",label:"13/14"}}},
+  {name:"Thierry Henry",nat:"France",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "ST", "lg": "MLS", "g": 11, "a": 11, "rt": 82, "age": 34, "club": "ny red bulls", "label": "11/12 · Legacy"}, "peak": {"pos": "ST", "lg": "PL", "g": 30, "a": 20, "rt": 97, "age": 26, "club": "arsenal", "label": "03/04 · Peak"}, "emerge": {"pos": "ST", "lg": "PL", "g": 24, "a": 23, "rt": 95, "age": 25, "club": "arsenal", "label": "02/03 · Emergence"}, "bonus": {"pos": "ST", "lg": "LL", "g": 14, "a": 12, "rt": 88, "age": 28, "club": "barcelona", "label": "05/06 · Barcelona"}}},
+  {name:"Ronaldinho",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CAM", "lg": "BRZ", "g": 13, "a": 8, "rt": 79, "age": 31, "club": "flamengo", "label": "10/11 · Legacy"}, "peak": {"pos": "CAM", "lg": "LL", "g": 17, "a": 16, "rt": 98, "age": 26, "club": "barcelona", "label": "05/06 · Peak"}, "emerge": {"pos": "CAM", "lg": "L1", "g": 12, "a": 10, "rt": 90, "age": 23, "club": "psg", "label": "02/03 · Emergence"}}},
+  {name:"Ronaldo Nazario",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "ST", "lg": "LL", "g": 15, "a": 4, "rt": 84, "age": 30, "club": "real-madrid", "label": "06/07 · Legacy"}, "peak": {"pos": "ST", "lg": "LL", "g": 34, "a": 8, "rt": 98, "age": 20, "club": "barcelona", "label": "96/97 · Peak"}, "emerge": {"pos": "ST", "lg": "SA", "g": 22, "a": 5, "rt": 88, "age": 18, "club": "inter", "label": "94/95 · Emergence"}}},
+  {name:"Zinedine Zidane",nat:"France",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CAM", "lg": "LL", "g": 6, "a": 12, "rt": 95, "age": 33, "club": "real-madrid", "label": "05/06 · Legacy"}, "peak": {"pos": "CAM", "lg": "LL", "g": 7, "a": 18, "rt": 98, "age": 29, "club": "real-madrid", "label": "01/02 · Peak"}, "emerge": {"pos": "CAM", "lg": "SA", "g": 8, "a": 10, "rt": 88, "age": 22, "club": "juventus", "label": "94/95 · Emergence"}}},
+  {name:"Dennis Bergkamp",nat:"Netherlands",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CAM", "lg": "PL", "g": 8, "a": 16, "rt": 92, "age": 36, "club": "arsenal", "label": "05/06 · Legacy"}, "peak": {"pos": "CAM", "lg": "PL", "g": 16, "a": 14, "rt": 96, "age": 28, "club": "arsenal", "label": "97/98 · Peak"}, "emerge": {"pos": "CAM", "lg": "PL", "g": 11, "a": 12, "rt": 89, "age": 26, "club": "arsenal", "label": "95/96 · Emergence"}}},
+  {name:"Ronaldo Fenomeno",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "ST", "lg": "LL", "g": 15, "a": 4, "rt": 83, "age": 30, "club": "real-madrid", "label": "06/07 · Legacy"}, "peak": {"pos": "ST", "lg": "LL", "g": 34, "a": 8, "rt": 98, "age": 20, "club": "barcelona", "label": "96/97 · Peak"}, "emerge": {"pos": "ST", "lg": "SA", "g": 22, "a": 5, "rt": 88, "age": 18, "club": "inter", "label": "94/95 · Emergence"}}},
+  {name:"Steven Gerrard",nat:"England",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CM", "lg": "PL", "g": 9, "a": 6, "rt": 85, "age": 34, "club": "liverpool", "label": "14/15 · Legacy"}, "peak": {"pos": "CM", "lg": "PL", "g": 23, "a": 14, "rt": 95, "age": 25, "club": "liverpool", "label": "05/06 · Peak"}, "emerge": {"pos": "CM", "lg": "PL", "g": 10, "a": 8, "rt": 84, "age": 20, "club": "liverpool", "label": "00/01 · Emergence"}}},
+  {name:"Frank Lampard",nat:"England",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CM", "lg": "PL", "g": 10, "a": 8, "rt": 82, "age": 36, "club": "man city", "label": "14/15 · Legacy"}, "peak": {"pos": "CM", "lg": "PL", "g": 13, "a": 16, "rt": 93, "age": 26, "club": "chelsea", "label": "04/05 · Peak"}, "emerge": {"pos": "CM", "lg": "PL", "g": 7, "a": 9, "rt": 80, "age": 21, "club": "chelsea", "label": "99/00 · Emergence"}}},
+  {name:"Didier Drogba",nat:"Ivory Coast",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "ST", "lg": "PL", "g": 7, "a": 3, "rt": 79, "age": 36, "club": "chelsea", "label": "14/15 · Legacy"}, "peak": {"pos": "ST", "lg": "PL", "g": 29, "a": 8, "rt": 94, "age": 31, "club": "chelsea", "label": "09/10 · Peak"}, "emerge": {"pos": "ST", "lg": "PL", "g": 10, "a": 5, "rt": 79, "age": 25, "club": "chelsea", "label": "03/04 · Emergence"}}},
+  {name:"Xabi Alonso",nat:"Spain",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CM", "lg": "BL", "g": 3, "a": 10, "rt": 91, "age": 32, "club": "bayern", "label": "14/15 · Legacy"}, "peak": {"pos": "CM", "lg": "PL", "g": 4, "a": 12, "rt": 90, "age": 27, "club": "liverpool", "label": "08/09 · Peak"}, "emerge": {"pos": "CM", "lg": "PL", "g": 3, "a": 8, "rt": 84, "age": 23, "club": "liverpool", "label": "04/05 · Emergence"}}},
+  {name:"Rio Ferdinand",nat:"England",retired:true,legacy:true,legacyTier:"fan-favourite",seasons:{"legacy": {"pos": "CB", "lg": "PL", "g": 0, "a": 1, "rt": 82, "age": 34, "club": "man utd", "label": "12/13 · Legacy"}, "peak": {"pos": "CB", "lg": "PL", "g": 1, "a": 2, "rt": 91, "age": 28, "club": "man utd", "label": "06/07 · Peak"}, "emerge": {"pos": "CB", "lg": "PL", "g": 1, "a": 1, "rt": 83, "age": 22, "club": "leeds", "label": "00/01 · Emergence"}}},
+  {name:"Michael Carrick",nat:"England",retired:true,legacy:true,legacyTier:"fan-favourite",seasons:{"legacy": {"pos": "CM", "lg": "PL", "g": 1, "a": 3, "rt": 80, "age": 35, "club": "man utd", "label": "16/17 · Legacy"}, "peak": {"pos": "CM", "lg": "PL", "g": 3, "a": 6, "rt": 86, "age": 31, "club": "man utd", "label": "12/13 · Peak"}, "emerge": {"pos": "CM", "lg": "PL", "g": 2, "a": 4, "rt": 79, "age": 25, "club": "man utd", "label": "06/07 · Emergence"}}},
+  {name:"Patrick Vieira",nat:"France",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CDM", "lg": "SA", "g": 2, "a": 4, "rt": 80, "age": 34, "club": "inter", "label": "10/11 · Legacy"}, "peak": {"pos": "CDM", "lg": "PL", "g": 3, "a": 8, "rt": 93, "age": 27, "club": "arsenal", "label": "03/04 · Peak"}, "emerge": {"pos": "CDM", "lg": "PL", "g": 2, "a": 5, "rt": 83, "age": 20, "club": "arsenal", "label": "96/97 · Emergence"}}},
+  {name:"Riquelme",nat:"Argentina",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "CAM", "lg": "ARG", "g": 8, "a": 9, "rt": 81, "age": 36, "club": "boca", "label": "14/15 · Legacy"}, "peak": {"pos": "CAM", "lg": "LL", "g": 14, "a": 16, "rt": 93, "age": 27, "club": "villarreal", "label": "05/06 · Peak"}, "emerge": {"pos": "CAM", "lg": "ARG", "g": 10, "a": 11, "rt": 85, "age": 22, "club": "boca", "label": "00/01 · Emergence"}}},
+  {name:"Roberto Carlos",nat:"Brazil",retired:true,legacy:true,legacyTier:"global-icon",seasons:{"legacy": {"pos": "LB", "lg": "LL", "g": 3, "a": 7, "rt": 82, "age": 34, "club": "real-madrid", "label": "07/08 · Legacy"}, "peak": {"pos": "LB", "lg": "LL", "g": 7, "a": 11, "rt": 93, "age": 28, "club": "real-madrid", "label": "01/02 · Peak"}, "emerge": {"pos": "LB", "lg": "LL", "g": 5, "a": 8, "rt": 85, "age": 23, "club": "real-madrid", "label": "96/97 · Emergence"}}},
+  {name:"Wayne Rooney",nat:"England",retired:true,legacy:true,legacyTier:"fan-favourite",seasons:{"legacy": {"pos": "ST", "lg": "PL", "g": 11, "a": 6, "rt": 76, "age": 31, "club": "everton", "label": "17/18 · Legacy"}, "peak": {"pos": "ST", "lg": "PL", "g": 27, "a": 15, "rt": 92, "age": 26, "club": "man utd", "label": "11/12 · Peak"}, "emerge": {"pos": "ST", "lg": "PL", "g": 11, "a": 9, "rt": 84, "age": 19, "club": "man utd", "label": "04/05 · Emergence"}}},
 ];
 
 
@@ -3141,31 +3630,67 @@ function natFlag(nat){
 // ══════════════════════════════════════════════════════
 function updateSeasonBtns(n){
   var p=pcSelected[n];
-  SEASONS_ORDERED.forEach(function(s){
-    var btn=document.getElementById('pc'+n+'-s'+s);
-    if(!btn) return;
-    btn.classList.toggle('on',pcSeason[n]===s);
-    if(p&&p.seasons){
-      var avail=!!p.seasons[s];
-      btn.classList.toggle('unavail',!avail);
-      btn.disabled=!avail;
-    } else {
-      btn.classList.remove('unavail');
-      btn.disabled=false;
-    }
-  });
+  var grp=document.getElementById('pc'+n+'-season-grp');
+  if(!grp) return;
+
+  // Check if this is a legacy player with historical (non-standard) seasons
+  var isLegacy = p && (p.legacy || p.retired);
+  var hasHistorical = isLegacy && p.seasons && !SEASONS_ORDERED.some(function(s){ return !!p.seasons[s]; });
+
+  if(hasHistorical) {
+    // Build custom legacy season cards
+    var keys = Object.keys(p.seasons);
+    grp.innerHTML = keys.map(function(sk) {
+      var sd = p.seasons[sk];
+      var label = sd.label || getSeasonLabel(sk, sd);
+      // Split label into era and type (e.g. "03/04 · Peak" → era="03/04", type="Peak")
+      var parts = label.split(' · ');
+      var era = parts[0] || label;
+      var type = parts[1] || '';
+      var club = sd.club ? sd.club.replace(/-/g,' ').replace(/\w/g,function(l){return l.toUpperCase();}) : '';
+      var isOn = pcSeason[n] === sk;
+      return '<div class="legacy-season-card'+(isOn?' on':'')+'" data-n="'+n+'" data-sk="'+sk+'" onclick="setLegacySeason(this.dataset.n,this.dataset.sk)" title="'+label+'">'
+        +'<div class="lsc-era">'+era+'</div>'
+        +(type?'<div class="lsc-label">'+type+'</div>':'')
+        +(club?'<div class="lsc-club">'+club+'</div>':'')
+        +'</div>';
+    }).join('');
+  } else {
+    // Standard season buttons
+    grp.innerHTML = SEASONS_ORDERED.map(function(s){
+      var avail = p && p.seasons && !!p.seasons[s];
+      var isOn = pcSeason[n]===s;
+    var cls='season-btn'+(isOn?' on':'')+((!avail)?' unavail':'');
+    return '<button class="'+cls+'" data-slot="'+n+'" data-s="'+s+'" onclick="setSeason(this.dataset.slot,this.dataset.s)"'+((!avail)?' disabled':'')+'>'+SEASON_LABELS[s]+'</button>';
+    }).join('');
+  }
+}
+
+function setLegacySeason(nOrEl, skOrEl) {
+  var n = typeof nOrEl === "string" ? parseInt(nOrEl) : nOrEl;
+  var sk = typeof skOrEl === "string" ? skOrEl : skOrEl;
+  if(!pcSelected[n] || !pcSelected[n].seasons[sk]) return;
+  pcSeason[n] = sk;
+  updateSeasonBtns(n);
+  applySeasonData(n);
 }
 
 // ══════════════════════════════════════════════════════
 //  PLAYER SEARCH & FILL
 // ══════════════════════════════════════════════════════
 function doSearch(n,v){
-  if(!v||v.length<1){closeSuggs(n);return;}
+  if(!v||v.length<1){openSearch(n);return;}
   var q=v.toLowerCase();
   var results=DB.filter(function(p){return p.name.toLowerCase().indexOf(q)>=0;})
-    .sort(function(a,b){return a.name.localeCompare(b.name);})
-    .slice(0,8);
-  var liveResults=[];
+    .sort(function(a,b){
+      // Exact start match ranked first
+      var aStarts=a.name.toLowerCase().indexOf(q)===0;
+      var bStarts=b.name.toLowerCase().indexOf(q)===0;
+      if(aStarts&&!bStarts) return -1;
+      if(!aStarts&&bStarts) return 1;
+      return a.name.localeCompare(b.name);
+    })
+    .slice(0,20);
   if(results.length<5) doLiveSearch(n,v);
   renderSuggs(n,results);
 }
@@ -3191,8 +3716,9 @@ function openSearch(n){
   var v=document.getElementById('pc'+n+'name').value;
   var players=DB.filter(function(p){
     return !v||p.name.toLowerCase().indexOf(v.toLowerCase())>=0;
-  }).sort(function(a,b){return a.name.localeCompare(b.name);}).slice(0,12);
-  renderSuggs(n,players);
+  }).sort(function(a,b){return a.name.localeCompare(b.name);});
+  // Show all players if no filter, up to 50 for performance
+  renderSuggs(n, players.slice(0, v ? 20 : 50));
 }
 
 function renderSuggs(n,players){
@@ -3225,7 +3751,12 @@ function fillPlayer(n,name){
   pcSelected[n]=p;
   // pick best available season
   if(!p.seasons[pcSeason[n]]){
-    var best=SEASONS_ORDERED.find(function(s){return !!p.seasons[s];});
+    // For legacy players with historical seasons, default to peak card
+    var allKeys = Object.keys(p.seasons);
+    var best = SEASONS_ORDERED.find(function(s){return !!p.seasons[s];})
+      || allKeys.find(function(k){return k==='peak';})
+      || allKeys.find(function(k){return k==='0304'||k==='0506'||k==='0102';})
+      || allKeys[0];
     if(best) pcSeason[n]=best;
   }
   document.getElementById('pc'+n+'name').value=p.name;
@@ -3236,6 +3767,8 @@ function fillPlayer(n,name){
   // update flag display
   var flagEl=document.getElementById('pc'+n+'-flag');
   if(flagEl) flagEl.textContent=natFlag(p.nat)||'';
+  // micro-interaction
+  addCardSelectedEffect(n);
 }
 
 function applySeasonData(n){
@@ -3395,17 +3928,70 @@ function isSamePlayer(p1,p2){
 // ══════════════════════════════════════════════════════
 function renderTrajectoryBars(traj, playerName){
   if(!traj) return '<div style="font-size:11px;color:#aaa;font-style:italic">Not enough seasons for trajectory analysis.</div>';
-  var html='<div class="vrow-tags" style="margin-bottom:8px"><span class="traj-tag '+traj.tagCls+'">'+traj.tagEmoji+' '+traj.tag+'</span></div>';
+
+  var html='<div class="vrow-tags" style="margin-bottom:10px"><span class="traj-tag '+traj.tagCls+'">'+traj.tagEmoji+' '+traj.tag+'</span></div>';
+
+  // Build trajectory narrative
+  var narrative = buildTrajNarrative(traj, playerName);
+  if(narrative) {
+    html += '<div style="font-size:12px;line-height:1.7;color:var(--ink2);font-style:italic;margin-bottom:10px;padding:8px 10px;background:var(--cream);border-left:3px solid var(--accent);border-radius:0 2px 2px 0">'+narrative+'</div>';
+  }
+
   traj.data.forEach(function(d){
     var pct=Math.round(d.adj/traj.maxOutput*100);
     html+='<div class="traj-row">'
-      +'<span class="traj-season">'+SEASON_LABELS[d.s]+'</span>'
-      +'<span class="traj-nums">'+d.g+'G | '+d.a+'A | '+(d.g+d.a)+' Out</span>'
+      +'<span class="traj-season">'+(SEASON_LABELS[d.s]||d.s)+'</span>'
+      +'<span class="traj-nums">'+d.g+'G · '+d.a+'A · '+(d.g+d.a)+' G+A</span>'
       +'<div class="traj-bar-wrap"><div class="traj-bar" style="width:'+pct+'%"></div></div>'
-      +'<span class="traj-adj">'+d.adj+' adj</span>'
+      +'<span class="traj-adj">'+d.adj+'</span>'
       +'</div>';
   });
   return html;
+}
+
+function buildTrajNarrative(traj, playerName) {
+  if (!traj || !traj.data || traj.data.length < 2) return '';
+  var data = traj.data;
+  var first = data[0];
+  var last = data[data.length-1];
+  var mid = data.length > 2 ? data[Math.floor(data.length/2)] : null;
+
+  // Calculate trend
+  var firstAdj = first.adj;
+  var lastAdj = last.adj;
+  var diff = lastAdj - firstAdj;
+  var pctChange = firstAdj > 0 ? Math.round((diff/firstAdj)*100) : 0;
+
+  var firstName = playerName ? playerName.split(' ')[0] : 'The player';
+  var name = playerName || 'The player';
+
+  // Build narrative based on trajectory type
+  if (traj.tag === 'Breakout' || traj.tag === 'Ascending') {
+    if (pctChange >= 40) {
+      return name+' is not the same player they were two seasons ago. The numbers tell a story of acceleration — from '+firstAdj+' adjusted output to '+lastAdj+'. At '+last.age+', this is the trajectory of someone heading somewhere significant.';
+    }
+    return firstName+' has improved consistently across the last '+data.length+' seasons. From '+firstAdj+' to '+lastAdj+' in adjusted output — a '+Math.abs(pctChange)+'% rise. The direction of travel is unambiguous.';
+  }
+
+  if (traj.tag === 'Declining' || traj.tag === 'Regression Risk') {
+    var ageTxt = last.age ? ' At '+last.age+', the question is whether this is a temporary dip or the beginning of an irreversible trend.' : ' The numbers suggest something is changing.';
+    return firstName+' has produced less across successive seasons — '+firstAdj+' falling to '+lastAdj+' adjusted output.'+ageTxt;
+  }
+
+  if (traj.tag === 'Peak Form') {
+    return firstName+' is at the summit. '+lastAdj+' adjusted output this season represents their career best across this window. At '+last.age+', they are producing the football of their life.';
+  }
+
+  if (traj.tag === 'Stable') {
+    return firstName+' delivers. Season after season, the output barely wavers — '+firstAdj+' to '+lastAdj+' adjusted. In a game obsessed with peaks, there is a quiet greatness in relentless consistency.';
+  }
+
+  if (traj.tag === 'Volatile') {
+    var peak = data.reduce(function(m,d){ return d.adj>m.adj?d:m; }, data[0]);
+    return 'The '+data.length+'-season window reveals a player of extremes. '+firstName+' has peaked at '+peak.adj+' adjusted output — a number that demands attention — but the variation across seasons tells a more complicated story.';
+  }
+
+  return firstName+' has averaged '+(Math.round(traj.data.reduce(function(s,d){return s+d.adj;},0)/traj.data.length))+' adjusted output across the last '+data.length+' seasons.';
 }
 
 // ══════════════════════════════════════════════════════
@@ -3462,7 +4048,7 @@ function analyse(mode){
   var curMode=isPC?pcMode:bbMode;
 
   if(curMode==='ai'){
-    verdictEl.innerHTML='<div class="vhd"><span class="vhd-title">Under the Lights</span><span class="vhd-mode">AI Live — Claude</span></div><div class="vbd"><div class="loading"><div class="spin"></div>Claude is analysing the matchup…</div></div>';
+    verdictEl.innerHTML='<div class="vhd"><span class="vhd-title">Under the Lights</span><span class="vhd-mode">AI Live — Claude</span></div><div class="vbd"><div class="loading"><div class="spin"></div><div><div class="loading-text">The scout is writing the verdict…</div><div class="loading-sub">Weighing output · context · legacy</div></div></div></div>';
     verdictEl.classList.add('show');
     callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same).then(function(r){
       renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm1,mm2,vtags,adj1,adj2,winN,r,same,curMode);
@@ -3668,7 +4254,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     '<div class="vbd vverdict-wrap">';
 
   // 1. Player Story Cards
-  html += '<div class="vv-stories">'+
+  html += '<div class="vv-stories vv-reveal">'+
     storyCard(p1,pObj1,traj1,sr1,cs1,mm1,adj1,1,w1,vvTags1,conf1)+
     storyCard(p2,pObj2,traj2,sr2,cs2,mm2,adj2,2,w2,vvTags2,conf2)+
   '</div>';
@@ -3677,10 +4263,10 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
   html += trajHTML();
 
   // 3. The Debate
-  html += debateHTML();
+  html += '<div class="vv-reveal vv-reveal-delay-1">'+debateHTML()+'</div>';
 
   // 4. The VVerdict
-  html += vverdictHTML();
+  html += '<div class="vv-reveal vv-reveal-delay-2">'+vverdictHTML()+'</div>';
 
   // 5. Share bar
   var verdictText = aiResult ? aiResult.verdict : generateSimpleVerdict(p1,p2,adj1,adj2,winN,same);
@@ -3776,9 +4362,13 @@ function applyGFilters(players,query){
 }
 
 function gsearchOpen(){
-  var val=document.getElementById('gsearch-input').value;
-  renderGSearch(applyGFilters(DB,val),val);
-  document.getElementById('gsearch-dropdown').classList.add('open');
+  var input = document.getElementById('gsearch-input');
+  var val = input ? input.value : '';
+  // Sort all DB players alphabetically for display
+  var players = applyGFilters(DB, val);
+  renderGSearch(players, val);
+  var dd = document.getElementById('gsearch-dropdown');
+  if (dd) dd.classList.add('open');
 }
 
 function gsearchFilter(val){
@@ -3799,7 +4389,7 @@ function renderGSearch(players,query){
     var flag=natFlag(p.nat)||'';
     var icons=(p.legacy?'👑':'')+(p.retired?'⭐':'');
     var safeName=p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-    html+='<div class="gsd-item" data-gname="'+safeName+'">'
+    html+='<div class="gsd-item" data-gname="'+safeName+'" onmousedown="gsearchSelect(this.getAttribute(\'data-gname\').replace(/&amp;/g,\'&\').replace(/&quot;/g,\'\"\'))" >'
       +'<span class="gsd-name">'+icons+flag+' '+p.name+'</span>'
       +'<span class="gsd-meta">'+(s.pos||'')+(s.pos&&s.lg?' · ':'')+(LGS[s.lg]?LGS[s.lg].n:s.lg||'')+'</span>'
       +'</div>';
@@ -4028,81 +4618,104 @@ function buildShareText(p1, p2, winnerName, verdictText) {
 }
 
 function buildShareBar(p1, p2, winnerName, verdictText, shareUrl, shareId) {
-  var s1 = p1.season ? ' ' + (SEASON_LABELS[p1.season]||'') : '';
-  var s2 = p2.season ? ' ' + (SEASON_LABELS[p2.season]||'') : '';
-  var label1 = p1.name + s1;
-  var label2 = p2.name + s2;
-  var shortVerdict = verdictText ? verdictText.split('.').slice(0,2).join('.')+'. ' : '';
+  var s1 = p1.season ? getSeasonLabel(p1.season, p1) : '';
+  var s2 = p2.season ? getSeasonLabel(p2.season, p2) : '';
+  var label1 = p1.name + (s1 ? ' ' + s1 : '');
+  var label2 = p2.name + (s2 ? ' ' + s2 : '');
+
+  // Get VV Tags for share text
+  var p1Tags = getVVTags(p1, p1.name, false).slice(0,2).map(function(t){return t.emoji+' '+t.key;}).join(' · ');
+  var p2Tags = getVVTags(p2, p2.name, false).slice(0,2).map(function(t){return t.emoji+' '+t.key;}).join(' · ');
+
+  // Poetic share text — Drury/Winter style
+  var shortVerdict = verdictText ? verdictText.split('.').slice(0,3).join('.')+'. ' : '';
+  var poeticShare = '⚽ ' + label1 + ' vs ' + label2
+    + (p1Tags ? '\n\n' + p1.name + ' · ' + p1Tags : '')
+    + (p2Tags ? '\n' + p2.name + ' · ' + p2Tags : '')
+    + '\n\n🏆 VVerdict: ' + winnerName
+    + '\n\n' + shortVerdict
+    + '\n\n"Football\'s Greatest Stories Aren\'t Finished." VV.'
+    + '\n' + shareUrl;
+
+  var xShareText = encodeURIComponent(poeticShare);
+  var waShareText = encodeURIComponent('⚽ *' + label1 + ' vs ' + label2 + '*'
+    + (p1Tags ? '\n\n' + p1.name + ' · ' + p1Tags : '')
+    + (p2Tags ? '\n' + p2.name + ' · ' + p2Tags : '')
+    + '\n\n🏆 *VVerdict: ' + winnerName + '*'
+    + '\n\n' + shortVerdict
+    + '\n\n_Football\'s Greatest Stories Aren\'t Finished. VV._'
+    + '\n' + shareUrl);
 
   // Rating bar
   var ratingId = 'rating-' + shareId;
-  var isLoggedIn = !!LOCKER.getSession();
+  var loggedIn = !!LOCKER.getSession();
   var ratingHtml = '<div class="rating-bar" id="' + ratingId + '">';
-  if (!isLoggedIn) {
+  if (!loggedIn) {
     ratingHtml += '<span class="rating-bar-lbl">Rate this debate</span>'
-      + '<span style="font-size:12px;color:#999;font-style:italic">🔒 <a href="#" onclick="openLocker();return false;" style="color:var(--accent);text-decoration:none;font-weight:600">Log in to rate</a> and track your debates</span>'
+      + '<span style="font-size:13px;color:#999;font-style:italic">🔒 <a href="#" onclick="openLocker();return false;" style="color:var(--accent);text-decoration:none;font-weight:600">Log in to rate</a> and track your debates</span>'
       + '</div>';
   } else {
-  ratingHtml += '<span class="rating-bar-lbl">Rate this debate</span>'
-    + '<div class="rating-stars" id="stars-' + ratingId + '">'
-    + [1,2,3,4,5].map(function(n){ return '<span class="rating-star" data-n="' + n + '" data-rid="' + ratingId + '" onclick="rateDebate(this)" onmouseover="hoverStars(this)" onmouseout="resetStars(this)">★</span>'; }).join('')
-    + '</div>'
-    + '<span class="rating-voted" id="voted-' + ratingId + '">✅ Rated!</span>'
-    + '<div class="rating-agree" id="agree-' + ratingId + '">'
-    + '<span class="rating-agree-lbl">Agree with verdict?</span>'
-    + '<div class="rating-agree-btns">'
-    + '<div><button class="ragree-btn" data-v="yes" data-rid="' + ratingId + '" onclick="agreeVote(this)">👍 Yes</button><div class="ragree-cnt" id="yes-cnt-' + ratingId + '"></div></div>'
-    + '<div><button class="ragree-btn" data-v="no" data-rid="' + ratingId + '" onclick="agreeVote(this)">👎 No</button><div class="ragree-cnt" id="no-cnt-' + ratingId + '"></div></div>'
-    + '</div></div>'
-    + '</div>';
-  } // end else isLoggedIn
+    ratingHtml += '<span class="rating-bar-lbl">Rate this debate</span>'
+      + '<div class="rating-stars" id="stars-' + ratingId + '">'
+      + [1,2,3,4,5].map(function(n){ return '<span class="rating-star" data-n="' + n + '" data-rid="' + ratingId + '" onclick="rateDebate(this)" onmouseover="hoverStars(this)" onmouseout="resetStars(this)">★</span>'; }).join('')
+      + '</div>'
+      + '<span class="rating-voted" id="voted-' + ratingId + '">✅ Rated!</span>'
+      + '<div class="rating-agree" id="agree-' + ratingId + '">'
+      + '<span class="rating-agree-lbl">Agree with verdict?</span>'
+      + '<div class="rating-agree-btns">'
+      + '<div><button class="ragree-btn" data-v="yes" data-rid="' + ratingId + '" onclick="agreeVote(this)">👍 Yes</button><div class="ragree-cnt" id="yes-cnt-' + ratingId + '"></div></div>'
+      + '<div><button class="ragree-btn" data-v="no" data-rid="' + ratingId + '" onclick="agreeVote(this)">👎 No</button><div class="ragree-cnt" id="no-cnt-' + ratingId + '"></div></div>'
+      + '</div></div>'
+      + '</div>';
+  }
 
-  var html = '<div class="share-bar" id="'+shareId+'">';
+  var html = '<div class="share-bar" id="' + shareId + '">';
   html += ratingHtml;
-  html += '<div class="share-bar-title" style="margin-top:14px">Share this debate</div>';
 
-  // Preview card
-  html += '<div class="share-card-preview">';
-  html += '<div class="sc-head">';
-  html += '<span class="sc-brand">VVonder<span>XI</span></span>';
-  html += '<span class="sc-tagline">Football Intelligence</span>';
-  html += '</div>';
-  html += '<div class="sc-body">';
-  html += '<div class="sc-matchup"><span>' + p1.name + '</span><span class="sc-vs">vs</span><span>' + p2.name + '</span></div>';
-  html += '<div class="sc-seasons">' + (p1.season ? SEASON_LABELS[p1.season]||'' : 'Career') + ' · ' + (p2.season ? SEASON_LABELS[p2.season]||'' : 'Career') + '</div>';
-  html += '<div class="sc-verdict-lbl">Peak Verdict</div>';
-  html += '<div class="sc-verdict-winner">' + winnerName + '</div>';
-  html += '<div class="sc-verdict-text">' + shortVerdict + '</div>';
-  html += '<div class="sc-foot">';
-  html += '<span class="sc-brand-line">Every generation leaves a question behind.</span>';
-  html += '<span class="sc-url">vvonderxi.com</span>';
-  html += '</div>';
-  html += '</div></div>'; // /sc-body /share-card-preview
+  // Share section
+  html += '<div class="share-bar-title" style="margin-top:18px">Share This Debate</div>';
 
-  // Buttons
-  html += '<div class="share-btns" style="margin-top:12px">';
+  // Preview
+  html += '<div class="share-preview">'
+    + '⚽ ' + label1 + ' vs ' + label2
+    + (p1Tags ? '<br><span style="font-size:12px">' + p1.name + ' · ' + p1Tags + '</span>' : '')
+    + (p2Tags ? '<br><span style="font-size:12px">' + p2.name + ' · ' + p2Tags + '</span>' : '')
+    + '<br><br>🏆 <strong>VVerdict: ' + winnerName + '</strong>'
+    + '<br><span style="font-size:12px">' + shortVerdict + '</span>'
+    + '<br><br><span style="font-size:11px;color:#999">Football&#39;s Greatest Stories Aren&#39;t Finished. VV.</span>'
+    + '</div>';
 
-  // Copy link
-  html += "<button class=\"share-btn share-copy\" onclick=\"copyShareLink(this)\" data-shareurl=\"" + encodeURIComponent(shareUrl) + "\" >📋 Copy Link</button>";
-
-  // Share on X
-  var xText = encodeURIComponent(label1 + ' vs ' + label2 + '.\n\n' + 'VVonderXI Verdict: ' + winnerName + '\n\n' + shortVerdict + '\n\n' + 'Every generation leaves a question behind.\n' + 'Compare careers. Predict greatness.\n' + shareUrl);
-  html += '<a class="share-btn share-x" href="https://x.com/intent/tweet?text='+xText+'" target="_blank" rel="noopener">𝕏 Share on X</a>';
-
-  // Share on WhatsApp
-  var waText = encodeURIComponent('⚽ *' + label1 + ' vs ' + label2 + '*\n\n' + 'VVonderXI Verdict: *' + winnerName + '*\n\n' + shortVerdict + '\n\n' + '_Every generation leaves a question behind._\n' + shareUrl);
-  html += '<a class="share-btn share-wa" href="https://wa.me/?text='+waText+'" target="_blank" rel="noopener">💬 WhatsApp</a>';
-
-  html += '</div>'; // /share-btns
-
-  // URL bar
-  html += '<div class="share-url">';
-  html += '<span class="share-url-text">'+shareUrl+'</span>';
+  // Buttons — centred
+  html += '<div class="share-btns">';
+  html += '<button class="share-btn share-btn-copy" data-sid="' + shareId + '" onclick="copyShareText(this,this.dataset.sid)">📋 Copy</button>';
+  html += '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + xShareText + '" target="_blank" rel="noopener">𝕏 Post on X</a>';
+  html += '<a class="share-btn share-btn-wa" href="https://wa.me/?text=' + waShareText + '" target="_blank" rel="noopener">💬 WhatsApp</a>';
   html += '</div>';
 
+  html += '<div id="share-copied-' + shareId + '" class="share-copied">✅ Copied to clipboard!</div>';
   html += '</div>'; // /share-bar
   return html;
 }
+
+function copyShareText(btn, shareId) {
+  // Build the full poetic text from the preview
+  var preview = btn.closest('.share-bar').querySelector('.share-preview');
+  var text = preview ? preview.innerText : '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = '✅ Copied!';
+      var msg = document.getElementById('share-copied-' + shareId);
+      if (msg) msg.style.display = 'block';
+      setTimeout(function(){
+        btn.textContent = '📋 Copy';
+        if (msg) msg.style.display = 'none';
+      }, 2000);
+    }).catch(function(){ btn.textContent = '✅ Done'; });
+  } else {
+    btn.textContent = '✅ Done';
+  }
+}
+
 
 function copyShareLink(btn, encodedUrl) {
   var url = decodeURIComponent(encodedUrl);
@@ -5589,6 +6202,157 @@ lockerLogout = function() {
   _patchNavLogout();
   updateLockerNavBtn();
 };
+
+// ── LEGENDS DROPDOWN ──────────────────────────────────
+function toggleLegendsDropdown() {
+  var wrap = document.getElementById('gnav-legends-wrap');
+  var btn = document.getElementById('gnav-legends-btn');
+  var dd = document.getElementById('gnav-legends-dropdown');
+  var isOpen = dd.classList.contains('open');
+  if (isOpen) {
+    closeLegendsDropdown();
+  } else {
+    dd.classList.add('open');
+    btn.classList.add('open');
+    // Close on outside click
+    setTimeout(function() {
+      document.addEventListener('click', closeLegendsOnOutside);
+    }, 10);
+  }
+}
+
+function closeLegendsDropdown() {
+  var btn = document.getElementById('gnav-legends-btn');
+  var dd = document.getElementById('gnav-legends-dropdown');
+  if (dd) dd.classList.remove('open');
+  if (btn) btn.classList.remove('open');
+  document.removeEventListener('click', closeLegendsOnOutside);
+}
+
+function closeLegendsOnOutside(e) {
+  var wrap = document.getElementById('gnav-legends-wrap');
+  if (wrap && !wrap.contains(e.target)) closeLegendsDropdown();
+}
+
+// ── LEGEND PANEL MODAL ────────────────────────────────
+var LEGEND_PANEL_CONTENT = {
+  'career-stage': {
+    title: 'Career Stage',
+    icon: '📈',
+    body: 'Every player moves through an arc. The VVonderXI Career Stage system identifies where a player stands in their journey — not just their age, but the shape of what they are producing relative to what they have produced before.<br><br><strong>Emerging</strong> — the numbers are building. The world is taking notice. A player under 23 whose output is accelerating.<br><strong>Peak Prime</strong> — the best version of themselves. Output at its highest, experience fully earned, the body still willing.<br><strong>Proven Elite</strong> — sustained excellence across seasons. The hardest thing in football: doing it again.<br><strong>Fading</strong> — the numbers are slowing. Not gone, but diminishing. Context matters here more than anywhere.<br><strong>Legacy</strong> — they are no longer what they were, but what they were still shapes the conversation.'
+  },
+  'trajectory': {
+    title: 'Trajectory',
+    icon: '🚀',
+    body: 'Three seasons. One direction. VVonderXI Trajectory system reads the momentum behind the numbers — not just where a player is, but where they are heading.<br><br>A player scoring 18 goals this season means something very different if they scored 12 last season and 8 the season before, versus if they scored 26 and 30. The destination matters. The journey to it matters more.<br><br><strong>Rocket</strong> — consistent acceleration. Each season better than the last.<br><strong>Peak Form</strong> — at their ceiling right now.<br><strong>Stable</strong> — consistent excellence season on season.<br><strong>Declining</strong> — the numbers tell a story the highlights do not.'
+  },
+  'market-momentum': {
+    title: 'Market Momentum',
+    icon: '💹',
+    body: 'Transfer value is not just about what a player produces. It is about what the market believes they will produce next. VVonderXI Market Momentum tag bridges that gap — identifying players whose output is rising faster than their perceived value, and those whose reputation has outrun their numbers.<br><br><strong>Rising</strong> — buy before everyone else does.<br><strong>Stable Value</strong> — priced fairly for what they deliver.<br><strong>Overvalued</strong> — the numbers do not support the price tag.<br><strong>Undervalued</strong> — a transfer market opportunity hiding in plain sight.'
+  },
+  'verdict-tags': {
+    title: 'Verdict Tags',
+    icon: '🏷️',
+    body: 'When two players are compared, the VV Engine produces Verdict Tags — labels that describe the nature of the outcome, not just the winner.<br><br><strong>Clear Winner</strong> — the numbers spoke without hesitation.<br><strong>VAR Close Call</strong> — separated by the narrowest of margins. Either player could have won this.<br><strong>Split Decision</strong> — raw output says one thing, context says another.<br><strong>League Strength Edge</strong> — the deciding factor was the difficulty of the competition.<br><strong>Trajectory Advantage</strong> — one player is moving in a direction the other is not.<br><strong>Age Context Flip</strong> — the same numbers mean something different at different ages.'
+  },
+  'vv-tags': {
+    title: 'VV Tags',
+    icon: '⭐',
+    body: 'VV Tags are personal to a player season. They are not about comparison — they are about identity. What made this campaign unique. What role this player truly played.<br><br><strong>Attackers:</strong> Elite Finisher · Goal Machine · Creative Genius · Complete Forward · Pressing Forward · Poacher<br><br><strong>Midfielders:</strong> Playmaker · Creative Engine · Scoring Midfielder · Box-to-Box Force · Complete Midfielder · Defensive Anchor<br><br><strong>Defenders:</strong> Defensive Monster · Attacking Fullback · Creative Defender · Wall<br><br><strong>Goalkeepers:</strong> Elite Keeper · Sweeper Keeper<br><br><strong>Prestige:</strong> Generational Season · Iconic Campaign · Role Breaker · Big Game Player · Legacy Season<br><br>Tags are calculated by the VV Engine from goals, assists, rating, position and league. No guessing. No AI deciding. Pure data, intelligently interpreted.'
+  }
+};
+
+var _legendPanelOpen = false;
+
+function openLegendPanel(key) {
+  closeLegendsDropdown();
+  var data = LEGEND_PANEL_CONTENT[key];
+  if (!data) return;
+
+  // Create or update modal
+  var modal = document.getElementById('legend-panel-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'legend-panel-modal';
+    modal.style.cssText = 'display:none;position:fixed;inset:0;z-index:500;background:rgba(10,8,6,.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px';
+    modal.innerHTML = '<div id="lpm-inner" style="background:#fff;border:1.5px solid var(--border);border-radius:4px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;position:relative">'
+      + '<div id="lpm-head" style="background:var(--ink);padding:16px 20px;display:flex;align-items:center;gap:10px">'
+      + '<span id="lpm-icon" style="font-size:20px"></span>'
+      + '<span id="lpm-title" style="font-family:Playfair Display,serif;font-size:18px;font-weight:900;color:#fff"></span>'
+      + '<button onclick="closeLegendPanel()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer">✕</button>'
+      + '</div>'
+      + '<div id="lpm-body" style="padding:20px 24px;font-size:13px;line-height:1.8;color:#444"></div>'
+      + '</div>';
+    modal.addEventListener('click', function(e){ if(e.target===modal) closeLegendPanel(); });
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('lpm-icon').textContent = data.icon;
+  document.getElementById('lpm-title').textContent = data.title;
+  document.getElementById('lpm-body').innerHTML = data.body;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  _legendPanelOpen = true;
+}
+
+function closeLegendPanel() {
+  var modal = document.getElementById('legend-panel-modal');
+  if (modal) modal.style.display = 'none';
+  document.body.style.overflow = '';
+  _legendPanelOpen = false;
+}
+
+// ── SCOUT GUIDE — MEMBERS ONLY ─────────────────────────
+function openGatedPage(page, btn) {
+  if (!isLoggedIn()) {
+    openLocker();
+    return;
+  }
+  switchPage(page, btn);
+}
+
+// ── PREMIUM MICRO-INTERACTIONS ───────────────────────
+function addCardSelectedEffect(n) {
+  var card = document.getElementById('pcard'+n);
+  if (!card) return;
+  card.style.transition = 'transform .1s ease, box-shadow .1s ease';
+  card.style.transform = 'scale(1.01)';
+  card.style.boxShadow = '0 6px 24px rgba(0,0,0,.12)';
+  setTimeout(function() {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+  }, 200);
+}
+
+// ── ANALYSE BUTTON PULSE ─────────────────────────────
+(function initGoBtn() {
+  var btn = document.querySelector('.go-btn');
+  if (!btn) return;
+  // Subtle pulse after 3s to draw attention
+  setTimeout(function() {
+    btn.style.animation = 'go-btn-pulse 2s ease-in-out 2';
+  }, 3000);
+})();
+
+// ── LOCKER ROOM READ MORE ─────────────────────────────
+function toggleReadMore(btn) {
+  var content = btn.nextElementSibling;
+  if (!content) return;
+  var isOpen = content.classList.contains('open');
+  content.classList.toggle('open', !isOpen);
+  btn.textContent = isOpen ? 'Read more ↓' : 'Read less ↑';
+}
+
+function gsearchBlur() {
+  // Delay so mousedown on dropdown items fires before blur closes it
+  setTimeout(function() {
+    var dd = document.getElementById('gsearch-dropdown');
+    if (dd) dd.classList.remove('open');
+    var cnt = document.getElementById('gsearch-count');
+    if (cnt) cnt.textContent = '';
+  }, 200);
+}
 
 </script>
 </body>
