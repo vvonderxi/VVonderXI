@@ -1,17 +1,47 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/*.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" }
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    { "src": "/api/search-player",   "dest": "/api/search-player.js"   },
-    { "src": "/api/get-seasons",     "dest": "/api/get-seasons.js"     },
-    { "src": "/api/analyse",         "dest": "/api/analyse.js"         },
-    { "src": "/api/refresh-players", "dest": "/api/refresh-players.js" },
-    { "src": "/api/import-players",  "dest": "/api/import-players.js"  },
-    { "src": "/api/debug-player",    "dest": "/api/debug-player.js"    },
-    { "src": "/(.*)",                "dest": "/index.html"             }
+    {
+      "src": "/api/search-player",
+      "dest": "/api/search-player.js"
+    },
+    {
+      "src": "/api/get-seasons",
+      "dest": "/api/get-seasons.js"
+    },
+    {
+      "src": "/api/analyse",
+      "dest": "/api/analyse.js"
+    },
+    {
+      "src": "/api/refresh-players",
+      "dest": "/api/refresh-players.js"
+    },
+    {
+      "src": "/api/import-players",
+      "dest": "/api/import-players.js"
+    },
+    {
+      "src": "/api/debug-player",
+      "dest": "/api/debug-player.js"
+    },
+    {
+      "src": "/db.json",
+      "dest": "/db.json",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ],
   "crons": [
     {
