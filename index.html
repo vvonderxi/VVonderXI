@@ -200,6 +200,39 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 /* Trajectory Tags */
 .traj-tag{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:2px}
 .tt-breakout{background:#f0e8f8;color:#5a2d82;border:1px solid #d4b8f0}
+.tt-formedge{background:#fff3e0;color:#c05010;border:1px solid #f0a060;font-weight:600}
+.vv-debate{background:var(--cream2);border:2px solid var(--ink);border-radius:6px;margin-top:14px;overflow:hidden}
+.vv-debate-hdr{background:var(--ink);padding:9px 16px;display:flex;align-items:center}
+.vv-debate-hdr-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent)}
+.vv-debate-panels{display:grid;grid-template-columns:1fr 2px 1fr}
+.vv-debate-panel{padding:16px 18px;background:var(--cream)}
+.vv-debate-panel--winner{border-top:3px solid var(--accent);background:#fff}
+.vv-debate-divider{background:var(--border)}
+.vv-debate-panel-top{margin-bottom:12px}
+.vv-debate-panel-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--ink);line-height:1.2;display:flex;align-items:center;gap:6px}
+.vv-debate-win-crown{font-size:13px}
+.vv-debate-panel-season{font-size:10px;color:var(--ink4);letter-spacing:1px;margin-top:3px}
+.vv-debate-stats{display:flex;align-items:center;gap:0;margin-bottom:12px;background:var(--cream2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.vv-debate-stat{flex:1;text-align:center;padding:8px 4px}
+.vv-debate-stat-div{width:1px;background:var(--border);align-self:stretch}
+.vv-debate-stat-n{display:block;font-size:18px;font-weight:700;color:var(--ink);line-height:1}
+.vv-debate-stat-l{display:block;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--ink4);margin-top:3px}
+.vv-debate-stat-vv{color:var(--accent)!important}
+.vv-debate-badge{margin-bottom:10px}
+.vv-debate-summary{font-size:11px;color:var(--ink3);line-height:1.6;margin-bottom:10px;font-style:italic;border-left:2px solid var(--border);padding-left:8px}
+.vv-debate-tags{display:flex;flex-wrap:wrap;gap:4px}
+.vv-debate-ctx{background:var(--cream2);border-top:1.5px solid var(--border);padding:14px 18px}
+.vv-debate-ctx-grid{display:grid;grid-template-columns:1fr 1px 1fr}
+.vv-debate-ctx-col{padding:0 12px}
+.vv-debate-ctx-col:first-child{padding-left:0}
+.vv-debate-ctx-col:last-child{padding-right:0}
+.vv-debate-ctx-divider{background:var(--border)}
+.vv-debate-ctx-name{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.vv-debate-ctx-row{display:flex;align-items:baseline;gap:8px;font-size:11px;color:var(--ink2);margin-bottom:5px}
+.vv-debate-ctx-key{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink4);min-width:72px;flex-shrink:0}
+.vv-debate-ctx-ai{font-size:12px;color:var(--ink2);line-height:1.7;font-style:italic}
+.vv-verdict-why-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;margin-top:12px}
+@media(max-width:580px){.vv-debate-panels{grid-template-columns:1fr}.vv-debate-divider{height:1.5px;width:100%}.vv-debate-ctx-grid{grid-template-columns:1fr}.vv-debate-ctx-divider{height:1px;margin:10px 0}.vv-debate-ctx-col{padding:0}}
 .tt-ascending{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
 .tt-stable{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd)}
 .tt-volatile{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-bd)}
@@ -1579,9 +1612,9 @@ aside{min-width:200px!important;max-width:220px!important}
               <div class="gld-desc">The VVonderXI player identity card. Style, role, career arc, tags. What the numbers mean — and what they say about who this footballer really is.</div>
             </div>
           <div class="gld-cell" onclick="openLegendsTab('tiers')">
-              <span class="gld-icon">📊</span>
-              <div class="gld-title">SSP — Performance Tiers</div>
-              <div class="gld-desc">Selected Season Performance. S-Tier through Poor. How the VV Engine grades every season across Output, Influence, Consistency, League Strength and Role Rarity.</div>
+              <span class="gld-icon">⚡</span>
+              <div class="gld-title">Behind the VVerdict</div>
+              <div class="gld-desc">The intelligence stack. VV Score™ · SSP Rating · VV Verdict.</div>
             </div>
             <div class="gld-cell" onclick="openLegendPanel('vv-tags')">
               <span class="gld-icon">⭐</span>
@@ -1668,6 +1701,23 @@ aside{min-width:200px!important;max-width:220px!important}
       <div class="data-pill" id="db-pill">Loading…</div>
       <div class="hdr-sub">6 Seasons · 8 Leagues · BIGGER</div>
     </div>
+  </div>
+</div>
+
+<!-- VV Score™ Definition Strip — always visible on compare page -->
+<div id="vvscore-strip" style="background:var(--cream2);border-bottom:1.5px solid var(--border);padding:0">
+  <div style="max-width:1400px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+      <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink)">VV Score<span style="font-size:9px;vertical-align:super;color:var(--accent)">™</span></span>
+      <span style="font-size:10px;color:var(--ink4);letter-spacing:.5px">×</span>
+      <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink)">SSP Rating</span>
+    </div>
+    <div style="width:1px;height:18px;background:var(--border);flex-shrink:0"></div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.5;flex:1;min-width:200px">
+      <strong style="color:var(--ink2)">VV Score™</strong> — Proprietary football intelligence score. Evaluates goals, assists, ratings, minutes, league strength and role context.&nbsp;
+      <strong style="color:var(--ink2)">SSP Rating</strong> — The scout-grade interpretation: from Poor → S-Tier.
+    </div>
+    <button onclick="document.getElementById('vvscore-strip').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--ink4);font-size:14px;padding:0;flex-shrink:0;line-height:1" title="Dismiss">×</button>
   </div>
 </div>
 
@@ -2096,7 +2146,7 @@ aside{min-width:200px!important;max-width:220px!important}
       <div style="text-align:center;padding:40px 20px">
         <div style="font-size:32px;margin-bottom:12px">🎬</div>
         <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--ink);margin-bottom:8px">Baller Bio has moved</div>
-        <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.7">Baller Bio definitions, Career Stage explanations, SSP tiers and the full VVonderXI methodology are now in the <strong>Legends</strong> section — under the <strong>🎬 Baller Bio</strong> and <strong>📊 SSP</strong> tabs.</div>
+        <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.7">Baller Bio definitions, Career Stage explanations, VV Score™ methodology and the full SSP Rating scale are now in the <strong>Legends</strong> section — under the <strong>🎬 Baller Bio</strong> and <strong>⚡ VV Score™</strong> tabs.</div>
         <button onclick="switchPage('legends',document.querySelector('.gnav-legends-btn'));setTimeout(function(){switchLegendTab('baller',document.querySelectorAll('#page-legends .tab-btn')[2])},100)" style="padding:10px 24px;background:var(--ink);color:#fff;border:none;font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px">Go to Legends →</button>
       </div>
     </main>
@@ -2121,7 +2171,7 @@ aside{min-width:200px!important;max-width:220px!important}
     <!-- Legends sub-nav tabs -->
     <div class="tab-bar" style="position:static!important;box-shadow:none!important;border-bottom:2px solid var(--border);margin-bottom:0;background:#fff;display:flex">
       <button class="tab-btn active" onclick="switchLegendTab('icons',this)">👑 Icons</button>
-      <button class="tab-btn" onclick="switchLegendTab('tiers',this)">📊 SSP</button>
+      <button class="tab-btn" onclick="switchLegendTab('tiers',this)">⚡ VV Score™</button>
       <button class="tab-btn" onclick="switchLegendTab('baller',this)">🎬 Baller Bio</button>
     </div>
 
@@ -2142,64 +2192,105 @@ aside{min-width:200px!important;max-width:220px!important}
 
     <!-- PERFORMANCE TIERS TAB -->
     <div class="tab-content" id="legend-tab-tiers">
+
+      <!-- VV Score™ Definition — Hero card at top of this tab -->
+      <div style="background:var(--ink);color:#fff;padding:28px 32px;margin:-1px 0 0 0;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;width:200px;height:100%;background:linear-gradient(135deg,transparent 60%,rgba(255,255,255,.04));pointer-events:none"></div>
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">Proprietary Intelligence Metric</div>
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px">VV Score<span style="font-size:14px;vertical-align:super;margin-left:2px;color:var(--accent)">™</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.65);font-style:italic;margin-bottom:18px;line-height:1.5;max-width:540px">Not goals. Not ratings. Not xG. A contextual football intelligence score that evaluates every season relative to role, position, league and career stage.</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:10px 14px;flex:1;min-width:110px">
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Inputs</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.7">Goals · Assists · Match Ratings · Minutes · League Strength · Positional Benchmarks · Career Stage</div>
+          </div>
+          <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:10px 14px;flex:1;min-width:110px">
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Output</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.7">A numerical score interpreted as an SSP Rating — from Poor through to S-Tier.</div>
+          </div>
+          <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:10px 14px;flex:1;min-width:110px">
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Formula</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.7">Proprietary to VVonderXI. The methodology is the product.</div>
+          </div>
+        </div>
+      </div>
       <div class="guide-page" style="padding:24px 0">
 
-        <!-- SSP intro -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- BEHIND THE VVERDICT                            -->
+        <!-- ═══════════════════════════════════════════════ -->
         <div class="guide-section">
-          <h2>📊 Selected Season Performance (SSP)</h2>
-          <p>The SSP Rating is VVonderXI's scout-grade interpretation of the VV Score™. Every season in the database is assigned a VV Score — a proprietary numerical intelligence metric — which is then interpreted into a professional scout grade. The same raw statistics mean completely different things depending on where you play, what position you occupy, and when in your career you produce them. The SSP accounts for all of this. What you see is not a raw number. It is an informed judgement.</p>
-        </div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:6px">Behind the VVerdict</h2>
+          <p style="font-size:12px;color:var(--ink3);font-style:italic;margin-bottom:24px">Every comparison on VVonderXI moves through three layers of intelligence. Each layer has a distinct role. Together they produce the verdict.</p>
 
-        <!-- VV Score + SSP methodology — clean brand framework -->
-        <div class="guide-section">
-          <h2>⚡ VV Score™ &amp; SSP Rating — The Intelligence Framework</h2>
-          <p style="margin-top:4px;margin-bottom:16px;font-size:12px;color:var(--ink3);font-style:italic">Two distinct layers. One intelligence platform.</p>
+          <!-- Three-layer flow — visually connected with arrows -->
+          <div style="display:flex;align-items:stretch;gap:0;margin-bottom:28px;flex-wrap:wrap">
 
-          <div class="guide-grid" style="margin-bottom:20px">
-            <div class="guide-item" style="border-left:3px solid var(--accent)">
-              <div class="guide-item-hd" style="color:var(--accent)">VV Score™ — The Numerical Intelligence Score</div>
-              <div class="guide-item-bd">
-                The VV Score is the proprietary numerical output of the VVonderXI Engine. It evaluates every season across multiple dimensions of performance — each weighted according to position, role, league quality, career stage and overall impact. The same raw statistics mean completely different things depending on where you play, who you are, and when in your career it happened.<br><br>
-                The VV Score is not goals and assists. It is not a rating. It is not xG.<br>
-                It is a contextual football intelligence score.<br><br>
-                <em style="color:var(--ink3);font-size:11px">The exact methodology behind the VV Score is proprietary to VVonderXI.</em>
+            <!-- Layer 1: VV Score -->
+            <div style="flex:1;min-width:200px;background:var(--ink);color:#fff;border-radius:6px 0 0 6px;padding:22px 20px;position:relative">
+              <div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">Layer 01</div>
+              <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:3px">VV Score<span style="font-size:10px;vertical-align:super;margin-left:2px;color:var(--accent)">™</span></div>
+              <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:12px;letter-spacing:.3px">The numerical intelligence score</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:14px">The VVonderXI Engine processes every season across multiple dimensions — goals, assists, ratings, minutes, league strength, positional benchmarks, career stage. The result is a single contextual score. Not raw statistics. Contextual intelligence.</div>
+              <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:8px 10px">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Example</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.8);font-style:italic">"Haaland 22/23 — 36G · 8A · PL · Age 22"<br>→ <strong style="color:var(--accent)">VV Score: 18.4</strong></div>
+              </div>
+              <div style="position:absolute;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);bottom:14px;right:16px">Proprietary · Contextual</div>
+            </div>
+
+            <!-- Arrow 1 -->
+            <div style="display:flex;align-items:center;justify-content:center;background:var(--border);width:32px;flex-shrink:0;position:relative">
+              <div style="font-size:18px;color:var(--ink3);transform:rotate(0deg)">→</div>
+            </div>
+
+            <!-- Layer 2: SSP Rating -->
+            <div style="flex:1;min-width:200px;background:var(--cream2);border:1.5px solid var(--border);border-left:none;border-right:none;padding:22px 20px;position:relative">
+              <div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:8px">Layer 02</div>
+              <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:3px;color:var(--ink)">SSP Rating</div>
+              <div style="font-size:10px;color:var(--ink4);margin-bottom:12px;letter-spacing:.3px">The scout-grade interpretation</div>
+              <div style="font-size:11px;color:var(--ink3);line-height:1.7;margin-bottom:14px">The VV Score is translated into a professional scout grade. Like a credit score produces a credit rating, or an exam result produces a degree classification — the SSP Rating is the human-readable verdict on the number. Ten grades, from Poor to S-Tier. Each one earned, not assigned.</div>
+              <div style="background:var(--cream3);border:1px solid var(--border);border-radius:3px;padding:8px 10px">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:4px">Example</div>
+                <div style="font-size:11px;color:var(--ink2);font-style:italic">VV Score: 18.4<br>→ <strong>🏆 Era Defining</strong></div>
               </div>
             </div>
-            <div class="guide-item" style="border-left:3px solid #5a2d82">
-              <div class="guide-item-hd" style="color:#5a2d82">SSP Rating — The Scout Interpretation</div>
-              <div class="guide-item-bd">
-                The SSP Rating is how the VVonderXI Engine translates a VV Score into a professional scout grade. Where the VV Score is the number, the SSP Rating is the verdict.<br><br>
-                The relationship is intuitive:<br>
-                VV Score → SSP Rating<br>
-                Like a credit score → credit grade.<br>
-                Like an exam result → degree classification.<br><br>
-                <em style="color:var(--ink3);font-size:11px">Higher VV Scores produce higher SSP Ratings. Both are earned, not assigned.</em>
+
+            <!-- Arrow 2 -->
+            <div style="display:flex;align-items:center;justify-content:center;background:var(--border);width:32px;flex-shrink:0">
+              <div style="font-size:18px;color:var(--ink3)">→</div>
+            </div>
+
+            <!-- Layer 3: VV Verdict -->
+            <div style="flex:1;min-width:200px;background:var(--cream);border:1.5px solid var(--border);border-left:none;border-radius:0 6px 6px 0;padding:22px 20px;position:relative">
+              <div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:8px">Layer 03</div>
+              <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:3px;color:var(--ink)">VV Verdict</div>
+              <div style="font-size:10px;color:var(--ink4);margin-bottom:12px;letter-spacing:.3px">The AI scout narrative</div>
+              <div style="font-size:11px;color:var(--ink3);line-height:1.7;margin-bottom:14px">The VV Verdict is where intelligence becomes language. The VVonderXI Engine synthesises the VV Score, SSP Rating, career trajectory, age context and positional comparison into a professional scout report. The kind of analysis that used to require a human analyst. Now available in seconds.</div>
+              <div style="background:var(--cream3);border:1px solid var(--border);border-radius:3px;padding:8px 10px">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:4px">Example</div>
+                <div style="font-size:11px;color:var(--ink2);font-style:italic">"Three consecutive Era Defining seasons. The trajectory is unambiguous."</div>
               </div>
             </div>
+
           </div>
 
-          <div style="background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-top:8px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-bottom:10px">The Full Intelligence Stack</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
-              <div style="flex:1;min-width:120px;padding:8px;background:var(--cream3);border-radius:3px">
-                <div style="font-weight:700;color:var(--accent);margin-bottom:4px">VV Score™</div>
-                <div style="color:var(--ink3)">Numerical season intelligence score. Proprietary. Contextual.</div>
-              </div>
-              <div style="flex:1;min-width:120px;padding:8px;background:var(--cream3);border-radius:3px">
-                <div style="font-weight:700;color:#5a2d82;margin-bottom:4px">SSP Rating</div>
-                <div style="color:var(--ink3)">Scout-grade interpretation of the VV Score.</div>
-              </div>
-              <div style="flex:1;min-width:120px;padding:8px;background:var(--cream3);border-radius:3px">
-                <div style="font-weight:700;color:var(--ink2);margin-bottom:4px">VV Verdict</div>
-                <div style="color:var(--ink3)">AI scout narrative. The story behind the numbers.</div>
-              </div>
+          <!-- Relationship summary strip -->
+          <div style="background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);flex-shrink:0">The Logic</div>
+            <div style="width:1px;height:16px;background:var(--border);flex-shrink:0"></div>
+            <div style="font-size:12px;color:var(--ink3);line-height:1.6;flex:1;min-width:200px">
+              <strong style="color:var(--ink2)">VV Score™</strong> produces the number &nbsp;→&nbsp;
+              <strong style="color:var(--ink2)">SSP Rating</strong> names the grade &nbsp;→&nbsp;
+              <strong style="color:var(--ink2)">VV Verdict</strong> tells the story.
+              The formula behind the VV Score is proprietary. The output is everything users see and trust.
             </div>
           </div>
         </div>
 
         <!-- Tier scale -->
         <div class="guide-section">
-          <h2>📈 SSP Tier Scale — What Each Grade Means</h2>
+          <h2>📈 SSP Rating Scale — What Each Grade Means</h2>
           <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;font-style:italic">The SSP Rating is the scout's interpretation of the VV Score. A rating is not a measure of talent — it is a measure of seasonal impact relative to role, position, league context and career stage.</p>
           <div class="guide-grid">
             <div class="guide-item" style="border-left:3px solid #5a2d82">
@@ -4297,11 +4388,15 @@ function trajectoryAnalysis(p){
   var adjDiff=latest.adj-oldest.adj;
   var adjDiff1=latest.adj-(prev?prev.adj:latest.adj); // last vs prev
   var tag,tagCls,tagEmoji;
+  // Form Edge: latest adj ≥20% above 3-season avg AND last-to-prev jump ≥5
+  var adjAvg=data.reduce(function(s,d){return s+d.adj;},0)/data.length;
+  var isFormEdge=data.length>=2&&adjAvg>0&&latest.adj>=adjAvg*1.20&&adjDiff1>=5;
   // detect volatility: big swing between seasons
   var isVolatile=prev&&Math.abs(latest.adj-prev.adj)>=6&&data.length>=2&&
     ((latest.adj>prev.adj&&prev.adj<(oldest?oldest.adj:prev.adj))||
      (latest.adj<prev.adj&&prev.adj>(oldest?oldest.adj:prev.adj)));
-  if(isVolatile){tag='Volatile';tagCls='tt-volatile';tagEmoji='🌊';}
+  if(isFormEdge){tag='Form Edge';tagCls='tt-formedge';tagEmoji='🔥';}
+  else if(isVolatile){tag='Volatile';tagCls='tt-volatile';tagEmoji='🌊';}
   else if(adjDiff>=10&&adjDiff1>=4){tag='Breakout';tagCls='tt-breakout';tagEmoji='🚀';}
   else if(adjDiff>=4||adjDiff1>=3){tag='Ascending';tagCls='tt-ascending';tagEmoji='📈';}
   else if(adjDiff<=-8||adjDiff1<=-5){tag='Regression Risk';tagCls='tt-regression';tagEmoji='⚠️';}
@@ -4397,13 +4492,14 @@ function getVerdictTagDesc(key) {
 
 // ── TRAJECTORY TAG DESCRIPTIONS ─────────────────────
 var TRAJ_DESCS = {
-  'Breakout': 'A major leap forward. Something has changed — the player has reached a new level suddenly and decisively.',
-  'Ascending': 'Steadily improving season after season. The direction of travel is unambiguous and positive.',
-  'Peak Form': 'Producing the best football of their career right now. At the ceiling of their ability.',
-  'Stable': 'Consistent season to season. Reliable, predictable, and delivering what is expected.',
-  'Volatile': 'Strong highs and notable lows. Capable of brilliance but difficult to predict.',
-  'Declining': 'Output has gradually decreased across multiple seasons. The curve is pointing downward.',
-  'Regression Risk': 'Recent output significantly below their established standard. The next season is critical.'
+  'Form Edge':      "Current season significantly outperforms this player's established baseline. Anomaly or new ceiling — the next season will tell.",
+  'Breakout':       'A major leap forward. Something has changed — the player has reached a new level suddenly and decisively.',
+  'Ascending':      'Steadily improving season after season. The direction of travel is unambiguous and positive.',
+  'Peak Form':      'Producing the best football of their career right now. At the ceiling of their ability.',
+  'Stable':         'Consistent season to season. Reliable, predictable, and delivering what is expected.',
+  'Volatile':       'Strong highs and notable lows. Capable of brilliance but difficult to predict.',
+  'Declining':      'Output has gradually decreased across multiple seasons. The curve is pointing downward.',
+  'Regression Risk':'Recent output significantly below their established standard. The next season is critical.'
 };
 function getTrajDesc(tag) {
   return TRAJ_DESCS[tag] || tag;
@@ -5157,36 +5253,132 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     return html;
   }
 
-  // ── THE DEBATE SECTION ────────────────────────────────
-  function debateHTML() {
-    var html = '<div class="vv-debate">'+
-      '<div class="vv-debate-title">The Debate</div>'+
-      '<div class="vv-debate-grid">';
+  // ══════════════════════════════════════════════════════
+  // THE DEBATE — Full intelligence briefing
+  // Two panels: stats · VV Score · SSP badge · 3-5 tags
+  // Context strip with trajectory/stage/market/league (no undefined)
+  // ══════════════════════════════════════════════════════
 
-    // Numbers say
-    var numStr1 = p1.g+'G '+p1.a+'A ('+adj1+' adj) · '+sr1.lbl;
-    var numStr2 = p2.g+'G '+p2.a+'A ('+adj2+' adj) · '+sr2.lbl;
-    html += '<div>'+
-      '<div class="vv-debate-col-title">What the numbers say</div>'+
-      '<div class="vv-debate-point">'+p1.name+': '+numStr1+'</div>'+
-      '<div class="vv-debate-point">'+p2.name+': '+numStr2+'</div>'+
-    '</div>';
-
-    // Context
-    var ctx = aiResult && aiResult.h2h ? aiResult.h2h :
-      (traj1 && traj2 ?
-        'Trajectory: '+p1.name+' is '+traj1.lbl+'. '+p2.name+' is '+traj2.lbl+'.' :
-        'League context: '+(LGS[p1.lg]||{n:p1.lg}).n+' (×'+(LGS[p1.lg]||{f:1}).f+') vs '+(LGS[p2.lg]||{n:p2.lg}).n+' (×'+(LGS[p2.lg]||{f:1}).f+').');
-
-    html += '<div>'+
-      '<div class="vv-debate-col-title">What the context says</div>'+
-      '<div class="vv-debate-point" style="border-left:none">'+ctx+'</div>'+
-    '</div>';
-
-    html += '</div></div>'; // /vv-debate-grid /vv-debate
-    return html;
+  function buildDebateTags(vvT, cs, traj, mm) {
+    var pool = [];
+    var used = {};
+    // 1. VV Tags — season identity (up to 3)
+    if (vvT && vvT.length) {
+      vvT.slice(0,3).forEach(function(t) {
+        if (!used[t.key]) {
+          var def = VV_TAG_DEFS[t.key] || {};
+          pool.push('<span class="vv-tag vv-tag-'+(def.group||'att')+(t.primary?' vv-tag-primary':'')+'" title="'+(def.desc||t.key)+'">'+(def.emoji||t.emoji||'🏷️')+' '+t.key+'</span>');
+          used[t.key] = true;
+        }
+      });
+    }
+    // 2. Career Stage
+    if (cs && !used[cs.lbl] && pool.length < 5) {
+      pool.push('<span class="cs-tag '+cs.cls+'" title="'+(cs.desc||cs.lbl)+'">'+cs.emoji+' '+cs.lbl+'</span>');
+      used[cs.lbl] = true;
+    }
+    // 3. Trajectory — use .tag not .lbl (fix undefined)
+    if (traj && traj.tag && !used[traj.tag] && pool.length < 5) {
+      var tDesc = TRAJ_DESCS[traj.tag] || traj.tag;
+      pool.push('<span class="traj-tag '+traj.tagCls+'" title="'+tDesc+'">'+traj.tagEmoji+' '+traj.tag+'</span>');
+      used[traj.tag] = true;
+    }
+    // 4. Market Momentum
+    if (mm && !used[mm.lbl] && pool.length < 5) {
+      pool.push('<span class="mm-tag '+mm.cls+'" title="'+mm.lbl+'">'+mm.emoji+' '+mm.lbl+'</span>');
+    }
+    // Pad to minimum 3 from remaining VV Tags
+    if (pool.length < 3 && vvT) {
+      vvT.slice(3).forEach(function(t) {
+        if (pool.length >= 3 || used[t.key]) return;
+        var def = VV_TAG_DEFS[t.key] || {};
+        pool.push('<span class="vv-tag vv-tag-'+(def.group||'att')+'" title="'+(def.desc||t.key)+'">'+(def.emoji||t.emoji||'🏷️')+' '+t.key+'</span>');
+        used[t.key] = true;
+      });
+    }
+    return pool.join('');
   }
 
+  function buildSeasonSummary(p, sr, traj, cs) {
+    var pos = p.pos || '';
+    var ga = (p.g||0) + (p.a||0);
+    var lg = (LGS[p.lg]||{n:p.lg||'top flight'}).n;
+    if (pos === 'GK') {
+      if (sr.total >= 15.5) return 'An elite goalkeeper season. Dominant presence in the '+lg+'.';
+      return 'A goalkeeper season measured through rating and availability, not output. Steady in the '+lg+'.';
+    }
+    if (ga === 0) return 'Minimal attacking contribution this campaign. Impact measured through other dimensions.';
+    var lead = p.g > p.a ? p.g+' goals drove this campaign' : p.a+' assists shaped this campaign';
+    var stage = cs ? cs.lbl.toLowerCase() : 'professional';
+    var tNote = traj && traj.tag ? ' '+traj.tag+' trajectory.' : '';
+    return lead+' in the '+lg+' at the '+stage+' stage.'+tNote;
+  }
+
+  function debateHTML() {
+    var sLabel1 = sLbl(p1, pObj1) || '';
+    var sLabel2 = sLbl(p2, pObj2) || '';
+    var lgName1 = (LGS[p1.lg]||{n:p1.lg||'—'}).n;
+    var lgName2 = (LGS[p2.lg]||{n:p2.lg||'—'}).n;
+    var tags1 = buildDebateTags(vvTags1, cs1, traj1, mm1);
+    var tags2 = buildDebateTags(vvTags2, cs2, traj2, mm2);
+    var sum1 = buildSeasonSummary(p1, sr1, traj1, cs1);
+    var sum2 = buildSeasonSummary(p2, sr2, traj2, cs2);
+    // Fix undefined: use traj.tag not traj.lbl
+    var t1lbl = traj1 && traj1.tag ? (traj1.tagEmoji+' '+traj1.tag) : '—';
+    var t2lbl = traj2 && traj2.tag ? (traj2.tagEmoji+' '+traj2.tag) : '—';
+    var h2hCtx = aiResult && aiResult.h2h ? aiResult.h2h : null;
+
+    function panel(p, sr, adj, cs, traj, mm, tagsHtml, summary, sLabel, isWin) {
+      var wc = isWin ? ' vv-debate-panel--winner' : '';
+      return '<div class="vv-debate-panel'+wc+'">'+
+        '<div class="vv-debate-panel-top">'+
+          '<div class="vv-debate-panel-name">'+(isWin?'<span class="vv-debate-win-crown">🏆</span>':'')+p.name+'</div>'+
+          (sLabel?'<div class="vv-debate-panel-season">'+sLabel+'</div>':'')+
+        '</div>'+
+        '<div class="vv-debate-stats">'+
+          '<div class="vv-debate-stat"><span class="vv-debate-stat-n">'+p.g+'</span><span class="vv-debate-stat-l">Goals</span></div>'+
+          '<div class="vv-debate-stat-div"></div>'+
+          '<div class="vv-debate-stat"><span class="vv-debate-stat-n">'+p.a+'</span><span class="vv-debate-stat-l">Assists</span></div>'+
+          '<div class="vv-debate-stat-div"></div>'+
+          '<div class="vv-debate-stat"><span class="vv-debate-stat-n">'+(p.g+p.a)+'</span><span class="vv-debate-stat-l">G+A</span></div>'+
+          '<div class="vv-debate-stat-div"></div>'+
+          '<div class="vv-debate-stat"><span class="vv-debate-stat-n vv-debate-stat-vv">'+adj+'</span><span class="vv-debate-stat-l">VV Score</span></div>'+
+        '</div>'+
+        '<div class="vv-debate-badge"><span class="badge '+sr.cls+'">'+sr.emoji+' '+sr.lbl+'</span></div>'+
+        '<div class="vv-debate-summary">'+summary+'</div>'+
+        '<div class="vv-debate-tags">'+tagsHtml+'</div>'+
+      '</div>';
+    }
+
+    function ctxCol(name, cs, tLbl, mm, age, lgName) {
+      return '<div class="vv-debate-ctx-col">'+
+        '<div class="vv-debate-ctx-name">'+name+'</div>'+
+        '<div class="vv-debate-ctx-row"><span class="vv-debate-ctx-key">Stage</span><span>'+(cs?cs.emoji+' '+cs.lbl:'—')+'</span></div>'+
+        '<div class="vv-debate-ctx-row"><span class="vv-debate-ctx-key">Trajectory</span><span>'+tLbl+'</span></div>'+
+        '<div class="vv-debate-ctx-row"><span class="vv-debate-ctx-key">Market</span><span>'+(mm?mm.emoji+' '+mm.lbl:'—')+'</span></div>'+
+        '<div class="vv-debate-ctx-row"><span class="vv-debate-ctx-key">Age</span><span>'+(age?'Age '+age:'—')+'</span></div>'+
+        '<div class="vv-debate-ctx-row"><span class="vv-debate-ctx-key">League</span><span>'+lgName+'</span></div>'+
+      '</div>';
+    }
+
+    var html = '<div class="vv-debate">'+
+      '<div class="vv-debate-hdr"><span class="vv-debate-hdr-label">⚡ The Debate</span></div>'+
+      '<div class="vv-debate-panels">'+
+        panel(p1,sr1,adj1,cs1,traj1,mm1,tags1,sum1,sLabel1,winN===1)+
+        '<div class="vv-debate-divider"></div>'+
+        panel(p2,sr2,adj2,cs2,traj2,mm2,tags2,sum2,sLabel2,winN===2)+
+      '</div>'+
+      '<div class="vv-debate-ctx">'+(h2hCtx?
+        '<div class="vv-debate-ctx-ai">'+h2hCtx+'</div>' :
+        '<div class="vv-debate-ctx-grid">'+
+          ctxCol(p1.name,cs1,t1lbl,mm1,p1.age,lgName1)+
+          '<div class="vv-debate-ctx-divider"></div>'+
+          ctxCol(p2.name,cs2,t2lbl,mm2,p2.age,lgName2)+
+        '</div>')+
+      '</div>'+
+    '</div>';
+    return html;
+  }
   // ── THE VVERDICT ──────────────────────────────────────
   function vverdictHTML() {
     var winnerName = winN===1?p1.name:(winN===2?p2.name:'Drawn');
@@ -5211,8 +5403,9 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
       '<div class="vv-verdict-body">'+
         '<div class="vv-verdict-narrative">'+verdictText+'</div>';
 
-    // Verdict tags
+    // Verdict tags — Context C: unique deciding tags, labelled "Why this verdict"
     if (vtags.length) {
+      html += '<div class="vv-verdict-why-label">Why this verdict</div>';
       html += '<div class="vv-verdict-tags-row">';
       vtags.forEach(function(t){
         var vDesc = getVerdictTagDesc(t.key);
