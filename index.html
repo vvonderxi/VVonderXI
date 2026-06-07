@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>VVonderXI — Football Intelligence Platform</title>
 <meta name="description" content="Compare football careers. Predict greatness. AI-powered player analysis across 6 seasons.">
 <meta property="og:type" content="website">
@@ -1555,6 +1555,238 @@ aside{min-width:200px!important;max-width:220px!important}
   z-index:300;
 }
 
+
+/* ══════════════════════════════════════════════════════
+   MOBILE RESPONSIVENESS — Full pass
+   Breakpoints: 768px tablet | 480px mobile | 390px small
+   ══════════════════════════════════════════════════════ */
+
+/* ── 768px: Tablet ─────────────────────────────────── */
+@media(max-width:768px){
+
+  /* Nav */
+  .gnav{padding:0 10px;gap:0}
+  .gnav-brand{font-size:14px!important}
+  .gnav-btn{padding:10px 10px;font-size:9px;letter-spacing:.5px}
+
+  /* Header */
+  .hdr{padding:14px 16px 12px!important}
+  .hdr-site-title{font-size:22px!important}
+  .hdr-tagline{font-size:12px!important}
+  .hdr-inner{gap:8px}
+  .hdr-right{text-align:right}
+
+  /* Main layout: collapse sidebar to top */
+  .wrap{grid-template-columns:1fr!important;padding:12px 14px 60px!important;gap:14px!important}
+
+  /* Sidebar: show collapsed by default on mobile */
+  aside .sb-block:not(#sb-db){display:none}
+  aside #sb-db .sb-body{display:none}
+
+  /* Global search */
+  .gsearch-bar{padding:10px 14px!important}
+  .gsearch-inner{gap:8px}
+
+  /* Player cards grid */
+  .pgrid{grid-template-columns:1fr 1fr!important;gap:10px}
+
+  /* Story cards */
+  .vv-stories{grid-template-columns:1fr!important;gap:10px}
+  .vv-story{padding:12px!important}
+
+  /* VV Score strip */
+  #vvscore-strip > div{padding:7px 14px;gap:10px}
+  #vvscore-strip .vv-score-strip-divider{display:none}
+
+  /* Verdict */
+  .vhd{padding:12px 14px!important}
+  .vhd-title{font-size:16px!important}
+  .vv-verdict-winner{font-size:22px!important}
+  .vv-verdict-head{padding:12px 16px!important}
+  .vv-verdict-body{padding:14px 16px!important}
+
+  /* Trajectory */
+  .traj-section{padding:12px 14px!important}
+  .traj-hd{font-size:12px!important}
+
+  /* Legends */
+  .legends-page{padding:16px 14px 60px!important}
+  .guide-page{padding:16px 14px 60px!important}
+  .legends-header h1{font-size:22px!important}
+
+  /* Locker */
+  .ld-body{padding:16px 14px!important}
+  .ld-nav-btn{padding:12px 12px!important;font-size:10px!important;letter-spacing:1px!important}
+
+  /* Run button */
+  .go-btn{padding:13px!important;font-size:12px!important}
+
+  /* Legends dropdown */
+  .gld-grid{grid-template-columns:1fr 1fr!important}
+}
+
+/* ── 480px: Mobile ─────────────────────────────────── */
+@media(max-width:480px){
+
+  /* Nav — compact */
+  .gnav{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .gnav-brand{font-size:13px!important;margin-right:8px}
+  .gnav-btn{padding:10px 8px;font-size:8px;letter-spacing:.3px;white-space:nowrap}
+
+  /* Header */
+  .hdr{padding:12px 14px 10px!important}
+  .hdr-site-title{font-size:20px!important}
+  .hdr-eyebrow{font-size:8px!important;letter-spacing:2px}
+  .hdr-tagline{font-size:11px!important}
+  .hdr-right{display:none}
+
+  /* Wrap */
+  .wrap{padding:10px 12px 60px!important}
+
+  /* Player cards: full width */
+  .pgrid{grid-template-columns:1fr!important}
+  .pcard-hd{font-size:10px!important;padding:7px 10px!important}
+
+  /* Season buttons: horizontal scroll */
+  .season-row{flex-wrap:nowrap!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .season-row button,.s-btn{flex-shrink:0!important;min-width:44px;font-size:9px!important}
+
+  /* Stats row in story card */
+  .vv-story-stats{gap:4px!important}
+  .vv-stat-box{padding:6px 4px!important;min-width:40px}
+  .vv-stat-n{font-size:16px!important}
+  .vv-stat-l{font-size:7px!important}
+
+  /* VV Score bars */
+  .vv-index-bars{padding:8px 0!important}
+
+  /* Tags: allow wrap, touch-friendly size */
+  .vtag,.cs-tag,.traj-tag,.mm-tag,.vv-tag,.badge{
+    font-size:9px!important;
+    padding:4px 8px!important;
+    min-height:28px;
+    display:inline-flex;
+    align-items:center;
+  }
+
+  /* VV Score strip: hide on small mobile */
+  #vvscore-strip{display:none!important}
+
+  /* Verdict */
+  .vhd{padding:10px 12px!important}
+  .vhd-title{font-size:14px!important}
+  .vv-verdict-winner{font-size:20px!important}
+  .vv-verdict-narrative{font-size:12px!important;line-height:1.7!important}
+  .vv-verdict-factor{font-size:11px!important}
+
+  /* Debate */
+  .vv-debate-panel-name{font-size:14px!important}
+  .vv-debate-stat-n{font-size:15px!important}
+  .vv-debate-stat-l{font-size:7px!important}
+  .vv-debate-stats{border-radius:3px!important}
+
+  /* Trajectory bars */
+  .traj-bar-wrap{gap:4px!important}
+  .traj-player-label{font-size:9px!important}
+
+  /* Global search */
+  .gsearch-bar{padding:8px 12px!important}
+  .gsearch-input{font-size:13px!important}
+  .gsearch-count{display:none}
+
+  /* Mode toggle */
+  .mode-row{gap:6px}
+  .tgl-btn{padding:5px 10px!important;font-size:10px!important}
+
+  /* Tab buttons */
+  .tab-btn{padding:8px 12px!important;font-size:9px!important;letter-spacing:1px!important}
+
+  /* Guide grid */
+  .guide-grid{grid-template-columns:1fr!important}
+
+  /* Legends dropdown */
+  .gld-grid{grid-template-columns:1fr!important}
+  .gld-cell{padding:14px!important}
+  .gld-title{font-size:14px!important}
+  .gld-desc{font-size:11px!important}
+
+  /* Legends header */
+  .legends-header h1{font-size:20px!important}
+  .legends-page{padding:12px 12px 60px!important}
+  .guide-page{padding:12px 12px 60px!important}
+
+  /* Locker room */
+  .ld-body{padding:12px 12px!important}
+  .ld-section-title{font-size:18px!important}
+  .ld-nav{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ld-nav-btn{padding:10px 10px!important;font-size:9px!important;white-space:nowrap}
+  .ld-stats{grid-template-columns:1fr 1fr!important}
+  .ld-stat-n{font-size:24px!important}
+
+  /* Run comparison button */
+  .go-btn{padding:14px!important;font-size:12px!important;letter-spacing:2px!important}
+
+  /* Share bar */
+  .share-btns{flex-wrap:wrap!important;gap:6px!important}
+  .share-btn{font-size:9px!important;padding:6px 10px!important}
+}
+
+/* ── 390px: Small mobile (iPhone SE etc) ──────────── */
+@media(max-width:390px){
+
+  .gnav-brand{font-size:12px!important}
+  .gnav-btn{padding:10px 6px;font-size:8px}
+  .hdr-site-title{font-size:18px!important}
+  .hdr-tagline{display:none}
+
+  .vv-stat-n{font-size:14px!important}
+  .vv-stat-l{font-size:6px!important}
+  .vv-stat-box{min-width:36px;padding:5px 3px!important}
+
+  .vv-verdict-winner{font-size:18px!important}
+  .vv-debate-panel-name{font-size:13px!important}
+  .vv-debate-stat-n{font-size:14px!important}
+
+  .tab-btn{padding:8px 8px!important;font-size:8px!important}
+
+  .pgrid,.vv-stories{gap:8px!important}
+
+  /* Touch target minimums */
+  .go-btn{padding:15px!important}
+  .tgl-btn{min-height:36px}
+  .s-btn,.season-row button{min-height:32px;min-width:40px}
+}
+
+/* ── Touch optimisations (all mobile) ──────────────── */
+@media(hover:none) and (pointer:coarse){
+  /* Enlarge tap targets */
+  .gnav-btn{min-height:44px;display:flex;align-items:center}
+  .tab-btn{min-height:40px}
+  .go-btn{min-height:48px}
+  .tgl-btn{min-height:36px}
+  .s-btn,.season-row button{min-height:36px}
+  .sb-head{min-height:44px}
+
+  /* Remove hover effects that confuse on touch */
+  .pcard:hover{box-shadow:none}
+  .gnav-btn:hover:not(.active){color:rgba(255,255,255,.5)}
+}
+
+/* ── Mobile input sizing ── */
+@media(max-width:480px){
+  .pcard-bd input[type="text"],.swrap input{font-size:14px!important;-webkit-appearance:none}
+  .pcard-bd select{font-size:14px!important;-webkit-appearance:none;background:var(--cream2)}
+  .field label{font-size:9px!important;letter-spacing:1px!important}
+  .vv-story-name{font-size:15px!important}
+  .vv-story-meta{font-size:10px!important}
+  .vv-story-narrative{font-size:11px!important;line-height:1.6!important}
+  .vv-confidence{font-size:10px!important}
+  .score-label{font-size:8px!important}
+  /* Prevent zoom on input focus (iOS) */
+  input[type="text"],input[type="email"],input[type="password"],select,textarea{
+    font-size:16px!important
+  }
+}
 </style>
 </head>
 <body>
@@ -1706,7 +1938,7 @@ aside{min-width:200px!important;max-width:220px!important}
 
 <!-- VV Score™ Definition Strip — always visible on compare page -->
 <div id="vvscore-strip" style="background:var(--cream2);border-bottom:1.5px solid var(--border);padding:0">
-  <div style="max-width:1400px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div style="max-width:1400px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
       <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink)">VV Score<span style="font-size:9px;vertical-align:super;color:var(--accent)">™</span></span>
       <span style="font-size:10px;color:var(--ink4);letter-spacing:.5px">×</span>
@@ -1723,7 +1955,9 @@ aside{min-width:200px!important;max-width:220px!important}
 
 <div class="wrap">
   <!-- SIDEBAR -->
-  <aside>
+  <aside id="main-sidebar">
+  <button id="sb-mobile-toggle" onclick="toggleMobileSidebar()" style="display:none;width:100%;padding:10px;margin-bottom:10px;background:var(--cream3);border:1px solid var(--border);border-radius:3px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);cursor:pointer;text-align:left">⚙️ Filters &amp; Database ▼</button>
+  <div id="sb-mobile-content">
     <!-- Database Panel -->
     <div class="sb-block" id="sb-db">
       <div class="sb-head" onclick="toggleSb('sb-db')">
@@ -1886,7 +2120,8 @@ aside{min-width:200px!important;max-width:220px!important}
         <div class="lt"><span class="vtag vtag-primary">🚫 Not Even Close</span><div class="lt-desc">One player simply operated on a different level.</div></div>
       </div>
     </div>
-  </aside>
+    </div>
+</aside>
 
   <!-- MAIN CONTENT -->
   <main>
