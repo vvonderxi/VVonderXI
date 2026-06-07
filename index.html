@@ -75,20 +75,24 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .db-lg-arrow{font-size:10px;color:#aaa}
 .db-league-players{padding:4px 12px 8px;background:#f0ebe0}
 /* ── New sidebar league rows ── */
-.db-lr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--cream4);transition:background .12s;user-select:none}
-.db-lr:hover{background:var(--cream3)}
+.db-lr{display:flex;align-items:center;justify-content:space-between;padding:12px 12px;cursor:pointer;border-bottom:1px solid var(--cream4);transition:background .12s;user-select:none;min-height:44px;-webkit-tap-highlight-color:rgba(0,0,0,.05)}
+.db-lr:hover,.db-lr:active{background:var(--cream3)}
 .db-lr--open{background:var(--cream3)}
-.db-lr--open .db-lr-arr{color:var(--accent)!important}
-.db-lr-name{font-size:11px;font-weight:600;color:var(--ink2);flex:1}
-.db-lr-count{font-size:10px;font-weight:700;color:var(--ink4);background:var(--cream3);padding:1px 6px;border-radius:10px;margin-right:6px}
+.db-lr--open .db-lr-arr{color:var(--accent)!important;transform:rotate(90deg)}
+.db-lr-name{font-size:12px;font-weight:600;color:var(--ink2);flex:1}
+.db-lr-count{font-size:10px;font-weight:700;color:var(--ink4);background:var(--cream3);padding:2px 7px;border-radius:10px;margin-right:8px;white-space:nowrap}
 .db-lr--open .db-lr-count{background:var(--accent);color:#fff}
-.db-lr-arr{font-size:14px;color:var(--ink4);transition:transform .15s;line-height:1}
+.db-lr-arr{font-size:16px;color:var(--ink4);transition:transform .2s ease;line-height:1;flex-shrink:0}
+/* Player list: hidden by default via class, shown when open */
 .db-lr-list{display:none;background:var(--cream);border-bottom:1.5px solid var(--border)}
-.db-player-tap{cursor:pointer!important;transition:background .1s}
-.db-player-tap:hover{background:var(--cream3)!important;color:var(--accent)!important}
-.db-player-tap:hover span:first-child{color:var(--accent)}
-.db-lr-more{color:#aaa!important;font-style:italic;font-size:10px!important;cursor:default!important}
-.db-lr-more:hover{background:none!important;color:#aaa!important}
+.db-lr-list--open{display:block}
+/* Player rows in list */
+.db-player-tap{cursor:pointer;transition:background .1s;min-height:40px;display:flex;align-items:center;padding:8px 12px!important;-webkit-tap-highlight-color:rgba(179,108,105,.1)}
+.db-player-tap:hover,.db-player-tap:active{background:var(--cream3)!important}
+.db-player-tap .db-player-name{flex:1;font-size:12px;color:var(--ink2)}
+.db-player-tap:hover .db-player-name,.db-player-tap:active .db-player-name{color:var(--accent)}
+.db-lr-more{color:#aaa!important;font-style:italic;font-size:11px!important;cursor:default!important;padding:6px 12px!important}
+.db-lr-more:hover{background:none!important}
 .db-player{font-size:11px;color:#555;padding:3px 0;border-bottom:1px solid var(--cream4);display:flex;justify-content:space-between}
 .db-player:last-child{border-bottom:none}
 .db-pos{font-size:9px;color:#999;font-weight:600;letter-spacing:1px;text-transform:uppercase}
@@ -449,7 +453,7 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .legends-header{margin-bottom:24px}
 .legends-header h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--ink);margin-bottom:6px}
 .legends-header p{font-size:13px;color:var(--ink3)}
-.legends-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.legends-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:12px}
 .legend-card{border:2px solid var(--border);border-radius:4px;overflow:hidden;background:var(--cream2);transition:box-shadow .2s}
 .legend-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .legend-card-hd{padding:10px 13px;border-bottom:1px solid var(--border);background:var(--cream3)}
@@ -1594,9 +1598,9 @@ aside{min-width:200px!important;max-width:220px!important}
   /* Main layout: collapse sidebar to top */
   .wrap{grid-template-columns:1fr!important;padding:12px 14px 60px!important;gap:14px!important}
 
-  /* Sidebar: show collapsed by default on mobile */
-  aside .sb-block:not(#sb-db){display:none}
-  aside #sb-db .sb-body{display:none}
+  /* Sidebar: all blocks accessible on mobile via toggle
+     Default collapsed state handled by .collapsed class on HTML elements */
+  aside .sb-block{display:block}
 
   /* Global search */
   .gsearch-bar{padding:10px 14px!important}
@@ -1801,6 +1805,47 @@ aside{min-width:200px!important;max-width:220px!important}
   input[type="text"],input[type="email"],input[type="password"],select,textarea{
     font-size:16px!important
   }
+}
+
+/* ── Sidebar mobile fixes ─────────────────────────────── */
+@media(max-width:768px){
+  /* Sidebar toggle button visible on mobile */
+  #sb-mobile-toggle{display:block!important}
+  /* When sidebar is hidden, content is hidden */
+  #sb-mobile-content.sb-mobile-hidden{display:none}
+  /* Sidebar blocks: all visible and collapsible */
+  aside .sb-block{display:block!important}
+  /* Database panel header: bigger tap target */
+  .sb-head{min-height:48px;padding:0 12px;display:flex;align-items:center;justify-content:space-between}
+  .sb-head-lbl{font-size:11px}
+  /* League rows: full-width tap targets */
+  .db-lr{padding:13px 12px;min-height:48px}
+  .db-lr-name{font-size:12px}
+  /* Player rows in expanded list */
+  .db-player-tap{min-height:44px;padding:10px 12px!important}
+  .db-player,.db-player-tap{font-size:12px!important}
+}
+
+/* ── Legends page mobile fixes ────────────────────────── */
+@media(max-width:600px){
+  /* Single column legend cards on mobile */
+  .legends-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .legend-card-name{font-size:12px!important}
+  .legend-card-seasons{font-size:11px!important}
+  /* Filter chips: wrap nicely */
+  .filter-bar{gap:5px;padding:8px 0}
+  .filter-chip{font-size:9px!important;padding:5px 10px!important;min-height:32px}
+  /* Legends page padding */
+  .legends-page{padding:12px 12px 60px!important}
+  /* Tab bar: scrollable on mobile */
+  .tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap!important}
+  .tab-btn{white-space:nowrap;flex-shrink:0}
+}
+
+@media(max-width:390px){
+  .legends-grid{gap:8px!important}
+  .legend-card-hd{padding:8px 10px}
+  .legend-card-bd{padding:8px 10px}
 }
 </style>
 </head>
@@ -6191,14 +6236,12 @@ function buildRatingTable(){
     var s  = p.seasons[sk] || {};
     var lg = s.lg || 'OTHER';
     var ln = (LGS[lg]||{n:lg}).n;
-    // Retired or legacy players → Icons bucket regardless of league
     var bucket = (p.legacy || p.retired) ? 'Icons' :
                  (MAIN.indexOf(ln) >= 0 ? ln : 'Icons');
     if (!grouped[bucket]) grouped[bucket] = [];
     grouped[bucket].push(p);
   });
 
-  // Sort main leagues by size; Icons always last
   var entries = Object.entries(grouped)
     .filter(function(e){ return e[0] !== 'Icons'; })
     .sort(function(a,b){ return b[1].length - a[1].length; });
@@ -6212,7 +6255,6 @@ function buildRatingTable(){
   entries.forEach(function(entry){
     var bucket = entry[0], players = entry[1];
     var isIcons = bucket === 'Icons';
-    // Find flag for main leagues
     var flag = '';
     if (!isIcons) {
       Object.keys(LGS).forEach(function(k){
@@ -6220,19 +6262,24 @@ function buildRatingTable(){
       });
     }
     var label = isIcons ? '👑 Icons Collection' : flag + bucket;
+    // Safe ID from bucket name
+    var safeId = 'db-list-' + bucket.replace(/[^a-z0-9]/gi, '_');
 
-    // Row — collapsed by default, click to expand
-    h += '<div class="db-lr" onclick="dbToggleLg(this)">';
+    // Row button — large tap target, uses data-league for reliable JS lookup
+    h += '<div class="db-lr" onclick="dbToggleLg(this)" data-league="' + bucket + '" role="button" tabindex="0">';
     h +=   '<span class="db-lr-name">' + label + '</span>';
     h +=   '<span class="db-lr-count">' + players.length + '</span>';
     h +=   '<span class="db-lr-arr">›</span>';
     h += '</div>';
-    h += '<div class="db-lr-list">';
-    players.slice(0,14).forEach(function(p){
+
+    // Player list — hidden by default via CSS class (not inline style)
+    h += '<div class="db-lr-list" id="' + safeId + '">';
+    players.slice(0, 14).forEach(function(p){
       var sk2 = SEASONS_ORDERED.find(function(k){ return !!p.seasons[k]; }) || '';
       var s2  = p.seasons[sk2] || {};
-      h += '<div class="db-player db-player-tap" onclick="fillFromSidebar(' + JSON.stringify(p.name) + ')" title="Add ' + p.name + '">';
-      h +=   '<span>' + p.name + '</span>';
+      var safeName = p.name.replace(/'/g, "\'").replace(/"/g, '&quot;');
+      h += '<div class="db-player db-player-tap" onclick="fillFromSidebar(this.dataset.n)" data-n="' + p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '">';
+      h +=   '<span class="db-player-name">' + p.name + '</span>';
       h +=   '<span class="db-pos">' + (s2.pos||'—') + '</span>';
       h += '</div>';
     });
@@ -6243,63 +6290,96 @@ function buildRatingTable(){
   });
 
   h += '<div class="db-total"><span>Total Players</span><span class="cnt">' + total + '</span></div>';
-  h += '<div class="api-hint">Tap any player to load them. Search by name for worldwide coverage.</div>';
+  h += '<div class="api-hint">Tap any name to load them into a comparison. Search by name for worldwide coverage.</div>';
   body.innerHTML = h;
 
   var pill = document.getElementById('db-pill');
   if (pill) pill.textContent = total + ' Players · 6 Seasons';
   var cnt = document.getElementById('db-cnt');
   if (cnt) cnt.textContent = total;
-  // Update inline header hint with count
   var inlinePill = document.getElementById('db-pill-inline');
   if (inlinePill) inlinePill.textContent = '— ' + total + ' players';
 })();
 
+
 // ── Toggle league row in sidebar (accordion) ──────────
 function dbToggleLg(row) {
-  var list = row.nextElementSibling;
+  // Use data-league attribute to find paired list reliably
+  var league = row.getAttribute('data-league');
+  if (!league) return;
+  var listId = 'db-list-' + league.replace(/[^a-z0-9]/gi, '_');
+  var list = document.getElementById(listId);
+  if (!list) return;
   var arr  = row.querySelector('.db-lr-arr');
-  var open = list.style.display !== 'none';
-  // Close all
-  document.querySelectorAll('.db-lr-list').forEach(function(el){ el.style.display = 'none'; });
-  document.querySelectorAll('.db-lr-arr').forEach(function(el){ el.textContent = '›'; });
-  document.querySelectorAll('.db-lr').forEach(function(el){ el.classList.remove('db-lr--open'); });
-  // Open clicked (toggle)
-  if (!open) {
-    list.style.display = 'block';
-    if (arr) arr.textContent = '⌄';
+  var isOpen = row.classList.contains('db-lr--open');
+
+  // Close all other open leagues first
+  document.querySelectorAll('.db-lr--open').forEach(function(el) {
+    if (el !== row) {
+      el.classList.remove('db-lr--open');
+      var otherArr = el.querySelector('.db-lr-arr');
+      if (otherArr) otherArr.textContent = '›';
+      var otherId = 'db-list-' + (el.getAttribute('data-league')||'').replace(/[^a-z0-9]/gi, '_');
+      var otherList = document.getElementById(otherId);
+      if (otherList) otherList.classList.remove('db-lr-list--open');
+    }
+  });
+
+  // Toggle clicked
+  if (isOpen) {
+    row.classList.remove('db-lr--open');
+    list.classList.remove('db-lr-list--open');
+    if (arr) arr.textContent = '›';
+  } else {
     row.classList.add('db-lr--open');
+    list.classList.add('db-lr-list--open');
+    if (arr) arr.textContent = '⌄';
+    // Scroll into view on mobile
+    setTimeout(function(){ row.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 100);
   }
 }
 
 // ── Click player in sidebar → fill search slot ────────
-function fillFromSidebar(name) {
-  var slots = [1, 2];
-  var filled = false;
-  for (var i = 0; i < slots.length; i++) {
-    var n = slots[i];
-    if (!pcSelected[n]) {
-      var inp = document.getElementById('pc'+n+'name');
+function fillFromSidebar(nameOrEl) {
+  // Accept either a string name or a DOM element (from data-n)
+  var name = typeof nameOrEl === 'string' ? nameOrEl :
+             (nameOrEl && nameOrEl.dataset && nameOrEl.dataset.n) ? nameOrEl.dataset.n :
+             (nameOrEl && nameOrEl.getAttribute) ? nameOrEl.getAttribute('data-n') : nameOrEl;
+  if (!name) return;
+
+  // Navigate to compare page first if not there
+  var comparePage = document.getElementById('page-compare');
+  if (comparePage && !comparePage.classList.contains('active')) {
+    switchPage('compare');
+  }
+
+  // Fill first empty slot
+  for (var i = 1; i <= 2; i++) {
+    if (!pcSelected[i]) {
+      var inp = document.getElementById('pc'+i+'name');
       if (inp) {
         inp.value = name;
-        doSearch(n, name);
-        // Auto-pick first suggestion after results load
+        doSearch(i, name);
         setTimeout((function(slot){
           return function(){
             var first = document.querySelector('#s'+slot+' .sugg-item');
             if (first) first.click();
           };
-        })(n), 350);
-        filled = true;
-        break;
+        })(i), 380);
+        // On mobile, close the sidebar after selecting
+        if (window.innerWidth <= 768) {
+          var content = document.getElementById('sb-mobile-content');
+          var toggle = document.getElementById('sb-mobile-toggle');
+          if (content) content.classList.add('sb-mobile-hidden');
+          if (toggle) toggle.innerHTML = '⚙️ Filters &amp; Database ▼';
+        }
+        return;
       }
     }
   }
-  // Both slots full — overwrite slot 1
-  if (!filled) {
-    var inp = document.getElementById('pc1name');
-    if (inp) { inp.value = name; doSearch(1, name); }
-  }
+  // Both full — overwrite slot 1
+  var inp1 = document.getElementById('pc1name');
+  if (inp1) { inp1.value = name; doSearch(1, name); }
 }
 
 // ══════════════════════════════════════════════════════
@@ -6322,10 +6402,29 @@ function fillFromSidebar(name) {
   // Initialise season buttons
   updateSeasonBtns(1);
   updateSeasonBtns(2);
-  // Build legend grid if on that page (won't be on load, but ready)
   // Set initial mode hints
   setPCMode('simple');
   setBBMode('simple');
+  // Mobile sidebar: initialise based on screen size
+  (function initMobileSidebar() {
+    var toggle = document.getElementById('sb-mobile-toggle');
+    var content = document.getElementById('sb-mobile-content');
+    if (!toggle || !content) return;
+    function applyMobileSidebar() {
+      if (window.innerWidth <= 768) {
+        toggle.style.display = 'block';
+        if (!content._mobileReady) {
+          content.classList.add('sb-mobile-hidden');
+          content._mobileReady = true;
+        }
+      } else {
+        toggle.style.display = 'none';
+        content.classList.remove('sb-mobile-hidden');
+      }
+    }
+    applyMobileSidebar();
+    window.addEventListener('resize', applyMobileSidebar);
+  })();
 })();
 
 // ══════════════════════════════════════════════════════
