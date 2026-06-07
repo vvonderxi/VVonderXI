@@ -47,6 +47,10 @@
       }
     },
     {
+      "src": "/api/db",
+      "dest": "/api/db.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
