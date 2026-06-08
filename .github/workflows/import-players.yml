@@ -34,18 +34,16 @@ jobs:
       - name: Install dependencies
         run: npm install dotenv @supabase/supabase-js ws
 
-      - name: Discover BSD League IDs
+      - name: Run import
         env:
           BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
-          node -e "
-          async function run() {
-            const r = await fetch('https://sports.bzzoiro.com/api/v2/leagues/?limit=100', {
-              headers: { 'Authorization': 'Token ' + process.env.BSD_API_KEY }
-            });
-            const d = await r.json();
-            const results = d.results || (Array.isArray(d) ? d : []);
-            results.forEach(l => console.log('ID:', l.id, '| Name:', l.name, '| Country:', l.country));
-          }
-          run().catch(console.error);
-          "
+          LEAGUE="${{ github.event.inputs.league }}"
+          DRY="${{ github.event.inputs.dry_run }}"
+          CMD="node api/import-players.js"
+          if [ -n "$LEAGUE" ]; then CMD="$CMD --league $LEAGUE"; fi
+          if [ "$DRY" = "true" ]; then CMD="$CMD --dry-run"; fi
+          echo "Running: $CMD"
+          $CMD
