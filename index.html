@@ -1905,6 +1905,7 @@ aside{min-width:200px!important;max-width:220px!important}
 .dev-mode-toggle.active{background:var(--ink);color:var(--accent);border-color:var(--ink)}
 .dev-panel{background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:12px;margin-top:10px;display:none}
 .dev-panel.show{display:block}
+body.dev-mode-active .dev-panel{display:block}
 .dev-panel-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-bottom:10px}
 .dev-dim-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .dev-dim-label{font-size:10px;font-weight:700;color:var(--ink3);width:90px;flex-shrink:0}
@@ -6734,7 +6735,9 @@ function toggleDevMode() {
     btn.classList.toggle('active', devModeOn);
     btn.textContent = devModeOn ? '⚙️ Dev Mode ON' : '⚙️ Dev Mode';
   }
-  // Show/hide all dev panels
+  // Toggle class on body — CSS handles all panels instantly
+  document.body.classList.toggle('dev-mode-active', devModeOn);
+  // Also directly toggle any already-rendered panels
   document.querySelectorAll('.dev-panel').forEach(function(p) {
     p.classList.toggle('show', devModeOn);
   });
