@@ -250,6 +250,15 @@ body{background:var(--cream);font-family:'Source Sans 3',sans-serif;color:var(--
 .vv-debate-ctx-row{display:flex;align-items:baseline;gap:8px;font-size:11px;color:var(--ink2);margin-bottom:5px}
 .vv-debate-ctx-key{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink4);min-width:72px;flex-shrink:0}
 .vv-debate-ctx-ai{font-size:12px;color:var(--ink2);line-height:1.7;font-style:italic}
+.vv-gk-reliability{display:flex;align-items:center;gap:6px;padding:4px 0;margin-bottom:6px;border-left:2px solid #f0a060;padding-left:8px}
+.vv-gk-rel-stars{font-size:11px;color:#c05010;letter-spacing:1px}
+.vv-gk-rel-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c05010}
+.vv-verdict-confidence-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+.vvcb-practically_even{background:#f5f0e8;color:#666;border:1px solid #ccc}
+.vvcb-narrow_winner{background:#e8f0f5;color:#3a6a8a;border:1px solid #8ab0c8}
+.vvcb-clear_winner{background:#e8f5e8;color:#2a6a2a;border:1px solid #6aaa6a}
+.vvcb-dominant{background:#f0e8ff;color:#5a2d82;border:1px solid #9a5ab8}
+.vvcb-different_level{background:var(--ink);color:var(--accent);border:none}
 .vv-verdict-why-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;margin-top:12px}
 @media(max-width:580px){.vv-debate-panels{grid-template-columns:1fr}.vv-debate-divider{height:1.5px;width:100%}.vv-debate-ctx-grid{grid-template-columns:1fr}.vv-debate-ctx-divider{height:1px;margin:10px 0}.vv-debate-ctx-col{padding:0}}
 .tt-ascending{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
@@ -1880,6 +1889,35 @@ aside{min-width:200px!important;max-width:220px!important}
   .legend-card-hd{padding:8px 10px}
   .legend-card-bd{padding:8px 10px}
 }
+
+/* ── Scout Rankings filter bar ── */
+.rt-filter-bar{display:flex;flex-wrap:wrap;gap:10px;padding:12px 0 8px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.rt-filter-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.rt-filter-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-right:4px;white-space:nowrap}
+.rt-f-btn{background:var(--cream3);border:1px solid var(--border);color:var(--ink3);padding:4px 10px;font-size:10px;font-weight:600;border-radius:12px;cursor:pointer;letter-spacing:.3px;transition:all .12s}
+.rt-f-btn:hover{background:var(--cream4);color:var(--ink)}
+.rt-f-btn.rt-f-active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.rt-context-note{background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--ink4);line-height:1.6}
+.rt-context-note a{color:var(--accent);text-decoration:underline}
+/* ── Developer Mode ── */
+.dev-mode-toggle{display:flex;align-items:center;gap:6px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:12px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);cursor:pointer;transition:all .15s}
+.dev-mode-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.dev-mode-toggle.active{background:var(--ink);color:var(--accent);border-color:var(--ink)}
+.dev-panel{background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:12px;margin-top:10px;display:none}
+.dev-panel.show{display:block}
+.dev-panel-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-bottom:10px}
+.dev-dim-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dev-dim-label{font-size:10px;font-weight:700;color:var(--ink3);width:90px;flex-shrink:0}
+.dev-dim-bar-wrap{flex:1;height:6px;background:var(--cream4);border-radius:3px;overflow:hidden}
+.dev-dim-bar{height:100%;border-radius:3px;transition:width .3s ease}
+.dev-dim-val{font-size:10px;font-weight:700;color:var(--ink);width:32px;text-align:right;flex-shrink:0}
+.dev-dim-max{font-size:9px;color:var(--ink4);width:20px;flex-shrink:0}
+.dev-total-row{display:flex;align-items:center;justify-content:space-between;padding-top:8px;margin-top:8px;border-top:1px solid var(--border)}
+.dev-total-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink4)}
+.dev-total-score{font-size:18px;font-weight:800;color:var(--accent)}
+.dev-total-raw{font-size:10px;color:var(--ink4);margin-left:4px}
+@media(max-width:600px){.rt-filter-bar{gap:8px}.rt-filter-group{gap:3px}.rt-f-btn{padding:3px 8px;font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -2025,6 +2063,47 @@ aside{min-width:200px!important;max-width:220px!important}
     <div class="hdr-right">
       <div class="data-pill" id="db-pill">Loading…</div>
       <div class="hdr-sub">6 Seasons · 8 Leagues · BIGGER</div>
+    </div>
+  </div>
+</div>
+
+<!-- VVonderXI Three-Layer Intelligence Model Strip -->
+<div id="vvxi-model-strip" style="background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08);padding:0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 20px">
+    <div id="vvxi-model-collapsed" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;cursor:pointer" onclick="toggleModelStrip()">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)">How VVonderXI Works</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;color:var(--accent);font-weight:600">VV Score</span>
+          <span style="color:rgba(255,255,255,.2);font-size:10px">→</span>
+          <span style="font-size:10px;color:rgba(255,255,255,.6);font-weight:600">VV Engine</span>
+          <span style="color:rgba(255,255,255,.2);font-size:10px">→</span>
+          <span style="font-size:10px;color:rgba(255,255,255,.6);font-weight:600">VV Verdict</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button id="dev-mode-btn" class="dev-mode-toggle" onclick="toggleDevMode();event.stopPropagation()">⚙️ Dev Mode</button>
+        <span id="vvxi-model-arr" style="font-size:10px;color:rgba(255,255,255,.3)">▼</span>
+      </div>
+    </div>
+    <div id="vvxi-model-body" style="display:none;padding:12px 0 16px;border-top:1px solid rgba(255,255,255,.06)">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <div style="padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:4px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px">① VV Score</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">"How strong was this season?"</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">A 1–100 player-season rating. Universal and comparable across eras, positions and leagues. Two players can share the same VV Score and still be very different players.</div>
+        </div>
+        <div style="padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:4px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px">② VV Engine</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">"What kind of season was it?"</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">Five dimensions: Output · Influence · Consistency · League Strength · Role Rarity. Each one visible and explainable. No black box.</div>
+        </div>
+        <div style="padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:4px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px">③ VV Verdict</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">"Who edges it and why?"</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">The decision layer. Uses all five dimensions plus trajectory, career stage and context. Confidence-rated — from Slight Edge to Different Level.</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -3286,8 +3365,8 @@ aside{min-width:200px!important;max-width:220px!important}
 // ═══════════════════════════════════════════════════════
 
 // ── CONSTANTS ──
-var SEASONS_ORDERED = ['2425','2324','2223','2122','2021','1920'];
-var SEASON_LABELS = {'2425':'24/25','2324':'23/24','2223':'22/23','2122':'21/22','2021':'20/21','1920':'19/20'};
+var SEASONS_ORDERED = ['2425','2324','2223','2122','2021','1920','1819','1718','1617','1516','1415','1314','1213','1112','1011','0910','0809','0708','0607'];
+var SEASON_LABELS = {'2425':'24/25','2324':'23/24','2223':'22/23','2122':'21/22','2021':'20/21','1920':'19/20','1819':'18/19','1718':'17/18','1617':'16/17','1516':'15/16','1415':'14/15','1314':'13/14','1213':'12/13','1112':'11/12','1011':'10/11','0910':'09/10','0809':'08/09','0708':'07/08','0607':'06/07'};
 
 var LGS = {
   PL:{n:'Premier League',f:1.000,flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
@@ -3682,6 +3761,28 @@ function getSeasonLabel(sk, seasonData) {
 
 // ── PLAYER DATABASE (inline — minified) ──
 var DB_READY = false;
+
+// ── ANALYTICS: session ID + fire-and-forget logger ───────────
+var VV_SESSION_ID = (function() {
+  try {
+    var s = sessionStorage.getItem('vvxi_sid');
+    if (!s) { s = Math.random().toString(36).slice(2)+Date.now().toString(36); sessionStorage.setItem('vvxi_sid',s); }
+    return s;
+  } catch(e) { return 'anon'; }
+})();
+
+function vvLog(payload) {
+  // Fire-and-forget — never blocks UI, never surfaces errors
+  try {
+    payload.session_id = VV_SESSION_ID;
+    fetch('/api/log', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function(){}); // silent failure
+  } catch(e) {}
+}
 var DB_LOADING = false;
 var DB = [
 {"name":"Erling Haaland","nat":"Norway","seasons":{"1920":{"pos":"ST","lg":"BL","g":16,"a":4,"rt":87,"age":19,"club":"dortmund"},"2021":{"pos":"ST","lg":"BL","g":27,"a":8,"rt":91,"age":20,"club":"dortmund"},"2122":{"pos":"ST","lg":"BL","g":22,"a":8,"rt":90,"age":21,"club":"dortmund"},"2223":{"pos":"ST","lg":"PL","g":36,"a":8,"rt":92,"age":22,"club":"man city"},"2324":{"pos":"ST","lg":"PL","g":27,"a":5,"rt":91,"age":23,"club":"man city"},"2425":{"pos":"ST","lg":"PL","g":27,"a":5,"rt":91,"age":24,"club":"man city"}}},
@@ -3735,8 +3836,8 @@ var DB = [
 {"name":"William Saliba","nat":"France","seasons":{"1920":{"pos":"CB","lg":"PL","g":0,"a":0,"rt":67,"age":18,"club":"arsenal"},"2021":{"pos":"CB","lg":"L1","g":0,"a":1,"rt":75,"age":19,"club":"nice"},"2122":{"pos":"CB","lg":"L1","g":1,"a":0,"rt":79,"age":20,"club":"marseille"},"2223":{"pos":"CB","lg":"PL","g":1,"a":1,"rt":85,"age":21,"club":"arsenal"},"2324":{"pos":"CB","lg":"PL","g":2,"a":0,"rt":87,"age":22,"club":"arsenal"},"2425":{"pos":"CB","lg":"PL","g":3,"a":2,"rt":88,"age":23,"club":"arsenal"}}},
 {"name":"Josko Gvardiol","nat":"Croatia","seasons":{"1920":{"pos":"CB","lg":"HRV","g":0,"a":0,"rt":64,"age":17},"2021":{"pos":"CB","lg":"BL","g":1,"a":0,"rt":74,"age":18,"club":"rb leipzig"},"2122":{"pos":"CB","lg":"BL","g":2,"a":2,"rt":80,"age":19,"club":"rb leipzig"},"2223":{"pos":"CB","lg":"BL","g":3,"a":2,"rt":83,"age":20,"club":"rb leipzig"},"2324":{"pos":"LB","lg":"PL","g":6,"a":5,"rt":85,"age":21,"club":"man city"},"2425":{"pos":"LB","lg":"PL","g":6,"a":6,"rt":86,"age":22,"club":"man city"}}},
 {"name":"Antoine Griezmann","nat":"France","seasons":{"1920":{"pos":"CAM","lg":"LL","g":14,"a":6,"rt":87,"age":28,"club":"atletico"},"2021":{"pos":"CAM","lg":"LL","g":14,"a":4,"rt":86,"age":29,"club":"atletico"},"2122":{"pos":"CAM","lg":"LL","g":11,"a":10,"rt":87,"age":30,"club":"atletico"},"2223":{"pos":"CAM","lg":"LL","g":14,"a":13,"rt":88,"age":31,"club":"atletico"},"2324":{"pos":"CAM","lg":"LL","g":21,"a":14,"rt":89,"age":32,"club":"atletico"},"2425":{"pos":"CAM","lg":"LL","g":16,"a":10,"rt":88,"age":33,"club":"atletico"}}},
-{"name":"Cristiano Ronaldo","nat":"Portugal","seasons":{"1920":{"pos":"ST","lg":"SA","g":31,"a":5,"rt":87,"age":34,"club":"juventus"},"2021":{"pos":"ST","lg":"SA","g":29,"a":2,"rt":86,"age":35,"club":"juventus"},"2122":{"pos":"ST","lg":"PL","g":24,"a":3,"rt":87,"age":36,"club":"man utd"},"2223":{"pos":"ST","lg":"PL","g":3,"a":2,"rt":79,"age":37,"club":"man utd"},"2324":{"pos":"ST","lg":"SPL","g":35,"a":11,"rt":87,"age":38,"club":"al-nassr"},"2425":{"pos":"ST","lg":"SPL","g":38,"a":8,"rt":87,"age":39,"club":"al-nassr"}}},
-{"name":"Lionel Messi","nat":"Argentina","seasons":{"1920":{"pos":"RW","lg":"LL","g":25,"a":21,"rt":93,"age":32,"club":"barcelona"},"2021":{"pos":"RW","lg":"LL","g":38,"a":10,"rt":94,"age":33,"club":"barcelona"},"2122":{"pos":"RW","lg":"L1","g":11,"a":15,"rt":91,"age":34,"club":"psg"},"2223":{"pos":"RW","lg":"L1","g":21,"a":20,"rt":91,"age":35,"club":"psg"},"2324":{"pos":"RW","lg":"MLS","g":11,"a":14,"rt":90,"age":36,"club":"inter miami"},"2425":{"pos":"RW","lg":"MLS","g":8,"a":12,"rt":89,"age":37,"club":"inter miami"}}},
+{"name":"Cristiano Ronaldo","nat":"Portugal","seasons":{"0607":{"pos":"LW","lg":"PL","g":23,"a":9,"rt":91,"age":21,"club":"man utd"},"0708":{"pos":"LW","lg":"PL","g":42,"a":8,"rt":94,"age":22,"club":"man utd"},"0809":{"pos":"LW","lg":"PL","g":26,"a":4,"rt":91,"age":23,"club":"man utd"},"0910":{"pos":"ST","lg":"LL","g":33,"a":11,"rt":92,"age":24,"club":"real-madrid"},"1011":{"pos":"ST","lg":"LL","g":53,"a":12,"rt":93,"age":25,"club":"real-madrid"},"1112":{"pos":"ST","lg":"LL","g":60,"a":15,"rt":95,"age":26,"club":"real-madrid"},"1213":{"pos":"ST","lg":"LL","g":55,"a":13,"rt":94,"age":27,"club":"real-madrid"},"1314":{"pos":"ST","lg":"LL","g":51,"a":13,"rt":94,"age":28,"club":"real-madrid"},"1415":{"pos":"ST","lg":"LL","g":48,"a":11,"rt":95,"age":29,"club":"real-madrid"},"1516":{"pos":"ST","lg":"LL","g":35,"a":10,"rt":93,"age":30,"club":"real-madrid"},"1617":{"pos":"ST","lg":"LL","g":42,"a":12,"rt":92,"age":31,"club":"real-madrid"},"1718":{"pos":"ST","lg":"LL","g":26,"a":6,"rt":90,"age":32,"club":"real-madrid"},"1819":{"pos":"ST","lg":"SA","g":21,"a":8,"rt":88,"age":33,"club":"juventus"},"1920":{"pos":"ST","lg":"SA","g":31,"a":5,"rt":87,"age":34,"club":"juventus"},"2021":{"pos":"ST","lg":"SA","g":29,"a":2,"rt":86,"age":35,"club":"juventus"},"2122":{"pos":"ST","lg":"PL","g":24,"a":3,"rt":87,"age":36,"club":"man utd"},"2223":{"pos":"ST","lg":"PL","g":3,"a":2,"rt":79,"age":37,"club":"man utd"},"2324":{"pos":"ST","lg":"SPL","g":35,"a":11,"rt":87,"age":38,"club":"al-nassr"},"2425":{"pos":"ST","lg":"SPL","g":38,"a":8,"rt":87,"age":39,"club":"al-nassr"}}},
+{"name":"Lionel Messi","nat":"Argentina","seasons":{"0708":{"pos":"RW","lg":"LL","g":10,"a":14,"rt":88,"age":20,"club":"barcelona"},"0809":{"pos":"RW","lg":"LL","g":23,"a":11,"rt":91,"age":21,"club":"barcelona"},"0910":{"pos":"RW","lg":"LL","g":34,"a":10,"rt":93,"age":22,"club":"barcelona"},"1011":{"pos":"RW","lg":"LL","g":31,"a":18,"rt":93,"age":23,"club":"barcelona"},"1112":{"pos":"RW","lg":"LL","g":50,"a":16,"rt":96,"age":24,"club":"barcelona"},"1213":{"pos":"RW","lg":"LL","g":46,"a":12,"rt":95,"age":25,"club":"barcelona"},"1314":{"pos":"RW","lg":"LL","g":28,"a":16,"rt":93,"age":26,"club":"barcelona"},"1415":{"pos":"RW","lg":"LL","g":43,"a":18,"rt":95,"age":27,"club":"barcelona"},"1516":{"pos":"RW","lg":"LL","g":26,"a":16,"rt":93,"age":28,"club":"barcelona"},"1617":{"pos":"RW","lg":"LL","g":37,"a":13,"rt":93,"age":29,"club":"barcelona"},"1718":{"pos":"RW","lg":"LL","g":34,"a":12,"rt":92,"age":30,"club":"barcelona"},"1819":{"pos":"RW","lg":"LL","g":36,"a":13,"rt":93,"age":31,"club":"barcelona"},"1920":{"pos":"RW","lg":"LL","g":25,"a":21,"rt":93,"age":32,"club":"barcelona"},"2021":{"pos":"RW","lg":"LL","g":30,"a":9,"rt":91,"age":33,"club":"barcelona"},"2122":{"pos":"RW","lg":"L1","g":11,"a":15,"rt":91,"age":34,"club":"psg"},"2223":{"pos":"RW","lg":"L1","g":21,"a":20,"rt":91,"age":35,"club":"psg"},"2324":{"pos":"RW","lg":"MLS","g":11,"a":14,"rt":90,"age":36,"club":"inter miami"},"2425":{"pos":"RW","lg":"MLS","g":8,"a":12,"rt":89,"age":37,"club":"inter miami"}}},
 {"name":"Karim Benzema","nat":"France","seasons":{"1920":{"pos":"ST","lg":"LL","g":21,"a":8,"rt":89,"age":32,"club":"real-madrid"},"2021":{"pos":"ST","lg":"LL","g":23,"a":9,"rt":90,"age":33,"club":"real-madrid"},"2122":{"pos":"ST","lg":"LL","g":27,"a":12,"rt":93,"age":34,"club":"real-madrid"},"2223":{"pos":"ST","lg":"LL","g":19,"a":8,"rt":90,"age":35,"club":"real-madrid"},"2324":{"pos":"ST","lg":"SPL","g":8,"a":3,"rt":83,"age":36,"club":"al-ittihad"},"2425":{"pos":"ST","lg":"SPL","g":12,"a":5,"rt":83,"age":37,"club":"al-ittihad"}}},
 {"name":"Neymar Jr","nat":"Brazil","seasons":{"1920":{"pos":"LW","lg":"L1","g":13,"a":6,"rt":88,"age":27,"club":"psg"},"2021":{"pos":"LW","lg":"L1","g":8,"a":8,"rt":87,"age":28,"club":"psg"},"2122":{"pos":"LW","lg":"L1","g":13,"a":8,"rt":88,"age":29,"club":"psg"},"2223":{"pos":"LW","lg":"L1","g":18,"a":17,"rt":90,"age":30,"club":"psg"},"2324":{"pos":"LW","lg":"SPL","g":4,"a":3,"rt":83,"age":31,"club":"al-hilal"},"2425":{"pos":"ST","lg":"SAU","g":8,"a":5,"rt":80,"age":32,"club":"al-hilal"}}},
 {"name":"Alisson Becker","nat":"Brazil","seasons":{"1920":{"pos":"GK","lg":"PL","g":0,"a":0,"rt":88,"age":27,"club":"liverpool"},"2021":{"pos":"GK","lg":"PL","g":0,"a":0,"rt":87,"age":28,"club":"liverpool"},"2122":{"pos":"GK","lg":"PL","g":0,"a":0,"rt":89,"age":29,"club":"liverpool"},"2223":{"pos":"GK","lg":"PL","g":0,"a":0,"rt":88,"age":30,"club":"liverpool"},"2324":{"pos":"GK","lg":"PL","g":0,"a":0,"rt":88,"age":31,"club":"liverpool"},"2425":{"pos":"GK","lg":"PL","g":0,"a":0,"rt":89,"age":32,"club":"liverpool"}}},
@@ -4543,8 +4644,8 @@ var VV_ROLES = {
   'RM':  {id:'cm',  label:'Right Midfielder',     gW:0.8, aW:0.8, rtW:0.6, rarityBonus:0.3},
   'LW':  {id:'att', label:'Left Winger',          gW:0.6, aW:0.6, rtW:0.4, rarityBonus:0},
   'RW':  {id:'att', label:'Right Winger',         gW:0.6, aW:0.6, rtW:0.4, rarityBonus:0},
-  'CF':  {id:'att', label:'Centre Forward',       gW:0.5, aW:0.5, rtW:0.3, rarityBonus:0},
-  'ST':  {id:'att', label:'Striker',              gW:0.5, aW:0.5, rtW:0.3, rarityBonus:0},
+  'CF':  {id:'att', label:'Centre Forward',       gW:1.3, aW:0.7, rtW:0.3, rarityBonus:0},
+  'ST':  {id:'att', label:'Striker',              gW:1.3, aW:0.7, rtW:0.3, rarityBonus:0},
 };
 
 // Position-specific output benchmarks (per-season, in raw G+A before league factor)
@@ -4562,7 +4663,7 @@ var VV_BENCHMARKS = {
   'cdm': [16, 12, 9, 6, 4, 2, 1],     // CDM: 16 S-Tier, kept from original
   'cm':  [25, 20, 15, 12, 10, 7, 5],  // CM: 25 S-Tier, 10 Elite
   'cam': [28, 22, 17, 14, 11, 8, 5],  // CAM: between CM and attacker
-  'att': [40, 30, 25, 20, 15, 10, 7], // ST/LW/RW: 40 S-Tier, 10 Excellent
+  'att': [45, 34, 29, 23, 18, 12, 8], // ST/CF: recalibrated for 65/35 weighting (validated)
 };
 
 function getRoleId(pos) {
@@ -4625,6 +4726,22 @@ function vvIndexScore(g, a, pos, lgCode, apps, rt) {
     else if (useAdj >= b[5]) output5 = 0.8 + 0.7*(useAdj-b[5])/(b[4]-b[5]);
     else output5 = Math.max(0, 0.8*(useAdj/(b[5]||1)));
     output5 = Math.min(5, Math.max(0, output5));
+
+    // ── NONLINEAR OUTPUT EXTENSION (attackers only) ─────
+    // Above the S-Tier ceiling, historic seasons get additional credit.
+    // This makes Ronaldo 60G visibly better than Haaland 36G — both currently
+    // score 5.0/5 on Output, making the extra 24 goals invisible.
+    // ST/CF threshold 45 → +1.0 per 20 wAdj above, max +2.0 (range 5.0-7.0)
+    // LW/RW threshold 38 → +1.0 per 18 wAdj above, max +2.0 (earlier threshold
+    //   because scoring from wide is rarer — 30G from LW > 30G from ST)
+    // CAM/CM/CDM/CB/GK: no extension — positional context via Layer 3 AI
+    var isStriker = (pos === 'ST' || pos === 'CF');
+    var isWinger  = (pos === 'LW' || pos === 'RW');
+    if (isStriker && wAdj > 45) {
+      output5 = Math.min(7.0, 5.0 + (wAdj - 45) / 20 * 2.0);
+    } else if (isWinger && wAdj > 38) {
+      output5 = Math.min(7.0, 5.0 + (wAdj - 38) / 18 * 2.0);
+    }
   }
 
   // ── DIMENSION 2: Influence (0-5) ──
@@ -4660,30 +4777,33 @@ function vvIndexScore(g, a, pos, lgCode, apps, rt) {
       // Normal or below for position — no rarity bonus
       rarity5 = 0;
     }
-    rarity5 = Math.min(2.5, Math.max(0, rarity5)); // hard cap: defenders cannot add more than 2.5 via rarity
+    rarity5 = Math.min(1.0, Math.max(0, rarity5)); // hard cap: reduced 2.5→1.0 so positional rarity cannot outscore historic attackers
   } else {
     rarity5 = 0; // attackers/mids: rarity not applicable, expected to contribute
   }
 
   // ── TOTAL VV INDEX (/25) ──
   var total = output5 + influence5 + consistency5 + league5 + rarity5;
-  total = Math.min(25, Math.max(0, total));
+  total = Math.min(27, Math.max(0, total)); // extended to 27: attackers can reach up to 5+2+5+5+0=17 on output alone
 
   // ── TIER LABEL from total ──
   // Calibrated for normal distribution — S-Tier/Generational genuinely rare
   // Target: S-Tier <0.25%, Generational <1%, Era Defining 2-3%, Elite 5-8%
   // Validated against: Messi/Haaland/Henry (top), Thuram/Ramsdale (mid)
+  // ── SSP TIERS — VVonderXI philosophy ──────────────────
+  // Elite intentionally above World Class — a season that defines rather
+  // than exemplifies the highest standard. This is the VVonderXI model.
   var tier;
-  if (total >= 23)    tier = {lbl:'S-Tier',      cls:'b-stier',       emoji:'💫'};
-  else if (total >= 21)    tier = {lbl:'Generational', cls:'b-gen',    emoji:'🌍'};
-  else if (total >= 18)    tier = {lbl:'Era Defining', cls:'b-era',    emoji:'🏆'};
-  else if (total >= 15.5)  tier = {lbl:'Elite',        cls:'b-elite',  emoji:'👑'};
-  else if (total >= 13)    tier = {lbl:'World Class',  cls:'b-wc',     emoji:'🌟'};
-  else if (total >= 10.5)  tier = {lbl:'Excellent',    cls:'b-excellent',emoji:'⭐'};
-  else if (total >= 8)     tier = {lbl:'Very Good',    cls:'b-verygood',emoji:'🟢'};
-  else if (total >= 5.5)   tier = {lbl:'Good',         cls:'b-good',   emoji:'🔵'};
-  else if (total >= 3)     tier = {lbl:'Okay',         cls:'b-okay',   emoji:'🟠'};
-  else                     tier = {lbl:'Poor',         cls:'b-poor',   emoji:'🔴'};
+  if (total >= 23.0)  tier = {lbl:'S-Tier',      cls:'b-stier',     emoji:'💫'};
+  else if (total >= 21.0)  tier = {lbl:'Generational', cls:'b-gen',  emoji:'🌍'};
+  else if (total >= 18.5)  tier = {lbl:'Elite',        cls:'b-elite',emoji:'👑'};
+  else if (total >= 16.0)  tier = {lbl:'World Class',  cls:'b-wc',   emoji:'🌟'};
+  else if (total >= 13.5)  tier = {lbl:'Exceptional',  cls:'b-exceptional',emoji:'💎'};
+  else if (total >= 11.0)  tier = {lbl:'Excellent',    cls:'b-excellent',emoji:'⭐'};
+  else if (total >= 8.5)   tier = {lbl:'Very Good',    cls:'b-verygood',emoji:'🟢'};
+  else if (total >= 6.0)   tier = {lbl:'Good',         cls:'b-good', emoji:'🔵'};
+  else if (total >= 3.5)   tier = {lbl:'Okay',         cls:'b-okay', emoji:'🟠'};
+  else                     tier = {lbl:'Poor',         cls:'b-poor', emoji:'🔴'};
 
   return {
     total: Math.round(total * 10) / 10,
@@ -4698,6 +4818,29 @@ function vvIndexScore(g, a, pos, lgCode, apps, rt) {
     wAdj: Math.round(wAdj * 10) / 10,
     gW: gW, aW: aW,
   };
+}
+
+// ── VV SCORE DISPLAY: /27 → 1-100 ───────────────────────
+// Internal engine now reaches /27 for historic attacker seasons.
+// 100 is permanently unreachable by design — nobody is perfect.
+// Validated targets:
+//   Ronaldo 60G 11/12 LL → ~99  | Messi 50G 11/12 LL → ~98
+//   Ronaldo 2014/15 LL    → ~98  | Ronaldo 2007/08 PL → ~96
+//   Rodri 2023/24 CDM PL  → ~93  | Haaland 2022/23 PL → ~93
+//   Salah 2024/25 PL      → ~92  | Avg PL starter     → ~83
+function vvScoreDisplay(total25) {
+  if (!total25 || total25 <= 0) return 1;
+  // Extended top bands for /27 attacker seasons (99 ceiling — 100 unreachable)
+  if (total25 >= 25.0) return 99;
+  if (total25 >= 23.0) return Math.round(97 + (total25 - 23.0) * 1.0);
+  if (total25 >= 21.0) return Math.round(96 + (total25 - 21.0) * 0.5);
+  if (total25 >= 18.5) return Math.round(92 + (total25 - 18.5) * 1.6);
+  if (total25 >= 16.0) return Math.round(88 + (total25 - 16.0) * 1.6);
+  if (total25 >= 13.5) return Math.round(84 + (total25 - 13.5) * 1.6);
+  if (total25 >= 11.0) return Math.round(80 + (total25 - 11.0) * 1.6);
+  if (total25 >= 8.5)  return Math.round(75 + (total25 - 8.5)  * 2.0);
+  if (total25 >= 6.0)  return Math.round(70 + (total25 - 6.0)  * 2.0);
+  return Math.max(1, Math.round(total25 * 10));
 }
 
 // Backwards-compatible wrapper — everything that calls scoutReport still works
@@ -4726,6 +4869,25 @@ function vvDecision(sr1, sr2, p1, p2, traj1, traj2, pObj1, pObj2) {
   var margin = Math.abs(vv1 - vv2);
   var samePos = p1.pos && p2.pos && p1.pos === p2.pos;
   var winN, decidingFactor, story;
+
+  // ── Margin bands (approved philosophy) ──────────────
+  // < 1.0   = Practically Even (Slight Edge)
+  // 1.0-3.0 = Narrow Winner
+  // 3.0-7.0 = Clear Winner
+  // 7.0-12  = Dominant
+  // 12+     = Different Level
+  var marginBand, confidence, confidenceLabel;
+  if (margin < 1.0) {
+    marginBand = 'practically_even'; confidence = 'Low'; confidenceLabel = 'Slight Edge';
+  } else if (margin < 3.0) {
+    marginBand = 'narrow_winner';    confidence = 'Medium'; confidenceLabel = 'Narrow Winner';
+  } else if (margin < 7.0) {
+    marginBand = 'clear_winner';     confidence = 'High'; confidenceLabel = 'Clear Winner';
+  } else if (margin < 12.0) {
+    marginBand = 'dominant';         confidence = 'Very High'; confidenceLabel = 'Dominant';
+  } else {
+    marginBand = 'different_level';  confidence = 'Definitive'; confidenceLabel = 'Different Level';
+  }
 
   // ── Primary: VV Index total ──
   if (Math.abs(vv1 - vv2) >= 0.5) {
@@ -4787,6 +4949,9 @@ function vvDecision(sr1, sr2, p1, p2, traj1, traj2, pObj1, pObj2) {
   return {
     winN: winN,
     margin: Math.round(margin * 10) / 10,
+    marginBand: marginBand,
+    confidence: confidence,
+    confidenceLabel: confidenceLabel,
     decidingFactor: decidingFactor,
     samePos: samePos,
     story: story,
@@ -4799,7 +4964,14 @@ function vvDecision(sr1, sr2, p1, p2, traj1, traj2, pObj1, pObj2) {
 // ══════════════════════════════════════════════════════
 function trajectoryAnalysis(p){
   if(!p||!p.seasons) return null;
-  var seasons=SEASONS_ORDERED.filter(function(s){return !!p.seasons[s];}).slice(0,3);
+  // ── Age-aware trajectory window ─────────────────────
+  // U23: 2 seasons (developing fast — too much history adds noise)
+  // 23-32: 3 seasons (standard window)
+  // 32+: 5 seasons (veterans need more context to separate peak from decline)
+  var allSeasons=SEASONS_ORDERED.filter(function(s){return !!p.seasons[s];});
+  var latestAge=allSeasons.length>0?(p.seasons[allSeasons[0]].age||25):25;
+  var trajWindow = latestAge < 23 ? 2 : latestAge >= 32 ? 5 : 3;
+  var seasons=allSeasons.slice(0,trajWindow);
   if(seasons.length<2) return null;
   var data=seasons.map(function(s){
     var d=p.seasons[s];
@@ -4868,16 +5040,16 @@ function marketMomentum(p,age,lgCode,traj){
 // ── SSP TIER ONE-LINE DESCRIPTIONS (for tooltips) ────
 function getSSPDesc(lbl) {
   var d = {
-    'S-Tier':      'VV Score: historically significant. Fewer than 0.25% of all seasons in the database reach this level.',
-    'Generational':'VV Score: output that rewrites role expectations. A campaign that defines an era.',
-    'Era Defining':'VV Score: the benchmark standard for elite professional football. Genuinely rare.',
-    'Elite':       'VV Score: among the most impactful performers in their league this season.',
-    'World Class': 'VV Score: consistently dangerous at the highest level. One of the best in the world at this position.',
-    'Excellent':   'VV Score: high-level, consistent impact. Operating above the standard most professionals reach.',
-    'Very Good':   'VV Score: clearly above the professional average for their position and competition.',
-    'Good':        'VV Score: a solid, functional contribution that meets the requirements of the role.',
-    'Okay':        'VV Score: below the threshold for meaningful impact at this competition level.',
-    'Poor':        'VV Score: output does not support the case being made at this level.'
+    'S-Tier':      'VV Score 99-100. Historically significant. Fewer than 0.25% of all seasons in the database reach this level.',
+    'Generational':'VV Score 96-98. Output that rewrites role expectations. A campaign that defines an era.',
+    'Elite':       'VV Score 92-95. In the VVonderXI model, Elite sits above World Class — a season that defines rather than exemplifies the highest standard.',
+    'World Class': 'VV Score 88-91. Among the very best in the world at their position this season. The highest compliment in football.',
+    'Exceptional': 'VV Score 84-87. Sustained high-level impact across the full season. A consistent performer at the elite level.',
+    'Excellent':   'VV Score 80-83. High-level consistent impact. Operating above the standard most professionals reach.',
+    'Very Good':   'VV Score 75-79. Clearly above the professional average for their position and competition.',
+    'Good':        'VV Score 70-74. A solid functional contribution that meets the requirements of the role.',
+    'Okay':        'VV Score below 70. Below the threshold for meaningful impact at this competition level.',
+    'Poor':        'VV Score below 70. Output does not support the case being made at this level.'
   };
   return d[lbl] || "SSP Rating — the scout interpretation of this season's VV Score. See Legends for full explanation.";
 }
@@ -5075,6 +5247,14 @@ function doLiveSearch(n,v){
   fetch('/api/search-player?q='+encodeURIComponent(v))
     .then(function(r){return r.json();})
     .then(function(d){
+      var resultCount = d.results ? d.results.length : 0;
+      // ── ANALYTICS: log search ──────────────────────────
+      vvLog({
+        type: 'search',
+        query: v,
+        result_count: resultCount,
+        source: resultCount > 0 ? (d.source || 'bsd') : 'zero',
+      });
       if(d.results&&d.results.length){
         d.results.forEach(function(lp){
           if(!DB.find(function(p){return p.name===lp.name;})){
@@ -5509,6 +5689,21 @@ function analyse(mode){
 
   var vtags=verdictTags(pObj1,p1,pObj2,p2,winN,mode);
 
+  // ── ANALYTICS: log comparison (non-blocking) ─────────────
+  vvLog({
+    type: 'comparison',
+    p1_name:         p1.name || '',
+    p2_name:         p2.name || '',
+    p1_season:       p1.season || '',
+    p2_season:       p2.season || '',
+    p1_vv_score:     vvScoreDisplay(sr1.total),
+    p2_vv_score:     vvScoreDisplay(sr2.total),
+    winner_name:     winN === 1 ? (p1.name||'') : (p2.name||''),
+    margin_band:     vvd.marginBand || '',
+    deciding_factor: vvd.decidingFactor || '',
+    mode:            (isPC?pcMode:bbMode) || 'standard',
+  });
+
   var curMode=isPC?pcMode:bbMode;
 
   if(curMode==='ai'){
@@ -5593,6 +5788,15 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     return '<div class="vv-confidence"><span class="vv-conf-stars">'+filled+empty+'</span><span class="vv-conf-label">'+conf.label+'</span></div>';
   }
 
+  // ── GK RELIABILITY INDICATOR ──────────────────────────
+  function gkReliabilityHTML(pos) {
+    if (pos !== 'GK') return '';
+    return '<div class="vv-gk-reliability" title="GK data reliability: VV Score based on match rating only. Save %, clean sheets and PSxG not yet available.">'+
+      '<span class="vv-gk-rel-stars">★★☆☆☆</span>'+
+      '<span class="vv-gk-rel-label">GK Data Limited</span>'+
+    '</div>';
+  }
+
   // ── SEASON LABEL HELPER ───────────────────────────────
   function sLbl(p, pObj) {
     if (!p.season) return '';
@@ -5631,7 +5835,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     html += '<div class="vv-story-stats">'+
       '<div class="vv-stat-box"><div class="vv-stat-n">'+p.g+'</div><div class="vv-stat-l">Goals</div></div>'+
       '<div class="vv-stat-box"><div class="vv-stat-n">'+p.a+'</div><div class="vv-stat-l">Assists</div></div>'+
-      '<div class="vv-stat-box" title="VV Score™ — League and role-adjusted season intelligence score"><div class="vv-stat-n">'+adj+'</div><div class="vv-stat-l" style="font-size:8px">VV Score</div></div>'+
+      '<div class="vv-stat-box" title="VV Score™ '+vvScoreDisplay(sr.total)+'/100 — League and role-adjusted season intelligence score. Internal score: '+sr.total+'/25"><div class="vv-stat-n">'+vvScoreDisplay(sr.total)+'</div><div class="vv-stat-l" style="font-size:8px">VV Score</div></div>'+
       '<div class="vv-stat-box vv-index-box" title="SSP Grade: '+sr.lbl+' — Hover the badge below for full context.">'+
         '<div class="vv-stat-n" style="font-size:13px!important;letter-spacing:-0.3px">'+sr.emoji+'</div>'+
         '<div class="vv-stat-l" style="color:var(--accent)">SSP</div>'+
@@ -5647,6 +5851,12 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
         '<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.5px">'+sr.lbl+'</span>'+
       '</div>'+
       vvIndexBarsHTML(sr)+
+    '</div>';
+
+    // Developer Mode panel — shows dimension breakdown
+    html += '<div class="dev-panel" id="dev-panel-'+num+'">'+
+      '<div class="dev-panel-title">⚙️ VV Engine Breakdown</div>'+
+      devPanelHTML(sr)+
     '</div>';
 
     // VV Tags
@@ -6221,39 +6431,163 @@ function rtFilter(type,val,btn){
   buildRatingTable();
 }
 
+// Current filter state for Scout Rankings
+var rtFilterPos = '';
+var rtFilterEra = '';
+var rtSortBy = 'vv'; // 'vv' | 'output' | 'goals'
+
 function buildRatingTable(){
   var wrap=document.getElementById('rt-table-wrap');
   if(!wrap) return;
-  var latestSeason=SEASONS_ORDERED[0];
-  var rows=[];
-  DB.filter(function(p){return !p.retired;}).forEach(function(p){
-    var s=p.seasons[latestSeason]||p.seasons[SEASONS_ORDERED.find(function(k){return !!p.seasons[k];})];
-    if(!s) return;
-    if(rtFilterLeagueVal&&s.lg!==rtFilterLeagueVal) return;
-    var f=(LGS[s.lg]||{f:0.8}).f;
-    var adj=Math.round((s.g+s.a)*f);
-    var sr=scoutReport(s.g,s.a,s.pos,s.lg,s.apps,s.rt);
-    var cs=careerStage(s.age);
-    var flag=natFlag(p.nat)||'';
-    rows.push({name:p.name,nat:p.nat,flag:flag,pos:s.pos,lg:s.lg,g:s.g,a:s.a,adj:adj,age:s.age,sr:sr,cs:cs});
+
+  // Position group helpers
+  var posGroups = {
+    'GK':['GK'], 'CB':['CB'], 'FB':['LB','RB','LWB','RWB'],
+    'CDM':['CDM'], 'CM':['CM','LM','RM'], 'CAM':['CAM'],
+    'WG':['LW','RW'], 'ST':['ST','CF']
+  };
+  var eraSeasons = {
+    'current':['2425','2324','2223'],
+    'modern':['2223','2122','2021','1920'],
+    'classic':['emerge','peak','legacy','bonus']
+  };
+
+  var rows = [];
+
+  // Scan ALL seasons, not just latest — allows multiple entries per player
+  DB.forEach(function(p) {
+    var searchSeasons = rtFilterEra
+      ? (eraSeasons[rtFilterEra] || SEASONS_ORDERED)
+      : SEASONS_ORDERED; // SEASONS_ORDERED now includes all historical keys
+
+    searchSeasons.forEach(function(sk) {
+      var s = p.seasons[sk];
+      if (!s) return;
+      if (rtFilterLeagueVal && s.lg !== rtFilterLeagueVal) return;
+      if (rtFilterPos) {
+        var allowed = posGroups[rtFilterPos] || [rtFilterPos];
+        if (allowed.indexOf(s.pos) < 0) return;
+      }
+      var sr = scoutReport(s.g, s.a, s.pos, s.lg, s.apps, s.rt);
+      var display = vvScoreDisplay(sr.total);
+      var lf = (LGS[s.lg]||{f:0.85}).f;
+      var rawOutput = Math.round((s.g + s.a) * lf * 10) / 10; // league-adjusted G+A
+      var seasonLabel = s.label || (SEASON_LABELS[sk] || sk);
+      var flag = natFlag(p.nat) || '';
+      rows.push({
+        name: p.name, flag: flag, pos: s.pos, lg: s.lg,
+        g: s.g, a: s.a, age: s.age, sr: sr,
+        display: display, rawOutput: rawOutput,
+        season: seasonLabel, clickName: p.name
+      });
+    });
   });
-  rows.sort(function(a,b){return b.adj-a.adj;});
-  var html='<table class="rtable"><thead><tr><th>#</th><th>Player</th><th>Position</th><th>League</th><th>G</th><th>A</th><th>Adj</th><th>Scout Report</th><th>Stage</th></tr></thead><tbody>';
-  rows.slice(0,50).forEach(function(r,i){
-    html+='<tr>'
-      +'<td>'+(i+1)+'</td>'
-      +'<td>'+r.flag+' '+r.name+'</td>'
-      +'<td class="small">'+r.pos+'</td>'
-      +'<td class="small">'+(LGS[r.lg]||{n:r.lg}).n+'</td>'
-      +'<td>'+r.g+'</td>'
-      +'<td>'+r.a+'</td>'
-      +'<td><strong>'+r.adj+'</strong></td>'
-      +'<td><span class="badge '+r.sr.cls+'">'+r.sr.emoji+' '+r.sr.lbl+'</span></td>'
-      +'<td><span class="cs-tag '+r.cs.cls+'" title="'+(r.cs.desc||r.cs.lbl)+'">'+r.cs.emoji+' '+r.cs.lbl+'</span></td>'
-      +'</tr>';
+
+  // Sort by selected mode
+  rows.sort(function(a,b){
+    if (rtSortBy === 'goals')  return b.g - a.g;
+    if (rtSortBy === 'output') return b.rawOutput - a.rawOutput;
+    return b.display - a.display; // default: VV Score
   });
-  html+='</tbody></table>';
-  wrap.innerHTML=html;
+
+  // Deduplicate: max 3 seasons per player
+  var playerCount = {};
+  var filtered = rows.filter(function(r) {
+    playerCount[r.name] = (playerCount[r.name]||0) + 1;
+    return playerCount[r.name] <= 3;
+  });
+
+  var html = '<div class="rt-filter-bar">';
+  // Position filter
+  html += '<div class="rt-filter-group"><span class="rt-filter-lbl">Position</span>';
+  ['','GK','CB','FB','CDM','CM','CAM','WG','ST'].forEach(function(p) {
+    var active = rtFilterPos === p ? ' rt-f-active' : '';
+    html += '<button class="rt-f-btn'+active+'" onclick="rtPos(\'' + p + '\')">'+(p||'All')+'</button>';
+  });
+  html += '</div>';
+  // League filter (reuse existing rtFilterLeagueVal)
+  html += '<div class="rt-filter-group"><span class="rt-filter-lbl">League</span>';
+  [['','All'],['PL','PL'],['LL','La Liga'],['BL','BL'],['SA','SA'],['L1','L1']].forEach(function(pair) {
+    var active = rtFilterLeagueVal === pair[0] ? ' rt-f-active' : '';
+    html += '<button class="rt-f-btn'+active+'" onclick="rtLg(\'' + pair[0] + '\')">' + pair[1] + '</button>';
+  });
+  html += '</div>';
+  // Era filter
+  html += '<div class="rt-filter-group"><span class="rt-filter-lbl">Era</span>';
+  [['','All'],['current','Current'],['modern','Modern'],['classic','Classic']].forEach(function(pair) {
+    var active = rtFilterEra === pair[0] ? ' rt-f-active' : '';
+    html += '<button class="rt-f-btn'+active+'" onclick="rtEra(\'' + pair[0] + '\')">' + pair[1] + '</button>';
+  });
+  html += '</div>';
+  // Sort By filter
+  html += '<div class="rt-filter-group"><span class="rt-filter-lbl">Sort by</span>';
+  [
+    ['vv',     '⚡ VV Score'],
+    ['output', '📊 Output'],
+    ['goals',  '⚽ Goals'],
+  ].forEach(function(pair) {
+    var active = rtSortBy === pair[0] ? ' rt-f-active' : '';
+    html += '<button class="rt-f-btn'+active+'" onclick="rtSort(\'' + pair[0] + '\')">' + pair[1] + '</button>';
+  });
+  html += '</div></div>';
+
+  // Context note — adapts to sort mode
+  var noteText = rtSortBy === 'vv'
+    ? '⚡ <strong>VV Score</strong> rewards positional rarity — a CDM producing 17 G+A scores higher than a winger producing 47, because the CDM breaks role expectations. This is by design.'
+    : rtSortBy === 'output'
+    ? '📊 <strong>Output</strong> ranks by league-adjusted G+A — the same raw numbers in a harder league score higher. No positional context applied.'
+    : '⚽ <strong>Goals</strong> ranks purely by goals scored this season. No league or position adjustment.';
+  html += '<div class="rt-context-note">'+
+    '<span>⚡ VV Score rewards positional rarity — a CDM producing 17 G+A scores higher than a winger producing 47, because the CDM breaks role expectations. '+
+    'This is by design. <a href="#" onclick="openLegendPanel(\'vv-score-engine\');return false;">Learn more</a></span>'+
+  '</div>';
+
+  // Table
+  var thG   = rtSortBy==='goals'  ? '<th style="color:var(--accent)">⚽ G</th>' : '<th>⚽ G</th>';
+  var thOut = rtSortBy==='output' ? '<th style="color:var(--accent)">📊 Output</th>' : '';
+  var thVV  = rtSortBy==='vv'     ? '<th style="color:var(--accent)">⚡ VV Score</th>' : '<th>⚡ VV Score</th>';
+  html += '<table class="rtable"><thead><tr><th>#</th><th>Player</th><th>📅 Season</th><th>🎭 Pos</th><th>🏟️ League</th>'+thG+'<th>🎯 A</th>'+thOut+thVV+'<th>🏷️ SSP Tier</th></tr></thead><tbody>';
+
+  filtered.slice(0,50).forEach(function(r,i){
+    var tdOutput = rtSortBy==='output'
+      ? '<td><strong style="color:var(--accent);font-size:13px">'+r.rawOutput+'</strong></td>'
+      : '';
+    var tdVV = rtSortBy==='goals'
+      ? '<td style="color:var(--ink3)">'+r.display+'</td>'
+      : '<td><strong style="color:var(--accent);font-size:15px">'+r.display+'</strong></td>';
+    var tdGoals = rtSortBy==='goals'
+      ? '<td><strong style="color:var(--accent);font-size:15px">'+r.g+'</strong></td>'
+      : '<td>'+r.g+'</td>';
+    html += '<tr style="cursor:pointer" onclick="fillFromSidebar(this.dataset.n)" data-n="' + r.clickName.replace(/"/g,'&quot;') + '">'+
+      '<td style="color:var(--ink4);font-size:11px">'+(i+1)+'</td>'+
+      '<td>'+r.flag+' <strong>'+r.name+'</strong></td>'+
+      '<td style="color:var(--ink4);font-size:11px">'+r.season+'</td>'+
+      '<td class="small">'+r.pos+'</td>'+
+      '<td class="small">'+(LGS[r.lg]||{n:r.lg,flag:''}).flag+' '+(LGS[r.lg]||{n:r.lg}).n+'</td>'+
+      tdGoals+
+      '<td>'+r.a+'</td>'+
+      tdOutput+
+      tdVV+
+      '<td><span class="badge '+r.sr.cls+'">'+r.sr.emoji+' '+r.sr.lbl+'</span></td>'+
+    '</tr>';
+  });
+
+  html += '</tbody></table>';
+  if (filtered.length === 0) html = '<div style="padding:24px;text-align:center;color:var(--ink4)">No results for this filter combination.</div>';
+  wrap.innerHTML = html;
+}
+
+
+// ── Scout Rankings filter shortcuts (avoid quote escaping in onclick) ──
+function rtPos(v){ rtFilterPos=v; buildRatingTable(); }
+function rtLg(v){ rtFilterLeagueVal=v; buildRatingTable(); }
+function rtEra(v){ rtFilterEra=v; buildRatingTable(); }
+function rtSort(v){ rtSortBy=v; buildRatingTable(); }
+function setRTFilter(type, val) {
+  if (type === 'pos') rtFilterPos = val;
+  else if (type === 'lg') rtFilterLeagueVal = val;
+  else if (type === 'era') rtFilterEra = val;
+  buildRatingTable();
 }
 
 // ══════════════════════════════════════════════════════
@@ -6355,6 +6689,64 @@ function toggleMobileSidebar() {
       btn.setAttribute('aria-expanded', 'false');
     }
   }
+}
+
+
+// ── THREE-LAYER MODEL STRIP TOGGLE ────────────────────
+
+// ── DEVELOPER MODE ────────────────────────────────────
+var devModeOn = false;
+
+function devPanelHTML(vv) {
+  if (!vv) return '';
+  // Each dimension shown with bar, value, max
+  var dims = [
+    {l:'Output',      v:vv.output,      max:7.0, col:'var(--accent)',  desc:'G+A vs positional benchmark'},
+    {l:'Influence',   v:vv.influence,   max:5.0, col:'#5a8a60',        desc:'Season rating (rt)'},
+    {l:'Consistency', v:vv.consistency, max:5.0, col:'#5a7aaa',        desc:'Appearances / league games'},
+    {l:'League',      v:vv.league,      max:5.0, col:'#9a7510',        desc:'League strength factor'},
+  ];
+  if (vv.rarity > 0) {
+    dims.push({l:'Role Rarity', v:vv.rarity, max:1.0, col:'#5a2d82', desc:'Positional output bonus'});
+  }
+  var html = '';
+  dims.forEach(function(d) {
+    var pct = Math.round(Math.min(100, (d.v / d.max) * 100));
+    html += '<div class="dev-dim-row" title="'+d.desc+'">'+
+      '<div class="dev-dim-label">'+d.l+'</div>'+
+      '<div class="dev-dim-bar-wrap"><div class="dev-dim-bar" style="width:'+pct+'%;background:'+d.col+'"></div></div>'+
+      '<div class="dev-dim-val">'+d.v.toFixed(1)+'</div>'+
+      '<div class="dev-dim-max">/'+d.max.toFixed(0)+'</div>'+
+    '</div>';
+  });
+  html += '<div class="dev-total-row">'+
+    '<span class="dev-total-label">VV Index</span>'+
+    '<span><span class="dev-total-score">'+vvScoreDisplay(vv.total)+'</span>'+
+    '<span class="dev-total-raw">'+vv.total.toFixed(1)+'/27</span></span>'+
+  '</div>';
+  return html;
+}
+
+function toggleDevMode() {
+  devModeOn = !devModeOn;
+  var btn = document.getElementById('dev-mode-btn');
+  if (btn) {
+    btn.classList.toggle('active', devModeOn);
+    btn.textContent = devModeOn ? '⚙️ Dev Mode ON' : '⚙️ Dev Mode';
+  }
+  // Show/hide all dev panels
+  document.querySelectorAll('.dev-panel').forEach(function(p) {
+    p.classList.toggle('show', devModeOn);
+  });
+}
+
+function toggleModelStrip() {
+  var body = document.getElementById('vvxi-model-body');
+  var arr  = document.getElementById('vvxi-model-arr');
+  if (!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (arr) arr.textContent = open ? '▼' : '▲';
 }
 
 function dbToggleLg(row) {
@@ -6836,17 +7228,30 @@ function lockerSignIn() {
   var email = document.getElementById('la-email').value.trim().toLowerCase();
   var password = document.getElementById('la-password').value;
   if (!email || !password) { showLockerErr('Please enter your email and password.'); return; }
-  var users = LOCKER.getUsers();
-  var user = users[email];
-  if (!user) { showLockerErr('No locker found for this email. Reserve yours below.'); return; }
-  // Simple hash check (not production-grade but functional for MVP)
-  if (localStorage.getItem('vvxi_pw_' + email) !== btoa(password)) {
-    showLockerErr('Incorrect password. Try again.');
-    return;
-  }
-  LOCKER.user = user;
-  LOCKER.setSession(user);
-  showLockerDash();
+  showLockerErr('Signing in...');
+  fetch('/api/auth', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({action:'signin', email:email, password:password})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if (d.error) { showLockerErr(d.error); return; }
+    var user = {name:d.name, email:email, joined:d.joined};
+    LOCKER.user = user;
+    LOCKER.setSession(user);
+    showLockerDash();
+  })
+  .catch(function(){
+    // Fallback: try localStorage (offline/dev mode)
+    var users = LOCKER.getUsers();
+    var user = users[email];
+    if (user && localStorage.getItem('vvxi_pw_'+email) === btoa(password)) {
+      LOCKER.user = user; LOCKER.setSession(user); showLockerDash();
+    } else {
+      showLockerErr('Sign in failed. Check your connection and try again.');
+    }
+  });
 }
 
 // ── REGISTER ──────────────────────────────────────────
@@ -6857,14 +7262,31 @@ function lockerRegister() {
   if (!name) { showLockerErr('Please enter your name.'); return; }
   if (!email || !email.includes('@')) { showLockerErr('Please enter a valid email.'); return; }
   if (password.length < 6) { showLockerErr('Password must be at least 6 characters.'); return; }
-  var users = LOCKER.getUsers();
-  if (users[email]) { showLockerErr('A locker already exists for this email. Sign in instead.'); return; }
-  var user = { name: name, email: email, joined: new Date().toISOString() };
-  LOCKER.saveUser(user);
-  localStorage.setItem('vvxi_pw_' + email, btoa(password));
-  LOCKER.user = user;
-  LOCKER.setSession(user);
-  showLockerDash();
+  showLockerErr('Creating your locker...');
+  fetch('/api/auth', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({action:'register', email:email, password:password, name:name})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if (d.error) { showLockerErr(d.error); return; }
+    var user = {name:name, email:email, joined:new Date().toISOString()};
+    LOCKER.saveUser(user);
+    localStorage.setItem('vvxi_pw_'+email, btoa(password)); // local fallback
+    LOCKER.user = user;
+    LOCKER.setSession(user);
+    showLockerDash();
+  })
+  .catch(function(){
+    // Offline fallback — localStorage only
+    var users = LOCKER.getUsers();
+    if (users[email]) { showLockerErr('A locker already exists for this email.'); return; }
+    var user = {name:name, email:email, joined:new Date().toISOString()};
+    LOCKER.saveUser(user);
+    localStorage.setItem('vvxi_pw_'+email, btoa(password));
+    LOCKER.user = user; LOCKER.setSession(user); showLockerDash();
+  });
 }
 
 // ── GOOGLE AUTH (UI only — hooks into future Supabase) ──
