@@ -48,8 +48,8 @@ const args = process.argv.slice(2);
 const DRY_RUN       = args.includes('--dry-run');
 const ESTIMATE_ONLY = args.includes('--estimate');
 const FORCE         = args.includes('--force');
-const FILTER_LEAGUE = args[args.indexOf('--league') + 1] || null;
-const FILTER_SEASON = args[args.indexOf('--season') + 1] || null;
+const FILTER_LEAGUE = args.includes('--league') ? args[args.indexOf('--league') + 1] : null;
+const FILTER_SEASON = args.includes('--season') ? args[args.indexOf('--season') + 1] : null;
 
 const DELAY_MS = 350; // ms between API calls — BSD fair-use rate limit
 
