@@ -2007,7 +2007,7 @@ body.dev-mode-active .dev-panel{display:block}
 <div class="gsearch-bar">
   <div class="gsearch-inner">
     <div class="gsearch-wrap" id="gsearch-wrap">
-      <input id="gsearch-input" type="text" placeholder="Search any player…" oninput="gsearchFilter(this.value)" onfocus="gsearchOpen()" onblur="gsearchBlur()" autocomplete="off">
+      <input id="gsearch-input" type="text" placeholder="Search any player…" oninput="gsearchFilter(this.value)" onkeydown="gsearchEnter(event)" onfocus="gsearchOpen()" onblur="gsearchBlur()" autocomplete="off">
       <div class="gsearch-dd" id="gsearch-dropdown"></div>
     </div>
     <div class="gf-wrap">
@@ -2330,7 +2330,7 @@ body.dev-mode-active .dev-panel{display:block}
           <div class="pcard-bd">
             <div class="field"><label>Search Player</label>
               <div class="swrap">
-                <input type="text" id="pc1name" placeholder="Click to browse A–Z…" oninput="doSearch(1,this.value)" onfocus="openSearch(1)" autocomplete="off">
+                <input type="text" id="pc1name" placeholder="Click to browse A–Z…" oninput="doSearch(1,this.value)" onkeydown="searchEnter(event,1)" onfocus="openSearch(1)" autocomplete="off">
                 <div class="suggs" id="s1"></div>
               </div>
             </div>
@@ -2373,7 +2373,7 @@ body.dev-mode-active .dev-panel{display:block}
           <div class="pcard-bd">
             <div class="field"><label>Search Player</label>
               <div class="swrap">
-                <input type="text" id="pc2name" placeholder="Click to browse A–Z…" oninput="doSearch(2,this.value)" onfocus="openSearch(2)" autocomplete="off">
+                <input type="text" id="pc2name" placeholder="Click to browse A–Z…" oninput="doSearch(2,this.value)" onkeydown="searchEnter(event,2)" onfocus="openSearch(2)" autocomplete="off">
                 <div class="suggs" id="s2"></div>
               </div>
             </div>
@@ -5239,12 +5239,13 @@ function doSearch(n,v){
       return a.name.localeCompare(b.name);
     })
     .slice(0,20);
-  if(results.length<5) doLiveSearch(n,v);
   renderSuggs(n,results);
 }
 
 function doLiveSearch(n,v){
   if(!v) return;
+  var box=document.getElementById('s'+n);
+  if(box){box.innerHTML='<div class="si" style="opacity:.6;cursor:default">Searching online…</div>';box.style.display='block';}
   fetch('/api/search-player?q='+encodeURIComponent(v))
     .then(function(r){return r.json();})
     .then(function(d){
@@ -5264,8 +5265,55 @@ function doLiveSearch(n,v){
         });
         var q=document.getElementById('pc'+n+'name').value.toLowerCase();
         if(q) renderSuggs(n,DB.filter(function(p){return normaliseSearch(p.name).indexOf(q)>=0;}).slice(0,8));
+      } else if(box){
+        box.innerHTML='<div class="si" style="opacity:.6;cursor:default">No analyzable data for that player</div>';
+        box.style.display='block';
       }
-    }).catch(function(){});
+    }).catch(function(){ if(box){box.style.display='none';} });
+}
+
+// Press Enter in a compare input → go ask the backend (Supabase → BSD)
+function searchEnter(e,n){
+  if(e.key==='Enter'||e.keyCode===13){
+    e.preventDefault();
+    var v=document.getElementById('pc'+n+'name').value;
+    if(v&&v.length>=2) doLiveSearch(n,v);
+  }
+}
+
+// Press Enter in the global search → go ask the backend, then re-render the dropdown
+function gsearchEnter(e){
+  if(e.key==='Enter'||e.keyCode===13){
+    e.preventDefault();
+    var v=document.getElementById('gsearch-input').value;
+    if(v&&v.length>=2) gsearchLive(v);
+  }
+}
+
+function gsearchLive(v){
+  var dd=document.getElementById('gsearch-dropdown');
+  var cnt=document.getElementById('gsearch-count');
+  if(dd){dd.innerHTML='<div class="gsd-empty">Searching online…</div>';dd.classList.add('open');}
+  if(cnt) cnt.textContent='…';
+  fetch('/api/search-player?q='+encodeURIComponent(v))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var resultCount = d.results ? d.results.length : 0;
+      vvLog({ type:'search', query:v, result_count:resultCount, source: resultCount>0?(d.source||'bsd'):'zero' });
+      if(d.results&&d.results.length){
+        d.results.forEach(function(lp){
+          if(!DB.find(function(p){return p.name===lp.name;})){
+            DB.push({name:lp.name,nat:lp.nationality,seasons:lp.seasons||{},api_id:lp.api_id,source:'live'});
+          }
+        });
+        renderGSearch(applyGFilters(DB,v),v);
+      } else {
+        if(dd) dd.innerHTML='<div class="gsd-empty">No analyzable data found for "'+v.replace(/</g,'&lt;')+'"</div>';
+        if(cnt) cnt.textContent='0 found';
+      }
+    }).catch(function(){
+      if(dd) dd.innerHTML='<div class="gsd-empty">Search failed — try again</div>';
+    });
 }
 
 function openSearch(n){
