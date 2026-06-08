@@ -160,11 +160,18 @@ async function cachePlayer(p) {
       { onConflict: 'api_player_id,season,league_code' }
     );
 
-    // Track search count
-    await supabase.from('players')
-      .update({ search_count: supabase.rpc('increment', { row_id: pl.id }) })
-      .eq('id', pl.id)
-      .catch(() => {}); // Non-critical — ignore errors
+    // Track search count — direct increment (rpc 'increment' doesn't exist on free tier)
+    await supabase.rpc('increment_search_count', { player_id: pl.id })
+      .catch(async () => {
+        // Fallback: fetch current count and increment manually
+        try {
+          const { data: cur } = await supabase.from('players')
+            .select('search_count').eq('id', pl.id).single();
+          await supabase.from('players')
+            .update({ search_count: ((cur?.search_count || 0) + 1) })
+            .eq('id', pl.id);
+        } catch(e) {} // Non-critical — ignore
+      });
   } catch(e) {
     console.log('Cache error:', e.message);
   }
