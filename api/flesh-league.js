@@ -176,10 +176,20 @@ async function savePlayer(sp){ // sp = squad player
     });
   }
 
-  if(!cards.length) return 0;                          // no qualifying season → skip player
+  // Dedupe: a player can have two rows for the same season+league (e.g. a mid-season
+  // transfer within the same league). Keep the higher-minutes spell so the upsert key
+  // (api_player_id, season, league_code) is unique within this batch.
+  const byKey = {};
+  for(const c of cards){
+    const k = c.season + '|' + c.league_code;
+    if(!byKey[k] || (c.minutes||0) > (byKey[k].minutes||0)) byKey[k] = c;
+  }
+  const deduped = Object.values(byKey);
+
+  if(!deduped.length) return 0;                          // no qualifying season → skip player
   stats.playersKept++;
 
-  if(DRY_RUN){ stats.cards += cards.length; return cards.length; }
+  if(DRY_RUN){ stats.cards += deduped.length; return deduped.length; }
 
   // upsert player, get id, link cards
   const { data: pl, error: pe } = await supabase.from('players').upsert({
@@ -192,13 +202,13 @@ async function savePlayer(sp){ // sp = squad player
   }, { onConflict:'api_player_id' }).select('id').single();
   if(pe || !pl){ stats.errors++; console.error(`  player upsert failed for ${sp.name}: ${pe?.message}`); return 0; }
 
-  const withId = cards.map(c => ({ ...c, player_id: pl.id }));
+  const withId = deduped.map(c => ({ ...c, player_id: pl.id }));
   const { error: ce } = await supabase.from('player_season_cards')
     .upsert(withId, { onConflict:'api_player_id,season,league_code' });
   if(ce){ stats.errors++; console.error(`  cards upsert failed for ${sp.name}: ${ce.message}`); return 0; }
 
-  stats.cards += cards.length;
-  return cards.length;
+  stats.cards += deduped.length;
+  return deduped.length;
 }
 
 async function main(){
