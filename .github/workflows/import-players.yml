@@ -1,8 +1,42 @@
-- name: Run import
+name: VVonderXI — Bulk Player Import
+
+on:
+  workflow_dispatch:
+    inputs:
+      league:
+        description: 'League: PL, LL, BL, SA, L1, PRT, ERE, BPL (blank = ALL)'
+        required: false
+        default: 'PL'
+      dry_run:
+        description: 'Dry run?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  import:
+    name: Import Players to Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install dotenv @supabase/supabase-js ws
+
+      - name: Discover BSD League IDs
         env:
           BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           node -e "
           async function run() {
@@ -10,8 +44,8 @@
               headers: { 'Authorization': 'Token ' + process.env.BSD_API_KEY }
             });
             const d = await r.json();
-            const results = d.results || d;
-            results.forEach(l => console.log(l.id, l.name, l.country));
+            const results = d.results || (Array.isArray(d) ? d : []);
+            results.forEach(l => console.log('ID:', l.id, '| Name:', l.name, '| Country:', l.country));
           }
           run().catch(console.error);
           "
