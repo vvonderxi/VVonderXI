@@ -17,7 +17,10 @@ module.exports = async (req, res) => {
 
   // Log async after response sent
   try {
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return;
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+      console.log('log.js: Missing SUPABASE_URL or SUPABASE_SERVICE_KEY env var');
+      return;
+    }
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
     const body = req.body || {};
     const type = body.type; // 'comparison' or 'search'
