@@ -85,23 +85,31 @@ async function bsd(path, retries=3){
   }
 }
 
-const seasonCache={}, leagueCache={}, teamNameCache={};
-async function getSeasonYear(id){
-  if(seasonCache[id]!==undefined) return seasonCache[id];
+const teamNameCache={};
+// NOTE: /seasons/{id}/ is DEAD (404) on this tier. We derive the season YEAR from
+// /leagues/{id}/ which DOES work and returns current_season {id, year}. Season_ids are
+// sequential per league per season, so:  year = curYear - (curSeasonId - seasonId)
+const leagueMeta={}; // league_id -> { code, curSeasonId, curYear }
+async function getLeagueMeta(id){
+  if(leagueMeta[id]!==undefined) return leagueMeta[id];
   try{
-    const d=await bsd(`/seasons/${id}/`);
-    let y=null;
-    if(d.year>=2000) y=d.year;
-    if(!y && d.season_year>=2000) y=d.season_year;
-    if(!y && d.start_date) y=new Date(d.start_date).getFullYear();
-    if(!y && d.name){ let m=d.name.match(/(20\d{2})/); if(m) y=parseInt(m[1]); else { let m2=d.name.match(/\b(\d{2})[\/\-](\d{2})\b/); if(m2) y=2000+parseInt(m2[1]); } }
-    seasonCache[id]= y||null; return seasonCache[id];
-  }catch(e){ seasonCache[id]=null; return null; }
+    const d=await bsd(`/leagues/${id}/`);
+    const cs=d.current_season||{};
+    leagueMeta[id]={ code: lgCode(d.name||d.league_name||''), curSeasonId: (cs.id!=null?cs.id:null), curYear: (cs.year!=null?cs.year:null) };
+  }catch(e){ leagueMeta[id]={ code:'OTHER', curSeasonId:null, curYear:null }; }
+  return leagueMeta[id];
 }
-async function getLeagueCode(id){
-  if(leagueCache[id]!==undefined) return leagueCache[id];
-  try{ const d=await bsd(`/leagues/${id}/`); leagueCache[id]=lgCode(d.name||d.league_name||''); }catch(e){ leagueCache[id]='OTHER'; }
-  return leagueCache[id];
+// returns { year, code } for a given league_id + season_id
+async function resolveSeason(leagueIdNum, seasonIdNum){
+  const m = await getLeagueMeta(leagueIdNum);
+  // Only the CURRENT season can be dated reliably (its id+year come straight from
+  // /leagues/{id}/). Historical seasons have no working date source on this tier,
+  // so we return year=null for them and skip — accurate data only.
+  let year = null;
+  if(m.curSeasonId!=null && m.curYear!=null && seasonIdNum===m.curSeasonId){
+    year = m.curYear;
+  }
+  return { year, code: m.code };
 }
 async function getTeamName(id){
   if(teamNameCache[id]!==undefined) return teamNameCache[id];
@@ -144,10 +152,9 @@ async function savePlayer(sp){ // sp = squad player
   for(const row of rows){
     const minutes = parseInt(row.minutes) || 0;
     if(minutes < MIN_MINUTES) continue;              // ← the 500-min filter
-    const year = await getSeasonYear(row.season_id); await sleep(DELAY_MS);
+    const { year, code } = await resolveSeason(row.league_id, row.season_id); await sleep(DELAY_MS);
     const sCode = seasonCode(year);
     if(!sCode) continue;
-    const code = await getLeagueCode(row.league_id); await sleep(DELAY_MS);
     if(code === 'OTHER') continue;                    // recognised leagues only
     const teamName = row.team_name || (row.team_id ? await getTeamName(row.team_id) : '');
     if(row.team_id && !row.team_name) await sleep(DELAY_MS);
