@@ -4,15 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       league:
-        description: 'League to import (PL, LL, BL, SA, L1, PRT, ERE, BPL) — leave blank for ALL'
+        description: 'League: PL, LL, BL, SA, L1, PRT, ERE, BPL (blank = ALL)'
         required: false
-        default: ''
-      season:
-        description: 'Season to import (2425, 2324, 2223, 2122, 2021, 1920) — leave blank for ALL'
-        required: false
-        default: ''
+        default: 'PL'
       dry_run:
-        description: 'Dry run only — no writes to database'
+        description: 'Dry run?'
         required: false
         default: 'false'
         type: choice
@@ -24,7 +20,7 @@ jobs:
   import:
     name: Import Players to Supabase
     runs-on: ubuntu-latest
-    timeout-minutes: 360  # 6 hour max — import is resumable if it stops
+    timeout-minutes: 360
 
     steps:
       - name: Checkout repo
@@ -34,41 +30,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+
       - name: Install dependencies
         run: npm install dotenv @supabase/supabase-js ws
 
-      - name: Run import — dry run check
-        if: ${{ github.event.inputs.dry_run == 'true' }}
+      - name: Run import
         env:
           BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
-          echo "🔍 DRY RUN MODE — no data will be written"
-          ARGS="--dry-run"
-          if [ -n "${{ github.event.inputs.league }}" ]; then
-            ARGS="$ARGS --league ${{ github.event.inputs.league }}"
-          fi
-          if [ -n "${{ github.event.inputs.season }}" ]; then
-            ARGS="$ARGS --season ${{ github.event.inputs.season }}"
-          fi
-          echo "Running: node api/import-players.js $ARGS"
-          node api/import-players.js $ARGS
-
-      - name: Run import — live
-        if: ${{ github.event.inputs.dry_run == 'false' }}
-        env:
-          BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: |
-          echo "🚀 LIVE IMPORT — writing to Supabase"
-          ARGS=""
-          if [ -n "${{ github.event.inputs.league }}" ]; then
-            ARGS="$ARGS --league ${{ github.event.inputs.league }}"
-          fi
-          if [ -n "${{ github.event.inputs.season }}" ]; then
-            ARGS="$ARGS --season ${{ github.event.inputs.season }}"
-          fi
-          echo "Running: node api/import-players.js $ARGS"
-          node api/import-players.js $ARGS
+          LEAGUE="${{ github.event.inputs.league }}"
+          DRY="${{ github.event.inputs.dry_run }}"
+          CMD="node api/import-players.js"
+          if [ -n "$LEAGUE" ]; then CMD="$CMD --league $LEAGUE"; fi
+          if [ "$DRY" = "true" ]; then CMD="$CMD --dry-run"; fi
+          echo "Running: $CMD"
+          $CMD
