@@ -195,6 +195,29 @@ function fmtCached(p, cards) {
   };
 }
 
+// Look a name up in Supabase (our cache: seeded curated players + anything BSD
+// has fetched before). Returns formatted players that actually have season data.
+async function searchSupabase(q) {
+  const { data, error } = await supabase
+    .from('players')
+    .select('*, player_season_cards(*)')
+    .ilike('name', `%${q}%`)
+    .limit(12);
+  if (error || !data) return [];
+
+  // Format, keep only players with at least one season, dedupe by name
+  // (a player may exist twice: once seeded, once cached from BSD — keep the richer one)
+  const byName = {};
+  for (const p of data) {
+    const f = fmtCached(p, p.player_season_cards);
+    const count = Object.keys(f.seasons || {}).length;
+    if (count === 0) continue;
+    const existing = byName[f.name];
+    if (!existing || count > Object.keys(existing.seasons).length) byName[f.name] = f;
+  }
+  return Object.values(byName).slice(0, 8);
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -202,34 +225,32 @@ module.exports = async (req, res) => {
   if (!q || q.length < 2) return res.status(400).json({ error: 'Query too short' });
 
   try {
-    // No BSD key — fall back to Supabase cache only
-    if (!process.env.BSD_API_KEY) {
-      const { data } = await supabase
-        .from('players')
-        .select('*, player_season_cards(*)')
-        .ilike('name', `%${q}%`)
-        .limit(8);
-      return res.json({ results: (data || []).map(p => fmtCached(p, p.player_season_cards)), source: 'no-key' });
+    // ── 1. SUPABASE FIRST ────────────────────────────────────────────
+    // Our own cache (681 seeded players + anything fetched before).
+    // Fast, free, no BSD quota used.
+    const cached = await searchSupabase(q);
+    if (cached.length) {
+      return res.json({ results: cached, source: 'supabase' });
     }
 
-    // Live BSD search
+    // ── 2. NO BSD KEY → nothing more we can do ───────────────────────
+    if (!process.env.BSD_API_KEY) {
+      return res.json({ results: [], source: 'no-key' });
+    }
+
+    // ── 3. BSD LIVE (only when the cache misses) ─────────────────────
+    // Fetch from BSD, cache into Supabase for next time, return.
     const data = await bsd(`/players/?name=${encodeURIComponent(q)}&limit=10`);
     const players = data.results || [];
 
     if (!players.length) {
-      // Fallback to cache
-      const { data: cached } = await supabase
-        .from('players')
-        .select('*, player_season_cards(*)')
-        .ilike('name', `%${q}%`)
-        .limit(8);
-      return res.json({ results: (cached || []).map(p => fmtCached(p, p.player_season_cards)), source: 'cache-fallback' });
+      return res.json({ results: [], source: 'zero' });
     }
 
     const results = [];
     for (const p of players.slice(0, 5)) {
       const player = await buildPlayer(p);
-      await cachePlayer(player);
+      await cachePlayer(player); // saves to Supabase → enriches the cache
       results.push(player);
     }
 
@@ -237,14 +258,11 @@ module.exports = async (req, res) => {
 
   } catch(err) {
     console.error('search-player error:', err.message);
-    // Best-effort cache fallback
-    const { data } = await supabase
-      .from('players')
-      .select('*, player_season_cards(*)')
-      .ilike('name', `%${q}%`)
-      .limit(8)
-      .catch(() => ({ data: [] }));
-    if (data?.length) return res.json({ results: data.map(p => fmtCached(p, p.player_season_cards)), source: 'cache-error' });
+    // Best-effort: if BSD blew up, try the cache one more time
+    try {
+      const cached = await searchSupabase(q);
+      if (cached.length) return res.json({ results: cached, source: 'cache-error' });
+    } catch(e) {}
     return res.status(500).json({ error: err.message });
   }
 };
