@@ -68,7 +68,7 @@ const LEAGUES = [
   { code: 'ERE', name: 'Eredivisie',         bsdLeagueId: 10, f: 0.820, country: 'Netherlands'  },
   { code: 'BPL', name: 'Belgian Pro League', bsdLeagueId: 14, f: 0.790, country: 'Belgium'      },
 ];
-];
+
 
 // ─────────────────────────────────────────────────
 //  SEASON CONFIG
