@@ -59,14 +59,15 @@ const DELAY_MS = 350; // ms between API calls — BSD fair-use rate limit
 //  These IDs are known from existing search-player.js mapping
 // ─────────────────────────────────────────────────
 const LEAGUES = [
-  { code: 'PL',  name: 'Premier League',     bsdLeagueId: 8,   f: 1.000, country: 'England'     },
-  { code: 'LL',  name: 'La Liga',            bsdLeagueId: 87,  f: 0.978, country: 'Spain'        },
-  { code: 'BL',  name: 'Bundesliga',         bsdLeagueId: 35,  f: 0.940, country: 'Germany'      },
-  { code: 'SA',  name: 'Serie A',            bsdLeagueId: 115, f: 0.935, country: 'Italy'        },
-  { code: 'L1',  name: 'Ligue 1',            bsdLeagueId: 34,  f: 0.878, country: 'France'       },
-  { code: 'PRT', name: 'Primeira Liga',      bsdLeagueId: 131, f: 0.845, country: 'Portugal'     },
-  { code: 'ERE', name: 'Eredivisie',         bsdLeagueId: 29,  f: 0.820, country: 'Netherlands'  },
-  { code: 'BPL', name: 'Belgian Pro League', bsdLeagueId: 144, f: 0.790, country: 'Belgium'      },
+  { code: 'PL',  name: 'Premier League',     bsdLeagueId: 1,  f: 1.000, country: 'England'     },
+  { code: 'LL',  name: 'La Liga',            bsdLeagueId: 3,  f: 0.978, country: 'Spain'        },
+  { code: 'BL',  name: 'Bundesliga',         bsdLeagueId: 5,  f: 0.940, country: 'Germany'      },
+  { code: 'SA',  name: 'Serie A',            bsdLeagueId: 4,  f: 0.935, country: 'Italy'        },
+  { code: 'L1',  name: 'Ligue 1',            bsdLeagueId: 6,  f: 0.878, country: 'France'       },
+  { code: 'PRT', name: 'Primeira Liga',      bsdLeagueId: 2,  f: 0.845, country: 'Portugal'     },
+  { code: 'ERE', name: 'Eredivisie',         bsdLeagueId: 10, f: 0.820, country: 'Netherlands'  },
+  { code: 'BPL', name: 'Belgian Pro League', bsdLeagueId: 14, f: 0.790, country: 'Belgium'      },
+];
 ];
 
 // ─────────────────────────────────────────────────
