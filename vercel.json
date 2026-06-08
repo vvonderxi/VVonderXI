@@ -40,6 +40,14 @@
       "dest": "/api/debug-player.js"
     },
     {
+      "src": "/api/log",
+      "dest": "/api/log.js"
+    },
+    {
+      "src": "/api/auth",
+      "dest": "/api/auth.js"
+    },
+    {
       "src": "/db.json",
       "dest": "/db.json",
       "headers": {
