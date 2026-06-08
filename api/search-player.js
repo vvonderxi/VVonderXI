@@ -251,7 +251,16 @@ module.exports = async (req, res) => {
     for (const p of players.slice(0, 5)) {
       const player = await buildPlayer(p);
       await cachePlayer(player); // saves to Supabase → enriches the cache
-      results.push(player);
+      // Only keep players that actually have analyzable season data.
+      // (BSD sometimes knows a player's profile but has zero stats — e.g. some
+      // leagues on the free tier. A player with no seasons is useless to analyse.)
+      if (player.seasons && Object.keys(player.seasons).length > 0) {
+        results.push(player);
+      }
+    }
+
+    if (!results.length) {
+      return res.json({ results: [], source: 'zero' });
     }
 
     return res.json({ results, source: 'bsd' });
