@@ -3,16 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>VVonderXI — Football Intelligence Platform</title>
-<meta name="description" content="Compare football careers. Predict greatness. AI-powered player analysis across 6 seasons.">
+<title>VVonderXI — The Football Intelligence Platform</title>
+<meta name="description" content="VVonderXI is the Football Intelligence Platform. Compare careers, define legacies — AI-powered player analysis across 6 seasons.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VVonderXI">
-<meta property="og:title" content="VVonderXI — Compare Careers. Predict Greatness.">
-<meta property="og:description" content="The world's most intelligent football comparison platform. Compare any two players across any season, with AI analysis and data going back to 2019.">
+<meta property="og:title" content="VVonderXI — Compare Careers. Define Legacies.">
+<meta property="og:description" content="Compare any two footballers across any season, with AI analysis and data going back to 2019. VVonderXI — the Football Intelligence Platform.">
 <meta property="og:url" content="https://vvonderxi.com">
+<meta property="og:image" content="https://vvonderxi.com/og-image.png">
+<meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VVonderXI — Compare Careers. Predict Greatness.">
-<meta name="twitter:description" content="AI-powered football player comparison. Every generation leaves a question behind.">
+<meta name="twitter:title" content="VVonderXI — Compare Careers. Define Legacies.">
+<meta name="twitter:description" content="Compare Careers. Define Legacies. The Football Intelligence Platform.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════
@@ -1944,7 +1946,7 @@ body.dev-mode-active .dev-panel{display:block}
 .vvx-hero{padding:var(--s6) var(--s5) var(--s5);text-align:center;position:relative;background:var(--ivory);border-bottom:1px solid var(--line)}
 .vvx-logo-stage{display:flex;flex-direction:column;align-items:center;margin-bottom:var(--s4);perspective:1200px}
 .vvx-vvbob{transform-style:preserve-3d;animation:vvx-bob 3.4s ease-in-out infinite}
-.vvx-vvspin{position:relative;width:clamp(96px,24vw,140px);aspect-ratio:300/158;transform-style:preserve-3d;animation:vvx-spin 8s linear infinite}
+.vvx-vvspin{position:relative;width:clamp(96px,24vw,140px);aspect-ratio:300/160;transform-style:preserve-3d;animation:vvx-spin 8s linear infinite}
 .vvx-vvspin .layer{position:absolute;inset:0}
 .vvx-vvspin .layer svg{display:block;width:100%;height:100%}
 @keyframes vvx-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
@@ -2002,6 +2004,7 @@ body.dev-mode-active .dev-panel{display:block}
 .vvx-chronicle{background:var(--charcoal);border-radius:var(--r-lg);padding:16px 18px;margin-top:var(--s4)}
 .vvx-ch-head{font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--blush);margin-bottom:8px}
 .vvx-ch-body{font-family:var(--display);font-weight:500;font-style:italic;font-size:1.05rem;line-height:1.45;color:rgba(246,243,236,.92)}
+.vvx-ch-meta{margin-top:12px;font-family:var(--body);font-style:normal;font-weight:700;font-size:var(--t-xs);letter-spacing:.1em;text-transform:uppercase;color:var(--blush)}
 /* rankings: row highlight, hover peek, foundations pills */
 .rtable tr.vvx-rank-row:hover{background:var(--blush-wash)}
 .vvx-peek{position:fixed;width:228px;z-index:4000;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .15s var(--ease),transform .15s var(--ease)}
@@ -2154,7 +2157,7 @@ body.dev-mode-active .dev-panel{display:block}
   <h1 class="vvx-hero-title">Compare Careers.<br><em>Define Legacies.</em></h1>
   <div class="vvx-byline">A product by <span>LiVVonderful</span></div>
   <hr class="vvx-rule">
-  <div class="vvx-hero-meta"><span class="data-pill" id="db-pill">Loading…</span><span class="vvx-hero-sub">6 Seasons · 8 Leagues · BIGGER</span></div>
+  <div class="vvx-hero-meta"><span class="data-pill" id="db-pill">Loading…</span></div>
 </section>
 
 <!-- VVonderXI Three-Layer Intelligence Model Strip -->
@@ -2391,7 +2394,7 @@ body.dev-mode-active .dev-panel{display:block}
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('tab-pc',this)">Player Comparison</button>
       <button class="tab-btn" onclick="switchTab('tab-bb',this)">Baller Bio</button>
-      <button class="tab-btn" onclick="switchTab('tab-rt',this)">Scout Rankings</button>
+      <button class="tab-btn" onclick="switchTab('tab-rt',this)">VV Rankings</button>
       <button class="tab-btn" onclick="openTrendingTab(this)">🔥 Trending <span id="trending-lock-icon" style="font-size:9px;opacity:.6">🔒</span></button>
     </div>
 
@@ -2575,7 +2578,7 @@ body.dev-mode-active .dev-panel{display:block}
     <!-- ── SCOUT RANKINGS TAB ── -->
     <div class="tab-content" id="tab-rt">
       <div style="padding:10px 0 14px;font-size:12px;color:var(--ink3);line-height:1.6;border-bottom:1px solid var(--border);margin-bottom:12px">
-        <strong style="color:var(--ink);font-size:13px">Scout Rankings</strong> — Active players ranked by <strong>VV Score™</strong> — a proprietary football intelligence score combining goals, assists, league strength, match ratings, availability and positional context. Updated automatically when new season data is added.
+        <strong style="color:var(--ink);font-size:13px">VV Rankings</strong> — Active players ranked by <strong>VV Score™</strong> — a proprietary football intelligence score combining goals, assists, league strength, match ratings, availability and positional context. Updated automatically when new season data is added.
       </div>
       <div class="filter-bar" id="rt-filter-bar">
         <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-right:4px">League:</span>
@@ -5009,8 +5012,9 @@ function vvxBuildCardModal(p,pObj,sr,cs,traj,mm,vvT,narrative){
     (mm?'<span class="mm-tag '+mm.cls+'" style="margin-left:4px" title="'+getMMDesc(mm.lbl)+'">'+mm.emoji+' '+mm.lbl+'</span>':'')+
     '<span class="cs-tag '+cs.cls+'" style="margin-left:4px" title="'+(cs.desc||cs.lbl)+'">'+cs.emoji+' '+cs.lbl+'</span>'+
   '</div>';
-  var chron=narrative||(p.g+' goals, '+p.a+' assists in the '+lgStr+'. Graded '+sr.lbl+' by the VV Engine.');
-  html+='<div class="vvx-chronicle"><div class="vvx-ch-head">\u2726 VV Chronicle</div><div class="vvx-ch-body">'+chron+'</div></div>';
+  var moment=vvxMoment(p.name,p.season);
+  if(narrative){ html+='<div class="vvx-chronicle"><div class="vvx-ch-head">\u2726 VV Read</div><div class="vvx-ch-body">'+narrative+'</div></div>'; }
+  if(moment){ html+='<div class="vvx-chronicle"><div class="vvx-ch-head">\u2726 VV Chronicle</div><div class="vvx-ch-body">'+moment.line+'</div><div class="vvx-ch-meta">'+moment.meta+'</div></div>'; }
   html+='</div>';
   return html;
 }
@@ -5065,6 +5069,31 @@ function vvxRowEnter(el){
   },140);
 }
 function vvxRowLeave(){ clearTimeout(vvxPeekT); var peek=document.getElementById('vvx-peek'); if(peek) peek.classList.remove('show'); }
+// ── VV CHRONICLE: curated, source-verified iconic moments (player|seasonKey) ──
+var VV_MOMENTS={
+  "Dennis Bergkamp|peak":{line:"The hat-trick at Filbert Street — and the third is the one they still replay: a long ball killed stone dead, flicked past Matt Elliott, buried. One of the Premier League's great individual nights, even in a draw.",meta:"Leicester 3-3 Arsenal · 27 Aug 1997"},
+  "Zinedine Zidane|peak":{line:"La Volea. Roberto Carlos hangs the cross, Zidane waits an age on the edge of the box, and the left foot meets it perfectly — the finest goal a European Cup final has seen, and Madrid's ninth.",meta:"Real Madrid 2-1 Bayer Leverkusen · 15 May 2002"},
+  "Steven Gerrard|peak":{line:"The Gerrard Final. Cramping, beaten, seconds left on the clock — then from thirty yards he strikes it flat and true past Hislop, and Liverpool are alive again. They win it on penalties.",meta:"Liverpool 3-3 West Ham · 13 May 2006"},
+  "Cristiano Ronaldo|1718":{line:"The bicycle kick in Turin. He hangs in the air, impossibly high, and meets Carvajal's cross on the volley — and the Juventus end rises to applaud the man tearing them apart. Ronaldo called it the best of his career.",meta:"Juventus 0-3 Real Madrid · 3 Apr 2018"},
+  "Cristiano Ronaldo|0708":{line:"The header that lit up Moscow — rising at the back post to beat Cech and put United ahead in an all-English final, the crowning night of a 42-goal season that brought him his first Ballon d'Or.",meta:"Man Utd 1-1 Chelsea (won on pens) · 21 May 2008"},
+  "Lionel Messi|1617":{line:"The 500th goal, and the coldest celebration in the game. Last kick of El Clásico, Alba rolls it back, Messi finishes — then peels off his shirt and holds it up to a silenced Bernabéu, his name facing out.",meta:"Real Madrid 2-3 Barcelona · 23 Apr 2017"},
+  "Erling Haaland|2223":{line:"His first Manchester derby, and he simply broke it — a header, a finish, then a third rolled in, the hat-trick sealed before the hour in the highest-scoring derby there has ever been.",meta:"Man City 6-3 Man Utd · 2 Oct 2022"},
+  "Eric Cantona|*":{line:"The chip against Sunderland, and the celebration that outshone it — collar up, chest out, a slow turn to drink in Old Trafford while the keeper still lay beaten. The King, surveying his kingdom.",meta:"Man Utd 5-0 Sunderland · 21 Dec 1996"},
+  "Ronaldinho|*":{line:"The night the Bernabéu applauded the enemy. Two goals, a procession of impossible touches, and Real Madrid's own crowd rose to salute him — the rarest tribute the game can give.",meta:"Real Madrid 0-3 Barcelona · 19 Nov 2005"},
+  "Ronaldo Fenomeno|*":{line:"The goal at Compostela — twenty years old, he collects it inside his own half and runs clean through the whole team, Bobby Robson on the touchline with his hands to his head. Power, pace and impudence in one surge.",meta:"Compostela 1-5 Barcelona · 12 Oct 1996"},
+  "Ronaldo Nazario|*":{line:"The goal at Compostela — twenty years old, he collects it inside his own half and runs clean through the whole team, Bobby Robson on the touchline with his hands to his head. Power, pace and impudence in one surge.",meta:"Compostela 1-5 Barcelona · 12 Oct 1996"},
+  "Thierry Henry|*":{line:"The length-of-the-pitch goal against Spurs — Vieira's header collected inside his own half, four men gliding past, a low finish beyond Keller, then the long run back to celebrate. The knee-slide is now his statue outside the Emirates.",meta:"Arsenal 3-0 Tottenham · 16 Nov 2002"},
+  "Johan Cruyff|*":{line:"The night Total Football arrived in Spain. In his debut season Cruyff took Barcelona to the Bernabéu and ran Real Madrid ragged — a goal, two made, a 5-0 that still stands as the great Clásico humiliation, and a first title in fourteen years.",meta:"Real Madrid 0-5 Barcelona · 17 Feb 1974"},
+  "Jamie Vardy|*":{line:"History against Manchester United — a Schmeichel throw, a Fuchs pass, and Vardy arrows it past De Gea to score in an eleventh consecutive game, a Premier League record, in the season nobody saw coming.",meta:"Leicester 1-1 Man Utd · 28 Nov 2015"},
+  "Henrik Larsson|*":{line:"The chip over Klos in the six-two demolition of Rangers — the King of Kings at his most insolent, in a campaign of fifty-three goals, a treble, and a European Golden Boot.",meta:"Celtic 6-2 Rangers · Aug 2000"}
+};
+function vvxMoment(name,sk){ if(!name) return null; return (sk&&VV_MOMENTS[name+'|'+sk])||VV_MOMENTS[name+'|*']||null; }
+function vvxResolveSeasonKey(pObj,p){
+  if(!pObj||!pObj.seasons) return null;
+  if(p.season&&pObj.seasons[p.season]) return p.season;
+  for(var k in pObj.seasons){ var s=pObj.seasons[k]; if(s.g===p.g&&s.a===p.a&&s.lg===p.lg) return k; }
+  return null;
+}
 
 function vvScoreDisplay(total25) {
   if (!total25 || total25 <= 0) return 1;
@@ -6134,7 +6163,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
 
     // ── EXPANSION DATA (hidden; injected into wallet modal on tap) ──
     var narrative = aiResult ? (num===1 ? aiResult.p1 : aiResult.p2) : null;
-    var chronicleTxt = narrative || buildSeasonSummary(p, sr, traj, cs);
+    var moment = vvxMoment(p.name, vvxResolveSeasonKey(pObj,p));
     var exp = '<div class="vvx-expand-data" id="vvx-exp-'+num+'" style="display:none">';
     exp += '<div class="vvx-statline">'+
       '<div class="vvx-stat"><div class="vvx-sv">'+p.g+'</div><div class="vvx-sl">Goals</div></div>'+
@@ -6150,7 +6179,8 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     '</div>';
     exp += confHTML(conf);
     exp += '<div class="dev-panel" id="dev-panel-'+num+'"><div class="dev-panel-title">⚙️ VV Engine Breakdown</div>'+devPanelHTML(sr)+'</div>';
-    exp += '<div class="vvx-chronicle"><div class="vvx-ch-head">✦ VV Chronicle</div><div class="vvx-ch-body">'+chronicleTxt+'</div></div>';
+    if(narrative){ exp += '<div class="vvx-chronicle"><div class="vvx-ch-head">✦ VV Read</div><div class="vvx-ch-body">'+narrative+'</div></div>'; }
+    if(moment){ exp += '<div class="vvx-chronicle"><div class="vvx-ch-head">✦ VV Chronicle</div><div class="vvx-ch-body">'+moment.line+'</div><div class="vvx-ch-meta">'+moment.meta+'</div></div>'; }
     exp += '</div>';
 
     html += exp;
@@ -6941,7 +6971,7 @@ function setRTFilter(type, val) {
   body.innerHTML = h;
 
   var pill = document.getElementById('db-pill');
-  if (pill) pill.textContent = total + ' Players · 6 Seasons';
+  if (pill) pill.textContent = total + ' Players';
   var cnt = document.getElementById('db-cnt');
   if (cnt) cnt.textContent = total;
   var inlinePill = document.getElementById('db-pill-inline');
@@ -9085,9 +9115,9 @@ function switchLegendTab(tab, btn) {
     var layer=document.createElement('div');
     layer.className='layer';
     layer.style.transform='translateZ('+(-i*step)+'px)';
-    layer.innerHTML='<svg viewBox="0 0 300 158" fill="none" stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="12">'+
-      '<path d="M46 16 L86 142 L126 16" stroke="'+darken(charcoal,t)+'" stroke-width="42"/>'+
-      '<path d="M174 16 L214 142 L254 16" stroke="'+darken(blush,t)+'" stroke-width="42"/>'+
+    layer.innerHTML='<svg viewBox="0 0 300 160" fill="none">'+
+      '<polygon points="14,18 86,150 150,48 124,48 86,108 46,18" fill="'+darken(charcoal,t)+'"/>'+
+      '<polygon points="286,18 214,150 150,48 176,48 214,108 254,18" fill="'+darken(blush,t)+'"/>'+
       '</svg>';
     stage.appendChild(layer);
   }
