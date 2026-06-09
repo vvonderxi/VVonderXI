@@ -1976,6 +1976,32 @@ body.dev-mode-active .dev-panel{display:block}
 .vvx-pbody{padding:var(--s4)}
 .vvx-pname{font-family:var(--display);font-weight:700;font-size:1.3rem;line-height:1.1;color:var(--charcoal);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .vvx-pmeta{font-size:var(--t-sm);color:var(--ink-soft);margin:3px 0 var(--s3)}
+.vv-story.vvx-pcard{cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.vv-story.vvx-pcard:hover{transform:translateY(-3px)}
+.vvx-pfoot{display:flex;align-items:center;justify-content:space-between}
+.vvx-ptag{font-size:var(--t-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blush-deep)}
+.vvx-pseason{font-size:var(--t-xs);color:var(--ink-soft)}
+/* wallet modal */
+.vvx-scrim{position:fixed;inset:0;background:rgba(26,23,20,.55);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s var(--ease);z-index:5000;display:flex;overflow-y:auto;padding:48px 16px 64px}
+.vvx-scrim.open{opacity:1;pointer-events:auto}
+.vvx-modal-col{width:100%;max-width:380px;margin:auto;position:relative}
+.vvx-close{position:absolute;top:-44px;right:0;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.95);border:0;font-size:16px;cursor:pointer;color:var(--charcoal);z-index:4;box-shadow:0 4px 14px -4px rgba(0,0,0,.5)}
+.vvx-expanded{background:var(--paper);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-pop);transform:scale(.95);transition:transform .3s var(--ease)}
+.vvx-scrim.open .vvx-expanded{transform:scale(1)}
+.vvx-expanded .vvx-crest{height:150px}
+.vvx-expanded .vvx-ball{width:84px;height:84px}
+.vvx-xbody{padding:var(--s5)}
+.vvx-xbody .vvx-pname{font-size:1.7rem}
+.vvx-xbody .vvx-pmeta{margin-bottom:var(--s4)}
+.vvx-statline{display:flex;gap:var(--s6);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:var(--s4) 0;margin:var(--s4) 0}
+.vvx-stat .vvx-sv{font-family:var(--display);font-weight:900;font-size:1.4rem;color:var(--charcoal)}
+.vvx-stat .vvx-sl{font-size:var(--t-xs);color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.vvx-xsection{margin:var(--s4) 0}
+.vvx-xhd{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.vvx-xtags,.vvx-xbadges{margin:var(--s3) 0}
+.vvx-chronicle{background:var(--charcoal);border-radius:var(--r-lg);padding:16px 18px;margin-top:var(--s4)}
+.vvx-ch-head{font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--blush);margin-bottom:8px}
+.vvx-ch-body{font-family:var(--display);font-weight:500;font-style:italic;font-size:1.05rem;line-height:1.45;color:rgba(246,243,236,.92)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -4913,6 +4939,24 @@ function vvxGradeClass(lbl){
   if(lbl==='Elite'||lbl==='World Class') return ' vvx-elite';
   return '';
 }
+function vvxOpenCard(n){
+  var card=document.querySelector('.vvx-pcard.p'+n);
+  if(!card) return;
+  var crest=card.querySelector('.vvx-crest');
+  var name=card.querySelector('.vvx-pname');
+  var meta=card.querySelector('.vvx-pmeta');
+  var exp=card.querySelector('.vvx-expand-data');
+  var body=document.getElementById('vvx-modal-body');
+  if(!body) return;
+  body.innerHTML=(crest?crest.outerHTML:'')+'<div class="vvx-xbody">'+(name?name.outerHTML:'')+(meta?meta.outerHTML:'')+(exp?exp.innerHTML:'')+'</div>';
+  document.getElementById('vvx-scrim').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function vvxCloseCard(){
+  var s=document.getElementById('vvx-scrim'); if(s) s.classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') vvxCloseCard(); });
 
 function vvScoreDisplay(total25) {
   if (!total25 || total25 <= 0) return 1;
@@ -5953,85 +5997,56 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     var flag = pObj ? natFlag(pObj.nat) : '';
     var leg = (pObj && pObj.legacy) ? '👑 ' : '';
     var seasonLbl = sLbl(p, pObj);
-    var clubStr = p.club ? p.club.replace(/-/g,' ') : '';
     var lgStr = (LGS[p.lg]||{n:p.lg||''}).n;
-
-    // Get team colour key for data-team attribute
     var teamKey = p.club ? (TEAM_COLOURS[p.club.toLowerCase().trim()] || TEAM_COLOURS[p.club.toLowerCase().replace(/-/g,' ').trim()] || null) : null;
     var dataTeam = teamKey ? ' data-team="'+teamKey+'"' : '';
+    var clubNice = fmtClub(p.club);
+    var clubShown = (clubNice && clubNice !== '\u2014') ? clubNice : '';
+    var vvScore = vvScoreDisplay(sr.total);
+    var crest = vvxClubCrest(teamKey||'');
+    var isIcon = !!(pObj && pObj.legacy);
+    var ballCol = vvxTierColor(sr.lbl);
+    var metaBits = [(sr.roleLabel||p.pos||''), clubShown, lgStr, (p.age?'Age '+p.age:'')].filter(Boolean).join(' \u00b7 ');
+    var primeTag = (vvT && vvT.length) ? vvT[0] : null;
+    var footTag = primeTag ? ((primeTag.emoji||'')+' '+primeTag.key) : (sr.emoji+' '+sr.lbl);
 
-    // Proper club display name
-    var clubDisplay = clubStr ? clubStr.replace(/\w/g,function(l){return l.toUpperCase();}) : '';
-
-    var _vvScore=vvScoreDisplay(sr.total);
-    var _crest=vvxClubCrest(teamKey||'');
-    var _isIcon=!!(pObj&&pObj.legacy);
-    var _ballCol=vvxTierColor(sr.lbl);
-    var _clubNice=fmtClub(p.club);
-    var _metaBits=[(sr.roleLabel||p.pos||''),(_clubNice&&_clubNice!=='\u2014'?_clubNice:''),seasonLbl,lgStr,(p.age?'Age '+p.age:'')].filter(Boolean).join(' \u00b7 ');
-    var html = '<div class="vv-story vvx-pcard p'+num+(isWin?' vv-story-win':'')+vvxGradeClass(sr.lbl)+'"'+dataTeam+'>'+
-      '<div class="vvx-crest" style="--c1:'+_crest[0]+';--c2:'+_crest[1]+'">'+
-        vvxBall(_ballCol,_isIcon?'icon':'modern',num)+
+    // ── CARD FRONT (clean foundations artifact) ──
+    var html = '<div class="vv-story vvx-pcard p'+num+(isWin?' vv-story-win':'')+vvxGradeClass(sr.lbl)+'"'+dataTeam+' onclick="vvxOpenCard('+num+')">'+
+      '<div class="vvx-crest" style="--c1:'+crest[0]+';--c2:'+crest[1]+'">'+
+        vvxBall(ballCol,isIcon?'icon':'modern',num)+
         '<span class="vvx-tier-flag">'+sr.emoji+' '+sr.lbl+'</span>'+
         (isWin?'<span class="vvx-win-flag">🏆 Verdict Winner</span>':'')+
-        '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+_vvScore+'</div></div>'+
+        '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+vvScore+'</div></div>'+
       '</div>'+
       '<div class="vvx-pbody">'+
-      '<div class="vvx-pname">'+leg+flag+' '+p.name+'</div>'+
-      '<div class="vvx-pmeta">'+_metaBits+'</div>';
+        '<div class="vvx-pname">'+leg+flag+' '+p.name+'</div>'+
+        '<div class="vvx-pmeta">'+metaBits+'</div>'+
+        '<div class="vvx-pfoot"><span class="vvx-ptag">'+footTag+'</span><span class="vvx-pseason">'+(seasonLbl||'')+'</span></div>'+
+      '</div>';
 
-    // Stats boxes + VV Index
-    html += '<div class="vv-story-stats">'+
-      '<div class="vv-stat-box"><div class="vv-stat-n">'+p.g+'</div><div class="vv-stat-l">Goals</div></div>'+
-      '<div class="vv-stat-box"><div class="vv-stat-n">'+p.a+'</div><div class="vv-stat-l">Assists</div></div>'+
-      '<div class="vv-stat-box" title="VV Score™ '+vvScoreDisplay(sr.total)+'/100 — League and role-adjusted season intelligence score. Internal score: '+sr.total+'/25"><div class="vv-stat-n">'+vvScoreDisplay(sr.total)+'</div><div class="vv-stat-l" style="font-size:8px">VV Score</div></div>'+
-      '<div class="vv-stat-box vv-index-box" title="SSP Grade: '+sr.lbl+' — Hover the badge below for full context.">'+
-        '<div class="vv-stat-n" style="font-size:13px!important;letter-spacing:-0.3px">'+sr.emoji+'</div>'+
-        '<div class="vv-stat-l" style="color:var(--accent)">SSP</div>'+
-      '</div>'+
-    '</div>'+
-    // SSP label + VV Index 5-bar mini breakdown
-    '<div class="vv-index-bars">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">'+
-        '<span style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4)">'+
-          'VV Score™ '+
-          '<span title="VV Score™ — The proprietary football intelligence metric powering VVonderXI. Combines goals, assists, match ratings, minutes, league strength, positional benchmarks and career stage. The SSP Rating is the scout interpretation of this score." style="cursor:help;color:var(--ink4);font-size:9px">ⓘ</span>'+
-        '</span>'+
-        '<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.5px">'+sr.lbl+'</span>'+
-      '</div>'+
-      vvIndexBarsHTML(sr)+
+    // ── EXPANSION DATA (hidden; injected into wallet modal on tap) ──
+    var narrative = aiResult ? (num===1 ? aiResult.p1 : aiResult.p2) : null;
+    var chronicleTxt = narrative || buildSeasonSummary(p, sr, traj, cs);
+    var exp = '<div class="vvx-expand-data" id="vvx-exp-'+num+'" style="display:none">';
+    exp += '<div class="vvx-statline">'+
+      '<div class="vvx-stat"><div class="vvx-sv">'+p.g+'</div><div class="vvx-sl">Goals</div></div>'+
+      '<div class="vvx-stat"><div class="vvx-sv">'+p.a+'</div><div class="vvx-sl">Assists</div></div>'+
+      '<div class="vvx-stat"><div class="vvx-sv">'+(seasonLbl||'\u2014')+'</div><div class="vvx-sl">Season</div></div>'+
     '</div>';
-
-    // Developer Mode panel — shows dimension breakdown
-    html += '<div class="dev-panel" id="dev-panel-'+num+'">'+
-      '<div class="dev-panel-title">⚙️ VV Engine Breakdown</div>'+
-      devPanelHTML(sr)+
-    '</div>';
-
-    // VV Tags
-    if (vvT && vvT.length) {
-      html += '<div class="vv-tags">';
-      vvT.forEach(function(t){ html += vvTagHTML(t); });
-      html += '</div>';
-    }
-
-    // Scout badges (existing system)
-    html += '<div class="vrow-tags" style="margin-top:6px">'+
-      '<span class="badge '+sr.cls+'" title="SSP: '+sr.lbl+' — '+getSSPDesc(sr.lbl)+'">'+sr.emoji+' '+sr.lbl+'</span>'+
-      (mm ? '<span class="mm-tag '+mm.cls+'" style="margin-left:4px" title="Market Momentum: '+mm.lbl+' — '+getMMDesc(mm.lbl)+'">'+mm.emoji+' '+mm.lbl+'</span>' : '')+
+    if (vvT && vvT.length) { exp += '<div class="vv-tags vvx-xtags">'; vvT.forEach(function(t){ exp += vvTagHTML(t); }); exp += '</div>'; }
+    exp += '<div class="vvx-xsection"><div class="vvx-xhd">VV Engine \u2014 '+sr.lbl+'</div>'+vvIndexBarsHTML(sr)+'</div>';
+    exp += '<div class="vrow-tags vvx-xbadges">'+
+      '<span class="badge '+sr.cls+'" title="SSP: '+sr.lbl+'">'+sr.emoji+' '+sr.lbl+'</span>'+
+      (mm ? '<span class="mm-tag '+mm.cls+'" style="margin-left:4px" title="'+getMMDesc(mm.lbl)+'">'+mm.emoji+' '+mm.lbl+'</span>' : '')+
       '<span class="cs-tag '+cs.cls+'" style="margin-left:4px" title="'+(cs.desc||cs.lbl)+'">'+cs.emoji+' '+cs.lbl+'</span>'+
     '</div>';
+    exp += confHTML(conf);
+    exp += '<div class="dev-panel" id="dev-panel-'+num+'"><div class="dev-panel-title">⚙️ VV Engine Breakdown</div>'+devPanelHTML(sr)+'</div>';
+    exp += '<div class="vvx-chronicle"><div class="vvx-ch-head">✦ VV Chronicle</div><div class="vvx-ch-body">'+chronicleTxt+'</div></div>';
+    exp += '</div>';
 
-    // Confidence
-    html += confHTML(conf);
-
-    // AI narrative if available
-    var narrative = aiResult ? (num===1 ? aiResult.p1 : aiResult.p2) : null;
-    if (narrative) {
-      html += '<div class="vv-story-narrative">'+narrative+'</div>';
-    }
-
-    html += '</div></div>'; // /vvx-pbody /vvx-pcard
+    html += exp;
+    html += '</div>'; // /vvx-pcard
     return html;
   }
 
@@ -8939,6 +8954,12 @@ function switchLegendTab(tab, btn) {
 }
 
 </script>
+<div class="vvx-scrim" id="vvx-scrim" onclick="if(event.target===this)vvxCloseCard()">
+  <div class="vvx-modal-col">
+    <button class="vvx-close" onclick="vvxCloseCard()">✕</button>
+    <div class="vvx-expanded" id="vvx-modal-body"></div>
+  </div>
+</div>
 <script>
 /* 3D-extruded rotating VV mark */
 (function(){
