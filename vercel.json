@@ -4,6 +4,7 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "foundations.html", "use": "@vercel/static" },
     { "src": "db.json", "use": "@vercel/static" },
+    { "src": "og-image.png", "use": "@vercel/static" },
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
@@ -17,6 +18,7 @@
     { "src": "/api/db", "dest": "/api/db.js" },
     { "src": "/db.json", "dest": "/db.json", "headers": { "Cache-Control": "public, max-age=3600" } },
     { "src": "/foundations.html", "dest": "/foundations.html" },
+    { "src": "/og-image.png", "dest": "/og-image.png", "headers": { "Cache-Control": "public, max-age=86400" } },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
   "crons": [
