@@ -11,12 +11,11 @@
     { "src": "/api/get-seasons", "dest": "/api/get-seasons.js" },
     { "src": "/api/analyse", "dest": "/api/analyse.js" },
     { "src": "/api/refresh-players", "dest": "/api/refresh-players.js" },
-    { "src": "/api/import-players", "dest": "/api/import-players.js" },
     { "src": "/api/debug-player", "dest": "/api/debug-player.js" },
     { "src": "/api/log", "dest": "/api/log.js" },
     { "src": "/api/auth", "dest": "/api/auth.js" },
-    { "src": "/db.json", "dest": "/db.json", "headers": { "Cache-Control": "public, max-age=3600" } },
     { "src": "/api/db", "dest": "/api/db.js" },
+    { "src": "/db.json", "dest": "/db.json", "headers": { "Cache-Control": "public, max-age=3600" } },
     { "src": "/foundations.html", "dest": "/foundations.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
