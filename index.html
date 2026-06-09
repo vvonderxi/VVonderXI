@@ -2015,6 +2015,30 @@ body.dev-mode-active .dev-panel{display:block}
 .vvx-pill:hover{border-color:var(--blush);background:var(--blush-wash)}
 .vvx-pilldef{position:absolute;top:calc(100% + 8px);left:0;background:var(--charcoal);color:var(--ivory);font-weight:400;font-size:var(--t-xs);padding:10px 12px;border-radius:var(--r-md);width:max-content;max-width:220px;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .2s var(--ease),transform .2s var(--ease);box-shadow:var(--shadow-pop);z-index:8;line-height:1.45}
 .vvx-pill:hover .vvx-pilldef,.vvx-pill.open .vvx-pilldef{opacity:1;transform:none;pointer-events:auto}
+
+/* ══ FOUNDATIONS — Scout Guide (page-guide) ══ */
+#page-guide{background:var(--ivory);color:var(--charcoal);font-family:var(--body)}
+#page-guide .hdr{background:var(--paper);border-bottom:1px solid var(--line);padding:var(--s7) var(--s5) var(--s6);position:static}
+#page-guide .hdr-inner{max-width:860px;margin:0 auto}
+#page-guide .hdr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:var(--s3)}
+#page-guide .hdr-eyebrow::before{content:'';width:18px;height:2px;background:var(--blush-deep)}
+#page-guide .hdr-site-title{font-family:var(--display);font-weight:900;font-size:clamp(2rem,5vw,2.8rem);line-height:1;letter-spacing:-.02em;color:var(--charcoal);margin-bottom:var(--s3)}
+#page-guide .hdr-xi{color:var(--blush-deep)}
+#page-guide .hdr-tagline{font-family:var(--display);font-style:italic;font-weight:500;font-size:var(--t-md);color:var(--ink-soft);margin:0}
+#page-guide .guide-page{max-width:860px;margin:0 auto;padding:0 var(--s5) var(--s9)}
+#page-guide .guide-section{margin:0;padding:var(--s8) 0;border-top:1px solid var(--line)}
+#page-guide .guide-section:first-child{border-top:none}
+#page-guide .guide-section h2{font-family:var(--display);font-weight:700;font-size:var(--t-lg);line-height:1.06;letter-spacing:-.01em;color:var(--charcoal);margin:0 0 var(--s3)}
+#page-guide .guide-section > p{font-family:var(--body);font-size:var(--t-base);line-height:1.6;color:var(--ink-soft);max-width:60ch;margin:0 0 var(--s5)}
+#page-guide .weight-table{width:100%;border-collapse:collapse;font-family:var(--body);font-size:var(--t-base);margin:0}
+#page-guide .weight-table td{padding:var(--s3) var(--s2);border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+#page-guide .weight-table tr:last-child td{border-bottom:none}
+#page-guide .weight-table td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--blush-deep);white-space:nowrap;width:1%}
+#page-guide .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4);margin:0}
+#page-guide .guide-item{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-card)}
+#page-guide .guide-item-hd{font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.01em;color:var(--charcoal);padding:var(--s4) var(--s4) var(--s2);border-bottom:1px solid var(--line)}
+#page-guide .guide-item-bd{font-family:var(--body);font-size:var(--t-sm);line-height:1.55;color:var(--ink-soft);padding:var(--s3) var(--s4) var(--s4)}
+@media(max-width:560px){#page-guide .guide-grid{grid-template-columns:1fr}#page-guide .guide-section{padding:var(--s7) 0}#page-guide .hdr{padding:var(--s6) var(--s4) var(--s5)}#page-guide .guide-page{padding:0 var(--s4) var(--s8)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
