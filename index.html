@@ -2002,6 +2002,16 @@ body.dev-mode-active .dev-panel{display:block}
 .vvx-chronicle{background:var(--charcoal);border-radius:var(--r-lg);padding:16px 18px;margin-top:var(--s4)}
 .vvx-ch-head{font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--blush);margin-bottom:8px}
 .vvx-ch-body{font-family:var(--display);font-weight:500;font-style:italic;font-size:1.05rem;line-height:1.45;color:rgba(246,243,236,.92)}
+/* rankings: row highlight, hover peek, foundations pills */
+.rtable tr.vvx-rank-row:hover{background:var(--blush-wash)}
+.vvx-peek{position:fixed;width:228px;z-index:4000;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .15s var(--ease),transform .15s var(--ease)}
+.vvx-peek.show{opacity:1;transform:none}
+.vvx-peek .vvx-pcard{box-shadow:var(--shadow-pop)!important}
+.vvx-pillrow{display:flex;flex-wrap:wrap;gap:8px;margin:var(--s3) 0 var(--s4)}
+.vvx-pill{position:relative;font-family:var(--body);font-weight:600;font-size:var(--t-sm);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.vvx-pill:hover{border-color:var(--blush);background:var(--blush-wash)}
+.vvx-pilldef{position:absolute;top:calc(100% + 8px);left:0;background:var(--charcoal);color:var(--ivory);font-weight:400;font-size:var(--t-xs);padding:10px 12px;border-radius:var(--r-md);width:max-content;max-width:220px;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .2s var(--ease),transform .2s var(--ease);box-shadow:var(--shadow-pop);z-index:8;line-height:1.45}
+.vvx-pill:hover .vvx-pilldef,.vvx-pill.open .vvx-pilldef{opacity:1;transform:none;pointer-events:auto}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -4957,6 +4967,104 @@ function vvxCloseCard(){
   document.body.style.overflow='';
 }
 document.addEventListener('keydown',function(e){ if(e.key==='Escape') vvxCloseCard(); });
+function vvxPill(el){ el.classList.toggle('open'); }
+function vvxFindPlayer(name){ for(var i=0;i<DB.length;i++){ if(DB[i].name===name) return DB[i]; } return null; }
+function vvxShowModal(html){
+  var body=document.getElementById('vvx-modal-body'); if(!body) return;
+  body.innerHTML=html;
+  document.getElementById('vvx-scrim').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function vvxSeasonLabel(pObj,sk){
+  if(pObj.seasons[sk]&&pObj.seasons[sk].label) return pObj.seasons[sk].label;
+  return SEASON_LABELS[sk]||sk;
+}
+// Reusable: build the full wallet-card content from raw player-season data
+function vvxBuildCardModal(p,pObj,sr,cs,traj,mm,vvT,narrative){
+  var flag=pObj?natFlag(pObj.nat):'';
+  var leg=(pObj&&pObj.legacy)?'\U0001f451 ':'';
+  var lgStr=(LGS[p.lg]||{n:p.lg||''}).n;
+  var teamKey=p.club?(TEAM_COLOURS[p.club.toLowerCase().trim()]||TEAM_COLOURS[p.club.toLowerCase().replace(/-/g,' ').trim()]||null):null;
+  var clubNice=fmtClub(p.club); var clubShown=(clubNice&&clubNice!=='\u2014')?clubNice:'';
+  var vvScore=vvScoreDisplay(sr.total); var crest=vvxClubCrest(teamKey||'');
+  var isIcon=!!(pObj&&pObj.legacy); var ballCol=vvxTierColor(sr.lbl);
+  var seasonLbl=vvxSeasonLabel(pObj,p.season);
+  var metaBits=[(sr.roleLabel||p.pos||''),clubShown,lgStr,(p.age?'Age '+p.age:'')].filter(Boolean).join(' \u00b7 ');
+  var html='<div class="vvx-crest" style="--c1:'+crest[0]+';--c2:'+crest[1]+'">'+
+    vvxBall(ballCol,isIcon?'icon':'modern','rk')+
+    '<span class="vvx-tier-flag">'+sr.emoji+' '+sr.lbl+'</span>'+
+    '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+vvScore+'</div></div>'+
+  '</div><div class="vvx-xbody">'+
+    '<div class="vvx-pname">'+leg+flag+' '+p.name+'</div>'+
+    '<div class="vvx-pmeta">'+metaBits+'</div>'+
+    '<div class="vvx-statline">'+
+      '<div class="vvx-stat"><div class="vvx-sv">'+p.g+'</div><div class="vvx-sl">Goals</div></div>'+
+      '<div class="vvx-stat"><div class="vvx-sv">'+p.a+'</div><div class="vvx-sl">Assists</div></div>'+
+      '<div class="vvx-stat"><div class="vvx-sv">'+(seasonLbl||'\u2014')+'</div><div class="vvx-sl">Season</div></div>'+
+    '</div>';
+  if(vvT&&vvT.length){ html+='<div class="vvx-pillrow">'; vvT.forEach(function(t){ html+='<span class="vvx-pill" onclick="vvxPill(this)">'+(t.emoji||'')+' '+t.key+'<span class="vvx-pilldef">'+(t.desc||'')+'</span></span>'; }); html+='</div>'; }
+  html+='<div class="vvx-xsection"><div class="vvx-xhd">VV Engine \u2014 '+sr.lbl+'</div>'+vvIndexBarsHTML(sr)+'</div>';
+  html+='<div class="vrow-tags vvx-xbadges">'+
+    '<span class="badge '+sr.cls+'" title="SSP: '+sr.lbl+'">'+sr.emoji+' '+sr.lbl+'</span>'+
+    (mm?'<span class="mm-tag '+mm.cls+'" style="margin-left:4px" title="'+getMMDesc(mm.lbl)+'">'+mm.emoji+' '+mm.lbl+'</span>':'')+
+    '<span class="cs-tag '+cs.cls+'" style="margin-left:4px" title="'+(cs.desc||cs.lbl)+'">'+cs.emoji+' '+cs.lbl+'</span>'+
+  '</div>';
+  var chron=narrative||(p.g+' goals, '+p.a+' assists in the '+lgStr+'. Graded '+sr.lbl+' by the VV Engine.');
+  html+='<div class="vvx-chronicle"><div class="vvx-ch-head">\u2726 VV Chronicle</div><div class="vvx-ch-body">'+chron+'</div></div>';
+  html+='</div>';
+  return html;
+}
+// Card FRONT only (for hover peek)
+function vvxCardFront(p,pObj,sr){
+  var flag=pObj?natFlag(pObj.nat):''; var leg=(pObj&&pObj.legacy)?'\U0001f451 ':'';
+  var lgStr=(LGS[p.lg]||{n:p.lg||''}).n;
+  var teamKey=p.club?(TEAM_COLOURS[p.club.toLowerCase().trim()]||TEAM_COLOURS[p.club.toLowerCase().replace(/-/g,' ').trim()]||null):null;
+  var clubNice=fmtClub(p.club); var clubShown=(clubNice&&clubNice!=='\u2014')?clubNice:'';
+  var crest=vvxClubCrest(teamKey||''); var isIcon=!!(pObj&&pObj.legacy); var ballCol=vvxTierColor(sr.lbl);
+  var vvScore=vvScoreDisplay(sr.total); var seasonLbl=vvxSeasonLabel(pObj,p.season);
+  var metaBits=[(sr.roleLabel||p.pos||''),clubShown,lgStr].filter(Boolean).join(' \u00b7 ');
+  return '<div class="vv-story vvx-pcard'+vvxGradeClass(sr.lbl)+'">'+
+    '<div class="vvx-crest" style="--c1:'+crest[0]+';--c2:'+crest[1]+'">'+
+      vvxBall(ballCol,isIcon?'icon':'modern','pk')+
+      '<span class="vvx-tier-flag">'+sr.emoji+' '+sr.lbl+'</span>'+
+      '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+vvScore+'</div></div>'+
+    '</div>'+
+    '<div class="vvx-pbody"><div class="vvx-pname">'+leg+flag+' '+p.name+'</div><div class="vvx-pmeta">'+metaBits+'</div>'+
+    '<div class="vvx-pfoot"><span class="vvx-ptag">'+sr.emoji+' '+sr.lbl+'</span><span class="vvx-pseason">'+(seasonLbl||'')+'</span></div></div>'+
+  '</div>';
+}
+function vvxSeasonData(name,sk){
+  var pObj=vvxFindPlayer(name); if(!pObj||!pObj.seasons[sk]) return null;
+  var s=pObj.seasons[sk];
+  var sr=scoutReport(s.g,s.a,s.pos,s.lg,s.apps,s.rt);
+  var p={name:pObj.name,g:s.g,a:s.a,age:s.age,pos:s.pos,lg:s.lg,club:s.club,season:sk};
+  return {pObj:pObj,s:s,sr:sr,p:p};
+}
+function vvxOpenRankCard(name,sk){
+  var d=vvxSeasonData(name,sk); if(!d) return;
+  var cs=careerStage(d.s.age);
+  var traj=trajectoryAnalysis(d.pObj);
+  var mm=marketMomentum(d.pObj,d.s.age,d.s.lg,traj);
+  var vvT=getVVTags(d.s,d.pObj.name,!!(d.pObj.legacy));
+  vvxShowModal(vvxBuildCardModal(d.p,d.pObj,d.sr,cs,traj,mm,vvT,null));
+}
+var vvxPeekT=null;
+function vvxRowEnter(el){
+  if(!window.matchMedia||!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  clearTimeout(vvxPeekT);
+  vvxPeekT=setTimeout(function(){
+    var d=vvxSeasonData(el.dataset.n,el.dataset.sk); if(!d) return;
+    var peek=document.getElementById('vvx-peek'); if(!peek) return;
+    peek.innerHTML=vvxCardFront(d.p,d.pObj,d.sr);
+    var r=el.getBoundingClientRect();
+    var left=r.right+16; if(left+240>window.innerWidth) left=r.left-256;
+    if(left<8) left=8;
+    var top=Math.max(10,Math.min(window.innerHeight-320,r.top-30));
+    peek.style.left=left+'px'; peek.style.top=top+'px';
+    peek.classList.add('show');
+  },140);
+}
+function vvxRowLeave(){ clearTimeout(vvxPeekT); var peek=document.getElementById('vvx-peek'); if(peek) peek.classList.remove('show'); }
 
 function vvScoreDisplay(total25) {
   if (!total25 || total25 <= 0) return 1;
@@ -6650,7 +6758,7 @@ function buildRatingTable(){
         name: p.name, flag: flag, pos: s.pos, lg: s.lg,
         g: s.g, a: s.a, age: s.age, sr: sr,
         display: display, rawOutput: rawOutput,
-        season: seasonLabel, clickName: p.name
+        season: seasonLabel, sk: sk, clickName: p.name
       });
     });
   });
@@ -6730,7 +6838,7 @@ function buildRatingTable(){
     var tdGoals = rtSortBy==='goals'
       ? '<td><strong style="color:var(--accent);font-size:15px">'+r.g+'</strong></td>'
       : '<td>'+r.g+'</td>';
-    html += '<tr style="cursor:pointer" onclick="fillFromSidebar(this.dataset.n)" data-n="' + r.clickName.replace(/"/g,'&quot;') + '">'+
+    html += '<tr class="vvx-rank-row" style="cursor:pointer" data-n="' + r.clickName.replace(/"/g,'&quot;') + '" data-sk="' + r.sk + '" onclick="vvxOpenRankCard(this.dataset.n,this.dataset.sk)" onmouseenter="vvxRowEnter(this)" onmouseleave="vvxRowLeave()">'+
       '<td style="color:var(--ink4);font-size:11px">'+(i+1)+'</td>'+
       '<td>'+r.flag+' <strong>'+r.name+'</strong></td>'+
       '<td style="color:var(--ink4);font-size:11px">'+r.season+'</td>'+
@@ -8960,6 +9068,7 @@ function switchLegendTab(tab, btn) {
     <div class="vvx-expanded" id="vvx-modal-body"></div>
   </div>
 </div>
+<div class="vvx-peek" id="vvx-peek"></div>
 <script>
 /* 3D-extruded rotating VV mark */
 (function(){
