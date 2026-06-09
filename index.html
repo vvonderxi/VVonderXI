@@ -8,13 +8,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VVonderXI">
 <meta property="og:title" content="VVonderXI — The Football Intelligence Platform">
-<meta property="og:description" content="Compare Careers. Define Legacies. Analyse any two footballers across any season with AI and data back to 2019.">
+<meta property="og:description" content="Compare Careers. Define Legacies. Every generation creates new questions.">
 <meta property="og:url" content="https://vvonderxi.com">
 <meta property="og:image" content="https://vvonderxi.com/og-image.png">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="VVonderXI — The Football Intelligence Platform">
-<meta name="twitter:description" content="Compare Careers. Define Legacies. Analyse any two footballers across any season with AI and data back to 2019.">
+<meta name="twitter:description" content="Compare Careers. Define Legacies. Every generation creates new questions.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════
@@ -548,8 +548,8 @@ body{background:var(--cream);font-family:'Hanken Grotesk',sans-serif;color:var(-
 .la-input::placeholder{color:rgba(255,255,255,.3)}
 .la-btn-primary{width:100%;padding:12px;background:var(--accent);border:none;border-radius:3px;font-family:'Hanken Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;transition:all .15s;margin-bottom:12px}
 .la-btn-primary:hover{background:#c47e7b}
-.la-btn-google{width:100%;padding:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:3px;font-family:'Hanken Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:rgba(255,255,255,.8);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px}
-.la-btn-google:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+.la-btn-google{width:100%;padding:11px;background:#ffffff;border:1px solid rgba(0,0,0,.12);border-radius:3px;font-family:'Hanken Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:#1A1714;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px}
+.la-btn-google:hover{background:#f1f1f1;border-color:rgba(0,0,0,.2)}
 .la-divider{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .la-divider-line{flex:1;height:1px;background:rgba(255,255,255,.1)}
 .la-divider-text{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3)}
@@ -2039,9 +2039,185 @@ body.dev-mode-active .dev-panel{display:block}
 #page-guide .guide-item-hd{font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.01em;color:var(--charcoal);padding:var(--s4) var(--s4) var(--s2);border-bottom:1px solid var(--line)}
 #page-guide .guide-item-bd{font-family:var(--body);font-size:var(--t-sm);line-height:1.55;color:var(--ink-soft);padding:var(--s3) var(--s4) var(--s4)}
 @media(max-width:560px){#page-guide .guide-grid{grid-template-columns:1fr}#page-guide .guide-section{padding:var(--s7) 0}#page-guide .hdr{padding:var(--s6) var(--s4) var(--s5)}#page-guide .guide-page{padding:0 var(--s4) var(--s8)}}
-</style>
+
+/* ══ FOUNDATIONS — Legends / Icons (page-legends) ══ */
+#page-legends{background:var(--ivory);color:var(--charcoal);font-family:var(--body)}
+#page-legends .hdr{background:var(--paper);border-bottom:1px solid var(--line);padding:var(--s6) var(--s5);position:static}
+#page-legends .hdr-inner{max-width:980px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s4);flex-wrap:wrap}
+#page-legends .hdr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:var(--s2)}
+#page-legends .hdr-eyebrow::before{content:'';width:18px;height:2px;background:var(--blush-deep)}
+#page-legends .hdr-site-title{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,4vw,2.4rem);line-height:1;letter-spacing:-.02em;color:var(--charcoal);margin-bottom:var(--s2)}
+#page-legends .hdr-xi{color:var(--blush-deep)}
+#page-legends .hdr-tagline,#page-legends .hdr-sub{font-family:var(--display);font-style:italic;font-weight:500;font-size:var(--t-base);color:var(--ink-soft);margin:0}
+#page-legends .hdr-right{display:flex;align-items:center;gap:var(--s2)}
+#page-legends .data-pill{font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:var(--ivory-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+#page-legends .tab-bar{display:flex;gap:var(--s5);max-width:980px;margin:0 auto;padding:0 var(--s5);border-bottom:1px solid var(--line);overflow-x:auto}
+#page-legends .tab-btn{appearance:none;background:none;border:none;cursor:pointer;font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.04em;color:var(--ink-soft);padding:var(--s4) 2px;margin:0;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s var(--ease),border-color .2s var(--ease)}
+#page-legends .tab-btn:hover{color:var(--charcoal)}
+#page-legends .tab-btn.active{color:var(--charcoal);border-bottom-color:var(--blush-deep)}
+#page-legends .legends-page,#page-legends .guide-page{max-width:980px;margin:0 auto;padding:0 var(--s5) var(--s9)}
+#page-legends .legends-header{max-width:980px;margin:0 auto;padding:var(--s7) var(--s5) var(--s4)}
+#page-legends .legends-header h1{font-family:var(--display);font-weight:700;font-size:var(--t-lg);line-height:1.05;letter-spacing:-.01em;color:var(--charcoal);margin:0 0 var(--s3)}
+#page-legends .legends-header p{font-family:var(--body);font-size:var(--t-base);line-height:1.6;color:var(--ink-soft);max-width:62ch;margin:0}
+#page-legends .filter-bar{display:flex;flex-wrap:wrap;gap:var(--s2);max-width:980px;margin:0 auto;padding:0 var(--s5) var(--s5)}
+#page-legends .filter-chip{appearance:none;cursor:pointer;font-family:var(--body);font-weight:600;font-size:var(--t-sm);color:var(--ink-soft);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:7px 14px;transition:all .18s var(--ease)}
+#page-legends .filter-chip:hover{border-color:var(--ink4);color:var(--charcoal)}
+#page-legends .filter-chip.active{background:var(--charcoal);border-color:var(--charcoal);color:var(--ivory)}
+#page-legends .legends-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:var(--s4);max-width:980px;margin:0 auto;padding:0 var(--s5) var(--s9)}
+#page-legends .legend-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-card);transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
+#page-legends .legend-card:hover{transform:translateY(-2px);box-shadow:0 1px 2px rgba(26,23,20,.05),0 18px 40px -16px rgba(26,23,20,.28)}
+#page-legends .legend-card-hd{padding:var(--s4) var(--s4) var(--s3);border-bottom:1px solid var(--line)}
+#page-legends .legend-card-name{font-family:var(--display);font-weight:700;font-size:1.12rem;line-height:1.1;color:var(--charcoal);margin-bottom:4px}
+#page-legends .legend-card-meta{font-family:var(--body);font-weight:600;font-size:var(--t-xs);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft)}
+#page-legends .legend-card-bd{padding:var(--s3) var(--s4) var(--s4);display:flex;flex-direction:column;gap:var(--s3)}
+#page-legends .legend-card-seasons{font-family:var(--body);font-size:var(--t-sm);line-height:1.7;color:var(--ink2);font-variant-numeric:tabular-nums}
+#page-legends .legend-card-tier{align-self:flex-start;font-family:var(--body);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid transparent}
+#page-legends .legend-card-tier.b-era{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-bd)}
+#page-legends .legend-card-tier.b-elite{background:var(--blush-wash);color:var(--blush-deep);border-color:#E7C4CE}
+#page-legends .legend-card-tier.b-verygood{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-bd)}
+#page-legends .legend-card-tier.b-good{background:var(--ivory-2);color:var(--ink-soft);border-color:var(--line)}
+#page-legends .guide-section{margin:0;padding:var(--s7) 0;border-top:1px solid var(--line)}
+#page-legends .guide-section:first-child{border-top:none}
+#page-legends .guide-section h2{font-family:var(--display);font-weight:700;font-size:var(--t-lg);line-height:1.06;letter-spacing:-.01em;color:var(--charcoal);margin:0 0 var(--s3)}
+#page-legends .guide-section > p{font-family:var(--body);font-size:var(--t-base);line-height:1.6;color:var(--ink-soft);max-width:62ch;margin:0 0 var(--s5)}
+#page-legends .weight-table{width:100%;border-collapse:collapse;font-family:var(--body);font-size:var(--t-base);margin:0}
+#page-legends .weight-table td{padding:var(--s3) var(--s2);border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+#page-legends .weight-table tr:last-child td{border-bottom:none}
+#page-legends .weight-table td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--blush-deep);white-space:nowrap;width:1%}
+#page-legends .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--s4);margin:0}
+#page-legends .guide-item{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-card)}
+#page-legends .guide-item-hd{font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.01em;color:var(--charcoal);padding:var(--s4) var(--s4) var(--s2);border-bottom:1px solid var(--line)}
+#page-legends .guide-item-bd{font-family:var(--body);font-size:var(--t-sm);line-height:1.55;color:var(--ink-soft);padding:var(--s3) var(--s4) var(--s4)}
+@media(max-width:560px){#page-legends .legends-grid{grid-template-columns:1fr;padding:0 var(--s4) var(--s8)}#page-legends .tab-bar{gap:var(--s4);padding:0 var(--s4)}#page-legends .legends-header,#page-legends .filter-bar,#page-legends .legends-page,#page-legends .guide-page{padding-left:var(--s4);padding-right:var(--s4)}#page-legends .guide-grid{grid-template-columns:1fr}}
+
+/* ══ FOUNDATIONS — Baller Bio stub (page-baller) ══ */
+#page-baller{background:var(--ivory);color:var(--charcoal);font-family:var(--body)}
+#page-baller .hdr{background:var(--paper);border-bottom:1px solid var(--line);padding:var(--s7) var(--s5) var(--s6);position:static}
+#page-baller .hdr-inner{max-width:760px;margin:0 auto}
+#page-baller .hdr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:var(--s3)}
+#page-baller .hdr-eyebrow::before{content:'';width:18px;height:2px;background:var(--blush-deep)}
+#page-baller .hdr-site-title{font-family:var(--display);font-weight:900;font-size:clamp(2rem,5vw,2.8rem);line-height:1;letter-spacing:-.02em;color:var(--charcoal);margin-bottom:var(--s3)}
+#page-baller .hdr-xi{color:var(--blush-deep)}
+#page-baller .hdr-tagline{font-family:var(--display);font-style:italic;font-weight:500;font-size:var(--t-md);color:var(--ink-soft);margin:0}
+#page-baller .wrap{max-width:620px;margin:0 auto;padding:var(--s9) var(--s5)}
+
+/* ══ FOUNDATIONS — Locker Room: Auth (editorial light) ══ */
+#locker-overlay{background:var(--ivory)}
+#locker-auth{font-family:var(--body);color:var(--charcoal);padding:var(--s8) var(--s5)}
+#locker-auth .locker-auth-bg{display:none}
+#locker-auth .la-badge{font-size:34px;margin-bottom:var(--s4);filter:none}
+#locker-auth .la-brand{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,5vw,2.4rem);letter-spacing:-.02em;color:var(--charcoal);line-height:1;margin-bottom:var(--s2)}
+#locker-auth .la-brand span{color:var(--blush-deep)}
+#locker-auth .la-sub{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.26em;text-transform:uppercase;color:var(--blush-deep);margin-bottom:var(--s5)}
+#locker-auth .la-sub::before{content:'';width:18px;height:2px;background:var(--blush-deep)}
+#locker-auth .la-headline{font-family:var(--display);font-style:italic;font-weight:500;font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.2;color:var(--charcoal);max-width:22ch;text-align:center;margin:0 auto var(--s3)}
+#locker-auth .la-tagline{font-family:var(--body);font-size:var(--t-base);line-height:1.6;color:var(--ink-soft);max-width:46ch;text-align:center;margin:0 auto var(--s7)}
+#locker-auth .la-features{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);width:100%;max-width:760px;margin:0 auto var(--s7)}
+#locker-auth .la-feat{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s5) var(--s4);text-align:center;box-shadow:var(--shadow-card)}
+#locker-auth .la-feat-icon{font-size:22px;margin-bottom:var(--s3)}
+#locker-auth .la-feat-title{font-family:var(--display);font-weight:700;font-size:1.02rem;color:var(--charcoal);margin-bottom:6px}
+#locker-auth .la-feat-desc{font-family:var(--body);font-size:var(--t-sm);line-height:1.5;color:var(--ink-soft)}
+#locker-auth .la-form{width:100%;max-width:400px;margin:0 auto}
+#locker-auth .la-form-title{font-family:var(--display);font-weight:700;font-size:1.4rem;color:var(--charcoal);text-align:center;margin-bottom:var(--s4)}
+#locker-auth .la-tabs{display:flex;gap:var(--s5);justify-content:center;border:none;border-bottom:1px solid var(--line);border-radius:0;margin-bottom:var(--s5);overflow:visible}
+#locker-auth .la-tab{appearance:none;background:none;border:none;cursor:pointer;font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.03em;color:var(--ink-soft);padding:var(--s3) 2px;border-bottom:2px solid transparent;transition:color .2s var(--ease),border-color .2s var(--ease)}
+#locker-auth .la-tab:hover{color:var(--charcoal)}
+#locker-auth .la-tab.active{color:var(--charcoal);border-bottom-color:var(--blush-deep)}
+#locker-auth .la-input{width:100%;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);font-family:var(--body);font-size:var(--t-base);color:var(--charcoal);margin-bottom:var(--s3);transition:border-color .18s var(--ease)}
+#locker-auth .la-input::placeholder{color:var(--ink4)}
+#locker-auth .la-input:focus{outline:none;border-color:var(--blush-deep);background:#fff}
+#locker-auth .la-btn-primary{width:100%;padding:13px;background:var(--charcoal);color:var(--ivory);border:none;border-radius:var(--r-sm);font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .18s var(--ease),transform .12s var(--ease)}
+#locker-auth .la-btn-primary:hover{background:var(--charcoal-2);transform:translateY(-1px)}
+#locker-auth .la-close-btn{position:absolute;top:var(--s4);right:var(--s4);background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:8px}
+#locker-auth .la-close-btn:hover{color:var(--charcoal)}
+#locker-auth .la-err{color:var(--red);font-family:var(--body);font-size:var(--t-sm);text-align:center;min-height:1em;margin-bottom:var(--s2)}
+#locker-auth .la-emoji-display{color:var(--charcoal)}
+#locker-auth .la-emoji-label{font-family:var(--body);font-size:var(--t-xs);letter-spacing:.04em;color:var(--ink-soft);text-align:center;margin-bottom:var(--s3)}
+#locker-auth .emoji-picker{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s2)}
+#locker-auth .emoji-opt{cursor:pointer;border-radius:var(--r-sm)}
+#locker-auth .emoji-opt.selected{background:var(--blush-wash)}
+#locker-auth .la-divider{display:flex;align-items:center;gap:10px;margin-bottom:var(--s4);color:var(--ink-soft);font-size:var(--t-sm)}
+#locker-auth .la-divider-line{flex:1;border:none;border-top:1px solid var(--line)}
+@media(max-width:560px){#locker-auth .la-features{grid-template-columns:1fr 1fr;gap:var(--s2)}#locker-auth{padding:var(--s7) var(--s4)}}
+
+/* ══ Locker feature explainers + tags ══ */
+#locker-auth .la-feat{position:relative;cursor:pointer;transition:transform .16s var(--ease),box-shadow .16s var(--ease),border-color .16s var(--ease)}
+#locker-auth .la-feat:hover{transform:translateY(-2px);border-color:var(--ink4);box-shadow:0 1px 2px rgba(26,23,20,.05),0 16px 36px -16px rgba(26,23,20,.25)}
+#locker-auth .la-feat-tag{position:absolute;top:9px;right:9px;font-family:var(--body);font-weight:700;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--blush-deep);background:var(--blush-wash);border:1px solid #E7C4CE;border-radius:999px;padding:3px 7px;line-height:1}
+.la-explain{font-family:var(--body);color:var(--charcoal);padding:var(--s7) var(--s6) var(--s6)}
+.la-explain-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--blush-deep);margin-bottom:var(--s3)}
+.la-explain-tag::before{content:'';width:14px;height:2px;background:var(--blush-deep)}
+.la-explain h3{font-family:var(--display);font-weight:700;font-size:1.6rem;line-height:1.1;color:var(--charcoal);margin:0 0 var(--s3)}
+.la-explain p{font-family:var(--body);font-size:var(--t-base);line-height:1.65;color:var(--ink-soft);margin:0 0 var(--s6)}
+.la-explain-cta{display:inline-block;width:100%;text-align:center;background:var(--charcoal);color:var(--ivory);font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:var(--r-sm);padding:13px 22px;cursor:pointer;transition:background .18s var(--ease)}
+.la-explain-cta:hover{background:var(--blush-deep)}
+
+/* living db count pill */
+#db-pill.db-live{display:inline-flex;align-items:center;gap:7px;font-family:var(--body);font-weight:600;font-size:var(--t-xs);letter-spacing:.02em;color:var(--charcoal)!important;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.db-live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);position:relative;flex:none}
+.db-live-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--green);opacity:.4;animation:dbpulse 1.8s ease-out infinite}
+@keyframes dbpulse{0%{transform:scale(.6);opacity:.55}70%{transform:scale(1.9);opacity:0}100%{opacity:0}}
+
+/* === Locker Room: Dashboard (light editorial) === */
+#locker-dash{background:var(--ivory);color:var(--charcoal);font-family:var(--body)}
+#locker-dash .ld-header{background:var(--paper);border-bottom:1px solid var(--line);padding:var(--s4) var(--s5);display:flex;align-items:center;justify-content:space-between;gap:var(--s4);flex-wrap:wrap}
+#locker-dash .ld-header-brand{font-family:var(--display);font-weight:900;font-size:1.3rem;color:var(--charcoal);display:flex;align-items:center;gap:10px}
+#locker-dash .ld-header-brand span:first-of-type{color:var(--blush-deep)}
+#locker-dash .ld-user-info{display:flex;align-items:center;gap:var(--s3)}
+#locker-dash .ld-avatar{width:34px;height:34px;border-radius:50%;background:var(--ivory-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--charcoal)}
+#locker-dash .ld-username{font-family:var(--body);font-weight:700;font-size:var(--t-sm);color:var(--charcoal)}
+#locker-dash .ld-logout-btn{background:none;border:1px solid var(--line);border-radius:var(--r-sm);color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:var(--t-xs);letter-spacing:.04em;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:all .2s var(--ease)}
+#locker-dash .ld-logout-btn:hover{color:var(--charcoal);border-color:var(--ink4)}
+#locker-dash .ld-close-btn{background:none;border:none;color:var(--ink-soft);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px}
+#locker-dash .ld-close-btn:hover{color:var(--charcoal)}
+#locker-dash .ld-nav{display:flex;gap:var(--s5);padding:0 var(--s5);border-bottom:1px solid var(--line);background:var(--ivory);overflow-x:auto}
+#locker-dash .ld-nav-btn{appearance:none;background:none;border:none;cursor:pointer;font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.02em;color:var(--ink-soft);padding:var(--s4) 2px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s var(--ease),border-color .2s var(--ease)}
+#locker-dash .ld-nav-btn:hover{color:var(--charcoal)}
+#locker-dash .ld-nav-btn.active{color:var(--charcoal);border-bottom-color:var(--blush-deep)}
+#locker-dash .ld-panel{max-width:760px;margin:0 auto;padding:var(--s7) var(--s5) var(--s9)}
+#locker-dash .ld-section-title{font-family:var(--display);font-weight:700;font-size:var(--t-lg);line-height:1.12;color:var(--charcoal);margin:0 0 var(--s2)}
+#locker-dash .ld-section-sub{font-family:var(--body);font-size:var(--t-base);color:var(--ink-soft);margin:0 0 var(--s5)}
+#locker-dash .ld-read-more-btn{background:none;border:none;color:var(--blush-deep);font-family:var(--body);font-weight:600;font-size:var(--t-sm);cursor:pointer;padding:0;margin-bottom:var(--s4)}
+#locker-dash .ld-read-more-content{font-family:var(--body);font-size:var(--t-base);line-height:1.65;color:var(--ink-soft);margin-bottom:var(--s5)}
+#locker-dash .ld-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:var(--s3);margin-bottom:var(--s6)}
+#locker-dash .ld-stat{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s5) var(--s4);text-align:center}
+#locker-dash .ld-stat-n{font-family:var(--display);font-weight:900;font-size:2rem;line-height:1;color:var(--charcoal)}
+#locker-dash .ld-stat-lbl{font-family:var(--body);font-weight:600;font-size:var(--t-xs);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+#locker-dash .ld-empty{text-align:center;padding:var(--s7) var(--s5);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md)}
+#locker-dash .ld-empty-icon{font-size:30px;margin-bottom:var(--s3);opacity:.65}
+#locker-dash .ld-empty-text{font-family:var(--body);font-size:var(--t-sm);line-height:1.6;color:var(--ink-soft);margin-bottom:var(--s4)}
+#locker-dash .ld-empty-btn,#locker-dash .ld-note-save-btn{background:var(--charcoal)!important;color:var(--ivory)!important;border:none;border-radius:var(--r-sm);font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.05em;text-transform:uppercase;padding:11px 20px;cursor:pointer;transition:background .2s var(--ease)}
+#locker-dash .ld-empty-btn:hover,#locker-dash .ld-note-save-btn:hover{background:var(--blush-deep)!important}
+#locker-dash .ld-note-input,#locker-dash .ld-follow-input{width:100%;box-sizing:border-box;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);font-family:var(--body);font-size:var(--t-base);color:var(--charcoal);padding:12px 14px;margin-bottom:var(--s3)}
+#locker-dash .ld-note-input{min-height:90px;resize:vertical}
+#locker-dash .ld-note-input::placeholder,#locker-dash .ld-follow-input::placeholder{color:var(--ink4)}
+#locker-dash .ld-note-input:focus,#locker-dash .ld-follow-input:focus{outline:none;border-color:var(--blush-deep)}
+#locker-dash .ld-notes-list,#locker-dash .ld-following-list,#locker-dash .ld-collection-list,#locker-dash .ld-debates-list{margin-top:var(--s3)}
+#locker-dash .ld-dc-meta{font-family:var(--body);font-size:var(--t-xs);color:var(--ink4)}
+#locker-dash .ld-profile-avatar-big{width:64px;height:64px;border-radius:50%;background:var(--ivory-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:var(--s3)}
+#locker-dash .ld-profile-handle{font-family:var(--display);font-weight:700;font-size:1.3rem;color:var(--charcoal)}
+#locker-dash .ld-profile-email,#locker-dash .ld-profile-joined{font-family:var(--body);font-size:var(--t-sm);color:var(--ink-soft)}
+#locker-dash .emoji-opt{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm)}
+#locker-dash .emoji-opt:hover,#locker-dash .emoji-opt.selected{border-color:var(--blush-deep);background:var(--blush-wash)}
+/* daily debate: light paper card */
+#locker-dash .daily-thought{background:var(--paper)!important;border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s5);margin-top:var(--s5)}
+#locker-dash .dt-label{display:inline-flex;align-items:center;gap:7px;font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.1em;text-transform:uppercase;color:var(--blush-deep);margin-bottom:var(--s2)}
+#locker-dash .dt-label-dot{width:7px;height:7px;border-radius:50%;background:var(--blush-deep)}
+#locker-dash .dt-question{font-family:var(--display);font-weight:700;font-size:var(--t-md);line-height:1.25;color:var(--charcoal)!important;margin-bottom:var(--s2)}
+#locker-dash .dt-context{font-family:var(--body);font-size:var(--t-sm);line-height:1.6;color:var(--ink-soft);margin-bottom:var(--s4)}
+#locker-dash .dt-actions{display:flex;gap:var(--s3);flex-wrap:wrap}
+#locker-dash .dt-btn-main{background:var(--charcoal)!important;color:var(--ivory)!important;border:none;border-radius:var(--r-sm);font-family:var(--body);font-weight:700;font-size:var(--t-sm);letter-spacing:.04em;padding:10px 18px;cursor:pointer}
+#locker-dash .dt-btn-main:hover{background:var(--blush-deep)!important}
+#locker-dash .dt-btn-refresh{background:none;border:1px solid var(--line);color:var(--ink-soft)!important;border-radius:var(--r-sm);font-family:var(--body);font-weight:600;font-size:var(--t-sm);padding:10px 16px;cursor:pointer}
+#locker-dash .dt-btn-refresh:hover{color:var(--charcoal)!important;border-color:var(--ink4)}
+.gnav-legends-dropdown{background:var(--ivory)!important;border-bottom:1px solid var(--line)!important} .gnav-legends-dropdown::before{display:none!important} .gld-header{border-bottom-color:var(--line)!important} .gld-header-title{color:var(--charcoal)!important} .gld-header-sub{color:var(--ink-soft)!important} .gld-close{color:var(--ink-soft)!important} .gld-close:hover{color:var(--charcoal)!important} .gld-cell{background:var(--paper)!important;border:1px solid var(--line)!important} .gld-cell::before{display:none!important} .gld-cell:hover{background:var(--ivory-2)!important;border-color:var(--blush-deep)!important} .gld-title{color:var(--charcoal)!important} .gld-desc{color:var(--ink-soft)!important} .gld-divider-label{color:var(--ink4)!important}.la-switch{text-align:center;margin-top:16px;font-family:var(--body);font-size:13px;color:var(--ink-soft)} .la-switch-link{background:none;border:none;padding:0 2px;font:inherit;color:var(--blush-deep);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px}#vvxi-model-strip{box-shadow:0 1px 0 var(--line)} #vvxi-model-strip .dev-mode-toggle{color:var(--ink-soft)}/* compare selection UI */.pgrid{}#page-compare .pcard{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:var(--r-md)!important;box-shadow:var(--shadow-card);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}#page-compare .pcard:hover{border-color:var(--blush-deep)!important}#page-compare .pcard-hd{background:var(--ivory-2)!important;border-bottom:1px solid var(--line)!important;color:var(--charcoal)!important}#page-compare .pcard-num{background:var(--charcoal)!important;color:var(--ivory)!important}#page-compare .field label{color:var(--ink-soft)!important}#page-compare .pcard-bd input{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);color:var(--charcoal);padding:9px 11px}#page-compare .pcard-bd input::placeholder{color:var(--ink4)}#page-compare .pcard-bd input:focus{outline:none;border-color:var(--blush-deep)}#page-compare .suggs{background:var(--paper)!important;border:1px solid var(--line)!important;border-top:none!important}#page-compare .sugg{color:var(--charcoal)}#page-compare .sugg:hover{background:var(--ivory-2)}#page-compare .clear-btn{color:var(--blush-deep)!important}#page-compare .locked-notice{background:var(--ivory-2)!important;color:var(--ink-soft)!important;border-left:2px solid var(--blush-deep)!important;font-style:italic}#page-compare .season-lbl{color:var(--ink-soft)!important}#page-compare .season-grp{border:1px solid var(--line)!important;border-radius:var(--r-sm)}#page-compare .season-btn{background:var(--paper)!important;color:var(--ink-soft)!important;border-right:1px solid var(--line)!important}#page-compare .season-btn:hover{color:var(--charcoal)!important}#page-compare .season-btn.on{background:var(--charcoal)!important;color:var(--ivory)!important}#page-compare .season-btn.unavail{background:var(--ivory-2)!important;color:var(--ink4)!important}#page-compare .go-btn{background:var(--charcoal)!important;color:var(--ivory)!important}#page-compare .go-btn:hover{background:var(--blush-deep)!important}#page-compare{background:var(--ivory)}#page-compare .tabs{background:transparent!important;border-bottom:1px solid var(--line)!important}#page-compare .tab-btn{color:var(--ink-soft)!important}#page-compare .tab-btn.active{color:var(--charcoal)!important;border-bottom-color:var(--blush-deep)!important}#page-compare .tgl-grp{border:1px solid var(--line)!important}#page-compare .tgl-btn{background:var(--paper)!important;color:var(--ink-soft)!important;border-right:1px solid var(--line)!important}#page-compare .tgl-btn:hover{color:var(--charcoal)!important}#page-compare .tgl-btn.on{background:var(--charcoal)!important;color:var(--ivory)!important}#page-compare .lg-sw-lbl,#page-compare .bio-type-lbl,#page-compare .mode-row-lbl,#page-compare .mode-hint{color:var(--ink-soft)!important}#page-compare .live-badge{color:var(--green)!important;background:var(--green-bg)!important;border:1px solid var(--green-bd)!important}#page-compare .verdict{border:1px solid var(--line)!important;border-radius:var(--r-md)!important}#page-compare select{background:var(--paper)!important;border:1px solid var(--line)!important;color:var(--charcoal)!important;border-radius:var(--r-sm)!important}#page-compare select:focus{outline:none;border-color:var(--blush-deep)!important}@media(max-width:600px){.vvx-hero{padding:var(--s5) var(--s4) var(--s4)}#locker-dash .ld-panel{padding:var(--s5) var(--s4) var(--s7)}#locker-dash .ld-header{padding:var(--s3) var(--s4)}#page-guide .guide-section{padding:var(--s6) 0}#page-legends .guide-section{padding:var(--s6) 0}.gld-inner{padding:20px 18px 24px}#page-compare .tabs{padding-left:var(--s4);padding-right:var(--s4)}#vvxi-model-strip>div{padding-left:16px;padding-right:16px}}.vvm{white-space:nowrap}.vvm .v1{color:var(--charcoal)}.vvm .v2{color:var(--blush-deep)}.vvx-pilldef{display:none!important}#vvx-tiplayer{position:fixed;z-index:99999;background:var(--charcoal);color:var(--ivory);font-family:var(--body);font-weight:400;font-size:var(--t-xs);line-height:1.55;padding:11px 14px;border-radius:var(--r-md);box-shadow:0 10px 34px rgba(26,23,20,.30);max-width:300px;opacity:0;transform:translateY(5px) scale(.98);transform-origin:top left;pointer-events:none;visibility:hidden;transition:opacity .18s var(--ease),transform .18s var(--ease)}#vvx-tiplayer.show{opacity:1;transform:none;visibility:visible}.bb-intro{max-width:680px;margin:0 auto var(--s5)}.bb-intro-eyebrow{font-family:var(--body);font-weight:700;font-size:var(--t-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--blush-deep);display:flex;align-items:center;gap:8px;margin-bottom:var(--s2)}.bb-intro-eyebrow::before{content:"";width:18px;height:2px;background:var(--blush-deep)}.bb-intro-h{font-family:var(--display);font-weight:700;font-size:var(--t-lg);line-height:1.15;color:var(--charcoal);margin:0 0 var(--s2)}.bb-intro-p{font-family:var(--body);font-size:var(--t-base);line-height:1.6;color:var(--ink-soft);margin:0}#page-compare .filter-bar{border-bottom-color:var(--line)!important;gap:14px!important}#page-compare .filter-chip{background:none!important;border:none!important;border-radius:0!important;border-bottom:2px solid transparent!important;color:var(--ink-soft)!important;padding:4px 1px!important;font-size:var(--t-xs)!important;font-weight:600;letter-spacing:.03em;text-transform:none}#page-compare .filter-chip:hover{background:none!important;color:var(--charcoal)!important}#page-compare .filter-chip.active{background:none!important;color:var(--charcoal)!important;border-color:transparent!important;border-bottom:2px solid var(--blush-deep)!important}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"VVonderXI","applicationCategory":"SportsApplication","operatingSystem":"Web","url":"https://vvonderxi.com","description":"Compare careers and define legacies. Analyse any two footballers across any season with AI and data back to 2019.","publisher":{"@type":"Organization","name":"LiVVonderful","url":"https://vvonderxi.com"}}</script><style id="vvx-cardfirst">
+#page-compare .vvx-preview{margin:0 0 var(--s4) 0;animation:vvxCardIn .35s var(--ease) both}
+#page-compare .vvx-preview .vv-story,#page-compare .vvx-preview .vvx-pcard{max-width:none;width:100%;margin:0 auto}
+@keyframes vvxCardIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+</style>
+<style id="vvx-verdict">.vv-verdict-head{display:grid !important;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;padding:16px 20px !important;border-bottom:2px solid var(--blush-deep)}.vv-verdict-head-title{justify-self:start;font-family:var(--display) !important;font-size:23px !important;font-weight:800 !important;letter-spacing:-.3px !important;text-transform:none !important;color:#fff !important;line-height:1.04;margin:0 !important}.vv-verdict-head .vvm .v1{color:#F6F3EC}.vv-verdict-head .vvm .v2{color:var(--blush)}.vv-verdict-winner{justify-self:center;text-align:center;font-family:var(--display) !important;font-size:20px !important;font-weight:700 !important;letter-spacing:0 !important;color:#fff !important;margin:0 !important}.vv-verdict-factor{justify-self:end;font-size:12px !important;font-weight:700 !important;letter-spacing:.4px;color:var(--blush) !important;background:rgba(199,99,122,.16);border:1px solid rgba(199,99,122,.5);padding:6px 14px;border-radius:999px;white-space:nowrap;margin:0 !important}.vtag{font-size:11px !important;padding:5px 12px !important;font-weight:600 !important;letter-spacing:.2px !important;border-radius:999px !important}.vtag-primary{font-weight:700 !important}.vv-verdict-why-label{font-size:10px !important;letter-spacing:1.6px !important;color:var(--ink-soft) !important;margin-top:14px !important}@media(max-width:600px){.vv-verdict-head{grid-template-columns:1fr;justify-items:center;text-align:center;gap:6px;padding:14px 16px !important}.vv-verdict-head-title,.vv-verdict-winner,.vv-verdict-factor{justify-self:center !important}.vv-verdict-head-title{font-size:20px !important}.vv-verdict-winner{font-size:18px !important}}</style><style id="vvx-result-cards">.vv-story{cursor:default !important}.vv-story .vvx-expand-data{display:block !important;padding:12px 14px 14px;border-top:1px solid var(--line)}.vv-story .vvx-expand-data>*+*{margin-top:10px}.vv-story .vvx-expand-data .dev-panel{display:none !important}.vv-story .vvx-statline{display:flex;justify-content:space-between;text-align:center;gap:4px}.vv-story .vvx-statline .vvx-stat{flex:1}.vv-story .vvx-xtags,.vv-story .vvx-xbadges{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center}</style><style id="vvx-mobile">@media(max-width:600px){html,body{overflow-x:hidden !important;max-width:100% !important}.gnav{padding:0 12px !important;-webkit-overflow-scrolling:touch;scrollbar-width:none}.gnav::-webkit-scrollbar{display:none}.gnav-brand{margin-right:14px !important;font-size:14px !important;padding:9px 0 !important}.gnav-centre{flex:0 0 auto !important;justify-content:flex-start !important}.gnav-btn{padding:10px 11px !important;font-size:9px !important;letter-spacing:1.3px !important;white-space:nowrap}.gnav-legends-btn{padding:10px 10px !important;font-size:12px !important;white-space:nowrap}#vvxi-model-collapsed{flex-wrap:wrap !important;gap:8px 12px !important}#vvxi-model-collapsed>div{flex-wrap:wrap !important;min-width:0}#dev-mode-btn,.dev-mode-toggle{font-size:10px !important;padding:6px 10px !important}.season-grp{display:flex !important;flex-wrap:nowrap !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:6px}.season-grp::-webkit-scrollbar{display:none}.season-btn{flex:0 0 auto}.vvx-pmeta{white-space:normal !important;overflow-wrap:anywhere}.gnav-btn,.gnav-legends-btn,.clear-btn,.go-btn,.tab-btn,.tgl-btn,.season-btn,.filter-chip{min-height:40px}.vv-stories,.pgrid,#vvxi-model-strip,.vverdict-wrap{max-width:100% !important}}</style><style id="vvx-polish">.vvx-ch-body{font-family:var(--body) !important;font-style:normal !important;font-size:1rem !important;line-height:1.6 !important;font-weight:400 !important;color:rgba(246,243,236,.9) !important}.vvx-crest{height:96px !important}.vvx-ball{width:50px !important;height:50px !important}.vv-verdict-tags-row{flex-wrap:wrap !important}.vtag{white-space:normal !important;max-width:100%}@media(max-width:600px){.vvx-crest{height:80px !important}.vvx-ball{width:44px !important;height:44px !important}.gnav{padding:0 10px !important}.gnav-brand{margin-right:8px !important;font-size:13px !important}.gnav-centre{flex:0 1 auto !important;justify-content:flex-start !important}.gnav-btn{padding:9px 9px !important;font-size:9px !important;letter-spacing:1px !important}.gnav-legends-btn{padding:9px 8px !important;font-size:11px !important}.vv-verdict-tags-row{justify-content:flex-start}}</style><style id="vvx-logo-size">.vvx-vvspin{width:clamp(120px,32vw,180px) !important}</style><style id="vvx-hamburger">.gnav-burger{display:none;background:none;border:none;color:#fff;font-size:24px;line-height:1;padding:6px 8px;cursor:pointer;margin-left:auto}.vvx-mmenu{display:none}.vvx-mmenu.open{display:flex;flex-direction:column;position:fixed;inset:0;z-index:9998;background:var(--ivory);padding:72px 22px 40px;gap:0}.vvx-mmenu-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:32px;line-height:1;color:var(--charcoal);cursor:pointer}.vvx-mmenu-item{background:none;border:none;border-bottom:1px solid var(--line);text-align:left;font-family:var(--display);font-size:26px;font-weight:700;color:var(--charcoal);padding:20px 2px;cursor:pointer}.vvx-mmenu-item:last-child{border-bottom:none}@media(max-width:600px){.gnav-btn{display:none !important}.gnav-legends-btn{display:none !important}.gnav-centre{flex:0 0 auto !important;width:0;overflow:visible}.gnav-burger{display:block !important}.gnav{justify-content:space-between !important}.gnav-brand{margin-right:0 !important}#gnav-legends-dropdown{top:0 !important;max-height:100vh !important;overflow-y:auto !important;z-index:9999 !important}}</style><style id="vvx-menu-fixes">.gnav-burger{align-items:center;gap:8px}.gnav-burger-lbl{font-family:var(--body);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}.vvx-mmenu-item:nth-child(2){color:var(--charcoal)}.vvx-mmenu-item:nth-child(3){color:var(--accent)}.vvx-mmenu-item:nth-child(4){color:var(--charcoal)}.vvx-mmenu-close{width:46px;height:46px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:28px}@media(max-width:600px){.gnav-burger{display:flex !important}#gnav-legends-dropdown .gld-close{position:fixed !important;top:10px;right:12px;z-index:10000;background:var(--charcoal) !important;color:#fff !important;padding:9px 16px !important;border-radius:22px !important;font-size:13px !important;box-shadow:0 4px 14px rgba(0,0,0,.28)}}</style><style id="vvx-uxfix2">.gnav{position:sticky;top:0;z-index:500}.vvx-vvspin{width:clamp(150px,40vw,220px) !important}@media(max-width:600px){.vvx-scrim{align-items:center;padding:20px 12px}.vvx-modal-col{max-width:92vw;max-height:90vh}.vvx-expanded{max-height:90vh;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}.vvx-close{top:-40px}}</style><style id="vvx-menu-fixes3">.gnav-burger{color:var(--charcoal) !important;align-items:center;gap:9px}.vvx-bico{display:inline-flex;flex-direction:column;justify-content:center;gap:5px;width:26px}.vvx-bico i{display:block;height:3px;border-radius:2px;background:var(--charcoal)}.vvx-bico i:nth-child(2){background:var(--accent)}.gnav-burger-lbl{color:var(--charcoal) !important;font-family:var(--body);font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.tab-btn{font-size:13px !important;font-weight:800 !important;letter-spacing:.05em !important;padding:12px 16px !important}.tab-btn.active{color:var(--charcoal) !important}@media(max-width:600px){.gnav-burger{position:absolute !important;right:14px;top:50%;transform:translateY(-50%);margin:0 !important}.tab-btn{font-size:12.5px !important;padding:11px 12px !important}}</style><style id="vvx-strip-devmode">#vvxi-model-collapsed{background:var(--paper) !important;border:1px solid var(--line) !important;border-radius:10px !important;padding:10px 14px !important;margin:6px 0 !important}#dev-mode-btn{display:none !important}</style><style id="vvx-batch7">.bb-intro{text-align:center}.bb-intro-p{max-width:640px;margin-left:auto;margin-right:auto}.vvx-rt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}.vvx-mmenu,#gnav-legends-dropdown{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}@media(max-width:600px){.rtable{font-size:11px;min-width:540px}.rtable td{padding:6px 8px !important}.rtable th{padding:6px 8px !important;font-size:9px}#rt-filter-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}.rt-filter-group{flex-wrap:nowrap !important;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}.filter-chip{white-space:nowrap}}</style><style>.vvx-navlang{display:flex;gap:4px;align-items:center;margin-left:14px}.vvx-navlang .vvx-lang-btn{padding:3px 7px;font-size:10px;letter-spacing:.5px;border-radius:12px}@media(max-width:600px){.vvx-navlang{margin-left:0}.gnav-right{margin-right:92px!important}}</style><style id="vvx-i18n-css">.vvx-lang-row{display:flex;gap:8px;justify-content:center;margin-top:30px}.vvx-lang-btn{padding:8px 16px;border:1px solid var(--line);background:none;border-radius:20px;font-family:var(--body);font-weight:700;font-size:13px;letter-spacing:1px;color:var(--charcoal);cursor:pointer}.vvx-lang-btn.active{background:var(--charcoal);color:#fff;border-color:var(--charcoal)}</style><style id="vvx-rt-mobile">@media(max-width:600px){#tab-rt{overflow-x:visible!important}#tab-rt .vvx-rt-scroll{overflow-x:visible!important}#tab-rt .rtable{min-width:0!important;display:block;width:100%;font-size:12px!important}#tab-rt .rtable thead{display:none}#tab-rt .rtable tbody{display:block}#tab-rt .rtable tr{display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:3px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;padding:10px 12px;background:var(--paper)}#tab-rt .rtable td{display:inline-flex;align-items:center;border:none!important;padding:0!important;white-space:nowrap}#tab-rt .rtable td:nth-child(1){font-weight:800;color:var(--accent);min-width:20px}#tab-rt .rtable td:nth-child(2){font-weight:800;font-size:14px;color:var(--charcoal);flex:1 1 55%;white-space:normal}#tab-rt .rtable td:nth-child(7){order:9;flex-basis:100%;margin-top:3px}#tab-rt .rtable td:nth-child(3),#tab-rt .rtable td:nth-child(4),#tab-rt .rtable td:nth-child(5),#tab-rt .rtable td:nth-child(6){color:var(--ink-soft);font-size:11px}#tab-rt .rtable .badge{white-space:nowrap}}</style></head>
 <body>
 
 <!-- DB Loading State — shown while db.json fetches -->
@@ -2052,25 +2228,25 @@ body.dev-mode-active .dev-panel{display:block}
 
 <!-- ═══════════════════════════ GLOBAL NAV ═══════════════════════════ -->
 <nav class="gnav">
-  <span class="gnav-brand">VVonder<span>XI</span></span>
-  <button class="gnav-btn active" onclick="switchPage('compare',this)">⚡ Compare</button>
+  <span class="gnav-brand">VVonder<span>XI</span></span><button class="gnav-burger" onclick="vvxToggleMenu()" aria-label="Open menu"><span class="vvx-bico"><i></i><i></i><i></i></span><span class="gnav-burger-lbl">Menu</span></button>
+  <button class="gnav-btn active" onclick="switchPage('compare',this)">Compare</button>
 
   <!-- Legends Centre Dropdown -->
   <div class="gnav-centre">
     <div class="gnav-legends-wrap" id="gnav-legends-wrap">
       <button class="gnav-legends-btn" id="gnav-legends-btn" onclick="toggleLegendsDropdown()">
-        👑 Legends <span class="gnav-legends-arrow">▼</span>
+        Playbook <span class="gnav-legends-arrow">▼</span>
       </button>
       <div class="gnav-legends-dropdown" id="gnav-legends-dropdown">
         <div class="gld-inner">
           <div class="gld-header">
             <div>
-              <div class="gld-header-title">👑 Legends</div>
+              <div class="gld-header-title">Playbook</div>
               <div class="gld-header-sub">The VVonderXI Intelligence Model</div>
             </div>
             <button class="gld-close" onclick="closeLegendsDropdown()">✕ Close</button>
           </div>
-          <div class="gld-grid">
+          <div class="gld-grid"><div class="gld-cell" onclick="closeLegendsDropdown();openGatedPage('guide',this)"><span class="gld-icon">&#128203;</span><div class="gld-title">Scout Guide</div><div class="gld-desc">The full scouting handbook — how to read players, weigh context, and reach a verdict.</div></div>
             <div class="gld-cell" onclick="openLegendPanel('career-stage')">
               <span class="gld-icon">📈</span>
               <div class="gld-title">Career Stage</div>
@@ -2119,10 +2295,10 @@ body.dev-mode-active .dev-panel{display:block}
   </div>
 
   <div class="gnav-right">
-    <button class="gnav-btn" onclick="openGatedPage('guide',this)">📋 Scout Guide</button>
-    <button class="gnav-btn gnav-locker" onclick="openLocker()" id="gnav-locker-btn">🔐 Locker Room</button>
+    
+    <button class="gnav-btn gnav-locker" onclick="openLocker()" id="gnav-locker-btn">🔐 Locker Room</button><div class="vvx-navlang"><button class="vvx-lang-btn" data-lang="en" onclick="vvxSetLang('en')">EN</button><button class="vvx-lang-btn" data-lang="fr" onclick="vvxSetLang('fr')">FR</button><button class="vvx-lang-btn" data-lang="nl" onclick="vvxSetLang('nl')">NL</button></div>
   </div>
-</nav>
+</nav><div class="vvx-mmenu" id="vvx-mmenu"><button class="vvx-mmenu-close" onclick="vvxCloseMenu()" aria-label="Close menu">&times;</button><button class="vvx-mmenu-item" onclick="vvxCloseMenu();switchPage('compare',document.querySelector('.gnav-btn'))">Compare</button><button class="vvx-mmenu-item" onclick="vvxCloseMenu();toggleLegendsDropdown()">Playbook</button><button class="vvx-mmenu-item" onclick="vvxCloseMenu();openLocker()">Locker Room</button><div class="vvx-lang-row"><button class="vvx-lang-btn active" data-lang="en" onclick="vvxSetLang('en')">EN</button><button class="vvx-lang-btn" data-lang="fr" onclick="vvxSetLang('fr')">FR</button><button class="vvx-lang-btn" data-lang="nl" onclick="vvxSetLang('nl')">NL</button></div></div>
 
 <!-- ═══════════════════════════ GLOBAL SEARCH BAR ═══════════════════════════ -->
 <div class="gsearch-bar">
@@ -2185,40 +2361,40 @@ body.dev-mode-active .dev-panel{display:block}
 </section>
 
 <!-- VVonderXI Three-Layer Intelligence Model Strip -->
-<div id="vvxi-model-strip" style="background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08);padding:0">
+<div id="vvxi-model-strip" style="background:var(--paper);border-bottom:1px solid var(--line);padding:0">
   <div style="max-width:1400px;margin:0 auto;padding:0 20px">
     <div id="vvxi-model-collapsed" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;cursor:pointer" onclick="toggleModelStrip()">
       <div style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)">How VVonderXI Works</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4)">How VVonderXI Works</span>
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:10px;color:var(--accent);font-weight:600">VV Score</span>
-          <span style="color:rgba(255,255,255,.2);font-size:10px">→</span>
-          <span style="font-size:10px;color:rgba(255,255,255,.6);font-weight:600">VV Engine</span>
-          <span style="color:rgba(255,255,255,.2);font-size:10px">→</span>
-          <span style="font-size:10px;color:rgba(255,255,255,.6);font-weight:600">VV Verdict</span>
+          <span style="font-size:10px;color:var(--accent);font-weight:600"><span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Score</span>
+          <span style="color:var(--ink4);font-size:10px">→</span>
+          <span style="font-size:10px;color:var(--ink-soft);font-weight:600"><span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Engine</span>
+          <span style="color:var(--ink4);font-size:10px">→</span>
+          <span style="font-size:10px;color:var(--ink-soft);font-weight:600"><span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Verdict</span>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <button id="dev-mode-btn" class="dev-mode-toggle" onclick="toggleDevMode();event.stopPropagation()">⚙️ Dev Mode</button>
-        <span id="vvxi-model-arr" style="font-size:10px;color:rgba(255,255,255,.3)">▼</span>
+        <span id="vvxi-model-arr" style="font-size:10px;color:var(--ink4)">▼</span>
       </div>
     </div>
-    <div id="vvxi-model-body" style="display:none;padding:12px 0 16px;border-top:1px solid rgba(255,255,255,.06)">
+    <div id="vvxi-model-body" style="display:none;padding:12px 0 16px;border-top:1px solid var(--line)">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
-        <div style="padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:4px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px">① VV Score</div>
-          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">"How strong was this season?"</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">A 1–100 player-season rating. Universal and comparable across eras, positions and leagues. Two players can share the same VV Score and still be very different players.</div>
+        <div style="padding:12px;border:1px solid var(--line);border-radius:4px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px">① <span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Score</div>
+          <div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:4px">"How strong was this season?"</div>
+          <div style="font-size:11px;color:var(--ink-soft);line-height:1.6">A 1–100 player-season rating. Universal and comparable across eras, positions and leagues. Two players can share the same <span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Score and still be very different players.</div>
         </div>
-        <div style="padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:4px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px">② VV Engine</div>
-          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">"What kind of season was it?"</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">Five dimensions: Output · Influence · Consistency · League Strength · Role Rarity. Each one visible and explainable. No black box.</div>
+        <div style="padding:12px;border:1px solid var(--line);border-radius:4px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px">② <span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Engine</div>
+          <div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:4px">"What kind of season was it?"</div>
+          <div style="font-size:11px;color:var(--ink-soft);line-height:1.6">Five dimensions: Output · Influence · Consistency · League Strength · Role Rarity. Each one visible and explainable. No black box.</div>
         </div>
-        <div style="padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:4px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px">③ VV Verdict</div>
-          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">"Who edges it and why?"</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">The decision layer. Uses all five dimensions plus trajectory, career stage and context. Confidence-rated — from Slight Edge to Different Level.</div>
+        <div style="padding:12px;border:1px solid var(--line);border-radius:4px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px">③ <span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Verdict</div>
+          <div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:4px">"Who edges it and why?"</div>
+          <div style="font-size:11px;color:var(--ink-soft);line-height:1.6">The decision layer. Uses all five dimensions plus trajectory, career stage and context. Confidence-rated — from Slight Edge to Different Level.</div>
         </div>
       </div>
     </div>
@@ -2231,7 +2407,7 @@ body.dev-mode-active .dev-panel{display:block}
     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
       <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink)">VV Score<span style="font-size:9px;vertical-align:super;color:var(--accent)">™</span></span>
       <span style="font-size:10px;color:var(--ink4);letter-spacing:.5px">×</span>
-      <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink)">SSP Rating</span>
+      <span style="font-family:'Hanken Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--ink-soft)">SSP Rating</span>
     </div>
     <div style="width:1px;height:18px;background:var(--border);flex-shrink:0"></div>
     <div style="font-size:11px;color:var(--ink3);line-height:1.5;flex:1;min-width:200px">
@@ -2418,20 +2594,20 @@ body.dev-mode-active .dev-panel{display:block}
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('tab-pc',this)">Player Comparison</button>
       <button class="tab-btn" onclick="switchTab('tab-bb',this)">Baller Bio</button>
-      <button class="tab-btn" onclick="switchTab('tab-rt',this)">VV Rankings</button>
+      <button class="tab-btn" onclick="switchTab('tab-rt',this)"><span class="vvm"><span class="v1">V</span><span class="v2">V</span></span> Rankings</button>
       <button class="tab-btn" onclick="openTrendingTab(this)">🔥 Trending <span id="trending-lock-icon" style="font-size:9px;opacity:.6">🔒</span></button>
     </div>
 
     <!-- ── PLAYER COMPARISON TAB ── -->
     <div class="tab-content active" id="tab-pc">
       <div class="mode-row">
-        <span class="mode-row-lbl">Mode:</span>
+        
         <div class="tgl-grp">
-          <button class="tgl-btn on" id="pc-simple" onclick="setPCMode('simple')">Simple</button>
-          <button class="tgl-btn" id="pc-advanced" onclick="setPCMode('advanced')">Advanced</button>
-          <button class="tgl-btn" id="pc-ai" onclick="setPCMode('ai')">AI Live</button>
+          
+          
+          <button class="tgl-btn" id="pc-ai" onclick="pcToggleAI(this)">AI Live</button>
         </div>
-        <span class="mode-hint" id="pc-hint">Goals &amp; Assists only</span>
+        
         <span class="live-badge" id="pc-live-badge" style="display:none"><span class="live-dot"></span>Claude AI</span>
       </div>
 
@@ -2528,7 +2704,7 @@ body.dev-mode-active .dev-panel{display:block}
     </div>
 
     <!-- ── BALLER BIO TAB ── -->
-    <div class="tab-content" id="tab-bb">
+    <div class="tab-content" id="tab-bb"><div class="bb-intro"><div class="bb-intro-eyebrow">Baller Bio</div><h2 class="bb-intro-h">Some debates are too glorious to leave unsettled. So summon them.</h2><p class="bb-intro-p">The prodigy and the old master; the hometown hero and the faraway great. Build any baller from memory or from dreams, and lead them out beneath the floodlights — where reputation fades, and only the football speaks. Two names. One stage. The argument that has raged for generations, given at last its night. Step forward — the verdict is yours.</p></div>
       <div class="bio-type-row">
         <span class="bio-type-lbl">Bio Type:</span>
         <div class="tgl-grp">
@@ -2694,15 +2870,15 @@ body.dev-mode-active .dev-panel{display:block}
 
     <!-- Legends sub-nav tabs -->
     <div class="tab-bar" style="position:static!important;box-shadow:none!important;border-bottom:2px solid var(--border);margin-bottom:0;background:#fff;display:flex">
-      <button class="tab-btn active" onclick="switchLegendTab('icons',this)">👑 Icons</button>
-      <button class="tab-btn" onclick="switchLegendTab('tiers',this)">⚡ VV Score™</button>
-      <button class="tab-btn" onclick="switchLegendTab('baller',this)">🎬 Baller Bio</button>
+      <button class="tab-btn active" onclick="switchLegendTab('icons',this)">Icons</button>
+      <button class="tab-btn" onclick="switchLegendTab('tiers',this)">VV Score™</button>
+      <button class="tab-btn" onclick="switchLegendTab('baller',this)">Baller Bio</button>
     </div>
 
     <!-- ICONS TAB -->
     <div class="tab-content active" id="legend-tab-icons">
       <div class="legends-header">
-        <h1>👑 Icons Collection</h1>
+        <h1>Icons Collection</h1>
         <p>The retired players who defined an era. Three cards per icon: Emergence · Peak · Legacy. Compare their greatest seasons against today's stars.</p>
       </div>
       <div class="filter-bar">
@@ -3048,7 +3224,7 @@ body.dev-mode-active .dev-panel{display:block}
     <div class="la-brand">VVonder<span>XI</span></div>
     <div class="la-sub">The Locker Room</div>
     <div class="la-headline">Football's greatest stories aren't finished. Yours is just beginning.</div>
-    <div class="la-tagline">Build your Greatest XI. Save debates. Follow legends. Create your football legacy.</div>
+    <div class="la-tagline">Build your Greatest XI. Save debates. Follow legends. Create your football legacy.</div><div class="vvx-lk-social"><span class="vvx-lk-social-lbl">Follow the build</span><a class="vvx-soc vvx-soc-lk" href="https://www.instagram.com/vvonderxi" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a><a class="vvx-soc vvx-soc-lk" href="https://x.com/vvonderxi" target="_blank" rel="noopener" aria-label="X (Twitter)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg></a></div>
 
     <!-- Feature preview -->
     <div class="la-features">
@@ -3088,20 +3264,17 @@ body.dev-mode-active .dev-panel{display:block}
     <div class="la-form">
       <div class="la-form-title">Time to lace up.</div>
 
-      <div class="la-tabs">
-        <button class="la-tab active" onclick="lockerTab('login',this)">Sign In</button>
-        <button class="la-tab" onclick="lockerTab('register',this)">Reserve Your Locker</button>
-      </div>
+      
 
       <div id="la-err" class="la-err"></div>
 
-      <div id="la-login-form">
+      <div id="la-login-form" style="display:none">
         <input class="la-input" id="la-email" type="email" placeholder="Email address" autocomplete="email">
         <input class="la-input" id="la-password" type="password" placeholder="Password" autocomplete="current-password">
-        <button class="la-btn-primary" onclick="lockerSignIn()">Enter the Locker Room</button>
+        <button class="la-btn-primary" onclick="lockerSignIn()">Enter the Locker Room</button><div class="la-switch">New here? <button type="button" class="la-switch-link" onclick="lockerTab('register',this)">Reserve your locker</button></div>
       </div>
 
-      <div id="la-register-form" style="display:none">
+      <div id="la-register-form">
         <div style="text-align:center;margin-bottom:6px">
           <span class="la-emoji-display" id="reg-emoji-display" onclick="toggleEmojiPicker()" title="Pick your emoji">⚽</span>
           <div class="la-emoji-label">Tap to pick your emoji</div>
@@ -3133,7 +3306,7 @@ body.dev-mode-active .dev-panel{display:block}
         <input class="la-input" id="la-reg-name" type="text" placeholder="Your real name (optional)" autocomplete="name">
         <input class="la-input" id="la-reg-email" type="email" placeholder="Email address" autocomplete="email">
         <input class="la-input" id="la-reg-password" type="password" placeholder="Create a password" autocomplete="new-password">
-        <button class="la-btn-primary" onclick="lockerRegister()">Reserve Your Locker</button>
+        <button class="la-btn-primary" onclick="lockerRegister()">Reserve Your Locker</button><div class="la-switch">Already have a locker? <button type="button" class="la-switch-link" onclick="lockerTab('login',this)">Sign in</button></div>
       </div>
 
       <div class="la-divider">
@@ -3158,7 +3331,7 @@ body.dev-mode-active .dev-panel{display:block}
 
     <!-- Header -->
     <div class="ld-header">
-      <div class="ld-header-brand">VVonder<span>XI</span> <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.4);font-family:'Hanken Grotesk',sans-serif;letter-spacing:1px;text-transform:uppercase">Locker Room</span></div>
+      <div class="ld-header-brand">VVonder<span>XI</span> <span style="font-size:12px;font-weight:400;color:var(--ink4);font-family:'Hanken Grotesk',sans-serif;letter-spacing:1px;text-transform:uppercase">Locker Room</span></div>
       <div class="ld-user-info">
         <div class="ld-avatar" id="ld-avatar">?</div>
         <div class="ld-username" id="ld-username">—</div>
@@ -3219,7 +3392,7 @@ body.dev-mode-active .dev-panel{display:block}
 
         <!-- Recent debates -->
         <div style="margin-bottom:28px">
-          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:14px">Recent Debates</div>
+          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--charcoal);margin-bottom:14px">Recent Debates</div>
           <div id="ov-recent-debates">
             <div class="ld-empty"><div class="ld-empty-icon">📚</div><div class="ld-empty-text">No debates yet.<br>Start a comparison to build your history.</div><button class="ld-empty-btn" onclick="closeLocker()">Start Comparing</button></div>
           </div>
@@ -3228,8 +3401,8 @@ body.dev-mode-active .dev-panel{display:block}
         <!-- Favourite Comparisons -->
         <div style="margin-bottom:24px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff">⭐ Favourite Comparisons</div>
-            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3)">Star any debate to save here</div>
+            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--charcoal)">⭐ Favourite Comparisons</div>
+            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink4)">Star any debate to save here</div>
           </div>
           <div id="ov-fav-comparisons">
             <div class="ld-empty" style="padding:20px"><div class="ld-empty-icon" style="font-size:22px">⭐</div><div class="ld-empty-text">No favourites yet. Star a debate from your history to pin it here.</div></div>
@@ -3239,16 +3412,16 @@ body.dev-mode-active .dev-panel{display:block}
         <!-- Popular Comparisons -->
         <div style="margin-bottom:28px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff">🔥 Popular Debates</div>
-            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3)">The debates that never die</div>
+            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--charcoal)">🔥 Popular Debates</div>
+            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink4)">The debates that never die</div>
           </div>
           <div class="popular-grid" id="popular-grid"><!-- built by JS --></div>
         </div>
 
         <!-- Favourite Card -->
         <div class="fav-card-wrap">
-          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px">⭐ Your Favourite Player Card</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px">Create a personal collectible for the player who means everything to you.</div>
+          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--charcoal);margin-bottom:6px">⭐ Your Favourite Player Card</div>
+          <div style="font-size:11px;color:var(--ink4);margin-bottom:14px">Create a personal collectible for the player who means everything to you.</div>
           <div id="fav-card-display">
             <div class="fav-card-empty" onclick="openFavBuilder()">
               <div class="fav-card-empty-icon">⭐</div>
@@ -3258,7 +3431,7 @@ body.dev-mode-active .dev-panel{display:block}
         </div>
 
         <!-- Profile row -->
-        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">Your Locker</div>
+        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--charcoal);margin-bottom:12px">Your Locker</div>
         <div class="ld-profile-row">
           <div class="ld-profile-avatar-big" id="ld-profile-avatar-big" onclick="openEmojiSettings()" title="Change emoji">⚽</div>
           <div class="ld-profile-info">
@@ -3266,13 +3439,13 @@ body.dev-mode-active .dev-panel{display:block}
             <div class="ld-profile-email" id="ld-profile-email">—</div>
             <div class="ld-profile-joined" id="ld-profile-joined">—</div>
           </div>
-          <button onclick="ldPanel('xi',document.querySelectorAll('.ld-nav-btn')[1])" style="background:var(--accent);border:none;color:#fff;padding:8px 14px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:2px;white-space:nowrap">Build XI →</button>
+          <button onclick="ldPanel('xi',document.querySelectorAll('.ld-nav-btn')[1])" style="background:var(--charcoal);border:none;color:var(--ivory);padding:8px 14px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:2px;white-space:nowrap">Build XI →</button>
         </div>
 
         <!-- Quick actions -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
           <button class="ld-empty-btn" style="display:block;text-align:center" onclick="ldPanel('xi',document.querySelectorAll('.ld-nav-btn')[1])">⚽ Build My Greatest XI</button>
-          <button class="ld-empty-btn" style="display:block;text-align:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7)" onclick="ldPanel('scout',document.querySelectorAll('.ld-nav-btn')[6])">🤖 Ask The Scout</button>
+          <button class="ld-empty-btn" style="display:block;text-align:center;background:var(--ivory-2);border:1px solid var(--line);color:var(--charcoal)" onclick="ldPanel('scout',document.querySelectorAll('.ld-nav-btn')[6])">🤖 Ask The Scout</button>
         </div>
       </div>
 
@@ -3283,20 +3456,20 @@ body.dev-mode-active .dev-panel{display:block}
 
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
           <span class="ld-xi-formation">Formation:</span>
-          <select id="xi-formation" onchange="renderXIPitch()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#fff;padding:5px 10px;font-size:11px;border-radius:2px;outline:none">
+          <select id="xi-formation" onchange="renderXIPitch()" style="background:var(--ivory-2);border:1px solid var(--line);color:var(--charcoal);padding:5px 10px;font-size:11px;border-radius:2px;outline:none">
             <option value="433">4-3-3</option>
             <option value="442">4-4-2</option>
             <option value="4231">4-2-3-1</option>
             <option value="352">3-5-2</option>
             <option value="532">5-3-2</option>
           </select>
-          <button onclick="clearXI()" style="background:none;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:5px 12px;font-size:10px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all .15s">Clear XI</button>
-          <button onclick="shareXI()" style="background:var(--accent);border:none;color:#fff;padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all .15s">Share XI</button>
+          <button onclick="clearXI()" style="background:none;border:1px solid var(--line);color:var(--ink4);padding:5px 12px;font-size:10px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all .15s">Clear XI</button>
+          <button onclick="shareXI()" style="background:var(--charcoal);border:none;color:var(--ivory);padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all .15s">Share XI</button>
         </div>
 
         <div class="ld-xi-pitch" id="xi-pitch"><!-- built by JS --></div>
 
-        <div style="font-size:11px;color:rgba(255,255,255,.35);text-align:center">Tap a position to assign a player from your searches</div>
+        <div style="font-size:11px;color:var(--ink4);text-align:center">Tap a position to assign a player from your searches</div>
       </div>
 
       <!-- DEBATES PANEL -->
@@ -3334,7 +3507,7 @@ body.dev-mode-active .dev-panel{display:block}
 
         <div style="margin-bottom:16px;display:flex;gap:8px">
           <input id="ld-follow-input" class="ld-note-input" style="min-height:0;padding:9px 12px;margin:0;flex:1" placeholder="Search a player to follow…" onkeyup="followSearch(this.value)">
-          <div id="ld-follow-sugg" style="display:none;position:absolute;background:#1a1208;border:1px solid rgba(255,255,255,.1);border-radius:3px;z-index:10;min-width:220px;max-height:200px;overflow-y:auto"></div>
+          <div id="ld-follow-sugg" style="display:none;position:absolute;background:var(--ivory-2);border:1px solid var(--line);border-radius:3px;z-index:10;min-width:220px;max-height:200px;overflow-y:auto"></div>
         </div>
 
         <div class="ld-following" id="ld-following-list">
@@ -3370,10 +3543,10 @@ body.dev-mode-active .dev-panel{display:block}
         </div>
 
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
-          <button onclick="setScoutQ('Who was better at their peak — Zidane or Ronaldinho?')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Zidane vs Ronaldinho peak?</button>
-          <button onclick="setScoutQ('Was Lampard or Gerrard the better midfielder?')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Lampard vs Gerrard?</button>
-          <button onclick="setScoutQ('Who was more complete — Messi or Ronaldo in their prime years?')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Messi vs Ronaldo prime?</button>
-          <button onclick="setScoutQ('Is Lamine Yamal on track to be the greatest ever?')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Yamal — greatest ever?</button>
+          <button onclick="setScoutQ('Who was better at their peak — Zidane or Ronaldinho?')" style="background:var(--ivory-2);border:1px solid var(--line);color:var(--ink-soft);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Zidane vs Ronaldinho peak?</button>
+          <button onclick="setScoutQ('Was Lampard or Gerrard the better midfielder?')" style="background:var(--ivory-2);border:1px solid var(--line);color:var(--ink-soft);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Lampard vs Gerrard?</button>
+          <button onclick="setScoutQ('Who was more complete — Messi or Ronaldo in their prime years?')" style="background:var(--ivory-2);border:1px solid var(--line);color:var(--ink-soft);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Messi vs Ronaldo prime?</button>
+          <button onclick="setScoutQ('Is Lamine Yamal on track to be the greatest ever?')" style="background:var(--ivory-2);border:1px solid var(--line);color:var(--ink-soft);padding:6px 12px;font-size:11px;border-radius:2px;cursor:pointer;transition:all .15s">Yamal — greatest ever?</button>
         </div>
       </div>
 
@@ -3409,7 +3582,7 @@ body.dev-mode-active .dev-panel{display:block}
     <label>Era / Years Active</label>
     <input id="fb-era" type="text" placeholder="e.g. 1999 – 2012 · Arsenal & France">
 
-    <label>Your tribute line <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.3)">(one sentence, make it count)</span></label>
+    <label>Your tribute line <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink4)">(one sentence, make it count)</span></label>
     <textarea id="fb-quote" placeholder="e.g. The most complete forward I ever watched. Every touch was poetry."></textarea>
 
     <label>Career Goals (approx)</label>
@@ -3436,10 +3609,10 @@ body.dev-mode-active .dev-panel{display:block}
 </div>
 
 <!-- ── EMOJI SETTINGS MODAL ── -->
-<div id="emoji-settings-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(10,8,6,.9);align-items:center;justify-content:center;padding:20px">
-  <div style="background:#1a1208;border:1.5px solid rgba(255,255,255,.1);border-radius:6px;padding:28px;max-width:340px;width:100%;text-align:center">
-    <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">Change Your Emoji</div>
-    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:20px">This shows in your header and profile</div>
+<div id="emoji-settings-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:var(--ivory-2);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--ivory-2);border:1.5px solid var(--line);border-radius:6px;padding:28px;max-width:340px;width:100%;text-align:center">
+    <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--charcoal);margin-bottom:4px">Change Your Emoji</div>
+    <div style="font-size:11px;color:var(--ink4);margin-bottom:20px">This shows in your header and profile</div>
     <div style="font-size:48px;margin-bottom:16px" id="emoji-settings-preview">⚽</div>
     <div class="emoji-picker" id="emoji-settings-grid" style="margin-bottom:20px">
       <span class="emoji-opt" onclick="settingsPickEmoji('⚽',this)">⚽</span>
@@ -3465,8 +3638,8 @@ body.dev-mode-active .dev-panel{display:block}
       <span class="emoji-opt" onclick="settingsPickEmoji('🏴',this)">🏴</span>
     </div>
     <div style="display:flex;gap:10px">
-      <button onclick="closeEmojiSettings()" style="flex:1;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:3px;font-size:11px;color:rgba(255,255,255,.6);cursor:pointer">Cancel</button>
-      <button onclick="saveEmojiSettings()" style="flex:1;padding:10px;background:var(--accent);border:none;border-radius:3px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save</button>
+      <button onclick="closeEmojiSettings()" style="flex:1;padding:10px;background:var(--ivory-2);border:1px solid var(--line);border-radius:3px;font-size:11px;color:var(--ink-soft);cursor:pointer">Cancel</button>
+      <button onclick="saveEmojiSettings()" style="flex:1;padding:10px;background:var(--accent);border:none;border-radius:3px;font-size:11px;font-weight:700;color:var(--charcoal);cursor:pointer">Save</button>
     </div>
   </div>
 </div>
@@ -4228,10 +4401,9 @@ var DB = [
 {"name":"Jadon Sancho","nat":"England","seasons":{"1920":{"pos":"LW","lg":"BL","g":17,"a":17,"rt":85,"age":19,"club":"dortmund"},"2021":{"pos":"LW","lg":"BL","g":16,"a":20,"rt":85,"age":20,"club":"dortmund"},"2122":{"pos":"LW","lg":"PL","g":3,"a":3,"rt":72,"age":21,"club":"man utd"},"2223":{"pos":"LW","lg":"PL","g":6,"a":3,"rt":74,"age":22,"club":"man utd"},"2324":{"pos":"LW","lg":"PL","g":3,"a":2,"rt":70,"age":23,"club":"man utd"},"2425":{"pos":"LW","lg":"BL","g":8,"a":7,"rt":78,"age":24,"club":"dortmund"}}},
 {"name":"Thierry Henry","nat":"France","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"ST","lg":"MLS","g":11,"a":11,"rt":82,"age":34,"club":"ny red bulls","label":"11/12 \u00b7 Legacy"},"peak":{"pos":"ST","lg":"PL","g":30,"a":20,"rt":97,"age":26,"club":"arsenal","label":"03/04 \u00b7 Peak"},"emerge":{"pos":"ST","lg":"PL","g":24,"a":23,"rt":95,"age":25,"club":"arsenal","label":"02/03 \u00b7 Emergence"},"bonus":{"pos":"ST","lg":"LL","g":14,"a":12,"rt":88,"age":28,"club":"barcelona","label":"05/06 \u00b7 Barcelona"}}},
 {"name":"Ronaldinho","nat":"Brazil","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"CAM","lg":"BRZ","g":13,"a":8,"rt":79,"age":31,"club":"flamengo","label":"10/11 \u00b7 Legacy"},"peak":{"pos":"CAM","lg":"LL","g":17,"a":16,"rt":98,"age":26,"club":"barcelona","label":"05/06 \u00b7 Peak"},"emerge":{"pos":"CAM","lg":"L1","g":12,"a":10,"rt":90,"age":23,"club":"psg","label":"02/03 \u00b7 Emergence"}}},
-{"name":"Ronaldo Nazario","nat":"Brazil","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"ST","lg":"LL","g":15,"a":4,"rt":84,"age":30,"club":"real-madrid","label":"06/07 \u00b7 Legacy"},"peak":{"pos":"ST","lg":"LL","g":34,"a":8,"rt":98,"age":20,"club":"barcelona","label":"96/97 \u00b7 Peak"},"emerge":{"pos":"ST","lg":"SA","g":22,"a":5,"rt":88,"age":18,"club":"inter","label":"94/95 \u00b7 Emergence"}}},
+{"name":"Ronaldo","nat":"Brazil","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"ST","lg":"LL","g":15,"a":4,"rt":84,"age":30,"club":"real-madrid","label":"06/07 \u00b7 Legacy"},"peak":{"pos":"ST","lg":"LL","g":34,"a":8,"rt":98,"age":20,"club":"barcelona","label":"96/97 \u00b7 Peak"},"emerge":{"pos":"ST","lg":"SA","g":22,"a":5,"rt":88,"age":18,"club":"inter","label":"94/95 \u00b7 Emergence"}}},
 {"name":"Zinedine Zidane","nat":"France","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"CAM","lg":"LL","g":6,"a":12,"rt":95,"age":33,"club":"real-madrid","label":"05/06 \u00b7 Legacy"},"peak":{"pos":"CAM","lg":"LL","g":7,"a":18,"rt":98,"age":29,"club":"real-madrid","label":"01/02 \u00b7 Peak"},"emerge":{"pos":"CAM","lg":"SA","g":8,"a":10,"rt":88,"age":22,"club":"juventus","label":"94/95 \u00b7 Emergence"}}},
 {"name":"Dennis Bergkamp","nat":"Netherlands","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"CAM","lg":"PL","g":8,"a":16,"rt":92,"age":36,"club":"arsenal","label":"05/06 \u00b7 Legacy"},"peak":{"pos":"CAM","lg":"PL","g":16,"a":14,"rt":96,"age":28,"club":"arsenal","label":"97/98 \u00b7 Peak"},"emerge":{"pos":"CAM","lg":"PL","g":11,"a":12,"rt":89,"age":26,"club":"arsenal","label":"95/96 \u00b7 Emergence"}}},
-{"name":"Ronaldo Fenomeno","nat":"Brazil","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"ST","lg":"LL","g":15,"a":4,"rt":83,"age":30,"club":"real-madrid","label":"06/07 \u00b7 Legacy"},"peak":{"pos":"ST","lg":"LL","g":34,"a":8,"rt":98,"age":20,"club":"barcelona","label":"96/97 \u00b7 Peak"},"emerge":{"pos":"ST","lg":"SA","g":22,"a":5,"rt":88,"age":18,"club":"inter","label":"94/95 \u00b7 Emergence"}}},
 {"name":"Steven Gerrard","nat":"England","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"CM","lg":"PL","g":9,"a":6,"rt":85,"age":34,"club":"liverpool","label":"14/15 \u00b7 Legacy"},"peak":{"pos":"CM","lg":"PL","g":23,"a":14,"rt":95,"age":25,"club":"liverpool","label":"05/06 \u00b7 Peak"},"emerge":{"pos":"CM","lg":"PL","g":10,"a":8,"rt":84,"age":20,"club":"liverpool","label":"00/01 \u00b7 Emergence"}}},
 {"name":"Frank Lampard","nat":"England","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"CM","lg":"PL","g":10,"a":8,"rt":82,"age":36,"club":"man city","label":"14/15 \u00b7 Legacy"},"peak":{"pos":"CM","lg":"PL","g":13,"a":16,"rt":93,"age":26,"club":"chelsea","label":"04/05 \u00b7 Peak"},"emerge":{"pos":"CM","lg":"PL","g":7,"a":9,"rt":80,"age":21,"club":"chelsea","label":"99/00 \u00b7 Emergence"}}},
 {"name":"Didier Drogba","nat":"Ivory Coast","retired":true,"legacy":true,"legacyTier":"global-icon","seasons":{"legacy":{"pos":"ST","lg":"PL","g":7,"a":3,"rt":79,"age":36,"club":"chelsea","label":"14/15 \u00b7 Legacy"},"peak":{"pos":"ST","lg":"PL","g":29,"a":8,"rt":94,"age":31,"club":"chelsea","label":"09/10 \u00b7 Peak"},"emerge":{"pos":"ST","lg":"PL","g":10,"a":5,"rt":79,"age":25,"club":"chelsea","label":"03/04 \u00b7 Emergence"}}},
@@ -4623,7 +4795,7 @@ function dbGuard(fn) {
 // ── STATE ──
 var pcSelected={1:null,2:null};
 var pcSeason={1:'2425',2:'2425'};
-var bbMode='simple', pcMode='simple', bbType='custom';
+var bbMode='simple', pcMode='advanced', bbType='custom';
 var rtFilterLeague='';
 
 // ══════════════════════════════════════════════════════
@@ -4692,11 +4864,12 @@ function setPCMode(m){
   var btn=document.getElementById('pc-'+m);
   if(btn) btn.classList.add('on');
   var hints={simple:'Goals & Assists only',advanced:'+ League strength · Position context',ai:'Claude AI — Full intelligence report'};
-  document.getElementById('pc-hint').textContent=hints[m]||'';
+  var _ph=document.getElementById('pc-hint'); if(_ph) _ph.textContent=hints[m]||'';
   var lb=document.getElementById('pc-live-badge');
   if(lb) lb.style.display=m==='ai'?'inline-flex':'none';
 }
 
+function pcToggleAI(btn){ setPCMode(pcMode==='ai'?'advanced':'ai'); }
 function setBBMode(m){
   bbMode=m;
   ['simple','advanced','ai'].forEach(function(x){
@@ -4958,9 +5131,16 @@ function vvxTierColor(lbl){
   return '#9A9186';
 }
 function vvxBall(C, style, uid){
+  var cid='vbc'+uid;
+  if(style==='vintage'){
+    return '<svg class="vvx-ball" viewBox="0 0 100 100" fill="none" aria-label="vintage football">'+
+      '<defs><clipPath id="'+cid+'"><circle cx="50" cy="50" r="45"/></clipPath></defs>'+
+      '<circle cx="50" cy="50" r="45" fill="#C7A36A" stroke="#5E3F1E" stroke-width="2.5"/>'+
+      '<g clip-path="url(#'+cid+')" stroke="#5E3F1E" stroke-width="2" fill="none"><path d="M31 8 Q22 50 31 92"/><path d="M69 8 Q78 50 69 92"/><path d="M8 36 Q50 30 92 36"/><path d="M8 64 Q50 70 92 64"/></g>'+
+      '<g clip-path="url(#'+cid+')" stroke="#4A2F14" stroke-width="2" stroke-linecap="round"><line x1="50" y1="13" x2="50" y2="35"/><line x1="44" y1="18" x2="56" y2="18"/><line x1="44" y1="24" x2="56" y2="24"/><line x1="44" y1="30" x2="56" y2="30"/></g></svg>';
+  }
   var bg = (style==='icon') ? '#16130F' : '#FBF9F4';
   var col = (style==='icon') ? '#C2982F' : C;
-  var cid='vbc'+uid;
   var pents='';
   [0,72,144,216,288].forEach(function(r){ pents+='<polygon points="50,3 59,9 56,20 44,20 41,9" transform="rotate('+r+' 50 50)"/>'; });
   var lines='';
@@ -4970,6 +5150,13 @@ function vvxBall(C, style, uid){
     '<circle cx="50" cy="50" r="45" fill="'+bg+'" stroke="'+col+'" stroke-width="2.5"/>'+
     '<g clip-path="url(#'+cid+')" fill="'+col+'"><polygon points="50,35 64,45 59,63 41,63 36,45"/>'+pents+'</g>'+
     '<g clip-path="url(#'+cid+')" stroke="'+col+'" stroke-width="2" stroke-linecap="round">'+lines+'</g></svg>';
+}
+function vvxBallStyle(pObj,sr,p){
+  if(!(pObj&&pObj.legacy)) return 'modern';
+  if(sr&&(sr.lbl==='Generational'||sr.lbl==='S-Tier')) return 'icon';
+  var lbl=p?vvxSeasonLabel(pObj,p.season):'';
+  var m=(''+lbl).match(/\d{4}/); var yr=m?parseInt(m[0],10):9999;
+  return yr<1995?'vintage':'icon';
 }
 function vvxGradeClass(lbl){
   if(lbl==='S-Tier'||lbl==='Generational') return ' vvx-gold';
@@ -4994,7 +5181,41 @@ function vvxCloseCard(){
   document.body.style.overflow='';
 }
 document.addEventListener('keydown',function(e){ if(e.key==='Escape') vvxCloseCard(); });
-function vvxPill(el){ el.classList.toggle('open'); }
+function vvxTipLayer(){
+  var L=document.getElementById('vvx-tiplayer');
+  if(!L){ L=document.createElement('div'); L.id='vvx-tiplayer'; L.setAttribute('role','tooltip'); document.body.appendChild(L); }
+  return L;
+}
+function vvxShowTip(el, txt){
+  if(!txt) return;
+  var L=vvxTipLayer(); L._for=el; L.textContent=txt;
+  L.style.maxWidth=Math.min(300, window.innerWidth-24)+'px';
+  L.classList.add('show');
+  var r=el.getBoundingClientRect(), lw=L.offsetWidth, lh=L.offsetHeight;
+  var top=r.bottom+8, left=r.left + (r.width/2) - (lw/2);
+  if(top+lh > window.innerHeight-8){ top=r.top-lh-8; }
+  if(top<8) top=8;
+  if(left+lw > window.innerWidth-10) left=window.innerWidth-10-lw;
+  if(left<10) left=10;
+  L.style.top=top+'px'; L.style.left=left+'px';
+}
+function vvxHideTip(){ var L=document.getElementById('vvx-tiplayer'); if(L){ L.classList.remove('show'); L._for=null; } }
+function vvxPill(el){
+  var L=vvxTipLayer(), def=el.querySelector('.vvx-pilldef');
+  var txt=def?(def.textContent||'').trim():'';
+  if(L.classList.contains('show') && L._for===el){ vvxHideTip(); return; }
+  vvxShowTip(el, txt);
+}
+(function(){
+  var canHover=false; try{ canHover=window.matchMedia('(hover:hover)').matches; }catch(e){}
+  if(canHover){
+    document.addEventListener('mouseover', function(e){ var p=e.target.closest&&e.target.closest('.vvx-pill'); if(p){ var d=p.querySelector('.vvx-pilldef'); if(d) vvxShowTip(p,(d.textContent||'').trim()); } });
+    document.addEventListener('mouseout', function(e){ var p=e.target.closest&&e.target.closest('.vvx-pill'); if(p){ var to=e.relatedTarget; if(!to||!(to.closest&&to.closest('.vvx-pill'))) vvxHideTip(); } });
+  }
+  document.addEventListener('click', function(e){ if(!(e.target.closest&&e.target.closest('.vvx-pill'))) vvxHideTip(); }, true);
+  window.addEventListener('scroll', vvxHideTip, true);
+  window.addEventListener('resize', vvxHideTip);
+})();
 function vvxFindPlayer(name){ for(var i=0;i<DB.length;i++){ if(DB[i].name===name) return DB[i]; } return null; }
 function vvxShowModal(html){
   var body=document.getElementById('vvx-modal-body'); if(!body) return;
@@ -5009,7 +5230,7 @@ function vvxSeasonLabel(pObj,sk){
 // Reusable: build the full wallet-card content from raw player-season data
 function vvxBuildCardModal(p,pObj,sr,cs,traj,mm,vvT,narrative){
   var flag=pObj?natFlag(pObj.nat):'';
-  var leg=(pObj&&pObj.legacy)?'\U0001f451 ':'';
+  var leg=(pObj&&pObj.legacy)?'👑 ':'';
   var lgStr=(LGS[p.lg]||{n:p.lg||''}).n;
   var teamKey=p.club?(TEAM_COLOURS[p.club.toLowerCase().trim()]||TEAM_COLOURS[p.club.toLowerCase().replace(/-/g,' ').trim()]||null):null;
   var clubNice=fmtClub(p.club); var clubShown=(clubNice&&clubNice!=='\u2014')?clubNice:'';
@@ -5018,7 +5239,7 @@ function vvxBuildCardModal(p,pObj,sr,cs,traj,mm,vvT,narrative){
   var seasonLbl=vvxSeasonLabel(pObj,p.season);
   var metaBits=[(sr.roleLabel||p.pos||''),clubShown,lgStr,(p.age?'Age '+p.age:'')].filter(Boolean).join(' \u00b7 ');
   var html='<div class="vvx-crest" style="--c1:'+crest[0]+';--c2:'+crest[1]+'">'+
-    vvxBall(ballCol,isIcon?'icon':'modern','rk')+
+    vvxBall(ballCol,vvxBallStyle(pObj,sr,p),'rk')+
     '<span class="vvx-tier-flag">'+sr.emoji+' '+sr.lbl+'</span>'+
     '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+vvScore+'</div></div>'+
   '</div><div class="vvx-xbody">'+
@@ -5044,7 +5265,7 @@ function vvxBuildCardModal(p,pObj,sr,cs,traj,mm,vvT,narrative){
 }
 // Card FRONT only (for hover peek)
 function vvxCardFront(p,pObj,sr){
-  var flag=pObj?natFlag(pObj.nat):''; var leg=(pObj&&pObj.legacy)?'\U0001f451 ':'';
+  var flag=pObj?natFlag(pObj.nat):''; var leg=(pObj&&pObj.legacy)?'👑 ':'';
   var lgStr=(LGS[p.lg]||{n:p.lg||''}).n;
   var teamKey=p.club?(TEAM_COLOURS[p.club.toLowerCase().trim()]||TEAM_COLOURS[p.club.toLowerCase().replace(/-/g,' ').trim()]||null):null;
   var clubNice=fmtClub(p.club); var clubShown=(clubNice&&clubNice!=='\u2014')?clubNice:'';
@@ -5053,7 +5274,7 @@ function vvxCardFront(p,pObj,sr){
   var metaBits=[(sr.roleLabel||p.pos||''),clubShown,lgStr].filter(Boolean).join(' \u00b7 ');
   return '<div class="vv-story vvx-pcard'+vvxGradeClass(sr.lbl)+'">'+
     '<div class="vvx-crest" style="--c1:'+crest[0]+';--c2:'+crest[1]+'">'+
-      vvxBall(ballCol,isIcon?'icon':'modern','pk')+
+      vvxBall(ballCol,vvxBallStyle(pObj,sr,p),'pk')+
       '<span class="vvx-tier-flag">'+sr.emoji+' '+sr.lbl+'</span>'+
       '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+vvScore+'</div></div>'+
     '</div>'+
@@ -5067,6 +5288,18 @@ function vvxSeasonData(name,sk){
   var sr=scoutReport(s.g,s.a,s.pos,s.lg,s.apps,s.rt);
   var p={name:pObj.name,g:s.g,a:s.a,age:s.age,pos:s.pos,lg:s.lg,club:s.club,season:sk};
   return {pObj:pObj,s:s,sr:sr,p:p};
+}
+function vvxRenderPreview(n){
+  var card=document.getElementById('pcard'+n); if(!card) return;
+  var p=pcSelected[n];
+  var hosts=card.querySelectorAll('.vvx-preview');
+  if(!p){ for(var i=0;i<hosts.length;i++){ if(hosts[i].parentNode) hosts[i].parentNode.removeChild(hosts[i]); } card.classList.remove('vvx-has-card'); return; }
+  for(var j=hosts.length-1;j>=1;j--){ if(hosts[j].parentNode) hosts[j].parentNode.removeChild(hosts[j]); }
+  var host=hosts[0];
+  if(!host){ var bd=card.querySelector('.pcard-bd'); if(!bd) return; host=document.createElement('div'); host.className='vvx-preview'; bd.insertBefore(host, bd.firstChild); }
+  var d=null; try{ d=vvxSeasonData(p.name, pcSeason[n]); }catch(e){ d=null; }
+  if(d){ host.innerHTML=vvxCardFront(d.p,d.pObj,d.sr); host.style.display='block'; host.style.cursor='pointer'; host.onclick=function(){try{vvxOpenRankCard(p.name,pcSeason[n]);}catch(e){}}; card.classList.add('vvx-has-card'); }
+  else { if(host.parentNode) host.parentNode.removeChild(host); card.classList.remove('vvx-has-card'); }
 }
 function vvxOpenRankCard(name,sk){
   var d=vvxSeasonData(name,sk); if(!d) return;
@@ -5104,14 +5337,13 @@ var VV_MOMENTS={
   "Erling Haaland|2223":{line:"His first Manchester derby, and he simply broke it — a header, a finish, then a third rolled in, the hat-trick sealed before the hour in the highest-scoring derby there has ever been.",meta:"Man City 6-3 Man Utd · 2 Oct 2022"},
   "Eric Cantona|*":{line:"The chip against Sunderland, and the celebration that outshone it — collar up, chest out, a slow turn to drink in Old Trafford while the keeper still lay beaten. The King, surveying his kingdom.",meta:"Man Utd 5-0 Sunderland · 21 Dec 1996"},
   "Ronaldinho|*":{line:"The night the Bernabéu applauded the enemy. Two goals, a procession of impossible touches, and Real Madrid's own crowd rose to salute him — the rarest tribute the game can give.",meta:"Real Madrid 0-3 Barcelona · 19 Nov 2005"},
-  "Ronaldo Fenomeno|*":{line:"The goal at Compostela — twenty years old, he collects it inside his own half and runs clean through the whole team, Bobby Robson on the touchline with his hands to his head. Power, pace and impudence in one surge.",meta:"Compostela 1-5 Barcelona · 12 Oct 1996"},
-  "Ronaldo Nazario|*":{line:"The goal at Compostela — twenty years old, he collects it inside his own half and runs clean through the whole team, Bobby Robson on the touchline with his hands to his head. Power, pace and impudence in one surge.",meta:"Compostela 1-5 Barcelona · 12 Oct 1996"},
+  "Ronaldo|*":{line:"The goal at Compostela — twenty years old, he collects it inside his own half and runs clean through the whole team, Bobby Robson on the touchline with his hands to his head. Power, pace and impudence in one surge.",meta:"Compostela 1-5 Barcelona · 12 Oct 1996"},
   "Thierry Henry|*":{line:"The length-of-the-pitch goal against Spurs — Vieira's header collected inside his own half, four men gliding past, a low finish beyond Keller, then the long run back to celebrate. The knee-slide is now his statue outside the Emirates.",meta:"Arsenal 3-0 Tottenham · 16 Nov 2002"},
   "Johan Cruyff|*":{line:"The night Total Football arrived in Spain. In his debut season Cruyff took Barcelona to the Bernabéu and ran Real Madrid ragged — a goal, two made, a 5-0 that still stands as the great Clásico humiliation, and a first title in fourteen years.",meta:"Real Madrid 0-5 Barcelona · 17 Feb 1974"},
   "Jamie Vardy|*":{line:"History against Manchester United — a Schmeichel throw, a Fuchs pass, and Vardy arrows it past De Gea to score in an eleventh consecutive game, a Premier League record, in the season nobody saw coming.",meta:"Leicester 1-1 Man Utd · 28 Nov 2015"},
   "Henrik Larsson|*":{line:"The chip over Klos in the six-two demolition of Rangers — the King of Kings at his most insolent, in a campaign of fifty-three goals, a treble, and a European Golden Boot.",meta:"Celtic 6-2 Rangers · Aug 2000"}
 };
-function vvxMoment(name,sk){ if(!name) return null; return (sk&&VV_MOMENTS[name+'|'+sk])||VV_MOMENTS[name+'|*']||null; }
+Object.assign(VV_MOMENTS,{"Cristiano Ronaldo|1415":{line:"Easter Sunday at the Bernabeu, and the sun has come out for one man only. Five times he asks the question, five times Granada have no answer. Cristiano Ronaldo doesn't just score goals; today he composes them.",meta:"Granada 9-1 W \u00b7 La Liga \u00b7 5 Apr 2015"},"Cristiano Ronaldo|1314":{line:"Twelve long years they waited for the tenth star. And here, in Lisbon, the man in white tears off his shirt and bellows into the night, La Decima is theirs, and Ronaldo is its author.",meta:"Atletico Madrid 4-1 AET W \u00b7 Champions League Final \u00b7 24 May 2014"},"Cristiano Ronaldo|1213":{line:"He stands, arms by his side, head bowed, for this is the theatre that made him. Cristiano cannot celebrate against his first love. The goal that hurts the most.",meta:"Manchester United 2-1 W \u00b7 Champions League R16 \u00b7 5 Mar 2013"},"Lionel Messi|1415":{line:"He shifts once, he shifts again, and a World Cup-winning defender simply falls down. Then, with the gentlest of touches, he lifts it over Neuer. Genius needs no translation.",meta:"Bayern Munich 3-0 W \u00b7 Champions League SF \u00b7 6 May 2015"},"Lionel Messi|1213":{line:"Forty years that record stood, through Maradona, through Ronaldo, through every great. And in Seville, with two flicks of his left foot, Lionel Messi makes the impossible look like a Sunday afternoon.",meta:"Real Betis 2-1 W \u00b7 La Liga \u00b7 9 Dec 2012"},"Lionel Messi|1112":{line:"Nobody had ever done it. Not Di Stefano, not Cruyff, not van Basten. One man, one night, five goals, and the record books are torn up and rewritten in Catalan.",meta:"Bayer Leverkusen 7-1 W \u00b7 Champions League R16 \u00b7 7 Mar 2012"},"Mohamed Salah|2425":{line:"Champions of England, and the King of the Kop turns to his people, takes their phone, and freezes the moment forever. Thirty years of hurt, washed away in red.",meta:"Tottenham 5-1 W \u00b7 Premier League \u00b7 27 Apr 2025"},"Erling Haaland|2223":{line:"Twenty-eight years that number stood, thirty-four. And a Norwegian giant, in his very first English winter, simply strolls past it. They line up to applaud him off. History, made in Manchester.",meta:"West Ham 3-0 W \u00b7 Premier League \u00b7 3 May 2023"},"Vinicius Jr|2223":{line:"In the cathedral of his greatest rivals, on the stroke of half-time, the Brazilian strikes, and the silence is deafening. This is Real Madrid's house too, tonight.",meta:"Barcelona 0-4 W (4-1 agg) \u00b7 Copa del Rey SF \u00b7 5 Apr 2023"},"Vinicius Jr|2122":{line:"Valverde drives, the ball flashes across, and there is the boy from Sao Goncalo to write his name into eternity. Number fourteen for the kings of Europe, and a star is truly born in Paris.",meta:"Liverpool 1-0 W \u00b7 Champions League Final \u00b7 28 May 2022"},"Gary Lineker|*":{line:"Two goals inside five minutes and the Camp Nou is a wall of sound. An Englishman, in the cauldron of El Clasico, writing himself into Catalan folklore, they will call him El Matador forever.",meta:"Real Madrid 3-2 W \u00b7 La Liga \u00b7 31 Jan 1987"},"Thierry Henry|*":{line:"Champions League gone, FA Cup gone, the Invincible dream trembling, and then Henry glides clean through the heart of Liverpool. The stadium's heart wasn't beating; he revived it.",meta:"Liverpool 4-2 W \u00b7 Premier League \u00b7 9 Apr 2004"},"Ronaldinho|*":{line:"Twice he leaves the defence for dead, twice he beats Casillas, and then the unthinkable: eighty thousand Real Madrid supporters rise to applaud him. The home of his rivals, on its feet, for a man in Barca blue.",meta:"Real Madrid 0-3 W \u00b7 La Liga \u00b7 19 Nov 2005"},"Ronaldo|*":{line:"He takes it inside his own half and the laws of the game suspend. Bodies bounce off him, the whole defence trails in his wake, a 20-year-old Phenomenon, a goal that travelled the world by word of mouth.",meta:"Compostela 5-1 W \u00b7 La Liga \u00b7 12 Oct 1996"},"Roberto Carlos|*":{line:"He thunders down the left as only he could and hooks one last hopeful ball into the Glasgow sky. What Zidane does with it becomes immortal, but it was the rocket-launcher at left-back who lit the fuse.",meta:"Bayer Leverkusen 2-1 W \u00b7 Champions League Final \u00b7 15 May 2002"},"Dani Alves|*":{line:"Up and down that right flank all night, tormenting United, 'the day in football I treasure most,' he called it. The heartbeat of the greatest side of a generation.",meta:"Manchester United 3-1 W \u00b7 Champions League Final \u00b7 28 May 2011"},"Zinedine Zidane|*":{line:"Roberto Carlos's cross hangs in the Glasgow sky, and Zidane waits... and waits... and then that left foot. A volley for the ages, La Novena secured.",meta:"Bayer Leverkusen 2-1 W \u00b7 Champions League Final \u00b7 15 May 2002"},"Dennis Bergkamp|*":{line:"A long ball drops, one touch to kill it, a second to bewitch the defender, a third to finish, the most perfect hat-trick the English game has seen.",meta:"Leicester City 3-3 D \u00b7 Premier League \u00b7 27 Aug 1997"},"Steven Gerrard|*":{line:"Three-two down, the cup slipping away, the seconds dying, and the ball drops to him thirty yards out. He doesn't think. He just hits it. A captain dragging his club back from the dead.",meta:"West Ham 3-3 (3-1 pens) W \u00b7 FA Cup Final \u00b7 13 May 2006"},"Frank Lampard|*":{line:"Two clean finishes at Bolton, and fifty years of waiting come crashing down. Chelsea are champions of England again, and it's the boy from West Ham who carries them over the line.",meta:"Bolton 2-0 W \u00b7 Premier League \u00b7 30 Apr 2005"},"Didier Drogba|*":{line:"The last day, the title on the line, and the big man saves his finest for last. A hat-trick, the Golden Boot, and Chelsea past a hundred goals, the man for the biggest moments takes the crown.",meta:"Wigan 8-0 W \u00b7 Premier League \u00b7 9 May 2010"},"Declan Rice|2425":{line:"He'd never scored a free-kick in his life, and now two in twelve minutes against the kings of Europe. The Emirates loses its mind, Madrid lose their bearings.",meta:"Real Madrid 3-0 W \u00b7 Champions League QF \u00b7 8 Apr 2025"},"Trent Alexander-Arnold|2425":{line:"Back from injury, on as a substitute, and within five minutes he strikes with his weaker foot. The local boy's last flourish before Madrid came calling.",meta:"Leicester City 1-0 W \u00b7 Premier League \u00b7 20 Apr 2025"},"Gabriel Magalhaes|2425":{line:"A corner swings in and the Brazilian rises above them all to thump it home in City's own backyard. The set-piece is Arsenal's sword, and Gabriel is its blade.",meta:"Manchester City 2-2 D \u00b7 Premier League \u00b7 22 Sep 2024"},"Kylian Mbapp\u00e9|2425":{line:"Four minutes in he's away and chipping it home; by the hour, a hat-trick, and Guardiola's City are dismantled in the Madrid night. The Bernabeu has found its new No. 9.",meta:"Manchester City 3-1 W \u00b7 Champions League playoff \u00b7 19 Feb 2025"},"Cole Palmer|2425":{line:"Twenty cold-blooded minutes, four goals, a feat no one had ever managed before half-time. Cole Palmer, hands shivering in celebration, simply unplayable.",meta:"Brighton 4-2 W \u00b7 Premier League \u00b7 28 Sep 2024"},"Jude Bellingham|2425":{line:"Ninety-two minutes gone, the tie in the balance, and of course it's Bellingham. Whenever Madrid need a hero at the death, the Englishman answers.",meta:"Manchester City 3-2 W \u00b7 Champions League playoff \u00b7 11 Feb 2025"},"Phil Foden|2324":{line:"A goal down in the derby, the Etihad anxious, and then Foden takes the game by the throat with two of his own. The local lad turned talisman, in the season they crowned him the best in England.",meta:"Manchester United 3-1 W \u00b7 Premier League \u00b7 3 Mar 2024"},"Declan Rice|2324":{line:"Ninety-six minutes, his first goal in red and white, and the Emirates erupts like never before. A hundred-million-pound man announcing himself against United, instant folklore.",meta:"Manchester United 3-1 W \u00b7 Premier League \u00b7 3 Sep 2023"},"Trent Alexander-Arnold|2223":{line:"A full-back painting passes only he can see, reborn in midfield to revive Liverpool's season, and at Elland Road, his fiftieth Premier League assist. A position remade in his image.",meta:"Leeds United 6-1 W \u00b7 Premier League \u00b7 17 Apr 2023"},"Trent Alexander-Arnold|1920":{line:"Thirteen assists from right-back, a number no defender had dreamed of, and at the end, after thirty long years, Liverpool are champions again. The boy from West Derby, redefining the role forever.",meta:"Season-long (PL title) Champions \u00b7 Premier League"},"Virgil van Dijk|2122":{line:"A colossus reborn after a year lost to injury, marshalling Liverpool's charge at an impossible quadruple, and at Wembley, Man of the Match as the first trophy is prised from Chelsea on penalties.",meta:"Chelsea 0-0 (11-10 pens) W \u00b7 EFL Cup Final \u00b7 27 Feb 2022"},"Karim Benzema|2122":{line:"Two down on aggregate, the tie all but gone, and then seventeen minutes of Benzema. The Bernabeu erupting, PSG in ruins. The night a 34-year-old announced he'd win the Ballon d'Or.",meta:"Paris Saint-Germain 3-1 W \u00b7 Champions League R16 \u00b7 9 Mar 2022"},"Viktor Gyokeres|2324":{line:"From the English Championship to the toast of Portugal, a debut season of relentless scoring that dragged Sporting to the title and announced him as the most coveted striker in Europe.",meta:"Season-long (Primeira Liga title) Champions \u00b7 Primeira Liga"},"Erling Haaland|2425":{line:"Even in a quieter year for the champions, the ledger keeps growing, one hundred Manchester City goals in just one hundred and five games. A scoring machine that will not stop.",meta:"Milestone (100 City goals) \u00b7 All competitions"},"Erling Haaland|2324":{line:"Fifty Premier League goals in forty-eight games, faster than anyone in the competition's history, and another Golden Boot, the relentless heart of a record fourth straight title.",meta:"Liverpool 1-1 D \u00b7 Premier League \u00b7 25 Nov 2023"},"Romario|*":{line:"He takes it with his back to goal, harmless and half-forgotten, then the cow's tail flicks, Alkorta grasps at thin air, and the Camp Nou erupts. The Little One has just rewritten what a number nine is allowed to be.",meta:"Real Madrid 5-0 W \u00b7 La Liga \u00b7 8 Jan 1994"},"Lothar Matthaus|*":{line:"Box to box he surges, the metronome and the muscle in one body, and on a Roman night he lifts the gold as captain of the world. The complete midfielder, in his most complete year.",meta:"Argentina 1-0 W \u00b7 World Cup Final \u00b7 8 Jul 1990"},"Gerd Muller|*":{line:"Forty times in a single season the net shivered, a number so absurd it would outlive the man himself for half a century. Der Bomber did not score goals; he hoarded them.",meta:"Season-long (40-goal record) Champions \u00b7 Bundesliga"},"Rivaldo|*":{line:"Bandy-legged and bewitching, the Brazilian is the pulse of everything Barcelona do, dropping deep, gliding past, bending the impossible into corners. By season's end the whole world agrees: there is no one better.",meta:"Season-long (La Liga title) Champions \u00b7 La Liga"},"Patrick Vieira|*":{line:"Three minutes gone in the lions' den, and the captain slides it home, the title all but theirs, not a single defeat to their name. They came to White Hart Lane to be crowned, and they left immortal.",meta:"Tottenham Hotspur 2-2 D \u00b7 Premier League \u00b7 25 Apr 2004"},"Wayne Rooney|*":{line:"Old Trafford bathed in late-summer sun, and the Gunners are simply torn to ribbons, eight goals, three of them his. A statement carved into the record books at the very first whistle of the season.",meta:"Arsenal 8-2 W \u00b7 Premier League \u00b7 28 Aug 2011"},"David Beckham|*":{line:"Thirty yards, a dead ball, and that right foot like a tuning fork, it dips, it bends, it kisses the underside of the bar on its way in. Another flourish in a season made of them.",meta:"West Ham United 7-1 W \u00b7 Premier League \u00b7 1 Apr 2000"},"Andrea Pirlo|*":{line:"While others sprint and snarl, he simply conducts, the architect at the base of it all, gliding Milan to the roof of the world. The year the Rossoneri ruled everything, set to his unhurried rhythm.",meta:"Boca Juniors 4-2 W \u00b7 Club World Cup Final \u00b7 16 Dec 2007"},"Alan Shearer|*":{line:"Thirty goals, three seasons running, a feat no man had managed in sixty years. The classic English nine, arm aloft, asking only for the next chance to do it all again.",meta:"Season-long (Golden Boot) \u00b7 Premier League"},"Yaya Tour\u00e9|*":{line:"From deepest midfield he comes, all power and purpose, and from distance he strikes, a cup in the cabinet, a title on the way. A giant of a man having the season of his life.",meta:"Sunderland 3-1 W \u00b7 League Cup Final \u00b7 2 Mar 2014"},"Samuel Eto'o|*":{line:"Down to ten men, a goal behind, the dream curdling, and then the Cameroonian pokes it home, and Paris breathes again. Fourteen minutes from the end, he turns a European final on its head.",meta:"Arsenal 2-1 W \u00b7 Champions League Final \u00b7 17 May 2006"},"Michael Laudrup|*":{line:"The Danish prince at the heart of Cruyff's dream, threading passes only he could imagine, the soul of the side that won Barcelona's first crown of Europe. Elegance, deployed as a tactic.",meta:"Season-long (La Liga / European Cup) Champions \u00b7 La Liga"},"Cesc Fabregas|*":{line:"Home again, doubters circling, and in the lions' den he rises to head it in, the Bernabeu silenced, the title race level once more. The boy of La Masia, answering in the loudest possible way.",meta:"Real Madrid 1-3 W \u00b7 La Liga \u00b7 10 Dec 2011"},"Eusebio|*":{line:"Through on goal, the cup almost his, and Stepney stands tall to deny him. And then the most beautiful thing of all: the great man applauds the keeper. Grace, on a humid Wembley night.",meta:"Manchester United 1-4 L (AET) \u00b7 European Cup Final \u00b7 29 May 1968"},"Dwight Yorke|*":{line:"Grin as wide as the goals are many, he and Cole read each other like old friends, league, cup and Europe, all in one impossible spring. The smile at the centre of the greatest season the club has known.",meta:"Season-long (the Treble) Treble W \u00b7 All competitions"},"Kak\u00e1|*":{line:"He gathers it in his own half, shifts through a gear no one else possesses, and Old Trafford can only watch him go. Beaten on the night, but the world's best player has announced that the year is his.",meta:"Manchester United 2-3 L \u00b7 Champions League SF \u00b7 24 Apr 2007"},"Carlos Tevez|*":{line:"Banished to the fairways of Buenos Aires, written off and frozen out, and now he buries a hat-trick and mimes a golf swing to the heavens. The exile returns to drag the title back across the city.",meta:"Norwich City 6-1 W \u00b7 Premier League \u00b7 14 Apr 2012"},"Fernando Torres|*":{line:"El Nino in his first English winter, and the Kop has a new idol, twenty-four goals, hat-trick after hat-trick at the Anfield Road end. No foreigner had ever begun a life in England quite like this.",meta:"Season-long (record 24-goal debut) \u00b7 Premier League"},"Ruud van Nistelrooy|*":{line:"From inside his own half he sets off, four white shirts left trailing, and finishes as if it were nothing, the start of a run that simply would not stop. The penalty-box assassin, on the day he became unstoppable.",meta:"Fulham 3-0 W \u00b7 Premier League \u00b7 22 Mar 2003"},"Roberto Baggio|*":{line:"The Divine Ponytail, crowned the finest on earth, carrying Juventus on his slender shoulders, and soon, almost alone, dragging Italy to a World Cup final. Grace and burden, forever entwined.",meta:"Crowned 1993 Ballon d'Or \u00b7 Serie A \u00b7 28 Dec 1993"},"Hristo Stoichkov|*":{line:"A free-kick to fell the world champions, a nation soaring to places it had never been, the bad boy from Plovdiv at the very peak of his powers. God, he insisted, was Bulgarian.",meta:"Germany 2-1 W \u00b7 World Cup QF \u00b7 10 Jul 1994"},"David Villa|*":{line:"Wembley, the night Barcelona purred, and the curling third is his, a finish as smooth as the football around it. The striker's name written onto the grandest scoreline of all.",meta:"Manchester United 3-1 W \u00b7 Champions League Final \u00b7 28 May 2011"},"Ian Wright|*":{line:"Thirty-three years old and still the goals will not stop, four past Everton, scoring against almost everyone, the irrepressible heartbeat of the North Bank. Wright, Wright, Wright, as the old terrace sang.",meta:"Season-long (23 goals at 33) \u00b7 Premier League"},"Matt Le Tissier|*":{line:"One club, one love, and a highlight reel of the outrageous, lobs, flicks and volleys conjured from nothing at The Dell. The maverick who turned loyalty into an art form, and goals into theatre.",meta:"Season-long (the maverick's art) \u00b7 Premier League"},"Bryan Robson|*":{line:"Captain Marvel, chest out, dragging a faltering United through the storm, the bridge between one era and the dawn of another. Where the team went, he led; where they fell, he carried.",meta:"Season-long (Captain Marvel) \u00b7 First Division"},"Glenn Hoddle|*":{line:"Languid, unhurried, impossibly gifted, the Spurs artist who saw passes others could not picture and chipped keepers from absurd range. England's luxury, and White Hart Lane's poet.",meta:"Season-long (Spurs' artist) \u00b7 First Division"},"Marcelo Brozovic|*":{line:"Thirteen kilometres a game and the calm in the eye of it all, the Croatian metronome at the base of Inter's machine. The quiet man who helped end nine years of someone else's reign.",meta:"Season-long (Scudetto) Champions \u00b7 Serie A \u00b7 2 May 2021"},"Andrew Cole|*":{line:"Thirty-four in a single season, a record nobody thought possible, he and Beardsley tearing the new league apart in black and white. The Entertainers had a finisher to match their flair.",meta:"Season-long (34-goal PL record) \u00b7 Premier League"}});function vvxMoment(name,sk){ if(!name) return null; return (sk&&VV_MOMENTS[name+'|'+sk])||VV_MOMENTS[name+'|*']||null; }
 function vvxResolveSeasonKey(pObj,p){
   if(!pObj||!pObj.seasons) return null;
   if(p.season&&pObj.seasons[p.season]) return p.season;
@@ -5404,7 +5636,7 @@ function verdictTags(p1data, s1, p2data, s2, winnerN, mode){
   // primary tag
   if(adjDiff<=2.5){tags.push({key:'var_close_call',lbl:'VAR Close Call',emoji:'🟢',primary:true});}
   else if(adjDiff<=6){tags.push({key:'split_decision',lbl:'Split Decision',emoji:'⚖️',primary:true});}
-  else if(adjDiff>=20){tags.push({key:'not_even_close',lbl:'Not Even Close',emoji:'🚫',primary:true});}
+  else if(adjDiff>=25){tags.push({key:'not_even_close',lbl:'Not Even Close',emoji:'🚫',primary:true});}
   else if(adjDiff>=12){tags.push({key:'clear_winner',lbl:'Clear Winner',emoji:'🏆',primary:true});}
   else{tags.push({key:'form_edge',lbl:'Form Edge',emoji:'🔥',primary:true});}
   // supporting tags (up to 3)
@@ -5680,6 +5912,7 @@ function applySeasonData(n){
   if(!p) return;
   var sdata=p.seasons[pcSeason[n]];
   if(!sdata) return;
+  vvxRenderPreview(n);
   document.getElementById('pc'+n+'g').value=sdata.g!==undefined?sdata.g:'';
   document.getElementById('pc'+n+'a').value=sdata.a!==undefined?sdata.a:'';
   document.getElementById('pc'+n+'age').value=sdata.age||'';
@@ -5715,6 +5948,7 @@ function lockFields(n,lock){
 
 function clearPlayer(n){
   pcSelected[n]=null;
+  vvxRenderPreview(n);
   pcSeason[n]='2425';
   ['name','g','a','age','rt','apps','club'].forEach(function(f){
     var el=document.getElementById('pc'+n+f);
@@ -5988,7 +6222,7 @@ function analyse(mode){
 
   // Gather data
   var name1=document.getElementById((isPC?'pc1':'bb1')+'name').value.trim();
-  var name2=document.getElementById((isPC?'pc2':'bb2')+'name').value.trim();
+  var name2=document.getElementById((isPC?'pc2':'bb2')+'name').value.trim(); function _vvxNeedSel(msg){verdictEl.innerHTML='<div style="padding:26px 22px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:14px"><div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--charcoal);margin-bottom:6px">Pick your players first</div><div style="font-family:var(--body);font-size:13px;color:var(--ink-soft);line-height:1.6">'+msg+'</div></div>';verdictEl.style.display='block';try{verdictEl.scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}} if(isPC){var _x1=name1||(typeof pcSelected!=='undefined'&&pcSelected[1]&&pcSelected[1].name);var _x2=name2||(typeof pcSelected!=='undefined'&&pcSelected[2]&&pcSelected[2].name);if(!_x1||!_x2){_vvxNeedSel('Select <strong>both</strong> players to run a comparison.');return;}}else{if(!name1){_vvxNeedSel('Select a player to see their Baller Bio.');return;}}
   var g1=parseInt(document.getElementById((isPC?'pc1':'bb1')+'g').value)||0;
   var a1=parseInt(document.getElementById((isPC?'pc1':'bb1')+'a').value)||0;
   var g2=parseInt(document.getElementById((isPC?'pc2':'bb2')+'g').value)||0;
@@ -6172,9 +6406,9 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     var footTag = primeTag ? ((primeTag.emoji||'')+' '+primeTag.key) : (sr.emoji+' '+sr.lbl);
 
     // ── CARD FRONT (clean foundations artifact) ──
-    var html = '<div class="vv-story vvx-pcard p'+num+(isWin?' vv-story-win':'')+vvxGradeClass(sr.lbl)+'"'+dataTeam+' onclick="vvxOpenCard('+num+')">'+
+    var html = '<div class="vv-story vvx-pcard p'+num+(isWin?' vv-story-win':'')+vvxGradeClass(sr.lbl)+'"'+dataTeam+'>'+
       '<div class="vvx-crest" style="--c1:'+crest[0]+';--c2:'+crest[1]+'">'+
-        vvxBall(ballCol,isIcon?'icon':'modern',num)+
+        vvxBall(ballCol,vvxBallStyle(pObj,sr,p),num)+
         '<span class="vvx-tier-flag">'+sr.emoji+' '+sr.lbl+'</span>'+
         (isWin?'<span class="vvx-win-flag">🏆 Verdict Winner</span>':'')+
         '<div class="vvx-score-badge"><div class="vvx-bvv"><span class="v1">V</span><span class="v2">V</span></div><div class="vvx-bnum">'+vvScore+'</div></div>'+
@@ -6188,7 +6422,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     // ── EXPANSION DATA (hidden; injected into wallet modal on tap) ──
     var narrative = aiResult ? (num===1 ? aiResult.p1 : aiResult.p2) : null;
     var moment = vvxMoment(p.name, vvxResolveSeasonKey(pObj,p));
-    var exp = '<div class="vvx-expand-data" id="vvx-exp-'+num+'" style="display:none">';
+    var exp = '<div class="vvx-expand-data" id="vvx-exp-'+num+'">';
     exp += '<div class="vvx-statline">'+
       '<div class="vvx-stat"><div class="vvx-sv">'+p.g+'</div><div class="vvx-sl">Goals</div></div>'+
       '<div class="vvx-stat"><div class="vvx-sv">'+p.a+'</div><div class="vvx-sl">Assists</div></div>'+
@@ -6352,12 +6586,7 @@ function renderVerdictFull(mode,p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,cs1,cs2,mm
     var confLabel = ['','★','★★','★★★','★★★★','★★★★★'][overallConf] || '★★★';
 
     var html = '<div class="vv-verdict-section">'+
-      '<div class="vv-verdict-head">'+
-        '<div>'+
-          '<div class="vv-verdict-head-title">The VVerdict</div>'+
-          '<div class="vv-verdict-winner">'+winnerName+'</div>'+
-        '</div>'+
-        '<div class="vv-verdict-factor">'+factor+'</div>'+
+      '<div class="vv-verdict-head">'+'<div class="vv-verdict-head-title">The <span class="vvm"><span class="v1">V</span><span class="v2">V</span></span>erdict</div>'+'<div class="vv-verdict-winner">'+winnerName+'</div>'+'<div class="vv-verdict-factor">'+factor+'</div>'+
       '</div>'+
       '<div class="vv-verdict-body">'+
         '<div class="vv-verdict-narrative">'+verdictText+'</div>';
@@ -6549,7 +6778,7 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
     }).then(function(res){return res.json();})
     .then(function(d){
       var txt=(d.content||[]).map(function(i){return i.text||'';}).join('');
-      try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}
+      try{return (window.vvxDeDash?window.vvxDeDash(JSON.parse(txt.replace(/```json|```/g,'').trim())):JSON.parse(txt.replace(/```json|```/g,'').trim()));}
       catch(e){return{p1:'Bio unavailable.',p2:'Bio unavailable.',h2h:'',verdict:'Please try again.'};}
     }).catch(function(){
       return{p1:'Unavailable.',p2:'Unavailable.',h2h:'',verdict:'Switch to Simple mode.'};
@@ -6588,12 +6817,13 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
     '=== WRITING INSTRUCTIONS ===',
     '',
     '=== VOICE ===',
-    'You are the chief football writer for a serious title — the cadence of Henry Winter or Barney Ronay. You are NOT an AI assistant and must never read like one. Write as a scout and storyteller who has watched these players, not a model summarising numbers.',
+    'You are the chief football writer for a serious title, in the cadence of Henry Winter or Barney Ronay. You are NOT an AI assistant and must never read like one. Write as a scout and storyteller who has watched these players, not a model summarising numbers.',
     '- Plain, muscular football English. Short sentences hit hardest. Specific beats grand. Trust the reader.',
     '- BANNED (AI tells): "In the world of football", "When it comes to", "boasts", "a testament to", "showcased", "proved to be", "not just X but Y", "stamped his authority", and tidy "Ultimately" or "In conclusion" closers.',
-    '- Every word must be earned by the data given. Invent nothing — no matches, quotes, trophies or moments that are not supported. Evocative, never fabricated.',
+    '- NEVER use an em-dash or en-dash, or any dash character; use a comma, full stop or colon instead. A dash mid-sentence is the clearest AI tell of all.',
+    '- Every word must be earned by the data given. Invent nothing: no matches, quotes, trophies or moments that are not supported. Evocative, never fabricated.',
     '- Slip the numbers in the way a scout drops a stat into an argument, not as a readout.',
-    'SECTION WEIGHTING — p1, p2 and h2h are measured, analytical, clear-eyed: a scout report, precise and confident, warmth held in reserve. The verdict is the showpiece, written in a different register entirely (see below).',
+    'SECTION WEIGHTING. p1, p2 and h2h are measured, analytical, clear-eyed: a scout report, precise and confident, warmth held in reserve. The verdict is the showpiece, written in a different register entirely (see below).',
     '',
     'p1 (4-5 sentences): Write about '+p1.name+' at '+club1+' in '+season1+'. They are a '+((VV_ROLES[p1.pos]||{label:p1.pos||'?'}).label)+' — judge their output against that role benchmark. VV Index '+sr1.total+'/25 ('+sr1.lbl+'). '+(sr1.rarity>0?'Role Rarity bonus of +'+sr1.rarity+' — their attacking output breaks '+((VV_ROLES[p1.pos]||{label:p1.pos}).label)+' expectations.':'')+' What did this season represent in their career story?',
     '',
@@ -6601,7 +6831,7 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
     '',
     'h2h (3-4 sentences): '+(samePos?'SAME POSITION — direct benchmark. '+sr1.roleLabel+' vs '+sr2.roleLabel+' by identical standards.':'CROSS-POSITION — '+sr1.roleLabel+' vs '+sr2.roleLabel+'. Different roles, different expectations.')+' VV margin: '+vvd.margin+'/25. Deciding factor: '+vvd.decidingFactor+'. '+(vvd.story||'')+' Does role context change the interpretation?',
     '',
-    'verdict (5-6 sentences — the showpiece, in the register of Peter Drury on commentary): Not a scout now but a poet on the gantry. Soaring, romantic, present-tense. Build the swell — what these two careers MEAN set against each other — then break it with one short line that lands like a final whistle. Speak to the reader directly: use "you", ask a rhetorical question. Invoke place and identity by name where the data supports it. Commit to the call with total conviction. The engine decided this on '+vvd.decidingFactor+', margin '+vvd.margin+'/25 ('+winN+') — let that read as destiny, not arithmetic. Close on a single quotable line. Romance is allowed; invention is not — every image must be earned by the data above. Never tidy, never "in conclusion".',
+    'verdict (5-6 sentences — the showpiece, in the register of Peter Drury on commentary): Not a scout now but a poet on the gantry. Soaring, romantic, present-tense. Build the swell, what these two careers MEAN set against each other, then break it with one short line that lands like a final whistle. Speak to the reader directly: use "you", ask a rhetorical question. Invoke place and identity by name where the data supports it. Commit to the call with total conviction. The engine decided this on '+vvd.decidingFactor+', margin '+vvd.margin+'/25 ('+winN+'); let that read as destiny, not arithmetic. Close on a single quotable line. Romance is allowed; invention is not, every image must be earned by the data above. Never tidy, never "in conclusion".',
     '',
     'JSON only: {"p1":"...","p2":"...","h2h":"...","verdict":"..."}'
   ].filter(Boolean).join('\n');
@@ -6613,7 +6843,7 @@ function callAI(p1,p2,pObj1,pObj2,traj1,traj2,sr1,sr2,same,isBB){
   }).then(function(res){return res.json();})
   .then(function(d){
     var txt=(d.content||[]).map(function(i){return i.text||'';}).join('');
-    try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}
+    try{return (window.vvxDeDash?window.vvxDeDash(JSON.parse(txt.replace(/```json|```/g,'').trim())):JSON.parse(txt.replace(/```json|```/g,'').trim()));}
     catch(e){return{p1:'AI analysis unavailable.',p2:'AI analysis unavailable.',h2h:'',verdict:'Please try again or switch to Standard mode.'};}
   }).catch(function(){
     return{p1:'AI unavailable — check API connection.',p2:'AI unavailable — check API connection.',h2h:'',verdict:'Switch to Simple or Advanced mode.'};
@@ -6731,7 +6961,7 @@ function buildLegacyGrid(filter){
     var safeName=p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
     html+='<div class="legend-card" onclick="compareFromLegend(\''+safeName+'\')" style="cursor:pointer">'
       +'<div class="legend-card-hd">'
-      +'<div class="legend-card-name">👑 ⭐ '+flag+' '+p.name+'</div>'
+      +'<div class="legend-card-name">'+flag+' '+p.name+'</div>'
       +'<div class="legend-card-meta">'+(s.pos||'')+(s.pos&&s.lg?' · ':'')+(LGS[s.lg]?LGS[s.lg].n:'')+' · Retired</div>'
       +'</div>'
       +'<div class="legend-card-bd">'
@@ -6880,7 +7110,7 @@ function buildRatingTable(){
   var thG   = rtSortBy==='goals'  ? '<th style="color:var(--accent)">⚽ G</th>' : '<th>⚽ G</th>';
   var thOut = rtSortBy==='output' ? '<th style="color:var(--accent)">📊 Output</th>' : '';
   var thVV  = rtSortBy==='vv'     ? '<th style="color:var(--accent)">⚡ VV Score</th>' : '<th>⚡ VV Score</th>';
-  html += '<table class="rtable"><thead><tr><th>#</th><th>Player</th><th>📅 Season</th><th>🎭 Pos</th><th>🏟️ League</th>'+thG+'<th>🎯 A</th>'+thOut+thVV+'<th>🏷️ SSP Tier</th></tr></thead><tbody>';
+  html += '<div class="vvx-rt-scroll"><table class="rtable"><thead><tr><th>#</th><th>Player</th><th>📅 Season</th><th>🎭 Pos</th><th>🏟️ League</th>'+thG+'<th>🎯 A</th>'+thOut+thVV+'<th>🏷️ SSP Tier</th></tr></thead><tbody>';
 
   filtered.slice(0,50).forEach(function(r,i){
     var tdOutput = rtSortBy==='output'
@@ -6906,7 +7136,7 @@ function buildRatingTable(){
     '</tr>';
   });
 
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   if (filtered.length === 0) html = '<div style="padding:24px;text-align:center;color:var(--ink4)">No results for this filter combination.</div>';
   wrap.innerHTML = html;
 }
@@ -6995,7 +7225,7 @@ function setRTFilter(type, val) {
   body.innerHTML = h;
 
   var pill = document.getElementById('db-pill');
-  if (pill) pill.textContent = total + ' Players';
+  if (pill) { var __c=0; try{ for(var __i=0;__i<DB.length;__i++){ if(DB[__i].seasons) __c+=Object.keys(DB[__i].seasons).length; } }catch(e){} pill.innerHTML='<span class=db-live-dot></span>'+Number(total).toLocaleString()+' players · '+__c.toLocaleString()+' season cards'; pill.classList.add('db-live'); }
   var cnt = document.getElementById('db-cnt');
   if (cnt) cnt.textContent = total;
   var inlinePill = document.getElementById('db-pill-inline');
@@ -9027,12 +9257,12 @@ function openLegendPanel(key) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'legend-panel-modal';
-    modal.style.cssText = 'display:none;position:fixed;inset:0;z-index:500;background:rgba(10,8,6,.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px';
-    modal.innerHTML = '<div id="lpm-inner" style="background:#fff;border:1.5px solid var(--border);border-radius:4px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;position:relative">'
-      + '<div id="lpm-head" style="background:var(--ink);padding:16px 20px;display:flex;align-items:center;gap:10px">'
+    modal.style.cssText = 'display:none;position:fixed;inset:0;z-index:500;background:rgba(26,23,20,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px';
+    modal.innerHTML = '<div id="lpm-inner" style="background:#fff;border:1px solid var(--line);border-radius:4px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;position:relative">'
+      + '<div id="lpm-head" style="background:var(--paper);border-bottom:1px solid var(--line);padding:16px 20px;display:flex;align-items:center;gap:10px">'
       + '<span id="lpm-icon" style="font-size:20px"></span>'
-      + '<span id="lpm-title" style="font-family:Playfair Display,serif;font-size:18px;font-weight:900;color:#fff"></span>'
-      + '<button onclick="closeLegendPanel()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer">✕</button>'
+      + '<span id="lpm-title" style="font-family:Playfair Display,serif;font-size:18px;font-weight:900;color:var(--charcoal)"></span>'
+      + '<button onclick="closeLegendPanel()" style="margin-left:auto;background:none;border:none;color:var(--ink-soft);font-size:18px;cursor:pointer">✕</button>'
       + '</div>'
       + '<div id="lpm-body" style="padding:20px 24px;font-size:13px;line-height:1.8;color:#444"></div>'
       + '</div>';
@@ -9051,8 +9281,9 @@ function openLegendPanel(key) {
 function closeLegendPanel() {
   var modal = document.getElementById('legend-panel-modal');
   if (modal) modal.style.display = 'none';
-  document.body.style.overflow = '';
   _legendPanelOpen = false;
+  var dd = document.getElementById('gnav-legends-dropdown');
+  if (dd && !dd.classList.contains('open')) { toggleLegendsDropdown(); } else { document.body.style.overflow = ''; }
 }
 
 // ── SCOUT GUIDE — MEMBERS ONLY ─────────────────────────
@@ -9116,6 +9347,49 @@ function switchLegendTab(tab, btn) {
 }
 
 </script>
+<script>
+(function(){
+  var LA_INFO={
+    'Legacy Collection':'A personal collection of the players who shaped your story \u2014 the ones you will defend in any argument. Save them, revisit them, and watch the collection become a portrait of your football life.',
+    'Greatest XI':'Your perfect team \u2014 your era, your rules. Eleven slots, every position, drawn from any player in the database. Build it, refine it, and settle the only debate that truly matters.',
+    'Debate History':'Every comparison you run, saved. Return to the debates that mattered, see how your verdicts shifted over time, and never lose a great argument again.',
+    'Scout Notes':'Your private scouting notebook. Record observations, opinions and intelligence on any player \u2014 proof of what you saw before everyone else did.',
+    'Players You Follow':'Track rising stars and established icons as their journeys unfold. Follow a player and keep their story close as the seasons turn.',
+    'Ask The Scout':'Your personal AI football analyst. Ask anything \u2014 comparisons, context, what-ifs \u2014 and get a considered answer. The conversation never ends.'
+  };
+  window.laGoRegister=function(){
+    if(typeof vvxCloseCard==='function') vvxCloseCard();
+    var t=document.querySelectorAll('#locker-auth .la-tab');
+    if(t[1] && typeof lockerTab==='function') lockerTab('register',t[1]);
+  };
+  window.laExplain=function(key){
+    var body=LA_INFO[key]; if(!body||typeof vvxShowModal!=='function') return;
+    var h='<div class="la-explain">'+
+      '<div class="la-explain-tag">Members feature</div>'+
+      '<h3>'+key+'</h3>'+
+      '<p>'+body+'</p>'+
+      '<button class="la-explain-cta" onclick="laGoRegister()">Reserve your locker to unlock</button>'+
+      '</div>';
+    vvxShowModal(h);
+  };
+  function wire(){
+    var feats=document.querySelectorAll('#locker-auth .la-feat');
+    Array.prototype.forEach.call(feats,function(f){
+      if(f.getAttribute('data-laexp')) return;
+      var tEl=f.querySelector('.la-feat-title'); if(!tEl) return;
+      var key=tEl.textContent.trim(); if(!LA_INFO[key]) return;
+      f.setAttribute('data-laexp','1');
+      f.addEventListener('click',function(){ laExplain(key); });
+      if(!f.querySelector('.la-feat-tag')){
+        var tag=document.createElement('span'); tag.className='la-feat-tag'; tag.textContent='Members'; f.appendChild(tag);
+      }
+    });
+  }
+  if(document.readyState!=='loading') wire(); else document.addEventListener('DOMContentLoaded',wire);
+})();
+</script>
+<script>window.vvxDeDash=function(o){if(typeof o==='string'){var em=String.fromCharCode(8212),en=String.fromCharCode(8211),hb=String.fromCharCode(8213);var s=o.split(em).join(', ').split(en).join(', ').split(hb).join(', ');return s.split(' ,').join(',').split(',  ').join(', ');}if(o instanceof Array)return o.map(window.vvxDeDash);if(o&&typeof o==='object'){var r={};for(var k in o){if(Object.prototype.hasOwnProperty.call(o,k))r[k]=window.vvxDeDash(o[k]);}return r;}return o;};</script>
+<script>window.vvxSetDbCount=function(players,cards){var p=document.getElementById('db-pill');if(!p)return;p.innerHTML='<span class=db-live-dot></span>'+Number(players).toLocaleString()+' players · '+Number(cards).toLocaleString()+' season cards';p.classList.add('db-live');};</script>
 <div class="vvx-scrim" id="vvx-scrim" onclick="if(event.target===this)vvxCloseCard()">
   <div class="vvx-modal-col">
     <button class="vvx-close" onclick="vvxCloseCard()">✕</button>
@@ -9127,7 +9401,7 @@ function switchLegendTab(tab, btn) {
 /* 3D-extruded rotating VV mark */
 (function(){
   var stage=document.getElementById('vvspin'); if(!stage) return;
-  var N=30, step=1.4;
+  var N=80, step=1.0;
   function darken(hex,t){
     var r=parseInt(hex.substr(1,2),16),g=parseInt(hex.substr(3,2),16),b=parseInt(hex.substr(5,2),16);
     var f=1-0.66*t;
@@ -9140,12 +9414,68 @@ function switchLegendTab(tab, btn) {
     layer.className='layer';
     layer.style.transform='translateZ('+(-i*step)+'px)';
     layer.innerHTML='<svg viewBox="0 0 300 160" fill="none">'+
-      '<polygon points="14,18 86,150 150,48 124,48 86,108 46,18" fill="'+darken(charcoal,t)+'"/>'+
-      '<polygon points="286,18 214,150 150,48 176,48 214,108 254,18" fill="'+darken(blush,t)+'"/>'+
+      '<polygon points="14,18 86,150 150,48 124,48 86,108 46,18" fill="'+darken(charcoal,t)+'" stroke="'+darken(charcoal,t)+'" stroke-width="8" stroke-linejoin="round"/>'+
+      '<polygon points="286,18 214,150 150,48 176,48 214,108 254,18" fill="'+darken(blush,t)+'" stroke="'+darken(blush,t)+'" stroke-width="8" stroke-linejoin="round"/>'+
       '</svg>';
     stage.appendChild(layer);
   }
 })();
 </script>
-</body>
+<script>
+/* VVonderXI tag engine: thresholds calibrated to the 681-player season-card distribution */
+window.VVTags = (function(){
+  function G(p){p=(p||'').toUpperCase();
+    if(p==='ST'||p==='CF')return'ST';
+    if(['LW','RW','W','LM','RM'].indexOf(p)>=0)return'W';
+    if(p==='CAM'||p==='AM')return'CAM';
+    if(['CM','LCM','RCM'].indexOf(p)>=0)return'CM';
+    if(p==='DM'||p==='CDM')return'DM';
+    if(['LB','RB','LWB','RWB','FB','WB'].indexOf(p)>=0)return'FB';
+    if(['CB','LCB','RCB'].indexOf(p)>=0)return'CB';
+    if(p==='GK')return'GK';
+    return'OTH';}
+  var B={ST:{g:[20,26],a:[7,11],r:[86,90]},W:{g:[11,16],a:[9,13],r:[85,89]},
+    CAM:{g:[11,16],a:[10,14],r:[87,91]},CM:{g:[7,9],a:[8,11],r:[84,87]},
+    DM:{g:[4,6],a:[5,8],r:[85,88]},FB:{g:[3,5],a:[7,10],r:[83,86]},
+    CB:{g:[2,3],a:[2,3],r:[84,87]},GK:{g:[99,99],a:[99,99],r:[86,89]},
+    OTH:{g:[12,20],a:[8,12],r:[85,89]}};
+  function stageOf(age,pos){var g=G(pos),late=(g==='CB'||g==='GK'||g==='DM');
+    if(age==null)return null;
+    if(age<=19)return'Breakthrough'; if(age<=22)return'Rising'; if(age<=24)return'Ascending';
+    if(age<=(late?30:28))return'Prime'; if(age<=(late?34:31))return'Peak Veteran'; return'Twilight';}
+  function sorted(seasons){return Object.keys(seasons).sort().map(function(k){return seasons[k];});}
+  function trajOf(seasons){var ss=sorted(seasons);if(ss.length<2)return'Emerging';
+    var rs=ss.map(function(s){return s.rt||0;});
+    var first=rs[0],last=rs[rs.length-1],peak=Math.max.apply(null,rs),mi=rs.indexOf(peak),d=last-first;
+    if(last>=peak-1&&peak>=88)return'Sustained Elite';
+    if(last>=peak-1&&d>=4)return'Rising';
+    if(d<=-4)return'Declining';
+    if(mi<rs.length-2&&last<peak-3)return'Past Peak';
+    if(d>=2)return'Trending Up';
+    if(Math.abs(d)<=2)return'Consistent';
+    return'Steady';}
+  function momentumOf(seasons,age){var ss=sorted(seasons);if(ss.length<2)return null;
+    var rs=ss.map(function(s){return s.rt||0;}),rec=rs[rs.length-1]-rs[rs.length-2],young=(age!=null&&age<=23);
+    if(rec>=2||(young&&rec>=1))return'Surging'; if(rec<=-2)return'Cooling'; return null;}
+  function scoutOf(s){var g=G(s.pos),b=B[g]||B.OTH,o={},def=(g==='CB'||g==='GK');
+    function t(v,lo,hi){if(v>=hi)return'Elite';if(v>=lo)return'Strong';return null;}
+    if(!def&&g!=='DM'){var f=t(s.g||0,b.g[0],b.g[1]);if(f)o.Finishing=f;}
+    if(!def){var c=t(s.a||0,b.a[0],b.a[1]);if(c)o.Creation=c;}
+    var r=t(s.rt||0,b.r[0],b.r[1]);if(r)o.Rating=r;return o;}
+  function identityOf(s){var g=G(s.pos),b=B[g]||B.OTH,t=[],gg=s.g||0,aa=s.a||0;
+    var eG=gg>=b.g[1],sG=gg>=b.g[0],eA=aa>=b.a[1],sA=aa>=b.a[0];
+    if(g==='ST'){if((eG&&sA)||(sG&&eA))t.push('Complete Forward');else if(eG)t.push('Elite Finisher');else if(sG&&aa<b.a[0])t.push('Penalty-Box Poacher');}
+    else if(g==='W'){if(eG&&eA)t.push('Dual Threat');else if(eA)t.push('Chance Creator');else if(eG)t.push('Wide Goal Threat');}
+    else if(g==='CAM'){if(eA&&sG)t.push('Complete Ten');else if(eA)t.push('Creator-in-Chief');else if(eG)t.push('Goal-Getting Ten');}
+    else if(g==='CM'){if(eG||eA)t.push('Box-to-Box Engine');}
+    else if(g==='DM'){if(eA)t.push('Deep Playmaker');}
+    else if(g==='FB'){if(eA)t.push('Attacking Full-Back');}
+    else if(g==='CB'){if((s.rt||0)>=b.r[1])t.push('Defensive Rock');}
+    else if(g==='GK'){if((s.rt||0)>=b.r[1])t.push('Elite Shot-Stopper');}
+    return t;}
+  function forSeason(pl,key){var ss=pl.seasons||{},s=ss[key];if(!s)return null;
+    return{pos:s.pos,careerStage:stageOf(s.age,s.pos),trajectory:trajOf(ss),momentum:momentumOf(ss,s.age),scout:scoutOf(s),identity:identityOf(s)};}
+  return{forSeason:forSeason,stage:stageOf,traj:trajOf,momentum:momentumOf,scout:scoutOf,identity:identityOf,grp:G};
+})();
+</script><script>function vvxToggleMenu(){var m=document.getElementById("vvx-mmenu");if(!m)return;var open=!m.classList.contains("open");m.classList.toggle("open",open);document.body.style.overflow=open?"hidden":"";}function vvxCloseMenu(){var m=document.getElementById("vvx-mmenu");if(m)m.classList.remove("open");document.body.style.overflow="";}</script><script>(function(){var TXT={"Compare": {"fr": "Comparer", "nl": "Vergelijken"}, "Player Comparison": {"fr": "Comparaison de joueurs", "nl": "Spelervergelijking"}, "Locker Room": {"fr": "Vestiaire", "nl": "Kleedkamer"}, "Menu": {"fr": "Menu", "nl": "Menu"}};var ELS={".bb-intro-h":{"fr": "Certains d\u00e9bats sont trop glorieux pour rester en suspens. Alors, convoquez-les.", "nl": "Sommige debatten zijn te groots om onbeslist te laten. Roep ze dus op."},".bb-intro-p":{"fr": "Le prodige et le vieux ma\u00eetre ; le h\u00e9ros local et le grand venu d'ailleurs. Composez n'importe quel joueur, de m\u00e9moire ou de r\u00eave, et menez-le sous les projecteurs \u2014 l\u00e0 o\u00f9 la r\u00e9putation s'efface, et o\u00f9 seul le football parle. Deux noms. Une sc\u00e8ne. Le d\u00e9bat qui fait rage depuis des g\u00e9n\u00e9rations se voit enfin offrir sa soir\u00e9e. Avancez \u2014 le verdict vous appartient.", "nl": "Het wonderkind en de oude meester; de lokale held en de grootheid van ver weg. Bouw elke baller uit herinnering of uit dromen, en leid hem het veld op onder het kunstlicht \u2014 waar reputatie vervaagt en alleen het voetbal spreekt. Twee namen. E\u00e9n podium. Het debat dat al generaties woedt, krijgt eindelijk zijn avond. Treed naar voren \u2014 het oordeel is aan u."}};var SEL=".gnav-btn,.gnav-legends-btn,.gnav-burger-lbl,.vvx-mmenu-item,.tab-btn";function txt(el,lang){if(el.children.length>0)return;if(!el.hasAttribute("data-vvx-en"))el.setAttribute("data-vvx-en",el.textContent.trim());var en=el.getAttribute("data-vvx-en");if(lang==="en"){el.textContent=en;return;}var m=TXT[en];el.textContent=(m&&m[lang])?m[lang]:en;}function elt(sel,lang){var el=document.querySelector(sel);if(!el)return;if(!el.hasAttribute("data-vvx-en"))el.setAttribute("data-vvx-en",el.textContent);var en=el.getAttribute("data-vvx-en");if(lang==="en"){el.textContent=en;return;}var m=ELS[sel];el.textContent=(m&&m[lang])?m[lang]:en;}function apply(lang){document.querySelectorAll(SEL).forEach(function(el){txt(el,lang);});for(var s in ELS)elt(s,lang);try{localStorage.setItem("vvxLang",lang);}catch(e){}document.querySelectorAll(".vvx-lang-btn").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-lang")===lang);});}window.vvxSetLang=function(l){apply(l);};function init(){var l="en";try{l=localStorage.getItem("vvxLang")||"en";}catch(e){}apply(l);}if(document.readyState!=="loading")init();else document.addEventListener("DOMContentLoaded",init);})();</script><style id="vvx-footer-css">.vvx-footer{margin-top:64px;padding:48px 20px 40px;border-top:1px solid var(--line);background:var(--paper);text-align:center}.vvx-foot-mark{font-family:'Playfair Display',serif;font-weight:900;font-size:26px;color:var(--charcoal);letter-spacing:-.5px}.vvx-foot-mark span{color:var(--accent)}.vvx-foot-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}.vvx-foot-social{display:flex;gap:14px;justify-content:center;margin:22px 0 18px}.vvx-soc{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--charcoal);transition:all .2s;text-decoration:none}.vvx-soc svg{width:20px;height:20px}.vvx-soc:hover{background:var(--charcoal);color:#fff;border-color:var(--charcoal);transform:translateY(-2px)}.vvx-foot-copy{font-size:11px;color:var(--ink-soft);letter-spacing:.5px}.vvx-lk-social{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}.vvx-lk-social-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5)}.vvx-soc-lk{width:36px;height:36px;border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.8)}.vvx-soc-lk svg{width:17px;height:17px}.vvx-soc-lk:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-2px)}</style><footer class="vvx-footer"><div class="vvx-foot-mark">VVonder<span>XI</span></div><div class="vvx-foot-tag">The Football Intelligence Platform</div><div class="vvx-foot-social"><a class="vvx-soc" href="https://www.instagram.com/vvonderxi" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a><a class="vvx-soc" href="https://x.com/vvonderxi" target="_blank" rel="noopener" aria-label="X (Twitter)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg></a></div><div class="vvx-foot-copy">© 2026 LiVVonderful · VVonderXI</div></footer></body>
 </html>
