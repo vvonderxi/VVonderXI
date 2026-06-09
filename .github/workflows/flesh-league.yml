@@ -36,7 +36,7 @@ jobs:
         run: |
           LEAGUE="${{ github.event.inputs.league }}"
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            node api/flesh-league.js --league "$LEAGUE" --dry-run
+            node scripts/flesh-league.js --league "$LEAGUE" --dry-run
           else
-            node api/flesh-league.js --league "$LEAGUE"
+            node scripts/flesh-league.js --league "$LEAGUE" --league "$LEAGUE"
           fi
