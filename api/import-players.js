@@ -249,17 +249,26 @@ async function discoverSeasonId(league, seasonYear) {
   if (bsdSeasonIdCache[cacheKey] !== undefined) return bsdSeasonIdCache[cacheKey];
 
   try {
-    const data = await bsdFetch(`/seasons/?league=${league.bsdLeagueId}&limit=20`);
+    // v2: seasons are a sub-resource of a league, NOT a top-level filterable list
+    const data = await bsdFetch(`/leagues/${league.bsdLeagueId}/seasons/?limit=50`);
     stats.apiCalls++;
     const seasons = data.results || data.seasons || (Array.isArray(data) ? data : []);
 
     for (const s of seasons) {
-      const name = s.name || s.season_name || '';
-      const startYear = name.match(/^(\d{4})/)?.[1];
-      if (startYear && parseInt(startYear) === seasonYear) {
+      // 1) explicit numeric year field
+      const numericYear = parseInt(s.year ?? s.start_year ?? s.season_year);
+      if (!isNaN(numericYear) && numericYear === seasonYear) {
         bsdSeasonIdCache[cacheKey] = s.id;
         return s.id;
       }
+      // 2) a name like "2024/2025", "2024-25", "2024/25", "2024"
+      const name = String(s.name || s.season_name || s.label || '');
+      const m = name.match(/(\d{4})/);
+      if (m && parseInt(m[1]) === seasonYear) {
+        bsdSeasonIdCache[cacheKey] = s.id;
+        return s.id;
+      }
+      // 3) fallback: start_date
       if (s.start_date) {
         const y = new Date(s.start_date).getFullYear();
         if (y === seasonYear) {
@@ -275,6 +284,8 @@ async function discoverSeasonId(league, seasonYear) {
     console.warn(`  ⚠️  Season discovery failed for ${league.code} ${seasonYear}: ${err.message}`);
     bsdSeasonIdCache[cacheKey] = null;
     return null;
+  }
+}
   }
 }
 
