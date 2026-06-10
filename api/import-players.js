@@ -286,8 +286,6 @@ async function discoverSeasonId(league, seasonYear) {
     return null;
   }
 }
-  }
-}
 
 // ─────────────────────────────────────────────────
 //  BSD API: FETCH PLAYERS IN A LEAGUE+SEASON PAGE
