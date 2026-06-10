@@ -42,7 +42,7 @@ jobs:
         run: |
           LEAGUE="${{ github.event.inputs.league }}"
           DRY="${{ github.event.inputs.dry_run }}"
-          CMD="node api/bsd-probe.js"
+          CMD="node api/import-players.js --dry-run --limit 10"
           if [ -n "$LEAGUE" ]; then CMD="$CMD --league $LEAGUE"; fi
           if [ "$DRY" = "true" ]; then CMD="$CMD --dry-run"; fi
           echo "Running: $CMD"
