@@ -166,7 +166,8 @@ async function preloadSeasonMap() {
       }
     } catch (e) { console.warn(`  ⚠️  season preload failed for ${league.code}: ${e.message}`); }
   }
-  console.log(`  → mapped ${Object.keys(seasonById).length} in-window league-seasons\n`);
+  console.log(`  → mapped ${Object.keys(seasonById).length} in-window league-seasons`);
+  console.log(`  sample mapped season_ids: [${Object.keys(seasonById).slice(0, 12).join(', ')}]\n`);
 }
 
 // ── Load every player already in Supabase ────────────────────────────
@@ -221,6 +222,10 @@ async function backfillPlayer(p) {
     const playerId = await upsertPlayerDetail(detail);
     const position = normalisePos(detail.specific_position || detail.position);
     const rows = career.seasons || career.results || (Array.isArray(career) ? career : []);
+
+    if (DRY_RUN) {
+      console.log(`  ▸ ${detail.name}: /career/ returned ${rows.length} row(s) · season_ids [${rows.map(r => r.season_id).join(', ')}] · league_ids [${rows.map(r => r.league_id).join(', ')}]`);
+    }
 
     for (const row of rows) {
       const meta = seasonById[row.season_id];
