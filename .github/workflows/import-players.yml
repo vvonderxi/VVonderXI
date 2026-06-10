@@ -36,7 +36,7 @@ jobs:
 
       - name: Run import
         env:
-          BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
