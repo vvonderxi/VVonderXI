@@ -1,137 +1,94 @@
 #!/usr/bin/env node
 // ══════════════════════════════════════════════════════════════════════
-//  VVonderXI — Bulk Player Import Script   (CORRECTED)
-//  BSD/API-Football → Supabase player_season_cards
+//  VVonderXI — Player CAREER BACKFILL   (v3 — career-driven)
+//  BSD /players/{id}/career/ → Supabase player_season_cards
 //
-//  Scope:    Top 8 domestic leagues (club-only) · 7 seasons (2019/20 → 2025/26)
-//  Target:   35,000–50,000 player-season cards · ~120–200 MB
-//  Runtime:  3–6 hours depending on API rate limits
+//  WHY THIS REPLACES THE OLD IMPORTER:
+//    BSD v2 has NO league-season roster endpoint (every /seasons/{id}/players,
+//    /topscorers, /standings, /teams returned 404). The ONLY source of per-season
+//    goals/assists/minutes/rating is /players/{id}/career/. So we no longer try to
+//    "discover" players — we BACKFILL the players already in Supabase by walking
+//    each one's career and rebuilding clean cards.
 //
-//  FIX SUMMARY (vs previous version):
-//    1) rt no longer = avg_rating*10 (which compressed every BSD season to 63–76).
-//       It now maps the BSD match rating onto VVonderXI's curated 0–96 scale via
-//       ratingToRt(). Tune RT_ANCHOR / RT_SLOPE and sanity-check before committing.
-//    2) 2025/26 added to the season window (the season is finished = final data).
-//    (Club-only was already enforced: the script only iterates the 8 leagues below.)
+//  PER PLAYER (2 calls): /players/{id}/  (position, DOB, height, foot) +
+//                        /players/{id}/career/  (the season stat rows)
+//  SCOPE:   top-8 domestic leagues · 2019/20 → 2025/26 · min 300 minutes/season
+//  rt:      calibrated 0–96 (unchanged) · positions: SPECIFIC kept (CF stays CF)
+//  SAFE:    upsert — re-running never duplicates.
 //
-//  RESUMABLE: tracks progress in import_log table
-//  SAFE:      upsert logic — re-running never duplicates data
-//  RATE-LIMITED: 350ms between calls (BSD fair-use)
-//
-//  HOW TO RUN:
-//    node api/import-players.js                 → full import (resumes)
-//    node api/import-players.js --dry-run       → estimate only, no writes
-//    node api/import-players.js --league PL      → one league only
-//    node api/import-players.js --season 2526    → one season only
-//    node api/import-players.js --force          → re-import even if complete
-//    node api/import-players.js --estimate       → print estimates and exit
+//  RUN:
+//    CMD="node api/import-players.js --dry-run --limit 10"   → 10-player dry test
+//    CMD="node api/import-players.js --dry-run"              → full dry run, no writes
+//    CMD="node api/import-players.js"                        → real backfill
 // ══════════════════════════════════════════════════════════════════════
 
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
-// ─────────────────────────────────────────────────
-//  CONFIG
-// ─────────────────────────────────────────────────
-const BSD_BASE   = 'https://sports.bzzoiro.com/api/v2';
-const BSD_KEY    = process.env.BSD_API_KEY;
+const BSD_BASE     = 'https://sports.bzzoiro.com/api/v2';
+const BSD_KEY      = process.env.BSD_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-if (!BSD_KEY)      { console.error('❌  BSD_API_KEY not set in .env'); process.exit(1); }
-if (!SUPABASE_URL) { console.error('❌  SUPABASE_URL not set in .env'); process.exit(1); }
-if (!SUPABASE_KEY) { console.error('❌  SUPABASE_SERVICE_KEY not set in .env'); process.exit(1); }
+if (!BSD_KEY)      { console.error('❌  BSD_API_KEY not set');       process.exit(1); }
+if (!SUPABASE_URL) { console.error('❌  SUPABASE_URL not set');      process.exit(1); }
+if (!SUPABASE_KEY) { console.error('❌  SUPABASE_SERVICE_KEY not set'); process.exit(1); }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Parse CLI flags
-const args = process.argv.slice(2);
-const DRY_RUN       = args.includes('--dry-run');
-const ESTIMATE_ONLY = args.includes('--estimate');
-const FORCE         = args.includes('--force');
-const FILTER_LEAGUE = args.includes('--league') ? args[args.indexOf('--league') + 1] : null;
-const FILTER_SEASON = args.includes('--season') ? args[args.indexOf('--season') + 1] : null;
+const args     = process.argv.slice(2);
+const DRY_RUN  = args.includes('--dry-run');
+const LIMIT    = args.includes('--limit') ? parseInt(args[args.indexOf('--limit') + 1]) : null;
 
-const DELAY_MS = 350; // ms between API calls — BSD fair-use rate limit
+const DELAY_MS    = 350;  // BSD fair-use
+const MIN_MINUTES = 300;  // a season needs >= this many minutes to become a card
 
-// ─────────────────────────────────────────────────
-//  LEAGUE CONFIG  (club-only: these 8 are the entire scope)
-// ─────────────────────────────────────────────────
+// ── Scope ────────────────────────────────────────────────────────────
 const LEAGUES = [
-  { code: 'PL',  name: 'Premier League',     bsdLeagueId: 1,  f: 1.000, country: 'England'     },
-  { code: 'LL',  name: 'La Liga',            bsdLeagueId: 3,  f: 0.978, country: 'Spain'        },
-  { code: 'BL',  name: 'Bundesliga',         bsdLeagueId: 5,  f: 0.940, country: 'Germany'      },
-  { code: 'SA',  name: 'Serie A',            bsdLeagueId: 4,  f: 0.935, country: 'Italy'        },
-  { code: 'L1',  name: 'Ligue 1',            bsdLeagueId: 6,  f: 0.878, country: 'France'       },
-  { code: 'PRT', name: 'Primeira Liga',      bsdLeagueId: 2,  f: 0.845, country: 'Portugal'     },
-  { code: 'ERE', name: 'Eredivisie',         bsdLeagueId: 10, f: 0.820, country: 'Netherlands'  },
-  { code: 'BPL', name: 'Belgian Pro League', bsdLeagueId: 14, f: 0.790, country: 'Belgium'      },
+  { code: 'PL',  bsdLeagueId: 1  }, { code: 'LL',  bsdLeagueId: 3  },
+  { code: 'BL',  bsdLeagueId: 5  }, { code: 'SA',  bsdLeagueId: 4  },
+  { code: 'L1',  bsdLeagueId: 6  }, { code: 'PRT', bsdLeagueId: 2  },
+  { code: 'ERE', bsdLeagueId: 10 }, { code: 'BPL', bsdLeagueId: 14 },
 ];
-
-// ─────────────────────────────────────────────────
-//  SEASON CONFIG  (now includes 2025/26 — finished season, final data)
-// ─────────────────────────────────────────────────
 const SEASONS = [
-  { code: '2526', year: 2025, label: '2025/26' },
-  { code: '2425', year: 2024, label: '2024/25' },
-  { code: '2324', year: 2023, label: '2023/24' },
-  { code: '2223', year: 2022, label: '2022/23' },
-  { code: '2122', year: 2021, label: '2021/22' },
-  { code: '2021', year: 2020, label: '2020/21' },
-  { code: '1920', year: 2019, label: '2019/20' },
+  { code: '2526', year: 2025 }, { code: '2425', year: 2024 },
+  { code: '2324', year: 2023 }, { code: '2223', year: 2022 },
+  { code: '2122', year: 2021 }, { code: '2021', year: 2020 },
+  { code: '1920', year: 2019 },
 ];
+const YEAR_TO_CODE       = Object.fromEntries(SEASONS.map(s => [s.year, s.code]));
+const LEAGUE_BY_BSD_ID   = Object.fromEntries(LEAGUES.map(l => [l.bsdLeagueId, l.code]));
 
-// ─────────────────────────────────────────────────
-//  POSITION NORMALISATION
-// ─────────────────────────────────────────────────
+// ── Position: SPECIFIC positions kept. CF stays CF (per spec). ────────
 const POS_MAP = {
-  'G': 'GK', 'GK': 'GK', 'Goalkeeper': 'GK',
-  'D': 'CB', 'CB': 'CB', 'LB': 'LB', 'RB': 'RB',
-  'Centre-Back': 'CB', 'Left Back': 'LB', 'Right Back': 'RB',
-  'Defender': 'CB', 'Central Defender': 'CB',
-  'M': 'CM', 'CM': 'CM', 'CDM': 'CDM', 'CAM': 'CAM',
-  'Midfielder': 'CM', 'Central Midfield': 'CM',
-  'Defensive Midfield': 'CDM', 'Attacking Midfield': 'CAM',
-  'F': 'ST', 'ST': 'ST', 'CF': 'ST', 'LW': 'LW', 'RW': 'RW',
-  'Centre-Forward': 'ST', 'Striker': 'ST', 'Forward': 'ST',
-  'Left Winger': 'LW', 'Right Winger': 'RW',
-  'Left Wing': 'LW', 'Right Wing': 'RW', 'Winger': 'LW', 'Attacker': 'ST',
+  'G':'GK','GK':'GK','Goalkeeper':'GK',
+  'D':'CB','CB':'CB','LB':'LB','RB':'RB',
+  'Centre-Back':'CB','Left Back':'LB','Right Back':'RB','Defender':'CB','Central Defender':'CB',
+  'M':'CM','CM':'CM','CDM':'CDM','CAM':'CAM',
+  'Midfielder':'CM','Central Midfield':'CM','Defensive Midfield':'CDM','Attacking Midfield':'CAM',
+  'CF':'CF','Centre-Forward':'CF','ST':'ST','Striker':'ST',   // CF and ST kept distinct
+  'LW':'LW','RW':'RW','Left Winger':'LW','Right Winger':'RW',
+  'Left Wing':'LW','Right Wing':'RW',
+  'F':'ST','Forward':'ST','Attacker':'ST','Winger':'LW',       // vague labels default
 };
-
 function normalisePos(raw) {
   if (!raw) return 'MID';
-  return POS_MAP[raw] || POS_MAP[raw.trim()] || raw.slice(0, 3).toUpperCase();
+  return POS_MAP[raw] || POS_MAP[String(raw).trim()] || String(raw).slice(0,3).toUpperCase();
 }
 
-// ─────────────────────────────────────────────────
-//  rt CALIBRATION
-//  Map BSD avg match rating (~5.5–8.5) onto VVonderXI's curated 0–96 scale.
-//  Calibrated so the BSD mean (~6.8) lands near the curated historical mean (~79).
-//  rt is a SEASON RATING; the VV Engine adds goals/assists output on top of it.
-//  TUNE these two constants and sanity-check against players you know.
-// ─────────────────────────────────────────────────
-const RT_ANCHOR = 6.3;   // rating that maps to RT_BASE
-const RT_BASE   = 70;    // rt at the anchor
-const RT_SLOPE  = 17;    // rt points per +1.0 of match rating
-
+// ── rt calibration (UNCHANGED — parked engine knob) ──────────────────
+const RT_ANCHOR = 6.3, RT_BASE = 70, RT_SLOPE = 17;
 function ratingToRt(avg, goals, assists) {
   const v = parseFloat(avg);
   if (avg != null && !isNaN(v)) {
-    if (v > 20) return Math.max(50, Math.min(96, Math.round(v))); // already on 0–100
-    const rt = Math.round(RT_BASE + (v - RT_ANCHOR) * RT_SLOPE);
-    return Math.max(50, Math.min(96, rt));
+    if (v > 20) return Math.max(50, Math.min(96, Math.round(v)));
+    return Math.max(50, Math.min(96, Math.round(RT_BASE + (v - RT_ANCHOR) * RT_SLOPE)));
   }
-  // No rating available (older seasons): rough output-based fallback
-  const out = (parseInt(goals) || 0) + (parseInt(assists) || 0);
+  const out = (parseInt(goals)||0) + (parseInt(assists)||0);
   return Math.max(50, Math.min(96, 60 + Math.round(out * 0.9)));
 }
 
-// ─────────────────────────────────────────────────
-//  UTILITIES
-// ─────────────────────────────────────────────────
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function bsdFetch(path, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -140,12 +97,9 @@ async function bsdFetch(path, retries = 3) {
         headers: { 'Authorization': `Token ${BSD_KEY}` },
         signal: AbortSignal.timeout(10000),
       });
-      if (res.status === 429) {
-        console.warn(`  ⚠️  Rate limited on ${path} — waiting 5s...`);
-        await sleep(5000);
-        continue;
-      }
+      if (res.status === 429) { console.warn(`  ⚠️  429 on ${path} — waiting 5s`); await sleep(5000); continue; }
       if (!res.ok) throw new Error(`BSD ${res.status} — ${path}`);
+      stats.apiCalls++;
       return await res.json();
     } catch (err) {
       if (attempt === retries) throw err;
@@ -157,425 +111,186 @@ async function bsdFetch(path, retries = 3) {
 
 function calcAge(dob, seasonYear) {
   if (!dob || !seasonYear) return null;
-  const start = new Date(seasonYear, 7, 1); // Aug 1st of season start
-  const birth = new Date(dob);
-  const age = Math.floor((start - birth) / (365.25 * 24 * 3600 * 1000));
+  const age = Math.floor((new Date(seasonYear, 7, 1) - new Date(dob)) / (365.25 * 24 * 3600 * 1000));
   return (age > 10 && age < 50) ? age : null;
 }
 
-// ─────────────────────────────────────────────────
-//  STATS
-// ─────────────────────────────────────────────────
-let stats = {
-  apiCalls: 0,
-  playersProcessed: 0,
-  cardsInserted: 0,
-  cardsSkipped: 0,
-  errors: 0,
-  startTime: Date.now(),
-};
-
+const stats = { apiCalls: 0, playersProcessed: 0, cardsInserted: 0, cardsSkipped: 0, errors: 0, startTime: Date.now() };
 function logProgress() {
-  const elapsed = Math.round((Date.now() - stats.startTime) / 1000);
-  console.log(`\n📊 Progress: ${stats.playersProcessed} players · ${stats.cardsInserted} cards inserted · ${stats.apiCalls} API calls · ${elapsed}s elapsed`);
+  const s = Math.round((Date.now() - stats.startTime) / 1000);
+  console.log(`\n📊  ${stats.playersProcessed} players · ${stats.cardsInserted} cards · ${stats.cardsSkipped} skipped · ${stats.apiCalls} calls · ${s}s`);
 }
 
-// ─────────────────────────────────────────────────
-//  SUPABASE HELPERS
-// ─────────────────────────────────────────────────
-let supabaseLeagueIdCache = {};
-let supabaseTeamIdCache   = {};
+// ── Supabase + BSD lookups (cached) ──────────────────────────────────
+const leagueIdCache = {}, teamIdCache = {}, bsdTeamNameCache = {}, seasonById = {};
 
 async function getLeagueId(code) {
-  if (supabaseLeagueIdCache[code]) return supabaseLeagueIdCache[code];
+  if (leagueIdCache[code] !== undefined) return leagueIdCache[code];
   const { data } = await supabase.from('leagues').select('id').eq('code', code).single();
-  supabaseLeagueIdCache[code] = data?.id || null;
-  return supabaseLeagueIdCache[code];
+  return (leagueIdCache[code] = data?.id || null);
+}
+
+async function getBsdTeamName(bsdTeamId) {
+  if (!bsdTeamId) return '';
+  if (bsdTeamNameCache[bsdTeamId] !== undefined) return bsdTeamNameCache[bsdTeamId];
+  try {
+    const d = await bsdFetch(`/teams/${bsdTeamId}/`);
+    await sleep(DELAY_MS);
+    return (bsdTeamNameCache[bsdTeamId] = d?.name || '');
+  } catch { return (bsdTeamNameCache[bsdTeamId] = ''); }
 }
 
 async function getOrCreateTeamId(teamName) {
   if (!teamName) return null;
   const key = teamName.toLowerCase().trim();
-  if (supabaseTeamIdCache[key]) return supabaseTeamIdCache[key];
+  if (teamIdCache[key] !== undefined) return teamIdCache[key];
   const { data: existing } = await supabase.from('teams').select('id').ilike('name', teamName).maybeSingle();
-  if (existing) {
-    supabaseTeamIdCache[key] = existing.id;
-    return existing.id;
-  }
-  const { data: created } = await supabase.from('teams')
-    .upsert({ name: teamName }, { onConflict: 'name' })
-    .select('id').single();
-  supabaseTeamIdCache[key] = created?.id || null;
-  return supabaseTeamIdCache[key];
+  if (existing) return (teamIdCache[key] = existing.id);
+  if (DRY_RUN) return (teamIdCache[key] = null);
+  const { data: created } = await supabase.from('teams').upsert({ name: teamName }, { onConflict: 'name' }).select('id').single();
+  return (teamIdCache[key] = created?.id || null);
 }
 
-async function upsertPlayer(bsdPlayer) {
-  if (DRY_RUN) return Math.floor(Math.random() * 999999);
+// ── Preload: build season_id → { year, league_code } for the 8 leagues ─
+async function preloadSeasonMap() {
+  console.log('Preloading season ids for 8 leagues...');
+  for (const league of LEAGUES) {
+    try {
+      const d = await bsdFetch(`/leagues/${league.bsdLeagueId}/seasons/?limit=50`);
+      await sleep(DELAY_MS);
+      const rows = d.seasons || d.results || (Array.isArray(d) ? d : []);
+      for (const s of rows) {
+        const year = parseInt(s.year) || parseInt(String(s.name || '').match(/(\d{4})/)?.[1]);
+        if (YEAR_TO_CODE[year]) seasonById[s.id] = { year, league_code: league.code };
+      }
+    } catch (e) { console.warn(`  ⚠️  season preload failed for ${league.code}: ${e.message}`); }
+  }
+  console.log(`  → mapped ${Object.keys(seasonById).length} in-window league-seasons\n`);
+}
+
+// ── Load every player already in Supabase ────────────────────────────
+async function loadAllPlayers() {
+  const all = [];
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase.from('players')
+      .select('id, api_player_id, name').not('api_player_id', 'is', null).range(from, from + PAGE - 1);
+    if (error) throw new Error(`load players: ${error.message}`);
+    if (!data || !data.length) break;
+    all.push(...data);
+    if (data.length < PAGE) break;
+  }
+  return all;
+}
+
+async function upsertPlayerDetail(detail) {
   const payload = {
-    api_player_id: bsdPlayer.id,
-    name: bsdPlayer.name,
-    full_name: bsdPlayer.full_name || bsdPlayer.name,
-    nationality: bsdPlayer.nationality || null,
-    position: normalisePos(bsdPlayer.position),
-    date_of_birth: bsdPlayer.date_of_birth || null,
-    updated_at: new Date().toISOString(),
+    api_player_id: detail.id,
+    name:          detail.name,
+    full_name:     detail.full_name || detail.name,
+    nationality:   detail.nationality || null,
+    position:      normalisePos(detail.specific_position || detail.position),
+    date_of_birth: detail.date_of_birth || null,
+    height_cm:     detail.height_cm || null,        // NEW
+    preferred_foot: detail.preferred_foot || null,  // NEW
+    updated_at:    new Date().toISOString(),
   };
+  if (DRY_RUN) return Math.floor(Math.random() * 999999);
   const { data, error } = await supabase.from('players')
-    .upsert(payload, { onConflict: 'api_player_id' })
-    .select('id').single();
-  if (error) throw new Error(`Player upsert: ${error.message}`);
+    .upsert(payload, { onConflict: 'api_player_id' }).select('id').single();
+  if (error) throw new Error(`player upsert: ${error.message}`);
   return data.id;
 }
 
 async function upsertCard(card) {
   if (DRY_RUN) { stats.cardsInserted++; return; }
-  const { error } = await supabase.from('player_season_cards')
-    .upsert(card, { onConflict: 'api_player_id,season,league_code' });
-  if (error) {
-    stats.errors++;
-    console.error(`  ❌  Card upsert error: ${error.message}`);
-  } else {
-    stats.cardsInserted++;
-  }
+  const { error } = await supabase.from('player_season_cards').upsert(card, { onConflict: 'api_player_id,season,league_code' });
+  if (error) { stats.errors++; console.error(`  ❌  card upsert: ${error.message}`); }
+  else stats.cardsInserted++;
 }
 
-// ─────────────────────────────────────────────────
-//  BSD API: DISCOVER SEASON IDs
-// ─────────────────────────────────────────────────
-const bsdSeasonIdCache = {};
-
-async function discoverSeasonId(league, seasonYear) {
-  const cacheKey = `${league.code}-${seasonYear}`;
-  if (bsdSeasonIdCache[cacheKey] !== undefined) return bsdSeasonIdCache[cacheKey];
-
+// ── Backfill one player ──────────────────────────────────────────────
+async function backfillPlayer(p) {
   try {
-    // v2: seasons are a sub-resource of a league, NOT a top-level filterable list
-    const data = await bsdFetch(`/leagues/${league.bsdLeagueId}/seasons/?limit=50`);
-    stats.apiCalls++;
-    const seasons = data.results || data.seasons || (Array.isArray(data) ? data : []);
+    const detail = await bsdFetch(`/players/${p.api_player_id}/`);
+    await sleep(DELAY_MS);
+    const career = await bsdFetch(`/players/${p.api_player_id}/career/`);
+    await sleep(DELAY_MS);
 
-    for (const s of seasons) {
-      // 1) explicit numeric year field
-      const numericYear = parseInt(s.year ?? s.start_year ?? s.season_year);
-      if (!isNaN(numericYear) && numericYear === seasonYear) {
-        bsdSeasonIdCache[cacheKey] = s.id;
-        return s.id;
-      }
-      // 2) a name like "2024/2025", "2024-25", "2024/25", "2024"
-      const name = String(s.name || s.season_name || s.label || '');
-      const m = name.match(/(\d{4})/);
-      if (m && parseInt(m[1]) === seasonYear) {
-        bsdSeasonIdCache[cacheKey] = s.id;
-        return s.id;
-      }
-      // 3) fallback: start_date
-      if (s.start_date) {
-        const y = new Date(s.start_date).getFullYear();
-        if (y === seasonYear) {
-          bsdSeasonIdCache[cacheKey] = s.id;
-          return s.id;
-        }
-      }
+    const playerId = await upsertPlayerDetail(detail);
+    const position = normalisePos(detail.specific_position || detail.position);
+    const rows = career.seasons || career.results || (Array.isArray(career) ? career : []);
+
+    for (const row of rows) {
+      const meta = seasonById[row.season_id];
+      if (!meta) continue;                       // not a top-8 in-window season
+      // cross-check league via career row's league_id when present
+      if (row.league_id != null && LEAGUE_BY_BSD_ID[row.league_id]
+          && LEAGUE_BY_BSD_ID[row.league_id] !== meta.league_code) continue;
+
+      const minutes = parseInt(row.minutes) || 0;
+      if (minutes < MIN_MINUTES) { stats.cardsSkipped++; continue; }
+
+      const goals   = parseInt(row.goals)   || 0;
+      const assists = parseInt(row.assists) || 0;
+      const matches = parseInt(row.matches) || parseInt(row.appearances) || 0;
+      const avg     = row.avg_rating;
+
+      const teamName = await getBsdTeamName(row.team_id);
+      const teamId   = teamName ? await getOrCreateTeamId(teamName) : null;
+      const leagueId = await getLeagueId(meta.league_code);
+
+      await upsertCard({
+        player_id:     playerId,
+        team_id:       teamId,
+        league_id:     leagueId,
+        api_player_id: p.api_player_id,
+        season:        meta.code || YEAR_TO_CODE[meta.year],
+        season_year:   meta.year,
+        league_code:   meta.league_code,
+        team_name:     teamName,
+        position,
+        age:           calcAge(detail.date_of_birth, meta.year),
+        appearances:   matches,
+        minutes,
+        goals,
+        assists,
+        rating:        (avg != null && avg !== '') ? parseFloat(avg) : null,
+        rt:            ratingToRt(avg, goals, assists),
+      });
     }
-    console.warn(`  ⚠️  No season found for ${league.code} ${seasonYear}`);
-    bsdSeasonIdCache[cacheKey] = null;
-    return null;
-  } catch (err) {
-    console.warn(`  ⚠️  Season discovery failed for ${league.code} ${seasonYear}: ${err.message}`);
-    bsdSeasonIdCache[cacheKey] = null;
-    return null;
-  }
-}
-
-// ─────────────────────────────────────────────────
-//  BSD API: FETCH PLAYERS IN A LEAGUE+SEASON PAGE
-// ─────────────────────────────────────────────────
-async function fetchPlayersPage(bsdSeasonId, bsdLeagueId, page) {
-  const data = await bsdFetch(`/players/?season=${bsdSeasonId}&league=${bsdLeagueId}&page=${page}&limit=100`);
-  stats.apiCalls++;
-  return data;
-}
-
-// ─────────────────────────────────────────────────
-//  BSD API: FETCH PLAYER CAREER STATS
-// ─────────────────────────────────────────────────
-async function fetchPlayerCareer(bsdPlayerId) {
-  const data = await bsdFetch(`/players/${bsdPlayerId}/career/`);
-  stats.apiCalls++;
-  return data.seasons || data.results || (Array.isArray(data) ? data : []);
-}
-
-// ─────────────────────────────────────────────────
-//  IMPORT LOG: track page-level progress
-// ─────────────────────────────────────────────────
-async function getLogEntry(leagueCode, seasonCode, page) {
-  const { data } = await supabase.from('import_log')
-    .select('*')
-    .eq('league_code', leagueCode)
-    .eq('season', seasonCode)
-    .eq('page', page)
-    .maybeSingle();
-  return data;
-}
-
-async function logStart(leagueCode, seasonCode, page) {
-  if (DRY_RUN) return;
-  await supabase.from('import_log').upsert({
-    league_code: leagueCode,
-    season: seasonCode,
-    page,
-    status: 'in_progress',
-    started_at: new Date().toISOString(),
-  }, { onConflict: 'league_code,season,page' });
-}
-
-async function logComplete(leagueCode, seasonCode, page, playersFound, cardsInserted) {
-  if (DRY_RUN) return;
-  await supabase.from('import_log').upsert({
-    league_code: leagueCode,
-    season: seasonCode,
-    page,
-    status: 'complete',
-    players_found: playersFound,
-    cards_inserted: cardsInserted,
-    completed_at: new Date().toISOString(),
-  }, { onConflict: 'league_code,season,page' });
-}
-
-async function logError(leagueCode, seasonCode, page, errorMessage) {
-  if (DRY_RUN) return;
-  await supabase.from('import_log').upsert({
-    league_code: leagueCode,
-    season: seasonCode,
-    page,
-    status: 'error',
-    error_message: errorMessage,
-    completed_at: new Date().toISOString(),
-  }, { onConflict: 'league_code,season,page' });
-}
-
-// ─────────────────────────────────────────────────
-//  PROCESS ONE PLAYER IN A GIVEN SEASON
-// ─────────────────────────────────────────────────
-async function processPlayerSeason(bsdPlayer, league, season) {
-  try {
-    const playerId = await upsertPlayer(bsdPlayer);
-
-    const careerRows = bsdPlayer._careerRows || [];
-    const seasonRows = careerRows.filter(r => r.season_id === bsdPlayer._targetSeasonId && r.league_id === league.bsdLeagueId);
-    const statRow = seasonRows[0] || bsdPlayer._directStats || {};
-
-    const goals     = parseInt(statRow.goals)   || parseInt(bsdPlayer.goals)   || 0;
-    const assists   = parseInt(statRow.assists)  || parseInt(bsdPlayer.assists) || 0;
-    const apps      = parseInt(statRow.appearances) || parseInt(bsdPlayer.appearances) || 0;
-    const minutes   = parseInt(statRow.minutes)  || 0;
-    const rawRating = statRow.avg_rating || bsdPlayer.avg_rating || null;
-
-    // Skip if zero output and zero appearances (player wasn't active)
-    if (goals === 0 && assists === 0 && apps === 0) { stats.cardsSkipped++; return false; }
-
-    const age = calcAge(bsdPlayer.date_of_birth, season.year);
-    const leagueId = await getLeagueId(league.code);
-    const teamName = statRow.team_name || bsdPlayer.team_name || bsdPlayer.club || '';
-    const teamId = teamName ? await getOrCreateTeamId(teamName) : null;
-
-    await upsertCard({
-      player_id:    playerId,
-      team_id:      teamId,
-      league_id:    leagueId,
-      api_player_id: bsdPlayer.id,
-      season:       season.code,
-      season_year:  season.year,
-      league_code:  league.code,
-      team_name:    teamName,
-      position:     normalisePos(bsdPlayer.specific_position || bsdPlayer.position),
-      age,
-      appearances:  apps,
-      minutes,
-      goals,
-      assists,
-      rating:       rawRating ? parseFloat(rawRating) : null,
-      rt:           ratingToRt(rawRating, goals, assists),  // <-- FIXED: 0–96 scale
-    });
-
-    return true;
-  } catch (err) {
+    stats.playersProcessed++;
+  } catch (e) {
     stats.errors++;
-    console.error(`  ❌  Player ${bsdPlayer.name} (${bsdPlayer.id}): ${err.message}`);
-    return false;
+    console.error(`  ❌  ${p.name} (${p.api_player_id}): ${e.message}`);
   }
 }
 
-// ─────────────────────────────────────────────────
-//  IMPORT ONE LEAGUE × ONE SEASON (all pages)
-// ─────────────────────────────────────────────────
-async function importLeagueSeason(league, season) {
-  console.log(`\n  📁  ${league.name} · ${season.label}`);
+// ── Main ─────────────────────────────────────────────────────────────
+(async () => {
+  console.log('╔════════════════════════════════════════════════╗');
+  console.log(`║  VVonderXI — CAREER BACKFILL  ${DRY_RUN ? '(DRY RUN)        ' : '(LIVE)           '}║`);
+  console.log('╚════════════════════════════════════════════════╝');
 
-  const bsdSeasonId = await discoverSeasonId(league, season.year);
-  await sleep(DELAY_MS);
+  await preloadSeasonMap();
 
-  if (!bsdSeasonId) {
-    console.log(`     ⚠️  Season not available — skipping`);
-    return { players: 0, cards: 0 };
+  let players = await loadAllPlayers();
+  console.log(`Loaded ${players.length} players from Supabase.`);
+  if (LIMIT) { players = players.slice(0, LIMIT); console.log(`--limit ${LIMIT} → testing on ${players.length}.`); }
+  console.log('');
+
+  for (let i = 0; i < players.length; i++) {
+    await backfillPlayer(players[i]);
+    if ((i + 1) % 25 === 0) logProgress();
   }
 
-  let page = 1;
-  let totalPlayers = 0;
-  let totalCards = 0;
-
-  while (true) {
-    if (!FORCE && !DRY_RUN) {
-      const existing = await getLogEntry(league.code, season.code, page);
-      if (existing?.status === 'complete') {
-        console.log(`     ✅  Page ${page} already complete (${existing.players_found} players) — skipping`);
-        totalPlayers += existing.players_found || 0;
-        totalCards   += existing.cards_inserted || 0;
-        page++;
-        if ((existing.players_found || 0) < 100) break;
-        continue;
-      }
-    }
-
-    await logStart(league.code, season.code, page);
-
-    let pageData;
-    try {
-      pageData = await fetchPlayersPage(bsdSeasonId, league.bsdLeagueId, page);
-      await sleep(DELAY_MS);
-    } catch (err) {
-      console.error(`     ❌  Page ${page} fetch failed: ${err.message}`);
-      await logError(league.code, season.code, page, err.message);
-      break;
-    }
-
-    const players = pageData.results || pageData.players || (Array.isArray(pageData) ? pageData : []);
-    if (!players.length) {
-      console.log(`     📭  Page ${page} empty — done`);
-      break;
-    }
-
-    console.log(`     📄  Page ${page}: ${players.length} players`);
-
-    let pageCards = 0;
-    for (const bsdPlayer of players) {
-      bsdPlayer._targetSeasonId = bsdSeasonId;
-      const inserted = await processPlayerSeason(bsdPlayer, league, season);
-      if (inserted) pageCards++;
-      stats.playersProcessed++;
-      await sleep(DELAY_MS);
-    }
-
-    await logComplete(league.code, season.code, page, players.length, pageCards);
-    totalPlayers += players.length;
-    totalCards   += pageCards;
-
-    if (players.length < 100) break;
-
-    page++;
-    if (page % 5 === 0) logProgress();
-  }
-
-  console.log(`     ✅  ${league.name} ${season.label}: ${totalPlayers} players · ${totalCards} cards`);
-  return { players: totalPlayers, cards: totalCards };
-}
-
-// ─────────────────────────────────────────────────
-//  ESTIMATE MODE
-// ─────────────────────────────────────────────────
-function printEstimate() {
-  const leagues = FILTER_LEAGUE ? LEAGUES.filter(l => l.code === FILTER_LEAGUE) : LEAGUES;
-  const seasons = FILTER_SEASON ? SEASONS.filter(s => s.code === FILTER_SEASON) : SEASONS;
-
-  console.log('\n╔══════════════════════════════════════════════════════╗');
-  console.log('║       VVonderXI Import Estimate                     ║');
-  console.log('╚══════════════════════════════════════════════════════╝\n');
-
-  console.log(`Leagues:  ${leagues.map(l => l.code).join(', ')}`);
-  console.log(`Seasons:  ${seasons.map(s => s.label).join(', ')}\n`);
-
-  const playersPerLeagueSeason = { PL: 550, LL: 500, BL: 450, SA: 480, L1: 480, PRT: 400, ERE: 380, BPL: 380 };
-
-  let totalPlayers = 0;
-  let totalCards = 0;
-  let totalApiCalls = 0;
-
-  leagues.forEach(league => {
-    let leagueCards = 0;
-    seasons.forEach(season => {
-      const players = playersPerLeagueSeason[league.code] || 400;
-      const pages = Math.ceil(players / 100);
-      leagueCards += players;
-      totalApiCalls += 1 + pages;
-    });
-    totalPlayers += playersPerLeagueSeason[league.code] || 400;
-    totalCards += leagueCards;
-    console.log(`  ${league.code.padEnd(5)} ${league.name.padEnd(22)} → ${(leagueCards).toLocaleString()} cards`);
-  });
-
-  const deduped = Math.round(totalPlayers * 0.6);
-  const apiCallsTotal = totalApiCalls + (deduped * 0.1);
-
-  console.log(`\n  ─────────────────────────────────────────────────────`);
-  console.log(`  Estimated total cards:         ~${totalCards.toLocaleString()}`);
-  console.log(`  Estimated API calls:           ~${Math.round(apiCallsTotal).toLocaleString()}`);
-  console.log(`  Estimated runtime (350ms/call): ~${Math.round(apiCallsTotal * DELAY_MS / 1000 / 60)} minutes`);
-  console.log(`  Estimated storage:             ~${Math.round(totalCards * 500 / 1048576 * 3)} MB (with indexes)\n`);
-  console.log(`  Storage budget:                500 MB (Supabase free tier)`);
-  console.log(`  Expected usage:                ~120–200 MB ✅\n`);
-}
-
-// ─────────────────────────────────────────────────
-//  MAIN
-// ─────────────────────────────────────────────────
-async function main() {
-  console.log('\n╔══════════════════════════════════════════════════════╗');
-  console.log('║       VVonderXI — Bulk Player Import                ║');
-  if (DRY_RUN)       console.log('║       MODE: DRY RUN (no writes)                     ║');
-  if (ESTIMATE_ONLY) console.log('║       MODE: ESTIMATE ONLY                           ║');
-  console.log('╚══════════════════════════════════════════════════════╝');
-
-  printEstimate();
-  if (ESTIMATE_ONLY) return;
-
-  const leagues = FILTER_LEAGUE ? LEAGUES.filter(l => l.code === FILTER_LEAGUE) : LEAGUES;
-  const seasons = FILTER_SEASON ? SEASONS.filter(s => s.code === FILTER_SEASON) : SEASONS;
-
-  if (!leagues.length) { console.error(`Unknown league: ${FILTER_LEAGUE}`); process.exit(1); }
-  if (!seasons.length) { console.error(`Unknown season: ${FILTER_SEASON}`); process.exit(1); }
-
-  console.log(`\nStarting import: ${leagues.length} leagues × ${seasons.length} seasons`);
-  console.log(`Rate limit: ${DELAY_MS}ms between calls`);
-  if (DRY_RUN) console.log('DRY RUN: estimating only, no data written\n');
-
-  let grandTotal = { players: 0, cards: 0 };
-
-  for (const season of seasons) {
-    for (const league of leagues) {
-      try {
-        const result = await importLeagueSeason(league, season);
-        grandTotal.players += result.players;
-        grandTotal.cards   += result.cards;
-      } catch (err) {
-        console.error(`\n❌  Fatal error in ${league.code} ${season.label}: ${err.message}`);
-      }
-    }
-    await sleep(2000);
-  }
-
-  const elapsed = Math.round((Date.now() - stats.startTime) / 1000);
-  console.log('\n╔══════════════════════════════════════════════════════╗');
-  console.log('║       IMPORT COMPLETE                               ║');
-  console.log('╚══════════════════════════════════════════════════════╝\n');
-  console.log(`  Players processed:  ${stats.playersProcessed.toLocaleString()}`);
-  console.log(`  Cards inserted:     ${stats.cardsInserted.toLocaleString()}`);
-  console.log(`  Cards skipped:      ${stats.cardsSkipped.toLocaleString()}`);
-  console.log(`  API calls made:     ${stats.apiCalls.toLocaleString()}`);
+  logProgress();
+  console.log('\n╔════════════════════════════════════════════════╗');
+  console.log('║  BACKFILL COMPLETE                              ║');
+  console.log('╚════════════════════════════════════════════════╝');
+  console.log(`  Players processed:  ${stats.playersProcessed}`);
+  console.log(`  Cards inserted:     ${stats.cardsInserted}`);
+  console.log(`  Cards skipped (<${MIN_MINUTES}m): ${stats.cardsSkipped}`);
+  console.log(`  API calls:          ${stats.apiCalls}`);
   console.log(`  Errors:             ${stats.errors}`);
-  console.log(`  Total time:         ${Math.floor(elapsed/60)}m ${elapsed%60}s\n`);
-}
-
-main().catch(err => {
-  console.error('\n💥 Unhandled error:', err.message);
-  process.exit(1);
-});
+})();
