@@ -66,7 +66,7 @@ const POS_MAP = {
   'Centre-Back':'CB','Left Back':'LB','Right Back':'RB','Defender':'CB','Central Defender':'CB',
   'M':'CM','CM':'CM','CDM':'CDM','CAM':'CAM',
   'Midfielder':'CM','Central Midfield':'CM','Defensive Midfield':'CDM','Attacking Midfield':'CAM',
-  'CF':'CF','Centre-Forward':'CF','ST':'ST','Striker':'ST',   // CF and ST kept distinct
+  'CF':'ST','Centre-Forward':'ST','ST':'ST','Striker':'ST',   // CF folded into ST
   'LW':'LW','RW':'RW','Left Winger':'LW','Right Winger':'RW',
   'Left Wing':'LW','Right Wing':'RW',
   'F':'ST','Forward':'ST','Attacker':'ST','Winger':'LW',       // vague labels default
