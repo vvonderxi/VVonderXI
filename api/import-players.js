@@ -98,11 +98,12 @@ async function bsdFetch(path, retries = 3) {
         signal: AbortSignal.timeout(10000),
       });
       if (res.status === 429) { console.warn(`  ⚠️  429 on ${path} — waiting 5s`); await sleep(5000); continue; }
+      if (res.status === 404) { const e = new Error(`BSD 404 — ${path}`); e.noRetry = true; throw e; }
       if (!res.ok) throw new Error(`BSD ${res.status} — ${path}`);
       stats.apiCalls++;
       return await res.json();
     } catch (err) {
-      if (attempt === retries) throw err;
+      if (err.noRetry || attempt === retries) throw err;
       console.warn(`  ⚠️  Retry ${attempt}/${retries} for ${path}: ${err.message}`);
       await sleep(2000 * attempt);
     }
@@ -115,7 +116,7 @@ function calcAge(dob, seasonYear) {
   return (age > 10 && age < 50) ? age : null;
 }
 
-const stats = { apiCalls: 0, playersProcessed: 0, cardsInserted: 0, cardsSkipped: 0, errors: 0, startTime: Date.now() };
+const stats = { apiCalls: 0, playersProcessed: 0, cardsInserted: 0, cardsSkipped: 0, skippedNoId: 0, errors: 0, startTime: Date.now() };
 function logProgress() {
   const s = Math.round((Date.now() - stats.startTime) / 1000);
   console.log(`\n📊  ${stats.playersProcessed} players · ${stats.cardsInserted} cards · ${stats.cardsSkipped} skipped · ${stats.apiCalls} calls · ${s}s`);
@@ -239,13 +240,19 @@ async function backfillPlayer(p) {
       const teamName = await getBsdTeamName(row.team_id);
       const teamId   = teamName ? await getOrCreateTeamId(teamName) : null;
       const leagueId = await getLeagueId(meta.league_code);
+      const seasonCode = YEAR_TO_CODE[meta.year];
+      const rtVal = ratingToRt(avg, goals, assists);
+
+      if (DRY_RUN) {
+        console.log(`   • ${detail.name} ${seasonCode} ${meta.league_code} ${position} — ${goals}g ${assists}a ${minutes}m rt${rtVal}`);
+      }
 
       await upsertCard({
         player_id:     playerId,
         team_id:       teamId,
         league_id:     leagueId,
         api_player_id: p.api_player_id,
-        season:        meta.code || YEAR_TO_CODE[meta.year],
+        season:        seasonCode,
         season_year:   meta.year,
         league_code:   meta.league_code,
         team_name:     teamName,
@@ -256,7 +263,7 @@ async function backfillPlayer(p) {
         goals,
         assists,
         rating:        (avg != null && avg !== '') ? parseFloat(avg) : null,
-        rt:            ratingToRt(avg, goals, assists),
+        rt:            rtVal,
       });
     }
     stats.playersProcessed++;
@@ -276,6 +283,11 @@ async function backfillPlayer(p) {
 
   let players = await loadAllPlayers();
   console.log(`Loaded ${players.length} players from Supabase.`);
+  const orphaned = players.filter(p => !(Number(p.api_player_id) > 0));
+  players = players.filter(p => Number(p.api_player_id) > 0);
+  stats.skippedNoId = orphaned.length;
+  console.log(`  ${orphaned.length} have no real BSD id (synthetic/legend) — skipped.`);
+  console.log(`  ${players.length} have a real BSD id — will backfill.`);
   if (LIMIT) { players = players.slice(0, LIMIT); console.log(`--limit ${LIMIT} → testing on ${players.length}.`); }
   console.log('');
 
@@ -291,6 +303,7 @@ async function backfillPlayer(p) {
   console.log(`  Players processed:  ${stats.playersProcessed}`);
   console.log(`  Cards inserted:     ${stats.cardsInserted}`);
   console.log(`  Cards skipped (<${MIN_MINUTES}m): ${stats.cardsSkipped}`);
+  console.log(`  Players skipped (no BSD id):   ${stats.skippedNoId}`);
   console.log(`  API calls:          ${stats.apiCalls}`);
   console.log(`  Errors:             ${stats.errors}`);
 })();
