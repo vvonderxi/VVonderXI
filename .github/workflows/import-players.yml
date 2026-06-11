@@ -42,6 +42,6 @@ jobs:
           BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
         run: |
           CMD="node api/import-players.js --league ${{ github.event.inputs.league }}"
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then CMD="$CMD --dry-run"; fi
+          CMD="node api/import-standings.js"
           echo "Running: $CMD"
           $CMD
