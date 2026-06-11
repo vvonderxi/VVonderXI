@@ -110,7 +110,7 @@ async function upsertPlayer(pl, statPos){
     full_name:     ((pl.firstname||'')+' '+(pl.lastname||'')).trim() || pl.name,
     nationality:   pl.nationality || null,
     position:      normalisePos(statPos),
-    date_of_birth: pl.birth?.date || null,
+    date_of_birth: cleanDate(pl.birth?.date),
     height_cm:     pl.height ? parseInt(pl.height) : null,
     updated_at:    new Date().toISOString(),
   };
@@ -130,6 +130,16 @@ function ratingToRt(avg, g, a){
   return Math.max(50, Math.min(96, 60 + Math.round(((+g||0)+(+a||0))*0.9)));
 }
 const n = x => (x == null ? null : (parseInt(x) || 0));
+// Accept only a clean YYYY-MM-DD; anything else (empty, malformed, '0000-00-00') -> null
+function cleanDate(d){
+  if (!d || typeof d !== 'string') return null;
+  const m = d.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  const y = +m[1];
+  if (y < 1940 || y > 2015) return null;        // implausible birth year -> null
+  const t = Date.parse(d);
+  return isNaN(t) ? null : `${m[1]}-${m[2]}-${m[3]}`;
+}
 
 async function importLeagueSeason(code, year){
   if (await isSeasonDone(code, year)) { console.log(`  ⏭️  ${code} ${year} already complete — skip`); return; }
