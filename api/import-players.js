@@ -40,7 +40,7 @@ const DELAY_MS  = 320;   // ~3 req/s — comfortably under per-minute caps
 
 const LEAGUES = {
   PL:{id:39},  LL:{id:140}, SA:{id:135}, BL:{id:78}, L1:{id:61},
-  PRT:{id:94}, ERE:{id:88}, BPL:{id:144},
+  PRT:{id:94}, ERE:{id:88}, BPL:{id:144}, TR:{id:203},
 };
 const seasonCode = y => `${String(y).slice(2)}${String(y+1).slice(2)}`;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
