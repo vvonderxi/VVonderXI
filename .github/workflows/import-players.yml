@@ -42,6 +42,6 @@ jobs:
           BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
         run: |
           CMD="node api/import-players.js --league ${{ github.event.inputs.league }}"
-          CMD="node api/verify-squad-positions.js"
+          CMD="node api/import-positions-v2.js"
           echo "Running: $CMD"
           $CMD
