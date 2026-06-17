@@ -1,0 +1,8 @@
+api/apifootball-probe.js
+api/bsd-probe.js
+api/import-players.js
+api/import-positions.js
+api/import-positions-v2.js
+api/import-standings.js
+api/verify-positions.js
+api/verify-squad-positions.js
