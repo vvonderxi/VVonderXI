@@ -1,25 +1,14 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "foundations.html", "use": "@vercel/static" },
-    { "src": "db.json", "use": "@vercel/static" },
-    { "src": "og-image.png", "use": "@vercel/static" },
-    { "src": "api/*.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/search-player", "dest": "/api/search-player.js" },
-    { "src": "/api/get-seasons", "dest": "/api/get-seasons.js" },
-    { "src": "/api/analyse", "dest": "/api/analyse.js" },
-    { "src": "/api/refresh-players", "dest": "/api/refresh-players.js" },
-    { "src": "/api/debug-player", "dest": "/api/debug-player.js" },
-    { "src": "/api/log", "dest": "/api/log.js" },
-    { "src": "/api/auth", "dest": "/api/auth.js" },
-    { "src": "/api/db", "dest": "/api/db.js" },
-    { "src": "/db.json", "dest": "/db.json", "headers": { "Cache-Control": "public, max-age=3600" } },
-    { "src": "/foundations.html", "dest": "/foundations.html" },
-    { "src": "/og-image.png", "dest": "/og-image.png", "headers": { "Cache-Control": "public, max-age=86400" } },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/og-image.png",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/db.json",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+    }
   ],
   "crons": [
     { "path": "/api/refresh-players", "schedule": "0 3 * * *" }
