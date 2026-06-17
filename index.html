@@ -221,6 +221,16 @@
   var menu=document.getElementById('menu');
   document.getElementById('burger').onclick=function(){menu.classList.add('open');};
   menu.onclick=function(e){if(e.target===menu)menu.classList.remove('open');};
+
+  // search routing (player resolution happens in plumbing via ?q=)
+  function vvHomeSearch(){
+    var q=(document.getElementById('q').value||'').trim();
+    if(!q) return;
+    var dest = /(\bvs\b|\bv\b)/i.test(q) ? 'compare.html' : 'search.html';
+    location.href = dest + '?q=' + encodeURIComponent(q);
+  }
+  document.querySelector('.search .go').onclick = vvHomeSearch;
+  document.getElementById('q').addEventListener('keydown', function(e){ if(e.key==='Enter') vvHomeSearch(); });
 </script>
 </body>
 </html>
