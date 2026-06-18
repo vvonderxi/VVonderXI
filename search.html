@@ -294,65 +294,19 @@
       </div>
     </div>
   </div>
+<script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/vv-core.js"></script>
 <script>
-  function inkFor(hex){
-    if(!hex) return '#fff';
-    let h=hex.replace('#','');
-    if(h.length===3) h=h.split('').map(c=>c+c).join('');
-    const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
-    const L=(0.299*r+0.587*g+0.114*b)/255;
-    return L>0.6 ? '#1C1B1A' : '#fff';
-  }
-  function buildCard(d, cw){
-    const flag = d.flag ? `<span class="cflag">${d.flag}</span> ` : '';
-    const full = d.full ? `<div class="full">${d.full}</div>` : '';
-    const tag = d.tag ? `<div class="chtag"><span>${d.tag}</span></div>` : '';
-    const c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
-    const ink = inkFor(c1);
-    const numStroke = (ink==='#fff' && c2!==c1) ? ' stroke="rgba(0,0,0,0.25)" stroke-width="0.6" paint-order="stroke"' : (ink!=='#fff' && c2!==c1 ? ' stroke="rgba(255,255,255,0.5)" stroke-width="0.6" paint-order="stroke"' : '');
-    const numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
-    const numSize = numStr.length>=3 ? 42 : (numStr.length===2 ? 46 : 56);
-    const num = numStr ? `<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="${numSize}" fill="${ink}" text-anchor="middle" dominant-baseline="central"${numStroke}>${numStr}</text>` : '';
-    const uid = 'b'+Math.random().toString(36).slice(2,8);
-    const badgeFill = (c2===c1)
-      ? `<rect width="100" height="116" fill="${c1}"/>`
-      : `<rect x="0" width="50" height="116" fill="${c1}"/><rect x="50" width="50" height="116" fill="${c2}"/>`;
-    return `<div class="vvcard" style="--cw:${cw}px">
-      <div class="ctop">
-        <div class="ctl">
-          <div class="yr">${d.year}</div>
-          <div class="cbadgewrap">
-            <svg class="cbadge" viewBox="0 0 100 116"><defs><clipPath id="${uid}"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#${uid})">${badgeFill}</g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.5"/>${num}</svg>
-            <div class="pos">${d.pos}</div>
-          </div>
-        </div>
-        <div class="ctr"><div class="halo"></div><div class="vv"><span class="a">V</span><span class="b">V</span></div><div class="n">${d.vv}</div></div>
-      </div>
-      <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
-      ${tag}
-      <div class="cga"><div class="col"><div class="v">${d.goals}</div><div class="l">Goals</div></div><div class="divider"></div><div class="col"><div class="v">${d.assists}</div><div class="l">Assists</div></div></div>
-      <div class="cname"><div class="nm">${flag}${d.surname}</div>${full}<div class="sub">${d.clubname} &middot; ${d.age}</div></div>
-    </div>`;
-  }
+  let SEARCH_ROWS = [];
 
-  const GB = {label:'\u{1F45F} Golden Boot', g:true, tip:'Led the league for goals.'};
-  const POACH = {label:'\u{1FA9D} Poacher', tip:'Lived on the last shoulder.'};
-  const CLIN = {label:'\u{1F3AF} Clinical', tip:'Chances became goals.'};
-  const SEARCH_ROWS = [
-    {rank:1, gold:true, d:{year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', clubname:'Arsenal', age:'26', goals:30, assists:7}, tags:[{label:'\u{1F451} Iconic', g:true, tip:'One of the rarest single seasons.'}, CLIN]},
-    {rank:2, d:{year:'22/23', club1:'#6CABDD', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', clubname:'Man City', age:'22', goals:36, assists:8}, tags:[GB, POACH]},
-    {rank:3, d:{year:'17/18', club1:'#C8102E', number:11, pos:'RW', vv:90, flag:'\u{1F1EA}\u{1F1EC}', surname:'Salah', clubname:'Liverpool', age:'25', goals:32, assists:10}, tags:[GB, {label:'\u{26A1} Pace Merchant', tip:'Pace that broke lines.'}]},
-    {rank:4, d:{year:'11/12', club1:'#EF0107', number:10, pos:'ST', vv:89, flag:'\u{1F1F3}\u{1F1F1}', surname:'van Persie', clubname:'Arsenal', age:'28', goals:30, assists:9}, tags:[GB, POACH]},
-    {rank:5, d:{year:'14/15', club1:'#6CABDD', number:10, pos:'ST', vv:88, flag:'\u{1F1E6}\u{1F1F7}', surname:'Ag\u00FCero', clubname:'Man City', age:'26', goals:26, assists:7}, tags:[POACH, CLIN]},
-    {rank:6, d:{year:'16/17', club1:'#132257', number:10, pos:'ST', vv:88, flag:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}', surname:'Kane', clubname:'Tottenham', age:'23', goals:29, assists:7}, tags:[GB, {label:'\u{1F6CF} Target Man', tip:'Held the line up alone.'}]}
-  ];
   function rowTags(tags){
     return tags.map(t=>`<span class="rtag${t.g?' gold':''}" data-tip="${t.tip}">${t.label}</span>`).join('');
   }
   var TC={Iconic:'pink',Talisman:'pink',Generational:'gen','Golden Boot':'gold',Prestige:'gold',Maestro:'blue',Clinical:'green',Poacher:'green',Pace:'coral',Wonderkid:'purple',Rock:'slate',Engine:'slate','Target Man':'slate','Top Assist':'blue'};
   function tcol(label){for(var k in TC){if(label.indexOf(k)>=0)return TC[k];}return 'slate';}
   function denseHTML(r){ var d=r.d; var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
-    return '<div class="cmprow" onclick="window.location.href=\'card.html\'">'
+    return '<div class="cmprow" onclick="window.location.href=\'card.html'+(d.card_id!=null?'?id='+d.card_id:'')+'\'">'
       +'<span class="cmprail" style="background:'+(d.club1||'#9a948a')+'"></span>'
       +'<span class="cmprk">'+r.rank+'</span>'
       +'<div class="cmpmain"><div class="cmpl1"><span class="cmpnm">'+d.surname+'</span><span class="cmpfl">'+d.flag+'</span></div>'
@@ -363,7 +317,7 @@
     var d=r.d;
     var tags=r.tags.slice(0,3).map(function(t){return `<span class="rtag ${tcol(t.label)}" data-tip="${t.tip||''}">${t.label}</span>`;}).join('');
     var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
-    return `<div class="rrow${r.gold?' gold':''}" onclick="window.location.href='card.html'">
+    return `<div class="rrow${r.gold?' gold':''}" onclick="window.location.href='card.html${d.card_id!=null?'?id='+d.card_id:''}'">
       <div class="rrank">${r.rank}</div>
       <div class="rident"><span class="rflag">${d.flag}</span><div class="rinfo"><div class="rname">${d.surname} <span class="ryr">${d.year}</span></div><div class="rmeta">${d.clubname} · ${d.pos}</div></div></div>
       <div class="rtags">${tags}</div>
@@ -374,7 +328,7 @@
   }
   function vvNorm(x){return (x||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
   var searchView='list';
-  function searchFiltered(){ var q=vvNorm(document.getElementById('searchInput').value.trim()); if(!q) return SEARCH_ROWS; return SEARCH_ROWS.filter(function(r){var d=r.d;var tg=r.tags.map(function(t){return t.label;}).join(' ');return vvNorm(d.surname).includes(q)||vvNorm(d.clubname).includes(q)||vvNorm(tg).includes(q);}); }
+  function searchFiltered(){ return SEARCH_ROWS; }   // server-side filtering now; SEARCH_ROWS holds the live result set
   function renderSearch(){
     var g=document.getElementById('rows'); var L=searchFiltered();
     var rc=document.getElementById('resultCount'); if(rc) rc.textContent='Showing '+L.length+' of 920 seasons';
@@ -384,7 +338,7 @@
       var cols=Math.max(2,Math.min(5,Math.floor((gw+gap)/(200+gap))));
       var cw=Math.max(150,Math.min(250,Math.floor((gw-(cols-1)*gap)/cols)-2));
       g.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';
-      g.innerHTML=L.map(function(r){var d=Object.assign({},r.d,{tag:(r.tags[0]?r.tags[0].label:'')});return '<div class="scard" onclick="window.location.href=\'card.html\'">'+buildCard(d,cw)+'</div>';}).join(''); }
+      g.innerHTML=L.map(function(r){var d=Object.assign({},r.d,{tag:(r.tags[0]?r.tags[0].label:'')});return '<div class="scard" onclick="window.location.href=\'card.html'+(d.card_id!=null?'?id='+d.card_id:'')+'\'">'+buildCard(d,cw)+'</div>';}).join(''); }
     else if(searchView==='dense'){ g.className='compactmode'; g.style.gridTemplateColumns='';
       g.innerHTML=L.map(denseHTML).join(''); }
     else { g.className=''; g.style.gridTemplateColumns=''; g.innerHTML=L.map(rowHTML).join(''); }
@@ -392,9 +346,21 @@
   var _rsz; window.addEventListener('resize',function(){ if(searchView!=='cards')return; clearTimeout(_rsz); _rsz=setTimeout(renderSearch,120); });
   function toggleSFilters(){var l=document.querySelector('.searchlayout');l.classList.toggle('filtersopen');var b=document.getElementById('sFilterBtn');if(b)b.classList.toggle('on'); requestAnimationFrame(renderSearch);}
   function setSearchView(v){ searchView=v; var a=document.getElementById('vsCardS'),b=document.getElementById('vsListS'),c=document.getElementById('vsDenseS'); if(a)a.classList.toggle('on',v==='cards'); if(b)b.classList.toggle('on',v==='list'); if(c)c.classList.toggle('on',v==='dense'); renderSearch(); }
-  function applySearch(){ var q=document.getElementById('searchInput').value.trim(); var c=document.getElementById('searchClear'); if(c)c.style.display=q?'block':'none'; renderSearch(); }
+  function applySearch(){ var q=document.getElementById('searchInput').value.trim(); var c=document.getElementById('searchClear'); if(c)c.style.display=q?'block':'none'; clearTimeout(window._searchT); window._searchT=setTimeout(loadSearch,250); }
   function clearSearch(){ document.getElementById('searchInput').value=''; applySearch(); document.getElementById('searchInput').focus(); }
-  renderSearch();
+  // ── Live data: empty box -> top 100 by VV score; query -> filter by player_name / team_name ──
+  async function loadSearch(){
+    var sb = vvClient();
+    if(!sb) return;                        // vv-core logs why (missing config or lib)
+    var q = document.getElementById('searchInput').value.trim();
+    var query = sb.from('player_card_view').select('*').order('rt', { ascending:false }).limit(100);
+    if(q){ var like='%'+q.replace(/[(),]/g,'')+'%'; query = query.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
+    var res = await query;
+    if(res.error){ console.error('search load failed:', res.error.message); return; }
+    SEARCH_ROWS = (res.data||[]).map(function(row,i){ return { d: rowToCard(row), tags:[], rank:i+1, gold:false }; });
+    renderSearch();
+  }
+  loadSearch();
   // VV Score range filter (ported from mobile)
   function paintRange(lo,hi){
     const MIN=50,MAX=96,span=MAX-MIN;
