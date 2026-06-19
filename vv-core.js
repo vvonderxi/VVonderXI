@@ -227,6 +227,7 @@
     const band = bandFor(rt);
     return {
       card_id:  row.card_id != null ? row.card_id : null,   // identity, links to card.html?id=
+      api_player_id: row.api_player_id != null ? row.api_player_id : null,  // stable player id (trajectory query)
       // ── Mini-card face slots (consumed by buildCard) ──
       year:     fmtSeason(row.season),
       club1:    row.primary_colour   || undefined,
