@@ -882,12 +882,18 @@ body.light .pkmsub{color:#b0a899}
       +'Engine result: '+(engine==='tie'
           ? 'TIE , the two VV scores are equal ('+va+' = '+vb+'). The engine has left this to you: break the tie on the full profile and pick a narrow winner.'
           : 'Player '+engine+' wins on VV ('+va+' vs '+vb+'). Explain why; do not overturn.');
-    fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:content}],max_tokens:1024})})
+    var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
+    var idA=CMP_A.card_id, idB=CMP_B.card_id;
+    if(idA!=null && idB!=null){
+      body.cardIdA=idA; body.cardIdB=idB;
+      body.winnerCardId = engine==='A'?idA : (engine==='B'?idB : null);   // null on tie
+    }
+    fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
       .then(function(resp){ return resp.json().then(function(data){ if(!resp.ok) throw new Error((data&&data.error)||('HTTP '+resp.status)); return data; }); })
       .then(function(data){
-        var text=(data&&data.content&&data.content[0]&&data.content[0].text)||'';
-        text=text.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();
-        var v=JSON.parse(text);
+        var v;
+        if(data && data.verdict){ v=data.verdict; }                       // normalized (cache hit or freshly cached)
+        else { var text=(data&&data.content&&data.content[0]&&data.content[0].text)||''; text=text.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim(); v=JSON.parse(text); }
         vvSetStory(nameA,nameB,v.p1||'',v.p2||'');
         vvSetVerdict(v.verdict||'',v.h2h||'',engine,va,vb);
       })

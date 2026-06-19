@@ -13,7 +13,32 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1024, system: customSystem } = req.body;
+    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId } = req.body;
+    const MODEL = 'claude-sonnet-4-6';
+
+    // ── Verdict self-cache (server-side, service key). Active only when both
+    //    card ids are present + numeric; otherwise this stays a generic proxy. ──
+    const _a = Number(cardIdA), _b = Number(cardIdB);
+    const cacheable = cardIdA != null && cardIdB != null
+      && Number.isFinite(_a) && Number.isFinite(_b)
+      && !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_KEY;
+    const swapVerdict = (v) => ({ p1: v.p2, p2: v.p1, h2h: v.h2h, verdict: v.verdict });
+    let sb = null, pairKey = null, loId = null, hiId = null, swapped = false;
+    if (cacheable) {
+      const { createClient } = require('@supabase/supabase-js');
+      sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+      loId = Math.min(_a, _b); hiId = Math.max(_a, _b);
+      pairKey = loId + '-' + hiId;
+      swapped = (_a !== loId);   // requester's A is the HIGHER id -> their order is swapped vs canonical
+      try {
+        const { data: row } = await sb.from('verdict_cache')
+          .select('verdict, winner_card_id, model').eq('pair_key', pairKey).maybeSingle();
+        if (row && row.model === MODEL && row.verdict) {
+          const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
+          return res.json({ verdict: out, winner_card_id: row.winner_card_id, cached: true });
+        }
+      } catch (e) { /* cache read failed -> fall through and generate */ }
+    }
 
     const defaultSystem = `You are the VVonderXI voice. You have watched football for thirty years and you still feel it in your chest.
 
@@ -62,7 +87,7 @@ Write tight. Every word earns its place.`;
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: MODEL,
         max_tokens,
         system: customSystem || defaultSystem,
         messages
@@ -75,7 +100,28 @@ Write tight. Every word earns its place.`;
       return res.status(response.status).json({ error: data.error?.message || 'Anthropic API error' });
     }
 
-    return res.json(data);
+    // Generic path (no card ids): behave exactly as before.
+    if (!cacheable) return res.json(data);
+
+    // Cacheable path: parse the verdict JSON, cache it (awaited, Hobby-safe), return normalized.
+    let verdict = null;
+    try {
+      let text = (data && data.content && data.content[0] && data.content[0].text) || '';
+      text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+      verdict = JSON.parse(text);
+    } catch (e) {
+      return res.json(data);   // couldn't parse -> return raw, do not cache garbage
+    }
+    const _w = (winnerCardId != null) ? Number(winnerCardId) : NaN;
+    const winnerId = Number.isFinite(_w) ? _w : null;
+    const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
+    try {
+      await sb.from('verdict_cache').upsert({
+        pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
+        verdict: canonical, winner_card_id: winnerId, model: MODEL
+      }, { onConflict: 'pair_key', ignoreDuplicates: false });
+    } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
+    return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
   } catch (err) {
     console.error('analyse error:', err);
     return res.status(500).json({ error: err.message });
