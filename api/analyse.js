@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 800, system: customSystem } = req.body;
+    const { messages, max_tokens = 1024, system: customSystem } = req.body;
 
     const defaultSystem = `You are the VVonderXI voice. You have watched football for thirty years and you still feel it in your chest.
 
@@ -27,7 +27,7 @@ You reference VV Tags naturally and meaningfully. Not as decoration. As evidence
 
 You never use these words: solid, impressive, decent, great, fantastic, brilliant, amazing, incredible. These words say nothing. Say what you mean precisely.
 
-The VV Engine has already determined the winner. You do not decide. You explain. You give the verdict its story.
+When the two players' VV scores DIFFER, the VV Engine has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV scores are EQUAL, the engine has deliberately left the call to you: break the tie using the full profile , the complete stat line and all five radar dimensions , and pick a narrow, defensible winner. Never declare a flat draw.
 
 CRITICAL INTELLIGENCE LAYER — Role-based weighting:
 The VV Engine scores players across 5 dimensions: Output, Influence, Consistency, League Strength, Role Rarity.
@@ -62,7 +62,7 @@ Write tight. Every word earns its place.`;
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens,
         system: customSystem || defaultSystem,
         messages
