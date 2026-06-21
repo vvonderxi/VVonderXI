@@ -74,6 +74,17 @@
   .bmore{display:block;margin-top:10px;background:none;border:none;padding:0;cursor:pointer;font-family:'Archivo';font-weight:800;font-size:12px;color:var(--pink);letter-spacing:.02em}
   .bmore::before{content:'See more \203A'}
   .band.showmore .bmore::before{content:'See less \2039'}
+  /* Desktop-only band-card type scale (mobile provably untouched: min-width never fires below 1041px) */
+  @media (min-width:1041px){
+    .band{padding:20px 24px;border-radius:16px;margin-bottom:14px}
+    .band .bnm{font-size:24px}
+    .band .bv{font-size:19px}
+    .band .bdef{font-size:16px;line-height:1.65;max-width:62ch}
+    .band.open .bdef{max-height:340px}
+    .band.open.showmore .bdef{max-height:520px}
+    .bjury{font-size:16px;line-height:1.6;max-width:62ch}
+    .bmore{font-size:13px}
+  }
   /* dimensions */
   .dim{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:11px}
   body.light .dim{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
