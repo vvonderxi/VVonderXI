@@ -201,6 +201,7 @@
   body.light .libtag:hover{background:rgba(255,92,122,0.1);color:var(--pink);border-color:rgba(255,92,122,0.25)}
   .libtag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#262122;color:#F3EDE0;font-family:'Archivo';font-weight:500;font-size:12.5px;line-height:1.45;letter-spacing:0;padding:11px 14px;border-radius:11px;width:max-content;max-width:260px;text-align:center;z-index:40;box-shadow:0 16px 34px -12px rgba(0,0,0,0.6)}
   .libtag[data-tip]:hover::before{content:"";position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#262122;z-index:40}
+  @media (max-width:720px){.libtag[data-tip]:hover::after{max-width:min(260px,calc(100vw - 32px));text-align:left}}
 
   .coin .coinA{fill:var(--cream)}
   body.light .coin .coinA{fill:var(--charcoal)}
