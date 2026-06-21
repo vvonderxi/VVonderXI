@@ -59,6 +59,14 @@
   body.light .pbnav a:hover{color:var(--charcoal);background:rgba(0,0,0,0.04)}
   body.light .pbnav a.on{color:var(--pink);background:rgba(255,92,122,0.1)}
   .pbcontent{min-width:0;max-width:880px}
+  /* Desktop hybrid layout: widen content track, keep prose + band ladder readable (mobile untouched) */
+  @media (min-width:1181px){
+    .pbcontent{max-width:1480px}
+    .vvscale{max-width:880px}
+    .vvnote{max-width:880px}
+    .vvceiling{max-width:880px}
+    .vvstory{max-width:880px}
+  }
 
   .section{padding-top:46px;scroll-margin-top:24px}
   .section:first-child{padding-top:8px}
