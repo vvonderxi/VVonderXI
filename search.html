@@ -312,7 +312,7 @@
       +'<span class="cmprk">'+r.rank+'</span>'
       +'<div class="cmpmain"><div class="cmpl1"><span class="cmpnm">'+d.surname+'</span><span class="cmpfl">'+d.flag+'</span></div>'
       +'<div class="cmpl2"><b>'+d.clubname+'</b> &middot; '+d.year+' &middot; '+d.pos+'</div></div>'
-      +'<div class="cmpright"><div class="cmpvv'+tier+'">'+d.vv+'</div><div class="cmpga">'+d.goals+'G &middot; '+d.assists+'A</div></div>'
+      +'<div class="cmpright"><div class="cmpvv'+tier+'">'+d.vv+'</div><div class="cmpga">'+d.goals+'G &middot; '+(d.assists!=null ? d.assists+'A' : 'NR')+'</div></div>'
     +'</div>'; }
   function rowHTML(r){
     var d=r.d;
@@ -322,7 +322,7 @@
       <div class="rrank">${r.rank}</div>
       <div class="rident"><span class="rflag">${d.flag}</span><div class="rinfo"><div class="rname">${d.surname} <span class="ryr">${d.year}</span></div><div class="rmeta">${d.clubname} · ${d.pos}</div></div></div>
       <div class="rtags">${tags}</div>
-      <div class="rstats"><div class="rstat"><b>${d.goals}</b><span>Goals</span></div><div class="rstat"><b>${d.assists}</b><span>Assists</span></div></div>
+      <div class="rstats"><div class="rstat"><b>${d.goals}</b><span>Goals</span></div><div class="rstat"><b>${d.assistsText}</b><span>Assists</span></div></div>
       <div class="rmini${tier}"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">${d.vv}</span></div>
       <button class="rstar" onclick="event.stopPropagation();this.classList.toggle('on');this.innerHTML=this.classList.contains('on')?'&#9733;':'&#9734;'">&#9734;</button>
     </div>`;

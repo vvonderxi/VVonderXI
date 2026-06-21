@@ -682,7 +682,7 @@ body.light .pkmsub{color:#b0a899}
      +'<span class="cmprail" style="background:'+(p.club1||'#9a948a')+'"></span>'
      +'<div class="cmpmain"><div class="cmpl1"><span class="cmpnm">'+p.surname+'</span><span class="cmpfl">'+(p.flag||'')+'</span></div>'
      +'<div class="cmpl2"><b>'+p.clubname+'</b> &middot; '+p.year+' &middot; '+p.pos+'</div></div>'
-     +'<div class="cmpright"><div class="cmpvv'+tier+'">'+p.vv+'</div><div class="cmpga">'+p.goals+'G &middot; '+p.assists+'A</div></div>'
+     +'<div class="cmpright"><div class="cmpvv'+tier+'">'+p.vv+'</div><div class="cmpga">'+p.goals+'G &middot; '+(p.assists!=null ? p.assists+'A' : 'NR')+'</div></div>'
      +'</div>'; }
   function renderPicker(){
     var q=(document.getElementById('pkSearch').value||'').trim().toLowerCase();
