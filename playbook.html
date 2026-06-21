@@ -50,7 +50,7 @@
   body.light .hero .lede{color:#5a544a}
 
   /* ===== PLAYBOOK LAYOUT: sticky section-nav rail + content ===== */
-  .pblayout{display:grid;grid-template-columns:212px 1fr;gap:48px;padding:18px 48px 80px;max-width:1280px}
+  .pblayout{display:grid;grid-template-columns:212px 1fr;gap:48px;padding:18px 48px 80px;max-width:1680px}
   .pbnav{position:sticky;top:30px;align-self:start;display:flex;flex-direction:column;gap:3px}
   .pbnav a{font-family:'Archivo';font-weight:700;font-size:14.5px;color:rgba(243,237,224,0.5);padding:9px 14px;border-radius:10px;text-decoration:none;border-left:2px solid transparent;transition:all .15s}
   .pbnav a:hover{color:var(--cream);background:rgba(255,255,255,0.04)}
@@ -187,6 +187,16 @@
   .vvband-story{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease,opacity .4s ease;font-family:'Bricolage Grotesque';font-weight:600;font-size:15.5px;line-height:1.6;color:#F3EDE0}
   .vvband.open .vvband-story{max-height:400px;opacity:1;margin-top:13px;padding:14px 15px;background:linear-gradient(180deg,#262122,#1a1718);border-radius:12px}
   .vvband .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0;align-self:flex-start}
+  /* Desktop-only band-card type scale (min-width:1181px = page's 2-column desktop form; mobile untouched) */
+  @media (min-width:1181px){
+    .vvband{padding:18px 22px}
+    .vvb{font-size:19px}
+    .vvbl{font-size:16px;line-height:1.6}
+    .vvbl b{font-size:24px}
+    .vvband-story{font-size:16px;line-height:1.65;max-width:62ch}
+    .vvband.open .vvband-story{max-height:560px}
+    .vvband .more{font-size:13px}
+  }
 
   /* full profile tag library (one-liner on hover) */
   .liblabel{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin:30px 0 4px}
