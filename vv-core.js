@@ -156,15 +156,14 @@
   // ── Band ladder (Contract §2), from rt ────────────────────────────────
   function bandFor(rt){
     if(rt==null) return null;
-    if(rt>=99) return 'S-Tier';
-    if(rt>=96) return 'Generational';
-    if(rt>=92) return 'Elite';
-    if(rt>=88) return 'World Class';
-    if(rt>=84) return 'Exceptional';
-    if(rt>=80) return 'Excellent';
-    if(rt>=75) return 'Very Good';
-    if(rt>=70) return 'Good';
-    if(rt>=60) return 'Okay';
+    if(rt>=94) return 'Generational';
+    if(rt>=88) return 'Elite';
+    if(rt>=82) return 'World Class';
+    if(rt>=76) return 'Exceptional';
+    if(rt>=68) return 'Excellent';
+    if(rt>=58) return 'Very Good';
+    if(rt>=45) return 'Good';
+    if(rt>=30) return 'Okay';
     return 'Poor';
   }
 
@@ -224,7 +223,8 @@
   function rowToCard(row){
     if(!row) return null;
     const rt   = row.rt != null ? Math.round(row.rt) : null;
-    const band = bandFor(rt);
+    let band = bandFor(rt);
+    if(band==='Generational' && ((row.goals||0) + (row.assists||0)) < 35) band = 'Elite';
     return {
       card_id:  row.card_id != null ? row.card_id : null,   // identity, links to card.html?id=
       api_player_id: row.api_player_id != null ? row.api_player_id : null,  // stable player id (trajectory query)
