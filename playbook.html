@@ -116,6 +116,8 @@
   /* ===== TAG CARDS (one-liner visible, See more -> Drury) ===== */
   .h2 + .intro{margin-top:2px}
   .taggrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  /* Desktop: tag grid goes 3-column to fill the wide track (above the 860/720 collapses; mobile untouched) */
+  @media (min-width:1181px){ .taggrid{grid-template-columns:1fr 1fr 1fr} }
   .tagdef{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:15px;padding:16px 17px;transition:transform .18s,border-color .18s,background .18s}
   .tagdef:hover{transform:translateY(-3px);border-color:rgba(255,92,122,0.25)}
   body.light .tagdef{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
