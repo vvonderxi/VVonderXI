@@ -486,6 +486,11 @@ body.light .pkmgl{color:#9a9285}
 .pkmsub{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:rgba(243,237,224,.3);margin:8px 0 4px 2px}
 body.light .pkmsub{color:#b0a899}
 .pkmrow{display:flex;flex-wrap:wrap;gap:7px}
+  .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;margin-right:14px;transition:.15s}
+  .backbtn:hover{border-color:var(--pink);color:var(--pink)}
+  body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
+  body.light .backbtn:hover{color:var(--pink);border-color:var(--pink)}
+  @media (max-width:720px){.backbtn{padding:6px 10px;font-size:11px;margin-right:8px}}
 </style>
 </head>
 <body class="light">
@@ -493,7 +498,7 @@ body.light .pkmsub{color:#b0a899}
   <span class="mt-wrap mt-fixed"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The VV Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The VV Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div class="crumb"><span class="va">C</span>ompare</div></div><div class="matchup"><div class="side"><div class="edge-flag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> The Edge</div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><div class="sidecta"><button class="addclub" onclick="vvTrySave('Save this player to your club. Free.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The VV Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The VV Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="side"><div class="edge-flag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> The Edge</div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><div class="sidecta"><button class="addclub" onclick="vvTrySave('Save this player to your club. Free.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
         <div class="side">
           <div class="edge-spacer"></div>
           <div id="cardB" class="cardslot" onclick="openPicker('B')"></div>
@@ -633,6 +638,25 @@ body.light .pkmsub{color:#b0a899}
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
 
+  // ── Back control (same pattern as card.html) ──
+  function vvBack(){var inApp=false;try{inApp=document.referrer&&new URL(document.referrer).origin===location.origin;}catch(e){}if(inApp&&history.length>1)history.back();else location.href='rankings.html';}
+
+  // ── Deep-link: ?a=<card_id> -> Slot A, ?b=<card_id> -> Slot B (no param -> empty slots) ──
+  async function loadSlotFromUrl(){
+    var ids; try{ ids=new URLSearchParams(window.location.search); }catch(e){ return; }
+    var a=ids.get('a'), b=ids.get('b'); if(!a && !b) return;
+    var sb=vvClient(); if(!sb) return;            // vv-core logs why (missing config or lib)
+    async function fetchCard(id){
+      var res=await sb.from('player_card_view').select('*').eq('card_id', id).single();
+      if(res.error || !res.data){ console.error('compare ?a/?b load failed:', res.error && res.error.message); return null; }
+      return rowToCard(res.data);
+    }
+    if(a){ var ca=await fetchCard(a); if(ca) CMP_A=ca; }
+    if(b){ var cb=await fetchCard(b); if(cb) CMP_B=cb; }
+    vvSizeCards();
+  }
+  loadSlotFromUrl();
+
   // ===== Compare picker (design; live player resolution + AI verdict are plumbing) =====
   var POOL=[];
   function pkKey(p){return (p.surname+p.year).replace(/[^a-z0-9]/gi,'').toLowerCase();}
@@ -749,10 +773,16 @@ body.light .pkmsub{color:#b0a899}
 
   // dimensions for the two players (0..1)
   const DIMS=['Goal Threat','Creation','Progression','Defensive','Reliability'];
-  const A_VALS=[0.92,0.74,0.70,0.30,0.88]; // Henry
-  const B_VALS=[0.98,0.55,0.60,0.26,0.82]; // Haaland
-  const A_RAW=[92,74,70,30,88], B_RAW=[98,55,60,26,82];
+  let A_VALS=[0.92,0.74,0.70,0.30,0.88]; // Henry
+  let B_VALS=[0.98,0.55,0.60,0.26,0.82]; // Haaland
+  let A_RAW=[92,74,70,30,88], B_RAW=[98,55,60,26,82];
 
+  // recompute radar + H2H spokes from the live slots (DIMS order; 0-100 scaled, 0-1 for the radar)
+  function vvComputeSpokes(){
+    function arr(c){ var s=c&&c.radar&&c.radar.scaled; return s?[s.goalThreat,s.creation,s.progression,s.defensive,s.reliability].map(function(v){return v||0;}):[0,0,0,0,0]; }
+    A_RAW=arr(CMP_A); B_RAW=arr(CMP_B);
+    A_VALS=A_RAW.map(function(v){return v/100;}); B_VALS=B_RAW.map(function(v){return v/100;});
+  }
   function drawDualRadar(){
     const svg=document.getElementById('vradar');if(!svg)return;
     const cx=160,cy=120,R=72,N=5;
@@ -781,12 +811,17 @@ body.light .pkmsub{color:#b0a899}
   }
 
 
-  // THE TRAJECTORY , two per-player G+A bar charts (mobile style), glow on the best bar
-  function drawTrajectory(){
+  // THE TRAJECTORY , each player's real G+A per season (summed across leagues), last ~4 seasons
+  function drawTrajectory(serA,serB,nameA,nameB){
     const box=document.getElementById('vtraj'); if(!box) return;
+    serA=serA||{vals:[],labs:[]}; serB=serB||{vals:[],labs:[]};
+    var allV=(serA.vals||[]).concat(serB.vals||[]);
+    var maxOut=allV.length?Math.max.apply(null,allV):0;
+    var axisMax=Math.max(50,Math.ceil(maxOut/10)*10);   // dynamic so 60+ G+A seasons don't overflow
     function chart(name,cls,col,vals,labs){
-      const W=250,H=198,ml=28,mr=8,mt=24,mb=28,pw=W-ml-mr,ph=H-mt-mb,axisMax=50;
-      const slot=pw/vals.length, bw=Math.min(42,slot*0.54), maxV=Math.max(...vals);
+      const W=250,H=198,ml=28,mr=8,mt=24,mb=28,pw=W-ml-mr,ph=H-mt-mb;
+      if(!vals||!vals.length){ return `<div class="vtchart"><div class="vtname ${cls}">${name||''}</div><svg viewBox="0 0 ${W} ${H}"></svg></div>`; }
+      const slot=pw/vals.length, bw=Math.min(42,slot*0.54), maxV=Math.max.apply(null,vals);
       const X=i=>ml+slot*(i+0.5), Y=v=>mt+ph-(v/axisMax)*ph;
       let g='';
       for(let t=0;t<=axisMax;t+=10){const y=Y(t);g+=`<line class="tgrid" x1="${ml}" y1="${y.toFixed(1)}" x2="${W-mr}" y2="${y.toFixed(1)}"/><text class="tylab" x="${ml-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${t}</text>`;}
@@ -794,16 +829,85 @@ body.light .pkmsub{color:#b0a899}
         g+=`<rect x="${(x-bw/2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="5" fill="url(#grad${cls})"${gl}/>`;
         g+=`<text class="tval" x="${x.toFixed(1)}" y="${(y-8).toFixed(1)}" text-anchor="middle">${v}</text>`;
         g+=`<text class="txlab" x="${x.toFixed(1)}" y="${H-9}" text-anchor="middle">${labs[i]}</text>`;});
-      return `<div class="vtchart"><div class="vtname ${cls}">${name}</div><svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="grad${cls}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col[0]}"/><stop offset="1" stop-color="${col[1]}"/></linearGradient><filter id="glow${cls}" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="0" stdDeviation="3.5" flood-color="#ffffff" flood-opacity="0.6"/></filter></defs>${g}</svg></div>`;
+      return `<div class="vtchart"><div class="vtname ${cls}">${name||''}</div><svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="grad${cls}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col[0]}"/><stop offset="1" stop-color="${col[1]}"/></linearGradient><filter id="glow${cls}" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="0" stdDeviation="3.5" flood-color="#ffffff" flood-opacity="0.6"/></filter></defs>${g}</svg></div>`;
     }
-    box.innerHTML=chart('Henry','tA',['#FF8FA3','#E03E5C'],[30,32,37],['01/02','02/03','03/04'])
-                +chart('Haaland','tB',['#7FA8E0','#3B6FB0'],[27,28,44],['20/21','21/22','22/23']);
+    box.innerHTML=chart(nameA||'A','tA',['#FF8FA3','#E03E5C'],serA.vals,serA.labs)
+                +chart(nameB||'B','tB',['#7FA8E0','#3B6FB0'],serB.vals,serB.labs);
   }
 
+  // load a player's multi-season G+A history (summed per season_year across leagues); last ~4 seasons
+  async function vvLoadTrajectory(apiId){
+    if(apiId==null) return {vals:[],labs:[]};
+    var sb=vvClient(); if(!sb) return {vals:[],labs:[]};
+    var res=await sb.from('player_card_view').select('season,season_year,goals,assists').eq('api_player_id',apiId).order('season_year',{ascending:true});
+    if(res.error || !res.data){ if(res.error) console.error('trajectory load failed:', res.error.message); return {vals:[],labs:[]}; }
+    var byYear={};
+    res.data.forEach(function(r){ var y=r.season_year; if(y==null) return; if(!byYear[y]) byYear[y]={out:0,season:r.season}; byYear[y].out+=(r.goals||0)+(r.assists||0); });
+    var years=Object.keys(byYear).map(Number).sort(function(a,b){return a-b;}).slice(-4);
+    return { vals: years.map(function(y){return byYear[y].out;}), labs: years.map(function(y){return fmtSeason(byYear[y].season);}) };
+  }
+
+  // ── Live AI verdict (generation only; caching is a later step) ──
+  function vvEsc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[ch];}); }
+  function vvSetStory(nameA,nameB,proseA,proseB){
+    var cols=document.querySelectorAll('#verdict .vstorycol');
+    function fill(col,dot,name,prose){ if(!col)return; var nm=col.querySelector('.vsname'); if(nm)nm.innerHTML='<span class="sdot '+dot+'"></span>'+vvEsc(name); var p=col.querySelectorAll('.vsprose'); if(p[0])p[0].textContent=prose; for(var i=1;i<p.length;i++)p[i].remove(); }
+    fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
+  }
+  function vvSetVerdict(verdict,h2h,engine,va,vb){
+    var vq=document.querySelectorAll('#verdict .vfinal .vquote');
+    var parts=[]; if(h2h)parts.push(h2h); if(verdict)parts.push(verdict); if(!parts.length)parts=[''];
+    for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0)t='“'+t; if(i===parts.length-1)t=t+'”'; vq[i].textContent=t; vq[i].style.display=''; } else { vq[i].style.display='none'; } }
+    var who=document.querySelector('#verdict .vwho');
+    if(who){ if(engine==='A')who.textContent=CMP_A.surname+' edges it , '+va+' to '+vb; else if(engine==='B')who.textContent=CMP_B.surname+' edges it , '+vb+' to '+va; else who.textContent='Level on VV , '+va+' apiece. The verdict decides.'; }
+  }
+  function vvGenerateVerdict(){
+    if(!(CMP_A&&CMP_B))return;
+    var key=pkKey(CMP_A)+'|'+pkKey(CMP_B);
+    if(window._vvVerdictPair===key)return;       // only regenerate when the pairing actually changes
+    window._vvVerdictPair=key;
+    var va=+CMP_A.vv||0, vb=+CMP_B.vv||0;
+    var engine = va>vb?'A':(vb>va?'B':'tie');
+    var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
+    if(ca)ca.classList.toggle('winner',engine==='A'); if(cb)cb.classList.toggle('winner',engine==='B');
+    var nameA=CMP_A.surname+' · '+CMP_A.year+' · '+CMP_A.clubname;
+    var nameB=CMP_B.surname+' · '+CMP_B.year+' · '+CMP_B.clubname;
+    vvSetStory(nameA,nameB,'Reading the season…','Reading the season…');
+    vvSetVerdict('Reading the season…','',engine,va,vb);
+    function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
+    function line(c){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c); }
+    var content='Compare these two player-seasons and return the VV Verdict JSON. p1 = Player A, p2 = Player B.\n'
+      +'Player A: '+line(CMP_A)+'\n'
+      +'Player B: '+line(CMP_B)+'\n'
+      +'Engine result: '+(engine==='tie'
+          ? 'TIE , the two VV scores are equal ('+va+' = '+vb+'). The engine has left this to you: break the tie on the full profile and pick a narrow winner.'
+          : 'Player '+engine+' wins on VV ('+va+' vs '+vb+'). Explain why; do not overturn.');
+    var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
+    var idA=CMP_A.card_id, idB=CMP_B.card_id;
+    if(idA!=null && idB!=null){
+      body.cardIdA=idA; body.cardIdB=idB;
+      body.winnerCardId = engine==='A'?idA : (engine==='B'?idB : null);   // null on tie
+    }
+    fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(resp){ return resp.json().then(function(data){ if(!resp.ok) throw new Error((data&&data.error)||('HTTP '+resp.status)); return data; }); })
+      .then(function(data){
+        var v;
+        if(data && data.verdict){ v=data.verdict; }                       // normalized (cache hit or freshly cached)
+        else { var text=(data&&data.content&&data.content[0]&&data.content[0].text)||''; text=text.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim(); v=JSON.parse(text); }
+        vvSetStory(nameA,nameB,v.p1||'',v.p2||'');
+        vvSetVerdict(v.verdict||'',v.h2h||'',engine,va,vb);
+      })
+      .catch(function(e){
+        console.error('verdict generation failed:', e&&e.message);
+        window._vvVerdictPair=null;   // allow a retry on the next Compare
+        var msg='The verdict could not be generated right now. Please try again.';
+        vvSetStory(nameA,nameB,msg,msg); vvSetVerdict(msg,'',engine,va,vb);
+      });
+  }
   // reveal handler , draw graphics when Compare is pressed
   document.querySelector('.settle').addEventListener('click',function(){
-    setTimeout(()=>{drawDualRadar();drawH2H();drawTrajectory();},60);
-    document.getElementById('cardA').classList.add('winner');
+    setTimeout(async ()=>{vvComputeSpokes();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);},60);
+    vvGenerateVerdict();
   });
   // redraw radar on mode toggle (grid contrast)
   var _mt=document.querySelector('.modetoggle'); if(_mt) _mt.addEventListener('click',function(){
