@@ -169,11 +169,10 @@
 
   // ── Prestige badge (Contract §3), bound to BAND not rt ────────────────
   // Generational badge = Elite band and above; Iconic badge = World Class band.
-  const GEN_BANDS = { 'Elite':1, 'Generational':1, 'S-Tier':1 };
   function prestigeFor(band){
     if(!band) return null;
-    if(GEN_BANDS[band]) return 'Generational';
-    if(band==='World Class') return 'Iconic';
+    if(band==='Generational') return 'Generational';
+    if(band==='Elite') return 'Iconic';
     return null;
   }
 
