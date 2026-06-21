@@ -219,6 +219,7 @@
   .mycards{display:grid;grid-template-columns:repeat(3,1fr);gap:30px 24px}
   @media (min-width:1560px){.mycards{grid-template-columns:repeat(4,1fr)}}
   .mycards{max-height:60vh;overflow-y:auto;overflow-x:hidden;padding:4px 4px 10px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.5) transparent;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 30px),transparent)}
+  .mycards.listmode,.mycards.compactmode{max-height:60vh;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;-webkit-mask-image:none;mask-image:none}
   .mycards::-webkit-scrollbar{width:7px}
   .mycards::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.5);border-radius:4px}
   .cardcell{display:flex;flex-direction:column;align-items:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
