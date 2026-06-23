@@ -31,30 +31,46 @@
     return L>0.6 ? '#1C1B1A' : '#fff';
   }
 
+  // ── renderTagPills (Tag Model v1.1) , shared PURE pill renderer.
+  //    tags: array of {name, family, tier}. Returns the pill-markup string, or ''.
+  //    Ordering AGE > signature(ATT/MID/DEF) > CROSS with stable index tiebreak ,
+  //    byte-identical to the logic in buildCard / pillHTML. Callers own the empty,
+  //    placeholder and legacy-d.tag branches (this function never emits them). ──
+  function renderTagPills(tags, opts){
+    if (!Array.isArray(tags) || !tags.length) return '';
+    opts = opts || {};
+    const baseClass = opts.baseClass || 'chtag';
+    const max       = (opts.max != null) ? opts.max : 3;
+    const el        = opts.el || 'span';
+    const innerWrap = !!opts.innerWrap;
+    const PRIO = { AGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
+    const prio = f => (f in PRIO) ? PRIO[f] : 1;
+    return tags
+      .map((t, i) => ({ t, i }))                                   // keep original index for stable tiebreak
+      .sort((a, b) => prio(a.t.family) - prio(b.t.family) || a.i - b.i)
+      .slice(0, max)
+      .map(x => {
+        const famClass = (x.t.family in PRIO) ? `${baseClass}-${String(x.t.family).toLowerCase()}` : '';
+        const inner    = innerWrap ? `<span>${x.t.name}</span>` : x.t.name;
+        return `<${el} class="${baseClass} ${famClass}">${inner}</${el}>`;
+      })
+      .join('');
+  }
+
   // ── buildCard , canonical Version A, with myclub's hidden-placeholder
   //    empty-tag branch adopted as the standard (keeps grid rows aligned). ──
   function buildCard(d, cw){
     const flag = d.flag ? `<span class="cflag">${d.flag}</span> ` : '';
     const full = d.full ? `<div class="full">${d.full}</div>` : '';
-    // ── Tag pills (Tag Model v1.1) , consume the d.tags array; ordered
-    //    AGE > signature(ATT/MID/DEF) > CROSS, capped at 3. tags present but
-    //    empty -> invisible placeholder (reserves row height). tags absent ->
-    //    legacy d.tag string fallback, else placeholder. Family-colour CSS is
-    //    step 3b; the chtag-att/mid/def/age/cross classes are emitted now and
-    //    harmlessly inherit base .chtag styling until then. ──
-    const TAG_FAM_CLASS = { ATT:'chtag-att', MID:'chtag-mid', DEF:'chtag-def', AGE:'chtag-age', CROSS:'chtag-cross' };
-    const TAG_FAM_PRIO  = { AGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
+    // ── Tag pills (Tag Model v1.1) , built via the shared renderTagPills helper
+    //    (ordering / slice / family-class all live there). tags present but empty
+    //    -> invisible placeholder (reserves row height). tags absent -> legacy
+    //    d.tag string fallback, else placeholder. ──
     const tagPlaceholder = `<div class="chtag" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`;
     let tag;
     if (Array.isArray(d.tags)) {
       if (d.tags.length) {
-        const prio = f => (f in TAG_FAM_PRIO) ? TAG_FAM_PRIO[f] : 1;
-        tag = d.tags
-          .map((t, i) => ({ t, i }))                                       // keep original index for stable tiebreak
-          .sort((a, b) => prio(a.t.family) - prio(b.t.family) || a.i - b.i)
-          .slice(0, 3)
-          .map(x => `<div class="chtag ${TAG_FAM_CLASS[x.t.family] || ''}"><span>${x.t.name}</span></div>`)
-          .join('');
+        tag = renderTagPills(d.tags, { baseClass:'chtag', max:3, el:'div', innerWrap:true });
       } else {
         tag = tagPlaceholder;                                             // tags present but empty -> placeholder (req 3)
       }
@@ -512,7 +528,7 @@
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
-  const api = { inkFor, buildCard, rowToCard, fmtSeason, surnameOf, flagFor,
+  const api = { inkFor, buildCard, renderTagPills, getVVTags, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, radarFor, confidenceFor, vvClient };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
