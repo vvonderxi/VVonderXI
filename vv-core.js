@@ -434,9 +434,9 @@
     if (elig.complete && attackElite && defElite)
       tags.push({ name: 'Complete', family: 'CROSS', tier: 'granular' });
 
-    // Workhorse , ever-present, top minutes (Universal)
+    // Iron Man , ever-present, top minutes (Universal)
     if (elig.workhorse && ge(m, t.minutes_p90))
-      tags.push({ name: 'Workhorse', family: 'CROSS', tier: 'universal' });
+      tags.push({ name: 'Iron Man', family: 'CROSS', tier: 'universal' });
 
     // ========================= AGE FAMILY =========================
     // Wonderkid , young AND elite season (Universal). Always eligible.
