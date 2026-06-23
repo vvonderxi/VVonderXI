@@ -36,7 +36,31 @@
   function buildCard(d, cw){
     const flag = d.flag ? `<span class="cflag">${d.flag}</span> ` : '';
     const full = d.full ? `<div class="full">${d.full}</div>` : '';
-    const tag = d.tag ? `<div class="chtag"><span>${d.tag}</span></div>` : `<div class="chtag" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`;
+    // ── Tag pills (Tag Model v1.1) , consume the d.tags array; ordered
+    //    AGE > signature(ATT/MID/DEF) > CROSS, capped at 3. tags present but
+    //    empty -> invisible placeholder (reserves row height). tags absent ->
+    //    legacy d.tag string fallback, else placeholder. Family-colour CSS is
+    //    step 3b; the chtag-att/mid/def/age/cross classes are emitted now and
+    //    harmlessly inherit base .chtag styling until then. ──
+    const TAG_FAM_CLASS = { ATT:'chtag-att', MID:'chtag-mid', DEF:'chtag-def', AGE:'chtag-age', CROSS:'chtag-cross' };
+    const TAG_FAM_PRIO  = { AGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
+    const tagPlaceholder = `<div class="chtag" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`;
+    let tag;
+    if (Array.isArray(d.tags)) {
+      if (d.tags.length) {
+        const prio = f => (f in TAG_FAM_PRIO) ? TAG_FAM_PRIO[f] : 1;
+        tag = d.tags
+          .map((t, i) => ({ t, i }))                                       // keep original index for stable tiebreak
+          .sort((a, b) => prio(a.t.family) - prio(b.t.family) || a.i - b.i)
+          .slice(0, 3)
+          .map(x => `<div class="chtag ${TAG_FAM_CLASS[x.t.family] || ''}"><span>${x.t.name}</span></div>`)
+          .join('');
+      } else {
+        tag = tagPlaceholder;                                             // tags present but empty -> placeholder (req 3)
+      }
+    } else {
+      tag = d.tag ? `<div class="chtag"><span>${d.tag}</span></div>` : tagPlaceholder;  // legacy fallback (req 4) / placeholder
+    }
     const c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
     // number ink: on a split badge the number sits centred, so judge against the dominant/left colour
     const ink = inkFor(c1);
@@ -219,6 +243,214 @@
     return Math.round(2 + frac*3);                 // linear 2..5
   }
 
+  /* ════════════════════════════════════════════════════════════════════
+   *  getVVTags() , v1 PROFILE TAG ENGINE  (ported verbatim from
+   *  getVVTags_v1_draft.js , round-4 tuned thresholds. SOURCE OF TRUTH.)
+   *  - Position-relative thresholds per coarse family (DEF/MID/FWD/GK).
+   *  - Eligibility gating: fine position_pool decides WHICH tags apply.
+   *  - Null-safe: granular tags don't fire if the stat is missing.
+   *  - A season earns EVERY tag it crosses; the display layer trims.
+   * ════════════════════════════════════════════════════════════════════ */
+  // Threshold lookup, baked from live data (player_card_view, min 300 mins).
+  // Per coarse family. Values are per-90 unless noted. p90 = top 10%, etc.
+  const TAG_THRESHOLDS = {
+    FWD: {
+      goals90_p90: 0.598, goals90_p85: 0.528, goals90_p80: 0.477,
+      assists90_p90: 0.318,
+      keypass90_p90: 2.000, keypass90_p80: 1.645,
+      passes90_p90: 35.099, passes90_p80: 30.132, passacc_p80: 78.0,
+      drib90_p90: 2.440, drib90_p85: 2.124,
+      defact90_p90: 2.651, defact90_p70: 1.816,
+      int90_p90: 0.917, duelswon90_p90: 8.081,
+      conversion_p90: 0.286, minutes_p90: 2571,
+    },
+    MID: {
+      goals90_p90: 0.283, goals90_p85: 0.238, goals90_p80: 0.204,
+      assists90_p90: 0.286,
+      keypass90_p90: 2.115, keypass90_p80: 1.712,
+      passes90_p90: 59.724, passes90_p80: 52.148, passacc_p80: 83.0,
+      drib90_p90: 1.952, drib90_p85: 1.677,
+      defact90_p90: 4.873, defact90_p70: 3.698,
+      int90_p90: 1.983, duelswon90_p90: 7.450,
+      conversion_p90: 0.250, minutes_p90: 2703,
+    },
+    DEF: {
+      goals90_p90: 0.125, goals90_p85: 0.102, goals90_p80: 0.085,
+      assists90_p90: 0.193,
+      keypass90_p90: 1.216, keypass90_p80: 0.916,
+      passes90_p90: 62.508, passes90_p80: 54.138, passacc_p80: 83.0,
+      drib90_p90: 1.161, drib90_p85: 0.958,
+      defact90_p90: 5.055, defact90_p70: 4.091,
+      int90_p90: 2.418, duelswon90_p90: 6.571,
+      conversion_p90: 0.263, minutes_p90: 2836,
+    },
+    GK: { // GKs earn NO profile tags in v1 (no keeper stats exist). Age + prestige only.
+      minutes_p90: 3252,
+    },
+  };
+
+  function per90(value, minutes) {
+    if (value == null || !minutes || minutes <= 0) return null;
+    return value / (minutes / 90);
+  }
+
+  // Map fine position_pool -> eligibility flags. Falls back to coarse family
+  // when pool is null (38% of seasons, mostly pre-2015).
+  function eligibility(fam, pool) {
+    // pool can be: CB, RB, LB, CDM, CM, CAM, ST, LW, RW, GK, UNK, or null
+    const p = pool || '';
+    const wide = (p === 'LW' || p === 'RW' || p === 'RB' || p === 'LB');
+    const centreBack = (p === 'CB');
+    const striker = (p === 'ST');
+    return {
+      // Attacker tags
+      goalMachine: fam === 'FWD' || fam === 'MID',          // anyone who can score
+      clinical:    fam === 'FWD' || fam === 'MID',
+      provider:    fam !== 'GK',                             // any outfielder can provide (GK excluded)
+      poacher:     striker || (fam === 'FWD' && !pool),      // strikers (or coarse-FWD fallback)
+      winger:      wide || (fam === 'FWD' && !pool),         // wide players (or coarse-FWD fallback)
+      // Midfield tags
+      playmaker:   fam === 'MID' || fam === 'FWD',
+      maestro:     fam === 'MID',
+      deepPlaymaker: fam === 'MID' || fam === 'DEF',         // deep mids + ball-playing CBs
+      engineRoom:  fam === 'MID',
+      dribbler:    fam === 'MID' || fam === 'FWD',
+      // Defender tags , MID only via defensive/central pools (CDM/CM), never CAM;
+      // null-pool MIDs excluded (under-tag rather than mis-tag attacking mids).
+      theWall:     fam === 'DEF' || (fam === 'MID' && (pool === 'CDM' || pool === 'CM')),
+      destroyer:   fam === 'DEF' || (fam === 'MID' && pool === 'CDM'),
+      ballHawk:    fam === 'DEF' || (fam === 'MID' && (pool === 'CDM' || pool === 'CM')),
+      ballPlaying: centreBack || (fam === 'DEF' && !pool),   // CBs (or coarse-DEF fallback)
+      // Cross-dimensional
+      complete:    fam !== 'GK',
+      workhorse:   fam !== 'GK',
+      // Age (handled separately, always eligible)
+    };
+  }
+
+  // getVVTags(row) -> array of tag objects { name, family, tier }
+  // families: ATT (red), MID (green), DEF (blue), AGE, CROSS
+  function getVVTags(row) {
+    const tags = [];
+    const fam = row.position;            // coarse: DEF/MID/FWD/GK (100% populated)
+    const pool = row.position_pool;      // fine: CB/RB/.../null (62% populated)
+    const t = TAG_THRESHOLDS[fam];
+    if (!t) return tags;                 // unknown family -> no tags
+
+    const m = row.minutes;
+    const elig = eligibility(fam, pool);
+
+    // --- per-90 metrics (null-safe) ---
+    const goals90    = per90(row.goals, m);
+    const assists90  = per90(row.assists, m);
+    const keypass90  = per90(row.passes_key, m);
+    const passes90   = per90(row.passes_total, m);
+    const drib90     = per90(row.dribbles_success, m);
+    const defact90   = per90(
+      (row.tackles_total == null ? null
+        : row.tackles_total + (row.interceptions || 0) + (row.tackles_blocks || 0)),
+      m);
+    const int90      = per90(row.interceptions, m);
+    const duelswon90 = per90(row.duels_won, m);
+    const passAcc    = row.passes_accuracy;
+    const conversion = (row.shots_total > 0) ? row.goals / row.shots_total : null;
+
+    const ge = (v, thr) => v != null && v >= thr;   // >= threshold, null-safe
+    const le = (v, thr) => v != null && v <= thr;   // <= threshold, null-safe
+
+    // ========================= ATTACKER FAMILY (red) =========================
+    // Goal Machine , high goal VOLUME (Universal)
+    const gotGoalMachine = elig.goalMachine && ge(goals90, t.goals90_p90);
+    if (gotGoalMachine)
+      tags.push({ name: 'Goal Machine', family: 'ATT', tier: 'universal' });
+
+    // Marksman , good-but-not-elite scorer, the tier BELOW Goal Machine (no double-tag)
+    if (elig.goalMachine && !gotGoalMachine && ge(goals90, t.goals90_p85 * 0.907))
+      tags.push({ name: 'Marksman', family: 'ATT', tier: 'universal' });
+
+    // Clinical , high CONVERSION + real shot volume (Granular)
+    if (elig.clinical && ge(conversion, t.conversion_p90 * 0.85) && row.shots_total >= 25)
+      tags.push({ name: 'Clinical', family: 'ATT', tier: 'granular' });
+
+    // Provider , high ASSISTS (Universal)
+    if (elig.provider && ge(assists90, t.assists90_p90))
+      tags.push({ name: 'Provider', family: 'ATT', tier: 'universal' });
+
+    // Poacher , scores BUT does little else (Granular, compound , WILL NEED TUNING)
+    if (elig.poacher && ge(goals90, t.goals90_p80)
+        && le(keypass90, t.keypass90_p80 * 0.7)   // low creation
+        && le(drib90, t.drib90_p85 * 0.7))        // low dribbling
+      tags.push({ name: 'Poacher', family: 'ATT', tier: 'granular' });
+
+    // The Winger , dribbles + (assists or progression) (Granular)
+    if (elig.winger && ge(drib90, t.drib90_p85 * 0.92)
+        && (ge(assists90, t.assists90_p90 * 0.7) || ge(keypass90, t.keypass90_p80)))
+      tags.push({ name: 'The Winger', family: 'ATT', tier: 'granular' });
+
+    // ========================= MIDFIELD FAMILY (green) =========================
+    // Playmaker , high KEY PASSES (Granular)
+    if (elig.playmaker && ge(keypass90, t.keypass90_p90 * 0.92))
+      tags.push({ name: 'Playmaker', family: 'MID', tier: 'granular' });
+
+    // Maestro , creates AND controls (Granular, compound)
+    if (elig.maestro && ge(keypass90, t.keypass90_p80) && ge(passes90, t.passes90_p80 * 0.92))
+      tags.push({ name: 'Maestro', family: 'MID', tier: 'granular' });
+
+    // Deep-Lying Playmaker , high pass VOLUME + ACCURACY (Granular, compound)
+    if (elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.87) && ge(passAcc, t.passacc_p80 * 0.97))
+      tags.push({ name: 'Deep-Lying Playmaker', family: 'MID', tier: 'granular' });
+
+    // Engine Room , high pass volume + defensive work (box-to-box) (Granular, compound)
+    if (elig.engineRoom && ge(passes90, t.passes90_p80 * 0.92) && ge(defact90, t.defact90_p70 * 0.92))
+      tags.push({ name: 'Engine Room', family: 'MID', tier: 'granular' });
+
+    // The Dribbler , high DRIBBLE success (Granular)
+    if (elig.dribbler && ge(drib90, t.drib90_p90 * 0.92))
+      tags.push({ name: 'The Dribbler', family: 'MID', tier: 'granular' });
+
+    // ========================= DEFENDER FAMILY (blue) =========================
+    // The Wall , high DEFENSIVE VOLUME (Granular)
+    if (elig.theWall && ge(defact90, t.defact90_p90 * 0.92 * 1.04))
+      tags.push({ name: 'The Wall', family: 'DEF', tier: 'granular' });
+
+    // Destroyer , high DUELS WON (Granular)
+    if (elig.destroyer && ge(duelswon90, t.duelswon90_p90 * 0.92 * 1.04)
+        && ge(defact90, t.defact90_p70))   // real ball-winner: duels AND defensive actions (excludes wing-backs)
+      tags.push({ name: 'Destroyer', family: 'DEF', tier: 'granular' });
+
+    // Ball Hawk , high INTERCEPTIONS (Granular)
+    if (elig.ballHawk && ge(int90, t.int90_p90 * 0.92))
+      tags.push({ name: 'Ball Hawk', family: 'DEF', tier: 'granular' });
+
+    // Ball-Playing Defender , solid defensively + high accurate passing (Granular, compound)
+    if (elig.ballPlaying && ge(defact90, t.defact90_p70 * 0.85)
+        && ge(passes90, t.passes90_p80 * 0.80) && ge(passAcc, t.passacc_p80 * 0.93))
+      tags.push({ name: 'Ball-Playing Defender', family: 'DEF', tier: 'granular' });
+
+    // ========================= CROSS-DIMENSIONAL =========================
+    // Complete , elite at BOTH ends (Granular, compound , WILL NEED TUNING)
+    const attackElite = ge(goals90, t.goals90_p85) || ge(keypass90, t.keypass90_p80);
+    const defElite = ge(defact90, t.defact90_p70);
+    if (elig.complete && attackElite && defElite)
+      tags.push({ name: 'Complete', family: 'CROSS', tier: 'granular' });
+
+    // Workhorse , ever-present, top minutes (Universal)
+    if (elig.workhorse && ge(m, t.minutes_p90))
+      tags.push({ name: 'Workhorse', family: 'CROSS', tier: 'universal' });
+
+    // ========================= AGE FAMILY =========================
+    // Wonderkid , young AND elite season (Universal). Always eligible.
+    const age = row.season_age != null ? row.season_age : row.age;
+    if (age != null && age <= 21 && row.rt != null && row.rt >= 82)
+      tags.push({ name: 'Wonderkid', family: 'AGE', tier: 'universal' });
+
+    // The Last Dance , veteran AND still elite (Universal). Mutually exclusive with Wonderkid.
+    else if (age != null && age >= 34 && row.rt != null && row.rt >= 82)
+      tags.push({ name: 'The Last Dance', family: 'AGE', tier: 'universal' });
+
+    return tags;
+  }
+
   function rowToCard(row){
     if(!row) return null;
     const rt   = row.rt != null ? Math.round(row.rt) : null;
@@ -252,7 +484,8 @@
 
       // ── Seams not yet sourced (left blank by design) ──
       number:   null,        // shirt number , not in the view (cosmetic, open item)
-      tag:      '',          // Tag Model v1.1 not wired yet -> hidden-placeholder pill
+      tag:      '',                 // legacy placeholder, kept falsy for backward-compat; remove after step 3 verified
+      tags:     getVVTags(row),     // Tag Model v1.1 , array of {name,family,tier}; render consumes in step 3
       photo:    undefined    // headshot URL pattern unresolved -> silhouette fallback
     };
   }
