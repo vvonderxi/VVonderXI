@@ -92,6 +92,14 @@
   .rtag.purple{background:rgba(150,95,205,.15);border-color:rgba(150,95,205,.5);color:#8b5bc8}
   .rtag.slate{background:rgba(120,120,135,.14);border-color:rgba(120,120,135,.45);color:#777785}
   .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
+  /* Tag Model v1.1 , family-coloured LIST pills (engine tags). SAME gradients as the
+     grid .chtag-* ; shape (font 10px / padding 3px 9px / radius 999px) inherits from
+     base .rtag at :86 , i.e. smaller than the grid pills. Override colour only. */
+  .rtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A);border-color:transparent;color:#fff}
+  .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
+  .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
+  .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
+  .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
   .rstats{grid-area:stats;display:flex;gap:18px;justify-content:center}
   .rstat{text-align:center}
   .rstat b{font-family:'Archivo';font-weight:800;font-size:16px;color:var(--cream);display:block;line-height:1}
@@ -373,7 +381,16 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function pillHTML(d,i){
     var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
     var gold=d.tag&&d.tag.indexOf('Golden Boot')>=0;
-    var tag=d.tag?`<span class="rtag ${rankTagColor(d.tag)}">${d.tag}</span>`:'';
+    // ── Profile tags (Tag Model v1.1): engine array d.tags, AGE-first then
+    //    signature(ATT/MID/DEF) then CROSS, top 2, family-coloured. Empty -> nothing. ──
+    var TAG_PRIO={AGE:0,ATT:1,MID:1,DEF:1,CROSS:2}, TAG_CLS={ATT:'rtag-att',MID:'rtag-mid',DEF:'rtag-def',AGE:'rtag-age',CROSS:'rtag-cross'};
+    var tag=Array.isArray(d.tags)
+      ? d.tags.map(function(t,idx){return {t:t,idx:idx};})
+              .sort(function(a,b){var pa=(a.t.family in TAG_PRIO)?TAG_PRIO[a.t.family]:1,pb=(b.t.family in TAG_PRIO)?TAG_PRIO[b.t.family]:1;return pa-pb||a.idx-b.idx;})
+              .slice(0,2)
+              .map(function(x){return `<span class="rtag ${TAG_CLS[x.t.family]||''}">${x.t.name}</span>`;})
+              .join('')
+      : '';
     return `<div class="rrow${gold?' gold':''}" onclick="goCard(${d.card_id==null?'':d.card_id})">
       <div class="rrank">${i+1}</div>
       <div class="rident"><span class="rflag">${d.flag||''}</span><div class="rinfo"><div class="rname">${d.surname} <span class="ryr">${d.year}</span></div><div class="rmeta">${d.clubname} &middot; ${d.pos}</div></div></div>
