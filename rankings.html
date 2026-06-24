@@ -65,7 +65,7 @@
   body.light .ranksearch input{color:var(--charcoal)}
   body.light .rankempty{color:rgba(40,36,30,0.5)}
   /* ===== search-result pills (linear mini-cards, cloned from the search page) ===== */
-  .rrow{display:grid;grid-template-columns:30px minmax(0,1fr) 280px 96px 56px 30px;grid-template-areas:"rank ident tags stats card star";align-items:center;column-gap:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:15px 24px;margin-bottom:10px;cursor:pointer;transition:transform .18s,border-color .18s}
+  .rrow{display:grid;grid-template-columns:30px minmax(0,max-content) max-content minmax(16px,1fr) 96px 56px 30px;grid-template-areas:"rank ident tags gap stats card star";align-items:center;column-gap:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:15px 24px;margin-bottom:10px;cursor:pointer;transition:transform .18s,border-color .18s}
   .rrow:hover{transform:translateY(-2px);border-color:rgba(255,92,122,0.25)}
   .rrow.gold{background:linear-gradient(135deg,rgba(232,184,75,0.16),rgba(255,255,255,0.04));border-color:rgba(232,184,75,0.4)}
   body.light .rrow{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
@@ -76,11 +76,11 @@
   .rident{grid-area:ident;display:flex;align-items:center;gap:13px;min-width:0}
   .rflag{font-size:22px;flex:none}
   .rinfo{min-width:0}
-  .rname{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;color:var(--cream)}
+  .rname{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   body.light .rname{color:var(--charcoal)}
   .rmeta{font-family:'Archivo';font-size:13.5px;color:rgba(243,237,224,0.6);margin-top:2px;white-space:nowrap}
   body.light .rmeta{color:#8a8276}
-  .rtags{grid-area:tags;display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;min-width:0}
+  .rtags{grid-area:tags;display:flex;align-items:center;gap:7px;flex-wrap:nowrap;overflow:hidden;min-width:0;max-width:260px}
   .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
   .rtag.gold{background:rgba(232,184,75,.16);border-color:rgba(232,184,75,.55);color:#b5871a}
   .rtag.pink{background:rgba(255,92,122,.14);border-color:rgba(255,92,122,.5);color:#e0466a}
@@ -98,7 +98,7 @@
   .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
   .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
   .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
-  .rstats{grid-area:stats;display:flex;gap:18px;justify-content:center;margin-left:24px}
+  .rstats{grid-area:stats;display:flex;gap:18px;justify-content:center}
   .rstat{text-align:center}
   .rstat b{font-family:'Archivo';font-weight:800;font-size:16px;color:var(--cream);display:block;line-height:1}
   body.light .rstat b{color:var(--charcoal)}
