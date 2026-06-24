@@ -471,7 +471,6 @@
     if(!row) return null;
     const rt   = row.rt != null ? Math.round(row.rt) : null;
     let band = bandFor(rt);
-    if(band==='Generational' && ((row.goals||0) + (row.assists||0)) < 35) band = 'Elite';
     return {
       card_id:  row.card_id != null ? row.card_id : null,   // identity, links to card.html?id=
       api_player_id: row.api_player_id != null ? row.api_player_id : null,  // stable player id (trajectory query)
