@@ -383,14 +383,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var gold=d.tag&&d.tag.indexOf('Golden Boot')>=0;
     // ── Profile tags (Tag Model v1.1): engine array d.tags, AGE-first then
     //    signature(ATT/MID/DEF) then CROSS, top 2, family-coloured. Empty -> nothing. ──
-    var TAG_PRIO={AGE:0,ATT:1,MID:1,DEF:1,CROSS:2}, TAG_CLS={ATT:'rtag-att',MID:'rtag-mid',DEF:'rtag-def',AGE:'rtag-age',CROSS:'rtag-cross'};
-    var tag=Array.isArray(d.tags)
-      ? d.tags.map(function(t,idx){return {t:t,idx:idx};})
-              .sort(function(a,b){var pa=(a.t.family in TAG_PRIO)?TAG_PRIO[a.t.family]:1,pb=(b.t.family in TAG_PRIO)?TAG_PRIO[b.t.family]:1;return pa-pb||a.idx-b.idx;})
-              .slice(0,2)
-              .map(function(x){return `<span class="rtag ${TAG_CLS[x.t.family]||''}">${x.t.name}</span>`;})
-              .join('')
-      : '';
+    var tag = renderTagPills(d.tags, { baseClass:'rtag', max:2 });
     return `<div class="rrow${gold?' gold':''}" onclick="goCard(${d.card_id==null?'':d.card_id})">
       <div class="rrank">${i+1}</div>
       <div class="rident"><span class="rflag">${d.flag||''}</span><div class="rinfo"><div class="rname">${d.surname} <span class="ryr">${d.year}</span></div><div class="rmeta">${d.clubname} &middot; ${d.pos}</div></div></div>
