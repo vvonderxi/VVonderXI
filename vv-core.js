@@ -57,6 +57,17 @@
       .join('');
   }
 
+  // ── renderPrestige (Contract §3) , shared prestige-pill renderer, mirrors
+  //    renderTagPills's shape. baseClass 'chtag' (card) / 'rtag' (List). Returns
+  //    the pill markup or '' (null/non-prestige). Callers prepend it to tags. ──
+  function renderPrestige(prestige, opts){
+    opts = opts || {};
+    var base = opts.baseClass || 'chtag';
+    if(prestige === 'Generational') return '<div class="'+base+' '+base+'-prestige-gen"><span>GENERATIONAL</span></div>';
+    if(prestige === 'Iconic') return '<div class="'+base+' '+base+'-prestige-ico"><span>ICONIC</span></div>';
+    return '';
+  }
+
   // ── buildCard , canonical Version A, with myclub's hidden-placeholder
   //    empty-tag branch adopted as the standard (keeps grid rows aligned). ──
   function buildCard(d, cw){
@@ -78,13 +89,8 @@
       tag = d.tag ? `<div class="chtag"><span>${d.tag}</span></div>` : tagPlaceholder;  // legacy fallback (req 4) / placeholder
     }
     // ── Prestige tier pill (Contract §3) , the LOUD tag, leads the profile pills.
-    //    Generational / Iconic only; null -> nothing. Reuses the .chtag row so it
-    //    stacks above ${tag}; the empty-placeholder logic above is untouched. ──
-    const prestige = d.prestige==='Generational'
-      ? `<div class="chtag chtag-prestige-gen"><span>GENERATIONAL</span></div>`
-      : d.prestige==='Iconic'
-      ? `<div class="chtag chtag-prestige-ico"><span>ICONIC</span></div>`
-      : '';
+    //    Built via the shared renderPrestige helper; .chtag row stacks above ${tag}. ──
+    const prestige = renderPrestige(d.prestige, {baseClass:'chtag'});
     const c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
     // number ink: on a split badge the number sits centred, so judge against the dominant/left colour
     const ink = inkFor(c1);
@@ -535,7 +541,7 @@
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
-  const api = { inkFor, buildCard, renderTagPills, getVVTags, rowToCard, fmtSeason, surnameOf, flagFor,
+  const api = { inkFor, buildCard, renderTagPills, renderPrestige, getVVTags, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, radarFor, confidenceFor, vvClient };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle

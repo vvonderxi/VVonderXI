@@ -90,6 +90,9 @@
   .rtag.purple{background:rgba(150,95,205,.15);border-color:rgba(150,95,205,.5);color:#8b5bc8}
   .rtag.slate{background:rgba(120,120,135,.14);border-color:rgba(120,120,135,.45);color:#777785}
   .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
+  /* prestige pills , the loudest List tag (sized by base .rtag at :84; colour only) */
+  .rtag-prestige-gen{background:linear-gradient(90deg,#F3DA88,#E8B84B);border-color:transparent;color:#16120e;font-weight:800}
+  .rtag-prestige-ico{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F3DA88;font-weight:800}
   /* Tag Model v1.1 , family-coloured LIST pills (engine tags). SAME gradients as the
      grid .chtag-* ; shape (font 10px / padding 3px 9px / radius 999px) inherits from
      base .rtag at :86 , i.e. smaller than the grid pills. Override colour only. */
@@ -402,13 +405,15 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function pillHTML(d,i){
     var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
     var gold=d.tag&&d.tag.indexOf('Golden Boot')>=0;
-    // ── Profile tags (Tag Model v1.1): engine array d.tags, AGE-first then
-    //    signature(ATT/MID/DEF) then CROSS, top 2, family-coloured. Empty -> nothing. ──
-    var tag = renderTagPills(d.tags, { baseClass:'rtag', max:2 });
+    // ── Prestige pill (Contract §3) leads; profile tags follow. When a prestige
+    //    pill is present, cap profile tags at 1 so the nowrap/260px .rtags zone
+    //    doesn't clip (it holds ~2 small pills total). ──
+    var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
+    var tag = renderTagPills(d.tags, { baseClass:'rtag', max: (d.prestige ? 1 : 2) });
     return `<div class="rrow${gold?' gold':''}" onclick="goCard(${d.card_id==null?'':d.card_id})">
       <div class="rrank">${i+1}</div>
       <div class="rident"><span class="rflag">${d.flag||''}</span><div class="rinfo"><div class="rname">${d.surname}</div><div class="rmeta">${d.clubname} &middot; ${d.pos} &middot; ${d.year}</div></div></div>
-      <div class="rtags">${tag}</div>
+      <div class="rtags">${prestige}${tag}</div>
       <div class="rstats"><div class="rstat"><b>${d.goals}</b><span>Goals</span></div><div class="rstat"><b>${d.assistsText}</b><span>Assists</span></div></div>
       <div class="rmini${tier}"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">${d.vv}</span></div>
       <button class="rstar" onclick="event.stopPropagation();this.classList.toggle('on');this.innerHTML=this.classList.contains('on')?'&#9733;':'&#9734;'">&#9734;</button>
