@@ -71,6 +71,8 @@
   body.light #cardgrid.pillmode,body.light #cardgrid.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}
   .gridwrap.pillmode,.gridwrap.compactmode{max-width:2200px}
   .urow{display:grid;grid-template-columns:44px minmax(0,2.2fr) 56px minmax(0,1.5fr) 60px 300px 60px 60px 60px;align-items:center;cursor:pointer;transition:background .14s}
+  /* id-level specificity so the grid wins over the Cards `.cardgrid > div` flex rule → row spans full width edge-to-edge */
+  #cardgrid.pillmode > .urow,#cardgrid.compactmode > .urow{display:grid;justify-content:stretch}
   .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
   body.light .urow+.urow{border-color:rgba(0,0,0,0.055)}
   .urow:hover{background:rgba(255,255,255,0.04)}
@@ -143,8 +145,8 @@
   #cardgrid::-webkit-scrollbar-thumb:hover{background:rgba(255,92,122,0.8)}
   body.light #cardgrid::-webkit-scrollbar-track{background:rgba(0,0,0,0.04)}
   @media (max-width:560px){#cardgrid{max-height:calc(100dvh - 340px)}}
-  .cardgrid > div{display:flex;justify-content:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-  .cardgrid > div:hover{transform:translateY(-8px)}
+  .cardgrid:not(.pillmode):not(.compactmode) > div{display:flex;justify-content:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+  .cardgrid:not(.pillmode):not(.compactmode) > div:hover{transform:translateY(-8px)}
   .cardgrid .vvcard{cursor:pointer}
 
   /* wide breakpoints , cap and re-column so it never sprawls or crams */
