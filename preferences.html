@@ -96,6 +96,29 @@
   .vvcard .cname .full{font-family:'Archivo';font-weight:600;font-size:calc(var(--cw)*0.054);color:#8a8276;margin-top:calc(var(--cw)*0.022)}
   .vvcard .cname .sub{font-family:'Archivo';font-weight:700;font-size:calc(var(--cw)*0.044);letter-spacing:0.04em;text-transform:uppercase;color:#8a8276;margin-top:calc(var(--cw)*0.025)}
 
+  /* ===== Prestige whole-card treatment ===== */
+  /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 0 0 1.5px rgba(232,184,75,0.45),0 22px 50px -22px rgba(0,0,0,0.85)}
+  .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
+  .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
+  .vvcard.gen .vv .a{color:#F0EAD9}
+  .vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
+  .vvcard.gen .cga .divider{background:rgba(255,255,255,0.15)}
+  .vvcard.gen .cname .full,.vvcard.gen .cname .sub{color:rgba(240,234,217,0.6)}
+
+  /* ICONIC , bright GOLD card, dark text */
+  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 0 0 1.5px rgba(120,80,10,0.35),0 22px 50px -22px rgba(176,120,20,0.7)}
+  .vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
+  .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
+  .vvcard.iconic .vv .a{color:#2a1d03}
+  .vvcard.iconic .cga .col .l{color:rgba(42,29,3,0.6)}
+  .vvcard.iconic .cga .divider{background:rgba(0,0,0,0.18)}
+  .vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.65)}
+
+  /* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
+  .vvcard .chtag-prestige-gen span{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.11em;font-size:calc(var(--cw)*0.044);padding:calc(var(--cw)*0.026) calc(var(--cw)*0.06);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+  .vvcard .chtag-prestige-ico span{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;font-weight:900;letter-spacing:0.11em;font-size:calc(var(--cw)*0.044);padding:calc(var(--cw)*0.026) calc(var(--cw)*0.06);box-shadow:0 8px 20px -7px rgba(0,0,0,0.6)}
+
   /* ===================== MY CLUB , LAYOUT ===================== */
   .clublayout{display:grid;grid-template-columns:380px 1fr;gap:42px;padding:26px 48px 70px;max-width:1340px}
 
