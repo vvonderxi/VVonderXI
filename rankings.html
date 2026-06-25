@@ -386,7 +386,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
     g.innerHTML=list.map(function(d,i){return rankCompactHTML(d,i+1);}).join('');
   }
-  function rankCompactHTML(d,rk){ var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
+  function rankCompactHTML(d,rk){ var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
     return '<div class="cmprow" onclick="goCard('+(d.card_id==null?'':d.card_id)+')">'
       +'<span class="cmprail" style="background:'+(d.club1||'#9a948a')+'"></span>'
       +'<span class="cmprk">'+rk+'</span>'
@@ -403,7 +403,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function vvNorm(s){return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
   function rankTagColor(label){var T={Iconic:'pink',Talisman:'pink',Generational:'gen','Golden Boot':'gold',Prestige:'gold',Maestro:'blue',Clinical:'green',Poacher:'green',Pace:'coral',Wonderkid:'purple',Rock:'slate',Engine:'slate','Target Man':'slate','Top Assist':'blue'};for(var k in T){if(label.indexOf(k)>=0)return T[k];}return 'slate';}
   function pillHTML(d,i){
-    var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
+    var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
     var gold=d.tag&&d.tag.indexOf('Golden Boot')>=0;
     // ── Prestige pill (Contract §3) leads; profile tags follow. When a prestige
     //    pill is present, cap profile tags at 1 so the nowrap/260px .rtags zone
