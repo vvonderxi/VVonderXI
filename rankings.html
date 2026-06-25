@@ -64,23 +64,48 @@
   body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:rgba(40,36,30,0.5)}
   body.light .ranksearch input{color:var(--charcoal)}
   body.light .rankempty{color:rgba(40,36,30,0.5)}
-  /* ===== search-result pills (linear mini-cards, cloned from the search page) ===== */
-  .rrow{display:grid;grid-template-columns:30px minmax(0,max-content) max-content minmax(16px,1fr) 96px 56px 30px;grid-template-areas:"rank ident tags gap stats card star";align-items:center;column-gap:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:15px 24px;margin-bottom:10px;cursor:pointer;transition:transform .18s,border-color .18s}
-  .rrow:hover{transform:translateY(-2px);border-color:rgba(255,92,122,0.25)}
-  .rrow.gold{background:linear-gradient(135deg,rgba(232,184,75,0.16),rgba(255,255,255,0.04));border-color:rgba(232,184,75,0.4)}
-  body.light .rrow{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
-  body.light .rrow.gold{background:linear-gradient(135deg,rgba(232,184,75,0.18),rgba(255,255,255,0.6));border-color:rgba(232,184,75,0.4)}
-  .rrank{grid-area:rank;font-family:'Archivo';font-weight:900;font-size:18px;text-align:center;color:rgba(243,237,224,0.4)}
-  body.light .rrank{color:#b3a99a}
-  .rrow.gold .rrank{color:var(--gold)}
-  .rident{grid-area:ident;display:flex;align-items:center;gap:13px;min-width:0}
-  .rflag{font-size:22px;flex:none}
-  .rinfo{min-width:0}
-  .rname{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  body.light .rname{color:var(--charcoal)}
-  .rmeta{font-family:'Archivo';font-size:13.5px;color:rgba(243,237,224,0.6);margin-top:2px;white-space:nowrap}
-  body.light .rmeta{color:#8a8276}
-  .rtags{grid-area:tags;display:flex;align-items:center;gap:7px;flex-wrap:nowrap;overflow:hidden;min-width:0;max-width:260px}
+  /* ===== Unified rank row (.urow) , shared by List (pillmode) + Compact (compactmode).
+     ONE fixed-column grid in both modes -> every column aligns row-to-row (no max-content).
+     Only padding / font-size / column-gap differ (Compact = denser). Score = .rmini VV badge. ===== */
+  #cardgrid.pillmode,#cardgrid.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
+  body.light #cardgrid.pillmode,body.light #cardgrid.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}
+  .gridwrap.pillmode,.gridwrap.compactmode{max-width:2200px}
+  .urow{display:grid;grid-template-columns:44px minmax(0,2.2fr) 56px minmax(0,1.5fr) 60px 300px 60px 60px 60px;align-items:center;cursor:pointer;transition:background .14s}
+  .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
+  body.light .urow+.urow{border-color:rgba(0,0,0,0.055)}
+  .urow:hover{background:rgba(255,255,255,0.04)}
+  body.light .urow:hover{background:rgba(0,0,0,0.025)}
+  .urank{text-align:center;font-family:'Archivo';font-weight:900;color:rgba(243,237,224,0.4);font-variant-numeric:tabular-nums}
+  body.light .urank{color:#b3a99a}
+  .uident{display:flex;align-items:center;gap:11px;min-width:0}
+  .uflag{flex:none}
+  .uname{font-family:'Bricolage Grotesque';font-weight:800;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.light .uname{color:var(--charcoal)}
+  .uyear{font-weight:700;color:rgba(243,237,224,0.55);text-align:center;font-variant-numeric:tabular-nums}
+  body.light .uyear{color:#8c8578}
+  .uclub{font-weight:700;color:rgba(243,237,224,0.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.light .uclub{color:#6f685c}
+  .upos{font-family:'Archivo';font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,0.5);text-align:center}
+  body.light .upos{color:#8c8578}
+  .utags{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden;white-space:nowrap;min-width:0}
+  .ugoals,.uassists{font-weight:800;color:var(--cream);text-align:right;font-variant-numeric:tabular-nums}
+  body.light .ugoals,body.light .uassists{color:var(--charcoal)}
+  .ugoals span,.uassists span{font-family:'Archivo';font-weight:700;color:rgba(243,237,224,0.45);margin-left:1px}
+  body.light .ugoals span,body.light .uassists span{color:#a39b8d}
+  /* density , List (pillmode) = roomier */
+  .pillmode .urow{column-gap:18px;padding:14px 22px}
+  .pillmode .urank{font-size:17px}.pillmode .uflag{font-size:22px}.pillmode .uname{font-size:19px}
+  .pillmode .uyear{font-size:13px}.pillmode .uclub{font-size:14px}.pillmode .upos{font-size:11px}
+  .pillmode .ugoals,.pillmode .uassists{font-size:15px}.pillmode .ugoals span,.pillmode .uassists span{font-size:9px}
+  /* density , Compact (compactmode) = tighter */
+  .compactmode .urow{column-gap:14px;padding:8px 18px}
+  .compactmode .urank{font-size:13px}.compactmode .uflag{font-size:18px}.compactmode .uname{font-size:16px}
+  .compactmode .uyear{font-size:12px}.compactmode .uclub{font-size:13px}.compactmode .upos{font-size:10px}
+  .compactmode .ugoals,.compactmode .uassists{font-size:13px}.compactmode .ugoals span,.compactmode .uassists span{font-size:8.5px}
+  /* score column = List's VV badge (.rmini, defined below). Compact = denser badge. */
+  .compactmode .rmini{width:40px;height:44px;border-radius:9px}
+  .compactmode .rmvv{font-size:10px}
+  .compactmode .rmn{font-size:17px}
   .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
   .rtag.gold{background:rgba(232,184,75,.16);border-color:rgba(232,184,75,.55);color:#b5871a}
   .rtag.pink{background:rgba(255,92,122,.14);border-color:rgba(255,92,122,.5);color:#e0466a}
@@ -101,13 +126,7 @@
   .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
   .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
   .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
-  .rstats{grid-area:stats;display:flex;gap:18px;justify-content:center}
-  .rstat{text-align:center}
-  .rstat b{font-family:'Archivo';font-weight:800;font-size:16px;color:var(--cream);display:block;line-height:1}
-  body.light .rstat b{color:var(--charcoal)}
-  .rstat span{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(243,237,224,0.5);margin-top:4px;display:block}
-  body.light .rstat span{color:#9a9285}
-  .rmini{grid-area:card;justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
+  .rmini{justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
   .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:11.5px;line-height:1}
   .rmvv .a{color:#1C1B1A}.rmvv .b{color:var(--pink)}
   .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;line-height:1;color:#1C1B1A}
@@ -115,20 +134,6 @@
   .rmini.elite .a,.rmini.elite .rmn{color:#2a1d03}
   .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
   .rmini.gen .a,.rmini.gen .rmn{color:#fff}
-  .rstar{grid-area:star;width:30px;height:30px;border:none;background:none;padding:0;color:rgba(243,237,224,0.9);opacity:0.35;font-size:15px;cursor:pointer;transition:opacity .15s,color .15s}
-  .rstar:hover{background:none;opacity:0.7}
-  .rstar.on{color:var(--gold);opacity:1;background:none}
-  body.light .rstar{background:none;color:#6f685c;opacity:0.4}
-  body.light .rstar.on{color:var(--gold);opacity:1;background:none}
-  /* pill mode: stack rows full-width inside the same grid container */
-  .cardgrid.pillmode{display:block}
-  .cardgrid.pillmode > .rrow{display:grid;justify-content:initial;transform:none}
-  .cardgrid.pillmode > .rrow:hover{transform:translateY(-2px)}
-  @media (max-width:720px){
-    .cardgrid.pillmode > .rrow{grid-template-columns:22px 1fr auto;grid-template-areas:"rank ident card" "rank tags card";gap:7px 12px;padding:13px 14px}
-    .cardgrid.pillmode .rstats,.cardgrid.pillmode .rstar{display:none}
-    .cardgrid.pillmode .rmini{align-self:center}
-  }
   .cardgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
   @media (min-width:1560px){.cardgrid{grid-template-columns:repeat(4,1fr)}}
   #cardgrid{max-height:calc(100vh - 270px);overflow-y:auto;overflow-x:hidden;padding-right:8px;padding-bottom:42px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 36px),transparent 100%)}
@@ -319,7 +324,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     .cardgrid{gap:14px}
   }
   .crumb .va{color:var(--ink)} .crumb .vb{color:var(--pink)}
-#cardgrid.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}body.light #cardgrid.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}.cmprow{display:flex;align-items:center;gap:13px;padding:11px 16px 11px 0;cursor:pointer;transition:background .14s}.cmprow+.cmprow{border-top:1px solid rgba(255,255,255,0.06)}body.light .cmprow+.cmprow{border-color:rgba(0,0,0,0.055)}.cmprow:hover{background:rgba(255,255,255,0.04)}body.light .cmprow:hover{background:rgba(0,0,0,0.025)}.cmprail{width:4px;align-self:stretch;border-radius:0 3px 3px 0;flex-shrink:0}.cmprk{width:22px;text-align:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:13px;color:rgba(243,237,224,0.4);flex-shrink:0}body.light .cmprk{color:#b8b0a2}.cmpmain{flex:1;min-width:0}.cmpl1{display:flex;align-items:center;gap:8px}.cmpnm{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpnm{color:var(--charcoal)}.cmpfl{font-size:22px;flex-shrink:0}.cmpl2{font-weight:700;font-size:13.5px;color:rgba(243,237,224,0.6);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpl2{color:#8c8578}.cmpl2 b{color:rgba(243,237,224,0.72);font-weight:800}body.light .cmpl2 b{color:#6f685c}.cmpright{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end}.cmpvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}body.light .cmpvv{color:var(--charcoal)}.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink)}body.light .cmpvv.elite{color:var(--gold)}body.light .cmpvv.gen{color:var(--pink)}.cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,0.5);margin-top:4px;font-variant-numeric:tabular-nums}body.light .cmpga{color:#8c8578}.fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:#b0a899}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:6px;padding:1px 5px;margin-left:7px}body.light .flsoon{color:#a39b8d;border-color:rgba(0,0,0,.16)}</style>
+.fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:#b0a899}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:6px;padding:1px 5px;margin-left:7px}body.light .flsoon{color:#a39b8d;border-color:rgba(0,0,0,.16)}</style>
 </head>
 <body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
@@ -380,50 +385,53 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   let CARDS = [];
 
   const g=document.getElementById('cardgrid');
+  // ── setViewClass , toggle the view mode on BOTH #cardgrid (row styling) and its
+  //    .gridwrap (so List/Compact widen to 2200; Cards stays at the default 1680). ──
+  function setViewClass(mode){
+    var g=document.getElementById('cardgrid'), gw=g&&g.closest('.gridwrap');
+    ['pillmode','compactmode'].forEach(function(c){ if(g)g.classList.remove(c); if(gw)gw.classList.remove(c); });
+    if(mode){ if(g)g.classList.add(mode); if(gw)gw.classList.add(mode); }
+  }
   function renderRankCompact(list){
     const g=document.getElementById('cardgrid');
-    g.classList.remove('pillmode'); g.classList.add('compactmode');
+    setViewClass('compactmode');
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML=list.map(function(d,i){return rankCompactHTML(d,i+1);}).join('');
+    g.innerHTML=list.map(rankRowHTML).join('');
   }
-  function rankCompactHTML(d,rk){ var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
-    return '<div class="cmprow" onclick="goCard('+(d.card_id==null?'':d.card_id)+')">'
-      +'<span class="cmprail" style="background:'+(d.club1||'#9a948a')+'"></span>'
-      +'<span class="cmprk">'+rk+'</span>'
-      +'<div class="cmpmain"><div class="cmpl1"><span class="cmpfl">'+d.flag+'</span><span class="cmpnm">'+d.surname+'</span></div>'
-      +'<div class="cmpl2"><b>'+d.clubname+'</b> &middot; '+d.pos+' &middot; '+d.year+'</div></div>'
-      +'<div class="cmpright"><div class="cmpvv'+tier+'">'+d.vv+'</div><div class="cmpga">'+d.goals+'G &middot; '+(d.assists!=null ? d.assists+'A' : 'NR')+'</div></div>'
-    +'</div>'; }
+  // ── rankRowHTML , the ONE shared row builder for List (pillmode) + Compact
+  //    (compactmode). 9 fixed-grid columns; density differs only via container class.
+  //    Tags: prestige pill leads + profile tags, total capped at 3, overflow clipped.
+  //    Score: List's card-style VV badge (.rmini) , gen=black box, elite/Iconic=gold box. ──
+  function rankRowHTML(d,i){
+    var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
+    var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
+    var tags     = renderTagPills(d.tags, { baseClass:'rtag', max:(d.prestige?2:3) });
+    var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
+    return '<div class="urow'+tier+'" onclick="goCard('+(d.card_id==null?'':d.card_id)+')">'
+      +'<div class="urank">'+(i+1)+'</div>'
+      +'<div class="uident"><span class="uflag">'+(d.flag||'')+'</span><span class="uname">'+d.surname+'</span></div>'
+      +'<div class="uyear">'+d.year+'</div>'
+      +'<div class="uclub">'+d.clubname+'</div>'
+      +'<div class="upos">'+d.pos+'</div>'
+      +'<div class="utags">'+prestige+tags+'</div>'
+      +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
+      +'<div class="uassists">'+assists+'</div>'
+      +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+    +'</div>';
+  }
   function renderRankCards(list){
     const g=document.getElementById('cardgrid');
-    g.classList.remove('pillmode','compactmode');
+    setViewClass(null);
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
     g.innerHTML = list.map(d=>`<div onclick="goCard(${d.card_id==null?'':d.card_id})" style="cursor:pointer">${buildCard(d,260)}</div>`).join('');
   }
   function vvNorm(s){return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
   function rankTagColor(label){var T={Iconic:'pink',Talisman:'pink',Generational:'gen','Golden Boot':'gold',Prestige:'gold',Maestro:'blue',Clinical:'green',Poacher:'green',Pace:'coral',Wonderkid:'purple',Rock:'slate',Engine:'slate','Target Man':'slate','Top Assist':'blue'};for(var k in T){if(label.indexOf(k)>=0)return T[k];}return 'slate';}
-  function pillHTML(d,i){
-    var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
-    var gold=d.tag&&d.tag.indexOf('Golden Boot')>=0;
-    // ── Prestige pill (Contract §3) leads; profile tags follow. When a prestige
-    //    pill is present, cap profile tags at 1 so the nowrap/260px .rtags zone
-    //    doesn't clip (it holds ~2 small pills total). ──
-    var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
-    var tag = renderTagPills(d.tags, { baseClass:'rtag', max: (d.prestige ? 1 : 2) });
-    return `<div class="rrow${gold?' gold':''}" onclick="goCard(${d.card_id==null?'':d.card_id})">
-      <div class="rrank">${i+1}</div>
-      <div class="rident"><span class="rflag">${d.flag||''}</span><div class="rinfo"><div class="rname">${d.surname}</div><div class="rmeta">${d.clubname} &middot; ${d.pos} &middot; ${d.year}</div></div></div>
-      <div class="rtags">${prestige}${tag}</div>
-      <div class="rstats"><div class="rstat"><b>${d.goals}</b><span>Goals</span></div><div class="rstat"><b>${d.assistsText}</b><span>Assists</span></div></div>
-      <div class="rmini${tier}"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">${d.vv}</span></div>
-      <button class="rstar" onclick="event.stopPropagation();this.classList.toggle('on');this.innerHTML=this.classList.contains('on')?'&#9733;':'&#9734;'">&#9734;</button>
-    </div>`;
-  }
   function renderRankPills(list){
     const g=document.getElementById('cardgrid');
-    g.classList.remove('compactmode'); g.classList.add('pillmode');
+    setViewClass('pillmode');
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML=list.map(pillHTML).join('');
+    g.innerHTML=list.map(rankRowHTML).join('');
   }
   var rankView='cards';
   try{var _rv=localStorage.getItem('vvRankView');if(_rv==='pills'||_rv==='cards'||_rv==='compact')rankView=_rv;}catch(e){}
