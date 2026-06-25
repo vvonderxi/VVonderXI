@@ -490,11 +490,20 @@
   }
   let D={year:'23/24', club1:'#DA291C', number:8, pos:'CAM', vv:91, flag:'\u{1F1F5}\u{1F1F9}', surname:'Fernandes', full:'Bruno Fernandes', clubname:'Man Utd', age:'29', goals:10, assists:8, tag:'\u{1F451} Talisman'};
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,330); drawRadar(); }
-  renderHero();
+  // ── First paint: render the demo ONLY when there's no ?id (standalone visit).
+  //    With an ?id a real player is incoming -> show a neutral card-shaped skeleton
+  //    and let loadCard()'s render be the first real paint (kills the ~0.5s Bruno flash).
+  //    renderHero() also calls drawRadar(), so guarding it here prevents a Bruno radar too.
+  var _cardId=null; try{ _cardId=new URLSearchParams(window.location.search).get('id'); }catch(e){}
+  if(_cardId){
+    document.getElementById('heroCard').innerHTML='<div class="vvcard" aria-hidden="true" style="--cw:330px;min-height:450px;background:rgba(255,255,255,0.05)!important;box-shadow:none!important;border-color:rgba(255,255,255,0.10)!important"></div>';
+  } else {
+    renderHero();                              // no id -> standalone demo (unchanged)
+  }
 
   // ── Live data: load the player-season by ?id=<card_id> ──
   async function loadCard(){
-    var id=null; try{ id=new URLSearchParams(window.location.search).get('id'); }catch(e){}
+    var id=_cardId;                           // shared from the first-paint read above
     if(!id) return;                          // no id -> keep demo default (standalone)
     var sb=vvClient(); if(!sb) return;       // vv-core logs why (missing config or lib)
     var res=await sb.from('player_card_view').select('*').eq('card_id', id).single();
