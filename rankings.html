@@ -516,7 +516,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const f = readFilters();
     var _act=(f.leagues.length||f.positions.length||f.era||f.tags.length||f.rtLo!==50||f.rtHi!==96||f.sort.col!=='rt');
     var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
-    let q = sb.from('player_card_view').select('*', { count: 'exact' });
+    let q = sb.from('player_card_view').select('*', { count: 'estimated' });
     var tq=document.getElementById('rankSearch').value.trim();
     if(tq){ var like='%'+tq.replace(/[(),]/g,'')+'%'; q=q.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
     if(f.leagues.length)   q=q.in('league_code', f.leagues);
@@ -531,7 +531,12 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var _rc=document.getElementById('rankCount');
     if(_rc){
       if(f.tags.length){ _rc.textContent='Showing '+CARDS.length; }
-      else { _rc.textContent='Showing '+CARDS.length+' of '+(count!=null?count.toLocaleString():CARDS.length); }
+      else if(count==null){ _rc.textContent='Showing '+CARDS.length; }
+      else {
+        var _shown=CARDS.length, _tot=count;
+        var _totTxt = _tot>1000 ? '~'+(Math.round(_tot/100)*100).toLocaleString() : _tot.toLocaleString();
+        _rc.textContent='Showing '+_shown+' of '+_totTxt;
+      }
     }
     renderRank();
   }
