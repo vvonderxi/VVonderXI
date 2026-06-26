@@ -516,7 +516,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const f = readFilters();
     var _act=(f.leagues.length||f.positions.length||f.era||f.tags.length||f.rtLo!==50||f.rtHi!==96||f.sort.col!=='rt');
     var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
-    let q = sb.from('player_card_view').select('*', { count: 'estimated' });
+    let q = sb.from('player_card_view').select('*');
     var tq=document.getElementById('rankSearch').value.trim();
     if(tq){ var like='%'+tq.replace(/[(),]/g,'')+'%'; q=q.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
     if(f.leagues.length)   q=q.in('league_code', f.leagues);
@@ -524,7 +524,17 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(f.era){ q=q.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
     q=q.gte('rt', f.rtLo).lte('rt', f.rtHi);
     q=q.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(100);
-    const { data, error, count } = await q;
+    // separate head-only exact count, mirroring the same filters (parallel, no extra latency)
+    let cq = sb.from('player_card_view').select('*', { count: 'exact', head: true });
+    if(tq){ cq=cq.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
+    if(f.leagues.length)   cq=cq.in('league_code', f.leagues);
+    if(f.positions.length) cq=cq.in('position_pool', f.positions);
+    if(f.era){ cq=cq.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
+    cq=cq.gte('rt', f.rtLo).lte('rt', f.rtHi);
+    var _rcEl=document.getElementById('rankCount'); if(_rcEl && !f.tags.length) _rcEl.textContent='Counting…';
+    const [ qRes, cRes ] = await Promise.all([ q, cq ]);
+    const { data, error } = qRes;
+    const count = cRes.error ? null : cRes.count;
     if(error){ console.error('rankings load failed:', error.message); return; }
     CARDS = (data||[]).map(rowToCard).filter(Boolean);
     if(f.tags.length){ CARDS = CARDS.filter(function(d){ return f.tags.every(function(s){ return (d.tags||[]).some(function(t){ return t.name===s; }); }); }); }
@@ -532,11 +542,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(_rc){
       if(f.tags.length){ _rc.textContent='Showing '+CARDS.length; }
       else if(count==null){ _rc.textContent='Showing '+CARDS.length; }
-      else {
-        var _shown=CARDS.length, _tot=count;
-        var _totTxt = _tot>1000 ? '~'+(Math.round(_tot/100)*100).toLocaleString() : _tot.toLocaleString();
-        _rc.textContent='Showing '+_shown+' of '+_totTxt;
-      }
+      else { _rc.textContent='Showing '+CARDS.length+' of '+count.toLocaleString(); }
     }
     renderRank();
   }
