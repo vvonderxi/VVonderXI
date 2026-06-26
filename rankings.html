@@ -556,7 +556,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     }
     var _mw=document.getElementById('rankMoreWrap');
     if(_mw){
-      var _hasMore = !f.tags.length && count!=null && CARDS.length < count && (data||[]).length >= rankLimit;
+      var _rawLen=(data||[]).length;
+      var _hasMore = !f.tags.length && _rawLen>=rankLimit && (count==null || CARDS.length<count);
       _mw.classList.toggle('show', _hasMore);
     }
     renderRank();
