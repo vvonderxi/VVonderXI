@@ -169,6 +169,8 @@
   .fr-clear:hover{color:var(--pink)}
   body.light .fr-clear{color:#9a9285}
   .fr-clear.hidden{display:none}
+  .fr-count{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;color:rgba(243,237,224,0.4);margin-bottom:10px;min-height:13px}
+  body.light .fr-count{color:#9a9285}
   .fgroup{margin-bottom:22px}
   .fgroup .gl{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-bottom:11px}
   body.light .fgroup .gl{color:#9a9285}
@@ -378,6 +380,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       <div class="ranklayout">
 <aside class="filterrail">
         <div class="fr-title">Filters<button class="fr-clear hidden" id="frClear" onclick="clearAllFilters()">Clear all</button></div>
+        <div class="fr-count" id="rankCount"></div>
         <div class="fgroup"><div class="gl">Sort by</div><div class="fopts"><span class="fopt on">VV Score</span><span class="fopt">Goals</span><span class="fopt">Recent</span><span class="fopt">A to Z</span></div></div><div class="fgroup"><div class="gl">VV Score range</div><div class="scorefilter"><div class="scorevals"><span class="sv" id="svmin">50</span><span class="svdash">to</span><span class="sv" id="svmax">96</span></div><div class="dualrange"><div class="track"></div><div class="trackfill" id="trackfill"></div><input type="range" id="rmin" min="50" max="96" value="50" oninput="onRange(event)"><input type="range" id="rmax" min="50" max="96" value="96" oninput="onRange(event)"></div><div class="quickbands"><div class="qb" onclick="setBand(90,96,this)">Elite 90+</div><div class="qb" onclick="setBand(85,89,this)">85 to 89</div><div class="qb" onclick="setBand(80,84,this)">80 to 84</div><div class="qb" onclick="setBand(85,85,this)">Exactly 85</div></div></div></div><div class="fgroup"><div class="gl">League</div><div class="fopts"><span class="fopt">&#127468;&#127463; Premier League</span><span class="fopt">&#127466;&#127480; La Liga</span><span class="fopt">&#127470;&#127481; Serie A</span><span class="fopt">&#127465;&#127466; Bundesliga</span><span class="fopt">&#127467;&#127479; Ligue 1</span><span class="fopt">&#127477;&#127481; Primeira Liga</span><span class="fopt">&#127475;&#127473; Eredivisie</span><span class="fopt">&#127463;&#127466; Jupiler Pro League</span><span class="fopt">&#127481;&#127479; S&#252;per Lig</span></div></div><div class="fgroup"><div class="gl">Position</div><div class="fopts"><span class="fopt">GK</span><span class="fopt">CB</span><span class="fopt">FB</span><span class="fopt">CDM</span><span class="fopt">CM</span><span class="fopt">CAM</span><span class="fopt">Winger</span><span class="fopt">ST</span></div></div><div class="fgroup"><div class="gl">Prestige</div><div class="fopts"><span class="fopt gold">👑 Generational</span><span class="fopt gold">🏅 Iconic</span></div></div><div class="fgroup"><div class="gl">Honours</div><div class="fopts"><span class="fopt">🏆 League Champion</span><span class="fopt">👟 Golden Boot</span><span class="fopt">🅰️ Most Assists</span><span class="fopt">⭐ Player of the Season</span><span class="fopt">🧤 Golden Glove</span></div></div><div class="fgroup"><div class="gl">Profile</div><div class="subgl">Attack</div><div class="fopts"><span class="fopt" data-tag="Goal Machine">⚽ Goal Machine</span><span class="fopt" data-tag="Marksman">🎯 Marksman</span><span class="fopt" data-tag="Clinical">🔫 Clinical</span><span class="fopt" data-tag="Provider">🅰️ Provider</span><span class="fopt" data-tag="Poacher">🦊 Poacher</span><span class="fopt" data-tag="The Winger">🪄 The Winger</span></div><div class="subgl">Midfield</div><div class="fopts"><span class="fopt" data-tag="Playmaker">🧠 Playmaker</span><span class="fopt" data-tag="Maestro">🎩 Maestro</span><span class="fopt" data-tag="Deep-Lying Playmaker">🎻 Deep-Lying Playmaker</span><span class="fopt" data-tag="Engine Room">🧭 Engine Room</span><span class="fopt" data-tag="The Dribbler">✨ The Dribbler</span></div><div class="subgl">Defence</div><div class="fopts"><span class="fopt" data-tag="The Wall">🧱 The Wall</span><span class="fopt" data-tag="Destroyer">🦮 Destroyer</span><span class="fopt" data-tag="Ball Hawk">🦅 Ball Hawk</span><span class="fopt" data-tag="Ball-Playing Defender">🦶 Ball-Playing Defender</span></div><div class="subgl">All-Round</div><div class="fopts"><span class="fopt" data-tag="Complete">💎 Complete</span><span class="fopt" data-tag="Iron Man">🛡️ Iron Man</span></div><div class="subgl">Career-Stage</div><div class="fopts"><span class="fopt" data-tag="Wonderkid">🌱 Wonderkid</span><span class="fopt" data-tag="The Last Dance">🌅 The Last Dance</span></div></div><div class="fgroup"><div class="gl">Era</div><div class="fopts"><span class="fopt">2020s</span><span class="fopt">2010s</span></div></div>
       </aside>
         <div class="cardgrid" id="cardgrid"></div>
@@ -513,7 +516,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const f = readFilters();
     var _act=(f.leagues.length||f.positions.length||f.era||f.tags.length||f.rtLo!==50||f.rtHi!==96||f.sort.col!=='rt');
     var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
-    let q = sb.from('player_card_view').select('*');
+    let q = sb.from('player_card_view').select('*', { count: 'exact' });
     var tq=document.getElementById('rankSearch').value.trim();
     if(tq){ var like='%'+tq.replace(/[(),]/g,'')+'%'; q=q.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
     if(f.leagues.length)   q=q.in('league_code', f.leagues);
@@ -521,10 +524,15 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(f.era){ q=q.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
     q=q.gte('rt', f.rtLo).lte('rt', f.rtHi);
     q=q.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(100);
-    const { data, error } = await q;
+    const { data, error, count } = await q;
     if(error){ console.error('rankings load failed:', error.message); return; }
     CARDS = (data||[]).map(rowToCard).filter(Boolean);
     if(f.tags.length){ CARDS = CARDS.filter(function(d){ return f.tags.every(function(s){ return (d.tags||[]).some(function(t){ return t.name===s; }); }); }); }
+    var _rc=document.getElementById('rankCount');
+    if(_rc){
+      if(f.tags.length){ _rc.textContent='Showing '+CARDS.length; }
+      else { _rc.textContent='Showing '+CARDS.length+' of '+(count!=null?count.toLocaleString():CARDS.length); }
+    }
     renderRank();
   }
   loadRankings();
