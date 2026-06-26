@@ -79,6 +79,9 @@
   .urank{text-align:center;font-family:'Archivo';font-weight:900;color:rgba(243,237,224,0.4);font-variant-numeric:tabular-nums}
   body.light .urank{color:#b3a99a}
   .uident{display:flex;align-items:center;gap:11px;min-width:0}
+  .ushield{flex:none;display:block;width:auto}            /* aspect kept by viewBox; height drives size */
+  .pillmode .ushield{height:24px}                          /* List , roomier */
+  .compactmode .ushield{height:20px}                       /* Compact , tighter */
   .uflag{flex:none}
   .uname{font-family:'Bricolage Grotesque';font-weight:800;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   body.light .uname{color:var(--charcoal)}
@@ -403,6 +406,28 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   //    (compactmode). 9 fixed-grid columns; density differs only via container class.
   //    Tags: prestige pill leads + profile tags, total capped at 3, overflow clipped.
   //    Score: List's card-style VV badge (.rmini) , gen=black box, elite/Iconic=gold box. ──
+  // Small colour-matched jersey shield for List/Compact rows , mirrors buildCard's
+  // .cbadge (same pentagon path, club-split fill, inkFor contrast). Scaled via CSS.
+  // No number yet (d.number null) -> render nothing (cleaner than an empty jersey).
+  function rowShieldHTML(d,i){
+    var numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
+    if(!numStr) return '';
+    var c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
+    var ink = inkFor(c1);
+    var numStroke = (ink==='#fff' && c2!==c1) ? ' stroke="rgba(0,0,0,0.25)" stroke-width="0.6" paint-order="stroke"'
+                  : (ink!=='#fff' && c2!==c1 ? ' stroke="rgba(255,255,255,0.5)" stroke-width="0.6" paint-order="stroke"' : '');
+    var numSize = numStr.length>=3 ? 42 : (numStr.length===2 ? 46 : 56);
+    var uid='rs'+i;
+    var fill = (c2===c1)
+      ? '<rect width="100" height="116" fill="'+c1+'"/>'
+      : '<rect x="0" width="50" height="116" fill="'+c1+'"/><rect x="50" width="50" height="116" fill="'+c2+'"/>';
+    return '<svg class="ushield" viewBox="0 0 100 116" aria-hidden="true">'
+      +'<defs><clipPath id="'+uid+'"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs>'
+      +'<g clip-path="url(#'+uid+')">'+fill+'</g>'
+      +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.5"/>'
+      +'<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
+    +'</svg>';
+  }
   function rankRowHTML(d,i){
     var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
     var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
@@ -410,7 +435,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
     return '<div class="urow'+tier+'" onclick="goCard('+(d.card_id==null?'':d.card_id)+')">'
       +'<div class="urank">'+(i+1)+'</div>'
-      +'<div class="uident"><span class="uflag">'+(d.flag||'')+'</span><span class="uname">'+d.surname+'</span></div>'
+      +'<div class="uident"><span class="uflag">'+(d.flag||'')+'</span>'+rowShieldHTML(d,i)+'<span class="uname">'+d.surname+'</span></div>'
       +'<div class="uyear">'+d.year+'</div>'
       +'<div class="uclub">'+d.clubname+'</div>'
       +'<div class="upos">'+d.pos+'</div>'
