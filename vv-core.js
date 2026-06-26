@@ -511,8 +511,8 @@
       radar:      radarFor(row),        // §4  { raw, scaled, provisional }
       confidence: confidenceFor(row),   // §5  X/5 dots
 
-      // ── Seams not yet sourced (left blank by design) ──
-      number:   null,        // shirt number , not in the view (cosmetic, open item)
+      // ── Seams: number now sourced from the view; tag/photo still blank by design ──
+      number:   row.shirt_number ?? null,   // shirt number (player_positions.shirt_number, via view)
       tag:      '',                 // legacy placeholder, kept falsy for backward-compat; remove after step 3 verified
       tags:     getVVTags(row),     // Tag Model v1.1 , array of {name,family,tier}; render consumes in step 3
       photo:    undefined    // headshot URL pattern unresolved -> silhouette fallback

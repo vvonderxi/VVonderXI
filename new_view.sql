@@ -99,7 +99,8 @@ SELECT psc.id AS card_id,
     psc.duels_won,
     psc.estimated_market_value,
     (psc.season_year::numeric - EXTRACT(year FROM p.date_of_birth))::integer AS season_age,
-    pp."position" AS position_pool
+    pp."position" AS position_pool,
+    pp.shirt_number
    FROM player_season_cards psc
      LEFT JOIN players p ON psc.player_id = p.id
      LEFT JOIN leagues l ON psc.league_id = l.id

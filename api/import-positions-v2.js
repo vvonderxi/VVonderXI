@@ -100,8 +100,9 @@ async function processLeagueSeason(code,year){
         const pl=x.player; const [r,c]=pl.grid.split(':').map(Number);
         const pos=classify(pl.pos,r,c,rows[r]||1,defRow,fwdRow);
         if(!pl.id)continue;
-        if(!agg[pl.id])agg[pl.id]={name:pl.name,counts:{}};
+        if(!agg[pl.id])agg[pl.id]={name:pl.name,counts:{},numbers:{}};
         agg[pl.id].counts[pos]=(agg[pl.id].counts[pos]||0)+1;
+        if(pl.number!=null) agg[pl.id].numbers[pl.number]=(agg[pl.id].numbers[pl.number]||0)+1;
       }
     }
     done++;
@@ -114,9 +115,12 @@ async function processLeagueSeason(code,year){
     const best=entries[0];
     // distribution as {POS: pct}
     const dist={}; for(const [p,c] of entries) dist[p]=Math.round(c/apps*100);
+    // modal shirt number (most-frequent across the season; null if none seen)
+    const numEntries=Object.entries(info.numbers||{}).sort((a,b)=>b[1]-a[1]);
+    const shirt=numEntries.length?Number(numEntries[0][0]):null;
     const {error}=await supabase.from('player_positions').upsert({
       api_player_id:Number(pid), season_year:year, league_code:code,
-      position:best[0], appearances:apps, distribution:dist
+      position:best[0], appearances:apps, distribution:dist, shirt_number:shirt
     },{onConflict:'api_player_id,season_year,league_code'});
     if(error){stats.errors++;}else{stats.rows++;n++;}
   }
