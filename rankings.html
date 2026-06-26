@@ -523,7 +523,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(f.positions.length) q=q.in('position_pool', f.positions);
     if(f.era){ q=q.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
     q=q.gte('rt', f.rtLo).lte('rt', f.rtHi);
-    q=q.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(100);
+    q=q.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(300);
     // separate head-only exact count, mirroring the same filters (parallel, no extra latency)
     let cq = sb.from('player_card_view').select('*', { count: 'exact', head: true });
     if(tq){ cq=cq.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
