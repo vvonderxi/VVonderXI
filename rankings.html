@@ -30,7 +30,7 @@
   /* ===================== CONTENT CANVAS ===================== */
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
-  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .crumb{font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.55)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
@@ -92,18 +92,18 @@
   .utags{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden;white-space:nowrap;min-width:0}
   .ugoals,.uassists{font-weight:800;color:var(--cream);text-align:right;font-variant-numeric:tabular-nums}
   body.light .ugoals,body.light .uassists{color:var(--charcoal)}
-  .ugoals span,.uassists span{font-family:'Archivo';font-weight:700;color:rgba(243,237,224,0.45);margin-left:1px}
+  .ugoals span,.uassists span{font-family:'Archivo';font-weight:700;color:rgba(243,237,224,0.6);margin-left:1px}
   body.light .ugoals span,body.light .uassists span{color:#a39b8d}
   /* density , List (pillmode) = roomier */
   .pillmode .urow{column-gap:18px;padding:14px 22px}
   .pillmode .urank{font-size:17px}.pillmode .uflag{font-size:22px}.pillmode .uname{font-size:19px}
   .pillmode .uyear{font-size:13px}.pillmode .uclub{font-size:14px}.pillmode .upos{font-size:11px}
-  .pillmode .ugoals,.pillmode .uassists{font-size:15px}.pillmode .ugoals span,.pillmode .uassists span{font-size:9px}
+  .pillmode .ugoals,.pillmode .uassists{font-size:15px}.pillmode .ugoals span,.pillmode .uassists span{font-size:11px}
   /* density , Compact (compactmode) = tighter */
   .compactmode .urow{column-gap:14px;padding:8px 18px}
   .compactmode .urank{font-size:13px}.compactmode .uflag{font-size:18px}.compactmode .uname{font-size:16px}
   .compactmode .uyear{font-size:12px}.compactmode .uclub{font-size:13px}.compactmode .upos{font-size:10px}
-  .compactmode .ugoals,.compactmode .uassists{font-size:13px}.compactmode .ugoals span,.compactmode .uassists span{font-size:8.5px}
+  .compactmode .ugoals,.compactmode .uassists{font-size:13px}.compactmode .ugoals span,.compactmode .uassists span{font-size:10px}
   /* score column = List's VV badge (.rmini, defined below). Compact = denser badge. */
   .compactmode .rmini{width:40px;height:44px;border-radius:9px}
   .compactmode .rmvv{font-size:10px}
@@ -128,7 +128,7 @@
   .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
   .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
   .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
-  .rmini{justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
+  .rmini{justify-self:end;margin-right:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
   .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:11.5px;line-height:1}
   .rmvv .a{color:#1C1B1A}.rmvv .b{color:var(--pink)}
   .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;line-height:1;color:#1C1B1A}
