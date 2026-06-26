@@ -69,7 +69,7 @@
      Only padding / font-size / column-gap differ (Compact = denser). Score = .rmini VV badge. ===== */
   #cardgrid.pillmode,#cardgrid.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
   body.light #cardgrid.pillmode,body.light #cardgrid.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}
-  .gridwrap.pillmode,.gridwrap.compactmode{max-width:2200px}
+  .gridwrap.pillmode,.gridwrap.compactmode{max-width:1960px}
   .urow{display:grid;grid-template-columns:44px minmax(0,2.2fr) 56px minmax(0,1.5fr) 60px 300px 60px 60px 60px;align-items:center;cursor:pointer;transition:background .14s}
   /* id-level specificity so the grid wins over the Cards `.cardgrid > div` flex rule → row spans full width edge-to-edge */
   #cardgrid.pillmode > .urow,#cardgrid.compactmode > .urow{display:grid;justify-content:stretch}
@@ -407,7 +407,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function rankRowHTML(d,i){
     var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
     var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
-    var tags     = renderTagPills(d.tags, { baseClass:'rtag', max:(d.prestige?2:3) });
+    var tags     = renderTagPills(d.tags, { baseClass:'rtag', max:(d.prestige?1:2) });
     var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
     return '<div class="urow'+tier+'" onclick="goCard('+(d.card_id==null?'':d.card_id)+')">'
       +'<div class="urank">'+(i+1)+'</div>'
