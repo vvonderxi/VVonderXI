@@ -53,7 +53,7 @@
   .hero .lede{font-family:'Inter';font-weight:400;font-size:13.5px;line-height:1.45;color:rgba(243,237,224,0.6);max-width:560px;margin-top:7px}
 
   /* the rankings grid , generous, never crammed (premium = space) */
-  .gridwrap{padding:30px 64px 60px 48px;max-width:1680px}
+  .gridwrap{padding:30px 48px 60px;max-width:1680px}
   .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px;margin-bottom:14px}
   .ranksearch svg{width:17px;height:17px;color:rgba(243,237,224,0.45);flex-shrink:0}
   .ranksearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:15px}
@@ -69,7 +69,6 @@
      Only padding / font-size / column-gap differ (Compact = denser). Score = .rmini VV badge. ===== */
   #cardgrid.pillmode,#cardgrid.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
   body.light #cardgrid.pillmode,body.light #cardgrid.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}
-  .gridwrap.pillmode,.gridwrap.compactmode{max-width:1960px}
   .urow{display:grid;grid-template-columns:44px minmax(0,2.2fr) 56px minmax(0,1.5fr) 60px 300px 60px 60px 60px;align-items:center;cursor:pointer;transition:background .14s}
   /* id-level specificity so the grid wins over the Cards `.cardgrid > div` flex rule → row spans full width edge-to-edge */
   #cardgrid.pillmode > .urow,#cardgrid.compactmode > .urow{display:grid;justify-content:stretch}
