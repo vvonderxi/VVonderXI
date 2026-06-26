@@ -413,18 +413,19 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
     if(!numStr) return '';
     var c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
+    var split = shieldSplit(c1, c2);
     var ink = inkFor(c1);
-    var numStroke = (ink==='#fff' && c2!==c1) ? ' stroke="rgba(0,0,0,0.25)" stroke-width="0.6" paint-order="stroke"'
-                  : (ink!=='#fff' && c2!==c1 ? ' stroke="rgba(255,255,255,0.5)" stroke-width="0.6" paint-order="stroke"' : '');
+    var numStroke = split ? (ink==='#fff' ? ' stroke="rgba(0,0,0,0.35)" stroke-width="0.6" paint-order="stroke"' : ' stroke="rgba(255,255,255,0.6)" stroke-width="0.6" paint-order="stroke"') : '';
     var numSize = numStr.length>=3 ? 42 : (numStr.length===2 ? 46 : 56);
     var uid='rs'+i;
-    var fill = (c2===c1)
-      ? '<rect width="100" height="116" fill="'+c1+'"/>'
-      : '<rect x="0" width="50" height="116" fill="'+c1+'"/><rect x="50" width="50" height="116" fill="'+c2+'"/>';
+    var fill = split
+      ? '<rect x="0" width="50" height="116" fill="'+c1+'"/><rect x="50" width="50" height="116" fill="'+c2+'"/>'
+      : '<rect width="100" height="116" fill="'+c1+'"/>';
     return '<svg class="ushield" viewBox="0 0 100 116" aria-hidden="true">'
       +'<defs><clipPath id="'+uid+'"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs>'
       +'<g clip-path="url(#'+uid+')">'+fill+'</g>'
-      +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.5"/>'
+      +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/>'
+      +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>'
       +'<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
     +'</svg>';
   }

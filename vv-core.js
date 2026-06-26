@@ -31,6 +31,20 @@
     return L>0.6 ? '#1C1B1A' : '#fff';
   }
 
+  // ── luma , relative luminance 0..1 for a hex (shared by shieldSplit) ──
+  function luma(hex){
+    if(!hex) return 0;
+    var h=hex.replace('#','');
+    if(h.length===3) h=h.split('').map(function(c){return c+c;}).join('');
+    var r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+    return (0.299*r+0.587*g+0.114*b)/255;
+  }
+  // ── shieldSplit , split the badge ONLY for a genuine 2nd colour: present,
+  //    distinct from c1, and not near-white (data uses #FFFFFF as filler 2nd). ──
+  function shieldSplit(c1,c2){
+    return !!c2 && c2!==c1 && luma(c2) <= 0.80;
+  }
+
   // ── renderTagPills (Tag Model v1.1) , shared PURE pill renderer.
   //    tags: array of {name, family, tier}. Returns the pill-markup string, or ''.
   //    Ordering AGE > signature(ATT/MID/DEF) > CROSS with stable index tiebreak ,
@@ -92,25 +106,26 @@
     //    Built via the shared renderPrestige helper; .chtag row stacks above ${tag}. ──
     const prestige = renderPrestige(d.prestige, {baseClass:'chtag'});
     const c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
-    // number ink: on a split badge the number sits centred, so judge against the dominant/left colour
+    const split = shieldSplit(c1, c2);
+    // number ink: solid badge -> inkFor(c1) reliably contrasts; split -> add a contrast halo
     const ink = inkFor(c1);
-    const numStroke = (ink==='#fff' && c2!==c1) ? ' stroke="rgba(0,0,0,0.25)" stroke-width="0.6" paint-order="stroke"' : (ink!=='#fff' && c2!==c1 ? ' stroke="rgba(255,255,255,0.5)" stroke-width="0.6" paint-order="stroke"' : '');
+    const numStroke = split ? (ink==='#fff' ? ' stroke="rgba(0,0,0,0.35)" stroke-width="0.6" paint-order="stroke"' : ' stroke="rgba(255,255,255,0.6)" stroke-width="0.6" paint-order="stroke"') : '';
     // number sizing: match the visual weight of a two-digit number like "14" (the default look).
     // single digits get a larger font so they fill the badge the same way; 3 digits shrink slightly.
     const numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
     const numSize = numStr.length>=3 ? 42 : (numStr.length===2 ? 46 : 56);
     const num = numStr ? `<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="${numSize}" fill="${ink}" text-anchor="middle" dominant-baseline="central"${numStroke}>${numStr}</text>` : '';
     const uid = 'b'+Math.random().toString(36).slice(2,8);
-    // badge fill: solid (c2==c1), or vertical split
-    const badgeFill = (c2===c1)
-      ? `<rect width="100" height="116" fill="${c1}"/>`
-      : `<rect x="0" width="50" height="116" fill="${c1}"/><rect x="50" width="50" height="116" fill="${c2}"/>`;
+    // badge fill: SOLID primary by default; split only for a genuine 2nd colour
+    const badgeFill = split
+      ? `<rect x="0" width="50" height="116" fill="${c1}"/><rect x="50" width="50" height="116" fill="${c2}"/>`
+      : `<rect width="100" height="116" fill="${c1}"/>`;
     return `<div class="vvcard${d.prestige==='Generational'?' gen':d.prestige==='Iconic'?' iconic':''}" style="--cw:${cw}px">
       <div class="ctop">
         <div class="ctl">
           <div class="yr">${d.year}</div>
           <div class="cbadgewrap">
-            <svg class="cbadge" viewBox="0 0 100 116"><defs><clipPath id="${uid}"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#${uid})">${badgeFill}</g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.5"/>${num}</svg>
+            <svg class="cbadge" viewBox="0 0 100 116"><defs><clipPath id="${uid}"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#${uid})">${badgeFill}</g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>${num}</svg>
             <div class="pos">${d.pos}</div>
           </div>
         </div>
@@ -541,7 +556,7 @@
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
-  const api = { inkFor, buildCard, renderTagPills, renderPrestige, getVVTags, rowToCard, fmtSeason, surnameOf, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, radarFor, confidenceFor, vvClient };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
