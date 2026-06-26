@@ -52,7 +52,14 @@ function classify(posL,row,col,rowWidth,defRow,fwdRow){
     return 'ST';
   }
   if(posL==='M'){
-    // depth relative to this game's defensive & forward rows
+    // Wide midfielders: outermost player in a 4+-wide row is a wide attacker.
+    // No LM/RM in the recognized pool set, so map to LW/RW (winger-eligible),
+    // mirroring the D-branch's rowWidth>=4 LB/RB wide-detection.
+    if(rowWidth>=4){
+      if(col===1)        return 'LW';
+      if(col===rowWidth) return 'RW';
+    }
+    // central: depth relative to this game's defensive & forward rows
     if(fwdRow>defRow){
       const depth=(row-defRow)/(fwdRow-defRow);
       if(depth<=0.45)return 'CDM';
