@@ -427,7 +427,7 @@
 <div class="attr"><div class="an">Reliability</div><div class="abar"><i style="width:85%;background:#2E8C5A"></i></div><div class="av">85</div></div></div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="trajtag">\u{1F4C8} At Peak</div>
 <div class="trajwrap">
-  <div class="yscale"><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
+  <div class="yscale" id="trajYscale"><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
   <div class="trajchart">
     <div class="tcol"><div class="tbarwrap"><div class="tga">13</div><div class="tbar" style="height:65%"></div></div><div class="ttone">Rising</div><div class="ty">21/22</div></div>
     <div class="tcol"><div class="tbarwrap"><div class="tga">16</div><div class="tbar" style="height:80%"></div></div><div class="ttone">Climbing</div><div class="ty">22/23</div></div>
@@ -514,18 +514,25 @@
   function renderTrajectory(){
     var chart=document.querySelector('.trajchart');
     var tag=document.querySelector('.trajtag');
+    var yscale=document.getElementById('trajYscale');
     if(!chart) return;
     if(!SEASON_ROWS || SEASON_ROWS.length<2){ return; }
-    // oldest -> newest (SEASON_ROWS is desc by season_year)
     var rows=SEASON_ROWS.slice().reverse();
     var ga=function(r){ return (r.goals||0) + (r.assists||0); };
-    var maxGA=1; for(var i=0;i<rows.length;i++){ if(ga(rows[i])>maxGA) maxGA=ga(rows[i]); }
+    var maxGA=0; for(var i=0;i<rows.length;i++){ if(ga(rows[i])>maxGA) maxGA=ga(rows[i]); }
+    var axisTop=Math.max(5, Math.ceil(maxGA/5)*5);
+    var step=Math.max(5, Math.round((axisTop/3)/5)*5);
+    axisTop=Math.ceil(axisTop/step)*step;
+    if(yscale){
+      var labels=''; for(var t=axisTop; t>=0; t-=step){ labels+='<span>'+t+'</span>'; }
+      yscale.innerHTML=labels;
+    }
     var peakIdx=0, peakVal=-1; for(var j=0;j<rows.length;j++){ if(ga(rows[j])>peakVal){ peakVal=ga(rows[j]); peakIdx=j; } }
     var html='';
     for(var k=0;k<rows.length;k++){
       var r=rows[k];
       var g=ga(r);
-      var h=Math.round((g/maxGA)*100);
+      var h=Math.round((g/axisTop)*100);
       var isSel=(r.card_id===SEASON_CARDID);
       var isPeak=(k===peakIdx);
       var tone = isPeak ? '<div class="ttone up">Peak</div>' : '<div class="ttone">&nbsp;</div>';
