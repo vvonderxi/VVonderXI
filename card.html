@@ -453,7 +453,7 @@
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.3l5.5 3.7L10 15.7z" fill="currentColor" stroke="none"/></svg></div><div class="layer-t">Watch</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Go and see it for yourself. Some things must be witnessed, not read.</div>
 <a class="watchcta" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 highlights</a>
-<a class="comparecta" href="compare.html"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg> Compare this player</a></div></div></div>
+<a class="comparecta" id="compareCta1" href="compare.html"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg> Compare this player</a></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
         <div class="dc-row"><span class="dc-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="dc-x">5 / 5</span></div>
         <div class="dc-note">How complete the data behind this card is. It measures the record, not the player.</div>
@@ -466,7 +466,7 @@
         </div>
       </div></div></div></div>
       <div class="cardactions">
-        <a class="ca-btn ca-compare" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare players</a>
+        <a class="ca-btn ca-compare" id="compareCta2" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare this player</a>
         <div class="ca-row">
           
           <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300);document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
@@ -522,6 +522,9 @@
       w.href='https://www.youtube.com/results?search_query='+encodeURIComponent((D.full||'')+' season highlights '+(D.year||''));
       w.lastChild.textContent=' Watch '+(D.full||'')+' , '+(D.year||'')+' highlights';
     }
+    var cmp='compare.html'+(D.card_id!=null ? '?a='+encodeURIComponent(D.card_id) : '');
+    var c1=document.getElementById('compareCta1'); if(c1) c1.href=cmp;
+    var c2=document.getElementById('compareCta2'); if(c2) c2.href=cmp;
   }
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,330); drawRadar(); }
   // ── First paint: render the demo ONLY when there's no ?id (standalone visit).
