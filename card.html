@@ -356,11 +356,12 @@
   .yr.switchable{ cursor:pointer; position:relative; }
   .yr.switchable::after{ content:"\25BE"; font-size:.6em; opacity:.5; margin-left:.28em; vertical-align:middle; }
   .yr.switchable:hover::after{ opacity:.85; }
-  .seasonpanel{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px auto 0; max-width:330px; animation:seasonIn .18s ease; }
+  .seasonpanel{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin:16px auto 0; max-width:330px; padding:12px 10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; animation:seasonIn .18s ease; }
   @keyframes seasonIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;} }
   .seasonpill{ font-family:'Archivo',sans-serif; font-size:13px; font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:#F0EAD9; transition:background .15s,border-color .15s,transform .12s; }
   .seasonpill:hover{ background:rgba(255,255,255,0.12); transform:translateY(-1px); }
   .seasonpill.active{ background:#FF5C7A; border-color:#FF5C7A; color:#1C1B1A; }
+  body.light .seasonpanel{ background:rgba(0,0,0,0.03); border-color:rgba(0,0,0,0.08); }
   body.light .seasonpill{ border-color:rgba(0,0,0,0.16); background:rgba(0,0,0,0.04); color:#1C1B1A; }
   body.light .seasonpill:hover{ background:rgba(0,0,0,0.08); }
   body.light .seasonpill.active{ background:#DE3A5E; border-color:#DE3A5E; color:#fff; }
