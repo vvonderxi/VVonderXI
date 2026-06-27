@@ -342,11 +342,17 @@
   .dc-chev{transition:transform .2s} .dc-see.on .dc-chev{transform:rotate(180deg)}
   .dc-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
   .dc-detail.show{max-height:240px;margin-top:12px}
-  .dc-grouphead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(0,0,0,0.4);margin:14px 0 4px}
+  .dc-grouphead{font-family:'Archivo';font-weight:600;font-size:11px;letter-spacing:0.03em;color:#a39c8c;margin:20px 0 2px}
   .dc-grouphead:first-child{margin-top:0}
-  .dc-line{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;color:#6b6658}
-  .dc-line:last-child{border:none} .dc-line b{font-family:'Archivo',sans-serif;font-weight:800;color:var(--green,#2E8C5A)}
-  .dc-line:last-child b{color:#6b6658}
+  .dc-grouphead+.dc-hr{height:1px;background:rgba(0,0,0,.1);margin-bottom:4px}
+  .dc-line{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.055);font-size:13.5px;color:#46433c}
+  .dc-line:last-child{border:none}
+  .dc-stat{display:inline-flex;align-items:center;gap:7px;font-family:'Archivo',sans-serif;font-weight:500;font-size:12.5px}
+  .dc-stat .dot{width:7px;height:7px;border-radius:50%;box-sizing:border-box;flex-shrink:0}
+  .dc-stat.ok{color:#2E8C5A} .dc-stat.ok .dot{background:#2E8C5A}
+  .dc-stat.nr{color:rgba(28,27,26,.34)} .dc-stat.nr .dot{border:1.5px solid rgba(28,27,26,.28)}
+  .dc-src{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:13px;border-top:1px solid rgba(0,0,0,.1)}
+  .dc-src .k{font-size:11.5px;color:#a39c8c} .dc-src .v{font-size:11.5px;color:#8a8479;font-weight:500}
   *{box-sizing:border-box}
   .chips{max-width:100%}
   .chips>*{max-width:100%}
@@ -474,7 +480,7 @@
         <div class="dc-detail">
           <div class="dc-note" style="margin-bottom:10px">The dots run from 2 to 5. Every card has verified minutes, the baseline. Goals, assists and the deeper fields below show what else was recorded for that season. NR means not recorded.</div>
           <div id="dcFields"></div>
-          <div class="dc-line"><span>Source</span><b>Official league &amp; match data</b></div>
+          <div class="dc-src"><span class="k">Source</span><span class="v">Official league &amp; match data</span></div>
         </div>
       </div></div></div></div>
       <div class="cardactions">
@@ -610,12 +616,16 @@
     }
     if(dcFields){
       if(Array.isArray(D.confidenceFields)){
-        var line = function(f){ return '<div class="dc-line"><span>' + f.label + '</span><b>' + (f.present ? 'Verified' : 'NR') + '</b></div>'; };
+        var line = function(f){
+          var cls = f.present ? 'ok' : 'nr';
+          var txt = f.present ? 'Verified' : 'NR';
+          return '<div class="dc-line"><span>' + f.label + '</span><span class="dc-stat ' + cls + '"><span class="dot"></span>' + txt + '</span></div>';
+        };
         var basics = D.confidenceFields.filter(function(f){ return f.group === 'basics'; });
         var advanced = D.confidenceFields.filter(function(f){ return f.group === 'advanced'; });
         var html = '';
-        if(basics.length){ html += '<div class="dc-grouphead">Basics</div>' + basics.map(line).join(''); }
-        if(advanced.length){ html += '<div class="dc-grouphead">Advanced metrics</div>' + advanced.map(line).join(''); }
+        if(basics.length){ html += '<div class="dc-grouphead">Basics</div><div class="dc-hr"></div>' + basics.map(line).join(''); }
+        if(advanced.length){ html += '<div class="dc-grouphead">Advanced metrics</div><div class="dc-hr"></div>' + advanced.map(line).join(''); }
         dcFields.innerHTML = html;
       } else {
         dcFields.innerHTML = '';
