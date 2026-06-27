@@ -466,13 +466,11 @@
 <a class="watchcta" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 highlights</a>
 <a class="comparecta" id="compareCta1" href="compare.html"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg> Compare this player</a></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
-        <div class="dc-row"><span class="dc-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="dc-x">5 / 5</span></div>
+        <div class="dc-row"><span class="dc-dots" id="dcDots"></span><span class="dc-x" id="dcX">NR</span></div>
         <div class="dc-note">How complete the data behind this card is. It measures the record, not the player.</div>
         <button class="dc-see" onclick="var d=this.nextElementSibling;var o=d.classList.toggle('show');this.classList.toggle('on');this.querySelector('span').textContent=o?'Hide the breakdown':'See the breakdown';"><span>See the breakdown</span><i class="dc-chev">&#9662;</i></button>
         <div class="dc-detail">
-          <div class="dc-line"><span>Minutes &amp; appearances</span><b>Verified</b></div>
-          <div class="dc-line"><span>Goals &amp; assists</span><b>Verified</b></div>
-          <div class="dc-line"><span>Advanced metrics</span><b>Verified</b></div>
+          <div id="dcFields"></div>
           <div class="dc-line"><span>Source</span><b>Official league &amp; match data</b></div>
         </div>
       </div></div></div></div>
@@ -595,6 +593,25 @@
         var av=rows[i].querySelector('.av');
         if(bar){ bar.style.width=v+'%'; bar.style.background=barColor(v); }
         if(av){ av.textContent=v; }
+      }
+    }
+    var dcX = document.getElementById('dcX');
+    var dcDots = document.getElementById('dcDots');
+    var dcFields = document.getElementById('dcFields');
+    if(dcX && dcDots){
+      var c = (D.confidence != null) ? D.confidence : 0;
+      dcX.textContent = c + ' / 5';
+      var dots = '';
+      for(var i=1;i<=5;i++){ dots += (i<=c) ? '<i class="on"></i>' : '<i></i>'; }
+      dcDots.innerHTML = dots;
+    }
+    if(dcFields){
+      if(Array.isArray(D.confidenceFields)){
+        dcFields.innerHTML = D.confidenceFields.map(function(f){
+          return '<div class="dc-line"><span>' + f.label + '</span><b>' + (f.present ? 'Verified' : 'NR') + '</b></div>';
+        }).join('');
+      } else {
+        dcFields.innerHTML = '';
       }
     }
     var wt = document.getElementById('wonderTags');

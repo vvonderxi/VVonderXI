@@ -287,6 +287,20 @@
     const frac = present / GRANULAR.length;       // 0 at the wall, 1 fully granular
     return Math.round(2 + frac*3);                 // linear 2..5
   }
+  function confidenceFields(row){
+    var LABELS = {
+      shots_on:'Shots on target',
+      passes_key:'Key passes',
+      dribbles_success:'Successful dribbles',
+      passes_total:'Total passes',
+      tackles_total:'Tackles',
+      interceptions:'Interceptions',
+      duels_won:'Duels won'
+    };
+    return GRANULAR.map(function(f){
+      return { label: LABELS[f] || f, present: row[f] != null };
+    });
+  }
 
   /* ════════════════════════════════════════════════════════════════════
    *  getVVTags() , v1 PROFILE TAG ENGINE  (ported verbatim from
@@ -549,6 +563,7 @@
       prestige:   prestigeFor(band),    // §3  band-bound badge (Generational / Iconic / null)
       radar:      radarFor(row),        // §4  { raw, scaled, provisional }
       confidence: confidenceFor(row),   // §5  X/5 dots
+      confidenceFields: confidenceFields(row),   // §5b per-field present/missing breakdown
 
       // ── Seams: number now sourced from the view; tag/photo still blank by design ──
       number:   row.shirt_number ?? null,   // shirt number (player_positions.shirt_number, via view)
@@ -601,7 +616,7 @@
 
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
-                bandFor, prestigeFor, radarFor, confidenceFor, vvClient };
+                bandFor, prestigeFor, radarFor, confidenceFor, confidenceFields, vvClient };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
