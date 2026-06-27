@@ -374,6 +374,13 @@
   .tcol-sel .tbar{box-shadow:0 0 0 2px var(--pink);background:var(--pink)!important}
   .tcol-sel .tga{color:var(--pink);font-weight:800}
   .tcol-sel .ty{color:var(--pink);font-weight:800}
+  #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+  #glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+  #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A)}
+  #glChips .chtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968)}
+  #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
+  #glChips .chtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F)}
+  #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
 </style>
 </head>
 <body class="light">
@@ -551,7 +558,7 @@
     set('glSub', (D.pos||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
     set('glSquad', (D.number!=null ? D.number : 'NR'));
     var chips=document.getElementById('glChips');
-    if(chips){ chips.innerHTML = renderTagPills(D.tags, {baseClass:'chtag', max:3}); }
+    if(chips){ chips.innerHTML = renderTagPills(D.tags, {baseClass:'chtag', max:99}); }
     var w=document.querySelector('.watchcta');
     if(w){
       w.href='https://www.youtube.com/results?search_query='+encodeURIComponent((D.full||'')+' season highlights '+(D.year||''));
