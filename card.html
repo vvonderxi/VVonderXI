@@ -353,6 +353,17 @@
   .layer-b-inner{min-width:0}
   @media(max-width:430px){ .layer-b-inner{padding-left:16px;padding-right:16px} }
   .sb-opt.soc{flex:0 0 auto;width:46px;padding-left:0;padding-right:0;justify-content:center;gap:0}
+  .yr.switchable{ cursor:pointer; position:relative; }
+  .yr.switchable::after{ content:"\25BE"; font-size:.6em; opacity:.5; margin-left:.28em; vertical-align:middle; }
+  .yr.switchable:hover::after{ opacity:.85; }
+  .seasonpanel{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px auto 0; max-width:330px; animation:seasonIn .18s ease; }
+  @keyframes seasonIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;} }
+  .seasonpill{ font-family:'Archivo',sans-serif; font-size:13px; font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:#F0EAD9; transition:background .15s,border-color .15s,transform .12s; }
+  .seasonpill:hover{ background:rgba(255,255,255,0.12); transform:translateY(-1px); }
+  .seasonpill.active{ background:#FF5C7A; border-color:#FF5C7A; color:#1C1B1A; }
+  body.light .seasonpill{ border-color:rgba(0,0,0,0.16); background:rgba(0,0,0,0.04); color:#1C1B1A; }
+  body.light .seasonpill:hover{ background:rgba(0,0,0,0.08); }
+  body.light .seasonpill.active{ background:#DE3A5E; border-color:#DE3A5E; color:#fff; }
 </style>
 </head>
 <body class="light">
@@ -506,12 +517,57 @@
     var id=_cardId;                           // shared from the first-paint read above
     if(!id) return;                          // no id -> keep demo default (standalone)
     var sb=vvClient(); if(!sb) return;       // vv-core logs why (missing config or lib)
-    var res=await sb.from('player_card_view').select('*').eq('card_id', id).single();
+    var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
     if(res.error || !res.data){ console.error('card load failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
     renderHero();                            // hero + radar from the live card
+    loadSeasons(res.data.api_player_id, res.data.card_id);
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
+  // ── Season switcher , swap between a player's seasons from the hero year chip ──
+  var SEASON_CARDID=null, SEASON_ROWS=null;
+  async function loadSeasons(apiPlayerId, currentCardId){
+    SEASON_CARDID=currentCardId; SEASON_ROWS=null;
+    if(apiPlayerId==null) return;
+    var sb=vvClient(); if(!sb) return;
+    var res=await sb.from('player_card_mv').select('card_id,season,season_year,rt').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
+    if(res.error || !res.data || res.data.length<2) return;
+    SEASON_ROWS=res.data;
+    var yr=document.querySelector('#heroCard .yr'); if(yr) yr.classList.add('switchable');
+  }
+  function seasonPanelOpen(){
+    if(!SEASON_ROWS) return;
+    if(document.getElementById('seasonPanel')){ seasonPanelClose(); return; }   // toggle
+    var hero=document.getElementById('heroCard'); if(!hero) return;
+    var p=document.createElement('div');
+    p.id='seasonPanel'; p.className='seasonpanel';
+    p.innerHTML=SEASON_ROWS.map(function(r){
+      var active=(r.card_id===SEASON_CARDID)?' active':'';
+      return '<button class="seasonpill'+active+'" data-cid="'+r.card_id+'" onclick="switchSeason('+r.card_id+')">'+fmtSeason(r.season)+'</button>';
+    }).join('');
+    hero.parentNode.insertBefore(p, hero.nextSibling);
+  }
+  function seasonPanelClose(){
+    var p=document.getElementById('seasonPanel'); if(p) p.remove();
+  }
+  async function switchSeason(cardId){
+    seasonPanelClose();
+    if(cardId===SEASON_CARDID) return;
+    var sb=vvClient(); if(!sb) return;
+    var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
+    if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
+    D=rowToCard(res.data);
+    renderHero();
+    SEASON_CARDID=cardId;
+    var yr=document.querySelector('#heroCard .yr'); if(yr) yr.classList.add('switchable');
+    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
+  }
+  document.addEventListener('click', function(e){
+    var inYr = e.target.closest && e.target.closest('#heroCard .yr');
+    if(inYr && SEASON_ROWS){ e.stopPropagation(); seasonPanelOpen(); return; }
+    var panel=document.getElementById('seasonPanel');
+    if(panel && !(e.target.closest && e.target.closest('#seasonPanel'))){ seasonPanelClose(); }
+  });
   loadCard();
 </script>
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx=\"12\" cy=\"12\" r=\"4.3\"/><path d=\"M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4\"/>';var moon='<g transform=\"translate(24,0) scale(-1,1)\"><path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});
