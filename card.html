@@ -132,7 +132,7 @@
   .gsub{font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:#9a9285;margin-bottom:14px}
   /* HOVER-TO-SHOW tag tooltip , the standard for ALL tags/chips */
   .chip{position:relative}
-  .chip[data-tip]:hover::after, #glChips .chtag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);width:max-content;max-width:260px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:10px 13px;border-radius:10px;box-shadow:0 14px 30px -10px rgba(0,0,0,0.6);z-index:20;pointer-events:none}
+  .chip[data-tip]:hover::after, #glChips .chtag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(calc(-50% + var(--tip-shift, 0px)));width:max-content;max-width:260px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:10px 13px;border-radius:10px;box-shadow:0 14px 30px -10px rgba(0,0,0,0.6);z-index:20;pointer-events:none}
   .chip[data-tip]:hover::before, #glChips .chtag[data-tip]:hover::before{content:'';position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1d1a1b;z-index:20}
   /* chronicle one-liner above the expanded box */
   .chronicle-one{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:18px;line-height:1.5;color:#2a2620;margin-bottom:16px}

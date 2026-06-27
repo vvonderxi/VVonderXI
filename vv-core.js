@@ -579,6 +579,24 @@
     return _client;
   }
 
+  // ── Tooltip viewport-guard , one delegated listener shifts any [data-tip]
+  //    bubble back on-screen via --tip-shift (consumed by the ::after transform). ──
+  (function(){
+    if (typeof document === 'undefined') return;
+    function guard(e){
+      var el = e.target.closest && e.target.closest('[data-tip]');
+      if(!el) return;
+      var r = el.getBoundingClientRect();
+      var center = r.left + r.width/2;
+      var half = 130, margin = 10, vw = window.innerWidth, shift = 0;
+      if(center - half < margin) shift = margin - (center - half);
+      else if(center + half > vw - margin) shift = (vw - margin) - (center + half);
+      el.style.setProperty('--tip-shift', Math.round(shift) + 'px');
+    }
+    document.addEventListener('mouseover', guard, true);
+    document.addEventListener('focusin', guard, true);
+  })();
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, radarFor, confidenceFor, vvClient };
