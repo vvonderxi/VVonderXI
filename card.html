@@ -381,6 +381,8 @@
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
   #glChips .chtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F)}
   #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
+  #glChips .chtag-prestige-gen{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
+  #glChips .chtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
 </style>
 </head>
 <body class="light">
@@ -558,7 +560,7 @@
     set('glSub', (D.pos||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
     set('glSquad', (D.number!=null ? D.number : 'NR'));
     var chips=document.getElementById('glChips');
-    if(chips){ chips.innerHTML = renderTagPills(D.tags, {baseClass:'chtag', max:99}); }
+    if(chips){ chips.innerHTML = renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99}); }
     var w=document.querySelector('.watchcta');
     if(w){
       w.href='https://www.youtube.com/results?search_query='+encodeURIComponent((D.full||'')+' season highlights '+(D.year||''));
