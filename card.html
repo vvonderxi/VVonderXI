@@ -257,6 +257,8 @@
   .cardshare.done span::after{content:' \2713'}
   .glancebadge{align-self:flex-start;margin-top:2px}
   .gdrury{font-family:'Bricolage Grotesque';font-style:italic;font-weight:800;font-size:14.5px;line-height:1.5;color:var(--pink);margin:4px 0 12px;max-width:520px}
+  .gdrury.gen{position:relative;min-height:1.2em;border-radius:6px;background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
+  @keyframes gdShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   /* SHARE MODAL */
   .sharemodal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,8,9,.66);backdrop-filter:blur(6px)}
   .sharemodal.on{display:flex}
@@ -422,7 +424,7 @@
   <div class="glancestats">
     <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV">91</span><span class="gl">VV Index</span></div><div class="gstat"><span class="gv" id="glGoals">10</span><span class="gl">Goals</span></div><div class="gstat"><span class="gv" id="glAssists">8</span><span class="gl">Assists</span></div></div>
     <div class="gsub" id="glSub">CAM &middot; Man Utd &middot; 23/24</div>
-    <div class="gdrury">"Three names this season alone, and not one of them given lightly. The team had a heartbeat, and it answered to him."</div>
+    <div class="gdrury" id="glDrury"></div>
     <div class="chips" id="glChips">
       <span class="chip gold" data-tip="One of the rarest single seasons , a year that defined an era."><svg class="ci" viewBox="0 0 100 100" fill="#5a4410"><path d="M18 72 L18 34 L36 52 L50 26 L64 52 L82 34 L82 72 Z"/><circle cx="18" cy="30" r="5"/><circle cx="82" cy="30" r="5"/><circle cx="50" cy="22" r="5"/></svg> Iconic</span>
       <span class="chip gold" data-tip="The player the whole team leaned on , the one who carried the side."><svg class="ci" viewBox="0 0 100 100" fill="#5a4410"><path d="M18 72 L18 34 L36 52 L50 26 L64 52 L82 34 L82 72 Z"/><circle cx="18" cy="30" r="5"/><circle cx="82" cy="30" r="5"/><circle cx="50" cy="22" r="5"/></svg> Talisman</span>
@@ -452,7 +454,7 @@
     <div class="tcol"><div class="tbarwrap"><div class="tga">18</div><div class="tbar" style="height:90%"></div></div><div class="ttone up">Peak</div><div class="ty">23/24</div></div>
   </div>
 </div>
-<div class="darkbox"><div class="q">"Three seasons of steady ascent, and now he stands at the summit of his powers. At twenty-nine, this is Bruno distilled , the fullest version of a player who has only grown into the weight of the armband."</div><div class="m">SCOUT REPORT</div></div></div></div></div>
+<div class="darkbox" id="scoutBox"><div class="q" id="scoutBody"></div><div class="m">SCOUT REPORT</div></div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain">The raw stats behind his Creation score. The <b>per 90</b> rate, the season <b>total</b>, and his <b>percentile</b> , where he ranks against every midfielder in the league.</div>
 <div class="proofrow"><div class="pl">Key passes</div><div class="pr"><span class="per90">2.4</span><span class="raw">81</span><span class="pctn">88th</span><span class="pct"><i style="width:88%;background:#2E8C5A"></i></span></div></div>
 <div class="proofrow"><div class="pl">Big chances created</div><div class="pr"><span class="per90">0.5</span><span class="raw">17</span><span class="pctn">82nd</span><span class="pct"><i style="width:82%;background:#2E8C5A"></i></span></div></div>
@@ -555,35 +557,43 @@
     chart.innerHTML=html;
     if(tag){ tag.innerHTML='📈 Career'; }
   }
-  var NOTES_LOADED_FOR = null;   // card_id we've loaded notes for
-  var LEAGUE_NAMES = { PL:'Premier League', PD:'La Liga', SA:'Serie A', BL1:'Bundesliga', FL1:'Ligue 1', DED:'Eredivisie', PPL:'Primeira Liga', ELC:'Championship', BSA:'Brasileirao' };
-  async function vvNotesOpen(){
-    var D = window.D; if(!D) return;
-    var layer = document.getElementById('notesLayer');
-    if(!layer || !layer.classList.contains('open')) return;   // only when opening
-    if(NOTES_LOADED_FOR === D.card_id) return;                // already loaded this card
-    NOTES_LOADED_FOR = D.card_id;
-    var body = document.getElementById('notesBody'); if(!body) return;
-    body.innerHTML = '<div class="np" style="opacity:.6">Reading the season...</div>';
+  function vvNotesOpen(){ /* editorial loads on card load; nothing to do on open */ }
+  var EDITORIAL_FOR = null;
+  var EDITORIAL = null;
+  async function vvLoadEditorial(D){
+    if(!D || D.card_id==null) return;
+    if(EDITORIAL_FOR === D.card_id){ vvFillEditorial(); return; }
+    EDITORIAL_FOR = D.card_id; EDITORIAL = null;
+    var gd=document.getElementById('glDrury'); if(gd){ gd.textContent=''; gd.classList.add('gen'); }
     try{
-      var payload = {
-        mode:'notes', cardId: D.card_id,
-        player: {
-          player_name: D.full, season: D.year, age: D.age,
-          club: D.clubname, league: (LEAGUE_NAMES[D.league] || D.league),
-          position: D.pos, goals: D.goals, assists: D.assists,
-          rt: D.vv, tags: (Array.isArray(D.tags) ? D.tags.map(function(t){return t.name;}) : [])
-        }
-      };
-      var r = await fetch('/api/analyse', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      var LEAGUE_NAMES = { PL:'Premier League', PD:'La Liga', SA:'Serie A', BL1:'Bundesliga', FL1:'Ligue 1', DED:'Eredivisie', PPL:'Primeira Liga', ELC:'Championship', BSA:'Brasileirao' };
+      var payload = { mode:'notes', cardId:D.card_id, player:{
+        player_name:D.full, season:D.year, age:D.age, club:D.clubname,
+        league:(LEAGUE_NAMES[D.league]||D.league), position:D.pos,
+        goals:D.goals, assists:D.assists, rt:D.vv,
+        tags:(Array.isArray(D.tags)?D.tags.map(function(t){return t.name;}):[])
+      }};
+      var r = await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       var data = await r.json();
-      if(!r.ok || !data || !Array.isArray(data.notes) || !data.notes.length){ vvNotesHide(); return; }
-      body.innerHTML = data.notes.map(function(s){ var d=document.createElement('div'); d.className='np'; d.textContent=s; return d.outerHTML; }).join('');
-    }catch(e){ vvNotesHide(); }
+      if(!r.ok || !data || typeof data.glance!=='string' || typeof data.scout!=='string' || !Array.isArray(data.notes)){ vvEditorialFail(); return; }
+      EDITORIAL = { glance:data.glance, scout:data.scout, notes:data.notes };
+      vvFillEditorial();
+    }catch(e){ vvEditorialFail(); }
   }
-  function vvNotesHide(){
-    var layer = document.getElementById('notesLayer'); if(layer) layer.style.display='none';
-    NOTES_LOADED_FOR = null;
+  function vvFillEditorial(){
+    if(!EDITORIAL) return;
+    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.textContent='"'+EDITORIAL.glance+'"'; }
+    var sb=document.getElementById('scoutBody'); var sbox=document.getElementById('scoutBox');
+    if(sb){ sb.textContent='"'+EDITORIAL.scout+'"'; } if(sbox){ sbox.style.display=''; }
+    var nb=document.getElementById('notesBody'); var nl=document.getElementById('notesLayer');
+    if(nb){ nb.innerHTML=EDITORIAL.notes.map(function(s){var d=document.createElement('div');d.className='np';d.textContent=s;return d.outerHTML;}).join(''); }
+    if(nl){ nl.style.display=''; }
+  }
+  function vvEditorialFail(){
+    EDITORIAL=null;
+    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.textContent=''; }
+    var sbox=document.getElementById('scoutBox'); if(sbox){ sbox.style.display='none'; }
+    var nl=document.getElementById('notesLayer'); if(nl){ nl.style.display='none'; }
   }
   function vvProfileBlurb(D){
     var s = D && D.radar && D.radar.scaled; if(!s) return '';
@@ -621,8 +631,7 @@
   function renderPanels(D){
     if(!D) return;
     window.D = D;
-    NOTES_LOADED_FOR = null;
-    var _nl = document.getElementById('notesLayer'); if(_nl){ _nl.style.display=''; _nl.classList.remove('open'); var _nb=document.getElementById('notesBody'); if(_nb) _nb.innerHTML=''; }
+    vvLoadEditorial(D);
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
     set('glVV', D.vv);
     var _pl = document.getElementById('profileLead'); if(_pl){ var _b = vvProfileBlurb(D); _pl.textContent = _b || 'A footballer measured across five dimensions.'; }
