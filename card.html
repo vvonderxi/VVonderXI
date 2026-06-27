@@ -365,6 +365,12 @@
   body.light .seasonpill{ border-color:rgba(0,0,0,0.16); background:rgba(0,0,0,0.04); color:#1C1B1A; }
   body.light .seasonpill:hover{ background:rgba(0,0,0,0.08); }
   body.light .seasonpill.active{ background:#DE3A5E; border-color:#DE3A5E; color:#fff; }
+  .seasontrigger{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;cursor:pointer;padding:4px 2px;transition:color .18s}
+  .seasontrigger:hover{color:rgba(243,237,224,0.9)}
+  .seasontrigger::after{content:"\25BE";font-size:.85em;opacity:.7}
+  body.light .seasontrigger{color:#8a8276}
+  body.light .seasontrigger:hover{color:#1C1B1A}
+  #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
 </style>
 </head>
 <body class="light">
@@ -385,6 +391,7 @@
       <div class="plinth">
         <div class="glow"></div>
         <div id="heroCard"></div>
+        <div id="seasonZone"></div>
         <button class="clubpill" onclick="vvTrySave('Save this card to your club. Free.', function(){ toggleClub(document.querySelector('.clubpill')); })"><span class="cp-star">&#9734;</span> <span class="cp-txt">Add to my club</span></button>
         <button class="wallpill" id="wallPill" onclick="vvWallToggle(this)"><svg class="wp-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-4 4 3 3-2 6 4"/><circle cx="8.6" cy="9" r="1.3"/></svg> <span class="wp-txt">Add to my wall</span></button>
         <div class="pcap">Tap any layer to go deeper , from the glance to the full story.</div>
@@ -534,21 +541,26 @@
     if(res.error || !res.data || res.data.length<2) return;
     SEASON_ROWS=res.data;
     var yr=document.querySelector('#heroCard .yr'); if(yr) yr.classList.add('switchable');
+    var zone=document.getElementById('seasonZone');
+    if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
   }
   function seasonPanelOpen(){
     if(!SEASON_ROWS) return;
     if(document.getElementById('seasonPanel')){ seasonPanelClose(); return; }   // toggle
-    var hero=document.getElementById('heroCard'); if(!hero) return;
+    var zone=document.getElementById('seasonZone'); if(!zone) return;
     var p=document.createElement('div');
     p.id='seasonPanel'; p.className='seasonpanel';
     p.innerHTML=SEASON_ROWS.map(function(r){
       var active=(r.card_id===SEASON_CARDID)?' active':'';
       return '<button class="seasonpill'+active+'" data-cid="'+r.card_id+'" onclick="switchSeason('+r.card_id+')">'+fmtSeason(r.season)+'</button>';
     }).join('');
-    hero.parentNode.insertBefore(p, hero.nextSibling);
+    zone.appendChild(p);
+    var trig=zone.querySelector('.seasontrigger'); if(trig) trig.textContent='Hide seasons';
   }
   function seasonPanelClose(){
     var p=document.getElementById('seasonPanel'); if(p) p.remove();
+    var trig=document.querySelector('#seasonZone .seasontrigger');
+    if(trig && SEASON_ROWS) trig.textContent='View all '+SEASON_ROWS.length+' seasons';
   }
   async function switchSeason(cardId){
     if(cardId===SEASON_CARDID) return;
@@ -567,7 +579,7 @@
     var inYr = e.target.closest && e.target.closest('#heroCard .yr');
     if(inYr && SEASON_ROWS){ e.stopPropagation(); seasonPanelOpen(); return; }
     var panel=document.getElementById('seasonPanel');
-    if(panel && !(e.target.closest && e.target.closest('#seasonPanel'))){ seasonPanelClose(); }
+    if(panel && !(e.target.closest && e.target.closest('#seasonZone'))){ seasonPanelClose(); }
   });
   loadCard();
 </script>
