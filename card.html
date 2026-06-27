@@ -129,7 +129,7 @@
   @media (max-width:560px){.glancebadge{display:none}}
   /* glance: stat row + chips on the right */
   .gstatrow{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.07)}
-  .gsub{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#9a9285;margin-bottom:14px}
+  .gsub{font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:#9a9285;margin-bottom:14px}
   /* HOVER-TO-SHOW tag tooltip , the standard for ALL tags/chips */
   .chip{position:relative}
   .chip[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);width:max-content;max-width:260px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:10px 13px;border-radius:10px;box-shadow:0 14px 30px -10px rgba(0,0,0,0.6);z-index:20;pointer-events:none}
@@ -425,7 +425,7 @@
 <div class="attr"><div class="an">Progression</div><div class="abar"><i style="width:88%;background:#2E8C5A"></i></div><div class="av">88</div></div>
 <div class="attr"><div class="an">Defensive</div><div class="abar"><i style="width:42%;background:#D9534F"></i></div><div class="av">42</div></div>
 <div class="attr"><div class="an">Reliability</div><div class="abar"><i style="width:85%;background:#2E8C5A"></i></div><div class="av">85</div></div></div></div></div></div>
-      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="trajtag">\u{1F4C8} At Peak</div>
+      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Every season, measured in goals and assists. A career's arc, told in output.</div><div class="trajtag">\u{1F4C8} At Peak</div>
 <div class="trajwrap">
   <div class="yscale" id="trajYscale"><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
   <div class="trajchart">
@@ -548,7 +548,7 @@
     set('glVV', D.vv);
     set('glGoals', D.goals);
     set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
-    set('glSub', (D.pos||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||''));
+    set('glSub', (D.pos||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
     set('glSquad', (D.number!=null ? D.number : 'NR'));
     var chips=document.getElementById('glChips');
     if(chips){ chips.innerHTML = renderTagPills(D.tags, {baseClass:'chtag', max:3}); }
