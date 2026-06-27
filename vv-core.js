@@ -591,6 +591,8 @@
       var half = 130, margin = 10, vw = window.innerWidth, shift = 0;
       if(center - half < margin) shift = margin - (center - half);
       else if(center + half > vw - margin) shift = (vw - margin) - (center + half);
+      el.style.setProperty('--tip-left', Math.round(center) + 'px');
+      el.style.setProperty('--tip-bottom', Math.round(window.innerHeight - r.top + 9) + 'px');
       el.style.setProperty('--tip-shift', Math.round(shift) + 'px');
     }
     document.addEventListener('mouseover', guard, true);
