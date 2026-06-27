@@ -213,6 +213,13 @@
   #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%}
   #cardA::before,#cardB::before{content:'';position:absolute;width:120%;height:88%;top:12%;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(255,143,163,0.30),rgba(255,143,163,0.08) 46%,transparent 72%);filter:blur(36px);z-index:0;pointer-events:none}
   body.light #cardA::before,body.light #cardB::before{background:radial-gradient(ellipse at center,rgba(255,143,163,0.20),rgba(255,143,163,0.05) 46%,transparent 72%)}
+  .cmp-seasons{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px auto 0;max-width:240px}
+  .cmp-spill{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.02em;padding:6px 11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:rgba(243,237,224,.72);transition:.15s;line-height:1;white-space:nowrap}
+  .cmp-spill:hover{border-color:rgba(255,255,255,.32);color:#F3EDE0}
+  .cmp-spill.on{background:var(--pink);border-color:var(--pink);color:#fff}
+  body.light .cmp-spill{border-color:rgba(0,0,0,.14);background:rgba(0,0,0,.035);color:#6b6658}
+  body.light .cmp-spill:hover{border-color:rgba(0,0,0,.3);color:#1d1a1b}
+  body.light .cmp-spill.on{background:var(--pink);border-color:var(--pink);color:#fff}
   #cardA .vvcard,#cardB .vvcard{position:relative;z-index:1}
   /* favourite + add-to-club under each card */
   .sidecta{display:flex;align-items:center;gap:10px;width:var(--cw,300px);max-width:300px}
@@ -670,18 +677,43 @@ body.light .pkmsub{color:#b0a899}
   function vvBack(){var inApp=false;try{inApp=document.referrer&&new URL(document.referrer).origin===location.origin;}catch(e){}if(inApp&&history.length>1)history.back();else location.href='rankings.html';}
 
   // ── Deep-link: ?a=<card_id> -> Slot A, ?b=<card_id> -> Slot B (no param -> empty slots) ──
+  async function fetchCard(id){
+    var sb=vvClient(); if(!sb) return null;
+    var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
+    if(res.error || !res.data){ console.error('compare fetchCard failed:', res.error && res.error.message); return null; }
+    return rowToCard(res.data);
+  }
   async function loadSlotFromUrl(){
     var ids; try{ ids=new URLSearchParams(window.location.search); }catch(e){ return; }
     var a=ids.get('a'), b=ids.get('b'); if(!a && !b) return;
     var sb=vvClient(); if(!sb) return;            // vv-core logs why (missing config or lib)
-    async function fetchCard(id){
-      var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
-      if(res.error || !res.data){ console.error('compare ?a/?b load failed:', res.error && res.error.message); return null; }
-      return rowToCard(res.data);
-    }
     if(a){ var ca=await fetchCard(a); if(ca) CMP_A=ca; }
     if(b){ var cb=await fetchCard(b); if(cb) CMP_B=cb; }
     vvSizeCards();
+    vvLoadSlotSeasons('A'); vvLoadSlotSeasons('B');
+  }
+  async function vvLoadSlotSeasons(slot){
+    var cmp = slot==='A'?CMP_A:CMP_B;
+    var host = document.getElementById('card'+slot);
+    var old = document.getElementById('seasons'+slot); if(old) old.remove();
+    if(!host || !cmp || cmp.api_player_id==null) return;
+    var sb=vvClient(); if(!sb) return;
+    var res=await sb.from('player_card_mv').select('card_id,season,season_year,rt').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false});
+    if(res.error || !res.data || res.data.length<2) return;
+    var rows=res.data;
+    var wrap=document.createElement('div'); wrap.id='seasons'+slot; wrap.className='cmp-seasons';
+    wrap.innerHTML=rows.map(function(r){
+      var on=(String(r.card_id)===String(cmp.card_id))?' on':'';
+      var lbl=(typeof fmtSeason==='function')?fmtSeason(r.season):r.season;
+      return '<button class="cmp-spill'+on+'" onclick="event.stopPropagation();vvSwitchSlotSeason(\''+slot+'\','+r.card_id+')">'+lbl+'</button>';
+    }).join('');
+    host.insertAdjacentElement('afterend', wrap);
+  }
+  async function vvSwitchSlotSeason(slot, cardId){
+    var card=await fetchCard(cardId); if(!card) return;
+    if(slot==='A') CMP_A=card; else CMP_B=card;
+    vvSizeCards();
+    vvLoadSlotSeasons(slot);
   }
   loadSlotFromUrl();
 
@@ -704,7 +736,7 @@ body.light .pkmsub{color:#b0a899}
   function pkRecents(){ try{return JSON.parse(localStorage.getItem('vvCmpRecents')||'[]');}catch(e){return [];} }
   function pkPushRecent(p){ try{var r=pkRecents().filter(function(x){return pkKey(x)!==pkKey(p);}); r.unshift(p); localStorage.setItem('vvCmpRecents',JSON.stringify(r.slice(0,6)));}catch(e){} }
   function pkPick(k){ var pool=POOL.concat(pkRecents()); var p=null; for(var i=0;i<pool.length;i++){ if(pkKey(pool[i])===k){p=pool[i];break;} } if(!p)return;
-    if(pickerSlot==='A')CMP_A=p; else CMP_B=p; pkPushRecent(p); vvSizeCards(); closePicker(); }
+    if(pickerSlot==='A')CMP_A=p; else CMP_B=p; pkPushRecent(p); vvSizeCards(); closePicker(); vvLoadSlotSeasons(pickerSlot); }
   function pkRow(p){ var tier=p.vv>=95?' gen':(p.vv>=90?' elite':'');
     return '<div class="cmprow" onclick="pkPick(\''+pkKey(p)+'\')">'
      +'<span class="cmprail" style="background:'+(p.club1||'#9a948a')+'"></span>'
