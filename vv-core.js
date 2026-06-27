@@ -373,6 +373,30 @@
     };
   }
 
+  const TAG_DEFS = {
+  "Goal Machine":          { oneLiner: "Goals by the season, not the handful. Volume that bends a table.", def: "Some players score. This one scores, and scores, and scores again, until the goal becomes less an event than a habit. A season measured in the simplest, cruellest currency the game knows, and there was always more of it to come." },
+  "Marksman":              { oneLiner: "A reliable source of goals, season after season. The dependable hand in front of goal.", def: "Not the name that headlines the highlight reel, but the one the table quietly depends on. Week after week the chances came, and week after week they were taken. Honest, steady scoring is its own kind of art." },
+  "Clinical":              { oneLiner: "Cold, efficient finishing. Rarely wastes a chance.", def: "There is a coldness to it, a certainty. Where others hesitate, he has already decided. The chance arrives, the net ripples, and all season long the story barely changes. Ruthless, and quietly so." },
+  "Provider":              { oneLiner: "The pass before the goal. Assists at a rate few can match.", def: "He does not need his name on the scoresheet to have written the story. The vision, the weight, the moment of generosity that turns a teammate into a hero. A season spent handing out goals like gifts." },
+  "Poacher":               { oneLiner: "Lives in the box, lives for the goal. A natural finisher.", def: "He does not build the move. He does not need to. He waits, in the spaces no one else sees, for the half-yard and the half-second, and then he is gone, and the net is rippling. A predator, patient and merciless." },
+  "The Winger":            { oneLiner: "Drifts wide, cuts in, beats his man for fun.", def: "Give him the touchline and a defender to torment, and watch the old magic unfold. The drop of the shoulder, the burst of pace, the moment the full-back is left grasping at shadows. Football's purest thrill: a winger in full flight." },
+  "Playmaker":             { oneLiner: "The creative hub. Unlocks defences with vision and weight of pass.", def: "He sees the pass a moment before anyone else, and plays it a moment before they expect. The defence is unlocked not by force but by imagination. Where others see a wall, he sees a door." },
+  "Maestro":               { oneLiner: "The conductor of a team's attack. Vision, control, and the passes others don't see.", def: "He does not run the game. He composes it. Every pass a note, every movement a phrase, the rhythm of an entire team bending to his tempo. You do not watch a Maestro. You listen to him." },
+  "Deep-Lying Playmaker":  { oneLiner: "Dictates tempo from deep, sprays passes across the pitch.", def: "From the quietest part of the pitch, he runs the loudest game. A glance, a touch, and the ball travels forty yards to feet. He does not chase the spotlight. He bends the whole match to his rhythm and lets others dance in it." },
+  "Engine Room":           { oneLiner: "The relentless heartbeat of midfield. Covering ground, linking play, never stopping.", def: "While others rest, he runs. The unseen miles, the quiet work, the lungs that never beg for mercy. No highlight reel will ever do him justice, and yet without him, none of it happens." },
+  "The Dribbler":          { oneLiner: "Beats his man and keeps the ball. Carries it where others lose it.", def: "Others give the ball away when the pitch gets crowded. He keeps it. Surrounded, hounded, doubled up on, he lowers his head and goes, and the tighter the space, the more alive he seems. A footballer who treats a crowd as an invitation." },
+  "The Wall":              { oneLiner: "Immovable. Wins his duels, heads everything, gives nothing away.", def: "Strikers came, and strikers left empty-handed. A season of saying no, of the header won, the tackle timed, the door bolted shut. Nothing glamorous, nothing soft, just an immovable certainty at the heart of the defence." },
+  "Destroyer":             { oneLiner: "Tough, tireless, wins the ball and the battle.", def: "The unglamorous heart of a team. The tackle, the block, the ball won back before the danger grows. He does the work nobody sings about, so that those who are sung about have a stage to perform on." },
+  "Ball Hawk":             { oneLiner: "Reads the pass before it is played. Lives in the passing lanes.", def: "He defends with his mind as much as his legs. The ball is cut out before it ever arrives, the danger snuffed before it draws breath. Anticipation is its own kind of pace, and his was the quickest read on the pitch." },
+  "Ball-Playing Defender": { oneLiner: "Defends first, but starts attacks with the ball at his feet.", def: "The defender who is also the architect. He wins the ball, and then he does the harder thing, he uses it. A season of quelling danger at one end and igniting it at the other, all from the foundations of the team." },
+  "Complete":              { oneLiner: "Elite at both ends. Gives as much as he takes away.", def: "Football usually asks a player to choose: create or destroy, build or break. He refused the choice. A season of doing it all, at both ends, with a balance that bordered on greed. The rarest profile the game produces." },
+  "Iron Man":              { oneLiner: "Plays through everything, never misses a game.", def: "While others came and went, nursed and rested, he simply played. Every week, every minute, the one name the manager never had to think about. There is a quiet greatness in always being there." },
+  "Wonderkid":             { oneLiner: "A teenager already producing at an elite level. The future, arriving early.", def: "We are not supposed to see this yet. One so young has no business being this good, and yet here it is, the future arriving ahead of schedule. Remember the season. You were watching greatness take its first steps." },
+  "The Last Dance":        { oneLiner: "A great veteran defying age with one more elite campaign.", def: "They said the legs had gone. They said it was time. And he answered, not with words, but with one more season of the old magic, proof that class does not retire when the body ages. A final, glorious flourish, all the sweeter for being unexpected." },
+  "Generational":          { oneLiner: "The highest grade the Index awards. Reserved for the rarest seasons in the history of the game.", def: "Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone." },
+  "Iconic":                { oneLiner: "A season in the top five percent ever recorded, remembered forever.", def: "The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career." }
+};
+
   // getVVTags(row) -> array of tag objects { name, family, tier }
   // families: ATT (red), MID (green), DEF (blue), AGE, CROSS
   function getVVTags(row) {
@@ -556,7 +580,7 @@
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
-  const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, rowToCard, fmtSeason, surnameOf, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, radarFor, confidenceFor, vvClient };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
