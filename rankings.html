@@ -536,17 +536,17 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const f = readFilters();
     var _act=(f.leagues.length||f.positions.length||f.era||f.tags.length||f.rtLo!==50||f.rtHi!==96||f.sort.col!=='rt');
     var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
-    let q = sb.from('player_card_view').select('*');
+    let q = sb.from('player_card_mv').select('*');
     var tq=document.getElementById('rankSearch').value.trim();
-    if(tq){ var like='%'+tq.replace(/[(),]/g,'')+'%'; q=q.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
+    if(tq){ var like='%'+vvNorm(tq).replace(/[(),]/g,'')+'%'; q=q.or('player_name_norm.ilike.'+like+',team_name_norm.ilike.'+like); }
     if(f.leagues.length)   q=q.in('league_code', f.leagues);
     if(f.positions.length) q=q.in('position_pool', f.positions);
     if(f.era){ q=q.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
     q=q.gte('rt', f.rtLo).lte('rt', f.rtHi);
     q=q.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(rankLimit);
     // separate head-only exact count, mirroring the same filters (parallel, no extra latency)
-    let cq = sb.from('player_card_view').select('*', { count: 'exact', head: true });
-    if(tq){ cq=cq.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
+    let cq = sb.from('player_card_mv').select('*', { count: 'exact', head: true });
+    if(tq){ cq=cq.or('player_name_norm.ilike.'+like+',team_name_norm.ilike.'+like); }
     if(f.leagues.length)   cq=cq.in('league_code', f.leagues);
     if(f.positions.length) cq=cq.in('position_pool', f.positions);
     if(f.era){ cq=cq.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
