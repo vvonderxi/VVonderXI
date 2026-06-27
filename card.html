@@ -455,9 +455,7 @@
   <div class="np">By the final whistle the deficit was a memory, and the captain stood at the centre circle, chest heaving , the embodiment of a side that refused to die. That was the night they remembered who he was.</div>
   <div class="nm chron-score">Man Utd 2-1 Liverpool, 7 Apr 2024</div>
 </div></div></div></div>
-      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 10l4.9-1.7z"/><path d="M18.6 15l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></div><div class="layer-t">Wonder Tags</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="tagrow" onclick="this.classList.toggle('open')"><div class="tt">&#128081; Talisman <span class="tchev">&#8964;</span></div><div class="td">The player the whole team leaned on , the one who carried the side.</div><div class="tmore">A Talisman is more than the best player; he is the one the team believes in. When the game tightens and the doubt creeps in, this is the man the others look for, the one whose touch settles nerves and whose presence alone shifts the odds. Take him off the pitch and you do not just lose his numbers , you lose the side's certainty.</div></div>
-<div class="tagrow" onclick="this.classList.toggle('open')"><div class="tt">&#127932; Maestro <span class="tchev">&#8964;</span></div><div class="td">He set the tempo. The game moved at the speed he chose.</div><div class="tmore">The Maestro conducts. He decides when the match should slow to a crawl and when it should explode, dictating rhythm the way a composer holds an orchestra. Possession bends around him; teammates find space because he saw it first. It is control disguised as ease.</div></div>
-<div class="tagrow" onclick="this.classList.toggle('open')"><div class="tt">&#9889; The Difference <span class="tchev">&#8964;</span></div><div class="td">When the margins were thin, his was the moment that tipped them.</div><div class="tmore">Every tight season turns on a handful of moments, and this is the player who owned them. The pass nobody else attempted, the goal that broke the deadlock, the decision made a half-second before everyone else , when the difference between winning and drawing was a single act of nerve, it was his.</div></div></div></div></div>
+      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 10l4.9-1.7z"/><path d="M18.6 15l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></div><div class="layer-t">Wonder Tags</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div id="wonderTags"></div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
   <div class="np">He is the heartbeat , and you only understand a heartbeat when it stutters. Take him out of this side and it wobbles, second-guesses, forgets its own name. Leave him in and it stands taller, plays faster, believes deeper.</div>
   <div class="np">This was a season that asked everything of one man , every weekend, every load, every burden of expectation laid at his feet , and he carried it without once asking to be relieved.</div>
@@ -598,6 +596,36 @@
         if(bar){ bar.style.width=v+'%'; bar.style.background=barColor(v); }
         if(av){ av.textContent=v; }
       }
+    }
+    var wt = document.getElementById('wonderTags');
+    if(wt && typeof TAG_DEFS !== 'undefined'){
+      var svg = function(p){ return '<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; };
+      var ICON = {
+        ATT:   svg('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/>'),
+        MID:   svg('<path d="M15 5l4 4"/><path d="M17 3l4 4-12 12-4 1 1-4z"/>'),
+        DEF:   svg('<path d="M12 3l7 3v5c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6z"/>'),
+        CROSS: svg('<path d="M12 3l7 9-7 9-7-9z"/>'),
+        AGE:   svg('<path d="M12 3.5l2.4 5.3 5.6.5-4.3 3.7 1.3 5.5L12 21l-5.3 3 1.3-5.5L3.7 9.3l5.6-.5z"/>')
+      };
+      var ICON_GEN = svg('<path d="M3 8l4 6 5-9 5 9 4-6v9H3z"/>');
+      var ICON_ICO = svg('<path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 11.8l4.9-1.7z"/><path d="M18.5 15l.5 1.6 1.6.5-1.6.5-.5 1.6-.5-1.6-1.6-.5 1.6-.5z"/>');
+      var wtRows = [];
+      if(D.prestige === 'Generational' || D.prestige === 'Iconic'){
+        var pdef = TAG_DEFS[D.prestige];
+        if(pdef){ wtRows.push({ icon:(D.prestige==='Generational'?ICON_GEN:ICON_ICO), name:D.prestige, one:pdef.oneLiner, full:pdef.def }); }
+      }
+      if(Array.isArray(D.tags)){
+        D.tags.forEach(function(t){
+          var def = TAG_DEFS[t.name];
+          if(def){ wtRows.push({ icon:(ICON[t.family]||ICON.CROSS), name:t.name, one:def.oneLiner, full:def.def }); }
+        });
+      }
+      wt.innerHTML = wtRows.map(function(r){
+        return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
+          + '<div class="tt">' + r.icon + ' ' + r.name + ' <span class="tchev">&#8964;</span></div>'
+          + '<div class="td">' + r.one + '</div>'
+          + '<div class="tmore">' + r.full + '</div></div>';
+      }).join('');
     }
   }
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,330); drawRadar(); }
