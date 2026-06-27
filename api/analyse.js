@@ -79,6 +79,63 @@ OUTPUT LENGTH:
 - verdict: 2-3 sentences. Authoritative. Final. One quotable closing sentence.
 Write tight. Every word earns its place.`;
 
+    // ── Commentator's Notes mode (single player, cached in notes_cache) ──
+    if (req.body && req.body.mode === 'notes') {
+      const cid = Number(req.body.cardId);
+      const player = req.body.player || {};
+      const canCache = Number.isFinite(cid) && !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_KEY;
+      let nsb = null;
+      if (canCache) {
+        const { createClient } = require('@supabase/supabase-js');
+        nsb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+        try {
+          const { data: row } = await nsb.from('notes_cache')
+            .select('notes, model').eq('card_id', cid).maybeSingle();
+          if (row && row.model === MODEL && Array.isArray(row.notes) && row.notes.length) {
+            return res.json({ notes: row.notes, cached: true });
+          }
+        } catch (e) { /* cache read failed -> generate */ }
+      }
+
+      const notesSystem = defaultSystem + `
+
+YOU ARE NOW WRITING COMMENTATOR'S NOTES for a SINGLE player-season, not a comparison. Take the full card into account: player, age, club, league, position, goals, assists, VV tags, VV score, and the radar dimensions provided. Write in the Peter Drury register: poetic, emotional, the human truth inside the numbers.
+
+OUTPUT FORMAT:
+Respond with ONLY a valid JSON array of exactly 4 strings. No markdown, no code blocks, no preamble, no keys, just the array.
+Each string is one short stanza of 2 to 3 sentences. Never one long paragraph.
+Stanza 1: the essence of the season, what it was.
+Stanza 2: the human and contextual truth , the age, the club, the system, what was asked of him.
+Stanza 3: the tags and the numbers as evidence of who he was that year.
+Stanza 4: a closing line that lingers, that closes the argument without closing the debate.
+Never use em-dashes, use spaced commas instead. Every word earns its place.`;
+
+      const notesMessages = [{ role: 'user', content: 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2) }];
+
+      const nResp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: MODEL, max_tokens: 900, system: notesSystem, messages: notesMessages })
+      });
+      const nData = await nResp.json();
+      if (!nResp.ok) return res.status(nResp.status).json({ error: (nData.error && nData.error.message) || 'Anthropic API error' });
+
+      let notes = null;
+      try {
+        let t = (nData && nData.content && nData.content[0] && nData.content[0].text) || '';
+        t = t.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+        notes = JSON.parse(t);
+      } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
+      if (!Array.isArray(notes) || !notes.length) return res.status(502).json({ error: 'notes empty' });
+
+      if (canCache) {
+        try {
+          await nsb.from('notes_cache').upsert({ card_id: cid, notes: notes, model: MODEL }, { onConflict: 'card_id', ignoreDuplicates: false });
+        } catch (e) { /* cache write failed -> non-fatal */ }
+      }
+      return res.json({ notes: notes, cached: false });
+    }
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
