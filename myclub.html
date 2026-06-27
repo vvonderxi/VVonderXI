@@ -631,7 +631,7 @@
   setShelf('cards');
 
   function openCardDetail(i){ var d=MY_CARDS[i]; window.location.href=(d&&d.card_id!=null)?('card.html?id='+encodeURIComponent(d.card_id)):'card.html'; }
-  function goSearch(){ window.location.href='search.html'; }
+  function goSearch(){ window.location.href='rankings.html'; }
   function joinClub(){ /* production: Supabase Google OAuth , signInWithOAuth then vvxiHandleGoogleReturn */ window.location.href="index.html"; }
   function goVerdict(){ window.location.href='compare.html'; }
   function toggleClub(e,el){

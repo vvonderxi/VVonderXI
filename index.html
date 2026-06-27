@@ -227,7 +227,7 @@
   function vvHomeSearch(){
     var q=(document.getElementById('q').value||'').trim();
     if(!q) return;
-    var dest = /(\bvs\b|\bv\b)/i.test(q) ? 'compare.html' : 'search.html';
+    var dest = /(\bvs\b|\bv\b)/i.test(q) ? 'compare.html' : 'rankings.html';
     location.href = dest + '?q=' + encodeURIComponent(q);
   }
   document.querySelector('.search .go').onclick = vvHomeSearch;
