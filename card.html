@@ -416,11 +416,12 @@
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.1"/><path d="M5.7 16c.5-1.6 1.7-2.5 3.3-2.5s2.8.9 3.3 2.5"/><line x1="15" y1="10.2" x2="18.3" y2="10.2"/><line x1="15" y1="13.6" x2="18.3" y2="13.6"/></svg></div><div class="layer-t">The Profile</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext"><b>A creator, elite in creation and progression.</b> The radar shows his shape; the gradient (red to green) tells you where his game lives.</div>
 <div class="radarwrap"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg></div>
 <div class="attrtop"><span>Attribute</span><span>/ 100</span></div>
+<div id="attrBars">
 <div class="attr"><div class="an">Goal Threat</div><div class="abar"><i style="width:55%;background:#E8943B"></i></div><div class="av">55</div></div>
 <div class="attr"><div class="an">Creation</div><div class="abar"><i style="width:95%;background:#1f6b42"></i></div><div class="av">95</div></div>
 <div class="attr"><div class="an">Progression</div><div class="abar"><i style="width:88%;background:#2E8C5A"></i></div><div class="av">88</div></div>
 <div class="attr"><div class="an">Defensive</div><div class="abar"><i style="width:42%;background:#D9534F"></i></div><div class="av">42</div></div>
-<div class="attr"><div class="an">Reliability</div><div class="abar"><i style="width:85%;background:#2E8C5A"></i></div><div class="av">85</div></div></div></div></div>
+<div class="attr"><div class="an">Reliability</div><div class="abar"><i style="width:85%;background:#2E8C5A"></i></div><div class="av">85</div></div></div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="trajtag">\u{1F4C8} At Peak</div>
 <div class="trajwrap">
   <div class="yscale"><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
@@ -525,6 +526,19 @@
     var cmp='compare.html'+(D.card_id!=null ? '?a='+encodeURIComponent(D.card_id) : '');
     var c1=document.getElementById('compareCta1'); if(c1) c1.href=cmp;
     var c2=document.getElementById('compareCta2'); if(c2) c2.href=cmp;
+    var sc = (D.radar && D.radar.scaled) ? D.radar.scaled : null;
+    if(sc){
+      var dims=[sc.goalThreat, sc.creation, sc.progression, sc.defensive, sc.reliability];
+      var barColor=function(v){ if(v>=85) return '#1f6b42'; if(v>=70) return '#2E8C5A'; if(v>=55) return '#E8943B'; return '#D9534F'; };
+      var rows=document.querySelectorAll('#attrBars .attr');
+      for(var i=0;i<rows.length && i<dims.length;i++){
+        var v=Math.max(0, Math.min(100, Math.round(dims[i]||0)));
+        var bar=rows[i].querySelector('.abar i');
+        var av=rows[i].querySelector('.av');
+        if(bar){ bar.style.width=v+'%'; bar.style.background=barColor(v); }
+        if(av){ av.textContent=v; }
+      }
+    }
   }
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,330); drawRadar(); }
   // ── First paint: render the demo ONLY when there's no ?id (standalone visit).
