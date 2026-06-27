@@ -233,8 +233,7 @@
   .coin .coinB{fill:var(--pink)}
 
   /* Data Confidence footer (bottom of every card) */
-  .dataconf{margin-top:14px;padding:18px 22px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)}
-  body.light .dataconf{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
+  .dataconf{background:none;border:0;padding:0;margin:0}
   .dc-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-bottom:12px}
   body.light .dc-t{color:#9a9285}
   .dc-row{display:flex;align-items:center;gap:13px}
@@ -448,8 +447,7 @@
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.3l5.5 3.7L10 15.7z" fill="currentColor" stroke="none"/></svg></div><div class="layer-t">Watch</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Go and see it for yourself. Some things must be witnessed, not read.</div>
 <a class="watchcta" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 highlights</a>
 <a class="comparecta" href="compare.html"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg> Compare this player</a></div></div></div>
-      <div class="dataconf">
-        <div class="dc-t">Data Confidence</div>
+      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
         <div class="dc-row"><span class="dc-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="dc-x">5 / 5</span></div>
         <div class="dc-note">How complete the data behind this card is. It measures the record, not the player.</div>
         <button class="dc-see" onclick="var d=this.nextElementSibling;var o=d.classList.toggle('show');this.classList.toggle('on');this.querySelector('span').textContent=o?'Hide the breakdown':'See the breakdown';"><span>See the breakdown</span><i class="dc-chev">&#9662;</i></button>
@@ -459,7 +457,7 @@
           <div class="dc-line"><span>Advanced metrics</span><b>Verified</b></div>
           <div class="dc-line"><span>Source</span><b>Official league &amp; match data</b></div>
         </div>
-      </div>
+      </div></div></div></div>
       <div class="cardactions">
         <a class="ca-btn ca-compare" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare players</a>
         <div class="ca-row">
@@ -553,7 +551,6 @@
     var p=document.getElementById('seasonPanel'); if(p) p.remove();
   }
   async function switchSeason(cardId){
-    seasonPanelClose();
     if(cardId===SEASON_CARDID) return;
     var sb=vvClient(); if(!sb) return;
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
@@ -561,6 +558,8 @@
     D=rowToCard(res.data);
     renderHero();
     SEASON_CARDID=cardId;
+    var _sp=document.getElementById('seasonPanel');
+    if(_sp){ _sp.querySelectorAll('.seasonpill').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cid')===String(cardId)); }); }
     var yr=document.querySelector('#heroCard .yr'); if(yr) yr.classList.add('switchable');
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
