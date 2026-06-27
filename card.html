@@ -465,10 +465,8 @@
   <div class="nm chron-score">Man Utd 2-1 Liverpool, 7 Apr 2024</div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 10l4.9-1.7z"/><path d="M18.6 15l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></div><div class="layer-t">Wonder Tags</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div id="wonderTags"></div></div></div></div>
-      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
-  <div class="np">He is the heartbeat , and you only understand a heartbeat when it stutters. Take him out of this side and it wobbles, second-guesses, forgets its own name. Leave him in and it stands taller, plays faster, believes deeper.</div>
-  <div class="np">This was a season that asked everything of one man , every weekend, every load, every burden of expectation laid at his feet , and he carried it without once asking to be relieved.</div>
-  <div class="np">Some players decorate a team. He defined one. When the history of this side is written, it will not be a list of results. It will be the story of the season he refused to let them fall.</div>
+      <div class="layer" id="notesLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open'); vvNotesOpen();"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
+  <div id="notesBody"></div>
   <div class="nm">Commentator's Notes</div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.3l5.5 3.7L10 15.7z" fill="currentColor" stroke="none"/></svg></div><div class="layer-t">Watch</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Go and see it for yourself. Some things must be witnessed, not read.</div>
@@ -557,8 +555,41 @@
     chart.innerHTML=html;
     if(tag){ tag.innerHTML='📈 Career'; }
   }
+  var NOTES_LOADED_FOR = null;   // card_id we've loaded notes for
+  var LEAGUE_NAMES = { PL:'Premier League', PD:'La Liga', SA:'Serie A', BL1:'Bundesliga', FL1:'Ligue 1', DED:'Eredivisie', PPL:'Primeira Liga', ELC:'Championship', BSA:'Brasileirao' };
+  async function vvNotesOpen(){
+    var D = window.D; if(!D) return;
+    var layer = document.getElementById('notesLayer');
+    if(!layer || !layer.classList.contains('open')) return;   // only when opening
+    if(NOTES_LOADED_FOR === D.card_id) return;                // already loaded this card
+    NOTES_LOADED_FOR = D.card_id;
+    var body = document.getElementById('notesBody'); if(!body) return;
+    body.innerHTML = '<div class="np" style="opacity:.6">Reading the season...</div>';
+    try{
+      var payload = {
+        mode:'notes', cardId: D.card_id,
+        player: {
+          player_name: D.full, season: D.year, age: D.age,
+          club: D.clubname, league: (LEAGUE_NAMES[D.league] || D.league),
+          position: D.pos, goals: D.goals, assists: D.assists,
+          rt: D.vv, tags: (Array.isArray(D.tags) ? D.tags.map(function(t){return t.name;}) : [])
+        }
+      };
+      var r = await fetch('/api/analyse', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      var data = await r.json();
+      if(!r.ok || !data || !Array.isArray(data.notes) || !data.notes.length){ vvNotesHide(); return; }
+      body.innerHTML = data.notes.map(function(s){ var d=document.createElement('div'); d.className='np'; d.textContent=s; return d.outerHTML; }).join('');
+    }catch(e){ vvNotesHide(); }
+  }
+  function vvNotesHide(){
+    var layer = document.getElementById('notesLayer'); if(layer) layer.style.display='none';
+    NOTES_LOADED_FOR = null;
+  }
   function renderPanels(D){
     if(!D) return;
+    window.D = D;
+    NOTES_LOADED_FOR = null;
+    var _nl = document.getElementById('notesLayer'); if(_nl){ _nl.style.display=''; _nl.classList.remove('open'); var _nb=document.getElementById('notesBody'); if(_nb) _nb.innerHTML=''; }
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
     set('glVV', D.vv);
     set('glGoals', D.goals);
