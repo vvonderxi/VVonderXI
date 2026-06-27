@@ -66,7 +66,7 @@
       .map(x => {
         const famClass = (x.t.family in PRIO) ? `${baseClass}-${String(x.t.family).toLowerCase()}` : '';
         const inner    = innerWrap ? `<span>${x.t.name}</span>` : x.t.name;
-        return `<${el} class="${baseClass} ${famClass}">${inner}</${el}>`;
+        return `<${el} class="${baseClass} ${famClass}" data-tag="${x.t.name}">${inner}</${el}>`;
       })
       .join('');
   }
@@ -77,8 +77,8 @@
   function renderPrestige(prestige, opts){
     opts = opts || {};
     var base = opts.baseClass || 'chtag';
-    if(prestige === 'Generational') return '<div class="'+base+' '+base+'-prestige-gen"><span>GENERATIONAL</span></div>';
-    if(prestige === 'Iconic') return '<div class="'+base+' '+base+'-prestige-ico"><span>ICONIC</span></div>';
+    if(prestige === 'Generational') return '<div class="'+base+' '+base+'-prestige-gen" data-tag="Generational"><span>GENERATIONAL</span></div>';
+    if(prestige === 'Iconic') return '<div class="'+base+' '+base+'-prestige-ico" data-tag="Iconic"><span>ICONIC</span></div>';
     return '';
   }
 
