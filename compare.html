@@ -675,7 +675,7 @@ body.light .pkmsub{color:#b0a899}
     var a=ids.get('a'), b=ids.get('b'); if(!a && !b) return;
     var sb=vvClient(); if(!sb) return;            // vv-core logs why (missing config or lib)
     async function fetchCard(id){
-      var res=await sb.from('player_card_view').select('*').eq('card_id', id).single();
+      var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
       if(res.error || !res.data){ console.error('compare ?a/?b load failed:', res.error && res.error.message); return null; }
       return rowToCard(res.data);
     }
@@ -737,7 +737,7 @@ body.light .pkmsub{color:#b0a899}
   async function loadPool(){
     var sb=vvClient(); if(!sb){ renderPicker(); return; }   // vv-core logs why (missing config or lib)
     var q=(document.getElementById('pkSearch').value||'').trim();
-    var query=sb.from('player_card_view').select('*').order('rt',{ascending:false}).limit(50);
+    var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false}).limit(50);
     if(q){ var like='%'+q.replace(/[(),]/g,'')+'%'; query=query.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
     var res=await query;
     if(res.error){ console.error('compare picker load failed:', res.error.message); return; }
@@ -867,7 +867,7 @@ body.light .pkmsub{color:#b0a899}
   async function vvLoadTrajectory(apiId){
     if(apiId==null) return {vals:[],labs:[]};
     var sb=vvClient(); if(!sb) return {vals:[],labs:[]};
-    var res=await sb.from('player_card_view').select('season,season_year,goals,assists').eq('api_player_id',apiId).order('season_year',{ascending:true});
+    var res=await sb.from('player_card_mv').select('season,season_year,goals,assists').eq('api_player_id',apiId).order('season_year',{ascending:true});
     if(res.error || !res.data){ if(res.error) console.error('trajectory load failed:', res.error.message); return {vals:[],labs:[]}; }
     var byYear={};
     res.data.forEach(function(r){ var y=r.season_year; if(y==null) return; if(!byYear[y]) byYear[y]={out:0,season:r.season}; byYear[y].out+=(r.goals||0)+(r.assists||0); });
