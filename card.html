@@ -421,7 +421,7 @@
     </div>
   </div>
   <div class="glancebadge">
-    <svg viewBox="0 0 100 116"><defs><clipPath id="gbc"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#gbc)"><rect width="100" height="116" fill="#DA291C"/></g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3"/><text id="glSquad" x="50" y="58" font-family="Archivo" font-weight="900" font-size="48" fill="#fff" text-anchor="middle" dominant-baseline="central">8</text></svg>
+    <svg viewBox="0 0 100 116"><defs><clipPath id="gbc"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#gbc)"><rect id="glBadgeBg" width="100" height="116" fill="#DA291C"/></g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3"/><text id="glSquad" x="50" y="58" font-family="Archivo" font-weight="900" font-size="48" fill="#fff" text-anchor="middle" dominant-baseline="central">8</text></svg>
     <div class="gbnum">SQUAD NO.</div>
   </div>
 </div></div></div></div>
@@ -559,6 +559,8 @@
     set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
     set('glSub', (D.pos||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
     set('glSquad', (D.number!=null ? D.number : 'NR'));
+    var badgeBg=document.getElementById('glBadgeBg'); if(badgeBg && D.club1) badgeBg.setAttribute('fill', D.club1);
+    var badgeNum=document.getElementById('glSquad'); if(badgeNum && D.club1 && typeof inkFor==='function') badgeNum.setAttribute('fill', inkFor(D.club1));
     var chips=document.getElementById('glChips');
     if(chips){ chips.innerHTML = renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99}); }
     var w=document.querySelector('.watchcta');
