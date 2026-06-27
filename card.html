@@ -371,6 +371,9 @@
   body.light .seasontrigger{color:#8a8276}
   body.light .seasontrigger:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .tcol-sel .tbar{box-shadow:0 0 0 2px var(--pink);background:var(--pink)!important}
+  .tcol-sel .tga{color:var(--pink);font-weight:800}
+  .tcol-sel .ty{color:var(--pink);font-weight:800}
 </style>
 </head>
 <body class="light">
@@ -508,6 +511,30 @@
     try{vvWallSync();}catch(e){}
   }
   let D={year:'23/24', club1:'#DA291C', number:8, pos:'CAM', vv:91, flag:'\u{1F1F5}\u{1F1F9}', surname:'Fernandes', full:'Bruno Fernandes', clubname:'Man Utd', age:'29', goals:10, assists:8, tag:'\u{1F451} Talisman'};
+  function renderTrajectory(){
+    var chart=document.querySelector('.trajchart');
+    var tag=document.querySelector('.trajtag');
+    if(!chart) return;
+    if(!SEASON_ROWS || SEASON_ROWS.length<2){ return; }
+    // oldest -> newest (SEASON_ROWS is desc by season_year)
+    var rows=SEASON_ROWS.slice().reverse();
+    var ga=function(r){ return (r.goals||0) + (r.assists||0); };
+    var maxGA=1; for(var i=0;i<rows.length;i++){ if(ga(rows[i])>maxGA) maxGA=ga(rows[i]); }
+    var peakIdx=0, peakVal=-1; for(var j=0;j<rows.length;j++){ if(ga(rows[j])>peakVal){ peakVal=ga(rows[j]); peakIdx=j; } }
+    var html='';
+    for(var k=0;k<rows.length;k++){
+      var r=rows[k];
+      var g=ga(r);
+      var h=Math.round((g/maxGA)*100);
+      var isSel=(r.card_id===SEASON_CARDID);
+      var isPeak=(k===peakIdx);
+      var tone = isPeak ? '<div class="ttone up">Peak</div>' : '<div class="ttone">&nbsp;</div>';
+      var selClass = isSel ? ' tcol-sel' : '';
+      html += '<div class="tcol'+selClass+'"><div class="tbarwrap"><div class="tga">'+g+'</div><div class="tbar" style="height:'+h+'%"></div></div>'+tone+'<div class="ty">'+fmtSeason(r.season)+'</div></div>';
+    }
+    chart.innerHTML=html;
+    if(tag){ tag.innerHTML='📈 Career'; }
+  }
   function renderPanels(D){
     if(!D) return;
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
@@ -571,9 +598,10 @@
     SEASON_CARDID=currentCardId; SEASON_ROWS=null;
     if(apiPlayerId==null) return;
     var sb=vvClient(); if(!sb) return;
-    var res=await sb.from('player_card_mv').select('card_id,season,season_year,rt').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
+    var res=await sb.from('player_card_mv').select('card_id,season,season_year,rt,goals,assists').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
     if(res.error || !res.data || res.data.length<2) return;
     SEASON_ROWS=res.data;
+    renderTrajectory();
     var yr=document.querySelector('#heroCard .yr'); if(yr) yr.classList.add('switchable');
     var zone=document.getElementById('seasonZone');
     if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
@@ -605,6 +633,7 @@
     renderHero();
     renderPanels(D);
     SEASON_CARDID=cardId;
+    renderTrajectory();
     var _sp=document.getElementById('seasonPanel');
     if(_sp){ _sp.querySelectorAll('.seasonpill').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cid')===String(cardId)); }); }
     var yr=document.querySelector('#heroCard .yr'); if(yr) yr.classList.add('switchable');
