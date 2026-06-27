@@ -538,6 +538,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
     let q = sb.from('player_card_mv').select('*');
     var tq=document.getElementById('rankSearch').value.trim();
+    if(tq && f.sort.col==='rt' && f.sort.asc===false){ f.sort={col:'season_year',asc:false}; }
     if(tq){ var like='%'+vvNorm(tq).replace(/[(),]/g,'')+'%'; q=q.or('player_name_norm.ilike.'+like+',team_name_norm.ilike.'+like); }
     if(f.leagues.length)   q=q.in('league_code', f.leagues);
     if(f.positions.length) q=q.in('position_pool', f.positions);
