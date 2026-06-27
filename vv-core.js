@@ -297,9 +297,15 @@
       interceptions:'Interceptions',
       duels_won:'Duels won'
     };
-    return GRANULAR.map(function(f){
-      return { label: LABELS[f] || f, present: row[f] != null };
+    var basics = [
+      { label:'Minutes played', present: row.minutes != null, group:'basics' },
+      { label:'Goals',          present: row.goals   != null, group:'basics' },
+      { label:'Assists',        present: row.assists != null, group:'basics' }
+    ];
+    var advanced = GRANULAR.map(function(f){
+      return { label: LABELS[f] || f, present: row[f] != null, group:'advanced' };
     });
+    return basics.concat(advanced);
   }
 
   /* ════════════════════════════════════════════════════════════════════

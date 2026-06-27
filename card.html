@@ -342,6 +342,7 @@
   .dc-chev{transition:transform .2s} .dc-see.on .dc-chev{transform:rotate(180deg)}
   .dc-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
   .dc-detail.show{max-height:240px;margin-top:12px}
+  .dc-grouphead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin:12px 0 6px}
   .dc-line{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;color:#6b6658}
   .dc-line:last-child{border:none} .dc-line b{font-family:'Archivo',sans-serif;font-weight:800;color:var(--green,#2E8C5A)}
   .dc-line:last-child b{color:#6b6658}
@@ -470,7 +471,7 @@
         <div class="dc-note">How complete the data behind this card is. It measures the record, not the player.</div>
         <button class="dc-see" onclick="var d=this.nextElementSibling;var o=d.classList.toggle('show');this.classList.toggle('on');this.querySelector('span').textContent=o?'Hide the breakdown':'See the breakdown';"><span>See the breakdown</span><i class="dc-chev">&#9662;</i></button>
         <div class="dc-detail">
-          <div class="dc-note" style="margin-bottom:10px">Confidence runs from 2 to 5, based on how many of the deeper data fields below were recorded for that season. NR means not recorded.</div>
+          <div class="dc-note" style="margin-bottom:10px">The dots run from 2 to 5. Every card has verified minutes, the baseline. Goals, assists and the deeper fields below show what else was recorded for that season. NR means not recorded.</div>
           <div id="dcFields"></div>
           <div class="dc-line"><span>Source</span><b>Official league &amp; match data</b></div>
         </div>
@@ -608,9 +609,13 @@
     }
     if(dcFields){
       if(Array.isArray(D.confidenceFields)){
-        dcFields.innerHTML = D.confidenceFields.map(function(f){
-          return '<div class="dc-line"><span>' + f.label + '</span><b>' + (f.present ? 'Verified' : 'NR') + '</b></div>';
-        }).join('');
+        var line = function(f){ return '<div class="dc-line"><span>' + f.label + '</span><b>' + (f.present ? 'Verified' : 'NR') + '</b></div>'; };
+        var basics = D.confidenceFields.filter(function(f){ return f.group === 'basics'; });
+        var advanced = D.confidenceFields.filter(function(f){ return f.group === 'advanced'; });
+        var html = '';
+        if(basics.length){ html += '<div class="dc-grouphead">Basics</div>' + basics.map(line).join(''); }
+        if(advanced.length){ html += '<div class="dc-grouphead">Advanced</div>' + advanced.map(line).join(''); }
+        dcFields.innerHTML = html;
       } else {
         dcFields.innerHTML = '';
       }
