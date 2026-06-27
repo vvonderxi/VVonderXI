@@ -91,8 +91,9 @@ Write tight. Every word earns its place.`;
         try {
           const { data: row } = await nsb.from('notes_cache')
             .select('notes, model').eq('card_id', cid).maybeSingle();
-          if (row && row.model === MODEL && Array.isArray(row.notes) && row.notes.length) {
-            return res.json({ notes: row.notes, cached: true });
+          if (row && row.model === MODEL && row.notes && typeof row.notes === 'object' && Array.isArray(row.notes.notes) && row.notes.notes.length) {
+            var cobj = row.notes;
+            return res.json({ glance: cobj.glance, scout: cobj.scout, notes: cobj.notes, cached: true });
           }
         } catch (e) { /* cache read failed -> generate */ }
       }
@@ -102,38 +103,40 @@ Write tight. Every word earns its place.`;
 YOU ARE NOW WRITING COMMENTATOR'S NOTES for a SINGLE player-season, not a comparison. Take the full card into account: player, age, club, league, position, goals, assists, VV tags, VV score, and the radar dimensions provided. Write in the Peter Drury register: poetic, emotional, the human truth inside the numbers.
 
 OUTPUT FORMAT:
-Respond with ONLY a valid JSON array of exactly 4 strings. No markdown, no code blocks, no preamble, no keys, just the array.
-Each string is one short stanza of 2 to 3 sentences. Never one long paragraph.
-Stanza 1: the essence of the season, what it was.
-Stanza 2: the human and contextual truth , the age, the club, the system, what was asked of him.
-Stanza 3: the tags and the numbers as evidence of who he was that year.
-Stanza 4: a closing line that lingers, that closes the argument without closing the debate.
-Never use em-dashes, use spaced commas instead. Every word earns its place.`;
+Respond with ONLY a valid JSON object, no markdown, no code blocks, no preamble. Exactly these three keys:
+{
+  "glance": "ONE single sentence. The essence of this season in one breath, Peter Drury at his most distilled. This is the hero line, it must land instantly.",
+  "scout": "TWO to THREE sentences. A scout's verdict on where this season sits in the player's career arc, what it proves, what it costs to deny. Authoritative, the close of an argument.",
+  "notes": ["four", "stanzas", "as", "before"]
+}
+The "notes" value is an array of exactly 4 strings, each a short stanza of 2 to 3 sentences (same rules as before: stanza 1 essence, 2 human/context, 3 tags+numbers as evidence, 4 a closing line that lingers).
+Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap the JSON in anything.`;
 
       const notesMessages = [{ role: 'user', content: 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2) }];
 
       const nResp = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: MODEL, max_tokens: 900, system: notesSystem, messages: notesMessages })
+        body: JSON.stringify({ model: MODEL, max_tokens: 1500, system: notesSystem, messages: notesMessages })
       });
       const nData = await nResp.json();
       if (!nResp.ok) return res.status(nResp.status).json({ error: (nData.error && nData.error.message) || 'Anthropic API error' });
 
-      let notes = null;
+      let parsed = null;
       try {
         let t = (nData && nData.content && nData.content[0] && nData.content[0].text) || '';
         t = t.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-        notes = JSON.parse(t);
+        parsed = JSON.parse(t);
       } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
-      if (!Array.isArray(notes) || !notes.length) return res.status(502).json({ error: 'notes empty' });
-
+      if (!parsed || typeof parsed.glance !== 'string' || typeof parsed.scout !== 'string' || !Array.isArray(parsed.notes) || !parsed.notes.length) {
+        return res.status(502).json({ error: 'notes shape invalid' });
+      }
       if (canCache) {
         try {
-          await nsb.from('notes_cache').upsert({ card_id: cid, notes: notes, model: MODEL }, { onConflict: 'card_id', ignoreDuplicates: false });
-        } catch (e) { /* cache write failed -> non-fatal */ }
+          await nsb.from('notes_cache').upsert({ card_id: cid, notes: parsed, model: MODEL }, { onConflict: 'card_id', ignoreDuplicates: false });
+        } catch (e) { /* non-fatal */ }
       }
-      return res.json({ notes: notes, cached: false });
+      return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
