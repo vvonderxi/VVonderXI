@@ -452,6 +452,8 @@
 .cardslot{cursor:pointer;position:relative}
 .cardslot:not(.flipping){transition:transform .15s}
 .cardslot.flipping{transform:none !important}
+  @keyframes vvturn{0%{transform:scaleX(1)}50%{transform:scaleX(0.04)}100%{transform:scaleX(1)}}
+  .vvturning{animation:vvturn 1s cubic-bezier(.45,.03,.25,1)}
   .flipstage{perspective:1600px;width:var(--cw);height:calc(var(--cw)*1.397);margin:0 auto}
   .flipinner{position:relative;width:100%;height:100%;transition:transform .95s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d}
   .flipstage.flipped .flipinner{transform:rotateY(180deg)}
@@ -694,17 +696,17 @@ body.light .pkmsub{color:#b0a899}
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
   function vvFlipReveal(slot, card, cw){
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
-    var h=Math.round(cw*1.397);
-    host.classList.add('flipping');
-    host.innerHTML='<div style="perspective:1600px;width:'+cw+'px;height:'+h+'px;margin:0 auto">'
-      +'<div class="vvflipinner" style="position:relative;width:100%;height:100%;transition:transform 1s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d">'
-      +'<div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden">'+vvEmptySlot(slot,cw)+'</div>'
-      +'<div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">'+buildCard(card,cw)+'</div>'
-      +'</div></div>';
-    var inner=host.querySelector('.vvflipinner');
-    void inner.offsetWidth;
-    setTimeout(function(){ inner.style.transform='rotateY(180deg)'; }, 50);
-    setTimeout(function(){ host.classList.remove('flipping'); vvSizeCards(); vvLoadSlotSeasons(slot); }, 1120);
+    host.innerHTML=vvEmptySlot(slot,cw);
+    var el=host.firstElementChild; if(!el){ vvSizeCards(); vvLoadSlotSeasons(slot); return; }
+    el.classList.add('vvturning');
+    setTimeout(function(){
+      host.innerHTML=buildCard(card,cw);
+      var n=host.firstElementChild; if(n) n.classList.add('vvturning');
+    }, 500);
+    setTimeout(function(){
+      var n2=host.firstElementChild; if(n2) n2.classList.remove('vvturning');
+      vvLoadSlotSeasons(slot);
+    }, 1010);
   }
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
