@@ -734,8 +734,11 @@ body.light .pkmsub{color:#b0a899}
     if(a){ var ca=await fetchCard(a); if(ca) CMP_A=ca; }
     if(b){ var cb=await fetchCard(b); if(cb) CMP_B=cb; }
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
-    if(CMP_A) vvFlipReveal('A', CMP_A, cw); else { vvSizeCards(); }
-    if(CMP_B) vvFlipReveal('B', CMP_B, cw); else { vvSizeCards(); }
+    vvSizeCards();
+    requestAnimationFrame(function(){ setTimeout(function(){
+      if(CMP_A) vvFlipReveal('A', CMP_A, cw);
+      if(CMP_B) vvFlipReveal('B', CMP_B, cw);
+    }, 220); });
   }
   async function vvLoadSlotSeasons(slot){
     var cmp = slot==='A'?CMP_A:CMP_B;
