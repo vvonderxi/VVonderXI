@@ -406,13 +406,13 @@
   "The Winger":            { oneLiner: "Drifts wide, cuts in, beats his man for fun.", def: "Give him the touchline and a defender to torment, and watch the old magic unfold. The drop of the shoulder, the burst of pace, the moment the full-back is left grasping at shadows. Football's purest thrill: a winger in full flight." },
   "Playmaker":             { oneLiner: "The creative hub. Unlocks defences with vision and weight of pass.", def: "He sees the pass a moment before anyone else, and plays it a moment before they expect. The defence is unlocked not by force but by imagination. Where others see a wall, he sees a door." },
   "Maestro":               { oneLiner: "The conductor of a team's attack. Vision, control, and the passes others don't see.", def: "He does not run the game. He composes it. Every pass a note, every movement a phrase, the rhythm of an entire team bending to his tempo. You do not watch a Maestro. You listen to him." },
-  "Deep-Lying Playmaker":  { oneLiner: "Dictates tempo from deep, sprays passes across the pitch.", def: "From the quietest part of the pitch, he runs the loudest game. A glance, a touch, and the ball travels forty yards to feet. He does not chase the spotlight. He bends the whole match to his rhythm and lets others dance in it." },
+  "Regista":                { oneLiner: "Dictates tempo from deep, sprays passes across the pitch.", def: "From the quietest part of the pitch, he runs the loudest game. A glance, a touch, and the ball travels forty yards to feet. He does not chase the spotlight. He bends the whole match to his rhythm and lets others dance in it." },
   "Engine Room":           { oneLiner: "The relentless heartbeat of midfield. Covering ground, linking play, never stopping.", def: "While others rest, he runs. The unseen miles, the quiet work, the lungs that never beg for mercy. No highlight reel will ever do him justice, and yet without him, none of it happens." },
   "The Dribbler":          { oneLiner: "Beats his man and keeps the ball. Carries it where others lose it.", def: "Others give the ball away when the pitch gets crowded. He keeps it. Surrounded, hounded, doubled up on, he lowers his head and goes, and the tighter the space, the more alive he seems. A footballer who treats a crowd as an invitation." },
   "The Wall":              { oneLiner: "Immovable. Wins his duels, heads everything, gives nothing away.", def: "Strikers came, and strikers left empty-handed. A season of saying no, of the header won, the tackle timed, the door bolted shut. Nothing glamorous, nothing soft, just an immovable certainty at the heart of the defence." },
   "Destroyer":             { oneLiner: "Tough, tireless, wins the ball and the battle.", def: "The unglamorous heart of a team. The tackle, the block, the ball won back before the danger grows. He does the work nobody sings about, so that those who are sung about have a stage to perform on." },
   "Ball Hawk":             { oneLiner: "Reads the pass before it is played. Lives in the passing lanes.", def: "He defends with his mind as much as his legs. The ball is cut out before it ever arrives, the danger snuffed before it draws breath. Anticipation is its own kind of pace, and his was the quickest read on the pitch." },
-  "Ball-Playing Defender": { oneLiner: "Defends first, but starts attacks with the ball at his feet.", def: "The defender who is also the architect. He wins the ball, and then he does the harder thing, he uses it. A season of quelling danger at one end and igniting it at the other, all from the foundations of the team." },
+  "Ball-Playing CB":        { oneLiner: "Defends first, but starts attacks with the ball at his feet.", def: "The defender who is also the architect. He wins the ball, and then he does the harder thing, he uses it. A season of quelling danger at one end and igniting it at the other, all from the foundations of the team." },
   "Complete":              { oneLiner: "Elite at both ends. Gives as much as he takes away.", def: "Football usually asks a player to choose: create or destroy, build or break. He refused the choice. A season of doing it all, at both ends, with a balance that bordered on greed. The rarest profile the game produces." },
   "Iron Man":              { oneLiner: "Plays through everything, never misses a game.", def: "While others came and went, nursed and rested, he simply played. Every week, every minute, the one name the manager never had to think about. There is a quiet greatness in always being there." },
   "Wonderkid":             { oneLiner: "A teenager already producing at an elite level. The future, arriving early.", def: "We are not supposed to see this yet. One so young has no business being this good, and yet here it is, the future arriving ahead of schedule. Remember the season. You were watching greatness take its first steps." },
@@ -489,9 +489,9 @@
     if (elig.maestro && ge(keypass90, t.keypass90_p80) && ge(passes90, t.passes90_p80 * 0.92))
       tags.push({ name: 'Maestro', family: 'MID', tier: 'granular' });
 
-    // Deep-Lying Playmaker , high pass VOLUME + ACCURACY (Granular, compound)
+    // Regista , high pass VOLUME + ACCURACY (Granular, compound)
     if (elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.87) && ge(passAcc, t.passacc_p80 * 0.97))
-      tags.push({ name: 'Deep-Lying Playmaker', family: 'MID', tier: 'granular' });
+      tags.push({ name: 'Regista', family: 'MID', tier: 'granular' });
 
     // Engine Room , high pass volume + defensive work (box-to-box) (Granular, compound)
     if (elig.engineRoom && ge(passes90, t.passes90_p80 * 0.92) && ge(defact90, t.defact90_p70 * 0.92))
@@ -515,10 +515,10 @@
     if (elig.ballHawk && ge(int90, t.int90_p90 * 0.92))
       tags.push({ name: 'Ball Hawk', family: 'DEF', tier: 'granular' });
 
-    // Ball-Playing Defender , solid defensively + high accurate passing (Granular, compound)
+    // Ball-Playing CB , solid defensively + high accurate passing (Granular, compound)
     if (elig.ballPlaying && ge(defact90, t.defact90_p70 * 0.85)
         && ge(passes90, t.passes90_p80 * 0.80) && ge(passAcc, t.passacc_p80 * 0.93))
-      tags.push({ name: 'Ball-Playing Defender', family: 'DEF', tier: 'granular' });
+      tags.push({ name: 'Ball-Playing CB', family: 'DEF', tier: 'granular' });
 
     // ========================= CROSS-DIMENSIONAL =========================
     // Complete , elite at BOTH ends (Granular, compound , WILL NEED TUNING)
