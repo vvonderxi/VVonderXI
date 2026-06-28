@@ -575,7 +575,7 @@
       number:   row.shirt_number ?? null,   // shirt number (player_positions.shirt_number, via view)
       tag:      '',                 // legacy placeholder, kept falsy for backward-compat; remove after step 3 verified
       tags:     getVVTags(row),     // Tag Model v1.1 , array of {name,family,tier}; render consumes in step 3
-      photo:    undefined    // headshot URL pattern unresolved -> silhouette fallback
+      photo:    row.api_player_id != null ? 'https://media.api-sports.io/football/players/' + row.api_player_id + '.png' : undefined,   // API-Football CDN headshot (URL only, no storage); onerror in buildCard falls back to silhouette
     };
   }
 
