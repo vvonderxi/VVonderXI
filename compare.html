@@ -449,7 +449,9 @@
   /* keep mobile from scrolling sideways */
   .canvas{overflow-x:hidden}
 .searchrow{display:flex;align-items:center;gap:12px;margin:0 0 18px}.searchbar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:15px 19px;flex:1;min-width:0}body.light .searchbar{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.08)}.searchbar svg{width:20px;height:20px;color:rgba(243,237,224,0.4);flex-shrink:0}body.light .searchbar svg{color:#9a9285}.searchbar input{border:none;outline:none;background:transparent;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}body.light .searchbar input{color:var(--charcoal)}.searchbar .rs-clear{background:none;border:0;color:rgba(243,237,224,0.4);font-size:21px;cursor:pointer;display:none;line-height:1}body.light .searchbar .rs-clear{color:#9a9285}
-.cardslot{cursor:pointer;transition:transform .15s;position:relative}
+.cardslot{cursor:pointer;position:relative}
+.cardslot:not(.flipping){transition:transform .15s}
+.cardslot.flipping{transform:none !important}
   .flipstage{perspective:1600px;width:var(--cw);height:calc(var(--cw)*1.397);margin:0 auto}
   .flipinner{position:relative;width:100%;height:100%;transition:transform .95s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d}
   .flipstage.flipped .flipinner{transform:rotateY(180deg)}
@@ -695,11 +697,14 @@ body.light .pkmsub{color:#b0a899}
   // TEMP TEST , vvTestFlip('A') from console to preview the flip motion. Removed in 2b.
   function vvTestFlipMinimal(){
     var host=document.getElementById('cardA'); if(!host) return;
-    host.innerHTML='<div class="flipstage" style="--cw:240px"><div class="flipinner" id="mininner">'
-      +'<div class="flipface" style="background:#c0392b;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px">BACK</div>'
-      +'<div class="flipface fp-front" style="background:#2980b9;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px">FRONT</div>'
+    host.classList.add('flipping');
+    host.innerHTML='<div class="flipstage" style="width:240px;height:335px;perspective:1600px;margin:0 auto"><div class="flipinner" style="position:relative;width:100%;height:100%;transition:transform .95s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d">'
+      +'<div class="flipface" style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;background:#c0392b;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px">BACK</div>'
+      +'<div class="flipface" style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;transform:rotateY(180deg);background:#2980b9;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px">FRONT</div>'
       +'</div></div>';
-    setTimeout(function(){ host.querySelector('.flipstage').classList.add('flipped'); }, 100);
+    var inner=host.querySelector('.flipinner');
+    void inner.offsetWidth;
+    setTimeout(function(){ inner.style.transform='rotateY(180deg)'; }, 60);
   }
   function vvTestFlip(slot){
     var host=document.getElementById('card'+slot); if(!host) return;
