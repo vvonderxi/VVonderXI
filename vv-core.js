@@ -93,10 +93,12 @@
     //    d.tag string fallback, else placeholder. ──
     const tagPlaceholder = `<div class="chtag one" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`;
     let tag;
+    const tagMax = (d.prestige==='Generational' || d.prestige==='Iconic') ? 3 : 4;
     if (Array.isArray(d.tags)) {
       if (d.tags.length) {
-        const pills = renderTagPills(d.tags, { baseClass:'chtagcell', max:4, el:'span', innerWrap:false });
-        tag = `<div class="chtag${d.tags.length===1?' one':''}">${pills}</div>`;
+        const shown = Math.min(d.tags.length, tagMax);
+        const pills = renderTagPills(d.tags, { baseClass:'chtagcell', max:tagMax, el:'span', innerWrap:false });
+        tag = `<div class="chtag${shown===1?' one':''}">${pills}</div>`;
       } else {
         tag = tagPlaceholder;
       }
