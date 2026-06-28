@@ -450,6 +450,11 @@
   .canvas{overflow-x:hidden}
 .searchrow{display:flex;align-items:center;gap:12px;margin:0 0 18px}.searchbar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:15px 19px;flex:1;min-width:0}body.light .searchbar{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.08)}.searchbar svg{width:20px;height:20px;color:rgba(243,237,224,0.4);flex-shrink:0}body.light .searchbar svg{color:#9a9285}.searchbar input{border:none;outline:none;background:transparent;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}body.light .searchbar input{color:var(--charcoal)}.searchbar .rs-clear{background:none;border:0;color:rgba(243,237,224,0.4);font-size:21px;cursor:pointer;display:none;line-height:1}body.light .searchbar .rs-clear{color:#9a9285}
 .cardslot{cursor:pointer;transition:transform .15s;position:relative}
+  .flipstage{perspective:1400px}
+  .flipinner{position:relative;width:var(--cw);height:calc(var(--cw)*1.397);transition:transform .72s cubic-bezier(.4,.05,.2,1);transform-style:preserve-3d}
+  .flipstage.flipped .flipinner{transform:rotateY(180deg)}
+  .flipface{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(var(--cw)*0.073)}
+  .flipface.fp-front{transform:rotateY(180deg)}
 .cardslot:hover{transform:translateY(-3px)}
 .cardslot::after{content:'\21BB Tap to change';position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:rgba(243,237,224,.32);pointer-events:none}
 body.light .cardslot::after{color:#b0a899}
@@ -686,6 +691,18 @@ body.light .pkmsub{color:#b0a899}
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
+  // TEMP TEST , vvTestFlip('A') from console to preview the flip motion. Removed in 2b.
+  function vvTestFlip(slot){
+    var host=document.getElementById('card'+slot); if(!host) return;
+    var cw=parseInt(getComputedStyle(document.querySelector('.matchup')).getPropertyValue('--cw'))||240;
+    var sample={year:'23/24',club1:'#6CABDD',number:9,pos:'ST',vv:90,flag:'\u{1F1F3}\u{1F1F4}',surname:'Haaland',clubname:'Man City',age:'22',goals:36,assistsText:'8',tags:[]};
+    host.innerHTML='<div class="flipstage" style="--cw:'+cw+'px"><div class="flipinner">'
+      +'<div class="flipface fp-back">'+vvEmptySlot(slot,cw)+'</div>'
+      +'<div class="flipface fp-front">'+buildCard(sample,cw)+'</div>'
+      +'</div></div>';
+    var stage=host.querySelector('.flipstage');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ stage.classList.add('flipped'); }); });
+  }
 
   // ── Back control (same pattern as card.html) ──
   function vvBack(){var inApp=false;try{inApp=document.referrer&&new URL(document.referrer).origin===location.origin;}catch(e){}if(inApp&&history.length>1)history.back();else location.href='rankings.html';}
