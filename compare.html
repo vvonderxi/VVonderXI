@@ -453,8 +453,11 @@
 .cardslot{cursor:pointer;position:relative}
 .cardslot:not(.flipping){transition:transform .15s}
 .cardslot.flipping{transform:none !important}
-  @keyframes vvturn{0%{transform:scaleX(1)}50%{transform:scaleX(0.04)}100%{transform:scaleX(1)}}
-  .vvturning{animation:vvturn 1s cubic-bezier(.45,.03,.25,1)}
+  @keyframes vvpop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}
+  @keyframes vvshine{0%{left:-60%}100%{left:140%}}
+  .vvpopping{animation:vvpop .7s cubic-bezier(.34,1.4,.5,1)}
+  .vvshine{position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);left:-60%;pointer-events:none;z-index:5;border-radius:inherit}
+  .vvshine.go{animation:vvshine .8s ease-out .1s}
   .flipstage{perspective:1600px;width:var(--cw);height:calc(var(--cw)*1.397);margin:0 auto}
   .flipinner{position:relative;width:100%;height:100%;transition:transform .95s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d}
   .flipstage.flipped .flipinner{transform:rotateY(180deg)}
@@ -698,17 +701,18 @@ body.light .pkmsub{color:#b0a899}
   function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):240);}
   function vvFlipReveal(slot, card, cw){
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
-    host.innerHTML=vvEmptySlot(slot,cw);
+    host.innerHTML=buildCard(card,cw);
     var el=host.firstElementChild; if(!el){ vvSizeCards(); vvLoadSlotSeasons(slot); return; }
-    el.classList.add('vvturning');
+    el.style.position='relative';
+    var sh=document.createElement('div'); sh.className='vvshine'; el.appendChild(sh);
+    void el.offsetWidth;
+    el.classList.add('vvpopping');
+    void sh.offsetWidth; sh.classList.add('go');
     setTimeout(function(){
-      host.innerHTML=buildCard(card,cw);
-      var n=host.firstElementChild; if(n) n.classList.add('vvturning');
-    }, 500);
-    setTimeout(function(){
-      var n2=host.firstElementChild; if(n2) n2.classList.remove('vvturning');
+      el.classList.remove('vvpopping');
+      if(sh && sh.parentNode) sh.parentNode.removeChild(sh);
       vvLoadSlotSeasons(slot);
-    }, 1010);
+    }, 820);
   }
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
