@@ -696,9 +696,9 @@ body.light .pkmsub{color:#b0a899}
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
-  function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):320);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();}
+  function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();}
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
-  function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):320);}
+  function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);}
   function vvFlipReveal(slot, card, cw){
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
     host.innerHTML=buildCard(card,cw);
