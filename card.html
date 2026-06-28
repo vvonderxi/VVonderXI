@@ -180,9 +180,9 @@
   .vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
   .vvcard .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.08);letter-spacing:0.02em;line-height:1;margin-top:calc(var(--cw)*0.025)}
   .vvcard .vv .a{color:var(--charcoal)}.vvcard .vv .b{color:var(--pink)}
-  .vvcard .cimg{width:60%;aspect-ratio:1/1;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
+  .vvcard .cimg{width:60%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
   .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
-  .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:top center;display:none}
+  .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
   body.show-photos .vvcard .cimg .cphoto{display:block}
   body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
   .vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
@@ -210,6 +210,7 @@
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
   body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
   .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
+  .vvcard.gen .n{color:#F0EAD9}
   .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
   .vvcard.gen .vv .a{color:#F0EAD9}
   .vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
