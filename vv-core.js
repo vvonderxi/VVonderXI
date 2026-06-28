@@ -137,7 +137,7 @@
       </div>
       <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
       ${prestige}${tag}
-      <div class="cga"><div class="col"><div class="v">${d.goals}</div><div class="l">Goals</div></div><div class="divider"></div><div class="col"><div class="v">${d.assistsText}</div><div class="l">Assists</div></div></div>
+      <div class="cga"><div class="col"><div class="v">${d.goals == null ? 'NR' : d.goals}</div><div class="l">Goals</div></div><div class="divider"></div><div class="col"><div class="v">${d.assistsText == null ? 'NR' : d.assistsText}</div><div class="l">Assists</div></div></div>
       <div class="cname"><div class="nm${longName}">${flag}${d.surname}</div>${full}<div class="sub">${d.clubname} &middot; ${d.age}</div></div>
     </div>`;
   }
