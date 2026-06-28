@@ -648,7 +648,18 @@
         ? '<rect x="0" width="50" height="116" fill="'+c1+'"/><rect x="50" width="50" height="116" fill="'+c2+'"/>'
         : '<rect width="100" height="116" fill="'+c1+'"/>';
     }
-    var badgeNum=document.getElementById('glSquad'); if(badgeNum && D.club1 && typeof inkFor==='function') badgeNum.setAttribute('fill', inkFor(D.club1));
+    var badgeNum=document.getElementById('glSquad');
+    if(badgeNum && D.club1 && typeof inkFor==='function'){
+      var _ink=inkFor(c1);
+      badgeNum.setAttribute('fill', _ink);
+      if(split){
+        badgeNum.setAttribute('stroke', _ink==='#fff' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.6)');
+        badgeNum.setAttribute('stroke-width','1.1');
+        badgeNum.setAttribute('paint-order','stroke');
+      } else {
+        badgeNum.removeAttribute('stroke'); badgeNum.removeAttribute('stroke-width'); badgeNum.removeAttribute('paint-order');
+      }
+    }
     var chips=document.getElementById('glChips');
     if(chips){
       chips.innerHTML = renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
