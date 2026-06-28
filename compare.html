@@ -502,6 +502,15 @@ body.light .cmpvv{color:var(--charcoal)}
 .cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,.5);margin-top:4px}body.light .cmpga{color:#8c8578}
 
 .emptyslot{aspect-ratio:.7;border:2px dashed rgba(243,237,224,.2);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:rgba(255,255,255,.02);transition:border-color .18s,background .18s}
+  .vvback{--cw:240px;width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);display:flex;align-items:center;justify-content:center;position:relative;box-sizing:border-box;cursor:pointer;background:radial-gradient(130% 70% at 50% 40%, #2c2824 0%, #16120e 55%, #0c0a08 100%);box-shadow:0 20px 40px -22px rgba(0,0,0,0.8), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.65)}
+  body.light .vvback{background:radial-gradient(130% 70% at 50% 40%, #F7F2E6 0%, #efe9dc 55%, #e6dfce 100%);box-shadow:0 20px 40px -22px rgba(0,0,0,0.55), inset 0 0 0 calc(var(--cw)*0.02) #efe9dc, inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.5)}
+  .vvback .vlogo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-0.02em;line-height:1;display:flex}
+  .vvback .vlogo .a{color:#F0EAD9}.vvback .vlogo .b{color:#FF5C7A}
+  body.light .vvback .vlogo .a{color:#1C1B1A}
+  .vvback .vbtop{position:absolute;top:calc(var(--cw)*0.1);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.058);letter-spacing:.06em;text-transform:uppercase;color:rgba(240,234,217,0.45)}
+  body.light .vvback .vbtop{color:rgba(28,27,26,0.45)}
+  .vvback .vbsub{position:absolute;bottom:calc(var(--cw)*0.09);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:.18em;text-transform:uppercase;color:rgba(240,234,217,0.4)}
+  body.light .vvback .vbsub{color:rgba(28,27,26,0.4)}
 body.light .emptyslot{border-color:rgba(0,0,0,.16);background:rgba(255,255,255,.3)}
 .cardslot:hover .emptyslot{border-color:var(--pink);background:rgba(255,92,122,.06)}
 .esplus{font-size:34px;font-weight:300;color:rgba(243,237,224,.32);line-height:1}
@@ -674,7 +683,7 @@ body.light .pkmsub{color:#b0a899}
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
   function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):240);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();}
-  function vvEmptySlot(slot,cw){return '<div class="emptyslot" style="width:'+cw+'px"><div class="esplus">+</div><div class="eslbl">Tap to choose<br><b>Season '+slot+'</b></div></div>';}
+  function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
 
