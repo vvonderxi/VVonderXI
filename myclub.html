@@ -356,7 +356,30 @@
   .totop{position:fixed;right:18px;bottom:88px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(255,92,122,.6);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:60}
   .totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
   @media (min-width:721px){ .totop{bottom:28px} }
-.mycards.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}body.light .mycards.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}.cmprow{display:flex;align-items:center;gap:13px;padding:11px 16px 11px 0;cursor:pointer;transition:background .14s}.cmprow+.cmprow{border-top:1px solid rgba(255,255,255,0.06)}body.light .cmprow+.cmprow{border-color:rgba(0,0,0,0.055)}.cmprow:hover{background:rgba(255,255,255,0.04)}body.light .cmprow:hover{background:rgba(0,0,0,0.025)}.cmprail{width:4px;align-self:stretch;border-radius:0 3px 3px 0;flex-shrink:0;min-height:34px}.cmpmain{flex:1;min-width:0;padding-left:14px}.cmpl1{display:flex;align-items:center;gap:8px}.cmpnm{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpnm{color:var(--charcoal)}.cmpfl{font-size:14px;flex-shrink:0}.cmpl2{font-weight:700;font-size:11.5px;color:rgba(243,237,224,0.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpl2{color:#8c8578}.cmpl2 b{color:rgba(243,237,224,0.72);font-weight:800}body.light .cmpl2 b{color:#6f685c}.cmpright{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;padding-right:14px}.cmpvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}body.light .cmpvv{color:var(--charcoal)}.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink)}body.light .cmpvv.elite{color:var(--gold)}body.light .cmpvv.gen{color:var(--pink)}.cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,0.5);margin-top:4px;font-variant-numeric:tabular-nums}body.light .cmpga{color:#8c8578}.fhide{display:none!important}.cfchips.expanded .fhide{display:flex!important}.cfchips.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.cfsubgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .cfsubgl{color:#b0a899}</style>
+.mycards.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}body.light .mycards.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}.cmprow{display:flex;align-items:center;gap:13px;padding:11px 16px 11px 0;cursor:pointer;transition:background .14s}.cmprow+.cmprow{border-top:1px solid rgba(255,255,255,0.06)}body.light .cmprow+.cmprow{border-color:rgba(0,0,0,0.055)}.cmprow:hover{background:rgba(255,255,255,0.04)}body.light .cmprow:hover{background:rgba(0,0,0,0.025)}.cmprail{width:4px;align-self:stretch;border-radius:0 3px 3px 0;flex-shrink:0;min-height:34px}.cmpmain{flex:1;min-width:0;padding-left:14px}.cmpl1{display:flex;align-items:center;gap:8px}.cmpnm{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpnm{color:var(--charcoal)}.cmpfl{font-size:14px;flex-shrink:0}.cmpl2{font-weight:700;font-size:11.5px;color:rgba(243,237,224,0.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpl2{color:#8c8578}.cmpl2 b{color:rgba(243,237,224,0.72);font-weight:800}body.light .cmpl2 b{color:#6f685c}.cmpright{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;padding-right:14px}.cmpvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}body.light .cmpvv{color:var(--charcoal)}.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink)}body.light .cmpvv.elite{color:var(--gold)}body.light .cmpvv.gen{color:var(--pink)}.cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,0.5);margin-top:4px;font-variant-numeric:tabular-nums}body.light .cmpga{color:#8c8578}.fhide{display:none!important}.cfchips.expanded .fhide{display:flex!important}.cfchips.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.cfsubgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .cfsubgl{color:#b0a899}
+  .emptystate{max-width:420px;margin:8px auto 0;border-radius:20px;overflow:hidden;position:relative;display:none}
+  .emptystate.show{display:block}
+  .esghosts{position:relative;height:230px;overflow:hidden}
+  .esghosts .esrow{position:absolute;inset:0;display:flex;gap:14px;justify-content:center;padding-top:26px;opacity:.26;filter:blur(1px)}
+  .esghosts .esg{width:118px;height:168px;border-radius:13px;background:linear-gradient(165deg,#2a2528,#1a1618)}
+  .esghosts .esg.l{transform:rotate(-6deg) translateY(14px)} .esghosts .esg.r{transform:rotate(6deg) translateY(14px)}
+  .esveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(240,234,217,0) 0%,rgba(240,234,217,.72) 66%,var(--cream,#F0EAD9) 100%)}
+  body:not(.light) .esveil{background:linear-gradient(180deg,rgba(28,27,26,0) 0%,rgba(28,27,26,.72) 66%,var(--charcoal,#1C1B1A) 100%)}
+  .escopy{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 30px 8px;text-align:center}
+  .estitle{font-family:'Bricolage Grotesque';font-weight:900;font-size:23px;line-height:1.15;margin-bottom:7px;color:var(--charcoal)}
+  body:not(.light) .estitle{color:var(--cream)}
+  .essub{font-size:13px;line-height:1.5;color:rgba(40,36,30,.62);max-width:280px}
+  body:not(.light) .essub{color:rgba(240,234,217,.6)}
+  .esactions{padding:6px 26px 24px;text-align:center}
+  .esbtn{width:100%;background:var(--charcoal,#1a1614);color:var(--cream,#F0EAD9);border:none;border-radius:13px;padding:15px;font-family:'Archivo';font-weight:800;font-size:14.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  body:not(.light) .esbtn{background:var(--cream);color:var(--charcoal)}
+  .eshint{margin-top:11px;color:rgba(40,36,30,.5);font-size:12.5px;line-height:1.5}
+  body:not(.light) .eshint{color:rgba(240,234,217,.5)}
+  .esjoin{margin-top:18px;padding-top:16px;border-top:1px solid rgba(0,0,0,.08)}
+  body:not(.light) .esjoin{border-color:rgba(255,255,255,.1)}
+  .esjoin .jl{color:rgba(40,36,30,.6);font-size:12.5px;margin-bottom:10px} body:not(.light) .esjoin .jl{color:rgba(240,234,217,.6)}
+  .esjoinbtn{background:transparent;color:var(--charcoal);border:1.5px solid rgba(0,0,0,.18);border-radius:11px;padding:11px 22px;font-family:'Archivo';font-weight:800;font-size:13.5px;cursor:pointer}
+  body:not(.light) .esjoinbtn{color:var(--cream);border-color:rgba(255,255,255,.22)}</style>
 </head>
 <body class="light">
 <script>(function(){try{var f=localStorage.getItem('vvCardFace');if(f==='silhouette')document.body.classList.remove('show-photos');else document.body.classList.add('show-photos');}catch(e){}})();</script>
@@ -452,6 +475,16 @@
         <div class="secttitle sp" id="allcards">My Cards <span class="ct">24 cards</span></div>
         <div class="mycards" id="cardgrid"></div>
 
+        <div class="emptystate" id="emptyCards">
+          <div class="esghosts"><div class="esrow"><div class="esg l"></div><div class="esg"></div><div class="esg r"></div></div><div class="esveil"></div>
+            <div class="escopy"><div class="estitle">Build your club</div><div class="essub">The players you love, the seasons you'll never forget, all in one place.</div></div>
+          </div>
+          <div class="esactions">
+            <button class="esbtn" onclick="goSearch()"><span style="font-size:16px">&#9733;</span> Find players to add</button>
+            <div class="eshint">Find a player, tap <b>&#9733;</b> to make them part of your club.</div>
+            <div class="esjoin"><div class="jl">Your club is saved when you join , free.</div><button class="esjoinbtn" onclick="joinClub()">Join the Club</button></div>
+          </div>
+        </div>
         </div>
         <div id="shelfVerdicts" style="display:none">
         <div class="secttitle sp">Your Verdicts <span class="ct">2 of 2 kept</span></div>
@@ -498,6 +531,16 @@
           </div>
         </div>
 
+        <div class="emptystate" id="emptyVerdicts">
+          <div class="esghosts"><div class="esrow"><div class="esg l"></div><div class="esg"></div><div class="esg r"></div></div><div class="esveil"></div>
+            <div class="escopy"><div class="estitle">Settle your first debate</div><div class="essub">Two players, one verdict. Save the arguments worth keeping.</div></div>
+          </div>
+          <div class="esactions">
+            <button class="esbtn" onclick="goVerdict()"><span style="font-size:16px">&#9878;</span> Compare two players</button>
+            <div class="eshint">Run a comparison, then save the verdict to your club.</div>
+            <div class="esjoin"><div class="jl">Your verdicts are saved when you join , free.</div><button class="esjoinbtn" onclick="joinClub()">Join the Club</button></div>
+          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -569,6 +612,8 @@
 
   function vvNorm(x){return (x||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
   var clubView='cards', clubShelf='cards';
+  var MYCLUB_HASCARDS = true;      // flip to false to preview the Cards empty state; accounts: savedCards.length>0
+  var MYCLUB_HASVERDICTS = true;   // flip to false to preview the Verdicts empty state; accounts: savedVerdicts.length>0
   var clubFilters={sort:'vv', league:'', pos:''};
   function posCanon(p){ if(!p)return ''; if(p==='GK')return 'GK'; if(p==='LB'||p==='RB'||p==='FB'||p==='LWB'||p==='RWB')return 'FB'; if(p==='CB')return 'CB'; if(p==='CDM'||p==='DM')return 'CDM'; if(p==='CM')return 'CM'; if(p==='CAM'||p==='AM')return 'CAM'; if(p==='LW'||p==='RW'||p==='W'||p==='LM'||p==='RM')return 'W'; if(p==='ST'||p==='CF'||p==='FW')return 'ST'; return p; }
   function clubFiltered(){
@@ -611,6 +656,25 @@
     }
   }
   function setClubView(v){ clubView=v; var a=document.getElementById('vsCards'),b=document.getElementById('vsList'),c=document.getElementById('vsCompact'); if(a)a.classList.toggle('on',v==='cards'); if(b)b.classList.toggle('on',v==='list'); if(c)c.classList.toggle('on',v==='compact'); renderMyCards(); }
+  function vvApplyEmptyState(){
+    var isCards = (clubShelf==='cards');
+    var has = isCards ? MYCLUB_HASCARDS : MYCLUB_HASVERDICTS;
+    var emptyEl = document.getElementById(isCards ? 'emptyCards' : 'emptyVerdicts');
+    // populated bits for the cards shelf
+    var grid = document.getElementById('cardgrid');
+    var vgrid = document.getElementById('verdictgrid');
+    var recent = document.getElementById('recentStrip');
+    if(emptyEl) emptyEl.classList.toggle('show', !has);
+    if(isCards){
+      if(grid) grid.style.display = has ? '' : 'none';
+      if(recent) recent.style.display = has ? '' : 'none';
+      // hide view-mode + filter controls when empty
+      var vs=document.querySelector('.viewseg'); if(vs) vs.style.display = has ? '' : 'none';
+      var cfb=document.getElementById('clubFilterBtn'); if(cfb) cfb.style.display = has ? '' : 'none';
+    } else {
+      if(vgrid) vgrid.style.display = has ? '' : 'none';
+    }
+  }
   function setShelf(sh){
     clubShelf=sh;
     document.getElementById('shCards').classList.toggle('on',sh==='cards');
@@ -621,6 +685,7 @@
     var inp=document.getElementById('clubSearch'); inp.value=''; inp.placeholder=sh==='cards'?'Search your cards':'Search your verdicts';
     document.getElementById('clubClear').style.display='none';
     applyClubSearch();
+    vvApplyEmptyState();
   }
   function applyClubSearch(){
     var q=document.getElementById('clubSearch').value.trim();
