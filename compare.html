@@ -694,6 +694,7 @@ body.light .pkmsub{color:#b0a899}
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
   function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):240);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();}
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
+  function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):240);}
   function vvFlipReveal(slot, card, cw){
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
     host.innerHTML=vvEmptySlot(slot,cw);
@@ -727,8 +728,9 @@ body.light .pkmsub{color:#b0a899}
     var sb=vvClient(); if(!sb) return;            // vv-core logs why (missing config or lib)
     if(a){ var ca=await fetchCard(a); if(ca) CMP_A=ca; }
     if(b){ var cb=await fetchCard(b); if(cb) CMP_B=cb; }
-    vvSizeCards();
-    vvLoadSlotSeasons('A'); vvLoadSlotSeasons('B');
+    var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
+    if(CMP_A) vvFlipReveal('A', CMP_A, cw); else { vvSizeCards(); }
+    if(CMP_B) vvFlipReveal('B', CMP_B, cw); else { vvSizeCards(); }
   }
   async function vvLoadSlotSeasons(slot){
     var cmp = slot==='A'?CMP_A:CMP_B;
@@ -750,8 +752,8 @@ body.light .pkmsub{color:#b0a899}
   async function vvSwitchSlotSeason(slot, cardId){
     var card=await fetchCard(cardId); if(!card) return;
     if(slot==='A') CMP_A=card; else CMP_B=card;
-    vvSizeCards();
-    vvLoadSlotSeasons(slot);
+    var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
+    vvFlipReveal(slot, card, cw);
   }
   loadSlotFromUrl();
 
@@ -776,8 +778,8 @@ body.light .pkmsub{color:#b0a899}
   function pkPick(k){ var pool=POOL.concat(pkRecents()); var p=null; for(var i=0;i<pool.length;i++){ if(pkKey(pool[i])===k){p=pool[i];break;} } if(!p)return;
     var wasEmpty=(pickerSlot==='A')?!CMP_A:!CMP_B;
     if(pickerSlot==='A')CMP_A=p; else CMP_B=p; pkPushRecent(p); closePicker();
-    if(wasEmpty){ var w=window.innerWidth,mob=w<700; var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):240); vvFlipReveal(pickerSlot, p, cw); vvUpdateCompareGate(); }
-    else { vvSizeCards(); vvLoadSlotSeasons(pickerSlot); } }
+    var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
+    vvFlipReveal(pickerSlot, p, cw); vvUpdateCompareGate(); }
   function pkRow(p){ var tier=p.vv>=95?' gen':(p.vv>=90?' elite':'');
     return '<div class="cmprow" onclick="pkPick(\''+pkKey(p)+'\')">'
      +'<span class="cmprail" style="background:'+(p.club1||'#9a948a')+'"></span>'
