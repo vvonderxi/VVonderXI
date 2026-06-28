@@ -53,7 +53,8 @@
   .matchup .vscenter{align-self:center}
   .side{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
   .side .vvcard{cursor:default}
-  .edge-flag{display:inline-flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.04em;color:#5a4410;background:linear-gradient(135deg,#F0D27A,#E0A93A);padding:7px 16px;border-radius:18px;box-shadow:0 8px 18px -6px rgba(232,184,75,0.6)}
+  .edge-flag{display:none;align-items:center;gap:7px;font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.04em;color:#5a4410;background:linear-gradient(135deg,#F0D27A,#E0A93A);padding:7px 16px;border-radius:18px;box-shadow:0 8px 18px -6px rgba(232,184,75,0.6)}
+  .matchup.settled .edge-flag{display:inline-flex}
   .edge-flag svg{width:14px;height:14px}
   .edge-spacer{height:30px}
   .vsmedal{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,#2a2422,#161313);border:2.5px solid var(--pink);box-shadow:0 0 40px -6px rgba(255,92,122,0.6),inset 0 1px 0 rgba(255,255,255,0.08);font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;flex-shrink:0}
@@ -699,7 +700,12 @@ body.light .pkmsub{color:#b0a899}
   function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();}
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
   function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);}
+  function vvResetVerdict(){
+    var v=document.getElementById('verdict'); if(v) v.classList.remove('show');
+    var m=document.querySelector('.matchup'); if(m) m.classList.remove('settled');
+  }
   function vvFlipReveal(slot, card, cw){
+    vvResetVerdict();
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
     host.innerHTML=buildCard(card,cw);
     var el=host.firstElementChild; if(!el){ vvSizeCards(); vvLoadSlotSeasons(slot); return; }
@@ -1017,6 +1023,7 @@ body.light .pkmsub{color:#b0a899}
   }
   // reveal handler , draw graphics when Compare is pressed
   document.querySelector('.settle').addEventListener('click',function(){
+    var m=document.querySelector('.matchup'); if(m && CMP_A && CMP_B) m.classList.add('settled');
     setTimeout(async ()=>{vvComputeSpokes();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);},60);
     vvGenerateVerdict();
   });
