@@ -337,6 +337,7 @@
 </style>
 </head>
 <body class="light">
+<script>(function(){try{var f=localStorage.getItem('vvCardFace');if(f==='silhouette')document.body.classList.remove('show-photos');else document.body.classList.add('show-photos');}catch(e){}})();</script>
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
 
 <nav class="spine">
@@ -440,7 +441,7 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
 </script>
 
 <script>
-function meFace(sw){var on=sw.classList.toggle('on');try{localStorage.setItem('vvCardFace',on?'photo':'silhouette');}catch(e){}}
+function meFace(sw){var on=sw.classList.toggle('on');document.body.classList.toggle('show-photos',on);try{localStorage.setItem('vvCardFace',on?'photo':'silhouette');}catch(e){}}
 document.addEventListener('DOMContentLoaded',function(){var fsw=document.getElementById('meFaceSw');if(fsw){try{if(localStorage.getItem('vvCardFace')==='silhouette')fsw.classList.remove('on');}catch(e){}}});
 </script>
 </body>
