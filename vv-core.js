@@ -93,7 +93,7 @@
     //    d.tag string fallback, else placeholder. ──
     const tagPlaceholder = `<div class="chtag one" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`;
     let tag;
-    const tagMax = (d.prestige==='Generational' || d.prestige==='Iconic') ? 3 : 4;
+    const tagMax = (d.prestige==='Generational' || d.prestige==='Iconic') ? 2 : 4;
     if (Array.isArray(d.tags)) {
       if (d.tags.length) {
         const shown = Math.min(d.tags.length, tagMax);
