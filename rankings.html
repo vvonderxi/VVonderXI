@@ -141,7 +141,7 @@
   /* ===== Mobile rows (<=720px) , re-grid the SAME 9 row children into stacked,
      purpose-built layouts. List = tag-forward; Compact = data table.
      Desktop grids (above) untouched; no HTML/builder change. ===== */
-  @media (max-width:720px){
+  @media (max-width:720px),(max-height:600px){
     /* LIST (pillmode): name / subline(club clips, year+pos protected) / centred tags / VV right */
     #cardgrid.pillmode > .urow{grid-template-columns:26px auto minmax(0,auto) auto 1fr 44px;grid-template-rows:auto auto auto;column-gap:0;row-gap:5px;padding:12px 14px;align-items:center}
     #cardgrid.pillmode > .urow > .urank{grid-column:1;grid-row:1/4;align-self:start;margin-top:3px;font-size:13px}
@@ -187,7 +187,7 @@
   /* wide breakpoints , cap and re-column so it never sprawls or crams */
   @media (max-width:1400px){.cardgrid{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:1040px){.cardgrid{grid-template-columns:repeat(2,1fr);gap:22px}.hero{padding:28px 32px 6px}.gridwrap{padding:24px 32px 50px}.topline{padding:24px 32px 0}}
-  @media (max-width:720px){.spine{display:none}.cardgrid{grid-template-columns:repeat(2,1fr);gap:16px}.hero h1{font-size:28px}.hero{padding:14px 18px 2px}.gridwrap{padding:18px 18px 40px}.topline{padding:18px 18px 0}}
+  @media (max-width:720px),(max-height:600px){.spine{display:none}.cardgrid{grid-template-columns:repeat(2,1fr);gap:16px}.hero h1{font-size:28px}.hero{padding:14px 18px 2px}.gridwrap{padding:18px 18px 40px}.topline{padding:18px 18px 0}}
 
   /* ============================================================
      ★ THE BEDROCK CARD , canonical, reusable everywhere ★
