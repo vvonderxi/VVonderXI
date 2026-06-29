@@ -143,9 +143,9 @@
      Desktop grids (above) untouched; no HTML/builder change. ===== */
   @media (max-width:720px),(max-height:600px){
     /* LIST (pillmode): name / subline(club·year·pos·G·A, club clips first) / centred tags / VV right */
-    #cardgrid.pillmode > .urow{grid-template-columns:24px auto auto auto auto 1fr 42px;grid-template-rows:auto auto auto;column-gap:0;row-gap:4px;padding:10px 13px;align-items:center}
+    #cardgrid.pillmode > .urow{grid-template-columns:24px minmax(0,1fr) auto auto auto auto 42px;grid-template-rows:auto auto auto;column-gap:0;row-gap:4px;padding:10px 13px;align-items:center}
     #cardgrid.pillmode > .urow > .urank{grid-column:1;grid-row:1/4;align-self:start;margin-top:2px;font-size:12px;margin-right:11px}
-    #cardgrid.pillmode > .urow > .uident{grid-column:2/8;grid-row:1}
+    #cardgrid.pillmode > .urow > .uident{grid-column:2/7;grid-row:1;min-width:0}
     #cardgrid.pillmode .uname{font-size:15.5px}
     #cardgrid.pillmode .ushield{height:18px}
     #cardgrid.pillmode > .urow > .uclub,
@@ -157,13 +157,13 @@
     #cardgrid.pillmode > .urow > .uyear{grid-column:3;color:#5f5a52;font-variant-numeric:tabular-nums}
     #cardgrid.pillmode > .urow > .upos{grid-column:4;color:#9a9183}
     #cardgrid.pillmode > .urow > .ugoals{grid-column:5;color:#5f5a52;font-variant-numeric:tabular-nums}
-    #cardgrid.pillmode > .urow > .uassists{grid-column:6;color:#5f5a52;font-variant-numeric:tabular-nums;margin-left:6px}
+    #cardgrid.pillmode > .urow > .uassists{grid-column:6;color:#5f5a52;font-variant-numeric:tabular-nums;margin-left:6px;margin-right:8px}
     #cardgrid.pillmode > .urow > .uclub::after,
     #cardgrid.pillmode > .urow > .uyear::after,
     #cardgrid.pillmode > .urow > .upos::after{content:"\00B7";margin:0 6px;opacity:.45;color:#9a9183;font-weight:700}
     #cardgrid.pillmode > .urow > .ugoals span,
     #cardgrid.pillmode > .urow > .uassists span{color:#b8af9f;font-weight:800;font-size:10px;margin-left:1px}
-    #cardgrid.pillmode > .urow > .utags{grid-column:2/8;grid-row:3;justify-content:flex-start;margin-top:2px}
+    #cardgrid.pillmode > .urow > .utags{grid-column:2/7;grid-row:3;justify-content:flex-start;margin-top:2px}
     #cardgrid.pillmode .rtag{font-size:8.5px;padding:2.5px 8px}
     #cardgrid.pillmode > .urow > .rmini{grid-column:7;grid-row:1/4;align-self:center;justify-self:end;margin:0;width:42px;height:48px}
 
