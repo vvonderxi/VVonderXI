@@ -753,14 +753,21 @@
       }).join('');
     }
   }
-  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,330); drawRadar(); }
+  function cwNow(){
+    var w=window.innerWidth;
+    if(w>720) return 330;
+    return Math.round(Math.min(330,(w-36)*0.92));
+  }
+  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
+  var vvHeroRZ;
+  window.addEventListener('resize',function(){ clearTimeout(vvHeroRZ); vvHeroRZ=setTimeout(function(){ if(window.D) renderHero(); },150); });
   // ── First paint: render the demo ONLY when there's no ?id (standalone visit).
   //    With an ?id a real player is incoming -> show a neutral card-shaped skeleton
   //    and let loadCard()'s render be the first real paint (kills the ~0.5s Bruno flash).
   //    renderHero() also calls drawRadar(), so guarding it here prevents a Bruno radar too.
   var _cardId=null; try{ _cardId=new URLSearchParams(window.location.search).get('id'); }catch(e){}
   if(_cardId){
-    document.getElementById('heroCard').innerHTML='<div class="vvcard" aria-hidden="true" style="--cw:330px;min-height:450px;background:rgba(255,255,255,0.05)!important;box-shadow:none!important;border-color:rgba(255,255,255,0.10)!important"></div>';
+    document.getElementById('heroCard').innerHTML='<div class="vvcard" aria-hidden="true" style="--cw:'+cwNow()+'px;min-height:450px;background:rgba(255,255,255,0.05)!important;box-shadow:none!important;border-color:rgba(255,255,255,0.10)!important"></div>';
   } else {
     renderHero();                              // no id -> standalone demo (unchanged)
   }
