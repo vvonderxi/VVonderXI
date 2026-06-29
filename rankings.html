@@ -340,7 +340,6 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     .fopts,.quickbands,.fpills{flex-wrap:wrap}
   }
   @media (max-width:560px){
-    .cardgrid .vvcard{--cw:152px !important}
     .cardgrid{gap:14px}
   }
   .crumb .va{color:var(--ink)} .crumb .vb{color:var(--pink)}
@@ -465,11 +464,23 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
     +'</div>';
   }
+  function cwNow(){
+    var w=window.innerWidth;
+    if(w>560) return 260;
+    var g=document.getElementById('cardgrid');
+    if(!g||!g.clientWidth) return Math.round((((w-36-8))-14)/2*0.92);
+    var cs=getComputedStyle(g);
+    var padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
+    var gap=parseFloat(cs.columnGap||cs.gap)||14;
+    var usable=g.clientWidth-padL-padR;
+    var col=(usable-gap)/2;
+    return Math.round(Math.min(260,col*0.92));
+  }
   function renderRankCards(list){
     const g=document.getElementById('cardgrid');
     setViewClass(null);
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML = list.map(d=>`<div onclick="goCard(${d.card_id==null?'':d.card_id})" style="cursor:pointer">${buildCard(d,260)}</div>`).join('');
+    g.innerHTML = list.map(d=>`<div onclick="goCard(${d.card_id==null?'':d.card_id})" style="cursor:pointer">${buildCard(d,cwNow())}</div>`).join('');
   }
   function vvNorm(s){return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
   function rankTagColor(label){var T={Iconic:'pink',Talisman:'pink',Generational:'gen','Golden Boot':'gold',Prestige:'gold',Maestro:'blue',Clinical:'green',Poacher:'green',Pace:'coral',Wonderkid:'purple',Rock:'slate',Engine:'slate','Target Man':'slate','Top Assist':'blue'};for(var k in T){if(label.indexOf(k)>=0)return T[k];}return 'slate';}
@@ -493,6 +504,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     g.appendChild(w);
   }
   function renderRank(){ var list=currentRankList(); if(rankView==='pills') renderRankPills(list); else if(rankView==='compact') renderRankCompact(list); else renderRankCards(list); appendRankMore(); }
+  var vvRankRZ;
+  window.addEventListener('resize',function(){ clearTimeout(vvRankRZ); vvRankRZ=setTimeout(function(){ if(rankView==='cards' && typeof CARDS!=='undefined' && CARDS && CARDS.length) renderRank(); },150); });
   function setRankView(v){
     rankView=v;
     try{localStorage.setItem('vvRankView',v);}catch(e){}
