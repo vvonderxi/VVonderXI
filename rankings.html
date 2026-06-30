@@ -50,7 +50,8 @@
   .hero{padding:30px 48px 6px;max-width:1680px}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:46px;line-height:1.02;letter-spacing:-0.02em}
   .hero h1 .b{color:var(--pink)}
-  .hero .lede{font-family:'Inter';font-weight:400;font-size:13.5px;line-height:1.45;color:rgba(243,237,224,0.6);max-width:560px;margin-top:7px}
+  .hero .lede{font-family:'Bricolage Grotesque';font-weight:400;font-size:22px;line-height:1.2;color:rgba(243,237,224,0.9);max-width:620px;margin-top:2px;letter-spacing:-0.01em}
+  .hero .lede .b{color:var(--pink)}
 
   /* the rankings grid , generous, never crammed (premium = space) */
   .gridwrap{padding:30px 48px 60px;max-width:1680px}
@@ -204,7 +205,7 @@
   /* wide breakpoints , cap and re-column so it never sprawls or crams */
   @media (max-width:1400px){.cardgrid{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:1040px){.cardgrid{grid-template-columns:repeat(2,1fr);gap:22px}.hero{padding:28px 32px 6px}.gridwrap{padding:24px 32px 50px}.topline{padding:24px 32px 0}}
-  @media (max-width:720px),(max-height:600px){.spine{display:none}.cardgrid{grid-template-columns:repeat(2,1fr);gap:16px}.hero h1{font-size:28px}.hero{padding:14px 18px 2px}.gridwrap{padding:18px 18px 40px}.topline{padding:18px 18px 0}}
+  @media (max-width:720px),(max-height:600px){.spine{display:none}.cardgrid{grid-template-columns:repeat(2,1fr);gap:16px}.hero h1{font-size:28px}.hero .lede{font-size:19px}.hero{padding:14px 18px 2px}.gridwrap{padding:18px 18px 40px}.topline{padding:18px 18px 0}}
   @media (max-width:720px),(max-height:600px){#cardgrid:not(.pillmode):not(.compactmode) .vvcard{--cw:165px;max-width:100%}}
 
   /* ============================================================
@@ -359,7 +360,7 @@
   body.light .crumb{color:#9a9285}
   body.light .modetoggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
 body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
-  body.light .hero .lede{color:#5a544a}
+  body.light .hero .lede{color:#2e2a23}
 
   .coin .coinA{fill:var(--cream)}
   body.light .coin .coinA{fill:var(--charcoal)}
@@ -427,7 +428,6 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     </div>
 
     <div class="hero">
-      <h1>The V<span class="b">V</span> Rankings.</h1>
       <div class="lede">The best seasons football has <span class="b">produced</span>.</div>
     </div>
 
