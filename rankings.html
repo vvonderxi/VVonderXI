@@ -73,6 +73,7 @@
   .urow{display:grid;grid-template-columns:44px minmax(0,2.2fr) 56px minmax(0,1.5fr) 60px 300px 60px 60px 60px;align-items:center;cursor:pointer;transition:background .14s}
   /* id-level specificity so the grid wins over the Cards `.cardgrid > div` flex rule → row spans full width edge-to-edge */
   #cardgrid.pillmode > .urow,#cardgrid.compactmode > .urow{display:grid;justify-content:stretch}
+  .compacthead{display:none}
   .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
   body.light .urow+.urow{border-color:rgba(0,0,0,0.055)}
   .urow:hover{background:rgba(255,255,255,0.04)}
