@@ -1,22 +1,43 @@
 -- ════════════════════════════════════════════════════════════════════
---  player_card_view , REBUILT with computed VV Score (rt)
---  Phase 7 engine recalibration. rt is now a computed expression.
---  ALL 44 existing columns preserved in EXACT original order.
---  Only change: the rt column now reads the computed score (vv.rt_new)
---  instead of psc.rt (the old match-rating passthrough).
+--  player_card_view , ENGINE DISPERSION CALIBRATION (Blend + Option-2 curve)
+--  Phase: Engine Dispersion Tuning. Date: 2026-07-01. Branch: redesign-compare.
+--
+--  WHAT CHANGED vs the previous live view (rt computation only):
+--   1. Output currency is GOAL-WEIGHTED: goals + 0.7*assists (goals lead assists),
+--      applied to both the per-90 RATE and the VOLUME signals.
+--   2. RAW OUTPUT term added so genuine volume TOWERS at the top instead of
+--      saturating on the percentile ceiling: attack = 0.65*percentile_blend
+--      + 0.35*(100 * gaw / gaw_99thpct).  Linear, so 50 pulls clear of 40.
+--   3. Output vs reliability reweighted 0.70 / 0.30 (was 0.60 / 0.40).
+--   4. League tilt UNCHANGED (pyramid already adequate given 1-3).
+--   5. Defensive lens UNCHANGED (the elite leak was attacking-side, not defensive).
+--   6. OPTION-2 DISPERSION CURVE: anchor-based piecewise map. Cuts are placed at
+--      the top 12 / 150 / 650 outfield seasons (= rt 95 / 90 / 85), top stretched
+--      to 95-100 so singular seasons separate upward.
+--
+--  ANCHORS ARE LIVE, NOT HARDCODED (deliberate, per the "model is a belief" principle):
+--   b95/b90/b85 are computed from the CURRENT distribution every refresh, so the
+--   bands ALWAYS mean "top 12 / 150 / 650 seasons", forever. The BELIEF is frozen,
+--   the NUMBERS self-correct. The site reads player_card_mv (matview), so the anchor
+--   recompute cost is paid at REFRESH, not on every query.
+--   >>> AFTER ANY IMPORT: refresh player_card_mv so the anchors recompute. <<<
+--
+--  GK branch UNCHANGED (least(75,...)) , outfield-only phase.
+--  All 47 output columns preserved in EXACT original order. Only rt's source changed.
+--  "Success. No rows returned" is the expected result for a create-or-replace view.
 -- ════════════════════════════════════════════════════════════════════
 create or replace view player_card_view as
 with scored as (
   select
     psc.id as card_id,
-    psc.position as pos,
+    psc."position" as pos,
     psc.minutes,
     psc.season_year,
-    (psc.goals + coalesce(psc.assists,0)) / nullif(psc.minutes/90.0,0) as ga90,
-    (psc.goals + coalesce(psc.assists,0)) as ga_total,
+    (psc.goals + 0.7*coalesce(psc.assists,0)) as gaw,
+    (psc.goals + 0.7*coalesce(psc.assists,0))::numeric / nullif(psc.minutes::numeric/90.0, 0) as gaw90,
     case when psc.tackles_total is not null
-      then (coalesce(psc.tackles_total,0)+coalesce(psc.interceptions,0)+coalesce(psc.tackles_blocks,0))
-           / nullif(psc.minutes/90.0,0)
+      then (coalesce(psc.tackles_total,0)+coalesce(psc.interceptions,0)+coalesce(psc.tackles_blocks,0))::numeric
+           / nullif(psc.minutes::numeric/90.0, 0)
       else null end as def90,
     case when psc.duels_total >= 20 then psc.duels_won::numeric / psc.duels_total else null end as duel_rate,
     coalesce(l.league_strength_weight, 0.80) as wt
@@ -24,37 +45,67 @@ with scored as (
   left join leagues l on psc.league_id = l.id
   where psc.minutes >= 300 and psc.goals is not null
 ),
+ref as (
+  select percentile_cont(0.99) within group (order by gaw) as gaw_ref
+  from scored
+  where pos <> 'GK'
+),
 ranked as (
   select s.*,
-    percent_rank() over (partition by pos order by ga90) as pos_pct,
-    percent_rank() over (partition by (case when pos='GK' then 1 else 0 end) order by ga90) as abs_pct,
-    percent_rank() over (partition by pos order by ga_total) as posvol_pct,
-    percent_rank() over (partition by (case when pos='GK' then 1 else 0 end) order by ga_total) as absvol_pct,
+    percent_rank() over (partition by pos order by gaw90) as pos_pct,
+    percent_rank() over (partition by (case when pos='GK' then 1 else 0 end) order by gaw90) as abs_pct,
+    percent_rank() over (partition by pos order by gaw) as posvol_pct,
+    percent_rank() over (partition by (case when pos='GK' then 1 else 0 end) order by gaw) as absvol_pct,
     percent_rank() over (partition by pos order by minutes) as rel_pct,
     case when def90 is not null then percent_rank() over (partition by pos order by def90) else null end as defvol_pct,
     case when duel_rate is not null then percent_rank() over (partition by pos order by duel_rate) else null end as duelq_pct
   from scored s
 ),
+base as (
+  select r.card_id,
+    ( 0.70 * greatest(
+        0.65 * ((0.50*(0.60*r.pos_pct + 0.40*coalesce(r.abs_pct,0))
+               + 0.50*(0.60*r.posvol_pct + 0.40*coalesce(r.absvol_pct,0))) * 100)
+        + 0.35 * (100 * r.gaw / nullif(rf.gaw_ref,0)),
+        coalesce(case when r.defvol_pct is not null
+                   then (0.55*r.defvol_pct + 0.45*coalesce(r.duelq_pct, r.defvol_pct)) * 93
+                   else null end, 0)
+      )
+    + 0.30 * least(95, 100*(r.minutes::numeric/(r.minutes+380)))
+    ) * (1 - (1 - r.wt)*0.5) as b
+  from ranked r
+  cross join ref rf
+  where r.pos <> 'GK'
+),
+anchors as (
+  select
+    (select max(b) from base) as btop,
+    (select b from base order by b desc offset 11  limit 1) as b95,
+    (select b from base order by b desc offset 149 limit 1) as b90,
+    (select b from base order by b desc offset 649 limit 1) as b85
+),
 vv as (
-  select card_id,
-    greatest(0, least(100, round(
-      case when pos = 'GK'
-        then least(75,
-               (0.5*rel_pct*100 + 0.5*least(95, 100*(minutes::numeric/(minutes+380))))
-               * (1 - (1 - wt)*0.5))
+  select r.card_id,
+    ( case
+        when r.pos = 'GK' then
+          greatest(0, least(75, round(
+            (0.5*r.rel_pct*100 + 0.5*least(95, 100*(r.minutes::numeric/(r.minutes+380))))
+            * (1 - (1 - r.wt)*0.5)
+          )))
         else
-          ( 0.60 * greatest(
-                     ( 0.50*(0.60*pos_pct + 0.40*coalesce(abs_pct,0))
-                     + 0.50*(0.60*posvol_pct + 0.40*coalesce(absvol_pct,0)) ) * 100,
-                     coalesce(case when defvol_pct is not null
-                                then (0.55*defvol_pct + 0.45*coalesce(duelq_pct, defvol_pct))*93
-                                else null end, 0)
-                   )
-          + 0.40 * least(95, 100*(minutes::numeric/(minutes+380))) )
-          * (1 - (1 - wt)*0.5)
-      end
-    )))::integer as rt_new
-  from ranked
+          least(100, greatest(0,
+            case
+              when bs.b <= 80    then round(bs.b)
+              when bs.b <= a.b85 then floor(80 + (bs.b-80)*5.0/(a.b85-80))
+              when bs.b <= a.b90 then floor(85 + (bs.b-a.b85)*5.0/(a.b90-a.b85))
+              when bs.b <= a.b95 then floor(90 + (bs.b-a.b90)*5.0/(a.b95-a.b90))
+              else                    floor(95 + (bs.b-a.b95)*5.0/(a.btop-a.b95))
+            end
+          ))
+      end )::integer as rt_new
+  from ranked r
+  left join base bs on bs.card_id = r.card_id
+  cross join anchors a
 )
 SELECT psc.id AS card_id,
     p.id AS player_id,
@@ -100,7 +151,9 @@ SELECT psc.id AS card_id,
     psc.estimated_market_value,
     (psc.season_year::numeric - EXTRACT(year FROM p.date_of_birth))::integer AS season_age,
     pp."position" AS position_pool,
-    pp.shirt_number
+    pp.shirt_number,
+    lower(unaccent(p.name)) AS player_name_norm,
+    lower(unaccent(psc.team_name)) AS team_name_norm
    FROM player_season_cards psc
      LEFT JOIN players p ON psc.player_id = p.id
      LEFT JOIN leagues l ON psc.league_id = l.id
