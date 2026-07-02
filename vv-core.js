@@ -229,10 +229,10 @@
   // ── Band ladder (Contract §2), from rt ────────────────────────────────
   function bandFor(rt){
     if(rt==null) return null;
-    if(rt>=94) return 'Generational';
-    if(rt>=88) return 'Elite';
-    if(rt>=82) return 'World Class';
-    if(rt>=76) return 'Exceptional';
+    if(rt>=95) return 'Generational';
+    if(rt>=90) return 'Elite';
+    if(rt>=85) return 'World Class';
+    if(rt>=80) return 'Exceptional';
     if(rt>=68) return 'Excellent';
     if(rt>=58) return 'Very Good';
     if(rt>=45) return 'Good';
@@ -241,7 +241,7 @@
   }
 
   // ── Prestige badge (Contract §3), bound to BAND not rt ────────────────
-  // Generational badge = Elite band and above; Iconic badge = World Class band.
+  // Generational badge = Generational band only; Iconic badge = Elite band.
   function prestigeFor(band){
     if(!band) return null;
     if(band==='Generational') return 'Generational';
