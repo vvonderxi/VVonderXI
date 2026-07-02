@@ -177,24 +177,6 @@ async function cachePlayer(p) {
   }
 }
 
-// Format a cached player from the new schema
-function fmtCached(p, cards) {
-  const seasons = {};
-  (cards || []).forEach(r => {
-    if (r.season?.length === 4) {
-      seasons[r.season] = {
-        pos: r.position, lg: r.league_code,
-        g: r.goals, a: r.assists, rt: r.rt || 75,
-        age: r.age, club: r.team_name || ''
-      };
-    }
-  });
-  return {
-    name: p.name, api_id: p.api_player_id,
-    nationality: p.nationality, seasons, source: 'cache'
-  };
-}
-
 // Look a name up in Supabase (our cache: seeded curated players + anything BSD
 // has fetched before). Returns formatted players that actually have season data.
 async function searchSupabase(q) {
