@@ -198,20 +198,29 @@ function fmtCached(p, cards) {
 // Look a name up in Supabase (our cache: seeded curated players + anything BSD
 // has fetched before). Returns formatted players that actually have season data.
 async function searchSupabase(q) {
-  const { data, error } = await supabase
-    .from('players')
-    .select('*, player_season_cards(*)')
-    .ilike('name', `%${q}%`)
-    .limit(12);
+  const { data, error } = await supabase.rpc('search_players', { q });
   if (error || !data) return [];
 
-  // Format, keep only players with at least one season, dedupe by name
-  // (a player may exist twice: once seeded, once cached from BSD — keep the richer one)
+  // RPC returns [{ player: {...} }] ranked (exact/word/prefix/substring, then peak rt).
+  // Reshape each into the cache format, dedupe by name (a player may exist twice:
+  // seeded + BSD-cached — keep the richer one), keep only players with seasons.
   const byName = {};
-  for (const p of data) {
-    const f = fmtCached(p, p.player_season_cards);
-    const count = Object.keys(f.seasons || {}).length;
+  for (const row of data) {
+    const p = row.player;
+    if (!p) continue;
+    const seasons = {};
+    (p.season_cards || []).forEach(r => {
+      if (r.season?.length === 4) {
+        seasons[r.season] = {
+          pos: r.position, lg: r.league_code,
+          g: r.goals, a: r.assists, rt: r.rt || 75,
+          age: r.age, club: r.team_name || ''
+        };
+      }
+    });
+    const count = Object.keys(seasons).length;
     if (count === 0) continue;
+    const f = { name: p.name, api_id: p.api_player_id, nationality: p.nationality, seasons, source: 'cache' };
     const existing = byName[f.name];
     if (!existing || count > Object.keys(existing.seasons).length) byName[f.name] = f;
   }
