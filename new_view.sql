@@ -12,8 +12,8 @@
 --   4. League tilt UNCHANGED (pyramid already adequate given 1-3).
 --   5. Defensive lens UNCHANGED (the elite leak was attacking-side, not defensive).
 --   6. OPTION-2 DISPERSION CURVE: anchor-based piecewise map. Cuts are placed at
---      the top 12 / 150 / 650 outfield seasons (= rt 95 / 90 / 85), top stretched
---      to 95-100 so singular seasons separate upward.
+--      the top 12 / 150 / 650 outfield seasons (= rt 95 / 90 / 85), top COMPRESSED
+--      to 95-97 (no card scores 100 , the ceiling is a cluster of peers, not a point).
 --
 --  ANCHORS ARE LIVE, NOT HARDCODED (deliberate, per the "model is a belief" principle):
 --   b95/b90/b85 are computed from the CURRENT distribution every refresh, so the
@@ -99,7 +99,7 @@ vv as (
               when bs.b <= a.b85 then floor(80 + (bs.b-80)*5.0/(a.b85-80))
               when bs.b <= a.b90 then floor(85 + (bs.b-a.b85)*5.0/(a.b90-a.b85))
               when bs.b <= a.b95 then floor(90 + (bs.b-a.b90)*5.0/(a.b95-a.b90))
-              else                    floor(95 + (bs.b-a.b95)*5.0/(a.btop-a.b95))
+              else                    floor(95 + (bs.b-a.b95)*2.0/(a.btop-a.b95))
             end
           ))
       end )::integer as rt_new
@@ -152,8 +152,8 @@ SELECT psc.id AS card_id,
     (psc.season_year::numeric - EXTRACT(year FROM p.date_of_birth))::integer AS season_age,
     pp."position" AS position_pool,
     pp.shirt_number,
-    lower(unaccent(p.name)) AS player_name_norm,
-    lower(unaccent(psc.team_name)) AS team_name_norm
+    regexp_replace(lower(unaccent(COALESCE(p.full_name, p.name))), '[^a-z0-9 ]', '', 'g') AS player_name_norm,
+    regexp_replace(lower(unaccent(psc.team_name)), '[^a-z0-9 ]', '', 'g') AS team_name_norm
    FROM player_season_cards psc
      LEFT JOIN players p ON psc.player_id = p.id
      LEFT JOIN leagues l ON psc.league_id = l.id
