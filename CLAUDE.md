@@ -28,7 +28,7 @@
 - **Band architecture: `bandFor` in `vv-core.js` emits 9 internal bands. The PUBLIC ladder shows the top 4 named + 1 grouped.** Do NOT "collapse `bandFor` to 5" , the 9 are intentional (feed tags/colour). The 5-card public ladder lives in the DISPLAY layer.
 - **Public labels are RENAMES of engine strings, not the engine strings themselves:** engine `"Exceptional"` (rt>=76) displays PUBLICLY as **"Standout"**. The grouped lower field (75 and under) displays as **"Accomplished , the honest backbone of the professional game."** `bandFor`'s internal names are NOT the user-facing labels.
 - **Public 5-band ladder:** Generational / Elite / World Class / Standout / Accomplished. Definitions are authored copy (Henry Winter voice) , do not rewrite them casually.
-- **Generational = `bandFor(rt) >= 95`, pure rt function, no output gate in code.** Output rarity is guaranteed by the calibrated output-first scale (you cannot reach rt 95 without elite output; verified: top 12 seasons are all 40-50 goal campaigns). Two coupled places for band thresholds: `bandFor` in `vv-core.js` and the ladder display numbers in `vvindex.html`/`playbook.html`.
+- **Generational is OUTPUT-GATED, in `rowToCard`, NOT in `bandFor`:** `rt >= 94 AND (goals+assists) >= 35`, else demote to Elite. The `||0` guards are REQUIRED (Messi's null-assist 50-goal seasons must survive the gate). **Changing the band rt threshold WITHOUT changing the gate rt desyncs them and breaks Generational rarity.** This gate is why only ~15-18 cards are Generational.
 - **Two badges only.** Generational badge = Generational band ONLY. Iconic badge = Elite band. None below. `prestigeFor`: `Generational->Generational, Elite->Iconic, else null`. S-Tier is RETIRED everywhere , do not reintroduce it.
 - **ANCHOR GUARDRAIL:** bands and scores derive from LIVE top-N anchors (subqueries inside the view), never hardcoded numbers, never tuned until a famous name lands where wanted. **Famous names are a READ-OUT (validity check on the design), never a DIAL (a target).** Greatness shows as DENSITY in the elite band, never as any single card being #1.
 - Recalibrate the engine by EDITING THE VIEW, never by re-import. All `rt` is provisional until final calibration.
@@ -45,7 +45,7 @@
 - GK scoring is NOT broken: live GK max rt = 75, avg 58.1, ZERO keepers >= 88. The "backup above Messi" report was a STALE matview read; the calibration commit `19b9c22` + the search-RPC refresh already fixed it. Task 1 = verify-and-close, no view change.
 - Live distribution (matview): 95+ = 12, 90-94 = 138, 85-89 = 500, scored = 53,485, null = 2,969 (all sub-300-min), avg = 56.3, range 15-100.
 - Elite-assist check PASSED: all 6 seasons with assists>=20 sit at rt 85+. The `0.7` assist weight is fine , do not touch it.
-- `bandFor` thresholds re-cut to the recalibrated scale (95/90/85/80; lower four 68/58/45/30 unchanged). Coupled only to the ladder display numbers in `vvindex.html` / `playbook.html` , no `rowToCard` gate exists.
+- `bandFor` thresholds ARE still on the OLD scale (94/88/82/76/...) , these are the stale numbers Phase B re-cuts, in three coupled places: `bandFor`, the `rowToCard` Generational gate's `94`, and the display `xx+` numbers in `vvindex.html` / `playbook.html`.
 
 ## 7. CONFIRM LIVE BEFORE RELYING ON THESE (asserted by docs, not yet re-verified this session)
 - The exact `rowToCard` Generational-gate line and the "Exceptional -> Standout" / "Accomplished" display-mapping location. Read `vv-core.js` around lines 540-560 and the display layer live before editing either.
@@ -54,3 +54,21 @@
 ---
 
 **Update discipline:** when a decision is locked, deferred, or verified, add/edit ONE line here immediately. This file only works if it stays current , a stale locked-spec is the exact failure it exists to prevent.
+
+---
+
+## 8. DECISIONS LOCKED THIS SESSION (2 Jul 2026)
+
+- **Bands re-cut to 95/90/85/80** (Generational/Elite/World Class/Standout). Lower internal names unchanged. **NO output gate** (removed; the calibrated output-first scale guarantees rarity , you cannot reach rt 95 without elite output). Two coupled places only: `bandFor` in vv-core.js + ladder display numbers in vvindex.html/playbook.html. Shipped commit `18c6059`. (This SUPERSEDES the old §3 line that claimed a Generational output gate exists , it does not.)
+
+- **GK scoring is NOT broken** , verified live: GK max rt 75, avg 58.1, zero keepers >=88. The "backup above Messi" report was a STALE matview read, already fixed by calibration + refresh. No engine change. Do not reopen.
+
+- **Assist backfill (marquee NR seasons), DONE.** 22 pre-2015 seasons (rt>=90) that were scored NR/zero-assist now carry real FBref domestic-league assists (written by card_id, fill-only guard, matview refreshed). Movements honest: Messi 11/12 (50G/16A) top of scale, Ronaldo 10/11 (40G/9A) crossed into Generational on merit. Data-confidence lifted on these cards. Method proven + reusable.
+
+- **TOP-OF-SCALE CAP , BUILT + LIVE 2 Jul (commit `ebc8ce6`, staged for push):** 95-100 compressed to 95-97, else-line 5.0->2.0, verified Messi 11/12=97, pantheon clustered 95-97. Ibra wrinkle still separate/open.
+
+- **Ibra ordering wrinkle (LOGGED, separate engine task).** Ibra 15/16 (38G/13A, 47.1 goal-weighted output) sits at 94, below six lower-output 95s , tier-mapping isn't fully monotonic with output at the 90-96 seam. NOT a data gap (assists already recorded). Investigate in the same engine session as the cap.
+
+- **NR assist gap remaining:** 84 World Class (rt 85-89) seasons being sourced now (same method: FBref domestic-league only, goals-anchor check, fill-only guard, refresh). Thousands below rt 85 = scripted data-phase task, not manual.
+
+- **Shirt numbers:** 160 of 650 top-band cards (rt>=85) missing shirt_number. Public/low-risk data (prefer Wikipedia, openly-licensed). `pp.shirt_number` column exists, mostly empty. Fill top cards, script tail. Separate from licensing-gated FIFA/defensive-stats task.
