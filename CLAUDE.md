@@ -19,7 +19,7 @@ Why this file exists: this project has suffered from too many documents and no c
 ```
 === VVONDERXI LAUNCH PROGRESS ===
 Data quality   ████████████████░░  ~90%   Standout band cleared (250 classified, 249 written, dict 248; matview refresh pending); goals-provenance audit open; CM-tail <rt80 = dictionary job; ~18k coarse tail = v2
-Tags           ███░░░░░░░░░░░░░░░   ~16%   honours Tier-1 populated (314 rows) + team-season join validated; Tier-2 + tag validation + card/Compare wiring pending
+Tags           ███░░░░░░░░░░░░░░░   ~16%   honours built (629 rows / 7 types: champions, UCL, Ballon d'Or, golden boot, top_assists, POTS, World Cup); tag validation + card/Compare wiring pending
 Compare        █░░░░░░░░░░░░░░░░░   ~5%    hardcoded
 Card editorial ███░░░░░░░░░░░░░░░   ~15%   layout done, editorial half unwired
 Hygiene        ███░░░░░░░░░░░░░░░   ~20%   key rotation, meta, logo, QA outstanding
@@ -100,6 +100,40 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-04 | Card hero-name fix: particle-aware surnameOf (vv-core.js, commit eeaab53)
+- Vinícius Júnior card showed "Junior" -> traced to surnameOf() naive last-token render (data was already
+  correct: player_name = "Vinícius Júnior"; bug was front-end , hero shows last word, full name hidden).
+  SYSTEMATIC across multi-word names: De Bruyne->"Bruyne", van Dijk->"Dijk", de Ligt->"Ligt", de Jong->"Jong".
+- FIX (commit eeaab53): particle-aware surnameOf , keeps nobiliary particles (de/van/von/ter/da/dos/di/
+  del/al/el/mac/mc...) + multi-word (van der, de la, dos santos) with the surname; SURNAME_OVERRIDES
+  known-as map for exceptions (Vinícius Júnior->Vinícius). 14/14 tests pass. Front-end only, no
+  DB/rt/matview change; live on JS deploy. Backlog: extend overrides for suffix/nickname cases (Filho, Neto).
+
+### 2026-07-04 | Honours completed: top_assists + player_of_season + world_cup_winner (honours -> 629)
+- honours table now 629 rows / 7 honour_types: league_champion 143, ucl_winner 16, ballon_dor 14,
+  golden_boot 141 (Tier-1 CCC = 314) + top_assists 120 (computed) + player_of_season 102 (CCC) +
+  world_cup_winner 93 (CCC, player-level).
+- PLAYER_OF_SEASON (102): CCC "continuous best player per league" (Rule A), 7 leagues, 2010/11-2024/25.
+  Tiered resolver 101/102 -> api; 1 unresolved (Theo Janssen, genuinely not in players). Overrides:
+  Otávio->380 (Porto, not Bordeaux/Famalicao namesakes), Karim El Ahmadi->2713. honour_context =
+  award_name + proxy-era note (era-correct name matters: PFA vs official PL POTS). Kroos 2017/18 EXCLUDED
+  (Real Madrid, not a Bundesliga club). Validated: Messi LL POTS=7, Mbappé L1=5, Kroos absent.
+- WORLD_CUP_WINNER (93 of 95): PLAYER-LEVEL career accolade , attaches to the player, can surface as
+  context on ALL their season cards; does NOT feed rt, NOT a season tag. Written ONLY where the player
+  resolves to a CARD in our DB (2 skipped: Höwedes, Franco Armani , genuinely uncarded). season_year =
+  tournament year (2010/14/18/22); country in honour_context; NO league_code / NO team_name. Validated:
+  Messi 2022, Iniesta/Xavi 2010, France 2018 squad , all league/team NULL.
+- RESOLVER LESSON (patched via per-batch API_OVERRIDE): dual-surname / suffix DB name forms defeat
+  last-token surname bucketing , Spanish paternal+maternal ("Casillas Fernández", "Puyol i Saforcada",
+  "Hernández Creus"=Xavi) and Arabic ("El Ahmadi Al Aroos"). 8 WC names recovered this way (Casillas 367,
+  Puyol 116880, Xabi Alonso 90657, Valdés 90515, Arbeloa 90521, Marchena 116941, Xavi 42041, Javi
+  Martínez 514). Backlog: a token-anywhere matcher would generalize this.
+- top_assists (recap): computed from our data, >=9 credible cut, ties both-written, 41 thin-coverage
+  seasons excluded; numeric `assists` column added + 120 counts migrated into it.
+- honours is STANDALONE (no rt / no matview refresh). Pipelines preserved: scripts/enrichment/honours/
+  (honours Tier-1, top_assists x3, pots x3, wc x3 + input + prepared CSVs).
+- NEXT: wire honours into card/Compare (tag surfacing); honours Tier-2 (domestic cups excluded per SecC).
 
 ### 2026-07-04 | Honours Tier-1 WRITTEN (first tag family live)
 - honours table POPULATED Tier 1: 314 rows = 143 league_champion, 16 ucl_winner, 14 ballon_dor,

@@ -49,3 +49,23 @@ golden_boot. Columns: `honour_type, season, league, team, player_name, goals, co
 - 120 rows written across 103 league-seasons (14 with ties). Because it's computed-from-our-data, it
   honestly reflects exactly where our assist coverage is real.
 - The `assists` numeric column was added to `honours` for this (golden_boot uses `goals`).
+
+## player_of_season (CCC)
+`pots_dryrun.js` (resolve + validate) -> `pots_write.js` (guarded insert). Input `pots_final.csv` (102 rows,
+7 leagues 2010/11-2024/25, Rule A "continuous best player per league"; Kroos 2017/18 excluded , Real
+Madrid, not a Bundesliga club). Tiered resolver, disambiguated on league+season card existence (no team
+column). `honour_context` = award_name + era note (era-correct name matters: PFA vs PL POTS). 101/102
+resolved; 1 unresolved (Theo Janssen, not in players). Overrides: Otávio->380, Karim El Ahmadi->2713.
+
+## world_cup_winner (CCC, player-level accolade)
+`wc_dryrun.js` -> `wc_write.js`. Input `world_cup_winners.csv` (95 players, 4 squads). PLAYER-LEVEL career
+accolade , attaches to the player, surfaces as context on ALL their season cards; does NOT feed rt and is
+NOT a season tag. `season_year` = tournament year (2010/14/18/22); `honour_context` = country; NO
+league_code / NO team_name. WRITE ONLY where the player resolves to a CARD in our DB (a squad member with
+no card is skipped). 93/95 written; 2 genuinely uncarded (Höwedes, Franco Armani).
+
+## Resolver lesson (applies to all batches)
+Dual-surname / suffix DB name forms defeat last-token surname bucketing: Spanish paternal+maternal
+("Casillas Fernández", "Puyol i Saforcada", "Hernández Creus"=Xavi) and Arabic ("El Ahmadi Al Aroos").
+Patched per-batch via hand-verified `API_OVERRIDE` maps (see each `*_dryrun.js`). A token-anywhere match
+would generalize this , backlog.
