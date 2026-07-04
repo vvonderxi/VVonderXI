@@ -18,7 +18,7 @@ Why this file exists: this project has suffered from too many documents and no c
 
 ```
 === VVONDERXI LAUNCH PROGRESS ===
-Data quality   ████████████████░░  ~90%   top band nearly done; ~18k coarse tail = v2
+Data quality   ████████████████░░  ~90%   top+Standout positions clean (169 fixed, matview refresh pending); CM-tail <rt80 = known_players.csv job; ~18k coarse tail = v2
 Tags           ██░░░░░░░░░░░░░░░░   ~10%   system exists, unvalidated; honours pending
 Compare        █░░░░░░░░░░░░░░░░░   ~5%    hardcoded
 Card editorial ███░░░░░░░░░░░░░░░   ~15%   layout done, editorial half unwired
@@ -83,7 +83,7 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 
 ## D. CURRENT STATE / ACTIVE TASK
 
-**Active:** Top-150 position+shirt+assist verification sweep (CCC/Chrome). Rows 1-52 (famous players) skipped as pre-verified; rows 53-150 being re-verified in ~20-row batches (data was lost to summarization once , batches now output immediately). Also completes the 81 NR-assist top-band seasons (subset of 150). After all 150 collected -> one upsert -> refresh -> top-band distribution re-check (assists move rt; 97-cap self-corrects on anchors).
+**Active:** rt80-84 Standout position standardization DONE (169 written); 80 REVIEW pending CCC; matview refresh pending (paste `REFRESH MATERIALIZED VIEW player_card_mv;` in Supabase SQL editor). known_players.csv dictionary live (169 entries). Prior top-150 shirt+assist verification sweep still open as a separate strand.
 
 **Then:** honours -> TAG VALIDATION -> Compare -> card editorial -> hygiene -> merge.
 
@@ -92,7 +92,7 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## E. BACKLOG / HORIZON (not launch-blockers unless marked)
 
 - **LAUNCH-BLOCKERS:** tag validation; Compare build; card.html editorial (Proof/Wonder Tags/Notes); API-Football key rotation (exposed); og/meta + social image; contact-form endpoint (errors); OAuth published; 390px QA; merge to vvonderxi_BIGGER.
-- **Quality (not blockers):** ~18k coarse-position tail (v2 script); shirt/position tail below rt85; Ibra 15/16 ordering wrinkle (47.1 output at 94, tier-map not monotonic at top seam , engine session); rankings A-Z sort bug; result-cap raise (250-500, "showing X of Y"); Data Confidence expandable panel; season-switcher; card hero text overflow.
+- **Quality (not blockers):** DB-wide "CM" bug tail below rt80 , fix at scale via known_players.csv dictionary (built this session, no CCC needed for known players); ~18k coarse-position tail (v2 script); shirt/position tail below rt85; Ibra 15/16 ordering wrinkle (47.1 output at 94, tier-map not monotonic at top seam , engine session); rankings A-Z sort bug; result-cap raise (250-500, "showing X of Y"); Data Confidence expandable panel; season-switcher; card hero text overflow.
 - **Post-launch:** accounts/Locker (waitlist now); language toggle EN/NL/FR.
 
 ---
@@ -100,6 +100,36 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-04 | Position standardization: rt80-84 "Standout" band + DB-direct pipeline
+- BUILT a DB-DIRECT read/write pipeline from Terminal A (.env service key + supabase-js) , FIRST time
+  writing to the DB from here; previously all SQL was chat-paste round-trips. Three reusable scripts
+  (scratchpad): pull_8084.js (read player_card_view paginated, 41-club + coarse/CM filter),
+  classify.js (8-bucket judgment map + regista/false-9 rules + triage + self-check), write_positions.js
+  (guarded INSERT/UPDATE + spot-check). Reusable for the DB-wide cleanup.
+- PULLED 250 rt80-84 cards at 41 big clubs carrying coarse/CM-bug positions. Classified ALL into the 8
+  buckets: 169 HIGH (written), 80 REVIEW (pending CCC), 1 HELD (108547 Onyekuru/Arsenal = wrong-TEAM
+  data error, needs a data fix not a position).
+- RULES applied both sets: deep-lying regista in front of defense -> CDM (Çalhanoğlu@Inter x3);
+  false-9 -> ST (Firmino, Totti-as-false-9); box-to-box -> CM. Kroos/Parejo left CM (deep playmaker but
+  NOT the single pivot). API-Football "CM" bug corrected (De Bruyne->CAM, Salah->Winger, etc.).
+- WROTE player_positions (guarded, position-only, no assists, no rt impact): 87 INSERT (86 pre-2016 +
+  Mbeumo 25/26; ON CONFLICT DO NOTHING; position + shirt NULL) + 67 UPDATE (WHERE position='CM'
+  belt-and-braces; 15 CM->CM no-ops skipped). Spot-check confirmed De Bruyne/Salah/Firmino/
+  Çalhanoğlu-Inter/Álvarez all resolve the correct position_pool.
+- MATVIEW REFRESH PENDING: supabase-js has no refresh RPC -> Lucas must paste
+  `REFRESH MATERIALIZED VIEW player_card_mv;` in Supabase SQL editor. Source view already correct;
+  site stale until refreshed.
+- ASSET STARTED: known_players.csv , the REUSABLE dictionary (169 entries: api_player_id, season_year,
+  position, source=auto+rule, classified_date). Keyed by (api_player_id, season_year) => league-agnostic.
+- KEY INSIGHT: the "CM" bug tail exists DB-WIDE BELOW rt80 (verified live: De Bruyne 24/25, Çalhanoğlu
+  Inter 22/23 & 24/25, Milan 20/21 all still CM , out of this pull's rt80 scope). known_players.csv is
+  the mechanism to fix the CM-bug tail at scale DB-wide (dictionary-driven, no CCC needed for known players).
+- CCC PROTOCOL (the 80 REVIEW): positions_REVIEW.csv = obscure players + true toss-ups (CM/CAM/CDM,
+  Winger/ST). Verify obscure/toss-up cards on Transfermarkt via CCC in chunks of 25; then guarded write
+  + append to known_players.csv.
+- STATUS: Standout-band big-club positions clean once matview refreshed. NEXT: refresh -> (optional)
+  clear 80 REVIEW via CCC -> honours -> tags. Pipeline + dictionary now exist for DB-wide CM-tail fix.
 
 ### 2026-07-03/04 | Engine cleanup + data enrichment (this session)
 - Bands re-cut to 95/90/85/80 (commit 18c6059). GK "blocker" closed (stale read, not a bug). Elite-assist check passed (0.7 weight kept).
