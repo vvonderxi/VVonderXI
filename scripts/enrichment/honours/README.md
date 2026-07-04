@@ -35,3 +35,17 @@ golden_boot. Columns: `honour_type, season, league, team, player_name, goals, co
 
 ## Result of this run
 314 rows written: 143 league_champion, 16 ucl_winner, 14 ballon_dor, 141 golden_boot.
+
+## top_assists (computed from our own data)
+`compute_top_assists.js` (read-only validation + coverage report) -> `top_assists_write.js` (write) ->
+`migrate_top_assists.js` (move counts from honour_context into the numeric `assists` column).
+- Per league-season, aggregate assists per player (sum across cards, so mid-season transfers aren't
+  split; NR treated as 0), take the max. Write `honour_type='top_assists', source='computed'`.
+- CREDIBLE CUT: only write league-seasons with max >= 9. A sub-9 "leader" means sparse coverage, not a
+  real honour , 41 thin-coverage league-seasons (pre-2015 + Belgian/Turkish/early Portugal-Eredivisie)
+  are EXCLUDED. Ties at the max are all written (shared honour), like golden_boot.
+- Validation gate: computed max-goals cross-checked vs the written golden_boot rows (120/127 api match);
+  known assist leaders confirmed (De Bruyne PL 19/20 = 20, Messi LL 19/20 = 21).
+- 120 rows written across 103 league-seasons (14 with ties). Because it's computed-from-our-data, it
+  honestly reflects exactly where our assist coverage is real.
+- The `assists` numeric column was added to `honours` for this (golden_boot uses `goals`).
