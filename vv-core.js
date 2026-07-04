@@ -156,11 +156,45 @@
     return s.length===4 ? s.slice(0,2)+'/'+s.slice(2,4) : s;
   }
 
-  // surname = last token of the display name (card shows surname big, full below)
+  // surnameOf , particle-aware + known-as overrides
+  const SURNAME_OVERRIDES = {
+    'Vinícius Júnior': 'Vinícius',
+  };
+  const PARTICLES = new Set([
+    'de','del','della','dello','degli','di','da','dos','das','do',
+    'van','von','der','den','ter','ten','te',
+    'le','la','du',
+    'bin','ibn','al','el',
+    'mac','mc',"o'",'san','santa','st'
+  ]);
+  const MULTI_PARTICLES = [
+    ['van','der'], ['van','den'], ['van','de'],
+    ['de','la'], ['de','los'], ['de','las'],
+    ['dos','santos']
+  ];
   function surnameOf(name){
     if(!name) return '';
-    const parts=String(name).trim().split(/\s+/);
-    return parts[parts.length-1];
+    const raw = String(name).trim();
+    if(SURNAME_OVERRIDES[raw]) return SURNAME_OVERRIDES[raw];
+    const parts = raw.split(/\s+/);
+    if(parts.length === 1) return parts[0];
+    const lower = parts.map(p => p.toLowerCase());
+    const lastIdx = parts.length - 1;
+    for(const seq of MULTI_PARTICLES){
+      const start = lastIdx - seq.length;
+      if(start >= 1){
+        let match = true;
+        for(let i=0;i<seq.length;i++){
+          if(lower[start+i] !== seq[i]){ match=false; break; }
+        }
+        if(match) return parts.slice(start).join(' ');
+      }
+    }
+    const prevIdx = lastIdx - 1;
+    if(prevIdx >= 1 && PARTICLES.has(lower[prevIdx])){
+      return parts.slice(prevIdx).join(' ');
+    }
+    return parts[lastIdx];
   }
 
   // ── Nationality NAME -> flag emoji (Contract §1) ──────────────────────
