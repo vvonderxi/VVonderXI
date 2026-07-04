@@ -731,7 +731,9 @@ body.light .pkmsub{color:#b0a899}
     var sb=vvClient(); if(!sb) return null;
     var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
     if(res.error || !res.data){ console.error('compare fetchCard failed:', res.error && res.error.message); return null; }
-    return rowToCard(res.data);
+    var card=rowToCard(res.data);
+    card.honours = await fetchHonours(res.data);   // slot honours (fail-soft; Compare render consumes later)
+    return card;
   }
   async function loadSlotFromUrl(){
     var ids; try{ ids=new URLSearchParams(window.location.search); }catch(e){ return; }

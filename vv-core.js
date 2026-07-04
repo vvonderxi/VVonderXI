@@ -658,9 +658,84 @@
     document.addEventListener('focusin', guard, true);
   })();
 
+  // ── Honours fetch (folded from vv-honours.js) , reuses vvClient(); fail-soft ──
+  // Honours live in the standalone `honours` table (NOT the matview). Splits a
+  // player's honours into SEASON (match card season_year + league_code) and CAREER
+  // (world_cup_winner, shows on every card). Attach: D.honours = await fetchHonours(res.data).
+  const HONOUR_META = {
+    ballon_dor:        { group:'Individual', label:"Ballon d'Or",         tier:1 },
+    world_cup_winner:  { group:'Career',     label:'World Cup Winner',     tier:2 },
+    ucl_winner:        { group:'Team',       label:'UCL Winner',           tier:2 },
+    league_champion:   { group:'Team',       label:'League Champion',      tier:3 },
+    player_of_season:  { group:'Individual', label:'Player of the Season', tier:3 },
+    golden_boot:       { group:'Individual', label:'Golden Boot',          tier:4 },
+    top_assists:       { group:'Individual', label:'Top Assists',          tier:4 },
+  };
+  const HONOUR_GROUP_ORDER = ['Team','Individual','Career'];
+  const HONOUR_ONELINER = {
+    ballon_dor:       'The Ballon d’Or , football’s highest individual honour, the best player in the world that year.',
+    world_cup_winner: 'A World Cup winner , a member of the squad that lifted the game’s greatest prize.',
+    ucl_winner:       'Champions League winner , conquered Europe’s elite competition.',
+    league_champion:  'League Champion , finished top of the division across the season.',
+    player_of_season: 'The season’s outstanding player, as judged by the league’s official award.',
+    golden_boot:      'The division’s leading scorer across the season.',
+    top_assists:      'The division’s leading provider , most assists across the season.',
+  };
+  async function fetchHonours(row){
+    const empty = { season: [], career: [], groups: {}, count: 0, has: false };
+    if(!row || row.api_player_id == null) return empty;
+    const sb = (typeof vvClient === 'function') ? vvClient() : null;
+    if(!sb) return empty;
+    const seasonYear = row.season_year != null ? row.season_year
+                     : (row.season != null ? parseInt(String(row.season).slice(0,4), 10) : null);
+    const leagueCode = row.league_code || null;
+    let res;
+    try {
+      res = await sb.from('honours')
+        .select('honour_type,season_year,league_code,honour_context,goals,assists')
+        .eq('api_player_id', row.api_player_id);
+    } catch(e){ return empty; }
+    if(res.error || !res.data) return empty;
+    const season = [];   // honours for THIS card's season+league
+    const career = [];   // world_cup_winner etc. (player-level)
+    for(const h of res.data){
+      const meta = HONOUR_META[h.honour_type];
+      if(!meta) continue; // unknown type , skip (mirror rule: only what we define)
+      const item = {
+        type: h.honour_type, label: meta.label, group: meta.group, tier: meta.tier,
+        oneliner: HONOUR_ONELINER[h.honour_type] || meta.label,
+        context: h.honour_context || null,
+        goals: h.goals != null ? h.goals : null,
+        assists: h.assists != null ? h.assists : null,
+        season_year: h.season_year != null ? h.season_year : null,
+        league_code: h.league_code || null,
+      };
+      if(h.honour_type === 'world_cup_winner'){
+        career.push(item);
+      } else if(seasonYear != null && h.season_year === seasonYear
+                 && (!h.league_code || !leagueCode || h.league_code === leagueCode)){
+        season.push(item);
+      }
+    }
+    season.sort((a,b)=> a.tier - b.tier);   // rarer first
+    const groups = {};
+    const all = season.concat(career);
+    for(const g of HONOUR_GROUP_ORDER){
+      const items = all.filter(x=>x.group===g);
+      if(items.length) groups[g] = items;
+    }
+    return {
+      season, career, groups,
+      count: season.length,                          // count badge = season honours only
+      has: (season.length + career.length) > 0,
+      topHonour: season.length ? season[0] : null,   // rarest season honour (slot priority)
+    };
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
-                bandFor, prestigeFor, radarFor, confidenceFor, confidenceFields, vvClient };
+                bandFor, prestigeFor, radarFor, confidenceFor, confidenceFields, vvClient,
+                fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

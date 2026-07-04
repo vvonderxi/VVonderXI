@@ -780,6 +780,8 @@
     var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
     if(res.error || !res.data){ console.error('card load failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
+    const honours = await fetchHonours(res.data);   // honours fetch (fail-soft: empty shape on failure)
+    D.honours = honours;                            // populated before render; render layer consumes next
     renderHero();                            // hero + radar from the live card
     renderPanels(D);
     loadSeasons(res.data.api_player_id, res.data.card_id);
@@ -823,6 +825,8 @@
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
     if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
+    const honours = await fetchHonours(res.data);   // THIS season's own honours (fail-soft)
+    D.honours = honours;
     renderHero();
     renderPanels(D);
     SEASON_CARDID=cardId;
