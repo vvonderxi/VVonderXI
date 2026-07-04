@@ -18,8 +18,8 @@ Why this file exists: this project has suffered from too many documents and no c
 
 ```
 === VVONDERXI LAUNCH PROGRESS ===
-Data quality   ████████████████░░  ~90%   top+Standout positions clean (169 fixed, matview refresh pending); CM-tail <rt80 = known_players.csv job; ~18k coarse tail = v2
-Tags           ██░░░░░░░░░░░░░░░░   ~10%   system exists, unvalidated; honours pending
+Data quality   ████████████████░░  ~90%   Standout band cleared (250 classified, 249 written, dict 248; matview refresh pending); goals-provenance audit open; CM-tail <rt80 = dictionary job; ~18k coarse tail = v2
+Tags           ███░░░░░░░░░░░░░░░   ~16%   honours Tier-1 populated (314 rows) + team-season join validated; Tier-2 + tag validation + card/Compare wiring pending
 Compare        █░░░░░░░░░░░░░░░░░   ~5%    hardcoded
 Card editorial ███░░░░░░░░░░░░░░░   ~15%   layout done, editorial half unwired
 Hygiene        ███░░░░░░░░░░░░░░░   ~20%   key rotation, meta, logo, QA outstanding
@@ -83,16 +83,16 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 
 ## D. CURRENT STATE / ACTIVE TASK
 
-**Active:** rt80-84 Standout position standardization DONE (169 written); 80 REVIEW pending CCC; matview refresh pending (paste `REFRESH MATERIALIZED VIEW player_card_mv;` in Supabase SQL editor). known_players.csv dictionary live (169 entries). Prior top-150 shirt+assist verification sweep still open as a separate strand.
+**Active:** Standout (rt80-84) sweep DONE , 250 classified, 249 positions + 7 assists written, REVIEW queue cleared, known_players.csv dictionary at 248. Honours Tier-1 WRITTEN (314 rows, first tag family live). MATVIEW REFRESH PENDING for the position/assist writes (paste `REFRESH MATERIALIZED VIEW player_card_mv;` in Supabase SQL editor; honours needs no refresh). Open threads: goals-provenance audit (Euro goals may inflate rt), data-fix team_name (181398 Aydin, 108547 Onyekuru), prior top-150 shirt+assist sweep.
 
-**Then:** honours -> TAG VALIDATION -> Compare -> card editorial -> hygiene -> merge.
+**Then:** honours Tier-2 -> TAG VALIDATION + card/Compare wiring -> Compare -> card editorial -> hygiene -> merge.
 
 ---
 
 ## E. BACKLOG / HORIZON (not launch-blockers unless marked)
 
 - **LAUNCH-BLOCKERS:** tag validation; Compare build; card.html editorial (Proof/Wonder Tags/Notes); API-Football key rotation (exposed); og/meta + social image; contact-form endpoint (errors); OAuth published; 390px QA; merge to vvonderxi_BIGGER.
-- **Quality (not blockers):** DB-wide "CM" bug tail below rt80 , fix at scale via known_players.csv dictionary (built this session, no CCC needed for known players); ~18k coarse-position tail (v2 script); shirt/position tail below rt85; Ibra 15/16 ordering wrinkle (47.1 output at 94, tier-map not monotonic at top seam , engine session); rankings A-Z sort bug; result-cap raise (250-500, "showing X of Y"); Data Confidence expandable panel; season-switcher; card hero text overflow.
+- **Quality (not blockers):** GOALS-PROVENANCE audit , some cards' `goals` include European-competition goals but the engine is domestic-only (confirmed Vanaken x5 + Mboyo, figures match all-comps totals); could inflate rt for Euro-competition clubs; audit vs domestic-only source. DATA-FIX team_name: 181398 Aydin (Alanyaspor not Fenerbahce 23/24), 108547 Onyekuru (not Arsenal, HELD). DB-wide "CM" bug tail below rt80 , fix at scale via known_players.csv dictionary (built this session, no CCC needed for known players); ~18k coarse-position tail (v2 script); shirt/position tail below rt85; Ibra 15/16 ordering wrinkle (47.1 output at 94, tier-map not monotonic at top seam , engine session); rankings A-Z sort bug; result-cap raise (250-500, "showing X of Y"); Data Confidence expandable panel; season-switcher; card hero text overflow.
 - **Post-launch:** accounts/Locker (waitlist now); language toggle EN/NL/FR.
 
 ---
@@ -100,6 +100,48 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-04 | Honours Tier-1 WRITTEN (first tag family live)
+- honours table POPULATED Tier 1: 314 rows = 143 league_champion, 16 ucl_winner, 14 ballon_dor,
+  141 golden_boot (source='wikipedia_ccc'). Input 304 CCC/Wikipedia rows -> 314 after tie-splits
+  ("A / B" player -> separate honour rows). goals column carries golden_boot tallies.
+- TEAM-SEASON JOIN VALIDATED: Messi 11/12 = Ballon d'Or + Golden Boot (api 154) but NOT League Champion
+  (LL 11/12 champion correctly = Real Madrid). Barcelona 10/11 = league_champion present. Champions are
+  keyed to the winning TEAM, not a star player's club , the join is precise.
+- RESOLVER (honours_dryrun.js): tiered player match exact-norm -> token-subset (surname/first buckets)
+  -> surname+initial; norm folds ss/o/l/d specials (ß/ø/ł/đ); team+season cross-check disambiguates
+  same-name players + catches collisions. 3 hand overrides: Rodri->44 (Man City, not 3 other Rodris),
+  Salah->306 (not Ibrahim Salah 375000), Mane->304 (not Getafe's "Mané" 116847). Team map extended:
+  Roma->AS Roma, Istanbul Basaksehir->Başakşehir, KRC Genk->Genk.
+- Union SG (BPL champ 24/25) written WITHOUT card-link (not in dataset) , factual honour. 4 rows SKIPPED
+  (COVID / not-awarded: no team AND no player). 5 golden-boot scorers resolved by unique name but not
+  card-verifiable (club untracked): Cardozo 70475 (confirmed correct), Undav, Lepaul, Bertaccini,
+  Harbaoui (team string "Anderlecht & Zulte Waregem" left as-is).
+- honours is a STANDALONE tag table , does NOT feed player_card_view/rt, so NO matview refresh needed
+  after an honours write.
+- Pipeline preserved: scripts/enrichment/honours/ (commit 815bcc1), reusable for Tier 2 (domestic cups
+  excluded per SecC; player-level accolades = career context, not season tags).
+- STATUS: first tag family live + validated. NEXT: honours Tier 2 OR tag VALIDATION -> wire into card/Compare.
+
+### 2026-07-04 | REVIEW queue cleared (batch-2+3) + data-fix / goals-provenance flags
+- REVIEW QUEUE CLEARED: all 80 rt80-84 big-club REVIEW cards classified + written (batch-2 = 46
+  from-knowledge; batch-3 = 34 CCC-verified). With the 169 HIGH, full 250-card Standout sweep done
+  (1 HELD: Onyekuru).
+- POSITION WRITES total across 3 batches: 249 -> player_positions (guarded: INSERT if no row / UPDATE
+  only where position IN coarse{DEF,MID,FWD,GK,UNK}+CM; 0 curated buckets overwritten).
+- ASSISTS: batch-3 filled 7 NR assists (fill-only, player_season_cards.assists; card_id = psc.id; the
+  view recomputes rt from goals+assists so those 7 rt values move UP on refresh). 6 goals-mismatch cards
+  got position only.
+- DICTIONARY: known_players.csv = 248 rows (169 auto+rule + 45 knowledge + 34 ccc), keyed
+  (api_player_id, season_year). Reusable for the DB-wide CM-tail fix.
+- MATVIEW REFRESH PENDING (one paste covers all position+assist writes):
+  `REFRESH MATERIALIZED VIEW player_card_mv;` in Supabase SQL editor. supabase-js has no refresh RPC.
+- DATA-FIX LIST (team_name errors; positions/assists themselves correct): Aydin 181398 (Alanyaspor not
+  Fenerbahce 23/24 -> should fall out of the big-club filter); Onyekuru 108547 (not Arsenal; HELD).
+- GOALS-PROVENANCE ISSUE (AUDIT): some cards' goals include EUROPEAN-competition goals but the engine is
+  DOMESTIC-only. Confirmed Vanaken x5 + Mboyo (figures match all-comps totals). Risk: inflates
+  output->rt for Euro-competition clubs. Audit goals vs domestic-only source.
+- Scripts preserved: scripts/enrichment/ (commit 7fb37fe).
 
 ### 2026-07-04 | Position standardization: rt80-84 "Standout" band + DB-direct pipeline
 - BUILT a DB-DIRECT read/write pipeline from Terminal A (.env service key + supabase-js) , FIRST time
