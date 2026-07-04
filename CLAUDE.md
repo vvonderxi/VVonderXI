@@ -18,9 +18,9 @@ Why this file exists: this project has suffered from too many documents and no c
 
 ```
 === VVONDERXI LAUNCH PROGRESS ===
-Data quality   ████████████████░░  ~90%   Standout band cleared (250 classified, 249 written, dict 248; matview refresh pending); goals-provenance audit open; CM-tail <rt80 = dictionary job; ~18k coarse tail = v2
-Tags           ███░░░░░░░░░░░░░░░   ~16%   honours built (629 rows / 7 types: champions, UCL, Ballon d'Or, golden boot, top_assists, POTS, World Cup); tag validation + card/Compare wiring pending
-Compare        █░░░░░░░░░░░░░░░░░   ~5%    hardcoded
+Data quality   █████████████████░  ~94%   Standout cleared + honours 629 complete/verified; matview refresh pending; goals-provenance audit open; ~18k coarse tail = v2
+Tags           █████░░░░░░░░░░░░░   ~30%   honours 629 WIRED to cards (face pills + gold glance chips + Wonder Tags; Winter-voice + prestige-ranked); Compare Accolades + profile-tag validation pending
+Compare        █░░░░░░░░░░░░░░░░░   ~8%    honours fetched into slots (card.honours); Accolades render + compare engine still to build
 Card editorial ███░░░░░░░░░░░░░░░   ~15%   layout done, editorial half unwired
 Hygiene        ███░░░░░░░░░░░░░░░   ~20%   key rotation, meta, logo, QA outstanding
 Merge          ░░░░░░░░░░░░░░░░░░    0%    redesign-compare -> vvonderxi_BIGGER
@@ -100,6 +100,33 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-04 | Honours -> cards: fetch + render layer + polish (Winter voice, prestige rank, card-face fill) + WNG
+- HONOURS NOW SURFACE ON CARDS end-to-end. fetchHonours() folded into vv-core.js (reuses vvClient,
+  fail-soft empty shape); wired into card.html loadCard + switchSeason and compare.html fetchCard, so
+  D.honours carries each season's OWN honours (season = match season_year+league_code; world_cup_winner
+  = career, shows on every card). Commit 199fe5e.
+- RENDER LAYER (commit 5d8447d): renderHonourChips / renderHonourRows / renderTopHonourPill folded into
+  vv-core.js, reusing existing markup , #glChips gold chips (.chip.gold, hover-tip free via
+  .chip[data-tip]) + #wonderTags tap-expandable .tagrow.honour (mobile one-liner + goal/assist tally in
+  .tmore). Honours PREPEND above prestige+profile in both.
+- POLISH (this commit): (1) honour one-liners rewritten to WINTER VOICE (sharp, authoritative, no dashes);
+  (2) prestige RANKING re-cut , HONOUR_META.tier = ballon_dor 1 > world_cup 2 > ucl 3 > league 4 > POTS 5
+  > golden_boot 6 > top_assists 7; season+career now COMBINED + TIER-SORTED (fetchHonours.all, topHonour =
+  lowest tier), driving glance-chip order AND card-face pick; (3) CARD-FACE PRIORITY-FILL in buildCard , a
+  LOOP over the top-N honours: fixed budget 3 slots if prestige / 4 if not, filled Prestige -> Honours(by
+  tier) -> Profile(by PRIO); glance strip stays UNCAPPED. Gold .chtagcell.gold CSS added to card+compare.
+  Verified: Messi 11/12 (rt 97, Generational) = prestige + Ballon d'Or + World Cup on face; 9/9 slot-math
+  examples; Lautaro 23/24 (rt 89, no prestige) = 3 honours + 1 profile.
+- TOP-SLOT position = ADDITIVE (Option A): position stays the identity marker; face honour pills are the new tier.
+- WNG DISPLAY (commit 11f2da6): position bucket "Winger" RENDERS as "WNG" (render-only, like the band
+  renames) across card/rankings/compare via vv-core posDisplay() + POS_DISPLAY. DATA bucket unchanged
+  (tags/eligibility/filters/AI-prompt preserved). myclub.html left as-is (no vv-core; own buildCard copy).
+- STATE: honours fully wired card-side (face pills + glance chips + Wonder Tags). Compare Accolades
+  (.vtchips) still the hardcoded Henry/Haaland demo -> next: consume the honour renderers there. Honours
+  standalone (no rt / no matview refresh).
+- NOTE (carry-over): the position/assist writes STILL need `REFRESH MATERIALIZED VIEW player_card_mv;`.
+- NEXT: wire Compare Accolades to real honours; then honours Tier-2 / profile-tag validation.
 
 ### 2026-07-04 | Card hero-name fix: particle-aware surnameOf (vv-core.js, commit eeaab53)
 - Vinícius Júnior card showed "Junior" -> traced to surnameOf() naive last-token render (data was already

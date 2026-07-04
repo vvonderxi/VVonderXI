@@ -98,19 +98,28 @@
     //    -> invisible placeholder (reserves row height). tags absent -> legacy
     //    d.tag string fallback, else placeholder. ──
     const tagPlaceholder = `<div class="chtag one" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`;
-    let tag;
-    const tagMax = (d.prestige==='Generational' || d.prestige==='Iconic') ? 2 : 4;
-    if (Array.isArray(d.tags)) {
-      if (d.tags.length) {
-        const shown = Math.min(d.tags.length, tagMax);
-        const pills = renderTagPills(d.tags, { baseClass:'chtagcell', max:tagMax, el:'span', innerWrap:false });
-        tag = `<div class="chtag${shown===1?' one':''}">${pills}</div>`;
-      } else {
-        tag = tagPlaceholder;
-      }
-    } else {
-      tag = d.tag ? `<div class="chtag one"><span class="chtagcell">${d.tag}</span></div>` : tagPlaceholder;
+    // ── CHANGE 3: card-face priority-fill , FIXED total-slot budget filled in strict priority:
+    //    PRESTIGE (slot 1, if any) -> HONOURS (by tier) -> PROFILE (by PRIO).
+    //    total = 3 if prestige present, else 4. GLANCE STRIP is uncapped (all honours); the FACE caps.
+    const hasPrestige = (d.prestige==='Generational' || d.prestige==='Iconic');
+    const remaining = hasPrestige ? 2 : 4;   // slots after prestige (prestige takes 1 of the 3-slot budget)
+    const honList = (d.honours && Array.isArray(d.honours.all)) ? d.honours.all : [];
+    const honShown = honList.slice(0, remaining);   // top-ranked by tier (all is tier-sorted)
+    const honPills = honShown.map(function(h){
+      return '<span class="chtagcell gold" data-tag="'+escAttr(h.type)+'" data-tip="'+escAttr(h.oneliner||h.label)+'">'+(HONOUR_CHIP_LABEL[h.type]||h.label)+'</span>';
+    }).join('');
+    const profileMax = remaining - honShown.length;   // profile fills whatever honours left open
+    let profilePills = '', profileShown = 0;
+    if (Array.isArray(d.tags) && d.tags.length && profileMax > 0) {
+      profilePills = renderTagPills(d.tags, { baseClass:'chtagcell', max:profileMax, el:'span', innerWrap:false });
+      profileShown = Math.min(d.tags.length, profileMax);
+    } else if (!Array.isArray(d.tags) && d.tag && profileMax > 0) {
+      profilePills = `<span class="chtagcell">${d.tag}</span>`; profileShown = 1;   // legacy string fallback
     }
+    const shownCount = honShown.length + profileShown;
+    const tag = shownCount
+      ? `<div class="chtag${shownCount===1?' one':''}">${honPills}${profilePills}</div>`
+      : tagPlaceholder;
     // ── Prestige tier pill (Contract §3) , the LOUD tag, leads the profile pills.
     //    Built via the shared renderPrestige helper; .chtag row stacks above ${tag}. ──
     const prestige = renderPrestige(d.prestige, {baseClass:'chtag'});
@@ -671,21 +680,21 @@
   const HONOUR_META = {
     ballon_dor:        { group:'Individual', label:"Ballon d'Or",         tier:1 },
     world_cup_winner:  { group:'Career',     label:'World Cup Winner',     tier:2 },
-    ucl_winner:        { group:'Team',       label:'UCL Winner',           tier:2 },
-    league_champion:   { group:'Team',       label:'League Champion',      tier:3 },
-    player_of_season:  { group:'Individual', label:'Player of the Season', tier:3 },
-    golden_boot:       { group:'Individual', label:'Golden Boot',          tier:4 },
-    top_assists:       { group:'Individual', label:'Top Assists',          tier:4 },
+    ucl_winner:        { group:'Team',       label:'UCL Winner',           tier:3 },
+    league_champion:   { group:'Team',       label:'League Champion',      tier:4 },
+    player_of_season:  { group:'Individual', label:'Player of the Season', tier:5 },
+    golden_boot:       { group:'Individual', label:'Golden Boot',          tier:6 },
+    top_assists:       { group:'Individual', label:'Top Assists',          tier:7 },
   };
   const HONOUR_GROUP_ORDER = ['Team','Individual','Career'];
   const HONOUR_ONELINER = {
-    ballon_dor:       'The Ballon d’Or , football’s highest individual honour, the best player in the world that year.',
-    world_cup_winner: 'A World Cup winner , a member of the squad that lifted the game’s greatest prize.',
-    ucl_winner:       'Champions League winner , conquered Europe’s elite competition.',
-    league_champion:  'League Champion , finished top of the division across the season.',
-    player_of_season: 'The season’s outstanding player, as judged by the league’s official award.',
-    golden_boot:      'The division’s leading scorer across the season.',
-    top_assists:      'The division’s leading provider , most assists across the season.',
+    ballon_dor:       'The best player in the world that season.',
+    world_cup_winner: 'A world champion. The prize every player covets most.',
+    ucl_winner:       'Champion of Europe, the club game’s greatest prize.',
+    league_champion:  'Champions. Top of the league across a full season.',
+    player_of_season: 'The league’s outstanding player across the campaign.',
+    golden_boot:      'The league’s top scorer. Nobody scored more.',
+    top_assists:      'The league’s chief creator. Nobody made more.',
   };
   async function fetchHonours(row){
     const empty = { season: [], career: [], groups: {}, count: 0, has: false };
@@ -724,17 +733,18 @@
       }
     }
     season.sort((a,b)=> a.tier - b.tier);   // rarer first
+    // CHANGE 2: combined season+career, tier-sorted , drives glance-chip order + card-face pick.
+    const all = season.concat(career).sort((a,b)=> a.tier - b.tier);
     const groups = {};
-    const all = season.concat(career);
     for(const g of HONOUR_GROUP_ORDER){
       const items = all.filter(x=>x.group===g);
       if(items.length) groups[g] = items;
     }
     return {
-      season, career, groups,
+      season, career, groups, all,
       count: season.length,                          // count badge = season honours only
       has: (season.length + career.length) > 0,
-      topHonour: season.length ? season[0] : null,   // rarest season honour (slot priority)
+      topHonour: all.length ? all[0] : null,         // lowest tier present (season+career combined)
     };
   }
 
@@ -759,7 +769,7 @@
   // GLANCE STRIP: gold honour chips , prepend into #glChips (before prestige+profile).
   function renderHonourChips(honours){
     if(!honours || !honours.has) return '';
-    const items = honours.season.concat(honours.career);   // season first (sorted), then career
+    const items = honours.all || honours.season.concat(honours.career);   // tier-sorted combined (CHANGE 2)
     return items.map(function(h){
       const icon = HONOUR_ICON[h.type] || '';
       const label = HONOUR_CHIP_LABEL[h.type] || h.label;
@@ -770,7 +780,7 @@
   // WONDER TAGS: tap-expandable honour rows (wired NEXT step, not this one).
   function renderHonourRows(honours){
     if(!honours || !honours.has) return '';
-    const items = honours.season.concat(honours.career);
+    const items = honours.all || honours.season.concat(honours.career);   // tier-sorted combined (CHANGE 2)
     return items.map(function(h){
       const icon = HONOUR_ICON[h.type] || '';
       const oneLiner = h.oneliner || h.label;
