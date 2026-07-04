@@ -1,74 +1,118 @@
-# VVonderXI , LOCKED SPEC (read FIRST, every session, in full)
+# VVonderXI , MASTER SOURCE OF TRUTH (read this FIRST, every session, in full)
 
-**This is not a handover.** It is the flat list of decisions that must NEVER be re-derived or "discovered" fresh. If a chat proposes something that contradicts an item here, the chat is wrong, not the spec. Handovers carry task state; THIS carries the invariants.
+**This is the ONE reference point.** If any other document, memory, or assumption conflicts with this file, THIS FILE WINS. When you are unsure about anything , a decision, a convention, the state of the work , the answer is here. Do not re-derive decisions already recorded here. Do not trust a summary of this file; read the file.
 
-**First action, every chat / Claude Code session:**
+**First actions, every session:**
 1. Read this whole file.
-2. Confirm the load-bearing items (§3) back before proposing anything.
-3. Then read the task handover.
-4. Verify against LIVE code/DB before editing , docs drift, including this one. Distinguish "verified live this session" from "asserted by a doc."
+2. Read the PROGRESS graphic (below) to orient on where the project stands.
+3. Confirm the load-bearing invariants (§C) back to Lucas before proposing anything.
+4. Check the SESSION LOG (§F) for what the last few sessions did.
+5. Verify against LIVE code/DB before editing , docs drift, including this one. Distinguish "verified live this session" from "recorded in this doc."
+6. At session END: append a SESSION LOG entry (§F) and update the PROGRESS graphic. A session that changes state but doesn't log it has failed the next chat.
 
-**Where this lives:** repo root as `CLAUDE.md` (Claude Code reads it automatically) AND in project knowledge. Update it at the END of every session that changes an invariant , one line, immediately, not "later."
-
----
-
-## 1. SAFETY / WORKFLOW (never bypass)
-- Branch `redesign-compare`. Production `vvonderxi_BIGGER` is NEVER touched directly. First command each session, Terminal C: `git log --oneline -4` , confirm the expected tip before any work.
-- **Two terminals, strict:** Claude Code (Terminal A) = edits / SQL / commits, and NEVER pushes. Terminal C (plain) = reads / verify / push. **Lucas pushes, always.** Label every command with its terminal.
-- **View / engine changes go through the Supabase SQL editor**, method: `pg_get_viewdef('player_card_view', true)` -> edit ONLY the target lines -> `create or replace view` -> `refresh materialized view player_card_mv`. NEVER hand-retype engine SQL. `create or replace view` can only APPEND columns , preserve column order exactly. "Success, no rows" is correct for DDL.
-- Byte-verify every repo edit in Terminal C before commit. `node --check` FAILS on `.html` (Node v22). Stage NAMED files only , never `git add .` (scratch stays untracked: `api/probe-*.js`, `getVVTags_v1_draft.js`, `tags_test.csv`).
-- No em/en dashes anywhere , spaced comma ( , ). NR ("Not Recorded") for missing data, never "0".
-
-## 2. STACK FACTS
-- Supabase project `krqthvroetbxgnvwwjar`. Canonical view `player_card_view` (holds the WHOLE VV Score engine). Matview `player_card_mv` (site reads this). **Refresh the matview after every view change or import** , live anchors recompute at refresh, not per query.
-- Vercel serverless functions terminate after `res.json()` , do DB writes BEFORE sending the response.
-- SQL editor display cap = 100 rows; use explicit `LIMIT` > total for full exports. Always a NEW query window.
-
-## 3. THE ENGINE / BAND SYSTEM (this is where chats keep failing , read twice)
-- **Band architecture: `bandFor` in `vv-core.js` emits 9 internal bands. The PUBLIC ladder shows the top 4 named + 1 grouped.** Do NOT "collapse `bandFor` to 5" , the 9 are intentional (feed tags/colour). The 5-card public ladder lives in the DISPLAY layer.
-- **Public labels are RENAMES of engine strings, not the engine strings themselves:** engine `"Exceptional"` (rt>=76) displays PUBLICLY as **"Standout"**. The grouped lower field (75 and under) displays as **"Accomplished , the honest backbone of the professional game."** `bandFor`'s internal names are NOT the user-facing labels.
-- **Public 5-band ladder:** Generational / Elite / World Class / Standout / Accomplished. Definitions are authored copy (Henry Winter voice) , do not rewrite them casually.
-- **Generational is OUTPUT-GATED, in `rowToCard`, NOT in `bandFor`:** `rt >= 94 AND (goals+assists) >= 35`, else demote to Elite. The `||0` guards are REQUIRED (Messi's null-assist 50-goal seasons must survive the gate). **Changing the band rt threshold WITHOUT changing the gate rt desyncs them and breaks Generational rarity.** This gate is why only ~15-18 cards are Generational.
-- **Two badges only.** Generational badge = Generational band ONLY. Iconic badge = Elite band. None below. `prestigeFor`: `Generational->Generational, Elite->Iconic, else null`. S-Tier is RETIRED everywhere , do not reintroduce it.
-- **ANCHOR GUARDRAIL:** bands and scores derive from LIVE top-N anchors (subqueries inside the view), never hardcoded numbers, never tuned until a famous name lands where wanted. **Famous names are a READ-OUT (validity check on the design), never a DIAL (a target).** Greatness shows as DENSITY in the elite band, never as any single card being #1.
-- Recalibrate the engine by EDITING THE VIEW, never by re-import. All `rt` is provisional until final calibration.
-- **GK capped at 75** pending keeper-stats import (v1.2). Defenders scored in their own pool with data-confidence disclosure as the bridge; proper defensive-stats import is the destination. Do NOT hand-boost either , score honestly or disclose the gap.
-
-## 4. SEARCH (permanent architecture , high miss-risk)
-- **TWO search paths, NO shared code:** (a) `rankings.html` queries matview `player_card_mv` directly via `player_name_norm`/`team_name_norm`; (b) Compare / `api/search-player.js` calls Postgres RPC `search_players(q)`. **Any matching/normalization change MUST be applied to BOTH or they diverge.**
-- **Display name vs search name are separate:** `players.name` = short display ("E. Haaland", KEEP short); `players.full_name` = full, hidden, search-only. Normalization rule (identical both paths): `regexp_replace(lower(unaccent(coalesce(full_name,name))), '[^a-z0-9 ]', '', 'g')`.
-
-## 5. HOW LUCAS WORKS
-- Solo non-coder, voice-to-text (read for intent, not literal). Decisions/options FIRST, concise, no essays. Tappable choices when picking options. ONE pasteable block at a time. Demo-first on any multi-option design choice (show it, pick once, build once). Test the live preview at 390px after any UI-affecting push. Lucas is a separate instance from the terminals , he pastes Terminal C output and query results back.
-
-## 6. VERIFIED LIVE THIS SESSION (2 Jul 2026, branch tip `7c73d65`)
-- GK scoring is NOT broken: live GK max rt = 75, avg 58.1, ZERO keepers >= 88. The "backup above Messi" report was a STALE matview read; the calibration commit `19b9c22` + the search-RPC refresh already fixed it. Task 1 = verify-and-close, no view change.
-- Live distribution (matview): 95+ = 12, 90-94 = 138, 85-89 = 500, scored = 53,485, null = 2,969 (all sub-300-min), avg = 56.3, range 15-100.
-- Elite-assist check PASSED: all 6 seasons with assists>=20 sit at rt 85+. The `0.7` assist weight is fine , do not touch it.
-- `bandFor` thresholds ARE still on the OLD scale (94/88/82/76/...) , these are the stale numbers Phase B re-cuts, in three coupled places: `bandFor`, the `rowToCard` Generational gate's `94`, and the display `xx+` numbers in `vvindex.html` / `playbook.html`.
-
-## 7. CONFIRM LIVE BEFORE RELYING ON THESE (asserted by docs, not yet re-verified this session)
-- The exact `rowToCard` Generational-gate line and the "Exceptional -> Standout" / "Accomplished" display-mapping location. Read `vv-core.js` around lines 540-560 and the display layer live before editing either.
-- Whether `vvindex.html` / `playbook.html` still show a stale "50 to 96" range or empty ladder (master items S6/P12) , may already be resolved; verify on the live preview.
+Why this file exists: this project has suffered from too many documents and no clear reference point , chats rediscovering settled decisions, contradicting each other, losing work. This file is the fix. It is authoritative, current, and self-maintaining. Keep it that way.
 
 ---
 
-**Update discipline:** when a decision is locked, deferred, or verified, add/edit ONE line here immediately. This file only works if it stays current , a stale locked-spec is the exact failure it exists to prevent.
+## A. PROGRESS (update the bars every session)
+
+```
+=== VVONDERXI LAUNCH PROGRESS ===
+Data quality   ████████████████░░  ~90%   top band nearly done; ~18k coarse tail = v2
+Tags           ██░░░░░░░░░░░░░░░░   ~10%   system exists, unvalidated; honours pending
+Compare        █░░░░░░░░░░░░░░░░░   ~5%    hardcoded
+Card editorial ███░░░░░░░░░░░░░░░   ~15%   layout done, editorial half unwired
+Hygiene        ███░░░░░░░░░░░░░░░   ~20%   key rotation, meta, logo, QA outstanding
+Merge          ░░░░░░░░░░░░░░░░░░    0%    redesign-compare -> vvonderxi_BIGGER
+```
+LAUNCH = tags + Compare + card editorial + hygiene + merge. **Data quality is a supporting layer, NOT a blocker** , launch bar is "top band clean + tail honestly flagged via confidence dots", not 100% of 56k cards. The seductive trap is endless data-polish while Compare stays hardcoded. After honours, the center of gravity MUST shift from data to the tag->Compare product spine.
+
+Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the next chat.
 
 ---
 
-## 8. DECISIONS LOCKED THIS SESSION (2 Jul 2026)
+## B. HOW LUCAS WORKS (apply every session)
 
-- **Bands re-cut to 95/90/85/80** (Generational/Elite/World Class/Standout). Lower internal names unchanged. **NO output gate** (removed; the calibrated output-first scale guarantees rarity , you cannot reach rt 95 without elite output). Two coupled places only: `bandFor` in vv-core.js + ladder display numbers in vvindex.html/playbook.html. Shipped commit `18c6059`. (This SUPERSEDES the old §3 line that claimed a Generational output gate exists , it does not.)
+- **Solo non-coder founder.** Voice-to-text input , read for INTENT, not literal transcription (typos/run-ons are normal).
+- **Wants:** decisions and options FIRST, concise, no essays. Tappable/numbered choices when picking between options. ONE pasteable block at a time. Tell him EXACTLY what to paste and WHERE (Supabase SQL editor / Claude Code / Terminal C) , he is not technical, so "here's the SQL, paste it in Supabase" beats "run a query to check X". When giving steps, give the literal command, labelled with its destination.
+- **Think like a senior engineer + statistician + architect.** Be decisive, don't flip-flop, don't hedge. Flag the better option and say why. Don't drag , if stuck or confused, READ THE LIVE FILES / THIS DOC rather than guessing or looping.
+- **Two-terminal discipline (STRICT):** Claude Code (Terminal A) = edits/SQL/commits, NEVER pushes. Terminal C (plain) = reads/verify/push. Lucas pushes himself, always. Label every command's terminal.
+- **Demo-first:** on any multi-option design choice, show it before building. Pick once, build once.
+- **Honesty standard:** explicit when something is genuinely incomplete vs done. Recommend the best path, don't conservatively hedge. Own mistakes plainly, no grovelling.
+- Lucas is a separate instance from the terminals , he pastes Terminal C output and query results back into chat.
+- No em/en dashes anywhere (spaced comma). NR for missing data, never 0.
 
-- **GK scoring is NOT broken** , verified live: GK max rt 75, avg 58.1, zero keepers >=88. The "backup above Messi" report was a STALE matview read, already fixed by calibration + refresh. No engine change. Do not reopen.
+---
 
-- **Assist backfill (marquee NR seasons), DONE.** 22 pre-2015 seasons (rt>=90) that were scored NR/zero-assist now carry real FBref domestic-league assists (written by card_id, fill-only guard, matview refreshed). Movements honest: Messi 11/12 (50G/16A) top of scale, Ronaldo 10/11 (40G/9A) crossed into Generational on merit. Data-confidence lifted on these cards. Method proven + reusable.
+## C. LOCKED INVARIANTS (never re-derive; contradicting these = the chat is wrong)
 
-- **TOP-OF-SCALE CAP , BUILT + LIVE 2 Jul (commit `ebc8ce6`, staged for push):** 95-100 compressed to 95-97, else-line 5.0->2.0, verified Messi 11/12=97, pantheon clustered 95-97. Ibra wrinkle still separate/open.
+**Safety/workflow**
+- Branch `redesign-compare`. Production `vvonderxi_BIGGER` NEVER touched directly. First command each session, Terminal C: `git log --oneline -4`.
+- View/engine changes via Supabase SQL editor: `pg_get_viewdef` -> edit only target lines -> `create or replace view` -> `refresh materialized view player_card_mv`. NEVER hand-retype engine SQL. **ALWAYS build view edits from a FRESH pg_get_viewdef, never the repo `new_view.sql` copy , it has drifted repeatedly.** `create or replace view` can only APPEND columns; preserve column order.
+- Byte-verify edits in Terminal C before commit. `node --check` FAILS on .html. Stage named files only, never `git add .`.
 
-- **Ibra ordering wrinkle (LOGGED, separate engine task).** Ibra 15/16 (38G/13A, 47.1 goal-weighted output) sits at 94, below six lower-output 95s , tier-mapping isn't fully monotonic with output at the 90-96 seam. NOT a data gap (assists already recorded). Investigate in the same engine session as the cap.
+**Stack**
+- Supabase project `krqthvroetbxgnvwwjar`. View `player_card_view` (holds the whole VV engine). Matview `player_card_mv` (site reads this) , REFRESH after every data/view change. SQL editor caps display at 100 rows. Vercel serverless terminates after res.json() (writes before response).
 
-- **NR assist gap remaining:** 84 World Class (rt 85-89) seasons being sourced now (same method: FBref domestic-league only, goals-anchor check, fill-only guard, refresh). Thousands below rt 85 = scripted data-phase task, not manual.
+**Engine / bands**
+- `bandFor` (vv-core.js) emits 9 internal bands; PUBLIC ladder = top 4 named + 1 grouped. Public labels are DISPLAY renames: engine "Exceptional" shows as "Standout"; grouped lower field shows as "Accomplished". Do not collapse the 9.
+- Band thresholds (recut to recalibrated scale, live): Generational 95, Elite 90, World Class 85, Standout(=Exceptional) 80. Lower internal bands unchanged. NO Generational output gate exists , rarity is guaranteed by the output-first scale (can't reach 95 without elite output). Two coupled threshold places: bandFor + ladder display numbers (vvindex.html, playbook.html).
+- **Top-of-scale cap LIVE:** no card scores 100. Top piecewise segment compressed 95-100 -> 95-97 (else-line 2.0 not 5.0). Messi 11/12 = 97 (ceiling). Pantheon clusters as peers 95-97; ties allowed.
+- Two prestige badges only: Generational badge = Generational band; Iconic = Elite band. S-Tier retired.
+- **ANCHOR GUARDRAIL:** bands/scores derive from LIVE top-N anchors, never hardcoded, never tuned until a famous name lands where wanted. Famous names are a READ-OUT (validity check), never a DIAL. Greatness = density in the elite band, not any single #1.
+- GK capped at 75 (pending keeper-stats). Defenders scored in own pool; disclose via confidence, don't fake.
 
-- **Shirt numbers:** 160 of 650 top-band cards (rt>=85) missing shirt_number. Public/low-risk data (prefer Wikipedia, openly-licensed). `pp.shirt_number` column exists, mostly empty. Fill top cards, script tail. Separate from licensing-gated FIFA/defensive-stats task.
+**Search (two separate paths, no shared code)**
+- rankings.html queries matview directly; Compare/api uses RPC `search_players`. Any matching/normalization change goes to BOTH. Normalization: `regexp_replace(lower(unaccent(coalesce(full_name,name))), '[^a-z0-9 ]','','g')`.
+
+**Position system (LOCKED 8 buckets)**
+- Every card resolves to exactly one of: **GK, FB, CB, CDM, CM, CAM, Winger, ST**. No LW/RW split.
+- Map: RB/LB/wing-back->FB; DM->CDM; central mid->CM; AM/true #10 orchestrator->CAM; RW/LW/wide-forward->Winger; ST/CF/second-striker->ST. Ambiguous forward: goal-scoring->ST, wide->Winger, orchestrating->CAM; judge by role played MOST that season.
+- shirt_number + position live in `player_positions` (PK: api_player_id, season_year, league_code; position + shirt_number nullable). NO pre-2016 rows exist -> pre-2016 needs INSERT (guarded), not UPDATE. Card reads pp.position (via position_pool), falls back to coarse psc.position (DEF/MID/FWD/GK) when no pp row.
+- API-Football's auto-imported positions have a SYSTEMATIC bug: attacking mids + wingers dumped into "CM" (De Bruyne, Mbeumo, Bruno, Palmer, Pepe, Olise). Trust Transfermarkt/CCC-verified data OVER the auto-map.
+
+**Honours = a TAG family (tier: Prestige -> Honours -> Performance)**
+- Season honour tags (6): League Champion (ONE reused tag, team-season lookup), UCL Winner, Ballon d'Or, Golden Boot, Top Assists, Player of the Season.
+- Player-LEVEL accolades (career context for Commentator's Notes + verdicts, NOT season tags): World Cup Winner, etc.
+- Excluded from season tags: domestic cups. Data is table-shaped (Wikipedia), ~500-800 rows. Build as first piece of tag validation.
+
+**Provenance**
+- Assists = FBref domestic-league. Shirt+position = Transfermarkt. Don't mix within a field.
+
+---
+
+## D. CURRENT STATE / ACTIVE TASK
+
+**Active:** Top-150 position+shirt+assist verification sweep (CCC/Chrome). Rows 1-52 (famous players) skipped as pre-verified; rows 53-150 being re-verified in ~20-row batches (data was lost to summarization once , batches now output immediately). Also completes the 81 NR-assist top-band seasons (subset of 150). After all 150 collected -> one upsert -> refresh -> top-band distribution re-check (assists move rt; 97-cap self-corrects on anchors).
+
+**Then:** honours -> TAG VALIDATION -> Compare -> card editorial -> hygiene -> merge.
+
+---
+
+## E. BACKLOG / HORIZON (not launch-blockers unless marked)
+
+- **LAUNCH-BLOCKERS:** tag validation; Compare build; card.html editorial (Proof/Wonder Tags/Notes); API-Football key rotation (exposed); og/meta + social image; contact-form endpoint (errors); OAuth published; 390px QA; merge to vvonderxi_BIGGER.
+- **Quality (not blockers):** ~18k coarse-position tail (v2 script); shirt/position tail below rt85; Ibra 15/16 ordering wrinkle (47.1 output at 94, tier-map not monotonic at top seam , engine session); rankings A-Z sort bug; result-cap raise (250-500, "showing X of Y"); Data Confidence expandable panel; season-switcher; card hero text overflow.
+- **Post-launch:** accounts/Locker (waitlist now); language toggle EN/NL/FR.
+
+---
+
+## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
+
+Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-03/04 | Engine cleanup + data enrichment (this session)
+- Bands re-cut to 95/90/85/80 (commit 18c6059). GK "blocker" closed (stale read, not a bug). Elite-assist check passed (0.7 weight kept).
+- 101 assists backfilled (22 marquee + 79 World Class), FBref domestic, verified.
+- Top-of-scale cap BUILT + LIVE (commit ebc8ce6): 95-100 -> 95-97, Messi 11/12 = 97. Also fixed new_view.sql norm-drift.
+- Tagline -> "Every Season Tells a Different Story" site-wide (commit 480390b).
+- Rankings rt-ceiling bug fixed 96->97 across 11 coupled spots (commit f7745d3) , top-of-scale seasons were being filtered out.
+- Position auto-map: ~37,700 cards standardized to 8 buckets (format only; inherited API-Football accuracy errors).
+- Verified by hand: top 40 + 100 = 140 cards shirt+position (Transfermarkt).
+- Honours specced as a tag family. Progress-graphic + this master-doc structure established.
+- IN PROGRESS at session end: top-150 verification sweep (CCC), ~50 of 97 rows collected, write pending.
+- STATUS: engine clean and trustworthy; top band nearly fully enriched; NEXT is finish 150 -> honours -> tags.
+
+---
+
+**Update discipline:** when a decision is locked/deferred/verified, edit the relevant section immediately. Append to §F every session. Update §A bars every session. A stale master doc is the exact failure this file exists to prevent.
