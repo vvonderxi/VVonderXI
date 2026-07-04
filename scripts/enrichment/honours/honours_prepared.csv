@@ -1,0 +1,315 @@
+honour_type,season_year,league_code,team_name,api_player_id,player_name,goals,honour_context,source
+league_champion,2010,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2011,LL,Real Madrid,,,,,wikipedia_ccc
+league_champion,2012,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2013,LL,Atletico Madrid,,,,,wikipedia_ccc
+league_champion,2014,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2015,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2016,LL,Real Madrid,,,,,wikipedia_ccc
+league_champion,2017,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2018,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2019,LL,Real Madrid,,,,,wikipedia_ccc
+league_champion,2020,LL,Atletico Madrid,,,,,wikipedia_ccc
+league_champion,2021,LL,Real Madrid,,,,,wikipedia_ccc
+league_champion,2022,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2023,LL,Real Madrid,,,,,wikipedia_ccc
+league_champion,2024,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2025,LL,Barcelona,,,,,wikipedia_ccc
+league_champion,2010,PL,Manchester United,,,,,wikipedia_ccc
+league_champion,2011,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2012,PL,Manchester United,,,,,wikipedia_ccc
+league_champion,2013,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2014,PL,Chelsea,,,,,wikipedia_ccc
+league_champion,2015,PL,Leicester,,,,,wikipedia_ccc
+league_champion,2016,PL,Chelsea,,,,,wikipedia_ccc
+league_champion,2017,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2018,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2019,PL,Liverpool,,,,,wikipedia_ccc
+league_champion,2020,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2021,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2022,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2023,PL,Manchester City,,,,,wikipedia_ccc
+league_champion,2024,PL,Liverpool,,,,,wikipedia_ccc
+league_champion,2025,PL,Arsenal,,,,,wikipedia_ccc
+league_champion,2010,SA,AC Milan,,,,,wikipedia_ccc
+league_champion,2011,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2012,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2013,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2014,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2015,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2016,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2017,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2018,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2019,SA,Juventus,,,,,wikipedia_ccc
+league_champion,2020,SA,Inter,,,,,wikipedia_ccc
+league_champion,2021,SA,AC Milan,,,,,wikipedia_ccc
+league_champion,2022,SA,Napoli,,,,,wikipedia_ccc
+league_champion,2023,SA,Inter,,,,,wikipedia_ccc
+league_champion,2024,SA,Napoli,,,,,wikipedia_ccc
+league_champion,2025,SA,Inter,,,,,wikipedia_ccc
+league_champion,2010,BL,Borussia Dortmund,,,,,wikipedia_ccc
+league_champion,2011,BL,Borussia Dortmund,,,,,wikipedia_ccc
+league_champion,2012,BL,Bayern München,,,,treble,wikipedia_ccc
+league_champion,2013,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2014,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2015,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2016,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2017,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2018,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2019,BL,Bayern München,,,,treble,wikipedia_ccc
+league_champion,2020,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2021,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2022,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2023,BL,Bayer Leverkusen,,,,unbeaten domestic season,wikipedia_ccc
+league_champion,2024,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2025,BL,Bayern München,,,,,wikipedia_ccc
+league_champion,2010,L1,Lille,,,,,wikipedia_ccc
+league_champion,2011,L1,Montpellier,,,,,wikipedia_ccc
+league_champion,2012,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2013,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2014,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2015,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2016,L1,Monaco,,,,,wikipedia_ccc
+league_champion,2017,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2018,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2019,L1,Paris Saint Germain,,,,season curtailed - COVID,wikipedia_ccc
+league_champion,2020,L1,Lille,,,,,wikipedia_ccc
+league_champion,2021,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2022,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2023,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2024,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2025,L1,Paris Saint Germain,,,,,wikipedia_ccc
+league_champion,2010,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2011,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2012,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2013,PRT,Benfica,,,,treble,wikipedia_ccc
+league_champion,2014,PRT,Benfica,,,,,wikipedia_ccc
+league_champion,2015,PRT,Benfica,,,,,wikipedia_ccc
+league_champion,2016,PRT,Benfica,,,,,wikipedia_ccc
+league_champion,2017,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2018,PRT,Benfica,,,,,wikipedia_ccc
+league_champion,2019,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2020,PRT,Sporting CP,,,,,wikipedia_ccc
+league_champion,2021,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2022,PRT,Benfica,,,,,wikipedia_ccc
+league_champion,2023,PRT,Sporting CP,,,,,wikipedia_ccc
+league_champion,2024,PRT,Sporting CP,,,,double,wikipedia_ccc
+league_champion,2025,PRT,FC Porto,,,,,wikipedia_ccc
+league_champion,2010,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2011,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2012,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2013,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2014,ERE,PSV Eindhoven,,,,,wikipedia_ccc
+league_champion,2015,ERE,PSV Eindhoven,,,,,wikipedia_ccc
+league_champion,2016,ERE,Feyenoord,,,,,wikipedia_ccc
+league_champion,2017,ERE,PSV Eindhoven,,,,,wikipedia_ccc
+league_champion,2018,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2020,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2021,ERE,Ajax,,,,,wikipedia_ccc
+league_champion,2022,ERE,Feyenoord,,,,,wikipedia_ccc
+league_champion,2023,ERE,PSV Eindhoven,,,,,wikipedia_ccc
+league_champion,2024,ERE,PSV Eindhoven,,,,,wikipedia_ccc
+league_champion,2025,ERE,PSV Eindhoven,,,,,wikipedia_ccc
+league_champion,2010,BPL,Genk,,,,,wikipedia_ccc
+league_champion,2011,BPL,Anderlecht,,,,,wikipedia_ccc
+league_champion,2012,BPL,Anderlecht,,,,,wikipedia_ccc
+league_champion,2013,BPL,Anderlecht,,,,,wikipedia_ccc
+league_champion,2014,BPL,Gent,,,,,wikipedia_ccc
+league_champion,2015,BPL,Club Brugge KV,,,,,wikipedia_ccc
+league_champion,2016,BPL,Anderlecht,,,,,wikipedia_ccc
+league_champion,2017,BPL,Club Brugge KV,,,,,wikipedia_ccc
+league_champion,2018,BPL,Genk,,,,,wikipedia_ccc
+league_champion,2019,BPL,Club Brugge KV,,,,season curtailed - COVID,wikipedia_ccc
+league_champion,2020,BPL,Club Brugge KV,,,,,wikipedia_ccc
+league_champion,2021,BPL,Club Brugge KV,,,,,wikipedia_ccc
+league_champion,2022,BPL,Antwerp,,,,,wikipedia_ccc
+league_champion,2023,BPL,Club Brugge KV,,,,,wikipedia_ccc
+league_champion,2024,BPL,Union SG,,,,,wikipedia_ccc
+league_champion,2025,BPL,Club Brugge KV,,,,,wikipedia_ccc
+league_champion,2010,TR,Fenerbahçe,,,,,wikipedia_ccc
+league_champion,2011,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2012,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2013,TR,Fenerbahçe,,,,,wikipedia_ccc
+league_champion,2014,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2015,TR,Beşiktaş,,,,,wikipedia_ccc
+league_champion,2016,TR,Beşiktaş,,,,,wikipedia_ccc
+league_champion,2017,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2018,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2019,TR,Başakşehir,,,,,wikipedia_ccc
+league_champion,2020,TR,Beşiktaş,,,,,wikipedia_ccc
+league_champion,2021,TR,Trabzonspor,,,,,wikipedia_ccc
+league_champion,2022,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2023,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2024,TR,Galatasaray,,,,,wikipedia_ccc
+league_champion,2025,TR,Galatasaray,,,,,wikipedia_ccc
+ucl_winner,2010,,Barcelona,,,,,wikipedia_ccc
+ucl_winner,2011,,Chelsea,,,,,wikipedia_ccc
+ucl_winner,2012,,Bayern München,,,,,wikipedia_ccc
+ucl_winner,2013,,Real Madrid,,,,,wikipedia_ccc
+ucl_winner,2014,,Barcelona,,,,,wikipedia_ccc
+ucl_winner,2015,,Real Madrid,,,,,wikipedia_ccc
+ucl_winner,2016,,Real Madrid,,,,,wikipedia_ccc
+ucl_winner,2017,,Real Madrid,,,,three consecutive titles,wikipedia_ccc
+ucl_winner,2018,,Liverpool,,,,,wikipedia_ccc
+ucl_winner,2019,,Bayern München,,,,,wikipedia_ccc
+ucl_winner,2020,,Chelsea,,,,,wikipedia_ccc
+ucl_winner,2021,,Real Madrid,,,,,wikipedia_ccc
+ucl_winner,2022,,Manchester City,,,,treble,wikipedia_ccc
+ucl_winner,2023,,Real Madrid,,,,,wikipedia_ccc
+ucl_winner,2024,,Paris Saint Germain,,,,,wikipedia_ccc
+ucl_winner,2025,,Paris Saint Germain,,,,won on penalties vs Arsenal,wikipedia_ccc
+ballon_dor,2010,,,154,Lionel Messi,,,wikipedia_ccc
+ballon_dor,2011,,,154,Lionel Messi,,,wikipedia_ccc
+ballon_dor,2012,,,874,Cristiano Ronaldo,,,wikipedia_ccc
+ballon_dor,2013,,,874,Cristiano Ronaldo,,,wikipedia_ccc
+ballon_dor,2014,,,154,Lionel Messi,,,wikipedia_ccc
+ballon_dor,2015,,,874,Cristiano Ronaldo,,,wikipedia_ccc
+ballon_dor,2016,,,874,Cristiano Ronaldo,,,wikipedia_ccc
+ballon_dor,2017,,,754,Luka Modric,,,wikipedia_ccc
+ballon_dor,2018,,,154,Lionel Messi,,,wikipedia_ccc
+ballon_dor,2020,,,154,Lionel Messi,,,wikipedia_ccc
+ballon_dor,2021,,,759,Karim Benzema,,,wikipedia_ccc
+ballon_dor,2022,,,154,Lionel Messi,,record 8th award,wikipedia_ccc
+ballon_dor,2023,,,44,Rodri,,,wikipedia_ccc
+ballon_dor,2024,,,153,Ousmane Dembele,,,wikipedia_ccc
+golden_boot,2010,LL,Real Madrid,874,Cristiano Ronaldo,40,,wikipedia_ccc
+golden_boot,2011,LL,Barcelona,154,Lionel Messi,50,record - most goals in a La Liga season,wikipedia_ccc
+golden_boot,2012,LL,Barcelona,154,Lionel Messi,46,,wikipedia_ccc
+golden_boot,2013,LL,Real Madrid,874,Cristiano Ronaldo,31,,wikipedia_ccc
+golden_boot,2014,LL,Real Madrid,874,Cristiano Ronaldo,48,,wikipedia_ccc
+golden_boot,2015,LL,Barcelona,157,Luis Suarez,40,,wikipedia_ccc
+golden_boot,2016,LL,Barcelona,154,Lionel Messi,37,,wikipedia_ccc
+golden_boot,2017,LL,Barcelona,154,Lionel Messi,34,,wikipedia_ccc
+golden_boot,2018,LL,Barcelona,154,Lionel Messi,36,,wikipedia_ccc
+golden_boot,2019,LL,Barcelona,154,Lionel Messi,25,,wikipedia_ccc
+golden_boot,2020,LL,Barcelona,154,Lionel Messi,30,,wikipedia_ccc
+golden_boot,2021,LL,Real Madrid,759,Karim Benzema,27,,wikipedia_ccc
+golden_boot,2022,LL,Barcelona,521,Robert Lewandowski,23,,wikipedia_ccc
+golden_boot,2023,LL,Girona,15811,Artem Dovbyk,24,,wikipedia_ccc
+golden_boot,2024,LL,Real Madrid,278,Kylian Mbappe,31,,wikipedia_ccc
+golden_boot,2025,LL,Real Madrid,278,Kylian Mbappe,25,,wikipedia_ccc
+golden_boot,2010,PL,Manchester City,5982,Carlos Tevez,20,tie,wikipedia_ccc
+golden_boot,2010,PL,Manchester United,113639,Dimitar Berbatov,20,tie,wikipedia_ccc
+golden_boot,2011,PL,Arsenal,37162,Robin van Persie,30,,wikipedia_ccc
+golden_boot,2012,PL,Manchester United,37162,Robin van Persie,26,,wikipedia_ccc
+golden_boot,2013,PL,Liverpool,157,Luis Suarez,31,,wikipedia_ccc
+golden_boot,2014,PL,Manchester City,642,Sergio Aguero,26,,wikipedia_ccc
+golden_boot,2015,PL,Tottenham,184,Harry Kane,25,,wikipedia_ccc
+golden_boot,2016,PL,Tottenham,184,Harry Kane,29,,wikipedia_ccc
+golden_boot,2017,PL,Liverpool,306,Mohamed Salah,32,,wikipedia_ccc
+golden_boot,2018,PL,Arsenal,1465,Aubameyang,22,three-way tie,wikipedia_ccc
+golden_boot,2018,PL,Liverpool,304,Mane,22,three-way tie,wikipedia_ccc
+golden_boot,2018,PL,Liverpool,306,Salah,22,three-way tie,wikipedia_ccc
+golden_boot,2019,PL,Leicester,18788,Jamie Vardy,23,,wikipedia_ccc
+golden_boot,2020,PL,Tottenham,184,Harry Kane,23,,wikipedia_ccc
+golden_boot,2021,PL,Liverpool,306,Salah,23,tie,wikipedia_ccc
+golden_boot,2021,PL,Tottenham,186,Son Heung-min,23,tie,wikipedia_ccc
+golden_boot,2022,PL,Manchester City,1100,Erling Haaland,36,record - most goals in PL season,wikipedia_ccc
+golden_boot,2023,PL,Manchester City,1100,Erling Haaland,27,,wikipedia_ccc
+golden_boot,2024,PL,Liverpool,306,Mohamed Salah,29,,wikipedia_ccc
+golden_boot,2025,PL,Manchester City,1100,Erling Haaland,27,,wikipedia_ccc
+golden_boot,2010,SA,Udinese,115141,Antonio Di Natale,28,,wikipedia_ccc
+golden_boot,2011,SA,AC Milan,51070,Zlatan Ibrahimovic,28,,wikipedia_ccc
+golden_boot,2012,SA,Napoli,274,Edinson Cavani,29,,wikipedia_ccc
+golden_boot,2013,SA,Torino,1863,Ciro Immobile,22,,wikipedia_ccc
+golden_boot,2014,SA,Inter,216,Mauro Icardi,22,tie,wikipedia_ccc
+golden_boot,2014,SA,Hellas Verona,115142,Luca Toni,22,tie,wikipedia_ccc
+golden_boot,2015,SA,Napoli,2297,Gonzalo Higuain,36,record,wikipedia_ccc
+golden_boot,2016,SA,AS Roma,790,Edin Dzeko,29,,wikipedia_ccc
+golden_boot,2017,SA,Inter,216,Mauro Icardi,29,tie,wikipedia_ccc
+golden_boot,2017,SA,Lazio,1863,Ciro Immobile,29,tie,wikipedia_ccc
+golden_boot,2018,SA,Sampdoria,30463,Fabio Quagliarella,26,,wikipedia_ccc
+golden_boot,2019,SA,Lazio,1863,Ciro Immobile,36,,wikipedia_ccc
+golden_boot,2020,SA,Juventus,874,Cristiano Ronaldo,29,,wikipedia_ccc
+golden_boot,2021,SA,Lazio,1863,Ciro Immobile,27,,wikipedia_ccc
+golden_boot,2022,SA,Napoli,2780,Victor Osimhen,26,,wikipedia_ccc
+golden_boot,2023,SA,Inter,217,Lautaro Martinez,24,,wikipedia_ccc
+golden_boot,2024,SA,Atalanta,6420,Mateo Retegui,25,,wikipedia_ccc
+golden_boot,2025,SA,Inter,217,Lautaro Martinez,17,,wikipedia_ccc
+golden_boot,2010,BL,,26314,Mario Gomez,28,club not listed in source,wikipedia_ccc
+golden_boot,2011,BL,,551,Klaas-Jan Huntelaar,29,club not listed in source,wikipedia_ccc
+golden_boot,2012,BL,,90642,Stefan Kiessling,25,club not listed in source,wikipedia_ccc
+golden_boot,2013,BL,,521,Robert Lewandowski,20,club not listed in source,wikipedia_ccc
+golden_boot,2014,BL,,24947,Alexander Meier,19,club not listed in source,wikipedia_ccc
+golden_boot,2015,BL,,521,Robert Lewandowski,30,club not listed in source,wikipedia_ccc
+golden_boot,2016,BL,,1465,Pierre-Emerick Aubameyang,31,club not listed in source,wikipedia_ccc
+golden_boot,2017,BL,,521,Robert Lewandowski,29,club not listed in source,wikipedia_ccc
+golden_boot,2018,BL,,521,Robert Lewandowski,22,club not listed in source,wikipedia_ccc
+golden_boot,2019,BL,,521,Robert Lewandowski,34,club not listed in source,wikipedia_ccc
+golden_boot,2020,BL,,521,Robert Lewandowski,41,record; club not listed in source,wikipedia_ccc
+golden_boot,2021,BL,,521,Robert Lewandowski,35,club not listed in source,wikipedia_ccc
+golden_boot,2022,BL,,25391,Niclas Fullkrug,16,tie; club not listed in source,wikipedia_ccc
+golden_boot,2022,BL,,269,Christopher Nkunku,16,tie; club not listed in source,wikipedia_ccc
+golden_boot,2023,BL,,184,Harry Kane,36,club not listed in source,wikipedia_ccc
+golden_boot,2024,BL,,184,Harry Kane,26,club not listed in source,wikipedia_ccc
+golden_boot,2025,BL,,184,Harry Kane,36,club not listed in source,wikipedia_ccc
+golden_boot,2010,L1,Lille,61981,Moussa Sow,25,,wikipedia_ccc
+golden_boot,2011,L1,Montpellier,2295,Olivier Giroud,21,tie,wikipedia_ccc
+golden_boot,2011,L1,Paris Saint Germain,9970,Nene,21,tie,wikipedia_ccc
+golden_boot,2012,L1,Paris Saint Germain,51070,Zlatan Ibrahimovic,30,,wikipedia_ccc
+golden_boot,2013,L1,Paris Saint Germain,51070,Zlatan Ibrahimovic,26,,wikipedia_ccc
+golden_boot,2014,L1,Lyon,1467,Alexandre Lacazette,27,,wikipedia_ccc
+golden_boot,2015,L1,Paris Saint Germain,51070,Zlatan Ibrahimovic,38,,wikipedia_ccc
+golden_boot,2016,L1,Paris Saint Germain,274,Edinson Cavani,35,,wikipedia_ccc
+golden_boot,2017,L1,Paris Saint Germain,274,Edinson Cavani,28,,wikipedia_ccc
+golden_boot,2018,L1,Paris Saint Germain,278,Kylian Mbappe,33,,wikipedia_ccc
+golden_boot,2019,L1,Monaco,2059,Wissam Ben Yedder,18,tie; season curtailed - COVID,wikipedia_ccc
+golden_boot,2019,L1,Paris Saint Germain,278,Kylian Mbappe,18,tie; season curtailed - COVID,wikipedia_ccc
+golden_boot,2020,L1,Paris Saint Germain,278,Kylian Mbappe,27,,wikipedia_ccc
+golden_boot,2021,L1,Paris Saint Germain,278,Kylian Mbappe,28,,wikipedia_ccc
+golden_boot,2022,L1,Paris Saint Germain,278,Kylian Mbappe,29,,wikipedia_ccc
+golden_boot,2023,L1,Paris Saint Germain,278,Kylian Mbappe,27,,wikipedia_ccc
+golden_boot,2024,L1,Paris Saint Germain,153,Ousmane Dembele,21,tie,wikipedia_ccc
+golden_boot,2024,L1,Marseille,897,Mason Greenwood,21,tie,wikipedia_ccc
+golden_boot,2025,L1,Rennes,163004,Esteban Lepaul,21,,wikipedia_ccc
+golden_boot,2010,PRT,FC Porto,12705,Hulk,23,,wikipedia_ccc
+golden_boot,2011,PRT,Benfica,70475,Oscar Cardozo,20,,wikipedia_ccc
+golden_boot,2012,PRT,FC Porto,41373,Jackson Martinez,26,,wikipedia_ccc
+golden_boot,2013,PRT,FC Porto,41373,Jackson Martinez,20,,wikipedia_ccc
+golden_boot,2014,PRT,FC Porto,41373,Jackson Martinez,21,,wikipedia_ccc
+golden_boot,2015,PRT,Benfica,580,Jonas,31,,wikipedia_ccc
+golden_boot,2016,PRT,Sporting CP,1497,Bas Dost,34,,wikipedia_ccc
+golden_boot,2017,PRT,Benfica,580,Jonas,34,,wikipedia_ccc
+golden_boot,2018,PRT,Benfica,582,Haris Seferovic,23,,wikipedia_ccc
+golden_boot,2019,PRT,Benfica,104,Carlos Vinicius,19,,wikipedia_ccc
+golden_boot,2020,PRT,Sporting CP,18748,Pedro Goncalves,23,,wikipedia_ccc
+golden_boot,2021,PRT,Benfica,51617,Darwin Nunez,26,,wikipedia_ccc
+golden_boot,2022,PRT,FC Porto,42315,Mehdi Taremi,22,,wikipedia_ccc
+golden_boot,2023,PRT,Sporting CP,18979,Viktor Gyokeres,29,,wikipedia_ccc
+golden_boot,2024,PRT,Sporting CP,18979,Viktor Gyokeres,39,,wikipedia_ccc
+golden_boot,2025,PRT,Sporting CP,47237,Luis Suarez,28,,wikipedia_ccc
+golden_boot,2010,ERE,,76652,Bjorn Vleminckx,23,club not listed in source,wikipedia_ccc
+golden_boot,2011,ERE,,1497,Bas Dost,32,club not listed in source,wikipedia_ccc
+golden_boot,2012,ERE,,42246,Wilfried Bony,31,club not listed in source,wikipedia_ccc
+golden_boot,2013,ERE,,2797,Alfred Finnbogason,29,club not listed in source,wikipedia_ccc
+golden_boot,2014,ERE,,667,Memphis Depay,22,club not listed in source,wikipedia_ccc
+golden_boot,2015,ERE,,183,Vincent Janssen,27,club not listed in source,wikipedia_ccc
+golden_boot,2016,ERE,,2739,Nicolai Jorgensen,21,club not listed in source,wikipedia_ccc
+golden_boot,2017,ERE,,2700,Alireza Jahanbakhsh,21,club not listed in source,wikipedia_ccc
+golden_boot,2018,ERE,,246,Luuk de Jong,28,tie; club not listed in source,wikipedia_ccc
+golden_boot,2018,ERE,,554,Dusan Tadic,28,tie; club not listed in source,wikipedia_ccc
+golden_boot,2020,ERE,,26902,Giorgos Giakoumakis,26,club not listed in source,wikipedia_ccc
+golden_boot,2021,ERE,,1826,Sebastien Haller,21,club not listed in source,wikipedia_ccc
+golden_boot,2022,ERE,,26845,Anastasios Douvikas,19,tie; club not listed in source,wikipedia_ccc
+golden_boot,2022,ERE,,162016,Xavi Simons,19,tie; club not listed in source,wikipedia_ccc
+golden_boot,2023,ERE,,36798,Vangelis Pavlidis,29,tie; club not listed in source,wikipedia_ccc
+golden_boot,2023,ERE,,246,Luuk de Jong,29,tie; club not listed in source,wikipedia_ccc
+golden_boot,2024,ERE,,37784,Sem Steijn,24,club not listed in source,wikipedia_ccc
+golden_boot,2025,ERE,,72155,Ayase Ueda,25,club not listed in source,wikipedia_ccc
+golden_boot,2010,BPL,Club Brugge KV,207,Ivan Perisic,22,,wikipedia_ccc
+golden_boot,2011,BPL,Mons,8572,Jeremy Perbet,25,,wikipedia_ccc
+golden_boot,2012,BPL,Club Brugge KV,1706,Carlos Bacca,25,,wikipedia_ccc
+golden_boot,2013,BPL,Lokeren,8628,Hamdi Harbaoui,22,,wikipedia_ccc
+golden_boot,2014,BPL,Anderlecht,2825,Aleksandar Mitrovic,20,,wikipedia_ccc
+golden_boot,2015,BPL,Charleroi,8572,Jeremy Perbet,22,,wikipedia_ccc
+golden_boot,2016,BPL,Anderlecht,30817,Lukasz Teodorczyk,22,,wikipedia_ccc
+golden_boot,2017,BPL,Anderlecht & Zulte Waregem,8628,Hamdi Harbaoui,22,split season between two clubs,wikipedia_ccc
+golden_boot,2018,BPL,Zulte Waregem,8628,Hamdi Harbaoui,25,,wikipedia_ccc
+golden_boot,2019,BPL,Antwerp,8465,Dieumerci Mbokani,18,season stopped early - COVID,wikipedia_ccc
+golden_boot,2020,BPL,Genk,15812,Paul Onuachu,33,,wikipedia_ccc
+golden_boot,2021,BPL,Union SG,26475,Deniz Undav,26,,wikipedia_ccc
+golden_boot,2022,BPL,Gent,27104,Hugo Cuypers,24,,wikipedia_ccc
+golden_boot,2023,BPL,Cercle Brugge,21036,Kevin Denkey,27,,wikipedia_ccc
+golden_boot,2024,BPL,Sint-Truiden,129126,Adriano Bertaccini,21,tie,wikipedia_ccc
+golden_boot,2024,BPL,Genk,110153,Tolu Arokodare,21,tie,wikipedia_ccc
+golden_boot,2025,BPL,Club Brugge KV,287923,Nicolo Tresoldi,19,,wikipedia_ccc
