@@ -666,7 +666,7 @@
     }
     var chips=document.getElementById('glChips');
     if(chips){
-      chips.innerHTML = renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
+      chips.innerHTML = renderHonourChips(D.honours) + renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
       if(typeof TAG_DEFS !== 'undefined'){
         chips.querySelectorAll('[data-tag]').forEach(function(el){
           var def=TAG_DEFS[el.getAttribute('data-tag')];
@@ -745,7 +745,7 @@
           if(def){ wtRows.push({ icon:(ICON[t.family]||ICON.CROSS), name:t.name, one:def.oneLiner, full:def.def }); }
         });
       }
-      wt.innerHTML = wtRows.map(function(r){
+      wt.innerHTML = renderHonourRows(D.honours) + wtRows.map(function(r){
         return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
           + '<div class="tt">' + r.icon + ' ' + r.name + ' <span class="tchev">&#8964;</span></div>'
           + '<div class="td">' + r.one + '</div>'

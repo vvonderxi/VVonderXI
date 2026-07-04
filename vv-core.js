@@ -732,10 +732,67 @@
     };
   }
 
+  // ── Honours render helpers (folded from vv-honours-render.js) ─────────
+  // Match live markup: #glChips gold chips (.chip.gold, hover-tip free via .chip[data-tip]),
+  // #wonderTags .tagrow (tap), buildCard top honour pill. STEP 1 wires renderHonourChips only.
+  const HONOUR_ICON = {
+    ballon_dor:       '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="9" r="6"/><path d="M9 15l-2 6 5-3 5 3-2-6"/></svg>',
+    world_cup_winner: '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>',
+    ucl_winner:       '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>',
+    league_champion:  '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>',
+    player_of_season: '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    golden_boot:      '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h6v7c3 0 8 1 8 4v2H4z"/></svg>',
+    top_assists:      '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4l2-6 4 12 2-6h4"/></svg>',
+  };
+  const HONOUR_CHIP_LABEL = {
+    ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL',
+    league_champion:'Champion', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
+  };
+  function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  // GLANCE STRIP: gold honour chips , prepend into #glChips (before prestige+profile).
+  function renderHonourChips(honours){
+    if(!honours || !honours.has) return '';
+    const items = honours.season.concat(honours.career);   // season first (sorted), then career
+    return items.map(function(h){
+      const icon = HONOUR_ICON[h.type] || '';
+      const label = HONOUR_CHIP_LABEL[h.type] || h.label;
+      const tip = (h.oneliner || h.label) + (h.context ? '  ,  ' + h.context : '');
+      return '<span class="chip gold" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
+    }).join('');
+  }
+  // WONDER TAGS: tap-expandable honour rows (wired NEXT step, not this one).
+  function renderHonourRows(honours){
+    if(!honours || !honours.has) return '';
+    const items = honours.season.concat(honours.career);
+    return items.map(function(h){
+      const icon = HONOUR_ICON[h.type] || '';
+      const oneLiner = h.oneliner || h.label;
+      let more = h.context ? h.context : '';
+      if(h.goals != null)   more = (more? more+' , ':'') + h.goals + ' goals';
+      if(h.assists != null) more = (more? more+' , ':'') + h.assists + ' assists';
+      return '<div class="tagrow honour" onclick="this.classList.toggle(\'open\')">'
+        + '<div class="tt">'+icon+' '+h.label+' <span class="tchev">⌄</span></div>'
+        + '<div class="td">'+escHtml(oneLiner)+'</div>'
+        + (more ? '<div class="tmore">'+escHtml(more)+'</div>' : '')
+        + '</div>';
+    }).join('');
+  }
+  // TOP-SLOT honour pill (card face, wired with the priority decision later).
+  function renderTopHonourPill(honours, opts){
+    if(!honours || !honours.topHonour) return '';
+    const h = honours.topHonour;
+    const cls = (opts && opts.baseClass) || 'chtagcell';
+    const icon = HONOUR_ICON[h.type] || '';
+    const label = HONOUR_CHIP_LABEL[h.type] || h.label;
+    return '<span class="'+cls+' gold" data-tag="'+escAttr(h.type)+'" data-tip="'+escAttr(h.oneliner||h.label)+'">'+icon+label+'</span>';
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, radarFor, confidenceFor, confidenceFields, vvClient,
-                fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER };
+                fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
+                renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
