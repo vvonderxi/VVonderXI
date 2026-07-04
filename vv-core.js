@@ -82,6 +82,12 @@
     return '';
   }
 
+  // ── Position display map , RENDER-ONLY rename (like the band display renames).
+  //    Data bucket stays "Winger" (tags/filters/eligibility unchanged); the card
+  //    just SHOWS the short code "WNG", matching GK/CB/FB/CDM/CM/CAM/ST. ──
+  const POS_DISPLAY = { Winger: 'WNG' };
+  function posDisplay(p){ return POS_DISPLAY[p] || p; }
+
   // ── buildCard , canonical Version A, with myclub's hidden-placeholder
   //    empty-tag branch adopted as the standard (keeps grid rows aligned). ──
   function buildCard(d, cw){
@@ -129,7 +135,7 @@
         <div class="ctl">
           <div class="cbadgewrap">
             <svg class="cbadge" viewBox="0 0 100 116"><defs><clipPath id="${uid}"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#${uid})">${badgeFill}</g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>${num}</svg>
-            <div class="pos">${d.pos}</div>
+            <div class="pos">${posDisplay(d.pos)}</div>
           </div>
         </div>
         <div class="yr">${d.year}</div>
@@ -790,7 +796,7 @@
 
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
-                bandFor, prestigeFor, radarFor, confidenceFor, confidenceFields, vvClient,
+                bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites

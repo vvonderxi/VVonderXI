@@ -642,7 +642,7 @@
     var _pl = document.getElementById('profileLead'); if(_pl){ var _b = vvProfileBlurb(D); _pl.textContent = _b || 'A footballer measured across five dimensions.'; }
     set('glGoals', D.goals);
     set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
-    set('glSub', (D.pos||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
+    set('glSub', (posDisplay(D.pos)||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
     set('glSquad', (D.number!=null ? D.number : 'NR'));
     var badgeFill=document.getElementById('glBadgeFill');
     if(badgeFill){
