@@ -302,17 +302,20 @@
   // Real scaling is percentile-within-position, PARKED until distributions
   // land (Blueprint §7). RADAR_REF caps are PROVISIONAL placeholders only.
   const RADAR_REF = { goalThreat:1.5, creation:2.6, progression:4.0, defensive:8.0 };
+  // INTERIM cosmetic cap , no radar dimension displays a fake-perfect 100 (mirrors the rt ceiling).
+  // Remove/replace when percentile-within-position scaling lands (parked, Blueprint §7).
+  const RADAR_CAP = 97;
   function radarFor(row){
     const m = row.minutes || 0;
     const p90 = v => (m>0 && v!=null) ? (v/m)*90 : 0;
     const r2 = v => Math.round(v*100)/100;
-    const sc = (v,ref) => Math.max(0, Math.min(100, Math.round(v/ref*100)));
+    const sc = (v,ref) => Math.max(0, Math.min(RADAR_CAP, Math.round(v/ref*100)));
 
     const goalThreat  = p90(row.goals) + 0.3*p90(row.shots_on);
     const creation    = p90(row.passes_key) + 0.5*p90(row.assists);
     const progression = p90(row.dribbles_success) + 0.02*p90(row.passes_total);
     const defensive   = p90(row.tackles_total) + p90(row.interceptions) + 0.1*p90(row.duels_won);
-    const reliability = Math.min(100, (m/(38*90))*100);   // raw availability, not per-90
+    const reliability = Math.min(100, (m/(38*90))*100);   // raw availability, not per-90 , TRUE 100 for a full season
 
     return {
       raw: {
@@ -325,7 +328,7 @@
         creation:sc(creation,RADAR_REF.creation),
         progression:sc(progression,RADAR_REF.progression),
         defensive:sc(defensive,RADAR_REF.defensive),
-        reliability:Math.round(reliability)
+        reliability:Math.min(RADAR_CAP, Math.round(reliability))   // display caps at RADAR_CAP; raw.reliability stays true
       },
       provisional: true   // flag: scaling is placeholder, not real percentiles
     };
@@ -712,7 +715,7 @@
     } catch(e){ return empty; }
     if(res.error || !res.data) return empty;
     const season = [];   // honours for THIS card's season+league
-    const career = [];   // world_cup_winner etc. (player-level)
+    const career = [];   // legacy , now always empty (world_cup_winner is season-specific, see loop)
     for(const h of res.data){
       const meta = HONOUR_META[h.honour_type];
       if(!meta) continue; // unknown type , skip (mirror rule: only what we define)
@@ -725,10 +728,11 @@
         season_year: h.season_year != null ? h.season_year : null,
         league_code: h.league_code || null,
       };
-      if(h.honour_type === 'world_cup_winner'){
-        career.push(item);
-      } else if(seasonYear != null && h.season_year === seasonYear
-                 && (!h.league_code || !leagueCode || h.league_code === leagueCode)){
+      // world_cup_winner is now SEASON-SPECIFIC (season_year = tournament year, no league):
+      // matches season_year like every other honour but SKIPS the league check (WC has no league).
+      if(seasonYear != null && h.season_year === seasonYear
+         && (h.honour_type === 'world_cup_winner'
+             || !h.league_code || !leagueCode || h.league_code === leagueCode)){
         season.push(item);
       }
     }
@@ -804,11 +808,74 @@
     return '<span class="'+cls+' gold" data-tag="'+escAttr(h.type)+'" data-tip="'+escAttr(h.oneliner||h.label)+'">'+icon+label+'</span>';
   }
 
+  // ── Honours BATCH (folded from vv-honours-batch.js) , ONE query for a whole
+  //    page of cards (rankings). Mirrors fetchHonours' season-match (incl. the
+  //    WC season-specific rule), but batched (no N round-trips). Sets card.honours in place. ──
+  async function attachHonoursBatch(cards){
+    if(!Array.isArray(cards) || !cards.length) return;
+    const sb = (typeof vvClient === 'function') ? vvClient() : null;
+    if(!sb){ cards.forEach(c=>{ if(c) c.honours = emptyHonours(); }); return; }
+    const ids = [...new Set(cards.map(c => c && c.api_player_id).filter(x => x != null))];
+    if(!ids.length){ cards.forEach(c=>{ if(c) c.honours = emptyHonours(); }); return; }
+    let res;
+    try {
+      res = await sb.from('honours')
+        .select('honour_type,season_year,league_code,honour_context,goals,assists,api_player_id')
+        .in('api_player_id', ids);
+    } catch(e){ cards.forEach(c=>{ if(c) c.honours = emptyHonours(); }); return; }
+    if(res.error || !res.data){ cards.forEach(c=>{ if(c) c.honours = emptyHonours(); }); return; }
+    const byPlayer = new Map();
+    for(const h of res.data){
+      if(!byPlayer.has(h.api_player_id)) byPlayer.set(h.api_player_id, []);
+      byPlayer.get(h.api_player_id).push(h);
+    }
+    for(const c of cards){
+      if(!c){ continue; }
+      c.honours = shapeHonoursForCard(c, byPlayer.get(c.api_player_id) || []);
+    }
+  }
+  // Shape one card's honours from its player's rows (mirrors fetchHonours; WC season-specific).
+  function shapeHonoursForCard(card, rows){
+    const seasonYear = card.season_year != null ? card.season_year
+                     : (card.season != null ? parseInt(String(card.season).slice(0,4),10) : null);
+    const leagueCode = card.league_code || null;
+    const season = [];
+    for(const h of rows){
+      const meta = HONOUR_META[h.honour_type];
+      if(!meta) continue;
+      if(seasonYear != null && h.season_year === seasonYear
+         && (h.honour_type === 'world_cup_winner'
+             || !h.league_code || !leagueCode || h.league_code === leagueCode)){
+        season.push({
+          type: h.honour_type, label: meta.label, tier: meta.tier,
+          oneliner: (typeof HONOUR_ONELINER !== 'undefined' ? HONOUR_ONELINER[h.honour_type] : '') || meta.label,
+          context: h.honour_context || null,
+          goals: h.goals, assists: h.assists,
+          season_year: h.season_year, league_code: h.league_code || null,
+        });
+      }
+    }
+    season.sort((a,b)=>a.tier-b.tier);
+    const all = season.slice();   // WC season-specific -> all == season
+    return { season, career: [], all, count: season.length, has: season.length > 0, topHonour: all.length ? all[0] : null };
+  }
+  function emptyHonours(){ return { season:[], career:[], all:[], count:0, has:false, topHonour:null }; }
+  // Compact gold honour pills for list/compact rows (rankRowHTML) , text-only, up to 2.
+  function renderHonourPillsCompact(honours, opts){
+    if(!honours || !honours.has) return '';
+    const cls = (opts && opts.baseClass) || 'rtag';
+    return honours.all.slice(0, 2).map(function(h){
+      const label = (typeof HONOUR_CHIP_LABEL !== 'undefined' ? HONOUR_CHIP_LABEL[h.type] : '') || h.label;
+      return '<span class="'+cls+' gold" data-tip="'+escAttr(h.oneliner||h.label)+'">'+label+'</span>';
+    }).join('');
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
-                renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL };
+                renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
+                attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

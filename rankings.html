@@ -113,7 +113,7 @@
   .compactmode .rmvv{font-size:10px}
   .compactmode .rmn{font-size:17px}
   .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
-  .rtag.gold{background:rgba(232,184,75,.16);border-color:rgba(232,184,75,.55);color:#b5871a}
+  .rtag.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A);border-color:transparent;color:#5a4410}
   .rtag.pink{background:rgba(255,92,122,.14);border-color:rgba(255,92,122,.5);color:#e0466a}
   .rtag.blue{background:rgba(59,111,176,.14);border-color:rgba(59,111,176,.5);color:#3f74b5}
   .rtag.green{background:rgba(46,140,90,.15);border-color:rgba(46,140,90,.5);color:#2a8455}
@@ -523,7 +523,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       +'<div class="uyear">'+d.year+'</div>'
       +'<div class="uclub">'+d.clubname+'</div>'
       +'<div class="upos">'+posDisplay(d.pos)+'</div>'
-      +'<div class="utags">'+prestige+tags+'</div>'
+      +'<div class="utags">'+renderHonourPillsCompact(d.honours)+prestige+tags+'</div>'
       +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
       +'<div class="uassists">'+assists+'</div>'
       +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
@@ -650,6 +650,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     }
     var _rawLen=(data||[]).length;
     rankShowMoreFlag = !f.tags.length && _rawLen>=rankLimit && (count==null || CARDS.length<count);
+    await attachHonoursBatch(CARDS);   // ONE batched honours query for the whole page; sets each card.honours
     renderRank();
   }
   (function(){
