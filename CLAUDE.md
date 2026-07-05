@@ -18,11 +18,12 @@ Why this file exists: this project has suffered from too many documents and no c
 
 ```
 === VVONDERXI LAUNCH PROGRESS ===
-Data quality   █████████████████░  ~94%   Standout cleared + honours 629 complete/verified; matview refresh pending; goals-provenance audit open; ~18k coarse tail = v2
-Tags           █████░░░░░░░░░░░░░   ~30%   honours 629 WIRED to cards (face pills + gold glance chips + Wonder Tags; Winter-voice + prestige-ranked); Compare Accolades + profile-tag validation pending
-Compare        █░░░░░░░░░░░░░░░░░   ~8%    honours fetched into slots (card.honours); Accolades render + compare engine still to build
-Card editorial ███░░░░░░░░░░░░░░░   ~15%   layout done, editorial half unwired
-Hygiene        ███░░░░░░░░░░░░░░░   ~20%   key rotation, meta, logo, QA outstanding
+Data quality   █████████████████░  ~95%   honours 629 live + NR-assist fill (71 rt>=85 done, matview refreshed); tail NR queued (194 rt80-84, 1184 rt75-79); goals-provenance audit open
+Tags           ██████░░░░░░░░░░░░  ~35%   honours family COMPLETE + all bugs fixed, live cross-surface (card/rankings/mobile, rows priority-capped); profile + prestige + playbook audit remain
+Compare        ████████░░░░░░░░░░  ~45%   slots/deep-link/season-switch/verdict-radar-trajectory LIVE; C6 Accolades + C5 verdict still hardcoded demo; C8 position filter + polish remain
+Card editorial ██████████░░░░░░░░  ~55%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED; K4 Proof + K5 VV-line trajectory + honours strip UI remain
+Hygiene        ███░░░░░░░░░░░░░░░  ~20%   key rotation, meta, logo, QA outstanding; HYGIENE_BACKLOG_2026-07-05 (13 items) logged
+Engine         ███████████████░░░  ~85%   bands recut 95/90/85/80 + top-of-scale cap live + trustworthy; radar percentile parked; dynamic-league-strength = parallel launch-blocker
 Merge          ░░░░░░░░░░░░░░░░░░    0%    redesign-compare -> vvonderxi_BIGGER
 ```
 LAUNCH = tags + Compare + card editorial + hygiene + merge. **Data quality is a supporting layer, NOT a blocker** , launch bar is "top band clean + tail honestly flagged via confidence dots", not 100% of 56k cards. The seductive trap is endless data-polish while Compare stays hardcoded. After honours, the center of gravity MUST shift from data to the tag->Compare product spine.
@@ -100,6 +101,29 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-05 | Honours bug-batch (Batch 1) + build-state reconciliation
+Session focus: fix honours bugs across all surfaces, reconcile the TRUE build-state (3 sources), NR-assist fill.
+
+**BATCH 1 , 4 honours/display bugs (commit f6cb461, pushed):**
+1. World Cup was showing on EVERY card for a player (career-wide) , now SEASON-SPECIFIC (matches tournament-year card only, like all trophies). Messi 2011/12 no longer shows WC; his 2022 PSG card does. fetchHonours + shapeHonoursForCard both updated.
+2. Honours were INVISIBLE in rankings (search/list) , card view used buildCard (has priority-fill) but d.honours was never fetched; list/compact had no honour logic. Fixed: attachHonoursBatch(CARDS) , ONE batched honours query per page (not per-card; 50 cards = 1 query), + renderHonourPillsCompact in list/compact rows. Honours now show on the card face + rows in all rankings views.
+3. Wonder Tags broken on mobile , honour-row .ci SVG icons were unsized -> rendered ~300x150px, blowing out layout. Fixed: .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}. Tap mechanism was fine.
+4. Radar dimensions showed fake 100/100 , provisional linear scale (raw div RADAR_REF x100) clamped at 100; low placeholder refs let elite output max out; reliability maxed at full-season. Fixed: RADAR_CAP=97 display cap. IMPORTANT: raw.reliability stays TRUTHFUL (100 = genuinely played full season); only the radar DISPLAY caps. The other 4 dims capped at scaling site. INTERIM , real fix is percentile-within-position scaling (parked, engine phase).
+
+**FOLLOW-UP (post-Batch-1, this session):** #14 rowToCard carries season_year/season/league_code (rankings honours had matched nothing without them) + #15 clean Winter hovers + #16 Drury expansions + #17 grouped Wonder Tags (Silverware/Individual/The Player) = commit 1385002. #20 rankings ROW tags now priority-capped (honours > prestige > profile; 3 list / 2 compact; silent, no crop) = commit 3af7a40. Caveat logged: league_champion/ucl_winner are team-keyed (NULL api_player_id) so they never attach to players , SILVERWARE currently shows World Cup only.
+
+**NR-ASSIST FILL (data, done):** 71 rt>=85 pre-2016 marquee cards had NULL assists (scored 85+ on goals alone). CCC verified all 71 vs FBref domestic-league splits; written via guarded UPDATE (assists IS NULL); matview refreshed. Their rt nudges up. Remaining NR: 194 at rt80-84, 1184 at rt75-79 (queued, tiered). 4 goal-count flags noted (separate goals-provenance audit).
+
+**BUILD-STATE RECONCILED (3 sources: docs + PM + LIVE verify) , corrects earlier stale estimates:**
+- Compare ~45% (was estimated ~8%): slots/deep-link/season-switch/speed/mobile-template/verdict-radar-trajectory LIVE. REMAINING: C5 verdict "The Edge" + C6 Accolades still hardcoded Henry/Haaland (B2); C8 position filter (passF); See-Player, back path, layout clip, edge-pivot flip, radar overlay.
+- Card editorial ~55% (was ~20%): Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED. REMAINING: K4 Proof (hardcoded Bruno); K5 trajectory VV-line chart (greenfield); honours strip UI; defender flag; identity line; refined-crest shield.
+- Honours: DONE + all bugs fixed (this session). Winter one-liners, prestige ranking, card-face priority-fill, cross-surface (card/rankings/mobile).
+- Tags ~35%: honours family complete; profile/prestige/playbook-audit remain.
+
+**NEW BACKLOG (docs/HYGIENE_BACKLOG_2026-07-05.md, 13 items):** WC fix(done), rankings honours(done), mobile icons(done), radar cap(done); + accolades category division, custom branded icons, sticky filter+scroll-top-arrow, unify Compare picker, filter taxonomy+dynamic sort, radar percentile(engine), VV Index attacking-lean Graham disclosure.
+
+**NEXT:** Compare Accolades (C6 , wire honours into .vtchips, replace Henry/Haaland demo; quick, renderers exist). Then C5 verdict, card K4 Proof + K5 trajectory, tag system/playbook audit. Engine dynamic-league-strength = parallel launch-blocker.
 
 ### 2026-07-04 | Honours -> cards: fetch + render layer + polish (Winter voice, prestige rank, card-face fill) + WNG
 - HONOURS NOW SURFACE ON CARDS end-to-end. fetchHonours() folded into vv-core.js (reuses vvClient,
