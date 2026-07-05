@@ -603,6 +603,10 @@
     return {
       card_id:  row.card_id != null ? row.card_id : null,   // identity, links to card.html?id=
       api_player_id: row.api_player_id != null ? row.api_player_id : null,  // stable player id (trajectory query)
+      // raw honour-match keys , attachHonoursBatch/shapeHonoursForCard need these (year/league below are DISPLAY forms)
+      season_year: row.season_year,
+      season:      row.season,
+      league_code: row.league_code,
       // ── Mini-card face slots (consumed by buildCard) ──
       year:     fmtSeason(row.season),
       club1:    row.primary_colour   || undefined,
@@ -695,7 +699,7 @@
     world_cup_winner: 'A world champion. The prize every player covets most.',
     ucl_winner:       'Champion of Europe, the club game’s greatest prize.',
     league_champion:  'Champions. Top of the league across a full season.',
-    player_of_season: 'The league’s outstanding player across the campaign.',
+    player_of_season: 'The league’s finest over a full campaign.',
     golden_boot:      'The league’s top scorer. Nobody scored more.',
     top_assists:      'The league’s chief creator. Nobody made more.',
   };
@@ -777,26 +781,57 @@
     return items.map(function(h){
       const icon = HONOUR_ICON[h.type] || '';
       const label = HONOUR_CHIP_LABEL[h.type] || h.label;
-      const tip = (h.oneliner || h.label) + (h.context ? '  ,  ' + h.context : '');
+      const tip = h.oneliner || h.label;   // #15: hover = clean one-liner ONLY (context/tally live in the expand)
       return '<span class="chip gold" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
     }).join('');
   }
-  // WONDER TAGS: tap-expandable honour rows (wired NEXT step, not this one).
+  // #16: Drury expansions , the emotional meaning of each honour TYPE (general, not per-player).
+  //   Shown in the Wonder-Tags expand (.tmore), above the era-correct award context + tally.
+  const HONOUR_DRURY = {
+    ballon_dor:       'The Ballon d’Or is football’s loneliest honour. Not a team’s triumph but one player’s, held above all others for a single season. To win it is to be told, by those who watch closest, that on this earth in this year, no one played the game better.',
+    world_cup_winner: 'Every four years a nation holds its breath, and for one squad it ends in glory. The World Cup is the prize a career is measured against, the one that turns a great player into an immortal. Some of the finest never lift it. Those who do are never forgotten.',
+    ucl_winner:       'European nights are different, and every player knows it. To win the Champions League is to conquer the best the continent can offer, under the brightest lights, when the margins are thinnest. This is where legends are made and reputations are sealed.',
+    league_champion:  'A league title is the honest prize. Not one glorious night but nine months of them, the long grind of winter fixtures and spring nerves, where consistency is everything and there is nowhere to hide. To finish top is to have been the best not once, but across a whole season.',
+    player_of_season: 'Some seasons, one player stands apart. Not merely the top scorer or the finest creator, but the man who bent the whole campaign to his will, week after week, until his name was the only answer. This is the honour his peers and the watching game give to that season’s defining figure.',
+    golden_boot:      'There is a purity to the Golden Boot. Not the most complete player, not the prettiest to watch, simply the one who did the thing everyone came to see, more than anyone else. To lead a league in goals across a whole season is to answer the same question every week, and never once flinch.',
+    top_assists:      'The best assists are acts of generosity. To lead a league in them is to have seen the pass others missed, again and again, to have made teammates better and asked for none of the glory. The top creator is the player the goalscorers should thank first.',
+  };
+  // One honour as a tap-expandable Wonder-Tags row: one-liner (.td) + Drury paragraph & meta (.tmore, #16).
+  function honourRowHTML(h){
+    const icon = HONOUR_ICON[h.type] || '';
+    const oneLiner = h.oneliner || h.label;
+    const drury = HONOUR_DRURY[h.type] || '';
+    const bits = [];
+    if(h.context) bits.push(h.context);
+    if(h.goals != null) bits.push(h.goals + ' goals');
+    if(h.assists != null) bits.push(h.assists + ' assists');
+    const meta = bits.join(' , ');
+    const tmore = (drury || meta)
+      ? '<div class="tmore">' + (drury ? escHtml(drury) : '')
+        + (meta ? '<div class="tmeta">'+escHtml(meta)+'</div>' : '') + '</div>'
+      : '';
+    return '<div class="tagrow honour" onclick="this.classList.toggle(\'open\')">'
+      + '<div class="tt">'+icon+' '+h.label+' <span class="tchev">⌄</span></div>'
+      + '<div class="td">'+escHtml(oneLiner)+'</div>'
+      + tmore
+      + '</div>';
+  }
+  // Wonder-Tags honour rows (tier-sorted); delegates to honourRowHTML per item.
   function renderHonourRows(honours){
     if(!honours || !honours.has) return '';
-    const items = honours.all || honours.season.concat(honours.career);   // tier-sorted combined (CHANGE 2)
-    return items.map(function(h){
-      const icon = HONOUR_ICON[h.type] || '';
-      const oneLiner = h.oneliner || h.label;
-      let more = h.context ? h.context : '';
-      if(h.goals != null)   more = (more? more+' , ':'') + h.goals + ' goals';
-      if(h.assists != null) more = (more? more+' , ':'') + h.assists + ' assists';
-      return '<div class="tagrow honour" onclick="this.classList.toggle(\'open\')">'
-        + '<div class="tt">'+icon+' '+h.label+' <span class="tchev">⌄</span></div>'
-        + '<div class="td">'+escHtml(oneLiner)+'</div>'
-        + (more ? '<div class="tmore">'+escHtml(more)+'</div>' : '')
-        + '</div>';
-    }).join('');
+    const items = honours.all || honours.season.concat(honours.career);
+    return items.map(honourRowHTML).join('');
+  }
+  // #17: Wonder Tags grouped into 3 named sections , SILVERWARE (Team + world_cup Career) ->
+  //   INDIVIDUAL HONOURS (Individual) -> THE PLAYER (profile rows). Each renders only when non-empty.
+  function renderWonderTagsGrouped(honours, profileRowsHtml){
+    const all = (honours && honours.all) ? honours.all : [];
+    const silverware = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && (m.group === 'Team' || h.type === 'world_cup_winner'); });
+    const individual = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && m.group === 'Individual'; });
+    const sec = function(label, html){ return html ? '<div class="wtsec"><div class="wtsechead">'+label+'</div>'+html+'</div>' : ''; };
+    return sec('SILVERWARE', silverware.map(honourRowHTML).join(''))
+         + sec('INDIVIDUAL HONOURS', individual.map(honourRowHTML).join(''))
+         + sec('THE PLAYER', profileRowsHtml || '');
   }
   // TOP-SLOT honour pill (card face, wired with the priority decision later).
   function renderTopHonourPill(honours, opts){
@@ -875,7 +910,8 @@
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
-                attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours };
+                attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

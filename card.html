@@ -149,6 +149,10 @@
   .tagrow.open .tchev{transform:rotate(180deg)}
   .tagrow .tmore{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s;font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.78)}
   .tagrow.open .tmore{max-height:260px;opacity:1;margin-top:10px}
+  /* #17 Wonder Tags grouped sections , Winter label + gold hairline */
+  .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#E8B84B;margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
+  .wtsec:first-child .wtsechead{margin-top:0}
+  .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:rgba(232,184,75,0.85);margin-top:10px}
   .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
   .clubpill:hover{background:rgba(255,255,255,0.1)}
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
@@ -747,12 +751,13 @@
           if(def){ wtRows.push({ icon:(ICON[t.family]||ICON.CROSS), name:t.name, one:def.oneLiner, full:def.def }); }
         });
       }
-      wt.innerHTML = renderHonourRows(D.honours) + wtRows.map(function(r){
+      var profileRowsHtml = wtRows.map(function(r){
         return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
           + '<div class="tt">' + r.icon + ' ' + r.name + ' <span class="tchev">&#8964;</span></div>'
           + '<div class="td">' + r.one + '</div>'
           + '<div class="tmore">' + r.full + '</div></div>';
       }).join('');
+      wt.innerHTML = renderWonderTagsGrouped(D.honours, profileRowsHtml);   // #17: SILVERWARE -> INDIVIDUAL HONOURS -> THE PLAYER
     }
   }
   function cwNow(){
