@@ -962,9 +962,10 @@
           s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>'; }
       });
     }
-    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i>VV Score</span></div>';
+    var head='<div class="tjhead">Goals and assists per season, tracked against the VV Score they earned.</div>';
+    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i>V<span class="tjvp">V</span> Score</span></div>';
     var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
-    return legend+'<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>'+caption;
+    return head+legend+'<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>'+caption;
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
