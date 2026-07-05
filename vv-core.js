@@ -958,7 +958,8 @@
       if(pts.length>1) s+='<polyline class="tjline" points="'+pts.join(' ')+'" fill="none" stroke="#F0EAD9" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
       data.forEach(function(d,i){ if(d.rt==null) return; var x=X(i), y=Yr(d.rt), pk=(i===peakIdx);
         s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(pk?4.5:3.1)+'" fill="'+(pk?'#E8B84B':'#F0EAD9')+'" stroke="#17151a" stroke-width="1.2"/>';
-        if(pk) s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y-9).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>';
+        if(pk){ var poff=d.selected?-24:-12;   // clear the selected highlight box when peak==selected; else sit just above the dot
+          s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>'; }
       });
     }
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i>VV Score</span></div>';
