@@ -106,9 +106,9 @@
   .vvnd b{color:var(--cream);font-weight:600} body.light .vvnd{color:#4a443c} body.light .vvnd b{color:var(--charcoal)}
   .vvceiling{font-family:'Inter';font-weight:400;font-size:15px;line-height:1.5;color:rgba(243,237,224,0.75);background:rgba(232,184,75,0.12);border:1px solid rgba(232,184,75,0.3);border-radius:13px;padding:14px 16px;margin-bottom:14px}
   .vvceiling b{font-family:'Archivo';font-weight:800;color:var(--gold)} body.light .vvceiling{color:#5a5248} body.light .vvceiling b{color:#8a6410}
-  .vvstory{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px 18px}
+  .vvstory{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px 18px}
   body.light .vvstory{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
-  .vvstory-d{font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.65;color:rgba(243,237,224,0.92);max-height:0;overflow:hidden;transition:max-height .45s ease}
+  .vvstory-d{font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.65;color:#FFFFFF;max-height:0;overflow:hidden;transition:max-height .45s ease}
   body.light .vvstory-d{color:#3a352e}
   .vvstory.open .vvstory-d{max-height:800px;margin-bottom:12px}
   .vvstory-more{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.04em;color:var(--pink);background:none;border:none;cursor:pointer;padding:0}
@@ -249,7 +249,7 @@
   @media (min-width:721px){ .totop{bottom:28px} }
   .dimgrid{display:none}
   .dimgrid.show{display:grid}
-  .dim-see{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--ink,#1C1B1A);background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin:4px 0 18px;transition:.15s}
+  .dim-see{font-family:'Archivo';font-weight:800;font-size:13px;color:rgba(240,234,217,0.9);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:999px;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin:4px 0 18px;transition:.15s}
   .dim-see.on{background:var(--pink,#FF5C7A);color:#fff;border-color:transparent}
   .dim-see .chev{transition:transform .2s} .dim-see.on .chev{transform:rotate(180deg)}
 
