@@ -937,17 +937,24 @@
     var X=function(i){ return ml+slot*(i+0.5); };
     var Yl=function(v){ return mt+ph-(v/axisTop)*ph; };
     var Yr=function(v){ return mt+ph-((v-vvMin)/(vvMax-vvMin))*ph; };
-    var s='';
+    var s='<defs>'
+      + '<linearGradient id="tjgGoal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF6E88"/><stop offset="1" stop-color="#F04E6C"/></linearGradient>'
+      + '<linearGradient id="tjgAst" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C860"/><stop offset="1" stop-color="#E0AC3C"/></linearGradient>'
+      + '<filter id="tjShadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.18"/></filter>'
+      + '</defs>';
+    // SHARED gridlines , LEFT (G+A) and RIGHT (VV) labels map to the SAME horizontal lines
     for(var t=0;t<=axisTop;t+=lstep){ var y=Yl(t);
       s+='<line class="tjgrid" x1="'+ml+'" y1="'+y.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y.toFixed(1)+'"/>';
       s+='<text class="tjyl" x="'+(ml-6)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="end">'+t+'</text>';
+      if(hasVV){ var vvAt=Math.round(vvMin+(vvMax-vvMin)*(t/axisTop));   // VV value at this shared gridline
+        s+='<text class="tjyr" x="'+(W-mr+6)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="start">'+vvAt+'</text>'; }
     }
-    if(hasVV){ [vvMin, Math.round((vvMin+vvMax)/2), vvMax].forEach(function(v){ var y=Yr(v);
-      s+='<text class="tjyr" x="'+(W-mr+6)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="start">'+v+'</text>'; }); }
     data.forEach(function(d,i){ var x=X(i), bx=x-bw/2, base=Yl(0);
       if(d.selected) s+='<rect class="tjsel" x="'+(bx-4).toFixed(1)+'" y="'+(mt-2).toFixed(1)+'" width="'+(bw+8).toFixed(1)+'" height="'+(ph+2).toFixed(1)+'" rx="7"/>';
-      var gTop=Yl(d.g); if(d.g>0) s+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="3" fill="#FF5C7A"/>';
-      var aTop=Yl(d.g+d.a); if(d.a>0) s+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="3" fill="#E8B84B"/>';
+      var gTop=Yl(d.g), aTop=Yl(d.g+d.a), bars='';
+      if(d.g>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="4" fill="url(#tjgGoal)"/>';
+      if(d.a>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="4" fill="url(#tjgAst)"/>';
+      if(bars) s+='<g filter="url(#tjShadow)">'+bars+'</g>';   // soft shadow lifts the stacked bar off the green
       var top=(d.g+d.a>0)?aTop:base;
       s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+(top-6).toFixed(1)+'" text-anchor="middle">'+(d.g+d.a)+'</text>';
       var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
