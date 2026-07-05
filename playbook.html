@@ -2,7 +2,7 @@
 <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VVonderXI , The Playbook</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--page-1:#154A2C;--page-2:#0F3A22;--page-3:#0A2A18;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
+<style>  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--page-1:#154A2C;--page-2:#0F3A22;--page-3:#0A2A18;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,var(--page-1) 0%,var(--page-2) 50%,var(--page-3) 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
@@ -135,7 +135,7 @@
   body.light .tagdef .td{color:#5a544b}
   .tagdef .td b{font-weight:600;color:var(--cream)} body.light .tagdef .td b{color:var(--charcoal)}
   .tagdef .drury{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease,opacity .4s ease;font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.6;color:var(--cream)}
-  .tagdef.open .drury{max-height:600px;opacity:1;margin-top:13px;padding:15px 16px;background:linear-gradient(180deg,#262122,#1a1718);border-radius:12px;color:#F3EDE0}
+  .tagdef.open .drury{max-height:600px;opacity:1;margin-top:13px;padding:15px 16px;background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:12px;color:#F3EDE0}
   .tagdef .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0}
   /* honours = gold-tinted; prestige = light-gold hero card (both modes) */
   .tagdef.gold{background:linear-gradient(135deg,rgba(232,184,75,0.16),rgba(232,184,75,0.06));border-color:rgba(232,184,75,0.3)}
@@ -157,7 +157,7 @@
   .dim .ds{font-family:'Inter';font-weight:400;font-size:14.5px;color:rgba(243,237,224,0.62);margin-top:5px;line-height:1.5} body.light .dim .ds{color:#5a544b}
 
   /* percentile + data confidence (dark feature panels both modes) */
-  .pctbox{background:linear-gradient(180deg,#262122,#191617);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:24px 26px;max-width:680px}
+  .pctbox{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:24px 26px;max-width:680px}
   .pctbox .t{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--cream);margin-bottom:10px}
   .pctbox .b{font-family:'Inter';font-weight:400;font-size:16px;line-height:1.65;color:rgba(243,237,224,0.8)}
   .pctbox .b b{color:var(--pink);font-weight:600}
@@ -195,7 +195,7 @@
   .vvband{flex-direction:column;align-items:stretch;gap:0}
   .vvband-top{display:flex;align-items:center;gap:16px}
   .vvband-story{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease,opacity .4s ease;font-family:'Bricolage Grotesque';font-weight:600;font-size:15.5px;line-height:1.6;color:#F3EDE0}
-  .vvband.open .vvband-story{max-height:400px;opacity:1;margin-top:13px;padding:14px 15px;background:linear-gradient(180deg,#262122,#1a1718);border-radius:12px}
+  .vvband.open .vvband-story{max-height:400px;opacity:1;margin-top:13px;padding:14px 15px;background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:12px}
   .vvband .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0;align-self:flex-start}
   /* Desktop-only band-card type scale (min-width:1181px = page's 2-column desktop form; mobile untouched) */
   @media (min-width:1181px){
