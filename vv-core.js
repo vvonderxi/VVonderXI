@@ -775,14 +775,15 @@
   function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   // GLANCE STRIP: gold honour chips , prepend into #glChips (before prestige+profile).
-  function renderHonourChips(honours){
+  function renderHonourChips(honours, opts){
     if(!honours || !honours.has) return '';
+    const cls = (opts && opts.baseClass) || 'chip';   // card glance = 'chip'; Compare passes 'vchip'
     const items = honours.all || honours.season.concat(honours.career);   // tier-sorted combined (CHANGE 2)
     return items.map(function(h){
       const icon = HONOUR_ICON[h.type] || '';
       const label = HONOUR_CHIP_LABEL[h.type] || h.label;
       const tip = h.oneliner || h.label;   // #15: hover = clean one-liner ONLY (context/tally live in the expand)
-      return '<span class="chip gold" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
+      return '<span class="'+cls+' gold" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
     }).join('');
   }
   // #16: Drury expansions , the emotional meaning of each honour TYPE (general, not per-player).

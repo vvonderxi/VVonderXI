@@ -609,22 +609,12 @@ body.light .pkmsub{color:#b0a899}
             <div class="vsect-t">Accolades</div><div class="vsect-d">The honours and signatures of each season, the kind of player each man was that year.</div>
             <div class="vtags">
               <div class="vtcol">
-                <div class="vtname">Henry</div>
-                <div class="vtchips">
-                  <span class="vchip gold" data-tip="One of the rarest single seasons , a year that defined an era.">&#128081; Iconic</span>
-                  <span class="vchip gold" data-tip="The player the whole team leaned on.">&#128081; Talisman</span>
-                  <span class="vchip" data-tip="Ruthless in front of goal , chances became goals.">&#127919; Clinical</span>
-                  <span class="vchip" data-tip="Pace that stretched and broke defensive lines.">&#9889; Pace Merchant</span>
-                </div>
+                <div class="vtname"></div>
+                <div class="vtchips"></div>
               </div>
               <div class="vtcol">
-                <div class="vtname">Haaland</div>
-                <div class="vtchips">
-                  <span class="vchip gold" data-tip="Led the league for goals across the season.">&#128095; Golden Boot</span>
-                  <span class="vchip" data-tip="A pure number nine, living on the last shoulder.">&#129385; Poacher</span>
-                  <span class="vchip" data-tip="Ruthless in front of goal , chances became goals.">&#127919; Clinical</span>
-                  <span class="vchip" data-tip="A physical presence defenders could not handle.">&#128170; Powerhouse</span>
-                </div>
+                <div class="vtname"></div>
+                <div class="vtchips"></div>
               </div>
             </div>
           </div>
@@ -1024,10 +1014,23 @@ body.light .pkmsub{color:#b0a899}
         vvSetStory(nameA,nameB,msg,msg); vvSetVerdict(msg,'',engine,va,vb);
       });
   }
+  // ── Accolades , wire BOTH slots (real name + gold honours + profile tags) from CMP_A/CMP_B
+  function vvSetAccolades(){
+    var cols=document.querySelectorAll('.vtags .vtcol');
+    function fill(col,c){
+      if(!col) return;
+      var nm=col.querySelector('.vtname'); if(nm) nm.textContent=(c&&c.surname)?c.surname:'';
+      var chips=col.querySelector('.vtchips'); if(!chips) return;
+      var hon =(c&&c.honours)?renderHonourChips(c.honours,{baseClass:'vchip'}):'';   // gold, honours first
+      var prof=(c&&c.tags)?renderTagPills(c.tags,{baseClass:'vchip'}):'';            // then profile tags
+      chips.innerHTML=hon+prof;
+    }
+    fill(cols[0],CMP_A); fill(cols[1],CMP_B);
+  }
   // reveal handler , draw graphics when Compare is pressed
   document.querySelector('.settle').addEventListener('click',function(){
     var m=document.querySelector('.matchup'); if(m && CMP_A && CMP_B) m.classList.add('settled');
-    setTimeout(async ()=>{vvComputeSpokes();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);},60);
+    setTimeout(async ()=>{vvComputeSpokes();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);},60);
     vvGenerateVerdict();
   });
   // redraw radar on mode toggle (grid contrast)
