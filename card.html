@@ -6,7 +6,7 @@
 <title>VVonderXI , Master Card View</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0}
+  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#17151a;--panel-t:#262122;--panel-b:#1d1a1b}
   *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
@@ -74,7 +74,7 @@
   .attrtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
   .attrtop span{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#9a9285}
   /* trajectory (dual-axis: stacked G/A bars + VV Score line, on a dark panel) */
-  .tjbox{background:#17151a;border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
+  .tjbox{background:var(--panel);border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
   .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:8px}
   .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
   .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -102,17 +102,17 @@
   .pct{width:70px;height:7px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden}
   .pct i{display:block;height:100%}
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
-  .darkbox{background:linear-gradient(180deg,#262122,#1d1a1b);border-radius:14px;padding:20px 22px}
+  .darkbox{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:14px;padding:20px 22px}
   .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:var(--cream);line-height:1.55}
   .darkbox .m{font-family:'Archivo';font-weight:600;font-size:9px;color:rgba(243,237,224,0.5);margin-top:12px;text-align:right;letter-spacing:0.06em}
   /* segmented narrative (Chronicle / Commentator) , easier read */
-  .narrative{background:linear-gradient(180deg,#262122,#1d1a1b);border-radius:14px;padding:22px 24px}
+  .narrative{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:14px;padding:22px 24px}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:var(--cream);margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
   .narrative .nm{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:16px;text-align:right}
   /* wonder tag rows */
-  .tagrow{background:linear-gradient(180deg,#262122,#1d1a1b);border-radius:13px;padding:14px 16px;margin-bottom:9px}
+  .tagrow{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:13px;padding:14px 16px;margin-bottom:9px}
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .tagrow .tt .ti{width:15px;height:15px}
   .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}

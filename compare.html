@@ -7,7 +7,7 @@
 <title>VVonderXI , Web Compare</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0}
+  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#211d1c;--panel-b:#161313;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
@@ -67,7 +67,7 @@
   .settle{font-family:'Archivo';font-weight:900;font-size:16px;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(135deg,#FF5C7A,#FF8FA3);color:#fff;border:none;border-radius:16px;padding:17px 46px;cursor:pointer;box-shadow:0 20px 44px -12px rgba(255,92,122,0.75);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
   .settle:hover{transform:translateY(-2px);box-shadow:0 26px 52px -12px rgba(255,92,122,0.85)}
   /* verdict reveal , editorial pull-quote treatment */
-  .verdict{max-width:920px;margin:38px auto 0;background:linear-gradient(180deg,#211d1c,#161313);border-radius:20px;padding:40px 44px;display:none;text-align:center;box-shadow:0 30px 60px -24px rgba(0,0,0,0.6)}
+  .verdict{max-width:920px;margin:38px auto 0;background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:20px;padding:40px 44px;display:none;text-align:center;box-shadow:0 30px 60px -24px rgba(0,0,0,0.6)}
   .verdict.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
@@ -259,7 +259,7 @@
   .vwbtn{color:var(--cream)}
   .vwbtn svg{color:#fff}
   /* ★ LIGHT-MODE VERDICT FIX (was a dark panel, murky + unreadable in daylight) */
-  body.light .verdict{background:linear-gradient(180deg,#FCF9F1,#F1EAD9);box-shadow:0 30px 60px -24px rgba(0,0,0,0.16);border:1px solid rgba(0,0,0,0.05)}
+  body.light .verdict{background:linear-gradient(180deg,var(--panel-t-l),var(--panel-b-l));box-shadow:0 30px 60px -24px rgba(0,0,0,0.16);border:1px solid rgba(0,0,0,0.05)}
   body.light .verdict .vquote{color:var(--charcoal)}
   body.light .vfinal .vquote3{color:#b8902f}
   body.light .vsect{background:#fff;border-color:rgba(0,0,0,0.07);box-shadow:0 10px 24px -16px rgba(0,0,0,0.25)}
