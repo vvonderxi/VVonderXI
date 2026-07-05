@@ -73,19 +73,22 @@
   .attr .av{font-family:'Archivo';font-weight:900;font-size:14px;width:32px;text-align:right;flex-shrink:0}
   .attrtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
   .attrtop span{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#9a9285}
-  /* trajectory */
-  .trajtag{display:inline-flex;align-items:center;gap:5px;font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 13px;border-radius:20px;background:rgba(46,140,90,0.16);color:#2e7d4f;margin-bottom:14px}
-  .trajwrap{display:flex;gap:10px;margin-bottom:14px}
-  .yscale{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;height:130px;width:18px}
-  .yscale span{font-family:'Archivo';font-weight:700;font-size:9px;color:#b3a99a;line-height:1}
-  .trajchart{display:flex;align-items:flex-end;gap:20px;flex:1;border-left:1px solid rgba(0,0,0,0.1);padding-left:10px}
-  .tcol{flex:1;display:flex;flex-direction:column;align-items:center}
-  .tbarwrap{height:130px;width:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;border-bottom:1px solid rgba(0,0,0,0.12)}
-  .tcol .tga{font-family:'Archivo';font-weight:900;font-size:13px;color:#3a352e;margin-bottom:4px}
-  .tcol .tbar{width:54%;max-width:42px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--green),#1f6b42)}
-  .tcol .ttone{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:0.04em;text-transform:uppercase;color:#9a9285;margin-top:6px}
-  .tcol .ttone.up{color:var(--green)}
-  .tcol .ty{font-family:'Archivo';font-weight:700;font-size:9px;color:#9a9285;margin-top:3px}
+  /* trajectory (dual-axis: stacked G/A bars + VV Score line, on a dark panel) */
+  .tjbox{background:#17151a;border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
+  .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:8px}
+  .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
+  .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .tjlg i.tjlgline{width:16px;height:0;border-radius:0;border-top:2.4px solid #F0EAD9}
+  .tjsvg{display:block;width:100%;height:auto}
+  .tjgrid{stroke:rgba(243,237,224,0.08);stroke-width:1}
+  .tjyl{fill:rgba(243,237,224,0.45);font-family:'Archivo';font-weight:700;font-size:9px}
+  .tjyr{fill:rgba(240,234,217,0.72);font-family:'Archivo';font-weight:700;font-size:9px}
+  .tjtot{fill:rgba(243,237,224,0.92);font-family:'Archivo';font-weight:800;font-size:10px}
+  .tjxl{fill:rgba(243,237,224,0.5);font-family:'Archivo';font-weight:700;font-size:9px}
+  .tjxlsel{fill:#FF5C7A;font-weight:800}
+  .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
+  .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
+  .tjpeak{fill:#E8B84B;font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
   /* proof table */
   .proofexplain{font-family:'Archivo';font-weight:500;font-size:11px;color:#8a8276;line-height:1.5;margin-bottom:14px;background:rgba(0,0,0,0.03);border-radius:10px;padding:11px 13px}
   .proofexplain b{color:#3a352e;font-weight:800}
@@ -392,9 +395,6 @@
   body.light .seasontrigger{color:#8a8276}
   body.light .seasontrigger:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
-  .tcol-sel .tbar{box-shadow:0 0 0 2px var(--pink);background:var(--pink)!important}
-  .tcol-sel .tga{color:var(--pink);font-weight:800}
-  .tcol-sel .ty{color:var(--pink);font-weight:800}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
   #glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
   #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A)}
@@ -456,15 +456,8 @@
 <div class="attr"><div class="an">Progression</div><div class="abar"><i style="width:88%;background:#2E8C5A"></i></div><div class="av">88</div></div>
 <div class="attr"><div class="an">Defensive</div><div class="abar"><i style="width:42%;background:#D9534F"></i></div><div class="av">42</div></div>
 <div class="attr"><div class="an">Reliability</div><div class="abar"><i style="width:85%;background:#2E8C5A"></i></div><div class="av">85</div></div></div></div></div></div>
-      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Every season, measured in goals and assists. A career's arc, told in output.</div><div class="trajtag">\u{1F4C8} At Peak</div>
-<div class="trajwrap">
-  <div class="yscale" id="trajYscale"><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
-  <div class="trajchart">
-    <div class="tcol"><div class="tbarwrap"><div class="tga">13</div><div class="tbar" style="height:65%"></div></div><div class="ttone">Rising</div><div class="ty">21/22</div></div>
-    <div class="tcol"><div class="tbarwrap"><div class="tga">16</div><div class="tbar" style="height:80%"></div></div><div class="ttone">Climbing</div><div class="ty">22/23</div></div>
-    <div class="tcol"><div class="tbarwrap"><div class="tga">18</div><div class="tbar" style="height:90%"></div></div><div class="ttone up">Peak</div><div class="ty">23/24</div></div>
-  </div>
-</div>
+      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Goals + assists per season, with the VV Score line showing how output became legacy.</div>
+<div class="tjbox" id="trajHost"></div>
 <div class="darkbox" id="scoutBox"><div class="q" id="scoutBody"></div><div class="m">SCOUT REPORT</div></div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain">The raw stats behind his Creation score. The <b>per 90</b> rate, the season <b>total</b>, and his <b>percentile</b> , where he ranks against every midfielder in the league.</div>
 <div class="proofrow"><div class="pl">Key passes</div><div class="pr"><span class="per90">2.4</span><span class="raw">81</span><span class="pctn">88th</span><span class="pct"><i style="width:88%;background:#2E8C5A"></i></span></div></div>
@@ -538,35 +531,12 @@
   }
   let D={year:'23/24', club1:'#DA291C', number:8, pos:'CAM', vv:91, flag:'\u{1F1F5}\u{1F1F9}', surname:'Fernandes', full:'Bruno Fernandes', clubname:'Man Utd', age:'29', goals:10, assists:8, tag:'\u{1F451} Talisman'};
   function renderTrajectory(){
-    var chart=document.querySelector('.trajchart');
-    var tag=document.querySelector('.trajtag');
-    var yscale=document.getElementById('trajYscale');
-    if(!chart) return;
-    if(!SEASON_ROWS || SEASON_ROWS.length<2){ return; }
-    var rows=SEASON_ROWS.slice().reverse();
-    var ga=function(r){ return (r.goals||0) + (r.assists||0); };
-    var maxGA=0; for(var i=0;i<rows.length;i++){ if(ga(rows[i])>maxGA) maxGA=ga(rows[i]); }
-    var axisTop=Math.max(5, Math.ceil(maxGA/5)*5);
-    var step=Math.max(5, Math.round((axisTop/3)/5)*5);
-    axisTop=Math.ceil(axisTop/step)*step;
-    if(yscale){
-      var labels=''; for(var t=axisTop; t>=0; t-=step){ labels+='<span>'+t+'</span>'; }
-      yscale.innerHTML=labels;
-    }
-    var peakIdx=0, peakVal=-1; for(var j=0;j<rows.length;j++){ if(ga(rows[j])>peakVal){ peakVal=ga(rows[j]); peakIdx=j; } }
-    var html='';
-    for(var k=0;k<rows.length;k++){
-      var r=rows[k];
-      var g=ga(r);
-      var h=Math.round((g/axisTop)*100);
-      var isSel=(r.card_id===SEASON_CARDID);
-      var isPeak=(k===peakIdx);
-      var tone = isPeak ? '<div class="ttone up">Peak</div>' : '<div class="ttone">&nbsp;</div>';
-      var selClass = isSel ? ' tcol-sel' : '';
-      html += '<div class="tcol'+selClass+'"><div class="tbarwrap"><div class="tga">'+g+'</div><div class="tbar" style="height:'+h+'%"></div></div>'+tone+'<div class="ty">'+fmtSeason(r.season)+'</div></div>';
-    }
-    chart.innerHTML=html;
-    if(tag){ tag.innerHTML='📈 Career'; }
+    var host=document.getElementById('trajHost'); if(!host) return;
+    if(!SEASON_ROWS || !SEASON_ROWS.length){ host.innerHTML=''; return; }        // no seasons -> clear (never leave seed bars)
+    var rows=SEASON_ROWS.slice().reverse().map(function(r){                       // chronological (oldest -> newest)
+      return { season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, selected:(r.card_id===SEASON_CARDID) };
+    });
+    host.innerHTML = VVCore.renderTrajectory(rows);                              // shared dual-axis renderer (single-season safe)
   }
   function vvNotesOpen(){ /* editorial loads on card load; nothing to do on open */ }
   var EDITORIAL_FOR = null;

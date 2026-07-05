@@ -907,13 +907,70 @@
     }).join('');
   }
 
+  // ── The Trajectory , shared dual-axis chart (stacked G/A bars + VV Score line).
+  //    rows: [{season, goals, assists, rt, selected}] in CHRONOLOGICAL order.
+  //    Card passes SEASON_ROWS (reversed); compare passes each player's rows (STEP 2).
+  //    Returns legend + SVG string; '' when no rows (caller clears , no seed left behind).
+  function renderTrajectory(rows, opts){
+    opts = opts || {};
+    if(!Array.isArray(rows) || !rows.length) return '';
+    var data = rows.map(function(r){
+      return { season:r.season, g:(+r.goals||0), a:(+r.assists||0),
+               rt:(r.rt==null?null:+r.rt), selected:!!r.selected };
+    });
+    var n = data.length;
+    // LEFT axis , goals + assists (dynamic max)
+    var maxGA = 0; data.forEach(function(d){ var t=d.g+d.a; if(t>maxGA) maxGA=t; });
+    var lstep = maxGA>40?20:(maxGA>20?10:5);
+    var axisTop = Math.max(lstep, Math.ceil(maxGA/lstep)*lstep);
+    // RIGHT axis , VV Score (min-5 .. max+3, like the demo's 72-96)
+    var rts = data.map(function(d){return d.rt;}).filter(function(x){return x!=null;});
+    var hasVV = rts.length>0;
+    var minRt = hasVV?Math.min.apply(null,rts):0, maxRt = hasVV?Math.max.apply(null,rts):100;
+    var vvMin = hasVV?Math.max(0,minRt-5):0, vvMax = hasVV?Math.min(100,maxRt+3):100;
+    if(vvMax-vvMin<8) vvMax = vvMin+8;   // single-season / flat guard
+    var peakIdx=-1, peakRt=-1;
+    data.forEach(function(d,i){ if(d.rt!=null && d.rt>peakRt){ peakRt=d.rt; peakIdx=i; } });
+    // geometry
+    var W=360,H=214, ml=30, mr=36, mt=30, mb=26, pw=W-ml-mr, ph=H-mt-mb;
+    var slot=pw/n, bw=Math.min(38, slot*0.5);
+    var X=function(i){ return ml+slot*(i+0.5); };
+    var Yl=function(v){ return mt+ph-(v/axisTop)*ph; };
+    var Yr=function(v){ return mt+ph-((v-vvMin)/(vvMax-vvMin))*ph; };
+    var s='';
+    for(var t=0;t<=axisTop;t+=lstep){ var y=Yl(t);
+      s+='<line class="tjgrid" x1="'+ml+'" y1="'+y.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y.toFixed(1)+'"/>';
+      s+='<text class="tjyl" x="'+(ml-6)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="end">'+t+'</text>';
+    }
+    if(hasVV){ [vvMin, Math.round((vvMin+vvMax)/2), vvMax].forEach(function(v){ var y=Yr(v);
+      s+='<text class="tjyr" x="'+(W-mr+6)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="start">'+v+'</text>'; }); }
+    data.forEach(function(d,i){ var x=X(i), bx=x-bw/2, base=Yl(0);
+      if(d.selected) s+='<rect class="tjsel" x="'+(bx-4).toFixed(1)+'" y="'+(mt-2).toFixed(1)+'" width="'+(bw+8).toFixed(1)+'" height="'+(ph+2).toFixed(1)+'" rx="7"/>';
+      var gTop=Yl(d.g); if(d.g>0) s+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="3" fill="#FF5C7A"/>';
+      var aTop=Yl(d.g+d.a); if(d.a>0) s+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="3" fill="#E8B84B"/>';
+      var top=(d.g+d.a>0)?aTop:base;
+      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+(top-6).toFixed(1)+'" text-anchor="middle">'+(d.g+d.a)+'</text>';
+      s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+escHtml(fmtSeason(d.season))+'</text>';
+    });
+    if(hasVV){
+      var pts=[]; data.forEach(function(d,i){ if(d.rt!=null) pts.push(X(i).toFixed(1)+','+Yr(d.rt).toFixed(1)); });
+      if(pts.length>1) s+='<polyline class="tjline" points="'+pts.join(' ')+'" fill="none" stroke="#F0EAD9" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+      data.forEach(function(d,i){ if(d.rt==null) return; var x=X(i), y=Yr(d.rt), pk=(i===peakIdx);
+        s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(pk?4.5:3.1)+'" fill="'+(pk?'#E8B84B':'#F0EAD9')+'" stroke="#17151a" stroke-width="1.2"/>';
+        if(pk) s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y-9).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>';
+      });
+    }
+    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i>VV Score</span></div>';
+    return legend+'<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>';
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY };
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
