@@ -483,7 +483,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const g=document.getElementById('cardgrid');
     setViewClass('compactmode');
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML=list.map(rankRowHTML).join('');
+    g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,2); }).join('');   // #20: compact caps at 2 tags
   }
   // ── rankRowHTML , the ONE shared row builder for List (pillmode) + Compact
   //    (compactmode). 9 fixed-grid columns; density differs only via container class.
@@ -512,10 +512,17 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       +'<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
     +'</svg>';
   }
-  function rankRowHTML(d,i){
+  function rankRowHTML(d,i,cap){
+    cap = (cap!=null) ? cap : 3;
     var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
-    var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
-    var tags     = renderTagPills(d.tags, { baseClass:'rtag', max:(d.prestige?1:2) });
+    // #20: cap TOTAL row tags by PRIORITY , honours (tier) -> prestige -> profile; silent (full set on the card).
+    var honList = (d.honours && d.honours.all) ? d.honours.all : [];
+    var honN = Math.min(honList.length, cap);
+    var honHtml = honN>0 ? renderHonourPillsCompact(d.honours, { baseClass:'rtag', max:honN }) : '';
+    var rem = cap - honN;
+    var prestige = (rem>0) ? renderPrestige(d.prestige, { baseClass:'rtag' }) : '';
+    if(prestige) rem -= 1;
+    var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem }) : '';
     var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
     return '<div class="urow'+tier+'" onclick="goCard('+(d.card_id==null?'':d.card_id)+')">'
       +'<div class="urank">'+(i+1)+'</div>'
@@ -523,7 +530,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       +'<div class="uyear">'+d.year+'</div>'
       +'<div class="uclub">'+d.clubname+'</div>'
       +'<div class="upos">'+posDisplay(d.pos)+'</div>'
-      +'<div class="utags">'+renderHonourPillsCompact(d.honours)+prestige+tags+'</div>'
+      +'<div class="utags">'+honHtml+prestige+tags+'</div>'
       +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
       +'<div class="uassists">'+assists+'</div>'
       +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
@@ -553,7 +560,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const g=document.getElementById('cardgrid');
     setViewClass('pillmode');
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML=list.map(rankRowHTML).join('');
+    g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,3); }).join('');   // #20: list caps at 3 tags
   }
   var rankView='cards';
   try{var _rv=localStorage.getItem('vvRankView');if(_rv==='pills'||_rv==='cards'||_rv==='compact')rankView=_rv;}catch(e){}

@@ -899,7 +899,8 @@
   function renderHonourPillsCompact(honours, opts){
     if(!honours || !honours.has) return '';
     const cls = (opts && opts.baseClass) || 'rtag';
-    return honours.all.slice(0, 2).map(function(h){
+    const max = (opts && opts.max != null) ? opts.max : 2;   // #20: caller caps how many honour pills
+    return honours.all.slice(0, max).map(function(h){
       const label = (typeof HONOUR_CHIP_LABEL !== 'undefined' ? HONOUR_CHIP_LABEL[h.type] : '') || h.label;
       return '<span class="'+cls+' gold" data-tip="'+escAttr(h.oneliner||h.label)+'">'+label+'</span>';
     }).join('');
