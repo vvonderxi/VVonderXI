@@ -812,7 +812,7 @@
         + (meta ? '<div class="tmeta">'+escHtml(meta)+'</div>' : '') + '</div>'
       : '';
     return '<div class="tagrow honour" onclick="this.classList.toggle(\'open\')">'
-      + '<div class="tt">'+icon+' '+h.label+' <span class="tchev">⌄</span></div>'
+      + '<div class="tt">'+icon+' <span class="ttl">'+h.label+'</span> <span class="tchev">⌄</span></div>'
       + '<div class="td">'+escHtml(oneLiner)+'</div>'
       + tmore
       + '</div>';

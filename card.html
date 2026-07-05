@@ -107,16 +107,17 @@
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
   .darkbox{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:14px;padding:20px 22px}
   .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:var(--cream);line-height:1.55}
-  .darkbox .m{font-family:'Archivo';font-weight:600;font-size:9px;color:rgba(243,237,224,0.5);margin-top:12px;text-align:right;letter-spacing:0.06em}
+  .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:#E8B84B;margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
   .narrative{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:14px;padding:22px 24px}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:var(--cream);margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
-  .narrative .nm{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:16px;text-align:right}
+  .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#E8B84B;margin-top:16px;text-align:right}
   /* wonder tag rows */
   .tagrow{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:13px;padding:14px 16px;margin-bottom:9px}
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+  .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px}
   .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
   .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:var(--cream)}
@@ -152,10 +153,10 @@
   /* wonder tag expand */
   .tagrow{cursor:pointer}
   .tagrow .tt{justify-content:flex-start}
-  .tagrow .tchev{margin-left:auto;font-size:12px;opacity:0.5;transition:transform .3s}
+  .tagrow .tchev{margin-left:auto;font-size:16px;opacity:0.9;color:#E8B84B;transition:transform .3s}
   .tagrow.open .tchev{transform:rotate(180deg)}
   .tagrow .tmore{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s;font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.78)}
-  .tagrow.open .tmore{max-height:260px;opacity:1;margin-top:10px}
+  .tagrow.open .tmore{max-height:500px;opacity:1;margin-top:10px}
   /* #17 Wonder Tags grouped sections , Winter label + gold hairline */
   .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#E8B84B;margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
   .wtsec:first-child .wtsechead{margin-top:0}
@@ -727,7 +728,7 @@
       }
       var profileRowsHtml = wtRows.map(function(r){
         return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
-          + '<div class="tt">' + r.icon + ' ' + r.name + ' <span class="tchev">&#8964;</span></div>'
+          + '<div class="tt">' + r.icon + ' <span class="ttl">' + r.name + '</span> <span class="tchev">&#8964;</span></div>'
           + '<div class="td">' + r.one + '</div>'
           + '<div class="tmore">' + r.full + '</div></div>';
       }).join('');
