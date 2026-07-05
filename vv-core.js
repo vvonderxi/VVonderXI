@@ -950,7 +950,8 @@
       var aTop=Yl(d.g+d.a); if(d.a>0) s+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="3" fill="#E8B84B"/>';
       var top=(d.g+d.a>0)?aTop:base;
       s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+(top-6).toFixed(1)+'" text-anchor="middle">'+(d.g+d.a)+'</text>';
-      s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+escHtml(fmtSeason(d.season))+'</text>';
+      var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
+      s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
     });
     if(hasVV){
       var pts=[]; data.forEach(function(d,i){ if(d.rt!=null) pts.push(X(i).toFixed(1)+','+Yr(d.rt).toFixed(1)); });
@@ -961,7 +962,8 @@
       });
     }
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i>VV Score</span></div>';
-    return legend+'<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>';
+    var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
+    return legend+'<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>'+caption;
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
