@@ -797,16 +797,22 @@
     golden_boot:      'There is a purity to the Golden Boot. Not the most complete player, not the prettiest to watch, simply the one who did the thing everyone came to see, more than anyone else. To lead a league in goals across a whole season is to answer the same question every week, and never once flinch.',
     top_assists:      'The best assists are acts of generosity. To lead a league in them is to have seen the pass others missed, again and again, to have made teammates better and asked for none of the glory. The top creator is the player the goalscorers should thank first.',
   };
+  // Drury-wrapped tally per honour type (#4) , poetic .tmeta line; {N} = live goals/assists count.
+  const HONOUR_TALLY = {
+    golden_boot:      function(h){ return (h.goals!=null ? h.goals+' goals , and the net remembers every one.' : 'The net remembers every one.'); },
+    top_assists:      function(h){ return (h.assists!=null ? h.assists+' assists , '+h.assists+' times the final pass was his.' : 'Time and again, the final pass was his.'); },
+    ballon_dor:       function(){ return 'The best in the world , and the world agreed.'; },
+    player_of_season: function(){ return "The season's finest , by common consent."; },
+    league_champion:  function(){ return 'Champions , the long season theirs.'; },
+    world_cup_winner: function(){ return 'A world champion , the prize of all prizes.'; },
+    ucl_winner:       function(){ return 'Champions of Europe , the brightest lights conquered.'; },
+  };
   // One honour as a tap-expandable Wonder-Tags row: one-liner (.td) + Drury paragraph & meta (.tmore, #16).
   function honourRowHTML(h){
     const icon = HONOUR_ICON[h.type] || '';
     const oneLiner = h.oneliner || h.label;
     const drury = HONOUR_DRURY[h.type] || '';
-    const bits = [];
-    if(h.context) bits.push(h.context);
-    if(h.goals != null) bits.push(h.goals + ' goals');
-    if(h.assists != null) bits.push(h.assists + ' assists');
-    const meta = bits.join(' , ');
+    const meta = HONOUR_TALLY[h.type] ? HONOUR_TALLY[h.type](h) : '';
     const tmore = (drury || meta)
       ? '<div class="tmore">' + (drury ? escHtml(drury) : '')
         + (meta ? '<div class="tmeta">'+escHtml(meta)+'</div>' : '') + '</div>'
