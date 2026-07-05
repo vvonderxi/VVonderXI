@@ -85,7 +85,8 @@
   .tjgrid{stroke:rgba(243,237,224,0.09);stroke-width:1}
   .tjyl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjyr{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
-  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:rgba(10,26,18,0.9);stroke-width:2.6px;stroke-linejoin:round}
+  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px}
+  .tjmask{fill:var(--panel)}
   .tjxl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjxlsel{fill:#FF5C7A;font-weight:800}
   .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
@@ -414,7 +415,7 @@
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The VV Rankings</span></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink)">V</span> Rankings</span></div>
     <div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div>
     <div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span></div>
     <div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div>

@@ -955,8 +955,6 @@
       if(d.g>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="4" fill="url(#tjgGoal)"/>';
       if(d.a>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="4" fill="url(#tjgAst)"/>';
       if(bars) s+='<g filter="url(#tjShadow)">'+bars+'</g>';   // soft shadow lifts the stacked bar off the green
-      var top=(d.g+d.a>0)?aTop:base;
-      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+(top-6).toFixed(1)+'" text-anchor="middle">'+(d.g+d.a)+'</text>';
       var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
       s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
     });
@@ -969,6 +967,11 @@
           s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>'; }
       });
     }
+    // total-output numbers ON TOP , a panel-green mask breaks the VV line cleanly around each number
+    data.forEach(function(d,i){ var x=X(i), tot=d.g+d.a, ty=((tot>0)?Yl(tot):Yl(0))-6, tw=String(tot).length*6+8;
+      s+='<rect class="tjmask" x="'+(x-tw/2).toFixed(1)+'" y="'+(ty-9.5).toFixed(1)+'" width="'+tw.toFixed(1)+'" height="12" rx="3"/>';
+      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="middle">'+tot+'</text>';
+    });
     var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
     var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
