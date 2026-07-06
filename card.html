@@ -636,13 +636,14 @@
     }
     var badgeNum=document.getElementById('glSquad');
     if(badgeNum && D.club1 && typeof inkFor==='function'){
-      var _ink=inkFor(c1);
-      badgeNum.setAttribute('fill', _ink);
       if(split){
-        badgeNum.setAttribute('stroke', _ink==='#fff' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.6)');
-        badgeNum.setAttribute('stroke-width','1.1');
+        // split badge -> white fill + bold OPAQUE black outline (reads on BOTH halves)
+        badgeNum.setAttribute('fill', '#FFFFFF');
+        badgeNum.setAttribute('stroke', '#000000');
+        badgeNum.setAttribute('stroke-width','3');
         badgeNum.setAttribute('paint-order','stroke');
       } else {
+        badgeNum.setAttribute('fill', inkFor(c1));
         badgeNum.removeAttribute('stroke'); badgeNum.removeAttribute('stroke-width'); badgeNum.removeAttribute('paint-order');
       }
     }

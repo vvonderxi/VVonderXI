@@ -125,9 +125,9 @@
     const prestige = renderPrestige(d.prestige, {baseClass:'chtag'});
     const c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
     const split = shieldSplit(c1, c2);
-    // number ink: solid badge -> inkFor(c1) reliably contrasts; split -> add a contrast halo
-    const ink = inkFor(c1);
-    const numStroke = split ? (ink==='#fff' ? ' stroke="rgba(0,0,0,0.35)" stroke-width="0.6" paint-order="stroke"' : ' stroke="rgba(255,255,255,0.6)" stroke-width="0.6" paint-order="stroke"') : '';
+    // number ink: solid badge -> inkFor(c1); split badge -> white fill + bold OPAQUE black outline (reads on BOTH halves)
+    const ink = split ? '#FFFFFF' : inkFor(c1);
+    const numStroke = split ? ' stroke="#000000" stroke-width="2.5" paint-order="stroke"' : '';
     // number sizing: match the visual weight of a two-digit number like "14" (the default look).
     // single digits get a larger font so they fill the badge the same way; 3 digits shrink slightly.
     const numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
