@@ -540,11 +540,12 @@
 .cardslot.flipping{transform:none !important}
   /* #109 shared 360deg reveal-through-back flip (VVCore.vvCardFlip) , IDENTICAL block in card.html.
      vvflip*/vvmono* namespace (avoids the removed .flipstage prototype + the live .vvback empty-slot). */
-  .vvflipwrap{--cw:300px;position:relative;width:var(--cw);max-width:100%;height:calc(var(--cw)*1.397);margin:0 auto;perspective:1100px}
-  .vvflipinner{position:relative;width:100%;height:100%;transform-style:preserve-3d;will-change:transform}
-  .vvflipfront,.vvflipback{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:calc(var(--cw)*0.073)}
-  .vvflipback{transform:rotateY(180deg);display:flex;align-items:center;justify-content:center}
-  .vvflipfront .vvcard{width:100%;height:100%;max-width:none}
+  .vvflipwrap{--cw:300px;position:relative;margin:0 auto;perspective:1100px}   /* no forced dims , box comes from the in-flow front */
+  .vvflipinner{position:relative;transform-style:preserve-3d;will-change:transform}
+  .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+  .vvflipfront{position:relative}                                              /* IN FLOW: the real .vvcard defines the box at its natural height */
+  .vvflipfront .vvcard{max-width:none}                                         /* keep natural width:var(--cw) + height:calc(--cw*1.397); just drop the 92% cap so flip width == wrap */
+  .vvflipback{position:absolute;top:0;left:0;width:100%;height:100%;transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}   /* overlay , no flow impact */
   /* glossy sheen sweep (Option A) , one diagonal light pass per flip */
   .vvsheen{position:absolute;inset:0;overflow:hidden;border-radius:calc(var(--cw)*0.073);pointer-events:none;z-index:6}
   .vvsheen i{position:absolute;top:-25%;bottom:-25%;left:-70%;width:48%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-16deg);filter:blur(1px)}
