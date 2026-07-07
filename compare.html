@@ -337,8 +337,29 @@
   .cs-top{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.07em;color:var(--pink);background:rgba(255,92,122,0.12);border:1px solid rgba(255,92,122,0.3);padding:9px 13px;border-radius:12px;flex-shrink:0}
   @media(max-width:560px){.cs-top{display:none}}
   /* two per-player bar charts */
-  .vtrajgrid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-  @media(max-width:620px){.vtrajgrid{grid-template-columns:1fr;gap:22px}}
+  .vtrajpair{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media(max-width:620px){.vtrajpair{grid-template-columns:1fr;gap:22px}}
+  .vtchart .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;text-align:center;margin-bottom:8px}
+  .vtchart .vtname.tA{color:var(--pink)} .vtchart .vtname.tB{color:var(--blue)}
+  /* shared trajectory renderer (vv-core) , compare wears it TRANSPARENT on the verdict panel */
+  .tjhead{font-family:'Inter';font-weight:500;font-size:14px;line-height:1.5;color:rgba(243,237,224,0.95);text-align:center;margin-bottom:12px}
+  .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:14px}
+  .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
+  .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .tjlg i.tjlgline{width:16px;height:0;border-radius:0;border-top:2.4px solid #F0EAD9}
+  .tjvp{color:#FF5C7A}
+  .tjsvg{display:block;width:100%;height:auto}
+  .tjgrid{stroke:rgba(243,237,224,0.09);stroke-width:1}
+  .tjyl,.tjyr,.tjxl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px}
+  .tjxlsel{fill:#FF5C7A;font-weight:800}
+  .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
+  .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
+  .tjpeak{fill:#E8B84B;font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
+  .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:14px;padding:0 4px}
+  body.light .tjhead,body.light .tjlg{color:#5a544a}
+  body.light .tjyl,body.light .tjyr,body.light .tjxl,body.light .tjtot{fill:#5a544a}
+  body.light .tjgrid{stroke:rgba(0,0,0,0.09)}
   .vtchart{text-align:center}
   .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:19px;margin-bottom:2px}
   .vtname.tA{color:var(--pink)} .vtname.tB{color:var(--blue)}
@@ -623,7 +644,7 @@ body.light .pkmsub{color:#b0a899}
           <div class="vsect vsect-wide">
             <div class="vsect-t">The Trajectory</div>
             <div class="vsect-d">Total goals plus assists per season, the three years that led each man here.</div>
-            <div class="vtrajgrid" id="vtraj"></div>
+            <div id="vtraj"></div>
           </div>
           <!-- THE PROOF , raw per-90 numbers with green winner dots -->
           <div class="vsect vsect-wide">
@@ -922,39 +943,41 @@ body.light .pkmsub{color:#b0a899}
 
 
   // THE TRAJECTORY , each player's real G+A per season (summed across leagues), last ~4 seasons
-  function drawTrajectory(serA,serB,nameA,nameB){
+  function drawTrajectory(rowsA,rowsB,nameA,nameB){
     const box=document.getElementById('vtraj'); if(!box) return;
-    serA=serA||{vals:[],labs:[]}; serB=serB||{vals:[],labs:[]};
-    var allV=(serA.vals||[]).concat(serB.vals||[]);
-    var maxOut=allV.length?Math.max.apply(null,allV):0;
-    var axisMax=Math.max(50,Math.ceil(maxOut/10)*10);   // dynamic so 60+ G+A seasons don't overflow
-    function chart(name,cls,col,vals,labs){
-      const W=250,H=198,ml=28,mr=8,mt=24,mb=28,pw=W-ml-mr,ph=H-mt-mb;
-      if(!vals||!vals.length){ return `<div class="vtchart"><div class="vtname ${cls}">${name||''}</div><svg viewBox="0 0 ${W} ${H}"></svg></div>`; }
-      const slot=pw/vals.length, bw=Math.min(42,slot*0.54), maxV=Math.max.apply(null,vals);
-      const X=i=>ml+slot*(i+0.5), Y=v=>mt+ph-(v/axisMax)*ph;
-      let g='';
-      for(let t=0;t<=axisMax;t+=10){const y=Y(t);g+=`<line class="tgrid" x1="${ml}" y1="${y.toFixed(1)}" x2="${W-mr}" y2="${y.toFixed(1)}"/><text class="tylab" x="${ml-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${t}</text>`;}
-      vals.forEach((v,i)=>{const x=X(i),y=Y(v),h=(v/axisMax)*ph,gl=(v===maxV)?` filter="url(#glow${cls})"`:'';
-        g+=`<rect x="${(x-bw/2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="5" fill="url(#grad${cls})"${gl}/>`;
-        g+=`<text class="tval" x="${x.toFixed(1)}" y="${(y-8).toFixed(1)}" text-anchor="middle">${v}</text>`;
-        g+=`<text class="txlab" x="${x.toFixed(1)}" y="${H-9}" text-anchor="middle">${labs[i]}</text>`;});
-      return `<div class="vtchart"><div class="vtname ${cls}">${name||''}</div><svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="grad${cls}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col[0]}"/><stop offset="1" stop-color="${col[1]}"/></linearGradient><filter id="glow${cls}" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="0" stdDeviation="3.5" flood-color="#ffffff" flood-opacity="0.6"/></filter></defs>${g}</svg></div>`;
+    // mark each player's CURRENT compare season (CMP_*) as selected (pink highlight)
+    function mark(rows,cmp){ if(!Array.isArray(rows)) return [];
+      var selY = (cmp && cmp.season_year!=null) ? +cmp.season_year : null;
+      return rows.map(function(r){ return {season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, selected:(selY!=null && +r.season_year===selY)}; });
     }
-    box.innerHTML=chart(nameA||'A','tA',['#FF8FA3','#E03E5C'],serA.vals,serA.labs)
-                +chart(nameB||'B','tB',['#7FA8E0','#3B6FB0'],serB.vals,serB.labs);
+    var ra=mark(rowsA,CMP_A), rb=mark(rowsB,CMP_B);
+    // bare charts (no per-chart chrome), transparent on the verdict panel
+    var chartA = ra.length ? VVCore.renderTrajectory(ra,{chrome:false,transparent:true}) : '<svg class="tjsvg" viewBox="0 0 360 214"></svg>';
+    var chartB = rb.length ? VVCore.renderTrajectory(rb,{chrome:false,transparent:true}) : '<svg class="tjsvg" viewBox="0 0 360 214"></svg>';
+    // ONE shared head + legend above, ONE Drury caption below (not per-chart)
+    var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
+    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
+    var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
+    box.innerHTML = head + legend
+      + '<div class="vtrajpair">'
+      +   '<div class="vtchart"><div class="vtname tA">'+(nameA||'A')+'</div>'+chartA+'</div>'
+      +   '<div class="vtchart"><div class="vtname tB">'+(nameB||'B')+'</div>'+chartB+'</div>'
+      + '</div>'
+      + caption;
   }
 
   // load a player's multi-season G+A history (summed per season_year across leagues); last ~4 seasons
   async function vvLoadTrajectory(apiId){
-    if(apiId==null) return {vals:[],labs:[]};
-    var sb=vvClient(); if(!sb) return {vals:[],labs:[]};
-    var res=await sb.from('player_card_mv').select('season,season_year,goals,assists').eq('api_player_id',apiId).order('season_year',{ascending:true});
-    if(res.error || !res.data){ if(res.error) console.error('trajectory load failed:', res.error.message); return {vals:[],labs:[]}; }
+    if(apiId==null) return [];
+    var sb=vvClient(); if(!sb) return [];
+    var res=await sb.from('player_card_mv').select('season,season_year,goals,assists,rt').eq('api_player_id',apiId).order('season_year',{ascending:true});
+    if(res.error || !res.data){ if(res.error) console.error('trajectory load failed:', res.error.message); return []; }
     var byYear={};
-    res.data.forEach(function(r){ var y=r.season_year; if(y==null) return; if(!byYear[y]) byYear[y]={out:0,season:r.season}; byYear[y].out+=(r.goals||0)+(r.assists||0); });
-    var years=Object.keys(byYear).map(Number).sort(function(a,b){return a-b;}).slice(-4);
-    return { vals: years.map(function(y){return byYear[y].out;}), labs: years.map(function(y){return fmtSeason(byYear[y].season);}) };
+    res.data.forEach(function(r){ var y=r.season_year; if(y==null) return;
+      // highest-rt card per season_year (cross-league seasons pick the strongest)
+      if(!byYear[y] || (r.rt!=null && (byYear[y].rt==null || r.rt>byYear[y].rt))) byYear[y]={season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, season_year:y};
+    });
+    return Object.keys(byYear).map(Number).sort(function(a,b){return a-b;}).map(function(y){return byYear[y];});   // chronological, ALL seasons
   }
 
   // ── Live AI verdict (generation only; caching is a later step) ──

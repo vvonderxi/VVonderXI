@@ -973,15 +973,18 @@
           s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>'; }
       });
     }
-    // total-output numbers ON TOP , a panel-green mask breaks the VV line cleanly around each number
+    // total-output numbers ON TOP , panel-green mask breaks the VV line (card); transparent bg (compare) uses a dark halo instead
+    var totHalo = opts.transparent ? ' paint-order="stroke" stroke="#0A2A18" stroke-width="2.6"' : '';
     data.forEach(function(d,i){ var x=X(i), tot=d.g+d.a, ty=((tot>0)?Yl(tot):Yl(0))-6, tw=String(tot).length*6+8;
-      s+='<rect class="tjmask" x="'+(x-tw/2).toFixed(1)+'" y="'+(ty-9.5).toFixed(1)+'" width="'+tw.toFixed(1)+'" height="12" rx="3"/>';
-      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="middle">'+tot+'</text>';
+      if(!opts.transparent) s+='<rect class="tjmask" x="'+(x-tw/2).toFixed(1)+'" y="'+(ty-9.5).toFixed(1)+'" width="'+tw.toFixed(1)+'" height="12" rx="3"/>';
+      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="middle"'+totHalo+'>'+tot+'</text>';
     });
+    var svg='<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>';
+    if(opts.chrome===false) return svg;   // compare: bare chart (shared head/legend/caption supplied once by the caller)
     var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
     var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
-    return head+legend+'<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>'+caption;
+    return head+legend+svg+caption;
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
