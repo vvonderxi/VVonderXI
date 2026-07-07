@@ -236,7 +236,7 @@
 
   /* ===== Compare overhaul additions ===== */
   /* under-the-lights glow behind each player card (pops on dark) */
-  #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%}
+  #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%;perspective:800px}
   #cardA::before,#cardB::before{content:'';position:absolute;width:120%;height:88%;top:12%;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(255,143,163,0.30),rgba(255,143,163,0.08) 46%,transparent 72%);filter:blur(36px);z-index:0;pointer-events:none}
   body.light #cardA::before,body.light #cardB::before{background:radial-gradient(ellipse at center,rgba(255,143,163,0.20),rgba(255,143,163,0.05) 46%,transparent 72%)}
   /* per-slot season fold: collapsed trigger -> shared .seasonrows list */
@@ -538,11 +538,11 @@
 .cardslot{cursor:pointer;position:relative}
 .cardslot:not(.flipping){transition:transform .15s}
 .cardslot.flipping{transform:none !important}
-  @keyframes vvpop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}
   @keyframes vvshine{0%{left:-60%}100%{left:140%}}
-  .vvpopping{animation:vvpop .7s cubic-bezier(.34,1.4,.5,1)}
   .vvshine{position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);left:-60%;pointer-events:none;z-index:5;border-radius:inherit}
   .vvshine.go{animation:vvshine .8s ease-out .1s}
+  /* #109 edge-pivot flip , the .vvcard child rotates within the slot's perspective (set on #cardA/#cardB) */
+  .vvflip{transform-origin:center center;backface-visibility:hidden;will-change:transform}
   .flipstage{perspective:1600px;width:var(--cw);height:calc(var(--cw)*1.397);margin:0 auto}
   .flipinner{position:relative;width:100%;height:100%;transition:transform .95s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d}
   .flipstage.flipped .flipinner{transform:rotateY(180deg)}
@@ -784,21 +784,38 @@ body.light .pkmsub{color:#b0a899}
     var v=document.getElementById('verdict'); if(v) v.classList.remove('show');
     var m=document.querySelector('.matchup'); if(m) m.classList.remove('settled');
   }
+  // #109 Compare edge-pivot flip (~0.4s): current face swings out to 90deg (edge-on,
+  // invisible) -> swap innerHTML at the edge -> new face swings back to 0deg. Never
+  // passes 90deg, so no back face is shown (reserved for the Master 360). Applies to
+  // both player swap and season change (both land vvFlipReveal). Uses the .flipping
+  // stub on the slot + the slot perspective (#cardA/#cardB{perspective:800px}).
   function vvFlipReveal(slot, card, cw){
     vvResetVerdict();
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
-    host.innerHTML=buildCard(card,cw);
-    var el=host.firstElementChild; if(!el){ vvSizeCards(); vvLoadSlotSeasons(slot); return; }
-    el.style.position='relative';
-    var sh=document.createElement('div'); sh.className='vvshine'; el.appendChild(sh);
-    void el.offsetWidth;
-    el.classList.add('vvpopping');
-    void sh.offsetWidth; sh.classList.add('go');
-    setTimeout(function(){
-      el.classList.remove('vvpopping');
-      if(sh && sh.parentNode) sh.parentNode.removeChild(sh);
-      vvLoadSlotSeasons(slot);
-    }, 820);
+    host.classList.add('flipping');
+    function swapIn(){
+      host.innerHTML=buildCard(card,cw);
+      var el=host.firstElementChild;
+      if(!el){ host.classList.remove('flipping'); vvSizeCards(); vvLoadSlotSeasons(slot); return; }
+      el.classList.add('vvflip'); el.style.position='relative';
+      el.style.transition='none'; el.style.transform='rotateY(90deg)';   // start edge-on
+      var sh=document.createElement('div'); sh.className='vvshine'; el.appendChild(sh);
+      void el.offsetWidth;
+      el.style.transition='transform .2s ease-out'; el.style.transform='rotateY(0deg)';   // swing new face in
+      void sh.offsetWidth; sh.classList.add('go');
+      setTimeout(function(){
+        el.style.transition=''; el.style.transform=''; el.classList.remove('vvflip');
+        if(sh && sh.parentNode) sh.parentNode.removeChild(sh);
+        host.classList.remove('flipping');
+        vvLoadSlotSeasons(slot);
+      }, 240);
+    }
+    var cur=host.firstElementChild;
+    if(cur){
+      cur.classList.add('vvflip');
+      cur.style.transition='transform .2s ease-in'; cur.style.transform='rotateY(90deg)';   // swing current out to edge
+      setTimeout(swapIn, 200);
+    } else { swapIn(); }
   }
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
