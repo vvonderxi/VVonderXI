@@ -239,13 +239,51 @@
   #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%}
   #cardA::before,#cardB::before{content:'';position:absolute;width:120%;height:88%;top:12%;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(255,143,163,0.30),rgba(255,143,163,0.08) 46%,transparent 72%);filter:blur(36px);z-index:0;pointer-events:none}
   body.light #cardA::before,body.light #cardB::before{background:radial-gradient(ellipse at center,rgba(255,143,163,0.20),rgba(255,143,163,0.05) 46%,transparent 72%)}
-  .cmp-seasons{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px auto 0;max-width:240px}
-  .cmp-spill{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.02em;padding:6px 11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:rgba(243,237,224,.72);transition:.15s;line-height:1;white-space:nowrap}
-  .cmp-spill:hover{border-color:rgba(255,255,255,.32);color:#F3EDE0}
-  .cmp-spill.on{background:var(--pink);border-color:var(--pink);color:#fff}
-  body.light .cmp-spill{border-color:rgba(0,0,0,.14);background:rgba(0,0,0,.035);color:#6b6658}
-  body.light .cmp-spill:hover{border-color:rgba(0,0,0,.3);color:#1d1a1b}
-  body.light .cmp-spill.on{background:var(--pink);border-color:var(--pink);color:#fff}
+  /* per-slot season fold: collapsed trigger -> shared .seasonrows list */
+  .cmp-seasonfold{max-width:240px;margin:12px auto 0}
+  .cmp-seasontrigger{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,.6);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .cmp-seasontrigger:hover{color:#F3EDE0;border-color:rgba(255,255,255,.3)}
+  .cmp-seasontrigger .chev{transition:transform .18s;font-size:.9em;opacity:.8}
+  .cmp-seasontrigger.open .chev{transform:rotate(180deg)}
+  body.light .cmp-seasontrigger{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.14);color:#6b6658}
+  body.light .cmp-seasontrigger:hover{color:#1d1a1b;border-color:rgba(0,0,0,.3)}
+  .cmp-seasonfold .seasonrows{margin-top:8px;animation:cmpSeasonIn .18s ease}
+  @keyframes cmpSeasonIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  /* ===== .seasonrows shared block (identical in card.html) ===== */
+  .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
+  body.light .seasonrows{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
+  .seasonrows .urow{display:grid;grid-template-columns:minmax(0,1fr) 44px;column-gap:11px;align-items:center;padding:10px 13px;cursor:pointer;transition:background .14s}
+  .seasonrows .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
+  body.light .seasonrows .urow+.urow{border-color:rgba(0,0,0,0.055)}
+  .seasonrows .urow:hover{background:rgba(255,255,255,0.045)}
+  body.light .seasonrows .urow:hover{background:rgba(0,0,0,0.025)}
+  .seasonrows .urow.active{background:rgba(255,92,122,0.09)}
+  .seasonrows .srmain{min-width:0}
+  .seasonrows .sryear{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;letter-spacing:-.01em;line-height:1.05;color:var(--cream);font-variant-numeric:tabular-nums}
+  body.light .seasonrows .sryear{color:var(--charcoal)}
+  .seasonrows .urow.active .sryear{color:var(--pink)}
+  .seasonrows .srsub{margin-top:3px;font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.light .seasonrows .srsub{color:#7a7264}
+  .seasonrows .srtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .seasonrows .rmini{align-self:center;justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:42px;height:48px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
+  .seasonrows .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:10px;line-height:1}
+  .seasonrows .rmvv .a{color:#1C1B1A}.seasonrows .rmvv .b{color:var(--pink)}
+  .seasonrows .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;line-height:1;color:#1C1B1A}
+  .seasonrows .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
+  .seasonrows .rmini.elite .a,.seasonrows .rmini.elite .rmn{color:#2a1d03}
+  .seasonrows .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
+  .seasonrows .rmini.gen .a,.seasonrows .rmini.gen .rmn{color:#fff}
+  .seasonrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:2.5px 8px;border-radius:999px;border:1px solid}
+  .seasonrows .rtag.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A);border-color:transparent;color:#5a4410}
+  .seasonrows .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
+  .seasonrows .rtag-prestige-gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F3DA88;font-weight:800}
+  .seasonrows .rtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);border-color:transparent;color:#16120e;font-weight:800}
+  .seasonrows .rtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A);border-color:transparent;color:#fff}
+  .seasonrows .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
+  .seasonrows .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
+  .seasonrows .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
+  .seasonrows .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+  /* ===== end .seasonrows shared block ===== */
   #cardA .vvcard,#cardB .vvcard{position:relative;z-index:1}
   /* favourite + add-to-club under each card */
   .sidecta{display:flex;align-items:center;gap:10px;width:var(--cw,300px);max-width:300px}
@@ -790,22 +828,36 @@ body.light .pkmsub{color:#b0a899}
       if(CMP_B) vvFlipReveal('B', CMP_B, cw);
     }, 220); });
   }
+  var SLOT_SEASONS={};   // slot -> rowToCard-mapped seasons (with honours), for the per-slot fold
   async function vvLoadSlotSeasons(slot){
     var cmp = slot==='A'?CMP_A:CMP_B;
     var host = document.getElementById('card'+slot);
     var old = document.getElementById('seasons'+slot); if(old) old.remove();
+    SLOT_SEASONS[slot]=null;
     if(!host || !cmp || cmp.api_player_id==null) return;
     var sb=vvClient(); if(!sb) return;
-    var res=await sb.from('player_card_mv').select('card_id,season,season_year,rt').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false});
+    var res=await sb.from('player_card_mv').select('*').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false});
     if(res.error || !res.data || res.data.length<2) return;
-    var rows=res.data;
-    var wrap=document.createElement('div'); wrap.id='seasons'+slot; wrap.className='cmp-seasons';
-    wrap.innerHTML=rows.map(function(r){
-      var on=(String(r.card_id)===String(cmp.card_id))?' on':'';
-      var lbl=(typeof fmtSeason==='function')?fmtSeason(r.season):r.season;
-      return '<button class="cmp-spill'+on+'" onclick="event.stopPropagation();vvSwitchSlotSeason(\''+slot+'\','+r.card_id+')">'+lbl+'</button>';
-    }).join('');
+    var rows=(res.data||[]).map(rowToCard).filter(Boolean);
+    try{ await attachHonoursBatch(rows); }catch(e){}   // honour pills, one batched query
+    SLOT_SEASONS[slot]=rows;
+    var wrap=document.createElement('div'); wrap.id='seasons'+slot; wrap.className='cmp-seasonfold';
+    wrap.innerHTML='<button class="cmp-seasontrigger" onclick="event.stopPropagation();vvSlotSeasonsToggle(\''+slot+'\')">All '+rows.length+' seasons <span class="chev">&#9662;</span></button>';
     host.insertAdjacentElement('afterend', wrap);
+  }
+  function seasonRowsHTMLCmp(slot){
+    var rows=SLOT_SEASONS[slot]||[]; var cmp=slot==='A'?CMP_A:CMP_B; var curId=cmp&&cmp.card_id;
+    return rows.map(function(r,idx){
+      return rankRowHTML(r, idx, { cap:3, showRank:false, seasonLed:true, active:(String(r.card_id)===String(curId)),
+        onClick:function(d){ return "event.stopPropagation();vvSwitchSlotSeason('"+slot+"',"+(d.card_id==null?'':d.card_id)+")"; } });
+    }).join('');
+  }
+  function vvSlotSeasonsToggle(slot){
+    var wrap=document.getElementById('seasons'+slot); if(!wrap) return;
+    var open=wrap.querySelector('.seasonrows'); var trig=wrap.querySelector('.cmp-seasontrigger');
+    if(open){ open.remove(); if(trig) trig.classList.remove('open'); return; }   // fold
+    var list=document.createElement('div'); list.className='seasonrows'; list.innerHTML=seasonRowsHTMLCmp(slot);
+    wrap.appendChild(list); if(trig) trig.classList.add('open');
   }
   async function vvSwitchSlotSeason(slot, cardId){
     var card=await fetchCard(cardId); if(!card) return;

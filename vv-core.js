@@ -1068,6 +1068,26 @@
     var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem }) : '';
     var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
     var click = opts.onClick ? opts.onClick(d,i) : ('goCard('+(d.card_id==null?'':d.card_id)+')');
+    // ── Season-led variant (card view-all-seasons + Compare per-slot). One player,
+    //    so the YEAR leads (not the name); club/pos/age/G/A collapse into one
+    //    ellipsizing sub-line; tags wrap; same .rmini VV badge + same rtag pills as
+    //    rankings. Fits the narrow (240-330px) season containers. ──
+    if (opts.seasonLed){
+      var sub = [ d.clubname, posDisplay(d.pos),
+                  (d.age!=null && d.age!=='') ? 'Age '+d.age : '',
+                  (d.goals!=null ? d.goals+'G' : ''),
+                  (d.assists!=null ? d.assists+'A' : 'NR') ]
+                .filter(function(x){ return x!=null && x!==''; }).join(' · ');
+      var srtags = honHtml+prestige+tags;
+      return '<div class="urow seasonled'+tier+active+'" onclick="'+click+'">'
+        +'<div class="srmain">'
+          +'<div class="sryear">'+d.year+'</div>'
+          +'<div class="srsub">'+sub+'</div>'
+          +(srtags ? '<div class="srtags">'+srtags+'</div>' : '')
+        +'</div>'
+        +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+      +'</div>';
+    }
     return '<div class="urow'+tier+active+'" onclick="'+click+'">'
       +(showRank ? '<div class="urank">'+(i+1)+'</div>' : '')
       +'<div class="uident"><span class="uflag">'+(d.flag||'')+'</span>'+rowShieldHTML(d,i)+'<span class="uname">'+d.surname+'</span></div>'

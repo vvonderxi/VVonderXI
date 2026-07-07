@@ -390,15 +390,44 @@
   .yr.switchable{ cursor:pointer; position:relative; }
   .yr.switchable::after{ content:"\25BE"; font-size:.5em; opacity:.45; margin-left:.2em; }
   .yr.switchable:hover::after{ opacity:.85; }
-  .seasonpanel{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin:16px auto 0; max-width:330px; padding:12px 10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; animation:seasonIn .18s ease; }
   @keyframes seasonIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;} }
-  .seasonpill{ font-family:'Archivo',sans-serif; font-size:13px; font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:#F0EAD9; transition:background .15s,border-color .15s,transform .12s; }
-  .seasonpill:hover{ background:rgba(255,255,255,0.12); transform:translateY(-1px); }
-  .seasonpill.active{ background:#FF5C7A; border-color:#FF5C7A; color:#1C1B1A; }
-  body.light .seasonpanel{ background:rgba(0,0,0,0.03); border-color:rgba(0,0,0,0.08); }
-  body.light .seasonpill{ border-color:rgba(0,0,0,0.16); background:rgba(0,0,0,0.04); color:#1C1B1A; }
-  body.light .seasonpill:hover{ background:rgba(0,0,0,0.08); }
-  body.light .seasonpill.active{ background:#DE3A5E; border-color:#DE3A5E; color:#fff; }
+  /* season list , shared rankings-style season rows (one player), namespaced .seasonrows. Card sizing: */
+  #seasonZone .seasonrows{width:330px;max-width:100%;margin:16px auto 0;animation:seasonIn .18s ease}
+  /* ===== .seasonrows shared block (identical in compare.html) ===== */
+  .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
+  body.light .seasonrows{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
+  .seasonrows .urow{display:grid;grid-template-columns:minmax(0,1fr) 44px;column-gap:11px;align-items:center;padding:10px 13px;cursor:pointer;transition:background .14s}
+  .seasonrows .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
+  body.light .seasonrows .urow+.urow{border-color:rgba(0,0,0,0.055)}
+  .seasonrows .urow:hover{background:rgba(255,255,255,0.045)}
+  body.light .seasonrows .urow:hover{background:rgba(0,0,0,0.025)}
+  .seasonrows .urow.active{background:rgba(255,92,122,0.09)}
+  .seasonrows .srmain{min-width:0}
+  .seasonrows .sryear{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;letter-spacing:-.01em;line-height:1.05;color:var(--cream);font-variant-numeric:tabular-nums}
+  body.light .seasonrows .sryear{color:var(--charcoal)}
+  .seasonrows .urow.active .sryear{color:var(--pink)}
+  .seasonrows .srsub{margin-top:3px;font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.light .seasonrows .srsub{color:#7a7264}
+  .seasonrows .srtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .seasonrows .rmini{align-self:center;justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:42px;height:48px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
+  .seasonrows .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:10px;line-height:1}
+  .seasonrows .rmvv .a{color:#1C1B1A}.seasonrows .rmvv .b{color:var(--pink)}
+  .seasonrows .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;line-height:1;color:#1C1B1A}
+  .seasonrows .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
+  .seasonrows .rmini.elite .a,.seasonrows .rmini.elite .rmn{color:#2a1d03}
+  .seasonrows .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
+  .seasonrows .rmini.gen .a,.seasonrows .rmini.gen .rmn{color:#fff}
+  .seasonrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:2.5px 8px;border-radius:999px;border:1px solid}
+  .seasonrows .rtag.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A);border-color:transparent;color:#5a4410}
+  .seasonrows .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
+  .seasonrows .rtag-prestige-gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F3DA88;font-weight:800}
+  .seasonrows .rtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);border-color:transparent;color:#16120e;font-weight:800}
+  .seasonrows .rtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A);border-color:transparent;color:#fff}
+  .seasonrows .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
+  .seasonrows .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
+  .seasonrows .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
+  .seasonrows .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+  /* ===== end .seasonrows shared block ===== */
   .seasontrigger{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;cursor:pointer;padding:4px 2px;transition:color .18s}
   .seasontrigger:hover{color:rgba(243,237,224,0.9)}
   .seasontrigger::after{content:"\25BE";font-size:.85em;opacity:.7}
@@ -544,7 +573,7 @@
     var host=document.getElementById('trajHost'); if(!host) return;
     if(!SEASON_ROWS || !SEASON_ROWS.length){ host.innerHTML=''; return; }        // no seasons -> clear (never leave seed bars)
     var rows=SEASON_ROWS.slice().reverse().map(function(r){                       // chronological (oldest -> newest)
-      return { season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, selected:(r.card_id===SEASON_CARDID) };
+      return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), selected:(r.card_id===SEASON_CARDID) };
     });
     host.innerHTML = VVCore.renderTrajectory(rows);                              // shared dual-axis renderer (single-season safe)
   }
@@ -755,24 +784,29 @@
     SEASON_CARDID=currentCardId; SEASON_ROWS=null;
     if(apiPlayerId==null) return;
     var sb=vvClient(); if(!sb) return;
-    var res=await sb.from('player_card_mv').select('card_id,season,season_year,rt,goals,assists').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
+    var res=await sb.from('player_card_mv').select('*').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
     if(res.error || !res.data || res.data.length<2) return;
-    SEASON_ROWS=res.data;
+    var rows=(res.data||[]).map(rowToCard).filter(Boolean);
+    try{ await attachHonoursBatch(rows); }catch(e){}   // honour pills, one batched query for all seasons
+    SEASON_ROWS=rows;
     renderTrajectory();
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     var zone=document.getElementById('seasonZone');
     if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
+  }
+  function seasonRowsHTML(){
+    return (SEASON_ROWS||[]).map(function(r,idx){
+      return rankRowHTML(r, idx, { cap:3, showRank:false, seasonLed:true, active:(r.card_id===SEASON_CARDID),
+        onClick:function(d){ return 'switchSeason('+(d.card_id==null?'':d.card_id)+')'; } });
+    }).join('');
   }
   function seasonPanelOpen(){
     if(!SEASON_ROWS) return;
     if(document.getElementById('seasonPanel')){ seasonPanelClose(); return; }   // toggle
     var zone=document.getElementById('seasonZone'); if(!zone) return;
     var p=document.createElement('div');
-    p.id='seasonPanel'; p.className='seasonpanel';
-    p.innerHTML=SEASON_ROWS.map(function(r){
-      var active=(r.card_id===SEASON_CARDID)?' active':'';
-      return '<button class="seasonpill'+active+'" data-cid="'+r.card_id+'" onclick="switchSeason('+r.card_id+')">'+fmtSeason(r.season)+'</button>';
-    }).join('');
+    p.id='seasonPanel'; p.className='seasonrows';
+    p.innerHTML=seasonRowsHTML();
     zone.appendChild(p);
     var trig=zone.querySelector('.seasontrigger'); if(trig) trig.textContent='Hide seasons';
   }
@@ -794,7 +828,7 @@
     SEASON_CARDID=cardId;
     renderTrajectory();
     var _sp=document.getElementById('seasonPanel');
-    if(_sp){ _sp.querySelectorAll('.seasonpill').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cid')===String(cardId)); }); }
+    if(_sp){ _sp.innerHTML=seasonRowsHTML(); }   // rebuild rows with the new active season highlighted
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
