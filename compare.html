@@ -71,8 +71,8 @@
   .verdict.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
-  .verdict .vquote{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:23px;line-height:1.5;color:var(--cream)}
-  .verdict .vwho{font-family:'Archivo';font-weight:800;font-size:14px;color:var(--pink);margin-top:20px;letter-spacing:0.04em}
+  .verdict .vquote{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:23px;line-height:1.45;color:var(--cream)}   /* #102: punchier statement */
+  .verdict .vwho{font-family:'Archivo';font-weight:800;font-size:14px;color:var(--pink);margin-top:24px;letter-spacing:0.04em}   /* #102: more air above the who-won beat */
   /* full verdict breakdown */
   .vbreak{margin-top:34px;padding-top:30px;border-top:1px solid rgba(255,255,255,0.1);text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:28px}
   .vsect{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px 22px}
@@ -148,6 +148,7 @@
   /* the final verdict , the payoff after the analysis */
   .vfinal{margin-top:34px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.1);text-align:center}
   body.light .vfinal{border-top-color:rgba(0,0,0,0.1)}
+  .vfinal .vquote{max-width:620px;margin-inline:auto}   /* #102: cap the measure , tight centered pull-quote (~50-58 chars) */
   .vfinal .vquote2,.vfinal .vquote3{margin-top:16px}
   .vfinal .vquote3{color:var(--gold)}
   /* breakpoints , stack on narrow, keep premium spacing */
@@ -344,7 +345,7 @@
   .vstorygrid .vstorycol:nth-child(2) .vsname{color:var(--blue)}
   .vsname .sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
   .vsname .sdot-a{background:var(--pink)} .vsname .sdot-b{background:var(--blue)}
-  .vsprose{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.62;color:rgba(243,237,224,0.92)}
+  .vsprose{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:16px;line-height:1.62;color:rgba(243,237,224,0.92)}   /* #102: a hair more reading comfort */
   body.light .vsprose{color:#33302a}
   .vsprose b{font-style:normal;font-weight:800;color:var(--gold)}
   body.light .vsprose b{color:#b8902f}
