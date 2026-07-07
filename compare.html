@@ -353,7 +353,7 @@
   @media(max-width:560px){.cs-top{display:none}}
   /* two per-player bar charts */
   .vtrajpair{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-  @media(max-width:620px){.vtrajpair{grid-template-columns:1fr;gap:22px}}
+  @media(max-width:720px){.vtrajpair{grid-template-columns:1fr;gap:22px}}   /* #91: stack in step with the rest of the page (720), not 620 */
   .vtchart .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;text-align:center;margin-bottom:8px}
   .vtchart .vtname.tA{color:var(--pink)} .vtchart .vtname.tB{color:var(--blue)}
   /* shared trajectory renderer (vv-core) , compare wears it TRANSPARENT on the verdict panel */
@@ -379,6 +379,7 @@
   .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:19px;margin-bottom:2px}
   .vtname.tA{color:var(--pink)} .vtname.tB{color:var(--blue)}
   .vtchart svg{width:100%;height:auto;display:block;max-width:330px;margin:0 auto}
+  @media(max-width:720px){.vtchart svg{max-width:430px}}   /* #91: stacked charts breathe, match the solo chart cap (:328) */
   #vtraj .tgrid{stroke:rgba(255,255,255,0.10)} body.light #vtraj .tgrid{stroke:rgba(0,0,0,0.10)}
   #vtraj .tylab,#vtraj .txlab{font-family:'Archivo';font-weight:700;font-size:9.5px;fill:rgba(243,237,224,0.5)}
   body.light #vtraj .tylab,body.light #vtraj .txlab{fill:#9a9285}
