@@ -236,7 +236,7 @@
 
   /* ===== Compare overhaul additions ===== */
   /* under-the-lights glow behind each player card (pops on dark) */
-  #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%;perspective:800px}
+  #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%}
   #cardA::before,#cardB::before{content:'';position:absolute;width:120%;height:88%;top:12%;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(255,143,163,0.30),rgba(255,143,163,0.08) 46%,transparent 72%);filter:blur(36px);z-index:0;pointer-events:none}
   body.light #cardA::before,body.light #cardB::before{background:radial-gradient(ellipse at center,rgba(255,143,163,0.20),rgba(255,143,163,0.05) 46%,transparent 72%)}
   /* per-slot season fold: collapsed trigger -> shared .seasonrows list */
@@ -538,17 +538,28 @@
 .cardslot{cursor:pointer;position:relative}
 .cardslot:not(.flipping){transition:transform .15s}
 .cardslot.flipping{transform:none !important}
-  @keyframes vvshine{0%{left:-60%}100%{left:140%}}
-  .vvshine{position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);left:-60%;pointer-events:none;z-index:5;border-radius:inherit}
-  .vvshine.go{animation:vvshine .8s ease-out .1s}
-  /* #109 edge-pivot flip , the .vvcard child rotates within the slot's perspective (set on #cardA/#cardB) */
-  .vvflip{transform-origin:center center;backface-visibility:hidden;will-change:transform}
-  .flipstage{perspective:1600px;width:var(--cw);height:calc(var(--cw)*1.397);margin:0 auto}
-  .flipinner{position:relative;width:100%;height:100%;transition:transform .95s cubic-bezier(.45,.03,.25,1);transform-style:preserve-3d}
-  .flipstage.flipped .flipinner{transform:rotateY(180deg)}
-  .flipface{position:absolute;top:0;left:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(var(--cw)*0.073)}
-  .flipface .vvcard,.flipface .vvback{width:100%;height:100%;max-width:none}
-  .flipface.fp-front{transform:rotateY(180deg)}
+  /* #109 shared 360deg reveal-through-back flip (VVCore.vvCardFlip) , IDENTICAL block in card.html.
+     vvflip*/vvmono* namespace (avoids the removed .flipstage prototype + the live .vvback empty-slot). */
+  .vvflipwrap{--cw:300px;position:relative;width:var(--cw);max-width:100%;height:calc(var(--cw)*1.397);margin:0 auto;perspective:1100px}
+  .vvflipinner{position:relative;width:100%;height:100%;transform-style:preserve-3d;will-change:transform}
+  .vvflipfront,.vvflipback{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:calc(var(--cw)*0.073)}
+  .vvflipback{transform:rotateY(180deg);display:flex;align-items:center;justify-content:center}
+  .vvflipfront .vvcard{width:100%;height:100%;max-width:none}
+  /* glossy sheen sweep (Option A) , one diagonal light pass per flip */
+  .vvsheen{position:absolute;inset:0;overflow:hidden;border-radius:calc(var(--cw)*0.073);pointer-events:none;z-index:6}
+  .vvsheen i{position:absolute;top:-25%;bottom:-25%;left:-70%;width:48%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-16deg);filter:blur(1px)}
+  .vvsheen.go i{animation:vvsheenmove .8s cubic-bezier(.5,0,.5,1)}
+  @keyframes vvsheenmove{0%{left:-70%;opacity:0}22%{opacity:1}78%{opacity:1}100%{left:160%;opacity:0}}
+  /* VV monogram back , tier-matched (back colour = card tier); 1st V tier-ink, 2nd V pink */
+  .vvmono{width:100%;height:100%;border-radius:calc(var(--cw)*0.073);display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+  .vvmonomark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1;text-shadow:0 6px 18px rgba(0,0,0,.3)}
+  .vvmonomark span{color:var(--pink)}
+  .vvmono-cream{background:linear-gradient(158deg,#F7F2E6,#EAE2D0);box-shadow:inset 0 0 0 1px rgba(0,0,0,.10),0 24px 60px -20px rgba(0,0,0,.5)}
+  .vvmono-cream .vvmonomark{color:#1C1B1A}
+  .vvmono-gold{background:linear-gradient(158deg,#F6DE93,#DC9E2C);box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
+  .vvmono-gold .vvmonomark{color:#3a2708}
+  .vvmono-black{background:linear-gradient(158deg,#2c2926,#121010);box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(232,184,75,.55),inset 0 0 0 calc(var(--cw)*0.028) rgba(232,184,75,.9),0 22px 54px -18px rgba(0,0,0,.7),0 0 26px -6px rgba(232,184,75,.25)}
+  .vvmono-black .vvmonomark{color:#F0EAD9}
 .cardslot:hover{transform:translateY(-3px)}
 .cardslot::after{content:'\21BB Tap to change';position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:rgba(243,237,224,.32);pointer-events:none}
 body.light .cardslot::after{color:#b0a899}
@@ -784,38 +795,15 @@ body.light .pkmsub{color:#b0a899}
     var v=document.getElementById('verdict'); if(v) v.classList.remove('show');
     var m=document.querySelector('.matchup'); if(m) m.classList.remove('settled');
   }
-  // #109 Compare edge-pivot flip (~0.4s): current face swings out to 90deg (edge-on,
-  // invisible) -> swap innerHTML at the edge -> new face swings back to 0deg. Never
-  // passes 90deg, so no back face is shown (reserved for the Master 360). Applies to
-  // both player swap and season change (both land vvFlipReveal). Uses the .flipping
-  // stub on the slot + the slot perspective (#cardA/#cardB{perspective:800px}).
+  // #109 Compare reveal-through-back flip , routes to the shared VVCore.vvCardFlip
+  // (360deg, VV monogram mid-turn, lands on the new card). A first pick into an EMPTY
+  // slot renders statically (nothing to flip from). Season change + player swap both
+  // land here, so both flip.
   function vvFlipReveal(slot, card, cw){
     vvResetVerdict();
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
-    host.classList.add('flipping');
-    function swapIn(){
-      host.innerHTML=buildCard(card,cw);
-      var el=host.firstElementChild;
-      if(!el){ host.classList.remove('flipping'); vvSizeCards(); vvLoadSlotSeasons(slot); return; }
-      el.classList.add('vvflip'); el.style.position='relative';
-      el.style.transition='none'; el.style.transform='rotateY(90deg)';   // start edge-on
-      var sh=document.createElement('div'); sh.className='vvshine'; el.appendChild(sh);
-      void el.offsetWidth;
-      el.style.transition='transform .2s ease-out'; el.style.transform='rotateY(0deg)';   // swing new face in
-      void sh.offsetWidth; sh.classList.add('go');
-      setTimeout(function(){
-        el.style.transition=''; el.style.transform=''; el.classList.remove('vvflip');
-        if(sh && sh.parentNode) sh.parentNode.removeChild(sh);
-        host.classList.remove('flipping');
-        vvLoadSlotSeasons(slot);
-      }, 240);
-    }
-    var cur=host.firstElementChild;
-    if(cur){
-      cur.classList.add('vvflip');
-      cur.style.transition='transform .2s ease-in'; cur.style.transform='rotateY(90deg)';   // swing current out to edge
-      setTimeout(swapIn, 200);
-    } else { swapIn(); }
+    if(!host.querySelector('.vvcard')){ host.innerHTML=buildCard(card,cw); vvSizeCards(); vvLoadSlotSeasons(slot); return; }   // empty slot: static
+    vvCardFlip(host, { swap:true, newHTML:buildCard(card,cw), cw:cw, vv:card.vv, onDone:function(){ vvLoadSlotSeasons(slot); } });
   }
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);

@@ -1101,6 +1101,55 @@
     +'</div>';
   }
 
+  // ── Card flip (#109) , shared 360deg reveal-through-back for Compare + Master.
+  //    ONE continuous rotateY(0->360): front .vvcard 0-90, VV monogram back through
+  //    90-270, front again 270-360. swap:true replaces the front content at the
+  //    back-facing midpoint (~180deg, hidden) so the flip LANDS on the new card;
+  //    swap:false returns to the same card (Master admire tap). The host rests as a
+  //    plain .vvcard before + after (structure is wrapped only for the flip, then
+  //    unwrapped), so all existing DOM contracts (host.firstElementChild, .yr,
+  //    vvSizeCards) hold. opts: {swap, newHTML, cw, duration, onDone}. ──
+  // Back tier by VV score (locked cuts): 92+ black, 88-91 gold, else cream. The back
+  // matches the card's tier; monogram 1st V = tier-ink, 2nd V always pink; gold/black
+  // carry the metallic gold edge (CSS).
+  function vvFlipTier(vv){ var n=Number(vv); return (n>=92)?'black':((n>=88)?'gold':'cream'); }
+  function vvBackFace(tier){
+    tier = (tier==='black'||tier==='gold') ? tier : 'cream';
+    return '<div class="vvmono vvmono-'+tier+'"><div class="vvmonomark">V<span>V</span></div></div>';
+  }
+  function vvCardFlip(host, opts){
+    if(!host) return;
+    opts = opts || {};
+    var dur = opts.duration || 800;
+    var swap = !!opts.swap;
+    var newHTML = opts.newHTML || null;
+    var cw = opts.cw;
+    var tier = vvFlipTier(opts.vv);                        // back/border tier from the card's VV
+    var startFront = host.innerHTML;                       // current plain .vvcard (resting state)
+    var finalHTML = (swap && newHTML) ? newHTML : startFront;
+    if(host._flipping){ host.innerHTML = finalHTML; if(opts.onDone) opts.onDone(); return; }  // guard re-entry
+    host._flipping = true;
+    host.innerHTML = '<div class="vvflipwrap"'+(cw?' style="--cw:'+cw+'px"':'')+'>'
+      + '<div class="vvflipinner"><div class="vvflipfront">'+startFront+'</div>'
+      + '<div class="vvflipback">'+vvBackFace(tier)+'</div></div>'
+      + '<div class="vvsheen"><i></i></div></div>';       // glossy sweep overlay (Option A)
+    var inner = host.querySelector('.vvflipinner'), front = host.querySelector('.vvflipfront'), sheen = host.querySelector('.vvsheen');
+    if(!inner){ host._flipping=false; host.innerHTML=finalHTML; if(opts.onDone) opts.onDone(); return; }
+    inner.style.transition='none'; inner.style.transform='rotateY(0deg)';
+    void inner.offsetWidth;                                // commit the 0deg base
+    inner.style.transition='transform '+dur+'ms cubic-bezier(.5,0,.5,1)';
+    inner.style.transform='rotateY(360deg)';              // one weighted motion
+    if(sheen){ void sheen.offsetWidth; sheen.classList.add('go'); }   // light sweeps across as it turns
+    if(swap && newHTML){                                  // swap at the hidden back-facing midpoint
+      setTimeout(function(){ if(front) front.innerHTML = newHTML; }, Math.round(dur/2));
+    }
+    setTimeout(function(){                                // land + normalize base (unwrap to plain .vvcard)
+      host.innerHTML = finalHTML;
+      host._flipping = false;
+      if(opts.onDone) opts.onDone();
+    }, dur + 30);
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
@@ -1108,7 +1157,7 @@
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
-                rankRowHTML, rowShieldHTML };
+                rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
