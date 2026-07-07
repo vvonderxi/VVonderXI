@@ -153,7 +153,7 @@
       <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
       ${prestige}${tag}
       <div class="cga"><div class="col"><div class="v">${d.goals == null ? 'NR' : d.goals}</div><div class="l">Goals</div></div><div class="divider"></div><div class="col"><div class="v">${d.assistsText == null ? 'NR' : d.assistsText}</div><div class="l">Assists</div></div></div>
-      <div class="cname"><div class="nm${longName}">${flag}${d.surname}</div>${full}<div class="sub">${d.clubname} &middot; ${d.age}</div></div>
+      <div class="cname"><div class="nm${longName}">${flag}${d.surname}</div>${full}<div class="sub">${[d.clubname, posDisplay(d.pos), d.age].filter(x=>x!=null&&x!=='').join(' &middot; ')}</div></div>
     </div>`;
   }
 
@@ -660,24 +660,36 @@
     return _client;
   }
 
-  // ── Tooltip viewport-guard , one delegated listener shifts any [data-tip]
-  //    bubble back on-screen via --tip-shift (consumed by the ::after transform). ──
+  // ── Tag info: tap-toggle inline reveal (shared: card + compare). Replaces the
+  //    old hover tooltip, which stuck on touch (no mouseout) and could pan the
+  //    page. Tap a [data-tip] chip -> its info folds open inline right below it;
+  //    tap it again, tap another chip, or tap outside -> it folds shut. Chips
+  //    inside a card face (.vvcard) or a click-to-open wrapper ([onclick], e.g.
+  //    ranking rows) are left alone , there the tap opens the card instead. ──
   (function(){
     if (typeof document === 'undefined') return;
-    function guard(e){
-      var el = e.target.closest && e.target.closest('[data-tip]');
-      if(!el) return;
-      var r = el.getBoundingClientRect();
-      var center = r.left + r.width/2;
-      var half = 130, margin = 10, vw = window.innerWidth, shift = 0;
-      if(center - half < margin) shift = margin - (center - half);
-      else if(center + half > vw - margin) shift = (vw - margin) - (center + half);
-      el.style.setProperty('--tip-left', Math.round(center) + 'px');
-      el.style.setProperty('--tip-bottom', Math.round(window.innerHeight - r.top + 9) + 'px');
-      el.style.setProperty('--tip-shift', Math.round(shift) + 'px');
+    function closeTips(){
+      var t = document.querySelectorAll('.chiptip');
+      for (var i=0;i<t.length;i++){ if(t[i].parentNode) t[i].parentNode.removeChild(t[i]); }
+      var o = document.querySelectorAll('[data-tip].tip-on');
+      for (var j=0;j<o.length;j++){ o[j].classList.remove('tip-on'); }
     }
-    document.addEventListener('mouseover', guard, true);
-    document.addEventListener('focusin', guard, true);
+    document.addEventListener('click', function(e){
+      if (e.target.closest && e.target.closest('.chiptip')) return;              // tap inside an open tip: keep it
+      var el = e.target.closest && e.target.closest('[data-tip]');
+      if (el && (el.closest('.vvcard') || el.closest('[onclick]'))) el = null;   // card face / navigable row
+      if (!el){ closeTips(); return; }                                           // tap outside any chip: fold all
+      var wasOpen = el.classList.contains('tip-on');
+      closeTips();                                                               // fold everything first
+      if (wasOpen) return;                                                       // re-tap the open chip: just fold
+      var tip = el.getAttribute('data-tip') || '';
+      if (!tip) return;
+      el.classList.add('tip-on');
+      var box = document.createElement('div');
+      box.className = 'chiptip';
+      box.textContent = tip;
+      el.parentNode.insertBefore(box, el.nextSibling);
+    }, false);
   })();
 
   // ── Honours fetch (folded from vv-honours.js) , reuses vvClient(); fail-soft ──

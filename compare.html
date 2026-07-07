@@ -137,7 +137,11 @@
   .vchip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410;border:none}
   body.light .vchip{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
   body.light .vchip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
-  .vchip[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);width:max-content;max-width:240px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:10px 13px;border-radius:10px;box-shadow:0 14px 30px -10px rgba(0,0,0,0.6);z-index:30;pointer-events:none}
+  /* tag info: tap-toggle inline reveal (shared handler in vv-core.js), replaces the
+     old hover tooltip so it works on touch and never floats/sticks. Full-width panel
+     injected right after the tapped chip. */
+  .chiptip{flex-basis:100%;width:100%;box-sizing:border-box;margin:2px 0 3px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:10px;box-shadow:0 10px 24px -12px rgba(0,0,0,.55);animation:chiptipin .16s ease}
+  @keyframes chiptipin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
   /* green dot on h2h winner */
   .h2hbar .hwin{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 8px -1px var(--green);flex-shrink:0}
   .h2hbar .hwin.hide{visibility:hidden}
@@ -299,10 +303,7 @@
   .vtag.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410;border:none}
   body.light .vtag{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
   body.light .vtag.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
-  .vtag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);width:max-content;max-width:240px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:10px 13px;border-radius:10px;box-shadow:0 14px 30px -10px rgba(0,0,0,0.6);z-index:30;pointer-events:none}
-  .vtag[data-tip]:hover::before{content:"";position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1d1a1b;z-index:30}
-  body.light .vtag[data-tip]:hover::after{background:#262122}
-  body.light .vtag[data-tip]:hover::before{border-top-color:#262122}
+  /* .vtag info now uses the shared tap-toggle .chiptip (defined above), not a hover bubble */
   /* numbers + 3-year trajectory layout */
   .vnumwrap2{display:grid;grid-template-columns:0.82fr 1.5fr;gap:30px;align-items:start}
   @media(max-width:760px){.vnumwrap2{grid-template-columns:1fr;gap:22px}}
