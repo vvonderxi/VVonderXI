@@ -20,7 +20,7 @@ Why this file exists: this project has suffered from too many documents and no c
 === VVONDERXI LAUNCH PROGRESS ===
 Data quality   █████████████████░  ~95%   honours 629 live + NR-assist fill (71 rt>=85 done, matview refreshed); tail NR queued (194 rt80-84, 1184 rt75-79); goals-provenance audit open
 Tags           ██████░░░░░░░░░░░░  ~35%   honours family COMPLETE + all bugs fixed, live cross-surface (card/rankings/mobile, rows priority-capped); profile + prestige + playbook audit remain
-Compare        ████████░░░░░░░░░░  ~45%   slots/deep-link/season-switch/verdict-radar-trajectory LIVE; C6 Accolades + C5 verdict still hardcoded demo; C8 position filter + polish remain
+Compare        ██████████████░░░░  ~78%   spine LIVE: slots/deep-link/season-switch/verdict/radar/trajectory + accolades (real Wonder Tags) + story split + shared season picker + mobile bugs done; C8 position filter + final polish + merge remain
 Card editorial ██████████░░░░░░░░  ~55%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED; K4 Proof + K5 VV-line trajectory + honours strip UI remain
 Hygiene        ███░░░░░░░░░░░░░░░  ~20%   key rotation, meta, logo, QA outstanding; HYGIENE_BACKLOG_2026-07-05 (13 items) logged
 Engine         ███████████████░░░  ~85%   bands recut 95/90/85/80 + top-of-scale cap live + trustworthy; radar percentile parked; dynamic-league-strength = parallel launch-blocker
@@ -101,6 +101,22 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-07 | Compare finish batch (Batch B) + shared season picker
+Session focus: finish the Compare product spine + build one shared season picker for card + Compare.
+
+- PREMIUM TRAJECTORY ported to Compare: shared vv-core renderTrajectory (opts chrome:false + transparent halo), ALL seasons, ONE shared head/legend/caption, CMP season selected.
+- AI-FEEL PROMPT FIX (api/analyse.js): STYLE RULES block , banned em/en-dashes + AI-tell phrases ("not just X but Y", "a testament to", "cements"...), Winter/Drury two-register voice; cleaned the prompt's OWN example text.
+- BRAND: "VV Engine" -> "VV Index" site-wide.
+- COMPARE ACCOLADES: swapped hover-tooltip .vchip chips for card-style tap-expandable Wonder Tags (renderWonderTagsGrouped + renderProfileTagRows) , killed the tooltip left-crop; odd-tag-count card-face fill (last cell spans both cols) propagated across card/rankings/compare.
+- CARD FIXES (commit effa5be): #104 horizontal-scroll lock (body overflow-x:clip , chosen over hidden to preserve the sticky spine + plinth); #105 tap-toggle-INLINE tags site-wide (shared vv-core click handler replaces the sticking hover tooltip; skips .vvcard card-face + [onclick] nav rows); #106 position on the card face (.sub -> CLUB·POS·AGE in buildCard, all surfaces); #107 removed the visible "Master Card View" crumb + trimmed <title>.
+- COMPARE MOBILE BUGS: #93 season-search input 16px (no iOS zoom); #94 season A/B slot vertical alignment (edge-flag reserved 30px box); #97 floating back-to-top FAB (>400px).
+- TRAJECTORY SQUISH #91 (commit e9d25d0): pair stack breakpoint 620->720px (in step with the page); mobile per-chart cap 330->430px.
+- STORY PER-PLAYER SPLIT #96 (commit 55bee8b): airy editorial , pink/blue full-height left accent bars + colour-matched names + generous padding + mobile vertical spacing (no boxes).
+- STORY/VERDICT TEXT #102 (commit 93688fd): verdict pull-quote measure cap 620px + line-height 1.45 + more air above the gold who-line; story prose 15.5->16px.
+- SHARED SEASON PICKER (commit ddf5519 extract + feb0aff wire): rankRowHTML + rowShieldHTML moved into vv-core with options {cap,onClick,showRank,active,seasonLed}; RANKINGS BYTE-IDENTICAL via a number-3rd-arg back-compat branch. Season-led variant (YEAR leads, club·pos·age·G·A subline ellipsizes, tags wrap, .rmini VV badge). Namespaced .seasonrows CSS block copied identically into card + compare. Both season fetches widened select('*') -> rowToCard -> attachHonoursBatch (club/pos/tags/VV/honours). CARD view-all-seasons reuses existing fold; COMPARE per-slot gets the same collapsed "All N seasons" fold (replaced year-only .cmp-spill pills). Clicks: card -> switchSeason, compare -> vvSwitchSlotSeason; current season highlighted pink; collapsed by default on both.
+- NOTE: §A Compare bar was ~45% live (not the ~62% recalled); bumped to ~78%.
+- NEXT: C8 position filter + remaining Compare polish -> card K4 Proof / K5 trajectory -> hygiene -> merge.
 
 ### 2026-07-05 | Honours bug-batch (Batch 1) + build-state reconciliation
 Session focus: fix honours bugs across all surfaces, reconcile the TRUE build-state (3 sources), NR-assist fill.
