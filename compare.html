@@ -119,7 +119,20 @@
   .vtags{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   @media (max-width:720px){.vtags{grid-template-columns:1fr}}
   .vtcol .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;margin-bottom:11px}
-  .vtchips{display:flex;flex-wrap:wrap;gap:8px}
+  .vtchips{min-width:0}
+  /* card-consistent Wonder-Tags rows (shared renderer output) , tap to expand, no floating tooltip */
+  .tagrow{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:13px;padding:14px 16px;margin-bottom:9px;cursor:pointer;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}
+  .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px;justify-content:flex-start}
+  .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
+  .tagrow .tt .ti{width:15px;height:15px} .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
+  .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:var(--cream)}
+  .tagrow .tchev{margin-left:auto;font-size:16px;opacity:0.9;color:#E8B84B;transition:transform .3s}
+  .tagrow.open .tchev{transform:rotate(180deg)}
+  .tagrow .tmore{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s;font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.78)}
+  .tagrow.open .tmore{max-height:1200px;opacity:1;margin-top:10px}
+  .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:rgba(232,184,75,0.85);margin-top:10px;margin-bottom:2px}
+  .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#E8B84B;margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
+  .wtsec:first-child .wtsechead{margin-top:0}
   .vchip{position:relative;font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream)}
   .vchip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410;border:none}
   body.light .vchip{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
@@ -164,6 +177,7 @@
   body.show-photos .vvcard .cimg .cphoto{display:block}
   body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
   .vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
+  .vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}   /* #4: odd count -> last tag spans both cols, no blank cell */
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
   .vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#FF5C7A);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
   .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
@@ -1049,10 +1063,10 @@ body.light .pkmsub{color:#b0a899}
     function fill(col,c){
       if(!col) return;
       var nm=col.querySelector('.vtname'); if(nm) nm.textContent=(c&&c.surname)?c.surname:'';
-      var chips=col.querySelector('.vtchips'); if(!chips) return;
-      var hon =(c&&c.honours)?renderHonourChips(c.honours,{baseClass:'vchip'}):'';   // gold, honours first
-      var prof=(c&&c.tags)?renderTagPills(c.tags,{baseClass:'vchip'}):'';            // then profile tags
-      chips.innerHTML=hon+prof;
+      var box=col.querySelector('.vtchips'); if(!box) return;
+      if(!c){ box.innerHTML=''; return; }
+      // card-consistent tap-expandable Wonder Tags (shared renderer): SILVERWARE / INDIVIDUAL HONOURS / THE PLAYER
+      box.innerHTML = renderWonderTagsGrouped(c.honours, renderProfileTagRows(c.tags, c.prestige));
     }
     fill(cols[0],CMP_A); fill(cols[1],CMP_B);
   }

@@ -831,6 +831,31 @@
   }
   // #17: Wonder Tags grouped into 3 named sections , SILVERWARE (Team + world_cup Career) ->
   //   INDIVIDUAL HONOURS (Individual) -> THE PLAYER (profile rows). Each renders only when non-empty.
+  // Wonder-Tags "THE PLAYER" rows , tap-expandable profile-tag rows. SHARED by card + compare.
+  //   prestige (Gen/Iconic) leads, then each profile tag; icon + name + one-liner + Drury def, all from TAG_DEFS.
+  const WT_TAG_ICON = (function(){ var svg=function(p){ return '<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; };
+    return { ATT:svg('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/>'),
+             MID:svg('<path d="M15 5l4 4"/><path d="M17 3l4 4-12 12-4 1 1-4z"/>'),
+             DEF:svg('<path d="M12 3l7 3v5c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6z"/>'),
+             CROSS:svg('<path d="M12 3l7 9-7 9-7-9z"/>'),
+             AGE:svg('<path d="M12 3.5l2.4 5.3 5.6.5-4.3 3.7 1.3 5.5L12 21l-5.3 3 1.3-5.5L3.7 9.3l5.6-.5z"/>'),
+             GEN:svg('<path d="M3 8l4 6 5-9 5 9 4-6v9H3z"/>'),
+             ICO:svg('<path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 11.8l4.9-1.7z"/><path d="M18.5 15l.5 1.6 1.6.5-1.6.5-.5 1.6-.5-1.6-1.6-.5 1.6-.5z"/>') };
+  })();
+  function renderProfileTagRows(tags, prestige){
+    var rows=[];
+    if(prestige==='Generational' || prestige==='Iconic'){
+      var pdef=TAG_DEFS[prestige];
+      if(pdef) rows.push({ icon:(prestige==='Generational'?WT_TAG_ICON.GEN:WT_TAG_ICON.ICO), name:prestige, one:pdef.oneLiner, full:pdef.def });
+    }
+    if(Array.isArray(tags)) tags.forEach(function(t){ var def=TAG_DEFS[t.name]; if(def) rows.push({ icon:(WT_TAG_ICON[t.family]||WT_TAG_ICON.CROSS), name:t.name, one:def.oneLiner, full:def.def }); });
+    return rows.map(function(r){
+      return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
+        + '<div class="tt">' + r.icon + ' <span class="ttl">' + r.name + '</span> <span class="tchev">&#8964;</span></div>'
+        + '<div class="td">' + r.one + '</div>'
+        + '<div class="tmore">' + r.full + '</div></div>';
+    }).join('');
+  }
   function renderWonderTagsGrouped(honours, profileRowsHtml){
     const all = (honours && honours.all) ? honours.all : [];
     const silverware = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && (m.group === 'Team' || h.type === 'world_cup_winner'); });
@@ -993,7 +1018,7 @@
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory };
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
