@@ -1024,13 +1024,71 @@
     return head+legend+svg+caption;
   }
 
+  // ── Unified rank/season row (.urow) , shared by rankings List + Compact AND
+  //    the card / Compare season pickers (one player's seasons). Pure function:
+  //    reads only its args. Deps (renderHonourPillsCompact/renderPrestige/
+  //    renderTagPills/posDisplay/rowShieldHTML/shieldSplit/inkFor) are all in this
+  //    file. opts: {cap, onClick(d,i)->string, showRank, active}. Back-compat: a
+  //    bare number 3rd arg is treated as `cap` (rankings' original call shape).
+  //    Defaults keep rankings byte-identical (showRank:true, onClick:goCard). ──
+  function rowShieldHTML(d,i){
+    var numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
+    if(!numStr) return '';
+    var c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
+    var split = shieldSplit(c1, c2);
+    var ink = inkFor(c1);
+    var numStroke = split ? (ink==='#fff' ? ' stroke="rgba(0,0,0,0.35)" stroke-width="0.6" paint-order="stroke"' : ' stroke="rgba(255,255,255,0.6)" stroke-width="0.6" paint-order="stroke"') : '';
+    var numSize = numStr.length>=3 ? 42 : (numStr.length===2 ? 46 : 56);
+    var uid='rs'+i;
+    var fill = split
+      ? '<rect x="0" width="50" height="116" fill="'+c1+'"/><rect x="50" width="50" height="116" fill="'+c2+'"/>'
+      : '<rect width="100" height="116" fill="'+c1+'"/>';
+    return '<svg class="ushield" viewBox="0 0 100 116" aria-hidden="true">'
+      +'<defs><clipPath id="'+uid+'"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs>'
+      +'<g clip-path="url(#'+uid+')">'+fill+'</g>'
+      +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/>'
+      +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>'
+      +'<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
+    +'</svg>';
+  }
+  function rankRowHTML(d,i,opts){
+    if (typeof opts === 'number') opts = { cap: opts };   // back-compat: 3rd arg was `cap`
+    opts = opts || {};
+    var cap = (opts.cap!=null) ? opts.cap : 3;
+    var showRank = (opts.showRank !== false);             // default: show the rank cell (rankings)
+    var active = opts.active ? ' active' : '';
+    var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
+    // #20: cap TOTAL row tags by PRIORITY , honours (tier) -> prestige -> profile; silent (full set on the card).
+    var honList = (d.honours && d.honours.all) ? d.honours.all : [];
+    var honN = Math.min(honList.length, cap);
+    var honHtml = honN>0 ? renderHonourPillsCompact(d.honours, { baseClass:'rtag', max:honN }) : '';
+    var rem = cap - honN;
+    var prestige = (rem>0) ? renderPrestige(d.prestige, { baseClass:'rtag' }) : '';
+    if(prestige) rem -= 1;
+    var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem }) : '';
+    var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
+    var click = opts.onClick ? opts.onClick(d,i) : ('goCard('+(d.card_id==null?'':d.card_id)+')');
+    return '<div class="urow'+tier+active+'" onclick="'+click+'">'
+      +(showRank ? '<div class="urank">'+(i+1)+'</div>' : '')
+      +'<div class="uident"><span class="uflag">'+(d.flag||'')+'</span>'+rowShieldHTML(d,i)+'<span class="uname">'+d.surname+'</span></div>'
+      +'<div class="uyear">'+d.year+'</div>'
+      +'<div class="uclub">'+d.clubname+'</div>'
+      +'<div class="upos">'+posDisplay(d.pos)+'</div>'
+      +'<div class="utags">'+honHtml+prestige+tags+'</div>'
+      +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
+      +'<div class="uassists">'+assists+'</div>'
+      +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+    +'</div>';
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows };
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
+                rankRowHTML, rowShieldHTML };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
