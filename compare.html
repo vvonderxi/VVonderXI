@@ -540,8 +540,8 @@
 .cardslot.flipping{transform:none !important}
   /* #109 shared 360deg reveal-through-back flip (VVCore.vvCardFlip) , IDENTICAL block in card.html.
      vvflip*/vvmono* namespace (avoids the removed .flipstage prototype + the live .vvback empty-slot). */
-  .vvflipwrap{--cw:300px;position:relative;margin:0 auto;perspective:1100px}   /* no forced dims , box comes from the in-flow front */
-  .vvflipinner{position:relative;transform-style:preserve-3d;will-change:transform}
+  .vvflipwrap{--cw:300px;position:relative;margin:0 auto;-webkit-perspective:calc(var(--cw)*3.6);perspective:calc(var(--cw)*3.6)}   /* no forced dims (box from in-flow front); perspective scales to card so small mobile cards still read as a real turn */
+  .vvflipinner{position:relative;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}   /* iOS Safari needs -webkit- or it flattens; NO will-change (it promotes to a flattened layer, killing children's 3D) */
   .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
   .vvflipfront{position:relative}                                              /* IN FLOW: the real .vvcard defines the box at its natural height */
   .vvflipfront .vvcard{max-width:none}                                         /* keep natural width:var(--cw) + height:calc(--cw*1.397); just drop the 92% cap so flip width == wrap */
