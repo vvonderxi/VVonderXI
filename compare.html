@@ -248,6 +248,11 @@
   body.light .cmp-seasontrigger{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.14);color:#6b6658}
   body.light .cmp-seasontrigger:hover{color:#1d1a1b;border-color:rgba(0,0,0,.3)}
   .cmp-seasonfold .seasonrows{margin-top:8px;animation:cmpSeasonIn .18s ease}
+  /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with card.html */
+  .seasoncollapse{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;border-top:1px solid rgba(255,255,255,0.06);padding:11px;cursor:pointer;transition:color .18s}
+  .seasoncollapse:hover{color:rgba(243,237,224,0.9)}
+  body.light .seasoncollapse{color:#8a8276;border-top-color:rgba(0,0,0,0.06)}
+  body.light .seasoncollapse:hover{color:#1C1B1A}
   @keyframes cmpSeasonIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
   /* ===== .seasonrows shared block (identical in card.html) ===== */
   .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
@@ -868,6 +873,11 @@ body.light .pkmsub{color:#b0a899}
     if(open){ open.remove(); if(trig) trig.classList.remove('open'); return; }   // fold
     var list=document.createElement('div'); list.className='seasonrows'; list.innerHTML=seasonRowsHTMLCmp(slot);
     wrap.appendChild(list); if(trig) trig.classList.add('open');
+    if((SLOT_SEASONS[slot]||[]).length>=6){   // #108: bottom collapse only for long lists
+      var cb=document.createElement('button'); cb.className='seasoncollapse'; cb.innerHTML='&#9650; Collapse';
+      cb.onclick=function(e){ e.stopPropagation(); vvSlotSeasonsToggle(slot); var t=wrap.querySelector('.cmp-seasontrigger'); if(t) t.scrollIntoView({block:'center',behavior:'smooth'}); };
+      list.appendChild(cb);
+    }
   }
   async function vvSwitchSlotSeason(slot, cardId){
     var card=await fetchCard(cardId); if(!card) return;

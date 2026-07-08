@@ -458,6 +458,11 @@
   .seasontrigger::after{content:"\25BE";font-size:.85em;opacity:.7}
   body.light .seasontrigger{color:#8a8276}
   body.light .seasontrigger:hover{color:#1C1B1A}
+  /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with compare.html */
+  .seasoncollapse{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;border-top:1px solid rgba(255,255,255,0.06);padding:11px;cursor:pointer;transition:color .18s}
+  .seasoncollapse:hover{color:rgba(243,237,224,0.9)}
+  body.light .seasoncollapse{color:#8a8276;border-top-color:rgba(0,0,0,0.06)}
+  body.light .seasoncollapse:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
   #glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
@@ -834,6 +839,11 @@
     p.id='seasonPanel'; p.className='seasonrows';
     p.innerHTML=seasonRowsHTML();
     zone.appendChild(p);
+    if(SEASON_ROWS.length>=6){   // #108: bottom collapse only for long lists
+      var cb=document.createElement('button'); cb.className='seasoncollapse'; cb.innerHTML='&#9650; Collapse';
+      cb.onclick=function(e){ e.stopPropagation(); seasonPanelClose(); var t=document.querySelector('#seasonZone .seasontrigger'); if(t) t.scrollIntoView({block:'center',behavior:'smooth'}); };
+      p.appendChild(cb);
+    }
     var trig=zone.querySelector('.seasontrigger'); if(trig) trig.textContent='Hide seasons';
   }
   function seasonPanelClose(){
