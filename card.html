@@ -848,7 +848,7 @@
     const honours = await fetchHonours(res.data);   // THIS season's own honours (fail-soft)
     D.honours = honours;
     var _cw=cwNow();   // #109 reveal to the new season: desktop 3D flip / mobile scale-swap, coin = destination tier (D.vv)
-    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, vv:D.vv, onDone:function(){ drawRadar(); } });
+    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, prestige:D.prestige, onDone:function(){ drawRadar(); } });
     renderPanels(D);
     SEASON_CARDID=cardId;
     renderTrajectory();
@@ -866,7 +866,7 @@
     // .yr is handled above; layer section headers live in .depth (outside #heroCard) so tap-to-expand is untouched.
     var _hero = document.getElementById('heroCard');
     var inCard = e.target.closest && e.target.closest('#heroCard');
-    if(inCard && D && _hero && !_hero._flipping){ var _cw=cwNow(); vvCardFlip(_hero, { swap:false, cw:_cw, vv:D.vv }); }   // ignore taps mid-flip
+    if(inCard && D && _hero && !_hero._flipping){ var _cw=cwNow(); vvCardFlip(_hero, { swap:false, cw:_cw, prestige:D.prestige }); }   // ignore taps mid-flip
   });
   loadCard();
 </script>

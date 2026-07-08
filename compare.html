@@ -808,7 +808,7 @@ body.light .pkmsub{color:#b0a899}
     vvResetVerdict();
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
     if(!host.querySelector('.vvcard')){ host.innerHTML=buildCard(card,cw); vvSizeCards(); vvLoadSlotSeasons(slot); return; }   // empty slot: static
-    vvCardFlip(host, { swap:true, newHTML:buildCard(card,cw), cw:cw, vv:card.vv, onDone:function(){ vvLoadSlotSeasons(slot); } });
+    vvCardFlip(host, { swap:true, newHTML:buildCard(card,cw), cw:cw, prestige:card.prestige, onDone:function(){ vvLoadSlotSeasons(slot); } });
   }
   function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);

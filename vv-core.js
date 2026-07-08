@@ -1109,10 +1109,11 @@
   //    plain .vvcard before + after (structure is wrapped only for the flip, then
   //    unwrapped), so all existing DOM contracts (host.firstElementChild, .yr,
   //    vvSizeCards) hold. opts: {swap, newHTML, cw, duration, onDone}. ──
-  // Back tier by VV score (locked cuts): 92+ black, 88-91 gold, else cream. The back
-  // matches the card's tier; monogram 1st V = tier-ink, 2nd V always pink; gold/black
-  // carry the metallic gold edge (CSS).
-  function vvFlipTier(vv){ var n=Number(vv); return (n>=92)?'black':((n>=88)?'gold':'cream'); }
+  // Coin/back tier from the card's PRESTIGE , the identical field buildCard uses to
+  // colour the FRONT (Generational->black card, Iconic->gold card, else cream). Tying
+  // the coin to prestige (not a VV cut) guarantees coin colour == card colour at every
+  // boundary. monogram 1st V = tier-ink, 2nd V always pink; gold/black carry the gold edge.
+  function vvFlipTier(prestige){ return prestige==='Generational' ? 'black' : (prestige==='Iconic' ? 'gold' : 'cream'); }
   function vvBackFace(tier){
     tier = (tier==='black'||tier==='gold') ? tier : 'cream';
     return '<div class="vvmono vvmono-'+tier+'"><div class="vvmonomark">V<span>V</span></div></div>';
@@ -1124,7 +1125,7 @@
     var swap = !!opts.swap;
     var newHTML = opts.newHTML || null;
     var cw = opts.cw;
-    var tier = vvFlipTier(opts.vv);                        // back/border tier from the card's VV
+    var tier = vvFlipTier(opts.prestige);                  // coin tier from the card's prestige (same source as the front colour)
     var startFront = host.innerHTML;                       // current plain .vvcard (resting state)
     var finalHTML = (swap && newHTML) ? newHTML : startFront;
     if(host._flipping){ host.innerHTML = finalHTML; if(opts.onDone) opts.onDone(); return; }  // guard re-entry
