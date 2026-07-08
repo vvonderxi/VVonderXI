@@ -544,7 +544,7 @@
   .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
   .vvflipfront{position:relative}                                              /* IN FLOW: the real .vvcard defines the box at its natural height */
   .vvflipfront .vvcard{max-width:none}                                         /* keep natural width:var(--cw) + height:calc(--cw*1.397); just drop the 92% cap so flip width == wrap */
-  .vvflipback{position:absolute;top:0;left:0;width:100%;height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}   /* overlay , no flow impact. Definite height = card formula (NOT height:100%, which resolves to 0 against the auto-height in-flow inner) */
+  .vvflipback{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}   /* overlay , no flow impact. BOTH dims explicit off --cw (like the working .vvback); width:100%/height:100% resolve to 0 against the auto-sized in-flow inner */
   /* glossy sheen sweep (Option A) , one diagonal light pass per flip */
   .vvsheen{position:absolute;inset:0;overflow:hidden;border-radius:calc(var(--cw)*0.073);pointer-events:none;z-index:6}
   .vvsheen i{position:absolute;top:-25%;bottom:-25%;left:-70%;width:48%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-16deg);filter:blur(1px)}
