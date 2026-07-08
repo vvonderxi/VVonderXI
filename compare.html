@@ -67,7 +67,7 @@
   .settle{font-family:'Archivo';font-weight:900;font-size:16px;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(135deg,#FF5C7A,#FF8FA3);color:#fff;border:none;border-radius:16px;padding:17px 46px;cursor:pointer;box-shadow:0 20px 44px -12px rgba(255,92,122,0.75);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
   .settle:hover{transform:translateY(-2px);box-shadow:0 26px 52px -12px rgba(255,92,122,0.85)}
   /* verdict reveal , editorial pull-quote treatment */
-  .verdict{max-width:920px;margin:38px auto 0;background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:20px;padding:40px 44px;display:none;text-align:center;box-shadow:0 30px 60px -24px rgba(0,0,0,0.6)}
+  .verdict{max-width:920px;margin:38px auto 0;background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:20px;padding:40px 44px;display:none;text-align:center;box-shadow:0 30px 60px -24px rgba(0,0,0,0.6);overflow-x:clip}   /* #109: contain verdict-side horizontal drift here (cards stay clip-free) */
   .verdict.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
@@ -309,7 +309,7 @@
   .vtraj-avg .tal,.vtraj-avg .tbl{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:5px;display:block}
   body.light .vtraj-avg .tal,body.light .vtraj-avg .tbl{color:#8a8276}
   /* See It For Yourself under the verdict */
-  .vafter{margin-top:30px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.1);text-align:center}
+  .vafter{margin-top:30px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.1);text-align:center;overflow-x:clip}   /* #109: contain drift here too */
   body.light .vafter{border-top-color:rgba(0,0,0,0.12)}
   .vafter .vsect-t{text-align:center;margin-bottom:14px}
   .vafter .vwatch{max-width:520px;margin:0 auto}
@@ -476,9 +476,7 @@
     .bn-item.on{color:var(--pink)}
     .bn-item svg{width:21px;height:21px}
   }
-  @media (max-width:720px){
-    html,body{overflow-x:hidden;max-width:100vw}
-  }
+  /* #109 mobile flip fix: removed the html,body overflow-x:hidden clip , on iOS it flattened the card flip's preserve-3d (back face culled). Horizontal drift is now contained on .verdict/.vafter (below the cards), keeping .matchup clip-free. */
 
   .joinscrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:90}
   .joinscrim.on{opacity:1;pointer-events:auto}
@@ -501,6 +499,7 @@
   .vsect{min-width:0}
   .vbreak,.vnumwrap,.vstorygrid,.vtags{min-width:0}
   .vbreak>*,.vnumwrap>*,.vstorygrid>*{min-width:0}
+  .vnumwrap2>*,.vtrajpair>*,.vproof-head>*,.vprow>*{min-width:0}   /* #109: protect the grids not covered above (source-level drift guard now that the ancestor clip is gone) */
 
   .settlerow{display:flex;justify-content:center;margin:22px auto 0;max-width:920px}
   .settlerow .settle{width:100%;max-width:340px}
@@ -533,7 +532,7 @@
   .vsect.vfoldable .vsect-t.vfoldh::after{content:'\25BE';margin-left:auto;font-size:13px;opacity:.45;transition:transform .3s ease}
   .vsect.vfoldable.vopen .vsect-t.vfoldh::after{transform:rotate(180deg)}
   /* keep mobile from scrolling sideways */
-  .canvas{overflow-x:hidden}
+  /* .canvas overflow-x:hidden removed (#109) , it flattened the flip's preserve-3d; drift scoped to .verdict/.vafter */
 .searchrow{display:flex;align-items:center;gap:12px;margin:0 0 18px}.searchbar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:15px 19px;flex:1;min-width:0}body.light .searchbar{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.08)}.searchbar svg{width:20px;height:20px;color:rgba(243,237,224,0.4);flex-shrink:0}body.light .searchbar svg{color:#9a9285}.searchbar input{border:none;outline:none;background:transparent;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}body.light .searchbar input{color:var(--charcoal)}.searchbar .rs-clear{background:none;border:0;color:rgba(243,237,224,0.4);font-size:21px;cursor:pointer;display:none;line-height:1}body.light .searchbar .rs-clear{color:#9a9285}
 .cardslot{cursor:pointer;position:relative}
 .cardslot:not(.flipping){transition:transform .15s}
