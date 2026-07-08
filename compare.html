@@ -560,6 +560,11 @@
   .vvmono-gold .vvmonomark{color:#3a2708}
   .vvmono-black{background:linear-gradient(158deg,#2c2926,#121010);box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(232,184,75,.55),inset 0 0 0 calc(var(--cw)*0.028) rgba(232,184,75,.9),0 22px 54px -18px rgba(0,0,0,.7),0 0 26px -6px rgba(232,184,75,.25)}
   .vvmono-black .vvmonomark{color:#F0EAD9}
+  /* #109 MOBILE reveal , scale-swap through the VV coin (no 3D; built by vvCardFlip when <=720px). Reuses .vvmono* coin. */
+  .vvscalewrap{position:relative;margin:0 auto;transform-origin:center center}
+  .vvscalefront{position:relative}                                             /* in-flow card , defines the box (no collapse) */
+  .vvscalefront .vvcard{max-width:none}
+  .vvscalecover{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}   /* tier VV coin overlay , explicit dims off --cw (like .vvback) */
 .cardslot:hover{transform:translateY(-3px)}
 .cardslot::after{content:'\21BB Tap to change';position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:rgba(243,237,224,.32);pointer-events:none}
 body.light .cardslot::after{color:#b0a899}

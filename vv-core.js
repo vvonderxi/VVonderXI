@@ -1129,6 +1129,36 @@
     var finalHTML = (swap && newHTML) ? newHTML : startFront;
     if(host._flipping){ host.innerHTML = finalHTML; if(opts.onDone) opts.onDone(); return; }  // guard re-entry
     host._flipping = true;
+
+    // ── MOBILE (<=720px): scale-swap through the VV coin. NO 3D (rotateY/perspective/
+    //    preserve-3d/backface all flatten unreliably on iOS) , pure transform:scale +
+    //    opacity. Card shrinks to the tier VV coin, swaps under it, reopens as the new
+    //    card. Front stays in-flow (no collapse). Same tier logic as the desktop flip. ──
+    if (typeof window !== 'undefined' && window.innerWidth <= 720){
+      var mh = 540;                                        // each phase ~0.54s -> ~1.1s total
+      host.innerHTML = '<div class="vvscalewrap"'+(cw?' style="--cw:'+cw+'px"':'')+'>'
+        + '<div class="vvscalefront">'+startFront+'</div>'
+        + '<div class="vvscalecover">'+vvBackFace(tier)+'</div></div>';
+      var swrap = host.querySelector('.vvscalewrap'), sfront = host.querySelector('.vvscalefront'), scover = host.querySelector('.vvscalecover');
+      if(!swrap){ host._flipping=false; host.innerHTML=finalHTML; if(opts.onDone) opts.onDone(); return; }
+      swrap.style.transition='none'; swrap.style.transform='scale(1)';
+      scover.style.transition='none'; scover.style.opacity='0';
+      void swrap.offsetWidth;                              // commit base
+      swrap.style.transition='transform '+mh+'ms cubic-bezier(.5,0,.5,1)';
+      scover.style.transition='opacity '+mh+'ms ease';
+      swrap.style.transform='scale(.8)'; scover.style.opacity='1';   // collapse to the brand
+      setTimeout(function(){                               // at the smallest point: swap under the opaque coin, then reopen
+        if(swap && newHTML && sfront) sfront.innerHTML = newHTML;
+        swrap.style.transform='scale(1)'; scover.style.opacity='0';
+      }, mh);
+      setTimeout(function(){
+        host.innerHTML = finalHTML; host._flipping = false;
+        if(opts.onDone) opts.onDone();
+      }, mh*2 + 40);
+      return;
+    }
+
+    // ── DESKTOP (>720px): 3D reveal-through-back flip (unchanged) ──
     host.innerHTML = '<div class="vvflipwrap"'+(cw?' style="--cw:'+cw+'px"':'')+'>'
       + '<div class="vvflipinner"><div class="vvflipfront">'+startFront+'</div>'
       + '<div class="vvflipback">'+vvBackFace(tier)+'</div></div>'
