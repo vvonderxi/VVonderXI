@@ -917,6 +917,15 @@ body.light .pkmsub{color:#b0a899}
      +'<div class="cmpl2"><b>'+p.clubname+'</b> &middot; '+p.year+' &middot; '+posDisplay(p.pos)+'</div></div>'
      +'<div class="cmpright"><div class="cmpvv'+tier+'">'+p.vv+'</div><div class="cmpga">'+p.goals+'G &middot; '+(p.assists!=null ? p.assists+'A' : 'NR')+'</div></div>'
      +'</div>'; }
+  // Shared token-AND search matcher (identical to rankings.html): fold accents, strip to the DB
+  // norm charset, split on spaces, require EVERY token in player_name_norm OR every token in team_name_norm.
+  function vvNorm(s){return (s||'').toString().normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();}
+  function tokenAndFilter(q){
+    var toks=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+    if(!toks.length) return null;
+    function grp(col){ var c=toks.map(function(t){return col+'.ilike.%'+t+'%';}); return c.length>1 ? 'and('+c.join(',')+')' : c[0]; }
+    return grp('player_name_norm')+','+grp('team_name_norm');
+  }
   function renderPicker(){
     var q=(document.getElementById('pkSearch').value||'').trim().toLowerCase();
     var res=document.getElementById('pkResults'); var html='';
@@ -929,7 +938,8 @@ body.light .pkmsub{color:#b0a899}
         if(sug.length){ html+='<div class="pkhd">Suggested rivals</div>'+sug.map(pkRow).join(''); } }
       html+='<div class="pkhd">All seasons</div>'+POOL.filter(passF).map(pkRow).join('');
     } else {
-      var L=POOL.filter(function(p){return passF(p)&&(p.surname+' '+p.clubname+' '+p.full).toLowerCase().indexOf(q)>=0;});
+      var _tk=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);   // #search: fold + token-AND client-side (was contiguous indexOf, re-broke accents/tokens)
+      var L=POOL.filter(function(p){ if(!passF(p)) return false; var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')); return _tk.every(function(t){return hay.indexOf(t)>=0;}); });
       html = L.length? L.map(pkRow).join('') : '<div class="pkempty">No seasons match.</div>';
     }
     res.innerHTML=html;
@@ -943,7 +953,7 @@ body.light .pkmsub{color:#b0a899}
     var sb=vvClient(); if(!sb){ renderPicker(); return; }   // vv-core logs why (missing config or lib)
     var q=(document.getElementById('pkSearch').value||'').trim();
     var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false}).limit(50);
-    if(q){ var like='%'+q.replace(/[(),]/g,'')+'%'; query=query.or('player_name.ilike.'+like+',team_name.ilike.'+like); }
+    if(q){ var _sf=tokenAndFilter(q); if(_sf) query=query.or(_sf); }   // token-AND on player_name_norm/team_name_norm (was raw player_name)
     var res=await query;
     if(res.error){ console.error('compare picker load failed:', res.error.message); return; }
     POOL=(res.data||[]).map(rowToCard);
