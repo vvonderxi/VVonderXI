@@ -78,3 +78,25 @@ Pipe unchanged (core -> 70/30 reliability -> league tilt). Core redefined as TWO
 - **Distributions vs movers (Lucas Q, answered):** within-pool percentiles rank players WITHIN a context; only movers calibrate difficulty BETWEEN contexts (same player, both contexts). Percentile first, league tilt second.
 
 **Register additions:** (6) "We measured league strength ourselves , hundreds of border-crossers, not a coefficient table." (7) "An Eredivisie 90 and a PL 85 are different currencies , here is how we know." (8) Defenders inherit attacker-measured league weights (assumption, disclosed).
+
+---
+
+## DECISION 4 , DEF_SIGNAL IS MODEST + DISCLOSED; TEAM-OUTCOME REJECTED (LOCKED, 2026-07-09, evidence-driven)
+
+Executed Stage 0 (baseline snapshot) + Stage 1/1b (INSPECTION-only view columns, rt untouched: def90, defvol_pct, team_def90, def_share, def_share_pct, def90_pool_pct, duel_rate, duel_quality_pct , all within position_pool, 2016+). Read the signals against a real CB distribution (Dias, Saliba, van Dijk, Koulibaly, Maguire + journeymen). The findings overturn the optimistic parts of Decision 1.
+
+**Finding 1 , the share-of-team-defending innovation (Decision 1.1) does NOT rescue van Dijk.** His def_share sits ~0.8-1.2 (he defends about his team's average, sometimes less); the journeyman Tarkowski sits 1.3-1.6 and stays above him. Liverpool's team def-volume is not actually suppressed enough to correct (team_def90 ~2.2-2.8 vs Burnley/Everton ~2.6-3.5). Share-adjustment is a real refinement but it is NOT the elite-defender rescue the design hoped for.
+
+**Finding 2 , neither volume-share NOR duel-quality is a class discriminator.** Within the CB pool, sorted by duel quality: van Dijk 90th pct (right), but Maguire 87th and Tarkowski 83rd rank ABOVE elite Dias (69), Saliba (67), Koulibaly (44). Volume is worse (inverse to class , Dias 13, van Dijk 20 at the bottom; journeymen high). Root cause: the signals capture defender ARCHETYPE (ball-winner vs high-volume vs space-defender), not class, and class cuts across all archetypes. No blend of these two ingredients recovers CB class.
+
+**Finding 3 , team-defensive-outcome (goals_against) is a TEAM property, not a player signal , CONFOUND-PROVEN.** Cross-sectionally GA/game separates the elites cleanly (Dias/Saliba/van Dijk/Koulibaly 0.91-1.03, gap to journeymen 1.34+), which is seductive. But it fails the confound test decisively: (a) within-player , van Dijk's Liverpool GA/g swings 0.58-1.39 season to season while his duel_rank holds 89-92; Maguire's GA/g halved (2.11 Hull -> ~1.0 Man Utd) purely by transferring to a richer club. (b) CLEANEST TEST , on mid/lower-table sides only (rank >= 8), elite/quality CBs average 1.57 GA/g (24 seasons) vs journeymen 1.51 (54 seasons) , indistinguishable, journeymen marginally better. Strip out the elite club and an elite CB's team defends no better than a journeyman's. Wiring goals_against would credit Maguire for Manchester United's wage bill. Decision 1.4's exclusion holds, now with proof.
+
+**DECISION (Option A, locked):**
+1. **def_signal stays a MODEST input** (volume-share + duel quality per Decision 1's blend), framed honestly as *defensive workload and ball-winning archetype*, NOT a verdict on defensive class. It correctly lifts genuine high-workload / ball-winning defenders; it does not adjudicate elite class and must not be weighted as if it does.
+2. **Team goals_against / clean sheets REJECTED for individual scoring** (confound-proven this session; clean-sheet rate isn't in league_standings anyway). Revisiting remains a deliberate argued exception, never a default.
+3. **The "van Dijk -> 85+" read-out target is RETIRED.** It is not reachable from aggregate defensive data without tuning toward one name (anchor-guardrail violation). Individual elite-CB class is largely INVISIBLE to our data; we DISCLOSE that (Decision 1.7 confidence dots + explainer: "we measure the defending you carried and the duels you won; positional/aerial/leadership value beyond that we acknowledge, we do not fabricate it"), rather than force it.
+4. **Stage 2 is reframed:** "integrate a modest, disclosed def_signal into position-aware weighting (Decision 2)," NOT "find the magic defensive formula." The weights should keep def_signal's influence bounded and honest for CB/FB pools, since the signal is archetype/workload, not class.
+
+**Also flagged (for Decision 2 weights):** Alexander-Arnold is a POOR dueler (3-27th pct within FB) with only mid volume , his greatness is entirely attacking. Decision 2's FB 30/70 out/def split would badly underrate attacking FBs; the FB (and Winger-as-FB) weighting needs output to carry more than a flat 70%-def share allows.
+
+**Infra note:** DB now has `exec_sql(text)` (service-role) so migrations run from Node (service key), and a materialized `engine_def_inspect` table (snapshot of the inspection columns, rebuilt per stage) for fast engine reads. Migrations: `migrations/stage1_def_share.sql`, `migrations/stage1b_pool_scoped_def.sql`.
