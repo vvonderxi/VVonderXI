@@ -20,7 +20,7 @@ Why this file exists: this project has suffered from too many documents and no c
 === VVONDERXI LAUNCH PROGRESS ===
 Data quality   █████████████████░  ~95%   honours 629 live + NR-assist fill (71 rt>=85 done, matview refreshed); tail NR queued (194 rt80-84, 1184 rt75-79); goals-provenance audit open
 Tags           ██████░░░░░░░░░░░░  ~35%   honours family COMPLETE + all bugs fixed, live cross-surface (card/rankings/mobile, rows priority-capped); profile + prestige + playbook audit remain
-Compare        ██████████████░░░░  ~78%   spine LIVE: slots/deep-link/season-switch/verdict/radar/trajectory + accolades (real Wonder Tags) + story split + shared season picker + mobile bugs done; C8 position filter + final polish + merge remain
+Compare        ███████████████░░░  ~85%   spine + accolades + story + season picker (foldable, #108 collapse) + device-split card reveal (desktop 360 3D flip / mobile scale-swap, prestige-tier VV coin) + above-fold Compare CTA (#111) + token-AND search all LIVE; C8 position filter + final polish + merge remain
 Card editorial ██████████░░░░░░░░  ~55%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED; K4 Proof + K5 VV-line trajectory + honours strip UI remain
 Hygiene        ███░░░░░░░░░░░░░░░  ~20%   key rotation, meta, logo, QA outstanding; HYGIENE_BACKLOG_2026-07-05 (13 items) logged
 Engine         ███████████████░░░  ~85%   bands recut 95/90/85/80 + top-of-scale cap live + trustworthy; radar percentile parked; dynamic-league-strength = parallel launch-blocker
@@ -104,6 +104,22 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-08 | Device-split card reveal + shared season picker + search fix (Batch B tail)
+Big UI arc across card.html + compare.html + vv-core.js. All on redesign-compare, committed through ece8520.
+
+- SHARED SEASON PICKER (ddf5519 extract + feb0aff wire): rankRowHTML + rowShieldHTML moved into vv-core (opts {cap,onClick,showRank,active,seasonLed}; rankings byte-identical via back-compat). Foldable rankings-style SEASON-LED rows (year leads, club·pos·age·G·A subline ellipsizes, tags wrap, .rmini VV badge) on BOTH the card "view all seasons" and the Compare per-slot switcher. Season fetches widened select('*') -> rowToCard -> attachHonoursBatch. #108 (5d5591c): bottom "Collapse" for long lists (>=6 seasons) , folds + scrolls back to the top trigger; both surfaces.
+- DEVICE-SPLIT CARD REVEAL (shared VVCore.vvCardFlip): DESKTOP >720px = 360deg reveal-through-back 3D flip (front .vvcard -> VV coin at 180 -> new card at 360, content swap at the hidden midpoint, ~0.8s); MOBILE <=720px = pure transform:scale + opacity scale-swap through the coin (NO 3D , iOS Safari flattens preserve-3d unreliably). Wired on Compare (season-switch + player-swap) AND Master (season-switch + card-FACE tap-admire, excluding .yr + layer headers). Coin/back TIER derived from PRESTIGE (Generational->black, Iconic->gold, else cream) = the SAME field that colours the front card, so coin colour == card colour by construction (34d93a1 killed the earlier VV-cut mismatch).
+- THE MOBILE-SAFARI 3D BATTLE (why the flip took ~8 commits , invariants NOW LOCKED, do NOT re-derive):
+  1. Faces need EXPLICIT dims off --cw (width:var(--cw) + height:calc(--cw*1.397)); NEVER % (resolves to 0 against the auto-sized in-flow parent , hit as both zero-width AND zero-height bugs).
+  2. FRONT in-flow (position:relative) + BACK absolute overlay , card box comes from the real card (no collapse).
+  3. -webkit-transform-style:preserve-3d + NO will-change (Safari flattener) + card-scaled -webkit-perspective:calc(--cw*3.6).
+  4. NO overflow clip on ANY flip ancestor (iOS flattens preserve-3d under a clip) , the horizontal-scroll guard moved OFF the cards onto sibling blocks (.verdict/.vafter) + min-width:0 on drifting grids.
+  5. Mobile = scale-swap not 3D; coin tier from prestige.
+  Trail: 6fbb183 edge-pivot(superseded) -> 4aef735 flip+tiers -> f7b1af7 front-in-flow -> 8eb6b92 webkit/will-change -> 5fc06e1 back-height -> 85a5a82 overflow-clip -> f4fad57 back-width -> 88b9ace mobile scale-swap -> 1403009 Master -> 34d93a1 prestige-tier.
+- COMPARE CTA ABOVE-THE-FOLD #111 (8bfebac): "Compare this player" pill under "Add to my club" in .plinth (clubpill style; deep-links compare.html?a=<card_id> -> slot A); retired the buried in-layer compareCta1; kept the bottom action-row CTA.
+- SEARCH TOKEN-AND + ACCENT-FOLD (ece8520): search_players RPC already token-ANDs; matched the two front-end paths to it. Shared tokenAndFilter(q) (vvNorm fold + strip to [a-z0-9 ] + split on spaces; require EVERY token in player_name_norm OR team_name_norm) in rankings.html + compare.html. Fixes "jordan lukaku" (non-adjacent tokens, middle names) + "Suárez" in the picker (was raw player_name, no fold). Empirically verified vs live DB.
+- STATUS: Compare reveal/picker/CTA/search all LIVE + mobile-safe. Compare bar 78->85%. NEXT: C8 position filter, final Compare polish, then merge redesign-compare -> vvonderxi_BIGGER.
 
 ### 2026-07-07 | Defensive data FOUND in-DB + engine recalibration decision (Phase 2)
 Launch-relevant ENGINE decision (source-of-truth also recorded in §C Engine/bands). No code change , a locked decision + data finding for the Phase-2 recalibration.
