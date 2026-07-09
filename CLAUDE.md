@@ -65,6 +65,7 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 - **Defensive data + engine recalibration (Phase 2) , SOURCE OF TRUTH (finding 5 Jul):** defensive data EXISTS in the DB, NO external sourcing needed. Fields on `player_card_view` + `player_season_cards`: `tackles_total, tackles_blocks, interceptions, duels_total, duels_won`; `league_standings.goals_against` = team defensive record. Coverage 2015-2025 ≈ 85-95% populated; pre-2015 ≈ 0% (API-Football stats start ~2015). Validated: van Dijk (CB) high tackles/interceptions vs Messi/Haaland low , data separates defenders from attackers correctly.
 - **Recalibration MUST add a defensive dimension** (Phase 2, after data-lock, alongside dynamic league strength) so defensive players get equal treatment: scored on tackles+interceptions+blocks PER-90, ranked WITHIN position pool (percentile). Target: van Dijk peak ≈ 85+ (sanity exhibit , a READ-OUT, not a dial; anchor guardrail holds). Duels = SECONDARY only (attackers rack them up, not defender-specific). Pre-2015 gap disclosed via confidence dots. Position-aware weighting integrates the defensive score with attacking output + league strength. SUPERSEDES the interim "GK capped 75 / defenders in own pool, disclose don't fake" stopgap once built.
 - **DATA BUG (flag for data-accuracy/position pass):** `age` column = CURRENT age (van Dijk shows 34 on every season row) , use `season_age` for per-season age. May relate to the Lukaku position issue.
+- **Engine recalibration DESIGN LOCKED (2026-07-08, Fable session) , full detail in `VVonderXI_Engine_Design_Log.md` (repo root, authoritative).** 4 decisions: (1) DEFENSIVE SIGNAL = SHARE-of-team-defending (opportunity-adjusted volume , player's per-90 defensive actions / team's per-90, percentile within pool; corrects the denominator like per-90 corrects for minutes, stays team-agnostic , refines the "raw per-90" note above) + duel-win-rate quality; (2) position-aware weighting + goals-primacy gravity; (3) ENDOGENOUS league strength with a circularity guard; (4) 6-stage implementation order. NEXT EXECUTABLE = Stage 0/1 (snapshot + ingredients-only view columns). Design done; EXECUTION not started.
 
 **Search (two separate paths, no shared code)**
 - rankings.html queries matview directly; Compare/api uses RPC `search_players`. Any matching/normalization change goes to BOTH. Normalization: `regexp_replace(lower(unaccent(coalesce(full_name,name))), '[^a-z0-9 ]','','g')`.
@@ -104,6 +105,24 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-08 | Engine recalibration DESIGN phase complete (Fable session, 4 decisions locked)
+Design-only , NO engine code changed. Authoritative detail: VVonderXI_Engine_Design_Log.md (repo root; newest-at-bottom running log).
+
+- 4 DECISIONS LOCKED: (1) defensive signal built on SHARE-OF-TEAM-DEFENDING (opportunity-adjusted volume , player's per-90 defensive actions / team per-90, percentile within pool; stays team-agnostic) + duel-win-rate quality (>=50-duel floor); (2) position-aware weighting + goals-primacy gravity; (3) ENDOGENOUS league strength with a circularity guard; (4) a 6-stage implementation order.
+- Builds on the #118 position data-lock (position_pool clean 2016+) + the defensive-data finding (§C): recalibration now has reliable pools AND a locked design.
+- NEXT EXECUTABLE STEP = Stage 0/1: snapshot + ingredients-only view columns (expose the raw defensive/context ingredients on the view before any scoring change).
+- STATUS: design complete, execution not started. Engine track (parallel to the Compare/launch track).
+
+### 2026-07-08 | #118 position data-lock: CM-bug + null-fill cleanup RAN
+Cleared the position_pool tail for the defensive within-pool percentile (engine recalibration prep). DB write done + matview refreshed.
+
+- CM-BUG FIXED: the definitionally-wrong CM tail , FWD/DEF coarse mislabeled central-mid , 1,437 rows reclassified (993 via each player's own dominant other-season pool; 444 coarse-default FWD->Winger / DEF->CB where no signal). Guarded UPDATE (.eq('position','CM')) so no curated bucket was touched.
+- NULLS FILLED: 131 resolvable post-2016 pool-NULLs (25 GK->GK; 106 from each player's own other-season pool). INSERT ON CONFLICT DO NOTHING.
+- position_pool now CLEAN on the 2016+ window (the field the defensive percentile pools on). Matview REFRESHED (player_card_mv).
+- Script: scripts/enrichment/cm_bug_fill.js (dry-run-first, reproducible/auditable, alongside write_positions.js); provenance appended to known_players.csv (source tags cmbug-modal / cmbug-default / nullfill-gk / nullfill-modal).
+- DEFERRED (post-Fable polish, NOT blocking recalibration): 207 obscure BPL/ERE pool-NULLs (confidence dots) + ~6k MID-coarse CM rows needing CM/CAM/CDM nuance.
+- This CLEARS the position data-lock for the engine recalibration (defensive within-pool percentile now has reliable 2016+ pools).
 
 ### 2026-07-08 | Device-split card reveal + shared season picker + search fix (Batch B tail)
 Big UI arc across card.html + compare.html + vv-core.js. All on redesign-compare, committed through ece8520.
