@@ -62,6 +62,9 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 - Two prestige badges only: Generational badge = Generational band; Iconic = Elite band. S-Tier retired.
 - **ANCHOR GUARDRAIL:** bands/scores derive from LIVE top-N anchors, never hardcoded, never tuned until a famous name lands where wanted. Famous names are a READ-OUT (validity check), never a DIAL. Greatness = density in the elite band, not any single #1.
 - GK capped at 75 (pending keeper-stats). Defenders scored in own pool; disclose via confidence, don't fake.
+- **Defensive data + engine recalibration (Phase 2) , SOURCE OF TRUTH (finding 5 Jul):** defensive data EXISTS in the DB, NO external sourcing needed. Fields on `player_card_view` + `player_season_cards`: `tackles_total, tackles_blocks, interceptions, duels_total, duels_won`; `league_standings.goals_against` = team defensive record. Coverage 2015-2025 ≈ 85-95% populated; pre-2015 ≈ 0% (API-Football stats start ~2015). Validated: van Dijk (CB) high tackles/interceptions vs Messi/Haaland low , data separates defenders from attackers correctly.
+- **Recalibration MUST add a defensive dimension** (Phase 2, after data-lock, alongside dynamic league strength) so defensive players get equal treatment: scored on tackles+interceptions+blocks PER-90, ranked WITHIN position pool (percentile). Target: van Dijk peak ≈ 85+ (sanity exhibit , a READ-OUT, not a dial; anchor guardrail holds). Duels = SECONDARY only (attackers rack them up, not defender-specific). Pre-2015 gap disclosed via confidence dots. Position-aware weighting integrates the defensive score with attacking output + league strength. SUPERSEDES the interim "GK capped 75 / defenders in own pool, disclose don't fake" stopgap once built.
+- **DATA BUG (flag for data-accuracy/position pass):** `age` column = CURRENT age (van Dijk shows 34 on every season row) , use `season_age` for per-season age. May relate to the Lukaku position issue.
 
 **Search (two separate paths, no shared code)**
 - rankings.html queries matview directly; Compare/api uses RPC `search_players`. Any matching/normalization change goes to BOTH. Normalization: `regexp_replace(lower(unaccent(coalesce(full_name,name))), '[^a-z0-9 ]','','g')`.
@@ -101,6 +104,14 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-07-07 | Defensive data FOUND in-DB + engine recalibration decision (Phase 2)
+Launch-relevant ENGINE decision (source-of-truth also recorded in §C Engine/bands). No code change , a locked decision + data finding for the Phase-2 recalibration.
+
+- FINDING (5 Jul): defensive data EXISTS in the DB , no external sourcing needed. Fields on player_card_view + player_season_cards: tackles_total, tackles_blocks, interceptions, duels_total, duels_won. league_standings.goals_against = team defensive record. Coverage 2015-2025 ≈ 85-95% populated; pre-2015 ≈ 0% (API-Football stats start ~2015). Validated: van Dijk (CB) high tackles/interceptions vs Messi/Haaland low , the data separates defenders from attackers correctly.
+- ENGINE IMPACT: the recalibration (Phase 2, after data-lock, alongside dynamic league strength) MUST add a defensive dimension so defensive players get equal treatment , scored on tackles+interceptions+blocks per-90, ranked WITHIN position pool (percentile). Target: van Dijk peak ≈ 85+ (sanity exhibit). Duels = secondary only. Pre-2015 gap disclosed via confidence dots. Position-aware weighting integrates defensive score with attacking output + league strength. Anti-confirmation-bias holds (van Dijk = read-out, not dial).
+- FABLE'S ROLE: the data question is answered; the DESIGN/reasoning (defensive formula, within-pool percentile, position-aware weighting, league-strength integration) is where Mythos-tier reasoning is applied on the engine track.
+- DATA BUG: `age` column = current age (van Dijk shows 34 every row) , use `season_age`. May relate to the Lukaku position issue , flag for the data-accuracy/position pass.
 
 ### 2026-07-07 | Compare finish batch (Batch B) + shared season picker
 Session focus: finish the Compare product spine + build one shared season picker for card + Compare.
