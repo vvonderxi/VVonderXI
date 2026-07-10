@@ -151,3 +151,22 @@ Decision 3 built + live. Placeholder league ladder RETIRED , league weights now 
 **STILL DISCLOSED:** strength measured through attacking output (defenders inherit weights); env-correction handles the scoring-style confound but the attacking-output assumption remains (Decision 3 register). alpha=0.5 residuals (BL~L1 2020, TR~L1 2016) are honest era-ambiguity.
 
 **CHART RE-ANCHOR (DISPLAY ONLY, 2026-07-10):** for VISUALIZING the ladder, weights may be re-anchored to the per-season 9-league AVERAGE (each league / season-average) so no league is a fixed flat line and PL wobbles naturally. Export: league_strength_live_2015-2024.csv (PL-anchored live values). **DO NOT re-anchor the ENGINE.** The tilt socket `(1-(1-wt)*0.5)` is AFFINE and calibrated so PL (wt=1.0) = "no tilt"; moving the anchor would CHANGE scores (not a pure rescale) and shift every card. The engine stays PL-anchored; re-anchoring lives only in chart display. Player cards were NOT touched by the chart work (read + in-memory arithmetic only).
+
+---
+
+## ENGINE-COMPLETE VERIFICATION (2026-07-10, read-only, post Stages 0-3)
+
+Confirmed the recalibrated engine is internally consistent and Stage 4 (band re-cut) is a NO-OP:
+- **Band rarity SELF-CORRECTS by construction.** Live counts: rt>=95 = 12, rt>=90 = 150, rt>=85 = 650 , EXACTLY the anchor targets. The anchors (b95/b90/b85 = 12th/150th/650th highest base score, `offset 11/149/649`) recompute every matview refresh, so Stages 2-3 auto-recut the bands; the counts are pinned by design. What changed is WHICH seasons populate each band, not how many.
+- **Prestige badge threshold verified 95/90** (vv-core.js bandFor + prestigeFor): Generational badge = rt>=95 (12 seasons = "a dozen ever"), Iconic = Elite band rt 90-94 (138 ~= "150"). NO stale VV-coin 92/88 (retired 34d93a1). Both land at target rarity.
+- **Top band (rt>=90) = 100% attackers** (ST 105 / Winger 37 / CAM 7 / CM 1; 0 defenders). CORRECT by design , goals-primacy reserves the top for elite scorers; peaks intact (Messi 97, Ronaldo 96, Suarez/Salah/Haaland 95). The defensive integration deliberately did NOT inflate pure defenders into the scorer tier (Decision A). It landed defenders honestly: CB/FB mean 46.7->56, best pure defenders ~73-76 (Excellent band), TAA into World Class (86) via OUTPUT (13 assists, best-of working). Working as designed.
+
+## STAGE 4 SCOPE , CDM position-mislabel tail (data-hygiene, NOT a launch blocker, scoped 2026-07-10)
+
+Cousin of the #118 CM-bug: attacking mids/wingers mislabeled into the CDM pool (Mahrez, Eriksen, Grealish, Di Maria, Coutinho, Sneijder, Fabregas, Calhanoglu tagged CDM). Scope (read-only):
+- **SIZE = ~100-150 row TAIL, not systemic.** CB pool 5941 regulars = 0% output-mislabel (5 cards >= attacker-Q3); FB 3514 = 0% (8); **CDM 2152 = 2% (47) >= attacker-Q3** + 92 rows with the coarse contradiction (defensive pool BUT API coarse-position = FWD). Concentrated ENTIRELY in CDM; CB/FB clean.
+- **AUTO-CORRECT SIGNALS:** output profile (ga90 >= attacker Q3 = 0.57) + coarse-position contradiction (pool defensive, coarse = FWD). NOT the `distribution` jsonb , it is 99% populated but carries the raw-API bug itself (a Winger-pool row has distribution {"CM":100}), so it is the source, not the cure.
+- **NOT purely cosmetic , touches rt:** a mislabeled attacker in CDM receives the DEFENDER output-rarity boost (wt^2.5, applied to CB/FB/CDM), inflating rt ~1-2. Reclassifying removes it.
+- **FIX = existing tooling:** scripts/enrichment/cm_bug_fill.js pattern (flag -> reclassify to each player's modal attacking pool via known_players.csv). Half-day cleanup, famous names with clean attacking seasons elsewhere. Deferred, low priority (rt already ~correct via best-of; this is pool/tag/filter hygiene).
+
+**ENGINE TRACK STATUS: Stages 0-3 DONE + LIVE, verified internally consistent. Engine recalibration COMPLETE. Remaining = optional/post-launch (CDM hygiene, dribbles_past re-ingest, radar percentile, GK saves). Center of gravity returns to the launch/Compare track.**
