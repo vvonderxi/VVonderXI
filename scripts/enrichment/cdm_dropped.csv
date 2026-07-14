@@ -1,0 +1,21 @@
+id,name,yr,lc,team,ga90,reason
+47289,Susaeta,2018,LL,Athletic Club,0.196,"no in-DB corroboration (career CDM:3 only, ga90 0.25) — famous RW but data can't support it"
+47289,Susaeta,2017,LL,Athletic Club,0.198,"no in-DB corroboration (career CDM:3 only, ga90 0.25) — famous RW but data can't support it"
+47289,Susaeta,2016,LL,Athletic Club,0.245,"no in-DB corroboration (career CDM:3 only, ga90 0.25) — famous RW but data can't support it"
+2601,D. Kamada,2025,PL,Crystal Palace,0,"Kamada 2025 Palace — playing deep central this season, ga90 0 — leave CDM"
+50095,G. Torje,2018,TR,Sivasspor,0.118,"no in-DB corroboration (career CDM:2 only, ga90 0.39) — same profile"
+50095,G. Torje,2017,TR,Kardemir Karabukspor,0.388,"no in-DB corroboration (career CDM:2 only, ga90 0.39) — same profile"
+180644,I. Olawoyin,2024,TR,Rizespor,0.43,"central-leaning (career CDM:2 CM:1), obscure, no attacking history — unverifiable"
+180644,I. Olawoyin,2023,TR,Rizespor,0.328,"central-leaning (career CDM:2 CM:1), obscure, no attacking history — unverifiable"
+23,Sergio Gómez,2022,PL,Manchester City,0.257,"fullback (FB) — not a pure attacker; CDM->FB is a separate accuracy question, keeps boost anyway"
+2692,V. Amiri,2018,TR,Trabzonspor,0.13,"unverifiable central (career CDM:1, ga90 0.13) — Lucas-named false-positive"
+7585,J. Jantscher,2016,TR,Rizespor,0.246,"no in-DB corroboration (career CDM:1, ga90 0.25) — name-recognition only"
+14395,K. Jakić,2025,BL,FC Augsburg,0.163,defensive mid / CB (career CDM:3 CM:1 CB:1) — Lucas-named false-positive
+25400,Y. Gerhardt,2025,BL,VfL Wolfsburg,0.501,"central mid (career CM:6 dominant) — versatile left/central mid, not a pure attacker"
+39043,F. Aursnes,2025,PRT,Benfica,0.196,central mid / RB (career CM:3 FB:1) — Lucas-named false-positive
+61878,S. Ilgaz,2020,TR,Hatayspor,0.306,"obscure single-season (career CDM:1), archetype unverifiable"
+62081,O. Aynaoğlu,2016,TR,Rizespor,0.173,"obscure single-season (career CDM:1), archetype unverifiable"
+62192,M. Milinković,2017,TR,Gençlerbirliği S.K.,0.472,"obscure single-season (career CDM:1), archetype unverifiable"
+68196,Daniel Alexander Larsson,2017,TR,Akhisarspor,0.197,"no in-DB corroboration (career CDM:1, ga90 0.20) — name-recognition only"
+105295,Dejan Lazarević,2016,TR,Kardemir Karabukspor,0,"no in-DB corroboration (career CDM:1, ga90 0) — same profile as Jobe Bellingham"
+326757,J. Bellingham,2025,BL,Borussia Dortmund,0.05,"Jobe Bellingham — central/def mid (0g 1a, ga90 0.05) — Lucas-named false-positive"

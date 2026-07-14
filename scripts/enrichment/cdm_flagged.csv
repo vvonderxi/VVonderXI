@@ -1,0 +1,122 @@
+api_player_id,season_year,league_code,player_name,team_name,season,rt,coarse,ga90,sigCoarse,sigOutput,to,via
+1992,2020,TR,J. Lens,Fatih Karagümrük,2021,42,FWD,0.433,true,false,Winger,modalAtt
+1992,2018,TR,J. Lens,Beşiktaş,1819,50,FWD,0.317,true,false,Winger,modalAtt
+1992,2017,TR,J. Lens,Beşiktaş,1718,50,FWD,0.083,true,false,Winger,modalAtt
+1992,2016,TR,J. Lens,Fenerbahçe,1617,70,FWD,0.64,true,true,Winger,modalAtt
+207,2018,SA,I. Perišić,Inter,1819,76,FWD,0.366,true,false,Winger,modalAtt
+207,2017,SA,I. Perišić,Inter,1718,85,FWD,0.543,true,false,Winger,modalAtt
+207,2019,BL,I. Perišić,Bayern München,1920,60,FWD,0.524,true,false,Winger,modalAtt
+1989,2018,TR,Ricardo Andrade Quaresma Bernardo,Beşiktaş,1819,69,FWD,0.678,true,true,Winger,modalAtt
+1989,2017,TR,Ricardo Andrade Quaresma Bernardo,Beşiktaş,1718,64,FWD,0.495,true,false,Winger,modalAtt
+1989,2016,TR,Ricardo Andrade Quaresma Bernardo,Beşiktaş,1617,68,FWD,0.592,true,true,Winger,modalAtt
+47289,2018,LL,Susaeta,Athletic Club,1819,56,FWD,0.196,true,false,CAM,default-CAM
+47289,2017,LL,Susaeta,Athletic Club,1718,58,FWD,0.198,true,false,CAM,default-CAM
+47289,2016,LL,Susaeta,Athletic Club,1617,43,FWD,0.245,true,false,CAM,default-CAM
+174,2018,PL,C. Eriksen,Tottenham,1819,88,MID,0.649,false,true,ST,modalAtt
+174,2016,PL,C. Eriksen,Tottenham,1617,89,MID,0.654,false,true,ST,modalAtt
+178,2020,PL,Lucas Moura,Tottenham,2021,63,FWD,0.45,true,false,ST,modalAtt
+178,2019,PL,Lucas Moura,Tottenham,1920,64,FWD,0.321,true,false,ST,modalAtt
+447,2018,TR,S. Feghouli,Galatasaray,1819,77,MID,0.641,false,true,Winger,modalAtt
+447,2017,TR,S. Feghouli,Galatasaray,1718,76,MID,0.684,false,true,Winger,modalAtt
+515,2018,BL,F. Ribéry,Bayern München,1819,74,MID,0.694,false,true,ST,modalAtt
+515,2016,BL,F. Ribéry,Bayern München,1617,78,MID,1.16,false,true,ST,modalAtt
+554,2017,PL,D. Tadić,Southampton,1718,68,FWD,0.288,true,false,Winger,modalAtt
+554,2016,PL,D. Tadić,Southampton,1617,63,FWD,0.297,true,false,Winger,modalAtt
+1367,2018,TR,M. Valbuena,Fenerbahçe,1819,67,MID,0.766,false,true,CAM,default-CAM
+1367,2017,TR,M. Valbuena,Fenerbahçe,1718,77,MID,0.915,false,true,CAM,default-CAM
+1640,2025,SA,H. Çalhanoğlu,Inter,2526,81,MID,0.709,false,true,ST,modalAtt
+1640,2021,SA,H. Çalhanoğlu,Inter,2122,85,MID,0.682,false,true,ST,modalAtt
+1763,2020,TR,Candeias,Gençlerbirliği S.K.,2021,58,FWD,0.327,true,false,Winger,modalAtt
+1763,2016,TR,Candeias,Alanyaspor,1617,56,FWD,0.296,true,false,Winger,modalAtt
+2382,2020,TR,Pedro Henrique,Kayserispor,2021,61,FWD,0.356,true,false,ST,modalAtt
+2382,2019,TR,Pedro Henrique,Kayserispor,1920,65,FWD,0.49,true,false,ST,modalAtt
+2601,2025,PL,D. Kamada,Crystal Palace,2526,66,FWD,0,true,false,ST,modalAtt
+2601,2022,BL,D. Kamada,Eintracht Frankfurt,2223,80,MID,0.595,false,true,ST,modalAtt
+22095,2018,L1,R. Hamouma,Saint Etienne,1819,62,FWD,0.451,true,false,ST,modalAtt
+22095,2017,L1,R. Hamouma,Saint Etienne,1718,60,FWD,0.388,true,false,ST,modalAtt
+25352,2018,BL,Salomon Armand Magloire Kalou,Hertha BSC,1819,70,FWD,0.387,true,false,CAM,modalAtt
+25352,2017,BL,Salomon Armand Magloire Kalou,Hertha BSC,1718,80,FWD,0.607,true,true,CAM,modalAtt
+30562,2018,SA,J. Galvão,Cagliari,1819,70,FWD,0.315,true,false,ST,modalAtt
+30562,2017,SA,J. Galvão,Cagliari,1718,59,FWD,0.325,true,false,ST,modalAtt
+37749,2025,ERE,J. Veerman,PSV Eindhoven,2526,81,MID,0.835,false,true,CAM,modalAtt
+37749,2023,ERE,J. Veerman,PSV Eindhoven,2324,79,MID,0.79,false,true,CAM,modalAtt
+41124,2018,PRT,B. Aouacheria,Moreirense,1819,48,FWD,0.098,true,false,CAM,modalAtt
+41124,2017,PRT,B. Aouacheria,Moreirense,1718,52,FWD,0.151,true,false,CAM,modalAtt
+49852,2019,TR,Eljero George Rinaldo Elia,Başakşehir,1920,53,FWD,0.34,true,false,CAM,modalAtt
+49852,2018,TR,Eljero George Rinaldo Elia,Başakşehir,1819,49,FWD,0.173,true,false,CAM,modalAtt
+50095,2018,TR,G. Torje,Sivasspor,1819,48,FWD,0.118,true,false,CAM,default-CAM
+50095,2017,TR,G. Torje,Kardemir Karabukspor,1718,50,FWD,0.388,true,false,CAM,default-CAM
+180644,2024,TR,I. Olawoyin,Rizespor,2425,65,FWD,0.43,true,false,CAM,default-CAM
+180644,2023,TR,I. Olawoyin,Rizespor,2324,63,FWD,0.328,true,false,CAM,default-CAM
+16,2020,ERE,M. Götze,PSV Eindhoven,2021,65,MID,0.638,false,true,ST,modalAtt
+23,2022,PL,Sergio Gómez,Manchester City,2223,,FWD,0.257,true,false,Winger,modalAtt
+24,2020,BL,M. Philipp,VfL Wolfsburg,2021,62,FWD,0.647,true,true,ST,modalAtt
+108,2016,PL,Cesc Fàbregas,Chelsea,1617,85,MID,1.152,false,true,Winger,modalAtt
+147,2019,BL,Philippe Coutinho,Bayern München,1920,78,MID,0.892,false,true,Winger,modalAtt
+152,2016,LL,K. Boateng,Las Palmas,1617,82,MID,0.633,false,true,ST,modalAtt
+266,2019,L1,Á. Di María,Paris Saint Germain,1920,86,MID,0.988,false,true,ST,modalAtt
+511,2019,BL,L. Goretzka,Bayern München,1920,74,MID,0.654,false,true,CAM,default-CAM
+516,2018,BL,A. Robben,Bayern München,1819,54,FWD,0.635,true,false,Winger,modalAtt
+635,2017,PL,R. Mahrez,Leicester,1718,89,FWD,0.669,true,true,Winger,modalAtt
+663,2018,L1,M. Terrier,Lyon,1819,70,FWD,0.547,true,false,ST,modalAtt
+872,2016,SA,M. Pjanić,Juventus,1617,81,MID,0.58,false,true,Winger,modalAtt
+1152,2018,BL,E. Forsberg,RB Leipzig,1819,76,MID,0.789,false,true,ST,modalAtt
+1356,2017,TR,N. Dirar,Fenerbahçe,1718,65,FWD,0.474,true,false,Winger,modalAtt
+1459,2018,PL,A. Ramsey,Arsenal,1819,78,MID,0.678,false,true,Winger,modalAtt
+1821,2020,BL,F. Kostić,Eintracht Frankfurt,2021,78,MID,0.639,false,true,Winger,modalAtt
+2050,2016,SA,É. Banega,Inter,1617,80,MID,0.693,false,true,CAM,default-CAM
+2116,2019,BPL,M. Lestienne,Standard Liege,1920,55,FWD,0.308,true,false,CAM,modalAtt
+2208,2017,L1,C. Grenier,Guingamp,1718,69,MID,0.669,false,true,Winger,modalAtt
+2605,2016,BL,T. Usami,FC Augsburg,1617,51,FWD,0,true,false,Winger,modalAtt
+2692,2018,TR,V. Amiri,Trabzonspor,1819,49,FWD,0.13,true,false,CAM,default-CAM
+2751,2018,BL,M. Leckie,Hertha BSC,1819,58,FWD,0.192,true,false,Winger,modalAtt
+2790,2017,PL,J. Guðmunds­son,Burnley,1718,66,FWD,0.317,true,false,Winger,modalAtt
+2799,2021,SA,A. Guðmundsson,Genoa,2122,48,FWD,0.149,true,false,ST,modalAtt
+2808,2018,BL,A. Mehmedi,VfL Wolfsburg,1819,72,FWD,0.583,true,true,Winger,modalAtt
+2926,2018,PL,Y. Tielemans,Leicester,1819,71,MID,0.577,false,true,CAM,modalAtt
+3175,2020,L1,Z. Ferhat,Nimes,2021,74,FWD,0.487,true,false,Winger,modalAtt
+3313,2021,PRT,Nélson Luz,Guimaraes,2122,42,FWD,0.816,true,false,Winger,modalAtt
+7585,2016,TR,J. Jantscher,Rizespor,1617,51,FWD,0.246,true,false,CAM,default-CAM
+8453,2016,BPL,A. Baby,Charleroi,1617,43,FWD,0.182,true,false,Winger,modalAtt
+8455,2021,BPL,G. Hairemans,KV Mechelen,2122,70,MID,0.641,false,true,ST,modalAtt
+8616,2017,BPL,Nill De Pauw,Zulte Waregem,1718,48,FWD,0.269,true,false,Winger,modalAtt
+13645,2021,PRT,O. Barreto,Santa Clara,2122,49,FWD,0.522,true,false,Winger,modalAtt
+14395,2025,BL,K. Jakić,FC Augsburg,2526,59,FWD,0.163,true,false,CAM,default-CAM
+16839,2017,BPL,C. Benavente,Charleroi,1718,59,FWD,0.336,true,false,Winger,modalAtt
+18828,2019,PL,R. Snodgrass,West Ham,1920,79,MID,0.595,false,true,Winger,modalAtt
+19187,2020,PL,J. Grealish,Aston Villa,2021,86,MID,0.659,false,true,ST,modalAtt
+19195,2020,PL,A. El Ghazi,Aston Villa,2021,78,FWD,0.558,true,false,CAM,modalAtt
+19246,2017,PL,R. van La Parra,Huddersfield,1718,59,FWD,0.126,true,false,ST,modalAtt
+19545,2021,PL,R. James,Chelsea,2122,85,DEF,0.676,false,true,CAM,default-CAM
+21443,2018,L1,T. Savanier,Nimes,1819,85,MID,0.628,false,true,CAM,default-CAM
+21496,2018,L1,N. Benezet,Guingamp,1819,55,FWD,0.216,true,false,Winger,modalAtt
+21503,2018,L1,Y. N&apos;Gbakoto,Guingamp,1819,49,FWD,0.161,true,false,Winger,modalAtt
+22255,2018,L1,A. Gonçalves,Strasbourg,1819,70,DEF,0.595,false,true,CAM,default-CAM
+25400,2025,BL,Y. Gerhardt,VfL Wolfsburg,2526,70,FWD,0.501,true,false,Winger,modalAtt
+25647,2016,BL,I. Traoré,Borussia Mönchengladbach,1617,47,FWD,0.429,true,false,CAM,modalAtt
+30422,2020,SA,R. Gosens,Atalanta,2021,85,DEF,0.603,false,true,Winger,modalAtt
+30456,2018,SA,R. Saponara,Sampdoria,1819,68,MID,0.597,false,true,ST,modalAtt
+37155,2023,PRT,O. Kökçü,Benfica,2324,71,MID,0.752,false,true,CAM,modalAtt
+39043,2025,PRT,F. Aursnes,Benfica,2526,55,FWD,0.196,true,false,CAM,default-CAM
+39095,2021,L1,E. Rashani,Clermont Foot,2122,71,FWD,0.558,true,false,ST,modalAtt
+39137,2021,TR,Z. Bytyqi,Konyaspor,2122,66,FWD,0.4,true,false,Winger,modalAtt
+42309,2016,TR,Wesley Sneijder,Galatasaray,1617,80,MID,0.855,false,true,CAM,default-CAM
+44612,2019,TR,Garry Rodrigues,Fenerbahçe,1920,55,FWD,0.387,true,false,Winger,modalAtt
+46687,2019,LL,Ángel Montoro,Granada CF,1920,69,MID,0.648,false,true,Winger,modalAtt
+47436,2016,L1,R. Boudebouz,Montpellier,1617,83,MID,0.616,false,true,ST,modalAtt
+48022,2021,ERE,D. Irandust,Groningen,2122,46,FWD,0.187,true,false,Winger,modalAtt
+48579,2018,BL,Caiuby,FC Augsburg,1819,54,FWD,0.179,true,false,Winger,modalAtt
+48666,2017,TR,Markus Neumayr,Kasımpaşa,1718,62,MID,0.629,false,true,CAM,default-CAM
+49851,2018,TR,Robinho,Başakşehir,1819,57,FWD,0.504,true,false,Winger,modalAtt
+49860,2021,TR,E. Višća,Trabzonspor,2122,69,MID,0.75,false,true,Winger,modalAtt
+50123,2018,TR,Silvestre Varela,Kayserispor,1819,54,FWD,0.392,true,false,ST,modalAtt
+50180,2019,TR,S. Gürler,Göztepe,1920,67,FWD,0.508,true,false,Winger,modalAtt
+61878,2020,TR,S. Ilgaz,Hatayspor,2021,47,FWD,0.306,true,false,CAM,default-CAM
+62004,2019,BPL,H. Kagé,Kortrijk,1920,35,FWD,0.22,true,false,ST,modalAtt
+62081,2016,TR,O. Aynaoğlu,Rizespor,1617,28,FWD,0.173,true,false,CAM,default-CAM
+62192,2017,TR,M. Milinković,Gençlerbirliği S.K.,1718,47,FWD,0.472,true,false,CAM,default-CAM
+68196,2017,TR,Daniel Alexander Larsson,Akhisarspor,1718,52,FWD,0.197,true,false,CAM,default-CAM
+83023,2020,ERE,K. Frei,Emmen,2021,47,FWD,0,true,false,Winger,modalAtt
+85772,2020,L1,J. Le Douaron,Stade Brestois 29,2021,50,FWD,0.336,true,false,Winger,modalAtt
+105295,2016,TR,Dejan Lazarević,Kardemir Karabukspor,1617,20,FWD,0,true,false,CAM,default-CAM
+326757,2025,BL,J. Bellingham,Borussia Dortmund,2526,64,FWD,0.05,true,false,CAM,default-CAM
