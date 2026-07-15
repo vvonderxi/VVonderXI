@@ -86,19 +86,39 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 
 ---
 
-## D. CURRENT STATE / ACTIVE TASK
+## D. LAUNCH MASTER PLAN (consolidated 2026-07-15 , SUPERSEDES all prior scattered outstanding-item lists)
 
-**Active:** Standout (rt80-84) sweep DONE , 250 classified, 249 positions + 7 assists written, REVIEW queue cleared, known_players.csv dictionary at 248. Honours Tier-1 WRITTEN (314 rows, first tag family live). MATVIEW REFRESH PENDING for the position/assist writes (paste `REFRESH MATERIALIZED VIEW player_card_mv;` in Supabase SQL editor; honours needs no refresh). Open threads: goals-provenance audit (Euro goals may inflate rt), data-fix team_name (181398 Aydin, 108547 Onyekuru), prior top-150 shirt+assist sweep.
+This is the single ordered launch plan. If an older §F entry lists a "NEXT" that conflicts with this, THIS wins.
 
-**Then:** honours Tier-2 -> TAG VALIDATION + card/Compare wiring -> Compare -> card editorial -> hygiene -> merge.
+**DONE , engine + data track COMPLETE + LIVE (do not reopen):** Stages 0-4 shipped , defensive integration (bounded def_core + best-of), computed endogenous league strength, top-of-scale cap, bands 95/90/85/80, CDM-mislabel cleanup. rt is the fully recalibrated engine. Honours tag family written (629 rows) + wired to cards. Position data-lock clean 2016+. Remaining engine ideas are post-launch/optional (see DEFERRED).
+
+### BUILD TRACK (ordered, dependency-first , do in this order)
+
+1. **TAG KEYSTONE** (everything editorial depends on this , do FIRST). Validate the tag families against the LIVE distribution (are the right players getting the right tags, at sane volumes); finish the honours join (league_champion/ucl_winner are team-keyed / NULL api_player_id , make them attach to players so Silverware shows more than World Cup); vocabulary/taxonomy fixes (profile + prestige tags, playbook audit).
+2. **COMPARE #101.** In order: (a) reuse the shared search FIRST (single code path both surfaces); (b) verdict "The Edge" live (kill hardcoded Henry/Haaland); (c) Accolades wired to real honours; (d) back path; (e) go-to-player pill; (f) user-controlled fold. Then C8 position filter + final polish.
+3. **CARD + DESIGN-LOCK.** Wire the Proof off hardcoded Bruno; K5 trajectory VV-line chart; refined-crest shield; card-reveal flip; G/A colours; glance-on-phone. Identity line + defender flag.
+4. **CONTENT + HONESTY.** VV Index explainer (content already drafted in the design log , lift it); five-dimensions radar voice; search empty/loading/no-result states; result-cap raise (250-500, "showing X of Y"); Data Confidence panel.
+5. **MOBILE + HYGIENE SWEEP.** Tag-crop sweep (390px); Playbook dark-mode revert; enforce green=Compare-only rule (see LOCKED RULES); badge colours; em-dash sweep (spaced comma house rule); security/RLS + API-Football key rotation (exposed) + og/meta + social image + contact-form endpoint + OAuth published.
+6. **MERGE + LAUNCH.** Final QA pass; merge redesign-compare -> vvonderxi_BIGGER; waitlist live.
+
+### LOCKED RULES
+- **Under-the-Lights green = Compare-ONLY** (Compare headings + finding boxes). Standard tone everywhere else , do NOT bleed the green into card/rankings/playbook.
+- **Premium/motion polish = a dedicated pass AFTER the core build**, never interleaved (it is the seductive trap that stalls the spine).
+
+### DEFERRED (post-launch, explicitly NOT launch-blockers)
+- Premium/motion pass; accounts/Locker (waitlist for now); language toggle EN/NL/FR.
+- January mid-season DUAL-CARD (split a season at the winter window) , SCOPE THE COUNT FIRST before committing.
+- Advanced-data VV Score v2 (radar percentile-within-position; GK saves/goals_conceded mapping to lift the GK-75 cap); dribbles_past re-ingest experiment (confirmed NOT in DB , defensive signal for outfielders).
+
+### PARALLEL / ANYTIME (no dependency, slot in whenever)
+- Mobile-responsive fixes; logo + og/meta polish; coarse-position tail cleanup (DB-wide "CM" tail below rt80 + ~18k coarse tail via known_players.csv dictionary, no CCC needed for known names).
 
 ---
 
-## E. BACKLOG / HORIZON (not launch-blockers unless marked)
-
-- **LAUNCH-BLOCKERS:** tag validation; Compare build; card.html editorial (Proof/Wonder Tags/Notes); API-Football key rotation (exposed); og/meta + social image; contact-form endpoint (errors); OAuth published; 390px QA; merge to vvonderxi_BIGGER.
-- **Quality (not blockers):** GOALS-PROVENANCE audit , some cards' `goals` include European-competition goals but the engine is domestic-only (confirmed Vanaken x5 + Mboyo, figures match all-comps totals); could inflate rt for Euro-competition clubs; audit vs domestic-only source. DATA-FIX team_name: 181398 Aydin (Alanyaspor not Fenerbahce 23/24), 108547 Onyekuru (not Arsenal, HELD). DB-wide "CM" bug tail below rt80 , fix at scale via known_players.csv dictionary (built this session, no CCC needed for known players); ~18k coarse-position tail (v2 script); shirt/position tail below rt85; Ibra 15/16 ordering wrinkle (47.1 output at 94, tier-map not monotonic at top seam , engine session); rankings A-Z sort bug; result-cap raise (250-500, "showing X of Y"); Data Confidence expandable panel; season-switcher; card hero text overflow.
-- **Post-launch:** accounts/Locker (waitlist now); language toggle EN/NL/FR.
+## E. OPEN DATA THREADS (specific, low-priority; fold into the track above , not blockers)
+- GOALS-PROVENANCE audit: some cards' `goals` include European-competition goals but the engine is domestic-only (confirmed Vanaken x5 + Mboyo, figures match all-comps totals); could inflate rt for Euro-competition clubs; audit vs a domestic-only source.
+- DATA-FIX team_name: 181398 Aydin (Alanyaspor not Fenerbahce 23/24 , should then fall out of the big-club filter); 108547 Onyekuru (not Arsenal, HELD).
+- NR-assist tail: 194 cards rt80-84, 1184 rt75-79 queued (tiered fill). `estimated_market_value` column is 100% empty (never populated). Ibra 15/16 ordering wrinkle (tier-map not monotonic at top seam); rankings A-Z sort bug; card hero text overflow.
 
 ---
 
