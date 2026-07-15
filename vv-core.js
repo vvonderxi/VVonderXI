@@ -723,42 +723,114 @@
     golden_boot:      'The league’s top scorer. Nobody scored more.',
     top_assists:      'The league’s chief creator. Nobody made more.',
   };
+
+  // ── Team-keyed honours (league_champion + ucl_winner) ────────────────────
+  //  api_player_id is NULL on these , a title belongs to the winning club-season,
+  //  not one player. They attach by matching the card's team+season(+league):
+  //  league_champion = team+season+league; ucl_winner = team+season (UCL has no
+  //  domestic league_code). Loaded ONCE per session: loadTeamHonours() memoizes
+  //  the in-flight PROMISE, so concurrent callers (every page, every card) share
+  //  a single fetch , it fires exactly once, never per-card or per-page-load.
+  function honTeamNorm(s){
+    return (s==null?'':String(s)).normalize('NFD').replace(/[̀-ͯ]/g,'')
+      .toLowerCase().replace(/[^a-z0-9]/g,'');
+  }
+  let _teamHonoursPromise = null;   // single in-flight/settled fetch (session-once)
+  let _teamHonoursCache   = null;   // resolved { lc:Map, ucl:Set } for sync reads after load
+  function loadTeamHonours(){
+    if(_teamHonoursPromise) return _teamHonoursPromise;   // memoized , fires exactly ONCE
+    _teamHonoursPromise = (async () => {
+      const empty = { lc:new Map(), ucl:new Set() };
+      const sb = (typeof vvClient === 'function') ? vvClient() : null;
+      if(!sb){ _teamHonoursCache = empty; return empty; }
+      try {
+        const res = await sb.from('honours')
+          .select('honour_type,team_name,season_year,league_code,honour_context')
+          .in('honour_type', ['league_champion','ucl_winner']);
+        if(res.error || !res.data){ _teamHonoursCache = empty; return empty; }
+        const lc = new Map(), ucl = new Set();
+        for(const h of res.data){
+          if(h.team_name == null || h.season_year == null) continue;
+          if(h.honour_type === 'league_champion' && h.league_code)
+            lc.set(honTeamNorm(h.team_name)+'|'+h.season_year+'|'+h.league_code, h);
+          else if(h.honour_type === 'ucl_winner')
+            ucl.add(honTeamNorm(h.team_name)+'|'+h.season_year);
+        }
+        const cache = { lc, ucl };
+        _teamHonoursCache = cache;
+        return cache;
+      } catch(e){ _teamHonoursCache = empty; return empty; }
+    })();
+    return _teamHonoursPromise;
+  }
+  // Build team-honour item(s) for a card from a resolved cache. Same item shape as
+  // fetchHonours' player honours (so shaping/grouping/render are identical). [] if none.
+  function teamHonoursFor(card, cache){
+    if(!card || !cache) return [];
+    const seasonYear = card.season_year != null ? card.season_year
+                     : (card.season != null ? parseInt(String(card.season).slice(0,4),10) : null);
+    if(seasonYear == null || card.team_name == null) return [];
+    const tn = honTeamNorm(card.team_name);
+    const leagueCode = card.league_code || null;
+    const mk = (type) => {
+      const meta = HONOUR_META[type];
+      return { type, label: meta.label, group: meta.group, tier: meta.tier,
+        oneliner: HONOUR_ONELINER[type] || meta.label, context: null,
+        goals: null, assists: null, season_year: seasonYear,
+        league_code: (type === 'league_champion' ? leagueCode : null) };
+    };
+    const out = [];
+    if(leagueCode && cache.lc && cache.lc.has(tn+'|'+seasonYear+'|'+leagueCode)) out.push(mk('league_champion'));
+    if(cache.ucl && cache.ucl.has(tn+'|'+seasonYear)) out.push(mk('ucl_winner'));
+    return out;
+  }
+
   async function fetchHonours(row){
     const empty = { season: [], career: [], groups: {}, count: 0, has: false };
-    if(!row || row.api_player_id == null) return empty;
+    if(!row) return empty;
     const sb = (typeof vvClient === 'function') ? vvClient() : null;
     if(!sb) return empty;
     const seasonYear = row.season_year != null ? row.season_year
                      : (row.season != null ? parseInt(String(row.season).slice(0,4), 10) : null);
     const leagueCode = row.league_code || null;
-    let res;
-    try {
-      res = await sb.from('honours')
-        .select('honour_type,season_year,league_code,honour_context,goals,assists')
-        .eq('api_player_id', row.api_player_id);
-    } catch(e){ return empty; }
-    if(res.error || !res.data) return empty;
     const season = [];   // honours for THIS card's season+league
     const career = [];   // legacy , now always empty (world_cup_winner is season-specific, see loop)
-    for(const h of res.data){
-      const meta = HONOUR_META[h.honour_type];
-      if(!meta) continue; // unknown type , skip (mirror rule: only what we define)
-      const item = {
-        type: h.honour_type, label: meta.label, group: meta.group, tier: meta.tier,
-        oneliner: HONOUR_ONELINER[h.honour_type] || meta.label,
-        context: h.honour_context || null,
-        goals: h.goals != null ? h.goals : null,
-        assists: h.assists != null ? h.assists : null,
-        season_year: h.season_year != null ? h.season_year : null,
-        league_code: h.league_code || null,
-      };
-      // world_cup_winner is now SEASON-SPECIFIC (season_year = tournament year, no league):
-      // matches season_year like every other honour but SKIPS the league check (WC has no league).
-      if(seasonYear != null && h.season_year === seasonYear
-         && (h.honour_type === 'world_cup_winner'
-             || !h.league_code || !leagueCode || h.league_code === leagueCode)){
-        season.push(item);
+    // (a) PLAYER-keyed honours (individual + world_cup) , keyed by api_player_id
+    if(row.api_player_id != null){
+      let res;
+      try {
+        res = await sb.from('honours')
+          .select('honour_type,season_year,league_code,honour_context,goals,assists')
+          .eq('api_player_id', row.api_player_id);
+      } catch(e){ res = null; }
+      if(res && !res.error && res.data){
+        for(const h of res.data){
+          const meta = HONOUR_META[h.honour_type];
+          if(!meta) continue; // unknown type , skip (mirror rule: only what we define)
+          const item = {
+            type: h.honour_type, label: meta.label, group: meta.group, tier: meta.tier,
+            oneliner: HONOUR_ONELINER[h.honour_type] || meta.label,
+            context: h.honour_context || null,
+            goals: h.goals != null ? h.goals : null,
+            assists: h.assists != null ? h.assists : null,
+            season_year: h.season_year != null ? h.season_year : null,
+            league_code: h.league_code || null,
+          };
+          // world_cup_winner is now SEASON-SPECIFIC (season_year = tournament year, no league):
+          // matches season_year like every other honour but SKIPS the league check (WC has no league).
+          if(seasonYear != null && h.season_year === seasonYear
+             && (h.honour_type === 'world_cup_winner'
+                 || !h.league_code || !leagueCode || h.league_code === leagueCode)){
+            season.push(item);
+          }
+        }
       }
+    }
+    // (b) TEAM-keyed honours (league_champion + ucl_winner) , matched by team+season(+league).
+    //     Never come through the api_player_id query above (their api_player_id is NULL), so no dup.
+    const teamCache = await loadTeamHonours();
+    for(const ti of teamHonoursFor(row, teamCache)){
+      if(!season.some(s => s.type === ti.type && s.season_year === ti.season_year)) season.push(ti);
     }
     season.sort((a,b)=> a.tier - b.tier);   // rarer first
     // CHANGE 2: combined season+career, tier-sorted , drives glance-chip order + card-face pick.
@@ -916,13 +988,16 @@
       if(!byPlayer.has(h.api_player_id)) byPlayer.set(h.api_player_id, []);
       byPlayer.get(h.api_player_id).push(h);
     }
+    await loadTeamHonours();   // session-once; shapeHonoursForCard reads the resolved cache
     for(const c of cards){
       if(!c){ continue; }
       c.honours = shapeHonoursForCard(c, byPlayer.get(c.api_player_id) || []);
     }
   }
   // Shape one card's honours from its player's rows (mirrors fetchHonours; WC season-specific).
-  function shapeHonoursForCard(card, rows){
+  // teamCache (optional): resolved team-honours cache; defaults to the session cache set by
+  // loadTeamHonours() (attachHonoursBatch awaits it before calling, so it is ready here).
+  function shapeHonoursForCard(card, rows, teamCache){
     const seasonYear = card.season_year != null ? card.season_year
                      : (card.season != null ? parseInt(String(card.season).slice(0,4),10) : null);
     const leagueCode = card.league_code || null;
@@ -940,6 +1015,13 @@
           goals: h.goals, assists: h.assists,
           season_year: h.season_year, league_code: h.league_code || null,
         });
+      }
+    }
+    // merge TEAM-keyed honours (league_champion/ucl_winner) from the session cache
+    const _tc = teamCache || _teamHonoursCache;
+    if(_tc){
+      for(const ti of teamHonoursFor(card, _tc)){
+        if(!season.some(s => s.type === ti.type && s.season_year === ti.season_year)) season.push(ti);
       }
     }
     season.sort((a,b)=>a.tier-b.tier);
@@ -1195,6 +1277,7 @@
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
+                loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
