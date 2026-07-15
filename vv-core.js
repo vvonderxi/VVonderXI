@@ -418,24 +418,32 @@
   // Map fine position_pool -> eligibility flags. Falls back to coarse family
   // when pool is null (38% of seasons, mostly pre-2015).
   function eligibility(fam, pool) {
-    // pool can be: CB, RB, LB, CDM, CM, CAM, ST, LW, RW, GK, UNK, or null
+    // pool (8-bucket, LOCKED): GK, FB, CB, CDM, CM, CAM, Winger, ST, or null/UNK.
+    // (Superseded the pre-lock LW/RW/RB/LB codes , which no longer exist in the data.)
     const p = pool || '';
-    const wide = (p === 'LW' || p === 'RW' || p === 'RB' || p === 'LB');
+    const winger     = (p === 'Winger');
+    const fb         = (p === 'FB');
     const centreBack = (p === 'CB');
-    const striker = (p === 'ST');
+    const striker    = (p === 'ST');
+    // FB output principle (Stage-2 best-of / TAA): an attacking full-back's value IS output,
+    // so FBs are eligible for the ABILITY tags (playmaker/dribbler/provider) AND the defensive
+    // family (via coarse DEF). Which fires is decided by his PROFILE. But "The Winger" is a
+    // POSITION-IDENTITY tag, NOT an ability tag , an attacking FB is a full-back, not a winger
+    // (mirrors the engine: his output is credited, but he is scored WITHIN the FB pool, never
+    // reclassified wide). So FBs are excluded from winger; wingers keep their own tag.
     return {
       // Attacker tags
-      goalMachine: fam === 'FWD' || fam === 'MID',          // anyone who can score
+      goalMachine: fam === 'FWD' || fam === 'MID',          // scorers only (FBs are creators, not scorers)
       clinical:    fam === 'FWD' || fam === 'MID',
-      provider:    fam !== 'GK',                             // any outfielder can provide (GK excluded)
+      provider:    fam !== 'GK',                             // any outfielder can provide (GK excluded; FB incl.)
       poacher:     striker || (fam === 'FWD' && !pool),      // strikers (or coarse-FWD fallback)
-      winger:      wide || (fam === 'FWD' && !pool),         // wide players (or coarse-FWD fallback)
+      winger:      winger || (fam === 'FWD' && !pool),       // POSITION tag: Winger pool + coarse-FWD fallback (NOT FBs)
       // Midfield tags
-      playmaker:   fam === 'MID' || fam === 'FWD',
-      maestro:     fam === 'MID',
-      deepPlaymaker: fam === 'MID' || fam === 'DEF',         // deep mids + ball-playing CBs
+      playmaker:   fam === 'MID' || fam === 'FWD' || fb,     // ability tag: + attacking FBs (key-pass creators, TAA-type)
+      maestro:     fam === 'MID',                            // central conductor , kept MID-only
+      deepPlaymaker: fam === 'MID' || fam === 'DEF',         // deep mids + ball-playing CBs + FBs (Regista)
       engineRoom:  fam === 'MID',
-      dribbler:    fam === 'MID' || fam === 'FWD',
+      dribbler:    fam === 'MID' || fam === 'FWD' || fb,     // ability tag: + attacking FBs who carry
       // Defender tags , MID only via defensive/central pools (CDM/CM), never CAM;
       // null-pool MIDs excluded (under-tag rather than mis-tag attacking mids).
       theWall:     fam === 'DEF' || (fam === 'MID' && (pool === 'CDM' || pool === 'CM')),
