@@ -120,6 +120,7 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
 - GOALS-PROVENANCE audit: some cards' `goals` include European-competition goals but the engine is domestic-only (confirmed Vanaken x5 + Mboyo, figures match all-comps totals); could inflate rt for Euro-competition clubs; audit vs a domestic-only source.
 - DATA-FIX team_name: 181398 Aydin (Alanyaspor not Fenerbahce 23/24 , should then fall out of the big-club filter); 108547 Onyekuru (not Arsenal, HELD).
 - NR-assist tail: 194 cards rt80-84, 1184 rt75-79 queued (tiered fill). `estimated_market_value` column is 100% empty (never populated). Ibra 15/16 ordering wrinkle (tier-map not monotonic at top seam); rankings A-Z sort bug; card hero text overflow.
+- **Compare "See It For Yourself" YouTube links (POST-LAUNCH quality item):** now DYNAMIC from the compared players (was hardcoded Henry/Haaland , fixed), but they are YouTube SEARCH links (land on a results page, quality uncertain , may surface fan edits/wrong players/ads). Dynamic-and-correct beats hardcoded-and-wrong for launch. Revisit post-launch: curate real video IDs, use the YouTube Data API for a best-match video, or drop the section if it misses the premium bar.
 
 ---
 
