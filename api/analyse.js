@@ -22,7 +22,8 @@ module.exports = async (req, res) => {
     const cacheable = cardIdA != null && cardIdB != null
       && Number.isFinite(_a) && Number.isFinite(_b)
       && !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_KEY;
-    const swapVerdict = (v) => ({ p1: v.p2, p2: v.p1, h2h: v.h2h, verdict: v.verdict });
+    // tag is symmetric (describes the matchup, not a slot) , carried through unchanged on swap
+    const swapVerdict = (v) => ({ p1: v.p2, p2: v.p1, h2h: v.h2h, verdict: v.verdict, tag: v.tag });
     let sb = null, pairKey = null, loId = null, hiId = null, swapped = false;
     if (cacheable) {
       const { createClient } = require('@supabase/supabase-js');
@@ -76,13 +77,14 @@ OUTPUT FORMAT:
 You respond ONLY with valid JSON. No markdown. No code blocks. No preamble. No explanation outside the JSON.
 
 Required format:
-{"p1": "...", "p2": "...", "h2h": "...", "verdict": "..."}
+{"p1": "...", "p2": "...", "h2h": "...", "verdict": "...", "tag": "..."}
 
 OUTPUT LENGTH:
 - p1: 3-4 sentences. Club, role, VV tags, what this season meant. Precise and poetic.
-- p2: 3-4 sentences. Same depth. Equal analytical weight.  
+- p2: 3-4 sentences. Same depth. Equal analytical weight.
 - h2h: 2-3 sentences. The real argument. What does context change?
 - verdict: 2-3 sentences. Authoritative. Final. One quotable closing sentence.
+- tag: when the user prompt provides a VERDICT TAG list, return the single chosen KEY verbatim (one of the provided keys, nothing else). Default to the first key; up-rank only if another clearly fits better. If no tag list is provided, omit this field.
 Write tight. Every word earns its place.`;
 
     // ── Commentator's Notes mode (single player, cached in notes_cache) ──

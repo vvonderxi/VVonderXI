@@ -451,6 +451,8 @@
   .vp-va.win::after,.vp-vb.win::after{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px -1px var(--green);margin-left:8px;vertical-align:middle}
   /* Data Confidence */
   .vcrow{display:flex;align-items:center;gap:18px;padding:9px 2px}
+  .vc-sub{font-family:'Archivo';font-weight:600;font-size:11px;color:rgba(243,237,224,0.42);padding:0 2px 8px;letter-spacing:.01em}
+  body.light .vc-sub{color:#8a8276}
   .vc-n{font-family:'Archivo';font-weight:800;font-size:15px;width:84px;flex-shrink:0}
   .vc-a{color:var(--pink)} .vc-b{color:var(--blue)}
   .vc-dots{display:flex;gap:9px;flex:1}
@@ -757,18 +759,13 @@ body.light .pkmsub{color:#b0a899}
           <div class="vquote vquote3"></div>
           <div class="vwho"></div>
           <div class="vtags-final">
-            <span class="vtag gold" data-tip="Henry takes it by the finest of margins, 93 to 90.">&#9889; The Edge: Henry</span>
-            <span class="vtag" data-tip="Decided by a sliver. On another day it swings the other way.">&#128248; Photo Finish</span>
-            <span class="vtag" data-tip="A season that bent its whole era around it.">&#127941; Era-Defining</span>
+            <span class="vtag gold" id="vEdgeTag" data-tip="" style="display:none"></span>
           </div>
         </div>
 <!-- DATA CONFIDENCE -->
           <div class="vsect vsect-wide">
             <div class="vsect-t">Data Confidence</div>
-            <div class="vconf">
-              <div class="vcrow"><span class="vc-n vc-a">Henry</span><span class="vc-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="vc-x">4 / 5</span></div>
-              <div class="vcrow"><span class="vc-n vc-b">Haaland</span><span class="vc-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="vc-x">5 / 5</span></div>
-            </div>
+            <div class="vconf" id="vconf"></div>
             <div class="vsect-d" style="margin-top:14px;margin-bottom:0">How complete the data behind each card is. It measures the record, not the player.</div>
           </div>
 
@@ -1112,12 +1109,20 @@ body.light .pkmsub{color:#b0a899}
     function fill(col,dot,name,prose){ if(!col)return; var nm=col.querySelector('.vsname'); if(nm)nm.innerHTML='<span class="sdot '+dot+'"></span>'+vvEsc(name); var p=col.querySelectorAll('.vsprose'); if(p[0])p[0].textContent=prose; for(var i=1;i<p.length;i++)p[i].remove(); }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
   }
-  function vvSetVerdict(verdict,h2h,engine,va,vb){
+  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj){
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
     var parts=[]; if(h2h)parts.push(h2h); if(verdict)parts.push(verdict); if(!parts.length)parts=[''];
     for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0)t='“'+t; if(i===parts.length-1)t=t+'”'; vq[i].textContent=t; vq[i].style.display=''; } else { vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
-    if(who){ if(engine==='A')who.textContent=CMP_A.surname+' edges it , '+va+' to '+vb; else if(engine==='B')who.textContent=CMP_B.surname+' edges it , '+vb+' to '+va; else who.textContent='Level on VV , '+va+' apiece. The verdict decides.'; }
+    if(who){
+      if(winner==='A'||winner==='B'){
+        var W=(winner==='A')?CMP_A:CMP_B, wv=(winner==='A')?va:vb, lv=(winner==='A')?vb:va;
+        who.textContent = (VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
+                                          : (W.surname+' edges it , '+wv+' to '+lv);
+      } else { who.textContent='Level on VV , '+va+' apiece. The verdict decides.'; }
+    }
+    var chip=document.getElementById('vEdgeTag');   // the ONE selected verdict tag (was hardcoded "The Edge: Henry")
+    if(chip && tagObj){ chip.innerHTML=tagObj.emoji+' '+tagObj.name; chip.setAttribute('data-tip', tagObj.drury||tagObj.blurb||''); chip.style.display=''; }
   }
   function vvGenerateVerdict(){
     if(!(CMP_A&&CMP_B))return;
@@ -1125,26 +1130,36 @@ body.light .pkmsub{color:#b0a899}
     if(window._vvVerdictPair===key)return;       // only regenerate when the pairing actually changes
     window._vvVerdictPair=key;
     var va=+CMP_A.vv||0, vb=+CMP_B.vv||0;
-    var engine = va>vb?'A':(vb>va?'B':'tie');
+    var VC=VVCore.verdictContext(CMP_A,CMP_B), TAGS=VVCore.VERDICT_TAGS;
+    var winner=VC.winner;   // post age-tiebreak winner ('A'/'B'/'tie')
     var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
-    if(ca)ca.classList.toggle('winner',engine==='A'); if(cb)cb.classList.toggle('winner',engine==='B');
+    if(ca)ca.classList.toggle('winner',winner==='A'); if(cb)cb.classList.toggle('winner',winner==='B');
     var nameA=CMP_A.surname+' · '+CMP_A.year+' · '+CMP_A.clubname;
     var nameB=CMP_B.surname+' · '+CMP_B.year+' · '+CMP_B.clubname;
     vvSetStory(nameA,nameB,'Reading the season…','Reading the season…');
-    vvSetVerdict('Reading the season…','',engine,va,vb);
+    vvSetVerdict('Reading the season…','',winner,va,vb,VC,TAGS[VC.floorTag]);   // show deterministic floor tag immediately
+    // eligible tag set for the AI: deterministic floor + context hints (AI may up-rank per CONTEXT>AGE>LADDER)
+    var eligKeys=[VC.floorTag].concat(VC.contextHints.filter(function(k){return k!==VC.floorTag;}));
     function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
-    function line(c){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c); }
-    var content='Compare these two player-seasons and return the VV Verdict JSON. p1 = Player A, p2 = Player B.\n'
-      +'Player A: '+line(CMP_A)+'\n'
-      +'Player B: '+line(CMP_B)+'\n'
-      +'Engine result: '+(engine==='tie'
-          ? 'TIE , the two VV scores are equal ('+va+' = '+vb+'). The engine has left this to you: break the tie on the full profile and pick a narrow winner.'
-          : 'Player '+engine+' wins on VV ('+va+' vs '+vb+'). Explain why; do not overturn.');
+    function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c); }
+    var tagMenu=eligKeys.map(function(k){var t=TAGS[k];return '- '+k+' ("'+t.name+'"): '+t.blurb;}).join('\n');
+    var toneNote={tie:'a dead heat , write the argument-continues register, never a flat draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
+    var winNote;
+    if(winner==='tie'){ winNote='TIE ('+va+'='+vb+'). Break it on the full profile and name a narrow winner. Never a flat draw.'; }
+    else { var wName=(winner==='A'?CMP_A:CMP_B).surname, wv=(winner==='A'?va:vb), lv=(winner==='A'?vb:va);
+      winNote='Player '+winner+' ('+wName+') takes the edge, '+wv+' to '+lv+'.'+(VC.tipped?' NOTE: within a coin-flip ('+va+' vs '+vb+'), AGE tipped it to the younger player , the equal season at a younger age is the harder feat. Lead with that.':' Explain why; do not overturn the engine.'); }
+    var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag). p1 = Player A, p2 = Player B.\n'
+      +'Player A: '+line(CMP_A,VC.wonderkidA)+'\n'
+      +'Player B: '+line(CMP_B,VC.wonderkidB)+'\n'
+      +'Result: '+winNote+'\n'
+      +'Tone: '+toneNote+'\n'
+      +'VERDICT TAG , choose EXACTLY ONE key from this list (default to the FIRST; up-rank to a later one ONLY if it clearly fits better):\n'+tagMenu+'\n'
+      +'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.';
     var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
       body.cardIdA=idA; body.cardIdB=idB;
-      body.winnerCardId = engine==='A'?idA : (engine==='B'?idB : null);   // null on tie
+      body.winnerCardId = winner==='A'?idA : (winner==='B'?idB : null);   // post-tiebreak winner; null on true tie
     }
     fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
       .then(function(resp){ return resp.json().then(function(data){ if(!resp.ok) throw new Error((data&&data.error)||('HTTP '+resp.status)); return data; }); })
@@ -1153,13 +1168,14 @@ body.light .pkmsub{color:#b0a899}
         if(data && data.verdict){ v=data.verdict; }                       // normalized (cache hit or freshly cached)
         else { var text=(data&&data.content&&data.content[0]&&data.content[0].text)||''; text=text.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim(); v=JSON.parse(text); }
         vvSetStory(nameA,nameB,v.p1||'',v.p2||'');
-        vvSetVerdict(v.verdict||'',v.h2h||'',engine,va,vb);
+        var chosen=(v.tag&&eligKeys.indexOf(v.tag)>=0)?v.tag:VC.floorTag;   // validate AI tag vs eligible set; else deterministic floor
+        vvSetVerdict(v.verdict||'',v.h2h||'',winner,va,vb,VC,TAGS[chosen]);
       })
       .catch(function(e){
         console.error('verdict generation failed:', e&&e.message);
         window._vvVerdictPair=null;   // allow a retry on the next Compare
         var msg='The verdict could not be generated right now. Please try again.';
-        vvSetStory(nameA,nameB,msg,msg); vvSetVerdict(msg,'',engine,va,vb);
+        vvSetStory(nameA,nameB,msg,msg); vvSetVerdict(msg,'',winner,va,vb,VC,TAGS[VC.floorTag]);
       });
   }
   // ── Accolades , wire BOTH slots (real name + gold honours + profile tags) from CMP_A/CMP_B
@@ -1175,6 +1191,42 @@ body.light .pkmsub{color:#b0a899}
     }
     fill(cols[0],CMP_A); fill(cols[1],CMP_B);
   }
+  // ── The Proof , real per-90 numbers from CMP_A/CMP_B (was hardcoded Henry/Haaland) ──
+  function vvSetProof(){
+    var box=document.querySelector('.vproof'); if(!box||!CMP_A||!CMP_B) return;
+    var ha=box.querySelector('.vp-a'), hb=box.querySelector('.vp-b');
+    if(ha)ha.textContent=CMP_A.surname; if(hb)hb.textContent=CMP_B.surname;
+    function p90(c,f){ var m=c.minutes; if(m==null||m<=0)return null; var v=c[f]; return v==null?null:(v/(m/90)); }
+    function conv(c){ if(c.shots_total==null||c.shots_total<=0||c.goals==null)return null; return c.goals/c.shots_total; }
+    var d2=function(x){return x==null?'NR':x.toFixed(2);}, d1=function(x){return x==null?'NR':x.toFixed(1);}, pc=function(x){return x==null?'NR':Math.round(x*100)+'%';};
+    var rows=[
+      { a:p90(CMP_A,'goals'),   b:p90(CMP_B,'goals'),   fmt:d2 },
+      { a:p90(CMP_A,'assists'), b:p90(CMP_B,'assists'), fmt:d2 },
+      { a:p90(CMP_A,'shots_on'),b:p90(CMP_B,'shots_on'),fmt:d1 },
+      { a:conv(CMP_A),          b:conv(CMP_B),          fmt:pc },
+    ];
+    var els=box.querySelectorAll('.vprow');
+    rows.forEach(function(r,i){ var row=els[i]; if(!row)return;
+      var va=row.querySelector('.vp-va'), vb=row.querySelector('.vp-vb');
+      if(va){ va.textContent=r.fmt(r.a); va.classList.remove('win'); }
+      if(vb){ vb.textContent=r.fmt(r.b); vb.classList.remove('win'); }
+      if(r.a!=null&&r.b!=null){ if(r.a>r.b){ if(va)va.classList.add('win'); } else if(r.b>r.a){ if(vb)vb.classList.add('win'); } }
+    });
+  }
+  // ── Data Confidence , real per player: X/5 level + league + seasons on record + missing granular fields ──
+  function vvSetConfidence(nA,nB){
+    var box=document.getElementById('vconf'); if(!box) return;
+    function row(c,cls,ns){
+      if(!c) return '';
+      var lvl=c.confidence||0, dots='';
+      for(var i=0;i<5;i++) dots+='<i'+(i<lvl?' class="on"':'')+'></i>';
+      var miss=(c.confidenceFields||[]).filter(function(f){return f.group==='advanced'&&!f.present;}).map(function(f){return f.label;});
+      var sub=(c.league||'')+' · '+(ns!=null?ns:'?')+' season'+(ns===1?'':'s')+' on record · '+(miss.length?('missing: '+miss.join(', ')):'full stat record');
+      return '<div class="vcrow"><span class="vc-n '+cls+'">'+vvEsc(c.surname)+'</span><span class="vc-dots">'+dots+'</span><span class="vc-x">'+lvl+' / 5</span></div>'
+           + '<div class="vc-sub">'+vvEsc(sub)+'</div>';
+    }
+    box.innerHTML=row(CMP_A,'vc-a',nA)+row(CMP_B,'vc-b',nB);
+  }
   // dynamic 'See It For Yourself' YouTube links from the ACTUAL compared players (was hardcoded Henry/Haaland).
   // NB YouTube SEARCH links are known-imperfect (results page, quality uncertain) , see CLAUDE.md post-launch item.
   function vvUpdateWatchLinks(){
@@ -1188,7 +1240,7 @@ body.light .pkmsub{color:#b0a899}
   // reveal handler , draw graphics when Compare is pressed
   document.querySelector('.settle').addEventListener('click',function(){
     var m=document.querySelector('.matchup'); if(m && CMP_A && CMP_B) m.classList.add('settled');
-    setTimeout(async ()=>{vvComputeSpokes();vvUpdateWatchLinks();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);},60);
+    setTimeout(async ()=>{vvComputeSpokes();vvUpdateWatchLinks();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();vvSetProof();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);vvSetConfidence(serA&&serA.length,serB&&serB.length);},60);
     vvGenerateVerdict();
   });
   // redraw radar on mode toggle (grid contrast)

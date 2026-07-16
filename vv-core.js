@@ -631,6 +631,11 @@
       goals:    row.goals != null ? row.goals : 0,
       assists:  row.assists != null ? row.assists : null,
       assistsText: (row.assists != null ? String(row.assists) : 'NR'),
+      // raw stat fields , consumed by Compare's The Proof (per-90) + verdictContext (age tiebreaker)
+      minutes:     row.minutes != null ? row.minutes : null,
+      shots_on:    row.shots_on != null ? row.shots_on : null,
+      shots_total: row.shots_total != null ? row.shots_total : null,
+      season_age:  row.season_age != null ? row.season_age : null,
 
       // ── Computed Contract fields (rows / expanded card / radar / poster) ──
       band:       band,                 // §2  10-band ladder
@@ -1339,9 +1344,72 @@
     return '';
   }
 
+  /* ════════════════════════════════════════════════════════════════════
+   *  VERDICT_TAGS , the 14-tag Compare verdict vocabulary (single source).
+   *   - 6 LADDER tags: deterministic by |rt gap| (guarantee tone matches gap).
+   *   - 5 CONTEXT tags: AI-selected (judgment, no numeric trigger).
+   *   - 3 AGE tags: deterministic by season_age + rt gap (no missed wonderkid).
+   *  Priority when several fit: CONTEXT > AGE > LADDER (most characterful wins).
+   *  verdictContext(A,B) computes the deterministic scaffold; the AI writes prose
+   *  and may up-rank to a context tag it judges clearly applies.
+   * ════════════════════════════════════════════════════════════════════ */
+  const VERDICT_TAGS = {
+    // gap ladder (deterministic)
+    masterclass:      { name:'A Masterclass',                 emoji:'🏅', kind:'ladder', blurb:'One card so far ahead it stops being a contest and becomes a demonstration.', drury:'This was not a comparison. It was a lesson. One season stood and the other could only watch, and there is no shame in that.', trigger:'rt gap >= 10' },
+    bragging_rights:  { name:'Bragging Rights Settled',       emoji:'🏆', kind:'ladder', blurb:'A clear, shareable result. The kind you send to the group chat.', drury:'Screenshot it. Send it. Let it speak for itself. Some verdicts are made to be shared, and this is one of them.', trigger:'rt gap 7-9' },
+    clear_edge:       { name:'A Clear Edge',                  emoji:'⚖️', kind:'ladder', blurb:'The margin is real but not huge: one season clearly shades the other.', drury:'Not a landslide. Not a rout. But when you weigh the two, the scales tip, and they tip with conviction.', trigger:'rt gap 4-6' },
+    photo_finish:     { name:'Photo Finish',                  emoji:'📸', kind:'ladder', blurb:'Near-identical scores, but one nicks it at the line.', drury:'They crossed the line together, or so it seemed. Only the closest look could tell them apart. And by a fraction, one was first.', trigger:'rt gap 2-3' },
+    var_close:        { name:'VAR close call',               emoji:'📺', kind:'ladder', blurb:'Close enough to send it to the screen. Settled by the finest of margins.', drury:'A breath. A heartbeat. The width of a coat of paint. To separate these two feels almost unkind, and yet a verdict must be given.', trigger:'rt gap 1' },
+    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:"So close it won't end the argument. Fuel for the next conversation.", drury:'There will be no peace tonight. The numbers have spoken, and still the argument burns. Some debates were never meant to end.', trigger:'rt gap 0 (true tie, no age tiebreak)' },
+    // contextual (AI-selected)
+    different_worlds: { name:'Different Worlds',              emoji:'🌍', kind:'context', blurb:'They win on totally different things, a creator against a finisher. Both elite, in their own lane.', drury:'One paints, the other scores. One builds the cathedral, the other places the final stone. They are different answers to the same beautiful question.', trigger:'close gap + both elite + divergent radar peaks' },
+    across_eras:      { name:'Class Across Eras',            emoji:'🕰️', kind:'context', blurb:'A cross-generation matchup where both players transcend their time.', drury:'Years apart, yet cut from the same cloth. Greatness does not belong to a decade. It echoes across them, and here, two echoes meet.', trigger:'season-year gap >= 8 + both elite' },
+    league_tips:      { name:'League Strength Tips It',       emoji:'🌐', kind:'context', blurb:'Genuinely close on output, but the stronger league or era decides it.', drury:'On paper, almost nothing between them. But football is not played on paper. One did it against the very best, week after week.', trigger:'close output + different league strength' },
+    eye_test:         { name:'The Eye Test Deceives',        emoji:'👁️', kind:'context', blurb:'The numbers disagree with the gut. One looks better; the other scores higher.', drury:'Your eyes told you one thing. The data, quietly, tells you another. Sometimes the truth hides in the spaces the highlight reel forgets.', trigger:'fewer-goals player has the higher rt' },
+    complete_spec:    { name:'Complete Package vs Specialist',emoji:'🧩', kind:'context', blurb:'One balanced across every dimension, the other a peak in a single craft.', drury:'One could do everything. The other did one thing better than anyone alive. Is it better to be complete, or to be unforgettable?', trigger:'close gap + one even radar, one spiky' },
+    // age (deterministic , approved 2026-07-17)
+    prodigy:          { name:"The Prodigy's Edge",           emoji:'🌟', kind:'age', blurb:'A young season stands with or above an established one, and doing it this early is the rarer feat.', drury:'To command this stage at nineteen, the years ahead should frighten us all.', trigger:'rt gap <= 3 AND younger <= 21 AND >= 4 years younger' },
+    ascendant:        { name:'The Ascendant',                emoji:'📈', kind:'age', blurb:'A near-tie where the younger player is still climbing, the finished portrait against the one still being painted.', drury:'One is the finished portrait; the other still being painted, and already this good.', trigger:'rt gap <= 2 AND >= 5-year gap favouring youth AND younger > 21' },
+    twilight:         { name:'Twilight Brilliance',          emoji:'🌅', kind:'age', blurb:'A veteran matches a prime player; age has not dimmed him.', drury:'They said the legs would fade. The refusal does not fade.', trigger:'rt gap <= 3 AND older >= 33 AND >= 5 years older' },
+  };
+
+  // Deterministic verdict scaffold from two card objects (rowToCard). The AI writes the
+  // prose and may up-rank floorTag -> a contextHint it judges clearly applies (priority CONTEXT>AGE>LADDER).
+  function verdictContext(A, B){
+    const va = +A.vv || 0, vb = +B.vv || 0, g = Math.abs(va - vb);
+    const engineWinner = va > vb ? 'A' : (vb > va ? 'B' : 'tie');
+    const ageA = A.season_age != null ? +A.season_age : null;
+    const ageB = B.season_age != null ? +B.season_age : null;
+    let winner = engineWinner, tipped = false, younger = null, older = null, ageDiff = null;
+    if (ageA != null && ageB != null) {
+      younger = ageA <= ageB ? 'A' : 'B'; older = ageA <= ageB ? 'B' : 'A'; ageDiff = Math.abs(ageA - ageB);
+      if (g <= 2 && ageDiff >= 4) { winner = younger; tipped = true; }   // coin-flip band only; never overrides gap>=3
+    }
+    const tone = g === 0 ? 'tie' : (g <= 2 ? 'razor' : (g <= 6 ? 'clear' : 'decisive'));
+    const ladder = g === 0 ? 'the_debate' : g === 1 ? 'var_close' : g <= 3 ? 'photo_finish' : g <= 6 ? 'clear_edge' : g <= 9 ? 'bragging_rights' : 'masterclass';
+    const age = [];
+    if (younger) {
+      const yAge = younger === 'A' ? ageA : ageB, oAge = older === 'A' ? ageA : ageB;
+      if (g <= 3 && yAge <= 21 && ageDiff >= 4) age.push('prodigy');
+      if (g <= 2 && ageDiff >= 5 && yAge > 21) age.push('ascendant');
+      if (g <= 3 && oAge >= 33 && ageDiff >= 5) age.push('twilight');
+    }
+    const peak = c => { const s = (c.radar && c.radar.scaled) || {}; const k = ['goalThreat','creation','progression','defensive']; let bi = 0, bv = -1; k.forEach((x, i) => { if ((s[x] || 0) > bv) { bv = s[x] || 0; bi = i; } }); return k[bi]; };
+    const varc = c => { const s = (c.radar && c.radar.scaled) || {}; const a = ['goalThreat','creation','progression','defensive'].map(x => s[x] || 0); const m = a.reduce((x, y) => x + y, 0) / 4; return Math.sqrt(a.reduce((x, y) => x + (y - m) * (y - m), 0) / 4); };
+    const ctx = [];
+    if (g <= 3 && va >= 80 && vb >= 80 && peak(A) !== peak(B)) ctx.push('different_worlds');
+    if (Math.abs((A.season_year || 0) - (B.season_year || 0)) >= 8 && va >= 80 && vb >= 80) ctx.push('across_eras');
+    if (((A.goals || 0) > (B.goals || 0) && va < vb) || ((B.goals || 0) > (A.goals || 0) && vb < va)) ctx.push('eye_test');
+    if (g <= 3 && Math.abs(varc(A) - varc(B)) >= 14) ctx.push('complete_spec');
+    const floorTag = age[0] || ladder;   // deterministic default (AGE priority 2, else LADDER 3); AI may up-rank to a contextHint
+    return { gap: g, engineWinner, winner, tipped, tone, ladder, ageTags: age, contextHints: ctx, floorTag,
+      ageA, ageB, younger, older, ageDiff,
+      wonderkidA: (ageA != null && ageA <= 21 && va >= 82), wonderkidB: (ageB != null && ageB <= 21 && vb >= 82) };
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
-                FILTER_TAXONOMY, renderFilterChips,
+                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
