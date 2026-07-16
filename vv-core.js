@@ -1271,8 +1271,77 @@
     }, dur + 30);
   }
 
+  /* ════════════════════════════════════════════════════════════════════
+   *  FILTER TAXONOMY , SINGLE SOURCE OF TRUTH for the filter/picker chips.
+   *  rankings + compare both render their chips from here via renderFilterChips
+   *  so the two UIs CANNOT drift from the engine vocabulary again.
+   *   - profile[].items[].v MUST equal a TAG_DEFS key (verified in test).
+   *   - prestige mirrors the two prestige badges; honours mirror HONOUR_META
+   *     types (honour filtering is DEFERRED , rendered visibly "soon");
+   *     position mirrors the locked 8-bucket position_pool.
+   * ════════════════════════════════════════════════════════════════════ */
+  const FILTER_TAXONOMY = {
+    prestige: [
+      { v:'Generational', l:'Generational', e:'👑' },
+      { v:'Iconic',       l:'Iconic',       e:'🏅' },
+    ],
+    // DEFERRED (Option C , needs honour flags on the matview). Rendered "soon", inert.
+    honours: [
+      { v:'ballon_dor',       l:"Ballon d'Or",          e:'🥇' },
+      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍' },
+      { v:'ucl_winner',       l:'UCL Winner',            e:'⭐' },
+      { v:'league_champion',  l:'League Champion',       e:'🏆' },
+      { v:'player_of_season', l:'Player of the Season',  e:'🎖️' },
+      { v:'golden_boot',      l:'Golden Boot',           e:'👟' },
+      { v:'top_assists',      l:'Top Assists',           e:'🅰️' },
+    ],
+    // ability tags , grouped by getVVTags family. v = the tag name the engine emits.
+    profile: [
+      { sub:'Attack',       items:[ {v:'Goal Machine',e:'⚽'},{v:'Marksman',e:'🎯'},{v:'Clinical',e:'🔫'},{v:'Provider',e:'🅰️'},{v:'Poacher',e:'🦊'},{v:'The Winger',e:'🪄'} ] },
+      { sub:'Midfield',     items:[ {v:'Playmaker',e:'🧠'},{v:'Maestro',e:'🎩'},{v:'Regista',e:'🎻'},{v:'Engine Room',e:'🧭'},{v:'The Dribbler',e:'✨'} ] },
+      { sub:'Defence',      items:[ {v:'The Wall',e:'🧱'},{v:'Destroyer',e:'🦮'},{v:'Ball Hawk',e:'🦅'},{v:'Ball-Playing CB',e:'🦶'} ] },
+      { sub:'All-Round',    items:[ {v:'Complete',e:'💎'},{v:'Iron Man',e:'🛡️'} ] },
+      { sub:'Career-Stage', items:[ {v:'Wonderkid',e:'🌱'},{v:'The Last Dance',e:'🌅'} ] },
+    ],
+    position: [ {v:'GK'},{v:'CB'},{v:'FB'},{v:'CDM'},{v:'CM'},{v:'CAM'},{v:'Winger'},{v:'ST'} ],
+  };
+
+  // Render chips for one taxonomy group. variant 'rankings'|'compare'; soon => inert + visibly deferred.
+  //  rankings tag chips carry data-tag (readFilters reads it); prestige/position use text (readFilters
+  //  matches textContent). compare chips carry onclick=pkSetFilter(this,kind,value); soon chips have none.
+  function renderFilterChips(groupKey, opts){
+    opts = opts || {};
+    var variant = opts.variant || 'rankings';
+    var soon = !!opts.soon;
+    var esc = function(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
+    function chip(kind, value, label, emoji, gold){
+      var lab = (emoji ? emoji + ' ' : '') + label;
+      if(variant === 'compare'){
+        var cc = 'pkchip' + (soon ? ' pksoon' : '');
+        var oc = soon ? '' : ' onclick="pkSetFilter(this,\'' + kind + '\',\'' + esc(value) + '\')"';
+        return '<span class="' + cc + '"' + oc + '>' + lab + (soon ? ' <em class="pksoonlbl">soon</em>' : '') + '</span>';
+      }
+      var rc = 'fopt' + (gold ? ' gold' : '') + (soon ? ' disabled' : '');
+      var dt = (kind === 'tag') ? ' data-tag="' + esc(value) + '"' : '';
+      return '<span class="' + rc + '"' + dt + '>' + lab + '</span>';
+    }
+    if(groupKey === 'prestige') return FILTER_TAXONOMY.prestige.map(function(it){ return chip('prestige', it.v, it.l, it.e, true); }).join('');
+    if(groupKey === 'honours')  return FILTER_TAXONOMY.honours.map(function(it){ return chip('honour', it.v, it.l, it.e, false); }).join('');
+    if(groupKey === 'position') return FILTER_TAXONOMY.position.map(function(it){ return chip('pos', it.v, (it.l||it.v), (it.e||''), false); }).join('');
+    if(groupKey === 'profile'){
+      if(opts.flat){   // compare picker: flat list, no subheaders
+        return FILTER_TAXONOMY.profile.map(function(g){ return g.items.map(function(it){ return chip('tag', it.v, (it.l||it.v), it.e, false); }).join(''); }).join('');
+      }               // rankings: return [{sub, html}] so caller adds .subgl headers
+      return FILTER_TAXONOMY.profile.map(function(g){
+        return { sub:g.sub, html: g.items.map(function(it){ return chip('tag', it.v, (it.l||it.v), it.e, false); }).join('') };
+      });
+    }
+    return '';
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
+                FILTER_TAXONOMY, renderFilterChips,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,

@@ -109,6 +109,7 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
 - Premium/motion pass; accounts/Locker (waitlist for now); language toggle EN/NL/FR.
 - January mid-season DUAL-CARD (split a season at the winter window) , SCOPE THE COUNT FIRST before committing.
 - Advanced-data VV Score v2 (radar percentile-within-position; GK saves/goals_conceded mapping to lift the GK-75 cap); dribbles_past re-ingest experiment (confirmed NOT in DB , defensive signal for outfielders).
+- **OPTION C , honours-in-filter (scoped follow-up to the #3 vocab reconciliation).** The 7 honour filter chips are rendered but DEFERRED/visibly "soon" in both rankings + compare, because honours are NOT on `player_card_mv` (attached client-side after the query). Wiring them needs honour flags ON the matview (e.g. boolean columns or an honour-type array per card-season) so `player_card_mv` can be filtered by honour server-side , then flip the honour chips live in both UIs. Also fold in GK ability tags + their filters when GK scoring lands (both currently emit nothing). Not a launch blocker.
 
 ### PARALLEL / ANYTIME (no dependency, slot in whenever)
 - Mobile-responsive fixes; logo + og/meta polish; coarse-position tail cleanup (DB-wide "CM" tail below rt80 + ~18k coarse tail via known_players.csv dictionary, no CCC needed for known names).
