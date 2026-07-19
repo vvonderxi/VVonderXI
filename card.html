@@ -105,17 +105,18 @@
   .pct{width:70px;height:7px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden}
   .pct i{display:block;height:100%}
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
-  .darkbox{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:14px;padding:20px 22px}
+  .darkbox{background:rgba(255,255,255,0.03);border-radius:14px;padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
   .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:var(--cream);line-height:1.55}
   .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:#E8B84B;margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
-  .narrative{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:14px;padding:22px 24px}
+  .narrative{background:rgba(255,255,255,0.03);border-radius:14px;padding:22px 24px}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:var(--cream);margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
   .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#E8B84B;margin-top:16px;text-align:right}
   /* wonder tag rows */
-  .tagrow{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:13px;padding:14px 16px;margin-bottom:9px}
+  .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px}
+  body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px}
