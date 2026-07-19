@@ -687,22 +687,35 @@
       var o = document.querySelectorAll('[data-tip].tip-on');
       for (var j=0;j<o.length;j++){ o[j].classList.remove('tip-on'); }
     }
-    document.addEventListener('click', function(e){
-      if (e.target.closest && e.target.closest('.chiptip')) return;              // tap inside an open tip: keep it
-      var el = e.target.closest && e.target.closest('[data-tip]');
-      if (el && (el.closest('.vvcard') || el.closest('[onclick]'))) el = null;   // card face / navigable row
-      if (!el){ closeTips(); return; }                                           // tap outside any chip: fold all
-      var wasOpen = el.classList.contains('tip-on');
-      closeTips();                                                               // fold everything first
-      if (wasOpen) return;                                                       // re-tap the open chip: just fold
-      var tip = el.getAttribute('data-tip') || '';
-      if (!tip) return;
+    function tipTarget(node){
+      var el = node && node.closest && node.closest('[data-tip]');
+      if (el && (el.closest('.vvcard') || el.closest('[onclick]'))) el = null;   // card face / navigable row: leave alone
+      return el;
+    }
+    function showTip(el){
+      var tip = el.getAttribute('data-tip') || ''; if (!tip) return;
       el.classList.add('tip-on');
       var box = document.createElement('div');
       box.className = 'chiptip';
       box.textContent = tip;
       el.parentNode.insertBefore(box, el.nextSibling);
+    }
+    // TAP / click toggle , the reachable-on-mobile mechanism (works everywhere).
+    document.addEventListener('click', function(e){
+      if (e.target.closest && e.target.closest('.chiptip')) return;              // tap inside an open tip: keep it
+      var el = tipTarget(e.target);
+      if (!el){ closeTips(); return; }                                           // tap outside any chip: fold all
+      var wasOpen = el.classList.contains('tip-on');
+      closeTips();                                                               // fold everything first
+      if (wasOpen) return;                                                       // re-tap the open chip: just fold
+      showTip(el);
     }, false);
+    // HOVER , mouse-only (guarded so touch never gets it; the old hover-only stuck on touch, hence the tap toggle above).
+    var hoverable = false; try{ hoverable = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
+    if (hoverable){
+      document.addEventListener('mouseover', function(e){ var el=tipTarget(e.target); if(!el || el.classList.contains('tip-on')) return; closeTips(); showTip(el); }, false);
+      document.addEventListener('mouseout', function(e){ var el=tipTarget(e.target); if(!el) return; if(e.relatedTarget && el.contains(e.relatedTarget)) return; closeTips(); }, false);
+    }
   })();
 
   // ── Honours fetch (folded from vv-honours.js) , reuses vvClient(); fail-soft ──
