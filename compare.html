@@ -240,14 +240,18 @@
   #cardA::before,#cardB::before{content:'';position:absolute;width:100%;height:88%;top:12%;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(255,143,163,0.30),rgba(255,143,163,0.08) 46%,transparent 72%);filter:blur(36px);z-index:0;pointer-events:none}   /* was 120% , bled past viewport (cardslot is position:relative, unclipped, flip-safe); blur(36px) keeps the halo */
   body.light #cardA::before,body.light #cardB::before{background:radial-gradient(ellipse at center,rgba(255,143,163,0.20),rgba(255,143,163,0.05) 46%,transparent 72%)}
   /* per-slot season fold: collapsed trigger -> shared .seasonrows list */
-  .cmp-seasonfold{max-width:240px;margin:12px auto 0}
+  .cmp-seasonfold{max-width:240px;margin:12px auto 0;position:relative}   /* anchor for the absolute dropdown below , keeps the fold out of the matchup height so the Compare pill stays put */
   .cmp-seasontrigger{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,.6);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.15s;white-space:nowrap}
   .cmp-seasontrigger:hover{color:#F3EDE0;border-color:rgba(255,255,255,.3)}
   .cmp-seasontrigger .chev{transition:transform .18s;font-size:.9em;opacity:.8}
   .cmp-seasontrigger.open .chev{transform:rotate(180deg)}
   body.light .cmp-seasontrigger{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.14);color:#6b6658}
   body.light .cmp-seasontrigger:hover{color:#1d1a1b;border-color:rgba(0,0,0,.3)}
-  .cmp-seasonfold .seasonrows{margin-top:8px;animation:cmpSeasonIn .18s ease}
+  /* expanded season list = ABSOLUTE dropdown , does NOT grow the .side/.matchup, so the open fold no longer
+     displaces the Compare button (holds in all four states + at 390px). Solid bg + z-index so it reads as an overlay. */
+  .cmp-seasonfold .seasonrows{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:240px;max-width:calc(100vw - 32px);z-index:40;max-height:min(58vh,440px);overflow-y:auto;background:#15100f;box-shadow:0 24px 50px -16px rgba(0,0,0,0.72);animation:cmpDrop .18s ease}
+  body.light .cmp-seasonfold .seasonrows{background:#F4EEE0;box-shadow:0 24px 50px -18px rgba(0,0,0,0.28)}
+  @keyframes cmpDrop{from{opacity:0}to{opacity:1}}   /* opacity-only , keeps the translateX(-50%) centering static (cmpSeasonIn animated transform, which would break centering) */
   /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with card.html */
   .seasoncollapse{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;border-top:1px solid rgba(255,255,255,0.06);padding:11px;cursor:pointer;transition:color .18s}
   .seasoncollapse:hover{color:rgba(243,237,224,0.9)}
