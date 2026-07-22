@@ -204,7 +204,11 @@ function cleanDate(d){
 const num = x => (parseInt(x) || 0);                       // like n() but 0 (never null) — for summing
 const LEAGUE_GAMES = { PL:38, LL:38, SA:38, L1:38, TR:38, BL:34, ERE:34, PRT:34, BPL:34 };
 function seasonCeiling(code){ return (LEAGUE_GAMES[code] || 38) * 90 + 180; }   // +2-game cushion for cup/playoff bleed
-function appsCeiling(code){ return (LEAGUE_GAMES[code] || 38) + 2; }            // same +2-game cushion, in appearances
+// NO CUSHION, deliberately. The minutes ceiling carries +180 because stoppage time means a
+// real full season genuinely exceeds games*90. Appearances have no such mechanism: you cannot
+// appear in more matches than the season contains. A +2 cushion here let SA Esposito 2025
+// through at exactly 40 apps in a 38-game league (Inter 4ap + Cagliari 36ap).
+function appsCeiling(code){ return (LEAGUE_GAMES[code] || 38); }
 
 // two same-league blocks are near-identical mirrors => the same season copied under a 2nd club
 function isMirror(a, b){
