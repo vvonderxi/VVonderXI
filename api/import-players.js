@@ -202,13 +202,47 @@ function cleanDate(d){
 //  full-block shape it is actually diagnostic for.
 // ══════════════════════════════════════════════════════════════════════
 const num = x => (parseInt(x) || 0);                       // like n() but 0 (never null) — for summing
-const LEAGUE_GAMES = { PL:38, LL:38, SA:38, L1:38, TR:38, BL:34, ERE:34, PRT:34, BPL:34 };
-function seasonCeiling(code){ return (LEAGUE_GAMES[code] || 38) * 90 + 180; }   // +2-game cushion for cup/playoff bleed
-// NO CUSHION, deliberately. The minutes ceiling carries +180 because stoppage time means a
-// real full season genuinely exceeds games*90. Appearances have no such mechanism: you cannot
-// appear in more matches than the season contains. A +2 cushion here let SA Esposito 2025
-// through at exactly 40 apps in a 38-game league (Inter 4ap + Cagliari 36ap).
-function appsCeiling(code){ return (LEAGUE_GAMES[code] || 38); }
+// ══ SEASON-DERIVED CEILINGS ══════════════════════════════════════════
+// Ceilings are derived per (league, season) from the rows ALREADY STORED for that
+// league-season. A static per-league constant was WRONG for 5 of 9 leagues: Belgium,
+// the Netherlands, Portugal and Germany all play playoff/relegation matches under the
+// same league id (BPL reaches 45 apps / 4050 min against a nominal 34), and the Turkish
+// top flight has repeatedly changed size across the window (34/35/36/38/40 apps by
+// season). No single number can be right for those.
+//
+// THE ASYMMETRY DECIDES EVERY CHOICE HERE: a too-HIGH ceiling only misses artifacts that
+// the mirror / per-stat / proportionality tests may still catch. A too-LOW ceiling
+// MANUFACTURES artifacts out of genuine splits and corrupts real cards. When in doubt,
+// be permissive.
+//
+// TOLERANCES. Appearances +1, and it cannot be more: a genuine split cannot exceed the
+// season's match count, and the smallest real artifact observed (SA Esposito 2025, 40 apps
+// against a 38-app season) sits only +2 above it. The usable window is one appearance wide.
+// +1 buys the one thing derivation cannot see , a RECOVERED player who played more matches
+// than any currently-stored player, since we are adding rows that were previously missing.
+// Minutes +90 (one match): the derived base is empirical and already contains real stoppage
+// time, so it needs far less headroom than the old theoretical +180.
+const APPS_TOL = 1;
+const MINS_TOL = 90;
+const MIN_ROWS_FOR_DERIVATION = 50;   // our league-seasons hold 380-460 rows; <50 is thin
+
+const seasonCeilings = {};   // 'PL|2024' -> { apps, mins, n }
+const leagueCeilings = {};   // 'PL'      -> { apps, mins }   max across all seasons
+function setCeilings(seasonMap, leagueMap){
+  Object.assign(seasonCeilings, seasonMap || {});
+  Object.assign(leagueCeilings, leagueMap || {});
+}
+// FALLBACK CHAIN: season-derived -> league-wide (strictly MORE permissive, so it cannot
+// create false positives) -> null, which DISABLES the ceiling tests. Deliberately no
+// nominal-constant fallback: the nominal constant is precisely the thing that was wrong
+// (it claims BPL is 34 when BPL really runs to 45). When we cannot derive, we do not guess.
+function ceilingsFor(code, year){
+  const s = seasonCeilings[`${code}|${year}`];
+  if (s && s.n >= MIN_ROWS_FOR_DERIVATION) return { apps: s.apps + APPS_TOL, mins: s.mins + MINS_TOL };
+  const l = leagueCeilings[code];
+  if (l) return { apps: l.apps + APPS_TOL, mins: l.mins + MINS_TOL, viaLeague: true };
+  return null;
+}
 
 // two same-league blocks are near-identical mirrors => the same season copied under a 2nd club
 function isMirror(a, b){
@@ -270,11 +304,15 @@ function hasDuplicatedStat(real){
 }
 // (block selection for a dedupe now lives in pickDedupeBlock, below isArtifact)
 // >=2 real blocks: duplication artifact? (union of three SUFFICIENT tests — see §E)
-function isArtifact(real, code){
-  const sumMin = real.reduce((t, b) => t + num(b.games?.minutes), 0);
-  if (sumMin > seasonCeiling(code)) return true;           // (A) physically impossible in one season => copies
-  const sumApps = real.reduce((t, b) => t + num(b.games?.appearences), 0);
-  if (sumApps > appsCeiling(code)) return true;            // (A2) likewise: the games do not exist to play
+// The two ceiling tests only run when a ceiling could be DERIVED for this league-season.
+function isArtifact(real, code, year){
+  const C = ceilingsFor(code, year);
+  if (C) {
+    const sumMin = real.reduce((t, b) => t + num(b.games?.minutes), 0);
+    if (sumMin > C.mins) return true;                      // (A) physically impossible in one season => copies
+    const sumApps = real.reduce((t, b) => t + num(b.games?.appearences), 0);
+    if (sumApps > C.apps) return true;                     // (A2) likewise: the games do not exist to play
+  }
   const rich = richestByMinutes(real);                     // (B) every block mirrors the richest => same season copied
   return real.every(b => b === rich || isMirror(b, rich));
 }
@@ -328,7 +366,7 @@ function sumStat(real, L){
   };
 }
 // resolve a player's statistics[] into ONE stat block for the target league (or null if no real stint)
-function resolveSeasonStat(statistics, L, code){
+function resolveSeasonStat(statistics, L, code, year){
   const same = (statistics || []).filter(x => x.league?.id === L);
   let real   = same.filter(b => num(b.games?.minutes) > 0);      // drop 0-minute phantoms
   if (real.length === 0) return null;
@@ -345,7 +383,7 @@ function resolveSeasonStat(statistics, L, code){
   }
 
   if (real.length === 1) return Object.assign({}, real[0], { _shape:'single',  _blocks:1, _gated:gated });
-  if (isArtifact(real, code))
+  if (isArtifact(real, code, year))
     return Object.assign({}, pickDedupeBlock(real),            { _shape:'deduped', _blocks:real.length, _gated:gated });
   // (b) per-stat duplication guard — sits in front of the sum
   if (hasDuplicatedStat(real))
@@ -384,7 +422,7 @@ async function importLeagueSeason(code, year){
 
     for (const row of (j.response || [])) {
       const pl = row.player;
-      const s = resolveSeasonStat(row.statistics, L, code);      // phantom-drop + artifact-dedupe + genuine-sum
+      const s = resolveSeasonStat(row.statistics, L, code, year);      // phantom-drop + artifact-dedupe + genuine-sum
       if (!s) { stats.skipped++; continue; }                     // no real same-league stint
       const minutes = num(s.games?.minutes);
       if (minutes < MIN_MIN) { stats.skipped++; continue; }      // 300-min floor on the RESULT, not block[0]
@@ -460,10 +498,40 @@ async function importLeagueSeason(code, year){
   }
 }
 
+// Build the per-(league,season) ceilings from rows already stored. Read-only.
+// Runs once at startup, before any league is processed.
+async function deriveCeilings(){
+  const seasonMap = {}, leagueMap = {};
+  let f = 0;
+  while (true) {
+    const { data, error } = await supabase.from('player_season_cards')
+      .select('league_code,season_year,appearances,minutes').range(f, f + 999);
+    if (error) { console.warn(`  ⚠️ ceiling derivation: ${error.message} — ceiling tests will be DISABLED`); return; }
+    for (const r of (data || [])) {
+      const k = `${r.league_code}|${r.season_year}`;
+      const a = r.appearances || 0, m = r.minutes || 0;
+      const sm = seasonMap[k] || (seasonMap[k] = { apps: 0, mins: 0, n: 0 });
+      if (a > sm.apps) sm.apps = a;
+      if (m > sm.mins) sm.mins = m;
+      sm.n++;
+      const lm = leagueMap[r.league_code] || (leagueMap[r.league_code] = { apps: 0, mins: 0 });
+      if (a > lm.apps) lm.apps = a;
+      if (m > lm.mins) lm.mins = m;
+    }
+    if (!data || data.length < 1000) break; f += 1000;
+  }
+  setCeilings(seasonMap, leagueMap);
+  const ls = Object.keys(seasonMap).length;
+  const thin = Object.values(seasonMap).filter(v => v.n < MIN_ROWS_FOR_DERIVATION).length;
+  console.log(`Ceilings derived for ${ls} league-seasons (${thin} thin -> league-wide fallback). ` +
+    `Per-league max apps: ${Object.entries(leagueMap).map(([k,v]) => `${k} ${v.apps}`).join(' · ')}`);
+}
+
 (async () => {
   const codes = ONLY ? [ONLY] : Object.keys(LEAGUES);
   console.log(`╔══ VVonderXI API-Football import ${DRY_RUN?'(DRY RUN)':'(LIVE)'} ══╗`);
   console.log(`Leagues: ${codes.join(', ')} · seasons ${FLOOR_YR}–${TO_YR} · min ${MIN_MIN} min\n`);
+  await deriveCeilings();
 
   for (const code of codes) {
     if (!LEAGUES[code]) { console.error(`Unknown league ${code}`); continue; }
