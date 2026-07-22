@@ -169,6 +169,34 @@ function cleanDate(d){
 //              : GENUINE    -> SUM goals+assists+minutes+granular into one row,
 //                             dominant (max-minutes) club as team.
 //  The 300-minute floor is applied to the RESULT, not to block[0].
+//
+//  SUMMED-PATH HARDENING (2026-07-22, §E "summed-path bug"). The mirror test needs
+//  Δmin<=40, so a duplicate copied onto a block with DIFFERENT minutes slipped through
+//  and got SUMMED — doubling the output (Gibbs-White 8a+8a -> 16a, rt86). Two extra
+//  nets now sit in front of the sum, both deliberately CONSERVATIVE: they can undercount
+//  a genuine 1+1 by one, which is far cheaper than doubling an 8 into 16.
+//    (a) PROPORTIONALITY GATE — with >=2 real blocks, drop a NON-RICHEST block whose
+//        output could not plausibly be EARNED in its own minutes (Poisson upper tail
+//        against an elite ceiling). Runs BEFORE classification, so dropping the phantom
+//        usually leaves 1 real block and the row resolves through the plain single path.
+//    (b) PER-STAT DUPLICATION GUARD — dedupe to the richest block when a shared stat is
+//        actually EVIDENCE of copying, which needs BOTH conditions:
+//          large enough to be informative AND on comparable-minute blocks.
+//
+//  The two nets cover two DIFFERENT copy shapes and neither substitutes for the other
+//  (measured 2026-07-22, §E):
+//    LOW-MINUTE COPY  (output stapled onto a short block, Gibbs-White 8a/180m) — the
+//      proportionality tail separates it by ~4 orders of magnitude (p=3.7e-5 vs 3.4e-1
+//      for genuine short stints). Identical-stat matching catches it only by luck.
+//    FULL-BLOCK COPY  (same season under two clubs, comparable minutes: Cunha 2600/2600
+//      15g/15g, Kean 990/1006 6g/6g) — each block is individually plausible, so the
+//      tail test is BLIND to it (p=1.0, p=0.96). Only the stat match sees it.
+//
+//  Why guard (b) needs BOTH conditions: an identical stat is only as informative as it is
+//  LARGE. Identical 8a or 15g is near-conclusive; identical 1a is a common value and
+//  proves nothing — treating it as proof deduped three genuine loan splits (Nunes,
+//  Sturridge, Jarvis). Pairing magnitude with a minute-ratio test confines (b) to the
+//  full-block shape it is actually diagnostic for.
 // ══════════════════════════════════════════════════════════════════════
 const num = x => (parseInt(x) || 0);                       // like n() but 0 (never null) — for summing
 const LEAGUE_GAMES = { PL:38, LL:38, SA:38, L1:38, TR:38, BL:34, ERE:34, PRT:34, BPL:34 };
@@ -183,6 +211,64 @@ function isMirror(a, b){
 }
 function richestByMinutes(blocks){
   return blocks.reduce((m, b) => num(b.games?.minutes) > num(m.games?.minutes) ? b : m);
+}
+
+// ── SUMMED-PATH GUARDS (see header) ───────────────────────────────────
+// ═══ THRESHOLDS ═══ (every tunable in this fix, in one place)
+const CEIL_G90    = 1.00;  // elite-season ceiling rate, goals per 90
+const CEIL_A90    = 0.60;  // elite-season ceiling rate, assists per 90
+const P_IMPLAUSIBLE = 0.01;// gate (a): drop a block if its output has <1% chance at that ceiling
+const MIN_SHARED_STAT = 3; // guard (b): an identical stat below this is a common value, not evidence
+const MIN_MIN_RATIO = 0.5; // guard (b): minor/major minutes — below this it is not a full-block copy
+
+// (a) PROPORTIONALITY. P(X >= observed) for a Poisson with the elite ceiling as its rate.
+// Minutes-aware by construction: 1 assist in 73m is unremarkable (p=0.39), 8 assists in
+// 180m is not (p=3.7e-5). No fixed minutes cliff is needed, and none is used — the richest
+// block is exempt (see resolveSeasonStat), which is what protects a real elite season from
+// being gated for being too good.
+function poissonTail(k, lambda){                            // P(X >= k)
+  if (k <= 0) return 1;
+  let cum = 0, term = Math.exp(-lambda);
+  for (let i = 0; i < k; i++) { cum += term; term *= lambda / (i + 1); }
+  return Math.max(0, 1 - cum);
+}
+function outputPlausibility(b){                             // lower = less earnable in these minutes
+  const m = num(b.games?.minutes);
+  if (m <= 0) return 1;
+  return Math.min(poissonTail(num(b.goals?.total),   CEIL_G90 * m / 90),
+                  poissonTail(num(b.goals?.assists), CEIL_A90 * m / 90));
+}
+function isImplausible(b){ return outputPlausibility(b) < P_IMPLAUSIBLE; }
+
+// (b) per-stat duplication, NARROWED. Fires only when a shared NONZERO stat is both LARGE
+// ENOUGH TO BE INFORMATIVE and carried on COMPARABLE-MINUTE blocks — the signature of a
+// full-block copy. Identical 1a on a 73m block beside a 358m block is neither.
+function minuteRatio(a, b){
+  const x = num(a.games?.minutes), y = num(b.games?.minutes);
+  const hi = Math.max(x, y);
+  return hi > 0 ? Math.min(x, y) / hi : 0;
+}
+function sharesStat(a, b){
+  const g = num(a.goals?.total),   gb = num(b.goals?.total);
+  const s = num(a.goals?.assists), sb = num(b.goals?.assists);
+  const bigMatch = (g >= MIN_SHARED_STAT && g === gb) || (s >= MIN_SHARED_STAT && s === sb);
+  return bigMatch && minuteRatio(a, b) >= MIN_MIN_RATIO;
+}
+function hasDuplicatedStat(real){
+  for (let i = 0; i < real.length; i++)
+    for (let j = i + 1; j < real.length; j++)
+      if (sharesStat(real[i], real[j])) return true;
+  return false;
+}
+// "richest" = most minutes, tie-broken by output (a true copy ties on minutes too)
+function richestBlock(blocks){
+  return blocks.reduce((m, b) => {
+    const bm = num(b.games?.minutes), mm = num(m.games?.minutes);
+    if (bm !== mm) return bm > mm ? b : m;
+    const bo = num(b.goals?.total) + num(b.goals?.assists);
+    const mo = num(m.goals?.total) + num(m.goals?.assists);
+    return bo > mo ? b : m;
+  });
 }
 // >=2 real blocks: duplication artifact? (union of two SUFFICIENT tests — see §E)
 function isArtifact(real, code){
@@ -225,12 +311,27 @@ function sumStat(real, L){
 // resolve a player's statistics[] into ONE stat block for the target league (or null if no real stint)
 function resolveSeasonStat(statistics, L, code){
   const same = (statistics || []).filter(x => x.league?.id === L);
-  const real = same.filter(b => num(b.games?.minutes) > 0);      // drop 0-minute phantoms
+  let real   = same.filter(b => num(b.games?.minutes) > 0);      // drop 0-minute phantoms
   if (real.length === 0) return null;
-  if (real.length === 1) return Object.assign({}, real[0], { _shape:'single',  _blocks:1 });
+
+  // (a) proportionality gate — multi-block only. The richest block is EXEMPT: a genuine
+  // elite season posts a low tail probability too, and it must never be gated for being
+  // too good. Only the minor blocks are candidates, so a block is dropped for output it
+  // could not have earned, never for output that is merely exceptional.
+  let gated = 0;
+  if (real.length >= 2) {
+    const rich = richestByMinutes(real);
+    const kept = real.filter(b => b === rich || !isImplausible(b));
+    if (kept.length >= 1) { gated = real.length - kept.length; real = kept; }
+  }
+
+  if (real.length === 1) return Object.assign({}, real[0], { _shape:'single',  _blocks:1, _gated:gated });
   if (isArtifact(real, code))
-    return Object.assign({}, richestByMinutes(real),           { _shape:'deduped', _blocks:real.length });
-  return sumStat(real, L);                                       // genuine split
+    return Object.assign({}, richestByMinutes(real),           { _shape:'deduped', _blocks:real.length, _gated:gated });
+  // (b) per-stat duplication guard — sits in front of the sum
+  if (hasDuplicatedStat(real))
+    return Object.assign({}, richestBlock(real),               { _shape:'deduped', _blocks:real.length, _gated:gated });
+  return Object.assign(sumStat(real, L),                       { _gated:gated });   // genuine split
 }
 
 async function importLeagueSeason(code, year){
