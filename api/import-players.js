@@ -164,8 +164,11 @@ function cleanDate(d){
 //  Rule: keep only same-league blocks, drop 0-minute phantoms, then
 //    0 real   -> no card
 //    1 real   -> that block                       (recovers Delap: Man City 0m dropped, Ipswich kept)
-//    >=2 real -> ARTIFACT  (Σmin > league ceiling OR every block mirrors the richest)
-//                          -> DEDUPE to the max-minutes block, NEVER sum
+//    >=2 real -> ARTIFACT  (Σmin > league ceiling OR Σapps > league games OR every block
+//                           mirrors the richest) -> DEDUPE, NEVER sum. The surviving block is
+//                           the max-minutes one, EXCEPT when two blocks are within 5% on
+//                           minutes, where the gap is noise and a reproducible convention
+//                           (first club alphabetically) is used instead — see pickDedupeBlock.
 //              : GENUINE    -> SUM goals+assists+minutes+granular into one row,
 //                             dominant (max-minutes) club as team.
 //  The 300-minute floor is applied to the RESULT, not to block[0].
@@ -201,6 +204,7 @@ function cleanDate(d){
 const num = x => (parseInt(x) || 0);                       // like n() but 0 (never null) — for summing
 const LEAGUE_GAMES = { PL:38, LL:38, SA:38, L1:38, TR:38, BL:34, ERE:34, PRT:34, BPL:34 };
 function seasonCeiling(code){ return (LEAGUE_GAMES[code] || 38) * 90 + 180; }   // +2-game cushion for cup/playoff bleed
+function appsCeiling(code){ return (LEAGUE_GAMES[code] || 38) + 2; }            // same +2-game cushion, in appearances
 
 // two same-league blocks are near-identical mirrors => the same season copied under a 2nd club
 function isMirror(a, b){
@@ -260,22 +264,33 @@ function hasDuplicatedStat(real){
       if (sharesStat(real[i], real[j])) return true;
   return false;
 }
-// "richest" = most minutes, tie-broken by output (a true copy ties on minutes too)
-function richestBlock(blocks){
-  return blocks.reduce((m, b) => {
-    const bm = num(b.games?.minutes), mm = num(m.games?.minutes);
-    if (bm !== mm) return bm > mm ? b : m;
-    const bo = num(b.goals?.total) + num(b.goals?.assists);
-    const mo = num(m.goals?.total) + num(m.goals?.assists);
-    return bo > mo ? b : m;
-  });
-}
-// >=2 real blocks: duplication artifact? (union of two SUFFICIENT tests — see §E)
+// (block selection for a dedupe now lives in pickDedupeBlock, below isArtifact)
+// >=2 real blocks: duplication artifact? (union of three SUFFICIENT tests — see §E)
 function isArtifact(real, code){
   const sumMin = real.reduce((t, b) => t + num(b.games?.minutes), 0);
   if (sumMin > seasonCeiling(code)) return true;           // (A) physically impossible in one season => copies
+  const sumApps = real.reduce((t, b) => t + num(b.games?.appearences), 0);
+  if (sumApps > appsCeiling(code)) return true;            // (A2) likewise: the games do not exist to play
   const rich = richestByMinutes(real);                     // (B) every block mirrors the richest => same season copied
   return real.every(b => b === rich || isMirror(b, rich));
+}
+
+// Which block survives a dedupe. Max-minutes is right when one block is genuinely bigger.
+// When two blocks are within TIE_RATIO of each other the minute gap is NOISE, not signal
+// (LL Navarro 2024: Mallorca 1285m/23ap vs Athletic Club 1286m/25ap, 1g each), and picking
+// "the bigger one" would dress an arbitrary choice as a rule. THE SOURCE CANNOT TELL US
+// WHICH CLUB IS REAL. So tied blocks fall back to a REPRODUCIBLE convention: first club
+// alphabetically. Deliberately not "more appearances" — if both blocks are copies of one
+// season then the appearance gap is the copying noise too, and preferring the larger would
+// imply a confidence we do not have. Note the tied blocks carry the same minutes/goals/
+// assists, so rt is identical either way; this decides the CLUB LABEL only.
+const TIE_RATIO = 0.95;
+function pickDedupeBlock(blocks){
+  const rich = richestByMinutes(blocks);
+  const tied = blocks.filter(b => minuteRatio(b, rich) >= TIE_RATIO);
+  if (tied.length <= 1) return rich;
+  return tied.slice().sort((a, b) =>
+    String(a.team?.name || '').localeCompare(String(b.team?.name || '')))[0];
 }
 // combine >=2 genuine same-league stints into one synthetic block (same shape as an API block)
 function sumStat(real, L){
@@ -327,10 +342,10 @@ function resolveSeasonStat(statistics, L, code){
 
   if (real.length === 1) return Object.assign({}, real[0], { _shape:'single',  _blocks:1, _gated:gated });
   if (isArtifact(real, code))
-    return Object.assign({}, richestByMinutes(real),           { _shape:'deduped', _blocks:real.length, _gated:gated });
+    return Object.assign({}, pickDedupeBlock(real),            { _shape:'deduped', _blocks:real.length, _gated:gated });
   // (b) per-stat duplication guard — sits in front of the sum
   if (hasDuplicatedStat(real))
-    return Object.assign({}, richestBlock(real),               { _shape:'deduped', _blocks:real.length, _gated:gated });
+    return Object.assign({}, pickDedupeBlock(real),            { _shape:'deduped', _blocks:real.length, _gated:gated });
   return Object.assign(sumStat(real, L),                       { _gated:gated });   // genuine split
 }
 
