@@ -246,10 +246,20 @@ function ceilingsFor(code, year){
 
 // two same-league blocks are near-identical mirrors => the same season copied under a 2nd club
 function isMirror(a, b){
-  return Math.abs(num(a.games?.minutes)     - num(b.games?.minutes))     <= 40
-      && Math.abs(num(a.games?.appearences) - num(b.games?.appearences)) <= 1
-      && num(a.goals?.total)   === num(b.goals?.total)
-      && num(a.goals?.assists) === num(b.goals?.assists);
+  const am = num(a.games?.minutes), bm = num(b.games?.minutes);
+  const sameOutput = num(a.goals?.total)   === num(b.goals?.total)
+                  && num(a.goals?.assists) === num(b.goals?.assists);
+  if (!sameOutput) return false;
+  // EXACT minute equality is itself the copy signature, so the appearance tolerance is not
+  // required when it holds. Measured over 239 multi-block rows across PL/LL/L1/SA/TR: only
+  // 3 block pairs anywhere share exactly equal minutes, and ALL 3 also share identical goals
+  // AND assists (3/3 — perfect association; coincidence would be independent of output).
+  // The Δapps<=1 tolerance was the only thing letting TR Kapacak 2022 through: Fenerbahçe
+  // 281m/20ap 1g/1a + Fatih Karagümrük 281m/13ap 1g/1a, identical but for appearances.
+  // Blast radius of this relaxation, verified across all five captured leagues: 1 row.
+  if (am === bm && am > 0) return true;
+  return Math.abs(am - bm) <= 40
+      && Math.abs(num(a.games?.appearences) - num(b.games?.appearences)) <= 1;
 }
 function richestByMinutes(blocks){
   return blocks.reduce((m, b) => num(b.games?.minutes) > num(m.games?.minutes) ? b : m);
