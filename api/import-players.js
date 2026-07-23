@@ -436,6 +436,14 @@ async function importLeagueSeason(code, year){
       if (!s) { stats.skipped++; continue; }                     // no real same-league stint
       const minutes = num(s.games?.minutes);
       if (minutes < MIN_MIN) { stats.skipped++; continue; }      // 300-min floor on the RESULT, not block[0]
+      // BLANK-TEAM GUARD. A card with no team_name degrades visibly on two of three surfaces
+      // (rankings pills/compact leave an empty .uclub cell; card.html's glSub renders a
+      // double " ·  · " separator). Under INSERT-ONLY this is also SELF-HEALING: the row is
+      // skipped now and lands on a later pass once the source names the club — whereas
+      // inserting a blank-team card now would freeze it, since insert-only never rewrites it.
+      // Occurs on newly-promoted clubs in the live season whose name API-Football has not yet
+      // backfilled (e.g. Estrela Amadora, PRT 2025). See §E live-season lag.
+      if (!(s.team?.name || '').trim()) { stats.skipped++; stats.blankTeam = (stats.blankTeam||0)+1; continue; }
 
       const goals = n(s.goals?.total), assists = n(s.goals?.assists);
       const isNew = !existing.has(pl.id);
@@ -554,7 +562,7 @@ async function deriveCeilings(){
 
   console.log('\n╔══ COMPLETE ══╗');
   console.log(`  Cards:   ${stats.cards}`);
-  console.log(`  Skipped (<${MIN_MIN}m): ${stats.skipped}`);
+  console.log(`  Skipped (<${MIN_MIN}m or blank-team): ${stats.skipped}` + (stats.blankTeam ? `  (of which ${stats.blankTeam} blank-team, self-healing on a later pass)` : ''));
   console.log(`  Calls:   ${stats.calls}`);
   console.log(`  Errors:  ${stats.errors}`);
   console.log(`  Time:    ${elapsed()}s`);
