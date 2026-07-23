@@ -530,10 +530,10 @@
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner">
 <div class="tjbox" id="trajHost"></div>
 <div class="darkbox" id="scoutBox"><div class="q" id="scoutBody"></div><div class="m">SCOUT REPORT</div></div></div></div></div>
-      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain">The raw stats behind his Creation score. The <b>per 90</b> rate, the season <b>total</b>, and his <b>percentile</b> , where he ranks against every midfielder in the league.</div>
-<div class="proofrow"><div class="pl">Key passes</div><div class="pr"><span class="per90">2.4</span><span class="raw">81</span><span class="pctn">88th</span><span class="pct"><i style="width:88%;background:#2E8C5A"></i></span></div></div>
-<div class="proofrow"><div class="pl">Big chances created</div><div class="pr"><span class="per90">0.5</span><span class="raw">17</span><span class="pctn">82nd</span><span class="pct"><i style="width:82%;background:#2E8C5A"></i></span></div></div>
-<div class="proofrow"><div class="pl">Assists</div><div class="pr"><span class="per90">0.24</span><span class="raw">8</span><span class="pctn">74th</span><span class="pct"><i style="width:74%;background:#5BA86F"></i></span></div></div></div></div></div>
+      <div class="layer" id="proofLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain">The raw stats behind the score , the <b>per 90</b> rate and the <b>season total</b>.</div>
+<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span><span class="pctn"></span><span class="pct" style="display:none"><i></i></span></div></div>
+<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span><span class="pctn"></span><span class="pct" style="display:none"><i></i></span></div></div>
+<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span><span class="pctn"></span><span class="pct" style="display:none"><i></i></span></div></div></div></div></div>
       <div class="layer" id="chronicleLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 7.6 4.7 4 5.6v12c3.6-.9 6.4-.4 8 1 1.6-1.4 4.4-1.9 8-1v-12c-3.6-.9-6.4-.4-8 .9z"/><line x1="12" y1="6.4" x2="12" y2="18.5"/></svg></div><div class="layer-t">The Chronicle <span class="chron-rare">&#10038; Season Highlight</span></div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="chronicle-one">"The night Old Trafford rose as one, when a captain dragged his team from the brink and refused to let the season slip."</div>
 <div class="narrative">
   <div class="np">It was the kind of evening that football keeps for its favourites. United were drowning , a goal down and a man light, the noise draining from the stands.</div>
@@ -680,10 +680,42 @@
     }
     return SINGLE[top.k] || '';
   }
+  // ── The Proof , per-90 + season total for the dimension that fits the position.
+  //    Mirrors compare.html's vvSetProof (per-90 from raw/minutes). PERCENTILE COLUMN
+  //    DEFERRED , it needs the parked engine position-percentile work, so .pctn is blanked
+  //    and the .pct bar hidden (DOM kept so it can be re-enabled without markup churn).
+  var PROOF_DIMS = {
+    goal:   { rows:[ ['Goals','goals'], ['Shots on target','shots_on'], ['Shots','shots_total'] ] },
+    create: { rows:[ ['Assists','assists'], ['Key passes','passes_key'], ['Shots on target','shots_on'] ] },
+    def:    { rows:[ ['Tackles','tackles_total'], ['Interceptions','interceptions'], ['Blocks','tackles_blocks'] ] },
+  };
+  // position pool -> dimension. GK has no populated attacking/defensive per-90 (keeper stats
+  // pending), so it takes the defensive set and degrades to NR rather than showing a wrong lens.
+  var POOL_DIM = { ST:'goal', Winger:'goal', CAM:'create', CM:'create', CDM:'def', FB:'def', CB:'def', GK:'def' };
+  function renderProof(D){
+    var layer=document.getElementById('proofLayer'); if(!layer||!D) return;
+    var dim=PROOF_DIMS[POOL_DIM[D.pos]||'create'];
+    var mins=(D.minutes!=null && D.minutes>0) ? D.minutes : null;
+    var rows=layer.querySelectorAll('.proofrow');
+    dim.rows.forEach(function(def,i){
+      var row=rows[i]; if(!row) return;
+      var raw=D[def[1]];                                   // null-aware (NR); goals is 0-safe
+      var v90=(raw==null||mins==null) ? null : (raw/(mins/90));
+      var pl=row.querySelector('.pl'), p90=row.querySelector('.per90'), rw=row.querySelector('.raw');
+      var pn=row.querySelector('.pctn'), pc=row.querySelector('.pct');
+      if(pl) pl.textContent=def[0];
+      if(p90) p90.textContent=(v90==null)?'NR':v90.toFixed(2);
+      if(rw)  rw.textContent =(raw==null)?'NR':raw;
+      if(pn) pn.textContent='';                            // percentile deferred
+      if(pc) pc.style.display='none';
+    });
+  }
+
   function renderPanels(D){
     if(!D) return;
     window.D = D;
     vvLoadEditorial(D);
+    renderProof(D);
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
     set('glVV', D.vv);
     var _pl = document.getElementById('profileLead'); if(_pl){ var _b = vvProfileBlurb(D); _pl.textContent = _b || 'A footballer measured across five dimensions.'; }
@@ -1379,7 +1411,7 @@ var SIGNATURE_MOMENTS = {
     ]
   }
 };
-var CARD_PLAYER = "bruno-fernandes-2324"; /* set per card from your data layer */
+var CARD_PLAYER = "__none__"; /* no Chronicle until a real card resolves one (loadCard) or a ?key/?p deep-link sets it. A bare URL must NOT show a demo player's Chronicle. */
 
 /* ===== VV Chronicle , player matcher =====
    Maps a database row (player_name + season) to the right Chronicle key,
@@ -1387,7 +1419,8 @@ var CARD_PLAYER = "bruno-fernandes-2324"; /* set per card from your data layer *
    A card can be driven three ways (first match wins):
      1. ?key=lionel-messi-1415          (direct key, used by the data layer)
      2. ?p=L.%20Messi&s=1415            (name + season from a DB row)
-     3. the CARD_PLAYER default below   (no params -> demo card)
+   No params -> CARD_PLAYER stays "__none__" and no Chronicle renders (the bare
+   URL is a demo card, not a specific player's story).
    Any player-season with no entry simply shows no Chronicle. */
 function vvNorm(s){
   return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
@@ -1456,7 +1489,7 @@ function vvResolveChronicleKey(name, season){
 (function(){
   try {
     var u = new URLSearchParams(window.location.search);
-    if(!u.has('key') && !u.has('p')) return;   /* no params -> keep demo default */
+    if(!u.has('key') && !u.has('p')) return;   /* no params -> CARD_PLAYER stays "__none__" (no Chronicle) */
     var direct = u.get('key');
     if(direct){ CARD_PLAYER = SIGNATURE_MOMENTS[direct] ? direct : '__none__'; return; }
     var k = vvResolveChronicleKey(u.get('p'), u.get('s'));

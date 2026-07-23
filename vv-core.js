@@ -632,9 +632,14 @@
       assists:  row.assists != null ? row.assists : null,
       assistsText: (row.assists != null ? String(row.assists) : 'NR'),
       // raw stat fields , consumed by Compare's The Proof (per-90) + verdictContext (age tiebreaker)
+      // + card.html's The Proof (dimension-picked per-90/total). Null-preserving: NR, never 0.
       minutes:     row.minutes != null ? row.minutes : null,
       shots_on:    row.shots_on != null ? row.shots_on : null,
       shots_total: row.shots_total != null ? row.shots_total : null,
+      passes_key:     row.passes_key != null ? row.passes_key : null,
+      tackles_total:  row.tackles_total != null ? row.tackles_total : null,
+      tackles_blocks: row.tackles_blocks != null ? row.tackles_blocks : null,
+      interceptions:  row.interceptions != null ? row.interceptions : null,
       season_age:  row.season_age != null ? row.season_age : null,
 
       // ── Computed Contract fields (rows / expanded card / radar / poster) ──
