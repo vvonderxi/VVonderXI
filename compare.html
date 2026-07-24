@@ -1117,17 +1117,23 @@ body.light .pkmsub{color:#b0a899}
     function fill(col,dot,name,prose){ if(!col)return; var nm=col.querySelector('.vsname'); if(nm)nm.innerHTML='<span class="sdot '+dot+'"></span>'+vvEsc(name); var p=col.querySelectorAll('.vsprose'); if(p[0])p[0].textContent=prose; for(var i=1;i<p.length;i++)p[i].remove(); }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
   }
-  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj){
+  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine){
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
     var parts=[]; if(h2h)parts.push(h2h); if(verdict)parts.push(verdict); if(!parts.length)parts=[''];
     for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0)t='“'+t; if(i===parts.length-1)t=t+'”'; vq[i].textContent=t; vq[i].style.display=''; } else { vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     if(who){
+      // The AI writes this line to match the selected verdict tag + rt gap (see the /api/analyse
+      // "who" spec), so a decisive gap reads decisive rather than "edges it" beside "A Masterclass".
+      // The hardcoded phrasing below is a FALLBACK only , the loading placeholder and any
+      // cache-miss/old-cache/error path where the AI line is absent. NOT a client-side tone table.
+      var ai=(whoLine!=null && String(whoLine).trim()) ? String(whoLine).trim() : '';
       if(winner==='A'||winner==='B'){
         var W=(winner==='A')?CMP_A:CMP_B, wv=(winner==='A')?va:vb, lv=(winner==='A')?vb:va;
-        who.textContent = (VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
-                                          : (W.surname+' edges it , '+wv+' to '+lv);
-      } else { who.textContent='Level on VV , '+va+' apiece. The verdict decides.'; }
+        var fb=(VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
+                               : (W.surname+' edges it , '+wv+' to '+lv);
+        who.textContent = ai || fb;
+      } else { who.textContent = ai || ('Level on VV , '+va+' apiece. The verdict decides.'); }
     }
     var chip=document.getElementById('vEdgeTag');   // the ONE verdict-section tag chip (was the hardcoded Henry gold pill)
     // data-tip = the tag's one-line BLURB (from VERDICT_TAGS, not duplicated); shared vv-core tooltip = hover (desktop) + tap (mobile)
@@ -1169,13 +1175,14 @@ body.light .pkmsub{color:#b0a899}
     if(winner==='tie'){ winNote='TIE ('+va+'='+vb+'). Break it on the full profile and name a narrow winner. Never a flat draw.'; }
     else { var wName=(winner==='A'?CMP_A:CMP_B).surname, wv=(winner==='A'?va:vb), lv=(winner==='A'?vb:va);
       winNote='Player '+winner+' ('+wName+') takes the edge, '+wv+' to '+lv+'.'+(VC.tipped?' NOTE: within a coin-flip ('+va+' vs '+vb+'), AGE tipped it to the younger player , the equal season at a younger age is the harder feat. Lead with that.':' Explain why; do not overturn the engine.'); }
-    var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag). p1 = Player A, p2 = Player B.\n'
+    var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag, who). p1 = Player A, p2 = Player B.\n'
       +'Player A: '+line(CMP_A,VC.wonderkidA)+'\n'
       +'Player B: '+line(CMP_B,VC.wonderkidB)+'\n'
       +'Result: '+winNote+'\n'
       +'Tone: '+toneNote+'\n'
       +'VERDICT TAG , choose EXACTLY ONE key from this list (default to the FIRST; up-rank to a later one ONLY if it clearly fits better):\n'+tagMenu+'\n'
-      +'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.';
+      +'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.\n'
+      +'"who" , the winner HEADLINE shown beside the tag chip. Write it in the register of the chosen tag and the tone above: a decisive gap reads decisive and settled, the finest of margins keeps "edges it" restraint, a tie reads as the argument continuing. It MUST NOT contradict the tag. Name the winner and include both VV scores ('+va+' and '+vb+'). Max ~14 words, a headline not a sentence.';
     var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
@@ -1190,7 +1197,7 @@ body.light .pkmsub{color:#b0a899}
         else { var text=(data&&data.content&&data.content[0]&&data.content[0].text)||''; text=text.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim(); v=JSON.parse(text); }
         vvSetStory(nameA,nameB,v.p1||'',v.p2||'');
         var chosen=(v.tag&&eligKeys.indexOf(v.tag)>=0)?v.tag:VC.floorTag;   // validate AI tag vs eligible set; else deterministic floor
-        vvSetVerdict(v.verdict||'',v.h2h||'',winner,va,vb,VC,TAGS[chosen]);
+        vvSetVerdict(v.verdict||'',v.h2h||'',winner,va,vb,VC,TAGS[chosen],v.who);
       })
       .catch(function(e){
         console.error('verdict generation failed:', e&&e.message);
