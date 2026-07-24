@@ -211,6 +211,16 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
 
+### 2026-07-24 (cont.) | SEASON SEARCH shipped + shared matcher lifted to vv-core (one mechanism)
+
+**Front-end only, no DB, no schema change. Commit 6115f72 on `redesign-compare` (NOT pushed).**
+- **SEASON SEARCH: "hazard 23" now surfaces the 2023/24 season directly** instead of returning nothing (a year token used to break the name-AND filter -> empty). `vvParseSearch(q) -> {nameQ, seasonYear}`: 2-/4-digit token in range 2010-2025 is the season (season_year = STARTING year, "23"->2023->2023/24); "23/24"/"2023/24" takes the start year; out-of-range year-shaped tokens DROPPED (ignored, never name text); bare year filters to that season. Applied server-side via `.eq('season_year',y)` , season_year is already the era-filter column, so no schema change. Graceful degrade: in-range season with no matching row for that name -> drop the season, show all + a subtle "No 23/24 season for that search , showing all" hint (rankings count line; picker `.pkhint`).
+- **ONE MECHANISM: `vvNorm`/`tokenAndFilter`/`vvParseSearch`/`vvSeasonLabel` lifted into vv-core.js** (export as globals), the byte-identical `tokenAndFilter`/`vvNorm` copies DELETED from both rankings.html and compare.html. **§C corrected , the "Compare uses RPC `search_players`" claim was STALE; the RPC is called NOWHERE; both surfaces query the matview directly.** Picker: season filter in loadPool (server) + renderPicker re-filters on the PARSED name, not the raw text (raw would strip the year token and empty the results).
+- **VERIFIED live (read-outs):** "hazard 23" -> Thorgan Hazard 23/24 (a real HIT , Eden has no 2023 season but Thorgan does, so NOT a degradation); "hazard 2018" -> the three Hazards' 18/19; "hazard 99" -> year ignored, all Hazard seasons; "eden hazard 23" -> DEGRADES (Eden has no 2023) to all 12 Eden seasons + hint; "2018" -> that season.
+- **`cr7` FINDING (confirmed pre-existing, NOT masked by this change):** returns 0 rows because search matches literal normalized name/club SUBSTRINGS and no row contains "cr7" (Ronaldo's `player_name_norm` = "cristiano ronaldo dos santos aveiro"; "ronaldo" matches fine). The query is BYTE-IDENTICAL old vs new (raw "cr7" and parsed nameQ "cr7" both -> `player_name_norm.ilike.%cr7%,team_name_norm.ilike.%cr7%`) , the parser passes it through unchanged (7 is single-digit, not year-shaped). So it is a standing search limitation, not a regression.
+- **DEFERRED (new idea, post-launch): NICKNAME ALIAS INDEX** , map nicknames/shorthands (cr7 -> Ronaldo, r9 -> Ronaldo Nazario, etc.) so name search matches beyond literal normalized substrings. Separate feature, own table/lookup; not this change.
+- NEXT: Lucas verifies the batch on preview once pushed (season search; + the still-open item-1 season order after hard-refresh and item-3 fold after deploy). Unpushed stack on redesign-compare: ff6a1f1 (Proof), 52171a0 (Compare-New + fold), 137e5ec (§F log), 6115f72 (season search). Only c77fa4e (.vwho) is live.
+
 ### 2026-07-24 | Card editorial + Compare polish: .vwho AI winner-line, The Proof wired, Compare-New CTA, fold hardening
 
 **On the launch spine now (recovery track closed). Front-end only, no DB. Commits on `redesign-compare`.**
