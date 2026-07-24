@@ -250,7 +250,11 @@
   body.light .cmp-seasontrigger:hover{color:#1d1a1b;border-color:rgba(0,0,0,.3)}
   /* expanded season list = ABSOLUTE dropdown , does NOT grow the .side/.matchup, so the open fold no longer
      displaces the Compare button (holds in all four states + at 390px). Solid bg + z-index so it reads as an overlay. */
-  .cmp-seasonfold .seasonrows{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:240px;max-width:calc(100vw - 32px);z-index:40;max-height:min(58vh,440px);overflow-y:auto;background:#15100f;box-shadow:0 24px 50px -16px rgba(0,0,0,0.72);animation:cmpDrop .18s ease}
+  /* width:min(240px,100%) , the dropdown never exceeds its own column (.cmp-seasonfold, which is
+     column-constrained on mobile ~158px). A fixed 240px spilled ~41px each side of the narrow column,
+     over the sibling card + its VV scores AND past the viewport (horizontal page scroll). Contained on
+     the element itself , NOT via an ancestor overflow clip, which would flatten the card-flip preserve-3d (#109). */
+  .cmp-seasonfold .seasonrows{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:min(240px,100%);max-width:calc(100vw - 32px);z-index:40;max-height:min(58vh,440px);overflow-y:auto;background:#15100f;box-shadow:0 24px 50px -16px rgba(0,0,0,0.72);animation:cmpDrop .18s ease}
   body.light .cmp-seasonfold .seasonrows{background:#F4EEE0;box-shadow:0 24px 50px -18px rgba(0,0,0,0.28)}
   @keyframes cmpDrop{from{opacity:0}to{opacity:1}}   /* opacity-only , keeps the translateX(-50%) centering static (cmpSeasonIn animated transform, which would break centering) */
   /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with card.html */
@@ -697,7 +701,7 @@ body.light .pkmsub{color:#b0a899}
           </div>
         </div>
       </div>
-            <div class="settlerow"><button class="settle" onclick="if(!(CMP_A&&CMP_B))return; document.getElementById('verdict').classList.add('show')"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><rect x="0.8" y="12.3" width="9.2" height="4.3" rx="2"/><rect x="8.5" y="5" width="4.2" height="3.2" rx="1.4"/><path fill-rule="evenodd" d="M10.5 8.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3.7a2.3 2.3 0 1 0 0.01 0z"/><path d="M18.4 10c1.6 1.4 1.6 5.6 0 7M21.4 7.6c2.6 2.4 2.6 9.4 0 11.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Compare</button></div>
+            <div class="settlerow"><button class="settle" onclick="if(!(CMP_A&&CMP_B))return; vvCloseSeasonFolds(); document.getElementById('verdict').classList.add('show')"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><rect x="0.8" y="12.3" width="9.2" height="4.3" rx="2"/><rect x="8.5" y="5" width="4.2" height="3.2" rx="1.4"/><path fill-rule="evenodd" d="M10.5 8.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3.7a2.3 2.3 0 1 0 0.01 0z"/><path d="M18.4 10c1.6 1.4 1.6 5.6 0 7M21.4 7.6c2.6 2.4 2.6 9.4 0 11.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Compare</button></div>
             <div class="settle-newrow"><button class="settlenew" id="compareNewBtn" onclick="vvCompareNew()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 1 2.3 5.6"/><path d="M4 20v-4h4"/></svg> Compare New</button></div>
             <div class="verdict" id="verdict">
         <!-- FULL BREAKDOWN FIRST (the analysis builds to the payoff) -->
@@ -917,6 +921,22 @@ body.light .pkmsub{color:#b0a899}
       list.appendChild(cb);
     }
   }
+  // Close both season folds (tap-outside / Compare). Distinct from the toggle: this only ever
+  // FOLDS, and clears SLOT_OPEN so a later season-switch does not re-open a fold the user dismissed.
+  function vvCloseSeasonFolds(){
+    ['A','B'].forEach(function(s){
+      var wrap=document.getElementById('seasons'+s); if(!wrap) return;
+      var open=wrap.querySelector('.seasonrows');
+      if(open){ open.remove(); var trig=wrap.querySelector('.cmp-seasontrigger'); if(trig) trig.classList.remove('open'); }
+      SLOT_OPEN[s]=false;
+    });
+  }
+  // Tap-outside-to-close. Row/trigger clicks stopPropagation (never reach here); the .closest guard
+  // is belt-and-braces so a click inside the fold never dismisses it. Any genuine outside click folds.
+  document.addEventListener('click', function(e){
+    if(e.target && e.target.closest && e.target.closest('.cmp-seasonfold')) return;
+    vvCloseSeasonFolds();
+  });
   async function vvSwitchSlotSeason(slot, cardId){
     var card=await fetchCard(cardId); if(!card) return;
     if(slot==='A') CMP_A=card; else CMP_B=card;
