@@ -1426,7 +1426,49 @@
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
+  // ── SHARED SEARCH , single source for rankings.html + Compare picker (was duplicated in both) ──
+  //  vvNorm         : fold accents + lowercase (matches the DB player_name_norm / team_name_norm charset).
+  //  tokenAndFilter : PostgREST .or() , EVERY token in player_name_norm OR EVERY token in team_name_norm.
+  //  vvParseSearch  : split a query into { nameQ, seasonYear }. A pure 2- or 4-digit token in the data
+  //                   range (2010-2025) is the SEASON , season_year is the STARTING year, so "23" -> 2023
+  //                   -> 2023/24; an explicit "23/24" / "2023/24" takes the start year; a year-SHAPED token
+  //                   OUT of range is DROPPED (ignored, never treated as name text); the rest is the name/club.
+  //  vvSeasonLabel  : season_year -> display form, e.g. 2023 -> "23/24" (via fmtSeason).
+  function vvNorm(s){ return (s==null?'':String(s)).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+  function tokenAndFilter(q){
+    var toks=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+    if(!toks.length) return null;
+    function grp(col){ var c=toks.map(function(t){return col+'.ilike.%'+t+'%';}); return c.length>1 ? 'and('+c.join(',')+')' : c[0]; }
+    return grp('player_name_norm')+','+grp('team_name_norm');
+  }
+  function vvYearFromDigits(d){
+    if(!/^\d{2}$|^\d{4}$/.test(d)) return null;              // only 2- or 4-digit tokens are year-shaped
+    var n=parseInt(d,10); if(d.length===2) n=2000+n;        // "23" -> 2023
+    return (n>=2010 && n<=2025) ? n : null;                 // data range; out-of-range -> null (dropped upstream)
+  }
+  function vvParseSearch(q){
+    var raw=(q==null?'':String(q)).trim();
+    if(!raw) return { nameQ:'', seasonYear:null };
+    var seasonYear=null;
+    // explicit "23/24" or "2023/24" -> start year, matched BEFORE '/' is stripped by norm
+    var pair=raw.match(/(?:^|\s)(\d{4}|\d{2})\/\d{2}(?=\s|$)/);
+    if(pair){ var py=vvYearFromDigits(pair[1]); if(py!=null){ seasonYear=py; raw=raw.replace(pair[0],' '); } }
+    var toks=vvNorm(raw).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+    var nameToks=[];
+    toks.forEach(function(t){
+      if(/^\d{2}$|^\d{4}$/.test(t)){                        // year-SHAPED: consume as season or drop, NEVER name text
+        var y=vvYearFromDigits(t);
+        if(y!=null && seasonYear==null) seasonYear=y;
+        return;
+      }
+      nameToks.push(t);
+    });
+    return { nameQ: nameToks.join(' '), seasonYear: seasonYear };
+  }
+  function vvSeasonLabel(y){ return (y==null) ? '' : fmtSeason(String(y).slice(2)+String(y+1).slice(2)); }
+
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
+                vvNorm, tokenAndFilter, vvParseSearch, vvSeasonLabel,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,

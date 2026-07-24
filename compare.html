@@ -609,6 +609,8 @@ body.light .pkresults{border-color:rgba(0,0,0,.07)}
 .pkhd{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(243,237,224,.4);padding:15px 6px 5px}
 body.light .pkhd{color:#9a9285}
 .pkempty{padding:30px 10px;text-align:center;font-family:'Archivo';font-weight:700;font-size:13px;color:rgba(243,237,224,.4)}
+.pkhint{padding:8px 12px 10px;font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.02em;color:rgba(243,237,224,.5)}
+body.light .pkhint{color:#8a8276}
 .cmprow{display:flex;align-items:center;gap:13px;padding:11px 6px;cursor:pointer;transition:background .14s;border-radius:10px}
 .cmprow:active{background:rgba(255,255,255,.06)}
 body.light .cmprow:active{background:rgba(0,0,0,.04)}
@@ -930,7 +932,7 @@ body.light .pkmsub{color:#b0a899}
   var pickerSlot='A', pkFilterKind='all', pkFilterVal='';
   function openPicker(slot){ pickerSlot=slot;
     document.getElementById('pkTitle').innerHTML='Choose <span class="s">Season '+slot+'</span>';
-    document.getElementById('pkSearch').value=''; pkFilterKind='all'; pkFilterVal='';
+    document.getElementById('pkSearch').value=''; pkFilterKind='all'; pkFilterVal=''; _pkSeasonMiss=null;
     var chips=document.querySelectorAll('.pkchip'); chips.forEach(function(c,i){c.classList.toggle('on',i===0);});
     document.getElementById('pickerDim').classList.add('show');
     document.getElementById('pickerSheet').classList.add('show');
@@ -953,15 +955,9 @@ body.light .pkmsub{color:#b0a899}
      +'<div class="cmpl2"><b>'+p.clubname+'</b> &middot; '+p.year+' &middot; '+posDisplay(p.pos)+'</div></div>'
      +'<div class="cmpright"><div class="cmpvv'+tier+'">'+p.vv+'</div><div class="cmpga">'+p.goals+'G &middot; '+(p.assists!=null ? p.assists+'A' : 'NR')+'</div></div>'
      +'</div>'; }
-  // Shared token-AND search matcher (identical to rankings.html): fold accents, strip to the DB
-  // norm charset, split on spaces, require EVERY token in player_name_norm OR every token in team_name_norm.
-  function vvNorm(s){return (s||'').toString().normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();}
-  function tokenAndFilter(q){
-    var toks=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
-    if(!toks.length) return null;
-    function grp(col){ var c=toks.map(function(t){return col+'.ilike.%'+t+'%';}); return c.length>1 ? 'and('+c.join(',')+')' : c[0]; }
-    return grp('player_name_norm')+','+grp('team_name_norm');
-  }
+  // vvNorm / tokenAndFilter / vvParseSearch / vvSeasonLabel now live in vv-core.js (shared with
+  // rankings.html , the two were byte-identical copies). They arrive as globals via VVCore.
+  var _pkSeasonMiss=null;   // set by loadPool when a name+season query degraded (season had no row) -> hint
   function renderPicker(){
     var q=(document.getElementById('pkSearch').value||'').trim().toLowerCase();
     var res=document.getElementById('pkResults'); var html='';
@@ -974,9 +970,15 @@ body.light .pkmsub{color:#b0a899}
         if(sug.length){ html+='<div class="pkhd">Suggested rivals</div>'+sug.map(pkRow).join(''); } }
       html+='<div class="pkhd">All seasons</div>'+POOL.filter(passF).map(pkRow).join('');
     } else {
-      var _tk=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);   // #search: fold + token-AND client-side (was contiguous indexOf, re-broke accents/tokens)
-      var L=POOL.filter(function(p){ if(!passF(p)) return false; var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')); return _tk.every(function(t){return hay.indexOf(t)>=0;}); });
-      html = L.length? L.map(pkRow).join('') : '<div class="pkempty">No seasons match.</div>';
+      // client re-filter uses the PARSED name only (the year token is a season filter, applied
+      // server-side in loadPool , matching it as name text would wrongly empty the results).
+      var _nq=vvParseSearch(q).nameQ;
+      var _tk=vvNorm(_nq).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+      var L=POOL.filter(function(p){ if(!passF(p)) return false;
+        if(!_tk.length) return true;
+        var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')); return _tk.every(function(t){return hay.indexOf(t)>=0;}); });
+      var _h = (_pkSeasonMiss!=null) ? '<div class="pkhint">No '+vvSeasonLabel(_pkSeasonMiss)+' season for that search , showing all seasons.</div>' : '';
+      html = _h + (L.length? L.map(pkRow).join('') : '<div class="pkempty">No seasons match.</div>');
     }
     res.innerHTML=html;
   }
@@ -997,9 +999,17 @@ body.light .pkmsub{color:#b0a899}
   async function loadPool(){
     var sb=vvClient(); if(!sb){ renderPicker(); return; }   // vv-core logs why (missing config or lib)
     var q=(document.getElementById('pkSearch').value||'').trim();
-    var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false}).limit(50);
-    if(q){ var _sf=tokenAndFilter(q); if(_sf) query=query.or(_sf); }   // token-AND on player_name_norm/team_name_norm (was raw player_name)
-    var res=await query;
+    var ps=vvParseSearch(q); var nameQ=ps.nameQ, seasonYear=ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
+    function buildPoolQ(withSeason){
+      var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false}).limit(50);
+      if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }        // token-AND on player/team norm
+      if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);    // NAME + SEASON, or bare year
+      return query;
+    }
+    var res=await buildPoolQ(true);
+    _pkSeasonMiss=null;
+    // graceful degrade: in-range season with no matching row for this NAME -> drop season, show all + hint
+    if(!res.error && seasonYear!=null && nameQ && (res.data||[]).length===0){ res=await buildPoolQ(false); _pkSeasonMiss=seasonYear; }
     if(res.error){ console.error('compare picker load failed:', res.error.message); return; }
     POOL=(res.data||[]).map(rowToCard);
     renderPicker();

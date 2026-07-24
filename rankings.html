@@ -514,16 +514,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
     g.innerHTML = list.map(d=>`<div onclick="goCard(${d.card_id==null?'':d.card_id})" style="cursor:pointer">${buildCard(d,cwNow())}</div>`).join('');
   }
-  function vvNorm(s){return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
-  // Token-AND search: fold (vvNorm) + strip to the DB norm charset [a-z0-9 ] + split on spaces;
-  // require EVERY token in player_name_norm, OR every token in team_name_norm. Fixes multi-word
-  // queries whose tokens aren't adjacent in the full name (e.g. "jordan lukaku"). Shared with compare.html.
-  function tokenAndFilter(q){
-    var toks=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
-    if(!toks.length) return null;
-    function grp(col){ var c=toks.map(function(t){return col+'.ilike.%'+t+'%';}); return c.length>1 ? 'and('+c.join(',')+')' : c[0]; }
-    return grp('player_name_norm')+','+grp('team_name_norm');
-  }
+  // vvNorm / tokenAndFilter / vvParseSearch / vvSeasonLabel now live in vv-core.js (shared with the
+  // Compare picker , the two were byte-identical copies). They arrive as globals via VVCore.
   function rankTagColor(label){var T={Iconic:'pink',Talisman:'pink',Generational:'gen','Golden Boot':'gold',Prestige:'gold',Maestro:'blue',Clinical:'green',Poacher:'green',Pace:'coral',Wonderkid:'purple',Rock:'slate',Engine:'slate','Target Man':'slate','Top Assist':'blue'};for(var k in T){if(label.indexOf(k)>=0)return T[k];}return 'slate';}
   function renderRankPills(list){
     const g=document.getElementById('cardgrid');
@@ -595,24 +587,29 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const f = readFilters();
     var _act=(f.leagues.length||f.positions.length||f.era||f.tags.length||f.rtLo!==50||f.rtHi!==97||f.sort.col!=='rt');
     var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
-    let q = sb.from('player_card_mv').select('*');
     var tq=document.getElementById('rankSearch').value.trim();
+    var _ps=vvParseSearch(tq); var nameQ=_ps.nameQ, seasonYear=_ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
     if(tq && f.sort.col==='rt' && f.sort.asc===false){ f.sort={col:'season_year',asc:false}; }
-    if(tq){ var _sf=tokenAndFilter(tq); if(_sf) q=q.or(_sf); }   // token-AND on player_name_norm/team_name_norm
-    if(f.leagues.length)   q=q.in('league_code', f.leagues);
-    if(f.positions.length) q=q.in('position_pool', f.positions);
-    if(f.era){ q=q.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
-    q=q.gte('rt', f.rtLo).lte('rt', f.rtHi);
-    q=q.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(rankLimit);
-    // separate head-only exact count, mirroring the same filters (parallel, no extra latency)
-    let cq = sb.from('player_card_mv').select('*', { count: 'exact', head: true });
-    if(tq){ var _sf2=tokenAndFilter(tq); if(_sf2) cq=cq.or(_sf2); }   // count query , same token-AND
-    if(f.leagues.length)   cq=cq.in('league_code', f.leagues);
-    if(f.positions.length) cq=cq.in('position_pool', f.positions);
-    if(f.era){ cq=cq.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
-    cq=cq.gte('rt', f.rtLo).lte('rt', f.rtHi);
+    // one builder for both the data query and the head-count, with the season filter toggleable for the fallback
+    function buildRankQ(head, withSeason){
+      var qq = head ? sb.from('player_card_mv').select('*', { count:'exact', head:true }) : sb.from('player_card_mv').select('*');
+      if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) qq=qq.or(_sf); }         // token-AND on player_name_norm/team_name_norm
+      if(withSeason && seasonYear!=null) qq=qq.eq('season_year', seasonYear);     // NAME + SEASON (e.g. hazard 2018)
+      if(f.leagues.length)   qq=qq.in('league_code', f.leagues);
+      if(f.positions.length) qq=qq.in('position_pool', f.positions);
+      if(f.era){ qq=qq.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
+      qq=qq.gte('rt', f.rtLo).lte('rt', f.rtHi);
+      if(!head) qq=qq.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(rankLimit);
+      return qq;
+    }
     var _rcEl=document.getElementById('rankCount'); if(_rcEl && !f.tags.length) _rcEl.textContent='Counting…';
-    const [ qRes, cRes ] = await Promise.all([ q, cq ]);
+    let [ qRes, cRes ] = await Promise.all([ buildRankQ(false,true), buildRankQ(true,true) ]);
+    // graceful degrade: an in-range season with NO matching row for this name -> drop the season, show all
+    var seasonDegraded=false;
+    if(seasonYear!=null && nameQ && !qRes.error && (qRes.data||[]).length===0){
+      [ qRes, cRes ] = await Promise.all([ buildRankQ(false,false), buildRankQ(true,false) ]);
+      seasonDegraded=true;
+    }
     const { data, error } = qRes;
     const count = cRes.error ? null : cRes.count;
     if(error){ console.error('rankings load failed:', error.message); return; }
@@ -620,9 +617,10 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(f.tags.length){ CARDS = CARDS.filter(function(d){ return f.tags.every(function(s){ return (d.tags||[]).some(function(t){ return t.name===s; }); }); }); }
     var _rc=document.getElementById('rankCount');
     if(_rc){
-      if(f.tags.length){ _rc.textContent='Showing '+CARDS.length; }
-      else if(count==null){ _rc.textContent='Showing '+CARDS.length; }
-      else { _rc.textContent='Showing '+CARDS.length+' of '+count.toLocaleString(); }
+      var _hint=seasonDegraded ? ('No '+vvSeasonLabel(seasonYear)+' season for that search , showing all. ') : '';
+      if(f.tags.length){ _rc.textContent=_hint+'Showing '+CARDS.length; }
+      else if(count==null){ _rc.textContent=_hint+'Showing '+CARDS.length; }
+      else { _rc.textContent=_hint+'Showing '+CARDS.length+' of '+count.toLocaleString(); }
     }
     var _rawLen=(data||[]).length;
     rankShowMoreFlag = !f.tags.length && _rawLen>=rankLimit && (count==null || CARDS.length<count);
