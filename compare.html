@@ -649,6 +649,12 @@ body.light .eslbl{color:#9a9285}
 body.light .eslbl b{color:#6f685c}
 .cardslot.empty::after{display:none}
 .settle.disabled{opacity:.4;pointer-events:none;filter:grayscale(.35)}
+  /* "Compare New" , secondary ghost pill in the .settle family; clears both slots back to the empty picker */
+  .settle-newrow{display:flex;justify-content:center;margin:12px auto 0}
+  .settlenew{font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.03em;text-transform:uppercase;background:transparent;color:var(--pink);border:1.5px solid rgba(255,92,122,.45);border-radius:16px;padding:12px 30px;cursor:pointer;transition:transform .2s,background .2s;display:none;align-items:center;gap:8px}
+  .settlenew.show{display:inline-flex}
+  .settlenew:hover{transform:translateY(-1px);background:rgba(255,92,122,.09)}
+  body.light .settlenew{border-color:rgba(255,92,122,.55)}
 .pkdiv{width:1px;align-self:stretch;background:rgba(255,255,255,.14);margin:5px 4px;flex-shrink:0}body.light .pkdiv{background:rgba(0,0,0,.1)}
 .pkfiltbtn{flex-shrink:0;font-family:'Archivo';font-weight:800;font-size:12px;padding:7px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(243,237,224,.75);cursor:pointer;display:flex;align-items:center;gap:5px}
 body.light .pkfiltbtn{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.03);color:#6a6256}
@@ -690,6 +696,7 @@ body.light .pkmsub{color:#b0a899}
         </div>
       </div>
             <div class="settlerow"><button class="settle" onclick="if(!(CMP_A&&CMP_B))return; document.getElementById('verdict').classList.add('show')"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><rect x="0.8" y="12.3" width="9.2" height="4.3" rx="2"/><rect x="8.5" y="5" width="4.2" height="3.2" rx="1.4"/><path fill-rule="evenodd" d="M10.5 8.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3.7a2.3 2.3 0 1 0 0.01 0z"/><path d="M18.4 10c1.6 1.4 1.6 5.6 0 7M21.4 7.6c2.6 2.4 2.6 9.4 0 11.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Compare</button></div>
+            <div class="settle-newrow"><button class="settlenew" id="compareNewBtn" onclick="vvCompareNew()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 1 2.3 5.6"/><path d="M4 20v-4h4"/></svg> Compare New</button></div>
             <div class="verdict" id="verdict">
         <!-- FULL BREAKDOWN FIRST (the analysis builds to the payoff) -->
         <div class="vbreak">
@@ -821,7 +828,22 @@ body.light .pkmsub{color:#b0a899}
     if(!host.querySelector('.vvcard')){ host.innerHTML=buildCard(card,cw); vvSizeCards(); vvLoadSlotSeasons(slot); return; }   // empty slot: static
     vvCardFlip(host, { swap:true, newHTML:buildCard(card,cw), cw:cw, prestige:card.prestige, onDone:function(){ vvLoadSlotSeasons(slot); } });
   }
-  function vvUpdateCompareGate(){var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));}
+  function vvUpdateCompareGate(){
+    var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));
+    var nb=document.getElementById('compareNewBtn');if(nb)nb.classList.toggle('show',!!(CMP_A||CMP_B));   // offer a reset once anything is filled
+  }
+  // ── "Compare New" , clear both slots back to the empty picker state, no navigation ──
+  function vvCompareNew(){
+    CMP_A=null; CMP_B=null;
+    window._vvVerdictPair=null;                                   // let the next pairing generate a fresh verdict
+    ['A','B'].forEach(function(s){ var f=document.getElementById('seasons'+s); if(f) f.remove(); SLOT_SEASONS[s]=null; SLOT_OPEN[s]=false; });
+    var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
+    if(ca) ca.classList.remove('winner'); if(cb) cb.classList.remove('winner');
+    vvResetVerdict();                                             // hide the verdict + un-settle
+    vvSizeCards();                                                // re-render empty slots + gate + see-links
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}   // drop ?a=/?b= so a reload starts empty
+    var m=document.querySelector('.matchup'); if(m) m.scrollIntoView({block:'start',behavior:'smooth'});
+  }
   CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
 
   // ── Back control (same pattern as card.html) ──
@@ -850,11 +872,16 @@ body.light .pkmsub{color:#b0a899}
     }, 220); });
   }
   var SLOT_SEASONS={};   // slot -> rowToCard-mapped seasons (with honours), for the per-slot fold
+  var SLOT_OPEN={};      // slot -> is the fold open? AUTHORITATIVE user-fold state (see vvLoadSlotSeasons)
   async function vvLoadSlotSeasons(slot){
     var cmp = slot==='A'?CMP_A:CMP_B;
     var host = document.getElementById('card'+slot);
     var old = document.getElementById('seasons'+slot);
-    var wasOpen = !!(old && old.querySelector('.seasonrows'));   // user-controlled fold: preserve open state across a season switch
+    // User-controlled fold: preserve open state across a season switch. AUTHORITATIVE flag,
+    // not a DOM read , the old `old.querySelector('.seasonrows')` check depended on the list
+    // still being in the DOM at this moment (after an async flip + two awaits), which is a
+    // timing race. SLOT_OPEN is set the instant the user opens/folds, so it cannot be lost.
+    var wasOpen = !!SLOT_OPEN[slot];
     if(old) old.remove();
     SLOT_SEASONS[slot]=null;
     if(!host || !cmp || cmp.api_player_id==null) return;
@@ -879,9 +906,9 @@ body.light .pkmsub{color:#b0a899}
   function vvSlotSeasonsToggle(slot){
     var wrap=document.getElementById('seasons'+slot); if(!wrap) return;
     var open=wrap.querySelector('.seasonrows'); var trig=wrap.querySelector('.cmp-seasontrigger');
-    if(open){ open.remove(); if(trig) trig.classList.remove('open'); return; }   // fold
+    if(open){ open.remove(); if(trig) trig.classList.remove('open'); SLOT_OPEN[slot]=false; return; }   // fold (explicit)
     var list=document.createElement('div'); list.className='seasonrows'; list.innerHTML=seasonRowsHTMLCmp(slot);
-    wrap.appendChild(list); if(trig) trig.classList.add('open');
+    wrap.appendChild(list); if(trig) trig.classList.add('open'); SLOT_OPEN[slot]=true;
     if((SLOT_SEASONS[slot]||[]).length>=6){   // #108: bottom collapse only for long lists
       var cb=document.createElement('button'); cb.className='seasoncollapse'; cb.innerHTML='&#9650; Collapse';
       cb.onclick=function(e){ e.stopPropagation(); vvSlotSeasonsToggle(slot); var t=wrap.querySelector('.cmp-seasontrigger'); if(t) t.scrollIntoView({block:'center',behavior:'smooth'}); };
