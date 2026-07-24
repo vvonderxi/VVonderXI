@@ -257,29 +257,29 @@
   .cmp-seasonfold .seasonrows{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:min(240px,100%);max-width:calc(100vw - 32px);z-index:40;max-height:min(58vh,440px);overflow-y:auto;background:#15100f;box-shadow:0 24px 50px -16px rgba(0,0,0,0.72);animation:cmpDrop .18s ease}
   body.light .cmp-seasonfold .seasonrows{background:#F4EEE0;box-shadow:0 24px 50px -18px rgba(0,0,0,0.28)}
   @keyframes cmpDrop{from{opacity:0}to{opacity:1}}   /* opacity-only , keeps the translateX(-50%) centering static (cmpSeasonIn animated transform, which would break centering) */
-  /* ── Compare season TILE rows (compare-only; card.html keeps the shared rankRowHTML seasonLed). ──
-     Fixed 44px charcoal VV tile enforces a UNIFORM row height regardless of tag count. Nothing may
-     exceed the column width: club ellipsizes, the tag row clips (overflow:hidden), the +N chip is
-     pinned outside the clip so the overflow count always shows. Fits within width:min(240px,100%). */
-  .cmp-seasonfold .seasonrows .cst-row{display:flex;align-items:center;gap:11px;padding:9px 12px;cursor:pointer;min-width:0;border-bottom:1px solid rgba(255,255,255,.06)}
+  /* ── Compare season rows , Option B (compare-only; card.html keeps the shared rankRowHTML seasonLed). ──
+     season+club on the left (club ellipsizes), tier-coloured VV score on the right. No tags. Uniform
+     height (every row is season+club+score). Fits within width:min(240px,100%), no 390px overflow. */
+  .cmp-seasonfold .seasonrows .cst-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;cursor:pointer;min-width:0;border-bottom:1px solid rgba(255,255,255,.06)}
   .cmp-seasonfold .seasonrows .cst-row:last-child{border-bottom:none}
   .cmp-seasonfold .seasonrows .cst-row:hover{background:rgba(255,255,255,.045)}
   body.light .cmp-seasonfold .seasonrows .cst-row:hover{background:rgba(0,0,0,.03)}
   .cmp-seasonfold .seasonrows .cst-row.active{background:rgba(255,92,122,.09)}
-  .cst-vv{flex:0 0 44px;width:44px;height:44px;border-radius:12px;background:#1C1B1A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}  /* UNIFORM charcoal , never accented */
-  .cst-vvlabel{font-family:'Bricolage Grotesque';font-weight:800;font-size:8px;letter-spacing:.09em;color:rgba(243,237,224,.5);line-height:1}
-  .cst-vvn{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;line-height:1;color:#fff}
-  .cst-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:5px}
-  .cst-head{display:flex;align-items:baseline;gap:8px;min-width:0}
-  .cst-season{font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.05;color:#F3EDE0;flex:0 0 auto}
+  .cst-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .cst-season{font-family:'Bricolage Grotesque';font-weight:600;font-size:17px;line-height:1.05;color:#F3EDE0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   body.light .cst-season{color:var(--charcoal)}
-  .cst-club{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,.5);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cst-club{font-family:'Archivo';font-weight:700;font-size:11px;color:#a8a394;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   body.light .cst-club{color:#8a8276}
-  .cst-tags{display:flex;align-items:center;gap:5px;min-width:0;min-height:16px}   /* reserved even when empty -> season line sits at the same y on every row */
-  .cst-pills{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;flex:1 1 auto}
-  .cst-pills > *{flex:0 0 auto}
-  .cst-more{flex:0 0 auto;font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.03em;color:rgba(243,237,224,.55);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 6px;white-space:nowrap}
-  body.light .cst-more{color:#6b6658;background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1)}
+  /* VV score , tier colour by the SAME engine bands as the card face (bandFor): >=95 Generational,
+     >=80 Standout/WC/Elite (the card's default charcoal score), <80 Accomplished. The "strong" tier
+     is theme-aware: spec charcoal #1C1B1A reads on the cream light dropdown; on the DARK dropdown it
+     would be invisible, so it uses cream (#F0EAD9) there , exactly how the card does it (.vvcard.gen .n). */
+  .cst-vv{flex:0 0 auto;font-family:'Bricolage Grotesque';font-weight:700;font-size:22px;line-height:1;color:#F0EAD9}
+  body.light .cst-vv{color:#1C1B1A}
+  .cst-vv.gen{color:#C79A2E}
+  body.light .cst-vv.gen{color:#C79A2E}
+  .cst-vv.low{color:#9a9588}
+  body.light .cst-vv.low{color:#9a9588}
   /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with card.html */
   .seasoncollapse{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;border-top:1px solid rgba(255,255,255,0.06);padding:11px;cursor:pointer;transition:color .18s}
   .seasoncollapse:hover{color:rgba(243,237,224,0.9)}
@@ -925,33 +925,20 @@ body.light .pkmsub{color:#b0a899}
     host.insertAdjacentElement('afterend', wrap);
     if(wasOpen) vvSlotSeasonsToggle(slot);   // re-open with the new active season highlighted; only an explicit trigger/Collapse folds it
   }
-  // Compare-only season TILE (card.html keeps the shared rankRowHTML seasonLed). Tags: honours first
-  // (gold), then prestige, then profile (own colours) , cap 2 visible + a pinned "+N" overflow chip.
+  // Compare-only season row , Option B (card.html keeps the shared rankRowHTML seasonLed).
+  // season + club left; tier-coloured VV score right. Tier from the SAME engine bands as bandFor / the
+  // card face: >=95 gold (Generational), >=80 charcoal/cream (Standout/WC/Elite = the card's default
+  // score colour), <80 muted grey (Accomplished). No tags.
   function pkSeasonTileHTML(d, onclick, active){
-    // 2 visible + "+N" on desktop; 1 + "+N" at <=430px (the 44px tile leaves ~100px for tags at 390px,
-    // which won't hold two pills). Computed in JS , the "+N" count is baked into the HTML, so a CSS
-    // hide would leave a wrong count. The dropdown re-renders on every open/switch, so CAP tracks width.
-    var CAP=(typeof window!=='undefined' && window.innerWidth<=430)?1:2;
-    var honList=(d.honours&&d.honours.all)?d.honours.all:[];
-    var honN=Math.min(honList.length,CAP);
-    var honHtml=honN>0?renderHonourPillsCompact(d.honours,{baseClass:'rtag',max:honN}):'';   // baseClass 'rtag' keeps existing colours
-    var rem=CAP-honN;
-    var pres=(rem>0)?renderPrestige(d.prestige,{baseClass:'rtag'}):'';
-    var presN=(pres && pres.trim())?1:0; if(presN) rem-=1;
-    var tagList=Array.isArray(d.tags)?d.tags:[];
-    var tagN=(rem>0)?Math.min(tagList.length,rem):0;
-    var tagsHtml=(rem>0 && tagN>0)?renderTagPills(d.tags,{baseClass:'rtag',max:rem}):'';
-    var total=honList.length+(d.prestige?1:0)+tagList.length;
-    var overflow=total-(honN+presN+tagN);
-    var more=overflow>0?'<span class="cst-more">+'+overflow+'</span>':'';
-    var pills=honHtml+pres+tagsHtml;
-    var vv=(d.vv!=null && d.vv!=='')?d.vv:'NR';
+    var rt=(d.vv===''||d.vv==null)?null:+d.vv;
+    var tier = (rt==null) ? ' low' : (rt>=95 ? ' gen' : (rt>=80 ? '' : ' low'));   // '' = strong (default charcoal/cream)
+    var vv=(rt==null)?'NR':rt;
     return '<div class="cst-row'+(active?' active':'')+'" onclick="'+onclick+'">'
-      +'<div class="cst-vv"><span class="cst-vvlabel">VV</span><span class="cst-vvn">'+vv+'</span></div>'
       +'<div class="cst-main">'
-        +'<div class="cst-head"><span class="cst-season">'+(d.year||'')+'</span><span class="cst-club">'+vvEsc(d.clubname||'')+'</span></div>'
-        +'<div class="cst-tags">'+(pills?'<span class="cst-pills">'+pills+'</span>':'')+more+'</div>'
+        +'<div class="cst-season">'+(d.year||'')+'</div>'
+        +'<div class="cst-club">'+vvEsc(d.clubname||'')+'</div>'
       +'</div>'
+      +'<div class="cst-vv'+tier+'">'+vv+'</div>'
     +'</div>';
   }
   function seasonRowsHTMLCmp(slot){
