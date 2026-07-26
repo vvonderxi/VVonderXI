@@ -7,7 +7,7 @@
 <title>VVonderXI , Web Compare</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9}
+  :root{--ink-soft:#8a8276;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
@@ -39,7 +39,7 @@
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:42px;line-height:1.02;letter-spacing:-0.02em}
   .hero h1 .b{color:var(--pink)}
   .hero .lede{font-family:'Inter';font-weight:400;font-size:15px;line-height:1.6;color:rgba(243,237,224,0.6);max-width:540px;margin-top:12px}
-  body.light{color:var(--charcoal);--ink-soft:#5f594e;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
+  body.light{color:var(--charcoal);--ink-soft:#5f594e;--gold-ink:#7e5a10;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
   body.light .navitem{color:var(--ink-soft)}
   body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}
@@ -127,12 +127,12 @@
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px} .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
   .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:var(--cream)}
-  .tagrow .tchev{margin-left:auto;font-size:16px;opacity:0.9;color:#E8B84B;transition:transform .3s}
+  .tagrow .tchev{margin-left:auto;font-size:16px;opacity:0.9;color:var(--gold-ink);transition:transform .3s}
   .tagrow.open .tchev{transform:rotate(180deg)}
   .tagrow .tmore{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s;font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.78)}
   .tagrow.open .tmore{max-height:1200px;opacity:1;margin-top:10px}
   .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:rgba(232,184,75,0.85);margin-top:10px;margin-bottom:2px}
-  .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#E8B84B;margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
+  .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-ink);margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
   .wtsec:first-child .wtsechead{margin-top:0}
   .vchip{position:relative;font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream)}
   .vchip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410;border:none}
@@ -284,7 +284,7 @@
   .cst-vv{flex:0 0 auto;font-family:'Bricolage Grotesque';font-weight:700;font-size:22px;line-height:1;color:#F0EAD9}
   body.light .cst-vv{color:#1C1B1A}
   .cst-vv.gen{color:#C79A2E}
-  body.light .cst-vv.gen{color:#C79A2E}
+  body.light .cst-vv.gen{color:var(--gold-ink)}
   .cst-vv.low{color:#9a9588}
   body.light .cst-vv.low{color:#9a9588}
   /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with card.html */
@@ -362,11 +362,11 @@
   /* ★ LIGHT-MODE VERDICT FIX (was a dark panel, murky + unreadable in daylight) */
   body.light .verdict{background:linear-gradient(180deg,var(--panel-t-l),var(--panel-b-l));box-shadow:0 30px 60px -24px rgba(0,0,0,0.16);border:1px solid rgba(0,0,0,0.05)}
   body.light .verdict .vquote{color:var(--charcoal)}
-  body.light .vfinal .vquote3{color:#b8902f}
+  body.light .vfinal .vquote3{color:var(--gold-ink)}
   body.light .vsect{background:#fff;border-color:rgba(0,0,0,0.07);box-shadow:0 10px 24px -16px rgba(0,0,0,0.25)}
   body.light .vsect-t{color:var(--ink-soft)}
   body.light .vd-a,body.light .vd-b{color:var(--charcoal)}
-  body.light .vd-a.win,body.light .vd-b.win{color:#b8902f}
+  body.light .vd-a.win,body.light .vd-b.win{color:var(--gold-ink)}
   body.light .vwbtn{background:var(--charcoal);color:var(--cream);border-color:rgba(0,0,0,0.1)}
   body.light .vwbtn svg{color:#fff}
   #vradar .rgrid{stroke:rgba(255,255,255,0.14)}
@@ -379,7 +379,7 @@
   body.light .vsect-d{color:#6a6256}
   /* verdict result: gold + bigger */
   .verdict .vwho{font-size:22px;color:var(--gold)}
-  body.light .verdict .vwho{color:#b8902f}
+  body.light .verdict .vwho{color:var(--gold-ink)}
   /* hoverable verdict tags */
   .vtags-final{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:18px}
   .vtag{position:relative;font-family:'Archivo';font-weight:800;font-size:11.5px;padding:8px 14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);cursor:default}
@@ -431,7 +431,7 @@
   body.light .vsprose{color:#33302a}
   .vsprose + .vsprose{margin-top:.7em}   /* paragraph spacing when p1/p2 split into 2-3 paras */
   .vsprose b{font-style:normal;font-weight:800;color:var(--gold)}
-  body.light .vsprose b{color:#b8902f}
+  body.light .vsprose b{color:var(--gold-ink)}
 
   /* ===== Mobile-match: search bar, bar-chart trajectory, proof, data confidence ===== */
   .cmpsearch{display:flex;align-items:center;gap:14px;max-width:680px;margin:0 auto 26px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:13px 15px}

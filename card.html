@@ -6,7 +6,7 @@
 <title>VVonderXI</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#175030;--panel-t:#1C6038;--panel-b:#0F3A22}
+  :root{--ink-soft:#8a8276;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#175030;--panel-t:#1C6038;--panel-b:#0F3A22}
   *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;overflow-x:clip}
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
@@ -29,7 +29,7 @@
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
   .avatar{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#DA291C,#a01818);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:#fff}
-  body.light{color:var(--charcoal);--ink-soft:#5f594e;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
+  body.light{color:var(--charcoal);--ink-soft:#5f594e;--gold-ink:#7e5a10;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
   body.light .navitem{color:var(--ink-soft)}body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   body.light .crumb{color:var(--ink-soft)}body.light .modetoggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
@@ -112,13 +112,13 @@
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
   .darkbox{background:rgba(255,255,255,0.03);border-radius:14px;padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
   .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:var(--cream);line-height:1.55}
-  .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:#E8B84B;margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
+  .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--gold-ink);margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
   .narrative{background:rgba(255,255,255,0.03);border-radius:14px;padding:22px 24px}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:var(--cream);margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
-  .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#E8B84B;margin-top:16px;text-align:right}
+  .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-ink);margin-top:16px;text-align:right}
   /* wonder tag rows */
   .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px}
   body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
@@ -155,20 +155,20 @@
   /* chronicle one-liner above the expanded box */
   .chronicle-one{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:18px;line-height:1.5;color:#2a2620;margin-bottom:16px}
   body.light .chronicle-one{color:#2a2620}
-  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:#E8B84B;background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
+  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-ink);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
   #chronicleLayer .chronicle-one{text-align:center}
   #chronicleLayer .narrative .np{text-align:center}
   #chronicleLayer .narrative .nm{text-align:center}
   /* wonder tag expand */
   .tagrow{cursor:pointer}
   .tagrow .tt{justify-content:flex-start}
-  .tagrow .tchev{margin-left:auto;font-size:16px;opacity:0.9;color:#E8B84B;transition:transform .3s}
+  .tagrow .tchev{margin-left:auto;font-size:16px;opacity:0.9;color:var(--gold-ink);transition:transform .3s}
   .tagrow.open .tchev{transform:rotate(180deg)}
   .tagrow .tmore{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s;font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.78)}
   .tagrow.open .tmore{max-height:1200px;opacity:1;margin-top:10px}
   /* #17 Wonder Tags grouped sections , Winter label + gold hairline */
-  .wtintro{font-family:'Inter';font-size:13.5px;line-height:1.6;color:#E8B84B;margin-bottom:12px}
-  .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#E8B84B;margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
+  .wtintro{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--gold-ink);margin-bottom:12px}
+  .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-ink);margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
   .wtsec:first-child .wtsechead{margin-top:0}
   .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:rgba(232,184,75,0.85);margin-top:10px;margin-bottom:2px}
   .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
@@ -176,7 +176,7 @@
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
   .clubpill .cp-star{font-size:15px}
   body.light .clubpill{color:var(--charcoal);background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.12)}
-  body.light .clubpill.on{background:rgba(232,184,75,0.18);border-color:rgba(232,184,75,0.55);color:#8a6410}
+  body.light .clubpill.on{background:rgba(232,184,75,0.18);border-color:rgba(232,184,75,0.55);color:var(--gold-ink)}
   .comparepill{text-decoration:none}   /* #111: .clubpill styling on an <a> , kill the anchor underline */
   /* compare-next CTA under watch */
   .comparecta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--pink);color:#fff;border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:10px;box-shadow:0 14px 30px -12px rgba(255,92,122,0.6)}
