@@ -101,6 +101,11 @@
   .proofrow .pr{display:flex;align-items:center;gap:14px}
   .proofrow .per90{font-family:'Archivo';font-weight:700;font-size:13px;color:#8a8276;width:42px;text-align:center}
   .proofrow .raw{font-family:'Archivo';font-weight:900;font-size:15px;width:38px;text-align:center}
+  .proofhead{display:flex;align-items:center;justify-content:space-between;padding:0 0 3px}
+  .proofhead .pr{display:flex;align-items:center;gap:14px}
+  .proofhead .phc{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:0.09em;text-transform:uppercase;color:#b3aa9a;text-align:center}
+  .proofhead .h90{width:42px}
+  .proofhead .htot{width:38px}
   .pctn{font-family:'Archivo';font-weight:800;font-size:11px;color:#2E8C5A;width:36px;text-align:right}
   .pct{width:70px;height:7px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden}
   .pct i{display:block;height:100%}
@@ -212,7 +217,7 @@
   .vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A) !important}
   .vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
   .vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
-  .vvcard .chtagcell-age{background:linear-gradient(90deg,#C8855A,#B06B3F) !important}
+  .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}   /* Career-Stage (Wonderkid / The Last Dance) , neutral profile tag, NOT the honour gold */
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
   .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
@@ -451,7 +456,7 @@
   .seasonrows .rtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A);border-color:transparent;color:#fff}
   .seasonrows .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
   .seasonrows .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
-  .seasonrows .rtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F);border-color:transparent;color:#fff}
+  .seasonrows .rtag-age{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
   .seasonrows .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
   /* ===== end .seasonrows shared block ===== */
   .seasontrigger{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;cursor:pointer;padding:4px 2px;transition:color .18s}
@@ -470,7 +475,7 @@
   #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A)}
   #glChips .chtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968)}
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
-  #glChips .chtag-age{background:linear-gradient(90deg,#C8855A,#B06B3F)}
+  #glChips .chtag-age{background:linear-gradient(90deg,#5A5856,#46443F)}
   #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
   #glChips .chtag-prestige-gen{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
   #glChips .chtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
@@ -531,6 +536,7 @@
 <div class="tjbox" id="trajHost"></div>
 <div class="darkbox" id="scoutBox"><div class="q" id="scoutBody"></div><div class="m">SCOUT REPORT</div></div></div></div></div>
       <div class="layer" id="proofLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain" id="proofExplain">The <b>per 90</b> rate and the <b>season total</b> behind the score.</div>
+<div class="proofhead"><span class="phl"></span><span class="pr"><span class="phc h90">Per 90</span><span class="phc htot">Total</span></span></div>
 <div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span></div></div>
 <div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span></div></div>
 <div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span></div></div></div></div></div>
@@ -726,7 +732,10 @@
     var _pl = document.getElementById('profileLead'); if(_pl){ var _b = vvProfileBlurb(D); _pl.textContent = _b || 'A footballer measured across five dimensions.'; }
     set('glGoals', D.goals);
     set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
-    set('glSub', (posDisplay(D.pos)||'') + ' · ' + (D.clubname||'') + ' · ' + (D.year||'') + ' · Age ' + (D.age||'NR'));
+    var LEAGUE_FULL = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga', L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Jupiler Pro League', TR:'Süper Lig' };
+    var _gp = (D.appearances!=null) ? (D.appearances + (D.appearances===1 ? ' game' : ' games')) : null;
+    set('glSub', [ posDisplay(D.pos), D.clubname, (LEAGUE_FULL[D.league]||D.league), D.year, _gp, ('Age '+(D.age||'NR')) ]
+      .filter(function(x){ return x!=null && x!==''; }).join(' · '));
     set('glSquad', (D.number!=null ? D.number : 'NR'));
     var badgeFill=document.getElementById('glBadgeFill');
     if(badgeFill){
