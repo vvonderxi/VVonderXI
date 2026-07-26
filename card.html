@@ -530,10 +530,10 @@
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16l5.5-5.5 3.5 3 8.5-9"/><path d="M16.5 4.5h4v4"/></svg></div><div class="layer-t">The Trajectory</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner">
 <div class="tjbox" id="trajHost"></div>
 <div class="darkbox" id="scoutBox"><div class="q" id="scoutBody"></div><div class="m">SCOUT REPORT</div></div></div></div></div>
-      <div class="layer" id="proofLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain">The raw stats behind the score , the <b>per 90</b> rate and the <b>season total</b>.</div>
-<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span><span class="pctn"></span><span class="pct" style="display:none"><i></i></span></div></div>
-<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span><span class="pctn"></span><span class="pct" style="display:none"><i></i></span></div></div>
-<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span><span class="pctn"></span><span class="pct" style="display:none"><i></i></span></div></div></div></div></div>
+      <div class="layer" id="proofLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="19.5" x2="20.5" y2="19.5"/><path d="M6.6 19.5v-5"/><path d="M10.9 19.5v-9"/><path d="M15.2 19.5v-6.5"/><path d="M19.5 19.5v-11"/></svg></div><div class="layer-t">The Proof</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="proofexplain" id="proofExplain">The <b>per 90</b> rate and the <b>season total</b> behind the score.</div>
+<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span></div></div>
+<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span></div></div>
+<div class="proofrow"><div class="pl">&mdash;</div><div class="pr"><span class="per90">NR</span><span class="raw">NR</span></div></div></div></div></div>
       <div class="layer" id="chronicleLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.4 5.2 7.6 4.7 4 5.6v12c3.6-.9 6.4-.4 8 1 1.6-1.4 4.4-1.9 8-1v-12c-3.6-.9-6.4-.4-8 .9z"/><line x1="12" y1="6.4" x2="12" y2="18.5"/></svg></div><div class="layer-t">The Chronicle <span class="chron-rare">&#10038; Season Highlight</span></div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="chronicle-one">"The night Old Trafford rose as one, when a captain dragged his team from the brink and refused to let the season slip."</div>
 <div class="narrative">
   <div class="np">It was the kind of evening that football keeps for its favourites. United were drowning , a goal down and a man light, the noise draining from the stands.</div>
@@ -702,13 +702,18 @@
       var raw=D[def[1]];                                   // null-aware (NR); goals is 0-safe
       var v90=(raw==null||mins==null) ? null : (raw/(mins/90));
       var pl=row.querySelector('.pl'), p90=row.querySelector('.per90'), rw=row.querySelector('.raw');
-      var pn=row.querySelector('.pctn'), pc=row.querySelector('.pct');
       if(pl) pl.textContent=def[0];
       if(p90) p90.textContent=(v90==null)?'NR':v90.toFixed(2);
       if(rw)  rw.textContent =(raw==null)?'NR':raw;
-      if(pn) pn.textContent='';                            // percentile deferred
-      if(pc) pc.style.display='none';
     });
+    // Denominator header , the sample the per-90 rates are over. Season-level, stated once (NR, never 0).
+    var ex=document.getElementById('proofExplain');
+    if(ex){
+      var apps=D.appearances, has=(apps!=null || mins!=null);
+      var sample = has ? (' , across '+(apps!=null?apps:'NR')+(apps===1?' appearance':' appearances')
+                          +(mins!=null?' ('+mins.toLocaleString()+' min)':'')) : '';
+      ex.innerHTML='The <b>per 90</b> rate and the <b>season total</b> behind the score'+sample+'.';
+    }
   }
 
   function renderPanels(D){

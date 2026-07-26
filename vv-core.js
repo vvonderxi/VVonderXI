@@ -634,6 +634,7 @@
       // raw stat fields , consumed by Compare's The Proof (per-90) + verdictContext (age tiebreaker)
       // + card.html's The Proof (dimension-picked per-90/total). Null-preserving: NR, never 0.
       minutes:     row.minutes != null ? row.minutes : null,
+      appearances: row.appearances != null ? row.appearances : null,   // denominator for The Proof + glance games-played
       shots_on:    row.shots_on != null ? row.shots_on : null,
       shots_total: row.shots_total != null ? row.shots_total : null,
       passes_key:     row.passes_key != null ? row.passes_key : null,
