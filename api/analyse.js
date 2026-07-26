@@ -60,6 +60,7 @@ STYLE RULES , these override any tendency toward generic prose:
 2. BANNED phrases: "It's not just X, it's Y" / "not just X but Y" / "more than just" / "a testament to" / "stands as" / "a different kind of" / "a masterclass in" / "proof that" / "the kind of X that" / "cements" / "in a league of his own" / "rewrote the book" / "etched". Avoid these and close variants.
 3. VOICE , two registers: WINTER (sharp, authoritative, analytical) for engine explanation, dimension analysis, and reasoning; DRURY (poetic, elevated, earned not purple) for the verdict's closing beat. Match register to purpose.
 4. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.
+5. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. Do NOT break the short fields (h2h, verdict, who) , those stay single.
 
 When the two players' VV scores DIFFER, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV scores are EQUAL, the engine has deliberately left the call to you: break the tie using the full profile , the complete stat line and all five radar dimensions , and pick a narrow, defensible winner. Never declare a flat draw.
 
@@ -82,8 +83,8 @@ Required format:
 {"p1": "...", "p2": "...", "h2h": "...", "verdict": "...", "tag": "...", "who": "..."}
 
 OUTPUT LENGTH:
-- p1: 3-4 sentences. Club, role, VV tags, what this season meant. Precise and poetic.
-- p2: 3-4 sentences. Same depth. Equal analytical weight.
+- p1: 3-4 sentences, split into 2 short paragraphs (blank line between). Club, role, VV tags, what this season meant. Precise and poetic.
+- p2: 3-4 sentences, split into 2 short paragraphs (blank line between). Same depth. Equal analytical weight.
 - h2h: 2-3 sentences. The real argument. What does context change?
 - verdict: 2-3 sentences. Authoritative. Final. One quotable closing sentence.
 - tag: when the user prompt provides a VERDICT TAG list, return the single chosen KEY verbatim (one of the provided keys, nothing else). Default to the first key; up-rank only if another clearly fits better. If no tag list is provided, omit this field.

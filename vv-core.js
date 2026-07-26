@@ -1078,7 +1078,7 @@
     var n = data.length;
     // LEFT axis , goals + assists (dynamic max)
     var maxGA = 0; data.forEach(function(d){ var t=d.g+d.a; if(t>maxGA) maxGA=t; });
-    var lstep = maxGA>40?20:(maxGA>20?10:5);
+    var lstep = maxGA>40?20:(maxGA>20?10:(maxGA>8?5:2));   // finer steps at low values so a sparse chart fills the axis
     var axisTop = Math.max(lstep, Math.ceil(maxGA/lstep)*lstep);
     // RIGHT axis , VV Score (min-5 .. max+3, like the demo's 72-96)
     var rts = data.map(function(d){return d.rt;}).filter(function(x){return x!=null;});
@@ -1088,10 +1088,11 @@
     if(vvMax-vvMin<8) vvMax = vvMin+8;   // single-season / flat guard
     var peakIdx=-1, peakRt=-1;
     data.forEach(function(d,i){ if(d.rt!=null && d.rt>peakRt){ peakRt=d.rt; peakIdx=i; } });
-    // geometry
-    var W=360,H=214, ml=30, mr=36, mt=30, mb=26, pw=W-ml-mr, ph=H-mt-mb;
-    var slot=pw/n, bw=Math.min(38, slot*0.5);
-    var X=function(i){ return ml+slot*(i+0.5); };
+    // geometry , extra top room for peak/total labels, bottom room for axis titles
+    var W=360,H=240, ml=32, mr=38, mt=42, mb=36, pw=W-ml-mr, ph=H-mt-mb;
+    var single=(n===1);
+    var slot=Math.min(pw/n, 72), usedW=slot*n, x0=ml+(pw-usedW)/2, bw=Math.min(38, slot*0.5);
+    var X=function(i){ return x0+slot*(i+0.5); };   // centre the bar cluster (neat for 1-2 seasons, full spread when many)
     var Yl=function(v){ return mt+ph-(v/axisTop)*ph; };
     var Yr=function(v){ return mt+ph-((v-vvMin)/(vvMax-vvMin))*ph; };
     var s='<defs>'
@@ -1099,6 +1100,9 @@
       + '<linearGradient id="tjgAst" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C860"/><stop offset="1" stop-color="#E0AC3C"/></linearGradient>'
       + '<filter id="tjShadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.18"/></filter>'
       + '</defs>';
+    // axis titles , name the two number columns so the ticks are legible
+    s+='<text class="tjyl" x="'+(ml-6)+'" y="'+(mt-16)+'" text-anchor="end" style="letter-spacing:.05em">G+A</text>';
+    if(hasVV) s+='<text class="tjyr" x="'+(W-mr+6)+'" y="'+(mt-16)+'" text-anchor="start" style="letter-spacing:.05em">VV</text>';
     // SHARED gridlines , LEFT (G+A) and RIGHT (VV) labels map to the SAME horizontal lines
     for(var t=0;t<=axisTop;t+=lstep){ var y=Yl(t);
       s+='<line class="tjgrid" x1="'+ml+'" y1="'+y.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y.toFixed(1)+'"/>';
@@ -1106,14 +1110,17 @@
       if(hasVV){ var vvAt=Math.round(vvMin+(vvMax-vvMin)*(t/axisTop));   // VV value at this shared gridline
         s+='<text class="tjyr" x="'+(W-mr+6)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="start">'+vvAt+'</text>'; }
     }
+    var xStep = n>=13?3:(n>=9?2:1);   // thin x-labels on dense charts
     data.forEach(function(d,i){ var x=X(i), bx=x-bw/2, base=Yl(0);
       if(d.selected) s+='<rect class="tjsel" x="'+(bx-4).toFixed(1)+'" y="'+(mt-2).toFixed(1)+'" width="'+(bw+8).toFixed(1)+'" height="'+(ph+2).toFixed(1)+'" rx="7"/>';
       var gTop=Yl(d.g), aTop=Yl(d.g+d.a), bars='';
       if(d.g>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="4" fill="url(#tjgGoal)"/>';
       if(d.a>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="4" fill="url(#tjgAst)"/>';
       if(bars) s+='<g filter="url(#tjShadow)">'+bars+'</g>';   // soft shadow lifts the stacked bar off the green
-      var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
-      s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
+      if(i%xStep===0 || d.selected || i===n-1){
+        var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
+        s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
+      }
     });
     if(hasVV){
       var pts=[]; data.forEach(function(d,i){ if(d.rt!=null) pts.push(X(i).toFixed(1)+','+Yr(d.rt).toFixed(1)); });
@@ -1121,7 +1128,7 @@
       data.forEach(function(d,i){ if(d.rt==null) return; var x=X(i), y=Yr(d.rt), pk=(i===peakIdx);
         s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(pk?4.5:3.1)+'" fill="'+(pk?'#E8B84B':'#F0EAD9')+'" stroke="#17151a" stroke-width="1.2"/>';
         if(pk){ var poff=d.selected?-24:-12;   // clear the selected highlight box when peak==selected; else sit just above the dot
-          s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">PEAK '+d.rt+'</text>'; }
+          s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">'+(single?('VV '+d.rt):('PEAK '+d.rt))+'</text>'; }   // one season isn't a "peak"
       });
     }
     // total-output numbers ON TOP , panel-green mask breaks the VV line (card); transparent bg (compare) uses a dark halo instead
@@ -1134,7 +1141,9 @@
     if(opts.chrome===false) return svg;   // compare: bare chart (shared head/legend/caption supplied once by the caller)
     var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
-    var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
+    var caption='<div class="tjcap">'+(single
+      ? 'One season on record , the numbers so far, not yet a trajectory.'
+      : 'The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.')+'</div>';
     return head+legend+svg+caption;
   }
 
