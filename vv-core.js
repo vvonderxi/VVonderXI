@@ -819,14 +819,15 @@
     const leagueCode = row.league_code || null;
     const season = [];   // honours for THIS card's season+league
     const career = [];   // legacy , now always empty (world_cup_winner is season-specific, see loop)
-    // (a) PLAYER-keyed honours (individual + world_cup) , keyed by api_player_id
+    // (a)+(b) fire the PLAYER-keyed query and the (session-memoized) TEAM-honours cache in PARALLEL ,
+    // independent reads, so honours cost ONE round-trip not two. Player query resolves to null on error.
+    const _playerQ = (row.api_player_id != null)
+      ? sb.from('honours').select('honour_type,season_year,league_code,honour_context,goals,assists')
+          .eq('api_player_id', row.api_player_id).then(function(r){ return r; }, function(){ return null; })
+      : Promise.resolve(null);
+    const [res, teamCache] = await Promise.all([ _playerQ, loadTeamHonours() ]);
+    // (a) PLAYER-keyed honours (individual + world_cup)
     if(row.api_player_id != null){
-      let res;
-      try {
-        res = await sb.from('honours')
-          .select('honour_type,season_year,league_code,honour_context,goals,assists')
-          .eq('api_player_id', row.api_player_id);
-      } catch(e){ res = null; }
       if(res && !res.error && res.data){
         for(const h of res.data){
           const meta = HONOUR_META[h.honour_type];
@@ -850,9 +851,8 @@
         }
       }
     }
-    // (b) TEAM-keyed honours (league_champion + ucl_winner) , matched by team+season(+league).
+    // (b) TEAM-keyed honours (league_champion + ucl_winner) , from the parallel-fetched cache above.
     //     Never come through the api_player_id query above (their api_player_id is NULL), so no dup.
-    const teamCache = await loadTeamHonours();
     for(const ti of teamHonoursFor(row, teamCache)){
       if(!season.some(s => s.type === ti.type && s.season_year === ti.season_year)) season.push(ti);
     }

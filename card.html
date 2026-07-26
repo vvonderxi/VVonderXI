@@ -749,16 +749,7 @@
         badgeNum.removeAttribute('stroke'); badgeNum.removeAttribute('stroke-width'); badgeNum.removeAttribute('paint-order');
       }
     }
-    var chips=document.getElementById('glChips');
-    if(chips){
-      chips.innerHTML = renderHonourChips(D.honours) + renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
-      if(typeof TAG_DEFS !== 'undefined'){
-        chips.querySelectorAll('[data-tag]').forEach(function(el){
-          var def=TAG_DEFS[el.getAttribute('data-tag')];
-          if(def && def.oneLiner){ el.setAttribute('data-tip', def.oneLiner); }
-        });
-      }
-    }
+    vvApplyHonours();   // glChips + Wonder Tags , honour-dependent DOM, re-callable when honours land
     var w=document.querySelector('.watchcta');
     if(w){
       w.href='https://www.youtube.com/results?search_query='+encodeURIComponent((D.full||'')+' season highlights '+(D.year||''));
@@ -807,6 +798,22 @@
         dcFields.innerHTML = '';
       }
     }
+  }
+  // Honour-dependent DOM only (glance chips + Wonder Tags). Split out of renderPanels so honours can
+  // fill in AFTER the card core paints (they arrive on their own fetch) without re-running renderPanels
+  // (which would re-fire the AI editorial). Reads window.D; safe to call repeatedly.
+  function vvApplyHonours(){
+    var D=window.D; if(!D) return;
+    var chips=document.getElementById('glChips');
+    if(chips){
+      chips.innerHTML = renderHonourChips(D.honours) + renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
+      if(typeof TAG_DEFS !== 'undefined'){
+        chips.querySelectorAll('[data-tag]').forEach(function(el){
+          var def=TAG_DEFS[el.getAttribute('data-tag')];
+          if(def && def.oneLiner){ el.setAttribute('data-tip', def.oneLiner); }
+        });
+      }
+    }
     var wt = document.getElementById('wonderTags');
     if(wt && typeof TAG_DEFS !== 'undefined'){
       var profileRowsHtml = VVCore.renderProfileTagRows(D.tags, D.prestige);   // shared (card + compare)
@@ -837,15 +844,19 @@
     var id=_cardId;                           // shared from the first-paint read above
     if(!id) return;                          // no id -> keep demo default (standalone)
     var sb=vvClient(); if(!sb) return;       // vv-core logs why (missing config or lib)
+    try{ if(typeof loadTeamHonours==='function') loadTeamHonours(); }catch(e){}   // warm the session-once team cache in PARALLEL with the card row
     var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
     if(res.error || !res.data){ console.error('card load failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
-    const honours = await fetchHonours(res.data);   // honours fetch (fail-soft: empty shape on failure)
-    D.honours = honours;                            // populated before render; render layer consumes next
+    D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
-    renderPanels(D);
-    loadSeasons(res.data.api_player_id, res.data.card_id);
+    renderPanels(D);                         // CARD CORE VISIBLE on ONE round-trip (score/stats/tags/radar/proof)
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
+    loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
+    var targetD=D;   // honours fill in WITHOUT blocking the core; guard against a season-switch landing first
+    // renderHero re-run too: the card FACE pills come from d.honours.all (buildCard), so the face needs
+    // the honours to show its pill , a quick pop-in as they land, exactly the "fill in after" behaviour.
+    fetchHonours(res.data).then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null;
@@ -856,12 +867,12 @@
     var res=await sb.from('player_card_mv').select('*').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
-    try{ await attachHonoursBatch(rows); }catch(e){}   // honour pills, one batched query for all seasons
     SEASON_ROWS=rows;
-    renderTrajectory();
+    renderTrajectory();                    // trajectory chart draws NOW , it does not need honours
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     var zone=document.getElementById('seasonZone');
     if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
+    attachHonoursBatch(rows).catch(function(){});   // honour pills for the season list fill in after (non-blocking; mutates rows in place)
   }
   function seasonRowsHTML(){
     return (SEASON_ROWS||[]).map(function(r,idx){
@@ -895,10 +906,16 @@
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
     if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
-    const honours = await fetchHonours(res.data);   // THIS season's own honours (fail-soft)
-    D.honours = honours;
+    D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; honours fill in after the flip lands (they don't gate the reveal)
     var _cw=cwNow();   // #109 reveal to the new season: desktop 3D flip / mobile scale-swap, coin = destination tier (D.vv)
-    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, prestige:D.prestige, onDone:function(){ drawRadar(); } });
+    var targetD=D;   // staleness guard: a rapid second switch must not get THIS season's honours
+    var _honP=fetchHonours(res.data);   // fire in PARALLEL with the flip, non-blocking
+    // honours applied in onDone so they never interrupt the in-flight flip; renderHero re-runs for the
+    // card FACE pill (buildCard reads d.honours.all), vvApplyHonours for glance chips + Wonder Tags.
+    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, prestige:D.prestige, onDone:function(){
+      drawRadar();
+      _honP.then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
+    } });
     renderPanels(D);
     SEASON_CARDID=cardId;
     renderTrajectory();
