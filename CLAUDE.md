@@ -122,6 +122,11 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
 
 ### PARALLEL / ANYTIME (no dependency, slot in whenever)
 - Mobile-responsive fixes; logo + og/meta polish; coarse-position tail cleanup (DB-wide "CM" tail below rt80 + ~18k coarse tail via known_players.csv dictionary, no CCC needed for known names).
+- **CARD / RANKINGS improvement queue (logged 2026-07-26, QUEUED , not built).** Checked against existing items; overlaps noted.
+  1. **[NEW] Glance , add LEAGUE to the glance line.** `glSub` (card.html ~L692) currently reads `pos · club · year · Age`; add which of the 9 leagues (from `D.league`/`league_code`, display name via LEAGUE_NAMES). Alongside club/position/age.
+  2. **[NEW] Glance , add GAMES/APPEARANCES beside goals + assists.** The glance stats show G + A only; add appearances (on `player_card_mv.appearances` + psc.appearances; may need `rowToCard` to carry it) so G/A has denominator context (12g in 15 games vs 38). High value given the minutes-based engine philosophy.
+  3. **[NEW ASSESSMENT] The Proof , decide finish / trim / unpark.** The panel is WIRED (ff6a1f1) but shows only per-90 + season total , the PERCENTILE column is parked on the engine percentile work (already logged §F 2026-07-24). OPEN QUESTION (design, not just deferral): is per-90 + raw enough to justify the panel, or does it read empty/thin without the percentile? A Graham-style version would show RATE + POSITIONAL CONTEXT (where this ranks in its pool), not raw totals. Decide: finish it (unpark the percentile , needs the parked radar-percentile-within-position engine work, see §C radar RADAR_REF), trim it to what per-90 alone justifies, or cut the panel. Depends on the engine percentile track.
+  4. **[PARTIAL DUP] Rankings LIST view , wonder tags crop/truncate** (Goal Machine, Provider, Generational cut off in pillmode). RELATED to §D build-track step 5 "Tag-crop sweep (390px)" but more specific: this is the LIST/pillmode row tag rendering truncating tag names, not only a 390px issue , fold into that sweep or handle as its own pillmode tag-fit fix.
 
 ---
 
