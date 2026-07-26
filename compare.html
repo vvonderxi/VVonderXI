@@ -254,8 +254,15 @@
      column-constrained on mobile ~158px). A fixed 240px spilled ~41px each side of the narrow column,
      over the sibling card + its VV scores AND past the viewport (horizontal page scroll). Contained on
      the element itself , NOT via an ancestor overflow clip, which would flatten the card-flip preserve-3d (#109). */
-  .cmp-seasonfold .seasonrows{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:min(240px,100%);max-width:calc(100vw - 32px);z-index:40;max-height:min(58vh,440px);overflow-y:auto;background:#15100f;box-shadow:0 24px 50px -16px rgba(0,0,0,0.72);animation:cmpDrop .18s ease}
+  .cmp-seasonfold .seasonrows{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:min(240px,100%);max-width:calc(100vw - 32px);z-index:40;max-height:min(58vh,440px);overflow-y:auto;scrollbar-gutter:stable;background:#15100f;box-shadow:0 24px 50px -16px rgba(0,0,0,0.72);animation:cmpDrop .18s ease}
   body.light .cmp-seasonfold .seasonrows{background:#F4EEE0;box-shadow:0 24px 50px -18px rgba(0,0,0,0.28)}
+  /* Desktop (>=700, same line as the JS render branch): pill + dropdown both span the CARD width via
+     var(--cw) (300px), driven off the same variable the card uses so they cannot drift. Mobile keeps
+     min(240px,100%) above , the overflow fix. The fuller seasonLed row gets its designed room here. */
+  @media (min-width:700px){
+    .cmp-seasonfold{max-width:var(--cw)}
+    .cmp-seasonfold .seasonrows{width:var(--cw)}
+  }
   @keyframes cmpDrop{from{opacity:0}to{opacity:1}}   /* opacity-only , keeps the translateX(-50%) centering static (cmpSeasonIn animated transform, which would break centering) */
   /* ── Compare season rows , Option B (compare-only; card.html keeps the shared rankRowHTML seasonLed). ──
      season+club on the left (club ellipsizes), tier-coloured VV score on the right. No tags. Uniform
