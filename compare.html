@@ -930,16 +930,26 @@ body.light .pkmsub{color:#b0a899}
   // card face: >=95 gold (Generational), >=80 charcoal/cream (Standout/WC/Elite = the card's default
   // score colour), <80 muted grey (Accomplished). No tags.
   function pkSeasonTileHTML(d, onclick, active){
-    var rt=(d.vv===''||d.vv==null)?null:+d.vv;
-    var tier = (rt==null) ? ' low' : (rt>=95 ? ' gen' : (rt>=80 ? '' : ' low'));   // '' = strong (default charcoal/cream)
-    var vv=(rt==null)?'NR':rt;
-    return '<div class="cst-row'+(active?' active':'')+'" onclick="'+onclick+'">'
-      +'<div class="cst-main">'
-        +'<div class="cst-season">'+(d.year||'')+'</div>'
-        +'<div class="cst-club">'+vvEsc(d.clubname||'')+'</div>'
-      +'</div>'
-      +'<div class="cst-vv'+tier+'">'+vv+'</div>'
-    +'</div>';
+    // ONE renderer, width branch read AT RENDER TIME (innerWidth here, not cached) , the dropdown
+    // re-renders on every open/switch, so each user gets the right layout on their next open regardless
+    // of where they opened it. <700 = the app's mobile line (matches cwNow / vvSizeCards).
+    if(typeof window!=='undefined' && window.innerWidth<700){
+      // MOBILE: Option B , season + club + tier-coloured score, no tags (narrow column).
+      var rt=(d.vv===''||d.vv==null)?null:+d.vv;
+      var tier = (rt==null) ? ' low' : (rt>=95 ? ' gen' : (rt>=80 ? '' : ' low'));   // '' = strong (default charcoal/cream)
+      var vv=(rt==null)?'NR':rt;
+      return '<div class="cst-row'+(active?' active':'')+'" onclick="'+onclick+'">'
+        +'<div class="cst-main">'
+          +'<div class="cst-season">'+(d.year||'')+'</div>'
+          +'<div class="cst-club">'+vvEsc(d.clubname||'')+'</div>'
+        +'</div>'
+        +'<div class="cst-vv'+tier+'">'+vv+'</div>'
+      +'</div>';
+    }
+    // DESKTOP (>=700): the fuller SHARED seasonLed row (year + club·pos·age·G·A + up to 3 tags + rmini
+    // VV badge). Reuses rankRowHTML , the SAME renderer card.html uses , so the two cannot drift.
+    return rankRowHTML(d, 0, { cap:3, showRank:false, seasonLed:true, active:active,
+                               onClick:function(){ return onclick; } });
   }
   function seasonRowsHTMLCmp(slot){
     var rows=SLOT_SEASONS[slot]||[]; var cmp=slot==='A'?CMP_A:CMP_B; var curId=cmp&&cmp.card_id;
