@@ -898,8 +898,9 @@ body.light .pkmsub{color:#b0a899}
     var ids; try{ ids=new URLSearchParams(window.location.search); }catch(e){ return; }
     var a=ids.get('a'), b=ids.get('b'); if(!a && !b) return;
     var sb=vvClient(); if(!sb) return;            // vv-core logs why (missing config or lib)
-    if(a){ var ca=await fetchCard(a); if(ca) CMP_A=ca; }
-    if(b){ var cb=await fetchCard(b); if(cb) CMP_B=cb; }
+    var _pair=await Promise.all([ a?fetchCard(a):null, b?fetchCard(b):null ]);
+    if(_pair[0]) CMP_A=_pair[0];
+    if(_pair[1]) CMP_B=_pair[1];
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
     vvSizeCards();
     requestAnimationFrame(function(){ setTimeout(function(){
@@ -1381,7 +1382,7 @@ body.light .pkmsub{color:#b0a899}
   // reveal handler , draw graphics when Compare is pressed
   document.querySelector('.settle').addEventListener('click',function(){
     var m=document.querySelector('.matchup'); if(m && CMP_A && CMP_B) m.classList.add('settled');
-    setTimeout(async ()=>{vvComputeSpokes();vvUpdateWatchLinks();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();vvSetProof();drawH2H();var serA=await vvLoadTrajectory(CMP_A&&CMP_A.api_player_id);var serB=await vvLoadTrajectory(CMP_B&&CMP_B.api_player_id);drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);vvSetConfidence(serA&&serA.length,serB&&serB.length);},60);
+    setTimeout(async ()=>{vvComputeSpokes();vvUpdateWatchLinks();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();vvSetProof();drawH2H();var _tr=await Promise.all([ vvLoadTrajectory(CMP_A&&CMP_A.api_player_id), vvLoadTrajectory(CMP_B&&CMP_B.api_player_id) ]);var serA=_tr[0],serB=_tr[1];drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);vvSetConfidence(serA&&serA.length,serB&&serB.length);},60);
     vvGenerateVerdict();
   });
   // redraw radar on mode toggle (grid contrast)
