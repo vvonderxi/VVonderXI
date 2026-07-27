@@ -7,7 +7,7 @@
 <title>VVonderXI , My Club</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
+  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);
@@ -44,12 +44,12 @@
   .avatar{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#DA291C,#a01818);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:#fff}
 
   /* ===================== LIGHT MODE , the shell flip (hallway) ===================== */
-  body.light{color:var(--charcoal);background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
+  body.light{--ink-soft:#5f594e;color:var(--charcoal);background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
-  body.light .navitem{color:#8a8276}
+  body.light .navitem{color:var(--ink-soft)}
   body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}
   body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
-  body.light .crumb{color:#9a9285}
+  body.light .crumb{color:var(--ink-soft)}
   body.light .modetoggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
 
   /* ============================================================
@@ -88,13 +88,13 @@
   .vvcard .cga{display:flex;justify-content:center;margin-top:calc(var(--cw)*0.04)}
   .vvcard .cga .col{flex:1;text-align:center}
   .vvcard .cga .col .v{font-family:'Archivo';font-weight:900;font-size:calc(var(--cw)*0.08)}
-  .vvcard .cga .col .l{font-family:'Archivo';font-weight:700;font-size:calc(var(--cw)*0.03);letter-spacing:0.08em;text-transform:uppercase;color:#9a9285;margin-top:2px}
+  .vvcard .cga .col .l{font-family:'Archivo';font-weight:700;font-size:calc(var(--cw)*0.03);letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
   .vvcard .cga .divider{width:1px;background:rgba(0,0,0,0.12)}
   .vvcard .cname{text-align:center;margin-top:calc(var(--cw)*0.05)}
   .vvcard .cname .nm{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.125);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.033)}
   .vvcard .cname .nm .cflag{font-size:calc(var(--cw)*0.088)}
-  .vvcard .cname .full{font-family:'Archivo';font-weight:600;font-size:calc(var(--cw)*0.054);color:#8a8276;margin-top:calc(var(--cw)*0.022)}
-  .vvcard .cname .sub{font-family:'Archivo';font-weight:700;font-size:calc(var(--cw)*0.044);letter-spacing:0.04em;text-transform:uppercase;color:#8a8276;margin-top:calc(var(--cw)*0.025)}
+  .vvcard .cname .full{font-family:'Archivo';font-weight:600;font-size:calc(var(--cw)*0.054);color:var(--ink-soft);margin-top:calc(var(--cw)*0.022)}
+  .vvcard .cname .sub{font-family:'Archivo';font-weight:700;font-size:calc(var(--cw)*0.044);letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-top:calc(var(--cw)*0.025)}
 
   /* ===== Prestige whole-card treatment ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
@@ -127,7 +127,7 @@
     background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:22px;padding:28px 26px 26px}
   body.light .identrail{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
   .greet{font-family:'Archivo';font-weight:600;font-size:14px;color:rgba(243,237,224,0.6);letter-spacing:0.02em;align-self:flex-start}
-  body.light .greet{color:#8a8276}
+  body.light .greet{color:var(--ink-soft)}
   .squadname{font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;line-height:1.04;margin-top:4px;align-self:flex-start}
   .estline{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-left:6px;white-space:nowrap}
 
@@ -135,11 +135,11 @@
   .shirt .jersey{position:absolute;inset:0;border-radius:20px;background:linear-gradient(160deg,var(--club),#8a1810);box-shadow:0 16px 34px -12px rgba(218,40,28,0.6),inset 0 0 0 1px rgba(255,255,255,0.12)}
   .shirt .num{position:relative;font-family:'Bricolage Grotesque';font-weight:800;font-size:42px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
   .clubline{font-family:'Archivo';font-weight:700;font-size:11.5px;color:rgba(243,237,224,0.6);margin-top:12px;letter-spacing:0.03em;text-align:center}
-  body.light .clubline{color:#8a8276}
+  body.light .clubline{color:var(--ink-soft)}
 
   .identtags{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:7px;width:100%}
   .itlabel{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
-  body.light .itlabel{color:#9a9285}
+  body.light .itlabel{color:var(--ink-soft)}
   .tagrow{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
   .tip{position:relative;font-family:'Archivo';font-weight:700;font-size:11px;padding:5px 12px;border-radius:12px;background:rgba(255,255,255,0.08);color:rgba(243,237,224,0.85);cursor:default;display:inline-flex;align-items:center;gap:5px}
   .tip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
@@ -160,7 +160,7 @@
   .reflection .q{font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;line-height:1.55;color:var(--cream)}
   body.light .reflection .q{color:var(--charcoal)}
   .reflection .m{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-top:10px;text-align:right}
-  body.light .reflection .m{color:#9a9285}
+  body.light .reflection .m{color:var(--ink-soft)}
 
   /* stats strip */
   .stats{display:flex;gap:9px;margin-top:18px;width:100%}
@@ -171,12 +171,12 @@
   .stat .v .pk{color:var(--gold)}
   .stat .v .sm{font-size:12px}
   .stat .l{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:3px}
-  body.light .stat .l{color:#9a9285}
+  body.light .stat .l{color:var(--ink-soft)}
 
   /* ===================== MAIN COLUMN ===================== */
   .clubmain{min-width:0}
   .secttitle{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.5);margin:6px 2px 16px;display:flex;align-items:center;justify-content:space-between}
-  body.light .secttitle{color:#7a746a}
+  body.light .secttitle{color:var(--ink-soft)}
   .secttitle .ct{color:var(--pink);cursor:pointer}
   .secttitle.sp{margin-top:40px}
 
@@ -207,7 +207,7 @@
   .addtile .plus{width:46px;height:46px;border-radius:50%;background:rgba(255,92,122,0.15);color:var(--pink);font-size:28px;font-weight:300;display:flex;align-items:center;justify-content:center;line-height:1}
   .addtile .lbl{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.55);letter-spacing:0.02em}
   body.light .addtile{border-color:rgba(0,0,0,0.16);background:rgba(0,0,0,0.015)}
-  body.light .addtile .lbl{color:#8a8276}
+  body.light .addtile .lbl{color:var(--ink-soft)}
 
   /* ===================== VERDICT HISTORY ===================== */
   .vmemberbar{background:linear-gradient(135deg,rgba(232,184,75,0.14),rgba(232,184,75,0.06));border:1px solid rgba(232,184,75,0.3);border-radius:16px;padding:16px 18px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
@@ -245,14 +245,14 @@
   .vcm-bar.madrid{background:linear-gradient(90deg,#FEBE10 0 50%,#fff 50%)}
   .vcm-nm{text-align:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:var(--charcoal);margin-top:7px}
   .vvs{font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:rgba(243,237,224,0.4);flex-shrink:0}
-  body.light .vvs{color:#b3a99a}
+  body.light .vvs{color:var(--ink-soft)}
   .vbody{text-align:center;margin-top:15px}
   .vt{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:var(--cream);line-height:1.1}
   body.light .vt{color:var(--charcoal)}
   .vverdict{font-family:'Archivo';font-weight:800;font-size:11.5px;color:var(--gold);background:rgba(232,184,75,0.15);display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:11px;margin-top:9px}
   .vverdict .vvi{width:13px;height:13px}
   .vgo{position:absolute;top:16px;right:16px;color:rgba(243,237,224,0.3);font-size:17px}
-  body.light .vgo{color:#b3a99a}
+  body.light .vgo{color:var(--ink-soft)}
   .vdelete{position:absolute;top:12px;left:13px;z-index:5;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.32);color:rgba(255,255,255,0.85);border:none;font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
   .vcard:hover .vdelete{opacity:1}
   body.light .vdelete{background:rgba(0,0,0,0.4)}
@@ -277,7 +277,7 @@
     .bottomnav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:60;justify-content:space-around;align-items:center;background:rgba(20,16,17,.93);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.08);padding:9px 4px calc(10px + env(safe-area-inset-bottom,0px))}
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
-    body.light .bn-item{color:#9a9285}
+    body.light .bn-item{color:var(--ink-soft)}
     .bn-item.on{color:var(--pink)}
     .bn-item svg{width:21px;height:21px}
   }
@@ -327,12 +327,12 @@
   .iosbody b{color:#fff}
   .iosclose{margin-top:18px;width:100%;padding:13px;border-radius:13px;border:0;background:var(--pink,#ff2d78);color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;cursor:pointer}
   /* daylight */
-  body.light .memail,body.light .merow .mv,body.light .merow .chev{color:rgba(40,36,30,0.5)}
+  body.light .memail,body.light .merow .mv,body.light .merow .chev{color:var(--ink-soft)}
   body.light .mecard{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
   body.light .merow{border-color:rgba(0,0,0,0.06)}
   body.light .merow:hover{background:rgba(0,0,0,0.02)}
-  body.light .meicon{color:rgba(40,36,30,0.65)}
-  body.light .meglabel{color:rgba(40,36,30,0.42)}
+  body.light .meicon{color:var(--ink-soft)}
+  body.light .meglabel{color:var(--ink-soft)}
   body.light .mesw{background:rgba(0,0,0,0.18)}
   body.light .mesw.on{background:var(--pink,#ff2d78)}
 </style>

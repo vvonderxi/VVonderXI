@@ -62,9 +62,9 @@
   .rs-clear{display:none;background:none;border:0;color:rgba(243,237,224,0.5);font-size:21px;line-height:1;cursor:pointer;padding:0 2px}
   .rankempty{grid-column:1/-1;text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.5)}
   body.light .ranksearch{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
-  body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:rgba(40,36,30,0.5)}
+  body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:var(--ink-soft)}
   body.light .ranksearch input{color:var(--charcoal)}
-  body.light .rankempty{color:rgba(40,36,30,0.5)}
+  body.light .rankempty{color:var(--ink-soft)}
   /* ===== Unified rank row (.urow) , shared by List (pillmode) + Compact (compactmode).
      ONE fixed-column grid in both modes -> every column aligns row-to-row (no max-content).
      Only padding / font-size / column-gap differ (Compact = denser). Score = .rmini VV badge. ===== */
@@ -119,6 +119,8 @@
   .rtag.green{background:rgba(46,140,90,.15);border-color:rgba(46,140,90,.5);color:#2a8455}
   .rtag.coral{background:rgba(255,122,92,.15);border-color:rgba(255,122,92,.5);color:#e0613a}
   .rtag.purple{background:rgba(150,95,205,.15);border-color:rgba(150,95,205,.5);color:#8b5bc8}
+  body.light .rtag.pink{color:#af3753}body.light .rtag.coral{color:#a1462a}body.light .rtag.slate{color:#62626d}body.light .rtag.green{color:#236f47}body.light .rtag.blue{color:#36649c}body.light .rtag.purple{color:#784eac}
+  {RTAG}
   .rtag.slate{background:rgba(120,120,135,.14);border-color:rgba(120,120,135,.45);color:#777785}
   .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
   /* prestige pills , the loudest List tag (sized by base .rtag at :84; colour only) */
@@ -186,7 +188,7 @@
     #cardgrid.compactmode > .urow > .utags{display:none}
     #cardgrid.compactmode > .urow > .rmini{grid-column:6;grid-row:1/3;align-self:center;justify-self:end;margin:0;width:38px;height:42px}
     .compacthead{display:none}
-    .gridwrap.compactmode .compacthead{display:grid;grid-template-columns:22px minmax(0,1fr) 34px 30px 30px 40px;column-gap:9px;padding:6px 12px 7px;margin:0 0 2px;font-size:11px;letter-spacing:.03em;color:#7c756a;align-items:center}
+    .gridwrap.compactmode .compacthead{display:grid;grid-template-columns:22px minmax(0,1fr) 34px 30px 30px 40px;column-gap:9px;padding:6px 12px 7px;margin:0 0 2px;font-size:11px;letter-spacing:.03em;color:var(--ink-soft);align-items:center}
     .gridwrap.compactmode .compacthead span:nth-child(1){grid-column:2}
     .gridwrap.compactmode .compacthead span:nth-child(2),.gridwrap.compactmode .compacthead span:nth-child(3),.gridwrap.compactmode .compacthead span:nth-child(4),.gridwrap.compactmode .compacthead span:nth-child(5){text-align:center}
   }
@@ -288,7 +290,7 @@
   body.light .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.5);transition:background .15s,color .15s}
   .vseg.on{background:var(--pink);color:#fff}
-  body.light .vseg{color:rgba(40,36,30,0.45)}
+  body.light .vseg{color:var(--ink-soft)}
   body.light .vseg.on{color:#fff}
   .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--ink);background:var(--pillbg);border:1px solid var(--pill-b);border-radius:999px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
   .rankfbtn.on{background:var(--pink);color:#fff;border-color:transparent}
