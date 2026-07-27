@@ -106,6 +106,30 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
    - **SEQUENCING (hard rule):** Step 5 hygiene , API-Football key rotation (exposed), OAuth published, og/meta + social image, vercel.json review , MUST land BEFORE the merge/deploy, not after (the merge = production the instant it deploys).
    - **PRE-MERGE CHECK:** run `git fetch origin` in Terminal C immediately before merging to confirm origin/vvonderxi_BIGGER is still 0-ahead (the 0-ahead count is only as fresh as the last fetch).
 
+### PRE-LAUNCH POLISH / BUG QUEUE (logged 2026-07-27, reconciled against code , see §F audit)
+Priority order. These are build-completeness gaps (ship-readiness), several never previously logged. Work top-down.
+
+**TIER 1 , BUGS (launch-blocking, wrong not just unpolished):**
+1. **SEARCH ACCURACY** , "Rodri 18" returns wrong players. Diagnose the matcher: season-token parse (`vvParseSearch`), name substring (`tokenAndFilter`), or result ranking. First thing a user does. NOT previously logged. [BUG, untouched]
+2. **COMPARE PICKER FILTER** , reported static (Prestige/Honours/Profile don't filter). **CODE FINDING (2026-07-27): it was NOT left out of the FILTER_TAXONOMY/passF reconciliation.** `renderFilterChips` populates the chips, they carry `onclick="pkSetFilter(...)"`, `pkSetFilter` sets the filter AND calls `renderPicker()`, and `passF` implements `prestige`/`tag`/`pos`. So Prestige + Profile DO filter; **Honours is deferred-inert BY DESIGN** (`soon:true`, same as rankings, awaiting honour flags on the matview , see Option C item). ACTION = live REPRO to find the actual defect before touching; do NOT re-apply a reconciliation that is already present. [needs repro , likely not the bug as described]
+3. **GLANCE HOVER TAGS** , glance tags disappear/rearrange on hover (desktop). No `:hover` rule on `#glChips` , likely a JS re-render (`renderHero`/`vvApplyHonours`). Find + fix. NOT logged. [BUG, untouched]
+
+**TIER 2 , CONTRAST SWEEP (exhaustive, grep-driven like the green sweep):**
+4. Every muted-grey token on every cream/white surface, PLATFORM-WIDE. The `--ink-soft` pass covered card/compare/rankings/vvindex/playbook but **MISSED iwonder.html + myclub.html entirely** (both still carry washed greys #8a8276/#9a9285/#b3a99a/#b0a899/etc). Also verify playbook "see more" (currently `--pink`, NOT a grey issue) + compare labels. Grep ALL grey values, check each vs its actual background, fix everything below AA 4.5. No spot-fixes , total sweep, extend `--ink-soft`/`--gold-ink` to the 2 missed pages. [POLISH, partial done]
+
+**TIER 3 , POLISH/CONTENT (after bugs + contrast):**
+5. **Trajectory G/A clarity** , goals vs assists hard to tell apart. Check the COMPARE DUAL chart (`drawTrajectory`, a SEPARATE renderer, untouched by the Option A `renderTrajectory` restructure). [POLISH]
+6. **Glance full name + field reorder** , glance has NO full-name element; reorder age/club/games. (league + games already done, `2c25155`.) [POLISH]
+7. **VV INDEX league-weight disclosure + matrix/emoji restructure** , the league-strength disclosure is DRAFTED but not on the page (§F ~"VV INDEX content notes"); surface it , a real model strength currently unmentioned. Matrix/emoji per-subsection = separate visual idea. [POLISH + logged-not-built disclosure]
+8. **My Club / VV Index nav swap** , swap My Club -> VV Index on the mobile bottomnav (VV Index live, My Club coming-soon); coming-soon banner on desktop like the I VVonder page. card.html bottomnav currently = Home/Rankings/Compare/My Club/Playbook (no VV Index). [POLISH, untouched]
+9. **I VVONDER real-example fix** , `iwonder.html:166` uses "Henry's 03/04" (2003/04 = pre-2015, NOT in dataset). Replace with a real in-data example. [POLISH, untouched]
+10. **Playbook tag cropping + UI** , playbook-specific tag crop (DISTINCT from the logged rankings-list crop). [POLISH]
++ **Club-token search** ("rodri manchester city") , DISTINCT from the deferred nickname-alias idea (that is cr7->Ronaldo); add club name as a searchable token. NOT logged before. [POLISH/feature]
+
+**DEFERRED DESIGN (own demo-driven sessions, NOT this queue):**
+- **Compare filter REDESIGN** (whole look/UX, cleaner + comparison-focused) , separate from the #2 FUNCTION bug.
+- **Social sharing TIER 2** (per-link OG via @vercel/og) , already scoped in the SHARE / SOCIAL section below.
+
 ### SHARE / SOCIAL , scope decision + reality check (logged 2026-07-26)
 **DECISION.**
 - **LAUNCH , link sharing only.** Complete the share-a-link path and make shared links unfurl with an image on Twitter/X via a DYNAMIC og:image on the share route. Folds into the Step-5 hygiene og/meta + social-image work , NOT a separate feature.
