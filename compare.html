@@ -1080,7 +1080,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var q=(document.getElementById('pkSearch').value||'').trim();
     var ps=vvParseSearch(q); var nameQ=ps.nameQ, seasonYear=ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
     function buildPoolQ(withSeason){
-      var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false}).limit(50);
+      var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false}).limit(50);
       if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }        // token-AND on player/team norm
       if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);    // NAME + SEASON, or bare year
       return query;
