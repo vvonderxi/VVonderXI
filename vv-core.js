@@ -698,13 +698,27 @@
       if (el && (el.closest('.vvcard') || el.closest('[onclick]'))) el = null;   // card face / navigable row: leave alone
       return el;
     }
-    function showTip(el){
+    // Two presentations, chosen by the CALLER: tap -> inline fold-below (unchanged);
+    // hover -> floating box, OUT OF FLOW, so it never reflows the flex-wrap chip row.
+    function showTip(el, floating){
       var tip = el.getAttribute('data-tip') || ''; if (!tip) return;
       el.classList.add('tip-on');
       var box = document.createElement('div');
-      box.className = 'chiptip';
+      box.className = floating ? 'chiptip chiptip-float' : 'chiptip';
       box.textContent = tip;
-      el.parentNode.insertBefore(box, el.nextSibling);
+      if (floating){ document.body.appendChild(box); positionFloat(box, el); }   // out of flow -> zero reflow
+      else { el.parentNode.insertBefore(box, el.nextSibling); }                   // inline fold (tap) , UNCHANGED
+    }
+    // Position the floating hover tip near the chip, clamped to the viewport so the
+    // last chip in a wrapped row never clips at the right (or left) edge.
+    function positionFloat(box, el){
+      var r = el.getBoundingClientRect();
+      var m = 8, vw = document.documentElement.clientWidth;
+      var left = r.left + r.width/2 - box.offsetWidth/2;                // centre on the chip
+      left = Math.max(m, Math.min(left, vw - box.offsetWidth - m));     // clamp -> never clips L/R edge
+      var top = r.top - box.offsetHeight - 8;                           // ABOVE the chip (doesn't cover it)
+      if (top < m) top = r.bottom + 8;                                  // near the top edge -> flip below
+      box.style.left = left + 'px'; box.style.top = top + 'px';
     }
     // TAP / click toggle , the reachable-on-mobile mechanism (works everywhere).
     document.addEventListener('click', function(e){
@@ -719,7 +733,7 @@
     // HOVER , mouse-only (guarded so touch never gets it; the old hover-only stuck on touch, hence the tap toggle above).
     var hoverable = false; try{ hoverable = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
     if (hoverable){
-      document.addEventListener('mouseover', function(e){ var el=tipTarget(e.target); if(!el || el.classList.contains('tip-on')) return; closeTips(); showTip(el); }, false);
+      document.addEventListener('mouseover', function(e){ var el=tipTarget(e.target); if(!el || el.classList.contains('tip-on')) return; closeTips(); showTip(el, true); }, false);
       document.addEventListener('mouseout', function(e){ var el=tipTarget(e.target); if(!el) return; if(e.relatedTarget && el.contains(e.relatedTarget)) return; closeTips(); }, false);
     }
   })();

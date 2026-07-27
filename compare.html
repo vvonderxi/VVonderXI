@@ -142,6 +142,7 @@
      old hover tooltip so it works on touch and never floats/sticks. Full-width panel
      injected right after the tapped chip. */
   .chiptip{flex-basis:100%;width:100%;box-sizing:border-box;margin:2px 0 3px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:10px;box-shadow:0 10px 24px -12px rgba(0,0,0,.55);animation:chiptipin .16s ease}
+  .chiptip-float{position:fixed;z-index:200;flex-basis:auto;width:auto;max-width:240px;margin:0;pointer-events:none}
   @keyframes chiptipin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
   /* green dot on h2h winner */
   .h2hbar .hwin{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 8px -1px var(--green);flex-shrink:0}
