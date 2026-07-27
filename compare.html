@@ -1055,7 +1055,8 @@ body.light .pkmsub{color:var(--ink-soft)}
       var L=POOL.filter(function(p){ if(!passF(p)) return false;
         if(!_tk.length) return true;
         var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')); return _tk.every(function(t){return hay.indexOf(t)>=0;}); });
-      var _h = (_pkSeasonMiss!=null) ? '<div class="pkhint">No '+vvSeasonLabel(_pkSeasonMiss)+' season for that search , showing all seasons.</div>' : '';
+      L = VVCore.rankBySearch(L, _nq, function(p){ return (p.full||'')+' '+(p.surname||''); });   // relevance: exact>prefix>word-start>mid, then vv
+      var _h = (_pkSeasonMiss!=null) ? '<div class="pkhint">No '+vvSeasonLabel(_pkSeasonMiss)+' season for that name , showing all seasons.</div>' : '';
       html = _h + (L.length? L.map(pkRow).join('') : '<div class="pkempty">No seasons match.</div>');
     }
     res.innerHTML=html;

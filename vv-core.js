@@ -1438,18 +1438,58 @@
   // ── Expose ────────────────────────────────────────────────────────────
   // ── SHARED SEARCH , single source for rankings.html + Compare picker (was duplicated in both) ──
   //  vvNorm         : fold accents + lowercase (matches the DB player_name_norm / team_name_norm charset).
-  //  tokenAndFilter : PostgREST .or() , EVERY token in player_name_norm OR EVERY token in team_name_norm.
+  //  tokenAndFilter : PostgREST .or() , cross-column AND: every token in (player_name_norm OR team_name_norm).
+  //  rankBySearch   : client-side relevance re-rank (exact>prefix>word-start>mid, then rt).
   //  vvParseSearch  : split a query into { nameQ, seasonYear }. A pure 2- or 4-digit token in the data
   //                   range (2010-2025) is the SEASON , season_year is the STARTING year, so "23" -> 2023
   //                   -> 2023/24; an explicit "23/24" / "2023/24" takes the start year; a year-SHAPED token
   //                   OUT of range is DROPPED (ignored, never treated as name text); the rest is the name/club.
   //  vvSeasonLabel  : season_year -> display form, e.g. 2023 -> "23/24" (via fmtSeason).
-  function vvNorm(s){ return (s==null?'':String(s)).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+  // NFD strips decomposable diacritics (á é ç ñ ü ğ ...); the explicit map folds the
+  // NON-decomposable specials (Turkish ı, Nordic ø/æ/ð, Polish ł, Croatian đ) so the client
+  // folds IDENTICALLY to the stored player_name_norm (which already folds them) , no drift.
+  function vvNorm(s){ return (s==null?'':String(s)).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/ı/g,'i').replace(/ø/g,'o').replace(/ł/g,'l').replace(/đ/g,'d').replace(/ð/g,'d').replace(/æ/g,'ae'); }
+  // CROSS-COLUMN AND: every token must appear in the player name OR the team name, tokens AND'd.
+  // -> "rodri manchester city" = (name~rodri OR team~rodri) AND (name/team~manchester) AND (~city),
+  //    so club tokens disambiguate same-name players. Each token's OR-across-columns is a SUPERSET
+  //    of name-only, so a mixed name+club query never returns FEWER rows than name-only would ,
+  //    the ambiguity fallback ("token is both a club and a name") degrades toward showing something.
   function tokenAndFilter(q){
     var toks=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
     if(!toks.length) return null;
-    function grp(col){ var c=toks.map(function(t){return col+'.ilike.%'+t+'%';}); return c.length>1 ? 'and('+c.join(',')+')' : c[0]; }
-    return grp('player_name_norm')+','+grp('team_name_norm');
+    var perTok=toks.map(function(t){ return 'or(player_name_norm.ilike.%'+t+'%,team_name_norm.ilike.%'+t+'%)'; });
+    return perTok.length>1 ? 'and('+perTok.join(',')+')' : perTok[0];
+  }
+  // ── Search RELEVANCE re-rank (client-side; shared by rankings + compare) ──
+  //    Surfaces the obvious player: exact > prefix > word-start > mid-string, THEN rt.
+  //    Accent-folded (via vvNorm) so it covers the whole diacritic class, not one name.
+  //    Known-as/nickname value (Rodri -> "rodrigo hernandez cascante") is DEFERRED (nickname item);
+  //    the ranking SURFACES him high, known-as later makes him first.
+  function _mnorm(s){ return vvNorm(s).replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+  function searchTier(nameStr, toks){
+    if(!toks || !toks.length) return 6;
+    var hay=_mnorm(nameStr), best=6;
+    for(var i=0;i<toks.length;i++){ var t=toks[i], r;
+      if(hay===t) r=0;                                   // exact whole-name
+      else if(hay.indexOf(t)===0) r=1;                   // name starts with token (prefix)
+      else if((' '+hay+' ').indexOf(' '+t+' ')>=0) r=2;  // token IS a complete word (exact surname beats surname-prefix)
+      else if((' '+hay).indexOf(' '+t)>=0) r=3;          // a word starts with token
+      else if(hay.indexOf(t)>=0) r=4;                    // mid-string
+      else r=6;                                          // no NAME hit (matched via team/club token)
+      if(r<best) best=r;
+    }
+    return best;
+  }
+  // rows sorted by (match tier asc, rt/vv desc, stable). getName(row)->the name haystack to score.
+  function rankBySearch(rows, nameQ, getName){
+    if(!Array.isArray(rows)) return rows;
+    var toks=_mnorm(nameQ).split(' ').filter(Boolean);
+    if(!toks.length) return rows;
+    return rows.map(function(r,i){ var nm=getName?getName(r):((r.player_name||'')+' '+(r.player_name_norm||''));
+        var sc=(r.rt!=null?+r.rt:(r.vv!=null?+r.vv:-1));
+        return { r:r, i:i, t:searchTier(nm,toks), sc:isNaN(sc)?-1:sc }; })
+      .sort(function(a,b){ return (a.t-b.t) || (b.sc-a.sc) || (a.i-b.i); })
+      .map(function(x){ return x.r; });
   }
   function vvYearFromDigits(d){
     if(!/^\d{2}$|^\d{4}$/.test(d)) return null;              // only 2- or 4-digit tokens are year-shaped
@@ -1478,7 +1518,7 @@
   function vvSeasonLabel(y){ return (y==null) ? '' : fmtSeason(String(y).slice(2)+String(y+1).slice(2)); }
 
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
-                vvNorm, tokenAndFilter, vvParseSearch, vvSeasonLabel,
+                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,

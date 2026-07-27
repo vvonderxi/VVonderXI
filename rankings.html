@@ -613,11 +613,12 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const { data, error } = qRes;
     const count = cRes.error ? null : cRes.count;
     if(error){ console.error('rankings load failed:', error.message); return; }
-    CARDS = (data||[]).map(rowToCard).filter(Boolean);
+    var _sd = (nameQ && Array.isArray(data)) ? VVCore.rankBySearch(data, nameQ, function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); }) : data;
+    CARDS = (_sd||[]).map(rowToCard).filter(Boolean);
     if(f.tags.length){ CARDS = CARDS.filter(function(d){ return f.tags.every(function(s){ return (d.tags||[]).some(function(t){ return t.name===s; }); }); }); }
     var _rc=document.getElementById('rankCount');
     if(_rc){
-      var _hint=seasonDegraded ? ('No '+vvSeasonLabel(seasonYear)+' season for that search , showing all. ') : '';
+      var _hint=seasonDegraded ? ('No '+vvSeasonLabel(seasonYear)+' season for that name , showing all. ') : '';
       if(f.tags.length){ _rc.textContent=_hint+'Showing '+CARDS.length; }
       else if(count==null){ _rc.textContent=_hint+'Showing '+CARDS.length; }
       else { _rc.textContent=_hint+'Showing '+CARDS.length+' of '+count.toLocaleString(); }
