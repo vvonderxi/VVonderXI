@@ -130,6 +130,7 @@ Priority order. These are build-completeness gaps (ship-readiness), several neve
 **DEFERRED DESIGN (own demo-driven sessions, NOT this queue):**
 - **Compare filter REDESIGN** (whole look/UX, cleaner + comparison-focused) , separate from the #2 FUNCTION bug.
 - **Social sharing TIER 2** (per-link OG via @vercel/og) , already scoped in the SHARE / SOCIAL section below.
+- **COMPARE VISUAL REDESIGN (logged 2026-07-28).** The page feels stale/flat , too much white, too one-colour. **Demo-driven session, NOT a scoped fix.** SHOW MOCKUP OPTIONS BEFORE ANY CODE. Three directions to mock when we get there, safest -> boldest: **(1) Tonal depth only** , same palette, surfaces at layered shades to build hierarchy ("this floats above that") + elevate the verdict as the HERO. Safest, keeps everything. **(2) Brand palette structuring the layout** , charcoal band behind the verdict, pink/gold doing LAYOUT work not just accents. **(3) "Under the Lights"** , the already-designed floodlit-stadium backdrop concept (`VVonderXI_Concept_UnderTheLights`), which Lucas already liked ON MOBILE. Boldest. Starting reference = the Under the Lights concept files. Keep SEPARATE from the scoped Tier-3 fixes (trajectory G/A, glance, etc. , those build now); this is its own design sitting.
 
 ### SHARE / SOCIAL , scope decision + reality check (logged 2026-07-26)
 **DECISION.**
