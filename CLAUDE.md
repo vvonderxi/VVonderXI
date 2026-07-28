@@ -120,7 +120,7 @@ Priority order. These are build-completeness gaps (ship-readiness), several neve
 
 **TIER 3 , POLISH/CONTENT (after bugs + contrast):**
 5. **Trajectory G/A clarity** , goals vs assists hard to tell apart. Check the COMPARE DUAL chart (`drawTrajectory`, a SEPARATE renderer, untouched by the Option A `renderTrajectory` restructure). [POLISH]
-6. **Glance full name + field reorder** , glance has NO full-name element; reorder age/club/games. (league + games already done, `2c25155`.) [POLISH]
+6. **Glance FULL NAME + field reorder** , the glance must show the player's **FULL name (first + last, e.g. "Bruno Fernandes")**, NOT surname-only. The glance currently has **no name element at all** (`glSub` = pos · club · league · year · games · age; the surname lives only on the card FACE). ADD a full-name element (`D.full` = `row.player_name`) to the glance in the correct field order (name first, then the meta line). Do NOT build it surname-only. (league + games already done, `2c25155`.) [POLISH]
 7. **VV INDEX league-weight disclosure + matrix/emoji restructure** , the league-strength disclosure is DRAFTED but not on the page (§F ~"VV INDEX content notes"); surface it , a real model strength currently unmentioned. Matrix/emoji per-subsection = separate visual idea. [POLISH + logged-not-built disclosure]
 8. **My Club / VV Index nav swap** , swap My Club -> VV Index on the mobile bottomnav (VV Index live, My Club coming-soon); coming-soon banner on desktop like the I VVonder page. card.html bottomnav currently = Home/Rankings/Compare/My Club/Playbook (no VV Index). [POLISH, untouched]
 9. **I VVONDER real-example fix** , `iwonder.html:166` uses "Henry's 03/04" (2003/04 = pre-2015, NOT in dataset). Replace with a real in-data example. [POLISH, untouched]

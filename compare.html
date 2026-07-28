@@ -464,6 +464,10 @@
   .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
   .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
   .tjpeak{fill:#E8B84B;font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
+  /* trajectory on the LIGHT verdict panel: the VV line/dots/peak were cream/gold (built for the old green panel) , invisible on light. Give them a readable dark. */
+  body.light #vtraj .tjline{stroke:#2a2620}
+  body.light #vtraj .tjdot{fill:#2a2620}
+  body.light #vtraj .tjpeak{fill:#7a5c12}
   .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:14px;padding:0 4px}
   body.light .tjhead,body.light .tjlg{color:#5a544a}
   body.light .tjyl,body.light .tjyr,body.light .tjxl,body.light .tjtot{fill:#5a544a}
@@ -1205,7 +1209,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     // ONE shared head + legend above, ONE Drury caption below (not per-chart)
     var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
-    var caption='<div class="tjcap">The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.</div>';
+    var caption='<div class="tjcap">The bars remember what they did. The line remembers what they were worth. The gap tells the story a raw tally can’t.</div>';
     box.innerHTML = head + legend
       + '<div class="vtrajpair">'
       +   '<div class="vtchart"><div class="vtname tA">'+(nameA||'A')+'</div>'+chartA+'</div>'

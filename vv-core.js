@@ -1105,7 +1105,7 @@
     // geometry , extra top room for peak/total labels, bottom room for axis titles
     var W=360,H=240, ml=32, mr=38, mt=42, mb=36, pw=W-ml-mr, ph=H-mt-mb;
     var single=(n===1);
-    var slot=Math.min(pw/n, 72), usedW=slot*n, x0=ml+(pw-usedW)/2, bw=Math.min(38, slot*0.5);
+    var slot=Math.min(pw/n, 72), usedW=slot*n, x0=ml+(pw-usedW)/2, bw=Math.min(44, slot*0.6);   // wider bars , clearer colour blocks
     var X=function(i){ return x0+slot*(i+0.5); };   // centre the bar cluster (neat for 1-2 seasons, full spread when many)
     var Yl=function(v){ return mt+ph-(v/axisTop)*ph; };
     var Yr=function(v){ return mt+ph-((v-vvMin)/(vvMax-vvMin))*ph; };
@@ -1127,9 +1127,9 @@
     var xStep = n>=13?3:(n>=9?2:1);   // thin x-labels on dense charts
     data.forEach(function(d,i){ var x=X(i), bx=x-bw/2, base=Yl(0);
       if(d.selected) s+='<rect class="tjsel" x="'+(bx-4).toFixed(1)+'" y="'+(mt-2).toFixed(1)+'" width="'+(bw+8).toFixed(1)+'" height="'+(ph+2).toFixed(1)+'" rx="7"/>';
-      var gTop=Yl(d.g), aTop=Yl(d.g+d.a), bars='';
+      var gTop=Yl(d.g), aTop=Yl(d.g+d.a), bars='', GAP=(d.g>0&&d.a>0)?2:0;   // clean gap so the pink/gold split reads as two blocks
       if(d.g>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="4" fill="url(#tjgGoal)"/>';
-      if(d.a>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(gTop-aTop).toFixed(1)+'" rx="4" fill="url(#tjgAst)"/>';
+      if(d.a>0){ var aBot=(gTop-GAP>aTop+1)?(gTop-GAP):gTop; bars+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(aBot-aTop).toFixed(1)+'" rx="4" fill="url(#tjgAst)"/>'; }
       if(bars) s+='<g filter="url(#tjShadow)">'+bars+'</g>';   // soft shadow lifts the stacked bar off the green
       if(i%xStep===0 || d.selected || i===n-1){
         var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
@@ -1140,16 +1140,16 @@
       var pts=[]; data.forEach(function(d,i){ if(d.rt!=null) pts.push(X(i).toFixed(1)+','+Yr(d.rt).toFixed(1)); });
       if(pts.length>1) s+='<polyline class="tjline" points="'+pts.join(' ')+'" fill="none" stroke="#F0EAD9" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
       data.forEach(function(d,i){ if(d.rt==null) return; var x=X(i), y=Yr(d.rt), pk=(i===peakIdx);
-        s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(pk?4.5:3.1)+'" fill="'+(pk?'#E8B84B':'#F0EAD9')+'" stroke="#17151a" stroke-width="1.2"/>';
-        if(pk){ var poff=d.selected?-24:-12;   // clear the selected highlight box when peak==selected; else sit just above the dot
-          s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+(y+poff).toFixed(1)+'" text-anchor="middle">'+(single?('VV '+d.rt):('PEAK '+d.rt))+'</text>'; }   // one season isn't a "peak"
+        s+='<circle class="tjdot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(pk?4.5:3.1)+'" fill="'+(pk?'#E8B84B':'#F0EAD9')+'" stroke="#17151a" stroke-width="1.2"/>';
+        if(pk){ var barTop=Yl(d.g+d.a), peakY=Math.min(y, barTop)-18;   // sit above BOTH the VV dot AND the season-total (which is at barTop-6) , never overlap
+          s+='<text class="tjpeak" x="'+x.toFixed(1)+'" y="'+peakY.toFixed(1)+'" text-anchor="middle">'+(single?('VV '+d.rt):('PEAK '+d.rt))+'</text>'; }   // one season isn't a "peak"
       });
     }
-    // total-output numbers ON TOP , panel-green mask breaks the VV line (card); transparent bg (compare) uses a dark halo instead
-    var totHalo = opts.transparent ? ' paint-order="stroke" stroke="#0A2A18" stroke-width="2.6"' : '';
+    // season total , a clean number above the bar. Card: panel-green mask breaks the VV line. Compare: no halo
+    // (the old dark-green #0A2A18 halo was leftover from the green panel , the noise); .tjtot is dark via body.light.
     data.forEach(function(d,i){ var x=X(i), tot=d.g+d.a, ty=((tot>0)?Yl(tot):Yl(0))-6, tw=String(tot).length*6+8;
       if(!opts.transparent) s+='<rect class="tjmask" x="'+(x-tw/2).toFixed(1)+'" y="'+(ty-9.5).toFixed(1)+'" width="'+tw.toFixed(1)+'" height="12" rx="3"/>';
-      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="middle"'+totHalo+'>'+tot+'</text>';
+      s+='<text class="tjtot" x="'+x.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="middle">'+tot+'</text>';
     });
     var svg='<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>';
     if(opts.chrome===false) return svg;   // compare: bare chart (shared head/legend/caption supplied once by the caller)
