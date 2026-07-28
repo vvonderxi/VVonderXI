@@ -121,7 +121,8 @@
   .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-ink);margin-top:16px;text-align:right}
   /* wonder tag rows */
   .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px}
-  body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
+  body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}
+  body.light .tagrow .td,body.light .tagrow .tmore,body.light .narrative .np,body.light .darkbox .q{color:#3a352e}   /* prose text override , container went light, cream text would be invisible */   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px}
