@@ -13,8 +13,26 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId } = req.body;
+    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB } = req.body;
     const MODEL = 'claude-sonnet-4-6';
+    // ── CACHE VERSION , bump on ANY change to the prompt text below, to the
+    //    VERDICT_TAGS vocabulary (vv-core), or to the output contract. A row
+    //    stamped with a different version is a MISS, so prose written under an
+    //    older prompt never survives a prompt change. This is the lever the
+    //    §D "verdict_cache prompt-version bump" item asked for.
+    const CACHE_VERSION = 'v2-2026-07-29';
+    const crypto = require('crypto');
+    // Complete freshness signal for the notes cache: hash the exact player
+    // payload the prompt cites, key-sorted so field order can't false-invalidate,
+    // tags sorted for the same reason.
+    const statsHash = (p) => {
+      if (!p || typeof p !== 'object') return null;
+      const norm = {};
+      Object.keys(p).sort().forEach(k => {
+        norm[k] = Array.isArray(p[k]) ? p[k].slice().map(String).sort() : p[k];
+      });
+      return crypto.createHash('sha256').update(JSON.stringify(norm)).digest('hex').slice(0, 16);
+    };
 
     // ── Verdict self-cache (server-side, service key). Active only when both
     //    card ids are present + numeric; otherwise this stays a generic proxy. ──
@@ -26,17 +44,33 @@ module.exports = async (req, res) => {
     // who is winner-oriented (names the winner + margin), NOT A/B-oriented, so it is carried
     // through the A<->B swap unchanged, same as h2h/verdict/tag.
     const swapVerdict = (v) => ({ p1: v.p2, p2: v.p1, h2h: v.h2h, verdict: v.verdict, tag: v.tag, who: v.who });
-    let sb = null, pairKey = null, loId = null, hiId = null, swapped = false;
+    let sb = null, pairKey = null, loId = null, hiId = null, swapped = false, rtLo = null, rtHi = null;
     if (cacheable) {
       const { createClient } = require('@supabase/supabase-js');
       sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
       loId = Math.min(_a, _b); hiId = Math.max(_a, _b);
       pairKey = loId + '-' + hiId;
       swapped = (_a !== loId);   // requester's A is the HIGHER id -> their order is swapped vs canonical
+      // Live scores, mapped from the requester's slot order into CANONICAL lo/hi
+      // order , the same swap the verdict payload goes through. Getting this
+      // backwards would compare Player A's score against Player B's stamp and
+      // invalidate every swapped-order pair on every read.
+      const _rtA = Number(rtA), _rtB = Number(rtB);
+      const haveRt = Number.isFinite(_rtA) && Number.isFinite(_rtB);
+      if (haveRt) { rtLo = swapped ? _rtB : _rtA; rtHi = swapped ? _rtA : _rtB; }
       try {
         const { data: row } = await sb.from('verdict_cache')
-          .select('verdict, winner_card_id, model').eq('pair_key', pairKey).maybeSingle();
-        if (row && row.model === MODEL && row.verdict) {
+          .select('verdict, winner_card_id, model, rt_a, rt_b, cache_version').eq('pair_key', pairKey).maybeSingle();
+        // MISS conditions, in order of what they protect against:
+        //  (1) unstamped legacy row      -> always a miss, regenerates on demand
+        //  (2) prompt/tag vocab changed  -> prose predates the current contract
+        //  (3) either score moved        -> prose would contradict the live panel
+        // A request that supplies no rt cannot check (3), but (1) and (2) still
+        // apply, so a legacy row is never served as valid.
+        const unstamped = !row || row.rt_a == null || row.rt_b == null || row.cache_version == null;
+        const staleVersion = !!row && row.cache_version !== CACHE_VERSION;
+        const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
+        if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
           return res.json({ verdict: out, winner_card_id: row.winner_card_id, cached: true });
         }
@@ -96,14 +130,27 @@ Write tight. Every word earns its place.`;
       const cid = Number(req.body.cardId);
       const player = req.body.player || {};
       const canCache = Number.isFinite(cid) && !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_KEY;
+      // Stamps for this card: the score shown beside the prose, plus a hash of
+      // EVERY stat the prompt cites (card.html already sends rt inside `player`,
+      // so no client change is needed here).
+      const _nRt = Number(player.rt);
+      const nRt = Number.isFinite(_nRt) ? _nRt : null;
+      const nHash = statsHash(player);
       let nsb = null;
       if (canCache) {
         const { createClient } = require('@supabase/supabase-js');
         nsb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
         try {
           const { data: row } = await nsb.from('notes_cache')
-            .select('notes, model').eq('card_id', cid).maybeSingle();
-          if (row && row.model === MODEL && row.notes && typeof row.notes === 'object' && Array.isArray(row.notes.notes) && row.notes.notes.length) {
+            .select('notes, model, rt, stats_hash, cache_version').eq('card_id', cid).maybeSingle();
+          // Same three miss conditions as the verdict path: unstamped legacy row,
+          // prompt-version drift, or any cited stat having changed.
+          const unstamped = !row || row.stats_hash == null || row.cache_version == null;
+          const staleVersion = !!row && row.cache_version !== CACHE_VERSION;
+          const staleStats = !!row && nHash != null && row.stats_hash !== nHash;
+          const usable = row && row.model === MODEL && row.notes && typeof row.notes === 'object'
+                       && Array.isArray(row.notes.notes) && row.notes.notes.length;
+          if (usable && !unstamped && !staleVersion && !staleStats) {
             var cobj = row.notes;
             return res.json({ glance: cobj.glance, scout: cobj.scout, notes: cobj.notes, cached: true });
           }
@@ -129,7 +176,12 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
       const nResp = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: MODEL, max_tokens: 1500, system: notesSystem, messages: notesMessages })
+        // system sent as a cacheable block: it is byte-identical on every notes
+        // call and well over the 1024-token minimum, so reads bill at ~0.1x.
+        body: JSON.stringify({
+          model: MODEL, max_tokens: 1500, messages: notesMessages,
+          system: [{ type: 'text', text: notesSystem, cache_control: { type: 'ephemeral' } }]
+        })
       });
       const nData = await nResp.json();
       if (!nResp.ok) return res.status(nResp.status).json({ error: (nData.error && nData.error.message) || 'Anthropic API error' });
@@ -145,7 +197,10 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
       }
       if (canCache) {
         try {
-          await nsb.from('notes_cache').upsert({ card_id: cid, notes: parsed, model: MODEL }, { onConflict: 'card_id', ignoreDuplicates: false });
+          await nsb.from('notes_cache').upsert({
+            card_id: cid, notes: parsed, model: MODEL,
+            rt: nRt, stats_hash: nHash, cache_version: CACHE_VERSION   // stamps
+          }, { onConflict: 'card_id', ignoreDuplicates: false });
         } catch (e) { /* non-fatal */ }
       }
       return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
@@ -161,7 +216,10 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
       body: JSON.stringify({
         model: MODEL,
         max_tokens,
-        system: customSystem || defaultSystem,
+        // ~1,508-token system prompt, identical on every verdict call -> cache it.
+        // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
+        // below the 1024-token minimum simply won't cache; that is silent + safe.
+        system: [{ type: 'text', text: customSystem || defaultSystem, cache_control: { type: 'ephemeral' } }],
         messages
       })
     });
@@ -190,6 +248,7 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
     try {
       await sb.from('verdict_cache').upsert({
         pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
+        rt_a: rtLo, rt_b: rtHi, cache_version: CACHE_VERSION,   // stamps (null rt if caller sent none)
         verdict: canonical, winner_card_id: winnerId, model: MODEL
       }, { onConflict: 'pair_key', ignoreDuplicates: false });
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }

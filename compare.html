@@ -1313,6 +1313,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
       body.cardIdA=idA; body.cardIdB=idB;
+      body.rtA=va; body.rtB=vb;   // live scores -> verdict_cache stamps; a cached verdict citing different scores is a MISS
       body.winnerCardId = winner==='A'?idA : (winner==='B'?idB : null);   // post-tiebreak winner; null on true tie
     }
     fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
