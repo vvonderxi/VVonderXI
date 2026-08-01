@@ -299,13 +299,23 @@
 <style>
   /* ===== Me / profile ===== */
   .mewrap{max-width:620px;margin:0 auto;padding:4px 0 96px}
-  .meprofile{display:flex;align-items:center;gap:16px;padding:6px 4px 24px}
-  .meav{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#DA291C,#a01818);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;color:#fff;flex-shrink:0}
-  .mename{font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;line-height:1.1}
-  .memail{font-family:'Inter';font-size:13.5px;color:rgba(243,237,224,0.55);margin-top:4px}
+  
+  
+  
+  
   .megroup{margin-bottom:22px}
   .meglabel{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin:0 4px 9px}
   .mecard{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden}
+  /* Account , coming soon. There is no auth yet: api/auth.js exists but nothing
+     reads a session, and the old Email/Privacy/Sign out rows were entirely
+     inert ("Sign out" had no handler at all). Same .comingpill treatment as
+     the I VVonder page so the two unbuilt features read the same. */
+  .comingpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--pink);background:rgba(255,92,122,0.1);border:1px solid rgba(255,92,122,0.3);padding:7px 13px;border-radius:20px}
+  .comingpill .dot{width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px var(--pink)}
+  .merow.mesoon{cursor:default;padding-bottom:11px}
+  .merow.mesoon-note{cursor:default;padding-top:0;border-bottom:none}
+  .merow.mesoon-note .ml{font-size:13.5px;line-height:1.5;color:rgba(243,237,224,0.55)}
+  body.light .merow.mesoon-note .ml{color:var(--ink-soft)}
   .merow{display:flex;align-items:center;gap:14px;padding:15px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06)}
   .merow:last-child{border-bottom:0}
   .merow:hover{background:rgba(255,255,255,0.03)}
@@ -368,13 +378,6 @@
     </div>
 
     <div class="mewrap">
-      <div class="meprofile">
-        <div class="meav">L</div>
-        <div>
-          <div class="mename">Lucas</div>
-          <div class="memail">livanlauwe@gmail.com</div>
-        </div>
-      </div>
 
       <div class="megroup">
         <div class="meglabel">Appearance</div>
@@ -395,14 +398,13 @@
         </div>
       </div>
 
-      <div class="megroup">
-        <div class="meglabel">Account</div>
-        <div class="mecard">
-          <div class="merow"><svg class="meicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg><span class="ml">Email</span><span class="mv">livanlauwe@gmail.com</span></div>
-          <div class="merow"><svg class="meicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span class="ml">Privacy</span><span class="chev">&#8250;</span></div>
-          <div class="merow danger"><svg class="meicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M9 16l-4-4 4-4"/><path d="M5 12h11"/></svg><span class="ml">Sign out</span></div>
+        <div class="megroup">
+          <div class="meglabel">Account</div>
+          <div class="mecard">
+            <div class="merow mesoon"><span class="comingpill"><span class="dot"></span> Coming soon</span></div>
+            <div class="merow mesoon-note"><span class="ml">Saving cards, verdicts and your club will need an account. There is nothing to sign in to yet.</span></div>
+          </div>
         </div>
-      </div>
 
       <div class="megroup">
         <div class="meglabel">About</div>
@@ -422,12 +424,12 @@
   </div>
 
 <nav class="bottomnav">
-    <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
-    <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
-    <a href="myclub.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="6.5" y="3" width="11" height="18" rx="2.5"/><circle cx="12" cy="9.5" r="2.3"/></svg><span>My Club</span></a>
-    <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
-    <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink)">V</span> Index</span></a>
-  </nav>
+      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
+      <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
+      <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
+      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink)">V</span> Index</span></a>
+      <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
+    </nav>
 <button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);var sw=document.getElementById('meThemeSw');if(sw)sw.classList.toggle('on',document.body.classList.contains('light'));}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();
