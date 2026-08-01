@@ -1,5 +1,6 @@
 {
   "cleanUrls": true,
+  "fluid": true,
   "headers": [
     {
       "source": "/og-image.png",

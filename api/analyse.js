@@ -179,14 +179,23 @@ module.exports = async (req, res) => {
         try {
           const { data: row } = await nsb.from('notes_cache')
             .select('notes, model, rt, stats_hash, cache_version').eq('card_id', cid).maybeSingle();
-          // Same three miss conditions as the verdict path: unstamped legacy row,
-          // prompt-version drift, or any cited stat having changed.
-          const unstamped = !row || row.stats_hash == null || row.cache_version == null;
-          const staleVersion = !!row && row.cache_version !== NOTES_VERSION;
-          const staleStats = !!row && nHash != null && row.stats_hash !== nHash;
+          // ── LEGACY SOFTENING (notes only) ───────────────────────────────────
+          // A pre-stamp row (stats_hash / cache_version null) is SERVED, not
+          // regenerated. Treating those as a miss turned a 100%-hit population
+          // into a ~96%-miss one, so every card view ran a 10-16s live
+          // generation against Vercel's function timeout -> intermittent 502.
+          // We have no evidence those 252 rows are stale (unlike verdicts, where
+          // 47 of 70 were measured citing scores that no longer exist , so the
+          // VERDICT path deliberately stays strict and still misses on unstamped).
+          // Rows that ARE stamped get the full check below, so anything written
+          // from here on is fully protected. Once the offline backfill stamps the
+          // legacy rows this branch stops being reachable and can be deleted.
+          const legacy = !!row && (row.stats_hash == null || row.cache_version == null);
+          const staleVersion = !!row && !legacy && row.cache_version !== NOTES_VERSION;
+          const staleStats = !!row && !legacy && nHash != null && row.stats_hash !== nHash;
           const usable = row && row.model === MODEL && row.notes && typeof row.notes === 'object'
                        && Array.isArray(row.notes.notes) && row.notes.notes.length;
-          if (usable && !unstamped && !staleVersion && !staleStats) {
+          if (usable && !staleVersion && !staleStats) {
             var cobj = row.notes;
             return res.json({ glance: cobj.glance, scout: cobj.scout, notes: cobj.notes, cached: true });
           }
