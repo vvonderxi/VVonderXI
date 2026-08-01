@@ -96,8 +96,18 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .verdict.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
-  .verdict .vquote{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:23px;line-height:1.45;color:var(--cream)}   /* #102: punchier statement */
-  .verdict .vwho{font-family:'Archivo';font-weight:800;font-size:14px;color:var(--pink);margin-top:24px;letter-spacing:0.04em}   /* #102: more air above the who-won beat */
+  .verdict .vquote{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:18.5px;line-height:1.55;color:var(--cream)}   /* #102: punchier statement */
+  .verdict .vwho{font-family:'Archivo';font-weight:800;font-size:30px;line-height:1.2;letter-spacing:-.015em;
+    color:var(--cream);margin-top:14px;max-width:660px;margin-inline:auto;text-wrap:balance}
+  /* score + tag, STRUCTURED , deliberately not parsed out of the AI sentence, whose
+     shape varies by verdict tag ("89 vs 85." / "VV 96 vs 90." / "83-80." / no score). */
+  .vscore{font-family:'Archivo';font-weight:900;font-size:15px;letter-spacing:.02em;margin-top:12px}
+  .vscore .vs-n{color:var(--pink)}
+  .vscore .vs-sep{opacity:.45;margin:0 9px;font-weight:700}
+  .vscore .vs-tag{color:var(--ink-soft);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px}
+  /* the rule that demotes everything below it to supporting prose */
+  .vsplit{width:100%;max-width:420px;height:1px;margin:26px auto 22px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent)}   /* #102: more air above the who-won beat */
   /* full verdict breakdown */
   .vbreak{margin-top:34px;padding-top:30px;border-top:1px solid rgba(255,255,255,0.1);text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:28px}
   .vsect{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px 22px}   /* green-scope: the Under-the-Lights green now sits on the finding boxes, on the dark .verdict stage */
@@ -183,14 +193,13 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)}
 .vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
   width:168px;height:4px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--pink),var(--gold))}
-  body.light 
   .vfinal .vquote{max-width:620px;margin-inline:auto}   /* #102: cap the measure , tight centered pull-quote (~50-58 chars) */
   .vfinal .vquote2,.vfinal .vquote3{margin-top:16px}
   .vfinal .vquote3{color:var(--gold)}
   /* breakpoints , stack on narrow, keep premium spacing */
   @media (max-width:1040px){.matchup{gap:22px}.hero{padding:24px 32px 4px}.arena{padding:20px 32px 36px}.topline{padding:24px 32px 0}}
   @media (max-width:820px){.matchup{gap:7px;align-items:start;padding:20px 8px 18px;border-radius:16px}.vsmedal{transform:rotate(0);width:44px;height:44px;font-size:17px;border-width:2px;align-self:center}.edge-spacer{display:block;height:30px}}
-  @media (max-width:720px){.vfinal{padding:30px 18px 26px;border-radius:16px}.spine{display:none}.hero h1{font-size:30px}.hero{padding:22px 18px 4px}.arena{padding:16px 10px 32px}.topline{padding:18px 18px 0}.verdict{padding:28px 22px}.verdict .vquote{font-size:18px}}
+  @media (max-width:720px){.vfinal{padding:30px 18px 26px;border-radius:16px}/* specificity: a later .verdict .vwho rule (0,2,0) would otherwise win on source order even from inside this media query, so these are 0,3,0. */.verdict .vfinal .vwho{font-size:23px}.verdict .vfinal .vquote{font-size:16.5px}.vsplit{margin:20px auto 18px}.spine{display:none}.hero h1{font-size:30px}.hero{padding:22px 18px 4px}.arena{padding:16px 10px 32px}.topline{padding:18px 18px 0}.verdict{padding:28px 22px}.verdict .vquote{font-size:18px}}
   /* ============================================================
      ★ THE BEDROCK CARD , canonical, reusable everywhere ★
      Scale a whole card by changing --cw (card width).
@@ -417,8 +426,9 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vsect-d{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:rgba(243,237,224,0.5);margin:0 0 16px}
   body.light .vsect-d{color:#6a6256}
   /* verdict result: gold + bigger */
-  .verdict .vwho{font-size:22px;color:var(--gold)}
-  body.light .verdict .vwho{color:var(--gold-ink)}
+  .verdict .vwho{font-size:30px}
+  body.light .verdict .vwho{color:#241f1b}
+  body.light .vsplit{background:linear-gradient(90deg,transparent,rgba(0,0,0,.14),transparent)}
   /* hoverable verdict tags */
   .vtags-final{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:18px}
   .vtag{position:relative;font-family:'Archivo';font-weight:800;font-size:11.5px;padding:8px 14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);cursor:default}
@@ -851,11 +861,16 @@ body.light .pkmsub{color:var(--ink-soft)}
 
         <!-- THE VERDICT , the emotional payoff, AFTER the analysis -->
         <div class="vfinal">
+          <!-- ANSWER-FIRST. .vwho (the conclusion) leads and is the largest element;
+               the prose below the rule is now the supporting "why", not the lead.
+               Same content, reweighted , nothing here is hardcoded, see vvSetVerdict. -->
           <div class="vlabel">The Verdict</div>
+          <div class="vwho"></div>
+          <div class="vscore" id="vScore"></div>
+          <div class="vsplit"></div>
           <div class="vquote">Reading the season…</div>
           <div class="vquote vquote2"></div>
           <div class="vquote vquote3"></div>
-          <div class="vwho"></div>
           <div class="vtags-final">
             <span class="vtag gold" id="vEdgeTag" data-tip="" style="display:none"></span>
           </div>
@@ -1303,6 +1318,30 @@ body.light .pkmsub{color:var(--ink-soft)}
                                : (W.surname+' edges it , '+wv+' to '+lv);
         who.textContent = ai || fb;
       } else { who.textContent = ai || ('Level on VV , '+va+' apiece. The verdict decides.'); }
+    }
+    // SCORE ROW , built from the STRUCTURED values this function already receives
+    // (va/vb are the two rt integers, tagObj is the selected VERDICT_TAGS entry).
+    // Deliberately NOT parsed out of whoLine: that sentence is free-form AI prose whose
+    // shape varies by tag , "89 vs 85." / "VV 96 vs 90." / "83-80." / "90 to 88" / no
+    // score at all , so splitting it would be wrong for most verdicts. Winner's score
+    // leads; on a tie the slot order is kept.
+    var sc=document.getElementById('vScore');
+    if(sc){
+      var _hi=(winner==='B')?vb:va, _lo=(winner==='B')?va:vb;
+      // The AI line USUALLY states the scores itself, in a format that varies by tag.
+      // Rather than parse them out of it (fragile), just test whether BOTH numbers are
+      // already present as whole numbers , if so the row would only repeat the headline,
+      // so it is suppressed. Containment test, not parsing: worst case is a small row
+      // shown or hidden, never a wrong number, because the row's own values come from
+      // va/vb. The tag is NOT repeated here , the chip below already carries it with
+      // its tooltip.
+      var _w=String(who&&who.textContent||'');
+      var _has=function(n){ return new RegExp('(^|[^0-9])'+n+'([^0-9]|$)').test(_w); };
+      if(_has(_hi) && _has(_lo)){ sc.style.display='none'; sc.innerHTML=''; }
+      else {
+        sc.innerHTML='<span class="vs-n">'+_hi+'</span><span class="vs-sep">&mdash;</span><span class="vs-n">'+_lo+'</span>';
+        sc.style.display='';
+      }
     }
     var chip=document.getElementById('vEdgeTag');   // the ONE verdict-section tag chip (was the hardcoded Henry gold pill)
     // data-tip = the tag's one-line BLURB (from VERDICT_TAGS, not duplicated); shared vv-core tooltip = hover (desktop) + tap (mobile)
