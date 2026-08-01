@@ -123,12 +123,15 @@
   .fd-v[aria-selected="true"] .fd-dot{transform:scale(1.35)}
   .fd-v:focus-visible .fd-dot{stroke:var(--pink);stroke-width:3;stroke-opacity:0.45}
   body.light .fd-v:focus-visible .fd-dot{stroke:#DE3A5E}
-  /* affordance: dots pulse 6 -> 8.5px, staggered, until the first tap */
+  /* Affordance: dots pulse 6 -> 8.5px, staggered. Gated on .fd-live (added when
+     the pentagon scrolls into view) and killed by .fd-settled, so it runs for a
+     bounded 3 cycles rather than looping forever , the page's motion rule is
+     "plays once on scroll-into-view, never loops". */
   @keyframes fdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.417)}}
-  .fd:not(.fd-tapped) .fd-dot{animation:fdPulse 2s ease-in-out var(--d,0s) infinite}
+  .fd.fd-live:not(.fd-settled) .fd-dot{animation:fdPulse 3s ease-in-out var(--d,0s) infinite}
   .fd-hint{margin:4px auto 15px;text-align:center;font-family:'Bricolage Grotesque';font-style:italic;font-size:14px;color:var(--pink);transition:opacity .5s}
   body.light .fd-hint{color:#DE3A5E}
-  .fd.fd-tapped .fd-hint{opacity:0;pointer-events:none}
+  .fd.fd-settled .fd-hint{opacity:0;pointer-events:none}
   .fd-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-left:2px solid rgba(255,92,122,0.45);border-radius:14px;padding:16px 18px}
   body.light .fd-panel{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06);border-left-color:rgba(222,58,94,0.5)}
   .fd-lead{font-family:'Bricolage Grotesque';font-style:italic;font-size:15.5px;line-height:1.5;color:var(--pink)}
@@ -304,8 +307,30 @@
       if(p){ if(on) p.removeAttribute('hidden'); else p.setAttribute('hidden',''); }
       if(on && moveFocus) t.focus();
     });
-    fd.classList.add('fd-tapped');   // first interaction: stop pulse + fade hint
+    settle();                        // a tap proves the affordance landed
   }
+  // ── settle: the ONE place the hint fades and the pulse stops ──────────────
+  //    Reached by a tap, or by the 10s visibility timer, whichever comes first.
+  var settled=false, timer=null;
+  function settle(){
+    if(settled) return; settled=true;
+    if(timer){ clearTimeout(timer); timer=null; }
+    fd.classList.add('fd-settled');
+  }
+  // ── start the clock when the pentagon is actually SEEN, not on page load ──
+  //    This section sits well down the page; a load-started timer would expire
+  //    before most people ever scroll to it, so the hint would never be read.
+  function goLive(){
+    if(fd.classList.contains('fd-live')) return;
+    fd.classList.add('fd-live');                       // pulse begins here
+    timer=setTimeout(settle,9000);                     // exactly 3 cycles at 3s, then rest
+  }
+  if(typeof IntersectionObserver==='function'){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ goLive(); io.disconnect(); } });
+    },{threshold:0.5});
+    io.observe(fd);
+  } else { goLive(); }   // no IO support -> behave as before, just bounded
   tabs.forEach(function(t,i){
     t.addEventListener('click',function(){ select(t.getAttribute('data-k')); });
     t.addEventListener('keydown',function(e){
