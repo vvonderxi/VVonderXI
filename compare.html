@@ -797,7 +797,13 @@ body.light .pkmsub{color:var(--ink-soft)}
             <div class="vsect-t">The Proof</div>
             <div class="vsect-d">The raw season numbers, shown per 90 minutes so different game-times compare fairly.</div>
             <div class="vproof">
-              <div class="vproof-head"><span></span><span class="vp-a">Henry</span><span class="vp-b">Haaland</span></div>
+              <!-- Neutral until vvSetProof fills them from CMP_A/CMP_B. Previously hardcoded
+                   "Henry"/"Haaland" , a player with ZERO rows in the dataset , which was safe
+                   ONLY because .verdict is display:none until the Compare click, and that same
+                   click refreshes these. Do not reintroduce a real name here: any change that
+                   reveals the verdict by another route (e.g. auto-opening on a deep link) would
+                   put it in front of users. -->
+              <div class="vproof-head"><span></span><span class="vp-a">Season A</span><span class="vp-b">Season B</span></div>
               <div class="vprow"><span class="vp-l">Goals</span><span class="vp-va">0.93</span><span class="vp-vb win">1.12</span></div>
               <div class="vprow"><span class="vp-l">Assists</span><span class="vp-va win">0.34</span><span class="vp-vb">0.18</span></div>
               <div class="vprow"><span class="vp-l">Shots on target</span><span class="vp-va win">2.6</span><span class="vp-vb">2.1</span></div>
@@ -830,8 +836,8 @@ body.light .pkmsub{color:var(--ink-soft)}
         <div class="vafter">
           <div class="vsect-t">See It For Yourself</div>
           <div class="vwatch">
-            <a class="vwbtn" id="ytA" href="https://www.youtube.com/results?search_query=Thierry+Henry+season+highlights+2003+2004" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M30 22 L78 50 L30 78 Z"/></svg> Henry , 03/04</a>
-            <a class="vwbtn" id="ytB" href="https://www.youtube.com/results?search_query=Erling+Haaland+season+highlights+2022+2023" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M30 22 L78 50 L30 78 Z"/></svg> Haaland , 22/23</a>
+            <a class="vwbtn" id="ytA" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M30 22 L78 50 L30 78 Z"/></svg> Season A</a>
+            <a class="vwbtn" id="ytB" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M30 22 L78 50 L30 78 Z"/></svg> Season B</a>
           </div>
           <div class="vshare">
             <button class="vshare-main" onclick="vvVerdictShare(this)">Share this verdict</button>
