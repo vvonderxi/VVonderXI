@@ -100,6 +100,48 @@
   .dim .dmore{font-family:'Inter';font-weight:400;font-size:13px;line-height:1.65;color:rgba(243,237,224,0.6);max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1);border-left:2px solid rgba(255,92,122,0.4);padding-left:0}
   body.light .dim .dmore{color:#5a544a}
   .dim.open .dmore{max-height:340px;margin-top:12px;padding-left:14px}
+
+  /* ── The Five Dimensions pentagon (replaces the five .dim text cards) ────
+     Schematic + regular, NOT player data , it illustrates the five axes, it
+     does not plot anyone. Pink is #DE3A5E in LIGHT (deeper rose, ~3.9:1 on
+     cream) and the brighter --pink #FF5C7A in DARK, the same bright-in-dark /
+     darkened-in-light pattern the .rtag family uses. */
+  .fd{margin:2px 0 0}
+  .fd-svg{display:block;width:100%;max-width:430px;margin:0 auto}
+  .fd-web{fill:none;stroke:rgba(243,237,224,0.10);stroke-width:1}
+  body.light .fd-web{stroke:rgba(0,0,0,0.08)}
+  .fd-shape{fill:rgba(255,92,122,0.08);stroke:var(--pink);stroke-width:2;stroke-linejoin:round}
+  body.light .fd-shape{fill:rgba(222,58,94,0.08);stroke:#DE3A5E}
+  .fd-hit{fill:transparent}
+  .fd-dot{fill:var(--pink);pointer-events:none;transform-box:fill-box;transform-origin:center;transition:transform .2s}
+  body.light .fd-dot{fill:#DE3A5E}
+  .fd-lab{font-family:'Archivo';font-weight:700;font-size:12.5px;fill:var(--ink-soft);dominant-baseline:middle;pointer-events:none;transition:fill .18s}
+  .fd-v{cursor:pointer}
+  .fd-v:focus{outline:none}
+  .fd-v:hover .fd-lab,.fd-v:focus-visible .fd-lab,.fd-v[aria-selected="true"] .fd-lab{fill:var(--pink)}
+  body.light .fd-v:hover .fd-lab,body.light .fd-v:focus-visible .fd-lab,body.light .fd-v[aria-selected="true"] .fd-lab{fill:#DE3A5E}
+  .fd-v[aria-selected="true"] .fd-dot{transform:scale(1.35)}
+  .fd-v:focus-visible .fd-dot{stroke:var(--pink);stroke-width:3;stroke-opacity:0.45}
+  body.light .fd-v:focus-visible .fd-dot{stroke:#DE3A5E}
+  /* affordance: dots pulse 6 -> 8.5px, staggered, until the first tap */
+  @keyframes fdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.417)}}
+  .fd:not(.fd-tapped) .fd-dot{animation:fdPulse 2s ease-in-out var(--d,0s) infinite}
+  .fd-hint{margin:4px auto 15px;text-align:center;font-family:'Bricolage Grotesque';font-style:italic;font-size:14px;color:var(--pink);transition:opacity .5s}
+  body.light .fd-hint{color:#DE3A5E}
+  .fd.fd-tapped .fd-hint{opacity:0;pointer-events:none}
+  .fd-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-left:2px solid rgba(255,92,122,0.45);border-radius:14px;padding:16px 18px}
+  body.light .fd-panel{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06);border-left-color:rgba(222,58,94,0.5)}
+  .fd-lead{font-family:'Bricolage Grotesque';font-style:italic;font-size:15.5px;line-height:1.5;color:var(--pink)}
+  body.light .fd-lead{color:#DE3A5E}
+  .fd-body{margin-top:10px;font-family:'Inter';font-weight:400;font-size:13px;line-height:1.65;color:rgba(243,237,224,0.6)}
+  body.light .fd-body{color:#5a544a}
+  /* Phones: .idxwrap's 48px side padding leaves a ~279px container at 390px, which
+     scales the whole SVG to ~0.70 and would render the labels at ~8.7px. Bump the
+     label size in user units so it lands ~11px on a phone , in line with the 10.5px
+     the card radar already ships. Labels stay inside the 0-400 viewBox at this size,
+     so nothing can clip. */
+  @media (max-width:480px){.fd-lab{font-size:15.5px}}
+  @media (prefers-reduced-motion:reduce){.fd .fd-dot{animation:none!important}}
   .dicon{display:inline-flex;color:var(--pink)}
   .dicon .di{width:18px;height:18px}
   .picon{display:inline-flex;color:var(--pink);vertical-align:middle}
@@ -164,11 +206,45 @@
       </div>
       <div style="margin-top:34px">
       <div class="idx-sectitle">The Five Dimensions</div>
-      <div class="dim" onclick="this.classList.toggle('open')"><div class="dt"><span class="dnum">1</span> <span class="dicon"><svg class="di" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="13" fill="currentColor" stroke="none"/><path d="M50 8 L50 20 M50 80 L50 92 M8 50 L20 50 M80 50 L92 50"/></svg></span> Goal Threat <span class="dchev">&#8964;</span></div><div class="dd">How much a player threatens the goal , shots, conversion, and the danger they carry in the box.</div><div class="dmore">This is the cleanest dimension to read and the easiest to misjudge. Goal threat is not the same as goals scored. We measure the quality and volume of the chances a player gets into, how often they take them, and the gravity they exert in the penalty area , the defenders pulled out of shape simply because of where they stand. A poacher with ten tap-ins and a forward who drags two centre-halves with every run are not the same player, and the Index knows it.</div></div>
-      <div class="dim" onclick="this.classList.toggle('open')"><div class="dt"><span class="dnum">2</span> <span class="dicon"><svg class="di" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M50 18 C30 18 18 32 18 50 C18 60 24 68 32 74 L32 84 L68 84 L68 74 C76 68 82 60 82 50 C82 32 70 18 50 18 Z"/><path d="M40 84 L60 84"/></svg></span> Creation <span class="dchev">&#8964;</span></div><div class="dd">The chances a player makes for others , key passes, assists, and the moments that unlock a defence.</div><div class="dmore">Assists flatter and deceive in equal measure; a player can lay on twenty and create little, or create relentlessly and finish a season with five to show for it. So we look past the final ball to the chance itself , its danger, its difficulty, the lock it picked. Creation rewards the pass that should have been a goal as much as the one that was. It is the truest measure of a player who makes others better.</div></div>
-      <div class="dim" onclick="this.classList.toggle('open')"><div class="dt"><span class="dnum">3</span> <span class="dicon"><svg class="di" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 66 L42 44 L56 58 L82 30"/><path d="M62 30 L82 30 L82 50"/></svg></span> Progression <span class="dchev">&#8964;</span></div><div class="dd">How a player moves the ball and the team up the pitch , carries, line-breaking passes, territory gained.</div><div class="dmore">Football is a territorial game, and somebody has to do the carrying. Progression captures the unglamorous, decisive work of advancing the ball through the thirds , the carry that beats the press, the pass that splits a line, the yards won that turn defence into attack. It is why a deep midfielder with no goals and no assists can still be the engine of everything, and why the Index refuses to let that work go unseen.</div></div>
-      <div class="dim" onclick="this.classList.toggle('open')"><div class="dt"><span class="dnum">4</span> <span class="dicon"><svg class="di" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M50 14 L80 26 L80 52 C80 72 66 84 50 90 C34 84 20 72 20 52 L20 26 Z"/></svg></span> Defensive <span class="dchev">&#8964;</span></div><div class="dd">The work without the ball , duels, recoveries, interceptions, and the protection a player gives the side.</div><div class="dmore">The half of the game that never makes the highlight reel. Defensive value is read in context , a full-back is asked for different things than a holding midfielder, and both are judged against their own brief, not a single blunt standard. Recoveries, duels won, the interception that ends an attack before it starts, the positional discipline that means the tackle was never needed. The best defending often looks like nothing happening at all.</div></div>
-      <div class="dim" onclick="this.classList.toggle('open')"><div class="dt"><span class="dnum">5</span> <span class="dicon"><svg class="di" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="52" r="32"/><path d="M50 34 L50 52 L64 60"/><path d="M38 16 L62 16"/></svg></span> Reliability <span class="dchev">&#8964;</span></div><div class="dd">Consistency and availability , minutes played, error rate, and how dependable the season was as a whole.</div><div class="dmore">Talent that cannot be counted on is talent half-spent. Reliability is the season-long view , the minutes actually played, the errors that cost, the weeks a player was there when the team needed him versus the weeks he was not. A brilliant half-season and a steady full one are different achievements, and this is the dimension that tells them apart. Availability, in the end, is a skill of its own.</div></div>
+      <div class="fd" id="fd">
+        <svg class="fd-svg" viewBox="0 0 400 320" role="tablist" aria-label="The Five Dimensions">
+        <polygon class="fd-web" points="200 120.7 229.7 142.3 218.4 177.3 181.6 177.3 170.3 142.3"/>
+        <polygon class="fd-web" points="200 90.4 258.6 133 236.2 201.9 163.8 201.9 141.4 133"/>
+        <polygon class="fd-web" points="200 60 287.5 123.6 254.1 226.4 145.9 226.4 112.5 123.6"/>
+        <line class="fd-web" x1="200" y1="152" x2="200" y2="60"/>
+        <line class="fd-web" x1="200" y1="152" x2="287.5" y2="123.6"/>
+        <line class="fd-web" x1="200" y1="152" x2="254.1" y2="226.4"/>
+        <line class="fd-web" x1="200" y1="152" x2="145.9" y2="226.4"/>
+        <line class="fd-web" x1="200" y1="152" x2="112.5" y2="123.6"/>
+        <polygon class="fd-shape" points="200 60 287.5 123.6 254.1 226.4 145.9 226.4 112.5 123.6"/>
+        <g class="fd-v" id="fdv-goal" role="tab" tabindex="0" aria-selected="true" aria-controls="fdp-goal" data-k="goal" style="--d:0.00s"><circle class="fd-hit" cx="200" cy="60" r="26"/><circle class="fd-dot" cx="200" cy="60" r="6"/><text class="fd-lab" x="200.0" y="34.0" text-anchor="middle">Goal Threat</text></g>
+        <g class="fd-v" id="fdv-creation" role="tab" tabindex="-1" aria-selected="false" aria-controls="fdp-creation" data-k="creation" style="--d:0.28s"><circle class="fd-hit" cx="287.5" cy="123.6" r="26"/><circle class="fd-dot" cx="287.5" cy="123.6" r="6"/><text class="fd-lab" x="301.5" y="123.6" text-anchor="start">Creation</text></g>
+        <g class="fd-v" id="fdv-progression" role="tab" tabindex="-1" aria-selected="false" aria-controls="fdp-progression" data-k="progression" style="--d:0.56s"><circle class="fd-hit" cx="254.1" cy="226.4" r="26"/><circle class="fd-dot" cx="254.1" cy="226.4" r="6"/><text class="fd-lab" x="268.1" y="226.4" text-anchor="start">Progression</text></g>
+        <g class="fd-v" id="fdv-defensive" role="tab" tabindex="-1" aria-selected="false" aria-controls="fdp-defensive" data-k="defensive" style="--d:0.84s"><circle class="fd-hit" cx="145.9" cy="226.4" r="26"/><circle class="fd-dot" cx="145.9" cy="226.4" r="6"/><text class="fd-lab" x="131.9" y="226.4" text-anchor="end">Defensive</text></g>
+        <g class="fd-v" id="fdv-reliability" role="tab" tabindex="-1" aria-selected="false" aria-controls="fdp-reliability" data-k="reliability" style="--d:1.12s"><circle class="fd-hit" cx="112.5" cy="123.6" r="26"/><circle class="fd-dot" cx="112.5" cy="123.6" r="6"/><text class="fd-lab" x="98.5" y="123.6" text-anchor="end">Reliability</text></g>
+        </svg>
+        <div class="fd-hint" id="fdHint">Tap each point to read the dimension</div>
+        <div class="fd-panel" id="fdp-goal" role="tabpanel" aria-labelledby="fdv-goal">
+          <div class="fd-lead">How much a player threatens the goal , shots, conversion, and the danger they carry in the box.</div>
+          <div class="fd-body">This is the cleanest dimension to read and the easiest to misjudge. Goal threat is not the same as goals scored. We measure the quality and volume of the chances a player gets into, how often they take them, and the gravity they exert in the penalty area , the defenders pulled out of shape simply because of where they stand. A poacher with ten tap-ins and a forward who drags two centre-halves with every run are not the same player, and the Index knows it.</div>
+        </div>
+        <div class="fd-panel" id="fdp-creation" role="tabpanel" aria-labelledby="fdv-creation" hidden>
+          <div class="fd-lead">The chances a player makes for others , key passes, assists, and the moments that unlock a defence.</div>
+          <div class="fd-body">Assists flatter and deceive in equal measure; a player can lay on twenty and create little, or create relentlessly and finish a season with five to show for it. So we look past the final ball to the chance itself , its danger, its difficulty, the lock it picked. Creation rewards the pass that should have been a goal as much as the one that was. It is the truest measure of a player who makes others better.</div>
+        </div>
+        <div class="fd-panel" id="fdp-progression" role="tabpanel" aria-labelledby="fdv-progression" hidden>
+          <div class="fd-lead">How a player moves the ball and the team up the pitch , carries, line-breaking passes, territory gained.</div>
+          <div class="fd-body">Football is a territorial game, and somebody has to do the carrying. Progression captures the unglamorous, decisive work of advancing the ball through the thirds , the carry that beats the press, the pass that splits a line, the yards won that turn defence into attack. It is why a deep midfielder with no goals and no assists can still be the engine of everything, and why the Index refuses to let that work go unseen.</div>
+        </div>
+        <div class="fd-panel" id="fdp-defensive" role="tabpanel" aria-labelledby="fdv-defensive" hidden>
+          <div class="fd-lead">The work without the ball , duels, recoveries, interceptions, and the protection a player gives the side.</div>
+          <div class="fd-body">The half of the game that never makes the highlight reel. Defensive value is read in context , a full-back is asked for different things than a holding midfielder, and both are judged against their own brief, not a single blunt standard. Recoveries, duels won, the interception that ends an attack before it starts, the positional discipline that means the tackle was never needed. The best defending often looks like nothing happening at all.</div>
+        </div>
+        <div class="fd-panel" id="fdp-reliability" role="tabpanel" aria-labelledby="fdv-reliability" hidden>
+          <div class="fd-lead">Consistency and availability , minutes played, error rate, and how dependable the season was as a whole.</div>
+          <div class="fd-body">Talent that cannot be counted on is talent half-spent. Reliability is the season-long view , the minutes actually played, the errors that cost, the weeks a player was there when the team needed him versus the weeks he was not. A brilliant half-season and a steady full one are different achievements, and this is the dimension that tells them apart. Availability, in the end, is a skill of its own.</div>
+        </div>
+      </div>
       </div>
       <div style="margin-top:34px">
       <div class="idx-sectitle">Principles Behind the Score</div>
@@ -215,4 +291,33 @@
     <a href="myclub.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="6.5" y="3" width="11" height="18" rx="2.5"/><circle cx="12" cy="9.5" r="2.3"/></svg><span>My Club</span></a>
     <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
   </nav>
+<script>
+(function(){
+  var fd=document.getElementById('fd'); if(!fd) return;
+  var tabs=[].slice.call(fd.querySelectorAll('.fd-v'));
+  function select(k,moveFocus){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-k')===k;
+      t.setAttribute('aria-selected', on?'true':'false');
+      t.setAttribute('tabindex', on?'0':'-1');
+      var p=document.getElementById('fdp-'+t.getAttribute('data-k'));
+      if(p){ if(on) p.removeAttribute('hidden'); else p.setAttribute('hidden',''); }
+      if(on && moveFocus) t.focus();
+    });
+    fd.classList.add('fd-tapped');   // first interaction: stop pulse + fade hint
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){ select(t.getAttribute('data-k')); });
+    t.addEventListener('keydown',function(e){
+      var k=e.key, n=null;
+      if(k==='Enter'||k===' '||k==='Spacebar'){ e.preventDefault(); select(t.getAttribute('data-k')); return; }
+      if(k==='ArrowRight'||k==='ArrowDown') n=(i+1)%tabs.length;
+      else if(k==='ArrowLeft'||k==='ArrowUp') n=(i-1+tabs.length)%tabs.length;
+      else if(k==='Home') n=0;
+      else if(k==='End') n=tabs.length-1;
+      if(n!==null){ e.preventDefault(); select(tabs[n].getAttribute('data-k'), true); }
+    });
+  });
+})();
+</script>
 </body></html>
