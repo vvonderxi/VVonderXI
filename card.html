@@ -931,6 +931,16 @@
     } });
     renderPanels(D);
     SEASON_CARDID=cardId;
+    // URL follows the season. card_id IS the player-season key (one id per season),
+    // so writing ?id= is the whole state , no extra season param needed. Without this a
+    // reload reverted to the arrival season and a shared link lost the chosen one.
+    // replaceState, NOT pushState: the card's Back button is history.back(), so pushing
+    // would make Back step through every season toggle instead of returning to rankings.
+    try{
+      var _u=new URL(window.location.href);
+      _u.searchParams.set('id', cardId);          // keep any other params (p/s/key -> Chronicle)
+      history.replaceState({cardId:cardId}, '', _u);
+    }catch(e){}
     renderTrajectory();
     var _sp=document.getElementById('seasonPanel');
     if(_sp){ _sp.innerHTML=seasonRowsHTML(); }   // rebuild rows with the new active season highlighted
