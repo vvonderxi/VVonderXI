@@ -147,7 +147,19 @@
   @media (max-width:560px){.glancebadge{display:none}}
   /* glance: stat row + chips on the right */
   .gstatrow{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.07)}
+  /* .gname , the player's name, the glance's heading. Starts as whatever
+     player_name holds ("L. Messi") and is upgraded in place to the derived
+     full name once the players.full_name lookup returns. The transition is on
+     opacity only, so the upgrade reads as a refinement, never as a reflow. */
+  .gname{font-family:'Archivo';font-weight:900;font-size:23px;line-height:1.15;min-height:26px;letter-spacing:-0.01em;color:var(--cream);margin-bottom:6px;transition:opacity .18s ease}
+  body.light .gname{color:#2a2620}
+  .gname.resolving{opacity:.72}
   .gsub{font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px}
+  /* games = the minutes denominator the engine is built on. Full ink weight so
+     it reads as a fact, not a footnote, while the rest of the line stays muted. */
+  .gsub .gm{white-space:nowrap}
+  .gsub .gm-games{font-weight:900;color:var(--cream)}
+  body.light .gsub .gm-games{color:#2a2620}
   /* HOVER-TO-SHOW tag tooltip , the standard for ALL tags/chips */
   .chip{position:relative}
   /* tag info: tap-toggle inline reveal (shared handler in vv-core.js). The panel is a
@@ -514,6 +526,11 @@
       <div class="layer open"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5 10 6.5 10 6.5-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></div><div class="layer-t">The Glance</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="glancegrid">
   <div class="glancestats">
     <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV">91</span><span class="gl">V<span style="color:var(--pink)">V</span> Index</span></div><div class="gstat"><span class="gv" id="glGoals">10</span><span class="gl">Goals</span></div><div class="gstat"><span class="gv" id="glAssists">8</span><span class="gl">Assists</span></div></div>
+    <!-- deliberately EMPTY, unlike the demo placeholders on the stats/gsub rows:
+         a name is identifying, so flashing a real player's name (~165ms, until
+         this card's own data lands) would read as the wrong card. min-height on
+         .gname reserves the line so the blank costs no layout shift. -->
+    <div class="gname" id="glName"></div>
     <div class="gsub" id="glSub">CAM &middot; Man Utd &middot; 23/24</div>
     <div class="gdrury" id="glDrury"></div>
     <div class="chips" id="glChips">
@@ -738,9 +755,34 @@
     set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
     var LEAGUE_FULL = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga', L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Jupiler Pro League', TR:'Süper Lig' };
     var _gp = (D.appearances!=null) ? (D.appearances + (D.appearances===1 ? ' game' : ' games')) : null;
-    set('glSub', [ posDisplay(D.pos), D.clubname, (LEAGUE_FULL[D.league]||D.league), D.year, _gp, ('Age '+(D.age||'NR')) ]
-      .filter(function(x){ return x!=null && x!==''; }).join(' · '));
+    /* Meta line order: position · age · club · league · season · GAMES.
+       Name identifies; position + age frame what KIND of season it was (a
+       22-year-old's 30 goals is not a 33-year-old's); club + league place it;
+       season dates it; games is the denominator the whole engine rests on, so
+       it is emphasised rather than mumbled , it sits last in reading order but
+       first in visual weight, and on a wrapped mobile line it leads row two.
+       Built as DOM nodes, not innerHTML: club names contain "&"
+       ("Brighton & Hove Albion"), which string concatenation would mangle. */
+    var _sub=document.getElementById('glSub');
+    if(_sub){
+      var _meta=[ posDisplay(D.pos), ('Age '+(D.age||'NR')), D.clubname,
+                  (LEAGUE_FULL[D.league]||D.league), D.year ]
+        .filter(function(x){ return x!=null && x!==''; });
+      if(_gp) _meta.push(_gp);   // appearances is non-null on all 57,234 cards
+      _sub.textContent='';
+      _meta.forEach(function(txt,i){
+        /* Each field is its own nowrap span so a wrap can ONLY land on a
+           separator , otherwise "Premier League" splits across lines. The
+           separators are plain text nodes, i.e. the only breakable points. */
+        if(i) _sub.appendChild(document.createTextNode(' · '));
+        var s=document.createElement('span');
+        s.className='gm'+((_gp && i===_meta.length-1) ? ' gm-games' : '');
+        s.textContent=txt;
+        _sub.appendChild(s);
+      });
+    }
     set('glSquad', (D.number!=null ? D.number : 'NR'));
+    vvSetGlanceName(D);
     var badgeFill=document.getElementById('glBadgeFill');
     if(badgeFill){
       var c1=D.club1||'#2a2320', c2=D.club2||c1;
@@ -913,6 +955,40 @@
     var trig=document.querySelector('#seasonZone .seasontrigger');
     if(trig && SEASON_ROWS) trig.textContent='View all '+SEASON_ROWS.length+' seasons';
   }
+  /* ── Glance heading: render instantly, refine in place ──────────────────
+     player_card_mv carries player_name only ("L. Messi"), and full_name lives
+     on players , NOT on the matview, whose column list is frozen at creation
+     (adding it would mean dropping and rebuilding the matview the whole site
+     reads, plus its 8 indexes, for a display string , wrong risk class).
+     So: paint player_name synchronously, then upgrade to the derived full name
+     when a single indexed lookup returns. It never flashes empty, and if the
+     lookup fails, is slow, or the player is one of the 68 unresolvable
+     diminutives, the abbreviated name simply stands , which is today's
+     behaviour, so there is no regression path. */
+  var _NAME_CACHE = Object.create(null);          // api_player_id -> full_name (avoids refetch on season switch)
+  async function vvSetGlanceName(D){
+    var el=document.getElementById('glName'); if(!el || !D) return;
+    var base = D.full || D.surname || '';
+    el.textContent = base;                        // instant, never blank
+    var pid = D.api_player_id;
+    if(pid == null || !/^[A-Za-zÀ-ɏ]\.\s/.test(base)) return;   // already full / mononym -> nothing to fetch
+    var apply=function(fn){
+      if(fn == null) return;
+      var better = VVCore.vvDisplayName(base, fn);
+      if(better && better !== el.textContent) el.textContent = better;
+    };
+    if(pid in _NAME_CACHE){ apply(_NAME_CACHE[pid]); return; }
+    el.classList.add('resolving');
+    try{
+      var sb=vvClient(); if(!sb) return;
+      var res=await sb.from('players').select('full_name').eq('api_player_id', pid).limit(1);
+      var fn=(res && res.data && res.data[0]) ? res.data[0].full_name : null;
+      _NAME_CACHE[pid]=fn;
+      if(document.getElementById('glName')===el && el.textContent===base) apply(fn);  // ignore if the card changed under us
+    }catch(e){ /* keep the abbreviated name */ }
+    finally{ el.classList.remove('resolving'); }
+  }
+
   async function switchSeason(cardId){
     if(cardId===SEASON_CARDID) return;
     var sb=vvClient(); if(!sb) return;

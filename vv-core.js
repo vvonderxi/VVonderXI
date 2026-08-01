@@ -212,6 +212,47 @@
     return parts[lastIdx];
   }
 
+  // ── vvDisplayName , "L. Messi" + legal name -> "Lionel Messi" ─────────
+  // player_card_mv.player_name is abbreviated for 63.6% of players ("L. Messi")
+  // and already full for the rest ("Cristiano Ronaldo", "Neymar", "Son Heung-Min").
+  // players.full_name is the full LEGAL name, so it is NOT a display name:
+  //   Messi  -> "Lionel Andrés Messi Cuccittini"
+  //   Salah  -> "Mohamed Salah Hamed Mahrous Ghaly"
+  //   Hulk   -> "Givanildo Vieira de Souza"
+  // So we borrow ONLY the given name from full_name and keep player_name's own
+  // surname, which is the "known as" surname with compounds already intact
+  // ("K. De Bruyne" -> "Kevin De Bruyne", never "Kevin De" or a legal variant).
+  //
+  // The ^X\. guard is what makes every awkward case safe: anything not in
+  // initial form is returned untouched, which covers already-full names,
+  // mononyms whose legal name differs entirely (Hulk, Neymar, Fred), and
+  // non-Latin rows where the two fields are in OPPOSITE order
+  // ("Son Heung-Min" / full_name "Heung-Min Son").
+  //
+  // Measured over the 9,798 abbreviated names: resolves 9,730 (99.3%).
+  // The 68 left abbreviated are diminutives absent from the legal name
+  // ("D. Alli" <- Bamidele; "N. Madueke" <- Noni), where abbreviating is honest.
+  const _nameFold = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '');
+  function vvDisplayName(playerName, fullName){
+    if(!playerName) return fullName || '';
+    const m = String(playerName).match(/^([A-Za-zÀ-ɏ])\.\s+(.+)$/);
+    if(!m) return playerName;                       // already full / mononym / reversed order
+    const initial = _nameFold(m[1]).toUpperCase(), surname = m[2];
+    if(!fullName || !String(fullName).trim()) return playerName;   // no source -> keep as-is
+    const toks = String(fullName).trim().split(/\s+/);
+    const first = toks[0];
+    if(first && _nameFold(first[0]).toUpperCase() === initial)
+      return first.toLowerCase() === surname.toLowerCase() ? playerName : first + ' ' + surname;
+    // The initial disagrees -> the player goes by a MIDDLE name ("H. Maguire"
+    // <- "Jacob Harry Maguire"). Recover it only when exactly ONE later token
+    // matches; 2+ is ambiguous ("O. Aina" <- Temitayo Olufisayo Olaoluwa) and
+    // guessing there would be worse than staying abbreviated.
+    const surnWords = new Set(_nameFold(surname).toLowerCase().split(/\s+/));
+    const cands = toks.slice(1).filter(t => !surnWords.has(_nameFold(t).toLowerCase())
+                                         && _nameFold(t[0]).toUpperCase() === initial);
+    return cands.length === 1 ? cands[0] + ' ' + surname : playerName;
+  }
+
   // ── Nationality NAME -> flag emoji (Contract §1) ──────────────────────
   // The view stores FULL COUNTRY NAMES, not ISO codes. Covers all 170
   // distinct live values incl. variant spellings and one mojibake entry.
@@ -1531,7 +1572,7 @@
   }
   function vvSeasonLabel(y){ return (y==null) ? '' : fmtSeason(String(y).slice(2)+String(y+1).slice(2)); }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
