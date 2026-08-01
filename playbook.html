@@ -220,13 +220,21 @@
   .libgroup{margin-bottom:18px}
   .libgroup-h{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-bottom:11px} body.light .libgroup-h{color:var(--ink-soft)}
   .libtags{display:flex;flex-wrap:wrap;gap:9px}
+  /* Tag tooltip. Was a CSS ::after centred on the chip, which cannot clamp to the
+     viewport , at 390px the leftmost chip in each wrapped row pushed its bubble
+     49-61px off-screen (10 of 19 chips). Now a fixed-position box positioned by the
+     same clamp math as vv-core's positionFloat (used by the card/compare glance
+     chips), mirrored here because playbook does not load vv-core. */
+  .libtip{position:fixed;z-index:200;pointer-events:none;opacity:0;transition:opacity .12s;
+    background:#262122;color:#F3EDE0;font-family:'Archivo';font-weight:500;font-size:12.5px;
+    line-height:1.45;padding:11px 14px;border-radius:11px;width:max-content;max-width:260px;
+    text-align:center;box-shadow:0 16px 34px -12px rgba(0,0,0,0.6)}
+  .libtip.on{opacity:1}
+  @media (max-width:720px){.libtip{max-width:min(260px,calc(100vw - 32px));text-align:left}}
   .libtag{position:relative;font-family:'Archivo';font-weight:700;font-size:14px;padding:9px 14px;border-radius:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(243,237,224,0.82);cursor:default;transition:all .14s}
   .libtag:hover{background:rgba(255,92,122,0.12);color:var(--pink);border-color:rgba(255,92,122,0.25)}
   body.light .libtag{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06);color:#4a443c}
   body.light .libtag:hover{background:rgba(255,92,122,0.1);color:var(--pink);border-color:rgba(255,92,122,0.25)}
-  .libtag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#262122;color:#F3EDE0;font-family:'Archivo';font-weight:500;font-size:12.5px;line-height:1.45;letter-spacing:0;padding:11px 14px;border-radius:11px;width:max-content;max-width:260px;text-align:center;z-index:40;box-shadow:0 16px 34px -12px rgba(0,0,0,0.6)}
-  .libtag[data-tip]:hover::before{content:"";position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#262122;z-index:40}
-  @media (max-width:720px){.libtag[data-tip]:hover::after{max-width:min(260px,calc(100vw - 32px));text-align:left}}
 
   .coin .coinA{fill:var(--cream)}
   body.light .coin .coinA{fill:var(--charcoal)}
@@ -392,4 +400,30 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
       <a href="playbook.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 <button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<script>
+(function(){
+  var box=null;
+  function ensure(){ if(!box){ box=document.createElement('div'); box.className='libtip'; document.body.appendChild(box); } return box; }
+  function place(el){
+    var b=ensure(); b.textContent=el.getAttribute('data-tip')||''; if(!b.textContent) return;
+    b.classList.add('on');
+    // same clamp as vv-core positionFloat: centre on the chip, then keep it on screen
+    var r=el.getBoundingClientRect(), m=8, vw=document.documentElement.clientWidth;
+    var left=r.left+r.width/2-b.offsetWidth/2;
+    left=Math.max(m, Math.min(left, vw-b.offsetWidth-m));       // never clips L/R
+    var top=r.top-b.offsetHeight-10;
+    if(top<m) top=r.bottom+10;                                   // near the top -> flip below
+    b.style.left=left+'px'; b.style.top=top+'px';
+  }
+  function hide(){ if(box) box.classList.remove('on'); }
+  function tag(n){ return n && n.closest ? n.closest('.libtag[data-tip]') : null; }
+  document.addEventListener('mouseover',function(e){ var t=tag(e.target); if(t) place(t); else hide(); });
+  document.addEventListener('mouseout', function(e){ if(tag(e.target)) hide(); });
+  document.addEventListener('focusin',  function(e){ var t=tag(e.target); if(t) place(t); });
+  document.addEventListener('focusout', hide);
+  document.addEventListener('click',    function(e){ var t=tag(e.target); if(t) place(t); else hide(); });  // tap on mobile
+  window.addEventListener('scroll', hide, {passive:true});
+  window.addEventListener('resize', hide);
+})();
+</script>
 </body></html>

@@ -95,7 +95,7 @@
   body.light .uclub{color:var(--ink-soft)}
   .upos{font-family:'Archivo';font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,0.5);text-align:center}
   body.light .upos{color:var(--ink-soft)}
-  .utags{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden;white-space:nowrap;min-width:0}
+  .utags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:5px;min-width:0}  /* was flex-wrap:nowrap + overflow:hidden + white-space:nowrap , that hard-truncated the 3rd tag (measured: 3 of 10 rows cut by 24-43px at 390px). The pillmode row is grid-template-rows:auto auto auto, so it absorbs a wrapped tag row without breaking. */
   .ugoals,.uassists{font-weight:800;color:var(--cream);text-align:right;font-variant-numeric:tabular-nums}
   body.light .ugoals,body.light .uassists{color:var(--charcoal)}
   .ugoals span,.uassists span{font-family:'Archivo';font-weight:700;color:rgba(243,237,224,0.6);margin-left:1px}
