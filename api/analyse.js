@@ -54,7 +54,7 @@ STYLE RULES , these override any tendency toward generic prose:
 2. BANNED phrases: "It's not just X, it's Y" / "not just X but Y" / "more than just" / "a testament to" / "stands as" / "a different kind of" / "a masterclass in" / "proof that" / "the kind of X that" / "cements" / "in a league of his own" / "rewrote the book" / "etched". Avoid these and close variants.
 3. VOICE , two registers: WINTER (sharp, authoritative, analytical) for engine explanation, dimension analysis, and reasoning; DRURY (poetic, elevated, earned not purple) for the verdict's closing beat. Match register to purpose.
 4. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.
-5. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. Do NOT break the short fields (h2h, verdict, who) , those stay single.
+5. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. The "verdict" field must ALSO read as TWO short paragraphs separated by \n\n: the reasoning, then a breath, then the closing beat. It lands harder with the pause. Do NOT break the truly short fields (h2h, who) , those stay single.
 
 When the two players' VV scores DIFFER, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV scores are EQUAL, the engine has deliberately left the call to you: break the tie using the full profile , the complete stat line and all five radar dimensions , and pick a narrow, defensible winner. Never declare a flat draw.
 
@@ -93,7 +93,7 @@ OUTPUT FORMAT:
 Respond with ONLY a valid JSON object, no markdown, no code blocks, no preamble. Exactly these three keys:
 {
   "glance": "ONE single sentence. The essence of this season in one breath, Peter Drury at his most distilled. This is the hero line, it must land instantly.",
-  "scout": "TWO to THREE sentences. A scout's verdict on where this season sits in the player's career arc, what it proves, what it costs to deny. Authoritative, the close of an argument.",
+  "scout": "TWO SHORT PARAGRAPHS separated by \\n\\n, one to two sentences each. Paragraph one: where this season sits in the player's career arc and what it proves. Paragraph two: what it costs to deny it. Authoritative, the close of an argument, not a block of text.",
   "notes": ["four", "stanzas", "as", "before"]
 }
 The "notes" value is an array of exactly 4 strings, each a short stanza of 2 to 3 sentences (same rules as before: stanza 1 essence, 2 human/context, 3 tags+numbers as evidence, 4 a closing line that lingers).

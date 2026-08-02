@@ -1303,7 +1303,13 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
   function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine){
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
-    var parts=[]; if(h2h)parts.push(h2h); if(verdict)parts.push(verdict); if(!parts.length)parts=[''];
+    var parts=[]; if(h2h)parts.push(h2h);
+      // STYLE RULE 5 asks the model for a TWO-PARAGRAPH verdict separated by a blank line.
+      // .vquote is filled with textContent, which COLLAPSES newlines, so the break has to
+      // become separate elements , the markup already has 3 .vquote slots with margins.
+      if(verdict) String(verdict).split(/\n\s*\n/).map(function(x){return x.trim();})
+                    .filter(Boolean).forEach(function(x){ parts.push(x); });
+      if(!parts.length) parts=[''];
     for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0)t='“'+t; if(i===parts.length-1)t=t+'”'; vq[i].textContent=t; vq[i].style.display=''; } else { vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     if(who){
