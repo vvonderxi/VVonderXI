@@ -334,7 +334,7 @@
   .iosback.show{opacity:1;pointer-events:auto}
   .iossheet{position:fixed;left:0;right:0;bottom:0;background:#16110d;border-top:1px solid rgba(255,255,255,0.1);border-radius:22px 22px 0 0;padding:24px 22px calc(26px + env(safe-area-inset-bottom));transform:translateY(110%);transition:.3s cubic-bezier(.4,0,.2,1);z-index:61;max-width:560px;margin:0 auto}
   .iossheet.show{transform:translateY(0)}
-  .iostitle{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;margin-bottom:8px}
+  .iostitle{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;margin-bottom:8px;color:var(--cream)}  /* .iossheet is ALWAYS dark (#16110d), so this must NOT follow the body theme , it was inheriting body.light's charcoal and rendering at 1.09 contrast. .iosbody already sets its own cream. */
   .iosbody{font-family:'Inter';font-size:14.5px;color:rgba(243,237,224,0.72);line-height:1.55}
   .iosbody b{color:#fff}
   .iosclose{margin-top:18px;width:100%;padding:13px;border-radius:13px;border:0;background:var(--pink,#ff2d78);color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;cursor:pointer}
