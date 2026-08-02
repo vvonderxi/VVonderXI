@@ -98,6 +98,13 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 - (b) **The Index CHART uses AVERAGE-ANCHORED display while the ENGINE stays PL-ANCHORED.** The tilt socket is AFFINE, so re-anchoring the engine would change scores. **Display re-anchor only, NEVER the engine.**
 - (c) ANCHOR DISCLOSURE: we measure leagues RELATIVE TO EACH OTHER, not whether football overall rose or fell (no absolute claim about the global level over time).
 
+**CSS GOTCHA , A MEDIA QUERY ADDS NO SPECIFICITY. This bit THREE times in one session (2026-08-02); assume it will bite again.**
+Every page here is ONE long inline `<style>` with responsive rules scattered through it, and later rules of EQUAL specificity win regardless of media query. So a `@media` override silently does nothing whenever a same-specificity rule appears later in the sheet , and it fails QUIETLY: the layout half-changes and looks plausible.
+- `compare.html` , `@media (max-width:720px){.vwho{font-size:23px}}` lost to a later `.verdict .vwho` (0,2,0). Fixed with `.verdict .vfinal .vwho` (0,3,0). Same for `.vquote`.
+- `vvindex.html` , `@media (min-width:900px){.fd-lab{font-size:8.4px}}` lost to the base `.fd-lab` (0,1,0) declared AFTER it. Fixed with `.fd .fd-lab` (0,2,0). Symptom: the pentagon grew but the label compensation did not apply, rendering labels at 20px.
+- Related shape: an APPENDED override block loses to existing `body.light X` rules, which is why the Compare re-skin edits the EXISTING `body.light` block rather than appending one.
+**RULE: when adding a responsive override, either place it AFTER every competing rule or out-specify them , and VERIFY the computed value, never assume the media query won.**
+
 **FRONT-END invariants , the mobile-Safari 3D flip (cost ~8 commits to learn; invariants LOCKED, do NOT re-derive)**
 1. Faces need EXPLICIT dims off `--cw` (`width:var(--cw)` + `height:calc(--cw*1.397)`); NEVER % (resolves to 0 against the auto-sized in-flow parent , hit as both zero-width AND zero-height bugs).
 2. FRONT in-flow (`position:relative`) + BACK absolute overlay , the card box comes from the real card (no collapse).
