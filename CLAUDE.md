@@ -11,6 +11,10 @@
 5. Verify against LIVE code/DB before editing , docs drift, including this one. Distinguish "verified live this session" from "recorded in this doc."
 6. At session END: append a SESSION LOG entry (§F) and update the PROGRESS graphic. A session that changes state but doesn't log it has failed the next chat.
 
+**WHAT LIVES HERE vs A STAGE FILE (decided 2026-08-03, DO THIS BEFORE THE NEXT LOGGING SESSION).** CLAUDE.md holds the **resume point + active queue + locked decisions**. Detailed specs for work DEFERRED to a later stage belong in their OWN file, read only when that stage starts. **This is the real fix for the doc refilling:** the two compression passes proved the remaining mass is OPEN work, which cannot be compressed but CAN be relocated , archiving only moves closed history, and closed history is no longer the bulk.
+- **QUEUED, NOT YET DONE: extract the accounts-stage spec** (waitlist table + policy + grant, the 5 mapped trigger sites, settled modal copy, the RLS verification method, the two open questions) from §D into **`ACCOUNTS_STAGE_SPEC.md`**, leaving a one-line pointer in §D: *"Accounts stage: see ACCOUNTS_STAGE_SPEC.md"*. Apply the same treatment to any other deferred-stage detail as it accumulates.
+- **The trigger is size, not time:** do it before CLAUDE.md crosses **90%** of the 150k truncation limit (it was 88% when this was written). Truncation is silent and this file is read first every session.
+
 Why this file exists: this project has suffered from too many documents and no clear reference point , chats rediscovering settled decisions, contradicting each other, losing work. This file is the fix. It is authoritative, current, and self-maintaining. Keep it that way.
 
 ---
