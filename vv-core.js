@@ -1172,7 +1172,10 @@
       if(d.g>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+gTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-gTop).toFixed(1)+'" rx="4" fill="url(#tjgGoal)"/>';
       if(d.a>0){ var aBot=(gTop-GAP>aTop+1)?(gTop-GAP):gTop; bars+='<rect x="'+bx.toFixed(1)+'" y="'+aTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(aBot-aTop).toFixed(1)+'" rx="4" fill="url(#tjgAst)"/>'; }
       if(bars) s+='<g filter="url(#tjShadow)">'+bars+'</g>';   // soft shadow lifts the stacked bar off the green
-      if(i%xStep===0 || d.selected || i===n-1){
+      /* invariant: thinning stays (i%xStep) and the last season is always labelled.
+         The d.selected clause was REMOVED , it inserted an off-rhythm label; the selected
+         season already carries the full-height .tjsel highlight band, so it was redundant. */
+      if(i%xStep===0 || i===n-1){
         var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
         s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
       }

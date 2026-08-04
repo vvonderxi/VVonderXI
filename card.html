@@ -101,7 +101,8 @@
   .tjgrid{stroke:rgba(243,237,224,0.09);stroke-width:1}
   .tjyl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjyr{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
-  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px}
+  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:var(--panel);stroke-width:3.4px;stroke-linejoin:round}  /* halo in the PANEL colour so the VV line cannot cut through the number. Additive , the
+     card also keeps its .tjmask (invariant 7); this just makes the digits self-protecting. */
   .tjmask{fill:var(--panel)}
   .tjxl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjxlsel{fill:#FF5C7A;font-weight:800}
