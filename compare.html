@@ -1342,7 +1342,7 @@ body.light .pkmsub{color:var(--ink-soft)}
         var fb=(VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
                                : (W.surname+' edges it , '+wv+' to '+lv);
         who.textContent = ai || fb;
-      } else { who.textContent = ai || ('Level on VV , '+va+' apiece. The verdict decides.'); }
+      } else { who.textContent = ai || ('Level on VV , '+va+' apiece. The Index will not separate them.'); }
     }
     /* ── THE VERDICT TRIAD , three centred lines, one per state ──────────────
        The engine already distinguishes all three; this is DISPLAY only.
@@ -1420,9 +1420,9 @@ body.light .pkmsub{color:var(--ink-soft)}
     function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
     function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c); }
     var tagMenu=eligKeys.map(function(k){var t=TAGS[k];return '- '+k+' ("'+t.name+'"): '+t.blurb;}).join('\n');
-    var toneNote={tie:'a dead heat , write the argument-continues register, never a flat draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
+    var toneNote={tie:'a dead heat , the argument-continues register. Two-sided and unresolved, never a limp draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
     var winNote;
-    if(winner==='tie'){ winNote='TIE ('+va+'='+vb+'). Break it on the full profile and name a narrow winner. Never a flat draw.'; }
+    if(winner==='tie'){ winNote='GENUINELY LEVEL ('+va+'='+vb+'), and NO tiebreak applies. Do NOT name a winner and do NOT say either "edges it". Give both sides their due and leave it unresolved , the chip beside your line reads "The Debate Lives On".'; }
     else { var wName=(winner==='A'?CMP_A:CMP_B).surname, wv=(winner==='A'?va:vb), lv=(winner==='A'?vb:va);
       winNote='Player '+winner+' ('+wName+') takes the edge, '+wv+' to '+lv+'.'+(VC.tipped?' NOTE: within a coin-flip ('+va+' vs '+vb+'), AGE tipped it to the younger player , the equal season at a younger age is the harder feat. Lead with that.':' Explain why; do not overturn the engine.'); }
     var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag, who). p1 = Player A, p2 = Player B.\n'
