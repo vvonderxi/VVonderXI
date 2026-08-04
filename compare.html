@@ -1337,6 +1337,23 @@ body.light .pkmsub{color:var(--ink-soft)}
       // The hardcoded phrasing below is a FALLBACK only , the loading placeholder and any
       // cache-miss/old-cache/error path where the AI line is absent. NOT a client-side tone table.
       var ai=(whoLine!=null && String(whoLine).trim()) ? String(whoLine).trim() : '';
+      /* DEFENSIVE STRIP , rows cached before the prompt stopped asking for scores still carry them
+         ("Dzeko's Roma season is a demonstration. 92 vs 57."), and the pink line renders the numbers
+         again, so the score printed TWICE. Strip a TRAILING scoreline at display time so those rows
+         read correctly until they regenerate. Conservative on purpose: trailing only, both numbers
+         must be the actual rt values, and only shapes seen in real cached rows. If nothing matches,
+         the line is untouched. */
+      if(ai){
+        var _num='(?:'+va+'|'+vb+')';
+        var _tail=new RegExp('[\\s,.:;]*(?:VV\\s*)?'+_num+'\\s*(?:vs\\.?|to|and|[-–—])\\s*'+_num+'\\s*[.!]?\\s*$','i');
+        var _st=ai.replace(_tail,'');
+        /* ONLY rewrite when the pattern actually MATCHED. Otherwise a line that never carried a
+           trailing score would still get a full stop appended , editing prose we must not touch. */
+        if(_st!==ai){
+          _st=_st.replace(/[\s,;:]+$/,'');
+          if(_st.length>=12) ai=/[.!?]$/.test(_st)?_st:_st+'.';
+        }
+      }
       if(winner==='A'||winner==='B'){
         var W=(winner==='A')?CMP_A:CMP_B, wv=(winner==='A')?va:vb, lv=(winner==='A')?vb:va;
         var fb=(VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
@@ -1432,7 +1449,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       +'Tone: '+toneNote+'\n'
       +'VERDICT TAG , choose EXACTLY ONE key from this list (default to the FIRST; up-rank to a later one ONLY if it clearly fits better):\n'+tagMenu+'\n'
       +'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.\n'
-      +'"who" , the winner HEADLINE shown beside the tag chip. Write it in the register of the chosen tag and the tone above: a decisive gap reads decisive and settled, the finest of margins keeps "edges it" restraint, a tie reads as the argument continuing. It MUST NOT contradict the tag. Name the winner and include both VV scores ('+va+' and '+vb+'). Max ~14 words, a headline not a sentence.';
+      +'"who" , the winner HEADLINE shown beside the tag chip. Write it in the register of the chosen tag and the tone above: a decisive gap reads decisive and settled, the finest of margins keeps "edges it" restraint, a tie reads as the argument continuing. It MUST NOT contradict the tag. Name the winner (unless the Result line says genuinely level) and give the REASON in a few words. Do NOT write either VV score or any scoreline , the UI renders the numbers directly beneath your line, so repeating them prints them twice. Max ~14 words, a headline not a sentence.';
     var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
