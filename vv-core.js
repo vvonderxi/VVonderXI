@@ -1241,11 +1241,17 @@
     var tier = d.prestige==='Generational' ? ' gen' : (d.prestige==='Iconic' ? ' elite' : '');
     // #20: cap TOTAL row tags by PRIORITY , honours (tier) -> prestige -> profile; silent (full set on the card).
     var honList = (d.honours && d.honours.all) ? d.honours.all : [];
+    /* PRESTIGE LEADS AND IS EXEMPT FROM THE CAP. It used to sit THIRD in priority
+       (honours -> prestige -> profile) and be rendered only if slots remained, so a card with
+       cap-many honours dropped it entirely , on the rt97 top card three honours filled all
+       three slots and GENERATIONAL never appeared at all. It is the rarest signal on the row
+       (12 Generational, 138 Iconic), so it now renders first and unconditionally.
+       renderPrestige returns '' for everything else, so unranked rows are unaffected.
+       Consequence, accepted: a prestige row can show cap+1 pills. .utags wraps (d5898d6). */
+    var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
     var honN = Math.min(honList.length, cap);
     var honHtml = honN>0 ? renderHonourPillsCompact(d.honours, { baseClass:'rtag', max:honN }) : '';
     var rem = cap - honN;
-    var prestige = (rem>0) ? renderPrestige(d.prestige, { baseClass:'rtag' }) : '';
-    if(prestige) rem -= 1;
     var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem }) : '';
     var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
     var click = opts.onClick ? opts.onClick(d,i) : ('goCard('+(d.card_id==null?'':d.card_id)+')');
@@ -1259,7 +1265,7 @@
                   (d.goals!=null ? d.goals+'G' : ''),
                   (d.assists!=null ? d.assists+'A' : 'NR') ]
                 .filter(function(x){ return x!=null && x!==''; }).join(' · ');
-      var srtags = honHtml+prestige+tags;
+      var srtags = prestige+honHtml+tags;   // prestige FIRST
       return '<div class="urow seasonled'+tier+active+'" onclick="'+click+'">'
         +'<div class="srmain">'
           +'<div class="sryear">'+d.year+'</div>'
@@ -1275,7 +1281,7 @@
       +'<div class="uyear">'+d.year+'</div>'
       +'<div class="uclub">'+d.clubname+'</div>'
       +'<div class="upos">'+posDisplay(d.pos)+'</div>'
-      +'<div class="utags">'+honHtml+prestige+tags+'</div>'
+      +'<div class="utags">'+prestige+honHtml+tags+'</div>'   // prestige FIRST (matches .srtags)
       +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
       +'<div class="uassists">'+assists+'</div>'
       +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
