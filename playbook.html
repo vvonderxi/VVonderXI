@@ -232,7 +232,13 @@
   body.light .liblabel{color:var(--ink-soft)}
   .liblede{font-family:'Inter';font-weight:400;font-size:14.5px;color:rgba(243,237,224,0.55);margin-bottom:18px} body.light .liblede{color:#6a6256}
   .libgroup{margin-bottom:18px}
-  .libgroup-h{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-bottom:11px} body.light .libgroup-h{color:var(--ink-soft)}
+  /* Section divider for the grouped glossary. The .libgroup WRAPPER that used to supply
+     margin-bottom:18px was dropped when 09d451c merged the chip library into the glossary,
+     so headers sat flush against the previous group's last card , margin-top restores that
+     separation without reinstating the wrapper. Gold ties it to the tier system; the old
+     40%-cream / muted-grey read as a quiet label rather than a divider. */
+  .libgroup-h{font-family:'Archivo';font-weight:900;font-size:13px;letter-spacing:0.13em;text-transform:uppercase;color:var(--gold);margin:30px 0 13px}
+  .libgroup-h:first-of-type{margin-top:4px}   /* the first group follows the section lede, not a card */ body.light .libgroup-h{color:var(--gold-ink)}   /* #7e5a10 , the established light-mode gold */
   .libtags{display:flex;flex-wrap:wrap;gap:9px}
   /* Tag tooltip. Was a CSS ::after centred on the chip, which cannot clamp to the
      viewport , at 390px the leftmost chip in each wrapped row pushed its bubble
