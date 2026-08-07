@@ -665,6 +665,11 @@
       flag:     flagFor(row.nationality),
       surname:  surnameOf(row.player_name),
       full:     row.player_name || '',
+      // the SEARCHABLE legal-name form. `full` is the DISPLAY name ("L. Messi"), so any client-side
+      // re-filter that only sees `full` strips rows the server matched via player_name_norm
+      // ("lionel andres messi cuccittini") , measured: compare returned 13 rows for "Lionel Messi"
+      // and rendered 0. Carried here so the shared card object can be re-filtered faithfully.
+      name_norm: row.player_name_norm || '',
       clubname: row.team_name || '',
       league:   row.league_code || '',                      // league filter (My Club) + cross-page consistency
       age:      (row.season_age != null ? String(row.season_age)   // Contract §1: prefer season_age
@@ -1518,12 +1523,45 @@
   //    so club tokens disambiguate same-name players. Each token's OR-across-columns is a SUPERSET
   //    of name-only, so a mixed name+club query never returns FEWER rows than name-only would ,
   //    the ambiguity fallback ("token is both a club and a name") degrades toward showing something.
+  // MULTI-FIELD (2026-08-07). Each token may land in the player name, the DISPLAY name, the club,
+  // the position pool or the league , tokens still AND'd, so every token must find a home somewhere
+  // in the SAME row. That AND is the over-return guard: "haaland city" = (haaland somewhere) AND
+  // (city somewhere), so a City team-mate fails the haaland clause and is excluded. Never OR.
+  //
+  // WHY player_name IS A SEPARATE BRANCH: player_name_norm is built from COALESCE(full_name, name),
+  // i.e. the LEGAL name, so a known-as name is DISCARDED whenever a legal name exists , "Nico
+  // Williams" stores "nicholas williams arthuer" and "nico" matches nothing. Measured 2026-08-07:
+  // 509 players (3.3%) were unreachable by their own display name, incl. Raphinha, Hulk, Casemiro,
+  // Diogo Jota. Adding the raw display column rescues 375 of them (74%) with no migration. The
+  // remaining 134 have ACCENTED display names (Nenê, Álex Grimaldo) and ilike does not fold accents;
+  // those need player_name_norm rebuilt as full_name || ' ' || name, which forces a matview
+  // DROP+CREATE (see §C, the frozen 47-column list). Deliberately deferred.
+  //
+  // POSITION + LEAGUE MATCH ON EXACT TOKEN EQUALITY, NEVER SUBSTRING. 'st', 'cb' and 'cm' are
+  // substrings of hundreds of names, so a substring match here would flood every result set.
+  var POS_TOKENS = { gk:'GK', fb:'FB', cb:'CB', cdm:'CDM', cm:'CM', cam:'CAM', winger:'Winger', st:'ST' };
+  var LEAGUE_TOKENS = { pl:'PL', premier:'PL', epl:'PL', laliga:'LL', liga:'LL', ll:'LL',
+    seriea:'SA', sa:'SA', bundesliga:'BL', bl:'BL', ligue1:'L1', l1:'L1',
+    eredivisie:'ERE', ere:'ERE', primeira:'PRT', prt:'PRT', superlig:'TR', tr:'TR', bpl:'BPL' };
   function tokenAndFilter(q){
     var toks=vvNorm(q).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
     if(!toks.length) return null;
-    var perTok=toks.map(function(t){ return 'or(player_name_norm.ilike.%'+t+'%,team_name_norm.ilike.%'+t+'%)'; });
+    var perTok=toks.map(function(t){
+      var br=['player_name_norm.ilike.%'+t+'%','team_name_norm.ilike.%'+t+'%','player_name.ilike.%'+t+'%'];
+      if(POS_TOKENS[t])    br.push('position_pool.eq.'+POS_TOKENS[t]);
+      if(LEAGUE_TOKENS[t]) br.push('league_code.eq.'+LEAGUE_TOKENS[t]);
+      return 'or('+br.join(',')+')';
+    });
     return perTok.length>1 ? 'and('+perTok.join(',')+')' : perTok[0];
   }
+  // Does this token address a position/league rather than a name? The compare client-side
+  // re-filter needs this so it does not strip rows the server matched on those fields.
+  function searchFieldToken(t){ return POS_TOKENS[t] || LEAGUE_TOKENS[t] || null; }
+  // SPECIFICITY , match-count, NOT token-count. Measured 2026-08-07: "williams" is 1 token but
+  // 34 matches, "city" is 1 token but 590, so token-count cannot tell them apart. If the whole
+  // result set fits under the ceiling it IS the answer , show all of it. The ceiling doubles as
+  // the threshold AND the cap, so "uncapped" never means unbounded.
+  var SEARCH_CEIL = 300;
   // ── Search RELEVANCE re-rank (client-side; shared by rankings + compare) ──
   //    Surfaces the obvious player: exact > prefix > word-start > mid-string, THEN rt.
   //    Accent-folded (via vvNorm) so it covers the whole diacritic class, not one name.
@@ -1582,7 +1620,7 @@
   function vvSeasonLabel(y){ return (y==null) ? '' : fmtSeason(String(y).slice(2)+String(y+1).slice(2)); }
 
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
-                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel,
+                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,

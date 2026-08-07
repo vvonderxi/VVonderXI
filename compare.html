@@ -1141,7 +1141,17 @@ body.light .pkmsub{color:var(--ink-soft)}
       var _tk=vvNorm(_nq).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
       var L=POOL.filter(function(p){ if(!passF(p)) return false;
         if(!_tk.length) return true;
-        var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')); return _tk.every(function(t){return hay.indexOf(t)>=0;}); });
+        var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')+' '+(p.name_norm||''));
+        return _tk.every(function(t){
+          if(hay.indexOf(t)>=0) return true;
+          // A position/league token matched SERVER-side against position_pool / league_code. This
+          // name+club haystack cannot see those columns, so without this branch the re-filter would
+          // silently strip rows the server had just correctly returned , the exact shape of the
+          // prestige bug that fixed 1 of 2 row templates and still reported success.
+          var fv=VVCore.searchFieldToken(t); if(!fv) return false;
+          return String(p.pos||'').toLowerCase()===String(fv).toLowerCase()
+              || String(p.league_code||'').toLowerCase()===String(fv).toLowerCase();
+        }); });
       L = VVCore.rankBySearch(L, _nq, function(p){ return (p.full||'')+' '+(p.surname||''); });   // relevance: exact>prefix>word-start>mid, then vv
       var _h = (_pkSeasonMiss!=null) ? '<div class="pkhint">No '+vvSeasonLabel(_pkSeasonMiss)+' season for that name , showing all seasons.</div>' : '';
       html = _h + (L.length? L.map(pkRow).join('') : '<div class="pkempty">No seasons match.</div>');
@@ -1167,7 +1177,10 @@ body.light .pkmsub{color:var(--ink-soft)}
     var q=(document.getElementById('pkSearch').value||'').trim();
     var ps=vvParseSearch(q); var nameQ=ps.nameQ, seasonYear=ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
     function buildPoolQ(withSeason){
-      var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false}).limit(50);
+      // Browse keeps the curated 50. A SEARCH gets the full ceiling , compare has no rt floor,
+      // so the hard 50 was its only reach limit (a specific query could still be truncated by rt).
+      var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false})
+                  .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
       if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }        // token-AND on player/team norm
       if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);    // NAME + SEASON, or bare year
       return query;

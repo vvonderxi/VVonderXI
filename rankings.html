@@ -594,6 +594,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     return f;
   }
   var rankLimit=300;
+  // The rt slider RESTS at 50, which hides 27,092 of the 57,234 cards (44% of scored cards sit
+  // below rt 50 , the 50 is a default slider position, never a scale floor). That default is a
+  // BROWSE convenience and must not silently amputate a SEARCH, so the floor is treated as an
+  // explicit choice only once the user actually moves it. Reset by Clear all.
+  var _rtTouched=false;
   function rankShowMore(){ rankLimit+=300; loadRankings(true); }
   function rankRangeChanged(){ clearTimeout(window._rankRangeT); window._rankRangeT=setTimeout(loadRankings,250); }
 
@@ -609,23 +614,38 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var _ps=vvParseSearch(tq); var nameQ=_ps.nameQ, seasonYear=_ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
     if(tq && f.sort.col==='rt' && f.sort.asc===false){ f.sort={col:'season_year',asc:false}; }
     // one builder for both the data query and the head-count, with the season filter toggleable for the fallback
-    function buildRankQ(head, withSeason){
+    function buildRankQ(head, withSeason, withFloor){
       var qq = head ? sb.from('player_card_mv').select('*', { count:'exact', head:true }) : sb.from('player_card_mv').select('*');
       if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) qq=qq.or(_sf); }         // token-AND on player_name_norm/team_name_norm
       if(withSeason && seasonYear!=null) qq=qq.eq('season_year', seasonYear);     // NAME + SEASON (e.g. hazard 2018)
       if(f.leagues.length)   qq=qq.in('league_code', f.leagues);
       if(f.positions.length) qq=qq.in('position_pool', f.positions);
       if(f.era){ qq=qq.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
-      qq=qq.gte('rt', f.rtLo).lte('rt', f.rtHi);
+      if(withFloor) qq=qq.gte('rt', f.rtLo).lte('rt', f.rtHi);   // gte/lte also drops rt IS NULL (3,061 cards)
       if(!head) qq=qq.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(rankLimit);
       return qq;
     }
     var _rcEl=document.getElementById('rankCount'); if(_rcEl && !f.tags.length) _rcEl.textContent='Counting…';
-    let [ qRes, cRes ] = await Promise.all([ buildRankQ(false,true), buildRankQ(true,true) ]);
+    // SPECIFICITY = MATCH-COUNT, not token-count. "williams" is 1 token / 34 matches, "city" is
+    // 1 token / 590 , token-count cannot separate them. So: with a search term and an untouched
+    // slider, fetch WITHOUT the floor and count in parallel. If the count fits the ceiling the rows
+    // already in hand ARE the complete answer , ONE round trip, nothing capped. Only a genuinely
+    // broad search pays a second fetch, and that is the browse case where latency matters least.
+    var _searching = !!nameQ, _floorFirst = (!_searching || _rtTouched), _uncapped=false;
+    let [ qRes, cRes ] = await Promise.all([ buildRankQ(false,true,_floorFirst), buildRankQ(true,true,_floorFirst) ]);
+    if(_searching && !_rtTouched){
+      if(!cRes.error && cRes.count!=null && cRes.count<=VVCore.SEARCH_CEIL){ _uncapped=true; }
+      else { [ qRes, cRes ] = await Promise.all([ buildRankQ(false,true,true), buildRankQ(true,true,true) ]); }
+    }
     // graceful degrade: an in-range season with NO matching row for this name -> drop the season, show all
     var seasonDegraded=false;
     if(seasonYear!=null && nameQ && !qRes.error && (qRes.data||[]).length===0){
-      [ qRes, cRes ] = await Promise.all([ buildRankQ(false,false), buildRankQ(true,false) ]);
+      var _ff=(!_searching || _rtTouched);
+      [ qRes, cRes ] = await Promise.all([ buildRankQ(false,false,_ff), buildRankQ(true,false,_ff) ]);
+      if(_searching && !_rtTouched){
+        if(!cRes.error && cRes.count!=null && cRes.count<=VVCore.SEARCH_CEIL){ _uncapped=true; }
+        else { _uncapped=false; [ qRes, cRes ] = await Promise.all([ buildRankQ(false,false,true), buildRankQ(true,false,true) ]); }
+      }
       seasonDegraded=true;
     }
     const { data, error } = qRes;
@@ -669,15 +689,17 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     if(lo>hi){ if(e&&e.target===rmin){hi=lo;rmax.value=hi;} else {lo=hi;rmin.value=lo;} }
     paintRange(lo,hi);
     document.querySelectorAll('.quickbands .qb').forEach(q=>q.classList.remove('on'));
+    _rtTouched=true;                       // an explicit rt choice , search must now respect it
     rankRangeChanged();
   }
   function setBand(lo,hi,el){
     const wasOn = el && el.classList.contains('on');
     document.querySelectorAll('.quickbands .qb').forEach(q=>q.classList.remove('on'));
-    if(wasOn){ document.getElementById('rmin').value=50; document.getElementById('rmax').value=97; paintRange(50,97); rankRangeChanged(); return; }
+    if(wasOn){ document.getElementById('rmin').value=50; document.getElementById('rmax').value=97; paintRange(50,97); _rtTouched=false; rankRangeChanged(); return; }
     document.getElementById('rmin').value=lo; document.getElementById('rmax').value=hi;
     paintRange(lo,hi);
     if(el) el.classList.add('on');
+    _rtTouched=true;                       // a quick-band IS an explicit rt choice
     rankRangeChanged();
   }
   paintRange(50,97);
@@ -690,6 +712,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     });
     var rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
     if(rmin&&rmax){ rmin.value=50; rmax.value=97; paintRange(50,97); }
+    _rtTouched=false;
     document.querySelectorAll('.quickbands .qb').forEach(function(q){ q.classList.remove('on'); });
     loadRankings();
   }
