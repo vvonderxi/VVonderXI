@@ -70,8 +70,7 @@
   body.light .idx-htext p{color:#4a443c}
   .idx-sectitle{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin:8px 0 16px}
   body.light .idx-sectitle{color:var(--ink-soft)}
-  .idx-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-  @media (max-width:980px){.idx-cols{grid-template-columns:1fr;gap:30px}.idx-hero{grid-template-columns:1fr;gap:20px;text-align:center}.idx-num .big{font-size:76px}}
+  @media (max-width:980px){.idx-hero{grid-template-columns:1fr;gap:20px;text-align:center}.idx-num .big{font-size:76px}}
   /* bands */
   .band{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:11px;cursor:pointer;transition:border-color .2s}
   .band:hover{border-color:rgba(255,92,122,0.25)}
@@ -172,7 +171,6 @@
   .dicon .di{width:18px;height:18px}
   .picon{display:inline-flex;color:var(--pink);vertical-align:middle}
   .picon .pi{width:17px;height:17px}
-  .principle .pt{display:flex;align-items:center;gap:8px}
   /* dual CTAs */
   .idx-ctas{display:flex;gap:16px;flex-wrap:wrap;margin-top:40px;padding-top:34px;border-top:1px solid rgba(255,255,255,0.08)}
   body.light .idx-ctas{border-top-color:rgba(0,0,0,0.08)}
@@ -183,11 +181,7 @@
   .idx-cta.secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);color:var(--cream)}
   body.light .idx-cta.secondary{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.12);color:var(--charcoal)}
   /* principle */
-  .principle{border-left:2px solid var(--pink);padding:4px 0 4px 16px;margin-bottom:20px}
-  .principle .pt{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;margin-bottom:5px}
-  .principle .pb{font-family:'Inter';font-weight:400;font-size:13px;line-height:1.55;color:rgba(243,237,224,0.65)}
   .idx-nrline{margin-top:18px;font-family:'Bricolage Grotesque';font-style:italic;font-size:15px;line-height:1.55;color:var(--pink)}
-  body.light .principle .pb{color:#5a544a}
 
   /* what-we-measure cards , scannable heading + gist, full prose behind a native details fold */
   .wmg-h{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:24px 0 12px;color:var(--gold)}
@@ -244,7 +238,6 @@
   @media (max-width:720px){
     html,body{overflow-x:hidden;max-width:100vw}
   }
-  @media (max-width:720px){ .idx-cols{grid-template-columns:1fr !important;gap:22px} }
 </style></head>
 <body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
@@ -317,7 +310,7 @@
       <div class="band" onclick="this.classList.toggle('open')"><div class="bhead"><span class="bnm">Accomplished:</span><span class="bv">79 and under</span><span class="bchev">&#8964;</span></div><div class="bdef"><div class="bdmain">A reliable, quality season at a good level. The dependable spine of a competitive team, the player who does his job well week in and week out, rarely spectacular but rarely a liability, and quietly central to almost everything that works.</div><div class="bjury">No headlines, no fuss, no nights off. Ask the dressing room who they trust, and this is the name they say first.</div><button class="bmore" onclick="event.stopPropagation();this.closest('.band').classList.toggle('showmore')"></button></div></div>
       </div>
       <div style="margin-top:34px">
-      <div class="idx-sectitle">What We Measure, and What We Don&#8217;t</div>
+      <div class="idx-sectitle">The Method, and Its Limits</div>
       <div class="wm-lede">What the number does on purpose, and where it cannot see.</div>
       <div class="wmg-h">What We Measure</div>
       <details class="wmc"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="50" r="31"/><circle cx="50" cy="50" r="11"/></svg></span>Position is the lens</span><span class="wmc-g">A centre-half is not a failed striker, and nobody is marked down for the job they were asked to do.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>A holding midfielder and a winger are never judged by the same yardstick, and a goalkeeper is no one&#8217;s playmaker. Each player is read through the lens that fits the role, every dimension weighted by what that role actually demands. A low goal tally is not a low score. It is the wrong measure, declined.</p></div></details>
