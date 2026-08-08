@@ -809,6 +809,14 @@ body.light .pkmsub{color:var(--ink-soft)}
   body.light .vfinal .vscore .s, body.light .verdict .vstorycol .vsname, body.light .verdict .vproof-head .vp-a{color:var(--pink-ink)}
   /* residual: bare `.s` is declared later at equal specificity , out-specify AND append */
   body.light .verdict .vscore .s, body.light .vfinal .vscore .s{color:var(--pink-ink)}
+  /* 4th attempt, and the first correct one: this .s lives in .pkhead-row h2 inside the picker
+     sheet, NOT the verdict. Earlier guesses (.vfinal .vscore .s, .verdict .vstorycol .vsname)
+     matched no element at all. Found by listing the rules that actually match the node. */
+  body.light .pkhead-row h2 .s{color:var(--pink-ink)}
+  body.light .pkmore .pkmgl{color:#5f594e}
+  /* the join sheet is white in BOTH themes, so these are theme-independent */
+  .joinsheet #joinSub, .joinsheet .js-optin, .joinsheet .js-later{color:#5f594e}
+  .pkmore .pkmgl{color:rgba(243,237,224,0.58)}
 </style>
 </head>
 <body class="light">
