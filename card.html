@@ -6,19 +6,19 @@
 <title>VVonderXI</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#175030;--panel-t:#1C6038;--panel-b:#0F3A22}
+  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#175030;--panel-t:#1C6038;--panel-b:#0F3A22}
   *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;overflow-x:clip}
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.5);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}.navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}.navitem .lbl{font-family:'Archivo';font-weight:700;font-size:15.5px;opacity:0;transition:opacity .25s}
   .spine:hover .navitem .lbl{opacity:1}.navspacer{flex:1}
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
-  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
@@ -53,7 +53,7 @@
   .plinth{position:sticky;top:40px;display:flex;flex-direction:column;align-items:center;gap:20px}
   .plinth .glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,92,122,0.14),transparent 66%);filter:blur(20px);z-index:0;top:20px}
   .plinth .vvcard{position:relative;z-index:1}
-  .plinth .pcap{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.5);text-align:center;max-width:300px;line-height:1.5;position:relative;z-index:1}
+  .plinth .pcap{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58);text-align:center;max-width:300px;line-height:1.5;position:relative;z-index:1}
   body.light .plinth .pcap{color:var(--ink-soft)}
   .depth{display:flex;flex-direction:column;gap:0;padding-top:6px;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px -24px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06)}
   /* each layer = a cream dashboard panel (so charts/colours read), with a header bar */
@@ -299,7 +299,7 @@
 
   /* Data Confidence footer (bottom of every card) */
   .dataconf{background:none;border:0;padding:0;margin:0}
-  .dc-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-bottom:12px}
+  .dc-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:12px}
   body.light .dc-t{color:var(--ink-soft)}
   .dc-row{display:flex;align-items:center;gap:13px}
   .dc-dots{display:flex;gap:6px}

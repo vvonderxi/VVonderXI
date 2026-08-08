@@ -7,7 +7,7 @@
 <title>VVonderXI , Web Shell</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--row-muted:rgba(243,237,224,0.6);--row-muted-2:rgba(243,237,224,0.55);--row-dim:rgba(243,237,224,0.45)}
+  :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--row-muted:rgba(243,237,224,0.6);--row-muted-2:rgba(243,237,224,0.55);--row-dim:rgba(243,237,224,0.45)}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);
@@ -19,7 +19,7 @@
     display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.5);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -72,11 +72,11 @@
   /* the rankings grid , generous, never crammed (premium = space) */
   .gridwrap{padding:30px 48px 60px;max-width:1680px}
   .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px;margin-bottom:14px}
-  .ranksearch svg{width:17px;height:17px;color:rgba(243,237,224,0.45);flex-shrink:0}
+  .ranksearch svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   .ranksearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}
-  .ranksearch input::placeholder{color:rgba(243,237,224,0.4)}
-  .rs-clear{display:none;background:none;border:0;color:rgba(243,237,224,0.5);font-size:21px;line-height:1;cursor:pointer;padding:0 2px}
-  .rankempty{grid-column:1/-1;text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.5)}
+  .ranksearch input::placeholder{color:rgba(243,237,224,0.58)}
+  .rs-clear{display:none;background:none;border:0;color:rgba(243,237,224,0.58);font-size:21px;line-height:1;cursor:pointer;padding:0 2px}
+  .rankempty{grid-column:1/-1;text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.58)}
   body.light .ranksearch{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:var(--ink-soft)}
   body.light .ranksearch input{color:var(--charcoal)}
@@ -94,7 +94,7 @@
   body.light .urow+.urow{border-color:rgba(0,0,0,0.055)}
   .urow:hover{background:rgba(255,255,255,0.04)}
   body.light .urow:hover{background:rgba(0,0,0,0.025)}
-  .urank{text-align:center;font-family:'Archivo';font-weight:900;color:rgba(243,237,224,0.4);font-variant-numeric:tabular-nums}
+  .urank{text-align:center;font-family:'Archivo';font-weight:900;color:rgba(243,237,224,0.58);font-variant-numeric:tabular-nums}
   body.light .urank{color:var(--ink-soft)}
   .uident{display:flex;align-items:center;gap:11px;min-width:0}
   .ushield{flex:none;display:block;width:auto}            /* aspect kept by viewBox; height drives size */
@@ -107,7 +107,7 @@
   body.light .uyear{color:var(--ink-soft)}
   .uclub{font-weight:700;color:rgba(243,237,224,0.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   body.light .uclub{color:var(--ink-soft)}
-  .upos{font-family:'Archivo';font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,0.5);text-align:center}
+  .upos{font-family:'Archivo';font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,0.58);text-align:center}
   body.light .upos{color:var(--ink-soft)}
   .utags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:5px;min-width:0}  /* was flex-wrap:nowrap + overflow:hidden + white-space:nowrap , that hard-truncated the 3rd tag (measured: 3 of 10 rows cut by 24-43px at 390px). The pillmode row is grid-template-rows:auto auto auto, so it absorbs a wrapped tag row without breaking. */
   .ugoals,.uassists{font-weight:800;color:var(--cream);text-align:right;font-variant-numeric:tabular-nums}
@@ -246,13 +246,13 @@
      ============================================================ */
   .filterrail{position:sticky;top:30px;align-self:start;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:22px 20px;max-height:calc(100vh - 60px);overflow-y:auto}
   body.light .filterrail{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
-  .fr-title{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+  .fr-title{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
   body.light .fr-title{color:var(--ink-soft)}
-  .fr-clear{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;text-transform:none;color:rgba(243,237,224,0.45);background:none;border:none;padding:0;cursor:pointer;transition:color .12s}
+  .fr-clear{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;text-transform:none;color:rgba(243,237,224,0.58);background:none;border:none;padding:0;cursor:pointer;transition:color .12s}
   .fr-clear:hover{color:var(--pink)}
   body.light .fr-clear{color:var(--ink-soft)}
   .fr-clear.hidden{display:none}
-  .fr-count{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;color:rgba(243,237,224,0.4);margin-bottom:10px;min-height:13px}
+  .fr-count{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;color:rgba(243,237,224,0.58);margin-bottom:10px;min-height:13px}
   body.light .fr-count{color:var(--ink-soft)}
   .rankmore-wrap{display:none;justify-content:center;padding:18px 0 4px;grid-column:1/-1;width:100%}
   .rankmore-wrap.show{display:flex}
@@ -261,7 +261,7 @@
   body.light .rankmore{color:#6a6256;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .rankmore:hover{color:#111;border-color:var(--pink)}
   .fgroup{margin-bottom:22px}
-  .fgroup .gl{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-bottom:11px}
+  .fgroup .gl{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:11px}
   body.light .fgroup .gl{color:var(--ink-soft)}
   .fopts{display:flex;gap:7px;flex-wrap:wrap}
   .fopt{font-family:'Archivo';font-weight:700;font-size:12px;padding:8px 13px;border-radius:16px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(243,237,224,0.8);cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:6px}
@@ -276,7 +276,7 @@
   .scorevals{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
   .scorevals .sv{font-family:'Archivo';font-weight:900;font-size:23px;color:var(--cream);min-width:38px;text-align:center}
   body.light .scorevals .sv{color:var(--charcoal)}
-  .scorevals .svdash{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.5)}
+  .scorevals .svdash{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58)}
   body.light .scorevals .svdash{color:var(--ink-soft)}
   .dualrange{position:relative;height:30px;margin:0 8px}
   .dualrange .track{position:absolute;top:13px;left:0;right:0;height:5px;border-radius:4px;background:rgba(255,255,255,0.14)}
@@ -304,7 +304,7 @@
   .rankfbar{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
   .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
   body.light .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
-  .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.5);transition:background .15s,color .15s}
+  .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   .vseg.on{background:var(--pink);color:#fff}
   body.light .vseg{color:var(--ink-soft)}
   body.light .vseg.on{color:#fff}
@@ -437,6 +437,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   .fopts .fopt.on{background:#C42847}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
   .fopts .fopt.on{background:#C42847}   /* white label on bright pink was 2.97 at 12px bold */
+  /* residual: white on bright pink was 2.97 at 12px bold */
+  .fopts .fopt.on, body.light .fopts .fopt.on{background:#C42847}
 </style>
 </head>
 <body class="light">

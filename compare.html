@@ -7,7 +7,7 @@
 <title>VVonderXI , Web Compare</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9;
+  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9;
     /* ── TONAL DEPTH , four surface tiers (dark values; light overridden in body.light).
        Purpose: the page had ONE tone , every .vsect computed to #fff on a near-flat
        cream stage, and .vfinal (the payoff) had no background at all. These give the
@@ -25,7 +25,7 @@
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.5);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -34,7 +34,7 @@
   .navspacer{flex:1}
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
-  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
@@ -131,7 +131,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   /* full verdict breakdown */
   .vbreak{margin-top:34px;padding-top:30px;border-top:1px solid rgba(255,255,255,0.1);text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:28px}
   .vsect{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px 22px}   /* green-scope: the Under-the-Lights green now sits on the finding boxes, on the dark .verdict stage */
-  .vsect-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-bottom:16px}
+  .vsect-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:16px}
   .vradar-wrap{display:flex;flex-direction:column;align-items:center}
   .vradar-wrap{max-width:100%}
   #vradar{width:100%;max-width:320px;height:auto;display:block}
@@ -155,7 +155,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vd-a,.vd-b{font-family:'Archivo';font-weight:900;font-size:18px;width:60px}
   .vd-a{text-align:left}.vd-b{text-align:right}
   .vd-a.win,.vd-b.win{color:var(--gold)}
-  .vd-l{flex:1;text-align:center;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(243,237,224,0.5)}
+  .vd-l{flex:1;text-align:center;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   /* watch */
   .vwatch{display:flex;gap:12px;flex-wrap:wrap}
   .vwbtn{flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--charcoal);color:var(--cream);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:13px;font-family:'Archivo';font-weight:800;font-size:12.5px;text-decoration:none}
@@ -405,7 +405,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   /* numbers + trajectory side by side */
   .vnumwrap{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
   @media (max-width:760px){.vnumwrap{grid-template-columns:minmax(0,1fr);gap:20px}}
-  .vtraj-t{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-bottom:10px;text-align:center}
+  .vtraj-t{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:10px;text-align:center}
   body.light .vtraj-t{color:var(--ink-soft)}
   .vtraj svg{width:100%;height:auto;display:block}
   body.light .vtraj .trbase{stroke:rgba(0,0,0,0.12)}
@@ -414,7 +414,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vtraj-avg .ta,.vtraj-avg .tb{text-align:center;flex:1}
   .vtraj-avg .tav,.vtraj-avg .tbv{font-family:'Archivo';font-weight:900;font-size:24px;display:block;line-height:1}
   .vtraj-avg .tav{color:var(--pink)} .vtraj-avg .tbv{color:var(--blue)}
-  .vtraj-avg .tal,.vtraj-avg .tbl{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:5px;display:block}
+  .vtraj-avg .tal,.vtraj-avg .tbl{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-top:5px;display:block}
   body.light .vtraj-avg .tal,body.light .vtraj-avg .tbl{color:var(--ink-soft)}
   /* See It For Yourself under the verdict */
   .vafter{margin-top:30px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.1);text-align:center;overflow-x:clip}   /* #109: contain drift here too */
@@ -443,7 +443,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   body.light #vradar .rlabel{fill:#6a6256}
 
   /* layer definitions (the story) */
-  .vsect-d{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:rgba(243,237,224,0.5);margin:0 0 16px}
+  .vsect-d{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:rgba(243,237,224,0.58);margin:0 0 16px}
   body.light .vsect-d{color:#6a6256}
   /* verdict result: gold + bigger */
   .verdict .vwho{font-size:30px}
@@ -459,11 +459,11 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   /* numbers + 3-year trajectory layout */
   .vnumwrap2{display:grid;grid-template-columns:0.82fr 1.5fr;gap:30px;align-items:start}
   @media(max-width:760px){.vnumwrap2{grid-template-columns:1fr;gap:22px}}
-  .vtraj-t{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-bottom:12px;text-align:center}
+  .vtraj-t{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:12px;text-align:center}
   body.light .vtraj-t{color:var(--ink-soft)}
 
   .vtcard{text-align:center}
-  .vtcap{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.5);margin-bottom:6px}
+  .vtcap{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:6px}
   body.light .vtcap{color:var(--ink-soft)}
   .vtcard svg{width:100%;height:auto;display:block}
   .vtcard .tbase{stroke:rgba(255,255,255,0.14)} body.light .vtcard .tbase{stroke:rgba(0,0,0,0.12)}
@@ -471,7 +471,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vtavg{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
   .vtavg .aa{color:var(--pink);font-family:'Archivo';font-weight:900;font-size:15px}
   .vtavg .bb{color:var(--blue);font-family:'Archivo';font-weight:900;font-size:15px}
-  .vtavg .gl{font-family:'Archivo';font-size:7.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .vtavg .gl{font-family:'Archivo';font-size:7.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   body.light .vtavg .gl{color:var(--ink-soft)}
   .vtavg .gdot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px -1px var(--green);flex-shrink:0}
   .vtavg .gdot.hide{visibility:hidden}
@@ -505,8 +505,8 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   /* ===== Mobile-match: search bar, bar-chart trajectory, proof, data confidence ===== */
   .cmpsearch{display:flex;align-items:center;gap:14px;max-width:680px;margin:0 auto 26px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:13px 15px}
   body.light .cmpsearch{background:rgba(255,255,255,0.65);border-color:rgba(0,0,0,0.08)}
-  .cs-mag{width:20px;height:20px;color:rgba(243,237,224,0.5);flex-shrink:0} body.light .cs-mag{color:var(--ink-soft)}
-  .cs-ph{flex:1;font-family:'Inter';font-size:15.5px;color:rgba(243,237,224,0.5)} body.light .cs-ph{color:var(--ink-soft)}
+  .cs-mag{width:20px;height:20px;color:rgba(243,237,224,0.58);flex-shrink:0} body.light .cs-mag{color:var(--ink-soft)}
+  .cs-ph{flex:1;font-family:'Inter';font-size:15.5px;color:rgba(243,237,224,0.58)} body.light .cs-ph{color:var(--ink-soft)}
   .cs-gear{width:42px;height:42px;border-radius:12px;background:var(--pink);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 10px 22px -10px rgba(255,92,122,0.6)}
   .cs-gear svg{width:20px;height:20px}
   .cs-top{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.07em;color:var(--pink);background:rgba(255,92,122,0.12);border:1px solid rgba(255,92,122,0.3);padding:9px 13px;border-radius:12px;flex-shrink:0}
@@ -537,7 +537,10 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   body.light #vtraj .tjline{stroke:#3a352e;stroke-width:2.2;stroke-dasharray:1.5 4;stroke-linecap:round}  /* option B , dotted trend line. COMPARE-ONLY and LIGHT-ONLY: the card's cream-on-green
      line is untouched, as is compare's own dark theme. */
   body.light #vtraj .tjdot{fill:#2a2620}
-  body.light #vtraj .tjpeak{fill:#7a5c12}
+  /* REVERTED 2026-08-08: c86362d darkened the peak label for compare-light on the assumption the
+     panel had gone light. It has NOT , the trajectory panel is the dark green #175030 in BOTH
+     themes, so dark gold on dark green measured 1.51. Bright gold is correct here (5.12). */
+  body.light #vtraj .tjpeak{fill:#E8B84B}
   .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:14px;padding:0 4px}
   body.light .tjhead,body.light .tjlg{color:#5a544a}
   body.light .tjyl,body.light .tjyr,body.light .tjxl,body.light .tjtot{fill:#5a544a}
@@ -657,7 +660,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vsect.vfoldable.vopen .vsect-t.vfoldh::after{transform:rotate(180deg)}
   /* keep mobile from scrolling sideways */
   /* .canvas overflow-x:hidden removed (#109) , it flattened the flip's preserve-3d; drift scoped to .verdict/.vafter */
-.searchrow{display:flex;align-items:center;gap:12px;margin:0 0 18px}.searchbar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:15px 19px;flex:1;min-width:0}body.light .searchbar{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.08)}.searchbar svg{width:20px;height:20px;color:rgba(243,237,224,0.4);flex-shrink:0}body.light .searchbar svg{color:var(--ink-soft)}.searchbar input{border:none;outline:none;background:transparent;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}body.light .searchbar input{color:var(--charcoal)}.searchbar .rs-clear{background:none;border:0;color:rgba(243,237,224,0.4);font-size:21px;cursor:pointer;display:none;line-height:1}body.light .searchbar .rs-clear{color:var(--ink-soft)}
+.searchrow{display:flex;align-items:center;gap:12px;margin:0 0 18px}.searchbar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:15px 19px;flex:1;min-width:0}body.light .searchbar{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.08)}.searchbar svg{width:20px;height:20px;color:rgba(243,237,224,0.58);flex-shrink:0}body.light .searchbar svg{color:var(--ink-soft)}.searchbar input{border:none;outline:none;background:transparent;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}body.light .searchbar input{color:var(--charcoal)}.searchbar .rs-clear{background:none;border:0;color:rgba(243,237,224,0.58);font-size:21px;cursor:pointer;display:none;line-height:1}body.light .searchbar .rs-clear{color:var(--ink-soft)}
 .cardslot{cursor:pointer;position:relative}
 .cardslot:not(.flipping){transition:transform .15s}
 .cardslot.flipping{transform:none !important}
@@ -804,6 +807,8 @@ body.light .pkmsub{color:var(--ink-soft)}
   body.light .navitem .lbl, body.light #compareNewBtn, body.light .vshare-opt .lbl, body.light .vfinal .s, body.light .vstorycol .vsname, body.light .vproof-head .vp-a{color:var(--pink-ink)}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
   body.light .vfinal .vscore .s, body.light .verdict .vstorycol .vsname, body.light .verdict .vproof-head .vp-a{color:var(--pink-ink)}
+  /* residual: bare `.s` is declared later at equal specificity , out-specify AND append */
+  body.light .verdict .vscore .s, body.light .vfinal .vscore .s{color:var(--pink-ink)}
 </style>
 </head>
 <body class="light">

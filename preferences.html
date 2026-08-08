@@ -7,7 +7,7 @@
 <title>VVonderXI , My Club</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
+  :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);
@@ -19,7 +19,7 @@
     display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:30}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.5);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -30,7 +30,7 @@
   /* ===================== CONTENT CANVAS (hallway) ===================== */
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
-  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
@@ -154,7 +154,7 @@
   body.light .clubline{color:var(--ink-soft)}
 
   .identtags{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:7px;width:100%}
-  .itlabel{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .itlabel{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   body.light .itlabel{color:var(--ink-soft)}
   .tagrow{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
   .tip{position:relative;font-family:'Archivo';font-weight:700;font-size:11px;padding:5px 12px;border-radius:12px;background:rgba(255,255,255,0.08);color:rgba(243,237,224,0.85);cursor:default;display:inline-flex;align-items:center;gap:5px}
@@ -175,7 +175,7 @@
   body.light .reflection{background:linear-gradient(180deg,rgba(0,0,0,0.035),rgba(0,0,0,0.015));border-color:rgba(0,0,0,0.07)}
   .reflection .q{font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;line-height:1.55;color:var(--cream)}
   body.light .reflection .q{color:var(--charcoal)}
-  .reflection .m{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-top:10px;text-align:right}
+  .reflection .m{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-top:10px;text-align:right}
   body.light .reflection .m{color:var(--ink-soft)}
 
   /* stats strip */
@@ -186,12 +186,12 @@
   body.light .stat .v{color:var(--charcoal)}
   .stat .v .pk{color:var(--gold)}
   .stat .v .sm{font-size:12px}
-  .stat .l{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:3px}
+  .stat .l{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-top:3px}
   body.light .stat .l{color:var(--ink-soft)}
 
   /* ===================== MAIN COLUMN ===================== */
   .clubmain{min-width:0}
-  .secttitle{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.5);margin:6px 2px 16px;display:flex;align-items:center;justify-content:space-between}
+  .secttitle{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin:6px 2px 16px;display:flex;align-items:center;justify-content:space-between}
   body.light .secttitle{color:var(--ink-soft)}
   .secttitle .ct{color:var(--pink);cursor:pointer}
   .secttitle.sp{margin-top:40px}
@@ -260,7 +260,7 @@
   .vcm-bar.barca{background:linear-gradient(90deg,#A50044 0 50%,#004D98 50%)}
   .vcm-bar.madrid{background:linear-gradient(90deg,#FEBE10 0 50%,#fff 50%)}
   .vcm-nm{text-align:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:var(--charcoal);margin-top:7px}
-  .vvs{font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:rgba(243,237,224,0.4);flex-shrink:0}
+  .vvs{font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:rgba(243,237,224,0.58);flex-shrink:0}
   body.light .vvs{color:var(--ink-soft)}
   .vbody{text-align:center;margin-top:15px}
   .vt{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:var(--cream);line-height:1.1}
@@ -318,7 +318,7 @@
   
   
   .megroup{margin-bottom:22px}
-  .meglabel{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin:0 4px 9px}
+  .meglabel{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin:0 4px 9px}
   .mecard{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden}
   /* Account , coming soon. There is no auth yet: api/auth.js exists but nothing
      reads a session, and the old Email/Privacy/Sign out rows were entirely
@@ -335,7 +335,7 @@
   .merow:hover{background:rgba(255,255,255,0.03)}
   .meicon{width:19px;height:19px;flex-shrink:0;color:rgba(243,237,224,0.7)}
   .merow .ml{flex:1;font-family:'Inter';font-size:15.5px}
-  .merow .mv{font-family:'Inter';font-size:14px;color:rgba(243,237,224,0.5);max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .merow .mv{font-family:'Inter';font-size:14px;color:rgba(243,237,224,0.58);max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .merow .chev{color:rgba(243,237,224,0.3);font-size:19px;line-height:1}
   .merow.danger .ml{color:#ff7a8a}
   .merow.install .meicon{color:var(--pink,#ff2d78)}

@@ -2,7 +2,7 @@
 <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VVonderXI , I Wonder</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0}
+<style>  :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
@@ -11,7 +11,7 @@
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:30}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.5);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -22,7 +22,7 @@
   /* canvas + topline + hero (hallway) */
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
-  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
@@ -90,13 +90,13 @@
   .iwbar{position:relative;z-index:1;display:flex;align-items:center;gap:14px;margin-top:34px;max-width:680px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,92,122,0.25);border-radius:18px;padding:18px 20px;cursor:not-allowed}
   body.light .iwbar{background:rgba(255,255,255,0.6);border-color:rgba(255,92,122,0.3)}
   .iwbar .spark{width:26px;height:26px;flex-shrink:0}
-  .iwbar .ph{flex:1;font-family:'Inter';font-weight:400;font-size:17px;color:rgba(243,237,224,0.5)} body.light .iwbar .ph{color:var(--ink-soft)}
+  .iwbar .ph{flex:1;font-family:'Inter';font-weight:400;font-size:17px;color:rgba(243,237,224,0.58)} body.light .iwbar .ph{color:var(--ink-soft)}
   .iwbar .ph .cursor{display:inline-block;width:2px;height:19px;background:var(--pink);vertical-align:-3px;margin-left:2px;animation:blink 1.1s step-end infinite}
   @keyframes blink{50%{opacity:0}}
-  .iwbar .lockbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:rgba(243,237,224,0.5);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 16px;flex-shrink:0}
+  .iwbar .lockbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:rgba(243,237,224,0.58);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 16px;flex-shrink:0}
   body.light .iwbar .lockbtn{color:var(--ink-soft);background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
 
-  .iwsub{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin:38px 0 14px} body.light .iwsub{color:var(--ink-soft)}
+  .iwsub{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin:38px 0 14px} body.light .iwsub{color:var(--ink-soft)}
   .iwchips{display:flex;flex-wrap:wrap;gap:11px;max-width:760px}
   .iwchip{font-family:'Inter';font-weight:500;font-size:15px;color:rgba(243,237,224,0.82);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:13px 17px;line-height:1.4}
   .iwchip .q{color:var(--pink);font-family:'Archivo';font-weight:800;margin-right:7px}
@@ -129,7 +129,7 @@
   .iwform{display:flex;gap:10px}
   .iwform input{flex:1;font-family:'Inter';font-size:15px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:13px;padding:14px 16px;outline:none}
   body.light .iwform input{color:var(--charcoal);background:#fff;border-color:rgba(0,0,0,0.1)}
-  .iwform input::placeholder{color:rgba(243,237,224,0.4)} body.light .iwform input::placeholder{color:var(--ink-soft)}
+  .iwform input::placeholder{color:rgba(243,237,224,0.58)} body.light .iwform input::placeholder{color:var(--ink-soft)}
   .iwform input:focus{border-color:var(--pink)}
   .iwform button{font-family:'Archivo';font-weight:800;font-size:14px;color:#fff;background:var(--pink);border:none;border-radius:13px;padding:14px 22px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(255,92,122,0.6)}
   .iwthanks{font-family:'Archivo';font-weight:700;font-size:14px;color:var(--green);background:rgba(46,140,90,0.12);border:1px solid rgba(46,140,90,0.3);border-radius:13px;padding:15px;text-align:center;display:none}
@@ -166,6 +166,8 @@
   /* white on #FF5C7A is 2.97; these labels are 12px bold so they need 4.5. #C42847 = 5.61. */
   .iwcta-btn.primary{background:#C42847}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  /* .tryit was still on the rejected #DE3A5E (4.07) , move it onto the established token */
+  body.light .iwchip .tryit{color:var(--pink-ink)}
 </style></head><body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">

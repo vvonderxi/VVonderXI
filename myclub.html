@@ -7,7 +7,7 @@
 <title>VVonderXI , My Club</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#8a8276;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
+  :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);
@@ -19,7 +19,7 @@
     display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:30}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.5);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -30,7 +30,7 @@
   /* ===================== CONTENT CANVAS (hallway) ===================== */
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
-  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
@@ -78,18 +78,18 @@
   body.light .shseg.on,body.light .shseg.on .shct{color:#fff}
   .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
   body.light .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
-  .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.5);transition:background .15s,color .15s}
+  .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   .vseg.on{background:var(--pink);color:#fff}
   body.light .vseg{color:var(--ink-soft)}
   .clubsearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px;margin-bottom:22px}
-  .clubsearch svg{width:17px;height:17px;color:rgba(243,237,224,0.45);flex-shrink:0}
+  .clubsearch svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   .clubsearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:15px}
-  .clubsearch input::placeholder{color:rgba(243,237,224,0.4)}
-  .rs-clear{background:none;border:0;color:rgba(243,237,224,0.45);font-size:20px;cursor:pointer;display:none;line-height:1}
+  .clubsearch input::placeholder{color:rgba(243,237,224,0.58)}
+  .rs-clear{background:none;border:0;color:rgba(243,237,224,0.58);font-size:20px;cursor:pointer;display:none;line-height:1}
   body.light .clubsearch{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .clubsearch svg,body.light .clubsearch input::placeholder,body.light .rs-clear{color:var(--ink-soft)}
   body.light .clubsearch input{color:var(--charcoal)}
-  .clubempty{padding:40px 10px;text-align:center;font-family:'Archivo';font-weight:700;font-size:14px;color:rgba(243,237,224,0.45)}
+  .clubempty{padding:40px 10px;text-align:center;font-family:'Archivo';font-weight:700;font-size:14px;color:rgba(243,237,224,0.58)}
   body.light .clubempty{color:var(--ink-soft)}
   .clubsearchrow{display:flex;align-items:center;gap:12px;margin-bottom:22px}
   .clubsearchrow .clubsearch{flex:1;margin-bottom:0;min-width:0}
@@ -103,7 +103,7 @@
   body.light .clubpanel{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
   .cfgroup{margin-bottom:16px}
   .cfgroup:last-child{margin-bottom:0}
-  .cfgl{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-bottom:9px}
+  .cfgl{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:9px}
   body.light .cfgl{color:var(--ink-soft)}
   .cfchips{display:flex;flex-wrap:wrap;gap:8px}
   .cfchip{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.8);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:8px 13px;cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:6px}
@@ -117,8 +117,8 @@
   .clrow .clflag{font-size:21px;flex:none}
   .clrow .clname{font-family:'Bricolage Grotesque';font-weight:800;font-size:16px;color:var(--cream)}
   body.light .clrow .clname{color:var(--charcoal)}
-  .clrow .clyr{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.5)}
-  .clrow .clmeta{font-family:'Archivo';font-size:12px;color:rgba(243,237,224,0.5);margin-top:2px}
+  .clrow .clyr{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58)}
+  .clrow .clmeta{font-family:'Archivo';font-size:12px;color:rgba(243,237,224,0.58);margin-top:2px}
   body.light .clrow .clyr,body.light .clrow .clmeta{color:var(--ink-soft)}
   .clrow .cltag{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.03em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(255,92,122,.14);color:#e0466a;border:1px solid rgba(255,92,122,.4);white-space:nowrap}
   .clrow .clvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--cream);margin-left:auto}
@@ -211,7 +211,7 @@
   body.light .clubline{color:var(--ink-soft)}
 
   .identtags{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:7px;width:100%}
-  .itlabel{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.4)}
+  .itlabel{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   body.light .itlabel{color:var(--ink-soft)}
   .tagrow{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
   .tip{position:relative;font-family:'Archivo';font-weight:700;font-size:11px;padding:5px 12px;border-radius:12px;background:rgba(255,255,255,0.08);color:rgba(243,237,224,0.85);cursor:default;display:inline-flex;align-items:center;gap:5px}
@@ -232,7 +232,7 @@
   body.light .reflection{background:linear-gradient(180deg,rgba(0,0,0,0.035),rgba(0,0,0,0.015));border-color:rgba(0,0,0,0.07)}
   .reflection .q{font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;line-height:1.55;color:var(--cream)}
   body.light .reflection .q{color:var(--charcoal)}
-  .reflection .m{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.4);margin-top:10px;text-align:right}
+  .reflection .m{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-top:10px;text-align:right}
   body.light .reflection .m{color:var(--ink-soft)}
 
   /* stats strip */
@@ -243,12 +243,12 @@
   body.light .stat .v{color:var(--charcoal)}
   .stat .v .pk{color:var(--gold)}
   .stat .v .sm{font-size:12px}
-  .stat .l{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.45);margin-top:3px}
+  .stat .l{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-top:3px}
   body.light .stat .l{color:var(--ink-soft)}
 
   /* ===================== MAIN COLUMN ===================== */
   .clubmain{min-width:0}
-  .secttitle{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.5);margin:6px 2px 16px;display:flex;align-items:center;justify-content:space-between}
+  .secttitle{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin:6px 2px 16px;display:flex;align-items:center;justify-content:space-between}
   body.light .secttitle{color:var(--ink-soft)}
   .secttitle .ct{color:var(--pink);cursor:pointer}
   .secttitle.sp{margin-top:40px}
@@ -322,7 +322,7 @@
   .vcm-bar.barca{background:linear-gradient(90deg,#A50044 0 50%,#004D98 50%)}
   .vcm-bar.madrid{background:linear-gradient(90deg,#FEBE10 0 50%,#fff 50%)}
   .vcm-nm{text-align:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:var(--charcoal);margin-top:7px}
-  .vvs{font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:rgba(243,237,224,0.4);flex-shrink:0}
+  .vvs{font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:rgba(243,237,224,0.58);flex-shrink:0}
   body.light .vvs{color:var(--ink-soft)}
   .vbody{text-align:center;margin-top:15px}
   .vt{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:var(--cream);line-height:1.1}
@@ -437,7 +437,7 @@
   .totop{position:fixed;right:18px;bottom:88px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(255,92,122,.6);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:60}
   .totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
   @media (min-width:721px){ .totop{bottom:28px} }
-.mycards.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}body.light .mycards.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}.cmprow{display:flex;align-items:center;gap:13px;padding:11px 16px 11px 0;cursor:pointer;transition:background .14s}.cmprow+.cmprow{border-top:1px solid rgba(255,255,255,0.06)}body.light .cmprow+.cmprow{border-color:rgba(0,0,0,0.055)}.cmprow:hover{background:rgba(255,255,255,0.04)}body.light .cmprow:hover{background:rgba(0,0,0,0.025)}.cmprail{width:4px;align-self:stretch;border-radius:0 3px 3px 0;flex-shrink:0;min-height:34px}.cmpmain{flex:1;min-width:0;padding-left:14px}.cmpl1{display:flex;align-items:center;gap:8px}.cmpnm{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpnm{color:var(--charcoal)}.cmpfl{font-size:14px;flex-shrink:0}.cmpl2{font-weight:700;font-size:11.5px;color:rgba(243,237,224,0.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpl2{color:var(--ink-soft)}.cmpl2 b{color:rgba(243,237,224,0.72);font-weight:800}body.light .cmpl2 b{color:var(--ink-soft)}.cmpright{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;padding-right:14px}.cmpvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}body.light .cmpvv{color:var(--charcoal)}.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink)}body.light .cmpvv.elite{color:var(--gold)}body.light .cmpvv.gen{color:var(--pink)}.cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,0.5);margin-top:4px;font-variant-numeric:tabular-nums}body.light .cmpga{color:var(--ink-soft)}.fhide{display:none!important}.cfchips.expanded .fhide{display:flex!important}.cfchips.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.cfsubgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .cfsubgl{color:var(--ink-soft)}
+.mycards.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}body.light .mycards.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}.cmprow{display:flex;align-items:center;gap:13px;padding:11px 16px 11px 0;cursor:pointer;transition:background .14s}.cmprow+.cmprow{border-top:1px solid rgba(255,255,255,0.06)}body.light .cmprow+.cmprow{border-color:rgba(0,0,0,0.055)}.cmprow:hover{background:rgba(255,255,255,0.04)}body.light .cmprow:hover{background:rgba(0,0,0,0.025)}.cmprail{width:4px;align-self:stretch;border-radius:0 3px 3px 0;flex-shrink:0;min-height:34px}.cmpmain{flex:1;min-width:0;padding-left:14px}.cmpl1{display:flex;align-items:center;gap:8px}.cmpnm{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpnm{color:var(--charcoal)}.cmpfl{font-size:14px;flex-shrink:0}.cmpl2{font-weight:700;font-size:11.5px;color:rgba(243,237,224,0.58);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.light .cmpl2{color:var(--ink-soft)}.cmpl2 b{color:rgba(243,237,224,0.72);font-weight:800}body.light .cmpl2 b{color:var(--ink-soft)}.cmpright{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;padding-right:14px}.cmpvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}body.light .cmpvv{color:var(--charcoal)}.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink)}body.light .cmpvv.elite{color:var(--gold)}body.light .cmpvv.gen{color:var(--pink)}.cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,0.58);margin-top:4px;font-variant-numeric:tabular-nums}body.light .cmpga{color:var(--ink-soft)}.fhide{display:none!important}.cfchips.expanded .fhide{display:flex!important}.cfchips.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.cfsubgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .cfsubgl{color:var(--ink-soft)}
   .emptystate{max-width:420px;margin:8px auto 0;border-radius:20px;overflow:hidden;position:relative;display:none}
   .emptystate.show{display:block}
   .esghosts{position:relative;height:230px;overflow:hidden}
@@ -469,6 +469,7 @@
   /* white on #FF5C7A is 2.97; these labels are 12px bold so they need 4.5. #C42847 = 5.61. */
   .mcform button, #shCards, .cfchips .cfchip.on{background:#C42847}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  .cfchips .cfchip.on, body.light .cfchips .cfchip.on{background:#C42847}
 </style>
 </head>
 <body class="light">
