@@ -39,7 +39,7 @@
   body.light .avatar .vvsh-b{fill:#1C1B1A}
   body.light .avatar .vvsh-e{stroke:var(--cream)}
   body.light .avatar .vvsh-v{fill:var(--cream)}
-  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-left:7px}
+  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e5a10;margin-left:7px}
 
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -58,6 +58,11 @@
   .depth{display:flex;flex-direction:column;gap:0;padding-top:6px;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px -24px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06)}
   /* each layer = a cream dashboard panel (so charts/colours read), with a header bar */
   .layer{background:var(--cream);overflow:hidden;color:var(--charcoal)}
+  /* .layer is cream in BOTH themes (it IS the physical card), so every text token inside it is
+     theme-independent. Scoping the two ink variables here fixes the muted family (.gl,.gbnum,.phc,
+     .per90,.dc-grouphead,.dc-src) and the gold family (.wtintro,.wtsechead,.darkbox .m,.narrative
+     .nm) at once. Measured on the cream surface: #5f594e 5.78, #7e5a10 5.21. */
+  .layer{--ink-soft:#5f594e;--gold-ink:#7e5a10}
   .layer + .layer{border-top:1px solid rgba(0,0,0,0.07)}
   .layer-h{display:flex;align-items:center;gap:13px;padding:18px 22px;cursor:pointer}
   .layer-n{font-size:19px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
@@ -128,23 +133,24 @@
   .pct i{display:block;height:100%}
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
   .darkbox{background:rgba(255,255,255,0.03);border-radius:14px;padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
-  .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:var(--cream);line-height:1.55;white-space:pre-line}
+  .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:#3a352e;line-height:1.55;white-space:pre-line}
   .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--gold-ink);margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
   .narrative{background:rgba(255,255,255,0.03);border-radius:14px;padding:22px 24px}
-  .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:var(--cream);margin-bottom:14px}
+  .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:#3a352e;margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
   .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-ink);margin-top:16px;text-align:right}
   /* wonder tag rows */
   .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px}
   body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}
-  body.light .tagrow .td,body.light .tagrow .tmore,body.light .narrative .np,body.light .darkbox .q{color:#3a352e}   /* prose text override , container went light, cream text would be invisible */   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
+  /* CLASS 1: these live on the always-cream .layer, so they are dark in BOTH themes now , the
+     body.light override corrected the one theme that was already fine. */   /* prose text override , container went light, cream text would be invisible */   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px}
   .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
-  .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:var(--cream)}
+  .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:#3a352e}
   /* honour chips (glance / profile) */
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
   .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
@@ -166,15 +172,13 @@
      player_name holds ("L. Messi") and is upgraded in place to the derived
      full name once the players.full_name lookup returns. The transition is on
      opacity only, so the upgrade reads as a refinement, never as a reflow. */
-  .gname{font-family:'Archivo';font-weight:900;font-size:23px;line-height:1.15;min-height:26px;letter-spacing:-0.01em;color:var(--cream);margin-bottom:6px;transition:opacity .18s ease}
-  body.light .gname{color:#2a2620}
+  .gname{font-family:'Archivo';font-weight:900;font-size:23px;line-height:1.15;min-height:26px;letter-spacing:-0.01em;color:#2a2620;margin-bottom:6px;transition:opacity .18s ease}
   .gname.resolving{opacity:.72}
   .gsub{font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px}
   /* games = the minutes denominator the engine is built on. Full ink weight so
      it reads as a fact, not a footnote, while the rest of the line stays muted. */
   .gsub .gm{white-space:nowrap}
-  .gsub .gm-games{font-weight:900;color:var(--cream)}
-  body.light .gsub .gm-games{color:#2a2620}
+  .gsub .gm-games{font-weight:900;color:#2a2620}
   /* HOVER-TO-SHOW tag tooltip , the standard for ALL tags/chips */
   .chip{position:relative}
   /* tag info: tap-toggle inline reveal (shared handler in vv-core.js). The panel is a
@@ -201,7 +205,7 @@
   .wtintro{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--gold-ink);margin-bottom:12px}
   .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-ink);margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
   .wtsec:first-child .wtsechead{margin-top:0}
-  .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:rgba(232,184,75,0.85);margin-top:10px;margin-bottom:2px}
+  .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:var(--gold-ink);margin-top:10px;margin-bottom:2px}
   .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
   .clubpill:hover{background:rgba(255,255,255,0.1)}
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
@@ -303,10 +307,10 @@
   body.light .dc-dots i{background:rgba(0,0,0,0.1)}
   .dc-dots i.on{background:var(--green);box-shadow:0 0 8px -1px var(--green)}
   body.light .dc-dots i.on{background:var(--green);box-shadow:0 0 8px -1px var(--green)}
-  .dc-x{font-family:'Archivo';font-weight:900;font-size:14px;color:var(--cream)}
+  .dc-x{font-family:'Archivo';font-weight:900;font-size:14px;color:var(--charcoal)}
   body.light .dc-x{color:var(--charcoal)}
-  .dc-note{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:rgba(243,237,224,0.5);margin-top:12px}
-  body.light .dc-note{color:#6a6256}  body:not(.light){color-scheme:dark} body.light{color-scheme:light}
+  .dc-note{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:#6a6256;margin-top:12px}
+  body:not(.light){color-scheme:dark} body.light{color-scheme:light}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink);color:var(--pink)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
@@ -510,6 +514,17 @@
   #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
   #glChips .chtag-prestige-gen{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
   #glChips .chtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
+
+  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+     decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
+     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#B81D3C}
+  body.light .navitem .lbl, body.light .wallpill .wp-txt, body.light .tt .ttl{color:var(--pink-ink)}
+  body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  /* out-specified: the base .tagrow .tmore rule is declared LATER and sets its own colour,
+     so an equal-specificity rule loses (§C , later wins at equal specificity). */
+  .layer .tagrow .tmore{color:#3a352e}
+  .layer .tt .ttl{color:#B81D3C}   /* pink on the always-cream layer, 2.49 in both themes */
 </style>
 </head>
 <body class="light">

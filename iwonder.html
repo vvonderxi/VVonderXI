@@ -44,7 +44,7 @@
   body.light .avatar .vvsh-b{fill:#1C1B1A}
   body.light .avatar .vvsh-e{stroke:var(--cream)}
   body.light .avatar .vvsh-v{fill:var(--cream)}
-  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-left:7px}
+  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e5a10;margin-left:7px}
 
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -157,6 +157,15 @@
   @media (max-width:720px){
     html,body{overflow-x:hidden;max-width:100vw}
   }
+
+  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+     decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
+     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#B81D3C}
+  body.light .comingpill, body.light .iwh1 .b{color:var(--pink-ink)}
+  /* white on #FF5C7A is 2.97; these labels are 12px bold so they need 4.5. #C42847 = 5.61. */
+  .iwcta-btn.primary{background:#C42847}
+  body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
 </style></head><body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">

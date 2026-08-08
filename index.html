@@ -96,7 +96,7 @@
   .pill.soon{opacity:.66;cursor:default}
   .pill.soon:hover{transform:none;border-color:var(--pill-b)}
   .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;
-        text-transform:uppercase;color:var(--gold)}
+        text-transform:uppercase;color:#7e5a10}
   .vv{font-family:'Bricolage Grotesque';font-weight:800;letter-spacing:-.02em}
   .vv .va{color:var(--ink)} .vv .vb{color:var(--pink)}
   .badge{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.1em;
@@ -145,6 +145,15 @@
   @media (max-width:720px){
     html,body{overflow-x:hidden;max-width:100vw}
   }
+
+  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+     decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
+     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#B81D3C}
+  body.light .tag .pk{color:var(--pink-ink)}
+  /* white on #FF5C7A is 2.97; these labels are 12px bold so they need 4.5. #C42847 = 5.61. */
+  .search .go{background:#C42847}
+  body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
 </style>
 </head>
 <body class="light">

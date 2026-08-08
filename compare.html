@@ -45,7 +45,7 @@
   .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:999px;opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
-  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-left:7px}
+  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e5a10;margin-left:7px}
 
   .avatar{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#DA291C,#a01818);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:#fff}
   .hero{padding:30px 48px 4px;max-width:1240px}
@@ -101,7 +101,8 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .verdict{max-width:920px;margin:38px auto 0;background:var(--surf-stage);border-radius:20px;padding:40px 44px;display:none;text-align:center;box-shadow:0 30px 60px -24px rgba(0,0,0,0.6);overflow-x:clip}   /* green-scope: OUTER stage is standard dark; the green lives on the .vsect finding boxes */   /* #109: contain verdict-side horizontal drift here (cards stay clip-free) */
   .verdict.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#7e5a10;margin-bottom:16px}
+  body:not(.light) .verdict .vlabel{color:var(--gold)}   /* bright gold reads on charcoal; on the white hero it measured 1.84 */
   .verdict .vquote{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:18.5px;line-height:1.55;color:var(--cream)}   /* #102: punchier statement */
   .verdict .vwho{font-family:'Archivo';font-weight:800;font-size:30px;line-height:1.2;letter-spacing:-.015em;
     color:var(--cream);margin-top:14px;max-width:660px;margin-inline:auto;text-wrap:balance}
@@ -791,6 +792,18 @@ body.light .pkmsub{color:var(--ink-soft)}
   .vv-totop.show:hover{transform:translateY(-2px)}
   body.light .vv-totop{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.10);color:var(--charcoal)}
   @media (max-width:720px){.vv-totop{bottom:84px}}
+
+  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+     decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
+     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#B81D3C}
+  /* EXCEPTION: .addclub sits on the .matchup PLINTH (#DCD2BE), the darkest light surface on the
+     platform, where #B81D3C reaches only 4.27. This ONE element goes a step deeper (#A81733 = 4.94)
+     rather than deepening the whole brand to maroon for a single button. */
+  body.light .sidecta .addclub{color:#A81733}
+  body.light .navitem .lbl, body.light #compareNewBtn, body.light .vshare-opt .lbl, body.light .vfinal .s, body.light .vstorycol .vsname, body.light .vproof-head .vp-a{color:var(--pink-ink)}
+  body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  body.light .vfinal .vscore .s, body.light .verdict .vstorycol .vsname, body.light .verdict .vproof-head .vp-a{color:var(--pink-ink)}
 </style>
 </head>
 <body class="light">

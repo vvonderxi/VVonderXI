@@ -52,7 +52,7 @@
   body.light .avatar .vvsh-b{fill:#1C1B1A}
   body.light .avatar .vvsh-e{stroke:var(--cream)}
   body.light .avatar .vvsh-v{fill:var(--cream)}
-  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-left:7px}
+  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e5a10;margin-left:7px}
 
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -361,6 +361,15 @@
   body.light .meglabel{color:var(--ink-soft)}
   body.light .mesw{background:rgba(0,0,0,0.18)}
   body.light .mesw.on{background:var(--pink,#ff2d78)}
+
+  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+     decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
+     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#B81D3C}
+  body.light .navitem .lbl, body.light .comingpill{color:var(--pink-ink)}
+  /* white on #FF5C7A is 2.97; these labels are 12px bold so they need 4.5. #C42847 = 5.61. */
+  .iossheet .iosclose{background:#C42847}
+  body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
 </style>
 </head>
 <body class="light">

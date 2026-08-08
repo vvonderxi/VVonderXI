@@ -74,6 +74,12 @@
   body.light .vvlogo .flogo.l{display:inline-block}
   .foot{text-align:center;font-family:'Archivo';font-weight:500;font-size:11px;color:rgba(243,237,224,0.35);margin-top:18px}
   body.light .foot{color:#9a9285}  body:not(.light){color-scheme:dark} body.light{color-scheme:light}
+  /* Was an INLINE style , color:rgba(243,237,224,.6) , so no stylesheet rule could override it
+     and it measured 1.00 in daylight, invisible. This is the element the audit harness MISSED:
+     its gradient guard silently drops elements on gradient-backed ancestors. Class-ified so both
+     themes are addressable. */
+  .hdrlabel{font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:0.04em;color:rgba(243,237,224,0.6)}
+  body.light .hdrlabel{color:#5f594e}
 </style>
 </head>
 <body class="light">
@@ -82,7 +88,7 @@
 
   <div class="hdr">
     <div class="hbtn" onclick="history.back()">&#8249;</div>
-    <div style="font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:0.04em;color:rgba(243,237,224,0.6)">Got a question?</div>
+    <div class="hdrlabel">Got a question?</div>
   </div>
 
   <div class="hero">

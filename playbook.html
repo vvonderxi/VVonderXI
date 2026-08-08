@@ -44,7 +44,7 @@
   body.light .avatar .vvsh-b{fill:#1C1B1A}
   body.light .avatar .vvsh-e{stroke:var(--cream)}
   body.light .avatar .vvsh-v{fill:var(--cream)}
-  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-left:7px}
+  .soontag{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e5a10;margin-left:7px}
 
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -214,7 +214,7 @@
   .vvband-story{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease,opacity .4s ease;font-family:'Bricolage Grotesque';font-weight:600;font-size:15.5px;line-height:1.6;color:#F3EDE0}
   .vvband.open .vvband-story{max-height:400px;opacity:1;margin-top:13px;padding:14px 15px;background:rgba(255,255,255,0.03);border-radius:12px}
   body.light .tagdef.open .drury,body.light .vvband.open .vvband-story{background:rgba(255,255,255,0.6)}   /* green-sweep: were olive (expanded state); standard tone in both modes */
-  body.light .tagdef .drury,body.light .tagdef.open .drury,body.light .pctbox .t,body.light .pctbox .b,body.light .vvband-story{color:#3a352e}   /* prose text override , containers went light, cream text would be invisible */
+  body.light .tagdef .drury,body.light .tagdef.open .drury,body.light .pctbox .t,body.light .pctbox .b,body.light .vvband-story,body.light .drurybox-q{color:#3a352e}   /* .drurybox-q was missing from this list , cream on white, ratio 1.13 */   /* prose text override , containers went light, cream text would be invisible */
   .vvband .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0;align-self:flex-start}
   /* Desktop-only band-card type scale (min-width:1181px = page's 2-column desktop form; mobile untouched) */
   @media (min-width:1181px){
@@ -302,6 +302,16 @@
   .foldh .foldcount{margin-left:auto;font-family:'Archivo';font-weight:800;font-size:11px;color:var(--pink,#ff5c7a);background:rgba(255,92,122,.13);border-radius:999px;padding:3px 10px}
   .foldh::after{content:'\25BE';font-size:13px;opacity:.45;transition:transform .3s ease}
   .section.foldable.open .foldh::after{transform:rotate(180deg)}
+
+  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+     decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
+     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#B81D3C}
+  body.light .pbnav a.on, body.light .navitem .lbl, body.light .b, body.light .tagdef .more, body.light .vvband .more, body.light .vvstory-more, body.light .drurybox-more{color:var(--pink-ink)}
+  body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  body.light .pctbar span{color:#5f594e}   /* white-on-white measured 1.06 in daylight; white is correct on the dark bar */
+  body.light .pbnum .pbcap{color:#7e5a10}   /* gold 'elite' caption, 1.59 on cream */
+  body.light .pctbox .b b{color:var(--pink-ink)}   /* '95th percentile' emphasis, 2.81 on cream */
 </style></head><body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">
