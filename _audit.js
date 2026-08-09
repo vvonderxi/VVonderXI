@@ -33,6 +33,12 @@ window.__vvAudit = function(){
                    '.tagdef .drury,.drurybox-q,.vvband-story,.dmore,.wmc-b,.fd-panel,.bdef,.foldbody,.vfoldbody{opacity:1!important;visibility:visible!important}';
     document.head.appendChild(st); }
   document.querySelectorAll('details').forEach(function(d){ d.open=true; });
+  // OPEN THE BURGER DRAWER. It is closed by default, so no sweep ever saw its six nav labels ,
+  // which sat at contrast 1.02 in light mode, cream on a cream drawer. Same blind spot as
+  // .drurybox-q, one level further out: force-opening <details> and .open was not enough,
+  // because this one needs a click.
+  var _b=document.getElementById('burger'); if(_b) _b.click();
+  document.querySelectorAll('.menu,.drawer').forEach(function(m){ m.classList.add('open'); });
   // Only 'open' , the class these components actually use. Adding 'show'/'vopen' blindly
   // risks triggering unrelated rules and inventing findings.
   ['tagdef','drurybox','vvband','band','section','vsect','wmc','fd-panel','emptystate'].forEach(function(c){

@@ -119,8 +119,15 @@
   .mlogo{width:118px;height:auto;display:none;margin:4px auto 14px}
   body:not(.light) .drawer .mlogo.d{display:block}
   body.light .drawer .mlogo.l{display:block}
+  /* The drawer holds SIX PRIMARY DESTINATIONS and has NO active state , nothing ever receives
+     .on here, since the drawer lives on the home page and home is not one of its entries. With
+     nothing to recede behind, muting every item mutes the whole menu. Worse, --muted is
+     rgba(240,234,217,.52) in BOTH themes, so on the cream light drawer it measured 1.02 ,
+     the menu was invisible in daylight. Primary ink, full strength, both themes:
+     light #2a2620 = 13.10, dark #F0EAD9 = 15.32. */
   .navitem{display:flex;align-items:center;gap:14px;padding:12px;border-radius:13px;
-        cursor:pointer;color:var(--muted);transition:background .2s,color .2s;text-decoration:none}
+        cursor:pointer;color:#F0EAD9;transition:background .2s,color .2s;text-decoration:none}
+  body.light .navitem{color:#2a2620}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--ink)}
   body.light .navitem:hover{background:rgba(0,0,0,0.04)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
