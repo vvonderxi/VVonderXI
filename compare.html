@@ -7,7 +7,7 @@
 <title>VVonderXI , Web Compare</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9;
+  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--panel-t-l:#FCF9F1;--panel-b-l:#F1EAD9;
     /* ── TONAL DEPTH , four surface tiers (dark values; light overridden in body.light).
        Purpose: the page had ONE tone , every .vsect computed to #fff on a near-flat
        cream stage, and .vfinal (the payoff) had no background at all. These give the
@@ -27,7 +27,7 @@
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
   .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
-  .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
+  .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
   .navitem .lbl{font-family:'Archivo';font-weight:700;font-size:15.5px;opacity:0;transition:opacity .25s}
   .spine:hover .navitem .lbl{opacity:1}
@@ -50,7 +50,7 @@
   .avatar{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#DA291C,#a01818);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:#fff}
   .hero{padding:30px 48px 4px;max-width:1240px}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:42px;line-height:1.02;letter-spacing:-0.02em}
-  .hero h1 .b{color:var(--pink)}
+  .hero h1 .b{color:var(--pink-ink)}
   .hero .lede{font-family:'Inter';font-weight:400;font-size:15px;line-height:1.6;color:rgba(243,237,224,0.6);max-width:540px;margin-top:12px}
   /* light tiers live IN this block (not appended later) so they cannot lose a
      specificity fight with the body.light rules further down the sheet. */
@@ -64,7 +64,7 @@
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
   body.light .navitem{color:var(--ink-soft)}
   body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}
-  body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
+  body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   body.light .crumb{color:var(--ink-soft)}
   body.light .modetoggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
   body.light .hero .lede{color:#5a544a}
@@ -88,13 +88,13 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .edge-flag svg{width:14px;height:14px}
   .edge-spacer{height:30px}
   .vsmedal{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,#2a2422,#161313);border:2.5px solid var(--pink);box-shadow:0 0 40px -6px rgba(255,92,122,0.6),inset 0 1px 0 rgba(255,255,255,0.08);font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;flex-shrink:0}
-  .vsmedal .a{color:var(--cream)} .vsmedal .s{color:var(--pink)}
+  .vsmedal .a{color:var(--cream)} .vsmedal .s{color:var(--pink-ink)}
   body.light .vsmedal{background:radial-gradient(circle at 50% 35%,#fff,#F0EAD9);box-shadow:0 0 34px -6px rgba(255,92,122,0.45)}
   body.light .vsmedal .a{color:var(--charcoal)}
   .arena-cta{display:none}
   .vscenter{display:flex;flex-direction:column;align-items:center;gap:16px;align-self:center}
   .vscenter .settle{margin-top:2px}
-  .settle{font-family:'Archivo';font-weight:900;font-size:16px;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(135deg,#FF5C7A,#FF8FA3);color:#fff;border:none;border-radius:16px;padding:17px 46px;cursor:pointer;box-shadow:0 20px 44px -12px rgba(255,92,122,0.75);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
+  .settle{font-family:'Archivo';font-weight:900;font-size:16px;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(135deg,#E70443,#FF8FA3);color:#fff;border:none;border-radius:16px;padding:17px 46px;cursor:pointer;box-shadow:0 20px 44px -12px rgba(255,92,122,0.75);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
   .settle:hover{transform:translateY(-2px);box-shadow:0 26px 52px -12px rgba(255,92,122,0.85)}
   /* verdict reveal , editorial pull-quote treatment */
   /* TIER 1 , the STAGE. Holds every section; the payoff (.vfinal) sits ON it. */
@@ -108,7 +108,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
     color:var(--cream);margin-top:14px;max-width:660px;margin-inline:auto;text-wrap:balance}
   /* score + tag, STRUCTURED , deliberately not parsed out of the AI sentence, whose
      shape varies by verdict tag ("89 vs 85." / "VV 96 vs 90." / "83-80." / no score). */
-  .vscore{font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:.01em;margin-top:10px;color:var(--pink)}
+  .vscore{font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:.01em;margin-top:10px;color:var(--pink-ink)}
   .vscore .vs-sep{opacity:.55;margin:0 8px;font-weight:700}
   /* tagline , the selected tag's one-line blurb, the quiet third line of the triad */
   .vtagline{font-family:'Bricolage Grotesque';font-style:italic;font-size:15px;line-height:1.5;
@@ -122,7 +122,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
     box-shadow:0 0 0 5px rgba(255,92,122,.10)}
   .tie-flag.tf-show{display:inline-flex}
   body.light .tie-flag{background:var(--charcoal);color:var(--cream)}
-  .vscore .vs-n{color:var(--pink)}
+  .vscore .vs-n{color:var(--pink-ink)}
   .vscore .vs-sep{opacity:.45;margin:0 9px;font-weight:700}
   .vscore .vs-tag{color:var(--ink-soft);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px}
   /* the rule that demotes everything below it to supporting prose */
@@ -148,7 +148,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .h2hbar .ha i{display:block;height:100%;background:linear-gradient(90deg,rgba(255,92,122,0.35),var(--pink));border-radius:5px 2px 2px 5px}
   .h2hbar .hb i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),rgba(59,111,176,0.35));border-radius:2px 5px 5px 2px}
   .h2hbar .hav,.h2hbar .hbv{font-family:'Archivo';font-weight:900;font-size:12px;width:26px;flex-shrink:0}
-  .h2hbar .hav{text-align:right;color:var(--pink)} .h2hbar .hbv{text-align:left;color:var(--blue)}
+  .h2hbar .hav{text-align:right;color:var(--pink-ink)} .h2hbar .hbv{text-align:left;color:var(--blue)}
   /* the numbers */
   .vdrow{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
   .vdrow:last-child{border-bottom:none}
@@ -179,7 +179,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px;cursor:pointer;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}
   body.light .tagrow .td,body.light .tagrow .tmore{color:#3a352e}   /* prose text override , container went light, cream would be invisible */
   body.light .tagrow{background:rgba(255,255,255,0.6)}   /* green-sweep: standard tone (green is Compare-only; only .vsect finding boxes stay green) */
-  .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink);margin-bottom:6px;display:flex;align-items:center;gap:7px;justify-content:flex-start}
+  .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink-ink);margin-bottom:6px;display:flex;align-items:center;gap:7px;justify-content:flex-start}
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px} .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
   .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:var(--cream)}
@@ -240,7 +240,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vvcard .halo{display:none}
   .vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
   .vvcard .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.08);letter-spacing:0.02em;line-height:1;margin-top:calc(var(--cw)*0.025)}
-  .vvcard .vv .a{color:var(--charcoal)}.vvcard .vv .b{color:var(--pink)}
+  .vvcard .vv .a{color:var(--charcoal)}.vvcard .vv .b{color:var(--pink-ink)}
   .vvcard .cimg{width:60%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
   .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
   .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
@@ -249,9 +249,9 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
   .vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}   /* #4: odd count -> last tag spans both cols, no blank cell */
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
-  .vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#FF5C7A);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
+  .vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
   .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
-  .vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A) !important}
+  .vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#E70443) !important}
   .vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
   .vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
   .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
@@ -369,13 +369,13 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .seasonrows .srmain{min-width:0}
   .seasonrows .sryear{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;letter-spacing:-.01em;line-height:1.05;color:var(--cream);font-variant-numeric:tabular-nums}
   body.light .seasonrows .sryear{color:var(--charcoal)}
-  .seasonrows .urow.active .sryear{color:var(--pink)}
+  .seasonrows .urow.active .sryear{color:var(--pink-ink)}
   .seasonrows .srsub{margin-top:3px;font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   body.light .seasonrows .srsub{color:var(--ink-soft)}
   .seasonrows .srtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
   .seasonrows .rmini{align-self:center;justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:42px;height:48px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
   .seasonrows .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:10px;line-height:1}
-  .seasonrows .rmvv .a{color:#1C1B1A}.seasonrows .rmvv .b{color:var(--pink)}
+  .seasonrows .rmvv .a{color:#1C1B1A}.seasonrows .rmvv .b{color:var(--pink-ink)}
   .seasonrows .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;line-height:1;color:#1C1B1A}
   .seasonrows .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
   .seasonrows .rmini.elite .a,.seasonrows .rmini.elite .rmn{color:#2a1d03}
@@ -386,7 +386,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .seasonrows .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
   .seasonrows .rtag-prestige-gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F3DA88;font-weight:800}
   .seasonrows .rtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);border-color:transparent;color:#16120e;font-weight:800}
-  .seasonrows .rtag-att{background:linear-gradient(90deg,#FF7A5C,#FF5C7A);border-color:transparent;color:#fff}
+  .seasonrows .rtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443);border-color:transparent;color:#fff}
   .seasonrows .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
   .seasonrows .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
   .seasonrows .rtag-age{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
@@ -394,13 +394,13 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   /* ===== end .seasonrows shared block ===== */
   #cardA .vvcard,#cardB .vvcard{position:relative;z-index:1}
   /* favourite + add-to-club under each card */
-  .sidecta{display:flex;align-items:center;gap:10px;width:var(--cw,300px);max-width:300px}.seecard{display:block;width:var(--cw,300px);max-width:300px;margin:9px auto 0;text-align:center;font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,.6);text-decoration:none;padding:6px 0;transition:color .15s}.seecard:hover{color:var(--pink)}body.light .seecard{color:var(--ink-soft)}body.light .seecard:hover{color:var(--pink)}
+  .sidecta{display:flex;align-items:center;gap:10px;width:var(--cw,300px);max-width:300px}.seecard{display:block;width:var(--cw,300px);max-width:300px;margin:9px auto 0;text-align:center;font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,.6);text-decoration:none;padding:6px 0;transition:color .15s}.seecard:hover{color:var(--pink-ink)}body.light .seecard{color:var(--ink-soft)}body.light .seecard:hover{color:var(--pink-ink)}
   .favstar{width:44px;height:44px;flex-shrink:0;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(243,237,224,0.6);font-size:19px;cursor:pointer;transition:all .15s}
   .favstar:hover{border-color:rgba(232,184,75,0.5);color:var(--gold)}
   .favstar.on{color:var(--gold);background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.45)}
   body.light .favstar{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--ink-soft)}
   body.light .favstar.on{color:var(--gold);background:rgba(232,184,75,0.18)}
-  .addclub{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--pink);border:1.5px solid rgba(255,92,122,0.55);border-radius:12px;padding:12px 16px;font-family:'Archivo';font-weight:800;font-size:13px;cursor:pointer;box-shadow:none;transition:background .15s}
+  .addclub{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--pink-ink);border:1.5px solid rgba(255,92,122,0.55);border-radius:12px;padding:12px 16px;font-family:'Archivo';font-weight:800;font-size:13px;cursor:pointer;box-shadow:none;transition:background .15s}
   .addclub:hover{filter:brightness(1.06)}
   /* numbers + trajectory side by side */
   .vnumwrap{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
@@ -413,7 +413,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vtraj-avg{display:flex;justify-content:space-around;margin-top:12px;gap:12px}
   .vtraj-avg .ta,.vtraj-avg .tb{text-align:center;flex:1}
   .vtraj-avg .tav,.vtraj-avg .tbv{font-family:'Archivo';font-weight:900;font-size:24px;display:block;line-height:1}
-  .vtraj-avg .tav{color:var(--pink)} .vtraj-avg .tbv{color:var(--blue)}
+  .vtraj-avg .tav{color:var(--pink-ink)} .vtraj-avg .tbv{color:var(--blue)}
   .vtraj-avg .tal,.vtraj-avg .tbl{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-top:5px;display:block}
   body.light .vtraj-avg .tal,body.light .vtraj-avg .tbl{color:var(--ink-soft)}
   /* See It For Yourself under the verdict */
@@ -469,7 +469,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vtcard .tbase{stroke:rgba(255,255,255,0.14)} body.light .vtcard .tbase{stroke:rgba(0,0,0,0.12)}
   .vtcard .tlab{fill:rgba(243,237,224,0.4)} body.light .vtcard .tlab{fill:var(--ink-soft)}
   .vtavg{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
-  .vtavg .aa{color:var(--pink);font-family:'Archivo';font-weight:900;font-size:15px}
+  .vtavg .aa{color:var(--pink-ink);font-family:'Archivo';font-weight:900;font-size:15px}
   .vtavg .bb{color:var(--blue);font-family:'Archivo';font-weight:900;font-size:15px}
   .vtavg .gl{font-family:'Archivo';font-size:7.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   body.light .vtavg .gl{color:var(--ink-soft)}
@@ -487,12 +487,12 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   @media(max-width:760px){.vstorygrid{grid-template-columns:minmax(0,1fr);gap:36px}}   /* #96: clear vertical breathing room between the two stacked stories */
   /* #96: airy per-player split , full-height coloured left rule + generous left padding, no box */
   .vstorycol{padding-left:20px;border-left:3px solid transparent}
-  .vstorygrid .vstorycol:nth-child(1){border-left-color:var(--pink)}
+  .vstorygrid .vstorycol:nth-child(1){border-left-color:var(--pink-ink)}
   .vstorygrid .vstorycol:nth-child(2){border-left-color:var(--blue)}
   .vsname{font-family:'Archivo';font-weight:800;font-size:15px;letter-spacing:0.02em;display:flex;align-items:center;gap:8px;margin-bottom:12px;color:var(--cream)}
   body.light .vsname{color:var(--charcoal)}
   /* #96: name coloured in the player's colour, matching the dot + left rule */
-  .vstorygrid .vstorycol:nth-child(1) .vsname{color:var(--pink)}
+  .vstorygrid .vstorycol:nth-child(1) .vsname{color:var(--pink-ink)}
   .vstorygrid .vstorycol:nth-child(2) .vsname{color:var(--blue)}
   .vsname .sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
   .vsname .sdot-a{background:var(--pink)} .vsname .sdot-b{background:var(--blue)}
@@ -509,27 +509,27 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .cs-ph{flex:1;font-family:'Inter';font-size:15.5px;color:rgba(243,237,224,0.58)} body.light .cs-ph{color:var(--ink-soft)}
   .cs-gear{width:42px;height:42px;border-radius:12px;background:var(--pink);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 10px 22px -10px rgba(255,92,122,0.6)}
   .cs-gear svg{width:20px;height:20px}
-  .cs-top{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.07em;color:var(--pink);background:rgba(255,92,122,0.12);border:1px solid rgba(255,92,122,0.3);padding:9px 13px;border-radius:12px;flex-shrink:0}
+  .cs-top{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.07em;color:var(--pink-ink);background:rgba(255,92,122,0.12);border:1px solid rgba(255,92,122,0.3);padding:9px 13px;border-radius:12px;flex-shrink:0}
   @media(max-width:560px){.cs-top{display:none}}
   /* two per-player bar charts */
   .vtrajpair{display:grid;grid-template-columns:1fr 1fr;gap:26px}
   @media(max-width:720px){.vtrajpair{grid-template-columns:1fr;gap:22px}}   /* #91: stack in step with the rest of the page (720), not 620 */
   .vtchart .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;text-align:center;margin-bottom:8px}
-  .vtchart .vtname.tA{color:var(--pink)} .vtchart .vtname.tB{color:var(--blue)}
+  .vtchart .vtname.tA{color:var(--pink-ink)} .vtchart .vtname.tB{color:var(--blue)}
   /* shared trajectory renderer (vv-core) , compare wears it TRANSPARENT on the verdict panel */
   .tjhead{font-family:'Inter';font-weight:500;font-size:14px;line-height:1.5;color:rgba(243,237,224,0.95);text-align:center;margin-bottom:12px}
   .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:14px}
   .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
   .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
   .tjlg i.tjlgline{width:16px;height:0;border-radius:0;border-top:2.4px solid #F0EAD9}
-  .tjvp{color:#FF5C7A}
+  .tjvp{color:var(--pink-ink)}
   .tjsvg{display:block;width:100%;height:auto}
   .tjgrid{stroke:rgba(243,237,224,0.09);stroke-width:1}
   .tjyl,.tjyr,.tjxl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:#164A2D;stroke-width:3.4px;stroke-linejoin:round}  /* dark theme: halo = mid of the .vsect green gradient. Compare renders with
      transparent:true so it has NO .tjmask (invariant 7) , the halo is what stops the VV
      line cutting through the season total here. */
-  .tjxlsel{fill:#FF5C7A;font-weight:800}
+  .tjxlsel{fill:#E70443;font-weight:800}
   .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
   .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
   .tjpeak{fill:#E8B84B;font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
@@ -548,7 +548,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   body.light .tjgrid{stroke:rgba(0,0,0,0.09)}
   .vtchart{text-align:center}
   .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:19px;margin-bottom:2px}
-  .vtname.tA{color:var(--pink)} .vtname.tB{color:var(--blue)}
+  .vtname.tA{color:var(--pink-ink)} .vtname.tB{color:var(--blue)}
   .vtchart svg{width:100%;height:auto;display:block;max-width:330px;margin:0 auto}
   @media(max-width:720px){.vtchart svg{max-width:430px}}   /* #91: stacked charts breathe, match the solo chart cap (:328) */
   #vtraj .tgrid{stroke:rgba(255,255,255,0.10)} body.light #vtraj .tgrid{stroke:rgba(0,0,0,0.10)}
@@ -560,7 +560,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vproof-head{display:grid;grid-template-columns:1.5fr 1fr 1fr;padding:0 2px 11px;border-bottom:1px solid rgba(255,255,255,0.09)}
   body.light .vproof-head{border-bottom-color:rgba(0,0,0,0.09)}
   .vproof-head span{font-family:'Archivo';font-weight:800;font-size:13px;text-align:center}
-  .vproof-head .vp-a{color:var(--pink)} .vproof-head .vp-b{color:var(--blue)}
+  .vproof-head .vp-a{color:var(--pink-ink)} .vproof-head .vp-b{color:var(--blue)}
   .vprow{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center;padding:14px 2px;border-bottom:1px solid rgba(255,255,255,0.06)}
   body.light .vprow{border-bottom-color:rgba(0,0,0,0.06)}
   .vprow:last-child{border-bottom:none}
@@ -574,7 +574,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vc-sub{font-family:'Archivo';font-weight:600;font-size:11px;color:rgba(243,237,224,0.42);padding:0 2px 8px;letter-spacing:.01em}
   body.light .vc-sub{color:var(--ink-soft)}
   .vc-n{font-family:'Archivo';font-weight:800;font-size:15px;width:84px;flex-shrink:0}
-  .vc-a{color:var(--pink)} .vc-b{color:var(--blue)}
+  .vc-a{color:var(--pink-ink)} .vc-b{color:var(--blue)}
   .vc-dots{display:flex;gap:9px;flex:1}
   .vc-dots i{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.10);border:1.5px solid rgba(255,255,255,0.22)}
   body.light .vc-dots i{background:rgba(0,0,0,0.06);border-color:rgba(0,0,0,0.16)}
@@ -586,8 +586,8 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vshare-main{background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:999px;padding:13px 32px;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.01em;cursor:pointer;box-shadow:0 12px 30px -10px rgba(255,92,122,.6);transition:transform .15s}
   .vshare-main:hover{transform:translateY(-2px)}
   .vshare-row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-  .vshare-opt{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-family:'Archivo';font-weight:700;font-size:12.5px;color:var(--pink);border:1.5px solid rgba(255,92,122,.4);border-radius:999px;padding:8px 16px;cursor:pointer;transition:.15s}
-  .vshare-opt:hover{background:rgba(255,92,122,.1);border-color:var(--pink)}
+  .vshare-opt{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-family:'Archivo';font-weight:700;font-size:12.5px;color:var(--pink-ink);border:1.5px solid rgba(255,92,122,.4);border-radius:999px;padding:8px 16px;cursor:pointer;transition:.15s}
+  .vshare-opt:hover{background:rgba(255,92,122,.1);border-color:var(--pink-ink)}
   #cardA,#cardB{transition:transform .45s cubic-bezier(.4,0,.2,1),filter .45s}
   #cardA.winner,#cardB.winner{transform:translateY(-6px)}
   #cardA.winner .vvcard,#cardB.winner .vvcard{box-shadow:0 0 0 3px var(--gold),0 0 22px -2px rgba(232,184,75,.5),0 22px 48px -14px rgba(232,184,75,.55)!important}
@@ -600,7 +600,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink)}
+    .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   /* #109 mobile flip fix: removed the html,body overflow-x:hidden clip , on iOS it flattened the card flip's preserve-3d (back face culled). Horizontal drift is now contained on .verdict/.vafter (below the cards), keeping .matchup clip-free. */
@@ -610,12 +610,12 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .joinsheet{position:fixed;left:0;right:0;bottom:0;z-index:91;background:#fff;border-radius:24px 24px 0 0;transform:translateY(101%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding:8px 24px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -24px 70px -24px rgba(0,0,0,.5);text-align:center;max-width:440px;margin:0 auto}
   .joinsheet.open{transform:translateY(0)}
   .js-grip{width:38px;height:4px;border-radius:2px;background:rgba(0,0,0,.16);margin:10px auto 18px}
-  .js-star{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#FF5C7A,#FF8FA3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 14px 30px -12px rgba(255,92,122,.6)}
+  .js-star{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#E70443,#FF8FA3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 14px 30px -12px rgba(255,92,122,.6)}
   .js-title{font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:22px;color:#1C1B1A}
   .js-sub{font-size:14px;color:var(--ink-soft);margin:8px 0 20px;line-height:1.5}
   .js-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:#1C1B1A;cursor:pointer}
   .js-optin{display:flex;align-items:flex-start;gap:9px;text-align:left;font-size:12.5px;color:var(--ink-soft);margin:14px 2px 2px;cursor:pointer;line-height:1.4}
-  .js-optin input{margin-top:1px;width:16px;height:16px;accent-color:#FF5C7A;flex:none}
+  .js-optin input{margin-top:1px;width:16px;height:16px;accent-color:#E70443;flex:none}
   .js-later{background:none;border:none;color:var(--ink-soft);font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;padding:14px;cursor:pointer;margin-top:6px}
   .vsave{display:flex;justify-content:center;margin:26px 0 6px}
   .vsavebtn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:14px;border:none;background:var(--char,#1C1B1A);color:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 14px 30px -14px rgba(0,0,0,.5)}
@@ -638,7 +638,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   #verdictPoster .vptop{position:relative;z-index:2;display:flex;align-items:baseline;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid rgba(243,237,224,.10);margin-bottom:26px}
   #verdictPoster .vpmark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.015em;color:#F3EDE0}
   #verdictPoster .vplogo{height:30px;width:auto;display:block}
-  #verdictPoster .vpmark i{font-style:normal;color:var(--pink)}
+  #verdictPoster .vpmark i{font-style:normal;color:var(--pink-ink)}
   #verdictPoster .vpeyebrow{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;color:rgba(243,237,224,.45)}
   #verdictPoster .vpcards{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:start;justify-items:center;--cw:150px}
   #verdictPoster .vpcrown{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.04em;color:#5a4410;background:linear-gradient(135deg,#F0D27A,#E0A93A);padding:5px 13px;border-radius:14px;margin-bottom:9px;box-shadow:0 8px 18px -6px rgba(232,184,75,.55)}
@@ -649,7 +649,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   #verdictPoster .vpline{position:relative;z-index:2;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:rgba(243,237,224,.84);margin:0 18px 26px}
   #verdictPoster .vpfoot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(243,237,224,.10);padding-top:15px}
   #verdictPoster .vpfoot .vpfm{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;color:#F3EDE0}
-  #verdictPoster .vpfoot .vpfm i{font-style:normal;color:var(--pink)}
+  #verdictPoster .vpfoot .vpfm i{font-style:normal;color:var(--pink-ink)}
   #verdictPoster .vpfoot .vpfl{text-align:right;font-family:'Archivo',sans-serif;font-weight:700;font-size:9px;letter-spacing:.07em;color:rgba(243,237,224,.42);line-height:1.6}
   /* foldable verdict sections */
   .vsect.vfoldable .vfoldbody{overflow:hidden;transition:max-height .42s ease,opacity .3s ease}
@@ -680,7 +680,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   /* VV monogram back , tier-matched (back colour = card tier); 1st V tier-ink, 2nd V pink */
   .vvmono{width:100%;height:100%;border-radius:calc(var(--cw)*0.073);display:flex;align-items:center;justify-content:center;box-sizing:border-box}
   .vvmonomark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1;text-shadow:0 6px 18px rgba(0,0,0,.3)}
-  .vvmonomark span{color:var(--pink)}
+  .vvmonomark span{color:var(--pink-ink)}
   .vvmono-cream{background:linear-gradient(158deg,#F7F2E6,#EAE2D0);box-shadow:inset 0 0 0 1px rgba(0,0,0,.10),0 24px 60px -20px rgba(0,0,0,.5)}
   .vvmono-cream .vvmonomark{color:#1C1B1A}
   .vvmono-gold{background:linear-gradient(158deg,#F6DE93,#DC9E2C);box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
@@ -705,7 +705,7 @@ body.light .pkgrab{background:rgba(0,0,0,.16)}
 .pkhead-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .pkhead-row h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;color:var(--cream)}
 body.light .pkhead-row h2{color:var(--charcoal)}
-.pkhead-row h2 .s{color:var(--pink)}
+.pkhead-row h2 .s{color:var(--pink-ink)}
 .pkx{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);font-size:18px;color:var(--cream);cursor:pointer;line-height:1}
 body.light .pkx{background:rgba(0,0,0,.06);color:var(--charcoal)}
 .pksbar{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 15px;margin-bottom:12px}
@@ -718,7 +718,7 @@ body.light .pksbar input{color:var(--charcoal)}
 .pkchips::-webkit-scrollbar{display:none}
 .pkchip{flex-shrink:0;font-family:'Archivo';font-weight:800;font-size:12px;padding:7px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(243,237,224,.7);cursor:pointer}.pkchip.pksoon{opacity:.4;cursor:not-allowed;pointer-events:none}.pkchip.pksoon .pksoonlbl{font-style:normal;font-weight:800;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;opacity:.8;margin-left:5px;border:1px solid currentColor;border-radius:5px;padding:0 4px}
 body.light .pkchip{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.03);color:#6a6256}
-.pkchip.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+.pkchip.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
 .pkresults{flex:1;overflow-y:auto;border-top:1px solid rgba(255,255,255,.08);margin:0 -16px;padding:0 10px 18px}
 body.light .pkresults{border-color:rgba(0,0,0,.07)}
 .pkhd{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(243,237,224,.4);padding:15px 6px 5px}
@@ -742,24 +742,24 @@ body.light .cmpl2{color:var(--ink-soft)}
 .cmpright{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end}
 .cmpvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;line-height:1;color:var(--cream);font-variant-numeric:tabular-nums}
 body.light .cmpvv{color:var(--charcoal)}
-.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink)}
+.cmpvv.elite{color:var(--gold)}.cmpvv.gen{color:var(--pink-ink)}
 .cmpga{font-weight:700;font-size:10.5px;color:rgba(243,237,224,.5);margin-top:4px}body.light .cmpga{color:var(--ink-soft)}
 
 .emptyslot{aspect-ratio:.7;border:2px dashed rgba(243,237,224,.2);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:rgba(255,255,255,.02);transition:border-color .18s,background .18s}
   .vvback{--cw:240px;width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);display:flex;align-items:center;justify-content:center;position:relative;box-sizing:border-box;cursor:pointer;background:radial-gradient(130% 70% at 50% 40%, #2c2824 0%, #16120e 55%, #0c0a08 100%);box-shadow:0 20px 40px -22px rgba(0,0,0,0.8), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.65)}
   body.light .vvback{background:radial-gradient(130% 70% at 50% 40%, #F7F2E6 0%, #efe9dc 55%, #e6dfce 100%);box-shadow:0 20px 40px -22px rgba(0,0,0,0.55), inset 0 0 0 calc(var(--cw)*0.02) #efe9dc, inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.5)}
   .vvback .vlogo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-0.02em;line-height:1;display:flex}
-  .vvback .vlogo .a{color:#F0EAD9}.vvback .vlogo .b{color:#FF5C7A}
+  .vvback .vlogo .a{color:#F0EAD9}.vvback .vlogo .b{color:var(--pink-ink)}
   body.light .vvback .vlogo .a{color:#1C1B1A}
   .vvback .vbtop{position:absolute;top:calc(var(--cw)*0.1);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.058);letter-spacing:.06em;text-transform:uppercase;color:rgba(240,234,217,0.45)}
   body.light .vvback .vbtop{color:var(--ink-soft)}
   .vvback .vbsub{position:absolute;bottom:calc(var(--cw)*0.09);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:.18em;text-transform:uppercase;color:rgba(240,234,217,0.4)}
   body.light .vvback .vbsub{color:var(--ink-soft)}
 body.light .emptyslot{border-color:rgba(0,0,0,.16);background:rgba(255,255,255,.3)}
-.cardslot:hover .emptyslot{border-color:var(--pink);background:rgba(255,92,122,.06)}
+.cardslot:hover .emptyslot{border-color:var(--pink-ink);background:rgba(255,92,122,.06)}
 .esplus{font-size:34px;font-weight:300;color:rgba(243,237,224,.32);line-height:1}
 body.light .esplus{color:var(--ink-soft)}
-.cardslot:hover .esplus{color:var(--pink)}
+.cardslot:hover .esplus{color:var(--pink-ink)}
 .eslbl{font-family:'Archivo';font-weight:700;font-size:11.5px;text-align:center;color:rgba(243,237,224,.4);line-height:1.45}
 body.light .eslbl{color:var(--ink-soft)}
 .eslbl b{font-weight:800;color:rgba(243,237,224,.62)}
@@ -768,14 +768,14 @@ body.light .eslbl b{color:var(--ink-soft)}
 .settle.disabled{opacity:.4;pointer-events:none;filter:grayscale(.35)}
   /* "Compare New" , secondary ghost pill in the .settle family; clears both slots back to the empty picker */
   .settle-newrow{display:flex;justify-content:center;margin:12px auto 0}
-  .settlenew{font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.03em;text-transform:uppercase;background:transparent;color:var(--pink);border:1.5px solid rgba(255,92,122,.45);border-radius:16px;padding:12px 30px;cursor:pointer;transition:transform .2s,background .2s;display:none;align-items:center;gap:8px}
+  .settlenew{font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.03em;text-transform:uppercase;background:transparent;color:var(--pink-ink);border:1.5px solid rgba(255,92,122,.45);border-radius:16px;padding:12px 30px;cursor:pointer;transition:transform .2s,background .2s;display:none;align-items:center;gap:8px}
   .settlenew.show{display:inline-flex}
   .settlenew:hover{transform:translateY(-1px);background:rgba(255,92,122,.09)}
   body.light .settlenew{border-color:rgba(255,92,122,.55)}
 .pkdiv{width:1px;align-self:stretch;background:rgba(255,255,255,.14);margin:5px 4px;flex-shrink:0}body.light .pkdiv{background:rgba(0,0,0,.1)}
 .pkfiltbtn{flex-shrink:0;font-family:'Archivo';font-weight:800;font-size:12px;padding:7px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(243,237,224,.75);cursor:pointer;display:flex;align-items:center;gap:5px}
 body.light .pkfiltbtn{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.03);color:#6a6256}
-.pkfiltbtn.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+.pkfiltbtn.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
 .pkmore{display:none;border-top:1px solid rgba(255,255,255,.08);margin:0 -16px;padding:6px 16px 12px;max-height:40vh;overflow-y:auto}
 body.light .pkmore{border-color:rgba(0,0,0,.07)}
 .pkmore.open{display:block}
@@ -785,9 +785,9 @@ body.light .pkmgl{color:var(--ink-soft)}
 body.light .pkmsub{color:var(--ink-soft)}
 .pkmrow{display:flex;flex-wrap:wrap;gap:7px}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;margin-right:14px;transition:.15s}
-  .backbtn:hover{border-color:var(--pink);color:var(--pink)}
+  .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
-  body.light .backbtn:hover{color:var(--pink);border-color:var(--pink)}
+  body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   @media (max-width:720px){.backbtn{padding:6px 10px;font-size:11px;margin-right:8px}}
   /* #97 , floating Back-to-top FAB (reuses the card .ca-top look; appears on scroll) */
   .vv-totop{position:fixed;right:18px;bottom:22px;z-index:70;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream);cursor:pointer;box-shadow:0 10px 26px -12px rgba(0,0,0,.55);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s}
@@ -796,14 +796,14 @@ body.light .pkmsub{color:var(--ink-soft)}
   body.light .vv-totop{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.10);color:var(--charcoal)}
   @media (max-width:720px){.vv-totop{bottom:84px}}
 
-  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+  /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
-     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
-  body.light{--pink-ink:#B81D3C}
+     #E70443: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#AD0332}
   /* EXCEPTION: .addclub sits on the .matchup PLINTH (#DCD2BE), the darkest light surface on the
-     platform, where #B81D3C reaches only 4.27. This ONE element goes a step deeper (#A81733 = 4.94)
+     platform, where #E70443 reaches only 4.27. This ONE element goes a step deeper (#E70443 = 4.94)
      rather than deepening the whole brand to maroon for a single button. */
-  body.light .sidecta .addclub{color:#A81733}
+  body.light .sidecta .addclub{color:var(--pink-ink)}
   body.light .navitem .lbl, body.light #compareNewBtn, body.light .vshare-opt .lbl, body.light .vfinal .s, body.light .vstorycol .vsname, body.light .vproof-head .vp-a{color:var(--pink-ink)}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
   body.light .vfinal .vscore .s, body.light .verdict .vstorycol .vsname, body.light .verdict .vproof-head .vp-a{color:var(--pink-ink)}
@@ -825,7 +825,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   <span class="mt-wrap mt-fixed"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink)">V</span> Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink)">V</span> Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="tie-flag" id="tieFlag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M4 7h16M4 12h16M4 17h16"/></svg> <span class="tflabel"></span></div><div class="side"><div class="edge-flag" id="edgeFlagA"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><a class="seecard" id="seeA" href="#" style="display:none">See full card &rarr;</a><div class="sidecta"><button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="tie-flag" id="tieFlag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M4 7h16M4 12h16M4 17h16"/></svg> <span class="tflabel"></span></div><div class="side"><div class="edge-flag" id="edgeFlagA"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><a class="seecard" id="seeA" href="#" style="display:none">See full card &rarr;</a><div class="sidecta"><button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
         <div class="side">
           <div class="edge-flag" id="edgeFlagB"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div>
           <div id="cardB" class="cardslot" onclick="openPicker('B')"></div><a class="seecard" id="seeB" href="#" style="display:none">See full card &rarr;</a>
@@ -1295,7 +1295,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     for(let i=0;i<N;i++){const[x,y]=pt(i,R);g+=`<line class="rgrid" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;}
     function shape(vals,fill,stroke){let dp='';for(let i=0;i<N;i++){const[x,y]=pt(i,R*vals[i]);dp+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}return `<path d="${dp}Z" fill="${fill}" stroke="${stroke}" stroke-width="2.5"/>`;}
     g+=shape(B_VALS,'rgba(59,111,176,0.25)','#3B6FB0');
-    g+=shape(A_VALS,'rgba(255,92,122,0.25)','#FF5C7A');
+    g+=shape(A_VALS,'rgba(255,92,122,0.25)','#E70443');
     const labels=DIMS;
     for(let i=0;i<N;i++){const[x,y]=pt(i,R+18);g+=`<text class="rlabel" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Archivo" font-size="9.5" font-weight="700" text-anchor="middle" dominant-baseline="middle">${labels[i]}</text>`;}
     svg.innerHTML=g;
@@ -1328,7 +1328,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var chartB = rb.length ? VVCore.renderTrajectory(rb,{chrome:false,transparent:true}) : '<svg class="tjsvg" viewBox="0 0 360 214"></svg>';
     // ONE shared head + legend above, ONE Drury caption below (not per-chart)
     var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
-    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
+    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#E70443"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
     var caption='<div class="tjcap">The bars remember what they did. The line remembers what they were worth. The gap tells the story a raw tally can’t.</div>';
     box.innerHTML = head + legend
       + '<div class="vtrajpair">'
@@ -1609,7 +1609,7 @@ function vvJoin(){
       <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
-      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink)">V</span> Index</span></a>
+      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink-ink)">V</span> Index</span></a>
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 

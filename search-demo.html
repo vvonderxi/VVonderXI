@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VV search , current vs proposed (DEMO, not shipped)</title>
 <style>
- :root{--cream:#F0EAD9;--ink:#2a2620;--pink:#FF5C7A;--gold:#E8B84B;--muted:#5f594e}
+ :root{--cream:#F0EAD9;--ink:#2a2620;--pink:#E70443;--pink-ink:#F1688E;--gold:#E8B84B;--muted:#5f594e}
  *{box-sizing:border-box}
  body{margin:0;font-family:Inter,system-ui,sans-serif;background:#EFE8DA;color:var(--ink);padding:22px}
  h1{font-size:19px;margin:0 0 4px}
@@ -11,7 +11,7 @@
  input{flex:1;min-width:260px;padding:12px 14px;font-size:15px;border:1px solid rgba(0,0,0,.18);border-radius:10px;background:#fff}
  .presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
  .p{font-size:12px;padding:6px 11px;border:1px solid rgba(0,0,0,.16);border-radius:999px;background:#fff;cursor:pointer}
- .p:hover{border-color:var(--pink);color:var(--pink)}
+ .p:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
  @media(max-width:860px){.cols{grid-template-columns:1fr}}
  .panel{background:#FBF8F2;border-radius:12px;padding:14px 16px;border-left:3px solid rgba(0,0,0,.2)}
@@ -30,6 +30,7 @@
  .hl{background:#fff2a8;border-radius:3px;padding:0 2px}
  code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px;font-size:11.5px}
  .note{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.6;max-width:900px}
+  body.light{--pink-ink:#AD0332}
 </style></head><body>
 <h1>VV search , current vs proposed</h1>
 <div class="sub">Demo only. Hits the live matview with the anon key. Does not touch rankings.html or compare.html.</div>

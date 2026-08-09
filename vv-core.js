@@ -1203,7 +1203,7 @@
     var svg='<svg class="tjsvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" width="100%">'+s+'</svg>';
     if(opts.chrome===false) return svg;   // compare: bare chart (shared head/legend/caption supplied once by the caller)
     var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
-    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#FF5C7A"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
+    var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#E70443"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
     var caption='<div class="tjcap">'+(single
       ? 'One season on record , the numbers so far, not yet a trajectory.'
       : 'The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.')+'</div>';

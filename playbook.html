@@ -2,7 +2,7 @@
 <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VVonderXI , The Playbook</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#FF5C7A;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--page-1:#1b1617;--page-2:#141011;--page-3:#0e0b0c;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
+<style>  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--page-1:#1b1617;--page-2:#141011;--page-3:#0e0b0c;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,var(--page-1) 0%,var(--page-2) 50%,var(--page-3) 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
@@ -13,7 +13,7 @@
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
   .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
-  .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
+  .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
   .navitem .lbl{font-family:'Archivo';font-weight:700;font-size:15.5px;opacity:0;transition:opacity .25s}
   .spine:hover .navitem .lbl{opacity:1}
@@ -52,7 +52,7 @@
   .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
   .hero{padding:34px 48px 6px;max-width:1240px}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:48px;line-height:1.02;letter-spacing:-0.02em}
-  .hero h1 .b{color:var(--pink)}
+  .hero h1 .b{color:var(--pink-ink)}
   .hero .lede{font-family:'Inter';font-weight:400;font-size:16px;line-height:1.6;color:rgba(243,237,224,0.6);max-width:600px;margin-top:14px}
 
   /* light flip (hallway) */
@@ -60,7 +60,7 @@
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
   body.light .navitem{color:var(--ink-soft)}
   body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}
-  body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink)}
+  body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   body.light .crumb{color:var(--ink-soft)}
   body.light .modetoggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
   body.light .hero .lede{color:#5a544a}
@@ -70,10 +70,10 @@
   .pbnav{position:sticky;top:30px;align-self:start;display:flex;flex-direction:column;gap:3px}
   .pbnav a{font-family:'Archivo';font-weight:700;font-size:14.5px;color:rgba(243,237,224,0.58);padding:9px 14px;border-radius:10px;text-decoration:none;border-left:2px solid transparent;transition:all .15s}
   .pbnav a:hover{color:var(--cream);background:rgba(255,255,255,0.04)}
-  .pbnav a.on{color:var(--pink);border-left-color:var(--pink);background:rgba(255,92,122,0.08)}
+  .pbnav a.on{color:var(--pink-ink);border-left-color:var(--pink-ink);background:rgba(255,92,122,0.08)}
   body.light .pbnav a{color:var(--ink-soft)}
   body.light .pbnav a:hover{color:var(--charcoal);background:rgba(0,0,0,0.04)}
-  body.light .pbnav a.on{color:var(--pink);background:rgba(255,92,122,0.1)}
+  body.light .pbnav a.on{color:var(--pink-ink);background:rgba(255,92,122,0.1)}
   .pbcontent{min-width:0;max-width:880px}
   /* Desktop hybrid layout: widen content track, keep prose + band ladder readable (mobile untouched) */
   @media (min-width:1181px){
@@ -89,7 +89,7 @@
   .label{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px}
   body.light .label{color:var(--ink-soft)}
   .h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:34px;margin-bottom:8px;letter-spacing:-0.01em}
-  .h2 .va{color:var(--cream)} .h2 .vb{color:var(--pink)} body.light .h2 .va{color:var(--charcoal)}
+  .h2 .va{color:var(--cream)} .h2 .vb{color:var(--pink-ink)} body.light .h2 .va{color:var(--charcoal)}
   .intro{font-family:'Inter';font-weight:400;font-size:16px;line-height:1.6;color:rgba(243,237,224,0.6);margin-bottom:22px;max-width:680px}
   body.light .intro{color:#5a544a}
 
@@ -127,7 +127,7 @@
   .vvstory-d{font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.65;color:#FFFFFF;max-height:0;overflow:hidden;transition:max-height .45s ease}
   body.light .vvstory-d{color:#3a352e}
   .vvstory.open .vvstory-d{max-height:800px;margin-bottom:12px}
-  .vvstory-more{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.04em;color:var(--pink);background:none;border:none;cursor:pointer;padding:0}
+  .vvstory-more{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:0.04em;color:var(--pink-ink);background:none;border:none;cursor:pointer;padding:0}
 
   /* ===== TAG CARDS (one-liner visible, See more -> Drury) ===== */
   .h2 + .intro{margin-top:2px}
@@ -152,7 +152,7 @@
   .tagdef .td b{font-weight:600;color:var(--cream)} body.light .tagdef .td b{color:var(--charcoal)}
   .tagdef .drury{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease,opacity .4s ease;font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.6;color:var(--cream)}
   .tagdef.open .drury{max-height:600px;opacity:1;margin-top:13px;padding:15px 16px;background:rgba(255,255,255,0.03);border-radius:12px;color:#F3EDE0}
-  .tagdef .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0}
+  .tagdef .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink-ink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0}
   /* honours = gold-tinted; prestige = light-gold hero card (both modes) */
   .tagdef.gold{background:linear-gradient(135deg,rgba(232,184,75,0.16),rgba(232,184,75,0.06));border-color:rgba(232,184,75,0.3)}
   body.light .tagdef.gold{background:linear-gradient(135deg,rgba(240,210,122,0.32),rgba(224,169,58,0.16));border-color:rgba(232,184,75,0.35)}
@@ -177,7 +177,7 @@
   body.light .pctbox{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
   .pctbox .t{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--cream);margin-bottom:10px}
   .pctbox .b{font-family:'Inter';font-weight:400;font-size:16px;line-height:1.65;color:rgba(243,237,224,0.8)}
-  .pctbox .b b{color:var(--pink);font-weight:600}
+  .pctbox .b b{color:var(--pink-ink);font-weight:600}
   .pctbar{height:14px;border-radius:8px;background:rgba(255,255,255,0.12);margin-top:18px;position:relative;overflow:hidden}
   .pctbar i{display:block;height:100%;width:95%;background:linear-gradient(90deg,#5BA86F,#2E8C5A);border-radius:8px}
   .pctbar span{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-family:'Archivo';font-weight:900;font-size:10px;color:#fff}
@@ -187,7 +187,7 @@
   .drurybox{margin-top:18px;padding-top:17px;border-top:1px solid rgba(255,255,255,0.1)}
   .drurybox-q{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:16px;line-height:1.65;color:var(--cream);max-height:0;overflow:hidden;transition:max-height .45s,opacity .4s;opacity:0}
   .drurybox.open .drurybox-q{max-height:340px;opacity:1;margin-bottom:10px}
-  .drurybox-more{font-family:'Archivo';font-weight:800;font-size:11.5px;color:var(--pink);background:none;border:none;cursor:pointer;padding:0}
+  .drurybox-more{font-family:'Archivo';font-weight:800;font-size:11.5px;color:var(--pink-ink);background:none;border:none;cursor:pointer;padding:0}
 
   /* CTAs */
   .ctas{padding-top:54px;max-width:880px}
@@ -215,7 +215,7 @@
   .vvband.open .vvband-story{max-height:400px;opacity:1;margin-top:13px;padding:14px 15px;background:rgba(255,255,255,0.03);border-radius:12px}
   body.light .tagdef.open .drury,body.light .vvband.open .vvband-story{background:rgba(255,255,255,0.6)}   /* green-sweep: were olive (expanded state); standard tone in both modes */
   body.light .tagdef .drury,body.light .tagdef.open .drury,body.light .pctbox .t,body.light .pctbox .b,body.light .vvband-story,body.light .drurybox-q{color:#3a352e}   /* .drurybox-q was missing from this list , cream on white, ratio 1.13 */   /* prose text override , containers went light, cream text would be invisible */
-  .vvband .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0;align-self:flex-start}
+  .vvband .more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink-ink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0;align-self:flex-start}
   /* Desktop-only band-card type scale (min-width:1181px = page's 2-column desktop form; mobile untouched) */
   @media (min-width:1181px){
     .vvband{padding:18px 22px}
@@ -248,9 +248,9 @@
   .pgweb{fill:none;stroke:rgba(243,237,224,0.13);stroke-width:1}
   body.light .pgweb{stroke:rgba(0,0,0,0.13)}
   .pgshape{fill:rgba(255,92,122,0.08);stroke:var(--pink);stroke-width:2;stroke-linejoin:round}
-  body.light .pgshape{stroke:#DE3A5E}
+  body.light .pgshape{stroke:#E70443}
   .pgdot{fill:var(--pink)}
-  body.light .pgdot{fill:#DE3A5E}
+  body.light .pgdot{fill:#E70443}
   .pglab{font-family:'Archivo';font-weight:700;font-size:12.5px;fill:var(--ink-soft);dominant-baseline:middle}
   @media (max-width:480px){.pgwrap .pglab{font-size:15.5px}}   /* narrow container scales the svg down; keep labels legible */
   .pgdefs{margin-top:22px;display:grid;gap:15px;max-width:760px}
@@ -280,7 +280,7 @@
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink)}
+    .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   @media (max-width:720px){
@@ -292,21 +292,21 @@
   .dimgrid{display:none}
   .dimgrid.show{display:grid}
   .dim-see{font-family:'Archivo';font-weight:800;font-size:13px;color:rgba(240,234,217,0.9);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:999px;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin:4px 0 18px;transition:.15s}
-  .dim-see.on{background:var(--pink,#FF5C7A);color:#fff;border-color:transparent}
+  .dim-see.on{background:var(--pink,#E70443);color:#fff;border-color:transparent}
   .dim-see .chev{transition:transform .2s} .dim-see.on .chev{transform:rotate(180deg)}
 
   /* foldable tag sections */
   .section.foldable .foldbody{max-height:0;overflow:hidden;opacity:0;transition:max-height .42s ease,opacity .3s ease,margin .3s ease;margin-top:0!important}
   .section.foldable.open .foldbody{max-height:9000px;opacity:1}
   .foldh{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none}
-  .foldh .foldcount{margin-left:auto;font-family:'Archivo';font-weight:800;font-size:11px;color:var(--pink,#ff5c7a);background:rgba(255,92,122,.13);border-radius:999px;padding:3px 10px}
+  .foldh .foldcount{margin-left:auto;font-family:'Archivo';font-weight:800;font-size:11px;color:var(--pink,#E70443);background:rgba(255,92,122,.13);border-radius:999px;padding:3px 10px}
   .foldh::after{content:'\25BE';font-size:13px;opacity:.45;transition:transform .3s ease}
   .section.foldable.open .foldh::after{transform:rotate(180deg)}
 
-  /* CLASS 3 PINK POLICY , bright #FF5C7A measures 2.0-3.0 on every light surface, so it is
+  /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
-     #B81D3C: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
-  body.light{--pink-ink:#B81D3C}
+     #E70443: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
+  body.light{--pink-ink:#AD0332}
   body.light .pbnav a.on, body.light .navitem .lbl, body.light .b, body.light .tagdef .more, body.light .vvband .more, body.light .vvstory-more, body.light .drurybox-more{color:var(--pink-ink)}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
   body.light .pctbar span{color:#5f594e}   /* white-on-white measured 1.06 in daylight; white is correct on the dark bar */
@@ -316,20 +316,20 @@
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <a class="navitem" href="rankings.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink)">V</span> Rankings</span></a>
+    <a class="navitem" href="rankings.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></a>
     <a class="navitem" href="compare.html"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></a>
     <a class="navitem soon" href="myclub.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></a>
     <a class="navitem on" href="playbook.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></a>
-    <a class="navitem" href="vvindex.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink)">V</span> Index</span></a>
+    <a class="navitem" href="vvindex.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></a>
     <div class="navspacer"></div>
     <a class="navitem" href="preferences.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></a>
   </nav>
   <div class="canvas">
-    <div class="topline"><div class="crumb">Playbook</div><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#FF5C7A">V</tspan></text></svg></div></div></div>
+    <div class="topline"><div class="crumb">Playbook</div><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#E70443">V</tspan></text></svg></div></div></div>
     <div class="hero"><h1>The <span class="b">Playbook</span>.</h1><div class="lede">Learn the language of the cards. Every tag, every dimension, and what the numbers really mean.</div></div>
     <div class="pblayout">
     <nav class="pbnav">
-      <a href="#s-vv" class="on">V<span style="color:var(--pink)">V</span> Score</a>
+      <a href="#s-vv" class="on">V<span style="color:var(--pink-ink)">V</span> Score</a>
       <a href="#s-dim">The 5 Dimensions</a>
       <a href="#s-prestige">Prestige</a>
       <a href="#s-honours">Honours</a>
@@ -358,7 +358,7 @@
         <div class="vvnd"><b>Goals and assists first</b>, the numbers fans remember. Then <b>shaped by position</b> (a striker is judged differently from a defender), and <b>adjusted for league strength</b>, so a season in a tougher division counts for more. The result: <b>one fair number</b> that lets any two seasons, from any of the 9 leagues, stand side by side.</div>
       </div>
       <div class="vvceiling">&#127919; <b>100 is unreachable by design.</b> The very top is reserved, the ceiling exists so greatness always has somewhere left to climb.</div>
-      <div class="vvstory"><div class="vvstory-d">The V<span style="color:var(--pink)">V</span> Score is <b>not a popularity contest</b>, and <b>not a sum of trophies</b>. It measures a single season's output, weighed against the standard of its position and the strength of its stage. A striker is asked for goals; a playmaker, for creation; a defender, for control, <b>each judged against their own kind</b>. Then the league is accounted for, because <b>thirty goals in the strongest division is not thirty goals in a gentler one</b>. What remains is a single, defensible figure, the closest thing the game has to a <b>common currency</b>, so any two seasons, separated by decades or borders, can finally be set on the same table and asked the only question that matters: <b>who was greater?</b></div><button class="vvstory-more" onclick="toggleStory(event,this)">Read the full story &#8250;</button></div>
+      <div class="vvstory"><div class="vvstory-d">The V<span style="color:var(--pink-ink)">V</span> Score is <b>not a popularity contest</b>, and <b>not a sum of trophies</b>. It measures a single season's output, weighed against the standard of its position and the strength of its stage. A striker is asked for goals; a playmaker, for creation; a defender, for control, <b>each judged against their own kind</b>. Then the league is accounted for, because <b>thirty goals in the strongest division is not thirty goals in a gentler one</b>. What remains is a single, defensible figure, the closest thing the game has to a <b>common currency</b>, so any two seasons, separated by decades or borders, can finally be set on the same table and asked the only question that matters: <b>who was greater?</b></div><button class="vvstory-more" onclick="toggleStory(event,this)">Read the full story &#8250;</button></div>
     </section><section class="section" id="s-dim">
       <div class="label">The Foundation</div>
       <h2 class="h2"><span class="se">&#128376;&#65039;</span> The Five Dimensions</h2>
@@ -386,7 +386,7 @@
       <div class="ctahead">You know the language.</div>
       <div class="ctasub">Now go and settle the debates.</div>
       <div class="ctarow">
-        <a class="cta primary" href="rankings.html">&#128202; <span>Explore the V<span style="color:var(--pink)">V</span> Rankings</span></a>
+        <a class="cta primary" href="rankings.html">&#128202; <span>Explore the V<span style="color:var(--pink-ink)">V</span> Rankings</span></a>
         <a class="cta pink" href="compare.html"><div class="bg"></div><span>&#10024; Compare players</span></a>
       </div>
     </section>
@@ -429,7 +429,7 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
       <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
-      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink)">V</span> Index</span></a>
+      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink-ink)">V</span> Index</span></a>
       <a href="playbook.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 <button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
