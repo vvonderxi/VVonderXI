@@ -451,6 +451,40 @@
     },
   };
 
+  // ── RAW + SAMPLE GUARDS (added 2026-08-09, simulated across all 57,234 cards first) ──
+  // WHY: the per-90 thresholds alone were position-relative but SCALE-BLIND. A 6-goal season
+  // over 1,687 minutes clears the MID p90 goal rate and was earning "Goal Machine" (Nico
+  // Williams 2526); a 1-assist season was earning "Playmaker" off key passes alone, because
+  // Playmaker read passes_key and never touched assists (Barcola 2526).
+  //
+  // MEASURED EFFECT (% of all 57,234 cards): Goal Machine 5.45 -> 1.49, Marksman 4.82 -> 2.88,
+  // Playmaker 6.35 -> 2.78. Cards with >=1 tag 37.2% -> 26.0%. ZERO cards at rt>=85 lose all
+  // their tags. Iron Man and the two age tags are deliberately untouched , Iron Man is a
+  // minutes tag by construction and the age tags key off rt, not per-90.
+  //
+  // MARKSMAN'S FLOOR IS NOT OPTIONAL, and it is the non-obvious one. Marksman fires on
+  // `!gotGoalMachine`, so EVERY card the Goal Machine floor rejects falls straight into it.
+  // Without MIN_GOALS_MARKSMAN the fix does not remove the misfire, it RENAMES it (Williams
+  // 2526 simply became "Marksman" on the same 6 goals) and Marksman inflates to 8.78%,
+  // the most common profile tag on the platform. Do not remove one floor without the other.
+  const MIN_GOALS_GOALMACHINE = 12;   // 1.49% of cards. 15 was rejected: it is POSITION-BLIND,
+                                      // and would strip De Bruyne 1920 (13g, rt91), Pogba 1819,
+                                      // Son 1617, Maddison 2122 , midfielders who clear the MID
+                                      // p90 rate (0.283/90 ~= 8.8 goals over 2,800 min) easily.
+  const MIN_GOALS_MARKSMAN    = 8;    // leaves a clean 8-11 band below Goal Machine's 12.
+  const MIN_ASSISTS_PLAYMAKER = 3;    // Barcola 2526 (1 assist) dies; his 2425 (10) survives.
+  const MIN_MINUTES_TAG       = 900;  // 26.6% of cards sit below this, where per-90 inflates.
+                                      // ~10 full matches. Gates every PER-90-derived tag.
+
+  // NR IS NOT ZERO (house rule). A MISSING raw stat is EXEMPT from a raw floor rather than
+  // failing it , 54.2% of rows have null assists (the pre-2015 FBref gap), and treating those
+  // as 0 would silently punish a data gap as if it were a bad season. Costs 33 Playmaker cards.
+  function rawFloorOK(value, floor) {
+    if (!(floor > 0)) return true;
+    if (value == null) return true;      // NR , exempt, not a failure
+    return value >= floor;
+  }
+
   function per90(value, minutes) {
     if (value == null || !minutes || minutes <= 0) return null;
     return value / (minutes / 90);
@@ -552,72 +586,82 @@
     const ge = (v, thr) => v != null && v >= thr;   // >= threshold, null-safe
     const le = (v, thr) => v != null && v <= thr;   // <= threshold, null-safe
 
+    // SAMPLE GATE , every per-90-derived tag below requires a real season behind the rate.
+    // Iron Man and the age tags are OUTSIDE this gate on purpose (see the constants block).
+    const okMin = (m != null && m >= MIN_MINUTES_TAG);
+
     // ========================= ATTACKER FAMILY (red) =========================
-    // Goal Machine , high goal VOLUME (Universal)
-    const gotGoalMachine = elig.goalMachine && ge(goals90, t.goals90_p90);
+    // Goal Machine , high goal VOLUME (Universal). Rate AND raw total AND real sample.
+    const gotGoalMachine = okMin && elig.goalMachine && ge(goals90, t.goals90_p90)
+      && rawFloorOK(row.goals, MIN_GOALS_GOALMACHINE);
     if (gotGoalMachine)
       tags.push({ name: 'Goal Machine', family: 'ATT', tier: 'universal' });
 
-    // Marksman , good-but-not-elite scorer, the tier BELOW Goal Machine (no double-tag)
-    if (elig.goalMachine && !gotGoalMachine && ge(goals90, t.goals90_p85 * 0.907))
+    // Marksman , good-but-not-elite scorer, the tier BELOW Goal Machine (no double-tag).
+    // Its own raw floor is load-bearing: this branch catches everything Goal Machine rejects.
+    if (okMin && elig.goalMachine && !gotGoalMachine && ge(goals90, t.goals90_p85 * 0.907)
+        && rawFloorOK(row.goals, MIN_GOALS_MARKSMAN))
       tags.push({ name: 'Marksman', family: 'ATT', tier: 'universal' });
 
     // Clinical , high CONVERSION + real shot volume (Granular)
-    if (elig.clinical && ge(conversion, t.conversion_p90 * 0.85) && row.shots_total >= 25)
+    if (okMin && elig.clinical && ge(conversion, t.conversion_p90 * 0.85) && row.shots_total >= 25)
       tags.push({ name: 'Clinical', family: 'ATT', tier: 'granular' });
 
     // Provider , high ASSISTS (Universal)
-    if (elig.provider && ge(assists90, t.assists90_p90))
+    if (okMin && elig.provider && ge(assists90, t.assists90_p90))
       tags.push({ name: 'Provider', family: 'ATT', tier: 'universal' });
 
     // Poacher , scores BUT does little else (Granular, compound , WILL NEED TUNING)
-    if (elig.poacher && ge(goals90, t.goals90_p80)
+    if (okMin && elig.poacher && ge(goals90, t.goals90_p80)
         && le(keypass90, t.keypass90_p80 * 0.7)   // low creation
         && le(drib90, t.drib90_p85 * 0.7))        // low dribbling
       tags.push({ name: 'Poacher', family: 'ATT', tier: 'granular' });
 
     // The Winger , dribbles + (assists or progression) (Granular)
-    if (elig.winger && ge(drib90, t.drib90_p85 * 0.92)
+    if (okMin && elig.winger && ge(drib90, t.drib90_p85 * 0.92)
         && (ge(assists90, t.assists90_p90 * 0.7) || ge(keypass90, t.keypass90_p80)))
       tags.push({ name: 'The Winger', family: 'ATT', tier: 'granular' });
 
     // ========================= MIDFIELD FAMILY (green) =========================
-    // Playmaker , high KEY PASSES (Granular)
-    if (elig.playmaker && ge(keypass90, t.keypass90_p90 * 0.92))
+    // Playmaker , high KEY PASSES *and* real assists. The key-pass p90 is used STRAIGHT (the
+    // old x0.92 softening is gone, so "p90" means p90); the assist floor exists because this
+    // tag read passes_key and never touched assists, which is how a 1-assist season earned it.
+    if (okMin && elig.playmaker && ge(keypass90, t.keypass90_p90)
+        && rawFloorOK(row.assists, MIN_ASSISTS_PLAYMAKER))
       tags.push({ name: 'Playmaker', family: 'MID', tier: 'granular' });
 
     // Maestro , creates AND controls (Granular, compound)
-    if (elig.maestro && ge(keypass90, t.keypass90_p80) && ge(passes90, t.passes90_p80 * 0.92))
+    if (okMin && elig.maestro && ge(keypass90, t.keypass90_p80) && ge(passes90, t.passes90_p80 * 0.92))
       tags.push({ name: 'Maestro', family: 'MID', tier: 'granular' });
 
     // Regista , high pass VOLUME + ACCURACY (Granular, compound)
-    if (elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.87) && ge(passAcc, t.passacc_p80 * 0.97))
+    if (okMin && elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.87) && ge(passAcc, t.passacc_p80 * 0.97))
       tags.push({ name: 'Regista', family: 'MID', tier: 'granular' });
 
     // Engine Room , high pass volume + defensive work (box-to-box) (Granular, compound)
-    if (elig.engineRoom && ge(passes90, t.passes90_p80 * 0.92) && ge(defact90, t.defact90_p70 * 0.92))
+    if (okMin && elig.engineRoom && ge(passes90, t.passes90_p80 * 0.92) && ge(defact90, t.defact90_p70 * 0.92))
       tags.push({ name: 'Engine Room', family: 'MID', tier: 'granular' });
 
     // The Dribbler , high DRIBBLE success (Granular)
-    if (elig.dribbler && ge(drib90, t.drib90_p90 * 0.92))
+    if (okMin && elig.dribbler && ge(drib90, t.drib90_p90 * 0.92))
       tags.push({ name: 'The Dribbler', family: 'MID', tier: 'granular' });
 
     // ========================= DEFENDER FAMILY (blue) =========================
     // The Wall , high DEFENSIVE VOLUME (Granular)
-    if (elig.theWall && ge(defact90, t.defact90_p90 * 0.92 * 1.04))
+    if (okMin && elig.theWall && ge(defact90, t.defact90_p90 * 0.92 * 1.04))
       tags.push({ name: 'The Wall', family: 'DEF', tier: 'granular' });
 
     // Destroyer , high DUELS WON (Granular)
-    if (elig.destroyer && ge(duelswon90, t.duelswon90_p90 * 0.92 * 1.04)
+    if (okMin && elig.destroyer && ge(duelswon90, t.duelswon90_p90 * 0.92 * 1.04)
         && ge(defact90, t.defact90_p70))   // real ball-winner: duels AND defensive actions (excludes wing-backs)
       tags.push({ name: 'Destroyer', family: 'DEF', tier: 'granular' });
 
     // Ball Hawk , high INTERCEPTIONS (Granular)
-    if (elig.ballHawk && ge(int90, t.int90_p90 * 0.92))
+    if (okMin && elig.ballHawk && ge(int90, t.int90_p90 * 0.92))
       tags.push({ name: 'Ball Hawk', family: 'DEF', tier: 'granular' });
 
     // Ball-Playing CB , solid defensively + high accurate passing (Granular, compound)
-    if (elig.ballPlaying && ge(defact90, t.defact90_p70 * 0.85)
+    if (okMin && elig.ballPlaying && ge(defact90, t.defact90_p70 * 0.85)
         && ge(passes90, t.passes90_p80 * 0.80) && ge(passAcc, t.passacc_p80 * 0.93))
       tags.push({ name: 'Ball-Playing CB', family: 'DEF', tier: 'granular' });
 
@@ -625,7 +669,7 @@
     // Complete , elite at BOTH ends (Granular, compound , WILL NEED TUNING)
     const attackElite = ge(goals90, t.goals90_p85) || ge(keypass90, t.keypass90_p80);
     const defElite = ge(defact90, t.defact90_p70);
-    if (elig.complete && attackElite && defElite)
+    if (okMin && elig.complete && attackElite && defElite)
       tags.push({ name: 'Complete', family: 'CROSS', tier: 'granular' });
 
     // Iron Man , ever-present, top minutes (Universal)
