@@ -1,0 +1,98 @@
+api_player_id,card_id,player_name,season,club,league,current_pool,goals,assists,minutes,rt,verified_position,confidence,evidence
+50940,166415,Nani,1819,Sporting CP,PRT,CAM,7,4,1350,68,Winger,medium,Sporting return: LW (1350 min)
+25644,153294,P. Herrmann,1920,Borussia Mönchengladbach,BL,CAM,6,5,1452,68,Winger,medium,Gladbach's veteran RW
+2214,159714,R. Del Castillo,1819,Rennes,L1,CAM,0,3,1338,48,Winger,low,Rennes wide rotation (1338 min)
+2214,158872,R. Del Castillo,2021,Rennes,L1,CAM,0,5,637,55,Winger,low,637 fringe min; wide when used
+2214,158423,R. Del Castillo,2122,Stade Brestois 29,L1,CAM,0,6,983,59,Winger,low,Brest wide rotation (983 min)
+2214,156806,R. Del Castillo,2526,Stade Brestois 29,L1,CAM,9,3,2643,68,Winger,low,Brest's wide man through the autumn; spring half beyond reliable coverage
+22095,160440,R. Hamouma,1617,Saint Etienne,L1,CAM,7,5,1967,68,Winger,medium,ASSE wide forward (L/R)
+30488,146210,R. Orsolini,2021,Bologna,SA,CAM,7,3,1757,68,Winger,medium,Bologna's RW
+107,159713,S. Diop,1819,Monaco,L1,CAM,0,NR,742,21,UNSURE,UNSURE,742 fringe teenage minutes; no citable data
+107,158888,S. Diop,2021,Monaco,L1,CAM,7,1,2034,68,CAM,low,Kovac's Monaco: left AM/10 - advanced plurality
+50205,184370,S. Eduok,1617,Kasımpaşa,TR,CAM,4,2,1695,61,Winger,low,Eduok: LW per Turkish league records
+50205,184312,S. Eduok,1718,Kasımpaşa,TR,CAM,7,2,1592,68,Winger,low,Same LW role; 7 goals
+879,159484,S. Mavididi,1920,Dijon,L1,CAM,5,1,1393,57,Winger,low,Dijon LW (1393 min)
+879,158667,S. Mavididi,2122,Montpellier,L1,CAM,8,3,2313,68,Winger,medium,Montpellier's LW; 8 goals
+879,158223,S. Mavididi,2223,Montpellier,L1,CAM,4,2,1284,55,Winger,low,LW (1284 min)
+879,131037,S. Mavididi,2425,Leicester,PL,CAM,4,1,1615,55,Winger,medium,Leicester LW
+41112,166005,Trincão,1920,SC Braga,PRT,CAM,8,5,1606,68,Winger,medium,Braga RW before Barcelona move
+20633,160533,J. Cabot,1617,Lorient,L1,CAM,5,4,1269,67,Winger,low,Lorient RW (1269 min); pre-dates his wing-back conversion
+976,153921,K. Bellarabi,1718,Bayer Leverkusen,BL,CAM,1,3,1143,46,Winger,low,Injury-hit 1143 min; RW when fit
+976,153549,K. Bellarabi,1819,Bayer Leverkusen,BL,CAM,5,4,1060,67,Winger,medium,Leverkusen RW (1060 min)
+976,153163,K. Bellarabi,1920,Bayer Leverkusen,BL,CAM,4,5,1426,63,Winger,medium,RW rotation (1426 min)
+976,152767,K. Bellarabi,2021,Bayer Leverkusen,BL,CAM,0,NR,789,21,Winger,low,789 fringe min; RW
+976,152381,K. Bellarabi,2122,Bayer Leverkusen,BL,CAM,3,2,685,53,Winger,low,685 fringe min; RW
+30480,148127,Ladislav Krejčí I,1617,Bologna,SA,CAM,1,8,2785,67,Winger,medium,"The elder Krejci (winger, b.1992 - file's 'I' suffix + ID): Bologna LW, 8 assists"
+1910,160669,M. Lopez,1617,Marseille,L1,CAM,3,7,2185,67,CM,medium,Marseille's teenage deep playmaker/8
+1910,160232,M. Lopez,1718,Marseille,L1,CAM,0,1,1372,33,CM,low,"Reduced role (1372 min), same central profile"
+1910,159786,M. Lopez,1819,Marseille,L1,CAM,1,3,2186,53,CM,medium,Central mid (2186 min)
+1910,159399,M. Lopez,1920,Marseille,L1,CAM,0,3,1109,48,CM,low,1109 rotation min
+37191,171775,O. Tannane,1920,Vitesse,ERE,CAM,5,6,1437,67,CAM,low,Vitesse's creative 10/right-sided AM - advanced plurality (1437 min)
+126642,152413,P. Wimmer,2122,Arminia Bielefeld,BL,CAM,3,6,2066,67,Winger,low,Bielefeld: wide L/R attacking role - wide plurality
+48471,153368,R. Vargas,1920,FC Augsburg,BL,CAM,6,1,2538,65,Winger,medium,Augsburg LW
+48471,152979,R. Vargas,2021,FC Augsburg,BL,CAM,6,3,1613,67,Winger,medium,Same LW role
+19334,172914,B. Celina,1617,Twente,ERE,CAM,5,4,2156,66,CAM,low,Man City loanee as Twente's 10
+15803,165804,B. Kraev,1920,GIL Vicente,PRT,CAM,8,1,2267,66,CAM,low,Gil Vicente attacking mid per Portuguese records - thin split data
+3424,167211,B. Mensah,1617,Guimaraes,PRT,CAM,NR,1,881,NR,UNSURE,UNSURE,881 fringe minutes (NR goals); no citable data
+3424,183818,B. Mensah,1819,Kayserispor,TR,CAM,3,1,1752,53,CAM,low,"Kayserispor: 8/10 hybrid - advanced plurality, thin data"
+3424,183430,B. Mensah,1920,Kayserispor,TR,CAM,4,6,1947,66,CAM,low,Same 8/10 profile; 4G/6A
+3424,183016,B. Mensah,2021,Beşiktaş,TR,CAM,4,1,1464,56,CM,low,Besiktas title season: central-midfield plurality beside Atiba/Souza
+451,184568,B. Ndiaye,1617,Ankaraspor,TR,CAM,6,2,2322,66,CM,medium,Badou Ndiaye (by ID/club): Osmanlispor's box-to-box CM; earned the Stoke move in that role
+51045,182342,D. Rossi,2122,Fenerbahçe,TR,CAM,6,7,1988,66,Winger,low,Diego Rossi: LW/second-striker at Fener - wide plurality
+51045,181947,D. Rossi,2223,Fenerbahçe,TR,CAM,4,5,1584,58,Winger,low,Same profile (1584 min)
+41161,183040,Davidson,2021,Alanyaspor,TR,CAM,11,2,3023,66,Winger,low,Davidson: LW per Turkish league records; 11-goal season
+41161,182533,Davidson,2122,Alanyaspor,TR,CAM,5,2,1547,54,Winger,low,Same LW role
+574,167165,F. Krovinović,1617,Rio Ave,PRT,CAM,5,3,1656,66,CAM,low,Rio Ave: the 10 (earned Benfica move as a playmaker)
+574,166775,F. Krovinović,1718,Benfica,PRT,CAM,1,1,850,42,CAM,low,850 min at Benfica before injury; same 10 profile
+8483,176683,J. Dompé,2122,Zulte Waregem,BPL,CAM,3,12,2635,66,Winger,medium,Zulte's fast LW; 12 assists
+47574,140918,Moi Gómez,1617,Sporting Gijon,LL,CAM,2,5,1878,66,Winger,low,Sporting Gijon: wide-left attacking role
+409,154192,N. Bentaleb,1718,FC Schalke 04,BL,CAM,4,3,1010,66,CM,low,Schalke: central mid/8 (1010 min)
+2809,153764,R. Steffen,1819,VfL Wolfsburg,BL,CAM,5,1,1506,66,Winger,low,Wolfsburg wide rotation (L/R)
+2996,159622,S. Thioub,1819,Nimes,L1,CAM,3,5,2481,66,Winger,medium,Nimes RW (2481 min)
+2996,159217,S. Thioub,1920,Angers,L1,CAM,1,1,1505,43,Winger,low,Angers wide rotation
+2996,158773,S. Thioub,2021,Angers,L1,CAM,1,1,1253,42,Winger,low,Same wide rotation
+2996,158325,S. Thioub,2122,Saint Etienne,L1,CAM,0,NR,953,20,Winger,low,953 min at ASSE; wide when used
+31146,146484,S. Tonali,2021,AC Milan,SA,CAM,0,NR,1335,28,CDM,medium,Pioli 4-2-3-1: double pivot (1335 settling-in min)
+31146,146044,S. Tonali,2122,AC Milan,SA,CAM,5,2,2607,66,CDM,high,Fixed double pivot beside Kessie in the Scudetto season (2607 min)
+22104,160783,Y. Salibur,1617,Guingamp,L1,CAM,8,4,2826,66,Winger,medium,Guingamp's wide man; 8-goal season
+22104,160357,Y. Salibur,1718,Guingamp,L1,CAM,3,3,1529,53,Winger,low,Same wide role (1529 min)
+22104,159937,Y. Salibur,1819,Saint Etienne,L1,CAM,1,NR,881,30,Winger,low,881 min at ASSE; wide in cameos
+22104,182782,Y. Salibur,2021,Fatih Karagümrük,TR,CAM,0,NR,798,21,Winger,low,798 min at Karagumruk; wide in cameos
+50910,140885,A. Katai,1617,Alaves,LL,CAM,3,3,770,65,Winger,low,770 min at Alaves; LW when used
+272,160638,A. Rabiot,1617,Paris Saint Germain,L1,CAM,3,2,1931,57,CM,medium,PSG central mid (some 6)
+272,160202,A. Rabiot,1718,Paris Saint Germain,L1,CAM,1,5,2366,57,CM,medium,Emery's midfield 8/6
+272,144357,A. Rabiot,2526,AC Milan,SA,CAM,6,4,2557,65,CM,medium,Allegri's Milan: central mid through the autumn; spring half beyond reliable coverage
+9971,171011,Antony,2122,Ajax,ERE,CAM,8,4,1736,65,Winger,medium,Ajax RW (1736 injury-limited min)
+9971,131637,Antony,2223,Manchester United,PL,CAM,4,2,1817,58,Winger,high,Man Utd's fixed RW
+9971,131239,Antony,2324,Manchester United,PL,CAM,1,1,1322,38,Winger,medium,RW (1322 min)
+9971,137553,Antony,2425,Real Betis,LL,CAM,5,2,1364,59,Winger,medium,Betis revival from Jan loan: RW
+21437,158936,D. Bouanga,2021,Saint Etienne,L1,CAM,7,4,2734,65,Winger,medium,ASSE LW
+18809,133129,Deulofeu,1920,Watford,PL,CAM,4,5,2109,65,Winger,medium,Watford: wide-left forward
+1161,132455,E. Smith Rowe,2021,Arsenal,PL,CAM,2,4,1448,65,CAM,medium,Broke in from Boxing Day as Arteta's 10 (1448 min) - 10 plurality with left-side share
+30410,146464,F. Chiesa,2021,Juventus,SA,CAM,8,1,2227,65,Winger,medium,Juve wide L/R (incl. wing-back spells under Pirlo) - wide plurality
+30410,146041,F. Chiesa,2122,Juventus,SA,CAM,2,2,868,49,Winger,low,868 min before ACL; wide when used
+1457,133908,H. Mkhitaryan,1718,Arsenal,PL,CAM,2,4,796,65,CAM,low,"796 min after Jan swap deal: 10/RW split - advanced plurality, thin"
+1944,177717,J. Paintsil,1819,Genk,BPL,CAM,3,NR,1053,42,Winger,low,Genk: young wide forward (1053 min)
+1944,182999,J. Paintsil,2021,Ankaragücü,TR,CAM,11,NR,2219,65,Winger,low,"Ankaragucu wide forward; 11 goals, thin split data"
+30533,147483,M. Locatelli,1718,AC Milan,SA,CAM,0,NR,666,24,CM,low,666 min of young regista/8 cameos at Milan
+30533,147062,M. Locatelli,1819,Sassuolo,SA,CAM,2,4,1849,65,CM,medium,De Zerbi's midfield 8 (1849 min)
+30533,146175,M. Locatelli,2021,Sassuolo,SA,CAM,4,2,2885,61,CDM,medium,De Zerbi's deep regista in the double pivot (2885 min)
+21509,153031,M. Thuram,2021,Borussia Mönchengladbach,BL,CAM,8,2,1740,65,Winger,medium,Rose's left forward (some CF)
+1165,153068,Matheus Cunha,2021,Hertha BSC,BL,CAM,7,4,2155,65,CAM,low,"Hertha: second striker/AM with CF spells - near split, advanced plurality"
+2598,170955,R. Dōan,2122,PSV Eindhoven,ERE,CAM,8,1,1517,65,Winger,medium,PSV RW (1517 min)
+635,134301,R. Mahrez,1617,Leicester,PL,CAM,6,3,2837,65,Winger,high,Leicester's fixed RW (2837 min)
+41288,166974,Ricardo Valente,1617,Pacos Ferreira,PRT,CAM,4,NR,1496,47,Winger,low,Pacos: wide forward per Portuguese records (1496 min)
+41288,166574,Ricardo Valente,1718,Maritimo,PRT,CAM,8,3,2376,65,Winger,low,Maritimo wide forward; 8 goals
+41288,166175,Ricardo Valente,1819,Maritimo,PRT,CAM,1,NR,420,28,UNSURE,UNSURE,420 fringe minutes; no citable data
+41288,165736,Ricardo Valente,1920,Tondela,PRT,CAM,0,2,441,32,UNSURE,UNSURE,441 fringe minutes; no citable data
+2955,160186,S. Khaoui,1718,Estac Troyes,L1,CAM,5,2,1960,65,CAM,low,Troyes loan: 10/8 - advanced plurality
+50157,166831,T. Boyd,1718,Tondela,PRT,CAM,5,2,1434,57,Winger,low,"Tyler Boyd (by ID/club history, NOT Terrence the striker): Tondela loan RW"
+50157,166433,T. Boyd,1819,Guimaraes,PRT,CAM,NR,NR,425,NR,UNSURE,UNSURE,425 fringe minutes at Guimaraes; no citable data
+50157,183809,T. Boyd,1819,Ankaragücü,TR,CAM,6,4,1144,65,Winger,medium,Ankaragucu loan: RW - the 6G/4A spell that earned the Besiktas move
+50157,183425,T. Boyd,1920,Beşiktaş,TR,CAM,1,1,940,33,Winger,low,Besiktas RW (940 min)
+50157,183011,T. Boyd,2021,Sivasspor,TR,CAM,1,NR,318,27,UNSURE,UNSURE,318 fringe minutes at Sivasspor; no citable data
+2808,187436,A. Mehmedi,1718,Bayer Leverkusen,BL,CAM,3,6,988,64,Winger,low,988 min: wide/second-striker rotation - wide plurality
+238,172713,B. Ramselaar,1617,PSV Eindhoven,ERE,CAM,5,3,1822,64,CAM,low,PSV: advanced mid - CAM/CM boundary (1822 min)
+50043,183775,B. Samudio,1819,Rizespor,TR,CAM,5,4,2034,59,Winger,low,"Samudio: wide forward per Turkish records - CF share, thin data"
+50043,183376,B. Samudio,1920,Rizespor,TR,CAM,4,2,1780,51,Winger,low,Same wide-forward profile
+50043,182944,B. Samudio,2021,Rizespor,TR,CAM,8,4,2520,64,Winger,low,Same profile; 8G/4A season

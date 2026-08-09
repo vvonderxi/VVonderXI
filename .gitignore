@@ -23,3 +23,12 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# CAM-tail research batches: only 01-05 were run and are tracked (with PROMPT.md).
+# 06-21 are regenerable via scripts/enrichment/make_cam_tail_batches.js , see the
+# open queue in CLAUDE.md §F: the sub-rt56 tail returned 3% high confidence and
+# should not be run as-is.
+cam_tail_batches/batch_0[6-9].csv
+cam_tail_batches/batch_1[0-9].csv
+cam_tail_batches/batch_2[0-9].csv
+cam_tail_batches/MANIFEST.json

@@ -1,0 +1,109 @@
+api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_position,confidence,hold_reason,evidence,source_batch
+629,131490,K. De Bruyne,2324,PL,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",Injury-shortened (1235 min); returned into the same AM slot,batch_01_verified.csv
+1485,166778,Bruno Fernandes,1718,PRT,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",Jorge Jesus's Sporting: advanced mid with deeper CM share,batch_01_verified.csv
+1485,166382,Bruno Fernandes,1819,PRT,CAM,89,CAM,medium,"AGREED with current pool at medium confidence , no change",8/10 hybrid; frequently in the midfield three,batch_01_verified.csv
+172,133173,D. Alli,1920,PL,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",10/second striker under Mourinho's autumn revival,batch_01_verified.csv
+9970,163158,Nenê,1011,L1,CAM,85,CAM,medium,"AGREED with current pool at medium confidence , no change","ID=PSG playmaker Nene; squad databases list AM, deployed from the left of Kombouare's attack",batch_01_verified.csv
+9970,162793,Nenê,1112,L1,CAM,89,CAM,medium,"AGREED with current pool at medium confidence , no change",46 of 47 apps as starter; French club records: co-top scorer 'en n'etant que milieu de terrain',batch_01_verified.csv
+25,153382,M. Reus,1920,BL,CAM,79,CAM,medium,"AGREED with current pool at medium confidence , no change",Captain-10 until Feb injury; some CF spells (bundesliga.com match records),batch_01_verified.csv
+18784,132808,J. Maddison,1920,PL,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Rodgers 4-1-4-1: advanced left-interior playmaker - CAM/CM boundary case,batch_01_verified.csv
+37930,172793,A. El Khayati,1617,ERE,CAM,58,CAM,low,"AGREED with current pool at low confidence , no change",Part-season (~689 min) at ADO; playmaker when used - thin sample,batch_01_verified.csv
+26728,142558,Francisco Medina Luna,1213,LL,CAM,86,CAM,medium,"AGREED with current pool at medium confidence , no change","BeSoccer career split: mediapunta 85%/LW 15%; Jemez 4-2-3-1 with Trashorras deep, Piti advanced",batch_01_verified.csv
+668,160551,N. Fekir,1617,L1,CAM,70,CAM,medium,"AGREED with current pool at medium confidence , no change",Post-ACL season; 10/second striker off Lacazette,batch_01_verified.csv
+1695,139786,Santi Cazorla,1920,LL,CAM,86,CAM,medium,"AGREED with current pool at medium confidence , no change",Advanced interior playmaker in Calleja's 4-4-2 - CAM/CM boundary,batch_01_verified.csv
+522,153761,T. Müller,1819,BL,CAM,76,CAM,low,"AGREED with current pool at low confidence , no change",Kovac rotation: 10/RW split with James - no clean majority,batch_01_verified.csv
+522,152262,T. Müller,2223,BL,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Reduced minutes (1679); 10/false-9 under Nagelsmann then Tuchel,batch_01_verified.csv
+522,151912,T. Müller,2324,BL,CAM,72,CAM,low,"AGREED with current pool at low confidence , no change",Backup 10/RW behind Musiala; 1659 min mostly from bench,batch_01_verified.csv
+522,151561,T. Müller,2425,BL,CAM,48,CAM,low,"AGREED with current pool at low confidence , no change",Fringe under Kompany; AM cameos in farewell season (1255 min),batch_01_verified.csv
+978,154167,K. Havertz,1718,BL,CAM,65,CAM,medium,"AGREED with current pool at medium confidence , no change",18-year-old used at AM and right mid under Herrlich - narrow AM plurality,batch_01_verified.csv
+978,153426,K. Havertz,1920,BL,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",Bosz's AM; CF conversion only post-restart,batch_01_verified.csv
+1640,146886,H. Çalhanoğlu,1920,SA,CAM,84,CAM,medium,"AGREED with current pool at medium confidence , no change",LW under Giampaolo and early Pioli; definitive 10 from winter - narrow CAM plurality,batch_01_verified.csv
+745,140919,Isco,1617,LL,CAM,84,CAM,medium,"AGREED with current pool at medium confidence , no change",Rotation player until spring 4-3-1-2 with Isco at the tip,batch_01_verified.csv
+181812,152889,J. Musiala,2021,BL,CAM,63,CAM,low,"AGREED with current pool at low confidence , no change","870 breakout minutes mostly as sub across AM/wing - thin, no majority role",batch_01_verified.csv
+181812,151851,J. Musiala,2324,BL,CAM,79,CAM,medium,"AGREED with current pool at medium confidence , no change","Tuchel insisted on him centrally; only occasional wing (BFW coverage, verified this session); 24 injury-limited apps",batch_01_verified.csv
+181812,151525,J. Musiala,2425,BL,CAM,79,CAM,medium,"AGREED with current pool at medium confidence , no change",Kompany's central AM (Olise/Coman wide),batch_01_verified.csv
+19220,132839,M. Mount,1920,PL,CAM,79,CAM,low,"AGREED with current pool at low confidence , no change",Lampard rotated him AM/LW/CM - AM plurality narrow,batch_01_verified.csv
+1991,183917,S. Kagawa,1819,TR,CAM,58,CAM,low,"AGREED with current pool at low confidence , no change",546 min after Jan loan to Besiktas; 10 when used - thin sample,batch_01_verified.csv
+12724,183949,Talisca,1718,TR,CAM,82,CAM,medium,"AGREED with current pool at medium confidence , no change",Besiktas 4-2-3-1: the 10/SS (Quaresma/Babel wide),batch_01_verified.csv
+517,154210,J. Rodríguez,1718,BL,CAM,81,CAM,medium,"AGREED with current pool at medium confidence , no change",Heynckes used him 10 and 8 at Bayern,batch_01_verified.csv
+162016,151948,X. Simons,2324,BL,CAM,81,CAM,medium,"AGREED with current pool at medium confidence , no change",Left of the two central AMs in Rose's 4-2-2-2; some LW,batch_01_verified.csv
+2002,183816,A. Ljajić,1819,TR,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",Besiktas 4-2-3-1 with Ljajic the 10 (11 assists),batch_01_verified.csv
+2002,183031,A. Ljajić,2021,TR,CAM,54,CAM,low,"AGREED with current pool at low confidence , no change",1103 fringe minutes; AM when used - thin sample,batch_01_verified.csv
+1323,137007,Dani Olmo,2526,LL,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",Flick's 10/left AM when fit; spring half beyond verifiable coverage here,batch_01_verified.csv
+984,153170,J. Brandt,1920,BL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change","Bit-part wide early, then central playmaker/dual-AM in 3-4-2-1 from Nov (bundesliga.com, verified this session); real pivot share",batch_01_verified.csv
+984,152401,J. Brandt,2122,BL,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",AM/wing mix under Rose - AM plurality,batch_01_verified.csv
+984,152033,J. Brandt,2223,BL,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",Terzic 4-2-3-1: 10/left AM,batch_01_verified.csv
+984,151298,J. Brandt,2425,BL,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",10 under Sahin (Aug-Jan); Kovac from Feb,batch_01_verified.csv
+206,164874,João Mário,2223,PRT,CAM,80,CAM,medium,"AGREED with current pool at medium confidence , no change",ID=the Benfica midfielder (not the full-back): right AM/10 under Schmidt; penalties inflate goal count,batch_01_verified.csv
+18906,133465,Ayoze Pérez,1819,PL,CAM,79,CAM,medium,"AGREED with current pool at medium confidence , no change",Benitez 4-4-1-1: second striker/10 off Rondon,batch_02_verified.csv
+47461,140699,E. Bardhi,1718,LL,CAM,79,CAM,low,"AGREED with current pool at low confidence , no change","Levante: attacking mid/left-sided free-kick taker - AM/LM split, thin data",batch_02_verified.csv
+47461,139404,E. Bardhi,2021,LL,CAM,49,CAM,low,"AGREED with current pool at low confidence , no change",Paco Lopez rotation across AM/CM - thin,batch_02_verified.csv
+1646,158654,Lucas Paquetá,2122,L1,CAM,79,CAM,medium,"AGREED with current pool at medium confidence , no change",Bosz's Lyon: 10/left attacking mid,batch_02_verified.csv
+547,172490,D. van de Beek,1718,ERE,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",Ajax's advanced mid/box-crasher - CAM/CM boundary,batch_02_verified.csv
+547,172127,D. van de Beek,1819,ERE,CAM,78,CAM,medium,"AGREED with current pool at medium confidence , no change","Advanced 8 (Schone holding, De Jong left) in the CL-semi season",batch_02_verified.csv
+36905,170986,G. Til,2122,ERE,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",Slot's Feyenoord: the 10 in 4-2-3-1; 15 league goals,batch_02_verified.csv
+36905,169343,G. Til,2526,ERE,CAM,78,CAM,low,"AGREED with current pool at low confidence , no change",PSV advanced 8/10 box-crasher; spring half beyond reliable coverage,batch_02_verified.csv
+778,147474,B. Cristante,1718,SA,CAM,77,CAM,low,"AGREED with current pool at low confidence , no change","Gasperini's 3-4-1-2: rotated between the 10 slot and the central pair - advanced plurality in his 9-goal season, close call",batch_02_verified.csv
+744,146544,Brahim Díaz,2021,SA,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change","Milan: 10/RW rotation behind Ibrahimovic - split, thin",batch_02_verified.csv
+744,146110,Brahim Díaz,2122,SA,CAM,63,CAM,medium,"AGREED with current pool at medium confidence , no change",Took the no.10 shirt and the starting 10 role in the first half of Milan's Scudetto season,batch_02_verified.csv
+49857,184340,İ. Kahveci,1617,TR,CAM,40,CAM,low,"AGREED with current pool at low confidence , no change","NOTE: 16/17 he was at Genclerbirligi, not Basaksehir - club field looks wrong; played CM/AM there (969 min)",batch_02_verified.csv
+49857,183961,İ. Kahveci,1718,TR,CAM,34,CAM,low,"AGREED with current pool at low confidence , no change",First Basaksehir season: 1170 rotation minutes across CM/AM,batch_02_verified.csv
+49857,182311,İ. Kahveci,2122,TR,CAM,60,CAM,low,"AGREED with current pool at low confidence , no change",Fener rotation across AM/CM/RW - no clean majority,batch_02_verified.csv
+49857,181927,İ. Kahveci,2223,TR,CAM,51,CAM,low,"AGREED with current pool at low confidence , no change",Same rotation profile,batch_02_verified.csv
+49857,181517,İ. Kahveci,2324,TR,CAM,77,CAM,low,"AGREED with current pool at low confidence , no change","Best Fener season (12G/7A) but role rotated AM/RW/CM under Kartal - advanced plurality, split",batch_02_verified.csv
+900,132502,J. Lingard,2021,PL,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",West Ham loan: attacking-mid band (often left) in Moyes's 4-2-3-1; 9 goals,batch_02_verified.csv
+36927,171391,Z. Flemming,2021,ERE,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",Fortuna Sittard's 10/second striker; 12-goal season,batch_02_verified.csv
+2849,167554,Bryan Jafet Ruiz González,1516,PRT,CAM,76,CAM,medium,"AGREED with current pool at medium confidence , no change",Jorge Jesus: the 10/free creator (8G/12A),batch_02_verified.csv
+2849,167172,Bryan Jafet Ruiz González,1617,PRT,CAM,52,CAM,low,"AGREED with current pool at low confidence , no change","Reduced role, same creator profile (2087 min)",batch_02_verified.csv
+2849,166791,Bryan Jafet Ruiz González,1718,PRT,CAM,41,CAM,low,"AGREED with current pool at low confidence , no change",1015 min; 10/wide rotation,batch_02_verified.csv
+105581,176451,D. Hotić,2122,BPL,CAM,76,CAM,low,"AGREED with current pool at low confidence , no change",Cercle's right-sided attacking mid per Belgian coverage (7G/10A) - AM/RW split,batch_02_verified.csv
+1321,158578,L. Majer,2122,L1,CAM,76,CAM,medium,"AGREED with current pool at medium confidence , no change",Rennes's playmaker: advanced 8/10 under Genesio,batch_02_verified.csv
+162037,170212,M. Tillman,2324,ERE,CAM,76,CAM,medium,"AGREED with current pool at medium confidence , no change",Bosz's PSV: advanced left-8/AM (9G/10A in 1589 min),batch_02_verified.csv
+37182,172518,S. van de Streek,1718,ERE,CAM,76,CAM,low,"AGREED with current pool at low confidence , no change","Utrecht's attacking mid/box-crasher - AM plurality, thin split data",batch_02_verified.csv
+237,172769,G. Pereiro,1617,ERE,CAM,73,CAM,medium,"AGREED with current pool at medium confidence , no change",Cocu's PSV: the 10/left attacking mid,batch_03_verified.csv
+237,172384,G. Pereiro,1718,ERE,CAM,75,CAM,medium,"AGREED with current pool at medium confidence , no change",Same advanced-mid role in the title season,batch_03_verified.csv
+607,183398,A. Bakasetas,1920,TR,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Bakasetas: classic 10/second striker; Alanyaspor's creator,batch_03_verified.csv
+607,182982,A. Bakasetas,2021,TR,CAM,65,CAM,medium,"AGREED with current pool at medium confidence , no change",Trabzonspor's 10 from Jan arrival,batch_03_verified.csv
+2601,177837,D. Kamada,1819,BPL,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",STVV loan breakout as the 10/second striker,batch_03_verified.csv
+41725,165196,Fábio Vieira,2122,PRT,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Porto's creative AM (14 assists in 1328 min) under Conceicao,batch_03_verified.csv
+2763,147068,M. Pašalić,1819,SA,CAM,74,CAM,low,"AGREED with current pool at low confidence , no change","Gasperini: rotated between the dual-10 slots and the central pair - advanced plurality, close",batch_03_verified.csv
+1697,133059,Pablo Fornals,1920,PL,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",First season: rotated across the attacking-mid band - no clean majority,batch_03_verified.csv
+130256,165016,André Franco,2122,PRT,CAM,73,CAM,low,"AGREED with current pool at low confidence , no change",Estoril's attacking mid per Portuguese records (11 goals); earned Porto move in that role,batch_03_verified.csv
+31057,146483,H. Traorè,2021,SA,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",De Zerbi: left AM/10 rotation - advanced plurality,batch_03_verified.csv
+31057,146043,H. Traorè,2122,SA,CAM,73,CAM,low,"AGREED with current pool at low confidence , no change",Dionisi: 10/left of the front - advanced plurality,batch_03_verified.csv
+47557,140019,Ó. Trejo,1819,LL,CAM,61,CAM,medium,"AGREED with current pool at medium confidence , no change",Rayo's enganche/10,batch_03_verified.csv
+47557,138664,Ó. Trejo,2122,LL,CAM,73,CAM,medium,"AGREED with current pool at medium confidence , no change",Captain-10 under Iraola; 9 assists,batch_03_verified.csv
+40569,166948,João Amaral,1617,PRT,CAM,63,CAM,low,"AGREED with current pool at low confidence , no change",Vitoria Setubal attacking mid per Portuguese records,batch_03_verified.csv
+40569,166540,João Amaral,1718,PRT,CAM,72,CAM,low,"AGREED with current pool at low confidence , no change",Same AM role; 9-goal season,batch_03_verified.csv
+40569,165710,João Amaral,1920,PRT,CAM,53,CAM,low,"AGREED with current pool at low confidence , no change",1106 min at Pacos; same profile,batch_03_verified.csv
+21446,159739,A. Bobichon,1819,L1,CAM,71,CAM,low,"AGREED with current pool at low confidence , no change",Nimes: attacking mid per French records - thin split data,batch_03_verified.csv
+539,170978,D. de Wit,2122,ERE,CAM,71,CAM,medium,"AGREED with current pool at medium confidence , no change",AZ's 10/box-crashing attacking mid; ever-present 3178 min,batch_04_verified.csv
+443,182716,E. Akbaba,2021,TR,CAM,61,CAM,low,"AGREED with current pool at low confidence , no change",Galatasaray rotation AM (1424 min),batch_04_verified.csv
+443,182286,E. Akbaba,2122,TR,CAM,71,CAM,low,"AGREED with current pool at low confidence , no change",Alanyaspor attacking mid per Turkish records,batch_04_verified.csv
+935,132611,Rodrigo,2021,PL,CAM,71,CAM,low,"AGREED with current pool at low confidence , no change",Bielsa: 10/second striker off Bamford (1288 min) - split with CF,batch_04_verified.csv
+49986,182927,Fredy,2021,TR,CAM,70,CAM,low,"AGREED with current pool at low confidence , no change",Fredy: attacking mid per Turkish league records - thin split data,batch_04_verified.csv
+12493,140878,Tana,1617,LL,CAM,70,CAM,low,"AGREED with current pool at low confidence , no change",Las Palmas rotation attacking mid under Setien - thin split data,batch_04_verified.csv
+417,154474,A. Schöpf,1617,BL,CAM,69,CAM,low,"AGREED with current pool at low confidence , no change",Weinzierl 3-4-2-1: one of the two behind the striker; rotation-heavy - no clean majority,batch_04_verified.csv
+2057,140961,F. Vázquez,1617,LL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change",Sampaoli: the 10/interior ('El Mudo'),batch_04_verified.csv
+2057,140501,F. Vázquez,1718,LL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change",Same advanced-mid role,batch_04_verified.csv
+2057,140080,F. Vázquez,1819,LL,CAM,59,CAM,low,"AGREED with current pool at low confidence , no change",Machin's 3-5-2: interior mid - CAM/CM boundary,batch_04_verified.csv
+2057,139672,F. Vázquez,1920,LL,CAM,47,CAM,low,"AGREED with current pool at low confidence , no change",1087 rotation min,batch_04_verified.csv
+426,153348,M. Uth,1920,BL,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Jan loan to Koln: second striker/AM (1168 min),batch_04_verified.csv
+426,152593,M. Uth,2122,BL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change",One of the two 10s in Baumgart's 4-2-2-2,batch_04_verified.csv
+20634,159030,A. Claude-Maurice,2021,L1,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change","Nice: attacking mid also used wide - AM plurality, thin data",batch_04_verified.csv
+30460,146400,G. Caprari,2021,SA,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Benevento: second striker behind Lapadula - SS/CAM boundary,batch_04_verified.csv
+50067,183218,H. Hajradinović,1920,TR,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Kasimpasa's playmaker-10 per Turkish records (4G/7A),batch_04_verified.csv
+25925,153244,J. Boëtius,1920,BL,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Mainz: AM/left rotation - advanced plurality,batch_04_verified.csv
+107,158888,S. Diop,2021,L1,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Kovac's Monaco: left AM/10 - advanced plurality,batch_05_verified.csv
+37191,171775,O. Tannane,1920,ERE,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",Vitesse's creative 10/right-sided AM - advanced plurality (1437 min),batch_05_verified.csv
+19334,172914,B. Celina,1617,ERE,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Man City loanee as Twente's 10,batch_05_verified.csv
+15803,165804,B. Kraev,1920,PRT,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Gil Vicente attacking mid per Portuguese records - thin split data,batch_05_verified.csv
+3424,183818,B. Mensah,1819,TR,CAM,53,CAM,low,"AGREED with current pool at low confidence , no change","Kayserispor: 8/10 hybrid - advanced plurality, thin data",batch_05_verified.csv
+3424,183430,B. Mensah,1920,TR,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Same 8/10 profile; 4G/6A,batch_05_verified.csv
+574,167165,F. Krovinović,1617,PRT,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Rio Ave: the 10 (earned Benfica move as a playmaker),batch_05_verified.csv
+574,166775,F. Krovinović,1718,PRT,CAM,42,CAM,low,"AGREED with current pool at low confidence , no change",850 min at Benfica before injury; same 10 profile,batch_05_verified.csv
+1161,132455,E. Smith Rowe,2021,PL,CAM,65,CAM,medium,"AGREED with current pool at medium confidence , no change",Broke in from Boxing Day as Arteta's 10 (1448 min) - 10 plurality with left-side share,batch_05_verified.csv
+1457,133908,H. Mkhitaryan,1718,PL,CAM,65,CAM,low,"AGREED with current pool at low confidence , no change","796 min after Jan swap deal: 10/RW split - advanced plurality, thin",batch_05_verified.csv
+1165,153068,Matheus Cunha,2021,BL,CAM,65,CAM,low,"AGREED with current pool at low confidence , no change","Hertha: second striker/AM with CF spells - near split, advanced plurality",batch_05_verified.csv
+2955,160186,S. Khaoui,1718,L1,CAM,65,CAM,low,"AGREED with current pool at low confidence , no change",Troyes loan: 10/8 - advanced plurality,batch_05_verified.csv
+238,172713,B. Ramselaar,1617,ERE,CAM,64,CAM,low,"AGREED with current pool at low confidence , no change",PSV: advanced mid - CAM/CM boundary (1822 min),batch_05_verified.csv
