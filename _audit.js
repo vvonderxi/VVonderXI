@@ -20,6 +20,40 @@
 // reports a high unmeasurable count, hand-check that region before declaring it clean.
 //
 // Usage: load /_audit.js into the page, then __vvAudit() per theme, waiting ~260ms after toggling.
+// ── withTheme(doc, theme, fn) ────────────────────────────────────────────────
+// USE THIS FOR EVERY THEME-DEPENDENT MEASUREMENT. Never toggle a theme class and read
+// getComputedStyle directly.
+//
+// WHY IT EXISTS: theme toggling animates colour and background. getComputedStyle mid-flight
+// returns an INTERPOLATED value, not the resting one. That has produced a false reading THREE
+// times in this codebase: 13 phantom mid-grey failures on playbook, and , worse , an entirely
+// fabricated bug where the burger drawer appeared to sit at contrast 1.02 in daylight. It was
+// actually 6.05 and had never been broken; the reading was a colour caught mid-fade toward cream.
+//
+// Remembering to disable transitions by hand is exactly what failed, so this makes it structural:
+// transitions are killed BEFORE the class changes, and restored after.
+//
+//   withTheme(document, 'light', function(){ return getComputedStyle(el).color; })
+//
+window.withTheme = function(doc, theme, fn){
+  var st = doc.getElementById('__notrans');
+  if(!st){ st = doc.createElement('style'); st.id='__notrans';
+    st.textContent = '*,*::before,*::after{transition:none!important;animation:none!important}';
+    doc.head.appendChild(st); }
+  var had = doc.body.classList.contains('light');
+  if(theme === 'light') doc.body.classList.add('light');
+  else if(theme === 'dark') doc.body.classList.remove('light');
+  // force a synchronous style flush so the new theme is fully resolved before fn() reads anything
+  void doc.body.offsetHeight;
+  var out;
+  try { out = fn(); }
+  finally {
+    if(had) doc.body.classList.add('light'); else doc.body.classList.remove('light');
+    void doc.body.offsetHeight;
+  }
+  return out;
+};
+
 window.__vvAudit = function(){
   // 1. FORCE-OPEN every collapsed container FIRST. This is the whole reason .drurybox-q
   //    survived earlier sweeps: it lives behind max-height:0 + overflow:hidden, so a naive
