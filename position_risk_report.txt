@@ -1,0 +1,257 @@
+BASE POPULATION: coarse MID/FWD, pool CAM/CM/CDM, rt>=70 -> 981 cards
+  of which never written and never held: 798
+
+GROUP 1 , THE WILLIAMS SHAPE (never entered a CAM-scoped sweep)   (798 cards, showing 60)
+player              season club               pool cse  rt   G   A  drb/90  status
+K. De Bruyne        1920  Manchester City    CAM  MID  91  13g  20a  1.54/90  
+Alexsandro de Souza 1011  Fenerbahçe         CAM  MID  91  28g  16a    NR/90  
+Bruno Fernandes     2021  Manchester United  CAM  MID  90  18g  12a  0.67/90  
+Yaya Touré          1314  Manchester City    CM   MID  90  20g   9a    NR/90  
+C. Eriksen          1617  Tottenham          CDM  MID  89   8g  15a  0.77/90  
+D. Alli             1617  Tottenham          CAM  MID  89  18g   7a  1.45/90  
+C. Palmer           2425  Chelsea            CAM  MID  88  15g   8a  1.43/90  
+M. Ødegaard         2223  Arsenal            CAM  MID  88  15g   7a  1.40/90  
+C. Eriksen          1819  Tottenham          CDM  MID  88   8g  12a  0.58/90  
+P. Pogba            1819  Manchester United  CM   MID  88  13g   9a  1.79/90  
+C. Eriksen          1718  Tottenham          CDM  MID  88  10g  10a  0.81/90  
+M. Özil             1516  Arsenal            CAM  MID  88   6g  19a  1.36/90  
+M. Reus             1819  Borussia Dortmund  CAM  MID  88  17g   8a  0.97/90  
+P. Groß             2223  Brighton           CDM  MID  87   9g   8a  0.47/90  
+K. De Bruyne        2223  Manchester City    CAM  MID  87   7g  16a  1.19/90  
+J. Maddison         2122  Leicester          CAM  MID  87  12g   8a  1.13/90  
+D. Payet            1516  West Ham           CAM  MID  87   9g  12a  2.34/90  
+Rodri               2324  Manchester City    CDM  MID  86   8g   9a  1.29/90  
+J. Grealish         2021  Aston Villa        CDM  MID  86   6g  10a  2.68/90  
+G. Sigurðsson       1819  Everton            CAM  MID  86  13g   6a  1.09/90  
+D. Alli             1718  Tottenham          CAM  MID  86   9g  10a  1.33/90  
+J. Bellingham       2324  Real Madrid        CAM  MID  86  19g   6a  1.94/90  
+T. Müller           1920  Bayern München     CAM  FWD  86   8g  21a  0.72/90  
+Á. Di María         1920  Paris Saint Germai CDM  MID  86   8g  14a  3.01/90  
+N. Fekir            1718  Lyon               CAM  FWD  86  18g   8a  3.27/90  
+A. El Khayati       1819  ADO Den Haag       CAM  MID  86  17g  12a  1.17/90  
+E. Fernández        2526  Chelsea            CDM  MID  85  10g   4a  0.37/90  
+M. Ødegaard         2324  Arsenal            CAM  MID  85   8g  10a  1.07/90  
+Bruno Fernandes     2324  Manchester United  CAM  MID  85  10g   8a  0.55/90  
+Douglas Luiz        2324  Aston Villa        CDM  MID  85   9g   5a  0.72/90  
+Bruno Fernandes     2122  Manchester United  CAM  MID  85  10g   6a  0.75/90  
+Matheus Pereira     2021  West Brom          CAM  MID  85  11g   6a  1.39/90  
+İ. Gündoğan         2021  Manchester City    CM   MID  85  13g   2a  1.19/90  
+Cesc Fàbregas       1617  Chelsea            CDM  MID  85   5g  12a  0.81/90  
+M. Özil             1617  Arsenal            CAM  MID  85   8g   9a  1.01/90  
+C. Eriksen          1516  Tottenham          CAM  MID  85   6g  13a  1.07/90  
+Raúl García         1920  Athletic Club      CM   MID  85  15g   1a  0.28/90  
+Raúl García         1819  Athletic Club      CDM  MID  85   9g   3a  0.45/90  
+Pedro León          1617  Eibar              CDM  MID  85  10g   5a  1.47/90  
+Jonathan Viera      1516  Las Palmas         CAM  MID  85  10g   9a  1.50/90  
+H. Çalhanoğlu       2324  Inter              CDM  MID  85  13g   3a  0.24/90  
+H. Çalhanoğlu       2122  Inter              CDM  MID  85   7g  12a  0.47/90  
+R. De Paul          1819  Udinese            CM   MID  85   9g   8a  2.28/90  
+R. Nainggolan       1617  AS Roma            CDM  MID  85  11g   5a  0.89/90  
+P. Pogba            1516  Juventus           CM   MID  85   8g  12a  3.04/90  
+T. Müller           2122  Bayern München     CAM  FWD  85   8g  18a  0.45/90  
+T. Müller           2021  Bayern München     CAM  FWD  85  11g  18a  0.91/90  
+K. Havertz          1819  Bayer Leverkusen   CAM  FWD  85  17g   3a  1.49/90  
+T. Savanier         1819  Nimes              CDM  MID  85   6g  14a  2.48/90  
+H. Ben Arfa         1516  Nice               CAM  MID  85  17g   6a  4.81/90  
+E. Višća            1819  Başakşehir         CM   MID  85  12g  14a  1.37/90  
+M. Rogers           2526  Aston Villa        CM   MID  84  10g   6a  1.15/90  
+J. Maddison         2425  Tottenham          CAM  MID  84   9g   7a  1.63/90  
+E. Eze              2324  Crystal Palace     CM   MID  84  11g   4a  3.01/90  
+Bruno Fernandes     2223  Manchester United  CAM  MID  84   8g   8a  0.87/90  
+Santi Cazorla       1819  Villarreal         CDM  MID  84   4g  10a  1.66/90  
+Koke                1516  Atletico Madrid    CM   MID  84   5g  14a  0.45/90  
+N. Paz              2526  Como               CM   MID  84  12g   6a  2.15/90  
+A. Candreva         2122  Sampdoria          CDM  MID  84   7g  10a  0.60/90  
+M. Mancosu          1920  Lecce              CM   MID  84  14g   2a  0.74/90  
+  ...of those, 740 sit in CM/CDM rather than CAM , the exact Williams 25/26 case
+
+GROUP 2 , BIG-CLUB CARDS (ranked by club prominence, then rt)   (236 cards, showing 60)
+player              season club               pool cse  rt   G   A  drb/90  status
+J. Bellingham       2324  Real Madrid        CAM  MID  86  19g   6a  1.94/90  
+Isco                1617  Real Madrid        CAM  MID  84  10g   8a  2.91/90  held
+Isco                1718  Real Madrid        CAM  MID  82   7g   7a  2.93/90  
+T. Kroos            1718  Real Madrid        CDM  MID  82   5g   7a  0.95/90  
+J. Rodríguez        1516  Real Madrid        CAM  MID  81   7g   8a  1.13/90  held
+J. Rodríguez        1415  Real Madrid        CAM  MID  81  13g  NRa    NR/90  
+J. Bellingham       2425  Real Madrid        CM   MID  80   9g   8a  1.44/90  WRITTEN
+T. Kroos            1617  Real Madrid        CM   MID  80   3g  12a  1.01/90  
+J. Rodríguez        1617  Real Madrid        CAM  MID  80   8g   6a  0.99/90  held
+Brahim Díaz         2324  Real Madrid        CAM  MID  77   8g   6a  3.13/90  held
+A. Güler            2526  Real Madrid        CM   MID  76   4g   9a  1.20/90  
+T. Kroos            2021  Real Madrid        CM   MID  75   3g  10a  0.68/90  
+L. Modrić           1920  Real Madrid        CM   MID  74   3g   7a  1.94/90  
+Casemiro            1718  Real Madrid        CDM  MID  74   5g   3a  0.38/90  
+J. Bellingham       2526  Real Madrid        CM   MID  73   6g   4a  1.74/90  
+L. Modrić           1819  Real Madrid        CM   MID  73   3g   6a  1.86/90  
+Casemiro            2021  Real Madrid        CM   MID  72   6g   4a  0.40/90  
+T. Kroos            1920  Real Madrid        CM   MID  72   4g   5a  1.05/90  
+F. Valverde         2425  Real Madrid        CDM  MID  71   6g   4a  0.47/90  
+Philippe Coutinho   1718  Barcelona          CAM  MID  81   8g   5a  3.17/90  held
+Dani Olmo           2526  Barcelona          CAM  MID  80   7g   8a  0.69/90  held
+Fermín              2526  Barcelona          CM   MID  80   6g   9a  2.20/90  
+Paulinho            1718  Barcelona          CM   MID  80   9g   2a  1.16/90  
+I. Rakitić          1617  Barcelona          CM   MID  80   8g   5a  0.88/90  
+Cesc Fàbregas       1213  Barcelona          CM   MID  78  11g  NRa    NR/90  
+A. Vidal            1920  Barcelona          CM   MID  77   8g   2a  0.43/90  
+A. Vidal            1819  Barcelona          CM   MID  76   3g   7a  0.23/90  
+İ. Gündoğan         2324  Barcelona          CM   MID  75   5g   9a  1.02/90  
+Pedri               2526  Barcelona          CDM  MID  74   2g   9a  1.58/90  
+Dani Olmo           2425  Barcelona          CM   MID  74   9g   3a  1.73/90  
+Rafinha             1617  Barcelona          CM   MID  72   6g   2a  1.00/90  
+Fermín              2425  Barcelona          CM   MID  71   6g   4a  1.74/90  
+Philippe Coutinho   1819  Barcelona          CM   MID  71   5g   2a  2.27/90  
+Fermín              2324  Barcelona          CM   MID  70   8g   0a  1.30/90  
+I. Rakitić          1819  Barcelona          CM   MID  70   3g   5a  0.65/90  
+T. Müller           1920  Bayern München     CAM  FWD  86   8g  21a  0.72/90  
+T. Müller           2122  Bayern München     CAM  FWD  85   8g  18a  0.45/90  
+T. Müller           2021  Bayern München     CAM  FWD  85  11g  18a  0.91/90  
+J. Musiala          2223  Bayern München     CAM  MID  84  12g  10a  3.13/90  
+T. Müller           1718  Bayern München     CAM  FWD  83   8g  14a  0.55/90  held
+J. Rodríguez        1718  Bayern München     CAM  MID  81   7g  11a  1.11/90  held
+J. Musiala          2425  Bayern München     CAM  MID  79  12g   2a  3.44/90  held
+J. Musiala          2324  Bayern München     CAM  MID  79  10g   5a  4.23/90  held
+Philippe Coutinho   1920  Bayern München     CDM  MID  78   8g   6a  2.10/90  
+L. Goretzka         1819  Bayern München     CM   MID  78   8g   4a  0.67/90  
+F. Ribéry           1617  Bayern München     CDM  MID  78   5g  11a  2.76/90  
+T. Müller           1617  Bayern München     CAM  FWD  77   5g  12a  0.64/90  held
+L. Goretzka         2324  Bayern München     CDM  MID  76   6g   7a  0.52/90  
+T. Müller           1819  Bayern München     CAM  FWD  76   6g   9a  0.87/90  held
+T. Müller           2223  Bayern München     CAM  FWD  74   7g   8a  0.48/90  held
+J. Kimmich          2122  Bayern München     CM   MID  74   3g  11a  0.76/90  
+L. Goretzka         1920  Bayern München     CDM  MID  74   6g   5a  1.13/90  
+J. Rodríguez        1819  Bayern München     CM   MID  74   7g   3a  1.26/90  
+F. Ribéry           1819  Bayern München     CDM  MID  74   6g   3a  2.78/90  
+Thiago Alcântara    1617  Bayern München     CM   MID  74   6g   5a  2.36/90  
+J. Kimmich          2021  Bayern München     CM   MID  73   4g  10a  1.19/90  
+C. Tolisso          1718  Bayern München     CAM  MID  73   6g   4a  0.29/90  held
+T. Müller           2324  Bayern München     CAM  FWD  72   5g   9a  0.60/90  held
+J. Kimmich          2223  Bayern München     CDM  MID  72   5g   6a  0.42/90  
+J. Kimmich          1920  Bayern München     CDM  MID  72   4g   7a  0.61/90  
+
+GROUP 3 , HIGH-DRIBBLE CENTRALS (drb/90 >= 2.37, the Winger median)   (79 cards, showing 60)
+player              season club               pool cse  rt   G   A  drb/90  status
+N. Fekir            1718  Lyon               CAM  FWD  86  18g   8a  3.27/90  
+P. Pogba            1516  Juventus           CM   MID  85   8g  12a  3.04/90  
+H. Ben Arfa         1516  Nice               CAM  MID  85  17g   6a  4.81/90  
+E. Eze              2324  Crystal Palace     CM   MID  84  11g   4a  3.01/90  
+Isco                1617  Real Madrid        CAM  MID  84  10g   8a  2.91/90  held
+J. Musiala          2223  Bayern München     CAM  MID  84  12g  10a  3.13/90  
+E. Eze              2223  Crystal Palace     CM   MID  83  10g   4a  2.42/90  
+P. Pogba            1718  Manchester United  CM   MID  83   6g  10a  3.14/90  WRITTEN
+R. Cherki           2526  Manchester City    CAM  MID  82   4g  12a  2.49/90  held
+M. Kudus            2324  West Ham           CM   MID  82   8g   6a  4.49/90  
+Isco                1718  Real Madrid        CAM  MID  82   7g   7a  2.93/90  
+Philippe Coutinho   1718  Barcelona          CAM  MID  81   8g   5a  3.17/90  held
+X. Simons           2324  RB Leipzig         CAM  MID  81   8g  11a  2.73/90  held
+M. Gradel           1819  Toulouse           CM   MID  81  11g   5a  2.44/90  
+Trézéguet           1718  Kasımpaşa          CM   MID  81  13g   6a  3.26/90  
+Philippe Coutinho   1718  Liverpool          CAM  MID  80   7g   6a  3.15/90  held
+N. Keïta            1617  RB Leipzig         CM   MID  80   8g   7a  3.09/90  
+T. Savanier         2223  Montpellier        CM   MID  80  12g   4a  2.53/90  
+J. Musiala          2425  Bayern München     CAM  MID  79  12g   2a  3.44/90  held
+J. Musiala          2324  Bayern München     CAM  MID  79  10g   5a  4.23/90  held
+F. Wirtz            2122  Bayer Leverkusen   CAM  MID  79   7g  10a  2.66/90  
+R. Del Castillo     2324  Stade Brestois 29  CM   MID  79   8g   8a  2.68/90  
+Lucas Paquetá       2122  Lyon               CAM  MID  79   9g   6a  2.69/90  held
+Trézéguet           1819  Kasımpaşa          CM   MID  79   9g   9a  3.24/90  
+Vitolo              1617  Sevilla            CM   MID  78   6g   6a  2.74/90  
+C. Führich          2324  VfB Stuttgart      CM   MID  78   8g   7a  2.50/90  
+S. Gnabry           1718  1899 Hoffenheim    CAM  FWD  78  10g   5a  2.67/90  held
+K. Demirbay         1617  1899 Hoffenheim    CM   MID  78   6g   8a  2.48/90  
+T. Savanier         2122  Montpellier        CM   MID  78   8g   7a  2.82/90  
+Brahim Díaz         2324  Real Madrid        CAM  MID  77   8g   6a  3.13/90  held
+P. Zieliński        1617  Napoli             CM   MID  77   5g   7a  2.53/90  
+K. Demirbay         1819  1899 Hoffenheim    CM   MID  77   4g   9a  2.58/90  
+L. Blas             2021  Nantes             CM   MID  77  10g   4a  3.11/90  
+Isco                2324  Real Betis         CM   MID  76   8g   5a  2.93/90  
+Felipe Anderson     1617  Lazio              CM   MID  76   4g   9a  3.61/90  
+P. Sisto            1718  Celta Vigo         CAM  FWD  76   5g   9a  2.66/90  held
+Rochina             1819  Levante            CM   MID  75   4g   5a  3.08/90  
+Á. Correa           1718  Atletico Madrid    CAM  FWD  75   8g   4a  2.74/90  held
+J. Fernándes        1718  Alanyaspor         CAM  FWD  75  10g   6a  2.93/90  held
+Y. Carrasco         2122  Atletico Madrid    CM   MID  74   6g   6a  3.06/90  
+R. De Paul          1718  Udinese            CM   MID  74   4g   7a  2.79/90  
+J. Bellingham       2223  Borussia Dortmund  CM   MID  74   8g   4a  2.87/90  
+N. Keïta            1718  RB Leipzig         CM   MID  74   6g   5a  3.07/90  
+F. Tait             1819  Angers             CM   MID  74   5g   7a  2.46/90  
+H. Ziyech           1920  Ajax               CM   MID  74   6g  12a  3.08/90  
+P. Pogba            2122  Manchester United  CM   MID  73   1g   9a  2.59/90  
+R. Loftus-Cheek     1819  Chelsea            CM   MID  73   6g   2a  3.75/90  
+P. Pogba            1617  Manchester United  CM   MID  73   5g   4a  2.48/90  WRITTEN
+Ó. Trejo            2122  Rayo Vallecano     CAM  MID  73   3g   9a  3.65/90  held
+Á. Correa           1617  Atletico Madrid    CAM  FWD  73   4g   8a  3.64/90  held
+H. Traorè           2122  Sassuolo           CAM  MID  73   7g   2a  3.09/90  held
+B. Embolo           1920  Borussia Mönchengl CAM  FWD  73   8g   5a  2.38/90  held
+L. Blas             2223  Nantes             CM   MID  73   7g   5a  2.62/90  
+A. Oxlade-Chamberla 1617  Arsenal            CM   MID  72   2g   7a  3.51/90  
+A. Januzaj          1718  Real Sociedad      CAM  MID  72   3g   5a  3.82/90  held
+S. Fofana           1920  Udinese            CM   MID  72   3g   7a  2.84/90  
+A. Fulgini          2021  Angers             CM   MID  72   7g   4a  2.66/90  
+G. Kakuta           1718  Amiens             CM   MID  72   6g   6a  2.59/90  
+P. Guiagon          2526  Charleroi          CM   MID  72   9g   5a  2.57/90  
+N. Fekir            2122  Real Betis         CAM  FWD  71   6g   8a  2.62/90  
+
+GROUP 4 , CARDS OF THE MULTI-ROLE EXCLUSIONS (75 players excluded by the rule)
+
+  their cards at rt>=70   (66 cards, showing 60)
+player              season club               pool cse  rt   G   A  drb/90  status
+Pablo Sarabia       1617  Sevilla            CAM  MID  83   8g   8a  0.93/90  held
+D. Türüç            1617  Kayserispor        CM   MID  83  11g  11a  1.24/90  
+Bernardo Silva      2324  Manchester City    CM   MID  82   6g   9a  1.33/90  WRITTEN
+Pablo Fornals       1718  Villarreal         CM   MID  81   3g  12a  0.93/90  
+Philippe Coutinho   1718  Barcelona          CAM  MID  81   8g   5a  3.17/90  held
+R. Dōan             2425  SC Freiburg        CM   MID  81  10g   7a  1.69/90  
+M. Gradel           1819  Toulouse           CM   MID  81  11g   5a  2.44/90  
+Giuliano            1718  Fenerbahçe         CAM  MID  81  14g   5a  1.91/90  held
+D. Szoboszlai       2526  Liverpool          CM   MID  80   6g   7a  0.72/90  WRITTEN
+Bernardo Silva      2122  Manchester City    CM   MID  80   8g   4a  1.67/90  WRITTEN
+Bernardo Silva      1920  Manchester City    CAM  MID  80   6g   7a  1.77/90  held
+Philippe Coutinho   1718  Liverpool          CAM  MID  80   7g   6a  3.15/90  held
+Pablo Fornals       2526  Real Betis         CM   MID  80   9g   6a  0.79/90  
+D. Szoboszlai       2425  Liverpool          CM   MID  79   6g   6a  0.76/90  
+A. Iwobi            2425  Fulham             CAM  FWD  79   9g   6a  1.44/90  held
+S. Benrahma         2122  West Ham           CAM  FWD  79   8g   6a  1.52/90  held
+R. Oudin            1819  Reims              CAM  MID  79  10g   4a  0.41/90  held
+A. Rebić            2021  AC Milan           CAM  FWD  79  11g   4a  1.01/90  held
+Pablo Sarabia       1718  Sevilla            CM   MID  78   6g   5a  0.79/90  
+Philippe Coutinho   1920  Bayern München     CDM  MID  78   8g   6a  2.10/90  
+S. Gnabry           1718  1899 Hoffenheim    CAM  FWD  78  10g   5a  2.67/90  held
+B. Raman            1819  Fortuna Düsseldorf CAM  FWD  78  10g   4a  1.98/90  held
+N. Pépé             1718  Lille              CAM  FWD  78  13g   4a  2.31/90  held
+R. Orsolini         2526  Bologna            CM   MID  77  10g   1a  1.35/90  
+D. Verde            2122  Spezia             CAM  FWD  76   8g   6a  0.69/90  held
+M. Barrow           2021  Bologna            CAM  FWD  76   8g   8a  1.04/90  held
+X. Shaqiri          1819  Liverpool          CAM  MID  75   6g   3a  0.51/90  held
+Á. Correa           1718  Atletico Madrid    CAM  FWD  75   8g   4a  2.74/90  held
+D. Szoboszlai       2223  RB Leipzig         CAM  MID  75   6g   8a  1.95/90  held
+J. Fernándes        1718  Alanyaspor         CAM  FWD  75  10g   6a  2.93/90  held
+A. Ndao             2021  Fatih Karagümrük   CAM  FWD  75  11g   9a  0.99/90  held
+Pablo Fornals       2122  West Ham           CAM  MID  74   6g   3a  0.74/90  held
+S. Katompa Mvumpa   2021  VfB Stuttgart      CAM  FWD  74  11g   4a  2.24/90  held
+Fábio Martins       1920  Famalicao          CAM  FWD  74  12g   5a  1.05/90  held
+Ricardo Horta       1920  SC Braga           CAM  FWD  74  12g   5a  0.79/90  held
+Bernardo Silva      2223  Manchester City    CM   MID  73   4g   5a  1.13/90  
+Pablo Fornals       2021  West Ham           CAM  MID  73   5g   4a  1.01/90  held
+Á. Correa           1617  Atletico Madrid    CAM  FWD  73   4g   8a  3.64/90  held
+M. Richter          1819  FC Augsburg        CAM  MID  73   4g   6a  2.20/90  held
+T. Hazard           1617  Borussia Mönchengl CAM  MID  73   6g   4a  2.10/90  held
+I. Sarr             1819  Rennes             CAM  FWD  73   8g   6a  2.00/90  held
+J. Fernándes        1920  Alanyaspor         CAM  FWD  73   9g   7a  1.30/90  held
+A. Januzaj          1718  Real Sociedad      CAM  MID  72   3g   5a  3.82/90  held
+J. Bamba            1718  Saint Etienne      CAM  FWD  72   7g   8a  1.51/90  held
+Ö. Şahiner          1819  Konyaspor          CAM  MID  72   8g   4a  0.66/90  held
+Álex Berenguer      2021  Athletic Club      CAM  FWD  71   8g   4a  1.38/90  held
+Moi Gómez           1819  Huesca             CM   MID  71   2g   7a  0.97/90  
+Philippe Coutinho   1819  Barcelona          CM   MID  71   5g   2a  2.27/90  
+Pablo Fornals       1617  Malaga             CM   MID  71   6g   2a  0.71/90  
+M. Simon            2122  Nantes             CAM  FWD  71   6g   8a  1.57/90  held
+J. Corona           1920  FC Porto           CAM  MID  71   4g  11a  2.21/90  held
+J. Corona           1819  FC Porto           CAM  MID  71   3g   9a  2.26/90  held
+R. Dōan             1718  Groningen          CM   MID  71   9g   3a  2.43/90  
+M. Vargas           2122  Adana Demirspor    CAM  FWD  71   5g  13a  2.11/90  held
+A. Iwobi            2526  Fulham             CDM  MID  70   4g   3a  0.70/90  
+Bernardo Silva      2425  Manchester City    CM   MID  70   4g   4a  0.91/90  
+Bernardo Silva      2021  Manchester City    CM   MID  70   2g   6a  1.78/90  
+M. Arnautović       1617  Stoke City         CAM  FWD  70   6g   5a  2.05/90  held
+R. Vargas           2526  Sevilla            CM   MID  70   3g   6a  1.18/90  
+Jorge de Frutos     2021  Levante            CAM  FWD  70   4g   9a  1.89/90  held
