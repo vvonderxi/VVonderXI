@@ -105,14 +105,10 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 2206,159661,B. Bourigeaud,1819,L1,CAM,73,CM,low,"CHANGE proposed at low confidence , unresolved",Rennes: central/right mid and set-piece taker - central plurality,batch_03_verified.csv
 421,153371,B. Embolo,1920,BL,CAM,73,ST,low,"CHANGE proposed at low confidence , unresolved","Rose rotation across the front three - CF plurality, close",batch_03_verified.csv
 519,154104,C. Tolisso,1718,BL,CAM,73,CM,medium,"CHANGE proposed at medium confidence , unresolved",No.8 in Heynckes's midfield (1527 min),batch_03_verified.csv
-48648,159095,D. Ndoye,2021,L1,CAM,36,Winger,low,"CHANGE proposed at low confidence , unresolved",532 min at Nice; RW in cameos,batch_03_verified.csv
-48648,145210,D. Ndoye,2324,SA,CAM,37,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Motta's Bologna: RW,batch_03_verified.csv
-48648,144781,D. Ndoye,2425,SA,CAM,73,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Italiano's Bologna: wide L/R,batch_03_verified.csv
 2218,160722,I. Sarr,1617,L1,CAM,53,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Metz breakout RW,batch_03_verified.csv
 2218,160294,I. Sarr,1718,L1,CAM,59,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Rennes RW,batch_03_verified.csv
 2218,159871,I. Sarr,1819,L1,CAM,73,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Rennes RW; Europa League run season,batch_03_verified.csv
 2218,131996,I. Sarr,2122,PL,CAM,62,Winger,medium,"CHANGE proposed at medium confidence , unresolved",RW in the relegation season,batch_03_verified.csv
-22003,159727,M. Cafaro,1819,L1,CAM,73,Winger,low,"CHANGE proposed at low confidence , unresolved",Reims: wide attacking mid (L/R) per French records,batch_03_verified.csv
 25307,153968,M. Richter,1718,BL,CAM,36,Winger,low,"CHANGE proposed at low confidence , unresolved",598 fringe min; wide in cameos,batch_03_verified.csv
 25307,153614,M. Richter,1819,BL,CAM,73,Winger,low,"CHANGE proposed at low confidence , unresolved",Augsburg wide forward rotation,batch_03_verified.csv
 25307,153242,M. Richter,1920,BL,CAM,64,Winger,medium,"CHANGE proposed at medium confidence , unresolved",RW/wide forward plurality (2288 min),batch_03_verified.csv
@@ -120,20 +116,15 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 1914,160305,M. Sanson,1718,L1,CAM,73,CM,low,"CHANGE proposed at low confidence , unresolved","Marseille box-to-box 8 with a 10 share - central plurality, 9-goal season",batch_03_verified.csv
 1914,159088,M. Sanson,2021,L1,CAM,58,CM,low,"CHANGE proposed at low confidence , unresolved",829 min before Jan exit; same central role,batch_03_verified.csv
 50464,183395,M. Thiam,1920,TR,CAM,73,ST,low,"CHANGE proposed at low confidence , unresolved","Kasimpasa forward (11 goals) - CF plurality with wide share, thin data",batch_03_verified.csv
-50844,166935,Pedro Santos,1617,PRT,CAM,73,Winger,low,"CHANGE proposed at low confidence , unresolved",Braga wide man (L/R) before Columbus move,batch_03_verified.csv
 37160,171045,S. Berghuis,2122,ERE,CAM,73,CM,low,"CHANGE proposed at low confidence , unresolved","Began RW, converted to the right 8 as Antony claimed the wing - near split, central plurality",batch_03_verified.csv
 20649,159077,Y. Wissa,2021,L1,CAM,73,ST,low,"CHANGE proposed at low confidence , unresolved","Lorient: CF/left-forward split - CF plurality, 10-goal season",batch_03_verified.csv
 2924,140721,A. Januzaj,1718,LL,CAM,72,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Real Sociedad RW,batch_03_verified.csv
 35533,183156,E. Valencia,2021,TR,CAM,72,ST,low,"CHANGE proposed at low confidence , unresolved",Fener: CF/second-striker plurality with wide rotation - close,batch_03_verified.csv
 30453,148095,J. Jankto,1617,SA,CAM,72,CM,low,"CHANGE proposed at low confidence , unresolved",Udinese: left-sided interior/box-to-box - CM/LM boundary,batch_03_verified.csv
-1911,148134,L. Ocampos,1617,SA,CAM,22,Winger,low,"CHANGE proposed at low confidence , unresolved",534 fringe min at Milan; wide in cameos,batch_03_verified.csv
-1911,159806,L. Ocampos,1819,L1,CAM,72,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Marseille: fixed wide L/R (2714 min),batch_03_verified.csv
 50018,184343,Ö. Şahiner,1617,TR,CAM,65,Winger,low,"CHANGE proposed at low confidence , unresolved",Sahiner: right winger per Turkish league records,batch_03_verified.csv
 50018,183563,Ö. Şahiner,1819,TR,CAM,72,Winger,low,"CHANGE proposed at low confidence , unresolved",Same RW role; 8-goal season,batch_03_verified.csv
 22169,160675,W. Cyprien,1617,L1,CAM,72,CM,medium,"CHANGE proposed at medium confidence , unresolved",Nice's box-to-box 8 beside Seri; 8-goal season,batch_03_verified.csv
 2926,178538,Y. Tielemans,1617,BPL,CAM,72,CM,medium,"CHANGE proposed at medium confidence , unresolved",Anderlecht's deep-lying/advanced 8 in his POTY season (13 goals incl. pens),batch_03_verified.csv
-47554,139936,Adri Embarba,1819,LL,CAM,71,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Rayo's LW,batch_03_verified.csv
-47554,138552,Adri Embarba,2122,LL,CAM,35,Winger,low,"CHANGE proposed at low confidence , unresolved","Espanyol wide rotation (1997 min, 0 goals)",batch_03_verified.csv
 30510,139262,Álex Berenguer,2021,LL,CAM,71,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Athletic's LW,batch_03_verified.csv
 30510,138809,Álex Berenguer,2122,LL,CAM,60,Winger,medium,"CHANGE proposed at medium confidence , unresolved",LW,batch_03_verified.csv
 30510,138363,Álex Berenguer,2223,LL,CAM,50,Winger,medium,"CHANGE proposed at medium confidence , unresolved",LW,batch_03_verified.csv

@@ -75,10 +75,15 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 183799,138707,Nico Williams,2122,LL,Winger,25,Winger,medium,"AGREED with current pool at medium confidence , no change",Breakout cameos at RW (1324 min),batch_03_verified.csv
 1697,133059,Pablo Fornals,1920,PL,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",First season: rotated across the attacking-mid band - no clean majority,batch_03_verified.csv
 130256,165016,André Franco,2122,PRT,CAM,73,CAM,low,"AGREED with current pool at low confidence , no change",Estoril's attacking mid per Portuguese records (11 goals); earned Porto move in that role,batch_03_verified.csv
+48648,159095,D. Ndoye,2021,L1,Winger,36,Winger,low,"AGREED with current pool at low confidence , no change",532 min at Nice; RW in cameos,batch_03_verified.csv
+48648,145210,D. Ndoye,2324,SA,Winger,37,Winger,medium,"AGREED with current pool at medium confidence , no change",Motta's Bologna: RW,batch_03_verified.csv
+48648,144781,D. Ndoye,2425,SA,Winger,73,Winger,medium,"AGREED with current pool at medium confidence , no change",Italiano's Bologna: wide L/R,batch_03_verified.csv
 31057,146483,H. Traorè,2021,SA,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",De Zerbi: left AM/10 rotation - advanced plurality,batch_03_verified.csv
 31057,146043,H. Traorè,2122,SA,CAM,73,CAM,low,"AGREED with current pool at low confidence , no change",Dionisi: 10/left of the front - advanced plurality,batch_03_verified.csv
+22003,159727,M. Cafaro,1819,L1,Winger,73,Winger,low,"AGREED with current pool at low confidence , no change",Reims: wide attacking mid (L/R) per French records,batch_03_verified.csv
 47557,140019,Ó. Trejo,1819,LL,CAM,61,CAM,medium,"AGREED with current pool at medium confidence , no change",Rayo's enganche/10,batch_03_verified.csv
 47557,138664,Ó. Trejo,2122,LL,CAM,73,CAM,medium,"AGREED with current pool at medium confidence , no change",Captain-10 under Iraola; 9 assists,batch_03_verified.csv
+50844,166935,Pedro Santos,1617,PRT,Winger,73,Winger,low,"AGREED with current pool at low confidence , no change",Braga wide man (L/R) before Columbus move,batch_03_verified.csv
 40569,166948,João Amaral,1617,PRT,CAM,63,CAM,low,"AGREED with current pool at low confidence , no change",Vitoria Setubal attacking mid per Portuguese records,batch_03_verified.csv
 40569,166540,João Amaral,1718,PRT,CAM,72,CAM,low,"AGREED with current pool at low confidence , no change",Same AM role; 9-goal season,batch_03_verified.csv
 40569,165710,João Amaral,1920,PRT,CAM,53,CAM,low,"AGREED with current pool at low confidence , no change",1106 min at Pacos; same profile,batch_03_verified.csv
@@ -89,7 +94,11 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 508,152663,K. Coman,2122,BL,Winger,62,Winger,medium,"AGREED with current pool at medium confidence , no change",LW/RW under Nagelsmann,batch_03_verified.csv
 508,151929,K. Coman,2324,BL,Winger,55,Winger,medium,"AGREED with current pool at medium confidence , no change",Wide rotation with Sane/Gnabry,batch_03_verified.csv
 508,151567,K. Coman,2425,BL,Winger,65,Winger,medium,"AGREED with current pool at medium confidence , no change",Kompany: LW rotation,batch_03_verified.csv
+1911,148134,L. Ocampos,1617,SA,Winger,22,Winger,low,"AGREED with current pool at low confidence , no change",534 fringe min at Milan; wide in cameos,batch_03_verified.csv
+1911,159806,L. Ocampos,1819,L1,Winger,72,Winger,medium,"AGREED with current pool at medium confidence , no change",Marseille: fixed wide L/R (2714 min),batch_03_verified.csv
 21446,159739,A. Bobichon,1819,L1,CAM,71,CAM,low,"AGREED with current pool at low confidence , no change",Nimes: attacking mid per French records - thin split data,batch_03_verified.csv
+47554,139936,Adri Embarba,1819,LL,Winger,71,Winger,medium,"AGREED with current pool at medium confidence , no change",Rayo's LW,batch_03_verified.csv
+47554,138552,Adri Embarba,2122,LL,Winger,35,Winger,low,"AGREED with current pool at low confidence , no change","Espanyol wide rotation (1997 min, 0 goals)",batch_03_verified.csv
 539,170978,D. de Wit,2122,ERE,CAM,71,CAM,medium,"AGREED with current pool at medium confidence , no change",AZ's 10/box-crashing attacking mid; ever-present 3178 min,batch_04_verified.csv
 443,182716,E. Akbaba,2021,TR,CAM,61,CAM,low,"AGREED with current pool at low confidence , no change",Galatasaray rotation AM (1424 min),batch_04_verified.csv
 443,182286,E. Akbaba,2122,TR,CAM,71,CAM,low,"AGREED with current pool at low confidence , no change",Alanyaspor attacking mid per Turkish records,batch_04_verified.csv
