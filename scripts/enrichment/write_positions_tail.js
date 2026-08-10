@@ -28,6 +28,14 @@ const path = require('path');
 const POOLS = ['GK','FB','CB','CDM','CM','CAM','Winger','ST'];
 const WRITE = process.argv.includes('--write');
 const TARGET = process.argv[2];
+// PROVENANCE MUST MATCH THE ACTUAL SOURCE. This was hardcoded to 'fable-tail', which is
+// wrong for any batch not produced by that research run , e.g. rows re-verified directly
+// against Transfermarkt. known_players.csv is the provenance record; a wrong stamp there
+// is silently misleading forever. Same for the date, which was frozen at 2026-08-09.
+const arg = (flag, dflt) => { const i = process.argv.indexOf(flag);
+  return (i > -1 && process.argv[i+1]) ? process.argv[i+1] : dflt; };
+const SOURCE = arg('--source', 'fable-tail');
+const STAMP  = arg('--date', new Date().toISOString().slice(0,10));
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 function parseCSV(txt){
@@ -217,8 +225,8 @@ const esc=v=>{const s=(v===null||v===undefined||v==='')?'NR':String(v);
     // The committed CSV does not reliably end with a newline; a bare append FUSES rows.
     const prev=fs.readFileSync(CSV,'utf8');
     const lead=(prev.length && !prev.endsWith('\n')) ? '\n' : '';
-    fs.appendFileSync(CSV, lead + done.map(r=>r[0]+','+r[1]+','+r[2]+',fable-tail,2026-08-09').join('\n') + '\n');
-    console.log('  appended '+done.length+' rows to known_players.csv (source=fable-tail)');
+    fs.appendFileSync(CSV, lead + done.map(r=>r[0]+','+r[1]+','+r[2]+','+SOURCE+','+STAMP).join('\n') + '\n');
+    console.log('  appended '+done.length+' rows to known_players.csv (source='+SOURCE+', date='+STAMP+')');
   }
   // TWO FILES, because only one of them is a work queue.
   const H='api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_position,confidence,hold_reason,evidence,source_batch';
