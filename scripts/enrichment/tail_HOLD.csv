@@ -171,12 +171,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 22097,158173,A. Nordin,2223,L1,CAM,69,Winger,low,"CHANGE proposed at low confidence , unresolved","Montpellier: wide forward/second striker - wide plurality, 9 goals",batch_04_verified.csv
 22097,157759,A. Nordin,2324,L1,CAM,62,Winger,low,"CHANGE proposed at low confidence , unresolved",Wide rotation (1253 min),batch_04_verified.csv
 22097,157384,A. Nordin,2425,L1,CAM,52,Winger,low,"CHANGE proposed at low confidence , unresolved",Wide rotation (1171 min),batch_04_verified.csv
-15916,146888,A. Skov Olsen,1920,SA,CAM,30,Winger,low,"CHANGE proposed at low confidence , unresolved",747 fringe min; RW in cameos,batch_04_verified.csv
-15916,146447,A. Skov Olsen,2021,SA,CAM,47,Winger,low,"CHANGE proposed at low confidence , unresolved",Bologna RW rotation (1176 min),batch_04_verified.csv
-15916,146005,A. Skov Olsen,2122,SA,CAM,35,Winger,low,"CHANGE proposed at low confidence , unresolved",741 fringe min before Jan exit; RW,batch_04_verified.csv
-15916,176686,A. Skov Olsen,2122,BPL,CAM,69,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Brugge RW from Jan arrival,batch_04_verified.csv
-15916,175946,A. Skov Olsen,2324,BPL,CAM,67,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Brugge RW,batch_04_verified.csv
-15916,175588,A. Skov Olsen,2425,BPL,CAM,67,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Brugge RW - NOTE: stats identical to the 2324 card; upstream duplicate suspected,batch_04_verified.csv
 10135,132023,Bruno Guimarães,2122,PL,CAM,69,CM,medium,"CHANGE proposed at medium confidence , unresolved",Jan arrival: box-to-box 8 in Howe's midfield (1032 min),batch_04_verified.csv
 17,154579,C. Pulišić,1617,BL,CAM,69,Winger,medium,"CHANGE proposed at medium confidence , unresolved",BVB wide L/R as a teenager (1515 min),batch_04_verified.csv
 17,154190,C. Pulišić,1718,BL,CAM,69,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Wide L/R under Bosz/Stoger,batch_04_verified.csv
@@ -202,27 +196,17 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 53659,181929,Miguel Cardoso,2223,TR,CAM,65,Winger,low,"CHANGE proposed at low confidence , unresolved",Same wide role,batch_04_verified.csv
 53659,181528,Miguel Cardoso,2324,TR,CAM,51,Winger,low,"CHANGE proposed at low confidence , unresolved",Same wide role; 7 assists,batch_04_verified.csv
 53659,181155,Miguel Cardoso,2425,TR,CAM,68,Winger,low,"CHANGE proposed at low confidence , unresolved",Same wide role; 8G/7A,batch_04_verified.csv
-2058,134068,Nolito,1617,PL,CAM,62,Winger,low,"CHANGE proposed at low confidence , unresolved",775 fringe min at City; LW in cameos,batch_04_verified.csv
-2058,139333,Nolito,2021,LL,CAM,69,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Celta: wide-left forward under Coudet (2627 min),batch_04_verified.csv
-2058,138885,Nolito,2122,LL,CAM,37,Winger,low,"CHANGE proposed at low confidence , unresolved",Wide rotation (1380 min),batch_04_verified.csv
 21451,159651,R. Ripart,1819,L1,CAM,69,Winger,low,"CHANGE proposed at low confidence , unresolved",Nimes: right-sided forward per French records - wide plurality,batch_04_verified.csv
 25352,154592,Salomon Armand Magloire Kalou,1617,BL,CAM,69,Winger,low,"CHANGE proposed at low confidence , unresolved",Hertha: wide-left forward with CF share - wide plurality,batch_04_verified.csv
 3430,183463,C. Ekuban,1920,TR,CAM,56,ST,low,"CHANGE proposed at low confidence , unresolved",Trabzonspor forward rotation (1151 min),batch_04_verified.csv
 3430,183067,C. Ekuban,2021,TR,CAM,68,ST,low,"CHANGE proposed at low confidence , unresolved","CF/wide-left split post-Sorloth - CF plurality, 10 goals",batch_04_verified.csv
-2414,165490,Everton,2021,PRT,CAM,68,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Benfica LW (Everton Cebolinha),batch_04_verified.csv
-2414,165097,Everton,2122,PRT,CAM,53,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Same LW role,batch_04_verified.csv
 31615,146385,G. Castrovilli,2021,SA,CAM,68,CM,medium,"CHANGE proposed at medium confidence , unresolved",Fiorentina mezzala (8) under Iachini/Prandelli,batch_04_verified.csv
 47473,140389,Jason,1718,LL,CAM,52,Winger,low,"CHANGE proposed at low confidence , unresolved",Levante RW (1793 min),batch_04_verified.csv
 47473,139934,Jason,1819,LL,CAM,68,Winger,low,"CHANGE proposed at low confidence , unresolved",Same RW role,batch_04_verified.csv
-106835,176732,K. Mitoma,2122,BPL,CAM,68,Winger,low,"CHANGE proposed at low confidence , unresolved",USG loan: left wing/left wing-back split in the 3-5-2 - wide-left plurality,batch_04_verified.csv
 33255,184678,Ł. Podolski,1617,TR,CAM,68,ST,low,"CHANGE proposed at low confidence , unresolved",Galatasaray: CF plurality with LW share (7 goals) - close,batch_04_verified.csv
 50097,183178,M. Yandaş,1920,TR,CAM,68,CM,low,"CHANGE proposed at low confidence , unresolved",Sivasspor captain: 8/10 hybrid - central plurality per Turkish records,batch_04_verified.csv
 50940,166415,Nani,1819,PRT,CAM,68,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Sporting return: LW (1350 min),batch_05_verified.csv
 25644,153294,P. Herrmann,1920,BL,CAM,68,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Gladbach's veteran RW,batch_05_verified.csv
-2214,159714,R. Del Castillo,1819,L1,CAM,48,Winger,low,"CHANGE proposed at low confidence , unresolved",Rennes wide rotation (1338 min),batch_05_verified.csv
-2214,158872,R. Del Castillo,2021,L1,CAM,55,Winger,low,"CHANGE proposed at low confidence , unresolved",637 fringe min; wide when used,batch_05_verified.csv
-2214,158423,R. Del Castillo,2122,L1,CAM,59,Winger,low,"CHANGE proposed at low confidence , unresolved",Brest wide rotation (983 min),batch_05_verified.csv
-2214,156806,R. Del Castillo,2526,L1,CAM,68,Winger,low,"CHANGE proposed at low confidence , unresolved",Brest's wide man through the autumn; spring half beyond reliable coverage,batch_05_verified.csv
 22095,160440,R. Hamouma,1617,L1,CAM,68,Winger,medium,"CHANGE proposed at medium confidence , unresolved",ASSE wide forward (L/R),batch_05_verified.csv
 30488,146210,R. Orsolini,2021,SA,CAM,68,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Bologna's RW,batch_05_verified.csv
 50205,184370,S. Eduok,1617,TR,CAM,61,Winger,low,"CHANGE proposed at low confidence , unresolved",Eduok: LW per Turkish league records,batch_05_verified.csv

@@ -109,16 +109,32 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 49986,182927,Fredy,2021,TR,CAM,70,CAM,low,"AGREED with current pool at low confidence , no change",Fredy: attacking mid per Turkish league records - thin split data,batch_04_verified.csv
 12493,140878,Tana,1617,LL,CAM,70,CAM,low,"AGREED with current pool at low confidence , no change",Las Palmas rotation attacking mid under Setien - thin split data,batch_04_verified.csv
 417,154474,A. Schöpf,1617,BL,CAM,69,CAM,low,"AGREED with current pool at low confidence , no change",Weinzierl 3-4-2-1: one of the two behind the striker; rotation-heavy - no clean majority,batch_04_verified.csv
+15916,146888,A. Skov Olsen,1920,SA,Winger,30,Winger,low,"AGREED with current pool at low confidence , no change",747 fringe min; RW in cameos,batch_04_verified.csv
+15916,146447,A. Skov Olsen,2021,SA,Winger,47,Winger,low,"AGREED with current pool at low confidence , no change",Bologna RW rotation (1176 min),batch_04_verified.csv
+15916,146005,A. Skov Olsen,2122,SA,Winger,35,Winger,low,"AGREED with current pool at low confidence , no change",741 fringe min before Jan exit; RW,batch_04_verified.csv
+15916,176686,A. Skov Olsen,2122,BPL,Winger,69,Winger,medium,"AGREED with current pool at medium confidence , no change",Brugge RW from Jan arrival,batch_04_verified.csv
+15916,175946,A. Skov Olsen,2324,BPL,Winger,67,Winger,medium,"AGREED with current pool at medium confidence , no change",Brugge RW,batch_04_verified.csv
+15916,175588,A. Skov Olsen,2425,BPL,Winger,67,Winger,medium,"AGREED with current pool at medium confidence , no change",Brugge RW - NOTE: stats identical to the 2324 card; upstream duplicate suspected,batch_04_verified.csv
 2057,140961,F. Vázquez,1617,LL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change",Sampaoli: the 10/interior ('El Mudo'),batch_04_verified.csv
 2057,140501,F. Vázquez,1718,LL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change",Same advanced-mid role,batch_04_verified.csv
 2057,140080,F. Vázquez,1819,LL,CAM,59,CAM,low,"AGREED with current pool at low confidence , no change",Machin's 3-5-2: interior mid - CAM/CM boundary,batch_04_verified.csv
 2057,139672,F. Vázquez,1920,LL,CAM,47,CAM,low,"AGREED with current pool at low confidence , no change",1087 rotation min,batch_04_verified.csv
 426,153348,M. Uth,1920,BL,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Jan loan to Koln: second striker/AM (1168 min),batch_04_verified.csv
 426,152593,M. Uth,2122,BL,CAM,69,CAM,medium,"AGREED with current pool at medium confidence , no change",One of the two 10s in Baumgart's 4-2-2-2,batch_04_verified.csv
+2058,134068,Nolito,1617,PL,Winger,62,Winger,low,"AGREED with current pool at low confidence , no change",775 fringe min at City; LW in cameos,batch_04_verified.csv
+2058,139333,Nolito,2021,LL,Winger,69,Winger,medium,"AGREED with current pool at medium confidence , no change",Celta: wide-left forward under Coudet (2627 min),batch_04_verified.csv
+2058,138885,Nolito,2122,LL,Winger,37,Winger,low,"AGREED with current pool at low confidence , no change",Wide rotation (1380 min),batch_04_verified.csv
 20634,159030,A. Claude-Maurice,2021,L1,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change","Nice: attacking mid also used wide - AM plurality, thin data",batch_04_verified.csv
+2414,165490,Everton,2021,PRT,Winger,68,Winger,medium,"AGREED with current pool at medium confidence , no change",Benfica LW (Everton Cebolinha),batch_04_verified.csv
+2414,165097,Everton,2122,PRT,Winger,53,Winger,medium,"AGREED with current pool at medium confidence , no change",Same LW role,batch_04_verified.csv
 30460,146400,G. Caprari,2021,SA,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Benevento: second striker behind Lapadula - SS/CAM boundary,batch_04_verified.csv
 50067,183218,H. Hajradinović,1920,TR,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Kasimpasa's playmaker-10 per Turkish records (4G/7A),batch_04_verified.csv
 25925,153244,J. Boëtius,1920,BL,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Mainz: AM/left rotation - advanced plurality,batch_04_verified.csv
+106835,176732,K. Mitoma,2122,BPL,Winger,68,Winger,low,"AGREED with current pool at low confidence , no change",USG loan: left wing/left wing-back split in the 3-5-2 - wide-left plurality,batch_04_verified.csv
+2214,159714,R. Del Castillo,1819,L1,Winger,48,Winger,low,"AGREED with current pool at low confidence , no change",Rennes wide rotation (1338 min),batch_05_verified.csv
+2214,158872,R. Del Castillo,2021,L1,Winger,55,Winger,low,"AGREED with current pool at low confidence , no change",637 fringe min; wide when used,batch_05_verified.csv
+2214,158423,R. Del Castillo,2122,L1,Winger,59,Winger,low,"AGREED with current pool at low confidence , no change",Brest wide rotation (983 min),batch_05_verified.csv
+2214,156806,R. Del Castillo,2526,L1,Winger,68,Winger,low,"AGREED with current pool at low confidence , no change",Brest's wide man through the autumn; spring half beyond reliable coverage,batch_05_verified.csv
 107,158888,S. Diop,2021,L1,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Kovac's Monaco: left AM/10 - advanced plurality,batch_05_verified.csv
 37191,171775,O. Tannane,1920,ERE,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",Vitesse's creative 10/right-sided AM - advanced plurality (1437 min),batch_05_verified.csv
 19334,172914,B. Celina,1617,ERE,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Man City loanee as Twente's 10,batch_05_verified.csv
