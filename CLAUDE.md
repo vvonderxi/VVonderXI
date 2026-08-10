@@ -323,6 +323,23 @@ Nothing below is launch-blocking. This is the INDEX; the detail lives in `POST_L
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
 
+### 2026-08-10 | CAM tail continued to 151 cards + THE CLEARING RULE (with its measured hit rate) + archive split
+
+**Continues the 2026-08-09 session. Writes: Coman 7, Nico Williams 2, the eight-player pass 11. RUNNING TOTAL 151 cards across EIGHT writes, CAM pool 1,870 -> 1,721, ONE band crossing in the whole programme (Souček 20/21).**
+
+**THE CLEARING RULE, and the number that justifies it.** A held row can be cleared without per-season research ONLY when the player's Transfermarkt **main position AND every listed secondary position are wide** , read from the profile, **NOT inferred from the player's other cards**.
+- **MEASURED HIT RATE: 4 of 8 players, 11 of 25 rows.** Qualified: McNeil, Antony, Gelson Martins, Honorat. Excluded: **Sarr (Second Striker), Bamba (Centre-Forward), Mahi (Attacking Midfield), Ghezzal (Attacking Midfield)** , the same shape as Pépé (Centre-Forward, Second Striker), who failed the rule in the first pass.
+- **HALF the players with a wide MAIN position carried a central alternative on the SECOND line.** Main position alone is not sufficient and never was. Reading only the first line would have looked like 8-for-8 support.
+- **THE BROAD "his other seasons were Winger so this one is too" HEURISTIC WOULD HAVE WRITTEN 14 UNVERIFIABLE ROWS**, and they would have looked correct afterwards , a plausible bucket on the right player, invisible in any diff. That is the whole reason the rule is written in terms of the PROFILE and not the player's own card history.
+- **LM/RM COUNT AS WIDE** (decided explicitly): a player whose only alternatives are left or right midfield has no central role to switch to, which is exactly what the rule tests. 8 of the 11 written rows depend on this reading; only Antony is the pure LW/RW case. The 8-bucket system has no LM/RM, so they fold to Winger anyway.
+- **14 rows for the four excluded players stay in `tail_HOLD.csv`** and need per-season work, not a rule.
+
+**OTHER FACTS FROM THE CONTINUATION:**
+- **Nico Williams 25/26 was in `CM`, not CAM**, so every CAM-scoped pass was structurally unable to see it (the documented coarse-MID bug). His 21/22 was in CAM but at rt25, below the rt56 floor batches 01-05 reached. **Two cards missed for two DIFFERENT reasons, neither a research failure.** Batch 03 had independently proposed Winger for 21/22 at medium confidence , the override released a gated correct answer rather than overruling the research.
+- **`CLAUDE_ARCHIVE.md` SPLIT: 98.9% -> 73.6%.** PART 2 merged into `INGESTION_RECOVERY.md`, which now holds that thread whole. **The merge removed a hop rather than adding a file.** The archive is now the session log and nothing else. **NEXT CUT when it crosses 90%: PART 1 by month.** Note the constraint has MOVED , CLAUDE.md is now the nearer limit.
+- **A SILENT `.replace()` NO-OP mis-stamped 7 rows of provenance** (`fable-tail` instead of `tm-ccc`) while the writer printed success. DB was always correct; only the record was wrong. Caught by reading the file, not the message. Rule now in §C, and every replacement in this session's later patches was asserted , which then caught two more stale anchors during the archive split that reading the diff had missed.
+- **TRANSFERMARKT WENT INTO MAINTENANCE mid-pass and no substitute source was used.** Under that pressure I navigated to a GUESSED TM id for Sarr rather than searching; it resolved to the maintenance page so nothing came of it, but the real id (410225) is not the one I guessed (376662). **Every lookup goes through search. A guessed id that resolves gives a plausible profile for the wrong player.**
+
 ### 2026-08-09 | Tag engine fix + 115 position reclassifications + doc relocation , 5 commits
 
 **Commits `c90f5e3`, `549c19c`, `27b465e`, `c4ad9e2` + this batch (uncommitted at time of writing). Front-end + DB writes + docs. NOT pushed.**

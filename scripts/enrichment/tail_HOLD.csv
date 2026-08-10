@@ -7,8 +7,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 48079,144960,J. Karlsson,2324,SA,CAM,15,Winger,low,"CHANGE proposed at low confidence , unresolved",344 fringe minutes at Bologna; LW in cameos - thin sample,batch_01_verified.csv
 8627,141141,T. Bongonda,1617,LL,CAM,46,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Wide rotation (LW/RW) under Berizzo at Celta,batch_01_verified.csv
 8627,177355,T. Bongonda,1920,BPL,CAM,50,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Genk LW; 1420 min,batch_01_verified.csv
-20784,159426,F. Honorat,1920,L1,CAM,49,Winger,low,"CHANGE proposed at low confidence , unresolved",849 fringe minutes at Saint-Etienne; wide when used - thin sample,batch_01_verified.csv
-20784,159032,F. Honorat,2021,L1,CAM,75,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Brest RW after summer move,batch_01_verified.csv
 984,153926,J. Brandt,1718,BL,CAM,77,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Mostly wide left under Herrlich (pre-Bosz),batch_01_verified.csv
 18780,160857,R. Ghezzal,1617,L1,CAM,53,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Lyon RW rotation (1284 min),batch_01_verified.csv
 18780,160421,R. Ghezzal,1718,L1,CAM,58,Winger,low,"CHANGE proposed at low confidence , unresolved",995 fringe minutes at Monaco; wide when used - thin sample,batch_01_verified.csv
@@ -57,9 +55,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 8965,176613,F. Selemani,2122,BPL,CAM,77,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Kortrijk's main wide attacker; 13-goal season,batch_02_verified.csv
 8965,176231,F. Selemani,2223,BPL,CAM,65,Winger,low,"CHANGE proposed at low confidence , unresolved",Same wide role; 2058 min,batch_02_verified.csv
 30543,145912,G. Raspadori,2122,SA,CAM,77,ST,low,"CHANGE proposed at low confidence , unresolved","Dionisi: second striker off Scamacca with wide-left spells - forward plurality, close call",batch_02_verified.csv
-118,159700,Gelson Martins,1819,L1,CAM,64,Winger,medium,"CHANGE proposed at medium confidence , unresolved","Monaco RW (1393 min, chaotic season)",batch_02_verified.csv
-118,159282,Gelson Martins,1920,L1,CAM,60,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Monaco RW,batch_02_verified.csv
-118,158854,Gelson Martins,2021,L1,CAM,59,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Monaco RW/wing-back share under Kovac,batch_02_verified.csv
 49857,183584,İ. Kahveci,1819,TR,CAM,57,CM,low,"CHANGE proposed at low confidence , unresolved","Buruk's midfield: 8/AM hybrid - central plurality, thin split data",batch_02_verified.csv
 49857,183217,İ. Kahveci,1920,TR,CAM,54,CM,low,"CHANGE proposed at low confidence , unresolved",Same 8/AM hybrid in the title-winning squad,batch_02_verified.csv
 900,134054,J. Lingard,1617,PL,CAM,52,Winger,low,"CHANGE proposed at low confidence , unresolved","1367 rotation minutes, mostly right-sided under Mourinho",batch_02_verified.csv
@@ -161,9 +156,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 785,147409,C. Ünder,1819,SA,CAM,70,Winger,medium,"CHANGE proposed at medium confidence , unresolved",RW,batch_04_verified.csv
 785,146988,C. Ünder,1920,SA,CAM,46,Winger,low,"CHANGE proposed at low confidence , unresolved",887 injury-hit min; RW when used,batch_04_verified.csv
 785,181424,C. Ünder,2324,TR,CAM,66,Winger,low,"CHANGE proposed at low confidence , unresolved",1046 rotation min at Fener; RW,batch_04_verified.csv
-18929,133236,D. McNeil,1819,PL,CAM,63,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Dyche 4-4-2: left mid (1599 min),batch_04_verified.csv
-18929,130823,D. McNeil,2425,PL,CAM,70,Winger,low,"CHANGE proposed at low confidence , unresolved",Everton: LW/No.10 split under Dyche before injury - no clean majority,batch_04_verified.csv
-18929,130578,D. McNeil,2526,PL,CAM,30,Winger,low,"CHANGE proposed at low confidence , unresolved",LW under Moyes through the autumn; spring beyond reliable coverage,batch_04_verified.csv
 864,134342,E. Can,1617,PL,CAM,70,CM,medium,"CHANGE proposed at medium confidence , unresolved",Klopp's 8 (some 6); 2368 min,batch_04_verified.csv
 46892,140507,Ivi López,1718,LL,CAM,70,Winger,low,"CHANGE proposed at low confidence , unresolved",Levante wide-left forward (1757 min),batch_04_verified.csv
 19192,132436,J. Ramsey,2021,PL,CAM,23,CM,low,"CHANGE proposed at low confidence , unresolved",618 min of academy-graduate cameos as a young 8,batch_04_verified.csv
@@ -286,9 +278,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 272,160638,A. Rabiot,1617,L1,CAM,57,CM,medium,"CHANGE proposed at medium confidence , unresolved",PSG central mid (some 6),batch_05_verified.csv
 272,160202,A. Rabiot,1718,L1,CAM,57,CM,medium,"CHANGE proposed at medium confidence , unresolved",Emery's midfield 8/6,batch_05_verified.csv
 272,144357,A. Rabiot,2526,SA,CAM,65,CM,medium,"CHANGE proposed at medium confidence , unresolved",Allegri's Milan: central mid through the autumn; spring half beyond reliable coverage,batch_05_verified.csv
-9971,171011,Antony,2122,ERE,CAM,65,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Ajax RW (1736 injury-limited min),batch_05_verified.csv
-9971,131239,Antony,2324,PL,CAM,38,Winger,medium,"CHANGE proposed at medium confidence , unresolved",RW (1322 min),batch_05_verified.csv
-9971,137553,Antony,2425,LL,CAM,59,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Betis revival from Jan loan: RW,batch_05_verified.csv
 21437,158936,D. Bouanga,2021,L1,CAM,65,Winger,medium,"CHANGE proposed at medium confidence , unresolved",ASSE LW,batch_05_verified.csv
 18809,133129,Deulofeu,1920,PL,CAM,65,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Watford: wide-left forward,batch_05_verified.csv
 30410,146464,F. Chiesa,2021,SA,CAM,65,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Juve wide L/R (incl. wing-back spells under Pirlo) - wide plurality,batch_05_verified.csv
