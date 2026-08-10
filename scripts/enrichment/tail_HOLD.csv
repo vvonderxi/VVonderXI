@@ -103,7 +103,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 1463,132034,J. Willock,2122,PL,CAM,48,CM,medium,"CHANGE proposed at medium confidence , unresolved",Same arriving-8 role under Howe/Bruce,batch_03_verified.csv
 2489,165998,L. Díaz,1920,PRT,CAM,57,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Porto LW,batch_03_verified.csv
 2489,165606,L. Díaz,2021,PRT,CAM,62,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Fixed LW,batch_03_verified.csv
-183799,138707,Nico Williams,2122,LL,CAM,25,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Breakout cameos at RW (1324 min),batch_03_verified.csv
 1697,132648,Pablo Fornals,2021,PL,CAM,73,Winger,low,"CHANGE proposed at low confidence , unresolved",Mostly left of Moyes's attacking trio (nominal LW tucking in) - boundary case,batch_03_verified.csv
 1697,132247,Pablo Fornals,2122,PL,CAM,74,Winger,low,"CHANGE proposed at low confidence , unresolved",Same left-of-trio role; 2804 min - boundary case,batch_03_verified.csv
 41103,165841,Ricardo Horta,1920,PRT,CAM,74,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Braga: left wing/left forward (12 goals),batch_03_verified.csv
@@ -132,13 +131,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 2924,140721,A. Januzaj,1718,LL,CAM,72,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Real Sociedad RW,batch_03_verified.csv
 35533,183156,E. Valencia,2021,TR,CAM,72,ST,low,"CHANGE proposed at low confidence , unresolved",Fener: CF/second-striker plurality with wide rotation - close,batch_03_verified.csv
 30453,148095,J. Jankto,1617,SA,CAM,72,CM,low,"CHANGE proposed at low confidence , unresolved",Udinese: left-sided interior/box-to-box - CM/LM boundary,batch_03_verified.csv
-508,154511,K. Coman,1617,BL,CAM,43,Winger,low,"CHANGE proposed at low confidence , unresolved",914 injury-hit min; wide when used,batch_03_verified.csv
-508,154147,K. Coman,1718,BL,CAM,56,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Wide L/R rotation behind Robben/Ribery,batch_03_verified.csv
-508,153789,K. Coman,1819,BL,CAM,69,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Wide L/R,batch_03_verified.csv
-508,153410,K. Coman,1920,BL,CAM,57,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Flick: LW/RW,batch_03_verified.csv
-508,152663,K. Coman,2122,BL,CAM,62,Winger,medium,"CHANGE proposed at medium confidence , unresolved",LW/RW under Nagelsmann,batch_03_verified.csv
-508,151929,K. Coman,2324,BL,CAM,55,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Wide rotation with Sane/Gnabry,batch_03_verified.csv
-508,151567,K. Coman,2425,BL,CAM,65,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Kompany: LW rotation,batch_03_verified.csv
 1911,148134,L. Ocampos,1617,SA,CAM,22,Winger,low,"CHANGE proposed at low confidence , unresolved",534 fringe min at Milan; wide in cameos,batch_03_verified.csv
 1911,159806,L. Ocampos,1819,L1,CAM,72,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Marseille: fixed wide L/R (2714 min),batch_03_verified.csv
 50018,184343,Ö. Şahiner,1617,TR,CAM,65,Winger,low,"CHANGE proposed at low confidence , unresolved",Sahiner: right winger per Turkish league records,batch_03_verified.csv

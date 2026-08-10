@@ -67,6 +67,7 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 2601,177837,D. Kamada,1819,BPL,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",STVV loan breakout as the 10/second striker,batch_03_verified.csv
 41725,165196,Fábio Vieira,2122,PRT,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Porto's creative AM (14 assists in 1328 min) under Conceicao,batch_03_verified.csv
 2763,147068,M. Pašalić,1819,SA,CAM,74,CAM,low,"AGREED with current pool at low confidence , no change","Gasperini: rotated between the dual-10 slots and the central pair - advanced plurality, close",batch_03_verified.csv
+183799,138707,Nico Williams,2122,LL,Winger,25,Winger,medium,"AGREED with current pool at medium confidence , no change",Breakout cameos at RW (1324 min),batch_03_verified.csv
 1697,133059,Pablo Fornals,1920,PL,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",First season: rotated across the attacking-mid band - no clean majority,batch_03_verified.csv
 130256,165016,André Franco,2122,PRT,CAM,73,CAM,low,"AGREED with current pool at low confidence , no change",Estoril's attacking mid per Portuguese records (11 goals); earned Porto move in that role,batch_03_verified.csv
 31057,146483,H. Traorè,2021,SA,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",De Zerbi: left AM/10 rotation - advanced plurality,batch_03_verified.csv
@@ -76,6 +77,13 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 40569,166948,João Amaral,1617,PRT,CAM,63,CAM,low,"AGREED with current pool at low confidence , no change",Vitoria Setubal attacking mid per Portuguese records,batch_03_verified.csv
 40569,166540,João Amaral,1718,PRT,CAM,72,CAM,low,"AGREED with current pool at low confidence , no change",Same AM role; 9-goal season,batch_03_verified.csv
 40569,165710,João Amaral,1920,PRT,CAM,53,CAM,low,"AGREED with current pool at low confidence , no change",1106 min at Pacos; same profile,batch_03_verified.csv
+508,154511,K. Coman,1617,BL,Winger,43,Winger,low,"AGREED with current pool at low confidence , no change",914 injury-hit min; wide when used,batch_03_verified.csv
+508,154147,K. Coman,1718,BL,Winger,56,Winger,medium,"AGREED with current pool at medium confidence , no change",Wide L/R rotation behind Robben/Ribery,batch_03_verified.csv
+508,153789,K. Coman,1819,BL,Winger,69,Winger,medium,"AGREED with current pool at medium confidence , no change",Wide L/R,batch_03_verified.csv
+508,153410,K. Coman,1920,BL,Winger,57,Winger,medium,"AGREED with current pool at medium confidence , no change",Flick: LW/RW,batch_03_verified.csv
+508,152663,K. Coman,2122,BL,Winger,62,Winger,medium,"AGREED with current pool at medium confidence , no change",LW/RW under Nagelsmann,batch_03_verified.csv
+508,151929,K. Coman,2324,BL,Winger,55,Winger,medium,"AGREED with current pool at medium confidence , no change",Wide rotation with Sane/Gnabry,batch_03_verified.csv
+508,151567,K. Coman,2425,BL,Winger,65,Winger,medium,"AGREED with current pool at medium confidence , no change",Kompany: LW rotation,batch_03_verified.csv
 21446,159739,A. Bobichon,1819,L1,CAM,71,CAM,low,"AGREED with current pool at low confidence , no change",Nimes: attacking mid per French records - thin split data,batch_03_verified.csv
 539,170978,D. de Wit,2122,ERE,CAM,71,CAM,medium,"AGREED with current pool at medium confidence , no change",AZ's 10/box-crashing attacking mid; ever-present 3178 min,batch_04_verified.csv
 443,182716,E. Akbaba,2021,TR,CAM,61,CAM,low,"AGREED with current pool at low confidence , no change",Galatasaray rotation AM (1424 min),batch_04_verified.csv
