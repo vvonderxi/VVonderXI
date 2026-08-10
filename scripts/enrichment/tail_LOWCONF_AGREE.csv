@@ -57,6 +57,8 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 49857,181927,İ. Kahveci,2223,TR,CAM,51,CAM,low,"AGREED with current pool at low confidence , no change",Same rotation profile,batch_02_verified.csv
 49857,181517,İ. Kahveci,2324,TR,CAM,77,CAM,low,"AGREED with current pool at low confidence , no change","Best Fener season (12G/7A) but role rotated AM/RW/CM under Kartal - advanced plurality, split",batch_02_verified.csv
 900,132502,J. Lingard,2021,PL,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",West Ham loan: attacking-mid band (often left) in Moyes's 4-2-3-1; 9 goals,batch_02_verified.csv
+983,153823,L. Bailey,1819,BL,Winger,56,Winger,medium,"AGREED with current pool at medium confidence , no change",LW; reduced impact,batch_02_verified.csv
+983,153442,L. Bailey,1920,BL,Winger,63,Winger,low,"AGREED with current pool at low confidence , no change",1093 min; wide rotation,batch_02_verified.csv
 36927,171391,Z. Flemming,2021,ERE,CAM,77,CAM,medium,"AGREED with current pool at medium confidence , no change",Fortuna Sittard's 10/second striker; 12-goal season,batch_02_verified.csv
 2849,167554,Bryan Jafet Ruiz González,1516,PRT,CAM,76,CAM,medium,"AGREED with current pool at medium confidence , no change",Jorge Jesus: the 10/free creator (8G/12A),batch_02_verified.csv
 2849,167172,Bryan Jafet Ruiz González,1617,PRT,CAM,52,CAM,low,"AGREED with current pool at low confidence , no change","Reduced role, same creator profile (2087 min)",batch_02_verified.csv
@@ -65,12 +67,17 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 1321,158578,L. Majer,2122,L1,CAM,76,CAM,medium,"AGREED with current pool at medium confidence , no change",Rennes's playmaker: advanced 8/10 under Genesio,batch_02_verified.csv
 162037,170212,M. Tillman,2324,ERE,CAM,76,CAM,medium,"AGREED with current pool at medium confidence , no change",Bosz's PSV: advanced left-8/AM (9G/10A in 1589 min),batch_02_verified.csv
 37182,172518,S. van de Streek,1718,ERE,CAM,76,CAM,low,"AGREED with current pool at low confidence , no change","Utrecht's attacking mid/box-crasher - AM plurality, thin split data",batch_02_verified.csv
+49852,184308,Eljero George Rinaldo Elia,1718,TR,Winger,61,Winger,medium,"AGREED with current pool at medium confidence , no change",Basaksehir LW,batch_02_verified.csv
 237,172769,G. Pereiro,1617,ERE,CAM,73,CAM,medium,"AGREED with current pool at medium confidence , no change",Cocu's PSV: the 10/left attacking mid,batch_03_verified.csv
 237,172384,G. Pereiro,1718,ERE,CAM,75,CAM,medium,"AGREED with current pool at medium confidence , no change",Same advanced-mid role in the title season,batch_03_verified.csv
+127769,132797,Gabriel Martinelli,1920,PL,Winger,49,Winger,low,"AGREED with current pool at low confidence , no change",656 league min; LW/CF cameos in breakout year - wide plurality,batch_03_verified.csv
+127769,132385,Gabriel Martinelli,2021,PL,Winger,47,Winger,low,"AGREED with current pool at low confidence , no change",588 injury-hit min; LW when used,batch_03_verified.csv
 607,183398,A. Bakasetas,1920,TR,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Bakasetas: classic 10/second striker; Alanyaspor's creator,batch_03_verified.csv
 607,182982,A. Bakasetas,2021,TR,CAM,65,CAM,medium,"AGREED with current pool at medium confidence , no change",Trabzonspor's 10 from Jan arrival,batch_03_verified.csv
 2601,177837,D. Kamada,1819,BPL,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",STVV loan breakout as the 10/second striker,batch_03_verified.csv
 41725,165196,Fábio Vieira,2122,PRT,CAM,74,CAM,medium,"AGREED with current pool at medium confidence , no change",Porto's creative AM (14 assists in 1328 min) under Conceicao,batch_03_verified.csv
+2489,165998,L. Díaz,1920,PRT,Winger,57,Winger,medium,"AGREED with current pool at medium confidence , no change",Porto LW,batch_03_verified.csv
+2489,165606,L. Díaz,2021,PRT,Winger,62,Winger,medium,"AGREED with current pool at medium confidence , no change",Fixed LW,batch_03_verified.csv
 2763,147068,M. Pašalić,1819,SA,CAM,74,CAM,low,"AGREED with current pool at low confidence , no change","Gasperini: rotated between the dual-10 slots and the central pair - advanced plurality, close",batch_03_verified.csv
 183799,138707,Nico Williams,2122,LL,Winger,25,Winger,medium,"AGREED with current pool at medium confidence , no change",Breakout cameos at RW (1324 min),batch_03_verified.csv
 1697,133059,Pablo Fornals,1920,PL,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",First season: rotated across the attacking-mid band - no clean majority,batch_03_verified.csv

@@ -59,8 +59,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 49857,183217,İ. Kahveci,1920,TR,CAM,54,CM,low,"CHANGE proposed at low confidence , unresolved",Same 8/AM hybrid in the title-winning squad,batch_02_verified.csv
 900,134054,J. Lingard,1617,PL,CAM,52,Winger,low,"CHANGE proposed at low confidence , unresolved","1367 rotation minutes, mostly right-sided under Mourinho",batch_02_verified.csv
 37156,172351,J. Toornstra,1718,ERE,CAM,77,CM,medium,"CHANGE proposed at medium confidence , unresolved",Continuity of the El Ahmadi-Toornstra-Vilhena midfield three post-title,batch_02_verified.csv
-983,153823,L. Bailey,1819,BL,CAM,56,Winger,medium,"CHANGE proposed at medium confidence , unresolved",LW; reduced impact,batch_02_verified.csv
-983,153442,L. Bailey,1920,BL,CAM,63,Winger,low,"CHANGE proposed at low confidence , unresolved",1093 min; wide rotation,batch_02_verified.csv
 897,132142,M. Greenwood,2122,PL,CAM,61,Winger,medium,"CHANGE proposed at medium confidence , unresolved",RW until Jan (1281 min),batch_02_verified.csv
 50180,184202,S. Gürler,1718,TR,CAM,77,Winger,low,"CHANGE proposed at low confidence , unresolved",Serdar Gurler: right winger by Turkish league records; 12-goal Osmanlispor/Ankaraspor season,batch_02_verified.csv
 18805,134116,A. Doucouré,1617,PL,CAM,38,CM,low,"CHANGE proposed at low confidence , unresolved",1358 min settling-in season in the Watford engine room,batch_02_verified.csv
@@ -77,9 +75,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 53,140053,Á. Correa,1819,LL,CAM,54,Winger,low,"CHANGE proposed at low confidence , unresolved",Same hybrid role,batch_02_verified.csv
 194880,182731,A. Ndao,2021,TR,CAM,75,Winger,low,"CHANGE proposed at low confidence , unresolved",Karagumruk wide forward (RW) per Turkish league coverage; 11G/9A,batch_02_verified.csv
 1096,152296,D. Szoboszlai,2223,BL,CAM,75,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Rose's Leipzig: right-attacking role in 4-2-2-2/4-4-2 - RW plurality with AM share,batch_02_verified.csv
-49852,184308,Eljero George Rinaldo Elia,1718,TR,CAM,61,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Basaksehir LW,batch_02_verified.csv
-127769,132797,Gabriel Martinelli,1920,PL,CAM,49,Winger,low,"CHANGE proposed at low confidence , unresolved",656 league min; LW/CF cameos in breakout year - wide plurality,batch_03_verified.csv
-127769,132385,Gabriel Martinelli,2021,PL,CAM,47,Winger,low,"CHANGE proposed at low confidence , unresolved",588 injury-hit min; LW when used,batch_03_verified.csv
 49950,184653,J. Fernándes,1617,TR,CAM,64,Winger,low,"CHANGE proposed at low confidence , unresolved",Junior Fernandes: wide forward per Turkish league records (1186 min),batch_03_verified.csv
 49950,184264,J. Fernándes,1718,TR,CAM,75,Winger,low,"CHANGE proposed at low confidence , unresolved","Alanyaspor wide forward; 10-goal season, thin per-season split data",batch_03_verified.csv
 49950,183502,J. Fernándes,1920,TR,CAM,73,Winger,low,"CHANGE proposed at low confidence , unresolved",Same wide role,batch_03_verified.csv
@@ -96,8 +91,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 41113,165827,Fábio Martins,1920,PRT,CAM,74,Winger,low,"CHANGE proposed at low confidence , unresolved","Famalicao's wide-left creator (12 goals) - LW/AM split, thin data",batch_03_verified.csv
 1463,132426,J. Willock,2021,PL,CAM,74,CM,medium,"CHANGE proposed at medium confidence , unresolved",Jan loan: arriving no.8 - the famous 8-goal late-run streak from midfield,batch_03_verified.csv
 1463,132034,J. Willock,2122,PL,CAM,48,CM,medium,"CHANGE proposed at medium confidence , unresolved",Same arriving-8 role under Howe/Bruce,batch_03_verified.csv
-2489,165998,L. Díaz,1920,PRT,CAM,57,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Porto LW,batch_03_verified.csv
-2489,165606,L. Díaz,2021,PRT,CAM,62,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Fixed LW,batch_03_verified.csv
 1697,132648,Pablo Fornals,2021,PL,CAM,73,Winger,low,"CHANGE proposed at low confidence , unresolved",Mostly left of Moyes's attacking trio (nominal LW tucking in) - boundary case,batch_03_verified.csv
 1697,132247,Pablo Fornals,2122,PL,CAM,74,Winger,low,"CHANGE proposed at low confidence , unresolved",Same left-of-trio role; 2804 min - boundary case,batch_03_verified.csv
 41103,165841,Ricardo Horta,1920,PRT,CAM,74,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Braga: left wing/left forward (12 goals),batch_03_verified.csv
