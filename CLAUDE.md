@@ -104,6 +104,13 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 **Provenance**
 - Assists = FBref domestic-league. Shirt+position = Transfermarkt. Don't mix within a field.
 
+**CDM IS ASYMMETRIC , MOVING INTO IT RAISES rt, MOVING OUT OF IT LOWERS rt. Predicting only the inbound half cost two public band crossings (2026-08-10).**
+CDM is the ONE destination pool where the defensive signal is load-bearing, so it is the only transition family that moves rt at all , every `CAM -> Winger` and `CAM -> CM` write across 208 cards moved exactly ZERO. That much was already recorded. **What was NOT recorded is that the effect has a SIGN, and the earlier note stated only the direction that had been observed.**
+- **MEASURED, 11 big-club writes:** `CM -> CDM` moved **UP** (Casemiro +1, Kimmich +1, Fernandinho +2). `CDM -> anything` moved **DOWN** (Kroos -3, Di Maria -2, Eriksen -2 and -2, Ribery -2 and 0).
+- **MECHANISM: a card sitting in CDM draws a `def_core` benefit from the defensive pool. Moving it out REMOVES that benefit.** So the demotion is prior inflation leaving, not new error , those cards were being credited for defensive work they were never doing. **State it that way when it is questioned**, because a famous name losing a band reads like a bug.
+- **THE COST OF THE HALF-RULE: the handover said "expect rt movement only on CDM transitions, and expect it upward."** Correct on inbound, silent on outbound, and the outbound half is where the band crossings came from , **Kroos 17/18 Standout -> Accomplished and Di Maria 19/20 World Class -> Standout.** A rule that names one direction reads as complete.
+- **AND IT RIPPLES: 3 cards leaving CDM shifted the CDM pool percentiles enough to move 38 UNTOUCHED cards by up to 3 points, one of them across a band** (84 -> 85). **Any CDM-touching write needs a full before/after snapshot, not just the target rows.**
+
 **A SILENT NO-OP IS A SUCCESSFUL-LOOKING FAILURE , ASSERT THE REPLACEMENT LANDED, NEVER TRUST `.replace()` (2026-08-10).**
 A patch script searched for `done.map(r => r[0]+...` while the file actually contained `done.map(r=>r[0]+...` , no spaces around the arrow. **Python's `str.replace()` does not error on a non-match; it returns the string unchanged.** So the surrounding edits applied, the target line did not, `node --check` passed (the file was still valid), and the script printed its own success message. The writer then stamped 7 rows `fable-tail,2026-08-09` while reporting `source=tm-ccc, date=2026-08-10` **on screen**. The DB write was correct throughout; only the provenance record was wrong, and provenance is the entire point of `known_players.csv`.
 - **WHAT CAUGHT IT: reading `known_players.csv` itself, NOT the script's output.** The success message was confidently wrong. A tool reporting what it INTENDED to do is not evidence of what landed on disk.
@@ -323,6 +330,16 @@ Nothing below is launch-blocking. This is the INDEX; the detail lives in `POST_L
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-08-10 (cont.) | BIG-CLUB write , 11 cards, 3 band crossings, and the outbound-CDM asymmetry
+
+**The 798-unchecked finding produced its first write.** `bigclub_batches/` 01-05 (184 cards, 99 players, the big-club subset of the unchecked population) came back and was written.
+
+- **RESULT: 119 of 184 CONFIRM the existing pool.** The value of this pass is largely NEGATIVE evidence , the big-club cards are mostly right, which the 798 finding could not assume. 65 changes proposed, **11 at high confidence and written**; 54 held at medium/low in `bigclub_HOLD.csv`, 52 weak agreements in `bigclub_LOWCONF_AGREE.csv`. **Confidence 42% high**, against 3% at the bottom of the CAM tail , the curve behaving, since these are the best-documented players in the dataset.
+- **THE 11: Ribery x2 and Di Maria were sitting in CDM. Wingers in the defensive-midfield bucket** , the clearest misfiles found anywhere in the programme. Eriksen x2 CDM -> CAM (he was Spurs' creator, not a holder). Plus Kroos CDM -> CM, Kulusevski CM -> Winger, Calhanoglu CM -> CAM, and Kimmich/Casemiro/Fernandinho CM -> CDM.
+- **THREE BAND CROSSINGS, the most of any write in the programme:** Kroos 17/18 **82 -> 79 Standout -> Accomplished**; Di Maria 19/20 **86 -> 84 World Class -> Standout**; and one on an UNTOUCHED card, Borini 22/23 **84 -> 85 Standout -> World Class**, purely from the CDM pool percentiles shifting. **38 untouched cards moved, largest +/-3.** Pool census CDM 2837 -> 2834, Winger 4920 -> 4924.
+- **DECISION (Lucas): COMMITTED, NOT REVERTED.** The demotions are prior inflation leaving, not new error , see the §C entry on the CDM asymmetry. The position calls are right; the rt cost is the correction of a benefit those cards never earned.
+- **TOOLING: `write_positions_tail.js` gained `--hold-prefix`.** Without it this run would have CLOBBERED `tail_HOLD.csv`, since both research streams share the writer. Verified byte-identical after the run.
 
 ### 2026-08-10 | CAM tail continued to 151 cards + THE CLEARING RULE (with its measured hit rate) + archive split
 

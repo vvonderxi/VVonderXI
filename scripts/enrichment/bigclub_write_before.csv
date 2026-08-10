@@ -1,0 +1,12 @@
+api_player_id,card_id,player_name,season,club,league,position_bucket,rt,band,target_position
+752,140567,T. Kroos,1718,Real Madrid,LL,CDM,82,Standout,CM
+747,139311,Casemiro,2021,Real Madrid,LL,CM,72,Accomplished,CDM
+515,154625,F. Ribéry,1617,Bayern München,BL,CDM,78,Accomplished,Winger
+515,153880,F. Ribéry,1819,Bayern München,BL,CDM,74,Accomplished,Winger
+502,152884,J. Kimmich,2021,Bayern München,BL,CM,73,Accomplished,CDM
+266,159482,Á. Di María,1920,Paris Saint Germain,L1,CDM,86,World Class,Winger
+640,133950,Fernandinho,1718,Manchester City,PL,CM,71,Accomplished,CDM
+174,134338,C. Eriksen,1617,Tottenham,PL,CDM,89,World Class,CAM
+174,133928,C. Eriksen,1718,Tottenham,PL,CDM,88,World Class,CAM
+1640,146443,H. Çalhanoğlu,2021,AC Milan,SA,CM,75,Accomplished,CAM
+30435,131145,D. Kulusevski,2324,Tottenham,PL,CM,79,Accomplished,Winger

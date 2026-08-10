@@ -35,6 +35,9 @@ const TARGET = process.argv[2];
 const arg = (flag, dflt) => { const i = process.argv.indexOf(flag);
   return (i > -1 && process.argv[i+1]) ? process.argv[i+1] : dflt; };
 const SOURCE = arg('--source', 'fable-tail');
+// Hold-file naming is a FLAG because a second research stream (big-club) would
+// otherwise CLOBBER the CAM tail's hold files, which share this writer.
+const HOLD_PREFIX = arg('--hold-prefix', 'tail');
 const STAMP  = arg('--date', new Date().toISOString().slice(0,10));
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
@@ -238,7 +241,7 @@ const esc=v=>{const s=(v===null||v===undefined||v==='')?'NR':String(v);
     console.log('  wrote '+file+' , '+rows.length+' rows  ('+label+')');
   };
   // ACTIONABLE , the card may be wrong and nothing has settled it.
-  dump('scripts/enrichment/tail_HOLD.csv', [].concat(
+  dump('scripts/enrichment/'+HOLD_PREFIX+'_HOLD.csv', [].concat(
     buckets.holdChange.map(x=>({...x,reason:'CHANGE proposed at '+(x.conf||'blank')+' confidence , unresolved'})),
     buckets.unsure.map(x=>({...x,reason:'UNSURE , research could not establish the season role'})),
     buckets.badpos.map(x=>({...x,reason:'position outside the 8-bucket set: '+x.want})),
@@ -247,7 +250,7 @@ const esc=v=>{const s=(v===null||v===undefined||v==='')?'NR':String(v);
   // NOT ACTIONABLE , research agreed with what we already have, just not confidently.
   // Kept as a record so nobody re-researches them, and so a later pass can tell the
   // difference between "nobody looked" and "someone looked and agreed, weakly".
-  dump('scripts/enrichment/tail_LOWCONF_AGREE.csv',
+  dump('scripts/enrichment/'+HOLD_PREFIX+'_LOWCONF_AGREE.csv',
     buckets.holdAgree.map(x=>({...x,reason:'AGREED with current pool at '+(x.conf||'blank')+' confidence , no change'})),
     'no work, record only');
   console.log('  NEXT: refresh materialized view player_card_mv, then snapshot rt before/after.');
