@@ -136,6 +136,7 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 2214,158423,R. Del Castillo,2122,L1,Winger,59,Winger,low,"AGREED with current pool at low confidence , no change",Brest wide rotation (983 min),batch_05_verified.csv
 2214,156806,R. Del Castillo,2526,L1,Winger,68,Winger,low,"AGREED with current pool at low confidence , no change",Brest's wide man through the autumn; spring half beyond reliable coverage,batch_05_verified.csv
 107,158888,S. Diop,2021,L1,CAM,68,CAM,low,"AGREED with current pool at low confidence , no change",Kovac's Monaco: left AM/10 - advanced plurality,batch_05_verified.csv
+20633,160533,J. Cabot,1617,L1,Winger,67,Winger,low,"AGREED with current pool at low confidence , no change",Lorient RW (1269 min); pre-dates his wing-back conversion,batch_05_verified.csv
 37191,171775,O. Tannane,1920,ERE,CAM,67,CAM,low,"AGREED with current pool at low confidence , no change",Vitesse's creative 10/right-sided AM - advanced plurality (1437 min),batch_05_verified.csv
 19334,172914,B. Celina,1617,ERE,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Man City loanee as Twente's 10,batch_05_verified.csv
 15803,165804,B. Kraev,1920,PRT,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Gil Vicente attacking mid per Portuguese records - thin split data,batch_05_verified.csv
@@ -143,6 +144,8 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 3424,183430,B. Mensah,1920,TR,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Same 8/10 profile; 4G/6A,batch_05_verified.csv
 574,167165,F. Krovinović,1617,PRT,CAM,66,CAM,low,"AGREED with current pool at low confidence , no change",Rio Ave: the 10 (earned Benfica move as a playmaker),batch_05_verified.csv
 574,166775,F. Krovinović,1718,PRT,CAM,42,CAM,low,"AGREED with current pool at low confidence , no change",850 min at Benfica before injury; same 10 profile,batch_05_verified.csv
+8483,176683,J. Dompé,2122,BPL,Winger,66,Winger,medium,"AGREED with current pool at medium confidence , no change",Zulte's fast LW; 12 assists,batch_05_verified.csv
+2809,153764,R. Steffen,1819,BL,Winger,66,Winger,low,"AGREED with current pool at low confidence , no change",Wolfsburg wide rotation (L/R),batch_05_verified.csv
 9971,171011,Antony,2122,ERE,Winger,65,Winger,medium,"AGREED with current pool at medium confidence , no change",Ajax RW (1736 injury-limited min),batch_05_verified.csv
 9971,131239,Antony,2324,PL,Winger,38,Winger,medium,"AGREED with current pool at medium confidence , no change",RW (1322 min),batch_05_verified.csv
 9971,137553,Antony,2425,LL,Winger,59,Winger,medium,"AGREED with current pool at medium confidence , no change",Betis revival from Jan loan: RW,batch_05_verified.csv

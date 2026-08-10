@@ -216,7 +216,6 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 879,158223,S. Mavididi,2223,L1,CAM,55,Winger,low,"CHANGE proposed at low confidence , unresolved",LW (1284 min),batch_05_verified.csv
 879,131037,S. Mavididi,2425,PL,CAM,55,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Leicester LW,batch_05_verified.csv
 41112,166005,Trincão,1920,PRT,CAM,68,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Braga RW before Barcelona move,batch_05_verified.csv
-20633,160533,J. Cabot,1617,L1,CAM,67,Winger,low,"CHANGE proposed at low confidence , unresolved",Lorient RW (1269 min); pre-dates his wing-back conversion,batch_05_verified.csv
 976,153921,K. Bellarabi,1718,BL,CAM,46,Winger,low,"CHANGE proposed at low confidence , unresolved",Injury-hit 1143 min; RW when fit,batch_05_verified.csv
 976,153549,K. Bellarabi,1819,BL,CAM,67,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Leverkusen RW (1060 min),batch_05_verified.csv
 976,153163,K. Bellarabi,1920,BL,CAM,63,Winger,medium,"CHANGE proposed at medium confidence , unresolved",RW rotation (1426 min),batch_05_verified.csv
@@ -236,10 +235,8 @@ api_player_id,card_id,player_name,season,league_code,current_pool,rt,proposed_po
 51045,181947,D. Rossi,2223,TR,CAM,58,Winger,low,"CHANGE proposed at low confidence , unresolved",Same profile (1584 min),batch_05_verified.csv
 41161,183040,Davidson,2021,TR,CAM,66,Winger,low,"CHANGE proposed at low confidence , unresolved",Davidson: LW per Turkish league records; 11-goal season,batch_05_verified.csv
 41161,182533,Davidson,2122,TR,CAM,54,Winger,low,"CHANGE proposed at low confidence , unresolved",Same LW role,batch_05_verified.csv
-8483,176683,J. Dompé,2122,BPL,CAM,66,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Zulte's fast LW; 12 assists,batch_05_verified.csv
 47574,140918,Moi Gómez,1617,LL,CAM,66,Winger,low,"CHANGE proposed at low confidence , unresolved",Sporting Gijon: wide-left attacking role,batch_05_verified.csv
 409,154192,N. Bentaleb,1718,BL,CAM,66,CM,low,"CHANGE proposed at low confidence , unresolved",Schalke: central mid/8 (1010 min),batch_05_verified.csv
-2809,153764,R. Steffen,1819,BL,CAM,66,Winger,low,"CHANGE proposed at low confidence , unresolved",Wolfsburg wide rotation (L/R),batch_05_verified.csv
 2996,159622,S. Thioub,1819,L1,CAM,66,Winger,medium,"CHANGE proposed at medium confidence , unresolved",Nimes RW (2481 min),batch_05_verified.csv
 2996,159217,S. Thioub,1920,L1,CAM,43,Winger,low,"CHANGE proposed at low confidence , unresolved",Angers wide rotation,batch_05_verified.csv
 2996,158773,S. Thioub,2021,L1,CAM,42,Winger,low,"CHANGE proposed at low confidence , unresolved",Same wide rotation,batch_05_verified.csv
