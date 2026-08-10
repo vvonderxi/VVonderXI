@@ -1,0 +1,46 @@
+api_player_id,card_id,player_name,season,club,league,current_pool,coarse_position,rt,goals,assists,minutes,dribbles_per90,verified_position,confidence,evidence
+116117,130811,M. Caicedo,2425,Chelsea,PL,CDM,MID,72,1,2,3356,0.78,CDM,high,Confirms pool: Maresca's 6 (3356 min)
+116117,130496,M. Caicedo,2526,Chelsea,PL,CDM,MID,71,3,1,2802,0.48,CDM,medium,"Confirms pool: the 6; autumn-verified, spring beyond coverage"
+116117,131218,M. Caicedo,2324,Chelsea,PL,CDM,MID,70,1,3,2874,0.81,CDM,high,Confirms pool: Pochettino's holding mid
+63577,131208,M. Mudryk,2324,Chelsea,PL,CM,MID,71,5,2,1586,2.21,Winger,medium,CORRECTION to pool (CM): LW (1586 rotation min)
+2287,133242,R. Barkley,1819,Chelsea,PL,CM,MID,71,3,5,1241,1.09,CM,low,Confirms pool: Sarri-rotation 8 (1241 min)
+872,148314,M. Pjanić,1617,Juventus,SA,CDM,MID,81,5,9,2173,0.66,CDM,low,Confirms pool narrowly: deep playmaker beside Khedira - CDM/CM boundary
+872,147857,M. Pjanić,1718,Juventus,SA,CM,MID,78,5,8,2488,1.01,CDM,medium,CORRECTION to pool (CM): Allegri's regista in the 4-3-3
+872,147003,M. Pjanić,1920,Juventus,SA,CDM,MID,72,3,6,2286,0.59,CDM,medium,Confirms pool: Sarri's regista
+872,147426,M. Pjanić,1819,Juventus,SA,CM,MID,70,2,6,2288,0.43,CDM,medium,CORRECTION to pool (CM): regista
+272,145272,A. Rabiot,2223,Juventus,SA,CDM,MID,79,8,4,2751,0.88,CM,medium,CORRECTION to pool (CDM): box-to-box left 8 in the 3-5-2 (8 goals)
+868,147765,S. Khedira,1718,Juventus,SA,CM,MID,78,9,2,1922,0.37,CM,medium,Confirms pool: box-to-box (9 goals)
+868,148206,S. Khedira,1617,Juventus,SA,CM,MID,71,5,4,2548,0.53,CM,medium,Confirms pool: box-to-box 8
+866,147790,J. Cuadrado,1718,Juventus,SA,CM,MID,73,4,6,1358,1.99,Winger,medium,CORRECTION to pool (CM): RW/right wing-back (1358 min)
+116,144459,K. Thuram,2425,Juventus,SA,CDM,MID,72,4,5,2337,1.5,CM,medium,CORRECTION to pool (CDM): Motta's box-to-box 8 (Locatelli held)
+1642,146412,F. Kessié,2021,AC Milan,SA,CM,MID,83,13,4,3230,1.2,CDM,medium,CORRECTION to pool (CM): Pioli's double pivot beside Bennacer/Tonali - penalties inflated the 13 goals
+1642,147296,F. Kessié,1819,AC Milan,SA,CM,MID,75,7,2,3021,1.34,CM,medium,Confirms pool: Gattuso's right 8 (3021 min)
+744,145665,Brahim Díaz,2223,AC Milan,SA,CM,MID,77,6,7,1947,1.8,CAM,medium,CORRECTION to pool (CM): Pioli's 10 for much of 22/23 (RW share)
+1638,147727,G. Bonaventura,1718,AC Milan,SA,CM,MID,77,8,3,2552,1.2,CM,medium,Confirms pool: left 8/mezzala under Gattuso
+1640,146443,H. Çalhanoğlu,2021,AC Milan,SA,CM,MID,75,4,9,2627,1.23,CAM,high,CORRECTION to pool (CM): Pioli's fixed 10 behind Ibrahimovic (9 assists)
+1640,145154,H. Çalhanoğlu,2324,Inter,SA,CDM,MID,85,13,3,2576,0.24,CDM,high,Confirms pool: Inzaghi's regista (13 goals incl. pens)
+1640,146002,H. Çalhanoğlu,2122,Inter,SA,CDM,MID,85,7,12,2509,0.47,CM,medium,CORRECTION to pool (CDM): left 8 in his first Inter season - Brozovic held the regista role
+1640,144334,H. Çalhanoğlu,2526,Inter,SA,CDM,MID,81,9,4,1650,0.27,CDM,medium,"Confirms pool: regista; autumn-verified, spring beyond coverage"
+1640,144750,H. Çalhanoğlu,2425,Inter,SA,CM,MID,75,5,6,1961,0.14,CDM,medium,CORRECTION to pool (CM): still the regista
+2050,148123,É. Banega,1617,Inter,SA,CDM,MID,80,6,6,1558,2.37,CAM,low,CORRECTION to pool (CDM): 10/8 rotation under De Boer/Pioli - advanced plurality (1558 min)
+205,147242,R. Nainggolan,1819,Inter,SA,CDM,MID,79,6,3,1971,1.23,CAM,low,CORRECTION to pool (CDM): Spalletti's 10 behind Icardi in an injury-hit season
+201,147724,M. Brozović,1718,Inter,SA,CM,MID,77,4,9,1923,1.22,CDM,low,"Converted to regista mid-season (the famous Spalletti switch) - deep plurality of minutes, close"
+30558,145370,N. Barella,2223,Inter,SA,CM,MID,75,6,6,2622,1.37,CM,high,Confirms pool: right mezzala
+30558,144140,N. Barella,2526,Inter,SA,CM,MID,72,3,8,2533,0.89,CM,high,Confirms pool: right mezzala (autumn-verified; spring beyond coverage)
+30558,144546,N. Barella,2425,Inter,SA,CM,MID,70,3,6,2425,0.85,CM,high,Confirms pool: right mezzala
+329,144133,P. Zieliński,2526,Inter,SA,CM,MID,72,6,3,2055,0.79,CM,medium,Confirms pool: mezzala rotation; autumn only
+31173,144944,D. Frattesi,2324,Inter,SA,CM,MID,70,6,3,934,0.67,CM,low,Confirms pool: super-sub mezzala (934 min)
+25,153747,M. Reus,1819,Borussia Dortmund,BL,CAM,MID,88,17,8,2322,0.97,CAM,high,Confirmed: Favre's 10
+25,151911,M. Reus,2324,Borussia Dortmund,BL,CM,MID,74,6,6,1610,0.45,CAM,low,CORRECTION to pool (CM): rotation 10/left in farewell season - advanced plurality (Brandt first-choice 10)
+25,152261,M. Reus,2223,Borussia Dortmund,BL,CM,MID,70,6,4,1356,0.6,CAM,low,CORRECTION to pool (CM): 10 in an injury-hit 1356 min
+1991,154989,S. Kagawa,1516,Borussia Dortmund,BL,CAM,MID,82,9,7,2168,0.83,CAM,high,Confirmed: Tuchel's 10/8
+984,151651,J. Brandt,2324,Borussia Dortmund,BL,CAM,MID,80,7,11,2230,1.09,CAM,high,Confirmed: Terzic's fixed 10
+50,141372,Koke,1516,Atletico Madrid,LL,CM,MID,84,5,14,2972,0.45,Winger,low,Left mid in Simeone's flat 4-4-2 for most of 15/16 (14 assists from wide) - wide-mid/CM boundary
+50,140911,Koke,1617,Atletico Madrid,LL,CM,MID,76,4,8,3171,0.4,CM,low,"Rotated wide-left and central in the 4-4-2 - boundary case, central plurality slight"
+50,140450,Koke,1718,Atletico Madrid,LL,CM,MID,70,4,4,2764,0.65,CM,medium,Confirms pool: central with Gabi (Saul wide-left)
+2923,138770,Y. Carrasco,2122,Atletico Madrid,LL,CM,MID,74,6,6,2591,3.06,Winger,low,"CORRECTION to pool (CM): LW/left wing-back split in the 3-5-2/4-4-2 - wide-left plurality, bucket boundary"
+172,134381,D. Alli,1617,Tottenham,PL,CAM,MID,89,18,7,3045,1.45,CAM,high,Confirmed: advanced mid behind Kane
+172,133972,D. Alli,1718,Tottenham,PL,CAM,MID,86,9,10,2972,1.33,CAM,high,Confirmed: 10/left AM
+172,133566,D. Alli,1819,Tottenham,PL,CM,MID,73,5,3,1835,1.42,CAM,low,"AM/8 mix in an injury-hit season - advanced plurality, close vs pool's CM"
+18784,130744,J. Maddison,2425,Tottenham,PL,CAM,MID,84,9,7,1817,1.63,CAM,high,Confirmed: 10
+18784,131157,J. Maddison,2324,Tottenham,PL,CAM,MID,80,4,9,2154,1.34,CAM,high,Confirmed: Postecoglou's 10
