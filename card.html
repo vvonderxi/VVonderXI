@@ -540,7 +540,10 @@
      Trigger sits in .topline between Back and .topactions. On open the stage
      (card + season rows + depth) slides down and dims; the panel takes the top.
      One thing prominent at a time. No page navigation either way. */
-  .searchtrigger{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px 14px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
+  /* GROWS INTO THE TOPLINE GAP. .topline is justify-content:space-between, so the pill
+     was pinned to its intrinsic 102px inside a 1569px gap at 1920. flex:1 fills it;
+     max-width stops it sprawling on ultrawide. Mobile reverts to icon-only below. */
+  .searchtrigger{flex:1 1 auto;max-width:460px;margin:0 24px;justify-content:flex-start;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px 14px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
   .searchtrigger:hover{background:rgba(255,255,255,0.09)}
   .searchtrigger svg{width:16px;height:16px;flex:none}
   .searchtrigger:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
@@ -598,6 +601,18 @@
   body.light #cardSearch .vseg{color:var(--ink-soft)}
   body.light #cardSearch .vseg.on{color:#fff}
 
+  /* recent searches , shown only when the input is empty */
+  #cardSearch .cs-recent{margin:0 0 14px}
+  #cardSearch .cs-rlabel{font-family:'Archivo';font-weight:700;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px}
+  body.light #cardSearch .cs-rlabel{color:var(--ink-soft)}
+  #cardSearch .cs-rlist{display:flex;flex-wrap:wrap;gap:8px}
+  #cardSearch .cs-rchip{display:inline-flex;align-items:baseline;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--cream);transition:background .15s,border-color .15s;max-width:100%}
+  #cardSearch .cs-rchip:hover{background:rgba(255,255,255,0.1)}
+  #cardSearch .cs-rchip .rn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  #cardSearch .cs-rchip .rs{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--row-muted);font-variant-numeric:tabular-nums;flex:none}
+  body.light #cardSearch .cs-rchip{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
+  body.light #cardSearch .cs-rchip:hover{background:rgba(0,0,0,0.07)}
+
   /* results scroll region , the curtain owns the viewport below the bar */
   #cardSearch .cs-results{max-height:calc(100vh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
   #cardSearch .cs-results::-webkit-scrollbar{width:6px}
@@ -612,7 +627,7 @@
     #cardSearch .cs-results{max-height:calc(100vh - 216px)}
     #cardSearch .cs-meta{margin:10px 0 8px}
     .searchtrigger .stlbl{display:none}
-    .searchtrigger{padding:8px 10px}
+    .searchtrigger{flex:0 0 auto;max-width:none;margin:0 0 0 10px;padding:8px 10px}
     body.searching .stage{transform:translateY(14px)}
   }
 
@@ -697,7 +712,6 @@
   #cardSearch .rmini.elite .a,#cardSearch .rmini.elite .rmn{color:#2a1d03}
   #cardSearch .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
   #cardSearch .rmini.gen .a,#cardSearch .rmini.gen .rmn{color:#fff}
-     Desktop grids (above) untouched; no HTML/builder change. ===== */
   @media (max-width:720px),(max-height:600px){
     
     #cardSearch #csGrid.pillmode > .urow{grid-template-columns:24px minmax(0,1fr) auto auto auto auto 42px;grid-template-rows:auto auto auto;column-gap:0;row-gap:4px;padding:10px 13px;align-items:center}
@@ -776,6 +790,7 @@
             <button class="vseg on" id="csVCompact" type="button" onclick="csSetView('compact')" aria-label="Compact view" title="Compact"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 9.3h16M4 13.6h16M4 17.9h16"/></svg></button>
           </div>
         </div>
+        <div class="cs-recent" id="csRecent" hidden><div class="cs-rlabel">Recent</div><div class="cs-rlist" id="csRecentList"></div></div>
         <div class="cs-results"><div class="cardgrid" id="csGrid"></div></div>
       </div>
     </div>
@@ -1996,18 +2011,63 @@ function csOpen(){
   o.setAttribute('aria-hidden','false');
   document.getElementById('csTrigger').setAttribute('aria-expanded','true');
   csSetView(CS.view);
+  csRenderRecent();
   var i=document.getElementById('csInput'); if(i){ i.focus(); i.select(); }
   if(!CS.loaded) csRun();                    // browse pool on first open
 }
+/* csReset clears the QUERY STATE. Coming back to a card with "casemiro" still in the
+   box and 12 results on screen is what made a WORKING Back read as broken , the card
+   was there, you just could not see it, so you pressed Back again and left for
+   rankings. Clearing is the actual fix; the history stack was never wrong. */
+function csReset(){
+  var i=document.getElementById('csInput'); if(i) i.value='';
+  CS.q=''; CS.rows=[]; CS.loaded=false; CS.seq++;          // bump seq , orphan any in-flight query
+  var c=document.getElementById('csClear'); if(c) c.classList.remove('on');
+  ['csHint','csCount'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=''; });
+  var g=document.getElementById('csGrid'); if(g) g.innerHTML='';
+}
+/* No early return and no bfcache gate , this must be safe to call unconditionally. */
 function csClose(){
-  if(!document.body.classList.contains('searching')) return;
-  var o=document.getElementById('cardSearch');
-  o.setAttribute('aria-hidden','true');
   document.body.classList.remove('searching');
-  document.getElementById('csTrigger').setAttribute('aria-expanded','false');
+  var o=document.getElementById('cardSearch'); if(o) o.setAttribute('aria-hidden','true');
+  var t=document.getElementById('csTrigger'); if(t) t.setAttribute('aria-expanded','false');
+  csReset();
 }
 function csToggle(){ document.body.classList.contains('searching') ? csClose() : csOpen(); }
-function csGo(id){ if(id!=null&&id!=='') location.href='card.html?id='+encodeURIComponent(id); }
+/* RECENT , last 5 player-seasons opened FROM the overlay. Same localStorage
+   convention as vvRankView. Most recent first, deduped on card_id. */
+var RECENT_KEY='vvRecentCards', RECENT_MAX=5;
+function csRecentGet(){ try{ var a=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function csRecentPut(list){ try{ localStorage.setItem(RECENT_KEY,JSON.stringify(list.slice(0,RECENT_MAX))); }catch(e){} }
+function csRecentAdd(entry){
+  if(!entry||entry.id==null) return;
+  var list=csRecentGet().filter(function(x){ return String(x.id)!==String(entry.id); });
+  list.unshift(entry); csRecentPut(list);
+}
+function csGo(id){
+  if(id==null||id==='') return;
+  var d=(CS.rows||[]).filter(function(r){ return String(r.card_id)===String(id); })[0];
+  if(d) csRecentAdd({id:d.card_id, name:d.full||d.surname, season:d.year, club:d.clubname});
+  location.href='card.html?id='+encodeURIComponent(id);
+}
+function csGoRecent(id){
+  var e=csRecentGet().filter(function(x){ return String(x.id)===String(id); })[0];
+  if(e) csRecentAdd(e);                                   // re-open bumps it to the front
+  location.href='card.html?id='+encodeURIComponent(id);
+}
+function csRenderRecent(){
+  var wrap=document.getElementById('csRecent'), list=document.getElementById('csRecentList');
+  if(!wrap||!list) return;
+  var items=CS.q ? [] : csRecentGet();                    // only when the input is empty
+  if(!items.length){ wrap.hidden=true; list.innerHTML=''; return; }
+  wrap.hidden=false;
+  list.innerHTML=items.map(function(x){
+    // x.season is already the display form (rowToCard's `year`, e.g. "11/12")
+    return '<button type="button" class="cs-rchip" title="'+esc((x.name||'')+' , '+(x.club||''))+'" onclick="csGoRecent('+JSON.stringify(String(x.id))+')">'+
+           '<span class="rn">'+esc(x.name||'')+'</span><span class="rs">'+esc(x.season||'')+'</span></button>';
+  }).join('');
+  function esc(v){ return String(v).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+}
 function csClearQ(){
   var i=document.getElementById('csInput'); if(i){ i.value=''; i.focus(); }
   CS.q=''; document.getElementById('csClear').classList.remove('on'); csRun();
@@ -2060,6 +2120,7 @@ async function csRun(){
   csRender();
 }
 function csRender(){
+  csRenderRecent();
   var g=document.getElementById('csGrid'); if(!g) return;
   var rows=CS.rows||[];
   g.classList.remove('pillmode','compactmode');
@@ -2087,8 +2148,11 @@ function csRender(){
   /* bfcache restore , Back must land on the CARD, not on a re-drawn curtain.
      Returning from a card we navigated to leaves body.searching set in the restored
      page, so the previous card would come back hidden behind the search panel. */
-  window.addEventListener(pageshow,function(e){ if(e.persisted) csClose(); });
-  var rz; window.addEventListener(resize,function(){
+  /* UNCONDITIONAL , not gated on e.persisted. The deployed restore reported
+     navigation type "navigate" while body.searching was still set, so the bfcache
+     gate never fired. A fresh load never has the class, so closing always is safe. */
+  window.addEventListener('pageshow',function(){ csClose(); });
+  var rz; window.addEventListener('resize',function(){
     clearTimeout(rz); rz=setTimeout(function(){ if(CS.view==='cards'&&document.body.classList.contains('searching')) csRender(); },150);
   });
 })();
