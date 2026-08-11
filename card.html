@@ -51,7 +51,10 @@
   body.light .crumb{color:var(--ink-soft)}body.light .modetoggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
   .stage{display:grid;grid-template-columns:auto 1fr;gap:54px;padding:20px 56px 60px;max-width:1320px;align-items:start}
   .plinth{position:sticky;top:40px;display:flex;flex-direction:column;align-items:center;gap:20px}
-  .plinth .glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,92,122,0.14),transparent 66%);filter:blur(20px);z-index:0;top:20px}
+  /* pointer-events:none , DECORATIVE ONLY, never a hit target at any width. At <=1040px
+     .plinth is position:static, so this escapes its containing block, resolves against
+     BODY and lands over .topline, blocking the search trigger's tap (2026-08-11, §C). */
+  .plinth .glow{pointer-events:none;position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,92,122,0.14),transparent 66%);filter:blur(20px);z-index:0;top:20px}
   .plinth .vvcard{position:relative;z-index:1}
   .plinth .pcap{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58);text-align:center;max-width:300px;line-height:1.5;position:relative;z-index:1}
   body.light .plinth .pcap{color:var(--ink-soft)}
@@ -561,7 +564,10 @@
   body.light #cardSearch{--row-muted:#5f5a52;--row-muted-2:#655f54;--row-dim:#6a6256}
 
   /* the curtain itself */
-  #cardSearch{display:none;padding:16px 56px 0;max-width:1320px;width:100%}
+  /* max-width matches rankings' .gridwrap (1680) for the same result density.
+     margin-inline:auto because rankings is actually LEFT-ALIGNED with no auto margins
+     , we centre rather than inherit that bias. See the open item in §D. */
+  #cardSearch{display:none;padding:16px 56px 0;max-width:1680px;margin-inline:auto;width:100%}
   body.searching #cardSearch{display:block}
   /* RESTING STATE IS VISIBLE , the entrance is a flourish, never a gate.
      An earlier version faded in via a double-rAF class; rAF is THROTTLED in a
