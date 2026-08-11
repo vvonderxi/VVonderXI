@@ -119,6 +119,12 @@ Postgres does NOT reject a view that selects from itself. The body is replaced b
 - **CAPTURE BEFORE YOU EDIT:** `SELECT pg_get_viewdef('player_card_view'::regclass, true);` and save the output BEFORE any view work. That capture is the only thing that made recovery possible.
 - **DO NOT REFRESH THE MATVIEW IF THE VIEW LOOKS WRONG.** The stale matview is the backup. Refreshing destroys the last good copy of the data.
 
+**CLAUDE CODE CAN EXECUTE DDL VIA THE `exec_sql` RPC WITH THE SERVICE KEY , USE IT FOR VIEW CHANGES (proven 2026-08-11).**
+`fold_fix.sql` applied **unmodified, on the first attempt**, through the RPC after **two silent no-ops through the Supabase SQL editor**. The file was never wrong; the paste was not reaching the database.
+- **THE EDITOR RUNS ONLY HIGHLIGHTED TEXT WHEN A SELECTION EXISTS**, so a stray selection silently executes a FRAGMENT and reports success. That is why the view sat at exactly 11,202 chars twice with no error shown. **Unchanged-and-no-error is the signature of a statement that never ran** , a wrong `CREATE OR REPLACE VIEW` fails LOUDLY, it cannot leave the old view intact.
+- **PREFER THE RPC ROUTE for view changes.** Node in Terminal A, service key from `.env`. Note `exec_sql` DISCARDS SELECT output (returns `data:null`), so to READ a value back, force it through the error channel: `select (('x'||(<expr>)))::int` and parse the "invalid input syntax" message. Read long values (a viewdef) in `substr` chunks and assert the reassembled length matches `length()`.
+- **KEEP CAPTURE-BEFORE-EDIT EITHER WAY.** The route changes nothing about the incident below , capture `pg_get_viewdef` to a timestamped file, verify it is on disk and non-empty, THEN write.
+
 **A SILENT NO-OP IS A SUCCESSFUL-LOOKING FAILURE , ASSERT THE REPLACEMENT LANDED, NEVER TRUST `.replace()` (2026-08-10).**
 A patch script searched for `done.map(r => r[0]+...` while the file actually contained `done.map(r=>r[0]+...` , no spaces around the arrow. **Python's `str.replace()` does not error on a non-match; it returns the string unchanged.** So the surrounding edits applied, the target line did not, `node --check` passed (the file was still valid), and the script printed its own success message. The writer then stamped 7 rows `fable-tail,2026-08-09` while reporting `source=tm-ccc, date=2026-08-10` **on screen**. The DB write was correct throughout; only the provenance record was wrong, and provenance is the entire point of `known_players.csv`.
 - **WHAT CAUGHT IT: reading `known_players.csv` itself, NOT the script's output.** The success message was confidently wrong. A tool reporting what it INTENDED to do is not evidence of what landed on disk.
@@ -338,6 +344,25 @@ Nothing below is launch-blocking. This is the INDEX; the detail lives in `POST_L
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-08-11 | KNOWN-AS NAME FOLD shipped (search follow-up 1) + the view-destruction incident
+
+**DB write + matview refresh + docs. Commit `9fc9008` (docs) and this one. NOT pushed.**
+
+**1. KNOWN-AS NAMES ARE SEARCHABLE , `DB_HYGIENE_STAGE.md` follow-up (1) is DONE.**
+`player_name_norm` now folds **`concat_ws(' ', p.name, p.full_name)`** instead of `COALESCE(p.full_name, p.name)`, so the known-as name and the legal name are BOTH in the searchable text. **ONE line of the view changed** (line 201 of 218), +19 chars, 11,202 -> 11,221. Applied via the `exec_sql` RPC, not the SQL editor (see §C).
+- **MEASURED, matview before -> after:** Casemiro **0 -> 12**, Jorginho **0 -> 16**, Fernandinho **0 -> 9**, Raphinha **0 -> 12**, Fabinho **0 -> 11**. **Salah unchanged at 26** , the control, proving the fold widened the column without disturbing names that already worked.
+- **ENGINE UNTOUCHED, verified before and after:** elite (rt>=85) **650**, rt range **11 / 97**, **57,234** rows, on both the view and the refreshed matview. `REFRESH MATERIALIZED VIEW player_card_mv` took **4.3s** (plain, ACCESS EXCLUSIVE, site locked for that window).
+- **NO FRONT-END CHANGE AND NO MATVIEW REBUILD WERE NEEDED.** `tokenAndFilter` already queries `player_name_norm`, and the matview's frozen column list already contains it , the frozen-query trap only bites on ADDED columns, so widening an EXISTING column's expression propagates on a plain REFRESH. **No `?v=` bump required.** This is exactly why widening beat adding an `alias_norm` column.
+- Backup kept at `~/Downloads/player_card_view_BACKUP_2026-08-11T120335Z.sql` (11,411 bytes, verified on disk before the write).
+
+**2. TWO OPEN ITEMS FOUND DURING VERIFICATION, neither blocking:**
+- **NULL rt SORTS FIRST on `ORDER BY rt DESC`** (Postgres default), so a null-rt row can take the top slot. Hit while spot-checking Salah, whose top row read `null` until re-read with `NULLS LAST`; 1 of his 26 rows has a null rt. **Same trap as the Compare picker bug** (`buildPoolQ` missing `nullsFirst:false`, fixed in `4428552`) , it is a property of the DATA that is still live, so any new `rt DESC` query needs `nullsFirst:false`.
+- **67 DOUBLE-SPACED FOLDED NAMES, up from 4 , introduced by this change and cosmetic.** `players.name` already contains double spaces (`J.  McGinn` -> `j  mcginn john mcginn`); `COALESCE` had been preferring `full_name`, and `concat_ws` now brings that field in. **Search is NOT affected** , `tokenAndFilter` matches each token as its own substring, so inter-token spacing is never compared (verified: a double-spaced row still matches on a single token). Fix with a `regexp_replace(..., '\\s+', ' ')` collapse at the NEXT view edit; not worth a write of its own.
+
+**3. THE VIEW WAS DESTROYED AND RECOVERED EARLIER THE SAME DAY.** An accidental `CREATE OR REPLACE VIEW x AS SELECT * FROM x` replaced the 11,202-char engine body with a 965-char self-referential projection, silently. Full lesson in §C, including the two rules that matter most: **the stale matview is the backup, so do NOT refresh a view that looks wrong**, and **capture `pg_get_viewdef` before any view work**. A read that day concluded "the engine is not in a view" , that was true of the damaged database and false of the system; the §Stack line now records this so it is not re-derived.
+
+**STILL OPEN on the search track:** follow-up (2) **trigram indexes** (`pg_trgm` + 2 GIN, `CREATE INDEX CONCURRENTLY`, no rebuild, safe while live) is now the only piece of `DB_HYGIENE_STAGE.md` left and can ship alone. **The percentile columns still need the matview DROP + CREATE** and their 3 product decisions , they no longer share a sitting with the known-as fix, since that shipped without a rebuild. Plan in `scripts/enrichment/matview_rebuild_plan.md` (untracked).
 
 ### 2026-08-10 (cont.) | BIG-CLUB write , 11 cards, 3 band crossings, and the outbound-CDM asymmetry
 
