@@ -132,6 +132,12 @@ Postgres does NOT reject a view that selects from itself. The body is replaced b
 - **THE SWEEP, done 2026-08-11 , the chip was the ONLY instance in card.html.** Method worth reusing: scan the inline `<script>` bodies for handler attributes built by concatenation, then check what is interpolated. Everything else is safe , `csGo` interpolates a bare number, the season trigger interpolates nothing into its handler, and the remaining hits are `textContent` assignments (which never parse). `vv-core.js`'s `rankRowHTML` interpolates only the caller's click expression and puts **no names into attributes**, which matters because the DB genuinely holds `M&apos;Bala Nzola` and `D&apos;Ambrosio`.
 - **ASSERT THE HANDLER COMPILED, do not trust the markup.** `csRenderRecent` now checks `typeof el.onclick === 'function'` after render and `console.error`s with the raw attribute plus a `data-vv-handler-error` marker. A malformed handler is indistinguishable from a working one in the DOM inspector until you look at `onclick` itself.
 
+**A QUERY THAT RETURNS EXACTLY 1000 ROWS HAS HIT PostgREST'S DEFAULT MAX-ROWS CAP, NOT THE END OF THE DATA (2026-08-12).**
+It is a silent truncation , no error, no flag, just a suspiciously round number. Caught on the deep-playmaker gate: a CM/CDM pool came back as "1000" and the top-40 ranking drawn from it was the top 40 of an **arbitrary slice**, not of the real **6,582**. The names looked plausible enough to have been reported as a result.
+- **PAGINATE BEFORE DRAWING ANY CONCLUSION FROM A TOP-N.** Walk `.range(from, from+999)` with a stable `.order()` until a page returns fewer than 1000, then sort in JS.
+- **TREAT A COUNT OF EXACTLY 1000 AS A RED FLAG, never as a finding.** Same family as the §C verification principle: the harness quietly limited the answer, and nothing in the result says so.
+- For a pure count use `select('*',{count:'exact',head:true})`, which is not subject to the row cap.
+
 **A DECORATIVE ABSOLUTELY-POSITIONED ELEMENT INTERCEPTS TAPS IN WHATEVER REGION IT OCCUPIES, INVISIBLY (2026-08-11).**
 `card.html`'s `.glow` is a blurred radial gradient with no content. At **<=1040px `.plinth` switches to `position:static`**, so the glow loses its containing block, resolves against **BODY**, and lands at **x68 y20, 240x240 , directly over `.topline`**. It swallowed the search trigger's tap entirely: the button rendered, the handler was bound, `csToggle` was a function, and `document.elementFromPoint()` at the trigger's centre returned **`DIV.glow`**. Desktop was unaffected because there the glow sits at y112, below the topline.
 - **THE PART THAT MAKES IT LOOK LIKE SOMETHING ELSE: Back and the theme toggle stayed reachable, so it read as "the new control is broken", not "something is covering that area".** The glow is a **circle** (`border-radius:50%`), so it only hit-tests inside its ellipse , centre (188,140), radius 120. Trigger centre (183,37) is **103** away, INSIDE. Theme toggle (300,37) is 152 and Back (39,37) is 181, both outside. **A partial overlay produces a partial symptom.**
@@ -274,6 +280,33 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
    - **BUT the merge is ATOMIC:** ~91 files, +72k / -9.5k lines land in one fast-forward (whole redesign: vv-core.js, compare/card/rankings/playbook/vvindex/search .html, vercel.json, all enrichment/honours scripts + known_players.csv). A fast-forward has NO merge commit and NO merge-review safety net , the ONLY gate is the Step-6 QA pass on the branch BEFORE merging.
    - **SEQUENCING (hard rule):** Step 5 hygiene , API-Football key rotation (exposed), OAuth published, og/meta + social image, vercel.json review , MUST land BEFORE the merge/deploy, not after (the merge = production the instant it deploys).
    - **PRE-MERGE CHECK:** run `git fetch origin` in Terminal C immediately before merging to confirm origin/vvonderxi_BIGGER is still 0-ahead (the 0-ahead count is only as fresh as the last fetch).
+
+### ENGINE , DEEP-PLAYMAKER LENS (CM/CDM ONLY) , logged 2026-08-12, NOT built
+**SEQUENCING: AFTER engine recalibration, BEFORE trajectory tags.** Do not start it earlier , it reads the same pools the recalibration moves.
+
+**WHAT IT IS.** A THIRD lens in the existing best-of, alongside the attacking path and `def_core`. Scoped to **CM and CDM only**.
+- **Dominant term: within-pool percentile of `passes_total` per 90.** Within-pool, not global , the point is to rank a deep playmaker against his own position, exactly as `def_core` does.
+- **Blended at modest weight: `passes_accuracy` and `passes_key`.** Volume is the signal; accuracy and creation are the corroboration, not co-equal terms.
+- **CDM GETS A TWO-WAY GATE: `min(ball-use percentile, defensive percentile)`.** A tackle machine with no ball use cannot ride one axis into a high score, and neither can a pure passer who never defends. **This gate is the reason the lens is safe to give CDM at all** , without it the lens would re-create the exact inflation Stage 4 removed, where the `def_core` floor propped players at a competence baseline they had not earned.
+- **CEILING BOUNDED AT 93 PRE-TILT, matching `def_core`.** Same bound, same reason: a lens is a correction, not a route to the top of the scale.
+- **ATTACKER rt UNTOUCHED. Messi 97 holds.** That is the read-out check, not the target , cf. the ANCHOR GUARDRAIL in §C: famous names are a validity check, never a dial.
+
+**GATE RUN 2026-08-12 , PASSED ON ARCHETYPE, FAILED ON THE METRIC AS SPECIFIED. READ THIS BEFORE BUILDING.**
+- **THE ARCHETYPE IS REAL.** Top 40 by `passes_total` per 90 (CM/CDM, >=900 min, 2016+) reads **Rodri x4, Verratti x7, Kroos x3, Kimmich x3, Busquets x2, Jorginho x2**, plus Vitinha, Tchouameni, Modric, Xhaka, Enzo Fernandez. **22 distinct players across 40 rows, recurring season to season** , the signature of a stable player property, not noise. True pool **6,582 cards (CDM 2,094 / CM 4,488)**.
+- **AND THE GAP IS THE CASE FOR THE LENS: median rt 61 among the highest-volume passers in world football, max 86.**
+- **BUT THE METRIC MEASURES THE TEAM, NOT THE PLAYER. 33 of 40 rows come from seven possession-dominant clubs, 12 from PSG alone.** Hojbjerg, Paredes, Gueye, Seri, Eustaquio and Fabian Ruiz appear alongside Kroos , they are not his peers as passers, they were on sides that held the ball.
+- **AMENDMENT, BINDING: the dominant term becomes SHARE OF TEAM PASSES, mirroring `def_share`, or the percentile computed PER LEAGUE-SEASON. NOT raw per-90.** This is the same confound and the same fix as July Stage 1b on the defensive side , the answer was already in the design log before this gate ran.
+- **PRINCIPLE, and it is why this matters beyond one column: shipping a metric that rewards being at PSG would be open to exactly the criticism the CB decision refuses , a number that LOOKS like class but MEASURES circumstance.** The two decisions have to stand or fall together.
+
+**WHAT DOES NOT GET BUILT , both of these are decisions, not omissions.**
+- **FB GETS NO LENS.** The attacking path already serves full-backs , **TAA 85** is the evidence. Full-backs are not mis-served by the current engine, so a lens would be solving a problem that does not exist. **Cost: two disclosure lines**, nothing more.
+- **CB GETS NO LENS. THIS IS A PERMANENT PUBLISHED LIMITATION, NOT A BACKLOG ITEM.** Evidence-settled at July Stage 1b and **re-confirmed August**: tackles, interceptions, blocks and duels measure **workload and archetype, not class**, and `goals_against` is a **TEAM property** (confound-proven , elite CBs on mid sides 1.57 GA/g vs journeymen 1.51). **van Dijk stays 70-74 and the platform SAYS WHY.**
+  - **NEVER MINT A WITHIN-POOL CB SCORE TO FAKE PARITY.** A number that ranks CBs against each other would look like the others and mean nothing , it would be a fabricated class signal wearing the same clothes as a measured one. This is the same call as the retired "van Dijk 85+" target: **disclose, do not fabricate.** If a future session proposes a CB lens, the answer is already recorded here and the burden is new EVIDENCE, not a new formula.
+
+**COVERAGE , the lens is only as good as `passes_total`.**
+- **Complete 2017+. Partial 2016. ABSENT pre-2015.** Anything the lens touches before 2017 is thinner than it looks.
+- **Excluded league-seasons: BPL 2016-2019, PRT 2016, TR 2016, BPL 2023.** Those combinations have no usable passing data and must be excluded explicitly rather than scored on nulls.
+- Consequence to design for up front: a CM/CDM card outside coverage gets **no lens**, and must fall through to the existing best-of rather than to a zero. Confidence dots carry the disclosure, per the standing "disclose the boundary" stance.
 
 ### UI HYGIENE / MOBILE-POLISH BATCH , **see `LAUNCH_STAGE.md`** (8 real-device items, logged 2026-08-02, NOT built; the two that needed diagnosis are ALREADY DIAGNOSED there , do not re-investigate).
 ### IMPROVEMENTS BATCH , **see `LAUNCH_STAGE.md`** (quick fixes + a demo-driven Compare-filter redesign, logged 2026-08-02, NOT built).
