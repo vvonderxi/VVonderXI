@@ -1911,6 +1911,87 @@
       return groups.every(function(sel){ return sel.some(function(v){ return names.indexOf(v)>=0; }); });
     };
   }
+  /* labelFor , the ONLY place a value maps to display text. Callers never read
+     text to get state; this goes the other way, state -> text. */
+  function labelFor(groupKey, value){
+    var g=vvfGroup(groupKey); if(!g) return value;
+    if(groupKey==='score'){
+      var p=bandPresets().filter(function(x){ return x.v===value; })[0];
+      return p ? p.l : value;
+    }
+    var it=vvfItems(g).filter(function(x){ return x.v===value; })[0];
+    return it ? (it.l||it.v) : value;
+  }
+  /* Active-filter chips , one per SELECTION, each removable. This is what makes
+     OR-within / AND-across legible: the reader sees every clause spelled out. */
+  function renderActive(st){
+    if(!st) return '';
+    var out=[];
+    function add(gk,v,extra){
+      out.push('<button type="button" class="vvf-active-chip" data-vvf-remove="'+VVF_ESC(gk)+
+        '" data-vvf-value="'+VVF_ESC(v)+'" aria-label="Remove filter '+VVF_ESC(labelFor(gk,v))+'">'+
+        '<span class="vvf-ag">'+VVF_ESC(vvfGroup(gk)?vvfGroup(gk).label:gk)+'</span>'+
+        VVF_ESC(extra||labelFor(gk,v))+'<span class="vvf-ax" aria-hidden="true">&times;</span></button>');
+    }
+    (st.score.bands||[]).forEach(function(v){ add('score',v); });
+    if(st.score.lo!=null || st.score.hi!=null){
+      out.push('<button type="button" class="vvf-active-chip" data-vvf-remove="score" data-vvf-value="__range"'+
+        ' aria-label="Remove score range"><span class="vvf-ag">VV Score</span>'+
+        (st.score.lo==null?'up to '+st.score.hi:(st.score.hi==null?st.score.lo+'+':st.score.lo+' , '+st.score.hi))+
+        '<span class="vvf-ax" aria-hidden="true">&times;</span></button>');
+    }
+    ['league','position','prestige','profile','stage','trajectory'].forEach(function(gk){
+      (st[gk]||[]).forEach(function(v){ add(gk,v); });
+    });
+    if(st.sort && st.sort!=='rt'){
+      var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0];
+      if(so) add('sort', st.sort, so.l);
+    }
+    return out.join('');
+  }
+  /* removeFrom , un-set one selection in the DOM, mirroring renderActive. */
+  function removeFrom(host, groupKey, value){
+    if(groupKey==='score' && value==='__range'){
+      var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
+      if(mn) mn.value=mn.min; if(mx) mx.value=mx.max; paintRange(host); return;
+    }
+    if(groupKey==='sort'){
+      var d=host.querySelector('.vvf-chip[data-vvf-group="sort"][data-vvf-value="rt"]');
+      host.querySelectorAll('.vvf-chip[data-vvf-group="sort"]').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
+      if(d){ d.classList.add('on'); d.setAttribute('aria-pressed','true'); }
+      return;
+    }
+    var c=host.querySelector('.vvf-chip[data-vvf-group="'+groupKey+'"][data-vvf-value="'+
+          (window.CSS&&CSS.escape?CSS.escape(value):value)+'"]');
+    if(c){ c.classList.remove('on'); c.setAttribute('aria-pressed','false'); }
+  }
+  /* facetPlan , for each SERVER-side option, the state to count if it alone were
+     the selection for its group. Client-side groups are omitted ON PURPOSE: their
+     values are computed by getVVTags and cannot be counted without fetching every
+     row, so greying them would be a guess dressed as a fact. */
+  function facetPlan(st){
+    var plan=[];
+    VVF_GROUPS.forEach(function(g){
+      if(g.where!=='server' || g.key==='sort') return;
+      vvfItems(g).forEach(function(it){
+        var probe=JSON.parse(JSON.stringify(st));
+        if(g.key==='score'){ probe.score={lo:null,hi:null,bands:[it.v]}; }
+        else probe[g.key]=[it.v];
+        plan.push({group:g.key, value:it.v, state:probe});
+      });
+    });
+    return plan;
+  }
+  function setAvailability(host, avail){
+    host.querySelectorAll('.vvf-chip[data-vvf-group]').forEach(function(c){
+      var g=c.getAttribute('data-vvf-group'), v=c.getAttribute('data-vvf-value');
+      var k=g+'||'+v;
+      if(!(k in avail)) return;                       // unknown -> leave alone
+      var zero=(avail[k]===0) && !c.classList.contains('on');
+      c.classList.toggle('vvf-zero', zero);
+      if(zero) c.setAttribute('aria-disabled','true'); else c.removeAttribute('aria-disabled');
+    });
+  }
   function describe(){
     return VVF_GROUPS.map(function(g){ return {key:g.key,label:g.label,select:g.select,where:g.where,
       items:vvfItems(g).length, note:g.note||null}; });
@@ -1936,7 +2017,12 @@
     '.vvf-chip:focus-visible{outline:2px solid var(--pink);outline-offset:2px}',
     'body.light .vvf-chip{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.12);color:var(--charcoal)}',
     'body.light .vvf-chip:hover{background:rgba(0,0,0,0.07)}',
-    'body.light .vvf-chip.on{color:#fff}',
+    /* MUST restate background AND border, not just colour. `body.light .vvf-chip`
+       is (0,2,1) and beats `.vvf-chip.on` at (0,2,0), so the light-theme base
+       rule was overriding the pink fill while .on still set white text , a
+       selected chip rendered white on rgba(0,0,0,0.04), i.e. invisible. */
+    'body.light .vvf-chip.on{background:var(--pink);border-color:transparent;color:#fff}',
+    'body.light .vvf-chip.on:hover{background:var(--pink)}',
     '.vvf-chip.vvf-inert{opacity:.45;cursor:default}',
     '.vvf-chip.vvf-inert:hover{background:rgba(255,255,255,0.05)}',
     'body.light .vvf-chip.vvf-inert:hover{background:rgba(0,0,0,0.04)}',
@@ -1948,7 +2034,18 @@
     '.vvf-rt{flex:1 1 120px;min-width:110px;accent-color:var(--pink)}',
     '.vvf-rlabel{font-family:\'Archivo\';font-weight:800;font-size:12px;font-variant-numeric:tabular-nums;color:rgba(243,237,224,0.72);min-width:64px;text-align:right}',
     'body.light .vvf-rlabel{color:var(--charcoal)}',
-    '@media (max-width:720px){.vvf{gap:14px}.vvf-chip{font-size:12.5px;padding:7px 11px}}',
+    '.vvf-chip.vvf-zero{opacity:.32;cursor:not-allowed}',
+    '.vvf-chip.vvf-zero:hover{background:rgba(255,255,255,0.05)}',
+    'body.light .vvf-chip.vvf-zero:hover{background:rgba(0,0,0,0.04)}',
+    '.vvf-active{display:flex;flex-wrap:wrap;gap:7px;align-items:center}',
+    '.vvf-active:empty{display:none}',
+    '.vvf-active-chip{display:inline-flex;align-items:center;gap:6px;font-family:\'Inter\';font-weight:600;font-size:12.5px;line-height:1;',
+    'padding:6px 10px 6px 8px;border-radius:999px;cursor:pointer;background:rgba(255,92,122,.14);border:1px solid rgba(255,92,122,.45);color:var(--pink-ink)}',
+    '.vvf-active-chip:hover{background:rgba(255,92,122,.24)}',
+    'body.light .vvf-active-chip{color:var(--pink-ink)}',
+    '.vvf-ag{font-family:\'Archivo\';font-weight:700;font-size:9px;letter-spacing:.06em;text-transform:uppercase;opacity:.72}',
+    '.vvf-ax{font-size:15px;line-height:1;opacity:.7;margin-left:1px}',
+    '@media (max-width:720px){.vvf{gap:14px}.vvf-chip{font-size:12.5px;padding:7px 11px}.vvf-active-chip{font-size:11.5px}}',
     '@media (prefers-reduced-motion:reduce){.vvf-chip{transition:none}}'
   ].join('');
   var VVF_STYLED=false;
@@ -2012,6 +2109,7 @@
   const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
+    labelFor, renderActive, removeFrom, facetPlan, setAvailability,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,

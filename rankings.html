@@ -260,17 +260,6 @@
   .rankmore:hover{color:#fff;border-color:var(--pink-ink);background:rgba(255,92,122,0.12)}
   body.light .rankmore{color:#6a6256;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .rankmore:hover{color:#111;border-color:var(--pink-ink)}
-  .fgroup{margin-bottom:22px}
-  .fgroup .gl{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:11px}
-  body.light .fgroup .gl{color:var(--ink-soft)}
-  .fopts{display:flex;gap:7px;flex-wrap:wrap}
-  .fopt{font-family:'Archivo';font-weight:700;font-size:12px;padding:8px 13px;border-radius:16px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(243,237,224,0.8);cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:6px}
-  .fopt:hover{border-color:rgba(255,92,122,0.4)}
-  .fopt.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
-  .fopt.gold.on{background:linear-gradient(135deg,#E8B84B,#d49a2f);color:#3a2c08;border-color:transparent}
-  body.light .fopt{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:#4a443c}
-  body.light .fopt.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
-  body.light .fopt.gold.on{background:linear-gradient(135deg,#E8B84B,#d49a2f);color:#3a2c08;border-color:transparent}
   /* ★ VV Score range filter (ported from mobile VV Rankings) */
   .scorefilter{padding:2px 0 0}
   .scorevals{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
@@ -289,12 +278,6 @@
   .dualrange input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--cream);border:3px solid var(--pink);box-shadow:0 2px 6px rgba(0,0,0,0.45);cursor:pointer;pointer-events:auto}
   body.light .dualrange input[type=range]::-webkit-slider-thumb{background:#fff}
   body.light .dualrange input[type=range]::-moz-range-thumb{background:#fff}
-  .quickbands{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
-  .qb{font-family:'Archivo';font-weight:700;font-size:11.5px;padding:7px 11px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(243,237,224,0.8);cursor:pointer;transition:all .12s}
-  .qb:hover{border-color:rgba(255,92,122,0.4)}
-  .qb.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
-  body.light .qb{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:#4a443c}
-  body.light .qb.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
 
   /* Rankings filter layout (same filter as Search) */
   .ranklayout{display:grid;grid-template-columns:1fr;gap:38px;align-items:start;}
@@ -421,7 +404,6 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     .dualrange{width:100% !important;max-width:100%;margin-left:0;margin-right:0}
     .scorefilter,.track,.trackfill{width:auto;max-width:100%}
     .filterrail *{max-width:100%;box-sizing:border-box}
-    .fopts,.quickbands,.fpills{flex-wrap:wrap}
   }
   @media (max-width:560px){
     .cardgrid{gap:14px}
@@ -434,15 +416,9 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   body.light{--pink-ink:#AD0332}
   body.light .lede .b{color:var(--pink-ink)}
   /* white on #E70443 is 2.97; these labels are 12px bold so they need 4.5. #E70443 = 5.61. */
-  .fopts .fopt.on{background:#E70443}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
-  .fopts .fopt.on{background:#E70443}   /* white label on bright pink was 2.97 at 12px bold */
   /* residual: white on bright pink was 2.97 at 12px bold */
-  .fopts .fopt.on, body.light .fopts .fopt.on{background:#E70443}
-  .subgl{color:rgba(243,237,224,0.58)}
-  body.light .subgl{color:#5f594e}
   .gl .flsoon{color:rgba(243,237,224,.58)}
-  body.light .gl .flsoon{color:#5f594e}
 </style>
 </head>
 <body class="light">
@@ -490,8 +466,9 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 <aside class="filterrail">
         <div class="fr-title">Filters<button class="fr-clear hidden" id="frClear" onclick="clearAllFilters()">Clear all</button></div>
         <div class="fr-count" id="rankCount"></div>
-        <div class="fgroup"><div class="gl">Sort by</div><div class="fopts"><span class="fopt on">V<span style="color:var(--pink-ink)">V</span> Score</span><span class="fopt">Goals</span><span class="fopt">Recent</span><span class="fopt">A to Z</span></div></div><div class="fgroup"><div class="gl">V<span style="color:var(--pink-ink)">V</span> Score range</div><div class="scorefilter"><div class="scorevals"><span class="sv" id="svmin">50</span><span class="svdash">to</span><span class="sv" id="svmax">97</span></div><div class="dualrange"><div class="track"></div><div class="trackfill" id="trackfill"></div><input type="range" id="rmin" min="0" max="97" value="50" oninput="onRange(event)"><input type="range" id="rmax" min="0" max="97" value="97" oninput="onRange(event)"></div><div class="quickbands"><div class="qb" onclick="setBand(90,97,this)">Elite 90+</div><div class="qb" onclick="setBand(85,89,this)">85 to 89</div><div class="qb" onclick="setBand(80,84,this)">80 to 84</div><div class="qb" onclick="setBand(85,85,this)">Exactly 85</div></div></div></div><div class="fgroup"><div class="gl">League</div><div class="fopts"><span class="fopt">&#127468;&#127463; Premier League</span><span class="fopt">&#127466;&#127480; La Liga</span><span class="fopt">&#127470;&#127481; Serie A</span><span class="fopt">&#127465;&#127466; Bundesliga</span><span class="fopt">&#127467;&#127479; Ligue 1</span><span class="fopt">&#127477;&#127481; Primeira Liga</span><span class="fopt">&#127475;&#127473; Eredivisie</span><span class="fopt">&#127463;&#127466; Jupiler Pro League</span><span class="fopt">&#127481;&#127479; S&#252;per Lig</span></div></div><div class="fgroup"><div class="gl">Position</div><div class="fopts" id="rkPos"></div></div><div class="fgroup"><div class="gl">Prestige</div><div class="fopts" id="rkPrestige"></div></div><div class="fgroup"><div class="gl">Honours</div><div class="fopts" id="rkHonours"></div></div><div class="fgroup"><div class="gl">Profile</div><div id="rkProfile"></div></div><div class="fgroup"><div class="gl">Era</div><div class="fopts"><span class="fopt">2020s</span><span class="fopt">2010s</span></div></div>
+        <div id="rkFilters"></div>
       </aside>
+        <div class="vvf-active" id="rankActive"></div>
         <div class="compacthead" aria-hidden="true"><span>Player</span><span>Pos</span><span>G</span><span>A</span><span>VV</span></div>
         <div class="cardgrid" id="cardgrid"></div>
         <!-- Show more button is now appended inside #cardgrid by renderRank() -->
@@ -501,7 +478,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260811a"></script>
+<script src="/vv-core.js?v=20260812a"></script>
 <script>
   function goCard(id){ location.href = id!=null ? "card.html?id="+encodeURIComponent(id) : "card.html"; }
   let CARDS = [];
@@ -560,17 +537,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   var rankView='cards';
   try{var _rv=localStorage.getItem('vvRankView');if(_rv==='pills'||_rv==='cards'||_rv==='compact')rankView=_rv;}catch(e){}
   function currentRankList(){ return CARDS; }   // server already filtered + sorted
-  var rankShowMoreFlag=false;
-  function appendRankMore(){
-    var g=document.getElementById('cardgrid'); if(!g) return;
-    if(!rankShowMoreFlag) return;
-    var w=document.createElement('div');
-    w.className='rankmore-wrap show';
-    w.id='rankMoreWrap';
-    w.innerHTML='<button class="rankmore" id="rankMore" onclick="rankShowMore()">Show more</button>';
-    g.appendChild(w);
-  }
-  function renderRank(){ var list=currentRankList(); if(rankView==='pills') renderRankPills(list); else if(rankView==='compact') renderRankCompact(list); else renderRankCards(list); appendRankMore(); }
+  /* Show more is gone , infinite scroll replaces the 300 cap (see loadRankings). */
+  function renderRank(){ var list=currentRankList(); if(rankView==='pills') renderRankPills(list); else if(rankView==='compact') renderRankCompact(list); else renderRankCards(list); }
   var vvRankRZ;
   window.addEventListener('resize',function(){ clearTimeout(vvRankRZ); vvRankRZ=setTimeout(function(){ if(rankView==='cards' && typeof CARDS!=='undefined' && CARDS && CARDS.length) renderRank(); },150); });
   function setRankView(v){
@@ -589,193 +557,220 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   setRankView(rankView);
 
   // read active chips + score range + sort into canonical query values (verified column values)
-  /* rtFloorForPrestige , DERIVED from bandFor + prestigeFor, never hardcoded.
-     The old filter carried rt>=88 for Iconic and rt>=92 for Generational, which
-     were the PRE-RECUT thresholds. The live bands are Elite(=Iconic) 90 and
-     Generational 95, so "Generational" was returning 47 cards of which 35 were
-     not Generational, and "Iconic" 281 of which 131 were not.
-     Scanning bandFor means a future recut moves this automatically , the numbers
-     exist in exactly one place, vv-core, and this reads them back out. */
-  function rtFloorForPrestige(p){
-    if(!window.VVCore || !VVCore.bandFor || !VVCore.prestigeFor) return null;
-    for(var r=0; r<=100; r++){ if(VVCore.prestigeFor(VVCore.bandFor(r)) === p) return r; }
-    return null;                       // unknown -> caller leaves the floor alone
-  }
-  function readFilters(){
-    /* Bounds come FROM the slider elements. They used to be duplicated here as
-       15/97 while the inputs said min="15", and live min(rt) is 11 , so 1,030
-       cards sat below the floor and were unreachable by any filter combination.
-       Reading the element means the two can never disagree again. */
-    var _rmn=document.getElementById('rmin'), _rmx=document.getElementById('rmax');
-    var _lo=_rmn?+_rmn.min:0, _hi=_rmx?+_rmx.max:100;
-    var f={leagues:[],positions:[],era:null,rtLo:_lo,rtHi:_hi,sort:{col:'rt',asc:false},tags:[]};
-    var LG={'Premier League':'PL','La Liga':'LL','Serie A':'SA','Bundesliga':'BL','Ligue 1':'L1','Primeira Liga':'PRT','Eredivisie':'ERE','Jupiler Pro League':'BPL','S\u00fcper Lig':'TR'};
-    var POS={'GK':['GK'],'CB':['CB'],'FB':['FB'],'CDM':['CDM'],'CM':['CM'],'CAM':['CAM'],'Winger':['Winger'],'ST':['ST']};
-    var ERA={'2020s':[2020,2025],'2010s':[2010,2019],'2000s':[2000,2009],'90s':[1990,1999]};
-    document.querySelectorAll('.fgroup').forEach(function(grp){
-      var glEl=grp.querySelector('.gl'); if(!glEl) return;
-      var label=glEl.textContent.replace('soon','').trim();
-      var on=grp.querySelectorAll('.fopt.on');
-      if(label==='League'){ on.forEach(function(x){ for(var k in LG){ if(x.textContent.indexOf(k)>=0){ f.leagues.push(LG[k]); break; } } }); }
-      else if(label==='Position'){ on.forEach(function(x){ var t=x.textContent.trim(); if(POS[t]) POS[t].forEach(function(v){ f.positions.push(v); }); }); }
-      else if(label==='Era'){ if(on[0]){ var e=ERA[on[0].textContent.trim()]; if(e) f.era={lo:e[0],hi:e[1]}; } }
-      else if(label==='Prestige'){ var gen=false,ico=false; on.forEach(function(x){ if(x.textContent.indexOf('Generational')>=0)gen=true; if(x.textContent.indexOf('Iconic')>=0)ico=true; });
-        // both selected -> the LOWER floor, i.e. the union, matching the old ico?:gen order
-        var _pf = ico ? rtFloorForPrestige('Iconic') : (gen ? rtFloorForPrestige('Generational') : null);
-        if(_pf!=null) f.rtLo=Math.max(f.rtLo, _pf); }
-      else if(label==='Sort by'){ var s=on[0]?on[0].textContent.trim():'VV Score'; if(s==='Goals')f.sort={col:'goals',asc:false}; else if(s==='Recent')f.sort={col:'season_year',asc:false}; else if(s==='A to Z')f.sort={col:'player_name',asc:true}; else f.sort={col:'rt',asc:false}; }
-      else if(label==='Profile'){ on.forEach(function(x){ var nm=x.getAttribute('data-tag'); if(nm) f.tags.push(nm); }); }
-    });
-    var rmin=_rmn, rmax=_rmx;
-    if(rmin&&rmax){ var lo=+rmin.value, hi=+rmax.value; if(lo>hi){var t=lo;lo=hi;hi=t;} f.rtLo=Math.max(f.rtLo,lo); f.rtHi=Math.min(f.rtHi,hi); }
-    return f;
-  }
-  var rankLimit=300;
-  // The rt slider RESTS at 50, which hides 27,092 of the 57,234 cards (44% of scored cards sit
-  // below rt 50 , the 50 is a default slider position, never a scale floor). That default is a
-  // BROWSE convenience and must not silently amputate a SEARCH, so the floor is treated as an
-  // explicit choice only once the user actually moves it. Reset by Clear all.
-  var _rtTouched=false;
-  function rankShowMore(){ rankLimit+=300; loadRankings(true); }
-  function rankRangeChanged(){ clearTimeout(window._rankRangeT); window._rankRangeT=setTimeout(loadRankings,250); }
+  /* ===================== FILTERS , VVFilters (vv-core) =====================
+     The inline filter UI, readFilters() and ALL label-text parsing are gone.
+     State now comes from data-vvf-value only, so a label edit, an added emoji or
+     the EN/NL/FR toggle can no longer change the query.
 
-  // ── Live data: top 100 of the FILTERED set ──
-  async function loadRankings(more){
-    const sb = vvClient();
-    if(!sb) return;                       // vv-core logs why (missing config or lib)
-    if(!more){ rankLimit=300; }
-    const f = readFilters();
-    var _act=(f.leagues.length||f.positions.length||f.era||f.tags.length||f.rtLo!==50||f.rtHi!==97||f.sort.col!=='rt');
-    var _cb=document.getElementById('frClear'); if(_cb)_cb.classList.toggle('hidden',!_act);
-    var tq=document.getElementById('rankSearch').value.trim();
-    var _ps=vvParseSearch(tq); var nameQ=_ps.nameQ, seasonYear=_ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
-    if(tq && f.sort.col==='rt' && f.sort.asc===false){ f.sort={col:'season_year',asc:false}; }
-    // one builder for both the data query and the head-count, with the season filter toggleable for the fallback
-    function buildRankQ(head, withSeason, withFloor){
-      var qq = head ? sb.from('player_card_mv').select('*', { count:'exact', head:true }) : sb.from('player_card_mv').select('*');
-      if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) qq=qq.or(_sf); }         // token-AND on player_name_norm/team_name_norm
-      if(withSeason && seasonYear!=null) qq=qq.eq('season_year', seasonYear);     // NAME + SEASON (e.g. hazard 2018)
-      if(f.leagues.length)   qq=qq.in('league_code', f.leagues);
-      if(f.positions.length) qq=qq.in('position_pool', f.positions);
-      if(f.era){ qq=qq.gte('season_year', f.era.lo).lte('season_year', f.era.hi); }
-      if(withFloor) qq=qq.gte('rt', f.rtLo).lte('rt', f.rtHi);   // gte/lte also drops rt IS NULL (3,061 cards)
-      if(!head) qq=qq.order(f.sort.col, { ascending:f.sort.asc, nullsFirst:false }).limit(rankLimit);
-      return qq;
-    }
-    var _rcEl=document.getElementById('rankCount'); if(_rcEl && !f.tags.length) _rcEl.textContent='Counting…';
-    // SPECIFICITY = MATCH-COUNT, not token-count. "williams" is 1 token / 34 matches, "city" is
-    // 1 token / 590 , token-count cannot separate them. So: with a search term and an untouched
-    // slider, fetch WITHOUT the floor and count in parallel. If the count fits the ceiling the rows
-    // already in hand ARE the complete answer , ONE round trip, nothing capped. Only a genuinely
-    // broad search pays a second fetch, and that is the browse case where latency matters least.
-    var _searching = !!nameQ, _floorFirst = (!_searching || _rtTouched), _uncapped=false;
-    let [ qRes, cRes ] = await Promise.all([ buildRankQ(false,true,_floorFirst), buildRankQ(true,true,_floorFirst) ]);
-    if(_searching && !_rtTouched){
-      if(!cRes.error && cRes.count!=null && cRes.count<=VVCore.SEARCH_CEIL){ _uncapped=true; }
-      else { [ qRes, cRes ] = await Promise.all([ buildRankQ(false,true,true), buildRankQ(true,true,true) ]); }
-    }
-    // graceful degrade: an in-range season with NO matching row for this name -> drop the season, show all
-    var seasonDegraded=false;
-    if(seasonYear!=null && nameQ && !qRes.error && (qRes.data||[]).length===0){
-      var _ff=(!_searching || _rtTouched);
-      [ qRes, cRes ] = await Promise.all([ buildRankQ(false,false,_ff), buildRankQ(true,false,_ff) ]);
-      if(_searching && !_rtTouched){
-        if(!cRes.error && cRes.count!=null && cRes.count<=VVCore.SEARCH_CEIL){ _uncapped=true; }
-        else { _uncapped=false; [ qRes, cRes ] = await Promise.all([ buildRankQ(false,false,true), buildRankQ(true,false,true) ]); }
-      }
-      seasonDegraded=true;
-    }
-    const { data, error } = qRes;
-    const count = cRes.error ? null : cRes.count;
-    if(error){ console.error('rankings load failed:', error.message); return; }
-    var _sd = (nameQ && Array.isArray(data)) ? VVCore.rankBySearch(data, nameQ, function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); }) : data;
-    CARDS = (_sd||[]).map(rowToCard).filter(Boolean);
-    if(f.tags.length){ CARDS = CARDS.filter(function(d){ return f.tags.every(function(s){ return (d.tags||[]).some(function(t){ return t.name===s; }); }); }); }
-    var _rc=document.getElementById('rankCount');
-    if(_rc){
-      var _hint=seasonDegraded ? ('No '+vvSeasonLabel(seasonYear)+' season for that name , showing all. ') : '';
-      if(f.tags.length){ _rc.textContent=_hint+'Showing '+CARDS.length; }
-      else if(count==null){ _rc.textContent=_hint+'Showing '+CARDS.length; }
-      else { _rc.textContent=_hint+'Showing '+CARDS.length+' of '+count.toLocaleString(); }
-    }
-    var _rawLen=(data||[]).length;
-    rankShowMoreFlag = !f.tags.length && _rawLen>=rankLimit && (count==null || CARDS.length<count);
-    await attachHonoursBatch(CARDS);   // ONE batched honours query for the whole page; sets each card.honours
-    renderRank();
+     Removed with adoption: Era, "Exactly 85", every hardcoded threshold (band
+     edges and prestige floors are derived from bandFor/prestigeFor inside the
+     component), and the slider's floor of 15 , the ends now mean NO bound, so
+     the 1,030 cards below rt 15 are reachable.
+
+     DELIBERATE BEHAVIOUR CHANGE, confirmed: profile tags now OR within the group
+     instead of AND. Selecting Goal Machine + Playmaker returns either, not both.
+
+     THE SERVER/CLIENT SPLIT IS THE THING TO REMEMBER HERE. applyServer() handles
+     league/position/prestige/score/sort; profile, Career-Stage and Trajectory are
+     getVVTags output with no column to filter on, so they run as a predicate
+     AFTER the fetch. That is also why the total count goes soft when they are
+     active , see rankCountText(). */
+  var RANK_PAGE = 100;                 // infinite-scroll page (replaces the 300 cap)
+  var FHOST=null, FINST=null;
+  var rankOffset=0, rankTotal=null, rankDone=false, rankBusy=false, rankSeq=0;
+
+  function fState(){
+    return (FHOST && window.VVFilters) ? VVFilters.readState(FHOST)
+         : (window.VVFilters ? VVFilters.emptyState() : null);
   }
+  function clientActive(st){ return !!(st && (st.profile.length || st.stage.length || st.trajectory.length)); }
+
+  /* One builder for the rows, the head-count and every facet probe. */
+  function rankQuery(sb, st, o){
+    o=o||{};
+    var q = o.head ? sb.from('player_card_mv').select('*',{count:'exact',head:true})
+                   : sb.from('player_card_mv').select('*');
+    if(o.nameQ){ var sf=tokenAndFilter(o.nameQ); if(sf) q=q.or(sf); }
+    if(o.seasonYear!=null) q=q.eq('season_year', o.seasonYear);
+    q = VVFilters.applyServer(q, st, {headCount:!!o.head}).query;
+    if(!o.head) q=q.range(o.from||0, (o.from||0)+RANK_PAGE-1);
+    return q;
+  }
+
+  /* THE COUNT IS HONEST OR IT IS ABSENT. The server cannot see client-side tag
+     filtering, so with tags active "of N" would be a number for a different
+     question. We say what the N actually counts instead of quietly printing it. */
+  function rankCountText(shown, total, st, hint){
+    var h=hint||'';
+    if(total==null) return h+'Showing '+shown.toLocaleString();
+    if(clientActive(st)) return h+'Showing '+shown.toLocaleString()+' of '+total.toLocaleString()+' before tag filters';
+    return h+'Showing '+shown.toLocaleString()+' of '+total.toLocaleString();
+  }
+
+  async function loadRankings(o){
+    o=o||{};
+    var sb=vvClient(); if(!sb || !window.VVFilters) return;
+    if(o.append && (rankBusy || rankDone)) return;   // appends queue; fresh loads SUPERSEDE
+    if(!o.append){ rankOffset=0; rankDone=false; rankTotal=null; CARDS=[]; }
+    rankBusy=true;
+    var seq=++rankSeq;
+    var done=function(){ if(seq===rankSeq) rankBusy=false; };   // only the winner clears the flag
+    var st=fState();
+    var tq=(document.getElementById('rankSearch')||{value:''}).value.trim();
+    var ps=vvParseSearch(tq), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
+    var qo={nameQ:nameQ, seasonYear:seasonYear, from:rankOffset};
+
+    var rcEl=document.getElementById('rankCount');
+    if(rcEl && !o.append) rcEl.textContent='Counting…';
+
+    var need=[ rankQuery(sb,st,qo) ];
+    if(rankTotal==null) need.push(rankQuery(sb,st,{nameQ:nameQ,seasonYear:seasonYear,head:true}));
+    var res=await Promise.all(need);
+    if(seq!==rankSeq){ done(); return; }        // a newer request already won
+    var qRes=res[0], cRes=res[1];
+
+    // graceful degrade , an in-range season with no row for this name: drop the season
+    var degraded=false;
+    if(seasonYear!=null && nameQ && !qRes.error && (qRes.data||[]).length===0 && rankOffset===0){
+      qo.seasonYear=null;
+      var r2=await Promise.all([ rankQuery(sb,st,qo), rankQuery(sb,st,{nameQ:nameQ,head:true}) ]);
+      if(seq!==rankSeq){ done(); return; }
+      qRes=r2[0]; cRes=r2[1]; degraded=true;
+    }
+    if(qRes.error){ console.error('rankings load failed:', qRes.error.message); done(); return; }
+    if(cRes && !cRes.error && cRes.count!=null) rankTotal=cRes.count;
+
+    var raw=qRes.data||[];
+    if(raw.length<RANK_PAGE) rankDone=true;
+    rankOffset+=raw.length;
+
+    var sorted=(nameQ && Array.isArray(raw))
+      ? VVCore.rankBySearch(raw, nameQ, function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); })
+      : raw;
+    var page=sorted.map(rowToCard).filter(Boolean).filter(VVFilters.clientPredicate(st));
+    CARDS = o.append ? CARDS.concat(page) : page;
+
+    await attachHonoursBatch(page);
+    if(seq!==rankSeq){ done(); return; }
+    renderRank();
+    scrollSentinel();                 // renderRank rewrote innerHTML
+    if(rcEl){
+      var hint=degraded ? ('No '+vvSeasonLabel(seasonYear)+' season for that name , showing all. ') : '';
+      rcEl.textContent=rankCountText(CARDS.length, rankTotal, st, hint);
+    }
+    renderActiveChips(st);
+    done();
+    // a page that filtered down to nothing client-side should keep pulling
+    if(o.append && page.length===0 && !rankDone) loadRankings({append:true});
+    else scrollSentinelCheck();
+  }
+
+  /* ---- infinite scroll (replaces the 300 cap + Show more) ---- */
+  /* THE SENTINEL MUST LIVE INSIDE #cardgrid AND THE OBSERVER MUST BE ROOTED THERE.
+     #cardgrid is itself a scroll container (max-height + overflow-y:auto), so a
+     sentinel placed after it is permanently in the viewport and every page fires
+     immediately , the first load pulled 1,900 rows in one go. Rooted to the
+     scroller it only trips when the user actually reaches the end.
+     renderRank() rewrites innerHTML, so it is re-appended after every render. */
+  function scrollSentinel(){
+    var gw=document.getElementById('cardgrid'); if(!gw) return null;
+    var s=document.getElementById('rankSentinel');
+    if(!s){ s=document.createElement('div'); s.id='rankSentinel'; s.style.cssText='height:1px;grid-column:1/-1'; }
+    if(s.parentNode!==gw) gw.appendChild(s);
+    else if(gw.lastElementChild!==s) gw.appendChild(s);   // keep it last after a re-render
+    return s;
+  }
+  function scrollSentinelCheck(){
+    var s=scrollSentinel(), gw=document.getElementById('cardgrid');
+    if(!s||!gw||rankDone||rankBusy) return;
+    var r=s.getBoundingClientRect(), g=gw.getBoundingClientRect();
+    if(r.top < g.bottom+600) loadRankings({append:true});
+  }
+  (function initInfiniteScroll(){
+    var s=scrollSentinel(), gw=document.getElementById('cardgrid');
+    if(!s||!gw) return;
+    if(window.IntersectionObserver){
+      new IntersectionObserver(function(es){
+        if(es.some(function(e){ return e.isIntersecting; })) loadRankings({append:true});
+      },{root:gw, rootMargin:'600px 0px'}).observe(s);       // root = the scroller, not the page
+    }
+    gw.addEventListener('scroll', function(){ scrollSentinelCheck(); }, {passive:true});
+  })();
+
+  /* ---- active filter chips , one per selection, each removable ---- */
+  function renderActiveChips(st){
+    var bar=document.getElementById('rankActive'); if(!bar||!window.VVFilters) return;
+    st=st||fState();
+    bar.innerHTML=VVFilters.renderActive(st);
+    var clr=document.getElementById('frClear');
+    if(clr) clr.classList.toggle('hidden', !VVFilters.isActive(st));
+  }
+  (function wireActiveChips(){
+    var bar=document.getElementById('rankActive'); if(!bar) return;
+    bar.addEventListener('click', function(e){
+      var b=e.target.closest ? e.target.closest('[data-vvf-remove]') : null;
+      if(!b) return;
+      VVFilters.removeFrom(FHOST, b.getAttribute('data-vvf-remove'), b.getAttribute('data-vvf-value'));
+      onFiltersChanged();
+    });
+  })();
+
+  /* ---- facets , grey out any option that would return zero -----------------
+     Server-side groups only. Client-side tag groups are left alone on purpose:
+     their values are computed by getVVTags, so counting them would mean pulling
+     every matching row, and a guess shown as a fact is worse than no hint.
+     Only runs while the rail is open, and only after the query settles. */
+  var _facetT=null;
+  function refreshFacets(){
+    clearTimeout(_facetT);
+    _facetT=setTimeout(async function(){
+      if(!window.VVFilters) return;
+      var rail=document.querySelector('.filterrail');
+      if(rail && rail.offsetParent===null) return;         // rail not visible , skip the work
+      var sb=vvClient(); if(!sb) return;
+      var st=fState();
+      var tq=(document.getElementById('rankSearch')||{value:''}).value.trim();
+      var ps=vvParseSearch(tq);
+      var plan=VVFilters.facetPlan(st);
+      var seq=rankSeq;
+      var counts=await Promise.all(plan.map(function(p){
+        return rankQuery(sb,p.state,{nameQ:ps.nameQ,seasonYear:ps.seasonYear,head:true})
+          .then(function(r){ return r.error?null:r.count; }).catch(function(){ return null; });
+      }));
+      if(seq!==rankSeq) return;
+      var avail={};
+      plan.forEach(function(p,i){ if(counts[i]!=null) avail[p.group+'||'+p.value]=counts[i]; });
+      VVFilters.setAvailability(FHOST, avail);
+    }, 350);
+  }
+
+  function onFiltersChanged(){ loadRankings(); refreshFacets(); }
+  function clearAllFilters(){ if(FINST) FINST.clear(); onFiltersChanged(); }
+  function rankRangeChanged(){ onFiltersChanged(); }
+
+  /* ---- mount ---- */
+  (function mountFilters(){
+    FHOST=document.getElementById('rkFilters');
+    if(!FHOST || !window.VVFilters){
+      console.error('vv-core VVFilters missing , filter rail not mounted. Check the ?v= cache token on the vv-core script tag.');
+      return;
+    }
+    FINST=VVFilters.mount(FHOST,{ onChange:function(){ onFiltersChanged(); } });
+    renderActiveChips();
+    refreshFacets();
+  })();
+
   (function(){
     try{
       var _qp=new URLSearchParams(window.location.search).get('q');
-      if(_qp){ var _sb=document.getElementById('rankSearch'); if(_sb){ _sb.value=_qp; var _rc=document.getElementById('rsClear'); if(_rc)_rc.style.display='block'; } }
+      if(_qp){ var _sb=document.getElementById('rankSearch'); if(_sb){ _sb.value=_qp; var _rc=document.getElementById('rs-clear'); if(_rc)_rc.style.display='block'; } }
     }catch(e){}
   })();
   loadRankings();
-
-  // VV Score range filter (ported from mobile)
-  function paintRange(lo,hi){
-    const MIN=15,MAX=97,span=MAX-MIN;
-    document.getElementById('svmin').textContent=lo;
-    document.getElementById('svmax').textContent=hi;
-    const l=((lo-MIN)/span)*100, r=((hi-MIN)/span)*100;
-    const tf=document.getElementById('trackfill');
-    tf.style.left=l+'%'; tf.style.width=(r-l)+'%';
-  }
-  function onRange(e){
-    const rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
-    let lo=+rmin.value, hi=+rmax.value;
-    if(lo>hi){ if(e&&e.target===rmin){hi=lo;rmax.value=hi;} else {lo=hi;rmin.value=lo;} }
-    paintRange(lo,hi);
-    document.querySelectorAll('.quickbands .qb').forEach(q=>q.classList.remove('on'));
-    _rtTouched=true;                       // an explicit rt choice , search must now respect it
-    rankRangeChanged();
-  }
-  function setBand(lo,hi,el){
-    const wasOn = el && el.classList.contains('on');
-    document.querySelectorAll('.quickbands .qb').forEach(q=>q.classList.remove('on'));
-    if(wasOn){ document.getElementById('rmin').value=50; document.getElementById('rmax').value=97; paintRange(50,97); _rtTouched=false; rankRangeChanged(); return; }
-    document.getElementById('rmin').value=lo; document.getElementById('rmax').value=hi;
-    paintRange(lo,hi);
-    if(el) el.classList.add('on');
-    _rtTouched=true;                       // a quick-band IS an explicit rt choice
-    rankRangeChanged();
-  }
-  paintRange(50,97);
-  // Clear all , reset every filter to default and re-query
-  function clearAllFilters(){
-    document.querySelectorAll('.fopt.on').forEach(function(x){ x.classList.remove('on'); });
-    document.querySelectorAll('.fgroup').forEach(function(grp){
-      var gl=grp.querySelector('.gl');
-      if(gl && gl.textContent.replace('soon','').trim()==='Sort by'){ var first=grp.querySelector('.fopt'); if(first) first.classList.add('on'); }
-    });
-    var rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
-    if(rmin&&rmax){ rmin.value=50; rmax.value=97; paintRange(50,97); }
-    _rtTouched=false;
-    document.querySelectorAll('.quickbands .qb').forEach(function(q){ q.classList.remove('on'); });
-    loadRankings();
-  }
-  // filter chips , single-select Sort/Era, multi-select elsewhere; re-query on change
-  // #3 vocab reconciliation: render filter chips from the engine's FILTER_TAXONOMY (single source of truth).
-  (function populateFilters(){
-    if(!window.VVCore || !VVCore.renderFilterChips) return;
-    var g=function(id){return document.getElementById(id);};
-    if(g('rkPos'))      g('rkPos').innerHTML      = VVCore.renderFilterChips('position',{variant:'rankings'});
-    if(g('rkPrestige')) g('rkPrestige').innerHTML = VVCore.renderFilterChips('prestige',{variant:'rankings'});
-    if(g('rkHonours'))  g('rkHonours').innerHTML  = VVCore.renderFilterChips('honours',{variant:'rankings',soon:true});
-    if(g('rkProfile'))  g('rkProfile').innerHTML  = VVCore.renderFilterChips('profile',{variant:'rankings'}).map(function(s){return '<div class="subgl">'+s.sub+'</div><div class="fopts">'+s.html+'</div>';}).join('');
-  })();
-  document.querySelectorAll('.fopt').forEach(o=>o.addEventListener('click',()=>{
-    if(o.classList.contains('disabled')) return;
-    const grp=o.closest('.fgroup').querySelector('.gl').textContent.replace('soon','').trim();
-    if(grp==='Sort by'){o.parentElement.querySelectorAll('.fopt').forEach(x=>x.classList.remove('on'));o.classList.add('on');}
-    else{o.classList.toggle('on');}
-    loadRankings();
-  }));
-  // disable filter groups with no data yet (Honours / Profile / Trajectory)
-  ['Honours'].forEach(function(name){
-    document.querySelectorAll('.fgroup').forEach(function(grp){
-      var gl=grp.querySelector('.gl'); if(gl && gl.textContent.trim()===name){ grp.classList.add('fgroup-disabled'); gl.insertAdjacentHTML('beforeend',' <span class="flsoon">soon</span>'); grp.querySelectorAll('.fopt').forEach(function(x){x.classList.add('disabled');}); }
-    });
-  });
+  /* The legacy .fopt click handler and the Honours-disable pass are GONE. Both
+     identified the group by reading .gl textContent, which is the exact pattern
+     this adoption exists to remove. VVFilters selects by data-vvf-group and
+     declares Honours inert in its own group definition. */
 </script>
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});
 document.getElementById('rankFBtn').addEventListener('click',function(){document.querySelector('.ranklayout').classList.toggle('filters-open');this.classList.toggle('on');});
