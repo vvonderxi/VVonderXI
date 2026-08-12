@@ -697,6 +697,22 @@
   body.light #cardSearch .cs-rchip{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--charcoal)}
   body.light #cardSearch .cs-rchip:hover{background:rgba(0,0,0,0.07)}
 
+  /* filter toggle + collapsible filter area , the panel is narrower than the
+     rankings rail, so the component mounts in its COMPACT variant (label left,
+     chips on one scrolling line per group) rather than as a copy of the rail. */
+  #cardSearch .cs-filtbtn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
+  #cardSearch .cs-filtbtn:hover{background:rgba(255,255,255,0.1)}
+  #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
+  body.light #cardSearch .cs-filtbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--ink-soft)}
+  body.light #cardSearch .cs-filtbtn:hover{background:rgba(0,0,0,0.07)}
+  body.light #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
+  #cardSearch .cs-fcount{font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(255,255,255,.18);border-radius:999px;padding:1px 5px;min-width:15px;text-align:center}
+  #cardSearch .cs-filtbtn.on .cs-fcount{background:rgba(0,0,0,.22)}
+  #cardSearch .cs-filters{margin:0 0 10px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
+  body.light #cardSearch .cs-filters{background:rgba(0,0,0,0.025);border-color:rgba(0,0,0,0.07)}
+  #cardSearch .cs-clearall{margin-top:10px;background:none;border:0;padding:0;color:var(--pink-ink);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer}
+  #cardSearch .vvf-active{margin:0 0 10px}
+
   /* results scroll region , the curtain owns the viewport below the bar */
   #cardSearch .cs-results{max-height:calc(100vh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
   #cardSearch .cs-results::-webkit-scrollbar{width:6px}
@@ -879,12 +895,15 @@
         <div class="cs-meta">
           <span class="cs-count" id="csCount"></span>
           <span class="cs-hint" id="csHint"></span>
+          <button type="button" class="cs-filtbtn" id="csFiltBtn" onclick="csToggleFilters()" aria-expanded="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"/></svg> Filters<span class="cs-fcount" id="csFCount"></span></button>
           <div class="viewseg" role="group" aria-label="View">
             <button class="vseg" id="csVCards" type="button" onclick="csSetView('cards')" aria-label="Card view" title="Cards"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></button>
             <button class="vseg" id="csVPills" type="button" onclick="csSetView('pills')" aria-label="List view" title="List"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
             <button class="vseg on" id="csVCompact" type="button" onclick="csSetView('compact')" aria-label="Compact view" title="Compact"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 9.3h16M4 13.6h16M4 17.9h16"/></svg></button>
           </div>
         </div>
+        <div class="cs-filters" id="csFilters" hidden><div id="csFilterHost"></div><button type="button" class="cs-clearall" id="csClearAll" onclick="csClearFilters()">Clear all</button></div>
+        <div class="vvf-active" id="csActive"></div>
         <div class="cs-recent" id="csRecent" hidden><div class="cs-rlabel">Recent</div><div class="cs-rlist" id="csRecentList"></div></div>
         <div class="cs-results"><div class="cardgrid" id="csGrid"></div></div>
       </div>
@@ -976,7 +995,7 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260812b"></script>
+<script src="/vv-core.js?v=20260812c"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -2231,12 +2250,55 @@ function csCw(){
 /* buildPoolQ , COPIED FROM compare.html, deliberately NOT rankings' filter-aware version.
    nullsFirst:false is REQUIRED: NULL rt sorts FIRST on DESC in Postgres, which is the
    exact bug that made the Compare picker return 50 empty rows (fixed in 4428552). */
+/* ---- FILTERS , the same VVFilters component rankings mounts, in compact form.
+   Server groups go into the query below; profile / Career-Stage / Trajectory are
+   getVVTags output and run as a predicate after the fetch. Both halves, always. */
+var CSF_HOST=null, CSF=null;
+function csFState(){ return (CSF_HOST && window.VVFilters) ? VVFilters.readState(CSF_HOST)
+                    : (window.VVFilters ? VVFilters.emptyState() : null); }
+function csToggleFilters(){
+  var p=document.getElementById('csFilters'), b=document.getElementById('csFiltBtn');
+  var open=p.hidden; p.hidden=!open;
+  b.classList.toggle('on',open); b.setAttribute('aria-expanded',open?'true':'false');
+}
+function csClearFilters(){ if(CSF) CSF.clear(); csOnFilters(); }
+function csOnFilters(){ CS.loaded=false; csRun(); }
+function csSyncFilterUI(st){
+  st=st||csFState(); if(!st) return;
+  var bar=document.getElementById('csActive');
+  if(bar) bar.innerHTML=VVFilters.renderActive(st);
+  var n=(st.score.bands||[]).length + (st.score.lo!=null||st.score.hi!=null?1:0)
+      + ['league','position','profile','stage','trajectory'].reduce(function(a,k){ return a+(st[k]||[]).length; },0);
+  var c=document.getElementById('csFCount');
+  if(c) c.textContent = n ? String(n) : '';
+  var b=document.getElementById('csFiltBtn');
+  if(b && !document.getElementById('csFilters').hidden) b.classList.add('on');
+}
+(function csMountFilters(){
+  CSF_HOST=document.getElementById('csFilterHost');
+  if(!CSF_HOST || !window.VVFilters){
+    console.error('[VV] VVFilters missing , card search filters not mounted. Check the ?v= token on the vv-core script tag.');
+    return;
+  }
+  CSF=VVFilters.mount(CSF_HOST,{compact:true, onChange:function(){ csOnFilters(); }});
+  var bar=document.getElementById('csActive');
+  if(bar) bar.addEventListener('click', function(e){
+    var b=e.target.closest ? e.target.closest('[data-vvf-remove]') : null;
+    if(!b) return;
+    VVFilters.removeFrom(CSF_HOST, b.getAttribute('data-vvf-remove'), b.getAttribute('data-vvf-value'));
+    csOnFilters();
+  });
+  csSyncFilterUI();
+})();
+
 function csBuildQ(sb,withSeason,nameQ,seasonYear){
   var q=sb.from('player_card_mv').select('*')
           .order('rt',{ascending:false,nullsFirst:false})
           .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
   if(nameQ){ var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf); }
   if(withSeason && seasonYear!=null) q=q.eq('season_year',seasonYear);
+  var st=csFState();
+  if(st) q=VVFilters.applyServer(q, st, {}).query;   // server half; the client half runs in csRun
   return q;
 }
 async function csRun(){
@@ -2255,8 +2317,10 @@ async function csRun(){
                  console.error('card search failed:',res.error.message); return; }
   var rows=res.data||[];
   if(nameQ) rows=VVCore.rankBySearch(rows,nameQ,function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); });
-  CS.rows=rows.map(rowToCard);
+  var stNow=csFState();
+  CS.rows=rows.map(rowToCard).filter(stNow ? VVFilters.clientPredicate(stNow) : function(){ return true; });
   CS.loaded=true;
+  csSyncFilterUI(stNow);
   hint.textContent = (miss!=null) ? ('No '+VVCore.vvSeasonLabel(miss)+' season for that search , showing all') : '';
   csRender();
 }
@@ -2268,7 +2332,10 @@ function csRender(){
   var c=document.getElementById('csCount');
   c.textContent = rows.length ? (rows.length+(rows.length>=VVCore.SEARCH_CEIL?'+':'')+' season'+(rows.length===1?'':'s')) : '';
   if(!rows.length){
-    g.innerHTML='<div class="rankempty">'+(CS.q?'No seasons match your search.':'Type to search, or browse the top seasons.')+'</div>';
+    var _st=csFState();
+    g.innerHTML = (_st && VVFilters.isActive(_st))
+      ? VVFilters.emptyStateHTML(_st,{searching:!!CS.q})      // names the clauses that must all hold
+      : '<div class="rankempty">'+(CS.q?'No seasons match your search.':'Type to search, or browse the top seasons.')+'</div>';
     return;
   }
   /* row stagger , 120ms after the panel's own 60ms offset, then 55ms apart.

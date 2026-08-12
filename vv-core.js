@@ -2013,6 +2013,28 @@
       if(zero) c.setAttribute('aria-disabled','true'); else c.removeAttribute('aria-disabled');
     });
   }
+  /* emptyStateHTML , why a result set is empty, in the user's own selections.
+     Groups now AND together and no group silently rewrites another's bounds
+     (Prestige used to fold into the score floor), so a contradictory pair returns
+     genuinely nothing. Saying WHICH clauses are active turns a blank panel into a
+     legible one , the audit note this closes. */
+  function emptyStateHTML(st, opts){
+    opts=opts||{};
+    var parts=[];
+    (st.score.bands||[]).forEach(function(v){ parts.push(labelFor('score',v)); });
+    if(st.score.lo!=null || st.score.hi!=null){
+      parts.push('VV ' + (st.score.lo==null ? ('up to '+st.score.hi)
+                : (st.score.hi==null ? (st.score.lo+'+') : (st.score.lo+' , '+st.score.hi))));
+    }
+    ['league','position','profile','stage','trajectory'].forEach(function(gk){
+      (st[gk]||[]).forEach(function(v){ parts.push(labelFor(gk,v)); });
+    });
+    var head=opts.searching ? 'No seasons match your search.' : 'No seasons match these filters.';
+    if(!parts.length) return '<div class="vvf-empty-state">'+VVF_ESC(head)+'</div>';
+    return '<div class="vvf-empty-state">'+VVF_ESC(head)+
+      '<span class="vvf-es-why">All of these have to be true at once , '+
+      VVF_ESC(parts.join(' + '))+'</span></div>';
+  }
   function describe(){
     return VVF_GROUPS.map(function(g){ return {key:g.key,label:g.label,select:g.select,where:g.where,
       items:vvfItems(g).length, note:g.note||null}; });
@@ -2082,6 +2104,25 @@
     'body.light .vvf-active-chip{color:var(--pink-ink)}',
     '.vvf-ag{font-family:\'Archivo\';font-weight:700;font-size:9px;letter-spacing:.06em;text-transform:uppercase;opacity:.72}',
     '.vvf-ax{font-size:15px;line-height:1;opacity:.7;margin-left:1px}',
+    /* COMPACT , for a panel rather than a rail. Label to the left, chips on one
+       horizontally-scrolling line per group, so eight groups fit a search panel
+       without becoming a wall. Not a copy of the rail; a different shape. */
+    '.vvf.vvf-compact{gap:9px}',
+    '.vvf-compact .vvf-group{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:start;gap:10px}',
+    '.vvf-compact .vvf-gl{padding-top:8px;font-size:10.5px;line-height:1.15}',
+    '.vvf-compact .vvf-chips{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-ms-overflow-style:none}',
+    '.vvf-compact .vvf-chips::-webkit-scrollbar{display:none}',
+    '.vvf-compact .vvf-chip{flex:none;font-size:12.5px;padding:7px 11px}',
+    '.vvf-compact .vvf-sub{margin-top:0}',
+    '.vvf-compact .vvf-score{padding:0}',
+    '.vvf-compact .vvf-svals{justify-content:flex-start;gap:6px}',
+    '.vvf-compact .vvf-sv{font-size:15px}',
+    '.vvf-compact .vvf-dual{margin:0 8px 0 0}',
+    '@media (max-width:560px){.vvf-compact .vvf-group{grid-template-columns:1fr;gap:4px}.vvf-compact .vvf-gl{padding-top:0}}',
+    /* empty state , names the clauses that have to hold at once */
+    '.vvf-empty-state{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;padding:40px 14px;font-family:\'Inter\';font-size:15px;color:rgba(243,237,224,0.6)}',
+    'body.light .vvf-empty-state{color:var(--ink-soft)}',
+    '.vvf-es-why{font-size:12.5px;opacity:.75;max-width:36ch;line-height:1.45}',
     '@media (max-width:720px){.vvf{gap:14px}.vvf-chip{font-size:12.5px;padding:7px 11px}.vvf-active-chip{font-size:11.5px}}',
     '@media (prefers-reduced-motion:reduce){.vvf-chip{transition:none}}'
   ].join('');
@@ -2102,7 +2143,7 @@
     if(typeof host==='string') host=document.querySelector(host);
     if(!host) return null;
     mountStyles(host.ownerDocument||document);
-    host.innerHTML=renderAll();
+    host.innerHTML='<div class="vvf'+(opts.compact?' vvf-compact':'')+'">'+VVF_GROUPS.map(function(g){ return renderGroup(g.key); }).join('')+'</div>';
     var onChange=opts.onChange||function(){};
     host.addEventListener('click', function(e){
       var c=e.target.closest ? e.target.closest('.vvf-chip') : null;
@@ -2153,7 +2194,7 @@
   const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
-    labelFor, renderActive, removeFrom, facetPlan, setAvailability,
+    labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,

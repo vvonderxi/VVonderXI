@@ -714,11 +714,6 @@ body.light .pksbar{background:#fff;border-color:rgba(0,0,0,.07)}
 body.light .pksbar svg{color:var(--ink-soft)}
 .pksbar input{border:0;outline:0;background:0;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}
 body.light .pksbar input{color:var(--charcoal)}
-.pkchips{display:flex;gap:7px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;flex:1;min-width:0;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}.pkfilterbar{display:flex;align-items:flex-start;gap:9px}
-.pkchips::-webkit-scrollbar{display:none}
-.pkchip{flex-shrink:0;font-family:'Archivo';font-weight:800;font-size:12px;padding:7px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(243,237,224,.7);cursor:pointer}.pkchip.pksoon{opacity:.4;cursor:not-allowed;pointer-events:none}.pkchip.pksoon .pksoonlbl{font-style:normal;font-weight:800;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;opacity:.8;margin-left:5px;border:1px solid currentColor;border-radius:5px;padding:0 4px}
-body.light .pkchip{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.03);color:#6a6256}
-.pkchip.on{background:var(--pink);color:#fff;border-color:var(--pink-ink)}
 .pkresults{flex:1;overflow-y:auto;border-top:1px solid rgba(255,255,255,.08);margin:0 -16px;padding:0 10px 18px}
 body.light .pkresults{border-color:rgba(0,0,0,.07)}
 .pkhd{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(243,237,224,.4);padding:15px 6px 5px}
@@ -953,7 +948,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260812b"></script>
+<script src="/vv-core.js?v=20260812c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1120,18 +1115,43 @@ body.light .pkmsub{color:var(--ink-soft)}
   var POOL=[];
   function pkKey(p){return (p.surname+p.year).replace(/[^a-z0-9]/gi,'').toLowerCase();}
   function pkPosGroup(p){ if(!p)return ''; if(p==='GK')return 'GK'; if(p==='LB'||p==='RB'||p==='FB'||p==='LWB'||p==='RWB')return 'FB'; if(p==='CB')return 'CB'; if(p==='CDM'||p==='DM')return 'CDM'; if(p==='CM')return 'CM'; if(p==='CAM'||p==='AM')return 'CAM'; if(p==='LW'||p==='RW'||p==='W'||p==='LM'||p==='RM')return 'W'; if(p==='ST'||p==='CF'||p==='FW')return 'ST'; return p; }
-  var pickerSlot='A', pkFilterKind='all', pkFilterVal='';
+  var pickerSlot='A';
+  /* FILTERS , VVFilters, replacing the single (pkFilterKind, pkFilterVal) pair.
+     Three changes worth naming:
+     1. MULTI-SELECT. The old picker held ONE choice and cleared every chip on each
+        pick. Now: OR within a group, AND across groups, same as rankings.
+     2. SERVER-SIDE. The old passF filtered an already-fetched POOL, and browse
+        caps that pool at the top 50 by rt , measured, 5 of 8 position chips and
+        4 of 9 league chips matched ZERO rows there, so the chips looked broken
+        through no fault of their own. Server groups now go into buildPoolQ.
+     3. PRESTIGE IS GONE, AND NOTHING IS LOST. The old test was
+        p.prestige === 'Generational' | 'Iconic'. Verified across rt 0..100: the
+        VV Score bands Generational [95..] and Elite [90..94] make the IDENTICAL
+        cut, zero disagreement. Same filter, one vocabulary, shared with rankings. */
+  var PKF_HOST=null, PKF=null;
+  function pkFState(){ return (PKF_HOST && window.VVFilters) ? VVFilters.readState(PKF_HOST)
+                      : (window.VVFilters ? VVFilters.emptyState() : null); }
   function openPicker(slot){ pickerSlot=slot;
     document.getElementById('pkTitle').innerHTML='Choose <span class="s">Season '+slot+'</span>';
-    document.getElementById('pkSearch').value=''; pkFilterKind='all'; pkFilterVal=''; _pkSeasonMiss=null;
-    var chips=document.querySelectorAll('.pkchip'); chips.forEach(function(c,i){c.classList.toggle('on',i===0);});
+    document.getElementById('pkSearch').value=''; if(PKF) PKF.clear(); _pkSeasonMiss=null;
     document.getElementById('pickerDim').classList.add('show');
     document.getElementById('pickerSheet').classList.add('show');
     var pm=document.getElementById('pkMore'); if(pm)pm.classList.remove('open'); var fb=document.getElementById('pkFiltBtn'); if(fb)fb.classList.remove('on'); renderPicker(); loadPool(); setTimeout(function(){try{document.getElementById('pkSearch').focus();}catch(e){}},260);
   }
   function pkToggleFilters(){ var p=document.getElementById('pkMore'),btn=document.getElementById('pkFiltBtn'); var open=p.classList.toggle('open'); btn.classList.toggle('on',open); }
   function closePicker(){ document.getElementById('pickerDim').classList.remove('show'); document.getElementById('pickerSheet').classList.remove('show'); }
-  function pkSetFilter(el,kind,val){ pkFilterKind=kind; pkFilterVal=val||''; document.querySelectorAll('.pkchip').forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); var pm=document.getElementById('pkMore'); if(pm)pm.classList.remove('open'); var fb=document.getElementById('pkFiltBtn'); if(fb&&el.id!=='pkFiltBtn')fb.classList.remove('on'); renderPicker(); }
+  function pkClearFilters(){ if(PKF) PKF.clear(); pkOnFilters(); }
+  function pkOnFilters(){ pkSyncFilterUI(); loadPool(); }
+  function pkSyncFilterUI(){
+    var st=pkFState(); if(!st) return;
+    var bar=document.getElementById('pkActive');
+    if(bar) bar.innerHTML=VVFilters.renderActive(st);
+    var fb=document.getElementById('pkFiltBtn');
+    if(fb) fb.classList.toggle('on', VVFilters.isActive(st));
+  }
+  /* pkSetFilterLegacy DELETED , the single-select handler that held one
+     (kind,val) pair and cleared every chip on each pick. VVFilters owns
+     selection now, by data-vvf-group, with real multi-select. */
   function pkRecents(){ try{return JSON.parse(localStorage.getItem('vvCmpRecents')||'[]');}catch(e){return [];} }
   function pkPushRecent(p){ try{var r=pkRecents().filter(function(x){return pkKey(x)!==pkKey(p);}); r.unshift(p); localStorage.setItem('vvCmpRecents',JSON.stringify(r.slice(0,6)));}catch(e){} }
   function pkPick(k){ var pool=POOL.concat(pkRecents()); var p=null; for(var i=0;i<pool.length;i++){ if(pkKey(pool[i])===k){p=pool[i];break;} } if(!p)return;
@@ -1152,14 +1172,21 @@ body.light .pkmsub{color:var(--ink-soft)}
   function renderPicker(){
     var q=(document.getElementById('pkSearch').value||'').trim().toLowerCase();
     var res=document.getElementById('pkResults'); var html='';
-    function passF(p){ if(pkFilterKind==='pos') return pkPosGroup(p.pos)===pkFilterVal; if(pkFilterKind==='prestige') return p.prestige===pkFilterVal; if(pkFilterKind==='tag') return Array.isArray(p.tags)&&p.tags.some(function(t){return t.name===pkFilterVal;}); return true; /* 'honour' deferred -> inert (chips have no onclick) */ }
+    /* CLIENT HALF ONLY. league / position / score all went into the query in
+       loadPool; this covers profile, Career-Stage and Trajectory, which are
+       getVVTags output with no column to filter on. */
+    var _st=pkFState();
+    var passF = _st ? VVFilters.clientPredicate(_st) : function(){ return true; };
     if(!q){
       var rec=pkRecents().filter(passF);
       if(rec.length){ html+='<div class="pkhd">Recent</div>'+rec.map(pkRow).join(''); }
       var other = pickerSlot==='A'?CMP_B:CMP_A;
       if(other){ var sug=POOL.filter(function(p){return passF(p)&&pkPosGroup(p.pos)===pkPosGroup(other.pos)&&pkKey(p)!==pkKey(other);}).slice(0,4);
         if(sug.length){ html+='<div class="pkhd">Suggested rivals</div>'+sug.map(pkRow).join(''); } }
-      html+='<div class="pkhd">All seasons</div>'+POOL.filter(passF).map(pkRow).join('');
+      var _all=POOL.filter(passF);
+      html+= _all.length ? ('<div class="pkhd">All seasons</div>'+_all.map(pkRow).join(''))
+           : ((_st && VVFilters.isActive(_st)) ? VVFilters.emptyStateHTML(_st,{})
+              : '<div class="pkhd">All seasons</div>');
     } else {
       // client re-filter uses the PARSED name only (the year token is a season filter, applied
       // server-side in loadPool , matching it as name text would wrongly empty the results).
@@ -1192,12 +1219,33 @@ body.light .pkmsub{color:var(--ink-soft)}
   function populatePicker(){
     if(!window.VVCore || !VVCore.renderFilterChips) return;
     var g=function(id){return document.getElementById(id);};
-    if(g('pkPrestige')) g('pkPrestige').innerHTML = VVCore.renderFilterChips('prestige',{variant:'compare'});
-    if(g('pkHonours'))  g('pkHonours').innerHTML  = VVCore.renderFilterChips('honours',{variant:'compare',soon:true});
-    if(g('pkTags'))     g('pkTags').innerHTML      = VVCore.renderFilterChips('profile',{variant:'compare',flat:true});
+    // pkPrestige / pkHonours / pkTags are gone , VVFilters renders every group now.
   }
   populatePicker();
   function pkOnSearch(){ clearTimeout(_pkT); _pkT=setTimeout(loadPool,250); }
+  /* DEFERRED , this script block sits ABOVE the picker sheet markup in the
+     document, so at parse time #pkFilterHost does not exist yet and a direct
+     mount finds null. card.html gets away with an immediate mount only because
+     its overlay markup happens to precede its script. Wait for DOM ready. */
+  function pkMountFilters(){
+    PKF_HOST=document.getElementById('pkFilterHost');
+    if(!PKF_HOST || !window.VVFilters){
+      console.error('[VV] VVFilters missing , compare picker filters not mounted. Check the ?v= token on the vv-core script tag.');
+      return;
+    }
+    PKF=VVFilters.mount(PKF_HOST,{compact:true, onChange:function(){ pkOnFilters(); }});
+    var bar=document.getElementById('pkActive');
+    if(bar) bar.addEventListener('click', function(e){
+      var b=e.target.closest ? e.target.closest('[data-vvf-remove]') : null;
+      if(!b) return;
+      VVFilters.removeFrom(PKF_HOST, b.getAttribute('data-vvf-remove'), b.getAttribute('data-vvf-value'));
+      pkOnFilters();
+    });
+    pkSyncFilterUI();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',pkMountFilters);
+  else pkMountFilters();
+
   async function loadPool(){
     var sb=vvClient(); if(!sb){ renderPicker(); return; }   // vv-core logs why (missing config or lib)
     var q=(document.getElementById('pkSearch').value||'').trim();
@@ -1209,6 +1257,13 @@ body.light .pkmsub{color:var(--ink-soft)}
                   .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
       if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }        // token-AND on player/team norm
       if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);    // NAME + SEASON, or bare year
+      var st=pkFState();
+      if(st && VVFilters.isActive(st)){
+        query=VVFilters.applyServer(query, st, {}).query;
+        // an ACTIVE filter is a deliberate narrowing , the curated 50 would hide
+        // most of what the user just asked for, so lift the browse cap too
+        query=query.limit(VVCore.SEARCH_CEIL);
+      }
       return query;
     }
     var res=await buildPoolQ(true);
@@ -1623,5 +1678,5 @@ function vvJoin(){
   <label class="js-optin"><input type="checkbox" id="vvOptIn" checked> When accounts launch, keep me posted on new features and big match cards.</label>
   <button class="js-later" onclick="closeJoin()">Maybe later</button>
 </div>
-<div class="pkdim" id="pickerDim" onclick="closePicker()"></div><div class="pksheet" id="pickerSheet" role="dialog" aria-label="Choose a season"><div class="pkgrab"></div><div class="pkhead-row"><h2 id="pkTitle">Choose <span class="s">Season A</span></h2><button class="pkx" onclick="closePicker()" aria-label="Close">&times;</button></div><div class="pksbar"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"><circle cx="44" cy="44" r="26"/><path d="M64 64 L84 84"/></svg><input id="pkSearch" placeholder="Search player, club or tag..." oninput="pkOnSearch()" autocomplete="off"></div><div class="pkfilterbar"><div class="pkchips"><span class="pkchip on" onclick="pkSetFilter(this,'all','')">All</span><span class="pkchip" onclick="pkSetFilter(this,'pos','GK')">GK</span><span class="pkchip" onclick="pkSetFilter(this,'pos','CB')">CB</span><span class="pkchip" onclick="pkSetFilter(this,'pos','FB')">FB</span><span class="pkchip" onclick="pkSetFilter(this,'pos','CDM')">CDM</span><span class="pkchip" onclick="pkSetFilter(this,'pos','CM')">CM</span><span class="pkchip" onclick="pkSetFilter(this,'pos','CAM')">CAM</span><span class="pkchip" onclick="pkSetFilter(this,'pos','W')">Winger</span><span class="pkchip" onclick="pkSetFilter(this,'pos','ST')">ST</span></div><button class="pkfiltbtn" id="pkFiltBtn" onclick="pkToggleFilters()">⚙ Filters</button></div><div class="pkmore" id="pkMore"><div class="pkmgl">Prestige</div><div class="pkmrow" id="pkPrestige"></div><div class="pkmgl">Honours</div><div class="pkmrow" id="pkHonours"></div><div class="pkmgl">Profile</div><div class="pkmrow" id="pkTags"></div></div><div class="pkresults" id="pkResults"></div></div></body>
+<div class="pkdim" id="pickerDim" onclick="closePicker()"></div><div class="pksheet" id="pickerSheet" role="dialog" aria-label="Choose a season"><div class="pkgrab"></div><div class="pkhead-row"><h2 id="pkTitle">Choose <span class="s">Season A</span></h2><button class="pkx" onclick="closePicker()" aria-label="Close">&times;</button></div><div class="pksbar"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"><circle cx="44" cy="44" r="26"/><path d="M64 64 L84 84"/></svg><input id="pkSearch" placeholder="Search player, club or tag..." oninput="pkOnSearch()" autocomplete="off"></div><div class="pkfilterbar"><button class="pkfiltbtn" id="pkFiltBtn" onclick="pkToggleFilters()">⚙ Filters</button></div><div class="pkmore" id="pkMore"><div id="pkFilterHost"></div><button type="button" class="pkclearall" id="pkClearAll" onclick="pkClearFilters()">Clear all</button></div><div class="vvf-active" id="pkActive"></div><div class="pkresults" id="pkResults"></div></div></body>
 </html>
