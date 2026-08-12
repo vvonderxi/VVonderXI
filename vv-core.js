@@ -1663,6 +1663,357 @@
   }
   function vvSeasonLabel(y){ return (y==null) ? '' : fmtSeason(String(y).slice(2)+String(y+1).slice(2)); }
 
+
+  /* ==========================================================================
+     VVFilters , the shared filter component (added 2026-08-12, filter stage S1)
+     ==========================================================================
+     SHIPS UNUSED. rankings.html / card.html / compare.html are untouched this
+     session; surfaces adopt it one at a time. Nothing below runs unless a page
+     calls VVFilters.mount().
+
+     FOUNDING RULE , EVERY CHIP CARRIES ITS VALUE IN data-vvf-value.
+     State is NEVER read from rendered label text. The old rankings readFilters
+     matched x.textContent.indexOf('Premier League') / 'Generational' / 'Goals'
+     / '2020s', so a label edit, an added emoji or the EN/NL/FR toggle silently
+     changed the QUERY. readState() below only ever reads data-* attributes.
+
+     WHERE EACH GROUP RUNS IS DECLARED, NOT IMPLIED. Profile / Career-Stage /
+     Trajectory are computed by getVVTags and do not exist as columns, so they
+     CANNOT go to PostgREST , they run as a client predicate after the fetch.
+     Everything else is a real column and runs server-side. group.where says
+     which, and applyServer()/clientPredicate() each handle only their own half.
+     The caller must run BOTH.
+
+     PRESTIGE IS SEPARATE FROM THE SCORE SLIDER, deliberately. rankings did
+     f.rtLo = Math.max(f.rtLo, floor), so Prestige mutated the slider's state.
+     That cannot survive multi-select bands: "Elite 90-94" + "Standout 80-84" is
+     a DISJOINT union and no single lo/hi pair expresses it. Each group now emits
+     its own constraint and they AND together, per OR-within / AND-across.
+
+     NO NUMBER IS HARDCODED. Band edges are derived by scanning bandFor(), and
+     prestige floors by scanning prestigeFor(bandFor()), exactly as rankings now
+     does. A recut in bandFor moves every threshold here automatically. */
+
+  // ---- band edges, derived ------------------------------------------------
+  // Scans bandFor across the scale and returns ordered {band, lo, hi} runs.
+  function bandRanges(){
+    var out=[], cur=null;
+    for(var r=0;r<=100;r++){
+      var b=bandFor(r);
+      if(!cur || cur.band!==b){ if(cur) out.push(cur); cur={band:b, lo:r, hi:r}; }
+      else cur.hi=r;
+    }
+    if(cur) out.push(cur);
+    return out.reverse();                       // highest band first
+  }
+  function bandRange(name){
+    var all=bandRanges();
+    for(var i=0;i<all.length;i++) if(all[i].band===name) return all[i];
+    return null;
+  }
+  function rtFloorForPrestige(p){
+    for(var r=0;r<=100;r++){ if(prestigeFor(bandFor(r))===p) return r; }
+    return null;
+  }
+  /* PUBLIC BAND LABELS are display renames, not engine names (CLAUDE.md §C:
+     engine "Exceptional" ships as "Standout"). Only the LABEL is mapped here ,
+     the edges still come from bandFor. */
+  var VVF_BAND_LABEL = { Exceptional:'Standout' };
+  function bandPresets(){
+    var wanted=['Generational','Elite','World Class','Exceptional'];
+    var out=wanted.map(function(n){
+      var r=bandRange(n); if(!r) return null;
+      var top=(n==='Generational');
+      return { v:n, l:(VVF_BAND_LABEL[n]||n), lo:r.lo, hi:(top?null:r.hi),
+               hint: top ? (r.lo+'+') : (r.lo+'-'+r.hi) };
+    }).filter(Boolean);
+    var lowest=bandRange('Exceptional');
+    if(lowest) out.push({ v:'__below', l:(lowest.lo-1)+' and below', lo:null, hi:lowest.lo-1,
+                          hint:'' });
+    return out;
+  }
+
+  // ---- group definitions ---------------------------------------------------
+  var VVF_LEAGUES=[
+    {v:'PL',l:'Premier League'},{v:'LL',l:'La Liga'},{v:'SA',l:'Serie A'},
+    {v:'BL',l:'Bundesliga'},{v:'L1',l:'Ligue 1'},{v:'PRT',l:'Primeira Liga'},
+    {v:'ERE',l:'Eredivisie'},{v:'BPL',l:'Jupiler Pro League'},{v:'TR',l:'Süper Lig'}
+  ];
+  var VVF_SORTS=[
+    {v:'rt',       l:'VV Score',  col:'rt',          asc:false},
+    {v:'goals',    l:'Goals',     col:'goals',       asc:false},
+    {v:'assists',  l:'Assists',   col:'assists',     asc:false},
+    {v:'ga',       l:'Total G/A', col:'output',      asc:false},
+    {v:'recent',   l:'Recent',    col:'season_year', asc:false},
+    {v:'az',       l:'A-Z',       col:'player_name', asc:true}
+  ];
+  // Career-Stage is split OUT of FILTER_TAXONOMY.profile into its own group.
+  function profileSubs(exclude){
+    return FILTER_TAXONOMY.profile.filter(function(g){
+      return exclude ? g.sub!=='Career-Stage' : g.sub==='Career-Stage'; });
+  }
+  function flatItems(subs){
+    return subs.reduce(function(a,g){ return a.concat(g.items.map(function(it){
+      return {v:it.v, l:(it.l||it.v), e:it.e}; })); }, []);
+  }
+
+  var VVF_GROUPS=[
+    { key:'sort',     label:'Sort by',      select:'single', where:'server', items:VVF_SORTS },
+    { key:'score',    label:'VV Score',     select:'multi',  where:'server', kind:'score' },
+    { key:'league',   label:'League',       select:'multi',  where:'server', items:VVF_LEAGUES },
+    { key:'position', label:'Position',     select:'multi',  where:'server',
+      items:FILTER_TAXONOMY.position.map(function(p){ return {v:p.v,l:(p.l||p.v)}; }) },
+    { key:'prestige', label:'Prestige',     select:'multi',  where:'server',
+      items:FILTER_TAXONOMY.prestige.map(function(p){ return {v:p.v,l:p.l,e:p.e}; }) },
+    { key:'profile',  label:'Profile',      select:'multi',  where:'client', subs:true },
+    { key:'stage',    label:'Career-Stage', select:'multi',  where:'client' },
+    { key:'trajectory',label:'Trajectory',  select:'multi',  where:'client', items:[],
+      note:'wired, empty until Peak / The Standard / Breakout / Renaissance ship' },
+    { key:'honours',  label:'Honours',      select:'multi',  where:'inert',
+      items:FILTER_TAXONOMY.honours.map(function(h){ return {v:h.v,l:h.l,e:h.e}; }),
+      note:'INERT , honours live in the `honours` TABLE, not on player_card_mv, and '+
+           'PostgREST cannot filter the matview by a joined table. Needs honour flags '+
+           'ON the matview (the DROP + CREATE in matview_rebuild_plan.md) before these '+
+           'can do anything. Rendered so the vocabulary is visible; no handler attached.' }
+  ];
+  function vvfGroup(key){ for(var i=0;i<VVF_GROUPS.length;i++) if(VVF_GROUPS[i].key===key) return VVF_GROUPS[i]; return null; }
+  function vvfItems(g){
+    if(g.key==='score')   return bandPresets();
+    if(g.key==='profile') return flatItems(profileSubs(true));
+    if(g.key==='stage')   return flatItems(profileSubs(false));
+    return g.items||[];
+  }
+
+  // ---- markup --------------------------------------------------------------
+  var VVF_ESC=function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+  function vvfChip(groupKey, it, opts){
+    var inert=!!opts.inert;
+    var lab=(it.e?it.e+' ':'')+(it.l||it.v);
+    return '<button type="button" class="vvf-chip'+(inert?' vvf-inert':'')+'"'+
+      ' data-vvf-group="'+VVF_ESC(groupKey)+'" data-vvf-value="'+VVF_ESC(it.v)+'"'+
+      (it.lo!=null?' data-vvf-lo="'+it.lo+'"':'')+(it.hi!=null?' data-vvf-hi="'+it.hi+'"':'')+
+      (inert?' disabled aria-disabled="true"':'')+
+      ' aria-pressed="false">'+VVF_ESC(lab)+
+      (it.hint?' <em class="vvf-hint">'+VVF_ESC(it.hint)+'</em>':'')+
+      (inert?' <em class="vvf-soon">soon</em>':'')+'</button>';
+  }
+  function renderGroup(key){
+    var g=vvfGroup(key); if(!g) return '';
+    var inert=(g.where==='inert');
+    var head='<div class="vvf-group" data-vvf-groupkey="'+VVF_ESC(key)+'" data-vvf-where="'+g.where+'"'+
+             ' data-vvf-select="'+g.select+'"><div class="vvf-gl">'+VVF_ESC(g.label)+'</div>';
+    var body='';
+    if(key==='score'){
+      var b=bandRanges()[bandRanges().length-1];   // lowest band, for the slider floor
+      var lo=0, hi=100;
+      var rr=bandRange('Generational');
+      body+='<div class="vvf-range">'+
+        '<input type="range" class="vvf-rt" data-vvf-role="rtmin" min="'+lo+'" max="'+hi+'" value="'+lo+'">'+
+        '<input type="range" class="vvf-rt" data-vvf-role="rtmax" min="'+lo+'" max="'+hi+'" value="'+hi+'">'+
+        '<span class="vvf-rlabel" data-vvf-role="rtlabel"></span></div>';
+      body+='<div class="vvf-chips">'+bandPresets().map(function(it){ return vvfChip(key,it,{}); }).join('')+'</div>';
+    } else if(g.subs){
+      body+=profileSubs(true).map(function(sub){
+        return '<div class="vvf-sub">'+VVF_ESC(sub.sub)+'</div><div class="vvf-chips">'+
+          sub.items.map(function(it){ return vvfChip(key,{v:it.v,l:(it.l||it.v),e:it.e},{}); }).join('')+'</div>';
+      }).join('');
+    } else {
+      var items=vvfItems(g);
+      body+='<div class="vvf-chips">'+(items.length
+        ? items.map(function(it){ return vvfChip(key,it,{inert:inert}); }).join('')
+        : '<span class="vvf-empty">'+VVF_ESC(g.note||'Coming soon')+'</span>')+'</div>';
+    }
+    return head+body+'</div>';
+  }
+  function renderAll(){ return '<div class="vvf">'+VVF_GROUPS.map(function(g){ return renderGroup(g.key); }).join('')+'</div>'; }
+
+  // ---- state ---------------------------------------------------------------
+  function emptyState(){
+    return { sort:'rt', score:{lo:null,hi:null,bands:[]}, league:[], position:[],
+             prestige:[], profile:[], stage:[], trajectory:[], honours:[] };
+  }
+  /* READS data-* ONLY. Never textContent , that is the whole point of the rewrite. */
+  function readState(root){
+    root=root||document;
+    var st=emptyState();
+    var chips=root.querySelectorAll('.vvf-chip.on[data-vvf-group]');
+    for(var i=0;i<chips.length;i++){
+      var c=chips[i], gk=c.getAttribute('data-vvf-group'), v=c.getAttribute('data-vvf-value');
+      var g=vvfGroup(gk); if(!g || g.where==='inert') continue;
+      if(gk==='score'){ st.score.bands.push(v); continue; }
+      if(g.select==='single'){ st[gk]=v; } else if(st[gk] && st[gk].indexOf(v)<0){ st[gk].push(v); }
+    }
+    var mn=root.querySelector('[data-vvf-role="rtmin"]'), mx=root.querySelector('[data-vvf-role="rtmax"]');
+    if(mn&&mx){
+      var lo=+mn.value, hi=+mx.value; if(lo>hi){ var t=lo; lo=hi; hi=t; }
+      // "at the ends" means NO bound , never amputate silently (rankings shipped a
+      // floor of 15 against a live min(rt) of 11, hiding 1,030 cards)
+      st.score.lo = (lo<=+mn.min) ? null : lo;
+      st.score.hi = (hi>=+mx.max) ? null : hi;
+    }
+    return st;
+  }
+  function isActive(st){
+    if(!st) return false;
+    if(st.sort && st.sort!=='rt') return true;
+    if(st.score && (st.score.lo!=null || st.score.hi!=null || st.score.bands.length)) return true;
+    return ['league','position','prestige','profile','stage','trajectory']
+      .some(function(k){ return (st[k]||[]).length>0; });
+  }
+
+  // ---- server half ---------------------------------------------------------
+  function vvfRangeOr(ranges){          // [{lo,hi}] -> PostgREST or() string
+    return ranges.map(function(r){
+      var parts=[];
+      if(r.lo!=null) parts.push('rt.gte.'+r.lo);
+      if(r.hi!=null) parts.push('rt.lte.'+r.hi);
+      return parts.length>1 ? 'and('+parts.join(',')+')' : parts[0];
+    }).filter(Boolean).join(',');
+  }
+  /* Applies ONLY the server-side groups. Returns {query, applied}. The caller
+     must ALSO run clientPredicate() , this half cannot see computed tags. */
+  function applyServer(query, st, opts){
+    opts=opts||{}; var applied=[];
+    if(st.league.length){   query=query.in('league_code', st.league);      applied.push('league'); }
+    if(st.position.length){ query=query.in('position_pool', st.position);  applied.push('position'); }
+    // VV Score , slider range AND band presets are SEPARATE constraints that AND
+    if(st.score.lo!=null){ query=query.gte('rt', st.score.lo); applied.push('score.lo'); }
+    if(st.score.hi!=null){ query=query.lte('rt', st.score.hi); applied.push('score.hi'); }
+    if(st.score.bands.length){
+      var presets=bandPresets(), byV={};
+      presets.forEach(function(p){ byV[p.v]=p; });
+      var rs=st.score.bands.map(function(v){ return byV[v]; }).filter(Boolean);
+      var s=vvfRangeOr(rs); if(s){ query=query.or(s); applied.push('score.bands'); }
+    }
+    // Prestige , its OWN constraint, never folded into the slider
+    if(st.prestige.length){
+      var pr=st.prestige.map(function(p){ var f=rtFloorForPrestige(p); return f==null?null:{lo:f,hi:null}; }).filter(Boolean);
+      var ps=vvfRangeOr(pr); if(ps){ query=query.or(ps); applied.push('prestige'); }
+    }
+    if(!opts.headCount){
+      var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0]||VVF_SORTS[0];
+      query=query.order(so.col,{ascending:so.asc, nullsFirst:false}); applied.push('sort:'+so.col);
+    }
+    return { query:query, applied:applied };
+  }
+
+  // ---- client half ---------------------------------------------------------
+  /* Profile / Career-Stage / Trajectory are getVVTags output, not columns.
+     OR WITHIN A GROUP, AND ACROSS GROUPS , note this DIFFERS from the rankings
+     behaviour it replaces, which AND-ed selected tags together. */
+  function clientPredicate(st){
+    var groups=['profile','stage','trajectory'].map(function(k){ return st[k]||[]; })
+                 .filter(function(a){ return a.length; });
+    if(!groups.length) return function(){ return true; };
+    return function(card){
+      var names=(card&&card.tags)?card.tags.map(function(t){ return t.name; }):[];
+      return groups.every(function(sel){ return sel.some(function(v){ return names.indexOf(v)>=0; }); });
+    };
+  }
+  function describe(){
+    return VVF_GROUPS.map(function(g){ return {key:g.key,label:g.label,select:g.select,where:g.where,
+      items:vvfItems(g).length, note:g.note||null}; });
+  }
+
+  // ---- styles + mount ------------------------------------------------------
+  /* CSS lives HERE now, not per page , the three surfaces diverged precisely
+     because each kept its own copy. Namespaced under .vvf with vvf- prefixed
+     classes so it CANNOT touch the existing .fopt / .pkchip markup on the live
+     pages, and injected only on mount so an unused import paints nothing. */
+  var VVF_CSS = [
+    '.vvf{display:flex;flex-direction:column;gap:18px}',
+    '.vvf-group{display:flex;flex-direction:column;gap:8px}',
+    '.vvf-gl{font-family:\'Archivo\';font-weight:800;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,0.58)}',
+    'body.light .vvf-gl{color:var(--ink-soft)}',
+    '.vvf-sub{font-family:\'Archivo\';font-weight:700;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.42);margin-top:4px}',
+    'body.light .vvf-sub{color:var(--ink-soft);opacity:.8}',
+    '.vvf-chips{display:flex;flex-wrap:wrap;gap:7px}',
+    '.vvf-chip{font-family:\'Inter\';font-weight:600;font-size:13px;line-height:1;padding:8px 13px;border-radius:999px;cursor:pointer;',
+    'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--cream);transition:background .15s,border-color .15s,color .15s}',
+    '.vvf-chip:hover{background:rgba(255,255,255,0.1)}',
+    '.vvf-chip.on{background:var(--pink);border-color:transparent;color:#fff}',
+    '.vvf-chip:focus-visible{outline:2px solid var(--pink);outline-offset:2px}',
+    'body.light .vvf-chip{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.12);color:var(--charcoal)}',
+    'body.light .vvf-chip:hover{background:rgba(0,0,0,0.07)}',
+    'body.light .vvf-chip.on{color:#fff}',
+    '.vvf-chip.vvf-inert{opacity:.45;cursor:default}',
+    '.vvf-chip.vvf-inert:hover{background:rgba(255,255,255,0.05)}',
+    'body.light .vvf-chip.vvf-inert:hover{background:rgba(0,0,0,0.04)}',
+    '.vvf-hint{font-style:normal;font-family:\'Archivo\';font-weight:700;font-size:10px;opacity:.62;margin-left:5px;font-variant-numeric:tabular-nums}',
+    '.vvf-soon{font-style:normal;font-family:\'Archivo\';font-weight:700;font-size:9px;letter-spacing:.05em;text-transform:uppercase;opacity:.7;margin-left:5px}',
+    '.vvf-empty{font-family:\'Inter\';font-size:12.5px;color:rgba(243,237,224,0.45)}',
+    'body.light .vvf-empty{color:var(--ink-soft)}',
+    '.vvf-range{display:flex;align-items:center;gap:10px;flex-wrap:wrap}',
+    '.vvf-rt{flex:1 1 120px;min-width:110px;accent-color:var(--pink)}',
+    '.vvf-rlabel{font-family:\'Archivo\';font-weight:800;font-size:12px;font-variant-numeric:tabular-nums;color:rgba(243,237,224,0.72);min-width:64px;text-align:right}',
+    'body.light .vvf-rlabel{color:var(--charcoal)}',
+    '@media (max-width:720px){.vvf{gap:14px}.vvf-chip{font-size:12.5px;padding:7px 11px}}',
+    '@media (prefers-reduced-motion:reduce){.vvf-chip{transition:none}}'
+  ].join('');
+  var VVF_STYLED=false;
+  function mountStyles(doc){
+    doc=doc||document;
+    if(VVF_STYLED && doc.getElementById('vvf-styles')) return;
+    if(doc.getElementById('vvf-styles')){ VVF_STYLED=true; return; }
+    var st=doc.createElement('style'); st.id='vvf-styles'; st.textContent=VVF_CSS;
+    doc.head.appendChild(st); VVF_STYLED=true;
+  }
+  /* mount(host, opts) , renders, injects CSS, wires delegated clicks.
+     Delegation, not per-chip onclick: chips are re-rendered and an inline handler
+     built by string concatenation is how the recent-search chips shipped dead
+     (JSON.stringify truncating the attribute, CLAUDE.md §C). */
+  function mount(host, opts){
+    opts=opts||{};
+    if(typeof host==='string') host=document.querySelector(host);
+    if(!host) return null;
+    mountStyles(host.ownerDocument||document);
+    host.innerHTML=renderAll();
+    var onChange=opts.onChange||function(){};
+    host.addEventListener('click', function(e){
+      var c=e.target.closest ? e.target.closest('.vvf-chip') : null;
+      if(!c || !host.contains(c) || c.hasAttribute('disabled')) return;
+      var gk=c.getAttribute('data-vvf-group'), g=vvfGroup(gk); if(!g) return;
+      if(g.select==='single'){
+        host.querySelectorAll('.vvf-chip[data-vvf-group="'+gk+'"]').forEach(function(x){
+          x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
+        c.classList.add('on'); c.setAttribute('aria-pressed','true');
+      } else {
+        var on=c.classList.toggle('on'); c.setAttribute('aria-pressed', on?'true':'false');
+      }
+      onChange(readState(host));
+    });
+    host.addEventListener('input', function(e){
+      if(!e.target.matches || !e.target.matches('[data-vvf-role="rtmin"],[data-vvf-role="rtmax"]')) return;
+      paintRange(host); onChange(readState(host));
+    });
+    // default sort selected
+    var d=host.querySelector('.vvf-chip[data-vvf-group="sort"][data-vvf-value="rt"]');
+    if(d){ d.classList.add('on'); d.setAttribute('aria-pressed','true'); }
+    paintRange(host);
+    return { host:host, read:function(){ return readState(host); }, clear:function(){ clear(host); onChange(readState(host)); } };
+  }
+  function paintRange(host){
+    var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]'),
+        lb=host.querySelector('[data-vvf-role="rtlabel"]');
+    if(!mn||!mx||!lb) return;
+    var lo=+mn.value, hi=+mx.value; if(lo>hi){ var t=lo; lo=hi; hi=t; }
+    lb.textContent = (lo<=+mn.min && hi>=+mx.max) ? 'All' : (lo+' , '+hi);
+  }
+  function clear(host){
+    host.querySelectorAll('.vvf-chip.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
+    var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
+    if(mn) mn.value=mn.min; if(mx) mx.value=mx.max;
+    var d=host.querySelector('.vvf-chip[data-vvf-group="sort"][data-vvf-value="rt"]');
+    if(d){ d.classList.add('on'); d.setAttribute('aria-pressed','true'); }
+    paintRange(host);
+  }
+
+  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES,
+    bandRanges, bandRange, bandPresets, rtFloorForPrestige,
+    renderGroup, renderAll, mountStyles, mount, clear, paintRange,
+    emptyState, readState, isActive, applyServer, clientPredicate, describe };
+
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
@@ -1672,7 +2023,8 @@
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
-                rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace };
+                rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,
+                VVFilters };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
