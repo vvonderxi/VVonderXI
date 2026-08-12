@@ -568,20 +568,60 @@
      margin-inline:auto because rankings is actually LEFT-ALIGNED with no auto margins
      , we centre rather than inherit that bias. See the open item in §D. */
   #cardSearch{display:none;padding:16px 56px 0;max-width:1680px;margin-inline:auto;width:100%}
-  body.searching #cardSearch{display:block}
-  /* RESTING STATE IS VISIBLE , the entrance is a flourish, never a gate.
-     An earlier version faded in via a double-rAF class; rAF is THROTTLED in a
-     background tab, so the panel could open invisible. Fails safe now: if the
-     animation never runs, the panel is simply already there. */
+  /* .cs-closing keeps the panel DISPLAYED through the out-animation. Without it,
+     removing body.searching flips display to none on the same frame and the panel
+     vanishes instead of animating , the exact flash this treatment rules out. */
+  body.searching #cardSearch,#cardSearch.cs-closing{display:block}
+  /* ===================== MOTION , treatment B, "Settle" =====================
+     The old motion read as a PAGE CHANGE, for three reasons, all fixed here:
+     the card dimmed to 0.2 (reads as gone, not behind), the panel appeared with
+     no motion of its own, and everything moved at once so nothing appeared to
+     CAUSE anything. Settle keeps the card legible at 0.45, gives the panel its
+     own entrance, and STAGGERS , stage, then panel +60ms, then rows +120ms after
+     the panel and 55ms apart. The stagger is the whole point.
+
+     RESTING STATE IS VISIBLE and the animations are pure decoration. An earlier
+     version faded the panel in via a double-rAF class; rAF is THROTTLED in a
+     background tab, so the panel could open invisible. Never gate visibility on
+     motion , if none of these animations run, the panel is simply already there. */
   #cardSearch .cs-panel{opacity:1;transform:none}
-  body.searching #cardSearch .cs-panel{animation:csIn .26s cubic-bezier(.4,0,.2,1) both}
-  @keyframes csIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
-  /* the card slides down and dims , NOT display:none, so it reads as "behind" */
-  .stage{transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s ease}
-  body.searching .stage{transform:translateY(22px);opacity:.2;pointer-events:none}
+  /* two animations so transform and opacity can carry DIFFERENT durations */
+  body.searching #cardSearch .cs-panel{
+    animation:csPanelRise 420ms cubic-bezier(.32,.72,0,1) 60ms both,
+              csPanelFade 300ms ease 60ms both}
+  @keyframes csPanelRise{from{transform:translateY(-14px)}to{transform:none}}
+  @keyframes csPanelFade{from{opacity:0}to{opacity:1}}
+  /* CLOSING , body.searching is already gone (so the stage returns immediately),
+     .cs-closing keeps the panel displayed so it can animate OUT instead of
+     vanishing. JS removes it on animationend, with a timeout fallback. */
+  #cardSearch.cs-closing .cs-panel{
+    animation:csPanelRise 300ms cubic-bezier(.32,.72,0,1) reverse both,
+              csPanelFade 220ms ease reverse both}
+
+  /* result rows , rise and fade, 120ms after the panel, 55ms apart.
+     --csd is set per row in csRender; the fallback keeps them animating together
+     rather than not at all if it is ever missing. */
+  body.searching #csGrid > *{animation:csRowIn 300ms ease var(--csd,180ms) both}
+  @keyframes csRowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* the stage settles BACK and DOWN , 0.45 keeps it readable as "behind",
+     not "gone". Blur is the smallest part of the effect and the first thing
+     dropped if it costs frames (see the 720px block). */
+  .stage{transition:transform 420ms cubic-bezier(.32,.72,0,1),opacity 420ms cubic-bezier(.32,.72,0,1),filter 420ms ease}
+  body.searching .stage{opacity:.45;transform:translateY(46px) scale(.94);filter:blur(1.5px);pointer-events:none}
+  /* trigger recedes rather than lighting up */
+  .searchtrigger{transition:background .15s,border-color .15s,color .15s,opacity 300ms ease}
+  body.searching .searchtrigger{opacity:.35}
+
   @media (prefers-reduced-motion:reduce){
-    .stage{transition:none}
-    body.searching #cardSearch .cs-panel{animation:none}
+    /* opacity only , no transform, no blur, no stagger */
+    .stage{transition:opacity 120ms ease}
+    body.searching .stage{transform:none;filter:none;opacity:.45}
+    #cardSearch .cs-panel,
+    body.searching #cardSearch .cs-panel,
+    #cardSearch.cs-closing .cs-panel{animation:none}
+    body.searching #csGrid > *{animation:none}
+    .searchtrigger{transition:opacity 120ms ease}
   }
 
   /* search bar , mirrors rankings' .ranksearch tokens exactly */
@@ -634,7 +674,10 @@
     #cardSearch .cs-meta{margin:10px 0 8px}
     .searchtrigger .stlbl{display:none}
     .searchtrigger{flex:0 0 auto;max-width:none;margin:0 0 0 10px;padding:8px 10px}
-    body.searching .stage{transform:translateY(14px)}
+    /* Smaller travel, and NO BLUR at phone width , a 1.5px blur over the whole
+       stage is the most expensive part of this transition and buys least on a
+       small screen, where scale + opacity already read clearly. */
+    body.searching .stage{transform:translateY(28px) scale(.95);filter:none}
   }
 
   /* ================= SEARCH OVERLAY , results grid =================
@@ -2012,6 +2055,9 @@ try{ var _csv=localStorage.getItem('vvRankView'); if(_csv==='pills'||_csv==='car
 
 function csOpen(){
   if(document.body.classList.contains('searching')) return;
+  // cancel an in-flight close so a fast toggle does not strand .cs-closing
+  var _o=document.getElementById('cardSearch');
+  if(_o && _o.classList.contains('cs-closing')){ csFinishClose(); }
   document.body.classList.add('searching');
   var o=document.getElementById('cardSearch');
   o.setAttribute('aria-hidden','false');
@@ -2033,11 +2079,29 @@ function csReset(){
   var g=document.getElementById('csGrid'); if(g) g.innerHTML='';
 }
 /* No early return and no bfcache gate , this must be safe to call unconditionally. */
-function csClose(){
-  document.body.classList.remove('searching');
-  var o=document.getElementById('cardSearch'); if(o) o.setAttribute('aria-hidden','true');
-  var t=document.getElementById('csTrigger'); if(t) t.setAttribute('aria-expanded','false');
+/* CLOSE , the panel must animate OUT, not vanish, and must not FLASH.
+   body.searching comes off immediately so the stage starts returning; .cs-closing
+   keeps #cardSearch displayed until the out-animation ends. animationend is the
+   primary signal, with a timeout fallback because animations are throttled in a
+   background tab and the panel must never be left stranded on screen. */
+var CS_CLOSE_MS=340, _csCloseT=null;
+function csFinishClose(){
+  clearTimeout(_csCloseT); _csCloseT=null;
+  var o=document.getElementById('cardSearch');
+  if(o){ o.classList.remove('cs-closing'); o.removeEventListener('animationend',csFinishClose); }
   csReset();
+}
+function csClose(){
+  var o=document.getElementById('cardSearch');
+  var wasOpen=document.body.classList.contains('searching');
+  document.body.classList.remove('searching');
+  if(o) o.setAttribute('aria-hidden','true');
+  var t=document.getElementById('csTrigger'); if(t) t.setAttribute('aria-expanded','false');
+  if(!o || !wasOpen){ csFinishClose(); return; }      // never open -> nothing to play
+  o.classList.add('cs-closing');
+  o.addEventListener('animationend',csFinishClose);
+  clearTimeout(_csCloseT);
+  _csCloseT=setTimeout(csFinishClose, CS_CLOSE_MS+260);
 }
 function csToggle(){ document.body.classList.contains('searching') ? csClose() : csOpen(); }
 /* RECENT , last 5 player-seasons opened FROM the overlay. Same localStorage
@@ -2156,10 +2220,18 @@ function csRender(){
     g.innerHTML='<div class="rankempty">'+(CS.q?'No seasons match your search.':'Type to search, or browse the top seasons.')+'</div>';
     return;
   }
+  /* row stagger , 120ms after the panel's own 60ms offset, then 55ms apart.
+     CAPPED at 12 rows: 50 rows x 55ms would take 2.75s to finish, which stops
+     reading as a stagger and starts reading as a slow page. */
+  var stagger=function(){
+    for(var k=0;k<g.children.length;k++)
+      g.children[k].style.setProperty('--csd',(180+Math.min(k,11)*55)+'ms');
+  };
   var onClick=function(d){ return 'csGo('+(d.card_id==null?'':d.card_id)+')'; };
   if(CS.view==='compact'){ g.classList.add('compactmode'); g.innerHTML=rows.map(function(d,i){ return rankRowHTML(d,i,{cap:2,onClick:onClick}); }).join(''); }
   else if(CS.view==='pills'){ g.classList.add('pillmode'); g.innerHTML=rows.map(function(d,i){ return rankRowHTML(d,i,{cap:3,onClick:onClick}); }).join(''); }
   else { var cw=csCw(); g.innerHTML=rows.map(function(d){ return '<div onclick="csGo('+(d.card_id==null?'':d.card_id)+')" style="cursor:pointer">'+buildCard(d,cw)+'</div>'; }).join(''); }
+  stagger();
 }
 (function csWire(){
   var i=document.getElementById('csInput'); if(!i) return;
