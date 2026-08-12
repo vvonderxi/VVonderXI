@@ -261,27 +261,15 @@
   body.light .rankmore{color:#6a6256;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .rankmore:hover{color:#111;border-color:var(--pink-ink)}
   /* ★ VV Score range filter (ported from mobile VV Rankings) */
-  .scorefilter{padding:2px 0 0}
-  .scorevals{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
-  .scorevals .sv{font-family:'Archivo';font-weight:900;font-size:23px;color:var(--cream);min-width:38px;text-align:center}
   body.light .scorevals .sv{color:var(--charcoal)}
-  .scorevals .svdash{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58)}
   body.light .scorevals .svdash{color:var(--ink-soft)}
-  .dualrange{position:relative;height:30px;margin:0 8px}
-  .dualrange .track{position:absolute;top:13px;left:0;right:0;height:5px;border-radius:4px;background:rgba(255,255,255,0.14)}
-  body.light .dualrange .track{background:rgba(0,0,0,0.1)}
-  .dualrange .trackfill{position:absolute;top:13px;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--pink),#FF7A5C)}
-  .dualrange input[type=range]{position:absolute;top:0;left:0;width:100%;height:30px;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none}
-  .dualrange input[type=range]::-webkit-slider-runnable-track{background:none;height:30px;border:none}
-  .dualrange input[type=range]::-moz-range-track{background:none;height:30px;border:none}
-  .dualrange input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--cream);border:3px solid var(--pink);box-shadow:0 2px 6px rgba(0,0,0,0.45);cursor:pointer;pointer-events:auto;margin-top:6px}
-  .dualrange input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--cream);border:3px solid var(--pink);box-shadow:0 2px 6px rgba(0,0,0,0.45);cursor:pointer;pointer-events:auto}
-  body.light .dualrange input[type=range]::-webkit-slider-thumb{background:#fff}
-  body.light .dualrange input[type=range]::-moz-range-thumb{background:#fff}
 
   /* Rankings filter layout (same filter as Search) */
   .ranklayout{display:grid;grid-template-columns:1fr;gap:38px;align-items:start;}
   .ranklayout.filters-open{grid-template-columns:262px 1fr}
+  /* ONE child for the results column , see the note on #rankActive in the body.
+     Without this the active-chips bar consumes a grid cell and displaces the grid. */
+  .rankresults{display:flex;flex-direction:column;gap:12px;min-width:0}
   .ranklayout .filterrail{display:none}
   .ranklayout.filters-open .filterrail{display:block}
   .rankfbar{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -401,8 +389,6 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     .filterrail{position:static;max-height:none;width:auto;min-width:0}
     .filterrail .scorefilter,.filterrail .dualrange,.filterrail .fgroup,.filterrail .fr-title{max-width:100%;width:auto;box-sizing:border-box}
     .filterrail input[type=range]{width:100%}
-    .dualrange{width:100% !important;max-width:100%;margin-left:0;margin-right:0}
-    .scorefilter,.track,.trackfill{width:auto;max-width:100%}
     .filterrail *{max-width:100%;box-sizing:border-box}
   }
   @media (max-width:560px){
@@ -468,9 +454,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
         <div class="fr-count" id="rankCount"></div>
         <div id="rkFilters"></div>
       </aside>
+        <div class="rankresults">
         <div class="vvf-active" id="rankActive"></div>
         <div class="compacthead" aria-hidden="true"><span>Player</span><span>Pos</span><span>G</span><span>A</span><span>VV</span></div>
         <div class="cardgrid" id="cardgrid"></div>
+        </div>
         <!-- Show more button is now appended inside #cardgrid by renderRank() -->
       </div>
     </div>
@@ -680,21 +668,31 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     else if(gw.lastElementChild!==s) gw.appendChild(s);   // keep it last after a re-render
     return s;
   }
+  function gridIsScroller(){
+    var gw=document.getElementById('cardgrid'); if(!gw) return false;
+    var cs=getComputedStyle(gw);
+    return /(auto|scroll)/.test(cs.overflowY) && gw.scrollHeight > gw.clientHeight + 1;
+  }
   function scrollSentinelCheck(){
     var s=scrollSentinel(), gw=document.getElementById('cardgrid');
     if(!s||!gw||rankDone||rankBusy) return;
-    var r=s.getBoundingClientRect(), g=gw.getBoundingClientRect();
-    if(r.top < g.bottom+600) loadRankings({append:true});
+    var r=s.getBoundingClientRect();
+    // reference frame: the grid when it scrolls itself, otherwise the viewport
+    var bottom = gridIsScroller() ? gw.getBoundingClientRect().bottom : (window.innerHeight||0);
+    if(r.top < bottom+600) loadRankings({append:true});
   }
   (function initInfiniteScroll(){
     var s=scrollSentinel(), gw=document.getElementById('cardgrid');
     if(!s||!gw) return;
     if(window.IntersectionObserver){
+      // root:null , the observer only NUDGES; scrollSentinelCheck decides, and it
+      // knows which frame applies at the current breakpoint.
       new IntersectionObserver(function(es){
-        if(es.some(function(e){ return e.isIntersecting; })) loadRankings({append:true});
-      },{root:gw, rootMargin:'600px 0px'}).observe(s);       // root = the scroller, not the page
+        if(es.some(function(e){ return e.isIntersecting; })) scrollSentinelCheck();
+      },{rootMargin:'600px 0px'}).observe(s);
     }
     gw.addEventListener('scroll', function(){ scrollSentinelCheck(); }, {passive:true});
+    window.addEventListener('scroll', function(){ scrollSentinelCheck(); }, {passive:true});
   })();
 
   /* ---- active filter chips , one per selection, each removable ---- */

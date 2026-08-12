@@ -1734,10 +1734,15 @@
   }
 
   // ---- group definitions ---------------------------------------------------
+  /* Flags are DECORATION. The chip's value is data-vvf-value ('PL'), never the
+     label, so adding or changing an emoji cannot touch the query , that is the
+     whole point of the rewrite and the reason these are safe to restore. */
   var VVF_LEAGUES=[
-    {v:'PL',l:'Premier League'},{v:'LL',l:'La Liga'},{v:'SA',l:'Serie A'},
-    {v:'BL',l:'Bundesliga'},{v:'L1',l:'Ligue 1'},{v:'PRT',l:'Primeira Liga'},
-    {v:'ERE',l:'Eredivisie'},{v:'BPL',l:'Jupiler Pro League'},{v:'TR',l:'Süper Lig'}
+    {v:'PL', l:'Premier League',     e:'🇬🇧'},{v:'LL', l:'La Liga',           e:'🇪🇸'},
+    {v:'SA', l:'Serie A',            e:'🇮🇹'},{v:'BL', l:'Bundesliga',        e:'🇩🇪'},
+    {v:'L1', l:'Ligue 1',            e:'🇫🇷'},{v:'PRT',l:'Primeira Liga',     e:'🇵🇹'},
+    {v:'ERE',l:'Eredivisie',         e:'🇳🇱'},{v:'BPL',l:'Jupiler Pro League',e:'🇧🇪'},
+    {v:'TR', l:'Süper Lig',          e:'🇹🇷'}
   ];
   var VVF_SORTS=[
     {v:'rt',       l:'VV Score',  col:'rt',          asc:false},
@@ -1763,9 +1768,16 @@
     { key:'league',   label:'League',       select:'multi',  where:'server', items:VVF_LEAGUES },
     { key:'position', label:'Position',     select:'multi',  where:'server',
       items:FILTER_TAXONOMY.position.map(function(p){ return {v:p.v,l:(p.l||p.v)}; }) },
-    { key:'prestige', label:'Prestige',     select:'multi',  where:'server',
-      items:FILTER_TAXONOMY.prestige.map(function(p){ return {v:p.v,l:p.l,e:p.e}; }) },
+    /* PRESTIGE GROUP REMOVED , Generational and Iconic are the same cut the VV
+       Score bands already make (Generational 95+, Elite 90-94), so the group
+       offered the identical filter twice under two vocabularies and let a user
+       select two contradictory versions of one idea. FILTER_TAXONOMY.prestige is
+       untouched , the BADGES still render on cards; only the filter group is gone. */
     { key:'profile',  label:'Profile',      select:'multi',  where:'client', subs:true },
+    /* Career-Stage reads whatever FILTER_TAXONOMY.profile's 'Career-Stage' sub
+       contains , today Wonderkid and The Last Dance, tomorrow whatever ships.
+       Nothing here counts or names them, so a new stage tag appears in this
+       group automatically once getVVTags emits it and the taxonomy lists it. */
     { key:'stage',    label:'Career-Stage', select:'multi',  where:'client' },
     { key:'trajectory',label:'Trajectory',  select:'multi',  where:'client', items:[],
       note:'wired, empty until Peak / The Standard / Breakout / Renaissance ship' },
@@ -1805,13 +1817,18 @@
              ' data-vvf-select="'+g.select+'"><div class="vvf-gl">'+VVF_ESC(g.label)+'</div>';
     var body='';
     if(key==='score'){
-      var b=bandRanges()[bandRanges().length-1];   // lowest band, for the slider floor
+      /* The previous two-overlaid-thumbs treatment, restored. The flat pair of
+         native tracks that replaced it was a regression. BEHAVIOUR is the new one:
+         the ends mean NO bound, so dragging to either extreme removes the clause
+         rather than clamping at a floor of 15. */
       var lo=0, hi=100;
-      var rr=bandRange('Generational');
-      body+='<div class="vvf-range">'+
-        '<input type="range" class="vvf-rt" data-vvf-role="rtmin" min="'+lo+'" max="'+hi+'" value="'+lo+'">'+
-        '<input type="range" class="vvf-rt" data-vvf-role="rtmax" min="'+lo+'" max="'+hi+'" value="'+hi+'">'+
-        '<span class="vvf-rlabel" data-vvf-role="rtlabel"></span></div>';
+      body+='<div class="vvf-score">'+
+        '<div class="vvf-svals"><span class="vvf-sv" data-vvf-role="rtvmin">'+lo+'</span>'+
+        '<span class="vvf-svdash">to</span>'+
+        '<span class="vvf-sv" data-vvf-role="rtvmax">'+hi+'</span></div>'+
+        '<div class="vvf-dual"><div class="vvf-track"></div><div class="vvf-fill" data-vvf-role="rtfill"></div>'+
+        '<input type="range" data-vvf-role="rtmin" min="'+lo+'" max="'+hi+'" value="'+lo+'">'+
+        '<input type="range" data-vvf-role="rtmax" min="'+lo+'" max="'+hi+'" value="'+hi+'"></div></div>';
       body+='<div class="vvf-chips">'+bandPresets().map(function(it){ return vvfChip(key,it,{}); }).join('')+'</div>';
     } else if(g.subs){
       body+=profileSubs(true).map(function(sub){
@@ -1831,7 +1848,7 @@
   // ---- state ---------------------------------------------------------------
   function emptyState(){
     return { sort:'rt', score:{lo:null,hi:null,bands:[]}, league:[], position:[],
-             prestige:[], profile:[], stage:[], trajectory:[], honours:[] };
+             profile:[], stage:[], trajectory:[], honours:[] };
   }
   /* READS data-* ONLY. Never textContent , that is the whole point of the rewrite. */
   function readState(root){
@@ -1858,7 +1875,7 @@
     if(!st) return false;
     if(st.sort && st.sort!=='rt') return true;
     if(st.score && (st.score.lo!=null || st.score.hi!=null || st.score.bands.length)) return true;
-    return ['league','position','prestige','profile','stage','trajectory']
+    return ['league','position','profile','stage','trajectory']
       .some(function(k){ return (st[k]||[]).length>0; });
   }
 
@@ -1885,11 +1902,6 @@
       presets.forEach(function(p){ byV[p.v]=p; });
       var rs=st.score.bands.map(function(v){ return byV[v]; }).filter(Boolean);
       var s=vvfRangeOr(rs); if(s){ query=query.or(s); applied.push('score.bands'); }
-    }
-    // Prestige , its OWN constraint, never folded into the slider
-    if(st.prestige.length){
-      var pr=st.prestige.map(function(p){ var f=rtFloorForPrestige(p); return f==null?null:{lo:f,hi:null}; }).filter(Boolean);
-      var ps=vvfRangeOr(pr); if(ps){ query=query.or(ps); applied.push('prestige'); }
     }
     if(!opts.headCount){
       var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0]||VVF_SORTS[0];
@@ -1940,7 +1952,7 @@
         (st.score.lo==null?'up to '+st.score.hi:(st.score.hi==null?st.score.lo+'+':st.score.lo+' , '+st.score.hi))+
         '<span class="vvf-ax" aria-hidden="true">&times;</span></button>');
     }
-    ['league','position','prestige','profile','stage','trajectory'].forEach(function(gk){
+    ['league','position','profile','stage','trajectory'].forEach(function(gk){
       (st[gk]||[]).forEach(function(v){ add(gk,v); });
     });
     if(st.sort && st.sort!=='rt'){
@@ -2030,10 +2042,26 @@
     '.vvf-soon{font-style:normal;font-family:\'Archivo\';font-weight:700;font-size:9px;letter-spacing:.05em;text-transform:uppercase;opacity:.7;margin-left:5px}',
     '.vvf-empty{font-family:\'Inter\';font-size:12.5px;color:rgba(243,237,224,0.45)}',
     'body.light .vvf-empty{color:var(--ink-soft)}',
-    '.vvf-range{display:flex;align-items:center;gap:10px;flex-wrap:wrap}',
-    '.vvf-rt{flex:1 1 120px;min-width:110px;accent-color:var(--pink)}',
-    '.vvf-rlabel{font-family:\'Archivo\';font-weight:800;font-size:12px;font-variant-numeric:tabular-nums;color:rgba(243,237,224,0.72);min-width:64px;text-align:right}',
-    'body.light .vvf-rlabel{color:var(--charcoal)}',
+    /* VV Score slider , the previous rankings treatment, ported here so compare
+       inherits it too. Two range inputs overlaid on one track, pointer-events on
+       the thumbs only, with a gradient fill between them. */
+    '.vvf-score{padding:2px 0 0}',
+    '.vvf-svals{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-bottom:2px}',
+    '.vvf-sv{font-family:\'Bricolage Grotesque\';font-weight:800;font-size:17px;color:var(--cream);font-variant-numeric:tabular-nums}',
+    'body.light .vvf-sv{color:var(--charcoal)}',
+    '.vvf-svdash{font-family:\'Archivo\';font-weight:700;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.5)}',
+    'body.light .vvf-svdash{color:var(--ink-soft)}',
+    '.vvf-dual{position:relative;height:30px;margin:0 8px}',
+    '.vvf-dual .vvf-track{position:absolute;top:13px;left:0;right:0;height:5px;border-radius:4px;background:rgba(255,255,255,0.14)}',
+    'body.light .vvf-dual .vvf-track{background:rgba(0,0,0,0.1)}',
+    '.vvf-dual .vvf-fill{position:absolute;top:13px;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--pink),#FF7A5C)}',
+    '.vvf-dual input[type=range]{position:absolute;top:0;left:0;width:100%;height:30px;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none}',
+    '.vvf-dual input[type=range]::-webkit-slider-runnable-track{background:none;height:30px;border:none}',
+    '.vvf-dual input[type=range]::-moz-range-track{background:none;height:30px;border:none}',
+    '.vvf-dual input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--cream);border:3px solid var(--pink);box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:auto;cursor:pointer;margin-top:6px}',
+    '.vvf-dual input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--cream);border:3px solid var(--pink);box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:auto;cursor:pointer}',
+    'body.light .vvf-dual input[type=range]::-webkit-slider-thumb{background:#fff}',
+    'body.light .vvf-dual input[type=range]::-moz-range-thumb{background:#fff}',
     '.vvf-chip.vvf-zero{opacity:.32;cursor:not-allowed}',
     '.vvf-chip.vvf-zero:hover{background:rgba(255,255,255,0.05)}',
     'body.light .vvf-chip.vvf-zero:hover{background:rgba(0,0,0,0.04)}',
@@ -2082,6 +2110,10 @@
     });
     host.addEventListener('input', function(e){
       if(!e.target.matches || !e.target.matches('[data-vvf-role="rtmin"],[data-vvf-role="rtmax"]')) return;
+      var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
+      if(mn&&mx&&+mn.value>+mx.value){           // do not let the thumbs cross
+        if(e.target===mn) mx.value=mn.value; else mn.value=mx.value;
+      }
       paintRange(host); onChange(readState(host));
     });
     // default sort selected
@@ -2091,11 +2123,14 @@
     return { host:host, read:function(){ return readState(host); }, clear:function(){ clear(host); onChange(readState(host)); } };
   }
   function paintRange(host){
-    var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]'),
-        lb=host.querySelector('[data-vvf-role="rtlabel"]');
-    if(!mn||!mx||!lb) return;
+    var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
+    if(!mn||!mx) return;
     var lo=+mn.value, hi=+mx.value; if(lo>hi){ var t=lo; lo=hi; hi=t; }
-    lb.textContent = (lo<=+mn.min && hi>=+mx.max) ? 'All' : (lo+' , '+hi);
+    var a=host.querySelector('[data-vvf-role="rtvmin"]'), b=host.querySelector('[data-vvf-role="rtvmax"]'),
+        f=host.querySelector('[data-vvf-role="rtfill"]');
+    if(a) a.textContent=lo; if(b) b.textContent=hi;
+    if(f){ var MIN=+mn.min, MAX=+mx.max, span=(MAX-MIN)||1;
+      f.style.left=(((lo-MIN)/span)*100)+'%'; f.style.width=((((hi-lo))/span)*100)+'%'; }
   }
   function clear(host){
     host.querySelectorAll('.vvf-chip.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
