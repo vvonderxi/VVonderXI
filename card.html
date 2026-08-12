@@ -584,7 +584,41 @@
      version faded the panel in via a double-rAF class; rAF is THROTTLED in a
      background tab, so the panel could open invisible. Never gate visibility on
      motion , if none of these animations run, the panel is simply already there. */
-  #cardSearch .cs-panel{opacity:1;transform:none}
+  /* SCRIM , full-viewport, behind the panel, above the stage.
+     Z-ORDER, checked against the real landscape in this file: .glow 0,
+     .plinth .vvcard 1, .bottomnav 60, .joinscrim 90, .sharemodal 200. The scrim
+     sits at 70 so it covers the stage, the card AND the escaped .glow (which
+     resolves against BODY at <=1040px), and the bottom nav, while staying BELOW
+     the join sheet and share modal , those are true modals and must win.
+     POINTER-EVENTS:NONE AT REST is load-bearing, not caution: an always-on
+     full-viewport layer that swallows taps is exactly the .glow bug we just
+     fixed. It only becomes interactive while body.searching is set.
+     RESTING OPACITY IS 1 so that if the animation never runs the scrim is simply
+     there , same fail-safe as the panel, no rAF gate anywhere. */
+  #cardSearch .cs-scrim{position:fixed;inset:0;background:rgba(28,27,26,.55);z-index:70;opacity:1;pointer-events:none}
+  body.searching #cardSearch .cs-scrim{animation:csPanelFade 300ms ease both;pointer-events:auto}
+  #cardSearch.cs-closing .cs-scrim{animation:csPanelFade 220ms ease reverse both;pointer-events:none}
+
+  /* PANEL , sits above the scrim and gains a real edge so it reads as a surface
+     rather than floating text. Border follows this file's theme convention
+     (rgba(255,255,255,a) dark / rgba(0,0,0,a) light , no border in card.html uses
+     var(--cream) or var(--charcoal)), with the light value at the specified
+     charcoal rather than pure black. */
+  /* SOLID SURFACE so the scrim never shows through the gaps between .cs-bar and
+     the results list , the children carry TRANSLUCENT tints (.cs-bar is
+     rgba(255,255,255,.05) dark / rgba(0,0,0,.04) light, the results list
+     rgba(255,255,255,.03) / rgba(255,255,255,.5)), which now composite over this
+     surface instead of over the scrim.
+     TOKENS, not hex: --charcoal / --cream are this file's dark/light surface pair
+     (.layer{background:var(--cream)}, .watchcta{background:var(--charcoal);
+     color:var(--cream)}). Deliberately NOT var(--panel) , that resolves to
+     #175030, the Under-the-Lights green, which CLAUDE.md locks to Compare only
+     and must never bleed into card.html. */
+  #cardSearch .cs-panel{position:relative;z-index:71;padding:14px;border-radius:18px;
+    background:var(--charcoal);
+    border:1.5px solid rgba(255,255,255,.28);box-shadow:0 14px 36px rgba(0,0,0,.5);
+    opacity:1;transform:none}
+  body.light #cardSearch .cs-panel{background:var(--cream);border-color:rgba(28,27,26,.28)}
   /* two animations so transform and opacity can carry DIFFERENT durations */
   body.searching #cardSearch .cs-panel{
     animation:csPanelRise 420ms cubic-bezier(.32,.72,0,1) 60ms both,
@@ -621,6 +655,10 @@
     body.searching #cardSearch .cs-panel,
     #cardSearch.cs-closing .cs-panel{animation:none}
     body.searching #csGrid > *{animation:none}
+    /* scrim appears and disappears instantly */
+    #cardSearch .cs-scrim,
+    body.searching #cardSearch .cs-scrim,
+    #cardSearch.cs-closing .cs-scrim{animation:none}
     .searchtrigger{transition:opacity 120ms ease}
   }
 
@@ -824,6 +862,7 @@
   <div class="canvas">
     <div class="topline"><button class="backbtn" onclick="history.back()">&#8249; Back</button><button class="searchtrigger" id="csTrigger" type="button" onclick="csToggle()" aria-label="Search seasons" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="stlbl">Search</span></button><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#E70443">V</tspan></text></svg></div></div></div>
     <div id="cardSearch" aria-hidden="true">
+      <div class="cs-scrim" id="csScrim" onclick="csClose()" aria-hidden="true"></div>
       <div class="cs-panel">
         <div class="cs-bar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -2098,6 +2137,11 @@ function csClose(){
   if(o) o.setAttribute('aria-hidden','true');
   var t=document.getElementById('csTrigger'); if(t) t.setAttribute('aria-expanded','false');
   if(!o || !wasOpen){ csFinishClose(); return; }      // never open -> nothing to play
+  /* REDUCED MOTION , close INSTANTLY. The out-animation is set to none there, so
+     animationend never fires and only the 600ms timeout would clear .cs-closing,
+     leaving the panel and scrim on screen for 600ms after the user asked to close.
+     "Appears and disappears instantly" has to mean the teardown too. */
+  try{ if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ csFinishClose(); return; } }catch(e){}
   o.classList.add('cs-closing');
   o.addEventListener('animationend',csFinishClose);
   clearTimeout(_csCloseT);
