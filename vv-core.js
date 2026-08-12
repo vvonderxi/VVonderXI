@@ -1329,7 +1329,16 @@
       +'<div class="uident"><span class="uflag">'+(d.flag||'')+'</span>'+rowShieldHTML(d,i)+'<span class="uname">'+d.surname+'</span></div>'
       +'<div class="uyear">'+d.year+'</div>'
       +'<div class="uclub">'+d.clubname+'</div>'
-      +'<div class="upos">'+posDisplay(d.pos)+'</div>'
+      /* AGE lives INSIDE .upos , deliberately not a tenth column. The desktop grid
+         is nine fixed tracks and .utags already sits close to its content width, so
+         a new track would squeeze the tags. Sequence reads year, club, POS, Age NN,
+         matching card.html's meta line and Cards mode ("Barcelona · ST · 24").
+         d.age is '' when both season_age and age are null (4 of 57,234 cards) , the
+         field is then OMITTED ENTIRELY rather than printing "Age NR" in a dense row.
+         Same guard the seasonled branch above already uses. */
+      +'<div class="upos">'+posDisplay(d.pos)
+        +((d.age!=null && d.age!=='') ? '<span class="uage">'+d.age+'</span>' : '')
+      +'</div>'
       +'<div class="utags">'+prestige+honHtml+tags+'</div>'   // prestige FIRST (matches .srtags)
       +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
       +'<div class="uassists">'+assists+'</div>'
