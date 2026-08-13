@@ -107,6 +107,10 @@ CDM is the ONE destination pool where the defensive signal is load-bearing, so i
 - **MECHANISM: a card sitting in CDM draws a `def_core` benefit from the defensive pool. Moving it out REMOVES that benefit.** So the demotion is prior inflation leaving, not new error , those cards were being credited for defensive work they were never doing. **State it that way when it is questioned**, because a famous name losing a band reads like a bug.
 - **THE COST OF THE HALF-RULE: the handover said "expect rt movement only on CDM transitions, and expect it upward."** Correct on inbound, silent on outbound, and the outbound half is where the band crossings came from , **Kroos 17/18 Standout -> Accomplished and Di Maria 19/20 World Class -> Standout.** A rule that names one direction reads as complete.
 - **AND IT RIPPLES: 3 cards leaving CDM shifted the CDM pool percentiles enough to move 38 UNTOUCHED cards by up to 3 points, one of them across a band** (84 -> 85). **Any CDM-touching write needs a full before/after snapshot, not just the target rows.**
+**CONFIRMED AT SCALE 2026-08-13 , 15 CDM transitions in one write, ZERO exceptions in either direction. The rule is now evidence-backed, not observed once.**
+- **13 LEAVING CDM: 7 fell (-1 to -3), 6 held flat, NONE ROSE.** Gallagher -2, Mkhitaryan -3, Joaquin -3, Banega -3, Didavi -2, Lucas Vazquez -2, Clauss -1; Dallas, Marcos Alonso, Birsa, Conti, Caligiuri and Sneijder unchanged. **2 ENTERING CDM: both +3** (Rice 2324 and Parejo 1718, each 82 -> 85).
+- **So the SIGN is reliable and the MAGNITUDE is not.** Nearly half the outbound cards did not move at all, which means "expect a drop" is right and "expect a drop of N" is not , the size depends on where the card sat relative to its destination pool. **Predict the direction, never the number.**
+- **The flat six are not counter-evidence.** A card only loses the `def_core` benefit it was actually drawing; one already scoring on its attacking path loses nothing. That is why the effect is asymmetric rather than symmetric, and it is the same mechanism, not an exception to it.
 
 **`CREATE OR REPLACE VIEW x AS SELECT * FROM x` SUCCEEDS SILENTLY AND DESTROYS THE VIEW BODY (2026-08-11). THE SITE KEEPS LOOKING HEALTHY.**
 Postgres does NOT reject a view that selects from itself. The body is replaced by a self-referential column projection and the original SQL is gone. **The matview keeps serving stale-but-good data, so nothing appears wrong** , the damage is invisible until the next `REFRESH`, which would then empty `player_card_mv` and take every page down at once, because rankings/compare/card all read it directly from the browser with no fallback.
@@ -426,6 +430,24 @@ Nothing below is launch-blocking. This is the INDEX; the detail lives in `POST_L
 ## F. SESSION LOG (append-only; newest at top; NEVER rewrite past entries)
 
 Each session appends: date | chat/task | what was done | status | anything the next chat must know.
+
+### 2026-08-13 | TIER-1 POSITION WRITE , 351 cards, and the ripple did exactly what §C said it would
+
+**DB write + matview refresh + provenance. NOT pushed. The write artefacts are committed so the before-state is recoverable without a restore.**
+
+**WHAT WENT IN.** 351 of the 353 Fable tier-1 returns: **126 updates, 15 inserts, 210 already correct**, i.e. **141 real changes**. Every row resolved on `card_id` with `api_player_id` asserted to agree BEFORE any write, never on display name (§C). **Every write was read back and compared to the intended value , 0 failures.** The 15 inserts are cards with NO `player_positions` row at all, where the mv had been falling back to coarse `psc.position`; those are new rows, not edits, and they are invisible in a "changed position" count. Provenance: 310 rows added to `known_players.csv` stamped `tm-fable-tier1,2026-08-13` (41 of the 351 already carried an `api_player_id|season_year` entry and were left alone).
+
+**TWO EXCLUSIONS, and one of them was my call rather than the brief's.** `O. Aydin 2324` (card 181398) was excluded as instructed , position verified Winger but the club field is wrong (Alanyaspor in 23/24, not Fenerbahce). `Cristo Gonzalez 2324` (card 164296) came back **UNSURE**, so there was no position to write; writing it would have meant inventing one. **It is still unresolved and is the only tier-1 card in that state.**
+
+**THE GATE PASSED ON THE LINE, NOT COMFORTABLY.** Bounds were "stop if more than 10 public band crossings or any single card moves more than 4". Result: **exactly 10 crossings and a largest move of 3.** One more crossing and the write would have stopped. **Elite (rt>=85) held at 650 and the rt range held at 11-97**, both before and after , but the elite count is stable only by coincidence: Rice and Parejo entered World Class while Samatta and Borini left it.
+
+**THE RIPPLE IS THE POINT, AND IT WAS BIGGER THAN THE WRITE.** **137 UNTOUCHED cards moved** , 36 up, 101 down, every one by exactly +/-1 , concentrated in **CM 46, FB 28, CDM 26, CB 17**. **Two of the ten public crossings were cards nobody touched: Samatta 1819 and Borini 2223, both 85 -> 84, both losing World Class.** Borini is the card the original lesson is named after, and it moved again for the same reason. Pool census: **CAM +39, Winger +15, FB +11, CDM -11, CB -5, ST -6, CM -27, (none) -15, GK unchanged.**
+
+**THE CDM ASYMMETRY HELD WITH ZERO EXCEPTIONS ACROSS 15 TRANSITIONS** , 13 out (7 fell, 6 flat, none rose), 2 in (both +3). Promoted to §C as evidence-backed, with the new qualifier that the SIGN is predictable and the MAGNITUDE is not.
+
+**METHOD NOTE WORTH KEEPING: the full 57,234-row before/after snapshots are what made the ripple visible at all.** A 351-row target snapshot would have reported a clean, small, well-behaved write and silently missed 137 movers and 2 public band crossings. **Paginate past the 1000-row cap (§C) , both snapshots were read back off disk and asserted row-for-row before being trusted.**
+
+**STILL OPEN:** the ~350 tier-1 cards the dead Transfermarkt lane never resolved (122 of 474 fetched before the markup change); the single UNSURE card; `O. Aydin`'s club field.
 
 ### 2026-08-11 -> 08-13 | Search overlay, the filter stage, and two methods that died
 **19 commits, none pushed. This entry is the ORDER and the CAUSE , the rules themselves are in §C, the queued work in §D. Read it to understand why the week went the way it did, not to look up a decision.**
