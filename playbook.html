@@ -178,16 +178,30 @@
   .pctbox .t{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--cream);margin-bottom:10px}
   .pctbox .b{font-family:'Inter';font-weight:400;font-size:16px;line-height:1.65;color:rgba(243,237,224,0.8)}
   .pctbox .b b{color:var(--pink-ink);font-weight:600}
-  .pctbar{height:14px;border-radius:8px;background:rgba(255,255,255,0.12);margin-top:18px;position:relative;overflow:hidden}
-  .pctbar i{display:block;height:100%;width:95%;background:linear-gradient(90deg,#5BA86F,#2E8C5A);border-radius:8px}
-  .pctbar span{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-family:'Archivo';font-weight:900;font-size:10px;color:#fff}
+  /* The label used to be anchored to the BAR's right edge (right:11px), not to
+     the 95% point it names , measured at 1280 it spanned 591-615px while the
+     fill ended at 595, so 4px of the text sat on the dark green and 20px on the
+     light grey track, across two backgrounds at once. It is now anchored TO the
+     95% mark, sits ABOVE the bar rather than inside a 14px track at 10px, and a
+     real 2px tick marks the position. overflow:hidden is gone so the tick can
+     extend past the track. */
+  .pctbar{height:18px;border-radius:9px;background:rgba(255,255,255,0.12);margin-top:34px;position:relative}
+  .pctbar i{display:block;height:100%;width:95%;background:linear-gradient(90deg,#5BA86F,#2E8C5A);border-radius:9px}
+  .pctbar b.tick{position:absolute;left:95%;top:-5px;bottom:-5px;width:2px;margin-left:-1px;border-radius:2px;background:var(--cream);box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+  body.light .pctbar b.tick{background:#1C1B1A;box-shadow:0 0 0 1px rgba(255,255,255,.5)}
+  .pctbar span{position:absolute;left:95%;transform:translateX(-50%);bottom:calc(100% + 9px);white-space:nowrap;font-family:'Archivo';font-weight:900;font-size:11px;letter-spacing:.04em;color:var(--cream)}
+  body.light .pctbar span{color:var(--charcoal)}
+  /* at narrow widths the 95% anchor pushes the label off the right edge */
+  @media (max-width:560px){ .pctbar span{left:auto;right:0;transform:none} }
   .confdots{display:flex;gap:10px;margin:18px 0}
   .confdots i{width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25)}
   .confdots i.on{background:var(--green);border-color:var(--green);box-shadow:0 0 11px -2px var(--green)}
   .drurybox{margin-top:18px;padding-top:17px;border-top:1px solid rgba(255,255,255,0.1)}
   .drurybox-q{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:16px;line-height:1.65;color:var(--cream);max-height:0;overflow:hidden;transition:max-height .45s,opacity .4s;opacity:0}
   .drurybox.open .drurybox-q{max-height:340px;opacity:1;margin-bottom:10px}
-  .drurybox-more{font-family:'Archivo';font-weight:800;font-size:11.5px;color:var(--pink-ink);background:none;border:none;cursor:pointer;padding:0}
+  /* matched to .vvband .more / .tagdef .more , it was 11.5px with no margin-top,
+     so it sat smaller than every other See more and butted under the divider. */
+  .drurybox-more{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:0.04em;color:var(--pink-ink);margin-top:11px;background:none;border:none;cursor:pointer;padding:0}
 
   /* CTAs */
   .ctas{padding-top:54px;max-width:880px}
@@ -224,7 +238,7 @@
     .vvbl b{font-size:24px}
     .vvband-story{font-size:16px;line-height:1.65;max-width:62ch}
     .vvband.open .vvband-story{max-height:560px}
-    .vvband .more{font-size:13px}
+    .vvband .more,.drurybox-more{font-size:13px}
   }
 
   /* full profile tag library (one-liner on hover) */
@@ -309,7 +323,8 @@
   body.light{--pink-ink:#AD0332}
   body.light .pbnav a.on, body.light .b, body.light .tagdef .more, body.light .vvband .more, body.light .vvstory-more, body.light .drurybox-more{color:var(--pink-ink)}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
-  body.light .pctbar span{color:#5f594e}   /* white-on-white measured 1.06 in daylight; white is correct on the dark bar */
+  /* (the old body.light .pctbar span override is gone , the label now sits ABOVE
+     the bar on the panel, so it takes --charcoal there and --cream in dark.) */
   body.light .pbnum .pbcap{color:#7e5a10}   /* gold 'elite' caption, 1.59 on cream */
   body.light .pctbox .b b{color:var(--pink-ink)}   /* '95th percentile' emphasis, 2.81 on cream */
 </style></head><body class="light">
@@ -371,7 +386,7 @@
       <div class="pctbox">
         <div class="t">A measure of rarity, not just volume.</div>
         <div class="b">When a card says a player is in the <b>95th percentile</b> for creation, it means only <b>5 in 100</b> players in their position and league created more that season. It ranks them against their real peers, in their real context.</div>
-        <div class="pctbar"><i></i><span>95th</span></div>
+        <div class="pctbar"><i></i><b class="tick"></b><span>95th</span></div>
       </div>
     </section><section class="section" id="s-conf">
       <div class="label">The Method</div>

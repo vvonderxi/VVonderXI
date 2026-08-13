@@ -1003,6 +1003,59 @@ body.light .pkmsub{color:var(--ink-soft)}
     card.honours = await fetchHonours(res.data);   // slot honours (fail-soft; Compare render consumes later)
     return card;
   }
+  /* ?q= , the versus search from the home page. index.html sends
+     compare.html?q=messi vs ronaldo, and nothing here read it, so the query was
+     silently discarded and Compare opened empty. ?a= / ?b= stay canonical: this
+     resolves ?q= to cards and hands over, it does not replace the deep link.
+     A side that cannot be resolved OPENS THE PICKER pre-filled with its own text
+     rather than failing quietly , the user still sees their words. */
+  async function resolveSide(text){
+    var sb=vvClient(); if(!sb || !text) return null;
+    var ps=vvParseSearch(text), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
+    if(!nameQ) return null;
+    var q=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false}).limit(VVCore.SEARCH_CEIL);
+    var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf);
+    if(seasonYear!=null) q=q.eq('season_year',seasonYear);
+    var res=await q;
+    if(res.error || !(res.data||[]).length) return null;
+    var ranked=VVCore.rankBySearch(res.data, nameQ, function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); });
+    if(!ranked || !ranked.length) return null;
+    /* TOP HIT BY rt, not ranked[0]. rankBySearch sorts by (tier, rt), and its tier
+       favours a prefix of the first word , for "messi" that puts MESSIAS (rt 47)
+       above L. Messi (rt 97), because "messias" starts with the token and
+       "l messi" does not. Relevance still shapes the candidate set; rt picks the
+       one a person means. */
+    var best=ranked[0], bestRt=(best.rt==null?-1:+best.rt);
+    for(var k=1;k<ranked.length;k++){ var v=(ranked[k].rt==null?-1:+ranked[k].rt); if(v>bestRt){ best=ranked[k]; bestRt=v; } }
+    return rowToCard(best);
+  }
+  async function loadFromQuery(){
+    var qp; try{ qp=new URLSearchParams(window.location.search).get('q'); }catch(e){ return false; }
+    if(!qp) return false;
+    var parts=String(qp).split(/\s+vs?\s+/i);          // same token the home page routes on
+    var aTxt=(parts[0]||'').trim(), bTxt=(parts[1]||'').trim();
+    var pair=await Promise.all([ aTxt?resolveSide(aTxt):null, bTxt?resolveSide(bTxt):null ]);
+    if(pair[0]) CMP_A=pair[0];
+    if(pair[1]) CMP_B=pair[1];
+    if(CMP_A||CMP_B){
+      var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
+      vvSizeCards();
+      requestAnimationFrame(function(){ setTimeout(function(){
+        if(CMP_A) vvFlipReveal('A', CMP_A, cw);
+        if(CMP_B) vvFlipReveal('B', CMP_B, cw);
+      }, 220); });
+    }
+    // an UNRESOLVED side opens its picker carrying the text the user typed
+    var miss = !pair[0] && aTxt ? {slot:'A',txt:aTxt} : (!pair[1] && bTxt ? {slot:'B',txt:bTxt} : null);
+    if(miss){
+      setTimeout(function(){
+        openPicker(miss.slot);
+        var i=document.getElementById('pkSearch');
+        if(i){ i.value=miss.txt; loadPool(); }
+      }, CMP_A||CMP_B ? 700 : 60);
+    }
+    return true;
+  }
   async function loadSlotFromUrl(){
     var ids; try{ ids=new URLSearchParams(window.location.search); }catch(e){ return; }
     var a=ids.get('a'), b=ids.get('b'); if(!a && !b) return;
@@ -1110,6 +1163,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     vvFlipReveal(slot, card, cw);
   }
   loadSlotFromUrl();
+  loadFromQuery();   // ?q= from the home versus search; ?a=/?b= remain canonical
 
   // ===== Compare picker (design; live player resolution + AI verdict are plumbing) =====
   var POOL=[];

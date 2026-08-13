@@ -241,7 +241,9 @@
   function vvHomeSearch(){
     var q=(document.getElementById('q').value||'').trim();
     if(!q) return;
-    var dest = /(\bvs\b|\bv\b)/i.test(q) ? 'compare.html' : 'rankings.html';
+    // \bv\b matched a bare 'v', so a name carrying a standalone v ("Anthony V Smith")
+    // routed to Compare. Require the token to be SURROUNDED by whitespace.
+    var dest = /\s+vs?\s+/i.test(q) ? 'compare.html' : 'rankings.html';
     location.href = dest + '?q=' + encodeURIComponent(q);
   }
   document.querySelector('.search .go').onclick = vvHomeSearch;
