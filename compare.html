@@ -703,10 +703,12 @@ body.light .cardslot::after{color:var(--ink-soft)}
    takes the slot column, so at 1920 each is ~700px rather than a shared 560,
    which is what lets VVFilters render in its NORMAL variant here. No dim: both
    panels can be open at once and dimming one would fight the other. */
-.pkpanel{display:none;width:100%;box-sizing:border-box;margin-top:14px;padding:16px 16px 8px;
-  border-radius:18px;background:rgba(21,16,15,0.97);border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 18px 44px -20px rgba(0,0,0,.6);text-align:left}
-body.light .pkpanel{background:#F6F1E6;border-color:rgba(0,0,0,.10)}
+/* aligned to card.html's .cs-panel , same padding, shadow, border and surface,
+   so the two search UIs read as one product rather than two. */
+.pkpanel{display:none;width:100%;box-sizing:border-box;margin-top:14px;padding:14px;
+  border-radius:18px;background:var(--charcoal);border:1.5px solid rgba(255,255,255,.28);
+  box-shadow:0 14px 36px rgba(0,0,0,.5);text-align:left}
+body.light .pkpanel{background:var(--cream);border-color:rgba(28,27,26,.28)}
 .pkpanel.open{display:block}
 /* a FILLED slot keeps its card , the panel only ever replaces an EMPTY slot */
 .side.picking .cardslot{display:none}
@@ -727,11 +729,13 @@ body.light .pkhead-row h2{color:var(--charcoal)}
 .pkhead-row h2 .s{color:var(--pink-ink)}
 .pkx{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);font-size:18px;color:var(--cream);cursor:pointer;line-height:1}
 body.light .pkx{background:rgba(0,0,0,.06);color:var(--charcoal)}
-.pksbar{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 15px;margin-bottom:12px}
-body.light .pksbar{background:#fff;border-color:rgba(0,0,0,.07)}
+/* matches #cardSearch .cs-bar */
+.pksbar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px;margin-bottom:12px}
+body.light .pksbar{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
 .pksbar svg{width:18px;height:18px;color:rgba(243,237,224,.4);flex-shrink:0}
 body.light .pksbar svg{color:var(--ink-soft)}
-.pksbar input{border:0;outline:0;background:0;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--cream);flex:1;min-width:0}
+/* Inter 400, matching the overlay. The Archivo 600 read as a different product. */
+.pksbar input{border:0;outline:0;background:0;font-family:'Inter';font-weight:400;font-size:16px;color:var(--cream);flex:1;min-width:0}
 body.light .pksbar input{color:var(--charcoal)}
 .pkresults{flex:1;overflow-y:auto;border-top:1px solid rgba(255,255,255,.08);margin:0 -16px;padding:0 10px 18px}
 body.light .pkresults{border-color:rgba(0,0,0,.07)}
@@ -1318,12 +1322,20 @@ body.light .pkmsub{color:var(--ink-soft)}
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
     vvFlipReveal(slot, p, cw); vvUpdateCompareGate();
   }
+  /* RESTORED. The picker rebuild (67feec7) rewrote this from memory with class
+     names that do not exist , cmpr-main / cmpr-n / cmpr-s / cmpr-vv , against a
+     stylesheet defining cmprail / cmpmain / cmpl1 / cmpnm / cmpfl / cmpl2 /
+     cmpright / cmpvv / cmpga. Only .cmprow matched, so every row rendered as
+     unstyled text and the club-colour rail, flag, position and G/A were silently
+     dropped. Exactly the §C block-rewrite trap: the diff shows what ARRIVED, not
+     what left. Nothing errored, which is why review missed it. */
   function pkRow(slot,p){ var tier=p.vv>=95?' gen':(p.vv>=90?' elite':'');
     return '<div class="cmprow" onclick="pkPick(\''+slot+'\',\''+pkKey(p)+'\')">'
-      +'<div class="cmpr-main"><div class="cmpr-n">'+vvEsc(p.surname||'')+'</div>'
-      +'<div class="cmpr-s">'+vvEsc((p.year||''))+' &middot; '+vvEsc(p.clubname||'')+'</div></div>'
-      +'<div class="cmpr-vv'+tier+'">'+(p.vv==null?'NR':p.vv)+'</div></div>';
-  }
+     +'<span class="cmprail" style="background:'+(p.club1||'#9a948a')+'"></span>'
+     +'<div class="cmpmain"><div class="cmpl1"><span class="cmpnm">'+p.surname+'</span><span class="cmpfl">'+(p.flag||'')+'</span></div>'
+     +'<div class="cmpl2"><b>'+p.clubname+'</b> &middot; '+p.year+' &middot; '+posDisplay(p.pos)+'</div></div>'
+     +'<div class="cmpright"><div class="cmpvv'+tier+'">'+p.vv+'</div><div class="cmpga">'+p.goals+'G &middot; '+(p.assists!=null ? p.assists+'A' : 'NR')+'</div></div>'
+     +'</div>'; }
 
   function renderPicker(slot){
     var res=pkQ(slot,'Results'); if(!res) return;
@@ -1354,6 +1366,7 @@ body.light .pkmsub{color:var(--ink-soft)}
           return String(p.pos||'').toLowerCase()===String(fv).toLowerCase()
               || String(p.league_code||'').toLowerCase()===String(fv).toLowerCase();
         }); });
+      L = VVCore.rankBySearch(L, _nq, function(p){ return (p.full||'')+' '+(p.surname||''); });   // RESTORED , relevance before rt
       html+= L.length ? L.map(function(p){return pkRow(slot,p);}).join('')
            : ((st && VVFilters.isActive(st)) ? VVFilters.emptyStateHTML(st,{searching:true})
               : '<div class="pkempty">No seasons match that search.</div>');

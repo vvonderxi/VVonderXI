@@ -459,7 +459,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       <div class="rankfbar"><button class="rankfbtn" id="rankFBtn"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"/></svg> Filters<i class="chev">&#9662;</i></button><div class="viewseg" role="group" aria-label="View"><button class="vseg on" id="vsCards" onclick="setRankView('cards')" aria-label="Card view" title="Cards"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></button><button class="vseg" id="vsPills" onclick="setRankView('pills')" aria-label="List view" title="List"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><button class="vseg" id="vsCompact" onclick="setRankView('compact')" aria-label="Compact view" title="Compact"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 9.3h16M4 13.6h16M4 17.9h16"/></svg></button></div></div>
       <div class="ranklayout">
 <aside class="filterrail">
-        <div class="fr-title">Filters<button class="fr-clear hidden" id="frClear" onclick="clearAllFilters()">Clear all</button></div>
+        <div class="fr-title">Filters<button class="fr-clear" id="frClear" onclick="clearAllFilters()">Clear all</button></div>
         <div class="fr-count" id="rankCount"></div>
         <div id="rkFilters"></div>
       </aside>
@@ -709,8 +709,9 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var bar=document.getElementById('rankActive'); if(!bar||!window.VVFilters) return;
     st=st||fState();
     bar.innerHTML=VVFilters.renderActive(st);
-    var clr=document.getElementById('frClear');
-    if(clr) clr.classList.toggle('hidden', !VVFilters.isActive(st));
+    /* Clear all is ALWAYS visible now, matching card.html and compare.html. It
+       used to hide until a filter was active, which made rankings the odd one out
+       of the three surfaces. */
   }
   (function wireActiveChips(){
     var bar=document.getElementById('rankActive'); if(!bar) return;
