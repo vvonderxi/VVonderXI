@@ -1822,6 +1822,15 @@
   function renderGroup(key){
     var g=vvfGroup(key); if(!g) return '';
     var inert=(g.where==='inert');
+    /* A group with nothing to show is HIDDEN, not annotated. Trajectory was
+       printing its own build note to users , "wired, empty until Peak / The
+       Standard / Breakout / Renaissance ship" , which is a message to the next
+       engineer, never to a visitor. Honours is different and stays: it has real
+       chips rendered inert with a "soon" marker, which teaches the vocabulary.
+       Trajectory has nothing to teach yet, so it costs a heading and a blank row
+       and earns nothing. When the tags ship, items appear and the group returns
+       on its own , no code change needed. */
+    if(!g.subs && key!=='score' && !vvfItems(g).length) return '';
     var head='<div class="vvf-group" data-vvf-groupkey="'+VVF_ESC(key)+'" data-vvf-where="'+g.where+'"'+
              ' data-vvf-select="'+g.select+'"><div class="vvf-gl">'+VVF_ESC(g.label)+'</div>';
     var body='';
@@ -1846,11 +1855,12 @@
       }).join('');
     } else {
       var items=vvfItems(g);
-      body+='<div class="vvf-chips">'+(items.length
-        ? items.map(function(it){ return vvfChip(key,it,{inert:inert}); }).join('')
-        : '<span class="vvf-empty">'+VVF_ESC(g.note||'Coming soon')+'</span>')+'</div>';
+      // g.note is DEVELOPER metadata , never rendered. An items-less group is
+      // hidden above; this branch only ever runs for a group that has items.
+      body+='<div class="vvf-chips">'+items.map(function(it){ return vvfChip(key,it,{inert:inert}); }).join('')+'</div>';
     }
-    return head+body+'</div>';
+    /* the wrapper is what keeps the group at exactly two children */
+    return head+'<div class="vvf-body">'+body+'</div></div>';
   }
   function renderAll(){ return '<div class="vvf">'+VVF_GROUPS.map(function(g){ return renderGroup(g.key); }).join('')+'</div>'; }
 
@@ -2108,7 +2118,9 @@
        horizontally-scrolling line per group, so eight groups fit a search panel
        without becoming a wall. Not a copy of the rail; a different shape. */
     '.vvf.vvf-compact{gap:9px}',
+    '.vvf-body{display:flex;flex-direction:column;gap:8px;min-width:0}',
     '.vvf-compact .vvf-group{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:start;gap:10px}',
+    '.vvf-compact .vvf-body{gap:7px}',
     '.vvf-compact .vvf-gl{padding-top:8px;font-size:10.5px;line-height:1.15}',
     '.vvf-compact .vvf-chips{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-ms-overflow-style:none}',
     '.vvf-compact .vvf-chips::-webkit-scrollbar{display:none}',

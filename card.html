@@ -700,7 +700,11 @@
   /* filter toggle + collapsible filter area , the panel is narrower than the
      rankings rail, so the component mounts in its COMPACT variant (label left,
      chips on one scrolling line per group) rather than as a copy of the rail. */
-  #cardSearch .cs-filtbtn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
+  /* margin-left:auto , .cs-meta is justify-content:space-between with FOUR children
+     (count, hint, Filters, viewseg), so space-between scattered the pill into the
+     middle: neither right-aligned nor centred. The auto margin absorbs the free
+     space so count and hint stay left while Filters and the view pills sit right. */
+  #cardSearch .cs-filtbtn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
   #cardSearch .cs-filtbtn:hover{background:rgba(255,255,255,0.1)}
   #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
   body.light #cardSearch .cs-filtbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--ink-soft)}
@@ -995,7 +999,7 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260812c"></script>
+<script src="/vv-core.js?v=20260813a"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
