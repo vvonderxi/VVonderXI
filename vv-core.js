@@ -413,6 +413,101 @@
    *  - Null-safe: granular tags don't fire if the stat is missing.
    *  - A season earns EVERY tag it crosses; the display layer trims.
    * ════════════════════════════════════════════════════════════════════ */
+  /* ── REKEYED 2026-08-13 , thresholds now come from the 8-bucket position_pool ──
+     WHY: TAG_THRESHOLDS below is keyed on the COARSE position field (DEF/MID/FWD/GK),
+     but eligibility() has always run on position_pool, so the two halves of the tag
+     engine disagreed. Worse, a pool spans MORE THAN ONE coarse family , 4,740 of
+     37,091 pooled cards (12.78%) sit in a minority family for their pool , so the
+     same position faced a different bar depending on a field CLAUDE.md records as
+     systematically broken (attacking mids + wingers dumped into CM by API-Football).
+     MEASURED: the Goal Machine cut landed at p99.5 for a CAM read as FWD and p75.3
+     for a CAM read as MID. A 24-percentile swing decided by a data defect.
+
+     CALIBRATION (correctness, NOT rarity , no floor was tuned in this change):
+     for each key, the pass-rate the coarse table produced across all pooled cards was
+     measured, then each pool's value set at that same rate within its OWN distribution.
+     Every pool therefore carries an identical rarity bar and the aggregate population
+     is preserved by construction. Rarity tuning is a separate, later decision.
+
+     NULL/UNK POOL (35% of cards, mostly pre-2016) STILL USES THE COARSE TABLE BELOW.
+     That fallback is load-bearing , do not delete TAG_THRESHOLDS.
+     GK carries minutes_p90 only, matching the existing design (no keeper stats). */
+  const TAG_THRESHOLDS_POOL = {
+    GK: {
+      minutes_p90: 3240,
+    },
+    FB: {
+      goals90_p90: 0.115, goals90_p85: 0.094, goals90_p80: 0.081,
+      assists90_p90: 0.206,
+      keypass90_p90: 1.361, keypass90_p80: 1.078,
+      passes90_p90: 57.707, passes90_p80: 50.403, passacc_p80: 82,
+      drib90_p90: 1.246, drib90_p85: 1.051,
+      defact90_p90: 4.946, defact90_p70: 4.014,
+      int90_p90: 2.321, duelswon90_p90: 6.555,
+      conversion_p90: 0.25, minutes_p90: 2781,
+    },
+    CB: {
+      goals90_p90: 0.113, goals90_p85: 0.095, goals90_p80: 0.082,
+      assists90_p90: 0.156,
+      keypass90_p90: 0.951, keypass90_p80: 0.652,
+      passes90_p90: 65.43, passes90_p80: 57.77, passacc_p80: 82,
+      drib90_p90: 1, drib90_p85: 0.794,
+      defact90_p90: 4.974, defact90_p70: 4.074,
+      int90_p90: 2.357, duelswon90_p90: 6.551,
+      conversion_p90: 0.25, minutes_p90: 2839,
+    },
+    CDM: {
+      goals90_p90: 0.2, goals90_p85: 0.171, goals90_p80: 0.143,
+      assists90_p90: 0.235,
+      keypass90_p90: 1.853, keypass90_p80: 1.453,
+      passes90_p90: 62.449, passes90_p80: 54.722, passacc_p80: 85,
+      drib90_p90: 1.474, drib90_p85: 1.252,
+      defact90_p90: 5.159, defact90_p70: 4.109,
+      int90_p90: 2.049, duelswon90_p90: 7.222,
+      conversion_p90: 0.232, minutes_p90: 2762,
+    },
+    CM: {
+      goals90_p90: 0.265, goals90_p85: 0.227, goals90_p80: 0.191,
+      assists90_p90: 0.271,
+      keypass90_p90: 2.038, keypass90_p80: 1.679,
+      passes90_p90: 59.594, passes90_p80: 51.888, passacc_p80: 82,
+      drib90_p90: 1.859, drib90_p85: 1.611,
+      defact90_p90: 4.976, defact90_p70: 3.773,
+      int90_p90: 2.057, duelswon90_p90: 7.479,
+      conversion_p90: 0.239, minutes_p90: 2679,
+    },
+    CAM: {
+      goals90_p90: 0.395, goals90_p85: 0.349, goals90_p80: 0.31,
+      assists90_p90: 0.353,
+      keypass90_p90: 2.355, keypass90_p80: 1.945,
+      passes90_p90: 50.245, passes90_p80: 43.135, passacc_p80: 79,
+      drib90_p90: 2.69, drib90_p85: 2.368,
+      defact90_p90: 4.273, defact90_p70: 2.925,
+      int90_p90: 1.677, duelswon90_p90: 7.855,
+      conversion_p90: 0.25, minutes_p90: 2623,
+    },
+    Winger: {
+      goals90_p90: 0.472, goals90_p85: 0.408, goals90_p80: 0.359,
+      assists90_p90: 0.345,
+      keypass90_p90: 2.235, keypass90_p80: 1.859,
+      passes90_p90: 45.562, passes90_p80: 39.407, passacc_p80: 81,
+      drib90_p90: 2.613, drib90_p85: 2.243,
+      defact90_p90: 3.973, defact90_p70: 2.778,
+      int90_p90: 1.537, duelswon90_p90: 7.531,
+      conversion_p90: 0.263, minutes_p90: 2623,
+    },
+    ST: {
+      goals90_p90: 0.674, goals90_p85: 0.596, goals90_p80: 0.534,
+      assists90_p90: 0.297,
+      keypass90_p90: 1.883, keypass90_p80: 1.512,
+      passes90_p90: 33.611, passes90_p80: 28.232, passacc_p80: 77,
+      drib90_p90: 2.12, drib90_p85: 1.832,
+      defact90_p90: 2.345, defact90_p70: 1.577,
+      int90_p90: 0.791, duelswon90_p90: 8.197,
+      conversion_p90: 0.3, minutes_p90: 2637,
+    },
+  };
+
   // Threshold lookup, baked from live data (player_card_view, min 300 mins).
   // Per coarse family. Values are per-90 unless noted. p90 = top 10%, etc.
   const TAG_THRESHOLDS = {
@@ -457,21 +552,79 @@
   // Williams 2526); a 1-assist season was earning "Playmaker" off key passes alone, because
   // Playmaker read passes_key and never touched assists (Barcola 2526).
   //
-  // MEASURED EFFECT (% of all 57,234 cards): Goal Machine 5.45 -> 1.49, Marksman 4.82 -> 2.88,
-  // Playmaker 6.35 -> 2.78. Cards with >=1 tag 37.2% -> 26.0%. ZERO cards at rt>=85 lose all
-  // their tags. Iron Man and the two age tags are deliberately untouched , Iron Man is a
-  // minutes tag by construction and the age tags key off rt, not per-90.
+  // MEASURED EFFECT (% of all 57,234 cards): Goal Machine 5.45 -> 1.49, Playmaker 6.35 -> 2.78.
+  // Iron Man and the two age tags are deliberately untouched , Iron Man is a minutes tag by
+  // construction and the age tags key off rt, not per-90.
   //
-  // MARKSMAN'S FLOOR IS NOT OPTIONAL, and it is the non-obvious one. Marksman fires on
-  // `!gotGoalMachine`, so EVERY card the Goal Machine floor rejects falls straight into it.
-  // Without MIN_GOALS_MARKSMAN the fix does not remove the misfire, it RENAMES it (Williams
-  // 2526 simply became "Marksman" on the same 6 goals) and Marksman inflates to 8.78%,
-  // the most common profile tag on the platform. Do not remove one floor without the other.
-  const MIN_GOALS_GOALMACHINE = 12;   // 1.49% of cards. 15 was rejected: it is POSITION-BLIND,
-                                      // and would strip De Bruyne 1920 (13g, rt91), Pogba 1819,
-                                      // Son 1617, Maddison 2122 , midfielders who clear the MID
-                                      // p90 rate (0.283/90 ~= 8.8 goals over 2,800 min) easily.
-  const MIN_GOALS_MARKSMAN    = 8;    // leaves a clean 8-11 band below Goal Machine's 12.
+  // MARKSMAN WAS RETIRED 2026-08-13, and the note that used to sit here (`MIN_GOALS_MARKSMAN
+  // is not optional, every card Goal Machine rejects falls straight into Marksman`) described
+  // exactly the defect that killed it: Marksman was defined by FAILING Goal Machine's bar, so
+  // it was a TIER, not a TYPE, and its name promised precision it never measured. The rekey
+  // made that visible , Kane 2021 (23 goals, 0.6706/90 against an ST bar of 0.674) dropped
+  // from Goal Machine to "Marksman" by 0.004.
+  //
+  // WHY IT WAS NOT REDEFINED AS ACCURACY INSTEAD (measured, do not re-litigate): shots-on-target
+  // ratio correlates 0.614 with conversion (0.586 within ST), so accuracy and efficiency are ONE
+  // axis, and `shots_on` is 100% NULL before 2015. Shot volume correlates 0.459 with goals, so it
+  // re-awards Goal Machine. Minutes-per-goal is goals-per-90 inverted (Spearman -1.000, an
+  // identity). NO PENALTY FIELD EXISTS anywhere in the schema, so non-penalty goals cannot be
+  // derived. Scoring is therefore TWO independent axes , volume and efficiency , and
+  // shots_total vs conversion at 0.180 is the number that says so.
+  // RAISED 12 -> 15 AND THE RATE CUT DROPPED ENTIRELY (2026-08-13). This REVERSES the note that
+  // stood here, which rejected 15 as POSITION-BLIND because it strips De Bruyne 1920 (13g, rt91),
+  // Pogba 1819, Son 1617 and Maddison 2122. That cost is REAL and was accepted with the evidence
+  // in hand , it is not an oversight, and the four names above are the price.
+  //
+  // WHAT OVERTURNED IT: the rate cut was rejecting FULL SEASONS, not worse scorers. Among cards
+  // with 20+ goals, 55 did NOT hold Goal Machine, and the rejected group averaged 3,028 minutes
+  // against 2,688 for holders , +340. The gap WIDENS with volume (15+ goals +255, 18+ +318,
+  // 20+ +340), which is the signature of a per-90 artefact, not a scoring judgement: a 21-goal
+  // ever-present was refused while a 24-goal player in 2,500 minutes qualified.
+  //
+  // WHY NOT SOFTEN THE RATE INSTEAD: every softening (x0.90/x0.85/x0.80) KEEPS the 12-goal floor,
+  // so the bottom edge never moves , it stays Cazorla 1213 (12g, 0.326/90), Vanaken 1718 (rt 70),
+  // Toornstra 1314 (rt 72). Softening only adds cards ABOVE the floor. A hard 15 is the only
+  // option whose lowest holders read as football: Defoe, Belotti, Haller, Griezmann 1819,
+  // Palmer 2425, Odegaard 2223 , all exactly 15 goals over 3,150-3,320 minutes.
+  //
+  // THE FLOOR IS NOW HARD, NOT rawFloorOK. rawFloorOK treats a NULL raw stat as EXEMPT, which is
+  // right when a rate cut is also present but CATASTROPHIC once it is the only test , it would
+  // award Goal Machine to all 466 eligible cards with NULL goals. Do not route this through
+  // rawFloorOK to "match the other floors". It is deliberately different because it is now the
+  // WHOLE rule, and it is the reason MIN_GOALS_MARKSMAN's removal is safe.
+  // FLAT 15 WAS WRONG AND WAS REPLACED SAME-DAY BY A PER-POOL FLOOR. A flat floor is
+  // POSITION-BLIND, which is the exact defect the TAG_THRESHOLDS_POOL rekey above had just
+  // removed: it dropped CM in Goal Machine from 38 cards to 5 and made the tag 66% strikers,
+  // because it asks a midfielder to score like a forward.
+  //
+  // CALIBRATION: each pool's floor is the integer landing nearest a 4% within-pool rarity, the
+  // same equal-rarity method as the threshold rekey. 4% (not the 14.81% that a 15-goal ST floor
+  // represents) because the target sets the TOTAL: 14.81% gives 3,136 cards (5.48%, which would
+  // make Goal Machine the second most common tag on the platform), while 4% gives 887 , within
+  // 12 of the flat rule and within 34 of where the tag stood at HEAD.
+  //
+  // EQUAL-RARITY CALIBRATION IS CORRECT FOR A RATE TAG AND BREAKS ON A VOLUME TAG, AND THIS IS
+  // THE THING TO REMEMBER HERE. "Top 10% of your pool by goals per 90" is a genuinely relative
+  // statement, so the rekey was sound. "Goal Machine" is NOT relative , the NAME makes an
+  // absolute claim about goals. A 3-goal centre-back is as rare among centre-backs as a 15-goal
+  // striker is among strikers, and is still not a goal machine. Rarity and identity come apart.
+  // At the first calibration the ten lowest holders were 3-goal CBs and FBs at rt 49-73.
+  //
+  // SO CB AND FB ARE DROPPED FROM ELIGIBILITY ENTIRELY (see eligibility() below). They were only
+  // ever eligible via miscoded coarse positions (211 CB and 167 FB cards), so removing them
+  // COSTS 45 CARDS AND ELIMINATES EVERY ABSURD BOTTOM HOLDER IN ONE STEP , a far better trade
+  // than tightening the floor further, which would push real scorers out to fix a fringe.
+  //
+  // No coarse DEF fallback is defined ON PURPOSE: elig.goalMachine requires coarse FWD|MID, so a
+  // DEF entry would be dead config that reads like a live rule. Verified 0 reachable cards.
+  const GOAL_FLOOR_POOL   = { ST: 23, Winger: 16, CAM: 13, CM: 9, CDM: 7 };
+  const GOAL_FLOOR_COARSE = { FWD: 15, MID: 9 };   // null/UNK pool only (35% of cards)
+  function goalFloorFor(pool, fam) {
+    var f = GOAL_FLOOR_POOL[pool];
+    if (f != null) return f;
+    var c = GOAL_FLOOR_COARSE[fam];
+    return c != null ? c : null;                   // no floor -> tag unreachable, never a free pass
+  }
   const MIN_ASSISTS_PLAYMAKER = 3;    // Barcola 2526 (1 assist) dies; his 2425 (10) survives.
   const MIN_MINUTES_TAG       = 900;  // 26.6% of cards sit below this, where per-90 inflates.
                                       // ~10 full matches. Gates every PER-90-derived tag.
@@ -508,7 +661,10 @@
     // reclassified wide). So FBs are excluded from winger; wingers keep their own tag.
     return {
       // Attacker tags
-      goalMachine: fam === 'FWD' || fam === 'MID',          // scorers only (FBs are creators, not scorers)
+      // CB and FB EXCLUDED BY POOL (2026-08-13), not just by coarse family. They reached this tag
+      // only through miscoded coarse positions, and an equal-rarity volume floor handed them the
+      // tag on 3 goals. See GOAL_FLOOR_POOL. Cost: 45 cards.
+      goalMachine: (fam === 'FWD' || fam === 'MID') && pool !== 'CB' && pool !== 'FB',
       clinical:    fam === 'FWD' || fam === 'MID',
       provider:    fam !== 'GK',                             // any outfielder can provide (GK excluded; FB incl.)
       poacher:     striker || (fam === 'FWD' && !pool),      // strikers (or coarse-FWD fallback)
@@ -534,7 +690,6 @@
 
   const TAG_DEFS = {
   "Goal Machine":          { oneLiner: "Goals by the season, not the handful. Volume that bends a table.", def: "Some players score. This one scores, and scores, and scores again, until the goal becomes less an event than a habit. A season measured in the simplest, cruellest currency the game knows, and there was always more of it to come." },
-  "Marksman":              { oneLiner: "A reliable source of goals, season after season. The dependable hand in front of goal.", def: "Not the name that headlines the highlight reel, but the one the table quietly depends on. Week after week the chances came, and week after week they were taken. Honest, steady scoring is its own kind of art." },
   "Clinical":              { oneLiner: "Cold, efficient finishing. Rarely wastes a chance.", def: "There is a coldness to it, a certainty. Where others hesitate, he has already decided. The chance arrives, the net ripples, and all season long the story barely changes. Ruthless, and quietly so." },
   "Provider":              { oneLiner: "The pass before the goal. Assists at a rate few can match.", def: "He does not need his name on the scoresheet to have written the story. The vision, the weight, the moment of generosity that turns a teammate into a hero. A season spent handing out goals like gifts." },
   "Poacher":               { oneLiner: "Lives in the box, lives for the goal. A natural finisher.", def: "He does not build the move. He does not need to. He waits, in the spaces no one else sees, for the half-yard and the half-second, and then he is gone, and the net is rippling. A predator, patient and merciless." },
@@ -562,8 +717,9 @@
     const tags = [];
     const fam = row.position;            // coarse: DEF/MID/FWD/GK (100% populated)
     const pool = row.position_pool;      // fine: CB/RB/.../null (62% populated)
-    const t = TAG_THRESHOLDS[fam];
-    if (!t) return tags;                 // unknown family -> no tags
+    // Pool first (8-bucket, LOCKED); coarse family is the FALLBACK for null/UNK pools.
+    const t = TAG_THRESHOLDS_POOL[pool] || TAG_THRESHOLDS[fam];
+    if (!t) return tags;                 // unknown family AND unknown pool -> no tags
 
     const m = row.minutes;
     const elig = eligibility(fam, pool);
@@ -591,20 +747,29 @@
     const okMin = (m != null && m >= MIN_MINUTES_TAG);
 
     // ========================= ATTACKER FAMILY (red) =========================
-    // Goal Machine , high goal VOLUME (Universal). Rate AND raw total AND real sample.
-    const gotGoalMachine = okMin && elig.goalMachine && ge(goals90, t.goals90_p90)
-      && rawFloorOK(row.goals, MIN_GOALS_GOALMACHINE);
-    if (gotGoalMachine)
+    // Goal Machine , pure goal VOLUME (Universal), against a floor set by the player's OWN pool.
+    // NO per-90 rate cut , see GOAL_FLOOR_POOL for why it was removed rather than softened.
+    // HARD null check, NOT rawFloorOK: the floor is now the ENTIRE rule, and rawFloorOK's
+    // "NULL is exempt" would hand the tag to every one of the 466 eligible null-goal cards.
+    const goalFloor = goalFloorFor(pool, fam);
+    if (okMin && elig.goalMachine && goalFloor != null && row.goals != null && row.goals >= goalFloor)
       tags.push({ name: 'Goal Machine', family: 'ATT', tier: 'universal' });
 
-    // Marksman , good-but-not-elite scorer, the tier BELOW Goal Machine (no double-tag).
-    // Its own raw floor is load-bearing: this branch catches everything Goal Machine rejects.
-    if (okMin && elig.goalMachine && !gotGoalMachine && ge(goals90, t.goals90_p85 * 0.907)
-        && rawFloorOK(row.goals, MIN_GOALS_MARKSMAN))
-      tags.push({ name: 'Marksman', family: 'ATT', tier: 'universal' });
+    // Marksman RETIRED 2026-08-13 , it was a TIER (defined by failing the line above), never a
+    // TYPE. Scoring is now two independent axes: Goal Machine = volume, Clinical = efficiency.
+    // A season that clears the rate but not the volume floor now carries NO scoring tag, which
+    // is the honest outcome: 612 cards lost their only tag, none above rt 89.
 
     // Clinical , high CONVERSION + real shot volume (Granular)
-    if (okMin && elig.clinical && ge(conversion, t.conversion_p90 * 0.85) && row.shots_total >= 25)
+    // SHOT FLOOR 25 -> 30 (2026-08-13). At 25 the leaderboard was small-sample noise , Mbokani
+    // 2021 topped the whole population at 0.560 on exactly 25 shots, and 4 of the top 7 were
+    // 2015/16 null-pool cards converting 44-55% on 27-31 shots.
+    // 40 WAS TRIED AND REJECTED ON THE TRADE, not on the noise: it removed all 8 offenders but
+    // cost 53% of the tag (1137 -> 534) and untagged 1,120 cards outright. 30 removes 5 of the 8
+    // for 20% (1137 -> 909). Buying the last 3 noise cards costs another third of the tag, which
+    // is a bad price. Bonatini 1516 (31 shots), Onuachu 2223 (35) and Mayoral 2324 (34) survive
+    // deliberately , they are the accepted residue.
+    if (okMin && elig.clinical && ge(conversion, t.conversion_p90 * 0.85) && row.shots_total >= 30)
       tags.push({ name: 'Clinical', family: 'ATT', tier: 'granular' });
 
     // Provider , high ASSISTS (Universal)
@@ -631,7 +796,10 @@
       tags.push({ name: 'Playmaker', family: 'MID', tier: 'granular' });
 
     // Maestro , creates AND controls (Granular, compound)
-    if (okMin && elig.maestro && ge(keypass90, t.keypass90_p80) && ge(passes90, t.passes90_p80 * 0.92))
+    // x1.20 on the key-pass leg (2026-08-13): the pool rekey LOWERED keypass90_p80 for CM (1.712
+    // -> 1.679) and CDM (-> 1.453), inflating Maestro 651 -> 980. The multiplier returns it to
+    // 633, at or below where it stood. This is a rekey CORRECTION, not rarity tuning.
+    if (okMin && elig.maestro && ge(keypass90, t.keypass90_p80 * 1.20) && ge(passes90, t.passes90_p80 * 0.92))
       tags.push({ name: 'Maestro', family: 'MID', tier: 'granular' });
 
     // Regista , high pass VOLUME + ACCURACY (Granular, compound)
@@ -1452,7 +1620,7 @@
     ],
     // ability tags , grouped by getVVTags family. v = the tag name the engine emits.
     profile: [
-      { sub:'Attack',       items:[ {v:'Goal Machine',e:'⚽'},{v:'Marksman',e:'🎯'},{v:'Clinical',e:'🔫'},{v:'Provider',e:'🅰️'},{v:'Poacher',e:'🦊'},{v:'The Winger',e:'🪄'} ] },
+      { sub:'Attack',       items:[ {v:'Goal Machine',e:'⚽'},{v:'Clinical',e:'🔫'},{v:'Provider',e:'🅰️'},{v:'Poacher',e:'🦊'},{v:'The Winger',e:'🪄'} ] },
       { sub:'Midfield',     items:[ {v:'Playmaker',e:'🧠'},{v:'Maestro',e:'🎩'},{v:'Regista',e:'🎻'},{v:'Engine Room',e:'🧭'},{v:'The Dribbler',e:'✨'} ] },
       { sub:'Defence',      items:[ {v:'The Wall',e:'🧱'},{v:'Destroyer',e:'🦮'},{v:'Ball Hawk',e:'🦅'},{v:'Ball-Playing CB',e:'🦶'} ] },
       { sub:'All-Round',    items:[ {v:'Complete',e:'💎'},{v:'Iron Man',e:'🛡️'} ] },
