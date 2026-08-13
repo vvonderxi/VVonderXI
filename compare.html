@@ -73,6 +73,9 @@
   /* TIER 2 , the plinth. The cards are dark objects; giving them a surface stops
    them floating in empty page. No overflow/clip here , §C invariant 4: an
    overflow clip on ANY flip ancestor flattens preserve-3d on iOS. */
+/* a season asked for but not available , stated, never silently substituted */
+.cmpnotice{display:none;margin:0 auto 14px;max-width:640px;padding:9px 14px;border-radius:12px;background:rgba(255,92,122,.12);border:1px solid rgba(255,92,122,.4);color:var(--pink-ink);font-family:'Inter';font-size:13px;line-height:1.45;text-align:center;box-sizing:border-box}
+.cmpnotice.show{display:block}
 .matchup{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:34px;align-items:start;justify-items:center;
   background:var(--surf-plinth);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:30px 26px 26px;position:relative;
   /* the plinth sat flush against .topline (0px gap), so the Back pill's bottom edge
@@ -948,7 +951,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260813a"></script>
+<script src="/vv-core.js?v=20260813b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1009,14 +1012,22 @@ body.light .pkmsub{color:var(--ink-soft)}
      resolves ?q= to cards and hands over, it does not replace the deep link.
      A side that cannot be resolved OPENS THE PICKER pre-filled with its own text
      rather than failing quietly , the user still sees their words. */
+  /* Returns {card, askedSeason, fellBack} , the caller needs to know a season was
+     asked for and NOT honoured, so it can say so rather than substituting quietly. */
   async function resolveSide(text){
     var sb=vvClient(); if(!sb || !text) return null;
     var ps=vvParseSearch(text), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
     if(!nameQ) return null;
-    var q=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false}).limit(VVCore.SEARCH_CEIL);
-    var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf);
-    if(seasonYear!=null) q=q.eq('season_year',seasonYear);
-    var res=await q;
+    function base(){
+      var q=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false}).limit(VVCore.SEARCH_CEIL);
+      var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf);
+      return q;
+    }
+    var fellBack=false;
+    var res = seasonYear!=null ? await base().eq('season_year',seasonYear) : await base();
+    if(seasonYear!=null && (res.error || !(res.data||[]).length)){
+      res=await base(); fellBack=true;            // named season has no card for this player
+    }
     if(res.error || !(res.data||[]).length) return null;
     var ranked=VVCore.rankBySearch(res.data, nameQ, function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); });
     if(!ranked || !ranked.length) return null;
@@ -1027,7 +1038,13 @@ body.light .pkmsub{color:var(--ink-soft)}
        one a person means. */
     var best=ranked[0], bestRt=(best.rt==null?-1:+best.rt);
     for(var k=1;k<ranked.length;k++){ var v=(ranked[k].rt==null?-1:+ranked[k].rt); if(v>bestRt){ best=ranked[k]; bestRt=v; } }
-    return rowToCard(best);
+    return { card:rowToCard(best), askedSeason:seasonYear, fellBack:fellBack };
+  }
+  function cmpNotice(msg){
+    var el=document.getElementById('cmpNotice');
+    if(!el){ el=document.createElement('div'); el.id='cmpNotice'; el.className='cmpnotice';
+      var m=document.querySelector('.matchup'); if(m&&m.parentNode) m.parentNode.insertBefore(el,m); else return; }
+    el.textContent=msg; el.classList.add('show');
   }
   async function loadFromQuery(){
     var qp; try{ qp=new URLSearchParams(window.location.search).get('q'); }catch(e){ return false; }
@@ -1035,8 +1052,14 @@ body.light .pkmsub{color:var(--ink-soft)}
     var parts=String(qp).split(/\s+vs?\s+/i);          // same token the home page routes on
     var aTxt=(parts[0]||'').trim(), bTxt=(parts[1]||'').trim();
     var pair=await Promise.all([ aTxt?resolveSide(aTxt):null, bTxt?resolveSide(bTxt):null ]);
-    if(pair[0]) CMP_A=pair[0];
-    if(pair[1]) CMP_B=pair[1];
+    if(pair[0]) CMP_A=pair[0].card;
+    if(pair[1]) CMP_B=pair[1].card;
+    // a season that was asked for and could not be honoured is SAID, not swallowed
+    var missed=[];
+    [[pair[0],aTxt],[pair[1],bTxt]].forEach(function(p){
+      if(p[0] && p[0].fellBack) missed.push(p[0].card.surname+' has no '+VVCore.vvSeasonLabel(p[0].askedSeason)+' season');
+    });
+    if(missed.length) cmpNotice(missed.join(' , ')+' , showing their best instead.');
     if(CMP_A||CMP_B){
       var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
       vvSizeCards();

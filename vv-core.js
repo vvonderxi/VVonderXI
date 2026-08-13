@@ -1651,6 +1651,22 @@
     var n=parseInt(d,10); if(d.length===2) n=2000+n;        // "23" -> 2023
     return (n>=2010 && n<=2025) ? n : null;                 // data range; out-of-range -> null (dropped upstream)
   }
+  /* A BARE year means the season ENDING in it , "19" is 2018/19, "22" is 2021/22,
+     so season_year (the STARTING year) is one less. This was previously the other
+     way round: "23" resolved to 2023, i.e. 2023/24. People say "Messi 19" meaning
+     the season that finished in 2019, so the ending year is the natural reading.
+     SUPERSEDES the §C line that reads 'a 2- or 4-digit token ... season_year = the
+     STARTING year: "23"->2023->2023/24'.
+     The SPLIT form is untouched and must stay that way: "18/19" and "2018/19"
+     already yield 2018 through vvYearFromDigits on the FIRST half, which is
+     already the starting year. Subtracting inside vvYearFromDigits would have
+     broken that, so the adjustment lives here at the bare-token call site only. */
+  function vvSeasonFromBareYear(d){
+    var y=vvYearFromDigits(d);
+    if(y==null) return null;
+    var s=y-1;                                  // ending year -> starting year
+    return (s>=2010 && s<=2025) ? s : null;     // "10" -> 2009, outside the data, dropped
+  }
   function vvParseSearch(q){
     var raw=(q==null?'':String(q)).trim();
     if(!raw) return { nameQ:'', seasonYear:null };
@@ -1662,7 +1678,7 @@
     var nameToks=[];
     toks.forEach(function(t){
       if(/^\d{2}$|^\d{4}$/.test(t)){                        // year-SHAPED: consume as season or drop, NEVER name text
-        var y=vvYearFromDigits(t);
+        var y=vvSeasonFromBareYear(t);
         if(y!=null && seasonYear==null) seasonYear=y;
         return;
       }
@@ -2211,6 +2227,7 @@
 
   const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
+                vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
