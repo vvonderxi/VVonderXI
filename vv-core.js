@@ -1743,7 +1743,7 @@
   /* PUBLIC BAND LABELS are display renames, not engine names (CLAUDE.md §C:
      engine "Exceptional" ships as "Standout"). Only the LABEL is mapped here ,
      the edges still come from bandFor. */
-  var VVF_BAND_LABEL = { Exceptional:'Standout' };
+  var VVF_BAND_LABEL = { Exceptional:'Standout', Elite:'Iconic' };
   function bandPresets(){
     var wanted=['Generational','Elite','World Class','Exceptional'];
     var out=wanted.map(function(n){
@@ -1753,7 +1753,7 @@
                hint: top ? (r.lo+'+') : (r.lo+'-'+r.hi) };
     }).filter(Boolean);
     var lowest=bandRange('Exceptional');
-    if(lowest) out.push({ v:'__below', l:(lowest.lo-1)+' and below', lo:null, hi:lowest.lo-1,
+    if(lowest) out.push({ v:'__below', l:(lowest.lo-1)+' and under', lo:null, hi:lowest.lo-1,
                           hint:'' });
     return out;
   }
