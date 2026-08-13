@@ -221,7 +221,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vfinal .vquote3{color:var(--gold)}
   /* breakpoints , stack on narrow, keep premium spacing */
   @media (max-width:1040px){.matchup{gap:22px}.hero{padding:24px 32px 4px}.arena{padding:20px 32px 36px}.topline{padding:24px 32px 0}}
-  @media (max-width:820px){.matchup{gap:7px;align-items:start;padding:20px 8px 18px;border-radius:16px;margin-top:22px}.vsmedal{transform:rotate(0);width:44px;height:44px;font-size:17px;border-width:2px;align-self:center}.edge-spacer{display:block;height:30px}}
+  @media (max-width:820px){.matchup{grid-template-columns:1fr;gap:7px;align-items:start;padding:20px 8px 18px;border-radius:16px;margin-top:22px}.vsmedal{transform:rotate(0);width:44px;height:44px;font-size:17px;border-width:2px;align-self:center}.edge-spacer{display:block;height:30px}}
   @media (max-width:720px){.vfinal{padding:30px 18px 26px;border-radius:16px}/* specificity: a later .verdict .vwho rule (0,2,0) would otherwise win on source order even from inside this media query, so these are 0,3,0. */.verdict .vfinal .vwho{font-size:23px}.verdict .vfinal .vquote{font-size:16.5px}.vsplit{margin:20px auto 18px}.spine{display:none}.hero h1{font-size:30px}.hero{padding:22px 18px 4px}.arena{padding:16px 10px 32px}.topline{padding:18px 18px 0}.verdict{padding:28px 22px}.verdict .vquote{font-size:18px}}
   /* ============================================================
      ★ THE BEDROCK CARD , canonical, reusable everywhere ★
@@ -698,11 +698,27 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
 .cardslot:hover{transform:translateY(-3px)}
 .cardslot::after{content:'\21BB Tap to change';position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:rgba(243,237,224,.32);pointer-events:none}
 body.light .cardslot::after{color:var(--ink-soft)}
-.pkdim{position:fixed;inset:0;background:rgba(20,18,16,.42);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:80}
-.pkdim.show{opacity:1;pointer-events:auto}
-.pksheet{position:fixed;left:0;right:0;bottom:0;height:80vh;max-width:560px;margin:0 auto;background:rgba(21,16,15,0.98);border-radius:26px 26px 0 0;box-shadow:0 -16px 50px rgba(0,0,0,.42);display:flex;flex-direction:column;padding:10px 16px 0;transform:translateY(101%);transition:transform .34s cubic-bezier(.32,.72,0,1);z-index:81}
-body.light .pksheet{background:#F6F1E6}
-.pksheet.show{transform:translateY(0)}
+/* ANCHORED PICKER PANELS , one per slot, inside its own .side.
+   Replaces the fixed 560px centred .pksheet + full-screen .pkdim. The panel
+   takes the slot column, so at 1920 each is ~700px rather than a shared 560,
+   which is what lets VVFilters render in its NORMAL variant here. No dim: both
+   panels can be open at once and dimming one would fight the other. */
+.pkpanel{display:none;width:100%;box-sizing:border-box;margin-top:14px;padding:16px 16px 8px;
+  border-radius:18px;background:rgba(21,16,15,0.97);border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 18px 44px -20px rgba(0,0,0,.6);text-align:left}
+body.light .pkpanel{background:#F6F1E6;border-color:rgba(0,0,0,.10)}
+.pkpanel.open{display:block}
+/* a FILLED slot keeps its card , the panel only ever replaces an EMPTY slot */
+.side.picking .cardslot{display:none}
+.pkpanel .pkresults{max-height:46vh;overflow-y:auto;margin-top:10px}
+.pkpanel .pkhint{font-family:'Inter';font-size:12.5px;opacity:.75;margin:8px 0 2px}
+.pkpanel .pkempty{font-family:'Inter';font-size:14px;opacity:.7;padding:26px 4px;text-align:center}
+@media (max-width:820px){
+  /* STACKED , .matchup already restructures at 820, so the picker follows the
+     breakpoint the file already uses rather than inventing one. Full width. */
+  .pkpanel{margin-top:10px;padding:13px 13px 6px;border-radius:14px}
+  .pkpanel .pkresults{max-height:52vh}
+}
 .pkgrab{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.18);margin:4px auto 14px}
 body.light .pkgrab{background:rgba(0,0,0,.16)}
 .pkhead-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -823,10 +839,10 @@ body.light .pkmsub{color:var(--ink-soft)}
   <span class="mt-wrap mt-fixed"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="tie-flag" id="tieFlag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M4 7h16M4 12h16M4 17h16"/></svg> <span class="tflabel"></span></div><div class="side"><div class="edge-flag" id="edgeFlagA"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><a class="seecard" id="seeA" href="#" style="display:none">See full card &rarr;</a><div class="sidecta"><button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="tie-flag" id="tieFlag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M4 7h16M4 12h16M4 17h16"/></svg> <span class="tflabel"></span></div><div class="side"><div class="edge-flag" id="edgeFlagA"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><div class="pkpanel" id="pkPanel_A"></div><a class="seecard" id="seeA" href="#" style="display:none">See full card &rarr;</a><div class="sidecta"><button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
         <div class="side">
           <div class="edge-flag" id="edgeFlagB"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div>
-          <div id="cardB" class="cardslot" onclick="openPicker('B')"></div><a class="seecard" id="seeB" href="#" style="display:none">See full card &rarr;</a>
+          <div id="cardB" class="cardslot" onclick="openPicker('B')"></div><div class="pkpanel" id="pkPanel_B"></div><a class="seecard" id="seeB" href="#" style="display:none">See full card &rarr;</a>
           <div class="sidecta">
             <button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button>
           </div>
@@ -951,7 +967,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260813b"></script>
+<script src="/vv-core.js?v=20260813c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1073,8 +1089,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(miss){
       setTimeout(function(){
         openPicker(miss.slot);
-        var i=document.getElementById('pkSearch');
-        if(i){ i.value=miss.txt; loadPool(); }
+        var i=document.getElementById('pkSearch_'+miss.slot);   // per-slot now
+        if(i){ i.value=miss.txt; loadPool(miss.slot); }
       }, CMP_A||CMP_B ? 700 : 60);
     }
     return true;
@@ -1185,171 +1201,191 @@ body.light .pkmsub{color:var(--ink-soft)}
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
     vvFlipReveal(slot, card, cw);
   }
-  loadSlotFromUrl();
-  loadFromQuery();   // ?q= from the home versus search; ?a=/?b= remain canonical
+  /* both are async and either may fill a slot , sync AFTER they settle, so an
+     empty slot expands and a filled one is left as a card. */
+  Promise.resolve()
+    .then(function(){ return loadSlotFromUrl(); })
+    .then(function(){ return loadFromQuery(); })   // ?q= from the home versus search; ?a=/?b= canonical
+    .then(function(){ setTimeout(pkSyncSlots, 260); })
+    .catch(function(e){ console.error("compare url load failed:", e && e.message); setTimeout(pkSyncSlots, 260); });
 
   // ===== Compare picker (design; live player resolution + AI verdict are plumbing) =====
-  var POOL=[];
   function pkKey(p){return (p.surname+p.year).replace(/[^a-z0-9]/gi,'').toLowerCase();}
   function pkPosGroup(p){ if(!p)return ''; if(p==='GK')return 'GK'; if(p==='LB'||p==='RB'||p==='FB'||p==='LWB'||p==='RWB')return 'FB'; if(p==='CB')return 'CB'; if(p==='CDM'||p==='DM')return 'CDM'; if(p==='CM')return 'CM'; if(p==='CAM'||p==='AM')return 'CAM'; if(p==='LW'||p==='RW'||p==='W'||p==='LM'||p==='RM')return 'W'; if(p==='ST'||p==='CF'||p==='FW')return 'ST'; return p; }
-  var pickerSlot='A';
-  /* FILTERS , VVFilters, replacing the single (pkFilterKind, pkFilterVal) pair.
-     Three changes worth naming:
-     1. MULTI-SELECT. The old picker held ONE choice and cleared every chip on each
-        pick. Now: OR within a group, AND across groups, same as rankings.
-     2. SERVER-SIDE. The old passF filtered an already-fetched POOL, and browse
-        caps that pool at the top 50 by rt , measured, 5 of 8 position chips and
-        4 of 9 league chips matched ZERO rows there, so the chips looked broken
-        through no fault of their own. Server groups now go into buildPoolQ.
-     3. PRESTIGE IS GONE, AND NOTHING IS LOST. The old test was
-        p.prestige === 'Generational' | 'Iconic'. Verified across rt 0..100: the
-        VV Score bands Generational [95..] and Elite [90..94] make the IDENTICAL
-        cut, zero disagreement. Same filter, one vocabulary, shared with rankings. */
-  var PKF_HOST=null, PKF=null;
-  function pkFState(){ return (PKF_HOST && window.VVFilters) ? VVFilters.readState(PKF_HOST)
-                      : (window.VVFilters ? VVFilters.emptyState() : null); }
-  function openPicker(slot){ pickerSlot=slot;
-    document.getElementById('pkTitle').innerHTML='Choose <span class="s">Season '+slot+'</span>';
-    document.getElementById('pkSearch').value=''; if(PKF) PKF.clear(); _pkSeasonMiss=null;
-    document.getElementById('pickerDim').classList.add('show');
-    document.getElementById('pickerSheet').classList.add('show');
-    var pm=document.getElementById('pkMore'); if(pm)pm.classList.remove('open'); var fb=document.getElementById('pkFiltBtn'); if(fb)fb.classList.remove('on'); renderPicker(); loadPool(); setTimeout(function(){try{document.getElementById('pkSearch').focus();}catch(e){}},260);
+  /* ===================== PICKER , TWO ANCHORED PANELS =====================
+     Was ONE fixed centred sheet (max-width 560px) with a full-screen dim. Nine
+     filter groups competed for that width, which is the only reason the compact
+     variant was needed here at all. Each picker now anchors over ITS OWN slot, so
+     the available width roughly doubles and the filter renders in its NORMAL
+     variant. compact stays in card.html, whose panel genuinely is narrow.
+
+     EVERY PIECE OF PICKER STATE IS NOW PER SLOT. Both panels can be open at once,
+     so a single global POOL / filter host / season-miss would have had slot B's
+     query overwrite slot A's results. PK.A and PK.B are independent.
+
+     THE RULE THAT PROTECTS A SELECTION: a FILLED slot renders its card, never a
+     picker. Only an empty slot expands. Selecting collapses that panel and leaves
+     the other open, so a matchup is built in one pass. Tapping a filled card
+     still opens its picker , that path is deliberate, and it is the only way a
+     filled slot ever reopens. */
+  var PK={ A:{pool:[],host:null,inst:null,miss:null,open:false},
+           B:{pool:[],host:null,inst:null,miss:null,open:false} };
+  var pickerSlot='A';                                  // last-touched, for pkPick
+  function pkQ(slot,role){ return document.getElementById('pk'+role+'_'+slot); }
+  function pkFilled(slot){ return slot==='A' ? !!CMP_A : !!CMP_B; }
+  function pkFState(slot){
+    var h=PK[slot].host;
+    return (h && window.VVFilters) ? VVFilters.readState(h)
+         : (window.VVFilters ? VVFilters.emptyState() : null);
   }
-  function pkToggleFilters(){ var p=document.getElementById('pkMore'),btn=document.getElementById('pkFiltBtn'); var open=p.classList.toggle('open'); btn.classList.toggle('on',open); }
-  function closePicker(){ document.getElementById('pickerDim').classList.remove('show'); document.getElementById('pickerSheet').classList.remove('show'); }
-  function pkClearFilters(){ if(PKF) PKF.clear(); pkOnFilters(); }
-  function pkOnFilters(){ pkSyncFilterUI(); loadPool(); }
-  function pkSyncFilterUI(){
-    var st=pkFState(); if(!st) return;
-    var bar=document.getElementById('pkActive');
-    if(bar) bar.innerHTML=VVFilters.renderActive(st);
-    var fb=document.getElementById('pkFiltBtn');
-    if(fb) fb.classList.toggle('on', VVFilters.isActive(st));
+
+  /* EMPTY SLOTS EXPAND, FILLED SLOTS STAY CARDS. Called once the URL handlers
+     have settled, so ?a=<card_id> opens only B, ?a=&b= opens neither, and a bare
+     visit opens both , the matchup gets built in one pass. Never force-closes a
+     panel the user opened on a filled slot by tapping its card. */
+  function pkSyncSlots(){
+    ["A","B"].forEach(function(sl){ if(!pkFilled(sl) && !PK[sl].open) openPicker(sl); });
   }
-  /* pkSetFilterLegacy DELETED , the single-select handler that held one
-     (kind,val) pair and cleared every chip on each pick. VVFilters owns
-     selection now, by data-vvf-group, with real multi-select. */
+  function pkPanelHTML(slot){
+    return '<div class="pkhead-row"><h2>Choose <span class="s">Season '+slot+'</span></h2>'+
+             '<button class="pkx" onclick="closePicker(\''+slot+'\')" aria-label="Close">&times;</button></div>'+
+           '<div class="pksbar"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"><circle cx="44" cy="44" r="26"/><path d="M64 64 L84 84"/></svg>'+
+             '<input id="pkSearch_'+slot+'" placeholder="Search player, club or tag..." oninput="pkOnSearch(\''+slot+'\')" autocomplete="off"></div>'+
+           '<div class="pkfilterbar"><button class="pkfiltbtn" id="pkFiltBtn_'+slot+'" onclick="pkToggleFilters(\''+slot+'\')">&#9881; Filters</button></div>'+
+           '<div class="pkmore" id="pkMore_'+slot+'"><div id="pkFilterHost_'+slot+'"></div>'+
+             '<button type="button" class="pkclearall" onclick="pkClearFilters(\''+slot+'\')">Clear all</button></div>'+
+           '<div class="vvf-active" id="pkActive_'+slot+'"></div>'+
+           '<div class="pkresults" id="pkResults_'+slot+'"></div>';
+  }
+
+  function openPicker(slot){
+    pickerSlot=slot;
+    var panel=document.getElementById('pkPanel_'+slot); if(!panel) return;
+    if(!PK[slot].open){
+      panel.innerHTML=pkPanelHTML(slot);
+      PK[slot].open=true;
+      PK[slot].miss=null;
+      panel.classList.add('open');
+      var side=panel.closest('.side'); if(side) side.classList.add('picking');
+      // filters mount per panel , NORMAL variant, the width is there now
+      var host=document.getElementById('pkFilterHost_'+slot);
+      PK[slot].host=host;
+      if(host && window.VVFilters){
+        PK[slot].inst=VVFilters.mount(host,{ onChange:function(){ pkOnFilters(slot); } });
+      } else if(!window.VVFilters){
+        console.error('[VV] VVFilters missing , compare picker filters not mounted. Check the ?v= token on the vv-core script tag.');
+      }
+      var bar=document.getElementById('pkActive_'+slot);
+      if(bar) bar.addEventListener('click',function(e){
+        var b=e.target.closest ? e.target.closest('[data-vvf-remove]') : null;
+        if(!b) return;
+        VVFilters.removeFrom(PK[slot].host, b.getAttribute('data-vvf-remove'), b.getAttribute('data-vvf-value'));
+        pkOnFilters(slot);
+      });
+      loadPool(slot);
+    }
+    var i=pkQ(slot,'Search'); if(i) i.focus();
+  }
+  function closePicker(slot){
+    if(!slot){ closePicker('A'); closePicker('B'); return; }   // legacy no-arg call
+    var panel=document.getElementById('pkPanel_'+slot); if(!panel) return;
+    panel.classList.remove('open'); panel.innerHTML='';
+    var side=panel.closest('.side'); if(side) side.classList.remove('picking');
+    PK[slot]={pool:[],host:null,inst:null,miss:null,open:false};
+  }
+  function pkToggleFilters(slot){
+    var p=pkQ(slot,'More'), b=pkQ(slot,'FiltBtn');
+    if(!p||!b) return;
+    b.classList.toggle('on', p.classList.toggle('open'));
+  }
+  function pkClearFilters(slot){ if(PK[slot].inst) PK[slot].inst.clear(); pkOnFilters(slot); }
+  function pkOnFilters(slot){ pkSyncFilterUI(slot); loadPool(slot); }
+  function pkSyncFilterUI(slot){
+    var st=pkFState(slot); if(!st) return;
+    var bar=pkQ(slot,'Active'); if(bar) bar.innerHTML=VVFilters.renderActive(st);
+    var fb=pkQ(slot,'FiltBtn'); if(fb) fb.classList.toggle('on', VVFilters.isActive(st));
+  }
   function pkRecents(){ try{return JSON.parse(localStorage.getItem('vvCmpRecents')||'[]');}catch(e){return [];} }
   function pkPushRecent(p){ try{var r=pkRecents().filter(function(x){return pkKey(x)!==pkKey(p);}); r.unshift(p); localStorage.setItem('vvCmpRecents',JSON.stringify(r.slice(0,6)));}catch(e){} }
-  function pkPick(k){ var pool=POOL.concat(pkRecents()); var p=null; for(var i=0;i<pool.length;i++){ if(pkKey(pool[i])===k){p=pool[i];break;} } if(!p)return;
-    var wasEmpty=(pickerSlot==='A')?!CMP_A:!CMP_B;
-    if(pickerSlot==='A')CMP_A=p; else CMP_B=p; pkPushRecent(p); closePicker();
+
+  function pkPick(slot,k){
+    var pool=(PK[slot].pool||[]).concat(pkRecents());
+    var p=null; for(var i=0;i<pool.length;i++){ if(pkKey(pool[i])===k){p=pool[i];break;} }
+    if(!p) return;
+    if(slot==='A') CMP_A=p; else CMP_B=p;
+    pkPushRecent(p);
+    closePicker(slot);                                  // this panel collapses, the other stays
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
-    vvFlipReveal(pickerSlot, p, cw); vvUpdateCompareGate(); }
-  function pkRow(p){ var tier=p.vv>=95?' gen':(p.vv>=90?' elite':'');
-    return '<div class="cmprow" onclick="pkPick(\''+pkKey(p)+'\')">'
-     +'<span class="cmprail" style="background:'+(p.club1||'#9a948a')+'"></span>'
-     +'<div class="cmpmain"><div class="cmpl1"><span class="cmpnm">'+p.surname+'</span><span class="cmpfl">'+(p.flag||'')+'</span></div>'
-     +'<div class="cmpl2"><b>'+p.clubname+'</b> &middot; '+p.year+' &middot; '+posDisplay(p.pos)+'</div></div>'
-     +'<div class="cmpright"><div class="cmpvv'+tier+'">'+p.vv+'</div><div class="cmpga">'+p.goals+'G &middot; '+(p.assists!=null ? p.assists+'A' : 'NR')+'</div></div>'
-     +'</div>'; }
-  // vvNorm / tokenAndFilter / vvParseSearch / vvSeasonLabel now live in vv-core.js (shared with
-  // rankings.html , the two were byte-identical copies). They arrive as globals via VVCore.
-  var _pkSeasonMiss=null;   // set by loadPool when a name+season query degraded (season had no row) -> hint
-  function renderPicker(){
-    var q=(document.getElementById('pkSearch').value||'').trim().toLowerCase();
-    var res=document.getElementById('pkResults'); var html='';
-    /* CLIENT HALF ONLY. league / position / score all went into the query in
-       loadPool; this covers profile, Career-Stage and Trajectory, which are
-       getVVTags output with no column to filter on. */
-    var _st=pkFState();
-    var passF = _st ? VVFilters.clientPredicate(_st) : function(){ return true; };
+    vvFlipReveal(slot, p, cw); vvUpdateCompareGate();
+  }
+  function pkRow(slot,p){ var tier=p.vv>=95?' gen':(p.vv>=90?' elite':'');
+    return '<div class="cmprow" onclick="pkPick(\''+slot+'\',\''+pkKey(p)+'\')">'
+      +'<div class="cmpr-main"><div class="cmpr-n">'+vvEsc(p.surname||'')+'</div>'
+      +'<div class="cmpr-s">'+vvEsc((p.year||''))+' &middot; '+vvEsc(p.clubname||'')+'</div></div>'
+      +'<div class="cmpr-vv'+tier+'">'+(p.vv==null?'NR':p.vv)+'</div></div>';
+  }
+
+  function renderPicker(slot){
+    var res=pkQ(slot,'Results'); if(!res) return;
+    var q=((pkQ(slot,'Search')||{}).value||'').trim().toLowerCase();
+    var st=pkFState(slot);
+    var passF = st ? VVFilters.clientPredicate(st) : function(){ return true; };
+    var POOLs=PK[slot].pool||[];
+    var html='';
+    if(PK[slot].miss!=null) html+='<div class="pkhint">No '+vvSeasonLabel(PK[slot].miss)+' season for that search , showing all</div>';
     if(!q){
       var rec=pkRecents().filter(passF);
-      if(rec.length){ html+='<div class="pkhd">Recent</div>'+rec.map(pkRow).join(''); }
-      var other = pickerSlot==='A'?CMP_B:CMP_A;
-      if(other){ var sug=POOL.filter(function(p){return passF(p)&&pkPosGroup(p.pos)===pkPosGroup(other.pos)&&pkKey(p)!==pkKey(other);}).slice(0,4);
-        if(sug.length){ html+='<div class="pkhd">Suggested rivals</div>'+sug.map(pkRow).join(''); } }
-      var _all=POOL.filter(passF);
-      html+= _all.length ? ('<div class="pkhd">All seasons</div>'+_all.map(pkRow).join(''))
-           : ((_st && VVFilters.isActive(_st)) ? VVFilters.emptyStateHTML(_st,{})
-              : '<div class="pkhd">All seasons</div>');
+      if(rec.length) html+='<div class="pkhd">Recent</div>'+rec.map(function(p){return pkRow(slot,p);}).join('');
+      var other = slot==='A'?CMP_B:CMP_A;
+      if(other){ var sug=POOLs.filter(function(p){return passF(p)&&pkPosGroup(p.pos)===pkPosGroup(other.pos)&&pkKey(p)!==pkKey(other);}).slice(0,4);
+        if(sug.length) html+='<div class="pkhd">Suggested rivals</div>'+sug.map(function(p){return pkRow(slot,p);}).join(''); }
+      var all=POOLs.filter(passF);
+      html+= all.length ? ('<div class="pkhd">All seasons</div>'+all.map(function(p){return pkRow(slot,p);}).join(''))
+           : ((st && VVFilters.isActive(st)) ? VVFilters.emptyStateHTML(st,{}) : '<div class="pkhd">All seasons</div>');
     } else {
-      // client re-filter uses the PARSED name only (the year token is a season filter, applied
-      // server-side in loadPool , matching it as name text would wrongly empty the results).
       var _nq=vvParseSearch(q).nameQ;
       var _tk=vvNorm(_nq).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
-      var L=POOL.filter(function(p){ if(!passF(p)) return false;
+      var L=POOLs.filter(function(p){ if(!passF(p)) return false;
         if(!_tk.length) return true;
         var hay=vvNorm((p.full||'')+' '+(p.surname||'')+' '+(p.clubname||'')+' '+(p.name_norm||''));
         return _tk.every(function(t){
           if(hay.indexOf(t)>=0) return true;
-          // A position/league token matched SERVER-side against position_pool / league_code. This
-          // name+club haystack cannot see those columns, so without this branch the re-filter would
-          // silently strip rows the server had just correctly returned , the exact shape of the
-          // prestige bug that fixed 1 of 2 row templates and still reported success.
           var fv=VVCore.searchFieldToken(t); if(!fv) return false;
           return String(p.pos||'').toLowerCase()===String(fv).toLowerCase()
               || String(p.league_code||'').toLowerCase()===String(fv).toLowerCase();
         }); });
-      L = VVCore.rankBySearch(L, _nq, function(p){ return (p.full||'')+' '+(p.surname||''); });   // relevance: exact>prefix>word-start>mid, then vv
-      var _h = (_pkSeasonMiss!=null) ? '<div class="pkhint">No '+vvSeasonLabel(_pkSeasonMiss)+' season for that name , showing all seasons.</div>' : '';
-      html = _h + (L.length? L.map(pkRow).join('') : '<div class="pkempty">No seasons match.</div>');
+      html+= L.length ? L.map(function(p){return pkRow(slot,p);}).join('')
+           : ((st && VVFilters.isActive(st)) ? VVFilters.emptyStateHTML(st,{searching:true})
+              : '<div class="pkempty">No seasons match that search.</div>');
     }
     res.innerHTML=html;
   }
 
+  var _pkT={};
+  function pkOnSearch(slot){ clearTimeout(_pkT[slot]); _pkT[slot]=setTimeout(function(){ loadPool(slot); },250); }
 
-  // ── Live picker data: empty -> top 50 by VV; query -> player_name/team_name match (debounced) ──
-  var _pkT;
-  // #3 vocab reconciliation: picker chips from the engine's FILTER_TAXONOMY (single source of truth).
-  function populatePicker(){
-    if(!window.VVCore || !VVCore.renderFilterChips) return;
-    var g=function(id){return document.getElementById(id);};
-    // pkPrestige / pkHonours / pkTags are gone , VVFilters renders every group now.
-  }
-  populatePicker();
-  function pkOnSearch(){ clearTimeout(_pkT); _pkT=setTimeout(loadPool,250); }
-  /* DEFERRED , this script block sits ABOVE the picker sheet markup in the
-     document, so at parse time #pkFilterHost does not exist yet and a direct
-     mount finds null. card.html gets away with an immediate mount only because
-     its overlay markup happens to precede its script. Wait for DOM ready. */
-  function pkMountFilters(){
-    PKF_HOST=document.getElementById('pkFilterHost');
-    if(!PKF_HOST || !window.VVFilters){
-      console.error('[VV] VVFilters missing , compare picker filters not mounted. Check the ?v= token on the vv-core script tag.');
-      return;
-    }
-    PKF=VVFilters.mount(PKF_HOST,{compact:true, onChange:function(){ pkOnFilters(); }});
-    var bar=document.getElementById('pkActive');
-    if(bar) bar.addEventListener('click', function(e){
-      var b=e.target.closest ? e.target.closest('[data-vvf-remove]') : null;
-      if(!b) return;
-      VVFilters.removeFrom(PKF_HOST, b.getAttribute('data-vvf-remove'), b.getAttribute('data-vvf-value'));
-      pkOnFilters();
-    });
-    pkSyncFilterUI();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',pkMountFilters);
-  else pkMountFilters();
-
-  async function loadPool(){
-    var sb=vvClient(); if(!sb){ renderPicker(); return; }   // vv-core logs why (missing config or lib)
-    var q=(document.getElementById('pkSearch').value||'').trim();
-    var ps=vvParseSearch(q); var nameQ=ps.nameQ, seasonYear=ps.seasonYear;   // "hazard 23" -> {hazard, 2023}
+  async function loadPool(slot){
+    var sb=vvClient(); if(!sb){ renderPicker(slot); return; }
+    var q=((pkQ(slot,'Search')||{}).value||'').trim();
+    var ps=vvParseSearch(q), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
+    var st=pkFState(slot);
     function buildPoolQ(withSeason){
-      // Browse keeps the curated 50. A SEARCH gets the full ceiling , compare has no rt floor,
-      // so the hard 50 was its only reach limit (a specific query could still be truncated by rt).
       var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false})
                   .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
-      if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }        // token-AND on player/team norm
-      if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);    // NAME + SEASON, or bare year
-      var st=pkFState();
+      if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }
+      if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);
       if(st && VVFilters.isActive(st)){
         query=VVFilters.applyServer(query, st, {}).query;
-        // an ACTIVE filter is a deliberate narrowing , the curated 50 would hide
-        // most of what the user just asked for, so lift the browse cap too
-        query=query.limit(VVCore.SEARCH_CEIL);
+        query=query.limit(VVCore.SEARCH_CEIL);           // a deliberate narrowing must not be capped at 50
       }
       return query;
     }
     var res=await buildPoolQ(true);
-    _pkSeasonMiss=null;
-    // graceful degrade: in-range season with no matching row for this NAME -> drop season, show all + hint
-    if(!res.error && seasonYear!=null && nameQ && (res.data||[]).length===0){ res=await buildPoolQ(false); _pkSeasonMiss=seasonYear; }
+    PK[slot].miss=null;
+    if(!res.error && seasonYear!=null && nameQ && (res.data||[]).length===0){ res=await buildPoolQ(false); PK[slot].miss=seasonYear; }
     if(res.error){ console.error('compare picker load failed:', res.error.message); return; }
-    POOL=(res.data||[]).map(rowToCard);
-    renderPicker();
+    PK[slot].pool=(res.data||[]).map(rowToCard);
+    renderPicker(slot);
   }
   function vvFoldVerdict(){
     document.querySelectorAll('.verdict .vsect').forEach(function(sec){
@@ -1755,5 +1791,5 @@ function vvJoin(){
   <label class="js-optin"><input type="checkbox" id="vvOptIn" checked> When accounts launch, keep me posted on new features and big match cards.</label>
   <button class="js-later" onclick="closeJoin()">Maybe later</button>
 </div>
-<div class="pkdim" id="pickerDim" onclick="closePicker()"></div><div class="pksheet" id="pickerSheet" role="dialog" aria-label="Choose a season"><div class="pkgrab"></div><div class="pkhead-row"><h2 id="pkTitle">Choose <span class="s">Season A</span></h2><button class="pkx" onclick="closePicker()" aria-label="Close">&times;</button></div><div class="pksbar"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"><circle cx="44" cy="44" r="26"/><path d="M64 64 L84 84"/></svg><input id="pkSearch" placeholder="Search player, club or tag..." oninput="pkOnSearch()" autocomplete="off"></div><div class="pkfilterbar"><button class="pkfiltbtn" id="pkFiltBtn" onclick="pkToggleFilters()">⚙ Filters</button></div><div class="pkmore" id="pkMore"><div id="pkFilterHost"></div><button type="button" class="pkclearall" id="pkClearAll" onclick="pkClearFilters()">Clear all</button></div><div class="vvf-active" id="pkActive"></div><div class="pkresults" id="pkResults"></div></div></body>
+<!-- the centred .pksheet + .pkdim are gone , each slot now owns an anchored .pkpanel inside its .side --></body>
 </html>
