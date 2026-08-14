@@ -20,6 +20,29 @@
 
 **Archived 2026-08-10 , four entries (2026-08-06 back to 2026-08-02) moved out of CLAUDE.md §F to bring it under 75%. Three load-bearing facts were PROMOTED into §C first: the real rt range 11 to 97 with 44% of cards below 50, the prestige-exempt-from-cap rule, and the four tag-render paths.**
 
+### 2026-07-27 -> 2026-08-01 | PRE-LAUNCH POLISH / BUG QUEUE , the 10 CLOSED items (relocated from CLAUDE.md §D on 2026-08-14)
+
+**These are CLOSED. They were removed from CLAUDE.md §D because closed history in a live section is exactly what the relocation rule exists to move.** Item 8 (the desktop My Club coming-soon page) stayed behind , it is still open. Three live details were promoted into CLAUDE.md §C/§D first: the `nullsFirst` NULL-rt sort trap, `VVCore.vvDisplayName`, and the nickname-alias (cr7) deferral.
+
+
+**TIER 0 , STOP-GAP UNWOUND (CLOSED 2026-08-01):**
+0. **NOTES SOFTENING , CLOSED 2026-08-01.** The `legacy` cache branch was a stop-gap for 502s; Fluid Compute verified live (11.29s generation, past the old 10s wall), so strict invalidation was restored and the branch deleted. Notes are symmetric with verdicts again. Offline backfill deliberately not run. Full narrative: §F 2026-08-01 (archived).
+**TIER 1 , BUGS (launch-blocking, wrong not just unpolished):**
+1. **SEARCH ACCURACY , DONE 2026-07-27 (`e83de31`).** Root cause was substring `ilike` on `player_name_norm`, which stores the FULL LEGAL name. Fixed in the shared vv-core parser (diacritic folding, cross-column token AND, `rankBySearch` relevance, explicit season-miss), so rankings + compare both inherit it. Full narrative: §F 2026-07-27 (archived). **Still deferred: the nickname-alias index (cr7 -> Ronaldo), post-launch.**
+2. **COMPARE PICKER FILTER , DONE 2026-07-27 (`4428552`).** Wiring was never broken; `buildPoolQ` ordered `rt DESC` without `nullsFirst:false`, so the pool was 50 null-rt rows and every filter matched 0. One-line fix also retired the `limit(50)` search edge. Full narrative: §F 2026-07-27 (archived).
+3. **GLANCE HOVER TAGS , DONE 2026-07-27 (`d4b1860`).** Not a re-render , a flow reflow: the tap fold-below tip was also wired to hover, inserting a full-width flex item into the chip row. Hover now uses a fixed-position floating tip; the tap path is byte-identical. Full narrative: §F 2026-07-27 (archived).
+
+**TIER 2 , CONTRAST SWEEP (exhaustive, grep-driven like the green sweep):**
+4. **CONTRAST SWEEP , DONE 2026-07-27 (`16d6993`) + cream-on-light follow-up 2026-07-28 (`ccdce6c`).** 84 muted-grey-on-cream failures across 7 pages (four pages missed entirely by the earlier pass), then a second class: prose set to `--cream` on containers that had gained a light background, rendering ~1.06 contrast. Audit tool patched for both. Full narrative: §F 2026-07-27 (archived) and 2026-07-28 (archived).
+
+**TIER 3 , POLISH/CONTENT (after bugs + contrast):**
+5. **Trajectory G/A clarity , DONE 2026-07-28 (`6892c55`, Option 2).** Gap between pink/gold segments, green-panel halo removed, compare-scoped `body.light #vtraj` overrides, peak label de-collided. **Landed in the SHARED `VVCore.renderTrajectory`, so verify BOTH card and compare on any trajectory change.** Full narrative: §F 2026-07-28 (archived).
+6. **Glance FULL NAME + field reorder , DONE 2026-08-01 (`462b6a4`).** Glance gained a name heading (it had none) plus `position · age · club · league · season · games`. Required a new derivation, `VVCore.vvDisplayName` (99.3%), because `player_name` is abbreviated for 63.6% of players and `players.full_name` is the LEGAL name. Full narrative: §F 2026-08-02.
+7. **VV INDEX league-weight disclosure , DONE (`58efb95`); matrix/emoji restructure , CLOSED as redundant.** The disclosure shipped as "Where the league counts" (the drafted copy was factually wrong and was rewritten , percentiles are NOT partitioned by league). The visual idea is overtaken by the pentagon + the existing SVG icon system; the page uses zero emoji by design. Full narrative: §F 2026-08-01 (archived).
+9. **I VVONDER real-example fix , DONE 2026-08-01 (`10d8e71`).** Not one bad chip , three inert chips, two naming players with zero rows (Henry, Maradona). Rebuilt as four real clickable pairings teaching four different engine behaviours. Full narrative: §F 2026-08-02.
+10. **Playbook tag cropping , CLOSED 2026-08-01 (verified, no work needed).** 0 clipped of 19 `.libtag` at 390px; the only real defect was the tooltip, already fixed in `d5898d6`. Doc was stale.
++ **Club-token search , ALREADY SHIPPED (`e83de31`).** `tokenAndFilter` ANDs each token across player OR team name, so club name is already searchable. Distinct from the still-deferred nickname-alias idea (cr7 -> Ronaldo), which remains post-launch.
+
 ### 2026-08-11 -> 08-13 | Search overlay, the filter stage, and two methods that died
 **19 commits, none pushed. This entry is the ORDER and the CAUSE , the rules themselves are in §C, the queued work in §D. Read it to understand why the week went the way it did, not to look up a decision.**
 
