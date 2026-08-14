@@ -619,6 +619,21 @@
   // DEF entry would be dead config that reads like a live rule. Verified 0 reachable cards.
   const GOAL_FLOOR_POOL   = { ST: 23, Winger: 16, CAM: 13, CM: 9, CDM: 7 };
   const GOAL_FLOOR_COARSE = { FWD: 15, MID: 9 };   // null/UNK pool only (35% of cards)
+  /* POOL -> COARSE FAMILY. eligibility() resolves the family from the POOL first and falls
+     back to the coarse field, EXACTLY as TAG_THRESHOLDS_POOL[pool] || TAG_THRESHOLDS[fam] does.
+     WHY (measured 2026-08-14): before this, eligibility read the COARSE field while thresholds
+     read the POOL, so a miscoded card was ADMITTED by one and JUDGED by the other , and it drew
+     whichever bar was easiest. An ST-pool card carrying coarse MID was eligible for Engine Room
+     (a MID-only tag) but judged against ST's passes90_p80 of 28.2 instead of MID's 51.9, so it
+     cleared trivially. 198 Engine Room holders sat in the ST pool.
+     THE DAMAGE, as a share of each tag held by minority-family cards against an 8.28% population
+     baseline: Maestro 46.0%, Engine Room 39.4%, Playmaker 21.7%, Regista 18.4%, The Winger 18.4%,
+     Complete 15.9%, Provider 15.7%. Every one of those tags had a bottom ten made entirely of
+     cards whose pool contradicted the tag , CBs holding The Dribbler, strikers holding Regista.
+     RAISING THE BARS DOES NOT FIX IT: at Provider x1.20 and The Dribbler x1.30 the bottom ten are
+     still entirely CB, because those cards pass on the WRONG POOL'S threshold, not by a margin. */
+  const POOL_FAMILY = { GK:'GK', ST:'FWD', Winger:'FWD', CAM:'FWD', CM:'MID', CDM:'MID', FB:'DEF', CB:'DEF' };
+
   function goalFloorFor(pool, fam) {
     var f = GOAL_FLOOR_POOL[pool];
     if (f != null) return f;
@@ -645,10 +660,14 @@
 
   // Map fine position_pool -> eligibility flags. Falls back to coarse family
   // when pool is null (38% of seasons, mostly pre-2015).
-  function eligibility(fam, pool) {
+  function eligibility(coarseFam, pool) {
     // pool (8-bucket, LOCKED): GK, FB, CB, CDM, CM, CAM, Winger, ST, or null/UNK.
     // (Superseded the pre-lock LW/RW/RB/LB codes , which no longer exist in the data.)
     const p = pool || '';
+    // POOL FIRST, coarse as fallback , mirrors the threshold lookup. `fam` below is the
+    // RESOLVED family, so eligibility and thresholds can no longer read different fields.
+    // Null/UNK pool (35% of cards, mostly pre-2016) still resolves via the coarse field.
+    const fam = POOL_FAMILY[p] || coarseFam;
     const winger     = (p === 'Winger');
     const fb         = (p === 'FB');
     const centreBack = (p === 'CB');
@@ -664,6 +683,8 @@
       // CB and FB EXCLUDED BY POOL (2026-08-13), not just by coarse family. They reached this tag
       // only through miscoded coarse positions, and an equal-rarity volume floor handed them the
       // tag on 3 goals. See GOAL_FLOOR_POOL. Cost: 45 cards.
+      // The CB/FB exclusions are now REDUNDANT (both resolve to DEF above) and are kept
+      // deliberately as a guard: if POOL_FAMILY is ever re-mapped, this still holds.
       goalMachine: (fam === 'FWD' || fam === 'MID') && pool !== 'CB' && pool !== 'FB',
       clinical:    fam === 'FWD' || fam === 'MID',
       provider:    fam !== 'GK',                             // any outfielder can provide (GK excluded; FB incl.)
