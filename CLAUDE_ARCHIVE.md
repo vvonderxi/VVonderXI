@@ -10,6 +10,8 @@
 
 **Append-only discipline still applies.** These entries are preserved byte-identical to how they were written. Never rewrite a past entry, here or in CLAUDE.md.
 
+**2026-08-14 relocation.** CLAUDE.md hit 90.4% of its 150k truncation limit. The two 2026-08-11 entries below were moved here from CLAUDE.md §F. **Their three still-open items were promoted into CLAUDE.md §D before the move** (compare.html div/comment imbalance, the home-page versus regex, the 67 double-spaced folded names) , so nothing live was archived. §C and §D were left intact by instruction.
+
 **Ordering.** PART 1 (session log) is newest-at-top, matching CLAUDE.md §F. **PART 2 is no longer in this file** (moved to `INGESTION_RECOVERY.md`, 2026-08-10); it was deliberately kept in its ORIGINAL chronological order , it is one continuous technical narrative of a single project, and reversing it would destroy the reasoning chain.
 
 ---
@@ -17,6 +19,53 @@
 # PART 1 , ARCHIVED SESSION LOG (newest at top)
 
 **Archived 2026-08-10 , four entries (2026-08-06 back to 2026-08-02) moved out of CLAUDE.md §F to bring it under 75%. Three load-bearing facts were PROMOTED into §C first: the real rt range 11 to 97 with 44% of cards below 50, the prestige-exempt-from-cap rule, and the four tag-render paths.**
+
+### 2026-08-11 -> 08-13 | Search overlay, the filter stage, and two methods that died
+**19 commits, none pushed. This entry is the ORDER and the CAUSE , the rules themselves are in §C, the queued work in §D. Read it to understand why the week went the way it did, not to look up a decision.**
+
+**THE THROUGH-LINE, and the single most useful thing here: NINE separate defects this week were invisible to source review and to `node --check`, and were found by driving the DEPLOYED page.** Every one rendered plausibly, parsed cleanly and did nothing, or did the wrong thing quietly. Local verification passed on all of them. **If a session ends without testing the deployed page, assume it is not finished.**
+
+**1. THE VIEW INCIDENT CAME FIRST, AND IT SET THE TONE (08-11).** A placeholder `CREATE OR REPLACE VIEW x AS SELECT * FROM x` destroyed `player_card_view`'s 11,202-char engine body, silently, and the site kept serving because the matview held stale-but-good data. Recovered from a `pg_get_viewdef` capture taken earlier the same session. The known-as name fold then shipped through the `exec_sql` RPC after two silent no-ops through the SQL editor , Casemiro **0 -> 12**, Jorginho **0 -> 16**, elite count **650** and rt range **11-97** held. Full detail in the entry below; §C carries both rules.
+
+**2. THE SEARCH OVERLAY, AND FOUR SILENT FAILURES IN ONE FILE (08-11 -> 08-12).** Built search as a curtain state of `card.html` , stage dims and settles, panel enters 60ms later, rows stagger 55ms apart, scrim behind the panel, recent-search chips. **Then four bugs, each found only on the deployed page, each of a different kind:** `addEventListener(pageshow,...)` unquoted by `node -e` and throwing at runtime while the file parsed; an orphan `*/` lifted with a CSS line range that made the parser discard **42 of 45 rules**; the decorative `.glow` escaping its containing block at <=1040px and swallowing the trigger's tap; and `JSON.stringify` truncating a chip's `onclick` attribute. **They share one shape , a quote or a marker inside a delimited context produces output that parses and does nothing.** §C records the family.
+
+**3. THE PRESTIGE CORRECTION (08-12).** Found while auditing the filter ahead of extraction, and fixed immediately rather than folded into that stage, because it was live and wrong: the Prestige chips used **rt>=88 / rt>=92**, the pre-recut thresholds, against live bands of **90 / 95**. Selecting Generational returned **47 cards of which 35 were not Generational**. Now derived by scanning `bandFor` composed with `prestigeFor`, so no threshold is written down anywhere and a future recut moves it automatically.
+
+**4. THE FILTER STAGE, THREE SESSIONS (08-12).** `VVFilters` into vv-core first, shipping unused; then rankings adopted it; then the card overlay and compare picker. **The founding rule , every chip carries `data-vvf-value` , exists because `readFilters` matched `textContent.indexOf('Premier League')`, so a label edit or the EN/NL/FR toggle would silently have changed the QUERY.**
+- **The compare picker was the real finding.** Its `passF` filtered an already-fetched POOL, and browse caps that pool at the **top 50 by rt**. Measured composition: ST 32, Winger 17, CAM 1. **Five of eight position chips and four of nine league chips matched ZERO rows** , GK, CB, FB, CDM and CM were all impossible. The chips looked broken through no fault of their own. Moving to the server path took a GK filter from 50 to **300 rows, all GK**.
+- Prestige was dropped as a group: verified across rt 0..100 that the VV Score bands make the **identical cut**, so it was one filter offered twice under two vocabularies.
+
+**5. TWO FIXED-GRID CHILD BUGS, THE SAME BUG TWICE (08-12 -> 08-13).** `.ranklayout` is a 2-column grid; the active-chips bar became a third child and pushed `#cardgrid` into the rail's column, 262px wide and below the fold , which read as "results empty" AND "rows overlap the rail" at once. Then `.vvf-group` in compact form, same story: score has 3 children and profile has 9, so chips auto-placed into the **78px label column** and clipped mid-word. **A fixed column count handed extra children relocates everything after them, silently, and the symptom appears far from the cause.** Fix both times: wrap the body so the count is fixed. `.cs-meta` was a third instance, milder.
+
+**6. AGE ON THE ROWS (08-12).** Folded into `.upos` rather than a tenth column. Worth remembering the discarded attempt: widening the mobile track stole 24px from the club name and took clipping from **15 to 50 of 60 rows**, measured against a stashed baseline, so compact now STACKS the age in the cell's spare vertical room instead.
+
+**7. THE DEEP-PLAYMAKER GATE , GO ON ARCHETYPE, NO-GO ON THE METRIC (08-12).** Top 40 by `passes_total` per 90 reads Rodri, Verratti, Kroos, Kimmich, Busquets, Jorginho , 22 distinct players, recurring season to season, median rt 61. The archetype is real and the gap is the case for the lens. **But 33 of 40 rows come from seven possession-dominant clubs, 12 from PSG alone**, so the metric measures team possession. Amended to share-of-team passes before anything is built. §D carries the spec.
+
+**8. TRANSFERMARKT CHANGED ITS MARKUP AND THE METHOD DIED (08-12 -> 08-13).** The tier-1 fetch resolved **122 of 471** cards, then produced **208 consecutive rows with zero useful results**. Not a block: HTTP **200**, correct title, correct player, no challenge markers , but `<select name="pos">` gone. **Confirmed by re-fetching Neymar, who had parsed fine hours earlier on the identical URL.** The 429s were real but incidental. **The 122 rows survive; the remaining ~350 Tier-1 cards need Fable or a re-pointed parser, and that is a decision, not a retry.**
+
+**9. THE SEASON CONVENTION WAS BACKWARDS (08-13).** `vvParseSearch` read a bare "19" as 2019/20. People mean the season that FINISHED in 2019. Corrected to the ending year , and deliberately NOT inside `vvYearFromDigits`, since the split form "18/19" already yields the starting year and subtracting there would have broken it. **This changed rankings too**, and was checked there rather than assumed.
+
+**WHAT IS OPEN.** Nothing is pushed. The tier-1 method decision (Fable vs re-point vs disclose at 122). `compare.html` carries a pre-existing div imbalance of -1 and an unbalanced CSS comment pair, byte-identical at HEAD across three commits , worth its own look, given an orphan `*/` cost 42 rules in `card.html` this week. The home-page versus regex still routes "Anthony V Smith" to Compare, and now fills two unrelated players rather than showing an empty page; the real fix is resolution-based, not a pattern.
+
+### 2026-08-11 | KNOWN-AS NAME FOLD shipped (search follow-up 1) + the view-destruction incident
+
+**DB write + matview refresh + docs. Commit `9fc9008` (docs) and this one. NOT pushed.**
+
+**1. KNOWN-AS NAMES ARE SEARCHABLE , `DB_HYGIENE_STAGE.md` follow-up (1) is DONE.**
+`player_name_norm` now folds **`concat_ws(' ', p.name, p.full_name)`** instead of `COALESCE(p.full_name, p.name)`, so the known-as name and the legal name are BOTH in the searchable text. **ONE line of the view changed** (line 201 of 218), +19 chars, 11,202 -> 11,221. Applied via the `exec_sql` RPC, not the SQL editor (see §C).
+- **MEASURED, matview before -> after:** Casemiro **0 -> 12**, Jorginho **0 -> 16**, Fernandinho **0 -> 9**, Raphinha **0 -> 12**, Fabinho **0 -> 11**. **Salah unchanged at 26** , the control, proving the fold widened the column without disturbing names that already worked.
+- **ENGINE UNTOUCHED, verified before and after:** elite (rt>=85) **650**, rt range **11 / 97**, **57,234** rows, on both the view and the refreshed matview. `REFRESH MATERIALIZED VIEW player_card_mv` took **4.3s** (plain, ACCESS EXCLUSIVE, site locked for that window).
+- **NO FRONT-END CHANGE AND NO MATVIEW REBUILD WERE NEEDED.** `tokenAndFilter` already queries `player_name_norm`, and the matview's frozen column list already contains it , the frozen-query trap only bites on ADDED columns, so widening an EXISTING column's expression propagates on a plain REFRESH. **No `?v=` bump required.** This is exactly why widening beat adding an `alias_norm` column.
+- Backup kept at `~/Downloads/player_card_view_BACKUP_2026-08-11T120335Z.sql` (11,411 bytes, verified on disk before the write).
+
+**2. TWO OPEN ITEMS FOUND DURING VERIFICATION, neither blocking:**
+- **NULL rt SORTS FIRST on `ORDER BY rt DESC`** (Postgres default), so a null-rt row can take the top slot. Hit while spot-checking Salah, whose top row read `null` until re-read with `NULLS LAST`; 1 of his 26 rows has a null rt. **Same trap as the Compare picker bug** (`buildPoolQ` missing `nullsFirst:false`, fixed in `4428552`) , it is a property of the DATA that is still live, so any new `rt DESC` query needs `nullsFirst:false`.
+- **67 DOUBLE-SPACED FOLDED NAMES, up from 4 , introduced by this change and cosmetic.** `players.name` already contains double spaces (`J.  McGinn` -> `j  mcginn john mcginn`); `COALESCE` had been preferring `full_name`, and `concat_ws` now brings that field in. **Search is NOT affected** , `tokenAndFilter` matches each token as its own substring, so inter-token spacing is never compared (verified: a double-spaced row still matches on a single token). Fix with a `regexp_replace(..., '\\s+', ' ')` collapse at the NEXT view edit; not worth a write of its own.
+
+**3. THE VIEW WAS DESTROYED AND RECOVERED EARLIER THE SAME DAY.** An accidental `CREATE OR REPLACE VIEW x AS SELECT * FROM x` replaced the 11,202-char engine body with a 965-char self-referential projection, silently. Full lesson in §C, including the two rules that matter most: **the stale matview is the backup, so do NOT refresh a view that looks wrong**, and **capture `pg_get_viewdef` before any view work**. A read that day concluded "the engine is not in a view" , that was true of the damaged database and false of the system; the §Stack line now records this so it is not re-derived.
+
+**STILL OPEN on the search track:** follow-up (2) **trigram indexes** (`pg_trgm` + 2 GIN, `CREATE INDEX CONCURRENTLY`, no rebuild, safe while live) is now the only piece of `DB_HYGIENE_STAGE.md` left and can ship alone. **The percentile columns still need the matview DROP + CREATE** and their 3 product decisions , they no longer share a sitting with the known-as fix, since that shipped without a rebuild. Plan in `scripts/enrichment/matview_rebuild_plan.md` (untracked).
+
 
 ### 2026-08-10 (cont.) | BIG-CLUB write , 11 cards, 3 band crossings, and the outbound-CDM asymmetry
 
