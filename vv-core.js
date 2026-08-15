@@ -640,13 +640,67 @@
     var c = GOAL_FLOOR_COARSE[fam];
     return c != null ? c : null;                   // no floor -> tag unreachable, never a free pass
   }
-  const MIN_ASSISTS_PLAYMAKER = 3;    // Barcola 2526 (1 assist) dies; his 2425 (10) survives.
+  /* ── RARITY FLOORS (2026-08-14) ──────────────────────────────────────────────────────────
+     Target band for the platform: 1.0-2.0% of all cards per tag. Set AFTER the eligibility fix
+     (04d127d), because that alone moved Engine Room, Regista and Maestro into band without a
+     single threshold changing , tuning before it would have been tuning twice.
+
+     LEVER CHOSEN PER TAG, on the BOTTOM EDGE rather than on the count. A raw floor and a rate
+     multiplier can land on the same percentage and select very different cards: for Complete the
+     two candidates both gave exactly 1,011 cards and overlapped on only 685 of them.
+     Measured, holders below rt 50 / holders under 1,200 minutes:
+       The Wall   x1.10 -> 17.5% / 18.3%     raw tackles>=50 -> 7.7% / 1.2%   <- floor wins
+       Ball Hawk  x1.15 -> 33.2% / n/a       raw int>=60     -> 26.3%         <- floor wins
+       Dribbler   x1.25 -> 12.2%             raw drib>=50    -> 8.7%          <- floor wins
+       Complete   x1.15 ->  4.1% / 15.5%     raw min>=1500   -> 2.3% / 0.0%   <- floor wins
+     A rate multiplier scales everyone equally and keeps the thin-sample tail; a raw floor removes
+     it outright.
+
+     NULL HANDLING , every floor below goes through rawFloorOK, so a MISSING metric is EXEMPT,
+     not a failure. This is the locked NR-is-not-zero rule: assists are 54.2% null, tackles 40.4%,
+     interceptions 36.7%, dribbles 37.8%, and a player whose assists were never logged is not a
+     player with zero assists. A NULL-rejecting floor punishes the DATA GAP as if it were a bad
+     season.
+     MEASURED, and the reason this is easy to get wrong: it changes ONLY Playmaker (+28 cards).
+     For Provider, The Dribbler, Ball Hawk and The Wall the floor reads the SAME field the rate
+     gate reads, so a null value already fails upstream and the exemption is never consulted ,
+     0 cards recovered on each. Playmaker is the ONLY tag whose floor field (assists) differs
+     from its rate field (passes_key), which is exactly why it was the only one bleeding.
+     THE GENERAL RULE: a raw floor is NULL-sensitive only when it reads a DIFFERENT field from
+     the rate gate. Check that before assuming a floor is safe.
+     GOAL MACHINE IS THE ONE EXEMPTION AND STAYS NULL-REJECTING , its floor is the ENTIRE rule
+     (no rate cut), so exempting null would hand the tag to all 466 eligible null-goal cards. */
+  const MIN_ASSISTS_PLAYMAKER  = 5;    // was 3 via rawFloorOK. 2.73% -> 1.82%.
+  const MIN_ASSISTS_PROVIDER   = 6;    // 2.83% -> 1.77%. Higher than Playmaker's ON PURPOSE:
+                                       // assists ARE Provider's metric, but only corroborate
+                                       // Playmaker, whose driving metric is key passes.
+  const MIN_DRIBBLES_DRIBBLER  = 50;   // 3.91% -> 1.62%.
+  const MIN_INT_BALLHAWK       = 60;   // 3.60% -> 1.47%.
+  const MIN_TACKLES_WALL       = 50;   // 3.24% -> 1.88%. The rate lever was brittle here ,
+                                       // x1.08 gave 1.91% and x1.20 gave 0.86%, so the usable
+                                       // window was one step wide. The floor is not brittle.
+  const MIN_MINUTES_COMPLETE   = 1500; // 2.60% -> 1.77%. "Elite at both ends" over 900 minutes
+                                       // was half a season; Complete is a whole-season claim.
+  /* IRON MAN IS A DELIBERATE EXCEPTION TO THE 1.0-2.0% BAND , DO NOT "FIX" IT BACK.
+     x1.15 lands it at 1.71%, inside band, and was REJECTED. Availability is structurally common
+     in a way no other tag's signal is: the tag means "played every week", and a season-long
+     ever-present is simply not a rare event. Forcing it into band stripped the LAST tag from
+     84 elite cards (rt>=85) , Rashford 2223, Mane 2122, Bowen 2122 and 2324, Gordon 2324 , 45 of
+     which held Iron Man and nothing else. That is the band buying rarity with coverage at the
+     top of the scale, which is the wrong trade for this specific tag.
+     x1.10 = 3.40%. Pool-relative, NOT a flat minutes floor, which would re-import the
+     position-blindness the Goal Machine work removed. ~2,885-3,125 minutes by pool. */
+  const IRONMAN_MULT           = 1.10;
   const MIN_MINUTES_TAG       = 900;  // 26.6% of cards sit below this, where per-90 inflates.
                                       // ~10 full matches. Gates every PER-90-derived tag.
 
   // NR IS NOT ZERO (house rule). A MISSING raw stat is EXEMPT from a raw floor rather than
   // failing it , 54.2% of rows have null assists (the pre-2015 FBref gap), and treating those
   // as 0 would silently punish a data gap as if it were a bad season. Costs 33 Playmaker cards.
+  // THE NR-IS-NOT-ZERO HELPER. Used by every raw floor except Goal Machine's, which must reject
+  // null because its floor is the whole rule. Briefly replaced by explicit null-rejecting checks
+  // on 2026-08-14 and restored the same pass , that version dropped 28 Playmaker holders purely
+  // for unrecorded assists, which is the exact failure this helper exists to prevent.
   function rawFloorOK(value, floor) {
     if (!(floor > 0)) return true;
     if (value == null) return true;      // NR , exempt, not a failure
@@ -794,7 +848,8 @@
       tags.push({ name: 'Clinical', family: 'ATT', tier: 'granular' });
 
     // Provider , high ASSISTS (Universal)
-    if (okMin && elig.provider && ge(assists90, t.assists90_p90))
+    if (okMin && elig.provider && ge(assists90, t.assists90_p90)
+        && rawFloorOK(row.assists, MIN_ASSISTS_PROVIDER))
       tags.push({ name: 'Provider', family: 'ATT', tier: 'universal' });
 
     // Poacher , scores BUT does little else (Granular, compound , WILL NEED TUNING)
@@ -832,12 +887,14 @@
       tags.push({ name: 'Engine Room', family: 'MID', tier: 'granular' });
 
     // The Dribbler , high DRIBBLE success (Granular)
-    if (okMin && elig.dribbler && ge(drib90, t.drib90_p90 * 0.92))
+    if (okMin && elig.dribbler && ge(drib90, t.drib90_p90 * 0.92)
+        && rawFloorOK(row.dribbles_success, MIN_DRIBBLES_DRIBBLER))
       tags.push({ name: 'The Dribbler', family: 'MID', tier: 'granular' });
 
     // ========================= DEFENDER FAMILY (blue) =========================
     // The Wall , high DEFENSIVE VOLUME (Granular)
-    if (okMin && elig.theWall && ge(defact90, t.defact90_p90 * 0.92 * 1.04))
+    if (okMin && elig.theWall && ge(defact90, t.defact90_p90 * 0.92 * 1.04)
+        && rawFloorOK(row.tackles_total, MIN_TACKLES_WALL))
       tags.push({ name: 'The Wall', family: 'DEF', tier: 'granular' });
 
     // Destroyer , high DUELS WON (Granular)
@@ -846,7 +903,8 @@
       tags.push({ name: 'Destroyer', family: 'DEF', tier: 'granular' });
 
     // Ball Hawk , high INTERCEPTIONS (Granular)
-    if (okMin && elig.ballHawk && ge(int90, t.int90_p90 * 0.92))
+    if (okMin && elig.ballHawk && ge(int90, t.int90_p90 * 0.92)
+        && rawFloorOK(row.interceptions, MIN_INT_BALLHAWK))
       tags.push({ name: 'Ball Hawk', family: 'DEF', tier: 'granular' });
 
     // Ball-Playing CB , solid defensively + high accurate passing (Granular, compound)
@@ -858,11 +916,12 @@
     // Complete , elite at BOTH ends (Granular, compound , WILL NEED TUNING)
     const attackElite = ge(goals90, t.goals90_p85) || ge(keypass90, t.keypass90_p80);
     const defElite = ge(defact90, t.defact90_p70);
-    if (okMin && elig.complete && attackElite && defElite)
+    // minutes is 0.0% null and okMin already required >=900, so this floor needs no NR exemption.
+    if (okMin && elig.complete && attackElite && defElite && row.minutes >= MIN_MINUTES_COMPLETE)
       tags.push({ name: 'Complete', family: 'CROSS', tier: 'granular' });
 
     // Iron Man , ever-present, top minutes (Universal)
-    if (elig.workhorse && ge(m, t.minutes_p90))
+    if (elig.workhorse && ge(m, t.minutes_p90 * IRONMAN_MULT))
       tags.push({ name: 'Iron Man', family: 'CROSS', tier: 'universal' });
 
     // ========================= AGE FAMILY =========================
