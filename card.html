@@ -164,6 +164,9 @@
   /* watch CTA */
   .watchcta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--charcoal);color:var(--cream);border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:4px}
   .watchcta svg{width:16px;height:16px}
+  /* The Chronicle CTA is the SAME .watchcta component , only the top margin differs, because
+     here it sits under the scoreline inside .narrative rather than as a standalone block. */
+  .chron-watch{margin-top:16px}
   .glancegrid{align-items:flex-start}
   .glancebadge{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;padding-left:20px}
   .glancebadge svg{width:74px;height:86px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.3))}
@@ -974,6 +977,7 @@
   <div class="np">And then he took the game by the collar. A pass that split the night. A strike that found the roof. An arm raised not in celebration but in command, telling forty thousand souls to believe again.</div>
   <div class="np">By the final whistle the deficit was a memory, and the captain stood at the centre circle, chest heaving , the embodiment of a side that refused to die. That was the night they remembered who he was.</div>
   <div class="nm chron-score">Man Utd 2-1 Liverpool, 7 Apr 2024</div>
+  <a class="watchcta chron-watch" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> <span class="cw-label">Watch this match</span></a>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 10l4.9-1.7z"/><path d="M18.6 15l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></div><div class="layer-t">Wonder Tags</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he won, and what he was.</div><div id="wonderTags"></div></div></div></div>
       <div class="layer" id="notesLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open'); vvNotesOpen();"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
@@ -2038,6 +2042,38 @@ function vvResolveChronicleKey(apiId, season){
   } catch(e){ /* keep default CARD_PLAYER */ }
 })();
 
+/* WATCH-THIS-MATCH , "Lionel Messi vs Granada 2012".
+   NAME COMES FROM THE KEY SLUG, NOT FROM THE CARD. `D.full` is `row.player_name`, which §C
+   records as ABBREVIATED for 63.6% of players , it would emit "L. Messi vs Granada 2012". The
+   key slug is hand-authored and is always the full name, so it is both more reliable and free.
+   (The older standalone .watchcta above still uses D.full and still says "L. Messi"; that is a
+   pre-existing wart, not something this introduced.)
+   Two slugs lose punctuation the canonical spelling has , "Son Heung Min" and "Robin Van
+   Persie" , and both return identical YouTube results, so they are left alone rather than
+   given a special-case table.
+   YEAR comes off `date`, which carries an extractable 4-digit year on all 51 entries.
+   The anchor is HIDDEN if either part is missing, so a future entry without a date or an
+   opponent degrades to no button rather than to a broken search. */
+function vvChronicleName(key){
+  return String(key||'').replace(/-\d{4}$/,'')
+    .split('-').filter(Boolean)
+    .map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }).join(' ');
+}
+function vvChronicleYear(date){
+  var m=String(date||'').match(/\b(19|20)\d{2}\b/);
+  return m ? m[0] : '';
+}
+function vvWireChronicleWatch(layer, m){
+  var a=layer.querySelector('.chron-watch'); if(!a) return;
+  var name=vvChronicleName(CARD_PLAYER), yr=vvChronicleYear(m && m.date), opp=(m && m.opponent)||'';
+  if(!name || !opp || !yr){ a.style.display='none'; return; }   // never a half-formed search
+  a.style.display='';
+  var q=name+' vs '+opp+' '+yr;
+  a.href='https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+  var lab=a.querySelector('.cw-label'); if(lab) lab.textContent='Watch '+q;
+  a.setAttribute('aria-label','Watch '+q+' on YouTube');
+}
+
 function vvWireChronicle(){
   var layer = document.getElementById('chronicleLayer');
   if(!layer) return;
@@ -2046,6 +2082,7 @@ function vvWireChronicle(){
   layer.style.display='';
   var sc = layer.querySelector('.chron-score'); if(sc) sc.textContent = m.scoreline + ' \u00b7 ' + m.date + ' \u00b7 ' + m.comp;
   var q  = layer.querySelector('.chronicle-one'); if(q && m.quote) q.textContent = '\u201c' + m.quote + '\u201d';
+  vvWireChronicleWatch(layer, m);
   var nar = layer.querySelector('.narrative');
   if(nar && m.narrative && m.narrative.length){
     var anchor = nar.querySelector('.chron-score');
