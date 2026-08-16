@@ -985,7 +985,7 @@
   <div class="nm">Commentator's Notes</div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.3l5.5 3.7L10 15.7z" fill="currentColor" stroke="none"/></svg></div><div class="layer-t">Watch</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Go and see it for yourself. Some things must be witnessed, not read.</div>
-<a class="watchcta" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 highlights</a>
+<a class="watchcta season-watch" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 highlights</a>
 </div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
         <div class="dc-row"><span class="dc-dots" id="dcDots"></span><span class="dc-x" id="dcX">NR</span></div>
@@ -1216,10 +1216,24 @@
       }
     }
     vvApplyHonours();   // glChips + Wonder Tags , honour-dependent DOM, re-callable when honours land
-    var w=document.querySelector('.watchcta');
+    /* .season-watch, NOT .watchcta , the Chronicle CTA shares the .watchcta component and sits
+       EARLIER in the document, so a bare '.watchcta' selector returns the Chronicle anchor and
+       this block would overwrite it while leaving the real season link on its hardcoded demo
+       href. Introduced and caught the same day the Chronicle CTA landed. */
+    var w=document.querySelector('.season-watch');
     if(w){
-      w.href='https://www.youtube.com/results?search_query='+encodeURIComponent((D.full||'')+' season highlights '+(D.year||''));
-      w.lastChild.textContent=' Watch '+(D.full||'')+' , '+(D.year||'')+' highlights';
+      /* D.full is row.player_name, ABBREVIATED for 63.6% of players (§C), so this used to read
+         "Watch L. Messi , 11/12 highlights". vvDisplayNameFor resolves it (99.3%) and falls back
+         to the abbreviated form, so the link is written twice: once immediately so it is never
+         broken, then again if a better name arrives. */
+      var _setWatch=function(nm){
+        w.href='https://www.youtube.com/results?search_query='+encodeURIComponent(nm+' season highlights '+(D.year||''));
+        w.lastChild.textContent=' Watch '+nm+' , '+(D.year||'')+' highlights';
+      };
+      _setWatch(D.full||'');
+      (function(_d){ vvDisplayNameFor(_d).then(function(nm){
+        if(D===_d && nm) _setWatch(nm);          // ignore if the card changed under us
+      }); })(D);
     }
     var cmp='compare.html'+(D.card_id!=null ? '?a='+encodeURIComponent(D.card_id) : '');
     var c2=document.getElementById('compareCta2'); if(c2) c2.href=cmp;   // bottom action row
@@ -1377,6 +1391,29 @@
      diminutives, the abbreviated name simply stands , which is today's
      behaviour, so there is no regression path. */
   var _NAME_CACHE = Object.create(null);          // api_player_id -> full_name (avoids refetch on season switch)
+  /* players.full_name is NOT on player_card_mv, so resolving a display name costs a second
+     query. Cached per api_player_id for the session , _NAME_CACHE is shared with the glance
+     name, so a card that has already resolved once costs nothing here. */
+  async function vvFullNameFor(pid){
+    if(pid == null) return null;
+    if(pid in _NAME_CACHE) return _NAME_CACHE[pid];
+    try{
+      var sb=vvClient(); if(!sb) return null;
+      var res=await sb.from('players').select('full_name').eq('api_player_id', pid).limit(1);
+      var fn=(res && res.data && res.data[0]) ? res.data[0].full_name : null;
+      _NAME_CACHE[pid]=fn;
+      return fn;
+    }catch(e){ return null; }
+  }
+  /* "L. Messi" -> "Lionel Messi". Returns the ABBREVIATED name unchanged when there is nothing
+     to improve (already full, mononym, or no full_name on file), so callers never get a blank. */
+  async function vvDisplayNameFor(D){
+    var base=(D && (D.full || D.surname)) || '';
+    if(!base || !/^[A-Za-zÀ-ɏ]\.\s/.test(base)) return base;
+    var fn=await vvFullNameFor(D.api_player_id);
+    return fn ? (VVCore.vvDisplayName(base, fn) || base) : base;
+  }
+
   async function vvSetGlanceName(D){
     var el=document.getElementById('glName'); if(!el || !D) return;
     var base = D.full || D.surname || '';
@@ -1391,10 +1428,7 @@
     if(pid in _NAME_CACHE){ apply(_NAME_CACHE[pid]); return; }
     el.classList.add('resolving');
     try{
-      var sb=vvClient(); if(!sb) return;
-      var res=await sb.from('players').select('full_name').eq('api_player_id', pid).limit(1);
-      var fn=(res && res.data && res.data[0]) ? res.data[0].full_name : null;
-      _NAME_CACHE[pid]=fn;
+      var fn=await vvFullNameFor(pid);
       if(document.getElementById('glName')===el && el.textContent===base) apply(fn);  // ignore if the card changed under us
     }catch(e){ /* keep the abbreviated name */ }
     finally{ el.classList.remove('resolving'); }
