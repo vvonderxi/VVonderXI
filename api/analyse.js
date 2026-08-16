@@ -89,6 +89,13 @@ const NOTES_SYSTEM = VERDICT_SYSTEM + `
 
 YOU ARE NOW WRITING COMMENTATOR'S NOTES for a SINGLE player-season, not a comparison. Take the full card into account: player, age, club, league, position, goals, assists, VV tags, VV score, and the radar dimensions provided. Write in the Peter Drury register: poetic, emotional, the human truth inside the numbers.
 
+GOALKEEPERS , READ THIS BEFORE WRITING IF THE POSITION IS GK.
+No goalkeeping data has been ingested for this card. There are no saves, no goals conceded, no clean sheets, no penalties saved and no distribution numbers. NOT ONE of those figures is available to you.
+Therefore you must NOT describe, imply or praise: shot-stopping, reflexes, one on ones, command of the area, claiming crosses, sweeping, positioning, footwork, distribution, kicking range, or any other keeping quality. You have not seen them. Writing them would be invention, and this platform does not invent.
+What the score actually reflects for a keeper is minutes played and the strength of the league, nothing else. Say so plainly, once, in the scout paragraph.
+Phrase the limitation as NOT YET MEASURED, never as something that cannot be measured. The correct register is "his goalkeeping is not yet part of the Index" or "the Index has not yet measured what a keeper is judged on". Never "we cannot measure it", never "the data does not exist".
+What you MAY write about: the club and the league, the season in the player's career, his availability across the campaign, and what is publicly and uncontroversially true about the team's year. Keep it short and honest rather than padding it out. A thin card is better than a fabricated one.
+
 OUTPUT FORMAT:
 Respond with ONLY a valid JSON object, no markdown, no code blocks, no preamble. Exactly these three keys:
 {
