@@ -23,6 +23,29 @@ not evidence of what landed. Assert the result, in the same harness, before beli
 
 ---
 
+**AN INLINE SVG WITH A viewBox IS A REPLACED ELEMENT, SO `height:auto` RESOLVES FROM ITS RATIO AND `bottom:0` IS SILENTLY IGNORED , `inset:0` DOES NOT SIZE IT (2026-08-16). IT SURVIVED TWO BRIEFS BECAUSE NOTHING IN THE MARKUP LOOKED WRONG.**
+
+The Playbook's card mockup drew a grey trajectory line diagonally across the Proof and Watch panels below it. The rule was:
+
+    .cm-line{position:absolute;inset:0;pointer-events:none;overflow:visible}
+
+and the markup was an ordinary `<svg class="cm-line" viewBox="0 0 100 44" preserveAspectRatio="none">` holding one polyline whose every point sits inside the viewBox. **Read on its own, every part of that is correct.** The polyline coordinates are in range. The parent `.cm-chart` is `position:relative` and `height:44px`. `inset:0` names all four edges.
+
+**IT IS THE `inset:0` THAT DOES NOTHING, AND THE REASON IS THE ELEMENT TYPE, NOT THE CSS.** An inline SVG carrying a viewBox is a **REPLACED element with an intrinsic aspect ratio**. For a replaced element, `height:auto` resolves from that ratio rather than from the box, and the over-constrained `bottom` is discarded. So the SVG took the container's width and then set its own height to width x 44/100.
+
+**MEASURED IN A REAL BROWSER, with the original rule restored on the live page: the SVG rendered 467.3px tall against a 44px chart, and the polyline ended 274.6px BELOW the chart's bottom edge.** With `overflow:visible` there was nothing to clip it, so it drew straight down the panel stack.
+
+**WHY IT SURVIVED TWO BRIEFS.** It had been reported before and not fixed, and the reason is the shape of the evidence: **there is no wrong number anywhere to find.** A reader checking the polyline finds valid points. A reader checking the viewBox finds it matches the chart. A reader checking the container finds an explicit height. Nothing in the file is the wrong value , the defect lives in a CSS resolution rule that only shows up as a rendered box size, and the file cannot show you a rendered box size.
+
+**THE FIX IS TWO DECLARATIONS AND BOTH ARE LOAD-BEARING:**
+
+    .cm-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+
+`width`/`height` force the used size to the container instead of the ratio; `overflow:hidden` is the second belt, so that if anything ever escapes the viewBox again it is clipped rather than drawn across the page. Re-measured after: SVG 44px, polyline ending 14px INSIDE the chart.
+
+**GENERALISE IT: `position:absolute; inset:0` is a reliable way to fill a container ONLY for non-replaced elements.** For `<svg>`, `<img>`, `<video>`, `<canvas>` and `<iframe>`, add explicit `width`/`height` , or accept that the intrinsic ratio wins. **And the general lesson is the one this whole file is about: a defect whose only symptom is a rendered geometry cannot be found by reading markup.** It needed the page open in a real browser with `getBoundingClientRect` on the SVG, the chart and the polyline. That check now runs against a local `python3 -m http.server` and should be the default for any visual change.
+---
+
 **`CREATE OR REPLACE VIEW x AS SELECT * FROM x` SUCCEEDS SILENTLY AND DESTROYS THE VIEW BODY (2026-08-11). THE SITE KEEPS LOOKING HEALTHY.**
 Postgres does NOT reject a view that selects from itself. The body is replaced by a self-referential column projection and the original SQL is gone. **The matview keeps serving stale-but-good data, so nothing appears wrong** , the damage is invisible until the next `REFRESH`, which would then empty `player_card_mv` and take every page down at once, because rankings/compare/card all read it directly from the browser with no fallback.
 - **WHAT HAPPENED:** `player_card_view` , the object holding the whole VV engine , was replaced by a **965-char column projection ending `FROM player_card_view`**. The 11,202-char engine body (`WITH scored AS`, `percentile_cont`, `rt_new`) was destroyed. Cause: placeholder/example DDL pasted into the SQL editor and run.
