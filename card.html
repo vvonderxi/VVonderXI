@@ -985,7 +985,7 @@
   <div class="nm">Commentator's Notes</div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.3l5.5 3.7L10 15.7z" fill="currentColor" stroke="none"/></svg></div><div class="layer-t">Watch</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext">Go and see it for yourself. Some things must be witnessed, not read.</div>
-<a class="watchcta season-watch" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 highlights</a>
+<a class="watchcta season-watch" href="https://www.youtube.com/results?search_query=Bruno+Fernandes+season+highlights+2023+2024" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Bruno Fernandes , 23/24 season</a>
 </div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
         <div class="dc-row"><span class="dc-dots" id="dcDots"></span><span class="dc-x" id="dcX">NR</span></div>
@@ -1228,7 +1228,7 @@
          broken, then again if a better name arrives. */
       var _setWatch=function(nm){
         w.href='https://www.youtube.com/results?search_query='+encodeURIComponent(nm+' season highlights '+(D.year||''));
-        w.lastChild.textContent=' Watch '+nm+' , '+(D.year||'')+' highlights';
+        w.lastChild.textContent=' Watch '+nm+' , '+(D.year||'')+' season';   // "season", not "highlights" , the link is a whole-season compilation, and "highlight" collided with the Chronicle's SIGNATURE MOMENT pill
       };
       _setWatch(D.full||'');
       (function(_d){ vvDisplayNameFor(_d).then(function(nm){
