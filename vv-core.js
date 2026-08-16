@@ -87,6 +87,22 @@
   //    just SHOWS the short code "WNG", matching GK/CB/FB/CDM/CM/CAM/ST. ──
   const POS_DISPLAY = { Winger: 'WNG' };
   function posDisplay(p){ return POS_DISPLAY[p] || p; }
+  /* FULL position names, for PROSE contexts only , currently just the card's Glance sub-line.
+     POS_DISPLAY above stays SHORT and must: it feeds the card-face pill and the dense result
+     rows (rankRowHTML .upos, the compare picker), where "Defensive Midfielder" would break a
+     layout built for three characters.
+     COARSE DEF/MID/FWD/GK ARE INCLUDED DELIBERATELY , 35% of cards have a null position_pool
+     and fall back to the coarse field, so without these a third of Glance lines would read
+     "DEF" beside another card's "Centre Back". "Defender" is the honest label for a card whose
+     pool we do not know: less precise, not abbreviated. UNK and anything unrecognised fall
+     through to posDisplay, so nothing ever renders blank. */
+  const POS_FULL = {
+    GK:'Goalkeeper', CB:'Centre Back', FB:'Full Back',
+    CDM:'Defensive Midfielder', CM:'Central Midfielder', CAM:'Attacking Midfielder',
+    Winger:'Winger', ST:'Striker',
+    DEF:'Defender', MID:'Midfielder', FWD:'Forward'
+  };
+  function posFull(p){ return POS_FULL[p] || posDisplay(p); }
 
   // ── buildCard , canonical Version A, with myclub's hidden-placeholder
   //    empty-tag branch adopted as the standard (keeps grid rows aligned). ──
@@ -2477,7 +2493,7 @@
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, radarFor, confidenceFor, confidenceFields, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
