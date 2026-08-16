@@ -657,7 +657,13 @@
     return c != null ? c : null;                   // no floor -> tag unreachable, never a free pass
   }
   /* ── RARITY FLOORS (2026-08-14) ──────────────────────────────────────────────────────────
-     Target band for the platform: 1.0-2.0% of all cards per tag. Set AFTER the eligibility fix
+     CEILING for the platform: no tag over roughly 2.0% of all cards. IT IS A CEILING, NOT A
+     TARGET, AND THERE IS NO FLOOR (corrected 2026-08-16). This pass tuned the tags that were
+     OVER it; it never tried to lift anything UP to it. Maestro 0.67%, The Winger 0.52%, Poacher
+     0.47% and Ball-Playing CB 0.36% sit below and are CORRECT there , each names one position
+     doing one recognisable thing, so rarity follows the archetype. Loosening them to reach 1%
+     would admit players who are not that thing, which is the error the identity-vs-ability fix
+     removed. DO NOT AUDIT FOR UNDER-BAND TAGS. Set AFTER the eligibility fix
      (04d127d), because that alone moved Engine Room, Regista and Maestro into band without a
      single threshold changing , tuning before it would have been tuning twice.
 
@@ -697,8 +703,8 @@
                                        // window was one step wide. The floor is not brittle.
   const MIN_MINUTES_COMPLETE   = 1500; // 2.60% -> 1.77%. "Elite at both ends" over 900 minutes
                                        // was half a season; Complete is a whole-season claim.
-  /* IRON MAN IS A DELIBERATE EXCEPTION TO THE 1.0-2.0% BAND , DO NOT "FIX" IT BACK.
-     x1.15 lands it at 1.71%, inside band, and was REJECTED. Availability is structurally common
+  /* IRON MAN IS A DELIBERATE EXCEPTION TO THE ~2% CEILING , DO NOT "FIX" IT BACK.
+     x1.15 lands it at 1.71%, under the ceiling, and was REJECTED. Availability is structurally common
      in a way no other tag's signal is: the tag means "played every week", and a season-long
      ever-present is simply not a rare event. Forcing it into band stripped the LAST tag from
      84 elite cards (rt>=85) , Rashford 2223, Mane 2122, Bowen 2122 and 2324, Gordon 2324 , 45 of
@@ -918,7 +924,9 @@
 
     // Regista , high pass VOLUME + ACCURACY (Granular, compound)
     // RE-TUNE 2026-08-16, forced by the identity fix above: restricting Regista to CM/CDM removed
-    // 656 defender holders and left it at 418 (0.73%), below the 1.0-2.0% band. SINGLE LEVER , the
+    // 656 defender holders and left it at 418 (0.73%). Regista is an ABILITY-shaped rule on an
+    // identity-gated pool, not a narrow archetype, so unlike the four tags that sit below the band
+    // by design it was worth re-tuning. SINGLE LEVER , the
     // VOLUME multiplier drops 0.87 -> 0.75 and the ACCURACY multiplier is UNTOUCHED at 0.97, so the
     // quality bar the tag was designed with still holds and only the reach on its own defining axis
     // widens. Both p80 references are per-pool, so 0.75 still means high volume FOR A DEEP MIDFIELDER.
