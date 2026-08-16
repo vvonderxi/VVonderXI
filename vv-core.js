@@ -748,6 +748,28 @@
     // POSITION-IDENTITY tag, NOT an ability tag , an attacking FB is a full-back, not a winger
     // (mirrors the engine: his output is credited, but he is scored WITHIN the FB pool, never
     // reclassified wide). So FBs are excluded from winger; wingers keep their own tag.
+    //
+    // IDENTITY vs ABILITY , GENERALISED 2026-08-16. The rule above was written for ONE tag and
+    // never applied to the other four that share its shape, so each of them contradicted its own
+    // stated meaning:
+    //   Regista       "dictates tempo from deep"      , 656 of 1,118 holders (58.7%) were
+    //                 DEFENDERS (CB 439, FB 217) via fam==='DEF', and 161 of those CBs already
+    //                 held Ball-Playing CB, which is the tag that actually describes them.
+    //   Maestro       "conductor of a team's attack"  , EXCLUDED CAM, the one position the
+    //                 sentence names, because POOL_FAMILY.CAM is 'FWD' and the gate read 'MID'.
+    //   The Winger / Poacher / Ball-Playing CB        , admitted null-pool cards on the coarse
+    //                 field alone (52 / 37 / 14).
+    // THE DISTINCTION: an ABILITY tag describes a quality anyone in range can show, so a family
+    // gate is right for it (The Wall, Destroyer, Ball Hawk keep theirs, and Engine Room stays
+    // MID , "the relentless heartbeat of midfield" is a central-workload claim, not a position).
+    // An IDENTITY tag names a POSITION, so it must gate on position_pool DIRECTLY.
+    // AND NULL POOL NEVER EARNS AN IDENTITY TAG , this is the "under-tag rather than mis-tag"
+    // principle already stated on theWall/ballHawk below, applied consistently: a card with no
+    // verified position cannot be said to occupy one. DO NOT re-add a coarse fallback to any
+    // identity tag , the coarse field is exactly what cannot distinguish ST from Winger, or
+    // CB from FB.
+    // Deliberate consequence: CAM is NOT reclassified to MID. It stays in the FWD family, which
+    // is correct for the goal thresholds; only the identity gates read the pool.
     return {
       // Attacker tags
       // CB and FB EXCLUDED BY POOL (2026-08-13), not just by coarse family. They reached this tag
@@ -758,12 +780,12 @@
       goalMachine: (fam === 'FWD' || fam === 'MID') && pool !== 'CB' && pool !== 'FB',
       clinical:    fam === 'FWD' || fam === 'MID',
       provider:    fam !== 'GK',                             // any outfielder can provide (GK excluded; FB incl.)
-      poacher:     striker || (fam === 'FWD' && !pool),      // strikers (or coarse-FWD fallback)
-      winger:      winger || (fam === 'FWD' && !pool),       // POSITION tag: Winger pool + coarse-FWD fallback (NOT FBs)
+      poacher:     striker,                                 // IDENTITY: ST pool only (was + coarse-FWD null fallback, 37)
+      winger:      winger,                                  // IDENTITY: Winger pool only (was + coarse-FWD null fallback, 52)
       // Midfield tags
       playmaker:   fam === 'MID' || fam === 'FWD' || fb,     // ability tag: + attacking FBs (key-pass creators, TAA-type)
-      maestro:     fam === 'MID',                            // central conductor , kept MID-only
-      deepPlaymaker: fam === 'MID' || fam === 'DEF',         // deep mids + ball-playing CBs + FBs (Regista)
+      maestro:     (p === 'CM' || p === 'CDM' || p === 'CAM'), // IDENTITY: + CAM, the position the tag names
+      deepPlaymaker: (p === 'CM' || p === 'CDM'),            // IDENTITY (Regista): deep MIDS only, never CB/FB
       engineRoom:  fam === 'MID',
       dribbler:    fam === 'MID' || fam === 'FWD' || fb,     // ability tag: + attacking FBs who carry
       // Defender tags , MID only via defensive/central pools (CDM/CM), never CAM;
@@ -771,7 +793,7 @@
       theWall:     fam === 'DEF' || (fam === 'MID' && (pool === 'CDM' || pool === 'CM')),
       destroyer:   fam === 'DEF' || (fam === 'MID' && pool === 'CDM'),
       ballHawk:    fam === 'DEF' || (fam === 'MID' && (pool === 'CDM' || pool === 'CM')),
-      ballPlaying: centreBack || (fam === 'DEF' && !pool),   // CBs (or coarse-DEF fallback)
+      ballPlaying: centreBack,                               // IDENTITY: CB pool only (was + coarse-DEF null fallback, 14)
       // Cross-dimensional
       complete:    fam !== 'GK',
       workhorse:   fam !== 'GK',
@@ -895,7 +917,14 @@
       tags.push({ name: 'Maestro', family: 'MID', tier: 'granular' });
 
     // Regista , high pass VOLUME + ACCURACY (Granular, compound)
-    if (okMin && elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.87) && ge(passAcc, t.passacc_p80 * 0.97))
+    // RE-TUNE 2026-08-16, forced by the identity fix above: restricting Regista to CM/CDM removed
+    // 656 defender holders and left it at 418 (0.73%), below the 1.0-2.0% band. SINGLE LEVER , the
+    // VOLUME multiplier drops 0.87 -> 0.75 and the ACCURACY multiplier is UNTOUCHED at 0.97, so the
+    // quality bar the tag was designed with still holds and only the reach on its own defining axis
+    // widens. Both p80 references are per-pool, so 0.75 still means high volume FOR A DEEP MIDFIELDER.
+    // Rejected: relaxing accuracy instead (0.81/0.93 also lands in band at 586) , it admits a 77%
+    // passer, and "sprays passes across the pitch" is a precision claim as much as a volume one.
+    if (okMin && elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.75) && ge(passAcc, t.passacc_p80 * 0.97))
       tags.push({ name: 'Regista', family: 'MID', tier: 'granular' });
 
     // Engine Room , high pass volume + defensive work (box-to-box) (Granular, compound)
