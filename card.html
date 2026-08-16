@@ -193,7 +193,14 @@
   /* chronicle one-liner above the expanded box */
   .chronicle-one{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:18px;line-height:1.5;color:#2a2620;margin-bottom:16px}
   body.light .chronicle-one{color:#2a2620}
-  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-ink);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
+  /* --gold, NOT --gold-ink. `.layer` sets `--gold-ink:#7e5a10` (the LIGHT-mode dark gold) for
+     BOTH themes, which is correct for every other consumer inside the layer , .nm, .darkbox .m
+     and .tagrow all sit on the cream ground and measure 5.24:1. This pill is the ONE element in
+     there with a DARK background, so it was inheriting a light-mode ink onto near-black:
+     2.40:1 at the gradient top, 2.85:1 at the bottom, against a 4.5 requirement (9.5px is below
+     the large-text cutoff, so 3:1 does not apply). --gold gives 8.16:1 / 9.65:1.
+     Reading var(--gold) instead of var(--gold-ink) is what takes it out of that override. */
+  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
   #chronicleLayer .chronicle-one{text-align:center}
   #chronicleLayer .narrative .np{text-align:center}
   #chronicleLayer .narrative .nm{text-align:center}
@@ -1306,7 +1313,7 @@
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
     renderPanels(D);                         // CARD CORE VISIBLE on ONE round-trip (score/stats/tags/radar/proof)
-    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
+    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
     loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
     var targetD=D;   // honours fill in WITHOUT blocking the core; guard against a season-switch landing first
     // renderHero re-run too: the card FACE pills come from d.honours.all (buildCard), so the face needs
@@ -1421,7 +1428,7 @@
     var _sp=document.getElementById('seasonPanel');
     if(_sp){ _sp.innerHTML=seasonRowsHTML(); }   // rebuild rows with the new active season highlighted
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
-    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.player_name, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
+    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
   document.addEventListener('click', function(e){
     var inYr = e.target.closest && e.target.closest('#heroCard .yr');
@@ -1456,7 +1463,7 @@ function vvJoin(){
    the section hides itself automatically. This is what makes it scale. */
 var SIGNATURE_MOMENTS = {
   "lukasz-teodorczyk-1617": {
-    scoreline: "Charleroi 1-3 Anderlecht", date: "18 May 2017", comp: "Jupiler Pro League",
+    scoreline: "Charleroi 1-3 Anderlecht", date: "18 May 2017", comp: "Jupiler Pro League", opponent: "Charleroi",
     quote: "Two strikes from the Polish poacher, and after three long years the purple half of Brussels had its crown again.",
     narrative: [
       "Brugge had bossed the autumn, but Anderlecht surged in the spring, and on the decisive night they would not be denied.",
@@ -1465,7 +1472,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "hans-vanaken-2122": {
-    scoreline: "Antwerp 1-3 Club Brugge", date: "May 2022", comp: "Jupiler Pro League",
+    scoreline: "Antwerp 1-3 Club Brugge", date: "May 2022", comp: "Jupiler Pro League", opponent: "Antwerp",
     quote: "A penalty from the captain, then control, as Brugge ran down the surprise leaders and made it three in a row.",
     narrative: [
       "Union, newly promoted, had led for much of the season and dreamed of a fairytale. Club Brugge had other ideas.",
@@ -1474,7 +1481,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "mario-gomez-1516": {
-    scoreline: "Besiktas 3-1 Osmanlispor", date: "May 2016", comp: "Süper Lig",
+    scoreline: "Besiktas 3-1 Osmanlispor", date: "May 2016", comp: "Süper Lig", opponent: "Osmanlispor",
     quote: "The German came to Istanbul to be reborn, and fired the Black Eagles to a title seven years in waiting.",
     narrative: [
       "Cast adrift at Fiorentina, Mario Gomez arrived on loan with a point to prove and a Germany place to win back.",
@@ -1483,7 +1490,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "moussa-sow-1314": {
-    scoreline: "Fenerbahce 0-0 Caykur Rizespor", date: "27 Apr 2014", comp: "Süper Lig",
+    scoreline: "Fenerbahce 0-0 Caykur Rizespor", date: "27 Apr 2014", comp: "Süper Lig", opponent: "Caykur Rizespor",
     quote: "A goalless night that roared like a victory, as Fenerbahce drew level with history , a nineteenth star, and pride restored.",
     narrative: [
       "These had been turbulent years on the Bosphorus, the club shut out of Europe, the mood heavy. The league was the road back.",
@@ -1492,7 +1499,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "dusan-tadic-1819": {
-    scoreline: "De Graafschap 1-4 Ajax", date: "15 May 2019", comp: "Eredivisie",
+    scoreline: "De Graafschap 1-4 Ajax", date: "15 May 2019", comp: "Eredivisie", opponent: "De Graafschap",
     quote: "A penalty, then a flourish at the last , the talisman of a golden generation, signing off a title with a smile.",
     narrative: [
       "This was the Ajax the world fell back in love with , de Ligt and de Jong, Ziyech and Neres, young and fearless, sweeping through Europe and now home for the title.",
@@ -1501,7 +1508,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "memphis-depay-1415": {
-    scoreline: "PSV 4-1 Heerenveen", date: "18 Apr 2015", comp: "Eredivisie",
+    scoreline: "PSV 4-1 Heerenveen", date: "18 Apr 2015", comp: "Eredivisie", opponent: "Heerenveen",
     quote: "Thirty-five yards, dead centre, and the title was Eindhoven's again , the boy from Moordrecht announcing himself to the world.",
     narrative: [
       "PSV had waited seven long years, watching the title sit elsewhere. Memphis Depay decided the wait was over.",
@@ -1510,7 +1517,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "goncalo-ramos-2223": {
-    scoreline: "Benfica 3-0 Santa Clara", date: "27 May 2023", comp: "Primeira Liga",
+    scoreline: "Benfica 3-0 Santa Clara", date: "27 May 2023", comp: "Primeira Liga", opponent: "Santa Clara",
     quote: "A header in the seventh minute, and four years of waiting began to lift from the Estadio da Luz.",
     narrative: [
       "Four years without a title, watching Porto and Sporting take turns , for Benfica, an eternity. The final day, everything riding on it.",
@@ -1519,7 +1526,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "hulk-1011": {
-    scoreline: "Benfica 1-2 Porto", date: "3 Apr 2011", comp: "Primeira Liga",
+    scoreline: "Benfica 1-2 Porto", date: "3 Apr 2011", comp: "Primeira Liga", opponent: "Benfica",
     quote: "A penalty struck with menace in the lion's den, and an unbeaten season had its crown.",
     narrative: [
       "Villas-Boas, just thirty-three, had built something frightening , Hulk and Falcao up front, not a single defeat all season long.",
@@ -1528,7 +1535,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "alessandro-del-piero-1112": {
-    scoreline: "Juventus 3-1 Atalanta", date: "13 May 2012", comp: "Serie A",
+    scoreline: "Juventus 3-1 Atalanta", date: "13 May 2012", comp: "Serie A", opponent: "Atalanta",
     quote: "His two hundred and ninetieth and final goal, and then a lap of a weeping stadium , the perfect farewell for the prince of Turin.",
     narrative: [
       "Nineteen years, seven hundred matches, a club's whole identity wrapped around one number ten. And now, on the final day, the last time.",
@@ -1537,7 +1544,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "romelu-lukaku-2021": {
-    scoreline: "Inter 3-0 AC Milan", date: "21 Feb 2021", comp: "Serie A",
+    scoreline: "Inter 3-0 AC Milan", date: "21 Feb 2021", comp: "Serie A", opponent: "AC Milan",
     quote: "A turn, a surge, and a strike in the derby , the goal of a season that finally tore the crown from Juventus.",
     narrative: [
       "For nine long years the Scudetto had belonged to Juventus, and no one in Italy could loosen their grip.",
@@ -1546,7 +1553,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "olivier-giroud-2122": {
-    scoreline: "Inter 1-2 AC Milan", date: "5 Feb 2022", comp: "Serie A",
+    scoreline: "Inter 1-2 AC Milan", date: "5 Feb 2022", comp: "Serie A", opponent: "Inter",
     quote: "Two goals in three second-half minutes, a derby turned on its head, and a title race blown wide open.",
     narrative: [
       "A goal down and second best for an hour, Milan's title hopes were fading against their greatest rivals.",
@@ -1555,7 +1562,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "robin-van-persie-1112": {
-    scoreline: "Chelsea 3-5 Arsenal", date: "29 Oct 2011", comp: "Premier League",
+    scoreline: "Chelsea 3-5 Arsenal", date: "29 Oct 2011", comp: "Premier League", opponent: "Chelsea",
     quote: "Three times at Stamford Bridge, the last two in the dying minutes, as the captain dragged Arsenal back from the dead twice over.",
     narrative: [
       "Arsenal arrived at Stamford Bridge bruised , hammered eight-two at United weeks earlier, doubts everywhere. Twice they fell behind, and twice it looked beyond them.",
@@ -1563,8 +1570,12 @@ var SIGNATURE_MOMENTS = {
       "A hat-trick, a 5-3 win, his 28th goal in 27 games that calendar year. The captain was carrying Arsenal, and he was carrying them alone."
     ]
   },
+  /* UNREACHABLE , Kuyt has NO season rows in the database, so no card can ever resolve
+     this key. He is one of the §C SOURCE-ABSENT legends (absent from API-Football's
+     season-stats linkage entirely; no re-ingest recovers him). The content is KEPT, not
+     deleted, so it is ready if that data ever arrives , do not rewrite it as missing. */
   "dirk-kuyt-1617": {
-    scoreline: "Feyenoord 3-1 Heracles", date: "14 May 2017", comp: "Eredivisie",
+    scoreline: "Feyenoord 3-1 Heracles", date: "14 May 2017", comp: "Eredivisie", opponent: "Heracles",
     quote: "Eighteen years of waiting, and the old warrior settled it himself , a hat-trick on the final day, in the very last match he would ever play.",
     narrative: [
       "Feyenoord had not been champions since 1999. Rotterdam ached for it, and on the final day only a win would do, with Ajax breathing down their necks.",
@@ -1573,7 +1584,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "paulinho-2021": {
-    scoreline: "Sporting 1-0 Boavista", date: "11 May 2021", comp: "Primeira Liga",
+    scoreline: "Sporting 1-0 Boavista", date: "11 May 2021", comp: "Primeira Liga", opponent: "Boavista",
     quote: "One goal, the only goal, and nineteen years of Sporting heartache lifted at last into the Lisbon night.",
     narrative: [
       "Sporting had not been champions of Portugal since 2002. Nineteen years of watching Porto and Benfica share the spoils, of getting close and falling away.",
@@ -1582,7 +1593,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "paul-onuachu-2021": {
-    scoreline: "Genk 4-2 Antwerp", date: "6 Dec 2020", comp: "Jupiler Pro League",
+    scoreline: "Genk 4-2 Antwerp", date: "6 Dec 2020", comp: "Jupiler Pro League", opponent: "Antwerp",
     quote: "Two more for the towering Nigerian, on his way to a season Belgium had not seen in a generation.",
     narrative: [
       "At two metres tall, Paul Onuachu was impossible to miss , and in 2020-21, impossible to stop.",
@@ -1591,7 +1602,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "mauro-icardi-2223": {
-    scoreline: "Ankaragucu 1-4 Galatasaray", date: "30 May 2023", comp: "Süper Lig",
+    scoreline: "Ankaragucu 1-4 Galatasaray", date: "30 May 2023", comp: "Süper Lig", opponent: "Ankaragucu",
     quote: "A year after their darkest finish, the Argentine struck twice to drag Galatasaray back to the summit of Turkey.",
     narrative: [
       "The season before, Galatasaray had finished thirteenth , the worst in their proud history, a humiliation for Istanbul's grandest club.",
@@ -1600,7 +1611,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "victor-osimhen-2223": {
-    scoreline: "Udinese 1-1 Napoli", date: "4 May 2023", comp: "Serie A",
+    scoreline: "Udinese 1-1 Napoli", date: "4 May 2023", comp: "Serie A", opponent: "Udinese",
     quote: "One swing of his boot in Udine, and thirty-three years of Neapolitan longing came pouring out into the night.",
     narrative: [
       "Naples had waited since Maradona. Two titles in the eighties, and then three decades of ache, of near-misses and false dawns, of a city that never stopped believing.",
@@ -1609,7 +1620,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "erling-haaland-1920": {
-    scoreline: "Augsburg 3-5 Dortmund", date: "18 Jan 2020", comp: "Bundesliga",
+    scoreline: "Augsburg 3-5 Dortmund", date: "18 Jan 2020", comp: "Bundesliga", opponent: "Augsburg",
     quote: "Three goals in twenty minutes off the bench, a teenager announcing himself to Germany in the only language that matters.",
     narrative: [
       "Dortmund were three-one down and drifting when Lucien Favre turned to his nineteen-year-old new signing from Salzburg.",
@@ -1618,7 +1629,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "edinson-cavani-1718": {
-    scoreline: "PSG 4-0 Montpellier", date: "27 Jan 2018", comp: "Ligue 1",
+    scoreline: "PSG 4-0 Montpellier", date: "27 Jan 2018", comp: "Ligue 1", opponent: "Montpellier",
     quote: "One more poacher's finish at the Parc des Princes, and El Matador stood alone as the greatest scorer in the history of Paris.",
     narrative: [
       "He had arrived in the shadow of Zlatan, shunted to the wing, doubted at every turn. Yet quietly, relentlessly, Edinson Cavani kept scoring.",
@@ -1627,7 +1638,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "luis-suarez-2021": {
-    scoreline: "Valladolid 1-2 Atletico", date: "22 May 2021", comp: "La Liga",
+    scoreline: "Valladolid 1-2 Atletico", date: "22 May 2021", comp: "La Liga", opponent: "Valladolid",
     quote: "Cast aside by Barcelona, he turned and scored the goal that won Atletico the title , and then he wept.",
     narrative: [
       "Barcelona had decided he was finished and ushered him out for nothing. Atletico simply asked him to win them the league.",
@@ -1636,7 +1647,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "eden-hazard-1415": {
-    scoreline: "Chelsea 1-0 Crystal Palace", date: "3 May 2015", comp: "Premier League",
+    scoreline: "Chelsea 1-0 Crystal Palace", date: "3 May 2015", comp: "Premier League", opponent: "Crystal Palace",
     quote: "He missed from the spot, then made amends in a heartbeat, heading in his own rebound to deliver Chelsea the title they had chased all year.",
     narrative: [
       "Stamford Bridge had waited for this , three points from a first title in five years, the tension thick as the clear chances stayed scarce.",
@@ -1645,7 +1656,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "jamie-vardy-1516": {
-    scoreline: "Leicester 1-1 Man Utd", date: "28 Nov 2015", comp: "Premier League",
+    scoreline: "Leicester 1-1 Man Utd", date: "28 Nov 2015", comp: "Premier League", opponent: "Man Utd",
     quote: "Schmeichel to Fuchs to Vardy, a counter in a single heartbeat, and an eleventh goal in eleven games to rewrite the record books.",
     narrative: [
       "Leicester were the story nobody believed, and at their heart was a striker who simply would not stop scoring.",
@@ -1653,26 +1664,8 @@ var SIGNATURE_MOMENTS = {
       "The fairytale rolled on. By May the 5000-1 outsiders were champions of England, and this record run had been its unforgettable overture."
     ]
   },
-  "son-heung-min-2122": {
-    scoreline: "Norwich 0-5 Tottenham", date: "22 May 2022", comp: "Premier League",
-    quote: "Two goals in the second half at Carrow Road, the last curled from twenty-five yards, and a Golden Boot won without a single penalty.",
-    narrative: [
-      "Salah was already clear on twenty-three. Son needed two, and for an hour the chances came and went, the frustration mounting.",
-      "Then it clicked. A clinical first, and then a sweeping strike from distance into the corner , twenty-two and twenty-three, level at the very summit.",
-      "He became the first Asian player to win the Premier League's Golden Boot, every one of his goals from open play. A landmark, earned the hard way."
-    ]
-  },
-  "kevin-de-bruyne-1920": {
-    scoreline: "Man City 5-0 Norwich", date: "26 Jul 2020", comp: "Premier League",
-    quote: "On the final day, one more incisive pass slid through for Sterling , a twentieth assist, and a record that had belonged to Henry alone for seventeen years.",
-    narrative: [
-      "For nearly two decades Thierry Henry's twenty assists had stood untouched, a number that spoke of a striker's eye inside a midfielder's game.",
-      "Then, in the last match of the season, De Bruyne threaded one final pass into Sterling's path , his twentieth of the campaign, drawing level with the great Frenchman.",
-      "He struck twice himself for good measure and was named Player of the Season. The assist king had his record, and his reward."
-    ]
-  },
   "robin-van-persie-1213": {
-    scoreline: "Man Utd 3-0 Aston Villa", date: "22 Apr 2013", comp: "Premier League",
+    scoreline: "Man Utd 3-0 Aston Villa", date: "22 Apr 2013", comp: "Premier League", opponent: "Aston Villa",
     quote: "A long ball dropping out of the Manchester night, and on the half-volley he struck the title clean into the corner.",
     narrative: [
       "Twelve months on from the cruelty of Aguero, United had built a lead that could not be caught. All that remained was the coronation.",
@@ -1680,8 +1673,12 @@ var SIGNATURE_MOMENTS = {
       "It was the heart of a hat-trick, the strike that sealed a 20th title, and the perfect parting gift in the manager's final season."
     ]
   },
+  /* UNREACHABLE , Kompany has NO season rows in the database, so no card can ever resolve
+     this key. He is one of the §C SOURCE-ABSENT legends (absent from API-Football's
+     season-stats linkage entirely; no re-ingest recovers him). The content is KEPT, not
+     deleted, so it is ready if that data ever arrives , do not rewrite it as missing. */
   "vincent-kompany-1819": {
-    scoreline: "Man City 1-0 Leicester", date: "6 May 2019", comp: "Premier League",
+    scoreline: "Man City 1-0 Leicester", date: "6 May 2019", comp: "Premier League", opponent: "Leicester",
     quote: "Everyone screamed at him not to shoot. From twenty-five yards, the captain shot anyway , and won a title.",
     narrative: [
       "The Etihad was tight with nerves. Goalless against a stubborn Leicester, the title swinging back toward Liverpool with every minute that passed.",
@@ -1689,8 +1686,12 @@ var SIGNATURE_MOMENTS = {
       "City went back to the summit and never came down. A defender's defender had settled a title with a striker's dream."
     ]
   },
+  /* UNREACHABLE , Rooney has NO season rows in the database, so no card can ever resolve
+     this key. He is one of the §C SOURCE-ABSENT legends (absent from API-Football's
+     season-stats linkage entirely; no re-ingest recovers him). The content is KEPT, not
+     deleted, so it is ready if that data ever arrives , do not rewrite it as missing. */
   "wayne-rooney-1011": {
-    scoreline: "Man Utd 2-1 Man City", date: "12 Feb 2011", comp: "Premier League",
+    scoreline: "Man Utd 2-1 Man City", date: "12 Feb 2011", comp: "Premier League", opponent: "Man City",
     quote: "The derby level, the title in the balance, and he hung in the Old Trafford air to hook the goal of his life over his own shoulder.",
     narrative: [
       "City were rising, the balance of the city beginning to shift, and the derby sat poised at one apiece with everything still to play for.",
@@ -1699,7 +1700,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "sergio-aguero-1112": {
-    scoreline: "Man City 3-2 QPR", date: "13 May 2012", comp: "Premier League",
+    scoreline: "Man City 3-2 QPR", date: "13 May 2012", comp: "Premier League", opponent: "QPR",
     quote: "Ninety-three minutes and twenty seconds, the title drifting to United, and then one touch, one swing, and a roar that has never quite stopped.",
     narrative: [
       "City had waited forty-four years. Now, in the final breath of the final day, it was slipping away , two-one down to ten-man QPR, the crown drifting across the city to Old Trafford.",
@@ -1708,7 +1709,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "bruno-fernandes-2324": {
-    scoreline: "Man Utd 2-2 Liverpool", date: "7 Apr 2024", comp: "Premier League",
+    scoreline: "Man Utd 2-2 Liverpool", date: "7 Apr 2024", comp: "Premier League", opponent: "Liverpool",
     quote: "From inside his own half, with the audacity of a man who feared nothing, the captain looked up and chipped a dream into the Old Trafford sky.",
     narrative: [
       "Old Trafford was wounded. A goal down to the oldest enemy, the doubts swirling, a season threatening to curdle into something forgettable.",
@@ -1717,7 +1718,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "lionel-messi-1617": {
-    scoreline: "Real Madrid 2-3 Barcelona", date: "23 Apr 2017", comp: "La Liga",
+    scoreline: "Real Madrid 2-3 Barcelona", date: "23 Apr 2017", comp: "La Liga", opponent: "Real Madrid",
     quote: "With the Clasico tied and the clock dead, he scored his five-hundredth goal, then held his shirt aloft to a silenced Bernabeu.",
     narrative: [
       "The Bernabeu braced for a draw, the Clasico balanced on a knife's edge deep into stoppage time.",
@@ -1725,7 +1726,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "lionel-messi-1415": {
-    scoreline: "Barcelona 5-1 Sevilla", date: "22 Nov 2014", comp: "La Liga",
+    scoreline: "Barcelona 5-1 Sevilla", date: "22 Nov 2014", comp: "La Liga", opponent: "Sevilla",
     quote: "A curling free-kick to draw level with history, then two more to leave it behind.",
     narrative: [
       "For nearly sixty years Telmo Zarra's record had stood like a monument, untouchable, immovable.",
@@ -1734,7 +1735,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "cristiano-ronaldo-1415": {
-    scoreline: "Real Madrid 9-1 Granada", date: "5 Apr 2015", comp: "La Liga",
+    scoreline: "Real Madrid 9-1 Granada", date: "5 Apr 2015", comp: "La Liga", opponent: "Granada",
     quote: "Five times he found the net, and the fastest hat-trick of a peerless career came in a single eight-minute storm.",
     narrative: [
       "Granada came to the Bernabeu and were swallowed whole.",
@@ -1743,7 +1744,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "robert-lewandowski-2021": {
-    scoreline: "Bayern Munich 5-2 Augsburg", date: "22 May 2021", comp: "Bundesliga",
+    scoreline: "Bayern Munich 5-2 Augsburg", date: "22 May 2021", comp: "Bundesliga", opponent: "Augsburg",
     quote: "The last kick of the season, the 41st goal of a relentless year, and a record half a century old finally fell.",
     narrative: [
       "For forty-nine years Gerd Muller's 40 stood as Bundesliga gospel, the number no striker could reach.",
@@ -1752,7 +1753,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "luis-suarez-1516": {
-    scoreline: "Granada 0-3 Barcelona", date: "14 May 2016", comp: "La Liga",
+    scoreline: "Granada 0-3 Barcelona", date: "14 May 2016", comp: "La Liga", opponent: "Granada",
     quote: "On the final afternoon, with the title in the balance, the Uruguayan answered the only way he knew , three times.",
     narrative: [
       "It came down to the last day, Madrid one point behind, the championship hanging by a thread.",
@@ -1761,7 +1762,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "erling-haaland-2223": {
-    scoreline: "Manchester City 3-0 West Ham", date: "3 May 2023", comp: "Premier League",
+    scoreline: "Manchester City 3-0 West Ham", date: "3 May 2023", comp: "Premier League", opponent: "West Ham",
     quote: "Thirty-five goals in a single season, a record twenty-eight years old, broken by a debutant with games to spare.",
     narrative: [
       "Cole and Shearer set the mark in the league's infancy, across forty-two games. For twenty-eight years it held.",
@@ -1770,7 +1771,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "kylian-mbappe-1819": {
-    scoreline: "Paris Saint Germain 5-0 Lyon", date: "7 Oct 2018", comp: "Ligue 1",
+    scoreline: "Paris Saint Germain 5-0 Lyon", date: "7 Oct 2018", comp: "Ligue 1", opponent: "Lyon",
     quote: "Nineteen years old, four goals in thirteen minutes, and Lyon's defence simply dissolved before him.",
     narrative: [
       "For an hour it was a contest. Then Mbappe decided it was not.",
@@ -1779,7 +1780,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "jude-bellingham-2324": {
-    scoreline: "Barcelona 1-2 Real Madrid", date: "28 Oct 2023", comp: "La Liga",
+    scoreline: "Barcelona 1-2 Real Madrid", date: "28 Oct 2023", comp: "La Liga", opponent: "Barcelona",
     quote: "On his first Clasico, the boy in white did not flinch. Twice he struck, the last in the dying breath.",
     narrative: [
       "He had arrived as a promise. By the final whistle of his first Clasico, he was a certainty.",
@@ -1788,7 +1789,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "lionel-messi-1112": {
-    scoreline: "Barcelona 5-3 Granada", date: "20 Mar 2012", comp: "La Liga",
+    scoreline: "Barcelona 5-3 Granada", date: "20 Mar 2012", comp: "La Liga", opponent: "Granada",
     quote: "A lobbed finish to pass Cesar, and a record sixty years old belonged to a boy of twenty-four.",
     narrative: [
       "Cesar Rodriguez had been Barcelona's greatest scorer since the 1950s, 232 goals, a number that felt eternal.",
@@ -1797,7 +1798,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "cristiano-ronaldo-1112": {
-    scoreline: "Barcelona 1-2 Real Madrid", date: "21 Apr 2012", comp: "La Liga",
+    scoreline: "Barcelona 1-2 Real Madrid", date: "21 Apr 2012", comp: "La Liga", opponent: "Barcelona",
     quote: "Into the lion's den, around Valdes, and the title was all but won. Then, to a silenced Camp Nou, the famous gesture , calma.",
     narrative: [
       "Madrid arrived at the Camp Nou with the title in their grasp and Barcelona desperate to wrench it back.",
@@ -1806,7 +1807,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "zlatan-ibrahimovic-1516": {
-    scoreline: "Paris Saint Germain 4-0 Nantes", date: "14 May 2016", comp: "Ligue 1",
+    scoreline: "Paris Saint Germain 4-0 Nantes", date: "14 May 2016", comp: "Ligue 1", opponent: "Nantes",
     quote: "On his last night at the Parc des Princes, the king signed off with two more, and a Ligue 1 record that had stood since 1978.",
     narrative: [
       "In the tenth minute the referee stopped the game so a city could say goodbye. Zlatan Ibrahimovic was leaving, and Paris would not see his kind again.",
@@ -1815,7 +1816,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "ciro-immobile-1920": {
-    scoreline: "Napoli 3-1 Lazio", date: "1 Aug 2020", comp: "Serie A",
+    scoreline: "Napoli 3-1 Lazio", date: "1 Aug 2020", comp: "Serie A", opponent: "Napoli",
     quote: "Thirty-six goals in a single Serie A season, a number only Higuain had ever reached. On the final day, Ciro Immobile joined him in history.",
     narrative: [
       "It had been the season of his life, a Lazio talisman scoring at a rate Italy had not seen in years.",
@@ -1824,7 +1825,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "kevin-de-bruyne-1920": {
-    scoreline: "Manchester City 5-0 Norwich City", date: "26 Jul 2020", comp: "Premier League",
+    scoreline: "Manchester City 5-0 Norwich City", date: "26 Jul 2020", comp: "Premier League", opponent: "Norwich City",
     quote: "One last pass on the final day, a twentieth assist, and Kevin De Bruyne drew level with Thierry Henry at the very summit of the art.",
     narrative: [
       "For seventeen years Thierry Henry's twenty assists in a season had stood as the Premier League's gold standard for a creator.",
@@ -1833,7 +1834,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "harry-kane-2324": {
-    scoreline: "Bayern Munich 8-0 Darmstadt", date: "28 Oct 2023", comp: "Bundesliga",
+    scoreline: "Bayern Munich 8-0 Darmstadt", date: "28 Oct 2023", comp: "Bundesliga", opponent: "Darmstadt",
     quote: "From inside his own half he looked up, and let fly. The ball dropped under the bar, and a new Bundesliga life announced itself.",
     narrative: [
       "On a chaotic afternoon of three first-half red cards, the floodgates opened after the break.",
@@ -1842,7 +1843,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "mohamed-salah-2425": {
-    scoreline: "Liverpool 5-1 Tottenham", date: "27 Apr 2025", comp: "Premier League",
+    scoreline: "Liverpool 5-1 Tottenham", date: "27 Apr 2025", comp: "Premier League", opponent: "Tottenham",
     quote: "On the day Anfield reclaimed its throne, the King cut inside, scored, and turned to the Kop for a selfie.",
     narrative: [
       "Liverpool needed a single point. They took all three, and the title, in a 5-1 storm against Tottenham.",
@@ -1851,7 +1852,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "riyad-mahrez-1516": {
-    scoreline: "Manchester City 1-3 Leicester City", date: "6 Feb 2016", comp: "Premier League",
+    scoreline: "Manchester City 1-3 Leicester City", date: "6 Feb 2016", comp: "Premier League", opponent: "Manchester City",
     quote: "A flick, a turn, a finish at the Etihad, and the impossible began to look real. Leicester were no longer a fairytale. They were contenders.",
     narrative: [
       "They had gone to the home of a giant to test whether the dream could survive.",
@@ -1860,7 +1861,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "cristiano-ronaldo-1011": {
-    scoreline: "Real Madrid 8-1 Almeria", date: "21 May 2011", comp: "La Liga",
+    scoreline: "Real Madrid 8-1 Almeria", date: "21 May 2011", comp: "La Liga", opponent: "Almeria",
     quote: "Two goals on the final day, and a number no one had ever reached. Forty in a single La Liga season, the record his alone.",
     narrative: [
       "Zarra and Hugo Sanchez had shared the La Liga benchmark of 38, a mark untouched for decades.",
@@ -1869,7 +1870,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "robert-lewandowski-1516": {
-    scoreline: "Bayern Munich 5-1 Wolfsburg", date: "22 Sep 2015", comp: "Bundesliga",
+    scoreline: "Bayern Munich 5-1 Wolfsburg", date: "22 Sep 2015", comp: "Bundesliga", opponent: "Wolfsburg",
     quote: "Bayern were losing when he came off the bench. Nine minutes later he had scored five, and rewritten the record books four times over.",
     narrative: [
       "Half-time, a goal down to Wolfsburg, and Pep Guardiola sent on Robert Lewandowski.",
@@ -1878,7 +1879,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "mohamed-salah-1718": {
-    scoreline: "Liverpool 4-0 Brighton", date: "13 May 2018", comp: "Premier League",
+    scoreline: "Liverpool 4-0 Brighton", date: "13 May 2018", comp: "Premier League", opponent: "Brighton",
     quote: "His 32nd of the season, on the final day, and a record that had stood since the league shrank to 38 games fell to the Egyptian King.",
     narrative: [
       "Shearer, Ronaldo and Suarez had each managed 31 in a 38-game Premier League season. None had gone further.",
@@ -1887,7 +1888,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "gonzalo-higuain-1516": {
-    scoreline: "Napoli 4-0 Frosinone", date: "14 May 2016", comp: "Serie A",
+    scoreline: "Napoli 4-0 Frosinone", date: "14 May 2016", comp: "Serie A", opponent: "Frosinone",
     quote: "A bicycle kick on the final day, his 36th of the season, and a Serie A record that had stood for sixty-six years was gone.",
     narrative: [
       "Gunnar Nordahl's 35 goals had been Serie A's gold standard since 1950, a number no one had touched.",
@@ -1896,7 +1897,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "luis-suarez-1314": {
-    scoreline: "Liverpool 5-1 Norwich City", date: "4 Dec 2013", comp: "Premier League",
+    scoreline: "Liverpool 5-1 Norwich City", date: "4 Dec 2013", comp: "Premier League", opponent: "Norwich City",
     quote: "Four goals, each more outrageous than the last , a 40-yard lob, a flick and finish, a free kick. One man, one night, his own Goal of the Season collection.",
     narrative: [
       "Norwich had become Suarez's favourite victims, but this was something else entirely.",
@@ -1905,7 +1906,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "harry-kane-1617": {
-    scoreline: "Hull City 1-7 Tottenham", date: "21 May 2017", comp: "Premier League",
+    scoreline: "Hull City 1-7 Tottenham", date: "21 May 2017", comp: "Premier League", opponent: "Hull City",
     quote: "Eight goals across two final games, a hat-trick to finish at Hull, and a second Golden Boot in a row for the youngest man to do it since the war.",
     narrative: [
       "Romelu Lukaku had led the race, until Kane scored four at Leicester, then turned to Hull on the final day.",
@@ -1914,7 +1915,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "son-heung-min-2122": {
-    scoreline: "Norwich City 0-5 Tottenham", date: "22 May 2022", comp: "Premier League",
+    scoreline: "Norwich City 0-5 Tottenham", date: "22 May 2022", comp: "Premier League", opponent: "Norwich City",
     quote: "Two goals on the final day, twenty-three for the season, and not one a penalty. The first Asian player to share the Premier League's golden prize.",
     narrative: [
       "He had missed chance after chance, frustrated, the Golden Boot slipping away. Then Son Heung-min remembered who he was.",
@@ -1923,7 +1924,7 @@ var SIGNATURE_MOMENTS = {
     ]
   },
   "kylian-mbappe-2324": {
-    scoreline: "Montpellier 2-6 Paris Saint Germain", date: "17 Mar 2024", comp: "Ligue 1",
+    scoreline: "Montpellier 2-6 Paris Saint Germain", date: "17 Mar 2024", comp: "Ligue 1", opponent: "Montpellier",
     quote: "A hat-trick and an assist in his final season, the departing king reminding Paris exactly what they were about to lose.",
     narrative: [
       "He had already told them he was leaving. Real Madrid waited. These were his last months in Paris.",
@@ -1939,7 +1940,7 @@ var CARD_PLAYER = "__none__"; /* no Chronicle until a real card resolves one (lo
    tolerant of accents, capitalisation, initials and short/long name forms.
    A card can be driven three ways (first match wins):
      1. ?key=lionel-messi-1415          (direct key, used by the data layer)
-     2. ?p=L.%20Messi&s=1415            (name + season from a DB row)
+     2. ?p=lionel-messi&s=1415          (key slug + season , NOT a display name)
    No params -> CARD_PLAYER stays "__none__" and no Chronicle renders (the bare
    URL is a demo card, not a specific player's story).
    Any player-season with no entry simply shows no Chronicle. */
@@ -1947,65 +1948,82 @@ function vvNorm(s){
   return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
     .toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 }
+/* CHRONICLE_MAP , keyed on api_player_id + season, NOT on display name.
+   WHY (measured 2026-08-16): the old name+season index put THREE Chronicles on the wrong
+   player's card, because a display name is not a key (§C). Confirmed by api_player_id,
+   nationality and date of birth:
+     son-heung-min-2122   api 186    Son Heung-Min, Tottenham, Korea Republic 1992-07-08
+                          ALSO HIT   api 131538 "Son", Levante, SPAIN 1994-03-30
+     luis-suarez-2021     api 157    L. Suarez, Atletico Madrid, Uruguay 1987-01-24
+                          ALSO HIT   api 47237  L. Suarez, Granada CF, COLOMBIA 1997-12-02
+     paulinho-2021        api 41111  Paulinho, Sporting CP  (the narrative names him scoring
+                          AGAINST Boavista, and this is the Sporting card, 3 goals)
+                          ALSO HIT   api 41413 GIL Vicente and api 96353 Boavista , a
+                          different Paulinho on each, including the OPPONENT'S.
+   A Spanish winger at Levante was displaying Son Heung-Min's Golden Boot night.
+
+   THE THREE SOURCE-ABSENT LEGENDS ARE DELIBERATELY ABSENT FROM THIS MAP , Kuyt, Kompany and
+   Rooney have no row in `players` at all, let alone a season row, so there is no id to key
+   them on. Their moments are kept in SIGNATURE_MOMENTS (see the notes there) and simply never
+   resolve, which is exactly what happened before. Do not "fix" this by adding a name fallback:
+   the name fallback is the bug. */
 var CHRONICLE_MAP = [
-  { key:"lukasz-teodorczyk-1617", season:"1617", names:["Lukasz Teodorczyk","Łukasz Teodorczyk","L. Teodorczyk","Teodorczyk"] },
-  { key:"hans-vanaken-2122",       season:"2122", names:["Hans Vanaken","H. Vanaken","Vanaken"] },
-  { key:"mario-gomez-1516",        season:"1516", names:["Mario Gomez","Mario Gómez","M. Gomez","Gomez","Gómez"] },
-  { key:"moussa-sow-1314",         season:"1314", names:["Moussa Sow","M. Sow","Sow"] },
-  { key:"dusan-tadic-1819",   season:"1819", names:["Dusan Tadic","Du\u0161an Tadi\u0107","D. Tadic","Tadic","Tadi\u0107"] },
-  { key:"memphis-depay-1415", season:"1415", names:["Memphis Depay","Memphis","M. Depay","Depay"] },
-  { key:"goncalo-ramos-2223", season:"2223", names:["Goncalo Ramos","Gon\u00e7alo Ramos","G. Ramos","Ramos"] },
-  { key:"hulk-1011",          season:"1011", names:["Hulk"] },
-  { key:"alessandro-del-piero-1112",season:"1112", names:["Alessandro Del Piero","A. Del Piero","Del Piero"] },
-  { key:"romelu-lukaku-2021",       season:"2021", names:["Romelu Lukaku","R. Lukaku","Lukaku"] },
-  { key:"olivier-giroud-2122",      season:"2122", names:["Olivier Giroud","O. Giroud","Giroud"] },
-  { key:"robin-van-persie-1112",    season:"1112", names:["Robin van Persie","R. van Persie","van Persie"] },
-  { key:"dirk-kuyt-1617",           season:"1617", names:["Dirk Kuyt","D. Kuyt","Kuyt"] },
-  { key:"paulinho-2021",            season:"2021", names:["Paulinho"] },
-  { key:"paul-onuachu-2021",        season:"2021", names:["Paul Onuachu","P. Onuachu","Onuachu"] },
-  { key:"mauro-icardi-2223",        season:"2223", names:["Mauro Icardi","M. Icardi","Icardi"] },
-  { key:"victor-osimhen-2223",      season:"2223", names:["Victor Osimhen","V. Osimhen","Osimhen"] },
-  { key:"erling-haaland-1920",      season:"1920", names:["Erling Haaland","E. Haaland","Haaland"] },
-  { key:"edinson-cavani-1718",      season:"1718", names:["Edinson Cavani","E. Cavani","Cavani"] },
-  { key:"luis-suarez-2021",         season:"2021", names:["L. Suarez","Luis Suarez","Suarez"] },
-  { key:"eden-hazard-1415",         season:"1415", names:["Eden Hazard","E. Hazard","Hazard"] },
-  { key:"jamie-vardy-1516",         season:"1516", names:["Jamie Vardy","J. Vardy","Vardy"] },
-  { key:"robin-van-persie-1213",    season:"1213", names:["Robin van Persie","R. van Persie","van Persie"] },
-  { key:"vincent-kompany-1819",     season:"1819", names:["Vincent Kompany","V. Kompany","Kompany"] },
-  { key:"wayne-rooney-1011",        season:"1011", names:["Wayne Rooney","W. Rooney","Rooney"] },
-  { key:"sergio-aguero-1112",       season:"1112", names:["Sergio Aguero","S. Aguero","Aguero","Kun Aguero"] },
-  { key:"lionel-messi-1415",        season:"1415", names:["L. Messi","Lionel Messi","Messi"] },
-  { key:"lionel-messi-1112",        season:"1112", names:["L. Messi","Lionel Messi","Messi"] },
-  { key:"lionel-messi-1617",        season:"1617", names:["L. Messi","Lionel Messi","Messi"] },
-  { key:"cristiano-ronaldo-1011",   season:"1011", names:["Cristiano Ronaldo","C. Ronaldo","Ronaldo"] },
-  { key:"cristiano-ronaldo-1112",   season:"1112", names:["Cristiano Ronaldo","C. Ronaldo","Ronaldo"] },
-  { key:"cristiano-ronaldo-1415",   season:"1415", names:["Cristiano Ronaldo","C. Ronaldo","Ronaldo"] },
-  { key:"robert-lewandowski-2021",  season:"2021", names:["R. Lewandowski","Robert Lewandowski","Lewandowski"] },
-  { key:"robert-lewandowski-1516",  season:"1516", names:["R. Lewandowski","Robert Lewandowski","Lewandowski"] },
-  { key:"luis-suarez-1516",         season:"1516", names:["L. Suarez","Luis Suarez","Suarez"] },
-  { key:"luis-suarez-1314",         season:"1314", names:["L. Suarez","Luis Suarez","Suarez"] },
-  { key:"erling-haaland-2223",      season:"2223", names:["E. Haaland","Erling Haaland","Haaland"] },
-  { key:"kylian-mbappe-1819",       season:"1819", names:["Kylian Mbappe","K. Mbappe","Mbappe"] },
-  { key:"kylian-mbappe-2324",       season:"2324", names:["Kylian Mbappe","K. Mbappe","Mbappe"] },
-  { key:"jude-bellingham-2324",     season:"2324", names:["J. Bellingham","Jude Bellingham","Bellingham"] },
-  { key:"zlatan-ibrahimovic-1516",  season:"1516", names:["Z. Ibrahimovic","Zlatan Ibrahimovic","Ibrahimovic"] },
-  { key:"ciro-immobile-1920",       season:"1920", names:["C. Immobile","Ciro Immobile","Immobile"] },
-  { key:"kevin-de-bruyne-1920",     season:"1920", names:["K. De Bruyne","Kevin De Bruyne","De Bruyne"] },
-  { key:"harry-kane-2324",          season:"2324", names:["H. Kane","Harry Kane","Kane"] },
-  { key:"harry-kane-1617",          season:"1617", names:["H. Kane","Harry Kane","Kane"] },
-  { key:"mohamed-salah-2425",       season:"2425", names:["Mohamed Salah","M. Salah","Salah"] },
-  { key:"mohamed-salah-1718",       season:"1718", names:["Mohamed Salah","M. Salah","Salah"] },
-  { key:"riyad-mahrez-1516",        season:"1516", names:["R. Mahrez","Riyad Mahrez","Mahrez"] },
-  { key:"gonzalo-higuain-1516",     season:"1516", names:["G. Higuain","Gonzalo Higuain","Higuain"] },
-  { key:"son-heung-min-2122",       season:"2122", names:["Son Heung-Min","Son Heung-min","Son"] },
-  { key:"bruno-fernandes-2324",     season:"2324", names:["Bruno Fernandes","B. Fernandes"] }
+  { api:115353, season:"1112", key:"alessandro-del-piero-1112" },
+  { api:1485, season:"2324", key:"bruno-fernandes-2324" },
+  { api:1863, season:"1920", key:"ciro-immobile-1920" },
+  { api:874, season:"1011", key:"cristiano-ronaldo-1011" },
+  { api:874, season:"1112", key:"cristiano-ronaldo-1112" },
+  { api:874, season:"1415", key:"cristiano-ronaldo-1415" },
+  { api:554, season:"1819", key:"dusan-tadic-1819" },
+  { api:2296, season:"1415", key:"eden-hazard-1415" },
+  { api:274, season:"1718", key:"edinson-cavani-1718" },
+  { api:1100, season:"1920", key:"erling-haaland-1920" },
+  { api:1100, season:"2223", key:"erling-haaland-2223" },
+  { api:41585, season:"2223", key:"goncalo-ramos-2223" },
+  { api:2297, season:"1516", key:"gonzalo-higuain-1516" },
+  { api:78, season:"2122", key:"hans-vanaken-2122" },
+  { api:184, season:"1617", key:"harry-kane-1617" },
+  { api:184, season:"2324", key:"harry-kane-2324" },
+  { api:12705, season:"1011", key:"hulk-1011" },
+  { api:18788, season:"1516", key:"jamie-vardy-1516" },
+  { api:129718, season:"2324", key:"jude-bellingham-2324" },
+  { api:629, season:"1920", key:"kevin-de-bruyne-1920" },
+  { api:278, season:"1819", key:"kylian-mbappe-1819" },
+  { api:278, season:"2324", key:"kylian-mbappe-2324" },
+  { api:154, season:"1112", key:"lionel-messi-1112" },
+  { api:154, season:"1415", key:"lionel-messi-1415" },
+  { api:154, season:"1617", key:"lionel-messi-1617" },
+  { api:157, season:"1314", key:"luis-suarez-1314" },
+  { api:157, season:"1516", key:"luis-suarez-1516" },
+  { api:157, season:"2021", key:"luis-suarez-2021" },
+  { api:30817, season:"1617", key:"lukasz-teodorczyk-1617" },
+  { api:26314, season:"1516", key:"mario-gomez-1516" },
+  { api:216, season:"2223", key:"mauro-icardi-2223" },
+  { api:667, season:"1415", key:"memphis-depay-1415" },
+  { api:306, season:"1718", key:"mohamed-salah-1718" },
+  { api:306, season:"2425", key:"mohamed-salah-2425" },
+  { api:61981, season:"1314", key:"moussa-sow-1314" },
+  { api:2295, season:"2122", key:"olivier-giroud-2122" },
+  { api:15812, season:"2021", key:"paul-onuachu-2021" },
+  { api:41111, season:"2021", key:"paulinho-2021" },
+  { api:635, season:"1516", key:"riyad-mahrez-1516" },
+  { api:521, season:"1516", key:"robert-lewandowski-1516" },
+  { api:521, season:"2021", key:"robert-lewandowski-2021" },
+  { api:37162, season:"1112", key:"robin-van-persie-1112" },
+  { api:37162, season:"1213", key:"robin-van-persie-1213" },
+  { api:907, season:"2021", key:"romelu-lukaku-2021" },
+  { api:642, season:"1112", key:"sergio-aguero-1112" },
+  { api:186, season:"2122", key:"son-heung-min-2122" },
+  { api:2780, season:"2223", key:"victor-osimhen-2223" },
+  { api:51070, season:"1516", key:"zlatan-ibrahimovic-1516" },
 ];
 var CHRONICLE_INDEX = {};
-CHRONICLE_MAP.forEach(function(r){
-  r.names.forEach(function(n){ CHRONICLE_INDEX[vvNorm(n) + '|' + r.season] = r.key; });
-});
-function vvResolveChronicleKey(name, season){
-  return CHRONICLE_INDEX[vvNorm(name) + '|' + (season||'')] || null;
+CHRONICLE_MAP.forEach(function(r){ CHRONICLE_INDEX[String(r.api) + '|' + r.season] = r.key; });
+/* Takes api_player_id, never a name. Returns null for anything unrecognised, which is what
+   hides the section. */
+function vvResolveChronicleKey(apiId, season){
+  if(apiId == null) return null;
+  return CHRONICLE_INDEX[String(apiId) + '|' + (season||'')] || null;
 }
 (function(){
   try {
@@ -2013,7 +2031,9 @@ function vvResolveChronicleKey(name, season){
     if(!u.has('key') && !u.has('p')) return;   /* no params -> CARD_PLAYER stays "__none__" (no Chronicle) */
     var direct = u.get('key');
     if(direct){ CARD_PLAYER = SIGNATURE_MOMENTS[direct] ? direct : '__none__'; return; }
-    var k = vvResolveChronicleKey(u.get('p'), u.get('s'));
+    /* ?p= now takes the KEY SLUG (e.g. p=lionel-messi&s=1112), not a display name , the
+       name lookup was removed with the api re-key and must not come back. */
+    var k = SIGNATURE_MOMENTS[u.get('p') + '-' + (u.get('s')||'')] ? (u.get('p') + '-' + (u.get('s')||'')) : null;
     CARD_PLAYER = k || '__none__';             /* real card, no moment -> hides */
   } catch(e){ /* keep default CARD_PLAYER */ }
 })();
