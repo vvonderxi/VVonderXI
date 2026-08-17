@@ -394,7 +394,25 @@
   // ── Confidence dots (Contract §5): 5 granular present, 2 at the wall ──
   const GRANULAR = ['shots_on','passes_key','dribbles_success','passes_total',
                     'tackles_total','interceptions','duels_won'];
+
+  /* GOALKEEPERS GET NO SCORE, AND THAT IS THE HONEST ANSWER, NOT A GAP.
+     Every one of the seven GRANULAR fields describes OUTFIELD play, so scoring a keeper
+     against them measures how much of an outfielder's record a goalkeeper happens to have.
+     Neuer 19/20 scored 4 of 5 under a caption reading "how complete the data behind this
+     card is", which was simply false. A keeper's actual measures — saves, goals conceded,
+     penalties saved, clean sheets — are not on player_card_mv at all, so the front end
+     cannot see them and cannot honestly put a number on the record.
+     So confidenceFor returns NULL for a keeper. Not 0, and not a reduced score: any number
+     is a completeness claim, and the claim cannot be made. Consumers must render an
+     explicit not-yet-measured state instead.
+     WORDING IS DELIBERATE AND INTERIM: "not yet measured", NEVER "cannot be measured".
+     The keeper fields are being backfilled into player_season_cards now; they surface once
+     player_card_mv is rebuilt, at which point this branch should be revisited rather than
+     left to harden into a permanent disclaimer. */
+  function isGK(row){ return (row.position_pool || row.position || '') === 'GK'; }
+
   function confidenceFor(row){
+    if (isGK(row)) return null;                    // see note above: no number for a keeper
     let present = 0;
     for (const f of GRANULAR) if (row[f]!=null) present++;
     const frac = present / GRANULAR.length;       // 0 at the wall, 1 fully granular
@@ -415,6 +433,15 @@
       { label:'Goals',          present: row.goals   != null, group:'basics' },
       { label:'Assists',        present: row.assists != null, group:'basics' }
     ];
+    // A keeper gets the keeper measures, not the outfield ones. Listing "Successful
+    // dribbles , NR" against a goalkeeper is the same false claim as the score was,
+    // just itemised, and Compare builds its "missing:" line straight off this group.
+    if (isGK(row)) {
+      var KEEPER = ['Saves','Goals conceded','Penalties saved','Clean sheets'];
+      return basics.concat(KEEPER.map(function(l){
+        return { label:l, present:false, group:'keeper' };
+      }));
+    }
     var advanced = GRANULAR.map(function(f){
       return { label: LABELS[f] || f, present: row[f] != null, group:'advanced' };
     });
