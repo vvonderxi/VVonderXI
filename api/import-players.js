@@ -58,6 +58,8 @@ const seasonCode = y => `${String(y).slice(2)}${String(y+1).slice(2)}`;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const stats = { calls:0, cards:0, skipped:0, players:0, errors:0, start:Date.now() };
+// Populated from every API response's rate-limit headers. See af().
+const QUOTA = { dayLimit:null, dayRemaining:null, minLimit:null, minRemaining:null };
 function elapsed(){ return Math.round((Date.now()-stats.start)/1000); }
 
 async function af(path, retries = 4) {
@@ -65,6 +67,14 @@ async function af(path, retries = 4) {
     try {
       const res = await fetch(`${BASE}${path}`, { headers:{'x-apisports-key':KEY}, signal:AbortSignal.timeout(15000) });
       stats.calls++;
+      // LIVE quota, straight off the response we already have, so it costs no extra call.
+      // Do NOT read quota from /status instead: that endpoint is served CACHED (measured
+      // 2026-08-17 — it reported 22 used both before and after a 51-page run, while a real
+      // endpoint's headers decremented correctly on every call). These headers are live.
+      QUOTA.dayLimit     = +res.headers.get('x-ratelimit-requests-limit')     || QUOTA.dayLimit;
+      QUOTA.dayRemaining = +res.headers.get('x-ratelimit-requests-remaining') || QUOTA.dayRemaining;
+      QUOTA.minLimit     = +res.headers.get('x-ratelimit-limit')              || QUOTA.minLimit;
+      QUOTA.minRemaining = +res.headers.get('x-ratelimit-remaining')          || QUOTA.minRemaining;
       if (res.status === 429) {
         const wait = (parseInt(res.headers.get('retry-after')) || 60) * 1000;
         console.warn(`  ⏳ 429 rate limit — waiting ${wait/1000}s`); await sleep(wait); continue;
@@ -619,5 +629,5 @@ if (require.main === module) (async () => {
 module.exports = {
   LEAGUES, MIN_MIN, DELAY_MS, seasonCode, sleep,
   af, deriveCeilings, resolveSeasonStat,
-  n, extractNewFields, NEW_FIELDS,
+  n, extractNewFields, NEW_FIELDS, QUOTA,
 };

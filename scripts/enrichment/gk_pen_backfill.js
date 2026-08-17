@@ -67,8 +67,12 @@
 //
 //  DRY RUN IS THE DEFAULT. --write is required to touch anything.
 //  Resumable: Ctrl-C is safe, re-running skips completed league-seasons.
-//  Budget: ~4,300-5,200 calls for the full 2010-2025 pass, inside the 7,500/day PRO
-//  cap in a single day. DELAY_MS 320 bounds the rate at 187/min against a 300 cap.
+//  Budget, MEASURED not estimated: a league-season is ~35 pages for older seasons and
+//  51 for recent ones (PL 2023), so the full 144 league-season pass is ~5,000-7,000
+//  pages, NOT the ~33,000 first assumed. The API is not the bottleneck in a write run:
+//  each page is followed by ~20 individual row updates, so the ~60,000 DB round-trips
+//  dominate and the wall time is ~1.5-2h. Pacing via --delay (default DELAY_MS 320).
+//  Reason on the ZERO-LATENCY ceiling, 60000/DELAY per minute, not the observed rate.
 //  Pre-2015 yields only `starts` (the keeper and penalty fields do not exist there).
 // ══════════════════════════════════════════════════════════════════════
 
@@ -83,7 +87,7 @@ const { createClient } = require('@supabase/supabase-js');
 // Safe to require only because of the ENTRY-POINT GUARD in that file.
 const {
   LEAGUES, MIN_MIN, DELAY_MS, seasonCode, sleep,
-  af, deriveCeilings, resolveSeasonStat, extractNewFields, NEW_FIELDS,
+  af, deriveCeilings, resolveSeasonStat, extractNewFields, NEW_FIELDS, QUOTA,
 } = require('../../api/import-players.js');
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -94,6 +98,21 @@ const ONLY     = args.includes('--league') ? args[args.indexOf('--league') + 1] 
 const FLOOR_YR = args.includes('--from') ? parseInt(args[args.indexOf('--from') + 1]) : 2010;
 const TO_YR    = args.includes('--to')   ? parseInt(args[args.indexOf('--to')   + 1]) : 2025;
 const SNAPSHOT = args.includes('--snapshot') ? args[args.indexOf('--snapshot') + 1] : null;
+// Backfill-only pacing override. The importer's shared DELAY_MS stays at 320; this lets a
+// backfill run faster on a higher-tier key WITHOUT changing pacing for the importer too.
+// Reason on the ZERO-LATENCY ceiling (1000/DELAY per second), not the observed rate: at 240
+// that ceiling is 250/min against ULTRA's 450 cap, so 44% headroom even if the API answered
+// instantly. The docs warn that exceeding the per-minute rate can get the key firewalled
+// WITHOUT NOTICE, and the API is not the bottleneck here anyway — the ~20 row updates that
+// follow each page cost far more than the sleep does. Do not tune this to save minutes.
+const DELAY = args.includes('--delay') ? parseInt(args[args.indexOf('--delay') + 1]) : DELAY_MS;
+// A mistyped --delay yields NaN, and sleep(NaN) resolves IMMEDIATELY, so the run would lose
+// its throttle entirely and hammer the API at full speed — the exact firewall case the
+// pacing exists to prevent, arriving silently and looking merely like a fast run.
+if (!Number.isFinite(DELAY) || DELAY < 100) {
+  console.error(`❌ --delay must be a number >= 100 (got ${JSON.stringify(args[args.indexOf('--delay') + 1])}). Refusing to run unthrottled.`);
+  process.exit(1);
+}
 const STATE_FILE = path.join(__dirname, 'gk_pen_backfill_state.json');
 
 // Never writable by this script. Not a comment, an assertion: see assertPatch().
@@ -105,6 +124,19 @@ const FORBIDDEN = new Set([
 
 const S = { calls:0, resolved:0, updated:0, missed:0, allNull:0, errors:0, start:Date.now() };
 const elapsed = () => Math.round((Date.now() - S.start) / 1000);
+
+// Per-field coverage, so a run reports WHICH fields actually landed rather than just a
+// row count. A row can be "updated" on `starts` alone and look identical in the totals to
+// one that landed all seven, which is precisely the distinction that matters pre-2015.
+const FIELD_STATS = Object.fromEntries(NEW_FIELDS.map(k => [k, { pop:0, nul:0 }]));
+const SAMPLES = { keepers: [], penalties: [] };
+function tally(name, team, s, ext){
+  for (const k of NEW_FIELDS) ext[k] != null ? FIELD_STATS[k].pop++ : FIELD_STATS[k].nul++;
+  const row = { name, team, goals: s.goals?.total ?? null, assists: s.goals?.assists ?? null,
+                minutes: s.games?.minutes ?? null, ...ext };
+  if (ext.saves != null && SAMPLES.keepers.length < 12) SAMPLES.keepers.push(row);
+  if ((ext.penalties_scored || 0) > 0 && SAMPLES.penalties.length < 12) SAMPLES.penalties.push(row);
+}
 
 // ── state ─────────────────────────────────────────────────────────────
 function loadState(){
@@ -156,10 +188,28 @@ async function backfillLeagueSeason(code, year, st){
   let page = 1, totalPages = 1;
   const local = { resolved:0, updated:0, missed:0, allNull:0 };
 
+  // DRY RUN MUST PROVE THE KEYS MATCH. Without this the dry run counts a row and skips
+  // before touching the database, so it reports "missed 0" having checked nothing — false
+  // comfort about precisely the failure this script exists to prevent. So in dry run we
+  // pull the existing (api_player_id) set for this league-season once and check membership
+  // in memory: same answer as the real run's affected-row assertion, zero writes, one query.
+  const existing = new Set();
+  if (!WRITE) {
+    let f = 0;
+    while (true) {
+      const { data, error } = await supabase.from('player_season_cards')
+        .select('api_player_id').eq('season_year', year).eq('league_code', code).range(f, f + 999);
+      if (error) throw new Error(`existing-fetch ${code} ${year}: ${error.message}`);
+      (data || []).forEach(r => existing.add(r.api_player_id));
+      if (!data || data.length < 1000) break;
+      f += 1000;                                 // paginate past the 1000-row cap (§C)
+    }
+  }
+
   do {
     const j = await af(`/players?league=${L}&season=${year}&page=${page}`);
     S.calls++;
-    await sleep(DELAY_MS);
+    await sleep(DELAY);
     totalPages = j.paging?.total || 1;
 
     for (const row of (j.response || [])) {
@@ -180,6 +230,7 @@ async function backfillLeagueSeason(code, year, st){
       // null something you must do it deliberately in SQL. That is the correct trade here,
       // because the failure it prevents is silent and the one it creates is not.
       const ext = extractNewFields(s);
+      tally(row.player.name, s.team?.name || '', s, ext);
       const patch = {};
       for (const k of NEW_FIELDS) if (ext[k] != null) patch[k] = ext[k];
       assertPatch(patch);
@@ -188,7 +239,14 @@ async function backfillLeagueSeason(code, year, st){
       // ~16,600 pointless round-trips across the pre-2015 seasons, where only `starts` exists.
       if (Object.keys(patch).length === 0) { local.allNull++; S.allNull++; continue; }
 
-      if (!WRITE) { local.updated++; continue; }  // dry run: count what WOULD land
+      // Dry run: count what WOULD land, and what would NOT, by the same key the real write
+      // uses. S.updated must move too, or the reconciliation reports a false failure on
+      // every dry run (it did, on the first one).
+      if (!WRITE) {
+        if (existing.has(row.player.id)) { local.updated++; S.updated++; }
+        else                             { local.missed++;  S.missed++;  }
+        continue;
+      }  // dry run: count what WOULD land
 
       const { data, error } = await supabase.from('player_season_cards')
         .update(patch)
@@ -254,4 +312,27 @@ async function backfillLeagueSeason(code, year, st){
   const acc = S.updated + S.missed + S.allNull;
   console.log(`\n  Reconciliation: ${S.updated} + ${S.missed} + ${S.allNull} = ${acc} vs ${S.resolved} resolved ` +
               `${acc === S.resolved ? '✓ balances' : '✗ DOES NOT BALANCE — investigate before trusting this run'}`);
+
+  console.log('\n  ── PER-FIELD COVERAGE (of resolved rows) ──');
+  for (const k of NEW_FIELDS) {
+    const { pop, nul } = FIELD_STATS[k];
+    const t = pop + nul;
+    console.log(`     ${k.padEnd(17)} populated ${String(pop).padStart(5)} / ${t}  (${t ? (100*pop/t).toFixed(1) : '0.0'}%)   NR ${nul}`);
+  }
+
+  const show = r => `     ${r.name.slice(0,22).padEnd(23)} ${String(r.team).slice(0,16).padEnd(17)} ` +
+    `min ${String(r.minutes).padStart(4)} starts ${String(r.starts).padStart(2)} | goals ${String(r.goals).padStart(4)} ` +
+    `conceded ${String(r.goals_conceded).padStart(4)} saves ${String(r.saves).padStart(4)} | ` +
+    `pen ${r.penalties_scored}/${r.penalties_missed} saved ${r.penalties_saved} won ${r.penalties_won}`;
+  if (SAMPLES.keepers.length)   { console.log('\n  ── KEEPERS (saves non-null) ──');            SAMPLES.keepers.forEach(r => console.log(show(r))); }
+  if (SAMPLES.penalties.length) { console.log('\n  ── OUTFIELD PENALTY TAKERS (scored > 0) ──'); SAMPLES.penalties.forEach(r => console.log(show(r))); }
+
+  // Quota from the LIVE rate-limit headers captured during the run, costing no extra call.
+  // NOT from /status: that endpoint is served cached and reported the same figure before
+  // and after a 51-page run, which would have understated real usage by 51.
+  if (QUOTA.dayRemaining != null) {
+    console.log(`\n  ── QUOTA (live headers, last response of this run) ──`);
+    console.log(`     day    ${QUOTA.dayLimit - QUOTA.dayRemaining} used of ${QUOTA.dayLimit}, ${QUOTA.dayRemaining} remaining`);
+    console.log(`     minute ${QUOTA.minLimit - QUOTA.minRemaining} used of ${QUOTA.minLimit} (DELAY ${DELAY}ms, ceiling ${Math.round(60000/DELAY)}/min)`);
+  }
 })();
