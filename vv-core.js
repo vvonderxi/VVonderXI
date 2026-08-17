@@ -2269,6 +2269,23 @@
     if(!opts.headCount){
       var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0]||VVF_SORTS[0];
       query=query.order(so.col,{ascending:so.asc, nullsFirst:false}); applied.push('sort:'+so.col);
+      /* DETERMINISTIC TIEBREAK , WITHOUT THIS THE SORT IS NOT A TOTAL ORDER AND range()
+         IS NOT REPRODUCIBLE. Every sort column here is low-cardinality against 57,234
+         rows (rt alone puts thousands of cards on the same value), and Postgres is free
+         to return tied rows in any order , it will even choose a different plan for a
+         different window size.
+         MEASURED 2026-08-17, not hypothetical: the SAME rows 0-99 query returned two
+         DIFFERENT orders on consecutive calls, and the first 12 rows of a 0-99 window
+         did not match the same query asked for rows 0-11.
+         THE LIVE BUG THIS FIXES IS IN RANKINGS, and it predates the card sequence that
+         exposed it: rankings pages with range() for infinite scroll, so a card could
+         appear on two pages, or on none, as the offset advanced. Silent in both
+         directions , a duplicate looks like a coincidence and a missing card looks like
+         it was filtered.
+         card_id is unique, so appending it makes the order total and every window
+         reproducible. Nothing a visitor can see changes except that ties stop
+         shuffling between fetches. */
+      query=query.order('card_id',{ascending:true}); applied.push('sort:card_id(tiebreak)');
     }
     return { query:query, applied:applied };
   }
