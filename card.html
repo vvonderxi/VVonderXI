@@ -18,6 +18,24 @@
   .spine:hover .navitem .lbl{opacity:1}.navspacer{flex:1}
   .canvas{flex:1;min-width:0;display:flex;flex-direction:column}
   .topline{display:flex;align-items:center;justify-content:space-between;padding:30px 48px 0}
+  /* SEQUENCE NAV , sits in the gap .topline's space-between already leaves between the
+     search pill and the theme toggle, so it needs no layout change of its own.
+     Hidden entirely (the `hidden` attribute) when there is no sequence, which is the
+     rule: arriving by a shared link must never show an ordering we cannot justify. */
+  .seqnav{display:flex;align-items:center;gap:6px}
+  .seqnav[hidden]{display:none}
+  .seqbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0;
+          border:1px solid rgba(243,237,224,.22);border-radius:999px;background:transparent;
+          color:var(--cream);cursor:pointer;transition:background .16s,border-color .16s,opacity .16s}
+  .seqbtn svg{width:15px;height:15px}
+  .seqbtn:hover:not(:disabled){background:rgba(243,237,224,.10);border-color:rgba(243,237,224,.40)}
+  /* Disabled, NOT hidden, at either end , the control staying put is what tells you the
+     list has an end. This is also why nothing wraps around. */
+  .seqbtn:disabled{opacity:.28;cursor:default}
+  .seqpos{font-family:'Archivo',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.01em;
+          color:var(--ink-soft);white-space:nowrap;min-width:64px;text-align:center}
+  body.light .seqbtn{border-color:rgba(28,27,26,.20);color:var(--charcoal)}
+  body.light .seqbtn:hover:not(:disabled){background:rgba(28,27,26,.06);border-color:rgba(28,27,26,.38)}
   .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
   .topactions{display:flex;align-items:center;gap:14px}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
@@ -230,7 +248,13 @@
   .comparecta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--pink);color:#fff;border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:10px;box-shadow:0 14px 30px -12px rgba(255,92,122,0.6)}
   .comparecta svg{width:16px;height:16px}
   @media (max-width:1040px){.stage{grid-template-columns:1fr;gap:34px;padding:18px 32px 50px;justify-items:center}.plinth{position:static}.depth{width:100%;max-width:580px}.topline{padding:24px 32px 0}}
-  @media (max-width:720px){.spine{display:none}.stage{padding:14px 18px 40px}.topline{padding:18px 18px 0}.glancegrid{flex-direction:column}}
+  @media (max-width:720px){.spine{display:none}.stage{padding:14px 18px 40px}.topline{padding:18px 18px 0}.glancegrid{flex-direction:column}
+    /* PHONE: no chevrons. The gesture is the control (swipe the card, the way Photos
+       does), but the COUNTER stays , it is the only thing carrying the context the
+       visitor arrived with, and losing it would make the swipe feel like it came from
+       nowhere. */
+    .seqbtn{display:none}
+    .seqpos{min-width:0;font-size:12px}}
   /* ============================================================
      ★ THE BEDROCK CARD , canonical, reusable everywhere ★
      Scale a whole card by changing --cw (card width).
@@ -911,7 +935,7 @@
     <div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div>
   </nav>
   <div class="canvas">
-    <div class="topline"><button class="backbtn" onclick="history.back()">&#8249; Back</button><button class="searchtrigger" id="csTrigger" type="button" onclick="csToggle()" aria-label="Search seasons" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="stlbl">Search</span></button><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#E70443">V</tspan></text></svg></div></div></div>
+    <div class="topline"><button class="backbtn" onclick="history.back()">&#8249; Back</button><button class="searchtrigger" id="csTrigger" type="button" onclick="csToggle()" aria-label="Search seasons" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="stlbl">Search</span></button><div class="seqnav" id="seqNav" hidden><button class="seqbtn" id="seqPrev" type="button" aria-label="Previous season in this list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="seqpos" id="seqPos" aria-live="polite"></span><button class="seqbtn" id="seqNext" type="button" aria-label="Next season in this list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#E70443">V</tspan></text></svg></div></div></div>
     <div id="cardSearch" aria-hidden="true">
       <div class="cs-scrim" id="csScrim" onclick="csClose()" aria-hidden="true"></div>
       <div class="cs-panel">
@@ -1024,7 +1048,7 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260817b"></script>
+<script src="/vv-core.js?v=20260817c"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -1502,6 +1526,205 @@
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
+  /* ══ CARD SEQUENCE , walk the list the visitor arrived from ═══════════════════
+     The sequence is the RESULT SET of the query rankings was showing, re-derived here
+     from the stored query (see VVSeq in vv-core). Nothing about it lives in the URL, so
+     a shared link carries no sequence and shows no controls.
+
+     TWO RESOLUTION PATHS, and the split mirrors rankings' own server/client split:
+       - the server ordering IS the visitor's ordering -> a neighbour is a one-row
+         range() fetch and the total is an exact head count. Cheap, nothing scanned.
+       - the visitor's ordering DIFFERS from the server's -> the sequence has to be
+         rebuilt page by page, exactly as rankings built it.
+
+     THE ORDER DIVERGES FOR TWO SEPARATE REASONS, and missing the second one cost a
+     silent off-by-one that was only visible by clicking through:
+       1. TAG FILTERS. profile/stage/trajectory have no column to filter on, so they run
+          as a predicate AFTER the fetch. Rows drop out and every later ordinal shifts.
+       2. A NAME SEARCH. rankings re-ranks each page by search relevance
+          (rankBySearch), so with a search term the rows are RE-SORTED client side and
+          the server's ordinal is not the visitor's. Measured: the visitor's 12th
+          "arsenal" row was card 133491, while the server's index 11 was 131127. The
+          server window itself was perfectly stable across three runs, so this was never
+          an ordering-instability problem , it was our own re-sort, unaccounted for.
+
+     PAGE SIZE MUST MATCH rankings' RANK_PAGE. The re-rank happens per page, so paging
+     the rebuild differently would produce a different order from the same query and the
+     off-by-one would come back in a subtler form.
+
+     Only as much is materialised as the walk actually needs (the page containing the
+     next index), so this stays one small fetch in the normal case. A total is printed
+     only when it is known: the head count is exact whenever tag filters are off, since
+     re-ranking reorders the set without changing it. With tags on the total is known
+     only once the set is fully materialised, and otherwise the position is shown alone.
+     A counter reading "12 of 346" has to mean it. */
+  var SEQ = null;                 // {q, st, index, id, total, clientActive}
+  var SEQ_ORDER = null;           // materialised ordering (card_ids), as far as scanned
+  var SEQ_SCANNED = 0;            // server rows consumed so far
+  var SEQ_END = false;            // server returned a short page: the set is complete
+  var SEQ_PAGE = 100, SEQ_SCAN_MAX = 3000;   // SEQ_PAGE mirrors rankings' RANK_PAGE
+
+  function seqCtxValid(ctx){
+    // The stored context describes ONE card. If this is not that card the visitor got
+    // here some other way (shared link, direct URL, a stale tab), and inventing an
+    // ordering for them is exactly what the rule forbids.
+    return !!(ctx && ctx.id != null && _cardId != null && String(ctx.id) === String(_cardId));
+  }
+  function seqParsed(){ return vvParseSearch(SEQ.q || ''); }
+  // True when the rows the visitor saw are not in the server's order , see the note above.
+  function seqNeedsOrder(){ return !!(SEQ && (SEQ.clientActive || seqParsed().nameQ)); }
+
+  async function seqInit(){
+    SEQ = null; SEQ_ORDER = null; SEQ_SCANNED = 0; SEQ_END = false;
+    if(!window.VVSeq || !window.VVFilters) { seqRender(); return; }
+    var ctx = VVSeq.load();
+    if(!seqCtxValid(ctx)){ seqRender(); return; }
+    SEQ = ctx;
+    seqRender();                                  // paint from stored state at once; the card never waits
+    var sb = vvClient(); if(!sb) return;
+    var ps = seqParsed();
+    // The head count is exact whenever tag filters are off: a re-rank reorders the set,
+    // it does not change its size.
+    if(!SEQ.clientActive && SEQ.total == null){
+      var h = await VVSeq.query(sb, { st:SEQ.st, nameQ:ps.nameQ, seasonYear:ps.seasonYear, head:true });
+      if(!h.error && h.count != null) SEQ.total = h.count;
+    }
+    if(seqNeedsOrder()){ SEQ_ORDER = []; await seqEnsure(SEQ.index + 1); }
+    seqRender();
+  }
+
+  /* Rebuild the visitor's ordering up to and including uptoIdx, one rankings-sized page
+     at a time, applying the SAME re-rank and the SAME predicate rankings applied. */
+  async function seqEnsure(uptoIdx){
+    if(!SEQ_ORDER) SEQ_ORDER = [];
+    var sb = vvClient(); if(!sb) return;
+    var ps = seqParsed();
+    var pred = VVFilters.clientPredicate(SEQ.st);
+    while(!SEQ_END && SEQ_ORDER.length <= uptoIdx && SEQ_SCANNED < SEQ_SCAN_MAX){
+      var r = await VVSeq.query(sb, { st:SEQ.st, nameQ:ps.nameQ, seasonYear:ps.seasonYear,
+                                      from:SEQ_SCANNED, to:SEQ_SCANNED + SEQ_PAGE - 1 });
+      if(r.error || !r.data){ break; }
+      var raw = r.data;
+      // Byte-for-byte the rankings pipeline: re-rank the page, map, then predicate.
+      var sorted = ps.nameQ
+        ? VVCore.rankBySearch(raw, ps.nameQ, function(x){ return (x.player_name||'')+' '+(x.player_name_norm||''); })
+        : raw;
+      sorted.map(rowToCard).filter(Boolean).filter(pred)
+            .forEach(function(c){ SEQ_ORDER.push(c.card_id); });
+      SEQ_SCANNED += raw.length;
+      if(raw.length < SEQ_PAGE) SEQ_END = true;
+    }
+  }
+
+  /* THE MISSING DENOMINATOR UNDER TAG FILTERS IS DELIBERATE. DO NOT "FIX" IT.
+     With a profile / career-stage / trajectory tag active there is no column to filter
+     on, so the true size of the list is knowable only by walking the whole 57,234-row
+     table, which is not something a card page should do to print a number. The counter
+     therefore shows the POSITION ALONE ("4"), never a guessed total.
+     Every available shortcut is wrong: the server's head count is the count BEFORE tag
+     filtering (rankings says exactly that, in those words, rather than printing it), the
+     scanned-so-far length grows as you walk and would make the denominator move under
+     the visitor, and the loaded-rows count is just the first page.
+     This is the same standard as the goalkeeper confidence dots: a number the platform
+     cannot stand behind does not get printed. If a total is genuinely wanted here, the
+     fix is a server-side count of the tag predicate, not a cheaper guess. */
+  function seqTotal(){
+    if(!SEQ) return null;
+    // Known only once the whole set has actually been walked, which is the rare case.
+    if(SEQ.clientActive) return SEQ_END ? SEQ_ORDER.length : null;
+    return SEQ.total;
+  }
+  function seqRender(){
+    var nav=document.getElementById('seqNav'), pos=document.getElementById('seqPos'),
+        pv=document.getElementById('seqPrev'), nx=document.getElementById('seqNext');
+    if(!nav) return;
+    if(!SEQ){ nav.hidden = true; return; }
+    nav.hidden = false;
+    var total = seqTotal(), i = SEQ.index;
+    pos.textContent = (total != null) ? ((i+1).toLocaleString()+' of '+total.toLocaleString())
+                                      : (i+1).toLocaleString();
+    if(pv) pv.disabled = (i <= 0);
+    // No wrapping, by design. At the end the forward control greys out and stays put.
+    if(nx) nx.disabled = (total != null) ? (i >= total-1)
+                       : (SEQ_END && SEQ_ORDER ? (i >= SEQ_ORDER.length-1) : false);
+  }
+  async function seqIdAt(idx){
+    if(idx < 0) return null;
+    if(seqNeedsOrder()){
+      await seqEnsure(idx);
+      return (SEQ_ORDER && idx < SEQ_ORDER.length) ? SEQ_ORDER[idx] : null;
+    }
+    var sb=vvClient(); if(!sb) return null;
+    var ps=seqParsed();
+    var r = await VVSeq.query(sb, { st:SEQ.st, nameQ:ps.nameQ, seasonYear:ps.seasonYear,
+                                    select:'card_id', from:idx, to:idx });
+    if(r.error || !r.data || !r.data.length) return null;
+    return r.data[0].card_id;
+  }
+  var SEQ_BUSY=false;
+  async function seqGo(delta){
+    if(!SEQ || SEQ_BUSY) return;
+    var idx = SEQ.index + delta;
+    if(idx < 0) return;
+    SEQ_BUSY = true;
+    try{
+      var id = await seqIdAt(idx);
+      if(id == null) return;                        // ran off the end: leave the card as it is
+      SEQ.index = idx; SEQ.id = id;
+      VVSeq.save(SEQ);                              // position is written BEFORE we move, so a
+      _cardId = String(id);                         // refresh on the new card still finds its place
+      try{
+        var u=new URL(window.location.href);
+        u.searchParams.set('id', id);
+        // replaceState, NOT pushState , the same reason season switching uses it: Back is
+        // history.back(), so pushing would make Back crawl the sequence one card at a time
+        // instead of returning to the list the visitor came from.
+        history.replaceState({cardId:id}, '', u);
+      }catch(e){}
+      window.scrollTo({top:0, behavior:'auto'});
+      await loadCard();                             // full load: a different PLAYER needs its own seasons
+      seqRender();
+    } finally { SEQ_BUSY=false; }
+  }
+  document.getElementById('seqPrev').addEventListener('click', function(){ seqGo(-1); });
+  document.getElementById('seqNext').addEventListener('click', function(){ seqGo(1); });
+  document.addEventListener('keydown', function(e){
+    if(!SEQ) return;
+    if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    // never steal the arrows from a field, or from the search overlay's own list
+    var t=e.target;
+    if(t && (t.closest && t.closest('input,textarea,select,[contenteditable="true"]'))) return;
+    if(document.body.classList.contains('searching')) return;
+    e.preventDefault();
+    seqGo(e.key==='ArrowLeft' ? -1 : 1);
+  });
+  /* PHONE SWIPE. Horizontal only, and it must not fight the vertical scroll or fire the
+     card's tap-to-flip. Hence the dominance test (|dx| must clearly beat |dy|) and the
+     capture-phase click suppressor: a touchend is followed by a synthetic click, which
+     would otherwise flip the card the swipe just replaced. */
+  (function(){
+    var hero=document.getElementById('heroCard'); if(!hero) return;
+    var x0=0,y0=0,t0=0,tracking=false,swiped=0;
+    hero.addEventListener('touchstart', function(e){
+      if(!SEQ || e.touches.length!==1) { tracking=false; return; }
+      tracking=true; x0=e.touches[0].clientX; y0=e.touches[0].clientY; t0=Date.now();
+    }, {passive:true});
+    hero.addEventListener('touchend', function(e){
+      if(!tracking) return; tracking=false;
+      var t=e.changedTouches && e.changedTouches[0]; if(!t) return;
+      var dx=t.clientX-x0, dy=t.clientY-y0;
+      if(Math.abs(dx) < 55) return;                       // a tap, or too small to mean it
+      if(Math.abs(dx) < Math.abs(dy)*1.5) return;         // that was a scroll, not a swipe
+      if(Date.now()-t0 > 800) return;                     // a slow drag is not a flick
+      swiped=Date.now();
+      seqGo(dx < 0 ? 1 : -1);                             // swipe left = forward, as in Photos
+    }, {passive:true});
+    hero.addEventListener('click', function(e){
+      if(Date.now()-swiped < 400){ e.preventDefault(); e.stopPropagation(); }
+    }, true);
+  })();
+
   document.addEventListener('click', function(e){
     var inYr = e.target.closest && e.target.closest('#heroCard .yr');
     if(inYr && SEASON_ROWS){ e.stopPropagation(); seasonPanelOpen(); return; }   // .yr opens the season list (unchanged)
@@ -1514,6 +1737,9 @@
     if(inCard && D && _hero && !_hero._flipping){ var _cw=cwNow(); vvCardFlip(_hero, { swap:false, cw:_cw, prestige:D.prestige }); }   // ignore taps mid-flip
   });
   loadCard();
+  // Sequence resolves in PARALLEL with the card, never gating it: the card is the hero
+  // and must paint on its own round-trip, exactly as loadCard's comment says.
+  seqInit();
 </script>
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx=\"12\" cy=\"12\" r=\"4.3\"/><path d=\"M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4\"/>';var moon='<g transform=\"translate(24,0) scale(-1,1)\"><path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});
 var VV_MEMBER=false;

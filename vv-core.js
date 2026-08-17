@@ -2564,6 +2564,48 @@
     paintRange(host);
   }
 
+  /* ══ CARD SEQUENCE , the prev/next walk on card.html ═══════════════════════
+     STORE THE QUESTION, NEVER THE ANSWER.
+     What is persisted is the search text plus the filter state, i.e. the QUERY, and
+     the sequence is re-derived from it on the card page. A stored list of card_ids
+     would go stale the moment the data moves under it (this database is written to
+     regularly, and rt itself is population-relative , see the anchor note in §C), and
+     it would have to travel in the URL to survive a share, which would hand a visitor
+     someone else's results dressed as their own.
+     SESSION storage, not local: the sequence belongs to this tab's browsing session.
+     It must survive a refresh and an in-page navigation, and it must NOT outlive the
+     visit or leak into a link. A card opened from a shared URL finds no context and
+     shows no controls, which is the rule , never invent an ordering.
+     ONE BUILDER. seqQuery is the same builder rankings uses for its rows, its head
+     count and its facet probes, so the sequence cannot drift from the list it came
+     from. If these were two copies, a filter change would have to be made twice and
+     the second copy would eventually be forgotten. */
+  const SEQ_KEY = 'vv.seq.v1';
+  function seqSave(ctx){ try{ sessionStorage.setItem(SEQ_KEY, JSON.stringify(ctx)); }catch(e){} }
+  function seqLoad(){
+    try{ const c = JSON.parse(sessionStorage.getItem(SEQ_KEY) || 'null'); return (c && c.st) ? c : null; }
+    catch(e){ return null; }
+  }
+  function seqClear(){ try{ sessionStorage.removeItem(SEQ_KEY); }catch(e){} }
+  function seqQuery(sb, o){
+    o = o || {};
+    let q = o.head ? sb.from('player_card_mv').select(o.select || '*', { count:'exact', head:true })
+                   : sb.from('player_card_mv').select(o.select || '*');
+    if(o.nameQ){ const sf = tokenAndFilter(o.nameQ); if(sf) q = q.or(sf); }
+    if(o.seasonYear != null) q = q.eq('season_year', o.seasonYear);
+    q = applyServer(q, o.st, { headCount: !!o.head }).query;
+    if(!o.head && o.from != null) q = q.range(o.from, o.to != null ? o.to : o.from);
+    return q;
+  }
+  /* Tag groups have no column to filter on, so they run as a predicate AFTER the fetch
+     (same split as rankings). When one is active the server's count answers a DIFFERENT
+     question, so the sequence must be materialised and counted client-side instead. */
+  function seqClientActive(st){
+    return !!(st && ((st.profile||[]).length || (st.stage||[]).length || (st.trajectory||[]).length));
+  }
+  const VVSeq = { KEY:SEQ_KEY, save:seqSave, load:seqLoad, clear:seqClear,
+                  query:seqQuery, clientActive:seqClientActive };
+
   const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
@@ -2581,7 +2623,7 @@
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,
-                VVFilters };
+                VVFilters, VVSeq };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

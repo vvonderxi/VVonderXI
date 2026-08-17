@@ -475,9 +475,26 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260817b"></script>
+<script src="/vv-core.js?v=20260817c"></script>
 <script>
-  function goCard(id){ location.href = id!=null ? "card.html?id="+encodeURIComponent(id) : "card.html"; }
+  /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
+     The query is stored, never the ids , see the VVSeq note in vv-core. idx is the
+     row's position in CARDS, which is the sequence the visitor is actually looking at
+     (server order, with the client tag predicate already applied).
+     idx == null means we cannot say where this card sits, so the context is CLEARED
+     rather than left stale: a wrong sequence is worse than none. */
+  function goCard(id, idx){
+    if(window.VVSeq){
+      if(id!=null && idx!=null){
+        var st=fState();
+        VVSeq.save({ q:(document.getElementById('rankSearch')||{value:''}).value.trim(),
+                     st:st, index:idx, id:id,
+                     total: clientActive(st) ? null : rankTotal,   // server count is a different question once tags are on
+                     clientActive: clientActive(st) });
+      } else { VVSeq.clear(); }
+    }
+    location.href = id!=null ? "card.html?id="+encodeURIComponent(id) : "card.html";
+  }
   let CARDS = [];
 
   const g=document.getElementById('cardgrid');
@@ -492,7 +509,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const g=document.getElementById('cardgrid');
     setViewClass('compactmode');
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,2); }).join('');   // #20: compact caps at 2 tags
+    g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,{cap:2, onClick:seqClick}); }).join('');   // #20: compact caps at 2 tags
   }
   // ── rankRowHTML , the ONE shared row builder for List (pillmode) + Compact
   //    (compactmode). 9 fixed-grid columns; density differs only via container class.
@@ -520,7 +537,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const g=document.getElementById('cardgrid');
     setViewClass(null);
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML = list.map(d=>`<div onclick="goCard(${d.card_id==null?'':d.card_id})" style="cursor:pointer">${buildCard(d,cwNow())}</div>`).join('');
+    g.innerHTML = list.map((d,i)=>`<div onclick="goCard(${d.card_id==null?'':d.card_id},${i})" style="cursor:pointer">${buildCard(d,cwNow())}</div>`).join('');
   }
   // vvNorm / tokenAndFilter / vvParseSearch / vvSeasonLabel now live in vv-core.js (shared with the
   // Compare picker , the two were byte-identical copies). They arrive as globals via VVCore.
@@ -529,10 +546,13 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     const g=document.getElementById('cardgrid');
     setViewClass('pillmode');
     if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
-    g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,3); }).join('');   // #20: list caps at 3 tags
+    g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,{cap:3, onClick:seqClick}); }).join('');   // #20: list caps at 3 tags
   }
   var rankView='cards';
   try{var _rv=localStorage.getItem('vvRankView');if(_rv==='pills'||_rv==='cards'||_rv==='compact')rankView=_rv;}catch(e){}
+  /* Every row carries its INDEX into the click, so the card page inherits the position
+     as well as the query. i is the index within CARDS, which is what renderRank maps. */
+  function seqClick(d,i){ return 'goCard('+(d.card_id==null?'':d.card_id)+','+i+')'; }
   function currentRankList(){ return CARDS; }   // server already filtered + sorted
   /* Show more is gone , infinite scroll replaces the 300 cap (see loadRankings). */
   function renderRank(){ var list=currentRankList(); if(rankView==='pills') renderRankPills(list); else if(rankView==='compact') renderRankCompact(list); else renderRankCards(list); }
@@ -582,16 +602,15 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   }
   function clientActive(st){ return !!(st && (st.profile.length || st.stage.length || st.trajectory.length)); }
 
-  /* One builder for the rows, the head-count and every facet probe. */
+  /* One builder for the rows, the head-count and every facet probe , and now also for
+     the card page's prev/next sequence, which is why the body moved into vv-core as
+     VVSeq.query. Two copies would drift, and the sequence would then walk a different
+     list from the one the visitor is looking at. */
   function rankQuery(sb, st, o){
     o=o||{};
-    var q = o.head ? sb.from('player_card_mv').select('*',{count:'exact',head:true})
-                   : sb.from('player_card_mv').select('*');
-    if(o.nameQ){ var sf=tokenAndFilter(o.nameQ); if(sf) q=q.or(sf); }
-    if(o.seasonYear!=null) q=q.eq('season_year', o.seasonYear);
-    q = VVFilters.applyServer(q, st, {headCount:!!o.head}).query;
-    if(!o.head) q=q.range(o.from||0, (o.from||0)+RANK_PAGE-1);
-    return q;
+    return VVSeq.query(sb, { st:st, nameQ:o.nameQ, seasonYear:o.seasonYear, head:o.head,
+                             from: o.head ? null : (o.from||0),
+                             to:   o.head ? null : ((o.from||0)+RANK_PAGE-1) });
   }
 
   /* THE COUNT IS HONEST OR IT IS ABSENT. The server cannot see client-side tag
