@@ -142,6 +142,35 @@ function ratingToRt(avg, g, a){
   return Math.max(50, Math.min(96, 60 + Math.round(((+g||0)+(+a||0))*0.9)));
 }
 const n = x => (x == null ? null : (parseInt(x) || 0));
+
+// ── KEEPER + PENALTY FIELDS: ONE extractor, called by BOTH the importer payload
+// below and scripts/enrichment/gk_pen_backfill.js. Single source on purpose — two
+// copies of this mapping would drift, and a backfilled row would then disagree with
+// a freshly-imported one on the same card.
+//
+// penalties_won IS WRITTEN RAW, and a coalesce-to-zero was designed, implemented and
+// then REMOVED on the evidence. The reasoning for coalescing was that penalty.won never
+// emits 0 (55 PL 2016 blocks over the 300-min floor: 3 non-null, values 1 and 2), so a
+// NULL looked like it meant "won none" and would invert the house NR rule.
+// IT DOES NOT MEAN THAT. Of the 9 players in that sample who SCORED a penalty, ALL 9
+// carry won=null — including Milner on 7 scored — while the 3 rows where won IS
+// populated scored none. Zero overlap. Somebody won the penalty Milner converted, so
+// null cannot mean zero, and coalescing would have written a fabricated 0 onto ~95% of
+// 57,234 rows. The field is simply unreliable: 5% populated, and absent exactly where
+// it should be present. Stored faithfully, NR where the source is silent.
+// DO NOT re-add the coalesce. The burden is new evidence, not a new formula.
+function extractNewFields(s){
+  return {
+    starts:           n(s.games?.lineups),
+    goals_conceded:   n(s.goals?.conceded),
+    saves:            n(s.goals?.saves),
+    penalties_scored: n(s.penalty?.scored),
+    penalties_missed: n(s.penalty?.missed),
+    penalties_saved:  n(s.penalty?.saved),
+    penalties_won:    n(s.penalty?.won),
+  };
+}
+const NEW_FIELDS = ['starts','goals_conceded','saves','penalties_scored','penalties_missed','penalties_saved','penalties_won'];
 // Accept only a clean YYYY-MM-DD; anything else (empty, malformed, '0000-00-00') -> null
 function cleanDate(d){
   if (!d || typeof d !== 'string') return null;
@@ -362,8 +391,16 @@ function sumStat(real, L){
   };
   return {
     games:    { minutes: S(b=>b.games?.minutes), appearences: S(b=>b.games?.appearences),
+                lineups: S(b=>b.games?.lineups),
                 position: rich.games?.position, rating: wMean(b=>b.games?.rating) },
-    goals:    { total: S(b=>b.goals?.total), assists: S(b=>b.goals?.assists) },
+    goals:    { total: S(b=>b.goals?.total), assists: S(b=>b.goals?.assists),
+                conceded: S(b=>b.goals?.conceded), saves: S(b=>b.goals?.saves) },
+    // Summed like every other counting stat, and S() preserves NR: if every contributing
+    // block is null the result stays null rather than becoming 0. That NR preservation is
+    // load-bearing for penalty.won in particular — see extractNewFields() for why a null
+    // there must never be turned into a zero.
+    penalty:  { scored: S(b=>b.penalty?.scored), missed: S(b=>b.penalty?.missed),
+                saved: S(b=>b.penalty?.saved), won: S(b=>b.penalty?.won) },
     shots:    { total: S(b=>b.shots?.total), on: S(b=>b.shots?.on) },
     passes:   { total: S(b=>b.passes?.total), key: S(b=>b.passes?.key), accuracy: wMean(b=>b.passes?.accuracy) },
     dribbles: { attempts: S(b=>b.dribbles?.attempts), success: S(b=>b.dribbles?.success) },
@@ -480,6 +517,7 @@ async function importLeagueSeason(code, year){
         duels_total:n(s.duels?.total), duels_won:n(s.duels?.won),
         fouls_drawn:n(s.fouls?.drawn), fouls_committed:n(s.fouls?.committed),
         cards_yellow:n(s.cards?.yellow), cards_red:n(s.cards?.red),
+        ...extractNewFields(s),          // keeper + penalty fields, see extractNewFields()
         source:'apifootball',
       };
 
@@ -545,7 +583,15 @@ async function deriveCeilings(){
     `Per-league max apps: ${Object.entries(leagueMap).map(([k,v]) => `${k} ${v.apps}`).join(' · ')}`);
 }
 
-(async () => {
+// ── ENTRY-POINT GUARD ─────────────────────────────────────────────────
+// WITHOUT THIS, `require()`ing this file LAUNCHES A LIVE IMPORT. The IIFE below used
+// to run on import, so any script that pulled in a helper would have started writing
+// to player_season_cards as a side effect of the require line.
+// scripts/enrichment/gk_pen_backfill.js needs resolveSeasonStat from here — it MUST
+// dedupe and sum identically to the original import, or the new columns would be
+// derived from a different block set than the goals and minutes on the same row —
+// so this guard is what makes that reuse safe. Do not remove it.
+if (require.main === module) (async () => {
   const codes = ONLY ? [ONLY] : Object.keys(LEAGUES);
   console.log(`╔══ VVonderXI API-Football import ${DRY_RUN?'(DRY RUN)':'(LIVE)'} ══╗`);
   console.log(`Leagues: ${codes.join(', ')} · seasons ${FLOOR_YR}–${TO_YR} · min ${MIN_MIN} min\n`);
@@ -567,3 +613,11 @@ async function deriveCeilings(){
   console.log(`  Errors:  ${stats.errors}`);
   console.log(`  Time:    ${elapsed()}s`);
 })();
+
+// Exported for scripts/enrichment/gk_pen_backfill.js. Read the ENTRY-POINT GUARD note
+// above before adding to this list: everything here runs against LIVE data.
+module.exports = {
+  LEAGUES, MIN_MIN, DELAY_MS, seasonCode, sleep,
+  af, deriveCeilings, resolveSeasonStat,
+  n, extractNewFields, NEW_FIELDS,
+};
