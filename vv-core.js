@@ -2081,10 +2081,16 @@
                hint: top ? (r.lo+'+') : (r.lo+'-'+r.hi) };
     }).filter(Boolean);
     var lowest=bandRange('Exceptional');
-    // Label is '<79', shorter than the old '79 and under'. The three surfaces that show
-    // this band (this computed chip, playbook's band pill, vvindex's band row) must say the
-    // SAME thing , they drifted once before, on this exact label.
-    if(lowest) out.push({ v:'__below', l:'<'+(lowest.lo-1), lo:null, hi:lowest.lo-1,
+    // Label is '≤79', replacing the longer '79 and under'.
+    // IT IS ≤ AND NOT <, AND THAT IS NOT A STYLE CHOICE: the band is 0 to 79 INCLUSIVE, so
+    // '<79' would exclude 79 itself and state the band wrongly on a public surface. If a
+    // shorter form is ever wanted, '<80' is the other correct one. Never '<79'.
+    // All three surfaces showing this band (this computed chip, playbook's band pill,
+    // vvindex's band row) must say the SAME thing , they drifted once, on this exact label.
+    // '≤' not a literal ≤ : this string is RENDERED, and an external classic script
+    // has no charset of its own, so it inherits the document's. The escape cannot mojibake
+    // whatever the server sends. The literals elsewhere in this file are all in comments.
+    if(lowest) out.push({ v:'__below', l:'\u2264'+(lowest.lo-1), lo:null, hi:lowest.lo-1,
                           hint:'' });
     return out;
   }
