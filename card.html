@@ -34,17 +34,26 @@
   .seqbtn:disabled{opacity:.28;cursor:default}
   .seqpos{font-family:'Archivo',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.01em;
           color:var(--ink-soft);white-space:nowrap;min-width:64px;text-align:center}
-  /* SWIPE AFFORDANCE. A gesture nobody is told about does not exist, but the card is the
-     hero and must not be dressed with instructions. So: one small line, under the card
-     rather than on it, PHONE ONLY (the desktop has visible arrows and does not need it),
-     shown only when a sequence exists, and retired for the session the moment the visitor
-     swipes once , it teaches and then gets out of the way. Deliberately not an animation:
-     a moving hint next to a still card pulls the eye away from the card. */
-  .seqhint{display:none;justify-content:center;align-items:center;gap:7px;margin-top:10px;
-           font-family:'Archivo',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.10em;
-           text-transform:uppercase;color:var(--ink-soft);opacity:.72;user-select:none}
-  .seqhint[hidden]{display:none}
-  .seqhint span{font-size:13px;line-height:1;opacity:.85}
+  /* ── PEEK , the phone affordance, replacing the old "‹ swipe ›" text ──────────
+     A sliver of the REAL next card at the right edge. The gesture explains itself: a
+     card half off-screen is a thing to pull, and nobody has to read anything first.
+     THE CLIP LIVES HERE AND NOWHERE ELSE. §C is explicit that an overflow clip on any
+     ANCESTOR of the flip card flattens preserve-3d on iOS, so .seqpeek is a SIBLING of
+     #heroCard with its own overflow, and the hero's own ancestry is untouched.
+     THE HERO IS SHIFTED BY MARGIN, NEVER BY TRANSFORM, for the same reason: a transform
+     on #heroCard would make it a containing block and put the 3D at risk. margin-right
+     on a centred flex item moves it left by half the margin, which is all we need.
+     pointer-events:none , the peek is an affordance, not a second hit target competing
+     with the swipe it is advertising. Position and height are set from JS against the
+     hero's measured rect, because the card's height depends on --cw. */
+  .seqpeek{display:none;position:absolute;overflow:hidden;pointer-events:none;
+           opacity:.5;filter:saturate(.75);z-index:0}
+  .seqpeek[hidden]{display:none}
+  .seqpeek-in{transform-origin:top left}
+  /* A soft edge so the sliver reads as "continues off-screen" rather than "card cut off". */
+  .seqpeek::after{content:'';position:absolute;inset:0;pointer-events:none;
+                  background:linear-gradient(to right, rgba(0,0,0,0) 40%, rgba(0,0,0,0.28) 100%)}
+  body.light .seqpeek::after{background:linear-gradient(to right, rgba(255,255,255,0) 40%, rgba(255,255,255,0.30) 100%)}
   body.light .seqbtn{border-color:rgba(28,27,26,.20);color:var(--charcoal)}
   body.light .seqbtn:hover:not(:disabled){background:rgba(28,27,26,.06);border-color:rgba(28,27,26,.38)}
   .crumb{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(243,237,224,0.58)}
@@ -267,7 +276,16 @@
        have taught the gesture are exactly what is missing here. */
     .seqbtn{display:none}
     .seqpos{min-width:0;font-size:12px}
-    .seqhint:not([hidden]){display:flex}}
+    /* Phone only. .plinth is position:static below 1040px, so it is made a containing
+       block here for the peek , positioning, NOT clipping, so the flip invariant holds.
+       The hero keeps its own width (cwNow is untouched); the margin only moves it. */
+    .plinth{position:relative}
+    /* Shift WITHOUT widening: an equal negative-left / positive-right pair leaves the
+       outer width alone, so .plinth does not grow and nothing is pushed past the viewport.
+       A plain margin-right widened the plinth by the full shift and left it 13px over the
+       content edge, absorbed only by the existing horizontal-scroll guard. */
+    #heroCard{margin-left:calc(var(--peek-shift,0px) * -1);margin-right:var(--peek-shift,0px)}
+    .seqpeek:not([hidden]){display:block}}
   /* ============================================================
      ★ THE BEDROCK CARD , canonical, reusable everywhere ★
      Scale a whole card by changing --cw (card width).
@@ -977,7 +995,7 @@
       <div class="plinth">
         <div class="glow"></div>
         <div id="heroCard"></div>
-        <div class="seqhint" id="seqHint" hidden aria-hidden="true"><span>&#8249;</span> swipe <span>&#8250;</span></div>
+        <div class="seqpeek" id="seqPeek" hidden aria-hidden="true"><div class="seqpeek-in" id="seqPeekIn"></div></div>
         <div id="seasonZone"></div>
         <button class="clubpill" onclick="vvTrySave('Saving cards is coming, once accounts are live.', function(){ toggleClub(document.querySelector('.clubpill')); })"><span class="cp-star">&#9734;</span> <span class="cp-txt">Add to my club</span></button>
         <a class="clubpill comparepill" id="compareCta3" href="compare.html"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> <span>Compare this player</span></a>
@@ -1379,7 +1397,9 @@
   }
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
   var vvHeroRZ;
-  window.addEventListener('resize',function(){ clearTimeout(vvHeroRZ); vvHeroRZ=setTimeout(function(){ if(window.D) renderHero(); },150); });
+  // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
+  // in either direction, and its geometry is measured from the hero's rect.
+  window.addEventListener('resize',function(){ clearTimeout(vvHeroRZ); vvHeroRZ=setTimeout(function(){ if(window.D) renderHero(); if(typeof seqRender==='function') seqRender(); },150); });
   // ── First paint: render the demo ONLY when there's no ?id (standalone visit).
   //    With an ?id a real player is incoming -> show a neutral card-shaped skeleton
   //    and let loadCard()'s render be the first real paint (kills the ~0.5s Bruno flash).
@@ -1648,21 +1668,93 @@
     if(SEQ.clientActive) return SEQ_END ? SEQ_ORDER.length : null;
     return SEQ.total;
   }
-  /* The hint is retired per SESSION, not per card: it has done its job once the visitor
-     has swiped, and re-offering it on the next card would be nagging. sessionStorage, so it
-     comes back for a fresh visit rather than being suppressed forever. */
-  var SEQ_HINT_KEY='vv.seq.hint.v1';
-  function seqHintDone(){ try{ return sessionStorage.getItem(SEQ_HINT_KEY)==='1'; }catch(e){ return false; } }
-  function seqHintSeen(){
-    try{ sessionStorage.setItem(SEQ_HINT_KEY,'1'); }catch(e){}
-    var h=document.getElementById('seqHint'); if(h) h.hidden = true;
+  /* ── THE PEEK ────────────────────────────────────────────────────────────────
+     Phone only, sequence only, and never at the end of the list. It renders the REAL
+     next card, not a placeholder, so what you pull into view is what you were shown.
+     GEOMETRY: the hero KEEPS its own width , cwNow() is untouched and the .vvcard measures
+     300px at a 390 viewport, with or without the peek. The sliver is 44px flush to the
+     content edge, with a 12px gap to the card. The hero shifts left only by however much it
+     must to keep that gap, which at 390 is a few px because a 300px card in a 375-390px
+     viewport already has slack , the shift is DERIVED, never assumed.
+     The shift is a negative-left / positive-right margin PAIR, which moves the item without
+     changing its outer width, so .plinth does not grow and nothing crosses the viewport.
+     Margin, never transform: a transform on #heroCard would make it a containing block and
+     put the 3D flip at risk.
+     The peek card is drawn at full size then scaled 0.86 with a top-left origin, so its
+     proportions match the hero exactly rather than being a differently-built card.
+     buildCard's internal ids are RANDOM per call and referenced by url(#..) inside the
+     same card, so a second copy is safe and stripping them would break the crest. */
+  var SEQ_PEEK_W = 44, SEQ_PEEK_GAP = 12, SEQ_PEEK_SCALE = 0.86;
+  var PEEK_SEQ = 0, PEEK_CACHE = {};
+  function seqPeekPhone(){ try{ return window.matchMedia('(max-width:720px)').matches; }catch(e){ return false; } }
+  function seqPeekClear(){
+    PEEK_SEQ++;                                        // cancel any fetch in flight
+    var p=document.getElementById('seqPeek');
+    if(p){ p.hidden = true; }
+    document.documentElement.style.setProperty('--peek-shift','0px');
+  }
+  function seqPeekPlace(){
+    var p=document.getElementById('seqPeek'), hero=document.getElementById('heroCard'),
+        plinth=document.querySelector('.plinth');
+    if(!p || p.hidden || !hero || !plinth) return;
+    // clientWidth, NOT innerWidth: it excludes a scrollbar, so the sliver sits flush with the
+    // content edge instead of hiding under one. (Measured 375 vs 390 in a desktop test frame.)
+    var vw=document.documentElement.clientWidth;
+    var peekLeft = vw - SEQ_PEEK_W;
+    // MEASURE THE CARD, NOT #heroCard. The .vvcard is narrower than its container and sits
+    // centred in it, so measuring the box overshot the shift and left a 39px gap where 12 was
+    // wanted. Everything below is in terms of the visible card.
+    var card = hero.querySelector('.vvcard') || hero;
+    // PASS 1, unshifted, so the shift is derived rather than accumulated across renders.
+    document.documentElement.style.setProperty('--peek-shift','0px');
+    plinth.getBoundingClientRect();                    // force the reflow before reading
+    var shift = Math.max(0, Math.round(card.getBoundingClientRect().right - (peekLeft - SEQ_PEEK_GAP)));
+    document.documentElement.style.setProperty('--peek-shift', shift+'px');
+    // PASS 2 IS NOT OPTIONAL. Applying the shift moves the very box the peek is positioned
+    // inside; reading the rect once, before the shift, put the sliver short of the edge.
+    var pr=plinth.getBoundingClientRect(), cr=card.getBoundingClientRect();
+    p.style.left   = Math.round(peekLeft - pr.left)+'px';
+    p.style.width  = SEQ_PEEK_W+'px';
+    p.style.top    = Math.round(cr.top - pr.top)+'px';
+    p.style.height = Math.round(cr.height*SEQ_PEEK_SCALE)+'px';
+  }
+  async function seqPeekRender(){
+    var p=document.getElementById('seqPeek'), inn=document.getElementById('seqPeekIn');
+    if(!p || !inn) return;
+    if(!SEQ || !seqPeekPhone()){ seqPeekClear(); return; }   // desktop keeps its chevrons
+    var my = ++PEEK_SEQ;
+    var nextId = await seqIdAt(SEQ.index + 1);
+    if(my !== PEEK_SEQ) return;                              // a newer render won
+    if(nextId == null){ seqPeekClear(); return; }            // end of the list: nothing to peek at
+    var d = PEEK_CACHE[nextId];
+    if(!d){
+      var sb=vvClient(); if(!sb) return;
+      var r=await sb.from('player_card_mv').select('*').eq('card_id', nextId).single();
+      if(my !== PEEK_SEQ) return;
+      if(r.error || !r.data){ seqPeekClear(); return; }
+      d = rowToCard(r.data); PEEK_CACHE[nextId] = d;
+    }
+    var cw = cwNow();
+    inn.innerHTML = buildCard(d, cw);
+    inn.style.width = cw+'px';
+    inn.style.transform = 'scale('+SEQ_PEEK_SCALE+')';
+    p.hidden = false;
+    // The built card is NARROWER than cw and sits centred in it, so without this the sliver
+    // would show the container's empty margin before any card. Shift the card's own left
+    // edge to the peek's left edge. Order matters: translate runs BEFORE scale here, so the
+    // offset is taken in unscaled space and lands the edge at exactly 0.
+    var kid = inn.querySelector('.vvcard') || inn.firstElementChild;
+    if(kid){
+      var off = Math.round(kid.getBoundingClientRect().left - inn.getBoundingClientRect().left);
+      if(off > 0) inn.style.transform = 'scale('+SEQ_PEEK_SCALE+') translateX(-'+off+'px)';
+    }
+    seqPeekPlace();
   }
   function seqRender(){
     var nav=document.getElementById('seqNav'), pos=document.getElementById('seqPos'),
-        pv=document.getElementById('seqPrev'), nx=document.getElementById('seqNext'),
-        hint=document.getElementById('seqHint');
+        pv=document.getElementById('seqPrev'), nx=document.getElementById('seqNext');
     if(!nav) return;
-    if(!SEQ){ nav.hidden = true; if(hint) hint.hidden = true; return; }
+    if(!SEQ){ nav.hidden = true; seqPeekClear(); return; }
     nav.hidden = false;
     var total = seqTotal(), i = SEQ.index;
     pos.textContent = (total != null) ? ((i+1).toLocaleString()+' of '+total.toLocaleString())
@@ -1673,9 +1765,9 @@
               : (SEQ_END && SEQ_ORDER ? (i >= SEQ_ORDER.length-1) : false);
     if(pv) pv.disabled = atStart;
     if(nx) nx.disabled = atEnd;
-    // Offer the hint only while there is somewhere to swipe TO, and only until they swipe.
-    // The CSS confines it to phone widths, so no viewport test belongs here.
-    if(hint) hint.hidden = seqHintDone() || (atStart && atEnd);
+    // The peek is the phone affordance. At the end of the list there is nothing to peek at,
+    // so it clears rather than showing an empty edge.
+    if(atEnd) seqPeekClear(); else seqPeekRender();
   }
   async function seqIdAt(idx){
     if(idx < 0) return null;
@@ -1775,7 +1867,6 @@
       if(Math.abs(dx) < DIST) return;                     // moved horizontally, but not enough
       if(Date.now()-t0 > SLOW) return;                    // a slow drag is not a flick
       swiped=Date.now();
-      seqHintSeen();                                      // they have found it; stop offering
       seqGo(dx < 0 ? 1 : -1);                             // swipe left = forward, as in Photos
     }, {passive:true});
     hero.addEventListener('click', function(e){
