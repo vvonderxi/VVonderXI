@@ -2081,7 +2081,10 @@
                hint: top ? (r.lo+'+') : (r.lo+'-'+r.hi) };
     }).filter(Boolean);
     var lowest=bandRange('Exceptional');
-    if(lowest) out.push({ v:'__below', l:(lowest.lo-1)+' and under', lo:null, hi:lowest.lo-1,
+    // Label is '<79', shorter than the old '79 and under'. The three surfaces that show
+    // this band (this computed chip, playbook's band pill, vvindex's band row) must say the
+    // SAME thing , they drifted once before, on this exact label.
+    if(lowest) out.push({ v:'__below', l:'<'+(lowest.lo-1), lo:null, hi:lowest.lo-1,
                           hint:'' });
     return out;
   }
