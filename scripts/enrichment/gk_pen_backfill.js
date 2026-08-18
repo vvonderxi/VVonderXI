@@ -25,10 +25,11 @@
 //     was FOUND at chars 171/212/111/75. The engine cannot read what it never
 //     references. They are also absent from player_card_mv, whose column list is
 //     frozen, so this write is invisible to the site until that matview is rebuilt.
-//  5. Proven empirically after the fact: --snapshot before and after, then diff. Per
-//     the §F 2026-08-13 lesson, the snapshot covers ALL 57,234 cards, not the target
-//     rows — a target-only snapshot once reported a clean write and missed 137 movers
-//     and two public band crossings.
+//  5. Proven empirically after the fact: --snapshot before and after, then diff. Per the
+//     all-57,234-card snapshot rule in §C, the snapshot covers EVERY card, not the target
+//     rows — a target-only snapshot once reported a clean write and missed 137 movers and
+//     two public band crossings. (That rule was promoted from §F into §C on 2026-08-18
+//     when the session log was archived, precisely so this reference could not dangle.)
 //
 //  ── THE TWO SILENT-SUCCESS TRAPS THIS SCRIPT AVOIDS ───────────────────
 //  a. import_progress. importLeagueSeason() opens with isSeasonDone(), and every
