@@ -9,26 +9,42 @@
 # Run:  bash migrations/mv_rebuild_2026-08-19/06_verify_anon.sh
 set -a && . ./.env && set +a
 
-H="apikey: ${SUPABASE_ANON_KEY}"
+# THE KEY: .env's SUPABASE_ANON_KEY is EMPTY in this repo, so relying on it sent a blank
+# header and every request came back 401 "No API key found" , a script failing against a
+# perfectly healthy database, which is worse than no script, because the next person reads
+# it as an outage. Fall back to the key the SITE itself uses, injected into the pages as
+# window.VV_PUBLIC, which is also the more faithful test: it is the exact credential a
+# visitor's browser presents.
+ANON="${SUPABASE_ANON_KEY}"
+if [ -z "$ANON" ]; then
+  ANON=$(grep -o 'SUPABASE_ANON_KEY: *"[^"]*"' card.html | head -1 | sed 's/.*"\(.*\)"/\1/')
+  echo "note: SUPABASE_ANON_KEY empty in .env , using the publishable key from card.html VV_PUBLIC"
+fi
+if [ -z "$ANON" ]; then echo "✗ no anon key found in .env or card.html"; exit 1; fi
+
+H="apikey: ${ANON}"
 B="${SUPABASE_URL}/rest/v1/player_card_mv"
 fail=0
 
-echo "1. row count as anon (expect: 200 and .../57234)"
+echo "1. row count as anon (expect: 200 or 206, and .../57234)"
 out=$(curl -s -D - -o /dev/null -H "$H" -H "Prefer: count=exact" "$B?select=card_id&limit=1")
 code=$(printf '%s' "$out" | head -1 | awk '{print $2}')
 range=$(printf '%s' "$out" | grep -i '^content-range' | tr -d '\r')
 echo "   HTTP $code | $range"
-[ "$code" = "200" ] || { echo "   ✗ not 200"; fail=1; }
+# 206 is CORRECT here, not a failure: PostgREST returns Partial Content whenever it sends a
+# Content-Range, which count=exact always does. Testing for 200 alone failed on a healthy
+# database. Accept both.
+case "$code" in 200|206) ;; *) echo "   ✗ expected 200 or 206, got $code"; fail=1;; esac
 case "$range" in *"/57234") echo "   ✓ full row count visible to anon";;
   *"/0") echo "   ✗ ZERO ROWS , this is the missing-grant signature, NOT an empty database"; fail=1;;
   *) echo "   ✗ unexpected count"; fail=1;; esac
 
 echo
-echo "2. the new columns exist and carry data (expect: 200, non-empty rows)"
+echo "2. the new columns exist and carry data (expect: 200 or 206, non-empty rows)"
 for col in saves goals_conceded penalties_scored starts fouls_drawn cards_yellow def90; do
   n=$(curl -s -o /dev/null -w '%{http_code}' -H "$H" "$B?select=card_id,${col}&${col}=not.is.null&limit=1")
   body=$(curl -s -H "$H" "$B?select=${col}&${col}=not.is.null&limit=1")
-  if [ "$n" = "200" ] && [ "$body" != "[]" ]; then echo "   ✓ ${col}"
+  if { [ "$n" = "200" ] || [ "$n" = "206" ]; } && [ "$body" != "[]" ]; then echo "   ✓ ${col}"
   elif [ "$n" = "400" ]; then echo "   ✗ ${col} , HTTP 400, the column is not on the matview"; fail=1
   else echo "   ✗ ${col} , HTTP $n, body $body"; fail=1; fi
 done
