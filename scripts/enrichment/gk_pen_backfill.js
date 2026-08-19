@@ -2,9 +2,11 @@
 // ══════════════════════════════════════════════════════════════════════
 //  VVonderXI , KEEPER + PENALTY BACKFILL   (2026-08-17)
 //
-//  Populates SEVEN columns on EXISTING player_season_cards rows:
-//    starts, goals_conceded, saves,
-//    penalties_scored, penalties_missed, penalties_saved, penalties_won
+//  Populates SIX columns on EXISTING player_season_cards rows:
+//    starts, goals_conceded, saves, penalties_scored, penalties_missed, penalties_saved
+//  (penalties_won was captured once, measured, and dropped on 2026-08-19 , see the note
+//   in api/import-players.js. The field list comes from NEW_FIELDS, so this script needed
+//   no change beyond this comment.)
 //
 //  WHY NOT THE IMPORTER. api/import-players.js writes with upsert(). Its default
 //  mode DO-UPDATEs every column, which rewrites goals/assists/minutes and therefore
@@ -324,7 +326,7 @@ async function backfillLeagueSeason(code, year, st){
   const show = r => `     ${r.name.slice(0,22).padEnd(23)} ${String(r.team).slice(0,16).padEnd(17)} ` +
     `min ${String(r.minutes).padStart(4)} starts ${String(r.starts).padStart(2)} | goals ${String(r.goals).padStart(4)} ` +
     `conceded ${String(r.goals_conceded).padStart(4)} saves ${String(r.saves).padStart(4)} | ` +
-    `pen ${r.penalties_scored}/${r.penalties_missed} saved ${r.penalties_saved} won ${r.penalties_won}`;
+    `pen ${r.penalties_scored}/${r.penalties_missed} saved ${r.penalties_saved}`;
   if (SAMPLES.keepers.length)   { console.log('\n  ── KEEPERS (saves non-null) ──');            SAMPLES.keepers.forEach(r => console.log(show(r))); }
   if (SAMPLES.penalties.length) { console.log('\n  ── OUTFIELD PENALTY TAKERS (scored > 0) ──'); SAMPLES.penalties.forEach(r => console.log(show(r))); }
 

@@ -158,17 +158,17 @@ const n = x => (x == null ? null : (parseInt(x) || 0));
 // copies of this mapping would drift, and a backfilled row would then disagree with
 // a freshly-imported one on the same card.
 //
-// penalties_won IS WRITTEN RAW, and a coalesce-to-zero was designed, implemented and
-// then REMOVED on the evidence. The reasoning for coalescing was that penalty.won never
-// emits 0 (55 PL 2016 blocks over the 300-min floor: 3 non-null, values 1 and 2), so a
-// NULL looked like it meant "won none" and would invert the house NR rule.
-// IT DOES NOT MEAN THAT. Of the 9 players in that sample who SCORED a penalty, ALL 9
-// carry won=null — including Milner on 7 scored — while the 3 rows where won IS
-// populated scored none. Zero overlap. Somebody won the penalty Milner converted, so
-// null cannot mean zero, and coalescing would have written a fabricated 0 onto ~95% of
-// 57,234 rows. The field is simply unreliable: 5% populated, and absent exactly where
-// it should be present. Stored faithfully, NR where the source is silent.
-// DO NOT re-add the coalesce. The burden is new evidence, not a new formula.
+// penalties_won IS NO LONGER CAPTURED, and the column was dropped on 2026-08-19.
+// It was stored raw for one day, then measured across all 57,234 rows: 1,701 non-null
+// (2.97%), and NOT ONE of them is 0. So a NULL conflates "won none" with "not recorded"
+// and the column cannot be read at all. Worse, it is absent where it should be most
+// reliable: 3,232 rows scored a penalty and are NULL here, only 438 carry both, so 88%
+// of penalty scorers have no value.
+// A coalesce-to-zero was designed and implemented before those figures existed, and
+// removed once they did; do not revive either the column or the coalesce without NEW
+// evidence that the source has started emitting a real zero.
+// (A 55-block sample first suggested ZERO overlap between scorers and populated rows.
+// At full scale it is 438. The conclusion held; the sample overstated it.)
 function extractNewFields(s){
   return {
     starts:           n(s.games?.lineups),
@@ -177,10 +177,9 @@ function extractNewFields(s){
     penalties_scored: n(s.penalty?.scored),
     penalties_missed: n(s.penalty?.missed),
     penalties_saved:  n(s.penalty?.saved),
-    penalties_won:    n(s.penalty?.won),
   };
 }
-const NEW_FIELDS = ['starts','goals_conceded','saves','penalties_scored','penalties_missed','penalties_saved','penalties_won'];
+const NEW_FIELDS = ['starts','goals_conceded','saves','penalties_scored','penalties_missed','penalties_saved'];
 // Accept only a clean YYYY-MM-DD; anything else (empty, malformed, '0000-00-00') -> null
 function cleanDate(d){
   if (!d || typeof d !== 'string') return null;
