@@ -216,6 +216,12 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)}
 .vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
   width:168px;height:4px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--pink),var(--gold))}
+  /* the unavailable state , plain, muted, not a quotation (see vvSetVerdict's `plain`) */
+  .vfinal .vquote.vq-na{font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;font-size:13px;color:var(--ink-soft)}
+  /* NEEDED, not redundant: `body.light .verdict .vquote` is ALSO (0,3,0) and sits later in
+     the sheet, so it won on equal specificity and repainted this charcoal in light mode ,
+     the same trap that hit .dc-x.dc-nym on the card. This is (0,4,0) and wins outright. */
+  body.light .vfinal .vquote.vq-na{color:var(--ink-soft)}
   .vfinal .vquote{max-width:620px;margin-inline:auto}   /* #102: cap the measure , tight centered pull-quote (~50-58 chars) */
   .vfinal .vquote2,.vfinal .vquote3{margin-top:16px}
   .vfinal .vquote3{color:var(--gold)}
@@ -1545,7 +1551,10 @@ body.light .pkmsub{color:var(--ink-soft)}
       for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.textContent=paras[j]; ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
   }
-  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine){
+  /* `plain` renders the text as a STATUS LINE rather than a pull-quote: no quotation marks,
+     no italic display face. A service outage is not something the platform said, and dressing
+     it as a quote is the same error as the card's fallback wearing the Drury italic. */
+  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine,plain){
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
     var parts=[]; if(h2h)parts.push(h2h);
       // STYLE RULE 5 asks the model for a TWO-PARAGRAPH verdict separated by a blank line.
@@ -1554,7 +1563,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(verdict) String(verdict).split(/\n\s*\n/).map(function(x){return x.trim();})
                     .filter(Boolean).forEach(function(x){ parts.push(x); });
       if(!parts.length) parts=[''];
-    for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0)t='“'+t; if(i===parts.length-1)t=t+'”'; vq[i].textContent=t; vq[i].style.display=''; } else { vq[i].style.display='none'; } }
+    for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0 && !plain)t='“'+t; if(i===parts.length-1 && !plain)t=t+'”'; vq[i].textContent=t; vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     if(who){
       // The AI writes this line to match the selected verdict tag + rt gap (see the /api/analyse
@@ -1695,8 +1704,16 @@ body.light .pkmsub{color:var(--ink-soft)}
       .catch(function(e){
         console.error('verdict generation failed:', e&&e.message);
         window._vvVerdictPair=null;   // allow a retry on the next Compare
-        var msg='The verdict could not be generated right now. Please try again.';
-        vvSetStory(nameA,nameB,msg,msg); vvSetVerdict(msg,'',winner,va,vb,VC,TAGS[VC.floorTag]);
+        /* Same treatment as the card: name the gap once, plainly. "right now" says OUTAGE,
+           not data gap , no apology, no cause, nothing that reads as permanent.
+           ONCE, not three times: this used to pass the sentence to both story columns AND
+           the verdict line, so a failure printed the same line three times and looked
+           broken. The story columns are cleared and the message sits in the verdict line.
+           THE TAG STILL RENDERS , VC.floorTag is deterministic and needs no AI, so the
+           verdict tag and the scores survive an outage. Only the prose is missing, and
+           only the prose is disclaimed. */
+        var msg='The written verdict is unavailable right now.';
+        vvSetStory(nameA,nameB,'',''); vvSetVerdict(msg,'',winner,va,vb,VC,TAGS[VC.floorTag],null,true);
       });
   }
   // ── Accolades , wire BOTH slots (real name + gold honours + profile tags) from CMP_A/CMP_B

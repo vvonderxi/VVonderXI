@@ -390,6 +390,8 @@
   .cardshare.done span::after{content:' \2713'}
   .glancebadge{align-self:flex-start;margin-top:2px}
   .gdrury{font-family:'Bricolage Grotesque';font-style:italic;font-weight:800;font-size:14.5px;line-height:1.5;color:var(--pink-ink);margin:4px 0 12px;max-width:520px}
+  /* the unavailable state , plain, muted, not italic: it is a status line, not a quote */
+  .gdrury.na{font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;font-size:12.5px;color:var(--ink-soft)}
   .gdrury.gen{position:relative;min-height:1.2em;border-radius:6px;background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
   @keyframes gdShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   /* SHARE MODAL */
@@ -1140,16 +1142,28 @@
   }
   function vvFillEditorial(){
     if(!EDITORIAL) return;
-    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.textContent='"'+EDITORIAL.glance+'"'; }
+    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.classList.remove('na'); gd.textContent='"'+EDITORIAL.glance+'"'; }
     var sb=document.getElementById('scoutBody'); var sbox=document.getElementById('scoutBox');
     if(sb){ sb.textContent='"'+EDITORIAL.scout+'"'; } if(sbox){ sbox.style.display=''; }
     var nb=document.getElementById('notesBody'); var nl=document.getElementById('notesLayer');
     if(nb){ nb.innerHTML=EDITORIAL.notes.map(function(s){var d=document.createElement('div');d.className='np';d.textContent=s;return d.outerHTML;}).join(''); }
     if(nl){ nl.style.display=''; }
   }
+  /* NAME THE GAP. This used to hide the glance line, the scout box and the notes layer and
+     say nothing, so an OUTAGE looked exactly like a card that simply has no editorial ,
+     the same invisible-failure family as a denied SELECT returning empty, or a silent
+     .replace() no-op. One plain line in the place the editorial voice starts.
+     WORDING IS DELIBERATE AND MUST NOT HARDEN: "right now" says outage, not data gap. No
+     apology, no cause, and nothing that reads as a permanent limitation , this is not an
+     NR and it is not a "not yet measured", both of which describe the RECORD. This
+     describes a service that is down, and it should read as temporary because it is.
+     One statement, not three: the scout box and notes layer stay hidden rather than each
+     repeating the same sentence. */
   function vvEditorialFail(){
     EDITORIAL=null;
-    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.textContent=''; }
+    var gd=document.getElementById('glDrury');
+    if(gd){ gd.classList.remove('gen'); gd.classList.add('na');
+            gd.textContent='The written analysis is unavailable for this card right now.'; }
     var sbox=document.getElementById('scoutBox'); if(sbox){ sbox.style.display='none'; }
     var nl=document.getElementById('notesLayer'); if(nl){ nl.style.display='none'; }
   }
