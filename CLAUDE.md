@@ -287,6 +287,34 @@ Deferred. **SEQUENCING UNCHANGED: AFTER engine recalibration, BEFORE trajectory 
 - **SPORTMONKS CARRIES CLEAN SHEETS AND ITS EVALUATION NEVER TESTED GOALKEEPING.** `sportmonks-killtest.js` lines 35-47 declare the search lists , `defensive`, `attacking_advanced`, `baseline` , and **not one keeper term appears in any of them**; the pass gate is `defensive >= 4`. The 24 keeper strings in the report are incidental, swept up by substring-matching "goal" against a dump of all 500 type names (that dump does show `Saves Insidebox`, `Penalties Saved`, `Goalkeeper Cleansheets`). **So the PASS verdict says nothing either way about keepers, and any provider decision on GK needs its own probe.**
 - **CONSEQUENCE FOR THE HONESTY WORK:** the two card-level fixes below are no longer permanent disclosures of a permanent limit , they are **interim**, and they should say "not yet measured", never "cannot be measured".
 
+### GOALKEEPER CARD , A SEPARATE VISUAL TREATMENT (LOCKED 2026-08-19, NOT built)
+**Outfield cards keep the five-dimension radar UNCHANGED. GK cards get their own treatment, applied to every keeper card on the platform.** This is a locked design decision, not an open question , do not re-derive the spoke count.
+
+**WHY IT EXISTS: a keeper card is currently an outfielder's card with the numbers emptied out.** Measured live on Neuer 19/20, which now holds saves 81, goals conceded 31, penalties saved 1: the radar reads Goal Threat 0, Creation 0, Progression 20, Defensive 1, Reliability 87 , **all of it arithmetically correct and none of it about goalkeeping** (the 20 is passing volume leaking through `0.02*passes_total`; the 87 is availability). The Proof lists Tackles 2, Interceptions NR, Blocks NR, because `POOL_DIM.GK = 'def'` hands keepers the defender row set. Not one of saves, goals conceded or penalties saved appears anywhere on the card.
+
+**THE RADAR , THREE SPOKES. NOT FIVE, NOT FOUR.**
+- **Save percentage** , `saves / (saves + goals_conceded)`. The one axis that is mostly the keeper rather than the team.
+- **Penalties saved** , the only measure that is purely his own.
+- **Workload** , shots faced, as CONTEXT rather than credit.
+- **WHY NOT FOUR (i.e. adding raw saves):** saves and save percentage share a numerator, so a busy season would inflate two spokes for one reason , the double-count the method exists to prevent. And saves and goals conceded BOTH rise when the defence in front is poor, so half a four-spoke shape would be drawn by the team rather than the keeper. Separately, **a four-point radar renders as a diamond and reads as a shape rather than a profile.**
+- **WHY NOT FIVE:** there are not five honest keeper axes. **Clean sheets are not in the source and are a team measure anyway.**
+
+**THE PROOF , the same treatment as outfield cards, with percentile bars.** Carries **saves, save percentage, goals conceded, penalties saved and shots faced**. **Every number appears here; only the ones that mean something get a spoke.** Percentiles run against the **KEEPER pool** and **2015+ only**, since no saves data exists before that, **and the panel must say so.**
+
+**THE PUBLISHED LIMITATION , shot quality is not in the source**, so a tap-in and a top-corner strike count the same. Save percentage separates keepers **partially, not fully. State it rather than implying the rate is definitive.**
+
+**BLOCKED ON , THE GK-75 CAP.** While rt is capped and driven by availability and league strength, **no panel can say much about how well he kept goal.** This treatment is worth building anyway, but **the cap is the real job behind it.**
+
+**ALSO NEEDS UPDATING , `vvindex.html`'s five-dimension section AND playbook's equivalent must BOTH explain that goalkeepers are measured on a different set, and why.** Both currently describe the five dimensions as though they apply to every card.
+
+**FOUR MEASUREMENTS THE BUILD WILL NEED, taken 2026-08-19 so nobody re-derives them:**
+- **`shots faced` IS NOT A COLUMN AND MUST BE DERIVED: `saves + goals_conceded`.** There is no shots-faced, save-percentage or clean-sheet column anywhere on the matview. **So it is shots ON TARGET faced** , it excludes blocked shots, shots off target, and anything off the frame. **Do not label it plain "shots faced" on the card without that qualifier**, or the number claims more than it is.
+- **ALL THREE SPOKES COME FROM TWO SOURCE NUMBERS PLUS PENALTIES SAVED**, since save percentage is the RATIO of `saves`/`(saves+conceded)` and workload is their SUM. **That is a clean volume-and-rate decomposition rather than a double-count**, and it is the reason the three-spoke set holds up where four would not , but a future session will ask, so it is written down.
+- **PENALTIES SAVED IS A SPARSE AXIS AND THE BUILD MUST DECIDE HOW IT RENDERS. 53.3% of the usable pool sits at ZERO** (1,162 of 2,179 cards over 900 minutes; 677 at one, 238 at two, 76 at three, 26 at four or more). **A spoke that is zero for over half the population collapses to a point on most cards.** Not a reason to drop it , it is the only purely-his-own measure , but decide the treatment deliberately rather than discovering it at render time.
+- **THE POOL: 4,304 GK cards, of which 2,806 have saves and 2,179 clear 900 minutes.** Save percentage over that pool runs **33.3 / 68.5 / 100.0** (min / median / max), so the axis genuinely discriminates. **Earliest saves data is 2014, not 2015** , 10 cards , so gate on DATA PRESENCE per card, never on the season year, exactly as the confidence rework had to.
+
+**DEPENDENCY THAT WILL BITE IF MISSED: the Proof's percentile bars do not exist yet for ANY position.** The launch Proof was trimmed to per-90 plus denominator (§D PARALLEL item 3), and the percentile columns are parked in `POST_LAUNCH.md` behind three unmade product decisions (pool, cross-league vs per-league, minutes threshold). **The keeper Proof inherits that block** , build the rows first and the bars with the percentile work, or settle those three decisions as part of this stage.
+
 ### FILTER FOLLOW-UP (VVFilters , ONE session, and every item benefits ALL THREE surfaces) , logged 2026-08-13, NOT built
 The component is adopted on rankings, the card overlay and the compare picker, so anything fixed inside `VVFilters` is fixed three times over. That is the reason to do these together rather than surface by surface.
 - **CLEAR ALL IS A BARE LINK. Restyle as a proper pill, consistently placed.** It lives in the component, so one fix covers all three. (Its VISIBILITY was already made consistent on 2026-08-13 , rankings used to hide it until a filter was active and was the odd one out; all three now show it whenever the panel is open.)
