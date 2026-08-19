@@ -377,14 +377,6 @@
   body.light .dc-dots i.on{background:var(--green);box-shadow:0 0 8px -1px var(--green)}
   .dc-x{font-family:'Archivo';font-weight:900;font-size:14px;color:var(--charcoal)}
   body.light .dc-x{color:var(--charcoal)}
-  /* GK state: no dots beside it, so it carries the row alone , drop the 900 weight and the
-     uppercase-score look, since this is a sentence rather than a figure. */
-  .dc-x.dc-nym{font-weight:600;font-size:12.5px;letter-spacing:0.01em;color:#7A5C18}
-  /* SAME colour, and it exists ONLY to out-specify `body.light .dc-x` (0,2,1) which beats
-     `.dc-x.dc-nym` (0,2,0) and was repainting this charcoal in light mode. This is a
-     specificity fix, NOT a theme variant , the panel is cream in both themes, so if these
-     two values ever diverge one of them is wrong. Measured 5.18:1 in both. */
-  body.light .dc-x.dc-nym{color:#7A5C18}
   .dc-note{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:#6a6256;margin-top:12px}
   body:not(.light){color-scheme:dark} body.light{color-scheme:light}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;margin-right:14px;transition:.15s}
@@ -495,12 +487,6 @@
   .dc-stat .dot{width:7px;height:7px;border-radius:50%;box-sizing:border-box;flex-shrink:0}
   .dc-stat.ok{color:#2E8C5A} .dc-stat.ok .dot{background:#2E8C5A}
   .dc-stat.nr{color:var(--ink-soft)} .dc-stat.nr .dot{border:1.5px solid rgba(28,27,26,.28)}
-  /* Goalkeeping: pending, not missing. Deliberately NOT the .nr grey , NR means the source
-     never recorded it, whereas these are measures the platform has not surfaced yet.
-     NO body.light VARIANT, deliberately: this panel is the cream .layer surface in BOTH
-     themes, so a light-mode-only override would leave dark mode on the lighter gold at
-     4.2:1. Measured 5.18:1 against the cream in both themes, so it clears AA. */
-  .dc-stat.nym{color:#7A5C18} .dc-stat.nym .dot{border:1.5px solid rgba(122,92,24,.55)}
   .dc-src{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:13px;border-top:1px solid rgba(0,0,0,.1)}
   .dc-src .k{font-size:11.5px;color:var(--ink-soft)} .dc-src .v{font-size:11.5px;color:var(--ink-soft);font-weight:500}
   *{box-sizing:border-box}
@@ -1080,7 +1066,7 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260818b"></script>
+<script src="/vv-core.js?v=20260819a"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -1324,36 +1310,37 @@
     var dcX = document.getElementById('dcX');
     var dcDots = document.getElementById('dcDots');
     var dcFields = document.getElementById('dcFields');
-    // GK: confidence is NULL by design (vv-core confidenceFor). Render the not-yet-measured
-    // state and NO dots at all , a row of five empty dots reads as a zero score, which is
-    // itself a completeness claim we cannot make for a keeper.
-    var isGKCard = (D.confidence == null);
+    // A keeper is scored on the SAME 2-to-5 scale as everyone else, on keeper measures.
+    // The old null-score / "not yet measured" state is gone: it was true only while the
+    // fields were unsurfaced, and the 2026-08-19 matview rebuild surfaced them.
+    // The keeper GROUP, not D.confidence, is what identifies a keeper here , the score is
+    // now a number for every card, so it can no longer carry that signal.
+    var isKeeper = Array.isArray(D.confidenceFields)
+      && D.confidenceFields.some(function(f){ return f.group === 'keeper'; });
     if(dcX && dcDots){
-      if(isGKCard){
-        dcX.textContent = 'Not yet measured';
-        dcX.classList.add('dc-nym');
-        dcDots.innerHTML = '';
-      } else {
-        var c = D.confidence;
-        dcX.textContent = c + ' / 5';
-        dcX.classList.remove('dc-nym');
-        var dots = '';
-        for(var i=1;i<=5;i++){ dots += (i<=c) ? '<i class="on"></i>' : '<i></i>'; }
-        dcDots.innerHTML = dots;
-      }
+      var c = D.confidence;
+      dcX.textContent = c + ' / 5';
+      var dots = '';
+      for(var i=1;i<=5;i++){ dots += (i<=c) ? '<i class="on"></i>' : '<i></i>'; }
+      dcDots.innerHTML = dots;
     }
-    // The static caption explains a 2-to-5 dot scale, which is meaningless with no dots.
     var dcNote = document.querySelector('.dc-detail .dc-note');
     if(dcNote){
-      dcNote.textContent = isGKCard
-        ? 'Goalkeeping is not yet measured on this platform. A keeper’s record is saves, goals conceded, penalties saved and clean sheets, and those are not yet on the card, so we do not put a completeness score on it. Minutes, goals and assists below are verified as normal. NR means not recorded.'
-        : 'The dots run from 2 to 5. Every card has verified minutes, the baseline. Goals, assists and the deeper fields below show what else was recorded for that season. NR means not recorded.';
+      // The keeper sentence explains the 4-of-5 ceiling BEFORE anyone wonders why their
+      // goalkeeper never reaches five. The ceiling is the source, not the player.
+      dcNote.textContent = 'The dots run from 2 to 5. Every card has verified minutes, the baseline. '
+        + (isKeeper
+            ? 'A keeper is measured on saves, goals conceded and penalties saved. Clean sheets are not in our source, so no goalkeeper card reaches five.'
+            : 'Goals, assists and the deeper fields below show what else was recorded for that season.')
+        + ' NR means not recorded.';
     }
     if(dcFields){
       if(Array.isArray(D.confidenceFields)){
+        // Keeper rows use the SAME ok/NR treatment as every other field now. A missing
+        // keeper measure is not a special state, it is the source not recording it.
         var line = function(f){
-          var cls = f.present ? 'ok' : (f.group === 'keeper' ? 'nym' : 'nr');
-          var txt = f.present ? 'Verified' : (f.group === 'keeper' ? 'Not yet measured' : 'NR');
+          var cls = f.present ? 'ok' : 'nr';
+          var txt = f.present ? 'Verified' : 'NR';
           return '<div class="dc-line"><span>' + f.label + '</span><span class="dc-stat ' + cls + '"><span class="dot"></span>' + txt + '</span></div>';
         };
         var basics = D.confidenceFields.filter(function(f){ return f.group === 'basics'; });

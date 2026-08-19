@@ -584,10 +584,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vc-dots i.on{background:var(--green);border-color:var(--green);box-shadow:0 0 8px -1px var(--green)}
   body.light .vc-dots i.on{background:var(--green);border-color:var(--green);box-shadow:0 0 8px -1px var(--green)}
   .vc-x{font-family:'Archivo';font-weight:900;font-size:15px;color:rgba(243,237,224,0.7);flex-shrink:0} body.light .vc-x{color:#5a544b}
-  /* GK: a sentence, not a figure, and no dots beside it. Placed AFTER .vc-x so it wins
-     without needing extra specificity, and light mode is overridden explicitly because
-     body.light .vc-x would otherwise out-specify a bare .vc-nym. */
-  .vc-x.vc-nym{font-weight:600;font-size:12px;letter-spacing:0.01em;color:rgba(226,193,109,0.92)} body.light .vc-x.vc-nym{color:#7A5C18}  body:not(.light){color-scheme:dark} body.light{color-scheme:light}
+  body:not(.light){color-scheme:dark} body.light{color-scheme:light}
   .vshare{margin-top:24px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.1)}
   body.light .vshare{border-top-color:rgba(0,0,0,0.1)}
   .vshare-main{background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:999px;padding:13px 32px;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.01em;cursor:pointer;box-shadow:0 12px 30px -10px rgba(255,92,122,.6);transition:transform .15s}
@@ -975,7 +972,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260818b"></script>
+<script src="/vv-core.js?v=20260819a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1742,20 +1739,16 @@ body.light .pkmsub{color:var(--ink-soft)}
     var box=document.getElementById('vconf'); if(!box) return;
     function row(c,cls,ns){
       if(!c) return '';
-      // GK: vv-core returns confidence NULL on purpose, because all seven granular fields
-      // describe outfield play. Show the not-yet-measured state and NO dots , `c.confidence||0`
-      // would have rendered an empty five-dot row and "0 / 5", which is a worse false claim
-      // than the old one. Note `||0` cannot be used to detect this: a real 0 never occurs
-      // (the outfield scale is 2..5), but null must be tested explicitly.
+      // A keeper is scored on the same 2-to-5 scale as everyone else now, on keeper
+      // measures. The null-score / not-yet-measured branch that used to sit here is gone:
+      // it was true only while the fields were unsurfaced, and the 2026-08-19 matview
+      // rebuild surfaced them.
       var seasons=(ns!=null?ns:'?')+' season'+(ns===1?'':'s')+' on record';
-      if(c.confidence==null){
-        var subGK=(c.league||'')+' · '+seasons+' · goalkeeping not yet measured';
-        return '<div class="vcrow"><span class="vc-n '+cls+'">'+vvEsc(c.surname)+'</span><span class="vc-dots"></span><span class="vc-x vc-nym">Not yet measured</span></div>'
-             + '<div class="vc-sub">'+vvEsc(subGK)+'</div>';
-      }
       var lvl=c.confidence, dots='';
       for(var i=0;i<5;i++) dots+='<i'+(i<lvl?' class="on"':'')+'></i>';
-      var miss=(c.confidenceFields||[]).filter(function(f){return f.group==='advanced'&&!f.present;}).map(function(f){return f.label;});
+      // The missing list reads BOTH groups. Scoped to 'advanced' it went silently empty for
+      // keepers, so a goalkeeper would claim a "full stat record" while missing clean sheets.
+      var miss=(c.confidenceFields||[]).filter(function(f){return (f.group==='advanced'||f.group==='keeper')&&!f.present;}).map(function(f){return f.label;});
       var sub=(c.league||'')+' · '+seasons+' · '+(miss.length?('missing: '+miss.join(', ')):'full stat record');
       return '<div class="vcrow"><span class="vc-n '+cls+'">'+vvEsc(c.surname)+'</span><span class="vc-dots">'+dots+'</span><span class="vc-x">'+lvl+' / 5</span></div>'
            + '<div class="vc-sub">'+vvEsc(sub)+'</div>';

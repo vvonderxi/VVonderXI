@@ -395,28 +395,51 @@
   const GRANULAR = ['shots_on','passes_key','dribbles_success','passes_total',
                     'tackles_total','interceptions','duels_won'];
 
-  /* GOALKEEPERS GET NO SCORE, AND THAT IS THE HONEST ANSWER, NOT A GAP.
-     Every one of the seven GRANULAR fields describes OUTFIELD play, so scoring a keeper
-     against them measures how much of an outfielder's record a goalkeeper happens to have.
-     Neuer 19/20 scored 4 of 5 under a caption reading "how complete the data behind this
-     card is", which was simply false. A keeper's actual measures — saves, goals conceded,
-     penalties saved, clean sheets — are not on player_card_mv at all, so the front end
-     cannot see them and cannot honestly put a number on the record.
-     So confidenceFor returns NULL for a keeper. Not 0, and not a reduced score: any number
-     is a completeness claim, and the claim cannot be made. Consumers must render an
-     explicit not-yet-measured state instead.
-     WORDING IS DELIBERATE AND INTERIM: "not yet measured", NEVER "cannot be measured".
-     The keeper fields are being backfilled into player_season_cards now; they surface once
-     player_card_mv is rebuilt, at which point this branch should be revisited rather than
-     left to harden into a permanent disclaimer. */
-  function isGK(row){ return (row.position_pool || row.position || '') === 'GK'; }
+  /* A KEEPER IS SCORED ON KEEPER MEASURES, ON THE SAME 2-TO-5 SCALE AS EVERY OTHER CARD.
+     The seven GRANULAR fields all describe OUTFIELD play, so scoring a keeper against them
+     measured how much of an outfielder's record a goalkeeper happened to have , Neuer 19/20
+     read 4 of 5 under a caption saying "how complete the data behind this card is".
+     That was answered for a while with a NULL score and an explicit not-yet-measured state,
+     which was true only because the fields were not surfaced. The matview rebuild of
+     2026-08-19 surfaced them, so that wording became the false statement , it would tell a
+     visitor "not yet measured" beside a card holding 81 saves. It is retired.
+     What is left is NOT a special keeper state. It is ordinary NR: the source did not record
+     it for that season, exactly as a pre-2015 outfielder already reads (15,181 of them score
+     2 of 5 with all seven granular fields NR). So keepers get a keeper FIELD SET inside the
+     normal scale, and no bespoke state that can go stale again.
+
+     FOUR KEEPER MEASURES, OF WHICH THE SOURCE CARRIES THREE. Clean sheets are not on
+     player_card_mv at all, and neither are shots faced, so a save rate cannot be derived
+     either. 3 of 4 gives 2 + 3*(3/4) = 4.25 -> 4, so A KEEPER TOPS OUT AT 4 OF 5 AND THAT
+     CEILING IS REAL, not a rounding artefact. Letting a keeper print 5 of 5 would claim
+     parity with an outfielder's full record, which is the same overclaim in a new costume.
+     Measured on the live matview: 2,784 keeper cards hold all three, 1,483 hold none, and
+     only 10 hold two , the three fields move as one, so the score is honest at two values.
+
+     THE isGK TEST IS DELIBERATELY WIDE, AND IT IS A MITIGATION, NOT THE FIX. 27 cards carry
+     coarse position 'GK' with a position_pool of 'UNK', and 22 of those DO have saves data;
+     under a coalesce test they would be scored against the seven outfield fields and read as
+     near-empty. OR-ing the two fields pulls them in. The underlying defect is the position
+     data itself (see §E position-pool accuracy) and this does not fix it , do not read this
+     as the fix and close that thread. */
+  function isGK(row){ return row.position === 'GK' || row.position_pool === 'GK'; }
+
+  // key:null means the measure exists in football but not in our source, so it can never be
+  // present. It still gets a row, because "we do not have this" is the honest thing to show.
+  const KEEPER_SET = [
+    { key:'saves',           label:'Saves' },
+    { key:'goals_conceded',  label:'Goals conceded' },
+    { key:'penalties_saved', label:'Penalties saved' },
+    { key:null,              label:'Clean sheets' }
+  ];
 
   function confidenceFor(row){
-    if (isGK(row)) return null;                    // see note above: no number for a keeper
+    const keeper = isGK(row);
+    const total = keeper ? KEEPER_SET.length : GRANULAR.length;
     let present = 0;
-    for (const f of GRANULAR) if (row[f]!=null) present++;
-    const frac = present / GRANULAR.length;       // 0 at the wall, 1 fully granular
-    return Math.round(2 + frac*3);                 // linear 2..5
+    if (keeper) { for (const m of KEEPER_SET) if (m.key && row[m.key]!=null) present++; }
+    else        { for (const f of GRANULAR)   if (row[f]!=null) present++; }
+    return Math.round(2 + (present/total)*3);      // linear 2..5, unchanged for outfielders
   }
   function confidenceFields(row){
     var LABELS = {
@@ -436,10 +459,10 @@
     // A keeper gets the keeper measures, not the outfield ones. Listing "Successful
     // dribbles , NR" against a goalkeeper is the same false claim as the score was,
     // just itemised, and Compare builds its "missing:" line straight off this group.
+    // present is now REAL per field, not hardcoded false , the data is on the matview.
     if (isGK(row)) {
-      var KEEPER = ['Saves','Goals conceded','Penalties saved','Clean sheets'];
-      return basics.concat(KEEPER.map(function(l){
-        return { label:l, present:false, group:'keeper' };
+      return basics.concat(KEEPER_SET.map(function(m){
+        return { label:m.label, present: !!(m.key && row[m.key] != null), group:'keeper' };
       }));
     }
     var advanced = GRANULAR.map(function(f){
