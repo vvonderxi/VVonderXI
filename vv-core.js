@@ -1082,6 +1082,13 @@
       tackles_total:  row.tackles_total != null ? row.tackles_total : null,
       tackles_blocks: row.tackles_blocks != null ? row.tackles_blocks : null,
       interceptions:  row.interceptions != null ? row.interceptions : null,
+      // Keeper figures, surfaced by the 2026-08-19 matview rebuild. Carried so the card
+      // and the AI payload can cite them. Null-preserving: NR, never 0 , a keeper with no
+      // recorded saves has an unknown season, not a season of zero saves.
+      saves:           row.saves != null ? row.saves : null,
+      goals_conceded:  row.goals_conceded != null ? row.goals_conceded : null,
+      penalties_saved: row.penalties_saved != null ? row.penalties_saved : null,
+      starts:          row.starts != null ? row.starts : null,
       season_age:  row.season_age != null ? row.season_age : null,
 
       // ── Computed Contract fields (rows / expanded card / radar / poster) ──
