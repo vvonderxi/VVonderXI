@@ -675,7 +675,7 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
 .cardslot:not(.flipping){transition:transform .15s}
 .cardslot.flipping{transform:none !important}
   /* #109 shared 360deg reveal-through-back flip (VVCore.vvCardFlip) , IDENTICAL block in card.html.
-     vvflip*/vvmono* namespace (avoids the removed .flipstage prototype + the live .vvback empty-slot). */
+     vvflip* / vvmono* namespace (avoids the removed .flipstage prototype + the live .vvback empty-slot). */
   .vvflipwrap{--cw:300px;position:relative;margin:0 auto;-webkit-perspective:calc(var(--cw)*3.6);perspective:calc(var(--cw)*3.6)}   /* no forced dims (box from in-flow front); perspective scales to card so small mobile cards still read as a real turn */
   .vvflipinner{position:relative;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}   /* iOS Safari needs -webkit- or it flattens; NO will-change (it promotes to a flattened layer, killing children's 3D) */
   .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
@@ -975,7 +975,6 @@ body.light .pkmsub{color:var(--ink-soft)}
         </div>
       </div>
     </div>
-  </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/vv-core.js?v=20260819b"></script>
