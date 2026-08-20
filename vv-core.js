@@ -1639,6 +1639,210 @@
       +'<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
     +'</svg>';
   }
+  // ── SHARED ROW CSS (#) , the rules that style what rankRowHTML emits ──────────────
+  //  THESE USED TO LIVE IN THE PAGE FILES, IN THREE PLACES, AND THAT WAS THE DEFECT.
+  //  rankRowHTML lived here while its CSS lived in rankings.html (global copy), in
+  //  card.html (a second copy scoped under #cardSearch) and, for the seasonled variant,
+  //  in card.html AND compare.html. Measured before moving: the copies were byte-IDENTICAL
+  //  once the container id was normalised, so nobody had customised one.
+  //
+  //  WHY IT MATTERED: the renderer worked and the rows simply had no styling, with nothing
+  //  to signal it. That is how pointing the compare picker at rankRowHTML produced 804px
+  //  unstyled rows. Until this move, any surface adopting the shared renderer was one
+  //  copy-paste from the same silent bug.
+  //
+  //  TWO NAMESPACES, NOT ONE, DELIBERATELY. The grid set and the season set both style
+  //  .rmini and .rtag with DIFFERENT values, so one namespace would make them collide with
+  //  each other. .vvrows is the list/grid container, .vvrows-season is the season fold.
+  //  A container opts in by carrying the class; no static markup on any page uses these
+  //  class names, so the renderer owns the whole vocabulary and nothing else can match.
+  //
+  //  .vvrows.vvrows IS NOT A TYPO. Those rules originally carried the container ID
+  //  (#cardgrid / #csGrid), which outranks any number of classes. Dropping the ID to one
+  //  class would let body.light rules (0,2,0) beat container rules that used to win at
+  //  (1,1,1), silently inverting light-mode colours under pillmode. The doubled class
+  //  restores the ordering.
+  //
+  //  .vvrows.pillmode IS ALSO NOT A SLIP , the mode class sits ON the container, so it
+  //  MERGES into that compound. Writing it as a descendant (".vvrows .pillmode .urow")
+  //  matches nothing, which is precisely the bug the computed-style diff caught: every
+  //  row lost its padding and column-gap and grew from 80px to 637px tall.
+  //
+  //  WHAT DELIBERATELY DID NOT MOVE: .gridwrap / .compacthead rules (page furniture that
+  //  merely mentions a mode class , .compacthead is static markup in rankings.html, not
+  //  renderer output) and the Cards-view :not(.pillmode) negations. Both stay in the pages.
+  //
+  //  THE BACKSLASHES ARE DOUBLED because a CSS escape (content:"\00B7") is an illegal
+  //  OCTAL escape inside a template literal. node --check catches it; nothing else would.
+  //
+  //  INJECTED AT THE FRONT OF <head> so page rules stay LATER in author order and a page
+  //  can still override at equal specificity. vv-core loads in the BODY on all three pages,
+  //  after the page <style> is parsed, and rows render later still, so the sheet is always
+  //  in place before a row exists. No flash.
+  var VV_ROW_CSS = `
+.vvrows.vvrows.pillmode, .vvrows.vvrows.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
+body.light .vvrows.vvrows.pillmode, body.light .vvrows.vvrows.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}
+.vvrows .urow{display:grid;grid-template-columns:44px minmax(0,2.2fr) 56px minmax(0,1.5fr) 96px 264px 60px 60px 60px;align-items:center;cursor:pointer;transition:background .14s}
+.vvrows.vvrows.pillmode > .urow, .vvrows.vvrows.compactmode > .urow{display:grid;justify-content:stretch}
+.vvrows .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
+body.light .vvrows .urow+.urow{border-color:rgba(0,0,0,0.055)}
+.vvrows .urow:hover{background:rgba(255,255,255,0.04)}
+body.light .vvrows .urow:hover{background:rgba(0,0,0,0.025)}
+.vvrows .urank{text-align:center;font-family:'Archivo';font-weight:900;color:rgba(243,237,224,0.58);font-variant-numeric:tabular-nums}
+body.light .vvrows .urank{color:var(--ink-soft)}
+.vvrows .uident{display:flex;align-items:center;gap:11px;min-width:0}
+.vvrows .ushield{flex:none;display:block;width:auto}
+.vvrows.pillmode .ushield{height:24px}
+.vvrows.compactmode .ushield{height:20px}
+.vvrows .uflag{flex:none}
+.vvrows .uname{font-family:'Bricolage Grotesque';font-weight:800;letter-spacing:-.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.light .vvrows .uname{color:var(--charcoal)}
+.vvrows .uyear{font-weight:700;color:rgba(243,237,224,0.55);text-align:center;font-variant-numeric:tabular-nums}
+body.light .vvrows .uyear{color:var(--ink-soft)}
+.vvrows .uclub{font-weight:700;color:rgba(243,237,224,0.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.light .vvrows .uclub{color:var(--ink-soft)}
+.vvrows .upos{font-family:'Archivo';font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,0.58);text-align:center}
+.vvrows .uage{position:relative;margin-left:11px;font-weight:700;letter-spacing:0;text-transform:none;opacity:.72;font-variant-numeric:tabular-nums}
+.vvrows .uage::before{content:"\\00B7";position:absolute;left:-8px;opacity:.55}
+body.light .vvrows .upos{color:var(--ink-soft)}
+.vvrows .utags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:5px;min-width:0}
+.vvrows .ugoals, .vvrows .uassists{font-weight:800;color:var(--cream);text-align:right;font-variant-numeric:tabular-nums}
+body.light .vvrows .ugoals, body.light .vvrows .uassists{color:var(--charcoal)}
+.vvrows .ugoals span, .vvrows .uassists span{font-family:'Archivo';font-weight:700;color:rgba(243,237,224,0.6);margin-left:1px}
+body.light .vvrows .ugoals span, body.light .vvrows .uassists span{color:var(--ink-soft)}
+.vvrows.pillmode .urow{column-gap:18px;padding:14px 22px}
+.vvrows.pillmode .urank{font-size:17px}
+.vvrows.pillmode .uflag{font-size:22px}
+.vvrows.pillmode .uname{font-size:19px}
+.vvrows.pillmode .uyear{font-size:13px}
+.vvrows.pillmode .uclub{font-size:14px}
+.vvrows.pillmode .upos{font-size:11px}
+.vvrows.pillmode .ugoals, .vvrows.pillmode .uassists{font-size:15px}
+.vvrows.pillmode .ugoals span, .vvrows.pillmode .uassists span{font-size:11px}
+.vvrows.compactmode .urow{column-gap:14px;padding:8px 18px}
+.vvrows.compactmode .urank{font-size:13px}
+.vvrows.compactmode .uflag{font-size:18px}
+.vvrows.compactmode .uname{font-size:16px}
+.vvrows.compactmode .uyear{font-size:12px}
+.vvrows.compactmode .uclub{font-size:13px}
+.vvrows.compactmode .upos{font-size:10px}
+.vvrows.compactmode .ugoals, .vvrows.compactmode .uassists{font-size:13px}
+.vvrows.compactmode .ugoals span, .vvrows.compactmode .uassists span{font-size:10px}
+.vvrows.compactmode .rmini{width:40px;height:44px;border-radius:9px}
+.vvrows.compactmode .rmvv{font-size:10px}
+.vvrows.compactmode .rmn{font-size:17px}
+.vvrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
+.vvrows .rtag.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A);border-color:transparent;color:#5a4410}
+.vvrows .rtag.pink{background:rgba(255,92,122,.14);border-color:rgba(255,92,122,.5);color:#e0466a}
+.vvrows .rtag.blue{background:rgba(59,111,176,.14);border-color:rgba(59,111,176,.5);color:#3f74b5}
+.vvrows .rtag.green{background:rgba(46,140,90,.15);border-color:rgba(46,140,90,.5);color:#2a8455}
+.vvrows .rtag.coral{background:rgba(255,122,92,.15);border-color:rgba(255,122,92,.5);color:#e0613a}
+.vvrows .rtag.purple{background:rgba(150,95,205,.15);border-color:rgba(150,95,205,.5);color:#8b5bc8}
+body.light .vvrows .rtag.pink{color:#af3753}
+body.light .vvrows .rtag.coral{color:#a1462a}
+body.light .vvrows .rtag.slate{color:#62626d}
+body.light .vvrows .rtag.green{color:#236f47}
+body.light .vvrows .rtag.blue{color:#36649c}
+body.light .vvrows .rtag.purple{color:#784eac}
+.vvrows .rtag.slate{background:rgba(120,120,135,.14);border-color:rgba(120,120,135,.45);color:#777785}
+.vvrows .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
+.vvrows .rtag-prestige-gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F3DA88;font-weight:800}
+.vvrows .rtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);border-color:transparent;color:#16120e;font-weight:800}
+.vvrows .rtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443);border-color:transparent;color:#fff}
+.vvrows .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
+.vvrows .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
+.vvrows .rtag-age{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+.vvrows .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+.vvrows .rmini{justify-self:end;margin-right:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
+.vvrows .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:11.5px;line-height:1}
+.vvrows .rmvv .a{color:#1C1B1A}
+.vvrows .rmvv .b{color:var(--pink)}
+.vvrows .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;line-height:1;color:#1C1B1A}
+.vvrows .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
+.vvrows .rmini.elite .a, .vvrows .rmini.elite .rmn{color:#2a1d03}
+.vvrows .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
+.vvrows .rmini.gen .a, .vvrows .rmini.gen .rmn{color:#fff}
+@media (max-width:720px),(max-height:600px){
+  .vvrows.vvrows.pillmode > .urow{grid-template-columns:24px minmax(0,1fr) auto auto auto auto 42px;grid-template-rows:auto auto auto;column-gap:0;row-gap:4px;padding:10px 13px;align-items:center}
+  .vvrows.vvrows.pillmode > .urow > .urank{grid-column:1;grid-row:1/4;align-self:start;margin-top:2px;font-size:12px;margin-right:11px}
+  .vvrows.vvrows.pillmode > .urow > .uident{grid-column:2/7;grid-row:1;min-width:0}
+  .vvrows.vvrows.pillmode .uname{font-size:15.5px}
+  .vvrows.vvrows.pillmode .ushield{height:18px}
+  .vvrows.vvrows.pillmode > .urow > .uclub, .vvrows.vvrows.pillmode > .urow > .uyear, .vvrows.vvrows.pillmode > .urow > .upos, .vvrows.vvrows.pillmode > .urow > .ugoals, .vvrows.vvrows.pillmode > .urow > .uassists{grid-row:2;display:inline-flex;align-items:baseline;font-size:12px;font-weight:700;white-space:nowrap}
+  .vvrows.vvrows.pillmode > .urow > .uclub{grid-column:2;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--row-muted-2)}
+  .vvrows.vvrows.pillmode > .urow > .uyear{grid-column:3;color:var(--row-muted);font-variant-numeric:tabular-nums}
+  .vvrows.vvrows.pillmode > .urow > .upos{grid-column:4;color:var(--row-muted-2)}
+  .vvrows.vvrows.pillmode > .urow > .ugoals{grid-column:5;color:var(--row-muted);font-variant-numeric:tabular-nums}
+  .vvrows.vvrows.pillmode > .urow > .uassists{grid-column:6;color:var(--row-muted);font-variant-numeric:tabular-nums;margin-left:6px;margin-right:8px}
+  .vvrows.vvrows.pillmode > .urow > .uclub::after, .vvrows.vvrows.pillmode > .urow > .uyear::after, .vvrows.vvrows.pillmode > .urow > .upos::after{content:"\\00B7";margin:0 6px;opacity:.45;color:var(--row-muted-2);font-weight:700}
+  .vvrows.vvrows.pillmode > .urow > .ugoals span, .vvrows.vvrows.pillmode > .urow > .uassists span{color:var(--row-dim);font-weight:800;font-size:10px;margin-left:1px}
+  .vvrows.vvrows.pillmode > .urow > .utags{grid-column:2/7;grid-row:3;justify-content:flex-start;margin-top:2px}
+  .vvrows.vvrows.pillmode .rtag{font-size:8.5px;padding:2.5px 8px}
+  .vvrows.vvrows.pillmode > .urow > .rmini{grid-column:7;grid-row:1/4;align-self:center;justify-self:end;margin:0;width:42px;height:48px}
+  .vvrows.vvrows.compactmode > .urow{grid-template-columns:22px minmax(0,1fr) 34px 30px 30px 40px;grid-template-rows:auto auto;column-gap:9px;row-gap:1px;padding:7px 12px;align-items:center}
+  .vvrows.vvrows.compactmode > .urow > .urank{grid-column:1;grid-row:1/3;align-self:center;font-size:11px}
+  .vvrows.vvrows.compactmode > .urow > .uident{grid-column:2;grid-row:1;min-width:0}
+  .vvrows.vvrows.compactmode .uname{font-size:13.5px}
+  .vvrows.vvrows.compactmode .ushield{height:15px}
+  .vvrows.vvrows.compactmode > .urow > .uyear{grid-column:2;grid-row:2;display:inline-flex;font-size:11px;color:var(--row-muted);font-variant-numeric:tabular-nums}
+  .vvrows.vvrows.compactmode > .urow > .uyear::after{content:"\\00B7";margin:0 5px;opacity:.5;color:var(--row-muted-2)}
+  .vvrows.vvrows.compactmode > .urow > .uclub{grid-column:2;grid-row:2;font-size:11px;color:var(--row-muted-2);min-width:0;overflow:hidden;text-overflow:ellipsis;text-indent:34px}
+  .vvrows.vvrows.compactmode > .urow > .upos{grid-column:3;grid-row:1/3;align-self:center;text-align:center;font-size:11px}
+  .vvrows.vvrows.compactmode > .urow > .ugoals{grid-column:4;grid-row:1/3;align-self:center;text-align:center;font-size:12px;color:var(--row-muted)}
+  .vvrows.vvrows.compactmode > .urow > .uassists{grid-column:5;grid-row:1/3;align-self:center;text-align:center;font-size:12px;color:var(--row-muted)}
+  .vvrows.vvrows.compactmode > .urow > .ugoals span, .vvrows.vvrows.compactmode > .urow > .uassists span{display:none}
+  .vvrows.vvrows.compactmode > .urow > .utags{display:none}
+  .vvrows.vvrows.compactmode .uage{display:block;margin:1px 0 0;font-size:10px;opacity:.6}
+  .vvrows.vvrows.compactmode .uage::before{content:none}
+  .vvrows.vvrows.pillmode .uage{margin-left:9px}
+  .vvrows.vvrows.pillmode .uage::before{left:-7px}
+  .vvrows.vvrows.compactmode > .urow > .rmini{grid-column:6;grid-row:1/3;align-self:center;justify-self:end;margin:0;width:38px;height:42px}
+}
+
+.vvrows-season .urow{display:grid;grid-template-columns:minmax(0,1fr) 44px;column-gap:11px;align-items:center;padding:10px 13px;cursor:pointer;transition:background .14s}
+.vvrows-season .urow+.urow{border-top:1px solid rgba(255,255,255,0.06)}
+body.light .vvrows-season .urow+.urow{border-color:rgba(0,0,0,0.055)}
+.vvrows-season .urow:hover{background:rgba(255,255,255,0.045)}
+body.light .vvrows-season .urow:hover{background:rgba(0,0,0,0.025)}
+.vvrows-season .urow.active{background:rgba(255,92,122,0.09)}
+.vvrows-season .srmain{min-width:0}
+.vvrows-season .sryear{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;letter-spacing:-.01em;line-height:1.05;color:var(--cream);font-variant-numeric:tabular-nums}
+body.light .vvrows-season .sryear{color:var(--charcoal)}
+.vvrows-season .urow.active .sryear{color:var(--pink-ink)}
+.vvrows-season .srsub{margin-top:3px;font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.light .vvrows-season .srsub{color:var(--ink-soft)}
+.vvrows-season .srtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.vvrows-season .rmini{align-self:center;justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:42px;height:48px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
+.vvrows-season .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:10px;line-height:1}
+.vvrows-season .rmvv .a{color:#1C1B1A}
+.vvrows-season .rmvv .b{color:var(--pink)}
+.vvrows-season .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;line-height:1;color:#1C1B1A}
+.vvrows-season .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
+.vvrows-season .rmini.elite .a, .vvrows-season .rmini.elite .rmn{color:#2a1d03}
+.vvrows-season .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
+.vvrows-season .rmini.gen .a, .vvrows-season .rmini.gen .rmn{color:#fff}
+.vvrows-season .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:2.5px 8px;border-radius:999px;border:1px solid}
+.vvrows-season .rtag.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A);border-color:transparent;color:#5a4410}
+.vvrows-season .rtag.gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F0EAD9}
+.vvrows-season .rtag-prestige-gen{background:#1C1B1A;border-color:rgba(232,184,75,.6);color:#F3DA88;font-weight:800}
+.vvrows-season .rtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);border-color:transparent;color:#16120e;font-weight:800}
+.vvrows-season .rtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443);border-color:transparent;color:#fff}
+.vvrows-season .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
+.vvrows-season .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
+.vvrows-season .rtag-age{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+.vvrows-season .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+`;
+  function vvInjectRowCSS(){
+    if (typeof document === 'undefined') return;
+    if (document.getElementById('vv-row-css')) return;          // idempotent
+    var st = document.createElement('style');
+    st.id = 'vv-row-css';
+    st.textContent = VV_ROW_CSS;
+    var h = document.head || document.documentElement;
+    h.insertBefore(st, h.firstChild);
+  }
+  vvInjectRowCSS();
+
   function rankRowHTML(d,i,opts){
     if (typeof opts === 'number') opts = { cap: opts };   // back-compat: 3rd arg was `cap`
     opts = opts || {};
