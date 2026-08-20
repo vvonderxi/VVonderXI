@@ -1843,7 +1843,51 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
   vvInjectRowCSS();
 
+
+  // ── OPT-IN GUARD , make the one failure this refactor cannot prevent LOUD ──────────
+  //  The namespace above is opt-in, so a container that renders rows WITHOUT .vvrows or
+  //  .vvrows-season gets no row CSS. That failure is invisible: the renderer works, the
+  //  rows are simply unstyled, nothing throws, and the page looks merely ugly rather
+  //  than broken. It is the exact bug the move was made to end (the compare picker's
+  //  804px rows), so leaving the new form of it silent would repeat the mistake.
+  //
+  //  DELIBERATELY NOT A MutationObserver. One would fire on every DOM mutation for the
+  //  life of the page, and card.html mutates constantly (flips, panels, season swaps).
+  //  Instead rankRowHTML queues ONE deferred check per render batch, and the first batch
+  //  that actually lands rows in the document settles it for good. Cost after that is a
+  //  single boolean test per row.
+  //
+  //  The timeout is what makes it work: rankRowHTML returns a STRING, so at call time
+  //  nothing is in the DOM yet. Every call site assigns innerHTML synchronously, so by
+  //  the next task the rows are live and closest() can answer. Rows built into a
+  //  detached container simply never appear and never warn, which is the right silence.
+  var _rowAudit = { done:false, queued:false };
+  function vvQueueRowAudit(){
+    if (_rowAudit.done || _rowAudit.queued) return;
+    if (typeof document === 'undefined') return;
+    _rowAudit.queued = true;
+    setTimeout(function(){
+      _rowAudit.queued = false;
+      var rows = document.getElementsByClassName('urow');
+      if (!rows.length) return;                 // nothing landed yet; a later batch re-queues
+      _rowAudit.done = true;                    // ONCE PER SURFACE, never once per row
+      for (var i=0; i<rows.length; i++){
+        var r = rows[i];
+        if (r.closest && !r.closest('.vvrows,.vvrows-season')){
+          console.warn('[VVonderXI] Shared row CSS is NOT applied. rankRowHTML rendered '
+            + 'into a container with no .vvrows / .vvrows-season ancestor, so these rows '
+            + 'are UNSTYLED (display:block instead of grid, .rmini full-width and '
+            + 'transparent). Nothing throws , the renderer works, only the styling is '
+            + 'missing. Fix: add class "vvrows" to a list/grid container, or '
+            + '"vvrows-season" to a season-fold container. Offending container:', r.parentNode);
+          return;                               // one warning is the signal; do not spam
+        }
+      }
+    }, 0);
+  }
+
   function rankRowHTML(d,i,opts){
+    vvQueueRowAudit();                          // cheap: one deferred check per batch, then never again
     if (typeof opts === 'number') opts = { cap: opts };   // back-compat: 3rd arg was `cap`
     opts = opts || {};
     var cap = (opts.cap!=null) ? opts.cap : 3;
