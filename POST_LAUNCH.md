@@ -38,6 +38,15 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 CLAUDE.md was at 91.9% of its 150k truncation limit. These two blocks are detailed specs for work that has NOT started, which is exactly what the §D relocation rule says belongs in a stage file. **CLAUDE.md keeps a pointer to each, carrying the DECISIONS** (CB and FB get no lens; the share-of-team amendment; the six decided-negative tag metrics) **so nothing load-bearing lives only here.** CLAUDE.md still wins on any conflict.
 
+### ENGINE , PERCENTILE REPARTITION (coarse position -> position_pool) , logged 2026-08-20, POST-MERGE, NOT built
+**THE DETAIL LIVES IN `CLAUDE.md` SECTION C, under "THE VIEW MIXES TWO POSITION KEYS FOR ONE CONCEPT". Read it there and do not restate it here** , this is a queue entry, not a second copy.
+
+**One line of what it is:** every `percent_rank` in `player_card_view` partitions on the coarse 4-bucket `psc.position` while the defender boost and the tag engine both use the 8-bucket `position_pool`, so CB and FB share one DEF percentile and wingers, strikers and attacking mids share one FWD percentile.
+
+**Why it sits here and not in the launch queue:** repartitioning moves every outfield score. It is not a bug fix that can be slipped in, and nothing on the site is wrong today in a way a visitor can see.
+
+**SEQUENCING, and this is the load-bearing part: pair it with the `gaw` penalty change and apply both in ONE pass.** Both rescale the same population. Done sequentially they produce two rounds of band churn and no clean baseline to measure either against. Tag floors need recalibrating after, because they are keyed to distributions that will have moved.
+
 ### ENGINE , DEEP-PLAYMAKER LENS (CM/CDM ONLY) , logged 2026-08-12, NOT built
 **SEQUENCING: AFTER engine recalibration, BEFORE trajectory tags.** Do not start it earlier , it reads the same pools the recalibration moves.
 
@@ -75,7 +84,8 @@ Established while retiring Marksman. **Read this before proposing any new profil
   - **BUT ALL FOUR DISCIPLINE FIELDS ARE ABSENT FROM `player_card_mv`** (`fouls_drawn`, `fouls_committed`, `cards_yellow`, `cards_red` live on `player_season_cards` only), so the tag engine **cannot see them at all** today. Surfacing them means the **matview DROP + CREATE** plus its 8 indexes , see the §C matview trap. **Do it in the SAME sitting as the percentile columns and the known-as work**, never on its own.
 - **`passes_accuracy` IS 72.4% NULL OVERALL AND GETTING WORSE , 73.3% null in 2020-2025**, vs 46.5% in 2015-2019. Regista and Ball-Playing CB both gate on it, which is the likely reason Ball-Playing CB sits at 0.39%. Check this before treating either tag's rarity as a design choice.
 - **DECIDED NEGATIVES , do not re-propose without NEW DATA, not a new formula:**
-  - **PENALTIES: no column exists anywhere in the schema** , not scored, taken, won or conceded. Non-penalty goals cannot be derived by any combination of existing fields. **This is the single most valuable missing field**; it is the only thing that would separate a spot-kick specialist from an open-play scorer.
+  - **PENALTIES: SOLVED, and this entry used to say the opposite.** `penalties_scored` went live with the 2026-08-19 matview swap and sits on both `player_season_cards` and `player_card_mv` , **38,291 rows, of which 32,986 are outfield cards carrying goals AND penalties (re-verified live 2026-08-20)**. Non-penalty goals ARE now derivable as `goals - penalties_scored`, so the one thing that separates a spot-kick specialist from an open-play scorer exists.
+  - **THIS IS THE ENABLING CONDITION FOR THE `gaw` PENALTY CHANGE**, which `CLAUDE.md` section C says to apply in ONE pass together with the percentile repartition, never sequentially.
   - **MINUTES-PER-GOAL: Spearman -1.000 against goals-per-90.** It is that number inverted, an identity, not a relationship.
   - **SHOTS-ON-TARGET: 0.614 with conversion (0.586 within ST) and 100% NULL pre-2015.** Accuracy and efficiency are one axis.
   - **SHOT VOLUME: 0.459 with goals** , it re-awards Goal Machine. The only thing it uniquely finds is high-volume/low-conversion (Ziyech x4 in the top ten), which is a criticism, not a badge.
