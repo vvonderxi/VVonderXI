@@ -1452,6 +1452,7 @@
     var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
     if(res.error || !res.data){ console.error('card load failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
+    vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
     renderPanels(D);                         // CARD CORE VISIBLE on ONE round-trip (score/stats/tags/radar/proof)
@@ -1531,6 +1532,28 @@
   }
   /* "L. Messi" -> "Lionel Messi". Returns the ABBREVIATED name unchanged when there is nothing
      to improve (already full, mononym, or no full_name on file), so callers never get a blank. */
+  // CLIENT-SIDE DOCUMENT TITLE , the browser tab, the bookmark and the history entry ONLY.
+  // Crawlers that do not execute JS (Twitter, Facebook, WhatsApp, Slack) never see this and keep
+  // the STATIC <title> in the head, which is why that tag still names the feature and not a
+  // player. This is browsing convenience and NOT an unfurl fix; per-link unfurls are Tier 2.
+  // Runs on BOTH entry points. A season switch rewrites the card in place via replaceState, so
+  // the tab has to follow it or it keeps naming the season the visitor arrived on.
+  var _TITLE_SEQ = 0;
+  function vvSetDocTitle(D){
+    if(!D) return;
+    var seq = ++_TITLE_SEQ;                       // a slow name lookup must not overwrite a NEWER card
+    var season = D.year ? (' , ' + D.year) : '';
+    var set = function(nm){
+      if(seq !== _TITLE_SEQ) return;              // a newer card landed while we were resolving
+      document.title = nm ? (nm + season + ' , VVonderXI') : 'VVonderXI , Player Cards';
+    };
+    set(D.full || D.surname || '');               // instant, never blank
+    // Upgrade an abbreviated name the same way the glance line does. player_name is abbreviated
+    // for 63.6% of players, so "L. Messi" is the common case, not the exception. vvDisplayNameFor
+    // short-circuits and returns base when the name is already full, so calling it always is safe.
+    try{ vvDisplayNameFor(D).then(function(nm){ if(nm) set(nm); }).catch(function(){}); }catch(e){}
+  }
+
   async function vvDisplayNameFor(D){
     var base=(D && (D.full || D.surname)) || '';
     if(!base || !/^[A-Za-zÀ-ɏ]\.\s/.test(base)) return base;
@@ -1564,6 +1587,7 @@
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
     if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
     D=rowToCard(res.data);
+    vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; honours fill in after the flip lands (they don't gate the reveal)
     var _cw=cwNow();   // #109 reveal to the new season: desktop 3D flip / mobile scale-swap, coin = destination tier (D.vv)
     var targetD=D;   // staleness guard: a rapid second switch must not get THIS season's honours
