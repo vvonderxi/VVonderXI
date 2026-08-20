@@ -1,28 +1,37 @@
-VVonderXI , TIER 1 SOCIAL META , PROPOSED TITLES AND DESCRIPTIONS
-Drafted 2026-08-20. NOT yet written to any page. Awaiting approval.
+VVonderXI , TIER 1 SOCIAL META , AS SHIPPED
+Drafted 2026-08-20, approved and APPLIED the same day. This file now records
+what is live in the pages, not a proposal. Edit the pages and this file
+together or they drift.
 
-TWO ITEMS STILL UNRESOLVED, both affect what ships:
-  1. Production domain. og:url and og:image must be absolute. No domain
-     exists anywhere in the codebase; README names vvonderxi.com as the
-     domain to add in Vercel. Confirm it is live before these ship.
+BOTH OPEN QUESTIONS ARE SETTLED:
+  1. Domain. All absolute URLs use https://vvonderxi.com. Decided knowingly:
+     the tags are static, so they are correct the moment the domain is live,
+     and they deliberately do NOT point at a preview subdomain.
      vercel.json sets cleanUrls:true, so URLs are extensionless.
-  2. Tagline conflict. LAUNCH_STAGE.md item 3 records that the tagline
-     must be "Every season tells a different story" and explicitly NOT
-     "The Football Legacy Platform". Below uses the brand line for the
-     home TITLE and the recorded tagline in the home DESCRIPTION, so
-     both survive. Swap on request.
+  2. Tagline. "Every Season Tells a Different Story" is the tagline and is
+     what goes in the meta. It is the home title and leads the home
+     description, and it is the og:image:alt on every page.
+     "The Football Legacy Platform" is a HOME-PAGE line and stays where it
+     is, at index.html:199 and in compare's verdict-poster footer. It is not
+     meta copy. LAUNCH_STAGE.md item 3 was correct and needed no change.
 
-Nine pages ship. Six do not: search.html (redirect stub with canonical),
-foundations.html (queued for deletion), myclub-mock.html and
-myclub-mock-B.html (dev mocks), search-demo.html (QA harness), and
-iwonder.html (orphaned, zero inbound links, needs a decision).
+Nine pages carry tags. Six do not: search.html is a 708 byte redirect stub
+that already carries rel=canonical, foundations.html is queued for deletion,
+the two myclub mocks and search-demo.html are dev only, and iwonder.html is
+orphaned with zero inbound references from any page or script, which needs a
+decision rather than a meta tag.
+
+VERIFIED IN A REAL BROWSER, all nine pages: 15 meta tags each, all parsed
+into <head> with zero leaking into <body>, og and twitter titles and
+descriptions agree everywhere, all nine og:url values unique and absolute,
+description lengths 52 to 128 characters.
 
 ================================================================
 PAGE      index.html
 URL       /
 NOW       VVonderXI
-TITLE     VVonderXI , The Football Legacy Platform
-DESC      Every season tells a different story. 57,234 player seasons
+TITLE     VVonderXI , Every Season Tells a Different Story
+DESC      Every Season Tells a Different Story. 57,234 player seasons
           across nine leagues, each one scored, ranked and ready to
           compare.
 
@@ -56,11 +65,16 @@ DESC      A card for every player season: the VV Score, the numbers
           behind it, wonder tags and a written scout report.
 NOTE      Dynamic page, same limitation as compare. A Messi 11/12 link
           and a Haaland 22/23 link produce an identical unfurl.
-          Optional extra, not part of this batch: set document.title in
-          JS once the card loads so the tab and bookmark read
-          "Messi , 2011/12 , VVonderXI". Buys nothing for unfurls,
-          because Twitter, Facebook, WhatsApp and Slack do not run JS.
-          Browsing convenience only.
+          SHIPPED: vvSetDocTitle() sets document.title once the card
+          loads, so the tab, bookmark and history entry read
+          "Lionel Messi , 11/12 , VVonderXI". Wired at BOTH entry
+          points, first load and switchSeason, and carries a sequence
+          guard so a slow name lookup cannot overwrite a newer card.
+          Abbreviated names upgrade via vvDisplayNameFor, which matters
+          because player_name is abbreviated for 63.6% of players.
+          Buys NOTHING for unfurls: Twitter, Facebook, WhatsApp and
+          Slack do not run JS and keep the static title. Browsing
+          convenience only.
 
 ================================================================
 PAGE      vvindex.html
@@ -93,9 +107,9 @@ TITLE     VVonderXI , My Club
 DESC      Follow your club and its players season by season. Coming
           soon.
 NOTE      Still reachable from the hamburger drawer on all 8 pages as
-          .navitem.soon, though it is gone from the bottom nav. CLAUDE
-          .md section D records it as removed from every nav, which is
-          only true of the bottom nav.
+          .navitem.soon, though it is gone from the bottom nav.
+          CLAUDE.md section D said "removed from every nav", which was
+          true only of the bottom nav. Corrected there 2026-08-20.
 
 ================================================================
 PAGE      contact.html
