@@ -1589,8 +1589,22 @@ body.light .pkmsub{color:var(--ink-soft)}
       }
       if(winner==='A'||winner==='B'){
         var W=(winner==='A')?CMP_A:CMP_B, wv=(winner==='A')?va:vb, lv=(winner==='A')?vb:va;
+        /* THE MARGIN PHRASE COMES FROM THE SAME GAP THAT CHOSE THE TAG, so the two cannot
+           contradict by construction. It used to be a single hardcoded "edges it", which read
+           "Salah edges it , 90 to 75" beside a tag saying A Masterclass , a 15-point gap
+           described as an edge. That shows only on the fallback paths (loading placeholder,
+           cache miss, outage), which is exactly where it was found.
+           VC.ladder, NOT VC.floorTag: floorTag is `age[0] || ladder`, so it can be an AGE tag,
+           which describes who is younger rather than how big the gap is. ladder is always the
+           margin. Age tags only fire at gap<=3 anyway, where these phrases are already true.
+           This is NOT the client-side tone table the note above warns against , it reuses a
+           decision the engine has already made rather than inventing a parallel one. */
+        var LADDER_WHO={ masterclass:'wins it outright', bragging_rights:'wins it clearly',
+                         clear_edge:'has the clear edge', photo_finish:'takes it by a whisker',
+                         var_close:'edges it', the_debate:'edges it' };
+        var _verb=(VC && LADDER_WHO[VC.ladder]) || 'edges it';
         var fb=(VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
-                               : (W.surname+' edges it , '+wv+' to '+lv);
+                               : (W.surname+' '+_verb+' , '+wv+' to '+lv);
         who.textContent = ai || fb;
       } else { who.textContent = ai || ('Level on VV , '+va+' apiece. The Index will not separate them.'); }
     }
