@@ -32,3 +32,35 @@ cam_tail_batches/batch_0[6-9].csv
 cam_tail_batches/batch_1[0-9].csv
 cam_tail_batches/batch_2[0-9].csv
 cam_tail_batches/MANIFEST.json
+
+# -- Scratch / probe artefacts (NEVER stage these) --------------------
+# Documented as intentional: they show as ?? in every git status and are
+# staged by name never by `git add .`.
+api/probe-games-number.js
+api/probe-shirt-number.js
+getVVTags_v1_draft.js
+tags_test.csv
+
+# -- Deliberately untracked until its stage starts ---------------------
+# ACCOUNTS_STAGE_SPEC.md line 9: the migration is written but NOT run, and is
+# held out of the tree on purpose until the accounts stage begins.
+migrations/waitlist_emails.sql
+
+# -- Resumable run checkpoints (machine-local, not shared state) -------
+scripts/enrichment/gk_pen_backfill_state.json
+scripts/enrichment/tm_bulk_state.json
+scripts/enrichment/tm_tier1_state.json
+
+# -- One-off audit reports, regenerable, large -------------------------
+scripts/enrichment/tag_rekey_2026-08-13.txt
+scripts/enrichment/tag_distribution_2026-08-13.txt
+
+# -- Pre-swap safety capture, already served its purpose ---------------
+# ONLY the timestamped capture. The rest of migrations/mv_rebuild_2026-08-19/
+# is TRACKED and load-bearing: 00_capture.js through 08_drop_penalties_won.sql
+# are the scripts that performed the 2026-08-19 matview swap. Ignoring the whole
+# directory silently covered all nine of them.
+migrations/mv_rebuild_2026-08-19/capture_*.sql
+
+# -- Local demo, wired into nothing ------------------------------------
+_demo_marks.html
