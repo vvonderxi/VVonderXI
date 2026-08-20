@@ -414,6 +414,7 @@
   .mcval{font-size:14.5px;line-height:1.6;color:#5f594e;margin:0 auto 22px;max-width:340px}
   body:not(.light) .mcval{color:rgba(240,234,217,.68)}
   .mcform{display:flex;gap:8px}
+.mcerr{display:none;font-size:14px;line-height:1.6;color:var(--pink-ink);background:rgba(231,4,67,0.10);border:1px solid rgba(231,4,67,0.32);border-radius:12px;padding:12px 14px;margin-top:10px}
   .mcform input{flex:1;min-width:0;padding:12px 14px;font-size:14px;font-family:'Inter';border-radius:11px;
                 border:1px solid rgba(28,27,26,.18);background:#fff;color:#1C1B1A}
   body:not(.light) .mcform input{background:rgba(255,255,255,.06);border-color:rgba(240,234,217,.18);color:var(--cream)}
@@ -672,6 +673,7 @@
           <input type="email" id="mcEmail" placeholder="you@email.com" aria-label="Email address">
           <button type="button" onclick="mcNotify()">Notify me</button>
         </div>
+        <div class="mcerr" id="mcErr">That did not send. Your address is still above , try again, or reach us on Instagram.</div>
         <div class="mcthanks" id="mcThanks">&#10003; You're on the list. We'll tell you the moment My Club opens.</div>
         <div class="mcfine">No account needed yet. One email, nothing else.</div>
       </div>
@@ -877,18 +879,35 @@
   })();
   // Matches iwNotify() in iwonder.html , same Formspree form, same JSON shape, same
   // optimistic UI. Deliberately NOT a new endpoint or a new table.
-  function mcNotify(){
+  async function mcNotify(){
     var el=document.getElementById('mcEmail'); var e=el.value.trim();
     if(!e||e.indexOf('@')<1){ el.focus(); return; }
-    document.getElementById('mcForm').style.display='none';
-    document.getElementById('mcThanks').style.display='block';
+    var btn=document.querySelector('#mcForm button'), err=document.getElementById('mcErr');
+    err.style.display='none';
+    btn.disabled=true; btn.textContent='Sending...';
+    // AWAIT THE FETCH, THEN DECIDE. This used to show the thanks line BEFORE the request
+    // was made and swallow every failure in a bare .catch(function(){}), so a visitor was
+    // thanked and the signup was lost whenever Formspree was down, rate-limited or over
+    // quota. The only honest signal is r.ok. Same pattern the contact page already used.
+    // On failure the form STAYS UP with the address still in it, so the visitor can retry
+    // or copy it. Never clear the input on error.
+    var ok=false;
     try{
-      fetch('https://formspree.io/f/maqzaooq',{
+      var r=await fetch('https://formspree.io/f/maqzaooq',{
         method:'POST',
         headers:{'Content-Type':'application/json','Accept':'application/json'},
         body:JSON.stringify({email:e, source:'My Club waitlist'})
-      }).catch(function(){});
-    }catch(_){}
+      });
+      ok=r.ok;
+    }catch(_){ ok=false; }
+    btn.disabled=false; btn.textContent='Notify me';
+    if(ok){
+      document.getElementById('mcForm').style.display='none';
+      document.getElementById('mcErr').style.display='none';
+      document.getElementById('mcThanks').style.display='block';
+    } else {
+      err.style.display='block';   // form stays up, address stays in the box
+    }
   }
   document.addEventListener('click',e=>{ if(!e.target.closest('.tip')) document.querySelectorAll('.tip.show').forEach(t=>t.classList.remove('show')); });
 </script>

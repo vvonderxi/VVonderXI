@@ -127,6 +127,7 @@
   .iwnotify .nt{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;margin-bottom:6px}
   .iwnotify .nd{font-family:'Inter';font-weight:400;font-size:15px;color:rgba(243,237,224,0.65);margin-bottom:18px} body.light .iwnotify .nd{color:#5a544a}
   .iwform{display:flex;gap:10px}
+.iwerr{display:none;font-family:'Archivo';font-weight:700;font-size:14px;color:var(--pink-ink);background:rgba(231,4,67,0.10);border:1px solid rgba(231,4,67,0.32);border-radius:13px;padding:15px;text-align:center;margin-top:10px}
   .iwform input{flex:1;font-family:'Inter';font-size:15px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:13px;padding:14px 16px;outline:none}
   body.light .iwform input{color:var(--charcoal);background:#fff;border-color:rgba(0,0,0,0.1)}
   .iwform input::placeholder{color:rgba(243,237,224,0.58)} body.light .iwform input::placeholder{color:var(--ink-soft)}
@@ -232,6 +233,7 @@
           <input type="email" placeholder="you@email.com" id="iwemail">
           <button onclick="iwNotify()">Notify me</button>
         </div>
+        <div class="iwerr" id="iwerr">That did not send. Your address is still above , try again, or reach us on Instagram.</div>
         <div class="iwthanks" id="iwthanks">&#10003; You're on the list. The questions are coming , and you'll be among the first to ask them.</div>
       </div>
        </div>
@@ -245,21 +247,35 @@
     </div>
   </div>
 <script>
-  function iwNotify(){
+  async function iwNotify(){
     var el=document.getElementById('iwemail'); var e=el.value.trim();
     if(!e||e.indexOf('@')<1){el.focus();return;}
-    document.getElementById('iwform').style.display='none';
-    document.getElementById('iwthanks').style.display='block';
-    // Sends each signup so you get an email per person (gauge interest).
-    // ONE-TIME SETUP: create a free form at formspree.io, then paste its
-    // form ID in place of YOUR_FORM_ID below. Until then the email is not sent.
+    var btn=document.querySelector('#iwform button'), err=document.getElementById('iwerr');
+    err.style.display='none';
+    btn.disabled=true; btn.textContent='Sending...';
+    // AWAIT THE FETCH, THEN DECIDE. This used to show the thanks line BEFORE the request
+    // was made and swallow every failure in a bare .catch(function(){}), so a visitor was
+    // thanked and the signup was lost whenever Formspree was down, rate-limited or over
+    // quota. The only honest signal is r.ok. Same pattern the contact page already used.
+    // On failure the form STAYS UP with the address still in it, so the visitor can retry
+    // or copy it. Never clear the input on error.
+    var ok=false;
     try{
-      fetch('https://formspree.io/f/maqzaooq',{
+      var r=await fetch('https://formspree.io/f/maqzaooq',{
         method:'POST',
         headers:{'Content-Type':'application/json','Accept':'application/json'},
         body:JSON.stringify({email:e, source:'I Wonder waitlist'})
-      }).catch(function(){});
-    }catch(_){}
+      });
+      ok=r.ok;
+    }catch(_){ ok=false; }
+    btn.disabled=false; btn.textContent='Notify me';
+    if(ok){
+      document.getElementById('iwform').style.display='none';
+      document.getElementById('iwerr').style.display='none';
+      document.getElementById('iwthanks').style.display='block';
+    } else {
+      err.style.display='block';   // form stays up, address stays in the box
+    }
   }
   // cycle the teaser placeholder
   var wonders=['I wonder who had the better single season','I wonder if a defender ever out-scored a striker','I wonder which midfield year aged the best','I wonder who truly carried their team'];
