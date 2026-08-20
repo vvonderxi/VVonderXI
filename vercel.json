@@ -10,8 +10,5 @@
       "source": "/db.json",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
     }
-  ],
-  "crons": [
-    { "path": "/api/refresh-players", "schedule": "0 3 * * *" }
   ]
 }
