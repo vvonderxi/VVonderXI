@@ -119,7 +119,7 @@ A patch script searched for `done.map(r => r[0]+...` while the file actually con
 
 **A DISPLAY NAME IS NOT A KEY , `player_name` maps to MORE THAN ONE `api_player_id`, and matching research output on it would have written the wrong player's card (found 2026-08-09, pass-2 position batch).**
 Research tools return `player_name` + `season`, because that is what a human reads. **That pair is NOT unique.** Resolving it against the mv surfaced three live collisions in a 55-row batch, i.e. a rate high enough that it WILL happen again on any future research pass:
-- **`J. Rodríguez`** = **api517 James Rodríguez** (Real Madrid / Bayern, rt 80-81) AND **api19169 Jay Rodriguez** (West Brom, rt 14-65) AND **api2616** (a third, LL). One 1516 row resolved to THREE cards across two leagues.
+- **`J. Rodríguez`** = **FIVE players, not three. CORRECTED 2026-08-21** by counting `players` directly rather than counting what one batch happened to surface: **api 517, 2616, 2979, 19169, 415155.** The originals named here were **api517 James Rodríguez** (Real Madrid / Bayern, rt 80-81), **api19169 Jay Rodriguez** (West Brom, rt 14-65) and **api2616** (LL). **The count was understated because it was derived from a 55-row batch, so it measured that batch and not the table.** A collision count that is too low weakens the very rule it exists to justify, and the rule is the identity contract every research write depends on.
 - **`João Mário`** = **api206** (Benfica, 17g, rt80) AND **api41734** (FC Porto, a full-back, rt56).
 - **`Nenê`** = **api9970** (PSG, rt 85-89) AND **api41138** (Cagliari, rt 30-58).
 

@@ -65,7 +65,7 @@ do not "correct" anything in those two columns.**
 
 That is not a formatting preference. The write resolves on `api_player_id`, never on
 player name, because player names are not unique in this database and the collisions are
-live: `J. Rodríguez` is THREE different players (James, Jay, and a third), `João Mário`
+live: `J. Rodríguez` is FIVE different players (api 517, 2616, 2979, 19169, 415155), `João Mário`
 is two, `Nenê` is two, `L. Pellegrini` is two. **In every one of those cases the collision
 partner plays a DIFFERENT position** , one of them is a full-back, another a striker. A
 name-keyed write therefore puts a wrong position on a wrong player and looks entirely
