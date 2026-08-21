@@ -57,7 +57,16 @@ function derive(posL,row,col,rowWidth,midRows){
     if(rowWidth>=3){ if(col===1)return 'LW'; if(col===rowWidth)return 'RW'; return 'ST'; }
     return 'ST';
   }
-  return 'UNK';
+  // An unrecognised player.pos is NOT a ninth position, it is an ABSENCE. Measured on
+  // live lineups: the only unrecognised value is NULL, on roughly 2% of gridded starters
+  // in 2016-2019 (L1 2016 3/176, PRT 2016 4/176; 2020+ samples are clean). Returning a
+  // sentinel let it WIN THE MODAL VOTE for fringe players , median 3 appearances , and
+  // wrote a ninth bucket into a vocabulary that is supposed to be closed at eight.
+  // Return null and let the caller drop the appearance: a season with no classifiable
+  // appearance must store NO position, because the view already reads
+  // COALESCE(pool, coarse) and a NULL pool falls back to the coarse field. 'UNK' broke
+  // that fallback; NULL is the fallback.
+  return null;
 }
 
 async function processLeagueSeason(code,year){
@@ -92,6 +101,7 @@ async function processLeagueSeason(code,year){
         const pl=x.player; const g=pl?.grid; if(!g||!pl.id)continue;
         const [r,c]=g.split(':').map(Number);
         let pos=derive(pl.pos,r,c,rows[r]||1,midRows);
+        if(pos===null)continue;   // unclassifiable appearance: skip, do not tally
         if(!agg[pl.id])agg[pl.id]={name:pl.name,counts:{}};
         agg[pl.id].counts[pos]=(agg[pl.id].counts[pos]||0)+1;
       }
@@ -106,7 +116,7 @@ async function processLeagueSeason(code,year){
     const apps=Object.values(info.counts).reduce((a,b)=>a+b,0);
     const {error}=await supabase.from('player_positions').upsert({
       api_player_id:Number(pid), season_year:year, league_code:code,
-      position:best[0], appearances:apps
+      position:best ? best[0] : null, appearances:apps
     },{onConflict:'api_player_id,season_year,league_code'});
     if(error){stats.errors++;}else{stats.rows++;n++;}
   }

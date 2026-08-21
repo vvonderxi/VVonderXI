@@ -67,7 +67,16 @@ function classify(posL,row,col,rowWidth,defRow,fwdRow){
     }
     return 'CM';
   }
-  return 'UNK';
+  // An unrecognised player.pos is NOT a ninth position, it is an ABSENCE. Measured on
+  // live lineups: the only unrecognised value is NULL, on roughly 2% of gridded starters
+  // in 2016-2019 (L1 2016 3/176, PRT 2016 4/176; 2020+ samples are clean). Returning a
+  // sentinel let it WIN THE MODAL VOTE for fringe players , median 3 appearances , and
+  // wrote a ninth bucket into a vocabulary that is supposed to be closed at eight.
+  // Return null and let the caller drop the appearance: a season with no classifiable
+  // appearance must store NO position, because the view already reads
+  // COALESCE(pool, coarse) and a NULL pool falls back to the coarse field. 'UNK' broke
+  // that fallback; NULL is the fallback.
+  return null;
 }
 
 async function processLeagueSeason(code,year){
@@ -99,7 +108,7 @@ async function processLeagueSeason(code,year){
       for(const x of xi){
         const pl=x.player; const [r,c]=pl.grid.split(':').map(Number);
         const pos=classify(pl.pos,r,c,rows[r]||1,defRow,fwdRow);
-        if(!pl.id)continue;
+        if(!pl.id||pos===null)continue;   // unclassifiable appearance: skip, do not tally
         if(!agg[pl.id])agg[pl.id]={name:pl.name,counts:{},numbers:{}};
         agg[pl.id].counts[pos]=(agg[pl.id].counts[pos]||0)+1;
         if(pl.number!=null) agg[pl.id].numbers[pl.number]=(agg[pl.id].numbers[pl.number]||0)+1;
@@ -112,7 +121,7 @@ async function processLeagueSeason(code,year){
   for(const [pid,info] of Object.entries(agg)){
     const entries=Object.entries(info.counts).sort((a,b)=>b[1]-a[1]);
     const apps=entries.reduce((s,e)=>s+e[1],0);
-    const best=entries[0];
+    const best=entries[0];   // undefined when EVERY appearance was unclassifiable
     // distribution as {POS: pct}
     const dist={}; for(const [p,c] of entries) dist[p]=Math.round(c/apps*100);
     // modal shirt number (most-frequent across the season; null if none seen)
@@ -120,7 +129,7 @@ async function processLeagueSeason(code,year){
     const shirt=numEntries.length?Number(numEntries[0][0]):null;
     const {error}=await supabase.from('player_positions').upsert({
       api_player_id:Number(pid), season_year:year, league_code:code,
-      position:best[0], appearances:apps, distribution:dist, shirt_number:shirt
+      position:best ? best[0] : null, appearances:apps, distribution:dist, shirt_number:shirt
     },{onConflict:'api_player_id,season_year,league_code'});
     if(error){stats.errors++;}else{stats.rows++;n++;}
   }
