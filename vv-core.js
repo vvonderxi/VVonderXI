@@ -50,6 +50,21 @@
   //    Ordering AGE > signature(ATT/MID/DEF) > CROSS with stable index tiebreak ,
   //    byte-identical to the logic in buildCard / pillHTML. Callers own the empty,
   //    placeholder and legacy-d.tag branches (this function never emits them). ──
+  // ── MARK LOOKUP , opt-in, and deliberately fail-soft ────────────────────────────
+  //  opts.mark turns marks ON for a caller. Only rankRowHTML passes it, so this change
+  //  reaches the ROW surfaces (rankings, the card search overlay, the card season list,
+  //  the compare season fold) and leaves the CARD FACE alone. Adoption is one surface
+  //  at a time and the card face is a different surface.
+  //
+  //  If vv-marks.js is missing or stale, vvMark returns '' and the pill renders exactly
+  //  as it does today. Referencing VVMarks directly would throw INSIDE renderTagPills and
+  //  take the whole row down, which is a much worse failure than a missing icon. The
+  //  one-shot audit in vv-marks.js is what stops that silence being permanent.
+  function vvMark(kind, key){
+    try { return (typeof VVMarks !== 'undefined' && VVMarks && VVMarks[kind]) ? VVMarks[kind](key) : ''; }
+    catch(e){ return ''; }
+  }
+
   function renderTagPills(tags, opts){
     if (!Array.isArray(tags) || !tags.length) return '';
     opts = opts || {};
@@ -66,7 +81,8 @@
       .map(x => {
         const famClass = (x.t.family in PRIO) ? `${baseClass}-${String(x.t.family).toLowerCase()}` : '';
         const inner    = innerWrap ? `<span>${x.t.name}</span>` : x.t.name;
-        return `<${el} class="${baseClass} ${famClass}" data-tag="${x.t.name}">${inner}</${el}>`;
+        const mk       = opts.mark ? vvMark('tag', x.t.name) : '';
+        return `<${el} class="${baseClass} ${famClass}" data-tag="${x.t.name}">${mk}${inner}</${el}>`;
       })
       .join('');
   }
@@ -77,8 +93,9 @@
   function renderPrestige(prestige, opts){
     opts = opts || {};
     var base = opts.baseClass || 'chtag';
-    if(prestige === 'Generational') return '<div class="'+base+' '+base+'-prestige-gen" data-tag="Generational"><span>GENERATIONAL</span></div>';
-    if(prestige === 'Iconic') return '<div class="'+base+' '+base+'-prestige-ico" data-tag="Iconic"><span>ICONIC</span></div>';
+    var mk = opts.mark ? vvMark('tag', prestige) : '';
+    if(prestige === 'Generational') return '<div class="'+base+' '+base+'-prestige-gen" data-tag="Generational"><span>'+mk+'GENERATIONAL</span></div>';
+    if(prestige === 'Iconic') return '<div class="'+base+' '+base+'-prestige-ico" data-tag="Iconic"><span>'+mk+'ICONIC</span></div>';
     return '';
   }
 
@@ -1522,7 +1539,8 @@
     const max = (opts && opts.max != null) ? opts.max : 2;   // #20: caller caps how many honour pills
     return honours.all.slice(0, max).map(function(h){
       const label = (typeof HONOUR_CHIP_LABEL !== 'undefined' ? HONOUR_CHIP_LABEL[h.type] : '') || h.label;
-      return '<span class="'+cls+' gold" data-tip="'+escAttr(h.oneliner||h.label)+'">'+label+'</span>';
+      const mk = (opts && opts.mark) ? vvMark('honour', h.type) : '';   // h.type IS the HONOUR_META key
+      return '<span class="'+cls+' gold" data-tip="'+escAttr(h.oneliner||h.label)+'">'+mk+label+'</span>';
     }).join('');
   }
 
@@ -1731,7 +1749,7 @@ body.light .vvrows .ugoals span, body.light .vvrows .uassists span{color:var(--i
 .vvrows.compactmode .rmini{width:40px;height:44px;border-radius:9px}
 .vvrows.compactmode .rmvv{font-size:10px}
 .vvrows.compactmode .rmn{font-size:17px}
-.vvrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
+.vvrows .rtag .vvm,.vvrows-season .rtag .vvm{width:11px;height:11px;flex:none;margin-right:5px;vertical-align:-1px}\n.vvrows .rtag,.vvrows-season .rtag{display:inline-flex;align-items:center}\n.vvrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
 .vvrows .rtag.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A);border-color:transparent;color:#5a4410}
 .vvrows .rtag.pink{background:rgba(255,92,122,.14);border-color:rgba(255,92,122,.5);color:#e0466a}
 .vvrows .rtag.blue{background:rgba(59,111,176,.14);border-color:rgba(59,111,176,.5);color:#3f74b5}
@@ -1903,11 +1921,11 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
        (12 Generational, 138 Iconic), so it now renders first and unconditionally.
        renderPrestige returns '' for everything else, so unranked rows are unaffected.
        Consequence, accepted: a prestige row can show cap+1 pills. .utags wraps (d5898d6). */
-    var prestige = renderPrestige(d.prestige, { baseClass:'rtag' });
+    var prestige = renderPrestige(d.prestige, { baseClass:'rtag', mark:true });
     var honN = Math.min(honList.length, cap);
-    var honHtml = honN>0 ? renderHonourPillsCompact(d.honours, { baseClass:'rtag', max:honN }) : '';
+    var honHtml = honN>0 ? renderHonourPillsCompact(d.honours, { baseClass:'rtag', max:honN, mark:true }) : '';
     var rem = cap - honN;
-    var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem }) : '';
+    var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem, mark:true }) : '';
     var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
     var click = opts.onClick ? opts.onClick(d,i) : ('goCard('+(d.card_id==null?'':d.card_id)+')');
     // ── Season-led variant (card view-all-seasons + Compare per-slot). One player,
