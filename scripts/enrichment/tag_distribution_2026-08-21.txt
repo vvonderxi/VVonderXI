@@ -1,0 +1,74 @@
+TAG DISTRIBUTION ANALYSIS , 2026-08-21   *** POST-RARITY-PASS BASELINE ***
+branch redesign-compare @ 743f968   population 57234 cards   engine: vv-core getVVTags (executed, not reimplemented)
+================================================================================================================
+
+THIS IS THE BASELINE TO QUOTE. The 2026-08-13 file is PRE-rarity-pass and PRE-identity-fix, so comparing
+against it makes two CORRECT changes read as collapses:
+  , the 2026-08-14/15 rarity pass, which cut the tags that sat OVER the ~2% ceiling;
+  , the 2026-08-16 identity fix, which moved five identity tags onto position_pool.
+Marksman is absent because it is RETIRED, not because it collapsed to zero.
+
+Captured AFTER the 2026-08-21 engine change (repartition on position_pool + gaw penalty weighting).
+That change moved 7 cards across 2 tags , see section C, "THE RECALIBRATION WARNING WAS WRONG".
+
+
+1. CURRENT HOLDINGS , every tag the engine can assign
+----------------------------------------------------------------------------------------------------------------
+tag                cards      % of 57,234   driving metric      raw floor
+  Goal Machine        844       1.47%      goals/90           MIN_GOALS_GOALMACHINE = 12
+  Playmaker          1067       1.86%      keypass/90         MIN_ASSISTS_PLAYMAKER = 3
+  Provider           1010       1.76%      assists/90         NONE
+  Clinical            919       1.61%      conversion         shots_total >= 25 (sample gate)
+  Poacher             268       0.47%      goals/90           NONE
+  The Winger          297       0.52%      dribbles/90        NONE
+  Maestro             389       0.68%      keypass/90         NONE
+  Regista             635       1.11%      passes/90          NONE
+  Engine Room         986       1.72%      passes/90          NONE
+  The Dribbler        924       1.61%      dribbles/90        NONE
+  The Wall           1075       1.88%      def actions/90     NONE
+  Destroyer           861       1.50%      duels won/90       NONE
+  Ball Hawk           841       1.47%      interceptions/90   NONE
+  Ball-Playing CB     208       0.36%      passes/90          NONE
+  Complete           1008       1.76%      def actions/90     NONE
+  Iron Man           1945       3.40%      minutes            NONE
+  Wonderkid            73       0.13%      rt                 NONE
+  The Last Dance       42       0.07%      rt                 NONE
+
+  cards holding at least one tag: 8716 (15.23%)
+
+  RARITY CEILING CHECK , nothing above roughly 2%, no floor (section C).
+    Iron Man          3.40% , DELIBERATE DOCUMENTED EXCEPTION, do not "fix" it back
+
+  Four tags sit BELOW the band by design and must NOT be lifted (section C, rarity is a CEILING not a target):
+    Maestro, The Winger, Poacher, Ball-Playing CB , narrow identity archetypes.
+
+
+2. POOL BREAKDOWN , the 2026-08-15 eligibility-vs-threshold diagnostic
+----------------------------------------------------------------------------------------------------------------
+IDENTITY tags gate on position_pool. A pool that contradicts the tag name is the defect this catches.
+  Poacher          n=268    ST 268
+  The Winger       n=297    Winger 297
+  Maestro          n=389    CM 201, CDM 111, CAM 77
+  Regista          n=635    CM 406, CDM 229
+  Ball-Playing CB  n=208    CB 208
+
+  CLEAN. No CB holds Maestro, no striker holds Regista. Maestro's CAM holders are CORRECT , the
+  2026-08-16 fix requires CAM to earn it while staying in the FWD family, so they register as
+  "minority family" by construction and are not a defect.
+
+ABILITY tags gate on family and are SUPPOSED to span pools. A broad spread here is not a defect.
+  Goal Machine     n=844    (none) 290, ST 154, CM 151, Winger 128, CDM 74, CAM 47
+  Playmaker        n=1067   CM 243, Winger 241, ST 205, FB 121, CDM 104, CAM 99
+  Provider         n=1010   Winger 208, CM 198, ST 197, FB 103, CB 90, CDM 89
+  Clinical         n=919    ST 430, Winger 248, CM 106, CAM 81, CDM 28, (none) 26
+  Engine Room      n=986    CM 613, CDM 237, (none) 134, UNK 2
+  The Dribbler     n=924    Winger 241, ST 203, CM 186, CAM 100, (none) 91, CDM 60
+  The Wall         n=1075   CB 296, CM 285, FB 184, (none) 178, CDM 132
+  Destroyer        n=861    CB 366, FB 222, (none) 140, CDM 133
+  Ball Hawk        n=841    (none) 301, CB 240, FB 129, CM 126, CDM 45
+  Complete         n=1008   CB 309, ST 177, (none) 160, FB 139, CM 84, CDM 66
+  Iron Man         n=1945   (none) 686, CM 244, CB 242, ST 235, Winger 200, FB 180
+
+  DO NOT run the minority-family share test on these and read a high number as a bug. It was run on
+  2026-08-21 and flagged eleven tags; all eleven were the diagnostic being pointed at the wrong class.
+
