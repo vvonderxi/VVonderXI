@@ -3232,7 +3232,313 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  // ══════════════════════════════════════════════════════════════════════════════
+  //  SHARE FRAMES , the composed image a card or a comparison goes out as.
+  //
+  //  WHY IT LIVES HERE. card.html and compare.html both need it, and the frame reuses
+  //  buildCard, so a copy on each page would be a third card renderer to keep in step.
+  //  The frame chrome ships as VV_SHARE_CSS; the CARD BOX does NOT , the pages already
+  //  own `.vvcard`, and moving that rule into a prepended sheet is the one extraction
+  //  that was tried and REVERTED (see §C: the live card went 304x461 -> 206x395 because
+  //  a prepended sheet inverts the cascade against page rules that used to follow it).
+  //
+  //  EVERYTHING BELOW WAS DECIDED AGAINST A RENDERED FRAME, NOT GUESSED. The variant is
+  //  CORNERS: brand in one corner, caption in the diagonal opposite, so neither competes
+  //  for the centre line. Ground and Plate were built, reviewed and dropped.
+  // ══════════════════════════════════════════════════════════════════════════════
+
+  //  SIZE OFF THE SHORT SIDE, NEVER THE HEIGHT. A 1200x675 and a 1080x1920 must carry type
+  //  of the same optical weight, and height-derived sizing made the wide frame's caption
+  //  tiny because 675 is its small number while 1920 is the large one elsewhere. The
+  //  coefficients are read off rendered output: 0.026 puts the caption at 18px on the wide
+  //  frame and 28px on a 1080, which survives X halving it to ~6px in a timeline.
+  const SHARE_FORMATS = {
+    x:   { key:'x',   name:'X / Twitter',      w:1200, h:675  },
+    igf: { key:'igf', name:'Instagram feed',   w:1080, h:1350 },
+    igs: { key:'igs', name:'Instagram story',  w:1080, h:1920 },
+    dl:  { key:'dl',  name:'Download',         w:1000, h:1518 }
+  };
+  //  1.518, NOT the 1.397 in the CSS. Height is `--cw x 1.397` but width is clamped by
+  //  `max-width:92%`, so the RENDERED ratio is 1.397/0.92. Reading 1.397 off the rule and
+  //  sizing a frame with it leaves the card short of its box. See §C.
+  const SHARE_RATIO = 1.518;
+  const shShort  = F => Math.min(F.w, F.h);
+  const shCapPx  = F => Math.round(shShort(F) * 0.026);
+  const shBrndPx = F => Math.round(shShort(F) * 0.024);
+  const shPad    = F => Math.round(shShort(F) * 0.055);
+  const shCardW  = (F, frac) => Math.round(Math.min(shShort(F) * frac, (F.h - shPad(F) * 3.4) / SHARE_RATIO));
+  const shEsc    = v => String(v == null ? '' : v).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+  //  LIGHT-MODE INK IS MEASURED, NOT PICKED BY EYE. Against the cream field the worst-case
+  //  ratios are: caption #6b6357 4.55 PASS, body #241f1a 12.56 PASS, band gold #8a6a1e 3.88
+  //  FAIL so it is #5a4410 at 7.12, brand pink #E70443 3.59 FAIL so emphasis is #AD0332 at
+  //  5.69. Dark field: #F1688E 5.85, #E0A93A 8.16, #a49c90 6.37, all PASS. Raw brand pink
+  //  fails on BOTH fields and is therefore never used as ink.
+  const VV_SHARE_CSS = `
+.sf{display:flex;position:relative;overflow:hidden;
+    background:radial-gradient(120% 90% at 20% 0%,#1e1a16 0%,#12100e 55%,#0d0b0a 100%);
+    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--band:#E0A93A;--quiet:#a49c90}
+.sf.light{background:radial-gradient(120% 90% at 20% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
+          color:#241f1a;--emph:#AD0332;--band:#5a4410;--quiet:#6b6357}
+.sf-brand{position:absolute;display:flex;align-items:center;gap:7px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92}
+.sf-vv{letter-spacing:-0.06em;margin-right:.16em}
+.sf-vv .a{color:currentColor}.sf-vv .b{color:var(--emph)}
+.sf-cap{position:absolute;color:var(--quiet);font-weight:600;letter-spacing:.06em}
+.sf-rule{height:1px;background:currentColor;opacity:.18}
+.sf-sub{color:var(--quiet);font-weight:600;letter-spacing:.07em;text-transform:uppercase}
+.sf-verdict{line-height:1.42}
+.sf-vtag{display:inline-flex;align-items:center;border-radius:999px;background:linear-gradient(90deg,#F0D27A,#E0A93A);
+         color:#5a4410;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.sf-score{font-family:'Archivo',Impact,sans-serif;font-weight:900;color:var(--emph);line-height:1}
+.sf-stage{position:fixed;left:-20000px;top:0;z-index:-1;pointer-events:none}
+.vvtoast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);z-index:9999;
+         /* width:max-content is load-bearing. A fixed box at left:50% with no width shrinks to
+            the space between 50% and the right edge , 206px on a 412px phone , so the message
+            wrapped to five lines. max-width still caps it and 92vw keeps it off both edges. */
+         width:max-content;max-width:min(92vw,420px);background:#1C1B1A;color:#F0EAD9;border:1px solid rgba(255,255,255,.16);
+         border-radius:12px;padding:12px 16px;font-family:'Inter',system-ui,sans-serif;font-size:13px;
+         line-height:1.45;box-shadow:0 18px 40px -16px rgba(0,0,0,.7);opacity:0;transition:opacity .18s,transform .18s}
+.vvtoast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14)}
+`;
+  //  The share sheet is PREPENDED for the same reason VV_CARD_CSS is , so a page rule can
+  //  still override it , but nothing in it competes with a page rule today.
+  let SHARE_CSS_IN = false;
+  function vvInjectShareCSS(){
+    if (SHARE_CSS_IN || typeof document === 'undefined') return;
+    const st = document.createElement('style');
+    st.setAttribute('data-vv-share-css', '1');
+    st.textContent = VV_SHARE_CSS;
+    document.head.insertBefore(st, document.head.firstChild);
+    SHARE_CSS_IN = true;
+  }
+
+  function shBrand(px){
+    return '<span class="sf-vv"><span class="a">V</span><span class="b">V</span></span>' +
+           '<span style="font-size:' + Math.round(px * 0.62) + 'px;letter-spacing:.2em">ONDERXI</span>';
+  }
+  //  CORNERS. The caption's `left` is a PLACEHOLDER , vvCentreShareCaption overwrites it
+  //  after the frame is in the DOM, because the card renders at max-width:92% of its
+  //  wrapper and the wrapper's centre is therefore NOT the card's. Predicting it from cw
+  //  was out by 11px on the wide compare frame, where the pair sits left of centre.
+  function shChrome(F, capText){
+    const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F);
+    return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp) + '</div>' +
+           '<div class="sf-cap" style="bottom:' + (P * 0.8) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
+           'font-size:' + cp + 'px;text-align:center;white-space:nowrap">' + shEsc(capText) + '</div>';
+  }
+
+  const shSeason = c => { try { return fmtSeason(c.season); } catch(e){ return c.season || ''; } };
+  function vvShareCaption(spec){
+    if (spec.kind === 'compare')
+      return (spec.a.full || '') + ' ' + shSeason(spec.a) + ' v ' + (spec.b.full || '') + ' ' + shSeason(spec.b) + ' · VVonderXI';
+    return (spec.card.full || '') + ' ' + shSeason(spec.card) + ' · ' + spec.card.vv + ' · VVonderXI';
+  }
+
+  function shCardFrame(spec, F, light){
+    const P = shPad(F), cw = shCardW(F, F.key === 'x' ? 0.42 : 0.58);
+    return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
+      'flex-direction:column;align-items:center;justify-content:center;padding:' + P + 'px">' +
+      shChrome(F, vvShareCaption(spec)) +
+      '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw) + '</div></div>';
+  }
+
+  //  THE LEDGER. Wide frames put the pair left and the verdict block right; portrait frames
+  //  stack them. Chosen against rendered mocks , the wide frame's empty right half was the
+  //  open question and the ledger is what answers it.
+  function shCmpFrame(spec, F, light){
+    const P = shPad(F), S = shShort(F) / 1000, wide = F.w / F.h > 1.2;
+    const a = spec.a, b = spec.b;
+    const cw = Math.round(Math.min((F.h - P * (wide ? 2.2 : 4.6)) / SHARE_RATIO, F.w * (wide ? 0.22 : 0.38)));
+    const pair = '<div style="display:flex;gap:' + (14 * S) + 'px;position:relative;z-index:1">' +
+      '<div style="width:' + cw + 'px">' + buildCard(a, cw) + '</div>' +
+      '<div style="width:' + cw + 'px">' + buildCard(b, cw) + '</div></div>';
+    const last = n => shEsc(String(n || '').split(' ').slice(-1)[0]);
+    const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
+      'gap:' + (16 * S) + 'px;position:relative;z-index:1;' + (wide ? '' : 'text-align:center;') + '">' +
+      '<div class="sf-vtag" style="font-size:' + (14 * S) + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' +
+      '<div class="sf-verdict" style="font-size:' + ((wide ? 23 : 21) * S) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.34 : F.w * 0.78) + 'px">' + shEsc(spec.verdictLine) + '</div>' +
+      '<div class="sf-rule" style="width:' + (64 * S) + 'px"></div>' +
+      '<div style="display:flex;gap:' + (18 * S) + 'px;align-items:baseline">' +
+        '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + a.vv + '</span>' +
+        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px">' + last(a.full) + '</span>' +
+        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px;opacity:.45">/</span>' +
+        '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + b.vv + '</span>' +
+        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px">' + last(b.full) + '</span>' +
+      '</div></div>';
+    const inner = wide
+      ? '<div style="flex:none">' + pair + '</div><div style="flex:1;min-width:0">' + block + '</div>'
+      : pair + block;
+    return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
+      (wide ? 'align-items:center;padding:' + P + 'px ' + (P * 1.4) + 'px;gap:' + (P * 1.2) + 'px'
+            : 'flex-direction:column;align-items:center;justify-content:center;padding:' + P + 'px;gap:' + (28 * S) + 'px') +
+      '">' + shChrome(F, vvShareCaption(spec)) + inner + '</div>';
+  }
+
+  function vvShareFrameHTML(spec, F, light){
+    return spec.kind === 'compare' ? shCmpFrame(spec, F, light) : shCardFrame(spec, F, light);
+  }
+
+  //  MEASURE, DO NOT PREDICT. See the note on shChrome.
+  function vvCentreShareCaption(frame){
+    const cap = frame.querySelector('.sf-cap'), cards = frame.querySelectorAll('.vvcard');
+    if (!cap || !cards.length) return;
+    const fr = frame.getBoundingClientRect();
+    let l = Infinity, r = -Infinity;
+    cards.forEach(function(c){ const b = c.getBoundingClientRect(); if (b.left < l) l = b.left; if (b.right > r) r = b.right; });
+    cap.style.left = ((l + r) / 2 - fr.left) + 'px';
+    cap.style.right = 'auto';
+  }
+
+  function vvLoadH2C(){
+    if (window.html2canvas) return Promise.resolve();
+    return new Promise(function(res, rej){
+      const sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      sc.onload = res; sc.onerror = function(){ rej(new Error('html2canvas failed to load')); };
+      document.head.appendChild(sc);
+    });
+  }
+
+  //  RENDER OFFSCREEN AND HAND BACK A BLOB. The stage is parked off to the left rather than
+  //  hidden , `display:none` and `visibility:hidden` both give html2canvas nothing to measure.
+  //  scale:2 so a 1080-wide frame lands at 2160 and survives a platform re-encode.
+  //  THE TWO SHIMS ARE NOT OPTIONAL AND THE FINALLY IS NOT OPTIONAL. See §C: html2canvas
+  //  resolves neither `<use>` nor an inset box-shadow on a rounded box, and this stage is
+  //  removed on every path so a throw cannot leave it in the document.
+  function vvRenderShareImage(spec, opts){
+    opts = opts || {};
+    const F = SHARE_FORMATS[opts.format] || SHARE_FORMATS[spec.kind === 'compare' ? 'x' : 'igf'];
+    const light = (opts.light != null) ? opts.light
+                : (typeof document !== 'undefined' && document.body.classList.contains('light'));
+    vvInjectShareCSS();
+    return vvLoadH2C().then(function(){
+      const stage = document.createElement('div');
+      stage.className = 'sf-stage';
+      stage.innerHTML = vvShareFrameHTML(spec, F, light);
+      document.body.appendChild(stage);
+      const frame = stage.firstElementChild;
+      vvCentreShareCaption(frame);
+      const undoMarks = vvInlineMarks(frame), undoRims = vvShimInsetRims(frame);
+      return html2canvas(frame, { backgroundColor: null, scale: 2, useCORS: true, logging: false })
+        .then(function(cv){
+          return new Promise(function(res){ cv.toBlob(function(b){ res({ blob: b, format: F }); }, 'image/png'); });
+        })
+        .finally(function(){ undoRims(); undoMarks(); stage.remove(); });
+    });
+  }
+
+  //  ── TOAST ──────────────────────────────────────────────────────────────────────
+  //  Replaces alert(). alert() BLOCKS the page and, in an automated browser, wedges the
+  //  whole session until a human dismisses it , which happened during this build. It is
+  //  also the wrong register for a success message.
+  let TOAST_T = null;
+  function vvToast(msg, ms){
+    if (typeof document === 'undefined') return;
+    vvInjectShareCSS();
+    let t = document.getElementById('vvToast');
+    if (!t){ t = document.createElement('div'); t.id = 'vvToast'; t.className = 'vvtoast';
+             t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite');
+             document.body.appendChild(t); }
+    t.textContent = msg;
+    // SIT ABOVE THE BOTTOM NAV RATHER THAN ON IT. card.html and compare.html both carry a
+    // fixed .bottomnav, and at a phone width a toast pinned to 26px lands squarely on the
+    // nav , unreadable, and it covers the controls the message is telling you about. The
+    // nav's height is read at show time because it is display:none on wide viewports, so a
+    // hardcoded offset would leave a gap on desktop.
+    let lift = 26;
+    const nav = document.querySelector('.bottomnav');
+    if (nav){ const nb = nav.getBoundingClientRect();
+              // The height is CLAMPED to a plausible nav. A nav forced visible outside its
+              // own media query measured 1123px here, which lifted the toast clean off the
+              // top of the screen , a message nobody can read is worse than one sitting a
+              // little low. Anything over a quarter of the viewport is not a bottom nav.
+              const sane = nb.height > 0 && nb.height <= window.innerHeight * 0.25;
+              if (sane && nb.bottom >= window.innerHeight - 2) lift = Math.round(nb.height) + 16; }
+    t.style.bottom = lift + 'px';
+    // FORCE A REFLOW, DO NOT WAIT FOR A FRAME. Reading offsetWidth commits the off-state so
+    // the transition has something to run from; adding the class in a requestAnimationFrame
+    // callback does the same thing ONLY IF a frame is produced, and a throttled or
+    // non-compositing tab produces none , the toast then sits at opacity 0 indefinitely
+    // with its class never applied. Measured that way during this build and mistaken for a
+    // CSS fault. This form has no such dependency.
+    void t.offsetWidth;
+    t.classList.add('on');
+    clearTimeout(TOAST_T);
+    TOAST_T = setTimeout(function(){ t.classList.remove('on'); }, ms || 3400);
+  }
+
+  //  ── THE SHARE CHAIN ────────────────────────────────────────────────────────────
+  //  Three rungs, each a real degradation rather than a retry of the same thing:
+  //    1. share the FILE , the only rung that puts the image in Instagram or a DM
+  //    2. share the LINK , no file support, but the OS sheet still opens
+  //    3. download the file AND copy the text , no sheet at all, so hand the user both
+  //       halves and SAY SO. Deciding rung 1 needs canShare({files}) specifically:
+  //       navigator.share existing does NOT mean files are accepted, and calling share
+  //       with an unsupported file rejects.
+  //  NOTHING REPORTS SUCCESS BEFORE ITS PROMISE RESOLVES , see §C. An AbortError is the
+  //  user closing the sheet, which is not a failure and must not fall through to a rung
+  //  that downloads a file they did not ask for.
+  function vvShareCompose(spec, opts){
+    opts = opts || {};
+    const text = opts.text || vvShareCaption(spec);
+    const url  = opts.url  || (typeof location !== 'undefined' ? location.href : '');
+    const name = (opts.filename || 'vvonderxi') + '.png';
+    const onDone = opts.onDone || function(){};
+
+    function fallbackLink(){
+      if (navigator.share) {
+        return navigator.share({ title: 'VVonderXI', text: text, url: url })
+          .then(function(){ onDone('link'); })
+          .catch(function(e){ if (e && e.name === 'AbortError'){ onDone('cancelled'); return; } return dropAndCopy(null); });
+      }
+      return dropAndCopy(null);
+    }
+    function dropAndCopy(blob){
+      let copied = false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text + '\n' + url);
+        copied = true;
+      } catch(e){}
+      if (blob){
+        const href = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = href; a.download = name; a.click();
+        setTimeout(function(){ URL.revokeObjectURL(href); }, 1000);
+        vvToast(copied ? 'Image saved, and the caption is on your clipboard , paste it with the post.'
+                       : 'Image saved to your downloads.');
+        onDone('download');
+      } else {
+        vvToast(copied ? 'Link copied , paste it anywhere to share.'
+                       : 'Sharing is not available in this browser.');
+        onDone(copied ? 'copied' : 'unavailable');
+      }
+      return Promise.resolve();
+    }
+
+    return vvRenderShareImage(spec, opts).then(function(out){
+      const blob = out && out.blob;
+      if (!blob) return fallbackLink();
+      const file = new File([blob], name, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })){
+        return navigator.share({ files: [file], title: 'VVonderXI', text: text })
+          .then(function(){ onDone('file'); })
+          .catch(function(e){ if (e && e.name === 'AbortError'){ onDone('cancelled'); return; } return dropAndCopy(blob); });
+      }
+      // RUNG 2, and it is a REAL rung , not a synonym for rung 3. A browser can have
+      // navigator.share and still refuse files, and on that browser the OS sheet still
+      // opens for a link, which is a better answer than a silent download. Falling
+      // straight through to dropAndCopy here was the first version's bug and it
+      // contradicted the comment directly above it.
+      if (navigator.share){
+        return navigator.share({ title: 'VVonderXI', text: text, url: url })
+          .then(function(){ onDone('link'); })
+          .catch(function(e){ if (e && e.name === 'AbortError'){ onDone('cancelled'); return; } return dropAndCopy(blob); });
+      }
+      return dropAndCopy(blob);
+    }).catch(function(){ return fallbackLink(); });
+  }
+
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

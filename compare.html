@@ -927,8 +927,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823g"></script>
-<script src="/vv-core.js?v=20260823g"></script>
+<script src="/vv-marks.js?v=20260823h"></script>
+<script src="/vv-core.js?v=20260823h"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1413,16 +1413,79 @@ body.light .pkmsub{color:var(--ink-soft)}
       }, 80);
     });
   }
-  function vvVerdictSave(el){ var l=el&&el.querySelector('.lbl'); if(l)l.textContent='Saving...';
-    vvVerdictImage(function(blob){ var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='VVonderXI-verdict.png'; a.click(); setTimeout(function(){URL.revokeObjectURL(url);},1000); if(l)l.textContent='Saved'; });
+  /* THE LEDGER SPEC. The tag and the line are read from the LIVE verdict panel rather than
+     recomputed, so the image can never disagree with what the page is showing , the panel
+     may be serving an AI-written verdict from cache that no client-side derivation would
+     reproduce. The tag is mapped through verdictShareName because three of the fourteen
+     have a share-only display name (see §C: VAR Close Call, The Complete Player, The League
+     Tips The Balance) , that lookup exists precisely for text leaving the page. */
+  function vvLedgerSpec(){
+    if(!CMP_A||!CMP_B||CMP_A.vv==null||CMP_B.vv==null) return null;
+    var tagEl=document.querySelector('.verdict .vtag.gold');
+    var tag=tagEl?tagEl.textContent.replace(/[^A-Za-z0-9'\- ]/g,'').trim():'';
+    if(!tag){
+      var ctx=VVCore.verdictContext({vv:CMP_A.vv,season_age:CMP_A.season_age},{vv:CMP_B.vv,season_age:CMP_B.season_age});
+      var VT=VVCore.VERDICT_TAGS||{}; var vt=VT[ctx&&ctx.floorTag];
+      tag=vt?vt.name:'The Verdict';
+    }
+    if(VVCore.verdictShareName){ var VT2=VVCore.VERDICT_TAGS||{};
+      for(var k in VT2){ if(VT2[k]&&VT2[k].name===tag){ tag=VVCore.verdictShareName(VT2[k]); break; } } }
+    var qs=document.querySelectorAll('.verdict .vquote');
+    var line=qs.length?qs[qs.length-1].textContent.replace(/[\u201C\u201D"]/g,'').trim():'';
+    var bits=line.split('. ');
+    for(var i=bits.length-1;i>=0;i--){ if(bits[i].trim().length>20){ line=bits[i].trim(); if(line.slice(-1)!=='.') line+='.'; break; } }
+    /* FALL BACK TO THE TAG'S OWN BLURB. The panel's prose is AI-written and served from
+       verdict_cache, so it is ABSENT on a cache miss, on an API failure, and on any local
+       run without a key , exactly the states where a share would otherwise go out with an
+       empty line where the verdict should be. The blurb is the tag's own sentence, so the
+       image still says something true rather than nothing. Nothing here reports success
+       before the prose actually resolves; it just refuses to ship a blank. */
+    if(!line){
+      var VT3=VVCore.VERDICT_TAGS||{};
+      for(var k3 in VT3){ if(VT3[k3]&&(VT3[k3].name===tag||VVCore.verdictShareName(VT3[k3])===tag)){
+        line=String(VT3[k3].blurb||'').split(/(?<=\.)\s/)[0]||''; break; } }
+    }
+    return { kind:'compare', a:CMP_A, b:CMP_B, verdictTag:tag, verdictLine:line };
   }
-  function vvVerdictShare(btn){ var orig=btn.textContent;
-    var who=(document.querySelector('.verdict .vwho')||{}).textContent||'VVonderXI Verdict';
-    var url=location.href; var text=who+' , VVonderXI';
-    if(navigator.share){ btn.textContent='Sharing...';
-      navigator.share({title:'VVonderXI',text:text,url:url}).then(function(){btn.textContent=orig;}).catch(function(){btn.textContent=orig;});
-    } else { window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank'); }
+  function vvLedgerText(){
+    var sp=vvLedgerSpec(); if(!sp) return 'VVonderXI , Compare Careers. Define Legacies.';
+    var sn=function(c){ try{ return VVCore.fmtSeason(c.season); }catch(e){ return c.year||''; } };
+    return (sp.a.full||'')+' '+sn(sp.a)+' or '+(sp.b.full||'')+' '+sn(sp.b)+'. The Verdict: '+sp.verdictTag+'.';
   }
+  function vvVerdictSave(el){
+    // Same composed frame as the share, at the card-shaped download size, so a saved
+    // verdict and a shared one are never two different pictures. Copies the caption too,
+    // because the image alone loses both names, both seasons and the verdict.
+    var sp=vvLedgerSpec(); var l=el&&el.querySelector('.lbl');
+    if(!sp){ VVCore.vvToast('Pick two seasons first.'); return; }
+    if(l) l.textContent='Saving...';
+    VVCore.vvRenderShareImage(sp,{format:'dl'}).then(function(out){
+      if(!out||!out.blob) throw new Error('no image');
+      var url=URL.createObjectURL(out.blob);
+      var a=document.createElement('a'); a.href=url; a.download='vvonderxi-verdict.png'; a.click();
+      setTimeout(function(){URL.revokeObjectURL(url);},1000);
+      var copied=false;
+      try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(vvLedgerText()+'\n'+location.href); copied=true; } }catch(e){}
+      if(l) l.textContent='Saved';
+      VVCore.vvToast(copied ? 'Image saved, and the caption is on your clipboard , paste it with the post.'
+                            : 'Image saved to your downloads.');
+    }).catch(function(){ if(l) l.textContent='Save image'; VVCore.vvToast('That image could not be made. The link still works.'); });
+  }
+
+  function vvVerdictShare(btn){
+    // The LEDGER goes out as an image , that is the composition Lucas chose for the wide
+    // frame, and a link alone is useless on Instagram. 1200x675 because the ledger is
+    // designed wide: the pair sits left and the verdict block fills the right half, which
+    // was the open question the mocks were built to answer.
+    var sp=vvLedgerSpec();
+    if(!sp){ VVCore.vvToast('Pick two seasons first.'); return; }
+    var orig=btn.textContent; btn.textContent='Preparing...';
+    VVCore.vvShareCompose(sp,{format:'x', text:vvLedgerText(), url:location.href,
+      filename:'vvonderxi-verdict',
+      onDone:function(){ btn.textContent=orig; }
+    }).catch(function(){ btn.textContent=orig; VVCore.vvToast('That image could not be made. The link still works.'); });
+  }
+
 
   // dimensions for the two players (0..1)
   const DIMS=['Goal Threat','Creation','Progression','Defensive','Reliability'];

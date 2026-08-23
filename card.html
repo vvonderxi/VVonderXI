@@ -985,8 +985,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823g"></script>
-<script src="/vv-core.js?v=20260823g"></script>
+<script src="/vv-marks.js?v=20260823h"></script>
+<script src="/vv-core.js?v=20260823h"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -2716,8 +2716,8 @@ vvWireChronicle();
         <div class="sb-cardwrap" id="shareCard"></div>
         <div class="sb-foot">V<span>V</span>onder<span>XI</span> &middot; <i>Every Season Tells a Different <span>Story</span></i></div>
       </div>
-      <button class="sb-share" onclick="vvShareOut()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> Share</button>
-      <div class="sb-hint">Posts to Instagram, X, WhatsApp and more</div>
+      <button class="sb-share" onclick="vvShareCard(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> Share</button>
+      <div class="sb-hint">Sends the card as an image , Instagram, X, WhatsApp and more</div>
       <div class="sb-opts">
         <button class="sb-opt soc" onclick="vvShareWhatsApp()" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.54-3.7 8.24-8.25 8.24a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24zm-2.6 3.98c-.14 0-.36.05-.55.26-.19.21-.73.71-.73 1.74s.75 2.02.85 2.16c.11.14 1.47 2.25 3.58 3.16.5.22.89.35 1.19.44.5.16.96.14 1.32.08.4-.06 1.24-.5 1.42-.99.18-.49.18-.9.13-.99-.05-.09-.19-.14-.4-.25-.21-.11-1.24-.61-1.43-.68-.19-.07-.33-.1-.47.11-.14.21-.54.68-.66.82-.12.14-.24.16-.45.05-.21-.11-.88-.32-1.68-1.04-.62-.55-1.04-1.23-1.16-1.44-.12-.21-.01-.32.09-.43.1-.1.21-.24.32-.37.11-.13.14-.21.21-.35.07-.14.04-.26-.02-.37-.05-.11-.47-1.15-.65-1.57-.17-.41-.34-.36-.47-.36z"/></svg></button>
         <button class="sb-opt soc" onclick="vvShareX()" aria-label="X"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
@@ -2754,10 +2754,47 @@ function vvShareText(){
   return d ? (d.full+' , '+d.year+' , VV '+d.vv+' on VVonderXI') : 'VVonderXI , Compare Careers. Define Legacies.';
 }
 function vvShareOut(){
+  // LINK share only , the IMAGE path is vvShareCard. Kept as its own rung because a link
+  // is the right thing for a DM or a reply, and because it is the terminal fallback when
+  // the image cannot be composed at all.
+  // The alert() is gone: it BLOCKS the page, it is the wrong register for a success
+  // message, and in an automated browser it wedges the session until a human dismisses it
+  // (which happened during this build). vvToast says the same thing without stopping
+  // anything. And nothing here claims success before its promise resolves , see §C.
   var data={title:'VVonderXI',text:vvShareText(),url:vvShareURL()};
-  if(navigator.share){ navigator.share(data).catch(function(){}); }
-  else { vvCopyLink(null); try{alert('Link copied , paste it anywhere to share.');}catch(e){} }
+  if(navigator.share){
+    navigator.share(data).catch(function(e){
+      if(e && e.name==='AbortError') return;              // the user closed the sheet
+      vvCopyLink(null); VVCore.vvToast('Link copied , paste it anywhere to share.');
+    });
+    return;
+  }
+  var ok=false;
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(vvShareURL()); ok=true; } }catch(e){}
+  VVCore.vvToast(ok ? 'Link copied , paste it anywhere to share.'
+                    : 'Sharing is not available in this browser , copy the address bar.');
 }
+/* The spec the share layer renders. D is the live card object, so the image is always the
+   season currently on screen , season switching rewrites D and ?id= together. */
+function vvShareSpec(){ return { kind:'card', card:(typeof D!=='undefined'&&D)?D:null }; }
+function vvShareFilename(){
+  var d=(typeof D!=='undefined'&&D)?D:null;
+  if(!d) return 'vvonderxi';
+  return ('vvonderxi-'+String(d.full||'card').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+String(d.year||'').replace('/','-'))
+         .replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+function vvShareCard(btn){
+  var sp=vvShareSpec(); if(!sp.card){ vvShareOut(); return; }
+  var lbl=btn?btn.childNodes[btn.childNodes.length-1]:null, orig=lbl?lbl.nodeValue:'';
+  if(lbl) lbl.nodeValue=' Preparing...';
+  // 1080x1350 is the one format that works everywhere , a feed post, a story crop and a
+  // DM preview all survive it. The other three live in VVCore.SHARE_FORMATS.
+  VVCore.vvShareCompose(sp,{format:'igf', text:vvShareText(), url:vvShareURL(),
+    filename:vvShareFilename(),
+    onDone:function(){ if(lbl) lbl.nodeValue=orig; }
+  }).catch(function(){ if(lbl) lbl.nodeValue=orig; vvShareOut(); });
+}
+
 function vvShareX(){
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(vvShareText())+'&url='+encodeURIComponent(vvShareURL()),'_blank','noopener');
 }
@@ -2769,30 +2806,25 @@ function vvCopyLink(btn){
   if(btn){ var sp=btn.querySelector('span'); if(sp) sp.textContent=' Copied'; }
 }
 function vvSaveImage(btn){
-  var node=document.getElementById('shareCapture');
-  function mark(t){ if(btn){ var sp=btn.querySelector('span'); if(sp) sp.textContent=t; } }
-  function cap(){
-    // html2canvas has TWO blind spots here and both fail silently. It does not resolve
-    // <use>, so the marks capture as holes; and it drops every inset box-shadow on a
-    // ROUNDED element, which on a Generational card is the gold rim , the tier's whole
-    // visual claim, gone from the shared image with nothing to show it. Shim both first
-    // and restore in a finally , #shareCapture is a LIVE element, not a throwaway poster,
-    // so a capture that throws must still put the DOM back. See vv-core for the evidence.
-    var undoMarks = (window.VVCore && VVCore.vvInlineMarks)   ? VVCore.vvInlineMarks(node)   : function(){};
-    var undoRims  = (window.VVCore && VVCore.vvShimInsetRims) ? VVCore.vvShimInsetRims(node) : function(){};
-    var restore = function(){ undoRims(); undoMarks(); };
-    try{
-      html2canvas(node,{backgroundColor:'#0f0c0d',scale:2,useCORS:true}).then(function(cv){
-        var a=document.createElement('a'); a.download='vvonderxi-card.png'; a.href=cv.toDataURL('image/png'); a.click(); mark(' Saved');
-      }).catch(function(){ vvShareOut(); }).finally(restore);
-    }catch(e){ restore(); vvShareOut(); }
-  }
-  if(window.html2canvas){ cap(); return; }
+  // The download is the SAME composed frame as the share, at the card-shaped size, so a
+  // saved image and a shared one are never two different pictures. 1000x1518 is the
+  // MEASURED card ratio 1.518, not the 1.397 in the CSS , see §C.
+  // It also copies the caption and SAYS SO, because a downloaded image on its own loses
+  // the player, the season and the score the moment it leaves the folder.
+  var sp=vvShareSpec(); if(!sp.card){ vvShareOut(); return; }
+  function mark(t){ if(btn){ var s=btn.querySelector('span'); if(s) s.textContent=t; } }
   mark(' Saving...');
-  var sc=document.createElement('script');
-  sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-  sc.onload=cap; sc.onerror=function(){ mark(' Save image'); vvShareOut(); };
-  document.head.appendChild(sc);
+  VVCore.vvRenderShareImage(sp,{format:'dl'}).then(function(out){
+    if(!out||!out.blob) throw new Error('no image');
+    var url=URL.createObjectURL(out.blob);
+    var a=document.createElement('a'); a.href=url; a.download=vvShareFilename()+'.png'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+    var copied=false;
+    try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(vvShareText()+'\n'+vvShareURL()); copied=true; } }catch(e){}
+    mark(' Saved');
+    VVCore.vvToast(copied ? 'Image saved, and the caption is on your clipboard , paste it with the post.'
+                          : 'Image saved to your downloads.');
+  }).catch(function(){ mark(' Save image'); VVCore.vvToast('That image could not be made. The link still works.'); });
 }
 
 /* ================= SEARCH OVERLAY , behaviour =================
