@@ -68,3 +68,4 @@ _demo_marks.html
 # full-population engine snapshots , working artefacts, kept local
 migrations/*/before*.csv
 migrations/*/after*.csv
+_demo_share.html

@@ -2165,6 +2165,36 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     twilight:         { name:'Twilight Brilliance',          emoji:'🌅', kind:'age', blurb:'A veteran matches a prime player; age has not dimmed him.', drury:'They said the legs would fade. The refusal does not fade.', trigger:'rt gap <= 3 AND older >= 33 AND >= 5 years older' },
   };
 
+  // ── SHARE-ONLY DISPLAY NAMES , A LOOKUP AT THE SHARE LAYER, NOT A SECOND TAG SET ──
+  //  The §C names above are LOCKED and are what Compare shows. Three of them break when
+  //  lifted OUT of the comparison and dropped into a post, where the sentence is
+  //  "The Verdict: {tag}." and nothing else is on screen to carry them:
+  //    , 'VAR close call'  is the only lower-cased name in a set of fourteen, so beside
+  //      thirteen title-cased siblings it reads as a typo rather than a style.
+  //    , 'Complete Package vs Specialist' names the AXIS, not the judgement, and reads as
+  //      a category label. In frame the two cards supply the contrast; out of frame nothing does.
+  //    , 'League Strength Tips It' ends on a pronoun whose referent is the pair of cards.
+  //      Remove the cards and "It" points at nothing.
+  //  THE DIVERGENCE IS DELIBERATE. Do not "reconcile" these back , the tag set is a
+  //  product vocabulary with its own locked names, and this is presentation for one
+  //  surface. Any tag with no entry here shares under its own name, which is the case
+  //  for the other eleven.
+  const VERDICT_SHARE_NAME = {
+    var_close:      'VAR Close Call',
+    complete_spec:  'The Complete Player',
+    league_tips:    'The League Tips The Balance',
+  };
+  // key OR name in, share-safe name out. Accepts either so a caller holding the tag
+  // object does not have to know its key.
+  function verdictShareName(tagOrKey){
+    if (!tagOrKey) return '';
+    const key = (typeof tagOrKey === 'string') ? tagOrKey : (tagOrKey.key || '');
+    if (VERDICT_SHARE_NAME[key]) return VERDICT_SHARE_NAME[key];
+    const name = (typeof tagOrKey === 'string') ? tagOrKey : (tagOrKey.name || '');
+    for (const k in VERDICT_TAGS) if (VERDICT_TAGS[k].name === name && VERDICT_SHARE_NAME[k]) return VERDICT_SHARE_NAME[k];
+    return name || key;
+  }
+
   // Deterministic verdict scaffold from two card objects (rowToCard). The AI writes the
   // prose and may up-rank floorTag -> a contextHint it judges clearly applies (priority CONTEXT>AGE>LADDER).
   function verdictContext(A, B){
@@ -2935,7 +2965,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
