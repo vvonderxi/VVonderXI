@@ -188,6 +188,13 @@
     
 
     
+  /* RESTORED 2026-08-23. 0260a90 deleted this @media OPENER along with the row rules
+     inside it and left its closing brace behind, so CSS depth went negative here and
+     the parser DISCARDED the next rule , the .cardgrid display:grid, which is why the
+     card grid rendered as one column. The opener is restored rather than the stray
+     brace deleted: these rules are mobile-only, and dropping the brace instead would
+     promote them to every viewport. */
+  @media (max-width:720px),(max-height:600px){
     .compacthead{display:none}
     .gridwrap.compactmode .compacthead{display:grid;grid-template-columns:22px minmax(0,1fr) 34px 30px 30px 40px;column-gap:9px;padding:6px 12px 7px;margin:0 0 2px;font-size:11px;letter-spacing:.03em;color:var(--ink-soft);align-items:center}
     .gridwrap.compactmode .compacthead span:nth-child(1){grid-column:2}
