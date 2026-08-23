@@ -308,6 +308,12 @@
   .vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
   .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+  /* MARKS ON THE CARD FACE , same rule as card.html. Sized against --cw so a mark scales
+     with the card. .chtagcell ONLY: the .chtag container is a 2-column grid and including it
+     here is what flattened the tag row on card.html (3a72999). currentColor is inherited from
+     the pill, so the gold honour pill needs no rule of its own. */
+  .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
+  .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
   .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
   .vvcard .cga .col{text-align:center}
   .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
@@ -517,6 +523,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     var col=(usable-gap)/2;
     return Math.round(Math.min(260,col*0.92));
   }
+  // CARD-FACE MARKS , this page. compare.html still does not opt in, so its cards are
+  // unchanged. Fail-soft: if vv-marks.js is missing or stale the pills render as before,
+  // minus the icon. Runs once at parse time, after vv-core.js has loaded.
+  try { VVCore.useCardMarks(true); } catch(e){}
+
   function renderRankCards(list){
     const g=document.getElementById('cardgrid');
     setViewClass(null);
