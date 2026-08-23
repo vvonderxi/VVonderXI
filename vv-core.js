@@ -101,6 +101,134 @@
     };
   }
 
+  // ── SHIM THE INSET RIMS BEFORE A CANVAS CAPTURE, AND PUT THEM BACK ─────────────
+  //  SECOND html2canvas BLIND SPOT, found 2026-08-23 by the same method as the `<use>`
+  //  one: reading the captured pixels back rather than looking at the picture.
+  //  **html2canvas 1.4.1 DROPS EVERY INSET box-shadow ON AN ELEMENT THAT HAS A
+  //  border-radius.** Isolated with a four-box control: a FLAT box captured the ring at
+  //  full strength (red-minus-blue 142 at 4px depth); the SAME shadow on a box with
+  //  `border-radius:21px` captured NOTHING (8, i.e. the background). A gradient
+  //  background and an additional outer shadow made no difference , the radius alone
+  //  decides it. Stacked inset shadows on a flat box render correctly, so this is not a
+  //  multiple-shadow limit either.
+  //
+  //  IT HITS EVERY VV CARD, because every card is rounded. On a Generational card the
+  //  casualty is the GOLD RIM, which is the whole visual claim of the tier , the shared
+  //  image would have gone out with the tier stripped off it and nothing to show the
+  //  difference. Live-DOM comparison cannot see this: the computed box-shadow is present
+  //  and correct on the element, and no descendant covers it. Only the pixels show it.
+  //
+  //  THE SHIM: for each inset layer, add an absolutely-positioned ring CHILD carrying the
+  //  band as a BORDER, which html2canvas does render on a rounded box (verified, 142 at
+  //  the same depth, and the corner stays dark so the ring follows the radius rather than
+  //  squaring off). Children are appended in REVERSE shadow order because CSS paints the
+  //  FIRST shadow on top while the DOM paints the LAST sibling on top.
+  //
+  //  SCOPE, deliberately narrow: only zero-offset, zero-blur inset layers are shimmed,
+  //  which is what a rim is. An offset or blurred inset is a soft interior shading that a
+  //  hard border cannot reproduce, so it is SKIPPED rather than approximated , a wrong
+  //  ring would be worse than the missing one, and nothing in this codebase uses one.
+  //
+  //  Same contract as vvInlineMarks: call the returned function from a `finally`.
+  function vvShimInsetRims(node){
+    if (!node || !node.querySelectorAll) return function(){};
+    const targets = [];
+    if (node.matches && node.matches('*')) targets.push(node);
+    node.querySelectorAll('*').forEach(function(el){ targets.push(el); });
+
+    // The suppression and the position fix go through an INJECTED STYLESHEET, never through
+    // el.style. Writing to .style at all reserialises the whole style attribute (`--cw:284px`
+    // comes back as `--cw: 284px;`) and leaves `style=""` behind on elements that had no
+    // attribute, so the restore can never be byte-identical. A stylesheet plus a temporary
+    // class touches neither, and removing both leaves the DOM exactly as found , which is
+    // what lets a caller ASSERT the restore rather than trust it.
+    const rules = [], touched = [];
+    let n = 0;
+
+    targets.forEach(function(el){
+      const cs = getComputedStyle(el);
+      const layers = vvSplitShadow(cs.boxShadow).filter(function(l){ return /\binset\b/.test(l); });
+      if (!layers.length) return;
+      const rings = [];
+      layers.forEach(function(layer){
+        const colour = (layer.match(/(rgba?\([^)]*\)|#[0-9a-f]{3,8})/i) || [])[1];
+        const lens = layer.replace(/rgba?\([^)]*\)/i, '').replace(/\binset\b/, '')
+                          .trim().split(/\s+/).map(parseFloat).filter(function(v){ return !isNaN(v); });
+        if (!colour || lens.length < 4) return;
+        const ox = lens[0], oy = lens[1], blur = lens[2], spread = lens[3];
+        if (ox || oy || blur || spread <= 0) return;      // not a rim , see SCOPE above
+        const ring = document.createElement('div');
+        ring.setAttribute('data-vv-rim', '1');
+        ring.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;' +
+          'box-sizing:border-box;border:' + spread + 'px solid ' + colour + ';' +
+          'border-radius:' + cs.borderRadius + ';';
+        rings.push(ring);
+      });
+      if (!rings.length) return;
+
+      // SUPPRESS THE ORIGINALS FOR THE DURATION OF THE CAPTURE. Adding the rings is only
+      // half the fix: html2canvas does not ignore these layers, it MISPLACES them , it
+      // resolves an inset ring against the element's CONTENT box instead of its border box,
+      // so on a card with 19.88px padding the gold rim is redrawn 20px in, boxing the content
+      // and cutting straight through the Generational pill. Measured on a captured row: with
+      // the originals left in place the gold landed at inset 26 and 233 on a 261.3px card,
+      // exactly contentEdge + the 5.68-to-7.1 band, so the image carried TWO rims , the right
+      // one and the wrong one. That misplaced rim is the "gold border cutting through the
+      // card" defect, and it is html2canvas's, not the card's.
+      // The rule needs !important because the card's own shadow is declared that way; a plain
+      // override is SILENTLY IGNORED (measured: the assignment ran, threw nothing, and
+      // getComputedStyle still returned all three layers, so the suppression looked applied
+      // while the wrong rim kept printing).
+      const cls = 'vv-rim-shim-' + (n++);
+      const keep = vvSplitShadow(cs.boxShadow).filter(function(l){ return !/\binset\b/.test(l); });
+      // THE CLASS IS REPEATED FOUR TIMES ON PURPOSE, the same device as `.vvrows.vvrows`
+      // elsewhere in this file. `!important` does NOT settle a contest between two important
+      // declarations , SPECIFICITY does, and the card's own rim is declared on `.vvcard.gen`
+      // (0,2,0). A single shim class is (0,1,0), so it LOSES and the suppression silently
+      // does nothing: measured, the misplaced rim came straight back at inset 26 while the
+      // rule sat in the sheet looking correct. Four repetitions is (0,4,0), which clears any
+      // realistic card selector without resorting to an inline style , and an inline style is
+      // what makes the restore non-byte-identical, so this is not a stylistic preference.
+      const sel = ('.' + cls).repeat(4);
+      rules.push(sel + '{box-shadow:' + (keep.length ? keep.join(', ') : 'none') + ' !important' +
+                 (cs.position === 'static' ? ';position:relative !important' : '') + '}');
+      el.classList.add(cls);
+      rings.reverse().forEach(function(r){ el.appendChild(r); });   // CSS paints first-on-top
+      touched.push({ el: el, cls: cls, rings: rings });
+    });
+
+    if (!touched.length) return function(){};
+    const sheet = document.createElement('style');
+    sheet.setAttribute('data-vv-rim-sheet', '1');
+    sheet.textContent = rules.join('\n');
+    document.head.appendChild(sheet);
+
+    return function restore(){
+      touched.forEach(function(t){
+        t.rings.forEach(function(r){ if (r.parentNode) r.parentNode.removeChild(r); });
+        t.el.classList.remove(t.cls);
+        if (!t.el.getAttribute('class')) t.el.removeAttribute('class');   // it had none to begin with
+      });
+      if (sheet.parentNode) sheet.parentNode.removeChild(sheet);
+      touched.length = 0;                                // idempotent, as vvInlineMarks is
+    };
+  }
+
+  //  Split a computed box-shadow on its TOP-LEVEL commas only. A plain .split(',') tears
+  //  `rgba(0, 0, 0, 0.85)` into four fragments and every layer after it is misread.
+  function vvSplitShadow(v){
+    if (!v || v === 'none') return [];
+    const out = []; let depth = 0, start = 0;
+    for (let i = 0; i < v.length; i++){
+      const ch = v[i];
+      if (ch === '(') depth++;
+      else if (ch === ')') depth--;
+      else if (ch === ',' && depth === 0){ out.push(v.slice(start, i).trim()); start = i + 1; }
+    }
+    out.push(v.slice(start).trim());
+    return out.filter(Boolean);
+  }
+
   // ── CARD-FACE ADOPTION , opt-in per PAGE, not per call ──────────────────────────
   //  buildCard is shared by card.html, compare.html and rankings.html, so the opt-in has
   //  to live somewhere only ONE of them turns on. It is a page-level flag rather than a
@@ -3104,7 +3232,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
