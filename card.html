@@ -347,7 +347,11 @@
      honour pill needs no rule of its own: .chtagcell.gold sets color:#5a4410 above and the
      gradient is identical in both themes. */
   .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
-  .vvcard .chtag,.vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
+  /* .chtagcell ONLY. The .chtag CONTAINER is a 2-column grid (see .vvcard .chtag above) and
+     including it here overrode display:grid with inline-flex, flattening the tag row into a
+     single line , grid-template-columns stayed set and inert. The mark needs the PILL to be
+     a flex box so icon and label align; the row around it must stay a grid. */
+  .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
   .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
   .vvcard .cga .col{text-align:center}
   .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
