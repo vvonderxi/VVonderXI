@@ -94,6 +94,7 @@
   .ranksearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}
   .ranksearch input::placeholder{color:rgba(243,237,224,0.58)}
   .rs-clear{display:none;background:none;border:0;color:rgba(243,237,224,0.58);font-size:21px;line-height:1;cursor:pointer;padding:0 2px}
+  .vvload{grid-column:1/-1;padding:52px 12px}
   .rankempty{grid-column:1/-1;text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.58)}
   body.light .ranksearch{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:var(--ink-soft)}
@@ -406,8 +407,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823i"></script>
-<script src="/vv-core.js?v=20260823i"></script>
+<script src="/vv-marks.js?v=20260823j"></script>
+<script src="/vv-core.js?v=20260823j"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the
@@ -503,7 +504,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
      nothing about results, because it does not know anything about results yet. */
   function rankEmptyHTML(){
     if(RANK_STATE==='error') return '<div class="rankempty">Those rankings could not be loaded. Check your connection and try again.</div>';
-    if(RANK_STATE!=='ready')  return '';        // nothing to say yet , the loader lands in its own commit
+    if(RANK_STATE!=='ready')  return (window.VVCore && VVCore.vvLoader) ? VVCore.vvLoader({size:44, label:'Loading rankings'}) : '';
     return '<div class="rankempty">No seasons match your search.</div>';
   }
   /* Show more is gone , infinite scroll replaces the 300 cap (see loadRankings). */

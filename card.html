@@ -353,6 +353,16 @@
   /* Holds the line while a real card is in flight, so emptying a value cannot reflow the
      panel underneath it. Mirrors the min-height .gname already carries for its blank. */
   .vv-wait{min-height:1em;display:inline-block}
+  /* THE WAITING CARD. This used to be inline styles: a 5% WHITE fill and a border-COLOUR
+     with no border-width. On the cream page that is a 5% white wash over cream with no
+     edge , i.e. nothing at all, and the skeleton has been invisible in light mode since it
+     was added. It only surfaced when a loader was put inside it and had no box to sit in.
+     Themed properly here instead, and aria-hidden is gone because the loader inside it
+     announces itself and a hidden ancestor would mute that. */
+  .vvcard-wait{display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.05) !important;box-shadow:none !important;
+    border:1px solid rgba(255,255,255,0.12) !important;min-height:450px}
+  body.light .vvcard-wait{background:rgba(28,27,26,0.045) !important;border-color:rgba(28,27,26,0.14) !important}
   .gsub.vv-wait,.chips.vv-wait{display:block;min-height:1.1em}
   .gdrury.na{font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;font-size:12.5px;color:var(--ink-soft)}
   .gdrury.gen{position:relative;min-height:1.2em;border-radius:6px;background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
@@ -989,8 +999,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823i"></script>
-<script src="/vv-core.js?v=20260823i"></script>
+<script src="/vv-marks.js?v=20260823j"></script>
+<script src="/vv-core.js?v=20260823j"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -1345,7 +1355,8 @@
   //    renderHero() also calls drawRadar(), so guarding it here prevents a Bruno radar too.
   var _cardId=null; try{ _cardId=new URLSearchParams(window.location.search).get('id'); }catch(e){}
   if(_cardId){
-    document.getElementById('heroCard').innerHTML='<div class="vvcard" aria-hidden="true" style="--cw:'+cwNow()+'px;min-height:450px;background:rgba(255,255,255,0.05)!important;box-shadow:none!important;border-color:rgba(255,255,255,0.10)!important"></div>';
+    var _ld=(window.VVCore && VVCore.vvLoader) ? VVCore.vvLoader({size:48, label:'Loading card'}) : '';
+    document.getElementById('heroCard').innerHTML='<div class="vvcard vvcard-wait" style="--cw:'+cwNow()+'px">'+_ld+'</div>';
     // ── AND THE PANELS, NOT JUST THE HERO ──────────────────────────────────────
     //  The skeleton above killed the Bruno flash ON THE CARD FACE and stopped there, so
     //  for the whole round-trip the GLANCE still read 91 / 10 / 8 / "CAM · Man Utd · 23/24"
@@ -1362,6 +1373,12 @@
       el.classList.add('vv-wait');            // reserves the line so blanking costs no shift
       el.innerHTML='';
     });
+    // ONE loader for the panels, in the analysis line under the stats. The stat LABELS are
+    // deliberately left visible , the panel keeps its shape and only the figures are
+    // pending, which is more honest than blanking the whole block and more legible than a
+    // spinner per number.
+    var _gd=document.getElementById('glDrury');
+    if(_gd && window.VVCore && VVCore.vvLoader) _gd.innerHTML=VVCore.vvLoader({size:40, label:'Loading the glance'});
   } else {
     renderHero();                              // no id -> standalone demo (unchanged)
   }

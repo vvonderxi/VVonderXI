@@ -3233,6 +3233,87 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
   // ══════════════════════════════════════════════════════════════════════════════
+  //  THE VV LOADER , the waiting state, shared by card, compare and rankings.
+  //
+  //  TWO MARKS, AND THE SPLIT IS A MEASUREMENT, NOT A PREFERENCE.
+  //  The monogram's identity is the INTERLOCK , two Vs sharing a knocked-out overlap
+  //  (§C). Rasterised and scanned across the middle of the mark, that knockout only
+  //  survives at 40px and above: at 48px it cuts clean through (deepest alpha 0.00, two
+  //  separate ink runs), while at 16px there is ONE run and the deepest cut is 0.50 ,
+  //  antialiasing fills the seam and the two Vs merge into a single blob.
+  //  So vvLoader() is for 40px and up, and anything smaller , a button, a line of text ,
+  //  gets vvLoaderBars() instead. A 16px monogram is not a small monogram, it is a
+  //  different mark, and shipping it as the brand would be a claim the pixels do not
+  //  support. Same logic as the single-ink translation: use the form the context can carry.
+  //
+  //  SWEEP is the chosen animation. A band of light travels UP through the mark and the
+  //  silhouette never moves, so the interlock is legible in every frame , the one option
+  //  whose motion is about the knockout rather than in spite of it.
+  // ══════════════════════════════════════════════════════════════════════════════
+  const VV_LOADER_MIN = 40;          // below this the interlock does not survive , measured
+
+  const VV_LOADER_CSS = `
+.vvload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--gold-ink,#E8B84B)}
+.vvload .vvm{display:block;
+  -webkit-mask-image:linear-gradient(0deg,#000 34%,rgba(0,0,0,.28) 50%,#000 66%);
+          mask-image:linear-gradient(0deg,#000 34%,rgba(0,0,0,.28) 50%,#000 66%);
+  -webkit-mask-size:100% 300%;mask-size:100% 300%;
+  animation:vvSweep 1.15s linear infinite}
+@keyframes vvSweep{0%{-webkit-mask-position:0 100%;mask-position:0 100%}
+                 100%{-webkit-mask-position:0 -100%;mask-position:0 -100%}}
+.vvload-l{font-family:'Inter',system-ui,sans-serif;font-size:12.5px;letter-spacing:.04em;color:var(--ink-soft,#a49d93)}
+.vvbars{display:inline-flex;gap:2.5px;align-items:flex-end;height:13px;vertical-align:-2px}
+.vvbars i{width:3px;background:currentColor;border-radius:1px;animation:vvBars .9s ease-in-out infinite}
+.vvbars i:nth-child(1){animation-delay:-.30s}.vvbars i:nth-child(2){animation-delay:-.15s}
+@keyframes vvBars{0%,100%{height:4px;opacity:.45}50%{height:13px;opacity:1}}
+/* MOTION IS NOT THE MESSAGE , the message is "still working". Anyone who has asked the
+   system to stop animating still needs to know that, so the mark stays and only the
+   movement goes. Removing the loader entirely would be a worse answer than a still one. */
+@media (prefers-reduced-motion: reduce){
+  .vvload .vvm{animation:none;-webkit-mask-image:none;mask-image:none;opacity:.75}
+  .vvbars i{animation:none;height:9px;opacity:.7}
+}
+`;
+  let LOADER_CSS_IN = false;
+  function vvInjectLoaderCSS(){
+    if (LOADER_CSS_IN || typeof document === 'undefined') return;
+    const st = document.createElement('style');
+    st.setAttribute('data-vv-loader-css', '1');
+    st.textContent = VV_LOADER_CSS;
+    document.head.insertBefore(st, document.head.firstChild);
+    LOADER_CSS_IN = true;
+  }
+
+  //  The monogram loader. `size` is clamped UP to the measured floor rather than honoured
+  //  blindly , a caller asking for 24px has misunderstood the mark, and silently giving
+  //  them a blob would hide that. label is announced to screen readers and shown when
+  //  `withText` is set.
+  function vvLoader(opts){
+    opts = opts || {};
+    vvInjectLoaderCSS();
+    const size = Math.max(VV_LOADER_MIN, opts.size || 48);
+    const label = opts.label || 'Loading';
+    const mark = (typeof VVMarks !== 'undefined' && VVMarks && VVMarks.brand)
+      ? VVMarks.brand('loader', { size: size }) : '';
+    if (!mark) return '';                       // fail-soft: no mark, no loader, never a throw
+    // ONE class attribute. Emitting a second one is silently ignored by the parser, so the
+    // extra class simply would not apply and nothing would say why.
+    return '<div class="vvload' + (opts.className ? ' ' + opts.className : '') +
+           '" role="status" aria-live="polite">' + mark +
+           (opts.withText ? '<span class="vvload-l">' + String(label).replace(/[&<>"]/g, '') + '</span>'
+                          : '<span class="vvload-l" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + String(label).replace(/[&<>"]/g, '') + '</span>') +
+           '</div>';
+  }
+
+  //  The inline form, for every context too small to carry the monogram honestly.
+  //  Three bars, no brand claim. Inherits currentColor so it works on a pink button and
+  //  in body text without a per-surface override.
+  function vvLoaderBars(){
+    vvInjectLoaderCSS();
+    return '<span class="vvbars" aria-hidden="true"><i></i><i></i><i></i></span>';
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════════
   //  SHARE FRAMES , the composed image a card or a comparison goes out as.
   //
   //  WHY IT LIVES HERE. card.html and compare.html both need it, and the frame reuses
@@ -3538,7 +3619,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvLoaderBars, vvInjectLoaderCSS, VV_LOADER_MIN, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
