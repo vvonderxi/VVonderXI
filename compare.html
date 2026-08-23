@@ -285,6 +285,12 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
+  /* MARKS ON THE CARD FACE , same rule as card.html and rankings.html. Sized against
+     --cw so a mark scales with the card, which matters most here: the compare pair renders
+     at 150px against the hero's 300px. .chtagcell ONLY , the .chtag container is a
+     2-column grid and including it flattens the tag row (3a72999). */
+  .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
+  .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
   .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
   .vvcard .cga .col{text-align:center}
   .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
@@ -990,6 +996,11 @@ body.light .pkmsub{color:var(--ink-soft)}
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
+  // CARD-FACE MARKS , the third and last surface. All three now opt in, so a card face
+  // renders identically wherever it appears. Fail-soft: a missing vv-marks.js costs the
+  // icon, not the pill. Runs once at parse time, after vv-core.js has loaded.
+  try { VVCore.useCardMarks(true); } catch(e){}
+
   function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();}
   function vvUpdateSeeLinks(){
     [['seeA',CMP_A],['seeB',CMP_B]].forEach(function(p){ var el=document.getElementById(p[0]); if(!el) return;
