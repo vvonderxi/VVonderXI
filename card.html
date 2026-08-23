@@ -315,17 +315,6 @@
     padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A !important;font-family:'Barlow Condensed',sans-serif}   /* Career-Stage (Wonderkid / The Last Dance) , neutral profile tag, NOT the honour gold */
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
-  /* MARKS ON THE CARD FACE. Sized against --cw so a mark scales with the card , the face
-     renders at 300px on the hero and 150px in the compare pair, and a fixed px mark would
-     dominate the small one. currentColor is inherited from the pill, which is why the gold
-     honour pill needs no rule of its own: .chtagcell.gold sets color:#5a4410 above and the
-     gradient is identical in both themes. */
-  .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
-  /* .chtagcell ONLY. The .chtag CONTAINER is a 2-column grid (see .vvcard .chtag above) and
-     including it here overrode display:grid with inline-flex, flattening the tag row into a
-     single line , grid-template-columns stayed set and inert. The mark needs the PILL to be
-     a flex box so icon and label align; the row around it must stay a grid. */
-  .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
 
   /* ===== Prestige whole-card treatment ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
@@ -996,8 +985,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823d"></script>
-<script src="/vv-core.js?v=20260823d"></script>
+<script src="/vv-marks.js?v=20260823e"></script>
+<script src="/vv-core.js?v=20260823e"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;

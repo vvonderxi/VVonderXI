@@ -288,12 +288,7 @@
      Ballon d'Or rendered red here and gold on the other two. The mark inherits the ink
      through currentColor, which is why it needs no rule of its own. */
   .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
-  /* MARKS ON THE CARD FACE , same rule as card.html. Sized against --cw so a mark scales
-     with the card. .chtagcell ONLY: the .chtag container is a 2-column grid and including it
-     here is what flattened the tag row on card.html (3a72999). currentColor is inherited from
-     the pill, so the gold honour pill needs no rule of its own. */
-  .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
-  .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
+  
 
   /* ===== Prestige whole-card treatment (SUB-STEP A: rankings only) ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
@@ -411,8 +406,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823d"></script>
-<script src="/vv-core.js?v=20260823d"></script>
+<script src="/vv-marks.js?v=20260823e"></script>
+<script src="/vv-core.js?v=20260823e"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the

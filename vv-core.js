@@ -1831,6 +1831,17 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
   .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
 .vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
 .vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+/* MARK SIZING , belongs here, and was MISSED by the first extraction pass.
+   These two rules are byte-identical in card.html, rankings.html and compare.html,
+   but each carried a DIFFERENT COMMENT above it, and the extraction compared the
+   selector prelude WITH its comment attached , so one shared rule read as three
+   different ones and none of them qualified. The cost was visible immediately on a
+   fourth surface: with no size rule a mark renders at its intrinsic 254px instead of
+   12px and blows the prestige row to 0.98 of the card width.
+   THE LESSON FOR THE NEXT EXTRACTION: compare DECLARATIONS, and normalise the
+   selector before comparing it. A comment is not part of a selector. */
+.vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
+.vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
 `;
   function vvInjectCardCSS(){
     if (typeof document === 'undefined') return;
