@@ -295,7 +295,11 @@
      and its font-size:15px made a 1em heading mark resolve to 15px beside 34px type. Both
      read as bugs in the new code. Neither was. */
   .vmono{font-family:'Archivo';font-weight:900;font-size:15px;letter-spacing:.08em;color:var(--charcoal)}
-  .vmono span{color:var(--pink-ink)}
+  /* The verdict demo cards are CREAM in both themes , they are mock VV cards, not page
+     surface. So --pink-ink flipping to its dark value (#F1688E) put a light pink on cream:
+     measured 2.46 in dark theme. Pinned to the light value, which is the one that matches
+     this ground. Same fixed-ground trap as .dpanel above and the display case before it. */
+  .vmono span{color:#AD0332}
   .vbars{margin-top:11px;display:flex;flex-direction:column;gap:6px}
   .vbars i{display:block;height:6px;border-radius:999px;background:rgba(0,0,0,0.14)}
   .vbars i b{display:block;height:100%;border-radius:999px;background:var(--pink);}
@@ -352,6 +356,13 @@
           background:radial-gradient(120% 68% at 50% 0%,rgba(232,184,75,0.17) 0%,rgba(232,184,75,0) 60%),
                      var(--charcoal);
           border:1px solid rgba(232,184,75,0.26)}
+  /* THE DARK PANELS KEEP DARK-THEME INK IN BOTH THEMES. .dpanel and .prehero are charcoal
+     whatever the page is doing, so --ink-soft flipping to its light value (#5f594e) put a
+     dark grey on a dark ground: measured 1.72 on .dtier and 1.77 on "Seasons, ever".
+     Scoped as a TOKEN rather than patched per rule, so anything added inside these panels
+     later inherits the correct ink instead of repeating the bug. #ada69b, not the dark
+     theme's own #a49d93, because that lands at 4.44 here , under AA by a hair. */
+  .dpanel,.prehero{--ink-soft:#ada69b}
   .dtier{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
          color:var(--ink-soft)}
   .dstage{position:relative;margin:16px auto 0;width:100%;max-width:260px}
@@ -849,7 +860,7 @@
   .section.foldable .foldbody{max-height:0;overflow:hidden;opacity:0;transition:max-height .42s ease,opacity .3s ease,margin .3s ease;margin-top:0!important}
   .section.foldable.open .foldbody{max-height:9000px;opacity:1}
   .foldh{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none}
-  .foldh .foldcount{margin-left:auto;font-family:'Archivo';font-weight:800;font-size:11px;color:var(--pink,#E70443);background:rgba(255,92,122,.13);border-radius:999px;padding:3px 10px}
+  .foldh .foldcount{margin-left:auto;font-family:'Archivo';font-weight:800;font-size:11px;color:var(--pink-ink,#AD0332);background:rgba(255,92,122,.13);border-radius:999px;padding:3px 10px}
   .foldh::after{content:'\25BE';font-size:13px;opacity:.45;transition:transform .3s ease}
   .section.foldable.open .foldh::after{transform:rotate(180deg)}
 
@@ -945,7 +956,7 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260823j"></script>
+<script src="/vv-marks.js?v=20260823k"></script>
 <script>
   function toggleStory(e,btn){ e.stopPropagation(); const card=btn.parentElement; const open=card.classList.toggle('open'); if(!btn.dataset.label) btn.dataset.label=btn.innerHTML; btn.innerHTML = open ? 'Show less &#8249;' : btn.dataset.label; }
 
