@@ -308,6 +308,12 @@
   .vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
   .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+  /* HONOURS ARE GOLD. This is a design rule, not a surface preference , the base
+     .chtagcell carries the attacking red, so without this override an honour pill reads
+     as an ability tag. card.html and compare.html both had it; rankings did not, so
+     Ballon d'Or rendered red here and gold on the other two. The mark inherits the ink
+     through currentColor, which is why it needs no rule of its own. */
+  .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
   /* MARKS ON THE CARD FACE , same rule as card.html. Sized against --cw so a mark scales
      with the card. .chtagcell ONLY: the .chtag container is a 2-column grid and including it
      here is what flattened the tag row on card.html (3a72999). currentColor is inherited from
