@@ -148,15 +148,47 @@ function lintFile(file) {
   return res;
 }
 
+// ── MODULE GUARD , `node --check` PROVES A FILE PARSES, NEVER THAT IT MEANS WHAT
+//  YOU WROTE. On 2026-08-23 a CSS comment inside the VV_CARD_CSS template literal in
+//  vv-core.js contained backticks. The literal ended early, everything after it parsed
+//  as different but still VALID JavaScript, `node --check` reported success, and the
+//  file loaded with VVCore UNDEFINED , so card.html, rankings.html and compare.html all
+//  silently fell back to their loading skeletons. Nothing errored anywhere.
+//  So: actually LOAD each shared module and assert the export it is supposed to publish.
+//  Four lines, and it catches the whole class.
+const MODULES = [
+  { file: 'vv-core.js',  expect: 'VVCore'  },
+  { file: 'vv-marks.js', expect: 'VVMarks' },
+];
+function lintModules(){
+  const out = [];
+  for (const m of MODULES) {
+    if (!fs.existsSync(m.file)) continue;
+    // the browser modules attach to a global; give them a window and read it back
+    const probe = `global.window = global; require(${JSON.stringify(path.resolve(m.file))}); ` +
+                  `if (typeof global.${m.expect} === 'undefined') { console.error('MISSING'); process.exit(3); }`;
+    try {
+      execFileSync(process.execPath, ['-e', probe], { stdio: 'pipe' });
+    } catch (e) {
+      const why = e.status === 3
+        ? `loads, but never defines ${m.expect} , a template literal or block almost certainly ended early`
+        : String(e.stderr || e.message).split('\n').filter(Boolean).slice(0, 4).join(' | ').slice(0, 220);
+      out.push({ file: m.file, expect: m.expect, error: why });
+    }
+  }
+  return out;
+}
+
 const targets = files.length
   ? files
   : fs.readdirSync(process.cwd()).filter(f => f.endsWith('.html')).sort();
 
 const results = targets.map(lintFile);
+const moduleFaults = lintModules();
 const broken = results.filter(r => r.css.faults.length || r.js.length);
 
 if (JSON_OUT) {
-  console.log(JSON.stringify({ results, ok: broken.length === 0 }, null, 1));
+  console.log(JSON.stringify({ results, moduleFaults, ok: broken.length === 0 && moduleFaults.length === 0 }, null, 1));
 } else {
   console.log('INLINE LINT , CSS rules surviving vs declared, and inline JS syntax\n');
   for (const r of results) {
@@ -169,9 +201,11 @@ if (JSON_OUT) {
                   (f.kind === 'stray-close-brace' ? '   , the next rule is discarded by the browser' : ''));
     for (const j of r.js) console.log(`      inline script at ${r.file}:${j.line} , ${j.error}`);
   }
-  console.log(broken.length
-    ? `\n  ${broken.length} file(s) with a structural break. A discarded rule does not error at runtime , it just stops applying.`
-    : '\n  All files parse clean: every declared rule survives, every inline script checks.');
+  for (const m of moduleFaults)
+    console.log(`\n  MODULE ${m.file} , ${m.error}`);
+  console.log(broken.length || moduleFaults.length
+    ? `\n  ${broken.length} file(s) with a structural break, ${moduleFaults.length} module(s) that do not export. A discarded rule does not error at runtime , it just stops applying.`
+    : '\n  All files parse clean, every declared rule survives, every inline script checks, and every shared module exports what it should.');
 }
 
-process.exit(broken.length ? 1 : 0);
+process.exit((broken.length || moduleFaults.length) ? 1 : 0);
