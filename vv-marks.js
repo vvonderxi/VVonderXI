@@ -61,8 +61,8 @@
   var HONOURS = {
     'ballon_dor':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.4a9.6 9.6 0 1 0 0 19.2 9.6 9.6 0 0 0 0-19.2Zm0 3.5 2.9 2.1-1.1 3.4h-3.6L9.1 8Z"/></g>',
     'world_cup_winner':  '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.2a4.6 4.6 0 0 0 0 9.2 4.6 4.6 0 0 0 0-9.2Zm0 2.2a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8Z"/> <path d="M9.5 11.2h5l-1.1 6.2h2.4v2.3H8.2v-2.3h2.4Z"/> <path d="M6.6 20.2h10.8v1.9H6.6Z"/></g>',
-    'ucl_winner':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.4 1.8h5.2v8.4a2.6 2.6 0 0 1-1.9 2.5v5.9h2.3v2.4H9v-2.4h2.3v-5.9a2.6 2.6 0 0 1-1.9-2.5Z"/> <path fill-rule="evenodd" d="M9.4 2.6C6.2 2.6 4.4 5 4.4 7.6s1.8 5 5 5v-2.2c-1.9 0-2.8-1.4-2.8-2.8s.9-2.8 2.8-2.8Z"/> <path fill-rule="evenodd" d="M14.6 2.6c3.2 0 5 2.4 5 5s-1.8 5-5 5v-2.2c1.9 0 2.8-1.4 2.8-2.8s-.9-2.8-2.8-2.8Z"/></g>',
-    'league_champion':   '<g fill="currentColor"> <path fill-rule="evenodd" d="M7.4 4.6h9.2v4.3a4.6 4.6 0 0 1-3.5 4.5v3.7h2.7v2.3H8.2v-2.3h2.7v-3.7A4.6 4.6 0 0 1 7.4 8.9Zm2.8 1.8 1.8 3.1 1.8-3.1Z"/> <path d="M7.4 6.1v1.9a1.1 1.1 0 0 0 .9 1v1.9A3 3 0 0 1 5.5 8V6.1ZM16.6 6.1h2.9V8a3 3 0 0 1-2.8 2.9V9a1.1 1.1 0 0 0 .9-1Z"/></g>',
+    'ucl_winner':        '<g fill="currentColor"> <path d="M9 2.4h6v6a3 3 0 0 1-6 0Z"/> <path fill-rule="evenodd" d="M9.2 3H7.4a4.8 4.8 0 0 0 0 9.6h1.8v-2.6H7.4a2.2 2.2 0 0 1 0-4.4h1.8Z"/> <path fill-rule="evenodd" d="M14.8 3h1.8a4.8 4.8 0 0 1 0 9.6h-1.8V10h1.8a2.2 2.2 0 0 0 0-4.4h-1.8Z"/> <path d="M10.9 12.4h2.2v5h-2.2Z"/> <path d="M7.6 17.4h8.8v2H7.6Z"/> <path d="M5.6 19.4h12.8v2.2H5.6Z"/></g>',
+    'league_champion':   '<g fill="currentColor"> <path d="M6.2 3.2h11.6v3.4a5.8 5.8 0 0 1-11.6 0Z"/> <path d="M10.8 11.8h2.4v2.4h-2.4Z"/> <path fill-rule="evenodd" d="M8.4 14.2h7.2v7.6H8.4Zm2 2.2v3.2h3.2v-3.2Z"/></g>',
     'player_of_season':  '<g fill="currentColor"> <path d="M12 1.8 15.1 8.5 22.4 9.4 17 14.4 18.5 21.6 12 18 5.5 21.6 7 14.4 1.6 9.4 8.9 8.5Z"/></g>',
     'golden_boot':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M4.2 6.2h4.4v5.1c1.9.3 3.6 1 5.2 2 1.9 1.2 4.2 1.9 6.8 2.1v3.4H4.2Zm2.6 8.9v1.6h2.1v-1.6Z"/></g>',
     'top_assists':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.2 1.6a6.6 6.6 0 0 0-2.6 12.7v6.1l3.4 2 3.4-2v-2.4h-2.4v-2.6h2.4v-1.1A6.6 6.6 0 0 0 9.2 1.6Zm0 3.2a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z"/></g>',
@@ -74,8 +74,9 @@
     's-dim':             '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 1.6 22.4 9.2l-4 12.2H5.6l-4-12.2Zm0 3.5L5 10.2l2.7 8.2h8.6l2.7-8.2Z"/></g>',
     's-pct':             '<g fill="currentColor"> <path d="M1.6 19.4h2.6v2.2H1.6Z M5.2 16.6h2.6v5H5.2Z M8.8 12.4h2.6v9.2H8.8Z M12.4 9.6h2.6v12h-2.6Z M16 13.8h2.6v7.8H16Z M19.6 18.2h2.6v3.4h-2.6Z"/> <path d="M12.8 1.6h1.8v6.2h-1.8Z M10.6 2.4h6.2v1.8h-6.2Z"/></g>',
     's-card':            '<g fill="currentColor"> <path fill-rule="evenodd" d="M4.4 2.4h15.2v19.2H4.4Zm2.6 2.6v14h10V5Z"/> <path d="M8.6 6.8h6.8v4.4H8.6Z M8.6 13h6.8v1.8H8.6Z M8.6 16h4.4v1.8H8.6Z"/></g>',
+    's-wonder':          '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.3 3.6h11.5v16.8H9.3L2.4 12Zm1.5 2.6L5.5 12l5.3 5.8h7.9V6.2Z"/> <circle cx="10.4" cy="12" r="1.9"/></g>',
     's-conf':            '<g fill="currentColor"> <circle cx="4" cy="12" r="2.6"/><circle cx="10" cy="12" r="2.6"/><circle cx="16" cy="12" r="2.6"/> <path fill-rule="evenodd" d="M20.6 9.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm0 1.5a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></g>',
-    's-prestige':        '<g fill="currentColor"> <path d="M2.2 6.4 7 11.2l5-6.6 5 6.6 4.8-4.8-2 12.4H4.2Z"/><path d="M4.2 19.4h15.6v2.2H4.2Z"/></g>',
+    's-prestige':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M1.4 6.2 6 10.4 12 3.6l6 6.8 4.6-4.2-1.7 9.2H3.1Zm4.2 5.9-1 3.5h13.2l-.7-3.5-3.6 3.3L12 8.9l-2.9 5.4Z"/> <path d="M3.4 17.6h17.2v2.6H3.4Z"/></g>',
     's-honours':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 1.8a6.6 6.6 0 1 0 0 13.2 6.6 6.6 0 0 0 0-13.2Zm0 2.8a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6Z"/> <path d="M7.4 15.4 4.8 22.4l4-1.8 3.2 1.8-1.4-6.2Zm9.2 0-2.2.6 1.6 6.4 1.2-1.8 4 1.2Z"/></g>',
     's-profile':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M2.2 7.2h13.4a5.4 5.4 0 0 1 0 10.8H2.2Zm2.8 2.8v5.2h10.6a2.6 2.6 0 0 0 0-5.2Z"/> <circle cx="17.4" cy="12.6" r="2"/></g>',
     's-verdict':         '<g fill="currentColor"> <path d="M11 2.2h2v19.6h-2Z M3.2 6.6h17.6v2.2H3.2Z"/> <path fill-rule="evenodd" d="M6.2 9.6 9.8 17H2.6Zm0 3.8L4.9 16.4h2.6Z"/> <path fill-rule="evenodd" d="M17.8 9.6 21.4 17h-7.2Zm0 3.8-1.3 3h2.6Z"/></g>',
@@ -164,6 +165,11 @@
       return !!SETS[kind] && Object.prototype.hasOwnProperty.call(SETS[kind], key);
     },
     ids: function (kind) { return kind ? Object.keys(SETS[kind] || {}) : Object.keys(SETS); },
+    // The raw path data, for TOOLING only , the pairwise-distinctness harness rasterises
+    // every mark against every other one and needs to enumerate them. Never call this to
+    // render: mark() applies the viewBox, the sizing and the aria handling, and a caller
+    // that inlines raw geometry itself will drift from all three.
+    raw: function (kind) { return kind ? SETS[kind] : SETS; },
     count: function () {
       return Object.keys(SETS).reduce(function (n, k) { return n + Object.keys(SETS[k]).length; }, 0);
     }
