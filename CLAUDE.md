@@ -251,6 +251,18 @@ CDM is the ONE destination pool where the defensive signal is load-bearing, so i
 - **SO THE RULE: to test IDENTITY , is this row about the person it claims to be , the evidence must come from OUTSIDE our database.** For a player-season that is the provider (`/players/profiles?player=<id>` for the name, `/players?id=&season=` for the club), or a genuinely separate source. Internal checks stay fine for CONSISTENCY, ARITHMETIC and RANGE. They are worthless for PROVENANCE.
 - **AND A CHEAP TELL WHEN NO EXTERNAL SOURCE IS TO HAND: look for things that cannot both be true.** One `api_player_id` holding two clubs in one season with minutes summing past 3,420. A pooled goalkeeper with 5 goals. A league-season carrying 600 cards where every other year of the same league carries 384 to 441. **Those are internal checks that test the WORLD rather than our own field agreement, which is why they survive.**
 
+**THE INTERLOCK DIES BELOW 40px. A 16px MONOGRAM IS NOT A SMALL MONOGRAM, IT IS A DIFFERENT MARK (measured 2026-08-23).**
+- **The identity is the knocked-out overlap** (see the rule directly below), and that knockout is the FIRST thing scaling destroys. Rasterised and scanned across the middle of the mark, counting separate ink runs and the deepest alpha inside its span:
+
+| px | 16 | 20 | 24 | 28 | 32 | 40 | 48 | 64 |
+|---|---|---|---|---|---|---|---|---|
+| interlock reads | no | no | barely | no | barely | **yes** | **yes** | **yes** |
+| deepest cut | 0.50 | 0.50 | 0.25 | 0.62 | 0.38 | 0.13 | **0.00** | **0.00** |
+
+- **At 48px the knockout cuts clean through, at 16px antialiasing fills the seam and the two Vs merge into one blob.** `VV_LOADER_MIN = 40` in `vv-core.js` is that number, and **`vvLoader()` CLAMPS a smaller request UP rather than honouring it** , a caller asking for 24px has misunderstood the mark, and quietly handing them a blob would hide the mistake instead of surfacing it.
+- **SO SMALL CONTEXTS GET A DIFFERENT THING, NOT A SHRUNKEN MONOGRAM , `vvLoaderBars()`**, three bars, no brand claim. Buttons and inline text are exactly the sizes that cannot carry the interlock. **This is the SAME LOGIC as the single-colour translation below**: use the form the context can actually carry, and do not make a claim the pixels cannot support.
+- **DO NOT "fix" the small case by widening the knockout for a second, small-size drawing.** That is two drawings of one thing, which is precisely the defect the display-case trophies had , the page and the pills had drifted apart and nothing would ever have said so.
+
 **THE TWO-COLOUR VV MONOGRAM IS THE CARD IDENTITY. THE SINGLE-COLOUR MARK IS A TRANSLATION, NOT A REPLACEMENT (locked 2026-08-20).**
 - **The identity is the interlocking pair: one CHARCOAL V and one PINK V**, overlapping by roughly a third of a stroke, the right apex lower and further right. Traced from the `.spinelogo` PNG in `index.html`, 260x116. **That is what a VVonderXI card is, and nothing below replaces it.**
 - **The single-colour `evenodd` mark exists for contexts that inherit ONE ink** , the loader, small marks, anywhere the mark sits inside a pill or a button and takes `currentColor`. **It preserves the INTERLOCK, which is the structural signature, and gives up the colour split, which it cannot carry.** The overlap is knocked out rather than drawn, so the two Vs still read as two.
