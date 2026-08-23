@@ -65,6 +65,20 @@
     catch(e){ return ''; }
   }
 
+  // ── CARD-FACE ADOPTION , opt-in per PAGE, not per call ──────────────────────────
+  //  buildCard is shared by card.html, compare.html and rankings.html, so the opt-in has
+  //  to live somewhere only ONE of them turns on. It is a page-level flag rather than a
+  //  third argument because buildCard has FIVE call sites on card.html alone (hero, flip
+  //  swap, share, sequence peek, search-overlay grid) and threading a flag through all
+  //  five invites one being missed , which would render two different card faces on the
+  //  same page. compare.html and rankings.html simply never call useCardMarks(), so their
+  //  cards are byte-identical to today. Each page is its own document, so the flag cannot
+  //  leak between surfaces.
+  //  Fail-soft is unchanged: the flag only decides whether vvMark is CONSULTED, and vvMark
+  //  still returns '' when vv-marks.js is missing or stale.
+  var CARD_MARKS = false;
+  function useCardMarks(on){ CARD_MARKS = (on !== false); }
+
   function renderTagPills(tags, opts){
     if (!Array.isArray(tags) || !tags.length) return '';
     opts = opts || {};
@@ -139,12 +153,16 @@
     const honList = (d.honours && Array.isArray(d.honours.all)) ? d.honours.all : [];
     const honShown = honList.slice(0, remaining);   // top-ranked by tier (all is tier-sorted)
     const honPills = honShown.map(function(h){
-      return '<span class="chtagcell gold" data-tag="'+escAttr(h.type)+'" data-tip="'+escAttr(h.oneliner||h.label)+'">'+(HONOUR_CHIP_LABEL[h.type]||h.label)+'</span>';
+      // h.type IS the HONOUR_META key, same as renderHonourPillsCompact. The mark inherits
+      // the pill's own ink through currentColor , .vvcard .chtagcell.gold sets color:#5a4410
+      // and the gold gradient is identical in both themes, so no light-mode branch is needed.
+      var mk = CARD_MARKS ? vvMark('honour', h.type) : '';
+      return '<span class="chtagcell gold" data-tag="'+escAttr(h.type)+'" data-tip="'+escAttr(h.oneliner||h.label)+'">'+mk+(HONOUR_CHIP_LABEL[h.type]||h.label)+'</span>';
     }).join('');
     const profileMax = remaining - honShown.length;   // profile fills whatever honours left open
     let profilePills = '', profileShown = 0;
     if (Array.isArray(d.tags) && d.tags.length && profileMax > 0) {
-      profilePills = renderTagPills(d.tags, { baseClass:'chtagcell', max:profileMax, el:'span', innerWrap:false });
+      profilePills = renderTagPills(d.tags, { baseClass:'chtagcell', max:profileMax, el:'span', innerWrap:false, mark:CARD_MARKS });
       profileShown = Math.min(d.tags.length, profileMax);
     } else if (!Array.isArray(d.tags) && d.tag && profileMax > 0) {
       profilePills = `<span class="chtagcell">${d.tag}</span>`; profileShown = 1;   // legacy string fallback
@@ -155,7 +173,7 @@
       : tagPlaceholder;
     // ── Prestige tier pill (Contract §3) , the LOUD tag, leads the profile pills.
     //    Built via the shared renderPrestige helper; .chtag row stacks above ${tag}. ──
-    const prestige = renderPrestige(d.prestige, {baseClass:'chtag'});
+    const prestige = renderPrestige(d.prestige, {baseClass:'chtag', mark:CARD_MARKS});
     const c1 = d.club1 || '#2a2320', c2 = d.club2 || c1;
     const split = shieldSplit(c1, c2);
     // number ink: solid badge -> inkFor(c1); split badge -> white fill + bold OPAQUE black outline (reads on BOTH halves)
@@ -2917,7 +2935,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
-  const api = { inkFor, luma, shieldSplit, buildCard, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

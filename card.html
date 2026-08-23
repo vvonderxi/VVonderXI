@@ -341,6 +341,13 @@
   .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}   /* Career-Stage (Wonderkid / The Last Dance) , neutral profile tag, NOT the honour gold */
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
+  /* MARKS ON THE CARD FACE. Sized against --cw so a mark scales with the card , the face
+     renders at 300px on the hero and 150px in the compare pair, and a fixed px mark would
+     dominate the small one. currentColor is inherited from the pill, which is why the gold
+     honour pill needs no rule of its own: .chtagcell.gold sets color:#5a4410 above and the
+     gradient is identical in both themes. */
+  .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
+  .vvcard .chtag,.vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
   .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
   .vvcard .cga .col{text-align:center}
   .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
@@ -1037,8 +1044,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260821a"></script>
-<script src="/vv-core.js?v=20260821a"></script>
+<script src="/vv-marks.js?v=20260823a"></script>
+<script src="/vv-core.js?v=20260823a"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -1378,6 +1385,10 @@
     if(w>720) return 330;
     return Math.round(Math.min(330,(w-36)*0.92));
   }
+  // CARD-FACE MARKS , this page only. compare.html and rankings.html never call this, so
+  // their cards stay byte-identical. Fail-soft: if vv-marks.js is missing the pills render
+  // exactly as before, minus the icon.
+  try { VVCore.useCardMarks(true); } catch(e){}
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
