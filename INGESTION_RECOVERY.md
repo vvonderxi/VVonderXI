@@ -53,6 +53,66 @@ Everything below is the full record, preserved verbatim.
     **So the census for this pass must be CLUB-VERSUS-PLAYER, not field-versus-field** , plus minutes summing past one season across two clubs, and goals from a pooled goalkeeper. **CORRECTED SAME DAY , THE BLOCK IS SYSTEMATIC, NOT PARTIAL.** The first reading called it partial because Pickford, Leno and Verbruggen looked correct inside it. **They are not: `api 803` reads as `Jordan Pickford` here and the provider says `L. Pernica`.** Plausibility had been judged against our own `players` table, which is itself one of the corrupted layers. **10 of 12 sampled cards carry a name that is not that api id's player**, and the 2 name-matches sit at impossible clubs. A spot check reads clean because the corruption FORGES FAMILIAR NAMES, not because any part of the block is sound. **Nothing was written.**
     4. **Watch-list** (8 live: L1 1, SA 3, BL 2, ERE 2 + BPL Vaesen) , comparable-minutes + shared-small-stat rows that summed; validate against the full population before any MIN_SHARED_STAT change. Public-crossing rate so far 1 per 379 recoveries , running WELL BELOW the "order ~10" model, which projected ~3-5 from ripple plus an anchor effect. Revised expectation for the remaining 5: **order 1-3, not 10.** Caveat that keeps the model honest: crossings are driven by whether a league adds cards AT a public seam, not by recovery count, so a single league that recovers several 84-86 cards could produce them in a cluster.
 
+    ---
+    ### TRANSFER-SUM REPAIR , SCOPED 2026-08-23, NOT RUN. Decide before or after the merge.
+
+    **THE DEFECT.** Same-league mid-season transfers are stored as ONE half on roughly two thirds of
+    genuine splits. Measured against the provider across three league-seasons: **34 of 51 halved**
+    (PL 2023/24 7/12, PL 2025/26 9/13, SA 2023/24 18/26). Worst seen: Semenyo 1,798 of 3,200 minutes.
+    **Extrapolated ~1,600 cards across 144 league-seasons , an ORDER from a three-season sample, NOT a count.**
+
+    **THE CAUSE IS STALE DATA, NOT THE CODE.** Run against real provider blocks, the current resolver
+    sums 49 of 51. The stored rows were written by an earlier summing path. **So this is a RE-RUN,
+    and no further resolver change is required** (the one real defect, `sharesStat` firing on a single
+    matching stat, is fixed).
+
+    **WHY A PLAIN RE-RUN WILL NOT DO IT.**
+    `--insert-only` cannot repair a halved row , ON CONFLICT DO NOTHING leaves it exactly as it is.
+    Default mode DOES rewrite it, but it rewrites **all ~57,000 rows** from today's provider data,
+    folding in every unrelated drift since each row was written. That is a far larger change than the
+    ~1,600 rows that are actually wrong, and it is the blanket rewrite §C tells us not to reach for.
+
+    **THE PROPOSED SHAPE , TARGETED, in the same staging as the 2026-08-21 engine pass.**
+    1. **Identify externally.** Fetch all 144 league-seasons' squads from the provider and find players
+       with 2+ clubs in the SAME league-season. **~5,800 calls** (144 x ~20 clubs x ~2 pages), roughly
+       **90 minutes** at the 320ms delay, **~8% of the 75k budget**. Identification MUST be external ,
+       our own rows cannot reveal a half we never stored (see §C, a check that reads our own data).
+    2. **Classify.** Separate genuine splits from duplicated blocks and from ADJACENT-SEASON BLEED.
+       The bleed is real and must not be summed: Smith Rowe 44 apps, Osula 51 apps, both above the
+       38-game cap. `isArtifact` (A2) already rejects those and is correct to.
+    3. **Full before-snapshot** of all rows, written and read back off disk.
+    4. **Update ONLY the affected rows**, recomputing through `resolveSeasonStat` so the repair uses the
+       same code path as an import rather than a second implementation.
+    5. **Refresh the matview, then assert**: row count unchanged, null-rt count held, rt range held,
+       band counts 12 / 150 / 650 (rank anchors hold BY CONSTRUCTION), and a full before/after diff
+       listing every card that moved and every public band crossing.
+
+    **COST BEYOND THE CALLS, and this is the part that decides the timing.** Minutes drive the
+    availability term and EVERY per-90 rate, so ~1,600 cards change on both. Percentiles are global
+    and unpartitioned (see §E engine exposure), so **the ripple reaches cards that were never touched**
+    and band OCCUPANCY moves even though the counts hold. Expect public band crossings and expect to
+    have to explain them. **This is the same blast radius as the WRONG-BLOCK pass and belongs beside it.**
+
+    **IT GROWS WHILE IT WAITS, SLOWLY.** The live season is still being imported, so every pass keeps
+    adding halved cards and the ~1,600 rises. **The `sharesStat` fix reduces the rate but does not stop
+    it** , that guard accounted for 1 of 3 resolver misses, and the rest of the halving was never the
+    resolver at all. So the population drifts upward until the repair runs. **It drifts slowly: a
+    league-season yields on the order of ten, and only the live season is still being written.**
+
+    **STATUS: POST-MERGE, and the reason is the KIND of wrongness, not the size.** These cards
+    **UNDERSTATE a real player-season** , the name, club and identity are right and only half the
+    minutes are present. **The BSD block was different in kind: those cards MISIDENTIFIED, carrying one
+    person's season under another person's name**, which is why it was worth writing against live data
+    before launch and this is not. A visitor reading a halved card sees a true season told short; a
+    visitor reading a block card saw a fiction. **Understating is a data-quality debt the confidence
+    dots already disclose. Misidentifying is a credibility hole.** Ship on the first, never on the second.
+
+    **RECOMMENDATION: AFTER the merge.** It is not a correctness blocker for launch , the cards are
+    understated, not wrong about who they describe , and running it before the merge adds a large,
+    hard-to-review rt movement to a QA pass that is already gating 167 files. **The cards it fixes are
+    mostly mid-table**, since a player who moved mid-season rarely tops the ladder.
+
+
 ---
 
 # THE FULL NARRATIVE , merged from `CLAUDE_ARCHIVE.md` PART 2 on 2026-08-10
