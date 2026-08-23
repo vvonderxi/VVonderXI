@@ -428,6 +428,14 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     location.href = id!=null ? "card.html?id="+encodeURIComponent(id) : "card.html";
   }
   let CARDS = [];
+  /* RANK_STATE , "no results" and "not loaded yet" are DIFFERENT STATES and the page could
+     not tell them apart. setRankView() runs at boot and calls renderRank() while CARDS is
+     still [], so for the whole first round-trip the grid said "No seasons match your
+     search." , an empty-state verdict delivered before the query it describes had returned.
+     Measured in flight: it showed for ~1s on a local server, and longer on anything real.
+     Same family as the §C rule that a UI must not report success before its request
+     resolves; this is the same lie with the sign flipped. */
+  var RANK_STATE = 'idle';        // idle -> loading -> ready | error
 
   const g=document.getElementById('cardgrid');
   // ── setViewClass , toggle the view mode on BOTH #cardgrid (row styling) and its
@@ -440,7 +448,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function renderRankCompact(list){
     const g=document.getElementById('cardgrid');
     setViewClass('compactmode');
-    if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
+    if(!list.length){ g.innerHTML=rankEmptyHTML(); return; }
     g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,{cap:2, onClick:seqClick}); }).join('');   // #20: compact caps at 2 tags
   }
   // ── rankRowHTML , the ONE shared row builder for List (pillmode) + Compact
@@ -473,7 +481,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function renderRankCards(list){
     const g=document.getElementById('cardgrid');
     setViewClass(null);
-    if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
+    if(!list.length){ g.innerHTML=rankEmptyHTML(); return; }
     g.innerHTML = list.map((d,i)=>`<div onclick="goCard(${d.card_id==null?'':d.card_id},${i})" style="cursor:pointer">${buildCard(d,cwNow())}</div>`).join('');
   }
   // vvNorm / tokenAndFilter / vvParseSearch / vvSeasonLabel now live in vv-core.js (shared with the
@@ -482,7 +490,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function renderRankPills(list){
     const g=document.getElementById('cardgrid');
     setViewClass('pillmode');
-    if(!list.length){ g.innerHTML='<div class="rankempty">No seasons match your search.</div>'; return; }
+    if(!list.length){ g.innerHTML=rankEmptyHTML(); return; }
     g.innerHTML=list.map(function(d,i){ return rankRowHTML(d,i,{cap:3, onClick:seqClick}); }).join('');   // #20: list caps at 3 tags
   }
   var rankView='cards';
@@ -491,6 +499,13 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
      as well as the query. i is the index within CARDS, which is what renderRank maps. */
   function seqClick(d,i){ return 'goCard('+(d.card_id==null?'':d.card_id)+','+i+')'; }
   function currentRankList(){ return CARDS; }   // server already filtered + sorted
+  /* The ONLY place the empty grid speaks. Before the first query resolves it must say
+     nothing about results, because it does not know anything about results yet. */
+  function rankEmptyHTML(){
+    if(RANK_STATE==='error') return '<div class="rankempty">Those rankings could not be loaded. Check your connection and try again.</div>';
+    if(RANK_STATE!=='ready')  return '';        // nothing to say yet , the loader lands in its own commit
+    return '<div class="rankempty">No seasons match your search.</div>';
+  }
   /* Show more is gone , infinite scroll replaces the 300 cap (see loadRankings). */
   function renderRank(){ var list=currentRankList(); if(rankView==='pills') renderRankPills(list); else if(rankView==='compact') renderRankCompact(list); else renderRankCards(list); }
   var vvRankRZ;
@@ -564,7 +579,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     o=o||{};
     var sb=vvClient(); if(!sb || !window.VVFilters) return;
     if(o.append && (rankBusy || rankDone)) return;   // appends queue; fresh loads SUPERSEDE
-    if(!o.append){ rankOffset=0; rankDone=false; rankTotal=null; CARDS=[]; }
+    if(!o.append){ rankOffset=0; rankDone=false; rankTotal=null; CARDS=[]; RANK_STATE='loading'; }
     rankBusy=true;
     var seq=++rankSeq;
     var done=function(){ if(seq===rankSeq) rankBusy=false; };   // only the winner clears the flag
@@ -590,7 +605,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       if(seq!==rankSeq){ done(); return; }
       qRes=r2[0]; cRes=r2[1]; degraded=true;
     }
-    if(qRes.error){ console.error('rankings load failed:', qRes.error.message); done(); return; }
+    if(qRes.error){ console.error('rankings load failed:', qRes.error.message); RANK_STATE='error'; renderRank(); done(); return; }
     if(cRes && !cRes.error && cRes.count!=null) rankTotal=cRes.count;
 
     var raw=qRes.data||[];
@@ -602,6 +617,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       : raw;
     var page=sorted.map(rowToCard).filter(Boolean).filter(VVFilters.clientPredicate(st));
     CARDS = o.append ? CARDS.concat(page) : page;
+    RANK_STATE='ready';        // only now does the page know anything about results
 
     await attachHonoursBatch(page);
     if(seq!==rankSeq){ done(); return; }
