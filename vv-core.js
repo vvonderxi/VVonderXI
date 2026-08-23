@@ -65,6 +65,42 @@
     catch(e){ return ''; }
   }
 
+  // ── INLINE THE MARKS BEFORE A CANVAS CAPTURE, AND PUT THEM BACK ─────────────────
+  //  html2canvas DOES NOT RESOLVE `<use href="#...">`. MEASURED 2026-08-23 by reading the
+  //  captured pixels back: all three marks on a Messi card came out FLAT (luminance range
+  //  1 to 5) while the pills around them captured fully (range ~200). It fails SILENTLY ,
+  //  the pill renders, the label renders, and there is a hole where the icon should be.
+  //  Cross-origin photos and the webfonts both capture fine; only `<use>` does not.
+  //
+  //  So before a capture, swap each `<use>` for the referenced symbol's own geometry, and
+  //  swap it back afterwards. Verified: the same three marks went from flat to ink ranges
+  //  of 186 / 135 / 129.
+  //
+  //  THE RESTORE IS THE DANGEROUS HALF. `#shareCapture` on card.html is a LIVE element in
+  //  the page, not a throwaway poster, so a capture that throws must still put the DOM
+  //  back. Callers MUST invoke the returned function from a `finally`, never only on the
+  //  success path.
+  function vvInlineMarks(node){
+    const swapped = [];
+    if (!node || !node.querySelectorAll) return function(){};
+    node.querySelectorAll('svg.vvm').forEach(function(svg){
+      const u = svg.querySelector('use'); if (!u) return;
+      const href = u.getAttribute('href') || u.getAttribute('xlink:href'); if (!href) return;
+      let sym = null; try { sym = document.querySelector(href); } catch(e){ return; }
+      if (!sym) return;                                  // unresolved already , leave it alone
+      swapped.push({ svg: svg, html: svg.innerHTML, vb: svg.getAttribute('viewBox') });
+      const vb = sym.getAttribute('viewBox'); if (vb) svg.setAttribute('viewBox', vb);
+      svg.innerHTML = sym.innerHTML;
+    });
+    return function restore(){
+      swapped.forEach(function(s){
+        s.svg.innerHTML = s.html;
+        if (s.vb == null) s.svg.removeAttribute('viewBox'); else s.svg.setAttribute('viewBox', s.vb);
+      });
+      swapped.length = 0;                                // idempotent , a second call is a no-op
+    };
+  }
+
   // ── CARD-FACE ADOPTION , opt-in per PAGE, not per call ──────────────────────────
   //  buildCard is shared by card.html, compare.html and rankings.html, so the opt-in has
   //  to live somewhere only ONE of them turns on. It is a page-level flag rather than a
@@ -2965,7 +3001,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
     emptyState, readState, isActive, applyServer, clientPredicate, describe };
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

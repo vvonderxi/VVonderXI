@@ -1055,8 +1055,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823b"></script>
-<script src="/vv-core.js?v=20260823b"></script>
+<script src="/vv-marks.js?v=20260823c"></script>
+<script src="/vv-core.js?v=20260823c"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -2842,11 +2842,15 @@ function vvSaveImage(btn){
   var node=document.getElementById('shareCapture');
   function mark(t){ if(btn){ var sp=btn.querySelector('span'); if(sp) sp.textContent=t; } }
   function cap(){
+    // html2canvas does not resolve <use>, so the marks capture as holes. Inline them first
+    // and restore in a finally , #shareCapture is a LIVE element, not a throwaway poster,
+    // so a capture that throws must still put the DOM back. See vvInlineMarks in vv-core.
+    var restore = (window.VVCore && VVCore.vvInlineMarks) ? VVCore.vvInlineMarks(node) : function(){};
     try{
       html2canvas(node,{backgroundColor:'#0f0c0d',scale:2,useCORS:true}).then(function(cv){
         var a=document.createElement('a'); a.download='vvonderxi-card.png'; a.href=cv.toDataURL('image/png'); a.click(); mark(' Saved');
-      }).catch(function(){ vvShareOut(); });
-    }catch(e){ vvShareOut(); }
+      }).catch(function(){ vvShareOut(); }).finally(restore);
+    }catch(e){ restore(); vvShareOut(); }
   }
   if(window.html2canvas){ cap(); return; }
   mark(' Saving...');
