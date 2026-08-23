@@ -257,32 +257,6 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
     background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;
     box-shadow:0 26px 50px -22px rgba(0,0,0,0.6), inset 0 0 0 calc(var(--cw)*0.02) var(--cream), inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.55) !important;
     padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A !important;font-family:'Barlow Condensed',sans-serif}
-  body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
-  .vvcard .ctop{position:relative;height:calc(var(--cw)*0.2);margin-bottom:calc(var(--cw)*0.02)}
-  .vvcard .ctl{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:flex-start}
-  .vvcard .yr{position:absolute;left:50%;top:calc(var(--cw)*0.015);transform:translateX(-50%);font-family:'Barlow Condensed';font-weight:700;font-size:calc(var(--cw)*0.1);letter-spacing:0.02em;color:var(--charcoal);white-space:nowrap;display:inline-flex;align-items:center}
-  .vvcard .cbadgewrap{display:flex;align-items:center;gap:calc(var(--cw)*0.033)}
-  .vvcard .cbadge{width:calc(var(--cw)*0.175);height:calc(var(--cw)*0.203);flex-shrink:0;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,0.32))}
-  .vvcard .pos{display:none}
-  .vvcard .ctr{position:absolute;right:0;top:calc(var(--cw)*-0.01);display:flex;flex-direction:column;align-items:center}
-  .vvcard .halo{display:none}
-  .vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
-  .vvcard .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.08);letter-spacing:0.02em;line-height:1;margin-top:calc(var(--cw)*0.025)}
-  .vvcard .vv .a{color:var(--charcoal)}.vvcard .vv .b{color:var(--pink)}
-  .vvcard .cimg{width:60%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
-  .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
-  .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
-  body.show-photos .vvcard .cimg .cphoto{display:block}
-  body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
-  .vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
-  .vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}   /* #4: odd count -> last tag spans both cols, no blank cell */
-  .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
-  .vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
-  .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
-  .vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#E70443) !important}
-  .vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
-  .vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
-  .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
   .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
   /* MARKS ON THE CARD FACE , same rule as card.html and rankings.html. Sized against
@@ -291,43 +265,10 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
      2-column grid and including it flattens the tag row (3a72999). */
   .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
   .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
-  .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
-  .vvcard .cga .col{text-align:center}
-  .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
-  .vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.04);letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
-  .vvcard .cga .divider{width:1px;background:rgba(0,0,0,0.12);align-self:stretch}
-  .vvcard .cname{text-align:center;margin-top:auto}
-  .vvcard .cname .nm{width:100%;font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:calc(var(--cw)*0.135);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.03);white-space:nowrap}
-  .vvcard .cname .nm.long{font-size:calc(var(--cw)*0.09)}
-  .vvcard .cname .nm .cflag{font-size:calc(var(--cw)*0.07)}
-  .vvcard .cname .full{display:none}
-  .vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-top:calc(var(--cw)*0.01)}
 
   /* ===== Prestige whole-card treatment ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
   body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
-  .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
-  .vvcard.gen .n{color:#F0EAD9}
-  .vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
-  .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
-  .vvcard.gen .vv .a{color:#F0EAD9}
-  .vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
-  .vvcard.gen .cga .divider{background:rgba(255,255,255,0.15)}
-  .vvcard.gen .cname .full,.vvcard.gen .cname .sub{color:rgba(240,234,217,0.6)}
-
-  /* ICONIC , bright GOLD card, dark text */
-  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #E8B84B, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
-  .vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
-  .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
-  .vvcard.iconic .vv .a{color:#2a1d03}
-  .vvcard.iconic .cga .col .l{color:rgba(42,29,3,0.6)}
-  .vvcard.iconic .cga .divider{background:rgba(0,0,0,0.18)}
-  .vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.65)}
-
-  /* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
-  .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
-  .vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
-  .vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
 
   .coin .coinA{fill:var(--cream)}
   body.light .coin .coinA{fill:var(--charcoal)}
@@ -991,8 +932,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823c"></script>
-<script src="/vv-core.js?v=20260823c"></script>
+<script src="/vv-marks.js?v=20260823d"></script>
+<script src="/vv-core.js?v=20260823d"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};

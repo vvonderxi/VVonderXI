@@ -1751,6 +1751,98 @@
   //  can still override at equal specificity. vv-core loads in the BODY on all three pages,
   //  after the page <style> is parsed, and rows render later still, so the sheet is always
   //  in place before a row exists. No flash.
+  // ── VV_CARD_CSS , the card face, beside its renderer ────────────────────────────
+  //  buildCard() emits MARKUP ONLY. Until this existed the ~67 .vvcard rules lived inside
+  //  each consuming page's <style>, three copies, and a page that called buildCard without
+  //  them rendered a card at 632x3705px of unstyled nonsense. That was not theoretical: it
+  //  broke the share demo and the html2canvas probe on their first runs, and it is the
+  //  reason a share renderer could not reuse the real card at all.
+  //
+  //  WHAT MOVED: the 56 selectors that were present in card.html, rankings.html AND
+  //  compare.html with BYTE-IDENTICAL declarations , measured, not assumed, exactly as the
+  //  row move required. What did NOT move: the layout-context selectors that describe how a
+  //  card sits in one page (.plinth .vvcard, .cardgrid .vvcard, .side .vvcard,
+  //  #cardA .vvcard, the flip wrappers). Those are page furniture and stay.
+  //
+  //  IT PREPENDS, IT DOES NOT APPEND , AND THAT IS THE WHOLE HAZARD.
+  //  These rules used to sit INSIDE each page's stylesheet, so page rules that follow them
+  //  at EQUAL specificity currently win. Appending would invert that. The concrete case:
+  //  rankings' `.vvcard .chtagcell.gold` is three classes, the same weight as the shared
+  //  `.vvcard .chtag .chtagcell`, and it wins today only by coming later , append and the
+  //  honour pills lose their gold. So the sheet is inserted as the FIRST child of <head>,
+  //  which keeps every page rule winning exactly as it does now.
+  var VV_CARD_CSS = `
+body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
+.vvcard .ctop{position:relative;height:calc(var(--cw)*0.2);margin-bottom:calc(var(--cw)*0.02)}
+.vvcard .ctl{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:flex-start}
+.vvcard .yr{position:absolute;left:50%;top:calc(var(--cw)*0.015);transform:translateX(-50%);font-family:'Barlow Condensed';font-weight:700;font-size:calc(var(--cw)*0.1);letter-spacing:0.02em;color:var(--charcoal);white-space:nowrap;display:inline-flex;align-items:center}
+.vvcard .cbadgewrap{display:flex;align-items:center;gap:calc(var(--cw)*0.033)}
+.vvcard .cbadge{width:calc(var(--cw)*0.175);height:calc(var(--cw)*0.203);flex-shrink:0;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,0.32))}
+.vvcard .pos{display:none}
+.vvcard .ctr{position:absolute;right:0;top:calc(var(--cw)*-0.01);display:flex;flex-direction:column;align-items:center}
+.vvcard .halo{display:none}
+.vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
+.vvcard .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.08);letter-spacing:0.02em;line-height:1;margin-top:calc(var(--cw)*0.025)}
+.vvcard .vv .a{color:var(--charcoal)}
+.vvcard .vv .b{color:var(--pink)}
+.vvcard .cimg{width:60%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
+.vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
+body.show-photos .vvcard .cimg .cphoto{display:block}
+body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
+.vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
+.vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}
+/* #4: odd count -> last tag spans both cols, no blank cell */
+  .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
+.vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
+.vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
+.vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#E70443) !important}
+.vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
+.vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
+.vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+.vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
+.vvcard .cga .col{text-align:center}
+.vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
+.vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.04);letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.vvcard .cga .divider{width:1px;background:rgba(0,0,0,0.12);align-self:stretch}
+.vvcard .cname{text-align:center;margin-top:auto}
+.vvcard .cname .nm{width:100%;font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:calc(var(--cw)*0.135);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.03);white-space:nowrap}
+.vvcard .cname .nm.long{font-size:calc(var(--cw)*0.09)}
+.vvcard .cname .nm .cflag{font-size:calc(var(--cw)*0.07)}
+.vvcard .cname .full{display:none}
+.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-top:calc(var(--cw)*0.01)}
+.vvcard.gen .yr{color:rgba(240,234,217,0.85)}
+.vvcard.gen .n{color:#F0EAD9}
+.vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
+.vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
+.vvcard.gen .vv .a{color:#F0EAD9}
+.vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
+.vvcard.gen .cga .divider{background:rgba(255,255,255,0.15)}
+.vvcard.gen .cname .full,.vvcard.gen .cname .sub{color:rgba(240,234,217,0.6)}
+/* ICONIC , bright GOLD card, dark text */
+  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #E8B84B, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
+.vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
+.vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
+.vvcard.iconic .vv .a{color:#2a1d03}
+.vvcard.iconic .cga .col .l{color:rgba(42,29,3,0.6)}
+.vvcard.iconic .cga .divider{background:rgba(0,0,0,0.18)}
+.vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.65)}
+/* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
+  .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
+.vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+`;
+  function vvInjectCardCSS(){
+    if (typeof document === 'undefined') return;
+    if (document.getElementById('vv-card-css')) return;
+    var st = document.createElement('style');
+    st.id = 'vv-card-css';
+    st.textContent = VV_CARD_CSS;
+    var head = document.head || document.getElementsByTagName('head')[0];
+    if (head) head.insertBefore(st, head.firstChild);   // FIRST, see the note above
+  }
+  vvInjectCardCSS();
+
   var VV_ROW_CSS = `
 .vvrows.vvrows.pillmode, .vvrows.vvrows.compactmode{display:block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px}
 body.light .vvrows.vvrows.pillmode, body.light .vvrows.vvrows.compactmode{background:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.06)}
