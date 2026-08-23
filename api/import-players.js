@@ -47,6 +47,8 @@ const INSERT_ONLY = args.includes('--insert-only');   // ON CONFLICT DO NOTHING 
 const ONLY        = args.includes('--league') ? args[args.indexOf('--league') + 1] : null;
 const FLOOR_YR    = args.includes('--from') ? parseInt(args[args.indexOf('--from') + 1]) : 2010;
 const TO_YR       = args.includes('--to')   ? parseInt(args[args.indexOf('--to')   + 1]) : 2025;
+const QUARANTINE  = args.includes('--quarantine');   // identity collisions: skip the player instead of halting
+const SIZE_TOL    = 0.25;   // season-size bound: +/-25% of the league's own history
 const MIN_MIN     = 300;
 const DELAY_MS    = 320;   // ~3 req/s — comfortably under per-minute caps
 
@@ -125,6 +127,36 @@ async function isSeasonDone(code, year){
   return !!data?.completed;
 }
 
+// ─────────────────────────────────────────────────
+//  GUARD 1 , IDENTITY COLLISION
+//  `api_player_id` is a FOREIGN KEY INTO A PROVIDER'S NAMESPACE, and the column does not
+//  record WHICH provider. On 2026-06-08 an importer wrote BSD ids (sports.bzzoiro.com) into
+//  it; on 2026-06-11 the API-Football importer upserted onto the same column and SILENTLY
+//  OVERWROTE 211 of those rows, because `onConflict:'api_player_id'` treats a numeric match
+//  as the same person. BSD 803 is Jordan Pickford; API-Football 803 is L. Pernica.
+//  The 181 rows API-Football never re-issued kept their BSD identity and became the PL
+//  2025/26 block , 179 unattributable cards that passed every internal consistency check.
+//  So: never overwrite an identity. If the stored row disagrees on date of birth,
+//  nationality or surname, the id is being reused across namespaces. HALT (or --quarantine).
+// ─────────────────────────────────────────────────
+const identityCollisions = [];
+const surname = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^a-z ]/g,'').trim().split(' ').filter(Boolean).pop() || '';
+
+function identityConflict(existing, incoming){
+  const reasons = [];
+  // Compare only where BOTH sides carry a value , a null is missing data, not a disagreement.
+  if (existing.date_of_birth && incoming.date_of_birth &&
+      String(existing.date_of_birth).slice(0,10) !== String(incoming.date_of_birth).slice(0,10))
+    reasons.push(`dob ${existing.date_of_birth} != ${incoming.date_of_birth}`);
+  if (existing.nationality && incoming.nationality &&
+      existing.nationality !== incoming.nationality)
+    reasons.push(`nationality ${existing.nationality} != ${incoming.nationality}`);
+  const a = surname(existing.full_name || existing.name), b = surname(incoming.full_name || incoming.name);
+  if (a && b && a !== b) reasons.push(`surname ${a} != ${b}`);
+  return reasons;
+}
+
 async function upsertPlayer(pl, statPos){
   const payload = {
     api_player_id: pl.id,
@@ -136,6 +168,25 @@ async function upsertPlayer(pl, statPos){
     height_cm:     pl.height ? parseInt(pl.height) : null,
     updated_at:    new Date().toISOString(),
   };
+  // GUARD 1. Read before write , the upsert would otherwise overwrite an identity in place.
+  const { data: prior } = await supabase.from('players')
+    .select('id,name,full_name,date_of_birth,nationality').eq('api_player_id', pl.id).maybeSingle();
+  if (prior) {
+    const reasons = identityConflict(prior, payload);
+    if (reasons.length) {
+      const detail = `api_player_id ${pl.id}: stored "${prior.name}" vs incoming "${payload.name}" , ${reasons.join('; ')}`;
+      identityCollisions.push(detail);
+      if (!QUARANTINE) {
+        console.error(`\n❌ IDENTITY COLLISION , HALTED\n   ${detail}\n` +
+          `   This id already belongs to a different person. That is what a cross-provider\n` +
+          `   id collision looks like, and overwriting it is how the 2026-06-08 block was made.\n` +
+          `   Investigate before re-running. Use --quarantine to skip these and continue.`);
+        process.exit(1);
+      }
+      console.warn(`  ⚠️ QUARANTINED ${detail}`);
+      return null;   // caller skips the card , never write a card under a contested identity
+    }
+  }
   if (DRY_RUN) return Math.floor(Math.random()*1e6);
   const { data, error } = await supabase.from('players').upsert(payload, {onConflict:'api_player_id'}).select('id').single();
   if (error) throw new Error(`player upsert: ${error.message}`);
@@ -447,6 +498,26 @@ function resolveSeasonStat(statistics, L, code, year){
   return Object.assign(sumStat(real, L),                       { _gated:gated });   // genuine split
 }
 
+// ─────────────────────────────────────────────────
+//  GUARD 2 , SEASON-SIZE BOUND
+//  A world test, not a field test. The 2026-06-08 batch left PL 2025/26 holding 600 cards
+//  where every other PL season holds 384 to 441 , visible without inspecting a single
+//  position, name or id. Internal cross-checks could not see the corruption because the
+//  forged rows were self-consistent; a count could.
+//  Bound each league-season against that league's OWN history, +/-25%. Halt rather than
+//  proceed, so a bad run damages ONE league-season instead of nine.
+// ─────────────────────────────────────────────────
+const seasonSizeHistory = {};   // league_code -> [counts], filled by deriveCeilings()
+
+function seasonSizeBound(code, year, count){
+  const hist = (seasonSizeHistory[code] || []).filter(h => h.year !== year).map(h => h.n).sort((a,b)=>a-b);
+  if (hist.length < 3) return null;                       // not enough history to judge
+  const med = hist[Math.floor(hist.length/2)];
+  const lo = Math.round(med * (1 - SIZE_TOL)), hi = Math.round(med * (1 + SIZE_TOL));
+  if (count >= lo && count <= hi) return null;
+  return { count, med, lo, hi, n: hist.length };
+}
+
 async function importLeagueSeason(code, year){
   if (await isSeasonDone(code, year)) { console.log(`  ⏭️  ${code} ${year} already complete — skip`); return; }
   const sCode = seasonCode(year);
@@ -506,6 +577,7 @@ async function importLeagueSeason(code, year){
       if (INSERT_ONLY && !isNew) { existingHit++; continue; }
 
       const playerId = await upsertPlayer(pl, s.games?.position);
+      if (playerId === null) { stats.skipped++; stats.quarantined = (stats.quarantined||0)+1; continue; }   // GUARD 1 quarantine
       const teamName = s.team?.name || '';
       const teamId   = await getOrCreateTeam(teamName);
       const rtVal    = ratingToRt(s.games?.rating, goals, assists);
@@ -561,6 +633,25 @@ async function importLeagueSeason(code, year){
     const mode = INSERT_ONLY ? ` · insert-only (${existingHit} existing untouched)` : '';
     console.log(`  ✅ ${code} ${year}: ${seasonCards} ${INSERT_ONLY?'new ':''}cards (${totalPages} pages)${mode} · ${stats.calls} calls · ${elapsed()}s`);
   }
+
+  // GUARD 2. Judged on the league-season's TOTAL stored size, not on this run's inserts,
+  // because an insert-only pass adds to what is already there and the total is what has to
+  // stay sane. Runs after the write so it cannot prevent this season, but it HALTS the run,
+  // which bounds the damage to one league-season instead of nine.
+  if (!DRY_RUN) {
+    const { count } = await supabase.from('player_season_cards')
+      .select('id', { count: 'exact', head: true }).eq('league_code', code).eq('season_year', year);
+    const breach = (count != null) && seasonSizeBound(code, year, count);
+    if (breach) {
+      console.error(`\n❌ SEASON-SIZE BOUND , HALTED\n` +
+        `   ${code} ${year} now holds ${breach.count} cards. ${code}'s own history (${breach.n} seasons)\n` +
+        `   has a median of ${breach.med}, so the accepted band is ${breach.lo}-${breach.hi}.\n` +
+        `   A league-season far outside its own range is the shape a duplicate or mis-keyed\n` +
+        `   import leaves behind, and it is visible without inspecting a single field.\n` +
+        `   Investigate before continuing.`);
+      process.exit(1);
+    }
+  }
 }
 
 // Build the per-(league,season) ceilings from rows already stored. Read-only.
@@ -584,6 +675,12 @@ async function deriveCeilings(){
       if (m > lm.mins) lm.mins = m;
     }
     if (!data || data.length < 1000) break; f += 1000;
+  }
+  // GUARD 2 , the same single pass already counts rows per league-season, so the size
+  // history is free. Keyed by league so each competition is judged against ITSELF.
+  for (const k of Object.keys(seasonMap)) {
+    const [lc, yr] = k.split('|');
+    (seasonSizeHistory[lc] = seasonSizeHistory[lc] || []).push({ year: Number(yr), n: seasonMap[k].n });
   }
   setCeilings(seasonMap, leagueMap);
   const ls = Object.keys(seasonMap).length;
