@@ -392,8 +392,16 @@ function minuteRatio(a, b){
 function sharesStat(a, b){
   const g = num(a.goals?.total),   gb = num(b.goals?.total);
   const s = num(a.goals?.assists), sb = num(b.goals?.assists);
-  const bigMatch = (g >= MIN_SHARED_STAT && g === gb) || (s >= MIN_SHARED_STAT && s === sb);
-  return bigMatch && minuteRatio(a, b) >= MIN_MIN_RATIO;
+  // BOTH stats must agree, not either one. A duplicated block is a COPY, so it agrees on
+  // everything; a genuine transfer that happens to match on ONE stat is a coincidence, and
+  // treating that as evidence halved a real season. MEASURED (2026-08-23): Belotti SA 23/24,
+  // Roma 686m/14ap/3g/2a + Fiorentina 958m/15ap/3g/0a , goals matched at 3, everything else
+  // differed, and the OR form deduped him to one club and lost 686 minutes.
+  // At least one of the two must still be informative: 0g and 0a agree on almost every pair
+  // of blocks and would fire on everything.
+  const bothAgree  = (g === gb) && (s === sb);
+  const informative = (g >= MIN_SHARED_STAT) || (s >= MIN_SHARED_STAT);
+  return bothAgree && informative && minuteRatio(a, b) >= MIN_MIN_RATIO;
 }
 function hasDuplicatedStat(real){
   for (let i = 0; i < real.length; i++)
