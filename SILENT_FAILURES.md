@@ -13,6 +13,11 @@ closed history were already spent as levers, so the room had to come from §C. S
 moved; their headline sentences stayed behind, unchanged, so §C still reads top to bottom as a
 complete list of rules.
 
+**TWO MORE WERE ADDED ON 2026-08-23 and the file is now NINETEEN.** The split is not a one-off
+archive , it is where this class of evidence lives from now on, so a new silent failure is written
+here with its headline in §C, rather than growing §C again. The 2026-08-16 note below describes
+that original move and is left as written.
+
 **WHY THESE SEVENTEEN AND NOTHING ELSE.** They share one subject: *something reported success, or
 looked correct, and was wrong.* None of them errored. None was caught by review. Almost all were
 caught by running the thing rather than reading it. That is the through-line, and it is why they
@@ -205,3 +210,110 @@ The theme-contrast harness (`_audit.js`, tracked) reads `backgroundColor` and re
 - **STATUS OF THOSE FIVE PAGES: PENDING USER VISUAL VERIFICATION.** A visual-pass checklist was handed to Lucas on 2026-08-08 for his real device , card faces in BOTH themes (surname, flag, sub-line, season, VV score, shirt watermark, stat labels, tag chips), deliberately including a **yellow/gold club** and a **white/light club**, since a light gradient under light text is where this breaks. **Do NOT record these pages as contrast-clean until he confirms by eye.**
 - **This is the same blind spot that hid the contact page's "Got a question?" eyebrow** , an inline-styled element at ratio 1.00 that the sweep dropped silently and that was only found because it was named by hand. A high unmeasurable count is a REASON TO LOOK, not a reason to move on.
 
+---
+
+## html2canvas 1.4.1 renders a SUBSET of CSS , the capture is a different renderer from the browser (2026-08-23)
+
+**Rule in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**HOW IT SURFACED, AND WHY NOTHING CAUGHT IT EARLIER.** The share frames were reviewed against the
+live DOM for two sessions. A computed-style diff of the demo card against a real `card.html` card at
+identical `cw` was run repeatedly and driven down to **one difference, `--peek-shift`, which is
+card.html-only and inert** , i.e. the live card was, to measurement, perfect. **The shared image was
+missing its gold rim the whole time.** The live DOM cannot see this class of defect: the element's
+computed `box-shadow` is present and correct, no descendant covers it, and `elementFromPoint`
+returns the card. Only reading the captured pixels back shows it.
+
+**DEFECT 1 , INSET box-shadow IS DROPPED ON ANY ROUNDED ELEMENT.** Every VV card is rounded
+(`border-radius: 20.732px` at `cw` 284), so on a Generational card this removes the **gold rim**,
+which is the entire visual claim of the tier. Nothing else in the picture distinguishes a
+Generational card from any other, so the image would have gone out with the tier stripped and no
+way to tell.
+
+**THE FOUR-BOX CONTROL, which is the transferable part.** Four boxes, same declaration
+(`rgb(22,18,14) 0 0 0 4px inset, rgba(232,184,75,.9) 0 0 0 7px inset`), differing in ONE property
+each, captured together, scored by red-minus-blue at the ring depth:
+
+| box | | score |
+|---|---|---|
+| flat | no radius | **142** , the ring renders at full strength |
+| rounded | `border-radius:21px` | **8** , background, i.e. nothing |
+| rounded + gradient background | | **8** |
+| rounded + an outer drop shadow | | **8** |
+
+**The radius alone decides it.** A gradient background and an additional non-inset layer make no
+difference, and stacked inset shadows on a FLAT box render correctly, so it is not a
+multiple-shadow limit either. One variable at a time turned "the capture looks wrong somewhere"
+into a named cause in a single pass; guessing which of four properties mattered would have cost
+the afternoon.
+
+**DEFECT 2 , WHERE IT DOES DRAW ONE, IT RESOLVES THE RING AGAINST THE CONTENT BOX.** This is the
+**"gold border cutting through the card"** Lucas reported, and it is html2canvas's, not the card's.
+On a 261.3px card with 19.88px padding the rim was redrawn at **inset 26 and 233**, which is
+exactly `contentEdge (19.88) + the 5.68-to-7.1 visible band`. Measured on a captured row against a
+correct rim at inset 5 and 254. It reads as a rectangle boxing the content, **interrupted where the
+Generational pill's dark fill covers it** , the gold column ran y 61-211 and y 233-369 with a gap at
+212-232, and the pill sits at insetT 211.3. That interruption is what made it look like a border
+"crossing" the pill.
+
+**FOUR THINGS THE FIX NEEDED, each of which failed silently first.**
+1. **The ring must be a BORDER on an absolutely-positioned child**, not another inset shadow.
+   Verified rendering at 142 at the same depth, with the corner staying dark, so it follows the
+   radius rather than squaring off. An outset shadow on the child works identically; the border is
+   simpler.
+2. **Children are appended in REVERSE shadow order.** CSS paints the FIRST shadow on top; the DOM
+   paints the LAST sibling on top.
+3. **The originals must be SUPPRESSED for the duration**, or the image carries two rims , the right
+   one and the wrong one. Adding the ring is only half the fix, and the half that shows.
+4. **Only zero-offset, zero-blur inset layers are shimmed.** An offset or blurred inset is soft
+   interior shading that a hard border cannot reproduce, so it is skipped rather than approximated.
+   A wrong ring is worse than a missing one, and nothing in this codebase uses one.
+
+**AND THE RESTORE HAD TO STOP TOUCHING `el.style` TO BE PROVABLE.** Writing to `.style` at all
+reserialises the whole attribute (`--cw:280px` comes back as `--cw: 280px;`) and leaves `style=""`
+behind on elements that had no attribute, so `outerHTML` before/after can never match and the
+caller cannot ASSERT the restore. Moving the suppression into an injected `<style>` plus a
+temporary class made the round trip byte-identical.
+
+**VERIFICATION, 24 frames x 4 sizes x 2 themes:** 0 elements rendering ink live but flat in the
+capture, **24 of 24 Generational cards carrying exactly one rim at the border box and 0 at the
+content edge** (scanned across the full half-width so a misplaced rim could not hide beyond the
+window), 0 restore failures, 0 stray nodes or stylesheets.
+
+**TWO HARNESS FAULTS DURING THIS, recorded because both were nearly reported as product bugs.**
+Four "restore failures" were **three of my own sweep calls interleaving** after CDP timeouts , the
+tool stopped waiting, the page kept running, and concurrent sweeps shimmed the same frame; a
+re-entry guard cleared them. One apparent leak was **the page still settling after load**,
+disproved by a no-capture control that waited the same interval and found the markup unchanged.
+Same rule as ever: hold the instrument to the standard of the code.
+
+---
+
+## `el.style` assignment fails silently against `!important`, and `!important` does not beat `!important` (2026-08-23)
+
+**Rule in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**PART ONE , THE ASSIGNMENT THAT DID NOTHING.** Suppressing the card's inset layers began as
+`el.style.boxShadow = keep`. It ran, returned, threw nothing, and `getComputedStyle(card).boxShadow`
+came back with **all three layers still in place** , byte-identical to before. A scan for a matching
+`!important` rule via `card.matches(r.selectorText)` returned **nothing**, which made it look like
+the assignment itself was at fault. The settling test was direct:
+`card.style.setProperty('box-shadow','none','important')` produced `"none"` immediately. So an
+important rule does match; the specificity scan simply missed it (a selector `matches()` could not
+parse, or a sheet it could not read). **The lesson is not "find the rule" , it is that the write
+gave no signal either way.**
+
+**PART TWO , AND THEN THE STYLESHEET LOST ANYWAY.** Moving the override into an injected sheet to
+keep the restore byte-identical reintroduced the defect exactly. The rule was present, well-formed
+and carried `!important`, and the misplaced rim **came straight back at inset 26**. Cause:
+`!important` does not settle a contest between two important declarations , specificity does, like
+any other pair. A single shim class is **(0,1,0)** and the card's own rim is declared on
+`.vvcard.gen`, **(0,2,0)**. The class is now repeated four times, **(0,4,0)**, the same device as
+`.vvrows.vvrows` and used for the same reason. An inline important declaration would also have won,
+but inline is what makes the restore unprovable, so this is not a stylistic preference.
+
+**WHY IT BELONGS IN THIS FILE.** Both halves are the same shape as the `.replace()` no-op: the
+operation reports success, the diff shows the intended change, and the effect is absent. **An
+override that silently loses is indistinguishable from one that was never written**, and it is
+worse than a crash, because you go on debugging the thing you believe you already fixed. The guard
+is one line , read the computed value back after setting it.
