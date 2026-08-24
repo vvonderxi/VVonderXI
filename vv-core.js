@@ -3262,7 +3262,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
 
   const VV_LOADER_CSS = `
 .vvload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.vvload .vvlmark{display:block}
+.vvload .vvlmark{display:block;flex:none}
 /* THE BASE V FOLLOWS ITS GROUND, AND THE CALLER IS THE ONLY THING THAT KNOWS THE GROUND.
    Two wrong answers were tried first. Keying the base to the THEME puts a cream V on
    card.html's glance panel, which is cream in BOTH themes , the base vanishes and only the
@@ -3335,9 +3335,13 @@ body.light .vvload{color:#1A1917}
         '</g>' +
       '</svg>';
     const inkStyle = opts.ink ? ' style="color:' + String(opts.ink).replace(/["<>]/g,'') + '"' : '';
+    const a11y = opts.silent
+      ? ' aria-hidden="true"'                 // the caller's own visible text is the announcement
+      : ' role="status" aria-live="polite"';
     return '<div class="vvload' + (opts.className ? ' ' + opts.className : '') +
-           '" role="status" aria-live="polite"' + inkStyle + '>' + mark +
-           (opts.withText
+           '"' + a11y + inkStyle + '>' + mark +
+           (opts.silent ? ''
+            : opts.withText
              ? '<span class="vvload-l">' + label + '</span>'
              : '<span class="vvload-l" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + label + '</span>') +
            '</div>';

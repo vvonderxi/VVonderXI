@@ -999,8 +999,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260824a"></script>
-<script src="/vv-core.js?v=20260824a"></script>
+<script src="/vv-marks.js?v=20260824c"></script>
+<script src="/vv-core.js?v=20260824c"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -1059,6 +1059,12 @@
     var nb0=document.getElementById('notesBody');
     if(nb0) nb0.innerHTML=_wait;
     var nl0=document.getElementById('notesLayer'); if(nl0) nl0.style.display='';
+    /* THE SCOUT REPORT IS THE THIRD STATE OF THE SAME CALL and was the only one showing
+       nothing , it stayed hidden until the prose arrived, so the same wait had three
+       different appearances. Same endpoint, same duration, same register. */
+    var sb0=document.getElementById('scoutBody');
+    if(sb0) sb0.innerHTML=_wait;
+    var sbox0=document.getElementById('scoutBox'); if(sbox0) sbox0.style.display='';
     try{
       var LEAGUE_NAMES = { PL:'Premier League', PD:'La Liga', SA:'Serie A', BL1:'Bundesliga', FL1:'Ligue 1', DED:'Eredivisie', PPL:'Primeira Liga', ELC:'Championship', BSA:'Brasileirao' };
       /* KEEPER FIGURES ARE ADDED ONLY FOR KEEPERS. The prompt used to tell the model no
@@ -1115,6 +1121,7 @@
        and still scheduling frames. textContent='' removes it rather than relying on the
        parent's display:none to make it stop. */
     var nbF=document.getElementById('notesBody'); if(nbF) nbF.textContent='';
+    var sbF=document.getElementById('scoutBody'); if(sbF) sbF.textContent='';
     var sbox=document.getElementById('scoutBox'); if(sbox){ sbox.style.display='none'; }
     var nl=document.getElementById('notesLayer'); if(nl){ nl.style.display='none'; }
   }

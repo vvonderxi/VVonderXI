@@ -932,8 +932,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260824a"></script>
-<script src="/vv-core.js?v=20260824a"></script>
+<script src="/vv-marks.js?v=20260824c"></script>
+<script src="/vv-core.js?v=20260824c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1381,12 +1381,19 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
   vvFoldVerdict();
 
-  /* The waiting marker for the two season-prose columns. Bars, not the monogram: this is a
-     line of body text and the interlock does not survive at that size (see vv-core). */
+  /* THE MARK, NOT THE BARS. The bars were chosen when the monogram's floor was 40px, which
+     was the SINGLE-INK KNOCKOUT's limit , a 1px transparent gap that antialiasing destroys.
+     The two-tone mark separates on COLOUR and holds to 16px, so the reason for a
+     brandless stand-in is gone and these waits get the real thing. */
   (function vvProseWait(){
-    if(!window.VVCore || !VVCore.vvLoaderBars) return;
+    if(!window.VVCore || !VVCore.vvLoader) return;
+    /* NO EXPLICIT INK. This panel follows the theme, so the loader's default (cream on
+       dark, charcoal on light) is already right. Passing var(--cream) here put a cream
+       mark on the light panel at 1.13 against its ground , the fixed-ground trap in
+       reverse: hardcoding an ink is only correct where the GROUND is fixed. */
+    var m=VVCore.vvLoader({size:22, duration:VVCore.VV_WAIT.ai.duration, silent:true});
     document.querySelectorAll('.vsprose-wait,.vquote-wait').forEach(function(el){
-      el.insertAdjacentHTML('afterbegin', VVCore.vvLoaderBars()+' ');
+      el.insertAdjacentHTML('afterbegin', m);
     });
   })();
   function vvH2C(cb){ if(window.html2canvas){cb();return;} var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; sc.onload=cb; document.head.appendChild(sc); }
@@ -1715,7 +1722,10 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(ca)ca.classList.toggle('winner',winner==='A'); if(cb)cb.classList.toggle('winner',winner==='B');
     var nameA=CMP_A.surname+' · '+CMP_A.year+' · '+CMP_A.clubname;
     var nameB=CMP_B.surname+' · '+CMP_B.year+' · '+CMP_B.clubname;
-    var _wait=(window.VVCore && VVCore.vvLoaderBars) ? VVCore.vvLoaderBars()+' Reading the season' : 'Reading the season…';
+    /* "Reading the seasons", plural , this wait is weighing TWO of them, unlike the card. */
+    var _wait=(window.VVCore && VVCore.vvLoader)
+      ? VVCore.vvLoader({size:22, duration:VVCore.VV_WAIT.ai.duration, silent:true})+' Reading the seasons'
+      : 'Reading the seasons…';
     vvSetStory(nameA,nameB,_wait,_wait);
     vvSetVerdict(_wait,'',winner,va,vb,VC,TAGS[VC.floorTag]);   // show deterministic floor tag immediately
     // eligible tag set for the AI: deterministic floor + context hints (AI may up-rank per CONTEXT>AGE>LADDER)
