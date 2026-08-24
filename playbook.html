@@ -610,15 +610,20 @@
           color:var(--gold);margin-top:8px}
 
   /* ── markers ── */
-  .cm-mk{width:23px;height:23px;border-radius:999px;flex-shrink:0;cursor:pointer;margin-left:auto;
-         font-family:'Archivo';font-weight:900;font-size:12px;line-height:1;padding:0;
+  /* SIZED TO THE LARGE-TEXT BAR, FILL UNCHANGED. Cream on brand pink is 3.89, which clears
+     the 3:1 large-text threshold but not the 4.5 small-text one, so the marker grows to meet
+     the bar it can actually reach rather than the pink being darkened. WCAG large text is
+     >=18.66px when bold, and this is already weight 900, so 19px is the smallest size that
+     qualifies; the circle grows with it. */
+  .cm-mk{width:30px;height:30px;border-radius:999px;flex-shrink:0;cursor:pointer;margin-left:auto;
+         font-family:'Archivo';font-weight:900;font-size:19px;line-height:1;padding:0;
          background:var(--pink);color:var(--cream);border:2px solid var(--charcoal);
          display:inline-flex;align-items:center;justify-content:center;
          transition:transform .16s ease,box-shadow .16s ease}
   .cm-mk:hover{transform:scale(1.14)}
   .cm-mk.on{background:var(--gold);color:var(--charcoal);box-shadow:0 0 0 3px rgba(232,184,75,0.30)}
   .cm-mk:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .cm-badge .cm-mk{position:absolute;top:-9px;right:-9px;margin-left:0}
+  .cm-badge .cm-mk{position:absolute;top:-12px;right:-12px;margin-left:0}
 
   /* ── the explanation, opening in place ── */
   .cm-exp{max-height:0;opacity:0;overflow:hidden;
@@ -651,7 +656,7 @@
   @media (max-width:860px){
     .cm-stage{grid-template-columns:1fr;gap:16px}
     .cm-card{max-width:280px;margin:0 auto}
-    .cm-mk{width:27px;height:27px;font-size:13px}
+    .cm-mk{width:32px;height:32px;font-size:20px}
     .cm-panel{padding:13px 15px 14px}
   }
   .tagdef{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:15px;padding:16px 17px;transition:transform .18s,border-color .18s,background .18s}
@@ -956,7 +961,7 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260824c"></script>
+<script src="/vv-marks.js?v=20260824d"></script>
 <script>
   function toggleStory(e,btn){ e.stopPropagation(); const card=btn.parentElement; const open=card.classList.toggle('open'); if(!btn.dataset.label) btn.dataset.label=btn.innerHTML; btn.innerHTML = open ? 'Show less &#8249;' : btn.dataset.label; }
 

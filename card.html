@@ -160,11 +160,20 @@
   .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
   .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
   .tjlg i.tjlgline{width:16px;height:0;border-radius:0;border-top:2.4px solid #F0EAD9}
-  .tjvp{color:var(--pink-ink)}
+  /* PINK-INK DOES NOT GO ON GREEN. --pink-ink on the Under-the-Lights panel measured 1.27,
+     the worst text ratio on the platform. Cream reads at 7.85 on the same ground. The pink
+     is not carrying meaning here , it is the VV monogram's second V, and the monogram is
+     already identified by the panel it sits in. */
+  .tjvp{color:var(--cream)}
   .tjsvg{display:block;width:100%;height:auto}
   .tjgrid{stroke:rgba(243,237,224,0.09);stroke-width:1}
-  .tjyl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
-  .tjyr{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  /* 0.72, not 0.55. On the green panel cream at 0.55 composites to 3.63 against the ground,
+     which is under AA for 10.5px text; 0.72 gives 5.04. NOTE FOR ANY FUTURE AUDIT: these are
+     SVG <text>, so the property that paints is `fill`, NOT `color`. A sweep that reads
+     `color` here gets the inherited charcoal and reports 1.82, a number that appears nowhere
+     on screen , that is how this one was first mis-measured. */
+  .tjyl{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  .tjyr{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:var(--panel);stroke-width:3.4px;stroke-linejoin:round}  /* halo in the PANEL colour so the VV line cannot cut through the number. Additive , the
      card also keeps its .tjmask (invariant 7); this just makes the digits self-protecting. */
   .tjmask{fill:var(--panel)}
@@ -999,8 +1008,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260824c"></script>
-<script src="/vv-core.js?v=20260824c"></script>
+<script src="/vv-marks.js?v=20260824d"></script>
+<script src="/vv-core.js?v=20260824d"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
