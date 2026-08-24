@@ -3242,9 +3242,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   //  separate ink runs), while at 16px there is ONE run and the deepest cut is 0.50 ,
   //  antialiasing fills the seam and the two Vs merge into a single blob.
   //  So vvLoader() is for 40px and up, and anything smaller , a button, a line of text ,
-  //  gets vvLoaderBars() instead. A 16px monogram is not a small monogram, it is a
-  //  different mark, and shipping it as the brand would be a claim the pixels do not
-  //  support. Same logic as the single-ink translation: use the form the context can carry.
+  //  16 is where the WIPE stops reading as a direction, not where the mark stops reading.
   //
   //  SWEEP is the chosen animation. A band of light travels UP through the mark and the
   //  silhouette never moves, so the interlock is legible in every frame , the one option
@@ -3283,17 +3281,12 @@ body.light .vvload{color:#1A1917}
   0%{transform:translateX(0)} 45%{transform:translateX(-24px)}
   58%{transform:translateX(-24px)} 100%{transform:translateX(0)}}
 .vvload-l{font-family:'Inter',system-ui,sans-serif;font-size:12.5px;letter-spacing:.04em;color:var(--ink-soft,#a49d93)}
-.vvbars{display:inline-flex;gap:2.5px;align-items:flex-end;height:13px;vertical-align:-2px}
-.vvbars i{width:3px;background:currentColor;border-radius:1px;animation:vvBars .9s ease-in-out infinite}
-.vvbars i:nth-child(1){animation-delay:-.30s}.vvbars i:nth-child(2){animation-delay:-.15s}
-@keyframes vvBars{0%,100%{height:4px;opacity:.45}50%{height:13px;opacity:1}}
 /* TWO-TONE MEANS ONE V IN EACH INK, the way the logo is drawn. Parking the wipe at full
    reveal would make the whole monogram pink, which is one-tone and reads as a different
    mark, so the still state drops the clip and hides the pink copy of the FIRST V. */
 @media (prefers-reduced-motion: reduce){
   .vvload .wipe{animation:none;transform:translateX(-24px)}
   .vvload .pink.p1{display:none}
-  .vvbars i{animation:none;height:9px;opacity:.7}
 }
 `;
   let LOADER_CSS_IN = false;
@@ -3355,13 +3348,6 @@ body.light .vvload{color:#1A1917}
     ai:    { duration: '2.6s', label: 'Reading the season' }
   };
 
-  //  The inline form, for every context too small to carry the monogram honestly.
-  //  Three bars, no brand claim. Inherits currentColor so it works on a pink button and
-  //  in body text without a per-surface override.
-  function vvLoaderBars(){
-    vvInjectLoaderCSS();
-    return '<span class="vvbars" aria-hidden="true"><i></i><i></i><i></i></span>';
-  }
 
   // ══════════════════════════════════════════════════════════════════════════════
   //  SHARE FRAMES , the composed image a card or a comparison goes out as.
@@ -3669,7 +3655,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvLoaderBars, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

@@ -177,11 +177,22 @@
   .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:var(--panel);stroke-width:3.4px;stroke-linejoin:round}  /* halo in the PANEL colour so the VV line cannot cut through the number. Additive , the
      card also keeps its .tjmask (invariant 7); this just makes the digits self-protecting. */
   .tjmask{fill:var(--panel)}
-  .tjxl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  /* 0.72, matching .tjyl/.tjyr. This is the SAME green panel and the same 10.5px, and it was
+     left at 0.55 when the y-axis was raised , half a fix, which is worse than none because
+     the rule looks applied. Measured 3.63 before, 5.04 after. */
+  .tjxl{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjxlsel{fill:#E70443;font-weight:800}
   .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
   .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
-  .tjpeak{fill:#E8B84B;font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
+  /* GOLD FILL PLUS A DARK OUTLINE, the same device the split shield uses. This label MOVES
+     with the peak, so it lands either on a pink bar or on the green panel and NO single ink
+     clears both: gold is 1.61 on the bar and 5.12 on the panel, charcoal is the reverse
+     (5.79 and 1.82). Outlined, the glyph is carried by whichever half separates , the
+     outline on the bar (6.10) and the fill on the panel (5.12) , and fill-vs-outline is
+     9.83 so the two always read against each other. Gold stays because gold IS the peak's
+     colour on this chart; the dot beside it already uses this same #17151a. */
+  .tjpeak{fill:#E8B84B;stroke:#17151a;stroke-width:2.6;paint-order:stroke;stroke-linejoin:round;
+          font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
   .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:12px;padding:0 4px}
   /* proof table */
   .proofexplain{font-family:'Archivo';font-weight:500;font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;background:rgba(0,0,0,0.03);border-radius:10px;padding:11px 13px}
@@ -1008,8 +1019,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260824d"></script>
-<script src="/vv-core.js?v=20260824d"></script>
+<script src="/vv-marks.js?v=20260824e"></script>
+<script src="/vv-core.js?v=20260824e"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
