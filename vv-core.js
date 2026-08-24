@@ -3250,27 +3250,49 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   //  silhouette never moves, so the interlock is legible in every frame , the one option
   //  whose motion is about the knockout rather than in spite of it.
   // ══════════════════════════════════════════════════════════════════════════════
-  const VV_LOADER_MIN = 40;          // below this the interlock does not survive , measured
+  const VV_LOADER_MIN = 16;          // two-tone floor , see the note on vvLoader
+
+  //  GEOMETRY MEASURED OFF THE .spinelogo PNG (760x340, decoded from the base64 in
+  //  rankings.html), not inherited. Fitted stroke edges gave LEFT 97.6 vs RIGHT 77.6 at the
+  //  top and 95.0 vs 80.0 lower down , a 1.26 ratio falling to 1.19. That asymmetry is the
+  //  character of the mark and is preserved exactly, along with two things the pixels show:
+  //  the right arm starts 43px below the left arm's top, and the second V sits 6px higher.
+  const VV_V1 = 'M1 4.45 L5.5 4.45 L8.96 11.54 L11.37 6.4 L14.87 6.4 L8.93 19.82 Z';
+  const VV_V2 = 'M9.13 4.18 L13.63 4.18 L17.08 11.26 L19.49 6.13 L23 6.13 L17.06 19.55 Z';
 
   const VV_LOADER_CSS = `
-.vvload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--gold-ink,#E8B84B)}
-.vvload .vvm{display:block;
-  -webkit-mask-image:linear-gradient(0deg,#000 34%,rgba(0,0,0,.28) 50%,#000 66%);
-          mask-image:linear-gradient(0deg,#000 34%,rgba(0,0,0,.28) 50%,#000 66%);
-  -webkit-mask-size:100% 300%;mask-size:100% 300%;
-  animation:vvSweep 1.15s linear infinite}
-@keyframes vvSweep{0%{-webkit-mask-position:0 100%;mask-position:0 100%}
-                 100%{-webkit-mask-position:0 -100%;mask-position:0 -100%}}
+.vvload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.vvload .vvlmark{display:block}
+/* THE BASE V FOLLOWS ITS GROUND, AND THE CALLER IS THE ONLY THING THAT KNOWS THE GROUND.
+   Two wrong answers were tried first. Keying the base to the THEME puts a cream V on
+   card.html's glance panel, which is cream in BOTH themes , the base vanishes and only the
+   pink wipe is left. Plain currentColor is worse in a different way: .gdrury is pink-inked
+   prose, so the base inherited pink-ink and sat at 1.59 against the pink overlay, i.e. a
+   two-tone mark rendering as one tone. So the wrapper carries an explicit ink with a
+   sensible default, and any surface whose text is not the page's body ink passes its own. */
+.vvload{color:var(--cream,#F0EAD9)}
+body.light .vvload{color:#1A1917}
+.vvload .base{fill:currentColor}
+.vvload .pink{fill:#E70443}
+.vvload .wipe{animation:vvWipe var(--vvdur,2s) cubic-bezier(.55,.06,.4,.95) infinite}
+/* The clip rect PARKS to the RIGHT of the mark (x=24, spanning 24..48, covering nothing).
+   Sliding it LEFT draws its left edge across the mark, so the pink is revealed from the
+   RIGHT EDGE INWARD, then withdraws right again. Get the sign wrong and the wipe runs
+   left-to-right, which is a different mark's behaviour. */
+@keyframes vvWipe{
+  0%{transform:translateX(0)} 45%{transform:translateX(-24px)}
+  58%{transform:translateX(-24px)} 100%{transform:translateX(0)}}
 .vvload-l{font-family:'Inter',system-ui,sans-serif;font-size:12.5px;letter-spacing:.04em;color:var(--ink-soft,#a49d93)}
 .vvbars{display:inline-flex;gap:2.5px;align-items:flex-end;height:13px;vertical-align:-2px}
 .vvbars i{width:3px;background:currentColor;border-radius:1px;animation:vvBars .9s ease-in-out infinite}
 .vvbars i:nth-child(1){animation-delay:-.30s}.vvbars i:nth-child(2){animation-delay:-.15s}
 @keyframes vvBars{0%,100%{height:4px;opacity:.45}50%{height:13px;opacity:1}}
-/* MOTION IS NOT THE MESSAGE , the message is "still working". Anyone who has asked the
-   system to stop animating still needs to know that, so the mark stays and only the
-   movement goes. Removing the loader entirely would be a worse answer than a still one. */
+/* TWO-TONE MEANS ONE V IN EACH INK, the way the logo is drawn. Parking the wipe at full
+   reveal would make the whole monogram pink, which is one-tone and reads as a different
+   mark, so the still state drops the clip and hides the pink copy of the FIRST V. */
 @media (prefers-reduced-motion: reduce){
-  .vvload .vvm{animation:none;-webkit-mask-image:none;mask-image:none;opacity:.75}
+  .vvload .wipe{animation:none;transform:translateX(-24px)}
+  .vvload .pink.p1{display:none}
   .vvbars i{animation:none;height:9px;opacity:.7}
 }
 `;
@@ -3288,22 +3310,46 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   //  blindly , a caller asking for 24px has misunderstood the mark, and silently giving
   //  them a blob would hide that. label is announced to screen readers and shown when
   //  `withText` is set.
+  //  The two-tone loader. `size` clamps UP to the measured floor. THE FLOOR IS 16, NOT 40:
+  //  the 40px number in §C is the SINGLE-INK KNOCKOUT's floor, where a 1px transparent gap
+  //  is destroyed by antialiasing. Two INKS separate where a gap cannot , measured colour
+  //  purity stays at 96 to 100% all the way down to 12px, and each V keeps its notch open
+  //  at every size tested. Pink to base measures 3.89 dark / 3.76 light and each ink to its
+  //  page ~4.05 and ~15.5, so every pair clears the 3:1 non-text bar. 16 is where the WIPE
+  //  stops reading as a direction, not where the mark stops reading.
+  let LOADER_UID = 0;
   function vvLoader(opts){
     opts = opts || {};
     vvInjectLoaderCSS();
     const size = Math.max(VV_LOADER_MIN, opts.size || 48);
-    const label = opts.label || 'Loading';
-    const mark = (typeof VVMarks !== 'undefined' && VVMarks && VVMarks.brand)
-      ? VVMarks.brand('loader', { size: size }) : '';
-    if (!mark) return '';                       // fail-soft: no mark, no loader, never a throw
-    // ONE class attribute. Emitting a second one is silently ignored by the parser, so the
-    // extra class simply would not apply and nothing would say why.
+    const label = String(opts.label || 'Loading').replace(/[&<>"]/g, '');
+    const dur = opts.duration || '2s';
+    const id = 'vvw' + (LOADER_UID++);
+    const mark =
+      '<svg class="vvlmark" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" ' +
+      'aria-hidden="true" style="--vvdur:' + dur + '">' +
+        '<defs><clipPath id="' + id + '"><rect class="wipe" x="24" y="0" width="24" height="24"/></clipPath></defs>' +
+        '<path class="base" d="' + VV_V1 + '"/><path class="base" d="' + VV_V2 + '"/>' +
+        '<g clip-path="url(#' + id + ')">' +
+          '<path class="pink p1" d="' + VV_V1 + '"/><path class="pink p2" d="' + VV_V2 + '"/>' +
+        '</g>' +
+      '</svg>';
+    const inkStyle = opts.ink ? ' style="color:' + String(opts.ink).replace(/["<>]/g,'') + '"' : '';
     return '<div class="vvload' + (opts.className ? ' ' + opts.className : '') +
-           '" role="status" aria-live="polite">' + mark +
-           (opts.withText ? '<span class="vvload-l">' + String(label).replace(/[&<>"]/g, '') + '</span>'
-                          : '<span class="vvload-l" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + String(label).replace(/[&<>"]/g, '') + '</span>') +
+           '" role="status" aria-live="polite"' + inkStyle + '>' + mark +
+           (opts.withText
+             ? '<span class="vvload-l">' + label + '</span>'
+             : '<span class="vvload-l" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + label + '</span>') +
            '</div>';
   }
+
+  //  THE TWO WAIT REGISTERS. Quick loads are a query coming back; the AI waits are a model
+  //  writing prose and are several times longer, so they run slower and say what they are
+  //  doing rather than just "Loading". Same mark, same wipe, different tempo.
+  const VV_WAIT = {
+    quick: { duration: '2s',   label: 'Loading' },
+    ai:    { duration: '2.6s', label: 'Reading the season' }
+  };
 
   //  The inline form, for every context too small to carry the monogram honestly.
   //  Three bars, no brand claim. Inherits currentColor so it works on a pink button and
@@ -3619,7 +3665,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvLoaderBars, vvInjectLoaderCSS, VV_LOADER_MIN, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvLoaderBars, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

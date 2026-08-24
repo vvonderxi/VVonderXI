@@ -999,8 +999,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260823k"></script>
-<script src="/vv-core.js?v=20260823k"></script>
+<script src="/vv-marks.js?v=20260824a"></script>
+<script src="/vv-core.js?v=20260824a"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -1044,7 +1044,21 @@
     if(!D || D.card_id==null) return;
     if(EDITORIAL_FOR === D.card_id){ vvFillEditorial(); return; }
     EDITORIAL_FOR = D.card_id; EDITORIAL = null;
-    var gd=document.getElementById('glDrury'); if(gd){ gd.textContent=''; gd.classList.add('gen'); }
+    /* BOTH AI PANELS SHOW THE SAME WAIT, because both are waiting on the SAME call.
+       /api/analyse writes prose with a model, so this is the longest wait on the site by
+       some distance , several seconds against a few hundred ms for a query. It gets the
+       AI register (2.6s, "Reading the season"), not the quick-load one.
+       The glance line used to run a pink shimmer bar and the notes panel showed nothing
+       but its own label, so the same wait looked like two unrelated states, and the notes
+       panel looked like a card that simply had no notes. */
+    var _wait=(window.VVCore && VVCore.vvLoader)
+      ? VVCore.vvLoader({size:40, duration:VVCore.VV_WAIT.ai.duration, label:VVCore.VV_WAIT.ai.label, withText:true, ink:'var(--charcoal)'})
+      : '';
+    var gd=document.getElementById('glDrury');
+    if(gd){ gd.classList.remove('na'); gd.classList.remove('gen'); gd.innerHTML=_wait; }
+    var nb0=document.getElementById('notesBody');
+    if(nb0) nb0.innerHTML=_wait;
+    var nl0=document.getElementById('notesLayer'); if(nl0) nl0.style.display='';
     try{
       var LEAGUE_NAMES = { PL:'Premier League', PD:'La Liga', SA:'Serie A', BL1:'Bundesliga', FL1:'Ligue 1', DED:'Eredivisie', PPL:'Primeira Liga', ELC:'Championship', BSA:'Brasileirao' };
       /* KEEPER FIGURES ARE ADDED ONLY FOR KEEPERS. The prompt used to tell the model no
@@ -1096,6 +1110,11 @@
     var gd=document.getElementById('glDrury');
     if(gd){ gd.classList.remove('gen'); gd.classList.add('na');
             gd.textContent='The written analysis is unavailable for this card right now.'; }
+    /* CLEAR THE LOADER OUT OF THE NOTES BODY TOO. The layer below is hidden on failure, but
+       a running animation inside a hidden subtree is still a running animation , invisible
+       and still scheduling frames. textContent='' removes it rather than relying on the
+       parent's display:none to make it stop. */
+    var nbF=document.getElementById('notesBody'); if(nbF) nbF.textContent='';
     var sbox=document.getElementById('scoutBox'); if(sbox){ sbox.style.display='none'; }
     var nl=document.getElementById('notesLayer'); if(nl){ nl.style.display='none'; }
   }
