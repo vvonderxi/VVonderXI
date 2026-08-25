@@ -459,6 +459,28 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vsprose{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:16px;line-height:1.62;color:rgba(243,237,224,0.92)}   /* #102: a hair more reading comfort */
   body.light .vsprose{color:#33302a}
   .vsprose + .vsprose{margin-top:.7em}   /* paragraph spacing when p1/p2 split into 2-3 paras */
+  /* THE WAIT MARKER , mark plus label, sitting where the prose will land.
+     It carries its OWN type because it inherits from .vsprose and .vquote, both of which
+     are the italic display face used for editorial voice. A wait is not editorial voice:
+     nothing has been said yet. Upright Archivo at the muted ink is the same register the
+     `plain` outage line uses, for the same reason. */
+  /* THE LABEL TAKES A LIGHT NEUTRAL IN DARK MODE, NOT --ink-soft, AND THE GROUND IS WHY.
+     This marker sits on the Compare green (.vsect, a linear-gradient 28,96,56 -> 15,58,34)
+     which is a MID-TONE, so the muted grey that reads fine on the near-black page measured
+     2.81 against the top stop , under AA. Same ruling as .tjvp: pink-ink does not go on
+     green, and neither does the muted grey; use cream or a light neutral.
+     IN LIGHT MODE THE PANEL IS NOT GREEN, it is rgb(251,248,242), so the theme token is
+     correct there and is kept , this ground DOES follow the theme, which is why the ink is
+     switched rather than pinned. Pinning an ink on a ground that moves is the inverse
+     error and it is just as wrong (CLAUDE.md §C). */
+  .vwait{display:inline-flex;align-items:center;gap:9px;font-family:'Archivo',sans-serif;
+         font-style:normal;font-weight:600;font-size:13px;letter-spacing:.02em;
+         color:rgba(243,237,224,0.86)}
+  body.light .vwait{color:var(--ink-soft)}
+  .vwaitlab{white-space:nowrap}
+  /* The loader's own wrapper is a column flex meant for a full panel; inside a line of
+     prose it must not stretch or add its own gap. */
+  .vwait .vvload{flex-direction:row;gap:0}
   .vsprose b{font-style:normal;font-weight:800;color:var(--gold)}
   /* Placed after every .vsprose rule AND marked important: `body.light .vsprose` is (0,2,0)
      and beats a single class outright, so position alone would still have lost in light
@@ -932,8 +954,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260825b"></script>
-<script src="/vv-core.js?v=20260825b"></script>
+<script src="/vv-marks.js?v=20260825c"></script>
+<script src="/vv-core.js?v=20260825c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1586,10 +1608,24 @@ body.light .pkmsub{color:var(--ink-soft)}
 
   // ── Live AI verdict (generation only; caching is a later step) ──
   function vvEsc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[ch];}); }
-  function vvSetStory(nameA,nameB,proseA,proseB){
+  /* THE WAIT MARKER IS MARKUP AND THE PROSE IS NOT, SO THEY CANNOT SHARE A PARAMETER.
+     Both setters below fill with textContent, deliberately: what they normally receive is
+     model output, and escaping it is the whole point. Handing them vvLoader()'s SVG through
+     the same argument rendered the raw tag as visible text in the panel , which is what
+     shipped, and is why the wait now arrives by its own flagged path rather than by
+     loosening the escape. Never "fix" this by switching the prose to innerHTML. */
+  function vvWaitHTML(label){
+    return (window.VVCore && VVCore.vvLoader)
+      ? '<span class="vwait">'+VVCore.vvLoader({size:22, duration:VVCore.VV_WAIT.ai.duration, silent:true})+
+        '<span class="vwaitlab">'+vvEsc(label)+'</span></span>'
+      : vvEsc(label+'…');
+  }
+  function vvSetStory(nameA,nameB,proseA,proseB,opts){
+    opts=opts||{};
     var cols=document.querySelectorAll('#verdict .vstorycol');
     function fill(col,dot,name,prose){ if(!col)return; var nm=col.querySelector('.vsname'); if(nm)nm.innerHTML='<span class="sdot '+dot+'"></span>'+vvEsc(name);
       var ps=col.querySelectorAll('.vsprose'); var first=ps[0]; for(var i=1;i<ps.length;i++)ps[i].remove(); if(!first)return;   // paragraph split: \n\n -> one .vsprose per para
+      if(opts.wait){ first.innerHTML=vvWaitHTML(opts.label||'Reading the seasons'); return; }
       var paras=String(prose==null?'':prose).split(/\n{2,}/).map(function(s){return s.trim();}).filter(Boolean); if(!paras.length)paras=[''];
       first.textContent=paras[0]; var ref=first;
       for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.textContent=paras[j]; ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
@@ -1598,8 +1634,20 @@ body.light .pkmsub{color:var(--ink-soft)}
   /* `plain` renders the text as a STATUS LINE rather than a pull-quote: no quotation marks,
      no italic display face. A service outage is not something the platform said, and dressing
      it as a quote is the same error as the card's fallback wearing the Drury italic. */
-  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine,plain){
+  function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine,plain,opts){
+    opts=opts||{};
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
+    /* The waiting state is markup , see the note above vvWaitHTML. It also carries no
+       quotation marks: nothing has been said yet, so dressing the wait as a pull-quote
+       would attribute a sentence to the platform that does not exist. Same reasoning as
+       the `plain` branch for an outage. */
+    if(opts.wait){
+      for(var w=0;w<vq.length;w++){
+        if(w===0){ vq[w].innerHTML=vvWaitHTML(opts.label||'Reading the seasons');
+                   vq[w].classList.add('vq-na'); vq[w].style.display=''; }
+        else vq[w].style.display='none';
+      }
+    }
     var parts=[]; if(h2h)parts.push(h2h);
       // STYLE RULE 5 asks the model for a TWO-PARAGRAPH verdict separated by a blank line.
       // .vquote is filled with textContent, which COLLAPSES newlines, so the break has to
@@ -1607,7 +1655,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(verdict) String(verdict).split(/\n\s*\n/).map(function(x){return x.trim();})
                     .filter(Boolean).forEach(function(x){ parts.push(x); });
       if(!parts.length) parts=[''];
-    for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0 && !plain)t='“'+t; if(i===parts.length-1 && !plain)t=t+'”'; vq[i].textContent=t; vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].style.display='none'; } }
+    if(!opts.wait) for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0 && !plain)t='“'+t; if(i===parts.length-1 && !plain)t=t+'”'; vq[i].textContent=t; vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     if(who){
       // The AI writes this line to match the selected verdict tag + rt gap (see the /api/analyse
@@ -1723,11 +1771,9 @@ body.light .pkmsub{color:var(--ink-soft)}
     var nameA=CMP_A.surname+' · '+CMP_A.year+' · '+CMP_A.clubname;
     var nameB=CMP_B.surname+' · '+CMP_B.year+' · '+CMP_B.clubname;
     /* "Reading the seasons", plural , this wait is weighing TWO of them, unlike the card. */
-    var _wait=(window.VVCore && VVCore.vvLoader)
-      ? VVCore.vvLoader({size:22, duration:VVCore.VV_WAIT.ai.duration, silent:true})+' Reading the seasons'
-      : 'Reading the seasons…';
-    vvSetStory(nameA,nameB,_wait,_wait);
-    vvSetVerdict(_wait,'',winner,va,vb,VC,TAGS[VC.floorTag]);   // show deterministic floor tag immediately
+    var _waitLab='Reading the seasons';
+    vvSetStory(nameA,nameB,null,null,{wait:true,label:_waitLab});
+    vvSetVerdict(null,'',winner,va,vb,VC,TAGS[VC.floorTag],null,false,{wait:true,label:_waitLab});   // show deterministic floor tag immediately
     // eligible tag set for the AI: deterministic floor + context hints (AI may up-rank per CONTEXT>AGE>LADDER)
     var eligKeys=[VC.floorTag].concat(VC.contextHints.filter(function(k){return k!==VC.floorTag;}));
     function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
