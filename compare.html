@@ -946,7 +946,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             <button class="vshare-main" onclick="vvVerdictShare(this)">Share this verdict</button>
             <div class="vshare-row">
               <a class="vshare-opt" href="#" onclick="event.preventDefault();vvVerdictSave(this)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6.5" width="18" height="13.5" rx="2.5"/><circle cx="12" cy="13.2" r="3.4"/><path d="M8.6 6.5l1.1-2h4.6l1.1 2"/></svg> <span class="lbl">Save image</span></a>
-              <a class="vshare-opt" href="#" onclick="event.preventDefault();navigator.clipboard&&navigator.clipboard.writeText(location.href);this.querySelector('.lbl').textContent='Copied'"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg> <span class="lbl">Copy link</span></a>
+              <a class="vshare-opt" href="#" onclick="event.preventDefault();vvVerdictCopy(this)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg> <span class="lbl">Copy link</span></a>
             </div>
           </div>
         </div>
@@ -1508,10 +1508,34 @@ body.light .pkmsub{color:var(--ink-soft)}
       setTimeout(function(){URL.revokeObjectURL(url);},1000);
       var copied=false;
       try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(vvLedgerText()+'\n'+location.href); copied=true; } }catch(e){}
-      if(l) l.textContent='Saved';
+      /* Restore, like Copy link. A control frozen on "Saved" stops telling the user
+         anything the moment they want to save a second time , and it reads as stuck. */
+      if(l){ l.textContent='Saved'; setTimeout(function(){ l.textContent='Save image'; }, 2600); }
       VVCore.vvToast(copied ? 'Image saved, and the caption is on your clipboard , paste it with the post.'
                             : 'Image saved to your downloads.');
     }).catch(function(){ if(l) l.textContent='Save image'; VVCore.vvToast('That image could not be made. The link still works.'); });
+  }
+
+  /* COPY LINK. It was one inline expression and it lied in three ways, all of which are
+     the §C rule about reporting success before a request resolves:
+       1. writeText() returns a PROMISE and the label was set on the next statement, so a
+          rejected write still read "Copied".
+       2. `navigator.clipboard && ...` SHORT-CIRCUITS when the API is absent , on a
+          non-secure origin the copy never even ran and the label still said "Copied".
+       3. the label was never restored, so the control read "Copied" forever afterwards.
+     It also copied the bare URL while Save image copies caption + URL, so the same verdict
+     went out with different text depending on which control was used. */
+  function vvVerdictCopy(el){
+    var l=el&&el.querySelector('.lbl'); if(!l) return;
+    var payload=vvLedgerText()+'\n'+location.href;
+    function settle(ok){
+      l.textContent = ok ? 'Copied' : 'Copy failed';
+      VVCore.vvToast(ok ? 'Verdict and link copied , paste it anywhere to share.'
+                        : 'Your browser blocked the copy. Select the address bar and copy the link instead.');
+      setTimeout(function(){ l.textContent='Copy link'; }, 2600);
+    }
+    if(!(navigator.clipboard && navigator.clipboard.writeText)){ settle(false); return; }
+    navigator.clipboard.writeText(payload).then(function(){ settle(true); }, function(){ settle(false); });
   }
 
   function vvVerdictShare(btn){
