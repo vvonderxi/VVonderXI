@@ -954,8 +954,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260825d"></script>
-<script src="/vv-core.js?v=20260825d"></script>
+<script src="/vv-marks.js?v=20260825f"></script>
+<script src="/vv-core.js?v=20260825f"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1538,6 +1538,20 @@ body.light .pkmsub{color:var(--ink-soft)}
     navigator.clipboard.writeText(payload).then(function(){ settle(true); }, function(){ settle(false); });
   }
 
+  /* THE LABEL FOLLOWS THE BROWSER, NOT THE INTENT. On a browser with no Web Share API
+     this control downloads a file, so it must not read "Share this verdict" , see
+     VVCore.vvShareCapability. Called once at load and never again: capability does not
+     change within a page's life. */
+  function vvShareRelabel(){
+    if(!(window.VVCore && VVCore.vvShareLabel)) return;
+    VVCore.vvShareLabel(document.querySelector('.vshare-main'),
+      'Share this verdict', 'Save post image');
+    /* "Save POST image", not "Save image": the row below already has a Save image, and the
+       two make DIFFERENT pictures , this button composes the wide 1200x675 social frame
+       (format 'x'), the option composes the card-shaped one (format 'dl'). Two controls
+       with one label doing two things is its own small lie. */
+  }
+
   function vvVerdictShare(btn){
     // The LEDGER goes out as an image , that is the composition Lucas chose for the wide
     // frame, and a link alone is useless on Instagram. 1200x675 because the ledger is
@@ -1920,6 +1934,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     setTimeout(async ()=>{vvComputeSpokes();vvUpdateWatchLinks();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();vvSetProof();drawH2H();var _tr=await Promise.all([ vvLoadTrajectory(CMP_A&&CMP_A.api_player_id), vvLoadTrajectory(CMP_B&&CMP_B.api_player_id) ]);var serA=_tr[0],serB=_tr[1];drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);vvSetConfidence(serA&&serA.length,serB&&serB.length);},60);
     vvGenerateVerdict();
   });
+  vvShareRelabel();   // before any visitor can read the button, not at click time
   // redraw radar on mode toggle (grid contrast)
   var _mt=document.querySelector('.modetoggle'); if(_mt) _mt.addEventListener('click',function(){
     if(document.getElementById('verdict').classList.contains('show')) setTimeout(drawDualRadar,40);

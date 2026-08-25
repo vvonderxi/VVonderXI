@@ -3750,6 +3750,57 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   //  NOTHING REPORTS SUCCESS BEFORE ITS PROMISE RESOLVES , see §C. An AbortError is the
   //  user closing the sheet, which is not a failure and must not fall through to a rung
   //  that downloads a file they did not ask for.
+  /* ── CAPABILITY, SO A CONTROL NEVER PROMISES WHAT THE BROWSER CANNOT DO ──────
+     Returns 'files' (rung 1, the image itself goes out), 'link' (rung 2, the OS sheet
+     opens with a URL , still genuinely sharing), or 'none' (rung 3, which DOWNLOADS and
+     copies the caption, and is not sharing by any reading).
+
+     A button reading "Share" that downloads a file is the same defect class as a waitlist
+     thanking someone for an email it never sent: the control reports an outcome that did
+     not happen. §C already says a success state must be gated on a resolved, checked
+     response; this is the same rule one step earlier, at the PROMISE rather than the
+     report. Desktop Chrome has neither navigator.share nor canShare, so 'none' is not an
+     edge case , it is every desktop visitor.
+
+     The probe builds a 1-byte PNG File because canShare() inspects the file TYPE, not its
+     contents, and asking with no file at all answers a different question. */
+  function vvShareCapability(){
+    try {
+      if (typeof navigator === 'undefined') return 'none';
+      if (navigator.canShare && typeof File !== 'undefined'){
+        const probe = new File([new Uint8Array(1)], 'p.png', { type: 'image/png' });
+        if (navigator.canShare({ files: [probe] })) return 'files';
+      }
+      if (navigator.share) return 'link';
+    } catch(e){}
+    return 'none';
+  }
+  /* Relabels one control to match the capability. Takes the two labels rather than
+     inventing copy, so the wording stays with the surface that owns it. The icon is
+     swapped too where the caller supplies one: a share glyph over a download is the same
+     false promise in pictures. */
+  function vvShareLabel(el, shareLabel, saveLabel, opts){
+    if (!el) return 'none';
+    opts = opts || {};
+    const cap = vvShareCapability();
+    const txt = (cap === 'none') ? saveLabel : shareLabel;
+    if (opts.textNode){
+      // the label is a bare text node beside an inline <svg>, so setting textContent
+      // would delete the icon
+      const n = el.childNodes[el.childNodes.length - 1];
+      if (n && n.nodeType === 3) n.nodeValue = txt;
+    } else if (opts.span){
+      const sp = el.querySelector(opts.span); if (sp) sp.textContent = txt;
+    } else {
+      el.textContent = txt;
+    }
+    if (opts.saveIcon && cap === 'none'){
+      const svg = el.querySelector('svg'); if (svg) svg.outerHTML = opts.saveIcon;
+    }
+    el.setAttribute('data-vv-cap', cap);
+    return cap;
+  }
+
   function vvShareCompose(spec, opts){
     opts = opts || {};
     const text = opts.text || vvShareCaption(spec);
@@ -3809,7 +3860,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, vvShareCapability, vvShareLabel, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

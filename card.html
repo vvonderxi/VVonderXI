@@ -1021,8 +1021,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260825d"></script>
-<script src="/vv-core.js?v=20260825d"></script>
+<script src="/vv-marks.js?v=20260825f"></script>
+<script src="/vv-core.js?v=20260825f"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -2849,19 +2849,36 @@ function vvShareOut(){
   // The alert() is gone: it BLOCKS the page, it is the wrong register for a success
   // message, and in an automated browser it wedges the session until a human dismisses it
   // (which happened during this build). vvToast says the same thing without stopping
-  // anything. And nothing here claims success before its promise resolves , see §C.
+  // anything.
+  //
+  // THE COMMENT HERE USED TO CLAIM "nothing claims success before its promise resolves"
+  // AND THE CODE DIRECTLY BELOW IT DID EXACTLY THAT, TWICE , the AbortError branch toasted
+  // "Link copied" without waiting for the copy, and the fallback set ok=true on the line
+  // after an un-awaited writeText(). A recorded claim is a claim, not a measurement (§C),
+  // and a comment asserting a property is the easiest place for that property to rot.
+  // Both now report only what a resolved promise says.
   var data={title:'VVonderXI',text:vvShareText(),url:vvShareURL()};
   if(navigator.share){
     navigator.share(data).catch(function(e){
       if(e && e.name==='AbortError') return;              // the user closed the sheet
-      vvCopyLink(null); VVCore.vvToast('Link copied , paste it anywhere to share.');
+      vvCopyURL().then(function(ok){
+        VVCore.vvToast(ok ? 'Link copied , paste it anywhere to share.'
+                          : 'Sharing is not available in this browser , copy the address bar.');
+      });
     });
     return;
   }
-  var ok=false;
-  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(vvShareURL()); ok=true; } }catch(e){}
-  VVCore.vvToast(ok ? 'Link copied , paste it anywhere to share.'
-                    : 'Sharing is not available in this browser , copy the address bar.');
+  vvCopyURL().then(function(ok){
+    VVCore.vvToast(ok ? 'Link copied , paste it anywhere to share.'
+                      : 'Sharing is not available in this browser , copy the address bar.');
+  });
+}
+/* ONE place that actually touches the clipboard, resolving to whether it worked. Both
+   vvCopyLink and vvShareOut go through it so neither can drift into reporting early. */
+function vvCopyURL(){
+  if(!(navigator.clipboard && navigator.clipboard.writeText)) return Promise.resolve(false);
+  return navigator.clipboard.writeText(vvShareURL()).then(function(){ return true; },
+                                                          function(){ return false; });
 }
 /* The spec the share layer renders. D is the live card object, so the image is always the
    season currently on screen , season switching rewrites D and ?id= together. */
@@ -2872,6 +2889,22 @@ function vvShareFilename(){
   return ('vvonderxi-'+String(d.full||'card').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+String(d.year||'').replace('/','-'))
          .replace(/-+/g,'-').replace(/^-|-$/g,'');
 }
+/* Same rule as compare: a control must not promise what the browser cannot do. On a
+   browser with no Web Share API this button downloads, so both the word AND the glyph
+   change , a share-nodes icon over a download is the same false promise in pictures. */
+var VV_DL_ICON='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 19h16"/></svg>';
+function vvShareRelabel(){
+  if(!(window.VVCore && VVCore.vvShareLabel)) return;
+  /* " Save post image", not " Save image": the options row already carries a Save image
+     and they compose DIFFERENT pictures , this button makes the 1080x1350 post frame
+     (format 'igf'), the option makes the card-shaped one (format 'dl'). */
+  VVCore.vvShareLabel(document.querySelector('.sb-share'), ' Share', ' Save post image',
+    {textNode:true, saveIcon:VV_DL_ICON});
+}
+
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', vvShareRelabel);
+else vvShareRelabel();
+
 function vvShareCard(btn){
   var sp=vvShareSpec(); if(!sp.card){ vvShareOut(); return; }
   var lbl=btn?btn.childNodes[btn.childNodes.length-1]:null, orig=lbl?lbl.nodeValue:'';
@@ -2890,9 +2923,18 @@ function vvShareX(){
 function vvShareWhatsApp(){
   window.open('https://wa.me/?text='+encodeURIComponent(vvShareText()+' '+vvShareURL()),'_blank','noopener');
 }
+/* SAME DEFECT AS compare's Copy link, fixed the same way. The write was never awaited and
+   the try/catch could not see a rejected promise anyway, so a blocked copy still reported
+   " Copied". An absent clipboard API short-circuited and ALSO reported success. */
 function vvCopyLink(btn){
-  try{ if(navigator.clipboard) navigator.clipboard.writeText(vvShareURL()); }catch(e){}
-  if(btn){ var sp=btn.querySelector('span'); if(sp) sp.textContent=' Copied'; }
+  var sp=btn?btn.querySelector('span'):null;
+  function settle(ok){
+    if(sp){ sp.textContent = ok ? ' Copied' : ' Copy failed';
+            setTimeout(function(){ sp.textContent=' Copy link'; }, 2600); }
+    if(!ok && window.VVCore && VVCore.vvToast)
+      VVCore.vvToast('Your browser blocked the copy. Select the address bar and copy the link instead.');
+  }
+  return vvCopyURL().then(function(ok){ settle(ok); return ok; });
 }
 function vvSaveImage(btn){
   // The download is the SAME composed frame as the share, at the card-shaped size, so a
