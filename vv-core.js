@@ -3532,9 +3532,18 @@ body.light .vvload{color:#1A1917}
     color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--band:#E0A93A;--quiet:#a49c90}
 .sf.light{background:radial-gradient(120% 90% at 20% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
           color:#241f1a;--emph:#AD0332;--band:#5a4410;--quiet:#6b6357}
-.sf-brand{position:absolute;display:flex;align-items:center;gap:7px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92}
-.sf-vv{letter-spacing:-0.06em;margin-right:.16em}
+/* VVonderXI IS ONE WORD, SO THE LOCKUP GETS NO WORD SPACE.
+   .sf-brand is a flex row and carried gap:7px, and .sf-vv added margin-right:.16em on top
+   of it. At the 16px brand size that is 7 + 2.56 = 9.56px between the second V and the O,
+   against a VV only 21.6px wide , 44% of its own width, which reads as two words. Both are
+   gone; the letter rhythm now comes from letter-spacing alone, the way it does inside
+   ONDERXI itself. Do not reintroduce a gap here to "separate" the two halves: they are not
+   two halves, they are one word set at two sizes. */
+.sf-brand{position:absolute;display:flex;align-items:baseline;gap:0;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92}
+.sf-vv{letter-spacing:-0.06em}
 .sf-vv .a{color:currentColor}.sf-vv .b{color:var(--emph)}
+/* The caption's own wordmark , same two-tone treatment as the brand, see shCapHTML. */
+.sf-cap .sf-vv2 .b{color:var(--emph)}
 .sf-cap{position:absolute;color:var(--quiet);font-weight:600;letter-spacing:.06em}
 .sf-rule{height:1px;background:currentColor;opacity:.18}
 .sf-sub{color:var(--quiet);font-weight:600;letter-spacing:.07em;text-transform:uppercase}
@@ -3573,11 +3582,21 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   //  after the frame is in the DOM, because the card renders at max-width:92% of its
   //  wrapper and the wrapper's centre is therefore NOT the card's. Predicting it from cw
   //  was out by 11px on the wide compare frame, where the pair sits left of centre.
+  /* THE CAPTION'S "VVonderXI" GETS ITS PINK V, AND IT HAS TO HAPPEN HERE RATHER THAN IN
+     vvShareCaption. That function's output is ALSO the share TEXT , it goes to
+     navigator.share({text}) and to the clipboard , so it must stay a plain string. Putting
+     markup in it would post literal span tags to whatever the visitor pastes into.
+     So the plain string stays the single source and only the RENDERED copy is marked up,
+     after escaping, on the one token that is the brand. */
+  function shCapHTML(text){
+    return shEsc(text).replace(/VVonderXI/g,
+      '<span class="sf-vv2"><span class="a">V</span><span class="b">V</span>onderXI</span>');
+  }
   function shChrome(F, capText){
     const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F);
     return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp) + '</div>' +
            '<div class="sf-cap" style="bottom:' + (P * 0.8) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
-           'font-size:' + cp + 'px;text-align:center;white-space:nowrap">' + shEsc(capText) + '</div>';
+           'font-size:' + cp + 'px;text-align:center;white-space:nowrap">' + shCapHTML(capText) + '</div>';
   }
 
   const shSeason = c => { try { return fmtSeason(c.season); } catch(e){ return c.season || ''; } };
