@@ -3250,13 +3250,45 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   // ══════════════════════════════════════════════════════════════════════════════
   const VV_LOADER_MIN = 16;          // two-tone floor , see the note on vvLoader
 
-  //  GEOMETRY MEASURED OFF THE .spinelogo PNG (760x340, decoded from the base64 in
-  //  rankings.html), not inherited. Fitted stroke edges gave LEFT 97.6 vs RIGHT 77.6 at the
-  //  top and 95.0 vs 80.0 lower down , a 1.26 ratio falling to 1.19. That asymmetry is the
-  //  character of the mark and is preserved exactly, along with two things the pixels show:
-  //  the right arm starts 43px below the left arm's top, and the second V sits 6px higher.
-  const VV_V1 = 'M1 4.45 L5.5 4.45 L8.96 11.54 L11.37 6.4 L14.87 6.4 L8.93 19.82 Z';
-  const VV_V2 = 'M9.13 4.18 L13.63 4.18 L17.08 11.26 L19.49 6.13 L23 6.13 L17.06 19.55 Z';
+  //  LOCKED GEOMETRY , see CLAUDE.md §C. Do not re-derive it and do not nudge it by eye;
+  //  it has been got wrong three times, and each element below is load-bearing.
+  //
+  //  THE TWO Vs ARE MIRRORED, NOT TRANSLATED. This is the correction that mattered, and it
+  //  is what the earlier trace got wrong. Fitted against the one pink arm the cream V never
+  //  occludes (the outer-right), a mirror predicts its two edge slopes to within 0.038 and a
+  //  translation is off by 0.129 , and the stroke widths settle it independently: the pink
+  //  V's RIGHT stroke measures 89-93 against the cream V's LEFT stroke at 97-103, not against
+  //  the cream's right at 77-80. A translated copy would put the heavy stroke on the same
+  //  side of both Vs. The asset puts them on opposite sides.
+  //
+  //  NO VERTICAL OFFSET. Both Vs top out on the same line. The 6px drop an earlier trace
+  //  recorded on the second V was the mirror being misread as a translation.
+  //
+  //  THE INNER ARMS DROP 43, THE OUTER ARMS RUN FULL HEIGHT. V1's outer-left starts at the
+  //  top and its inner-right starts 43 units down; V2 mirrors that, so its inner-left drops
+  //  and its outer-right runs full. Measured directly on V1 (left arm present from y=4, right
+  //  arm first appearing at y=47) and inherited by V2 through the mirror, because V2's
+  //  inner-left arm is fully occluded in the asset and cannot be measured on its own.
+  //  THIS ASYMMETRY IS WHY THE LOCKUP READS AS A W RATHER THAN AS TWO Vs. It is not decoration.
+  //
+  //  SEAM OFFSET 218.5 IN SOURCE UNITS, WHICH IS THE ASSET'S OWN NUMBER AND NOT A DERIVED ONE.
+  //  Fixed against two landmarks the cream V does not cover , the pink apex at x=350.5 gives
+  //  219.6, the pink outer-right at x=523 gives 217.3. A seam derived from the drop instead
+  //  (328.5 - 0.9588 x 43 = 287.3) separates the two Vs until they read as "V V", which is the
+  //  one thing the drop exists to prevent. Rendered side by side at 40px and at 150px, in both
+  //  themes, only 218.5 reads as a W.
+  //
+  //  ASYMMETRIC STROKE WEIGHT, LEFT HEAVIER THAN RIGHT, ratio 1.27 at the drop easing to 1.21
+  //  further down. Preserved exactly , neither V is rescaled, which is what the trace exists
+  //  to protect. Fitted edges (source units, top of mark at y=0):
+  //     outer-left  x = 0.5160y + 0.204     inner-left  x = 0.4874y + 99.37
+  //     inner-right x = -0.4698y + 248.82   outer-right x = -0.4428y + 324.91
+  //  Mark measures 524.0 x 338.7 in those units, ratio 1.547, normalised to the 24x24 grid.
+  //
+  //  THE BASE V IS ALWAYS PRESENT. Pink wipes right to left over it via clipPath, so the mark
+  //  never disappears , only the colour moves.
+  const VV_V1 = 'M1 4.89 L5.16 4.89 L8.36 11.45 L10.59 6.7 L13.83 6.7 L8.34 19.11 Z';
+  const VV_V2 = 'M23 4.89 L18.84 4.89 L15.64 11.45 L13.41 6.7 L10.17 6.7 L15.66 19.11 Z';
 
   const VV_LOADER_CSS = `
 .vvload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
