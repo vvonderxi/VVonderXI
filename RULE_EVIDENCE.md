@@ -175,3 +175,12 @@ reasoning behind them, in the same shape as the 2026-08-16 `SILENT_FAILURES.md` 
 - **(3) AND THE ONE THAT MATTERS MOST , I RECORDED THE FIX FOR (1) IN THE SOURCE AFTER PASS TWO AND DID NOT RE-RUN PASS THREE WITH IT.** The comment in `vv-core.js` says "compare DECLARATIONS, and normalise the selector before comparing it" and the very next extraction did neither. **Writing a lesson down is not applying it. If a rule is discovered mid-task, the work already done under the old rule has to be REDONE, not just annotated.**
 - **THE OUTCOME, AND IT IS A LIMIT NOT A WIN: the last four rules CANNOT be moved.** `.vvcard` carries `width:var(--cw)`, `max-width:92%` and `height:calc(var(--cw)*1.397)`, and moving it into a PREPENDED sheet inverts the cascade against page rules that used to follow it , the live card went from 304x461 to **206x395, ratio 1.917, radius gone**. Reverted. **`VV_CARD_CSS` holds 58 rules and the card box stays in the pages.** A new surface must therefore still supply the box itself, which is the standing cost of not finishing this.
 - **THE RENDERED CARD RATIO IS 1.518, NOT 1.397, AND BOTH NUMBERS ARE CORRECT.** Height is `--cw x 1.397`; width is clamped by `max-width:92%` to `0.92 x --cw`. So `461 / 304 = 1.518` is what a share frame must be sized against. **Do not read 1.397 off the CSS and size an image with it.**
+
+
+---
+
+## THE API-FOOTBALL KEY EXPOSURE , THE EVIDENCE (relocated from `CLAUDE.md` §D, 2026-08-25)
+
+**The RULE stays in `CLAUDE.md` §D BUILD TRACK step 6 , 'not in the repo' is not 'not leaked'. Only the repo-side checks moved here.**
+
+- **[SETTLED 2026-08-20] THE API-FOOTBALL KEY WAS GENUINELY EXPOSED, AND THE DOC AND THE REPO WERE BOTH RIGHT.** Every repo-side check is clean , not in HEAD, not in git history (`git log --all -S` returns 0), never in any HTML, `.env` gitignored and untracked. **The exposure was in a CHAT TRANSCRIPT, never committed**, which is exactly why the searches came back empty and why the 2026-08-09 handover could not substantiate it. **So rotation IS required and the repo can never show it.** **OPERATIONAL CONSTRAINT: rotate only when NO BACKFILL IS RUNNING** , a rotation mid-run kills every in-flight request and the enrichment scripts checkpoint per league-season, so a half-written run is the expensive failure. **GENERALISE IT: 'not in the repo' is not 'not leaked'. A secret can escape through a transcript, a screenshot or a paste, and no amount of grepping HEAD will ever see it , ask where it was USED, not only where it was stored.**

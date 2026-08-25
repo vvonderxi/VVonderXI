@@ -317,3 +317,12 @@ operation reports success, the diff shows the intended change, and the effect is
 override that silently loses is indistinguishable from one that was never written**, and it is
 worse than a crash, because you go on debugging the thing you believe you already fixed. The guard
 is one line , read the computed value back after setting it.
+
+
+---
+
+## `compare.html` DIV/COMMENT COUNT , A FALSE POSITIVE THAT LOOKS LIKE A DEFECT (relocated from `CLAUDE.md` §D, 2026-08-25)
+
+**The one-line guard stayed in `CLAUDE.md` §D so a future session counting delimiters trips over it there.**
+
+- **[CLOSED 2026-08-21] `compare.html` DIV IMBALANCE AND CSS COMMENT PAIR , BOTH BALANCED, AND THE RESIDUAL COUNT IS A FALSE POSITIVE.** Measured at HEAD: **`<div>` 156 / `</div>` 156, delta 0** (was -1). **A NAIVE COUNT STILL REPORTS `/*` 141 against `*/` 142, AND THAT ONE EXTRA IS NOT A COMMENT** , it is inside a JavaScript REGEX LITERAL at line 1720, a `String.replace` call whose pattern ends `\s*` immediately before the regex's own closing delimiter, where `\s*` followed by the closing delimiter spells `*/`. **Do NOT re-open this on the raw count.** Walking the file with a real open/close scanner returns exactly one such hit and zero orphan comments. If it is ever checked again, verify surviving `cssRules` in a browser, not the source text , that was the original instruction and it is still the right one.
