@@ -241,10 +241,10 @@
   body.light .filterrail{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
   .fr-title{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
   body.light .fr-title{color:var(--ink-soft)}
-  .fr-clear{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;text-transform:none;color:rgba(243,237,224,0.58);background:none;border:none;padding:0;cursor:pointer;transition:color .12s}
-  .fr-clear:hover{color:var(--pink-ink)}
-  body.light .fr-clear{color:var(--ink-soft)}
-  .fr-clear.hidden{display:none}
+  /* Clear all is a PILL now, and the treatment lives in vv-core (.vvf-clear) so
+     rankings, card and compare cannot drift apart again. .fr-clear survives as the
+     JS hook only , it carries no appearance. */
+  .fr-clear{margin-left:auto}
   .fr-count{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.03em;color:rgba(243,237,224,0.58);margin-bottom:10px;min-height:13px}
   body.light .fr-count{color:var(--ink-soft)}
   .rankmore-wrap{display:none;justify-content:center;padding:18px 0 4px;grid-column:1/-1;width:100%}
@@ -391,7 +391,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       <div class="rankfbar"><button class="rankfbtn" id="rankFBtn"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"/></svg> Filters<i class="chev">&#9662;</i></button><div class="viewseg" role="group" aria-label="View"><button class="vseg on" id="vsCards" onclick="setRankView('cards')" aria-label="Card view" title="Cards"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></button><button class="vseg" id="vsPills" onclick="setRankView('pills')" aria-label="List view" title="List"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><button class="vseg" id="vsCompact" onclick="setRankView('compact')" aria-label="Compact view" title="Compact"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 9.3h16M4 13.6h16M4 17.9h16"/></svg></button></div></div>
       <div class="ranklayout">
 <aside class="filterrail">
-        <div class="fr-title">Filters<button class="fr-clear" id="frClear" onclick="clearAllFilters()">Clear all</button></div>
+        <div class="fr-title">Filters<button type="button" class="fr-clear vvf-clear" id="frClear" onclick="clearAllFilters()">Clear all</button></div>
         <div class="fr-count" id="rankCount"></div>
         <div id="rkFilters"></div>
       </aside>
@@ -407,8 +407,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260825a"></script>
-<script src="/vv-core.js?v=20260825a"></script>
+<script src="/vv-marks.js?v=20260825b"></script>
+<script src="/vv-core.js?v=20260825b"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the

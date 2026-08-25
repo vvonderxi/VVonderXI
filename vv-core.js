@@ -2735,9 +2735,54 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       return {v:it.v, l:(it.l||it.v), e:it.e}; })); }, []);
   }
 
+  /* ── RANGE SLIDERS , ONE IMPLEMENTATION, TWO INSTANCES ────────────────────
+     VV Score and Age are the same control over different columns, so they share
+     one renderer, one painter, one reader and one clear. The alternative is a
+     second copy of the slider keyed to 'ag', and a copy is how the row CSS came
+     to style .rmini twice with different values (§C) , the second copy is the
+     one that gets forgotten when the first is fixed.
+
+     BOUNDS ARE MEASURED, NOT ASSUMED. season_age runs 15 (Mokio, Gent 23/24) to
+     43 (Hilton, Montpellier 20/21) across 57,058 cards. Both extremes are real
+     players, so neither end is junk to clamp away.
+
+     A STALE BOUND IS SAFE IN THE DIRECTION THAT MATTERS, because of the
+     ends-mean-no-bound rule below: if a 14-year-old is ever ingested, the slider
+     parked at its floor emits NO clause and still returns him. He only disappears
+     once a visitor deliberately narrows the range, which is the honest reading of
+     the control. That is the same protection that should have been on rankings'
+     old floor of 15 against a live min(rt) of 11.
+
+     season_age, NEVER age. `age` is the player's CURRENT age and is identical on
+     every one of his season rows , van Dijk reads 34 on a card from 2016 (§C).
+     Filtering on it would silently answer a different question. */
+  var VVF_RANGES = [
+    { role:'rt', group:'score', col:'rt',         lo:0,  hi:100 },
+    { role:'ag', group:'age',   col:'season_age', lo:15, hi:43  }
+  ];
+  function vvfRange(role){ for(var i=0;i<VVF_RANGES.length;i++) if(VVF_RANGES[i].role===role) return VVF_RANGES[i]; return null; }
+  function vvfRangeForGroup(gk){ for(var i=0;i<VVF_RANGES.length;i++) if(VVF_RANGES[i].group===gk) return VVF_RANGES[i]; return null; }
+  /* The slider markup. data-vvf-role carries the instance, so nothing downstream
+     has to know which group it came from. */
+  function rangeHTML(r){
+    return '<div class="vvf-score">'+
+      '<div class="vvf-svals"><span class="vvf-sv" data-vvf-role="'+r.role+'vmin">'+r.lo+'</span>'+
+      '<span class="vvf-svdash">to</span>'+
+      '<span class="vvf-sv" data-vvf-role="'+r.role+'vmax">'+r.hi+'</span></div>'+
+      '<div class="vvf-dual"><div class="vvf-track"></div><div class="vvf-fill" data-vvf-role="'+r.role+'fill"></div>'+
+      '<input type="range" data-vvf-role="'+r.role+'min" min="'+r.lo+'" max="'+r.hi+'" value="'+r.lo+'" aria-label="Minimum '+r.group+'">'+
+      '<input type="range" data-vvf-role="'+r.role+'max" min="'+r.lo+'" max="'+r.hi+'" value="'+r.hi+'" aria-label="Maximum '+r.group+'"></div></div>';
+  }
+
   var VVF_GROUPS=[
     { key:'sort',     label:'Sort by',      select:'single', where:'server', items:VVF_SORTS },
     { key:'score',    label:'VV Score',     select:'multi',  where:'server', kind:'score' },
+    /* AGE sits directly beneath VV Score because it is the same kind of question ,
+       a numeric range over a real column , and the two read as a pair. It carries no
+       chips: there are no defensible age BANDS the way there are score bands, and
+       inventing "Young / Prime / Veteran" would put an editorial judgement into a
+       filter rail where every other cut is measured. */
+    { key:'age',      label:'Age',          select:'multi',  where:'server', kind:'range' },
     { key:'league',   label:'League',       select:'multi',  where:'server', items:VVF_LEAGUES },
     { key:'position', label:'Position',     select:'multi',  where:'server',
       items:FILTER_TAXONOMY.position.map(function(p){ return {v:p.v,l:(p.l||p.v)}; }) },
@@ -2794,7 +2839,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
        Trajectory has nothing to teach yet, so it costs a heading and a blank row
        and earns nothing. When the tags ship, items appear and the group returns
        on its own , no code change needed. */
-    if(!g.subs && key!=='score' && !vvfItems(g).length) return '';
+    if(!g.subs && key!=='score' && g.kind!=='range' && !vvfItems(g).length) return '';
     var head='<div class="vvf-group" data-vvf-groupkey="'+VVF_ESC(key)+'" data-vvf-where="'+g.where+'"'+
              ' data-vvf-select="'+g.select+'"><div class="vvf-gl">'+VVF_ESC(g.label)+'</div>';
     var body='';
@@ -2803,15 +2848,10 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
          native tracks that replaced it was a regression. BEHAVIOUR is the new one:
          the ends mean NO bound, so dragging to either extreme removes the clause
          rather than clamping at a floor of 15. */
-      var lo=0, hi=100;
-      body+='<div class="vvf-score">'+
-        '<div class="vvf-svals"><span class="vvf-sv" data-vvf-role="rtvmin">'+lo+'</span>'+
-        '<span class="vvf-svdash">to</span>'+
-        '<span class="vvf-sv" data-vvf-role="rtvmax">'+hi+'</span></div>'+
-        '<div class="vvf-dual"><div class="vvf-track"></div><div class="vvf-fill" data-vvf-role="rtfill"></div>'+
-        '<input type="range" data-vvf-role="rtmin" min="'+lo+'" max="'+hi+'" value="'+lo+'">'+
-        '<input type="range" data-vvf-role="rtmax" min="'+lo+'" max="'+hi+'" value="'+hi+'"></div></div>';
+      body+=rangeHTML(vvfRangeForGroup('score'));
       body+='<div class="vvf-chips">'+bandPresets().map(function(it){ return vvfChip(key,it,{}); }).join('')+'</div>';
+    } else if(g.kind==='range'){
+      body+=rangeHTML(vvfRangeForGroup(key));
     } else if(g.subs){
       body+=profileSubs(true).map(function(sub){
         return '<div class="vvf-sub">'+VVF_ESC(sub.sub)+'</div><div class="vvf-chips">'+
@@ -2830,7 +2870,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
 
   // ---- state ---------------------------------------------------------------
   function emptyState(){
-    return { sort:'rt', score:{lo:null,hi:null,bands:[]}, league:[], position:[],
+    return { sort:'rt', score:{lo:null,hi:null,bands:[]}, age:{lo:null,hi:null},
+             league:[], position:[],
              profile:[], stage:[], trajectory:[], honours:[] };
   }
   /* READS data-* ONLY. Never textContent , that is the whole point of the rewrite. */
@@ -2844,20 +2885,24 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       if(gk==='score'){ st.score.bands.push(v); continue; }
       if(g.select==='single'){ st[gk]=v; } else if(st[gk] && st[gk].indexOf(v)<0){ st[gk].push(v); }
     }
-    var mn=root.querySelector('[data-vvf-role="rtmin"]'), mx=root.querySelector('[data-vvf-role="rtmax"]');
-    if(mn&&mx){
+    /* "AT THE ENDS" MEANS NO BOUND , never amputate silently. rankings shipped a
+       floor of 15 against a live min(rt) of 11 and hid 1,030 cards. Applied to every
+       range instance, so Age inherits the protection rather than re-earning it. */
+    VVF_RANGES.forEach(function(r){
+      var mn=root.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=root.querySelector('[data-vvf-role="'+r.role+'max"]');
+      if(!mn||!mx) return;
       var lo=+mn.value, hi=+mx.value; if(lo>hi){ var t=lo; lo=hi; hi=t; }
-      // "at the ends" means NO bound , never amputate silently (rankings shipped a
-      // floor of 15 against a live min(rt) of 11, hiding 1,030 cards)
-      st.score.lo = (lo<=+mn.min) ? null : lo;
-      st.score.hi = (hi>=+mx.max) ? null : hi;
-    }
+      st[r.group].lo = (lo<=+mn.min) ? null : lo;
+      st[r.group].hi = (hi>=+mx.max) ? null : hi;
+    });
     return st;
   }
   function isActive(st){
     if(!st) return false;
     if(st.sort && st.sort!=='rt') return true;
     if(st.score && (st.score.lo!=null || st.score.hi!=null || st.score.bands.length)) return true;
+    if(st.age && (st.age.lo!=null || st.age.hi!=null)) return true;
     return ['league','position','profile','stage','trajectory']
       .some(function(k){ return (st[k]||[]).length>0; });
   }
@@ -2877,9 +2922,17 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     opts=opts||{}; var applied=[];
     if(st.league.length){   query=query.in('league_code', st.league);      applied.push('league'); }
     if(st.position.length){ query=query.in('position_pool', st.position);  applied.push('position'); }
-    // VV Score , slider range AND band presets are SEPARATE constraints that AND
-    if(st.score.lo!=null){ query=query.gte('rt', st.score.lo); applied.push('score.lo'); }
-    if(st.score.hi!=null){ query=query.lte('rt', st.score.hi); applied.push('score.hi'); }
+    /* NUMERIC RANGES , every instance, server-side, because each is a real column.
+       VV Score's slider range and its band presets are SEPARATE constraints that AND.
+       A narrowed range drops rows whose column is NULL (119 cards carry no season_age),
+       which is unavoidable and correct: an unknown age cannot be inside a range. At the
+       ends no clause is emitted at all, so those rows survive until a visitor asks a
+       question they cannot answer. */
+    VVF_RANGES.forEach(function(r){
+      var v=st[r.group]; if(!v) return;
+      if(v.lo!=null){ query=query.gte(r.col, v.lo); applied.push(r.group+'.lo'); }
+      if(v.hi!=null){ query=query.lte(r.col, v.hi); applied.push(r.group+'.hi'); }
+    });
     if(st.score.bands.length){
       var presets=bandPresets(), byV={};
       presets.forEach(function(p){ byV[p.v]=p; });
@@ -2946,12 +2999,17 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         VVF_ESC(extra||labelFor(gk,v))+'<span class="vvf-ax" aria-hidden="true">&times;</span></button>');
     }
     (st.score.bands||[]).forEach(function(v){ add('score',v); });
-    if(st.score.lo!=null || st.score.hi!=null){
-      out.push('<button type="button" class="vvf-active-chip" data-vvf-remove="score" data-vvf-value="__range"'+
-        ' aria-label="Remove score range"><span class="vvf-ag">VV Score</span>'+
-        (st.score.lo==null?'up to '+st.score.hi:(st.score.hi==null?st.score.lo+'+':st.score.lo+' , '+st.score.hi))+
-        '<span class="vvf-ax" aria-hidden="true">&times;</span></button>');
-    }
+    /* A range reads as one clause, so it gets ONE chip, not a min chip and a max chip.
+       The phrasing follows which end is bounded , "80+" and "up to 24" say more than
+       "80 to 100" and "15 to 24", which would restate a bound the visitor never set. */
+    VVF_RANGES.forEach(function(r){
+      var v=st[r.group]; if(!v || (v.lo==null && v.hi==null)) return;
+      var g=vvfGroup(r.group), lab=g?g.label:r.group;
+      var txt = v.lo==null ? ('up to '+v.hi) : (v.hi==null ? (v.lo+'+') : (v.lo+' , '+v.hi));
+      out.push('<button type="button" class="vvf-active-chip" data-vvf-remove="'+VVF_ESC(r.group)+'" data-vvf-value="__range"'+
+        ' aria-label="Remove '+VVF_ESC(lab)+' range"><span class="vvf-ag">'+VVF_ESC(lab)+'</span>'+
+        VVF_ESC(txt)+'<span class="vvf-ax" aria-hidden="true">&times;</span></button>');
+    });
     ['league','position','profile','stage','trajectory'].forEach(function(gk){
       (st[gk]||[]).forEach(function(v){ add(gk,v); });
     });
@@ -2963,8 +3021,10 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
   /* removeFrom , un-set one selection in the DOM, mirroring renderActive. */
   function removeFrom(host, groupKey, value){
-    if(groupKey==='score' && value==='__range'){
-      var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
+    if(value==='__range'){
+      var r=vvfRangeForGroup(groupKey); if(!r) return;
+      var mn=host.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=host.querySelector('[data-vvf-role="'+r.role+'max"]');
       if(mn) mn.value=mn.min; if(mx) mx.value=mx.max; paintRange(host); return;
     }
     if(groupKey==='sort'){
@@ -3013,10 +3073,15 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     opts=opts||{};
     var parts=[];
     (st.score.bands||[]).forEach(function(v){ parts.push(labelFor('score',v)); });
-    if(st.score.lo!=null || st.score.hi!=null){
-      parts.push('VV ' + (st.score.lo==null ? ('up to '+st.score.hi)
-                : (st.score.hi==null ? (st.score.lo+'+') : (st.score.lo+' , '+st.score.hi))));
-    }
+    /* EVERY range instance is named. A group that narrows the result set but is left
+       out of this list makes the panel confidently incomplete , the visitor reads a
+       reason that does not mention the clause actually responsible. */
+    VVF_RANGES.forEach(function(r){
+      var v=st[r.group]; if(!v || (v.lo==null && v.hi==null)) return;
+      var g=vvfGroup(r.group), lab=(r.group==='score') ? 'VV' : (g?g.label:r.group);
+      parts.push(lab + ' ' + (v.lo==null ? ('up to '+v.hi)
+                : (v.hi==null ? (v.lo+'+') : (v.lo+' , '+v.hi))));
+    });
     ['league','position','profile','stage','trajectory'].forEach(function(gk){
       (st[gk]||[]).forEach(function(v){ parts.push(labelFor(gk,v)); });
     });
@@ -3116,6 +3181,28 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     '.vvf-empty-state{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;padding:40px 14px;font-family:\'Inter\';font-size:15px;color:rgba(243,237,224,0.6)}',
     'body.light .vvf-empty-state{color:var(--ink-soft)}',
     '.vvf-es-why{font-size:12.5px;opacity:.75;max-width:36ch;line-height:1.45}',
+    /* ── CLEAR ALL , A PILL, AND ONE TREATMENT FOR ALL THREE SURFACES ────────
+       It sat in a bar made entirely of pills and was the only bare text button on it,
+       so it read as a stray link rather than a control. It now takes the bar's own
+       shape: pill radius, one-pixel border, and the same pink hover the chips use.
+
+       IT LIVES HERE AND NOT ON EACH PAGE. rankings styled it one way and card another
+       (Archivo 10px muted versus Inter 12.5px pink), which is the same drift the row
+       CSS had , three copies, fixed once, wrong twice. The x is a ::before so no
+       surface has to change its markup to get it.
+
+       body.light RESTATES background AND border, not just colour, for the reason the
+       chip rules above record: a single-class rule loses to (0,2,0). */
+    '.vvf-clear{display:inline-flex;align-items:center;gap:5px;cursor:pointer;',
+      'font-family:\'Archivo\';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;',
+      'color:var(--ink-soft);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);',
+      'border-radius:999px;padding:4px 11px;transition:color .15s,border-color .15s,background .15s}',
+    '.vvf-clear::before{content:"\\00d7";font-size:13px;line-height:1;font-weight:600}',
+    '.vvf-clear:hover{color:var(--pink-ink);border-color:var(--pink-ink);background:rgba(231,4,67,0.10)}',
+    '.vvf-clear:focus-visible{outline:2px solid var(--pink);outline-offset:2px}',
+    '.vvf-clear.hidden{display:none}',
+    'body.light .vvf-clear{color:var(--ink-soft);background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.12)}',
+    'body.light .vvf-clear:hover{color:var(--pink-ink);border-color:var(--pink-ink);background:rgba(231,4,67,0.08)}',
     '@media (max-width:720px){.vvf{gap:14px}.vvf-chip{font-size:12.5px;padding:7px 11px}.vvf-active-chip{font-size:11.5px}}',
     '@media (prefers-reduced-motion:reduce){.vvf-chip{transition:none}}'
   ].join('');
@@ -3152,8 +3239,14 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       onChange(readState(host));
     });
     host.addEventListener('input', function(e){
-      if(!e.target.matches || !e.target.matches('[data-vvf-role="rtmin"],[data-vvf-role="rtmax"]')) return;
-      var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
+      /* Matches INPUT specifically. The value read-outs beside the track are spans
+         carrying roles that also end in min/max (rtvmin, agvmax), and a suffix match
+         on the role alone would pick them up. */
+      if(!e.target.matches || !e.target.matches('input[data-vvf-role]')) return;
+      var role=e.target.getAttribute('data-vvf-role').replace(/(min|max)$/,'');
+      var r=vvfRange(role); if(!r) return;
+      var mn=host.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=host.querySelector('[data-vvf-role="'+r.role+'max"]');
       if(mn&&mx&&+mn.value>+mx.value){           // do not let the thumbs cross
         if(e.target===mn) mx.value=mn.value; else mn.value=mx.value;
       }
@@ -3165,20 +3258,30 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     paintRange(host);
     return { host:host, read:function(){ return readState(host); }, clear:function(){ clear(host); onChange(readState(host)); } };
   }
+  /* Paints EVERY range instance the host contains. A host may hold one, both, or
+     neither , the compact picker renders a subset , so each is guarded on its own
+     rather than the function bailing on the first one it cannot find. */
   function paintRange(host){
-    var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
-    if(!mn||!mx) return;
-    var lo=+mn.value, hi=+mx.value; if(lo>hi){ var t=lo; lo=hi; hi=t; }
-    var a=host.querySelector('[data-vvf-role="rtvmin"]'), b=host.querySelector('[data-vvf-role="rtvmax"]'),
-        f=host.querySelector('[data-vvf-role="rtfill"]');
-    if(a) a.textContent=lo; if(b) b.textContent=hi;
-    if(f){ var MIN=+mn.min, MAX=+mx.max, span=(MAX-MIN)||1;
-      f.style.left=(((lo-MIN)/span)*100)+'%'; f.style.width=((((hi-lo))/span)*100)+'%'; }
+    VVF_RANGES.forEach(function(r){
+      var mn=host.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=host.querySelector('[data-vvf-role="'+r.role+'max"]');
+      if(!mn||!mx) return;
+      var lo=+mn.value, hi=+mx.value; if(lo>hi){ var t=lo; lo=hi; hi=t; }
+      var a=host.querySelector('[data-vvf-role="'+r.role+'vmin"]'),
+          b=host.querySelector('[data-vvf-role="'+r.role+'vmax"]'),
+          f=host.querySelector('[data-vvf-role="'+r.role+'fill"]');
+      if(a) a.textContent=lo; if(b) b.textContent=hi;
+      if(f){ var MIN=+mn.min, MAX=+mx.max, span=(MAX-MIN)||1;
+        f.style.left=(((lo-MIN)/span)*100)+'%'; f.style.width=((((hi-lo))/span)*100)+'%'; }
+    });
   }
   function clear(host){
     host.querySelectorAll('.vvf-chip.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
-    var mn=host.querySelector('[data-vvf-role="rtmin"]'), mx=host.querySelector('[data-vvf-role="rtmax"]');
-    if(mn) mn.value=mn.min; if(mx) mx.value=mx.max;
+    VVF_RANGES.forEach(function(r){
+      var mn=host.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=host.querySelector('[data-vvf-role="'+r.role+'max"]');
+      if(mn) mn.value=mn.min; if(mx) mx.value=mx.max;
+    });
     var d=host.querySelector('.vvf-chip[data-vvf-group="sort"][data-vvf-value="rt"]');
     if(d){ d.classList.add('on'); d.setAttribute('aria-pressed','true'); }
     paintRange(host);

@@ -764,7 +764,9 @@
   #cardSearch .cs-filtbtn.on .cs-fcount{background:rgba(0,0,0,.22)}
   #cardSearch .cs-filters{margin:0 0 10px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
   body.light #cardSearch .cs-filters{background:rgba(0,0,0,0.025);border-color:rgba(0,0,0,0.07)}
-  #cardSearch .cs-clearall{margin-top:10px;background:none;border:0;padding:0;color:var(--pink-ink);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer}
+  /* Appearance comes from vv-core's .vvf-clear , see the note there. This rule now
+     carries POSITION only, which is the one thing that is genuinely per-surface. */
+  #cardSearch .cs-clearall{margin-top:10px}
   #cardSearch .vvf-active{margin:0 0 10px}
 
   /* results scroll region , the curtain owns the viewport below the bar */
@@ -924,7 +926,7 @@
             <button class="vseg on" id="csVCompact" type="button" onclick="csSetView('compact')" aria-label="Compact view" title="Compact"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 9.3h16M4 13.6h16M4 17.9h16"/></svg></button>
           </div>
         </div>
-        <div class="cs-filters" id="csFilters" hidden><div id="csFilterHost"></div><button type="button" class="cs-clearall" id="csClearAll" onclick="csClearFilters()">Clear all</button></div>
+        <div class="cs-filters" id="csFilters" hidden><div id="csFilterHost"></div><button type="button" class="cs-clearall vvf-clear" id="csClearAll" onclick="csClearFilters()">Clear all</button></div>
         <div class="vvf-active" id="csActive"></div>
         <div class="cs-recent" id="csRecent" hidden><div class="cs-rlabel">Recent</div><div class="cs-rlist" id="csRecentList"></div></div>
         <div class="cs-results"><div class="cardgrid vvrows" id="csGrid"></div></div>
@@ -1019,8 +1021,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260825a"></script>
-<script src="/vv-core.js?v=20260825a"></script>
+<script src="/vv-marks.js?v=20260825b"></script>
+<script src="/vv-core.js?v=20260825b"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
