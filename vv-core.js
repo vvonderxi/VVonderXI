@@ -3515,8 +3515,19 @@ body.light .vvload{color:#1A1917}
   //  sizing a frame with it leaves the card short of its box. See §C.
   const SHARE_RATIO = 1.518;
   const shShort  = F => Math.min(F.w, F.h);
-  const shCapPx  = F => Math.round(shShort(F) * 0.026);
-  const shBrndPx = F => Math.round(shShort(F) * 0.024);
+  /*  TYPE SCALE, AS A FRACTION OF THE FRAME'S SHORT SIDE , one object so the three sizes
+      cannot drift apart and so a demo can sweep them through the REAL code path instead of
+      a copy of it.
+
+      SIZED FOR THE THUMBNAIL, NOT FOR THE FILE. X renders a shared image inline at about
+      600px wide, i.e. HALF the 1200x675 frame, so every number here is effectively halved
+      before anyone reads it. The old 0.026/0.024 put the caption at 18px and the wordmark
+      at 16px in the file , 9px and 8px as actually seen, which is not readable at arm's
+      length on a phone. Judge any change at 600px wide, never at 100%.  */
+  const SH_TYPE = { cap: 0.046, brand: 0.044, tag: 0.034, sub: 0.68 };
+  const shCapPx  = F => Math.round(shShort(F) * SH_TYPE.cap);
+  const shBrndPx = F => Math.round(shShort(F) * SH_TYPE.brand);
+  const shTagPx  = F => Math.round(shShort(F) * SH_TYPE.tag);
   const shPad    = F => Math.round(shShort(F) * 0.055);
   const shCardW  = (F, frac) => Math.round(Math.min(shShort(F) * frac, (F.h - shPad(F) * 3.4) / SHARE_RATIO));
   const shEsc    = v => String(v == null ? '' : v).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -3544,7 +3555,25 @@ body.light .vvload{color:#1A1917}
 .sf-vv .a{color:currentColor}.sf-vv .b{color:var(--emph)}
 /* The caption's own wordmark , same two-tone treatment as the brand, see shCapHTML. */
 .sf-cap .sf-vv2 .b{color:var(--emph)}
-.sf-cap{position:absolute;color:var(--quiet);font-weight:600;letter-spacing:.06em}
+/*  NO nowrap ON A LINE WHOSE CONTENT VARIES. The caption is a player's name, and names run
+    from "Pelé" to "Pierre-Emerick Aubameyang"; on the square formats the short side IS the
+    width, so the type scales up while the room does not. Measured at the shipped scale, a
+    single long card name overflowed the Instagram frame by 155px and a long compare pair by
+    779px , text bleeding straight off the image, silently, because nowrap does not clip, it
+    overflows. The wrapper now carries an explicit max-width (the frame minus its padding,
+    passed in per format) and the caption wraps inside it.
+    The TAGLINE is fixed text and fits on one line in every format, but it wraps by the same
+    rule rather than being exempted , an exemption is just a defect waiting for a longer
+    tagline.  */
+.sf-capwrap{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.42em;text-align:center}
+.sf-cap{color:var(--quiet);font-weight:600;letter-spacing:.06em;line-height:1.3;text-wrap:balance}
+/* The tagline now carries the BRAND, since the caption above it no longer does. So it is
+   not purely the quiet line any more: the wordmark sits upright and solid, and only the
+   phrase after it is the italic that matches the sheet's own .sb-foot. */
+.sf-tag{color:var(--quiet);font-weight:700;letter-spacing:.04em;line-height:1.3;text-wrap:balance}
+.sf-tag i{font-style:italic;font-weight:600;opacity:.82}
+.sf-em{color:var(--emph);font-style:normal;font-weight:800}
+.sf-tag .sf-vv2{font-weight:800;letter-spacing:.02em}
 .sf-rule{height:1px;background:currentColor;opacity:.18}
 .sf-sub{color:var(--quiet);font-weight:600;letter-spacing:.07em;text-transform:uppercase}
 .sf-verdict{line-height:1.42}
@@ -3576,7 +3605,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
 
   function shBrand(px){
     return '<span class="sf-vv"><span class="a">V</span><span class="b">V</span></span>' +
-           '<span style="font-size:' + Math.round(px * 0.62) + 'px;letter-spacing:.2em">ONDERXI</span>';
+           '<span style="font-size:' + Math.round(px * SH_TYPE.sub) + 'px;letter-spacing:.2em">ONDERXI</span>';
   }
   //  CORNERS. The caption's `left` is a PLACEHOLDER , vvCentreShareCaption overwrites it
   //  after the frame is in the DOM, because the card renders at max-width:92% of its
@@ -3588,15 +3617,34 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
      markup in it would post literal span tags to whatever the visitor pastes into.
      So the plain string stays the single source and only the RENDERED copy is marked up,
      after escaping, on the one token that is the brand. */
+  const SH_BRAND_HTML = '<span class="sf-vv2"><span class="a">V</span><span class="b">V</span>onderXI</span>';
+  /*  THE CAPTION DROPS ITS TRAILING BRAND IN THE FRAME ONLY. vvShareCaption() is also the
+      share TEXT , it goes to navigator.share({text}) and to the clipboard , and there the
+      trailing "· VVonderXI" is doing real work: it names the source in someone else's post.
+      In the FRAME it is the third VVonderXI on one image (wordmark, caption, tagline), so
+      the rendered copy strips it and the tagline carries the brand instead.
+      One plain string remains the single source; only the rendering differs.  */
   function shCapHTML(text){
-    return shEsc(text).replace(/VVonderXI/g,
-      '<span class="sf-vv2"><span class="a">V</span><span class="b">V</span>onderXI</span>');
+    const trimmed = String(text == null ? '' : text).replace(/\s*\u00b7\s*VVonderXI\s*$/, '');
+    return shEsc(trimmed).replace(/VVonderXI/g, SH_BRAND_HTML);
   }
+  /*  THE TAGLINE WAS IN THE PREVIEW AND NOT IN THE FILE, WHICH IS THE WORST OF BOTH.
+      card.html's share sheet wraps the card and a `.sb-foot` tagline in a container with
+      id="shareCapture" , named as though it is the capture source. It is not: the capture
+      composes a SEPARATE frame here and never read that element, so the preview promised a
+      line the PNG did not contain. Adding it to the frame is the fix, because the preview
+      is what was designed and the output should match it.
+      A container named for a job it does not do is its own trap , the name is the reason
+      nobody noticed for as long as they didn't.  */
   function shChrome(F, capText){
-    const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F);
+    const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F), tp = shTagPx(F);
     return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp) + '</div>' +
-           '<div class="sf-cap" style="bottom:' + (P * 0.8) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
-           'font-size:' + cp + 'px;text-align:center;white-space:nowrap">' + shCapHTML(capText) + '</div>';
+           '<div class="sf-capwrap" style="bottom:' + (P * 0.7) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
+             'width:' + (F.w - P * 2) + 'px">' +
+             '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText) + '</div>' +
+             '<div class="sf-tag" style="font-size:' + tp + 'px">' + SH_BRAND_HTML +
+               ' \u00b7 <i>Every Season Tells a Different <span class="sf-em">Story</span></i></div>' +
+           '</div>';
   }
 
   const shSeason = c => { try { return fmtSeason(c.season); } catch(e){ return c.season || ''; } };
@@ -3652,12 +3700,28 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
 
   //  MEASURE, DO NOT PREDICT. See the note on shChrome.
   function vvCentreShareCaption(frame){
-    const cap = frame.querySelector('.sf-cap'), cards = frame.querySelectorAll('.vvcard');
+    /*  TARGETS THE WRAPPER, NOT `.sf-cap`. The caption used to BE the absolutely-positioned
+        element; it is now a static child of `.sf-capwrap`, which carries the position, so
+        writing `left` to `.sf-cap` would be a silent no-op , the assignment succeeds, the
+        computed value never moves, and the caption quietly sits at the frame's centre
+        instead of the card's. Exactly the family §C warns about: replacing a block shows
+        what ARRIVED, never what left, and the positioning contract is what left.  */
+    const cap = frame.querySelector('.sf-capwrap') || frame.querySelector('.sf-cap');
+    const cards = frame.querySelectorAll('.vvcard');
     if (!cap || !cards.length) return;
     const fr = frame.getBoundingClientRect();
     let l = Infinity, r = -Infinity;
     cards.forEach(function(c){ const b = c.getBoundingClientRect(); if (b.left < l) l = b.left; if (b.right > r) r = b.right; });
-    cap.style.left = ((l + r) / 2 - fr.left) + 'px';
+    /*  CLAMPED TO THE FRAME. The block is now a real width rather than shrink-wrapped (it has
+        to be, or a long name wraps to four lines instead of two), so centring it on the card
+        cluster can push its edge past the frame. The clamp keeps it inside; when the block is
+        as wide as the padded area there is nowhere to move and it stays frame-centred, which
+        is the correct degenerate case rather than a special one.  */
+    const half = cap.getBoundingClientRect().width / 2;
+    const pad  = Math.round(Math.min(fr.width, fr.height) * 0.055);
+    const want = (l + r) / 2 - fr.left;
+    const lo   = pad + half, hi = fr.width - pad - half;
+    cap.style.left = (lo > hi ? fr.width / 2 : Math.max(lo, Math.min(hi, want))) + 'px';
     cap.style.right = 'auto';
   }
 
@@ -3860,7 +3924,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, vvShareCapability, vvShareLabel, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvShareCapability, vvShareLabel, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
