@@ -49,8 +49,9 @@ Runnable now, on the branch, with no domain and no human eye.
 
 ### A3. Verdict tags and the share-only names
 - **Check:** 14 tags, 3 share-only display names, and every share name resolves.
-- **How:** `node -e "global.window=global;require('./vv-core.js');const T=VVCore.VERDICT_TAGS,S=VVCore.VERDICT_SHARE_NAME;console.log(Object.keys(T).length,Object.keys(S).length);Object.keys(S).forEach(k=>{if(!Object.values(T).some(t=>t.name===k))throw new Error('share name with no tag: '+k)})"`
-- **Pass:** prints `14 3`, throws nothing. **The three divergent names are DELIBERATE (§C) , a mismatch is only a defect if a share name has no tag behind it.**
+- **How:** assert every key of `VERDICT_SHARE_NAME` is a real key of `VERDICT_TAGS`, then assert `verdictShareName()` returns the share name when given the KEY, the TAG OBJECT and the NAME, and returns the tag's own name for the other eleven.
+- **Pass:** 14 tags, 3 share names, all three resolve three ways, the other 11 pass through unchanged. **The three divergent names are DELIBERATE (§C) , a mismatch is only a defect if a share KEY has no tag behind it.**
+- **NOTE, and it cost a false failure on the first run: `VERDICT_SHARE_NAME` is keyed by TAG KEY (`var_close`), not by tag name.** A check written against the name throws on a correct codebase. `verdictShareName()` deliberately accepts either, so the test must too.
 
 ### A4. Mark set resolves, nothing renders blank
 - **Check:** all 38 marks exist and every key used by a consumer resolves to real path data.
@@ -114,7 +115,7 @@ Runnable now, on the branch, with no domain and no human eye.
 
 ### A16. GK matview swap is intact
 - **Check:** the keeper and discipline columns are present and populated on the matview the site reads.
-- **How:** query `player_card_mv` for non-null counts on `saves`, `goals_conceded`, `penalties_scored`, `starts` and the four discipline fields.
+- **How:** query `player_card_mv` for non-null counts on `saves`, `goals_conceded`, `penalties_scored`, `penalties_missed`, `penalties_saved`, `starts`, `cards_yellow`, `cards_red`, `fouls_committed`, `fouls_drawn`, and confirm the column count is 65. **THE DISCIPLINE COLUMNS ARE `cards_yellow` / `cards_red`, NOT `yellow_cards` / `red_cards` , guessing the obvious name reports a MISSING COLUMN on a healthy matview.**
 - **Pass:** all eight columns present and non-empty. **`information_schema` is BLIND to matview grants , if the site renders empty with no error, check `pg_class.relacl`, not `role_table_grants`.**
 
 ### A17. Engine repartition and the position vocabulary are NOT half-applied

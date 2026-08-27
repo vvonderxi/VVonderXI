@@ -3101,10 +3101,21 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       (st[gk]||[]).forEach(function(v){ parts.push(labelFor(gk,v)); });
     });
     var head=opts.searching ? 'No seasons match your search.' : 'No seasons match these filters.';
-    if(!parts.length) return '<div class="vvf-empty-state">'+VVF_ESC(head)+'</div>';
+    /* A SEARCH THAT FINDS NOTHING MUST EXPLAIN THE SCOPE, NOT JUST REPORT THE ABSENCE.
+       The platform is a FIXED SCORED DATASET , nine leagues, 2010 onward , and it no longer
+       falls back to a live lookup: that path was retired with the BSD provider, deliberately,
+       because a live result is a player the engine cannot rate, which is not a card. So "no
+       seasons match" reads as a broken site unless the boundary is stated.
+       SHOWN ONLY FOR A SEARCH. A visitor who is filtering is already inside the dataset, and
+       the clause list is the better answer there. */
+    var scope = opts.searching
+      ? '<span class="vvf-es-scope">VVonderXI scores nine leagues from 2010 onward. '+
+        'If a player or a season is not in that set, no card exists for it.</span>'
+      : '';
+    if(!parts.length) return '<div class="vvf-empty-state">'+VVF_ESC(head)+scope+'</div>';
     return '<div class="vvf-empty-state">'+VVF_ESC(head)+
       '<span class="vvf-es-why">All of these have to be true at once , '+
-      VVF_ESC(parts.join(' + '))+'</span></div>';
+      VVF_ESC(parts.join(' + '))+'</span>'+scope+'</div>';
   }
   function describe(){
     return VVF_GROUPS.map(function(g){ return {key:g.key,label:g.label,select:g.select,where:g.where,
@@ -3195,6 +3206,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     /* empty state , names the clauses that have to hold at once */
     '.vvf-empty-state{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;padding:40px 14px;font-family:\'Inter\';font-size:15px;color:rgba(243,237,224,0.6)}',
     'body.light .vvf-empty-state{color:var(--ink-soft)}',
+    '.vvf-es-scope{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}',
     '.vvf-es-why{font-size:12.5px;opacity:.75;max-width:36ch;line-height:1.45}',
     /* ── CLEAR ALL , A PILL, AND ONE TREATMENT FOR ALL THREE SURFACES ────────
        It sat in a bar made entirely of pills and was the only bare text button on it,

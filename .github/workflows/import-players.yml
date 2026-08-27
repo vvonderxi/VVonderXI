@@ -39,7 +39,6 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          BSD_API_KEY: ${{ secrets.BSD_API_KEY }}
         run: |
           CMD="node api/import-players.js --league ${{ github.event.inputs.league }}"
           CMD="node api/import-positions-v2.js"
