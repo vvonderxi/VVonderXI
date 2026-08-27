@@ -184,3 +184,161 @@ reasoning behind them, in the same shape as the 2026-08-16 `SILENT_FAILURES.md` 
 **The RULE stays in `CLAUDE.md` §D BUILD TRACK step 6 , 'not in the repo' is not 'not leaked'. Only the repo-side checks moved here.**
 
 - **[SETTLED 2026-08-20] THE API-FOOTBALL KEY WAS GENUINELY EXPOSED, AND THE DOC AND THE REPO WERE BOTH RIGHT.** Every repo-side check is clean , not in HEAD, not in git history (`git log --all -S` returns 0), never in any HTML, `.env` gitignored and untracked. **The exposure was in a CHAT TRANSCRIPT, never committed**, which is exactly why the searches came back empty and why the 2026-08-09 handover could not substantiate it. **So rotation IS required and the repo can never show it.** **OPERATIONAL CONSTRAINT: rotate only when NO BACKFILL IS RUNNING** , a rotation mid-run kills every in-flight request and the enrichment scripts checkpoint per league-season, so a half-written run is the expensive failure. **GENERALISE IT: 'not in the repo' is not 'not leaked'. A secret can escape through a transcript, a screenshot or a paste, and no amount of grepping HEAD will ever see it , ask where it was USED, not only where it was stored.**
+
+
+---
+
+## THE LOADER MONOGRAM GEOMETRY , THE FULL TRACE (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**THE LOADER MONOGRAM'S GEOMETRY IS LOCKED. IT HAS BEEN GOT WRONG THREE TIMES, SO EVERY ELEMENT IS RECORDED WITH THE REASON IT EXISTS (locked 2026-08-25, live in `vv-core.js` as `VV_V1`/`VV_V2`).** Do not re-derive it, do not nudge it by eye, and do not rescale either V , the rescale is what destroys the stroke asymmetry the trace exists to preserve.
+- **THE TWO Vs ARE MIRRORED, NOT TRANSLATED. This is the correction, and the two earlier traces both got it wrong the same way.** Fitted against the ONE pink arm the cream V never occludes (the outer-right), a mirror predicts its two edge slopes to within **0.038** and a translation is off by **0.129**. **The stroke widths settle it independently: the pink V's RIGHT stroke measures 89-93 against the cream V's LEFT stroke at 97-103, not against the cream's right at 77-80.** A translated copy puts the heavy stroke on the same side of both Vs; the asset puts them on opposite sides. **A mark measured only where the two shapes overlap cannot tell mirror from translation , find the arm that is never occluded and fit THAT.**
+- **NO VERTICAL OFFSET.** Both Vs top out on the same line. **The 6px drop an earlier trace recorded on the second V was the mirror being misread as a translation**, not a real offset.
+- **THE INNER ARMS DROP 43 SOURCE UNITS; THE OUTER ARMS RUN FULL HEIGHT.** Measured directly on V1 (left arm present from y=4, right arm first appearing at y=47) and inherited by V2 through the mirror, **because V2's inner-left arm is fully occluded in the asset and cannot be measured at all** , the pink run that appears to emerge tracks the cream's right edge to within 1-2px the whole way down, so it is an exposed sliver, not an edge. **THIS ASYMMETRY IS WHY THE LOCKUP READS AS A W RATHER THAN AS TWO Vs. It is not decoration.**
+- **SEAM OFFSET IS 218.5, WHICH IS THE ASSET'S OWN NUMBER AND NOT A DERIVED ONE.** Fixed against two landmarks the cream V does not cover: the pink apex at x=350.5 gives **219.6**, the pink outer-right at x=523 gives **217.3**. **A seam DERIVED from the drop instead (`328.5 - 0.9588 x 43 = 287.3`) separates the two Vs until they read as "V V", which is the one thing the drop exists to prevent** , and a true edge-to-edge touch (305.9) is further apart still. Rendered side by side at 40px and 150px in both themes, **only 218.5 reads as a W.** **THE GENERAL POINT: a number derived from a formula is a PREDICTION, and the asset is the measurement. When they disagree, measure a landmark the formula never touched.**
+- **ASYMMETRIC STROKE WEIGHT STAYS, LEFT HEAVIER THAN RIGHT** , ratio **1.27 at the drop easing to 1.21** further down. Fitted edges, source units, top of mark at y=0: outer-left `x = 0.5160y + 0.204`, inner-left `x = 0.4874y + 99.37`, inner-right `x = -0.4698y + 248.82`, outer-right `x = -0.4428y + 324.91`. Mark measures **524.0 x 338.7**, ratio **1.547**, normalised onto the 24x24 grid. **The asset's own single-V width and height are 324.7 x 338.7, not the 328.5 x 343 an earlier spec assumed** , a 1.2% difference, and the narrowing rate 0.9588 matches exactly, which is how both were confirmed to be the same trace.
+- **THE BASE V IS ALWAYS PRESENT.** Pink wipes right to left over it via `clipPath`, so **the mark never disappears , only the colour moves.** The reduced-motion still state hides the pink copy of V1 only, leaving base-left plus pink-right, which is the logo's own arrangement.
+
+
+---
+
+## THE html2canvas SWEEP , METHOD, CONTROLS AND MEASUREMENTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**THE FULL html2canvas SUPPORT SWEEP, MEASURED IN ONE PASS (2026-08-27). THREE DIVERGENCES HAD BEEN FOUND ONE SCREENSHOT AT A TIME; THIS IS THE REST.**
+- **THE METHOD, and it is reusable: render every feature as a WITH / WITHOUT pair designed to look obviously different, capture once, then compare each pair INSIDE THE CAPTURE.** A pair that becomes identical there is a feature the capture dropped. **TWO CONTROLS GUARD IT** , a red/blue pair that must read different and an identical pair that must read the same. Live in `_demo_h2c_audit.html`; the check now also ships as `VVCore.vvAuditCaptureSupport`, which warns once per surface naming the element.
+- **DROPPED , the capture draws NOTHING:** `<use>` references, **CSS `mask-image`**, **CSS `clip-path` (polygon)**, **`mix-blend-mode`**, **`background-blend-mode`**, **CSS/SVG `filter`** (both `blur` and `drop-shadow`).
+- **KEPT , verified rather than assumed:** SVG `clipPath` on a `<g>` (so the club shield's split shape is safe), SVG `text` `paint-order:stroke`, `background-clip:text`, `overflow:hidden` clipping a child, `conic-gradient`, `text-shadow`, `transform`, group `opacity`, and OUTSET `box-shadow`.
+- **THE METRIC'S LIMIT, AND IT MATTERS: IT DETECTS "DROPPED", NEVER "DRAWN WRONGLY".** The isolation pair for a rounded inset `box-shadow` reported KEPT , and on the real card that same rim is **absent from the corner entirely** (measured: ZERO gold pixels in the top-left 70x70 without `vvShimInsetRims`, 370 with it). **A feature can pass this harness and still be wrong in the real composition, so it is not a substitute for reading a captured PNG.**
+- **AN ACCEPTED EXCEPTION, WITH ITS NUMBER: the squad shield's `filter: drop-shadow(rgba(0,0,0,.32) 0 4px 9px)` IS dropped, and it does not matter.** Rasterised with and against on the card's own dark ground the shadow moves the image by a mean of **0.31/255 and a max of 8/255** , imperceptible. **Blur cannot be shimmed**, so faking it means a hard-edged shadow where a soft one belongs, which would be a visible artefact traded for nothing. **Left as is. Do not "fix" it.**
+- **AND THE ONE THING THIS SWEEP DID NOT FIND: the reported grey box behind the squad number could NOT be reproduced**, on the raw card capture or the shimmed share capture. What looked grey to a first pass was the card's own radial gradient (`#2c2824` at the top), which a loose neutral-colour detector matches. If it reappears, capture the frame and diff it against a clone of the SAME region , a crop of the badge alone against a crop of the badge IN CONTEXT is not a comparison, and that mistake produced a false positive here.
+
+
+---
+
+## THE THREE SVG CONTRAST INSTRUMENT FAULTS , THE NUMBERS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**A CONTRAST AUDIT NEEDS THREE THINGS RIGHT ON SVG, AND GETTING ONE RIGHT IS NOT ENOUGH. EACH FIX EXPOSED THE NEXT (2026-08-23/24).**
+- **(1) THE INK IS `fill`, NOT `color`.** `getComputedStyle(el).color` on an SVG `<text>` returns the INHERITED text colour, which the element never paints with. It reported the G+A axis label at **1.82** when it is **3.63** , the charcoal it measured appears nowhere on screen.
+- **(2) THE GROUND IS SIBLING GEOMETRY, NOT A CSS BACKGROUND.** Fixing (1) alone produced **NINE FALSE FAILURES** in one run. SVG text sits on `<rect>` and `<path>` fills inside the same `<svg>`; walking CSS ancestors falls through to the page and invents a ground. A white shirt number on a club shield was scored against the cream panel BEHIND the svg and reported at **1.2** when the real pair is white on blue at **8.35**. **HIT-TEST INSTEAD:** take the painted shapes in the same `<svg>` whose box contains the text's centre and use the TOPMOST, which in SVG is the LAST in document order.
+- **(3) AND A STROKE CARRIES LEGIBILITY THAT A FILL-ONLY MEASUREMENT CANNOT SEE.** The card badge's number is white with an opaque black outline precisely so it reads across a split shield's seam. Measuring fill-versus-ground called that **1.93 and a defect**; it is neither. **A glyph is legible if EITHER its fill or its outline separates from the ground** , that is the design language, and the audit has to score both. Checked that way: 28 distinct ink/ground pairs across every club colour, ZERO failing.
+- **SO THE PATTERN, AND IT IS THE POINT: an instrument that is wrong in one way hides the ways it is wrong in the others.** Each correction made the next visible and each intermediate state produced confident, wrong numbers. **The errors ran in BOTH directions** , (1) and (2) overstated and bought fixes nobody needed, while a fill-only reading of an outlined glyph would understate a real one. **Do not trust a contrast figure for anything inside an `<svg>` unless all three are handled.**
+
+
+---
+
+## THE FIXED-GROUND INSTANCES , THE MEASURED RATIOS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**A TOKEN THAT FLIPS WITH THE THEME IS WRONG ON A GROUND THAT DOES NOT. THIRD INSTANCE, AND THE THIRD ONE FAILED IN A WAY NO CONTRAST CHECK COULD SEE (2026-08-24).**
+- **The rule is one line: match the ink to the GROUND, not to `body.light`.** A surface that keeps one colour in both themes needs an ink pinned to that colour; a surface that follows the theme needs the token. Getting it backwards is invisible in whichever theme you happened to be looking at.
+- **THE THREE:** the playbook display case and prestige hero, charcoal in both themes, took light-mode `--ink-soft` and rendered at **1.72 and 1.77**. The card's waiting box was styled with a 5% WHITE fill and a border-COLOUR with no width, invisible on cream **from the day it shipped**. And the loader's base V, keyed to the theme, went CREAM on card.html's glance panel, which is cream in both themes , the base vanished and only the pink wipe was left.
+- **THEN `currentColor` LOOKED LIKE THE GENERAL FIX AND WAS WORSE, BECAUSE IT INHERITS FROM THE PROSE RATHER THAN THE PANEL.** `.gdrury` is pink-inked editorial voice, so the base V took `--pink-ink` and sat at **1.59 against the pink overlay** , a TWO-TONE mark rendering as ONE TONE. **NO CONTRAST CHECK ON THE TEXT WOULD EVER CATCH THIS: the text was fine, the ground was fine, and every ink on the page passed AA.** The defect is between the mark's own two halves, which no text-vs-ground audit looks at.
+- **SO A MULTI-INK OBJECT NEEDS ITS PARTS CHECKED AGAINST EACH OTHER, not only against the ground.** Three pairs, not one: base to ground, overlay to ground, and **base to overlay**. The loader now takes an explicit ink and the card passes its panel's charcoal; measured 14.31 and 17.20 to ground, 3.89 and 4.67 for the pink, **3.68 base to overlay**.
+- **AND THE INVERSE IS EQUALLY WRONG , DO NOT PIN AN INK ON A GROUND THAT MOVES.** Hardcoding `var(--cream)` for the compare verdict put a cream mark on the LIGHT panel at **1.13**, because that panel does follow the theme. Pinning is correct ONLY where the ground is fixed.
+
+
+---
+
+## THE GENERATIONAL FACE TRAP , THE MEASUREMENTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**A CARD RULE THAT LIVES IN THE PAGES AND NOT IN `vv-core.js` IS A TRAP FOR THE NEXT SURFACE, AND THE GENERATIONAL FACE WAS ONE (2026-08-27). FIXED , the rule now sits beside its sibling in `VV_CARD_CSS`.**
+- **THE ASYMMETRY WAS THE WHOLE DEFECT.** `body .vvcard.iconic{...}` had always lived in `VV_CARD_CSS`; `body .vvcard.gen{...}` did not , it was copied into each PAGE instead. Meanwhile **six `.gen` ink rules in vv-core are pinned LIGHT** (`.yr`, `.n`, `.vv .a`, `.cga .col .l`, `.cname .full/.sub`, `.pos`) because they assume the dark face vv-core never supplied. **Same §C class rule as always: a rule stated in one place and not applied to every member of its class will be violated everywhere else.**
+- **WHAT IT COSTS WHEN THE RULE IS ABSENT: `body.light .vvcard` wins, paints the face CREAM, and those six inks stay cream , year, score, labels and club line all vanish at 1.09 contrast against 14.99 in dark.** Measured on a scratch page that loaded vv-core alone, which is exactly what a new surface looks like. **The three live pages were never affected** and neither was the shipped share image, because each page carried its own copy.
+- **AND THE COPIES HAD ALREADY DRIFTED, WHICH IS THE ARGUMENT AGAINST DUPLICATION IN ONE LINE.** Five pages carry it: `card`/`compare`/`rankings` have the gold inset rim with `!important`; **`preferences`/`myclub` have a flat 1.5px outline and no `!important`**, so a Generational card is rimmed differently depending on the page. The page copies were LEFT IN PLACE (identical to the new vv-core rule on the three that matter, so nothing moves); the drift is logged in §D rather than silently overwritten.
+- **THE LESSON FOR ANY NEW SURFACE: `VV_CARD_CSS` must be sufficient on its own.** §C already says the card BOX stays in the pages and a new surface must supply its own; **a prestige FACE is not part of the box and must not have been left there.**
+
+
+---
+
+## THE SHARE-FRAME TYPE AND OVERFLOW MEASUREMENTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**THE SHARE FRAME IS JUDGED AT 600px, NOT AT 100%, AND ITS TEXT MUST NEVER BE `nowrap` (2026-08-26).** Two rules from one pass, both of which will bite again the moment the frame is redesigned.
+- **X RENDERS A SHARED IMAGE INLINE AT ROUGHLY 600px, HALF THE 1200x675 FRAME, SO EVERY TYPE SIZE IS HALVED BEFORE ANYONE READS IT.** The shipped coefficients put the caption at 18px and the wordmark at 16px , **9px and 8px as actually seen.** Sizes live in `SH_TYPE` as fractions of the frame's SHORT side so the three cannot drift. **Judge any change to them at 600px wide; the file is never the thing anyone reads.**
+- **`white-space:nowrap` ON A LINE WHOSE CONTENT VARIES IS AN OVERFLOW WAITING FOR A LONGER NAME, AND nowrap OVERFLOWS RATHER THAN CLIPS, SO IT BLEEDS OFF THE IMAGE SILENTLY.** On the square formats the short side IS the width, so type scales up while the room does not: measured, one long card name overflowed the Instagram frame by **155px** and a long compare pair by **779px**. The caption block now takes an explicit width (frame minus padding) and wraps. **An explicit width is required, not just `max-width`** , shrink-to-fit put a long name on FOUR lines where a real width puts it on two.
+- **AND `vvCentreShareCaption` MOVES THAT BLOCK UNDER THE CARDS, SO IT IS CLAMPED TO THE FRAME.** A full-width block centred on a left-sitting card pair would leave the frame. When the block is as wide as the padded area there is nowhere to move and it stays frame-centred, which is the correct degenerate case.
+- **A CONTAINER NAMED FOR A JOB IT DOES NOT DO IS ITS OWN TRAP.** `card.html` wraps the card and its tagline in `id="shareCapture"`, but the capture composes a SEPARATE frame in vv-core and never reads that element , so the preview showed a tagline the PNG never contained. **The name is the reason nobody checked.**
+
+
+---
+
+## SEASON SEARCH , THE FULL PARSING BEHAVIOUR (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **SEASON SEARCH (2026-07-24):** `vvParseSearch(q)` splits a query into `{nameQ, seasonYear}`. **CORRECTED 2026-08-13: a BARE year now means the season ENDING in it** , "19" is 2018/19, "22" is 2021/22, so `season_year` (the starting year) is one LESS than the token. People say "Messi 19" meaning the season that finished in 2019. The old reading ("23"->2023->2023/24) is superseded. **The SPLIT form is unchanged and must stay so: "23/24"/"2023/24" takes the START year directly**, which is why the adjustment lives in `vvSeasonFromBareYear` at the bare-token call site and NOT inside `vvYearFromDigits` , subtracting there would have broken the split form. **This changed rankings too**, since both surfaces share `vvParseSearch`; year-shaped tokens OUT of range are dropped (ignored, never name text); a bare year filters to that season. Applied server-side via `.eq('season_year', y)` (no schema change , season_year is already the era-filter column). Graceful degrade: an in-range season with no matching row for that name drops the season filter and shows all + a "No 23/24 season for that search , showing all" hint (both surfaces). Picker applies it in loadPool (server) + renderPicker (client re-filter uses the PARSED name, not the raw text).
+
+
+---
+
+## NULL-POOL IDENTITY TAGS , THE COUNTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **NULL-POOL CARDS NEVER RECEIVE AN IDENTITY TAG. A CARD WITH NO VERIFIED POSITION CANNOT BE SAID TO OCCUPY ONE (2026-08-16).** 20,143 cards (35.2%) have no pool, and the coarse field is exactly the one that cannot tell ST from Winger, or CB from FB , so a coarse fallback on an identity tag is a guess wearing the tag's authority. It was handing out **The Winger 52, Poacher 37, Ball-Playing CB 14**, all unverifiable by construction.
+  - **THIS PRINCIPLE WAS ALSO ALREADY STATED ONCE AND NOT GENERALISED** , the `theWall`/`ballHawk` comment says *"null-pool MIDs excluded (under-tag rather than mis-tag attacking mids)"*, applied to that one branch. Same failure as the rule above, in the same function, on the same day.
+  - **DO NOT RE-ADD A COARSE FALLBACK TO AN IDENTITY TAG** to lift its count. Under-tagging is the correct behaviour here; see the rarity CEILING rule above, which says a low count is not a defect.
+
+
+---
+
+## THE PRESTIGE TAG-CAP EXEMPTION , THE COUNTS AND THE FOUR PATHS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **PRESTIGE IS EXEMPT FROM THE ROW TAG CAP (rankings), and it is exempt because it was being DROPPED, not mis-ordered.** Row priority was honours -> prestige -> profile with prestige rendered only if slots remained, so a card with cap-many honours lost it entirely , the rt 97 top card showed no GENERATIONAL at all. Prestige now renders FIRST and outside the cap (12 Generational, 138 Iconic; `renderPrestige` returns '' otherwise). **Accepted consequence: a prestige row shows cap+1 pills.** **There are FOUR tag-render paths and a fix must be checked against all four** , `vv-core:srtags` (season row), `vv-core:utags` (list/pill row), `vv-core:chtagcell` (card face, where prestige is its own row and never entered the budget), and compact mode (renders none). A first pass fixed one row template and still reported success.
+
+
+---
+
+## THE RAW-FLOOR NULL SENSITIVITY , PER-TAG COUNTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **A RAW FLOOR IS NULL-SENSITIVE ONLY WHEN IT READS A DIFFERENT FIELD FROM ITS RATE GATE (2026-08-15).** All six floors added in the rarity pass were briefly written NULL-REJECTING and it changed exactly ONE tag: **Playmaker lost 28 holders purely for unrecorded assists**, violating the locked NR-is-not-zero rule (assists are 54.2% null). For Provider, The Dribbler, Ball Hawk and The Wall the floor reads the SAME field the rate gate reads, so a null already fails upstream and the exemption is never consulted , **0 cards recovered on each.** All floors now go through `rawFloorOK`. **`GOAL MACHINE` IS THE ONE EXEMPTION AND MUST STAY NULL-REJECTING** , its floor is the ENTIRE rule with no rate cut, so exempting null would hand the tag to all 466 eligible null-goal cards.
+
+
+---
+
+## IRON MAN AT 3.40% , THE REJECTED ALTERNATIVE AND THE CARDS IT COST (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **IRON MAN IS A DELIBERATE EXCEPTION TO THE ~2% RARITY CEILING. DO NOT "FIX" IT BACK (2026-08-15).** It sits at **3.40%** (`minutes_p90 x1.10`). **x1.15 lands it at 1.71%, under the ceiling, and was REJECTED.** Availability is structurally common in a way no other tag's signal is , the tag means "played every week", and a season-long ever-present is not a rare event. **Forcing it into band stripped the LAST tag from 84 elite cards (rt>=85)**, 45 of which held Iron Man and nothing else: Rashford 2223, Mane 2122, Bowen 2122 and 2324, Gordon 2324. **That is buying rarity with coverage at the top of the scale, which is the wrong trade for this tag specifically.**
+
+
+---
+
+## THE RIPPLE SNAPSHOT , THE WRITES IT CAUGHT (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **A TARGET-ONLY SNAPSHOT CANNOT SEE A RIPPLE. SNAPSHOT ALL 57,234 CARDS BEFORE AND AFTER ANY WRITE, NEVER JUST THE ROWS YOU TOUCHED (2026-08-13, promoted out of §F 2026-08-14).** The tier-1 position write changed 351 rows and **137 UNTOUCHED cards moved**, two of them across a public band (Samatta 1819 and Borini 2223, both 85 -> 84). **A 351-row snapshot would have reported a clean, small, well-behaved write and missed every one of them.** Paginate past the 1000-row cap, read the file back off disk and assert it row-for-row before trusting it. Used again on 2026-08-17 to prove the keeper/penalty backfill moved rt on **0 of 57,234** cards.
+
+
+---
+
+## THE INTERLOCK FLOOR , THE PER-SIZE MEASUREMENTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+**THE INTERLOCK DIES BELOW 40px. A 16px MONOGRAM IS NOT A SMALL MONOGRAM, IT IS A DIFFERENT MARK (measured 2026-08-23).**
+- **The identity is the knocked-out overlap** (see the rule directly below), and that knockout is the FIRST thing scaling destroys. Rasterised and scanned across the middle of the mark, counting separate ink runs and the deepest alpha inside its span:
+
+| px | 16 | 20 | 24 | 28 | 32 | 40 | 48 | 64 |
+|---|---|---|---|---|---|---|---|---|
+| interlock reads | no | no | barely | no | barely | **yes** | **yes** | **yes** |
+| deepest cut | 0.50 | 0.50 | 0.25 | 0.62 | 0.38 | 0.13 | **0.00** | **0.00** |
+
+- **At 48px the knockout cuts clean through, at 16px antialiasing fills the seam and the two Vs merge into one blob.** `VV_LOADER_MIN = 40` in `vv-core.js` is that number, and **`vvLoader()` CLAMPS a smaller request UP rather than honouring it** , a caller asking for 24px has misunderstood the mark, and quietly handing them a blob would hide the mistake instead of surfacing it.
+- **SO SMALL CONTEXTS GET A DIFFERENT THING, NOT A SHRUNKEN MONOGRAM , `vvLoaderBars()`**, three bars, no brand claim. Buttons and inline text are exactly the sizes that cannot carry the interlock. **This is the SAME LOGIC as the single-colour translation below**: use the form the context can actually carry, and do not make a claim the pixels cannot support.
+- **DO NOT "fix" the small case by widening the knockout for a second, small-size drawing.** That is two drawings of one thing, which is precisely the defect the display-case trophies had , the page and the pills had drifted apart and nothing would ever have said so.
