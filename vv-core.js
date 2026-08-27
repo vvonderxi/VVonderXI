@@ -3809,6 +3809,53 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   //  THE TWO SHIMS ARE NOT OPTIONAL AND THE FINALLY IS NOT OPTIONAL. See §C: html2canvas
   //  resolves neither `<use>` nor an inset box-shadow on a rounded box, and this stage is
   //  removed on every path so a throw cannot leave it in the document.
+  /*  ── WHAT THE CAPTURE CANNOT DRAW, MEASURED IN ONE PASS (2026-08-27) ──────────
+      Three divergences had been found one screenshot at a time. This list came from a
+      with/without harness instead: every feature rendered as a pair designed to look
+      obviously different, then the pair compared INSIDE the capture. A pair that becomes
+      identical there is a feature the capture dropped. Two controls guard the method , a
+      red/blue pair that must read different, and an identical pair that must read the same.
+
+      THE LIST IS A TRAP LIST, NOT A BUG LIST. Most of these are not used on the card or the
+      share frame today. They are here so the next person who reaches for one finds out now
+      rather than from a screenshot later.  */
+  const H2C_UNSUPPORTED = [
+    { prop:'maskImage',        label:'mask-image' },
+    { prop:'webkitMaskImage',  label:'-webkit-mask-image' },
+    { prop:'clipPath',         label:'CSS clip-path', skip:v => v.indexOf('url(') === 0 },
+    { prop:'mixBlendMode',     label:'mix-blend-mode' },
+    { prop:'backgroundBlendMode', label:'background-blend-mode' },
+    { prop:'filter',           label:'CSS/SVG filter (blur, drop-shadow)' }
+  ];
+  /*  Warns ONCE per surface, in the console, naming the element. Same guard shape as the
+      row-namespace audit and the missing-mark audit, added for the same reason: an opt-in
+      contract that nothing enforces gets broken silently.
+      NOTE it cannot see everything. It reports features the capture DROPS. It cannot report
+      a feature the capture draws WRONGLY , the card's inset gold rim is drawn, just without
+      its corner radius, which is why vvShimInsetRims exists and why this is not a substitute
+      for looking at a captured PNG.  */
+  let H2C_WARNED = false;
+  function vvAuditCaptureSupport(node){
+    if (H2C_WARNED || typeof getComputedStyle === 'undefined') return [];
+    const hits = [];
+    const all = [node].concat(Array.prototype.slice.call(node.querySelectorAll('*')));
+    all.forEach(function(el){
+      const cs = getComputedStyle(el);
+      H2C_UNSUPPORTED.forEach(function(f){
+        const v = String(cs[f.prop] || '');
+        if (!v || v === 'none' || v === 'normal') return;
+        if (f.skip && f.skip(v)) return;
+        hits.push({ el: el.tagName.toLowerCase() + (el.className && typeof el.className === 'string'
+                     ? '.' + el.className.trim().split(/\s+/)[0] : ''), feature: f.label, value: v.slice(0, 60) });
+      });
+    });
+    if (hits.length){
+      H2C_WARNED = true;
+      try { console.warn('[vv] the share capture cannot draw these , they will be MISSING from the PNG:', hits); } catch(e){}
+    }
+    return hits;
+  }
+
   function vvRenderShareImage(spec, opts){
     opts = opts || {};
     const F = SHARE_FORMATS[opts.format] || SHARE_FORMATS[spec.kind === 'compare' ? 'x' : 'igf'];
@@ -3822,6 +3869,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       document.body.appendChild(stage);
       const frame = stage.firstElementChild;
       vvCentreShareCaption(frame);
+      vvAuditCaptureSupport(frame);
       const undoMarks = vvInlineMarks(frame), undoRims = vvShimInsetRims(frame);
       return html2canvas(frame, { backgroundColor: null, scale: 2, useCORS: true, logging: false })
         .then(function(cv){
@@ -4067,7 +4115,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
