@@ -1845,7 +1845,18 @@ body.light .pkmsub{color:var(--ink-soft)}
     // eligible tag set for the AI: deterministic floor + context hints (AI may up-rank per CONTEXT>AGE>LADDER)
     var eligKeys=[VC.floorTag].concat(VC.contextHints.filter(function(k){return k!==VC.floorTag;}));
     function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
-    function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c); }
+    /* THE SAME ENRICHED BLOCK THE CARD SENDS, via VVCore.vvAIStats, so one card cannot look
+       like two different players across two surfaces. Serialised compactly because this is a
+       prompt line, not JSON. passes_accuracy is deliberately absent , see the prompt rule. */
+    function aiBlock(c){ var a=(window.VVCore&&VVCore.vvAIStats)?VVCore.vvAIStats(c):{}; var b=[];
+      if(a.passes_per90!=null) b.push('passes/90 '+a.passes_per90+(a.pool_passes_per90_p80!=null?' (pool p80 '+a.pool_passes_per90_p80+', p90 '+a.pool_passes_per90_p90+')':''));
+      if(a.key_passes_per90!=null) b.push('key passes/90 '+a.key_passes_per90);
+      if(a.minutes!=null) b.push(a.minutes+' min'+(a.starts!=null?' / '+a.starts+' starts':'')+(a.appearances!=null?' / '+a.appearances+' apps':''));
+      if(a.keeper) b.push('KEEPER saves '+a.keeper.saves+', conceded '+a.keeper.goals_conceded+', pens saved '+a.keeper.penalties_saved+'; rt CAPPED at 75 , '+a.keeper.cap_reason);
+      if(a.confidence!=null) b.push('data confidence '+a.confidence+'/5'+(a.missing&&a.missing.length?', NOT RECORDED: '+a.missing.join(', '):', all fields recorded'));
+      if(a.era) b.push(a.era);
+      return b.length? '; '+b.join('; ') : ''; }
+    function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c)+aiBlock(c); }
     var tagMenu=eligKeys.map(function(k){var t=TAGS[k];return '- '+k+' ("'+t.name+'"): '+t.blurb;}).join('\n');
     var toneNote={tie:'a dead heat , the argument-continues register. Two-sided and unresolved, never a limp draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
     var winNote;

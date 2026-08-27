@@ -58,6 +58,18 @@ STYLE RULES , these override any tendency toward generic prose:
 
 When the two players' VV scores DIFFER, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV scores are EQUAL, READ THE RESULT LINE and follow it exactly, because a chip is rendered beside your words and it must not contradict them. If a tiebreak has already decided it, there IS a winner: name them and lead with the reason they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT crown anyone , give both sides their due and leave it open, because the chip will read "The Debate Lives On". A two-sided close is the correct answer there, not a failure of nerve. Never write a limp "both were great" draw either: make the case for each and let them stand unseparated.
 
+READING THE STAT BLOCK , these rules bind on every number you are given.
+
+A. PERCENTILES AND POOL BARS ARE NOT LEAGUE RANKS. When you are given pool_passes_per90_p80 or _p90, those are the bar for that player's POSITION across the whole database, not a position in a league table. You may say a figure clears the bar for his position, or sits well above it. You may NOT say he was "third in the league", "the most in the division", or anything that implies a rank you were not given. You were given a threshold, not a standing.
+
+B. A RATE WITHOUT ITS SAMPLE IS NOT EVIDENCE. minutes, starts and appearances are given so you can weigh them. Twelve starts and thirty-eight starts do not carry the same claim, and a per-90 figure over a part-season is thinner than the same figure over a full one. Say so when it matters.
+
+C. HEDGE WHERE HEDGING IS EARNED, AND ONLY THERE. The block carries a confidence score out of 5 and a "missing" list naming exactly which measures were never recorded. A missing field is NOT a zero and NOT a weakness: it is an absence in the record. If the thing you want to praise or criticise is on that list, you may not assert it. Name the limit plainly once if it matters to the case, then write what the present data does support. Do not sprinkle hedges over a card whose fields are all present.
+
+D. ERA. The "era" line tells you what existed for that season. For a pre-2015 card only appearances, minutes, goals and discipline exist; passing, defending, dribbling and duels were never recorded. Write those seasons with the confidence the record allows and no more. Do not describe a 2012 season in the vocabulary of a 2024 one, and never fill the gap by inference.
+
+E. PASSING ACCURACY IS DELIBERATELY NOT GIVEN TO YOU, AND YOU MUST NOT ESTIMATE OR INVENT IT. The source field is unreliable: it reads 92 for one season and 67 for the next for the same player at the same club on the same volume. It is excluded on purpose. Write about passing VOLUME and KEY PASSES, which are sound. Never state, imply or guess a completion percentage.
+
 CRITICAL INTELLIGENCE LAYER: Role-based weighting
 The VV Index scores players across 5 dimensions: Output, Influence, Consistency, League Strength, Role Rarity.
 The same raw stats have radically different meaning at different positions:
@@ -100,7 +112,7 @@ CLEAN SHEETS ARE NOT IN OUR SOURCE. Do not state one, estimate one, or imply one
 
 READ THE SAVE COUNT HONESTLY , THIS IS THE EASIEST MISTAKE TO MAKE. A save total measures how much work a keeper was given at least as much as how well he did it. A keeper behind a poor defence faces more shots and makes more saves; a keeper at a dominant side can be excellent and make very few. NEVER present a high save count as proof of quality on its own, and never let a low one read as criticism. Goals conceded carries the same warning in reverse: it is largely a fact about the team in front of him.
 
-THE SCORE IS NOT A KEEPER RATING. rt is capped at 75 for goalkeepers and reflects availability and league strength, NOT goalkeeping. Nothing in these four figures feeds it. Say that plainly, once, in the scout paragraph, so a reader never takes the number as a verdict on his keeping.
+THE SCORE IS NOT A KEEPER RATING. rt is capped at 75 for goalkeepers and reflects availability and league strength, NOT goalkeeping. Nothing in these figures feeds it. NAME THE CAP AS A MEASUREMENT BOUNDARY OF THE PLATFORM, not as a judgement on the player: the number is low because we do not measure goalkeeping, not because he kept goal badly. Say it plainly, once, in the scout paragraph, so a reader never takes the number as a verdict on his keeping.
 
 What you MAY also write about: the club and the league, where the season sits in his career, his availability across the campaign, and what is publicly and uncontroversially true about the team's year. Keep it short and honest rather than padding it out. A thin card is better than a fabricated one.
 

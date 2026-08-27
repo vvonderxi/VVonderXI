@@ -632,6 +632,83 @@
     { key:null,              label:'Clean sheets' }
   ];
 
+  /*  ── THE AI PAYLOAD , ONE BUILDER FOR BOTH MODES ────────────────────────────
+      The card notes and the compare verdict were assembling their own stat blocks, so the
+      model saw different things on two surfaces describing the same card. One builder, so
+      they cannot drift , the same reason the row CSS and the search matcher were unified.
+
+      WHAT IT ADDS, AND WHY EACH IS SAFE TO SAY:
+      , PASSING VOLUME per 90 plus the POOL REFERENCE. The reference is the tag engine's own
+        `passes90_p80` / `_p90` for that position pool, already measured and already shipping,
+        so no query and no matview change. It lets the prose say "above the bar for his
+        position" instead of quoting a bare number nobody can scale.
+      , KEY PASSES per 90. 100% covered every season and internally consistent.
+      , MINUTES, STARTS, APPEARANCES , the denominator. A rate without its sample invites the
+        model to treat 12 games and 38 games as the same evidence.
+      , THE KEEPER BLOCK, and the 75 CAP AS A FACT IN THE PAYLOAD, not only in the prompt.
+      , THE MISSING-FIELD LIST from `confidenceFields`, so hedging is earned rather than
+        stylistic.
+      , ERA AND COVERAGE. Nothing granular exists before 2015; a 2012 card must not be
+        written with 2024 certainty.
+
+      `passes_accuracy` IS DELIBERATELY ABSENT AND MUST STAY ABSENT , it is a VALIDITY
+      problem, not a coverage one (§E): the provider reads Kroos 92 in 2019 and 67 in 2020 at
+      the same club on the same volume, and sustains Modric at 44-55. Feeding it would have
+      the model assert that Kroos passed at 67%.  */
+  const AI_GRANULAR_ERA = 2015;          // nothing granular exists before this
+  /*  NAMED aiPer90, NOT per90. There is ALREADY a `per90` in this file (the tag engine's,
+      further down) and a second function declaration of the same name in the same scope
+      does not error , it HOISTS and the later one silently wins, so the first is dead code
+      that looks alive. The first version of this shipped rounded values and produced
+      unrounded ones, which is how it was caught. Same defect family as two fields for one
+      concept: one name, two meanings, no error.  */
+  function aiPer90(v, mins){
+    if (v == null || !mins || mins <= 0) return null;
+    return Math.round((v / (mins / 90)) * 10) / 10;
+  }
+  function vvAIStats(row){
+    if (!row) return {};
+    const pool = row.position_pool || null;
+    const th   = (pool && TAG_THRESHOLDS_POOL[pool]) || null;
+    const mins = row.minutes;
+    const out = {
+      minutes: mins != null ? mins : null,
+      starts: row.starts != null ? row.starts : null,
+      appearances: row.appearances != null ? row.appearances : null,
+      passes_per90: aiPer90(row.passes_total, mins),
+      key_passes_per90: aiPer90(row.passes_key, mins)
+    };
+    // the bar for HIS position, so a number can be read as high or low without a league rank
+    if (th){
+      out.pool = pool;
+      out.pool_passes_per90_p80 = th.passes90_p80 != null ? th.passes90_p80 : null;
+      out.pool_passes_per90_p90 = th.passes90_p90 != null ? th.passes90_p90 : null;
+    }
+    if (isGK(row)){
+      out.keeper = {
+        saves: row.saves != null ? row.saves : null,
+        goals_conceded: row.goals_conceded != null ? row.goals_conceded : null,
+        penalties_saved: row.penalties_saved != null ? row.penalties_saved : null,
+        starts: row.starts != null ? row.starts : null,
+        rt_is_capped_at_75: true,
+        cap_reason: 'a platform measurement boundary, not a judgement on his goalkeeping'
+      };
+    }
+    /* PREFER THE OBJECT'S OWN CONFIDENCE. rowToCard already computed it FROM THE RAW ROW and
+       attached it; recomputing from a card gives a DIFFERENT answer, because a card does not
+       carry every granular column. Measured: 5 from the row, 4 from the card, same season.
+       The payload must agree with the Data Confidence panel the reader is looking at. */
+    const cf = (Array.isArray(row.confidenceFields) && row.confidenceFields.length)
+      ? row.confidenceFields : (confidenceFields(row) || []);
+    out.confidence = (row.confidence != null) ? row.confidence : confidenceFor(row);
+    out.missing = cf.filter(function(f){ return !f.present; }).map(function(f){ return f.label; });
+    const y = row.season_year;
+    out.era = (y != null && y < AI_GRANULAR_ERA)
+      ? 'pre-2015: ONLY appearances, minutes, goals and discipline exist for this season. Every other measure is absent, not zero.'
+      : 'granular data available for this season';
+    return out;
+  }
+
   function confidenceFor(row){
     const keeper = isGK(row);
     const total = keeper ? KEEPER_SET.length : GRANULAR.length;
@@ -1277,6 +1354,11 @@
       appearances: row.appearances != null ? row.appearances : null,   // denominator for The Proof + glance games-played
       shots_on:    row.shots_on != null ? row.shots_on : null,
       shots_total: row.shots_total != null ? row.shots_total : null,
+      /* passes_total and position_pool are carried so vvAIStats can build the AI block from
+         a CARD as well as a raw row , without them the model gets null passing and no pool
+         bar, which is silent rather than an error. */
+      passes_total:   row.passes_total != null ? row.passes_total : null,
+      position_pool:  row.position_pool || null,
       passes_key:     row.passes_key != null ? row.passes_key : null,
       tackles_total:  row.tackles_total != null ? row.tackles_total : null,
       tackles_blocks: row.tackles_blocks != null ? row.tackles_blocks : null,
@@ -4131,7 +4213,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,

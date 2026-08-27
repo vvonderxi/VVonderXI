@@ -1101,12 +1101,19 @@
       var _keeper = (D.pos === 'GK')
         ? { saves:D.saves, goals_conceded:D.goals_conceded, penalties_saved:D.penalties_saved, starts:D.starts }
         : {};
+      /* THE ENRICHED BLOCK comes from VVCore.vvAIStats, the SAME builder compare uses, so the
+         model cannot see two different pictures of one card. Passing volume and key passes per
+         90 with the pool bar for that position, the minutes/starts/appearances denominator, the
+         keeper block naming the 75 cap as a boundary, the missing-field list and the era flag.
+         NOTE: this payload is exactly what `stats_hash` fingerprints, so adding fields here
+         invalidates every cached note. Intended , and why this lands before any pre-warm. */
+      var _ai = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(D) : {};
       var payload = { mode:'notes', cardId:D.card_id, player:Object.assign({
         player_name:D.full, season:D.year, age:D.age, club:D.clubname,
         league:(LEAGUE_NAMES[D.league]||D.league), position:D.pos,
         goals:D.goals, assists:D.assists, rt:D.vv,
         tags:(Array.isArray(D.tags)?D.tags.map(function(t){return t.name;}):[])
-      }, _keeper) };
+      }, _ai, _keeper) };
       var r = await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       var data = await r.json();
       if(!r.ok || !data || typeof data.glance!=='string' || typeof data.scout!=='string' || !Array.isArray(data.notes)){ vvEditorialFail(); return; }
