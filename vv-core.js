@@ -3594,6 +3594,12 @@ body.light .vvload{color:#1A1917}
 .sf-verdict{line-height:1.42}
 .sf-vtag{display:inline-flex;align-items:center;border-radius:999px;background:linear-gradient(90deg,#F0D27A,#E0A93A);
          color:#5a4410;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+/* Reserves the winner tag's height above the losing card so the pair stays aligned. It is
+   invisible, not display:none , removing it would let the two cards sit at different heights. */
+.sf-vtag-ghost{visibility:hidden}
+.sf-slot{display:flex;flex-direction:column;align-items:center}
+.sf-slotcard{border-style:solid;border-color:transparent;box-sizing:content-box}
+.sf-slotcard.sf-win{border-color:#E8B84B;background:rgba(232,184,75,0.10)}
 .sf-score{font-family:'Archivo',Impact,sans-serif;font-weight:900;color:var(--emph);line-height:1}
 .sf-stage{position:fixed;left:-20000px;top:0;z-index:-1;pointer-events:none}
 .vvtoast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);z-index:9999;
@@ -3707,13 +3713,37 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const P = shPad(F), S = shShort(F) / 1000, wide = F.w / F.h > 1.2;
     const a = spec.a, b = spec.b;
     const cw = Math.round(Math.min((F.h - P * (wide ? 2.2 : 4.6)) / SHARE_RATIO, F.w * (wide ? 0.22 : 0.38)));
-    const pair = '<div style="display:flex;gap:' + (14 * S) + 'px;position:relative;z-index:1">' +
-      '<div style="width:' + cw + 'px">' + buildCard(a, cw) + '</div>' +
-      '<div style="width:' + cw + 'px">' + buildCard(b, cw) + '</div></div>';
+    /*  THE FRAME MUST SHOW WHICH CARD THE VERDICT PICKED, AND THE SCORES CANNOT BE TRUSTED
+        TO SAY IT. The engine decides the winner, and the age tiebreaker means a LOWER VV
+        Score can still win (gap <= 2 and >= 4 years apart, younger takes it , §C). A reader
+        of the image only sees two numbers, so without a mark they would read the higher one
+        as the winner and be wrong exactly when the verdict is most interesting.
+        The winner gets the gold rim AND the verdict tag directly above it, so the tag names
+        the card it belongs to rather than floating beside the pair.
+        A REAL BORDER, NOT AN INSET SHADOW: html2canvas drops inset box-shadow on rounded
+        elements (§C), which is how the Generational rim went missing from captures. The rim
+        here is an outset border on a plain wrapper, which the capture renders faithfully.
+        The loser's slot keeps an EMPTY tag of the same height so the two cards stay aligned;
+        a tie shows the tag above neither and rims neither.  */
+    const tagPx = 14 * S, win = spec.winner;
+    const tagFor = function(on){
+      return '<div class="sf-vtag' + (on ? '' : ' sf-vtag-ghost') + '" style="font-size:' + tagPx +
+             'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + (on ? shEsc(spec.verdictTag) : '') + '</div>';
+    };
+    const slot = function(card, side){
+      const isWin = (win === side);
+      return '<div class="sf-slot" style="width:' + cw + 'px;gap:' + (9 * S) + 'px">' +
+        (win === 'tie' ? '' : tagFor(isWin)) +
+        '<div class="sf-slotcard' + (isWin ? ' sf-win' : '') + '" style="padding:' + (6 * S) +
+        'px;border-width:' + (3 * S) + 'px;border-radius:' + (cw * 0.09) + 'px">' +
+        buildCard(card, cw) + '</div></div>';
+    };
+    const pair = '<div style="display:flex;gap:' + (14 * S) + 'px;position:relative;z-index:1;align-items:flex-start">' +
+      slot(a, 'A') + slot(b, 'B') + '</div>';
     const last = n => shEsc(String(n || '').split(' ').slice(-1)[0]);
     const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
       'gap:' + (16 * S) + 'px;position:relative;z-index:1;' + (wide ? '' : 'text-align:center;') + '">' +
-      '<div class="sf-vtag" style="font-size:' + (14 * S) + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' +
+      (win === 'tie' ? '<div class="sf-vtag" style="font-size:' + tagPx + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' : '') +
       '<div class="sf-verdict" style="font-size:' + ((wide ? 23 : 21) * S) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.34 : F.w * 0.78) + 'px">' + shEsc(spec.verdictLine) + '</div>' +
       '<div class="sf-rule" style="width:' + (64 * S) + 'px"></div>' +
       '<div style="display:flex;gap:' + (18 * S) + 'px;align-items:baseline">' +
@@ -3801,6 +3831,32 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     });
   }
 
+  /*  ── CLIPBOARD, WITH A BOUNDED WAIT ───────────────────────────────────────────
+      navigator.clipboard.writeText() RETURNS A PROMISE THAT CAN NEVER SETTLE. Measured on
+      a real browser: with the document hidden it stays PENDING indefinitely , not rejected,
+      pending. So `writeText().then(ok, fail)` is not a safe way to drive a UI: neither
+      branch ever runs and the control sits there having done nothing at all.
+
+      THAT IS A WORSE FAILURE THAN THE ONE IT REPLACED. The previous code set the label
+      synchronously and lied when the write failed; awaiting the promise stopped the lie and
+      introduced a silent hang. Both are wrong. §C says a success state must be gated on a
+      RESOLVED, CHECKED response , the missing half is that a response which never arrives
+      must still resolve the UI, as a failure.
+
+      So the wait is bounded. If the write has not confirmed in time we report FAILURE, never
+      success, and the control always reaches a definite state.  */
+  function vvCopyText(text, ms){
+    if (typeof navigator === 'undefined' || !(navigator.clipboard && navigator.clipboard.writeText))
+      return Promise.resolve(false);
+    return new Promise(function(res){
+      let settled = false;
+      const done = function(v){ if (!settled){ settled = true; clearTimeout(timer); res(v); } };
+      const timer = setTimeout(function(){ done(false); }, ms || 1200);
+      try { navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ done(false); }); }
+      catch(e){ done(false); }
+    });
+  }
+
   //  ── TOAST ──────────────────────────────────────────────────────────────────────
   //  Replaces alert(). alert() BLOCKS the page and, in an automated browser, wedges the
   //  whole session until a human dismisses it , which happened during this build. It is
@@ -3884,8 +3940,13 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   function vvShareLabel(el, shareLabel, saveLabel, opts){
     if (!el) return 'none';
     opts = opts || {};
-    const cap = vvShareCapability();
-    const txt = (cap === 'none') ? saveLabel : shareLabel;
+    /* THE CAPABILITY MAY BE PASSED IN. Left to derive its own, this function asked
+       "cap === 'none'" while vvApplyShareCapability asks "can the FILE go", and the two
+       disagree on the middle rung , share exists, files refused. That is the two-fields-for-
+       one-concept defect in §C: the button said "Share this verdict" while the hint beside it
+       said save-and-attach. One decision, made once, passed down. */
+    const cap = opts.cap || vvShareCapability();
+    const txt = (cap === 'files') ? shareLabel : saveLabel;
     if (opts.textNode){
       // the label is a bare text node beside an inline <svg>, so setting textContent
       // would delete the icon
@@ -3896,10 +3957,54 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     } else {
       el.textContent = txt;
     }
-    if (opts.saveIcon && cap === 'none'){
+    if (opts.saveIcon && cap !== 'files'){
       const svg = el.querySelector('svg'); if (svg) svg.outerHTML = opts.saveIcon;
     }
     el.setAttribute('data-vv-cap', cap);
+    return cap;
+  }
+
+  /*  ── THE CONTROL SET FOLLOWS CAPABILITY, NOT PLATFORM ────────────────────────
+      ONE FACT DRIVES ALL OF IT: a web page cannot attach a file to an X or WhatsApp post.
+      The intent URLs those buttons use carry TEXT and a LINK and nothing else. There is no
+      workaround, so the controls say so instead of pretending.
+
+      canShare({files}) TRUE , the OS sheet can carry the image itself. That is the whole
+      feature, so it gets ONE button and the per-platform buttons are REMOVED: tapping "X"
+      there would route around the sheet and post a link INSTEAD of the image, which is
+      strictly worse than the thing sitting next to it.
+
+      canShare({files}) FALSE , the image cannot leave programmatically at all. The honest
+      offer is: save it, take the caption, attach it yourself. The per-platform buttons stay
+      but are marked link-only, because that is genuinely all they can do.
+
+      The middle rung (share exists, files do not) is grouped with FALSE deliberately: what
+      decides the layout is whether the IMAGE can go, and on that question rung 2 is a no.
+
+      DOM CONTRACT , data-vvshare="main" | "social" | "hint". Attributes, not classes, so a
+      restyle cannot silently unhook the behaviour.  */
+  function vvApplyShareCapability(root, opts){
+    if (!root) return 'none';
+    opts = opts || {};
+    const cap = vvShareCapability();
+    const filesOK = (cap === 'files');
+    const main = root.querySelector('[data-vvshare="main"]');
+    if (main) vvShareLabel(main, opts.shareLabel || 'Share', opts.saveLabel || 'Save image',
+                           { textNode: !!opts.textNode, saveIcon: opts.saveIcon, cap: cap });
+    root.querySelectorAll('[data-vvshare="social"]').forEach(function(el){
+      el.hidden = filesOK;
+      el.style.display = filesOK ? 'none' : '';
+      const base = el.getAttribute('data-vvshare-name') || el.getAttribute('aria-label') || '';
+      if (!el.getAttribute('data-vvshare-name')) el.setAttribute('data-vvshare-name', base);
+      // says what it actually does, on the control itself, for anyone who hovers or listens
+      el.setAttribute('aria-label', filesOK ? base : (base + ' , posts a link only, without the image'));
+      el.setAttribute('title', filesOK ? base : (base + ' , posts a link only'));
+    });
+    const hint = root.querySelector('[data-vvshare="hint"]');
+    if (hint) hint.textContent = filesOK
+      ? (opts.hintShare || 'Sends the image itself , Instagram, X, WhatsApp and anywhere else you share.')
+      : (opts.hintSave  || 'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.');
+    root.setAttribute('data-vvshare-cap', cap);
     return cap;
   }
 
@@ -3962,7 +4067,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvShareCapability, vvShareLabel, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

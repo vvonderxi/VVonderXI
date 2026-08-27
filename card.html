@@ -1021,8 +1021,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260827c"></script>
-<script src="/vv-core.js?v=20260827c"></script>
+<script src="/vv-marks.js?v=20260827f"></script>
+<script src="/vv-core.js?v=20260827f"></script>
 <script>
   function drawRadar(){
     const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
@@ -2805,11 +2805,11 @@ vvWireChronicle();
         <div class="sb-cardwrap" id="shareCard"></div>
         <div class="sb-foot">V<span>V</span>onder<span>XI</span> &middot; <i>Every Season Tells a Different <span>Story</span></i></div>
       </div>
-      <button class="sb-share" onclick="vvShareCard(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> Share</button>
-      <div class="sb-hint">Sends the card as an image , Instagram, X, WhatsApp and more</div>
+      <button class="sb-share" data-vvshare="main" onclick="vvShareCard(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> Share</button>
+      <div class="sb-hint" data-vvshare="hint"></div>
       <div class="sb-opts">
-        <button class="sb-opt soc" onclick="vvShareWhatsApp()" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.54-3.7 8.24-8.25 8.24a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24zm-2.6 3.98c-.14 0-.36.05-.55.26-.19.21-.73.71-.73 1.74s.75 2.02.85 2.16c.11.14 1.47 2.25 3.58 3.16.5.22.89.35 1.19.44.5.16.96.14 1.32.08.4-.06 1.24-.5 1.42-.99.18-.49.18-.9.13-.99-.05-.09-.19-.14-.4-.25-.21-.11-1.24-.61-1.43-.68-.19-.07-.33-.1-.47.11-.14.21-.54.68-.66.82-.12.14-.24.16-.45.05-.21-.11-.88-.32-1.68-1.04-.62-.55-1.04-1.23-1.16-1.44-.12-.21-.01-.32.09-.43.1-.1.21-.24.32-.37.11-.13.14-.21.21-.35.07-.14.04-.26-.02-.37-.05-.11-.47-1.15-.65-1.57-.17-.41-.34-.36-.47-.36z"/></svg></button>
-        <button class="sb-opt soc" onclick="vvShareX()" aria-label="X"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
+        <button class="sb-opt soc" data-vvshare="social" data-vvshare-name="WhatsApp" onclick="vvShareWhatsApp()" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.54-3.7 8.24-8.25 8.24a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24zm-2.6 3.98c-.14 0-.36.05-.55.26-.19.21-.73.71-.73 1.74s.75 2.02.85 2.16c.11.14 1.47 2.25 3.58 3.16.5.22.89.35 1.19.44.5.16.96.14 1.32.08.4-.06 1.24-.5 1.42-.99.18-.49.18-.9.13-.99-.05-.09-.19-.14-.4-.25-.21-.11-1.24-.61-1.43-.68-.19-.07-.33-.1-.47.11-.14.21-.54.68-.66.82-.12.14-.24.16-.45.05-.21-.11-.88-.32-1.68-1.04-.62-.55-1.04-1.23-1.16-1.44-.12-.21-.01-.32.09-.43.1-.1.21-.24.32-.37.11-.13.14-.21.21-.35.07-.14.04-.26-.02-.37-.05-.11-.47-1.15-.65-1.57-.17-.41-.34-.36-.47-.36z"/></svg></button>
+        <button class="sb-opt soc" data-vvshare="social" data-vvshare-name="X" onclick="vvShareX()" aria-label="X"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
         <button class="sb-opt" onclick="vvCopyLink(this)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span> Copy link</span></button>
         <button class="sb-opt" onclick="vvSaveImage(this)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg><span> Save image</span></button>
       </div>
@@ -2876,9 +2876,9 @@ function vvShareOut(){
 /* ONE place that actually touches the clipboard, resolving to whether it worked. Both
    vvCopyLink and vvShareOut go through it so neither can drift into reporting early. */
 function vvCopyURL(){
-  if(!(navigator.clipboard && navigator.clipboard.writeText)) return Promise.resolve(false);
-  return navigator.clipboard.writeText(vvShareURL()).then(function(){ return true; },
-                                                          function(){ return false; });
+  /* BOUNDED , see VVCore.vvCopyText. writeText() can stay pending forever on a hidden
+     document, and an await that never returns is a control that silently does nothing. */
+  return VVCore.vvCopyText(vvShareURL());
 }
 /* The spec the share layer renders. D is the live card object, so the image is always the
    season currently on screen , season switching rewrites D and ?id= together. */
@@ -2894,12 +2894,14 @@ function vvShareFilename(){
    change , a share-nodes icon over a download is the same false promise in pictures. */
 var VV_DL_ICON='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 19h16"/></svg>';
 function vvShareRelabel(){
-  if(!(window.VVCore && VVCore.vvShareLabel)) return;
+  if(!(window.VVCore && VVCore.vvApplyShareCapability)) return;
   /* " Save post image", not " Save image": the options row already carries a Save image
      and they compose DIFFERENT pictures , this button makes the 1080x1350 post frame
      (format 'igf'), the option makes the card-shaped one (format 'dl'). */
-  VVCore.vvShareLabel(document.querySelector('.sb-share'), ' Share', ' Save post image',
-    {textNode:true, saveIcon:VV_DL_ICON});
+  VVCore.vvApplyShareCapability(document.querySelector('.sharebox'), {
+    shareLabel:' Share', saveLabel:' Save post image', textNode:true, saveIcon:VV_DL_ICON,
+    hintShare:'Sends the card as an image , Instagram, X, WhatsApp and anywhere else you share.',
+    hintSave:'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.'});
 }
 
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', vvShareRelabel);
@@ -2950,11 +2952,16 @@ function vvSaveImage(btn){
     var url=URL.createObjectURL(out.blob);
     var a=document.createElement('a'); a.href=url; a.download=vvShareFilename()+'.png'; a.click();
     setTimeout(function(){ URL.revokeObjectURL(url); },1000);
-    var copied=false;
-    try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(vvShareText()+'\n'+vvShareURL()); copied=true; } }catch(e){}
+    /* THE SAVE ALREADY HAPPENED , say so first and unconditionally. Only the CAPTION claim
+       waits on the clipboard, and it waits on a BOUNDED copy so a pending write cannot
+       leave the control silent. Reporting "and the caption is on your clipboard" without
+       checking was the same unearned claim as the old Copy link. */
     mark(' Saved');
-    VVCore.vvToast(copied ? 'Image saved, and the caption is on your clipboard , paste it with the post.'
-                          : 'Image saved to your downloads.');
+    setTimeout(function(){ mark(' Save image'); }, 2600);
+    VVCore.vvCopyText(vvShareText()+'\n'+vvShareURL()).then(function(copied){
+      VVCore.vvToast(copied ? 'Image saved, and the caption is on your clipboard , paste it with the post.'
+                            : 'Image saved to your downloads.');
+    });
   }).catch(function(){ mark(' Save image'); VVCore.vvToast('That image could not be made. The link still works.'); });
 }
 
