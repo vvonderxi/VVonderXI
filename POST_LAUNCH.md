@@ -147,3 +147,24 @@ The fourteen VERDICT tags are the only named things on the platform with **no ma
 **Closed work. The three decisions that must not be re-litigated stayed in `CLAUDE.md` §D.**
 
 **DONE, do not re-plan it.** The keeper fields were arriving in the API response and being discarded by one line in the importer's merge. `player_season_cards` went 36 -> 43 columns, a 144 league-season backfill wrote **56,674 rows with rt unchanged on all 57,234 cards**, and the **2026-08-19 matview swap** surfaced them: `saves` 2,813, `goals_conceded` 31,365, `penalties_scored` 38,291, `starts` 56,555, plus the four discipline fields. **Pre-2015 yields `starts` only** , 16,211 rows against 16 with goals_conceded , because those blocks do not exist before 2015, so re-running will not fill them. `penalties_won` was captured, measured (1,701 rows, not one of them 0, so NULL conflated "won none" with "not recorded") and **dropped**. **Clean sheets are NOT on this endpoint and never were** , they would have to be derived or sourced elsewhere, and Sportmonks' evaluation never tested goalkeeping, so any provider decision on GK needs its own probe. **What remains is not pipeline work: it is the GK-75 cap (engine) and the keeper card treatment (see the stage above).**
+
+
+---
+
+## PER-CARD OG , THE GENERATED IMAGE IS DEFERRED. THE TEXT HALF IS NOT (scoped 2026-08-27)
+
+**THE SPLIT: per-card TITLE and DESCRIPTION with the existing brand image is one session and carries no drift cost. The GENERATED per-card IMAGE is deferred, and the reason is not effort , it is that it adds a THIRD renderer of the same card.**
+
+**WHY A THIRD RENDERER IS THE REAL PRICE.** The card is already drawn twice: the live DOM, and the html2canvas capture. Satori (what `@vercel/og` renders with) is a third, and it is not a near-copy , it supports only a flexbox CSS subset, no SVG filters, and fonts must be fetched as ArrayBuffers. So the card would be RE-AUTHORED, not reused.
+
+**THE COST IS ONGOING, NOT ONE-OFF, AND THIS SESSION PRICED IT.** Two renderers diverged four separate times, each found individually and each needing its own fix or ruling:
+- **THE RIM.** html2canvas drops an inset `box-shadow` on a rounded element, so the Generational gold rim vanished from every capture. Measured 2026-08-27: **ZERO gold pixels in the card's top-left corner without `vvShimInsetRims`, 370 with it.** Needed a capture-time shim.
+- **THE MARKS.** `<use href="#...">` references resolve to nothing in the capture, so a mark renders BLANK , no error, no layout change. Needed `vvInlineMarks`.
+- **THE TAGLINE.** Present in the card sheet's preview and ABSENT from the captured PNG, because the capture composes a separate frame and never read the element the preview showed. The container is even named `id="shareCapture"`, which is the reason nobody checked. Fixed 2026-08-26.
+- **THE SHIELD'S SHADOW.** `filter: drop-shadow` is dropped outright. Accepted rather than shimmed, at a measured mean of 0.31/255 , blur cannot be faked without a visible hard edge.
+
+**GENERALISE IT: each of those was invisible until someone looked at a specific pixel region, and each cost a session's attention. A third renderer does not add a third of that , it adds a new pairing to keep in sync FOREVER, and the two-renderer pairing already needed a dedicated audit harness (`vvAuditCaptureSupport`, §C) to stop the discoveries arriving one screenshot at a time.** The same defect class the trophies and the loader already recorded: **two drawings of one thing drift, and nothing tells you.**
+
+**WHAT WOULD CHANGE THE DECISION.** If the OG image were a genuinely DIFFERENT artefact rather than a copy of the card , a text-and-score composition that never claims to be the card face , the drift argument mostly evaporates, because there is nothing to keep in sync. **That is the version worth building when it is built.** Re-rendering the card in Satori is the version to refuse.
+
+**NOT A BLOCKER FOR THE TEXT HALF.** Per-card title and description need the middleware and the meta function only; they reference `og-image.png`, which already exists and is already correct.
