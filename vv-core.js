@@ -1948,6 +1948,21 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard.gen .cga .divider{background:rgba(255,255,255,0.15)}
 .vvcard.gen .cname .full,.vvcard.gen .cname .sub{color:rgba(240,234,217,0.6)}
 /* ICONIC , bright GOLD card, dark text */
+  /* THE GENERATIONAL FACE BELONGS HERE, BESIDE ITS SIBLING. The iconic face has lived in
+     this sheet all along and the gen face did not , it was copied into each PAGE instead.
+     That asymmetry is the SS C class defect: a rule stated in one place and not applied to
+     every member of its class will be violated everywhere else.
+     WHAT IT COSTS WHEN IT IS MISSING: the six gen ink rules below (.yr, .n, .vv .a,
+     .cga .col .l, .cname .full/.sub, .pos) are all pinned LIGHT because they assume a dark
+     face. On a surface that lacks this rule, body.light .vvcard wins and paints the face
+     CREAM while those inks stay cream , year, score, labels and club line all vanish at
+     about 1.09 contrast. Measured on a scratch page that loaded vv-core alone, which is
+     exactly what a new surface looks like.
+     The five page copies are left in place: they are identical to this on card, compare and
+     rankings, so nothing moves, and preferences/myclub carry a DRIFTED rim (a flat 1.5px
+     outline instead of the gold inset, no !important) which is its own decision, logged in
+     SS D rather than silently overwritten here. */
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
   body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #E8B84B, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
 .vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
 .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
@@ -3655,9 +3670,32 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   }
 
   function shCardFrame(spec, F, light){
-    const P = shPad(F), cw = shCardW(F, F.key === 'x' ? 0.42 : 0.58);
+    /*  THE WIDE FRAME GETS A BIGGER CARD; THE PORTRAIT FRAMES DO NOT. Ruled 2026-08-27 after
+        rendering current / +10 / +20 / +30 in all four formats at 600px, which is how X shows
+        a shared image inline. At 0.42 the card was 284px in a 1200px frame , under a quarter
+        of its width, about 142px as actually seen , and the negative space was not framing it
+        but stranding it. The portrait frames do not have that problem: the card already fills
+        them and the restraint reads as deliberate, so igf, igs and dl keep 0.58.
+        Written as 0.42 * 1.20 rather than 0.504 so the decision stays legible: it is the
+        original Corners fraction, raised 20%, not a new number someone picked.
+        +30% was rejected , on igf it puts the card into the caption block.  */
+    const P = shPad(F), wide = F.w / F.h > 1.2;
+    const cw = shCardW(F, wide ? 0.42 * 1.20 : 0.58);
+    /*  RESERVE THE CAPTION'S HEIGHT ON THE WIDE FRAME. The card is centred with
+        justify-content:center over the WHOLE frame height, but the caption block is
+        absolutely positioned at the bottom and therefore out of flow , so the centring has
+        never known it was there. At the old sizes that was invisible. With the card 20%
+        bigger AND the type raised, the card's bottom edge landed 3px INTO the caption while
+        leaving a band of dead space above it: cramped at the bottom, empty at the top.
+        Reserving the zone as bottom padding lets flex centre the card in what is actually
+        free, which both fixes the collision and uses the space that was going to waste.
+        WIDE ONLY, and the condition is a PROPERTY not a format key: a short wide frame is
+        where the card and the caption compete for height. The portrait frames have height to
+        spare, they do not collide, and their composition is settled , 2026-08-27 ruling.  */
+    const capZone = wide ? Math.round((shCapPx(F) + shTagPx(F)) * 1.35 + P * 0.9) : 0;
     return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
-      'flex-direction:column;align-items:center;justify-content:center;padding:' + P + 'px">' +
+      'flex-direction:column;align-items:center;justify-content:center;' +
+      'padding:' + P + 'px ' + P + 'px ' + (P + capZone) + 'px ' + P + 'px">' +
       shChrome(F, vvShareCaption(spec)) +
       '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw) + '</div></div>';
   }
