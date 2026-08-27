@@ -1,7 +1,7 @@
 {
   "name": "vvonderxi",
   "version": "1.0.0",
-  "description": "VVonderXI — Football Intelligence Platform",
+  "description": "VVonderXI , The Football Legacy Platform",
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
