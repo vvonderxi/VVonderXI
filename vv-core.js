@@ -557,36 +557,63 @@
   // ── Radar (Contract §4): 5 per-90 spokes, raw + provisional 0-100 ─────
   // Real scaling is percentile-within-position, PARKED until distributions
   // land (Blueprint §7). RADAR_REF caps are PROVISIONAL placeholders only.
+  const RADAR_NR_MAX = 3;   // suppress the chart at this many unmeasured axes , see radarFor
   const RADAR_REF = { goalThreat:1.5, creation:2.6, progression:4.0, defensive:8.0 };
   // INTERIM cosmetic cap , no radar dimension displays a fake-perfect 100 (mirrors the rt ceiling).
   // Remove/replace when percentile-within-position scaling lands (parked, Blueprint §7).
   const RADAR_CAP = 97;
   function radarFor(row){
-    const m = row.minutes || 0;
-    const p90 = v => (m>0 && v!=null) ? (v/m)*90 : 0;
-    const r2 = v => Math.round(v*100)/100;
-    const sc = (v,ref) => Math.max(0, Math.min(RADAR_CAP, Math.round(v/ref*100)));
+    /*  A SPOKE WITH NO DATA MUST NOT RENDER AS ZERO. This is the platform's own NR rule
+        (SS B: NR for missing data, never 0) and the radar was the one place breaking it.
+        THE WHOLE DEFECT WAS ONE LINE: `p90` returned 0 for a null input, so absence became
+        zero at the FIRST step, before scaling and before RADAR_REF. The placeholder caps are
+        a separate problem and fixing them would not have fixed this.
+        MEASURED: Messi 11/12, 50 goals and 16 assists, rendered creation 8 and progression 0
+        out of 100. Not an absent value , a WRONG one, on 36.4% of cards.
 
-    const goalThreat  = p90(row.goals) + 0.3*p90(row.shots_on);
-    const creation    = p90(row.passes_key) + 0.5*p90(row.assists);
-    const progression = p90(row.dribbles_success) + 0.02*p90(row.passes_total);
-    const defensive   = p90(row.tackles_total) + p90(row.interceptions) + 0.1*p90(row.duels_won);
+        A DIMENSION IS NR WHEN *ANY* INPUT IS ABSENT, NOT ONLY WHEN ALL ARE. A composite
+        built from a subset of its terms is a DIFFERENT, SMALLER quantity plotted on the same
+        axis, which is the same falsehood in a quieter form. Measured: the all-absent rule
+        left Messi's creation at 8, because assists survived and key passes did not.
+
+        A RECORDED ZERO STAYS ZERO. A keeper who scored 0 goals has a true 0, not an NR. The
+        test is whether the FIELD IS NULL, never whether the value is falsy.  */
+    const m = row.minutes || 0;
+    const p90 = v => (m>0 && v!=null) ? (v/m)*90 : null;
+    const r2 = v => v==null ? null : Math.round(v*100)/100;
+    const sc = (v,ref) => v==null ? null : Math.max(0, Math.min(RADAR_CAP, Math.round(v/ref*100)));
+    const comp = terms => terms.some(t => t[0]==null) ? null
+                        : terms.reduce((a,t) => a + t[1]*t[0], 0);
+
+    const goalThreat  = comp([[p90(row.goals),1],[p90(row.shots_on),0.3]]);
+    const creation    = comp([[p90(row.passes_key),1],[p90(row.assists),0.5]]);
+    const progression = comp([[p90(row.dribbles_success),1],[p90(row.passes_total),0.02]]);
+    const defensive   = comp([[p90(row.tackles_total),1],[p90(row.interceptions),1],[p90(row.duels_won),0.1]]);
     const reliability = Math.min(100, (m/(38*90))*100);   // raw availability, not per-90 , TRUE 100 for a full season
 
+    const scaled = {
+      goalThreat:sc(goalThreat,RADAR_REF.goalThreat),
+      creation:sc(creation,RADAR_REF.creation),
+      progression:sc(progression,RADAR_REF.progression),
+      defensive:sc(defensive,RADAR_REF.defensive),
+      reliability:Math.min(RADAR_CAP, Math.round(reliability))
+    };
+    /*  SUPPRESS AT THREE. With three or more axes unmeasured a card has at most two real
+        ones, and TWO POINTS ARE NOT A SHAPE , the polygon degenerates to a line and reads as
+        a value rather than an absence. Below that the chart still says something true and the
+        NR axes are labelled. Measured at N=3: 37.0% of cards suppress, essentially every
+        pre-2015 card plus most keepers , exactly the populations whose radars were fabricated. */
+    const nr = ['goalThreat','creation','progression','defensive','reliability']
+                 .filter(k => scaled[k]==null).length;
     return {
       raw: {
         goalThreat:r2(goalThreat), creation:r2(creation), progression:r2(progression),
         defensive:r2(defensive), reliability:Math.round(reliability*10)/10
       },
-      // provisional 0-100 (reliability is already 0-100); order matches DIMS
-      scaled: {
-        goalThreat:sc(goalThreat,RADAR_REF.goalThreat),
-        creation:sc(creation,RADAR_REF.creation),
-        progression:sc(progression,RADAR_REF.progression),
-        defensive:sc(defensive,RADAR_REF.defensive),
-        reliability:Math.min(RADAR_CAP, Math.round(reliability))   // display caps at RADAR_CAP; raw.reliability stays true
-      },
-      provisional: true   // flag: scaling is placeholder, not real percentiles
+      scaled: scaled,
+      nr: nr,
+      suppressed: nr >= RADAR_NR_MAX,
+      provisional: true
     };
   }
 
@@ -1258,7 +1285,29 @@
     // widens. Both p80 references are per-pool, so 0.75 still means high volume FOR A DEEP MIDFIELDER.
     // Rejected: relaxing accuracy instead (0.81/0.93 also lands in band at 586) , it admits a 77%
     // passer, and "sprays passes across the pitch" is a precision claim as much as a volume one.
-    if (okMin && elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.75) && ge(passAcc, t.passacc_p80 * 0.97))
+    /*  REGISTA AND BALL-PLAYING CB ARE SUPPRESSED (2026-08-27). BOTH GATE ON
+        `passes_accuracy`, WHICH IS INVALID, NOT MERELY SPARSE , see SS E. The provider reads
+        Kroos 92 in 2019 and 67 in 2020 at the same club on the same volume, and sustains
+        Modric 44-55. A tag is a CLAIM ABOUT A PLAYER; these two made it from a field that
+        does not mean one thing.
+        AND IT IS WORSE THAN THE FIELD BEING WRONG. `ge()` is null-safe and rejects null, so
+        every holder had accuracy present , which confines both tags to the 42.8% of cards
+        where the field exists, a subset skewed to elite big-five players (coverage is
+        14-17% for 2020-2024). A midfielder in that hole could never be a Regista however he
+        played.
+        COST OF SUPPRESSION: 843 awards, 635 Regista and 208 Ball-Playing CB. No false claims
+        made. Removing the accuracy term instead was measured and REJECTED , it breaches the
+        rarity ceiling (Regista 1.11% -> 6.31%, BPCB 0.36% -> 2.38%). Regating on
+        `passes_key` was also measured: it restores the exact counts at floors of 1.77 and
+        0.61 key passes per 90, but replaces 521 of 635 and 186 of 208 holders , that is a
+        DIFFERENT TAG WEARING THE SAME NAME, not a repair.
+        WHAT WOULD UNSUPPRESS THEM: a passing-quality field that means one thing across eras.
+        Either the provider restores a consistent accuracy measure (re-check the 2020 break),
+        or a second source supplies completion, or the tags are RE-DEFINED on `passes_key`
+        with new names and new blurbs, so the vocabulary matches what is actually measured.
+        Do NOT simply re-enable these gates.  */
+    const TAGS_SUPPRESSED_INVALID_FIELD = true;
+    if (!TAGS_SUPPRESSED_INVALID_FIELD && okMin && elig.deepPlaymaker && ge(passes90, t.passes90_p80 * 0.75) && ge(passAcc, t.passacc_p80 * 0.97))
       tags.push({ name: 'Regista', family: 'MID', tier: 'granular' });
 
     // Engine Room , high pass volume + defensive work (box-to-box) (Granular, compound)
@@ -1288,7 +1337,7 @@
 
     // Ball-Playing CB , solid defensively + high accurate passing (Granular, compound)
     if (okMin && elig.ballPlaying && ge(defact90, t.defact90_p70 * 0.85)
-        && ge(passes90, t.passes90_p80 * 0.80) && ge(passAcc, t.passacc_p80 * 0.93))
+        && !TAGS_SUPPRESSED_INVALID_FIELD && ge(passes90, t.passes90_p80 * 0.80) && ge(passAcc, t.passacc_p80 * 0.93))
       tags.push({ name: 'Ball-Playing CB', family: 'DEF', tier: 'granular' });
 
     // ========================= CROSS-DIMENSIONAL =========================
@@ -2580,13 +2629,29 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       if (g <= 2 && ageDiff >= 5 && yAge > 21) age.push('ascendant');
       if (g <= 3 && oAge >= 33 && ageDiff >= 5) age.push('twilight');
     }
-    const peak = c => { const s = (c.radar && c.radar.scaled) || {}; const k = ['goalThreat','creation','progression','defensive']; let bi = 0, bv = -1; k.forEach((x, i) => { if ((s[x] || 0) > bv) { bv = s[x] || 0; bi = i; } }); return k[bi]; };
-    const varc = c => { const s = (c.radar && c.radar.scaled) || {}; const a = ['goalThreat','creation','progression','defensive'].map(x => s[x] || 0); const m = a.reduce((x, y) => x + y, 0) / 4; return Math.sqrt(a.reduce((x, y) => x + (y - m) * (y - m), 0) / 4); };
+    /*  BOTH GUARD ON NR NOW. They read `s[x] || 0`, which turns an UNMEASURED axis into a
+        zero , the same defect the radar itself had, one layer up. Unguarded, a card with no
+        passing data reports a 'peak dimension' of goalThreat because every other axis
+        coerced to 0, and varc reports a huge spread built out of absences. Those two feed
+        the 'different_worlds' and 'complete_spec' VERDICT TAGS, so a fabricated zero became
+        a published claim about how two players differ.
+        They now return null when ANY of the four axes is unmeasured, and the two rules
+        below skip rather than guess. A tag not shown is the correct answer when the shape
+        it describes was never measured.  */
+    const radarUsable = c => { const s = (c && c.radar && c.radar.scaled) || {};
+      return ['goalThreat','creation','progression','defensive'].every(x => s[x] != null); };
+    const peak = c => { if (!radarUsable(c)) return null; const s = c.radar.scaled;
+      const k = ['goalThreat','creation','progression','defensive'];
+      let bi = 0, bv = -1; k.forEach((x, i) => { if (s[x] > bv) { bv = s[x]; bi = i; } }); return k[bi]; };
+    const varc = c => { if (!radarUsable(c)) return null; const s = c.radar.scaled;
+      const a = ['goalThreat','creation','progression','defensive'].map(x => s[x]);
+      const m = a.reduce((x, y) => x + y, 0) / 4;
+      return Math.sqrt(a.reduce((x, y) => x + (y - m) * (y - m), 0) / 4); };
     const ctx = [];
-    if (g <= 3 && va >= 80 && vb >= 80 && peak(A) !== peak(B)) ctx.push('different_worlds');
+    if (g <= 3 && va >= 80 && vb >= 80 && peak(A) && peak(B) && peak(A) !== peak(B)) ctx.push('different_worlds');
     if (Math.abs((A.season_year || 0) - (B.season_year || 0)) >= 8 && va >= 80 && vb >= 80) ctx.push('across_eras');
     if (((A.goals || 0) > (B.goals || 0) && va < vb) || ((B.goals || 0) > (A.goals || 0) && vb < va)) ctx.push('eye_test');
-    if (g <= 3 && Math.abs(varc(A) - varc(B)) >= 14) ctx.push('complete_spec');
+    if (g <= 3 && varc(A) != null && varc(B) != null && Math.abs(varc(A) - varc(B)) >= 14) ctx.push('complete_spec');
     const floorTag = age[0] || ladder;   // deterministic default (AGE priority 2, else LADDER 3); AI may up-rank to a contextHint
     return { gap: g, engineWinner, winner, tipped, tone, ladder, ageTags: age, contextHints: ctx, floorTag,
       ageA, ageB, younger, older, ageDiff,

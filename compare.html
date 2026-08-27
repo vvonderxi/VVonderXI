@@ -578,7 +578,10 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
   .vshare-opt:hover{background:rgba(255,92,122,.1);border-color:var(--pink-ink)}
   /* icon-only pill, same shape as card.html's .sb-opt.soc */
   .vshare-opt.soc{width:42px;padding-left:0;padding-right:0;justify-content:center;gap:0}
-  .vshare-hint{margin-top:12px;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft);max-width:440px;margin-inline:auto}
+.h2hnr .h2hlabel{opacity:.6}
+  .h2hbar-nr{font-family:'Inter';font-size:11.5px;color:var(--ink-soft);opacity:.75;display:flex;align-items:center}
+  #vradarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 16px}
+    .vshare-hint{margin-top:12px;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft);max-width:440px;margin-inline:auto}
   #cardA,#cardB{transition:transform .45s cubic-bezier(.4,0,.2,1),filter .45s}
   #cardA.winner,#cardB.winner{transform:translateY(-6px)}
   #cardA.winner .vvcard,#cardB.winner .vvcard{box-shadow:0 0 0 3px var(--gold),0 0 22px -2px rgba(232,184,75,.5),0 22px 48px -14px rgba(232,184,75,.55)!important}
@@ -864,7 +867,7 @@ body.light .pkmsub{color:var(--ink-soft)}
           <div class="vsect">
             <div class="vsect-t">The Shape of Each Season</div><div class="vsect-d">Five dimensions, two seasons overlaid. The wider the shape, the more complete the campaign.</div>
             <div class="vradar-wrap">
-              <svg width="320" height="260" viewBox="0 0 320 260" id="vradar"></svg>
+              <svg width="320" height="260" viewBox="0 0 320 260" id="vradar"></svg><small id="vradarNote"></small>
               <div class="vradar-key"><span class="vk vk-a"><i></i> Season A</span><span class="vk vk-b"><i></i> Season B</span></div>
             </div>
           </div>
@@ -963,8 +966,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260827g"></script>
-<script src="/vv-core.js?v=20260827g"></script>
+<script src="/vv-marks.js?v=20260827h"></script>
+<script src="/vv-core.js?v=20260827h"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1599,35 +1602,66 @@ body.light .pkmsub{color:var(--ink-soft)}
 
   // dimensions for the two players (0..1)
   const DIMS=['Goal Threat','Creation','Progression','Defensive','Reliability'];
+  let RADAR_OK=[true,true,true,true,true];   // per-axis: measured on BOTH cards
   let A_VALS=[0.92,0.74,0.70,0.30,0.88]; // Henry
   let B_VALS=[0.98,0.55,0.60,0.26,0.82]; // Haaland
   let A_RAW=[92,74,70,30,88], B_RAW=[98,55,60,26,82];
 
   // recompute radar + H2H spokes from the live slots (DIMS order; 0-100 scaled, 0-1 for the radar)
+  /*  NULLS SURVIVE INTO THE SPOKES. This mapped `v||0`, so an axis nobody measured became
+      a zero and then a bar, a dot and a WINNER in the head-to-head , the platform
+      declaring that one player beat another on a dimension neither had recorded.
+      AN AXIS IS COMPARABLE ONLY IF BOTH SIDES MEASURED IT. One side's absence makes the
+      pair incomparable, not the absent side worse.  */
   function vvComputeSpokes(){
-    function arr(c){ var s=c&&c.radar&&c.radar.scaled; return s?[s.goalThreat,s.creation,s.progression,s.defensive,s.reliability].map(function(v){return v||0;}):[0,0,0,0,0]; }
+    function arr(c){ var s=c&&c.radar&&c.radar.scaled;
+      return s?[s.goalThreat,s.creation,s.progression,s.defensive,s.reliability]:[null,null,null,null,null]; }
     A_RAW=arr(CMP_A); B_RAW=arr(CMP_B);
-    A_VALS=A_RAW.map(function(v){return v/100;}); B_VALS=B_RAW.map(function(v){return v/100;});
+    // an axis is usable only when BOTH sides have it
+    RADAR_OK = A_RAW.map(function(v,i){ return v!=null && B_RAW[i]!=null; });
+    A_VALS=A_RAW.map(function(v){return v==null?null:v/100;});
+    B_VALS=B_RAW.map(function(v){return v==null?null:v/100;});
   }
   function drawDualRadar(){
-    const svg=document.getElementById('vradar');if(!svg)return;
+    const svg=document.getElementById('vradar'); if(!svg) return;
+    const note=document.getElementById('vradarNote');
+    const usable=RADAR_OK.reduce(function(a,b){return a+(b?1:0);},0);
+    /* FEWER THAN THREE COMPARABLE AXES IS NOT A SHAPE. Same rule as the card: two points
+       make a line, and a line reads as a value rather than an absence. */
+    if(usable<3){
+      svg.innerHTML='';
+      if(note) note.textContent='These two seasons share only '+usable+' measured dimension'+(usable===1?'':'s')+', so the overlay is not drawn. The head to head below shows what both cards actually record.';
+      return;
+    }
     const cx=160,cy=120,R=72,N=5;
     function pt(i,r){const a=-Math.PI/2+i*2*Math.PI/N;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];}
     let g='';
     for(let ring=1;ring<=3;ring++){let p='';for(let i=0;i<N;i++){const[x,y]=pt(i,R*ring/3);p+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}g+=`<path class="rgrid" d="${p}Z" fill="none"/>`;}
     for(let i=0;i<N;i++){const[x,y]=pt(i,R);g+=`<line class="rgrid" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;}
-    function shape(vals,fill,stroke){let dp='';for(let i=0;i<N;i++){const[x,y]=pt(i,R*vals[i]);dp+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}return `<path d="${dp}Z" fill="${fill}" stroke="${stroke}" stroke-width="2.5"/>`;}
+    function shape(vals,fill,stroke){
+      const q=[]; for(let i=0;i<N;i++){ if(!RADAR_OK[i]||vals[i]==null) continue; q.push(pt(i,R*Math.max(0,Math.min(1,vals[i])))); }
+      if(q.length<3) return '';
+      let dp=''; q.forEach(function(v,k){dp+=(k?'L':'M')+v[0].toFixed(1)+' '+v[1].toFixed(1);});
+      return `<path d="${dp}Z" fill="${fill}" stroke="${stroke}" stroke-width="2.2"/>`;
+    }
     g+=shape(B_VALS,'rgba(59,111,176,0.25)','#3B6FB0');
     g+=shape(A_VALS,'rgba(255,92,122,0.25)','#E70443');
-    const labels=DIMS;
-    for(let i=0;i<N;i++){const[x,y]=pt(i,R+18);g+=`<text class="rlabel" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Archivo" font-size="9.5" font-weight="700" text-anchor="middle" dominant-baseline="middle">${labels[i]}</text>`;}
+    for(let i=0;i<N;i++){const[x,y]=pt(i,R+18);
+      g+=`<text class="rlabel" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Archivo" font-size="9.5" font-weight="700" text-anchor="middle"${RADAR_OK[i]?'':' opacity="0.5"'}>${DIMS[i]}${RADAR_OK[i]?'':' , NR'}</text>`;}
     svg.innerHTML=g;
+    if(note) note.textContent='Shape is provisional: dimensions are scaled against reference values, not percentiles.';
   }
   function drawH2H(){
-    const box=document.getElementById('h2h');if(!box)return;
+    const box=document.getElementById('h2h'); if(!box) return;
     let h='';
     for(let i=0;i<DIMS.length;i++){
       const a=A_RAW[i], b=B_RAW[i];
+      /* NO WINNER ON AN AXIS EITHER SIDE NEVER MEASURED. The old code compared a>b with
+         nulls already coerced to 0, so it awarded a dot for a dimension nobody recorded. */
+      if(a==null||b==null){
+        h+=`<div class="h2hrow h2hnr"><div class="h2hlabel">${DIMS[i]}</div><div class="h2hbar h2hbar-nr">Not recorded for ${a==null&&b==null?'either season':(a==null?'the first season':'the second season')}</div></div>`;
+        continue;
+      }
       const aWins=a>b, bWins=b>a;
       const aDot=`<span class="hwin${aWins?'':' hide'}"></span>`;
       const bDot=`<span class="hwin${bWins?'':' hide'}"></span>`;

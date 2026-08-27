@@ -766,6 +766,15 @@
   body.light #cardSearch .cs-filters{background:rgba(0,0,0,0.025);border-color:rgba(0,0,0,0.07)}
   /* Appearance comes from vv-core's .vvf-clear , see the note there. This rule now
      carries POSITION only, which is the one thing that is genuinely per-surface. */
+  /* radar suppressed state , the numbers instead of a fabricated shape */
+  .rdsup{padding:14px 16px;text-align:left}
+  .rdsup-h{font-family:'Archivo';font-weight:800;font-size:12.5px;letter-spacing:.02em;color:var(--charcoal)}
+  .rdsup-b{font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft);margin-top:6px}
+  .rdsup-n{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:10px}
+  .rdsup-n span{font-family:'Inter';font-size:12.5px;color:var(--charcoal)}
+  .rdsup-n b{font-family:'Archivo';font-weight:800;font-size:14px;margin-right:4px}
+  /* the provisional disclosure , the flag has been on every card object and never shown */
+  #radarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 14px}
   #cardSearch .cs-clearall{margin-top:10px}
   #cardSearch .vvf-active{margin:0 0 10px}
 
@@ -966,7 +975,7 @@
   </div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.1"/><path d="M5.7 16c.5-1.6 1.7-2.5 3.3-2.5s2.8.9 3.3 2.5"/><line x1="15" y1="10.2" x2="18.3" y2="10.2"/><line x1="15" y1="13.6" x2="18.3" y2="13.6"/></svg></div><div class="layer-t">The Profile</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext"><b id="profileLead">&nbsp;</b> The radar shows his shape; the gradient (red to green) tells you where his game lives.</div>
-<div class="radarwrap"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg></div>
+<div class="radarwrap" id="radarBox"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg><small id="radarNote"></small></div>
 <div class="attrtop"><span>Attribute</span><span>/ 100</span></div>
 <div id="attrBars">
 <div class="attr"><div class="an">Goal Threat</div><div class="abar"><i style="width:55%;background:#E8943B"></i></div><div class="av">55</div></div>
@@ -1021,22 +1030,71 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260827g"></script>
-<script src="/vv-core.js?v=20260827g"></script>
+<script src="/vv-marks.js?v=20260827h"></script>
+<script src="/vv-core.js?v=20260827h"></script>
 <script>
-  function drawRadar(){
-    const svg=document.getElementById('radar');if(!svg)return;const cx=150,cy=104,R=64,N=5;
-    function pt(i,r){const a=-Math.PI/2+i*2*Math.PI/N;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];}
-    let g='';
-    for(let ring=1;ring<=3;ring++){let p='';for(let i=0;i<N;i++){const[x,y]=pt(i,R*ring/3);p+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}g+=`<path d="${p}Z" fill="none" stroke="rgba(0,0,0,0.08)"/>`;}
-    for(let i=0;i<N;i++){const[x,y]=pt(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(0,0,0,0.08)"/>`;}
-    const _sc=(typeof D!=='undefined'&&D&&D.radar&&D.radar.scaled)?D.radar.scaled:null;const vals=_sc?[_sc.goalThreat,_sc.creation,_sc.progression,_sc.defensive,_sc.reliability].map(function(v){return Math.max(0,Math.min(1,(v||0)/100));}):[0.55,0.95,0.88,0.42,0.85];let dp='';for(let i=0;i<N;i++){const[x,y]=pt(i,R*vals[i]);dp+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}
-    g+=`<path d="${dp}Z" fill="rgba(46,140,90,0.28)" stroke="#2E8C5A" stroke-width="2.5"/>`;
-    for(let i=0;i<N;i++){const[x,y]=pt(i,R*vals[i]);g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="#2E8C5A"/>`;}
-    const labels=['Goal Threat','Creation','Progression','Defensive','Reliability'];
-    for(let i=0;i<N;i++){const[x,y]=pt(i,R+22);g+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Archivo" font-size="10.5" font-weight="700" fill="#6a6256" text-anchor="middle" dominant-baseline="middle">${labels[i]}</text>`;}
-    svg.innerHTML=g;
-  }
+    /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
+        , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
+          shown instead, because a shape drawn from two points reads as a value rather than
+          an absence. This is 37% of cards, almost all pre-2015 or keepers.
+        , some axes null     : the chart draws across the measured axes only and the others
+          are labelled NR, not plotted at zero.
+        , all measured       : unchanged.
+        The old code plotted null as 0 and produced Messi 11/12 with creation 8 and
+        progression 0 out of 100 , a wrong number, not a missing one. */
+    function drawRadar(){
+      const svg=document.getElementById('radar'); if(!svg) return;
+      const box=document.getElementById('radarBox');
+      const rad=(typeof D!=='undefined'&&D&&D.radar)?D.radar:null;
+      const sc=rad&&rad.scaled?rad.scaled:null;
+      const KEYS=['goalThreat','creation','progression','defensive','reliability'];
+      const labels=['Goal Threat','Creation','Progression','Defensive','Reliability'];
+      const note=document.getElementById('radarNote');
+      if(!sc){ svg.innerHTML=''; return; }
+      /*  THE SUPPRESSED PANEL IS A SIBLING, NEVER box.innerHTML. Overwriting the box
+          DESTROYS the <svg> the renderer needs, so the next card , a season switch to one
+          with full data , finds no element and throws. Hide and show, do not replace. */
+      let sup=document.getElementById('radarSup');
+      if(!sup && box){ sup=document.createElement('div'); sup.id='radarSup'; sup.className='rdsup';
+                       box.insertBefore(sup, svg.nextSibling); }
+      if(rad.suppressed){
+        svg.innerHTML=''; svg.style.display='none';
+        if(note) note.textContent='';
+        if(sup){
+          const have=KEYS.map((k,i)=>({k,l:labels[i],v:sc[k]})).filter(x=>x.v!=null);
+          sup.style.display='';
+          sup.innerHTML='<div class="rdsup-h">Not enough measured data for a shape.</div>'
+            +'<div class="rdsup-b">'+rad.nr+' of 5 dimensions were never recorded for this season, so the chart is not drawn. '
+            +'What is recorded:</div><div class="rdsup-n">'
+            +(have.length? have.map(x=>'<span><b>'+x.v+'</b> '+x.l+'</span>').join('') : '<span>nothing beyond the basics</span>')
+            +'</div>';
+        }
+        return;
+      }
+      if(sup){ sup.style.display='none'; sup.innerHTML=''; }
+      svg.style.display='';
+      const cx=150,cy=104,R=64,N=5;
+      function pt(i,r){const a=-Math.PI/2+i*2*Math.PI/N;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];}
+      let g='';
+      for(let ring=1;ring<=3;ring++){let p='';for(let i=0;i<N;i++){const[x,y]=pt(i,R*ring/3);p+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}g+=`<path d="${p}Z" fill="none" stroke="rgba(0,0,0,0.07)"/>`;}
+      for(let i=0;i<N;i++){const[x,y]=pt(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(0,0,0,0.08)"/>`;}
+      // the shape spans ONLY the measured axes
+      const pts=[];
+      for(let i=0;i<N;i++){ const v=sc[KEYS[i]]; if(v==null) continue; pts.push(pt(i,R*Math.max(0,Math.min(100,v))/100)); }
+      if(pts.length>=3){
+        let dp=''; pts.forEach((q,k)=>{dp+=(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);});
+        g+=`<path d="${dp}Z" fill="rgba(46,140,90,0.28)" stroke="#2E8C5A" stroke-width="2.5"/>`;
+      }
+      for(let i=0;i<N;i++){ const v=sc[KEYS[i]]; if(v==null) continue;
+        const[x,y]=pt(i,R*Math.max(0,Math.min(100,v))/100);
+        g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="#2E8C5A"/>`; }
+      for(let i=0;i<N;i++){ const[x,y]=pt(i,R+22); const nrq=sc[KEYS[i]]==null;
+        g+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Archivo" font-size="10.5" font-weight="700" fill="${nrq?'#a09a90':'#6a6256'}" text-anchor="middle">${labels[i]}${nrq?' , NR':''}</text>`; }
+      svg.innerHTML=g;
+      if(note) note.textContent = rad.provisional
+        ? 'Shape is provisional: the dimensions are scaled against reference values, not percentiles.'
+        : '';
+    }
   function vvWallPaint(btn){ var t=btn.querySelector('.wp-txt'); if(t) t.textContent=btn.classList.contains('on')?'On your wall':'Add to my wall'; }
   function vvWallSync(){ var c=document.querySelector('.clubpill'); var w=document.getElementById('wallPill'); if(!c||!w) return; if(c.classList.contains('on')){ w.classList.add('show'); } else { w.classList.remove('show'); w.classList.remove('on'); vvWallPaint(w); } }
   function vvWallToggle(btn){ vvTrySave('The wall is coming: your poster of cards, once accounts are live.', function(){ btn.classList.toggle('on'); vvWallPaint(btn); }); }
@@ -1156,6 +1214,11 @@
   }
   function vvProfileBlurb(D){
     var s = D && D.radar && D.radar.scaled; if(!s) return '';
+    /* NO BLURB FROM UNMEASURED AXES. This names a player's top and second dimension and
+       read `+s.x||0`, so an NR axis became a zero and a suppressed card still got a
+       confident sentence about what he was best at. If any of the four is unmeasured the
+       ranking is not defensible, so say nothing. */
+    if (['goalThreat','creation','progression','defensive'].some(function(k){ return s[k]==null; })) return '';
     var dims = [
       {k:'goalThreat', v:+s.goalThreat||0},
       {k:'creation',   v:+s.creation||0},
