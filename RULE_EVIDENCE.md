@@ -342,3 +342,129 @@ reasoning behind them, in the same shape as the 2026-08-16 `SILENT_FAILURES.md` 
 - **At 48px the knockout cuts clean through, at 16px antialiasing fills the seam and the two Vs merge into one blob.** `VV_LOADER_MIN = 40` in `vv-core.js` is that number, and **`vvLoader()` CLAMPS a smaller request UP rather than honouring it** , a caller asking for 24px has misunderstood the mark, and quietly handing them a blob would hide the mistake instead of surfacing it.
 - **SO SMALL CONTEXTS GET A DIFFERENT THING, NOT A SHRUNKEN MONOGRAM , `vvLoaderBars()`**, three bars, no brand claim. Buttons and inline text are exactly the sizes that cannot carry the interlock. **This is the SAME LOGIC as the single-colour translation below**: use the form the context can actually carry, and do not make a claim the pixels cannot support.
 - **DO NOT "fix" the small case by widening the knockout for a second, small-size drawing.** That is two drawings of one thing, which is precisely the defect the display-case trophies had , the page and the pills had drifted apart and nothing would ever have said so.
+
+
+---
+
+## THE TWO-FIELDS DEFECT , THE PER-TAG NUMBERS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **WHEN A RULE READS TWO FIELDS FOR THE SAME CONCEPT, CHECK THEY AGREE BEFORE TUNING ANYTHING DOWNSTREAM (2026-08-15). The tag engine did not, and it cost a whole audit.** After the threshold rekey, `eligibility()` still read the COARSE `position` field while `TAG_THRESHOLDS_POOL` read `position_pool`. **A miscoded card was ADMITTED by one field and JUDGED by the other, so it drew whichever bar was easiest.** An ST-pool card carrying coarse MID was eligible for Engine Room (a MID-only tag) but judged against ST's `passes90_p80` of 28.2 instead of MID's 51.9, and cleared trivially , 198 Engine Room holders sat in the ST pool.  **, evidence in `RULE_EVIDENCE.md`**
+  - **GENERALISE IT: two fields for one concept is a defect even when both are populated.** The pair only has to disagree on a minority of rows to corrupt the tail, and the tail is exactly where a rarity audit looks.
+  - **RUN THIS DIAGNOSTIC ON IDENTITY TAGS ONLY. POINTED AT ABILITY TAGS IT REPORTS THE DESIGN AS A DEFECT (2026-08-21).** Re-run across all eighteen tags, it flagged ELEVEN , Iron Man 65.2%, Provider 50.9%, Goal Machine 50.0%, Playmaker 47.2%, Complete 46.3% , and **every one was the test aimed at the wrong class.** The rule directly above says ability tags gate on family and SHOULD span pools, so a high minority share there is the tag working. **Iron Man spanning every pool is availability doing what availability does.**
+
+
+---
+
+## THE IDENTITY-VERSUS-ABILITY GATING SPLIT (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **A TAG WHOSE NAME ASSERTS A POSITION MUST GATE ON `position_pool`. A TAG DESCRIBING A QUALITY MAY GATE ON FAMILY. THE RULE ALREADY EXISTED AND THAT IS THE WHOLE LESSON (generalised 2026-08-16).**  **, evidence in `RULE_EVIDENCE.md`**
+  - **IDENTITY tags , gate on the POOL, never on the family:** Regista (CM/CDM), Maestro (CM/CDM/CAM), The Winger (Winger), Poacher (ST), Ball-Playing CB (CB). The name makes a claim about WHERE a player stands, so only the pool can settle it.
+  - **ABILITY tags , family gating is CORRECT and must stay:** The Wall, Destroyer, Ball Hawk, Engine Room, Complete, Iron Man. They describe something any position in range can show, so a broader gate is not a defect.
+  - **SO THE LESSON IS NOT THE FIX. It is that A RULE STATED IN ONE PLACE AND NOT APPLIED AS A CLASS WILL BE VIOLATED EVERYWHERE ELSE.** A comment above one gate is not a rule, it is a note. When you write one, either apply it to every member of its class in the same change or promote it here , those are the only two endings that hold.
+  - **CAM IS NOT RECLASSIFIED TO MID and must not be.** It stays in the FWD family, which is correct for the goal thresholds; only the identity gates read the pool. Fixing the gate, not the mapping, is the whole point.
+
+
+---
+
+## THE RANK ANCHORS , THE OFFSET VALUES (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **THE LADDER POPULATIONS ARE ANCHOR-PINNED, NOT MEASURED , SO THE vvindex COUNTS ARE STRUCTURAL CONSTANTS AND A FUTURE SESSION MUST NOT "FIX" THEM AS STALE (logged 2026-08-13).** The band edges are RANK anchors, not score thresholds: `migrations/stage3_league_strength.sql` lines 67-70 set `b95 = OFFSET 11`, `b90 = OFFSET 149`, `b85 = OFFSET 649` , i.e. the **12th, 150th and 650th best card in the database**. So the populations are fixed BY CONSTRUCTION: **12 Generational, 150 at 90+, 650 at 85+, and 138 in the Iconic band (150 minus 12).**  **, evidence in `RULE_EVIDENCE.md`**
+  - **CONSEQUENCE FOR COPY: vvindex's "roughly a dozen" (Generational) and its hundred-and-fifty boundary (Iconic) are GUARANTEED TRUE and DO NOT drift as the database grows.** What changes is WHICH seasons occupy the slots, which the page's own **"Where the ground still moves"** card already discloses. **The copy and the disclosure are consistent , do not "correct" either one.**
+  - **THE ONE REAL DRIFT RISK IS A RECUT, NOT DATA GROWTH. If the OFFSET values are ever changed, the vvindex copy must be updated IN THE SAME COMMIT** , otherwise accurate copy silently becomes wrong with nothing in the diff to show it.
+
+
+---
+
+## THE RANGE() PAGINATION DEFECT , THE MEASUREMENTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **A SORT ON A LOW-CARDINALITY COLUMN IS NOT A TOTAL ORDER, SO `range()` PAGINATION SILENTLY DUPLICATES AND DROPS ROWS. THIS WAS LIVE IN RANKINGS AND NOBODY COULD SEE IT (2026-08-17).** `applyServer` ordered by ONE column. Every sort option is low-cardinality against 57,234 rows , rt alone puts thousands of cards on the same value , and **Postgres is free to return tied rows in any order, and will pick a DIFFERENT PLAN for a different window size.**  **, evidence in `RULE_EVIDENCE.md`**
+  - **GENERALISE IT: any query that paginates with `range()`, or that relies on an ordinal meaning the same thing twice, needs a UNIQUE tiebreak in its ORDER BY.** Ordering by a score, a date, a name or a band is never enough on its own.
+  - **AND NOTE HOW IT SURFACED: it was invisible until a feature depended on the ordinal being STABLE** (the card sequence re-deriving the list a visitor came from). A bug that only corrupts which rows you see, never whether the page loads, will not announce itself , it needs a consumer that asks the same question twice and compares.
+
+
+---
+
+## THE THREE FALSE DOC CLAIMS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **A STATEMENT ATTRIBUTED TO THE DOCS MUST BE CHECKED AGAINST THE DOCS BEFORE IT IS ACTED ON , AND THE DOC ITSELF CAN BE WRONG (2026-08-16). THREE CLAIMS WERE ASSERTED AS RECORDED IN ONE SESSION. TWO DID NOT EXIST AND THE THIRD EXISTED AND WAS FALSE.**  **, evidence in `RULE_EVIDENCE.md`**
+  - **SO CHECKING THE FILE IS NECESSARY AND NOT SUFFICIENT.** A recorded claim is a claim, not a measurement. **When a measurement contradicts the doc, the doc is what changes, in the same session, or the next reader inherits the same wrong premise.** The Ibra line survived because every session that read it treated "it is written down" as "it was verified".
+  - **AND NOTE WHICH DIRECTION IS DANGEROUS.** The two absent claims would each have caused a BUILD , hiding keepers, or ruling out a provider. **An unverified premise is most costly when it argues for removing something**, because the removal looks like caution.
+
+
+---
+
+## THE FOUR BAND NAMES (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the measurement behind it.**
+
+- **BAND VOCABULARY IS UNIFIED ON "ICONIC" FOR 90-94 (2026-08-13). The 90+ band had FOUR different public names.** `bandFor` emits the ENGINE name `Elite`; the public word is now **Iconic** everywhere. Before the fix: vvindex said **Iconic**, playbook's ladder said **Elite**, the filter chip said **Elite**, the card badge rendered **ICONIC**, and playbook's glossary said **Iconic Campaign** (paired with **Generational Season**).  **, evidence in `RULE_EVIDENCE.md`**
+  - **FOOTNOTE, minor: the "only three pages load vv-core.js" line above is off by two.** `myclub-mock.html` and `myclub-mock-B.html` also reference it, with **no `?v=` token at all** and **zero inbound links** , unreachable dev mocks, deliberately not bumped. The practical rule (bump card/compare/rankings) is unchanged.
+
+
+---
+
+## THE THREE SHARE-ONLY VERDICT NAMES , THE FULL REASONING (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the reasoning behind it.**
+
+**THREE VERDICT TAGS HAVE A SHARE-ONLY DISPLAY NAME. THE DIVERGENCE IS DELIBERATE , DO NOT RECONCILE IT (locked 2026-08-23).**
+- **The 14 names in the Compare VERDICT layer above are UNCHANGED and remain what Compare renders.** The share layer holds a SEPARATE lookup, `VERDICT_SHARE_NAME` + `verdictShareName()` in vv-core, consulted only when a tag is written into post text. **Eleven tags have no entry and share under their own name.**
+- **`VAR close call` -> `VAR Close Call`.** Casing only. It is the ONLY lower-cased name in a set of fourteen, so beside thirteen title-cased siblings in a feed it reads as a typo rather than a style.
+- **`Complete Package vs Specialist` -> `The Complete Player`.** The original names the AXIS, not the judgement. **In frame the two cards supply the contrast; out of frame nothing does**, and it lands as a category label.
+- **`League Strength Tips It` -> `The League Tips The Balance`.** The original ends on a pronoun whose referent is the pair of cards. **Remove the cards and "It" points at nothing.**
+- **WHY A LOOKUP AND NOT A RENAME: the tag set is a product vocabulary with locked names, and this is PRESENTATION FOR ONE SURFACE.** Renaming would move the name everywhere , the chip, the AI prompt contract, the 48 stale cache rows keyed on it , to fix a sentence that only exists in a share post. **A later session finding the two lists different will be tempted to "fix" the drift. This entry is why it must not.**
+- **THE TEST THAT FOUND THEM: put every tag in the target sentence and read all of them, not one example.** `"The Verdict: {tag}."` , eleven survived, three did not. **A format that works for one tag is not a format; the set has to hold.** Same shape as the pairwise-distinctness rule for marks.
+
+
+---
+
+## THE CACHE-TOKEN INCIDENTS (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the reasoning behind it.**
+
+- **`vv-core.js` CACHE TOKEN IS MANUAL , BUMP `?v=` IN card.html, compare.html AND rankings.html WHENEVER vv-core.js CHANGES, OR CLIENTS GET THE STALE FILE.** Added 2026-08-11 (`?v=20260811a`), **CURRENT VALUE `?v=20260823b` as of 2026-08-23** , the token has been live on all three pages since it was added, so any note calling the cache-buster outstanding is STALE (it was still listed as pending in the 2026-08-09 handover). Those are the ONLY three pages that load it (verified , myclub/playbook/index/vvindex/preferences/iwonder/contact do NOT, and playbook says so explicitly at line 241). **The token does not maintain itself: there is no build step, so nothing bumps it for you.** Forgetting is the SAME failure the token exists to fix , a stale cached copy makes any vv-core change **silently no-op while looking fine**, which cost real debugging time when a new export came back `undefined` and again when cached copies served the OLD tag logic after `c4ad9e2`. **HARD-REFRESH after any vv-core change**, and suspect this first when a shared-renderer edit "does nothing".
+
+
+---
+
+## THE DERIVED CACHE-STAMP SCHEME (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the reasoning behind it.**
+
+- **AI CACHE INVALIDATION IS STAMP-BASED AND THE VERSIONS ARE DERIVED, NOT HAND-SET.** `verdict_cache` carries `rt_a`/`rt_b`/`cache_version`; `notes_cache` carries `rt`/`stats_hash`/`cache_version`. Three miss conditions: unstamped / version drift / data moved. `VERDICT_VERSION` and `NOTES_VERSION` = `PROMPT_REV + fingerprint(prompt)`, so **editing a prompt auto-bumps its version and you cannot forget** , and they are SPLIT per cache, so editing the notes prompt does not invalidate every verdict row. `stats_hash` = key-sorted sha256 of the whole cited `player` payload, so a goals fix that leaves rt unchanged STILL invalidates. Legacy rows are never deleted; they miss and self-heal on view. **SWAP TRAP: `pair_key` is canonical min-max, so `rt_a` binds to the LOWER `card_id`** and must be mapped through the same `swapped` flag as the payload.
+
+
+---
+
+## THE SHARED CACHE TOKEN , WHY THE TWO FILES ARE COUPLED (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the reasoning behind it.**
+
+**`vv-marks.js` AND `vv-core.js` SHARE ONE `?v=` TOKEN. BUMP BOTH SCRIPT TAGS TOGETHER OR ONE IS SERVED FRESH AGAINST A CACHED COPY OF THE OTHER (locked 2026-08-21).**
+- **The mark set lives in its own file** , 37 original marks, one 24x24 grid, editorial-solid with `evenodd` knockouts, `currentColor` only. It is separate from `vv-core.js` because 200 KB of renderer plus a sprite of path data is how a module stops being maintainable, **not** because the two are independent. They are not: `renderTagPills` will call `VVMarks.tag()`, so a stale copy of either one breaks the other.
+- **THERE IS NO BUILD STEP, SO NOTHING ENFORCES THE PAIRING.** No constant is shared at runtime; the token is typed into the `<script>` tags on card.html, compare.html and rankings.html. **The single token is a DISCIPLINE, and this entry is the only thing holding it.** Bump both tags to the same value in the same commit, every time either file changes.
+- **THE FAILURE IS THE USUAL SILENT ONE.** A `<use>` pointing at a symbol that is not in the document renders **BLANK**, with no error and no layout change , a pill with a label and a hole where the mark should be. `VVMarks.inject()` runs at load and a one-shot audit warns once per surface when a mark resolves to nothing, which is the same guard shape as `vvQueueRowAudit`, added for the same reason.
+- **KEYS MATCH THEIR SOURCES EXACTLY and must keep matching:** `tag()` on `TAG_DEFS` names, `honour()` on `HONOUR_META` keys, `section()` on the `s-` ids in `playbook.html`. **Three namespaces, not one flat map** , "Honours" is both a Playbook section and a family of honours, and a flat map would let those collide silently. **Renaming a tag in `TAG_DEFS` without renaming its mark key leaves a blank pill, not an error.**
+
+
+---
+
+## THE ACCEPTED CONTRAST EXCEPTIONS , THE FULL REASONING (relocated from §C, 2026-08-27)
+
+**The RULE stays in `CLAUDE.md` §C. This is the reasoning behind it.**
+
+**THREE CONTRAST FAILURES ARE ACCEPTED EXCEPTIONS, RULED 2026-08-24. THEY ARE RECORDED WITH THEIR RATIOS SO A LATER AUDIT RE-FINDS THEM AND STOPS, RATHER THAN RE-OPENING THEM.**
+- **CARD-FACE CHIPS , the gold band label at 2.04 and the green `chtagcell` text at 2.34.** Both sit on the card's own colour system, where the fill carries the tag's identity. **Changing the ink is a redesign of the card, not a contrast fix**, and the card face is the product. Left as is.
+- **`.prenum` ("95+", "90+") fading to fully transparent.** It is `background-clip:text` over `linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,0))`, so the bottom of an 88px numeral has ZERO alpha and scores 1.00 by construction. **Deliberate and decorative**, and the number is also written in the copy beside it. Left as is.
+- **THE WAITING BOX EDGE AT 1.88 against the page**, under the 3:1 non-text bar. **A skeleton should be quiet** , it is a placeholder for content that is arriving, not a control. Left as is.
+- **`.pspot`, THE PITCH POSITIONS , cream on brand pink at 3.89 with an 11px label, so the bar is 4.5.** ACCEPTED. **The `.cm-mk` remedy does not transfer and the numbers are why:** that marker reached the 3:1 LARGE-text bar by growing to 19px bold, but the pitch labels are words, not digits , **"WNG" at 19px bold measures 52px and needs a circle of about 62px against the current 38px**, and eleven of those overlap on the pitch. So the only routes left are darkening the brand pink (ruled out), shortening the labels, or enlarging the pitch. **REVISITABLE IF THE PITCH IS EVER REDESIGNED** , a larger pitch changes the arithmetic and this becomes solvable by size, exactly as `.cm-mk` was.
