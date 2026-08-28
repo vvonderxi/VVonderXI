@@ -72,6 +72,7 @@
   var SECTIONS = {
     's-vv':              '<g fill="currentColor"> <path d="M2.4 16.6a9.6 9.6 0 0 1 19.2 0h-3.3a6.3 6.3 0 0 0-12.6 0Z"/> <path d="M11.13 15.94 16.13 9.34 17.87 10.66 12.87 17.26Z"/> <circle cx="12" cy="16.6" r="2.4"/> <path d="M1.8 19.4h20.4v2.2H1.8Z"/></g>',
     's-dim':             '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 1.6 22.4 9.2l-4 12.2H5.6l-4-12.2Zm0 3.5L5 10.2l2.7 8.2h8.6l2.7-8.2Z"/></g>',
+    's-gk':              '<g fill="currentColor"> <path fill-rule="evenodd" d="M5.6 11.4h11.0v10.6H5.6Zm2.2 2.4v6.0h6.6v-6.0Z M6.2 3.8h2.2v8.0H6.2Z M9.6 3.0h2.2v8.8H9.6Z M13.0 3.8h2.2v8.0h-2.2Z M16.6 9.8h3.4v3.8h-3.4Z"/></g>',
     's-pct':             '<g fill="currentColor"> <path d="M1.6 19.4h2.6v2.2H1.6Z M5.2 16.6h2.6v5H5.2Z M8.8 12.4h2.6v9.2H8.8Z M12.4 9.6h2.6v12h-2.6Z M16 13.8h2.6v7.8H16Z M19.6 18.2h2.6v3.4h-2.6Z"/> <path d="M12.8 1.6h1.8v6.2h-1.8Z M10.6 2.4h6.2v1.8h-6.2Z"/></g>',
     's-card':            '<g fill="currentColor"> <path fill-rule="evenodd" d="M4.4 2.4h15.2v19.2H4.4Zm2.6 2.6v14h10V5Z"/> <path d="M8.6 6.8h6.8v4.4H8.6Z M8.6 13h6.8v1.8H8.6Z M8.6 16h4.4v1.8H8.6Z"/></g>',
     's-wonder':          '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.3 3.6h11.5v16.8H9.3L2.4 12Zm1.5 2.6L5.5 12l5.3 5.8h7.9V6.2Z"/> <circle cx="10.4" cy="12" r="1.9"/></g>',
