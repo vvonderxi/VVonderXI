@@ -177,3 +177,18 @@ Priority order. These are build-completeness gaps (ship-readiness), several neve
 ## OG/META TIER 1 , WHAT SHIPPED (relocated from `CLAUDE.md` §D, 2026-08-25)
 
 - **[DONE 2026-08-20] og/meta + social image , TIER 1 SHIPPED (`01b0d73`).** There were ZERO og/twitter/description tags on any page; there are now 15 per page on nine pages, absolute URLs on `https://vvonderxi.com`, and `og-image.png` (1200x630) is referenced for the first time instead of sitting unused behind a cache header. **Five titles were WRONG, not merely plain** , rankings read "Web Shell", compare "Web Compare", preferences "My Club" (a different page), and all 57,234 cards read just "VVonderXI". Copy is recorded in `docs/meta_proposal.md`, which now describes LIVE pages and drifts if either side moves. **Tier 2 per-link unfurls stay post-launch**, so every shared card link still unfurls identically , that is the accepted Tier 1 boundary, not an oversight. **The tags are inert until `vvonderxi.com` actually resolves; confirm the domain is live before launch day.**
+
+
+---
+
+## RELOCATED FROM `CLAUDE.md` §C ON 2026-08-28 , VV INDEX STEP-4 EXPLAINER COPY
+
+Drafted 2026-07-19, still NOT on the page. Deferred page copy, not an invariant , which is why it
+left §C. **The one INVARIANT in the original block stayed behind in §C: display re-anchor only,
+never the engine.** CLAUDE.md wins on any conflict.
+
+**VV INDEX content + anchoring notes (drafted 2026-07-19 for the Step-4 explainer, NOT yet on the page , promoted here from the archived session log)**
+- (a) League strength is measured from **980 quality-filtered TRANSFERS** (both leagues in our nine, adjacent seasons, >=900 min each side, measurable output) , "cleaner beats bigger": a mover's output delta across a real league boundary is the signal, not squad reputation.
+- (b) **The Index CHART uses AVERAGE-ANCHORED display while the ENGINE stays PL-ANCHORED.** The tilt socket is AFFINE, so re-anchoring the engine would change scores. **Display re-anchor only, NEVER the engine.**
+- (c) ANCHOR DISCLOSURE: we measure leagues RELATIVE TO EACH OTHER, not whether football overall rose or fell (no absolute claim about the global level over time).
+

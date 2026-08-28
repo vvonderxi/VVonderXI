@@ -468,3 +468,149 @@ reasoning behind them, in the same shape as the 2026-08-16 `SILENT_FAILURES.md` 
 - **`.prenum` ("95+", "90+") fading to fully transparent.** It is `background-clip:text` over `linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,0))`, so the bottom of an 88px numeral has ZERO alpha and scores 1.00 by construction. **Deliberate and decorative**, and the number is also written in the copy beside it. Left as is.
 - **THE WAITING BOX EDGE AT 1.88 against the page**, under the 3:1 non-text bar. **A skeleton should be quiet** , it is a placeholder for content that is arriving, not a control. Left as is.
 - **`.pspot`, THE PITCH POSITIONS , cream on brand pink at 3.89 with an 11px label, so the bar is 4.5.** ACCEPTED. **The `.cm-mk` remedy does not transfer and the numbers are why:** that marker reached the 3:1 LARGE-text bar by growing to 19px bold, but the pitch labels are words, not digits , **"WNG" at 19px bold measures 52px and needs a circle of about 62px against the current 38px**, and eleven of those overlap on the pitch. So the only routes left are darkening the brand pink (ruled out), shortening the labels, or enlarging the pitch. **REVISITABLE IF THE PITCH IS EVER REDESIGNED** , a larger pitch changes the arithmetic and this becomes solvable by size, exactly as `.cm-mk` was.
+
+
+---
+
+## RELOCATED FROM `CLAUDE.md` §C ON 2026-08-28 , RELIEF PASS
+
+**THE RULES DID NOT MOVE.** Every headline below is still in §C, byte-identical, as the bold
+line it always was. What moved is the MEASUREMENT and the INCIDENT behind it. Each entry is
+reproduced in full as it stood in §C, so nothing is paraphrased away.
+
+**CLAUDE.md WINS ON ANY CONFLICT.**
+
+### THE RARITY BAND IS A CEILING, NOT A TARGET (2026-08-16)
+
+- **THE RARITY BAND IS A CEILING, NOT A TARGET. NO TAG SHOULD EXCEED ROUGHLY 2%; THERE IS NO FLOOR, AND A TAG BELOW THE BAND IS NOT A DEFECT TO TUNE AWAY (corrected 2026-08-16).**  **, evidence in `RULE_EVIDENCE.md`** The old "all tags in a 1-2% band" wording was overstated. **Maestro 0.67%, The Winger 0.52%, Poacher 0.47%, Ball-Playing CB 0.36%** all sit below it and always did. **THEY ARE NARROW IDENTITY ARCHETYPES AND RARITY FOLLOWS THE ARCHETYPE** , how many cards hold the tag is a property of how many players actually ARE that thing, not a dial. **Forcing them up admits players who are not that thing**, which is exactly the error the identity-vs-ability fix removed. **SO THE ONLY RARITY QUESTION WORTH ASKING IS "IS ANYTHING OVER ~2%".** Never write "all tags sit in a 1-2% band" into any doc or copy again.
+
+### THE 2026-08-21 TAG RECALIBRATION WARNING WAS WRONG
+
+- **THE 2026-08-21 "TAG RECALIBRATION IS NOW REQUIRED" WARNING WAS WRONG, AND THE REASONING ERROR IS THE USEFUL PART.**  **, evidence in `RULE_EVIDENCE.md`** Written the same day the engine changed and BEFORE anything was measured. **Measured on all 57,234 cards, the change moved SEVEN CARDS ACROSS TWO TAGS.** **SO: BEFORE DECLARING A DOWNSTREAM CONSUMER AFFECTED, GREP THE CONSUMER FOR THE FIELDS THAT ACTUALLY CHANGED** , `getVVTags` reads `gaw` zero times. A wrong warning costs a re-audit and teaches the next reader to distrust numbers that are correct. **QUOTE THE 2026-08-21 BASELINE, NOT THE 2026-08-13 ONE** (`scripts/enrichment/tag_distribution_2026-08-21.txt`) , the older file predates both the rarity pass and the identity fix, so correct changes read as collapses and a RETIRED tag reads as a total collapse.
+
+### NULL-POOL CARDS NEVER RECEIVE AN IDENTITY TAG (2026-08-16)
+
+- **NULL-POOL CARDS NEVER RECEIVE AN IDENTITY TAG , A CARD WITH NO VERIFIED POSITION CANNOT BE SAID TO OCCUPY ONE (2026-08-16).**  **, evidence in `RULE_EVIDENCE.md`** 35.2% of cards have no pool, and the coarse field is exactly the one that cannot tell ST from Winger or CB from FB, so a coarse fallback on an identity tag is a guess wearing the tag's authority. **DO NOT RE-ADD A COARSE FALLBACK TO LIFT A COUNT** , under-tagging is the correct behaviour, and a low count is not a defect (see the rarity CEILING rule). **This principle was ALSO already stated once and not generalised** , same failure as the rule above, in the same function, on the same day.
+
+### IRON MAN IS A DELIBERATE EXCEPTION TO THE RARITY CEILING (2026-08-15)
+
+- **IRON MAN IS A DELIBERATE EXCEPTION TO THE ~2% RARITY CEILING. DO NOT "FIX" IT BACK (2026-08-15).**  **, evidence in `RULE_EVIDENCE.md`** It sits at **3.40%**, and the tighter multiplier that would bring it under the ceiling was REJECTED. **Availability is structurally common in a way no other tag's signal is** , the tag means "played every week", and a season-long ever-present is not a rare event. **Forcing it into band stripped the LAST tag from 84 elite cards, 45 of which held Iron Man and nothing else. That is buying rarity with coverage at the top of the scale, which is the wrong trade for this tag specifically.**
+
+### A RAW FLOOR IS NULL-SENSITIVE ONLY WHEN IT READS A DIFFERENT FIELD (2026-08-15)
+
+- **A RAW FLOOR IS NULL-SENSITIVE ONLY WHEN IT READS A DIFFERENT FIELD FROM ITS RATE GATE (2026-08-15).**  **, evidence in `RULE_EVIDENCE.md`** Written null-rejecting, all six floors changed exactly ONE tag , Playmaker lost 28 holders purely for unrecorded assists, violating the locked NR-is-not-zero rule. Where the floor reads the SAME field as the rate gate a null already fails upstream, so the exemption is never consulted. All floors now go through `rawFloorOK`. **`GOAL MACHINE` IS THE ONE EXEMPTION AND MUST STAY NULL-REJECTING** , its floor is the ENTIRE rule with no rate cut, so exempting null would hand the tag to every eligible null-goal card.
+
+### DEFENSIVE DATA + THE PHASE-2 RECALIBRATION SPEC (finding 5 Jul)
+
+- **Defensive data + engine recalibration (Phase 2) , SOURCE OF TRUTH (finding 5 Jul):** defensive data EXISTS in the DB, NO external sourcing needed. Fields on `player_card_view` + `player_season_cards`: `tackles_total, tackles_blocks, interceptions, duels_total, duels_won`; `league_standings.goals_against` = team defensive record. Coverage 2015-2025 ≈ 85-95% populated; pre-2015 ≈ 0% (API-Football stats start ~2015). Validated: van Dijk (CB) high tackles/interceptions vs Messi/Haaland low , data separates defenders from attackers correctly.
+- **Recalibration MUST add a defensive dimension** (Phase 2, after data-lock, alongside dynamic league strength) so defensive players get equal treatment: scored on tackles+interceptions+blocks PER-90, ranked WITHIN position pool (percentile). Target: van Dijk peak ≈ 85+ (sanity exhibit , a READ-OUT, not a dial; anchor guardrail holds). Duels = SECONDARY only (attackers rack them up, not defender-specific). Pre-2015 gap disclosed via confidence dots. Position-aware weighting integrates the defensive score with attacking output + league strength. SUPERSEDES the interim "GK capped 75 / defenders in own pool, disclose don't fake" stopgap once built.
+
+### A VISUAL CHANGE IS NOT VERIFIED UNTIL RENDERED IN A REAL BROWSER (2026-08-16)
+
+- **A VISUAL CHANGE IS NOT VERIFIED UNTIL IT HAS BEEN RENDERED AND MEASURED IN A REAL BROWSER (2026-08-16).**  **, evidence in `RULE_EVIDENCE.md`** Reading the markup and probing a DOM shim both missed defects a real layout exposed at once. Serve the page (`python3 -m http.server`) and measure the rendered geometry. **AND HOLD THE INSTRUMENT TO THE SAME STANDARD AS THE CODE** , five "defects" across two days were the harness misreading, including `pgrep -f` matching its own shell and a log parser silently dropping a whole league. **A fresh element, a second source, or a positive control settles it.**
+
+### `ORDER BY rt DESC` PUTS NULL FIRST
+
+- **`ORDER BY rt DESC` PUTS NULL FIRST , Postgres default, and it is LIVE DATA, not a hypothetical.** A null-rt row takes the top slot of any `rt DESC` query unless `nullsFirst:false` is passed. It broke the Compare picker once (`buildPoolQ` returned 50 null-rt rows, so **every filter matched 0**, fixed in `4428552`) and surfaced again spot-checking Salah, whose top row read `null` , 1 of his 26 rows has a null rt. **Any new `rt DESC` query needs `nullsFirst:false`.** 3,061 of 57,234 cards have a null rt.
+
+### THE COMPARE-USES-RPC CLAIM IS STALE (2026-07-24)
+
+- **CORRECTION 2026-07-24: the old claim that "Compare uses RPC `search_players`" is STALE , the RPC is NOT called anywhere in the front-end.** BOTH rankings.html and the Compare picker query `player_card_mv` directly. The matching logic (`vvNorm`, `tokenAndFilter`, `vvParseSearch`, `vvSeasonLabel`) now lives ONCE in vv-core.js (was byte-identical copies in each file) , change it there and both surfaces update. DB norm columns: `player_name_norm` / `team_name_norm` = `regexp_replace(lower(unaccent(coalesce(full_name,name))), '[^a-z0-9 ]','','g')`.
+
+### PRESTIGE IS EXEMPT FROM THE ROW TAG CAP
+
+- **PRESTIGE IS EXEMPT FROM THE ROW TAG CAP (rankings), AND IT IS EXEMPT BECAUSE IT WAS BEING DROPPED, NOT MIS-ORDERED.**  **, evidence in `RULE_EVIDENCE.md`** Prestige now renders FIRST and outside the cap. **Accepted consequence: a prestige row shows cap+1 pills.** **THERE ARE FOUR TAG-RENDER PATHS AND A FIX MUST BE CHECKED AGAINST ALL FOUR** , `vv-core:srtags`, `vv-core:utags`, `vv-core:chtagcell` and compact mode. A first pass fixed one row template and still reported success.
+
+### A TARGET-ONLY SNAPSHOT CANNOT SEE A RIPPLE (2026-08-13)
+
+- **A TARGET-ONLY SNAPSHOT CANNOT SEE A RIPPLE. SNAPSHOT ALL 57,234 CARDS BEFORE AND AFTER ANY WRITE, NEVER JUST THE ROWS YOU TOUCHED (2026-08-13).**  **, evidence in `RULE_EVIDENCE.md`** A 351-row write moved 137 UNTOUCHED cards, two across a public band , a target-scoped snapshot would have reported it clean. **Paginate past the 1000-row cap, read the file back off disk and assert it row-for-row before trusting it.**
+
+### `player_card_mv` DOES NOT `SELECT *` , the matview's column list is FROZEN
+
+- **`player_card_mv` DOES NOT `SELECT *` , it enumerates all 47 columns EXPLICITLY, and a matview's query is FROZEN at creation.** So appending a column to `player_card_view` surfaces it **NOWHERE**: `REFRESH` re-runs the stored column list. Postgres has no `ALTER MATERIALIZED VIEW ... ADD COLUMN`, so the only route is **DROP + CREATE of the matview the whole site reads, plus its 8 indexes** including the UNIQUE `card_id` index that `REFRESH CONCURRENTLY` depends on. **"Append-only, rt-safe" is true of the VIEW and FALSE of the MATVIEW , do not conflate them** (this was stated wrongly once and corrected before anything was run). Prefer a client-side lookup over a matview rebuild unless the column is genuinely required at query time.
+
+### `information_schema` IS BLIND TO MATVIEW GRANTS (2026-08-19)
+
+- **`information_schema` IS BLIND TO MATVIEW GRANTS , `pg_class.relacl` IS THE AUTHORITATIVE SOURCE (2026-08-19).** `role_table_grants` returns NOTHING for a materialized view, so a permissions check run against it reports "no grants exist" on a matview that is granted correctly. **A denied SELECT returns EMPTY WITH NO ERROR**, so a missing grant renders as an empty site rather than a fault , which is why the 2026-08-19 swap GRANTED the new matview before renaming it, while nothing was reading it.
+
+### `vv-core.js` CACHE TOKEN IS MANUAL
+
+- **`vv-core.js` CACHE TOKEN IS MANUAL , BUMP `?v=` IN card.html, compare.html AND rankings.html WHENEVER vv-core.js CHANGES, OR CLIENTS GET THE STALE FILE.**  **, the incident history is in `RULE_EVIDENCE.md`** Those are the ONLY three pages that load it. **The token does not maintain itself: there is no build step, so nothing bumps it for you.** Forgetting is the SAME failure the token exists to fix , a stale cached copy makes any vv-core change **silently no-op while looking fine**. **HARD-REFRESH after any vv-core change**, and suspect this first when a shared-renderer edit "does nothing".
+
+### AI CACHE INVALIDATION IS STAMP-BASED AND DERIVED
+
+- **AI CACHE INVALIDATION IS STAMP-BASED AND THE VERSIONS ARE DERIVED, NOT HAND-SET.**  **, the full scheme is in `RULE_EVIDENCE.md`** `VERDICT_VERSION` and `NOTES_VERSION` = `PROMPT_REV + fingerprint(prompt)`, so **editing a prompt auto-bumps its version and you cannot forget**, and they are SPLIT per cache. `stats_hash` is a key-sorted sha256 of the whole cited payload, so a goals fix that leaves rt unchanged STILL invalidates. Legacy rows are never deleted; they miss and self-heal on view. **SWAP TRAP: `pair_key` is canonical min-max, so `rt_a` binds to the LOWER `card_id`** and must be mapped through the same `swapped` flag as the payload.
+
+### CLAUDE CODE CAN EXECUTE DDL VIA `exec_sql` , the fold_fix.sql proof and the two sub-rules
+
+`fold_fix.sql` applied **unmodified, on the first attempt**, through the RPC after **two silent no-ops through the Supabase SQL editor**. The file was never wrong; the paste was not reaching the database.
+  - **THE GENERAL RULE: VERIFY THE WHOLE MIGRATION, NOT THE COLUMNS YOU HAPPEN TO REMEMBER.** Count against the file's own list: `select count(*) from information_schema.columns where table_name='x' and column_name in (...)` with EVERY name, asserting it equals the expected number. **A check scoped to a subset can only ever confirm the subset.**
+  - **AND KEEP DDL FILES SINGLE-STATEMENT WHEN THEY GO THROUGH THE EDITOR.** Comments and verification blocks belong in a separate paste, or the file's success indicator reports on the comment rather than on the DDL. The `exec_sql` RPC route (below) does not have this failure mode and is the better route for anything multi-statement.
+
+### THREE VERDICT TAGS HAVE A SHARE-ONLY DISPLAY NAME , the rename argument and the test
+
+- **IT IS KEYED BY TAG KEY (`var_close`), NOT BY NAME**, and `verdictShareName()` accepts either. A check written against the name throws on a correct codebase , that cost a false QA failure on 2026-08-27.
+- **WHY A LOOKUP AND NOT A RENAME: the tag set is a product vocabulary with locked names, and this is PRESENTATION FOR ONE SURFACE.** Renaming would move the name everywhere , the chip, the AI prompt contract, the stale cache rows keyed on it. **A later session finding the two lists different will be tempted to "fix" the drift. This entry is why it must not.**
+- **THE TEST THAT FOUND THEM: put every tag in the target sentence and read all of them, not one example.** Eleven survived, three did not. **A format that works for one tag is not a format; the set has to hold.**
+
+### THE SHARE FRAME , vvCentreShareCaption and the misnamed shareCapture container
+
+- **AND `vvCentreShareCaption` MOVES THAT BLOCK UNDER THE CARDS, SO IT IS CLAMPED TO THE FRAME.** A full-width block centred on a left-sitting card pair would leave the frame.
+- **A CONTAINER NAMED FOR A JOB IT DOES NOT DO IS ITS OWN TRAP.** `card.html` wraps the card and its tagline in `id="shareCapture"`, but the capture composes a SEPARATE frame in vv-core and never reads that element , the preview showed a tagline the PNG never contained. **The name is the reason nobody checked.**
+
+### THE html2canvas SWEEP , the drop-shadow exception, measured
+
+- **ACCEPTED EXCEPTION: the squad shield's `drop-shadow` IS dropped and does not matter** , measured at a mean of 0.31/255 on the card's dark ground. **Blur cannot be shimmed, so faking it trades a visible hard edge for nothing. Do not "fix" it.**
+
+### A PAGE'S HTML IS NOT CACHE-BUSTED , the incident and the asymmetry
+
+- **IT COST A WRONG CONCLUSION THIS SESSION.** Attributes added to card.html's share buttons were verified present in the file and absent in the DOM, which reads exactly like a failed edit. **Add a query param (`?cb=1`) or hard-refresh before concluding that markup did not apply**, and suspect this FIRST when a file and the page disagree.
+- **NOTE THE ASYMMETRY THAT MAKES IT CONFUSING: the JS is fresh while the HTML is stale**, so the page half-updates and the symptom looks like a selector or a scoping bug rather than a cache.
+
+### FORGED-BUT-CONSISTENT CORRUPTION , the agreement mechanism in full
+
+- **The failure mode is not disagreement, it is AGREEMENT.** Every internal cross-check answers "do these two fields tell the same story". A row that is wholly someone else's tells a perfectly consistent story , wrong, and self-consistent. **Consistency is what this corruption PRODUCES, so consistency cannot be the test for it.**  **, evidence in `RULE_EVIDENCE.md`**
+
+### FORGED-BUT-CONSISTENT , the cheap tells, worked
+
+- **AND A CHEAP TELL WHEN NO EXTERNAL SOURCE IS TO HAND: look for things that cannot both be true.** One `api_player_id` holding two clubs in one season with minutes summing past 3,420. A pooled goalkeeper with 5 goals. A league-season carrying 600 cards where every other year of the same league carries 384 to 441. **Those are internal checks that test the WORLD rather than our own field agreement, which is why they survive.**
+
+### A CONTRAST AUDIT NEEDS THREE THINGS RIGHT ON SVG , the pattern, in full
+
+- **THE PATTERN, AND IT IS THE POINT: an instrument wrong in one way hides the ways it is wrong in the others.** Each correction made the next visible, every intermediate state produced confident wrong numbers, and **the errors ran in BOTH directions** , bought fixes nobody needed, and would have hidden real ones.
+
+### THREE CONTRAST FAILURES ARE ACCEPTED EXCEPTIONS , the reasoning per exception
+
+- **CARD-FACE CHIPS** , the gold band label at **2.04** and the green `chtagcell` text at **2.34**. The fill carries the tag's identity; changing the ink is a redesign of the card, and the card face is the product.
+- **`.prenum` ("95+", "90+") at 1.00 by construction** , `background-clip:text` over a gradient that ends fully transparent. Deliberate and decorative, and the number is also written in the copy beside it.
+- **THE WAITING BOX EDGE AT 1.88** against the page, under the 3:1 non-text bar. A skeleton should be quiet , it is a placeholder, not a control.
+- **`.pspot`, THE PITCH POSITIONS , cream on brand pink at 3.89 with an 11px label, so the bar is 4.5. ACCEPTED.** The `.cm-mk` remedy does not transfer: that marker reached the 3:1 LARGE-text bar by growing to 19px bold, but the pitch labels are WORDS, not digits, and eleven of them overlap on the pitch. **REVISITABLE IF THE PITCH IS EVER REDESIGNED** , a larger pitch makes this solvable by size, exactly as `.cm-mk` was.
+
+### CDM IS ASYMMETRIC , the 208-card zero-move baseline and the sign narrative
+
+CDM is the ONE destination pool where the defensive signal is load-bearing, so it is the only transition family that moves rt at all , every `CAM -> Winger` and `CAM -> CM` write across 208 cards moved exactly ZERO. That much was already recorded. **What was NOT recorded is that the effect has a SIGN, and the earlier note stated only the direction that had been observed.**
+- **MECHANISM: a card sitting in CDM draws a `def_core` benefit from the defensive pool. Moving it out REMOVES that benefit.** So the demotion is prior inflation leaving, not new error , those cards were being credited for defensive work they were never doing. **State it that way when it is questioned**, because a famous name losing a band reads like a bug.  **, evidence in `RULE_EVIDENCE.md`**
+
+### THE LOADER MONOGRAM , why both earlier traces read mirror as translation
+
+- **THE TWO Vs ARE MIRRORED, NOT TRANSLATED** , both earlier traces got this wrong the same way, and it is why the mark never sat right. **A mark measured only where the two shapes overlap cannot tell mirror from translation: find the arm that is never occluded and fit THAT.**
+
+### THE LOADER MONOGRAM , the seam offset, derived versus measured
+
+- **SEAM OFFSET IS 218.5, THE ASSET'S OWN NUMBER, NOT A DERIVED ONE.** A seam derived from the drop instead (287.3) separates the two Vs until they read as "V V", which is the one thing the drop exists to prevent. **THE GENERAL POINT: a number from a formula is a PREDICTION and the asset is the MEASUREMENT , when they disagree, measure a landmark the formula never touched.**
+
+### `vv-marks.js`/`vv-core.js` SHARED TOKEN , the blank-<use> failure mode
+
+- **THE FAILURE IS THE USUAL SILENT ONE.** A `<use>` pointing at a symbol not in the document renders **BLANK**, with no error and no layout change. `VVMarks.inject()` warns once per surface when a mark resolves to nothing , the same guard shape as `vvQueueRowAudit`, added for the same reason.
+
+### `git reset --hard` IS REPO-WIDE , the incident
+
+- **`git reset --hard` IS REPO-WIDE AND DESTROYS UNCOMMITTED WORK IN FILES THAT HAVE NOTHING TO DO WITH THE TASK. USE `git checkout -- <named files>` INSTEAD (2026-08-17).** It takes no path argument in the form it is usually reached for, so "undo my working-tree changes" quietly means "undo EVERYONE'S working-tree changes", including edits made hours earlier in a different thread of work.  **, evidence in `RULE_EVIDENCE.md`**
+
+### THE html2canvas SWEEP , the dropped-versus-drawn-wrongly limit, measured
+
+A rounded inset `box-shadow` passes `vvAuditCaptureSupport` and is still absent from the real card's corner: **zero gold pixels without `vvShimInsetRims`, 370 with it.** The harness detects DROPPED, never DRAWN WRONGLY, so it is not a substitute for reading a captured PNG.
+
+### NULL-POOL POLICY , a WRONG pool is not a MISSING pool
+
+- **SEPARATE AND NOT COVERED BY THIS POLICY: a WRONG pool is not a MISSING pool.** The repartition model's twelve biggest falls at rt>=85 are all creative players stored in the ST or Winger pool. **No null-pool policy touches them.** The narrow verifiable set is **15 cards: ST pool, rt>=80, assists >= goals.** Note the wider signal is NOT usable , at `assists >= 1.5x goals` the list is 24 cards and mostly LEGITIMATE wingers (Sane, Di Maria, Saka, David Silva, Messi at PSG), because a creative winger is an archetype and not an error.
