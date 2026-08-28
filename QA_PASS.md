@@ -174,21 +174,26 @@ instrument that cannot reproduce them is not evidence about anything else on the
 - **How:** query and RECORD: total cards, null `rt`, `position_pool='UNK'`, coarse `position='FOR'`, `card_id < 120000`.
 - **Pass:** figures recorded in the session log. **Measured 2026-08-27: 57,058 total, 3,061 null rt, 71 UNK, 36 FOR, 9 in the old corrupt block. THE DOCS SAY 125 UNK AND 185 IN THE BLOCK , both have moved, so this item CAPTURES a baseline rather than asserting an old one.**
 
+- **STATUS 2026-08-28: SATISFIED BY ITS OWN TEXT.** This item's pass condition is "figures recorded", and the 2026-08-27 figures are recorded in the line above. **Re-measured 2026-08-28: total is 57,058, unchanged.** Nothing to re-run.
 ### A16. GK matview swap is intact
 - **Check:** the keeper and discipline columns are present and populated on the matview the site reads.
 - **How:** query `player_card_mv` for non-null counts on `saves`, `goals_conceded`, `penalties_scored`, `penalties_missed`, `penalties_saved`, `starts`, `cards_yellow`, `cards_red`, `fouls_committed`, `fouls_drawn`, and confirm the column count is 65. **THE DISCIPLINE COLUMNS ARE `cards_yellow` / `cards_red`, NOT `yellow_cards` / `red_cards` , guessing the obvious name reports a MISSING COLUMN on a healthy matview.**
 - **Pass:** all eight columns present and non-empty. **`information_schema` is BLIND to matview grants , if the site renders empty with no error, check `pg_class.relacl`, not `role_table_grants`.**
 
+- **STATUS 2026-08-28: PASS, measured.** Non-null counts on `player_card_mv` , saves 2,813 / goals_conceded 31,365 / penalties_scored 38,291 / penalties_missed 38,291 / penalties_saved 2,816 / starts 56,555 / cards_yellow 57,055 / cards_red 57,055 / fouls_committed 36,832 / fouls_drawn 37,673. **Column count exactly 65**, as specified.
 ### A17. Engine repartition and the position vocabulary are NOT half-applied
 - **Check:** the repartition is parked, and nothing on the branch has partially applied it.
 - **How:** confirm `rel_pct` still partitions on the coarse field, and that the band counts hold.
 - **Pass:** band populations still **12 / 150 / 650** (rank-anchored, so they hold by construction) and no card's `rt` moved without a recorded write. **The repartition is PARKED behind the corrupt block , gating the GK branch on `COALESCE(pool,pos)` would cap a corrupt outfield season at 75 and make bad data look plausible.**
 
+- **STATUS 2026-08-28: PASS, measured two ways.** Band populations **12 / 150 / 650**, holding exactly. And read straight out of `pg_get_viewdef`: `percent_rank() OVER (PARTITION BY s.pos ORDER BY s.minutes) AS rel_pct` , the COARSE field, and **no `coalesce(r.pool` anywhere in the view**, so the repartition is genuinely parked rather than half-applied. Viewdef is 12,440 chars and contains `rt_new`, so the engine is intact (§C: under ~2,000 chars means damaged).
+- **NOTE, not a failure: the 80+ band reads 1,406 against the 1,412 recorded in §E.** The three RANK-ANCHORED bands are 95/90/85 and those hold by construction; 1,412 was a modelled figure, not an anchor. Worth a line in §E rather than a re-audit.
 ### A18. No secret is reachable from a deployed endpoint
 - **Check:** the BSD credential and base URL surface.
 - **How:** `git grep -ln "BSD_API_KEY\|sports.bzzoiro.com"`
 - **Pass:** a DECISION is recorded for each hit. **Measured 2026-08-27: THIRTEEN files, of which FOUR are deployed endpoints , `api/bsd-probe.js`, `api/debug-player.js`, `api/import-players.js` and `api/search-player.js` , plus five GitHub workflow files and `.env.example`. §E records FIVE files; it is thirteen.** Nothing here writes `api_player_id` today, but the second provider is one edit away from reintroducing the identity collision that produced the corrupt block.
 
+- **STATUS 2026-08-28: PASS.** `git grep -ln "BSD_API_KEY\|sports.bzzoiro.com"` now returns **FOUR** files, down from thirteen, and every one is a deliberate RECORD rather than a credential: `CLAUDE.md`, `QA_PASS.md`, `migrations/bsd_block_cleanup_2026-08-23/README.md`, and a post-mortem COMMENT at `api/import-players.js:133`. **The three BSD endpoints are gone.** `api/` now holds 15 files. **The key still needs revoking at the provider and removing from Vercel's env , code no longer reading it is not the same as it being dead (C5-adjacent, but a separate credential).**
 ---
 
 # GROUP B , NEEDS THE LIVE DOMAIN, AFTER THE MERGE
@@ -196,6 +201,23 @@ instrument that cannot reproduce them is not evidence about anything else on the
 `vvonderxi.com` IS live and served by Vercel, so these are runnable the moment the merge deploys.
 **None of them can be run before it: the branch has never been deployed anywhere and no preview
 URL is recorded.**
+
+**ALL SIX ARE PARKED FOR POST-MERGE (confirmed 2026-08-28).** Each asserts a state that only
+exists once the branch is deployed, and the branch has never been deployed anywhere.
+
+**BUT TWO WERE PRE-CHECKED AGAINST PRODUCTION TODAY, because they test infrastructure the merge
+does not change, and a failure in either would be a blocker nobody would discover until after
+deploying:**
+- **B3 og:image , PRE-CHECK PASSES.** `https://vvonderxi.com/og-image.png` returns **200,
+  `image/png`, 193,595 bytes, 1200x630** , the exact size the tags claim. The asset is real and
+  fetchable today, so B3 after the merge is only re-confirming the tag POINTS at it.
+- **B4 extensionless routing , PRE-CHECK PASSES.** `/card`, `/compare`, `/rankings`, `/playbook`
+  and `/vvindex` all return **200** on production now, so `cleanUrls` works and the extensionless
+  `og:url` values the branch emits will resolve.
+- **B1, B2, B5, B6 CANNOT be usefully pre-checked**: B1 and B2 assert the merge FIXED production's
+  title and tag count (both already measured wrong, which is the defect), B5 needs the merged
+  function set, and B6 needs `ANTHROPIC_API_KEY`, which lives only in Vercel. **B6 additionally
+  cannot pass until the merge, because production requests a RETIRED model and 404s , see §D.**
 
 ### B1. Production's title and brand line , RUN THIS FIRST
 - **Check:** the live title no longer says "Intelligence".
