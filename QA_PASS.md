@@ -37,6 +37,34 @@ behave, the result is void.**
 
 Runnable now, on the branch, with no domain and no human eye.
 
+### HARNESS CAVEATS , READ BEFORE TRUSTING ANY NUMBER IN GROUP A (added 2026-08-28)
+
+Both were found producing confident, wrong numbers during this pass. Neither is fixed; both
+are avoidable if you know about them.
+
+- **A THROTTLED TAB VOIDS EVERY TIMING, OPACITY AND TRANSITION READING.** Chrome freezes
+  transitions and clamps timers in a background tab. Measured here: `document.visibilityState`
+  `"hidden"`, `document.hasFocus()` false, and **a 50ms timer taking 558ms , an 11x throttle**.
+  **ASSERT FIRST, EVERY TIME:** `visibilityState === 'visible'` AND a 50ms timer returning in
+  under ~200ms. If either fails, the run is void, not merely noisy. This is the same fault
+  already recorded in section D against the toast.
+- **THE CONTRAST WALKER FALLS THROUGH GRADIENTS AND INVENTS A WHITE GROUND.** It reads only
+  `backgroundColor`; every VV page paints its body in gradients, so the walk reaches the root
+  and returns white. **It reported the card hero skeleton's loader at 1.20 , a failure , on a
+  ground that is actually `rgb(26,23,24)`, where the true figure is 14.81.** It did the same on
+  `rankings` (1.20 reported, 16.30 actual) and on `vvindex`, where the gradient-aware variant is
+  no better: that one scores text against decorative 26px radial stops sitting nowhere near it
+  and reported **51 failures on a visibly legible page**.
+  - **THE TELL: if any ancestor has a `background-image`, the ground is UNRESOLVED. Say so and
+    stop , do not report a ratio.**
+  - **WHAT SETTLES IT INSTEAD:** capture the element with html2canvas passing the page's own
+    base colour as `backgroundColor` (take it from the body's final gradient stop, do not guess),
+    then read the two dominant colours inside the mark's own box. **Capturing with
+    `backgroundColor:null` does NOT work** , a translucent panel then composites onto an implicit
+    white and reproduces the same false reading.
+  - **AND WHERE THE GROUND IS A SOLID COLOUR THE WALKER IS FINE.** The glance-panel failure it
+    found was real and confirmed by pixels.
+
 ### A1. Every file parses and every declared rule survives
 - **Check:** no syntax error, no silently truncated CSS, every shared module exports what pages expect.
 - **How:** `node scripts/lint-inline.js`
@@ -54,7 +82,7 @@ Runnable now, on the branch, with no domain and no human eye.
 - **NOTE, and it cost a false failure on the first run: `VERDICT_SHARE_NAME` is keyed by TAG KEY (`var_close`), not by tag name.** A check written against the name throws on a correct codebase. `verdictShareName()` deliberately accepts either, so the test must too.
 
 ### A4. Mark set resolves, nothing renders blank
-- **Check:** all 38 marks exist and every key used by a consumer resolves to real path data.
+- **Check:** all 39 marks exist and every key used by a consumer resolves to real path data. **(38 until `s-gk`, the goalkeeper glove, was added 2026-08-28.)**
 - **How:** serve locally, open card / compare / rankings, and read the one-shot console audit `VVMarks.inject()` emits.
 - **Pass:** no "mark resolves to nothing" warning on any surface. **A `<use>` pointing at a missing symbol renders BLANK with no error and no layout change, so the console warning is the only signal.**
 
@@ -62,6 +90,17 @@ Runnable now, on the branch, with no domain and no human eye.
 - **Check:** the two-tone mark renders as a W, in both themes, at every size actually used.
 - **How:** serve locally; render `VVCore.vvLoader({size:n})` at 64/48/44/40/22/16 in both themes; screenshot.
 - **Pass:** the interlock reads at every size, the base V is visible in both themes, and the pink wipes without the base disappearing. **The base must never vanish , that is the whole design guarantee.**
+- **AND CHECK THE INK AT EVERY CALL SITE, AGAINST ITS GROUND AND NOT AGAINST THE THEME.** The
+  loader's default base ink flips with `body.light`. That is correct only where the GROUND flips
+  too. **`card.html`'s glance panel is `.layer`, which is cream in BOTH themes, so the default
+  put a cream V on cream at contrast 1.00 , not faint, NOT DRAWN (0 non-ground pixels of 4096).**
+  Fixed 2026-08-28 by passing `ink:'var(--charcoal)'`, and `VVCore.vvAuditLoaderInk()` now warns
+  once per surface when a base falls under 1.6 against a resolvable ground.
+- **THE SIX CALL SITES, ALL MEASURED 2026-08-28:** card:1167 AI wait **14.41** (explicit ink),
+  card:1519 hero **14.81** (by capture), card:1542 glance **1.00 -> 14.31** (fixed),
+  rankings:507 **16.30 / 13.42** (by capture), compare:1428 **15.72 / 16.57**,
+  compare:1721 `.vwait` **15.72 / 14.41**. **Four of six sit on gradient grounds and can only be
+  settled by capture , see the harness caveats above.**
 
 ### A6. The four html2canvas divergences
 - **Check:** each of the four known capture gaps is either shimmed or accepted, and no NEW one has appeared.

@@ -1038,8 +1038,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260828b"></script>
-<script src="/vv-core.js?v=20260828b"></script>
+<script src="/vv-marks.js?v=20260828c"></script>
+<script src="/vv-core.js?v=20260828c"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1539,7 +1539,13 @@
     // pending, which is more honest than blanking the whole block and more legible than a
     // spinner per number.
     var _gd=document.getElementById('glDrury');
-    if(_gd && window.VVCore && VVCore.vvLoader) _gd.innerHTML=VVCore.vvLoader({size:40, label:'Loading the glance'});
+    if(_gd && window.VVCore && VVCore.vvLoader) _gd.innerHTML=VVCore.vvLoader({size:40, label:'Loading the glance', ink:'var(--charcoal)'});
+    /*  EXPLICIT INK, and the reason is the one written above VV_LOADER_CSS in vv-core:
+        this loader lands in the GLANCE panel, and .layer is cream in BOTH themes. The
+        default base is keyed to the theme, so in dark mode it rendered cream on cream
+        at contrast 1.00 , not faint, NOT DRAWN (measured: 0 non-ground pixels of 4096).
+        The base V vanishing is exactly the guarantee the mark is supposed to make.
+        Same fix as the AI wait above; it was applied there and not here. */
   } else {
     renderHero();                              // no id -> standalone demo (unchanged)
   }

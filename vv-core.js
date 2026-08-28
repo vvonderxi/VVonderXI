@@ -3801,6 +3801,55 @@ body.light .vvload{color:#1A1917}
   //  page ~4.05 and ~15.5, so every pair clears the 3:1 non-text bar. 16 is where the WIPE
   //  stops reading as a direction, not where the mark stops reading.
   let LOADER_UID = 0;
+  /*  THE INK RULE WAS STATED BESIDE ONE CALLER AND DID NOT PROTECT THE OTHERS (2026-08-28).
+      The comment above VV_LOADER_CSS names this exact failure , a cream base V on the
+      glance panel, which is cream in BOTH themes , and card.html:1167 passed its own ink
+      while card.html:1542 did not. It shipped at contrast 1.00: not faint, NOT DRAWN.
+      A comment is not a guard, so this is the guard. Same shape as vvQueueRowAudit and
+      vvAuditCaptureSupport: warn ONCE per surface, name the element, never throw.
+      It measures the BASE against its own composited ground. Where a gradient makes the
+      ground unresolvable it says so and stays silent rather than inventing a number ,
+      three separate instruments produced a confident wrong 1.20 on exactly that case. */
+  var LOADER_INK_AUDITED = false;
+  function vvAuditLoaderInk(root){
+    if (typeof document === 'undefined' || LOADER_INK_AUDITED) return;
+    var nodes = (root || document).querySelectorAll('.vvload');
+    if (!nodes.length) return;
+    LOADER_INK_AUDITED = true;
+    function pc(c){ var m=(String(c).match(/-?[\d.]+/g)||[]).map(Number);
+                    return m.length<3?null:[m[0],m[1],m[2],m.length>3?m[3]:1]; }
+    function over(f,b){ var a=f[3];
+      return [f[0]*a+b[0]*(1-a), f[1]*a+b[1]*(1-a), f[2]*a+b[2]*(1-a), 1]; }
+    function lum(c){ var f=function(v){ v/=255;
+      return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+      return 0.2126*f(c[0])+0.7152*f(c[1])+0.0722*f(c[2]); }
+    function cr(a,b){ var l1=lum(a), l2=lum(b);
+      return (Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05); }
+    for (var i=0;i<nodes.length;i++){
+      var el = nodes[i], base = el.querySelector('.base');
+      if (!base) continue;
+      var n = el, stack = [], gradient = false;
+      while (n && n !== document.documentElement){
+        var cs = getComputedStyle(n);
+        if (cs.backgroundImage && cs.backgroundImage !== 'none') gradient = true;
+        var c = pc(cs.backgroundColor);
+        if (c && c[3] > 0){ stack.push(c); if (c[3] >= 0.999) break; }
+        n = n.parentElement;
+      }
+      if (gradient) continue;                       // unresolvable ground , say nothing
+      var g = [255,255,255,1];
+      for (var k=stack.length-1;k>=0;k--) g = over(stack[k], g);
+      var ink = pc(getComputedStyle(base).fill);
+      if (!ink) continue;
+      var ratio = cr(ink, g);
+      if (ratio < 1.6){
+        try { console.warn('[vv] loader base is invisible on its ground (contrast ' +
+              ratio.toFixed(2) + '). Pass an explicit ink: option , the default follows the ' +
+              'THEME, and this ground does not move with it.', el); } catch(e){}
+      }
+    }
+  }
+
   function vvLoader(opts){
     opts = opts || {};
     vvInjectLoaderCSS();
@@ -3821,6 +3870,7 @@ body.light .vvload{color:#1A1917}
     const a11y = opts.silent
       ? ' aria-hidden="true"'                 // the caller's own visible text is the announcement
       : ' role="status" aria-live="polite"';
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(function(){ vvAuditLoaderInk(); });
     return '<div class="vvload' + (opts.className ? ' ' + opts.className : '') +
            '"' + a11y + inkStyle + '>' + mark +
            (opts.silent ? ''
@@ -4459,7 +4509,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
