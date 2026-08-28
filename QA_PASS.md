@@ -147,6 +147,28 @@ are avoidable if you know about them.
 - **How:** run the contrast harness on card, compare, rankings, playbook, vvindex, index, in BOTH themes. **On any SVG, ink is `fill` not `color`, the ground is sibling geometry (hit-test, topmost = last in document order), and a stroke counts toward legibility.**
 - **Pass:** the only failures are the recorded exceptions , card-face chips 2.04 and 2.34, `.prenum` 1.00 by construction, the waiting-box edge 1.88, `.pspot` 3.89. **Anything else is new.**
 
+**STATUS 2026-08-28: NOT RUN. NO AVAILABLE INSTRUMENT PASSES ITS OWN CONTROLS AT PAGE SCALE, AND
+THIS ITEM SHOULD NOT BE MARKED PASSED UNTIL ONE DOES.** Five were tried:
+1. **The CSS walker** , reads only `backgroundColor`, falls through gradient bodies to white.
+   Reported the loader at 1.20 where it is 14.81.
+2. **The gradient-aware variant** , scores text against decorative 26px radial stops nowhere
+   near it. **51 failures on a visibly legible page.**
+3. **Pixel capture, nearest-cluster ink** , picks an antialiased EDGE tone. Read `.pspot` at
+   1.92 against its recorded 3.89.
+4. **Pixel capture, glyph-core ink** (clusters holding >=2% of the crop, furthest from the
+   ground). **THIS ONE WORKS: it reproduced `.pspot` at exactly 3.89 and `.prenum` at 1.00.**
+   But it needs ONE CAPTURE PER ELEMENT , ~260 elements on the playbook alone, times two
+   themes, times six surfaces.
+5. **The same method batched into one capture per surface** , html2canvas returned a bitmap
+   **20090px tall where the DOM box is 18732px**, so every crop drifts downward and lands on
+   flat background. A uniform scale correction does not fix it (the extra height is appended,
+   not stretched) and the controls still fail: `.pspot` reads 1.01.
+
+**WHAT TO DO:** run method 4 offline in batches, or fix the batched capture's vertical
+alignment against a control BEFORE scanning. **VALIDATE ANY REPLACEMENT AGAINST THE RECORDED
+EXCEPTIONS FIRST , `.pspot` 3.89 and `.prenum` 1.00 are the two known values, and an
+instrument that cannot reproduce them is not evidence about anything else on the page.**
+
 ### A15. Data baselines , capture, do not assert
 - **Check:** record the state of the known data defects so the merge does not silently inherit a changed one.
 - **How:** query and RECORD: total cards, null `rt`, `position_pool='UNK'`, coarse `position='FOR'`, `card_id < 120000`.
