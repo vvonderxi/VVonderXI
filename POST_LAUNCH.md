@@ -103,7 +103,53 @@ Established while retiring Marksman. **Read this before proposing any new profil
 Locked design, not started. CLAUDE.md keeps a pointer carrying every DECISION; this file holds the
 detail and the measurements. CLAUDE.md wins on any conflict.
 
-### GOALKEEPER CARD , A SEPARATE VISUAL TREATMENT (LOCKED 2026-08-19, NOT built)
+### GOALKEEPER CARD , **SUPERSEDED AND BUILT 2026-08-28. THE THREE-SPOKE RADAR IS DEAD; THERE IS NO RADAR ON A KEEPER CARD.**
+
+**READ THIS HEADER BEFORE THE SPEC BELOW IT.** Everything from "THE RADAR , THREE SPOKES" down is the
+2026-08-19 design and is kept ONLY as the reasoning trail. It was superseded by measurement, not by taste,
+and the measurements are here so nobody reinstates it.
+
+**WHAT SHIPPED INSTEAD:** `VVCore.keeperScore()` plus `VVCore.keeperPanelHTML()`, wired into `card.html`'s
+Profile layer, with a new `s-gk` section on the playbook. **A percentile LADDER carries the score, a
+saved-versus-conceded bar carries the composition, and the recorded figures are stated.** No radar.
+
+**WHY THE THREE SPOKES DIED , THREE MEASURED REASONS:**
+- **PENALTIES SAVED IS NOT A SCOREABLE AXIS, AND THIS IS THE ONE THAT KILLED IT.** The old spec already
+  flagged 53.3% of the pool at zero and called it a rendering question. It is worse than that:
+  **`penalties_missed` is zero for all but 2 of 1,583 keepers, so PENALTIES FACED IS NOT DERIVABLE** and
+  the field is a count with no denominator. **Tested at 10% weight it put Trapp above Donnarumma and
+  dropped ter Stegen , the highest save% in the pool , to 39th.** A spoke needs a rate. This has none.
+  It is a stated FACT on the card and never a score term.
+- **WORKLOAD IS NOT A MEASURE OF THE KEEPER, so a spoke overstates it.** Measured on the gated pool:
+  **shots faced against save% is -0.118**, while **shots faced against goals conceded is +0.835.** Volume
+  tracks the weakness of the team in front of him, near enough one-to-one. Given a spoke it reads as
+  credit; given a bar with the count beneath it, it reads as context, which is what it is.
+- **THAT LEAVES ONE HONEST AXIS, AND ONE AXIS IS NOT A SHAPE.** With penalties out and workload demoted,
+  the three-spoke radar is a one-spoke radar wearing two decorations. **A ladder against the keeper pool
+  says strictly more than a triangle could**, because it shows WHERE in the pool he sits.
+
+**WHAT SURVIVED FROM THE OLD SPEC, UNCHANGED AND STILL TRUE:** shots faced is DERIVED as
+`saves + goals_conceded` and is SHOTS ON TARGET faced (the card says "shots on target faced"); the pool is
+keeper-only; shot quality is a PUBLISHED limitation, now on both the card and the playbook; the GK-75 cap
+is untouched and is still the real job behind this.
+
+**WHAT THE BUILD ADDED THAT THE SPEC DID NOT HAVE:**
+- **GATES: 800 minutes AND 60 shots faced, 2015+.** 1,920 of 4,289 keeper cards score. The rest get a
+  named reason , 1,299 pre-2015, 559 under minutes, 317 under shots, 194 with saves or conceded unrecorded.
+- **THE LADDER IS AN EMBEDDED PERCENTILE TABLE (`KEEPER_SAVE_LADDER`), not a live query**, measured on the
+  gated pool at every 5th percentile. **It is a snapshot: if the keeper population changes materially it
+  must be re-measured**, and nothing warns you.
+- **NO PER-LEAGUE NORMALISATION.** The spread across the nine leagues is 2.7 points of save%, which is not
+  worth a per-league pool that would shrink every comparison set.
+- **THE CAP IS STATED ON THE CARD**, one line under the score, because two keepers at the 54th and the 97th
+  percentile both print 75 and the ladder underneath would otherwise contradict the number above it.
+
+**THE PROOF ROWS BELOW ARE STILL UNBUILT AND STILL BLOCKED** on the percentile columns, exactly as the old
+spec says. The panel does not depend on them.
+
+---
+
+#### THE SUPERSEDED 2026-08-19 SPEC , reasoning trail only, DO NOT BUILD FROM THIS
 **Outfield cards keep the five-dimension radar UNCHANGED. GK cards get their own treatment, applied to every keeper card on the platform.** This is a locked design decision, not an open question , do not re-derive the spoke count.
 
 **WHY IT EXISTS: a keeper card is currently an outfielder's card with the numbers emptied out.** Measured live on Neuer 19/20, which now holds saves 81, goals conceded 31, penalties saved 1: the radar reads Goal Threat 0, Creation 0, Progression 20, Defensive 1, Reliability 87 , **all of it arithmetically correct and none of it about goalkeeping** (the 20 is passing volume leaking through `0.02*passes_total`; the 87 is availability). The Proof lists Tackles 2, Interceptions NR, Blocks NR, because `POOL_DIM.GK = 'def'` hands keepers the defender row set. Not one of saves, goals conceded or penalties saved appears anywhere on the card.

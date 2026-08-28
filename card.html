@@ -230,6 +230,12 @@
   .tagrow .tt .ti{width:15px;height:15px}
   .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
   .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:#3a352e}
+  /* THE KEEPER CAP, STATED. The VV Score does not weigh goalkeeping yet, so every keeper
+     prints 75 regardless of how well he kept goal. Left unsaid, the number contradicts the
+     save-rate ladder in The Profile directly beneath it. Shown on GK cards only. */
+  .gkcapline{font-family:'Inter';font-size:11.5px;line-height:1.45;color:var(--ink-soft);
+             margin:-2px 0 2px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.09)}
+  .gkcapline[hidden]{display:none}
   /* honour chips (glance / profile) */
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
   .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
@@ -960,6 +966,7 @@
          a name is identifying, so flashing a real player's name (~165ms, until
          this card's own data lands) would read as the wrong card. min-height on
          .gname reserves the line so the blank costs no layout shift. -->
+    <div class="gkcapline" id="glGKCap" hidden></div>
     <div class="gname" id="glName"></div>
     <div class="gsub" id="glSub" data-demo>CAM &middot; Man Utd &middot; 23/24</div>
     <div class="gdrury" id="glDrury"></div>
@@ -974,9 +981,10 @@
     <div class="gbnum">SQUAD NO.</div>
   </div>
 </div></div></div></div>
-      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.1"/><path d="M5.7 16c.5-1.6 1.7-2.5 3.3-2.5s2.8.9 3.3 2.5"/><line x1="15" y1="10.2" x2="18.3" y2="10.2"/><line x1="15" y1="13.6" x2="18.3" y2="13.6"/></svg></div><div class="layer-t">The Profile</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext"><b id="profileLead">&nbsp;</b> The radar shows his shape; the gradient (red to green) tells you where his game lives.</div>
+      <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.1"/><path d="M5.7 16c.5-1.6 1.7-2.5 3.3-2.5s2.8.9 3.3 2.5"/><line x1="15" y1="10.2" x2="18.3" y2="10.2"/><line x1="15" y1="13.6" x2="18.3" y2="13.6"/></svg></div><div class="layer-t">The Profile</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext"><b id="profileLead">&nbsp;</b> <span id="profileIntro">The radar shows his shape; the gradient (red to green) tells you where his game lives.</span></div>
 <div class="radarwrap" id="radarBox"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg><small id="radarNote"></small></div>
-<div class="attrtop"><span>Attribute</span><span>/ 100</span></div>
+<div id="gkPanel" hidden></div>
+<div class="attrtop" id="attrTop"><span>Attribute</span><span>/ 100</span></div>
 <div id="attrBars">
 <div class="attr"><div class="an">Goal Threat</div><div class="abar"><i style="width:55%;background:#E8943B"></i></div><div class="av">55</div></div>
 <div class="attr"><div class="an">Creation</div><div class="abar"><i style="width:95%;background:#1f6b42"></i></div><div class="av">95</div></div>
@@ -1030,8 +1038,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260827h"></script>
-<script src="/vv-core.js?v=20260827h"></script>
+<script src="/vv-marks.js?v=20260828a"></script>
+<script src="/vv-core.js?v=20260828a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1045,6 +1053,30 @@
     function drawRadar(){
       const svg=document.getElementById('radar'); if(!svg) return;
       const box=document.getElementById('radarBox');
+      /*  A KEEPER CARD GETS NO RADAR. The five dimensions are outfield measures , a
+          goalkeeper's creation and progression are not low, they are NOT MEASURED, and
+          the radar has no way to say that beyond an NR label on four of five spokes.
+          The panel replaces the whole radar+bars set with the two things we do hold.
+          The score itself is still capped at 75 and the glance says so. */
+      const kp=(typeof D!=='undefined'&&D&&D.keeper)?D.keeper:null;
+      const gkBox=document.getElementById('gkPanel');
+      const attrTop=document.getElementById('attrTop'), attrBars=document.getElementById('attrBars');
+      const intro=document.getElementById('profileIntro');
+      if(kp && gkBox){
+        svg.innerHTML=''; svg.style.display='none';
+        const n0=document.getElementById('radarNote'); if(n0) n0.textContent='';
+        const s0=document.getElementById('radarSup'); if(s0){ s0.style.display='none'; s0.innerHTML=''; }
+        if(attrTop) attrTop.hidden=true;
+        if(attrBars) attrBars.hidden=true;
+        if(intro) intro.textContent='A goalkeeper is measured on a different set: how often he saved the shots that reached him, against every other keeper we can measure.';
+        gkBox.hidden=false;
+        gkBox.innerHTML=VVCore.keeperPanelHTML(kp);
+        return;
+      }
+      if(gkBox){ gkBox.hidden=true; gkBox.innerHTML=''; }
+      if(attrTop) attrTop.hidden=false;
+      if(attrBars) attrBars.hidden=false;
+      if(intro) intro.textContent='The radar shows his shape; the gradient (red to green) tells you where his game lives.';
       const rad=(typeof D!=='undefined'&&D&&D.radar)?D.radar:null;
       const sc=rad&&rad.scaled?rad.scaled:null;
       const KEYS=['goalThreat','creation','progression','defensive','reliability'];
@@ -1293,7 +1325,18 @@
     renderProof(D);
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
     set('glVV', D.vv);
-    var _pl = document.getElementById('profileLead'); if(_pl){ var _b = vvProfileBlurb(D); _pl.textContent = _b || 'A footballer measured across five dimensions.'; }
+    /*  THE CAP LINE. A keeper's radar is all-null, so vvProfileBlurb correctly returns
+        nothing , but the FALLBACK said "measured across five dimensions", which is the
+        one thing a keeper card is not. Both the lead and the cap line are keeper-aware. */
+    var _gk = document.getElementById('glGKCap');
+    if(_gk){
+      if(D.keeper){ _gk.textContent='The VV Score does not yet weigh goalkeeping, so keepers are capped at 75.'; _gk.hidden=false; }
+      else { _gk.textContent=''; _gk.hidden=true; }
+    }
+    var _pl = document.getElementById('profileLead');
+    if(_pl){ var _b = vvProfileBlurb(D);
+      _pl.textContent = _b || (D.keeper ? 'A goalkeeper, measured on the shots that reached him.'
+                                        : 'A footballer measured across five dimensions.'); }
     set('glGoals', D.goals);
     set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
     var LEAGUE_FULL = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga', L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Jupiler Pro League', TR:'Süper Lig' };

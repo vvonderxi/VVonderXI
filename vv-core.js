@@ -736,6 +736,186 @@
     return out;
   }
 
+  /*  ── THE KEEPER SCORE ────────────────────────────────────────────────────────
+      ONE MEASURE CARRIES IT: SAVE PERCENTAGE, saves / (saves + goals_conceded). Shots faced
+      is not stored; it is that sum, and the derivation is sound because a shot on target is
+      either saved or conceded.
+
+      WHY THE RATE AND NEVER THE COUNT , this is the whole design, measured on 2,179
+      keeper-seasons:
+        save% vs shots faced per 90        -0.118   essentially independent
+        shots faced per 90 vs conceded/90  +0.835   volume tracks team weakness almost wholly
+      So RAW SAVES IS A TEAM MEASURE AND SAVE PERCENTAGE IS NOT. A keeper behind a poor
+      defence faces more shots and makes more saves; the rate does not reward him for it and
+      does not punish him either. Same family as the `goals_against` rejection for CBs,
+      landing the other way because a rate has a denominator the team supplies to both halves.
+
+      GLOBAL POOL PERCENTILE, NOT PER LEAGUE-SEASON. Median save% runs 66.9% (BL) to 69.6%
+      (LL/PRT) , a 2.7-point spread, unlike every outfield metric, so normalising per league
+      would add machinery and move nothing.
+
+      THE GATE IS 800 MINUTES AND 60 SHOTS FACED. Ungated, the top of the pool is 300-minute
+      cameos facing three shots at 100%. 1,070 of 2,990 keeper-seasons from 2015 fall outside
+      it and get NO score rather than a noisy one.
+
+      2015+ ONLY, AND THE CLIFF IS ABSOLUTE: saves coverage is 0% for 2010-2013, 4% in 2014,
+      then 84-100%. 1,299 keeper-seasons before 2015 carry minutes and starts and nothing
+      else. They fall through to the existing treatment with the boundary disclosed.
+
+      NO PENALTY TERM. `penalties_saved` correlates only 0.10 with volume, so it is genuinely
+      the keeper's act , but `penalties_missed` is zero for all but 2 of 1,583 keepers, so
+      PENALTIES FACED IS NOT DERIVABLE and the field is a count with no denominator. Tested
+      at 10% weight it put Trapp above Donnarumma and dropped ter Stegen, the highest save%
+      in the pool, to 39th. It is a stated FACT on the card, never a score term.
+
+      WHAT IT CANNOT SEPARATE, AND THIS IS PUBLISHED, NOT BURIED: shot quality. There is no
+      xG, no location, no shot type. Twenty tap-ins and twenty thirty-yarders score the same.
+      Nor can it see distribution, command of the area or sweeping.
+
+      THE 75 CAP IS UNTOUCHED. Lifting it is a separate decision in a separate pass.  */
+  const KEEPER_MIN_MINUTES = 800;
+  const KEEPER_MIN_SHOTS   = 60;
+  const KEEPER_ERA         = 2015;
+  // save% at every 5th percentile of the gated pool (n=1,920), measured 2026-08-28
+  const KEEPER_SAVE_LADDER = [0.4688,0.5915,0.6154,0.6299,0.6410,0.6484,0.6571,0.6639,0.6721,
+                              0.6790,0.6867,0.6928,0.6988,0.7059,0.7113,0.7194,0.7273,0.7364,
+                              0.7500,0.7667,0.8852];
+  function keeperScore(row){
+    if (!row || !isGK(row)) return null;
+    const out = { eligible:false, reason:null, savePct:null, pct:null,
+                  saves:row.saves, conceded:row.goals_conceded, shotsFaced:null,
+                  penaltiesSaved:row.penalties_saved, minutes:row.minutes, starts:row.starts };
+    if ((row.season_year||0) < KEEPER_ERA){ out.reason = 'pre-2015: shot data was never recorded'; return out; }
+    if (row.saves == null || row.goals_conceded == null){ out.reason = 'saves or goals conceded not recorded'; return out; }
+    const sf = row.saves + row.goals_conceded;
+    out.shotsFaced = sf;
+    if ((row.minutes||0) < KEEPER_MIN_MINUTES){ out.reason = 'under ' + KEEPER_MIN_MINUTES + ' minutes, too small a sample'; return out; }
+    if (sf < KEEPER_MIN_SHOTS){ out.reason = 'under ' + KEEPER_MIN_SHOTS + ' shots faced, too small a sample'; return out; }
+    const svp = sf > 0 ? row.saves / sf : null;
+    if (svp == null){ out.reason = 'no shots faced'; return out; }
+    out.savePct = svp;
+    // linear interpolation into the measured ladder
+    const L = KEEPER_SAVE_LADDER;
+    let pct = 100;
+    if (svp <= L[0]) pct = 0;
+    else for (let i = 1; i < L.length; i++){
+      if (svp <= L[i]){ const lo = L[i-1], hi = L[i];
+        pct = (i-1)*5 + (hi > lo ? ((svp-lo)/(hi-lo))*5 : 0); break; }
+    }
+    out.pct = Math.max(0, Math.min(100, Math.round(pct)));
+    out.eligible = true;
+    return out;
+  }
+
+
+  /* ══ THE GOALKEEPER PANEL , replaces the radar on a keeper card ═══════════════
+     IT LIVES HERE AND NOT IN card.html ON PURPOSE. §C: a card rule that lives in the
+     pages and not in vv-core is a trap for the next surface , the Generational face
+     was exactly that, and the copies had already drifted before anyone noticed.
+     Compare will need this panel the day it renders a keeper.
+
+     NO RADAR. Two measurable axes is not a shape. save% and penalties saved are the
+     only keeper measures we hold that are the keeper's own act, and a two-point radar
+     is a line. The percentile LADDER carries the score instead.
+
+     EVERY COLOUR IS A TOKEN, SO THE HOST SURFACE DECIDES. On card.html the panel sits
+     inside .layer, which is cream in BOTH themes and pins --charcoal/--ink-soft/
+     --pink-ink to that cream ground. Hard-coding a theme-flipping colour here would be
+     the §C mistake of pinning an ink to a ground that does not move. The one literal is
+     the conceded block's rgba(0,0,0,.10) tint, which assumes a LIGHT ground , correct
+     for the card layer, and the thing to revisit first if this is ever put on a dark one.
+
+     THE BAR IS COMPOSITION, NOT MERIT, so it is drawn in ink and a muted tint and never
+     in pink. Pink on this panel means the score, and only the ladder carries the score. */
+  var VV_GK_CSS = `
+.gkp{margin:2px 0 4px}
+.gkp-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px}
+.gkp-k:first-child{margin-top:0}
+.gkp-lad{display:flex;align-items:flex-end;gap:16px}
+.gkp-fig{flex:none;text-align:left}
+.gkp-pc{font-family:'Archivo';font-weight:800;font-size:38px;line-height:.95;color:var(--pink-ink)}
+.gkp-pl{font-family:'Inter';font-size:11px;color:var(--ink-soft);margin-top:3px}
+.gkp-tw{flex:1;min-width:0;padding-bottom:2px}
+.gkp-tr{position:relative;height:38px}
+.gkp-base{position:absolute;left:0;right:0;top:19px;height:6px;border-radius:99px;background:rgba(0,0,0,.09)}
+.gkp-fill{position:absolute;left:0;top:19px;height:6px;border-radius:99px;background:linear-gradient(90deg,rgba(231,4,67,.35),var(--pink))}
+.gkp-rung{position:absolute;top:12px;width:1px;height:20px;background:rgba(0,0,0,.16)}
+.gkp-rlab{position:absolute;top:0;transform:translateX(-50%);font-family:'Inter';font-size:9.5px;color:var(--ink-soft);white-space:nowrap}
+.gkp-mark{position:absolute;top:14px;width:3px;height:16px;border-radius:2px;background:var(--pink);transform:translateX(-1.5px)}
+.gkp-ends{display:flex;justify-content:space-between;font-family:'Inter';font-size:10px;color:var(--ink-soft);margin-top:4px}
+.gkp-say{font-family:'Inter';font-size:11.5px;line-height:1.5;color:var(--ink-soft);margin-top:8px}
+.gkp-say b{font-family:'Archivo';font-weight:800;color:var(--pink-ink)}
+.gkp-bar{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.12)}
+.gkp-s{background:var(--charcoal);color:var(--cream);display:flex;align-items:center;padding-left:10px;font-family:'Archivo';font-weight:800;font-size:13px}
+.gkp-c{background:rgba(0,0,0,.10);color:var(--charcoal);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-family:'Archivo';font-weight:800;font-size:13px}
+.gkp-mid{text-align:center;font-family:'Inter';font-size:11.5px;color:var(--ink-soft);margin-top:7px}
+.gkp-keys{display:flex;justify-content:space-between;font-family:'Inter';font-size:10.5px;color:var(--ink-soft);margin-top:5px}
+.gkp-figs{display:flex;gap:26px;flex-wrap:wrap}
+.gkp-f b{display:block;font-family:'Archivo';font-weight:800;font-size:19px;line-height:1.1;color:var(--charcoal)}
+.gkp-f span{font-family:'Inter';font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase}
+.gkp-lim{margin-top:18px;padding:11px 13px;border-left:2px solid var(--gold);background:rgba(232,184,75,.14);border-radius:0 8px 8px 0;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft)}
+.gkp-lim b{color:var(--charcoal);font-weight:700}
+.gkp-no{padding:12px 14px;border:1px dashed rgba(0,0,0,.20);border-radius:10px;font-family:'Inter';font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+.gkp-no b{color:var(--charcoal);font-weight:700}
+@media(max-width:430px){ .gkp-lad{gap:12px} .gkp-pc{font-size:32px} .gkp-figs{gap:18px} }
+`;
+  function vvInjectGKCSS(){
+    if (typeof document === 'undefined') return;
+    if (document.getElementById('vv-gk-css')) return;
+    var st = document.createElement('style'); st.id = 'vv-gk-css';
+    st.textContent = VV_GK_CSS;
+    var head = document.head || document.getElementsByTagName('head')[0];
+    if (head) head.appendChild(st);
+  }
+  function gkNum(v){ return v == null ? 'NR' : v; }
+  /*  k is a keeperScore() result. Returns '' for a non-keeper so a caller can use the
+      return value itself as the "is this a keeper card" test and never draw an empty box. */
+  function keeperPanelHTML(k){
+    if (!k) return '';
+    vvInjectGKCSS();
+    var h = '<div class="gkp">';
+    if (k.eligible){
+      var rungs = [50,75,90], ticks = '';
+      for (var i=0;i<rungs.length;i++){
+        ticks += '<div class="gkp-rung" style="left:'+rungs[i]+'%"></div>'
+              +  '<div class="gkp-rlab" style="left:'+rungs[i]+'%">'+rungs[i]+'th</div>';
+      }
+      h += '<div class="gkp-k">Save rate, against every goalkeeper we can measure</div>'
+        +  '<div class="gkp-lad">'
+        +    '<div class="gkp-fig"><div class="gkp-pc">'+(100*k.savePct).toFixed(1)
+        +      '<span style="font-size:20px">%</span></div><div class="gkp-pl">shots saved</div></div>'
+        +    '<div class="gkp-tw"><div class="gkp-tr"><div class="gkp-base"></div>'
+        +      '<div class="gkp-fill" style="width:'+k.pct+'%"></div>'+ticks
+        +      '<div class="gkp-mark" style="left:'+k.pct+'%"></div></div>'
+        +      '<div class="gkp-ends"><span>weakest</span><span>strongest</span></div></div></div>'
+        +  '<div class="gkp-say"><b>'+k.pct+'th percentile</b> among goalkeepers with a comparable '
+        +    'sample, 2015 onward.</div>';
+      var pcS = 100 * k.saves / k.shotsFaced;
+      h += '<div class="gkp-k">Saved versus conceded</div>'
+        +  '<div class="gkp-bar"><div class="gkp-s" style="width:'+pcS+'%">'+k.saves+'</div>'
+        +    '<div class="gkp-c" style="width:'+(100-pcS)+'%">'+k.conceded+'</div></div>'
+        +  '<div class="gkp-mid">'+k.shotsFaced+' shots on target faced</div>'
+        +  '<div class="gkp-keys"><span>saved</span><span>conceded</span></div>'
+        +  '<div class="gkp-say" style="color:var(--ink-soft)">How many shots he faced is a fact '
+        +    'about the team in front of him, not a measure of how well he kept goal.</div>';
+    } else {
+      h += '<div class="gkp-k">Save rate</div><div class="gkp-no"><b>Not scored.</b> '
+        +  k.reason + '. This card shows what was recorded and nothing more.</div>';
+    }
+    h += '<div class="gkp-k">Recorded</div><div class="gkp-figs">'
+      +  '<div class="gkp-f"><b>'+gkNum(k.minutes)+'</b><span>minutes</span></div>'
+      +  '<div class="gkp-f"><b>'+gkNum(k.starts)+'</b><span>starts</span></div>'
+      +  '<div class="gkp-f"><b>'+gkNum(k.penaltiesSaved)+'</b><span>pens saved</span></div>'
+      +  '<div class="gkp-f"><b>'+gkNum(k.saves)+'</b><span>saves</span></div>'
+      +  '<div class="gkp-f"><b>'+gkNum(k.conceded)+'</b><span>conceded</span></div></div>'
+      +  '<div class="gkp-lim"><b>What this cannot tell you.</b> We record whether a shot was '
+      +  'saved, never how hard it was. A keeper facing twenty close-range chances and one facing '
+      +  'twenty from distance score the same here. Nothing in these figures measures distribution, '
+      +  'command of the area or sweeping, so this card does not claim any of it. Penalties saved '
+      +  'is a count, not a rate: we do not know how many he faced.</div></div>';
+    return h;
+  }
+
   function confidenceFor(row){
     const keeper = isGK(row);
     const total = keeper ? KEEPER_SET.length : GRANULAR.length;
@@ -1425,6 +1605,7 @@
       band:       band,                 // §2  10-band ladder
       prestige:   prestigeFor(band),    // §3  band-bound badge (Generational / Iconic / null)
       radar:      radarFor(row),        // §4  { raw, scaled, provisional }
+      keeper:     keeperScore(row),     // null for an outfielder , the GK-card test
       confidence: confidenceFor(row),   // §5  X/5 dots
       confidenceFields: confidenceFields(row),   // §5b per-field present/missing breakdown
 
@@ -4278,7 +4459,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
