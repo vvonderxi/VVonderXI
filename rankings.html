@@ -268,7 +268,10 @@
   .rankfbar{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
   .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
   body.light .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
-  .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
+  /*  44x44 IS THE TOUCH-TARGET FLOOR. These were 36x30 and sit at y=220 on a 390x844
+    screen , the stretch zone , so they were both small and awkward to reach. The ICON
+    inside is unchanged; only the hit area grows. */
+  .vseg{width:44px;height:44px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   .vseg.on{background:var(--pink);color:#fff}
   body.light .vseg{color:var(--ink-soft)}
   body.light .vseg.on{color:#fff}
@@ -407,8 +410,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260829k"></script>
-<script src="/vv-core.js?v=20260829k"></script>
+<script src="/vv-marks.js?v=20260829l"></script>
+<script src="/vv-core.js?v=20260829l"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the

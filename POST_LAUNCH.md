@@ -336,3 +336,52 @@ rendering fix.
 
 **Cross-ref: `#vtraj` is also where the `.tjbox` green leak lands** (see the §C note), so
 whoever opens this file should read that entry first.
+
+---
+
+## RANKINGS ON MOBILE , OPTION C, SLIM BAR + FILTER SHEET (scoped and DEMOED 2026-08-29, NOT BUILT)
+
+**Parked deliberately. The two cheap fixes from the same audit shipped; this one did not, because it is a
+layout change to the main grid and belongs with the Compare/rankings filter redesign rather than the merge run.**
+
+**WHAT IT IS.** Replace the stacked mobile chrome (search + view toggles + filter rail, all in flow) with a
+**52px slim bar** at the top and a **61px action bar** at the bottom that opens the filters as a **sheet** over
+the page instead of pushing 1,572px of panel into the document.
+
+**MEASURED AT 390x844, both layouts rendered side by side in `_demo_mobilec.html` (gitignored):**
+
+| | current | option C |
+|---|---|---|
+| chrome above the grid | **256px** | **52px** |
+| bottom chrome | 54px nav | 61px actions + 54px nav = **115px** |
+| usable grid height | **530px (63%)** | **677px (80%)** |
+| cards visible | **2.5** | **3.2** |
+| open filters costs | **+1,572px** of in-flow panel | **0px** , sheet overlays |
+| smallest touch target | **30px** | **44px** |
+
+**VERIFIED IN THE DEMO, not assumed:** the action bar stacks ABOVE the existing nav with **0px overlap**
+(actions bottom 901 == nav top 901), the sheet carries its own scroll with `overscroll-behavior:contain`, and
+no touch target falls under 44px. **Cost: 5 to 6 hours.**
+
+**THREE RISKS, AND THE FIRST IS THE REAL ONE.**
+1. **THE 1100px BREAKPOINT IS THE WRONG SEAM, AND THE GAP IS PRE-EXISTING.** `.filterrail` goes static at
+   **1100px** while `.bottomnav` only appears at **720px**, so **720 to 1100px gets NEITHER treatment** , no
+   rail behaviour and no bottom bar. Option C does not create that hole but it will be blamed for it, because
+   it is the first change that makes the seam visible. **Decide one breakpoint for both before building.**
+2. **The sheet is a second scroller over a scrolling page** , the same class of defect as the compare picker
+   fixed the same day. It needs `overscroll-behavior:contain` from the first commit, not as a follow-up.
+3. **Desktop reads the same DOM.** The slim bar and the action bar are mobile-only presentations of controls
+   desktop renders in the rail, so every control exists twice in markup or moves between containers. Moving
+   is correct; duplicating drifts, which is what §C already records about the four tag-render paths.
+
+## COMPARE , THE SETTLE BUTTON SITS BELOW THE FOLD ON MOBILE (measured 2026-08-29, NOT FIXED)
+
+**At 390x844 on a deep-linked pair, the "Compare" button's top is 1,537px into a 1,715px page , 693px below
+the fold, 1.82 screens down.** The button itself is fine (213x53). **The reader has to scroll almost two
+screens past two cards to reach the control that does the thing the page is for.**
+
+**IT IS PAIR-DEPENDENT, SO QUOTE IT AS A RANGE, NOT A CONSTANT** , measured at 693px and 734px on two
+different pairs, because the cards above it are not a fixed height. **Do not record a single number.**
+
+**NOT FIXED HERE ON PURPOSE:** the honest fix is a sticky action, which is exactly the bottom-bar pattern
+option C introduces. **Doing it separately means building the same bar twice.** Fold it into option C.
