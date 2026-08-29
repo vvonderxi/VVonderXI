@@ -5,6 +5,45 @@ const crypto = require('crypto');
 
 const MODEL = 'claude-sonnet-4-6';
 
+/* ── MODEL EXISTENCE , the check that did not exist when production died ───────
+   A MODEL ID IS A DEPENDENCY WITH AN EXPIRY AND NOTHING WAS WATCHING IT.
+   Production hardcoded `claude-sonnet-4-20250514`, the model was retired, and
+   every request 404'd. The site kept serving, the panels kept rendering, and the
+   prose was simply never there , the front end cannot tell a retired model from
+   a bad night at the API, so it showed the outage line for months.
+
+   TWO PARTS, because one is not enough:
+     1. probeModel()  , asks the API ONCE per process whether MODEL is served,
+        and logs loudly if not. Cheap: one GET, cached for the process lifetime.
+     2. isModelMissing() , classifies a failed generate. A 404 naming the model
+        is a CONFIGURATION error and must not be reported as an outage.
+
+   IT FAILS OPEN, DELIBERATELY. No key, a network error, or an unexpected shape
+   all return null, and null never blocks a call. A watchdog that can take the
+   feature down when IT breaks is worse than the fault it watches for. */
+let MODEL_OK = null;                 // null = unknown, true = served, false = missing
+async function probeModel() {
+  if (MODEL_OK !== null) return MODEL_OK;
+  if (!process.env.ANTHROPIC_API_KEY) return null;      // cannot tell; not evidence
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/models/' + encodeURIComponent(MODEL), {
+      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' }
+    });
+    if (r.status === 404) {
+      MODEL_OK = false;
+      console.error('[vv] CONFIGURED MODEL IS NOT SERVED: "' + MODEL + '". Every editorial ' +
+                    'request will fail and the site will show the outage line. Update MODEL in ' +
+                    'api/analyse.js. This is a CONFIGURATION error, not an outage.');
+      return false;
+    }
+    if (r.ok) { MODEL_OK = true; return true; }
+    return null;                                        // 401/429/5xx say nothing about the model
+  } catch (e) { return null; }
+}
+function isModelMissing(status, msg) {
+  return status === 404 && /model/i.test(String(msg || ''));
+}
+
 // ═══ CACHE VERSIONS , derived, not hand-typed ═══════════════════════════════
 // TWO SEPARATE versions, one per cache. They were previously a single shared
 // constant, which meant editing the NOTES prompt invalidated every VERDICT row
@@ -131,6 +170,10 @@ const VERDICT_VERSION = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM);
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
 
 module.exports = async (req, res) => {
+  /*  Fire the model probe WITHOUT awaiting it. It must never add latency to a
+      request, and its answer is for the LOG, not for this response , the
+      per-call classifier below is what protects the caller. Once per process. */
+  if (MODEL_OK === null) { try { probeModel(); } catch (e) {} }
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -239,7 +282,14 @@ module.exports = async (req, res) => {
         })
       });
       const nData = await nResp.json();
-      if (!nResp.ok) return res.status(nResp.status).json({ error: (nData.error && nData.error.message) || 'Anthropic API error' });
+      if (!nResp.ok) {
+        const nMsg = (nData.error && nData.error.message) || 'Anthropic API error';
+        if (isModelMissing(nResp.status, nMsg)) {
+          console.error('[vv] notes generate failed because MODEL "' + MODEL + '" is not served.');
+          return res.status(503).json({ error: 'model_not_served', model: MODEL, detail: nMsg });
+        }
+        return res.status(nResp.status).json({ error: nMsg });
+      }
 
       let parsed = null;
       try {
@@ -282,7 +332,12 @@ module.exports = async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: data.error?.message || 'Anthropic API error' });
+      const vMsg = data.error?.message || 'Anthropic API error';
+      if (isModelMissing(response.status, vMsg)) {
+        console.error('[vv] verdict generate failed because MODEL "' + MODEL + '" is not served.');
+        return res.status(503).json({ error: 'model_not_served', model: MODEL, detail: vMsg });
+      }
+      return res.status(response.status).json({ error: vMsg });
     }
 
     // Generic path (no card ids): behave exactly as before.
@@ -316,6 +371,11 @@ module.exports = async (req, res) => {
 
 // Exported so scripts/prewarm_verdicts.js consumes the REAL values rather than
 // re-deriving or parsing them , write and read can never drift.
+/*  ATTACHED HERE, NOT AT THE DEFINITION. `module.exports = handler` above REPLACES the
+    whole exports object, so anything attached before it is silently discarded , which is
+    exactly what happened on the first attempt and what the classifier test caught. */
+module.exports.probeModel      = probeModel;
+module.exports.isModelMissing  = isModelMissing;
 module.exports.MODEL           = MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
 module.exports.NOTES_SYSTEM    = NOTES_SYSTEM;
