@@ -263,3 +263,32 @@ Examples: S. Proto (8 seasons), F. Boeckx (6), J. Gillet (6).
 **CHEAPEST HONEST INTERIM, if the full build is not wanted: suppress the trajectory on keeper
 cards** and say why, exactly as the radar is suppressed above three nulls. That removes a
 misleading chart today without inventing a new one.
+
+
+### KEEPER TRAJECTORY , DEMO BUILT 2026-08-29 (`_demo_gktraj.html`, gitignored). NOT WIRED.
+
+**THE POOL CONSTANTS THE BUILD NEEDS, measured on the 1,920 gated cards , do not re-derive:**
+**median 68.7%**, p5 **59.1%**, p95 **76.6%**, p25 64.8%, p75 71.9%, full range 46.9% to 88.5%.
+**The axis zooms to p5..p95 and EXTENDS to hold the player's own range**, so nothing is ever
+clipped, and **the median is drawn as a dashed reference** because a zoomed axis without one
+makes ordinary variation look dramatic.
+
+**TWO THINGS THE DEMO CHANGED FROM THE BRIEF, both because rendering showed the problem:**
+1. **THE MEDIAN VALUE LIVES IN THE LEGEND, NOT ON THE LINE.** An inline label on the dashed
+   reference collided with the data labels on BOTH demo cards and there is no margin to move it
+   into. The legend reads "keeper pool median 68.7%".
+2. **THE X AXIS IS CONTINUOUS BY YEAR, NOT BY ROW INDEX.** Casillas has **no 2013 row at all**,
+   and plotting by index silently CLOSED that hole , the chart drew 2012 next to 2014 as though
+   they were adjacent. **A season the record does not hold is itself information**, so the axis
+   keeps the slot and the span is labelled by WHY it is blank: `not recorded`, `no season`, or
+   `not recorded / no season` where a run contains both.
+
+**THE FOUR CASES ALL RENDER IN BOTH THEMES:** Buffon (11 seasons, 6 plotted, five-season blank
+span), Casillas (8/4, non-contiguous), Proto (8/0 , the season list with minutes and appearances
+plus one line saying saves were never recorded), and the compare mismatch panel.
+
+**COMPARE , the answer to "show the keeper panel or tell me a better one": SHOW BOTH SIDES ON
+THEIR OWN TERMS AND NAME THE MISMATCH.** No combined chart. Each side gets its own figures (save
+rate / minutes / starts against goals / assists / games) and a line beneath both reading
+**"Measured on different evidence."** That is better than showing only the keeper panel, because
+the outfielder's season does not disappear from a comparison the user asked for.
