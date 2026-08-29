@@ -404,6 +404,38 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
 
   /* layer definitions (the story) */
   .vsect-d{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:rgba(243,237,224,0.58);margin:0 0 16px}
+
+  /* ══ THE MUTED-INK FAMILY ON THE GREEN PANEL , ONE PALETTE CHANGE ═══════════════════
+     .vsect paints linear-gradient(rgb(28,96,56), rgb(15,58,34)). The muted family was set
+     at alpha 0.55-0.58, which measures 3.12-3.30 against the LIGHTER stop , the worst case
+     for a light ink, and under the 4.5 bar. Measured across both stops:
+         alpha 0.58 -> 3.30 / 4.73      alpha 0.74 -> 4.34 / 6.70
+         alpha 0.78 -> 4.64 / 7.27      alpha 0.80 -> 4.79 / 7.56   <- chosen
+     0.78 is the first value that clears; 0.80 is taken for margin and a round number.
+     SCOPED TO .vsect ON PURPOSE: the same alpha elsewhere on the page sits on the dark
+     stage, not the green panel, and does not need raising. This is one rule, not nineteen. */
+  .vsect{--vs-muted:rgba(243,237,224,0.80)}
+  .vsect .vsect-t, .vsect .vsect-d, .vsect .h2hlabel, .vsect .vd-l,
+  .vsect .vtraj-t, .vsect .vtcap, .vsect .vtavg .gl, .vsect .pkmgl{ color:var(--vs-muted) }
+  .vsect .tjyl, .vsect .tjyr, .vsect .tjxl, .vsect .tylab, .vsect .txlab{ fill:var(--vs-muted) }
+
+  /*  THE PROOF VALUES ARE A DELIBERATE EXCEPTION AND GET 0.55, NOT 0.80.
+      .vp-va/.vp-vb are the LOSING figure, dimmed against a .win sibling that renders at full
+      cream , that contrast IS the information. They are 19px weight 900, so the LARGE-text
+      bar of 3.0 applies, not 4.5. At 0.38 they measured 2.49 and failed even that; 0.55 gives
+      3.12 and clears it while keeping the win/lose distinction the 0.80 family would flatten. */
+  .vsect .vp-va, .vsect .vp-vb{ color:rgba(243,237,224,0.55) }
+  .vsect .vp-va.win, .vsect .vp-vb.win{ color:var(--cream) }
+
+  /*  .tjcap NEEDS ITS OWN VALUE ON THE GREEN PANEL, and this is the part the token alone did
+      not fix. var(--gold-ink) solved LIGHT (1.74 -> passes) but its DARK half, #E8B84B, sits
+      at 4.10 on the lighter green stop , still under 4.5. So the dark half is lifted to
+      #F3DA88, which measures 5.47 / 9.22 across the two stops.
+      #F3DA88 IS NOT A NEW COLOUR: it is already the top stop of the Generational card
+      gradient, so the palette gains nothing to maintain. Light is untouched and keeps
+      --gold-ink's #7e5a10 at 5.90. */
+  .vsect .tjcap{ color:#F3DA88 }
+  body.light .vsect .tjcap{ color:var(--gold-ink) }
   body.light .vsect-d{color:#6a6256}
   /* verdict result: gold + bigger */
   .verdict .vwho{font-size:30px}
@@ -528,7 +560,11 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
      panel had gone light. It has NOT , the trajectory panel is the dark green #175030 in BOTH
      themes, so dark gold on dark green measured 1.51. Bright gold is correct here (5.12). */
   body.light #vtraj .tjpeak{fill:#E8B84B}
-  .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:14px;padding:0 4px}
+  /*  var(--gold-ink), NOT #E8B84B. FIFTH INSTANCE OF THE FIXED-GROUND TRAP: .vsect is a green
+    gradient in dark and solid cream rgb(251,248,242) in light, so a fixed gold measured 1.74
+    on the light panel. --gold-ink is already the theme-aware pair, #E8B84B dark / #7e5a10
+    light, and the light half measures 5.90. Match the ink to the ground, not to a hex. */
+  .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:var(--gold-ink);text-align:center;margin-top:14px;padding:0 4px}
   body.light .tjhead,body.light .tjlg{color:#5a544a}
   body.light .tjyl,body.light .tjyr,body.light .tjxl,body.light .tjtot{fill:#5a544a}
   body.light .tjtot{stroke:#FBF8F2}   /* light theme: halo = the .vsect panel colour */
@@ -966,8 +1002,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260829i"></script>
-<script src="/vv-core.js?v=20260829i"></script>
+<script src="/vv-marks.js?v=20260829k"></script>
+<script src="/vv-core.js?v=20260829k"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
