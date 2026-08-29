@@ -436,3 +436,32 @@ Entries from **2026-07-24 (cont.) back to 2026-07-03/04**. The three most recent
 ### ⬇ JULY 2026 ENTRIES (2026-07-28 and earlier) ARE IN `CLAUDE_ARCHIVE_2026-07.md`
 
 Split out 2026-08-11 because this file had reached 87% of the 150k truncation limit and could not take the §F entries being relocated from CLAUDE.md. 34 entries moved, byte-identical. Nothing load-bearing lives only there , the earlier archive passes promoted those facts into CLAUDE.md §C/§D/§E first.
+
+
+---
+
+## RELOCATED FROM `CLAUDE.md` §F ON 2026-08-29 (tenth pass)
+
+**Promote-checked before moving: twelve load-bearing facts from these two entries were grepped present in `CLAUDE.md` first. TWO WERE NOT** , the loader floor (§C read as 40 where the live constant is 16) and the caveat that the whole 2026-08-23 SVG contrast survey needs re-running. **Both were fixed in `CLAUDE.md` in the same commit rather than the entries being moved on top of them.** That is the second time the check has caught a stale promotion claim; do not skip it.
+
+### 2026-08-24 | Two-tone loader shipped, the AI waits found, contrast rulings applied, and a relief pass
+
+**1. THE LOADER WAS REBUILT TO THE TWO-TONE SPEC AND THE SPEC IS NOT IN THE REPO.** It is not in `POST_LAUNCH.md` and not anywhere , `#1A1917`, `2.6s`, "Reading the seasons" and "right to left" return ZERO hits across every file. The only loader reference is a bare line in the superseded 2026-08-09 handover. **Built from Lucas's message instead, and the trace VERIFIED against the `.spinelogo` PNG rather than taken on trust: left stroke 97.6 vs right 77.6, a 1.26 ratio.** The asymmetry is real. **`VV_LOADER_MIN` 40 -> 16** , see §C.
+
+**2. THE AI WAITS WERE THE LONGEST ON THE SITE AND HAD NO LOADER.** Three states, one `/api/analyse` call: the glance Drury line ran a pink shimmer, Commentator's Notes showed an empty panel, and the Scout report showed nothing at all. All three now carry the mark at 2.6s. **The 400 path was tested and was already sound** , `vvEditorialFail()` names the outage; it now also empties the bodies, because an animation inside a `display:none` subtree still schedules frames.
+
+**3. CONTRAST RULINGS APPLIED. Fixed:** `.cm-mk` sized to the 3:1 large-text bar with the pink fill untouched (19px bold, 3.89); `.tjvp` off green, 1.27 -> 7.85. **Accepted with their ratios so a later pass stops re-finding them:** card-face chips 2.04 and 2.34, `.prenum` 1.00 by construction, the waiting box edge 1.88, and `.pspot` 3.89 , the last REVISITABLE only if the pitch is redesigned. **And a correction to my own survey: the G+A label was reported at 1.82 and is 3.63** , the sweep read `color` on SVG `<text>` where `fill` paints, so **every SVG figure in the 2026-08-23 survey needs re-running before it is trusted.**
+
+**4. RELIEF PASS, 97.1% -> 87.7%.** §D deferred specs to their stage files, then §C narrative to `RULE_EVIDENCE.md` on the six largest rules. **Rules stayed; only evidence moved.** Fourteen load-bearing strings grepped present afterwards. Detail and the method warning are in §D.
+
+### 2026-08-21 | The tag audit that unwrote yesterday's warning, and a relocation pass at 98%
+
+**Read-only audit, then docs. No engine change, no floor touched.**
+
+**1. THE "TAG RECALIBRATION IS NOW REQUIRED" WARNING WAS MINE AND IT WAS WRONG.** Written the same day the engine changed and BEFORE anything was measured. **Measured on all 57,234 cards, the change moved SEVEN CARDS ACROSS TWO TAGS** , The Last Dance 47 -> 42, Wonderkid 71 -> 73, every other tag identical card for card. `getVVTags` reads `gaw` **zero** times, `pos_pct` zero, `posvol_pct` zero; `rt` only at the `>= 82` gate those two tags share. **Full correction and the reasoning error in §C**, kept as a correction rather than deleted.
+
+**2. NO TAG IS OVER THE CEILING EXCEPT IRON MAN AT 3.40%, the documented exception, unmoved.** 15.23% of cards hold a tag. **The apparent collapses against the 2026-08-13 file are not collapses** , that baseline predates the rarity pass AND the identity fix, so Ball Hawk 3.49 -> 1.47 and The Dribbler 3.82 -> 1.61 are correct changes reading as damage, and **Marksman 1,649 -> 0 is a RETIRED tag.** Fixed by writing `scripts/enrichment/tag_distribution_2026-08-21.txt` as the post-pass baseline.
+
+**3. THE 2026-08-15 ELIGIBILITY-VERSUS-THRESHOLD DEFECT IS FULLY CLOSED** (figures in §C). **The method error is worth more than the result: run across all eighteen tags, the minority-family diagnostic flagged ELEVEN, and every one was the test pointed at the wrong class** , ability tags gate on family and are SUPPOSED to span pools, so Iron Man at 65.2% is availability doing what availability does. Baseline also moved 8.28% -> **12.54%** on coverage growth, not tag drift.
+
+**4. RELOCATION PASS, 98.0% -> 88.6%.** The file was already at 95.7% at HEAD, past its own 90% trigger, truncation silent, read first every session. Archive checked first (66.6%, no split needed; now 79.9%). Three §F entries moved. **§C IS NOW THE MASS AND §F CANNOT PAY AGAIN , §C 46.1%, §D 24.3%, §E 8.3%, §F 3.1%.** The next pass must split evidence out of §C the way `SILENT_FAILURES.md` already did; archiving cannot reach it.

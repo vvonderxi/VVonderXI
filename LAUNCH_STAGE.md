@@ -200,3 +200,33 @@ never the engine.** CLAUDE.md wins on any conflict.
 - (b) **The Index CHART uses AVERAGE-ANCHORED display while the ENGINE stays PL-ANCHORED.** The tilt socket is AFFINE, so re-anchoring the engine would change scores. **Display re-anchor only, NEVER the engine.**
 - (c) ANCHOR DISCLOSURE: we measure leagues RELATIVE TO EACH OTHER, not whether football overall rose or fell (no absolute claim about the global level over time).
 
+
+
+---
+
+## THE THREE LIVE PRODUCTION DEFECTS THE MERGE FIXES (relocated from `CLAUDE.md` §D, 2026-08-29)
+
+**All three are defects in `vvonderxi_BIGGER`, not on the branch, so NONE of them can be fixed before
+the merge without touching production, which the branch rule forbids.** §D keeps the decision; this
+keeps the measurement. **Re-verify against the live domain before launch day , these were measured on
+2026-08-27 and the deployed site can move without a commit on this branch.**
+
+   - **[LIVE PRODUCTION DEFECT, FOUND 2026-08-27] `/api/analyse` IS DEAD ON PRODUCTION , IT REQUESTS A RETIRED MODEL, SO NO EDITORIAL HAS GENERATED ON THE LIVE SITE.** `POST https://vvonderxi.com/api/analyse` returns **HTTP 404 `{"error":"model: claude-sonnet-4-20250514"}`**. Production's `api/analyse.js` hardcodes that string at line 65; the model no longer exists, so **every verdict and every set of Commentator's Notes falls back to the outage line.** The branch is on `claude-sonnet-4-6`, so **THE MERGE FIXES IT AND NOTHING ELSE NEEDS TO** , it cannot be fixed before then without touching `vvonderxi_BIGGER`.
+     - **AND IT MEANS THE CREDIT QUESTION IS STILL OPEN.** The request never reaches Anthropic, so a 404 here says NOTHING about whether the account has credit. **Do not read this as an out-of-credit signal** , that has to be tested separately, and the local `.env` carries no `ANTHROPIC_API_KEY` to test it with (§D already records that Vercel holds the key and local does not).
+     - **A MODEL ID IS A DEPENDENCY WITH AN EXPIRY AND NOTHING WATCHES IT.** There is no build step and no check that the configured model still exists, so the failure mode is silent: the site keeps serving, the panels keep rendering, and the prose is simply never there. **Worth a QA item after the merge**, since the branch's model string will age exactly the same way.
+   - **[LIVE PRODUCTION DEFECT, FOUND 2026-08-27] THE DEPLOYED SITE'S TITLE READS "VVonderXI — The Football Intelligence Platform". THE BRAND LINE IS "The Football LEGACY Platform", AND THE WRONG ONE IS IN `og:title` AND `<title>` ON PRODUCTION RIGHT NOW, SO EVERY UNFURLED LINK HAS CARRIED IT.** It also uses an em dash, against the house rule. **THIS IS A PRODUCTION DEFECT, NOT A BRANCH ITEM** , `redesign-compare` never says "Intelligence" in a title, so **THE MERGE FIXES IT AND NOTHING ELSE NEEDS TO**. Until the merge lands it is live and uncorrectable without touching `vvonderxi_BIGGER`, which the branch rule forbids.
+   - **AND THE FIX IS NOT "PUT THE BRAND LINE IN THE TITLE".** `docs/meta_proposal.md` settled this: **"The Football Legacy Platform" is a HOME-PAGE line, at `index.html` and in compare's verdict-poster footer. It is NOT meta copy.** The branch deliberately ships PER-PAGE titles instead , "VVonderXI , Player Cards", "VVonderXI , Compare" , which is what Tier 1 was for. **Do not "restore" the brand line into nine titles.**
+   - **THE DEPLOYED SITE IS NOT THIS BRANCH, AND THE GAP IS WIDER THAN THE TITLE (measured 2026-08-27 against the live domain).** `vvonderxi.com` IS live and served by Vercel , **the recorded assumption that the domain is not yet resolving is STALE.** What it serves is production, and it differs on every axis that matters to sharing: **6 `og:` + 4 `twitter:` tags against the branch's 9 + 5**; **`og:url` hardcoded to the bare domain on every page** rather than per-page; **`og-image.png?v=2`** rather than the branch's un-versioned reference; and **no `vv-core.js` at all**.
+     - **SO "TIER 1 SHIPPED" IS TRUE OF THE BRANCH AND FALSE OF THE SITE.** The commit is real; it has never been deployed. **State it that way** , a reader who checks the log and not the domain will conclude the opposite, which is what happened here.
+     - **AND NOTHING ON THE BRANCH HAS EVER BEEN TESTED AGAINST THE LIVE DOMAIN.** Every meta verification to date was done on local files or a preview. **The domain being live means the bot-UA `curl` checks the Tier 2 text work needs are available NOW**, which was not true when that work was scoped.
+
+
+---
+
+## THE LATENT TOOLTIP CLAMP , WHY IT IS MEASURED AND NOT FIXED (relocated from `CLAUDE.md` §D, 2026-08-29)
+
+     - **[MEASURED 2026-08-29, NOT FIXED, AND THE REASON MATTERS] LATENT TOOLTIP CLAMP.** The shape is real: `.tip[data-tip]:hover::after` uses `left:50%; transform:translateX(-50%); width:max-content; max-width:230px` with **no horizontal clamp**, so a trigger near either edge puts half the tooltip off-screen. **But it is UNREACHABLE on both pages today, for two different reasons, and neither is 'it happens not to wrap'.**
+       - **`preferences.html` declares the rule and has ZERO `data-tip` elements.** Dead CSS carrying a known-bad shape.
+       - **`myclub.html` has four, and ALL FOUR sit inside `.clublayout`, which computes `display:none`** , the coming-soon overlay (`9f5c21e`) replaced the locker, so the markup carrying them is not rendered. Measured at 390px: the triggers have **zero-width boxes**, which is the tell.
+       - **SO DO NOT ADD A CLAMP TO MARKUP THAT DOES NOT RENDER.** The fix belongs to whoever un-hides the locker, and it belongs in the SAME change, because that is the moment it starts cropping. **A clamp added now would be untestable and would look shipped.**
+       - **AND NOTE THE INSTRUMENT FAULT, because it nearly produced a wrong bug report:** deriving the tooltip box from `trigger centre +/- max-width/2` returned a confident **115px left overflow** on all four , computed from a centre of 0, which is what a zero-width box gives you. **Assert the trigger has a non-zero box before measuring anything positioned relative to it.**

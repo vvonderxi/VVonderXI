@@ -220,3 +220,24 @@ facts that GOVERN FUTURE WORK stayed in §E as a short block; this is the rest.
   4. **ENGINE EXPOSURE , THE PERCENTILES ARE NOT PARTITIONED BY LEAGUE OR SEASON. This is the single most important fact for any future data addition** (read-only audit 2026-07-22, from `migrations/stage3_league_strength.sql`; verify against a fresh `pg_get_viewdef` in the SQL editor before acting). `pos_pct`/`posvol_pct`/`rel_pct`/`defvol_pct`/`duelq_pct` = `percent_rank() OVER (PARTITION BY s.pos ...)` on the COARSE `psc.position` , **no league partition, no season partition**. `abs_pct`/`absvol_pct` = **ONE GLOBAL POOL of every outfielder in the database**. `ref.gaw_ref` = a SINGLE GLOBAL SCALAR. `anchors` b85/b90/b95/btop = the **650th/150th/12th/1st best `b` in the ENTIRE DATABASE**, so adding cards re-scales the whole 80-100 range. ONLY the defensive pool (`pool_ingr`) is narrowly scoped (8-bucket `pp."position"`, 2016+). **PLAINLY: adding a Belgian midfielder moves a Spanish midfielder, moves a Spanish striker, and can move ANY card above 80.** Boundary exposure: **876 of 53,624 scored cards (1.63%) sit within ONE POINT of a public band boundary** (PL most exposed at 3.40%).
   5. **DECISION LOCKED 2026-07-22 (Lucas): ACCEPT AND DISCLOSE.** Band crossings are a known, disclosed property of a population-relative score, not a defect to engineer away , the scale STABILISES as coverage completes, so stopping halfway carries the exposure AND keeps the churn ahead of us. **PARTITIONING THE PERCENTILES , REJECTED: cross-league comparability IS the product**; a score that only ranks within its own league is not this product. Do not revisit without a product-level decision, not an engineering one. **ANCHOR-FREEZING , REJECTED: freezing to incomplete data locks in a known-wrong scale.** **DISCLOSURE REQUIRED (the other half of the decision, not optional):** the VV Score is RELATIVE , as coverage grows, rankings move. SHIPPED to vvindex.html.
   - **POST-ROLLOUT WORK REMAINING (4 items, none launch-blocking):** combined-score duplication guard; blank-team re-run (self-healing); **WRONG-BLOCK PASS , DEFERRED POST-LAUNCH**, a separate gated mini-project that REWRITES existing rows (rt-touching, and entangled with the FBref assists layer , PL census 109 rows, ~500-900 across 9 leagues); watch-list of 8. Full detail + the three unanswered policy questions in `INGESTION_RECOVERY.md`.
+
+
+---
+
+## REFRESH COST CHANGED 2026-08-29 , READ THIS BEFORE PLANNING ANY RE-INGEST
+
+**`REFRESH MATERIALIZED VIEW player_card_mv` now rebuilds THREE GIN TRIGRAM INDEXES on top of
+the eight indexes it already rebuilt.** `pg_trgm` 1.6 plus GIN indexes on `player_name_norm`,
+`team_name_norm` and `player_name` were added so the front door's live search stops
+sequential-scanning all 57,058 rows on every keystroke (measured before: a Seq Scan removing
+57,051 rows, 225ms server-side per query).
+
+**WHY IT MATTERS HERE:** every plan in this file ends in a refresh , the insert-only re-ingest,
+the halved-transfer repair, and any bulk enrichment write. **The refresh is now the slower half of
+those runs than it was, and a run that takes longer than the last one is expected, not evidence of
+a problem.** Budget for it; do not diagnose it.
+
+**AND DO NOT SWITCH TO `REFRESH ... CONCURRENTLY` MID-REPAIR TO CLAW IT BACK.** It avoids the
+ACCESS EXCLUSIVE lock but requires a unique index on the matview and is slower again. If it is
+ever wanted, it is its own decision with its own before/after, not a mitigation bolted onto a
+data repair.

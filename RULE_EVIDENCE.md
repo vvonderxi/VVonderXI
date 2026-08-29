@@ -614,3 +614,17 @@ A rounded inset `box-shadow` passes `vvAuditCaptureSupport` and is still absent 
 ### NULL-POOL POLICY , a WRONG pool is not a MISSING pool
 
 - **SEPARATE AND NOT COVERED BY THIS POLICY: a WRONG pool is not a MISSING pool.** The repartition model's twelve biggest falls at rt>=85 are all creative players stored in the ST or Winger pool. **No null-pool policy touches them.** The narrow verifiable set is **15 cards: ST pool, rt>=80, assists >= goals.** Note the wider signal is NOT usable , at `assists >= 1.5x goals` the list is 24 cards and mostly LEGITIMATE wingers (Sane, Di Maria, Saka, David Silva, Messi at PSG), because a creative winger is an archetype and not an error.
+
+
+---
+
+## THE 2026-08-24 DEFECT BATCH , THE FIVE THAT CLOSED (relocated from `CLAUDE.md` §D, 2026-08-29)
+
+**The decisions stayed in §D as headlines. This is the measurement behind them.**
+
+### DEFECTS LOGGED 2026-08-24 , FIVE OF SEVEN CLOSED 2026-08-25. The two left open are one item, and the reason they are still open is an INSTRUMENT problem, not a missing fix.
+**CLOSED: (1) the escaped loader `11bfdfb`, (3) Copy link `f5309ec`, (5) the wordmark gap and (6) the caption's pink V `c0ba301`, (7) the loader geometry `92bb39a`, and the capability relabel `f60354b`.** Each carries its measurement in its own commit message; the geometry is locked in §C.
+- **ONE LESSON FROM (1) THAT IS NOT ALREADY A RULE: a function that escapes ON PURPOSE cannot also be the path a marker arrives by.** `vvSetVerdict`/`vvSetStory` receive model output, so `textContent` is correct and must stay , the wait comes through `vvWaitHTML` behind an `opts.wait` flag. **Do not "fix" a later version of this by switching the prose to `innerHTML`.**
+- **(3) and the card's `vvCopyLink`/`vvShareOut` were four more instances of the report-success-before-it-resolves rule already in §C**, including a comment asserting the property directly above code that violated it twice.
+
+**(4) CLOSED 2026-08-25 BY RELABELLING ON CAPABILITY (`f60354b`). The chain was never broken , it was the LABEL.** Measured on desktop Chrome 151: **`navigator.share` and `navigator.canShare` are both `undefined`**, so rungs 1 and 2 cannot fire and the download IS the designed rung 3. **A button reading "Share this verdict" that downloads is the same defect class as a waitlist thanking someone for an email it never sent** , the control reports an outcome that did not happen, which is the §C success-gating rule one step earlier, at the PROMISE rather than the report. `VVCore.vvShareCapability()` now drives the wording and the icon on both surfaces. **Do not "simplify" this back to a fixed label.**

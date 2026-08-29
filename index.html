@@ -102,6 +102,76 @@
           padding:0 18px;cursor:pointer;flex:none;transition:.18s}
   .search .go:hover{filter:brightness(1.06);transform:translateY(-1px)}
 
+  /* ══ LIVE RESULTS , the dropdown under the search bar ══
+     ONE MECHANISM: every piece of matching logic comes from vv-core , tokenAndFilter,
+     vvParseSearch, vvSeasonLabel, rankBySearch, vvLoader , the same code rankings and
+     the compare picker run. Nothing is re-implemented here. */
+  .srpanel{position:absolute;left:0;right:0;top:calc(100% + 10px);z-index:60;
+    background:#211E19;border:1.5px solid var(--field-b);border-radius:20px;
+    box-shadow:0 22px 60px -20px rgba(0,0,0,.62);overflow:hidden;text-align:left;display:none}
+  /*  OPAQUE, NOT TRANSLUCENT. var(--field) is a 4.5% white in dark mode, so the pills
+      behind the panel read straight through it , "Playbook" was legible across the first
+      result. A dropdown carrying names and scores is content, not chrome. */
+  body.light .srpanel{background:#FFFFFF;border-color:rgba(0,0,0,.12);
+    box-shadow:0 22px 60px -22px rgba(0,0,0,.28)}
+  .srpanel.open{display:block}
+  /*  overscroll-behavior:contain , THE SAME FIX AS THE COMPARE PICKER. Without it a
+      flick that runs out of results carries on into the page and drags the panel out
+      from under the thumb. The front door is the worst place for that. */
+  .srlist{max-height:var(--srmax,300px);overflow-y:auto;overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch}
+  /*  44px FLOOR. The row is 56px, which clears it. The chips inside are text, not
+      targets, so only the row itself has to. */
+  .srrow{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 18px;
+    cursor:pointer;border:0;background:none;width:100%;text-align:left;color:var(--ink);
+    font:inherit;transition:background .12s}
+  .srrow+.srrow{border-top:1px solid var(--field-b)}
+  .srrow:hover,.srrow.on{background:rgba(231,4,67,.11)}
+  body.light .srrow:hover,body.light .srrow.on{background:rgba(231,4,67,.09)}
+  .srrow:focus-visible{outline:2px solid var(--pink-ink);outline-offset:-3px}
+  .srrail{width:4px;align-self:stretch;min-height:34px;border-radius:3px;flex:none}
+  .srmain{flex:1;min-width:0}
+  /*  display:block IS LOAD-BEARING , these are spans inside a button, so they are inline
+      by default and the club ran straight on from the surname:
+      "K. De BruyneManchester City · 19/20". Every measurement passed while it did. */
+  .srnm{display:block;font-family:'Bricolage Grotesque';font-weight:800;font-size:16px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srsub{display:block;font-size:12px;color:var(--muted);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srvv{flex:none;font-family:'Archivo';font-weight:800;font-size:19px;line-height:1;
+    text-align:right;min-width:38px}
+  .srvvl{display:block;font-family:'Inter';font-weight:500;font-size:9px;
+    letter-spacing:.1em;color:var(--muted);margin-top:3px}
+  .srvv.nr{font-size:13px;color:var(--muted)}   /* NR is never 0 */
+  .srhead{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);padding:11px 18px 6px}
+  .srwait{display:flex;align-items:center;justify-content:center;gap:12px;padding:26px 18px;
+    color:var(--muted);font-size:12.5px}
+  .srempty{padding:20px 18px 22px;font-size:13.5px;line-height:1.55}
+  .srempty b{display:block;font-family:'Archivo';font-weight:800;font-size:13.5px;margin-bottom:5px}
+  .srempty span{color:var(--muted);font-size:12.5px}
+  .srfoot{border-top:1px solid var(--field-b)}
+  .srall{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    min-height:46px;padding:8px 18px;border:0;background:none;cursor:pointer;color:var(--ink);
+    font-family:'Archivo';font-weight:800;font-size:12px;text-align:left}
+  .srall:hover,.srall.on{background:rgba(231,4,67,.11)}
+  .srall .c{color:var(--muted);font-weight:600;font-family:'Inter';font-size:11.5px}
+  @media (max-width:520px){ .srnm{font-size:15px} }
+
+  /*  THE HERO YIELDS ROOM WHILE SEARCHING, AND THIS IS NOT DECORATION.
+      This page does not scroll (measured: scrollHeight == innerHeight at 390x844), and
+      the search bar's bottom sits at 492px, leaving 342px. The soft keyboard then takes
+      roughly half the viewport. Measured at 390x420 without this, the panel overflowed
+      the bottom by 64px even after the list had been squeezed to its floor.
+      NOTE THE PROPERTY: .logo is sized with `width`, not max-width, and the <=720px rule
+      is inside a media query, which adds NO specificity , so this (0,2,1) selector wins
+      on specificity alone and no !important is needed. */
+  .hero.searching .logo{width:min(112px,32vw)}
+  .hero.searching .tag{font-size:15px;margin-bottom:10px}
+  .hero.searching .pills{opacity:0;pointer-events:none}
+  .hero .logo,.hero .tag,.hero .pills{transition:width .22s ease,font-size .22s ease,margin .22s ease,opacity .18s ease}
+  @media (prefers-reduced-motion:reduce){.hero .logo,.hero .tag,.hero .pills{transition:none}}
+
   /* pills */
   .pills{display:flex;align-items:stretch;justify-content:center;gap:12px;
          margin-top:28px;flex-wrap:wrap}
@@ -202,9 +272,12 @@
     <div class="searchwrap">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input id="q" type="text" autocomplete="off" placeholder='Try "Messi vs Jude Bellingham"'>
+        <input id="q" type="text" autocomplete="off" role="combobox" aria-expanded="false"
+               aria-controls="srPanel" aria-autocomplete="list"
+               placeholder='Try "Messi vs Jude Bellingham"'>
         <button class="go">Search</button>
       </div>
+      <div class="srpanel" id="srPanel" role="listbox" aria-label="Search results"></div>
     </div>
 
     <div class="pills">
@@ -232,6 +305,9 @@
     </nav>
   </div>
 
+<script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/vv-core.js?v=20260829m"></script>
 <script>
   // rotating placeholder examples
   var ex=['Try "Messi vs Jude Bellingham"','Search "Thierry Henry"','Try "Haaland vs Mbapp\u00e9"','Search "Rodri 23/24"','Try "Bellingham vs Lamine Yamal"','Search "Van Dijk"'];
@@ -256,17 +332,279 @@
   document.getElementById('burger').onclick=function(){menu.classList.add('open');};
   menu.onclick=function(e){if(e.target===menu)menu.classList.remove('open');};
 
-  // search routing (player resolution happens in plumbing via ?q=)
-  function vvHomeSearch(){
-    var q=(document.getElementById('q').value||'').trim();
-    if(!q) return;
-    // \bv\b matched a bare 'v', so a name carrying a standalone v ("Anthony V Smith")
-    // routed to Compare. Require the token to be SURROUNDED by whitespace.
-    var dest = /\s+vs?\s+/i.test(q) ? 'compare.html' : 'rankings.html';
-    location.href = dest + '?q=' + encodeURIComponent(q);
+  /* ══════════════════════════════════════════════════════════════════════════
+     LIVE SEARCH. Replaces the old vvHomeSearch routing, which sent every query to
+     rankings.html?q= and made the visitor load a second page to find out whether the
+     player exists at all. The routing itself SURVIVES , the Search button and a
+     pre-debounce Enter both still route, and a "vs" query still goes to Compare.
+     ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var C = window.VVCore, F = window.VVFilters;
+  var P = window.VV_PUBLIC;
+  var sb = window.supabase.createClient(P.SUPABASE_URL, P.SUPABASE_ANON_KEY);
+
+  var input = document.getElementById('q');
+  var panel = document.getElementById('srPanel');
+
+  /* (1) DEBOUNCE. 180ms , long enough to swallow a fast typist's whole word,
+         short enough that a pause feels immediate. Measured: it removes 8 of the
+         9 requests that typing "de bruyne" would otherwise issue. */
+  var DEBOUNCE_MS = 180;
+
+  /* (2) MINIMUM TOKEN LENGTH , THREE, AND THE THIRD CHARACTER IS THE ONE THAT MATTERS.
+         A single character matches 96.2% of the table ("a" -> 54,893 of 57,058) and
+         identifies nothing. The floor is 3 rather than 2 because of pg_trgm: the GIN
+         indexes on player_name_norm / team_name_norm / player_name are TRIGRAM indexes,
+         and a 2-character pattern cannot yield a full trigram, so `ilike '%ab%'` falls
+         back to the sequential scan the indexes exist to remove , 225ms of scan to
+         return something that identifies nobody. Three characters is where the index
+         starts working AND where the answer starts being useful.
+         IF THE INDEXES ARE EVER DROPPED THIS CAN GO BACK TO 2 , it is a performance
+         floor, not a correctness one. */
+  var MIN_CHARS = 3;
+
+  /* (3) NO EXACT COUNT. Prefer:count=exact costs a measured 1.8x on this query
+         because Postgres must count every match before returning twelve. A
+         dropdown does not need a total. The "see all" line says "more" rather
+         than a number, deliberately , rankings, which DOES count, is one tap away. */
+  var LIMIT = 8;
+
+  /* (4) ABORT THE PREVIOUS REQUEST. Without this, a slow early query can resolve
+         AFTER a fast later one and repaint stale rows over fresh ones , the classic
+         out-of-order race, and it is invisible until someone types quickly on a bad
+         connection. A monotonic token settles it even where fetch cannot be aborted. */
+  var seq = 0, timer = null, rows = [], cursor = -1, lastQ = '';
+
+  /*  NO full_name , IT IS NOT ON THE MATVIEW, and asking for it 400s the whole query.
+      Worth knowing beyond this file: VVCore.vvDisplayName needs the legal name to expand
+      "E. Haaland", section C calls it "the derivation that resolves it", and the column it
+      reads does not exist on player_card_mv. rowToCard already sidesteps this by taking
+      row.player_name verbatim, so rankings shows the abbreviated form too. This surface
+      matches rankings rather than inventing a third answer. */
+  var SELECT = 'card_id,player_name,player_name_norm,team_name,team_name_norm,'
+             + 'season_year,rt,league_code,position_pool,primary_colour';
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,
+    function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /*  FIT THE PANEL TO THE ROOM THAT ACTUALLY EXISTS.
+      visualViewport is the one that shrinks when the soft keyboard opens; innerHeight
+      does not, so a vh-based list is sized for a screen the reader cannot see. Measured
+      on the real index.html at 390x844: 342px below the search bar with no keyboard.
+      The header and footer are measured rather than assumed, because both carry text
+      that can wrap. The floor is 76px , one 56px row plus a peek of the next, which is
+      what tells the reader the list scrolls. It is DELIBERATELY low: measured at 390x420
+      with the hero compacted there are only ~79px of real room, and a 132px floor
+      overflowed the screen by 41px rather than admitting it. A floor that exceeds the
+      room does not protect the layout, it breaks it silently, and one honest row beats
+      eight rendered off the bottom of the screen. */
+  function fit(){
+    var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    var top = panel.getBoundingClientRect().top;
+    var head = panel.querySelector('.srhead'), foot = panel.querySelector('.srfoot');
+    var chrome = (head ? head.getBoundingClientRect().height : 0)
+               + (foot ? foot.getBoundingClientRect().height : 0) + 16;
+    panel.style.setProperty('--srmax', Math.max(76, Math.round(vh - top - chrome - 12)) + 'px');
   }
-  document.querySelector('.search .go').onclick = vvHomeSearch;
-  document.getElementById('q').addEventListener('keydown', function(e){ if(e.key==='Enter') vvHomeSearch(); });
+  if(window.visualViewport) window.visualViewport.addEventListener('resize', function(){
+    if(panel.classList.contains('open')) fit();
+  });
+
+  var hero = document.querySelector('.hero');
+  function close(){ panel.classList.remove('open'); panel.innerHTML=''; input.setAttribute('aria-expanded','false');
+    if(hero) hero.classList.remove('searching'); cursor=-1; rows=[]; }
+  function open(html){ panel.innerHTML=html; panel.classList.add('open'); input.setAttribute('aria-expanded','true');
+    if(hero) hero.classList.add('searching'); }
+
+  /* THE WAITING STATE IS THE TWO-TONE LOADER, NOT A BLANK AND NOT A SPINNER.
+     vvLoader clamps below its floor rather than honouring a smaller request, so the
+     size asked for here is a real size, not a wish. */
+  function waiting(){
+    open('<div class="srwait">' + C.vvLoader({size:44}) + '<span>Reading the seasons</span></div>');
+  }
+
+  /* THE EMPTY STATE IS THE RANKINGS EMPTY STATE. Not a copy of its words , the
+     actual string, pulled from VVFilters.emptyStateHTML with searching:true, so the
+     two surfaces cannot drift apart. If that copy is ever rewritten, this follows. */
+  /* THE SCOPE LINE COMES FROM VVFilters, AND THE FIRST ATTEMPT AT THAT BROKE THE PAGE.
+     emptyStateHTML needs a filter STATE, not an empty object , it reads st.score.bands
+     directly. Passing {} threw at module load and took the ENTIRE feature with it: no
+     listeners were ever attached, so the field simply did nothing and reported nothing.
+     A top-level derivation that can throw is a single point of failure for everything
+     below it. Hence: lazy, guarded, and LOUD if the shared copy cannot be reached ,
+     never a silent fallback to an empty string, which would ship a blank empty state
+     that looks deliberate. */
+  var _scope = null;
+  function scopeHTML(){
+    if(_scope != null) return _scope;
+    try {
+      var d = document.createElement('div');
+      d.innerHTML = F.emptyStateHTML({score:{bands:[]}}, {searching:true});
+      var el = d.querySelector('.vvf-es-scope');
+      if(el && el.innerHTML.trim()){ _scope = el.innerHTML; return _scope; }
+    } catch(e){}
+    console.warn('[vv] search empty-state scope line unreachable from VVFilters , the '
+      + 'front door and rankings will disagree. Fix the call, do not hardcode the copy.');
+    _scope = '';
+    return _scope;
+  }
+
+
+  function failed(){
+    open('<div class="srempty"><b>Search is not responding.</b>'
+       + '<span>Something went wrong reaching the seasons, so this is not an answer about '
+       + 'whether the player exists. Try again, or open Rankings.</span></div>');
+  }
+
+  function empty(q){
+    open('<div class="srempty"><b>No seasons match &ldquo;' + esc(q) + '&rdquo;.</b>'
+       + '<span>' + scopeHTML() + '</span></div>');
+  }
+
+  function rowHTML(r, i){
+    var name = r.player_name || '';
+    var season = C.vvSeasonLabel(r.season_year);
+    var club = r.team_name || '';
+    var vv = (r.rt == null) ? null : Math.round(r.rt);
+    var sub = [club, season].filter(Boolean).join('  ·  ');
+    return '<button class="srrow" role="option" aria-selected="false" data-i="' + i + '" tabindex="-1">'
+      + '<span class="srrail" style="background:' + esc(r.primary_colour || 'var(--pink)') + '"></span>'
+      + '<span class="srmain"><span class="srnm">' + esc(name) + '</span>'
+      + '<span class="srsub">' + esc(sub) + '</span></span>'
+      + (vv == null
+          ? '<span class="srvv nr">NR<span class="srvvl">VV</span></span>'
+          : '<span class="srvv">' + vv + '<span class="srvvl">VV</span></span>')
+      + '</button>';
+  }
+
+  function paint(list, q, more){
+    rows = list; cursor = 0;
+    var h = '<div class="srhead">Seasons</div><div class="srlist">'
+          + list.map(rowHTML).join('') + '</div>'
+          + '<div class="srfoot"><button class="srall" data-all="1" tabindex="-1">'
+          + '<span>See all results in Rankings</span>'
+          + '<span class="c">' + (more ? 'more to see' : list.length + ' found') + '</span></button></div>';
+    open(h);
+    /* fit twice, and the second is not belt-and-braces: the hero compaction is a
+       transition, so measuring immediately reads the PRE-compaction position and sizes
+       the list for room that is about to grow. The first call stops it overflowing in
+       the meantime; the second uses the settled geometry. */
+    fit();
+    setTimeout(function(){ if(panel.classList.contains('open')) fit(); }, 260);
+    mark();
+    panel.querySelectorAll('.srrow').forEach(function(el){
+      el.addEventListener('mousedown', function(e){ e.preventDefault(); go(+el.dataset.i); });
+      el.addEventListener('mouseenter', function(){ cursor = +el.dataset.i; mark(); });
+    });
+    panel.querySelector('.srall').addEventListener('mousedown', function(e){ e.preventDefault(); goAll(); });
+  }
+
+  function mark(){
+    var els = panel.querySelectorAll('.srrow');
+    els.forEach(function(el){
+      var on = (+el.dataset.i === cursor);
+      el.classList.toggle('on', on);
+      el.setAttribute('aria-selected', on ? 'true' : 'false');
+      if(on) el.scrollIntoView({block:'nearest'});
+    });
+    var all = panel.querySelector('.srall');
+    if(all) all.classList.toggle('on', cursor === rows.length);
+  }
+
+  function go(i){
+    var r = rows[i]; if(!r) return;
+    location.href = 'card.html?id=' + r.card_id;
+  }
+  function goAll(){
+    location.href = 'rankings.html?q=' + encodeURIComponent(input.value.trim());
+  }
+
+  /* THE COMPARE ROUTE IS UNCHANGED , a "vs" query is not a card lookup and must not
+     open a dropdown. Same guarded pattern as today: the token has to be surrounded by
+     whitespace, so a name carrying a standalone v does not route to Compare. */
+  function isVersus(q){ return /\s+vs?\s+/i.test(q); }
+
+  function search(raw){
+    var q = raw.trim();
+    lastQ = q;
+    if(isVersus(q)) { close(); return; }
+
+    /* vvParseSearch splits the season off the name , "rodri 23/24" is a name token
+       plus season_year 2023, and a bare year means the season ENDING in it. Shared
+       with rankings and the compare picker, so the three read a query identically. */
+    var parsed = C.vvParseSearch(q);
+    var nameQ = parsed.nameQ || '';
+    var filter = nameQ ? C.tokenAndFilter(nameQ) : null;
+
+    // (2) the character floor , applies to the NAME part, so "pl 23/24" still works
+    var longest = nameQ.split(/\s+/).reduce(function(m,t){ return Math.max(m, t.length); }, 0);
+    if(!filter && parsed.seasonYear == null) { close(); return; }
+    if(filter && longest < MIN_CHARS && parsed.seasonYear == null) { close(); return; }
+
+    var mine = ++seq;                                   // (4) the ordering token
+    waiting();
+
+    var query = sb.from('player_card_mv').select(SELECT);   // (3) no count
+    if(filter) query = query.or(filter);
+    if(parsed.seasonYear != null) query = query.eq('season_year', parsed.seasonYear);
+    // nullsFirst:false , ORDER BY rt DESC puts NULL first in Postgres, which would
+    // hand the top slot of the front door to an unscored card. See CLAUDE.md section C.
+    query = query.order('rt', {ascending:false, nullsFirst:false}).limit(LIMIT + 1);
+
+    query.then(function(res){
+      if(mine !== seq) return;                           // a newer keystroke already won
+      /*  A FAILED QUERY IS NOT AN EMPTY RESULT, AND RENDERING IT AS ONE IS A LIE.
+          "No seasons match" tells the visitor their player is not in the dataset. If the
+          request actually failed, that statement is false and it is unfalsifiable from the
+          outside , exactly the report-a-state-that-did-not-happen family in section C.
+          This bug was live in the first draft of this file and only a rendered check found
+          it: a missing column 400'd every query and the panel confidently said no match. */
+      if(res.error){ failed(); return; }
+      var data = res.data || [];
+      var more = data.length > LIMIT;
+      data = data.slice(0, LIMIT);
+      if(!data.length){ empty(q); return; }
+      // the shared relevance re-rank , exact > prefix > word-start > mid-string, then rt
+      data = C.rankBySearch(data, nameQ, function(r){
+        return (r.player_name || '') + ' ' + (r.player_name_norm || '');
+      });
+      paint(data, q, more);
+    });
+  }
+
+  input.addEventListener('input', function(){
+    clearTimeout(timer);
+    var v = input.value;
+    if(!v.trim()){ seq++; close(); return; }             // clearing is instant, not debounced
+    timer = setTimeout(function(){ search(v); }, DEBOUNCE_MS);   // (1)
+  });
+
+  input.addEventListener('keydown', function(e){
+    var open_ = panel.classList.contains('open') && rows.length;
+    if(e.key === 'ArrowDown'){
+      if(!open_) return;
+      e.preventDefault(); cursor = Math.min(cursor + 1, rows.length); mark();
+    } else if(e.key === 'ArrowUp'){
+      if(!open_) return;
+      e.preventDefault(); cursor = Math.max(cursor - 1, 0); mark();
+    } else if(e.key === 'Enter'){
+      // ENTER OPENS THE TOP RESULT when the list is up , the requirement , and falls
+      // back to the existing routing when it is not, so a "vs" query and a query typed
+      // faster than the debounce both still work.
+      if(open_){ e.preventDefault(); if(cursor === rows.length) goAll(); else go(cursor < 0 ? 0 : cursor); }
+      else { var q = input.value.trim(); if(q) location.href = (isVersus(q) ? 'compare.html' : 'rankings.html') + '?q=' + encodeURIComponent(q); }
+    } else if(e.key === 'Escape'){
+      close(); 
+    }
+  });
+
+  input.addEventListener('blur', function(){ setTimeout(close, 120); });
+  input.addEventListener('focus', function(){ if(input.value.trim()) search(input.value); });
+  document.querySelector('.search .go').onclick = function(){
+    var q = input.value.trim(); if(!q) return;
+    location.href = (isVersus(q) ? 'compare.html' : 'rankings.html') + '?q=' + encodeURIComponent(q);
+  };
+})();
 </script>
 </body>
 </html>
