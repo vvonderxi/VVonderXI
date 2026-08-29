@@ -2727,8 +2727,14 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
           first and this sub-line was not, so a keeper's season list read "0G · NR" , the
           same true-and-useless pair, in a template nobody had checked. Section C's
           four-tag-render-paths lesson, applied to goals and assists. */
+      /*  AGE IS DROPPED FROM A KEEPER'S SUB-LINE, and only a keeper's. The line is
+          nowrap+ellipsis, and SV/GA is about 36px wider than G/A, so on a long club name
+          the tail was clipped , "Manchester United · GK · Age 31 · 128SV · 57GA" measured
+          271px into a 219px box and lost the 57GA. The figures ARE the season; age is on
+          the card face, the glance meta line and the season header, so it is the one part
+          of this line that is repeated elsewhere. */
       var sub = [ d.clubname, posDisplay(d.pos),
-                  (d.age!=null && d.age!=='') ? 'Age '+d.age : '',
+                  (!d.keeper && d.age!=null && d.age!=='') ? 'Age '+d.age : '',
                   (d.keeper ? (d.keeper.saves==null?'NR SV':d.keeper.saves+'SV')
                             : (d.goals!=null ? d.goals+'G' : '')),
                   (d.keeper ? (d.keeper.conceded==null?'NR GA':d.keeper.conceded+'GA')
