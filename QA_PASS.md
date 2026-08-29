@@ -70,22 +70,30 @@ are avoidable if you know about them.
 - **How:** `node scripts/lint-inline.js`
 - **Pass:** "All files parse clean, every declared rule survives, every inline script checks, and every shared module exports what it should." **A stray backtick inside `VV_CARD_CSS` once passed `node --check` and left `VVCore` undefined, so the export assertion is the load-bearing half , not the parse.**
 
+- **STATUS 2026-08-29: PASS, re-run.** `node scripts/lint-inline.js` returns the exact pass string across all files, including the export assertion that is the load-bearing half.
 ### A2. Cache-token discipline
 - **Check:** `vv-core.js` and `vv-marks.js` carry the SAME `?v=` on all three shipping pages.
-- **How:** `for f in card.html compare.html rankings.html; do grep -o 'vv-\(core\|marks\).js?v=[0-9a-z]*' $f; done | sort -u`
+- **How:** `for f in card.html compare.html rankings.html playbook.html; do grep -o 'vv-\(core\|marks\).js?v=[0-9a-z]*' $f; done | sort -u` **(playbook added 2026-08-28 , it loads vv-marks.js and was missing from this check.)**
 - **Pass:** exactly TWO lines, one per file, the SAME token. Today: `20260827g`. **Any third value means a page was missed and one file will be served fresh against a cached copy of the other.** Ignore the gitignored demos and the two `myclub-mock*` files, which reference vv-core only in a comment.
 
+- **STATUS 2026-08-29: PASS, re-run.** Exactly two lines, `vv-core.js?v=20260828c` and `vv-marks.js?v=20260828c`, one distinct token value across card, compare and rankings. **The token is no longer `20260827g` , it moved twice on 2026-08-28 (vv-core for the keeper panel, then vv-marks for `s-gk`).**
+- **AND THE RULE IN §C WAS INCOMPLETE, corrected 2026-08-28: `playbook.html` IS A FOURTH SURFACE LOADING `vv-marks.js`** and was not in the three-page list. It had drifted to its own stale token. It is now bumped with the others; **this item's `for` loop still only checks three pages and should check four.**
 ### A3. Verdict tags and the share-only names
 - **Check:** 14 tags, 3 share-only display names, and every share name resolves.
 - **How:** assert every key of `VERDICT_SHARE_NAME` is a real key of `VERDICT_TAGS`, then assert `verdictShareName()` returns the share name when given the KEY, the TAG OBJECT and the NAME, and returns the tag's own name for the other eleven.
 - **Pass:** 14 tags, 3 share names, all three resolve three ways, the other 11 pass through unchanged. **The three divergent names are DELIBERATE (§C) , a mismatch is only a defect if a share KEY has no tag behind it.**
 - **NOTE, and it cost a false failure on the first run: `VERDICT_SHARE_NAME` is keyed by TAG KEY (`var_close`), not by tag name.** A check written against the name throws on a correct codebase. `verdictShareName()` deliberately accepts either, so the test must too.
 
+- **STATUS 2026-08-29: PASS, re-run.** 14 tags, 3 share names, **zero orphan share keys**, and all three divergent names resolve identically by KEY, by TAG OBJECT and by NAME: `var_close` -> "VAR Close Call", `complete_spec` -> "The Complete Player", `league_tips` -> "The League Tips The Balance".
+- **A SECOND SHAPE TRAP, beyond the one this item already warns about: `VERDICT_TAGS` is an OBJECT keyed by tag key, and the tag objects carry no `key` field.** `Object.values()` silently discards the identifier and the check throws. Use `Object.entries()`. **That is twice this item has failed on the tester's shape assumption rather than on the code.**
+- **LATENT, NOT A DEFECT, recorded so nobody 'fixes' it blind: `verdictShareName(key)` returns the RAW KEY for the eleven non-divergent tags** (`fn('masterclass')` -> `"masterclass"`, not `"A Masterclass"`), because a bare string is treated as both key and name and falls through to `return name || key`. **Both live call sites (`compare.html:1486` and `:1499`) pass the tag OBJECT, for which all 14 return the correct display name, so this is unreachable today.** It would bite a future caller that passes a key, printing `masterclass` into a social post.
 ### A4. Mark set resolves, nothing renders blank
 - **Check:** all 39 marks exist and every key used by a consumer resolves to real path data. **(38 until `s-gk`, the goalkeeper glove, was added 2026-08-28.)**
 - **How:** serve locally, open card / compare / rankings, and read the one-shot console audit `VVMarks.inject()` emits.
 - **Pass:** no "mark resolves to nothing" warning on any surface. **A `<use>` pointing at a missing symbol renders BLANK with no error and no layout change, so the console warning is the only signal.**
 
+- **STATUS 2026-08-28: PASS.** Checked on rankings, card, compare and playbook. **39 symbols injected, zero dangling `<use>` refs, zero hollow symbols**, and all 11 section headings resolve including `s-gk`. Positive control: a planted `<use>` at a missing symbol was caught, and bogus keys return falsy.
+- **METHOD NOTE: the first attempt looked for inline `<path>` children and reported "294 painted, 294 empty" on marks that visibly render.** The architecture is `<use>` pointing at `<symbol>`, which is the whole point of the item. Resolve hrefs against the symbol table.
 ### A5. The loader, at every wired size
 - **Check:** the two-tone mark renders as a W, in both themes, at every size actually used.
 - **How:** serve locally; render `VVCore.vvLoader({size:n})` at 64/48/44/40/22/16 in both themes; screenshot.
@@ -102,46 +110,62 @@ are avoidable if you know about them.
   compare:1721 `.vwait` **15.72 / 14.41**. **Four of six sit on gradient grounds and can only be
   settled by capture , see the harness caveats above.**
 
+- **STATUS 2026-08-28: FAILED, FIXED, RE-VERIFIED.** All six sizes render and the clamp holds (a request for 8px returns 16). **`card.html:1542` rendered the glance loader with NO ink option, putting a cream base V on the cream `.layer` at contrast 1.00 , not faint, NOT DRAWN (0 non-ground pixels of 4096).** Fixed by passing `ink:'var(--charcoal)'`; now **14.31** in both themes. See the six-site table above.
 ### A6. The four html2canvas divergences
 - **Check:** each of the four known capture gaps is either shimmed or accepted, and no NEW one has appeared.
 - **How:** (a) capture a card and confirm the Generational gold rim is present in the PNG , count gold pixels in the top-left corner; (b) capture and confirm marks are not blank; (c) capture and confirm the tagline line is in the file; (d) run `VVCore.vvAuditCaptureSupport(frame)` on a composed share frame and read the console.
 - **Pass:** (a) non-zero gold in the corner (was ZERO without `vvShimInsetRims`, 370 with); (b) marks visible; (c) tagline present; (d) the audit reports the shield's `drop-shadow` ONLY , that one is an accepted exception at a measured 0.31/255. **Any other feature named by the audit is new and must be investigated before merge.**
 
+- **STATUS 2026-08-28: PASS, all four.** (a) Generational gold rim: **0 gold pixels without `vvShimInsetRims`, 654 with** , the negative control proves the test measures the shim. (b) marks drawn (3 of 3, 9 distinct tones each). (c) tagline drawn (22 tones across 1855x96). (d) `vvAuditCaptureSupport` reports **exactly one** finding, the SVG `drop-shadow`, which is the recorded accepted exception. **No new divergence.**
+- **The audit is ONE-SHOT per surface**, so a second call is silent by design , hook the console before the first composition or you will read an empty result and think it passed.
 ### A7. Share frames, all four formats, both themes
 - **Check:** nothing overflows, nothing collides, the caption and tagline fit, the card sits inside the padding.
 - **How:** compose `x`, `igf`, `igs`, `dl` and measure on the live frame before capture: caption block width against frame-minus-padding, card bottom against caption top, card box against frame padding. Repeat with the LONGEST realistic name, not Messi.
 - **Pass:** every format inside its padding, no card/caption overlap, caption wraps rather than overflowing. **`nowrap` overflows rather than clips, so an overflow bleeds off the image silently , the measurement is the only way to see it.**
 
+- **STATUS 2026-08-28: PASS.** Measured with the longest real name in the database, **Raffael Caetano de Araujo at Borussia Moenchengladbach** (25 + 24 characters), across x / igf / igs / dl in both themes: card and caption inside the padding everywhere, **no card/caption overlap**, **zero elements with `scrollWidth > clientWidth`**, and the caption inside the frame with **25.9 to 41.3px** of bottom clearance and 37 to 59px at the right.
+- **Corroborates §D's "the igf/igs bottom block is effectively full":** the tagline occupies **85.9% of full frame width** with this name.
 ### A8. Share type is legible at the size people see
 - **Check:** the type survives the thumbnail, not the file.
 - **How:** render each format and display at **600px wide**, which is roughly how X renders inline.
 - **Pass:** wordmark and caption readable at 600px. **Judging at 100% is how the old 18px caption shipped as 9px as seen.**
 
+- **STATUS 2026-08-28: PASS**, confirmed numerically and by eye at 600px. Effective sizes: **x** caption 15.5 / tagline 11.5 / brand 15.0; **igf and igs** caption 27.8 / tagline 20.6 / brand 26.7; **dl** similar. **`x` is the tight one at 11.5px** and is the format to re-judge after any `SH_TYPE` change.
+- **OBSERVED, OUTSIDE THIS ITEM'S SCOPE: on `x` the CARD'S OWN chips and club line get very small at 600px**, because the landscape frame sizes the card to its height. A8 scopes to wordmark and caption, both of which pass. Worth a human look before launch.
 ### A9. Capability-driven share controls
 - **Check:** the control set matches what the browser can actually do, in all three capability states.
 - **How:** on card and compare, stub `navigator.share`/`canShare` for `files`, `link`, and neither; call the relabel; read the rendered labels, the visible socials and the hint.
 - **Pass:** `files` gives one Share button with the socials REMOVED; `link` and `none` give "Save post image", socials shown and marked link-only, and a hint saying to attach the image. **No two share controls may share a label.**
 
+- **STATUS 2026-08-28: PASS**, all three states, driven through the real call site with its real options. **`files`** , socials hidden (2), main reads "Share", hint says it sends the image. **`link` and `none`** , socials visible (2) and marked "posts a link only" in `aria-label` and `title`, main reads "Save post image", hint says to attach it yourself. **No duplicate labels in any state** across the whole visible control row: "Save post image" and "Save image" are deliberately distinct and compose different frames.
 ### A10. Clipboard reports only what resolved
 - **Check:** Copy link never claims success it did not earn, and never hangs.
 - **How:** stub `navigator.clipboard` three ways , absent, rejecting, resolving , and call the handler.
 - **Pass:** absent and rejecting both land "Copy failed"; resolving lands "Copied"; **all three settle within ~1.5s**. **An unbounded `writeText()` can stay pending forever on a hidden document, which is a control that silently does nothing.**
 
+- **STATUS 2026-08-28: OUTCOMES PASS. THE TIMING BOUND IS UNVERIFIED and must be re-run on a visible tab.** Four stubs, all settling, none hanging: absent -> `false`, rejecting -> `false`, resolving -> `true`, and **a promise that never settles -> `false`**, which is the case the bounded wait exists for. Handler labels: resolving -> "Copied"; rejecting and absent -> "Copy failed" plus a toast explaining the browser blocked it. **It never claims success it did not earn.**
+- **The ~1.5s bound could not be checked**: the tab reported `visibilityState:"hidden"` with a 50ms timer taking **523ms**. See the harness caveats. This half belongs with C1/C2.
 ### A11. Age filter and Clear-all
 - **Check:** the Age range filters on `season_age`, the ends mean no bound, and Clear-all resets everything.
 - **How:** on rankings, set Age to a narrow band and read the emitted query and the result count; drag to the ends; set both Age and VV Score, then Clear-all.
 - **Pass:** the query uses **`season_age`, never `age`**; at the ends NO clause is emitted; Clear-all resets both ranges and every chip. **`age` is the player's CURRENT age and is identical on every season row, so filtering on it silently answers a different question , confirm by checking a card whose current age is far from its season age.**
 
+- **STATUS 2026-08-28: PASS.** The emitted query uses **`season_age`, never `age`**. At the ends the real UI writes `{lo:null, hi:null}` and **emits ZERO clauses**, with `isActive` false, so null-age cards survive. A narrow band emits `gte(season_age,22)` + `lte(season_age,24)`. Clear-all resets both ranges and every chip.
+- **THE `age` TRAP CONFIRMED DECISIVELY, not argued:** five cards that were TEENAGE seasons (`season_age` 19 to 20) by players now aged 33 to 35 are returned by a `season_age` 18-21 filter and by **ZERO** by the same filter on `age`. Filtering on `age` would have silently returned nothing.
+- **METHOD NOTE: a hand-built state of `{lo:15, hi:43}` DOES emit clauses**, but the UI never produces that , it writes nulls at the ends. Read the state from `readState()`; do not synthesise it.
 ### A12. Filter state survives a legacy shape
 - **Check:** a filter state stored by an earlier build, with no `age` key, still applies.
 - **How:** hand-build a state object without `age`, pass it to `applyServer`, `isActive`, `renderActive`, `emptyStateHTML`.
 - **Pass:** no throw, and the clauses that ARE present still apply. **Sequence state is persisted in sessionStorage and will outlive the deploy.**
 
+- **STATUS 2026-08-28: PASS.** A state with no `age` key at all threw in none of `applyServer`, `isActive`, `renderActive`, `emptyStateHTML`, `describe` or `clientPredicate`, and every clause that WAS present still applied: `in(league_code,["PL"])`, `in(position_pool,["ST"])`, `gte(rt,88)`, `lte(rt,97)`, plus the `order(card_id)` unique tiebreak §C requires.
 ### A13. Row CSS namespaces
 - **Check:** rows still render with a namespace ancestor on all three surfaces.
 - **How:** load each surface and read the one-shot console guard.
 - **Pass:** no "rows rendered with no namespace ancestor" warning. **The opt-in reproduces a silent failure otherwise , a missed prefix once grew rows from 80px to 637px tall.**
 
+- **STATUS 2026-08-28: PASS, with a positive control.** Rows mounted into a container with NO namespace **do** trigger the guard's warning; mounted into `.vvrows` the guard is silent, rows compute `display:grid` and stand at **80 to 81px**, against the **637px** the missed prefix once produced. `.vvrows-season` behaves identically.
+- **NOTE: in GRID mode rankings renders CARDS, not `.urow`**, so a `.urow` scan on the default view finds nothing and proves nothing. Exercise `rankRowHTML` directly, or switch to a row mode.
 ### A14. Contrast, both themes, every surface
 - **Check:** no new AA failure, and the accepted exceptions are still exactly the accepted ones.
 - **How:** run the contrast harness on card, compare, rankings, playbook, vvindex, index, in BOTH themes. **On any SVG, ink is `fill` not `color`, the ground is sibling geometry (hit-test, topmost = last in document order), and a stroke counts toward legibility.**
