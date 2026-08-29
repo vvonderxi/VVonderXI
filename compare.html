@@ -966,8 +966,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260829g"></script>
-<script src="/vv-core.js?v=20260829g"></script>
+<script src="/vv-marks.js?v=20260829h"></script>
+<script src="/vv-core.js?v=20260829h"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1113,6 +1113,12 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(CMP_A) vvFlipReveal('A', CMP_A, cw);
       if(CMP_B) vvFlipReveal('B', CMP_B, cw);
     }, 220); });
+    /*  A DEEP LINK RENDERS THE PANELS NOW, WITHOUT GENERATING ANYTHING. They land in the
+        #verdict block, which is display:none until the button reveals it, so this changes
+        nothing a visitor sees , it removes the fetch-and-draw delay AFTER the click, and it
+        means the keeper trajectory and the mismatch line exist by the time they are shown.
+        It deliberately does NOT reveal the section and does NOT call vvGenerateVerdict. */
+    if(CMP_A && CMP_B) vvRenderVerdictPanels();
   }
   var SLOT_SEASONS={};   // slot -> rowToCard-mapped seasons (with honours), for the per-slot fold
   var SLOT_OPEN={};      // slot -> is the fold open? AUTHORITATIVE user-fold state (see vvLoadSlotSeasons)
@@ -2027,9 +2033,30 @@ body.light .pkmsub{color:var(--ink-soft)}
     });
   }
   // reveal handler , draw graphics when Compare is pressed
+  /*  THE HANDLER IS SPLIT: FREE WORK RUNS ON LOAD, PAID WORK WAITS FOR THE CLICK.
+      Everything below is deterministic , local renders over Supabase rows , and it used to
+      sit inside the settle click, so a deep link showed empty panels. Only
+      vvGenerateVerdict() costs money, and it STAYS behind the button. Do not "simplify"
+      this by auto-clicking .settle: that fires a paid generation for every shared link
+      anyone ever opens, which is a cost decision wearing a rendering fix's clothes. */
+  var _vvPanelsFor = null;
+  async function vvRenderVerdictPanels(){
+    if(!(CMP_A && CMP_B)) return;
+    var key = pkKey(CMP_A)+'|'+pkKey(CMP_B);
+    if(_vvPanelsFor === key) return;        // idempotent: load AND click both call this
+    _vvPanelsFor = key;
+    vvComputeSpokes(); vvUpdateWatchLinks();
+    var ka=document.querySelector('.vk-a'); if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');
+    var kb=document.querySelector('.vk-b'); if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');
+    drawDualRadar(); vvSetAccolades(); vvSetProof(); drawH2H();
+    var _tr=await Promise.all([ vvLoadTrajectory(CMP_A&&CMP_A.api_player_id), vvLoadTrajectory(CMP_B&&CMP_B.api_player_id) ]);
+    var serA=_tr[0], serB=_tr[1];
+    drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);
+    vvSetConfidence(serA&&serA.length,serB&&serB.length);
+  }
   document.querySelector('.settle').addEventListener('click',function(){
     var m=document.querySelector('.matchup'); if(m && CMP_A && CMP_B) m.classList.add('settled');
-    setTimeout(async ()=>{vvComputeSpokes();vvUpdateWatchLinks();var ka=document.querySelector('.vk-a');if(ka)ka.innerHTML='<i></i> '+(CMP_A&&CMP_A.surname?CMP_A.surname:'A');var kb=document.querySelector('.vk-b');if(kb)kb.innerHTML='<i></i> '+(CMP_B&&CMP_B.surname?CMP_B.surname:'B');drawDualRadar();vvSetAccolades();vvSetProof();drawH2H();var _tr=await Promise.all([ vvLoadTrajectory(CMP_A&&CMP_A.api_player_id), vvLoadTrajectory(CMP_B&&CMP_B.api_player_id) ]);var serA=_tr[0],serB=_tr[1];drawTrajectory(serA,serB,CMP_A&&CMP_A.surname,CMP_B&&CMP_B.surname);vvSetConfidence(serA&&serA.length,serB&&serB.length);},60);
+    setTimeout(function(){ vvRenderVerdictPanels(); },60);
     vvGenerateVerdict();
   });
   vvShareRelabel();   // before any visitor can read the button, not at click time

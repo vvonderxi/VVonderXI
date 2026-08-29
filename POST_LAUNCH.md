@@ -294,7 +294,22 @@ rate / minutes / starts against goals / assists / games) and a line beneath both
 the outfielder's season does not disappear from a comparison the user asked for.
 
 
-### COMPARE , EVERYTHING BELOW THE FOLD IS GATED ON THE "SETTLE IT" CLICK (scoped 2026-08-29, NOT FIXED)
+### COMPARE , THE "SETTLE IT" GATE , **SPLIT 2026-08-29. Free work runs on load; the paid call still waits for the click.**
+
+**WHAT SHIPPED:** the deterministic half of the handler is now `vvRenderVerdictPanels()`, called
+both on a deep link and from the click, guarded by the pair key so it never runs twice.
+`vvGenerateVerdict()` stays in the click alone. **Measured on a deep link: panels render (14,237
+chars, keeper chart and mismatch caption present), the `#verdict` section stays `display:none`,
+and ZERO `/api/analyse` calls fire.** After the click: section reveals, one AI call, and `#vtraj`
+is byte-identical, which proves the guard stopped a second fetch-and-redraw.
+
+**STILL TRUE AND STILL A PRODUCT DECISION: the section is `display:none` until the button, so a
+shared keeper link still shows nothing until a human presses Settle.** Rendering early removes
+the post-click delay and guarantees the treatment exists when revealed; it does not make a deep
+link self-revealing. **Auto-revealing is a separate call and was NOT made** , it would put a
+verdict panel on screen with no verdict in it.
+
+#### the original scope, kept for the reasoning
 
 **`#vtraj` is empty on load, and so is the radar, the head-to-head and the confidence panel.**
 All of it lives inside one handler: `compare.html:2030`,
