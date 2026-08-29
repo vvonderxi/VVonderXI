@@ -186,7 +186,42 @@ are avoidable if you know about them.
   - **METHOD NOTE: CSS arithmetic said 6.59 dark / 1.45 light and was WRONG**, because it assumed the chip sat on the page ground rather than on the cabinet. **The pixel scan's identical-in-both-themes reading was right.** A screenshot settled it.
 - **`.vmono` 1.67 dark / 2.54 light , NOT AN AA FAILURE, and the instrument found it by accident.** In a glyph-dense 15px box the MODAL colour is a glyph, not the ground, so the measurement compared **ink to ink**. Both inks are fine against the ground (charcoal **14.31**, pink-ink **6.16** on cream). **What it actually surfaced is the base-to-overlay pair at 2.32** , precisely the multi-ink case §C says no contrast check on text would ever catch. Worth a look at 15px; not a WCAG item.
 
-**PROGRESS 2026-08-29: card and vvindex added, both themes. STILL TO RUN: compare, rankings, index.**
+**STATUS 2026-08-29: ALL SIX SURFACES DONE, BOTH THEMES. The instrument is validated (`.pspot`
+reproduces at 3.89 on every run) and the results are below.**
+
+| surface | probed/theme | dark | light |
+|---|---|---|---|
+| playbook | 142 | 10 | 10 |
+| card | 20 | 1 | 1 |
+| vvindex | 112 | 1 | 1 |
+| **compare** | 76 | **49** | **11** |
+| rankings | 116 | 0 | 0 |
+| index | 14 | 0 | 2 |
+
+**COMPARE IS THE FINDING, AND IT IS NOT A HANDFUL OF ELEMENTS. 49 failures across 19 DISTINCT
+classes in dark**, concentrated on the green `.vsect` panel. Confirmed by two independent methods
+that agree: the muted ink `rgba(243,237,224,0.55-0.58)` lands at **3.1 to 3.3 by CSS arithmetic
+and 3.4 to 4.0 by pixel** against the gradient `rgb(28,96,56)` to `rgb(15,58,34)`. Worst repeat
+offenders: `.vsect-t` section headings x7 at **3.37**, `.vsect-d` descriptions x6 at **3.45**,
+`.h2hlabel` x5 at **2.14**, `.vp-va`/`.vp-vb` Proof values x7 at **2.49** against a 3.0 bar,
+`.h2hbar-nr` x3 at **2.47**, `.ttl` x3 at **2.88**.
+- **`.tjcap` IS THE CLEANEST SINGLE CASE AND IT IS SECTION C'S OWN RULE: an ink pinned to a
+  ground that moves.** The caption's gold `#E8B84B` is FIXED, while `.vsect` is a green gradient
+  in dark and solid cream `rgb(251,248,242)` in light. **Gold on the light panel measures 1.74**,
+  and the pixel method returned 1.74 independently. **Pre-existing; the class and its gold predate
+  the keeper work, which only changed the text inside it.**
+- **The light theme is far healthier (11 failures, 5 classes) because the panel goes cream and
+  most inks flip with it.** The green panel in DARK is where the problem lives.
+
+**INDEX, light only: `.tag` 2.65 and `.pk` 2.49, both 19px** , the home-page brand line
+"Every Season Tells a Different Story" with "Story" in pink. Dark is clean.
+
+**RANKINGS IS CLEAN** , 116 elements per theme, zero failures, cards and chrome.
+
+**NOTHING HERE WAS FIXED.** These are findings, and the compare set in particular is a design
+decision about the green panel's muted-ink family rather than a set of one-line patches.
+
+**PREVIOUS PROGRESS NOTE, superseded:**
 - **CARD , 20 elements per theme, ONE failure in each and it is the same one:** `.chtag-att`
   "Clinical" at **3.88** against 4.5, 11px. **A third card-face chip**, alongside the two already
   accepted at 2.04 and 2.34. Same family, closer to the bar. **Rule it with the others.**
