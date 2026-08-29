@@ -367,7 +367,22 @@
       </div>
       <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
       ${prestige}${tag}
-      <div class="cga"><div class="col"><div class="v">${d.goals == null ? 'NR' : d.goals}</div><div class="l">Goals</div></div><div class="divider"></div><div class="col"><div class="v">${d.assistsText == null ? 'NR' : d.assistsText}</div><div class="l">Assists</div></div></div>
+      ${(function(){
+        /*  A KEEPER DOES NOT GET GOALS AND ASSISTS. "0 goals, NR assists" is true and
+            useless, and it is the same overclaim as a zeroed radar spoke wearing different
+            clothes , the pair says nothing about the season and crowds out the pair that
+            would. Keepers get SAVES and CONCEDED, which are the figures the panel below
+            already carries. Pre-2015 they are genuinely unrecorded and render NR, which
+            is the honest answer rather than a zero. */
+        const k = d.keeper;
+        const pair = k
+          ? [[k.saves,    'Saves'],    [k.conceded, 'Conceded']]
+          : [[d.goals,    'Goals'],    [d.assistsText, 'Assists']];
+        return '<div class="cga"><div class="col"><div class="v">' + (pair[0][0] == null ? 'NR' : pair[0][0]) +
+               '</div><div class="l">' + pair[0][1] + '</div></div><div class="divider"></div>' +
+               '<div class="col"><div class="v">' + (pair[1][0] == null ? 'NR' : pair[1][0]) +
+               '</div><div class="l">' + pair[1][1] + '</div></div></div>';
+      })()}
       <div class="cname"><div class="nm${longName}">${flag}${d.surname}</div>${full}<div class="sub">${[d.clubname, posDisplay(d.pos), d.age].filter(x=>x!=null&&x!=='').join(' &middot; ')}</div></div>
     </div>`;
   }

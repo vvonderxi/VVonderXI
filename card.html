@@ -961,7 +961,7 @@
       <div class="depth">
       <div class="layer open"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5 10 6.5 10 6.5-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></div><div class="layer-t">The Glance</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="glancegrid">
   <div class="glancestats">
-    <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV" data-demo>91</span><span class="gl">V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="gstat"><span class="gv" id="glGoals" data-demo>10</span><span class="gl">Goals</span></div><div class="gstat"><span class="gv" id="glAssists" data-demo>8</span><span class="gl">Assists</span></div></div>
+    <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV" data-demo>91</span><span class="gl">V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="gstat"><span class="gv" id="glGoals" data-demo>10</span><span class="gl" id="glGoalsLabel">Goals</span></div><div class="gstat"><span class="gv" id="glAssists" data-demo>8</span><span class="gl" id="glAssistsLabel">Assists</span></div></div>
     <!-- deliberately EMPTY, unlike the demo placeholders on the stats/gsub rows:
          a name is identifying, so flashing a real player's name (~165ms, until
          this card's own data lands) would read as the wrong card. min-height on
@@ -1038,8 +1038,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260828c"></script>
-<script src="/vv-core.js?v=20260828c"></script>
+<script src="/vv-marks.js?v=20260829a"></script>
+<script src="/vv-core.js?v=20260829a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1337,8 +1337,23 @@
     if(_pl){ var _b = vvProfileBlurb(D);
       _pl.textContent = _b || (D.keeper ? 'A goalkeeper, measured on the shots that reached him.'
                                         : 'A footballer measured across five dimensions.'); }
-    set('glGoals', D.goals);
-    set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
+    /*  KEEPERS GET SAVES AND CONCEDED, NOT GOALS AND ASSISTS. Removing the pair outright
+        would leave one stat in a three-stat row, so the two are RELABELLED rather than
+        deleted , same slots, figures that mean something for the position. Pre-2015 they
+        are unrecorded and fall through to NR, which `set` already does. */
+    var _glk = D.keeper;
+    var _lab = function(id, text){ var e=document.getElementById(id); if(e) e.textContent=text; };
+    if(_glk){
+      set('glGoals',   _glk.saves);
+      set('glAssists', _glk.conceded);
+      _lab('glGoalsLabel',   'Saves');
+      _lab('glAssistsLabel', 'Conceded');
+    } else {
+      set('glGoals', D.goals);
+      set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
+      _lab('glGoalsLabel',   'Goals');
+      _lab('glAssistsLabel', 'Assists');
+    }
     var LEAGUE_FULL = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga', L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Jupiler Pro League', TR:'Süper Lig' };
     var _gp = (D.appearances!=null) ? (D.appearances + (D.appearances===1 ? ' game' : ' games')) : null;
     /* Meta line order: position · age · club · league · season · GAMES.
