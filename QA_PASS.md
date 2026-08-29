@@ -186,7 +186,24 @@ are avoidable if you know about them.
   - **METHOD NOTE: CSS arithmetic said 6.59 dark / 1.45 light and was WRONG**, because it assumed the chip sat on the page ground rather than on the cabinet. **The pixel scan's identical-in-both-themes reading was right.** A screenshot settled it.
 - **`.vmono` 1.67 dark / 2.54 light , NOT AN AA FAILURE, and the instrument found it by accident.** In a glyph-dense 15px box the MODAL colour is a glyph, not the ground, so the measurement compared **ink to ink**. Both inks are fine against the ground (charcoal **14.31**, pink-ink **6.16** on cream). **What it actually surfaced is the base-to-overlay pair at 2.32** , precisely the multi-ink case §C says no contrast check on text would ever catch. Worth a look at 15px; not a WCAG item.
 
-**STILL TO RUN: card, compare, rankings, vvindex, index , both themes.** Plus `s-vv` and `s-profile` on the playbook, which need the drift fixed first.
+**PROGRESS 2026-08-29: card and vvindex added, both themes. STILL TO RUN: compare, rankings, index.**
+- **CARD , 20 elements per theme, ONE failure in each and it is the same one:** `.chtag-att`
+  "Clinical" at **3.88** against 4.5, 11px. **A third card-face chip**, alongside the two already
+  accepted at 2.04 and 2.34. Same family, closer to the bar. **Rule it with the others.**
+- **vvindex , 112 elements per theme across `.wmc` and `.band`, ZERO text failures.** The only
+  flag is `.bchev`, the band disclosure chevron glyph, at **3.42 dark / 2.45 light**. **Not body
+  text** , a UI affordance judged against the 3:1 non-text bar, which it clears in dark and
+  misses in light.
+- **A THIRD HOST RULE, learned the expensive way: THE CAPTURE BACKDROP MUST BE THE HOST'S OWN
+  GROUND, NOT THE PAGE'S.** `.layer-b-inner` is transparent and takes its cream from the ancestor
+  `.layer`; capturing it against the page base put cream-panel text on a dark backdrop and
+  produced **17 false failures on text that renders perfectly**. Walk up to the first opaque
+  background and pass THAT as `backgroundColor`.
+- **AND PICK A HOST THAT DOES NOT CLIP.** `.layer-b` carries `max-height:3000px`, so html2canvas
+  renders the full content height and the crop drifts by up to 2,034px , six of seven card
+  panels voided until the host moved to `.layer-b-inner`.
+- **BATCH SIZE IS A REAL LIMIT: 60 hosts x 2 themes times out the evaluator.** Run in chunks of
+  about ten hosts.
 
 **SUPERSEDED , the 2026-08-28 entry, kept because it records four methods that do NOT work:**
 **STATUS 2026-08-28: NOT RUN. NO AVAILABLE INSTRUMENT PASSES ITS OWN CONTROLS AT PAGE SCALE, AND
