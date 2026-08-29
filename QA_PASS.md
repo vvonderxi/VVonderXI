@@ -171,6 +171,24 @@ are avoidable if you know about them.
 - **How:** run the contrast harness on card, compare, rankings, playbook, vvindex, index, in BOTH themes. **On any SVG, ink is `fill` not `color`, the ground is sibling geometry (hit-test, topmost = last in document order), and a stroke counts toward legibility.**
 - **Pass:** the only failures are the recorded exceptions , card-face chips 2.04 and 2.34, `.prenum` 1.00 by construction, the waiting-box edge 1.88, `.pspot` 3.89. **Anything else is new.**
 
+**STATUS 2026-08-29: PLAYBOOK DONE, BOTH THEMES. A WORKING INSTRUMENT NOW EXISTS. Five surfaces remain.**
+
+**THE INSTRUMENT, and it took two more corrections beyond the 2026-08-28 method:**
+- **Capture per CONTAINER, not per page**, with the page's own base colour as `backgroundColor`, and **assert the bitmap height matches the host box** , `s-vv` and `s-profile` drift by 1,269px and 770px and are VOIDED rather than reported. Two sections of eleven are still unmeasured for this reason.
+- **THE INK FLOOR MUST BE ABSOLUTE, NOT A SHARE.** A 2% floor works on a small chip and silently fails on sparse text in a wide box , an 11px `.label` in a 1,324px row never reaches 2%, so no candidate qualifies, the ground is returned as its own ink and it reads **1.00**, which is indistinguishable from invisible text. **`max(25 device px, 0.05%)` fixed it: the same label reads 6.08.** Padding the crop was a red herring and changed nothing.
+- **SVG TEXT CANNOT BE MEASURED THIS WAY AT ALL. html2canvas draws NO SVG on this page** , the 430x258 pentagon and the 27px `<use>` marks both come back as a single flat band, so every SVG label reads 1.00 as an ARTEFACT. SVG text needs the separate instrument §C describes (ink is `fill`, ground is sibling geometry by hit-test, a stroke counts). **Excluded and declared, not silently included.**
+- **ELEMENTS INSIDE A ZERO-HEIGHT ANCESTOR ARE SKIPPED** , `.cm-dq` sits in `.cm-exp` at `max-height:0;overflow:hidden` and paints nothing, which also reads as 1.00.
+- **`.prenum` IS NOT A VALID CONTROL FOR A PIXEL METHOD and must not be used as one.** It is `background-clip:text` over a gradient that fades to transparent, so it has no single ink; the CSS reading of 1.00 and the pixel reading of ~1.7 are measuring different things. **`.pspot` is the control** , uniform ink, reproduces at exactly **3.89** on every run.
+
+**RESULT , PLAYBOOK, 142 elements probed per theme, 10 failures in each, and the SAME ten:**
+- **`.prenum` "95+" 1.78 and "90+" 1.70** , the RECORDED accepted exception. No action.
+- **`.dcl` x6 at 2.46 against a 4.5 bar, 8.5px/600 , NEW, NOT ON THE ACCEPTED LIST.** The display-case chip labels ("World Cup Winner", "UCL Winner", "League Champion", "Player of the Season", "Golden Boot", "Top Assists"). **Gold `#E8B84B` on the dark cabinet, and the ratio is IDENTICAL in both themes because the cabinet ground does not flip.** Confirmed by rendering: the inactive chips are visibly dimmer than the active one. **A decision is needed , size, weight, brightness, or accept and record it with its ratio like the other five.**
+  - **METHOD NOTE: CSS arithmetic said 6.59 dark / 1.45 light and was WRONG**, because it assumed the chip sat on the page ground rather than on the cabinet. **The pixel scan's identical-in-both-themes reading was right.** A screenshot settled it.
+- **`.vmono` 1.67 dark / 2.54 light , NOT AN AA FAILURE, and the instrument found it by accident.** In a glyph-dense 15px box the MODAL colour is a glyph, not the ground, so the measurement compared **ink to ink**. Both inks are fine against the ground (charcoal **14.31**, pink-ink **6.16** on cream). **What it actually surfaced is the base-to-overlay pair at 2.32** , precisely the multi-ink case §C says no contrast check on text would ever catch. Worth a look at 15px; not a WCAG item.
+
+**STILL TO RUN: card, compare, rankings, vvindex, index , both themes.** Plus `s-vv` and `s-profile` on the playbook, which need the drift fixed first.
+
+**SUPERSEDED , the 2026-08-28 entry, kept because it records four methods that do NOT work:**
 **STATUS 2026-08-28: NOT RUN. NO AVAILABLE INSTRUMENT PASSES ITS OWN CONTROLS AT PAGE SCALE, AND
 THIS ITEM SHOULD NOT BE MARKED PASSED UNTIL ONE DOES.** Five were tried:
 1. **The CSS walker** , reads only `backgroundColor`, falls through gradient bodies to white.
