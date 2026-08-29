@@ -154,7 +154,13 @@
   .attrtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
   .attrtop span{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft)}
   /* trajectory (dual-axis: stacked G/A bars + VV Score line, on a dark panel) */
-  .tjbox{background:var(--panel);border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
+  /*  #17151a, NOT var(--panel). --panel resolves to #175030, the Under-the-Lights green, which
+    section C locks to Compare ONLY. e39b76a ("trajectory panel deep-felt green") deliberately
+    made this panel green; the rest of card.html was swept back to neutral afterwards and this
+    rule was the survivor. The comment further down this file already says --panel must never
+    bleed into card.html , that rule and this panel disagreed until 2026-08-29. Do NOT
+    re-consolidate this to var(--panel). */
+  .tjbox{background:#17151a;border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
   .tjhead{font-family:'Inter';font-weight:500;font-size:14.5px;line-height:1.5;color:rgba(243,237,224,0.95);text-align:center;margin-bottom:12px}
   .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:8px}
   .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
@@ -174,9 +180,9 @@
      on screen , that is how this one was first mis-measured. */
   .tjyl{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
   .tjyr{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
-  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:var(--panel);stroke-width:3.4px;stroke-linejoin:round}  /* halo in the PANEL colour so the VV line cannot cut through the number. Additive , the
+  .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:#17151a;stroke-width:3.4px;stroke-linejoin:round}  /* halo in the PANEL colour so the VV line cannot cut through the number. Additive , the
      card also keeps its .tjmask (invariant 7); this just makes the digits self-protecting. */
-  .tjmask{fill:var(--panel)}
+  .tjmask{fill:#17151a}
   /* 0.72, matching .tjyl/.tjyr. This is the SAME green panel and the same 10.5px, and it was
      left at 0.55 when the y-axis was raised , half a fix, which is worse than none because
      the rule looks applied. Measured 3.63 before, 5.04 after. */
@@ -1038,8 +1044,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260829e"></script>
-<script src="/vv-core.js?v=20260829e"></script>
+<script src="/vv-marks.js?v=20260829f"></script>
+<script src="/vv-core.js?v=20260829f"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
