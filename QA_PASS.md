@@ -342,6 +342,10 @@ environment, which is itself the reason they are listed.
 - **Check:** whether the remaining rows ship.
 - **How:** review the 9 remaining `card_id < 120000` rows against the provider.
 - **Pass:** a recorded decision. **These are rows attached to the WRONG PLAYER , a keeper at Leeds with 5 goals. Internal consistency checks CANNOT find them, because both fields agree and both are wrong; only the external provider settles identity.**
+- **STATUS 2026-08-29: RESOLVED, AND THE PREMISE WAS WRONG. NOTHING WAS DELETED. Six of the nine are CLEAN, three need a SUM repair.**
+  - **SIX ARE CORRECT CARDS THAT HAPPEN TO CARRY A LOW `card_id`** , Bijol (api 833, Leeds), Mazraoui (545, Man Utd), Gravenberch (542, Liverpool), Joelinton (723, Newcastle), de Ligt (532, Man Utd), Kluivert (792, Bournemouth). **Verified against the provider on BOTH axes: `/players/profiles` returns the same person for every id, and `/players?season=2025` puts every one at the club we record.** Each is the only card for its `api_player_id` in 2025/26.
+  - **THREE ARE THE KNOWN TRANSFER HALVES AND ARE NOT DUPLICATES , THEY ARE THE MISSING HALF.** Douglas Luiz (108645, 613m), Bobb (108799, 579m), Ward-Prowse (109011, 694m). Their ids belong to OTHER PEOPLE at the provider (4304 Migert Taulla, 3651 Rustem Hoxha, 4696 Menaouar Benyettou) , the `source`-discriminator defect, live. **But the minutes reconcile exactly with the correctly-keyed sibling: 613+331=944, 579+472=1,051, 694+415=1,109.** The repair is a SUM into one card, which is what `UNIQUE (api_player_id, season, league_code)` already implies. **Deleting them loses minutes held nowhere else.**
+  - **A LOW `card_id` IDENTIFIED THE BLOCK AND IS NOT A TEST FOR AN INDIVIDUAL ROW.** It was the right heuristic for FINDING it and is worthless for JUDGING one: two thirds of the survivors are clean. **Judge on provider identity and on club.**
 
 ### C10. The final read of the diff
 - **Check:** 599 commits and 186 files land atomically.

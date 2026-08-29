@@ -97,9 +97,21 @@ keeper cards, which means a `player_card_view` edit plus a matview refresh, and 
 on up to 1,920 gated cards. **Engine changes are not merge-window work**, and §C's rule that a
 write needs a full before/after snapshot of all 57,234 cards applies.
 
-**K3 , repartition `rel_pct`.** **Explicitly PARKED behind the corrupt PL 2025/26 block** (§E),
-which is still an open decision (C9). Repartitioning through corrupt rows would cap a wrong
-outfield season at 75 and make bad data look plausible. **Blocked on data, not on time.**
+**K3 , repartition `rel_pct`. UNBLOCKED 2026-08-29, AND IT IS A ZERO-MOVEMENT CHANGE.**
+It was parked behind the corrupt block; C9 now resolves to six clean cards and three needing a
+sum repair, **none of which is a goalkeeper**. Re-measured, the danger §E named has gone:
+- **`rel_pct` is read in exactly ONE place**, verified from `pg_get_viewdef` rather than from the
+  doc: `CASE WHEN (r.pos = 'GK') THEN ... LEAST(75, ...)`. **Only goalkeepers' rt can move.**
+- **The GK partition is IDENTICAL before and after.** `pos = 'GK'` gives **4,289**;
+  `COALESCE(pool,pos) = 'GK'` gives **4,289**. Of those, 2,718 already carry `pool='GK'` and
+  1,571 carry a NULL pool that coalesces to GK. **Cards with a CONFLICTING pool: 0. Cards
+  entering the bucket from outside: 0.**
+- **The modelled hazard is gone too.** §E predicted 27 coarse-GK cards falling into a mixed `UNK`
+  bucket; `UNK` is now **71 cards of which ZERO are GK**. The nine-card block contains **zero**
+  GK. **Nothing can be capped at 75 by mistake, because nothing changes bucket.**
+**SO THE REPARTITION CAN PROCEED AND DOES NOT WAIT ON THE THREE.** The sum repair is a separate,
+non-GK, rt-touching write. **Still do it as its own change with the full before/after snapshot
+§C requires** , zero PREDICTED movement is a reason to verify, not a reason to skip verifying.
 
 **Lifting the 75 cap.** Follows K3 by K3's own ordering. Post-merge, after the repartition.
 
