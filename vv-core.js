@@ -3945,9 +3945,9 @@ body.light .vvload{color:#1A1917}
   const VV_SHARE_CSS = `
 .sf{display:flex;position:relative;overflow:hidden;
     background:radial-gradient(120% 90% at 20% 0%,#1e1a16 0%,#12100e 55%,#0d0b0a 100%);
-    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--band:#E0A93A;--quiet:#a49c90}
+    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--quiet:#a49c90}
 .sf.light{background:radial-gradient(120% 90% at 20% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
-          color:#241f1a;--emph:#AD0332;--band:#5a4410;--quiet:#6b6357}
+          color:#241f1a;--emph:#AD0332;--quiet:#6b6357}
 /* VVonderXI IS ONE WORD, SO THE LOCKUP GETS NO WORD SPACE.
    .sf-brand is a flex row and carried gap:7px, and .sf-vv added margin-right:.16em on top
    of it. At the 16px brand size that is 7 + 2.56 = 9.56px between the second V and the O,
