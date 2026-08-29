@@ -376,7 +376,7 @@
             is the honest answer rather than a zero. */
         const k = d.keeper;
         const pair = k
-          ? [[k.saves,    'Saves'],    [k.conceded, 'Conceded']]
+          ? [[k.saves,    'SV'],       [k.conceded, 'GA']]
           : [[d.goals,    'Goals'],    [d.assistsText, 'Assists']];
         return '<div class="cga"><div class="col"><div class="v">' + (pair[0][0] == null ? 'NR' : pair[0][0]) +
                '</div><div class="l">' + pair[0][1] + '</div></div><div class="divider"></div>' +
@@ -708,6 +708,20 @@
     if (v == null || !mins || mins <= 0) return null;
     return Math.round((v / (mins / 90)) * 10) / 10;
   }
+  /*  THE KEEPER'S SAVE-RATE SERIES, for the model. It costs no extra fetch , the caller
+      already holds the season rows , and it lands in the same change as the career arc so
+      the cache invalidation is paid ONCE rather than three times.
+      Absent seasons are emitted as null and NEVER as zero: a model handed an unlabelled
+      zero writes a sentence about a collapse that did not happen. */
+  function keeperSeriesFor(rows){
+    if (!Array.isArray(rows) || !rows.length) return null;
+    const out = rows.slice()
+      .filter(r => r && r.season_year != null)
+      .sort((a,b) => a.season_year - b.season_year)
+      .map(r => ({ season: r.season_year, savePct: kSavePct(r) == null ? null : +(100*kSavePct(r)).toFixed(1) }));
+    return out.some(o => o.savePct != null) ? out : null;
+  }
+
   function vvAIStats(row){
     if (!row) return {};
     const pool = row.position_pool || null;
@@ -873,6 +887,37 @@
 .gkp-no{padding:12px 14px;border:1px dashed rgba(0,0,0,.20);border-radius:10px;font-family:'Inter';font-size:12.5px;color:var(--ink-soft);line-height:1.5}
 .gkp-no b{color:var(--charcoal);font-weight:700}
 @media(max-width:430px){ .gkp-lad{gap:12px} .gkp-pc{font-size:32px} .gkp-figs{gap:18px} }
+.gkt{--gkt-absent:rgba(0,0,0,.055);--gkt-absent-line:rgba(0,0,0,.20);--gkt-ink:var(--ink-soft);--gkt-accent:var(--pink-ink);--gkt-line:var(--pink);margin:2px 0 4px}
+/*  THE TRAJECTORY PANEL IS A FIXED GROUND, SO THE INKS ARE PINNED TO IT, NOT TO THE THEME.
+    .tjbox computes rgb(23,80,48) in BOTH themes. Against it the default tokens measured
+    2.02 for the line and 1.36 for the caption , the caption effectively invisible. This is
+    the section C rule about an ink on a ground that does not move, and it applies to a
+    chart exactly as it applies to text. */
+.tjbox .gkt{--gkt-absent:rgba(255,255,255,.08);--gkt-absent-line:rgba(255,255,255,.30);--gkt-ink:rgba(243,237,224,.82);--gkt-accent:#FFC7D6;--gkt-line:#FF8FA3}
+.tjbox .gkt-k,.tjbox .gkt-lgd,.tjbox .gkt-say{color:rgba(243,237,224,.82)}
+.tjbox .gkt-say b{color:#FFC7D6}
+.tjbox .gkt-lgd i.ln{border-top-color:#FF8FA3}
+.tjbox .gkt-y,.tjbox .gkt-n{color:#F0EAD9}
+.tjbox .gkt-c,.tjbox .gkt-n i{color:rgba(243,237,224,.7)}
+.tjbox .gkt-no{background:rgba(232,184,75,.16);color:rgba(243,237,224,.82)}
+.tjbox .gkt-no b{color:#F0EAD9}
+.gkt-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px}
+.gkt-svg{display:block;max-width:100%;height:auto}
+.gkt-lgd{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-family:'Inter';font-size:10.5px;color:var(--ink-soft);margin-top:8px}
+.gkt-lgd i{display:inline-block;margin-right:5px;vertical-align:middle}
+.gkt-lgd i.ln{width:14px;height:0;border-top:2px solid var(--pink)}
+.gkt-lgd i.med{width:14px;height:0;border-top:1px dashed var(--gkt-absent-line)}
+.gkt-lgd i.abs{width:16px;height:9px;background:var(--gkt-absent);border-left:1px solid var(--gkt-absent-line);border-right:1px solid var(--gkt-absent-line)}
+.gkt-say{font-family:'Inter';font-size:11.5px;line-height:1.5;color:var(--ink-soft);margin-top:9px}
+.gkt-say b{font-family:'Archivo';font-weight:800;color:var(--pink-ink)}
+.gkt-list{display:grid;grid-template-columns:auto 1fr auto auto;gap:5px 14px;font-family:'Inter';font-size:12.5px;align-items:baseline}
+.gkt-y{font-family:'Archivo';font-weight:800;color:var(--charcoal)}
+.gkt-c{color:var(--ink-soft)}
+.gkt-n{font-family:'Archivo';font-weight:800;text-align:right;color:var(--charcoal)}
+.gkt-n i{font-style:normal;font-family:'Inter';font-weight:400;color:var(--ink-soft);font-size:10.5px}
+.gkt-no{margin-top:12px;padding:11px 13px;border-left:2px solid var(--gold);background:rgba(232,184,75,.14);border-radius:0 8px 8px 0;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft)}
+.gkt-no b{color:var(--charcoal);font-weight:700}
+@media(max-width:430px){ .gkt-list{grid-template-columns:auto 1fr auto} .gkt-list .gkt-n:last-child{display:none} }
 `;
   function vvInjectGKCSS(){
     if (typeof document === 'undefined') return;
@@ -929,6 +974,116 @@
       +  'command of the area or sweeping, so this card does not claim any of it. Penalties saved '
       +  'is a count, not a rate: we do not know how many he faced.</div></div>';
     return h;
+  }
+
+  /* ══ KEEPER TRAJECTORY , save% across the career, NOT rt ══════════════════════
+     rt for a keeper correlates 0.942 with MINUTES and 0.245 with save%, and 39.2% of
+     gated keeper cards sit exactly on the 75 cap , the old line was a minutes chart with
+     a ceiling. This plots the one thing that is the keeper's own work.
+
+     NO BARS. The outfield chart stacks goals+assists, which is 0+0 on every keeper season,
+     and substituting saves would re-draw shots faced, which is the team in front of him.
+
+     THE POOL CONSTANTS ARE MEASURED on the 1,920 gated cards (2015+, 800 minutes, 60 shots)
+     and must not be guessed: median 68.7%, p5 59.1%, p95 76.6%. THE AXIS ZOOMS to p5..p95
+     and EXTENDS to hold the player, so nothing is clipped, and THE MEDIAN IS DRAWN because
+     a zoomed axis without a reference makes ordinary variation look dramatic.
+
+     THE AXIS IS CONTINUOUS BY YEAR, NOT BY ROW INDEX. Casillas has no 2013 row at all;
+     plotting by index silently CLOSED that hole and drew 2012 beside 2014 as if adjacent.
+     A season the record does not hold is itself information, so the slot stays and the
+     blank span says WHY it is blank. The line is never bridged across a gap. */
+  const KEEPER_POOL = { n:1920, median:0.687, p5:0.591, p95:0.766 };
+  function kSavePct(r){
+    if (!r || r.saves == null || r.goals_conceded == null) return null;
+    const sf = r.saves + r.goals_conceded;
+    return sf > 0 ? r.saves / sf : null;
+  }
+  function keeperTrajectoryHTML(rows){
+    if (!Array.isArray(rows) || !rows.length) return '';
+    const byYear = {}; rows.forEach(r => { byYear[r.season_year] = r; });
+    const years = rows.map(r => r.season_year);
+    const y0 = Math.min.apply(null, years), y1 = Math.max.apply(null, years);
+    const pts = [];
+    for (let yy = y0; yy <= y1; yy++){
+      const r = byYear[yy];
+      pts.push({ year:yy, missing:!r, sv: r ? kSavePct(r) : null });
+    }
+    const vals = pts.filter(p => p.sv != null).map(p => p.sv);
+    const plotted = vals.length;
+
+    /*  NO PLOTTABLE SEASON , 166 keepers. They get the season list and one honest line,
+        the same shape as the suppressed radar: say what is missing, never draw nothing. */
+    if (!plotted){
+      let li = '';
+      rows.slice().sort((a,b)=>a.season_year-b.season_year).forEach(r => {
+        li += '<span class="gkt-y">' + String(r.season_year).slice(2) + '/' +
+              String(r.season_year+1).slice(2) + '</span>' +
+              '<span class="gkt-c">' + escHtml(r.team_name || '') + '</span>' +
+              '<span class="gkt-n">' + (r.minutes == null ? 'NR' : r.minutes) + '<i> min</i></span>' +
+              '<span class="gkt-n">' + (r.appearances == null ? 'NR' : r.appearances) + '<i> apps</i></span>';
+      });
+      return '<div class="gkt"><div class="gkt-k">Seasons recorded</div>' +
+             '<div class="gkt-list">' + li + '</div>' +
+             '<div class="gkt-no"><b>No save rate to plot.</b> Shots faced were never recorded ' +
+             'for any of these seasons, so there is no rate to chart. What is above is what the ' +
+             'record holds.</div></div>';
+    }
+
+    const W=430,H=170,PL=40,PR=12,PT=14,PB=26;
+    const lo = Math.min(KEEPER_POOL.p5,  Math.min.apply(null, vals)) - 0.015;
+    const hi = Math.max(KEEPER_POOL.p95, Math.max.apply(null, vals)) + 0.015;
+    const X = i => PL + (pts.length===1 ? (W-PL-PR)/2 : i*(W-PL-PR)/(pts.length-1));
+    const Y = v => PT + (1-(v-lo)/(hi-lo))*(H-PT-PB);
+    let g = '';
+    let i = 0;
+    while (i < pts.length){
+      if (pts[i].sv == null){
+        let j = i; while (j+1 < pts.length && pts[j+1].sv == null) j++;
+        const x0 = (i===0 ? PL-6 : (X(i-1)+X(i))/2);
+        const x1 = (j===pts.length-1 ? W-PR+6 : (X(j)+X(j+1))/2);
+        g += '<rect x="'+x0.toFixed(1)+'" y="'+PT+'" width="'+(x1-x0).toFixed(1)+'" height="'+(H-PT-PB)+
+             '" fill="var(--gkt-absent)" stroke="var(--gkt-absent-line)" stroke-width="1" stroke-dasharray="3 3"/>';
+        const seg = pts.slice(i, j+1);
+        const anyMissing = seg.some(p=>p.missing), allMissing = seg.every(p=>p.missing);
+        const lab = (j-i < 1) ? 'n/r'
+                  : (allMissing ? 'no season' : (anyMissing ? 'not recorded / no season' : 'not recorded'));
+        g += '<text x="'+((x0+x1)/2).toFixed(1)+'" y="'+(PT+(H-PT-PB)/2)+'" text-anchor="middle" '+
+             'font-family="Inter" font-size="9.5" fill="var(--gkt-ink)">'+lab+'</text>';
+        i = j+1;
+      } else i++;
+    }
+    if (KEEPER_POOL.median >= lo && KEEPER_POOL.median <= hi){
+      g += '<line x1="'+PL+'" y1="'+Y(KEEPER_POOL.median).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+
+           Y(KEEPER_POOL.median).toFixed(1)+'" stroke="var(--gkt-absent-line)" stroke-width="1" stroke-dasharray="4 4"/>';
+    }
+    [lo,(lo+hi)/2,hi].forEach(v => {
+      g += '<text x="'+(PL-7)+'" y="'+(Y(v)+3).toFixed(1)+'" text-anchor="end" font-family="Archivo" '+
+           'font-weight="700" font-size="9.5" fill="var(--gkt-ink)">'+(100*v).toFixed(0)+'%</text>';
+    });
+    let run = [];
+    const flush = () => { if (run.length>1){
+      g += '<path d="'+run.map((q,k)=>(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join('')+
+           '" fill="none" stroke="var(--gkt-line)" stroke-width="2.5" stroke-linejoin="round"/>'; } run = []; };
+    pts.forEach((p,k) => { if (p.sv == null){ flush(); return; } run.push([X(k), Y(p.sv)]); });
+    flush();
+    pts.forEach((p,k) => { if (p.sv == null) return;
+      g += '<circle cx="'+X(k).toFixed(1)+'" cy="'+Y(p.sv).toFixed(1)+'" r="3.4" fill="var(--gkt-line)"/>';
+      g += '<text x="'+X(k).toFixed(1)+'" y="'+(Y(p.sv)-8).toFixed(1)+'" text-anchor="middle" '+
+           'font-family="Archivo" font-weight="800" font-size="9" fill="var(--gkt-accent)">'+
+           (100*p.sv).toFixed(0)+'</text>';
+    });
+    pts.forEach((p,k) => { g += '<text x="'+X(k).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" '+
+      'font-family="Inter" font-size="9" fill="var(--gkt-ink)">'+String(p.year).slice(2)+'</text>'; });
+
+    return '<div class="gkt"><div class="gkt-k">Save rate across the career</div>' +
+      '<svg class="gkt-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" ' +
+      'aria-label="Save rate by season, with unrecorded seasons left blank">'+g+'</svg>' +
+      '<div class="gkt-lgd"><span><i class="ln"></i>save rate</span>' +
+      '<span><i class="med"></i>keeper pool median '+(100*KEEPER_POOL.median).toFixed(1)+'%</span>' +
+      '<span><i class="abs"></i>not recorded</span></div>' +
+      '<div class="gkt-say">Plotted against every goalkeeper we can measure. <b>'+plotted+' of '+
+      rows.length+' seasons</b> carry shot data; the rest predate it.</div></div>';
   }
 
   function confidenceFor(row){
@@ -2553,17 +2708,31 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var honHtml = honN>0 ? renderHonourPillsCompact(d.honours, { baseClass:'rtag', max:honN, mark:true }) : '';
     var rem = cap - honN;
     var tags = (rem>0) ? renderTagPills(d.tags, { baseClass:'rtag', max:rem, mark:true }) : '';
-    var assists  = (d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR';
+    /*  SV / GA FOR A KEEPER, EVERYWHERE THE PAIR RENDERS. This row template feeds rankings,
+        the card's season list and the Compare picker, and it was not keeper-aware , a keeper
+        row read "0G" and "NRA", which is the same true-and-useless pair the card face had.
+        SV = saves, GA = goals against, the standard keeper abbreviations. */
+    var _gk = d.keeper || null;
+    var goalsCell   = _gk ? ((_gk.saves==null?'NR':_gk.saves)+'<span>SV</span>')
+                          : (d.goals+'<span>G</span>');
+    var assists  = _gk ? ((_gk.conceded==null?'NR':_gk.conceded)+'<span>GA</span>')
+                       : ((d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR');
     var click = opts.onClick ? opts.onClick(d,i) : ('goCard('+(d.card_id==null?'':d.card_id)+')');
     // ── Season-led variant (card view-all-seasons + Compare per-slot). One player,
     //    so the YEAR leads (not the name); club/pos/age/G/A collapse into one
     //    ellipsizing sub-line; tags wrap; same .rmini VV badge + same rtag pills as
     //    rankings. Fits the narrow (240-330px) season containers. ──
     if (opts.seasonLed){
+      /*  THE THIRD PLACE THE PAIR RENDERS. The card face and the rankings row were fixed
+          first and this sub-line was not, so a keeper's season list read "0G · NR" , the
+          same true-and-useless pair, in a template nobody had checked. Section C's
+          four-tag-render-paths lesson, applied to goals and assists. */
       var sub = [ d.clubname, posDisplay(d.pos),
                   (d.age!=null && d.age!=='') ? 'Age '+d.age : '',
-                  (d.goals!=null ? d.goals+'G' : ''),
-                  (d.assists!=null ? d.assists+'A' : 'NR') ]
+                  (d.keeper ? (d.keeper.saves==null?'NR SV':d.keeper.saves+'SV')
+                            : (d.goals!=null ? d.goals+'G' : '')),
+                  (d.keeper ? (d.keeper.conceded==null?'NR GA':d.keeper.conceded+'GA')
+                            : (d.assists!=null ? d.assists+'A' : 'NR')) ]
                 .filter(function(x){ return x!=null && x!==''; }).join(' · ');
       var srtags = prestige+honHtml+tags;   // prestige FIRST
       return '<div class="urow seasonled'+tier+active+'" onclick="'+click+'">'
@@ -2591,7 +2760,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         +((d.age!=null && d.age!=='') ? '<span class="uage">'+d.age+'</span>' : '')
       +'</div>'
       +'<div class="utags">'+prestige+honHtml+tags+'</div>'   // prestige FIRST (matches .srtags)
-      +'<div class="ugoals">'+d.goals+'<span>G</span></div>'
+      +'<div class="ugoals">'+goalsCell+'</div>'
       +'<div class="uassists">'+assists+'</div>'
       +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
     +'</div>';
@@ -4524,7 +4693,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,

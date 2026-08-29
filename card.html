@@ -1038,8 +1038,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260829a"></script>
-<script src="/vv-core.js?v=20260829a"></script>
+<script src="/vv-marks.js?v=20260829e"></script>
+<script src="/vv-core.js?v=20260829e"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1147,6 +1147,14 @@
     var rows=SEASON_ROWS.slice().reverse().map(function(r){                       // chronological (oldest -> newest)
       return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), selected:(r.card_id===SEASON_CARDID) };
     });
+    /*  A KEEPER GETS THE SAVE-RATE CHART, NOT THE SHARED ONE. The shared renderer stacks
+        goals+assists as bars and plots rt as the line; for a keeper the bars are 0+0 on
+        every season and rt correlates 0.942 with MINUTES and 0.245 with save%, so the line
+        traced availability with a 75 ceiling. See VVCore.keeperTrajectoryHTML. */
+    if(typeof D!=='undefined' && D && D.keeper && VVCore.keeperTrajectoryHTML && SEASON_RAW && SEASON_RAW.length){
+      host.innerHTML = VVCore.keeperTrajectoryHTML(SEASON_RAW);
+      return;
+    }
     host.innerHTML = VVCore.renderTrajectory(rows);                              // shared dual-axis renderer (single-season safe)
   }
   function vvNotesOpen(){ /* editorial loads on card load; nothing to do on open */ }
@@ -1198,6 +1206,12 @@
          NOTE: this payload is exactly what `stats_hash` fingerprints, so adding fields here
          invalidates every cached note. Intended , and why this lands before any pre-warm. */
       var _ai = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(D) : {};
+      /*  THE KEEPER'S SAVE-RATE SERIES rides along when we have the season rows. No extra
+          fetch , SEASON_RAW is already loaded for the trajectory. Absent seasons are null,
+          never 0, and the prompt is told what that means. */
+      var _kser = (D.keeper && window.VVCore && VVCore.keeperSeriesFor && SEASON_RAW)
+        ? VVCore.keeperSeriesFor(SEASON_RAW) : null;
+      if (_kser) _keeper = Object.assign({}, _keeper || {}, { savePctSeries: _kser });
       var payload = { mode:'notes', cardId:D.card_id, player:Object.assign({
         player_name:D.full, season:D.year, age:D.age, club:D.clubname,
         league:(LEAGUE_NAMES[D.league]||D.league), position:D.pos,
@@ -1346,8 +1360,8 @@
     if(_glk){
       set('glGoals',   _glk.saves);
       set('glAssists', _glk.conceded);
-      _lab('glGoalsLabel',   'Saves');
-      _lab('glAssistsLabel', 'Conceded');
+      _lab('glGoalsLabel',   'SV');
+      _lab('glAssistsLabel', 'GA');
     } else {
       set('glGoals', D.goals);
       set('glAssists', (D.assists!=null ? D.assists : D.assistsText));
@@ -1590,15 +1604,15 @@
     fetchHonours(res.data).then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
-  var SEASON_CARDID=null, SEASON_ROWS=null;
+  var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
   async function loadSeasons(apiPlayerId, currentCardId){
-    SEASON_CARDID=currentCardId; SEASON_ROWS=null;
+    SEASON_CARDID=currentCardId; SEASON_ROWS=null; SEASON_RAW=null;
     if(apiPlayerId==null) return;
     var sb=vvClient(); if(!sb) return;
     var res=await sb.from('player_card_mv').select('*').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
-    SEASON_ROWS=rows;
+    SEASON_ROWS=rows; SEASON_RAW=res.data||[];
     renderTrajectory();                    // trajectory chart draws NOW , it does not need honours
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     var zone=document.getElementById('seasonZone');

@@ -966,8 +966,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260829a"></script>
-<script src="/vv-core.js?v=20260829a"></script>
+<script src="/vv-marks.js?v=20260829e"></script>
+<script src="/vv-core.js?v=20260829e"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1680,12 +1680,33 @@ body.light .pkmsub{color:var(--ink-soft)}
     }
     var ra=mark(rowsA,CMP_A), rb=mark(rowsB,CMP_B);
     // bare charts (no per-chart chrome), transparent on the verdict panel
-    var chartA = ra.length ? VVCore.renderTrajectory(ra,{chrome:false,transparent:true}) : '<svg class="tjsvg" viewBox="0 0 360 214"></svg>';
-    var chartB = rb.length ? VVCore.renderTrajectory(rb,{chrome:false,transparent:true}) : '<svg class="tjsvg" viewBox="0 0 360 214"></svg>';
+    /*  A KEEPER AND AN OUTFIELDER ARE NOT PLOTTED AS THE SAME QUANTITY. The two charts are
+        already separate, but the shared head, legend and caption below describe goals,
+        assists and rt , which is exactly the like-for-like implication to avoid. When either
+        side is a goalkeeper the copy changes and a mismatch line is added.
+        We do NOT hide the outfielder's chart: the user asked for this comparison, and
+        removing half of it answers a question nobody put. Each side, on its own terms. */
+    var gkA = !!(CMP_A && CMP_A.pos === 'GK'), gkB = !!(CMP_B && CMP_B.pos === 'GK');
+    function chartFor(isGK, marked, raw){
+      if (!raw || !raw.length) return '<svg class="tjsvg" viewBox="0 0 360 214"></svg>';
+      if (isGK && VVCore.keeperTrajectoryHTML) return VVCore.keeperTrajectoryHTML(raw);
+      return VVCore.renderTrajectory(marked,{chrome:false,transparent:true});
+    }
+    var chartA = chartFor(gkA, ra, rowsA), chartB = chartFor(gkB, rb, rowsB);
     // ONE shared head + legend above, ONE Drury caption below (not per-chart)
-    var head='<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
+    var anyGK = gkA || gkB, bothGK = gkA && gkB;
+    var head = anyGK
+      ? (bothGK
+         ? '<div class="tjhead">Save rate per season, against every goalkeeper we can measure.</div>'
+         : '<div class="tjhead">Each season on its own terms , a save rate on one side, goals and assists on the other.</div>')
+      : '<div class="tjhead">Goals and assists per season, tracked against the V<span class="tjvp">V</span> Score they earned.</div>';
     var legend='<div class="tjlegend"><span class="tjlg"><i style="background:#E70443"></i>Goals</span><span class="tjlg"><i style="background:#E8B84B"></i>Assists</span><span class="tjlg"><i class="tjlgline"></i><span>V<span class="tjvp">V</span> Score</span></span></div>';
     var caption='<div class="tjcap">The bars remember what they did. The line remembers what they were worth. The gap tells the story a raw tally can’t.</div>';
+    // the outfield legend describes bars and an rt line that a keeper chart does not have
+    if (anyGK) legend = bothGK ? '' : '<div class="tjlegend"><span class="tjlg">Goals and assists are shown for the outfielder only; the goalkeeper carries a save rate.</span></div>';
+    if (anyGK) caption = bothGK
+      ? '<div class="tjcap">A save rate is the share of the shots that reached him that he kept out. It is the one figure on a keeper\'s card that is his own work rather than his team\'s.</div>'
+      : '<div class="tjcap"><b>Measured on different evidence.</b> One of these is a goalkeeper. A save rate and a goal tally are not the same kind of number and do not share an axis, so there is no combined chart here , each side is shown on its own terms.</div>';
     box.innerHTML = head + legend
       + '<div class="vtrajpair">'
       +   '<div class="vtchart"><div class="vtname tA">'+(nameA||'A')+'</div>'+chartA+'</div>'
@@ -1698,12 +1719,14 @@ body.light .pkmsub{color:var(--ink-soft)}
   async function vvLoadTrajectory(apiId){
     if(apiId==null) return [];
     var sb=vvClient(); if(!sb) return [];
-    var res=await sb.from('player_card_mv').select('season,season_year,goals,assists,rt').eq('api_player_id',apiId).order('season_year',{ascending:true});
+    // keeper fields ride along: a GK gets the save-rate chart, which needs saves/conceded and
+    // the season list fields. Same query, more columns , no extra round trip.
+    var res=await sb.from('player_card_mv').select('season,season_year,goals,assists,rt,saves,goals_conceded,minutes,appearances,team_name').eq('api_player_id',apiId).order('season_year',{ascending:true});
     if(res.error || !res.data){ if(res.error) console.error('trajectory load failed:', res.error.message); return []; }
     var byYear={};
     res.data.forEach(function(r){ var y=r.season_year; if(y==null) return;
       // highest-rt card per season_year (cross-league seasons pick the strongest)
-      if(!byYear[y] || (r.rt!=null && (byYear[y].rt==null || r.rt>byYear[y].rt))) byYear[y]={season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, season_year:y};
+      if(!byYear[y] || (r.rt!=null && (byYear[y].rt==null || r.rt>byYear[y].rt))) byYear[y]={season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, season_year:y, saves:r.saves, goals_conceded:r.goals_conceded, minutes:r.minutes, appearances:r.appearances, team_name:r.team_name};
     });
     return Object.keys(byYear).map(Number).sort(function(a,b){return a-b;}).map(function(y){return byYear[y];});   // chronological, ALL seasons
   }

@@ -292,3 +292,32 @@ THEIR OWN TERMS AND NAME THE MISMATCH.** No combined chart. Each side gets its o
 rate / minutes / starts against goals / assists / games) and a line beneath both reading
 **"Measured on different evidence."** That is better than showing only the keeper panel, because
 the outfielder's season does not disappear from a comparison the user asked for.
+
+
+### COMPARE , EVERYTHING BELOW THE FOLD IS GATED ON THE "SETTLE IT" CLICK (scoped 2026-08-29, NOT FIXED)
+
+**`#vtraj` is empty on load, and so is the radar, the head-to-head and the confidence panel.**
+All of it lives inside one handler: `compare.html:2030`,
+`document.querySelector('.settle').addEventListener('click', ...)`, which then runs
+`vvComputeSpokes`, `vvUpdateWatchLinks`, `drawH2H`, the two `vvLoadTrajectory` fetches,
+`drawTrajectory` and `vvSetConfidence` in sequence.
+
+**NOTHING AUTO-CLICKS IT ON A DEEP LINK.** `?a=&b=` fills both slots and enables the button
+(`compare.html:1001` toggles `.disabled`), but the panels stay empty until a human presses it.
+
+**WHY IT MATTERS MORE NOW: the keeper trajectory and the keeper-versus-outfielder mismatch line
+are both inside that gate**, so a shared compare link of a goalkeeper shows none of the treatment
+that was just built for it. **The behaviour is PRE-EXISTING and unchanged by that work** , it
+was equally true of the outfield chart , but the consequence is larger, because the mismatch
+line is the thing that stops a keeper being read like-for-like.
+
+**THE SHAPE OF THE FIX, and the reason it is not a one-liner:** the handler mixes two kinds of
+work. **The AI verdict genuinely should wait for a click** , it costs money and it is the
+"settle it" gesture. **The charts do not: they are local renders over data already fetched.**
+Splitting the handler so the deterministic half runs on load and only the verdict waits is the
+honest fix. **Do not simply auto-click `.settle` on a deep link** , that would fire the AI
+generation for every shared link that is ever opened, which is a cost decision disguised as a
+rendering fix.
+
+**Cross-ref: `#vtraj` is also where the `.tjbox` green leak lands** (see the §C note), so
+whoever opens this file should read that entry first.
