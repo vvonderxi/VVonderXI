@@ -376,7 +376,7 @@
             is the honest answer rather than a zero. */
         const k = d.keeper;
         const pair = k
-          ? [[k.saves,    'SV'],       [k.conceded, 'GA']]
+          ? [[k.saves,    'SV'],       [k.conceded, 'GC']]
           : [[d.goals,    'Goals'],    [d.assistsText, 'Assists']];
         return '<div class="cga"><div class="col"><div class="v">' + (pair[0][0] == null ? 'NR' : pair[0][0]) +
                '</div><div class="l">' + pair[0][1] + '</div></div><div class="divider"></div>' +
@@ -2711,11 +2711,13 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     /*  SV / GA FOR A KEEPER, EVERYWHERE THE PAIR RENDERS. This row template feeds rankings,
         the card's season list and the Compare picker, and it was not keeper-aware , a keeper
         row read "0G" and "NRA", which is the same true-and-useless pair the card face had.
-        SV = saves, GA = goals against, the standard keeper abbreviations. */
+        SV = saves, GC = goals conceded. NOT "GA": on this platform G and A already mean
+        goals and assists , the trajectory's own left axis is labelled G+A , so GA reads as
+        goals PLUS assists before it reads as goals against. GC collides with nothing. */
     var _gk = d.keeper || null;
     var goalsCell   = _gk ? ((_gk.saves==null?'NR':_gk.saves)+'<span>SV</span>')
                           : (d.goals+'<span>G</span>');
-    var assists  = _gk ? ((_gk.conceded==null?'NR':_gk.conceded)+'<span>GA</span>')
+    var assists  = _gk ? ((_gk.conceded==null?'NR':_gk.conceded)+'<span>GC</span>')
                        : ((d.assists!=null) ? d.assistsText+'<span>A</span>' : 'NR');
     var click = opts.onClick ? opts.onClick(d,i) : ('goCard('+(d.card_id==null?'':d.card_id)+')');
     // ── Season-led variant (card view-all-seasons + Compare per-slot). One player,
@@ -2737,7 +2739,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
                   (!d.keeper && d.age!=null && d.age!=='') ? 'Age '+d.age : '',
                   (d.keeper ? (d.keeper.saves==null?'NR SV':d.keeper.saves+'SV')
                             : (d.goals!=null ? d.goals+'G' : '')),
-                  (d.keeper ? (d.keeper.conceded==null?'NR GA':d.keeper.conceded+'GA')
+                  (d.keeper ? (d.keeper.conceded==null?'NR GC':d.keeper.conceded+'GC')
                             : (d.assists!=null ? d.assists+'A' : 'NR')) ]
                 .filter(function(x){ return x!=null && x!==''; }).join(' · ');
       var srtags = prestige+honHtml+tags;   // prestige FIRST
