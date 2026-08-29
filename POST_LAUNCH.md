@@ -218,3 +218,48 @@ The fourteen VERDICT tags are the only named things on the platform with **no ma
 **WHAT WOULD CHANGE THE DECISION.** If the OG image were a genuinely DIFFERENT artefact rather than a copy of the card , a text-and-score composition that never claims to be the card face , the drift argument mostly evaporates, because there is nothing to keep in sync. **That is the version worth building when it is built.** Re-rendering the card in Satori is the version to refuse.
 
 **NOT A BLOCKER FOR THE TEXT HALF.** Per-card title and description need the middleware and the meta function only; they reference `og-image.png`, which already exists and is already correct.
+
+
+---
+
+## KEEPER TRAJECTORY , PLOT SAVE% INSTEAD OF rt (scoped 2026-08-29, NOT BUILT)
+
+**THE PREMISE IS CORRECT AND THE NUMBERS ARE WORSE THAN THE COMPLAINT.** On the 1,538 gated
+keeper cards that carry an rt: **rt against MINUTES correlates 0.942. rt against SAVE% correlates
+0.245.** The line is a minutes chart. **39.2% of them sit exactly on the 75 cap**, so for two in
+five keepers it is a FLAT minutes chart, and the whole gated pool spans just **35 distinct rt
+values between 39 and 75**.
+
+**COVERAGE , WHAT IT COSTS.** Across the **798 keepers with more than one season** (3,906
+season-rows): **2,569 rows are plottable on save% (65.8%)** and **1,337 are ABSENT (34.2%)**.
+**166 keepers would have NO line at all** , every season either pre-2015 or missing the fields.
+Examples: S. Proto (8 seasons), F. Boeckx (6), J. Gillet (6).
+
+**WHAT THE NAMED CARDS LOOK LIKE** (`--` is ABSENT, never zero):
+- **Buffon , 11 seasons, 6 plottable.** `10:-- 11:-- 12:-- 13:-- 14:-- 15:81% 16:74% 17:75%
+  18:74% 19:70% 20:76%` , **the first five seasons are a gap and the line starts mid-card.**
+- **Casillas , 8 seasons, 4 plottable.** `10:-- 11:-- 12:-- 14:-- 15:69% 16:78% 17:77% 18:72%`
+  , **half the card is absent, and note 13 is missing entirely**, so the gap is not even
+  contiguous.
+- Neuer 15/10, Lloris 13/8, De Gea 15/10 , all the same shape: a five-season hole then a line.
+
+**THE DESIGN PROBLEMS THIS RAISES, none of them settled:**
+1. **THE BARS ARE AS WRONG AS THE LINE AND THE BRIEF ONLY MENTIONS THE LINE.** `renderTrajectory`
+   plots goals+assists as bars on the LEFT axis and rt as a line on the RIGHT. **For a keeper the
+   bars are 0+0 on every season.** Fixing the line and leaving the bars gives a chart of empty
+   columns with a line above them. **Decide both or neither.**
+2. **THE AXIS RANGE IS THE OPPOSITE PROBLEM TO rt.** Save% for gated keepers runs roughly 60-85%,
+   so a 0-100 axis flattens every career into a line near the top. It needs its own zoomed scale,
+   and a zoomed scale makes small differences look large , the reverse of the current fault.
+3. **HOW IS "ABSENT" DRAWN?** A gap in the line, a greyed band, or a labelled region. **A gap
+   risks reading as a bad season rather than an unmeasured one**, which is precisely the NR
+   failure the radar work just removed. Casillas shows the gap need not be contiguous.
+4. **166 KEEPERS GET AN EMPTY CHART.** They need the same treatment the radar got: say what is
+   missing rather than draw nothing.
+5. **`renderTrajectory` IS SHARED BY card AND compare** (§D), so any change must be checked on
+   both, and compare draws TWO players , a keeper against an outfielder would then be plotting
+   two different quantities on one chart. **That case needs a rule before this is built.**
+
+**CHEAPEST HONEST INTERIM, if the full build is not wanted: suppress the trajectory on keeper
+cards** and say why, exactly as the radar is suppressed above three nulls. That removes a
+misleading chart today without inventing a new one.
