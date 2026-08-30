@@ -561,5 +561,20 @@ No label collision and no overflow in any of the twelve.
 forcing its collapsed ancestors visible breaks the layout flow, so the clip lands on the wrong
 region. **Its geometry at 390 IS verified numerically in both themes** (no collision, no overflow,
 rungs and pins correct, correct show/hide). A real eye on it at 390 is still worth having.
-**And a near-tie needs a rule:** 37th against 59th does not collide, but two keepers five places
-apart would. The pins must stay truthful; nudge the LABEL layer only.
+**[DONE 2026-08-30] THE NEAR-TIE RULE IS BUILT , `VVCore.vvFitKeeperLabels(root)`.** Measured after
+render, never predicted: label width depends on the name, the viewport and the loaded font, so it
+reads the real boxes. Same measure-after-render shape as `vvCentreShareCaption`.
+**THE PINS DO NOT MOVE, ONLY THE LABEL LAYER.** A pin is the datum; shifting it to make room would
+draw a different number from the one measured, which is the one thing this section exists not to do.
+A nudged label is therefore no longer centred on its pin , the correct trade.
+**Three steps and the order matters: separate around the midpoint, clamp inside the track, then
+STACK if the clamp put them back on top of each other.** The stack check is re-run after the clamp
+rather than assumed.
+**Verified across 14 states, both widths:** 37/59, 45/52, 48/51, **50/50 (a dead tie)**, 2/4, 95/97,
+1/99. Pins render at their true percentile in every one. Mid-track pairs separate to a 10px gutter;
+edge pairs (2/4, 95/97) correctly fall through to stacking because the clamp undoes the separation.
+**AND THE FIRST STACK IMPLEMENTATION WAS WRONG IN A WAY ONLY RENDERING SHOWED: raising the label
+alone drove it 10px INTO the kicker above.** The scale now drops instead (`.gkv-stacked`,
+`margin-top:30px`), measured clear at 12px. **The class is set in JS rather than by `:has()`** , a
+correctness-critical layout should not depend on a selector's support matrix.
+Re-fit on `resize`, since the result is measured and a width change invalidates it.

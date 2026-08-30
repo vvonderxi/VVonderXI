@@ -881,6 +881,12 @@
     their pin, so the pair is nudged apart only in the LABEL layer , the pins stay truthful. */
 .gkv-lab-a{transform:translateX(-50%)}
 .gkv-lab-b{transform:translateX(-50%)}
+/*  the stack fallback , used only when the track cannot hold both labels side by side even
+    after nudging and clamping. Set by vvFitKeeperLabels, never by hand. */
+.gkv-lab-stack{top:-18px}
+/*  the scale DROPS to make room for a raised label , raising the label alone drove it into
+    the kicker above by a measured 10px. Set by vvFitKeeperLabels, never by hand. */
+.gkv-scale.gkv-stacked{margin-top:30px;height:104px}
 @media (max-width:520px){ .gkv-v{font-size:24px} .gkv-scale{height:74px} }
 .gkp-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px}
 .gkp-k:first-child{margin-top:0}
@@ -1037,6 +1043,68 @@
       + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
       + '<div class="gkv-say">' + gkvSentence(hi, lo) + '</div>'
       + gkvFigs([A, B]) + '</div>';
+  }
+
+  /*  NEAR-TIE LABELS , MEASURED AFTER RENDER, NEVER PREDICTED.
+      Two pins a few percentile places apart put their labels on top of each other. The label
+      width is not knowable from the HTML , it depends on the name, the viewport and the font
+      once it has loaded , so this measures the real boxes and moves them, the same
+      measure-after-render shape as vvCentreShareCaption. §C: measure, do not predict.
+
+      THE PINS DO NOT MOVE. Only the label layer does. A pin is the datum; shifting it to make
+      room would be drawing a different number from the one that was measured, which is the one
+      thing this section exists not to do. A label that has been nudged is therefore no longer
+      centred on its pin, and that is the correct trade: an approximate pointer to a truthful
+      mark beats a tidy pointer to a moved one.
+
+      THREE STEPS, IN ORDER, AND THE ORDER MATTERS:
+        1. separate , push the pair apart around their shared midpoint until they clear.
+        2. clamp , keep both inside the track, which can undo some of step 1 at an edge.
+        3. stack , if after clamping they STILL overlap the track is too narrow to hold both
+           side by side, so the second label drops to its own line. Verified rather than
+           assumed: the check is re-run after the clamp.  */
+  function vvFitKeeperLabels(root){
+    if (!root || typeof window === 'undefined') return;
+    var scale = root.querySelector('.gkv-scale'); if (!scale) return;
+    var labs = [].slice.call(scale.querySelectorAll('.gkv-lab'));
+    if (labs.length < 2) return;                       // one keeper: nothing can collide
+
+    labs.forEach(function(l){ l.style.marginLeft = ''; l.classList.remove('gkv-lab-stack'); });
+    scale.classList.remove('gkv-stacked');
+
+    var GUTTER = 10;
+    var track = scale.getBoundingClientRect();
+    var a = labs[0].getBoundingClientRect(), b = labs[1].getBoundingClientRect();
+    var left = (a.left <= b.left) ? labs[0] : labs[1];
+    var right = (left === labs[0]) ? labs[1] : labs[0];
+    var lb = left.getBoundingClientRect(), rb = right.getBoundingClientRect();
+
+    var overlap = (lb.right + GUTTER) - rb.left;
+    if (overlap > 0){
+      var push = overlap / 2;
+      left.style.marginLeft  = (-push) + 'px';
+      right.style.marginLeft = ( push) + 'px';
+    }
+
+    // clamp , a nudge must not push a label off the track
+    lb = left.getBoundingClientRect(); rb = right.getBoundingClientRect();
+    var dl = track.left - lb.left, dr = rb.right - track.right;
+    if (dl > 0) left.style.marginLeft  = ((parseFloat(left.style.marginLeft)  || 0) + dl) + 'px';
+    if (dr > 0) right.style.marginLeft = ((parseFloat(right.style.marginLeft) || 0) - dr) + 'px';
+
+    // stack , only if the clamp put them back on top of each other
+    lb = left.getBoundingClientRect(); rb = right.getBoundingClientRect();
+    if ((lb.right + 2) > rb.left){
+      right.classList.add('gkv-lab-stack');
+      /*  The class goes on the SCALE too, not just the label. Two reasons. The stacked label
+          is raised above its partner, and raising it alone put it 10px INTO the kicker above
+          , measured, not guessed , so the whole scale drops to make the room instead. And a
+          class set here does not depend on :has(), which would tie a correctness-critical
+          layout to a selector's support matrix.  */
+      scale.classList.add('gkv-stacked');
+    } else {
+      scale.classList.remove('gkv-stacked');
+    }
   }
 
   /*  A CARD THAT DOES NOT MEET THE GATES GETS A NAMED REASON, NEVER A BLANK , the same rule
@@ -4850,7 +4918,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
