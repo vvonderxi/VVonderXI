@@ -385,3 +385,90 @@ different pairs, because the cards above it are not a fixed height. **Do not rec
 
 **NOT FIXED HERE ON PURPOSE:** the honest fix is a sticky action, which is exactly the bottom-bar pattern
 option C introduces. **Doing it separately means building the same bar twice.** Fold it into option C.
+
+---
+
+# POST-MERGE QUEUE LOGGED 2026-08-30 (three items; four more are in `LAUNCH_STAGE.md`)
+
+**Each was checked against the tree first. One of the three is ALREADY RECORDED and is repeated
+here only as a cross-reference , it must not be logged twice as new work.**
+
+## Q1. THE SEVEN INERT HONOUR CHIPS , ALREADY LOGGED, STRUCTURALLY BLOCKED, AND DELIBERATE (verified)
+
+**Count confirmed: exactly SEVEN**, in `FILTER_TAXONOMY.honours` in `vv-core.js` , Ballon d'Or,
+World Cup Winner, UCL Winner, League Champion, Player of the Season, Golden Boot, Top Assists. They
+render with the `pksoon` / `disabled` classes and carry no click handler.
+
+**THIS IS NOT A NEW ITEM AND MUST NOT BE "FIXED" BY HIDING THEM.** `CLAUDE.md` §D already records it
+under FILTER FOLLOW-UP: **honours activation is structurally blocked** , PostgREST cannot filter the
+matview against a separate honours table, so it needs the flags **on the matview**, which means a
+matview rebuild. And the inert chips are **deliberate**: they teach the vocabulary before the data
+exists.
+
+**THE ONE THING WORTH ADDING:** the rebuild they need is the same DROP + CREATE the known-as name
+fold and the percentile columns both need. **Three deferred items share one matview rebuild** , do
+them in one sitting or not at all.
+
+## Q2. COMPARE SEARCH AND LAYOUT NEED A RETHINK , DEMOS BEFORE ANY BUILD
+
+Lucas: the picker, its filters and the overall layout do not feel smooth. Reference points to
+consider are **Fantasy Premier League's player picker** for the list-and-filter mechanics, and
+**Apple/Tesla restraint** for the surface.
+
+**WHAT IS ALREADY TRUE AND MUST NOT BE REBUILT:** the picker is an anchored in-flow panel per slot,
+sharing `tokenAndFilter` / `vvParseSearch` with rankings and now the home page; the spine, verdict
+layer and deep links are shipped and are NOT in question. §D's three open Compare items stand
+separately , the picker pager, the one-paragraph Drury prose, and the cramped trajectory.
+
+**CONSTRAINTS ANY DEMO HAS TO RESPECT:** the picker still uses `pkRow` and was deliberately NOT
+switched to the shared `.vvrows` namespace, so a redesign is the moment to decide that rather than
+a drive-by; `overscroll-behavior:contain` on `.pkresults` is load-bearing and must survive; and
+the compare Settle button already sits **693 to 734px below the fold** at 390px, which is a layout
+problem this rethink should absorb rather than leave.
+
+**DEMO FIRST, PICK ONCE, BUILD ONCE.** This is a live surface and the §D locked rule puts
+premium/layout polish in a dedicated pass after the core build, never interleaved.
+
+## Q3. THE KEEPER TREATMENT ON PROOF, HEAD-TO-HEAD AND THE FIVE-SHAPE , THE REPLACEMENT HALF
+
+**The suppression half is PRE-MERGE and is logged in `LAUNCH_STAGE.md` (P3).** What belongs here is
+the design question it leaves behind: **once the outfield panels are hidden for a keeper, what
+should stand in their place?**
+
+- **Proof.** Verified: `renderProof` has no keeper gate and falls through to a creation panel. Its
+  launch shape is per-90 plus a minutes/apps denominator, and none of those denominators mean
+  anything for a keeper. **A keeper's proof is shots faced, saves, and the save rate against the
+  pool** , figures the keeper panel already computes via `VVCore.keeperScore`.
+- **Head-to-head on compare.** Not gated today. Two keepers should compare on keeper measures; a
+  keeper against an outfielder should say the comparison is across different evidence, which the
+  **trajectory already does** with its mismatch line , that copy is the precedent to follow.
+- **THE PROFILE SECTION MUST SPLIT PROPERLY WHEN BOTH SIDES ARE KEEPERS.** That is the case the
+  current layout was never designed for and is the reason this is design work and not a gate.
+
+**DEMOS REQUIRED, BOTH THEMES, AND CHECK card AND compare TOGETHER** , `renderTrajectory` and the
+keeper panels are shared renderers, so a change lands on two surfaces at once.
+
+## Q4. THE PLAYBOOK GOALKEEPER SECTION IS TEXT-ONLY AND SITS THIRD OF ELEVEN (verified, measured)
+
+**Measured across all eleven playbook sections:** `s-gk` is **466 words with ZERO svg**. Its two
+neighbours both carry a visual , `s-dim` (The 5 Dimensions) is 434 words with 1 svg, `s-card` is 471
+words with 2 svg. **So it is the only one of the three heavyweight opening sections with nothing to
+look at**, and it arrives immediately after The 5 Dimensions, which is exactly the placement Lucas
+describes as heavy.
+
+**Order today:** s-vv, s-dim, **s-gk**, s-card, s-wonder, s-prestige, s-honours, s-profile,
+s-verdict, s-pct, s-conf.
+
+**TWO SEPARATE DECISIONS, AND THEY SHOULD BE MADE TOGETHER:**
+- **A visual treatment.** The keeper card already ships a percentile ladder and a saved-versus-
+  conceded bar (`VVCore.keeperPanelHTML`). **Reuse the real component rather than drawing a
+  picture of it** , §C's display-case lesson is that two drawings of one thing drift and nothing
+  says so.
+- **The position.** Moving it after Verdicts puts it ninth. **Note the argument against:** the
+  goalkeeper section explains a published limitation, and burying a limitation is the one move
+  vvindex's honesty framing rules out. **Moving it is defensible; moving it because it is awkward
+  is not.**
+
+**ALSO STILL OPEN FROM THE GK BUILD:** `s-gk` has no mark in `vv-marks.js` and renders its glove
+emoji through the deliberate `pbMarks` fallback, and `vvindex.html` still describes the five
+dimensions as applying to every card.

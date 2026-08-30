@@ -230,3 +230,93 @@ keeps the measurement. **Re-verify against the live domain before launch day , t
        - **`myclub.html` has four, and ALL FOUR sit inside `.clublayout`, which computes `display:none`** , the coming-soon overlay (`9f5c21e`) replaced the locker, so the markup carrying them is not rendered. Measured at 390px: the triggers have **zero-width boxes**, which is the tell.
        - **SO DO NOT ADD A CLAMP TO MARKUP THAT DOES NOT RENDER.** The fix belongs to whoever un-hides the locker, and it belongs in the SAME change, because that is the moment it starts cropping. **A clamp added now would be untestable and would look shipped.**
        - **AND NOTE THE INSTRUMENT FAULT, because it nearly produced a wrong bug report:** deriving the tooltip box from `trigger centre +/- max-width/2` returned a confident **115px left overflow** on all four , computed from a centre of 0, which is what a zero-width box gives you. **Assert the trigger has a non-zero box before measuring anything positioned relative to it.**
+
+---
+
+# PRE-MERGE QUEUE LOGGED 2026-08-30 (four items; the other three are in `POST_LAUNCH.md`)
+
+**Each was checked against the tree before being written. Where the check disagreed with the
+report, the check is what is recorded** , two of these are not what they were reported as, and
+one is already fixed.
+
+## P1. THE HOME-PAGE SUGGESTIONS NAME PLAYERS THAT RETURN NOTHING , TWO OF THEM, NOT ONE (verified)
+
+`index.html:313`, the rotating placeholder array. Queried against `player_card_mv`:
+
+| placeholder | result |
+|---|---|
+| `Search "Thierry Henry"` | **ZERO hits** |
+| `Try "Messi vs Jude Bellingham"` | **"Jude Bellingham" ZERO hits** (`J. Bellingham` exists) |
+| `Try "Haaland vs Mbappé"` | both resolve |
+| `Search "Rodri 23/24"` | resolves |
+| `Try "Bellingham vs Lamine Yamal"` | both resolve |
+| `Search "Van Dijk"` | resolves |
+
+**The second one was not in the report and is the same defect.** `player_name` is `J. Bellingham`
+and `player_name_norm` does not carry "Jude", so the platform's own front door advertises a query
+its own search cannot answer. **This is now worse than it was**, because the box searches live: the
+suggestion used to route away, and now it sits there returning "No seasons match".
+
+**THE "vs" HALF OF THE REQUEST IS ALREADY DONE , DO NOT ADD ANOTHER.** Three of the six are already
+`vs` examples and one is already a season example (`Rodri 23/24`), so the vocabulary is taught. The
+work is replacing the two dead names, not adding a form.
+
+**RULE WORTH KEEPING: a suggestion is a promise the search has to honour.** Any name written into
+that array must be checked against `player_card_mv` first, in the abbreviated form the column
+actually stores.
+
+## P2. CARD SWIPE , THE HANDLER IS **NOT** ONE-DIRECTIONAL. THE REPORT AND THE CODE DISAGREE (verified)
+
+`card.html:2072` reads `seqGo(dx < 0 ? 1 : -1)` , swipe left forward, swipe right back , and
+`seqGo` accepts a negative delta. **There is no forward-only branch to find.** Two explanations fit
+the symptom and they are cheap to tell apart:
+
+- **`seqGo` returns early at `if(idx < 0) return;`.** At the FIRST card of a sequence, back is
+  correctly a no-op and is indistinguishable from broken. Arriving from a share link or opening the
+  top row both give index 0.
+- **`SEQ` is absent**, in which case `touchstart` sets `tracking=false` and NEITHER direction works.
+  Lucas reports forward working, so this one is probably not it.
+
+**THE TEN-SECOND TEST: read `SEQ.index` in the console on the card he swipes from.** If it is 0,
+there is no bug, there is a missing affordance , the card should say it is at the start rather than
+silently ignoring the gesture. **Do not rewrite the handler before running that test.**
+
+## P3. THE KEEPER CARD STILL SHOWS THREE OUTFIELD PANELS , AND `renderProof` HAS NO KEEPER GATE AT ALL (verified)
+
+**Confirmed in the tree: `grep` for a keeper gate inside `renderProof` returns ZERO.** It picks its
+dimension with `PROOF_DIMS[POOL_DIM[D.pos] || 'create']`, so a goalkeeper falls through to a
+creation panel. **This is the platform making a claim it cannot support, on the one position where
+it already publishes a limitation.**
+
+**WHAT IS ALREADY KEEPER-AWARE, so it is not rebuilt:** the radar is replaced by
+`VVCore.keeperPanelHTML` on card.html, and the trajectory by `keeperTrajectoryHTML` on BOTH card and
+compare, with the mismatch line and an altered legend. **The five-shape and head-to-head on compare
+are NOT gated.**
+
+**SPLIT THE WORK, AND THE FIRST HALF IS PRE-MERGE:**
+- **PRE-MERGE: suppress what is meaningless.** A keeper card must not render an outfield Proof
+  panel. Suppressing costs nothing and removes a false claim; §C's rule is disclose, never fabricate.
+- **POST-MERGE: the keeper-specific replacement** , what Proof and head-to-head should SAY about a
+  keeper, and splitting Profile properly when both sides are keepers. Design work, demos required,
+  logged in `POST_LAUNCH.md`.
+
+## P4. THE COMPARE SHARE POSTER , REPORTED, **NOT VERIFIED**, AND THE REASON MATTERS
+
+Three reported faults: the numbers are not the card font, the two cards touch with no gap, and the
+bottom line and title typography are off-brand.
+
+**I COULD NOT CAPTURE IT AND I AM NOT GUESSING FROM THE CSS.** `vvLedgerSpec()` returns **null**
+until a verdict has been generated, so `vvRenderShareImage` throws; generating one fires a paid AI
+call. Building a synthetic spec failed too , the compare page keeps its card objects in closure
+scope, not on `window`. Three attempts, then stopped.
+
+**WHAT THE SOURCE SAYS, AS A LEAD ONLY:** `.sf` sets `font-family:'Inter'` frame-wide while
+`.sf-score` sets `'Archivo',Impact,900`, and `.sf-cap` / `.sf-tag` inherit Inter. **That is
+consistent with the report and is not evidence for it** , §C is explicit that html2canvas
+implements a CSS subset and the PNG is not a photograph of the page.
+
+**THE METHOD FOR WHOEVER PICKS IT UP:** open a pair that already has a row in `verdict_cache` so the
+panels render from cache with no AI call, then `vvLedgerSpec()` returns a real spec and
+`vvRenderShareImage(spec,{format:'x'})` yields the data URL. **Read the PNG back and measure the
+gap and the fonts in the captured pixels, not in the DOM.** Judge it at 600px wide , §C records
+that X renders a shared image at roughly half the frame.
