@@ -1,4 +1,8 @@
-# THE THREE TRANSFER HALVES , SUM REPAIR (scoped 2026-08-29, NOT RUN)
+# THE THREE TRANSFER HALVES , SUM REPAIR (**APPLIED 2026-08-30**)
+
+> **DONE. Option 1 chosen by Lucas: merge, club = destination.** Restore source is
+> `CAPTURE_2026-08-30T07-30-45-179Z.json` (all 42 columns of all six rows, verified on disk before the write).
+> The SQL actually executed is `APPLIED.sql`. Result at the foot of this file.
 
 Douglas Luiz, Oscar Bobb and James Ward-Prowse each hold **two PL 2025/26 cards**: one correctly
 keyed, one keyed to a `api_player_id` that belongs to somebody else. §E already establishes they are
@@ -109,3 +113,55 @@ halves cannot be re-keyed into two rows; summing into one is what the constraint
 - **`source` SAYS `apifootball` ON ALL SIX ROWS, INCLUDING THE THREE IMPOSTOR-KEYED ONES.** The
   column does not record the namespace the id came from, which is the `UNIQUE (source,
   api_player_id)` argument demonstrated in three rows.
+
+
+---
+
+## RESULT , APPLIED 2026-08-30, FULL BEFORE/AFTER SNAPSHOT
+
+**The club question resolved itself before the write.** Provider transfer records show all three
+moved in **January 2026** and all three got MORE minutes at the club they moved to, so
+richest-by-minutes and destination-club name the same club in every case. Douglas Luiz: Forest ->
+**Aston Villa**. Bobb: Man City -> **Fulham**. Ward-Prowse: West Ham -> **Burnley**.
+
+**WHAT WAS WRITTEN.** Three UPDATEs and three DELETEs in ONE anonymous `DO` block, which is how a
+transaction is achieved through `exec_sql` , that RPC is a plpgsql function and `EXECUTE` takes a
+single command, so six semicolon-separated statements would NOT have been atomic.
+
+| kept | now | deleted |
+|---|---|---|
+| 130604 Douglas Luiz | Aston Villa, team_id 8, 944m 21ap 12st 1g | 108645 |
+| 130484 Oscar Bobb | Fulham, team_id 39, 1050m 23ap 11st 1a | 108799 |
+| 130408 J. Ward-Prowse | Burnley, team_id 45, 1109m 18ap 12st 1a | 109011 |
+
+**`position` WAS DELIBERATELY NOT WRITTEN.** The resolver reports a coarse position and for Bobb it
+would have moved the stored `FWD` to `MID` , a change with engine consequences, since `rel_pct`,
+`defvol_pct` and `duelq_pct` partition on the coarse field. **This repair sums a split season; it
+does not re-decide anyone's position.** Each surviving card keeps its verified `position_pool`
+(CDM, Winger, CDM).
+
+**THE RIPPLE, MEASURED ACROSS ALL 57,058 CARDS BEFORE AND 57,055 AFTER:**
+
+- Population **57,058 -> 57,055**, and the three rows removed are **exactly** the three deleted.
+  Zero rows appeared. Both snapshots paginated past the 1,000-row cap, ordered by a UNIQUE column,
+  and asserted row-for-row off disk.
+- **24 cards moved. Three are the repaired ones**: 130408 rt 47 -> **60**, 130604 rt 58 -> **64**,
+  130484 rt 29 -> **31**. Each was previously scored as a part-season, which is the whole point.
+- **21 untouched cards rippled, every one by exactly +/-1** (six up, fifteen down). Largest:
+  130304 62->61, 130656 56->55, 130676 44->43.
+- **ZERO public band crossings , touched or untouched.** Nothing crossed 95, 90, 85 or 80.
+- **The three rank-anchored band counts HOLD: 12 / 150 / 650.** 80+ is unchanged at 1,406.
+
+**AND EACH PLAYER NOW HAS EXACTLY ONE PL 2025/26 CARD**, confirmed per `api_player_id` , which is
+what `UNIQUE (api_player_id, season, league_code)` always implied.
+
+**THE ACCEPTED COST, STATED PLAINLY: each card now names ONE of the two clubs.** Douglas Luiz's card
+reads "Aston Villa" for a season of which 331 minutes were played at Forest. That is what one card
+per player-season forces, it is permanent, and it applies to roughly 1,600 more halved cards.
+**Whether a card may ever name two clubs is logged as its own platform decision in `POST_LAUNCH.md`
+, it is not a repair question.**
+
+**REVERSIBLE.** No foreign key points at `player_season_cards`; `id` defaults from a sequence and is
+NOT an identity column, so the three deleted rows can be re-inserted with their original ids from
+the capture file. Zero rows existed in `notes_cache`, `verdict_cache` or `player_positions` for any
+of them.

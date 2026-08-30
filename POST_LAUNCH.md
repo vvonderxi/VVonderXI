@@ -472,3 +472,42 @@ s-verdict, s-pct, s-conf.
 **ALSO STILL OPEN FROM THE GK BUILD:** `s-gk` has no mark in `vv-marks.js` and renders its glove
 emoji through the deliberate `pbMarks` fallback, and `vvindex.html` still describes the five
 dimensions as applying to every card.
+
+---
+
+## Q5. MAY A CARD NAME TWO CLUBS? A PLATFORM DECISION, NOT A REPAIR QUESTION (logged 2026-08-30)
+
+**Raised by the transfer-halves repair, and deliberately NOT settled inside it.** That repair merged
+three halved seasons into one card each, which is what `UNIQUE (api_player_id, season, league_code)`
+has always implied. **The accepted cost is that each card now names ONE of the two clubs** , Douglas
+Luiz's 2025/26 card reads "Aston Villa" for a season of which 331 minutes were played at Nottingham
+Forest. The season is now complete and the club line is now partial.
+
+**THE SCALE IS THE ARGUMENT FOR TAKING IT SERIOUSLY, NOT THE THREE CARDS.** §E measures roughly
+**1,600 halved cards** across the database. Every one of them, once repaired, lands in exactly this
+position. **Deciding this AFTER repairing 1,600 cards means deciding it twice.**
+
+**THE HARD CONSTRAINT, AND IT IS WHY THIS IS NOT A ONE-LINE CHANGE: `team_id` MUST RESOLVE TO ONE
+CLUB.** The view joins `teams` through it for `primary_colour` / `secondary_colour` / `accent_colour`,
+and the card face, the rankings row rail and the share poster are all painted from that join. So a
+card naming "Forest / Aston Villa" would still be **coloured as one of them**. The text and the
+paint would disagree, on the product's most recognisable surface.
+
+**THE OPTIONS, AS THEY STAND:**
+1. **Leave it , one club, the destination.** What ships today. Simple, consistent, and silently
+   incomplete for ~1,600 cards.
+2. **Name both in the text, paint one.** Cheapest to build, and it introduces a card whose words and
+   colours disagree. **§C's display-case lesson applies: two representations of one thing drift and
+   nothing says so.**
+3. **A real two-club treatment** , a split rail, or a secondary club line, designed so the colour
+   and the text agree. Touches the card face, the rankings row and the share poster, which is three
+   surfaces and a shared renderer.
+4. **Disclose instead of redesign** , keep one club and add the platform's existing honesty device,
+   a note that a season split across clubs is shown at the club where most of it was played. **This
+   is the cheapest HONEST option and it is not the same as option 1**, which says nothing at all.
+
+**DEMOS BEFORE ANY BUILD, and check card, rankings and the share poster together** , they share the
+`teams` colour join, so a change to any one of them is a change to all three.
+
+**DO NOT FOLD THIS INTO A DATA REPAIR.** It is a question about what a VVonderXI card claims, and the
+repair queue will keep producing instances of it either way.
