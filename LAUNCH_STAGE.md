@@ -341,26 +341,48 @@ keeper who misses the minutes or shots gates, and §E records `position` as unre
 2025/26 block, so either field alone would miss cards. **The copy follows the trajectory's existing
 mismatch line rather than inventing a second vocabulary for the same idea.**
 
-## P4. THE COMPARE SHARE POSTER , REPORTED, **NOT VERIFIED**, AND THE REASON MATTERS
+## P4. [VERIFIED 2026-08-30] THE COMPARE SHARE POSTER , ALL THREE COMPLAINTS CONFIRMED, AND THE LAYOUT IS WORSE THAN THE REPORT
 
-Three reported faults: the numbers are not the card font, the two cards touch with no gap, and the
-bottom line and title typography are off-brand.
+**THE EARLIER "cannot be captured without an AI call" NOTE WAS WRONG AND IS CORRECTED HERE.** That
+diagnosis said compare keeps its card objects in closure scope. It does not , `CMP_A` and `CMP_B`
+are readable from page scope, which the keeper head-to-head gate now relies on. Every failed attempt
+had used `?a=127885`, **the one card logged in P5 as failing to load in compare**, so `CMP_A` was
+null for a reason that had nothing to do with scope. **A wrong diagnosis that sounds structural will
+stop the next person trying at all , that is why it is corrected rather than deleted.**
 
-**I COULD NOT CAPTURE IT AND I AM NOT GUESSING FROM THE CSS.** `vvLedgerSpec()` returns **null**
-until a verdict has been generated, so `vvRenderShareImage` throws; generating one fires a paid AI
-call. Building a synthetic spec failed too , the compare page keeps its card objects in closure
-scope, not on `window`. Three attempts, then stopped.
+**METHOD THAT WORKS, no AI call and no cached verdict needed:** load a pair that loads, build the
+spec by hand from `CMP_A`/`CMP_B`, and render it with `VVCore.vvShareFrameHTML(spec, F, light)` plus
+`vvCentreShareCaption`. Measured on `?a=131185&b=133155` at format `x` (1200x675).
 
-**WHAT THE SOURCE SAYS, AS A LEAD ONLY:** `.sf` sets `font-family:'Inter'` frame-wide while
-`.sf-score` sets `'Archivo',Impact,900`, and `.sf-cap` / `.sf-tag` inherit Inter. **That is
-consistent with the report and is not evidence for it** , §C is explicit that html2canvas
-implements a CSS subset and the PNG is not a photograph of the page.
+**(1) THE NUMBERS ARE IN TWO DIFFERENT TYPEFACES, IN ONE IMAGE , CONFIRMED.**
+The card faces render 91 and 51 in **Barlow Condensed w800 44.88px**. The poster's own score readout
+renders the SAME two numbers in **Archivo w900 17.55px**. The year (`yr`) and the small `v` are also
+Barlow Condensed. So the poster disagrees with the card it is a poster of, on the one element the
+whole image is about.
 
-**THE METHOD FOR WHOEVER PICKS IT UP:** open a pair that already has a row in `verdict_cache` so the
-panels render from cache with no AI call, then `vvLedgerSpec()` returns a real spec and
-`vvRenderShareImage(spec,{format:'x'})` yields the data URL. **Read the PNG back and measure the
-gap and the fonts in the captured pixels, not in the DOM.** Judge it at 600px wide , §C records
-that X renders a shared image at roughly half the frame.
+**(2) THE CARDS DO NOT TOUCH , THEY ARE 30px APART. THE REAL DEFECT IS THE COMPOSITION.**
+Measured: card A spans x 52 to 295, card B spans 325 to 568, **gap 30px**, in a 1200px frame. So the
+literal complaint is not reproducible, and fixing "the gap" would fix nothing. **What is actually
+wrong is that both cards sit inside the LEFT 47% of the frame and the entire right half is empty
+except an orphaned score readout floating in dead space.** The cluster reads as cramped because of
+what is beside it, not because of what is between the cards.
+
+**(3) THE BOTTOM BLOCK AND THE WORDMARK ARE ENTIRELY INTER , CONFIRMED.**
+`.sf-cap` Inter w600, `.sf-tag` Inter w700 italic, `.sf-brand` Inter w800. The product's card
+language is Barlow Condensed plus Archivo. **Nothing in the bottom third of the poster is set in a
+typeface the card uses.**
+
+**AND REMEMBER THE VIEWING SIZE: §C records that X renders a shared image at roughly 600px, half
+this frame.** Every size above halves before anyone reads it , the 17.55px score readout becomes
+about 9px.
+
+**STILL UNVERIFIED, AND IT IS A NARROW GAP: the html2canvas capture itself.** Everything above is
+measured in the RENDERED FRAME, which settles typography and geometry because those are layout
+facts. It does not settle what the library additionally drops , §C is explicit that the capture is a
+different renderer and that a rounded inset shadow survives a support sweep and is still absent from
+the real card's corner. `vvRenderShareImage` returns something other than a data-URL string; three
+attempts to unwrap it produced 15 bytes of non-PNG. **Whoever fixes this must read a real captured
+PNG before believing the fix landed** , find the return shape first, it is not a string.
 
 ## P5. [FOUND 2026-08-30, NOT CHASED] CARD 127885 LOADS ON `card.html` AND NOT IN COMPARE
 
