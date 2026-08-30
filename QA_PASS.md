@@ -22,16 +22,15 @@ production is a strict ancestor: clean fast-forward, zero conflicts.
 EVERY TIME IT HAS BEEN CHECKED.** 517 -> 599 -> 639 in three measurements. If the figures have moved,
 the surface has moved.
 
-**AND THE GATE HAS A PRECONDITION THAT DID NOT EXIST WHEN THIS WAS WRITTEN: PRODUCTION'S OWN BUILD
-IS ERRORING ON VERCEL (2026-08-30).** `vvonderxi_BIGGER` has not changed since 2026-06-15, so the
-cause is outside the repo , the leading candidates are its uncapped `@supabase/supabase-js": "^2.39.0"`
-(a caret range resolves to a new version on every build, so an unchanged repo does NOT produce an
-unchanged build) and its legacy `builds` array pinning `@vercel/static` / `@vercel/node`. **Both are
-fixed by the merge. `engines: { node: "24.x" }` is NOT , it is identical on both branches, so if
-that is the cause the merge inherits it.** The live site is the last GOOD deployment; a failing
-build does not take it down, it means it can no longer be redeployed.
-**READ THE FIRST ERROR LINE IN THE BUILD LOG BEFORE MERGING.** Merging into a project that cannot
-deploy means debugging 639 commits of change and a platform failure at the same time.
+**[RESOLVED 2026-08-30] THE PRECONDITION IS CLEARED , PRODUCTION DEPLOYS.** Its build had been
+erroring since 2026-06-15 with **"No more than 12 Serverless Functions can be added to a Deployment
+on the Hobby plan"** , 16 functions against a limit of 12. **Vercel Pro is now on, and the redeploy
+came back Ready in 11 seconds with `vvonderxi.com` assigned.**
+**THE THREE CAUSES THIS DOCUMENT PREVIOUSLY LISTED WERE ALL WRONG** (a caret dependency range, the
+legacy `builds` array, `engines: node 24.x`) and are removed rather than left to mislead. The
+post-mortem is in §C: an unchanged repo that stops building points outside the repo, and that
+includes the platform's own plan limits, not only dependency drift , **and this pass already
+carried the correct check, in the B group, unread.**
 
 ## THE RULE THAT GOVERNS EVERY ITEM
 
@@ -393,7 +392,13 @@ environment, which is itself the reason they are listed.
 - **Pass:** the old key is dead and the site still loads data. **ROTATE ONLY WHEN NO BACKFILL IS RUNNING** , a mid-run rotation kills every in-flight request and the enrichment scripts checkpoint per league-season, so a half-written run is the expensive failure.
 
 ### C6. Vercel plan and the function limit
-- **Check:** which plan, and whether 16 functions are within it.
+- **Check:** which plan, and whether the deployed function count is within it.
+- **STATUS 2026-08-30: PASS, and this item found the production build failure that three
+  hand-rolled theories missed.** Hobby caps Serverless Functions at **12**; production shipped
+  **16** and had been failing to build since 2026-08-15's predecessor commit on 2026-06-15.
+  **Vercel Pro is now on; redeploy Ready in 11s, `vvonderxi.com` assigned.** The branch ships
+  **13** functions after the BSD retirement , still over Hobby's cap, so **Pro is what makes the
+  merge deployable**, not the function reduction.
 - **How:** the Vercel dashboard.
 - **Pass:** a plan that permits the deployed function count, and **Vercel Pro**, which §C records as a pre-launch requirement because Hobby restricts commercial use. **16 functions deploy and run today , proven by probing the live endpoints , but the plan behind that is not visible from the repo.**
 
