@@ -905,7 +905,8 @@ body.light .pkmsub{color:var(--ink-soft)}
             </div>
           </div>
           <!-- overlaid radar -->
-          <div class="vsect">
+          <div class="vsect vsect-wide" id="secKeeper" style="display:none"></div>
+          <div class="vsect" id="secShape">
             <div class="vsect-t">The Shape of Each Season</div><div class="vsect-d">Five dimensions, two seasons overlaid. The wider the shape, the more complete the campaign.</div>
             <div class="vradar-wrap">
               <svg width="320" height="260" viewBox="0 0 320 260" id="vradar"></svg><small id="vradarNote"></small>
@@ -913,7 +914,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             </div>
           </div>
           <!-- head to head dimension bars (green dot on the winner) -->
-          <div class="vsect">
+          <div class="vsect" id="secH2H">
             <div class="vsect-t">Head to Head</div><div class="vsect-d">Dimension by dimension, who came out on top. The green dot marks the winner.</div>
             <div id="h2h"></div>
           </div>
@@ -939,7 +940,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             <div id="vtraj"></div>
           </div>
           <!-- THE PROOF , raw per-90 numbers with green winner dots -->
-          <div class="vsect vsect-wide">
+          <div class="vsect vsect-wide" id="secProof">
             <div class="vsect-t">The Proof</div>
             <div class="vsect-d">The raw season numbers, shown per 90 minutes so different game-times compare fairly.</div>
             <div class="vproof">
@@ -1007,8 +1008,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260830d"></script>
-<script src="/vv-core.js?v=20260830d"></script>
+<script src="/vv-marks.js?v=20260830e"></script>
+<script src="/vv-core.js?v=20260830e"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1709,7 +1710,43 @@ body.light .pkmsub{color:var(--ink-soft)}
     svg.innerHTML=g;
     if(note) note.textContent='Shape is provisional: dimensions are scaled against reference values, not percentiles.';
   }
+  /*  BETWEEN THE POSTS , one section replacing three, whenever either side is a keeper.
+      The radar, the head to head and the Proof are all built on the five outfield dimensions.
+      For a goalkeeper those axes are NOT MEASURED rather than low, so all three either sit
+      empty or, worse, award wins on evidence that does not exist. Suppressing them left a
+      hole; this fills it with the one measure that does separate two keepers.
+      GATED ON pos === 'GK' || keeper, never pos alone , keeperScore() returns null for a
+      keeper who misses the minutes or shots gates, and §E records position as unreliable on
+      the corrupt 2025/26 block, so either field on its own misses cards.  */
+  function drawKeeperSection(){
+    const host=document.getElementById('secKeeper');
+    const three=['secShape','secH2H','secProof'].map(id=>document.getElementById(id));
+    if(!host) return false;
+    const isGK=c=>!!(c && (c.pos==='GK' || c.keeper));
+    const aGK=isGK(CMP_A), bGK=isGK(CMP_B);
+    if(!aGK && !bGK){
+      host.style.display='none'; host.innerHTML='';
+      three.forEach(el=>{ if(el) el.style.display=''; });
+      return false;
+    }
+    /*  rowToCard ALREADY carries `keeper: keeperScore(row)` , null for an outfielder. Do not
+        re-derive it from a raw row here; the card object is the one both surfaces read, and a
+        second derivation is a second thing to drift.  */
+    const side=c=>({ k:(c&&c.keeper)||null, name:(c&&c.full)||'',
+                     club:(c&&c.clubname)||'', year:(c&&c.year)||'' });
+    const A=side(CMP_A), B=side(CMP_B);
+    const html=VVCore.keeperVersusHTML(A,B);
+    if(!html){ host.style.display='none'; return false; }
+    host.innerHTML='<div class="vsect-t">Between The Posts</div>'+html;
+    host.style.display='';
+    three.forEach(el=>{ if(el) el.style.display='none'; });
+    return true;
+  }
+
   function drawH2H(){
+    /*  If the keeper section took over, the head to head is hidden and must not also paint ,
+        a hidden section still costs a render and can leave stale markup behind a later show. */
+    if(drawKeeperSection()) return;
     const box=document.getElementById('h2h'); if(!box) return;
 
     /*  NO HEAD-TO-HEAD WHEN EITHER SIDE IS A GOALKEEPER.

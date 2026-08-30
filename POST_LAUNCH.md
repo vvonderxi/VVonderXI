@@ -429,7 +429,7 @@ problem this rethink should absorb rather than leave.
 **DEMO FIRST, PICK ONCE, BUILD ONCE.** This is a live surface and the §D locked rule puts
 premium/layout polish in a dedicated pass after the core build, never interleaved.
 
-## Q3. THE KEEPER TREATMENT ON PROOF, HEAD-TO-HEAD AND THE FIVE-SHAPE , THE REPLACEMENT HALF
+## Q3. [BUILT 2026-08-30 , BETWEEN THE POSTS] THE KEEPER TREATMENT ON PROOF, HEAD-TO-HEAD AND THE FIVE-SHAPE
 
 **The suppression half is PRE-MERGE and is logged in `LAUNCH_STAGE.md` (P3).** What belongs here is
 the design question it leaves behind: **once the outfield panels are hidden for a keeper, what
@@ -511,3 +511,55 @@ paint would disagree, on the product's most recognisable surface.
 
 **DO NOT FOLD THIS INTO A DATA REPAIR.** It is a question about what a VVonderXI card claims, and the
 repair queue will keep producing instances of it either way.
+
+
+---
+
+## BETWEEN THE POSTS , BUILT 2026-08-30, THE SPEC AS SHIPPED
+
+**One section replaces three whenever either side of a compare is a goalkeeper** , The Shape of
+Each Season, Head to Head and The Proof are all built on the five outfield dimensions, which for a
+keeper are NOT MEASURED rather than low. Suppressing them (2026-08-30, earlier) left a hole; this
+fills it.
+
+**`VVCore.keeperVersusHTML(A, B)`**, wired through `drawKeeperSection()` in compare.
+
+**THE RUNGS ARE THE CARD'S RUNGS, AND THAT IS THE POINT.** `[50, 75, 90]` at `left:50/75/90%` , the
+same array, the same linear placement and the same labels as `keeperPanelHTML`. **One measurement
+must not be drawn two ways across two surfaces.** The placement is TRUTHFUL rather than tidy: the
+90th sits at 90% of the axis, not at two thirds of three evenly spaced ticks.
+
+**THE SENTENCE IS WHAT MAKES THE AXIS SAYABLE**, and it replaced an earlier eyebrow that was doing
+the same job less plainly: *"E. Caprile stopped a higher share of the shots he faced than 59% of
+keeper seasons. J. Pickford, 37%."* The higher keeper is named first so it reads as a finding.
+
+**EVERY COLOUR IS A TOKEN, AND THAT IS LOAD-BEARING HERE.** This renders on `.vsect`, which is the
+Under-the-Lights **gradient in dark** and **`#FBF8F2` in light** , unlike the card's `.layer`, which
+§C records as cream in BOTH. **The keeper card's own panel goes dark-on-dark if dropped here
+unchanged**, which is why this is a separate renderer and not a reuse of `keeperPanelHTML`.
+
+**VERIFIED , three pair types, both themes, both widths, twelve states:**
+
+| pair | keeper section | the three | rungs | pins |
+|---|---|---|---|---|
+| keeper v keeper | shown | all `none` | 50/75/90% | 37%, 59% |
+| keeper v outfield | shown, single pin + mismatch line | all `none` | 50/75/90% | 97% |
+| outfield v outfield | hidden | all `block` | , | , |
+
+No label collision and no overflow in any of the twelve.
+
+**TWO THINGS FOUND WHILE BUILDING, BOTH WORTH KEEPING:**
+- **`vvInjectGKCSS()` was called only from `keeperPanelHTML`.** Compare calls this renderer and
+  never that one, so the entire section first rendered as **unstyled stacked text** , rung labels on
+  their own lines, "weakest keeper" and "strongest" run together. It looked like a layout bug and
+  was a missing `<style>`. The injector is idempotent, so it is now called from both entry points.
+- **`rowToCard` already carries `keeper: keeperScore(row)`.** The first version re-derived it from a
+  raw mv row that compare does not keep. **Read the card object both surfaces already share; a
+  second derivation is a second thing to drift.**
+
+**STILL OPEN, SMALL:** the **390px visual was not captured** , the section sits below the fold and
+forcing its collapsed ancestors visible breaks the layout flow, so the clip lands on the wrong
+region. **Its geometry at 390 IS verified numerically in both themes** (no collision, no overflow,
+rungs and pins correct, correct show/hide). A real eye on it at 390 is still worth having.
+**And a near-tie needs a rule:** 37th against 59th does not collide, but two keepers five places
+apart would. The pins must stay truthful; nudge the LABEL layer only.

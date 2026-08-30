@@ -858,6 +858,30 @@
      in pink. Pink on this panel means the score, and only the ladder carries the score. */
   var VV_GK_CSS = `
 .gkp{margin:2px 0 4px}
+/*  BETWEEN THE POSTS , compare's keeper section. Colours are TOKENS ONLY: this renders on
+    .vsect, which is a dark gradient in dark mode and cream in light, so nothing here may
+    assume a ground the way the gkp- panel does. */
+.gkv-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--vs-muted,var(--ink-soft));margin-bottom:6px}
+.gkv-scale{position:relative;height:80px;margin-top:2px}
+.gkv-axis{position:absolute;left:0;right:0;top:52px;height:5px;border-radius:99px;background:currentColor;opacity:.14}
+.gkv-seg{position:absolute;top:52px;height:5px;border-radius:99px;background:var(--pink-ink)}
+.gkv-rung{position:absolute;top:46px;width:1px;height:17px;background:currentColor;opacity:.22}
+.gkv-rlab{position:absolute;top:66px;transform:translateX(-50%);font-size:9px;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));opacity:.75;white-space:nowrap}
+.gkv-pin{position:absolute;top:45px;width:3px;height:19px;border-radius:2px;background:var(--pink-ink);transform:translateX(-1.5px)}
+.gkv-lab{position:absolute;top:6px;transform:translateX(-50%);text-align:center;white-space:nowrap}
+.gkv-v{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:29px;line-height:.92;color:var(--pink-ink)}
+.gkv-n{display:block;font-family:'Inter';font-weight:700;font-size:11px;color:var(--vs-muted,var(--ink-soft))}
+.gkv-ends{display:flex;justify-content:space-between;font-size:9.5px;color:var(--vs-muted,var(--ink-soft));opacity:.8;margin-top:-6px}
+.gkv-say{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:14px}
+.gkv-figs{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}
+.gkv-figs div{font-size:10.5px;letter-spacing:.04em;color:var(--vs-muted,var(--ink-soft));opacity:.85}
+.gkv-figs b{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:19px;line-height:1.15;color:inherit;opacity:1}
+.gkv-no{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft))}
+/*  NEAR-TIE GUARD: two pins closer than a label's width collide. The labels are centred on
+    their pin, so the pair is nudged apart only in the LABEL layer , the pins stay truthful. */
+.gkv-lab-a{transform:translateX(-50%)}
+.gkv-lab-b{transform:translateX(-50%)}
+@media (max-width:520px){ .gkv-v{font-size:24px} .gkv-scale{height:74px} }
 .gkp-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px}
 .gkp-k:first-child{margin-top:0}
 .gkp-lad{display:flex;align-items:flex-end;gap:16px}
@@ -930,6 +954,109 @@
   function gkNum(v){ return v == null ? 'NR' : v; }
   /*  k is a keeperScore() result. Returns '' for a non-keeper so a caller can use the
       return value itself as the "is this a keeper card" test and never draw an empty box. */
+  /*  BETWEEN THE POSTS , the keeper section on COMPARE. It replaces the radar, the head to
+      head and the Proof for any pair containing a goalkeeper, because all three are built on
+      the five outfield dimensions and a keeper has none of them: those axes are not low, they
+      are NOT MEASURED, and charting them awards wins on evidence that does not exist.
+
+      THE RUNGS ARE THE CARD'S RUNGS. [50,75,90] positioned at left:50/75/90% , the same array,
+      the same linear placement, the same labels as keeperPanelHTML. One measurement must not be
+      drawn two ways across two surfaces, and the placement is TRUTHFUL rather than tidy: the
+      90th sits at 90% of the axis, not at two thirds of three evenly spaced ticks.
+
+      EVERY COLOUR IS A TOKEN, AND THAT IS LOAD-BEARING HERE. This renders on compare's .vsect,
+      which is the Under-the-Lights GRADIENT in dark mode and #FBF8F2 in light , unlike the
+      card's .layer, which is cream in BOTH. The keeper card panel assumes a cream ground and
+      goes dark-on-dark if it is dropped here unchanged. See §C: match the ink to the GROUND.  */
+  var GKV_RUNGS = [50, 75, 90];
+
+  function gkvPin(k, name, side){
+    return '<div class="gkv-pin" style="left:' + k.pct + '%"></div>'
+         + '<div class="gkv-lab gkv-lab-' + side + '" style="left:' + k.pct + '%">'
+         +   '<span class="gkv-v">' + (100 * k.savePct).toFixed(1) + '%</span>'
+         +   '<span class="gkv-n">' + escHtml(name) + '</span>'
+         + '</div>';
+  }
+
+  /*  THE SENTENCE IS WHAT MAKES THE AXIS SAYABLE. A percentile bar is only legible if the
+      reader is told what a position on it MEANS, and the higher keeper is named first so the
+      sentence reads as a finding rather than a table.  */
+  function gkvSentence(hi, lo){
+    return escHtml(hi.name) + ' stopped a higher share of the shots he faced than '
+         + hi.k.pct + '% of keeper seasons. ' + escHtml(lo.name) + ', ' + lo.k.pct + '%.';
+  }
+
+  function keeperVersusHTML(A, B){
+    /*  INJECT THE STYLESHEET HERE TOO. vvInjectGKCSS() was called only from
+        keeperPanelHTML, so compare , which calls this and never that , rendered the whole
+        section as unstyled stacked text: rung labels on their own lines, "weakest keeper"
+        and "strongest" run together, every figure a paragraph. It looked like a layout bug
+        and was a missing <style>. The injector is idempotent (it checks its own id), so
+        calling it from both entry points costs nothing.  */
+    vvInjectGKCSS();
+    var a = A && A.k, b = B && B.k;
+    var rungs = '';
+    for (var i = 0; i < GKV_RUNGS.length; i++){
+      rungs += '<div class="gkv-rung" style="left:' + GKV_RUNGS[i] + '%"></div>'
+            +  '<div class="gkv-rlab" style="left:' + GKV_RUNGS[i] + '%">' + GKV_RUNGS[i] + 'th</div>';
+    }
+
+    /*  ONE KEEPER ONLY. There is no shared axis to draw , the outfielder has no position on
+        the keeper pool at all , so this states the mismatch in the same voice the trajectory
+        already uses, and shows the keeper's own position rather than nothing.  */
+    if (!a !== !b){
+      var K = a ? A : B, O = a ? B : A;
+      if (!K.k.eligible) return gkvNotScored(K, O);
+      return '<div class="gkv">'
+        + '<div class="gkv-k">Save rate, against every goalkeeper we can measure</div>'
+        + '<div class="gkv-scale gkv-solo">'
+        +   '<div class="gkv-axis"></div>'
+        +   '<div class="gkv-seg" style="left:0;width:' + K.k.pct + '%"></div>'
+        +   rungs + gkvPin(K.k, K.name, 'a')
+        + '</div>'
+        + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
+        + '<div class="gkv-say">' + escHtml(K.name) + ' stopped a higher share of the shots he faced than '
+        +   K.k.pct + '% of keeper seasons. ' + escHtml(O.name) + ' is an outfielder, so there is no '
+        +   'shared measure here , a save rate and a goal tally are not the same kind of evidence.</div>'
+        + gkvFigs([K]) + '</div>';
+    }
+
+    if (!a && !b) return null;
+    if (!a.eligible || !b.eligible) return gkvNotScored(A, B);
+
+    var hi = (a.pct >= b.pct) ? A : B, lo = (hi === A) ? B : A;
+    var loP = Math.min(a.pct, b.pct), hiP = Math.max(a.pct, b.pct);
+    return '<div class="gkv">'
+      + '<div class="gkv-k">Save rate, against every goalkeeper we can measure</div>'
+      + '<div class="gkv-scale">'
+      +   '<div class="gkv-axis"></div>'
+      +   '<div class="gkv-seg" style="left:' + loP + '%;width:' + (hiP - loP) + '%"></div>'
+      +   rungs
+      +   gkvPin(a, A.name, 'a') + gkvPin(b, B.name, 'b')
+      + '</div>'
+      + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
+      + '<div class="gkv-say">' + gkvSentence(hi, lo) + '</div>'
+      + gkvFigs([A, B]) + '</div>';
+  }
+
+  /*  A CARD THAT DOES NOT MEET THE GATES GETS A NAMED REASON, NEVER A BLANK , the same rule
+      the keeper card follows. 800 minutes AND 60 shots faced, 2015 onward.  */
+  function gkvNotScored(A, B){
+    var parts = [A, B].filter(function(x){ return x && x.k; }).map(function(x){
+      return x.k.eligible ? null : escHtml(x.name) + ': ' + x.k.reason;
+    }).filter(Boolean);
+    return '<div class="gkv"><div class="gkv-k">Save rate</div>'
+      + '<div class="gkv-no"><b>Not scored.</b> ' + parts.join(' ') + '</div></div>';
+  }
+
+  function gkvFigs(list){
+    var cells = list.map(function(x){
+      var last = String(x.name).split(' ').pop();
+      return '<div><b>' + x.k.saves + ' / ' + x.k.conceded + '</b>' + escHtml(last) + ' saved / conceded</div>';
+    }).join('') + '<div><b>' + list.map(function(x){ return x.k.minutes; }).join(' &middot; ') + '</b>minutes</div>';
+    return '<div class="gkv-figs">' + cells + '</div>';
+  }
+
   function keeperPanelHTML(k){
     if (!k) return '';
     vvInjectGKCSS();
@@ -4723,7 +4850,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
