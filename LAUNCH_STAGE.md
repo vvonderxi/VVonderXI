@@ -384,14 +384,46 @@ the real card's corner. `vvRenderShareImage` returns something other than a data
 attempts to unwrap it produced 15 bytes of non-PNG. **Whoever fixes this must read a real captured
 PNG before believing the fix landed** , find the return shape first, it is not a string.
 
-## P5. [FOUND 2026-08-30, NOT CHASED] CARD 127885 LOADS ON `card.html` AND NOT IN COMPARE
+## P5. [DONE 2026-08-30 , AND IT WAS NOT WHAT I LOGGED] A CARD THAT DOES NOT EXIST RENDERED A SILENT BLANK
 
-Reproduced three times while testing something else. `card.html?id=127885` loads fine and renders as
-a CAM. `compare.html?a=127885&...` leaves **`CMP_A` undefined** after 11 seconds, so the whole
-downstream chain never runs , the head-to-head box stays empty and `vvLedgerSpec()` returns null.
-**It is what blocked the share-poster capture in P4.**
+**THE PREMISE WAS WRONG. `card_id` 127885 does not "fail to load in compare" , IT HAS NEVER
+EXISTED.** Absent from the before AND after snapshots of the whole matview, and there are no
+card_ids at all in the 127870-127900 range. It was a bad test fixture I carried through most of a
+session, and it produced three separate misreadings before anyone questioned it.
 
-**NOT INVESTIGATED , logged so the next session does not lose it, and so a failure to reproduce a
-compare bug on this card is understood as this, rather than as the bug being absent.** Check whether
-it is this card specifically or a race in the two-sided load, and whether `?b=127885` fails the same
-way (it did in one of the three).
+**WHAT COMPARE ACTUALLY DID WAS CORRECT.** `player_card_mv?card_id=eq.127885` returns **zero rows**,
+`.single()` therefore 406s with `PGRST116 "The result contains 0 rows"`, and `fetchCard` logs and
+returns null. Nothing to fix there.
+
+**THE REAL DEFECT WAS ON card.html, AND IT IS THE ONE WORTH HAVING FOUND.** The load path did
+`return` on a missing row, leaving the page on its emptied demo skeleton , blank score, blank
+sub-line, every panel present, and **no not-found state anywhere**. Indistinguishable from a load
+that never finished. A stale bookmark, or a link to a card merged away by a data repair, showed a
+reader a blank card and told them nothing.
+
+**FIXED: `vvCardNotFound(id, missing)`.** It replaces the hero rather than sitting beside it , a
+half-rendered card next to an explanation reads as broken rather than missing. **It separates the
+two cases**: `PGRST116` is the ordinary one (stale link, merged card, typed id) and gets its own
+words; anything else is a real fault and says so rather than blaming the reader's link. **The scope
+sentence is pulled from `VVFilters.emptyStateHTML`**, the same string rankings and the home page use,
+so the platform says one thing about its own boundaries , with its own copy as a fallback rather
+than an empty box.
+
+**AND IT NAMES THE CAUSE THE REPAIR QUEUE CREATES:** seasons split across two clubs are being merged
+into one card, so older links stop resolving. That is a growing population , §E puts it near 1,600
+cards , and this is what a reader will hit.
+
+| id | | |
+|---|---|---|
+| 127885 | never existed | not-found shown, scope line present, link out |
+| 999999999 | bogus | not-found shown |
+| 133095 | real (control) | **no** not-found, score 91 renders |
+
+**AND ONE CORRECTION TO WORK ALREADY REPORTED AS VERIFIED , THE SAME BAD FIXTURE VOIDED A CONTROL.**
+The P3 keeper suppression was reported with an "outfield control" of 127885, which does not exist,
+so `D.pos` read `CAM` off the demo default and the Proof panel measured 65px tall while showing
+blank rows. **The gate itself is correct** , re-run against a real CAM (133095, De Bruyne, rt 91)
+the Proof panel renders **Assists 0.64, Key passes 4.40, Shots on target 1.00** while the keeper's
+stays hidden at height 0. **The fix was right and the control was worthless. A control that cannot
+fail is not a control** , assert the fixture exists before trusting what it proves.
+

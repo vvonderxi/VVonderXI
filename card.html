@@ -51,6 +51,16 @@
   /* Disabled, NOT hidden, at either end , the control staying put is what tells you the
      list has an end. This is also why nothing wraps around. */
   .seqbtn:disabled{opacity:.28;cursor:default}
+  /* the not-found state , plain by design, see vvCardNotFound */
+  .cardnf{max-width:520px;margin:40px auto;padding:26px 24px;text-align:left;
+          border:1px dashed rgba(243,237,224,.22);border-radius:16px}
+  body.light .cardnf{border-color:rgba(28,27,26,.20)}
+  .cardnf b{display:block;font-family:'Archivo';font-weight:800;font-size:19px;margin-bottom:10px}
+  .cardnf p{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 10px}
+  .cardnf-scope:empty{display:none}
+  .cardnf-go{display:inline-block;margin-top:6px;font-family:'Archivo';font-weight:800;
+             font-size:13px;color:var(--pink-ink);text-decoration:none}
+  .cardnf-go:hover{text-decoration:underline}
   .seqpos{font-family:'Archivo',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.01em;
           color:var(--ink-soft);white-space:nowrap;min-width:64px;text-align:center}
   /* ── PEEK , the phone affordance, replacing the old "‹ swipe ›" text ──────────
@@ -1044,8 +1054,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260830b"></script>
-<script src="/vv-core.js?v=20260830b"></script>
+<script src="/vv-marks.js?v=20260830c"></script>
+<script src="/vv-core.js?v=20260830c"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1610,7 +1620,21 @@
     var sb=vvClient(); if(!sb) return;       // vv-core logs why (missing config or lib)
     try{ if(typeof loadTeamHonours==='function') loadTeamHonours(); }catch(e){}   // warm the session-once team cache in PARALLEL with the card row
     var res=await sb.from('player_card_mv').select('*').eq('card_id', id).single();
-    if(res.error || !res.data){ console.error('card load failed:', res.error && res.error.message); return; }
+    /*  A CARD THAT DOES NOT EXIST MUST SAY SO. It used to `return` here, which left the page
+        sitting on its emptied demo skeleton , blank score, blank sub-line, every panel in
+        place and nothing to explain any of it. Indistinguishable from a load that never
+        finished, which is the silent-failure family §C keeps recording: the reader is shown
+        a state that is not true and given no way to tell.
+        PGRST116 ("The result contains 0 rows") is the ordinary case and is NOT an error in
+        any useful sense , a stale bookmark, a shared link to a card that was merged away by
+        a data repair, or a typed id. It gets its own words. Anything else is a real fault
+        and says so instead of blaming the reader's link. */
+    if(res.error || !res.data){
+      var missing = !res.data || (res.error && res.error.code === 'PGRST116');
+      console.error('card load failed:', res.error && res.error.message);
+      vvCardNotFound(id, missing);
+      return;
+    }
     D=rowToCard(res.data);
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
@@ -2003,6 +2027,30 @@
     return r.data[0].card_id;
   }
   var SEQ_BUSY=false;
+  /*  THE NOT-FOUND STATE. Deliberately plain: it replaces the hero rather than sitting
+      beside it, because a half-rendered card next to an explanation reads as a broken card
+      rather than a missing one. The scope line is the SAME sentence rankings and the home
+      page use for an empty search , VVFilters.emptyStateHTML , so the platform says one
+      thing about its own boundaries. Falls back to its own copy if that is unreachable
+      rather than rendering an empty box. */
+  function vvCardNotFound(id, missing){
+    var host=document.getElementById('heroCard') || document.querySelector('.hero') || document.body;
+    var scope='';
+    try{
+      var d=document.createElement('div');
+      d.innerHTML=VVFilters.emptyStateHTML({score:{bands:[]}},{searching:true});
+      var el=d.querySelector('.vvf-es-scope'); if(el) scope=el.innerHTML;
+    }catch(e){}
+    if(!scope) scope='VVonderXI scores nine leagues from 2010 onward. If a player or a season is not in that set, no card exists for it.';
+    var head = missing ? 'That card is not here.' : 'This card could not be loaded.';
+    var body = missing
+      ? 'Nothing matches id <b>' + String(id).replace(/[^0-9]/g,'') + '</b>. A link can go stale when a season is corrected , seasons split across two clubs are being merged into one card, and the older link stops resolving.'
+      : 'Something went wrong reaching the seasons, so this is not an answer about whether the card exists. Try again.';
+    host.innerHTML = '<div class="cardnf"><b>' + head + '</b><p>' + body + '</p><p class="cardnf-scope">'
+      + (missing ? scope : '') + '</p><a class="cardnf-go" href="rankings.html">Browse the rankings</a></div>';
+    document.querySelectorAll('.vv-wait').forEach(function(el){ el.classList.remove('vv-wait'); });
+  }
+
   async function seqGo(delta){
     if(!SEQ || SEQ_BUSY) return;
     var idx = SEQ.index + delta;

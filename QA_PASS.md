@@ -5,16 +5,33 @@ written and never said what it checks. The handover calls it "the only gate". A 
 enumerated is not a gate. **The merge is a clean FAST-FORWARD, so there is no merge commit and
 no review step: whatever is wrong on the branch becomes production the instant it deploys.**
 
-**RE-MEASURED 2026-08-27, immediately before writing this** , the docs' figures were stale and
-the branch keeps moving:
+**RE-MEASURED 2026-08-30. THE BRANCH HAS MOVED AGAIN , THIS PASS NOW COVERS ROUGHLY 25% MORE
+SURFACE THAN WHEN IT WAS WRITTEN, AND THE FIGURES HAVE NOW GONE STALE TWICE:**
 
-| | measured now | recorded in §D |
-|---|---|---|
-| commits ahead of production | **599** | 517 |
-| production ahead (must be 0) | **0** | 0 |
-| files / lines | **186 files, +205,155 / -10,204** | 167, +201,009 / -9,571 |
+| | **measured 2026-08-30** | 2026-08-27 | recorded in §D |
+|---|---|---|---|
+| commits ahead of production | **639** | 599 | 517 |
+| production ahead (must be 0) | **0** | 0 | 0 |
+| files | **208** | 186 | 167 |
+| lines | **+208,979 / -10,955** | +205,155 / -10,204 | +201,009 / -9,571 |
 
-**RE-MEASURE AGAIN BEFORE RUNNING THIS.** If the figures have moved, the surface has moved.
+Merge-base `5bdbadb`. Local **and** `origin/vvonderxi_BIGGER` are both exactly that commit, so
+production is a strict ancestor: clean fast-forward, zero conflicts.
+
+**RE-MEASURE AGAIN BEFORE RUNNING THIS, AND DO NOT TREAT THAT AS A FORMALITY , IT HAS BEEN WRONG
+EVERY TIME IT HAS BEEN CHECKED.** 517 -> 599 -> 639 in three measurements. If the figures have moved,
+the surface has moved.
+
+**AND THE GATE HAS A PRECONDITION THAT DID NOT EXIST WHEN THIS WAS WRITTEN: PRODUCTION'S OWN BUILD
+IS ERRORING ON VERCEL (2026-08-30).** `vvonderxi_BIGGER` has not changed since 2026-06-15, so the
+cause is outside the repo , the leading candidates are its uncapped `@supabase/supabase-js": "^2.39.0"`
+(a caret range resolves to a new version on every build, so an unchanged repo does NOT produce an
+unchanged build) and its legacy `builds` array pinning `@vercel/static` / `@vercel/node`. **Both are
+fixed by the merge. `engines: { node: "24.x" }` is NOT , it is identical on both branches, so if
+that is the cause the merge inherits it.** The live site is the last GOOD deployment; a failing
+build does not take it down, it means it can no longer be redeployed.
+**READ THE FIRST ERROR LINE IN THE BUILD LOG BEFORE MERGING.** Merging into a project that cannot
+deploy means debugging 639 commits of change and a platform failure at the same time.
 
 ## THE RULE THAT GOVERNS EVERY ITEM
 
@@ -400,7 +417,7 @@ environment, which is itself the reason they are listed.
   - **A LOW `card_id` IDENTIFIED THE BLOCK AND IS NOT A TEST FOR AN INDIVIDUAL ROW.** It was the right heuristic for FINDING it and is worthless for JUDGING one: two thirds of the survivors are clean. **Judge on provider identity and on club.**
 
 ### C10. The final read of the diff
-- **Check:** 599 commits and 186 files land atomically.
+- **Check:** 639 commits and 208 files land atomically.
 - **How:** `git fetch origin` in Terminal C, confirm `origin/vvonderxi_BIGGER` is still **0 ahead**, then read the diff stat.
 - **Pass:** 0 ahead, and the figures match what this pass was scoped against. **The 0-ahead count is only as fresh as the last fetch.**
 
