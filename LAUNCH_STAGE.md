@@ -341,7 +341,7 @@ keeper who misses the minutes or shots gates, and §E records `position` as unre
 2025/26 block, so either field alone would miss cards. **The copy follows the trajectory's existing
 mismatch line rather than inventing a second vocabulary for the same idea.**
 
-## P4. [VERIFIED 2026-08-30] THE COMPARE SHARE POSTER , ALL THREE COMPLAINTS CONFIRMED, AND THE LAYOUT IS WORSE THAN THE REPORT
+## P4. [DONE 2026-08-30] THE COMPARE SHARE POSTER , OPTION B SHIPPED, PLUS A RIM BUG THE DEMO EXPOSED
 
 **THE EARLIER "cannot be captured without an AI call" NOTE WAS WRONG AND IS CORRECTED HERE.** That
 diagnosis said compare keeps its card objects in closure scope. It does not , `CMP_A` and `CMP_B`
@@ -435,3 +435,39 @@ the Proof panel renders **Assists 0.64, Key passes 4.40, Shots on target 1.00** 
 stays hidden at height 0. **The fix was right and the control was worthless. A control that cannot
 fail is not a control** , assert the fixture exists before trusting what it proves.
 
+
+
+## P4 RESULT , OPTION B, AND THE RIM FIX THAT CAME WITH IT
+
+**Option B chosen: type unified plus real separation between the cards.** `.sf-score` and `.sf-cap`
+follow the card into **Barlow Condensed** (the card face is Barlow Condensed throughout, measured);
+`.sf-tag` and `.sf-brand` are **Archivo**, the platform's label voice.
+
+**THE GOLD WINNER RIM WAS NOT CENTRED, AND THE CAUSE WAS THE CARD, NOT THE RIM.** The slot is
+`--cw` (264px) and so is the wrapper's content box, but the card renders at **242.9px** because
+`.vvcard` carries `max-width:92%` , the clamp §C records as the reason the rendered ratio is 1.518
+and not 1.397. **A block child with a max-width and no auto margins stays LEFT-aligned**, so the card
+sat against the rim on the left with 21.1px of slack on the right (gap 6.0 / 27.1). `.sf-slot`
+already centred the WRAPPER, which is exactly why this looked like a rim problem.
+**Fix: `display:flex; justify-content:center` on `.sf-slotcard`. DO NOT nudge the border, and DO NOT
+remove the 92% clamp** , it is load-bearing for the card's geometry everywhere else.
+
+**VERIFIED IN CAPTURED PIXELS, NOT THE DOM** , a dependency-free PNG decoder reading the gold rim and
+the card edge at four heights: **inset L=16 R=17, card centre 183.0 against rim centre 183.5, offset
+0.5px**, identical on every row. Was 21.1px.
+
+**AND THE FIX EXPOSED THAT THE OLD GAP WAS NEVER REAL.** The 30px between card faces WAS that
+uncentred slack , spacing produced by the bug. Centring reclaimed it and the true gap collapsed to
+about 19px, so the gap constant went `14 * S` -> `34 * S`, measured **44px** between faces.
+
+**`VV_SHARE_CSS` IS SHARED, SO THE SINGLE-CARD POSTER WAS CAPTURED TOO , ALL FOUR FORMATS, BOTH
+THEMES, EIGHT CAPTURES.** No horizontal overflow, no scroll overflow, no card-caption collision in
+any of them. **The §C constraint that matters held: the igf/igs tagline occupies 93.8% of the usable
+width against the 94% recorded on 2026-08-27** , the type change did not eat the little room that
+block has left. **That bottom block is still effectively full and nothing may be added to it.**
+
+**AND THE §C BACKTICK RULE BIT DURING THIS CHANGE.** A CSS comment written into `VV_SHARE_CSS` , a
+template literal , contained backticks around `.vvcard` and a property name. `node --check` passes
+that and leaves the module silently half-defined. **The `require`-and-assert-the-export guard caught
+it immediately.** Keep using it; a syntax check proves a file parses, never that it means what you
+wrote.

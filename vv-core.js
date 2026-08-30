@@ -4147,7 +4147,7 @@ body.light .vvload{color:#1A1917}
    gone; the letter rhythm now comes from letter-spacing alone, the way it does inside
    ONDERXI itself. Do not reintroduce a gap here to "separate" the two halves: they are not
    two halves, they are one word set at two sizes. */
-.sf-brand{position:absolute;display:flex;align-items:baseline;gap:0;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92}
+.sf-brand{position:absolute;display:flex;align-items:baseline;gap:0;font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92}
 .sf-vv{letter-spacing:-0.06em}
 .sf-vv .a{color:currentColor}.sf-vv .b{color:var(--emph)}
 /* The caption's own wordmark , same two-tone treatment as the brand, see shCapHTML. */
@@ -4163,11 +4163,11 @@ body.light .vvload{color:#1A1917}
     rule rather than being exempted , an exemption is just a defect waiting for a longer
     tagline.  */
 .sf-capwrap{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.42em;text-align:center}
-.sf-cap{color:var(--quiet);font-weight:600;letter-spacing:.06em;line-height:1.3;text-wrap:balance}
+.sf-cap{font-family:'Barlow Condensed',sans-serif;color:var(--quiet);font-weight:600;letter-spacing:.02em;line-height:1.3;text-wrap:balance}
 /* The tagline now carries the BRAND, since the caption above it no longer does. So it is
    not purely the quiet line any more: the wordmark sits upright and solid, and only the
    phrase after it is the italic that matches the sheet's own .sb-foot. */
-.sf-tag{color:var(--quiet);font-weight:700;letter-spacing:.04em;line-height:1.3;text-wrap:balance}
+.sf-tag{font-family:'Archivo',sans-serif;color:var(--quiet);font-weight:700;letter-spacing:.04em;line-height:1.3;text-wrap:balance}
 .sf-tag i{font-style:italic;font-weight:600;opacity:.82}
 .sf-em{color:var(--emph);font-style:normal;font-weight:800}
 .sf-tag .sf-vv2{font-weight:800;letter-spacing:.02em}
@@ -4180,9 +4180,26 @@ body.light .vvload{color:#1A1917}
    invisible, not display:none , removing it would let the two cards sit at different heights. */
 .sf-vtag-ghost{visibility:hidden}
 .sf-slot{display:flex;flex-direction:column;align-items:center}
-.sf-slotcard{border-style:solid;border-color:transparent;box-sizing:content-box}
+/*  THE WINNER'S GOLD RIM WAS NOT CENTRED ON ITS CARD, AND THE CAUSE IS NOT THE RIM.
+    Measured: the slot is --cw (264px), the wrapper's content box is also 264, but the card
+    inside renders at 242.9 because .vvcard carries max-width:92% , the same clamp §C
+    records as the reason the rendered card ratio is 1.518 and not 1.397. A block child with a
+    max-width and no auto margins stays LEFT-aligned, so the card sat hard against the rim on
+    the left with 21.1px of slack on the right: gap 6.0 left, 27.1 right.
+    .sf-slot already centres the WRAPPER in the slot, which is why this looked like a rim
+    problem rather than a card problem. Centring the CARD inside the wrapper is the fix.
+    DO NOT "FIX" THIS BY NUDGING THE BORDER OR BY REMOVING THE 92% CLAMP , the clamp is
+    load-bearing for the card's own geometry everywhere else.  */
+.sf-slotcard{border-style:solid;border-color:transparent;box-sizing:content-box;
+             display:flex;justify-content:center}
 .sf-slotcard.sf-win{border-color:#E8B84B;background:rgba(232,184,75,0.10)}
-.sf-score{font-family:'Archivo',Impact,sans-serif;font-weight:900;color:var(--emph);line-height:1}
+/*  THE POSTER SPEAKS THE CARD'S TYPE LANGUAGE. Measured off a real card face: every element
+    on it is Barlow Condensed. The poster set its score readout in Archivo 900 and its caption
+    and tagline in Inter, so the SAME two numbers appeared twice in one image in two different
+    typefaces, and the bottom third was set in a face the card never uses. Numbers and caption
+    follow the card; the verdict tag and the wordmark stay Archivo, which is the platform's
+    label voice.  */
+.sf-score{font-family:'Barlow Condensed',Impact,sans-serif;font-weight:800;color:var(--emph);line-height:1}
 .sf-stage{position:fixed;left:-20000px;top:0;z-index:-1;pointer-events:none}
 .vvtoast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);z-index:9999;
          /* width:max-content is load-bearing. A fixed box at left:50% with no width shrinks to
@@ -4320,7 +4337,12 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
         'px;border-width:' + (3 * S) + 'px;border-radius:' + (cw * 0.09) + 'px">' +
         buildCard(card, cw) + '</div></div>';
     };
-    const pair = '<div style="display:flex;gap:' + (14 * S) + 'px;position:relative;z-index:1;align-items:flex-start">' +
+    /*  GAP: 34 * S, NOT 14. The old 14 looked like 30px only because the winner's rim carried
+        21px of uncentred slack on one side , spacing produced by a bug. Centring the card
+        reclaims that slack and the true gap collapsed to about 19px, which at the 600px X
+        actually renders is under 10px between two busy card faces. 34 restores real
+        separation that does not depend on which side happens to be the winner.  */
+    const pair = '<div style="display:flex;gap:' + (34 * S) + 'px;position:relative;z-index:1;align-items:flex-start">' +
       slot(a, 'A') + slot(b, 'B') + '</div>';
     const last = n => shEsc(String(n || '').split(' ').slice(-1)[0]);
     const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
