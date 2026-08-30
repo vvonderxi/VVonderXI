@@ -307,7 +307,7 @@
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260829m"></script>
+<script src="/vv-core.js?v=20260830a"></script>
 <script>
   // rotating placeholder examples
   var ex=['Try "Messi vs Jude Bellingham"','Search "Thierry Henry"','Try "Haaland vs Mbapp\u00e9"','Search "Rodri 23/24"','Try "Bellingham vs Lamine Yamal"','Search "Van Dijk"'];
@@ -341,6 +341,46 @@
 (function(){
   var C = window.VVCore, F = window.VVFilters;
   var P = window.VV_PUBLIC;
+
+  /*  THE DEPENDENCY GATE , AND IT EXISTS BECAUSE THE ABSENCE OF IT WAS A REAL BUG.
+      This module used to open with `window.supabase.createClient(...)`. If ANY of its
+      three dependencies was missing, that line threw at module load, every listener
+      below it was never attached, and the search field silently did nothing , while
+      the page rendered perfectly, wordmark and pills and all. There was no way to tell
+      the failure apart from "the feature was never built".
+
+      TWO WAYS TO REACH IT, BOTH REPRODUCED IN A REAL BROWSER (2026-08-30):
+        , opening index.html off disk with file:// , `/vv-core.js` resolves to
+          file:///vv-core.js and 404s, so VVCore and VVFilters are undefined.
+        , an ad blocker, corporate proxy or offline machine blocking the
+          jsdelivr CDN , VVCore loads, `window.supabase` does not.
+
+      SO: DEGRADE TO THE ROUTING THAT EXISTED BEFORE LIVE SEARCH, rather than dying.
+      The Search button and Enter still take the visitor to rankings or compare, which
+      is exactly what this page did before , a worse experience, not a broken one. And
+      say so once in the console, naming the missing piece, so the next person does not
+      have to bisect it. */
+  var missing = [];
+  if(typeof C === 'undefined' || !C || !C.tokenAndFilter) missing.push('VVCore (vv-core.js)');
+  if(typeof F === 'undefined' || !F || !F.emptyStateHTML) missing.push('VVFilters (vv-core.js)');
+  if(!window.supabase || !window.supabase.createClient) missing.push('supabase-js (CDN)');
+  if(!P || !P.SUPABASE_URL) missing.push('VV_PUBLIC config');
+
+  if(missing.length){
+    console.warn('[vv] live search is OFF , missing: ' + missing.join(', ')
+      + '. The search box still routes to Rankings/Compare. If this is a file:// URL, '
+      + 'serve the folder over http instead; if the CDN is blocked, that is the cause.');
+    var qi = document.getElementById('q');
+    var vs = function(q){ return /\s+vs?\s+/i.test(q); };
+    var route = function(){
+      var q = (qi.value || '').trim(); if(!q) return;
+      location.href = (vs(q) ? 'compare.html' : 'rankings.html') + '?q=' + encodeURIComponent(q);
+    };
+    document.querySelector('.search .go').onclick = route;
+    qi.addEventListener('keydown', function(e){ if(e.key === 'Enter') route(); });
+    return;
+  }
+
   var sb = window.supabase.createClient(P.SUPABASE_URL, P.SUPABASE_ANON_KEY);
 
   var input = document.getElementById('q');
