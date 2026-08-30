@@ -239,7 +239,7 @@ keeps the measurement. **Re-verify against the live domain before launch day , t
 report, the check is what is recorded** , two of these are not what they were reported as, and
 one is already fixed.
 
-## P1. THE HOME-PAGE SUGGESTIONS NAME PLAYERS THAT RETURN NOTHING , TWO OF THEM, NOT ONE (verified)
+## P1. [DONE 2026-08-30] THE HOME-PAGE SUGGESTIONS NAMED PLAYERS THAT RETURN NOTHING , TWO OF THEM, NOT ONE
 
 `index.html:313`, the rotating placeholder array. Queried against `player_card_mv`:
 
@@ -265,7 +265,15 @@ work is replacing the two dead names, not adding a form.
 that array must be checked against `player_card_mv` first, in the abbreviated form the column
 actually stores.
 
-## P2. CARD SWIPE , THE HANDLER IS **NOT** ONE-DIRECTIONAL. THE REPORT AND THE CODE DISAGREE (verified)
+**FIXED:** `Thierry Henry` -> `Mohamed Salah`, `Messi vs Jude Bellingham` -> `Messi vs Bellingham`.
+All six re-verified through the real path (`vvParseSearch` + `tokenAndFilter`), both sides of every
+`vs`. **THE STATIC `placeholder` ATTRIBUTE ON THE INPUT CARRIED THE DEAD NAME TOO** and was fixed in
+the same change , it is what every visitor sees before the rotation starts, so fixing only the array
+would have left the worst instance in place. **AND "Henry" IS ITSELF A TRAP: it resolves to
+A. Robertson**, so a replacement has to be checked for resolving to the player you MEANT, not merely
+for returning rows.
+
+## P2. [CLOSED 2026-08-30 , NOT A BUG] CARD SWIPE-BACK WORKS. IT IS A CORRECT NO-OP AT INDEX 0
 
 `card.html:2072` reads `seqGo(dx < 0 ? 1 : -1)` , swipe left forward, swipe right back , and
 `seqGo` accepts a negative delta. **There is no forward-only branch to find.** Two explanations fit
@@ -277,11 +285,30 @@ the symptom and they are cheap to tell apart:
 - **`SEQ` is absent**, in which case `touchstart` sets `tracking=false` and NEITHER direction works.
   Lucas reports forward working, so this one is probably not it.
 
-**THE TEN-SECOND TEST: read `SEQ.index` in the console on the card he swipes from.** If it is 0,
-there is no bug, there is a missing affordance , the card should say it is at the start rather than
-silently ignoring the gesture. **Do not rewrite the handler before running that test.**
+**MEASURED WITH REAL TOUCH EVENTS, NOT BY READING THE CODE.** Opened rankings at 390x844, clicked
+the FOURTH row to land at `SEQ.index` 3, then dispatched real `Input.dispatchTouchEvent` swipes:
 
-## P3. THE KEEPER CARD STILL SHOWS THREE OUTFIELD PANELS , AND `renderProof` HAS NO KEEPER GATE AT ALL (verified)
+```
+  left : index 3 -> 4   card 142695 -> 143526   MOVED
+  right: index 4 -> 3   card 143526 -> 142695   MOVED
+  right: index 3 -> 2   card 142695 -> 141999   MOVED
+  right: index 2 -> 1   card 141999 -> 141853   MOVED
+  right: index 1 -> 0   card 141853 -> 143372   MOVED
+  right: index 0 -> 0   card 143372 -> 143372   no move
+```
+
+**Swipe-back works in both directions and correctly stops at the start. CLOSED.** The report was
+almost certainly made from the first card of a list, or from a card reached without a sequence at
+all (a share link), where `touchstart` sets `tracking=false` and NEITHER direction fires.
+
+**THE ONE REAL RESIDUE IS AN AFFORDANCE, NOT A DEFECT, AND IT IS NOT BEING BUILT.** On desktop the
+arrows carry `.seqbtn:disabled` at `opacity:.28`, so the end of the list is visible. **On phone the
+chevrons are deliberately hidden , the gesture is the control , so at index 0 a back-swipe is
+silently ignored with nothing to say why.** That is what makes a correct no-op read as a broken
+feature. If it is ever addressed, it belongs with the `.seqpeek` affordance, which already shows the
+NEXT card and has no backward twin.
+
+## P3. [DONE 2026-08-30, SUPPRESSION HALF] THE KEEPER CARD SHOWED OUTFIELD PANELS , `renderProof` HAD NO KEEPER GATE AT ALL
 
 **Confirmed in the tree: `grep` for a keeper gate inside `renderProof` returns ZERO.** It picks its
 dimension with `PROOF_DIMS[POOL_DIM[D.pos] || 'create']`, so a goalkeeper falls through to a
@@ -299,6 +326,20 @@ are NOT gated.**
 - **POST-MERGE: the keeper-specific replacement** , what Proof and head-to-head should SAY about a
   keeper, and splitting Profile properly when both sides are keepers. Design work, demos required,
   logged in `POST_LAUNCH.md`.
+
+**SUPPRESSION SHIPPED AND RENDER-VERIFIED:**
+
+| surface | keeper | outfield control |
+|---|---|---|
+| `card.html` Proof | `hidden`, `display:none`, height **0** | visible, height **65** |
+| `compare` head-to-head, keeper v outfield | 1 row, **0 bars**, mismatch copy | , |
+| `compare` head-to-head, keeper v keeper | 1 row, **0 bars**, both-keeper copy | , |
+| `compare` head-to-head, outfield v outfield | , | **5 rows, 4 bars** |
+
+**BOTH GATES READ `pos === 'GK' || keeper`, NOT `pos` ALONE** , `keeperScore()` returns null for a
+keeper who misses the minutes or shots gates, and §E records `position` as unreliable on the corrupt
+2025/26 block, so either field alone would miss cards. **The copy follows the trajectory's existing
+mismatch line rather than inventing a second vocabulary for the same idea.**
 
 ## P4. THE COMPARE SHARE POSTER , REPORTED, **NOT VERIFIED**, AND THE REASON MATTERS
 
@@ -320,3 +361,15 @@ panels render from cache with no AI call, then `vvLedgerSpec()` returns a real s
 `vvRenderShareImage(spec,{format:'x'})` yields the data URL. **Read the PNG back and measure the
 gap and the fonts in the captured pixels, not in the DOM.** Judge it at 600px wide , §C records
 that X renders a shared image at roughly half the frame.
+
+## P5. [FOUND 2026-08-30, NOT CHASED] CARD 127885 LOADS ON `card.html` AND NOT IN COMPARE
+
+Reproduced three times while testing something else. `card.html?id=127885` loads fine and renders as
+a CAM. `compare.html?a=127885&...` leaves **`CMP_A` undefined** after 11 seconds, so the whole
+downstream chain never runs , the head-to-head box stays empty and `vvLedgerSpec()` returns null.
+**It is what blocked the share-poster capture in P4.**
+
+**NOT INVESTIGATED , logged so the next session does not lose it, and so a failure to reproduce a
+compare bug on this card is understood as this, rather than as the bug being absent.** Check whether
+it is this card specifically or a race in the two-sided load, and whether `?b=127885` fails the same
+way (it did in one of the three).

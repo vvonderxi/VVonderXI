@@ -1044,8 +1044,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260830a"></script>
-<script src="/vv-core.js?v=20260830a"></script>
+<script src="/vv-marks.js?v=20260830b"></script>
+<script src="/vv-core.js?v=20260830b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1316,6 +1316,24 @@
   var POOL_DIM = { ST:'goal', Winger:'goal', CAM:'create', CM:'create', CDM:'def', FB:'def', CB:'def', GK:'def' };
   function renderProof(D){
     var layer=document.getElementById('proofLayer'); if(!layer||!D) return;
+
+    /*  A GOALKEEPER GETS NO PROOF PANEL, BECAUSE THERE IS NO HONEST ONE TO SHOW.
+        This function had NO keeper gate at all, so `POOL_DIM[D.pos] || 'create'` fell a
+        goalkeeper through to the CREATION dimension: a keeper card published per-90 rates
+        for chances created and passes, over a denominator that means nothing for the job
+        he does. That is the platform making a claim it cannot support, on the one position
+        where it already publishes a limitation , §C's rule is disclose, never fabricate.
+        SUPPRESSED, NOT REPLACED. What a keeper's proof SHOULD say is real design work and
+        is queued in POST_LAUNCH.md; removing a false claim does not wait for it. The
+        keeper card is not left empty either , the Profile layer already carries
+        VVCore.keeperPanelHTML, which is the honest version of this panel.
+        GATED ON THE SAME `D.keeper` THE REST OF THE CARD USES, not on D.pos: keeperScore()
+        returns null for a keeper who misses the minutes or shots gates, and the position
+        field is the one §E records as unreliable on the corrupt 2025/26 block. */
+    var isKeeper = (D.pos === 'GK') || !!D.keeper;
+    layer.hidden = isKeeper;
+    if(isKeeper) return;
+
     var dim=PROOF_DIMS[POOL_DIM[D.pos]||'create'];
     var mins=(D.minutes!=null && D.minutes>0) ? D.minutes : null;
     var rows=layer.querySelectorAll('.proofrow');

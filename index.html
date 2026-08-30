@@ -274,7 +274,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         <input id="q" type="text" autocomplete="off" role="combobox" aria-expanded="false"
                aria-controls="srPanel" aria-autocomplete="list"
-               placeholder='Try "Messi vs Jude Bellingham"'>
+               placeholder='Try "Messi vs Bellingham"'>
         <button class="go">Search</button>
       </div>
       <div class="srpanel" id="srPanel" role="listbox" aria-label="Search results"></div>
@@ -307,10 +307,21 @@
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260830a"></script>
+<script src="/vv-core.js?v=20260830b"></script>
 <script>
   // rotating placeholder examples
-  var ex=['Try "Messi vs Jude Bellingham"','Search "Thierry Henry"','Try "Haaland vs Mbapp\u00e9"','Search "Rodri 23/24"','Try "Bellingham vs Lamine Yamal"','Search "Van Dijk"'];
+  /*  EVERY SUGGESTION IS A PROMISE THE SEARCH HAS TO HONOUR, AND TWO OF THESE WERE NOT.
+      "Thierry Henry" and "Jude Bellingham" both returned ZERO against player_card_mv:
+      `player_name` stores the abbreviated form ("J. Bellingham") and Henry is not in the
+      dataset at all. Harmless while the box only routed away; now that it searches live,
+      the front door was advertising queries its own search answers with "No seasons match".
+      CHECK ANY NEW NAME AGAINST player_card_mv IN THE ABBREVIATED FORM THE COLUMN STORES,
+      and check it resolves to the player you MEANT , "Henry" returns A. Robertson, which
+      is the same trap wearing a different name.
+      The mix is deliberate and already complete: three `vs` examples teach that compares
+      are searchable, and "Rodri 23/24" teaches seasons. Verified 2026-08-30, all six
+      resolve on both sides through vvParseSearch + tokenAndFilter. */
+  var ex=['Try "Messi vs Bellingham"','Search "Mohamed Salah"','Try "Haaland vs Mbapp\u00e9"','Search "Rodri 23/24"','Try "Bellingham vs Lamine Yamal"','Search "Van Dijk"'];
   var qi=document.getElementById('q'),k=0;
   setInterval(function(){
     if(document.activeElement===qi||qi.value)return;

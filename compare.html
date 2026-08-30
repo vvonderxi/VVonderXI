@@ -1007,8 +1007,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260830a"></script>
-<script src="/vv-core.js?v=20260830a"></script>
+<script src="/vv-marks.js?v=20260830b"></script>
+<script src="/vv-core.js?v=20260830b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1711,6 +1711,29 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
   function drawH2H(){
     const box=document.getElementById('h2h'); if(!box) return;
+
+    /*  NO HEAD-TO-HEAD WHEN EITHER SIDE IS A GOALKEEPER.
+        DIMS are the five outfield dimensions and A_RAW/B_RAW are their percentiles. For a
+        keeper those axes are NOT LOW, THEY ARE NOT MEASURED , the same distinction the
+        radar already honours on card.html , so a bar chart of them awards wins on evidence
+        that does not exist. Worse than a blank: it reads as a keeper losing on creation.
+        THE PRECEDENT IS THE TRAJECTORY, WHICH ALREADY DOES THIS. When one side is a keeper
+        it swaps its copy and adds the mismatch line; this says the same thing in the same
+        voice rather than inventing a second vocabulary for one comparison.
+        SUPPRESSED, NOT REPLACED , what a keeper head-to-head should SAY is design work,
+        queued in POST_LAUNCH.md. Removing a false claim does not wait for it. */
+    const aGK = !!(CMP_A && (CMP_A.pos === 'GK' || CMP_A.keeper));
+    const bGK = !!(CMP_B && (CMP_B.pos === 'GK' || CMP_B.keeper));
+    if(aGK || bGK){
+      const both = aGK && bGK;
+      box.innerHTML = '<div class="h2hrow h2hnr"><div class="h2hbar h2hbar-nr">'
+        + (both
+            ? 'These five dimensions are not measured for goalkeepers, so there is nothing here to compare. The save rate above is the figure that separates them.'
+            : 'One of these is a goalkeeper. The five dimensions are not measured for keepers, so a head-to-head on them would compare evidence only one side has.')
+        + '</div></div>';
+      return;
+    }
+
     let h='';
     for(let i=0;i<DIMS.length;i++){
       const a=A_RAW[i], b=B_RAW[i];
