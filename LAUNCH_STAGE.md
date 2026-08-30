@@ -360,12 +360,20 @@ renders the SAME two numbers in **Archivo w900 17.55px**. The year (`yr`) and th
 Barlow Condensed. So the poster disagrees with the card it is a poster of, on the one element the
 whole image is about.
 
-**(2) THE CARDS DO NOT TOUCH , THEY ARE 30px APART. THE REAL DEFECT IS THE COMPOSITION.**
-Measured: card A spans x 52 to 295, card B spans 325 to 568, **gap 30px**, in a 1200px frame. So the
-literal complaint is not reproducible, and fixing "the gap" would fix nothing. **What is actually
-wrong is that both cards sit inside the LEFT 47% of the frame and the entire right half is empty
-except an orphaned score readout floating in dead space.** The cluster reads as cramped because of
-what is beside it, not because of what is between the cards.
+**(2) CORRECTED 2026-08-30 , "THE RIGHT HALF IS EMPTY" WAS MY OWN BUG, NOT THE POSTER'S.**
+The first render passed a synthetic spec using `tag:` and `line:`. **The builder reads
+`spec.verdictTag` and `spec.verdictLine`.** Both fields were therefore empty, which blanked the
+verdict tag above the winner AND the whole verdict paragraph in the right column , and I reported the
+resulting hole as a layout defect, in bold, as "worse than the report".
+**Rendered with the CORRECT field names the right column is properly occupied**: the verdict tag sits
+above the winner's card, the verdict prose fills 634 to 1042 of a 1200px frame, and the score readout
+sits under its own rule. **The two-column composition works.**
+**WHAT IS REAL: the 30px gap is tight, and it is tighter than it measures.** The winner carries a gold
+rim that eats into it, so the visual separation is less than 30px , at 600px, the size X renders,
+that is under 15px between two busy card faces.
+**THE LESSON IS THE ONE THIS FILE KEEPS RECORDING: a synthetic fixture that is silently wrong produces
+a confident finding about the wrong thing.** Same family as the 127885 control in P5, in the same
+session. **Assert the fixture populated what you think it populated before measuring what it renders.**
 
 **(3) THE BOTTOM BLOCK AND THE WORDMARK ARE ENTIRELY INTER , CONFIRMED.**
 `.sf-cap` Inter w600, `.sf-tag` Inter w700 italic, `.sf-brand` Inter w800. The product's card
