@@ -639,3 +639,32 @@ which is the only tidy way to remove a scheduled job.**
 **The merge is a fast-forward, so the pages and the functions are replaced in the same instant** ,
 there is no window in which the old page exists without its endpoint. **If the merge is ever split
 or partially reverted, restore these three or production's home page will 404 on them.**
+
+---
+
+## Q6. THE KEEPER TRAJECTORY AS POOL PERCENTILE , A QUESTION ABOUT WHAT THE CHART MEASURES (logged 2026-08-31)
+
+**Direction C from the 2026-08-31 demo, deliberately NOT built.** Direction B shipped instead:
+small multiples, one lane per keeper, one shared pair of scales.
+
+**WHAT C WOULD DO:** plot each season's POSITION IN THE KEEPER POOL rather than its raw save rate.
+The y-axis becomes "where he stood", 0 to 100. **The pool median becomes the halfway line by
+construction, so the reference needs no label at all** , which dissolves, rather than works around,
+the label-collision problem that has now been fixed twice in this section.
+
+**WHY IT IS NOT A LAYOUT CHOICE.** It changes what the chart is ABOUT: from *how well he kept goal*
+to *where he ranked among keepers*. Those are different claims and they are not interchangeable.
+**A percentile hides how tight the pool is** , the ladder runs 0.6721 at the 40th to 0.6928 at the
+55th, so fifteen percentile places can be two points of save rate. A reader seeing a line climb from
+the 40th to the 55th would infer a bigger change than actually occurred.
+
+**AND IT WOULD HAVE TO MATCH THE CARD.** `keeperTrajectoryHTML` (single keeper, card + mixed
+compare pairs) and `keeperTrajectoryPairHTML` (two keepers, compare) are separate renderers of the
+same idea. **If compare plots percentile and the card plots save rate, the same keeper's season is
+two different heights on two surfaces** , which is the exact fault B was built to remove. So C is
+all-or-nothing across both.
+
+**NOTE THE ADJACENCY: Between The Posts ALREADY uses the percentile axis**, and its sentence exists
+to make that axis sayable. So the platform currently says both things in one section , percentile
+on the bar, save rate on the trajectory. **That is defensible (a position, then a history) and it is
+also the strongest argument for C.** Decide the pair together, not the chart alone.

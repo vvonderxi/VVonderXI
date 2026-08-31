@@ -861,17 +861,47 @@
 /*  BETWEEN THE POSTS , compare's keeper section. Colours are TOKENS ONLY: this renders on
     .vsect, which is a dark gradient in dark mode and cream in light, so nothing here may
     assume a ground the way the gkp- panel does. */
+/*  DIRECTION B , small multiples on one shared pair of scales. Lanes, not an overlay:
+    at 346px an overlaid 3-season line is three points crushed under the other player's.
+    Colours are the A/B identity, matching the names directly above each lane. */
+/*  THE PAIR IS CAPPED, NOT FULL-BLEED. The viewBox is 360x104, so at a full 1180px each lane
+    renders 341px tall , two of those is a wall of chart for a line with ten points. Capping the
+    width at 640 gives ~185px lanes at desktop and the full width on a phone, with no distortion
+    (preserveAspectRatio stays at its default) and no letterboxing, because the cap is on the
+    BOX rather than on the height. */
+.gkt-pair{display:flex;flex-direction:column;gap:10px;max-width:640px;
+  --gkt-ink:var(--vs-muted,var(--ink-soft));--gkt-band:rgba(128,128,128,.10);--gkt-absent-line:var(--vs-muted,var(--ink-soft))}
+.gkt-lane{color:var(--gkt-ink)}
+.gkt-lane.gkt-a{color:var(--pink-ink)}
+.gkt-lane.gkt-b{color:var(--vv-blue,#3B6FB0)}
+body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
+.gkt-lanename{font-family:'Inter';font-weight:700;font-size:11px;color:currentColor;margin-bottom:1px}
+.gkt-svg{display:block;width:100%;height:auto}
+
+.gkt-say{font-size:12.5px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:10px}
+.gkt-say b{color:inherit;font-weight:700}
 .gkv-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--vs-muted,var(--ink-soft));margin-bottom:6px}
 .gkv-scale{position:relative;height:80px;margin-top:2px}
 .gkv-axis{position:absolute;left:0;right:0;top:52px;height:5px;border-radius:99px;background:currentColor;opacity:.14}
 .gkv-seg{position:absolute;top:52px;height:5px;border-radius:99px;background:var(--pink-ink)}
 .gkv-rung{position:absolute;top:46px;width:1px;height:17px;background:currentColor;opacity:.22}
-.gkv-rlab{position:absolute;top:66px;transform:translateX(-50%);font-size:9px;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));opacity:.75;white-space:nowrap}
+/*  RUNG LABELS AND ENDPOINT LABELS ARE ONE TYPE TREATMENT, DELIBERATELY IDENTICAL.
+    9px, 400, full --vs-muted with NO opacity dilution. They were 9px/.75 and 9.5px/.8, close
+    enough to look like a mistake and faint enough that neither read cleanly. The rungs and the
+    pins carry the information and the endpoints only frame the axis, so the endpoints must not
+    be heavier , parity is the target, not emphasis. Legibility comes from dropping the opacity
+    multiplier, not from size or weight. */
+.gkv-rlab{position:absolute;top:66px;transform:translateX(-50%);font-size:9px;font-weight:400;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));white-space:nowrap}
 .gkv-pin{position:absolute;top:45px;width:3px;height:19px;border-radius:2px;background:var(--pink-ink);transform:translateX(-1.5px)}
 .gkv-lab{position:absolute;top:6px;transform:translateX(-50%);text-align:center;white-space:nowrap}
 .gkv-v{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:29px;line-height:.92;color:var(--pink-ink)}
 .gkv-n{display:block;font-family:'Inter';font-weight:700;font-size:11px;color:var(--vs-muted,var(--ink-soft))}
-.gkv-ends{display:flex;justify-content:space-between;font-size:9.5px;color:var(--vs-muted,var(--ink-soft));opacity:.8;margin-top:-6px}
+/*  THE ENDPOINTS GET THEIR OWN ROW. They shared one with the rung labels via margin-top:-6px,
+    and at 346px "90th" sits at 90% of a short axis while "strongest" is flush right , measured
+    27px of horizontal overlap, on lines close enough to read as a collision. A row of their own
+    cannot collide at either end regardless of axis width or label length, which is the property
+    worth having; nudging would only move the width at which it breaks. */
+.gkv-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:400;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));margin-top:6px}
 .gkv-say{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:14px}
 .gkv-figs{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}
 .gkv-figs div{font-size:10.5px;letter-spacing:.04em;color:var(--vs-muted,var(--ink-soft));opacity:.85}
@@ -1194,6 +1224,110 @@
     const sf = r.saves + r.goals_conceded;
     return sf > 0 ? r.saves / sf : null;
   }
+  /*  BOTH KEEPERS ON ONE SHARED PAIR OF SCALES , DIRECTION B, "small multiples".
+      keeperTrajectoryHTML renders ONE keeper, and compare called it twice. Two independent
+      calls mean two independent axes, which is exactly the fault: Neuer ran 58-81% and Caprile
+      58-78%, so the SAME save rate was drawn at two different heights and the pool median ,
+      a shared constant , sat at two different heights too. The x-axis was worse: 15 seasons and
+      3 seasons stretched to the same physical width made one Caprile season five times the
+      slope of one Neuer season.
+
+      SO THE PAIR HAS TO BE RENDERED TOGETHER. A lane each, both axes computed ONCE across both
+      series and the pool reference, and real years on x so a 3-season career occupies three
+      years of a sixteen-year span rather than the whole width.
+
+      WHY LANES AND NOT ONE OVERLAID CHART: overlaying is denser and reads well at 1180px, and
+      at 346px , where most people will see it , a 3-season line becomes three points crushed
+      against the right edge under the other player's line. Lanes keep the honest x-axis AND
+      stay legible, because the comparison is carried by the shared scale rather than by
+      proximity.  */
+  function keeperTrajectoryPairHTML(rowsA, rowsB, nameA, nameB){
+    vvInjectGKCSS();
+    /*  keeperSeriesFor RETURNS savePct AS 0-100 AND KEEPER_POOL IS 0-1 , TWO SCALES FOR ONE
+        QUANTITY, and mixing them put the upper y tick at "7551%". Normalise to FRACTIONS here
+        and keep everything in that unit, so the pool constants and the plotted values are the
+        same kind of number. It also returns NULL, not [], when a keeper has no usable season,
+        so guard before calling .some on it. */
+    const SA = keeperSeriesFor(rowsA || []) || [], SB = keeperSeriesFor(rowsB || []) || [];
+    const frac = S => S.map(d => ({ season:d.season, v: d.savePct == null ? null : d.savePct / 100 }));
+    const FA = frac(SA), FB = frac(SB);
+    const has = S => S.some(d => d.v != null);
+    if (!has(FA) && !has(FB)) return null;
+
+    const years = FA.concat(FB).map(d => d.season);
+    const xMin = Math.min.apply(null, years), xMax = Math.max.apply(null, years);
+    const vals = FA.concat(FB).map(d => d.v).filter(v => v != null);
+    const lo = Math.min(KEEPER_POOL.p5,  Math.min.apply(null, vals)) - 0.015;
+    const hi = Math.max(KEEPER_POOL.p95, Math.max.apply(null, vals)) + 0.015;
+
+    const W = 360, H = 104, PL = 30, PR = 8, PT = 12, PB = 20;
+    const X = y => xMax === xMin ? (PL + (W - PL - PR) / 2)
+                                 : PL + ((y - xMin) / (xMax - xMin)) * (W - PL - PR);
+    const Y = v => PT + (1 - (v - lo) / (hi - lo)) * (H - PT - PB);
+
+    function lane(S, cls, label){
+      let g = '';
+      /*  ONE not-recorded treatment, quieter than the data: a single flat band behind the
+          seasons with no shot figures. The old chart drew two dashed boxes labelled "not
+          recorded" and "n/r" , two names for one idea, carrying more weight than the line. */
+      const miss = S.filter(d => d.v == null).map(d => d.season);
+      if (miss.length){
+        const a = Math.min.apply(null, miss), b = Math.max.apply(null, miss);
+        g += '<rect x="' + (X(a) - 5).toFixed(1) + '" y="' + PT + '" width="' +
+             (X(b) - X(a) + 10).toFixed(1) + '" height="' + (H - PT - PB) +
+             '" fill="var(--gkt-band)"/>';
+      }
+      // the pool median , same height in BOTH lanes, because the scale is shared
+      if (KEEPER_POOL.median >= lo && KEEPER_POOL.median <= hi){
+        const my = Y(KEEPER_POOL.median).toFixed(1);
+        g += '<line x1="' + PL + '" y1="' + my + '" x2="' + (W - PR) + '" y2="' + my +
+             '" stroke="var(--gkt-absent-line)" stroke-width="1" stroke-dasharray="4 3" opacity=".55"/>';
+      }
+      // y ticks , two, shared, so the lanes are directly comparable
+      [lo + 0.01, hi - 0.01].forEach(function(v){
+        g += '<text x="' + (PL - 5) + '" y="' + (Y(v) + 3).toFixed(1) +
+             '" text-anchor="end" font-size="8" fill="var(--gkt-ink)" opacity=".7">' +
+             Math.round(100 * v) + '%</text>';
+      });
+      for (let y = xMin; y <= xMax; y++){
+        if ((y - xMin) % 3) continue;
+        g += '<text x="' + X(y).toFixed(1) + '" y="' + (H - 6) +
+             '" text-anchor="middle" font-size="8" fill="var(--gkt-ink)" opacity=".7">' +
+             String(y).slice(2) + '</text>';
+      }
+      const pts = S.filter(d => d.v != null);
+      let d = '', prev = null;
+      pts.forEach(function(p){
+        const gap = prev && (p.season - prev.season > 1);   // never bridge a missing season
+        d += (d && !gap ? 'L' : 'M') + X(p.season).toFixed(1) + ' ' + Y(p.v).toFixed(1) + ' ';
+        prev = p;
+      });
+      g += '<path d="' + d + '" fill="none" stroke="currentColor" stroke-width="2.1" ' +
+           'stroke-linejoin="round" stroke-linecap="round"/>';
+      pts.forEach(function(p){
+        g += '<circle cx="' + X(p.season).toFixed(1) + '" cy="' + Y(p.v).toFixed(1) +
+             '" r="2.8" fill="currentColor"/>';
+      });
+      return '<div class="gkt-lane ' + cls + '">' +
+               '<div class="gkt-lanename">' + escHtml(label || '') + '</div>' +
+               '<svg class="gkt-svg" viewBox="0 0 ' + W + ' ' + H + '">' + g + '</svg>' +
+             '</div>';
+    }
+
+    /*  THE DISCLOSURE ONLY CLAIMS A GAP WHEN THERE IS ONE. It read "The rest predate it" even
+        when every season carried data , a sentence describing an absence that was not there. */
+    const n = S => S.filter(d => d.v != null).length;
+    const anyMissing = n(FA) < FA.length || n(FB) < FB.length;
+    return '<div class="gkt-pair">' +
+             lane(FA, 'gkt-a', nameA) + lane(FB, 'gkt-b', nameB) +
+           '</div>' +
+           '<div class="gkt-say"><b>Plotted against every goalkeeper we can measure.</b> ' +
+             escHtml(nameA || 'A') + ': ' + n(FA) + ' of ' + FA.length + ' seasons carry shot data. ' +
+             escHtml(nameB || 'B') + ': ' + n(FB) + ' of ' + FB.length + '.' +
+             (anyMissing ? ' The rest predate it.' : '') +
+           '</div>';
+  }
+
   function keeperTrajectoryHTML(rows){
     if (!Array.isArray(rows) || !rows.length) return '';
     const byYear = {}; rows.forEach(r => { byYear[r.season_year] = r; });
@@ -4918,7 +5052,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryPairHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,

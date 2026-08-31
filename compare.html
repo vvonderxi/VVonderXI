@@ -479,6 +479,12 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
 
   /* G+A trajectory chart */
   #vtraj svg{width:100%;height:auto;display:block;max-width:430px;margin:0 auto}
+  /*  THE 430px CAP IS FOR THE SIDE-BY-SIDE OUTFIELD CHARTS AND IS WRONG FOR THE KEEPER LANES,
+      which stack full width. Overridden HERE rather than in vv-core because the cap is this
+      file's rule: `#vtraj svg` carries an ID, so no number of classes in the shared module can
+      out-specify it, and reaching for !important would only start the fight §C warns about.
+      The exception belongs beside the rule it excepts. */
+  #vtraj .gkt-pair svg{max-width:none;margin:0}
   #vtraj .tgrid{stroke:rgba(255,255,255,0.10)} body.light #vtraj .tgrid{stroke:rgba(0,0,0,0.10)}
   #vtraj .tylab,#vtraj .txlab{font-family:'Archivo';font-weight:700;font-size:9px;fill:rgba(243,237,224,0.45)}
   body.light #vtraj .tylab,body.light #vtraj .txlab{fill:var(--ink-soft)}
@@ -1017,8 +1023,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260831b"></script>
-<script src="/vv-core.js?v=20260831b"></script>
+<script src="/vv-marks.js?v=20260831c"></script>
+<script src="/vv-core.js?v=20260831c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1830,6 +1836,13 @@ body.light .pkmsub{color:var(--ink-soft)}
       if (isGK && VVCore.keeperTrajectoryHTML) return VVCore.keeperTrajectoryHTML(raw);
       return VVCore.renderTrajectory(marked,{chrome:false,transparent:true});
     }
+    /*  TWO KEEPERS SHARE ONE PAIR OF SCALES. chartFor renders ONE keeper, so calling it twice
+        produced two independent axes , the same save rate drawn at two heights and the pool
+        median, a shared constant, at two heights as well. When BOTH sides are keepers the pair
+        renderer takes over and computes the axes once across both. Mixed pairs keep the old
+        path: a keeper and an outfielder are not the same quantity and must not share a scale. */
+    var pairHTML = (gkA && gkB && VVCore.keeperTrajectoryPairHTML)
+      ? VVCore.keeperTrajectoryPairHTML(rowsA, rowsB, nameA, nameB) : null;
     var chartA = chartFor(gkA, ra, rowsA), chartB = chartFor(gkB, rb, rowsB);
     // ONE shared head + legend above, ONE Drury caption below (not per-chart)
     var anyGK = gkA || gkB, bothGK = gkA && gkB;
@@ -1845,6 +1858,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     if (anyGK) caption = bothGK
       ? '<div class="tjcap">A save rate is the share of the shots that reached him that he kept out. It is the one figure on a keeper\'s card that is his own work rather than his team\'s.</div>'
       : '<div class="tjcap"><b>Measured on different evidence.</b> One of these is a goalkeeper. A save rate and a goal tally are not the same kind of number and do not share an axis, so there is no combined chart here , each side is shown on its own terms.</div>';
+    if(pairHTML){ box.innerHTML = head + pairHTML; return; }
     box.innerHTML = head + legend
       + '<div class="vtrajpair">'
       +   '<div class="vtchart"><div class="vtname tA">'+(nameA||'A')+'</div>'+chartA+'</div>'
