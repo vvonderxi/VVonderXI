@@ -36,3 +36,58 @@ declared it incompressible, and **§F cannot pay , it is 8%.**
 - **A MEASUREMENT WARNING FOR THE NEXT PASS: a regex that finds rule headlines by matching a bold run to end-of-line MERGES BLOCKS and reports one of them at 25 KB.** That sent this pass at the wrong target first. **Split §C on lines that BEGIN with a bold delimiter at column 0, and measure to the next one.**
 - **CHECK BOTH THE SOURCE AND THE DESTINATIONS FIRST.** `CLAUDE_ARCHIVE.md` is at 79.9% and is NOT a viable destination; `POST_LAUNCH.md` 22.7%, `LAUNCH_STAGE.md` 28.4% and `RULE_EVIDENCE.md` 24.7% all have room.
 - **AND VERIFY BY GREPPING FOR THE FACT, NEVER BY TRUSTING A POINTER.** Fourteen load-bearing strings were checked present in `CLAUDE.md` after the move , the priority order, the 1.518 ratio, the 58-rule limit, the seven-card measurement, the three open threads out of the pre-launch queue, and the verdict-mark key contract among them.
+
+---
+
+# THE OPEN ITEM , `CLAUDE.md` NEEDS A STRUCTURAL ANSWER, NOT A NINTH RELIEF PASS (logged 2026-08-31, NOT started)
+
+**THE MEASUREMENT.** `CLAUDE.md` sits at **98.2%** of the 150k truncation limit , 95.8% before
+the 2026-08-31 session began, 98.8% at its peak, 97.5% after the eighth pass, and **98.2% once
+this item was logged. Recording the problem consumed a third of the room the pass had just
+bought**, which is the clearest statement of it available. Section shares,
+measured with the documented column-0 method:
+
+| section | bytes | share of file |
+|---|---|---|
+| §C locked invariants | 62,421 | **42%** |
+| §D launch master plan | 43,718 | 30% |
+| §E open data threads | 20,092 | 14% |
+| §F session log | 12,408 | 8% |
+| §A + §B + head | ~9,562 | 6% |
+
+**WHY ANOTHER PASS WILL NOT DO IT, AND THIS IS THE WHOLE POINT OF THE ITEM.**
+- **§C IS 42% AND WAS DECLARED INCOMPRESSIBLE ON 2026-08-29 , IT HAS GROWN BACK SINCE.** That
+  declaration was correct about the technique, not about the trend: every pass strips EVIDENCE out
+  of §C and leaves the RULES, so §C converges on pure rules and then keeps growing, one rule per
+  session, forever. **A file that gains rules faster than it can shed evidence has no steady state.**
+- **§F CANNOT PAY , IT IS 8%.** Archiving both older entries buys 7.6 KB, roughly one session's
+  growth.
+- **`CLAUDE_ARCHIVE.md` IS AT 83% AND IS NOT A VIABLE DESTINATION.** It would need its own split
+  first, which is a second problem, not a solution to this one.
+- **THE STAGE FILES ARE FILLING TOO:** `RULE_EVIDENCE.md` 66%, `INGESTION_RECOVERY.md` 45%,
+  `POST_LAUNCH.md` 49%, `LAUNCH_STAGE.md` 48%. The evidence has to keep going somewhere.
+
+**SO THE QUESTION IS NOT "WHAT DO WE CUT NEXT", IT IS "WHAT IS THE STEADY STATE".** Four candidate
+shapes, recorded so the decision starts from options rather than from a blank page. **None is
+chosen and none is started.**
+
+1. **SPLIT §C INTO ITS OWN FILE, READ AT SESSION START ALONGSIDE A MUCH SMALLER `CLAUDE.md`.**
+   Mechanically the biggest single win. **The cost is the premise:** this file exists because the
+   project had too many documents and no reference point, and a mandatory second file is a second
+   reference point. Would need the entry rule rewritten so it reads as one document in two parts.
+2. **SPLIT §C BY DOMAIN AND LOAD PER TASK** , front-end / data / infra. Cheaper to read, but it
+   requires a session to know which domain it is in BEFORE it reads the rules, and several of the
+   worst incidents in this file came from a session not knowing that.
+3. **RETIRE RULES INTO TOOLING , THE LEVER NO PASS HAS USED.** A rule that a check now enforces
+   does not need to be read to be obeyed. The codebase already carries `vvAuditCaptureSupport`,
+   the row-namespace guard, the missing-mark audit and `scripts/lint-inline.js`, and each of those
+   corresponds to a §C rule still written out in full. **This is the only candidate that reduces
+   the rule COUNT rather than moving bytes**, and it is the only one that attacks the growth rate
+   instead of the level. Needs a criterion for when a rule is safely tool-enforced.
+4. **VERIFY THE 150k LIMIT ITSELF.** It is quoted everywhere in this file and has never been
+   measured. If it is wrong in either direction, every percentage above is wrong with it.
+   **Cheap, and it should be done FIRST**, because it may change which of 1 to 3 is needed.
+
+**WHAT MUST NOT HAPPEN: a ninth pass that buys 6 KB and resets the clock to 90%.** The last three
+passes each bought roughly one to two months and the interval is shortening , 2026-08-24, 08-28,
+08-29, 08-31. **The trigger has fired four times in eight days.**
