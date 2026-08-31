@@ -928,7 +928,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             <div id="h2h"></div>
           </div>
           <!-- the tags for both -->
-          <div class="vsect vsect-wide">
+          <div class="vsect vsect-wide" id="secAccolades">
             <div class="vsect-t">Accolades</div><div class="vsect-d">The honours and signatures of each season, the kind of player each man was that year.</div>
             <div class="vtags">
               <div class="vtcol">
@@ -1017,8 +1017,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260831a"></script>
-<script src="/vv-core.js?v=20260831a"></script>
+<script src="/vv-marks.js?v=20260831b"></script>
+<script src="/vv-core.js?v=20260831b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2110,6 +2110,23 @@ body.light .pkmsub{color:var(--ink-soft)}
       box.innerHTML = renderWonderTagsGrouped(c.honours, renderProfileTagRows(c.tags, c.prestige));
     }
     fill(cols[0],CMP_A); fill(cols[1],CMP_B);
+
+    /*  SUPPRESS THE SECTION WHEN NEITHER SIDE HAS ANYTHING TO PUT IN IT.
+        A heading that promises "the honours and signatures of each season" followed by two bare
+        surnames is the same hole the keeper sections had: a section that announces something and
+        then shows nothing reads as broken rather than as empty. Measured on Pickford v Caprile
+        (Everton and Cagliari won nothing in 25/26): 16 characters of body, both surnames, no chips.
+
+        GATED ON WHAT ACTUALLY RENDERED, NOT ON honours.count. The box holds honours AND profile
+        tags AND prestige, so a card with no silverware can still have plenty here , checking the
+        honours count alone would have hidden sections that had Wonder Tags to show. Ask the DOM
+        what it produced rather than predicting it from the inputs. */
+    var sect=document.getElementById('secAccolades');
+    if(sect){
+      var filled=[].slice.call(document.querySelectorAll('.vtags .vtcol .vtchips'))
+                   .some(function(b){ return b.textContent.trim().length > 0; });
+      sect.style.display = filled ? '' : 'none';
+    }
   }
   // ── The Proof , real per-90 numbers from CMP_A/CMP_B (was hardcoded Henry/Haaland) ──
   function vvSetProof(){
