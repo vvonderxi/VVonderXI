@@ -368,11 +368,14 @@ deploying:**
 - **Check:** `cleanUrls` serves the paths the meta tags claim.
 - **How:** `curl -s -o /dev/null -w '%{http_code}'` for `/card`, `/compare`, `/rankings`, `/playbook`, `/vvindex`.
 - **Pass:** 200 on each. **The og:url values are extensionless; if routing differs, every canonical URL is wrong.**
+- **`cleanUrls` IS LOAD-BEARING AND MUST NOT BE DROPPED , RULED 2026-08-31 after it was proposed and rejected on this item's own evidence.** All NINE pages carry an extensionless `og:url` (`/card`, `/compare`, `/rankings`, `/playbook`, `/vvindex`, `/myclub`, `/preferences`, `/contact`, `/`) and there is no static file at any of those paths, so **removing `cleanUrls` 404s every canonical URL and every link anyone has already shared.**
+- **THE 308 IS REAL BUT IT IS THE CHEAPER HALF OF THE TRADE.** 97 internal links still use `.html`, so every internal click takes a redirect to the clean path. **The fix is to rewrite the LINKS to extensionless, never to drop `cleanUrls`** , that also makes them agree with `og:url`. Queued, not done. **`search.html` is the one page with a `rel="canonical"`, and it points at `rankings.html`, which disagrees with the extensionless scheme; fold it into the same pass.**
+- **AND NOTE THAT THIS ITEM ALREADY CARRIED THE ANSWER.** The pass line above has said the og:url values are extensionless since it was written. The proposal to drop `cleanUrls` was made without reading it , the same failure as the Vercel function cap, which was also sitting in this file unread.
 
 ### B5. Functions still deploy
 - **Check:** the function set survives the merge.
-- **How:** `curl https://vvonderxi.com/api/get-seasons` (no argument) and `/api/db`.
-- **Pass:** `{"error":"api_id required"}` with 400, and 200 respectively , the function's OWN guard is the proof it executed. **DO NOT probe the importers: `import-*` and `refresh-players` write to the database.**
+- **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument. **`/api/db` IS GONE , deleted 2026-08-31 with `db.json`; do not probe it and do not restore it as a liveness check.**
+- **Pass:** `{"error":"api_id required"}` with 400 , the function's OWN guard is the proof it executed. **The deployed set is now TWO, `analyse` and `get-seasons`, and only `/api/analyse` has a caller.** **DO NOT probe the importers: `import-*` and `refresh-players` write to the database.**
 
 ### B6. The AI path works in production
 - **Check:** `/api/analyse` generates rather than falling back.
@@ -582,8 +585,8 @@ immediately after, not the next day.**
 
 ### D6. Functions survived the deploy
 - **Check:** the function set still executes.
-- **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument, and `/api/db`.
-- **Pass:** `{"error":"api_id required"}` with 400, and 200 , the function's OWN guard proves it ran. **DO NOT probe `import-*` or `refresh-players`: they write to the database.**
+- **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument. **`/api/db` was deleted 2026-08-31; a 404 there is the CORRECT result, not a failed deploy.**
+- **Pass:** `{"error":"api_id required"}` with 400 , the function's OWN guard proves it ran. **DO NOT probe `import-*` or `refresh-players`: they write to the database.**
 
 ### D7. One real share, end to end
 - **Check:** the whole share chain works from a real device on the real domain.
