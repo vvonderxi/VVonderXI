@@ -508,6 +508,27 @@ environment, which is itself the reason they are listed.
 - **How:** provider dashboard and a read of `vercel.json`.
 - **Pass:** OAuth out of test mode; `vercel.json` reviewed. **§D sequencing: these MUST land before the merge, because the merge is production the instant it deploys.**
 
+- **STATUS 2026-08-31, OAuth HALF: PASS, AND IT IS A PASS WITH NOTHING BEHIND IT.** OAuth is
+  configured and out of test mode, **Email and Google both enabled**. So this item is satisfied on
+  its own terms and can be ticked.
+- **BUT NOTHING ON THE PLATFORM USES IT, AND THAT IS THE PART TO CARRY FORWARD.** `api/auth.js`
+  was DELETED on 2026-08-31 (deployed functions 6 -> 3; see `POST_LAUNCH.md`), it was the only
+  writer of `locker_profiles`, and **`locker_profiles` is at 0 rows.** There is no sign-in control
+  on any shipping page. **A configured provider, a deleted handler and an empty table is not a
+  working auth path , it is a provider sitting ready for a stage that has not started.**
+- **SO DO NOT READ THIS TICK AS "ACCOUNTS WORK".** The accounts stage is deferred
+  (`ACCOUNTS_STAGE_SPEC.md`), and when it starts it will need a NEW handler written against
+  whatever that spec settles, not a restoration of the deleted one , `POST_LAUNCH.md` records what
+  `api/auth.js` did and what the stage must not repeat (it was public and unauthenticated).
+- **WHY IT WAS STILL WORTH DOING NOW: publishing OAuth is the slow half.** Provider review and
+  consent-screen approval are outside our control and cannot be done on launch day, so having it
+  live and idle is the right state. **The risk it creates is only this documentation risk** , a
+  later session seeing "OAuth: PASS" and inferring a sign-in path exists.
+- **`locker_profiles` RLS IS ALREADY CORRECT AND MUST NOT BE "FIXED"** , `service_role_all` plus
+  `users_read_own_profile` (SELECT, `authenticated`, `auth.uid() = user_id`), no anon policy. An
+  earlier report of an anon-read hole was a probe error. See `SILENT_FAILURES.md`: a DENIED select
+  under RLS returns `{data:[],error:null}`, so "no error" is not "permitted".
+
 ### C8. The two open defects
 - **Check:** decide each before merging.
 - **How:** **(1) "Save image appears to do nothing"** , covered by C1/C2; it may already be fixed by the bounded clipboard change. **(2) The overlaid radar rendering as two narrow spikes** on card and compare , this is NOT a redesign bug, it is the provisional `RADAR_REF` placeholder set, and it is visible on every card.
