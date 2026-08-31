@@ -388,9 +388,50 @@ environment, which is itself the reason they are listed.
 
 ### C5. API-Football key rotation
 - **Check:** the exposed key is rotated.
-- **How:** rotate in the provider dashboard and update the Vercel env var. **MUST land BEFORE the merge (§D sequencing).**
+- **How:** rotate in the provider dashboard and update **GitHub secrets**, not Vercel , see the status note below for why. **MUST land BEFORE the merge (§D sequencing).**
+
+- **STATUS 2026-08-31: PASS , ROTATED, AND PROVABLE.** Recorded as fingerprints, never as values:
+  **old `sha256[:12] = 8dab9c72ec3e` -> new `0c6a1822ce7b`.** Different, so the rotation demonstrably
+  happened rather than being asserted. The new key authenticates **HTTP 200**, account
+  `livanlauwe@gmail.com`, plan **Ultra, active**, and reported **0/75000 requests used** , itself
+  corroboration that it is a new credential, since the old one showed 9 the day before.
+  `BSD_API_KEY` is also now deleted from GitHub secrets as well as Vercel.
+
+- **AND THE VERCEL HALF OF THIS ITEM WAS WRONG. `APIFOOTBALL_KEY` DOES NOT BELONG IN VERCEL AT ALL,
+  AND ITS ABSENCE THERE IS NOT A FAULT.** Verified by tracing every `/api/` reference in every
+  shipping page: **the branch calls exactly ONE endpoint, `/api/analyse`**, which reads
+  `ANTHROPIC_API_KEY`, `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. Production calls four ,
+  `/api/analyse`, `/api/auth`, `/api/log`, `/api/search-player` , and **not one of them reads
+  `APIFOOTBALL_KEY`**. The seven functions that do read it (`import-players`, `import-positions`,
+  `import-positions-v2`, `import-standings`, `verify-positions`, `verify-squad-positions`,
+  `apifootball-probe`) are **called by no page on either branch**. The GitHub workflow runs them with
+  `node` in its own runner off `secrets.APIFOOTBALL_KEY`, which is why GitHub is the only place the
+  value is needed. **Nothing has been failing silently in production.**
+
+- **BUT TRACING IT SURFACED SOMETHING THAT IS NOT COVERED BY ANY OTHER ITEM , SEE C11.** Those seven
+  are still DEPLOYED, publicly reachable, unauthenticated, and they write to the database.
 - **Pass:** the old key is dead and the site still loads data. **ROTATE ONLY WHEN NO BACKFILL IS RUNNING** , a mid-run rotation kills every in-flight request and the enrichment scripts checkpoint per league-season, so a half-written run is the expensive failure.
 
+
+### C11. Seven deployed importer endpoints are public, unauthenticated and write to the database
+- **Found 2026-08-31 while tracing C5. Not covered by any other item, and it is a decision, not a bug report.**
+- **Check:** `import-players`, `import-positions`, `import-positions-v2`, `import-standings`,
+  `verify-positions`, `verify-squad-positions`, `apifootball-probe` are tracked, therefore deployed,
+  therefore reachable at `https://vvonderxi.com/api/<name>`. **Grepped for `CRON_SECRET`, an
+  `Authorization` check, a shared secret or any header guard: NONE of the seven has one.**
+- **What limits the damage today, and it is luck rather than design:** without `APIFOOTBALL_KEY` in
+  Vercel's env they cannot fetch from the provider, so a caller gets an early failure rather than a
+  write. **The protection is a missing variable, not a guard** , and §D already records that
+  `api/import-players.js` upserts, which is the same write class that produced the PL 2025/26 block.
+- **THIS IS THE SAME SHAPE AS `api/search-player.js`, WHICH IS WHY IT MATTERS.** That was retired for
+  being a public endpoint that wrote on every call. These seven are public endpoints that would write
+  if the variable were ever added to Vercel , for instance by someone "fixing" C5 by putting the key
+  where it looks like it should go.
+- **Pass:** a deliberate decision, recorded. Either **do not deploy them** (move under `scripts/`, since
+  the workflow runs them with `node` and never needs the HTTP route), or **guard them** with a shared
+  secret. **Moving them also drops the deployed function count from 13 to 6**, which puts the project
+  back inside Hobby's cap of 12 and makes Pro a choice rather than a dependency.
+- **Who:** Lucas decides, ~30 minutes to execute either way.
 ### C6. Vercel plan and the function limit
 - **Check:** which plan, and whether the deployed function count is within it.
 - **STATUS 2026-08-30: PASS, and this item found the production build failure that three
