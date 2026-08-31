@@ -517,7 +517,15 @@
     var season = C.vvSeasonLabel(r.season_year);
     var club = r.team_name || '';
     var vv = (r.rt == null) ? null : Math.round(r.rt);
-    var sub = [club, season].filter(Boolean).join('  ·  ');
+    /*  ONE space each side, matching the card face's own sub-line (vv-core buildCard) and
+        every other field list on the platform. This read '  ·  ' with two, which was dead
+        intent rather than a different look: .srsub is white-space:nowrap, and nowrap
+        COLLAPSES a run of spaces , only pre / pre-wrap / break-spaces preserve one.
+        Measured under the real rule: double 87.70px, single 87.70px, identical; the same
+        pair under white-space:pre measures 94.45 against 87.70, so the 6.75px was real and
+        was being thrown away. If a future session wants an airier separator HERE, literal
+        spaces will not deliver it , it needs margin on a wrapped span.  */
+    var sub = [club, season].filter(Boolean).join(' · ');
     return '<button class="srrow" role="option" aria-selected="false" data-i="' + i + '" tabindex="-1">'
       + '<span class="srrail" style="background:' + esc(r.primary_colour || 'var(--pink)') + '"></span>'
       + '<span class="srmain"><span class="srnm">' + esc(name) + '</span>'

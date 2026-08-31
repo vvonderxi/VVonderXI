@@ -2999,6 +2999,21 @@ body.light .vvrows .rtag.purple{color:#784eac}
   .vvrows.vvrows.pillmode > .urow > .upos{grid-column:4;color:var(--row-muted-2)}
   .vvrows.vvrows.pillmode > .urow > .ugoals{grid-column:5;color:var(--row-muted);font-variant-numeric:tabular-nums}
   .vvrows.vvrows.pillmode > .urow > .uassists{grid-column:6;color:var(--row-muted);font-variant-numeric:tabular-nums;margin-left:6px;margin-right:8px}
+  /*  THE ROW SEPARATOR IS QUIETER THAN THE CARD'S, AND THAT IS AN ACCEPTED DIFFERENCE, NOT
+      A DRIFT , RULED 2026-08-31. DO NOT UNIFY IT.
+      Every other field list on the platform (the card face sub-line, the glance meta line,
+      the home search, the compare picker, the season sub-line, My Club) writes the middle dot
+      as a CHARACTER IN THE TEXT, so it takes the sub-line's own ink at full strength. The
+      rankings rows are the one surface that generates it in CSS and DIMS it.
+      THE REASON IS DENSITY. A card sub-line is three fields on a card face with room around
+      them. A rankings row is a nine-column grid at list or compact density, and a full-strength
+      dot between every field there competes with the fields themselves , the separator starts
+      reading as content. A denser surface earns a quieter separator.
+      THE THREE VALUES ARE DELIBERATE AND DIFFER BY DENSITY: list .45 at 6px, compact .5 at
+      5px (tighter row, so the dot needs slightly more weight to survive the smaller gap), and
+      the age chip .55 because it sits hard against its number rather than between two fields.
+      §C's sibling-states rule applies if this is ever revisited: all three get looked at
+      TOGETHER, at the size they ship at, never one in isolation.  */
   .vvrows.vvrows.pillmode > .urow > .uclub::after, .vvrows.vvrows.pillmode > .urow > .uyear::after, .vvrows.vvrows.pillmode > .urow > .upos::after{content:"\\00B7";margin:0 6px;opacity:.45;color:var(--row-muted-2);font-weight:700}
   .vvrows.vvrows.pillmode > .urow > .ugoals span, .vvrows.vvrows.pillmode > .urow > .uassists span{color:var(--row-dim);font-weight:800;font-size:10px;margin-left:1px}
   .vvrows.vvrows.pillmode > .urow > .utags{grid-column:2/7;grid-row:3;justify-content:flex-start;margin-top:2px}
