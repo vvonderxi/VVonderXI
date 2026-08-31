@@ -3060,7 +3060,23 @@ vvWireChronicle();
 function vvShareURL(){ return location.href; } /* TODO plumbing: return canonical card permalink */
 function vvShareText(){
   var d=(typeof D!=='undefined'&&D)?D:null;
-  return d ? (d.full+' , '+d.year+' , VV '+d.vv+' on VVonderXI') : 'VVonderXI , Compare Careers. Define Legacies.';
+  /*  MIDDLE DOTS, NOT SPACED COMMAS, AND ONLY HERE. This string is the text that travels
+      BESIDE the composed image, and vvShareCaption , which is rendered INTO that image ,
+      uses `·`. A card share therefore showed both schemes at once, in one post, for the
+      same three fields. The image is the fixed half, so the text moved to match it.
+      DELIBERATELY NOT CHANGED: compare's vvLedgerText (it uses "or" and full stops, and
+      reads better than either), the document title (spaced comma is the house convention
+      for titles), and the AI prompt payload (its commas are structural, and the verdict
+      version is a fingerprint of the prompt, so a cosmetic edit there rebuilds every
+      cached verdict).
+      THE TAGLINE FALLBACK TAKES A DOT TOO, and it is prose rather than a field list: the
+      poster's own tagline is already `VVonderXI · Every Season Tells a Different Story`,
+      so this now matches the mark it sits under instead of clashing with it.
+      NOTE THE ONE RISK, since it is not visible from here: `·` is U+00B7 and we do not
+      control the destination's encoding, where a comma would always survive. Verified fine
+      on WhatsApp, X and Instagram; if a destination is ever found mangling it, this line
+      is the one to revert, NOT the caption.  */
+  return d ? (d.full+' \u00b7 '+d.year+' \u00b7 VV '+d.vv+' on VVonderXI') : 'VVonderXI \u00b7 Compare Careers. Define Legacies.';
 }
 function vvShareOut(){
   // LINK share only , the IMAGE path is vvShareCard. Kept as its own rung because a link
