@@ -127,12 +127,32 @@ are avoidable if you know about them.
   settled by capture , see the harness caveats above.**
 
 - **STATUS 2026-08-28: FAILED, FIXED, RE-VERIFIED.** All six sizes render and the clamp holds (a request for 8px returns 16). **`card.html:1542` rendered the glance loader with NO ink option, putting a cream base V on the cream `.layer` at contrast 1.00 , not faint, NOT DRAWN (0 non-ground pixels of 4096).** Fixed by passing `ink:'var(--charcoal)'`; now **14.31** in both themes. See the six-site table above.
-### A6. The four html2canvas divergences
+### A6. The five html2canvas divergences
 - **Check:** each of the four known capture gaps is either shimmed or accepted, and no NEW one has appeared.
 - **How:** (a) capture a card and confirm the Generational gold rim is present in the PNG , count gold pixels in the top-left corner; (b) capture and confirm marks are not blank; (c) capture and confirm the tagline line is in the file; (d) run `VVCore.vvAuditCaptureSupport(frame)` on a composed share frame and read the console.
 - **Pass:** (a) non-zero gold in the corner (was ZERO without `vvShimInsetRims`, 370 with); (b) marks visible; (c) tagline present; (d) the audit reports the shield's `drop-shadow` ONLY , that one is an accepted exception at a measured 0.31/255. **Any other feature named by the audit is new and must be investigated before merge.**
 
 - **STATUS 2026-08-28: PASS, all four.** (a) Generational gold rim: **0 gold pixels without `vvShimInsetRims`, 654 with** , the negative control proves the test measures the shim. (b) marks drawn (3 of 3, 9 distinct tones each). (c) tagline drawn (22 tones across 1855x96). (d) `vvAuditCaptureSupport` reports **exactly one** finding, the SVG `drop-shadow`, which is the recorded accepted exception. **No new divergence.**
+
+- **[ADDED 2026-08-31] (e) THE SHIELD'S SQUAD NUMBER MUST NOT BE SERIF.** A webfont does not load
+  inside a captured SVG (Chrome renders SVG-as-image with every resource fetch blocked), so the
+  badge number was going out in Times while the live card was correct. **Check:** capture a card
+  and read the number's glyphs back, or compare against a capture taken with
+  `VVCore.vvShimShieldNumbers` NOT applied. **Pass:** the shimmed capture differs visibly from the
+  unshimmed one and reads as Archivo 900. **Controls, both required:** a `monospace` SVG cell must
+  differ from a `serif` one (proves the harness can see a font change at all), and the same webfont
+  as HTML in the same capture must differ from serif (proves it is SVG-specific).
+  **STATUS 2026-08-31: PASS**, verified in captured PNGs on solid AND split badges, on the card and
+  the two-card compare frame, all four formats, both themes. Split badges take the stroke path ,
+  `shieldSplit` needs `luma(c2) <= 0.80`, **so a white second colour renders SOLID and does not
+  exercise it; pick a genuinely dark second colour or the branch goes untested.**
+- **[ADDED 2026-08-31] THE BRAND CORNER IS AN ASSET NOW, SO IT CAN BE BLANK.** `shBrand` draws
+  `assets/spinelogo-{dark,light}.png`. **Check:** count distinct tones and pink pixels in the
+  corner box of a captured PNG, both grounds. **Pass:** >5 tones and >100 pink (measured: 88 tones
+  / 10,618 pink on igf dark). **And test the FALLBACK by taking the asset off the server** , the
+  `onerror` lockup must appear rather than a blank corner. **Do not test it by patching
+  `VVCore.vvShareFrameHTML`: `vvRenderShareImage` calls the module-local binding and the patch is
+  ignored, which reads as a pass.**
 - **The audit is ONE-SHOT per surface**, so a second call is silent by design , hook the console before the first composition or you will read an empty result and think it passed.
 ### A7. Share frames, all four formats, both themes
 - **Check:** nothing overflows, nothing collides, the caption and tagline fit, the card sits inside the padding.

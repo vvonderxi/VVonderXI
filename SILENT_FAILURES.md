@@ -326,3 +326,61 @@ is one line , read the computed value back after setting it.
 **The one-line guard stayed in `CLAUDE.md` §D so a future session counting delimiters trips over it there.**
 
 - **[CLOSED 2026-08-21] `compare.html` DIV IMBALANCE AND CSS COMMENT PAIR , BOTH BALANCED, AND THE RESIDUAL COUNT IS A FALSE POSITIVE.** Measured at HEAD: **`<div>` 156 / `</div>` 156, delta 0** (was -1). **A NAIVE COUNT STILL REPORTS `/*` 141 against `*/` 142, AND THAT ONE EXTRA IS NOT A COMMENT** , it is inside a JavaScript REGEX LITERAL at line 1720, a `String.replace` call whose pattern ends `\s*` immediately before the regex's own closing delimiter, where `\s*` followed by the closing delimiter spells `*/`. **Do NOT re-open this on the raw count.** Walking the file with a real open/close scanner returns exactly one such hit and zero orphan comments. If it is ever checked again, verify surviving `cssRules` in a browser, not the source text , that was the original instruction and it is still the right one.
+
+---
+
+## A WEBFONT DOES NOT LOAD INSIDE A CAPTURED SVG , THE SQUAD NUMBER SHIPPED IN TIMES (2026-08-31)
+
+**THE SYMPTOM.** The shield's squad number came out of the share capture in a serif , a Times ,
+on a card face where every other glyph is Archivo or Barlow Condensed. Nothing in the markup says
+serif. The `<text>` carries `font-family="Archivo"`, Archivo is loaded on the page, and
+`document.fonts.check('900 46px Archivo')` returns true.
+
+**THE LIVE CARD WAS ALWAYS CORRECT AND THAT IS WHY IT SURVIVED.** Measured on the real badge:
+`getComputedTextLength()` is **61.342** against a canvas measurement of Archivo at **61.364** and
+serif at **46**. The DOM paints Archivo. **Only the capture was wrong**, and nobody reads a
+captured PNG at the size the number is legible.
+
+**THE MECHANISM.** html2canvas draws an inline `<svg>` by serialising it to a standalone
+`data:image/svg+xml` and handing that to an `Image`. Chrome renders SVG-as-image in a restricted
+mode that blocks **every resource fetch**, so the `@font-face` Google Fonts installed on the page
+does not exist inside that image and `font-family="Archivo"` falls back.
+
+**IT IS THE SAME MECHANISM AS THE `<use href="#...">` FAILURE ALREADY IN THIS FILE.** A serialised
+SVG loses everything outside itself. That one lost a symbol reference; this one loses a font. The
+two shims now sit together in `vv-core.js` for that reason.
+
+**THE MEASUREMENT , ONE CAPTURE, FOUR CELLS, TWO CONTROLS.** Ink-width of the string "23":
+
+| cell | ink width | reading |
+|---|---|---|
+| SVG, `font-family="Archivo"` | **85** | dropped |
+| SVG, `font-family="serif"` | **85** | , the control it collapsed onto |
+| SVG, `font-family="monospace"` | **99** | positive control: generic families DO work, they are OS-resolved, not fetched |
+| HTML, `font-family:Archivo`, same capture | **114** | the webfont draws fine as HTML , this is SVG-specific, not an html2canvas font limit |
+
+**EMBEDDING THE FACE DOES NOT WORK, AND IT WAS TESTED RATHER THAN ASSUMED.** An `@font-face`
+whose `src` is the woff2 as a `data:` URI, inside the SVG's own `<style>`, still measured **85**.
+In the same capture a `<style>` rule setting `fill` DID apply (red 3016 px, dark 0) and one setting
+`font-family:monospace` DID apply (99). **So stylesheets survive the serialisation and font
+LOADING is what is blocked, data URIs included.** There is no way in from the SVG side.
+
+**METHOD FAULT WORTH KEEPING, because the first run of that probe was void.** An SVG `<style>`
+inside an HTML document is **DOCUMENT-scoped**, not scoped to its own `<svg>`. The first probe
+painted *every* cell red , including the control that had no `<style>` at all , and reported four
+identical readings. **Scope by the svg's own id, and always keep a cell that must NOT change.**
+
+**THE FIX IS A CAPTURE-TIME SHIM, NEVER A CARD CHANGE** , `VVCore.vvShimShieldNumbers(node)`,
+restored from a `finally` exactly like `vvInlineMarks` and `vvShimInsetRims`. It hides the `<text>`
+and puts the number over the badge as HTML, which the capture draws with the real font. §C: the
+card is the product and the capture is a consumer of it; when they disagree, shim the capture.
+
+**THE SPLIT-BADGE OUTLINE BECOMES A `text-shadow`.** `paint-order:stroke` is SVG-only. The
+2026-08-27 support sweep lists `text-shadow` as KEPT, so the shim translates the 2.5-unit stroke
+into eight offsets at **half** that radius , SVG strokes are centred, so only the outer half shows.
+Verified in a captured PNG on a genuine split badge (`shieldSplit` needs `luma(c2) <= 0.80`, so a
+white second colour is REJECTED and the stroke branch is easy to miss , the first three test cards
+all rendered solid and never exercised it).
+
+**VERIFIED:** both badges on a compare frame, all four formats, both themes, and the DOM restored
+byte-for-byte after eight consecutive captures (`document.body.innerHTML.length` identical).

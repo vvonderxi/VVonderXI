@@ -16,7 +16,7 @@
 6. At session END: append a SESSION LOG entry (§F) and update the PROGRESS graphic. A session that changes state but doesn't log it has failed the next chat.
 
 **WHAT LIVES HERE vs A STAGE FILE (decided 2026-08-03, DO THIS BEFORE THE NEXT LOGGING SESSION).** CLAUDE.md holds the **resume point + active queue + locked decisions**. Detailed specs for work DEFERRED to a later stage belong in their OWN file, read only when that stage starts. **This is the real fix for the doc refilling:** the two compression passes proved the remaining mass is OPEN work, which cannot be compressed but CAN be relocated , archiving only moves closed history, and closed history is no longer the bulk.
-- **APPLIED SEVEN TIMES, all closed:** `ACCOUNTS_STAGE_SPEC.md` (2026-08-03), `LAUNCH_STAGE.md` (2026-08-07), `POST_LAUNCH.md` + `INGESTION_RECOVERY.md` + `DB_HYGIENE_STAGE.md` (2026-08-09, 89.5% -> 73.6%), the PART-2 archive merge (2026-08-10, 98.9% -> 73.2%), the July archive split + §F relocation (2026-08-11, 87.4% -> see below), and the 2026-08-18 pass (91.9% -> 79.2%: three §F entries to the archive, two deferred §D specs to `POST_LAUNCH.md`). **The rule works; the detail of each pass is in the session log.** Two things learned and worth keeping: relocating only moves CLOSED history, so it stops paying once the bulk is OPEN work; and **`CLAUDE.md` and `CLAUDE_ARCHIVE.md` fill independently , check BOTH before a pass, because the archive being near its own limit blocks the relocation entirely** (it did on 2026-08-11 and had to be split first; on 2026-08-18 it was at 56.7% and needed nothing). **THE 2026-08-18 PASS FOUND THE PAYING MOVE: §F is only 15% of the file, while §C and §D are 35% and 38%, so archiving alone cannot fix this again. What worked was relocating DEFERRED SPECS out of §D** , open work that is not open YET, which the rule at the top of this section already told us to move and which had been left in place for months.
+- **APPLIED SEVEN TIMES, all closed:** `ACCOUNTS_STAGE_SPEC.md` (2026-08-03), `LAUNCH_STAGE.md` (2026-08-07), `POST_LAUNCH.md` + `INGESTION_RECOVERY.md` + `DB_HYGIENE_STAGE.md` (2026-08-09, 89.5% -> 73.6%), the PART-2 archive merge (2026-08-10, 98.9% -> 73.2%), the July archive split + §F relocation (2026-08-11, 87.4% -> see below), and the 2026-08-18 pass (91.9% -> 79.2%: three §F entries to the archive, two deferred §D specs to `POST_LAUNCH.md`). **The rule works; the NARRATIVE of each pass now lives in `DOC_MAINTENANCE.md` (split 2026-08-31, eighth pass, at 98.8% , the highest this file has been); the METHOD is a compact block at the top of §D.** Two things learned and worth keeping: relocating only moves CLOSED history, so it stops paying once the bulk is OPEN work; and **`CLAUDE.md` and `CLAUDE_ARCHIVE.md` fill independently , check BOTH before a pass, because the archive being near its own limit blocks the relocation entirely** (it did on 2026-08-11 and had to be split first; on 2026-08-18 it was at 56.7% and needed nothing). **THE 2026-08-18 PASS FOUND THE PAYING MOVE: §F is only 15% of the file, while §C and §D are 35% and 38%, so archiving alone cannot fix this again. What worked was relocating DEFERRED SPECS out of §D** , open work that is not open YET, which the rule at the top of this section already told us to move and which had been left in place for months.
 - **The trigger is size, not time:** do it before CLAUDE.md crosses **90%** of the 150k truncation limit (it was 88% when this was written). Truncation is silent and this file is read first every session.
 
 Why this file exists: this project has suffered from too many documents and no clear reference point , chats rediscovering settled decisions, contradicting each other, losing work. This file is the fix. It is authoritative, current, and self-maintaining. Keep it that way.
@@ -241,6 +241,12 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 - **KEPT , verified rather than assumed:** SVG `clipPath` on a `<g>`, SVG `text` `paint-order:stroke`, `background-clip:text`, `overflow:hidden` clipping a child, `conic-gradient`, `text-shadow`, `transform`, group `opacity`, OUTSET `box-shadow`.
 - **THE LIMIT, AND IT MATTERS: THE HARNESS DETECTS "DROPPED", NEVER "DRAWN WRONGLY"** , a rounded inset `box-shadow` passes it and is still absent from the real card's corner. **It is not a substitute for reading a captured PNG.**  **, the gold-pixel measurement is in `RULE_EVIDENCE.md`**
 - **ACCEPTED EXCEPTION: the squad shield's `drop-shadow` IS dropped and does not matter** , measured at a mean of 0.31/255 on the card's dark ground. **Blur cannot be shimmed. Do not "fix" it.**
+**A WEBFONT DOES NOT LOAD INSIDE A CAPTURED SVG, SO THE SHIELD'S SQUAD NUMBER SHIPPED IN TIMES (2026-08-31).**  **, evidence in `SILENT_FAILURES.md`** html2canvas serialises an inline `<svg>` to a standalone `data:image/svg+xml` and Chrome renders SVG-as-image with **every resource fetch blocked**, so `font-family="Archivo"` finds no Archivo and falls back. **THE LIVE CARD WAS ALWAYS CORRECT** , the badge text measures 61.342 against Archivo's 61.364 and serif's 46. **This is a capture defect only, and it is the SAME MECHANISM as the `<use href>` failure: a serialised SVG loses everything outside itself.**
+- **GENERIC FAMILIES STILL WORK (they are OS-resolved, not fetched) AND THE SAME WEBFONT DRAWS FINE AS HTML IN THE SAME CAPTURE**, so this is SVG-specific, not an html2canvas font limit. **A fallback stack only buys a system sans that differs per device , it is not the card's type.**
+- **EMBEDDING THE FACE IS IMPOSSIBLE AND WAS TESTED: an `@font-face` with a `data:` URI woff2 inside the SVG's own `<style>` still fell back, while `<style>` rules setting `fill` and `font-family` in the same capture DID apply.** Stylesheets survive; font LOADING is blocked. **Do not re-propose embedding.**
+- **THE FIX IS `VVCore.vvShimShieldNumbers(node)`, a capture-time shim restored from a `finally`** like `vvInlineMarks` and `vvShimInsetRims` , it hides the `<text>` and draws the number as HTML. **The split badge's `paint-order:stroke` becomes an eight-way `text-shadow` at HALF the stroke width** (SVG strokes are centred). **`shieldSplit` needs `luma(c2) <= 0.80`, so a white second colour renders SOLID and never exercises the stroke branch , pick a genuinely dark second colour to test it.**
+- **METHOD: an SVG `<style>` inside an HTML document is DOCUMENT-scoped, not svg-scoped.** The first probe painted every control cell and was void. **Scope by the svg's own id and keep a cell that must not change.**
+
 **A PAGE'S HTML IS NOT CACHE-BUSTED , ONLY ITS SCRIPTS ARE, SO A MARKUP EDIT CAN APPEAR NOT TO HAVE LANDED (2026-08-27).** `vv-core.js` and `vv-marks.js` carry `?v=` tokens; `card.html`, `compare.html` and `rankings.html` carry NOTHING, so the browser serves a stale copy of the page itself while happily fetching the new JS.
 - **Add a query param (`?cb=1`) or hard-refresh before concluding that markup did not apply**, and suspect this FIRST when a file and the page disagree.  **, the wrong conclusion it caused, and the asymmetry that makes it confusing, are in `RULE_EVIDENCE.md`**
 **`el.style.foo = ...` FAILS SILENTLY AGAINST AN `!important` RULE, AND `!important` DOES NOT BEAT `!important` , SPECIFICITY DOES (2026-08-23).**  **, evidence in `SILENT_FAILURES.md`**
@@ -312,17 +318,12 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 
 This is the single ordered launch plan. If an older §F entry lists a "NEXT" that conflicts with this, THIS wins.
 
-**RELIEF PASS 2026-08-29: 94.8% -> 88.0%, AND IT WAS §E THAT PAID, NOT §C.** The 2026-08-28 pass concluded §C was the mass and that §D or §E would have to be reached into next , correct, and §E was the cheaper half. **New file `DATA_DEFECTS.md`, the `SILENT_FAILURES.md` shape applied to the data track: eight §E entries keep their headline and their decision, and only the forensics moved.** §D also gave up the three live production-defect narratives (to `LAUNCH_STAGE.md`), the closed half of the 2026-08-24 defect batch (to `RULE_EVIDENCE.md`) and the tooltip-clamp measurement.
-- **§C IS NOW GENUINELY INCOMPRESSIBLE AND THE NEXT PASS MUST NOT AIM AT IT.** Measured with the documented method, its 55 blocks average ~500 bytes and the largest, `Engine / bands` at 13,043, is **28 separate locked rules**, not one long entry. The 2026-08-24 pass already stripped the evidence out of the six biggest. **What is left is rules, and rules do not move.**
-- **DESTINATION CHECK BEFORE THE NEXT ONE: `CLAUDE_ARCHIVE.md` took the two oldest §F entries and is now at 83.1% , it is CLOSE TO NEEDING ITS OWN SPLIT and cannot take much more.** `DATA_DEFECTS.md` 13.2%, `SILENT_FAILURES.md` 27.5%, `LAUNCH_STAGE.md` 36.3%, `POST_LAUNCH.md` 36.6%, `RULE_EVIDENCE.md` 66.0%, `INGESTION_RECOVERY.md` 44.0%.
-- **METHOD, CARRIED FORWARD AND USED THIS TIME: address blocks by EXACT STRING and assert `count(old)==1` before replacing.** Every move in this pass was an assert-then-replace, and the byte count was read after each one , which is what caught the previous pass's clobbered line and is cheap enough to keep doing.
-
-**RELIEF PASS 2026-08-28: 94.0% -> under 90%**, §C evidence to `RULE_EVIDENCE.md` (64%), 55 headlines in and out, zero lost. **METHOD WARNING: once a pass has shifted a line, address blocks by EXACT STRING, never by index** , an index edit overwrote a blank separator and only the byte count going UP revealed it.
-**RELIEF PASS DONE 2026-08-24: 97.1% -> 87.5%. The file had crossed its own 90% trigger and stayed there for four commits.** What paid, in order: **§D DEFERRED SPECS to their stage files** (the rule at the top of this doc, and the biggest single win , the pre-launch queue alone was 5.3 KB for one open item), then **§C NARRATIVE to `RULE_EVIDENCE.md`** on the six largest rules, the `SILENT_FAILURES.md` shape again , **the RULES stayed in §C as their bold headlines and only the measurement and reasoning moved.**
-- **§C IS STILL THE MASS AND WILL NEED THIS AGAIN: 45.1% of the limit before the pass.** `Engine / bands` alone was 20.9 KB. **§F cannot pay , it is 2.9%.**
-- **A MEASUREMENT WARNING FOR THE NEXT PASS: a regex that finds rule headlines by matching a bold run to end-of-line MERGES BLOCKS and reports one of them at 25 KB.** That sent this pass at the wrong target first. **Split §C on lines that BEGIN with a bold delimiter at column 0, and measure to the next one.**
-- **CHECK BOTH THE SOURCE AND THE DESTINATIONS FIRST.** `CLAUDE_ARCHIVE.md` is at 79.9% and is NOT a viable destination; `POST_LAUNCH.md` 22.7%, `LAUNCH_STAGE.md` 28.4% and `RULE_EVIDENCE.md` 24.7% all have room.
-- **AND VERIFY BY GREPPING FOR THE FACT, NEVER BY TRUSTING A POINTER.** Fourteen load-bearing strings were checked present in `CLAUDE.md` after the move , the priority order, the 1.518 ratio, the 58-rule limit, the seven-card measurement, the three open threads out of the pre-launch queue, and the verdict-mark key contract among them.
+**RELIEF-PASS HISTORY AND METHOD , `DOC_MAINTENANCE.md` (split 2026-08-31, when this file hit 98.8% of the limit).** Three pass narratives moved; **the METHOD stayed here because it is a rule, and it has been paid for three times:**
+- **ADDRESS BLOCKS BY EXACT STRING AND ASSERT `count(old)==1` BEFORE REPLACING, NEVER BY LINE INDEX** , once a pass has shifted a line, an index edit silently overwrites something else. It clobbered a line on 2026-08-28 and **only the byte count going UP revealed it. Read the byte count after every move.**
+- **CHECK THE DESTINATION BEFORE THE SOURCE.** A near-full archive blocks the relocation entirely (it did on 2026-08-11 and had to be split first).
+- **PROMOTE BEFORE YOU MOVE, AND GREP FOR THE FACT , DO NOT TRUST AN ENTRY'S OWN CLAIM THAT IT WAS PROMOTED.** One entry said a finding "is now in §C" and it was not; archiving it would have destroyed the only copy.
+- **RELOCATING MOVES CLOSED HISTORY ONLY, so it stops paying once the bulk is OPEN work.** What has actually paid: DEFERRED SPECS out of §D to their stage files, and EVIDENCE out of §C/§E to `RULE_EVIDENCE.md` / `SILENT_FAILURES.md` / `DATA_DEFECTS.md` , **the headline rule stays, only the measurement leaves.**
+- **MEASURING §C: split on lines that BEGIN with a bold delimiter at column 0 and measure to the next one.** A regex matching a bold run to end-of-line MERGES blocks and reports one at 25 KB, which sends the pass at the wrong target.
 
 **DONE , engine + data track COMPLETE + LIVE (do not reopen):** Stages 0-4 shipped , defensive integration (bounded def_core + best-of), computed endogenous league strength, top-of-scale cap, bands 95/90/85/80, CDM-mislabel cleanup. rt is the fully recalibrated engine. Honours tag family written (629 rows) + wired to cards. Position data-lock clean 2016+. Remaining engine ideas are post-launch/optional (see DEFERRED).
 
@@ -515,6 +516,43 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-08-31 | Four share-poster items, and the squad number was shipping in Times
+
+**1. THE SQUAD NUMBER RENDERED SERIF IN EVERY SHARED IMAGE AND THE LIVE CARD WAS NEVER WRONG.**
+A webfont does not load inside a captured SVG. Rule in §C, full measurement and method in
+`SILENT_FAILURES.md`. Fixed with `VVCore.vvShimShieldNumbers`, the third capture-time shim.
+
+**2. THE POSTER'S BOTTOM-LINE WORDMARK MATCHES THE LOGO ASSET** , the two-tone rule was scoped to
+`.sf-cap`, so `.sf-tag` drew its second V in `currentColor` and one image showed the mark two ways.
+Scoped to `.sf-vv2` itself now, so a third placement cannot regress it.
+
+**3. THE CORNER MARK IS THE REAL ASSET AND THE FALLBACK IS NOW WIRED.** `shBrandText` was described
+as "not dead code" while nothing called it , the same unearned claim this file keeps recording. It
+is an `onerror` fallback now, tested by taking the asset off the server, and `vvSettleImages` waits
+for the image so it runs BEFORE html2canvas clones the DOM. Verified warm and cold, both grounds.
+
+**4. THE FRAME IS NOT CLIPPING THE CAPTION , MEASURED IN THE PNG, ALL FOUR FORMATS.** Clearance
+below the tagline: **x 25.9, igf 41.3, igs 41.3, dl 38.5**, and zero bright pixels below the
+tagline box. A clipped bottom line on X is X's compose preview, downstream of us. **Any 16:9 crop
+of the 4:5 igf frame keeps y 371 to 979 while the caption starts at 1189 , it removes the WHOLE
+bottom block, not one line.**
+
+**INSTRUMENT FAULT WORTH KEEPING: monkey-patching an exported `VVCore.*` function does NOT reach
+`vvRenderShareImage`, which calls the module-local binding.** Two negative controls came back
+byte-identical to the positive case and only the identical byte count showed it. **To break a
+module-internal path, break the input on disk, not the export.** (The other fault, SVG `<style>`
+being document-scoped, is in `SILENT_FAILURES.md`.)
+
+**VERIFIED:** DOM restored byte-for-byte after eight consecutive captures; `vvAuditCaptureSupport`
+still reports only the accepted shield `drop-shadow`, so no new divergence (QA A6, now five).
+
+**NEXT / OPEN:** **`CLAUDE.md` IS AT ~97% OF THE 150k TRUNCATION LIMIT, PAST ITS OWN 90% TRIGGER
+AND THE HIGHEST IT HAS BEEN** , it was already at 95.8% before this session's rule and log entry.
+Truncation is silent and this file is read first every session. **`CLAUDE_ARCHIVE.md` is at 83% and
+cannot absorb much, so the next pass needs its destination decided BEFORE it starts.** Archiving
+the two older §F entries buys only 7.6 KB and spends the archive's last headroom; §F is 7% of the
+file, so it cannot pay. This is the most urgent doc-side item.
 
 ### 2026-08-29 | Two mobile fixes shipped, one built-then-removed on measurement, the transfer halves scoped, and a relief pass that §E paid for
 
