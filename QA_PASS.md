@@ -459,7 +459,19 @@ environment, which is itself the reason they are listed.
   accounts stage. **And `refresh-players.js` is a cron target on PRODUCTION's `vercel.json` and the
   branch defines NO crons**, so after the merge it is deployed and invoked by nothing.
   **This is the same question again at a smaller scale: an endpoint with no caller is a surface
-  nobody chose.** Decide before launch whether the accounts-stage and logging endpoints ship.
+  nobody chose.**
+
+- **STATUS 2026-08-31: DECIDED AND DONE , `auth.js`, `log.js` and `refresh-players.js` REMOVED.**
+  **DEPLOYED FUNCTIONS 6 -> 3** (`analyse`, `db`, `get-seasons`), from 13 at the start of the day.
+  Full record of what each did and why it went is in `POST_LAUNCH.md` so the accounts stage does not
+  rediscover it; recover any of them with `git show cd80460~1:api/<name>.js`.
+  **`locker_profiles` was EMPTY, so nothing was orphaned. `comparison_log` (44 rows) and `search_log`
+  (11) were NOT deleted** , removing the endpoint stops collection, it does not remove what exists,
+  and what happens to those 55 rows is a separate decision that has not been taken.
+  **SEQUENCING NOTE: production's `index.html` DOES call `/api/auth` twice and `/api/log` once.** The
+  branch's does not, and the merge is a fast-forward, so pages and functions are replaced in the same
+  instant. **If the merge is ever split or partially reverted, restore these three or production's
+  home page 404s on them.**
 ### C6. Vercel plan and the function limit
 - **Check:** which plan, and whether the deployed function count is within it.
 - **STATUS 2026-08-30: PASS, and this item found the production build failure that three

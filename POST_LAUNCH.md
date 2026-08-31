@@ -578,3 +578,64 @@ alone drove it 10px INTO the kicker above.** The scale now drops instead (`.gkv-
 `margin-top:30px`), measured clear at 12px. **The class is set in JS rather than by `:has()`** , a
 correctness-critical layout should not depend on a selector's support matrix.
 Re-fit on `resize`, since the result is measured and a width change invalidates it.
+
+---
+
+# THREE ENDPOINTS REMOVED 2026-08-31 , WHAT WENT AND WHY, SO THE NEXT STAGE DOES NOT REDISCOVER IT
+
+**All three were DEPLOYED, PUBLIC, UNAUTHENTICATED and had NO CALLER on the branch.** They were
+removed rather than guarded, for the reason §E already gives about `api/search-player.js`: a public
+endpoint that writes is a corruption path whether or not anything calls it today, and **removing the
+surface beats guarding it.** Deployed functions **6 -> 3** (13 at the start of the day).
+
+**RECOVER THEM WITH `git show cd80460~1:api/<name>.js`** , they are in history, not lost. **Read this
+section before rebuilding any of them from scratch.**
+
+## `api/auth.js` , 110 lines , THE ACCOUNTS STAGE MUST READ THIS FIRST
+
+**What it did:** wrapped Supabase Auth for sign-in and registration, and **upserted into
+`locker_profiles`**. Read `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_ANON_KEY`.
+
+**Why it went:** unauthenticated, uncalled by any page on the branch, and it **wrote with the SERVICE
+KEY** , which bypasses RLS entirely. It belonged to an accounts stage that is **not built**
+(`ACCOUNTS_STAGE_SPEC.md`), so it was a live write path for a feature that does not exist.
+
+**`locker_profiles` is EMPTY (0 rows), so nothing was lost and no user data was orphaned.**
+
+**WHAT THE ACCOUNTS STAGE MUST NOT DO WHEN IT REBUILDS THIS:** do not restore it as-is. **A
+service-key write behind an unauthenticated HTTP endpoint is the same shape as `search-player.js`**
+, the endpoint that §E blames for the PL 2025/26 corruption. Auth writes belong behind a verified
+session, with RLS doing the enforcing, not a service key doing the bypassing.
+
+## `api/log.js` , 63 lines , ANALYTICS GETS BUILT DELIBERATELY OR NOT AT ALL
+
+**What it did:** inserted into **`comparison_log`** (`session_id`, both player names, both seasons,
+both scores, the winner, the deciding factor) and **`search_log`** (`session_id` + the query).
+
+**Why it went:** no caller on the branch, and it is a **session-linked personal-data surface with no
+product behind it.** §E already recorded it as a decision to take before launch. Last writes were
+**2026-06-30** (comparisons) and **2026-06-11** (searches).
+
+**THE DATA IS STILL THERE AND WAS NOT TOUCHED: `comparison_log` holds 44 rows, `search_log` 11.**
+Removing the endpoint stops new collection; it does not delete what exists. **Deciding what happens
+to those 55 rows is a separate call and has not been made.**
+
+**IF ANALYTICS IS EVER WANTED, IT IS A PRODUCT DECISION WITH A PRIVACY NOTICE ATTACHED**, not an
+endpoint quietly restored. That is the whole reason this one went.
+
+## `api/refresh-players.js` , 11 lines , ALREADY A NO-OP
+
+**What it did: nothing.** The file is 11 lines and its own header says **RETIRED** , the BSD career
+feed it drove was writing wrong teams, positions and ages. It touched no table and read no env var.
+
+**Why it went:** it was still a **cron target in PRODUCTION's `vercel.json`** (`0 3 * * *`, daily)
+while **the branch's `vercel.json` defines no crons at all.** So after the merge it would have
+deployed and been invoked by nothing. **The cron and the function disappear in the same commit,
+which is the only tidy way to remove a scheduled job.**
+
+## AND THE MERGE SEQUENCING, WHICH IS WHY THIS IS SAFE
+
+**PRODUCTION'S `index.html` DOES call `/api/auth` (twice) and `/api/log`.** The branch's does not.
+**The merge is a fast-forward, so the pages and the functions are replaced in the same instant** ,
+there is no window in which the old page exists without its endpoint. **If the merge is ever split
+or partially reverted, restore these three or production's home page will 404 on them.**
