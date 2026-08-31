@@ -214,6 +214,102 @@
     };
   }
 
+  // ── SHIM THE SHIELD NUMBER BEFORE A CANVAS CAPTURE, AND PUT IT BACK ───────────
+  //  THIRD html2canvas BLIND SPOT, and the first one that is about TYPE rather than
+  //  geometry. **A WEBFONT DOES NOT LOAD INSIDE A CAPTURED SVG.** html2canvas draws an
+  //  inline `<svg>` by serialising it to a standalone `data:image/svg+xml` and handing
+  //  that to an `Image`, and Chrome renders SVG-as-image in a restricted mode that blocks
+  //  every resource fetch. So `font-family="Archivo"` on the badge's `<text>` finds no
+  //  Archivo and falls back , the squad number went out in the browser's DEFAULT SERIF,
+  //  a Times, on a card face where every other glyph is Archivo or Barlow Condensed.
+  //
+  //  MEASURED 2026-08-31, ink-width of "23" inside one capture, four cells with controls:
+  //  SVG Archivo 85 == SVG serif 85 (dropped), SVG monospace 99 (generic families DO
+  //  work , they are resolved by the OS, not fetched), and the SAME webfont as HTML text
+  //  in the SAME capture 114 (so this is not "html2canvas cannot do webfonts", it is
+  //  specifically SVG). The live DOM is CORRECT and always was: the badge text measures
+  //  61.342 against Archivo's 61.364 and serif's 46. **This is a capture defect only.**
+  //
+  //  IT IS THE SAME MECHANISM AS THE `<use>` FAILURE ABOVE , a serialised SVG loses
+  //  everything outside itself , which is why the two shims sit together.
+  //
+  //  EMBEDDING THE FACE DOES NOT WORK AND WAS TESTED, NOT ASSUMED. An `@font-face` with
+  //  the woff2 as a `data:` URI inside the SVG's own `<style>` still measured 85, i.e.
+  //  the fallback, while a `<style>` rule setting `fill` in the same capture DID apply
+  //  (red 3016, dark 0) and one setting `font-family:monospace` DID apply (99). So
+  //  stylesheets survive the serialisation and font LOADING is what is blocked, data URIs
+  //  included. There is no way to get the face in from the SVG side.
+  //  (Method note: an SVG `<style>` inside an HTML document is DOCUMENT-scoped, so the
+  //  first run of that probe painted every control red and was void. Scope by the svg's
+  //  own id, and keep a cell that must NOT change.)
+  //
+  //  THE SHIM: hide the `<text>` and put the number over the badge as HTML, which the
+  //  capture draws with the real font. Not a card change , §C: the card is the product
+  //  and the capture is a consumer of it, so when they disagree, shim the capture.
+  //
+  //  The split-badge outline becomes an eight-way `text-shadow` rather than a stroke:
+  //  `paint-order:stroke` is SVG-only, and the 2026-08-27 support sweep lists `text-shadow`
+  //  as KEPT. SVG strokes are centred, so only the outer half shows , hence width/2.
+  //
+  //  Same contract as the two shims above: call the returned function from a `finally`.
+  function vvShimShieldNumbers(node){
+    if (!node || !node.querySelectorAll) return function(){};
+    const touched = [];
+    node.querySelectorAll('svg.cbadge').forEach(function(svg){
+      const t = svg.querySelector('text');
+      if (!t || !t.textContent) return;
+      const wrap = svg.parentNode;
+      if (!wrap) return;
+      const box = svg.getBoundingClientRect();
+      if (!box.width || !box.height) return;             // never measure off a zero box , §D
+      // viewBox is "0 0 100 116" and every number below is in those units.
+      const vb = (svg.getAttribute('viewBox') || '0 0 100 116').trim().split(/\s+/).map(Number);
+      const vw = vb[2] || 100, vh = vb[3] || 116;
+      const sx = box.width / vw, sy = box.height / vh;
+      const fs = parseFloat(t.getAttribute('font-size')) || 46;
+      const cx = parseFloat(t.getAttribute('x')) || vw / 2;
+      const cy = parseFloat(t.getAttribute('y')) || vh / 2;
+      const sw = parseFloat(t.getAttribute('stroke-width')) || 0;
+      const stroke = t.getAttribute('stroke');
+
+      const el = document.createElement('div');
+      el.setAttribute('data-vv-shirtnum', '1');
+      // The glyph is centred on the SVG's own (x,y) by translating off its own box, so the
+      // shim does not depend on line-height resolving the same way the SVG baseline does.
+      let css = 'position:absolute;left:' + (cx * sx) + 'px;top:' + (cy * sy) + 'px;' +
+        'transform:translate(-50%,-50%);pointer-events:none;white-space:pre;line-height:1;' +
+        'font-family:Archivo,sans-serif;font-weight:900;font-size:' + (fs * ((sx + sy) / 2)) + 'px;' +
+        'color:' + (t.getAttribute('fill') || '#fff') + ';';
+      if (stroke && sw > 0){
+        const r = (sw * ((sx + sy) / 2)) / 2;            // SVG strokes are centred
+        const dirs = [[1,0],[-1,0],[0,1],[0,-1],[0.7,0.7],[-0.7,0.7],[0.7,-0.7],[-0.7,-0.7]];
+        css += 'text-shadow:' + dirs.map(function(d){
+          return (d[0]*r).toFixed(2) + 'px ' + (d[1]*r).toFixed(2) + 'px 0 ' + stroke; }).join(',') + ';';
+      }
+      el.style.cssText = css;
+      el.textContent = t.textContent;
+
+      // The wrapper must establish a containing block, and it must be put back exactly as
+      // found , same reasoning as the rim shim: an element that had no style attribute must
+      // not be left carrying `style=""`.
+      const hadStyle = wrap.getAttribute('style');
+      if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+      const hadVis = t.getAttribute('visibility');
+      t.setAttribute('visibility', 'hidden');
+      wrap.appendChild(el);
+      touched.push({ el: el, t: t, hadVis: hadVis, wrap: wrap, hadStyle: hadStyle });
+    });
+    if (!touched.length) return function(){};
+    return function restore(){
+      touched.forEach(function(o){
+        if (o.el.parentNode) o.el.parentNode.removeChild(o.el);
+        if (o.hadVis == null) o.t.removeAttribute('visibility'); else o.t.setAttribute('visibility', o.hadVis);
+        if (o.hadStyle == null) o.wrap.removeAttribute('style'); else o.wrap.setAttribute('style', o.hadStyle);
+      });
+      touched.length = 0;                                // idempotent, as the two above are
+    };
+  }
+
   //  Split a computed box-shadow on its TOP-LEVEL commas only. A plain .split(',') tears
   //  `rgba(0, 0, 0, 0.85)` into four fragments and every layer after it is misread.
   function vvSplitShadow(v){
@@ -347,7 +443,7 @@
     // single digits get a larger font so they fill the badge the same way; 3 digits shrink slightly.
     const numStr = (d.number!=null && d.number!=='') ? String(d.number) : '';
     const numSize = numStr.length>=3 ? 42 : (numStr.length===2 ? 46 : 56);
-    const num = numStr ? `<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="${numSize}" fill="${ink}" text-anchor="middle" dominant-baseline="central"${numStroke}>${numStr}</text>` : '';
+    const num = numStr ? `<text x="50" y="58" font-family="Archivo, Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="${numSize}" fill="${ink}" text-anchor="middle" dominant-baseline="central"${numStroke}>${numStr}</text>` : '';
     const uid = 'b'+Math.random().toString(36).slice(2,8);
     // badge fill: SOLID primary by default; split only for a genuine 2nd colour
     const badgeFill = split
@@ -2647,7 +2743,7 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       +'<g clip-path="url(#'+uid+')">'+fill+'</g>'
       +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/>'
       +'<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>'
-      +'<text x="50" y="58" font-family="Archivo" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
+      +'<text x="50" y="58" font-family="Archivo, Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="'+numSize+'" fill="'+ink+'" text-anchor="middle" dominant-baseline="central"'+numStroke+'>'+numStr+'</text>'
     +'</svg>';
   }
   // ── SHARED ROW CSS (#) , the rules that style what rankRowHTML emits ──────────────
@@ -4480,7 +4576,15 @@ body.light .vvload{color:#1A1917}
 .sf-vv{letter-spacing:-0.06em}
 .sf-vv .a{color:currentColor}.sf-vv .b{color:var(--emph)}
 /* The caption's own wordmark , same two-tone treatment as the brand, see shCapHTML. */
-.sf-cap .sf-vv2 .b{color:var(--emph)}
+/*  THE WORDMARK IS TWO INKS EVERYWHERE IT APPEARS: first V in the ground's own ink, second V
+    pink, ONDERXI back in the ground's ink. §C: that interlocked pair IS the identity.
+    This rule was scoped to .sf-cap only, so the BOTTOM LINE , .sf-tag , rendered its second V
+    in currentColor and the poster showed the mark two different ways in one image.
+    Scoped to .sf-vv2 itself now, so any placement gets it and a third one cannot regress.
+    "Charcoal" is the LIGHT-ground value of that ink; on the dark frame the same role is the
+    cream. Using currentColor rather than a literal keeps the pair correct on both grounds. */
+.sf-vv2 .a{color:currentColor}
+.sf-vv2 .b{color:var(--emph)}
 /*  NO nowrap ON A LINE WHOSE CONTENT VARIES. The caption is a player's name, and names run
     from "Pelé" to "Pierre-Emerick Aubameyang"; on the square formats the short side IS the
     width, so the type scales up while the room does not. Measured at the shipped scale, a
@@ -4552,7 +4656,43 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     SHARE_CSS_IN = true;
   }
 
-  function shBrand(px){
+  /*  THE CORNER MARK USES THE REAL LOGO ASSET, NOT A TEXT LOCKUP. assets/spinelogo-dark.png and
+      spinelogo-light.png are 760x340 and are already the wordmark on nine pages, so the poster was
+      drawing a SECOND, hand-built version of a mark the platform already owns , the display-case
+      defect §C records: two drawings of one thing drift and nothing says so.
+      TWO FILES, ONE PER GROUND. The asset is baked, not tinted, so the dark frame takes the dark
+      file and the light frame the light one. `light` is passed in rather than read from the theme,
+      because the frame's ground does not follow the page.
+      VERIFIED IN A CAPTURED PNG, BOTH GROUNDS, WARM AND COLD (2026-08-31). html2canvas draws
+      the asset: 88 distinct tones and 10,577 pink pixels in the corner box on the dark frame,
+      and the light file on the light frame. The COLD path was tested separately, because
+      vvRenderShareImage does not itself wait for the image , a unique `?cold=` src so the
+      browser cache could not mask it, captured immediately, `img.complete === false` at the
+      moment the capture started. It drew anyway, twice: html2canvas loads images it finds in
+      the clone. The wait added below makes that a guarantee rather than a dependency on
+      library behaviour we do not control.
+
+      THE TEXT LOCKUP IS THE FALLBACK, AND IT IS NOW ACTUALLY WIRED. It used to be described
+      here as "not dead code" while nothing called it, which is the same unearned claim this
+      file keeps recording elsewhere , a fallback nobody invokes is not a fallback, it is a
+      comment. An img that fails to load leaves a BLANK CORNER, so `onerror` swaps in the
+      two-tone lockup and the corner always carries the mark. */
+  function shBrand(px, light){
+    const h = Math.round(px * 2.0);
+    return '<img class="sf-brandimg" src="/assets/spinelogo-' + (light ? 'light' : 'dark') +
+           '.png" alt="VVonderXI" style="height:' + h + 'px;width:auto;display:block"' +
+           ' onerror="this.replaceWith(VVCore.vvBrandTextNode(' + px + '))">';
+  }
+  //  The fallback as a NODE, not a string, so the onerror above can swap it in place without
+  //  reserialising the parent. It carries its own font-size because .sf-brand's size is set
+  //  inline on the wrapper for the img's benefit and the lockup reads the same value.
+  function vvBrandTextNode(px){
+    const s = document.createElement('span');
+    s.style.fontSize = px + 'px';
+    s.innerHTML = shBrandText(px);
+    return s;
+  }
+  function shBrandText(px){
     return '<span class="sf-vv"><span class="a">V</span><span class="b">V</span></span>' +
            '<span style="font-size:' + Math.round(px * SH_TYPE.sub) + 'px;letter-spacing:.2em">ONDERXI</span>';
   }
@@ -4585,9 +4725,9 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       is what was designed and the output should match it.
       A container named for a job it does not do is its own trap , the name is the reason
       nobody noticed for as long as they didn't.  */
-  function shChrome(F, capText){
+  function shChrome(F, capText, light){
     const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F), tp = shTagPx(F);
-    return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp) + '</div>' +
+    return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp, light) + '</div>' +
            '<div class="sf-capwrap" style="bottom:' + (P * 0.7) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
              'width:' + (F.w - P * 2) + 'px">' +
              '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText) + '</div>' +
@@ -4630,7 +4770,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
       'flex-direction:column;align-items:center;justify-content:center;' +
       'padding:' + P + 'px ' + P + 'px ' + (P + capZone) + 'px ' + P + 'px">' +
-      shChrome(F, vvShareCaption(spec)) +
+      shChrome(F, vvShareCaption(spec), light) +
       '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw) + '</div></div>';
   }
 
@@ -4692,7 +4832,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
       (wide ? 'align-items:center;padding:' + P + 'px ' + (P * 1.4) + 'px;gap:' + (P * 1.2) + 'px'
             : 'flex-direction:column;align-items:center;justify-content:center;padding:' + P + 'px;gap:' + (28 * S) + 'px') +
-      '">' + shChrome(F, vvShareCaption(spec)) + inner + '</div>';
+      '">' + shChrome(F, vvShareCaption(spec), light) + inner + '</div>';
   }
 
   function vvShareFrameHTML(spec, F, light){
@@ -4724,6 +4864,30 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const lo   = pad + half, hi = fr.width - pad - half;
     cap.style.left = (lo > hi ? fr.width / 2 : Math.max(lo, Math.min(hi, want))) + 'px';
     cap.style.right = 'auto';
+  }
+
+  /*  WAIT FOR EVERY <img> IN THE FRAME TO SETTLE BEFORE CAPTURING. The brand corner is an
+      asset now, and an image that has not resolved is a BLANK CORNER in the PNG , the exact
+      silent failure this file records for `<use>` and the inset rim. It also gives the
+      `onerror` fallback a chance to run BEFORE html2canvas clones the DOM, which is what
+      makes that fallback real rather than decorative.
+      It resolves on error as well as load, deliberately: the point is that the outcome is
+      DECIDED, not that it succeeded, and a broken image must not hang the share.  */
+  function vvSettleImages(node){
+    if (!node || !node.querySelectorAll) return Promise.resolve();
+    const imgs = Array.prototype.slice.call(node.querySelectorAll('img'))
+                      .filter(function(im){ return !im.complete; });
+    if (!imgs.length) return Promise.resolve();
+    return Promise.all(imgs.map(function(im){
+      return new Promise(function(res){
+        //  A bounded wait, for the same reason vvCopyText has one: a request that never
+        //  settles must not leave the share control silent forever.
+        const done = function(){ clearTimeout(t); res(); };
+        const t = setTimeout(done, 4000);
+        im.addEventListener('load', done, { once:true });
+        im.addEventListener('error', done, { once:true });
+      });
+    }));
   }
 
   function vvLoadH2C(){
@@ -4803,12 +4967,15 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       const frame = stage.firstElementChild;
       vvCentreShareCaption(frame);
       vvAuditCaptureSupport(frame);
-      const undoMarks = vvInlineMarks(frame), undoRims = vvShimInsetRims(frame);
-      return html2canvas(frame, { backgroundColor: null, scale: 2, useCORS: true, logging: false })
-        .then(function(cv){
-          return new Promise(function(res){ cv.toBlob(function(b){ res({ blob: b, format: F }); }, 'image/png'); });
-        })
-        .finally(function(){ undoRims(); undoMarks(); stage.remove(); });
+      return vvSettleImages(frame).then(function(){
+        const undoMarks = vvInlineMarks(frame), undoRims = vvShimInsetRims(frame),
+              undoNums = vvShimShieldNumbers(frame);
+        return html2canvas(frame, { backgroundColor: null, scale: 2, useCORS: true, logging: false })
+          .then(function(cv){
+            return new Promise(function(res){ cv.toBlob(function(b){ res({ blob: b, format: F }); }, 'image/png'); });
+          })
+          .finally(function(){ undoNums(); undoRims(); undoMarks(); stage.remove(); });
+      });
     });
   }
 
@@ -5048,7 +5215,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
