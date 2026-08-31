@@ -6,8 +6,8 @@
 //  Powers the COMPETITIVE-DEPTH league factor (§42).
 //  ~144 calls total (9 leagues × 16 seasons). Resumable, idempotent.
 //
-//  RUN:  CMD="node api/import-standings.js"            (all leagues)
-//        CMD="node api/import-standings.js --league PL" (one league)
+//  RUN:  CMD="node scripts/import/import-standings.js"            (all leagues)
+//        CMD="node scripts/import/import-standings.js --league PL" (one league)
 // ══════════════════════════════════════════════════════════════════
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');

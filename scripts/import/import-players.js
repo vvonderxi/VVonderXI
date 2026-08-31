@@ -22,10 +22,10 @@
 //     row (and its rt) untouchable BY CONSTRUCTION — never for fresh-import overwrites.
 //
 //  RUN (one league at a time):
-//    node api/import-players.js --league PL --dry-run                  → validate, no writes
-//    node api/import-players.js --league PL --insert-only --dry-run    → recovery preview (NEW rows only)
-//    node api/import-players.js --league PL --insert-only              → recovery run (additive, rt-safe)
-//    node api/import-players.js --league PL                            → fresh import (overwrites)
+//    node scripts/import/import-players.js --league PL --dry-run                  → validate, no writes
+//    node scripts/import/import-players.js --league PL --insert-only --dry-run    → recovery preview (NEW rows only)
+//    node scripts/import/import-players.js --league PL --insert-only              → recovery run (additive, rt-safe)
+//    node scripts/import/import-players.js --league PL                            → fresh import (overwrites)
 //  Leagues: PL LL SA BL L1 PRT ERE BPL TR
 // ══════════════════════════════════════════════════════════════════════
 

@@ -1,7 +1,7 @@
 // apifootball-probe.js — READ-ONLY. No DB writes. ~12 calls, <1 min.
 // Confirms league IDs, available seasons (true history depth), the per-player
 // stat field shape, and pagination — so we build the schema/importer to reality.
-// Run like the others:  CMD="node api/apifootball-probe.js"
+// Run like the others:  CMD="node scripts/import/apifootball-probe.js"
 
 const BASE = 'https://v3.football.api-sports.io';
 const KEY  = process.env.APIFOOTBALL_KEY;

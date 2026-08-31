@@ -2,7 +2,7 @@
 // VVonderXI — VERIFY granular position data exists in API-Football lineups.
 // Pulls ONE Premier League fixture's lineup and prints each player's grid.
 // If grid shows "row:column" coords, we can derive LB/CB/RB/CDM/CAM/etc.
-//   RUN:  CMD="node api/verify-positions.js"
+//   RUN:  CMD="node scripts/import/verify-positions.js"
 require('dotenv').config();
 const BASE='https://v3.football.api-sports.io';
 const KEY=process.env.APIFOOTBALL_KEY;

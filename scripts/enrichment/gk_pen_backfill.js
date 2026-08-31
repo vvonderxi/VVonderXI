@@ -5,10 +5,10 @@
 //  Populates SIX columns on EXISTING player_season_cards rows:
 //    starts, goals_conceded, saves, penalties_scored, penalties_missed, penalties_saved
 //  (penalties_won was captured once, measured, and dropped on 2026-08-19 , see the note
-//   in api/import-players.js. The field list comes from NEW_FIELDS, so this script needed
+//   in scripts/import/import-players.js. The field list comes from NEW_FIELDS, so this script needed
 //   no change beyond this comment.)
 //
-//  WHY NOT THE IMPORTER. api/import-players.js writes with upsert(). Its default
+//  WHY NOT THE IMPORTER. scripts/import/import-players.js writes with upsert(). Its default
 //  mode DO-UPDATEs every column, which rewrites goals/assists/minutes and therefore
 //  MOVES rt. Its --insert-only mode is ON CONFLICT DO NOTHING, which would skip all
 //  57,234 existing rows and finish with a clean summary having written nothing. So
@@ -91,7 +91,7 @@ const { createClient } = require('@supabase/supabase-js');
 const {
   LEAGUES, MIN_MIN, DELAY_MS, seasonCode, sleep,
   af, deriveCeilings, resolveSeasonStat, extractNewFields, NEW_FIELDS, QUOTA,
-} = require('../../api/import-players.js');
+} = require('../import/import-players.js');
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 

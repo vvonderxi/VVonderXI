@@ -432,6 +432,34 @@ environment, which is itself the reason they are listed.
   secret. **Moving them also drops the deployed function count from 13 to 6**, which puts the project
   back inside Hobby's cap of 12 and makes Pro a choice rather than a dependency.
 - **Who:** Lucas decides, ~30 minutes to execute either way.
+
+- **STATUS 2026-08-31: DONE , REMOVED, NOT GUARDED.** All seven moved to `scripts/import/`.
+  **Removing the write surface beats guarding it**, and it is the same defect class as
+  `api/search-player.js`, which §E blames for the PL 2025/26 corruption.
+  **DEPLOYED FUNCTION COUNT 13 -> 6**, which puts the project back inside Hobby's cap of 12 and
+  makes Vercel Pro a choice rather than a dependency.
+  Two callers updated, both verified: the workflow's `node api/...` invocations, and
+  **`scripts/enrichment/gk_pen_backfill.js`, which requires eleven exports from `import-players.js`**
+  , the dependency §D warns about. Re-checked after the move: all eleven resolve, every file parses,
+  and the only endpoint any page calls (`/api/analyse`) is present.
+
+- **AND THE MOVE EXPOSED THAT FIVE OF THE SIX SURVIVORS HAVE NO CALLER EITHER. Logged, not acted on.**
+
+  | endpoint | caller | writes | guard |
+  |---|---|---|---|
+  | `analyse.js` | `/api/analyse` | update, upsert | none |
+  | `auth.js` | **none** | **upsert** | none |
+  | `db.js` | none | read-only | none |
+  | `get-seasons.js` | none | read-only | none |
+  | `log.js` | **none** | **insert** | none |
+  | `refresh-players.js` | none | read-only | none |
+
+  **`auth.js` and `log.js` are public, uncalled and write.** `log.js` is already logged in §E as a
+  privacy decision. **`auth.js` is not logged anywhere** , it upserts and belongs to the unbuilt
+  accounts stage. **And `refresh-players.js` is a cron target on PRODUCTION's `vercel.json` and the
+  branch defines NO crons**, so after the merge it is deployed and invoked by nothing.
+  **This is the same question again at a smaller scale: an endpoint with no caller is a surface
+  nobody chose.** Decide before launch whether the accounts-stage and logging endpoints ship.
 ### C6. Vercel plan and the function limit
 - **Check:** which plan, and whether the deployed function count is within it.
 - **STATUS 2026-08-30: PASS, and this item found the production build failure that three

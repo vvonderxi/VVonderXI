@@ -2,7 +2,7 @@
 // VVonderXI — check how GRANULAR the /players/squads position field is.
 // If it gives "Centre-Back"/"Left-Back" etc → cheap path (20 calls/league-season).
 // If only "Defender" → stick with lineup grids. One call, decides our strategy.
-//   RUN:  CMD="node api/verify-squad-positions.js"
+//   RUN:  CMD="node scripts/import/verify-squad-positions.js"
 require('dotenv').config();
 const BASE='https://v3.football.api-sports.io';
 const KEY=process.env.APIFOOTBALL_KEY;

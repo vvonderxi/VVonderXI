@@ -4,8 +4,8 @@
 //  Fixes CDM/CAM: classifies mids by depth RELATIVE to that game's defensive
 //  & forward rows (formation-independent). Stores FULL position distribution
 //  (so future logic tweaks never need a re-pull). Resumable + scopeable.
-//   RUN:  CMD="node api/import-positions-v2.js --league PL"
-//         CMD="node api/import-positions-v2.js --league PL --from 2020 --to 2025"
+//   RUN:  CMD="node scripts/import/import-positions-v2.js --league PL"
+//         CMD="node scripts/import/import-positions-v2.js --league PL --from 2020 --to 2025"
 // ══════════════════════════════════════════════════════════════════
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');

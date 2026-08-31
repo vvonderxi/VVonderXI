@@ -5,8 +5,8 @@
 //  → aggregate most-common specific position across the season → store.
 //  Derives LB/CB/RB · CDM/CM/CAM/LM/RM · LW/ST/RW · GK from grid row:col.
 //  Resumable (checkpoints per league-season). Idempotent upsert.
-//   RUN:  CMD="node api/import-positions.js"            (all leagues)
-//         CMD="node api/import-positions.js --league PL" (one league)
+//   RUN:  CMD="node scripts/import/import-positions.js"            (all leagues)
+//         CMD="node scripts/import/import-positions.js --league PL" (one league)
 // ══════════════════════════════════════════════════════════════════
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
