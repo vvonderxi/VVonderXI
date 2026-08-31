@@ -414,7 +414,16 @@ body.light .matchup{border-color:rgba(0,0,0,.06)}
      0.78 is the first value that clears; 0.80 is taken for margin and a round number.
      SCOPED TO .vsect ON PURPOSE: the same alpha elsewhere on the page sits on the dark
      stage, not the green panel, and does not need raising. This is one rule, not nineteen. */
+  /*  --vs-muted IS GROUND-DEPENDENT AND HAD NO LIGHT VALUE, WHICH MADE IT A TRAP.
+      .vsect is the Under-the-Lights GRADIENT in dark and #FBF8F2 in light, so one cream
+      token cannot serve both. It was defined once, cream, and every consumer that did not
+      carry its own body.light override rendered cream-on-cream: measured at ratio 1.08.
+      The pre-existing consumers (.vtraj-t, .vtcap, the axis fills) each had their own light
+      rule and were fine, which is exactly why the hole survived , the token was broken and
+      nothing that used it showed the damage. The keeper section read the raw token and did.
+      DEFINE BOTH GROUNDS ON THE TOKEN. A new consumer must not have to know this. */
   .vsect{--vs-muted:rgba(243,237,224,0.80)}
+  body.light .vsect{--vs-muted:#5f594e}
   .vsect .vsect-t, .vsect .vsect-d, .vsect .h2hlabel, .vsect .vd-l,
   .vsect .vtraj-t, .vsect .vtcap, .vsect .vtavg .gl, .vsect .pkmgl{ color:var(--vs-muted) }
   .vsect .tjyl, .vsect .tjyr, .vsect .tjxl, .vsect .tylab, .vsect .txlab{ fill:var(--vs-muted) }
@@ -1008,8 +1017,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260830f"></script>
-<script src="/vv-core.js?v=20260830f"></script>
+<script src="/vv-marks.js?v=20260831a"></script>
+<script src="/vv-core.js?v=20260831a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
