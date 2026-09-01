@@ -668,3 +668,24 @@ all-or-nothing across both.
 to make that axis sayable. So the platform currently says both things in one section , percentile
 on the bar, save rate on the trajectory. **That is defensible (a position, then a history) and it is
 also the strongest argument for C.** Decide the pair together, not the chart alone.
+
+
+---
+
+# RELOCATED FROM `CLAUDE.md` SS D ON 2026-09-01 , THE SHIPPED GOALKEEPER CARD
+
+**Moved during the ninth relief pass; the three decisions that must not be re-derived stayed in SS D.**
+
+### GOALKEEPER CARD , **BUILT AND LIVE ON THE BRANCH 2026-08-28. THE LOCKED THREE-SPOKE RADAR WAS SUPERSEDED BY MEASUREMENT , A KEEPER CARD HAS NO RADAR AT ALL.**  **, the superseded spec and the three reasons are in `POST_LAUNCH.md`**
+**`VVCore.keeperScore()` + `VVCore.keeperPanelHTML()`, wired into card.html's Profile layer, plus the `s-gk` playbook section.** A percentile LADDER carries the score, a saved-versus-conceded bar carries the composition, the recorded figures are stated, and the shot-quality limit is published. **The decisions that must not be re-derived:**
+- **NO RADAR, AND NOT BECAUSE THREE SPOKES LOOKED THIN.** `penalties_saved` has no derivable denominator (`penalties_missed` is zero for all but 2 of 1,583 keepers) and at 10% weight it put Trapp above Donnarumma while dropping ter Stegen to 39th; **workload measures the team, not the keeper , shots faced against save% is -0.118, against goals conceded +0.835.** Both spokes fail, and one honest axis is not a shape.
+- **GATES: 800 minutes AND 60 shots faced, 2015+. 1,920 of 4,289 keeper cards score**, and every card that does not gets a NAMED reason rather than a blank.
+- **`KEEPER_SAVE_LADDER` IS AN EMBEDDED SNAPSHOT OF THE POOL, NOT A LIVE QUERY.** Re-measure it if the keeper population changes materially , **nothing warns you.**
+- **THE 75 CAP IS UNTOUCHED AND IS NOW STATED ON THE CARD**, one line under the score. Without it two keepers at the 54th and 97th percentile both print 75 and the ladder beneath silently contradicts the number above.
+- **THE PANEL LIVES IN `vv-core.js`, NOT IN card.html** , §C's rule about card rules trapped in the pages. Every colour is a token so the host surface decides; the one literal is the conceded block's `rgba(0,0,0,.10)`, which assumes a LIGHT ground (correct for `.layer`, which is cream in BOTH themes).
+- **[BOTH CLOSED , VERIFIED IN THE TREE 2026-08-30. THIS LINE CLAIMED THEY WERE OPEN AND THEY WERE ALREADY SHIPPED.]** `vvindex.html` DOES carry the keeper disclosure , **"The five dimensions above are outfield measures. A keeper is read on a different set"** , and **`s-gk` DOES have a mark in `vv-marks.js`**, so nothing falls through to the `pbMarks` glove-emoji fallback. **A NEXT-line written before the work is not re-read after it**, which is how both survived as outstanding.
+### DOC , `CLAUDE.md` IS OUT OF ROOM AND NEEDS A STRUCTURAL ANSWER, NOT A NINTH RELIEF PASS (logged 2026-08-31, NOT started, NOT launch-blocking)
+**THE ITEM, THE MEASUREMENTS AND FOUR CANDIDATE SHAPES ARE IN `DOC_MAINTENANCE.md` , READ IT BEFORE TOUCHING THIS.** Headline: **98.2%** of the 150k limit , 97.5% after the eighth pass, and **logging this item cost the other 0.7**, which is the problem stated in one line. **§C alone is 42%** and was called incompressible on 2026-08-29 having grown back since, §F is 8% and cannot pay, `CLAUDE_ARCHIVE.md` is at 83% and would need its own split first.
+- **THE TREND IS THE ITEM, NOT THE LEVEL.** Every pass strips EVIDENCE out of §C and leaves the RULES, so §C converges on pure rules and then grows one rule per session forever. **A file that gains rules faster than it can shed evidence has no steady state.** The trigger has fired four times in eight days (08-24, 08-28, 08-29, 08-31).
+- **SO A NINTH PASS THAT BUYS 6 KB AND RESETS THE CLOCK TO 90% IS THE WRONG ANSWER, AND IS WHAT WILL HAPPEN BY DEFAULT.**
+

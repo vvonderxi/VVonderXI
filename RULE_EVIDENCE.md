@@ -628,3 +628,19 @@ A rounded inset `box-shadow` passes `vvAuditCaptureSupport` and is still absent 
 - **(3) and the card's `vvCopyLink`/`vvShareOut` were four more instances of the report-success-before-it-resolves rule already in §C**, including a comment asserting the property directly above code that violated it twice.
 
 **(4) CLOSED 2026-08-25 BY RELABELLING ON CAPABILITY (`f60354b`). The chain was never broken , it was the LABEL.** Measured on desktop Chrome 151: **`navigator.share` and `navigator.canShare` are both `undefined`**, so rungs 1 and 2 cannot fire and the download IS the designed rung 3. **A button reading "Share this verdict" that downloads is the same defect class as a waitlist thanking someone for an email it never sent** , the control reports an outcome that did not happen, which is the §C success-gating rule one step earlier, at the PROMISE rather than the report. `VVCore.vvShareCapability()` now drives the wording and the icon on both surfaces. **Do not "simplify" this back to a fixed label.**
+
+
+---
+
+# RELOCATED FROM `CLAUDE.md` SS D ON 2026-09-01 , THE 2026-08-24 DEFECT BATCH
+
+**Moved during the ninth relief pass. The two non-revertible decisions and the one still-open defect stayed in SS D; this is the closed detail.**
+
+### DEFECTS LOGGED 2026-08-24 , FIVE OF SEVEN CLOSED 2026-08-25. The two left open are one item, and the reason they are still open is an INSTRUMENT problem, not a missing fix.
+**CLOSED: (1) the escaped loader `11bfdfb`, (3) Copy link `f5309ec`, (5) the wordmark gap and (6) the caption's pink V `c0ba301`, (7) the loader geometry `92bb39a`, and (4) the capability relabel `f60354b`.**  **, the measurements are in `RULE_EVIDENCE.md`** Each also carries its own commit message; the geometry is locked in §C. **Two decisions from that batch must not be reverted:** **a function that escapes ON PURPOSE cannot also be the path a marker arrives by** , `vvSetVerdict`/`vvSetStory` receive model output, so `textContent` is correct and the wait comes through `vvWaitHTML` behind an `opts.wait` flag; and **the share control is labelled from `VVCore.vvShareCapability()`, never a fixed string** , `navigator.share` is undefined on desktop, so a button reading "Share this verdict" that downloads reports an outcome that did not happen. **Do not "simplify" either back.**
+
+**[OPEN] (2) "Save image" appears to do nothing , AND IT IS BLOCKED ON A HUMAN EYE, NOT ON A FIX. Lucas is checking the toast directly.**
+- **THE TOAST IS UNMEASURED, AND BOTH ATTEMPTS TO MEASURE IT WERE ARTEFACTS OF DIFFERENT CAUSES.** The 2026-08-24 note said it carried `.on` at computed `opacity:0` and to check it on a real browser. **On a real browser it reproduced , and then the tab turned out to be `visibilityState:"hidden"` with `document.hasFocus()` false, and five 50ms timers took 4,497ms. An 18x throttle.** Chrome freezes transitions and clamps timers in a background tab, which manufactures exactly this symptom. **So every timing, opacity or transition number taken through this harness on a hidden tab is void.**
+  - **WHAT ANY SESSION MUST DO FIRST: assert `document.visibilityState === 'visible'` and that a 50ms timer takes ~50ms, BEFORE trusting any duration, opacity or transition reading.** Put it in the audit harness rather than in someone's memory. **Same family as the `pgrep -f` and log-parser faults , the instrument was wrong and produced confident numbers in both directions.**
+  - What IS known and needs no browser: the CSS is present and correctly specific (`.vvtoast.on` is (0,2,0) against `.vvtoast` at (0,1,0), both confirmed in the CSSOM), `vvToast` clears its own timer and sets 3400ms, `vvLedgerSpec()` returns a valid spec so nothing short-circuits early, and the share row is always-visible markup with **no sheet that could close over the feedback.** Save image also now restores its label, so a second save is no longer silent.
+

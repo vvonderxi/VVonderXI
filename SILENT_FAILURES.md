@@ -427,3 +427,42 @@ without controls is not evidence.
 **THE DEFECT THAT PROMPTED THE RE-RUN IS THE PROOF THE OLD ONE WAS BLIND:** the card's club/pos/age
 sub-line sat at **1.90 in dark mode on every plain card on every surface** , the large majority of
 cards , and the 2026-08-23 pass did not report it.
+
+
+---
+
+## THE HARNESS FAULTS , PROMOTED OUT OF THE 2026-08-28/29 LOGS BEFORE THEY WERE ARCHIVED (2026-09-01)
+
+**These were recorded ONLY inside two session-log entries and were about to be archived with them.
+All three were re-hit during the 2026-09-01 session, which is how the omission was found.**
+
+**(1) THE BROWSER WILL NOT RESIZE IN THIS ENVIRONMENT.** A resize call reports SUCCESS while
+`innerWidth` stays at the desktop value and `outerWidth` reports **0**. Every measurement taken
+after it is a desktop measurement wearing a mobile label. **Hit twice: 2026-08-28 and again
+2026-09-01, where `resize_window` returned "Successfully resized to 390x844" and the page was
+still at 1920 with the mobile media query FALSE.**
+- **THE METHOD: measure in a SINGLE iframe with its own viewport, and assert
+  `matchMedia('(max-width:820px)').matches` AND `innerWidth` before believing any number.** One
+  frame, not many , an eight-iframe contact sheet made the compositor return stale and blank
+  captures, which is a different failure that looks like a rendering bug.
+
+**(2) `window.X` IS A DIFFERENT BINDING FROM A SCRIPT-SCOPED `let` OR `const`, SO SEEDING STATE
+FROM OUTSIDE SILENTLY MEASURES THE OLD STATE.** A top-level `var` or `function` becomes a window
+property; `let` and `const` do not. **Three instances, all live code:** `let D` on card.html
+(2026-08-28), `let CMP_A` on compare.html and `const sb`/`vvClient()` (both 2026-09-01).
+- **Setting `window.CMP_A` renders nothing and reports no error** , the page keeps showing empty
+  slots and the numbers look plausible, because an empty slot and a card are the same box.
+- **THE METHOD: drive the page through its OWN functions** (`openPicker` / `pkPick`), never by
+  assigning to `window`. **And a harness that cannot move the state under test reports a failure
+  and a pass identically.**
+
+**(3) MONKEY-PATCHING AN EXPORTED `VVCore.*` FUNCTION DOES NOT REACH A CALLER THAT USES THE
+MODULE-LOCAL BINDING.** `vvRenderShareImage` calls the local `vvShareFrameHTML`, so patching the
+export is ignored. **Two "negative controls" came back byte-identical to the positive case and only
+the identical byte count revealed it.** To break a module-internal path, break the INPUT on disk.
+
+**AND THE DATA CORRECTIONS FROM THE SAME ENTRIES:** the card population is **57,058**, not the
+57,234 quoted in older text; and **`psc.rt` and `player_card_mv.rt` DISAGREE , the matview is what
+the site reads, so never quote `psc.rt` as a card's score.** A `body:not(.light)` selector at
+(0,2,1) beat `.wmg-h.neutral` at (0,2,0) on `vvindex.html`, correct in light and wrong in dark,
+which is why that one survived.

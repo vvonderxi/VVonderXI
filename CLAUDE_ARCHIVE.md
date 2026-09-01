@@ -465,3 +465,46 @@ Split out 2026-08-11 because this file had reached 87% of the 150k truncation li
 **3. THE 2026-08-15 ELIGIBILITY-VERSUS-THRESHOLD DEFECT IS FULLY CLOSED** (figures in §C). **The method error is worth more than the result: run across all eighteen tags, the minority-family diagnostic flagged ELEVEN, and every one was the test pointed at the wrong class** , ability tags gate on family and are SUPPOSED to span pools, so Iron Man at 65.2% is availability doing what availability does. Baseline also moved 8.28% -> **12.54%** on coverage growth, not tag drift.
 
 **4. RELOCATION PASS, 98.0% -> 88.6%.** The file was already at 95.7% at HEAD, past its own 90% trigger, truncation silent, read first every session. Archive checked first (66.6%, no split needed; now 79.9%). Three §F entries moved. **§C IS NOW THE MASS AND §F CANNOT PAY AGAIN , §C 46.1%, §D 24.3%, §E 8.3%, §F 3.1%.** The next pass must split evidence out of §C the way `SILENT_FAILURES.md` already did; archiving cannot reach it.
+
+
+---
+
+## RELOCATED FROM `CLAUDE.md` SS F ON 2026-09-01 (ninth pass)
+
+**Two entries, 7,598 bytes. `CLAUDE.md` was at 99.0% of its 150k truncation limit and a ruling had to be compressed mid-write to fit.**
+
+**THREE FACTS WERE PROMOTED OUT OF THESE ENTRIES FIRST, AND THE CHECK EARNED ITS KEEP:** the browser-will-not-resize fault (`outerWidth` 0), the `window.X` versus script-scoped `let` binding fault, and the compare picker's no-body-lock ruling existed NOWHERE ELSE , and all three had been re-hit in the session doing the archiving. They are now in SS C with their evidence in `SILENT_FAILURES.md`. Archiving without the check would have destroyed them.
+### 2026-08-29 | Two mobile fixes shipped, one built-then-removed on measurement, the transfer halves scoped, and a relief pass that §E paid for
+
+**1. THE COMPARE PICKER'S SCROLL CHAINED INTO THE PAGE AND NOW DOES NOT.** `overscroll-behavior:contain` on both `.pkresults` rules. Verified at 390x844: list parked at the end of its scroll, eight further wheel events, page unmoved with 871px still scrollable behind it, positive control run first.
+
+**2. THE COMPANION BODY LOCK WAS BUILT, MEASURED, AND REMOVED , AND THAT IS THE ENTRY WORTH KEEPING.** Locking the page while the picker is up is the obvious second half and it is wrong for THIS picker: `.pkpanel` is an **anchored IN-FLOW panel**, not an overlay, and compare auto-opens BOTH slots on a bare load. With `position:fixed` on body, `documentElement.scrollHeight` collapsed to the viewport while body stayed 1,365px tall at 1440x900 and 2,190px at 390x844 , **465px unreachable on desktop, 1,346px on mobile, with no scrollbar to say so.** The finding is left as a comment where the lock would go. **A fix that is correct for a pattern is not correct for every instance of it; render it before believing it.**
+
+**3. RANKINGS VIEW TOGGLES 36x30 -> 44x44.** Icon unchanged, hit area only; checked at both widths, no overflow, `.rankfbar` unchanged at 52px. **Nine targets under 44px remain on rankings** , `rankfbtn` at 33 and five `bn-item` at 34 , deliberately untouched, since the bottom nav is site-wide.
+
+**4. OPTION C AND THE SETTLE BUTTON ARE RECORDED, NOT BUILT** (`POST_LAUNCH.md`), with the demoed figures and three risks. **The one that matters is pre-existing: `.filterrail` goes static at 1100px while `.bottomnav` appears at 720px, so 720-1100px gets NEITHER treatment.** Option C does not create that hole, it is just the first change that makes it visible.
+
+**5. THE THREE TRANSFER HALVES ARE SCOPED , `migrations/transfer_halves_2026-08-29/PLAN.md`, NOT RUN.** §E justified the repair on the minutes reconciling with the sibling, which is an INTERNAL check, and §C forbids exactly that. **Re-verified against the provider under the CORRECT ids: both halves are real, and the three impostor ids return no 2025 season at all.** The merge rule is `resolveSeasonStat()`, already shipped , take its output verbatim rather than adding the stored halves, which disagree with the provider on appearances. **It needs a human nod first: richest-by-minutes moves all three cards to a different club** (Forest -> Villa, City -> Fulham, West Ham -> Burnley).
+
+**6. THREE DOC CORRECTIONS FOUND WHILE SCOPING.** **The population is 57,058, not the 57,234 quoted in §C and §E.** **`psc.rt` and `player_card_mv.rt` disagree and the matview is what the site reads** , the halves are 41/18/37 in the mv and 69/67/68 in `psc`; never quote `psc.rt` as a card's score. And **`source` says `apifootball` on all six rows including the impostor-keyed three**, which is the `UNIQUE (source, api_player_id)` argument demonstrated in live data.
+
+**7. RELIEF PASS, 94.8% -> 88.0%, AND §E PAID.** New `DATA_DEFECTS.md`. **THE PROMOTE CHECK EARNED ITS KEEP TWICE BEFORE THE TWO OLDEST §F ENTRIES COULD BE ARCHIVED** , §C read as `VV_LOADER_MIN` 40 where the live constant is **16** (it would have sent a session to "fix" correct code), and the caveat that the whole 2026-08-23 SVG contrast survey needs re-running existed ONLY in the entry about to be moved. **Both were corrected in `CLAUDE.md` first.** **§C is now genuinely incompressible** , its 55 blocks average ~500 bytes and the largest is 28 separate rules, not one entry. Detail and the destination sizes are in §D.
+
+### 2026-08-28 | Keeper scoring and the keeper card, built , and the locked three-spoke radar killed by its own measurements
+
+**1. THE GOALKEEPER CARD IS BUILT AND THE LOCKED DESIGN DID NOT SURVIVE CONTACT WITH THE NUMBERS.** The 2026-08-19 spec locked a THREE-SPOKE radar. **There is now no radar on a keeper card at all**, and it was measurement that did it, not taste: `penalties_saved` has no derivable denominator, and at 10% weight it put Trapp above Donnarumma while dropping ter Stegen, the highest save% in the pool, to 39th; **workload measures the team, not the keeper , shots faced against save% is -0.118, against goals conceded +0.835.** Two of three spokes fail, and one honest axis is not a shape. **A ladder against the keeper pool says strictly more than a triangle could.** Full supersession in `POST_LAUNCH.md`, decisions in §D.
+
+**2. WHAT SHIPPED.** `VVCore.keeperScore()` (800 minutes AND 60 shots faced, 2015+, global keeper-pool percentile off an embedded ladder) and `VVCore.keeperPanelHTML()`, wired into card.html's Profile layer, plus the `s-gk` playbook section. **1,920 of 4,289 keeper cards score; every card that does not gets a NAMED reason.** The panel went in **vv-core, not card.html**, per §C's rule about card rules trapped in the pages.
+
+**3. THE CAP IS NOW STATED, AND THAT WAS THE REAL DEFECT.** Two keepers at the 54th and the 97th percentile both print 75, so the header silently contradicted the ladder beneath it. One line under the score now says why. **The keeper-aware fallback matters as much: `vvProfileBlurb` correctly returns nothing for an all-null keeper radar, but the FALLBACK read "measured across five dimensions"**, which is the one thing a keeper card is not.
+
+**4. TWO INSTRUMENT FAULTS, BOTH CAUGHT BY CONTROLS, AND THE SECOND WOULD HAVE PASSED BROKEN CODE.** The window would not resize (`outerWidth` reports 0), so the 390px media query was tested in an IFRAME with its own viewport, asserting `matchMedia` matched before believing any measurement. Then the keeper-to-outfielder transition test reported the radar never coming back , **because it set `window.D`, which is a DIFFERENT binding from the script-scoped `let D` that `drawRadar` reads.** Re-run against the real binding with a control proving the harness moved it, the transition is clean in both directions. **A harness that cannot move the state under test reports a failure and a pass identically.**
+
+**5. VERIFIED BY RENDERING AND BY CAPTURE, NOT BY READING.** Contrast measured on every pair in both themes (all pass; the saved count correctly INVERTS with its block, which is §C's match-the-ink-to-the-ground rule working). Captured in html2canvas at scale 2 and probed on the five features most likely to diverge , **the `overflow:hidden` clip on the radiused bar SURVIVES**, which was the real risk given the inset-rim history.
+
+**6. vvindex NOW SAYS IT TOO, and measuring it found a PRE-EXISTING bug.** `body:not(.light) .wmg-h` is (0,2,1) and beat `.wmg-h.neutral` at (0,2,0), so in DARK mode the "Where We Cannot See" header rendered the same gold as "What We Measure" , correct in light, wrong in dark, which is why it survived. **BOTH contrast harnesses fail their controls on this page**, so neither number was quoted; the check used instead was ink-equivalence against the already-shipping Method section.
+
+**7. §C RELIEF PASS, 94.0% -> under 90%.** 55 rule headlines in, 55 out, ZERO lost. **One line was clobbered and the BYTE COUNT is what caught it** , a line-index edit ran against indices an earlier round had already shifted, overwriting a blank separator with a duplicate paragraph. **The file got BIGGER, which is the only reason it was seen.**
+
+**NEXT / OPEN:** `s-gk` has no mark in `vv-marks.js` and renders its glove emoji through the `pbMarks` fallback. **§C is still the mass at ~36% and the next pass will have to reach into §D (25%) or §E (16%)** , §C's remaining bulk is rules, and rules cannot move.
+
