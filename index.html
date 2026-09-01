@@ -66,10 +66,16 @@
     box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),
                inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
   .vvmono-gold .vvmonomark{color:#3a2708}
+  /*  PLAIN BLACK, NOT THE GENERATIONAL FACE. compare.html's .vvmono-black carries a gold
+      inset rim and glow, which is the Generational tier's signature; beside the gold back it
+      read as two golds, and a holding page should not assert a tier.
+      NOTE WHAT IT COSTS: cream and gold are real product tiers, plain black is not, so the
+      fan now reads as three cards rather than three tiers. Deliberate , do not "restore" the
+      gold rim thinking it was dropped by accident. */
   .vvmono-black{background:linear-gradient(158deg,#2c2926,#121010);
-    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(232,184,75,.55),
-               inset 0 0 0 calc(var(--cw)*0.028) rgba(232,184,75,.9),
-               0 22px 54px -18px rgba(0,0,0,.7),0 0 26px -6px rgba(232,184,75,.25)}
+    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.07),
+               inset 0 0 0 calc(var(--cw)*0.026) rgba(255,255,255,.11),
+               0 24px 60px -20px rgba(0,0,0,.72)}
   .vvmono-black .vvmonomark{color:#F0EAD9}
 
   /*  THE FAN , three backs for three tiers. A reader sees that tiers exist without learning
@@ -198,7 +204,14 @@
     go.disabled=true; go.textContent='Sending...';
     var ok=false;
     try{
-      var r=await fetch('https://formspree.io/f/mayzwqzv', {
+      /*  THE ENDPOINT IS iwonder.html's AND myclub.html's, COPIED FROM THE FILE, NOT WRITTEN
+          FROM MEMORY. The first version of this page carried /f/mayzwqzv, which I invented:
+          it returns {"error":"Form not found"} and every submission on it failed. The r.ok
+          check meant it failed HONESTLY rather than thanking anyone, which is the only
+          reason it was not silent , but it still collected nothing.
+          If a second Formspree form is ever wanted for the waitlist specifically, create it
+          first and paste the id; do not type one. */
+      var r=await fetch('https://formspree.io/f/maqzaooq', {
         method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'},
         body:JSON.stringify({email:e, source:'vvonderxi.com waitlist'})
       });
