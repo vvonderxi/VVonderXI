@@ -279,35 +279,67 @@
   window.addEventListener('resize', size);
   try{ size(); }catch(e){ /*  a sizing failure must not cost the page its content  */ }
 })();
-/*  AWAIT THE FETCH, THEN DECIDE , iwonder.html's contract. Nobody is thanked before the
-    request resolves, only r.ok unlocks the thanks, and on failure the form stays up with the
-    typed address still in it. That address is the only copy of what the visitor was giving us. */
+/*  TWO WRITES, ONE OF THEM DECIDES.
+    Supabase is the RECORD and Formspree is the NOTIFICATION, and the thanks is gated on the
+    record. A Formspree cap or outage then costs a ping, never a signup , which matters here
+    because Formspree does not document what it returns once the monthly cap is reached, so
+    it cannot be trusted to fail loudly. Nothing about the r.ok contract is relaxed: the page
+    still awaits the write that counts and still keeps the typed address on failure.
+    THE ORDER MATTERS. Supabase is awaited first and alone decides; the ping is fired after
+    and its result is deliberately ignored.
+    NO SDK. This is one REST call with the publishable key, so the page stays dependency-free
+    , it loads no external JavaScript at all and that is the point of a holding page.
+    THE KEY IS THE PUBLIC PUBLISHABLE ONE, copied from index.html, and it is safe in the page:
+    waitlist_emails is RLS insert-only for anon. Verified against the live database, not
+    assumed , anon inserted a row and read back zero. See migrations/waitlist_emails.sql. */
 (function(){
+  var SB_URL = "https://krqthvroetbxgnvwwjar.supabase.co";
+  var SB_KEY = "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp";
+
   var go=document.getElementById('go'), el=document.getElementById('email');
   var err=document.getElementById('err'), thanks=document.getElementById('thanks'), form=document.getElementById('form');
+
+  /*  The list is the thing. If this write fails the visitor is told so and keeps their
+      address in the field, exactly as before. */
+  async function record(email){
+    var r=await fetch(SB_URL+'/rest/v1/waitlist_emails', {
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,
+               'Content-Type':'application/json',
+               /*  return=minimal , there is deliberately no anon SELECT policy, so asking
+                   for the row back would fail on the read after a write that succeeded. */
+               'Prefer':'return=minimal'},
+      body:JSON.stringify({email:email, source:'vvonderxi.com waitlist'})
+    });
+    return r.ok;
+  }
+
+  /*  Fire and forget, on purpose. The endpoint is iwonder.html's and myclub.html's, copied
+      from the file, not written from memory , the first version of this page carried an id I
+      invented and every submission on it failed. */
+  function ping(email){
+    try{
+      fetch('https://formspree.io/f/maqzaooq', {
+        method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'},
+        body:JSON.stringify({email:email, source:'vvonderxi.com waitlist'})
+      }).catch(function(){});
+    }catch(_){}
+  }
+
   async function submit(){
     var e=el.value.trim();
     if(!e || e.indexOf('@')<1){ el.focus(); return; }
     err.style.display='none';
     go.disabled=true; go.textContent='Sending...';
     var ok=false;
-    try{
-      /*  THE ENDPOINT IS iwonder.html's AND myclub.html's, COPIED FROM THE FILE, NOT WRITTEN
-          FROM MEMORY. The first version of this page carried /f/mayzwqzv, which I invented:
-          it returns {"error":"Form not found"} and every submission on it failed. The r.ok
-          check meant it failed HONESTLY rather than thanking anyone, which is the only
-          reason it was not silent , but it still collected nothing.
-          If a second Formspree form is ever wanted for the waitlist specifically, create it
-          first and paste the id; do not type one. */
-      var r=await fetch('https://formspree.io/f/maqzaooq', {
-        method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'},
-        body:JSON.stringify({email:e, source:'vvonderxi.com waitlist'})
-      });
-      ok=r.ok;
-    }catch(_){ ok=false; }
+    try{ ok=await record(e); }catch(_){ ok=false; }
     go.disabled=false; go.textContent='Notify me';
-    if(ok){ form.style.display='none'; thanks.style.display='block'; }
-    else  { err.style.display='block'; }
+    if(ok){
+      ping(e);                      // after the decision, never part of it
+      form.style.display='none'; thanks.style.display='block';
+    } else {
+      err.style.display='block';    // address stays in the field
+    }
   }
   go.addEventListener('click', submit);
   el.addEventListener('keydown', function(ev){ if(ev.key==='Enter') submit(); });
