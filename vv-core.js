@@ -3033,6 +3033,19 @@ body.light .vvrows .rtag.purple{color:#784eac}
 .vvrows .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;line-height:1;color:#1C1B1A}
 .vvrows .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
 .vvrows .rmini.elite .a, .vvrows .rmini.elite .rmn{color:#2a1d03}
+/*  THE GEN ROW'S VV MARK TAKES A PINNED LITERAL, NOT --pink-ink , 2026-09-01, AND THIS ONE
+    WAS INTRODUCED BY THE FIX BEFORE IT. .rmini.gen paints its OWN dark gradient
+    (#2c2926 to #121010) in BOTH themes, exactly like the card faces. --pink-ink flips with the
+    theme, so in LIGHT mode it resolves to #AD0332 and lands dark-on-dark: 1.95 at the light
+    stop, 2.56 at the dark one. In dark mode #F1688E measures 4.90 and 6.42 and is fine.
+    #F1688E PINNED passes on both stops in both themes, because the ground never moves.
+    SAME RULE AS THE CARD FACE, ONE SURFACE OVER: a token that flips is wrong on a ground that
+    does not. The ORDINARY row keeps var(--pink-ink) and is correct, because its ground DOES
+    flip with the theme. Do not unify the two.
+    NO BACKTICKS IN THIS COMMENT , it is inside the VV_ROW_CSS template literal. The first draft
+    used them around a class name, ended the literal early, and node --check PASSED. Only
+    require()-ing the module caught it, which is the guard SS C says to use for exactly this. */
+.vvrows .urow.gen .rmini.gen .b, .vvrows-season .urow.gen .rmini.gen .b{color:#F1688E}
 .vvrows .rmini.gen{background:linear-gradient(155deg,#2c2926,#121010);border:1px solid rgba(232,184,75,.5)}
 .vvrows .rmini.gen .a, .vvrows .rmini.gen .rmn{color:#fff}
 @media (max-width:720px),(max-height:600px){
