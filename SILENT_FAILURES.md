@@ -384,3 +384,46 @@ all rendered solid and never exercised it).
 
 **VERIFIED:** both badges on a compare frame, all four formats, both themes, and the DOM restored
 byte-for-byte after eight consecutive captures (`document.body.innerHTML.length` identical).
+
+
+---
+
+## THE 2026-08-23 CONTRAST SURVEY IS VOID , THREE INSTRUMENT FAULTS, ALL FALSE FAILURES (2026-09-01)
+
+**THE SURVEY WAS RE-RUN AND WITHDRAWN.** The 2026-08-23 pass was already known to have ONE fault
+(reading `color` where SVG paints with `fill`). The re-run found **three**, and every one produced
+FALSE FAILURES , entries that read as defects and were not:
+
+1. **`fill` vs `color` on SVG text.** The recorded one. `getComputedStyle(el).color` returns an
+   inherited colour the glyph never paints with.
+2. **THE GROUND FELL THROUGH A GRADIENT.** `.vvcard` paints a `radial-gradient`, so its
+   `backgroundColor` is transparent and an ancestor walk climbs past the card to the page. A
+   Generational card in light mode reported **1.14**; it measures **6.25**.
+3. **A LAYERED BACKGROUND WAS READ ACROSS LAYERS.** The stadium-light stack on `card.html` is
+   twelve translucent radial layers over an opaque base. Reading colour stops across the whole
+   string picked a 0.07-alpha highlight and then fell through to white, reporting page-level inks
+   at **1.09** on a page that is visibly dark.
+
+**WHY IT IS NOT SPOT-CORRECTABLE.** Three independent faults spanning SVG, gradient and layered
+grounds means the POPULATION of entries is untrustworthy, not a handful of them. Patching the
+entries someone happened to question would leave every unquestioned entry standing on the same
+broken instrument. **Re-measure what you need; cite nothing from it.**
+
+**THE CORRECTED INSTRUMENT'S CONTRACT , THE REUSABLE PART.** Resolve the ground by what actually
+PAINTS, not by what CSS says:
+- **SVG text hit-tests its sibling shapes** in the same `<svg>` whose box contains the text's
+  centre, TOPMOST wins, which in SVG is the LAST in document order.
+- **A gradient resolves from its own colour stops**, sampled at the text's vertical position
+  within that box.
+- **A layered background is walked from the LAST layer upward**, because the last layer is the
+  bottom one, and the first opaque stop found is the base.
+- **A stroke counts.** A glyph is legible if EITHER its fill or its outline separates.
+
+**AND IT CARRIES FIVE CONTROLS, BECAUSE EACH FAULT WAS INVISIBLE UNTIL ONE CAUGHT IT:** flat pass,
+flat fail, gradient fail, SVG-over-sibling pass AND SVG-over-sibling fail. **Every one of the three
+faults was found by a control disagreeing, never by reading the code.** A contrast instrument
+without controls is not evidence.
+
+**THE DEFECT THAT PROMPTED THE RE-RUN IS THE PROOF THE OLD ONE WAS BLIND:** the card's club/pos/age
+sub-line sat at **1.90 in dark mode on every plain card on every surface** , the large majority of
+cards , and the 2026-08-23 pass did not report it.
