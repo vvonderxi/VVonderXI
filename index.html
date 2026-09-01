@@ -26,17 +26,14 @@
         and do not drop og-image.png from this branch. -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-  :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E}
-  /*  DEFAULTS FOR THE TWO VARIABLES JS OWNS, SO THE PAGE IS NEVER BLANK OR COLLAPSED.
-      JS sets --cw per card and --sp on body every resize; these are only ever used when that
-      never ran. Without them a thrown exception left the fan at zero width inside a zero
-      height stage, sitting on top of the headline , verified by deliberately throwing inside
-      size(). The reveal already survives such a failure; this makes what it reveals correct. */
-  :root{--cw:196px;--sp:152px}
+  :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;
+        --cw:300px;--sp:186px}
+  /*  --cw and --sp DEFAULTS SO THE PAGE IS NEVER BLANK OR COLLAPSED. JS owns both and sets
+      them every resize; these are only ever used if that never ran. Without them a thrown
+      exception left a zero-width fan inside a zero-height stage. */
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{min-height:100vh;display:flex;align-items:center;justify-content:center;
-    font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--cream);
+  body{min-height:100vh;font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--cream);
     background:radial-gradient(150% 620px at 50% -140px, rgba(255,244,224,.07), transparent 78%),
                radial-gradient(120% 90% at 50% 0%,#221E1A 0%,#141210 55%,#0e0c0b 100%);
     background-attachment:fixed}
@@ -44,167 +41,196 @@
     background:radial-gradient(150% 620px at 50% -140px, rgba(255,255,255,.7), transparent 78%),
                radial-gradient(120% 90% at 50% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
     background-attachment:fixed}
-  .wrap{width:100%;max-width:880px;padding:40px 24px 48px;display:flex;flex-direction:column;
-        align-items:center;text-align:center}
-  .mark{display:block;height:46px;width:auto;margin-bottom:34px}
 
-  /*  THE CARD BACK , MARKUP AND TIER CSS COPIED VERBATIM FROM THE PRODUCT, NOT RETYPED.
+  /*  THE CARD BACKS , MARKUP AND TIER CSS COPIED FROM THE PRODUCT, NOT RETYPED.
       Markup is VVCore.vvBackFace()'s output; the .vvmono* rules are compare.html's.
-      THIS PAGE DELIBERATELY LOADS NO JAVASCRIPT AT ALL, and that is a trade made with eyes
-      open: vvBackFace() returns one trivial div while the CSS that actually defines the back
-      lives in a page, so loading 350 KB of engine to source a div would cost the page that
-      must load fastest almost everything and buy almost nothing. The price is a second copy
-      of the tier rules, recorded here so it is not silent. This branch is temporary and is
-      deleted when the site opens; if it ever stops being temporary, move .vvmono* into
-      vv-core beside vvBackFace and load it properly.
-      THERE IS NO .vvmono-master. The neutral charcoal back was built for direction A and is
-      not a tier, so it is not in the fan and it survives nowhere , nothing was moved into
-      vv-core for it. */
+      THIS PAGE DELIBERATELY LOADS NO JAVASCRIPT AT ALL beyond its own inline block, and
+      that is a trade made with eyes open , loading the engine to source three divs would
+      cost the page that must load fastest almost everything. The price is a second copy of
+      the tier rules, recorded here so it is not silent. If this branch ever stops being
+      temporary, move .vvmono* into vv-core beside vvBackFace and load it properly.
+      PLAIN BLACK, NOT THE GENERATIONAL FACE. compare.html's .vvmono-black carries a gold
+      inset rim, which is the Generational tier's signature; beside the gold back it read as
+      two golds. Cream and gold are real tiers and plain black is not, so the fan reads as
+      three cards rather than three tiers. Deliberate , do not restore the gold rim. */
   .vvmono{width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);
-    display:flex;align-items:center;justify-content:center;box-sizing:border-box}
-  .vvmonomark{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;
+    display:flex;align-items:center;justify-content:center;position:relative}
+  .vvmonomark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
     font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1;text-shadow:0 6px 18px rgba(0,0,0,.3)}
-  .vvmonomark span{color:var(--pink)}
-  .vvmono-cream{background:linear-gradient(158deg,#F7F2E6,#EAE2D0);
-    box-shadow:inset 0 0 0 1px rgba(0,0,0,.10),0 24px 60px -20px rgba(0,0,0,.5)}
+  .vvmono-cream{background:linear-gradient(158deg,#FBF7EF,#E4DAC6);
+    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.7),
+               inset 0 0 0 calc(var(--cw)*0.026) rgba(140,120,90,.35),0 24px 60px -20px rgba(0,0,0,.5)}
   .vvmono-cream .vvmonomark{color:#1C1B1A}
+  .vvmono-cream .vvmonomark span{color:#AD0332}
   .vvmono-gold{background:linear-gradient(158deg,#F6DE93,#DC9E2C);
     box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),
                inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
-  .vvmono-gold .vvmonomark{color:#3a2708}
-  /*  PLAIN BLACK, NOT THE GENERATIONAL FACE. compare.html's .vvmono-black carries a gold
-      inset rim and glow, which is the Generational tier's signature; beside the gold back it
-      read as two golds, and a holding page should not assert a tier.
-      NOTE WHAT IT COSTS: cream and gold are real product tiers, plain black is not, so the
-      fan now reads as three cards rather than three tiers. Deliberate , do not "restore" the
-      gold rim thinking it was dropped by accident. */
+  .vvmono-gold .vvmonomark{color:#2b1d05}
+  .vvmono-gold .vvmonomark span{color:#AD0332}
   .vvmono-black{background:linear-gradient(158deg,#2c2926,#121010);
     box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.07),
                inset 0 0 0 calc(var(--cw)*0.026) rgba(255,255,255,.11),
                0 24px 60px -20px rgba(0,0,0,.72)}
   .vvmono-black .vvmonomark{color:#F0EAD9}
+  .vvmono-black .vvmonomark span{color:var(--pink-ink)}
 
-  /*  THE FAN , three backs for three tiers. A reader sees that tiers exist without learning
-      what any of them mean, which is the whole job of a holding page. No overflow clip on the
-      stage or anything above it. */
-  .stage{position:relative;display:flex;justify-content:center;align-items:center;
-         min-height:calc(var(--cw)*1.397)}
-  .fanc{position:absolute;opacity:0;transform:translateX(0) rotate(0deg) scale(.96);
-    transition:transform .95s cubic-bezier(.22,.61,.36,1),opacity .7s ease}
+  /*  THE ARRIVAL , CARDS BEING LAID DOWN, NOT FADED IN.
+      A fade says "content appeared". A card being dealt has weight: it comes from above and
+      slightly larger (nearer the viewer) and settles onto the surface. Three things carry
+      that, all of them transforms or opacity so it stays on the compositor:
+        , translateY from -34px, so it falls rather than materialises
+        , scale from 1.05 to 1, so it reads as approaching the surface
+        , a shadow layer that starts wide and soft and tightens as it lands
+      The easing is the whole difference. cubic-bezier(.17,.84,.38,1) decelerates hard,
+      which is what a laid-down object does; a plain ease-out arrives politely and dead.
+      Sampled live rather than eyeballed: the travel runs -65, -146, -184, -196, -197 px. */
+  .fanc{position:absolute;opacity:0;
+    transform:translate3d(0,-34px,0) rotate(0deg) scale(1.05);
+    transition:transform .92s cubic-bezier(.17,.84,.38,1), opacity .5s ease}
+  .fanc::after{content:'';position:absolute;inset:0;border-radius:calc(var(--cw)*0.073);
+    pointer-events:none;box-shadow:0 60px 90px -30px rgba(0,0,0,.75);opacity:0;
+    transition:opacity .92s cubic-bezier(.17,.84,.38,1)}
   body.go .fanc{opacity:1}
-  /*  THE SPREAD IS DERIVED FROM THE CARD WIDTH, NOT A FIXED px AT A BREAKPOINT.
-      Each back carries a centred VV mark about 0.41 of the card wide, so a neighbour stops
-      covering that mark only once the offset clears cw*0.705. The old page hard-coded 124px
-      against a 214px card (0.58) and the marks overlapped; scaling the card up to 268 kept
-      the same ratio and kept the same overlap. --sp is set to cw*0.78 in JS, clear of
-      the occlusion threshold rather than resting on it, so the fan cannot silently re-break when the card size
-      is next changed. */
-  body.go .f1{transform:translateX(calc(-1 * var(--sp))) rotate(-8deg);transition-delay:.10s}
-  body.go .f2{transform:translateX(0)                    rotate(0deg); transition-delay:.19s}
-  body.go .f3{transform:translateX(var(--sp))            rotate(8deg); transition-delay:.28s}
+  body.go .fanc::after{opacity:1}
+  /*  --sp IS DERIVED FROM THE CARD WIDTH IN JS, NEVER HARD-CODED. A back covers its
+      neighbour's VV mark until the offset clears cw*0.705; the old page hard-coded 124px
+      against a 214px card (0.58) and the marks overlapped, and scaling the card kept the
+      same ratio and the same overlap. */
+  body.go .f1{transform:translate3d(calc(-1 * var(--sp)),0,0) rotate(-8deg);transition-delay:.06s}
+  body.go .f2{transform:translate3d(0,0,0)                    rotate(0deg); transition-delay:.19s}
+  body.go .f3{transform:translate3d(var(--sp),0,0)            rotate(8deg); transition-delay:.32s}
 
-  /*  THE HEADLINE CARRIES THE PAGE. It is set in vw so it stays big on a large screen
-      instead of stranding one small line in a lot of empty space, and clamped at both ends
-      so it neither shrinks below readable on a phone nor runs away on a monitor. max-width
-      is in em, so the measure holds at every one of those sizes. */
+  .stage{position:relative;display:flex;justify-content:center;align-items:center;
+    min-height:calc(var(--cw)*1.397)}
+  .mark{display:block;height:44px;width:auto}
+
   .tag{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;
-       font-size:clamp(30px,5.1vw,52px);
-       line-height:1.16;letter-spacing:-.022em;margin:34px 0 0;max-width:13em}
+    line-height:1.12;letter-spacing:-.025em;margin:0;max-width:13em;
+    font-size:clamp(30px,3.5vw,50px)}
   .tag .pk{color:var(--pink-ink)}
   body.light .tag .pk{color:#AD0332}
-  /*  THE BRAND LINE WAS 9.5px AT .45 OPACITY, which on the old small page read as a
-      footnote. On a page that is now the only thing anyone sees, the one line that says what
-      VVonderXI IS cannot be the quietest thing on it. Bigger, less transparent, and given a
-      hairline above so it reads as a stated position rather than a caption. */
-  .brand{font-family:'Archivo',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.24em;
-         text-transform:uppercase;opacity:.62;margin-top:20px;padding-top:18px;
-         border-top:1px solid rgba(255,255,255,.13)}
-  body.light .brand{border-top-color:rgba(0,0,0,.13)}
-  .notify{margin-top:28px;width:100%;max-width:520px;text-align:left;
-    background:linear-gradient(135deg,rgba(255,92,122,0.10),rgba(255,255,255,0.04));
-    border:1px solid rgba(255,92,122,0.22);border-radius:20px;padding:24px 26px}
-  body.light .notify{background:linear-gradient(135deg,rgba(231,4,67,.06),rgba(0,0,0,.02));
-    border-color:rgba(231,4,67,.18)}
-  .notify .nt{font-family:'Archivo',sans-serif;font-weight:900;font-size:17.5px;margin-bottom:6px}
-  .notify .nd{font-size:13.5px;opacity:.74;line-height:1.55;margin-bottom:16px}
-  .form{display:flex;gap:9px}
-  .form input{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
-    border-radius:12px;padding:14px 16px;color:inherit;font:inherit;font-size:16px;outline:none}
-  body.light .form input{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.16)}
-  .form input:focus{border-color:var(--pink-ink)}
-  .form button{font-family:'Archivo',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:.04em;
-    padding:14px 22px;border:0;border-radius:11px;background:#E70443;color:#fff;cursor:pointer;white-space:nowrap}
-  .form button:disabled{opacity:.6;cursor:default}
-  .err,.thanks{display:none;font-size:13px;line-height:1.55;margin-top:12px}
+  .brand{font-family:'Archivo',sans-serif;font-weight:800;font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase;opacity:.5;margin-top:clamp(16px,2.4vh,26px)}
+
+  /*  THE FORM IS A FOOTNOTE, NOT A PANEL. The boxed version competed with the cards for the
+      eye: a filled ground, a pink border and a 17.5px heading is a second focal point on a
+      page that should have exactly one. A label, a ruled line and a text button reads as an
+      invitation, and it only asserts itself on focus. */
+  .notify{width:100%;max-width:400px;margin-top:clamp(34px,6vh,66px)}
+  .nlab{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;opacity:.42;margin-bottom:11px}
+  .form{display:flex;align-items:center;gap:10px;
+    border-bottom:1px solid rgba(255,255,255,.20);padding-bottom:9px;transition:border-color .3s ease}
+  body.light .form{border-bottom-color:rgba(0,0,0,.20)}
+  .form:focus-within{border-bottom-color:var(--pink-ink)}
+  body.light .form:focus-within{border-bottom-color:#AD0332}
+  .form input{flex:1;min-width:0;background:none;border:0;color:inherit;font:inherit;
+    font-size:16px;outline:none;padding:2px 0}
+  .form input::placeholder{opacity:.34}
+  .form button{font-family:'Archivo',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;background:none;border:0;color:inherit;cursor:pointer;
+    opacity:.62;padding:2px 0;white-space:nowrap;transition:opacity .25s ease}
+  .form button:hover{opacity:1}
+  .form button:disabled{opacity:.35;cursor:default}
+  .nnote{font-size:11.5px;opacity:.4;margin-top:11px;line-height:1.5}
+  .err,.thanks{display:none;font-size:12.5px;line-height:1.55;margin-top:12px}
   .err{color:var(--pink-ink)} body.light .err{color:#AD0332}
   .thanks{opacity:.8}
-  .tag,.brand,.notify{opacity:0;transform:translateY(8px);
-    transition:opacity .55s ease,transform .55s cubic-bezier(.22,.61,.36,1)}
-  body.go .tag{opacity:1;transform:none;transition-delay:.82s}
-  body.go .brand{opacity:1;transform:none;transition-delay:.97s}
-  body.go .notify{opacity:1;transform:none;transition-delay:1.12s}
 
-  /*  A SHORT VIEWPORT IS A DIFFERENT PROBLEM FROM A NARROW ONE, AND IT IS THE COMMON CASE.
-      A 1440x760 laptop is wide enough for the full type scale but not tall enough to carry
-      it and the fan: the card was being squeezed to 141px, SMALLER than the 214px this page
-      ships today, so making the page bigger had made the hero smaller on the machines most
-      people use. Trimming the fixed furniture here hands that height back to the cards.
-      THIS COMPOSES SAFELY ONLY BECAUSE THE VERTICAL COST IS MEASURED RATHER THAN HARD-CODED.
-      Against the old FIXED_V constant every line below would have silently desynced it. */
-  @media (max-height:820px){
-    .wrap{padding:26px 24px 30px}
-    .mark{height:36px;margin-bottom:20px}
-    .tag{font-size:clamp(27px,4.1vw,40px);margin-top:22px}
-    .brand{margin-top:15px;padding-top:13px;font-size:10.5px}
-    .notify{margin-top:20px;padding:19px 22px}
-    .notify .nt{font-size:16px}
-    .notify .nd{font-size:12.5px;margin-bottom:13px}
+  /*  Everything that is not a card arrives after the cards have landed. The fan finishes at
+      .32 + .92 = 1.24s; the words start at 1.15s so they overlap by a breath rather than
+      queueing politely behind it. */
+  .mark,.tag,.brand,.notify{opacity:0;transform:translateY(10px);
+    transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+  body.go .mark  {opacity:1;transform:none;transition-delay:.02s}
+  body.go .tag   {opacity:1;transform:none;transition-delay:1.15s}
+  body.go .brand {opacity:1;transform:none;transition-delay:1.30s}
+  body.go .notify{opacity:1;transform:none;transition-delay:1.44s}
+
+  /*  THE SPLIT. The fan takes a column of its own, so the words and the form never compete
+      with it for vertical space. That is the whole reason this layout was chosen: at
+      1440x760 it keeps a 330px card AND the form above the fold with zero overflow, where
+      the stacked build collapsed the card to 141px to fit the same content. */
+  .wrap{min-height:100vh;display:grid;grid-template-columns:1.32fr .68fr;
+    align-items:center;gap:clamp(40px,6vw,110px);
+    max-width:1440px;margin:0 auto;padding:0 clamp(32px,5vw,84px)}
+  .left{display:flex;justify-content:center}
+  .right{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+  .mark{margin-bottom:clamp(26px,4.4vh,46px)}
+
+  /*  THE COLLAPSE, AND THE BREAKPOINT IS 1230px , FAR HIGHER THAN IT LOOKS LIKE IT SHOULD BE.
+      A split layout breaks where it stacks, so this was swept across the boundary in both
+      directions rather than eyeballed, and the first attempt at 900px was badly wrong: at
+      901px the grid was still two columns and the card measured 206px, while at 900px it
+      stacked and the card jumped to 300px. TWO COLUMNS WAS PRODUCING A SMALLER HERO THAN ONE
+      COLUMN, and 206px is below even the 233px this page ships today. The split was losing
+      at every width below about 1300.
+      The reason is simple once measured: a second column only pays for itself when the fan's
+      column is still wider than the whole viewport would have given it stacked. Solving the
+      two sizing formulas against each other puts that crossover at 943px, and the breakpoint
+      IS the crossover, which is what makes the jump vanish.
+      IT MOVED TWICE WHILE BEING FOUND, AND BOTH MOVES ARE THE SAME LESSON. First 900, which
+      was simply a guess. Then 1230, solved honestly , but solved against a stacked card of
+      300px that was itself produced by a GUESSED vertical constant. Once the stacked side
+      was measured properly that card turned out to be 230px, not 300, and the crossover fell
+      to 943. A crossover is only as good as the two formulas it is solved between, and one
+      of mine was fiction.
+      IF YOU CHANGE SPREAD_WIDE OR ANYTHING ABOVE THE FORM, THIS NUMBER MOVES WITH IT. It is
+      solved at a 760px viewport height, the case that matters on laptops; at other heights
+      the true crossover shifts slightly and a small step at the boundary returns.
+      */
+  @media (max-width:943px){
+    .wrap{grid-template-columns:1fr;gap:clamp(28px,4.5vh,44px);
+      padding:clamp(34px,6vh,54px) 22px clamp(40px,7vh,60px);min-height:100vh;
+      align-content:center}
+    .right{align-items:center;text-align:center}
+    .tag{font-size:clamp(28px,5.4vw,40px);max-width:15em}
+    .notify{margin-top:clamp(26px,4vh,40px);max-width:340px}
+    .form{justify-content:center}
+    .mark{margin-bottom:clamp(20px,3.4vh,34px)}
   }
-
-  /*  NO font-size HERE. The headline is a clamp() and a fixed px override at a breakpoint
-      would defeat it, which is what the old page did at 820 and again at 420. Only spacing
-      changes below; the type scales itself. */
-  @media (max-width:820px){ .wrap{padding:28px 16px 40px} .tag{margin-top:26px} .mark{height:38px;margin-bottom:26px} }
-  @media (max-width:420px){ .form{flex-direction:column} .form button{width:100%} .notify{padding:20px 18px} }
+  @media (max-width:420px){ .notify{max-width:none} }
 
   /*  ONE RULE FOR REDUCED MOTION. The finished state is pinned rather than re-implemented:
-      transitions off, and every element placed exactly where the animation would have left
-      it, fan offsets included. */
+      transitions off, everything placed exactly where the animation would have left it,
+      fan offsets included. */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{transition:none !important;animation:none !important}
-    .fanc,.tag,.brand,.notify{opacity:1 !important}
-    .tag,.brand,.notify{transform:none !important}
-    .f1{transform:translateX(calc(-1 * var(--sp))) rotate(-8deg) !important}
-    .f2{transform:translateX(0)                    rotate(0deg)  !important}
-    .f3{transform:translateX(var(--sp))            rotate(8deg)  !important}
+    .fanc,.mark,.tag,.brand,.notify{opacity:1 !important}
+    .fanc::after{opacity:1 !important}
+    .mark,.tag,.brand,.notify{transform:none !important}
+    .f1{transform:translate3d(calc(-1 * var(--sp)),0,0) rotate(-8deg) !important}
+    .f2{transform:translate3d(0,0,0) rotate(0deg) !important}
+    .f3{transform:translate3d(var(--sp),0,0) rotate(8deg) !important}
   }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <img class="mark" id="mark" src="/assets/spinelogo-dark.png" alt="VVonderXI" width="104" height="46">
-    <div class="stage" id="stage">
-      <div class="fanc f1"><div class="vvmono vvmono-cream"><div class="vvmonomark">V<span>V</span></div></div></div>
-      <div class="fanc f2"><div class="vvmono vvmono-gold"><div class="vvmonomark">V<span>V</span></div></div></div>
-      <div class="fanc f3"><div class="vvmono vvmono-black"><div class="vvmonomark">V<span>V</span></div></div></div>
-    </div>
-    <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
-    <div class="brand">The Football Legacy Platform</div>
-    <div class="notify">
-      <div class="nt">Be first through the door.</div>
-      <div class="nd">One message when it opens. Nothing else, ever.</div>
-      <div class="form" id="form">
-        <input type="email" id="email" placeholder="you@email.com" autocomplete="email" aria-label="Your email address">
-        <button type="button" id="go">Notify me</button>
+    <div class="left">
+      <div class="stage" id="stage">
+        <div class="fanc f1"><div class="vvmono vvmono-cream"><div class="vvmonomark">V<span>V</span></div></div></div>
+        <div class="fanc f2"><div class="vvmono vvmono-gold"><div class="vvmonomark">V<span>V</span></div></div></div>
+        <div class="fanc f3"><div class="vvmono vvmono-black"><div class="vvmonomark">V<span>V</span></div></div></div>
       </div>
-      <div class="err" id="err">That did not send. Your address is still above , try again in a moment.</div>
-      <div class="thanks" id="thanks">&#10003; You&rsquo;re on the list. One message, when it opens.</div>
+    </div>
+    <div class="right">
+      <img class="mark" id="mark" src="/assets/spinelogo-dark.png" alt="VVonderXI" width="100" height="44">
+      <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
+      <div class="brand">The Football Legacy Platform</div>
+      <div class="notify">
+        <div class="nlab">Be first through the door</div>
+        <div class="form" id="form">
+          <input type="email" id="email" placeholder="you@email.com" autocomplete="email" aria-label="Your email address">
+          <button type="button" id="go">Notify me</button>
+        </div>
+        <div class="nnote">One message when it opens. Nothing else, ever.</div>
+        <div class="err" id="err">That did not send. Your address is still above , try again in a moment.</div>
+        <div class="thanks" id="thanks">&#10003; You&rsquo;re on the list. One message, when it opens.</div>
+      </div>
     </div>
   </div>
 <script>
-/*  Theme and sizing. The card width is set here rather than in CSS because the fan needs a
-    real number to lay out against and calc() on a percentage of the viewport would fight the
-    absolute positioning. */
 (function(){
   var light=false;
   try{ var t=localStorage.getItem('vvTheme');
@@ -213,68 +239,77 @@
   var m=document.getElementById('mark');
   if(m) m.src='/assets/spinelogo-'+(light?'light':'dark')+'.png';
 
-  /*  THE REVEAL IS SCHEDULED FIRST, BEFORE ANY CODE THAT COULD THROW.
-      Everything on this page starts at opacity 0 and is uncovered by adding one class, so a
-      single exception anywhere above the old scheduling point left a visitor looking at an
-      empty page , the worst possible failure for the only page the site has. Registering the
-      timer first means the content arrives even if sizing dies. */
-  /*  THE REVEAL MUST NOT DEPEND ON requestAnimationFrame ALONE , rAF DOES NOT FIRE IN A
-      HIDDEN TAB, and a shared link is very often opened in one. Without the timer the page
-      would sit at opacity 0 until the tab was looked at, and if it was never looked at while
-      loaded, never arrive at all. All three paths are idempotent. */
+  /*  THE REVEAL IS SCHEDULED FIRST, BEFORE ANY CODE THAT COULD THROW. Everything starts at
+      opacity 0 and is uncovered by adding one class, so a single exception anywhere below
+      would leave a visitor looking at an empty page , the worst possible failure for the
+      only page the site has. rAF ALSO DOES NOT FIRE IN A HIDDEN TAB, and a shared link is
+      very often opened in one, so the timer is not redundant. All three paths are
+      idempotent. */
   function reveal(){ document.body.classList.add('go'); }
   requestAnimationFrame(function(){ requestAnimationFrame(reveal); });
   setTimeout(reveal, 80);
   document.addEventListener('visibilitychange', reveal, {once:true});
-  /*  THE CARD IS SIZED AGAINST THE VIEWPORT HEIGHT AS WELL AS ITS WIDTH.
-      The waitlist form is the only thing on this page that does anything, and the first
-      build pushed it 51px below the fold on a 965px viewport , on a 13in laptop it would
-      have been far worse. Everything except the fan costs a fixed ~570px of vertical, so
-      the card gets whatever is left over and no more, floored so it never becomes a stamp
-      and capped so it never gets silly on a tall monitor.
-      IF YOU ADD OR REMOVE ANYTHING ABOVE THE FORM, UPDATE 570. It is measured, not guessed:
-      wrap padding + mark + headline + brand line + panel. Getting it wrong does not throw,
-      it just quietly pushes the form off-screen again, which is exactly how this got here. */
-  var ROT_PAD = 1.10;   // the outer backs are rotated 8deg, which widens their real footprint
-  var MIN_CW  = 112;    // below this a back stops reading as a card and becomes a chip
 
-  /*  SPREAD DIFFERS BY WIDTH, AND THAT IS A TRADE, NOT AN OVERSIGHT.
-      0.78 clears the VV mark completely. Holding 0.78 on a phone costs card size, because
-      the fan is then 2.56 cards wide inside 390px minus padding: it forced the card down to
-      127px, SMALLER than the 168px the page ships today, and three 127px cards read as
-      thumbnails rather than as the product. On a phone the backs therefore overlap about a
-      fifth of their neighbour's mark, which still reads as three distinct tiers, and the
-      cards stay big. Desktop has the room and does not make the trade. */
-  function spreadFor(vw){ return vw > 820 ? 0.78 : 0.64; }
+  var SPREAD_WIDE=0.55, SPREAD_NARROW=0.52, ROT=1.10, ROT_NARROW=1.06, MIN=112, STACK_AT=943;
+  /*  SPREAD IS TIGHTER THAN THE STACKED PAGE'S 0.78 BECAUSE THE COLUMN IS THE CONSTRAINT
+      HERE, NOT THE VIEWPORT. At 0.78 the fan needed 2.56 card-widths of column and the card
+      fell to 235px; 0.55 buys 352px at 1440. The outer marks are partly covered as a result, which
+      on this layout reads as a deck rather than as three named tiers , the deliberate trade.
+      On a phone 0.52 rather than 0.44: at 0.44 the card reached 185px but only the black
+      back's mark stayed visible, and a fan where two of three cards show no mark has stopped
+      saying anything at all. 0.52 gives up 20px of card to keep all three partly readable. */
 
-  /*  THE FIXED VERTICAL COST IS MEASURED, NOT A CONSTANT.
-      This started as "var FIXED_V = 570", the measured height of everything except the fan,
-      and that number is a trap: it is invisible to every future edit, nothing throws when it
-      goes stale, and the only symptom is the waitlist form drifting back below the fold ,
-      which is how the first build of this page shipped. So instead the fan is collapsed to
-      zero, the wrapper is measured at whatever height the real content actually is, and the
-      card gets what is left. Change the copy, the type scale or the panel and this simply
-      keeps working.
-      The headline is sized from vw, not from the fan, so there is no circularity here:
-      collapsing the stage cannot change the height of anything being measured. */
   function size(){
-    var vw=window.innerWidth, vh=window.innerHeight, SPREAD=spreadFor(vw);
-    var st=document.getElementById('stage'), wrap=document.querySelector('.wrap');
-    st.style.height='0px';
-    var fixedV=wrap.getBoundingClientRect().height;   // forces one sync reflow, on resize only
-    var byHeight=(vh-fixedV-2)/1.397;   // 2px of slack , cw is rounded up and 1px of it lands as overflow
-    var byWidth =(vw-32)/((1+2*SPREAD)*ROT_PAD);
-    var cap     = vw>820 ? 268 : 196;
-    var cw=Math.round(Math.max(MIN_CW, Math.min(cap, byHeight, byWidth)));
-    document.querySelectorAll('.vvmono').forEach(function(el){ el.style.setProperty('--cw', cw+'px'); });
-    document.body.style.setProperty('--sp', Math.round(cw*SPREAD)+'px');
-    st.style.height=Math.round(cw*1.397)+'px';
-    /*  MEASURED THRESHOLD: the whole page fits, form included, down to a 590px viewport
-        (at 600 the card is 119px, just clear of MIN_CW). Below that it scrolls, and that is
-        the accepted outcome , once the card is at MIN_CW there is nothing left to give, and
-        shrinking it further to win a scrollbar would trade the fan for nothing. Scrolling
-        still reaches the form; a 90px card would not still be a card.
-        Swept, not assumed: 760 -> 233px, 640 -> 147px, 600 -> 119px fits; 540 -> scrolls. */
+    var vw=window.innerWidth, vh=window.innerHeight, wide=vw>STACK_AT, cw;
+    var sp = wide?SPREAD_WIDE:SPREAD_NARROW;
+    if(wide){
+      /*  THIS RATIO MUST TRACK grid-template-columns IN THE CSS. It did not, once: the CSS
+          went to 1.32fr while this stayed at 1.05, so the fan was sized for a column
+          narrower than the one it was in and came out 235px. Two numbers describing one
+          layout in two languages is the same class of defect as a hard-coded spread. */
+      var GRID_LEFT=1.32, GRID_TOTAL=2.0;
+      var pad=Math.min(84,Math.max(32,vw*0.05)), gap=Math.min(110,Math.max(40,vw*0.06));
+      var colW=(Math.min(1440,vw)-2*pad)*(GRID_LEFT/GRID_TOTAL)-gap/2;
+      cw=Math.min(colW/((1+2*sp)*ROT), (vh*0.88)/1.397, 460);
+    } else {
+      /*  STACKED, AND THE VERTICAL COST IS MEASURED RATHER THAN A CONSTANT.
+          This was "vh - 330" and 330 was a guess: the real furniture is about 426px, so the
+          card came out 300 and pushed the form 96px BELOW THE FOLD at 760. A constant like
+          that is invisible to every future edit and nothing throws when it goes stale , the
+          only symptom is the form quietly drifting off-screen, which is the exact defect
+          this page was rebuilt to remove once already.
+          So: collapse the fan, measure the wrapper at whatever height the real content is,
+          and give the card the remainder. Change the copy or the type scale and it keeps
+          working. The headline is sized from vw, never from the fan, so collapsing the stage
+          cannot change the height of the thing being measured , no circularity. */
+      var st0=document.getElementById('stage'), wrap=document.querySelector('.wrap');
+      /*  BOTH height AND min-height. .stage carries min-height:calc(var(--cw)*1.397) so the
+          fan reserves its space before JS runs, and that min-height does not care about an
+          inline height:0 , the collapse silently did nothing, the measurement came back
+          including the whole fan, and the card floored at 112px. Zero both, measure, restore. */
+      /*  AND THE WRAPPER'S OWN min-height:100vh HAS TO GO TOO WHILE MEASURING. Left in, the
+          box can never measure smaller than the viewport, so vh - fixedV was always about
+          zero and the card floored at 112px at every stacked width. Three separate floors
+          had to be lifted before this measurement told the truth: the stage's height, the
+          stage's min-height, and the wrapper's. A measurement is only as honest as the
+          constraints you remember to remove. */
+      st0.style.minHeight='0px'; st0.style.height='0px'; wrap.style.minHeight='0px';
+      var fixedV=wrap.getBoundingClientRect().height;   // one sync reflow, on resize only
+      st0.style.minHeight=''; wrap.style.minHeight='';
+      cw=Math.min((vh-fixedV-2)/1.397, (vw-40)/((1+2*sp)*ROT_NARROW), 380);
+    }
+    cw=Math.round(Math.max(MIN,cw));
+    /*  --cw GOES ON THE BODY, NOT ON EACH CARD, AND THAT IS THE WHOLE FIX FOR A LONG BUG.
+        Setting it per .vvmono left every OTHER consumer of --cw resolving against the :root
+        default instead of the real size , and .stage{min-height:calc(var(--cw)*1.397)} is
+        one of those. The stage therefore reserved a 300px card's height forever, which both
+        poisoned the measurement above and added 96px of overflow below the fold no matter
+        what the card actually measured. On the body it inherits to the cards AND the stage,
+        and :root stays as the pre-JS default it was meant to be. */
+    document.body.style.setProperty('--cw', cw+'px');
+    document.body.style.setProperty('--sp', Math.round(cw*sp)+'px');
+    var st=document.getElementById('stage');
+    if(st) st.style.height=Math.round(cw*1.397)+'px';
   }
   window.addEventListener('resize', size);
   try{ size(); }catch(e){ /*  a sizing failure must not cost the page its content  */ }
