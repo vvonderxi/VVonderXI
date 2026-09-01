@@ -2838,7 +2838,12 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
 .vvcard .cga .col{text-align:center}
 .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
-.vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.04);letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+/*  SAME DEFECT AS .cname .sub DIRECTLY BELOW, AND THE SAME FIX , 2026-09-01. This is the
+    second and last element on the card face that read var(--ink-soft), a token that flips
+    with the theme, on a face that does not. Measured 2.23 in dark on the cream ground.
+    Found by the corrected contrast survey, not by reading, and fixed as a CLASS with its
+    sibling rather than one at a time , which is the SS C rule the original miss broke. */
+.vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.04);letter-spacing:0.1em;text-transform:uppercase;color:#5f594e;margin-top:2px}
 .vvcard .cga .divider{width:1px;background:rgba(0,0,0,0.12);align-self:stretch}
 .vvcard .cname{text-align:center;margin-top:auto}
 .vvcard .cname .nm{width:100%;font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:calc(var(--cw)*0.135);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.03);white-space:nowrap}
@@ -2864,7 +2869,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     element by construction.
     NO BACKTICKS IN THIS COMMENT , it lives inside the VV_CARD_CSS template literal, and the
     first draft of it ended the literal early. SS C records that exact failure. */
-.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01)}
+.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01)}
 .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
 .vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
@@ -2893,9 +2898,19 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
 .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
 .vvcard.iconic .vv .a{color:#2a1d03}
-.vvcard.iconic .cga .col .l{color:rgba(42,29,3,0.6)}
+/*  THE ICONIC FACE'S TWO MUTED INKS WERE FAILING ON AN ALPHA, NOT ON A DESIGN CONSTRAINT
+    , 2026-09-01. Measured on the gold gradient's darkest stop, rgb(210,154,44), which is
+    where both of these sit: the G/A labels read 3.02 at alpha 0.6 and the club/pos/age
+    sub-line 3.35 at 0.65, against a 4.5 bar.
+    THIS IS NOT THE CARD-FACE CHIP EXCEPTION AND MUST NOT BE FILED AS ONE. That exception
+    (SS C: gold band label 2.04, green chtagcell 2.34) rests on the fill CARRYING the tag's
+    identity , the gold IS the honour , and on there being no alternative rendering. Neither
+    holds here: this ink is not information, and the same colour at a higher alpha passes.
+    0.85 measures 5.05 and 0.85 for the labels likewise, so both clear the bar with margin
+    while staying softer than the name at full ink, which is the hierarchy the alpha was for. */
+.vvcard.iconic .cga .col .l{color:rgba(42,29,3,0.85)}
 .vvcard.iconic .cga .divider{background:rgba(0,0,0,0.18)}
-.vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.65)}
+.vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.85)}
 /* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
   .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
 .vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
