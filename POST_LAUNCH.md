@@ -684,3 +684,40 @@ also the strongest argument for C.** Decide the pair together, not the chart alo
 - **THE 75 CAP IS UNTOUCHED AND IS NOW STATED ON THE CARD**, one line under the score. Without it two keepers at the 54th and 97th percentile both print 75 and the ladder beneath silently contradicts the number above.
 - **THE PANEL LIVES IN `vv-core.js`, NOT IN card.html** , §C's rule about card rules trapped in the pages. Every colour is a token so the host surface decides; the one literal is the conceded block's `rgba(0,0,0,.10)`, which assumes a LIGHT ground (correct for `.layer`, which is cream in BOTH themes).
 - **[BOTH CLOSED , VERIFIED IN THE TREE 2026-08-30. THIS LINE CLAIMED THEY WERE OPEN AND THEY WERE ALREADY SHIPPED.]** `vvindex.html` DOES carry the keeper disclosure , **"The five dimensions above are outfield measures. A keeper is read on a different set"** , and **`s-gk` DOES have a mark in `vv-marks.js`**, so nothing falls through to the `pbMarks` glove-emoji fallback. **A NEXT-line written before the work is not re-read after it**, which is how both survived as outstanding.
+
+---
+
+# THE WAITLIST HAS NEVER COLLECTED ANYTHING , VERIFIED 2026-09-01
+
+**DO NOT ASSUME THERE IS EXISTING INTEREST TO LAUNCH INTO. There is no list, and there never was.**
+
+`iwonder.html` and `myclub.html` have carried a live Formspree form (`/f/maqzaooq`) for months.
+**Across the entire account history there are ZERO real submission notifications.** Nine Formspree
+emails exist since the account was verified on **2026-06-14**: six newsletters, one address
+verification, and two from this session's own tests. Nothing else, ever.
+
+**THE NOTIFICATION PATH ITSELF WORKS**, which is what makes the absence meaningful rather than
+ambiguous , this session's test submissions produced inbox mail in roughly two seconds, so a real
+signup would have left a trace. Two readings survive that, and **there is no evidence separating
+them**:
+
+1. **Nobody ever submitted.** Plausible , the pages were never promoted.
+2. **Submissions were lost silently before the `r.ok` fix.** The earlier handler thanked people
+   without waiting for the request to resolve, so a failed POST produced a thank-you and no record
+   and no notification. **A visitor in that window believes they signed up. We have nothing.**
+
+**Which one it is cannot now be recovered**, and that is the point worth carrying forward: any plan
+that assumes a warm list, or that treats the coming-soon page as re-engaging people who already
+raised a hand, is assuming something **never verified and now unverifiable**.
+
+**WHAT CHANGED SO THIS CANNOT RECUR.** The holding page writes to `public.waitlist_emails` in
+Supabase and gates its thank-you on THAT write; Formspree is now only a notification ping whose
+result is discarded. A cap or an outage costs a ping, never a signup. The list is queryable, so
+"how many people are on it" stops being a question answered by counting emails in an inbox.
+
+**AND THE ONE THAT PROMPTED ALL OF THIS:** the first build of the holding page posted to
+`/f/mayzwqzv`, **an endpoint that does not exist** , it was written from memory rather than copied.
+It returned `FORM_NOT_FOUND` on every submission. **The `r.ok` check is the only reason that failed
+loudly instead of silently**, which is the same fix that would have prevented reading 2 above. The
+rule that follows is narrow and worth keeping: **paste endpoint ids from the file that already
+works; never type one.**
