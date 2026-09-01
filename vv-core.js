@@ -2443,15 +2443,16 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   // ── Honours render helpers (folded from vv-honours-render.js) ─────────
   // Match live markup: #glChips gold chips (.chip.gold, hover-tip free via .chip[data-tip]),
   // #wonderTags .tagrow (tap), buildCard top honour pill. STEP 1 wires renderHonourChips only.
-  const HONOUR_ICON = {
-    ballon_dor:       '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="9" r="6"/><path d="M9 15l-2 6 5-3 5 3-2-6"/></svg>',
-    world_cup_winner: '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>',
-    ucl_winner:       '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>',
-    league_champion:  '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>',
-    player_of_season: '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
-    golden_boot:      '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h6v7c3 0 8 1 8 4v2H4z"/></svg>',
-    top_assists:      '<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4l2-6 4 12 2-6h4"/></svg>',
-  };
+  /*  HONOUR_ICON IS GONE , 2026-09-01. It was a SECOND set of seven honour marks, 24x24
+      stroke line icons, living beside VVMarks.honour()'s filled sprite set and used by the
+      card GLANCE chips and the Wonder-Tags rows, while the card FACE, the rankings rows and
+      the Playbook display case all used the shared set. Two drawings of one thing, which is
+      the display-case defect SS C records, and they had drifted into different METAPHORS,
+      not different styles: World Cup was a trophy in one set and a GLOBE in the other, UCL a
+      trophy and a STAR, Player of the Season a star and a CLOCK, Top Assists a bulb and a
+      ZIGZAG. Only Golden Boot and League Champion depicted the same object.
+      Everything now reads VVMarks.honour(), keyed on the HONOUR_META key, through vvMark(),
+      which fails soft to '' if vv-marks.js is missing or stale. */
   const HONOUR_CHIP_LABEL = {
     ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL',
     league_champion:'Champion', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
@@ -2464,7 +2465,7 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     const cls = (opts && opts.baseClass) || 'chip';   // card glance = 'chip'; Compare passes 'vchip'
     const items = honours.all || honours.season.concat(honours.career);   // tier-sorted combined (CHANGE 2)
     return items.map(function(h){
-      const icon = HONOUR_ICON[h.type] || '';
+      const icon = (opts && opts.mark) ? vvMark('honour', h.type) : '';   // h.type IS the HONOUR_META key
       const label = HONOUR_CHIP_LABEL[h.type] || h.label;
       const tip = h.oneliner || h.label;   // #15: hover = clean one-liner ONLY (context/tally live in the expand)
       return '<span class="'+cls+' gold" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
@@ -2492,8 +2493,13 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     ucl_winner:       function(){ return 'Champions of Europe , the brightest lights conquered.'; },
   };
   // One honour as a tap-expandable Wonder-Tags row: one-liner (.td) + Drury paragraph & meta (.tmore, #16).
+  /*  Marks unconditionally rather than behind an opts.mark like its siblings: this row is
+      reached through renderWonderTagsGrouped and renderHonourRows via `.map(honourRowHTML)`,
+      so there is no options object to thread and inventing one for three call sites would be
+      more surface than the flag is worth. vvMark fails soft, so the cost of no vv-marks is a
+      missing icon, exactly as it is everywhere else. */
   function honourRowHTML(h){
-    const icon = HONOUR_ICON[h.type] || '';
+    const icon = vvMark('honour', h.type);
     const oneLiner = h.oneliner || h.label;
     const drury = HONOUR_DRURY[h.type] || '';
     const meta = HONOUR_TALLY[h.type] ? HONOUR_TALLY[h.type](h) : '';
@@ -2554,7 +2560,7 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     if(!honours || !honours.topHonour) return '';
     const h = honours.topHonour;
     const cls = (opts && opts.baseClass) || 'chtagcell';
-    const icon = HONOUR_ICON[h.type] || '';
+    const icon = vvMark('honour', h.type);
     const label = HONOUR_CHIP_LABEL[h.type] || h.label;
     return '<span class="'+cls+' gold" data-tag="'+escAttr(h.type)+'" data-tip="'+escAttr(h.oneliner||h.label)+'">'+icon+label+'</span>';
   }
@@ -5297,7 +5303,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
                 bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryPairHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
-                renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_ICON, HONOUR_CHIP_LABEL,
+                renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,

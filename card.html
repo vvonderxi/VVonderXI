@@ -253,7 +253,12 @@
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink-ink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
   .tagrow .tt .ti{width:15px;height:15px}
-  .tagrow .tt .ci{width:15px;height:15px;flex-shrink:0}
+  /*  .vvm, NOT .ci , the glance chips and the Wonder-Tags rows moved onto the shared
+      VVMarks honour set on 2026-09-01 and HONOUR_ICON was deleted. The sizes are the ones
+      the old set shipped at, carried over unchanged so nothing moves. WITHOUT THESE THE
+      MARKS SHIP UNSIZED: VVMarks emits class="vvm" and the .vvm rules in vv-core are scoped
+      to .vvcard and .vvrows, neither of which covers these two surfaces. */
+  .tagrow .tt .vvm{width:15px;height:15px;flex-shrink:0}
   .tagrow .td{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;line-height:1.5;color:#3a352e}
   /* THE KEEPER CAP, STATED. The VV Score does not weigh goalkeeping yet, so every keeper
      prints 75 regardless of how well he kept goal. Left unsaid, the number contradicts the
@@ -265,8 +270,10 @@
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
   .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
   .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
-  .chip.gold .ci{width:13px;height:13px}
-  .chip.gold .ci path,.chip.gold .ci circle,.chip.gold .ci rect{fill:#5a4410}
+  .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
+  /*  DELETED WITH HONOUR_ICON , the old set was stroke-drawn and needed its shapes filled
+      by hand. VVMarks.honour() is fill="currentColor", so it inherits .chip.gold's own ink
+      and needs no per-shape rule. Verified rendered rather than assumed. */
   .chip.prof{background:rgba(255,92,122,0.12);color:#c43a55;border:1px solid rgba(255,92,122,0.3)}
   /* watch CTA */
   .watchcta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--charcoal);color:var(--cream);border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:4px}
@@ -1063,8 +1070,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260901c"></script>
-<script src="/vv-core.js?v=20260901c"></script>
+<script src="/vv-marks.js?v=20260901d"></script>
+<script src="/vv-core.js?v=20260901d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1554,7 +1561,7 @@
     var D=window.D; if(!D) return;
     var chips=document.getElementById('glChips');
     if(chips){
-      chips.innerHTML = renderHonourChips(D.honours) + renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
+      chips.innerHTML = renderHonourChips(D.honours, {mark:true}) + renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
       if(typeof TAG_DEFS !== 'undefined'){
         chips.querySelectorAll('[data-tag]').forEach(function(el){
           var def=TAG_DEFS[el.getAttribute('data-tag')];
