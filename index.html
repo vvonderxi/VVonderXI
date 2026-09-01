@@ -20,15 +20,13 @@
   <meta name="twitter:description" content="Every Season Tells a Different Story. 57,234 player seasons across nine leagues, each one scored, ranked and ready to compare.">
   <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
   <!--  THE META BLOCK ABOVE IS index.html's, VERBATIM AND COMPLETE , 9 og: tags and 5
-        twitter: tags. It is the whole reason this page can stand in for the site: a crawler
-        reads static HTML, so a link to vvonderxi.com unfurls from whatever the root serves,
-        and every already-shared link keeps the title, description and image it had. Do not
-        "tidy" it, do not rewrite the copy, and do not drop og-image.png from this branch. -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+        twitter:, plus the title and description. It is the whole reason this page can stand
+        in for the site: a crawler reads static HTML, so every link already shared keeps the
+        title, description and image it has today. Do not tidy it, do not rewrite the copy,
+        and do not drop og-image.png from this branch. -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-  :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;
-        --pink-ink:#F1688E;--pink-glow:#FF8FA3;--gold:#E8B84B;--gold-ink:#E8B84B}
-  body.light{--ink-soft:#5f594e;--gold-ink:#8a6a1e}
+  :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E}
   *{box-sizing:border-box}
   html,body{margin:0}
   body{min-height:100vh;display:flex;align-items:center;justify-content:center;
@@ -40,26 +38,64 @@
     background:radial-gradient(150% 620px at 50% -140px, rgba(255,255,255,.7), transparent 78%),
                radial-gradient(120% 90% at 50% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
     background-attachment:fixed}
-  .wrap{width:100%;max-width:680px;padding:44px 22px 60px;display:flex;flex-direction:column;
+  .wrap{width:100%;max-width:700px;padding:40px 22px 54px;display:flex;flex-direction:column;
         align-items:center;text-align:center}
-  .mark{display:block;height:34px;width:auto;margin-bottom:30px}
-  .cardhost{display:flex;justify-content:center;min-height:452px;align-items:center}
-  .tag{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:28px;line-height:1.28;
-       letter-spacing:-.01em;margin:30px 0 0;max-width:15em}
-  .tag i{font-style:italic;color:var(--pink-ink)}
-  body.light .tag i{color:#AD0332}
-  .sub{font-size:13.5px;line-height:1.62;opacity:.66;margin:14px 0 0;max-width:32em}
-  /*  WAITLIST , markup, copy shape and handler contract lifted from iwonder.html. The
-      handler AWAITS the fetch and decides on r.ok: it never thanks anyone before the
-      request has resolved, and on failure the form stays up with the address still in it.
-      That is the rule this project already had to learn once. */
-  .notify{margin-top:32px;width:100%;max-width:460px;text-align:left;
+  .mark{display:block;height:32px;width:auto;margin-bottom:30px}
+
+  /*  THE CARD BACK , MARKUP AND TIER CSS COPIED VERBATIM FROM THE PRODUCT, NOT RETYPED.
+      Markup is VVCore.vvBackFace()'s output; the .vvmono* rules are compare.html's.
+      THIS PAGE DELIBERATELY LOADS NO JAVASCRIPT AT ALL, and that is a trade made with eyes
+      open: vvBackFace() returns one trivial div while the CSS that actually defines the back
+      lives in a page, so loading 350 KB of engine to source a div would cost the page that
+      must load fastest almost everything and buy almost nothing. The price is a second copy
+      of the tier rules, recorded here so it is not silent. This branch is temporary and is
+      deleted when the site opens; if it ever stops being temporary, move .vvmono* into
+      vv-core beside vvBackFace and load it properly.
+      THERE IS NO .vvmono-master. The neutral charcoal back was built for direction A and is
+      not a tier, so it is not in the fan and it survives nowhere , nothing was moved into
+      vv-core for it. */
+  .vvmono{width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);
+    display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+  .vvmonomark{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;
+    font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1;text-shadow:0 6px 18px rgba(0,0,0,.3)}
+  .vvmonomark span{color:var(--pink)}
+  .vvmono-cream{background:linear-gradient(158deg,#F7F2E6,#EAE2D0);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.10),0 24px 60px -20px rgba(0,0,0,.5)}
+  .vvmono-cream .vvmonomark{color:#1C1B1A}
+  .vvmono-gold{background:linear-gradient(158deg,#F6DE93,#DC9E2C);
+    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),
+               inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
+  .vvmono-gold .vvmonomark{color:#3a2708}
+  .vvmono-black{background:linear-gradient(158deg,#2c2926,#121010);
+    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(232,184,75,.55),
+               inset 0 0 0 calc(var(--cw)*0.028) rgba(232,184,75,.9),
+               0 22px 54px -18px rgba(0,0,0,.7),0 0 26px -6px rgba(232,184,75,.25)}
+  .vvmono-black .vvmonomark{color:#F0EAD9}
+
+  /*  THE FAN , three backs for three tiers. A reader sees that tiers exist without learning
+      what any of them mean, which is the whole job of a holding page. No overflow clip on the
+      stage or anything above it. */
+  .stage{position:relative;display:flex;justify-content:center;align-items:center}
+  .fanc{position:absolute;opacity:0;transform:translateX(0) rotate(0deg) scale(.96);
+    transition:transform .95s cubic-bezier(.22,.61,.36,1),opacity .7s ease}
+  body.go .fanc{opacity:1}
+  body.go .f1{transform:translateX(-124px) rotate(-8deg);transition-delay:.10s}
+  body.go .f2{transform:translateX(0)     rotate(0deg); transition-delay:.19s}
+  body.go .f3{transform:translateX(124px)  rotate(8deg); transition-delay:.28s}
+
+  .tag{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:27px;
+       line-height:1.3;letter-spacing:-.01em;margin:30px 0 0;max-width:15em}
+  .tag .pk{color:var(--pink-ink)}
+  body.light .tag .pk{color:#AD0332}
+  .brand{font-family:'Archivo',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.2em;
+         text-transform:uppercase;opacity:.45;margin-top:16px}
+  .notify{margin-top:28px;width:100%;max-width:440px;text-align:left;
     background:linear-gradient(135deg,rgba(255,92,122,0.10),rgba(255,255,255,0.04));
-    border:1px solid rgba(255,92,122,0.22);border-radius:16px;padding:20px 22px}
+    border:1px solid rgba(255,92,122,0.22);border-radius:16px;padding:18px 20px}
   body.light .notify{background:linear-gradient(135deg,rgba(231,4,67,.06),rgba(0,0,0,.02));
     border-color:rgba(231,4,67,.18)}
-  .notify .nt{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;margin-bottom:5px}
-  .notify .nd{font-size:12.5px;opacity:.72;line-height:1.55;margin-bottom:14px}
+  .notify .nt{font-family:'Archivo',sans-serif;font-weight:900;font-size:14.5px;margin-bottom:4px}
+  .notify .nd{font-size:12px;opacity:.72;line-height:1.5;margin-bottom:12px}
   .form{display:flex;gap:9px}
   .form input{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
     border-radius:11px;padding:12px 14px;color:inherit;font:inherit;font-size:16px;outline:none}
@@ -71,19 +107,47 @@
   .err,.thanks{display:none;font-size:12.5px;line-height:1.55;margin-top:12px}
   .err{color:var(--pink-ink)} body.light .err{color:#AD0332}
   .thanks{opacity:.8}
-  @media (max-width:820px){ .wrap{padding:28px 16px 44px} .tag{font-size:23px;margin-top:24px}
-    .cardhost{min-height:300px} }
-  @media (max-width:420px){ .tag{font-size:21px} .form{flex-direction:column} .form button{width:100%} }
-  @media (prefers-reduced-motion:no-preference){ .wrap{animation:rise .5s ease both} }
-  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .tag,.brand,.notify{opacity:0;transform:translateY(8px);
+    transition:opacity .55s ease,transform .55s cubic-bezier(.22,.61,.36,1)}
+  body.go .tag{opacity:1;transform:none;transition-delay:.82s}
+  body.go .brand{opacity:1;transform:none;transition-delay:.97s}
+  body.go .notify{opacity:1;transform:none;transition-delay:1.12s}
+
+  @media (max-width:820px){ .wrap{padding:26px 16px 40px} .tag{font-size:22px;margin-top:24px} }
+  @media (max-width:560px){
+    body.go .f1{transform:translateX(-74px) rotate(-8deg)}
+    body.go .f2{transform:translateX(0) rotate(0deg)}
+    body.go .f3{transform:translateX(74px) rotate(8deg)}
+  }
+  @media (max-width:420px){ .tag{font-size:20px} .form{flex-direction:column} .form button{width:100%} }
+
+  /*  ONE RULE FOR REDUCED MOTION. The finished state is pinned rather than re-implemented:
+      transitions off, and every element placed exactly where the animation would have left
+      it, fan offsets included. */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition:none !important;animation:none !important}
+    .fanc,.tag,.brand,.notify{opacity:1 !important}
+    .tag,.brand,.notify{transform:none !important}
+    .f1{transform:translateX(-124px) rotate(-8deg) !important}
+    .f2{transform:translateX(0) rotate(0deg) !important}
+    .f3{transform:translateX(124px) rotate(8deg) !important}
+    @media (max-width:560px){
+      .f1{transform:translateX(-74px) rotate(-8deg) !important}
+      .f3{transform:translateX(74px) rotate(8deg) !important}
+    }
+  }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <img class="mark" id="mark" src="/assets/spinelogo-dark.png" alt="VVonderXI" width="76" height="34">
-    <div class="cardhost" id="cardhost"></div>
-    <div class="tag">Every season tells a <i>different story</i>.</div>
-    <div class="sub" id="sub">Fifty-seven thousand player seasons, nine leagues, one index. Opening shortly.</div>
+    <img class="mark" id="mark" src="/assets/spinelogo-dark.png" alt="VVonderXI" width="72" height="32">
+    <div class="stage" id="stage">
+      <div class="fanc f1"><div class="vvmono vvmono-cream"><div class="vvmonomark">V<span>V</span></div></div></div>
+      <div class="fanc f2"><div class="vvmono vvmono-gold"><div class="vvmonomark">V<span>V</span></div></div></div>
+      <div class="fanc f3"><div class="vvmono vvmono-black"><div class="vvmonomark">V<span>V</span></div></div></div>
+    </div>
+    <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
+    <div class="brand">The Football Legacy Platform</div>
     <div class="notify">
       <div class="nt">Be first through the door.</div>
       <div class="nd">One message when it opens. Nothing else, ever.</div>
@@ -95,49 +159,35 @@
       <div class="thanks" id="thanks">&#10003; You&rsquo;re on the list. One message, when it opens.</div>
     </div>
   </div>
-
-<script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260901e"></script>
-<script src="/vv-core.js?v=20260901e"></script>
 <script>
-/*  THE HERO IS A REAL CARD, READ LIVE FROM THE MATVIEW. card_id 143372 is Messi 11/12,
-    rt 97, Generational , the highest season in the index. It renders through the SAME
-    buildCard, the same marks and the same loader the product uses, so this page shows the
-    thing rather than describing it.
-    IF THE FETCH FAILS THE PAGE STILL STANDS: the card slot simply stays empty and the
-    tagline, the sub-line and the waitlist are untouched. A holding page must not depend on
-    a database being up. */
-var HERO_ID = 143372;
-function applyTheme(){
+/*  Theme and sizing. The card width is set here rather than in CSS because the fan needs a
+    real number to lay out against and calc() on a percentage of the viewport would fight the
+    absolute positioning. */
+(function(){
   var light=false;
   try{ var t=localStorage.getItem('vvTheme');
        light = t ? (t==='light') : window.matchMedia('(prefers-color-scheme: light)').matches; }catch(e){}
   document.body.classList.toggle('light', light);
   var m=document.getElementById('mark');
-  if(m) m.src = '/assets/spinelogo-' + (light?'light':'dark') + '.png';
-  return light;
-}
-applyTheme();
-(function(){
-  var host=document.getElementById('cardhost');
-  try{ if(window.VVCore && VVCore.vvLoader) host.innerHTML=VVCore.vvLoader({size:48,label:'Loading'}); }catch(e){}
-  try{ VVCore.useCardMarks(true); }catch(e){}
-  function cw(){ return window.innerWidth>820 ? 300 : Math.min(280, Math.max(190, Math.round(window.innerWidth*0.62))); }
-  (async function(){
-    try{
-      if(!window.supabase || !window.VV_PUBLIC){ host.innerHTML=''; return; }
-      var cli=window.supabase.createClient(VV_PUBLIC.SUPABASE_URL, VV_PUBLIC.SUPABASE_ANON_KEY);
-      var r=await cli.from('player_card_mv').select('*').eq('card_id', HERO_ID).single();
-      if(r.error || !r.data){ host.innerHTML=''; return; }
-      host.innerHTML = VVCore.buildCard(VVCore.rowToCard(r.data), cw());
-    }catch(e){ host.innerHTML=''; }
-  })();
+  if(m) m.src='/assets/spinelogo-'+(light?'light':'dark')+'.png';
+  function size(){
+    var cw = window.innerWidth>820 ? 214 : Math.min(168, Math.max(128, Math.round(window.innerWidth*0.34)));
+    document.querySelectorAll('.vvmono').forEach(function(el){ el.style.setProperty('--cw', cw+'px'); });
+    var st=document.getElementById('stage'); if(st) st.style.height = Math.round(cw*1.397)+'px';
+  }
+  size(); window.addEventListener('resize', size);
+  /*  THE REVEAL MUST NOT DEPEND ON requestAnimationFrame ALONE , rAF DOES NOT FIRE IN A
+      HIDDEN TAB, and a shared link is very often opened in one. Without the timer the page
+      would sit at opacity 0 until the tab was looked at, and if it was never looked at while
+      loaded, never arrive at all. All three paths are idempotent. */
+  function reveal(){ document.body.classList.add('go'); }
+  requestAnimationFrame(function(){ requestAnimationFrame(reveal); });
+  setTimeout(reveal, 80);
+  document.addEventListener('visibilitychange', reveal, {once:true});
 })();
-/*  AWAIT THE FETCH, THEN DECIDE , the contract iwonder.html arrived at. Nobody is thanked
-    before the request resolves, only r.ok unlocks the thanks, and on failure the form stays
-    up with the typed address still in it. Never clear the input on error: it is the only
-    copy of the thing the visitor was trying to give us. */
+/*  AWAIT THE FETCH, THEN DECIDE , iwonder.html's contract. Nobody is thanked before the
+    request resolves, only r.ok unlocks the thanks, and on failure the form stays up with the
+    typed address still in it. That address is the only copy of what the visitor was giving us. */
 (function(){
   var go=document.getElementById('go'), el=document.getElementById('email');
   var err=document.getElementById('err'), thanks=document.getElementById('thanks'), form=document.getElementById('form');
