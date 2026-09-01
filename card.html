@@ -252,7 +252,15 @@
      body.light override corrected the one theme that was already fine. */   /* prose text override , container went light, cream text would be invisible */   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
   .tagrow .tt{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--pink-ink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .tagrow .tt .ttl{flex:1;min-width:0;overflow-wrap:anywhere}
-  .tagrow .tt .ti{width:15px;height:15px}
+  /*  .vvm SIZING FOR THE TWO SURFACES vv-core DOES NOT REACH , 2026-09-01.
+      vv-core sizes .vvm under `.vvcard .chtag` and `.vvrows .rtag` only. The GLANCE chips
+      carry .chtag but live in #glChips, OUTSIDE .vvcard (measured: closest('.vvcard') is
+      null on every one of them), so that rule does not match and the marks would have
+      shipped unsized , the same failure the honour unification would have had. The
+      Wonder-Tags rows are the second such surface and used to size the deleted .ti set.
+      15px is the size the old .ti shipped at, carried over so nothing moves. */
+  .tagrow .tt .vvm{width:15px;height:15px;flex-shrink:0}
+  #glChips .chtag .vvm{width:12px;height:12px;flex-shrink:0;margin-right:5px;vertical-align:-1px}
   /*  .vvm, NOT .ci , the glance chips and the Wonder-Tags rows moved onto the shared
       VVMarks honour set on 2026-09-01 and HONOUR_ICON was deleted. The sizes are the ones
       the old set shipped at, carried over unchanged so nothing moves. WITHOUT THESE THE
@@ -1070,8 +1078,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260901e"></script>
-<script src="/vv-core.js?v=20260901e"></script>
+<script src="/vv-marks.js?v=20260901f"></script>
+<script src="/vv-core.js?v=20260901f"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1561,7 +1569,7 @@
     var D=window.D; if(!D) return;
     var chips=document.getElementById('glChips');
     if(chips){
-      chips.innerHTML = renderHonourChips(D.honours, {mark:true}) + renderPrestige(D.prestige, {baseClass:'chtag'}) + renderTagPills(D.tags, {baseClass:'chtag', max:99});
+      chips.innerHTML = renderHonourChips(D.honours, {mark:true}) + renderPrestige(D.prestige, {baseClass:'chtag', mark:true}) + renderTagPills(D.tags, {baseClass:'chtag', max:99, mark:true});
       if(typeof TAG_DEFS !== 'undefined'){
         chips.querySelectorAll('[data-tag]').forEach(function(el){
           var def=TAG_DEFS[el.getAttribute('data-tag')];

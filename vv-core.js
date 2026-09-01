@@ -2523,22 +2523,21 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   //   INDIVIDUAL HONOURS (Individual) -> THE PLAYER (profile rows). Each renders only when non-empty.
   // Wonder-Tags "THE PLAYER" rows , tap-expandable profile-tag rows. SHARED by card + compare.
   //   prestige (Gen/Iconic) leads, then each profile tag; icon + name + one-liner + Drury def, all from TAG_DEFS.
-  const WT_TAG_ICON = (function(){ var svg=function(p){ return '<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; };
-    return { ATT:svg('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/>'),
-             MID:svg('<path d="M15 5l4 4"/><path d="M17 3l4 4-12 12-4 1 1-4z"/>'),
-             DEF:svg('<path d="M12 3l7 3v5c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6z"/>'),
-             CROSS:svg('<path d="M12 3l7 9-7 9-7-9z"/>'),
-             AGE:svg('<path d="M12 3.5l2.4 5.3 5.6.5-4.3 3.7 1.3 5.5L12 21l-5.3 3 1.3-5.5L3.7 9.3l5.6-.5z"/>'),
-             GEN:svg('<path d="M3 8l4 6 5-9 5 9 4-6v9H3z"/>'),
-             ICO:svg('<path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 11.8l4.9-1.7z"/><path d="M18.5 15l.5 1.6 1.6.5-1.6.5-.5 1.6-.5-1.6-1.6-.5 1.6-.5z"/>') };
-  })();
+  /*  WT_TAG_ICON IS GONE , 2026-09-01, and it was a COARSER divergence than HONOUR_ICON.
+      That one was a second drawing of the same seven things. This one was keyed on the tag
+      FAMILY, not the tag NAME, so the Wonder-Tags rows gave every ATT tag one icon and every
+      DEF tag another: Goal Machine and Provider shared a drawing, while the card face gave
+      each its own mark. Five icons standing in for twenty tags.
+      Everything now reads VVMarks.tag() on the tag's own name, through vvMark(), which fails
+      soft to '' if vv-marks.js is missing or stale. All 20 TAG_DEFS names and both prestige
+      values were confirmed present in the mark set BEFORE the swap, so nothing renders blank. */
   function renderProfileTagRows(tags, prestige){
     var rows=[];
     if(prestige==='Generational' || prestige==='Iconic'){
       var pdef=TAG_DEFS[prestige];
-      if(pdef) rows.push({ icon:(prestige==='Generational'?WT_TAG_ICON.GEN:WT_TAG_ICON.ICO), name:prestige, one:pdef.oneLiner, full:pdef.def });
+      if(pdef) rows.push({ icon:vvMark('tag', prestige), name:prestige, one:pdef.oneLiner, full:pdef.def });
     }
-    if(Array.isArray(tags)) tags.forEach(function(t){ var def=TAG_DEFS[t.name]; if(def) rows.push({ icon:(WT_TAG_ICON[t.family]||WT_TAG_ICON.CROSS), name:t.name, one:def.oneLiner, full:def.def }); });
+    if(Array.isArray(tags)) tags.forEach(function(t){ var def=TAG_DEFS[t.name]; if(def) rows.push({ icon:vvMark('tag', t.name), name:t.name, one:def.oneLiner, full:def.def }); });
     return rows.map(function(r){
       return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
         + '<div class="tt">' + r.icon + ' <span class="ttl">' + r.name + '</span> <span class="tchev">&#8964;</span></div>'
