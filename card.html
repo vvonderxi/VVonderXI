@@ -51,6 +51,15 @@
   /* Disabled, NOT hidden, at either end , the control staying put is what tells you the
      list has an end. This is also why nothing wraps around. */
   .seqbtn:disabled{opacity:.28;cursor:default}
+  /*  A BARE /card SUPPRESSES EVERY SURFACE THAT WOULD OTHERWISE SHOW DEMO CONTENT.
+      Replacing the hero alone was not enough: the glance still read the demo player's
+      91 / 10 / 8 and "CAM . Man Utd . 23/24" underneath the not-found box, the season
+      Watch CTA still named him in its link text, and the club/compare/wall pills offered
+      actions on a card that does not exist. SS C: a wrong NUMBER looks like data, and this
+      is a ratings site. One body class rather than a list of element handles, so a panel
+      added later is hidden by living inside .depth instead of by someone remembering. */
+  body.nocard .depth, body.nocard .pcap, body.nocard .clubpill, body.nocard .wallpill,
+  body.nocard .sharebox, body.nocard .watchcta, body.nocard #seasonZone{display:none !important}
   /* the not-found state , plain by design, see vvCardNotFound */
   .cardnf{max-width:520px;margin:40px auto;padding:26px 24px;text-align:left;
           border:1px dashed rgba(243,237,224,.22);border-radius:16px}
@@ -1610,7 +1619,18 @@
         The base V vanishing is exactly the guarantee the mark is supposed to make.
         Same fix as the AI wait above; it was applied there and not here. */
   } else {
-    renderHero();                              // no id -> standalone demo (unchanged)
+    /*  A BARE /card IS NOT A DEMO ANY MORE , IT IS A LIVE ROUTE (fixed 2026-09-01, first
+        defect found after the merge). This branch used to render the hardcoded Bruno
+        Fernandes card, which was correct while card.html was a standalone demo page and
+        became wrong the moment cleanUrls started serving /card to the public: a bare URL,
+        a truncated share or a stale link showed a REAL-LOOKING CARD BELONGING TO NOBODY,
+        with a score, a club and a season, on a ratings site. That is the worst shape of
+        the silent-failure family SS C records , not a blank, not an error, but a
+        confident wrong answer.
+        It gets vvCardNotFound's treatment with its own words: there is no id to be stale,
+        so it is not "that card is not here", it is "this link does not name a card". */
+    document.body.classList.add('nocard');
+    vvCardNotFound(null, false, true);
   }
 
   // ── Live data: load the player-season by ?id=<card_id> ──
@@ -2033,7 +2053,10 @@
       page use for an empty search , VVFilters.emptyStateHTML , so the platform says one
       thing about its own boundaries. Falls back to its own copy if that is unreachable
       rather than rendering an empty box. */
-  function vvCardNotFound(id, missing){
+  /*  THREE STATES, NOT TWO. `missing` = an id that resolved to no row (a stale link);
+      neither = a load that failed (our fault, not the reader's); `noId` = the URL never
+      named a card at all. The third was added when a bare /card went public. */
+  function vvCardNotFound(id, missing, noId){
     var host=document.getElementById('heroCard') || document.querySelector('.hero') || document.body;
     var scope='';
     try{
@@ -2042,12 +2065,15 @@
       var el=d.querySelector('.vvf-es-scope'); if(el) scope=el.innerHTML;
     }catch(e){}
     if(!scope) scope='VVonderXI scores nine leagues from 2010 onward. If a player or a season is not in that set, no card exists for it.';
-    var head = missing ? 'That card is not here.' : 'This card could not be loaded.';
-    var body = missing
+    var head = noId ? 'No card in this link.'
+             : missing ? 'That card is not here.' : 'This card could not be loaded.';
+    var body = noId
+      ? 'A card address carries the season it belongs to, so this one does not point at a player. Nothing is wrong with the site , the link is just incomplete.'
+      : missing
       ? 'Nothing matches id <b>' + String(id).replace(/[^0-9]/g,'') + '</b>. A link can go stale when a season is corrected , seasons split across two clubs are being merged into one card, and the older link stops resolving.'
       : 'Something went wrong reaching the seasons, so this is not an answer about whether the card exists. Try again.';
     host.innerHTML = '<div class="cardnf"><b>' + head + '</b><p>' + body + '</p><p class="cardnf-scope">'
-      + (missing ? scope : '') + '</p><a class="cardnf-go" href="rankings.html">Browse the rankings</a></div>';
+      + ((missing || noId) ? scope : '') + '</p><a class="cardnf-go" href="rankings.html">Browse the rankings</a></div>';
     document.querySelectorAll('.vv-wait').forEach(function(el){ el.classList.remove('vv-wait'); });
   }
 
