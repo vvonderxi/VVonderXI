@@ -2845,7 +2845,26 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .cname .nm.long{font-size:calc(var(--cw)*0.09)}
 .vvcard .cname .nm .cflag{font-size:calc(var(--cw)*0.07)}
 .vvcard .cname .full{display:none}
-.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-top:calc(var(--cw)*0.01)}
+/*  THE INK IS PINNED TO THE CARD'S GROUND, NOT TO THE THEME , MEASURED 2026-09-01.
+    This read var(--ink-soft), which FLIPS with the theme: #a49d93 in dark, #5f594e in
+    light. The card face does NOT flip , .vvcard paints a cream gradient with !important in
+    both themes , so in DARK mode a light grey meant for a dark ground was being painted on
+    cream. Measured on a real plain card at 390px: contrast 1.90 in dark against 4.91 in
+    light, on the same pixels, and visibly washed out in a screenshot.
+    SS C already states this rule (a token that flips with the theme is wrong on a ground
+    that does not). It was stated and not applied as a class, which is the other SS C rule.
+    IT HIT EVERY PLAIN CARD ON EVERY SURFACE , card, compare, rankings, My Club , and plain
+    cards are the large majority. The prestige faces were never affected: .gen and .iconic
+    both override this colour below, which is why the defect survived a survey.
+    #5f594e IS THE LIGHT-MODE VALUE OF THE SAME TOKEN, so light mode is byte-identical to
+    what it already rendered and only dark mode changes. 1.90 -> 4.91 against the gradient's
+    darkest stop (#E2D8C4, at the bottom of the card where this line sits), which is the
+    worst case; higher further up.
+    DO NOT PUT A TOKEN BACK HERE. Any token that answers to body.light is wrong on this
+    element by construction.
+    NO BACKTICKS IN THIS COMMENT , it lives inside the VV_CARD_CSS template literal, and the
+    first draft of it ended the literal early. SS C records that exact failure. */
+.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01)}
 .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
 .vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
