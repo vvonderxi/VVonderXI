@@ -1,9 +1,0 @@
-api_player_id,card_id,player_name,season,club,league,current_pool,coarse_position,rt,goals,assists,minutes,dribbles_per90,verified_position,confidence,evidence
-114799,136674,Rafael van der Vaart,1011,Tottenham,PL,CAM,MID,83,13,NR,2239,NR,,,
-114799,136284,Rafael van der Vaart,1112,Tottenham,PL,CAM,MID,80,11,NR,2335,NR,,,
-30435,131145,D. Kulusevski,2324,Tottenham,PL,CM,MID,79,8,3,2767,1.76,,,
-30435,130733,D. Kulusevski,2425,Tottenham,PL,CM,MID,78,7,4,2390,1.43,,,
-2735,131859,P. Højbjerg,2223,Tottenham,PL,CDM,MID,74,4,5,3133,0.89,,,
-2735,132256,P. Højbjerg,2122,Tottenham,PL,CDM,MID,70,2,2,3199,1.18,,,
-863,131557,R. Bentancur,2223,Tottenham,PL,CDM,MID,73,5,2,1506,1.25,,,
-41104,130426,João Palhinha,2526,Tottenham,PL,CDM,MID,72,5,2,2210,0.41,,,

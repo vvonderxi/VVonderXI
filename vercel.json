@@ -1,6 +1,8 @@
 {
   "cleanUrls": true,
-  "fluid": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/og-image.png",

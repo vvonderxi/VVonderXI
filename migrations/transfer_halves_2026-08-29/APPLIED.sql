@@ -1,8 +1,0 @@
-do $vv$ begin
-  update player_season_cards set team_name='Aston Villa', team_id=8, minutes=944, appearances=21, starts=12, goals=1, assists=0, rating=6.89, shots_total=8, shots_on=5, passes_total=655, passes_key=19, passes_accuracy=89.4, dribbles_attempts=13, dribbles_success=6, tackles_total=23, tackles_blocks=4, interceptions=14, duels_total=91, duels_won=52, fouls_drawn=15, fouls_committed=13, cards_yellow=3, cards_red=0, saves=null, goals_conceded=0, penalties_scored=0, penalties_missed=0, penalties_saved=null where id=130604;
-  update player_season_cards set team_name='Fulham', team_id=39, minutes=1050, appearances=23, starts=11, goals=0, assists=1, rating=6.81, shots_total=8, shots_on=3, passes_total=401, passes_key=22, passes_accuracy=84.5, dribbles_attempts=45, dribbles_success=27, tackles_total=21, tackles_blocks=null, interceptions=9, duels_total=134, duels_won=71, fouls_drawn=17, fouls_committed=9, cards_yellow=1, cards_red=0, saves=null, goals_conceded=0, penalties_scored=0, penalties_missed=0, penalties_saved=null where id=130484;
-  update player_season_cards set team_name='Burnley', team_id=45, minutes=1109, appearances=18, starts=12, goals=0, assists=1, rating=6.84, shots_total=2, shots_on=2, passes_total=614, passes_key=23, passes_accuracy=88.37, dribbles_attempts=7, dribbles_success=2, tackles_total=15, tackles_blocks=7, interceptions=20, duels_total=79, duels_won=40, fouls_drawn=13, fouls_committed=8, cards_yellow=1, cards_red=0, saves=null, goals_conceded=0, penalties_scored=0, penalties_missed=0, penalties_saved=null where id=130408;
-  delete from player_season_cards where id=108645;
-  delete from player_season_cards where id=108799;
-  delete from player_season_cards where id=109011;
-end $vv$;
