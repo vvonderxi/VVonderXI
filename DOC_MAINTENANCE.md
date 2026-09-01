@@ -91,3 +91,35 @@ chosen and none is started.**
 **WHAT MUST NOT HAPPEN: a ninth pass that buys 6 KB and resets the clock to 90%.** The last three
 passes each bought roughly one to two months and the interval is shortening , 2026-08-24, 08-28,
 08-29, 08-31. **The trigger has fired four times in eight days.**
+
+
+---
+
+## THE NINTH PASS, AND WHY IT IS THE LAST CHEAP ONE (2026-09-01)
+
+**99.0% -> 88.3%, then back to 90.0% the same day.** The pass moved 19,738 bytes; four commits of
+rules and rulings in the same session spent roughly a fifth of it. **That is the shape of the
+problem in one line: relief is being consumed faster than it is bought.**
+
+| moved | bytes | to |
+|---|---|---|
+| §F, two entries | 7,598 | `CLAUDE_ARCHIVE.md` |
+| §D step 6, ten closed launch-blockers | 6,300 | `LAUNCH_STAGE.md` |
+| §D step 5, three DONE items | 875 | `LAUNCH_STAGE.md` |
+| §D, the 2026-08-24 defect batch | 2,641 | `RULE_EVIDENCE.md` |
+| §D, the shipped goalkeeper card | 2,324 | `POST_LAUNCH.md` |
+
+**THE PROMOTE CHECK EARNED ITS KEEP AND IS NOT OPTIONAL.** Three facts existed ONLY inside the two
+entries queued for archiving , the browser-will-not-resize fault, the `window.X` binding fault, and
+the picker's no-body-lock ruling , and **all three had been re-hit in the session doing the
+archiving.** Archiving first would have destroyed them.
+
+**WHY THE TENTH PASS CANNOT BE CHEAP:**
+- **`CLAUDE_ARCHIVE.md` is at 88.6%** after taking the two §F entries. It would need its own split
+  first, which is a second problem, not a solution.
+- **§F is back to a single entry.** It cannot pay again for months.
+- **§D's closed history is now relocated.** What is left there is the open queue.
+- **§C is 42% and is rules.** Stripping evidence from it is what the last four passes did.
+
+**SO THE NEXT MOVE IS STRUCTURAL, AND THE FOUR SHAPES ARE ABOVE.** Do the cheap check first: the
+150k limit has never been measured, and every percentage in this file depends on it.
