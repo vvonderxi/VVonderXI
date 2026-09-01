@@ -466,3 +466,44 @@ the identical byte count revealed it.** To break a module-internal path, break t
 the site reads, so never quote `psc.rt` as a card's score.** A `body:not(.light)` selector at
 (0,2,1) beat `.wmg-h.neutral` at (0,2,0) on `vvindex.html`, correct in light and wrong in dark,
 which is why that one survived.
+
+
+---
+
+## FAULT 4 OF THE CONTRAST INSTRUMENT , A SELF-PAINTING ELEMENT GROUNDED AGAINST ITS PARENT (2026-09-01)
+
+**Found AFTER the corrected instrument had already been used to produce a survey, which is the
+point of recording it.** Three faults were fixed before that survey ran; this is a fourth, and it
+runs the OTHER way from the first three.
+
+**THE FAULT: the ground was resolved starting at the element's PARENT.** For ordinary text that is
+right , a `<span>` paints no background. **For a BUTTON, CHIP, PILL or BADGE it is wrong**: the
+element paints its own background, so the label's real pair is the element itself.
+
+**IT UNDER-REPORTS RATHER THAN OVER-REPORTS, WHICH IS WHY IT IS THE DANGEROUS ONE.** The first
+three faults produced FALSE FAILURES, which are annoying and self-correcting , someone checks and
+finds nothing wrong. This one measures the wrong pair and can pass an element that fails, so
+**every button, chip and pill in the 2026-09-01 survey was effectively unsurveyed.**
+
+**THE TWO IT GOT WRONG, both re-measured by hand:**
+- **`myclub` "Notify me" reported 1.06. It is 4.67 and PASSES** , white on `#E70443`. The
+  instrument had grounded the label against the cream panel behind the button.
+  **AND THE CODE COMMENT BESIDE IT IS ALSO WRONG**, claiming "white on #E70443 is 2.97". Two
+  independent wrong numbers for the same pair; the arithmetic is 4.67.
+- **`playbook` `button.cm-mk` reported 1.03. It is 3.89 against a 3.0 bar and PASSES** , cream
+  `#F0EAD9` on `#E70443`, at 19px weight 900, which is LARGE text.
+
+**FIX: start the ground walk AT the element, not its parent.** Its own `backgroundColor` or
+gradient wins if opaque; only then walk up.
+
+**AND A FIFTH FAULT IS SUSPECTED, UNRESOLVED , THE THEME MAY NOT HAVE APPLIED.**
+`classList.remove('light')` did NOT stick on `compare.html`: the page re-applies its own theme, so
+light-mode inks were measured under a "dark" label (this is what reported `.backbtn` at 1.04, where
+the CSS is correct). **Any theme-dependent result from that session is provisional.** The missing
+control is to assert `document.body.classList` matches the REQUESTED theme AFTER the wait, never to
+assume that setting it worked , the same shape as every other instrument fault here.
+
+**THE GENERAL LESSON, and it is the one worth keeping: a corrected instrument is not a correct
+instrument.** Four faults were found in this one, each after the previous fix, and the fourth was
+found only because a reported number (1.06 on a red button) looked implausible enough to hand-check.
+**Hand-check the implausible ones. The plausible wrong answers are the ones that ship.**
