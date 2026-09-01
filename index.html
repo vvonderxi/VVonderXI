@@ -133,9 +133,32 @@
   .form button:hover{opacity:1}
   .form button:disabled{opacity:.35;cursor:default}
   .nnote{font-size:11.5px;opacity:.4;margin-top:11px;line-height:1.5}
-  .err,.thanks{display:none;font-size:12.5px;line-height:1.55;margin-top:12px}
-  .err{color:var(--pink-ink)} body.light .err{color:#AD0332}
-  .thanks{opacity:.8}
+  .err{display:none;font-size:12.5px;line-height:1.55;margin-top:12px;color:var(--pink-ink)}
+  body.light .err{color:#AD0332}
+
+  /*  THE RECEIPT IS THE LOUDEST THING IN THIS BLOCK ONCE IT EXISTS, WHICH IS THE REVERSAL
+      THAT MATTERED. It used to be 12.5px at .8 opacity , quieter than the label above it ,
+      so the one piece of evidence that the signup worked was the least prominent element in
+      its own box. Now it is the only thing in the box, and it leads. */
+  .thanks{display:none;margin-top:2px}
+  .tline{display:flex;align-items:baseline;gap:9px}
+  .ttick{color:var(--pink-ink);font-size:17px;line-height:1;font-weight:700}
+  body.light .ttick{color:#AD0332}
+  .tlead{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:22px;
+    letter-spacing:-.015em;line-height:1.2}
+  /*  The address is echoed at full strength and allowed to break , a long address must wrap
+      rather than push the column wider or slide under the fan. */
+  .taddr{margin-top:9px;font-size:14px;font-weight:500;opacity:.92;
+    overflow-wrap:anywhere;word-break:break-word;
+    padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.16)}
+  body.light .taddr{border-bottom-color:rgba(0,0,0,.16)}
+  .tsub{margin-top:11px;font-size:12.5px;opacity:.55;line-height:1.5}
+
+  /*  ON SUCCESS THE INVITATION HAS TO GO, NOT JUST THE INPUT. Hiding only the form left
+      "BE FIRST THROUGH THE DOOR" still calling to someone who had already walked through it,
+      and left "One message when it opens" on screen twice, four words apart, because the
+      standing note and the confirmation both said it. */
+  .notify.sent .nlab,.notify.sent .nnote{display:none}
 
   /*  Everything that is not a card arrives after the cards have landed. The fan finishes at
       .32 + .92 = 1.24s; the words start at 1.15s so they overlap by a breath rather than
@@ -225,8 +248,17 @@
           <button type="button" id="go">Notify me</button>
         </div>
         <div class="nnote">One message when it opens. Nothing else, ever.</div>
-        <div class="err" id="err">That did not send. Your address is still above , try again in a moment.</div>
-        <div class="thanks" id="thanks">&#10003; You&rsquo;re on the list. One message, when it opens.</div>
+        <div class="err" id="err" role="alert">That did not send. Your address is still above , try again in a moment.</div>
+        <!--  THE RECEIPT. With no confirmation email, this is the ONLY evidence a visitor
+              ever gets that it worked, so it answers the three questions they actually have,
+              in the order they have them: did it work, do you have MY address, and what
+              happens next. The address is echoed because it is the only chance anyone has to
+              notice they mistyped it. role=status so it is announced, not just painted. -->
+        <div class="thanks" id="thanks" role="status" aria-live="polite">
+          <div class="tline"><span class="ttick">&#10003;</span><span class="tlead">You&rsquo;re on the list.</span></div>
+          <div class="taddr" id="sentTo"></div>
+          <div class="tsub">We&rsquo;ll write the day the doors open.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -371,6 +403,9 @@
     go.disabled=false; go.textContent='Notify me';
     if(ok){
       ping(e);                      // after the decision, never part of it
+      /*  textContent, never innerHTML , this is user input going back onto the page. */
+      var to=document.getElementById('sentTo'); if(to) to.textContent=e;
+      document.querySelector('.notify').classList.add('sent');
       form.style.display='none'; thanks.style.display='block';
     } else {
       err.style.display='block';    // address stays in the field
