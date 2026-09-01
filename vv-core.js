@@ -2819,7 +2819,16 @@ body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, va
 .vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
 .vvcard .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.08);letter-spacing:0.02em;line-height:1;margin-top:calc(var(--cw)*0.025)}
 .vvcard .vv .a{color:var(--charcoal)}
-.vvcard .vv .b{color:var(--pink)}
+/*  THE PINK V IS PINNED PER FACE, BECAUSE THE CARD FACE DOES NOT FLIP AND var(--pink) IS A
+    FILL, NOT AN INK , 2026-09-01. SS C already says the raw brand pink #E70443 fails on BOTH
+    grounds and is therefore never used as ink; this rule was using it as ink anyway.
+    Measured per face: on the cream face #E70443 is 3.30 at the bottom and 4.18 at the top;
+    #AD0332 is 5.24 to 6.63. On the dark gen face #AD0332 would be 2.71, so gen takes #F1688E
+    at 6.81 instead. --pink-ink is NOT usable here: it flips with the theme and these grounds
+    do not, which is the trap that put the sub-line at 1.90.
+    THE ICONIC GOLD FACE IS A KNOWN EXCEPTION AND IS DELIBERATELY LEFT , see the note there. */
+.vvcard .vv .b{color:#AD0332}
+.vvcard.gen .vv .b{color:#F1688E}
 .vvcard .cimg{width:60%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
 .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
@@ -2843,7 +2852,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     with the theme, on a face that does not. Measured 2.23 in dark on the cream ground.
     Found by the corrected contrast survey, not by reading, and fixed as a CLASS with its
     sibling rather than one at a time , which is the SS C rule the original miss broke. */
-.vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.04);letter-spacing:0.1em;text-transform:uppercase;color:#5f594e;margin-top:2px}
+.vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:max(9.5px, calc(var(--cw)*0.04));letter-spacing:0.1em;text-transform:uppercase;color:#5f594e;margin-top:2px}
 .vvcard .cga .divider{width:1px;background:rgba(0,0,0,0.12);align-self:stretch}
 .vvcard .cname{text-align:center;margin-top:auto}
 .vvcard .cname .nm{width:100%;font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:calc(var(--cw)*0.135);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.03);white-space:nowrap}
@@ -3015,7 +3024,12 @@ body.light .vvrows .rtag.purple{color:#784eac}
 .vvrows .rmini{justify-self:end;margin-right:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
 .vvrows .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:11.5px;line-height:1}
 .vvrows .rmvv .a{color:#1C1B1A}
-.vvrows .rmvv .b{color:var(--pink)}
+/*  --pink-ink, NOT --pink , 2026-09-01. The row VV mark measured 3.13 on the charcoal row
+    ground with the raw brand pink. Here the token IS correct, because a row's ground flips
+    with the theme exactly as the token does: #F1688E measures 4.95 on charcoal and the light
+    value #AD0332 measures 5.24+ on the light panel. Contrast with the CARD face above, whose
+    ground does not flip and therefore takes pinned literals. */
+.vvrows .rmvv .b{color:var(--pink-ink)}
 .vvrows .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;line-height:1;color:#1C1B1A}
 .vvrows .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
 .vvrows .rmini.elite .a, .vvrows .rmini.elite .rmn{color:#2a1d03}
@@ -3089,7 +3103,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
 .vvrows-season .rmini{align-self:center;justify-self:end;display:flex;flex-direction:column;align-items:center;justify-content:center;width:42px;height:48px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
 .vvrows-season .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:10px;line-height:1}
 .vvrows-season .rmvv .a{color:#1C1B1A}
-.vvrows-season .rmvv .b{color:var(--pink)}
+.vvrows-season .rmvv .b{color:var(--pink-ink)}
 .vvrows-season .rmn{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;line-height:1;color:#1C1B1A}
 .vvrows-season .rmini.elite{background:linear-gradient(155deg,#F3DA88,#DC9E2C);border-color:rgba(120,80,10,.4)}
 .vvrows-season .rmini.elite .a, .vvrows-season .rmini.elite .rmn{color:#2a1d03}

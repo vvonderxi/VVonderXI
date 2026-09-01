@@ -168,8 +168,11 @@
   .fd-lab{font-family:'Archivo';font-weight:700;font-size:12.5px;fill:var(--ink-soft);dominant-baseline:middle;pointer-events:none;transition:fill .18s}
   .fd-v{cursor:pointer}
   .fd-v:focus{outline:none}
-  .fd-v:hover .fd-lab,.fd-v:focus-visible .fd-lab,.fd-v[aria-selected="true"] .fd-lab{fill:var(--pink)}
-  body.light .fd-v:hover .fd-lab,body.light .fd-v:focus-visible .fd-lab,body.light .fd-v[aria-selected="true"] .fd-lab{fill:#E70443}
+  /*  --pink-ink, NOT the raw brand pink , 2026-09-01. The SELECTED axis label measured 3.83 in
+      dark and 4.20 in light against a 4.5 bar. SS C: #E70443 fails on BOTH grounds and is a
+      FILL, never an ink. The token is correct here because this panel's ground flips with the
+      theme exactly as the token does, so the light override below is redundant and removed. */
+  .fd-v:hover .fd-lab,.fd-v:focus-visible .fd-lab,.fd-v[aria-selected="true"] .fd-lab{fill:var(--pink-ink)}
   .fd-v[aria-selected="true"] .fd-dot{transform:scale(1.35)}
   .fd-v:focus-visible .fd-dot{stroke:var(--pink);stroke-width:3;stroke-opacity:0.45}
   body.light .fd-v:focus-visible .fd-dot{stroke:#E70443}

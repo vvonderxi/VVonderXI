@@ -927,9 +927,13 @@ body.light .cmpvv{color:var(--charcoal)}
   .vvback .vlogo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-0.02em;line-height:1;display:flex}
   .vvback .vlogo .a{color:#F0EAD9}.vvback .vlogo .b{color:var(--pink-ink)}
   body.light .vvback .vlogo .a{color:#1C1B1A}
-  .vvback .vbtop{position:absolute;top:calc(var(--cw)*0.1);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.058);letter-spacing:.06em;text-transform:uppercase;color:rgba(240,234,217,0.45)}
+  /*  ALPHA RAISED 0.45/0.40 -> 0.60 , 2026-09-01. The empty-slot card-back read 3.69 and 3.33
+      against a 4.5 bar in dark mode, measured by the corrected contrast instrument. Same class
+      as the iconic face: a muted ALPHA, not a design constraint, and this is the ONE piece of
+      copy that tells a first-time visitor what the slot is for. 0.60 measures 5.37 and 6.24. */
+  .vvback .vbtop{position:absolute;top:calc(var(--cw)*0.1);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.058);letter-spacing:.06em;text-transform:uppercase;color:rgba(240,234,217,0.6)}
   body.light .vvback .vbtop{color:var(--ink-soft)}
-  .vvback .vbsub{position:absolute;bottom:calc(var(--cw)*0.09);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:.18em;text-transform:uppercase;color:rgba(240,234,217,0.4)}
+  .vvback .vbsub{position:absolute;bottom:calc(var(--cw)*0.09);left:0;right:0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:.18em;text-transform:uppercase;color:rgba(240,234,217,0.6)}
   body.light .vvback .vbsub{color:var(--ink-soft)}
 body.light .emptyslot{border-color:rgba(0,0,0,.16);background:rgba(255,255,255,.3)}
 .cardslot:hover .emptyslot{border-color:var(--pink-ink);background:rgba(255,92,122,.06)}
@@ -1134,8 +1138,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260901a"></script>
-<script src="/vv-core.js?v=20260901a"></script>
+<script src="/vv-marks.js?v=20260901b"></script>
+<script src="/vv-core.js?v=20260901b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};

@@ -355,7 +355,9 @@
   .meicon{width:19px;height:19px;flex-shrink:0;color:rgba(243,237,224,0.7)}
   .merow .ml{flex:1;font-family:'Inter';font-size:15.5px}
   .merow .mv{font-family:'Inter';font-size:14px;color:rgba(243,237,224,0.58);max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .merow .chev{color:rgba(243,237,224,0.3);font-size:19px;line-height:1}
+  /*  0.30 -> 0.55 , 2026-09-01. Measured 2.46 against a 4.5 bar in dark mode. It is the only
+      affordance saying a row opens, so it is not decoration; 0.55 measures 5.30. */
+  .merow .chev{color:rgba(243,237,224,0.55);font-size:19px;line-height:1}
   .merow.danger .ml{color:#ff7a8a}
   .merow.install .meicon{color:var(--pink,#ff2d78)}
   .mesw{width:44px;height:26px;border-radius:20px;background:rgba(255,255,255,0.16);position:relative;transition:.2s;flex-shrink:0}
