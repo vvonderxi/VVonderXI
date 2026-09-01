@@ -123,3 +123,68 @@ archiving.** Archiving first would have destroyed them.
 
 **SO THE NEXT MOVE IS STRUCTURAL, AND THE FOUR SHAPES ARE ABOVE.** Do the cheap check first: the
 150k limit has never been measured, and every percentage in this file depends on it.
+
+
+---
+
+# THE LIMIT, MEASURED AT LAST , THE 150k NEVER EXISTED (2026-09-01)
+
+**Every percentage in every relief pass above was computed against a number nobody had checked.**
+
+## What it actually is
+
+Read out of the Claude Code binary's own memory loader (`claude.exe`, strings, same chunk as the
+`[CLAUDE.md] skipping` message and 5,981 bytes from it, sitting immediately beside the literal
+"Codebase and user instructions are shown below..." preamble that wraps this file):
+
+```js
+War = 0.05, Rce = 4194304, zar = 40000;
+function l4e(){ ... return Math.max(zar, Math.round(contextTokens * War * charsPerToken)); }
+// loader:
+if (o.totalBytes > Rce) return { kind: "skipped" };
+n(`[CLAUDE.md] skipping ${e}: not a regular file or exceeds ${Rce} byte limit`);
+g("context_claude_md_load", "file_skipped_special_or_oversize");
+```
+
+- **HARD CAP: 4,194,304 bytes (4 MiB).**
+- **THE BEHAVIOUR IS SKIP, NOT TRUNCATE.** Above the cap the file is not loaded AT ALL. That is
+  worse than truncation , you lose everything, not the tail , and it is 30x away.
+- **SOFT ADVISORY: `max(40000, contextTokens x 0.05 x charsPerToken)`**, which produces the warning
+  **"Large CLAUDE.md will impact performance (N chars > threshold)"**. On a 1M-context session that
+  is 200,000 chars; on an ordinary 200k-context session it is the **40,000-char floor**.
+
+## The numbers that matter
+
+| | bytes | share |
+|---|---|---|
+| hard cap (skip) | 4,194,304 | , |
+| `CLAUDE.md` today | 136,800 | **3.3%** |
+| at session start, arrived COMPLETE | 143,645 | 3.4% |
+| soft advisory, 1M context | 200,000 | file is 68% |
+| soft advisory FLOOR, 200k context | 40,000 | **file is 342%** |
+
+**EMPIRICAL CORROBORATION, independent of reading the binary:** at 143,645 bytes this file reached
+the model with its final paragraph intact. Nothing was truncated, at 95.8% of a limit that does not
+exist.
+
+## Where 150k came from
+
+Introduced 2026-08-03 in `9edffc6`, wording it as "before CLAUDE.md crosses 90% of the 150k
+truncation limit (it was 88% when this was written)". The file was 133,449 bytes that day.
+**133,449 / 0.88 = 151,646.** The percentage was assumed and the limit back-derived from it. No
+measurement is recorded in any commit that touches the figure.
+
+## What this changes, and what it does not
+
+- **The cliff was imaginary. There is no deadline and no silent loss.** Nine passes, an escalation
+  to "binding constraint", and a ruling compressed mid-write to fit, all against a phantom.
+- **The context cost is real and is paid every session**, and on a normal 200k-context session this
+  file has been over the advisory threshold since long before anyone started counting.
+- **So the direction was right and the urgency was invented.** Relieve for readability and context
+  cost, on judgement.
+- **The strongest of the four shapes is now retiring rules into tooling**, because it reduces what
+  must be READ every session, which is the cost that actually exists.
+
+**THE LESSON IS THE ONE THIS PROJECT KEEPS RE-LEARNING: a recorded claim is a claim, not a
+measurement.** §C already holds that an unverified premise is most costly when it argues for
+REMOVING something. This one argued for removals for a month. **The check took one session.**

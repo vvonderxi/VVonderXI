@@ -17,7 +17,10 @@
 
 **WHAT LIVES HERE vs A STAGE FILE (decided 2026-08-03, DO THIS BEFORE THE NEXT LOGGING SESSION).** CLAUDE.md holds the **resume point + active queue + locked decisions**. Detailed specs for work DEFERRED to a later stage belong in their OWN file, read only when that stage starts. **This is the real fix for the doc refilling:** the two compression passes proved the remaining mass is OPEN work, which cannot be compressed but CAN be relocated , archiving only moves closed history, and closed history is no longer the bulk.
 - **APPLIED SEVEN TIMES, all closed:** `ACCOUNTS_STAGE_SPEC.md` (2026-08-03), `LAUNCH_STAGE.md` (2026-08-07), `POST_LAUNCH.md` + `INGESTION_RECOVERY.md` + `DB_HYGIENE_STAGE.md` (2026-08-09, 89.5% -> 73.6%), the PART-2 archive merge (2026-08-10, 98.9% -> 73.2%), the July archive split + §F relocation (2026-08-11, 87.4% -> see below), and the 2026-08-18 pass (91.9% -> 79.2%: three §F entries to the archive, two deferred §D specs to `POST_LAUNCH.md`). **The rule works; the NARRATIVE of each pass now lives in `DOC_MAINTENANCE.md` (split 2026-08-31, eighth pass, at 98.8% , the highest this file has been); the METHOD is a compact block at the top of §D.** Two things learned and worth keeping: relocating only moves CLOSED history, so it stops paying once the bulk is OPEN work; and **`CLAUDE.md` and `CLAUDE_ARCHIVE.md` fill independently , check BOTH before a pass, because the archive being near its own limit blocks the relocation entirely** (it did on 2026-08-11 and had to be split first; on 2026-08-18 it was at 56.7% and needed nothing). **THE 2026-08-18 PASS FOUND THE PAYING MOVE: §F is only 15% of the file, while §C and §D are 35% and 38%, so archiving alone cannot fix this again. What worked was relocating DEFERRED SPECS out of §D** , open work that is not open YET, which the rule at the top of this section already told us to move and which had been left in place for months.
-- **The trigger is size, not time:** do it before CLAUDE.md crosses **90%** of the 150k truncation limit (it was 88% when this was written). Truncation is silent and this file is read first every session.
+- **[MEASURED 2026-09-01. THE "150k TRUNCATION LIMIT" DOES NOT EXIST. NOTHING HAS EVER BEEN TRUNCATED, AND NINE RELIEF PASSES RAN AGAINST AN INVENTED NUMBER.]** Read from the Claude Code binary's own memory loader: the cap is **`Rce = 4194304`, four MEBIBYTES**, and the behaviour above it is **SKIP, NOT TRUNCATE** , `[CLAUDE.md] skipping <path>: not a regular file or exceeds 4194304 byte limit`, plus a `file_skipped_special_or_oversize` event. **The whole file would vanish, not its tail.** Confirmed same-chunk (5,981 bytes from the message) and sitting beside the exact "Codebase and user instructions are shown below" preamble that wraps this file. **Corroborated empirically: at 143,645 bytes this file reached the model COMPLETE, final paragraph present.**
+  - **AT 136,800 BYTES THIS FILE IS 3.3% OF THE REAL CAP.** The 150k came from a 2026-08-03 commit that called 133,449 bytes "88%" , the percentage was assumed and the limit back-derived from it. **Never quote 150k again.**
+  - **BUT THE PRACTICE WAS STILL RIGHT, FOR A DIFFERENT AND REAL REASON.** The same loader computes an advisory threshold, `max(40000, contextTokens x 0.05 x charsPerToken)`, and warns **"Large CLAUDE.md will impact performance (N chars > threshold)"**. On a 1M-context session that is 200,000 chars and this file is under it; **on an ordinary 200k-context session the threshold is its 40,000-char FLOOR and this file is 342% of it.** So the cost is CONTEXT and speed on normal sessions, not loss.
+  - **THE TRIGGER IS THEREFORE 40,000 CHARS, NOT 135,000, AND IT WAS CROSSED LONG AGO , WHICH MAKES THIS A STANDING DESIGN QUESTION, NOT A CLIFF.** Relieve for readability and context cost, on judgement. **There is no deadline and no silent loss, so never again compress a ruling mid-write to "fit".**
 
 Why this file exists: this project has suffered from too many documents and no clear reference point , chats rediscovering settled decisions, contradicting each other, losing work. This file is the fix. It is authoritative, current, and self-maintaining. Keep it that way.
 
@@ -381,13 +384,11 @@ Deferred. **SEQUENCING UNCHANGED: AFTER engine recalibration, BEFORE trajectory 
 - **`KEEPER_SAVE_LADDER` IS AN EMBEDDED SNAPSHOT, NOT A LIVE QUERY , re-measure it if the keeper population changes materially, because NOTHING WARNS YOU.** Gates are 800 minutes AND 60 shots faced, 2015+; 1,920 of 4,289 keeper cards score and every card that does not gets a NAMED reason.
 - **THE 75 CAP IS STATED ON THE CARD and must stay stated** , without it two keepers at the 54th and 97th percentile both print 75 and the ladder beneath silently contradicts the number above. **The panel lives in `vv-core.js`, not card.html.**
 
-### DOC , `CLAUDE.md` IS THE BINDING CONSTRAINT NOW, AND A TENTH RELIEF PASS IS THE WRONG ANSWER (escalated 2026-09-01, NOT started)
-**THE ITEM AND FOUR CANDIDATE SHAPES ARE IN `DOC_MAINTENANCE.md` , READ IT BEFORE TOUCHING THIS.**
-- **THE NINTH PASS BOUGHT TEN POINTS AND ONE SESSION SPENT ONE OF THEM.** 99.0% -> 88.3% on 2026-09-01, and four commits of rules and rulings the SAME DAY took it back to 90.0%, onto its own trigger. **Relief is being consumed faster than it is bought, which is a constraint rather than a chore.**
-- **THE TREND IS THE ITEM, NOT THE LEVEL.** Every pass strips EVIDENCE out of §C and leaves the RULES, so §C converges on pure rules and then grows one rule per session forever. **A file that gains rules faster than it can shed evidence has no steady state.**
-- **THE CHEAP LEVERS ARE SPENT.** `CLAUDE_ARCHIVE.md` is at **88.6%** after taking the last two §F entries and **is no longer a viable destination**; §F is back to one entry; §D's closed history is now relocated. **A tenth pass has nowhere left to reach that does not cost a rule.**
-- **THE CHEAP CHECK STILL HAS NOT BEEN DONE: the 150k limit is quoted throughout this file and has never been measured.** Do it first , every percentage depends on it and it may decide which shape is needed.
-- **AND NOTE HOW THIS ENTRY NEARLY DIED: THE NINTH PASS ITSELF SWEPT IT OUT OF §D INTO `POST_LAUNCH.md`**, because it sat between two sections being relocated and the slice took everything between them. **An OPEN item was moved as though it were closed history, into a file whose header says to read it only when a post-launch stage starts.** The rule it broke is already in this file: relocating moves CLOSED history only. **A relief pass must slice by EXACT block, never between two headings, and must re-read what it moved.**
+### DOC , `CLAUDE.md` SIZE: THE CLIFF WAS IMAGINARY, THE CONTEXT COST IS REAL (re-based on measurement 2026-09-01)
+**THE LIMIT WAS MEASURED AND THE 150k DOES NOT EXIST , see the trigger rule at the top of this file and `DOC_MAINTENANCE.md` for the method.** The real cap is **4 MiB and the behaviour is SKIP, not truncate**; this file is at **3.3%** of it. **Nine relief passes, a "binding constraint" escalation and one ruling compressed mid-write all ran against a number nobody had checked.**
+- **WHAT IS STILL TRUE: on an ordinary 200k-context session Claude Code warns "Large CLAUDE.md will impact performance" above 40,000 chars, and this file is 342% of that.** The cost is context budget and speed on every session, paid silently. **That is a real reason to keep it lean and a poor reason to panic.**
+- **SO THE FOUR STRUCTURAL SHAPES IN `DOC_MAINTENANCE.md` ARE STILL WORTH ANSWERING, ON JUDGEMENT AND NOT ON A DEADLINE.** The one that now looks strongest is retiring rules into tooling, because it reduces what has to be READ every session, which is the cost that actually exists.
+- **AND THE LESSON IS THE ONE THIS FILE KEEPS RECORDING ABOUT ITSELF: A RECORDED CLAIM IS A CLAIM, NOT A MEASUREMENT.** §C already says an unverified premise is most costly when it argues for REMOVING something. It argued for removals here for a month, and the check that settled it took one session and cost nothing.
 
 ### FILTER FOLLOW-UP (VVFilters) , FULL SPEC IN `LAUNCH_STAGE.md` (logged 2026-08-13, moved 2026-08-19, NOT built)
 ONE session, and every item benefits ALL THREE surfaces, because the component is shared. **[DONE 2026-08-20 , `0260a90` + `ebf9534`] ROW CSS INTO vv-core IS SHIPPED; the rest of this stage is untouched.** 148 rules moved (116 grid + 32 season), replacing 296 rule instances across three files; rankings 358 -> 242, card 717 -> 569, compare 712 -> 680. Two namespaces, `.vvrows` and `.vvrows-season`, because both sets style `.rmini` and `.rtag` with DIFFERENT values and one namespace would make them collide with each other. `.vvrows.vvrows` is deliberate: those rules carried the container ID, and a single class would let `body.light` start beating them. **The copies were byte-IDENTICAL before the move, measured, so no surface changed** , proven by diffing every computed property on 5,776 element states across three surfaces, two themes and 390/1920: ZERO differences. **The verification earned its keep: the FIRST attempt produced 2,050 differences**, because `.pillmode .urow` is a descendant selector whose mode class sits ON the container, so prefixing it matched nothing and every row grew from 80px to 637px tall. **A follow-up guard (`ebf9534`) warns once per surface when rows render with no namespace ancestor**, because the opt-in reproduces the same silent failure otherwise. **The compare picker still uses `pkRow` and was deliberately NOT switched** , a behavioural change to a live surface, kept separate so a failure can be attributed. The remaining decisions that must survive: **HONOURS ACTIVATION IS STRUCTURALLY BLOCKED** , PostgREST cannot filter the matview by the separate honours table, so it needs the flags ON the matview. **The inert "soon" chips are deliberate , do NOT "fix" them by hiding them**, they teach the vocabulary before the data exists. **TRAJECTORY GROUP is wired and hidden**, and populates itself the moment the four trajectory tags ship.
@@ -521,6 +522,42 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-09-01 | The truncation limit was measured, and it does not exist
+
+**1. THE "150k TRUNCATION LIMIT" IS NOT REAL. THE CAP IS 4 MiB AND THE BEHAVIOUR IS SKIP, NOT
+TRUNCATE.** Read from the Claude Code binary's own memory loader: `Rce = 4194304`, with
+`[CLAUDE.md] skipping <path>: not a regular file or exceeds 4194304 byte limit`. **This file is at
+3.3% of it.** Corroborated empirically , at 143,645 bytes it reached the model complete.
+**SUPERSEDES the 2026-08-31 NEXT line below, which says this file is at ~97% of a 150k limit and
+"1.4 KB from silent truncation". That was true of a number nobody had checked and false of the
+software.** The real pressure is the performance advisory, whose floor is 40,000 chars, and this
+file has been over that since long before anyone started counting. Rule at the top of this file;
+method and provenance in `DOC_MAINTENANCE.md`.
+
+**2. NINE RELIEF PASSES, AN ESCALATION TO "BINDING CONSTRAINT" AND ONE RULING COMPRESSED MID-WRITE
+ALL RAN AGAINST A PHANTOM.** The 150k entered on 2026-08-03 by calling 133,449 bytes "88%" , the
+percentage was assumed and the limit back-derived. **§C already says an unverified premise is most
+costly when it argues for REMOVING something. It argued for removals for a month; the check cost
+one session.**
+
+**3. THE CARD FACE NOW CLEARS AA EVERYWHERE, and the defect that started it was invisible to the
+old survey.** The sub-line sat at **1.90 in dark mode on every plain card on every surface** because
+`var(--ink-soft)` flips and the card face does not. Fixed with pinned literals on all three faces
+plus a `max(11.5px, ...)` floor; the iconic pink V is an ACCEPTED exception (no pink clears 4.5 on
+gold). **The 2026-08-23 contrast survey is VOID** , the re-run found FOUR instrument faults, three
+producing false failures and one, grounding a self-painting element against its parent, producing
+false PASSES. A fifth (the theme not actually applying) is fixed by asserting it after the wait.
+
+**4. COMPARE IS TWO-UP ON A PHONE and the picker is a fixed sheet.** Slot B went from 0 pixels
+visible to fully above the fold; page height 2190 -> 844. The empty state carries three suggested
+matchups, each resolved against live rows and dropped if either side misses , which caught a pair
+that cannot exist (Henry 03/04, before the 2010 dataset) and one whose diacritic an ilike misses.
+
+**NEXT / OPEN:** **The pre-merge queue is empty.** Remaining survey failures are accepted
+exceptions only. **The four structural shapes for this file stand as a judgement call, not a
+deadline** , the strongest is now retiring rules into tooling, because it reduces what must be READ
+each session, which is the cost that actually exists.
 
 ### 2026-08-31 | Four share-poster items, and the squad number was shipping in Times
 
