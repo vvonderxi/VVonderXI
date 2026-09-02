@@ -721,3 +721,85 @@ It returned `FORM_NOT_FOUND` on every submission. **The `r.ok` check is the only
 loudly instead of silently**, which is the same fix that would have prevented reading 2 above. The
 rule that follows is narrow and worth keeping: **paste endpoint ids from the file that already
 works; never type one.**
+
+---
+
+# THE WELCOME EMAIL , DRAFTED AND DECIDED 2026-09-02, NOT BUILT
+
+Sits directly beside [[the waitlist has never collected anything]] above: with no confirmation
+email today, the holding page's on-screen receipt is the ONLY evidence a signup worked. That
+receipt now echoes the submitted address, because **an echoed address is evidence where a claim
+is not** , a mistyped address is otherwise undetectable, since nothing else on the page and no
+email would ever reveal it.
+
+## THE SPEC AS GIVEN
+
+    SUBJECT   VVelcome: The Season Starts Here
+    FROM      VVonderXI <hello@vvonderxi.com>
+
+    VVonderXI                              [wordmark, second V pink]
+
+    Careers are remembered.
+    Seasons are forgotten.
+    This is where they are counted.        [heavier]
+
+    The next time you hear from us,
+    the doors will be open.
+
+    ---
+    Every Season Tells a Different Story   [italic, Story pink]
+    THE FOOTBALL LEGACY PLATFORM
+
+    You signed up at vvonderxi.com. Reply to this email to be removed.
+
+No images, no webfonts, colour and type only. Wordmark as TEXT so it survives a client stripping
+styles. Cream #F4EFE2 ground, charcoal ink, pink accent, real tokens.
+
+## THE FOOTER ROUTE , DECIDED: A PLUS B. C IS REJECTED.
+
+**A , a free forwarder for `hello@vvonderxi.com`** (Cloudflare Email Routing or ImprovMX) to
+Lucas's own inbox, so the reply line in the footer is TRUE. One MX record, no cost.
+**B , `List-Unsubscribe` headers**, which is what mail clients actually surface.
+**C , dropping the removal sentence, IS REJECTED: it leaves no removal route at all**, which is a
+GDPR/PECR problem for marketing mail and not something to ship to save an MX record.
+
+**BE PRECISE ABOUT WHAT THE MISSING MX ACTUALLY BREAKS.** Mail can be SENT from an address with no
+mailbox, so the absent MX does not block the FROM line , **it breaks the REPLY**. The copy is the
+part that fails, not the sender. That distinction is why A is cheap: one record makes the existing
+sentence honest without touching how the mail is sent.
+
+## THE DNS, WHICH BLOCKS EVERYTHING ELSE (measured 2026-09-01, nameservers at Squarespace)
+
+    MX      (none)                                      , hello@ cannot receive
+    SPF     v=spf1 -all                                 , authorises NO sender
+    DMARC   v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s
+    DKIM    no selectors found
+
+**THE TRAP IS `adkim=s` AND `aspf=s`, NOT THE MISSING RECORDS.** Strict alignment means the DKIM
+`d=` must be EXACTLY `vvonderxi.com` and the SPF return-path EXACTLY `vvonderxi.com` , a subdomain
+does NOT align. Most ESPs default to a subdomain return-path, which fails `aspf=s`, and with
+`p=reject` the mail is **rejected outright, not junked**. This is the single most likely cause of
+"it tested fine and then everything bounced". Either sign with the apex domain or relax to
+`adkim=r; aspf=r`. **`sp=reject` also covers subdomains, so sending from `hello@mail.vvonderxi.com`
+dodges nothing.**
+
+## AND FORMSPREE CANNOT SEND IT
+
+Their documentation is explicit , autoresponses are **"Available on: Professional, Business plans"**,
+not free. Confirmed empirically first: a submission using Lucas's own address produced the
+notification and no auto-reply. Even on a paid plan a custom FROM domain needs a Formspree custom
+domain, i.e. the same DNS work, so that spend buys nothing you do not already have to do.
+
+**The build, once DNS is done:** a transactional ESP (Resend signs with the apex domain, which is
+what the strict DMARC needs) triggered by a Supabase Database Webhook on `waitlist_emails` INSERT
+into an Edge Function. That keeps the holding page dependency-free and adds no Vercel functions.
+Nothing is wired today , no provider key in `.env` or `.env.example`. **`waitlist_emails` also has
+nowhere to record a send**, so it needs a `welcome_sent_at` column before a webhook retry can be
+made safe against double-sending.
+
+**Table-stakes for the template itself:** table layout with every style INLINE (clients strip
+`<style>`, which is exactly what the text wordmark requirement is protecting against); the cream
+ground on a wrapper table rather than `body`, which many clients ignore; a decision on dark mode,
+since Gmail and Outlook will invert the cream unless handled; small caps via `text-transform` plus
+`letter-spacing`, never `font-variant`; a plain-text alternative part; and a preheader line, or the
+inbox preview reads "Careers are remembered."
