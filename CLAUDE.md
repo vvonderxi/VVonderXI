@@ -387,7 +387,7 @@ Deferred. **SEQUENCING UNCHANGED: AFTER engine recalibration, BEFORE trajectory 
 
 ### GOALKEEPER CARD , BUILT AND LIVE ON THE BRANCH 2026-08-28. **FULL RECORD IN `POST_LAUNCH.md`** (relocated 2026-09-01).
 - **THERE IS NO RADAR ON A KEEPER CARD AND THAT WAS MEASUREMENT, NOT TASTE , DO NOT REBUILD THE LOCKED THREE-SPOKE SPEC.** `penalties_saved` has no derivable denominator and at 10% weight put Trapp above Donnarumma while dropping ter Stegen to 39th; **workload measures the TEAM, not the keeper** (shots faced against save% is -0.118, against goals conceded +0.835). Two of three spokes fail, and one honest axis is not a shape.
-- **`KEEPER_SAVE_LADDER` IS AN EMBEDDED SNAPSHOT, NOT A LIVE QUERY , re-measure it if the keeper population changes materially, because NOTHING WARNS YOU.** Gates are 800 minutes AND 60 shots faced, 2015+; 1,920 of 4,289 keeper cards score and every card that does not gets a NAMED reason.
+- **`KEEPER_SAVE_LADDER` IS AN EMBEDDED SNAPSHOT, NOT A LIVE QUERY , re-measure it if the keeper population changes materially, because NOTHING WARNS YOU.** Gates are 800 minutes AND 60 shots faced, 2015+; 1,920 of 2,741 keeper cards score and every card that does not gets a NAMED reason.
 - **THE 75 CAP IS STATED ON THE CARD and must stay stated** , without it two keepers at the 54th and 97th percentile both print 75 and the ladder beneath silently contradicts the number above. **The panel lives in `vv-core.js`, not card.html.**
 
 ### DOC , `CLAUDE.md` SIZE: THE CLIFF WAS IMAGINARY, THE CONTEXT COST IS REAL (re-based on measurement 2026-09-01)

@@ -848,8 +848,15 @@
             background:currentColor;opacity:1;box-shadow:none}
   .gkwtrack{background:rgba(128,128,128,.18)}
   .gkwbar{display:block;height:100%;border-radius:99px;min-width:6px}
-  .gkw-keeper{background:var(--ink-soft);opacity:.55}
-  .gkw-team{background:var(--pink-ink)}
+  /*  GOLD MARKS THE KEEPER'S OWN BAR, MUTED MARKS THE TEAM'S , SWAPPED 2026-09-02.
+      Gold on this platform means EARNED: honours, prestige, keeper quality. The bar it
+      belongs on is therefore "about how well he kept goal", and the whole force of the
+      figure is that this gold bar is almost empty. Shots faced is precisely the thing this
+      panel says is NOT earned, so the long bar takes the muted ink instead.
+      Reads correctly as a sentence: the earned thing is a sliver, the unearned thing is the
+      whole track.  */
+  .gkw-keeper{background:var(--gold-ink)}
+  .gkw-team{background:var(--ink-soft);opacity:.55}
   .gkwscale{display:flex;justify-content:space-between;gap:12px;margin-top:14px;
             font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;
             text-transform:uppercase;opacity:.55}
@@ -1044,7 +1051,7 @@
   <div class="gkgb"><b>60</b><span>shots faced, from</span></div>
   <div class="gkgb"><b>2015</b><span>when shot data begins</span></div>
 </div>
-<div class="gkcap gkcap-w">Below any of the three, the card does not guess. <b>1,920 of 4,289</b> keeper seasons are scored; every one that is not says which gate it missed.</div>
+<div class="gkcap gkcap-w">Below any of the three, the card does not guess. <b>1,920 of 2,741</b> keeper seasons are scored; every one that is not says which gate it missed.</div>
 
 <div class="gkfig gkwhat">
   <div class="gkwlede">Knowing how many shots a keeper faced tells you&hellip;</div>
@@ -1066,14 +1073,14 @@
 </div>
 
 <div class="gkfig">
-  <svg viewBox="0 0 460 74" width="100%" height="74" role="img" aria-label="A six-yard tap-in and a thirty-yard drive both count as one save.">
+  <svg viewBox="0 0 460 74" width="100%" height="74" role="img" aria-label="A tap-in in the six-yard box and a long-range effort both count as one save.">
     <text x="0" y="12" class="gkl">a save is a save, however hard</text>
     <g transform="translate(0,22)">
       <rect x="0" y="0" width="216" height="40" rx="8" class="gkbox"/>
-      <text x="14" y="18" class="gkl gkin">tap-in from six yards</text>
+      <text x="14" y="18" class="gkl gkin">a tap-in in the six-yard box</text>
       <text x="14" y="33" class="gkl">counts one</text>
       <rect x="236" y="0" width="216" height="40" rx="8" class="gkbox gkbox-2"/>
-      <text x="250" y="18" class="gkl gkin">thirty yards, top corner</text>
+      <text x="250" y="18" class="gkl gkin">a long-range effort</text>
       <text x="250" y="33" class="gkl">counts one</text>
     </g>
   </svg>

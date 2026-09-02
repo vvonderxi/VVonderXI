@@ -74,7 +74,7 @@ in the pool, to 39th**. It is a stated fact on the card and never a score term.
 > no business ordering.
 
 **5. The gate is 2015 onward, 800 minutes and 60 shots faced.** Saves coverage is 0% for 2010 to
-2013 and 4% in 2014, then 84 to 100%. **1,920 of 4,289 keeper cards clear the gate.** The rest get
+2013 and 4% in 2014, then 84 to 100%. **1,920 of 2,741 keeper cards clear the gate.** The rest get
 a named reason: 1,299 pre-2015, 559 under minutes, 317 under shots, 194 with saves or conceded
 unrecorded.
 
