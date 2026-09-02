@@ -26,18 +26,27 @@
         and do not drop og-image.png from this branch. -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-  :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;
-        --cw:300px;--sp:186px}
+    /*  --pink-ink IS THE ONLY SURVIVING COLOUR TOKEN, AND IT IS NOT A THEME COLOUR.
+      It paints the pink V on the BLACK card back, which is dark whatever the page is doing,
+      so it stays the light pink , this is the card's own ink, pinned per face, not the
+      page's. --cream, --charcoal and --pink went with the dark theme that used them; every
+      remaining page colour is now a literal, because there is only one ground to serve. */
+  :root{--pink-ink:#F1688E;--cw:300px;--sp:186px}
   /*  --cw and --sp DEFAULTS SO THE PAGE IS NEVER BLANK OR COLLAPSED. JS owns both and sets
       them every resize; these are only ever used if that never ran. Without them a thrown
       exception left a zero-width fan inside a zero-height stage. */
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{min-height:100vh;font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--cream);
-    background:radial-gradient(150% 620px at 50% -140px, rgba(255,244,224,.07), transparent 78%),
-               radial-gradient(120% 90% at 50% 0%,#221E1A 0%,#141210 55%,#0e0c0b 100%);
-    background-attachment:fixed}
-  body.light{color:#241f1a;
+  /*  CREAM IS THE ONLY GROUND. THIS PAGE HAS NO DARK MODE AND NO THEME DETECTION.
+      The platform it opens onto is cream, so a holding page that greeted half its visitors
+      in charcoal was introducing a product that does not look like that.
+      LIGHT IS BAKED INTO THE BASE RULES RATHER THAN APPLIED AS A body.light CLASS, and that
+      is deliberate rather than tidiness: everything here is uncovered by JavaScript adding a
+      class, so if the theme had stayed a class then any exception before it was applied would
+      have rendered the page DARK , the one appearance it must never have. With cream in the
+      base there is no code path, thrown or otherwise, that produces a dark page.
+      DO NOT REINTRODUCE prefers-color-scheme HERE. Everyone sees the same page. */
+  body{min-height:100vh;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#241f1a;
     background:radial-gradient(150% 620px at 50% -140px, rgba(255,255,255,.7), transparent 78%),
                radial-gradient(120% 90% at 50% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
     background-attachment:fixed}
@@ -107,10 +116,24 @@
   .tag{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;
     line-height:1.12;letter-spacing:-.025em;margin:0;max-width:13em;
     font-size:clamp(30px,3.5vw,50px)}
-  .tag .pk{color:var(--pink-ink)}
-  body.light .tag .pk{color:#AD0332}
+  .tag .pk{color:#AD0332}
+  /*  EVERY LOW OPACITY ON THIS PAGE HAD TO BE RAISED WHEN THE GROUND WENT CREAM, AND THE
+      REASON IS NOT TASTE. These were tuned as CREAM INK ON CHARCOAL, where dropping the
+      alpha barely costs contrast because the ink is far from the ground. Charcoal ink on
+      cream is the opposite: the ink is already close to the ground, so the same alpha
+      collapses it. Measured against the DARKEST stop of the gradient, #E9E1D0, which is the
+      worst ground any of this text sits on:
+          before -> after
+          standing note   .40  ratio 2.38  ->  .70  ratio 5.29
+          form label      .42  ratio 2.51  ->  .70  ratio 5.29
+          receipt sub     .55  ratio 3.53  ->  .70  ratio 5.29
+          Notify me       .62  ratio 4.33  ->  .74  ratio 5.99
+          placeholder     .34  (worst)     ->  .58
+      0.65 is where 4.5:1 is reached on that stop, so everything lands at .70 or above for
+      headroom. DO NOT LOWER THESE BACK FOR LOOKS , they read as quiet because the ink is
+      warm grey, not because it is faint. */
   .brand{font-family:'Archivo',sans-serif;font-weight:800;font-size:11px;letter-spacing:.26em;
-    text-transform:uppercase;opacity:.5;margin-top:clamp(16px,2.4vh,26px)}
+    text-transform:uppercase;opacity:.70;margin-top:clamp(16px,2.4vh,26px)}
 
   /*  THE FORM IS A FOOTNOTE, NOT A PANEL. The boxed version competed with the cards for the
       eye: a filled ground, a pink border and a 17.5px heading is a second focal point on a
@@ -118,23 +141,26 @@
       invitation, and it only asserts itself on focus. */
   .notify{width:100%;max-width:400px;margin-top:clamp(34px,6vh,66px)}
   .nlab{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.2em;
-    text-transform:uppercase;opacity:.42;margin-bottom:11px}
+    text-transform:uppercase;opacity:.70;margin-bottom:11px}
   .form{display:flex;align-items:center;gap:10px;
-    border-bottom:1px solid rgba(255,255,255,.20);padding-bottom:9px;transition:border-color .3s ease}
-  body.light .form{border-bottom-color:rgba(0,0,0,.20)}
-  .form:focus-within{border-bottom-color:var(--pink-ink)}
-  body.light .form:focus-within{border-bottom-color:#AD0332}
+    border-bottom:1px solid rgba(0,0,0,.20);padding-bottom:9px;transition:border-color .3s ease}
+  .form:focus-within{border-bottom-color:#AD0332}
   .form input{flex:1;min-width:0;background:none;border:0;color:inherit;font:inherit;
     font-size:16px;outline:none;padding:2px 0}
-  .form input::placeholder{opacity:.34}
+  /*  THE PLACEHOLDER IS SET AS A COLOUR, NOT AS AN OPACITY, AND THAT IS THE FIX.
+      Setting opacity here fades the browser's OWN default placeholder grey rather than the
+      page's ink, so the two discounts compound and it measured 1.95:1 , the faintest text on
+      the page by some way. Firefox also applies a default placeholder opacity of its own,
+      which is why opacity:1 is stated explicitly. #5F5951 is the charcoal ink at 70% over the
+      cream, computed rather than picked, so it matches the other quiet text at 5.31:1. */
+  .form input::placeholder{color:#5F5951;opacity:1}
   .form button{font-family:'Archivo',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.1em;
     text-transform:uppercase;background:none;border:0;color:inherit;cursor:pointer;
-    opacity:.62;padding:2px 0;white-space:nowrap;transition:opacity .25s ease}
+    opacity:.74;padding:2px 0;white-space:nowrap;transition:opacity .25s ease}
   .form button:hover{opacity:1}
   .form button:disabled{opacity:.35;cursor:default}
-  .nnote{font-size:11.5px;opacity:.4;margin-top:11px;line-height:1.5}
-  .err{display:none;font-size:12.5px;line-height:1.55;margin-top:12px;color:var(--pink-ink)}
-  body.light .err{color:#AD0332}
+  .nnote{font-size:11.5px;opacity:.70;margin-top:11px;line-height:1.5}
+  .err{display:none;font-size:12.5px;line-height:1.55;margin-top:12px;color:#AD0332}
 
   /*  THE RECEIPT IS THE LOUDEST THING IN THIS BLOCK ONCE IT EXISTS, WHICH IS THE REVERSAL
       THAT MATTERED. It used to be 12.5px at .8 opacity , quieter than the label above it ,
@@ -142,17 +168,15 @@
       its own box. Now it is the only thing in the box, and it leads. */
   .thanks{display:none;margin-top:2px}
   .tline{display:flex;align-items:baseline;gap:9px}
-  .ttick{color:var(--pink-ink);font-size:17px;line-height:1;font-weight:700}
-  body.light .ttick{color:#AD0332}
+  .ttick{color:#AD0332;font-size:17px;line-height:1;font-weight:700}
   .tlead{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:22px;
     letter-spacing:-.015em;line-height:1.2}
   /*  The address is echoed at full strength and allowed to break , a long address must wrap
       rather than push the column wider or slide under the fan. */
   .taddr{margin-top:9px;font-size:14px;font-weight:500;opacity:.92;
     overflow-wrap:anywhere;word-break:break-word;
-    padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.16)}
-  body.light .taddr{border-bottom-color:rgba(0,0,0,.16)}
-  .tsub{margin-top:11px;font-size:12.5px;opacity:.55;line-height:1.5}
+    padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.16)}
+  .tsub{margin-top:11px;font-size:12.5px;opacity:.70;line-height:1.5}
 
   /*  ON SUCCESS THE INVITATION HAS TO GO, NOT JUST THE INPUT. Hiding only the form left
       "BE FIRST THROUGH THE DOOR" still calling to someone who had already walked through it,
@@ -165,10 +189,18 @@
       queueing politely behind it. */
   .mark,.tag,.brand,.notify{opacity:0;transform:translateY(10px);
     transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
-  body.go .mark  {opacity:1;transform:none;transition-delay:.02s}
-  body.go .tag   {opacity:1;transform:none;transition-delay:1.15s}
-  body.go .brand {opacity:1;transform:none;transition-delay:1.30s}
-  body.go .notify{opacity:1;transform:none;transition-delay:1.44s}
+  /*  THESE SET THE SETTLED OPACITY, SO THEY MUST CARRY THE DESIGNED VALUE, NOT 1.
+      .brand is meant to sit back from the headline and had opacity:.62 on its own rule , but
+      this block set it to 1 on reveal and silently won, so the designed weight never applied
+      and the value in the .brand rule was dead code. Any element that both reveals and wants
+      a sub-1 resting opacity has to state it HERE. Caught by measuring the settled page
+      rather than reading the rule that looked right.
+      .brand lands on .70 rather than .62 because .62 measures 4.2:1 on the darkest stop of
+      the cream gradient and 11px uppercase is small text, so it needs 4.5. */
+  body.go .mark  {opacity:1;  transform:none;transition-delay:.02s}
+  body.go .tag   {opacity:1;  transform:none;transition-delay:1.15s}
+  body.go .brand {opacity:.70;transform:none;transition-delay:1.30s}
+  body.go .notify{opacity:1;  transform:none;transition-delay:1.44s}
 
   /*  THE SPLIT. The fan takes a column of its own, so the words and the form never compete
       with it for vertical space. That is the whole reason this layout was chosen: at
@@ -219,7 +251,8 @@
       fan offsets included. */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{transition:none !important;animation:none !important}
-    .fanc,.mark,.tag,.brand,.notify{opacity:1 !important}
+    .fanc,.mark,.tag,.notify{opacity:1 !important}
+    .brand{opacity:.70 !important}   /*  the same settled value as body.go .brand  */
     .fanc::after{opacity:1 !important}
     .mark,.tag,.brand,.notify{transform:none !important}
     .f1{transform:translate3d(calc(-1 * var(--sp)),0,0) rotate(-8deg) !important}
@@ -238,7 +271,9 @@
       </div>
     </div>
     <div class="right">
-      <img class="mark" id="mark" src="/assets/spinelogo-dark.png" alt="VVonderXI" width="100" height="44">
+      <!--  spinelogo-light.png is the mark FOR a light ground (charcoal ink). It is set here in
+           the markup and never swapped, because there is nothing left to swap it to. -->
+      <img class="mark" src="/assets/spinelogo-light.png" alt="VVonderXI" width="100" height="44">
       <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
       <div class="brand">The Football Legacy Platform</div>
       <div class="notify">
@@ -264,12 +299,10 @@
   </div>
 <script>
 (function(){
-  var light=false;
-  try{ var t=localStorage.getItem('vvTheme');
-       light = t ? (t==='light') : window.matchMedia('(prefers-color-scheme: light)').matches; }catch(e){}
-  document.body.classList.toggle('light', light);
-  var m=document.getElementById('mark');
-  if(m) m.src='/assets/spinelogo-'+(light?'light':'dark')+'.png';
+  /*  NO THEME CODE AT ALL. This block used to read localStorage and prefers-color-scheme and
+      then swap both a body class and the logo src. All of it is gone: the ground is cream in
+      the base CSS and the mark is set in the markup, so there is nothing to decide at runtime
+      and nothing that can fail. It also removes the page's only localStorage access. */
 
   /*  THE REVEAL IS SCHEDULED FIRST, BEFORE ANY CODE THAT COULD THROW. Everything starts at
       opacity 0 and is uncovered by adding one class, so a single exception anywhere below
