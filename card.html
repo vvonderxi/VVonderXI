@@ -1694,6 +1694,25 @@
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
+  /*  Adds the career-stage tags to the tag row once SEASON_RAW is populated. The engine
+      decides which apply , this only finds the current season inside the career and asks. */
+  function vvApplyCareerStage(){
+    if(!window.VVCore || !VVCore.careerStageTags || !SEASON_RAW || !SEASON_RAW.length) return;
+    var here = SEASON_RAW.filter(function(r){ return r.card_id === SEASON_CARDID; })[0];
+    if(!here) return;
+    var stage = VVCore.careerStageTags(here, SEASON_RAW);
+    if(!stage.length) return;
+    var row = document.querySelector('.tagrow');
+    if(!row) return;
+    stage.forEach(function(t){
+      if(row.querySelector('[data-stage="'+t.name+'"]')) return;
+      var el=document.createElement('span');
+      el.className='tt'; el.setAttribute('data-stage', t.name);
+      el.innerHTML=(VVCore.vvMarkFor?VVCore.vvMarkFor('tag',t.name):'')+t.name;
+      row.appendChild(el);
+    });
+  }
+
   async function loadSeasons(apiPlayerId, currentCardId){
     SEASON_CARDID=currentCardId; SEASON_ROWS=null; SEASON_RAW=null;
     if(apiPlayerId==null) return;
@@ -1702,6 +1721,12 @@
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
     SEASON_ROWS=rows; SEASON_RAW=res.data||[];
+    /*  CAREER-STAGE TAGS CAN ONLY BE COMPUTED ONCE THE CAREER IS HERE. Peak, Breakout and
+        The Standard are not per-season rules , they need every season the player has, which
+        is exactly what this fetch just returned. Rendered after the card rather than with
+        it, so a slow season fetch never delays the card itself; a card whose seasons never
+        arrive shows no career-stage tag rather than a wrong one. */
+    try{ vvApplyCareerStage(); }catch(e){}
     renderTrajectory();                    // trajectory chart draws NOW , it does not need honours
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     var zone=document.getElementById('seasonZone');

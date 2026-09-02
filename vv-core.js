@@ -1953,6 +1953,9 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   "Complete":              { oneLiner: "Elite at both ends. Gives as much as he takes away.", def: "Football usually asks a player to choose: create or destroy, build or break. He refused the choice. A season of doing it all, at both ends, with a balance that bordered on greed. The rarest profile the game produces." },
   "Iron Man":              { oneLiner: "Plays through everything, never misses a game.", def: "While others came and went, nursed and rested, he simply played. Every week, every minute, the one name the manager never had to think about. There is a quiet greatness in always being there." },
   "Wonderkid":             { oneLiner: "A teenager already producing at an elite level. The future, arriving early.", def: "We are not supposed to see this yet. One so young has no business being this good, and yet here it is, the future arriving ahead of schedule. Remember the season. You were watching greatness take its first steps." },
+  "Peak":                  { oneLiner: "The best season of his career, and a genuinely elite one.", def: "Every career has a highest point, but only some of them are high enough to be worth naming. This is the season he was at his very best, and his very best was excellent by the standards of anyone who plays his position. Not a comparison with his own worst year , simply the top of the climb, and a summit worth the name." },
+  "Breakout":              { oneLiner: "The season he first arrived at an elite level, and it came early.", def: "There is a season where a player stops being a prospect and becomes a fact. This is his: the first campaign he reached the level the best in his position operate at, arriving in the opening years of his career rather than the middle of it. The announcement, not the encore." },
+  "The Standard":          { oneLiner: "Elite not once but for years. Five seasons at the top level.", def: "Anyone can have a season. This is the far rarer thing: turning up at an elite level again, and again, and again, until excellence stopped being an event and became the baseline people expected of him. Consistency at a height most players never reach once." },
   "The Last Dance":        { oneLiner: "A great veteran defying age with one more elite campaign.", def: "They said the legs had gone. They said it was time. And he answered, not with words, but with one more season of the old magic, proof that class does not retire when the body ages. A final, glorious flourish, all the sweeter for being unexpected." },
   "Generational":          { oneLiner: "The highest grade the Index awards. Reserved for the rarest seasons in the history of the game.", def: "Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone." },
   "Iconic":                { oneLiner: "One of the 150 greatest seasons ever measured.", def: "The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career." }
@@ -2138,6 +2141,67 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       tags.push({ name: 'The Last Dance', family: 'AGE', tier: 'universal' });
 
     return tags;
+  }
+
+  /*  CAREER-STAGE TAGS THAT NEED THE WHOLE CAREER, NOT ONE SEASON.
+      Wonderkid and The Last Dance are per-season rules: age plus rt on the row in front
+      of you. These three cannot be. Peak needs to know this is his highest season,
+      Breakout needs to know it is the FIRST at the level and where it falls in his
+      career, and The Standard needs to count across all of them. So this takes the
+      career and returns nothing when it is not supplied , a card rendered without the
+      season list simply shows no career-stage tag rather than a wrong one.
+
+      NO GAP TERM ANYWHERE, AND THAT IS THE RULING THAT MATTERS. Every gap measure ,
+      best minus second, best minus worst, best minus median , rewards HAVING HAD BAD
+      SEASONS. Measured across 5,729 careers with four or more scored seasons: at a gap
+      of 16 it tagged Bamford's 88 and Bastón's 86 while excluding Messi 97, Ronaldo 96,
+      Salah 95, Haaland 95 and Lewandowski 92, whose second-best seasons are 96, 96, 94,
+      92 and 91. It was measuring inconsistency and calling it a peak. Renaissance was
+      dropped for the same defect in its purest form: it cannot be defined without
+      requiring a dip first.
+
+      THESE FLOORS ARE ABSOLUTE AND THAT EXCLUDES EVERY GOALKEEPER. The engine caps
+      keepers at 75, so no keeper season can ever reach 85 or 80: all three tags are
+      outfield-only by construction, today and permanently. Measured: 0 of 384 keepers
+      with four or more scored seasons earn any of them, Buffon included, whose eleven
+      seasons top out at the cap. If that is ever to change the fix is a
+      position-relative floor rather than a lower absolute one , keepers sit at 75 for
+      the 75th, 90th AND 95th percentile of their own pool, so the cap flattens them and
+      only a COUNT of capped seasons can separate them.  */
+  function careerStageTags(row, career){
+    const out = [];
+    if (!row || row.rt == null || !Array.isArray(career) || career.length < 4) return out;
+
+    const seasons = career
+      .filter(function(r){ return r && r.rt != null && r.season_year != null; })
+      .slice()
+      .sort(function(a,b){ return a.season_year - b.season_year; });
+    if (seasons.length < 4) return out;
+
+    const rts  = seasons.map(function(r){ return r.rt; });
+    const here = row.season_year;
+
+    // PEAK , his highest season, and it clears the absolute floor.
+    const best = Math.max.apply(null, rts);
+    if (best >= 85 && row.rt === best) {
+      // ties: the EARLIEST season at his best takes the tag, so two 85s do not both claim it
+      const firstBest = seasons.find(function(r){ return r.rt === best; });
+      if (firstBest && firstBest.season_year === here)
+        out.push({ name: 'Peak', family: 'STAGE', tier: 'universal' });
+    }
+
+    // BREAKOUT , first season at the level, inside his first three.
+    const firstElite = seasons.findIndex(function(r){ return r.rt >= 85; });
+    if (firstElite >= 0 && firstElite <= 2 && seasons[firstElite].season_year === here)
+      out.push({ name: 'Breakout', family: 'STAGE', tier: 'universal' });
+
+    // THE STANDARD , five or more seasons at the level. Carried by every qualifying
+    // season, not just one: the tag describes the career, and a reader looking at any
+    // of those seasons is looking at part of what earned it.
+    if (rts.filter(function(v){ return v >= 80; }).length >= 5 && row.rt >= 80)
+      out.push({ name: 'The Standard', family: 'STAGE', tier: 'universal' });
+
+    return out;
   }
 
   function rowToCard(row){
@@ -3405,7 +3469,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       { sub:'Midfield',     items:[ {v:'Playmaker',e:'🧠'},{v:'Maestro',e:'🎩'},{v:'Regista',e:'🎻'},{v:'Engine Room',e:'🧭'},{v:'The Dribbler',e:'✨'} ] },
       { sub:'Defence',      items:[ {v:'The Wall',e:'🧱'},{v:'Destroyer',e:'🦮'},{v:'Ball Hawk',e:'🦅'},{v:'Ball-Playing CB',e:'🦶'} ] },
       { sub:'All-Round',    items:[ {v:'Complete',e:'💎'},{v:'Iron Man',e:'🛡️'} ] },
-      { sub:'Career-Stage', items:[ {v:'Wonderkid',e:'🌱'},{v:'The Last Dance',e:'🌅'} ] },
+      { sub:'Career-Stage', items:[ {v:'Wonderkid',e:'🌱'},{v:'Breakout',e:'🚀'},{v:'Peak',e:'⛰️'},{v:'The Standard',e:'🏛️'},{v:'The Last Dance',e:'🌅'} ] },
     ],
     position: [ {v:'GK'},{v:'CB'},{v:'FB'},{v:'CDM'},{v:'CM'},{v:'CAM'},{v:'Winger'},{v:'ST'} ],
   };
@@ -5311,7 +5375,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

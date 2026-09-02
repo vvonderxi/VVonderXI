@@ -927,3 +927,76 @@ still arrives; this is about who else can send as you.
 receive-only and is exactly what is needed the day ImprovMX Premium sends as the address, so it
 is forward-compatible; `-all` restores the hard fail. Leave the `google-site-verification` TXT
 alone, it coexists at the apex.
+
+---
+
+# CAREER-STAGE TAGS , THREE BUILT, RENAISSANCE DROPPED. 2026-09-02.
+
+**Peak, Breakout and The Standard ship. Renaissance does not, and will not.**
+
+## THE RULING THAT SHAPED ALL FOUR: A GAP MEASURES INCONSISTENCY, NOT ACHIEVEMENT
+
+Peak was first specified as a GAP , best season minus his second-best, or minus his median.
+Measured across **5,729 careers with four or more scored seasons**, every gap threshold
+inverted the tag:
+
+    gap >= 16 (vs second-best)   caught  Bamford 88, Austin 88, Bastón 86, Holzhauser 86
+                                 missed  Messi 97, Ronaldo 96, Salah 95, Haaland 95, Lewandowski 92
+
+**Of the fifty highest peaks ever recorded, a gap of 16 caught ZERO.** Messi's second-best
+season is 96 and Ronaldo's is 96, so their gaps are 1 and 0. **A gap rewards having had bad
+seasons**, and the greatest players are great repeatedly. Adding a level gate does not fix it:
+at floor 80 AND gap >= 8 the top ten becomes Huntelaar, Yaya Touré, Belotti, Kießling , the
+same inversion, one filter later. **The gap is not a secondary filter that sharpens a level
+gate; it re-imposes the fault.** All three shipped rules are absolute levels with no
+self-relative term anywhere.
+
+## WHAT SHIPPED
+
+    Peak          his highest season AND rt >= 85                          310 players
+    Breakout      first season at rt >= 85, inside his first three          132 players
+    The Standard  five or more seasons at rt >= 80                           58 players
+
+Ties on Peak go to the EARLIEST season at that level, so a career with two 85s does not claim
+the tag twice , verified, 0 players receive it more than once. The Standard is carried by
+every qualifying season rather than one, because the tag describes the career and a reader
+looking at any of those seasons is looking at part of what earned it.
+
+`VVCore.careerStageTags(row, career)` , it takes the whole career and returns nothing without
+it. Wonderkid and The Last Dance are per-season rules (age plus rt on one row); these three
+cannot be, so a card whose season list never loads shows NO career-stage tag rather than a
+wrong one.
+
+## THESE THREE ARE OUTFIELD-ONLY, PERMANENTLY, AND THAT IS A CONSEQUENCE OF THE FLOORS
+
+**The engine caps keepers at 75**, so no keeper season can reach 80 or 85. Verified against the
+shipped function: **0 of 384 keepers** with four or more scored seasons earn any of the three.
+**Buffon earns none**, despite eleven seasons topping out at the cap with five of them at
+74-75. The Buffon test set during scoping is therefore NOT met by the shipped rules.
+
+**A lower absolute floor does not fix it and a percentile does not either**: for keepers the
+75th, 90th and 95th percentiles are ALL exactly 75, because the cap flattens the whole top of
+their distribution. Only a COUNT of capped seasons can separate one keeper from another. If
+keepers are ever to be eligible, that is the shape the fix has to take.
+
+## RENAISSANCE IS DROPPED AS A TAG , IT CANNOT BE DEFINED WITHOUT A DIP
+
+A late-career return **after a decline** requires the decline. Measured at a threshold of 12 it
+tagged 2,071 players whose mean worst season was **28 against a pool mean of 32** , it selects
+volatile careers, not returns. It caught Alexis Sánchez (a career containing a 20), Quagliarella
+(a 30) and Huntelaar (a 37 and a 41), alongside Son and De Bruyne who are simply long and good.
+
+**It is the gap defect in its purest form**, which is why it goes rather than gets a threshold.
+
+**IT MOVES TO THE VERDICT LAYER, and the reasoning is the trophies reasoning.** A return is a
+STORY, not a measurement: the written layer can say "he was written off and came back" about a
+career where that is true, without the platform having to define, defend and threshold what a
+decline is. Verdict prose is not held to the standard of a tag because it does not claim to be
+a measurement.
+
+## THE PLAYBOOK NO LONGER PROMISES A FOURTH
+
+The career-stage arc carried six markers, four of them greyed as "soon". It now carries
+**five** , Wonderkid, Breakout, Peak, The Standard, The Last Dance , all live, none greyed, and
+Renaissance removed from `ARC_STAGES` entirely. A page that shows a slot which will never fill
+is making a promise the engine has decided not to keep.
