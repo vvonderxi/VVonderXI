@@ -42,7 +42,22 @@
     --field:#FFFFFF; --field-b:rgba(0,0,0,.10);
     --pillbg:#FFFFFF; --pill-b:rgba(0,0,0,.10);
     --glow:rgba(255,92,122,.10);
-    background:radial-gradient(120% 80% at 50% 8%, var(--glow), transparent 60%), var(--bg);
+    /*  THE HEADER WASH , SOFTENED AND EXTENDED SO IT STOPS READING AS A PATCH.
+        At rgba(255,92,122,.10) fading out by 60%, this tinted the top ~340px to #F4EADE
+        against a #F4EFE2 page and then stopped, so the logo and tagline sat on a visibly
+        distinct area instead of on the page. Measured down the right margin: the old ramp
+        ran F4EADE -> F4EFE2 and was done by y=340 at both 390 and 1280.
+        Halved and carried much further out: the tint is now shallow enough not to register
+        as a colour change and never lands an edge inside the content.
+        AND THE FIX IS TO DROP THE HUE, NOT JUST THE ALPHA. The wash was PINK on CREAM, and a
+        hue shift reads far more strongly than a lightness one: measured, the top sat at
+        #F4EADE against a #F4EFE2 page, R-B of 22 versus 18, so the eye saw a differently
+        COLOURED area rather than a slightly brighter one. Halving the alpha alone left it at
+        9 units off. A white highlight lightens without tinting, which is what the holding
+        page already does, so the two surfaces now share one treatment.
+        NOT --glow ITSELF , that token is also the search field's focus ring
+        (.search:focus-within), where the stronger pink value is correct. Only the ground moves. */
+    background:radial-gradient(150% 620px at 50% -140px, rgba(255,255,255,.55), transparent 78%), var(--bg);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
