@@ -78,11 +78,45 @@
   body.light .direct a.email{color:var(--charcoal)}
   .direct .resp{font-family:'Archivo';font-weight:500;font-size:11px;color:rgba(243,237,224,0.58);margin-top:8px} body.light .direct .resp{color:#9a9285}
 
-  .socials{display:flex;gap:16px;justify-content:center;margin:44px 20px 0;flex-wrap:wrap}
-  .soc{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 28px;cursor:pointer;text-decoration:none;color:var(--cream);font-family:'Archivo';font-weight:800;font-size:16px;transition:transform .2s,background .2s}
+  /*  THE PRIMARY CONTACT. Sized and weighted to be the one thing on the page you cannot
+      miss, against socials that are deliberately quieter below it. */
+  .primary{margin:44px 20px 0;text-align:center}
+  .mailto{display:inline-flex;align-items:center;gap:14px;text-decoration:none;
+    font-family:'Archivo';font-weight:900;font-size:clamp(19px,3.4vw,27px);letter-spacing:-.015em;
+    color:var(--cream);background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.16);border-radius:18px;padding:20px 30px;
+    transition:transform .2s,background .2s,border-color .2s;
+    /*  break-word, NOT anywhere. overflow-wrap:anywhere participates in min-content sizing,
+        so an inline-flex box carrying it collapses to its smallest possible width , the
+        address broke as "hello@vvonderxi.c / om" on a 1100px screen with room to spare.
+        break-word wraps only when it genuinely has to and leaves intrinsic width alone. */
+    overflow-wrap:break-word}
+  .mailto svg{width:26px;height:26px;flex:none;color:var(--pink-ink)}
+  .mailto:hover{transform:translateY(-2px);background:rgba(255,255,255,0.11);
+    border-color:rgba(255,255,255,0.26)}
+  body.light .mailto{background:rgba(255,255,255,0.75);border-color:rgba(0,0,0,0.10);color:var(--charcoal)}
+  body.light .mailto svg{color:#AD0332}
+  body.light .mailto:hover{background:#fff;border-color:rgba(0,0,0,0.18)}
+  .mailnote{font-family:'Inter',sans-serif;font-size:13px;margin-top:14px;
+    color:rgba(243,237,224,0.55)}
+  body.light .mailnote{color:#6b655c}
+
+  /*  A stated divider rather than a gap, so the socials read as an alternative to the email
+      above rather than as a second, competing call to action. */
+  .orline{display:flex;align-items:center;gap:14px;margin:38px auto 0;max-width:360px;
+    padding:0 20px;color:rgba(243,237,224,0.34);
+    font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase}
+  .orline::before,.orline::after{content:'';flex:1;height:1px;background:rgba(243,237,224,0.16)}
+  body.light .orline{color:#8a8377}
+  body.light .orline::before,body.light .orline::after{background:rgba(0,0,0,0.12)}
+
+  .socials{display:flex;gap:12px;justify-content:center;margin:18px 20px 0;flex-wrap:wrap}
+  /*  SECONDARY: smaller type, lighter weight, less padding, no fill. Same components as
+      before, deliberately stepped down so the eye reaches the email first. */
+  .soc{display:flex;align-items:center;gap:9px;background:transparent;border:1px solid rgba(255,255,255,0.14);border-radius:13px;padding:12px 18px;cursor:pointer;text-decoration:none;color:rgba(243,237,224,0.78);font-family:'Archivo';font-weight:700;font-size:13.5px;transition:transform .2s,background .2s,color .2s}
   .soc:hover{transform:translateY(-2px);background:rgba(255,255,255,0.1)}
-  .soc svg{width:24px;height:24px}
-  body.light .soc{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06);color:var(--charcoal)}
+  .soc svg{width:18px;height:18px}
+  body.light .soc{background:transparent;border-color:rgba(0,0,0,0.12);color:#5f5951}
   .soc svg{width:18px;height:18px}
   .soc:hover{color:var(--pink-ink)}
 
@@ -114,8 +148,22 @@
 
   <div class="hero">
     <h1>Got a question?</h1>
-    <p>An idea, a player we've missed, or just to talk football. Send us a DM on Instagram , we read every one and reply as quickly as we can.</p>
+    <p>An idea, a player we&rsquo;ve missed, a correction, or just to talk football. Email is the surest way to reach us , we read every one and reply as quickly as we can.</p>
   </div>
+
+  <!--  EMAIL IS THE PRIMARY ROUTE AND THE SOCIALS ARE THE FALLBACK, WHICH IS A REVERSAL.
+        This page used to send everyone to an Instagram DM. The socials stay because they are
+        a real way to reach a person and some people prefer them, but they are now secondary
+        in size, weight and order , one obvious action, then alternatives. -->
+  <div class="primary">
+    <a class="mailto" href="mailto:hello@vvonderxi.com">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round"><rect x="12" y="22" width="76" height="56" rx="8"/><path d="M14 28 L50 56 L86 28"/></svg>
+      hello@vvonderxi.com
+    </a>
+    <div class="mailnote">We reply to everything, usually within a day.</div>
+  </div>
+
+  <div class="orline"><span>or find us on</span></div>
 
   <div class="socials">
     <a class="soc" href="https://www.instagram.com/vvonderxi" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7"><rect x="20" y="20" width="60" height="60" rx="18"/><circle cx="50" cy="50" r="15"/><circle cx="70" cy="30" r="4" fill="currentColor" stroke="none"/></svg> Instagram</a>
