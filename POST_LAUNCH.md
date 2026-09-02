@@ -803,3 +803,72 @@ ground on a wrapper table rather than `body`, which many clients ignore; a decis
 since Gmail and Outlook will invert the cream unless handled; small caps via `text-transform` plus
 `letter-spacing`, never `font-variant`; a plain-text alternative part; and a preheader line, or the
 inbox preview reads "Careers are remembered."
+
+---
+
+# `contact.html` , EMAIL-PRIMARY REBUILD, BUILT AND HELD 2026-09-02. BLOCKED ON AN MX RECORD.
+
+**THE CHANGE IS WRITTEN AND RENDERED BUT DELIBERATELY NOT COMMITTED**, because committing it
+would put a dead address on a public page. It is held in the working tree with a copy in the
+session scratchpad; it goes in the moment mail actually arrives.
+
+## WHY IT IS BLOCKED , `hello@vvonderxi.com` CANNOT RECEIVE MAIL
+
+Re-checked authoritatively on 2026-09-02, straight from `nsc2.squarespacedns.com` rather than a
+cache: **no MX record on `vvonderxi.com`, and no `mail`/`smtp`/`mx`/`mx1`/`inbound` subdomain.**
+
+**THE FAILURE MODE IS WORSE THAN A CLEAN REJECTION, WHICH IS THE WHOLE REASON THIS IS BLOCKING.**
+With no MX, RFC 5321 makes senders fall back to an IMPLICIT MX at the A record , `216.198.79.1`,
+which is Vercel. Tested: **port 25 REFUSED, port 587 REFUSED.** So a message is not bounced at
+send time. It sits in the sender's queue, retries for one to three days, and only then returns a
+permanent failure. **The sender believes it was delivered, we never see it, and they learn it
+failed days later.** An address that silently eats mail is worse than no address.
+
+## THE FIX , IMPROVMX, NOT CLOUDFLARE, AND THE REASON IS SPECIFIC
+
+**Cloudflare Email Routing requires the zone to be ON Cloudflare nameservers.** This domain is
+authoritative at Squarespace, so using it would mean migrating the entire zone , the Vercel A
+record, the Google site verification, everything , to get a mail forwarder. Disproportionate.
+**ImprovMX works with any DNS host**; it only needs MX records added wherever the zone lives.
+
+    Squarespace , Settings > Domains > vvonderxi.com > DNS Settings > Custom Records
+      MX   @   priority 10   mx1.improvmx.com
+      MX   @   priority 20   mx2.improvmx.com
+
+**DO NOT TOUCH SPF WHILE THIS IS RECEIVE-ONLY.** ImprovMX's docs suggest adding
+`include:spf.improvmx.com`, but SPF governs SENDING and this domain sends nothing. The current
+`v=spf1 -all` is a deliberate anti-spoofing lockdown and relaxing it to `~all` for a forwarder
+that only receives would weaken the domain for no gain. It becomes relevant only if outbound is
+ever sent through them.
+
+**Verify in this order:** `dig MX vvonderxi.com` returns the two ImprovMX hosts; the ImprovMX
+dashboard shows the domain valid; then **send a real message from an outside account and confirm
+it lands in the destination inbox.** The DNS check alone is not proof , the delivery is.
+
+**KNOWN LIMIT OF A FORWARDER, WORTH DECIDING BEFORE IT MATTERS:** it forwards inbound only.
+Replying from Gmail replies as the Gmail address, not as `hello@`, which reveals a personal
+address and looks unprofessional on a first reply. Sending AS `hello@` needs SMTP credentials
+plus SPF and DKIM, i.e. the same DNS work the welcome email needs. See [[the welcome email]].
+
+## WHAT THE HELD CHANGE DOES
+
+Email becomes the primary route and the socials are demoted rather than removed , same Instagram
+and X components, stepped down in size, weight and order, under a stated "or find us on" divider
+so they read as an alternative rather than a competing call to action. The hero copy no longer
+says "Send us a DM on Instagram".
+
+**One CSS trap found while building it, worth keeping:** `overflow-wrap:anywhere` participates in
+MIN-CONTENT sizing, so an inline-flex box carrying it collapses to its narrowest possible width ,
+the address broke as `hello@vvonderxi.c / om` on an 1100px screen with room to spare.
+`overflow-wrap:break-word` wraps only when it must and leaves intrinsic width alone.
+
+## AND NOTE WHERE THIS PAGE IS NOT
+
+**`contact.html` is unreachable while the holding page is live.** The `coming-soon` branch carries
+five files, `contact.html` is not among them, and `vercel.json` rewrites `/(.*)` to `/index.html`,
+so `/contact` serves the holding page. This work matters when the site OPENS, not during the
+holding period.
+
+**AND THE SOCIALS ARE DELIBERATELY NOT ON THE HOLDING PAGE.** Ruled 2026-09-02: that page has one
+job and one action, and two social buttons are an exit from a page built to convert. The
+proof-of-life argument does not apply to a conversion surface.
