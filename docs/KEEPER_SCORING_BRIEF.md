@@ -74,9 +74,11 @@ in the pool, to 39th**. It is a stated fact on the card and never a score term.
 > no business ordering.
 
 **5. The gate is 2015 onward, 800 minutes and 60 shots faced.** Saves coverage is 0% for 2010 to
-2013 and 4% in 2014, then 84 to 100%. **1,920 of 4,289 keeper cards clear the gate.** The rest get
+2013 and 4% in 2014, then 84 to 100%. **1,920 of 2,806 keeper cards clear the gate.** The rest get
 a named reason: 1,299 pre-2015, 559 under minutes, 317 under shots, 194 with saves or conceded
 unrecorded.
+
+**THE DENOMINATOR IS KEEPER SEASONS THAT CARRY SAVE DATA** , `position='GK' AND saves IS NOT NULL` = **2,806**, not all 4,289 keeper seasons. The sentence names three gates, and a card with no save recorded was never eligible to fail them: it could not have been scored however the keeper played, so counting it as a miss reports OUR data gap as HIS shortfall. Adding `goals_conceded IS NOT NULL` returns the same 2,806, so the two fields always travel together. It reconciles exactly: **1,920 scored + 10 pre-2015 + 559 under minutes + 317 under shots = 2,806**, where those 10 are the only pre-2015 seasons that DO carry save data and so were genuinely tested against the era gate. Measured 2026-09-02.
 
 **6. There is no shot quality. No xG, no location, no shot type.** Twenty tap-ins and twenty
 thirty-yard strikes score identically. Nor is there anything measuring distribution, command of

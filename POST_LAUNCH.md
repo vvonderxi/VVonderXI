@@ -134,8 +134,8 @@ keeper-only; shot quality is a PUBLISHED limitation, now on both the card and th
 is untouched and is still the real job behind this.
 
 **WHAT THE BUILD ADDED THAT THE SPEC DID NOT HAVE:**
-- **GATES: 800 minutes AND 60 shots faced, 2015+.** 1,920 of 4,289 keeper cards score. The rest get a
-  named reason , 1,299 pre-2015, 559 under minutes, 317 under shots, 194 with saves or conceded unrecorded.
+- **GATES: 800 minutes AND 60 shots faced, 2015+.** 1,920 of 2,806 keeper cards score. The rest get a
+  named reason , 10 pre-2015, 559 under minutes, 317 under shots. (Against the FULL 4,289 the misses are 1,299 pre-2015, 559 under minutes, 317 under shots and 194 with saves or conceded unrecorded; the last group and 1,289 of the pre-2015 group sit outside the 2,806 denominator.)
 - **THE LADDER IS AN EMBEDDED PERCENTILE TABLE (`KEEPER_SAVE_LADDER`), not a live query**, measured on the
   gated pool at every 5th percentile. **It is a snapshot: if the keeper population changes materially it
   must be re-measured**, and nothing warns you.
@@ -143,6 +143,8 @@ is untouched and is still the real job behind this.
   worth a per-league pool that would shrink every comparison set.
 - **THE CAP IS STATED ON THE CARD**, one line under the score, because two keepers at the 54th and the 97th
   percentile both print 75 and the ladder underneath would otherwise contradict the number above it.
+
+**THE DENOMINATOR IS KEEPER SEASONS THAT CARRY SAVE DATA** , `position='GK' AND saves IS NOT NULL` = **2,806**, not all 4,289 keeper seasons. The sentence names three gates, and a card with no save recorded was never eligible to fail them: it could not have been scored however the keeper played, so counting it as a miss reports OUR data gap as HIS shortfall. Adding `goals_conceded IS NOT NULL` returns the same 2,806, so the two fields always travel together. It reconciles exactly: **1,920 scored + 10 pre-2015 + 559 under minutes + 317 under shots = 2,806**, where those 10 are the only pre-2015 seasons that DO carry save data and so were genuinely tested against the era gate. Measured 2026-09-02.
 
 **THE PROOF ROWS BELOW ARE STILL UNBUILT AND STILL BLOCKED** on the percentile columns, exactly as the old
 spec says. The panel does not depend on them.
@@ -679,7 +681,7 @@ also the strongest argument for C.** Decide the pair together, not the chart alo
 ### GOALKEEPER CARD , **BUILT AND LIVE ON THE BRANCH 2026-08-28. THE LOCKED THREE-SPOKE RADAR WAS SUPERSEDED BY MEASUREMENT , A KEEPER CARD HAS NO RADAR AT ALL.**  **, the superseded spec and the three reasons are in `POST_LAUNCH.md`**
 **`VVCore.keeperScore()` + `VVCore.keeperPanelHTML()`, wired into card.html's Profile layer, plus the `s-gk` playbook section.** A percentile LADDER carries the score, a saved-versus-conceded bar carries the composition, the recorded figures are stated, and the shot-quality limit is published. **The decisions that must not be re-derived:**
 - **NO RADAR, AND NOT BECAUSE THREE SPOKES LOOKED THIN.** `penalties_saved` has no derivable denominator (`penalties_missed` is zero for all but 2 of 1,583 keepers) and at 10% weight it put Trapp above Donnarumma while dropping ter Stegen to 39th; **workload measures the team, not the keeper , shots faced against save% is -0.118, against goals conceded +0.835.** Both spokes fail, and one honest axis is not a shape.
-- **GATES: 800 minutes AND 60 shots faced, 2015+. 1,920 of 4,289 keeper cards score**, and every card that does not gets a NAMED reason rather than a blank.
+- **GATES: 800 minutes AND 60 shots faced, 2015+. 1,920 of 2,806 keeper cards score**, and every card that does not gets a NAMED reason rather than a blank.
 - **`KEEPER_SAVE_LADDER` IS AN EMBEDDED SNAPSHOT OF THE POOL, NOT A LIVE QUERY.** Re-measure it if the keeper population changes materially , **nothing warns you.**
 - **THE 75 CAP IS UNTOUCHED AND IS NOW STATED ON THE CARD**, one line under the score. Without it two keepers at the 54th and 97th percentile both print 75 and the ladder beneath silently contradicts the number above.
 - **THE PANEL LIVES IN `vv-core.js`, NOT IN card.html** , §C's rule about card rules trapped in the pages. Every colour is a token so the host surface decides; the one literal is the conceded block's `rgba(0,0,0,.10)`, which assumes a LIGHT ground (correct for `.layer`, which is cream in BOTH themes).
