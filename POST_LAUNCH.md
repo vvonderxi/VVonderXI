@@ -872,3 +872,56 @@ holding period.
 **AND THE SOCIALS ARE DELIBERATELY NOT ON THE HOLDING PAGE.** Ruled 2026-09-02: that page has one
 job and one action, and two social buttons are an exit from a page built to convert. The
 proof-of-life argument does not apply to a conversion surface.
+
+---
+
+# `hello@vvonderxi.com` IS REAL , VERIFIED 2026-09-02. AND WHAT IT STILL CANNOT DO.
+
+**The address receives.** ImprovMX forwards it to the destination inbox and a real message has
+arrived. Verified from the authoritative nameservers rather than the ImprovMX dashboard, because
+a dashboard reports its own view of the world:
+
+    MX     10 mx1.improvmx.com / 20 mx2.improvmx.com    , all four Squarespace NS, and 1.1.1.1,
+                                                          8.8.8.8, 9.9.9.9 all agree
+    SPF    v=spf1 include:spf.improvmx.com ~all
+
+**This supersedes the blocked note above.** Every earlier reference to the address as a
+placeholder is now correct rather than aspirational, `contact.html` ships it as the primary
+contact, and **the "Reply to this email to be removed" line in the email spec is a promise that
+can now be kept.**
+
+**COUNT CORRECTION:** this was described as nine doc occurrences. It is **five, across two
+files** , three in `POST_LAUNCH.md` (the FROM line in the spec, the option-A note, and the
+blocked heading) and two in `contact.html`. Recorded because a wrong count invites a
+search-and-replace that misses things or changes the wrong ones.
+
+## SENDING FROM THE ADDRESS IS NOT SET UP, AND IS DELIBERATELY DEFERRED
+
+A forwarder forwards INBOUND ONLY. **A reply typed in Gmail goes out as the Gmail address, not as
+`hello@`** , which exposes a personal address and undercuts the professionalism the switch to an
+email-first contact page was for. Fixing it needs ImprovMX Premium (SMTP credentials) or a real
+Workspace mailbox, plus SPF and DKIM alignment. **Deferred on purpose; it is the same DNS work
+[[the welcome email]] needs, and it should be done once, for both.**
+
+## TWO RECORDS ARE STILL WRONG, AND ONE OF THEM IS A SECURITY REGRESSION
+
+**`_dmarc` IS GONE.** On 2026-09-01 it read `v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s`.
+It is now absent from all four nameservers and all three public resolvers. Squarespace's Email
+Security block publishes SPF and DMARC together as managed records that do not appear as editable
+custom entries; switching it off while hunting for the SPF record removed both.
+
+**SPF came back WEAKER than it was.** It was `v=spf1 -all`, a hard fail authorising no sender at
+all. It is now `~all`, a soft fail. **Combined with no DMARC at all, the domain is materially
+more spoofable today than before any of this started** , anyone can send as `@vvonderxi.com` and
+no published policy tells a receiver to reject it. Neither record affects RECEIVING, so mail
+still arrives; this is about who else can send as you.
+
+**Restore, as custom TXT records** (the Email Security toggle may refuse now that MX exists):
+
+    _dmarc   TXT   v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s
+    @        TXT   v=spf1 include:spf.improvmx.com -all
+
+**Keep the ImprovMX include and tighten `~all` to `-all`.** The include is harmless while
+receive-only and is exactly what is needed the day ImprovMX Premium sends as the address, so it
+is forward-compatible; `-all` restores the hard fail. Leave the `google-site-verification` TXT
+alone, it coexists at the apex.
