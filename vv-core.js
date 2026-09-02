@@ -2938,6 +2938,21 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
    12px and blows the prestige row to 0.98 of the card width.
    THE LESSON FOR THE NEXT EXTRACTION: compare DECLARATIONS, and normalise the
    selector before comparing it. A comment is not part of a selector. */
+/*  A DEFAULT SIZE FOR EVERY MARK, BECAUSE THE ABSENCE OF ONE IS NOT A SMALL BUG.
+    VVMarks emits an SVG with a viewBox and NO width or height attributes. An SVG like that,
+    with CSS width auto, has no intrinsic size, so it takes its containing block , and inside
+    a flex row that means it swells to fill it. Measured on compare.html's Accolades, where no
+    rule existed: every mark rendered at 361 by 361 pixels inside a 389px row, which left about
+    28px for the label and stacked "Ballon d Or" one letter per line. That is the whole defect.
+    THE REAL FAULT WAS THAT SIZING WAS OPT-IN. Each surface had to remember to scope .vvm, and
+    card.html and playbook.html did while compare.html did not , so the mark unification landed
+    correctly everywhere a rule already existed and broke the one place it did not. A default
+    here makes it opt-OUT: a surface that wants a different size still states one and wins.
+    1em rather than a pixel value, so it tracks whatever text it sits beside.
+    THIS BLOCK IS INSERTED FIRST IN HEAD (see vvInjectCardCSS), so every page rule outranks it
+    on equal specificity, and every existing rule is more specific already.
+    NO BACKTICKS IN THIS COMMENT , it lives inside the VV_CARD_CSS template literal.  */
+.vvm{width:1em;height:1em;flex:none;vertical-align:-0.12em}
 .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
 .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
 `;
