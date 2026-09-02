@@ -810,11 +810,8 @@
   .gkfill{fill:#8a6a1e}
   body:not(.light) .gkfill{fill:#E0A93A}
   .gksaved{fill:#2E8C5A;fill-opacity:.45}
-  .gkneg{fill:#AD0332}
   body:not(.light) .gkneg{fill:#F1688E}
-  .gkneglab{fill:#AD0332;fill-opacity:1}
   body:not(.light) .gkneglab{fill:#F1688E}
-  .gkposlab{fill:#8a6a1e;fill-opacity:1}
   body:not(.light) .gkposlab{fill:#E0A93A}
   .gkx line{stroke:#AD0332}
   body:not(.light) .gkx line{stroke:#F1688E}
@@ -822,6 +819,45 @@
   .gkbox-2{fill:#8a6a1e;fill-opacity:.12;stroke:#8a6a1e;stroke-opacity:.4}
   body:not(.light) .gkbox-2{fill:#E0A93A;fill-opacity:.14;stroke:#E0A93A;stroke-opacity:.45}
   .gkcap{font-size:12.5px;line-height:1.6;opacity:.78;margin:10px 0 8px}
+
+  /*  WHAT SHOTS FACED ACTUALLY MEASURES , BAR LENGTH ONLY, NO COEFFICIENTS.
+      The panel used to print minus 0.118 and plus 0.835 beside the bars. A correlation
+      coefficient is not a football idea and a reader has no way to judge whether 0.835 is
+      large; the bar against a named scale carries the whole point without the concept.
+      THE SCALE IS MAGNITUDE, NOT DIRECTION, AND THAT IS A REAL GAIN. Once the ends read
+      "tells you nothing" to "tells you everything", the SIGN stops mattering , which is
+      useful, because reproducing the published figures from the database gives +0.109 for
+      the save-rate relationship where the page printed MINUS 0.118. Whatever that
+      disagreement turns out to be, both readings are near zero and the bar is the same
+      length either way. Lengths are the measured magnitudes, 0.11 and 0.88, rounded to
+      whole percentages.
+      THE COLOUR LOGIC IS INVERTED FROM THE OLD PANEL, ON PURPOSE. It filled the long bar ,
+      "how weak the defence was" , with gold (#8a6a1e), and gold in this brand means honour,
+      prestige and keeper quality. It was painting the thing that is NOT about the keeper in
+      the colour reserved for the thing that IS. Gold is gone from this figure entirely: the
+      long bar is pink, the brand ink for "look here", and the near-empty bar is plain soft
+      ink, because an absence should look like an absence. Both are TOKENS, so both follow
+      the theme; the old rules were hard-coded hex.  */
+  .gkwhat{padding-top:16px}
+  .gkwlede{font-family:'Bricolage Grotesque';font-weight:700;font-size:15.5px;line-height:1.35;
+           margin-bottom:16px}
+  .gkwrow{display:grid;grid-template-columns:minmax(0,15.5em) 1fr;gap:14px;align-items:center;
+          margin-bottom:11px}
+  .gkwlab{font-size:12.5px;line-height:1.45;opacity:.82}
+  .gkwtrack{position:relative;height:12px;border-radius:99px;
+            background:currentColor;opacity:1;box-shadow:none}
+  .gkwtrack{background:rgba(128,128,128,.18)}
+  .gkwbar{display:block;height:100%;border-radius:99px;min-width:6px}
+  .gkw-keeper{background:var(--ink-soft);opacity:.55}
+  .gkw-team{background:var(--pink-ink)}
+  .gkwscale{display:flex;justify-content:space-between;gap:12px;margin-top:14px;
+            font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;
+            text-transform:uppercase;opacity:.55}
+  @media (max-width:560px){
+    .gkwrow{grid-template-columns:1fr;gap:7px;margin-bottom:15px}
+    .gkwlede{font-size:14.5px}
+    .gkwscale{font-size:9px;letter-spacing:.1em}
+  }
   .gkcap-w{margin-top:8px}
   .gkgate{display:flex;gap:10px;margin:16px 0 0;flex-wrap:wrap}
   .gkgb{flex:1 1 120px;padding:11px 13px;border-radius:11px;
@@ -1010,25 +1046,23 @@
 </div>
 <div class="gkcap gkcap-w">Below any of the three, the card does not guess. <b>1,920 of 4,289</b> keeper seasons are scored; every one that is not says which gate it missed.</div>
 
-<div class="gkfig">
-  <svg viewBox="0 0 460 96" width="100%" height="96" role="img" aria-label="Shots faced correlates minus 0.118 with save percentage and plus 0.835 with goals conceded.">
-    <text x="0" y="12" class="gkl">what shots faced actually predicts</text>
-    <g transform="translate(0,28)">
-      <text x="0" y="12" class="gkl">his save rate</text>
-      <rect x="120" y="3" width="200" height="10" rx="5" class="gktrack"/>
-      <rect x="204" y="3" width="12" height="10" rx="5" class="gkneg"/>
-      <text x="332" y="12" class="gkl gkneglab">&#8722;0.118</text>
-    </g>
-    <g transform="translate(0,56)">
-      <text x="0" y="12" class="gkl">goals his team conceded</text>
-      <rect x="120" y="3" width="200" height="10" rx="5" class="gktrack"/>
-      <rect x="216" y="3" width="84" height="10" rx="5" class="gkfill"/>
-      <text x="332" y="12" class="gkl gkposlab">+0.835</text>
-    </g>
-    <line x1="216" y1="22" x2="216" y2="82" stroke="currentColor" stroke-opacity=".3" stroke-dasharray="2 3"/>
-    <text x="216" y="94" text-anchor="middle" class="gkl">0</text>
-  </svg>
+<div class="gkfig gkwhat">
+  <div class="gkwlede">Knowing how many shots a keeper faced tells you&hellip;</div>
+
+  <div class="gkwrow">
+    <div class="gkwlab">about how well he kept goal</div>
+    <div class="gkwtrack"><i class="gkwbar gkw-keeper" style="width:11%"></i></div>
+  </div>
+
+  <div class="gkwrow">
+    <div class="gkwlab">about how weak the defence in front of him was</div>
+    <div class="gkwtrack"><i class="gkwbar gkw-team" style="width:88%"></i></div>
+  </div>
+
+  <div class="gkwscale"><span>Tells you nothing</span><span>Tells you everything</span></div>
+
   <div class="gkcap">A busy keeper is a keeper behind a poor defence. Shots faced tells you about the team, not the man, so it is context on the card and never credit in the score.</div>
+</div>
 </div>
 
 <div class="gkfig">
