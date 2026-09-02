@@ -134,7 +134,7 @@ keeper-only; shot quality is a PUBLISHED limitation, now on both the card and th
 is untouched and is still the real job behind this.
 
 **WHAT THE BUILD ADDED THAT THE SPEC DID NOT HAVE:**
-- **GATES: 800 minutes AND 60 shots faced, 2015+.** 1,920 of 2,741 keeper cards score. The rest get a
+- **GATES: 800 minutes AND 60 shots faced, 2015+.** 1,920 of 4,289 keeper cards score. The rest get a
   named reason , 1,299 pre-2015, 559 under minutes, 317 under shots, 194 with saves or conceded unrecorded.
 - **THE LADDER IS AN EMBEDDED PERCENTILE TABLE (`KEEPER_SAVE_LADDER`), not a live query**, measured on the
   gated pool at every 5th percentile. **It is a snapshot: if the keeper population changes materially it
@@ -679,7 +679,7 @@ also the strongest argument for C.** Decide the pair together, not the chart alo
 ### GOALKEEPER CARD , **BUILT AND LIVE ON THE BRANCH 2026-08-28. THE LOCKED THREE-SPOKE RADAR WAS SUPERSEDED BY MEASUREMENT , A KEEPER CARD HAS NO RADAR AT ALL.**  **, the superseded spec and the three reasons are in `POST_LAUNCH.md`**
 **`VVCore.keeperScore()` + `VVCore.keeperPanelHTML()`, wired into card.html's Profile layer, plus the `s-gk` playbook section.** A percentile LADDER carries the score, a saved-versus-conceded bar carries the composition, the recorded figures are stated, and the shot-quality limit is published. **The decisions that must not be re-derived:**
 - **NO RADAR, AND NOT BECAUSE THREE SPOKES LOOKED THIN.** `penalties_saved` has no derivable denominator (`penalties_missed` is zero for all but 2 of 1,583 keepers) and at 10% weight it put Trapp above Donnarumma while dropping ter Stegen to 39th; **workload measures the team, not the keeper , shots faced against save% is -0.118, against goals conceded +0.835.** Both spokes fail, and one honest axis is not a shape.
-- **GATES: 800 minutes AND 60 shots faced, 2015+. 1,920 of 2,741 keeper cards score**, and every card that does not gets a NAMED reason rather than a blank.
+- **GATES: 800 minutes AND 60 shots faced, 2015+. 1,920 of 4,289 keeper cards score**, and every card that does not gets a NAMED reason rather than a blank.
 - **`KEEPER_SAVE_LADDER` IS AN EMBEDDED SNAPSHOT OF THE POOL, NOT A LIVE QUERY.** Re-measure it if the keeper population changes materially , **nothing warns you.**
 - **THE 75 CAP IS UNTOUCHED AND IS NOW STATED ON THE CARD**, one line under the score. Without it two keepers at the 54th and 97th percentile both print 75 and the ladder beneath silently contradicts the number above.
 - **THE PANEL LIVES IN `vv-core.js`, NOT IN card.html** , §C's rule about card rules trapped in the pages. Every colour is a token so the host surface decides; the one literal is the conceded block's `rgba(0,0,0,.10)`, which assumes a LIGHT ground (correct for `.layer`, which is cream in BOTH themes).
