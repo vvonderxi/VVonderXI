@@ -3474,7 +3474,16 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       { sub:'Midfield',     items:[ {v:'Playmaker',e:'🧠'},{v:'Maestro',e:'🎩'},{v:'Regista',e:'🎻'},{v:'Engine Room',e:'🧭'},{v:'The Dribbler',e:'✨'} ] },
       { sub:'Defence',      items:[ {v:'The Wall',e:'🧱'},{v:'Destroyer',e:'🦮'},{v:'Ball Hawk',e:'🦅'},{v:'Ball-Playing CB',e:'🦶'} ] },
       { sub:'All-Round',    items:[ {v:'Complete',e:'💎'},{v:'Iron Man',e:'🛡️'} ] },
-      { sub:'Career-Stage', items:[ {v:'Wonderkid',e:'🌱'},{v:'Breakout',e:'🚀'},{v:'Peak',e:'⛰️'},{v:'The Standard',e:'🏛️'},{v:'The Last Dance',e:'🌅'} ] },
+      { sub:'Career-Stage', items:[ {v:'Wonderkid',e:'🌱'},
+      /*  soon:true , THESE THREE ARE NOT FILTERABLE AND THE CHIP HAS TO SAY SO.
+          careerStageTags() needs a whole career; getVVTags() gets one row and never calls it,
+          so Peak / Breakout / The Standard never reach card.tags and clientPredicate can never
+          match them. Left selectable they returned an empty grid with no reason given.
+          Wonderkid and The Last Dance carry no flag because getVVTags DOES emit them per
+          season, so they filter correctly and must stay live , which is why this is a
+          PER-ITEM flag and not where:'inert' on the group.  */
+                              {v:'Breakout',e:'🚀',soon:true},{v:'Peak',e:'⛰️',soon:true},
+                              {v:'The Standard',e:'🏛️',soon:true},{v:'The Last Dance',e:'🌅'} ] },
     ],
     position: [ {v:'GK'},{v:'CB'},{v:'FB'},{v:'CDM'},{v:'CM'},{v:'CAM'},{v:'Winger'},{v:'ST'} ],
   };
@@ -3857,7 +3866,9 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
   function flatItems(subs){
     return subs.reduce(function(a,g){ return a.concat(g.items.map(function(it){
-      return {v:it.v, l:(it.l||it.v), e:it.e}; })); }, []);
+      /*  soon MUST be carried: vvfItems('stage') routes through here, so a flag dropped
+          at this line makes the taxonomy edit look applied and do nothing.  */
+      return {v:it.v, l:(it.l||it.v), e:it.e, soon:!!it.soon}; })); }, []);
   }
 
   /* ── RANGE SLIDERS , ONE IMPLEMENTATION, TWO INSTANCES ────────────────────
@@ -3986,7 +3997,9 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       var items=vvfItems(g);
       // g.note is DEVELOPER metadata , never rendered. An items-less group is
       // hidden above; this branch only ever runs for a group that has items.
-      body+='<div class="vvf-chips">'+items.map(function(it){ return vvfChip(key,it,{inert:inert}); }).join('')+'</div>';
+      /*  inert is now GROUP-or-ITEM. honours still ORs to true for every chip via g.where;
+          Career-Stage uses the per-item flag so two of its five stay live.  */
+      body+='<div class="vvf-chips">'+items.map(function(it){ return vvfChip(key,it,{inert:inert||!!it.soon}); }).join('')+'</div>';
     }
     /* the wrapper is what keeps the group at exactly two children */
     return head+'<div class="vvf-body">'+body+'</div></div>';
@@ -4006,7 +4019,10 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var chips=root.querySelectorAll('.vvf-chip.on[data-vvf-group]');
     for(var i=0;i<chips.length;i++){
       var c=chips[i], gk=c.getAttribute('data-vvf-group'), v=c.getAttribute('data-vvf-value');
-      var g=vvfGroup(gk); if(!g || g.where==='inert') continue;
+      /*  c.disabled is the PER-ITEM half of the same guard the group check gives honours.
+          A disabled button fires no click so this is belt and braces, and it is the layer
+          that holds if anything ever sets .on programmatically.  */
+      var g=vvfGroup(gk); if(!g || g.where==='inert' || c.disabled) continue;
       if(gk==='score'){ st.score.bands.push(v); continue; }
       if(g.select==='single'){ st[gk]=v; } else if(st[gk] && st[gk].indexOf(v)<0){ st[gk].push(v); }
     }
