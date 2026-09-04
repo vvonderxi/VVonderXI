@@ -190,8 +190,10 @@
 
   /*  ON SUCCESS THE INVITATION HAS TO GO, NOT JUST THE INPUT. Hiding only the form left
       "BE FIRST THROUGH THE DOOR" still calling to someone who had already walked through it,
-      and left "One message when it opens" on screen twice, four words apart, because the
-      standing note and the confirmation both said it. */
+      and left the same promise on screen twice, four words apart, because the standing note
+      and the confirmation both said it. (The note then read "One message when it opens.
+      Nothing else, ever."; it is now "No noise until kick-off." , the duplication is what
+      mattered, not the wording.) */
   .notify.sent .nlab,.notify.sent .nnote{display:none}
 
   /*  Everything that is not a card arrives after the cards have landed. The fan finishes at
@@ -292,7 +294,7 @@
           <input type="email" id="email" placeholder="you@email.com" autocomplete="email" aria-label="Your email address">
           <button type="button" id="go">Notify me</button>
         </div>
-        <div class="nnote">One message when it opens. Nothing else, ever.</div>
+        <div class="nnote">No noise until kick-off.</div>
         <div class="err" id="err" role="alert">That did not send. Your address is still above , try again in a moment.</div>
         <!--  THE RECEIPT. With no confirmation email, this is the ONLY evidence a visitor
               ever gets that it worked, so it answers the three questions they actually have,
