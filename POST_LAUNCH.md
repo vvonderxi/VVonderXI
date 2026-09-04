@@ -997,6 +997,16 @@ a measurement.
 ## THE PLAYBOOK NO LONGER PROMISES A FOURTH
 
 The career-stage arc carried six markers, four of them greyed as "soon". It now carries
-**five** , Wonderkid, Breakout, Peak, The Standard, The Last Dance , all live, none greyed, and
-Renaissance removed from `ARC_STAGES` entirely. A page that shows a slot which will never fill
+**five** , Wonderkid, Breakout, Peak, The Standard, The Last Dance , and Renaissance removed
+from `ARC_STAGES` entirely.
+
+**[CORRECTED 2026-09-04] THIS ENTRY SAID "all live, none greyed". THREE OF THE FIVE ARE
+GREYED.** `ARC_STAGES` (`playbook.html:1150`) marks **Breakout, Peak and The Standard**
+`live:false`, with `e:''` and `dq:''`, and `playbook.html:1273` appends
+`<span class="soonpill">Not yet live</span>` whenever `live` is false. So tapping any of the
+three gives the one-line description, a "Not yet live" pill, no mark and no Drury quote.
+Only Wonderkid and The Last Dance are `live:true` and carry both.
+**AND THE PLAYBOOK IS RIGHT TO SAY SO** , the three compute correctly but render only inside
+card.html's Wonder Tags panel, in the wrong container, without a mark (see `CLAUDE.md` §D).
+**The fix is to make them live, not to flip the flag.** A page that shows a slot which will never fill
 is making a promise the engine has decided not to keep.

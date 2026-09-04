@@ -18,6 +18,17 @@ SURFACE THAN WHEN IT WAS WRITTEN, AND THE FIGURES HAVE NOW GONE STALE TWICE:**
 Merge-base `5bdbadb`. Local **and** `origin/vvonderxi_BIGGER` are both exactly that commit, so
 production is a strict ancestor: clean fast-forward, zero conflicts.
 
+**[STALE AS OF 2026-09-04 , RE-MEASURE BEFORE USING ANY FIGURE ABOVE.] TWO THINGS CHANGED.**
+**(1) `vvonderxi_BIGGER` IS NO LONGER THE DEPLOYED BRANCH.** Vercel's production branch was
+changed to **`coming-soon`** on 2026-09-04 and a deployment promoted at `0515e00`;
+`vvonderxi_BIGGER` now builds as a preview. **The merge target is unchanged, so the setting has
+to be put back before the merged platform can deploy.**
+**(2) THE MERGE IS NO LONGER A FAST-FORWARD.** `vvonderxi_BIGGER` was repurposed into the
+holding page, so it carries its own commits. Measured 2026-09-04: merge base **`775095f`**,
+production **10 ahead**, `redesign-compare` **19 ahead**, `214 files changed,
++213,197 / -434`. The 639 / 208 / 0-ahead figures above describe a topology that no longer
+exists, and **C10 asserts 0-ahead as a pass condition, so it will fail as written.**
+
 **RE-MEASURE AGAIN BEFORE RUNNING THIS, AND DO NOT TREAT THAT AS A FORMALITY , IT HAS BEEN WRONG
 EVERY TIME IT HAS BEEN CHECKED.** 517 -> 599 -> 639 in three measurements. If the figures have moved,
 the surface has moved.
@@ -549,6 +560,7 @@ environment, which is itself the reason they are listed.
 ### C10. The final read of the diff
 - **Check:** 639 commits and 208 files land atomically.
 - **How:** `git fetch origin` in Terminal C, confirm `origin/vvonderxi_BIGGER` is still **0 ahead**, then read the diff stat.
+- **[BROKEN AS WRITTEN, 2026-09-04] PRODUCTION IS 10 AHEAD, NOT 0**, because `vvonderxi_BIGGER` was repurposed into the holding page. This item cannot pass in its current form. **Re-scope it to the real topology (merge base `775095f`) and decide the merge SHAPE before running the pass** , a fast-forward is no longer available, so there is a merge commit and therefore a review point that the pass was written to do without.
 - **Pass:** 0 ahead, and the figures match what this pass was scoped against. **The 0-ahead count is only as fresh as the last fetch.**
 
 ---
