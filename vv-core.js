@@ -346,7 +346,14 @@
     const max       = (opts.max != null) ? opts.max : 3;
     const el        = opts.el || 'span';
     const innerWrap = !!opts.innerWrap;
-    const PRIO = { AGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
+    /*  STAGE:0 IS LOAD-BEARING, NOT COSMETIC. famClass below is gated on `family in PRIO`,
+        so a family missing from this map renders with NO colour class at all, silently.
+        And prio() falls back to 1 for an unknown family, which would move Wonderkid and
+        The Last Dance out of first place and DROP THEM OFF the card face and rankings
+        rows entirely at max 2-3. Measured: without STAGE here, 1,230 rendered tag lists
+        change across the database; with it, ZERO. AGE is kept at 0 beside it so the two
+        sort identically while any -age rule is still on disk.  */
+    const PRIO = { AGE:0, STAGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
     const prio = f => (f in PRIO) ? PRIO[f] : 1;
     return tags
       .map((t, i) => ({ t, i }))                                   // keep original index for stable tiebreak
@@ -2134,11 +2141,11 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     // Wonderkid , young AND elite season (Universal). Always eligible.
     const age = row.season_age != null ? row.season_age : row.age;
     if (age != null && age <= 21 && row.rt != null && row.rt >= 82)
-      tags.push({ name: 'Wonderkid', family: 'AGE', tier: 'universal' });
+      tags.push({ name: 'Wonderkid', family: 'STAGE', tier: 'universal' });
 
     // The Last Dance , veteran AND still elite (Universal). Mutually exclusive with Wonderkid.
     else if (age != null && age >= 34 && row.rt != null && row.rt >= 82)
-      tags.push({ name: 'The Last Dance', family: 'AGE', tier: 'universal' });
+      tags.push({ name: 'The Last Dance', family: 'STAGE', tier: 'universal' });
 
     return tags;
   }
@@ -2918,6 +2925,10 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
 .vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
 .vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+/*  STAGE , the career-arc family. Teal is its own colour: charcoal is CROSS (Iron Man,
+    Complete) and gold is honours, so a stage tag must read as neither. The -age rule above
+    is DEAD as of the family merge and is left in place deliberately while this is unpushed.  */
+.vvcard .chtagcell-stage{background:linear-gradient(90deg,#2F8290,#1B5563) !important}
 .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
 .vvcard .cga .col{text-align:center}
 .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
@@ -3109,6 +3120,7 @@ body.light .vvrows .rtag.purple{color:#784eac}
 .vvrows .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
 .vvrows .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
 .vvrows .rtag-age{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+.vvrows .rtag-stage{background:linear-gradient(90deg,#2F8290,#1B5563);border-color:transparent;color:#fff}
 .vvrows .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
 .vvrows .rmini{justify-self:end;margin-right:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:52px;border-radius:11px;gap:1px;background:linear-gradient(155deg,#F7F2E6,#EDE6D4);border:1px solid rgba(0,0,0,.12);box-shadow:0 5px 14px -6px rgba(0,0,0,.4)}
 .vvrows .rmvv{font-family:'Bricolage Grotesque';font-weight:800;font-size:11.5px;line-height:1}
@@ -3220,6 +3232,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
 .vvrows-season .rtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968);border-color:transparent;color:#fff}
 .vvrows-season .rtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0);border-color:transparent;color:#fff}
 .vvrows-season .rtag-age{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
+.vvrows-season .rtag-stage{background:linear-gradient(90deg,#2F8290,#1B5563);border-color:transparent;color:#fff}
 .vvrows-season .rtag-cross{background:linear-gradient(90deg,#5A5856,#46443F);border-color:transparent;color:#fff}
 `;
   function vvInjectRowCSS(){
