@@ -1,11 +1,35 @@
 -- player_card_view , DEFINITION AS IT STANDS AFTER THE 2026-09-04 HONOURS + STAGE APPEND
 -- Read live 2026-09-04 from pg_get_viewdef('public.player_card_view', true), verbatim.
--- Body length asserted at 17013 chars: read in chunks and reassembled to the same length.
+-- Body length asserted at 17231 chars: read in chunks and reassembled to the same length.
+--
+-- AMENDED SAME DAY , PEAK AND BREAKOUT NOW MATCH A CARD, NOT A YEAR. Both were min(yr)
+-- with a predicate on sb.yr, which hands the tag to EVERY card in that year rather than
+-- the one the rule tested. Each has its own DISTINCT ON (api) ORDER BY api, yr, card_id
+-- CTE now , stage_peak and stage_break , and the predicate matches sb.card_id.
+-- Still EARLIEST, the decision recorded at POST_LAUNCH.md:960.
+--   Peak     , the hole was reachable but unhit: 0 cards changed, 329 before and after.
+--   Breakout , the hole was LIVE. Benteke's rt-48 Belgian 2012/13 card carried the tag
+--              off the back of his rt-88 Premier League card in the same season. It now
+--              has it and the Belgian card does not. Breakout holders scoring under 85
+--              themselves: 0, was 1.
+-- 614 players hold two or more cards in one season_year, which is what made both
+-- reachable. player_card_mv's own ordering had nothing to do with it.
+--
+-- RULED 2026-09-04 , PEAK REQUIRES TWO OR MORE SEASONS, BREAKOUT REQUIRES NONE. Peak
+-- keeps nc.n_all >= 2; stage_breakout no longer carries it. A single season is trivially
+-- its own highest, so a one-season peak says nothing, whereas arriving at the level
+-- immediately is exactly what Breakout describes. One card is affected: 130385, Thiago,
+-- 2025/26 PL, rt 87, his only season , the sole single-card player clearing 85 of 4,580.
+-- He takes Breakout and not Peak. This is why Breakout stays at 152 rather than falling
+-- to 151: the Benteke card leaves and the Thiago card arrives.
+-- Matches VVCore.careerStageTags card-for-card: 0 differences across 57,055 cards.
 --
 -- Appends 11 columns to the previous 65 (order preserved, nothing removed):
 --   honours_json (jsonb) + 7 booleans derived from the same aggregate,
 --   stage_peak / stage_breakout / stage_the_standard.
--- Eight new CTEs, all appended after the existing vv CTE; zero lines removed from the WITH.
+-- Nine new CTEs, all appended after the existing vv CTE; zero lines removed from the WITH.
+-- Two for honours (hon_rows, hon) and seven for the stage tags (stage_base, stage_seasons,
+-- stage_agg, stage_ncards, stage_peak, stage_break, stage_cards).
 --
 -- ROLLBACK IS THE SIBLING FILE: player_card_view_2026-09-04_before.sql
 --
@@ -225,7 +249,6 @@
          SELECT stage_seasons.api,
             max(stage_seasons.rt) AS best,
             count(*) FILTER (WHERE stage_seasons.rt >= 80) AS n80,
-            min(stage_seasons.yr) FILTER (WHERE stage_seasons.rt >= 85) AS elite_yr,
             min(stage_seasons.seq) FILTER (WHERE stage_seasons.rt >= 85) AS elite_seq
            FROM stage_seasons
           GROUP BY stage_seasons.api
@@ -235,20 +258,27 @@
            FROM stage_base
           GROUP BY stage_base.api
         ), stage_peak AS (
-         SELECT ss.api,
-            min(ss.yr) AS peak_yr
+         SELECT DISTINCT ON (ss.api) ss.api,
+            ss.card_id AS peak_card_id
            FROM stage_seasons ss
              JOIN stage_agg sa ON sa.api = ss.api
           WHERE ss.rt = sa.best
-          GROUP BY ss.api
+          ORDER BY ss.api, ss.yr, ss.card_id
+        ), stage_break AS (
+         SELECT DISTINCT ON (ss.api) ss.api,
+            ss.card_id AS break_card_id
+           FROM stage_seasons ss
+          WHERE ss.rt >= 85
+          ORDER BY ss.api, ss.yr, ss.card_id
         ), stage_cards AS (
          SELECT sb.card_id,
-            COALESCE(nc.n_all >= 2 AND sa.best >= 85 AND sb.rt = sa.best AND sb.yr = sp.peak_yr, false) AS stage_peak,
-            COALESCE(nc.n_all >= 2 AND sa.elite_seq <= 3 AND sb.yr = sa.elite_yr, false) AS stage_breakout,
+            COALESCE(nc.n_all >= 2 AND sa.best >= 85 AND sb.card_id = sp.peak_card_id, false) AS stage_peak,
+            COALESCE(sa.elite_seq <= 3 AND sb.card_id = sk.break_card_id, false) AS stage_breakout,
             COALESCE(nc.n_all >= 2 AND sa.n80 >= 5 AND sb.rt >= 80, false) AS stage_the_standard
            FROM stage_base sb
              LEFT JOIN stage_agg sa ON sa.api = sb.api
              LEFT JOIN stage_peak sp ON sp.api = sb.api
+             LEFT JOIN stage_break sk ON sk.api = sb.api
              LEFT JOIN stage_ncards nc ON nc.api = sb.api
         )
  SELECT psc.id AS card_id,

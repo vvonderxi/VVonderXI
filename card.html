@@ -1085,8 +1085,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260902a"></script>
-<script src="/vv-core.js?v=20260902a"></script>
+<script src="/vv-marks.js?v=20260904a"></script>
+<script src="/vv-core.js?v=20260904a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1695,39 +1695,28 @@
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
-  /*  Adds the career-stage tags to the tag row once SEASON_RAW is populated. The engine
-      decides which apply , this only finds the current season inside the career and asks. */
-  function vvApplyCareerStage(){
-    if(!window.VVCore || !VVCore.careerStageTags || !SEASON_RAW || !SEASON_RAW.length) return;
-    var here = SEASON_RAW.filter(function(r){ return r.card_id === SEASON_CARDID; })[0];
-    if(!here) return;
-    var stage = VVCore.careerStageTags(here, SEASON_RAW);
-    if(!stage.length) return;
-    var row = document.querySelector('.tagrow');
-    if(!row) return;
-    stage.forEach(function(t){
-      if(row.querySelector('[data-stage="'+t.name+'"]')) return;
-      var el=document.createElement('span');
-      el.className='tt'; el.setAttribute('data-stage', t.name);
-      el.innerHTML=(VVCore.vvMarkFor?VVCore.vvMarkFor('tag',t.name):'')+t.name;
-      row.appendChild(el);
-    });
-  }
 
   async function loadSeasons(apiPlayerId, currentCardId){
     SEASON_CARDID=currentCardId; SEASON_ROWS=null; SEASON_RAW=null;
     if(apiPlayerId==null) return;
     var sb=vvClient(); if(!sb) return;
-    var res=await sb.from('player_card_mv').select('*').eq('api_player_id', apiPlayerId).order('season_year',{ascending:false});
+    /*  card_id IS THE TIEBREAK AND IT IS NOT OPTIONAL. season_year is not unique per player
+        , 614 players hold two or more cards in one year , so an order on it alone is not a
+        total order and Postgres may return the tied rows either way round on different loads.
+        Ascending card_id matches stage_seasons' own ORDER BY (yr, card_id) in player_card_view,
+        so this career array and the stage_* columns cannot disagree. Same defect class as the
+        rankings range() pagination bug in CLAUDE.md SEC C. */
+    var res=await sb.from('player_card_mv').select('*').eq('api_player_id', apiPlayerId)
+              .order('season_year',{ascending:false}).order('card_id',{ascending:true});
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
     SEASON_ROWS=rows; SEASON_RAW=res.data||[];
-    /*  CAREER-STAGE TAGS CAN ONLY BE COMPUTED ONCE THE CAREER IS HERE. Peak, Breakout and
-        The Standard are not per-season rules , they need every season the player has, which
-        is exactly what this fetch just returned. Rendered after the card rather than with
-        it, so a slow season fetch never delays the card itself; a card whose seasons never
-        arrive shows no career-stage tag rather than a wrong one. */
-    try{ vvApplyCareerStage(); }catch(e){}
+    /*  CAREER-STAGE TAGS NO LONGER LAND HERE. Peak, Breakout and The Standard are columns
+        on player_card_mv now (stage_peak / stage_breakout / stage_the_standard), so
+        getVVTags reads them off the row like every other tag and every surface gets them,
+        not just this one. The old vvApplyCareerStage injected them into whichever tag row
+        happened to be first in the document, with no mark. It is gone; VVCore.careerStageTags
+        survives in vv-core.js as the reference implementation the SQL was ported from. */
     renderTrajectory();                    // trajectory chart draws NOW , it does not need honours
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     var zone=document.getElementById('seasonZone');

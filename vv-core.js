@@ -2147,10 +2147,49 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     else if (age != null && age >= 34 && row.rt != null && row.rt >= 82)
       tags.push({ name: 'The Last Dance', family: 'STAGE', tier: 'universal' });
 
+    /*  PEAK, BREAKOUT AND THE STANDARD ARE READ, NOT COMPUTED. They are career rules ,
+        they need every season a player has , so they cannot be derived from the single
+        row in front of us. They are computed once in player_card_view (a seven-CTE chain,
+        stage_base through stage_cards) and land here as three non-null
+        booleans on player_card_mv, measured across all 57,055 rows with zero nulls.
+        Reading them here is what puts them on rankings, compare and the filter rail:
+        those surfaces hold one row and no career array, so the JS rule was never
+        callable there, which is why the three Career-Stage chips were inert.
+        VVCore.careerStageTags remains the reference implementation the SQL was ported
+        from, and is no longer on any render path. If the rule ever changes, change
+        BOTH, in one commit. */
+    if (row.stage_peak === true)
+      tags.push({ name: 'Peak', family: 'STAGE', tier: 'universal' });
+    if (row.stage_breakout === true)
+      tags.push({ name: 'Breakout', family: 'STAGE', tier: 'universal' });
+    if (row.stage_the_standard === true)
+      tags.push({ name: 'The Standard', family: 'STAGE', tier: 'universal' });
+
     return tags;
   }
 
   /*  CAREER-STAGE TAGS THAT NEED THE WHOLE CAREER, NOT ONE SEASON.
+
+      THIS IS THE REFERENCE IMPLEMENTATION AND IT IS NO LONGER ON ANY RENDER PATH. The
+      three rules below are ported to SQL in player_card_view and arrive as the
+      stage_peak / stage_breakout / stage_the_standard columns, which getVVTags reads.
+      This function is what the port is checked against , it is the only executable
+      statement of the rule outside the database, and the SQL is a seven-CTE chain that
+      states it far less clearly. CHANGE BOTH IN ONE COMMIT or the two silently drift apart,
+      which SEC C already names as the defect class that corrupts the tail.
+
+      RULED 2026-09-04 , PEAK NEEDS TWO SEASONS, BREAKOUT NEEDS NONE. A single season is
+      trivially its own highest, so calling it a peak says nothing: Peak carries
+      career.length >= 2 here and n_all >= 2 in the SQL. Breakout makes no such demand ,
+      arriving at the level immediately IS the thing it describes, and a career that is
+      one season long has still had a first one. This settled a real disagreement rather
+      than a hypothetical: card 130385, Thiago, 2025/26 PL, rt 87, his only season, was
+      the ONE card the two implementations differed on, out of 4,580 single-card players
+      , he is the only one clearing 85. He now takes Breakout and not Peak, in both.
+      f9a93b8's career.length < 1 guard stays as the structural check that a career
+      exists at all; the two-season floor is Peak's own, not a return gate, which is what
+      keeps Breakout free of it.
+
       Wonderkid and The Last Dance are per-season rules: age plus rt on the row in front
       of you. These three cannot be. Peak needs to know this is his highest season,
       Breakout needs to know it is the FIRST at the level and where it falls in his
@@ -2184,27 +2223,37 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
         three, The Standard needs five at the level. */
     if (!row || row.rt == null || !Array.isArray(career) || career.length < 1) return out;
 
+    /*  card_id IS THE SECOND SORT KEY AND IT IS LOAD-BEARING. 614 players hold two or
+        more cards in one season_year, so a sort on the year alone leaves those tied rows
+        in whatever order the caller supplied them , and the caller is a Supabase query,
+        which is free to return them either way round. It mirrors stage_seasons'
+        row_number() OVER (... ORDER BY yr, card_id) in player_card_view exactly. */
     const seasons = career
       .filter(function(r){ return r && r.rt != null && r.season_year != null; })
       .slice()
-      .sort(function(a,b){ return a.season_year - b.season_year; });
+      .sort(function(a,b){ return (a.season_year - b.season_year) || (a.card_id - b.card_id); });
     if (!seasons.length) return out;
 
     const rts  = seasons.map(function(r){ return r.rt; });
-    const here = row.season_year;
 
-    // PEAK , his highest season, and it clears the absolute floor.
+    /*  BOTH TAGS BELOW MATCH ON card_id, NEVER ON season_year. Matching on the year hands
+        the tag to EVERY card in that year, including one the rule never tested: Benteke's
+        rt-48 Belgian card took Breakout off the back of his rt-88 Premier League card in
+        the same season. The card is the unit the tag is about, so the card is what the
+        comparison has to name. */
+
+    // PEAK , his highest season, and it clears the absolute floor. Two seasons minimum.
     const best = Math.max.apply(null, rts);
-    if (best >= 85 && row.rt === best) {
-      // ties: the EARLIEST season at his best takes the tag, so two 85s do not both claim it
+    if (career.length >= 2 && best >= 85 && row.rt === best) {
+      // ties: the EARLIEST season at his best takes it, then the lower card_id
       const firstBest = seasons.find(function(r){ return r.rt === best; });
-      if (firstBest && firstBest.season_year === here)
+      if (firstBest && firstBest.card_id === row.card_id)
         out.push({ name: 'Peak', family: 'STAGE', tier: 'universal' });
     }
 
-    // BREAKOUT , first season at the level, inside his first three.
+    // BREAKOUT , first season at the level, inside his first three. No career minimum.
     const firstElite = seasons.findIndex(function(r){ return r.rt >= 85; });
-    if (firstElite >= 0 && firstElite <= 2 && seasons[firstElite].season_year === here)
+    if (firstElite >= 0 && firstElite <= 2 && seasons[firstElite].card_id === row.card_id)
       out.push({ name: 'Breakout', family: 'STAGE', tier: 'universal' });
 
     // THE STANDARD , five or more seasons at the level. Carried by every qualifying
