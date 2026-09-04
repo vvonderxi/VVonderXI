@@ -164,9 +164,26 @@
       which is why opacity:1 is stated explicitly. #5F5951 is the charcoal ink at 70% over the
       cream, computed rather than picked, so it matches the other quiet text at 5.31:1. */
   .form input::placeholder{color:#5F5951;opacity:1}
+  /*  THE 44px TAP TARGET IS PADDING THE LAYOUT NEVER SEES, AND THE NUMBERS ARE BOUNDED BY
+      THE CORRIDOR RATHER THAN CHOSEN. This is the only conversion control on the page and it
+      measured 16px tall , 12px of type plus the old padding:2px 0 , against a 44px minimum.
+      padding:16px 0 makes the hit box 44px; margin:-14px 0 removes 28px from the OUTER size,
+      so the flex row still measures the button at 16px. Nothing moves: form height 34px,
+      underline at its original y, and the button centre still exactly on the input centre
+      (the row is align-items:center, so it is centre alignment, not baseline).
+      THE CORRIDOR IS 45px , 15px from the label's bottom, the button's own 16px, and 14px
+      down to the underline. A 44px box centred in it therefore lands with ONE PIXEL of
+      clearance below .nlab and its bottom edge exactly on the underline. 16 and -14 are
+      solved against that corridor, not picked for looks.
+      SO A CHANGE ABOVE OR INSIDE THIS ROW BREAKS IT SILENTLY. Shrink .nlab's margin-bottom
+      (11px), or grow this font-size, and the 1px goes negative: the button then captures taps
+      on the bottom of "BE FIRST THROUGH THE DOOR" and nothing anywhere reports it.
+      AND IT IS INVISIBLE. A screenshot before and after is identical, because only the hit
+      box changed. Verify by measuring getBoundingClientRect().height, never by looking.
+      Chrome-verified only. Negative margins on a flex item need a real iOS device (QA_PASS C4). */
   .form button{font-family:'Archivo',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.1em;
     text-transform:uppercase;background:none;border:0;color:inherit;cursor:pointer;
-    opacity:.74;padding:2px 0;white-space:nowrap;transition:opacity .25s ease}
+    opacity:.74;padding:16px 0;margin:-14px 0;white-space:nowrap;transition:opacity .25s ease}
   .form button:hover{opacity:1}
   .form button:disabled{opacity:.35;cursor:default}
   .nnote{font-size:11.5px;opacity:.70;margin-top:11px;line-height:1.5}
@@ -256,7 +273,20 @@
     .form{justify-content:center}
     .mark{margin-bottom:clamp(20px,3.4vh,34px)}
   }
-  @media (max-width:420px){ .notify{max-width:none} }
+  /*  THE PHONE CAP IS EXPRESSED AS AN INSET, NOT AS A WIDTH, AND 36 IS THE VALUE THAT
+      MAKES IT CONTINUOUS. This rule used to read max-width:none, which switched OFF the
+      340px cap set at 943px above and INVERTED the layout across its own breakpoint: at
+      421px the form measured 340px with 40.5px gutters, at 420px it measured 376px with
+      22px. The form grew by 36px and the margins halved as the screen got SMALLER, and the
+      button ended up 22px off the viewport edge at 390.
+      calc(100% - 36px) resolves against .right, which is the full content box, so it holds a
+      constant 18px inset inside the wrap's 22px padding. At 420px it evaluates to exactly
+      340px , the value 421px already gets from the rule above , so the step does not reverse,
+      it disappears. Measured across the phone range: 360/283.5, 375/295, 390/310, 414/334,
+      420/340, 421/340. Gutters 40px throughout.
+      IF THE 22px PADDING IN THE 943px RULE CHANGES, 36 MOVES WITH IT. It is 2 x 18, and 18 is
+      what the 340px cap already leaves at 420px. Two numbers describing one layout. */
+  @media (max-width:420px){ .notify{max-width:calc(100% - 36px)} }
 
   /*  ONE RULE FOR REDUCED MOTION. The finished state is pinned rather than re-implemented:
       transitions off, everything placed exactly where the animation would have left it,
