@@ -2170,13 +2170,18 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       only a COUNT of capped seasons can separate them.  */
   function careerStageTags(row, career){
     const out = [];
-    if (!row || row.rt == null || !Array.isArray(career) || career.length < 4) return out;
+    /*  The only structural requirement is that a career exists. The >= 4 season guard that
+        used to sit here was an artefact of the scoping ANALYSIS pool, not part of any rule,
+        and it silently withheld Peak from 19 players whose career max clears 85 in three
+        seasons or fewer. Each rule self-gates: Peak needs a maximum, Breakout needs a first
+        three, The Standard needs five at the level. */
+    if (!row || row.rt == null || !Array.isArray(career) || career.length < 1) return out;
 
     const seasons = career
       .filter(function(r){ return r && r.rt != null && r.season_year != null; })
       .slice()
       .sort(function(a,b){ return a.season_year - b.season_year; });
-    if (seasons.length < 4) return out;
+    if (!seasons.length) return out;
 
     const rts  = seasons.map(function(r){ return r.rt; });
     const here = row.season_year;
