@@ -773,26 +773,6 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .settlerow{display:flex;justify-content:center;margin:22px auto 0;max-width:920px}
   .settlerow .settle{width:100%;max-width:340px}
 
-  /* share-verdict poster (off-screen capture target) */
-  #verdictPoster{position:fixed;left:-99999px;top:0;width:460px;padding:34px 30px 24px;box-sizing:border-box;
-    background:radial-gradient(125% 75% at 50% -5%, #251f1d 0%, #16110f 55%, #0c0908 100%);overflow:hidden}
-  #verdictPoster .vpfloor{position:absolute;left:0;right:0;bottom:0;height:150px;background:radial-gradient(75% 130% at 50% 130%, rgba(46,140,90,.18), transparent 70%)}
-  #verdictPoster .vptop{position:relative;z-index:2;display:flex;align-items:baseline;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid rgba(243,237,224,.10);margin-bottom:26px}
-  #verdictPoster .vpmark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.015em;color:#F3EDE0}
-  #verdictPoster .vplogo{height:30px;width:auto;display:block}
-  #verdictPoster .vpmark i{font-style:normal;color:var(--pink-ink)}
-  #verdictPoster .vpeyebrow{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;color:rgba(243,237,224,.45)}
-  #verdictPoster .vpcards{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:start;justify-items:center;--cw:150px}
-  #verdictPoster .vpcrown{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.04em;color:#5a4410;background:linear-gradient(135deg,#F0D27A,#E0A93A);padding:5px 13px;border-radius:14px;margin-bottom:9px;box-shadow:0 8px 18px -6px rgba(232,184,75,.55)}
-  #verdictPoster .vpcrownsp{height:28px}
-  #verdictPoster .vpvs{align-self:center;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,#2a2422,#161313);border:2px solid var(--pink);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;color:#F3EDE0;box-shadow:0 0 26px -7px rgba(255,92,122,.6)}
-  #verdictPoster .vpqual{position:relative;z-index:2;text-align:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.22em;color:var(--gold);margin:28px 0 8px;opacity:.85}
-  #verdictPoster .vpresult{position:relative;z-index:2;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:29px;line-height:1.15;letter-spacing:-.01em;color:var(--gold);margin:0 0 16px}
-  #verdictPoster .vpline{position:relative;z-index:2;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:rgba(243,237,224,.84);margin:0 18px 26px}
-  #verdictPoster .vpfoot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(243,237,224,.10);padding-top:15px}
-  #verdictPoster .vpfoot .vpfm{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;color:#F3EDE0}
-  #verdictPoster .vpfoot .vpfm i{font-style:normal;color:var(--pink-ink)}
-  #verdictPoster .vpfoot .vpfl{text-align:right;font-family:'Archivo',sans-serif;font-weight:700;font-size:9px;letter-spacing:.07em;color:rgba(243,237,224,.42);line-height:1.6}
   /* foldable verdict sections */
   .vsect.vfoldable .vfoldbody{overflow:hidden;transition:max-height .42s ease,opacity .3s ease}
   .vsect.vfoldable.vopen .vfoldbody{max-height:6000px;opacity:1}
@@ -1162,8 +1142,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260905i"></script>
-<script src="/vv-core.js?v=20260905i"></script>
+<script src="/vv-marks.js?v=20260905j"></script>
+<script src="/vv-core.js?v=20260905j"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1761,43 +1741,6 @@ body.light .pkmsub{color:var(--ink-soft)}
       el.insertAdjacentHTML('afterbegin', m);
     });
   })();
-  function vvH2C(cb){ if(window.html2canvas){cb();return;} var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; sc.onload=cb; document.head.appendChild(sc); }
-  function vvBuildPoster(){
-    var prev=document.getElementById('verdictPoster'); if(prev) prev.remove();
-    var whoEl=document.querySelector('.verdict .vwho'); var who=whoEl?whoEl.textContent.trim():'';
-    var qs=document.querySelectorAll('.verdict .vquote'); var q=qs.length?qs[qs.length-1].textContent:''; q=q.replace(/[\u201C\u201D"]/g,'').trim();
-    var bits=q.split('. '); var line=q; for(var i=bits.length-1;i>=0;i--){ if(bits[i].trim().length>20){ line=bits[i].trim(); if(line.slice(-1)!=='.') line+='.'; break; } }
-    var quals=[].slice.call(document.querySelectorAll('.verdict .vtag:not(.gold)')).map(function(t){return t.textContent.replace(/[^A-Za-z\- ]/g,'').trim().toUpperCase();}).filter(Boolean).join(' \u00b7 ');
-    var mark='V<i>V</i>onder<i>XI</i>';
-    var sl=document.querySelector('.spinelogo'); var bg=sl?getComputedStyle(sl).backgroundImage:''; var s0=bg.indexOf('data:'); var logoSrc=''; if(s0>-1){ var s1=bg.lastIndexOf(')'); logoSrc=bg.slice(s0,s1).replace(/["']/g,'').trim(); } var topMark=logoSrc?('<img class="vplogo" src="'+logoSrc+'" alt="VVonderXI">'):mark;
-    var p=document.createElement('div'); p.id='verdictPoster';
-    p.innerHTML='<div class="vpfloor"></div>'
-      +'<div class="vptop"><div class="vpmark">'+topMark+'</div><div class="vpeyebrow">THE VERDICT</div></div>'
-      +'<div class="vpcards"><div><div class="vpcrown">\u265A THE EDGE</div>'+buildCard(CMP_A,150)+'</div>'
-      +'<div class="vpvs">VS</div>'
-      +'<div><div class="vpcrownsp"></div>'+buildCard(CMP_B,150)+'</div></div>'
-      +(quals?'<div class="vpqual">'+quals+'</div>':'')
-      +'<div class="vpresult">'+who+'</div>'
-      +'<div class="vpline">\u201C'+line+'\u201D</div>'
-      +'<div class="vpfoot"><div class="vpfm">'+mark+'</div><div class="vpfl">The Football Legacy Platform<br>Compare Careers. Define Legacies.</div></div>';
-    document.body.appendChild(p); return p;
-  }
-  function vvVerdictImage(then){
-    vvH2C(function(){ var p=vvBuildPoster();
-      setTimeout(function(){
-        // Same two fixes as card.html: html2canvas resolves neither <use> nor an inset
-        // box-shadow on a rounded box. The poster is discarded either way, but the restore
-        // runs in a finally so both call sites keep ONE contract , a future caller pointed
-        // at a live node inherits the safe behaviour instead of the exception.
-        var undoMarks = (window.VVCore && VVCore.vvInlineMarks)   ? VVCore.vvInlineMarks(p)   : function(){};
-        var undoRims  = (window.VVCore && VVCore.vvShimInsetRims) ? VVCore.vvShimInsetRims(p) : function(){};
-        var restore = function(){ undoRims(); undoMarks(); };
-        html2canvas(p,{backgroundColor:null,scale:2,useCORS:true,logging:false}).then(function(cv){
-          cv.toBlob(function(blob){ p.remove(); if(blob) then(blob); });
-        }).catch(function(){ p.remove(); }).finally(restore);
-      }, 80);
-    });
-  }
   /* THE LEDGER SPEC. The tag and the line are read from the LIVE verdict panel rather than
      recomputed, so the image can never disagree with what the page is showing , the panel
      may be serving an AI-written verdict from cache that no client-side derivation would
