@@ -145,6 +145,36 @@
   .brand{font-family:'Archivo',sans-serif;font-weight:800;font-size:11px;letter-spacing:.26em;
     text-transform:uppercase;opacity:.70;margin-top:clamp(16px,2.4vh,26px)}
 
+  /*  WHAT THIS IS. The headline is a promise and the brand line is a category; neither says
+      what the product does, so a visitor who has not heard of it had nothing to read. This
+      sits between them and the form, so the page reads mark / promise / what it is / join.
+      THIS BLOCK IS TINTED WITH A COLOUR, NOT DIMMED WITH AN OPACITY, AND THAT IS THE WHOLE
+      REASON THE NAME INSIDE IT CAN BE BRIGHTER THAN THE PROSE AROUND IT. opacity on .desc
+      would make the block a compositing group, and a child CANNOT exceed its parent's group
+      opacity , .desc b{opacity:1} inside .desc{opacity:.70} composites to .70, silently, so
+      the emphasis would have been the 600 weight and nothing else while the rule sat there
+      looking like it worked. Same fix, and the same reason, as the placeholder rule below:
+      set the colour.
+      #5F5951 IS NOT A NEW VALUE , it is the page's own charcoal-at-70%-over-cream, already
+      computed for that placeholder, and it measures 5.31:1 on the darkest stop of the
+      gradient. So this block sits in exactly the quiet layer .brand and the standing note
+      occupy, by using their number rather than a second one that means the same thing.
+      "The VV Score." TAKES THE FULL INK AND 600 WEIGHT because it is the one thing on this
+      page being NAMED. It is a proper noun the visitor has never seen before, and the
+      sentence around it only works if the name is the part that lands.
+      THE MOBILE SIZE IS 13px AND IT IS LOAD-BEARING, NOT A TASTE CALL. This block is the
+      only thing on the page tall enough to matter to the fan's sizing pass, which hands the
+      card whatever vertical space is left. At 14.5px the copy runs six lines at 390 and the
+      card is squeezed onto its 112px floor below about 790px of viewport height, at which
+      point the page starts to scroll and the socials row goes under the fold. 13px does not
+      drop a line , it is still six at 390 , it shortens each one, 141px of block down to
+      117px. That 24px clears the overflow at 760 outright and buys the card back from 112 to
+      155 at 844. Measured, every figure. RAISE THIS AND THE PAGE STARTS SCROLLING ON SHORT
+      PHONES, with nothing to tell you but the socials quietly leaving the screen. */
+  .desc{font-size:15px;line-height:1.62;color:#5F5951;margin-top:clamp(18px,2.6vh,28px);
+    max-width:34em}
+  .desc b{font-weight:600;color:#241f1a}
+
   /*  THE FORM IS A FOOTNOTE, NOT A PANEL. The boxed version competed with the cards for the
       eye: a filled ground, a pink border and a 17.5px heading is a second focal point on a
       page that should have exactly one. A label, a ruled line and a text button reads as an
@@ -252,7 +282,7 @@
   /*  Everything that is not a card arrives after the cards have landed. The fan finishes at
       .32 + .92 = 1.24s; the words start at 1.15s so they overlap by a breath rather than
       queueing politely behind it. */
-  .mark,.tag,.brand,.notify,.socials{opacity:0;transform:translateY(10px);
+  .mark,.tag,.brand,.desc,.notify,.socials{opacity:0;transform:translateY(10px);
     transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
   /*  THESE SET THE SETTLED OPACITY, SO THEY MUST CARRY THE DESIGNED VALUE, NOT 1.
       .brand is meant to sit back from the headline and had opacity:.62 on its own rule , but
@@ -265,8 +295,9 @@
   body.go .mark  {opacity:1;  transform:none;transition-delay:.02s}
   body.go .tag   {opacity:1;  transform:none;transition-delay:1.15s}
   body.go .brand {opacity:.70;transform:none;transition-delay:1.30s}
-  body.go .notify{opacity:1;  transform:none;transition-delay:1.44s}
-  body.go .socials{opacity:1; transform:none;transition-delay:1.56s}   /* last in, quietest */
+  body.go .desc  {opacity:1;  transform:none;transition-delay:1.39s}   /*  1, not .70 , this block is quiet by COLOUR, see its own note  */
+  body.go .notify{opacity:1;  transform:none;transition-delay:1.50s}
+  body.go .socials{opacity:1; transform:none;transition-delay:1.62s}   /* last in, quietest */
 
   /*  THE SPLIT. The fan takes a column of its own, so the words and the form never compete
       with it for vertical space. That is the whole reason this layout was chosen: at
@@ -299,22 +330,70 @@
       IF YOU CHANGE SPREAD_WIDE OR ANYTHING ABOVE THE FORM, THIS NUMBER MOVES WITH IT. It is
       solved at a 760px viewport height, the case that matters on laptops; at other heights
       the true crossover shifts slightly and a small step at the boundary returns.
-      */
+      AND IT HAS MOVED , THE DESCRIPTION MOVED IT, AND 943 IS DELIBERATELY LEFT IN PLACE.
+      Measured at 760px viewport height, stacked against what two columns would have given:
+          w   944   943   900   850   800   768   700
+          now 230   139   139   139   139   139   142      (stacked, height-bound)
+          2col 230  230   220   208   195   188   171
+      The stacked card is now pinned by HEIGHT across that whole band, because the copy is
+      part of the furniture the sizing pass measures, so two columns would win everywhere
+      down to below 700 and the true crossover is off the bottom of this table. The visible
+      consequence is a step at 943: the hero goes 230 -> 139 instead of the 230 -> 209 it
+      used to. NOTHING IS BROKEN THERE , zero overflow, form above the fold and socials on
+      screen at every width in the band, verified , so this is a smaller hero on tablets and
+      not a fault.
+      IT IS NOT RE-SOLVED HERE ON PURPOSE. Pushing the breakpoint below 700 puts a ~240px
+      right-hand column at tablet widths, which is a different layout question with its own
+      overflow risk, and it deserves its own decision rather than riding along with a copy
+      change. Recorded so the number is known to be stale rather than assumed current. */
+  /*  --vr IS THE STACKED VERTICAL RHYTHM, AS ONE NUMBER. Every vertical gap below 943px is
+      this multiplier times the value it already had, so the whole column tightens or relaxes
+      together instead of seven rules being nudged one at a time. It is 1 everywhere the page
+      fits, so on every phone that exists at this width nothing below has changed at all.
+      WHY IT EXISTS: the description is the first block on this page tall enough to matter to
+      the sizing pass, and that pass gives the card whatever is left. WITHOUT this ramp the
+      card hit its 112px MIN floor at about 740px of viewport height, and past that there was
+      nothing left to give, so the page scrolled , the socials row went under the fold first,
+      and nothing anywhere reported it. With the ramp the card is 128px at 740 and 116px at
+      667, off the floor in both cases. 390x844 is the phone; 390x667 is an IN-APP BROWSER, which
+      is exactly how a page linked from X and Instagram gets opened, so it is not a hypothetical.
+      IT RAMPS, IT DOES NOT STEP, and that is the whole reason it is written as a calc rather
+      than a second set of smaller numbers. At 800px it evaluates to exactly 1, which is the
+      value above the query, so the boundary is continuous and there is no jump to find.
+      Same lesson as the 943px breakpoint below: solve the crossover, do not guess a smaller
+      number. The crossover here was measured by driving --vr directly at 667 and reading the
+      overflow back: it flips to zero at .670, so the floor is .64 for headroom, not because
+      .64 looked right. */
   @media (max-width:943px){
-    .wrap{grid-template-columns:1fr;gap:clamp(28px,4.5vh,44px);
-      padding:clamp(34px,6vh,54px) 22px clamp(40px,7vh,60px);min-height:100vh;
+    .wrap{--vr:1;
+      grid-template-columns:1fr;gap:calc(clamp(28px,4.5vh,44px) * var(--vr));
+      padding:calc(clamp(34px,6vh,54px) * var(--vr)) 22px calc(clamp(40px,7vh,60px) * var(--vr));
+      min-height:100vh;
       align-content:center}
     .right{align-items:center;text-align:center}
     .tag{font-size:clamp(28px,5.4vw,40px);max-width:15em}
-    .notify{margin-top:clamp(26px,4vh,40px);max-width:340px}
+    .desc{font-size:13px;line-height:1.5;max-width:32em;
+      margin-top:calc(clamp(14px,2vh,22px) * var(--vr))}
+    .notify{margin-top:calc(clamp(26px,4vh,40px) * var(--vr));max-width:340px}
     .form{justify-content:center}
-    .mark{margin-bottom:clamp(20px,3.4vh,34px)}
+    .mark{margin-bottom:calc(clamp(20px,3.4vh,34px) * var(--vr))}
+    .brand{margin-top:calc(clamp(16px,2.4vh,26px) * var(--vr))}
     /*  .right centres below 943, so the optical pull would shift the pair off centre by half
         the icon's padding. Reset it and let the flex centring do the work. This is the one
         place the computed margin is overridden, and it overrides it to nothing, so there is
         still only one number describing the icon. */
     .socials{margin-left:0}
   }
+  /*  THE RAMP. Linear in viewport height, 1 at 800px down to .64 at 667px, clamped at both
+      ends so it can never invert or run away on a very short window. Both anchors are
+      measured: 800 is where the card first comes off its natural size on this copy, and 667
+      is the shortest viewport the page is held to, so the floor lands exactly there rather
+      than somewhere past it. Below 667 it simply holds .64 and the page is allowed to
+      scroll , that is a graceful end, not a target. */
+  @media (max-width:943px) and (max-height:800px){
+    .wrap{--vr:clamp(.64, .64 + .36 * (100vh - 667px) / 133px, 1)}
+  }
+
   /*  THE PHONE CAP IS EXPRESSED AS AN INSET, NOT AS A WIDTH, AND 36 IS THE VALUE THAT
       MAKES IT CONTINUOUS. This rule used to read max-width:none, which switched OFF the
       340px cap set at 943px above and INVERTED the layout across its own breakpoint: at
@@ -328,7 +407,10 @@
       420/340, 421/340. Gutters 40px throughout.
       IF THE 22px PADDING IN THE 943px RULE CHANGES, 36 MOVES WITH IT. It is 2 x 18, and 18 is
       what the 340px cap already leaves at 420px. Two numbers describing one layout. */
-  @media (max-width:420px){ .notify{max-width:calc(100% - 36px)} }
+  @media (max-width:420px){ .notify{max-width:calc(100% - 36px)}
+    /*  Same inset as .notify, for the same reason , see the note on that rule. The copy is
+        the widest block on the page below 420, so without this it would set the gutter. */
+    .desc{max-width:calc(100% - 36px)} }
 
   /*  ONE RULE FOR REDUCED MOTION. The finished state is pinned rather than re-implemented:
       transitions off, everything placed exactly where the animation would have left it,
@@ -336,9 +418,10 @@
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{transition:none !important;animation:none !important}
     .fanc,.mark,.tag,.notify,.socials{opacity:1 !important}
+    .desc{opacity:1 !important}      /*  quiet by colour, not by alpha , see the .desc note  */
     .brand{opacity:.70 !important}   /*  the same settled value as body.go .brand  */
     .fanc::after{opacity:1 !important}
-    .mark,.tag,.brand,.notify,.socials{transform:none !important}
+    .mark,.tag,.brand,.desc,.notify,.socials{transform:none !important}
     .f1{transform:translate3d(calc(-1 * var(--sp)),0,0) rotate(-8deg) !important}
     .f2{transform:translate3d(0,0,0) rotate(0deg) !important}
     .f3{transform:translate3d(var(--sp),0,0) rotate(8deg) !important}
@@ -360,6 +443,7 @@
       <img class="mark" src="/assets/spinelogo-light.png" alt="VVonderXI" width="100" height="44">
       <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
       <div class="brand">The Football Legacy Platform</div>
+      <div class="desc">Every season a footballer plays in nine European leagues gets a card, and a single number out of 100. <b>The VV Score.</b> Measured the same way whatever the league and whatever the year, so two seasons a decade apart can be held to the same standard.</div>
       <div class="notify">
         <div class="nlab">Be first through the door</div>
         <div class="form" id="form">
