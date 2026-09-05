@@ -2430,6 +2430,14 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     golden_boot:       { group:'Individual', label:'Golden Boot',          tier:6 },
     top_assists:       { group:'Individual', label:'Top Assists',          tier:7 },
   };
+  /*  THESE THREE GROUPS MIX TWO ORTHOGONAL AXES, AND IT IS WORTH KNOWING BEFORE ANYONE
+      TRIES TO "TIDY" THEM. Team and Individual answer WHO won it; Career answers WHEN it
+      attaches to a card. World Cup Winner is honestly BOTH , a team trophy that attaches
+      to a whole career , and it is filed under Career because that is the axis this
+      object drives: which cards show it, and whether the year has to be printed.
+      The Playbook keeps its own label ("Team honours", playbook.html HON_TIER) and that
+      is not a contradiction, it is the other axis. Do not reconcile them into one word;
+      reconciling would make one of the two true things unsayable. */
   const HONOUR_GROUP_ORDER = ['Team','Individual','Career'];
   const HONOUR_ONELINER = {
     ballon_dor:       'The best player in the world that season.',
@@ -2511,7 +2519,13 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
                      : (row.season != null ? parseInt(String(row.season).slice(0,4), 10) : null);
     const leagueCode = row.league_code || null;
     const season = [];   // honours for THIS card's season+league
-    const career = [];   // legacy , now always empty (world_cup_winner is season-specific, see loop)
+    /*  THE CAREER LEG IS LIVE AGAIN. It was declared dead when world_cup_winner was made
+        season-specific, and that was the defect: the honour is a CAREER honour, which is
+        what the Playbook says, what HONOUR_META has always said (group:'Career') and what
+        honours_json on the matview encodes ({leg:'career', year:2014}). Only this function
+        disagreed, and the disagreement was measurable , 496 of 587 flagged cards rendered
+        no World Cup at all, Toni Kroos 23/24 among them. */
+    const career = [];   // world_cup_winner , every season of a winner's career
     // (a)+(b) fire the PLAYER-keyed query and the (session-memoized) TEAM-honours cache in PARALLEL ,
     // independent reads, so honours cost ONE round-trip not two. Player query resolves to null on error.
     const _playerQ = (row.api_player_id != null)
@@ -2534,11 +2548,15 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
             season_year: h.season_year != null ? h.season_year : null,
             league_code: h.league_code || null,
           };
-          // world_cup_winner is now SEASON-SPECIFIC (season_year = tournament year, no league):
-          // matches season_year like every other honour but SKIPS the league check (WC has no league).
-          if(seasonYear != null && h.season_year === seasonYear
-             && (h.honour_type === 'world_cup_winner'
-                 || !h.league_code || !leagueCode || h.league_code === leagueCode)){
+          /*  WORLD CUP IS A CAREER HONOUR AND IS NOT MATCHED ON SEASON AT ALL. It attaches
+              to every card the player holds, and item.year carries the TOURNAMENT year so
+              the renderer can print "World Cup 2014" on a 23/24 card without lying. Every
+              other type stays season-matched, which is correct: measured, all six are 100%
+              same-year, and world_cup_winner is the only type that ever differs. */
+          if(h.honour_type === 'world_cup_winner'){
+            career.push(item);
+          } else if(seasonYear != null && h.season_year === seasonYear
+             && (!h.league_code || !leagueCode || h.league_code === leagueCode)){
             season.push(item);
           }
         }
@@ -2550,8 +2568,15 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       if(!season.some(s => s.type === ti.type && s.season_year === ti.season_year)) season.push(ti);
     }
     season.sort((a,b)=> a.tier - b.tier);   // rarer first
-    // CHANGE 2: combined season+career, tier-sorted , drives glance-chip order + card-face pick.
-    const all = season.concat(career).sort((a,b)=> a.tier - b.tier);
+    career.sort((a,b)=> (a.season_year||0) - (b.season_year||0));   // oldest tournament first
+    /*  `all` IS SEASON-ONLY AND THAT IS DELIBERATE , IT FEEDS THE CAPPED SURFACES.
+        The card FACE has two to four slots and the rankings ROW has three, both filled by
+        tier from this list. Letting a career honour into it would put World Cup on 587
+        card faces, displacing a season honour, in the one place there is no room to print
+        the tournament year , which is precisely the "reads as a season achievement"
+        failure this change exists to remove. The uncapped surfaces (glance strip, Wonder
+        Tags) render season.concat(career) explicitly and mark the career items. */
+    const all = season.slice();
     const groups = {};
     for(const g of HONOUR_GROUP_ORDER){
       const items = all.filter(x=>x.group===g);
@@ -2560,7 +2585,7 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     return {
       season, career, groups, all,
       count: season.length,                          // count badge = season honours only
-      has: (season.length + career.length) > 0,
+      has: (season.length + career.length) > 0,      // a WC-only card still renders chips
       topHonour: all.length ? all[0] : null,         // lowest tier present (season+career combined)
     };
   }
@@ -2588,12 +2613,21 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   function renderHonourChips(honours, opts){
     if(!honours || !honours.has) return '';
     const cls = (opts && opts.baseClass) || 'chip';   // card glance = 'chip'; Compare passes 'vchip'
-    const items = honours.all || honours.season.concat(honours.career);   // tier-sorted combined (CHANGE 2)
+    /*  THE GLANCE IS UNCAPPED, SO IT SHOWS BOTH LEGS , season honours first, then career.
+        `all` is season-only by design (it feeds the capped face and row surfaces), so this
+        concatenates explicitly rather than reading it. */
+    const items = honours.season.concat(honours.career || []);
     return items.map(function(h){
       const icon = (opts && opts.mark) ? vvMark('honour', h.type) : '';   // h.type IS the HONOUR_META key
-      const label = HONOUR_CHIP_LABEL[h.type] || h.label;
+      const isCareer = (HONOUR_META[h.type] && HONOUR_META[h.type].group === 'Career');
+      /*  A CAREER HONOUR PRINTS ITS TOURNAMENT YEAR AND CARRIES ITS OWN CLASS. Without the
+          year, "World Cup" on a 23/24 card is a claim about 23/24, which is the whole
+          defect. The .career class is what makes it read as a different KIND of thing
+          rather than a season chip that happens to say a number. */
+      const year = (isCareer && h.season_year != null) ? ' ' + h.season_year : '';
+      const label = (HONOUR_CHIP_LABEL[h.type] || h.label) + year;
       const tip = h.oneliner || h.label;   // #15: hover = clean one-liner ONLY (context/tally live in the expand)
-      return '<span class="'+cls+' gold" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
+      return '<span class="'+cls+' gold'+(isCareer?' career':'')+'" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
     }).join('');
   }
   // #16: Drury expansions , the emotional meaning of each honour TYPE (general, not per-player).
@@ -2632,8 +2666,9 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       ? '<div class="tmore">' + (drury ? escHtml(drury) : '')
         + (meta ? '<div class="tmeta">'+escHtml(meta)+'</div>' : '') + '</div>'
       : '';
-    return '<div class="tagrow honour" onclick="this.classList.toggle(\'open\')">'
-      + '<div class="tt">'+icon+' <span class="ttl">'+h.label+'</span> <span class="tchev">⌄</span></div>'
+    const isCareerH = (HONOUR_META[h.type] && HONOUR_META[h.type].group === 'Career');
+    return '<div class="tagrow honour'+(isCareerH?' career':'')+'" onclick="this.classList.toggle(\'open\')">'
+      + '<div class="tt">'+icon+' <span class="ttl">'+escHtml(h.label + (isCareerH && h.season_year!=null ? ' '+h.season_year : ''))+'</span> <span class="tchev">⌄</span></div>'
       + '<div class="td">'+escHtml(oneLiner)+'</div>'
       + tmore
       + '</div>';
@@ -2641,7 +2676,8 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   // Wonder-Tags honour rows (tier-sorted); delegates to honourRowHTML per item.
   function renderHonourRows(honours){
     if(!honours || !honours.has) return '';
-    const items = honours.all || honours.season.concat(honours.career);
+    // uncapped, like the glance: both legs, season first (see renderHonourChips)
+    const items = honours.season.concat(honours.career || []);
     return items.map(honourRowHTML).join('');
   }
   // #17: Wonder Tags grouped into 3 named sections , SILVERWARE (Team + world_cup Career) ->
@@ -2747,7 +2783,14 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       }
     }
     season.sort((a,b)=>a.tier-b.tier);
-    const all = season.slice();   // WC season-specific -> all == season
+    /*  THE BATCH PATH CARRIES NO CAREER LEG, AND THAT IS THE SAME RULE `all` FOLLOWS IN
+        fetchHonours. This shapes honours for the CAPPED surfaces , rankings rows and the
+        Compare picker , which show three pills by tier and have no room to print a
+        tournament year. A career honour there would read as a season achievement, which
+        is the defect this whole change removes. The card page and the Compare slots use
+        fetchHonours, which does carry it, and they are the uncapped surfaces.
+        If a career leg is ever wanted here, it needs a year on the pill first. */
+    const all = season.slice();
     return { season, career: [], all, count: season.length, has: season.length > 0, topHonour: all.length ? all[0] : null };
   }
   function emptyHonours(){ return { season:[], career:[], all:[], count:0, has:false, topHonour:null }; }
@@ -3523,21 +3566,16 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     // DEFERRED (Option C , needs honour flags on the matview). Rendered "soon", inert.
     honours: [
       { v:'ballon_dor',       l:"Ballon d'Or",          e:'🥇' },
-      /*  world_cup_winner IS THE ONE HONOUR THAT CANNOT BE FILTERED YET, and the reason
-          is a disagreement between the column and the renderer, not a missing column.
-          h_world_cup_winner is a CAREER leg: it is true on every season of a winner's
-          career, 587 cards from 93 honours rows. fetchHonours treats the same honour as
-          SEASON-SPECIFIC (vv-core ~2540, matching h.season_year to the card's) and its
-          career array is dead code. So 496 of those 587 cards would come back from the
-          filter and display NO World Cup when opened , measured, not estimated: Toni
-          Kroos 23/24 carries the flag and renders UCL and Champion only.
-          Every other honour type is 100% same-year, which is why the other six are safe.
-          UNBLOCKING THIS IS A PRODUCT DECISION, NOT A WIRING ONE: either the renderer
-          starts drawing it as a career honour printing its tournament year (honours_json
-          already carries {leg:'career', year:2014} for exactly this), or the column is
-          rebuilt season-specific and 496 flags go. Do not wire it until that is settled ,
-          a chip that finds cards which show nothing is worse than a chip that is greyed. */
-      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍', soon:true },
+      /*  world_cup_winner WAS THE ONE INERT HONOUR AND IS NOW LIVE. It was held back because
+          the column and the renderer disagreed: h_world_cup_winner is a CAREER leg, true on
+          every season of a winner's career (587 cards from 93 honours rows), while
+          fetchHonours matched it on season_year and its career array was dead code. 496 of
+          those 587 cards returned from the filter and displayed no World Cup at all.
+          FIXED IN THE RENDERER, NOT THE COLUMN, because the column was right: the Playbook
+          calls it a career honour, HONOUR_META has always had group:'Career', and
+          honours_json encodes {leg:'career', year:2014}. Only this file disagreed.
+          The card now shows it in the career leg with its TOURNAMENT year printed. */
+      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍' },
       { v:'ucl_winner',       l:'UCL Winner',            e:'⭐' },
       { v:'league_champion',  l:'League Champion',       e:'🏆' },
       { v:'player_of_season', l:'Player of the Season',  e:'🎖️' },
@@ -4035,8 +4073,9 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
            'h_league_champion, h_player_of_season, h_golden_boot, h_top_assists and '+
            'h_world_cup_winner are all non-null booleans on the matview, so PostgREST '+
            'filters them directly and no join is needed. Chip value IS the honour_type, '+
-           'so the column is h_ + value with no lookup table. world_cup_winner alone '+
-           'stays inert , see the soon flag in FILTER_TAXONOMY.honours for why.' }
+           'so the column is h_ + value with no lookup table. All SEVEN are live: '+
+           'world_cup_winner was unblocked once fetchHonours stopped treating a career '+
+           'honour as season-specific, so the cards it returns now display it.' }
   ];
   function vvfGroup(key){ for(var i=0;i<VVF_GROUPS.length;i++) if(VVF_GROUPS[i].key===key) return VVF_GROUPS[i]; return null; }
   function vvfItems(g){

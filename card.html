@@ -285,6 +285,18 @@
   .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
   .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
   .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
+  /*  CAREER HONOURS READ AS A DIFFERENT KIND OF THING, NOT A DIFFERENT COLOUR. World Cup
+      attaches to every season of a winner's career, so on a 23/24 card it must not look
+      like something won in 23/24. Two signals do that work: the chip prints its tournament
+      year (renderHonourChips), and it is engraved rather than filled , a pale gold with an
+      inset rule, against the season chips' saturated fill.
+      IT IS PALER, NOT DARKER, AND THAT IS A CORRECTION. The first version darkened the
+      ground to #C68F2A and measured 3.25 against the season chip's 4.37, because the ink
+      is DARK (#5a4410): darkening the ground closes the gap, it does not widen it. Paling
+      it opens the gap instead , 7.36 measured, the best-contrasting chip on the strip.
+      Do not re-darken this for weight; the ring carries the distinction. */
+  .chip.gold.career{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);
+    box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
   /*  DELETED WITH HONOUR_ICON , the old set was stroke-drawn and needed its shapes filled
       by hand. VVMarks.honour() is fill="currentColor", so it inherits .chip.gold's own ink
       and needs no per-shape rule. Verified rendered rather than assumed. */
@@ -1085,8 +1097,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260905b"></script>
-<script src="/vv-core.js?v=20260905b"></script>
+<script src="/vv-marks.js?v=20260905e"></script>
+<script src="/vv-core.js?v=20260905e"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
