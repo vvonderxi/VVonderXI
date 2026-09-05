@@ -1162,8 +1162,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260905h"></script>
-<script src="/vv-core.js?v=20260905h"></script>
+<script src="/vv-marks.js?v=20260905i"></script>
+<script src="/vv-core.js?v=20260905i"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1815,14 +1815,30 @@ body.light .pkmsub{color:var(--ink-soft)}
     }
     if(VVCore.verdictShareName){ var VT2=VVCore.VERDICT_TAGS||{};
       for(var k in VT2){ if(VT2[k]&&VT2[k].name===tag){ tag=VVCore.verdictShareName(VT2[k]); break; } } }
-    var qs=document.querySelectorAll('.verdict .vquote');
-    var line=qs.length?qs[qs.length-1].textContent.replace(/[\u201C\u201D"]/g,'').trim():'';
-    var bits=line.split('. ');
-    for(var i=bits.length-1;i>=0;i--){ if(bits[i].trim().length>20){ line=bits[i].trim(); if(line.slice(-1)!=='.') line+='.'; break; } }
-    /* FALL BACK TO THE TAG'S OWN BLURB. The panel's prose is AI-written and served from
-       verdict_cache, so it is ABSENT on a cache miss, on an API failure, and on any local
-       run without a key , exactly the states where a share would otherwise go out with an
-       empty line where the verdict should be. The blurb is the tag's own sentence, so the
+    /*  THE HEADLINE IS THE LINE WORTH SHARING, AND IT IS .vwho, NOT .vquote. The markup
+        calls .vwho the conclusion and makes it the largest element on the panel , "Griezmann,
+        and it isn't close. Goals, creation, pressure: he did everything." This function used
+        to skip it entirely and take the LAST SENTENCE of the Drury prose instead, which is
+        the tail of an argument rather than its answer, and on a shared image an answer is
+        the only thing that does any work.
+        THREE STEPS, AND ALL THREE ARE LOAD-BEARING. `who` is absent on 55 of the 107 rows in
+        verdict_cache , older rows written before the prompt asked for it , so a single read
+        would ship a blank on half of everything already cached. The prose is the second
+        choice because it is real writing about these two seasons. The tag blurb is last and
+        is generic by nature, which is exactly why it belongs at the bottom of the chain and
+        not, as it was, one step from the top. */
+    var whoEl=document.querySelector('.verdict .vwho');
+    var line=whoEl?whoEl.textContent.replace(/[\u201C\u201D"]/g,'').trim():'';
+    if(!line){
+      var qs=document.querySelectorAll('.verdict .vquote');
+      line=qs.length?qs[qs.length-1].textContent.replace(/[\u201C\u201D"]/g,'').trim():'';
+      var bits=line.split('. ');
+      for(var i=bits.length-1;i>=0;i--){ if(bits[i].trim().length>20){ line=bits[i].trim(); if(line.slice(-1)!=='.') line+='.'; break; } }
+    }
+    /* FALL BACK TO THE TAG'S OWN BLURB, THIRD AND LAST. Both the headline above it and the
+       prose are AI-written and served from verdict_cache, so both are ABSENT on a cache
+       miss, on an API failure, and on any local run without a key , exactly the states where
+       a share would otherwise go out with an empty line where the verdict should be. The blurb is the tag's own sentence, so the
        image still says something true rather than nothing. Nothing here reports success
        before the prose actually resolves; it just refuses to ship a blank. */
     if(!line){
