@@ -22,6 +22,14 @@ const { createClient } = require('@supabase/supabase-js');
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 const SELF_TEST = process.argv.includes('--self-test');
+/*  --floor=N RAISES THE SHOTS-FACED GATE. Default 60, which is the surveyed value and the
+    only one the EXPECT figures describe. Above it the pool shrinks, so the band targets
+    shrink with it (they are proportional to pool size, not fixed counts) and the G5 gate
+    assertion checks RECONCILIATION rather than the surveyed numbers , see the guard.  */
+const FLOOR_ARG = (process.argv.find(a => a.startsWith('--floor=')) || '').split('=')[1];
+const SHOTS_FLOOR = FLOOR_ARG ? parseInt(FLOOR_ARG, 10) : 60;
+if (FLOOR_ARG && (!Number.isFinite(SHOTS_FLOOR) || SHOTS_FLOOR < 1)) {
+  console.error('--floor must be a positive integer'); process.exit(2); }
 
 // ── surveyed constants. These are ASSERTIONS about the database, not settings. ──────────
 const EXPECT = {
@@ -33,7 +41,7 @@ const EXPECT = {
   scored:            1920, pre2015: 10, underMin: 559, underShots: 317
 };
 // ── gates. Minutes and SHOTS, never starts. ────────────────────────────────────────────
-const GATE = { minMinutes: 800, minShots: 60, fromSeason: 2015 };
+const GATE = { minMinutes: 800, minShots: SHOTS_FLOOR, fromSeason: 2015 };
 // ── band anchors, taken from the engine's own rank offsets and scaled to the keeper
 //    population, so the target is proportional occupancy rather than a number picked to
 //    make a name appear. engine: 12 at 95+, 150 at 90+, 650 at 85+, out of 54,173 scored. ─
@@ -70,6 +78,7 @@ const pct = (a, p) => { if (!a.length) return null; const s = a.slice().sort((x,
 
 (async () => {
   console.log('KEEPER SHADOW SCORER , read-only, ' + new Date().toISOString());
+  console.log('shots-faced floor: ' + SHOTS_FLOOR + (SHOTS_FLOOR === 60 ? ' (default, surveyed)' : ' (raised via --floor)'));
   console.log('Ships nothing. Writes nothing. Prints tables.\n');
 
   const mv = await page('player_card_mv',
@@ -157,11 +166,22 @@ const pct = (a, p) => { if (!a.length) return null; const s = a.slice().sort((x,
   const okMin = modern.filter(r => r.minutes >= GATE.minMinutes);
   const underShots = okMin.filter(r => shotsFaced(r) < GATE.minShots);
   const POOL = okMin.filter(r => shotsFaced(r) >= GATE.minShots);
-  check('G5-GATE  ', 'gate split reconciles to the keeper set',
-        pre.length === EXPECT.pre2015 && underMin.length === EXPECT.underMin &&
-        underShots.length === EXPECT.underShots && POOL.length === EXPECT.scored &&
-        pre.length + underMin.length + underShots.length + POOL.length === keepers.length,
-        { pre2015: pre.length, underMin: underMin.length, underShots: underShots.length, scored: POOL.length });
+  /*  AT THE DEFAULT FLOOR THIS ASSERTS THE SURVEYED NUMBERS. ABOVE IT THEY NO LONGER APPLY,
+      so it asserts what is still true , that the four groups partition the keeper set
+      exactly , rather than being quietly skipped. A guard that switches itself off when the
+      inputs change is not a guard.  */
+  const reconciles = pre.length + underMin.length + underShots.length + POOL.length === keepers.length;
+  if (SHOTS_FLOOR === 60) {
+    check('G5-GATE  ', 'gate split matches the surveyed figures and reconciles',
+      pre.length === EXPECT.pre2015 && underMin.length === EXPECT.underMin &&
+      underShots.length === EXPECT.underShots && POOL.length === EXPECT.scored && reconciles,
+      { pre2015: pre.length, underMin: underMin.length, underShots: underShots.length, scored: POOL.length });
+  } else {
+    check('G5-GATE  ', 'gate split partitions the keeper set exactly (floor ' + SHOTS_FLOOR + ', surveyed figures N/A)',
+      reconciles && POOL.length < EXPECT.scored,
+      { pre2015: pre.length, underMin: underMin.length, underShots: underShots.length, scored: POOL.length,
+        survivingOf1920: POOL.length + ' (' + (POOL.length / EXPECT.scored * 100).toFixed(1) + '%)' });
+  }
 
   const failed = results.filter(r => !r.ok);
   console.log('\n  ' + results.filter(r => r.ok && !r.vacuous).length + ' passed, ' +
@@ -231,11 +251,32 @@ const pct = (a, p) => { if (!a.length) return null; const s = a.slice().sort((x,
       it manufactured a two-row "plateau" of k = 0 and k = 10 and a confident k = 10.  */
   const eligible = sens.filter(s => s.k > 0);
   const best = eligible.slice().sort((a, b) => (a.churn - b.churn) || (b.tau - a.tau))[0];
-  const PLATEAU = eligible.filter(s => s.churn <= 1 && s.tau >= 0.95);
+  /*  A TOP-50 THAT IS MOST OF THE POOL CANNOT CHURN, SO ITS STABILITY IS SATURATION RATHER
+      THAN AGREEMENT. With 63 cards in the pool only 13 exist outside the top 50 to swap in,
+      so churn is near zero however the score is computed and every k looks like a plateau.
+      Same family as the k = 0 row above: a measurement that cannot come out badly is not a
+      measurement. 25% is the line, and crossing it voids the table rather than footnoting it.  */
+  const COVER = 50 / POOL.length;
+  const DEGENERATE = COVER > 0.25;
+  /*  AND THE PLATEAU MUST BE A CONTIGUOUS RUN, NOT A SCATTER. At floor 150 the qualifying set
+      was k = 10, 20, 30 and separately 500; a midpoint over that list mixes a real plateau at
+      the bottom with an unrelated stable point at the top. Longest contiguous run only.  */
+  const qualifying = eligible.map(s => s.churn <= 1 && s.tau >= 0.95);
+  let bestRun = [], run = [];
+  qualifying.forEach((q, i) => { if (q) { run.push(eligible[i]); if (run.length > bestRun.length) bestRun = run.slice(); }
+    else run = []; });
+  const PLATEAU = DEGENERATE ? [] : bestRun;
   let K = null;
-  if (PLATEAU.length >= 2) {
+  if (DEGENERATE) {
+    console.log('\n  *** TABLE VOID , THE TOP 50 IS ' + (COVER * 100).toFixed(0) + '% OF A POOL OF ' + POOL.length + '. ***');
+    console.log('  Only ' + (POOL.length - 50) + ' cards exist outside it, so churn is near zero however the');
+    console.log('  score is computed and every k reads as a plateau. This is saturation, not');
+    console.log('  stability. NO CONSTANT MAY BE CHOSEN FROM THIS RUN. Lower the floor or');
+    console.log('  shorten the list being compared.');
+    K = best.k;
+  } else if (PLATEAU.length >= 2) {
     K = PLATEAU[Math.floor(PLATEAU.length / 2)].k;
-    console.log('\n  PLATEAU FOUND: churn <= 1 and tau >= 0.95 at k = ' + PLATEAU.map(s => s.k).join(', '));
+    console.log('\n  PLATEAU FOUND (longest contiguous run): churn <= 1 and tau >= 0.95 at k = ' + PLATEAU.map(s => s.k).join(', '));
     console.log('  k = ' + K + ' chosen as its midpoint. Chosen from this table, not from the names.');
   } else {
     console.log('\n  *** NO PLATEAU. THE TOP-50 ORDERING DOES NOT STABILISE ANYWHERE IN THIS SWEEP. ***');
@@ -246,7 +287,7 @@ const pct = (a, p) => { if (!a.length) return null; const s = a.slice().sort((x,
     console.log('  ordering they show is unstable to a 25% change in a constant nobody has justified.');
     K = best.k;
   }
-  const K_IS_PROVISIONAL = PLATEAU.length < 2;
+  const K_IS_PROVISIONAL = DEGENERATE || PLATEAU.length < 2;
 
   const line = r => String(r.card_id).padEnd(8) + String(r.player_name).slice(0, 21).padEnd(22) +
     String(r.season).padEnd(7) + String(r.league_code).padEnd(5) + String(r.minutes).padStart(6) +
