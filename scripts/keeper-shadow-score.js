@@ -379,6 +379,76 @@ const pct = (a, p) => { if (!a.length) return null; const s = a.slice().sort((x,
   console.log('  and 0.35 is the wrong strength rather than the wrong idea.');
 
   console.log('\n' + '='.repeat(78));
+  console.log('TABLE 6 , WHAT RESOLUTION THE MEASUREMENT ACTUALLY HAS');
+  console.log('='.repeat(78));
+  /*  THIS TABLE EXISTS BECAUSE THE STRONGEST FINDING IN THIS TOOL USED TO LIVE ONLY IN A
+      COMMIT MESSAGE. The claim that keepers cannot be banded rests on three numbers , the
+      spread of save rates, the typical standard error, and how often adjacent ranks clear
+      that error , and a claim whose evidence cannot be re-run is a story. It is computed
+      over the same POOL and the same gates as every other table here.
+      PART A IS INDEPENDENT OF k AND OF THE TILT. Spread and standard error are properties
+      of the raw save rates, so no scoring choice can flatter or damage them. PART B ranks,
+      so it inherits whatever k this run settled on, and says so.  */
+  const seOf = r => Math.sqrt(RAW(r) * (1 - RAW(r)) / SF(r));
+  const rates = POOL.map(RAW), ses = POOL.map(seOf);
+  const p1 = pct(rates, 1), p50r = pct(rates, 50), p99 = pct(rates, 99);
+  const spread = p99 - p1, medSE = pct(ses, 50);
+  console.log('\n  A. RESOLUTION OF THE RAW MEASUREMENT  (independent of k and of the tilt)');
+  console.log('     save rate   p1 ' + (p1 * 100).toFixed(1) + '%   p50 ' + (p50r * 100).toFixed(1) +
+              '%   p99 ' + (p99 * 100).toFixed(1) + '%');
+  console.log('     spread (p1 to p99)              : ' + (spread * 100).toFixed(1) + 'pp');
+  console.log('     median binomial SE              : ' + (medSE * 100).toFixed(2) + 'pp' +
+              '   (sqrt(p(1-p)/shots), median over the pool)');
+  console.log('     SE at the 25th / 75th pctile    : ' + (pct(ses, 25) * 100).toFixed(2) + 'pp / ' +
+              (pct(ses, 75) * 100).toFixed(2) + 'pp');
+  console.log('     DISTINGUISHABLE TIERS AT 1 SE   : ' + (spread / medSE).toFixed(1) +
+              '   <<< the whole range divided by the error on one card');
+  console.log('     the same at 2 SE                : ' + (spread / (2 * medSE)).toFixed(1));
+  console.log('\n     Read it as: how many genuinely separable levels the measurement supports');
+  console.log('     across its ENTIRE range, before any scale is imposed on it. A five-band');
+  console.log('     ladder asks for more resolution than that number allows.');
+
+  const ranked = POOL.slice().sort((a, b) => tilted(b, K, TILT) - tilted(a, K, TILT) || a.card_id - b.card_id);
+  const adj = [];
+  for (let i = 0; i < ranked.length - 1; i++) {
+    const a = ranked[i], b = ranked[i + 1];
+    const gap = tilted(a, K, TILT) - tilted(b, K, TILT);
+    adj.push(gap / Math.sqrt(seOf(a) ** 2 + seOf(b) ** 2));
+  }
+  const N30 = Math.min(30, adj.length);
+  const t30 = adj.slice(0, N30);
+  const cnt = (arr, t) => arr.filter(v => v >= t).length;
+  console.log('\n  B. ADJACENT-PAIR SEPARABILITY  (ranks, so it uses this run\'s k = ' + K +
+              (K_IS_PROVISIONAL ? ' , PROVISIONAL' : '') + ' and tilt ' + TILT + ')');
+  console.log('     each pair\'s gap is expressed in pooled standard errors of the two cards\n');
+  console.log('     window            >= 1 SE     >= 0.5 SE    >= 0.25 SE     median gap');
+  console.log('     top ' + String(N30).padEnd(14) + String(cnt(t30, 1) + ' of ' + N30).padEnd(12) +
+              String(cnt(t30, 0.5) + ' of ' + N30).padEnd(13) + String(cnt(t30, 0.25) + ' of ' + N30).padEnd(14) +
+              pct(t30, 50).toFixed(3) + ' SE');
+  console.log('     all ' + String(adj.length + ' pairs').padEnd(14) + String(cnt(adj, 1) + ' of ' + adj.length).padEnd(12) +
+              String(cnt(adj, 0.5) + ' of ' + adj.length).padEnd(13) + String(cnt(adj, 0.25) + ' of ' + adj.length).padEnd(14) +
+              pct(adj, 50).toFixed(3) + ' SE');
+  /*  THE SINGLE LARGEST ADJACENT GAP IS NAMED, BECAUSE THE EXCEPTION IS THE EVIDENCE.
+      Whichever pair separates best in the whole pool is the best case any band boundary
+      could ever hope for, so printing it puts a ceiling on the claim rather than leaving a
+      reader to wonder whether some pair somewhere is cleanly split.
+      IT IS ALSO WHY A COUNT AT A THRESHOLD MOVES WITH k. At k = 10 this pair measures 0.535
+      SE and is counted at the 0.5 mark; at k = 20 it measures 0.488 and is not. A single
+      pair sitting on a threshold is what makes "0 of 30" and "1 of 30" both true of the same
+      data, which is a reason to report the gap itself and not only the tally.  */
+  let bi = 0; adj.forEach((v, i) => { if (v > adj[bi]) bi = i; });
+  const ba = ranked[bi], bb = ranked[bi + 1];
+  console.log('\n     largest adjacent gap anywhere in the pool: ' + adj[bi].toFixed(3) + ' SE, at ranks ' +
+              (bi + 1) + '/' + (bi + 2));
+  console.log('       ' + String(ba.player_name).slice(0, 20) + ' ' + ba.season + '  (' + SF(ba) + ' shots, ' +
+              (RAW(ba) * 100).toFixed(1) + '%)   vs   ' + String(bb.player_name).slice(0, 20) + ' ' + bb.season +
+              '  (' + SF(bb) + ' shots, ' + (RAW(bb) * 100).toFixed(1) + '%)');
+  console.log('       that is the BEST CASE. No boundary can separate better than this pair.');
+  console.log('\n     A band boundary is one of these pairs. If almost none of them clears 1 SE,');
+  console.log('     then wherever a boundary is drawn it separates two cards the data cannot');
+  console.log('     tell apart, and that is true of the boundary regardless of where it goes.');
+
+  console.log('\n' + '='.repeat(78));
   console.log('NOTHING WAS WRITTEN. No table, no view, no file. This run ships nothing.');
   console.log('='.repeat(78));
 })();
