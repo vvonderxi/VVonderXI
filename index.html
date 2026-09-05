@@ -204,16 +204,25 @@
       44px TAP TARGET, SAME CONSTRAINT AS THE NOTIFY BUTTON AND A DIFFERENT SOLUTION. The
       button needed padding plus a cancelling negative margin because it shares a flex row
       with the input and could not be allowed to grow it. These own their row, so the box is
-      declared directly, 44x44 with the 18px icon centred in it. The only negative margin is
-      the 13px on the container, which pulls the first icon's PAINTED edge back into line
-      with the text above it , without it the row looks indented by exactly the padding.
+      declared directly, 44x44 with the icon centred in it.
+      THE PAINTED SIZE IS 22px, NOT THE 18px contact.html USES, AND THE REASON IS THE MISSING
+      CHROME. There the icon sits in a bordered pill next to a text label, so the pill carries
+      the presence; stripped of both it has nothing around it and reads smaller at the same
+      number. 18 was measured and rejected as too quiet, 24 started to hold its own weight
+      against NOTIFY ME and read as a second control. 22 is a link without being a button.
+      ONE NUMBER, NOT TWO. The offset that pulls the first icon's PAINTED edge back onto the
+      form edge is exactly half the padding around the icon, (icon - 44) / 2, so it is
+      COMPUTED from --soc-icon rather than written down again. Writing it twice is how the
+      two drift: change the icon, forget the margin, and the row is silently indented by a
+      pixel or two with nothing in the diff to say so. At 22px it resolves to -11px.
       gap:0 IS LOAD-BEARING: two 44px boxes side by side touch and do not overlap. Any
       negative gap, or shrinking the box below 44, makes them steal each other's taps. */
-  .socials{display:flex;gap:0;margin:14px 0 0 -13px}
+  .socials{--soc-icon:22px;
+    display:flex;gap:0;margin:14px 0 0 calc((var(--soc-icon) - 44px) / 2)}
   .soc{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
     color:#241f1a;opacity:.70;text-decoration:none;transition:opacity .25s ease}
   .soc:hover,.soc:focus-visible{opacity:1}
-  .soc svg{width:18px;height:18px;display:block}
+  .soc svg{width:var(--soc-icon);height:var(--soc-icon);display:block}
   .err{display:none;font-size:12.5px;line-height:1.55;margin-top:12px;color:#AD0332}
 
   /*  THE RECEIPT IS THE LOUDEST THING IN THIS BLOCK ONCE IT EXISTS, WHICH IS THE REVERSAL
@@ -300,8 +309,10 @@
     .notify{margin-top:clamp(26px,4vh,40px);max-width:340px}
     .form{justify-content:center}
     .mark{margin-bottom:clamp(20px,3.4vh,34px)}
-    /*  .right centres below 943, so the -13px optical pull would shift the pair off centre
-        by half an icon. Reset it and let the flex centring do the work. */
+    /*  .right centres below 943, so the optical pull would shift the pair off centre by half
+        the icon's padding. Reset it and let the flex centring do the work. This is the one
+        place the computed margin is overridden, and it overrides it to nothing, so there is
+        still only one number describing the icon. */
     .socials{margin-left:0}
   }
   /*  THE PHONE CAP IS EXPRESSED AS AN INSET, NOT AS A WIDTH, AND 36 IS THE VALUE THAT
