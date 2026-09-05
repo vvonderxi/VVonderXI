@@ -82,3 +82,41 @@ carries why.
 - **28 CARDS HAVE `penalties_scored` GREATER THAN `goals`, WHICH IS IMPOSSIBLE. THE GAW GUARD HIDES THE SYMPTOM, NOT THE CAUSE (logged 2026-08-21).** `LEAST(penalties_scored, goals)` in the live `gaw` caps the deduction so no card is docked for more penalties than it scored goals, and it neutralises all 28. **The rows are still wrong in the database.** Worst: Faivre 21/22 Lyon 3g/10p, Snodgrass 16/17 West Ham 0g/4p, Vlahovic 21/22 Juventus 7g/10p, Edwards 21/22 Sporting 3g/6p, Cerci 15/16 Genoa 4g/6p.
   - **A SYSTEMATIC TRANSFER MISALIGNMENT WAS SUSPECTED AND RULED OUT BY THREE TESTS.** The hypothesis was that goals are club-scoped while penalties are season-total, which would have made every mid-season transfer silently wrong rather than 28 loudly wrong. **(1) PER-90 BY MINUTES BAND: `goals/90` is flat at 0.140/0.145/0.146/0.146, while `pens/90` RISES with minutes, 0.008 to 0.017.** A season-total on a part-season row predicts the opposite, inflated penalties at LOW minutes. **(2) CROSS-LEAGUE TRANSFER PAIRS: of 77 two-card seasons carrying a penalty, 73 hold DIFFERENT counts per card**, only 2 are identical at 3 or more. Penalties are club-scoped, like goals. **(3) HIGH-MINUTES CONTROL: 195 cards with 5+ penalties and 2,500+ minutes contain ZERO impossibles.** A general misalignment would not spare full seasons.
   - **AND A METHOD WARNING FROM THE SAME INVESTIGATION: penalty SHARE by minutes band looked like proof and was an artefact.** Conditioning on "has at least one penalty" at low minutes forces a high share by construction, which read as 62.3% against 31.2% and looked exactly like the bug. **The absolute per-90 rate is what settled it. When a ratio implicates a subgroup, check the numerator on its own before believing it.**
+
+---
+
+- **KEEPER STAT FIELDS , THE 2026-09-05 SURVEY, RUN BEFORE ANYTHING WAS BUILT ON THEM.** Headline and decisions in `CLAUDE.md` §E. Read-only; nothing was written. Every figure measured against the live database, not quoted from a doc.
+  - **COLUMN INVENTORY.** Read from `pg_attribute`, **not `information_schema`, which does not list matview columns at all** , the same blindness §C records for matview grants. All keeper fields are nullable `integer` on both relations. `player_card_mv` has 76 columns, `player_season_cards` 42.
+
+        field              player_card_mv (57,055)     GK rows (4,289)
+        saves                2,813  ( 4.9%)              2,806  (65.4%)
+        goals_conceded      31,365  (55.0%)              2,816  (65.7%)
+        penalties_saved      2,816  ( 4.9%)              2,816  (65.7%)
+        starts              56,555  (99.1%)              4,243  (98.9%)
+        fouls_drawn         37,673  (66.0%)              2,449  (57.1%)
+        fouls_committed     36,832  (64.6%)              1,415  (33.0%)
+        cards_yellow        57,055  (100.0%)             4,289  (100.0%)
+        cards_red           57,055  (100.0%)             4,289  (100.0%)
+
+  - **`cards_yellow` AND `cards_red` ARE ON THE MATVIEW BUT NOT ON `player_season_cards`.** They are sourced elsewhere in the view. **Anyone planning to WRITE discipline data must not assume the base table holds them.**
+  - **DISTRIBUTIONS, GK rows.** `saves` n=2,806 min 0 med 65 max 176. `goals_conceded` n=2,816 min 0 med 30 max 102. `penalties_saved` n=2,816 min 0 med 0 max 6. `starts` n=4,243 min 2 med 24 max 45. **No negative value in any keeper field.**
+  - **COVERAGE BY SEASON YEAR** (nothing before 2014): 2014:10, 2015:229, 2016:228, 2017:234, 2018:240, 2019:228, 2020:276, 2021:277, 2022:278, 2023:270, 2024:277, 2025:259.
+  - **COVERAGE BY LEAGUE:** LL 360, TR 360, SA 352, PL 347, L1 323, PRT 313, ERE 300, BL 281, **BPL 170**.
+  - **THE TEN ZERO-CONCEDED KEEPERS, IN FULL.** All carry `goals_conceded = 0` with `saves` NULL:
+
+        A. Ramsdale     24/25 PL    2,700 min, 30 starts
+        N. Marsman      15/16 ERE   2,009 min, 23 starts
+        E. Özbir        20/21 TR    2,160 min, 24 starts
+        A. Harush       19/20 ERE   1,440 min, 16 starts
+        Iago Herrerín   16/17 LL    1,826 min, 21 starts
+        J. Drommel      15/16 ERE   1,049 min, 11 starts
+        F. Rønnow       20/21 BL      944 min, 10 starts
+        C. Kameni       11/12 LL      768 min,  8 starts
+        S. Johnstone    24/25 PL      630 min,  7 starts
+        A. Haghighi     15/16 PRT     320 min,  3 starts
+
+    **16 GK cards carry `goals_conceded = 0` in total. The other 6 have `saves > 0` on low minutes and are plausible.**
+  - **THE `starts` DIAGNOSIS, AND WHY IT NAMES `starts` RATHER THAN `appearances`.** 774 of 56,555 comparable cards have `starts > appearances` (DEF 294, MID 253, FWD 183, GK 44). Worst: El Ouahdi 23/24 BPL 40 starts / 5 apps / 430 min; Audero 25/26 SA 38 / 4 / 360; Ramaj 25/26 BL 35 / 4 / 360; Agirrezabala 25/26 LL 23 / 5 / 450. **Minutes is consistent with APPEARANCES on 400 of the 774 and with STARTS on only 78**, so `starts` is the corrupt field. Audero's 360 minutes is exactly 4 x 90.
+  - **`penalties_saved` DISTRIBUTION:** {0:1599, 1:818, 2:282, 3:87, 4:26, 5:3, 6:1}, mean 0.628. **Zero non-GK cards carry it**, so unlike `saves` it is genuinely keeper-only.
+  - **SEVEN NON-KEEPERS CARRY `saves`** , Ocampos LL 19/20, Fares SA 17/18, De Smet L1 23/24, Amadou L1 17/18, Fontán ERE 22/23, Safouri TR 23/24, Demirbağ TR 22/23. All 1 or 2 saves with 0 conceded, across five leagues and five seasons. **This is the plausible shape of an outfielder finishing a match in goal after a keeper is sent off** , explicable, not corrupt, but it means `saves IS NOT NULL` is not a keeper filter on its own.
+  - **THE AGREEMENT TEST THAT WAS UNDISCRIMINATING, AND IT NEARLY SHIPPED AS A FINDING.** Asked whether outfield `goals_conceded` was the TEAM total, the test "do all outfielders on one team-season share a value" returned **1,589 of 1,589 in perfect agreement**. That reads as overwhelming support. **It was wrong** , they agree because the value is a constant zero. **Min and max settled it in one query.** Promoted to a rule in §C, beside the existing consistency-cannot-be-the-test rule it sharpens.
