@@ -3523,7 +3523,21 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     // DEFERRED (Option C , needs honour flags on the matview). Rendered "soon", inert.
     honours: [
       { v:'ballon_dor',       l:"Ballon d'Or",          e:'🥇' },
-      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍' },
+      /*  world_cup_winner IS THE ONE HONOUR THAT CANNOT BE FILTERED YET, and the reason
+          is a disagreement between the column and the renderer, not a missing column.
+          h_world_cup_winner is a CAREER leg: it is true on every season of a winner's
+          career, 587 cards from 93 honours rows. fetchHonours treats the same honour as
+          SEASON-SPECIFIC (vv-core ~2540, matching h.season_year to the card's) and its
+          career array is dead code. So 496 of those 587 cards would come back from the
+          filter and display NO World Cup when opened , measured, not estimated: Toni
+          Kroos 23/24 carries the flag and renders UCL and Champion only.
+          Every other honour type is 100% same-year, which is why the other six are safe.
+          UNBLOCKING THIS IS A PRODUCT DECISION, NOT A WIRING ONE: either the renderer
+          starts drawing it as a career honour printing its tournament year (honours_json
+          already carries {leg:'career', year:2014} for exactly this), or the column is
+          rebuilt season-specific and 496 flags go. Do not wire it until that is settled ,
+          a chip that finds cards which show nothing is worse than a chip that is greyed. */
+      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍', soon:true },
       { v:'ucl_winner',       l:'UCL Winner',            e:'⭐' },
       { v:'league_champion',  l:'League Champion',       e:'🏆' },
       { v:'player_of_season', l:'Player of the Season',  e:'🎖️' },
@@ -4000,12 +4014,29 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     { key:'stage',    label:'Career-Stage', select:'multi',  where:'client' },
     { key:'trajectory',label:'Trajectory',  select:'multi',  where:'client', items:[],
       note:'wired, empty until Peak / The Standard / Breakout / Renaissance ship' },
-    { key:'honours',  label:'Honours',      select:'multi',  where:'inert',
-      items:FILTER_TAXONOMY.honours.map(function(h){ return {v:h.v,l:h.l,e:h.e}; }),
-      note:'INERT , honours live in the `honours` TABLE, not on player_card_mv, and '+
-           'PostgREST cannot filter the matview by a joined table. Needs honour flags '+
-           'ON the matview (the DROP + CREATE in matview_rebuild_plan.md) before these '+
-           'can do anything. Rendered so the vocabulary is visible; no handler attached.' }
+    /*  SERVER-SIDE, NOT CLIENT-SIDE, AND THAT IS DELIBERATE , DO NOT COPY THE
+        CAREER-STAGE PATTERN HERE. Stage filters client-side because getVVTags puts its
+        three booleans into card.tags, which clientPredicate matches by name. Honours are
+        not tags and must not be pushed into card.tags: they carry a leg, a year, a group
+        and a tier that HONOUR_META already models, and flattening them to a name loses
+        all four. They also have real columns, so the server can answer properly.
+        SERVER-SIDE IS STRICTLY BETTER HERE FOR TWO REASONS BEYOND TIDINESS. The count
+        stays honest , clientActive() lists profile/stage/trajectory only, so rankings
+        prints a true "of N" instead of "before tag filters". And there is no pagination
+        hazard: rankings pages 100 rows and filters what it fetched, so a client-side
+        honours filter would show a handful per page and lean on the keep-pulling
+        fallback. A server filter returns only matching rows. */
+    { key:'honours',  label:'Honours',      select:'multi',  where:'server',
+      /*  soon MUST survive this map. It is the same trap flatItems carries a comment
+          about: drop the flag here and world_cup_winner silently becomes selectable. */
+      items:FILTER_TAXONOMY.honours.map(function(h){ return {v:h.v,l:h.l,e:h.e,soon:!!h.soon}; }),
+      note:'SIX OF SEVEN ARE LIVE. The old precondition , honour flags ON player_card_mv '+
+           ', was met by the 2026-09-04 matview swap: h_ballon_dor, h_ucl_winner, '+
+           'h_league_champion, h_player_of_season, h_golden_boot, h_top_assists and '+
+           'h_world_cup_winner are all non-null booleans on the matview, so PostgREST '+
+           'filters them directly and no join is needed. Chip value IS the honour_type, '+
+           'so the column is h_ + value with no lookup table. world_cup_winner alone '+
+           'stays inert , see the soon flag in FILTER_TAXONOMY.honours for why.' }
   ];
   function vvfGroup(key){ for(var i=0;i<VVF_GROUPS.length;i++) if(VVF_GROUPS[i].key===key) return VVF_GROUPS[i]; return null; }
   function vvfItems(g){
@@ -4144,6 +4175,17 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       presets.forEach(function(p){ byV[p.v]=p; });
       var rs=st.score.bands.map(function(v){ return byV[v]; }).filter(Boolean);
       var s=vvfRangeOr(rs); if(s){ query=query.or(s); applied.push('score.bands'); }
+    }
+    /*  HONOURS , OR WITHIN THE GROUP, AND THE COLUMN NAME IS DERIVED, NOT LOOKED UP.
+        The chip value is the honour_type itself ('ballon_dor'), so the matview column is
+        'h_' + value. Guarded against anything that is not a plain honour_type so a stray
+        value can never be concatenated into the filter string.
+        .or() gives OR within honours; because it is a separate call from the score-band
+        .or(), the two AND across groups, which is the platform's stated filter rule. */
+    if(st.honours && st.honours.length){
+      var hcols=st.honours.filter(function(v){ return /^[a-z_]+$/.test(v); })
+                          .map(function(v){ return 'h_'+v+'.is.true'; });
+      if(hcols.length){ query=query.or(hcols.join(',')); applied.push('honours'); }
     }
     if(!opts.headCount){
       var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0]||VVF_SORTS[0];
