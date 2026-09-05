@@ -806,91 +806,94 @@
   body.light .pgdot{fill:#E70443}
   .pglab{font-family:'Archivo';font-weight:700;font-size:12.5px;fill:var(--ink-soft);dominant-baseline:middle}
   @media (max-width:480px){.pgwrap .pglab{font-size:15.5px}}   /* narrow container scales the svg down; keep labels legible */
-  /*  GOALKEEPER SECTION FIGURES , 2026-09-01. The section was 463 words and ZERO graphics
-      while every claim in it was visual. It is now 322 words and four figures (three SVG
-      plus the gate tiles). Every colour is currentColor or a token, so both themes are
-      served by the section's own ink rather than a second palette. */
-  .gkfig{margin:16px 0 6px;padding:14px 14px 4px;border-radius:12px;
-         background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.07)}
-  body:not(.light) .gkfig{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.07)}
-  /*  CAPPED AND CENTRED. The SVGs scale to their container, and at the section's full
-      1294px the 460-unit viewBox blew every figure up 2.8x , legible but stranded in air,
-      and the type inside grew with it. 620px keeps them near the measure of the prose
-      beside them. */
-  .gkfig svg{display:block;overflow:visible;color:inherit;max-width:620px;margin:0 auto}
-  .gkl{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.06em;
-       text-transform:uppercase;fill:currentColor;fill-opacity:.62}
-  .gkin{fill-opacity:1}
-  .gkbig{font-family:'Archivo',sans-serif;font-weight:900;font-size:25px;fill:#8a6a1e}
-  body:not(.light) .gkbig{fill:var(--gold-ink,#E8B84B)}
-  .gktrack{fill:currentColor;fill-opacity:.12}
-  .gkfill{fill:#8a6a1e}
-  body:not(.light) .gkfill{fill:#E0A93A}
-  .gksaved{fill:#2E8C5A;fill-opacity:.45}
-  body:not(.light) .gkneg{fill:#F1688E}
-  body:not(.light) .gkneglab{fill:#F1688E}
-  body:not(.light) .gkposlab{fill:#E0A93A}
-  .gkx line{stroke:#AD0332}
-  body:not(.light) .gkx line{stroke:#F1688E}
-  .gkbox{fill:currentColor;fill-opacity:.06;stroke:currentColor;stroke-opacity:.22}
-  .gkbox-2{fill:#8a6a1e;fill-opacity:.12;stroke:#8a6a1e;stroke-opacity:.4}
-  body:not(.light) .gkbox-2{fill:#E0A93A;fill-opacity:.14;stroke:#E0A93A;stroke-opacity:.45}
-  .gkcap{font-size:12.5px;line-height:1.6;opacity:.78;margin:10px 0 8px}
-
-  /*  WHAT SHOTS FACED ACTUALLY MEASURES , BAR LENGTH ONLY, NO COEFFICIENTS.
-      The panel used to print minus 0.118 and plus 0.835 beside the bars. A correlation
-      coefficient is not a football idea and a reader has no way to judge whether 0.835 is
-      large; the bar against a named scale carries the whole point without the concept.
-      THE SCALE IS MAGNITUDE, NOT DIRECTION, AND THAT IS A REAL GAIN. Once the ends read
-      "tells you nothing" to "tells you everything", the SIGN stops mattering , which is
-      useful, because reproducing the published figures from the database gives +0.109 for
-      the save-rate relationship where the page printed MINUS 0.118. Whatever that
-      disagreement turns out to be, both readings are near zero and the bar is the same
-      length either way. Lengths are the measured magnitudes, 0.11 and 0.88, rounded to
-      whole percentages.
-      THE COLOUR LOGIC IS INVERTED FROM THE OLD PANEL, ON PURPOSE. It filled the long bar ,
-      "how weak the defence was" , with gold (#8a6a1e), and gold in this brand means honour,
-      prestige and keeper quality. It was painting the thing that is NOT about the keeper in
-      the colour reserved for the thing that IS. Gold is gone from this figure entirely: the
-      long bar is pink, the brand ink for "look here", and the near-empty bar is plain soft
-      ink, because an absence should look like an absence. Both are TOKENS, so both follow
-      the theme; the old rules were hard-coded hex.  */
-  .gkwhat{padding-top:16px}
-  .gkwlede{font-family:'Bricolage Grotesque';font-weight:700;font-size:15.5px;line-height:1.35;
-           margin-bottom:16px}
-  .gkwrow{display:grid;grid-template-columns:minmax(0,15.5em) 1fr;gap:14px;align-items:center;
-          margin-bottom:11px}
-  .gkwlab{font-size:12.5px;line-height:1.45;opacity:.82}
-  .gkwtrack{position:relative;height:12px;border-radius:99px;
-            background:currentColor;opacity:1;box-shadow:none}
-  .gkwtrack{background:rgba(128,128,128,.18)}
-  .gkwbar{display:block;height:100%;border-radius:99px;min-width:6px}
-  /*  GOLD MARKS THE KEEPER'S OWN BAR, MUTED MARKS THE TEAM'S , SWAPPED 2026-09-02.
-      Gold on this platform means EARNED: honours, prestige, keeper quality. The bar it
-      belongs on is therefore "about how well he kept goal", and the whole force of the
-      figure is that this gold bar is almost empty. Shots faced is precisely the thing this
-      panel says is NOT earned, so the long bar takes the muted ink instead.
-      Reads correctly as a sentence: the earned thing is a sliver, the unearned thing is the
-      whole track.  */
-  .gkw-keeper{background:var(--gold-ink)}
-  .gkw-team{background:var(--ink-soft);opacity:.55}
-  .gkwscale{display:flex;justify-content:space-between;gap:12px;margin-top:14px;
-            font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;
-            text-transform:uppercase;opacity:.55}
-  @media (max-width:560px){
-    .gkwrow{grid-template-columns:1fr;gap:7px;margin-bottom:15px}
-    .gkwlede{font-size:14.5px}
-    .gkwscale{font-size:9px;letter-spacing:.1em}
+  /*  GOALKEEPER SECTION , DEMONSTRATIVE, ON A REAL CARD (rewritten 2026-09-05).
+      It was six equal grey boxes: three stat tiles, a bar comparison, a two-pill row and a
+      crossed-out pentagon, all at one visual weight, so the argument had no sequence and the
+      reader had to assemble it. It is now one figure and three beats , the count, the
+      ceiling, the honesty , each earned by the thing above it.
+      EVERY FIGURE IS card 133659, David de Gea, Manchester United 2017/18, read from
+      player_card_mv: 115 saves, 28 conceded, 143 shots, 80.4%, rt 75, and 14th of the 1,920
+      keeper seasons that clear the gates. The old copy was illustrative and did not
+      reconcile , it printed 129 saved and 51 in beside 71.4%, and 129/180 is 71.67%.
+      THE GRID IS THE ARGUMENT. 143 marks, one per shot, all the same size, which is what
+      makes "a save is a save, however hard" an observation about the page rather than a
+      disclaimer under it. If the numbers are ever re-sourced, the mark count must move with
+      them, or the drawing starts lying about the caption. */
+  .gk3 .lede{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:22px;
+    line-height:1.32;color:var(--cream);margin:6px 0 0;max-width:48ch}
+  body.light .gk3 .lede{color:var(--charcoal)}
+  .gk3 .who{font-family:'Inter';font-size:14.5px;line-height:1.6;color:rgba(243,237,224,.6);
+    margin:11px 0 0;max-width:58ch}
+  body.light .gk3 .who{color:#5a544b}
+  .gk3 .who b{color:var(--cream);font-weight:600}
+  body.light .gk3 .who b{color:var(--charcoal)}
+  .gk3 .field{margin:28px 0 0;padding:22px 22px 20px;border-radius:16px;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+    border:1px solid rgba(255,255,255,.09)}
+  body.light .gk3 .field{background:rgba(255,255,255,.55);border-color:rgba(0,0,0,.08)}
+  .gk3 .fh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;margin-bottom:15px}
+  .gk3 .fht{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:rgba(243,237,224,.5)}
+  body.light .gk3 .fht{color:#7a736a}
+  .gk3 .key{display:flex;gap:15px;font-family:'Archivo';font-weight:700;font-size:11px;
+    color:rgba(243,237,224,.62)}
+  body.light .gk3 .key{color:#5a544b}
+  .gk3 .key i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;
+    vertical-align:-1px}
+  .gk3 .key .s i{background:var(--gold)}
+  .gk3 .key .c i{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(231,4,67,.85)}
+  .gk3 .grid{display:grid;grid-template-columns:repeat(26,1fr);gap:5px}
+  .gk3 .m{aspect-ratio:1/1;border-radius:2px;background:var(--gold)}
+  .gk3 .m.c{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(231,4,67,.85)}
+  .gk3 .fcount{display:flex;gap:26px;margin:18px 0 0;align-items:flex-end;flex-wrap:wrap}
+  .gk3 .fc b{display:block;font-family:'Archivo';font-weight:900;font-size:29px;line-height:1;
+    color:var(--cream)}
+  body.light .gk3 .fc b{color:var(--charcoal)}
+  .gk3 .fc.gold b{color:var(--gold-ink)}
+  .gk3 .fc span{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:rgba(243,237,224,.45)}
+  body.light .gk3 .fc span{color:#7a736a}
+  .gk3 .fc.res{margin-left:auto;text-align:right}
+  .gk3 .fc.res b{font-size:44px;letter-spacing:-.02em}
+  /*  THE CEILING IS THE PAYOFF, so it takes the gold rule and the largest type after the
+      grid. A keeper near the TOP of the ladder scoring the same as one in the middle is the
+      strongest form of this argument; a mediocre keeper capped at 75 would prove nothing. */
+  .gk3 .ceil{margin:34px 0 0;padding:0 0 0 22px;border-left:2px solid var(--gold)}
+  .gk3 .ceilh{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:23px;
+    line-height:1.38;color:var(--cream);margin:0;max-width:30ch}
+  body.light .gk3 .ceilh{color:var(--charcoal)}
+  .gk3 .ceilh em{font-style:normal;color:var(--gold-ink)}
+  .gk3 .ceilb{font-family:'Inter';font-size:14.5px;line-height:1.62;color:rgba(243,237,224,.62);
+    margin:11px 0 0;max-width:56ch}
+  body.light .gk3 .ceilb{color:#5a544b}
+  .gk3 .after{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:20px;
+    line-height:1.4;color:var(--cream);margin:30px 0 0;max-width:36ch}
+  body.light .gk3 .after{color:var(--charcoal)}
+  .gk3 .aftersub{font-family:'Inter';font-size:14.5px;line-height:1.62;
+    color:rgba(243,237,224,.62);margin:10px 0 0;max-width:56ch}
+  body.light .gk3 .aftersub{color:#5a544b}
+  /*  FOUR NOTES IN A 2x2, NOT FOUR ACROSS. Four equal columns would be the defect this
+      rewrite exists to remove , a row of same-weight boxes with no order to them. Two pairs
+      keep the measure readable and stay clearly subordinate to the grid above. */
+  .gk3 .two{display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;margin:30px 0 0}
+  .gk3 .tw h4{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);margin:0}
+  body.light .gk3 .tw h4{color:var(--charcoal)}
+  .gk3 .tw p{font-family:'Inter';font-size:13.5px;line-height:1.6;color:rgba(243,237,224,.58);
+    margin:6px 0 0}
+  body.light .gk3 .tw p{color:#5a544b}
+  .gk3 .gatestrip{font-family:'Inter';font-size:12.5px;line-height:1.6;
+    color:rgba(243,237,224,.45);margin:26px 0 0;max-width:74ch}
+  body.light .gk3 .gatestrip{color:#6d675e}
+  @media (max-width:720px){
+    .gk3 .grid{grid-template-columns:repeat(16,1fr);gap:4px}
+    .gk3 .two{grid-template-columns:1fr;gap:20px}
+    .gk3 .lede{font-size:19px}
+    .gk3 .ceilh{font-size:19px}
+    .gk3 .after{font-size:18px}
+    .gk3 .fc.res b{font-size:34px}
+    .gk3 .field{padding:16px 14px}
   }
-  .gkcap-w{margin-top:8px}
-  .gkgate{display:flex;gap:10px;margin:16px 0 0;flex-wrap:wrap}
-  .gkgb{flex:1 1 120px;padding:11px 13px;border-radius:11px;
-        background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.07)}
-  body:not(.light) .gkgb{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.07)}
-  .gkgb b{display:block;font-family:'Archivo',sans-serif;font-weight:900;font-size:21px;color:#8a6a1e}
-  body:not(.light) .gkgb b{color:#E0A93A}
-  .gkgb span{display:block;font-size:11px;opacity:.62;margin-top:2px;line-height:1.4}
-  @media (max-width:560px){ .gkfig{padding:11px 10px 2px} .gkgb{flex:1 1 100%} }
   .pgdefs{margin-top:22px;display:grid;gap:15px;max-width:760px}
   .pgrow{font-family:'Inter';font-size:15px;line-height:1.62;color:rgba(243,237,224,0.78)}
   body.light .pgrow{color:#3a352e}
@@ -1034,79 +1037,34 @@
       
       <div class="pgwrap"><svg class="pgsvg" viewBox="0 20 400 240" role="img" aria-label="The five dimensions: Goal Threat, Creation, Progression, Defensive, Reliability"><polygon class="pgweb" points="200.0 121.3 229.2 142.5 218.0 176.8 182.0 176.8 170.8 142.5"/><polygon class="pgweb" points="200.0 90.7 258.3 133.0 236.1 201.6 163.9 201.6 141.7 133.0"/><polygon class="pgweb" points="200.0 60.0 287.5 123.6 254.1 226.4 145.9 226.4 112.5 123.6"/><line class="pgweb" x1="200" y1="152" x2="200.0" y2="60.0"/><line class="pgweb" x1="200" y1="152" x2="287.5" y2="123.6"/><line class="pgweb" x1="200" y1="152" x2="254.1" y2="226.4"/><line class="pgweb" x1="200" y1="152" x2="145.9" y2="226.4"/><line class="pgweb" x1="200" y1="152" x2="112.5" y2="123.6"/><polygon class="pgshape" points="200.0 60.0 287.5 123.6 254.1 226.4 145.9 226.4 112.5 123.6"/><circle class="pgdot" cx="200.0" cy="60.0" r="4.5"/><circle class="pgdot" cx="287.5" cy="123.6" r="4.5"/><circle class="pgdot" cx="254.1" cy="226.4" r="4.5"/><circle class="pgdot" cx="145.9" cy="226.4" r="4.5"/><circle class="pgdot" cx="112.5" cy="123.6" r="4.5"/><text class="pglab" x="200.0" y="41.0" text-anchor="middle">Goal Threat</text><text class="pglab" x="305.6" y="117.7" text-anchor="start">Creation</text><text class="pglab" x="265.2" y="241.8" text-anchor="start">Progression</text><text class="pglab" x="134.8" y="241.8" text-anchor="end">Defensive</text><text class="pglab" x="94.4" y="117.7" text-anchor="end">Reliability</text></svg><div class="pgdefs"><div class="pgrow"><b>Goal Threat</b> The danger a player carries in and around the box , the chances they get into, how often they take them, and the defenders pulled out of shape simply by where they stand. It is not the same as goals scored: a poacher with ten tap-ins and a forward who drags two centre-halves with every run are not the same player.</div><div class="pgrow"><b>Creation</b> The chances a player makes for others, judged by the chance itself , its danger, its difficulty, the lock it picked , rather than by whether someone finished it. Assists flatter and deceive in equal measure, so Creation rewards the pass that should have been a goal as fully as the one that was.</div><div class="pgrow"><b>Progression</b> The work of moving the ball and the team up the pitch: the carry that beats the press, the pass that splits a line, the yards that turn defence into attack. Football is a territorial game and somebody has to do the carrying, which is why a deep midfielder with no goals and no assists can still be the engine of everything.</div><div class="pgrow"><b>Defensive</b> The half of the game that never makes the highlight reel , duels, recoveries, interceptions, and the positional discipline that means the tackle was never needed. It is read in context, a full-back and a holding midfielder judged against their own brief rather than one blunt standard, because the best defending often looks like nothing happening at all.</div><div class="pgrow"><b>Reliability</b> The season-long view: minutes actually played, errors that cost, and whether a player was there in the weeks the team needed him. Talent that cannot be counted on is talent half-spent, and a brilliant half-season and a steady full one are different achievements.</div></div></div>
     <div class="vvstory"><div class="vvstory-d">Five numbers, but never only numbers. They are the shape of a player , the fingerprint no two careers share. One man lives for the goal; another for the pass that breathes it into being. One carries the ball forward like a rising tide; another holds the line when the night turns cold. Reduce a season to these five and you do not shrink it , you reveal it. This is where the score finds its muscle and its meaning: not in a single figure handed down from on high, but in the living, breathing shape behind it , the truth of how a footballer spent his year.</div><button class="vvstory-more" onclick="toggleStory(event,this)">Read the full story &#8250;</button></div></section><section class="section" id="s-gk"><div class="label">The different set</div><h2 class="h2"><span class="se">&#129508;</span> Goalkeepers</h2>
-<div class="intro">A keeper is not measured on the five dimensions, because not one of them asks about keeping goal. His card puts the radar away and shows what we actually hold.</div>
-
-<div class="gkfig gkfig-swap">
-  <svg viewBox="0 0 460 152" width="100%" height="152" role="img" aria-label="The five-dimension radar struck through, replaced by a save percentage, a keeper-pool percentile and a saved-against-conceded bar.">
-    <g transform="translate(64,74)" opacity=".34">
-      <polygon points="0,-46 44,-14 27,38 -27,38 -44,-14" fill="none" stroke="currentColor" stroke-width="1.5"/>
-      <polygon points="0,-30 28,-9 17,24 -17,24 -28,-9" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="1"/>
-    </g>
-    <g transform="translate(64,74)" class="gkx">
-      <line x1="-52" y1="-52" x2="52" y2="52" stroke-width="2.6" stroke-linecap="round"/>
-      <line x1="52" y1="-52" x2="-52" y2="52" stroke-width="2.6" stroke-linecap="round"/>
-    </g>
-    <text x="64" y="142" text-anchor="middle" class="gkl">the five dimensions</text>
-    <text x="150" y="78" class="gkl">becomes</text>
-    <g transform="translate(228,30)">
-      <text x="0" y="0" class="gkl">save percentage</text>
-      <text x="0" y="27" class="gkbig">71.4%</text>
-      <rect x="0" y="41" width="196" height="9" rx="4.5" class="gktrack"/>
-      <rect x="0" y="41" width="151" height="9" rx="4.5" class="gkfill"/>
-      <text x="0" y="66" class="gkl">77th of every keeper we can measure</text>
-      <rect x="0" y="78" width="196" height="26" rx="6" class="gktrack"/>
-      <rect x="0" y="78" width="140" height="26" rx="6" class="gksaved"/>
-      <text x="9" y="95" class="gkl gkin">129 saved</text>
-      <text x="187" y="95" text-anchor="end" class="gkl">51 in</text>
-    </g>
-  </svg>
-  <div class="gkcap">The radar is not hidden, it is inapplicable. What replaces it is one rate, one position among keepers, and the two counts behind them.</div>
-</div>
-
-<div class="gkgate">
-  <div class="gkgb"><b>800</b><span>minutes, and</span></div>
-  <div class="gkgb"><b>60</b><span>shots faced, from</span></div>
-  <div class="gkgb"><b>2015</b><span>when shot data begins</span></div>
-</div>
-<div class="gkcap gkcap-w">Below any of the three, the card does not guess. <b>1,920 of 2,806</b> keeper seasons with save data are scored; every one that is not says which gate it missed. Seasons with no save recorded are not counted, because they were never eligible to fail a gate.</div>
-
-<div class="gkfig gkwhat">
-  <div class="gkwlede">Knowing how many shots a keeper faced tells you&hellip;</div>
-
-  <div class="gkwrow">
-    <div class="gkwlab">about how well he kept goal</div>
-    <div class="gkwtrack"><i class="gkwbar gkw-keeper" style="width:11%"></i></div>
+<div class="gk3">
+  <div class="lede">One keeper, one season, every shot he faced. The rate is not a claim on this page , it is a count you can run yourself.</div>
+  <div class="who"><b>David de Gea, Manchester United, 2017/18.</b> The fourteenth best save season of the 1,920 we can measure.</div>
+  <div class="field">
+    <div class="fh">
+      <div class="fht">143 shots faced &middot; 2017/18</div>
+      <div class="key"><span class="s"><i></i>Saved</span><span class="c"><i></i>In</span></div>
+    </div>
+    <div class="grid"><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span><span class="m c"></span></div>
+    <div class="fcount">
+      <div class="fc gold"><b>115</b><span>Saved</span></div>
+      <div class="fc"><b>28</b><span>In</span></div>
+      <div class="fc res"><b>80.4%</b><span>Save percentage &middot; 14th of 1,920</span></div>
+    </div>
   </div>
-
-  <div class="gkwrow">
-    <div class="gkwlab">about how weak the defence in front of him was</div>
-    <div class="gkwtrack"><i class="gkwbar gkw-team" style="width:88%"></i></div>
+  <div class="ceil">
+    <div class="ceilh">And his card still reads <em>75</em>.</div>
+    <div class="ceilb">The VV Index does not yet weigh goalkeeping, so every keeper is capped at 75 whatever his save rate. This is the fourteenth best save season we hold and it scores the same as the thousandth. The cap is stated on the card, because a number that cannot move should say it cannot move.</div>
   </div>
-
-  <div class="gkwscale"><span>Tells you nothing</span><span>Tells you everything</span></div>
-
-  <div class="gkcap">A busy keeper is a keeper behind a poor defence. Shots faced tells you about the team, not the man, so it is context on the card and never credit in the score.</div>
-</div>
-
-<div class="gkfig">
-  <svg viewBox="0 0 460 74" width="100%" height="74" role="img" aria-label="A tap-in in the six-yard box and a long-range effort both count as one save.">
-    <text x="0" y="12" class="gkl">a save is a save, however hard</text>
-    <g transform="translate(0,22)">
-      <rect x="0" y="0" width="216" height="40" rx="8" class="gkbox"/>
-      <text x="14" y="18" class="gkl gkin">a tap-in in the six-yard box</text>
-      <text x="14" y="33" class="gkl">counts one</text>
-      <rect x="236" y="0" width="216" height="40" rx="8" class="gkbox gkbox-2"/>
-      <text x="250" y="18" class="gkl gkin">a long-range effort</text>
-      <text x="250" y="33" class="gkl">counts one</text>
-    </g>
-  </svg>
-  <div class="gkcap">We record whether a shot was saved, never how hard it was. The score cannot weigh them, so the card says so rather than implying a precision it does not have.</div>
-</div>
-
-<div class="pgdefs">
-<div class="pgrow"><b>The ladder is keepers only</b> A save rate means nothing against a striker's numbers, so a keeper is ranked against every other keeper we can measure and against nobody else.</div>
-<div class="pgrow"><b>Penalties saved is a fact, not a score</b> Stopping one is genuinely his own act and we count it. How many he faced is not recorded, so there is no rate to be had and none is invented.</div>
-<div class="pgrow"><b>And the score is capped</b> The VV Index does not yet weigh goalkeeping, so every keeper is capped at 75 whatever his save rate. The cap is stated on the card, because a number that cannot move should say so.</div>
+  <div class="after">Every one of those marks is the same size, and that is not a design choice.</div>
+  <div class="aftersub">We record whether a shot was saved, never how hard it was. A tap-in in the six-yard box and a thirty-yard flying save both count one. The score cannot weigh them, so the card says so rather than implying a precision it does not have.</div>
+  <div class="two">
+    <div class="tw"><h4>Why there is no radar</h4><p>Not one of the five dimensions asks about keeping goal. The pentagon is not hidden, it is inapplicable, so the card puts it away and shows this instead.</p></div>
+    <div class="tw"><h4>Why 143 is context, not credit</h4><p>A low count does not mean he was untested. It means the team in front of him conceded fewer chances. High or low, shots faced describes the defence, not the keeper , context on the card, never credit in the score.</p></div>
+    <div class="tw"><h4>The ladder is keepers only</h4><p>A save rate means nothing against a striker's numbers, so a keeper is ranked against every other keeper we can measure and against nobody else.</p></div>
+    <div class="tw"><h4>Penalties saved is a fact, not a score</h4><p>Stopping one is genuinely his own act and we count it. How many he faced is not recorded, so there is no rate to be had and none is invented.</p></div>
+  </div>
+  <div class="gatestrip">Drawn only when the season can carry it: 800 minutes, 60 shots faced, 2015 onward. 1,920 of 2,806 keeper seasons with save data qualify, and every one that does not says which gate it missed. Seasons with no save recorded are not counted at all, because they were never eligible to fail a gate.</div>
 </div>
 </section><section class="section" id="s-card"><div class="label">The object itself</div><h2 class="h2"><span class="se">&#127924;</span> The Card</h2><div class="intro">The number and the badges are explained above. These are the parts of a card that are easy to miss, and one that only a few cards carry.</div><div class="cardmock"><div class="cm-stage"><div class="cm-card" data-cm="squad"><div class="cm-crown"><div class="cm-badge"><span class="cm-num">8</span><button type="button" class="cm-mk" aria-label="Explain Squad Number" aria-expanded="false">1</button></div><div class="cm-vv"><b>84</b><i>V<span>V</span></i></div></div><div class="cm-figure"></div><div class="cm-nm">PLAYER</div><div class="cm-sb">Attacking Midfielder &middot; Club</div><div class="cm-ga"><div><b>12</b><i>Goals</i></div><div><b>9</b><i>Assists</i></div></div><div class="cm-exp"><div class="cm-dt">The number on a shirt is a form of identification, and it is here for the same reason the name is: a season belongs to a person.</div></div></div><div class="cm-panels"><div class="cm-panel" data-cm="glance"><div class="cm-ph" role="button" tabindex="0"><span class="cm-pl">The Glance</span><button type="button" class="cm-mk" aria-label="Explain The Glance" aria-expanded="false">2</button></div><div class="cm-body"><div class="cm-figs"><span class="cm-fig"><b>84</b><i>VV Index</i></span><span class="cm-fig"><b>12</b><i>Goals</i></span><span class="cm-fig"><b>9</b><i>Assists</i></span></div></div><div class="cm-exp"><div class="cm-dt">The score, the goals, the assists, and one line of verdict. The three numbers anyone asks for first.</div><div class="cm-dq">&quot;Three numbers and a verdict line, chosen because they are what a stranger asks first. They deliberately leave out the tackle, the yard covered and the pass before the assist, all of which sit one layer down. The glance is a summary, not a judgement.&quot;</div></div></div><div class="cm-panel" data-cm="traj"><div class="cm-ph" role="button" tabindex="0"><span class="cm-pl">The Trajectory</span><button type="button" class="cm-mk" aria-label="Explain The Trajectory" aria-expanded="false">3</button></div><div class="cm-body"><div class="cm-chart"><span class="cm-col"><span style="height:38%"></span><span style="height:22%"></span></span><span class="cm-col"><span style="height:54%"></span><span style="height:30%"></span></span><span class="cm-col"><span style="height:70%"></span><span style="height:44%"></span></span><span class="cm-col"><span style="height:100%"></span><span style="height:56%"></span></span><span class="cm-col"><span style="height:76%"></span><span style="height:38%"></span></span><span class="cm-col"><span style="height:52%"></span><span style="height:33%"></span></span><svg class="cm-line" viewBox="0 0 100 44" preserveAspectRatio="none" aria-hidden="true"><polyline points="8,30 25,24 42,15 58,7 75,13 92,21"/></svg></div></div><div class="cm-exp"><div class="cm-dt">Goals and assists across every season, so a card can be read against the years around it.</div><div class="cm-dq">&quot;A single season is a data point. Three of them are a shape. The chart plots goals and assists year on year so a card can be read against what came before and after it, which is how careers are actually argued about.&quot;</div></div></div><div class="cm-panel" data-cm="proof"><div class="cm-ph" role="button" tabindex="0"><span class="cm-pl">The Proof</span><button type="button" class="cm-mk" aria-label="Explain The Proof" aria-expanded="false">4</button></div><div class="cm-body"><table class="cm-tbl"><tr><th>&nbsp;</th><th>Per 90</th><th>Total</th></tr><tr><td>Goals</td><td>0.40</td><td>12</td></tr><tr><td>Assists</td><td>0.30</td><td>9</td></tr><tr><td>Key passes</td><td class="cm-nr">NR</td><td class="cm-nr">NR</td></tr></table></div><div class="cm-exp"><div class="cm-dt">The per-90 rate and the season total behind the score. Where NR appears, the number was never recorded.</div><div class="cm-dq">&quot;Per 90 is the rate, the season total is the volume, and the two together are what a score is built from. A player with a high rate over few minutes and one with a steady rate across a full season are different achievements, and the table lets you tell them apart. Where a number was never recorded we write NR, because a zero would be a claim we cannot make.&quot;</div></div></div><div class="cm-panel" data-cm="high"><div class="cm-ph" role="button" tabindex="0"><span class="cm-pl">Watch</span><button type="button" class="cm-mk" aria-label="Explain Watch the Season" aria-expanded="false">5</button></div><div class="cm-body"><div class="cm-watch"><svg class="cm-play" viewBox="0 0 100 100" aria-hidden="true"><path d="M30 22 L78 50 L30 78 Z"/></svg> Watch Player Name , 23/24 season</div></div><div class="cm-exp"><div class="cm-dt">On every card, the link out to watch that player's season for yourself.</div><div class="cm-dq">&quot;Numbers, graphs, a scout's reading of ten months of football. And then a link out of all of it, because some things are better seen than described.&quot;</div></div></div><div class="cm-panel" data-cm="chron"><div class="cm-ph" role="button" tabindex="0"><span class="cm-pl">The Chronicle</span><span class="cm-pill">&#10038; Signature Moment</span><button type="button" class="cm-mk" aria-label="Explain The Chronicle" aria-expanded="false">6</button></div><div class="cm-body"><div class="cm-quote">&ldquo;A lobbed finish to pass Cesar, and a record sixty years old belonged to a boy of twenty-four.&rdquo;</div><div class="cm-cap">Barcelona 5-3 Granada · 20 Mar 2012 · La Liga (example)</div></div><div class="cm-exp"><div class="cm-dt">The single night that season is remembered for, told rather than measured. The gold marker appears only on the few cards that carry one.</div><div class="cm-dq">&quot;Everywhere else the season is measured. Here it is told. A total explains what a player did across ten months, and it will never explain why a stadium still talks about one evening in March , and both are true of the same season.&quot;</div></div></div></div></div></div></section><section class="section" id="s-wonder"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><div class="intro">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was , the language of a career, earned not bought. Some mark the rarest air the game produces. Some, the silverware actually lifted. Some, how a player plays. And some are reserved for when two seasons are weighed against each other.</div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. Each tag carries a one-line definition; open any card for the full read.</div><div class="prehero"><div class="prenum">95+</div><div class="preword">Generational</div><div class="pretd">The highest grade the Index awards. Reserved for the rarest seasons in the history of the game, the ones that stand entirely alone.</div><div class="prestats"><div><b>12</b><i>Seasons, ever</i></div></div><div class="predq">"Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone."</div></div><div class="prerule"></div><div class="prehero sec"><div class="prenum">90+</div><div class="preword">Iconic</div><div class="pretd">One of the 150 greatest seasons ever measured.</div><div class="predq">"The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career."</div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="dpanel"><div class="dtier" id="dTier"></div><div class="dstage"><div class="dtrophy" id="dTrophy"></div><div class="dplinth"></div><div class="dmirror" id="dMirror" aria-hidden="true"></div></div><div class="dname" id="dName"></div><div class="dtd" id="dTd"></div><div class="ddq" id="dDq"></div></div><div class="dstrip"><button type="button" class="dchip" data-h="Ballon d'Or" aria-label="Ballon d'Or" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Ballon d&#39;Or</span></button><button type="button" class="dchip" data-h="World Cup Winner" aria-label="World Cup Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">World Cup Winner</span></button><button type="button" class="dchip" data-h="UCL Winner" aria-label="UCL Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">UCL Winner</span></button><button type="button" class="dchip" data-h="League Champion" aria-label="League Champion" aria-pressed="false"><span class="dcmk"></span><span class="dcl">League Champion</span></button><button type="button" class="dchip" data-h="Player of the Season" aria-label="Player of the Season" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Player of the Season</span></button><button type="button" class="dchip" data-h="Golden Boot" aria-label="Golden Boot" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Golden Boot</span></button><button type="button" class="dchip" data-h="Top Assists" aria-label="Top Assists" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Top Assists</span></button></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
       This block used to carry six tags typed out by hand, out of twenty-one the engine
