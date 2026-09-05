@@ -3536,16 +3536,19 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       { sub:'Midfield',     items:[ {v:'Playmaker',e:'🧠'},{v:'Maestro',e:'🎩'},{v:'Regista',e:'🎻'},{v:'Engine Room',e:'🧭'},{v:'The Dribbler',e:'✨'} ] },
       { sub:'Defence',      items:[ {v:'The Wall',e:'🧱'},{v:'Destroyer',e:'🦮'},{v:'Ball Hawk',e:'🦅'},{v:'Ball-Playing CB',e:'🦶'} ] },
       { sub:'All-Round',    items:[ {v:'Complete',e:'💎'},{v:'Iron Man',e:'🛡️'} ] },
+      /*  ALL FIVE CAREER-STAGE CHIPS FILTER. Breakout, Peak and The Standard carried
+          soon:true until b585eee because careerStageTags() needs a whole career and
+          getVVTags() gets one row, so they never reached card.tags and clientPredicate
+          could never match them , selectable, they returned an empty grid with no reason
+          given. They are columns on player_card_mv now (stage_peak / stage_breakout /
+          stage_the_standard) and getVVTags reads them, so the flags came off.
+          THE soon MECHANISM IS DELIBERATELY LEFT STANDING , the flag on flatItems, the
+          OR in vvfChip and the readState guard. It is per-item rather than
+          where:'inert' on the group precisely so a subset can be held back, and the
+          next tag that ships ahead of its data will want exactly that.  */
       { sub:'Career-Stage', items:[ {v:'Wonderkid',e:'🌱'},
-      /*  soon:true , THESE THREE ARE NOT FILTERABLE AND THE CHIP HAS TO SAY SO.
-          careerStageTags() needs a whole career; getVVTags() gets one row and never calls it,
-          so Peak / Breakout / The Standard never reach card.tags and clientPredicate can never
-          match them. Left selectable they returned an empty grid with no reason given.
-          Wonderkid and The Last Dance carry no flag because getVVTags DOES emit them per
-          season, so they filter correctly and must stay live , which is why this is a
-          PER-ITEM flag and not where:'inert' on the group.  */
-                              {v:'Breakout',e:'🚀',soon:true},{v:'Peak',e:'⛰️',soon:true},
-                              {v:'The Standard',e:'🏛️',soon:true},{v:'The Last Dance',e:'🌅'} ] },
+                              {v:'Breakout',e:'🚀'},{v:'Peak',e:'⛰️'},
+                              {v:'The Standard',e:'🏛️'},{v:'The Last Dance',e:'🌅'} ] },
     ],
     position: [ {v:'GK'},{v:'CB'},{v:'FB'},{v:'CDM'},{v:'CM'},{v:'CAM'},{v:'Winger'},{v:'ST'} ],
   };
