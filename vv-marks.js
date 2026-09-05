@@ -1,6 +1,6 @@
 /* vv-marks.js , THE VVONDERXI MARK SET =========================================
  *
- *  37 original marks on one 24x24 grid, editorial-solid: filled shapes with their
+ *  42 original marks on one 24x24 grid, editorial-solid: filled shapes with their
  *  counters knocked out using fill-rule="evenodd", no strokes, currentColor only.
  *  Nothing here is imported or traced from Lucide, Feather, Font Awesome or any
  *  other set. The crest in Iron Man is rescaled from this repo's own rowShieldHTML
@@ -52,6 +52,28 @@
     'Complete':          '<g fill="currentColor"> <path d="M12 4.4 18.6 9.2 16.1 17H7.9L5.4 9.2Z"/> <circle cx="12" cy="2.6" r="2.2"/><circle cx="20.4" cy="8.7" r="2.2"/> <circle cx="17.2" cy="18.6" r="2.2"/><circle cx="6.8" cy="18.6" r="2.2"/> <circle cx="3.6" cy="8.7" r="2.2"/></g>',
     'Iron Man':          '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.2 19.2 4.6v7.1c0 4.8-3.4 7.5-7.2 8.9-3.8-1.4-7.2-4.1-7.2-8.9V4.6Zm-2.5 5.9v1.8h1.4v4.2H9.5v1.8h5v-1.8h-1.4V9.9h1.4V8.1Z"/></g>',
     'Wonderkid':         '<g fill="currentColor"> <path d="M1.8 18.2h20.4v3.2H1.8Z"/> <path d="M4.6 9.4h4.2v7.4H4.6Z"/><path d="M6.7 2.6 10.9 8H2.5Z"/></g>',
+    /*  THE THREE CAREER-STAGE MARKS SHARE WONDERKID'S AND THE LAST DANCE'S GRAMMAR:
+        a full-width ground bar, then mass placed along it, because in this family the
+        x-axis IS the career. Wonderkid's block sits left and The Last Dance's right;
+        Breakout rises through a broken level line, Peak is the summit itself, and The
+        Standard holds one level across the whole span under a lid.
+
+        PEAK IS A BROAD MOUNTAIN, NOT A COLUMN WITH AN ARROWHEAD. The first draft was the
+        latter and it had THE SAME SILHOUETTE AS WONDERKID , both resolved to a narrow
+        upright topped by a triangle, distinguishable at 64px and identical at 12px, which
+        is the size the glance actually ships. Section C's pairwise rule is what caught it,
+        and the rule got bigger here: adding three to Wonderkid and The Last Dance makes a
+        FIVE-member cluster, so it is ten pairs to check, not three, and they have to be
+        judged at the smallest size they ship at rather than the size they are drawn at.
+
+        ALL THREE ARE SOLID FILLS, DELIBERATELY. The sprite splits between solid shapes
+        (The Wall, Complete, Iron Man) and thin stroke-like ones (Ball Hawk, The Dribbler,
+        Engine Room), and at 18px the solid group holds together while the thin one reads
+        as a stray stroke. That split is a real inconsistency and it is its own job , this
+        is not the commit that resolves it, so the new marks join the side that reads. */
+    'Breakout':          '<g fill="currentColor"> <path d="M1.8 18.2h20.4v3.2H1.8Z"/> <path d="M1.8 10.4h7.6v2.4H1.8Z"/><path d="M14.6 10.4h7.6v2.4h-7.6Z"/> <path d="M12 1.8 16.6 7.4H7.4Z"/><path d="M10.4 7.4h3.2v9h-3.2Z"/></g>',
+    'Peak':              '<g fill="currentColor"> <path d="M1.8 18.2h20.4v3.2H1.8Z"/> <path d="M12 2.6 21.6 16.8H2.4Z"/></g>',
+    'The Standard':      '<g fill="currentColor"> <path d="M1.8 18.2h20.4v3.2H1.8Z"/> <path d="M1.8 4.8h20.4v2.4H1.8Z"/> <path d="M1.8 9.4h3v7.4h-3Z"/><path d="M7.6 9.4h3v7.4h-3Z"/><path d="M13.4 9.4h3v7.4h-3Z"/><path d="M19.2 9.4h3v7.4h-3Z"/></g>',
     'The Last Dance':    '<g fill="currentColor"> <path d="M1.8 18.2h15.8v3.2H1.8Z"/> <path d="M15.2 8.6h4.2v8.2h-4.2Z"/><path d="M12.8 4.8h9v3h-9Z"/></g>',
     'Generational':      '<g fill="currentColor"> <path fill-rule="evenodd" d="M6.2 2.6h11.6l4.2 6.2L12 21.8 2 8.8Zm1.6 3-2.4 3.6h3.9l1.4-3.6Zm4.2 0-1.4 3.6h6.8l-1.4-3.6Zm4.8 0 1.4 3.6h3.9l-2.4-3.6ZM6 12.4l4.2 5.4-2-5.4Zm4.6 0 1.4 4.6 1.4-4.6Zm4.4 0-2 5.4 4.2-5.4Z"/></g>',
     'Iconic':            '<g fill="currentColor"> <path d="M10.4 21.4C5.6 19.8 2.6 15.6 2.6 10.4c0-2.6.7-5 1.9-6.9 2.6 2.2 4.4 5.6 4.4 9.4 0 1.6-.3 3-.8 4.3l2.3 1.4Z"/> <path d="M13.6 21.4c4.8-1.6 7.8-5.8 7.8-11 0-2.6-.7-5-1.9-6.9-2.6 2.2-4.4 5.6-4.4 9.4 0 1.6.3 3 .8 4.3l-2.3 1.4Z"/></g>',
