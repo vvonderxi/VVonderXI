@@ -51,6 +51,31 @@
   //    byte-identical to the logic in buildCard / pillHTML. Callers own the empty,
   //    placeholder and legacy-d.tag branches (this function never emits them). ──
   // ── MARK LOOKUP , opt-in, and deliberately fail-soft ────────────────────────────
+  /*  FACE-ONLY STAGE CAP , PRECEDENCE ACROSS TWO MECHANISMS.
+      Peak, Breakout and The Standard are boolean COLUMNS on player_card_mv; Wonderkid and
+      The Last Dance are AGE rules computed in getVVTags. They arrive as one family and this
+      list ranks them as one, because the face cannot know or care which produced them.
+      THE ORDER IS RULED, NOT DERIVED, AND THE REASONING IS WORTH KEEPING. Peak first: it is
+      the single highest season of a career. The Last Dance next. Then BREAKOUT ABOVE
+      WONDERKID, which is the part that is not obvious , they look like a pair of
+      early-career tags and they are not the same kind of claim. Wonderkid is an AGE rule
+      (season_age <= 21 and rt >= 82): it says only that he is young and good. Breakout is an
+      ACHIEVEMENT rule: it says this is the season he arrived at the level. On a card
+      carrying both, the achievement is the stronger statement, and it is also the rarer one,
+      152 cards against 73. The Standard last, at 413 the commonest of the five and so the
+      least worth a scarce slot.
+      Returns the ORIGINAL array untouched when there is nothing to cap, so no caller pays
+      for a copy it does not need. */
+  const FACE_STAGE_ORDER = ['Peak','The Last Dance','Breakout','Wonderkid','The Standard'];
+  function capStageForFace(tags){
+    if (!Array.isArray(tags)) return tags;
+    const stage = tags.filter(function(t){ return t && t.family === 'STAGE'; });
+    if (stage.length <= 1) return tags;
+    const keep = FACE_STAGE_ORDER.map(function(n){ return stage.filter(function(t){ return t.name===n; })[0]; })
+                                 .filter(Boolean)[0] || stage[0];
+    return tags.filter(function(t){ return !t || t.family !== 'STAGE' || t === keep; });
+  }
+
   //  opts.mark turns marks ON for a caller. Only rankRowHTML passes it, so this change
   //  reaches the ROW surfaces (rankings, the card search overlay, the card season list,
   //  the compare season fold) and leaves the CARD FACE alone. Adoption is one surface
@@ -428,9 +453,18 @@
     }).join('');
     const profileMax = remaining - honShown.length;   // profile fills whatever honours left open
     let profilePills = '', profileShown = 0;
-    if (Array.isArray(d.tags) && d.tags.length && profileMax > 0) {
-      profilePills = renderTagPills(d.tags, { baseClass:'chtagcell', max:profileMax, el:'span', innerWrap:false, mark:CARD_MARKS });
-      profileShown = Math.min(d.tags.length, profileMax);
+    /*  ONE STAGE TAG ON THE FACE, THE FULL SET EVERYWHERE ELSE. Aduriz 15/16 legitimately
+        earns Peak, The Last Dance and The Standard at once , all three are correct , and on
+        a 145px face they filled every slot and left no room for what he actually did.
+        223 cards carry two or more, 40 carry three and 2 carry four.
+        THE FACE IS THE ONLY SURFACE CAPPED. The glance and the rankings row keep all of
+        them: the glance is uncapped by design and the row has its own cap that already
+        ranks by family. This is a face-budget decision, not a claim that the extra tags are
+        wrong. */
+    const faceTags = capStageForFace(d.tags);
+    if (Array.isArray(faceTags) && faceTags.length && profileMax > 0) {
+      profilePills = renderTagPills(faceTags, { baseClass:'chtagcell', max:profileMax, el:'span', innerWrap:false, mark:CARD_MARKS });
+      profileShown = Math.min(faceTags.length, profileMax);
     } else if (!Array.isArray(d.tags) && d.tag && profileMax > 0) {
       profilePills = `<span class="chtagcell">${d.tag}</span>`; profileShown = 1;   // legacy string fallback
     }
