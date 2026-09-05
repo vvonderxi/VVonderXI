@@ -33,10 +33,10 @@ Why this file exists: this project has suffered from too many documents and no c
 === VVONDERXI LAUNCH PROGRESS ===
 Data quality   █████████████████░  ~97%   INGESTION-GAP RECOVERY COMPLETE (780 seasons recovered across all 9 leagues, insert-only, 1 public band crossing total); honours 629 live + NR-assist fill; KEEPER + PENALTY FIELDS CAPTURED AND NOW LIVE (matview swapped 2026-08-19, 65 columns; saves/conceded/penalties/starts + 4 discipline fields visible to the site); goals-provenance audit open
 Tags           ██████████████████  ~97%   TAG ENGINE COMPLETE , thresholds AND eligibility both on position_pool (the field split that mis-bracketed 12.78% is gone), Marksman retired, scoring on two defensible axes, identity tags gated on pool not family, no tag over the ~2% rarity CEILING bar the stated Iron Man exception (the band is a ceiling, not a target , four narrow archetypes sit below it by design). Only the fouls_drawn tag + discipline fields on the mv remain, both post-launch
-Compare        █████████████████░  ~95%   spine + flow-polish COMPLETE (go-to-player, user-fold, back-path, subheading, C8) + VERDICT-TAG SYSTEM shipped (14 tags + age-tiebreaker + Proof/Confidence + crown badge); only optional picker pager + merge remain
-Card editorial █████████████░░░░░  ~71%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED + CHRONICLE REBUILT (72 moments, api-keyed, opponent field, watch CTA) + the card is now EXPLAINED on the playbook + GK confidence no longer claims a completeness it cannot have + SEQUENCE NAVIGATION (walks the list you arrived from, arrows/keys/swipe); K4 Proof + K5 VV-line trajectory + honours strip UI remain
+Compare        █████████████████░  ~95%   spine + flow-polish COMPLETE (go-to-player, user-fold, back-path, subheading, C8) + VERDICT-TAG SYSTEM shipped (14 tags + age-tiebreaker + Proof/Confidence + crown badge) + the keeper radar hole closed (966 keeper cards drew an outfield pentagon here, card.html always gated and compare.html never did); only optional picker pager + merge remain
+Card editorial █████████████░░░░░  ~71%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED + CHRONICLE REBUILT (72 moments, api-keyed, opponent field, watch CTA) + the card is now EXPLAINED on the playbook + GK confidence no longer claims a completeness it cannot have + SEQUENCE NAVIGATION (walks the list you arrived from, arrows/keys/swipe) + the radar is percentile-within-pool rather than four fixed constants (bar unmoved , it was already rendering, it was rendering wrongly); K4 Proof + K5 VV-line trajectory + honours strip UI remain
 Hygiene        █████░░░░░░░░░░░░░  ~28%   key rotation + QA pass outstanding (QA_PASS.md written, 42 items, Group A recorded); 2026-08-29 closed the dead-CSS sweep, the page-weight extraction (2.78 MB -> 0.98 MB) and two 390px defects (picker scroll chaining, 30px view toggles); 2026-08-18 polish batch closed 7 items
-Engine         ████████████████░░  ~90%   Stages 0-4 done+live (def recalib + best-of + output boost + computed league strength + CDM-mislabel cleanup); radar percentile parked; recalibration COMPLETE, remaining ideas post-launch/optional
+Engine         █████████████████░  ~93%   Stages 0-4 done+live (def recalib + best-of + output boost + computed league strength + CDM-mislabel cleanup); RADAR PERCENTILE-WITHIN-POOL SHIPPED 2026-09-05 (the last non-optional engine item, parked since the Blueprint , CB/ST goalThreat gap 6/40 closed to 48/46), as an embedded snapshot, with percent_rank columns still owed at the shared matview rebuild; recalibration COMPLETE, remaining ideas post-launch/optional
 Merge          ░░░░░░░░░░░░░░░░░░    0%    redesign-compare -> vvonderxi_BIGGER
 ```
 LAUNCH = tags + Compare + card editorial + hygiene + merge. **Data quality is a supporting layer, NOT a blocker** , launch bar is "top band clean + tail honestly flagged via confidence dots", not 100% of 56k cards. The seductive trap is endless data-polish while Compare stays hardcoded. After honours, the center of gravity MUST shift from data to the tag->Compare product spine.
@@ -359,7 +359,7 @@ This is the single ordered launch plan. If an older §F entry lists a "NEXT" tha
 1. **TAG KEYSTONE , DONE (2026-07-19).** Eligibility 8-bucket fix, honours team-join, one FILTER_TAXONOMY, and de-orphaning of BOTH playbook surfaces (glossary `.tagdef` + library `.libtag`). All four drifting consumer surfaces reconciled against TAG_DEFS. Full narrative: §F 2026-07-19 (archived). Unbuilt ideas surfaced during removal are preserved in §D DEFERRED.
 2. **COMPARE #101 , FLOW-POLISH, ~95% DONE. THE SPINE IS BUILT AND LIVE , DO NOT RE-BUILD IT.** The full closed inventory of what already works (shared token-AND search, the Edge verdict + `verdict_cache`, accolades, radar, trajectory, deep-link `?a=&b=`, `vvBack`, items a/b/c/e/f and the net-new verdict-tag system) moved to `LAUNCH_STAGE.md` on 2026-08-25. **Read it before touching Compare** , it exists so a session does not rebuild shipped work, which the stale "kill hardcoded Henry/Haaland" framing nearly caused once.
    - **THREE OPEN ITEMS, named here so they cannot be lost with the narrative:** **(d)** picker pager "show more"/count (optional, still `limit(50)`) plus 2 residual green sub-panels in playbook (`.tagdef.open .drury`, `.vvband.open .vvband-story`) for the green=Compare-only rule; **(g)** Drury prose renders as ONE long paragraph , fix at the PROMPT level, never post-processing, and it applies to the card editorial too; **(h)** the trajectory chart is cramped with unclear axis labels, worst on a single-season player , a layout pass on the SHARED `VVCore.renderTrajectory`, so it must be checked on card AND compare.
-   - **The two-narrow-spikes radar is NOT a Compare bug** , `RADAR_REF` is still the provisional placeholder set and the fix is the parked percentile-within-position work on the engine track.
+   - **[CLOSED 2026-09-05] The two-narrow-spikes radar was NOT a Compare bug and is now fixed at the source** , scaling is percentile within position pool (`RADAR_POOL_REF`, vv-core.js). **The collapsed axis was `goalThreat` (median 13), NOT creation or defensive, which were the healthiest at 40 and 38** , this entry said the opposite for months. Full record in §D.
 3. **CARD + DESIGN-LOCK.** Wire the Proof off hardcoded Bruno; K5 trajectory VV-line chart; refined-crest shield; card-reveal flip; G/A colours; glance-on-phone. Identity line + defender flag.
 4. **CONTENT + HONESTY.** [DONE 2026-08-07] VV Index honesty/method section , the nine prose blocks are now scannable cards (icon + gist + `<details>` fold), Principles is ABSORBED into it, and the section is retitled **"The Method, and Its Limits"**: 6 strengths / 5 limits / 1 coda. See §F. REMAINING: VV Index explainer (content already drafted in the design log , lift it); five-dimensions radar voice; search empty/loading/no-result states; result-cap raise (250-500, "showing X of Y"); Data Confidence panel.
 5. **MOBILE + HYGIENE SWEEP.** Tag-crop sweep (390px); Playbook dark-mode revert; enforce green=Compare-only rule (see LOCKED RULES); badge colours; em-dash sweep (spaced comma house rule); **[OPEN , logged 2026-07-21] PLATFORM-WIDE CONTRAST PASS on secondary/body text** , muted grey secondary text on the cream light-mode surface reads washed out (fails legibility, not just aesthetics). Darken the muted greys (e.g. the #8a8276 / rgba(...,0.5) family) on light mode across card/compare/rankings/playbook so secondary text holds contrast; audit against WCAG AA. security/RLS + API-Football key rotation (exposed) + og/meta + social image + contact-form endpoint + OAuth published.
@@ -436,7 +436,17 @@ Ten of twelve items are closed. **THREE OPEN THREADS, named here so they cannot 
 - **[CLOSED 2026-08-29, IT WAS ALREADY BUILT , THIS ITEM WAS STALE, NOT OUTSTANDING.] DESKTOP MY CLUB COMING-SOON.** `myclub.html` carries a full coming-soon treatment and has since **`9f5c21e`** ("coming-soon overlay , card-back wall replaces the fabricated locker"): a "Coming soon" eyebrow, the value line, an email capture with a Notify button, and a failure message that KEEPS the typed address. **The §D text saying it "still presents as a live page with no coming-soon treatment" was wrong when I re-read it, and would have caused a rebuild of shipped work.**
   - **THE ONE REAL RESIDUE IS A DECISION, NOT A BUG, AND IT IS LUCAS'S: the two coming-soon surfaces use two different treatments.** `iwonder.html` uses `.comingpill` , a pink pill, 1px border, glowing dot. `myclub.html` uses `.mceyebrow` , plain gold uppercase text, no pill, no dot. **Both are deliberate-looking and neither is broken.** Unifying them is a visual change to a live page, so it is not being made silently. **§C's sibling-states rule applies: if they are unified, look at both together at the size they ship at, not one in isolation.**
   - **STILL TRUE FROM THE ORIGINAL ITEM: `myclub.html` has no active bottom-nav tab but IS still in the hamburger drawer on all nine pages**, so it remains publicly reachable. That is consistent with a coming-soon page and is not a defect.
-- **[OPEN] THE OVERLAID RADAR RENDERS AS TWO NARROW SPIKES**, on BOTH card and compare. **NOT a redesign bug** , Creation, Progression and Defensive read ~0 because `RADAR_REF` (vv-core.js) is still the PROVISIONAL placeholder cap set. **Closing it is the parked percentile-within-position work**, the same dependency as the Proof percentile column.
+- **[CLOSED 2026-09-05] THE OVERLAID RADAR RENDERED AS TWO NARROW SPIKES**, on BOTH card and compare. **Scaling is now PERCENTILE WITHIN POSITION POOL** , `RADAR_POOL_REF` in `vv-core.js`, generated by `scripts/gen-radar-ref.js`. The four fixed `RADAR_REF` constants are gone.
+  - **MEASURED BEFORE AND AFTER, all 57,055 cards.** The pool gap that was the whole defect is closed: **goalThreat median CB 6 / ST 40 became CB 48 / ST 46**, and every pool now centres near 50 on every axis by construction. **Radars with at most two axes reaching 25/100 fell from 10,395 (28.9% of rendered) to 8,625 (24.6%)**.
+  - **THE REMAINING 24.6% IS NOT THE SAME DEFECT AND MUST NOT BE "FIXED" THE SAME WAY.** Decomposed: **34% of it (2,930 cards) is NR-limited** , only three axes measured, so three strong axes are impossible by construction , and the other **5,695 (16.3% of rendered) genuinely sit low across four or five measured axes.** In a percentile system a below-average season is SUPPOSED to draw small. Driving this number to zero would mean re-inflating the scale.
+  - **IT IS STAGE ONE OF TWO, BY DECISION.** `RADAR_POOL_REF` is an EMBEDDED SNAPSHOT with the same standing hazard as `KEEPER_SAVE_LADDER` , **nothing warns you when it goes stale, so regenerate it after any re-ingest, the transfer-halves repair, or a position backfill.** Real `percent_rank` columns land at the shared matview rebuild. **The snapshot uses FRACTION STRICTLY BELOW, which is what Postgres `percent_rank` returns**, precisely so that swap moves nobody's radar.
+  - **KEEPERS NOW SUPPRESS EVERYWHERE, AND THIS FIXED A LIVE COMPARE DEFECT.** `card.html` always swapped in the keeper panel, but **`compare.html` never gated on position at all, so 966 keeper cards drew an outfield pentagon** (GK pool medians: goalThreat 0, creation 3, defensive 2). The gate is now in `radarFor` itself, so every surface inherits it. **`raw` goes null too, not just `scaled`**, because `raw` is what the AI prompt cites.
+  - **NULL-POOL CARDS FALL BACK TO THE COARSE DEF/MID/FWD, which is the engine's own convention** (`pos_pct` and `posvol_pct` already partition on `COALESCE(s.pool, s.pos)`). **This does NOT breach the §C null-pool rule, which is scoped to IDENTITY TAGS** , a percentile is a comparison, not a claim that a player occupies a position. Worth 3,123 radars: 35% of cards carry no pool, but 84.4% of those already suppress.
+  - **STILL OPEN, DELIBERATELY OUT OF SCOPE: the three unused denominators.** `shots_total`, `dribbles_attempts` and `duels_total` are on the matview and well populated 2015+ (87.7% / 89.2% / 93.3%), so the radar plots successes as rates and **never accuracy**. Adding them changes what the five dimensions MEAN, which touches the Playbook copy, the AI prompt payload and every cached verdict. **`passes_accuracy` is the fourth and is NOT usable** , §E records it as invalid rather than sparse.
+  - **[CORRECTED 2026-09-05. THIS ENTRY NAMED THE WRONG THREE AXES AND WOULD HAVE SENT A SESSION TO FIX THE HEALTHY ONES.]** It read *"Creation, Progression and Defensive read ~0"*. Measured with the shipped `radarFor` over all 57,055 cards, those are the **healthiest** axes , median scaled **creation 40, defensive 38, progression 36**. **The collapsed axis is `goalThreat`, median 13**, and reliability sits at 44.
+  - **THE CAUSE IS NOT THAT THE CONSTANTS ARE TOO HIGH, IT IS THAT THERE ARE ONLY FOUR OF THEM FOR EIGHT POOLS.** `RADAR_REF` is one denominator set applied to every position, so an axis that is central to one pool and irrelevant to another is scored on the same bar. **On that single denominator, goalThreat reads a median of 6 for CB and 40 for ST**; defensive reads 41 for CB and 21 for ST. Raising or lowering a shared constant moves both together and cannot fix either.
+  - **THE MEASURED SYMPTOM IS 28.9% OF RENDERED RADARS HAVING AT MOST TWO AXES REACH 25/100** , 10,395 of 35,972. That is the "two narrow spikes", counted.
+  - **THE NR BEHAVIOUR IS CORRECT AND IS NOT PART OF THIS DEFECT , DO NOT "FIX" IT.** A dimension is NR when ANY input is absent and 37.0% of cards suppress the chart entirely (21,083). That is the platform's own NR rule working, and the comment block in `radarFor` records what it cost to get right.
 - **[OPEN] PREMIUM TRAJECTORY , Option 3** (VV score in its own lane, bars in the lower ~70%, a slim sparkline strip above with its own mini-axis). Needs the vertical room a redesign allows. Shared renderer `VVCore.renderTrajectory`, so any change must be checked on card AND compare.
 
 ### OPEN , CARRIED OUT OF THE 2026-08-11/13 SESSION LOGS BEFORE THEY WERE ARCHIVED (2026-08-14)
@@ -465,7 +475,7 @@ Four read-only questions about what a comparison persists to Supabase. **EXPECTE
 Nothing below is launch-blocking. This is the INDEX; the detail lives in `POST_LAUNCH.md`.
 - Premium/motion pass; accounts/Locker (waitlist for now); language toggle EN/NL/FR.
 - **ACCOUNTS / AUTH STAGE** , spec in `ACCOUNTS_STAGE_SPEC.md` (unchanged, not moved). Nothing built; `migrations/waitlist_emails.sql` stays untracked until this stage starts.
-- **THE PROOF , PERCENTILE COLUMN (Path 1, post-launch enhancement) , POINTER KEPT LIVE, TWO ACTIVE ITEMS DEPEND ON IT.** Launch Proof is TRIMMED (per-90 + minutes/apps denominator, no percentile). **NOT a data gap** , every stat is on the mv (2015+). Gated on THREE PRODUCT DECISIONS (pool: 8-bucket vs coarse / cross-league vs per-league / minutes threshold), then ~8 `percent_rank()` columns appended to `player_card_view`, matview refresh, `rowToCard` + `renderProof`. **COPY TRAP: the engine percentiles are GLOBAL/cross-league, so it must read "vs the position pool 2015+", NEVER "in the league".** Depended on by **§D PARALLEL item 1** (share the matview DROP+CREATE , one sitting) and by the **Compare-redesign radar note** (§C RADAR_REF, the two-narrow-spikes radar is blocked on the same percentile-within-position work). Full spec in `POST_LAUNCH.md`.
+- **THE PROOF , PERCENTILE COLUMN (Path 1, post-launch enhancement) , POINTER KEPT LIVE, TWO ACTIVE ITEMS DEPEND ON IT.** Launch Proof is TRIMMED (per-90 + minutes/apps denominator, no percentile). **NOT a data gap** , every stat is on the mv (2015+). Gated on THREE PRODUCT DECISIONS (pool: 8-bucket vs coarse / cross-league vs per-league / minutes threshold), then ~8 `percent_rank()` columns appended to `player_card_view`, matview refresh, `rowToCard` + `renderProof`. **COPY TRAP: the engine percentiles are GLOBAL/cross-league, so it must read "vs the position pool 2015+", NEVER "in the league".** Depended on by **§D PARALLEL item 1** (share the matview DROP+CREATE , one sitting). **NO LONGER BLOCKS THE RADAR** , the radar shipped its own per-pool percentile snapshot on 2026-09-05 and does not wait on these columns; when they land, `radarFor` should read them instead of `RADAR_POOL_REF`, and the semantics were chosen to match so nothing moves. Full spec in `POST_LAUNCH.md`.
 - **VV INDEX / PLAYBOOK PAGE SPLIT** , the two pages duplicate the 5 bands, the 5 dimensions, and now BOTH render their own pentagon. Long-term answer = split; LAUNCH ships Path B instead. Full analysis in `POST_LAUNCH.md`.
 - **PREMIUM PASS** , Compare season-dropdown rows as mini VV cards; VV Index motion ideas (incl. the HARD RULE that limitation disclosures stay STILL). `POST_LAUNCH.md`.
 - **January mid-season DUAL-CARD , RESOLVED 2026-07-21: NOT dual cards. ONE season, ONE row, SUMMED.** Rationale + the 82%-artifact finding in `POST_LAUNCH.md`.
@@ -542,6 +552,76 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-09-05 | The radar was one denominator for eight pools, and the doc named the wrong axes
+
+**1. SCALING IS NOW PERCENTILE WITHIN POSITION POOL.** The four fixed `RADAR_REF` constants
+served all eight pools at once, so an axis central to one position and irrelevant to another
+was divided by the same number. **Measured over all 57,055 cards: goalThreat had a median of
+6 for CB and 40 for ST on that one denominator**, while defensive ran the other way, 41 to 21.
+No value of a shared constant could have fixed either , it moves both together. After:
+**CB 48 / ST 46**, every pool near 50 on every axis by construction. Radars with at most two
+axes reaching 25/100 fell **10,395 (28.9% of rendered) to 8,625 (24.6%)**.
+
+**2. THE REMAINING 24.6% IS NOT THE SAME DEFECT AND MUST NOT BE DRIVEN TO ZERO.** 2,930 of
+them (34%) measure only three axes, so three strong axes are impossible by construction ,
+that is the NR rule working. The other **5,695 (16.3% of rendered) genuinely sit low across
+four or five measured axes**, and in a percentile system a below-average season is SUPPOSED
+to draw small. Re-inflating this number means re-inflating the scale.
+
+**3. `RADAR_POOL_REF` IS AN EMBEDDED SNAPSHOT AND NOTHING WARNS YOU WHEN IT GOES STALE.**
+**`scripts/gen-radar-ref.js` regenerates it** , 21 breakpoints per axis per pool, built from
+25,901 cards of 900+ minutes. **REGENERATE IT AFTER THE TRANSFER-HALVES REPAIR AND AFTER ANY
+POSITION BACKFILL**, both of which are queued: the repair moves 968 material cards' per-90
+rates in BOTH directions, and a backfill moves cards between pools, which changes the
+distribution they are scored against AND the one they leave.
+**THIS IS THE SECOND SNAPSHOT OF ITS KIND ON THE PLATFORM. `KEEPER_SAVE_LADDER` IS THE
+FIRST, AND IT CARRIES THE IDENTICAL HAZARD.** Two is a class, not a coincidence , when a
+future session runs a population-moving write, BOTH have to be regenerated in that pass, and
+neither will complain if they are not.
+**THE SEMANTICS ARE FRACTION STRICTLY BELOW, WHICH IS WHAT POSTGRES `percent_rank` RETURNS**,
+chosen so the eventual swap to real matview columns moves nobody's radar. Mid-rank would have
+shifted every card on the day the columns landed and read as a regression.
+
+**4. A LIVE COMPARE DEFECT, FIXED IN THE SAME PASS: 966 KEEPER CARDS DREW AN OUTFIELD RADAR.**
+`card.html` always swapped in the keeper panel; **`compare.html` never gated on position at
+all**, and `vvComputeSpokes` only asks that both sides measured an axis. GK pool medians say
+what it looked like: goalThreat 0, creation 3, defensive 2. **Percentile scaling would have
+made this worse**, turning a visibly empty chart into a confident one built out of nothing.
+The gate is now in `radarFor` itself so every surface inherits it, and **`raw` goes null too,
+not just `scaled`, because `raw` is what the AI prompt cites.**
+
+**5. THREE SURFACES CARRIED COPY THE CHANGE MADE FALSE, AND ONLY ONE SELF-HEALED.**
+`card.html`'s note was gated on `radar.provisional` and went blank on its own.
+**`compare.html`'s was set UNCONDITIONALLY, so it would have told visitors the dimensions are
+"not percentiles" on the day they became percentiles** , nothing would ever have switched it
+off. `playbook.html` asserted in prose that the caps were still provisional. **A scaling
+change is a COPY change, and the copy does not track the code.** Compare also gained the
+sentence that case needs: each card is scored against its own pool, so a centre-back and a
+striker can both show a full defensive spoke without contradiction.
+
+**6. §C AND §D HAD THE SYMPTOM BACKWARDS FOR MONTHS.** They recorded *"Creation, Progression
+and Defensive read ~0"*. Measured, those were the **healthiest** axes at 40, 36 and 38;
+**goalThreat, at 13, was the collapsed one.** A session acting on that entry would have gone
+to fix the three axes that were working. Both entries corrected, and §D CLOSED rather than
+only corrected , left as `[OPEN]` it would have sent the next session to rebuild shipped work.
+
+**VERIFIED, RENDERED AND MEASURED:** the live card note reads "Each dimension is a percentile
+against other ST seasons we can measure, not an absolute rate" (§C's copy trap forbids "in
+the league", and it does not say it). `node --check` plus a require-and-assert-export on
+vv-core; `lint-inline` clean. **The highest-risk failure is the two `poolKeyFor` copies
+diverging, so it was tested directly: 0 differences across all 57,055 rows, and a planted
+divergence produced 856**, so the harness can see drift. Token bumped to `20260905k` on all
+five shipping surfaces, found by `grep -l` rather than the count written in the rule.
+
+**NEXT / OPEN:** **The three unused denominators are deliberately NOT done.** `shots_total`,
+`dribbles_attempts` and `duels_total` are on the matview and well populated 2015+ (87.7% /
+89.2% / 93.3%), so the radar plots successes as rates and **never accuracy**. Adding them
+changes what the five dimensions MEAN , Playbook copy, the AI prompt payload, and every
+cached verdict, since the version is a fingerprint of the prompt. **`passes_accuracy` is the
+fourth and is NOT usable**, see §E. Ruled a separate decision, with the numbers already
+measured. **The Proof percentile columns still need the shared matview sitting; the radar no
+longer waits on them.**
 
 ### 2026-09-01 | The truncation limit was measured, and it does not exist
 

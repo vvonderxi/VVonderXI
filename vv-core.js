@@ -706,20 +706,83 @@
     return null;
   }
 
-  // ── Radar (Contract §4): 5 per-90 spokes, raw + provisional 0-100 ─────
-  // Real scaling is percentile-within-position, PARKED until distributions
-  // land (Blueprint §7). RADAR_REF caps are PROVISIONAL placeholders only.
+  // ── Radar (Contract §4): 5 per-90 spokes, raw + percentile-within-pool 0-100 ─────
+  /*  SCALING IS PERCENTILE WITHIN POSITION POOL. This replaced four fixed constants
+      (goalThreat 1.5, creation 2.6, progression 4.0, defensive 8.0) that served all eight
+      pools at once, and the flaw was structural rather than a matter of the values being
+      wrong: an axis central to one position and irrelevant to another was divided by the
+      same number. MEASURED before the change, over all 57,055 cards: goalThreat had a
+      median of 6 for CB and 40 for ST on that one denominator, while defensive ran the
+      other way, 41 for CB and 21 for ST. Raising or lowering a shared constant moves both
+      together, so no value of RADAR_REF could have fixed either. 28.9% of rendered radars
+      had at most two axes reaching 25/100 , that is the "two narrow spikes", counted.
+      NOTE FOR ANYONE READING AN OLD DOC: CLAUDE.md recorded the collapsed axes as creation,
+      progression and defensive. That was backwards , they were the HEALTHIEST at 40, 36 and
+      38. goalThreat, at 13, was the collapsed one. Corrected in §C and §D on 2026-09-05.  */
   const RADAR_NR_MAX = 3;   // suppress the chart at this many unmeasured axes , see radarFor
-  const RADAR_REF = { goalThreat:1.5, creation:2.6, progression:4.0, defensive:8.0 };
   // INTERIM cosmetic cap , no radar dimension displays a fake-perfect 100 (mirrors the rt ceiling).
-  // Remove/replace when percentile-within-position scaling lands (parked, Blueprint §7).
   const RADAR_CAP = 97;
+
+  /*  RADAR_POOL_REF IS AN EMBEDDED SNAPSHOT AND NOTHING WARNS YOU WHEN IT GOES STALE ,
+      the same standing hazard as KEEPER_SAVE_LADDER, recorded in §D for the same reason.
+      REGENERATE IT with `node scripts/gen-radar-ref.js` after anything that moves the card
+      population materially: a re-ingest, the transfer-halves repair, a position backfill.
+      The generator is committed beside it so these numbers can be re-derived rather than
+      trusted, and it carries the full rationale.
+      SHAPE: per pool, per axis, 21 breakpoints at every 5th percentile of the RAW per-90
+      composite. Built from 25,901 cards of 900+ minutes, because a per-90 rate off 200
+      minutes is noise that would fatten both tails of the bar everyone else is judged
+      against. Scoring is NOT gated , every card is scored, whatever its minutes.
+      THIS IS STAGE ONE OF TWO, BY DECISION. Real percent_rank columns land at the shared
+      matview rebuild, alongside the known-as fold, the Proof percentiles and the second-club
+      column. The semantics here are FRACTION STRICTLY BELOW precisely so that swap changes
+      nothing , mid-rank would have shifted every card's radar on the day the columns landed
+      and read as a regression.  */
+  var RADAR_REF_MIN_MINUTES = 900, RADAR_REF_STEP = 5;
+  var RADAR_POOL_REF = {
+    CB:{g:[0,0.011,0.018,0.024,0.031,0.043,0.052,0.061,0.07,0.079,0.087,0.097,0.106,0.116,0.128,0.142,0.159,0.18,0.207,0.254,0.912],c:[0.026,0.095,0.142,0.175,0.202,0.228,0.252,0.281,0.315,0.346,0.384,0.425,0.479,0.548,0.633,0.734,0.846,0.979,1.152,1.428,3.473],p:[0.076,0.741,0.85,0.928,0.994,1.042,1.091,1.138,1.188,1.23,1.276,1.335,1.388,1.454,1.513,1.587,1.678,1.785,1.935,2.213,4.523],d:[0.14,1.974,2.226,2.414,2.581,2.718,2.839,2.96,3.069,3.183,3.3,3.425,3.552,3.694,3.833,4.011,4.21,4.445,4.728,5.232,10.713]},
+    FB:{g:[0,0.01,0.016,0.022,0.029,0.038,0.048,0.058,0.067,0.077,0.086,0.095,0.106,0.119,0.13,0.145,0.161,0.183,0.214,0.27,0.693],c:[0.045,0.216,0.294,0.378,0.455,0.527,0.59,0.646,0.71,0.768,0.825,0.886,0.958,1.03,1.092,1.176,1.279,1.393,1.585,1.883,3.574],p:[0.109,0.729,0.856,0.938,1.012,1.069,1.127,1.178,1.231,1.289,1.338,1.392,1.451,1.529,1.62,1.704,1.795,1.914,2.09,2.37,5.295],d:[0.126,2.009,2.282,2.48,2.64,2.803,2.94,3.087,3.217,3.336,3.466,3.625,3.745,3.87,3.993,4.136,4.33,4.561,4.851,5.27,15.155]},
+    CDM:{g:[0,0.023,0.038,0.056,0.069,0.081,0.096,0.11,0.128,0.14,0.155,0.173,0.191,0.212,0.234,0.262,0.293,0.331,0.386,0.471,1.045],c:[0.055,0.379,0.472,0.551,0.606,0.664,0.727,0.791,0.859,0.922,0.977,1.039,1.125,1.23,1.331,1.475,1.618,1.806,2.034,2.357,5.345],p:[0.125,0.861,1.004,1.107,1.192,1.262,1.33,1.39,1.454,1.516,1.573,1.635,1.703,1.79,1.865,1.952,2.046,2.167,2.392,2.68,4.967],d:[0.096,1.901,2.263,2.534,2.719,2.871,3.02,3.155,3.292,3.454,3.59,3.734,3.893,4.053,4.227,4.405,4.612,4.825,5.168,5.648,7.666]},
+    CM:{g:[0,0.026,0.05,0.076,0.095,0.114,0.132,0.153,0.171,0.192,0.214,0.238,0.266,0.291,0.32,0.355,0.391,0.438,0.5,0.607,1.182],c:[0.076,0.456,0.586,0.672,0.766,0.837,0.913,0.991,1.069,1.147,1.244,1.329,1.413,1.497,1.61,1.739,1.863,2.022,2.261,2.604,4.822],p:[0,0.874,1.034,1.136,1.224,1.31,1.389,1.463,1.552,1.629,1.699,1.775,1.864,1.959,2.063,2.174,2.307,2.47,2.68,3.09,7.481],d:[0.1,1.584,1.906,2.14,2.333,2.497,2.661,2.796,2.937,3.09,3.231,3.386,3.563,3.723,3.91,4.137,4.376,4.654,5.001,5.524,9.485]},
+    CAM:{g:[0,0.06,0.105,0.138,0.175,0.204,0.229,0.265,0.294,0.323,0.354,0.383,0.42,0.457,0.499,0.544,0.593,0.64,0.711,0.81,1.536],c:[0.222,0.633,0.788,0.888,0.964,1.063,1.142,1.207,1.286,1.368,1.456,1.555,1.658,1.75,1.872,2.01,2.152,2.359,2.671,3.114,5.021],p:[0.017,0.977,1.173,1.299,1.415,1.532,1.647,1.74,1.84,1.968,2.05,2.166,2.265,2.358,2.484,2.663,2.846,3.039,3.354,3.848,5.508],d:[0.12,1.291,1.555,1.706,1.858,1.978,2.118,2.268,2.379,2.518,2.688,2.861,3.008,3.125,3.255,3.437,3.643,3.954,4.369,4.946,8.283]},
+    Winger:{g:[0,0.048,0.092,0.13,0.166,0.2,0.237,0.277,0.309,0.344,0.382,0.422,0.457,0.506,0.555,0.603,0.665,0.736,0.832,0.99,1.973],c:[0.032,0.592,0.751,0.844,0.935,1.003,1.083,1.164,1.238,1.32,1.399,1.475,1.588,1.676,1.79,1.91,2.018,2.196,2.452,2.782,5.271],p:[0.021,0.807,0.983,1.114,1.233,1.328,1.433,1.523,1.634,1.725,1.83,1.936,2.049,2.18,2.313,2.473,2.631,2.859,3.184,3.735,8.449],d:[0.112,1.129,1.384,1.575,1.719,1.87,2.003,2.132,2.247,2.359,2.485,2.612,2.761,2.905,3.05,3.241,3.447,3.738,4.106,4.657,7.876]},
+    ST:{g:[0.051,0.238,0.316,0.366,0.407,0.447,0.482,0.521,0.554,0.59,0.621,0.659,0.696,0.737,0.782,0.843,0.906,0.98,1.092,1.265,2.244],c:[0.121,0.574,0.677,0.754,0.822,0.882,0.942,1.004,1.062,1.112,1.163,1.224,1.287,1.36,1.446,1.528,1.653,1.814,2.034,2.376,5.195],p:[0.019,0.581,0.7,0.801,0.869,0.944,1.018,1.099,1.183,1.271,1.35,1.442,1.528,1.652,1.783,1.923,2.108,2.312,2.605,3.106,7.532],d:[0.305,0.773,0.916,1.023,1.114,1.203,1.282,1.36,1.437,1.524,1.61,1.692,1.778,1.89,2.024,2.145,2.285,2.471,2.708,3.041,5.729]},
+    DEF:{g:[0,0,0,0.01,0.015,0.021,0.027,0.033,0.045,0.052,0.062,0.072,0.084,0.096,0.108,0.121,0.14,0.16,0.184,0.231,0.579],c:[0.07,0.167,0.219,0.258,0.292,0.332,0.375,0.433,0.505,0.566,0.614,0.685,0.77,0.826,0.897,0.978,1.048,1.159,1.295,1.707,2.628],p:[0,0.213,0.497,0.659,0.739,0.796,0.868,0.924,0.992,1.059,1.115,1.172,1.258,1.318,1.398,1.472,1.58,1.718,1.896,2.273,4.464],d:[0.104,2.557,3.159,3.423,3.704,3.943,4.147,4.291,4.437,4.612,4.772,4.96,5.147,5.334,5.535,5.693,5.932,6.133,6.56,7.157,9.295]},
+    MID:{g:[0,0.015,0.03,0.05,0.069,0.083,0.104,0.128,0.146,0.16,0.179,0.201,0.228,0.251,0.274,0.308,0.354,0.398,0.461,0.549,1.106],c:[0.097,0.381,0.502,0.603,0.683,0.794,0.873,0.954,1.037,1.123,1.21,1.303,1.407,1.529,1.631,1.776,1.906,2.087,2.278,2.549,4.032],p:[0.005,0.241,0.638,0.85,0.998,1.113,1.211,1.304,1.399,1.504,1.641,1.735,1.818,1.922,2.052,2.174,2.372,2.593,2.848,3.299,5.491],d:[0.156,1.68,2.229,2.466,2.779,3.102,3.296,3.475,3.663,3.94,4.218,4.449,4.746,5.007,5.266,5.55,5.808,6.111,6.575,7.092,13.904]},
+    FWD:{g:[0.021,0.169,0.243,0.291,0.338,0.372,0.41,0.438,0.464,0.491,0.519,0.54,0.572,0.614,0.646,0.685,0.736,0.798,0.869,0.959,1.398],c:[0.291,0.614,0.739,0.87,0.926,0.974,1.016,1.087,1.128,1.179,1.252,1.352,1.423,1.483,1.546,1.648,1.743,1.951,2.139,2.407,3.259],p:[0.007,0.395,0.603,0.672,0.801,0.92,1.016,1.088,1.21,1.338,1.45,1.59,1.701,1.915,2.091,2.273,2.487,2.706,3.086,3.852,5.712],d:[0.42,0.902,1.094,1.273,1.416,1.513,1.601,1.772,1.887,1.993,2.084,2.203,2.389,2.491,2.69,2.808,3.003,3.275,3.756,4.153,5.356]}
+  };
+  /*  poolKeyFor MUST STAY BYTE-EQUIVALENT TO scripts/gen-radar-ref.js's COPY. A card scored
+      against a distribution built for a different population is the quietest possible defect
+      here: every number still renders, none of them errors, and the shape is simply wrong.
+      COARSE FALLBACK IS DELIBERATE AND IT IS THE ENGINE'S OWN CONVENTION , pos_pct and
+      posvol_pct already partition on COALESCE(s.pool, s.pos). 35% of cards carry no
+      position_pool, though 84.4% of those already suppress for want of granular stats, so
+      the fallback is worth 3,123 radars rather than a third of the database.
+      IT DOES NOT BREACH §C'S NULL-POOL RULE. That rule forbids a coarse fallback on IDENTITY
+      TAGS, which assert that a player OCCUPIES a position. A percentile asserts a comparison,
+      not an occupancy, and it degrades gracefully: DEF is a coarser peer group than CB, not a
+      false one.
+      A CARD WITH NEITHER A POOL NOR A USABLE COARSE VALUE GETS NULL, AND ITS AXES GO NR.
+      Under-scoring is correct here; inventing a peer group is not.  */
+  var RADAR_POOLS = ['CB','FB','CDM','CM','CAM','Winger','ST','DEF','MID','FWD'];
+  function poolKeyFor(row){
+    var pool = row && row.position_pool, pos = String((row && row.position) || '').toUpperCase();
+    if (pool === 'GK' || pos === 'GK') return null;          // keepers never get an outfield radar
+    if (pool && RADAR_POOLS.indexOf(pool) !== -1) return pool;
+    if (pos === 'FOR') return 'FWD';                          // §E: 36 cards carry the fifth coarse value
+    if (pos === 'DEF' || pos === 'MID' || pos === 'FWD') return pos;
+    return null;
+  }
+
   function radarFor(row){
     /*  A SPOKE WITH NO DATA MUST NOT RENDER AS ZERO. This is the platform's own NR rule
         (SS B: NR for missing data, never 0) and the radar was the one place breaking it.
         THE WHOLE DEFECT WAS ONE LINE: `p90` returned 0 for a null input, so absence became
-        zero at the FIRST step, before scaling and before RADAR_REF. The placeholder caps are
-        a separate problem and fixing them would not have fixed this.
+        zero at the FIRST step, before scaling and before the reference lookup. The scaling
+        was a separate problem and fixing it would not have fixed this. (It has since been
+        fixed too: the four placeholder RADAR_REF constants named here are gone, replaced by
+        RADAR_POOL_REF above. This paragraph is kept as written because it records a
+        different defect.)
         MEASURED: Messi 11/12, 50 goals and 16 assists, rendered creation 8 and progression 0
         out of 100. Not an absent value , a WRONG one, on 36.4% of cards.
 
@@ -730,12 +793,50 @@
 
         A RECORDED ZERO STAYS ZERO. A keeper who scored 0 goals has a true 0, not an NR. The
         test is whether the FIELD IS NULL, never whether the value is falsy.  */
+    /*  A KEEPER GETS NO RADAR, ON ANY SURFACE. §D locked this for the card and card.html has
+        always honoured it by swapping in the keeper panel , but compare.html never gated on
+        position at all, so 966 keeper cards were drawing an outfield pentagon there, and the
+        pool medians say what it looked like: goalThreat 0, creation 3, defensive 2. Not one
+        of the five dimensions asks about keeping goal, so the shape was a statement about
+        what a goalkeeper is not.
+        PERCENTILE SCALING WOULD HAVE MADE THIS WORSE RATHER THAN BETTER. Ranking keepers
+        against keepers on tackles and dribbles turns a visibly empty chart into a confident
+        one built out of nothing, which is the more dangerous of the two failures.
+        RAW GOES NULL TOO, NOT JUST SCALED, because raw is what the AI prompt cites. Leaving
+        the numbers there would keep feeding an outfield reading of a goalkeeper to the model
+        while the chart that exposed it was hidden.  */
+    if (poolKeyFor(row) == null && String(row.position || '').toUpperCase() === 'GK'){
+      return { raw:{ goalThreat:null, creation:null, progression:null, defensive:null,
+                     reliability:Math.round(Math.min(100,((row.minutes||0)/(38*90))*100)*10)/10 },
+               scaled:{ goalThreat:null, creation:null, progression:null, defensive:null,
+                        reliability:Math.min(RADAR_CAP, Math.round(Math.min(100,((row.minutes||0)/(38*90))*100))) },
+               nr:4, suppressed:true, provisional:false };
+    }
     const m = row.minutes || 0;
     const p90 = v => (m>0 && v!=null) ? (v/m)*90 : null;
     const r2 = v => v==null ? null : Math.round(v*100)/100;
-    const sc = (v,ref) => v==null ? null : Math.max(0, Math.min(RADAR_CAP, Math.round(v/ref*100)));
     const comp = terms => terms.some(t => t[0]==null) ? null
                         : terms.reduce((a,t) => a + t[1]*t[0], 0);
+    /*  FRACTION STRICTLY BELOW, WHICH IS WHAT POSTGRES percent_rank RETURNS. Ties at the
+        bottom therefore score 0 rather than the middle of their run, and that is the honest
+        reading as well as the compatible one: a centre-back who took no shots all season is
+        not at the 30th percentile of shooting just because most centre-backs join him.  */
+    const pool = poolKeyFor(row);
+    const ref  = pool ? RADAR_POOL_REF[pool] : null;
+    const pct = (v, bps) => {
+      if (v == null || !bps) return null;              // no value, or no pool to compare within
+      const last = bps.length - 1;
+      if (v <= bps[0]) return 0;
+      if (v >= bps[last]) return RADAR_CAP;
+      for (let i = 1; i <= last; i++){
+        if (v <= bps[i]){
+          const lo = bps[i-1], hi = bps[i];
+          const frac = hi > lo ? (v - lo) / (hi - lo) : 0;
+          return Math.max(0, Math.min(RADAR_CAP, Math.round(((i-1) + frac) * RADAR_REF_STEP)));
+        }
+      }
+      return RADAR_CAP;
+    };
 
     const goalThreat  = comp([[p90(row.goals),1],[p90(row.shots_on),0.3]]);
     const creation    = comp([[p90(row.passes_key),1],[p90(row.assists),0.5]]);
@@ -743,11 +844,15 @@
     const defensive   = comp([[p90(row.tackles_total),1],[p90(row.interceptions),1],[p90(row.duels_won),0.1]]);
     const reliability = Math.min(100, (m/(38*90))*100);   // raw availability, not per-90 , TRUE 100 for a full season
 
+    /*  RELIABILITY IS NOT PERCENTILED AND THAT IS DELIBERATE. The other four are per-90
+        RATES, which mean nothing until you know what is normal for the position; minutes
+        played out of a full season is already an absolute 0-100 that reads correctly on its
+        own, and it is the one axis a keeper and a striker can share honestly.  */
     const scaled = {
-      goalThreat:sc(goalThreat,RADAR_REF.goalThreat),
-      creation:sc(creation,RADAR_REF.creation),
-      progression:sc(progression,RADAR_REF.progression),
-      defensive:sc(defensive,RADAR_REF.defensive),
+      goalThreat:pct(goalThreat, ref && ref.g),
+      creation:pct(creation, ref && ref.c),
+      progression:pct(progression, ref && ref.p),
+      defensive:pct(defensive, ref && ref.d),
       reliability:Math.min(RADAR_CAP, Math.round(reliability))
     };
     /*  SUPPRESS AT THREE. With three or more axes unmeasured a card has at most two real
@@ -763,9 +868,12 @@
         defensive:r2(defensive), reliability:Math.round(reliability*10)/10
       },
       scaled: scaled,
+      pool: pool,          //  which distribution this card was scored against, for the disclosure
       nr: nr,
       suppressed: nr >= RADAR_NR_MAX,
-      provisional: true
+      /*  provisional:false , the caps are no longer placeholders. Left on the object rather
+          than removed because consumers read it; it is now a live flag, not a constant.  */
+      provisional: false
     };
   }
 

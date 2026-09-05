@@ -793,8 +793,9 @@
   /* ── Five Dimensions , STATIC schematic pentagon + definitions ──────────────
      Deliberately self-contained: no vv-core dependency, no tabs/panels/pulse.
      A regular symmetric pentagon that plots NOBODY , it illustrates the five
-     axes. (The real radar still scales against provisional RADAR_REF caps, so a
-     shape implying measurement here would promise what the data cannot deliver.)
+     axes. (The real radar scales by percentile within position pool as of
+     2026-09-05; this schematic still plots nobody, because a shape implying
+     measurement on an explainer page would read as a specific player's card.)
      Side labels anchor OUTWARD so they never sit on their own vertex. */
   .pgwrap{margin-top:6px}
   .pgsvg{display:block;width:100%;max-width:430px;margin:0 auto}
@@ -1161,14 +1162,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260905j"></script>
+<script src="/vv-marks.js?v=20260905k"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260905j"></script>
+<script src="/vv-core.js?v=20260905k"></script>
 <script>
   function toggleStory(e,btn){ e.stopPropagation(); const card=btn.parentElement; const open=card.classList.toggle('open'); if(!btn.dataset.label) btn.dataset.label=btn.innerHTML; btn.innerHTML = open ? 'Show less &#8249;' : btn.dataset.label; }
 

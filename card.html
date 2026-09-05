@@ -1097,8 +1097,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260905j"></script>
-<script src="/vv-core.js?v=20260905j"></script>
+<script src="/vv-marks.js?v=20260905k"></script>
+<script src="/vv-core.js?v=20260905k"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1182,8 +1182,12 @@
       for(let i=0;i<N;i++){ const[x,y]=pt(i,R+22); const nrq=sc[KEYS[i]]==null;
         g+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Archivo" font-size="10.5" font-weight="700" fill="${nrq?'#a09a90':'#6a6256'}" text-anchor="middle">${labels[i]}${nrq?' , NR':''}</text>`; }
       svg.innerHTML=g;
-      if(note) note.textContent = rad.provisional
-        ? 'Shape is provisional: the dimensions are scaled against reference values, not percentiles.'
+      /*  THE DISCLOSURE NAMES THE POOL, AND §C's COPY TRAP GOVERNS THE WORDING: these are
+          GLOBAL percentiles within a position, so it must never read "in the league". The
+          old text said the dimensions were "scaled against reference values, not
+          percentiles", which was true of the four fixed constants and is false now.  */
+      if(note) note.textContent = (rad.pool && !rad.suppressed)
+        ? 'Each dimension is a percentile against other ' + rad.pool + ' seasons we can measure, not an absolute rate.'
         : '';
     }
   function vvWallPaint(btn){ var t=btn.querySelector('.wp-txt'); if(t) t.textContent=btn.classList.contains('on')?'On your wall':'Add to my wall'; }
