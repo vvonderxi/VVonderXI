@@ -450,7 +450,7 @@ should stand in their place?**
 **DEMOS REQUIRED, BOTH THEMES, AND CHECK card AND compare TOGETHER** , `renderTrajectory` and the
 keeper panels are shared renderers, so a change lands on two surfaces at once.
 
-## Q4. THE PLAYBOOK GOALKEEPER SECTION IS TEXT-ONLY AND SITS THIRD OF ELEVEN (verified, measured)
+## Q4. [BOTH DECISIONS CLOSED 2026-09-05] THE PLAYBOOK GOALKEEPER SECTION WAS TEXT-ONLY AND SAT THIRD OF ELEVEN
 
 **Measured across all eleven playbook sections:** `s-gk` is **466 words with ZERO svg**. Its two
 neighbours both carry a visual , `s-dim` (The 5 Dimensions) is 434 words with 1 svg, `s-card` is 471
@@ -458,10 +458,22 @@ words with 2 svg. **So it is the only one of the three heavyweight opening secti
 look at**, and it arrives immediately after The 5 Dimensions, which is exactly the placement Lucas
 describes as heavy.
 
-**Order today:** s-vv, s-dim, **s-gk**, s-card, s-wonder, s-prestige, s-honours, s-profile,
+**Order was:** s-vv, s-dim, **s-gk**, s-card, s-wonder, s-prestige, s-honours, s-profile,
+s-verdict, s-pct, s-conf.
+**Order now:** s-vv, s-dim, **s-card**, **s-gk**, s-wonder, s-prestige, s-honours, s-profile,
 s-verdict, s-pct, s-conf.
 
-**TWO SEPARATE DECISIONS, AND THEY SHOULD BE MADE TOGETHER:**
+**BOTH DECISIONS BELOW ARE NOW MADE. Kept in full because the reasoning is the record, and
+because the argument against burying the section still governs any future move.**
+- **The visual treatment SHIPPED** (`eea09e2`, then `a6054c9`): the section now draws de Gea
+  17/18's 143 shots as 143 marks, 115 gold and 28 outlined, and a 1,920-tick ladder with the
+  marker on his 14th. **466 words with zero svg is no longer true of it.**
+- **The position MOVED, to FOURTH , after The Card, not after Verdicts.** The keeper section
+  argues by negation (no radar, the 75 cap, a different measurement set) and none of that
+  lands until the reader has seen a normal card. **Fourth is not buried**, which is what the
+  argument below rules out; ninth would have been.
+
+**THE ORIGINAL FRAMING, PRESERVED:**
 - **A visual treatment.** The keeper card already ships a percentile ladder and a saved-versus-
   conceded bar (`VVCore.keeperPanelHTML`). **Reuse the real component rather than drawing a
   picture of it** , §C's display-case lesson is that two drawings of one thing drift and nothing
@@ -471,9 +483,13 @@ s-verdict, s-pct, s-conf.
   vvindex's honesty framing rules out. **Moving it is defensible; moving it because it is awkward
   is not.**
 
-**ALSO STILL OPEN FROM THE GK BUILD:** `s-gk` has no mark in `vv-marks.js` and renders its glove
-emoji through the deliberate `pbMarks` fallback, and `vvindex.html` still describes the five
-dimensions as applying to every card.
+**ALSO FROM THE GK BUILD , ONE STALE, ONE STILL OPEN.** The claim that `s-gk` has no mark in
+`vv-marks.js` and falls through to the glove emoji is **WRONG and contradicted 214 lines below
+in this same file**, which recorded it as closed on 2026-08-30. Verified again 2026-09-05:
+`vv-marks.js` carries an `'s-gk'` symbol and the playbook renders `<use href="#vvm-section-s-gk">`
+at runtime. The `&#129508;` in the markup is the pre-JS fallback, not what ships.
+**STILL GENUINELY OPEN:** `vvindex.html` still describes the five dimensions as applying to
+every card.
 
 ---
 
