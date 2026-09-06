@@ -821,6 +821,29 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   body.light .vsect .tmeta, body.light .vsect .wtsechead{ color:var(--gold-ink) }
   .vsect .tjpeak{ fill:#F3DA88 }
 
+  /*  THE HEAD-TO-HEAD NUMBERS GO NEUTRAL AND THE BARS KEEP THE A/B CODING , 2026-09-06.
+      .hav was --pink-ink and .hbv --blue, which is the identity pair: pink means player A,
+      blue means player B. On the green panel they measured 2.56 and 1.47 against a 4.5 bar
+      (12px/900 is not WCAG large). These are NOT covered by the A/B identity exception in
+      SS C, and the boundary is the reason: that exception covers elements RECOGNISED for
+      identity, where the name is written out beside them. These are the VALUES , 96 against
+      81 , and a number is READ. Nothing else on the row carries it.
+      LIFTING THE HUES WAS MEASURED AND REJECTED. To clear 4.5 on rgb(28,96,56) the pink has
+      to travel 52% toward white (#F8B7C9, 4.52) and the blue 63% (#B6CAE2, 4.50). That works
+      on paper and destroys the thing the colour exists for: RGB separation between the two
+      collapses from 185 to 73, and the lifted pair measures 1.01 AGAINST EACH OTHER. Buying
+      legibility by making A and B nearly the same tone is the wrong trade on the one pair
+      whose whole job is telling them apart.
+      So identity moves to the BARS instead. .ha and .hb are large blocks of colour carrying
+      the same pink and blue, they are not text, and no contrast bar applies to them. The
+      signal keeps the channel that does not have to be legible; the numbers take the one
+      that does. Rendered side by side before choosing.
+      BOTH THEMES, DELIBERATELY. Light did not fail , .hav is #AD0332 at 5.2 and .hbv
+      #3B6FB0 at 4.85 on the cream panel , but this is a design decision about where identity
+      lives, not a contrast patch, and applying it to one theme only would make the two
+      structurally different. --vs-muted flips correctly: 4.79 dark, 6.55 light.  */
+  .vsect .h2hbar .hav, .vsect .h2hbar .hbv{ color:var(--vs-muted) }
+
   .settlerow{display:flex;justify-content:center;margin:22px auto 0;max-width:920px}
   .settlerow .settle{width:100%;max-width:340px}
 
