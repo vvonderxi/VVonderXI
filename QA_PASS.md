@@ -270,11 +270,33 @@ remaining hardcoded inks to the token and the gold pair.
 | after `43290d0` (now) | **18** | **9** |
 
 **WHAT REMAINS, THREE GROUPS, AND ONLY ONE IS A CONTRAST QUESTION:**
-- **A/B IDENTITY COLOURS , 9 of the 18 in dark, ZERO in light. NOT A DEFECT TO PATCH.** Pink
-  `rgb(241,104,142)` and blue `rgb(59,111,176)` carry WHICH PLAYER a value belongs to across the
-  whole surface, so changing them changes what a player is here. `13c5fc0` ruled this a brand
-  decision and it stays one. Classes: `.vsname`, `.vtname`, `.vc-n`, `.vp-a`, `.vp-b`, `.hav`,
-  `.hbv`, `.ttl`.
+- **A/B IDENTITY COLOURS , ACCEPTED EXCEPTION, RULED 2026-09-06, AND THE BOUNDARY IS THE POINT.**
+  Pink `--pink-ink` `rgb(241,104,142)` means player A and blue `--blue` `rgb(59,111,176)` means
+  player B across the whole compare surface. **CONFIRMED TWICE INDEPENDENTLY** , `13c5fc0` reached
+  the same conclusion in August, before this pass existed, and called it a brand decision rather
+  than a contrast patch. This is not a new ruling; it is the second arrival at the same one.
+  - **COVERED , four classes, worst 1.47:** `.vsname` (nth-child 1 pink / 2 blue), `.vtname.tA/.tB`,
+    `.vproof-head .vp-a/.vp-b`, `.vc-n` via `.vc-a/.vc-b`. **THE REASON IS NOT "identity matters
+    more than contrast". IT IS THAT EVERY ONE OF THESE WRITES THE NAME OUT** , measured on a
+    Messi vs Haaland pair they read "Messi · 11/12 · Barcelona", "Haaland", "Messi", "Haaland".
+    The colour is a tint on text that already identifies the player, the card sits directly above
+    with the same name and score, and column position repeats it again. Nothing is colour-only.
+  - **THIS IS A BOUNDARY, NOT A BLANKET, AND IT ALREADY EXCLUDES TWO THINGS THAT WEAR THE SAME
+    COLOURS. Any element in pink or blue that carries information nothing else carries is NOT
+    covered and is measured normally:**
+    - **`.ttl` IS NOT COVERED AND IS NOT EVEN IDENTITY-CODED. 2.37, 20 elements.** Its pink comes
+      from `.tagrow .tt{color:var(--pink-ink)}` , a tag-title style. **Checked: ZERO of the 20 has
+      a blue variant**, so it does not distinguish A from B at all, and it carries the honour name
+      ("Ballon d'Or", "Golden Boot"), which is the content. **A colour-match heuristic put it in
+      this group; looking at what sets the colour took it out.**
+    - **`.hav` / `.hbv` ARE identity-coded and are STILL NOT COVERED. 1.47 and 2.56.** They are
+      the head-to-head values , measured, 96 against 81 , and the number IS the row's content.
+      These are READ, not recognised, which is exactly what the exception does not cover.
+  - **DEGENERATE CASE WORTH KNOWING: comparing two seasons of the SAME player** (Messi 11/12 vs
+    Messi 14/15) makes `.vtname` read "Messi" on both sides, so the name stops distinguishing and
+    only column position and the season string in `.vsname` do. The exception still holds, but its
+    "the name is written beside it" justification is weaker there. **Do not extend it further on
+    that basis.**
 - **TWO "NOT RECORDED" INDICATORS, DIMMED BY ELEMENT OPACITY , `.h2hlabel` 2.75 dark / 2.51 light
   (opacity .6) and `.h2hbar-nr` 3.43 / 3.66 (opacity .75).** The ink is correct; the element alpha
   compounds with it. **This is the same shape as the Proof losing values `13c5fc0` kept at 0.55,
