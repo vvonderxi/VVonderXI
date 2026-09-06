@@ -859,7 +859,18 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       the green panel, so the same ink has to be measured against whatever they do sit on
       before anything is changed. Two files carrying one rule is the drift this codebase
       keeps paying for; it is logged here rather than silently half-fixed.  */
-  .vsect .tagrow .tt{ color:var(--vs-muted) }
+  /*  [CORRECTED 2026-09-06, SAME DAY] The first version of this used var(--vs-muted) and the
+      harness re-run caught it at 4.48 , 0.02 UNDER the bar. The panel is not the ground here:
+      .tagrow paints its own rgba(255,255,255,0.03) overlay, which lifts the green from
+      rgb(28,96,56) to rgb(35,101,62) and costs 0.31. --vs-muted needs alpha 0.805 on that
+      ground and carries 0.80. A rule measured against the panel is not measured against a
+      row that sits on the panel.
+      FULL CREAM IS ALSO THE RIGHT ANSWER, not just the passing one: .td, this row's own
+      description text, is already opaque var(--cream) at 5.82, so a muted title would have
+      rendered DIMMER THAN ITS OWN BODY TEXT. Light already passed at 6.77 and keeps the
+      token.  */
+  .vsect .tagrow .tt{ color:var(--cream) }
+  body.light .vsect .tagrow .tt{ color:var(--vs-muted) }
 
   .settlerow{display:flex;justify-content:center;margin:22px auto 0;max-width:920px}
   .settlerow .settle{width:100%;max-width:340px}
