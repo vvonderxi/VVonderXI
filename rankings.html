@@ -301,7 +301,7 @@
 
   /* ===== Prestige whole-card treatment (SUB-STEP A: rankings only) ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
-  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) rgba(232,184,75,0.7), inset 0 0 0 calc(var(--cw)*0.025) #16120e !important}
 
   /* ===================== LIGHT MODE (mirrors dark, colours flip) ===================== */
   body.light{color:var(--charcoal);--ink-soft:#5f594e;--row-muted:#5f5a52;--row-muted-2:#655f54;--row-dim:#6a6256;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
@@ -415,8 +415,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906e"></script>
-<script src="/vv-core.js?v=20260906e"></script>
+<script src="/vv-marks.js?v=20260906f"></script>
+<script src="/vv-core.js?v=20260906f"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the

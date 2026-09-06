@@ -3315,7 +3315,7 @@ body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, va
     width. The prestige faces below already sit at 55% and never overflowed, so they are
     left alone. This is a real change to every card face at every width, made deliberately:
     the photo is the only element on the face carrying no information. */
-.vvcard .cimg{width:56%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
+.vvcard .cimg{width:42%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
 .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
 body.show-photos .vvcard .cimg .cphoto{display:block}
@@ -3388,7 +3388,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
-.vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
+.vvcard.gen .cimg,.vvcard.iconic .cimg{width:42%;margin-top:calc(var(--cw)*0.005)}
 .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
 .vvcard.gen .vv .a{color:#F0EAD9}
 .vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
@@ -3409,8 +3409,8 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
      rankings, so nothing moves, and preferences/myclub carry a DRIFTED rim (a flat 1.5px
      outline instead of the gold inset, no !important) which is its own decision, logged in
      SS D rather than silently overwritten here. */
-  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
-  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #E8B84B, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) rgba(232,184,75,0.7), inset 0 0 0 calc(var(--cw)*0.025) #16120e !important}
+  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) rgba(42,29,3,0.55), inset 0 0 0 calc(var(--cw)*0.025) #E8B84B !important}
 .vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
 .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
 .vvcard.iconic .vv .a{color:#2a1d03}
@@ -3457,35 +3457,42 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvm{width:1em;height:1em;flex:none;vertical-align:-0.12em}
 .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
 .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
-/*  THE OVERFLOW HAS TO GO SOMEWHERE, AND IT COMES OFF THE PHOTO'S WIDTH , NOT ITS HEIGHT.
-    .ctop is pinned above, so on a narrow card the surplus needs another home, and .cimg is
-    the largest element on the face and the only one whose loss costs nothing readable.
+/*  THE PHOTO IS 42% AT EVERY WIDTH, AND THIS USED TO BE A @media (max-width:720px)
+    OVERRIDE OVER 56% / 55% BASES. THE VIEWPORT WAS THE WRONG KEY , 2026-09-06.
+    THE OVERFLOW HAS TO GO SOMEWHERE, AND IT COMES OFF THE PHOTO'S WIDTH , NOT ITS HEIGHT.
+    .ctop is pinned above, so the surplus needs another home, and .cimg is the largest
+    element on the face and the only one whose loss costs nothing readable.
     IT MUST STAY SQUARE. Letting it shrink vertically (flex-shrink:1) also frees the height
     and is one line shorter, and it was tried and rejected: aspect-ratio loses to flex, so the
     window went landscape below 720 and stayed square above it. A card that is square on
     desktop and landscape on mobile is two different objects, and the card is the product.
     Narrowing the width takes the same height out and keeps the ratio, because the height is
     derived from the width through aspect-ratio:1/1.
-    42% IS SET BY THE WORST CARD, NOT BY EYE. The surplus is chip rows: a three-tag card is
-    the heaviest and needs about 24px back at --cw:145px, which is 19 points of the content
-    width. 60% - 19 lands at 41%, and 42 is the measured value at which every test card
-    clears with .ctop at its declared height and nothing else shrinking. Lighter cards give up
-    more than they strictly need; that is the price of one number instead of a per-card one.
-    THIS SITS AT THE END OF THE SHEET ON PURPOSE. A media query adds NO specificity, so the
-    wrapped .vvcard .cimg and the base .vvcard .cimg are both (0,2,0) and the LAST one wins.
-    Placed before the base rule it would parse, validate, and silently do nothing. That
-    trap has bitten this repo three times and is recorded in section C; the fix is position,
-    not !important. */
-@media (max-width:720px){
-  /*  THE TIER SELECTORS ARE REPEATED HERE BECAUSE SPECIFICITY, NOT ORDER, DECIDES THIS ONE.
-      .vvcard.gen .cimg and .vvcard.iconic .cimg set width:55% at (0,3,0). A lone
-      .vvcard .cimg override is (0,2,0) and LOSES to them however late it is written , which
-      is the same trap as the media query, one rung up. Measured before this line existed:
-      the plain card took 42% and Messi's Generational card stayed at 55%, 69px, and his card
-      then overflowed its own box by 10px because .ctop was pinned and nothing else gave.
-      Both prestige faces take the same 42%, so every tier is one object again. */
-  .vvcard .cimg,.vvcard.gen .cimg,.vvcard.iconic .cimg{width:42%}
-}
+    42% IS STILL SET BY THE WORST CARD, NOT BY EYE , the surplus is chip rows and a
+    three-tag card is the heaviest.
+
+    WHY THE MEDIA QUERY WENT. The crowding is a function of --cw, and --cw is NOT a function
+    of the viewport. Measured on the live pages: with the photo at its old widths the club
+    line sat INSIDE the inner rim at EVERY size , clearance -14.7 / -12.0 / -9.2 / -6.8 /
+    -4.1 / -3.6 / -5.4 px at --cw 145 / 165 / 190 / 220 / 260 / 300 / 330. A plain card is
+    the same story once it carries three tags: clear at 0, 1 and 2 tags (+6.6 at 220, +9.0 at
+    300) and -8.0 / -6.7 at three. None of that was reachable by the old rule, because the
+    pages that render a small card on a LARGE viewport never matched max-width:720px.
+    rankings.html:226 is the case that proves it , it sets --cw:165px on
+    (max-width:720px),(max-height:600px), and the max-height branch fires on a wide, short
+    desktop window where the 42% override did not. rankings.html:237 does the same at 190px.
+    So the override protected the phone and left the identical card cropping on a laptop.
+
+    AND THE CLEARANCE CANNOT COME FROM ANYWHERE ELSE. .cname is margin-top:auto and that
+    margin computes to 0px at 145, 260, 300 AND 330 , there is no free space to reallocate,
+    which is why adding margin-bottom to .cname does nothing and why padding-bottom on
+    .vvcard measures IDENTICAL to base at all four sizes. Both were tried and measured. The
+    photo is the only source. Do not retry either.
+
+    42% costs the lighter cards photo they did not need: at 220 and above they were already
+    at the slack ceiling (+6.6 / +9.0) and stay there. That is the price of one number
+    instead of a per-card one, and it is the same trade the old comment already accepted.  */
+.vvcard .cimg,.vvcard.gen .cimg,.vvcard.iconic .cimg{width:42%}
 `;
   function vvInjectCardCSS(){
     if (typeof document === 'undefined') return;
