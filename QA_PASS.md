@@ -245,28 +245,70 @@ reproduces at 3.89 on every run) and the results are below.**
 | rankings | 116 | 0 | 0 |
 | index | 14 | 0 | 2 |
 
-**COMPARE IS THE FINDING, AND IT IS NOT A HANDFUL OF ELEMENTS. 49 failures across 19 DISTINCT
-classes in dark**, concentrated on the green `.vsect` panel. Confirmed by two independent methods
-that agree: the muted ink `rgba(243,237,224,0.55-0.58)` lands at **3.1 to 3.3 by CSS arithmetic
-and 3.4 to 4.0 by pixel** against the gradient `rgb(28,96,56)` to `rgb(15,58,34)`. Worst repeat
-offenders: `.vsect-t` section headings x7 at **3.37**, `.vsect-d` descriptions x6 at **3.45**,
-`.h2hlabel` x5 at **2.14**, `.vp-va`/`.vp-vb` Proof values x7 at **2.49** against a 3.0 bar,
-`.h2hbar-nr` x3 at **2.47**, `.ttl` x3 at **2.88**.
-- **`.tjcap` IS THE CLEANEST SINGLE CASE AND IT IS SECTION C'S OWN RULE: an ink pinned to a
-  ground that moves.** The caption's gold `#E8B84B` is FIXED, while `.vsect` is a green gradient
-  in dark and solid cream `rgb(251,248,242)` in light. **Gold on the light panel measures 1.74**,
-  and the pixel method returned 1.74 independently. **Pre-existing; the class and its gold predate
-  the keeper work, which only changed the text inside it.**
-- **The light theme is far healthier (11 failures, 5 classes) because the panel goes cream and
-  most inks flip with it.** The green panel in DARK is where the problem lives.
+**[SUPERSEDED 2026-09-06. THIS BLOCK USED TO RECORD 49 FAILURES ACROSS 19 CLASSES AS THE CURRENT
+STATE, AND DID SO FOR A WEEK AFTER THEY WERE FIXED.** `13c5fc0` (2026-08-29) raised the muted family to alpha 0.80 in one scoped rule the same
+day this table was written, taking dark from **49 failures across 19 classes to 27 across 15**, and
+this document was never updated. It also still said "NOTHING HERE WAS FIXED." **Grep the tree before
+citing a recorded finding: this file said 49 while the fix had been in the branch for a week.**]
+
+**AND THE INSTRUMENT IT CREDITED WAS NEVER COMMITTED.** The status line above credits a pixel
+harness for the playbook run. It is not in the repo, on any branch, in any history , the only
+tracked contrast tool is `_audit.js`. **`_audit.js` returned ZERO failures and 151 unmeasurable on
+compare.html in dark**, because `bgOf()` bailed on any `background-image` ancestor and `.vsect` is a
+gradient, so the whole panel was discarded. That is a false clean on the one surface with known
+failures. **Fixed in `1ddaaa9`** , gradients composited and scored against every stop, element
+opacity folded into the alpha, SVG text read via `fill`, opacity-0 elements skipped. Zero
+unmeasurable now.
+
+**RE-MEASURED 2026-09-06 WITH THE FIXED HARNESS, both themes, 173 elements.** `43290d0` routed the
+remaining hardcoded inks to the token and the gold pair.
+
+| | dark | light |
+|---|---|---|
+| before `13c5fc0` | 49 failures / 19 classes | 11 / 5 |
+| after `13c5fc0` | 27 / 15 | , |
+| after `43290d0` (now) | **18** | **9** |
+
+**WHAT REMAINS, THREE GROUPS, AND ONLY ONE IS A CONTRAST QUESTION:**
+- **A/B IDENTITY COLOURS , 9 of the 18 in dark, ZERO in light. NOT A DEFECT TO PATCH.** Pink
+  `rgb(241,104,142)` and blue `rgb(59,111,176)` carry WHICH PLAYER a value belongs to across the
+  whole surface, so changing them changes what a player is here. `13c5fc0` ruled this a brand
+  decision and it stays one. Classes: `.vsname`, `.vtname`, `.vc-n`, `.vp-a`, `.vp-b`, `.hav`,
+  `.hbv`, `.ttl`.
+- **TWO "NOT RECORDED" INDICATORS, DIMMED BY ELEMENT OPACITY , `.h2hlabel` 2.75 dark / 2.51 light
+  (opacity .6) and `.h2hbar-nr` 3.43 / 3.66 (opacity .75).** The ink is correct; the element alpha
+  compounds with it. **This is the same shape as the Proof losing values `13c5fc0` kept at 0.55,
+  except those are 19px/900 and clear the LARGE bar of 3.0, while these are small text against 4.5
+  and cannot clear it at any dimming worth having** , 0.80 undimmed is 4.79, so the budget is spent
+  before dimming starts. **Readable or dimmed, not both. Lucas's call.**
+- **FIVE CHIPS AND PILLS AT 4.20 to 4.37** , `.l` (card-face G/A label), `.mvtag`, `.eflabel`,
+  `.chtagcell.gold`, `#vEdgeTag`. Same family as the card-face chips §C already accepts at 2.04 and
+  2.34 and the `.chtag-att` "Clinical" at 3.88 recorded below. **Rule them together or not at all.**
+- **THE TWO PINK CTAs REPORT 2.16 AND THAT NUMBER IS A BOUND, NOT A READING.** `.settle` and
+  `.vshare-main` are white on `linear-gradient(#E70443,#FF8FA3)`; the harness scores the worst stop,
+  and the glyphs may sit over the dark end. **§C records this exact family being got wrong in BOTH
+  directions. Confirm against rendered pixels before acting.**
+
+**CLOSED BY `43290d0`, measured against the lighter green stop and the light panel's solid
+`rgb(251,248,242)`:** `.vc-sub` 2.43, `small#vradarNote` 2.81, `.vp-l` 3.93, `.vc-x` 4.08, `.vk`
+4.42 all to **4.79**; `.tmeta` 3.38, `.wtsechead` 4.10, `.tjpeak` 4.10 all to **5.47** on `#F3DA88`.
+**Light was where the gold showed:** `.tmeta` **1.59** and `.tjpeak` **1.74** on the cream panel,
+both now 5.90 , and `.tjpeak` was invisible to every previous run because it is SVG.
+
+**`.tjcap` IS THE CLEANEST SINGLE CASE AND IT IS SECTION C'S OWN RULE: an ink pinned to a ground
+that moves.** Fixed in `13c5fc0`; it is now the control this pass validates against, reproducing
+5.47 dark and 5.90 light by two independent methods.
 
 **INDEX, light only: `.tag` 2.65 and `.pk` 2.49, both 19px** , the home-page brand line
 "Every Season Tells a Different Story" with "Story" in pink. Dark is clean.
 
 **RANKINGS IS CLEAN** , 116 elements per theme, zero failures, cards and chrome.
 
-**NOTHING HERE WAS FIXED.** These are findings, and the compare set in particular is a design
-decision about the green panel's muted-ink family rather than a set of one-line patches.
+**[CORRECTED 2026-09-06. THIS LINE READ "NOTHING HERE WAS FIXED" AND WAS FALSE FROM THE DAY IT WAS
+WRITTEN.** `13c5fc0` landed the same day and `43290d0` finished the job; the compare set above is
+re-measured. **CARD, VVINDEX, INDEX AND RANKINGS ARE STILL FINDINGS ONLY AND ARE NOT FIXED** , the
+card-face chips, `.chtag-att` 3.88, and index's `.tag` 2.65 / `.pk` 2.49 all stand. The compare
+muted-ink family was indeed one decision rather than nineteen patches, which is how it was taken.]
 
 **PREVIOUS PROGRESS NOTE, superseded:**
 - **CARD , 20 elements per theme, ONE failure in each and it is the same one:** `.chtag-att`
