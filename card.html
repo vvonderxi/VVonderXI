@@ -850,7 +850,10 @@
   #cardSearch .rankempty{text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.58)}
   body.light #cardSearch .rankempty{color:var(--ink-soft)}
 
-  /* MOBILE , full-width single column; desktop keeps the rankings grid (lifted below) */
+  /* MOBILE , Cards two-up (matching rankings), List and Compact stacked at every
+     width; desktop keeps the rankings grid for Cards (lifted below).
+     Was "full-width single column", an intent no rule ever implemented, and one
+     that stopped being true of Cards on 2026-09-06.  */
   @media (max-width:1040px){ #cardSearch{padding:14px 32px 0} }
   @media (max-width:720px){
     #cardSearch{padding:12px 18px 0}
@@ -975,7 +978,16 @@
       This is the same trap as rankings.html:218, one specificity class up: there it was
       two equal rules decided by source order, here an ID silently outranks three
       classes and no ordering would have helped.  */
-  @media (max-width:720px){ #cardSearch .cardgrid{grid-template-columns:1fr} }
+  /*  CARDS IS TWO-UP ON A PHONE, MATCHING rankings.html:226 , 2026-09-06. The first
+      version of this rule was a bare 1fr applying to every mode, which made Cards
+      genuinely one-up: measured, 1fr resolved to the full 263 / 293 / 317px track with
+      one 242-260px card per row and no overflow. That was one-up BY DESIGN, not one-up
+      by overflow, so the column COUNT was the defect and the fixed 225px tracks were
+      never the Cards problem , they were the pre-fix List/Compact measurement.
+      Scoped with :not(.pillmode):not(.compactmode), the same idiom as the two rules
+      below, so List and Compact keep the display:block above rather than inheriting a
+      column count and undoing f6ff686. (1,3,0), so it also clears the (1,1,0) grid rule.  */
+  @media (max-width:720px){ #cardSearch .cardgrid:not(.pillmode):not(.compactmode){grid-template-columns:repeat(2,1fr)} }
   #cardSearch .cardgrid.pillmode, #cardSearch .cardgrid.compactmode{display:block}
   #cardSearch .cardgrid:not(.pillmode):not(.compactmode) > div{display:flex;justify-content:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
   #cardSearch .cardgrid:not(.pillmode):not(.compactmode) > div:hover{transform:translateY(-8px)}
