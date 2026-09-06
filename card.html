@@ -961,6 +961,22 @@
   }
   #cardSearch .cardgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
   @media (min-width:1560px){#cardSearch .cardgrid{grid-template-columns:repeat(4,1fr)}}
+  /*  THE OVERLAY GRID IS FOR THE CARDS VIEW ONLY , 2026-09-06.
+      #cardSearch .cardgrid above is (1,1,0), and vv-core's stacking rule
+      .vvrows.vvrows.pillmode{display:block} is (0,3,0). AN ID BEATS ANY NUMBER OF
+      CLASSES, so display:grid won in List and Compact at EVERY width and the rows were
+      laid out in 3 columns (4 above 1560px). Measured overflow past the panel: 541px at
+      390 in List, 380 in Compact, and 2057 / 1897 at 1560. .cs-results is
+      overflow-x:hidden, so the extra columns were CLIPPED rather than scrollable , two
+      thirds of the results were simply invisible, on desktop as well as on a phone.
+      Cards was never affected (-31px at 390, 900 and 1560) and keeps the grid, which is
+      what the MOBILE comment above means by "desktop keeps the rankings grid".
+      A class-only override cannot fix this. Both rules below are at or above (1,1,0).
+      This is the same trap as rankings.html:218, one specificity class up: there it was
+      two equal rules decided by source order, here an ID silently outranks three
+      classes and no ordering would have helped.  */
+  @media (max-width:720px){ #cardSearch .cardgrid{grid-template-columns:1fr} }
+  #cardSearch .cardgrid.pillmode, #cardSearch .cardgrid.compactmode{display:block}
   #cardSearch .cardgrid:not(.pillmode):not(.compactmode) > div{display:flex;justify-content:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
   #cardSearch .cardgrid:not(.pillmode):not(.compactmode) > div:hover{transform:translateY(-8px)}
   #cardSearch .cardgrid .vvcard{cursor:pointer}
