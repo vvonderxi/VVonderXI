@@ -3217,7 +3217,24 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     element by construction.
     NO BACKTICKS IN THIS COMMENT , it lives inside the VV_CARD_CSS template literal, and the
     first draft of it ended the literal early. SS C records that exact failure. */
-.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01)}
+/*  ONE LINE, ALWAYS , 2026-09-06. The floor above is correct and must stay; the WRAP was
+    the defect. Every other thing on this face scales with --cw, but this line stops at
+    11.5px, so as the card shrinks the line grows relative to its box. At --cw 132 (a 360px
+    phone, two-up in rankings) the design size is 6.6px and the floor forces 11.5px, so
+    32 of 100 club lines wrapped to a second line. .cname is margin-top:auto and the flex
+    column has no slack left at that size, so the second line spilled 11.7px PAST the card
+    border, drawing over the inset rim , the reported "club names cut mid-glyph".
+    With one line the face fits with 2.3px to spare, so nowrap is the whole fix and the
+    contrast pass is untouched. Cost is horizontal: 32/100 lines ellipsise at 360, 14 at
+    390, 3 at 414, ZERO at --cw 260 and above (rankings 720px up, card.html at every width).
+    Truncation eats the age first, then the position. That is the price of one line.
+    THIS ALSO CLOSES A LATENT CASE ON compare.html, which was never reported: its cards run
+    --cw 145 at 390px, so the floor binds there too and a long club name would have wrapped
+    and spilled exactly as rankings did. Measured before the fix, not assumed.
+    DO NOT "fix" this by lowering the floor , fitting the longest string at 360 needs about
+    9.2px, below the 9.5px its sibling .cga .col .l was given in the same pass, and it still
+    leaves the face 2.3px off the edge. Same nowrap+ellipsis pattern as .vvrows .uclub. */
+.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
 .vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
