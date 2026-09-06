@@ -340,11 +340,29 @@ instrument that cannot reproduce them is not evidence about anything else on the
 # GROUP B , NEEDS THE LIVE DOMAIN, AFTER THE MERGE
 
 `vvonderxi.com` IS live and served by Vercel, so these are runnable the moment the merge deploys.
-**None of them can be run before it: the branch has never been deployed anywhere and no preview
-URL is recorded.**
 
-**ALL SIX ARE PARKED FOR POST-MERGE (confirmed 2026-08-28).** Each asserts a state that only
-exists once the branch is deployed, and the branch has never been deployed anywhere.
+**[SUPERSEDED 2026-09-06. A PREVIEW EXISTS AND FIVE OF THESE SIX HAVE NOW BEEN RUN ON IT.]** This
+section used to read "the branch has never been deployed anywhere and no preview URL is recorded"
+and "all six are parked for post-merge". Both were true when written; neither is true now.
+
+**THE PREVIEW HOST IS `https://vvonderxi-preview.vercel.app`, AND IT WAS CONTROLLED BEFORE ANY
+RESULT WAS TRUSTED.** A preview alias can point at any branch, including the holding page, in which
+case every result below would be measuring the wrong tree. Verified 2026-09-06: zero holding-page
+markers, twelve platform markers, and the served page carrying `vv-core.js?v=20260906a` , the exact
+cache token bumped in `0a4ad3e` that day. **The preview tracks `redesign-compare` at HEAD. Re-run
+that control before trusting any future preview result, because the alias can be repointed.**
+
+**WHAT A PREVIEW CAN AND CANNOT SETTLE.** It serves the same build, the same `vercel.json` and the
+same `api/` functions, so structure, routing and function execution are genuinely testable there.
+It CANNOT settle anything whose pass condition is "the deploy landed on the real domain", which is
+the whole purpose of Group D. **A preview pass PREDICTS a Group D pass. It does not replace one, and
+no D item is closed by anything in this section.**
+
+**ONE THING A PREVIEW CANNOT TEST AT ALL, AND IT IS NOT A DEFICIENCY OF THE HOST.** `og:url` and
+`og:image` are absolute `https://vvonderxi.com/...` literals in static markup, eighteen image
+references across nine pages. That is CORRECT , a preview must not advertise itself as canonical ,
+but it means the tags name production wherever they are served from. A preview can therefore verify
+their STRUCTURE and never their RESOLUTION against the host serving them.
 
 **BUT TWO WERE PRE-CHECKED AGAINST PRODUCTION TODAY, because they test infrastructure the merge
 does not change, and a failure in either would be a blocker nobody would discover until after
@@ -363,21 +381,25 @@ deploying:**
 ### B1. Production's title and brand line , RUN THIS FIRST
 - **Check:** the live title no longer says "Intelligence".
 - **How:** `curl -s https://vvonderxi.com/ | grep -oP '(?<=<title>)[^<]*'` and the same for `/card`, `/compare`, `/rankings`.
+- **STATUS 2026-09-06: PASS ON PREVIEW.** All nine pages, each carrying its own title: `/` Every Season Tells a Different Story, `/card` Player Cards, `/compare` Compare, `/rankings` Rankings, `/playbook` The Playbook, `/vvindex` VV Index, `/contact` Get in Touch, `/myclub` My Club, `/preferences` Preferences. **Zero occurrences of "Intelligence" and zero em or en dashes across all nine.** **D1 still stands as the post-deploy confirmation.**
 - **Pass:** every page carries its own title, none contains "Intelligence", none contains an em dash. **This is the defect every unfurled link has carried. It is the first thing to confirm and the reason this group is ordered.**
 
 ### B2. The full meta set landed
 - **Check:** 15 tags per page on nine pages, with per-page `og:url`.
 - **How:** `curl` each page, count `og:` and `twitter:` tags, extract `og:url`.
+- **STATUS 2026-09-06: PASS ON PREVIEW.** Nine pages, every one at **9 `og:` + 5 `twitter:` + 1 description**, and **nine UNIQUE `og:url` values, all absolute**. The ninth page is `contact.html`; **`iwonder.html` is NOT one of the nine and carries no meta set, which is correct and not a failure of this item.** **D2 still stands as the post-deploy confirmation.**
 - **Pass:** 9 `og:` + 5 `twitter:` + 1 description per page; nine UNIQUE absolute `og:url` values. **Production served 6 and 4 with `og:url` hardcoded to the bare domain, so a count of 6 means the deploy did not take.**
 
 ### B3. og:image actually resolves
 - **Check:** the referenced image is fetchable at the absolute URL.
 - **How:** `curl -sI https://vvonderxi.com/og-image.png`
+- **STATUS 2026-09-06: PASS, AND THIS ONE IS PRODUCTION-VERIFIED RATHER THAN PREVIEW-VERIFIED.** The tags name an absolute URL, so no deploy was needed. Measured against `https://vvonderxi.com/og-image.png`: **HTTP 200, `content-type: image/png`, 346,002 bytes, 1200x630, valid PNG signature.** The only item in this section that required nothing at all. **The ROUTING half of D3 is untouched by this and still waits on the merge.**
 - **Pass:** 200, `image/png`, 1200x630. **A tag pointing at a 404 unfurls as no image at all, which looks identical to having no tag.**
 
 ### B4. Extensionless routing
 - **Check:** `cleanUrls` serves the paths the meta tags claim.
 - **How:** `curl -s -o /dev/null -w '%{http_code}'` for `/card`, `/compare`, `/rankings`, `/playbook`, `/vvindex`.
+- **STATUS 2026-09-06: PASS ON PREVIEW.** 200 on all eight extensionless paths (`/card`, `/compare`, `/rankings`, `/playbook`, `/vvindex`, `/contact`, `/myclub`, `/preferences`), and the `.html` forms return **308**, which is `cleanUrls` behaving exactly as the note below describes. **Production was also probed and returned 404 on every path. That is the holding page's own catch-all rewrite, it measures nothing about this branch, and it must NOT be recorded as a failure of this item.**
 - **Pass:** 200 on each. **The og:url values are extensionless; if routing differs, every canonical URL is wrong.**
 - **`cleanUrls` IS LOAD-BEARING AND MUST NOT BE DROPPED , RULED 2026-08-31 after it was proposed and rejected on this item's own evidence.** All NINE pages carry an extensionless `og:url` (`/card`, `/compare`, `/rankings`, `/playbook`, `/vvindex`, `/myclub`, `/preferences`, `/contact`, `/`) and there is no static file at any of those paths, so **removing `cleanUrls` 404s every canonical URL and every link anyone has already shared.**
 - **THE 308 IS REAL BUT IT IS THE CHEAPER HALF OF THE TRADE.** 97 internal links still use `.html`, so every internal click takes a redirect to the clean path. **The fix is to rewrite the LINKS to extensionless, never to drop `cleanUrls`** , that also makes them agree with `og:url`. Queued, not done. **`search.html` is the one page with a `rel="canonical"`, and it points at `rankings.html`, which disagrees with the extensionless scheme; fold it into the same pass.**
@@ -386,11 +408,15 @@ deploying:**
 ### B5. Functions still deploy
 - **Check:** the function set survives the merge.
 - **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument. **`/api/db` IS GONE , deleted 2026-08-31 with `db.json`; do not probe it and do not restore it as a liveness check.**
+- **STATUS 2026-09-06: PASS ON PREVIEW.** `GET /api/get-seasons` with no argument returned **400 `{"error":"api_id required"}`** , the function's own guard, so it executed rather than 404ing. `vercel.json` carries no `functions` block or build override, so a preview builds `api/` identically to production; the branch ships exactly two, `analyse.js` and `get-seasons.js`. **D6 still stands as the post-deploy confirmation.**
 - **Pass:** `{"error":"api_id required"}` with 400 , the function's OWN guard is the proof it executed. **The deployed set is now TWO, `analyse` and `get-seasons`, and only `/api/analyse` has a caller.** **DO NOT probe the importers: `import-*` and `refresh-players` write to the database.**
 
 ### B6. The AI path works in production
 - **Check:** `/api/analyse` generates rather than falling back.
 - **How:** open a compare that is not in `verdict_cache` and watch for real prose.
+- **STATUS 2026-09-06: PASS ON PREVIEW, AND THE KEY QUESTION WAS SETTLED FIRST.** A Production-only key would make this VOID rather than failed, so it was established before anything was generated: the key check in `api/analyse.js` runs BEFORE `req.body` is read and returns a distinct `500 {"error":"ANTHROPIC_API_KEY not configured"}`. An empty POST returned **400 `{"error":"messages: Field required"}`**, past that gate, so **the key IS enabled for Preview** and the result is real rather than void.
+- **THE VERDICT IS TRIGGER-BASED, NOT AUTOMATIC, AND POLLING ON LOAD LOOKS LIKE A FAILURE.** The panel is `display:none` carrying scaffold text until the `.settle` button is clicked. Anyone re-running this who simply watches the page load will record a false failure.
+- **After the click: real prose, no outage line, loader replaced.** 414 characters, opening "Fifty goals to 48, 16 assists apiece, **97 to 96 on the VV Index**." That phrasing is rule A of the naming contract from `351d64f` working on a live deployment rather than only in the file. **One Anthropic call was made and one `verdict_cache` row written** , unavoidable for this item, and cheap because the same commit had already invalidated every cached verdict by fingerprint. **D5 still stands as the post-deploy confirmation.**
 - **Pass:** prose arrives and the panel does not show the outage line. **Vercel holds `ANTHROPIC_API_KEY`; the local `.env` may not, so this CANNOT be verified before deploy.**
 
 ---
@@ -588,6 +614,7 @@ immediately after, not the next day.**
 ### D4. The site loads and reads data
 - **Check:** cards render with real numbers from the matview.
 - **How:** open card, compare and rankings in a browser and look.
+- **PRE-VERIFIED ON PREVIEW 2026-09-06, STILL OPEN.** `vvonderxi-preview.vercel.app/rankings` rendered **100 rows of real matview data** , Messi 11/12 Barcelona ST 24, GENERATIONAL, BALLON D'OR, POTS, 50G 16A, VV 97. Real scores, tags, honours and photos, so the anon key and the matview grants work on that host. **THIS DOES NOT CLOSE D4.** Its pass condition is that the deploy landed on `vvonderxi.com`, and a preview cannot speak to that. Run it again after the merge.
 - **Pass:** real scores, tags and photos. **A denied matview SELECT returns EMPTY WITH NO ERROR, so an empty grid is a permissions symptom, not an empty database , check `pg_class.relacl`, never `role_table_grants`.**
 
 ### D5. The AI path works in production
