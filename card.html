@@ -1249,7 +1249,23 @@
     if(sb0) sb0.innerHTML=_wait;
     var sbox0=document.getElementById('scoutBox'); if(sbox0) sbox0.style.display='';
     try{
-      var LEAGUE_NAMES = { PL:'Premier League', PD:'La Liga', SA:'Serie A', BL1:'Bundesliga', FL1:'Ligue 1', DED:'Eredivisie', PPL:'Primeira Liga', ELC:'Championship', BSA:'Brasileirao' };
+      /*  THESE ARE THE NINE CODES THIS DATABASE ACTUALLY USES. The previous map was a
+          DIFFERENT PROVIDER'S VOCABULARY (PD, BL1, FL1, DED, PPL, ELC, BSA) and resolved
+          only 2 of our 9: PL and SA. For the other seven the `|| D.league` fallback below
+          fired and the AI was told the league was "LL", "BL", "L1", "PRT", "ERE", "BPL" or
+          "TR" , a bare code, in a payload whose whole purpose is to give the model context
+          it can write from. It also carried Championship and Brasileirao, which this
+          platform has never held a card for.
+          IT LOOKED HEALTHY BECAUSE THE FALLBACK IS SILENT. Nothing throws when a lookup
+          misses; the raw code just goes to the model and comes back as prose that never
+          names the competition.
+          NAMES MATCH THE `leagues` TABLE, NOT LEAGUE_FULL BELOW, which drifted to
+          "Jupiler Pro League" and "Süper Lig". One vocabulary, and the database owns it.
+          THE JOIN IS ON league_id, NOT CODE , the leagues row for the Turkish league has
+          code 'TSL' while cards carry 'TR'. Key anything new off the card's league_code,
+          which is what this map does; keying off leagues.code silently matches nothing.  */
+      var LEAGUE_NAMES = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga',
+        L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Belgian Pro League', TR:'Super Lig' };
       /* KEEPER FIGURES ARE ADDED ONLY FOR KEEPERS. The prompt used to tell the model no
          goalkeeping data existed. That was true until the 2026-08-19 matview rebuild and
          false afterwards , but the model still could not see the figures, because THIS
