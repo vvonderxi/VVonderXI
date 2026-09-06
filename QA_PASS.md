@@ -609,8 +609,15 @@ environment, which is itself the reason they are listed.
   **Vercel Pro is now on; redeploy Ready in 11s, `vvonderxi.com` assigned.** The branch ships
   **13** functions after the BSD retirement , still over Hobby's cap, so **Pro is what makes the
   merge deployable**, not the function reduction.
+  **[SUPERSEDED 2026-09-06, THE CAP HALF ONLY: THE BRANCH SHIPS 2, NOT 13**, after the
+  2026-08-31 sweep removed `auth.js`, `log.js` and `refresh-players.js` and `fd3adc0` removed
+  `db.js`. **So the cap is no longer what makes Pro necessary** , 2 is inside Hobby's 12.
+  **PRO IS STILL A PRE-LAUNCH REQUIREMENT AND THAT HAS NOT CHANGED**, for the OTHER reason §C
+  records: Hobby restricts the plan to non-commercial personal use. The sentence above is kept
+  because it is the correct account of why the build was failing in August; only its forward-
+  looking half is dead.]
 - **How:** the Vercel dashboard.
-- **Pass:** a plan that permits the deployed function count, and **Vercel Pro**, which §C records as a pre-launch requirement because Hobby restricts commercial use. **16 functions deploy and run today , proven by probing the live endpoints , but the plan behind that is not visible from the repo.**
+- **Pass:** a plan that permits the deployed function count, and **Vercel Pro**, which §C records as a pre-launch requirement because Hobby restricts commercial use. **[CORRECTED 2026-09-06: IT IS 2, NOT 16.** The 16 was PRODUCTION's count on 2026-08-30, when `vvonderxi_BIGGER` was still the pre-holding-page platform and was failing to build against Hobby's cap of 12. Production is now the merge (`4c8ce8a`) and ships **`api/analyse.js` and `api/get-seasons.js`** , counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls`. **The plan question the item exists to answer is unchanged and still needs the dashboard**; what changed is that the count is now far below any plan's cap, so the limit cannot be what blocks a deploy. Same stale-count family as C11's 6 -> 3.]**
 
 ### C7. OAuth published and `vercel.json` reviewed , **CLOSED 2026-09-06**
 - **Check:** both, before the DEPLOY (see the sequencing note below , not before the merge).
@@ -686,10 +693,56 @@ environment, which is itself the reason they are listed.
   earlier report of an anon-read hole was a probe error. See `SILENT_FAILURES.md`: a DENIED select
   under RLS returns `{data:[],error:null}`, so "no error" is not "permitted".
 
-### C8. The two open defects
+### C8. The two open defects , **CLOSED 2026-09-06 ON RE-MEASUREMENT, NOT ON A DECISION**
 - **Check:** decide each before merging.
 - **How:** **(1) "Save image appears to do nothing"** , covered by C1/C2; it may already be fixed by the bounded clipboard change. **(2) The overlaid radar rendering as two narrow spikes** on card and compare , this is NOT a redesign bug, it is the provisional `RADAR_REF` placeholder set, and it is visible on every card.
 - **Pass:** each is fixed, or consciously accepted and recorded as shipping. **The radar one is the more visible of the two and has no fix short of the parked percentile work , decide whether it ships.**
+
+- **[CLOSED 2026-09-06. NEITHER HALF WAS A DECISION, AND THE ITEM WAS ALREADY STALE WHEN IT WAS
+  WRITTEN.** Re-read against the tree rather than decided as worded. Evidence below, not a tick.]
+
+- **(1) IT IS NOT A DEFECT AWAITING A FIX, IT IS A FIX AWAITING CONFIRMATION , FOLDED INTO C1/C2,
+  WHICH ADD NOTHING TO IT AND LOSE NOTHING BY IT.**
+  - **THE DATING SETTLES IT: the bounded-clipboard change `0da9983` IS AN ANCESTOR of `4d8ac72`,
+    the commit that wrote this pass** , both 2026-08-27. So "it may already be fixed by the
+    bounded clipboard change" was hedging about a change already in the tree when the hedge was
+    written. **Check ancestry, not dates: same-day commits tell you nothing by their timestamps.**
+  - **`vvSaveImage` marks feedback at THREE points and the ORDER is the fix:** `mark(' Saving...')`
+    on click, then **`mark(' Saved')` UNCONDITIONALLY on success, BEFORE the clipboard promise
+    resolves** (its own comment: the save already happened, so say so first), then a toast either
+    way with copy that differs on whether the caption copy succeeded. That is the opposite of
+    "appears to do nothing".
+  - **WHAT IS LEFT IS A HUMAN EYE, WHICH IS EXACTLY C1 AND C2.** C2 clicks each control and
+    watches the label, the toast and the download; C1 times the toast at ~3.4s. **C8 adds no check
+    they lack.** Both still need Lucas: C1 records every automated attempt hitting
+    `visibilityState:"hidden"` with timers throttled ~18x, which MANUFACTURES this symptom, and C2
+    records the click tool delivering ZERO events to its own positive control.
+  - **§D still lists this as `[OPEN] BLOCKED ON A HUMAN EYE, NOT ON A FIX`, which is the accurate
+    framing and should stay.** Closing it here does not mean it has been seen working.
+
+- **(2) CLOSED OUTRIGHT , THE NAMED CAUSE NO LONGER EXISTS AND THE "PARKED" WORK SHIPPED.**
+  - **`RADAR_REF`, the placeholder this item blames, IS GONE.** It survives in the tree only inside
+    two comments in `vv-core.js` recording its removal. `RADAR_POOL_REF` replaced it.
+  - **`21204e5` (2026-09-05, an ancestor of the branch) shipped percentile-within-position-pool**,
+    which is the work this item calls parked.
+  - **MEASURED OVER ALL 57,055 CARDS: radars with at most two axes reaching 25/100 fell from
+    10,395 (28.9% of rendered) to 8,625 (24.6%).** The pool gap that WAS the defect is closed ,
+    goalThreat median CB 6 / ST 40 became CB 48 / ST 46.
+  - **"VISIBLE ON EVERY CARD" WAS NEVER TRUE** , 37% of cards suppress the chart entirely under
+    the NR rule. Worth noting because it is the kind of overstatement that makes an item feel
+    urgent.
+  - **AND IT CLOSED A LIVE COMPARE DEFECT THIS ITEM NEVER KNEW ABOUT: 966 keeper cards drew an
+    OUTFIELD pentagon**, because `compare.html` never gated the radar on position while
+    `card.html` always swapped in the keeper panel. The gate now lives in `radarFor`, so every
+    surface inherits it.
+
+- **PRESERVED DELIBERATELY , THE RESIDUAL 24.6% IS CORRECT BEHAVIOUR AND MUST NOT REOPEN THIS
+  ITEM.** A future session measuring radars will find that figure and it looks like the same
+  defect. It is not. Decomposed: **2,930 cards (34% of the remainder) are NR-LIMITED** , only
+  three axes measured, so three strong axes are impossible by construction , and **5,695 (16.3%
+  of rendered) genuinely sit low across four or five MEASURED axes.** In a percentile system a
+  below-average season is SUPPOSED to draw small. **Driving this number toward zero means
+  re-inflating the scale, which is the defect the percentile work removed.** Full record in §D.
 
 ### C9. The corrupt PL 2025/26 block
 - **Check:** whether the remaining rows ship.
