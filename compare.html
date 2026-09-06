@@ -844,6 +844,23 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       structurally different. --vs-muted flips correctly: 4.79 dark, 6.55 light.  */
   .vsect .h2hbar .hav, .vsect .h2hbar .hbv{ color:var(--vs-muted) }
 
+  /*  THE TAG TITLES GO NEUTRAL ON THE GREEN PANEL , 2026-09-06. .tagrow .tt is --pink-ink
+      and measured 2.37 on rgb(28,96,56) at 13px/800, under the 4.5 bar. Dark only: in light
+      it resolves to #AD0332 on the cream panel and passes.
+      THIS IS NOT THE A/B IDENTITY PAIR EVEN THOUGH IT WEARS THE SAME PINK, AND THAT WAS
+      CHECKED RATHER THAN ASSUMED: ZERO of the 20 .tt elements has a blue variant, so the
+      colour never distinguishes player A from player B. It is tag-title styling, and the
+      text is the honour name ("Ballon d'Or", "Golden Boot") , unique content. A colour-match
+      heuristic put it in the identity group; reading the RULE that paints it took it out.
+      Group by the rule, never by the computed value.
+      SCOPED TO .vsect , COMPARE ONLY, AND ON PURPOSE. `.tagrow .tt` is declared IDENTICALLY
+      in card.html:259 and here. That copy is an UNCHECKED DUPLICATE sitting on a DIFFERENT
+      GROUND, and this value is not assumed to serve there , the card's tag rows are not on
+      the green panel, so the same ink has to be measured against whatever they do sit on
+      before anything is changed. Two files carrying one rule is the drift this codebase
+      keeps paying for; it is logged here rather than silently half-fixed.  */
+  .vsect .tagrow .tt{ color:var(--vs-muted) }
+
   .settlerow{display:flex;justify-content:center;margin:22px auto 0;max-width:920px}
   .settlerow .settle{width:100%;max-width:340px}
 
