@@ -985,14 +985,34 @@
       out.pool_passes_per90_p80 = th.passes90_p80 != null ? th.passes90_p80 : null;
       out.pool_passes_per90_p90 = th.passes90_p90 != null ? th.passes90_p90 : null;
     }
+    /*  ══ FALLBACK C , WHAT THE MODEL RECEIVES ABOUT A KEEPER ═══════════════════════════
+        docs/KEEPER_FALLBACK_C_SPEC.md: "Fable receives recorded figures, band, evidence
+        status, and the limit sentence."
+
+        THE CAP FIELDS ARE GONE. rt_is_capped_at_75 and cap_reason told the model about a
+        number the platform no longer stands behind, and the spec retires that sentence
+        everywhere. Nothing here carries a keeper scalar now.
+
+        THE BAND IS SENT AS A BAND, never as a midpoint, so the model has nothing to round
+        to a point even if it wanted one. evidence_status is the card's own three-state
+        classification, so the prose cannot claim a comparison the card does not make.  */
     if (isGK(row)){
+      var ks = keeperScore(row), kst = keeperState(row);
       out.keeper = {
         saves: row.saves != null ? row.saves : null,
         goals_conceded: row.goals_conceded != null ? row.goals_conceded : null,
+        shots_faced_derived: (row.saves != null && row.goals_conceded != null) ? row.saves + row.goals_conceded : null,
         penalties_saved: row.penalties_saved != null ? row.penalties_saved : null,
+        penalties_saved_note: 'a count with no denominator: we do not know how many he faced',
         starts: row.starts != null ? row.starts : null,
-        rt_is_capped_at_75: true,
-        cap_reason: 'a platform measurement boundary, not a judgement on his goalkeeping'
+        evidence_status: kst ? kst.state : null,       // measured | below_floor | unrecorded
+        save_rate_pct: (ks && ks.eligible) ? +(100 * ks.savePct).toFixed(1) : null,
+        save_rate_se_pp: (ks && ks.eligible) ? +ks.seP.toFixed(1) : null,
+        percentile_band: (ks && ks.eligible) ? [Math.min(ks.bandLo, ks.bandHi), Math.max(ks.bandLo, ks.bandHi)] : null,
+        percentile_band_note: 'a RANGE, not a point. There is no midpoint and none may be inferred.',
+        pool: KEEPER_POOL.n,
+        pool_median_pct: +(100 * KEEPER_POOL.median).toFixed(1),
+        limit: 'The VV Score does not rate goalkeeping: save data resolves too little to stand behind a number. Shot-stopping is shown as recorded, with its uncertainty, and nothing finer is claimed.'
       };
     }
     /* PREFER THE OBJECT'S OWN CONFIDENCE. rowToCard already computed it FROM THE RAW ROW and

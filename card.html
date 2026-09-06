@@ -1137,8 +1137,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906d"></script>
-<script src="/vv-core.js?v=20260906d"></script>
+<script src="/vv-marks.js?v=20260906e"></script>
+<script src="/vv-core.js?v=20260906e"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1343,7 +1343,12 @@
       var payload = { mode:'notes', cardId:D.card_id, player:Object.assign({
         player_name:D.full, season:D.year, age:D.age, club:D.clubname,
         league:(LEAGUE_NAMES[D.league]||D.league), position:D.pos,
-        goals:D.goals, assists:D.assists, rt:D.vv,
+        goals:D.goals, assists:D.assists,
+        /*  FALLBACK C , NO rt FOR A KEEPER. The spec's Fable contract lists what the model
+            receives and rt is not on it. Sending it and then telling the prompt to ignore
+            it is the weaker of the two available guarantees; not sending it is the other.
+            Outfielders are unchanged.  */
+        ...(D.keeper ? {} : { rt: D.vv }),
         tags:(Array.isArray(D.tags)?D.tags.map(function(t){return t.name;}):[])
       }, _ai, _keeper) };
       var r = await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
