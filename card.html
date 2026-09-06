@@ -847,7 +847,15 @@
   #cardSearch .cs-results{max-height:calc(100vh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
   #cardSearch .cs-results::-webkit-scrollbar{width:6px}
   #cardSearch .cs-results::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:3px}
-  #cardSearch .rankempty{text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.58)}
+  /*  BOTH SPAN THE GRID , copied from rankings.html:103-104, which already had them and
+      the overlay never did. #csGrid is a grid in Cards view (two columns on a phone since
+      4d95fa0), so a single status child lands in CELL ONE: the loader rendered
+      left-aligned at half width. SCOPED TO #cardSearch on purpose , this file calls
+      vvLoader three other times (the AI wait, the card load, the glance) and none of
+      those is in a grid, so an unscoped .vvload would hand them a 52px padding they
+      never asked for.  */
+  #cardSearch .vvload{grid-column:1/-1;padding:52px 12px}
+  #cardSearch .rankempty{grid-column:1/-1;text-align:center;padding:46px 12px;font-family:'Inter';font-size:15px;color:rgba(243,237,224,0.58)}
   body.light #cardSearch .rankempty{color:var(--ink-soft)}
 
   /* MOBILE , Cards two-up (matching rankings), List and Compact stacked at every
@@ -3329,7 +3337,7 @@ function vvSaveImage(btn){
    So De Bruyne -> search -> Tielemans -> Back lands on De Bruyne, and repeating
    never walks back through search states. Nothing here touches history directly;
    csGo() is a plain navigation, which pushes by itself. */
-var CS={q:'',view:'compact',t:null,seq:0,rows:[],loaded:false};
+var CS={q:'',view:'compact',t:null,seq:0,rows:[],loaded:false,state:'idle'};  // idle -> loading -> ready | error
 try{ var _csv=localStorage.getItem('vvRankView'); if(_csv==='pills'||_csv==='cards'||_csv==='compact') CS.view=_csv; }catch(e){}
 
 function csOpen(){
@@ -3352,7 +3360,7 @@ function csOpen(){
    rankings. Clearing is the actual fix; the history stack was never wrong. */
 function csReset(){
   var i=document.getElementById('csInput'); if(i) i.value='';
-  CS.q=''; CS.rows=[]; CS.loaded=false; CS.seq++;          // bump seq , orphan any in-flight query
+  CS.q=''; CS.rows=[]; CS.loaded=false; CS.state='idle'; CS.seq++;   // bump seq , orphan any in-flight query
   var c=document.getElementById('csClear'); if(c) c.classList.remove('on');
   ['csHint','csCount'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=''; });
   var g=document.getElementById('csGrid'); if(g) g.innerHTML='';
@@ -3519,6 +3527,11 @@ async function csRun(){
   var sb=vvClient(); if(!sb) return;
   var seq=++CS.seq;
   var ps=vvParseSearch(CS.q||''), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
+  /* Mirrors rankings' `CARDS=[]; RANK_STATE='loading'` on a fresh load. The repaint is
+     the half rankings does not need (its boot render already happens mid-flight) and
+     this one does: without it the panel keeps stale rows between keystroke and
+     response, which is the symptom this commit exists to remove. */
+  CS.rows=[]; CS.state='loading'; csRender();
   var res=await csBuildQ(sb,true,nameQ,seasonYear);
   var miss=null;
   // graceful degrade , in-range season with no row for this NAME: drop the season, hint it
@@ -3527,16 +3540,33 @@ async function csRun(){
   }
   if(seq!==CS.seq) return;                   // a newer keystroke already won
   var hint=document.getElementById('csHint');
-  if(res.error){ document.getElementById('csGrid').innerHTML='<div class="rankempty">Search failed.</div>';
+  if(res.error){ CS.state='error'; csRender();
                  console.error('card search failed:',res.error.message); return; }
   var rows=res.data||[];
   if(nameQ) rows=VVCore.rankBySearch(rows,nameQ,function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); });
   var stNow=csFState();
   CS.rows=rows.map(rowToCard).filter(stNow ? VVFilters.clientPredicate(stNow) : function(){ return true; });
-  CS.loaded=true;
+  CS.loaded=true; CS.state='ready';        // only now does the panel know anything about results
   csSyncFilterUI(stNow);
   hint.textContent = (miss!=null) ? ('No '+VVCore.vvSeasonLabel(miss)+' season for that search , showing all') : '';
   csRender();
+}
+/*  csEmptyHTML , "no results" and "not loaded yet" are DIFFERENT STATES and this
+    overlay could not tell them apart. csOpen() calls csSetView(), which calls csRender()
+    while CS.rows is still [], so for the whole first round-trip the panel said "Type to
+    search, or browse the top seasons." , an empty-state verdict delivered before the
+    query it describes had returned. Same family as the SS C rule that a UI must not
+    report success before its request resolves; this is that lie with the sign flipped.
+    LIFTED FROM rankings' rankEmptyHTML (rankings.html:513) RATHER THAN INVENTED , same
+    states, same loader, same reasoning. vvLoader was already used three times elsewhere
+    in this file (the AI wait, the card load, the glance); the overlay simply never
+    called it, so this wires an existing dependency rather than adding one.
+    Size 40 matches this file's other inline loaders and clears VV_LOADER_MIN (16).  */
+function csEmptyHTML(){
+  if(CS.state==='error') return '<div class="rankempty">Search failed. Check your connection and try again.</div>';
+  if(CS.state!=='ready') return (window.VVCore && VVCore.vvLoader)
+    ? VVCore.vvLoader({size:40, label:(CS.q?'Searching':'Loading seasons')}) : '';
+  return '<div class="rankempty">'+(CS.q?'No seasons match your search.':'Type to search, or browse the top seasons.')+'</div>';
 }
 function csRender(){
   csRenderRecent();
@@ -3547,9 +3577,12 @@ function csRender(){
   c.textContent = rows.length ? (rows.length+(rows.length>=VVCore.SEARCH_CEIL?'+':'')+' season'+(rows.length===1?'':'s')) : '';
   if(!rows.length){
     var _st=csFState();
-    g.innerHTML = (_st && VVFilters.isActive(_st))
+    /* The filter explainer is a VERDICT about a finished result set, so it is gated on
+       'ready' exactly like the plain empty copy , naming the clauses that must all hold
+       is just as wrong before the query returns. */
+    g.innerHTML = (CS.state==='ready' && _st && VVFilters.isActive(_st))
       ? VVFilters.emptyStateHTML(_st,{searching:!!CS.q})      // names the clauses that must all hold
-      : '<div class="rankempty">'+(CS.q?'No seasons match your search.':'Type to search, or browse the top seasons.')+'</div>';
+      : csEmptyHTML();
     return;
   }
   /* row stagger , 120ms after the panel's own 60ms offset, then 55ms apart.
