@@ -777,7 +777,11 @@
   function setClubSort(el,v){ cfActivate(el); clubFilters.sort=v; renderMyCards(); }
   function setClubLeague(el,v){ cfActivate(el); clubFilters.league=v; renderMyCards(); }
   function setClubPos(el,v){ cfActivate(el); clubFilters.pos=v; renderMyCards(); }
-  function myCompactHTML(o){ var d=o.d; var tier=d.vv>=95?' gen':(d.vv>=90?' elite':'');
+  /*  ROUTED THROUGH prestigeFor(bandFor()) , 2026-09-06. Same duplicate definition as the two
+      in compare.html. Behaviour unchanged. This page sits behind the coming-soon overlay, so
+      it renders for nobody today , which is exactly why it was drifting unnoticed.  */
+  function myCompactHTML(o){ var d=o.d; var _pr=VVCore.prestigeFor(VVCore.bandFor(d.vv));
+    var tier = _pr==='Generational' ? ' gen' : (_pr==='Iconic' ? ' elite' : '');
     return '<div class="cmprow" onclick="openCardDetail('+o.i+')">'
       +'<span class="cmprail" style="background:'+(d.club1||'#9a948a')+'"></span>'
       +'<div class="cmpmain"><div class="cmpl1"><span class="cmpnm">'+d.surname+'</span><span class="cmpfl">'+(d.flag||'')+'</span></div>'
