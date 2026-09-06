@@ -23,22 +23,42 @@ module.exports = async (req, res) => {
     if (error) throw error;
 
     // Format into VVonderXI season object: { '2425': { pos, lg, g, a, rt, age, club } }
+    /*  FALLBACK C , NO KEEPER SCALAR LEAVES THIS ENDPOINT.
+        docs/KEEPER_FALLBACK_C_SPEC.md, THE INVARIANT: "No field, column, EXPORT, sort key,
+        or prose construction anywhere in the platform reduces a keeper season's quality to
+        a single number." This is a public, deployed JSON endpoint, so it is an export.
+
+        BOTH PAYLOADS ARE STRIPPED, not just the pretty one. The `seasons` map is the
+        obvious place; `cards` is the raw matview rows and carried rt straight through,
+        which is the half that would have survived a fix aimed only at the first.
+
+        AND NOTE WHAT WAS ALREADY WRONG HERE: `rt: r.rt || 75` MANUFACTURED a 75 for any
+        null rt. For a keeper that invented the cap; for anyone it turned "not scored" into
+        a number. Nulls now stay null.  */
+    const isGK = r => r.position === 'GK' || r.position_pool === 'GK';
     const seasons = {};
     (cards || []).forEach(r => {
       if (r.season?.length === 4) {
-        seasons[r.season] = {
+        const o = {
           pos: r.position,
           lg: r.league_code,
           g: r.goals || 0,
           a: r.assists || 0,
-          rt: r.rt || 75,
           age: r.age,
           club: r.team_name || ''
         };
+        if (!isGK(r)) o.rt = r.rt != null ? r.rt : null;
+        seasons[r.season] = o;
       }
     });
 
-    return res.json({ seasons, cards: cards || [], source: 'cache' });
+    const safeCards = (cards || []).map(r => {
+      if (!isGK(r)) return r;
+      const { rt, ...rest } = r;      // the keeper's scalar does not leave the building
+      return rest;
+    });
+
+    return res.json({ seasons, cards: safeCards, source: 'cache' });
   } catch (err) {
     console.error('get-seasons error:', err);
     return res.status(500).json({ error: err.message });

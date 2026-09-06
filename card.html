@@ -1137,8 +1137,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906c"></script>
-<script src="/vv-core.js?v=20260906c"></script>
+<script src="/vv-marks.js?v=20260906d"></script>
+<script src="/vv-core.js?v=20260906d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -3540,13 +3540,20 @@ function csSyncFilterUI(st){
 })();
 
 function csBuildQ(sb,withSeason,nameQ,seasonYear){
+   /*  FALLBACK C , THE BROWSE/LOOKUP SPLIT. docs/KEEPER_FALLBACK_C_SPEC.md: "A keeper row
+       in an rt list is a release blocker." With NO name query this is a browse of the top 50
+       by rt , an rt list , so keepers are excluded. WITH a name query it is a lookup and the
+       rt order merely ranks the matches, so they are not.
+       THE FIRST VERSION EXCLUDED UNCONDITIONALLY AND TESTING CAUGHT IT: searching a keeper
+       by name returned "No seasons match your search", which is false of a card that exists.  */
   var q=sb.from('player_card_mv').select('*')
           .order('rt',{ascending:false,nullsFirst:false})
           .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
   if(nameQ){ var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf); }
+  else { q=q.neq('position','GK'); }        // browse = an rt list, see the note above
   if(withSeason && seasonYear!=null) q=q.eq('season_year',seasonYear);
   var st=csFState();
-  if(st) q=VVFilters.applyServer(q, st, {}).query;   // server half; the client half runs in csRun
+  if(st) q=VVFilters.applyServer(q, st, { lookup: !!nameQ }).query;   // server half; the client half runs in csRun. lookup: a named search is not an rt list
   return q;
 }
 async function csRun(){

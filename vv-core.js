@@ -4551,8 +4551,42 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
   /* Applies ONLY the server-side groups. Returns {query, applied}. The caller
      must ALSO run clientPredicate() , this half cannot see computed tags. */
+  /*  ══ FALLBACK C , KEEPERS LEAVE EVERY rt-SORTED AND rt-FILTERED SURFACE ═══════════
+      docs/KEEPER_FALLBACK_C_SPEC.md, CONSUMER RULES: "Keepers excluded from every
+      rt-sorted or rt-filtered surface. A keeper row in an rt list is a release blocker."
+
+      THE TEST IS ON THE QUERY, NOT ON THE PAGE, which is why it lives here: applyServer
+      is the ONE place the sort is applied (the order() call below is the only one in
+      this file), so rankings, the card overlay and the compare picker are all covered by
+      this single clause. The five queries that order by rt WITHOUT coming through here
+      carry their own .neq, each marked with this same rule.
+
+      CONDITIONAL, NOT UNCONDITIONAL, AND THE DISTINCTION IS THE SPEC'S OWN. The rule
+      names rt-sorted and rt-filtered surfaces. Sorting A-Z or by Recent with no rt
+      constraint is neither, so keepers still appear there , and they still carry a 75
+      badge, because the badge is the card-face pass and not this one. That residue is
+      known and recorded rather than silently swept in here.
+
+      MEASURED BEFORE: 3,725 keepers carry an rt, 1,305 of them sit inside a 70-80 slider
+      (29% of that result set), and the first keeper reaches the default rt-desc view at
+      about rank 2,299, which infinite scroll gets to.  */
+  /*  A NAME QUERY MAKES IT A LOOKUP, AND A LOOKUP IS NOT AN rt LIST. opts.lookup is
+      threaded from every caller that has a name query in scope. Without it this guard
+      caught the card overlay's SEARCH as well as its browse , testing found a keeper
+      searched by name returning "No seasons match your search", which is false of a card
+      that exists. Excluding a keeper from an ORDERING is not denying the card exists.  */
+  function rtInPlay(st, lookup){
+    if(!st) return false;
+    if(lookup) return false;                                          // named lookup, not a list
+    if((st.sort || 'rt') === 'rt') return true;                       // rt is VVF_SORTS[0], the default
+    if(st.score && st.score.bands && st.score.bands.length) return true;
+    if(st.score && (st.score.lo != null || st.score.hi != null)) return true;
+    return false;
+  }
+
   function applyServer(query, st, opts){
     opts=opts||{}; var applied=[];
+    if(rtInPlay(st, opts.lookup)){ query=query.neq('position','GK'); applied.push('fallbackC:noGK'); }
     if(st.league.length){   query=query.in('league_code', st.league);      applied.push('league'); }
     if(st.position.length){ query=query.in('position_pool', st.position);  applied.push('position'); }
     /* NUMERIC RANGES , every instance, server-side, because each is a real column.
@@ -4972,7 +5006,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
                    : sb.from('player_card_mv').select(o.select || '*');
     if(o.nameQ){ const sf = tokenAndFilter(o.nameQ); if(sf) q = q.or(sf); }
     if(o.seasonYear != null) q = q.eq('season_year', o.seasonYear);
-    q = applyServer(q, o.st, { headCount: !!o.head }).query;
+    q = applyServer(q, o.st, { headCount: !!o.head, lookup: !!o.nameQ }).query;   // a name query is a lookup, not an rt list
     if(!o.head && o.from != null) q = q.range(o.from, o.to != null ? o.to : o.from);
     return q;
   }

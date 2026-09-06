@@ -1244,8 +1244,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906c"></script>
-<script src="/vv-core.js?v=20260906c"></script>
+<script src="/vv-marks.js?v=20260906d"></script>
+<script src="/vv-core.js?v=20260906d"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1318,6 +1318,11 @@ body.light .pkmsub{color:var(--ink-soft)}
     var ps=vvParseSearch(text), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
     if(!nameQ) return null;
     function base(){
+   /*  FALLBACK C , NO EXCLUSION, AND THE GUARD ABOVE IS THE REASON. `if(!nameQ) return null;`
+       three lines up means this path is ALWAYS a named lookup, never a browse, so the rt
+       order only ranks the matches. Excluding here made a keeper unfindable in the picker,
+       which the spec forbids on its own terms: it requires two keeper panels in compare,
+       and you cannot select what you cannot find.  */
       var q=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false}).limit(VVCore.SEARCH_CEIL);
       var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf);
       return q;
@@ -1597,7 +1602,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var sb=vvClient(); if(!sb) return;
     var res;
     try { res = await sb.from('player_card_mv').select('*')
-                        .or(orExpr).order('rt',{ascending:false,nullsFirst:false}).limit(400); }
+                        .or(orExpr).order('rt',{ascending:false,nullsFirst:false}).limit(400); }   /* FALLBACK C , no exclusion: orExpr resolves a fixed list of NAMED players, so this is a lookup, not an rt list */
     catch(e){ console.warn('[vv] suggested matchups: query threw', e); return; }
     if(!res || res.error || !res.data){
       console.warn('[vv] suggested matchups: no rows', res && res.error && res.error.message); return; }
@@ -1815,8 +1820,12 @@ body.light .pkmsub{color:var(--ink-soft)}
     var ps=vvParseSearch(q), nameQ=ps.nameQ, seasonYear=ps.seasonYear;
     var st=pkFState(slot);
     function buildPoolQ(withSeason){
+   /*  FALLBACK C , THE BROWSE/LOOKUP SPLIT, and this query is the one that does both:
+       limit(nameQ ? CEIL : 50). With no name it browses the top 50 by rt , an rt list, so
+       keepers are excluded. With a name it is a lookup and they are not.  */
       var query=sb.from('player_card_mv').select('*').order('rt',{ascending:false,nullsFirst:false})
                   .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
+      if(!nameQ) query=query.neq('position','GK');   // browse = an rt list
       if(nameQ){ var _sf=tokenAndFilter(nameQ); if(_sf) query=query.or(_sf); }
       if(withSeason && seasonYear!=null) query=query.eq('season_year', seasonYear);
       if(st && VVFilters.isActive(st)){

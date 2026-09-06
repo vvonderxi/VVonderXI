@@ -328,7 +328,7 @@
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260906c"></script>
+<script src="/vv-core.js?v=20260906d"></script>
 <script>
   // rotating placeholder examples
   /*  EVERY SUGGESTION IS A PROMISE THE SEARCH HAS TO HONOUR, AND TWO OF THESE WERE NOT.
@@ -629,6 +629,14 @@
     if(parsed.seasonYear != null) query = query.eq('season_year', parsed.seasonYear);
     // nullsFirst:false , ORDER BY rt DESC puts NULL first in Postgres, which would
     // hand the top slot of the front door to an unscored card. See CLAUDE.md section C.
+   /*  FALLBACK C , NO EXCLUSION HERE, DELIBERATELY. The front door is a NAME LOOKUP and
+       never browses: without a query it renders nothing at all, so it is never an rt list.
+       The rt order RANKS NAME MATCHES; it is not the point of the surface.
+       A .neq here was tried and REVERTED , searching "courtois" returned the empty state,
+       whose copy reads "VVonderXI scores nine leagues from 2010 onward. If a player or a
+       season is not in that set, no card exists for it." That sentence is FALSE of a keeper
+       with 16 seasons in the record. Excluding a keeper from an ORDERING is not the same as
+       denying the card exists.  */
     query = query.order('rt', {ascending:false, nullsFirst:false}).limit(LIMIT + 1);
 
     query.then(function(res){
