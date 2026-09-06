@@ -587,6 +587,11 @@ environment, which is itself the reason they are listed.
 
 - **STATUS 2026-08-31: DECIDED AND DONE , `auth.js`, `log.js` and `refresh-players.js` REMOVED.**
   **DEPLOYED FUNCTIONS 6 -> 3** (`analyse`, `db`, `get-seasons`), from 13 at the start of the day.
+  **[CORRECTED 2026-09-06: IT IS 2, NOT 3.** `api/db.js` was deleted later the same day in
+  `fd3adc0`, the commit that added the security headers, so the tree ships `api/analyse.js` and
+  `api/get-seasons.js`. Counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls` , §C
+  records that a disk count over-reports the deployed surface and that this figure has been
+  miscounted before.]
   Full record of what each did and why it went is in `POST_LAUNCH.md` so the accounts stage does not
   rediscover it; recover any of them with `git show cd80460~1:api/<name>.js`.
   **`locker_profiles` was EMPTY, so nothing was orphaned. `comparison_log` (44 rows) and `search_log`
@@ -607,10 +612,58 @@ environment, which is itself the reason they are listed.
 - **How:** the Vercel dashboard.
 - **Pass:** a plan that permits the deployed function count, and **Vercel Pro**, which §C records as a pre-launch requirement because Hobby restricts commercial use. **16 functions deploy and run today , proven by probing the live endpoints , but the plan behind that is not visible from the repo.**
 
-### C7. OAuth published and `vercel.json` reviewed
-- **Check:** both, before the merge.
+### C7. OAuth published and `vercel.json` reviewed , **CLOSED 2026-09-06**
+- **Check:** both, before the DEPLOY (see the sequencing note below , not before the merge).
 - **How:** provider dashboard and a read of `vercel.json`.
-- **Pass:** OAuth out of test mode; `vercel.json` reviewed. **§D sequencing: these MUST land before the merge, because the merge is production the instant it deploys.**
+- **Pass:** OAuth out of test mode; `vercel.json` reviewed. **BOTH NOW DONE.**
+
+- **[SEQUENCING CORRECTED 2026-09-06] §D READS "MUST land BEFORE the merge/deploy ... (the merge =
+  production the instant it deploys)". THE PARENTHETICAL IS THE REASON AND IT IS NO LONGER TRUE**,
+  so the rule binds at the DEPLOY, not at the merge. Vercel's production branch is `coming-soon`,
+  so `vvonderxi_BIGGER` builds as a PREVIEW and the merge (`4c8ce8a`) deployed nothing , confirmed
+  live, `vvonderxi.com/rankings` returns **404** while the preview returns **200**. **The rule
+  conflated merge and deploy because they used to be ONE event; they are now two, and it binds on
+  the second.** Same correction already applied to Group D's preamble. **So the merge landing first
+  broke no ordering and created no risk. The merged code IS publicly reachable on the preview host,
+  but it was equally reachable there before the merge**, so nothing about exposure changed.
+
+- **STATUS 2026-09-06, `vercel.json` HALF: REVIEWED, PASS.** The merged config is four things:
+  `cleanUrls: true`, `fluid: true`, a 24h `Cache-Control` on `og-image.png`, and three security
+  headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`,
+  `Referrer-Policy: strict-origin-when-cross-origin`). What the read found:
+  - **The catch-all `rewrites` is correctly ABSENT.** Production carries `"/(.*)" -> "/index.html"`
+    for the holding page; a normal merge would have taken production's copy silently and served the
+    holding page on every platform route. C10 assertion 2 exists to catch exactly that.
+  - **`crons` is gone and so is its handler , AN OPEN QUESTION FROM C11 IS CLOSED.** C11 (above,
+    line ~583) notes that `refresh-players.js` was a cron target on production's `vercel.json`
+    while the branch defined none. The cron went in `38f98e5` ("remove the nightly cron for a
+    handler that does nothing") and the handler in the 2026-08-31 sweep. **Nothing in the tree
+    references it.**
+  - **NO `Cache-Control` FOR HTML, AND THAT IS FINE.** Vercel's default was measured, not assumed:
+    `public, max-age=0, must-revalidate` on every HTML route, and it revalidates correctly (correct
+    etag -> 304, deliberately wrong etag -> 200 with the full body as a control).
+  - **[CORRECTED] DEPLOYED FUNCTIONS ARE 2, NOT 3.** C11's status line (above, line ~589) says
+    "6 -> 3 (`analyse`, `db`, `get-seasons`)". `api/db.js` was deleted in `fd3adc0`, the same commit
+    that added the security headers, so the tree ships **`api/analyse.js` and `api/get-seasons.js`**.
+    Counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls` (§C: a disk count
+    over-reports, and this figure has been miscounted before).
+
+- **DECIDED 2026-09-06: SHIP WITHOUT A CONTENT-SECURITY-POLICY. Post-launch, and it is coupled to a
+  pass that moves inline styles out , not a config line.** There is no `CSP` and no
+  `Permissions-Policy`; HSTS is applied by Vercel on custom domains, so that one is covered.
+  - **THE BLOCKER IS NOT INLINE `<script>`, IT IS INLINE EVENT HANDLERS, AND THE COUNT IS WHY.**
+    Measured across the ten shipping pages: **39 inline `<script>` blocks, 149 `style=` attributes,
+    and 251 `on*=` handlers** (`onclick`, `oninput`, `onerror`, ...). **`script-src` hashes do NOT
+    cover inline event handlers** , those need `unsafe-inline` (or `unsafe-hashes`, which is poorly
+    supported). So a meaningful policy is gated on rewriting 251 handlers, not on hashing 39
+    scripts, and `style-src` needs the 149 `style=` attributes moved out too.
+  - **A CSP WITH `unsafe-inline` ON BOTH DIRECTIVES BUYS ALMOST NOTHING** while reading as a
+    security control in any later audit. **Shipping no policy is more honest than shipping a
+    permissive one**, and this entry is the record so a future session does not add the permissive
+    version thinking it is an improvement.
+  - **WHEN IT IS DONE IT IS ONE PASS, NOT TWO:** move the handlers to `addEventListener` and the
+    `style=` attributes into the sheets, THEN add the policy. Doing the policy first forces
+    `unsafe-inline` and there is no path back from it without the same work.
 
 - **STATUS 2026-08-31, OAuth HALF: PASS, AND IT IS A PASS WITH NOTHING BEHIND IT.** OAuth is
   configured and out of test mode, **Email and Google both enabled**. So this item is satisfied on
