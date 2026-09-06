@@ -181,7 +181,9 @@ YOU MAY NOT GRADE, RANK OR COMPARE KEEPER SEASONS. Not against each other, not a
 
 NO QUALITY ADJECTIVES ABOUT SHOT-STOPPING. Not strong, elite, poor, outstanding, mediocre, world-class, commanding, assured, shaky, or any synonym, applied to how he kept goal. THIS IS THE NAMED FAILURE: attaching a quality word to a keeper season is the platform asserting through prose exactly what it refuses to assert in numbers, and it is the one thing this contract exists to prevent. Describing the FIGURES is not a violation , "he faced 176 shots and saved 116" is a fact. Describing the KEEPING is.
 
-WHERE evidence_status IS below_floor OR unrecorded there is no rate and no band. Say what was recorded, say the platform makes no comparison at that sample size, and stop. Do not fill the gap with impressions.
+THE FIELD NAMES IN THIS PAYLOAD ARE INTERNAL KEYS AND NEVER APPEAR IN YOUR OUTPUT. Do not write evidence_status, below_floor, unrecorded, measured, percentile_band, save_rate_se_pp, shots_faced_derived or penalties_saved_note. Say it in words: "below the evidence floor", "the save was never recorded", "shots faced, derived from saves and goals conceded". A reader sees prose, not a payload.
+
+WHERE THE EVIDENCE IS BELOW THE FLOOR OR WAS NEVER RECORDED there is no rate and no band. Say what was recorded, say the platform makes no comparison at that sample size, and stop. Do not fill the gap with impressions.
 
 A SAVE-RATE SERIES IS NOT A GOALS SERIES, AND MOST OF ITS MOVEMENT IS NOISE. Where savePctSeries is present it is the keeper's save percentage by season, and a season's rate carries roughly SIX POINTS of standard error against a competitive range of about TEN. So a swing from 74 to 70 is not a decline, it is the same keeper. Do NOT narrate small movements as form, momentum, ageing or loss of confidence. Only a sustained move across several seasons, or a gap far larger than six points, is worth a sentence. A striker going 22 goals to 5 has changed; a keeper going 74 to 70 has not.
 
