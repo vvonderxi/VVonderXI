@@ -1,0 +1,46 @@
+api_player_id,card_id,player_name,season,club,league,current_pool,coarse_position,rt,goals,assists,minutes,dribbles_per90,verified_position,confidence,evidence
+174,131895,C. Eriksen,2223,Manchester United,PL,CDM,MID,73,1,8,2067,0.35,CM,medium,CORRECTION to pool (CDM): deep-lying left 8 beside Casemiro (the holder) under ten Hag
+174,134338,C. Eriksen,1617,Tottenham,PL,CDM,MID,89,8,15,3167,0.77,CAM,high,CORRECTION to pool (CDM): Poch's main creator/10 - 15-assist season
+174,133532,C. Eriksen,1819,Tottenham,PL,CDM,MID,88,8,12,2772,0.58,CAM,medium,CORRECTION to pool (CDM): advanced creator with some deeper late-Poch use
+174,133928,C. Eriksen,1718,Tottenham,PL,CDM,MID,88,10,10,3226,0.81,CAM,high,CORRECTION to pool (CDM): 10/free advanced role (3226 min)
+174,134750,C. Eriksen,1516,Tottenham,PL,CAM,MID,85,6,13,2941,1.07,CAM,high,Confirms pool: main creator
+905,132343,Fred,2122,Manchester United,PL,CM,MID,71,4,4,2035,0.93,CDM,medium,CORRECTION to pool (CM): the 'McFred' double pivot
+295,134223,A. Lallana,1617,Liverpool,PL,CM,MID,83,8,7,2349,1.26,CM,high,Confirms pool: Klopp's celebrated conversion to advanced 8
+296,134439,J. Milner,1516,Liverpool,PL,CM,MID,83,5,11,2416,0.71,CM,low,CM/right-mid split in the transition season - central plurality
+296,133238,J. Milner,1819,Liverpool,PL,CM,MID,74,5,4,1785,0.76,CM,medium,Confirms pool: 8 (some RB cover)
+300,134340,G. Wijnaldum,1617,Liverpool,PL,CM,MID,82,6,9,2978,0.91,CM,high,Confirms pool: Klopp's left 8
+1096,130729,D. Szoboszlai,2425,Liverpool,PL,CM,MID,79,6,6,2495,0.76,CAM,medium,CORRECTION to pool (CM): the 10 in Slot's 4-2-3-1 ahead of the Gravenberch-Mac Allister pivot
+6716,130721,A. Mac Allister,2425,Liverpool,PL,CDM,MID,78,5,5,2607,0.55,CDM,medium,Confirms pool: left half of Slot's double pivot
+6716,131132,A. Mac Allister,2324,Liverpool,PL,CM,MID,75,5,5,2611,0.62,CM,low,"Confirms pool narrowly: emergency 6 early, 8 after Endo's arrival - close split"
+542,108918,R. Gravenberch,2526,Liverpool,PL,CDM,MID,73,5,3,2996,0.93,CDM,medium,Confirms pool: Slot's 6 (autumn coverage); spring unverifiable
+19035,131144,H. Elliott,2324,Liverpool,PL,CM,MID,73,3,6,1337,0.61,CM,low,"Rotated 8/RW in 1337 min - central plurality, close"
+292,132863,J. Henderson,1920,Liverpool,PL,CM,MID,73,4,5,2244,0.68,CM,high,Confirms pool: captain right-8 (some 6 cover)
+203224,130274,F. Wirtz,2526,Liverpool,PL,CM,MID,72,5,3,2399,1.46,CAM,medium,CORRECTION to pool (CM): signed as and used as the 10 (some LW) under Slot; autumn coverage - spring unverifiable
+37127,131533,M. Ødegaard,2223,Arsenal,PL,CAM,MID,88,15,7,3149,1.4,CAM,high,Confirmed: captain-10
+37127,131118,M. Ødegaard,2324,Arsenal,PL,CAM,MID,85,8,10,3104,1.07,CAM,high,Confirmed: captain-10
+37127,131961,M. Ødegaard,2122,Arsenal,PL,CAM,MID,78,7,4,2793,0.81,CAM,high,Confirmed: Arteta's 10 after permanent move
+37127,130704,M. Ødegaard,2425,Arsenal,PL,CM,MID,76,3,8,2331,0.97,CAM,medium,CORRECTION to pool (CM): same captain-10 role in an injury-disrupted season
+1458,134800,M. Özil,1516,Arsenal,PL,CAM,MID,88,6,19,3049,1.36,CAM,high,Confirmed: Wenger's 10 (19 assists)
+1458,134385,M. Özil,1617,Arsenal,PL,CAM,MID,85,8,9,2848,1.01,CAM,high,Confirmed: Wenger's 10
+1458,133585,M. Özil,1819,Arsenal,PL,CDM,MID,73,5,2,1741,1.09,CAM,medium,CORRECTION to pool (CDM): still the 10 when selected under Emery (1741 rotation min)
+2937,131110,D. Rice,2324,Arsenal,PL,CM,MID,82,7,8,3232,0.58,CDM,medium,CORRECTION to pool (CM): primarily the 6 with Partey injured; advanced left-8 spells late
+2937,130698,D. Rice,2425,Arsenal,PL,CM,MID,76,4,7,2833,0.44,CM,medium,Confirms pool: left 8 with Partey holding; some 6
+2937,130538,D. Rice,2526,Arsenal,PL,CM,MID,72,4,5,3099,0.41,CM,medium,Confirms pool: left 8 after Zubimendi's arrival (autumn coverage); spring unverifiable
+1464,131614,G. Xhaka,2223,Arsenal,PL,CM,MID,81,7,7,3004,0.48,CM,high,Confirms pool: the advanced-left-8 reinvention season (7G/7A)
+1695,135891,Santi Cazorla,1213,Arsenal,PL,CM,MID,81,12,NR,3311,NR,CAM,medium,CORRECTION to pool (CM): Wenger's central playmaker/10 in his debut season
+1457,133507,H. Mkhitaryan,1819,Arsenal,PL,CDM,MID,80,6,4,1643,1.1,Winger,low,CORRECTION to pool (CDM): RW/AM rotation under Emery - wide plurality (1643 min)
+1459,133539,A. Ramsey,1819,Arsenal,PL,CDM,MID,78,4,6,1327,0.81,CM,low,"CORRECTION to pool (CDM): 8/10 rotation (1327 min) - advanced-central split, not a holder"
+47311,130706,Mikel Merino,2425,Arsenal,PL,CM,MID,76,7,2,1581,0.51,CM,medium,Confirms pool: 8 - plus the famous emergency-CF spell in spring 2025 (minority of apps)
+47311,130546,Mikel Merino,2526,Arsenal,PL,CM,MID,70,4,3,1035,0.43,CM,low,Confirms pool: 8 rotation with CF cameos; autumn only
+19586,186833,E. Eze,2526,Arsenal,PL,CM,MID,76,7,2,1900,1.37,CM,low,Confirms pool narrowly: left-8/creator role with LW use in the autumn - close; spring unverifiable
+297,134382,A. Oxlade-Chamberlain,1617,Arsenal,PL,CM,MID,72,2,7,1562,3.51,Winger,low,"CORRECTION to pool (CM): RW early, wing-back in the spring 3-4-3 - wide plurality across roles"
+152982,130812,C. Palmer,2425,Chelsea,PL,CAM,MID,88,15,8,3199,1.43,CAM,high,Confirmed: Maresca's 10
+152982,130497,C. Palmer,2526,Chelsea,PL,CAM,MID,80,10,1,1978,1,CAM,high,Confirmed: 10 (injury-shortened)
+5996,130489,E. Fernández,2526,Chelsea,PL,CDM,MID,85,10,4,3134,0.37,CM,medium,"CORRECTION to pool (CDM): advanced left-8 (10 goals) with Caicedo holding; autumn-verified, spring beyond coverage"
+5996,130809,E. Fernández,2425,Chelsea,PL,CDM,MID,82,6,7,2948,0.79,CM,medium,CORRECTION to pool (CDM): 8 beside Caicedo (the holder)
+67972,131463,C. Gallagher,2324,Chelsea,PL,CDM,MID,80,5,7,3137,1.09,CM,medium,CORRECTION to pool (CDM): box-to-box 8/10 under Pochettino - Caicedo held
+1864,130488,Pedro Neto,2526,Chelsea,PL,CM,MID,77,5,6,2643,1.6,Winger,medium,CORRECTION to pool (CM): wide L/R (autumn coverage); spring unverifiable
+19220,132437,M. Mount,2021,Chelsea,PL,CM,MID,77,6,5,2891,1.34,CAM,low,CORRECTION to pool (CM): one of the dual 10s in Tuchel's 3-4-2-1 from Jan; mixed roles under Lampard - advanced plurality
+2289,132330,Jorginho,2122,Chelsea,PL,CDM,MID,75,6,2,2278,0.63,CDM,high,Confirms pool: the pivot
+2289,132744,Jorginho,2021,Chelsea,PL,CM,MID,74,7,1,2013,0.76,CDM,medium,CORRECTION to pool (CM): Tuchel's double-pivot 6
+2292,133492,R. Loftus-Cheek,1819,Chelsea,PL,CM,MID,73,6,2,983,3.75,CM,low,Advanced 8 in Sarri rotation (983 min)

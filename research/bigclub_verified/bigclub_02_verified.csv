@@ -1,0 +1,43 @@
+api_player_id,card_id,player_name,season,club,league,current_pool,coarse_position,rt,goals,assists,minutes,dribbles_per90,verified_position,confidence,evidence
+511,153623,L. Goretzka,1819,Bayern München,BL,CM,MID,78,8,4,2021,0.67,CM,medium,Confirms pool: Kovac's box-to-box 8
+511,151848,L. Goretzka,2324,Bayern München,BL,CDM,MID,76,6,7,2243,0.52,CDM,medium,Confirms pool: Kimmich-Goretzka double pivot under Tuchel
+511,153256,L. Goretzka,1920,Bayern München,BL,CDM,MID,74,6,5,1513,1.13,CDM,medium,Confirms pool: Flick's double pivot from Nov (some 8 early under Kovac)
+515,154625,F. Ribéry,1617,Bayern München,BL,CDM,MID,78,5,11,1241,2.76,Winger,high,CORRECTION to pool (CDM): Ribery is Bayern's LW - pool label plainly wrong
+515,153880,F. Ribéry,1819,Bayern München,BL,CDM,MID,74,6,3,1167,2.78,Winger,high,CORRECTION to pool (CDM): LW in his farewell season
+502,152523,J. Kimmich,2122,Bayern München,BL,CM,MID,74,3,11,2478,0.76,CDM,medium,CORRECTION to pool (CM): Nagelsmann's double pivot with Goretzka
+502,152884,J. Kimmich,2021,Bayern München,BL,CM,MID,73,4,10,2197,1.19,CDM,high,CORRECTION to pool (CM): Flick's 6 in the sextuple-era pivot
+502,152170,J. Kimmich,2223,Bayern München,BL,CDM,MID,72,5,6,2819,0.42,CDM,high,Confirms pool: the 6
+502,153254,J. Kimmich,1920,Bayern München,BL,CDM,MID,72,4,7,2822,0.61,CDM,medium,"Confirms pool: RB under Kovac until Nov, then Flick's 6 - CDM plurality across the season"
+502,151522,J. Kimmich,2425,Bayern München,BL,CDM,MID,70,3,7,2847,0.38,CDM,high,Confirms pool: Kompany's 6 (2847 min)
+507,154545,Thiago Alcântara,1617,Bayern München,BL,CM,MID,74,6,5,2291,2.36,CM,high,Confirms pool: Ancelotti's 8/deep playmaker
+494131,150899,L. Karl,2526,Bayern München,BL,CM,MID,70,5,5,1282,1.54,Winger,low,CORRECTION to pool (CM): teenage breakout used mainly off the right wing/AM under Kompany (autumn coverage); spring unverifiable
+266,159482,Á. Di María,1920,Paris Saint Germain,L1,CDM,MID,86,8,14,2005,3.01,Winger,high,CORRECTION to pool (CDM): Di Maria is PSG's RW - pool label plainly wrong (14 assists from the right)
+128384,157854,Vitinha,2324,Paris Saint Germain,L1,CM,MID,73,7,4,2129,1.35,CM,high,Confirms pool: Luis Enrique's central 8/regista
+335051,157285,João Neves,2425,Paris Saint Germain,L1,CM,MID,70,3,8,1857,0.78,CM,high,Confirms pool: 8 in the 4-3-3 (occasional emergency RB cameos)
+629,133095,K. De Bruyne,1920,Manchester City,PL,CAM,MID,91,13,20,2800,1.54,CAM,high,Confirmed: 10 behind the Rodri-Gundogan pivot (consistent with earlier passes)
+629,131889,K. De Bruyne,2223,Manchester City,PL,CAM,MID,87,7,16,2425,1.19,CAM,high,Confirmed: dual 10 in the treble season's 3-2-4-1
+629,131067,K. De Bruyne,2425,Manchester City,PL,CM,MID,77,4,7,1715,0.63,CAM,low,CORRECTION to pool (CM): still the advanced mid when fit in his farewell season (1715 min) - close with 8 use
+90493,135435,Yaya Touré,1314,Manchester City,PL,CM,MID,90,20,9,2927,NR,CM,high,Confirms pool: the advanced 8 beside Fernandinho - his 20-goal season
+44,131182,Rodri,2324,Manchester City,PL,CDM,MID,86,8,9,2938,1.29,CDM,high,Confirms pool: sole pivot
+44,131581,Rodri,2223,Manchester City,PL,CDM,MID,71,2,6,2920,0.77,CDM,high,Confirms pool: pivot of the treble side
+634,134879,David Silva,1415,Manchester City,PL,CAM,MID,82,12,NR,2661,0.14,CAM,high,Confirmed: Pellegrini's 10/left AM
+631,130769,P. Foden,2425,Manchester City,PL,CM,MID,76,7,2,1786,0.71,CAM,low,"CORRECTION to pool (CM): rotated 10/wings in the down season - advanced-central plurality, close"
+2291,130771,M. Kovačić,2425,Manchester City,PL,CDM,MID,75,6,2,2207,0.9,CDM,medium,Confirms pool: frequently deputised at the 6 after Rodri's ACL; also 8
+2291,131986,M. Kovačić,2122,Chelsea,PL,CDM,MID,70,2,5,1555,2.2,CDM,medium,Confirms pool: one of the central two in Tuchel's 3-4-3 (with Jorginho/Kante) - CDM/CM boundary
+636,131584,Bernardo Silva,2223,Manchester City,PL,CM,MID,73,4,5,2222,1.13,CM,low,"Rotated 8/LW/RW through the treble season - central plurality slight, no clean majority"
+636,130770,Bernardo Silva,2425,Manchester City,PL,CM,MID,70,4,4,2671,0.91,CM,low,Confirms pool: central plurality with wide stints in the aging squad
+636,132394,Bernardo Silva,2021,Manchester City,PL,CM,MID,70,2,6,2071,1.78,CM,medium,Confirms pool: 8 in the title side (Gundogan the advanced runner)
+36902,130478,T. Reijnders,2526,Manchester City,PL,CM,MID,71,5,2,1640,1.04,CM,medium,Confirms pool: Pep's 8 after summer 2025 move (autumn coverage); spring unverifiable
+36902,144767,T. Reijnders,2425,AC Milan,SA,CDM,MID,83,10,4,3132,1.03,CDM,low,Confirms pool: nominally in Milan's double pivot but the advancing half (10 goals) - CDM/CM boundary
+640,133950,Fernandinho,1718,Manchester City,PL,CM,MID,71,5,3,2885,0.69,CDM,high,CORRECTION to pool (CM): Fernandinho is the centurions' anchor - pool label plainly wrong
+1485,132427,Bruno Fernandes,2021,Manchester United,PL,CAM,MID,90,18,12,3109,0.67,CAM,high,Confirmed: fixed 10
+1485,131237,Bruno Fernandes,2324,Manchester United,PL,CAM,MID,85,10,8,3119,0.55,CAM,high,Confirmed: fixed 10
+1485,132020,Bruno Fernandes,2122,Manchester United,PL,CAM,MID,85,10,6,3119,0.75,CAM,high,Confirmed: fixed 10
+1485,131634,Bruno Fernandes,2223,Manchester United,PL,CAM,MID,84,8,8,3325,0.87,CAM,high,Confirmed: fixed 10
+1485,132831,Bruno Fernandes,1920,Manchester United,PL,CAM,MID,82,8,7,1193,1.13,CAM,high,Confirmed: 10 from Jan arrival
+904,133538,P. Pogba,1819,Manchester United,PL,CM,MID,88,13,9,3011,1.79,CM,high,Confirms pool: box-to-box 8 (13G/9A)
+904,132318,P. Pogba,2122,Manchester United,PL,CM,MID,73,1,9,1353,2.59,CM,medium,Confirms pool: CM in an injury-hit 1353-min season
+904,148715,P. Pogba,1516,Juventus,SA,CM,MID,85,8,12,3018,3.04,CM,high,Confirms pool: Allegri's left CM
+903,131492,S. McTominay,2324,Manchester United,PL,CDM,MID,77,7,1,1919,0.38,CM,low,CORRECTION to pool (CDM): box-crashing advanced 8 arriving late (7 goals); Casemiro/Mainoo held - not the holder
+901,134393,Mata,1617,Manchester United,PL,CM,MID,75,6,3,1628,0.77,Winger,medium,CORRECTION to pool (CM): RW in Mourinho's 4-2-3-1
+901,133989,Mata,1718,Manchester United,PL,CM,MID,71,3,5,1930,0.79,Winger,medium,CORRECTION to pool (CM): RW/right AM
