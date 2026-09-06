@@ -4152,12 +4152,30 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   /* Flags are DECORATION. The chip's value is data-vvf-value ('PL'), never the
      label, so adding or changing an emoji cannot touch the query , that is the
      whole point of the rewrite and the reason these are safe to restore. */
+  /*  THIS IS THE CANONICAL NINE. Anything that needs to name, flag or count the leagues
+      reads it from here rather than writing its own copy , there were FOUR vocabularies on
+      2026-09-06 (this list, card.html's LEAGUE_FULL and LEAGUE_NAMES, and the leagues table)
+      and no two agreed. Names now match the database, which owns them.
+      ENGLAND IS THE SEVEN-CODEPOINT TAG SEQUENCE, NOT 🇬🇧. The Premier League is played in
+      England, and GB is a different place with a different flag; the same list used to say
+      "Jupiler Pro League" and "Süper Lig" where the database says Belgian Pro League and
+      Super Lig. All three are corrected together, because a naming rule applied in one place
+      and not the others is how these drift apart in the first place.
+      SAFE TO CHANGE, AND THE ORIGINAL COMMENT SAYS WHY: the chip's value is data-vvf-value
+      ('PL'), never the label, so a flag or a label cannot touch a query.
+      `c` IS NEW AND IS THE COUNTRY, for surfaces that name the country beside the league.
+      KEY OFF `v`, WHICH IS THE CARD'S league_code, NEVER off leagues.code , the view joins
+      leagues on league_id, so the Turkish row is 'TSL' there while every card carries 'TR'.  */
   var VVF_LEAGUES=[
-    {v:'PL', l:'Premier League',     e:'🇬🇧'},{v:'LL', l:'La Liga',           e:'🇪🇸'},
-    {v:'SA', l:'Serie A',            e:'🇮🇹'},{v:'BL', l:'Bundesliga',        e:'🇩🇪'},
-    {v:'L1', l:'Ligue 1',            e:'🇫🇷'},{v:'PRT',l:'Primeira Liga',     e:'🇵🇹'},
-    {v:'ERE',l:'Eredivisie',         e:'🇳🇱'},{v:'BPL',l:'Jupiler Pro League',e:'🇧🇪'},
-    {v:'TR', l:'Süper Lig',          e:'🇹🇷'}
+    {v:'PL', l:'Premier League',     c:'England',     e:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}'},
+    {v:'LL', l:'La Liga',            c:'Spain',       e:'🇪🇸'},
+    {v:'SA', l:'Serie A',            c:'Italy',       e:'🇮🇹'},
+    {v:'BL', l:'Bundesliga',         c:'Germany',     e:'🇩🇪'},
+    {v:'L1', l:'Ligue 1',            c:'France',      e:'🇫🇷'},
+    {v:'PRT',l:'Primeira Liga',      c:'Portugal',    e:'🇵🇹'},
+    {v:'ERE',l:'Eredivisie',         c:'Netherlands', e:'🇳🇱'},
+    {v:'BPL',l:'Belgian Pro League', c:'Belgium',     e:'🇧🇪'},
+    {v:'TR', l:'Super Lig',          c:'Turkey',      e:'🇹🇷'}
   ];
   var VVF_SORTS=[
     {v:'rt',       l:'VV Score',  col:'rt',          asc:false},
