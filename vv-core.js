@@ -1078,7 +1078,59 @@
     }
     out.pct = Math.max(0, Math.min(100, Math.round(pct)));
     out.eligible = true;
+
+    /*  ══ FALLBACK C , SE AND THE PERCENTILE BAND ══════════════════════════════════════
+        docs/KEEPER_FALLBACK_C_SPEC.md. The mark object failed its pre-registered floor
+        (6 above against 20, at every k from 0 to 300) and what ships instead asserts
+        nothing: recorded measurements, their uncertainty, and a platform that says so.
+
+        THE SE IS BINOMIAL ON THE RAW RATE , sqrt(p(1-p)/n), n = shots on target faced.
+        Held as a PROPORTION here and converted once at the point of display. The mark
+        scorer records that two of five design versions died of an unchecked conversion:
+        a rate in percentage points against an SE in proportion compares fine in code and
+        is wrong by 100x. One unit, one conversion, at the edge.
+
+        NO SHRINKAGE. The spec retires the prior-weight constant k , stabilisation existed
+        to protect assertions and Fallback C asserts nothing, so every figure here is a
+        recorded fact or a direct transform of one. This is the RAW rate, deliberately.
+
+        THE BAND IS THE POINT. rate +/- 1 SE, each end mapped through the ladder, whole
+        percentiles. A 60-shot season shows a wide band and a 250-shot season a narrow
+        one, so the reader sees evidence quality without being told about it. out.pct is
+        KEPT because compare's keeperVersusHTML reads it and compare is a later pass ,
+        but NOTHING IN THIS PASS RENDERS IT, and the spec forbids a point percentile
+        reaching a surface.  */
+    out.se = Math.sqrt(svp * (1 - svp) / sf);          // proportion
+    out.seP = out.se * 100;                            // percentage points, display only
+    var pctAt = function(v){
+      if (v <= L[0]) return 0;
+      for (var j = 1; j < L.length; j++){
+        if (v <= L[j]){ var a = L[j-1], b = L[j];
+          return (j-1)*5 + (b > a ? ((v-a)/(b-a))*5 : 0); }
+      }
+      return 100;
+    };
+    var whole = function(v){ return Math.max(0, Math.min(100, Math.round(pctAt(v)))); };
+    out.bandLo = whole(svp - out.se);
+    out.bandHi = whole(svp + out.se);
     return out;
+  }
+
+  /*  THE THREE CARD STATES , §"THE CARD SENTENCES". ERA FIRST, THEN FIELDS, THEN FLOOR,
+      and the order is load-bearing rather than stylistic: 10 pre-2015 keeper cards DO
+      carry save data (all of them 2014). Testing "has save data" first would give those
+      ten a band and a comparison the spec puts them outside of. They belong in the
+      unrecorded 1,493, not the below-floor 876.
+      MEASURED, not quoted: 1,920 measured + 876 below floor (559 minutes + 317 shots)
+      + 1,493 unrecorded (1,299 pre-2015 + 194 fields) = 4,289 keeper seasons.  */
+  function keeperState(row){
+    if (!row || !isGK(row)) return null;
+    if ((row.season_year || 0) < KEEPER_ERA) return { state:'unrecorded', why:'era' };
+    if (row.saves == null || row.goals_conceded == null) return { state:'unrecorded', why:'fields' };
+    var sf = row.saves + row.goals_conceded;
+    if ((row.minutes || 0) < KEEPER_MIN_MINUTES) return { state:'below_floor', why:'minutes', shotsFaced:sf };
+    if (sf < KEEPER_MIN_SHOTS) return { state:'below_floor', why:'shots', shotsFaced:sf };
+    return { state:'measured', shotsFaced:sf };
   }
 
 
@@ -1189,6 +1241,19 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
 .gkp-f span{font-family:'Inter';font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase}
 .gkp-lim{margin-top:18px;padding:11px 13px;border-left:2px solid var(--gold);background:rgba(232,184,75,.14);border-radius:0 8px 8px 0;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft)}
 .gkp-lim b{color:var(--charcoal);font-weight:700}
+.gkp-rate{font-family:'Bricolage Grotesque';font-weight:700;font-size:30px;line-height:1.1;color:var(--charcoal);margin:2px 0 10px}
+/*  THE SE SHARES THE RATE'S TYPE SIZE. The spec: "it is part of the number, same type
+    size, always" , so this is font-size:inherit and NOT a smaller muted span. Only the
+    weight and colour step down, which is what keeps it readable as one statement rather
+    than two. Anything that shrinks this is a spec violation, not a tidy-up. */
+.gkp-se{font-size:inherit;font-weight:700;color:var(--pink-ink)}
+.gkp-on{font-family:'Inter';font-size:12.5px;font-weight:400;color:var(--ink-soft);white-space:nowrap}
+.gkp-band{position:absolute;top:0;height:100%;border-radius:6px;background:linear-gradient(90deg,rgba(46,140,90,.30),rgba(46,140,90,.62));border:1px solid rgba(46,140,90,.55)}
+.gkp-ref{position:absolute;top:-3px;width:2px;height:calc(100% + 6px);background:var(--charcoal);opacity:.55}
+.gkp-ref-l{font-family:'Inter';font-size:11.5px;line-height:1.5;color:var(--ink-soft);margin:8px 0 2px}
+.gkp-state{font-family:'Inter';font-size:13px;line-height:1.55;color:var(--charcoal);background:rgba(0,0,0,.04);border-radius:10px;padding:12px 13px;margin:10px 0 2px}
+.gkp-figs .gkp-f span i{display:block;font-style:normal;font-size:9.5px;letter-spacing:.02em;color:var(--ink-soft);opacity:.85}
+
 .gkp-no{padding:12px 14px;border:1px dashed rgba(0,0,0,.20);border-radius:10px;font-family:'Inter';font-size:12.5px;color:var(--ink-soft);line-height:1.5}
 .gkp-no b{color:var(--charcoal);font-weight:700}
 @media(max-width:430px){ .gkp-lad{gap:12px} .gkp-pc{font-size:32px} .gkp-figs{gap:18px} }
@@ -1400,50 +1465,111 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     return '<div class="gkv-figs">' + cells + '</div>';
   }
 
-  function keeperPanelHTML(k){
+  /*  ══ THE PANEL , FALLBACK C SHIPPING SPEC ═══════════════════════════════════════
+      docs/KEEPER_FALLBACK_C_SPEC.md, "THE PANEL SPEC". Order is the spec's order and is
+      not a layout preference: recorded figures, then the rate WITH its uncertainty, then
+      the percentile AS A BAND, then the reference line, then the limitation block.
+
+      THE INVARIANT THIS SERVES: there is no keeper scalar. Nothing here prints a single
+      number standing for the season's quality, and nothing here sorts anything.
+
+      A RATE WITHOUT ITS SE IS A SPEC VIOLATION, so the two are emitted by one expression
+      and share a type size. They cannot drift apart by editing one of them.  */
+  function keeperPanelHTML(k, opts){
     if (!k) return '';
     vvInjectGKCSS();
+    opts = opts || {};
+    var st = opts.state || (k.eligible ? 'measured' : 'below_floor');
+    var why = opts.why || null;
     var h = '<div class="gkp">';
-    if (k.eligible){
-      var rungs = [50,75,90], ticks = '';
-      for (var i=0;i<rungs.length;i++){
-        ticks += '<div class="gkp-rung" style="left:'+rungs[i]+'%"></div>'
-              +  '<div class="gkp-rlab" style="left:'+rungs[i]+'%">'+rungs[i]+'th</div>';
-      }
-      h += '<div class="gkp-k">Save rate, against every goalkeeper we can measure</div>'
-        +  '<div class="gkp-lad">'
-        +    '<div class="gkp-fig"><div class="gkp-pc">'+(100*k.savePct).toFixed(1)
-        +      '<span style="font-size:20px">%</span></div><div class="gkp-pl">shots saved</div></div>'
-        +    '<div class="gkp-tw"><div class="gkp-tr"><div class="gkp-base"></div>'
-        +      '<div class="gkp-fill" style="width:'+k.pct+'%"></div>'+ticks
-        +      '<div class="gkp-mark" style="left:'+k.pct+'%"></div></div>'
-        +      '<div class="gkp-ends"><span>weakest</span><span>strongest</span></div></div></div>'
-        +  '<div class="gkp-say"><b>'+k.pct+'th percentile</b> among goalkeepers with a comparable '
-        +    'sample, 2015 onward.</div>';
-      var pcS = 100 * k.saves / k.shotsFaced;
-      h += '<div class="gkp-k">Saved versus conceded</div>'
-        +  '<div class="gkp-bar"><div class="gkp-s" style="width:'+pcS+'%">'+k.saves+'</div>'
-        +    '<div class="gkp-c" style="width:'+(100-pcS)+'%">'+k.conceded+'</div></div>'
-        +  '<div class="gkp-mid">'+k.shotsFaced+' shots on target faced</div>'
-        +  '<div class="gkp-keys"><span>saved</span><span>conceded</span></div>'
-        +  '<div class="gkp-say" style="color:var(--ink-soft)">How many shots he faced is a fact '
-        +    'about the team in front of him, not a measure of how well he kept goal.</div>';
-    } else {
-      h += '<div class="gkp-k">Save rate</div><div class="gkp-no"><b>Not scored.</b> '
-        +  k.reason + '. This card shows what was recorded and nothing more.</div>';
+
+    if (st === 'unrecorded'){
+      /*  NO PANEL BODY , there is nothing measured to put in one. The spec's own words:
+          "an unrecorded save is not a save that never happened."  */
+      h += '<div class="gkp-state">' +
+           (why === 'era'
+             ? 'Saves were not recorded for this season , coverage begins in 2015.'
+             : 'Saves were not recorded for this season , the fields were not captured.') +
+           ' Nothing is shown because nothing was measured: an unrecorded save is not a ' +
+           'save that never happened.</div></div>';
+      return h;
     }
+
+    // ---- 1. the recorded figures, every state that has them --------------------------
     h += '<div class="gkp-k">Recorded</div><div class="gkp-figs">'
-      +  '<div class="gkp-f"><b>'+gkNum(k.minutes)+'</b><span>minutes</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.starts)+'</b><span>starts</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.penaltiesSaved)+'</b><span>pens saved</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.saves)+'</b><span>saves</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.conceded)+'</b><span>conceded</span></div></div>'
-      +  '<div class="gkp-lim"><b>What this cannot tell you.</b> We record whether a shot was '
-      +  'saved, never how hard it was. A keeper facing twenty close-range chances and one facing '
-      +  'twenty from distance score the same here. Nothing in these figures measures distribution, '
-      +  'command of the area or sweeping, so this card does not claim any of it. Penalties saved '
-      +  'is a count, not a rate: we do not know how many he faced.</div></div>';
+      +  '<div class="gkp-f"><b>' + gkNum(k.saves) + '</b><span>saves</span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.conceded) + '</b><span>conceded</span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.shotsFaced) + '</b><span>shots faced <i>derived</i></span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.penaltiesSaved) + '</b><span>pens saved <i>no denominator recorded</i></span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.minutes) + '</b><span>minutes</span></div></div>';
+
+    if (k.shotsFaced > 0){
+      var pcS = 100 * k.saves / k.shotsFaced;
+      h += '<div class="gkp-bar"><div class="gkp-s" style="width:' + pcS + '%">' + k.saves + '</div>'
+        +  '<div class="gkp-c" style="width:' + (100 - pcS) + '%">' + k.conceded + '</div></div>'
+        +  '<div class="gkp-keys"><span>saved</span><span>conceded</span></div>';
+    }
+
+    if (st === 'below_floor'){
+      /*  FIGURES YES, COMPARISON NO. NR is never zero and a recorded fact is not hidden
+          for being thin, but no band, no reference line, no percentile.  */
+      h += '<div class="gkp-state">Below the evidence floor , '
+        +  (why === 'shots'
+             ? gkNum(k.shotsFaced) + ' shots on target faced, under the 60-shot minimum.'
+             : gkNum(k.minutes) + ' minutes, under the 800-minute minimum.')
+        +  ' What was recorded is shown; no comparison is made.</div>'
+        +  gkLimitHTML() + '</div>';
+      return h;
+    }
+
+    // ---- 2. the rate WITH its SE, one expression, one type size ----------------------
+    h += '<div class="gkp-k">Save rate</div>'
+      +  '<div class="gkp-rate">' + (100 * k.savePct).toFixed(1) + '%'
+      +    ' <span class="gkp-se">&plusmn; ' + k.seP.toFixed(1) + 'pp</span>'
+      +    ' <span class="gkp-on">on ' + gkNum(k.shotsFaced) + ' shots</span></div>';
+
+    // ---- 3. the percentile as a BAND, never a point ----------------------------------
+    var lo = Math.min(k.bandLo, k.bandHi), hi = Math.max(k.bandLo, k.bandHi);
+    /*  ORDINALS, NOT A BARE 'th'. Caught in review: the band read "92th and 98th". The
+        spec's own example is "38th and 71st", so the suffix has to be real. 11/12/13 are
+        the exception every naive implementation gets wrong, so they are handled first.  */
+    var ord = function(v){
+      var r100 = v % 100, r10 = v % 10;
+      if (r100 >= 11 && r100 <= 13) return v + 'th';
+      return v + (r10 === 1 ? 'st' : r10 === 2 ? 'nd' : r10 === 3 ? 'rd' : 'th');
+    };
+    var med = KEEPER_POOL.median * 100;
+    h += '<div class="gkp-tw"><div class="gkp-tr"><div class="gkp-base"></div>'
+      +    '<div class="gkp-band" style="left:' + lo + '%;width:' + Math.max(1, hi - lo) + '%"></div>'
+      +    '<div class="gkp-ref" style="left:50%"></div>'
+      +  '</div><div class="gkp-ends"><span>0th</span><span>100th</span></div></div>'
+      +  '<div class="gkp-say">Between the <b>' + ord(lo) + '</b> and <b>' + ord(hi) + '</b> percentile of '
+      +    KEEPER_POOL.n.toLocaleString() + ' measurable keeper seasons (2015 onward), on '
+      +    gkNum(k.shotsFaced) + ' shots on target faced.</div>';
+
+    // ---- 4. the reference line, value and vintage ------------------------------------
+    /*  VINTAGE IS WHAT IS KNOWN, NOT WHAT WOULD READ WELL. KEEPER_SAVE_LADDER is an
+        embedded snapshot with no generator and no recorded date, so the label states the
+        pool it was measured over and stops. Inventing a season-close date here would be
+        the fabrication the spec exists to refuse. See the class note at the ladder.  */
+    h += '<div class="gkp-ref-l">Pool median <b>' + med.toFixed(1) + '%</b> , measured over '
+      +  KEEPER_POOL.n.toLocaleString() + ' gated seasons, 2015 onward. Vintage not recorded '
+      +  'on this snapshot.</div>';
+
+    // ---- 5. the limitation block, in the panel ---------------------------------------
+    h += gkLimitHTML() + '</div>';
     return h;
+  }
+
+  /*  CARRIED AND FINAL, per the spec , part of the panel, not a linked page. The three
+      limits are the spec's three: no shot quality, workload independence, penalties.  */
+  function gkLimitHTML(){
+    return '<div class="gkp-lim"><b>What this cannot tell you.</b> We record whether a shot '
+      + 'was saved, never how hard it was , twenty tap-ins and twenty thirty-yard strikes '
+      + 'record identically. Save rate is independent of how busy a keeper was, and its '
+      + 'relationship to the defence in front of him is unknown on this data. Penalties are '
+      + 'inside the rate and cannot be separated from it, so they contaminate it slightly. '
+      + 'Nothing here measures distribution, command of the area or sweeping.</div>';
   }
 
   /* ══ KEEPER TRAJECTORY , save% across the career, NOT rt ══════════════════════
@@ -2468,6 +2594,11 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       prestige:   prestigeFor(band),    // §3  band-bound badge (Generational / Iconic / null)
       radar:      radarFor(row),        // §4  { raw, scaled, provisional }
       keeper:     keeperScore(row),     // null for an outfielder , the GK-card test
+      /*  THE STATE IS COMPUTED HERE, BESIDE THE SCORE, BECAUSE THIS IS WHERE THE RAW ROW IS.
+          card.html holds D, and D carries no `position` , only `pos` , so a caller trying to
+          derive the state downstream would fail isGK() and silently fall back to the wrong
+          card sentence. Same pattern as `keeper`, same input, no guessing at the call site.  */
+      keeperState: keeperState(row),
       confidence: confidenceFor(row),   // §5  X/5 dots
       confidenceFields: confidenceFields(row),   // §5b per-field present/missing breakdown
 
@@ -5772,7 +5903,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryPairHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperState, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryPairHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,

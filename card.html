@@ -1055,6 +1055,10 @@
       </div>
       <div class="depth">
       <div class="layer open"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5 10 6.5 10 6.5-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></div><div class="layer-t">The Glance</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="glancegrid">
+  <!--  FALLBACK C , THE PANEL SITS WHERE THE SCORE SITS. docs/KEEPER_FALLBACK_C_SPEC.md:
+        the save panel "moves to the top of the gated keeper card, occupying the position
+        the score holds on outfield cards". Empty and hidden on every outfield card.  -->
+  <div id="gkTop" hidden></div>
   <div class="glancestats">
     <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV" data-demo>91</span><span class="gl">V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="gstat"><span class="gv" id="glGoals" data-demo>10</span><span class="gl" id="glGoalsLabel">Goals</span></div><div class="gstat"><span class="gv" id="glAssists" data-demo>8</span><span class="gl" id="glAssistsLabel">Assists</span></div></div>
     <!-- deliberately EMPTY, unlike the demo placeholders on the stats/gsub rows:
@@ -1133,8 +1137,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906b"></script>
-<script src="/vv-core.js?v=20260906b"></script>
+<script src="/vv-marks.js?v=20260906c"></script>
+<script src="/vv-core.js?v=20260906c"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1157,6 +1161,16 @@
       const gkBox=document.getElementById('gkPanel');
       const attrTop=document.getElementById('attrTop'), attrBars=document.getElementById('attrBars');
       const intro=document.getElementById('profileIntro');
+      /*  THE PANEL RENDERS AT THE TOP NOW, into #gkTop. #gkPanel stays in the profile
+          layer and stays EMPTY , removing it is a markup change to a live surface and
+          belongs with the consumer pass, but nothing writes to it any more, so the panel
+          cannot appear twice. The radar suppression below is unchanged and still correct.  */
+      var kTop=document.getElementById('gkTop');
+      if(kp && kTop){
+        var kst=(typeof D!=='undefined'&&D)?D.keeperState:null;   // computed in rowToCard, where the raw row is
+        kTop.innerHTML=VVCore.keeperPanelHTML(kp, kst?{state:kst.state,why:kst.why}:{});
+        kTop.hidden=false;
+      }
       if(kp && gkBox){
         svg.innerHTML=''; svg.style.display='none';
         const n0=document.getElementById('radarNote'); if(n0) n0.textContent='';
@@ -1164,8 +1178,7 @@
         if(attrTop) attrTop.hidden=true;
         if(attrBars) attrBars.hidden=true;
         if(intro) intro.textContent='A goalkeeper is measured on a different set: how often he saved the shots that reached him, against every other keeper we can measure.';
-        gkBox.hidden=false;
-        gkBox.innerHTML=VVCore.keeperPanelHTML(kp);
+        gkBox.hidden=true; gkBox.innerHTML='';   // the panel lives at the top now, not here
         return;
       }
       if(gkBox){ gkBox.hidden=true; gkBox.innerHTML=''; }
@@ -1471,13 +1484,26 @@
     vvLoadEditorial(D);
     renderProof(D);
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
-    set('glVV', D.vv);
+    /*  THE SCORE SLOT IS REMOVED ON A KEEPER CARD, NOT DASHED. Spec: "A dash says a
+        score is missing; the truth is that for keepers, no score exists as a category."
+        set() would print NR, which is the same lie in a different font, so the whole
+        .gstat is taken out of the row rather than emptied.
+        SCOPED TO THE GLANCE. The card FACE, the share image and the compare dropdown
+        still print D.vv , they are the consumer pass, and this card is knowingly
+        inconsistent with itself until that lands. Recorded in the commit message.  */
+    var _vvStat = document.getElementById('glVV');
+    _vvStat = _vvStat ? _vvStat.closest('.gstat') : null;
+    if (D.keeper && _vvStat) { _vvStat.remove(); }
+    else { set('glVV', D.vv); }
     /*  THE CAP LINE. A keeper's radar is all-null, so vvProfileBlurb correctly returns
         nothing , but the FALLBACK said "measured across five dimensions", which is the
         one thing a keeper card is not. Both the lead and the cap line are keeper-aware. */
     var _gk = document.getElementById('glGKCap');
     if(_gk){
-      if(D.keeper){ _gk.textContent='The VV Score does not yet weigh goalkeeping, so keepers are capped at 75.'; _gk.hidden=false; }
+      /*  THE CAP SENTENCE IS RETIRED BY THE SPEC , "The retired sentence , capped at 75
+          , appears nowhere". It explained a number this card no longer shows. What
+          replaces it is the spec's own gated-card sentence.  */
+      if(D.keeper){ _gk.textContent='The VV Score does not rate goalkeeping: save data resolves too little to stand behind a number. This season\'s shot-stopping is shown as recorded, with its uncertainty , and nothing finer is claimed.'; _gk.hidden=false; }
       else { _gk.textContent=''; _gk.hidden=true; }
     }
     var _pl = document.getElementById('profileLead');
