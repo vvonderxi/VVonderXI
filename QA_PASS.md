@@ -583,18 +583,76 @@ environment, which is itself the reason they are listed.
   - **THREE ARE THE KNOWN TRANSFER HALVES AND ARE NOT DUPLICATES , THEY ARE THE MISSING HALF.** Douglas Luiz (108645, 613m), Bobb (108799, 579m), Ward-Prowse (109011, 694m). Their ids belong to OTHER PEOPLE at the provider (4304 Migert Taulla, 3651 Rustem Hoxha, 4696 Menaouar Benyettou) , the `source`-discriminator defect, live. **But the minutes reconcile exactly with the correctly-keyed sibling: 613+331=944, 579+472=1,051, 694+415=1,109.** The repair is a SUM into one card, which is what `UNIQUE (api_player_id, season, league_code)` already implies. **Deleting them loses minutes held nowhere else.**
   - **A LOW `card_id` IDENTIFIED THE BLOCK AND IS NOT A TEST FOR AN INDIVIDUAL ROW.** It was the right heuristic for FINDING it and is worthless for JUDGING one: two thirds of the survivors are clean. **Judge on provider identity and on club.**
 
-### C10. The final read of the diff
-- **Check:** 639 commits and 208 files land atomically.
-- **How:** `git fetch origin` in Terminal C, confirm `origin/vvonderxi_BIGGER` is still **0 ahead**, then read the diff stat.
-- **[BROKEN AS WRITTEN, 2026-09-04] PRODUCTION IS 10 AHEAD, NOT 0**, because `vvonderxi_BIGGER` was repurposed into the holding page. This item cannot pass in its current form. **Re-scope it to the real topology (merge base `775095f`) and decide the merge SHAPE before running the pass** , a fast-forward is no longer available, so there is a merge commit and therefore a review point that the pass was written to do without.
-- **Pass:** 0 ahead, and the figures match what this pass was scoped against. **The 0-ahead count is only as fresh as the last fetch.**
+### C10. The merged tree is the branch's tree, and the holding page is still live
+
+**[REWRITTEN 2026-09-06. THE OLD ITEM ASSERTED `origin/vvonderxi_BIGGER` IS 0 AHEAD AND IS
+DELETED, NOT SOFTENED.** It was a proxy for "nothing lands that we did not intend" that only
+worked while a fast-forward was available. Production is 10 ahead, so it could never pass, and
+its scoping figures (639 commits, 208 files) were measured against the OLD base `5bdbadb`.**
+
+**WHY THE COMMIT COUNT STOPPED MEANING ANYTHING.** Production diverged by DELETING the platform,
+not by editing it: its 10 commits are **204 deletions and 3 modifications**. So the number to
+check is not how many commits arrive, it is whether the resulting TREE is the branch's tree. A
+file production deleted and the branch has not touched since the base is **not a conflict** , it
+is a clean delete, and a merge keeps it deleted with nothing in the conflict list to say so.
+Measured before the merge: 22 conflicts (21 modify/delete plus `index.html`), and **183 files
+that would have been silently dropped**, including `package.json`, `package-lock.json`,
+`api/get-seasons.js`, `schema.sql`, `scripts/lint-inline.js` and all of `migrations/`.
+**`vercel.json` and `og-image.png` would have resolved silently to PRODUCTION's version**,
+because the branch never touched them since the base , which would have shipped the holding
+page's catch-all rewrite and dropped `"fluid": true`.
+
+**FIGURES, RE-MEASURED 2026-09-06.** Against merge base `775095f`: 62 commits, 38 files,
++4,177 / -332. Against production's tip `afb9970`: 62 commits, **223 files, +216,241 / -434**.
+The second is the meaningful one , it is what production gains. Re-measure before running this;
+the figure has been wrong every time it has been checked (517 -> 599 -> 639 -> these).
+
+- **Check:** five assertions. Items 1 and 2 are the ones that catch silent loss.
+- **How and Pass:**
+  1. **`git diff --stat <merged tip> redesign-compare` is EMPTY.** This is the whole check. It
+     passes only if nothing was silently dropped, and it catches all 183 deletions plus both
+     file substitutions in one line. A non-empty result names exactly what went missing.
+  2. **`vercel.json` on the merged branch contains `"fluid": true` and NO `"rewrites"`
+     catch-all.** Called out separately from 1 because this is the one file whose silent loss
+     breaks the site while the tree still looks plausible: the catch-all routes every path to
+     the holding page, and losing `fluid` reverts the 300s function ceiling to 10s, which is
+     what was 502ing every uncached AI generation.
+  3. **All 10 holding-page commits are still reachable from `coming-soon`** ,
+     `git merge-base --is-ancestor <sha> coming-soon` for each of the 10, not a spot check.
+     This is what makes the holding page safe, and it is why `vvonderxi_BIGGER` may be moved
+     at all: it is a strict ANCESTOR of `coming-soon` (0 ahead, 8 behind), so nothing in its
+     history is unique to it.
+  4. **Vercel's production branch still reads `coming-soon`** , read the SETTING, in
+     Settings > Environments > Production. **NOT the branch name, and NOT inferred from what
+     the domain serves.** SS C records that reading the branch name instead of the setting cost
+     a session an hour. **This item cannot be run from Claude Code: there is no `VERCEL_*`
+     credential in `.env` and no `vercel` CLI on PATH. It is Lucas's to check, and an
+     unchecked item is not a pass.**
+  5. **`vvonderxi.com` still serves the holding page and `/rankings` still 404s.** The positive
+     control for item 4 and the direct statement of the constraint that the merge must not go
+     live. `curl -s -o /dev/null -w '%{http_code}' https://vvonderxi.com/rankings` returns 404
+     while the same path on the preview host returns 200.
+
+**THE MERGE SHAPE THAT WAS CHOSEN, AND WHY.** Not a fast-forward (unavailable) and not a reset
+of `vvonderxi_BIGGER` (would have needed a force-push). A merge commit carrying BOTH parents
+whose TREE is `redesign-compare`'s wholesale. That is the only shape with neither a force-push
+nor silent loss. **`-X theirs` does NOT achieve this** , a strategy option only decides
+CONFLICTING hunks, and the 183 clean deletions are not conflicts.
 
 ---
 
-# GROUP D , POST-DEPLOY, IN THIS ORDER
+# GROUP D , POST-PROMOTION, IN THIS ORDER
 
-The merge is a fast-forward: it becomes production the instant it deploys. **These run
-immediately after, not the next day.**
+**[CORRECTED 2026-09-06] THE PREAMBLE BELOW WAS WRONG AND IS REPLACED. IT READ "The merge is a
+fast-forward: it becomes production the instant it deploys."** Neither half is true any more.
+A fast-forward is unavailable (production is 10 ahead of the merge base), and the merge does
+NOT deploy: Vercel's production branch is `coming-soon`, so `vvonderxi_BIGGER` builds as a
+PREVIEW and `vvonderxi.com` keeps serving the holding page.
+
+**SO THESE ARE POST-PROMOTION CHECKS, NOT POST-DEPLOY ONES.** They cannot run at merge time at
+all , every one of them curls `vvonderxi.com` and would be reading the holding page, which
+fails them for the wrong reason. They are gated on whoever later flips Vercel's production
+branch back to `vvonderxi_BIGGER`, and they run immediately after THAT, not after the merge.
 
 ### D1. Production says "Legacy" , the first thing to confirm
 - **Check:** the live title and og:title no longer say "Intelligence".
