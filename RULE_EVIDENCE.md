@@ -644,3 +644,36 @@ A rounded inset `box-shadow` passes `vvAuditCaptureSupport` and is still absent 
   - **WHAT ANY SESSION MUST DO FIRST: assert `document.visibilityState === 'visible'` and that a 50ms timer takes ~50ms, BEFORE trusting any duration, opacity or transition reading.** Put it in the audit harness rather than in someone's memory. **Same family as the `pgrep -f` and log-parser faults , the instrument was wrong and produced confident numbers in both directions.**
   - What IS known and needs no browser: the CSS is present and correctly specific (`.vvtoast.on` is (0,2,0) against `.vvtoast` at (0,1,0), both confirmed in the CSSOM), `vvToast` clears its own timer and sets 3400ms, `vvLedgerSpec()` returns a valid spec so nothing short-circuits early, and the share row is always-visible markup with **no sheet that could close over the feedback.** Save image also now restores its label, so a second save is no longer silent.
 
+
+---
+
+- **OUTFIELD SEPARABILITY AUDIT , THE MEASUREMENTS (2026-09-06, read-only).** Headline and consequences in `CLAUDE.md` §C, beside the anchor-pinned ladder rule. **A finding, not a decision: no remedy was proposed and none is recorded here.**
+  - **THE METHOD IS NOT THE KEEPER METHOD, AND IT COULD NOT BE.** A save rate is a single binomial proportion, so `sqrt(p(1-p)/n)` is exact. **rt has no closed form** , it is a percentile of `gaw90` within pool, combined with a defensive path, a league weight and a piecewise rank-anchored map. The cheap route was tested first and rejected on measurement: **`gaw90` explains only 32% of rt variance** (Pearson 0.568, Spearman 0.571), so a delta method through the goals-and-assists channel would have understated the error badly.
+  - **SO THE ENGINE WAS REIMPLEMENTED FROM A FRESH `pg_get_viewdef` AND VALIDATED BEFORE ANY INFERENCE: 97.75% exact against stored rt, 100% within 1**, on 50,269 cards. Every mismatch is +1 and concentrated in 2526, a float-rounding boundary rather than a structural error. **That residual does not contaminate the result: SE is the SPREAD of replicates, so a constant offset cancels.**
+  - **PARAMETRIC BOOTSTRAP, 120 REPLICATES, 5,890 CARDS** , a systematic sample plus **every** card at rt >= 78, so the sharp end is measured exhaustively rather than sampled. Counting inputs resampled from their own sampling distributions (goals, assists, tackles, interceptions, blocks as Poisson; duels won as binomial), pushed back through the engine with every OTHER card held fixed, which is the right conditioning: the error on this season's rt GIVEN the population it is ranked in.
+  - **SE OF A SEASON'S rt:** p25 2.23, **median 5.58**, p75 8.23, p95 12.22 rt points. Median 6.31 below rt 78 and 5.33 at rt >= 78.
+  - **TIERS BY CRITERION**, spread 72.0 points:
+
+        1 single SE   (lenient)                     5.58 rt      12
+        1 pooled SE   (both noisy, ~68%)            7.89 rt       9
+        2 single SE                                11.16 rt       6
+        1.96 pooled SE (STRICT)                    15.47 rt       4
+        z = 3.3 pooled (mark pre-registration)     26.05 rt       2
+
+  - **BAND POPULATIONS AND THEIR ERRORS**, all bootstrapped rather than sampled:
+
+        band           range    population   median SE
+        Generational   95+              12        0.96
+        Iconic         90-94           138        2.00
+        World Class    85-89           500        3.75
+        Standout       80-84           756        5.79
+
+  - **ADJACENT BAND PAIRS**, band centres against the pooled SE of the two medians:
+
+        Generational vs Iconic      95 / 90   gap 5.0   pooled 2.21   2.26 SE   SEPARATES
+        Iconic vs World Class       90 / 86   gap 4.0   pooled 4.25   0.94 SE   does not
+        World Class vs Standout     86 / 81   gap 5.0   pooled 6.90   0.72 SE   does not
+
+  - **BAND BOUNDARIES**, one card either side of each published cut, gap 1.0 rt by construction: at rt 95 pooled SE 1.82, ratio **0.549**; at 90, 3.31 and **0.302**; at 85, 6.55 and **0.153**; at 80, 8.72 and **0.115**. **Cards either side of every cut are indistinguishable**, which is the same result the keeper audit found and is a property of cutting a continuum, not of this engine.
+  - **THE ADJACENT-PAIR COUNT IS NOT COMPARABLE TO THE KEEPER FIGURE AND MUST NOT BE QUOTED BESIDE IT.** Across the top 30, 0 of 30 pairs clear 1 pooled SE and the median gap is 0.000 , but **rt is an INTEGER and the ceiling compresses the top twelve cards into three values**, so adjacent cards frequently share a score and the gap is literally zero. That measures discretisation. The keeper equivalent was continuous and meant something; this one does not, and the band-level test replaces it.
+  - **WHAT THE BOOTSTRAP HOLDS FIXED, AND WHY THE DIRECTION IS SAFE:** the pool, team defensive totals, league weights and position assignment, each of which carries its own uncertainty. **5.58 is therefore a lower bound and four tiers an upper bound.** Every conclusion survives, because the omitted uncertainty can only widen the error and reduce the tier count.
