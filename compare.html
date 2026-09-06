@@ -726,8 +726,15 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .vshare-opt:hover{background:rgba(255,92,122,.1);border-color:var(--pink-ink)}
   /* icon-only pill, same shape as card.html's .sb-opt.soc */
   .vshare-opt.soc{width:42px;padding-left:0;padding-right:0;justify-content:center;gap:0}
-.h2hnr .h2hlabel{opacity:.6}
-  .h2hbar-nr{font-family:'Inter';font-size:11.5px;color:var(--ink-soft);opacity:.75;display:flex;align-items:center}
+/*  THE NR ROW NO LONGER FADES , 2026-09-06. .h2hnr .h2hlabel used to sit at opacity:.6,
+    which measured 2.75 against a 4.5 bar. The fade was the wrong lever and the sweep proved
+    it: on this ground the whole span between the bar (4.5) and a passing neighbour (4.79) is
+    an RGB distance of TWELVE, so no fade both clears AA and reads as dimmed. Measured
+    0.60 -> 2.75, 0.75 -> 3.43, 0.80 -> 3.66, 0.85 -> 3.93, 0.90 -> 4.22, and 4.5 needs 0.953.
+    The label now renders exactly as a real row's label does, which is correct: the metric
+    name is the same whether or not a value exists. It is the VALUE that is absent, and the
+    italic plus the words below carry that.  */
+  .h2hbar-nr{font-family:'Inter';font-size:11.5px;color:var(--ink-soft);font-style:italic;display:flex;align-items:center}   /* italic, NOT a fade , see the note above; colour comes from the .vsect rule at the end of this sheet */
   #vradarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 16px}
     .vshare-hint{margin-top:12px;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft);max-width:440px;margin-inline:auto}
   #cardA,#cardB{transition:transform .45s cubic-bezier(.4,0,.2,1),filter .45s}
@@ -777,9 +784,8 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      stop (worst case for a light ink) and against the light panel's solid rgb(251,248,242):
 
        CREAM -> var(--vs-muted)      dark now -> after        light now -> after
-         (.h2hbar-nr is listed for completeness and is NOT closed , see the opacity note)
          .vc-sub                      2.43 -> 4.79             6.55 (already fine)
-         .h2hbar-nr                   2.20 -> 3.43 STILL FAILS  3.66 -> 3.66 STILL FAILS
+         .h2hbar-nr                   2.20 -> 4.79 (fade retired) 3.66 -> 6.55
          small#vradarNote             2.81 -> 4.79             6.55 (already fine)
          .vp-l                        3.93 -> 4.79             fine
          .vc-x                        4.08 -> 4.79             fine
@@ -794,16 +800,11 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      the Generational card gradient. The gold three are the SAME fixed-ground trap .tjcap was:
      pinned gold on a panel that goes cream in light.
 
-     TWO CLASSES ARE NOT CLOSED BY THIS AND ARE DELIBERATELY LEFT , .h2hbar-nr (opacity .75)
-     and .h2hnr .h2hlabel (opacity .6). Element opacity COMPOUNDS with the ink alpha, so the
-     token leaves them at 3.43 and 2.75 against a 4.5 bar. Both are "not recorded" indicators
-     and the dimming is the signal, so this is the same shape as the Proof losing values that
-     13c5fc0 kept at 0.55 , except that those are 19px/900 and clear the LARGE-text bar of
-     3.0, while these are 11.5px/400 and 10px/700 and cannot clear 4.5 at any dimming worth
-     having (0.80 ink undimmed is 4.79, so the whole budget is spent before dimming starts).
-     Readable or dimmed, not both. That is Lucas's call, not a contrast patch, and it is the
-     reason element opacity is called out here at all: BOTH earlier surveys missed it, which
-     is why 13c5fc0 recorded .h2hlabel as fixed by the token when it was not.
+     [CLOSED 2026-09-06] .h2hbar-nr and .h2hnr .h2hlabel were left open here because element
+     opacity COMPOUNDS with the ink alpha and the token alone left them at 3.43 and 2.75. The
+     fade is now RETIRED rather than tuned , see the note beside .h2hbar-nr. Both are 4.79.
+     Element opacity is still worth calling out: BOTH earlier surveys missed it, which is why
+     13c5fc0 recorded .h2hlabel as fixed by the token when it was not.
 
      PLACED AT THE END OF THE SHEET DELIBERATELY. .vp-l, .vc-sub, .vc-x and .h2hbar-nr declare
      their own colour at lines 700-730 and .tagrow .tmeta at 280, all at the same (0,2,0) as
