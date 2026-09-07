@@ -1244,8 +1244,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260907j"></script>
-<script src="/vv-core.js?v=20260907j"></script>
+<script src="/vv-marks.js?v=20260907m"></script>
+<script src="/vv-core.js?v=20260907m"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2103,21 +2103,16 @@ body.light .pkmsub{color:var(--ink-soft)}
     const side=c=>({ k:(c&&c.keeper)||null, name:(c&&c.full)||'',
                      club:(c&&c.clubname)||'', year:(c&&c.year)||'' });
     const A=side(CMP_A), B=side(CMP_B);
-    const html=VVCore.keeperVersusHTML(A,B);
+    const html=VVCore.keeperPanelsHTML(A,B);
     if(!html){ host.style.display='none'; return false; }
     host.innerHTML='<div class="vsect-t">Between The Posts</div>'+html;
     host.style.display='';
-    /*  AFTER the section is visible, or every box measures zero and the fit is a no-op that
-        looks like it ran. Re-run on resize: the labels are measured, so a width change
-        invalidates the result. */
-    try{ VVCore.vvFitKeeperLabels(host); }catch(e){}
-    if(!drawKeeperSection._wired){
-      drawKeeperSection._wired=true;
-      window.addEventListener('resize', function(){
-        var h=document.getElementById('secKeeper');
-        if(h && getComputedStyle(h).display!=='none'){ try{ VVCore.vvFitKeeperLabels(h); }catch(e){} }
-      });
-    }
+    /*  NO MEASURE-AFTER-RENDER PASS ANY MORE. vvFitKeeperLabels existed to push two pin
+        labels apart when the pins sat close together on the SHARED AXIS, and to re-run that
+        on resize. There is no shared axis: two panels do not collide, so there is nothing
+        to separate and nothing a width change can invalidate. The resize listener went with
+        it , it was registered once and never unregistered, so removing the reason removes
+        the listener too rather than leaving it firing on a function that is gone. */
     three.forEach(el=>{ if(el) el.style.display='none'; });
     return true;
   }

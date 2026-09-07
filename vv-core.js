@@ -1136,7 +1136,7 @@
                               0.7500,0.7667,0.8852];
   function keeperScore(row){
     if (!row || !isGK(row)) return null;
-    const out = { eligible:false, reason:null, savePct:null, pct:null,
+    const out = { eligible:false, reason:null, savePct:null,
                   saves:row.saves, conceded:row.goals_conceded, shotsFaced:null,
                   penaltiesSaved:row.penalties_saved, minutes:row.minutes, starts:row.starts };
     if ((row.season_year||0) < KEEPER_ERA){ out.reason = 'pre-2015: shot data was never recorded'; return out; }
@@ -1156,7 +1156,6 @@
       if (svp <= L[i]){ const lo = L[i-1], hi = L[i];
         pct = (i-1)*5 + (hi > lo ? ((svp-lo)/(hi-lo))*5 : 0); break; }
     }
-    out.pct = Math.max(0, Math.min(100, Math.round(pct)));
     out.eligible = true;
 
     /*  ══ FALLBACK C , SE AND THE PERCENTILE BAND ══════════════════════════════════════
@@ -1176,10 +1175,12 @@
 
         THE BAND IS THE POINT. rate +/- 1 SE, each end mapped through the ladder, whole
         percentiles. A 60-shot season shows a wide band and a 250-shot season a narrow
-        one, so the reader sees evidence quality without being told about it. out.pct is
-        KEPT because compare's keeperVersusHTML reads it and compare is a later pass ,
-        but NOTHING IN THIS PASS RENDERS IT, and the spec forbids a point percentile
-        reaching a surface.  */
+        one, so the reader sees evidence quality without being told about it.
+        out.pct IS GONE , 2026-09-07. It was a POINT percentile, which the spec forbids
+        reaching a surface, and it survived only because compare's keeperVersusHTML read it
+        to place a pin on the shared axis. That function is deleted, so the field was
+        written and read by nothing: a computed point percentile sitting on the object is
+        an invitation for the next surface to render it. The band is the whole answer.  */
     out.se = Math.sqrt(svp * (1 - svp) / sf);          // proportion
     out.seP = out.se * 100;                            // percentage points, display only
     var pctAt = function(v){
@@ -1235,66 +1236,26 @@
      in pink. Pink on this panel means the score, and only the ladder carries the score. */
   var VV_GK_CSS = `
 .gkp{margin:2px 0 4px}
-/*  BETWEEN THE POSTS , compare's keeper section. Colours are TOKENS ONLY: this renders on
-    .vsect, which is a dark gradient in dark mode and cream in light, so nothing here may
-    assume a ground the way the gkp- panel does. */
-/*  DIRECTION B , small multiples on one shared pair of scales. Lanes, not an overlay:
-    at 346px an overlaid 3-season line is three points crushed under the other player's.
-    Colours are the A/B identity, matching the names directly above each lane. */
-/*  THE PAIR IS CAPPED, NOT FULL-BLEED. The viewBox is 360x104, so at a full 1180px each lane
-    renders 341px tall , two of those is a wall of chart for a line with ten points. Capping the
-    width at 640 gives ~185px lanes at desktop and the full width on a phone, with no distortion
-    (preserveAspectRatio stays at its default) and no letterboxing, because the cap is on the
-    BOX rather than on the height. */
-.gkt-pair{display:flex;flex-direction:column;gap:10px;max-width:640px;
-  --gkt-ink:var(--vs-muted,var(--ink-soft));--gkt-band:rgba(128,128,128,.10);--gkt-absent-line:var(--vs-muted,var(--ink-soft))}
-.gkt-lane{color:var(--gkt-ink)}
-.gkt-lane.gkt-a{color:var(--pink-ink)}
-.gkt-lane.gkt-b{color:var(--vv-blue,#3B6FB0)}
-body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
-.gkt-lanename{font-family:'Inter';font-weight:700;font-size:11px;color:currentColor;margin-bottom:1px}
-.gkt-svg{display:block;width:100%;height:auto}
-
-.gkt-say{font-size:12.5px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:10px}
-.gkt-say b{color:inherit;font-weight:700}
-.gkv-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--vs-muted,var(--ink-soft));margin-bottom:6px}
-.gkv-scale{position:relative;height:80px;margin-top:2px}
-.gkv-axis{position:absolute;left:0;right:0;top:52px;height:5px;border-radius:99px;background:currentColor;opacity:.14}
-.gkv-seg{position:absolute;top:52px;height:5px;border-radius:99px;background:var(--pink-ink)}
-.gkv-rung{position:absolute;top:46px;width:1px;height:17px;background:currentColor;opacity:.22}
-/*  RUNG LABELS AND ENDPOINT LABELS ARE ONE TYPE TREATMENT, DELIBERATELY IDENTICAL.
-    9px, 400, full --vs-muted with NO opacity dilution. They were 9px/.75 and 9.5px/.8, close
-    enough to look like a mistake and faint enough that neither read cleanly. The rungs and the
-    pins carry the information and the endpoints only frame the axis, so the endpoints must not
-    be heavier , parity is the target, not emphasis. Legibility comes from dropping the opacity
-    multiplier, not from size or weight. */
-.gkv-rlab{position:absolute;top:66px;transform:translateX(-50%);font-size:9px;font-weight:400;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));white-space:nowrap}
-.gkv-pin{position:absolute;top:45px;width:3px;height:19px;border-radius:2px;background:var(--pink-ink);transform:translateX(-1.5px)}
-.gkv-lab{position:absolute;top:6px;transform:translateX(-50%);text-align:center;white-space:nowrap}
-.gkv-v{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:29px;line-height:.92;color:var(--pink-ink)}
-.gkv-n{display:block;font-family:'Inter';font-weight:700;font-size:11px;color:var(--vs-muted,var(--ink-soft))}
-/*  THE ENDPOINTS GET THEIR OWN ROW. They shared one with the rung labels via margin-top:-6px,
-    and at 346px "90th" sits at 90% of a short axis while "strongest" is flush right , measured
-    27px of horizontal overlap, on lines close enough to read as a collision. A row of their own
-    cannot collide at either end regardless of axis width or label length, which is the property
-    worth having; nudging would only move the width at which it breaks. */
-.gkv-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:400;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));margin-top:6px}
-.gkv-say{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:14px}
-.gkv-figs{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}
-.gkv-figs div{font-size:10.5px;letter-spacing:.04em;color:var(--vs-muted,var(--ink-soft));opacity:.85}
-.gkv-figs b{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:19px;line-height:1.15;color:inherit;opacity:1}
-.gkv-no{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft))}
-/*  NEAR-TIE GUARD: two pins closer than a label's width collide. The labels are centred on
-    their pin, so the pair is nudged apart only in the LABEL layer , the pins stay truthful. */
-.gkv-lab-a{transform:translateX(-50%)}
-.gkv-lab-b{transform:translateX(-50%)}
-/*  the stack fallback , used only when the track cannot hold both labels side by side even
-    after nudging and clamping. Set by vvFitKeeperLabels, never by hand. */
-.gkv-lab-stack{top:-18px}
-/*  the scale DROPS to make room for a raised label , raising the label alone drove it into
-    the kicker above by a measured 10px. Set by vvFitKeeperLabels, never by hand. */
-.gkv-scale.gkv-stacked{margin-top:30px;height:104px}
-@media (max-width:520px){ .gkv-v{font-size:24px} .gkv-scale{height:74px} }
+/*  THE PAIR, AND THE SURFACE THAT MAKES THE PANEL PORTABLE. .gkp above assumes the card's
+    cream ground; compare renders on .vsect, a dark gradient in dark mode. Rather than
+    re-inking the panel , which would fork one component into two , each column carries its
+    own cream surface, so the panel's ink assumptions hold wherever it is dropped.
+    STACKS BELOW 720px. Two panels side by side on a phone is two unreadable columns, and
+    the panel is a block of small figures. Stacked, the registered line still sits under
+    both, which is where a caption for a pair belongs at either width. */
+.gkpair{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.gkpair-solo{grid-template-columns:1fr;max-width:520px}
+.gkpair-col{min-width:0}
+.gkpair-surface{background:var(--cream,#F0EAD9);border-radius:14px;padding:12px 14px;
+  box-shadow:0 10px 26px -18px rgba(0,0,0,.5)}
+.gkpair-h{display:flex;flex-direction:column;gap:1px;margin:0 0 7px 2px}
+.gkpair-n{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;
+  letter-spacing:.02em;color:var(--vs-muted,var(--ink-soft));text-transform:uppercase}
+.gkpair-s{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11.5px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--vs-muted,var(--ink-soft));opacity:.8}
+.gkpair-line{margin:14px auto 0;max-width:640px;text-align:center;
+  font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;color:var(--vs-muted,var(--ink-soft))}
+@media (max-width:720px){ .gkpair{grid-template-columns:1fr;gap:16px} }
 .gkp-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px}
 .gkp-k:first-child{margin-top:0}
 .gkp-lad{display:flex;align-items:flex-end;gap:16px}
@@ -1394,155 +1355,71 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       which is the Under-the-Lights GRADIENT in dark mode and #FBF8F2 in light , unlike the
       card's .layer, which is cream in BOTH. The keeper card panel assumes a cream ground and
       goes dark-on-dark if it is dropped here unchanged. See §C: match the ink to the GROUND.  */
-  var GKV_RUNGS = [50, 75, 90];
+  /*  ══ TWO PANELS, NO AXIS , FALLBACK C, COMPARE ═════════════════════════════════
+      docs/KEEPER_FALLBACK_C_SPEC.md, CONSUMER RULES: "Two keeper panels render side by
+      side with bands visible. One line of registered copy between them, always."
 
-  function gkvPin(k, name, side){
-    return '<div class="gkv-pin" style="left:' + k.pct + '%"></div>'
-         + '<div class="gkv-lab gkv-lab-' + side + '" style="left:' + k.pct + '%">'
-         +   '<span class="gkv-v">' + (100 * k.savePct).toFixed(1) + '%</span>'
-         +   '<span class="gkv-n">' + escHtml(name) + '</span>'
-         + '</div>';
+      WHAT WAS HERE AND WHY IT IS GONE. keeperVersusHTML pinned both keepers on ONE shared
+      percentile axis, sorted them into `hi` and `lo`, and wrote a sentence naming the higher
+      first , "de Gea stopped a higher share of the shots he faced than 97% of keeper
+      seasons. Alisson Becker, 84%." That is the ranking the spec exists to refuse, and after
+      the verdict stopped declaring a keeper winner it sat DIRECTLY BENEATH a line saying the
+      Index will not place one above the other. The page contradicted itself in adjacent
+      blocks, which is worse than the state before the verdict was fixed.
+      DELETED WITH IT, because each existed only to serve the axis: GKV_RUNGS (the 50/75/90
+      ticks), gkvPin, gkvSentence, gkvNotScored, gkvFigs, and vvFitKeeperLabels , the
+      measure-after-render pass that pushed two pin labels apart when the pins sat close
+      together. Nothing needs separating when nothing shares a scale.
+
+      THE REPLACEMENT REUSES keeperPanelHTML, THE CARD'S OWN PANEL, RATHER THAN DRAWING A
+      SECOND ONE. Section C records what two drawings of one thing cost, and the panel
+      already handles all three evidence states, prints the band AS A BAND, and carries the
+      limitation block. One implementation, rendered twice.
+
+      THE GROUND IS THE TRAP, AND IT IS RECORDED ONE COMMENT ABOVE: .gkp assumes the card's
+      CREAM ground and compare renders on .vsect, a dark gradient in dark mode. Dropped in
+      unchanged it goes dark-on-dark. Each panel therefore gets its own cream surface here
+      rather than the panel being re-inked, so the card and compare keep ONE panel with one
+      set of ink assumptions.  */
+  var GK_PANELS_LINE =
+    "These panels report each season's measurements against the pool, not against each " +
+    "other. Overlapping bands are not distinguishable on this evidence , and most bands " +
+    "overlap.";
+
+  /*  THE SPEC'S SENTENCE, WITH ONE CHARACTER CHANGED. It is written there with an em dash;
+      the house rule is a spaced comma and section D records the shipping HTML as clean of
+      em dashes but for one regex character class. The WORDS are the spec's, unaltered.  */
+
+  function gkPanelHead(x){
+    var sub = [x.club, x.year].filter(Boolean).join(' , ');
+    return '<div class="gkpair-h"><span class="gkpair-n">' + escHtml(x.name) + '</span>'
+         + (sub ? '<span class="gkpair-s">' + escHtml(sub) + '</span>' : '') + '</div>';
   }
 
-  /*  THE SENTENCE IS WHAT MAKES THE AXIS SAYABLE. A percentile bar is only legible if the
-      reader is told what a position on it MEANS, and the higher keeper is named first so the
-      sentence reads as a finding rather than a table.  */
-  function gkvSentence(hi, lo){
-    return escHtml(hi.name) + ' stopped a higher share of the shots he faced than '
-         + hi.k.pct + '% of keeper seasons. ' + escHtml(lo.name) + ', ' + lo.k.pct + '%.';
+  function gkPanelCol(x){
+    return '<div class="gkpair-col">' + gkPanelHead(x)
+         + '<div class="gkpair-surface">' + keeperPanelHTML(x.k, { state: x.state, why: x.why }) + '</div></div>';
   }
 
-  function keeperVersusHTML(A, B){
-    /*  INJECT THE STYLESHEET HERE TOO. vvInjectGKCSS() was called only from
-        keeperPanelHTML, so compare , which calls this and never that , rendered the whole
-        section as unstyled stacked text: rung labels on their own lines, "weakest keeper"
-        and "strongest" run together, every figure a paragraph. It looked like a layout bug
-        and was a missing <style>. The injector is idempotent (it checks its own id), so
-        calling it from both entry points costs nothing.  */
+  /*  ONE KEEPER ONLY. There is no second panel to put beside it and no comparison to
+      refuse, so the registered line would be answering a question nobody asked. The mixed
+      line states the mismatch instead , and it is deliberately SHORTER than the verdict's,
+      which sits below and carries the ruling. Same reconciliation as the trajectory copy:
+      one block explains, the others do not re-explain.  */
+  function keeperPanelsHTML(A, B){
     vvInjectGKCSS();
     var a = A && A.k, b = B && B.k;
-    var rungs = '';
-    for (var i = 0; i < GKV_RUNGS.length; i++){
-      rungs += '<div class="gkv-rung" style="left:' + GKV_RUNGS[i] + '%"></div>'
-            +  '<div class="gkv-rlab" style="left:' + GKV_RUNGS[i] + '%">' + GKV_RUNGS[i] + 'th</div>';
-    }
+    if (!a && !b) return null;
 
-    /*  ONE KEEPER ONLY. There is no shared axis to draw , the outfielder has no position on
-        the keeper pool at all , so this states the mismatch in the same voice the trajectory
-        already uses, and shows the keeper's own position rather than nothing.  */
     if (!a !== !b){
       var K = a ? A : B, O = a ? B : A;
-      if (!K.k.eligible) return gkvNotScored(K, O);
-      return '<div class="gkv">'
-        + '<div class="gkv-k">Save rate, against every goalkeeper we can measure</div>'
-        + '<div class="gkv-scale gkv-solo">'
-        +   '<div class="gkv-axis"></div>'
-        +   '<div class="gkv-seg" style="left:0;width:' + K.k.pct + '%"></div>'
-        +   rungs + gkvPin(K.k, K.name, 'a')
-        + '</div>'
-        + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
-        + '<div class="gkv-say">' + escHtml(K.name) + ' stopped a higher share of the shots he faced than '
-        +   K.k.pct + '% of keeper seasons. ' + escHtml(O.name) + ' is an outfielder, so there is no '
-        +   'shared measure here , a save rate and a goal tally are not the same kind of evidence.</div>'
-        + gkvFigs([K]) + '</div>';
+      return '<div class="gkpair gkpair-solo">' + gkPanelCol(K) + '</div>'
+           + '<div class="gkpair-line">' + escHtml(O.name) + ' is an outfielder, so there is '
+           + 'one panel here rather than two.</div>';
     }
 
-    if (!a && !b) return null;
-    if (!a.eligible || !b.eligible) return gkvNotScored(A, B);
-
-    var hi = (a.pct >= b.pct) ? A : B, lo = (hi === A) ? B : A;
-    var loP = Math.min(a.pct, b.pct), hiP = Math.max(a.pct, b.pct);
-    return '<div class="gkv">'
-      + '<div class="gkv-k">Save rate, against every goalkeeper we can measure</div>'
-      + '<div class="gkv-scale">'
-      +   '<div class="gkv-axis"></div>'
-      +   '<div class="gkv-seg" style="left:' + loP + '%;width:' + (hiP - loP) + '%"></div>'
-      +   rungs
-      +   gkvPin(a, A.name, 'a') + gkvPin(b, B.name, 'b')
-      + '</div>'
-      + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
-      + '<div class="gkv-say">' + gkvSentence(hi, lo) + '</div>'
-      + gkvFigs([A, B]) + '</div>';
-  }
-
-  /*  NEAR-TIE LABELS , MEASURED AFTER RENDER, NEVER PREDICTED.
-      Two pins a few percentile places apart put their labels on top of each other. The label
-      width is not knowable from the HTML , it depends on the name, the viewport and the font
-      once it has loaded , so this measures the real boxes and moves them, the same
-      measure-after-render shape as vvCentreShareCaption. §C: measure, do not predict.
-
-      THE PINS DO NOT MOVE. Only the label layer does. A pin is the datum; shifting it to make
-      room would be drawing a different number from the one that was measured, which is the one
-      thing this section exists not to do. A label that has been nudged is therefore no longer
-      centred on its pin, and that is the correct trade: an approximate pointer to a truthful
-      mark beats a tidy pointer to a moved one.
-
-      THREE STEPS, IN ORDER, AND THE ORDER MATTERS:
-        1. separate , push the pair apart around their shared midpoint until they clear.
-        2. clamp , keep both inside the track, which can undo some of step 1 at an edge.
-        3. stack , if after clamping they STILL overlap the track is too narrow to hold both
-           side by side, so the second label drops to its own line. Verified rather than
-           assumed: the check is re-run after the clamp.  */
-  function vvFitKeeperLabels(root){
-    if (!root || typeof window === 'undefined') return;
-    var scale = root.querySelector('.gkv-scale'); if (!scale) return;
-    var labs = [].slice.call(scale.querySelectorAll('.gkv-lab'));
-    if (labs.length < 2) return;                       // one keeper: nothing can collide
-
-    labs.forEach(function(l){ l.style.marginLeft = ''; l.classList.remove('gkv-lab-stack'); });
-    scale.classList.remove('gkv-stacked');
-
-    var GUTTER = 10;
-    var track = scale.getBoundingClientRect();
-    var a = labs[0].getBoundingClientRect(), b = labs[1].getBoundingClientRect();
-    var left = (a.left <= b.left) ? labs[0] : labs[1];
-    var right = (left === labs[0]) ? labs[1] : labs[0];
-    var lb = left.getBoundingClientRect(), rb = right.getBoundingClientRect();
-
-    var overlap = (lb.right + GUTTER) - rb.left;
-    if (overlap > 0){
-      var push = overlap / 2;
-      left.style.marginLeft  = (-push) + 'px';
-      right.style.marginLeft = ( push) + 'px';
-    }
-
-    // clamp , a nudge must not push a label off the track
-    lb = left.getBoundingClientRect(); rb = right.getBoundingClientRect();
-    var dl = track.left - lb.left, dr = rb.right - track.right;
-    if (dl > 0) left.style.marginLeft  = ((parseFloat(left.style.marginLeft)  || 0) + dl) + 'px';
-    if (dr > 0) right.style.marginLeft = ((parseFloat(right.style.marginLeft) || 0) - dr) + 'px';
-
-    // stack , only if the clamp put them back on top of each other
-    lb = left.getBoundingClientRect(); rb = right.getBoundingClientRect();
-    if ((lb.right + 2) > rb.left){
-      right.classList.add('gkv-lab-stack');
-      /*  The class goes on the SCALE too, not just the label. Two reasons. The stacked label
-          is raised above its partner, and raising it alone put it 10px INTO the kicker above
-          , measured, not guessed , so the whole scale drops to make the room instead. And a
-          class set here does not depend on :has(), which would tie a correctness-critical
-          layout to a selector's support matrix.  */
-      scale.classList.add('gkv-stacked');
-    } else {
-      scale.classList.remove('gkv-stacked');
-    }
-  }
-
-  /*  A CARD THAT DOES NOT MEET THE GATES GETS A NAMED REASON, NEVER A BLANK , the same rule
-      the keeper card follows. 800 minutes AND 60 shots faced, 2015 onward.  */
-  function gkvNotScored(A, B){
-    var parts = [A, B].filter(function(x){ return x && x.k; }).map(function(x){
-      return x.k.eligible ? null : escHtml(x.name) + ': ' + x.k.reason;
-    }).filter(Boolean);
-    return '<div class="gkv"><div class="gkv-k">Save rate</div>'
-      + '<div class="gkv-no"><b>Not scored.</b> ' + parts.join(' ') + '</div></div>';
-  }
-
-  function gkvFigs(list){
-    var cells = list.map(function(x){
-      var last = String(x.name).split(' ').pop();
-      return '<div><b>' + x.k.saves + ' / ' + x.k.conceded + '</b>' + escHtml(last) + ' saved / conceded</div>';
-    }).join('') + '<div><b>' + list.map(function(x){ return x.k.minutes; }).join(' &middot; ') + '</b>minutes</div>';
-    return '<div class="gkv-figs">' + cells + '</div>';
+    return '<div class="gkpair">' + gkPanelCol(A) + gkPanelCol(B) + '</div>'
+         + '<div class="gkpair-line">' + escHtml(GK_PANELS_LINE) + '</div>';
   }
 
   /*  ══ THE PANEL , FALLBACK C SHIPPING SPEC ═══════════════════════════════════════
@@ -3642,6 +3519,19 @@ body.light .vvrows .ugoals span, body.light .vvrows .uassists span{color:var(--i
 .vvrows.compactmode .ugoals, .vvrows.compactmode .uassists{font-size:13px}
 .vvrows.compactmode .ugoals span, .vvrows.compactmode .uassists span{font-size:10px}
 .vvrows.compactmode .rmini{width:40px;height:44px;border-radius:9px}
+/*  THE EMPTY SLOT HOLDS ITS PLACE AND PAINTS NOTHING , 2026-09-07. A keeper row carries no
+    score, and .rmini is a filled tile with a gradient, a border and a shadow, so an EMPTY
+    .rmini renders as a visible empty box , which reads as a missing value rather than as a
+    thing that does not apply. The row is a grid, so the cell cannot simply be dropped
+    either: that shifts every column after it. It keeps its width and loses its paint.
+    BOTH NAMESPACES, AND THE FIRST DRAFT ONLY HAD ONE. Section D records that the row CSS
+    lives under TWO prefixes , .vvrows and .vvrows-season , precisely because both style
+    .rmini with different values. The season dropdown is .vvrows-season, so a rule written
+    against .vvrows alone MATCHED NOTHING and the box kept painting. It read like a
+    specificity fight and it was not; section C: a selector that matches nothing is not a
+    specificity problem. Found by asking the element which rules matched it. */
+.vvrows .rmini-none, .vvrows-season .rmini-none, .rmini.rmini-none{
+  background:none !important;border:0 !important;box-shadow:none !important}
 .vvrows.compactmode .rmvv{font-size:10px}
 .vvrows.compactmode .rmn{font-size:17px}
 .vvrows .rtag .vvm,.vvrows-season .rtag .vvm{width:11px;height:11px;flex:none;margin-right:5px;vertical-align:-1px}\n.vvrows .rtag,.vvrows-season .rtag{display:inline-flex;align-items:center}\n.vvrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
@@ -3834,6 +3724,23 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     }, 0);
   }
 
+  /*  A KEEPER ROW CARRIES NO SCORE , 2026-09-07, the last surface that still printed one.
+      The season dropdown on card.html and compare's season list both render through
+      rankRowHTML, so this one helper closes both. Same ruling as the card face: nothing
+      replaces the number, the slot is simply empty, and the VV wordmark goes with it
+      because it labels the number.
+      GATED ON POSITION via vvIsGKCard, never on a null rt. Most recent Premier League
+      keepers carry a null rt while de Gea carries 75, so a null-keyed gate would leave some
+      keepers scored and others not, which is worse than either.
+      THE ROW IS A GRID, so the cell is EMITTED EMPTY rather than omitted: dropping the
+      element would shift every column after it. Section C's lesson from .ctop, one layout
+      down , the absent thing still has to hold its place.  */
+  function gkRowScore(d, tier){
+    if (vvIsGKCard(d)) return '<div class="rmini' + tier + ' rmini-none"></div>';
+    return '<div class="rmini' + tier + '"><span class="rmvv"><span class="a">V</span>'
+         + '<span class="b">V</span></span><span class="rmn">' + d.vv + '</span></div>';
+  }
+
   function rankRowHTML(d,i,opts){
     vvQueueRowAudit();                          // cheap: one deferred check per batch, then never again
     if (typeof opts === 'number') opts = { cap: opts };   // back-compat: 3rd arg was `cap`
@@ -3897,7 +3804,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
           +'<div class="srsub">'+sub+'</div>'
           +(srtags ? '<div class="srtags">'+srtags+'</div>' : '')
         +'</div>'
-        +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+        +gkRowScore(d, tier)
       +'</div>';
     }
     return '<div class="urow'+tier+active+'" onclick="'+click+'">'
@@ -3918,7 +3825,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       +'<div class="utags">'+prestige+honHtml+tags+'</div>'   // prestige FIRST (matches .srtags)
       +'<div class="ugoals">'+goalsCell+'</div>'
       +'<div class="uassists">'+assists+'</div>'
-      +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+      +gkRowScore(d, tier)
     +'</div>';
   }
 
@@ -6074,7 +5981,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperState, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryPairHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
