@@ -5318,10 +5318,24 @@ body.light .vvload{color:#1A1917}
       before anyone reads it. The old 0.026/0.024 put the caption at 18px and the wordmark
       at 16px in the file , 9px and 8px as actually seen, which is not readable at arm's
       length on a phone. Judge any change at 600px wide, never at 100%.  */
-  const SH_TYPE = { cap: 0.046, brand: 0.044, tag: 0.034, sub: 0.68 };
+  /*  THE VERDICT LINE JOINED SH_TYPE ON 2026-09-07, AND UNTIL IT DID IT WAS HALF THE SIZE
+      OF THE CAPTION. It was written inline in shCmpFrame as (wide ? 23 : 21) * S, so the
+      2026-08-27 pass that doubled cap and brand for exactly this reason never touched it.
+      As a fraction of the short side those constants were 0.023 and 0.021 against the
+      caption's 0.046 , the headline the image exists to say, rendering at 7.8px once X
+      halves it, under a 15.5px line of metadata naming the two players.
+      0.052 IS ABOVE THE CAPTION, NOT LEVEL WITH IT. Parity is the wrong bar: the verdict is
+      the content and the caption is the label. At 0.052 the longest real headline measured
+      (78 chars) sets in 3 lines on the wide frame with 219px still clear of the caption
+      block, and no format overflows , dl 294px clear, igf 172px, igs 457px, all measured on
+      the rendered frame rather than predicted.
+      ONE NUMBER FOR BOTH ORIENTATIONS. The old pair differed by 2 points of a raw multiplier
+      and by 0.002 as a fraction, which was not a decision anybody made.  */
+  const SH_TYPE = { cap: 0.046, brand: 0.044, tag: 0.034, sub: 0.68, verdict: 0.052 };
   const shCapPx  = F => Math.round(shShort(F) * SH_TYPE.cap);
   const shBrndPx = F => Math.round(shShort(F) * SH_TYPE.brand);
   const shTagPx  = F => Math.round(shShort(F) * SH_TYPE.tag);
+  const shVerdPx = F => Math.round(shShort(F) * SH_TYPE.verdict);
   const shPad    = F => Math.round(shShort(F) * 0.055);
   const shCardW  = (F, frac) => Math.round(Math.min(shShort(F) * frac, (F.h - shPad(F) * 3.4) / SHARE_RATIO));
   const shEsc    = v => String(v == null ? '' : v).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -5589,7 +5603,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
       'gap:' + (16 * S) + 'px;position:relative;z-index:1;' + (wide ? '' : 'text-align:center;') + '">' +
       (win === 'tie' ? '<div class="sf-vtag" style="font-size:' + tagPx + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' : '') +
-      '<div class="sf-verdict" style="font-size:' + ((wide ? 23 : 21) * S) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.34 : F.w * 0.78) + 'px">' + shEsc(spec.verdictLine) + '</div>' +
+      '<div class="sf-verdict" style="font-size:' + shVerdPx(F) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.40 : F.w * 0.78) + 'px">' + shEsc(spec.verdictLine) + '</div>' +
       '<div class="sf-rule" style="width:' + (64 * S) + 'px"></div>' +
       '<div style="display:flex;gap:' + (18 * S) + 'px;align-items:baseline">' +
         '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + a.vv + '</span>' +
