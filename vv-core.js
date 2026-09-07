@@ -1040,6 +1040,54 @@
       key_passes_per90: aiPer90(row.passes_key, mins)
     };
     // the bar for HIS position, so a number can be read as high or low without a league rank
+    /*  ── THE rt CLAIMS LICENCE , POSITION-KEYED, INTERIM ──────────────────────────
+        MEASURED 2026-09-07 by reproducing player_card_view's own formula on all 50,269
+        outfield cards, 0 mismatches. rt is a rank-anchored map of a base score:
+
+            b = ( 0.70 * GREATEST(PERF, FLOOR) + 0.30 * AVAIL ) * LEAGUE
+
+        GREATEST IS A SWITCH, NOT A BLEND. When FLOOR wins, the whole performance half ,
+        the ranking percentiles, the goals-and-assists term and the defensive bonus , is
+        discarded and contributes EXACTLY ZERO. The score is then a defensive-share
+        percentile, a minutes curve and a league multiplier.
+        IT WINS ON MOST DEFENDERS: 86.2% of CB cards (5,260), 83.0% of FB (3,127), 74.0%
+        of CDM (1,709). Not a tail , even the TOP QUARTILE of centre-backs is 70% floor-
+        bound. Among those cards the LEAGUE MULTIPLIER varies more than the defensive
+        signal does (sd 5.17 against 4.77) and minutes correlate with the score more
+        strongly than the signal it is meant to measure (0.589 against 0.474).
+
+        SO NO QUALITY CLAIM MAY BE DERIVED FROM rt FOR THESE POSITIONS , NOT JUST
+        DEFENDING ONES. Goals and assists contributed zero on the same cards, so an
+        attacking claim read off rt is exactly as unsupported as a defensive one. The
+        figures themselves stay: the model may state what was recorded.
+
+        POSITION-KEYED IS THE INTERIM AND IT IS DELIBERATELY THE OVER-RESTRICTING ERROR.
+        The exact test is FLOOR >= PERF per card, and it is NOT COMPUTABLE at runtime:
+        pos_pct, abs_pct, posvol_pct, absvol_pct, gaw and gaw_ref are all CTE-internal and
+        reach no consumer , checked against the matview's 76 columns, all six absent.
+        Gating on the pool covers 12,177 cards to reach the 10,096 that are genuinely
+        floor-bound, so 2,081 (17.1%) are restricted without needing to be, van Dijk 2025
+        among them. That is the cheap error against narrating defending quality on 5,260
+        centre-back seasons that contain none.
+        IT IS REPLACED BY A BOOLEAN COLUMN AT THE SHARED MATVIEW REBUILD , see POST_LAUNCH.
+        When floor_bound lands, this reads the column and the position key goes.
+
+        NULL-POOL CARDS ARE NOT GATED, AND THAT IS A SEPARATE DECISION. 22,170 outfield
+        cards carry no pool; FLOOR is 0 for every one of them, so the 7,451 that satisfy
+        FLOOR >= PERF are near-EMPTY cards, not floor-bound defenders. Flagging them here
+        would be a different claim wearing the same name. Logged, not decided.  */
+    if (pool === 'CB' || pool === 'FB' || pool === 'CDM'){
+      out.rt_claims = 'forbidden';
+      out.rt_claims_reason =
+        'On this position the VV Score is usually a defensive-share percentile, a minutes ' +
+        'curve and a league weight: the measured performance half of the formula is ' +
+        'discarded on 74 to 86 per cent of these seasons, so goals, assists and the ' +
+        'ranking percentiles contribute nothing to it.';
+      out.rt_claims_rule =
+        'State recorded figures. Do NOT read any quality judgement off the VV Score for ' +
+        'this season , not defending, not attacking, not overall.';
+    }
+
     if (th){
       out.pool = pool;
       out.pool_passes_per90_p80 = th.passes90_p80 != null ? th.passes90_p80 : null;

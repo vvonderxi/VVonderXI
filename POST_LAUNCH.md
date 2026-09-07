@@ -11,6 +11,42 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 ---
 
+## FLOOR-BOUND FLAG , A BOOLEAN COLUMN, RIDES WITH THE SHARED MATVIEW REBUILD (queued 2026-09-07, NOT built)
+
+**IT REPLACES A POSITION KEY THAT IS DELIBERATELY WRONG ON 2,081 CARDS.** The rt claims licence
+shipped 2026-09-07 gating on `position_pool IN ('CB','FB','CDM')`, which covers 12,177 cards to
+reach the 10,096 that are genuinely floor-bound , **17.1% are restricted without needing to be,
+van Dijk 2025 among them.** That was the cheap error on purpose; this is the fix.
+
+**THE EXACT TEST IS `FLOOR >= PERF` AND IT IS NOT COMPUTABLE AT RUNTIME.** Checked against the
+matview's 76 columns: `pos_pct`, `abs_pct`, `posvol_pct`, `absvol_pct`, `gaw` and `gaw_ref` are
+ALL CTE-internal and reach no consumer. `FLOOR`'s inputs (`def_share_pct`, `duel_quality_pct`)
+are on the matview; `PERF`'s are not. So neither vv-core nor api/analyse.js can evaluate it, and
+the flag has to be computed where the switch already lives, in `player_card_view`.
+
+**THE COLUMN.** `floor_bound boolean` = `(FLOOR >= PERF)`, emitted from the `base` CTE where both
+sides are already in scope. **Append-only on the VIEW is safe; the MATVIEW enumerates its columns
+and is frozen at creation (SEC C), so it needs the DROP+CREATE and its 8 indexes.** That is why
+this rides with the shared rebuild rather than triggering one: the Proof percentile columns and
+the known-as name fold are already waiting on the same sitting.
+
+**WHEN IT LANDS:** `vvAIStats` reads `row.floor_bound` and the `pool === 'CB' || 'FB' || 'CDM'`
+test is DELETED , not kept as a fallback. A position key and a measured flag are two fields for
+one concept, which SEC C records as a defect even when both are populated.
+
+**MEASURED 2026-09-07**, by reproducing `player_card_view`'s own formula on all 50,269 outfield
+cards with 0 mismatches: **21,193 flagged overall (42.2%)** , CB 5,260 of 6,102 (86.2%), FB 3,127
+of 3,767 (83.0%), CDM 1,709 of 2,308 (74.0%), CM 2,940 of 5,274 (55.7%), CAM 164 (11.2%), Winger
+357 (8.6%), ST 174 (3.5%). **CM IS NOT GATED TODAY AND IS THE OPEN QUESTION**: at 55.7% it is
+past a coin flip, and the column settles it per card rather than by a judgement about the pool.
+
+**SEPARATE DECISION, NOT COVERED BY EITHER: THE NULL-POOL CARDS.** 22,170 outfield cards carry no
+`position_pool`. **`FLOOR` is 0 for every one of them** (the `ELSE NULL -> COALESCE 0` branch), so
+the 7,451 that satisfy `FLOOR >= PERF` are cards whose PERF is also near zero , **near-EMPTY
+cards, not floor-bound defenders.** Flagging them under this name would be a different claim
+wearing the same name, so they are ungated in both designs. **Decide what they get before the
+column ships**, because `floor_bound` computed naively in SQL WOULD flag all 7,451.
+
 ## §D DEFERRED (post-launch, explicitly NOT launch-blockers)
 
 - Premium/motion pass; accounts/Locker (waitlist for now); language toggle EN/NL/FR.
