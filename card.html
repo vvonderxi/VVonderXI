@@ -1137,8 +1137,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260907e"></script>
-<script src="/vv-core.js?v=20260907e"></script>
+<script src="/vv-marks.js?v=20260907f"></script>
+<script src="/vv-core.js?v=20260907f"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -3237,7 +3237,21 @@ function vvShareText(){
       control the destination's encoding, where a comma would always survive. Verified fine
       on WhatsApp, X and Instagram; if a destination is ever found mangling it, this line
       is the one to revert, NOT the caption.  */
-  return d ? (d.full+' \u00b7 '+d.year+' \u00b7 VV '+d.vv+' on VVonderXI') : 'VVonderXI \u00b7 Compare Careers. Define Legacies.';
+  /*  A KEEPER GETS ITS OWN BRANCH, NOT A DELETED SEGMENT , 2026-09-07. The score is the
+      OBJECT of "on VVonderXI" here, so removing "VV 75" from the middle leaves
+      "David de Gea \u00b7 17/18 \u00b7 on VVonderXI", which is broken English. The keeper
+      branch ends at "\u00b7 VVonderXI" instead. That is the difference between this and
+      vvShareCaption, where the score sits between two separators and can simply go.
+      WHY IT IS HERE AT ALL: this string travels BESIDE the composed image while the caption
+      is rendered INTO it, so stripping only the caption would leave a keeper post showing a
+      blank-scored card, a caption with no score, and post text reading "VV 75 on VVonderXI".
+      Same contradiction, one step further out.
+      GATED ON POSITION VIA VVCore.vvIsGKCard, the same predicate buildCard and the caption
+      use , not on a null rt, which is a data problem and must still show its gap.  */
+  if(!d) return 'VVonderXI \u00b7 Compare Careers. Define Legacies.';
+  var noScore = window.VVCore && VVCore.vvIsGKCard ? VVCore.vvIsGKCard(d) : false;
+  return noScore ? (d.full+' \u00b7 '+d.year+' \u00b7 VVonderXI')
+                 : (d.full+' \u00b7 '+d.year+' \u00b7 VV '+d.vv+' on VVonderXI');
 }
 function vvShareOut(){
   // LINK share only , the IMAGE path is vvShareCard. Kept as its own rung because a link

@@ -508,7 +508,7 @@
         NOTHING ELSE MOVES. All three children of .ctop are position:absolute and .ctop's
         height is a fixed --cw * 0.2, so removing this one changes no other element's
         geometry , verified rendered at all three sizes rather than reasoned about.  */
-    const gkFace = String(d.pos || '').toUpperCase() === 'GK';
+    const gkFace = vvIsGKCard(d);
     return `<div class="vvcard${d.prestige==='Generational'?' gen':d.prestige==='Iconic'?' iconic':''}" style="--cw:${cw}px">
       <div class="ctop">
         <div class="ctl">
@@ -927,6 +927,16 @@
      data itself (see §E position-pool accuracy) and this does not fix it , do not read this
      as the fix and close that thread. */
   function isGK(row){ return row.position === 'GK' || row.position_pool === 'GK'; }
+
+  /*  isGK ABOVE READS A RAW ROW; THIS READS A CARD OBJECT. They are not interchangeable and
+      keeping them apart is deliberate , rowToCard collapses position_pool and position into
+      a single `pos` (pool first, coarse fallback), so a card has one field where a row has
+      two. Passing a card to isGK returns false on every keeper alive.
+      IT IS EXPORTED BECAUSE THREE SURFACES NOW ASK THE SAME QUESTION: the card face
+      (buildCard), the caption rendered into the share image (vvShareCaption) and the text
+      posted beside it (card.html's vvShareText, which cannot see a module-local). Section C
+      already records what a rule stated in one place and not applied as a class costs.  */
+  function vvIsGKCard(d){ return String((d && d.pos) || '').toUpperCase() === 'GK'; }
 
   // key:null means the measure exists in football but not in our source, so it can never be
   // present. It still gets a row, because "we do not have this" is the honest thing to show.
@@ -5544,7 +5554,16 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   function vvShareCaption(spec){
     if (spec.kind === 'compare')
       return (spec.a.full || '') + ' ' + shSeason(spec.a) + ' v ' + (spec.b.full || '') + ' ' + shSeason(spec.b) + ' · VVonderXI';
-    return (spec.card.full || '') + ' ' + shSeason(spec.card) + ' · ' + spec.card.vv + ' · VVonderXI';
+    /*  A KEEPER CARRIES NO SCORE HERE EITHER , 2026-09-07. buildCard stopped drawing the
+        number on a keeper face, and this line kept stating it, so a keeper poster showed a
+        blank-scored card above a caption naming the score. The middle survives its own
+        removal: `full` and the season are joined by a SPACE, not a separator, so dropping
+        the score segment leaves ONE dot rather than two adjacent ones or a trailing one.
+        "David de Gea 17/18 · 75 · VVonderXI" becomes "David de Gea 17/18 · VVonderXI".
+        THE COMPARE PATH ABOVE NEVER CARRIED A SCORE and is untouched.  */
+    const noScore = vvIsGKCard(spec.card);
+    return (spec.card.full || '') + ' ' + shSeason(spec.card) +
+           (noScore ? '' : ' · ' + spec.card.vv) + ' · VVonderXI';
   }
 
   function shCardFrame(spec, F, light){
@@ -6019,7 +6038,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
