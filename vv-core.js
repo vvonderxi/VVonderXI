@@ -3315,12 +3315,12 @@ body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, va
     width. The prestige faces below already sit at 55% and never overflowed, so they are
     left alone. This is a real change to every card face at every width, made deliberately:
     the photo is the only element on the face carrying no information. */
-.vvcard .cimg{width:42%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
+.vvcard .cimg{width:56%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.02);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
 .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
 body.show-photos .vvcard .cimg .cphoto{display:block}
 body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
-.vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
+.vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.015)}
 .vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}
 /* #4: odd count -> last tag spans both cols, no blank cell */
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
@@ -3334,7 +3334,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     Complete) and gold is honours, so a stage tag must read as neither. The -age rule above
     is DEAD as of the family merge and is left in place deliberately while this is unpushed.  */
 .vvcard .chtagcell-stage{background:linear-gradient(90deg,#2F8290,#1B5563) !important}
-.vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
+.vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.015)}
 .vvcard .cga .col{text-align:center}
 .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
 /*  SAME DEFECT AS .cname .sub DIRECTLY BELOW, AND THE SAME FIX , 2026-09-01. This is the
@@ -3388,7 +3388,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vvcard.gen .yr{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
-.vvcard.gen .cimg,.vvcard.iconic .cimg{width:42%;margin-top:calc(var(--cw)*0.005)}
+.vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
 .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
 .vvcard.gen .vv .a{color:#F0EAD9}
 .vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
@@ -3409,8 +3409,8 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
      rankings, so nothing moves, and preferences/myclub carry a DRIFTED rim (a flat 1.5px
      outline instead of the gold inset, no !important) which is its own decision, logged in
      SS D rather than silently overwritten here. */
-  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) rgba(232,184,75,0.7), inset 0 0 0 calc(var(--cw)*0.025) #16120e !important}
-  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) rgba(42,29,3,0.55), inset 0 0 0 calc(var(--cw)*0.025) #E8B84B !important}
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #3a3126, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #C08A22, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
 .vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
 .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
 .vvcard.iconic .vv .a{color:#2a1d03}
@@ -3457,6 +3457,34 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvm{width:1em;height:1em;flex:none;vertical-align:-0.12em}
 .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
 .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
+/*  THE PHOTO STEPS DOWN ON SMALL CARDS, AND THE QUERY IS ON THE CARD, NOT THE VIEWPORT
+    , 2026-09-07. This replaced a @media (max-width:720px) override, which was keyed on the
+    wrong thing: crowding is a function of --cw, and --cw is not a function of the viewport.
+    rankings.html:226 is the proof , it sets --cw:165px on (max-width:720px),(max-height:600px),
+    and the max-height branch fires on a WIDE, SHORT desktop window where a viewport-keyed
+    override does not. The media rule protected the phone and left the identical card
+    cropping on a laptop.
+    WHY A STEP AT ALL, when the gaps above already bought most of it: two type sizes on this
+    face have FLOORS that do not scale , .cname .sub at 11.5px and .cga .col .l at 9.5px.
+    At --cw 132 their design sizes are 6.6px and 5.3px, so the floors add about 9px of height
+    that a small card has no room for. That is a fixed cost, so it can only be paid by
+    something that scales, and the photo is the only element on the face carrying no
+    information. It is NOT a reason to lower the floors: measured, dropping .sub from 11.5 to
+    9.5 buys 2.0px at 132 and EXACTLY ZERO at 260 and above, because above --cw 230 the floor
+    does not bind at all. A legibility cost for nothing where the card is largest.
+    46% AND 190px ARE MEASURED. The container query reports the CONTENT box, which is
+    --cw * 0.86 here, so 190px trips at --cw 221 and below. Club line to rim, worst of a
+    prestige card and a three-tag plain card: +1.7 at 132, +3.2 at 138, +4.3 at 145, +4.9 at
+    165, +5.7 at 190, +6.6 at 220, then 55% takes over , +7.8 at 260, +9.0 at 300, +9.9 at 330.
+    Those are read off the LIVE card page, not off an isolated sweep , the sweep said +2.1 and
+    +3.6 for the first two, and the real prestige card is the tighter subject.
+    container-type:inline-size is contain:layout style inline-size. It does NOT clip, so it
+    does not flatten preserve-3d , the flip invariant in section C is unaffected, and that
+    was verified on the rendered card rather than reasoned about.  */
+.vvcard{container-type:inline-size}
+@container (max-width:190px){
+  .vvcard .cimg,.vvcard.gen .cimg,.vvcard.iconic .cimg{width:46%}
+}
 /*  THE PHOTO IS 42% AT EVERY WIDTH, AND THIS USED TO BE A @media (max-width:720px)
     OVERRIDE OVER 56% / 55% BASES. THE VIEWPORT WAS THE WRONG KEY , 2026-09-06.
     THE OVERFLOW HAS TO GO SOMEWHERE, AND IT COMES OFF THE PHOTO'S WIDTH , NOT ITS HEIGHT.
@@ -3492,7 +3520,6 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     42% costs the lighter cards photo they did not need: at 220 and above they were already
     at the slack ceiling (+6.6 / +9.0) and stay there. That is the price of one number
     instead of a per-card one, and it is the same trade the old comment already accepted.  */
-.vvcard .cimg,.vvcard.gen .cimg,.vvcard.iconic .cimg{width:42%}
 `;
   function vvInjectCardCSS(){
     if (typeof document === 'undefined') return;
