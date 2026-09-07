@@ -1084,8 +1084,8 @@
         'discarded on 74 to 86 per cent of these seasons, so goals, assists and the ' +
         'ranking percentiles contribute nothing to it.';
       out.rt_claims_rule =
-        'State recorded figures. Do NOT read any quality judgement off the VV Score for ' +
-        'this season , not defending, not attacking, not overall.';
+        'Do not mention the VV Score for this season at all , not the number, not the band, ' +
+        'not its placement. Write about the recorded figures instead.';
     }
 
     if (th){
