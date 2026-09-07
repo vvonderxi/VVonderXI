@@ -207,6 +207,25 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
 
 // Derived AFTER the prompts, so each fingerprint tracks the exact text it governs.
 const VERDICT_VERSION = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM);
+
+/*  THE VERDICT'S CACHE VERSION IS THE SYSTEM PROMPT *AND* THE PAYLOAD SCHEMA , 2026-09-07.
+    VERDICT_VERSION above fingerprints the SYSTEM text, which lives in this file, so it moves
+    when the INSTRUCTIONS change. The user prompt is assembled in compare.html, so it moves
+    when the EVIDENCE changes and this fingerprint cannot see it. The note above PROMPT_REV
+    already named that hole and answered it with "bump PROMPT_REV by hand" , which is a thing
+    a person can forget, and forgetting it serves prose written without a field to a reader
+    looking at a page that has it. That is the stale-prose trap, and it was avoided rather
+    than closed.
+    The client now derives payloadRev from the KEY SET vvAIStats emits (names only, sorted,
+    no values) and sends it. Folding it in here means the existing staleVersion test does all
+    the work, and no column had to be added to verdict_cache.
+    ABSENT IS NOT ZERO. A caller that sends no payloadRev , scripts/prewarm_verdicts.js, an
+    older client, a hand-rolled request , gets the bare VERDICT_VERSION, exactly what it got
+    before. It does NOT get a version that collides with a stamped one, because the stamped
+    form always carries the extra segment.
+    IT DOES NOT REPLACE rt_a/rt_b. Those catch a moved SCORE; this catches a changed SHAPE.
+    A field being added and a value changing are different events and need different tests. */
+const verdictVersionFor = (rev) => rev ? (VERDICT_VERSION + '-' + rev) : VERDICT_VERSION;
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
 
 module.exports = async (req, res) => {
@@ -225,7 +244,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB } = req.body;
+    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev } = req.body;
 
     // ── Verdict self-cache (server-side, service key). Active only when both
     //    card ids are present + numeric; otherwise this stays a generic proxy. ──
@@ -261,7 +280,7 @@ module.exports = async (req, res) => {
         // A request that supplies no rt cannot check (3), but (1) and (2) still
         // apply, so a legacy row is never served as valid.
         const unstamped = !row || row.rt_a == null || row.rt_b == null || row.cache_version == null;
-        const staleVersion = !!row && row.cache_version !== VERDICT_VERSION;
+        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev);
         const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
         if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
@@ -398,7 +417,7 @@ module.exports = async (req, res) => {
     try {
       await sb.from('verdict_cache').upsert({
         pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-        rt_a: rtLo, rt_b: rtHi, cache_version: VERDICT_VERSION,   // stamps (null rt if caller sent none)
+        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev),   // stamps (null rt if caller sent none)
         verdict: canonical, winner_card_id: winnerId, model: MODEL
       }, { onConflict: 'pair_key', ignoreDuplicates: false });
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
@@ -420,4 +439,5 @@ module.exports.MODEL           = MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
 module.exports.NOTES_SYSTEM    = NOTES_SYSTEM;
 module.exports.VERDICT_VERSION = VERDICT_VERSION;
+module.exports.verdictVersionFor = verdictVersionFor;
 module.exports.NOTES_VERSION   = NOTES_VERSION;

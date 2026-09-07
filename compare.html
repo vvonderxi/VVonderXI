@@ -1244,8 +1244,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260907h"></script>
-<script src="/vv-core.js?v=20260907h"></script>
+<script src="/vv-marks.js?v=20260907j"></script>
+<script src="/vv-core.js?v=20260907j"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2581,6 +2581,27 @@ body.light .pkmsub{color:var(--ink-soft)}
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
       body.cardIdA=idA; body.cardIdB=idB;
+      /*  THE PAYLOAD SCHEMA TRAVELS WITH THE REQUEST , 2026-09-07. VERDICT_VERSION
+          fingerprints the SYSTEM prompt, which lives in api/analyse.js, so it moves when the
+          instructions change and does NOT move when the EVIDENCE changes. The user prompt is
+          built here, and api/analyse.js says so in its own words: "BUMP PROMPT_REV BY HAND
+          only for changes the fingerprint cannot see... the user-prompt builder in
+          compare.html". A hand bump is a thing you can forget, and forgetting it serves prose
+          written without a field to a reader looking at a page that has it.
+          DERIVED, NOT DECLARED. It is a hash of the KEY SET vvAIStats emits for this pair ,
+          the field names, sorted, with no values , so it changes the moment a field is added
+          or removed and never because Salah scored a different number of goals. Values are
+          already covered: rt_a/rt_b catch a moved score and are checked separately.
+          THE SERVER FOLDS IT INTO cache_version, so the existing staleVersion test does the
+          work and no column has to be added.  */
+      /*  GUARDED, BECAUSE A STALE vv-core IS A REAL STATE AND THIS IS NOT WORTH A VERDICT.
+          Found the honest way: the token had been bumped BEFORE this function was added to
+          vv-core, so the browser served new markup against a cached module and
+          VVCore.vvPayloadRev threw INSIDE vvGenerateVerdict , no request, no verdict, no
+          error a visitor could read. The token is fixed, but the shape of that failure is
+          the point: a cache stamp must never be able to take the thing it is stamping down
+          with it. Absent simply means the server uses the bare VERDICT_VERSION.  */
+      body.payloadRev = (window.VVCore && VVCore.vvPayloadRev) ? VVCore.vvPayloadRev([CMP_A, CMP_B]) : null;
       body.rtA=va; body.rtB=vb;   // live scores -> verdict_cache stamps; a cached verdict citing different scores is a MISS
       body.winnerCardId = winner==='A'?idA : (winner==='B'?idB : null);   // post-tiebreak winner; null on true tie
     }

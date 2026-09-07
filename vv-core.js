@@ -938,6 +938,38 @@
       already records what a rule stated in one place and not applied as a class costs.  */
   function vvIsGKCard(d){ return String((d && d.pos) || '').toUpperCase() === 'GK'; }
 
+  /*  THE VERDICT PAYLOAD'S SCHEMA REVISION , 2026-09-07. api/analyse.js fingerprints the
+      SYSTEM prompt, which lives in that file, so it moves when the INSTRUCTIONS change. The
+      user prompt is assembled from vvAIStats out here, so it moves when the EVIDENCE changes
+      and that fingerprint cannot see it. analyse.js already named the hole in its own comment
+      and answered it with "bump PROMPT_REV by hand", which is a thing a person can forget.
+      KEY SET ONLY , names, sorted, no values. A field added or removed moves it; Salah
+      scoring a different number of goals does not. Values are covered separately by the
+      rt_a/rt_b stamps, and a changed SHAPE and a changed VALUE are different events.
+      IT LIVES HERE BECAUSE TWO CALLERS NEED THE SAME ANSWER. compare.html sends it on the
+      request; scripts/prewarm_verdicts.js writes verdict_cache rows DIRECTLY and stamps the
+      version itself. If those two derived it separately they would drift, and the symptom
+      would be silent: every prewarmed row a permanent miss, generated and paid for and never
+      served. That is the same duplication trap section C keeps recording.
+      djb2, not sha , this is a change detector, not a security boundary, and it has to run
+      in a browser with no crypto import.  */
+  function vvPayloadRev(cards){
+    try{
+      var ks = {};
+      (cards || []).forEach(function(c){
+        var a = vvAIStats(c) || {};
+        Object.keys(a).forEach(function(k){
+          ks[k] = 1;
+          if (k === 'keeper' && a.keeper) Object.keys(a.keeper).forEach(function(k2){ ks['keeper.' + k2] = 1; });
+        });
+      });
+      var src = Object.keys(ks).sort().join(',');
+      var h = 5381;
+      for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;
+      return h.toString(16);
+    }catch(e){ return null; }   // never block a verdict on the stamp
+  }
+
   // key:null means the measure exists in football but not in our source, so it can never be
   // present. It still gets a row, because "we do not have this" is the honest thing to show.
   const KEEPER_SET = [
@@ -6038,7 +6070,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

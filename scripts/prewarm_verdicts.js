@@ -64,7 +64,7 @@ const LIMIT       = flag('limit', null) ? Number(flag('limit')) : null;
 // read cannot drift, and a prompt edit auto-bumps VERDICT_VERSION on both
 // sides at once (it is a fingerprint of the prompt text).
 const ANALYSE = require(path.join(__dirname, '..', 'api', 'analyse.js'));
-const { MODEL, VERDICT_VERSION, VERDICT_SYSTEM: SYSTEM_PROMPT } = ANALYSE;
+const { MODEL, VERDICT_VERSION, VERDICT_SYSTEM: SYSTEM_PROMPT, verdictVersionFor } = ANALYSE;
 for (const [k, v] of Object.entries({ MODEL, VERDICT_VERSION, SYSTEM_PROMPT })) {
   if (typeof v !== 'string' || !v) {
     console.error(`FATAL: api/analyse.js did not export ${k}. It must export MODEL, VERDICT_VERSION and VERDICT_SYSTEM for this script to mirror production exactly. Refusing to run rather than guess.`);
@@ -175,7 +175,7 @@ async function callClaude(userPrompt, attempt = 0) {
     const r = byKey.get(p.key);
     if (!r || !r.verdict || r.model !== MODEL) return false;
     if (r.rt_a == null || r.rt_b == null || r.cache_version == null) return false;   // legacy -> regenerate
-    if (r.cache_version !== VERDICT_VERSION) return false;
+    if (r.cache_version !== verdictVersionFor(VVCore.vvPayloadRev([A, B]))) return false;
     return r.rt_a === (+p.A.vv || 0) && r.rt_b === (+p.B.vv || 0);
   };
   const cachedFresh = pairs.filter(isFresh);
@@ -214,7 +214,14 @@ async function callClaude(userPrompt, attempt = 0) {
         const winnerId = VC.winner === 'A' ? p.A.card_id : (VC.winner === 'B' ? p.B.card_id : null);
         const { error: werr } = await sb.from('verdict_cache').upsert({
           pair_key: p.key, card_id_a: p.A.card_id, card_id_b: p.B.card_id,
-          rt_a: +p.A.vv || 0, rt_b: +p.B.vv || 0, cache_version: VERDICT_VERSION,   // stamped from creation, imported from analyse.js
+          /*  THE SAME COMPOSED VERSION THE LIVE CLIENT ASKS FOR , 2026-09-07. cache_version
+              is now VERDICT_VERSION plus the payload SCHEMA revision, and compare.html sends
+              that second half on every request. Stamping the bare VERDICT_VERSION here would
+              make every row this script writes a PERMANENT MISS , generated, paid for, and
+              never served, with nothing to show for it but the bill. Both halves come from
+              the two modules that own them (analyse.js, vv-core.js) so neither can drift. */
+          rt_a: +p.A.vv || 0, rt_b: +p.B.vv || 0,
+          cache_version: verdictVersionFor(VVCore.vvPayloadRev([p.A, p.B])),
           verdict, winner_card_id: winnerId, model: MODEL
         }, { onConflict: 'pair_key', ignoreDuplicates: false });
         if (werr) throw new Error('DB write: ' + werr.message);
