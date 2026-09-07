@@ -1244,8 +1244,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260907g"></script>
-<script src="/vv-core.js?v=20260907g"></script>
+<script src="/vv-marks.js?v=20260907h"></script>
+<script src="/vv-core.js?v=20260907h"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2414,14 +2414,43 @@ body.light .pkmsub{color:var(--ink-soft)}
       NO POSITIONAL WORD. An earlier draft ended "measured against every keeper we can
       score, below", which is true only while the panel renders beneath this and would
       break silently if it ever moved.  */
+  /*  THE MIXED LINE YIELDS TO THE TRAJECTORY'S, WHICH PREDATES IT , 2026-09-07. Both said
+      "a save rate and a goal tally are not the same kind of number / evidence", about 90px
+      apart on the same page: the trajectory caption argues it to explain why there is no
+      COMBINED CHART, and this line was re-arguing it to explain why there is no VERDICT.
+      The reader has already had the premise by the time they reach here, so this states only
+      the consequence. It also now parallels GK_NO_VERDICT_PAIR below , "does not rank" /
+      "does not place", "Each of these seasons" / "Each is measured" , so the two registered
+      lines read as a matched pair rather than two unrelated sentences.
+      IF THE TRAJECTORY COPY IS EVER REWRITTEN, READ THIS ONE IN THE SAME PASS. The reason
+      this line is short is that another line above it does the explaining; that dependency
+      is invisible from here and is the only thing holding it.  */
   var GK_NO_VERDICT_MIXED =
-    'A save rate and a goal tally are not the same kind of evidence. There is no shared ' +
-    'measure between these two seasons, so the VV Index does not rank them against each other.';
+    'The VV Index does not rank a goalkeeper against an outfielder. Each of these seasons ' +
+    'is measured on evidence the other one does not have.';
   var GK_NO_VERDICT_PAIR =
     'The VV Index does not rate goalkeeping, so it does not place either of these seasons ' +
     'above the other. Each is measured against every keeper we can score, and not against the other.';
 
+  /*  THE SHARE AFFORDANCE FOLLOWS THE VERDICT, AND IT MUST BE SYMMETRIC , 2026-09-07.
+      With no verdict there is nothing to save or post: "Save this verdict" and the whole
+      share row would compose an image of two blank-scored keeper cards with no verdict
+      text on it, and offer to save a thing that does not exist.
+      HIDDEN: .vsave (Save this verdict) and .vshare (the main button, the platform row and
+      the capability hint). KEPT: .vwatch , the two "See It For Yourself" links are per
+      PLAYER, not per verdict, and watching a keeper's season is still a real offer.
+      THE RESTORE IS THE HALF THAT BREAKS IF IT IS FORGOTTEN. Both slots persist across a
+      pairing change, so a visitor going keeper -> outfield would keep a hidden share row
+      with no way to get it back. Called from BOTH branches of vvGenerateVerdict for that
+      reason, rather than hiding in one place and hoping.  */
+  function vvShareAffordance(on){
+    ['.vsave','.vshare'].forEach(function(sel){
+      var e=document.querySelector(sel); if(e) e.style.display = on ? '' : 'none';
+    });
+  }
+
   function vvSetNoVerdict(bothKeepers){
+    vvShareAffordance(false);
     // the winner furniture, cleared one by one , each was its own claim
     var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
     if(ca)ca.classList.remove('winner'); if(cb)cb.classList.remove('winner');
@@ -2494,6 +2523,7 @@ body.light .pkmsub{color:var(--ink-soft)}
         where nothing replaced the number and the corner was left blank.  */
     var _gkA = VVCore.vvIsGKCard(CMP_A), _gkB = VVCore.vvIsGKCard(CMP_B);
     if(_gkA || _gkB){ vvSetNoVerdict(_gkA && _gkB); return; }
+    vvShareAffordance(true);   // restore , a previous pairing may have hidden it
     var va=+CMP_A.vv||0, vb=+CMP_B.vv||0;
     var VC=VVCore.verdictContext(CMP_A,CMP_B), TAGS=VVCore.VERDICT_TAGS;
     var winner=VC.winner;   // post age-tiebreak winner ('A'/'B'/'tie')
