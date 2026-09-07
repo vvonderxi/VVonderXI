@@ -491,6 +491,24 @@
       ? `<rect x="0" width="50" height="116" fill="${c1}"/><rect x="50" width="50" height="116" fill="${c2}"/>`
       : `<rect width="100" height="116" fill="${c1}"/>`;
     const longName = (d.surname && String(d.surname).length > 11) ? ' long' : '';
+    /*  A KEEPER CARD CARRIES NO SCORE, AND NO WORDMARK EITHER , 2026-09-07. The VV Index
+        does not rate goalkeeping (the keeper rt is minutes and league and nothing else, see
+        section C), so the face states nothing rather than stating a number it cannot stand
+        behind. Nothing replaces it: the top-right corner goes genuinely blank and the year
+        is alone in the row.
+        THE WORDMARK GOES WITH THE NUMBER BECAUSE IT LABELS THE NUMBER. Left in place it is a
+        caption with nothing captioned, and it does not stay where it was: .ctr is a
+        top-anchored flex column, so deleting .n pulls VV up by exactly the number's height
+        (20.2 / 36.2 / 41.8px at --cw 145 / 260 / 300) and, because .ctr is align-items:center
+        and its width collapses, slides it right until it touches the padding edge.
+        THE GATE IS POSITION, NOT A NULL rt. An outfield card with a missing rt is a DATA
+        problem , 3,061 cards have a null rt (section C) , and it must keep its wordmark and
+        show the gap, not quietly render as though it were a keeper. rowToCard already emits
+        '' for a null rt, so that case degrades on its own without borrowing this rule.
+        NOTHING ELSE MOVES. All three children of .ctop are position:absolute and .ctop's
+        height is a fixed --cw * 0.2, so removing this one changes no other element's
+        geometry , verified rendered at all three sizes rather than reasoned about.  */
+    const gkFace = String(d.pos || '').toUpperCase() === 'GK';
     return `<div class="vvcard${d.prestige==='Generational'?' gen':d.prestige==='Iconic'?' iconic':''}" style="--cw:${cw}px">
       <div class="ctop">
         <div class="ctl">
@@ -500,7 +518,7 @@
           </div>
         </div>
         <div class="yr">${d.year}</div>
-        <div class="ctr"><div class="n">${d.vv}</div><div class="vv"><span class="a">V</span><span class="b">V</span></div></div>
+        ${gkFace ? '' : `<div class="ctr"><div class="n">${d.vv}</div><div class="vv"><span class="a">V</span><span class="b">V</span></div></div>`}
       </div>
       <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
       ${prestige}${tag}
