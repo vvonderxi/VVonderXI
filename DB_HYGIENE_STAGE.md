@@ -4,11 +4,13 @@
 
 ## THE ONE THING TO KNOW BEFORE PLANNING THIS SITTING
 
-**The known-as-names fix and the percentile columns SHARE a matview DROP + CREATE, so they are ONE SITTING, not two.**
+**[SUPERSEDED 2026-09-08 , THE PAIRING NO LONGER BINDS, BECAUSE THE KNOWN-AS HALF HAS SHIPPED.] The percentile columns are now the only half of this pairing left.**
+
+Verified against the live database: `player_name_norm` carries BOTH names , `Nene` folds to `nene rui filipe da cunha correia`, `Borja Baston` to `borja baston borja gonzalez tomas`, and the same for `Alex Grimaldo`, `Lucas Paqueta` and `Hulk`. **All five test cases from item 1 are searchable today.** So the argument for pairing them is gone: there is nothing to pair the percentile columns WITH, and holding them for a partner that already arrived would delay them for nothing.
 
 A matview query is FROZEN at creation (§C), so neither can be added by `REFRESH`. Both force a **DROP + CREATE of `player_card_mv` plus its 8 indexes** , including the UNIQUE `card_id` index that `REFRESH CONCURRENTLY` depends on. That is hands-on production DB work on the table the whole site reads, and doing it twice pays the risk twice for no benefit.
 
-- **Known-as names** (item 1 below) , widen the existing `unaccent()` input so 134 unreachable players become searchable.
+- **~~Known-as names~~ (item 1 below) , DONE, verified 2026-09-08. Left in place so the reasoning survives; do NOT rebuild for it.**
 - **THE PROOF , percentile columns** , ~8 `percent_rank()` columns. **Full spec is in `POST_LAUNCH.md`**, not here; it is gated on three product decisions (pool / cross-league vs per-league / minutes threshold) that must be settled BEFORE the sitting, or the DROP+CREATE happens with the wrong columns.
 
 **Trigram indexes (item 2) are INDEPENDENT** , indexes can be added to a matview without rebuilding it, so that one can ship first and alone. Verify the index catalogue before spending effort; the "no trigram index exists" claim is inferred from cold-scan timing, not read from `pg_indexes`.
@@ -20,7 +22,7 @@ A matview query is FROZEN at creation (§C), so neither can be added by `REFRESH
 ## §D PARALLEL , search follow-ups (full text as it stood at extraction)
 
 - **SEARCH FOLLOW-UPS (logged 2026-08-07 after `bffc15e` shipped multi-field + match-count specificity). Neither is blocking , search now reaches the whole 57k instead of half of it. Recorded here because both were living ONLY in a code comment, which nobody reads until it breaks.**
-  1. **KNOWN-AS NAMES NOT SEARCHABLE , 134 players unreachable by the name everyone uses. RE-SCOPED READ-ONLY 2026-08-07: THIS IS NOT AN ACCENT BUG. Do not re-scope it as one.**
+  1. **[SHIPPED , VERIFIED 2026-09-08. THE FIX IS LIVE AND THIS ITEM IS CLOSED. The detail below is kept because it records WHY the two columns disagreed, which is worth having; the WORK is done.]** KNOWN-AS NAMES NOT SEARCHABLE , 134 players unreachable by the name everyone uses. RE-SCOPED READ-ONLY 2026-08-07: THIS IS NOT AN ACCENT BUG. Do not re-scope it as one.**
      - **WHAT IS ALREADY CORRECT, so nobody re-derives it:** `player_name_norm` is ALREADY accent-folded , the view builds it as `regexp_replace(lower(unaccent(COALESCE(full_name, name))), ...)`. **The CLUB side needs NO work at all**, `team_name_norm` gets the same `unaccent()` (verified live: `münchen`/`munchen` both -> 320 rows, `beşiktaş`/`besiktas` both -> 342, `atlético`/`atletico` both -> 326). **Typed accents ALSO already work** , `vvNorm` folds the QUERY, so `Paquetá` and `Paqueta` produce the identical token today.
      - **THE ACTUAL DEFECT , one column is folded but lacks the name, the other has the name but is not folded.** The folded column is built from the **LEGAL name only**, so the known-as name never enters it: `Álex Grimaldo` -> `alejandro grimaldo garcia`, `Lucas Paquetá` -> `lucas tolentino coelho de lima`, `Trézéguet` -> `mahmoud ahmed ibrahim hassan`. `bffc15e` added the raw `player_name` column as a second branch to reach the known-as name, **but that column is UNFOLDED**, so `alex` never matches `Álex`. Neither branch alone can win.
      - **THE FIX: WIDEN THE EXISTING `unaccent()` INPUT to include the display/known-as name.** One clause , the fold is already there, you are only changing what goes into it. NOT a rewrite, NOT new folding. Simulated across all 15,289 players: **134 unreachable -> 0**. Still broken today: Nenê rt89, Borja Bastón rt86, Álex Grimaldo rt85, Fernandão rt83, Trézéguet rt81, Lucas Paquetá rt79, Álex Baena rt79.
