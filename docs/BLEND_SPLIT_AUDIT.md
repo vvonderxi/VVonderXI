@@ -171,6 +171,65 @@ TWO THINGS THAT WOULD MATTER MORE THAN REWEIGHTING:
      that, not the weights.
 
 ================================================================================
+5b. THE NULL POLICY , SETTLED 2026-09-08. sig RENORMALISES, AND THAT IS CORRECT.
+================================================================================
+THREE THINGS, PLAINLY, SO NOBODY RE-OPENS THIS:
+
+  1. WHEN duel_quality_pct IS NULL, sig RENORMALISES ONTO THE ONE AVAILABLE FACET.
+     0.55*ds + 0.45*COALESCE(dq, ds) collapses to 0.55*ds + 0.45*ds = 1.00*ds exactly.
+     Those cards are scored by def_share_pct alone at full weight.
+
+  2. THAT IS CORRECT BEHAVIOUR AND NOT A BUG. It is what you would write deliberately: with
+     one facet unmeasured, the honest move is to use the other at full weight rather than to
+     score the absence. An earlier note in this session called it a "double-count", and that
+     was WRONG , nothing is counted twice, the weight is redistributed. The only real defect
+     is that the COALESCE DISGUISES it: a reader of the view sees a two-facet blend, and 329
+     cards get a one-facet measure with no marker in the expression.
+
+  3. duel_quality_pct IS NULL IS ALREADY THE MARKER, ON THE MATVIEW, TODAY. No new column is
+     needed and no rebuild is needed. Any consumer , the tag engine, the payload, a future
+     audit , can already distinguish a one-facet card from a two-facet one with a null test on
+     a column that is already there.
+
+THE POPULATION: 329 defender cards, 2.1% of the pool. CB 170, FB 113, CDM 46. All 2015+.
+Median 965 minutes, median rt 52.
+
+WHY THE FACET IS MISSING, AND IT IS ALMOST NEVER A REAL ZERO:
+     159  duels_total was never recorded (NULL)
+     168  duels_total > 0 but under the `duels_total >= 20` gate in the view's duel_rate CASE
+       2  genuinely played and won none (duels_total = 0)
+  So 327 of 329 are an ABSENCE or a deliberate small-sample gate. Two are a measurement.
+
+--------------------------------------------------------------------------------
+OPTION B , NULL THE sig SO THE FLOOR FALLS TO 0 , IS MEASURED AND REJECTED.
+--------------------------------------------------------------------------------
+RECORDED HERE BECAUSE IT IS THE OBVIOUS "FIX" AND IT IS A DISASTER. It looks principled: if a
+facet is unmeasured, do not score it. Measured on the live view's own CTE chain:
+
+     306 of the 329 cards MOVE
+     median drop of 27.07 points of b, maximum 44.41
+     every affected card sits at rt 38 to 70, BELOW the 80 knee where rt = round(b),
+     so the drop is very nearly one-for-one in rt , a card at 52 falls to about 25
+
+IT PUNISHES 327 CARDS FOR A MISSING FIELD. That is the rule this platform states in its own
+first principles , NR for missing data, never 0 , and it is the same defect class section E
+already records against goals_conceded being zero-filled on outfielders: a not-applicable
+sentinel written as data. A defender whose duels were never recorded is not a defender who
+lost them.
+
+--------------------------------------------------------------------------------
+THE VIEW EDIT IS DEFERRED, DELIBERATELY.
+--------------------------------------------------------------------------------
+Making the expression explicit , CASE WHEN duel_quality_pct IS NULL THEN def_share_pct ELSE
+0.55*ds + 0.45*dq END , is verified IDENTICAL to what ships today on every row (tolerance
+1e-12). It changes no score, so it buys clarity and nothing else.
+Against that: section C records that CREATE OR REPLACE VIEW has SILENTLY DESTROYED this view's
+body before, so the edit needs a captured pg_get_viewdef, a byte-verified read-back, and the
+whole capture-before-edit discipline. That is real risk for zero numeric gain.
+**IT WAITS FOR A COMMIT THAT CHANGES A NUMBER** , the floor_bound column, the percentile
+columns, or whatever else opens the view next. Do it THEN, in the same edit, not on its own.
+
+================================================================================
 6. WHAT THIS DOES NOT ESTABLISH
 ================================================================================
 - It does not say either facet is a GOOD measure of defending. It measures internal properties
