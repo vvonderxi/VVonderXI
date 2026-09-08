@@ -1244,8 +1244,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260908b"></script>
-<script src="/vv-core.js?v=20260908b"></script>
+<script src="/vv-marks.js?v=20260908c"></script>
+<script src="/vv-core.js?v=20260908c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2539,6 +2539,28 @@ body.light .pkmsub{color:var(--ink-soft)}
     function aiBlock(c){ var a=(window.VVCore&&VVCore.vvAIStats)?VVCore.vvAIStats(c):{}; var b=[];
       if(a.passes_per90!=null) b.push('passes/90 '+a.passes_per90+(a.pool_passes_per90_p80!=null?' (pool p80 '+a.pool_passes_per90_p80+', p90 '+a.pool_passes_per90_p90+')':''));
       if(a.key_passes_per90!=null) b.push('key passes/90 '+a.key_passes_per90);
+      /*  DENOMINATORS AS BOUND PAIRS , FACTS, STATED AND NEVER GRADED. Written as "X of Y"
+          so the pair cannot be split by the serialiser and arrive as two loose numbers.
+          A HALF-PAIR IS NOT SENT. Where the denominator is null the whole pair is dropped
+          rather than emitting the success count alone , a bare "60 dribbles" is exactly
+          the unanchored number this block exists to remove, and pre-2015 cards have the
+          successes without the attempts.  */
+      if(a.shots_total!=null && c.goals!=null) b.push('goals '+c.goals+' of '+a.shots_total+' shots');
+      if(a.dribbles_success!=null && a.dribbles_attempts!=null) b.push('dribbles '+a.dribbles_success+' of '+a.dribbles_attempts);
+      if(a.duels_won!=null && a.duels_total!=null) b.push('duels won '+a.duels_won+' of '+a.duels_total);
+      if(a.penalties_scored!=null && c.goals!=null) b.push('of those goals, '+a.penalties_scored+' from the spot');
+      /*  HONOURS , THE CLAIMS BLOCK. Asserted outright: the platform already asserted them
+          on the card face. won_by keeps a team title from being written as a personal one,
+          and leg keeps a 2018 World Cup from being read as something he won in this
+          season , it attaches to every card a winner holds.  */
+      if(a.honours&&a.honours.length) b.push('HONOURS: '+a.honours.map(function(h){
+        return h.honour+(h.year!=null?' '+h.year:'')+' ('+h.won_by+(h.leg==='career'?', career honour, NOT won in this season':'')+')'
+             +(h.context?' , '+h.context:''); }).join('; '));
+      if(a.career_stage&&a.career_stage.length) b.push('CAREER STAGE: '+a.career_stage.join(', '));
+      /*  TAG GLOSSES , the tag names were already in the prompt with no meaning attached,
+          so the model guessed at what they sound like. This is the platform's own one-line
+          definition, the same text the Playbook shows.  */
+      if(a.tag_glosses&&a.tag_glosses.length) b.push('TAG MEANINGS: '+a.tag_glosses.map(function(g){ return g.tag+' = '+g.means; }).join(' | '));
       if(a.minutes!=null) b.push(a.minutes+' min'+(a.starts!=null?' / '+a.starts+' starts':'')+(a.appearances!=null?' / '+a.appearances+' apps':''));
       /*  FALLBACK C , THE KEEPER LINE CARRIES THE BAND AND THE LIMIT, NEVER THE CAP.
           This used to end "rt CAPPED at 75 , a platform measurement boundary", which named a

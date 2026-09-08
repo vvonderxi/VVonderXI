@@ -1046,7 +1046,7 @@
     return out.some(o => o.savePct != null) ? out : null;
   }
 
-  function vvAIStats(row){
+  function vvAIStats(row, opts){
     if (!row) return {};
     const pool = row.position_pool || null;
     const th   = (pool && TAG_THRESHOLDS_POOL[pool]) || null;
@@ -1142,6 +1142,115 @@
         limit: 'The VV Score does not rate goalkeeping: save data resolves too little to stand behind a number. Shot-stopping is shown as recorded, with its uncertainty, and nothing finer is claimed.'
       };
     }
+    /*  ══ THE FACTS BLOCK , DENOMINATORS AS BOUND PAIRS ═══════════════════════════════
+        docs/FABLE_PAYLOAD_BRIEF.md: pairs are FACTS. The prose may STATE 29 from 104 and
+        may NOT GRADE the conversion, because a ratio with no reference is one more number
+        to restate. Grading needs pool percentiles for these ratios and nobody has computed
+        them; until then the pair stays stated and ungraded, which is the correct direction
+        of deferral.
+        `goals` is already on the payload from BOTH callers, so only its partner is added
+        here , sending it twice would put one number in two places and invite them to
+        disagree.  */
+    out.shots_total       = row.shots_total       != null ? row.shots_total       : null;
+    out.dribbles_success  = row.dribbles_success  != null ? row.dribbles_success  : null;
+    out.dribbles_attempts = row.dribbles_attempts != null ? row.dribbles_attempts : null;
+    out.duels_won         = row.duels_won         != null ? row.duels_won         : null;
+    out.duels_total       = row.duels_total       != null ? row.duels_total       : null;
+    out.penalties_scored  = row.penalties_scored  != null ? row.penalties_scored  : null;
+
+    /*  ══ THE CLAIMS BLOCK , HONOURS ════════════════════════════════════════════════════
+        Asserted outright, because the platform already asserted them: these are the same
+        rows the card face and the Wonder Tags render. The brief calls this the highest
+        insight per byte on the platform and it is right , the model has been writing about
+        Salah 24/25 without knowing about the Golden Boot, the Player of the Season award or
+        the title.
+        `won_by` IS THE FIELD THE BRIEF ASKS FOR , whether the PLAYER or the TEAM won it.
+        HONOUR_META's group already carries it and nothing was reading it for prose.
+        `leg` SEPARATES A SEASON HONOUR FROM A CAREER ONE, and it is load-bearing rather
+        than tidy: world_cup_winner attaches to EVERY card a winner holds, so without the
+        leg a 2018 World Cup would read as something he won in the 23/24 season. The year
+        travels with it for the same reason.  */
+    var _hon = row.honours;
+    if (_hon){
+      var _hl = [];
+      var _push = function(list, leg){
+        (list || []).forEach(function(h){
+          if (!h || !h.label) return;
+          _hl.push({ honour: h.label, year: h.season_year != null ? h.season_year : null,
+                     won_by: h.group === 'Team' ? 'team' : 'player', leg: leg,
+                     context: h.context || null });
+        });
+      };
+      _push(_hon.season, 'season');
+      _push(_hon.career, 'career');
+      if (_hl.length) out.honours = _hl;
+    }
+
+    /*  ══ THE CLAIMS BLOCK , CAREER STAGE ═══════════════════════════════════════════════
+        Read off the three matview columns rowToCard now carries, NOT off `tags`. A display
+        list is ordered, capped and family-mixed; a claim is not.  */
+    var _stage = [];
+    if (row.stage_peak         === true) _stage.push('Peak');
+    if (row.stage_breakout     === true) _stage.push('Breakout');
+    if (row.stage_the_standard === true) _stage.push('The Standard');
+    if (_stage.length) out.career_stage = _stage;
+
+    /*  ══ TAG GLOSSES ═══════════════════════════════════════════════════════════════════
+        Tag names have travelled with no meaning attached, so the model either ignored them
+        or guessed at what they sound like. TAG_DEFS' oneLiner IS the platform's one-line
+        definition, already written and already shipping on the Playbook, so this costs
+        nothing but the bytes.
+        ONLY TAGS THAT HAVE ONE ARE SENT. Prestige badges and honour pills also live in
+        `tags` on some surfaces and are NOT in TAG_DEFS; emitting them with a null gloss
+        would be a field carrying no label, which is the thing this block exists to fix.  */
+    var _tg = [];
+    (Array.isArray(row.tags) ? row.tags : []).forEach(function(t){
+      var nm = t && t.name, d = nm ? TAG_DEFS[nm] : null;
+      if (d && d.oneLiner) _tg.push({ tag: nm, means: d.oneLiner });
+    });
+    if (_tg.length) out.tag_glosses = _tg;
+
+    /*  ══ THE PLACEMENTS BLOCK , THE FIVE DIMENSIONS, PAIRED ════════════════════════════
+        OPT-IN, AND THE OPT-IN IS THE POINT. The brief rules that in the VERDICT path the
+        model never compares radars itself: two percentiles differ by amounts the platform
+        has not audited for separability, and the precomputed per-dimension comparison claim
+        that would licence it is NOT BUILT YET. Sending the pairs to compare without that
+        claim would hand the model exactly the arithmetic the brief refuses. So the block is
+        gated and only the NOTES path asks for it.
+        THE NOTES PATH IS WHERE IT WAS MOST MISSING: card.html sent NO radar at all, in any
+        form, while the page renders the chart beside the prose. The brief's sharpest line ,
+        the card page describes a chart it cannot see , was literally true.
+        RELIABILITY IS NOT A PERCENTILE AND IS NOT LABELLED AS ONE. radarFor percentiles
+        four axes and leaves reliability as an ABSOLUTE: minutes played as a share of a full
+        season. Emitting it under `percentile_in_pool` would put a number in the payload
+        under a name the platform does not give it, so it gets its own field and no
+        percentile. This is the one place in the block where the two axes genuinely differ.
+        POOL SIZE IS NOT SENT BECAUSE IT DOES NOT EXIST. RADAR_POOL_REF holds breakpoints
+        and no count, so "of the 5,618 wingers we can measure" cannot be written honestly
+        yet. It is owed at the snapshot's next regeneration; inventing it here would be the
+        opposite of the whole design.  */
+    if (opts && opts.radar){
+      var _rd = row.radar || radarFor(row);
+      if (_rd && !_rd.suppressed && _rd.scaled){
+        var _vals = {};
+        ['goalThreat','creation','progression','defensive'].forEach(function(k){
+          if (_rd.scaled[k] == null) return;              // NR stays absent, never zero
+          _vals[k] = { per90: (_rd.raw && _rd.raw[k] != null) ? _rd.raw[k] : null,
+                       percentile_in_pool: _rd.scaled[k] };
+        });
+        if (_rd.scaled.reliability != null)
+          _vals.reliability = { pct_of_full_season: _rd.scaled.reliability };
+        if (Object.keys(_vals).length)
+          out.dimensions = {
+            pool: _rd.pool || null,
+            note: 'percentile_in_pool is this season ranked against other ' +
+                  (_rd.pool || 'comparable') + ' seasons we can measure, not a rate and not a league rank. ' +
+                  'reliability is not a percentile: it is minutes played as a share of a full season.',
+            values: _vals
+          };
+      }
+    }
+
     /* PREFER THE OBJECT'S OWN CONFIDENCE. rowToCard already computed it FROM THE RAW ROW and
        attached it; recomputing from a card gives a DIFFERENT answer, because a card does not
        carry every granular column. Measured: 5 from the row, 4 from the card, same season.
@@ -2595,6 +2704,34 @@
       appearances: row.appearances != null ? row.appearances : null,   // denominator for The Proof + glance games-played
       shots_on:    row.shots_on != null ? row.shots_on : null,
       shots_total: row.shots_total != null ? row.shots_total : null,
+      /*  THE DENOMINATOR HALVES, CARRIED SO THE PAYLOAD CAN BIND A PAIR. Every one of
+          these was ALREADY ARRIVING , the surfaces select('*') from the matview , and
+          rowToCard was dropping them on the floor, so the card object knew successes and
+          not attempts. "29 goals" and "29 from 104 shots" are different sentences and only
+          the second can be read; the same holds for dribbles and duels.
+          radarFor READS dribbles_success AND duels_won OFF THE RAW ROW, which is why their
+          absence here was invisible: the chart drew correctly while the card object, and
+          therefore the AI payload, could not see them.
+          NULL-PRESERVING, §B , NR for missing data, never 0. duels_total sits at 93.3%
+          for 2015+ and near zero before it, and a zero-filled attempt count would invent a
+          0% success rate on every pre-2015 card.
+          duel_quality left the ENGINE on 2026-09-08 and stayed a reported fact (§C). This
+          is that fact reaching the payload; it is not a route back into scoring.  */
+      dribbles_success:  row.dribbles_success  != null ? row.dribbles_success  : null,
+      dribbles_attempts: row.dribbles_attempts != null ? row.dribbles_attempts : null,
+      duels_won:         row.duels_won         != null ? row.duels_won         : null,
+      duels_total:       row.duels_total       != null ? row.duels_total       : null,
+      penalties_scored:  row.penalties_scored  != null ? row.penalties_scored  : null,
+      /*  THE THREE CAREER-STAGE FLAGS, FROM THE MATVIEW COLUMNS AND NOT FROM D.tags.
+          getVVTags already reads these to build the pills, but `tags` is a DISPLAY list ,
+          ordered, capped and family-mixed , so a payload built from it inherits a
+          rendering rule it has no business obeying. The flags are non-null on all 57,055
+          rows, which is what a claims block needs. §D records the second implementation
+          (VVCore.careerStageTags) that is on no render path; this reads the side that
+          ships.  */
+      stage_peak:         row.stage_peak         === true,
+      stage_breakout:     row.stage_breakout     === true,
+      stage_the_standard: row.stage_the_standard === true,
       /* passes_total and position_pool are carried so vvAIStats can build the AI block from
          a CARD as well as a raw row , without them the model gets null passing and no pool
          bar, which is silent rather than an error. */

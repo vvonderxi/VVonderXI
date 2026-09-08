@@ -1137,8 +1137,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260908b"></script>
-<script src="/vv-core.js?v=20260908b"></script>
+<script src="/vv-marks.js?v=20260908c"></script>
+<script src="/vv-core.js?v=20260908c"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1272,6 +1272,21 @@
   function vvNotesOpen(){ /* editorial loads on card load; nothing to do on open */ }
   var EDITORIAL_FOR = null;
   var EDITORIAL = null;
+  /*  THE PAYLOAD'S DEPENDENCIES, HELD AS ONE PROMISE , 2026-09-08.
+      renderPanels calls vvLoadEditorial SYNCHRONOUSLY, and both honours and the season rows
+      arrive on their own later fetches. So the payload was being built from D.honours while
+      D.honours was still the empty PLACEHOLDER assigned two lines earlier , not a race that
+      sometimes lost, a read that ALWAYS lost. Adding honours to the payload without this
+      would have shipped an empty array on every card and looked like a data gap.
+      IT ALSO FIXES A LIVE ONE. `_kser` reads SEASON_RAW, which loadSeasons fills, and
+      loadSeasons was called AFTER renderPanels , so the keeper save-rate series never
+      reached the payload on a first card load, and DID reach it after a season switch. Two
+      different payloads for one card is two different stats_hash values, so the notes cache
+      could never settle: generate, store, miss, generate again. That is exactly the bill
+      the brief's one-invalidation rule exists to avoid paying twice.
+      NEVER REJECTS. A failed honours fetch must not take the editorial down with it , same
+      rule as the payloadRev stamp: a dependency of the prose may not be able to kill it.  */
+  var EDITORIAL_DEPS = null;
   async function vvLoadEditorial(D){
     if(!D || D.card_id==null) return;
     if(EDITORIAL_FOR === D.card_id){ vvFillEditorial(); return; }
@@ -1297,6 +1312,12 @@
     var sb0=document.getElementById('scoutBody');
     if(sb0) sb0.innerHTML=_wait;
     var sbox0=document.getElementById('scoutBox'); if(sbox0) sbox0.style.display='';
+    /*  WAIT FOR THE PAYLOAD'S INPUTS BEFORE BUILDING IT. See EDITORIAL_DEPS above. This
+        costs nothing perceptible: both fetches are ALREADY IN FLIGHT and this call is the
+        longest wait on the site by an order of magnitude, so it is one already-running
+        query folded into a several-second wait, not a new round-trip.  */
+    try{ if(EDITORIAL_DEPS) await EDITORIAL_DEPS; }catch(e){}
+    if(EDITORIAL_FOR !== D.card_id) return;   // a season switch landed while we waited
     try{
       /*  THESE ARE THE NINE CODES THIS DATABASE ACTUALLY USES. The previous map was a
           DIFFERENT PROVIDER'S VOCABULARY (PD, BL1, FL1, DED, PPL, ELC, BSA) and resolved
@@ -1333,7 +1354,13 @@
          keeper block naming the 75 cap as a boundary, the missing-field list and the era flag.
          NOTE: this payload is exactly what `stats_hash` fingerprints, so adding fields here
          invalidates every cached note. Intended , and why this lands before any pre-warm. */
-      var _ai = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(D) : {};
+      /*  {radar:true} , THE NOTES PATH ASKS FOR THE DIMENSIONS AND THE VERDICT PATH DOES
+          NOT. This page RENDERS the pentagon and then described it to the model as nothing
+          at all: no percentile, no per-90, no axis. The brief's sharpest line was literally
+          true here. Compare stays without it on purpose , the per-dimension comparison
+          claim that would licence the model to compare two radars is not built, and the
+          brief refuses to let it do that arithmetic unlicensed.  */
+      var _ai = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(D, {radar:true}) : {};
       /*  THE KEEPER'S SAVE-RATE SERIES rides along when we have the season rows. No extra
           fetch , SEASON_RAW is already loaded for the trajectory. Absent seasons are null,
           never 0, and the prompt is told what that means. */
@@ -1791,17 +1818,25 @@
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
+    /*  BOTH EDITORIAL INPUTS ARE STARTED BEFORE renderPanels, WHICH IS WHAT MAKES THE
+        PAYLOAD DETERMINISTIC. Starting a promise is synchronous, so the card core still
+        paints on the same tick and "visible on ONE round-trip" is unchanged , what moves
+        is only WHEN the two already-planned fetches are kicked off, from after this line
+        to before it. vvLoadEditorial awaits them; nothing else does.  */
+    var _honP0 = fetchHonours(res.data);
+    var _seaP0 = loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
+    EDITORIAL_DEPS = Promise.all([_honP0.catch(function(){}), _seaP0.catch(function(){})]);
     renderPanels(D);                         // CARD CORE VISIBLE on ONE round-trip (score/stats/tags/radar/proof)
     // Drop the holding class once real values are in. A state class left on settled content
     // is a small lie about what the element is doing, and the next person to style .vv-wait
     // would be styling live cards without meaning to.
     document.querySelectorAll('.vv-wait').forEach(function(el){ el.classList.remove('vv-wait'); });
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
-    loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
     var targetD=D;   // honours fill in WITHOUT blocking the core; guard against a season-switch landing first
     // renderHero re-run too: the card FACE pills come from d.honours.all (buildCard), so the face needs
     // the honours to show its pill , a quick pop-in as they land, exactly the "fill in after" behaviour.
-    fetchHonours(res.data).then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
+    // (the fetch itself is started above, so the editorial payload can await the same promise)
+    _honP0.then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
@@ -1946,6 +1981,10 @@
     var _cw=cwNow();   // #109 reveal to the new season: desktop 3D flip / mobile scale-swap, coin = destination tier (D.vv)
     var targetD=D;   // staleness guard: a rapid second switch must not get THIS season's honours
     var _honP=fetchHonours(res.data);   // fire in PARALLEL with the flip, non-blocking
+    /*  THE SWITCH PATH NEEDS THE SAME GUARANTEE. SEASON_RAW is already loaded here (this is
+        a switch, not a first load), so only honours are genuinely outstanding, but the
+        payload must not read a placeholder on this path either.  */
+    EDITORIAL_DEPS = _honP.catch(function(){});
     // honours applied in onDone so they never interrupt the in-flight flip; renderHero re-runs for the
     // card FACE pill (buildCard reads d.honours.all), vvApplyHonours for glance chips + Wonder Tags.
     vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, prestige:D.prestige, onDone:function(){
