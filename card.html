@@ -1137,8 +1137,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260908a"></script>
-<script src="/vv-core.js?v=20260908a"></script>
+<script src="/vv-marks.js?v=20260908b"></script>
+<script src="/vv-core.js?v=20260908b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1348,7 +1348,18 @@
             receives and rt is not on it. Sending it and then telling the prompt to ignore
             it is the weaker of the two available guarantees; not sending it is the other.
             Outfielders are unchanged.  */
-        ...(D.keeper ? {} : { rt: D.vv }),
+        /*  THE BAND TRAVELS WITH THE NUMBER , 2026-09-08. Sending rt alone made the model
+            INVENT the band, and it was wrong every time it tried: a 95 was called World
+            Class twice, Standout once, and "a World Class season by any measure the platform
+            applies" once , three different answers for one number, on a card whose face
+            reads GENERATIONAL. It had no ladder, so it guessed.
+            bandPublic(bandFor(rt)) is the same pair the card face resolves, so prose and
+            card cannot disagree. bandFor alone would NOT do: it emits the engine vocabulary,
+            where 95 is Generational but 92 is "Elite" and 82 "Exceptional" , words no reader
+            has seen. Section C: the public ladder is a display rename over the nine.
+            KEEPERS GET NEITHER, unchanged , they receive no rt, so there is no band. */
+        ...(D.keeper ? {} : { rt: D.vv,
+              band: (window.VVCore && VVCore.bandPublic) ? VVCore.bandPublic(VVCore.bandFor(D.vv)) : null }),
         tags:(Array.isArray(D.tags)?D.tags.map(function(t){return t.name;}):[])
       }, _ai, _keeper) };
       var r = await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});

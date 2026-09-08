@@ -724,6 +724,25 @@
     return null;
   }
 
+  /*  THE PUBLIC BAND NAME , THE ONE A READER EVER SEES , 2026-09-08.
+      bandFor emits the ENGINE vocabulary and it is NOT what the platform shows: 'Elite' is
+      published as ICONIC (prestigeFor does that rename directly above) and 'Exceptional' as
+      STANDOUT, while everything below the top four is grouped as ACCOMPLISHED. Section C
+      states all three renames and vvindex's own ladder confirms them , Generational, Iconic,
+      World Class, Standout, Accomplished.
+      IT EXISTS BECAUSE THE AI PAYLOAD NEEDED IT AND ALMOST GOT THE WRONG ONE. Sending
+      bandFor(rt) raw would have told the model 'Elite' and 'Exceptional', words no reader has
+      ever seen, replacing one disagreement between prose and card with another.
+      THE ENGINE'S NINE BANDS ARE NOT COLLAPSED , bandFor is untouched and still returns them.
+      This is a DISPLAY rename on top, which is the same split section C locks: do not collapse
+      the nine, and do not publish their names either.  */
+  const BAND_PUBLIC = { 'Generational':'Generational', 'Elite':'Iconic',
+                        'World Class':'World Class', 'Exceptional':'Standout' };
+  function bandPublic(band){
+    if (!band) return null;
+    return BAND_PUBLIC[band] || 'Accomplished';
+  }
+
   // ── Radar (Contract §4): 5 per-90 spokes, raw + percentile-within-pool 0-100 ─────
   /*  SCALING IS PERCENTILE WITHIN POSITION POOL. This replaced four fixed constants
       (goalThreat 1.5, creation 2.6, progression 4.0, defensive 8.0) that served all eight
@@ -6025,7 +6044,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,

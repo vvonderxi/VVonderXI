@@ -96,7 +96,11 @@ THE VV SCORE RULE IS CONDITIONAL. READ THE CARD BEFORE APPLYING IT.
 
 DEFAULT , NO rt_claims FIELD ON THE CARD: the VV Score is honest for this season and you may
 use it exactly as you always have. Name it, name its band, place it on the ladder, build the
-case around it. This is the normal state and it covers most cards. DO NOT CARRY THE
+case around it. THE BAND IS SENT TO YOU AS A FIELD , USE IT AND NEVER DERIVE ONE. You do not
+have the ladder's thresholds and you have got this wrong every time you have guessed: a 95 has
+been called World Class, Standout and "World Class by any measure the platform applies", on a
+card whose face reads Generational. If the band field is present, that word is the answer. If
+it is absent, do not name a band at all. This is the normal state and it covers most cards. DO NOT CARRY THE
 RESTRICTION BELOW ACROSS TO A CARD THAT DOES NOT HAVE THE FIELD , a measured 95 on a striker
 is a real fact about a real season, and going quiet about it loses something true.
 

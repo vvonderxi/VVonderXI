@@ -1244,8 +1244,8 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260908a"></script>
-<script src="/vv-core.js?v=20260908a"></script>
+<script src="/vv-marks.js?v=20260908b"></script>
+<script src="/vv-core.js?v=20260908b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2562,7 +2562,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(a.confidence!=null) b.push('data confidence '+a.confidence+'/5'+(a.missing&&a.missing.length?', NOT RECORDED: '+a.missing.join(', '):', all fields recorded'));
       if(a.era) b.push(a.era);
       return b.length? '; '+b.join('; ') : ''; }
-    function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c)+aiBlock(c); }
+    function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+(c.vv!=null&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c)+aiBlock(c); }
     var tagMenu=eligKeys.map(function(k){var t=TAGS[k];return '- '+k+' ("'+t.name+'"): '+t.blurb;}).join('\n');
     var toneNote={tie:'a dead heat , the argument-continues register. Two-sided and unresolved, never a limp draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
     var winNote;
