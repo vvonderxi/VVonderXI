@@ -4271,10 +4271,48 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     let winner = engineWinner, tipped = false, younger = null, older = null, ageDiff = null;
     if (ageA != null && ageB != null) {
       younger = ageA <= ageB ? 'A' : 'B'; older = ageA <= ageB ? 'B' : 'A'; ageDiff = Math.abs(ageA - ageB);
-      if (g <= 2 && ageDiff >= 4) { winner = younger; tipped = true; }   // coin-flip band only; never overrides gap>=3
     }
-    const tone = g === 0 ? 'tie' : (g <= 2 ? 'razor' : (g <= 6 ? 'clear' : 'decisive'));
-    const ladder = g === 0 ? 'the_debate' : g === 1 ? 'var_close' : g <= 3 ? 'photo_finish' : g <= 6 ? 'clear_edge' : g <= 9 ? 'bragging_rights' : 'masterclass';
+
+    /*  ══ THE MARGIN GATE , THE PAIR'S OWN ERROR, NOT A CONSTANT GAP (2026-09-09) ═══════
+        MEASURED, TWICE, INDEPENDENTLY: the standard error of a VV Score runs from 0.96 rt
+        at Generational to 5.79 at Standout and varies 1.5x WITHIN a single rt value, while
+        the old classes cut at a fixed 0 / 2 / 6. So "decisive" meant a 7-point gap whether
+        that was six pooled standard errors or two thirds of one. Against the pair's own
+        error, 97.0% of ALL pairings at rt 80+ sit inside the margin, and 61.9% of the
+        comparisons people have actually made crowned a winner the engine cannot support.
+        Full record: docs/FABLE_PAYLOAD_BRIEF_NOTES.md NOTE 3 and NOTE 4.
+
+        THREE STATES, and the middle one is the new one:
+          separated : the gap clears 1.96 pooled SE. The Index HAS decided. Crown as before.
+          inside    : a real gap the Index cannot resolve. NO winner, NO crown.
+          tie       : identical scores. The degenerate case of `inside`, kept apart only
+                      because "level on 95" is a different sentence from "we cannot separate
+                      95 and 92", and the UI already had copy for it.
+
+        IT FAILS CLOSED. A card the SE snapshot does not know returns a null margin and the
+        pair is treated as INSIDE. An unknown error cannot justify a crown, and a stale
+        table therefore under-crowns rather than crowning wrongly.
+
+        THE AGE TIEBREAKER IS RETIRED FROM CROWNING, and this is a consequence rather than a
+        separate decision. It fired at gap <= 2, which is now inside the margin on all but
+        the very tightest pairs , and where a gap of 2 DOES separate, the Index has decided
+        and age must not overturn it. Widening it to fill the new silence would mean crowning
+        almost every elite pairing on date of birth, which is worse than what it replaced.
+        `tipped` is therefore always false and the AGE TAGS below are untouched: they
+        describe a season, they do not award it.  */
+    const _mg = (typeof window !== 'undefined' && window.VVMargin) ? window.VVMargin
+              : (typeof VVMargin !== 'undefined' ? VVMargin : null);
+    const marginRaw = (_mg && A && B) ? _mg.marginFor(A.card_id, B.card_id) : null;
+    const margin = marginRaw;
+    const separated = (margin != null) && (g >= margin);
+    const separation = g === 0 ? 'tie' : (separated ? 'separated' : 'inside');
+    if (separation !== 'separated') winner = 'tie';   // no side is crowned
+
+    const tone = separation === 'separated'
+               ? (g <= 2 ? 'razor' : (g <= 6 ? 'clear' : 'decisive'))
+               : 'tie';
+    const ladder = separation !== 'separated' ? 'the_debate'
+                 : g === 1 ? 'var_close' : g <= 3 ? 'photo_finish' : g <= 6 ? 'clear_edge' : g <= 9 ? 'bragging_rights' : 'masterclass';
     const age = [];
     if (younger) {
       const yAge = younger === 'A' ? ageA : ageB, oAge = older === 'A' ? ageA : ageB;
@@ -4305,8 +4343,21 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     if (Math.abs((A.season_year || 0) - (B.season_year || 0)) >= 8 && va >= 80 && vb >= 80) ctx.push('across_eras');
     if (((A.goals || 0) > (B.goals || 0) && va < vb) || ((B.goals || 0) > (A.goals || 0) && vb < va)) ctx.push('eye_test');
     if (g <= 3 && varc(A) != null && varc(B) != null && Math.abs(varc(A) - varc(B)) >= 14) ctx.push('complete_spec');
-    const floorTag = age[0] || ladder;   // deterministic default (AGE priority 2, else LADDER 3); AI may up-rank to a contextHint
+    /*  AN AGE TAG NAMES ONE SIDE, SO IT CANNOT HEADLINE A VERDICT THAT HAS NO SIDE.
+        Found rendered, not reasoned: Salah 24/25 against Messi 14/15 is INSIDE the margin ,
+        no winner, no crown , and the tie pill read "The Ascendant", which points at the
+        younger player as plainly as a crown would. `age[0] || ladder` was written when an
+        age tag meant the age TIEBREAK had decided it, and that tiebreak is now retired.
+        TWO CONDITIONS, and the second is the one the old code assumed rather than checked:
+        the pair must be SEPARATED, and the younger player must be the one who won. An age
+        tag over a younger player who LOST points the headline at the wrong season.
+        The age tags stay in `ageTags` and remain available as hints , they describe a
+        season honestly, they just cannot be the verdict's own word for the pairing.  */
+    const floorTag = (separation === 'separated' && age[0] && younger && winner === younger)
+                   ? age[0] : ladder;
     return { gap: g, engineWinner, winner, tipped, tone, ladder, ageTags: age, contextHints: ctx, floorTag,
+             separation, margin, seA: _mg ? _mg.seFor(A && A.card_id) : null,
+             seB: _mg ? _mg.seFor(B && B.card_id) : null, marginKnown: margin != null,
       ageA, ageB, younger, older, ageDiff,
       wonderkidA: (ageA != null && ageA <= 21 && va >= 82), wonderkidB: (ageB != null && ageB <= 21 && vb >= 82) };
   }

@@ -120,6 +120,23 @@ const R=parseInt(process.env.REPS||'200',10);
 const MODEL=process.env.MODEL||'pois';
 const PHI=parseFloat(process.env.PHI||'1.5');
 // CENSUS at rt >= 80; stratified random draw below it
+/*  SAMPLE=all measures EVERY scored outfield card, which is what a SHIPPED gate needs.
+    The rt-keyed fallback was measured and rejected: it flips 11.24% of sub-80 decisions
+    against the per-card truth, because SE varies up to 5.8x WITHIN a single rt value down
+    there. A gate that is wrong on one pairing in nine is not a gate.  */
+if(process.env.SAMPLE==='all'){
+  const every=E.out.filter(s=>s.rt_stored!=null);
+  console.error('SAMPLE=all , '+every.length+' cards x '+(process.env.REPS||200)+' reps');
+  const R2=parseInt(process.env.REPS||'200',10);
+  const res2=every.map((s,n)=>{
+    if(n%5000===0) console.error('  '+n+'/'+every.length);
+    return {card_id:s.card_id, rt:s.rt_stored, pool:s.pool, se:seFor(s,idxOf.get(s.card_id),process.env.MODEL||'pois',parseFloat(process.env.PHI||'1.5'),R2)};
+  });
+  fs.writeFileSync('/tmp/se_all.json',JSON.stringify(res2));
+  const m=res2.map(r=>r.se).sort((a,b)=>a-b);
+  console.log('wrote /tmp/se_all.json  cards='+res2.length+'  median SE='+m[Math.floor(m.length/2)].toFixed(2));
+  process.exit(0);
+}
 const hi=E.out.filter(s=>s.rt_stored!=null&&s.rt_stored>=80);
 const loAll=E.out.filter(s=>s.rt_stored!=null&&s.rt_stored<80);
 const lo=[]; { const want=2000; const step=loAll.length/want;

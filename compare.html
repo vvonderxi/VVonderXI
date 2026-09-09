@@ -1244,8 +1244,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260908c"></script>
-<script src="/vv-core.js?v=20260908c"></script>
+<script src="/vv-marks.js?v=20260909a"></script>
+<!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
+      it is 82 KB and no other surface asks whether two seasons can be separated.
+      Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
+      time rather than at load, so the order is for readers and not a dependency.  -->
+<script src="/vv-margin.js?v=20260909a"></script>
+<script src="/vv-core.js?v=20260909a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2324,7 +2329,16 @@ body.light .pkmsub{color:var(--ink-soft)}
         var fb=(VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
                                : (W.surname+' '+_verb+' , '+wv+' to '+lv);
         who.textContent = ai || fb;
-      } else { who.textContent = ai || ('Level on VV , '+va+' apiece. The Index will not separate them.'); }
+      } else {
+        /*  FALLBACK ONLY , the loading placeholder, a cache miss, an outage. It used to
+            read "Level on VV , 95 apiece", which is TRUE of an exact tie and FALSE of a
+            pair inside the margin, where the scores genuinely differ. Writing "95 apiece"
+            over a 95 and a 92 is the platform stating a number that is not on either card. */
+        var _fbTie = (VC && VC.separation === 'inside')
+          ? 'Too close for the Index to separate.'
+          : ('Level on VV , '+va+' apiece. The Index will not separate them.');
+        who.textContent = ai || _fbTie;
+      }
     }
     /* ── THE VERDICT TRIAD , three centred lines, one per state ──────────────
        The engine already distinguishes all three; this is DISPLAY only.
@@ -2336,13 +2350,21 @@ body.light .pkmsub{color:var(--ink-soft)}
     var _decided = (winner==='A' || winner==='B');
     var _state = !_decided ? 3 : ((VC && VC.tipped && VC.gap===0) ? 2 : 1);
 
+    /*  THE SCORE LINE RENDERS ONLY WHERE IT CAN BE READ WITHOUT IMPLYING A RANK.
+        Two cases qualify: a SEPARATED pair, where "95 to 75" is the finding, and an exact
+        TIE, where "95 & 95" reinforces it. INSIDE the margin it is suppressed, because
+        "95 & 92" printed under a verdict that has just declined to separate them is a
+        result line in everything but punctuation , the reader ranks the two numbers
+        whatever the ampersand is doing. The card faces still carry both scores, which is
+        the honest place for them: on the seasons, not on the comparison.  */
+    var _showScore = (VC && VC.separation) ? (VC.separation !== 'inside') : true;
     var sc=document.getElementById('vScore');
     if(sc){
       var _hi=(winner==='B')?vb:va, _lo=(winner==='B')?va:vb;
       sc.innerHTML = (_state===1)
         ? _hi + '<span class="vs-sep">to</span>' + _lo          // winner's score leads
         : va  + '<span class="vs-sep">&amp;</span>' + vb;        // level, slot order kept
-      sc.style.display='';
+      sc.style.display = _showScore ? '' : 'none';
     }
 
     /*  THE PHONE'S VERDICT STRIP , same numbers, same tag, same pass. Deliberately fed from
@@ -2353,10 +2375,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(mv){
       var _mvhi=(winner==='B')?vb:va, _mvlo=(winner==='B')?va:vb;
       var _mvtag = tagObj ? ((tagObj.emoji?tagObj.emoji+' ':'')+tagObj.name) : '';
+      /*  THE PHONE STRIP IS THE SAME CLAIM IN A SMALLER FONT, so it takes the same rule.
+          Suppressing one and not the other would put the ranking back on the surface where
+          it is hardest to qualify.  */
       mv.innerHTML = (_mvtag ? '<span class="mvtag">'+_mvtag+'</span>' : '')
-        + '<div class="mvscore">' + (_state===1
+        + (_showScore ? ('<div class="mvscore">' + (_state===1
             ? _mvhi + '<span class="sep">to</span><span class="lo">' + _mvlo + '</span>'
-            : va + '<span class="sep">&amp;</span><span class="lo">' + vb + '</span>') + '</div>';
+            : va + '<span class="sep">&amp;</span><span class="lo">' + vb + '</span>') + '</div>') : '');
     }
 
     /* tagline , the selected tag's one-line blurb, straight from VERDICT_TAGS */
@@ -2521,6 +2546,16 @@ body.light .pkmsub{color:var(--ink-soft)}
     vvShareAffordance(true);   // restore , a previous pairing may have hidden it
     var va=+CMP_A.vv||0, vb=+CMP_B.vv||0;
     var VC=VVCore.verdictContext(CMP_A,CMP_B), TAGS=VVCore.VERDICT_TAGS;
+    /*  THE GATE FAILS CLOSED, AND A SILENT FAIL-CLOSED IS STILL A SILENT FAILURE. Without
+        vv-margin.js every pairing reads as INSIDE the margin and NOTHING is ever crowned ,
+        which looks like a deliberate product decision rather than a missing script. Warn
+        once, naming the file, so the cause is on screen rather than inferred.  */
+    if(!VC.marginKnown && !window.__vvMarginWarned){
+      window.__vvMarginWarned=true;
+      console.warn('[VVonderXI] vv-margin.js did not load or has no entry for this pair , '
+        +'the margin gate is failing CLOSED, so no comparison will crown a winner. '
+        +'Check the <script src="/vv-margin.js"> tag and its ?v= token.');
+    }
     var winner=VC.winner;   // post age-tiebreak winner ('A'/'B'/'tie')
     var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
     if(ca)ca.classList.toggle('winner',winner==='A'); if(cb)cb.classList.toggle('winner',winner==='B');
@@ -2587,10 +2622,27 @@ body.light .pkmsub{color:var(--ink-soft)}
     function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+(c.vv!=null&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c)+aiBlock(c); }
     var tagMenu=eligKeys.map(function(k){var t=TAGS[k];return '- '+k+' ("'+t.name+'"): '+t.blurb;}).join('\n');
     var toneNote={tie:'a dead heat , the argument-continues register. Two-sided and unresolved, never a limp draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
+    /*  ── THE RESULT LINE, ONE PER SEPARATION STATE ────────────────────────────────────
+        The gate is in VVCore.verdictContext and is keyed on the PAIR'S OWN standard error,
+        not on a constant gap. What changes here is what the model is TOLD, and the third
+        branch is the new one.  */
     var winNote;
-    if(winner==='tie'){ winNote='GENUINELY LEVEL ('+va+'='+vb+'), and NO tiebreak applies. Do NOT name a winner and do NOT say either "edges it". Give both sides their due and leave it unresolved , the chip beside your line reads "The Debate Lives On".'; }
-    else { var wName=(winner==='A'?CMP_A:CMP_B).surname, wv=(winner==='A'?va:vb), lv=(winner==='A'?vb:va);
-      winNote='Player '+winner+' ('+wName+') takes the edge, '+wv+' to '+lv+'.'+(VC.tipped?' NOTE: within a coin-flip ('+va+' vs '+vb+'), AGE tipped it to the younger player , the equal season at a younger age is the harder feat. Lead with that.':' Explain why; do not overturn the engine.'); }
+    if(VC.separation==='tie'){
+      winNote='GENUINELY LEVEL ('+va+'='+vb+'), identical scores. Do NOT name a winner and do NOT say either "edges it". Give both sides their due and leave it unresolved , the chip beside your line reads "The Debate Lives On". Then do what the INSIDE THE MARGIN rule in your instructions asks: name what each season holds that the other does not, from the record.';
+    } else if(VC.separation==='inside'){
+      /*  THE NUMBERS ARE GIVEN TO THE MODEL AND FORBIDDEN IN THE OUTPUT, deliberately. It
+          has to KNOW the gap is smaller than the error to write the sentence honestly, and
+          it must not hand the reader the ranking the platform has just declined to make.
+          Same shape as the per-card rt_claims licence: state the rule, name the instance.  */
+      var _mg=VC.margin!=null?VC.margin.toFixed(1):'?';
+      winNote='INSIDE THE INDEX\'S OWN MARGIN OF ERROR. These two seasons score '+va+' and '+vb+', a gap of '+VC.gap+
+        ', and the VV Score for this pair is measured to about plus or minus '+_mg+' points. The gap is smaller than the error on the numbers, so THE INDEX DOES NOT SEPARATE THEM and neither do you. '+
+        'There is no winner. Do not name one, do not imply one, and do not write "edges it", "shades it", "just ahead", "the better of the two" or any equivalent. '+
+        'DO NOT CITE EITHER VV SCORE OR EITHER BAND ANYWHERE IN YOUR OUTPUT for this pairing , those numbers are given to you so you can understand the finding, not so you can repeat it, and printing them hands the reader a ranking the platform has just refused to make. '+
+        'Now write the ARGUMENT, which is the actual verdict here: name what each season holds that the other does not, from the evidence that carries no error , the honours won, the recorded figures with their denominators, where each sits in his own position pool, the career stage, the club, the league and the age. '+
+        'Two seasons the Index cannot rank are NOT two seasons that are the same. The difference is in KIND, and saying exactly what it is IS the verdict. The chip beside your line reads "The Debate Lives On".';
+    } else { var wName=(winner==='A'?CMP_A:CMP_B).surname, wv=(winner==='A'?va:vb), lv=(winner==='A'?vb:va);
+      winNote='Player '+winner+' ('+wName+') takes the edge, '+wv+' to '+lv+'. The gap clears the Index\'s own margin of error for this pair ('+(VC.margin!=null?VC.margin.toFixed(1):'?')+' points), so this one IS separated and you may say so plainly. Explain why; do not overturn the engine.'; }
     var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag, who). p1 = Player A, p2 = Player B.\n'
       +'Player A: '+line(CMP_A,VC.wonderkidA)+'\n'
       +'Player B: '+line(CMP_B,VC.wonderkidB)+'\n'
@@ -2598,6 +2650,9 @@ body.light .pkmsub{color:var(--ink-soft)}
       +'Tone: '+toneNote+'\n'
       +'VERDICT TAG , choose EXACTLY ONE key from this list (default to the FIRST; up-rank to a later one ONLY if it clearly fits better):\n'+tagMenu+'\n'
       +'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.\n'
+      +(VC.separation!=='separated'
+        ? '"who" , the headline shown beside the tag chip. THERE IS NO WINNER TO NAME, so this is NOT a winner headline: it is one short line, max ~14 words, saying what the two seasons ARE, or what the argument between them is about. It must not name a winner, must not rank them, and must not contain either VV score. "Two ways to be the best forward in Europe" is the shape; "Salah edges it" is not.\n'
+        : '')
       +'"who" , the winner HEADLINE shown beside the tag chip. Write it in the register of the chosen tag and the tone above: a decisive gap reads decisive and settled, the finest of margins keeps "edges it" restraint, a tie reads as the argument continuing. It MUST NOT contradict the tag. Name the winner (unless the Result line says genuinely level) and give the REASON in a few words. Do NOT write either VV score or any scoreline , the UI renders the numbers directly beneath your line, so repeating them prints them twice. Max ~14 words, a headline not a sentence.';
     var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
