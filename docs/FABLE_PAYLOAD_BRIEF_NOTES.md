@@ -148,3 +148,79 @@ current thresholds are approximately right and need tuning.
 already refuses to crown anyone, gives both sides their due and tells the model the chip will
 read unresolved. **The brief asks for an *even* result line and a tag to match, and both
 exist.** They are gated on an exact tie. Only the gate is wrong.
+
+---
+
+## NOTE 4 , 2026-09-09 , the margin measurement, reproduced independently. It holds.
+
+**Why this was run.** NOTE 3 authorises removing the crown from almost every elite pairing on
+the strength of ONE audit that had never been reproduced. `CLAUDE.md` SS C's own rule is that
+an unverified premise is most costly when it argues for REMOVING something. This is that check.
+
+**INDEPENDENT ON EVERY AXIS THAT COULD CARRY AN ERROR.** The engine was re-transcribed from a
+fresh `pg_get_viewdef`; the per-band SEs were re-derived rather than read; the sample, the
+replicate count, the seed and the noise model all differ. Checked in at
+`scripts/separability/`, which the first audit did not do , its implementation did not
+survive, which is why this pass had to rebuild from the SQL.
+
+**THE ENGINE REIMPLEMENTATION IS BETTER THAN THE ONE IT CHECKS.** 99.56% exact against stored
+rt and 99.98% within 1, on 50,269 cards, against the recorded 97.75% / 100%. **And the anchors
+land on the recorded values independently , b95 119.91, b90 98.89, b85 85.59 against the
+recorded 119.91 / 98.89 / 85.58.** Two separate transcriptions agreeing on three order
+statistics of 50,269 values is the strongest single check in this file.
+
+**THE PER-BAND SEs REPRODUCE.** Parametric bootstrap, 200 replicates (recorded: 120), seed
+20260909, and a CENSUS of all 1,406 cards at rt >= 80 rather than a systematic sample:
+
+    band            n     re-derived    recorded 2026-09-06
+    Generational   12       0.99            0.96
+    Iconic        138       1.99            2.00
+    World Class   500       3.72            3.75
+    Standout      756       5.69            5.79
+    below 80     2000       6.04            not published
+
+**Every band agrees to within 0.1 rt points.**
+
+**THE HEADLINE NUMBERS HOLD, AND THE rt >= 80 ONE IS NOW EXHAUSTIVE.** All
+C(1406,2) = **987,715 pairs**, no sampling, per-card measured SEs rather than band averages:
+
+                                        second pass      first pass
+    all pairs at rt >= 80                  97.0%            97.9%   (now exhaustive)
+    real pairings, inside uncertainty       68.0%            66.7%
+    real pairings, inside AND crowned       61.9%            61.5%
+    all scored outfield                     56.9%            48.1%
+
+**WITHIN-BAND IS 100% IN ALL FOUR BANDS, MEASURED RATHER THAN ARGUED.** Generational 66
+pairs, Iconic 9,453, World Class 124,750, Standout 285,390 , every one inside uncertainty.
+The first pass reached this by construction from band width; it is now enumerated.
+
+**TWO THINGS THE FIRST PASS GOT WRONG, BOTH IN THE CONSERVATIVE DIRECTION.**
+- **It measured 39 real pairings when there are 97.** It used only `verdict_cache` rows
+  carrying a stamped `rt_a`/`rt_b`; the rest have card ids and their rt can simply be looked
+  up. Re-measured on the first pass's own 40-row population with per-card SEs: **67.5%**,
+  against its 66.7%. The population was two and a half times larger and the answer is the same.
+- **It assumed 5.58 for the sub-80 SE** (the published population median) where the measured
+  value is **6.04**. That is why the all-outfield figure rises from 48.1% to 56.9%. **The
+  first pass understated the problem.**
+
+**AND ONE THING NEITHER PASS CAN CLAIM CREDIT FOR: the engine changed underneath the first
+audit.** It ran on 2026-09-06 against the blended `sig`; `sig = def_share_pct` alone landed
+2026-09-08. The SEs are materially unchanged across that change, which is worth knowing in
+its own right , removing `duel_quality` from the floor did not make defenders' scores
+noticeably more or less stable.
+
+**THE NOISE MODEL WAS STRESSED, NOT ASSUMED.** Poisson is the MINIMUM plausible variance for
+count data, so it is the friendliest assumption available to the crown. Re-run with
+overdispersed counts (negative binomial, phi 1.5) every SE rises , 1.20 / 2.48 / 4.79 / 6.96
+by band , and rt >= 80 goes to **99.0%**. **Any departure from Poisson widens the error.**
+
+**NO THRESHOLD RESCUES IT, RE-CONFIRMED EXHAUSTIVELY:**
+
+    z       Poisson   negative binomial
+    1.96     97.0%         99.0%
+    1.64     93.6%           ,
+    1.28     85.9%         92.7%
+    1.00     76.5%         84.7%
+
+**CONCLUSION: the first pass is confirmed, and where the two differ the first pass was too
+kind.** NOTE 3 stands as written, and the decision it hands to Lucas is unchanged.
