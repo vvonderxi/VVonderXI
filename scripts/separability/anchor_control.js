@@ -1,7 +1,7 @@
 // CONTROL: the fast swap must agree with a brute-force re-sort. If it does not, everything
 // downstream is void, so this runs before any SE is believed.
 const fs=require('fs');
-const {buildEngine,bFor,anchorsOf}=require('./engine.js');
+const {buildEngine,bFor,anchorsOf}=require('./rt_reimpl.js');
 const raw=JSON.parse(fs.readFileSync('/tmp/engine_inputs.json','utf8'));
 const E=buildEngine(raw); const b=E.out.map(s=>bFor(s,E));
 const bDesc=b.slice().sort((x,y)=>y-x); const A0=anchorsOf(b);

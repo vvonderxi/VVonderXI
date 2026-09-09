@@ -1,5 +1,5 @@
 const fs=require('fs');
-const {buildEngine,bFor,anchorsOf,rtFrom}=require('./engine.js');
+const {buildEngine,bFor,anchorsOf,rtFrom}=require('./rt_reimpl.js');
 const raw=JSON.parse(fs.readFileSync('/tmp/engine_inputs.json','utf8'));
 const E=buildEngine(raw);
 const bs=E.out.map(s=>bFor(s,E));

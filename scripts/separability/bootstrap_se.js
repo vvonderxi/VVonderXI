@@ -11,7 +11,7 @@
     sig is now def_share_pct alone, so duel_quality has left the floor entirely. Their
     audit measured the pre-fix engine. This measures what is live.  */
 const fs=require('fs');
-const {buildEngine,bFor,anchorsOf,rtFrom}=require('./engine.js');
+const {buildEngine,bFor,anchorsOf,rtFrom}=require('./rt_reimpl.js');
 
 // ---------- seeded RNG (mulberry32), seed differs from anything used before ----------
 function mk(seed){ let a=seed>>>0; return function(){ a|=0; a=a+0x6D2B79F5|0;
