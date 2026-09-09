@@ -107,6 +107,11 @@
     .vvnote{max-width:880px}
     .vvceiling{max-width:880px}
     .vvstory{max-width:880px}
+    /* the exhibit joins the prose blocks that cap back to 880 above 1181px. Left at the
+       full 1480 track it ran 1324px wide with the quote capped at 44ch, leaving about 480px
+       of empty panel on the right , the same dead space the wide track already caps these
+       four siblings to avoid. */
+    .preexhibit{max-width:880px}
   }
 
   .section{padding-top:46px;scroll-margin-top:24px}
@@ -373,13 +378,16 @@
           background:radial-gradient(120% 68% at 50% 0%,rgba(232,184,75,0.17) 0%,rgba(232,184,75,0) 60%),
                      var(--charcoal);
           border:1px solid rgba(232,184,75,0.26)}
-  /* THE DARK PANELS KEEP DARK-THEME INK IN BOTH THEMES. .dpanel and .prehero are charcoal
-     whatever the page is doing, so --ink-soft flipping to its light value (#5f594e) put a
-     dark grey on a dark ground: measured 1.72 on .dtier and 1.77 on "Seasons, ever".
-     Scoped as a TOKEN rather than patched per rule, so anything added inside these panels
+  /* THE HONOURS CABINET KEEPS DARK-THEME INK IN BOTH THEMES. .dpanel is charcoal whatever
+     the page is doing, so --ink-soft flipping to its light value (#5f594e) put a dark grey
+     on a dark ground: measured 1.72 on .dtier and 1.77 on "Seasons, ever".
+     Scoped as a TOKEN rather than patched per rule, so anything added inside the panel
      later inherits the correct ink instead of repeating the bug. #ada69b, not the dark
-     theme's own #a49d93, because that lands at 4.44 here , under AA by a hair. */
-  .dpanel,.prehero{--ink-soft:#ada69b}
+     theme's own #a49d93, because that lands at 4.44 here , under AA by a hair.
+     .prehero WAS IN THIS RULE AND IS GONE, 2026-09-09. The prestige panel is no longer a
+     charcoal surface; it is CREAM in both themes, so it takes the ordinary light ink and
+     forcing a dark-theme value into it would have been the same bug inverted. */
+  .dpanel{--ink-soft:#ada69b}
   .dtier{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
          color:var(--ink-soft)}
   .dstage{position:relative;margin:16px auto 0;width:100%;max-width:260px}
@@ -469,37 +477,88 @@
      silently, with nothing in any diff to show it. DO NOT ADD IT BACK. If a second figure
      is ever wanted here it must be another rank-anchored constant, not a count. One figure
      also reads as the stronger hero line. ── */
-  .prehero{position:relative;text-align:center;padding:34px 22px 30px;border-radius:16px;
-           background:radial-gradient(120% 70% at 50% 0%,rgba(232,184,75,0.16) 0%,rgba(232,184,75,0) 62%),
-                      var(--charcoal);
-           border:1px solid rgba(232,184,75,0.26)}
-  .prenum{font-family:'Archivo';font-weight:900;font-size:88px;line-height:.92;letter-spacing:-.02em;
-          background:linear-gradient(180deg,rgba(255,255,255,0.72),rgba(255,255,255,0)),var(--gold);
-          -webkit-background-clip:text;background-clip:text;color:transparent}
-  .preword{font-family:'Archivo';font-weight:900;font-size:17px;letter-spacing:.24em;text-transform:uppercase;
-           color:var(--gold);margin-top:12px}
-  .pretd{font-family:'Inter';font-weight:400;font-size:15px;line-height:1.65;color:rgba(240,234,217,0.82);
-         max-width:520px;margin:16px auto 0}
-  .prestats{display:flex;justify-content:center;gap:46px;margin-top:24px}
-  .prestats b{display:block;font-family:'Archivo';font-weight:900;font-size:26px;color:var(--cream);line-height:1}
-  .prestats i{display:block;font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.13em;
-              text-transform:uppercase;color:var(--ink-soft);font-style:normal;margin-top:7px}
-  .predq{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15px;line-height:1.7;
-         color:var(--cream);max-width:560px;margin:24px auto 0;padding:16px 18px;
-         background:rgba(255,255,255,0.05);border-radius:12px}
-  .prerule{height:1px;background:rgba(232,184,75,0.30);margin:26px 0}
-  .prehero.sec{padding:26px 20px 24px}
-  .prehero.sec .prenum{font-size:50px}
-  .prehero.sec .preword{font-size:13px;letter-spacing:.2em;margin-top:9px}
-  .prehero.sec .pretd{font-size:14px;margin-top:12px}
-  .prehero.sec .predq{font-size:14px;margin-top:18px}
-  /* both panels are dark in BOTH themes , deliberately no body.light repaint */
+  /*  ── THE PANEL IS CREAM IN BOTH THEMES, AND THAT IS A CONSEQUENCE, NOT A PREFERENCE ──
+      2026-09-09. It used to be charcoal in both themes with a gold border and a centred
+      88px numeral, and it read heavy for four separate reasons at once: a filled panel, a
+      border around it, centred short lines, and the quote inside ANOTHER box on top.
+      All four are gone. What replaces them is the card back face, which is the thing this
+      section is actually about.
+      THE GROUND HAD TO GO LIGHT BECAUSE THE OBJECT ON IT DOES NOT FLIP. Measured, the card
+      faces invert against their ground: on the dark page the gold face reads 14.20 and the
+      black face 1.31, so black dissolves; on cream the black face reads 15.78 and the gold
+      face's top stop 1.11, so gold dissolves. The black card is the Generational tier and
+      it is the one that must be unmistakable, so the ground is cream and the gold card is
+      rescued by its own rim, below.
+      SO IT DOES NOT REPAINT PER THEME , same reason .dpanel does not, stated the other way
+      up: the card face is a fixed object, so its ground must be fixed too. In dark mode the
+      panel is an inversion and carries the hierarchy on colour alone. In LIGHT mode it
+      cannot: measured against the page's own gradient every available cream lands between
+      1.03 and 1.23, which is no separation at all. There it carries on ELEVATION instead ,
+      a hairline and a shadow , which is the honest answer when hue has nothing left to give.
+      #FBF7EF, not --cream #F0EAD9: it is the brief's cream-card top stop, it is the highest
+      of the three creams against the light page, and it gives the cards the most room
+      (black 17.75 against 15.78, gold rim 4.42 against 3.93).  */
+  .preexhibit{background:#FBF7EF;border-radius:20px;padding:44px 50px 46px;margin-top:26px;
+              box-shadow:0 24px 60px -34px rgba(0,0,0,0.55)}
+  body.light .preexhibit{border:1px solid rgba(28,27,26,0.10);
+              box-shadow:0 18px 44px -26px rgba(28,27,26,0.30)}
+  .prerow{display:grid;grid-template-columns:150px 1fr;gap:44px;align-items:start}
+  .prerow+.prerow{margin-top:44px;padding-top:44px;border-top:1px solid rgba(28,27,26,0.10)}
+  .prerow>:first-child{display:flex;justify-content:center}
+
+  /*  THE CARD BACK FACE. Gradients, rims, shadows and monogram inks are quoted from
+      docs/BRAND_BRIEF.md section 5; geometry derives from --cw exactly as the product
+      derives it, so the ratio stays the locked 1.397 and the radius the locked 0.073.
+      THE GOLD RIM #9a6a14 IS LOAD BEARING HERE AND WAS ONLY DECORATION ON DARK. The gold
+      face's top stop measures 1.11 against this ground, so without the rim the top half of
+      the card has no edge at all; the rim measures 4.42 and draws it.
+      THE BLACK FACE STILL CARRIES NO GOLD RIM. That is the holding page's ruling and it
+      survives, but its REASON inverts: there the rim was dropped because beside the gold
+      card it read as two golds, here because the black face already separates at 17.75
+      unaided and a gold rim on it would be the only gold near the black card, competing
+      with the real gold one. Same instruction, opposite justification. Do not "restore" it.  */
+  .pvcard{--cw:132px;width:var(--cw);height:calc(var(--cw)*1.397);
+          border-radius:calc(var(--cw)*0.073);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .pvcard .pvm{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+               font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1}
+  .pvcard.black{background:linear-gradient(158deg,#2c2926,#121010);
+    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.07),
+               inset 0 0 0 calc(var(--cw)*0.026) rgba(255,255,255,.11),
+               0 24px 60px -20px rgba(0,0,0,.5)}
+  .pvcard.black .pvm{color:#F0EAD9}
+  .pvcard.black .pvm i{color:#F1688E;font-style:normal}
+  .pvcard.gold{--cw:112px;background:linear-gradient(158deg,#F6DE93,#DC9E2C);
+    box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),
+               inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,
+               0 24px 60px -20px rgba(120,80,10,.45)}
+  .pvcard.gold .pvm{color:#2b1d05}
+  .pvcard.gold .pvm i{color:#AD0332;font-style:normal}
+
+  /*  NO DEFINITION LINE. The VV Score ladder above already gives all five a threshold, a
+      name and a one-line definition; repeating it here was the third telling of the same
+      sentence and most of this panel's weight. What only this section can do is show the
+      OBJECT and give the QUOTE, so that is all it does now.  */
+  .pr-t{font-family:'Archivo';font-weight:900;font-size:11.5px;letter-spacing:.22em;
+        text-transform:uppercase;color:#7e5a10}
+  .pr-n{font-family:'Bricolage Grotesque';font-weight:700;font-size:42px;line-height:1.04;
+        letter-spacing:-.03em;color:var(--charcoal);margin:9px 0 0}
+  .prerow.sec .pr-n{font-size:33px}
+  .pr-q{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:20px;
+        line-height:1.62;letter-spacing:-.012em;color:#3a352e;max-width:44ch;margin:22px 0 0}
+  .prerow.sec .pr-q{font-size:18px}
+  .pr-c{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.2em;
+        text-transform:uppercase;color:#5f594e;margin:22px 0 0}
   @media (max-width:860px){
-    .prenum{font-size:62px}
-    .prehero.sec .prenum{font-size:40px}
-    .prestats{gap:26px}
-    .prestats b{font-size:22px}
-    .prehero{padding:26px 15px 24px}
+    .preexhibit{padding:32px 22px 30px;border-radius:16px}
+    .prerow{grid-template-columns:1fr;gap:20px;margin-top:24px}
+    .prerow>:first-child{justify-content:flex-start}
+    .prerow+.prerow{margin-top:30px;padding-top:30px}
+    .pvcard{--cw:104px}
+    .pvcard.gold{--cw:88px}
+    .pr-n{font-size:31px}
+    .prerow.sec .pr-n{font-size:26px}
+    .pr-q{font-size:17px;margin-top:18px}
+    .prerow.sec .pr-q{font-size:16px}
   }
 
   /* chips are CONTROLS , a name alone never told a visitor what a Regista is. The definition
@@ -1144,7 +1203,7 @@
   </div>
   <div class="gatestrip">Drawn only when the season can carry it: 800 minutes, 60 shots faced, 2015 onward. 1,920 of 2,806 keeper seasons with save data qualify, and every one that does not says which gate it missed. Seasons with no save recorded are not counted at all, because they were never eligible to fail a gate.</div>
 </div>
-</section><section class="section" id="s-wonder"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><div class="intro">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was , the language of a career, earned not bought. Some mark the rarest air the game produces. Some, the silverware actually lifted. Some, how a player plays. And some are reserved for when two seasons are weighed against each other.</div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. Each tag carries a one-line definition; open any card for the full read.</div><div class="prehero"><div class="prenum">95+</div><div class="preword">Generational</div><div class="pretd">The highest grade the Index awards. Reserved for the rarest seasons in the history of the game, the ones that stand entirely alone.</div><div class="prestats"><div><b>12</b><i>Seasons, ever</i></div></div><div class="predq">"Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone."</div></div><div class="prerule"></div><div class="prehero sec"><div class="prenum">90+</div><div class="preword">Iconic</div><div class="pretd">One of the 150 greatest seasons ever measured.</div><div class="predq">"The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career."</div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="dpanel"><div class="dtier" id="dTier"></div><div class="dstage"><div class="dtrophy" id="dTrophy"></div><div class="dplinth"></div><div class="dmirror" id="dMirror" aria-hidden="true"></div></div><div class="dname" id="dName"></div><div class="dtd" id="dTd"></div><div class="ddq" id="dDq"></div></div><div class="dstrip"><button type="button" class="dchip" data-h="Ballon d'Or" aria-label="Ballon d'Or" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Ballon d&#39;Or</span></button><button type="button" class="dchip" data-h="World Cup Winner" aria-label="World Cup Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">World Cup Winner</span></button><button type="button" class="dchip" data-h="UCL Winner" aria-label="UCL Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">UCL Winner</span></button><button type="button" class="dchip" data-h="League Champion" aria-label="League Champion" aria-pressed="false"><span class="dcmk"></span><span class="dcl">League Champion</span></button><button type="button" class="dchip" data-h="Player of the Season" aria-label="Player of the Season" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Player of the Season</span></button><button type="button" class="dchip" data-h="Golden Boot" aria-label="Golden Boot" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Golden Boot</span></button><button type="button" class="dchip" data-h="Top Assists" aria-label="Top Assists" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Top Assists</span></button></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
+</section><section class="section" id="s-wonder"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><div class="intro">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was , the language of a career, earned not bought. Some mark the rarest air the game produces. Some, the silverware actually lifted. Some, how a player plays. And some are reserved for when two seasons are weighed against each other.</div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. The VV Score ladder above defines every band; these two are the only ones that get a card of their own.</div><div class="preexhibit"><div class="prerow"><div><div class="pvcard black"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">95 and above</div><h3 class="pr-n">Generational</h3><p class="pr-q">&#8220;Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.&#8221;</p><div class="pr-c">12 seasons, ever</div></div></div><div class="prerow sec"><div><div class="pvcard gold"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">90 and above</div><h3 class="pr-n">Iconic</h3><p class="pr-q">&#8220;The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.&#8221;</p><div class="pr-c">150 seasons at 90 and above</div></div></div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="dpanel"><div class="dtier" id="dTier"></div><div class="dstage"><div class="dtrophy" id="dTrophy"></div><div class="dplinth"></div><div class="dmirror" id="dMirror" aria-hidden="true"></div></div><div class="dname" id="dName"></div><div class="dtd" id="dTd"></div><div class="ddq" id="dDq"></div></div><div class="dstrip"><button type="button" class="dchip" data-h="Ballon d'Or" aria-label="Ballon d'Or" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Ballon d&#39;Or</span></button><button type="button" class="dchip" data-h="World Cup Winner" aria-label="World Cup Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">World Cup Winner</span></button><button type="button" class="dchip" data-h="UCL Winner" aria-label="UCL Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">UCL Winner</span></button><button type="button" class="dchip" data-h="League Champion" aria-label="League Champion" aria-pressed="false"><span class="dcmk"></span><span class="dcl">League Champion</span></button><button type="button" class="dchip" data-h="Player of the Season" aria-label="Player of the Season" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Player of the Season</span></button><button type="button" class="dchip" data-h="Golden Boot" aria-label="Golden Boot" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Golden Boot</span></button><button type="button" class="dchip" data-h="Top Assists" aria-label="Top Assists" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Top Assists</span></button></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
       This block used to carry six tags typed out by hand, out of twenty-one the engine
       actually awards. Fifteen were undocumented, and of the six that were written down one
       had already drifted: Engine Room read "Covers ground relentlessly, links play, never
@@ -1534,12 +1593,12 @@
          content section. Its badge count would be meaningless (there is no repeated item
          list), so the count is 0 there and the badge is skipped below. */
       var grid=sec.querySelector('.taggrid') || sec.querySelector('.cardmock') || sec.querySelector('.vsplit')
-               || sec.querySelector('.cabwrap') || sec.querySelector('.prehero');
+               || sec.querySelector('.cabwrap') || sec.querySelector('.preexhibit');
       if(!grid) return;
       var n=grid.querySelectorAll('.tagdef').length;
       /* .cardmock and .vsplit carry no repeated item list, so they fold with no count badge */
       if(!n && !sec.querySelector('.cardmock') && !sec.querySelector('.vsplit')
-            && !sec.querySelector('.cabwrap') && !sec.querySelector('.prehero')) return;
+            && !sec.querySelector('.cabwrap') && !sec.querySelector('.preexhibit')) return;
       var h2=sec.querySelector('.h2'); if(!h2) return;
       var anchor=sec.querySelector('.intro')||h2;
       var body=document.createElement('div'); body.className='foldbody';
