@@ -319,7 +319,7 @@
   /* The verdict demo cards are CREAM in both themes , they are mock VV cards, not page
      surface. So --pink-ink flipping to its dark value (#F1688E) put a light pink on cream:
      measured 2.46 in dark theme. Pinned to the light value, which is the one that matches
-     this ground. Same fixed-ground trap as .dpanel above and the display case before it. */
+     this ground. Same fixed-ground trap as the honours cabinet used to be, before it became a grid. */
   .vmono span{color:#AD0332}
   .vbars{margin-top:11px;display:flex;flex-direction:column;gap:6px}
   .vbars i{display:block;height:6px;border-radius:999px;background:rgba(0,0,0,0.14)}
@@ -374,74 +374,66 @@
      SEASONS, so the individual world prize leads, then the team honours, then the
      individual league honours. ── */
   .cabwrap{margin-top:4px}
-  .dpanel{position:relative;text-align:center;padding:26px 22px 28px;border-radius:16px;
-          background:radial-gradient(120% 68% at 50% 0%,rgba(232,184,75,0.17) 0%,rgba(232,184,75,0) 60%),
-                     var(--charcoal);
-          border:1px solid rgba(232,184,75,0.26)}
-  /* THE HONOURS CABINET KEEPS DARK-THEME INK IN BOTH THEMES. .dpanel is charcoal whatever
-     the page is doing, so --ink-soft flipping to its light value (#5f594e) put a dark grey
-     on a dark ground: measured 1.72 on .dtier and 1.77 on "Seasons, ever".
-     Scoped as a TOKEN rather than patched per rule, so anything added inside the panel
-     later inherits the correct ink instead of repeating the bug. #ada69b, not the dark
-     theme's own #a49d93, because that lands at 4.44 here , under AA by a hair.
-     .prehero WAS IN THIS RULE AND IS GONE, 2026-09-09. The prestige panel is no longer a
-     charcoal surface; it is CREAM in both themes, so it takes the ordinary light ink and
-     forcing a dark-theme value into it would have been the same bug inverted. */
-  .dpanel{--ink-soft:#ada69b}
-  .dtier{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
-         color:var(--ink-soft)}
-  .dstage{position:relative;margin:16px auto 0;width:100%;max-width:260px}
-  .dtrophy svg,.dmirror svg{width:126px;height:126px;display:block;margin:0 auto;color:var(--gold)}
-  .dplinth{height:1px;background:linear-gradient(90deg,rgba(232,184,75,0) 0%,rgba(232,184,75,0.55) 22%,
-           rgba(232,184,75,0.55) 78%,rgba(232,184,75,0) 100%);margin:2px auto 0;max-width:210px}
-  /* the mask sits on the WRAPPER, not on the flipped svg , mask is applied in the element's
-     own box before its child's transform, so masking the wrapper fades from the plinth
-     downward. Masking the flipped svg itself fades it from the wrong end. */
-  .dmirror{margin-top:2px;opacity:.30;overflow:hidden;height:62px;
-           -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,1),rgba(0,0,0,0));
-           mask-image:linear-gradient(to bottom,rgba(0,0,0,1),rgba(0,0,0,0))}
-  .dmirror svg{transform:scaleY(-1)}
-  .dname{font-family:'Archivo';font-weight:900;font-size:21px;color:var(--gold);margin-top:16px}
-  .dtd{font-family:'Inter';font-weight:400;font-size:14.5px;line-height:1.65;color:rgba(240,234,217,0.82);
-       max-width:520px;margin:10px auto 0}
-  .ddq{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:14.5px;line-height:1.7;
-       color:var(--cream);max-width:560px;margin:18px auto 0;padding:15px 17px;
-       background:rgba(255,255,255,0.05);border-radius:12px}
-  /* THE STRIP SITS ON THE SAME DARK SURFACE AS THE PANEL, and that is a legibility fix, not
-     decoration: gold at 0.42 opacity on the cream light-mode ground measured 1.29:1 , the
-     unselected pieces were effectively invisible. Gold needs a dark ground, which is the same
-     reason the case itself is dark in both themes. Do not lift the strip back onto the page. */
-  .dstrip{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px;
-          background:var(--charcoal);border:1px solid rgba(232,184,75,0.20);
-          border-radius:13px;padding:9px 10px}
-  /* Column layout so the trophy carries its NAME. All seven are then readable without
-     tapping through, which is the point of a display case. Fixed width keeps the strip a
-     tidy grid instead of seven differently-sized chips, and lets the two long names wrap
-     to a second line without shoving their neighbours around. */
-  .dchip{background:none;border:1px solid transparent;border-radius:10px;padding:5px 3px 4px;cursor:pointer;
-         display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;
-         opacity:.48;transition:opacity .16s ease,background .16s ease,border-color .16s ease}
-  .dchip svg{width:28px;height:28px;display:block;margin:0 auto;color:var(--gold)}
-  /* Two lines is the budget. At 72px wide and 8.5px the longest name, Player of the Season,
-     wraps to two and no further, which keeps every chip the same height and the strip to two
-     rows on a phone instead of three. */
-  .dcl{font-family:'Archivo';font-weight:600;font-size:8.5px;line-height:1.2;letter-spacing:.01em;
-       color:rgba(240,234,217,0.62);text-align:center}
-  .dchip.on .dcl{color:var(--gold)}
-  .dchip:hover{opacity:.8}
-  .dchip.on{opacity:1;background:rgba(232,184,75,0.13);border-color:rgba(232,184,75,0.42)}
-  .dchip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  /* the case is dark in BOTH themes, like the card face , no body.light repaint */
+  /*  ── THE HONOURS GRID , SEVEN VISIBLE, NO HERO, NO STRIP (2026-09-09) ──────────────
+      WHAT WENT: a hero panel with a floating disc and a mirrored reflection, fed by a strip
+      of seven small chips. Six of the seven rendered grey and tiny with labels wrapping to
+      two lines, so a trophy cabinet read as one exhibit and six thumbnails, and the disc
+      with its reflection was a stock 3D effect , the only generic thing on the platform.
+      WHAT ARRIVED: all seven at one size, three across, each with its mark, its name, its
+      one line and its leg. Detail opens INSIDE its own cell, so the row grows and what
+      follows reflows. Nothing closes when something else opens, which is the whole reason
+      for leaving a hero panel behind.
+      ORDERED BY FOOTBALL'S CONSENSUS ON PRESTIGE, top-left first, and that order is
+      HON_RANK , unchanged, it already encoded exactly this. The platform is reporting how
+      the sport ranks its prizes, not weighing them itself, which is the same position the
+      vvindex honours card takes: honours sit beside the number and never inside it.
+      SEVEN DOES NOT DIVIDE BY THREE, so the last row is one cell and two empty columns.
+      That is what a uniform grid does with this count and it is not worth hiding.
+      THE CELL IS A SURFACE, SO IT TAKES BOTH GROUNDS. Unlike the old cabinet, which was
+      charcoal in both themes and needed --ink-soft pinned, these cells follow the page, so
+      every ink below has a body.light value and none inherits a fixed-ground assumption.  */
+  .hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+  .hcell{border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px 20px 20px;
+         background:rgba(255,255,255,0.02);display:flex;flex-direction:column;align-self:start}
+  body.light .hcell{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
+  .hmk{height:64px;display:flex;align-items:flex-end}
+  .hmk svg{width:52px;height:52px;color:var(--gold)}
+  body.light .hmk svg{color:var(--gold-ink)}
+  .hcell .hn{font-family:'Bricolage Grotesque';font-weight:700;font-size:19px;letter-spacing:-.02em;
+             color:var(--cream);margin-top:16px;line-height:1.2}
+  body.light .hcell .hn{color:var(--charcoal)}
+  .hcell .ho{font-size:13.5px;line-height:1.6;color:rgba(240,234,217,0.72);margin-top:8px}
+  body.light .hcell .ho{color:#3a352e}
+  .hleg{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+        color:var(--ink-soft);margin-top:11px}
+  .hleg.team{color:var(--gold)}
+  body.light .hleg.team{color:var(--gold-ink)}
+  .hmore{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.04em;color:var(--pink-ink);
+         background:none;border:none;padding:0;margin-top:14px;cursor:pointer;text-align:left;align-self:flex-start}
+  .hdet{max-height:0;overflow:hidden;opacity:0;transition:max-height .45s ease,opacity .35s ease}
+  .hcell.open .hdet{max-height:560px;opacity:1;margin-top:14px}
+  .htd{font-size:13.5px;line-height:1.7;color:rgba(240,234,217,0.82)}
+  .htd b{color:var(--cream);font-weight:600}
+  body.light .htd{color:#3a352e}
+  body.light .htd b{color:var(--charcoal)}
+  .hdq{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15px;line-height:1.6;
+       color:var(--cream);margin-top:12px;padding-left:15px;border-left:1px solid rgba(232,184,75,0.34)}
+  body.light .hdq{color:#3a352e;border-left-color:rgba(126,90,16,0.34)}
+  /*  ONE COLUMN AT 720 AND BELOW, AND THAT IS THE ANSWER RATHER THAN A COLLAPSE. Measured
+      on the row version this replaces: at 375px of content it already used 100% of the
+      width, so the phone was never the problem , the desktop was, where every row wasted
+      206px to its right. Two columns at 375 gives each cell about 178px and the longest
+      label, "Player of the Season", needs 156px before its one-liner is considered, which
+      brings back the wrapped-label defect this change exists to remove.  */
   @media (max-width:860px){
-    .dpanel{padding:22px 15px 24px}
-    .dtrophy svg,.dmirror svg{width:102px;height:102px}
-    .dmirror{height:50px}
-    .dname{font-size:18px}
-    .dtd{font-size:14px}
-    .ddq{font-size:13.5px}
-    /* touch targets , the drawing stays 30px, the button grows around it */
-    .dchip{padding:10px 11px}
-    .dstrip{gap:6px}
+    .hgrid{grid-template-columns:repeat(2,1fr);gap:14px}
+  }
+  @media (max-width:720px){
+    .hgrid{grid-template-columns:1fr;gap:12px}
+    .hcell{padding:18px 16px 16px}
+    .hmk{height:52px}
+    .hmk svg{width:44px;height:44px}
+    .hcell .hn{font-size:18px;margin-top:12px}
   }
 
   /* ── THE TROPHY CABINET ────────────────────────────────────────────────────────────
@@ -1203,7 +1195,7 @@
   </div>
   <div class="gatestrip">Drawn only when the season can carry it: 800 minutes, 60 shots faced, 2015 onward. 1,920 of 2,806 keeper seasons with save data qualify, and every one that does not says which gate it missed. Seasons with no save recorded are not counted at all, because they were never eligible to fail a gate.</div>
 </div>
-</section><section class="section" id="s-wonder"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><div class="intro">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was , the language of a career, earned not bought. Some mark the rarest air the game produces. Some, the silverware actually lifted. Some, how a player plays. And some are reserved for when two seasons are weighed against each other.</div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. The VV Score ladder above defines every band; these two are the only ones that get a card of their own.</div><div class="preexhibit"><div class="prerow"><div><div class="pvcard black"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">95 and above</div><h3 class="pr-n">Generational</h3><p class="pr-q">&#8220;Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.&#8221;</p><div class="pr-c">12 seasons, ever</div></div></div><div class="prerow sec"><div><div class="pvcard gold"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">90 and above</div><h3 class="pr-n">Iconic</h3><p class="pr-q">&#8220;The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.&#8221;</p><div class="pr-c">150 seasons at 90 and above</div></div></div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="dpanel"><div class="dtier" id="dTier"></div><div class="dstage"><div class="dtrophy" id="dTrophy"></div><div class="dplinth"></div><div class="dmirror" id="dMirror" aria-hidden="true"></div></div><div class="dname" id="dName"></div><div class="dtd" id="dTd"></div><div class="ddq" id="dDq"></div></div><div class="dstrip"><button type="button" class="dchip" data-h="Ballon d'Or" aria-label="Ballon d'Or" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Ballon d&#39;Or</span></button><button type="button" class="dchip" data-h="World Cup Winner" aria-label="World Cup Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">World Cup Winner</span></button><button type="button" class="dchip" data-h="UCL Winner" aria-label="UCL Winner" aria-pressed="false"><span class="dcmk"></span><span class="dcl">UCL Winner</span></button><button type="button" class="dchip" data-h="League Champion" aria-label="League Champion" aria-pressed="false"><span class="dcmk"></span><span class="dcl">League Champion</span></button><button type="button" class="dchip" data-h="Player of the Season" aria-label="Player of the Season" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Player of the Season</span></button><button type="button" class="dchip" data-h="Golden Boot" aria-label="Golden Boot" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Golden Boot</span></button><button type="button" class="dchip" data-h="Top Assists" aria-label="Top Assists" aria-pressed="false"><span class="dcmk"></span><span class="dcl">Top Assists</span></button></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
+</section><section class="section" id="s-wonder"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><div class="intro">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was , the language of a career, earned not bought. Some mark the rarest air the game produces. Some, the silverware actually lifted. Some, how a player plays. And some are reserved for when two seasons are weighed against each other.</div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. The VV Score ladder above defines every band; these two are the only ones that get a card of their own.</div><div class="preexhibit"><div class="prerow"><div><div class="pvcard black"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">95 and above</div><h3 class="pr-n">Generational</h3><p class="pr-q">&#8220;Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.&#8221;</p><div class="pr-c">12 seasons, ever</div></div></div><div class="prerow sec"><div><div class="pvcard gold"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">90 and above</div><h3 class="pr-n">Iconic</h3><p class="pr-q">&#8220;The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.&#8221;</p><div class="pr-c">150 seasons at 90 and above</div></div></div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="hgrid"><div class="hcell" id="hc-ballon_dor"><div class="hmk"></div><div class="hn">Ballon d'Or</div><div class="ho">The best player in the world that season.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Ballon d'Or" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-world_cup_winner"><div class="hmk"></div><div class="hn">World Cup Winner</div><div class="ho">A world champion. The prize every player covets most.</div><div class="hleg team">Won by a squad , every season of a career</div><button type="button" class="hmore" data-h="World Cup Winner" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-ucl_winner"><div class="hmk"></div><div class="hn">UCL Winner</div><div class="ho">Champion of Europe, the club game&#8217;s greatest prize.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="UCL Winner" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-league_champion"><div class="hmk"></div><div class="hn">League Champion</div><div class="ho">Champions. Top of the league across a full season.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="League Champion" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-player_of_season"><div class="hmk"></div><div class="hn">Player of the Season</div><div class="ho">The league&#8217;s finest over a full campaign.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Player of the Season" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-golden_boot"><div class="hmk"></div><div class="hn">Golden Boot</div><div class="ho">The league&#8217;s top scorer. Nobody scored more.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Golden Boot" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-top_assists"><div class="hmk"></div><div class="hn">Top Assists</div><div class="ho">The league&#8217;s chief creator. Nobody made more.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Top Assists" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
       This block used to carry six tags typed out by hand, out of twenty-one the engine
       actually awards. Fifteen were undocumented, and of the six that were written down one
       had already drifted: Engine Room read "Covers ground relentlessly, links play, never
@@ -1304,7 +1296,9 @@
 
   /* the cabinet , same expand-in-place model as the arc and the pitch */
   var HON_COPY = {"Ballon d'Or":{"td":"Named the <b>single best player in the world</b> that year. Football's most prestigious individual prize.","dq":"\"The highest honour the game can bestow on one man. Not a team's triumph, but a singular coronation, the season the whole of football looked up and agreed: above all others, this one.\""},"League Champion":{"td":"A <b>champion</b>. Part of the team that won the league that season.","dq":"\"In the end, the only number that never fades: champions. Form is temporary. This is forever.\""},"UCL Winner":{"td":"Lifted the <b>Champions League</b>, the grandest prize in club football.","dq":"\"Under the brightest lights, on the grandest stage. He did not shrink. He rose.\""},"Player of the Season":{"td":"Voted the <b>standout individual</b> of the entire campaign.","dq":"\"When the votes were counted, one name stood above the rest. Across ten long months, no one shone brighter.\""},"Golden Boot":{"td":"Led the league for <b>goals</b> that season. The sharpest shooter of them all.","dq":"\"Goal after goal after goal, until the boot itself turned to gold. The oldest honour in the game, earned the only way it can be.\""},"Top Assists":{"td":"Led the league for <b>assists</b> that season. The supreme provider.","dq":"\"He did not always take the glory. He made it, time and again, with the pass that mattered.\""},"World Cup Winner":{"td":"A world champion. The prize every player covets most. It is the one honour that sits on <b>every season of a winner\u0027s career</b>, not just the tournament year, so a card prints the year it was won.","dq":"\"Every four years a nation holds its breath, and for one squad it ends in glory. The World Cup is the prize a career is measured against, the one that turns a great player into an immortal. Some of the finest never lift it. Those who do are never forgotten.\""}};
-  var HON_TIER = {"Ballon d'Or":"The individual summit","World Cup Winner":"Team honours","UCL Winner":"Team honours","League Champion":"Team honours","Player of the Season":"League awards","Golden Boot":"League awards","Top Assists":"League awards"};
+  /*  HON_TIER IS GONE. It labelled the retired hero panel's eyebrow ("The individual
+      summit", "Team honours", "League awards"), a THIRD grouping on top of the leg the
+      data carries and the order HON_RANK sets. The grid states the leg per cell instead.  */
   /* THE SEVEN TROPHIES COME FROM THE SHARED SET, not from a copy kept here. They used to be
      bespoke 48x56 drawings that existed ONLY on this page, which meant the display case and
      the honour pills on a card were two different pictures of the same seven things , and
@@ -1324,22 +1318,35 @@
     return VVMarks.honour(HON_KEY[name]||'');
   }
   var HON_RANK = ["Ballon d'Or","World Cup Winner","UCL Winner","League Champion","Player of the Season","Golden Boot","Top Assists"];
-  /* ONE IS ALWAYS SELECTED , this is a display case, not an expander, so unlike the pitch
-     and the arc there is no empty state to reserve nothing for. Ballon d'Or leads. */
-  function honShow(name){
-    var o=HON_COPY[name]; if(!o) return;
-    document.querySelectorAll('.dchip').forEach(function(c){
-      var on=c.getAttribute('data-h')===name;
-      c.classList.toggle('on',on); c.setAttribute('aria-pressed',on?'true':'false'); });
-    var set=function(id,html){var el=document.getElementById(id); if(el) el.innerHTML=html;};
-    set('dTier',vEsc(HON_TIER[name]||''));
-    set('dTrophy',honMark(name));
-    set('dMirror',honMark(name));
-    set('dName',vEsc(name));
-    set('dTd',o.td);
-    set('dDq',o.dq);
+  /*  NOTHING IS PRE-SELECTED ANY MORE, and that is the point of the change. The old case
+      always had one honour open because a hero panel cannot be empty; a grid of seven has
+      no such problem, so every cell starts closed and any number may be opened at once.
+      THE DETAIL IS FILLED ONCE AT LOAD rather than on click. It is seven short strings and
+      they never change, so building them up front means a click only toggles a class , no
+      innerHTML on the interaction path, and nothing to go stale between opens.  */
+  function honFill(){
+    /*  HON_RANK IS THE RECORDED ORDER AND THE MARKUP IS THE RENDERED ONE, so they are two
+        copies of one decision , the shape this file keeps recording as a defect. Rather
+        than delete HON_RANK and lose the record, or generate the markup and lose the static
+        HTML, the two are ASSERTED equal at load. A hand-edit that reorders the grid without
+        touching HON_RANK now says so in the console instead of drifting silently.
+        Warn, never throw: a wrong ORDER is a cosmetic fault and must not cost the section.  */
+    var domOrder=[].map.call(document.querySelectorAll('.hcell .hmore'),
+                             function(b){ return b.getAttribute('data-h'); });
+    if(domOrder.length===HON_RANK.length && domOrder.join('|')!==HON_RANK.join('|')){
+      console.warn('[VVonderXI] Honours grid order does not match HON_RANK.',
+                   '\n  markup:', domOrder.join(', '), '\n  HON_RANK:', HON_RANK.join(', '));
+    }
+    document.querySelectorAll('.hcell').forEach(function(c){
+      var b=c.querySelector('.hmore'); if(!b) return;
+      var name=b.getAttribute('data-h'), o=HON_COPY[name];
+      var mk=c.querySelector('.hmk'); if(mk) mk.innerHTML=honMark(name);
+      if(!o) return;
+      var td=c.querySelector('.htd'), dq=c.querySelector('.hdq');
+      if(td) td.innerHTML=o.td;
+      if(dq) dq.innerHTML=o.dq;
+    });
   }
-  function honOpen(name){ honShow(name); }
   /* ══════════════════════════════════════════════════════════════════════════════
      PLAYBOOK MARK ADOPTION , the same three properties as the row and card adoptions.
 
@@ -1368,12 +1375,9 @@
       if(m) se.innerHTML = m;
     });
 
-    // THE DISPLAY-CASE CHIPS. The big trophy is filled by honShow(); these are the strip.
-    document.querySelectorAll('.dchip').forEach(function(c){
-      var slot = c.querySelector('.dcmk'); if(!slot) return;
-      var m = honMark(c.getAttribute('data-h'));
-      if(m) slot.innerHTML = m;
-    });
+    // THE SEVEN HONOUR MARKS, one per grid cell. honFill() does the marks and the copy in
+    // one pass, so a cell can never end up with a trophy and no words, or the reverse.
+    honFill();
 
     // THE SIX ABILITY TAG NAMES in the profile library.
     document.querySelectorAll('.tn[data-tag]').forEach(function(el){
@@ -1395,13 +1399,20 @@
   })();
 
   (function honWire(){
+    /*  .cabwrap IS KEPT AS THE WRAPPER ON PURPOSE. vvFoldSections uses it TWICE as this
+        section's fold body , the selector chain and the negative guard , exactly the way
+        .prehero was load-bearing before it. Renaming it would have left Honours unfoldable
+        with no error. Keeping the class means this change touches vvFoldSections not at all.  */
     var w=document.querySelector('.cabwrap'); if(!w) return;
     w.addEventListener('click',function(ev){
       if(!ev.target.closest) return;
-      var t=ev.target.closest('.dchip'); if(!t) return;
-      ev.stopPropagation(); honShow(t.getAttribute('data-h'));
+      var b=ev.target.closest('.hmore'); if(!b) return;
+      ev.stopPropagation();
+      var c=b.closest('.hcell'); if(!c) return;
+      var open=c.classList.toggle('open');
+      b.setAttribute('aria-expanded', open?'true':'false');
+      b.innerHTML = open ? 'See less &#8249;' : 'See more &#8250;';
     });
-    honShow(HON_RANK[0]);        // the case is never empty
   })();
 
   /* career arc */
