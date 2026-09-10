@@ -1126,8 +1126,26 @@
     font-family:'Archivo';font-weight:700;font-size:12px;color:var(--cream);white-space:nowrap}
   body.light .lgchip{border-color:rgba(28,27,26,0.15);background:rgba(255,255,255,0.6);color:var(--charcoal)}
   .lgchip .f{font-size:15px;line-height:1}
-  .lgstrip-n{font-family:'Inter';font-size:12.5px;line-height:1.6;color:rgba(243,237,224,0.5);margin-top:12px}
-  body.light .lgstrip-n{color:#6d675e}
+  .lgstrip-n{font-family:'Inter';font-size:12.5px;line-height:1.6;color:rgba(243,237,224,0.74);margin-top:12px}
+  body.light .lgstrip-n{color:#4f4a43}
+  /*  .mut DID NOT EXIST , defined here and scoped to this note, 2026-09-10. The middle
+      sentence is the only one carrying dates, and dates are what a reader skims unless they
+      are chasing a specific season, so it should sit quieter than the claim around it.
+      IT IS MUTED BY LIFTING ITS NEIGHBOURS, NOT BY SINKING ITSELF, AND THAT IS FORCED BY
+      CONTRAST. The old .lgstrip-n ink measured 4.68 dark and 5.03 light on the ground this
+      note actually sits on (the element is at 2.6% of page height, so the gradient's FIRST
+      stop, not the worst one) , barely over the 4.5 floor for 12.5px text. There was no
+      headroom to mute into: a muted ink that still passed needed alpha 0.49 against the
+      base's 0.50 in dark, and in light it had to be DARKER than the base. Both are fake
+      mutes. So .lgstrip-n is lifted and .mut holds the value the note used to have: the
+      hierarchy is the same, and every sentence now clears AA by more than it did before.
+      NOT a new global utility: one surface asked for it, so it is scoped to one surface.
+      THE END OF THE RANGE IS DELIBERATELY NOT PRINTED. "2010/11 onward" stays true after
+      the next import; "to 2025/26" would be wrong the day 2026 data lands, which is the
+      same way the og:description went stale by 179. The three START points are historical
+      and cannot drift, so they are safe to name exactly. */
+  .lgstrip-n .mut{color:rgba(243,237,224,0.5)}
+  body.light .lgstrip-n .mut{color:#6d675e}
   @media (max-width:720px){ .lgchip{font-size:11.5px;padding:5px 11px 5px 9px;gap:6px} }
   .pgdefs{margin-top:22px;display:grid;gap:15px;max-width:760px}
   .pgrow{font-family:'Inter';font-size:15px;line-height:1.62;color:rgba(243,237,224,0.78)}
@@ -1413,7 +1431,12 @@
     host.innerHTML='<div class="lgstrip-l">The ground we cover</div><div class="lgstrip-r">'+
       L.map(function(x){ return '<span class="lgchip"><span class="f">'+x.e+'</span>'+x.l+'</span>'; }).join('')+
       '</div><div class="lgstrip-n">Every card comes from one of these '+L.length+
-      ' competitions, 2010 onward. If a league is not here, no card exists for it.</div>';
+      ' competitions. If a league is not here, no card exists for it. '+
+      'Every league runs from 2010/11 onward, but the detailed stats do not run that whole way. '+
+      '<span class="mut">Shots, passes, duels and dribbles begin in 2015/16 , a little earlier in '+
+      'the Premier League, which is partly covered in 2014/15 , and in Belgium they begin in '+
+      '2020/21.</span> '+
+      'Before those points a season is scored on goals, assists and minutes alone.</div>';
   })();
   function toggleStory(e,btn){ e.stopPropagation(); const card=btn.parentElement; const open=card.classList.toggle('open'); if(!btn.dataset.label) btn.dataset.label=btn.innerHTML; btn.innerHTML = open ? 'Show less &#8249;' : btn.dataset.label; }
 
