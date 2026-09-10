@@ -3206,8 +3206,22 @@
         + '<div class="tmore">' + r.full + '</div></div>';
     }).join('');
   }
+  /*  READS BOTH LEGS, NOT `all` , 2026-09-10. `all` is season-only BY DESIGN (see the long
+      note in fetchHonours: letting a career honour in would put World Cup on 587 card FACES,
+      displacing a season honour in the one place there is no room to print the tournament
+      year). That note names its two uncapped consumers , "the glance strip and Wonder Tags
+      render season.concat(career) explicitly" , and the strip did while THIS renderer did
+      not, so the World Cup was on the strip and absent from the panel that explains it.
+      THE SILVERWARE FILTER BELOW ALREADY NAMED IT. `world_cup_winner` is group:'Career', so
+      the `|| h.type === 'world_cup_winner'` clause exists for exactly one purpose and was
+      dead code, because it filtered over a list that by design never contained it. Feeding
+      both legs in is the whole fix; the filter, the label and the placement were already right.
+      SCOPED HERE RATHER THAN ON `all`, deliberately. Widening `all` would reach the capped
+      face and row surfaces, which is precisely the failure the fetchHonours note exists to
+      prevent. The batch path keeps returning `career: []`, so rankings is a literal no-op.
+      honourRowHTML already appends the tournament year and marks the row .career. */
   function renderWonderTagsGrouped(honours, profileRowsHtml){
-    const all = (honours && honours.all) ? honours.all : [];
+    const all = honours ? (honours.season || []).concat(honours.career || []) : [];
     const silverware = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && (m.group === 'Team' || h.type === 'world_cup_winner'); });
     const individual = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && m.group === 'Individual'; });
     const sec = function(label, html){ return html ? '<div class="wtsec"><div class="wtsechead">'+label+'</div>'+html+'</div>' : ''; };
