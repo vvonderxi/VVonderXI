@@ -266,7 +266,8 @@
       Wonder-Tags rows are the second such surface and used to size the deleted .ti set.
       15px is the size the old .ti shipped at, carried over so nothing moves. */
   .tagrow .tt .vvm{width:15px;height:15px;flex-shrink:0}
-  #glChips .chtag .vvm{width:12px;height:12px;flex-shrink:0;margin-right:5px;vertical-align:-1px}
+  #glChips .chtag .vvm,
+  #wonderTags .tagrow .tt .ttl .vvm{width:12px;height:12px;flex-shrink:0;margin-right:5px;vertical-align:-1px}
   /*  .vvm, NOT .ci , the glance chips and the Wonder-Tags rows moved onto the shared
       VVMarks honour set on 2026-09-01 and HONOUR_ICON was deleted. The sizes are the ones
       the old set shipped at, carried over unchanged so nothing moves. WITHOUT THESE THE
@@ -360,66 +361,55 @@
   .wtsec:first-child .wtsechead{margin-top:0}
   .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:var(--gold-ink);margin-top:10px;margin-bottom:2px}
 
-  /*  ── WONDER TAGS CARRY THE STRIP'S COLOUR LANGUAGE (2026-09-10) ──────────────────
-      The glance strip above is colour-coded by family and the panel that explains it was
-      one flat pink for every row, so a reader learned a colour and then met an explanation
-      that ignored it. Four treatments were demoed on Salah 24/25, the worst case on the
-      platform (twelve rows, five families plus prestige, all three sections). This is the
-      one that carries the connection with the least noise: the MARK takes the family
-      colour and the row's text goes to a neutral reading ink, so there is exactly ONE
-      coloured element per row and it is the element the strip already shares.
+  /*  ── WONDER TAGS WEAR THE STRIP'S PILLS (2026-09-10, replacing the mark-only first cut) ──
+      The glance strip above is colour-coded by family and the panel that explains it was one
+      flat pink, so a reader learned a colour and met an explanation that ignored it. The first
+      fix coloured only the MARK and left the text neutral. It was too quiet , the colour did
+      not carry at 16px , so every row now wears the family pill itself.
 
-      WHY NOT THE OTHERS, so this is not re-litigated from taste:
-        - PILLS IN EVERY ROW is perfect fidelity and reads as twelve buttons that are not
-          buttons (the tap target is the whole row). It also moves the strip's white-on-MID
-          3.00 and white-on-DEF 3.89 out of a glanced pill and into read body copy. It is
-          the FALLBACK if this treatment proves too quiet , see the commit message.
-        - FAMILY INK ON THE NAME needs five invented inks, because no pill hue clears 4.5
-          on this ground (ATT 3.91, MID 2.52, DEF 3.26, gold 1.78). Darkened to pass, the
-          Generational ink and the honour ink land on #806529 and #866523 , indistinguishable
-          , so five rows read as one colour where the strip shows a black-and-gold object
-          beside four gold pills. That is the treatment losing the thing it exists to carry.
-        - GROUP HEADERS ONLY is a no-op on two of the three groups (SILVERWARE and
-          INDIVIDUAL HONOURS are both gold and .wtsechead is ALREADY --gold-ink), and every
-          colour a reader must learn lives in the third. Split so one head means one colour,
-          it costs seven heads for twelve rows, four of them groups of one, and grows the
-          panel 14% at 1440 and 33% at 390 , while the rows underneath stay uniformly pink.
+      THE PILLS ARE FLAT HERE AND A GRADIENT ON THE STRIP, AND THAT IS WHAT MAKES THEM LEGIBLE.
+      Every strip pill is a two-stop gradient, and white text was being measured against the
+      DARK stop only. Against the LIGHT stop, five of the eight fail 4.5 outright:
+        ATT  #FF7A5C -> #E70443   2.56 / 4.67
+        MID  #3FBF7F -> #2FA968   2.34 / 3.00
+        DEF  #5C9DFF -> #4A7FE0   2.72 / 3.89
+        STAGE #2F8290 -> #1B5563  4.45 / 8.31
+        gold #F0D27A -> #E0A93A   6.26 / 4.37   (dark ink, so its dark stop is the hard one)
+      Flattening each pill to its gradient's DARK stop deletes the light stop, and with it the
+      whole problem, for the price of a gradient nobody can see on a 22px pill. ATT, STAGE and
+      CROSS then pass at their EXACT strip colours , the brand pink #E70443 is untouched , and
+      only two families still need a nudge, which is exactly the two that were named:
+        MID   #2FA968 -> #258652   3.00 -> 4.55   (scale 79%)
+        DEF   #4A7FE0 -> #4374CC   3.89 -> 4.56   (scale 91%)
+        gold  ink #5a4410 -> #574210   4.37 -> 4.52   (scale 97%, gradient KEPT, ground untouched)
+      THE STRIP IS DELIBERATELY NOT CHANGED. A strip pill is glanced in a row of eleven; an
+      accordion pill sits on the line a reader is reading. Same object, different duty, and the
+      strip's own rules below are the ones this widens, so the two cannot drift on anything
+      they still share.
 
-      GROUNDS. Measured both themes: every ink in this panel is theme-INDEPENDENT (name
-      #AD0332, prose #3a352e, head #7e5a10, .layer #F0EAD9, identical in dark and light).
-      The only thing that flips is .tagrow's white overlay, 0.03 against 0.60, giving
-      grounds #F0EBDA and #F9F7F0. So one palette serves both themes; the pair below is
-      quoted dark / light and the DARKER one is the harder case.
+      PRESTIGE IS UNTOUCHED AND WAS ALREADY RIGHT , #F3DA88 on near-black measures 10.46 / 13.72
+      and #16120e on gold 13.48 / 10.11. It is also the row that proved the case for the rest.
 
-      THE MARKS ARE NOT TEXT, so they are held to the 3:1 non-text bar, not 4.5, and they
-      are redundant besides , every row writes its name out beside the mark in a 12.60
-      reading ink, which is the same justification the compare A/B identity colours rest on.
-      Two pill hues could not form a recognisable shape at 3:1 on cream and take the
-      smallest correction that does; the rest are the strip's own values, untouched:
-        ATT   #E70443  3.91 / 4.36   strip value
-        DEF   #4A7FE0  3.26 / 3.63   strip value
-        MID   #2A985E  3.06 / 3.41   strip #2FA968 measures 2.52, darkened 10%
-        STAGE #1B5563  6.97 / 7.76   strip value
-        CROSS #46443F  8.15 / 9.07   strip value
-        honours + prestige  var(--gold-ink) #7e5a10  5.21 / 5.80
-      The honour marks take --gold-ink rather than an invented gold so a SILVERWARE mark
-      matches the SILVERWARE head directly above it, which is already that token.  */
-  #wonderTags .tagrow .tt .ttl{color:#2a2620}
-  #wonderTags .tagrow .tt .vvm{width:16px;height:16px;color:#46443F}   /* default: unclassed, never a stray pink */
-  #wonderTags .tagrow[data-fam="ATT"]   .tt .vvm{color:#E70443}
-  #wonderTags .tagrow[data-fam="MID"]   .tt .vvm{color:#2A985E}
-  #wonderTags .tagrow[data-fam="DEF"]   .tt .vvm{color:#4A7FE0}
-  #wonderTags .tagrow[data-fam="STAGE"] .tt .vvm{color:#1B5563}
-  #wonderTags .tagrow[data-fam="CROSS"] .tt .vvm{color:#46443F}
-  #wonderTags .tagrow.honour .tt .vvm,
-  #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .vvm{color:var(--gold-ink)}
-  /*  PRESTIGE KEEPS THE OBJECT, and it is the one row that has to. Its identity is a
-      GROUND (near-black under gold ink, or gold under near-black) rather than a hue, so
-      flattening it to a coloured mark loses it entirely , that is precisely what sank the
-      name-ink option. One row can afford a pill; eleven cannot.
-      flex:0 0 auto because .tagrow .tt .ttl is flex:1, which would stretch the pill across
-      the whole row. Measured in the demo before it was believed. */
-  #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .ttl{flex:0 0 auto;font-size:10.5px;text-transform:uppercase;overflow-wrap:normal}
+      GROUNDS. Every ink in this panel is theme-INDEPENDENT (measured: name, prose, head and
+      .layer identical in dark and light); only .tagrow's white overlay flips, 0.03 against
+      0.60. The pills paint their own ground, so the theme cannot reach them at all.
+
+      IF THIS EVER READS AS TOO LOUD, the retreat is the mark-only cut in 5446516, not a third
+      invention.  */
+  #wonderTags .tagrow .tt .ttl{flex:0 0 auto;overflow-wrap:normal;background:#46443F}
+  #wonderTags .tagrow[data-fam="ATT"]   .tt .ttl{background:#E70443}   /* strip dark stop, exact */
+  #wonderTags .tagrow[data-fam="MID"]   .tt .ttl{background:#258652}   /* darkened, see above */
+  #wonderTags .tagrow[data-fam="DEF"]   .tt .ttl{background:#4374CC}   /* darkened, see above */
+  #wonderTags .tagrow[data-fam="STAGE"] .tt .ttl{background:#1B5563}   /* strip dark stop, exact */
+  #wonderTags .tagrow[data-fam="CROSS"] .tt .ttl{background:#46443F}   /* strip dark stop, exact */
+  /*  The honour pill keeps the strip's gradient because its ground is fine; only the dark ink
+      moves, by 3%. Widening .chip.gold was not an option , the accordion ink differs.  */
+  #wonderTags .tagrow.honour .tt .ttl{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#574210}
+  /*  PRESTIGE KEEPS THE OBJECT, and it is the one row that has to. Its identity is a GROUND
+      (near-black under gold ink, or gold under near-black) rather than a hue. The two rules
+      that paint it are the STRIP'S OWN, widened, so it cannot drift from the pill above it.
+      flex:0 0 auto is on the base rule; this only restores the strip's uppercase treatment. */
+  #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .ttl{font-size:10.5px;text-transform:uppercase}
   .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
   .clubpill:hover{background:rgba(255,255,255,0.1)}
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
@@ -691,8 +681,7 @@
       Only the prestige rows take these in the accordion , every other row is plain text
       with a coloured mark, which is the whole point of the treatment. */
   #glChips .chtag,
-  #wonderTags .tagrow[data-tag="Generational"] .tt .ttl,
-  #wonderTags .tagrow[data-tag="Iconic"] .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+  #wonderTags .tagrow .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
   #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443)}
   #glChips .chtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968)}
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
@@ -1208,8 +1197,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260910a"></script>
-<script src="/vv-core.js?v=20260910a"></script>
+<script src="/vv-marks.js?v=20260910b"></script>
+<script src="/vv-core.js?v=20260910b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1807,6 +1796,11 @@
   // their cards stay byte-identical. Fail-soft: if vv-marks.js is missing the pills render
   // exactly as before, minus the icon.
   try { VVCore.useCardMarks(true); } catch(e){}
+  /*  WONDER-TAG PILLS , card.html only. Wraps each row title as a pill carrying the mark,
+      so the panel speaks the same colour language as the glance strip above it. compare.html
+      never calls this and keeps the plain shape (green ground, titles pinned neutral).
+      Same fail-soft as the line above: an old vv-core simply has no such function. */
+  try { VVCore.useWonderTagPills(true); } catch(e){}
   function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint

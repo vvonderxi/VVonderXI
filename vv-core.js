@@ -364,6 +364,25 @@
   var CARD_MARKS = false;
   function useCardMarks(on){ CARD_MARKS = (on !== false); }
 
+  /*  WONDER-TAG PILLS , PAGE-LEVEL OPT-IN, SAME SHAPE AND SAME REASON AS useCardMarks
+      ABOVE (2026-09-10). honourRowHTML and renderProfileTagRows are shared by card.html
+      and compare.html, and only card wants the row title wrapped as a pill: the mark has
+      to move INSIDE the .ttl box for a pill to contain it, and CSS cannot group two
+      siblings, so this is a markup change or nothing.
+      compare.html never calls this, so its rows stay byte-identical , which matters more
+      than usual here, because its .ttl carries flex:1 / overflow-wrap:anywhere and its
+      rows sit on the green .vsect ground where the card's pill palette would not survive.
+      Verified after the change: compare renders the unwrapped shape on every row.  */
+  var WT_PILLS = false;
+  function useWonderTagPills(on){ WT_PILLS = (on !== false); }
+  //  The title half of a Wonder-Tags row. Pill mode puts the mark inside .ttl so the pill
+  //  box contains it; default mode is the original sibling shape, character for character.
+  function wtTitle(icon, text){
+    return WT_PILLS
+      ? '<span class="ttl">' + icon + text + '</span>'
+      : icon + ' <span class="ttl">' + text + '</span>';
+  }
+
   /*  STAGE:0 IS LOAD-BEARING, NOT COSMETIC. famClass in renderTagPills is gated on
       `family in PRIO`, so a family missing from this map renders with NO colour class at
       all, silently. And prio() falls back to 1 for an unknown family, which would move
@@ -3113,7 +3132,7 @@
       : '';
     const isCareerH = (HONOUR_META[h.type] && HONOUR_META[h.type].group === 'Career');
     return '<div class="tagrow honour'+(isCareerH?' career':'')+'" onclick="this.classList.toggle(\'open\')">'
-      + '<div class="tt">'+icon+' <span class="ttl">'+escHtml(h.label + (isCareerH && h.season_year!=null ? ' '+h.season_year : ''))+'</span> <span class="tchev">⌄</span></div>'
+      + '<div class="tt">'+wtTitle(icon, escHtml(h.label + (isCareerH && h.season_year!=null ? ' '+h.season_year : '')))+' <span class="tchev">⌄</span></div>'
       + '<div class="td">'+escHtml(oneLiner)+'</div>'
       + tmore
       + '</div>';
@@ -3182,7 +3201,7 @@
       return '<div class="tagrow"' + (r.fam ? ' data-fam="'+escAttr(r.fam)+'"' : '')
         + ' data-tag="'+escAttr(r.name)+'"'
         + ' onclick="this.classList.toggle(\'open\')">'
-        + '<div class="tt">' + r.icon + ' <span class="ttl">' + r.name + '</span> <span class="tchev">&#8964;</span></div>'
+        + '<div class="tt">' + wtTitle(r.icon, r.name) + ' <span class="tchev">&#8964;</span></div>'
         + '<div class="td">' + r.one + '</div>'
         + '<div class="tmore">' + r.full + '</div></div>';
     }).join('');
@@ -6288,7 +6307,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
-                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,
                 VVFilters, VVSeq };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
