@@ -170,7 +170,20 @@
   .gstat .gv{font-family:'Archivo';font-weight:900;font-size:26px;color:var(--charcoal)}
   .gstat .gl{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft)}
   /* radar + attributes */
+  /*  THE NOTE IS A SIBLING OF THIS BOX, NOT A CHILD OF IT (fixed 2026-09-10).
+      .radarwrap is a flex row, so while #radarNote sat inside it the note became a second
+      flex ITEM: it lined up beside the chart, and the svg was squeezed from its 300-wide
+      viewBox down to 105px at 390. The default preserveAspectRatio then letterboxed the
+      drawing inside a box still 220 tall, which is where the empty space below came from.
+      Measured: moving the note out took the svg 105 -> 300px in the same layout pass.
+      #radarNote's own rule was always written for the position it now has , display:block,
+      margin-top, text-align:center. Nothing about it needed changing; it was in the wrong
+      parent, and the 6px between chart and caption was that margin-top acting as a flex
+      offset rather than a stacking gap.
+      max-width/height:auto on the svg so a narrower phone scales it proportionally instead
+      of reintroducing the same squash below 300px of content box. */
   .radarwrap{display:flex;justify-content:center;margin-bottom:8px}
+  .radarwrap svg{max-width:100%;height:auto}
   .attr{display:flex;align-items:center;gap:12px;margin-bottom:10px}
   .attr .an{font-family:'Archivo';font-weight:700;font-size:12px;width:92px;flex-shrink:0;color:#3a352e}
   .attr .abar{flex:1;height:10px;border-radius:5px;background:rgba(0,0,0,0.06);overflow:hidden}
@@ -308,6 +321,14 @@
   /* The Chronicle CTA is the SAME .watchcta component , only the top margin differs, because
      here it sits under the scoreline inside .narrative rather than as a standalone block. */
   .chron-watch{margin-top:16px}
+  /*  THE SEASON CTA HAD 4px ABOVE IT AND 22px BELOW (fixed 2026-09-10). The 4px is the base
+      .watchcta margin, which is right for the Chronicle variant sitting inline under a
+      scoreline and wrong here, where the same 62px block is the ONLY thing in its panel and
+      sits directly under the lede. Measured at 390: lede ended at y47, pill started at y51.
+      18px, not the Chronicle's 16, because the gap below is the panel's own 22px bottom
+      padding and this is the value that reads level against it rather than a value picked
+      to match a different variant's different job. */
+  .season-watch{margin-top:18px}
   .glancegrid{align-items:flex-start}
   .glancebadge{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;padding-left:20px}
   .glancebadge svg{width:74px;height:86px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.3))}
@@ -1141,7 +1162,7 @@
   </div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.1"/><path d="M5.7 16c.5-1.6 1.7-2.5 3.3-2.5s2.8.9 3.3 2.5"/><line x1="15" y1="10.2" x2="18.3" y2="10.2"/><line x1="15" y1="13.6" x2="18.3" y2="13.6"/></svg></div><div class="layer-t">The Profile</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext"><b id="profileLead">&nbsp;</b> <span id="profileIntro">The radar shows his shape; the gradient (red to green) tells you where his game lives.</span></div>
-<div class="radarwrap" id="radarBox"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg><small id="radarNote"></small></div>
+<div class="radarwrap" id="radarBox"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg></div><small id="radarNote"></small>
 <div id="gkPanel" hidden></div>
 <div class="attrtop" id="attrTop"><span>Attribute</span><span>/ 100</span></div>
 <div id="attrBars">

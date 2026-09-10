@@ -230,7 +230,21 @@
   /* the cap is SAFE because the svg is preserveAspectRatio=none and the markers are positioned
      in PERCENT of this box , both stretch together, so they stay on the curve at any height.
      Without it the arc is 450px tall on a wide screen, which dwarfs the section. */
-  .arcstage{position:relative;width:100%;aspect-ratio:100/34;max-height:250px;margin-bottom:2px}
+  /*  THE TRACK IS INSET BY THE MARKER'S OWN HALF-WIDTH (fixed 2026-09-10).
+      The end markers sit at left:3.24% and 96.76% with translateX(-50%), and the chip is
+      28px across (24 + a 2px border each side). Below a track of about 415px, 3.24% is
+      less than the marker's 14px half-width, so its left edge goes NEGATIVE and .foldbody,
+      which is overflow-x:hidden and exactly the track's box, slices it flat. Measured:
+      3px clipped each side at 390, 2px at 430, 1px at 450, clean at 470.
+      IT IS A CONTAINER-WIDTH DEFECT, NOT A PHONE ONE , the same shape SS C records against
+      the card photo, where a viewport-keyed rule guarded a --cw-keyed problem. A narrow
+      desktop column clips it too, so the fix is keyed to the track and not to a breakpoint.
+      Insetting the whole track (svg AND markers together) keeps every marker exactly on the
+      bezier , the svg is preserveAspectRatio=none and stretches with the box, so the curve
+      and the percentage positions move as one. That is why this does NOT touch the marker
+      positions themselves, which the comment below rightly forbids. */
+  .arcstage{--arcmk:28px;position:relative;width:auto;margin:0 calc(var(--arcmk)/2) 2px;
+            aspect-ratio:100/34;max-height:250px}
   .arcsvg{display:block;width:100%;height:100%}
   .arcpath{fill:none;stroke:url(#arcgrad);stroke-width:1.6;stroke-linecap:round}
   /*  THE ARC MARKER HOLDS ITS TAG'S MARK, so it went from a 15px dot to a 24px chip ,
@@ -944,8 +958,31 @@
   body.light .gk3 .lbar span{background:rgba(28,27,26,.15)}
   .gk3 .lbar span.t{background:rgba(232,184,75,.75)}
   body.light .gk3 .lbar span.t{background:rgba(176,128,20,.82)}
-  .gk3 .lmk{position:absolute;top:0;bottom:0;width:2px;background:var(--gold)}
-  .gk3 .lmk b{position:absolute;top:-1px;left:7px;font-family:'Archivo';font-weight:900;
+  /*  THE TICKS STAY. ALL 1,920 OF THEM. ONLY THE MARKER CHANGES (2026-09-10).
+      At 390 the bar is 309px, so each season is 0.161px and the strip renders as one wash
+      with the gold head an invisible sliver. The temptation was to bin , 96 blocks of 20,
+      or the top 100 , and every version of that fails for the same reason: the figure's
+      subject is FOURTEENTH OF 1,920, and a reader counting 96 or 100 marks recovers a
+      different number. "Each block is 20 seasons" asks them to do arithmetic to get back
+      the fact the panel exists to state. The comment above already settled this , the
+      drawing has to be the data, or it is an illustration of it , and binning makes it an
+      illustration. A rate scale was also built and rejected: it plots 80.4% between 46.9
+      and 88.5, which is a different figure making a different claim.
+      So the wash is correct and stays. What was broken is findability, and that is fixed
+      by the marker alone: a 3px core for the position, under an 8px translucent overlay
+      that gives the eye something to land on.
+      THE OVERLAY IS DELIBERATELY WIDER THAN THE THING IT MARKS AND THAT IS THE ONE PLACE
+      THE GEOMETRY IS BROKEN ON PURPOSE. 8px is about 50 seasons at this width where the
+      truth is 0.16px. It is a pointer, not an extent, which is why it is translucent and
+      unbounded rather than a crisp block a reader could measure , and why the 3px core is
+      kept solid inside it, since the core is the part that is true.
+      No clipping risk at the left end, unlike the arc: .ladder carries 14px of padding at
+      this width and the overlay reaches 12.25px from its edge. Checked, not assumed. */
+  .gk3 .lmk{position:absolute;top:0;bottom:0;width:3px;background:var(--gold);border-radius:2px}
+  .gk3 .lmk::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:8px;
+    transform:translateX(-50%);background:rgba(232,184,75,.34);border-radius:3px}
+  body.light .gk3 .lmk::before{background:rgba(176,128,20,.30)}
+  .gk3 .lmk b{position:absolute;top:-1px;left:9px;font-family:'Archivo';font-weight:900;
     font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);
     white-space:nowrap}
   .gk3 .lax{display:flex;justify-content:space-between;gap:10px;margin:10px 0 0;
@@ -999,10 +1036,22 @@
       at .45, which made a statement about what the platform refuses to draw look like a
       disclaimer. Same size and same ink as the three supporting notes now, separated by the
       same hairline.  */
+  /*  IT IS A FOOTNOTE AND IT NOW LOOKS LIKE ONE (2026-09-10). It carried margin 24 /
+      padding-top 22 / a full-width hairline , character for character the treatment
+      .notes2 .tw uses , so beside three headed notes it read as a fourth note whose
+      header had gone missing. It is not a note; it is the gate the whole section rests on.
+      SEPARATION, NOT A TITLE. The size and ink are deliberately UNCHANGED , c4556a4 took
+      the keeper notes off small print on purpose and shrinking this would walk that back.
+      What changes is the break: more air above, and a SHORT rule instead of the notes'
+      full-width hairline, so the eye reads a different kind of division rather than a
+      missing heading. */
   .gk3 .gatestrip{font-family:'Inter';font-size:14.5px;line-height:1.65;
-    color:rgba(243,237,224,.8);margin:24px 0 0;padding-top:22px;
-    border-top:1px solid rgba(243,237,224,.09);max-width:66ch}
-  body.light .gk3 .gatestrip{color:#3a352e;border-top-color:rgba(28,27,26,.09)}
+    color:rgba(243,237,224,.8);margin:40px 0 0;padding-top:0;
+    border-top:0;max-width:66ch}
+  .gk3 .gatestrip::before{content:'';display:block;width:56px;height:2px;
+    background:rgba(243,237,224,.22);margin-bottom:20px;border-radius:2px}
+  body.light .gk3 .gatestrip{color:#3a352e}
+  body.light .gk3 .gatestrip::before{background:rgba(28,27,26,.20)}
   @media (max-width:720px){
     .gk3 .grid{grid-template-columns:repeat(16,1fr);gap:4px}
     .gk3 .notes2 .tw:nth-child(2) p{font-size:18.5px}
@@ -1014,6 +1063,14 @@
     .gk3 .ceilh{font-size:19px}
     .gk3 .after{font-size:18px}
     .gk3 .fc.res b{font-size:34px}
+    /*  margin-left:auto sits the result cell at the far right of a ONE-LINE row, which is
+        right on a wide screen. .fcount is flex-wrap:wrap, and at this width the three cells
+        need 498px against 309, so the result wraps , and the auto margin travels with it and
+        strands the cell alone on the right, 75px below (row height 49 + the 26px row gap).
+        Measured: computed margin-left was 105.406px, exactly 309 minus the cell's 204.
+        On its own line the auto margin has nothing left to do, so it is dropped and the
+        three figures read down the left as one list. */
+    .gk3 .fc.res{margin-left:0;text-align:left;flex:1 0 100%}
     .gk3 .field{padding:16px 14px}
   }
   /*  THE COVERAGE STRIP , what the Playbook is the vocabulary FOR. It sits above the first
