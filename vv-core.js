@@ -364,6 +364,24 @@
   var CARD_MARKS = false;
   function useCardMarks(on){ CARD_MARKS = (on !== false); }
 
+  /*  STAGE:0 IS LOAD-BEARING, NOT COSMETIC. famClass in renderTagPills is gated on
+      `family in PRIO`, so a family missing from this map renders with NO colour class at
+      all, silently. And prio() falls back to 1 for an unknown family, which would move
+      Wonderkid and The Last Dance out of first place and DROP THEM OFF the card face and
+      rankings rows entirely at max 2-3. Measured: without STAGE here, 1,230 rendered tag
+      lists change across the database; with it, ZERO. AGE is kept at 0 beside it so the
+      two sort identically while any -age rule is still on disk.
+
+      HOISTED OUT OF renderTagPills 2026-09-10 so the Wonder-Tags rows can sort by the SAME
+      map rather than a second copy of it. The strip and the accordion had drifted into two
+      different orders , the strip sorted, the rows did not , so Peak and The Standard sat
+      6th and 7th on the glance and 11th and 12th in the panel that explains them. That is
+      the two-implementations-of-one-rule shape SS C records against eligibility() and the
+      career-stage tags, and the cheapest time to refuse it is before the second copy
+      exists. ONE map, two readers.  */
+  const TAG_PRIO = { AGE:0, STAGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
+  const tagPrio  = f => (f in TAG_PRIO) ? TAG_PRIO[f] : 1;
+
   function renderTagPills(tags, opts){
     if (!Array.isArray(tags) || !tags.length) return '';
     opts = opts || {};
@@ -371,15 +389,8 @@
     const max       = (opts.max != null) ? opts.max : 3;
     const el        = opts.el || 'span';
     const innerWrap = !!opts.innerWrap;
-    /*  STAGE:0 IS LOAD-BEARING, NOT COSMETIC. famClass below is gated on `family in PRIO`,
-        so a family missing from this map renders with NO colour class at all, silently.
-        And prio() falls back to 1 for an unknown family, which would move Wonderkid and
-        The Last Dance out of first place and DROP THEM OFF the card face and rankings
-        rows entirely at max 2-3. Measured: without STAGE here, 1,230 rendered tag lists
-        change across the database; with it, ZERO. AGE is kept at 0 beside it so the two
-        sort identically while any -age rule is still on disk.  */
-    const PRIO = { AGE:0, STAGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
-    const prio = f => (f in PRIO) ? PRIO[f] : 1;
+    const PRIO = TAG_PRIO;
+    const prio = tagPrio;
     return tags
       .map((t, i) => ({ t, i }))                                   // keep original index for stable tiebreak
       .sort((a, b) => prio(a.t.family) - prio(b.t.family) || a.i - b.i)
@@ -3126,15 +3137,51 @@
       Everything now reads VVMarks.tag() on the tag's own name, through vvMark(), which fails
       soft to '' if vv-marks.js is missing or stale. All 20 TAG_DEFS names and both prestige
       values were confirmed present in the mark set BEFORE the swap, so nothing renders blank. */
+  /*  SORTED BY TAG_PRIO, AND IT EMITS THE FAMILY , BOTH ADDED 2026-09-10.
+
+      THE ORDER. renderTagPills sorts the glance strip by TAG_PRIO and this renderer used to
+      emit source order, so the two lists disagreed on a card carrying both. Measured on
+      Salah 24/25: the strip runs GENERATIONAL, Peak, The Standard, Goal Machine, Clinical,
+      Provider, Playmaker, Iron Man; the rows ran Generational, Goal Machine, Clinical,
+      Provider, Playmaker, Iron Man, Peak, The Standard. Peak and The Standard are 6th and
+      7th above and 11th and 12th below, in the panel whose whole job is to explain the
+      thing above it. Reading TAG_PRIO rather than re-declaring it is the point , see the
+      comment on the map.
+      The prestige row is PREPENDED and never sorted, which matches the strip: renderPrestige
+      is a separate call that callers put in front of renderTagPills' output.
+
+      THE FAMILY. data-fam carries what the renderer already knows and used to throw away, so
+      a surface can key off it without re-deriving the family from the tag name. It is DATA,
+      not styling , this renderer is shared with compare.html, whose rows sit on the green
+      .vsect ground where the card's palette would not survive and where SS C deliberately
+      pins the titles neutral. Compare therefore emits the attribute and styles nothing, and
+      card.html supplies the colours for its own cream ground. Honour rows need no attribute:
+      honourRowHTML already marks them .tagrow.honour.  */
   function renderProfileTagRows(tags, prestige){
     var rows=[];
     if(prestige==='Generational' || prestige==='Iconic'){
       var pdef=TAG_DEFS[prestige];
-      if(pdef) rows.push({ icon:vvMark('tag', prestige), name:prestige, one:pdef.oneLiner, full:pdef.def });
+      if(pdef) rows.push({ icon:vvMark('tag', prestige), name:prestige, fam:'PRESTIGE', one:pdef.oneLiner, full:pdef.def });
     }
-    if(Array.isArray(tags)) tags.forEach(function(t){ var def=TAG_DEFS[t.name]; if(def) rows.push({ icon:vvMark('tag', t.name), name:t.name, one:def.oneLiner, full:def.def }); });
+    if(Array.isArray(tags)){
+      tags.map(function(t,i){ return { t:t, i:i }; })                   // original index = stable tiebreak
+        .sort(function(a,b){ return tagPrio(a.t.family) - tagPrio(b.t.family) || a.i - b.i; })
+        .forEach(function(x){
+          var def=TAG_DEFS[x.t.name]; if(!def) return;
+          rows.push({ icon:vvMark('tag', x.t.name), name:x.t.name, fam:x.t.family||'',
+                      one:def.oneLiner, full:def.def });
+        });
+    }
     return rows.map(function(r){
-      return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
+      /*  data-tag mirrors what renderTagPills and renderPrestige already put on the strip
+          pills. Generational and Iconic share family PRESTIGE but are opposite treatments
+          (near-black ground with gold ink against gold ground with near-black ink), so the
+          family alone cannot tell them apart and a surface would otherwise need a third
+          lookup keyed on the tag name , which is exactly the shape of the two icon maps
+          deleted on 2026-09-01. The renderer knows the name; it says the name.  */
+      return '<div class="tagrow"' + (r.fam ? ' data-fam="'+escAttr(r.fam)+'"' : '')
+        + ' data-tag="'+escAttr(r.name)+'"'
+        + ' onclick="this.classList.toggle(\'open\')">'
         + '<div class="tt">' + r.icon + ' <span class="ttl">' + r.name + '</span> <span class="tchev">&#8964;</span></div>'
         + '<div class="td">' + r.one + '</div>'
         + '<div class="tmore">' + r.full + '</div></div>';

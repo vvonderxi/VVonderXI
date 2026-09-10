@@ -359,6 +359,67 @@
   .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-ink);margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
   .wtsec:first-child .wtsechead{margin-top:0}
   .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:var(--gold-ink);margin-top:10px;margin-bottom:2px}
+
+  /*  ── WONDER TAGS CARRY THE STRIP'S COLOUR LANGUAGE (2026-09-10) ──────────────────
+      The glance strip above is colour-coded by family and the panel that explains it was
+      one flat pink for every row, so a reader learned a colour and then met an explanation
+      that ignored it. Four treatments were demoed on Salah 24/25, the worst case on the
+      platform (twelve rows, five families plus prestige, all three sections). This is the
+      one that carries the connection with the least noise: the MARK takes the family
+      colour and the row's text goes to a neutral reading ink, so there is exactly ONE
+      coloured element per row and it is the element the strip already shares.
+
+      WHY NOT THE OTHERS, so this is not re-litigated from taste:
+        - PILLS IN EVERY ROW is perfect fidelity and reads as twelve buttons that are not
+          buttons (the tap target is the whole row). It also moves the strip's white-on-MID
+          3.00 and white-on-DEF 3.89 out of a glanced pill and into read body copy. It is
+          the FALLBACK if this treatment proves too quiet , see the commit message.
+        - FAMILY INK ON THE NAME needs five invented inks, because no pill hue clears 4.5
+          on this ground (ATT 3.91, MID 2.52, DEF 3.26, gold 1.78). Darkened to pass, the
+          Generational ink and the honour ink land on #806529 and #866523 , indistinguishable
+          , so five rows read as one colour where the strip shows a black-and-gold object
+          beside four gold pills. That is the treatment losing the thing it exists to carry.
+        - GROUP HEADERS ONLY is a no-op on two of the three groups (SILVERWARE and
+          INDIVIDUAL HONOURS are both gold and .wtsechead is ALREADY --gold-ink), and every
+          colour a reader must learn lives in the third. Split so one head means one colour,
+          it costs seven heads for twelve rows, four of them groups of one, and grows the
+          panel 14% at 1440 and 33% at 390 , while the rows underneath stay uniformly pink.
+
+      GROUNDS. Measured both themes: every ink in this panel is theme-INDEPENDENT (name
+      #AD0332, prose #3a352e, head #7e5a10, .layer #F0EAD9, identical in dark and light).
+      The only thing that flips is .tagrow's white overlay, 0.03 against 0.60, giving
+      grounds #F0EBDA and #F9F7F0. So one palette serves both themes; the pair below is
+      quoted dark / light and the DARKER one is the harder case.
+
+      THE MARKS ARE NOT TEXT, so they are held to the 3:1 non-text bar, not 4.5, and they
+      are redundant besides , every row writes its name out beside the mark in a 12.60
+      reading ink, which is the same justification the compare A/B identity colours rest on.
+      Two pill hues could not form a recognisable shape at 3:1 on cream and take the
+      smallest correction that does; the rest are the strip's own values, untouched:
+        ATT   #E70443  3.91 / 4.36   strip value
+        DEF   #4A7FE0  3.26 / 3.63   strip value
+        MID   #2A985E  3.06 / 3.41   strip #2FA968 measures 2.52, darkened 10%
+        STAGE #1B5563  6.97 / 7.76   strip value
+        CROSS #46443F  8.15 / 9.07   strip value
+        honours + prestige  var(--gold-ink) #7e5a10  5.21 / 5.80
+      The honour marks take --gold-ink rather than an invented gold so a SILVERWARE mark
+      matches the SILVERWARE head directly above it, which is already that token.  */
+  #wonderTags .tagrow .tt .ttl{color:#2a2620}
+  #wonderTags .tagrow .tt .vvm{width:16px;height:16px;color:#46443F}   /* default: unclassed, never a stray pink */
+  #wonderTags .tagrow[data-fam="ATT"]   .tt .vvm{color:#E70443}
+  #wonderTags .tagrow[data-fam="MID"]   .tt .vvm{color:#2A985E}
+  #wonderTags .tagrow[data-fam="DEF"]   .tt .vvm{color:#4A7FE0}
+  #wonderTags .tagrow[data-fam="STAGE"] .tt .vvm{color:#1B5563}
+  #wonderTags .tagrow[data-fam="CROSS"] .tt .vvm{color:#46443F}
+  #wonderTags .tagrow.honour .tt .vvm,
+  #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .vvm{color:var(--gold-ink)}
+  /*  PRESTIGE KEEPS THE OBJECT, and it is the one row that has to. Its identity is a
+      GROUND (near-black under gold ink, or gold under near-black) rather than a hue, so
+      flattening it to a coloured mark loses it entirely , that is precisely what sank the
+      name-ink option. One row can afford a pill; eleven cannot.
+      flex:0 0 auto because .tagrow .tt .ttl is flex:1, which would stretch the pill across
+      the whole row. Measured in the demo before it was believed. */
+  #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .ttl{flex:0 0 auto;font-size:10.5px;text-transform:uppercase;overflow-wrap:normal}
   .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
   .clubpill:hover{background:rgba(255,255,255,0.1)}
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
@@ -623,15 +684,25 @@
   body.light .seasoncollapse:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
-  #glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+  /*  WIDENED, NOT COPIED (2026-09-10). The Wonder-Tags prestige row wears the same object
+      as the strip's prestige pill, so it reads the SAME declaration block rather than a
+      second copy of the values. SS C records three separate defects from comparing or
+      duplicating CSS by selector; a shared declaration cannot drift by construction.
+      Only the prestige rows take these in the accordion , every other row is plain text
+      with a coloured mark, which is the whole point of the treatment. */
+  #glChips .chtag,
+  #wonderTags .tagrow[data-tag="Generational"] .tt .ttl,
+  #wonderTags .tagrow[data-tag="Iconic"] .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
   #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443)}
   #glChips .chtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968)}
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
   #glChips .chtag-age{background:linear-gradient(90deg,#5A5856,#46443F)}   /* DEAD after the family merge, left in place deliberately */
   #glChips .chtag-stage{background:linear-gradient(90deg,#2F8290,#1B5563)}
   #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
-  #glChips .chtag-prestige-gen{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
-  #glChips .chtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
+  #glChips .chtag-prestige-gen,
+  #wonderTags .tagrow[data-tag="Generational"] .tt .ttl{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
+  #glChips .chtag-prestige-ico,
+  #wonderTags .tagrow[data-tag="Iconic"] .tt .ttl{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
 
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
@@ -1137,8 +1208,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260909a"></script>
-<script src="/vv-core.js?v=20260909a"></script>
+<script src="/vv-marks.js?v=20260910a"></script>
+<script src="/vv-core.js?v=20260910a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
