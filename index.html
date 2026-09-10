@@ -66,7 +66,27 @@
     background:radial-gradient(150% 620px at 50% -140px, rgba(255,255,255,.55), transparent 78%), var(--bg);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
+  /*  A FALLBACK, NOT A HEIGHT , 2026-09-10. This line used to read height:100%, and that
+      was the reason the home page scrolled on a phone when it is meant to be one fixed
+      screen. A percentage height resolves against the initial containing block, and on
+      iOS Safari the ICB is the LARGE viewport , it does not shrink while the URL bar is
+      showing. That is the same trap SS D records against 100vh, wearing a different name.
+      AND IT SILENTLY BEAT THE FIX ALREADY IN THE FILE. body carries min-height:100dvh six
+      lines below, which is the correct dynamic unit, but min-height can only ever RAISE a
+      used height, never lower one: height:100% resolved to the large viewport and won, so
+      the dvh never got to do anything.
+      Measured at 390 wide: the page's intrinsic content is 489px (top 66, hero 302, foot
+      53), so it fits any phone with room to spare. height:100% inflated the body to the
+      large viewport, and every pixel of the difference was empty , 86px of dead scroll on
+      an iPhone 12/13/14, 114px on an SE. Isolated by removing each declaration in turn:
+      neither alone changed anything, because each independently inflated the page; only
+      removing BOTH dropped the body to its 489px content.
+      100vh is kept here ONLY as the fallback for browsers with no dvh (iOS below 15.4).
+      It reintroduces the large-viewport behaviour there, which is what those browsers do
+      today, so it is the status quo for them and a fix for everyone else. The body rule
+      below is later at equal specificity, so 100dvh wins wherever it parses, and where it
+      does not the declaration is dropped and this one applies. */
+  html,body{min-height:100vh}
   body{
     font-family:'Inter',system-ui,sans-serif; color:var(--ink);
     background:

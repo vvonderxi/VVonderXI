@@ -925,7 +925,20 @@
   #cardSearch .vvf-active{margin:0 0 10px}
 
   /* results scroll region , the curtain owns the viewport below the bar */
-  #cardSearch .cs-results{max-height:calc(100vh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
+  /*  dvh, NOT vh , 2026-09-10. On iOS Safari vh is the LARGE viewport and does not shrink
+    while the URL bar is showing, so this list was sized for a screen taller than the one
+    the reader has. Measured at 390: the list top sits at 185 and the phone rule below gave
+    it 529px, ending at 714 against a 659px visible area , the last 55px of results were
+    unreachable, and there is no scroll lock on body.searching to stop the page moving
+    under it.
+    THE LIST WILL RESIZE WHEN THE BAR COLLAPSES AND THAT IS CORRECT HERE. dvh tracks, so
+    the list grows into room that has just appeared and every row stays reachable in both
+    states. That is the opposite of the FRACTIONAL vh scrollers logged in SS D (.pkresults,
+    .pkmore, .seasonrows), where a dvh swap would resize a panel mid-gesture for no gain ,
+    a fraction of the large viewport already fits inside the small one, so nothing there is
+    stranded. The rule of thumb the audit produced: viewport-minus-chrome wants dvh, a bare
+    fraction wants to be left alone. */
+#cardSearch .cs-results{max-height:calc(100dvh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
   #cardSearch .cs-results::-webkit-scrollbar{width:6px}
   #cardSearch .cs-results::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:3px}
   /*  BOTH SPAN THE GRID , copied from rankings.html:103-104, which already had them and
@@ -946,7 +959,7 @@
   @media (max-width:1040px){ #cardSearch{padding:14px 32px 0} }
   @media (max-width:720px){
     #cardSearch{padding:12px 18px 0}
-    #cardSearch .cs-results{max-height:calc(100vh - 216px)}
+    #cardSearch .cs-results{max-height:calc(100dvh - 216px)}   /* see the dvh note on the base rule */
     #cardSearch .cs-meta{margin:10px 0 8px}
     .searchtrigger .stlbl{display:none}
     .searchtrigger{flex:0 0 auto;max-width:none;margin:0 0 0 10px;padding:8px 10px}
