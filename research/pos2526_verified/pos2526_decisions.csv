@@ -1,0 +1,68 @@
+card_id,api_player_id,player_name,season,league,club,rt,stored_pool,pass1,pass1_conf,pass2,pass2_conf,agreed,decision,reason
+150885,184,H. Kane,2526,BL,Bayern München,92,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130474,1100,E. Haaland,2526,PL,Manchester City,92,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+137015,278,Kylian Mbappé,2526,LL,Real Madrid,89,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+150896,19617,M. Olise,2526,BL,Bayern München,89,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+137014,386828,Lamine Yamal,2526,LL,Barcelona,88,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+163396,47237,L. Suárez,2526,PRT,Sporting CP,88,ST,ST,medium,ST,high,true,CONFIRM,"matches the stored pool, no write"
+175142,161800,C. Tzolis,2526,BPL,Club Brugge KV,88,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+130385,196156,Thiago,2526,PL,Brentford,87,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+150894,2489,L. Díaz,2526,BL,Bayern München,87,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+151149,26475,D. Undav,2526,BL,VfB Stuttgart,87,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+136992,50048,V. Muriqi,2526,LL,Mallorca,87,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+186983,163004,E. Lepaul,2526,L1,Rennes,86,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+144132,217,Lautaro Martínez,2526,SA,Inter,86,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+169403,340153,M. Godts,2526,ERE,Ajax,86,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+130300,19366,O. Watkins,2526,PL,Aston Villa,86,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130490,10329,João Pedro,2526,PL,Chelsea,86,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+130364,18746,M. Gibbs-White,2526,PL,Nottingham Forest,86,Winger,CAM,high,CAM,medium,true,HELD,agreed change but split confidence (high/medium)
+157001,897,M. Greenwood,2526,L1,Marseille,85,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+169276,72155,A. Ueda,2526,ERE,Feyenoord,85,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+180727,53535,E. Shomurodov,2526,TR,Başakşehir,85,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+130413,19428,J. Bowen,2526,PL,West Ham,85,Winger,Winger,medium,Winger,medium,true,CONFIRM,"matches the stored pool, no write"
+137022,762,Vinícius Júnior,2526,LL,Real Madrid,85,ST,Winger,high,Winger,high,true,WRITTEN,both passes agree at high confidence
+150901,715,C. Baumgartner,2526,BL,RB Leipzig,85,CAM,CAM,medium,CAM,medium,true,CONFIRM,"matches the stored pool, no write"
+144072,350037,N. Paz,2526,SA,Como,85,CM,CAM,high,CAM,high,true,WRITTEN,both passes agree at high confidence
+130295,19170,M. Rogers,2526,PL,Aston Villa,85,CM,CAM,high,CAM,high,true,WRITTEN,both passes agree at high confidence
+130489,5996,E. Fernández,2526,PL,Chelsea,85,CDM,CM,high,CM,medium,true,HELD,agreed change but split confidence (high/medium)
+144141,31010,F. Dimarco,2526,SA,Inter,85,Winger,FB,high,FB,high,true,WRITTEN,both passes agree at high confidence
+137151,180496,G. Mikautadze,2526,LL,Villarreal,84,ST,ST,medium,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130355,19221,H. Wilson,2526,PL,Fulham,84,Winger,Winger,medium,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+144137,21509,M. Thuram,2526,SA,Inter,84,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+137005,931,Ferran Torres,2526,LL,Barcelona,84,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+130520,747,Casemiro,2526,PL,Manchester United,83,CDM,CDM,medium,CDM,medium,true,CONFIRM,"matches the stored pool, no write"
+137169,181421,A. Ezzalzouli,2526,LL,Real Betis,83,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+130310,10135,Bruno Guimarães,2526,PL,Newcastle,83,CM,CM,high,CM,high,true,CONFIRM,"matches the stored pool, no write"
+150914,513776,Y. Diomande,2526,BL,RB Leipzig,83,Winger,Winger,medium,Winger,medium,true,CONFIRM,"matches the stored pool, no write"
+180817,15812,P. Onuachu,2526,TR,Trabzonspor,83,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+163312,36798,V. Pavlidis,2526,PRT,Benfica,83,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+175162,287923,N. Tresoldi,2526,BPL,Club Brugge KV,82,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+144287,903,S. McTominay,2526,SA,Napoli,82,CDM,CM,medium,CM,high,true,HELD,agreed change but split confidence (medium/high)
+150932,726,A. Kramarić,2526,BL,1899 Hoffenheim,82,Winger,CAM,medium,ST,medium,false,HELD,passes disagree: CAM vs ST
+130281,19281,A. Semenyo,2526,PL,Bournemouth,82,CM,Winger,high,Winger,high,true,WRITTEN,both passes agree at high confidence
+137108,521,R. Lewandowski,2526,LL,Barcelona,81,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130273,174565,H. Ekitike,2526,PL,Liverpool,81,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+151118,21393,S. Guirassy,2526,BL,Borussia Dortmund,81,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+180896,746,Marco Asensio,2526,TR,Fenerbahçe,81,Winger,CAM,medium,CAM,medium,true,HELD,agreed change but split confidence (medium/medium)
+136901,1697,Pablo Fornals,2526,LL,Real Betis,81,CM,CM,medium,CM,medium,true,CONFIRM,"matches the stored pool, no write"
+150916,794,P. Schick,2526,BL,Bayer Leverkusen,81,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130419,2413,Richarlison,2526,PL,Tottenham,81,ST,ST,medium,ST,high,true,CONFIRM,"matches the stored pool, no write"
+137075,47323,Mikel Oyarzabal,2526,LL,Real Sociedad,81,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+137008,1496,Raphinha,2526,LL,Barcelona,81,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+130539,18979,V. Gyökeres,2526,PL,Arsenal,81,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+169344,37749,J. Veerman,2526,ERE,PSV Eindhoven,81,CDM,CM,high,CM,high,true,WRITTEN,both passes agree at high confidence
+151152,128533,J. Leweling,2526,BL,VfB Stuttgart,80,CM,Winger,high,Winger,high,true,WRITTEN,both passes agree at high confidence
+130581,148099,K. Dewsbury-Hall,2526,PL,Everton,80,CM,CAM,medium,CM,medium,false,HELD,passes disagree: CAM vs CM
+136854,47348,Borja Iglesias,2526,LL,Celta Vigo,80,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130266,306,Mohamed Salah,2526,PL,Liverpool,80,Winger,Winger,high,Winger,high,true,CONFIRM,"matches the stored pool, no write"
+130328,1469,D. Welbeck,2526,PL,Brighton,80,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+136790,47181,Toni Martínez,2526,LL,Alaves,80,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+144334,1640,H. Çalhanoğlu,2526,SA,Inter,80,CDM,CDM,high,CDM,high,true,CONFIRM,"matches the stored pool, no write"
+137160,9971,Antony,2526,LL,Real Betis,80,CM,Winger,high,Winger,high,true,WRITTEN,both passes agree at high confidence
+137021,756,F. Valverde,2526,LL,Real Madrid,80,FB,CM,medium,CM,medium,true,HELD,agreed change but split confidence (medium/medium)
+137039,46746,A. Budimir,2526,LL,Osasuna,80,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+144399,249,D. Malen,2526,SA,AS Roma,80,ST,ST,low,ST,low,true,HELD,"low confidence, and a confirm , no write needed"
+130288,368030,E. Kroupi,2526,PL,Bournemouth,80,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+163411,20867,Y. Begraoui,2526,PRT,Estoril,80,ST,ST,medium,ST,medium,true,CONFIRM,"matches the stored pool, no write"
+144363,288006,R. Højlund,2526,SA,Napoli,80,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
+130613,18766,D. Calvert-Lewin,2526,PL,Leeds,80,ST,ST,high,ST,high,true,CONFIRM,"matches the stored pool, no write"
