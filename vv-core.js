@@ -4464,6 +4464,45 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       wonderkidA: (ageA != null && ageA <= 21 && va >= 82), wonderkidB: (ageB != null && ageB <= 21 && vb >= 82) };
   }
 
+  /*  ══ THE DISPLAY DECISION, AFTER THE MODEL HAS ANSWERED , PATH B (2026-09-11) ═════════
+      verdictContext runs BEFORE the request and can only read the two scores, so for a pair
+      the Index cannot separate it returns winner 'tie' , correctly, because at that moment
+      nothing has decided. Under Path B the model then judges the pairing on the rest of the
+      record and the server returns the winning card_id, verified against the pair.
+      THIS FOLDS THAT ANSWER BACK INTO THE SAME CONTEXT OBJECT, which is the whole point:
+      the crown, the card's gold ring, the tie pill, the tag chip and the share frame then
+      read ONE decision instead of each re-deriving a winner from the rt gap. Four surfaces
+      deriving the same thing four times is how they come to disagree, and here they would
+      disagree in the one direction that matters , the gap says 'tie' and the verdict beside
+      it names a winner.
+      IT NEVER OVERTURNS THE INDEX. On a SEPARATED pair the engine's winner stands and a
+      disagreeing id is ignored: the score line renders that gap underneath, so a crown on
+      the lower number would contradict the page. On an exact TIE nothing was asked of the
+      model. Only the 'inside' state is Path B's.
+      A NULL ID IS A DECLINE, and a decline leaves the context exactly as it was.  */
+  function applyVerdictOutcome(ctx, winnerCardId, A, B){
+    if (!ctx) return ctx;
+    const out = Object.assign({}, ctx, { decidedBy: (ctx.winner === 'A' || ctx.winner === 'B') ? 'engine' : null });
+    if (ctx.separation !== 'inside') return out;
+    const id = (winnerCardId == null) ? NaN : Number(winnerCardId);
+    if (!Number.isFinite(id)) return out;
+    const side = (id === Number(A && A.card_id)) ? 'A' : (id === Number(B && B.card_id)) ? 'B' : null;
+    if (!side) return out;
+    out.winner = side; out.decidedBy = 'ai';
+    /*  THE TAG FOLLOWS THE SAME DECISION, because the one it had contradicts a crown. An
+        inside pair floors on 'the_debate', whose blurb reads "so close it won't end the
+        argument" , printed beside a badge naming a winner, on the same row.
+        THE AGE RULE IS THE ONE ALREADY WRITTEN ABOVE, not a new one: an age tag may headline
+        only where the pairing was DECIDED and the younger season is the one that won. That
+        second condition was untestable while nothing decided an inside pair. It is testable
+        now, so the rule finally applies where it was always meant to.
+        OTHERWISE 'photo_finish', which is the only ladder tag that is TRUE of this state:
+        near-identical scores, one judged ahead at the line. It claims no margin, which
+        matters , every other ladder tag names one, and the Index has just said it cannot.  */
+    out.floorTag = (ctx.ageTags && ctx.ageTags[0] && ctx.younger === side) ? ctx.ageTags[0] : 'photo_finish';
+    return out;
+  }
+
   // ── Expose ────────────────────────────────────────────────────────────
   // ── SHARED SEARCH , single source for rankings.html + Compare picker (was duplicated in both) ──
   //  vvNorm         : fold accents + lowercase (matches the DB player_name_norm / team_name_norm charset).
@@ -6337,7 +6376,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
-                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
+                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
                 bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,

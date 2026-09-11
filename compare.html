@@ -1244,13 +1244,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260911b"></script>
+<script src="/vv-marks.js?v=20260911c"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260909a"></script>
-<script src="/vv-core.js?v=20260911b"></script>
+<script src="/vv-core.js?v=20260911c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1881,6 +1881,10 @@ body.light .pkmsub{color:var(--ink-soft)}
      reproduce. The tag is mapped through verdictShareName because three of the fourteen
      have a share-only display name (see §C: VAR Close Call, The Complete Player, The League
      Tips The Balance) , that lookup exists precisely for text leaving the page. */
+  /*  THE LIVE VERDICT OUTCOME FOR THIS PAIRING , set when the verdict resolves and cleared
+      with the pairing. Script-scoped on purpose: §C records that window.X and a script-scoped
+      binding are different bindings, and every reader of this is in this same block.  */
+  var VV_OUTCOME=null;
   function vvLedgerSpec(){
     if(!CMP_A||!CMP_B||CMP_A.vv==null||CMP_B.vv==null) return null;
     var tagEl=document.querySelector('.verdict .vtag.gold');
@@ -1923,13 +1927,20 @@ body.light .pkmsub{color:var(--ink-soft)}
       for(var k3 in VT3){ if(VT3[k3]&&(VT3[k3].name===tag||VVCore.verdictShareName(VT3[k3])===tag)){
         line=String(VT3[k3].blurb||'').split(/(?<=\.)\s/)[0]||''; break; } }
     }
-    /* THE WINNER TRAVELS WITH THE SPEC. verdictContext applies the age tiebreaker, so this
-       is NOT "whichever vv is higher" , at a gap of <=2 with >=4 years between them the
-       younger card wins on a LOWER score. The share frame marks whatever this says, which is
-       the whole point: a reader of the image sees only two numbers and would otherwise read
-       the higher one as the winner, and be wrong exactly when the verdict is interesting. */
-    var _w=VVCore.verdictContext({vv:CMP_A.vv,season_age:CMP_A.season_age},
-                                 {vv:CMP_B.vv,season_age:CMP_B.season_age});
+    /*  THE WINNER TRAVELS WITH THE SPEC, AND IT IS READ FROM THE DECISION THE PAGE MADE, NOT
+        RE-DERIVED HERE. The share frame marks whatever this says: a reader of the image sees
+        two numbers and would otherwise read the higher one as the winner, and be wrong
+        exactly when the verdict is interesting.
+        IT USED TO CALL verdictContext AGAIN with two bare scores, which is a second derivation
+        of a decision the panel has already made , and under Path B it is a derivation that
+        CANNOT reach the right answer, because the model's verdict is not a function of the
+        two numbers. A pairing the Index cannot separate would have shipped an image marked
+        'tie' beside a headline naming a winner.
+        THE LIVE OUTCOME FIRST, the deterministic context only as a fallback , before a verdict
+        has been generated there is nothing else to read, and that is also the state the tag
+        and the line above fall back to.  */
+    var _w=VV_OUTCOME || VVCore.verdictContext({vv:CMP_A.vv,season_age:CMP_A.season_age,card_id:CMP_A.card_id},
+                                               {vv:CMP_B.vv,season_age:CMP_B.season_age,card_id:CMP_B.card_id});
     return { kind:'compare', a:CMP_A, b:CMP_B, verdictTag:tag, verdictLine:line,
              winner:(_w&&_w.winner)||'tie' };
   }
@@ -2261,6 +2272,20 @@ body.light .pkmsub{color:var(--ink-soft)}
       for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.textContent=paras[j]; ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
   }
+  /*  ONE PLACE THAT CROWNS A CARD, AND IT TAKES THE SIDE IT IS GIVEN.
+      This was three inline lines inside vvGenerateVerdict, run once, before the request ,
+      which was right while the rt gap decided everything and is wrong now that the decision
+      can arrive with the model's answer. Crowning happens twice per pairing now: the engine's
+      answer while the verdict is being written, then the outcome when it lands.
+      IT ALWAYS SETS BOTH CLASSES. Passing 'tie', null, or anything that is not 'A' or 'B'
+      clears the ring from both cards, so the previous pairing's crown can never survive into
+      the next one , which is exactly the bug shape that makes a stale winner look like a
+      live claim.  */
+  function vvSetWinner(side){
+    var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
+    if(ca)ca.classList.toggle('winner',side==='A');
+    if(cb)cb.classList.toggle('winner',side==='B');
+  }
   /* `plain` renders the text as a STATUS LINE rather than a pull-quote: no quotation marks,
      no italic display face. A service outage is not something the platform said, and dressing
      it as a quote is the same error as the card's fallback wearing the Drury italic. */
@@ -2326,7 +2351,15 @@ body.light .pkmsub{color:var(--ink-soft)}
                          clear_edge:'has the clear edge', photo_finish:'takes it by a whisker',
                          var_close:'edges it', the_debate:'edges it' };
         var _verb=(VC && LADDER_WHO[VC.ladder]) || 'edges it';
-        var fb=(VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
+        /*  A PATH B CROWN GETS ITS OWN FALLBACK, BECAUSE THE OTHER TWO PRINT THE SCORES.
+            "Bruno takes it by a whisker , 90 to 88" under a verdict that has just declined to
+            separate 90 from 88 puts the ranking back on the page by the back door, in the one
+            state where the panel deliberately hides its score line. It also must not borrow a
+            ladder verb: every one of them names a margin, and the margin is what the Index
+            could not read. This shows only on the fallback paths , the loading placeholder,
+            a cache miss, an outage , which is where the score-printing version was found.  */
+        var fb=(VC&&VC.decidedBy==='ai') ? (W.surname+' takes it on the record, not on the number')
+             : (VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
                                : (W.surname+' '+_verb+' , '+wv+' to '+lv);
         who.textContent = ai || fb;
       } else {
@@ -2472,8 +2505,8 @@ body.light .pkmsub{color:var(--ink-soft)}
   function vvSetNoVerdict(bothKeepers){
     vvShareAffordance(false);
     // the winner furniture, cleared one by one , each was its own claim
-    var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
-    if(ca)ca.classList.remove('winner'); if(cb)cb.classList.remove('winner');
+    VV_OUTCOME=null;          // nothing decided this pairing, so the share frame must not mark one either
+    vvSetWinner(null);        // the ring, through the one function that owns it
     ['edgeFlagA','edgeFlagB'].forEach(function(id){ var e=document.getElementById(id);
       if(e){ e.classList.remove('ef-show'); e.removeAttribute('data-tip');
              var l=e.querySelector('.eflabel'); if(l) l.textContent=''; } });
@@ -2546,6 +2579,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     vvShareAffordance(true);   // restore , a previous pairing may have hidden it
     var va=+CMP_A.vv||0, vb=+CMP_B.vv||0;
     var VC=VVCore.verdictContext(CMP_A,CMP_B), TAGS=VVCore.VERDICT_TAGS;
+    VV_OUTCOME=VC;   // the engine's answer stands until the verdict lands; cleared of the previous pairing either way
     /*  THE GATE FAILS CLOSED, AND A SILENT FAIL-CLOSED IS STILL A SILENT FAILURE. Without
         vv-margin.js every pairing reads as INSIDE the margin and NOTHING is ever crowned ,
         which looks like a deliberate product decision rather than a missing script. Warn
@@ -2556,17 +2590,35 @@ body.light .pkmsub{color:var(--ink-soft)}
         +'the margin gate is failing CLOSED, so no comparison will crown a winner. '
         +'Check the <script src="/vv-margin.js"> tag and its ?v= token.');
     }
-    var winner=VC.winner;   // post age-tiebreak winner ('A'/'B'/'tie')
-    var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
-    if(ca)ca.classList.toggle('winner',winner==='A'); if(cb)cb.classList.toggle('winner',winner==='B');
+    var winner=VC.winner;   // the ENGINE's answer, and on an inside-margin pair that is 'tie' until the model answers
+    vvSetWinner(winner);
+    /*  PATH B , WHO DECIDES THIS PAIRING, AND WHY THE GATE LIVES HERE. The licence to judge
+        an unseparated pair is granted for OUTFIELD pairs only, and position is a fact this
+        page holds and the API payload does not, so the gate is asserted here and the server
+        defaults closed. The keeper check is re-read rather than inherited from the early
+        return twenty lines above: the licence has to be readable on its own line, and a
+        condition that is true only because of a return somewhere else is the kind of thing a
+        later edit silently breaks.
+        TIE IS NOT PATH B. An exact tie is two identical numbers, not a gap smaller than the
+        error, and the page already has the honest sentence for it.  */
+    var _aiJudge = (VC.separation==='inside') && !_gkA && !_gkB;
     var nameA=CMP_A.surname+' · '+CMP_A.year+' · '+CMP_A.clubname;
     var nameB=CMP_B.surname+' · '+CMP_B.year+' · '+CMP_B.clubname;
     /* "Reading the seasons", plural , this wait is weighing TWO of them, unlike the card. */
     var _waitLab='Reading the seasons';
     vvSetStory(nameA,nameB,null,null,{wait:true,label:_waitLab});
     vvSetVerdict(null,'',winner,va,vb,VC,TAGS[VC.floorTag],null,false,{wait:true,label:_waitLab});   // show deterministic floor tag immediately
-    // eligible tag set for the AI: deterministic floor + context hints (AI may up-rank per CONTEXT>AGE>LADDER)
-    var eligKeys=[VC.floorTag].concat(VC.contextHints.filter(function(k){return k!==VC.floorTag;}));
+    /*  THE TAG MENU IS WHAT THE MODEL MAY ADD, NOT WHAT IT DECIDES , and under Path B that
+        distinction becomes load-bearing. Thirteen of the fourteen tags are derived from the
+        gap, and on an unseparated pair the gap is the one thing the platform has just said it
+        cannot read. So the ladder half is set from the model's own verdict afterwards, by
+        VVCore.vvApplyVerdictOutcome, and the model is offered the CONTEXT tags only , the
+        ones that describe the SHAPE of a pairing rather than the size of a margin. It may
+        return none, and often will.
+        EVERY OTHER STATE IS UNCHANGED: the deterministic floor first, context hints after,
+        up-ranked per CONTEXT > AGE > LADDER.  */
+    var eligKeys=_aiJudge ? VC.contextHints.slice()
+                          : [VC.floorTag].concat(VC.contextHints.filter(function(k){return k!==VC.floorTag;}));
     function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
     /* THE SAME ENRICHED BLOCK THE CARD SENDS, via VVCore.vvAIStats, so one card cannot look
        like two different players across two surfaces. Serialised compactly because this is a
@@ -2620,8 +2672,19 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(a.era) b.push(a.era);
       return b.length? '; '+b.join('; ') : ''; }
     function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+(c.vv!=null&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c)+aiBlock(c); }
+    /*  ONE SPEC PER STATE, AND THEY NO LONGER OVERLAP. The `who` instruction used to send the
+        "THERE IS NO WINNER TO NAME" paragraph AND the "Name the winner" paragraph in the same
+        prompt on every unseparated pairing , a conditional prepend followed by an
+        unconditional one , so the model was told both things and picked. Found while making
+        the crowning case work; it was a defect in the tie case too.  */
+    var _tagSpec, _whoSpec;
     var tagMenu=eligKeys.map(function(k){var t=TAGS[k];return '- '+k+' ("'+t.name+'"): '+t.blurb;}).join('\n');
-    var toneNote={tie:'a dead heat , the argument-continues register. Two-sided and unresolved, never a limp draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
+    /*  UNDER PATH B THE TONE IS NOT A DEAD HEAT. VC.tone reads 'tie' for every unseparated
+        pair, and the tie register , the argument continuing, unresolved , is the wrong
+        instrument for prose that may crown one of the two. The gap is still tiny, so the
+        register is close and hard-won, not decisive.  */
+    var toneNote=_aiJudge ? 'two seasons the number cannot split. You are judging them on the rest of the record, so write with the authority of someone who has weighed it, not the caution of someone who could not.'
+      : {tie:'a dead heat , the argument-continues register. Two-sided and unresolved, never a limp draw.',razor:'the finest of margins , a coin-flip decided by a sliver.',clear:'a real but contested edge.',decisive:'a decisive gap , write it as settled.'}[VC.tone];
     /*  ── THE RESULT LINE, ONE PER SEPARATION STATE ────────────────────────────────────
         The gate is in VVCore.verdictContext and is keyed on the PAIR'S OWN standard error,
         not on a constant gap. What changes here is what the model is TOLD, and the third
@@ -2629,32 +2692,56 @@ body.light .pkmsub{color:var(--ink-soft)}
     var winNote;
     if(VC.separation==='tie'){
       winNote='GENUINELY LEVEL ('+va+'='+vb+'), identical scores. Do NOT name a winner and do NOT say either "edges it". Give both sides their due and leave it unresolved , the chip beside your line reads "The Debate Lives On". Then do what the INSIDE THE MARGIN rule in your instructions asks: name what each season holds that the other does not, from the record.';
-    } else if(VC.separation==='inside'){
-      /*  THE NUMBERS ARE GIVEN TO THE MODEL AND FORBIDDEN IN THE OUTPUT, deliberately. It
-          has to KNOW the gap is smaller than the error to write the sentence honestly, and
-          it must not hand the reader the ranking the platform has just declined to make.
-          Same shape as the per-card rt_claims licence: state the rule, name the instance.  */
+    } else if(_aiJudge){
+      /*  PATH B , THE MARGIN AS EVIDENCE. The same two numbers, handed over for the opposite
+          purpose. The old branch told the model the gap was smaller than the error and
+          therefore that it must not decide; this tells it the gap is smaller than the error
+          and therefore that the SCORE cannot decide, which is a fact about the score and not
+          about the football. Everything that follows , the honours, the figures with their
+          denominators, the pool placement, the role, the league, the minutes, the age , is
+          evidence carrying no standard error, and the model has all of it.
+          THE TWO SCORES STAY UNPRINTABLE. They are given so the finding can be understood,
+          not repeated: a pair of numbers side by side is a ranking whatever the prose says,
+          and the platform has just declined to make that ranking on the number. The verdict
+          it may now reach rests on the record instead, so it is written from the record.  */
       var _mg=VC.margin!=null?VC.margin.toFixed(1):'?';
-      winNote='INSIDE THE INDEX\'S OWN MARGIN OF ERROR. These two seasons score '+va+' and '+vb+', a gap of '+VC.gap+
-        ', and the VV Score for this pair is measured to about plus or minus '+_mg+' points. The gap is smaller than the error on the numbers, so THE INDEX DOES NOT SEPARATE THEM and neither do you. '+
-        'There is no winner. Do not name one, do not imply one, and do not write "edges it", "shades it", "just ahead", "the better of the two" or any equivalent. '+
-        'DO NOT CITE EITHER VV SCORE OR EITHER BAND ANYWHERE IN YOUR OUTPUT for this pairing , those numbers are given to you so you can understand the finding, not so you can repeat it, and printing them hands the reader a ranking the platform has just refused to make. '+
-        'Now write the ARGUMENT, which is the actual verdict here: name what each season holds that the other does not, from the evidence that carries no error , the honours won, the recorded figures with their denominators, where each sits in his own position pool, the career stage, the club, the league and the age. '+
-        'Two seasons the Index cannot rank are NOT two seasons that are the same. The difference is in KIND, and saying exactly what it is IS the verdict. The chip beside your line reads "The Debate Lives On".';
+      winNote='THE INDEX CANNOT SEPARATE THESE TWO ON THE NUMBER, SO YOU JUDGE THEM ON EVERYTHING ELSE. They score '+va+' and '+vb+
+        ', a gap of '+VC.gap+', and the VV Score for this pair is measured to about plus or minus '+_mg+' points, so the gap sits inside the error. '+
+        'That is a fact about the SCORE and it is given to you as evidence. It does not decide the football, and it is not an instruction to abstain. '+
+        'Weigh the whole record , the honours actually won, the recorded figures with their denominators, where each sits in his own position pool, the role and what that role makes rare, the league, the minutes behind every rate, the career stage and the age , and NAME THE SEASON YOU JUDGE BETTER, leading with the reason rather than the name. '+
+        'Decline only if the record genuinely does not put one above the other without inventing a preference, and if you decline, say exactly what the difference in kind is. '+
+        'DO NOT CITE EITHER VV SCORE OR EITHER BAND ANYWHERE IN YOUR OUTPUT , those numbers are yours to understand the finding, not to print, and printing them hands the reader a ranking the Index has just declined to make. '+
+        'Return your answer in the "winner" field as well: "A", "B", or null if you declined. The badge on the page is drawn from that field.';
+    } else if(VC.separation!=='separated'){
+      /*  UNREACHABLE FROM THIS PAGE TODAY , the only unseparated pair that is not Path B is
+          one with a keeper in it, and a keeper pairing returns before any of this runs. It is
+          written anyway because the branch below assumes a winner exists, and an assumption
+          that holds only because of a return statement two hundred lines away is the kind
+          that survives until the day it does not. The platform declines rather than crowns.  */
+      winNote='THE INDEX DOES NOT SEPARATE THESE TWO. There is no winner to name. Do not name one, do not imply one, and do not cite either VV score. Say what each season holds that the other does not, from the record.';
     } else { var wName=(winner==='A'?CMP_A:CMP_B).surname, wv=(winner==='A'?va:vb), lv=(winner==='A'?vb:va);
       winNote='Player '+winner+' ('+wName+') takes the edge, '+wv+' to '+lv+'. The gap clears the Index\'s own margin of error for this pair ('+(VC.margin!=null?VC.margin.toFixed(1):'?')+' points), so this one IS separated and you may say so plainly. Explain why; do not overturn the engine.'; }
-    var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag, who). p1 = Player A, p2 = Player B.\n'
+    if(_aiJudge){
+      _tagSpec = eligKeys.length
+        ? 'VERDICT TAG , OPTIONAL HERE, and it is not where your verdict goes. The platform sets the headline tag from the verdict you reach. Return "tag" as one of these keys ONLY if it clearly describes this pairing, and omit the field otherwise:\n'+tagMenu+'\n'
+        : 'VERDICT TAG , omit the "tag" field for this pairing. The platform sets it from your verdict.\n';
+      _whoSpec = '"who" , the headline shown beside the tag chip, max ~14 words, a headline not a sentence. If you named a season, it names that season and the reason in the same breath. If you declined, it says what the argument between them is about. It must agree with your "winner" field, and it must not contain either VV score.';
+    } else {
+      _tagSpec = 'VERDICT TAG , choose EXACTLY ONE key from this list (default to the FIRST; up-rank to a later one ONLY if it clearly fits better):\n'+tagMenu+'\n'
+               + 'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.\n';
+      _whoSpec = (VC.separation!=='separated')
+        ? '"who" , the headline shown beside the tag chip. THERE IS NO WINNER TO NAME, so this is NOT a winner headline: it is one short line, max ~14 words, saying what the two seasons ARE, or what the argument between them is about. It must not name a winner, must not rank them, and must not contain either VV score. "Two ways to be the best forward in Europe" is the shape; "Salah edges it" is not.'
+        : '"who" , the winner HEADLINE shown beside the tag chip. Write it in the register of the chosen tag and the tone above: a decisive gap reads decisive and settled, the finest of margins keeps "edges it" restraint, a tie reads as the argument continuing. It MUST NOT contradict the tag. Name the winner (unless the Result line says genuinely level) and give the REASON in a few words. Do NOT write either VV score or any scoreline , the UI renders the numbers directly beneath your line, so repeating them prints them twice. Max ~14 words, a headline not a sentence.';
+    }
+    var content='Compare these two player-seasons and return the VV Verdict JSON (keys: p1, p2, h2h, verdict, tag, who, winner). p1 = Player A, p2 = Player B.\n'
       +'Player A: '+line(CMP_A,VC.wonderkidA)+'\n'
       +'Player B: '+line(CMP_B,VC.wonderkidB)+'\n'
       +'Result: '+winNote+'\n'
       +'Tone: '+toneNote+'\n'
-      +'VERDICT TAG , choose EXACTLY ONE key from this list (default to the FIRST; up-rank to a later one ONLY if it clearly fits better):\n'+tagMenu+'\n'
-      +'Return "tag" as one of those keys verbatim. Match the prose to the chosen tag and the tone.\n'
-      +(VC.separation!=='separated'
-        ? '"who" , the headline shown beside the tag chip. THERE IS NO WINNER TO NAME, so this is NOT a winner headline: it is one short line, max ~14 words, saying what the two seasons ARE, or what the argument between them is about. It must not name a winner, must not rank them, and must not contain either VV score. "Two ways to be the best forward in Europe" is the shape; "Salah edges it" is not.\n'
-        : '')
-      +'"who" , the winner HEADLINE shown beside the tag chip. Write it in the register of the chosen tag and the tone above: a decisive gap reads decisive and settled, the finest of margins keeps "edges it" restraint, a tie reads as the argument continuing. It MUST NOT contradict the tag. Name the winner (unless the Result line says genuinely level) and give the REASON in a few words. Do NOT write either VV score or any scoreline , the UI renders the numbers directly beneath your line, so repeating them prints them twice. Max ~14 words, a headline not a sentence.';
+      +_tagSpec
+      +_whoSpec;
     var body={ messages:[{role:'user',content:content}], max_tokens:1024 };
+    if(_aiJudge) body.judge='ai';   // asks api/analyse.js for the Path B system prompt; absent means the prohibiting one
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
       body.cardIdA=idA; body.cardIdB=idB;
@@ -2688,9 +2775,22 @@ body.light .pkmsub{color:var(--ink-soft)}
         var v;
         if(data && data.verdict){ v=data.verdict; }                       // normalized (cache hit or freshly cached)
         else { var text=(data&&data.content&&data.content[0]&&data.content[0].text)||''; text=text.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim(); v=JSON.parse(text); }
+        /*  THE DECISION ARRIVES WITH THE PROSE, AND EVERYTHING DOWNSTREAM READS IT FROM ONE
+            PLACE. winner_card_id is the id the SERVER verified against this pair , the model
+            answers "A" or "B" and never an id, and a decline or a failed check both arrive as
+            null, which leaves the pairing exactly as the engine left it.
+            IT IS ON BOTH SERVER PATHS, a cache hit included, so a second visit to the same
+            pairing crowns the same card as the first.  */
+        var OUT=VVCore.vvApplyVerdictOutcome(VC, data && data.winner_card_id, CMP_A, CMP_B);
+        VV_OUTCOME=OUT;
+        vvSetWinner(OUT.winner);
         vvSetStory(nameA,nameB,v.p1||'',v.p2||'');
-        var chosen=(v.tag&&eligKeys.indexOf(v.tag)>=0)?v.tag:VC.floorTag;   // validate AI tag vs eligible set; else deterministic floor
-        vvSetVerdict(v.verdict||'',v.h2h||'',winner,va,vb,VC,TAGS[chosen],v.who);
+        /*  THE TAG READS THE SAME DECISION. The AI may only UP-RANK to a context tag; the
+            ladder and age half comes from OUT.floorTag, which is derived from the outcome
+            rather than from the gap. On every non-Path-B pairing this is the identical
+            result: OUT.floorTag is VC.floorTag, and the floor was the first key offered.  */
+        var chosen=(v.tag&&VC.contextHints.indexOf(v.tag)>=0)?v.tag:OUT.floorTag;
+        vvSetVerdict(v.verdict||'',v.h2h||'',OUT.winner,va,vb,OUT,TAGS[chosen],v.who);
       })
       .catch(function(e){
         console.error('verdict generation failed:', e&&e.message);
@@ -2704,6 +2804,10 @@ body.light .pkmsub{color:var(--ink-soft)}
            verdict tag and the scores survive an outage. Only the prose is missing, and
            only the prose is disclaimed. */
         var msg='The written verdict is unavailable right now.';
+        /*  THE ENGINE'S ANSWER IS WHAT SURVIVES AN OUTAGE, WHICH ON A PATH B PAIRING MEANS NO
+            CROWN. That is the honest state: the only thing that could have decided this
+            pairing is the verdict that failed to arrive.  */
+        VV_OUTCOME=VC; vvSetWinner(VC.winner);
         vvSetStory(nameA,nameB,'',''); vvSetVerdict(msg,'',winner,va,vb,VC,TAGS[VC.floorTag],null,true);
       });
   }

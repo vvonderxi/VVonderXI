@@ -161,7 +161,7 @@ async function callClaude(userPrompt, attempt = 0) {
 
   // canonical order: A is always the LOWER card_id, so rt_a/rt_b map straight
   // through with no swap , the same trap analyse.js handles via `swapped`.
-  const pairs = [];
+  let pairs = [];   // let, not const , the Path B filter below rebinds it
   for (let i = 0; i < cards.length; i++)
     for (let j = i + 1; j < cards.length; j++)
       pairs.push({ A: cards[i], B: cards[j], key: cards[i].card_id + '-' + cards[j].card_id });
@@ -178,12 +178,27 @@ async function callClaude(userPrompt, attempt = 0) {
     if (r.cache_version !== verdictVersionFor(VVCore.vvPayloadRev([A, B]))) return false;
     return r.rt_a === (+p.A.vv || 0) && r.rt_b === (+p.B.vv || 0);
   };
+  /*  ── PATH B PAIRS ARE NOT PRE-WARMABLE FROM HERE , 2026-09-11 ──────────────────────
+      A pair the Index cannot separate is now generated under a DIFFERENT system prompt
+      (VERDICT_SYSTEM_JUDGE, selected by judge:'ai' from compare.html), and therefore under a
+      different cache_version. This script mirrors the ENGINE path: it sends the prohibiting
+      prompt and stamps the base version, so a row it wrote for such a pair would be a
+      PERMANENT MISS , generated, paid for, and never served, which is the exact failure the
+      composed-version note below was written about.
+      SKIPPED RATHER THAN RE-IMPLEMENTED. Warming them properly means sending the other
+      prompt and stamping the other version, and the pairs most worth warming are exactly
+      these, so it is worth doing , but deliberately, with its own flag, not as a silent
+      branch inside a script whose whole design is to mirror the live client exactly.  */
+  const pathB = pairs.filter(p => VVCore.verdictContext(p.A, p.B).separation === 'inside');
+  const pathBKeys = new Set(pathB.map(p => p.key));
+  pairs = pairs.filter(p => !pathBKeys.has(p.key));
   const cachedFresh = pairs.filter(isFresh);
   let todo = pairs.filter(p => !isFresh(p));
   const stale = todo.filter(p => byKey.has(p.key)).length;
   if (LIMIT) todo = todo.slice(0, LIMIT);
 
   console.log(`  pool rt>=${THRESHOLD}: ${cards.length} cards -> ${pairs.length} pairs`);
+  console.log(`  inside the margin, generated live under the Path B prompt (skipped): ${pathB.length}`);
   console.log(`  already cached fresh (skipped): ${cachedFresh.length}`);
   console.log(`  stale/unstamped rows to refresh: ${stale}`);
   console.log(`  to generate: ${todo.length}${LIMIT ? `  (--limit ${LIMIT})` : ''}\n`);

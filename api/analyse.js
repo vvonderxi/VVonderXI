@@ -189,7 +189,7 @@ OUTPUT FORMAT:
 You respond ONLY with valid JSON. No markdown. No code blocks. No preamble. No explanation outside the JSON.
 
 Required format:
-{"p1": "...", "p2": "...", "h2h": "...", "verdict": "...", "tag": "...", "who": "..."}
+{"p1": "...", "p2": "...", "h2h": "...", "verdict": "...", "tag": "...", "who": "...", "winner": "A"}
 
 OUTPUT LENGTH:
 - p1: 3-4 sentences, split into 2 short paragraphs (blank line between). Club, role, VV Tags, what this season meant. Precise and poetic.
@@ -197,12 +197,73 @@ OUTPUT LENGTH:
 - h2h: 2-3 sentences. The real argument. What does context change?
 - verdict: 2-3 sentences. Authoritative. Final. One quotable closing sentence.
 - tag: when the user prompt provides a VERDICT TAG list, return the single chosen KEY verbatim (one of the provided keys, nothing else). Default to the first key; up-rank only if another clearly fits better. If no tag list is provided, omit this field.
+- winner: WHICH SEASON YOU JUDGE BETTER , the string "A", the string "B", or null. THIS IS A MACHINE FIELD AND IT NEVER APPEARS IN YOUR PROSE. It is how the platform knows which card to crown, so it must agree with what you actually wrote: crowning one season in the prose and returning the other, or null, puts a badge over the season you argued against. Read the Result line for which of three things it asks. If the Index has already decided, return that winner. If it says there is no winner to name, return null. If it asks YOU to judge, return the season you named, or null if you declined. Never return a name, a score, a card id or a sentence here.
 - who: ONE short winner headline, max ~14 words, in the REGISTER OF THE CHOSEN TAG and the TONE given in the prompt. This is a headline, not prose. The margin must MATCH the words: a decisive gap reads decisive and settled; the finest of margins keeps the restraint of "edges it"; a tie reads as unresolved, the argument continuing, never a flat draw. Name the winner and include BOTH VV Scores as passed. If AGE tipped a coin-flip, lead with the younger-age feat. Do NOT write "edges it" for a decisive gap. If no verdict tag list is provided, omit this field.
 WHEN ONE SIDE IS A GOALKEEPER, SAY SO RATHER THAN WRITING AROUND IT. A save rate and a goal tally are not the same kind of evidence and the two are not like-for-like. State plainly, once, that the pair are measured on different evidence, in the same register as a measurement boundary: it is a limit of what we record, not a hedge and not a criticism of either player. Do not manufacture a common axis, do not rank them as though the numbers were comparable, and do not quietly favour the outfielder because his figures are easier to narrate. Note also that a goalkeeper carries NO SCORE AT ALL on this platform , there is no rt in a keeper payload and none may be inferred. Where the keeper's evidence_status is measured you are given a save rate with its standard error and a percentile BAND; quote the band as a range and never as a point, and do not use it to rank him against the outfielder or against anyone else.
 
 A SAVE-RATE SERIES IS NOT A GOALS SERIES, AND MOST OF ITS MOVEMENT IS NOISE. A keeper's season save percentage carries roughly SIX POINTS of standard error against a competitive range of about TEN, so a swing from 74 to 70 is the same keeper, not a decline. Never narrate a small movement as form or ageing. A null season means shots faced were never recorded, not that he saved nothing, and shot data begins in 2015.
 
 Write tight. Every word earns its place.`;
+
+/*  ══ PATH B , THE SECOND SYSTEM PROMPT, FOR A PAIR THE SCORE CANNOT SEPARATE ═══════════
+    THE PREMISE IS INVERTED, AND ONLY FOR THIS STATE. Everywhere else the VV Score decides
+    and the model explains. Measured twice, independently: 97.0% of pairings at rt 80+ sit
+    inside the pair's own margin of error, so on the pairings people actually make, the
+    number usually cannot decide anything. The prompt above answers that by forbidding the
+    model to decide either, which is honest about the Index and leaves the reader with no
+    verdict at all. Path B hands the model the margin AS EVIDENCE , a fact about the score,
+    not an instruction to abstain , and asks it to judge the football on the record that
+    carries no standard error: the honours, the figures with their denominators, the pool
+    placement, the role, the league, the minutes, the age.
+
+    IT IS A SWAP OF ONE BLOCK, NOT A SECOND PROMPT. Everything else , the voice, the style
+    rules, the naming contract, the stat-block rules, the keeper contract , is the SAME
+    TEXT, read from the same constant. Two hand-maintained prompts would drift, and the
+    drift would be invisible because each looks complete on its own.
+
+    IT IS SELECTED PER REQUEST AND IT DEFAULTS CLOSED. The caller asks for it with
+    judge:'ai', which compare.html sends only when the pair is OUTFIELD and the Index did
+    not separate them. Position is known on the client and not in this payload, so the gate
+    lives where the fact lives; a request that says nothing gets the prohibiting prompt.
+    KEEPER PAIRS THEREFORE KEEP EVERY PROHIBITION, which is the point: there is no keeper
+    score to sit inside a margin, and the keeper contract further down forbids ranking one
+    against an outfielder at all.
+
+    THE SWAP ASSERTS. A .replace() that matches nothing is a silent no-op that would ship
+    the prohibition under the licence's name, so the markers are located explicitly, the
+    result is checked against the input, and the prohibition is grepped for afterwards.
+    Failing here fails every request loudly, which is the correct trade for a prompt that
+    would otherwise be wrong in a way only the prose could reveal.  */
+const THIRD_STATE_START = 'THE THIRD VERDICT STATE';
+const THIRD_STATE_END   = 'READING THE STAT BLOCK';
+const JUDGE_BLOCK = `WHEN THE INDEX CANNOT SEPARATE THEM , YOU STILL HAVE A VERDICT TO REACH.
+
+A VV Score is an estimate and it carries a measured error. Where two seasons sit closer together than that error, the Index does not rank them, and the Result line will tell you so with the figures. THAT IS EVIDENCE HANDED TO YOU, NOT AN INSTRUCTION TO ABSTAIN. It tells you one specific thing: the single number cannot settle this pairing. It tells you nothing about whether the FOOTBALL can.
+
+SO READ EVERYTHING ELSE AND REACH A VERDICT. You have the output and its efficiency, the minutes and the starts behind every rate, the role and what that role makes rare, the league and its strength, the age and the career stage, the five dimensions, the tags, the honours actually won. None of that carries the standard error that stopped the Index. A trophy is a fact. Thirty-six goals from a striker who took few shots is a fact. The ninety-sixth percentile of his own position is a placement the platform computed and stands behind. A verdict built on those is not a guess dressed as a finding, it is what a good judge of football does with a complete record.
+
+NAME THE SEASON YOU JUDGE BETTER, AND SAY WHY IN THE SAME BREATH. Lead with the reason, not the name. The case must be specific enough that a reader who disagrees knows exactly which piece of evidence to argue with.
+
+BE HONEST ABOUT WHAT KIND OF VERDICT IT IS. You are not reporting a measurement, you are making a judgement, and the prose should carry that difference without apologising for it. "The record favours X, and here is the part of it that does" is right. Pretending the Index crowned X is wrong.
+
+NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT. You are given both so you can understand why the Index went quiet; you are not given them to print. Two numbers side by side ARE a ranking to a reader, and the bands do the same work by another route. Your verdict rests on the rest of the record, so write it from the rest of the record. The card faces carry the numbers.
+
+YOU MAY DECLINE, AND SOMETIMES YOU SHOULD. If the two seasons are strong in genuinely different currencies and nothing in the record puts one above the other without inventing a preference, say that, say precisely what the difference in kind is, and leave it unresolved. Declining is a real answer when the evidence earns it. It is NOT the safe default, and it is NOT available merely because the scores are close , close scores are the situation you were asked to judge, not a reason to refuse.
+
+NEVER WRITE A LIMP DRAW. "Both were magnificent" is the failure whether you crown or decline. Two seasons the Index cannot rank are not two seasons that are the same: the difference is in KIND, and naming it exactly is the minimum you owe the reader.
+
+RETURN YOUR ANSWER IN THE "winner" FIELD AS WELL AS IN THE PROSE. "A" or "B" if you judged one better, null if you declined. The badge on the page is drawn from that field, so the two must say the same thing.
+
+`;
+const VERDICT_SYSTEM_JUDGE = (() => {
+  const i0 = VERDICT_SYSTEM.indexOf(THIRD_STATE_START);
+  const i1 = VERDICT_SYSTEM.indexOf(THIRD_STATE_END);
+  if (i0 < 0 || i1 < 0 || i1 <= i0) throw new Error('[vv] Path B: the third-state block was not found in VERDICT_SYSTEM , the markers have moved.');
+  const out = VERDICT_SYSTEM.slice(0, i0) + JUDGE_BLOCK + VERDICT_SYSTEM.slice(i1);
+  if (out === VERDICT_SYSTEM) throw new Error('[vv] Path B: the block swap changed nothing.');
+  if (out.indexOf('NO WINNER, IN ANY FORM') >= 0) throw new Error('[vv] Path B: the ordering prohibition survived the swap.');
+  return out;
+})();
 
 const NOTES_SYSTEM = VERDICT_SYSTEM + `
 
@@ -258,6 +319,32 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
 // Derived AFTER the prompts, so each fingerprint tracks the exact text it governs.
 const VERDICT_VERSION = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM);
 
+/*  ── WHO WON, AND WHO IS ALLOWED TO SAY SO , PATH B (2026-09-11) ───────────────────────
+    TWO SOURCES, NEVER BOTH AT ONCE, chosen by the same flag that chose the prompt.
+      PATH B (aiJudge): the pair sits inside the Index's own margin, the caller sent no
+      winner, and the MODEL's answer is the verdict. It is untrusted input, and three things
+      guard it: it must be the string "A" or "B" (anything else, a card id included, is a
+      decline); "A"/"B" resolve against the ids THIS REQUEST carried, never against anything
+      in the model's text, so a hallucinated id cannot enter the table; and the resolved id
+      must be one of the two in the pair.
+      ENGINE (anything else): the caller computed the winner from a gap the Index does
+      separate, and the model was told not to overturn it. Its "winner" is ignored here,
+      because the score line renders that gap beneath the verdict and a crown on the lower
+      number would contradict the page.
+    A DECLINE AND A FAILED CHECK BOTH LAND ON null, WHICH IS THE SAFE STATE , no crown, no
+    winner_card_id, and the pairing reads as unresolved, which is exactly what shipped before.
+    PURE AND EXPORTED so the guard can be exercised without a key or a network call.  */
+function resolveWinnerId(o) {
+  const idA = Number(o.idA), idB = Number(o.idB);
+  const inPair = (v) => { const n = Number(v); return (Number.isFinite(n) && (n === idA || n === idB)) ? n : null; };
+  if (o.aiJudge) {
+    const w = (typeof o.modelWinner === 'string') ? o.modelWinner.trim().toUpperCase() : null;
+    if (w !== 'A' && w !== 'B') return null;
+    return inPair(w === 'A' ? idA : idB);
+  }
+  return (o.winnerCardId == null) ? null : inPair(o.winnerCardId);
+}
+
 /*  THE VERDICT'S CACHE VERSION IS THE SYSTEM PROMPT *AND* THE PAYLOAD SCHEMA , 2026-09-07.
     VERDICT_VERSION above fingerprints the SYSTEM text, which lives in this file, so it moves
     when the INSTRUCTIONS change. The user prompt is assembled in compare.html, so it moves
@@ -275,7 +362,16 @@ const VERDICT_VERSION = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM);
     form always carries the extra segment.
     IT DOES NOT REPLACE rt_a/rt_b. Those catch a moved SCORE; this catches a changed SHAPE.
     A field being added and a value changing are different events and need different tests. */
-const verdictVersionFor = (rev) => rev ? (VERDICT_VERSION + '-' + rev) : VERDICT_VERSION;
+/*  ONE VERSION PER PROMPT, STILL DERIVED. Path B is a different system prompt, so it is a
+    different cache version by the same rule that governs every other prompt edit here , the
+    fingerprint tracks the text that was actually sent. In practice a pair is one kind or the
+    other and does not flip, but a row must never be served under a prompt that did not write
+    it, and nothing else in the table records which one did.  */
+const VERDICT_VERSION_JUDGE = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM_JUDGE);
+const verdictVersionFor = (rev, judge) => {
+  const base = judge ? VERDICT_VERSION_JUDGE : VERDICT_VERSION;
+  return rev ? (base + '-' + rev) : base;
+};
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
 
 module.exports = async (req, res) => {
@@ -294,7 +390,12 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev } = req.body;
+    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, judge } = req.body;
+    /*  THE PATH B GATE. Asserted by the caller because it depends on a fact this payload does
+        not carry: whether either season is a goalkeeper. compare.html sends it only for an
+        OUTFIELD pair the Index did not separate. Absent or anything else means the prohibiting
+        prompt and the caller's own winner , the gate defaults closed.  */
+    const aiJudge = (judge === 'ai');
 
     // ── Verdict self-cache (server-side, service key). Active only when both
     //    card ids are present + numeric; otherwise this stays a generic proxy. ──
@@ -330,7 +431,7 @@ module.exports = async (req, res) => {
         // A request that supplies no rt cannot check (3), but (1) and (2) still
         // apply, so a legacy row is never served as valid.
         const unstamped = !row || row.rt_a == null || row.rt_b == null || row.cache_version == null;
-        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev);
+        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge);
         const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
         if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
@@ -433,7 +534,7 @@ module.exports = async (req, res) => {
         // ~1,508-token system prompt, identical on every verdict call -> cache it.
         // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
         // below the 1024-token minimum simply won't cache; that is silent + safe.
-        system: [{ type: 'text', text: customSystem || VERDICT_SYSTEM, cache_control: { type: 'ephemeral' } }],
+        system: [{ type: 'text', text: customSystem || (aiJudge ? VERDICT_SYSTEM_JUDGE : VERDICT_SYSTEM), cache_control: { type: 'ephemeral' } }],
         messages
       })
     });
@@ -461,13 +562,14 @@ module.exports = async (req, res) => {
     } catch (e) {
       return res.json(data);   // couldn't parse -> return raw, do not cache garbage
     }
-    const _w = (winnerCardId != null) ? Number(winnerCardId) : NaN;
-    const winnerId = Number.isFinite(_w) ? _w : null;
+    const winnerId = resolveWinnerId({ aiJudge: aiJudge, modelWinner: verdict && verdict.winner,
+                                       winnerCardId: winnerCardId, idA: cardIdA, idB: cardIdB });
+    if (verdict && 'winner' in verdict) delete verdict.winner;   // internal key, never rendered, never cached
     const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
     try {
       await sb.from('verdict_cache').upsert({
         pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev),   // stamps (null rt if caller sent none)
+        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge),   // stamps (null rt if caller sent none)
         verdict: canonical, winner_card_id: winnerId, model: MODEL
       }, { onConflict: 'pair_key', ignoreDuplicates: false });
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
@@ -487,6 +589,8 @@ module.exports.probeModel      = probeModel;
 module.exports.isModelMissing  = isModelMissing;
 module.exports.MODEL           = MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
+module.exports.VERDICT_SYSTEM_JUDGE = VERDICT_SYSTEM_JUDGE;
+module.exports.resolveWinnerId = resolveWinnerId;
 module.exports.NOTES_SYSTEM    = NOTES_SYSTEM;
 module.exports.VERDICT_VERSION = VERDICT_VERSION;
 module.exports.verdictVersionFor = verdictVersionFor;
