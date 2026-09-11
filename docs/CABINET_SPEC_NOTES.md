@@ -71,6 +71,45 @@ pattern. **The glance panel is cream in BOTH themes** , measured `rgb(240,234,21
 light. This is §C's rule verbatim: match the ink to the GROUND, not to `body.light`. Pinned to
 `#2b2924`; measured **12.09 in both themes**, with `.cabyr` at 5.78.
 
+## DEPARTURE FROM THE RULING , PLACEMENT (2026-09-11, Lucas's call)
+
+**The ruling says "Placement: glance, not face, not panel", and the cabinet now sits in its own
+foldable section immediately after Wonder Tags.** That is a panel, and the spec argues against
+one by name: *"A panel buries what is, for the journeyman card, the best thing the platform has
+to say about him."*
+
+Recorded here rather than by editing the spec, which stays verbatim. The reason given for the
+move is SEQUENCE: Wonder Tags has just shown what he won that season, and the cabinet widens the
+same subject to what he had won by then. The two sections now read as one argument, which the
+glance placement could not do.
+
+**What the departure costs, so a later reader can weigh it:** the spec's objection stands
+unanswered. A foldable section is collapsed until tapped, so on a card whose season won nothing
+, Ronaldo 22/23 at rt 30, 18 honours behind a fold , the cabinet is now one tap away instead of
+in view. That is exactly the burying the ruling predicted. It is a deliberate trade, not an
+oversight.
+
+**What did NOT change with it:** the empty case still removes the whole section (the layer
+carries `hidden`, verified `display:none`, height 0, and the other nine sections render), and
+the cabinet still prints no count.
+
+## THREE FURTHER CHANGES, SAME PASS
+
+1. **Pill treatment.** The cabinet renders through the same markup and classes as the season
+   honour chips , `.chip.gold`, `vvMark('honour', type)` , because it is honours and should
+   read as them. The only difference lives inside the pill.
+2. **Prestige order.** Sorted on `HONOUR_META.tier`, which already encodes exactly the
+   Playbook's order (Ballon d'Or, World Cup, UCL, League Champion, Player of the Season, Golden
+   Boot, Top Assists). Read off the existing field rather than a second list , §C's
+   two-sources-for-one-concept rule, and `playbook.html` already holds `HON_RANK` saying the
+   same thing.
+3. **Multiples extend the pill.** Years sit inside it behind a hairline rule rather than on a
+   separate line: `UCL | 2013 2015 2016 2017`.
+
+**There was no 8-line cap to remove.** One was asked for and never built, for the reason it was
+later asked to be removed by: seven honour types means at most seven pills, measured maximum 7
+across all 8,521 non-empty cabinets.
+
 ## DEFERRED, DELIBERATELY
 
 - **Compare has no cabinet yet, and the retirement costs it information in the meantime.** Its

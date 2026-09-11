@@ -3361,15 +3361,51 @@
       docs/CABINET_SPEC_NOTES.md. 85.1% of cards have no cabinet at all, so a consoling
       line would print on six cards in seven. Returns '' when there is nothing to show, and
       the caller hides its container on ''.  */
-  function renderCabinet(items){
+  function renderCabinet(items, opts){
     const list = items || [];
     if(!list.length) return '';
-    return '<div class="cabhead">The Cabinet</div><ul class="cablist">' + list.map(function(h){
-      const yr = h.season_year != null ? String(h.season_year) : '';
-      return '<li class="cabrow"><span class="cabyr">' + escHtml(yr) + '</span>'
-           + '<span class="cabn">' + escHtml(h.label || h.type) + '</span></li>';
-    }).join('') + '</ul>';
+    const cls = (opts && opts.baseClass) || 'chip';
+    /*  THE CABINET IS RENDERED AS HONOUR PILLS , same mark, same gold, same shape as the
+        season honour chips, because it IS honours and should read as them. The one
+        difference is inside the pill: a cabinet pill carries its YEARS.
+
+        FOLDED, ONE PILL PER HONOUR TYPE. Unfolded, a serial winner read as a list rather
+        than a cabinet , five separate "UCL Winner" pills. Folding is not summarising:
+        every year is still printed, which is what the spec requires. What goes is the
+        repetition of the label.
+
+        ORDERED BY HONOUR_META.tier, WHICH IS ALREADY THE PRESTIGE ORDER , Ballon d'Or,
+        World Cup, UCL, League Champion, Player of the Season, Golden Boot, Top Assists,
+        the same ranking the Playbook cabinet uses. Read off the existing field rather than
+        a second list: SS C's two-sources-for-one-concept rule, and a second copy of this
+        order is exactly the kind of pair that drifts.
+
+        NO COUNT AND NO CAP. A count is what the spec forbids outright ("It never counts,
+        ranks, or grades"). A cap cannot fire: seven honour types means at most seven
+        pills, and measured over all 8,521 non-empty cabinets the maximum really is 7.  */
+    const byType = new Map();
+    for(const h of list){
+      const k = h.type || h.label;
+      if(!byType.has(k)) byType.set(k, { type: k, label: h.label || k, oneliner: h.oneliner || h.label || k, years: [] });
+      const y = h.season_year != null ? h.season_year : null;
+      if(y != null && byType.get(k).years.indexOf(y) === -1) byType.get(k).years.push(y);
+    }
+    const pills = Array.from(byType.values());
+    pills.forEach(function(p){ p.years.sort(function(x,y){ return x - y; }); });
+    pills.sort(function(x,y){
+      const tx = (HONOUR_META[x.type] && HONOUR_META[x.type].tier) || 99;
+      const ty = (HONOUR_META[y.type] && HONOUR_META[y.type].tier) || 99;
+      return tx - ty;
+    });
+    return pills.map(function(p){
+      const icon = (opts && opts.mark !== false) ? vvMark('honour', p.type) : '';
+      const label = HONOUR_CHIP_LABEL[p.type] || p.label;
+      const yrs = p.years.length ? '<span class="cabyrs">' + escHtml(p.years.join(' ')) + '</span>' : '';
+      return '<span class="' + cls + ' gold cab" data-tip="' + escAttr(p.oneliner) + '">'
+           + icon + escHtml(label) + yrs + '</span>';
+    }).join('');
   }
+
   // Compact gold honour pills for list/compact rows (rankRowHTML) , text-only, up to 2.
   function renderHonourPillsCompact(honours, opts){
     if(!honours || !honours.has) return '';

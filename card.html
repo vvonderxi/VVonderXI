@@ -700,24 +700,14 @@
   body.light .seasoncollapse{color:var(--ink-soft);border-top-color:rgba(0,0,0,0.06)}
   body.light .seasoncollapse:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
-  /*  THE CABINET , a record, not a chip. The season honours above are saturated gold because
-      they are this season's claim; the cabinet is context, so it is set as quiet dated lines
-      with the year always printed (the spec requires the year on every entry). Distinct
-      treatment is a spec requirement, not taste: "season honours visually distinct (the Wonder
-      Tag treatment stays theirs alone)".  */
-  .cabinet{margin-bottom:14px}
-  .cabhead{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:0.14em;
-    text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
-  .cablist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
-  .cabrow{display:flex;gap:10px;align-items:baseline;font-size:12.5px;line-height:1.35}
-  .cabyr{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;color:var(--ink-soft);
-    min-width:30px;font-variant-numeric:tabular-nums}
-  /*  PINNED, NOT TOKENISED, AND THAT IS SS C's RULE RATHER THAN A PREFERENCE: match the ink
-      to the GROUND, not to body.light. The glance panel is cream in BOTH themes , measured,
-      rgb(240,234,217) either way , so `var(--cream)` here rendered cream on cream at ratio
-      1.00 in dark mode while looking perfect in light. Same family as the --vs-muted trap.
-      Measured after pinning: 12.09 in both themes, against .cabyr's 5.78.  */
-  .cabn{color:#2b2924}
+  /*  THE CABINET PILLS , the SAME treatment as the season honour chips: same mark, same gold,
+      same shape, because the cabinet is honours and should read as them. The only difference
+      lives INSIDE the pill: a cabinet pill carries its years. .chip.gold supplies everything
+      else, so there is no second colour to keep in sync.  */
+  .cabchips{display:flex;flex-wrap:wrap;gap:7px}
+  .cabyrs{font-family:'Archivo',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.03em;
+    margin-left:6px;padding-left:6px;border-left:1px solid rgba(90,68,16,0.28);
+    font-variant-numeric:tabular-nums;opacity:0.85}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
   /*  WIDENED, NOT COPIED (2026-09-10). The Wonder-Tags prestige row wears the same object
       as the strip's prestige pill, so it reads the SAME declaration block rather than a
@@ -1211,12 +1201,6 @@
     <div class="gname" id="glName"></div>
     <div class="gsub" id="glSub" data-demo>CAM &middot; Man Utd &middot; 23/24</div>
     <div class="gdrury" id="glDrury"></div>
-    <!--  THE CABINET , docs/CABINET_SPEC.md. Everything this player held AS OF this season,
-          frozen at that date. It sits in the glance because the face is the season's verdict
-          about itself and a panel would bury it. EMPTY MEANS ABSENT, not a consoling line:
-          85.1% of cards have no cabinet, so a "nothing yet" would print on six cards in
-          seven. Hidden by default; vvApplyHonours unhides it only with content.  -->
-    <div class="cabinet" id="glCabinet" hidden></div>
     <div class="chips" id="glChips" data-demo>
       <span class="chip gold" data-tip="One of the rarest single seasons , a year that defined an era."><svg class="ci" viewBox="0 0 100 100" fill="#5a4410"><path d="M18 72 L18 34 L36 52 L50 26 L64 52 L82 34 L82 72 Z"/><circle cx="18" cy="30" r="5"/><circle cx="82" cy="30" r="5"/><circle cx="50" cy="22" r="5"/></svg> Iconic</span>
       <span class="chip gold" data-tip="The player the whole team leaned on , the one who carried the side."><svg class="ci" viewBox="0 0 100 100" fill="#5a4410"><path d="M18 72 L18 34 L36 52 L50 26 L64 52 L82 34 L82 72 Z"/><circle cx="18" cy="30" r="5"/><circle cx="82" cy="30" r="5"/><circle cx="50" cy="22" r="5"/></svg> Talisman</span>
@@ -1255,6 +1239,14 @@
   <a class="watchcta chron-watch" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> <span class="cw-label">Watch this match</span></a>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 10l4.9-1.7z"/><path d="M18.6 15l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></div><div class="layer-t">Wonder Tags</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he won, and what he was.</div><div id="wonderTags"></div></div></div></div>
+      <!--  THE CABINET , docs/CABINET_SPEC.md, placed here by a deliberate DEPARTURE from the
+            ruling, which says "glance, not face, not panel". Recorded in
+            docs/CABINET_SPEC_NOTES.md rather than by editing the spec. The reason for the
+            move is sequence: Wonder Tags has just shown what he won THIS season, and the
+            cabinet widens the same subject to what he had won BY then.
+            THE SECTION HIDES ENTIRELY WHEN EMPTY , the ruling's own display rule, and it
+            governs 85.1% of cards, so this layer is absent far more often than present.  -->
+      <div class="layer" id="cabinetLayer" hidden><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12v3a6 6 0 0 1-12 0z"/><path d="M6 6H4.2a2.3 2.3 0 0 0 2.3 3.4"/><path d="M18 6h1.8a2.3 2.3 0 0 1-2.3 3.4"/><line x1="12" y1="13.5" x2="12" y2="17"/><line x1="8.8" y1="19.5" x2="15.2" y2="19.5"/></svg></div><div class="layer-t">The Cabinet</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he had won by this season.</div><div class="cabchips" id="cabChips"></div></div></div></div>
       <div class="layer" id="notesLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open'); vvNotesOpen();"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
   <div id="notesBody"></div>
   <div class="nm">Commentator's Notes</div>
@@ -1875,15 +1867,16 @@
         UCL), which is keyed on team+season and invisible to the player query. It may not have
         landed yet, or may be null for a single-season player , the cabinet then renders its
         player-keyed half and is completed when loadSeasons calls this again.  */
-    var cab = document.getElementById('glCabinet');
-    if(cab){
+    var cabLayer = document.getElementById('cabinetLayer');
+    var cabBox = document.getElementById('cabChips');
+    if(cabLayer && cabBox){
       var items = (D.honours && D.honours.cabinet) || [];
       if(typeof SEASON_RAW !== 'undefined' && SEASON_RAW && VVCore.cabinetWithTeamLegs){
         items = VVCore.cabinetWithTeamLegs(items, SEASON_RAW, D.season_year, null);
       }
-      var html = VVCore.renderCabinet(items);
-      cab.innerHTML = html;
-      cab.hidden = !html;                 // absence IS the empty state
+      var html = VVCore.renderCabinet(items, {mark:true});
+      cabBox.innerHTML = html;
+      cabLayer.hidden = !html;            // absence IS the empty state , the whole section goes
     }
     var wt = document.getElementById('wonderTags');
     if(wt && typeof TAG_DEFS !== 'undefined'){
