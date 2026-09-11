@@ -422,6 +422,12 @@
   #wonderTags .tagrow[data-fam="MID"]   .tt .ttl{background:#258652}   /* darkened, see above */
   #wonderTags .tagrow[data-fam="DEF"]   .tt .ttl{background:#4374CC}   /* darkened, see above */
   #wonderTags .tagrow[data-fam="STAGE"] .tt .ttl{background:#1B5563}   /* strip dark stop, exact */
+  /*  and The Standard is engraved here too , the panel is where a reader goes to find out
+      what a tag MEANS, so it is the last place the career tag should look like a season one.
+      Same ink and ground as the glance and the card face; see the note on the glance rule. */
+  #wonderTags .tagrow[data-tag="The Standard"] .tt .ttl{
+    background:linear-gradient(135deg,#E4F1F4,#D8EAEE);color:#1B5563;
+    box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
   #wonderTags .tagrow[data-fam="CROSS"] .tt .ttl{background:#46443F}   /* strip dark stop, exact */
   /*  The honour pill keeps the strip's gradient because its ground is fine; only the dark ink
       moves, by 3%. Widening .chip.gold was not an option , the accordion ink differs.  */
@@ -708,6 +714,30 @@
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
   #glChips .chtag-age{background:linear-gradient(90deg,#5A5856,#46443F)}   /* DEAD after the family merge, left in place deliberately */
   #glChips .chtag-stage{background:linear-gradient(90deg,#2F8290,#1B5563)}
+  /*  THE STANDARD IS CAREER-LEGGED, SO IT IS ENGRAVED RATHER THAN FILLED (2026-09-11).
+      SAME RULE AS THE WORLD CUP CHIP, AND FOR THE SAME REASON. It attaches to every season
+      at rt 80+, so Kane carries it on twelve cards and Lewandowski on fifteen; on any one
+      of them a solid pill identical to Peak's reads as a claim about THAT season, which it
+      is not. Peak and Breakout are moments, one card each by construction (cards/player
+      1.00). The Standard is 413 cards across 58 players, 7.12 each. Two of the three stage
+      tags mark a season and the third marks a career, and only the third should look it.
+      ENGRAVED, NOT RECOLOURED. The family teal stays , it is still a career-stage tag , and
+      the distinction is carried on the fill-versus-engrave axis, exactly as .chip.gold.career
+      does for the World Cup. Ink #1B5563 on a pale #D8EAEE ground measures 6.70, against
+      4.45 for white on the solid pill's light stop, so the engraved form is the better
+      contrast of the two. The World Cup's own pair is 8.12 / 6.99, so this sits in the same
+      register.
+      THE SEASON COUNT IS NOT PRINTED, AND THAT IS A DATA LIMIT RATHER THAN A CHOICE. The
+      extent is what the World Cup gets from its year, and "The Standard , 12 seasons" would
+      be the stronger signal, but only the BOOLEAN is stored: player_card_mv carries
+      stage_the_standard and no count, and rankings.html loads no career array at all. Since
+      buildCard is shared, printing it where the career happens to be known would make one
+      card look different on two surfaces, which is the inconsistency this treatment exists
+      to remove. It waits for a stage_standard_seasons column at the shared matview rebuild
+      that SS D already queues four other items behind. */
+  #glChips .chtag-stage[data-tag="The Standard"]{
+    background:linear-gradient(135deg,#E4F1F4,#D8EAEE);color:#1B5563;
+    box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
   #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
   #glChips .chtag-prestige-gen,
   #wonderTags .tagrow[data-tag="Generational"] .tt .ttl{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
@@ -1231,8 +1261,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260911a"></script>
-<script src="/vv-core.js?v=20260911a"></script>
+<script src="/vv-marks.js?v=20260911b"></script>
+<script src="/vv-core.js?v=20260911b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are

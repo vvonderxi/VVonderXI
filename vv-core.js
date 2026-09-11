@@ -3564,6 +3564,19 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     Complete) and gold is honours, so a stage tag must read as neither. The -age rule above
     is DEAD as of the family merge and is left in place deliberately while this is unpushed.  */
 .vvcard .chtagcell-stage{background:linear-gradient(90deg,#2F8290,#1B5563) !important}
+/*  THE STANDARD IS ENGRAVED ON THE CARD FACE TOO , career-legged, same rule as the World Cup
+    chip. It lands on every season at rt 80+ (413 cards, 58 players, 7.12 each) while Peak and
+    Breakout are one card per player, so on any single card a solid pill identical to theirs
+    claims something about THAT season that the tag does not mean. The family teal stays; the
+    fill-versus-engrave axis carries the distinction. Ink 6.70 on the pale ground against 4.45
+    for white on the solid pill's light stop.
+    IN VV_CARD_CSS RATHER THAN THE PAGES, because SS C records the gen face as exactly this
+    mistake: a card rule that lived in the pages was a trap for the next surface. The face is
+    shared by card.html, compare.html and rankings.html and all three must draw it the same.
+    !important mirrors the rule above it, which needs it to beat the page copies. */
+.vvcard .chtagcell-stage[data-tag="The Standard"]{
+  background:linear-gradient(135deg,#E4F1F4,#D8EAEE) !important;color:#1B5563 !important;
+  box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
 .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.015)}
 .vvcard .cga .col{text-align:center}
 .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
