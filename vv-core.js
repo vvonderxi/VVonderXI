@@ -2989,7 +2989,8 @@
         honours_json on the matview encodes ({leg:'career', year:2014}). Only this function
         disagreed, and the disagreement was measurable , 496 of 587 flagged cards rendered
         no World Cup at all, Toni Kroos 23/24 among them. */
-    const career = [];   // world_cup_winner , every season of a winner's career
+    const career = [];   // RETIRED, kept as an empty array so no consumer's shape changes
+    const cabinet = [];  // everything held as of THIS season , see docs/CABINET_SPEC.md
     // (a)+(b) fire the PLAYER-keyed query and the (session-memoized) TEAM-honours cache in PARALLEL ,
     // independent reads, so honours cost ONE round-trip not two. Player query resolves to null on error.
     const _playerQ = (row.api_player_id != null)
@@ -3017,11 +3018,25 @@
               the renderer can print "World Cup 2014" on a 23/24 card without lying. Every
               other type stays season-matched, which is correct: measured, all six are 100%
               same-year, and world_cup_winner is the only type that ever differs. */
-          if(h.honour_type === 'world_cup_winner'){
-            career.push(item);
-          } else if(seasonYear != null && h.season_year === seasonYear
-             && (!h.league_code || !leagueCode || h.league_code === leagueCode)){
+          /*  THE CAREER LEG IS RETIRED , docs/CABINET_SPEC.md, 2026-09-11. world_cup_winner
+              now matches on its own season like every other honour, and the "held as of here"
+              half of the fact moved to the CABINET below, where it carries its year.
+              WHY THIS IS A DELETION AND NOT A MOVE OF THE BUG: the leg attached to EVERY card
+              a winner holds, in BOTH directions, so 333 card-honour pairs rendered a World Cup
+              the player had not yet won , a 2010 card of a 2014 winner showed it. The cabinet
+              is as-of the card's own season, so those 333 disappear and the 496 later ones
+              become dated entries. The league clause is skipped for the World Cup because it
+              is not a league honour and carries no league_code to match.  */
+          if(seasonYear != null && h.season_year === seasonYear
+             && (h.honour_type === 'world_cup_winner'
+                 || !h.league_code || !leagueCode || h.league_code === leagueCode)){
             season.push(item);
+          }
+          /*  THE CABINET , every honour this player held AS OF this card's season, frozen.
+              Team honours are added by the caller from the player's own career rows, because
+              they are keyed on team+season and this query is keyed on the player.  */
+          if(h.season_year != null && seasonYear != null && h.season_year <= seasonYear){
+            cabinet.push(item);
           }
         }
       }
@@ -3032,7 +3047,7 @@
       if(!season.some(s => s.type === ti.type && s.season_year === ti.season_year)) season.push(ti);
     }
     season.sort((a,b)=> a.tier - b.tier);   // rarer first
-    career.sort((a,b)=> (a.season_year||0) - (b.season_year||0));   // oldest tournament first
+    cabinet.sort((a,b)=> (a.season_year||0) - (b.season_year||0));   // oldest first , a record reads forwards
     /*  `all` IS SEASON-ONLY AND THAT IS DELIBERATE , IT FEEDS THE CAPPED SURFACES.
         The card FACE has two to four slots and the rankings ROW has three, both filled by
         tier from this list. Letting a career honour into it would put World Cup on 587
@@ -3047,10 +3062,10 @@
       if(items.length) groups[g] = items;
     }
     return {
-      season, career, groups, all,
+      season, career, cabinet, groups, all,
       count: season.length,                          // count badge = season honours only
-      has: (season.length + career.length) > 0,      // a WC-only card still renders chips
-      topHonour: all.length ? all[0] : null,         // lowest tier present (season+career combined)
+      has: season.length > 0,                        // season honours only , the cabinet has its own gate
+      topHonour: all.length ? all[0] : null,
     };
   }
 
@@ -3316,7 +3331,45 @@
     const all = season.slice();
     return { season, career: [], all, count: season.length, has: season.length > 0, topHonour: all.length ? all[0] : null };
   }
-  function emptyHonours(){ return { season:[], career:[], all:[], count:0, has:false, topHonour:null }; }
+  function emptyHonours(){ return { season:[], career:[], cabinet:[], all:[], count:0, has:false, topHonour:null }; }
+
+  /*  ── THE CABINET'S TEAM HALF , docs/CABINET_SPEC.md ────────────────────────────────────
+      league_champion and ucl_winner carry a NULL api_player_id: they are keyed on team and
+      season, so the player query cannot see them. They are reachable only through the
+      player's OWN cards , which club he was at, in which season , and that is the correct
+      test anyway: a trophy won by a club before he arrived is not in his cabinet.
+      AS-OF IS ENFORCED HERE TOO. Only career rows at or before the card's season count, so
+      the cabinet stays frozen at that date exactly as the spec requires.
+      Returns a NEW array; it never mutates what it is given.  */
+  function cabinetWithTeamLegs(cabinet, careerRows, asOfYear, teamCache){
+    const out = (cabinet || []).slice();
+    const cache = teamCache || _teamHonoursCache;
+    if(!cache || !careerRows || asOfYear == null) return out;
+    for(const row of careerRows){
+      const yr = row && row.season_year != null ? row.season_year : null;
+      if(yr == null || yr > asOfYear) continue;
+      for(const ti of teamHonoursFor(row, cache)){
+        if(!out.some(x => x.type === ti.type && x.season_year === ti.season_year
+                          && (x.league_code || null) === (ti.league_code || null))) out.push(ti);
+      }
+    }
+    out.sort((a,b)=> (a.season_year||0) - (b.season_year||0));
+    return out;
+  }
+
+  /*  THE EMPTY CABINET DOES NOT RENDER, AND THAT IS A MEASURED DECISION , see
+      docs/CABINET_SPEC_NOTES.md. 85.1% of cards have no cabinet at all, so a consoling
+      line would print on six cards in seven. Returns '' when there is nothing to show, and
+      the caller hides its container on ''.  */
+  function renderCabinet(items){
+    const list = items || [];
+    if(!list.length) return '';
+    return '<div class="cabhead">The Cabinet</div><ul class="cablist">' + list.map(function(h){
+      const yr = h.season_year != null ? String(h.season_year) : '';
+      return '<li class="cabrow"><span class="cabyr">' + escHtml(yr) + '</span>'
+           + '<span class="cabn">' + escHtml(h.label || h.type) + '</span></li>';
+    }).join('') + '</ul>';
+  }
   // Compact gold honour pills for list/compact rows (rankRowHTML) , text-only, up to 2.
   function renderHonourPillsCompact(honours, opts){
     if(!honours || !honours.has) return '';
@@ -6381,6 +6434,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
+                cabinetWithTeamLegs, renderCabinet,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,

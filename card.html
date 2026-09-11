@@ -700,6 +700,24 @@
   body.light .seasoncollapse{color:var(--ink-soft);border-top-color:rgba(0,0,0,0.06)}
   body.light .seasoncollapse:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
+  /*  THE CABINET , a record, not a chip. The season honours above are saturated gold because
+      they are this season's claim; the cabinet is context, so it is set as quiet dated lines
+      with the year always printed (the spec requires the year on every entry). Distinct
+      treatment is a spec requirement, not taste: "season honours visually distinct (the Wonder
+      Tag treatment stays theirs alone)".  */
+  .cabinet{margin-bottom:14px}
+  .cabhead{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+  .cablist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+  .cabrow{display:flex;gap:10px;align-items:baseline;font-size:12.5px;line-height:1.35}
+  .cabyr{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;color:var(--ink-soft);
+    min-width:30px;font-variant-numeric:tabular-nums}
+  /*  PINNED, NOT TOKENISED, AND THAT IS SS C's RULE RATHER THAN A PREFERENCE: match the ink
+      to the GROUND, not to body.light. The glance panel is cream in BOTH themes , measured,
+      rgb(240,234,217) either way , so `var(--cream)` here rendered cream on cream at ratio
+      1.00 in dark mode while looking perfect in light. Same family as the --vs-muted trap.
+      Measured after pinning: 12.09 in both themes, against .cabyr's 5.78.  */
+  .cabn{color:#2b2924}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
   /*  WIDENED, NOT COPIED (2026-09-10). The Wonder-Tags prestige row wears the same object
       as the strip's prestige pill, so it reads the SAME declaration block rather than a
@@ -1193,6 +1211,12 @@
     <div class="gname" id="glName"></div>
     <div class="gsub" id="glSub" data-demo>CAM &middot; Man Utd &middot; 23/24</div>
     <div class="gdrury" id="glDrury"></div>
+    <!--  THE CABINET , docs/CABINET_SPEC.md. Everything this player held AS OF this season,
+          frozen at that date. It sits in the glance because the face is the season's verdict
+          about itself and a panel would bury it. EMPTY MEANS ABSENT, not a consoling line:
+          85.1% of cards have no cabinet, so a "nothing yet" would print on six cards in
+          seven. Hidden by default; vvApplyHonours unhides it only with content.  -->
+    <div class="cabinet" id="glCabinet" hidden></div>
     <div class="chips" id="glChips" data-demo>
       <span class="chip gold" data-tip="One of the rarest single seasons , a year that defined an era."><svg class="ci" viewBox="0 0 100 100" fill="#5a4410"><path d="M18 72 L18 34 L36 52 L50 26 L64 52 L82 34 L82 72 Z"/><circle cx="18" cy="30" r="5"/><circle cx="82" cy="30" r="5"/><circle cx="50" cy="22" r="5"/></svg> Iconic</span>
       <span class="chip gold" data-tip="The player the whole team leaned on , the one who carried the side."><svg class="ci" viewBox="0 0 100 100" fill="#5a4410"><path d="M18 72 L18 34 L36 52 L50 26 L64 52 L82 34 L82 72 Z"/><circle cx="18" cy="30" r="5"/><circle cx="82" cy="30" r="5"/><circle cx="50" cy="22" r="5"/></svg> Talisman</span>
@@ -1261,8 +1285,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260911c"></script>
-<script src="/vv-core.js?v=20260911c"></script>
+<script src="/vv-marks.js?v=20260911d"></script>
+<script src="/vv-core.js?v=20260911d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1845,6 +1869,22 @@
         });
       }
     }
+    /*  THE CABINET , season honours stay on the face and in the chips above; this is the
+        "held as of here" half. On the season an honour is won it appears in BOTH by design.
+        SEASON_RAW is the player's own career rows and carries the team half (league champion,
+        UCL), which is keyed on team+season and invisible to the player query. It may not have
+        landed yet, or may be null for a single-season player , the cabinet then renders its
+        player-keyed half and is completed when loadSeasons calls this again.  */
+    var cab = document.getElementById('glCabinet');
+    if(cab){
+      var items = (D.honours && D.honours.cabinet) || [];
+      if(typeof SEASON_RAW !== 'undefined' && SEASON_RAW && VVCore.cabinetWithTeamLegs){
+        items = VVCore.cabinetWithTeamLegs(items, SEASON_RAW, D.season_year, null);
+      }
+      var html = VVCore.renderCabinet(items);
+      cab.innerHTML = html;
+      cab.hidden = !html;                 // absence IS the empty state
+    }
     var wt = document.getElementById('wonderTags');
     if(wt && typeof TAG_DEFS !== 'undefined'){
       var profileRowsHtml = VVCore.renderProfileTagRows(D.tags, D.prestige);   // shared (card + compare)
@@ -1991,6 +2031,10 @@
         not just this one. The old vvApplyCareerStage injected them into whichever tag row
         happened to be first in the document, with no mark. It is gone; VVCore.careerStageTags
         survives in vv-core.js as the reference implementation the SQL was ported from. */
+    /*  THE CABINET'S TEAM HALF NEEDS THESE ROWS, so re-run the honour-dependent DOM now that
+        they exist. vvApplyHonours is idempotent by design and cheap; without this the cabinet
+        would show only its player-keyed half whenever the career rows lose the race.  */
+    if(typeof vvApplyHonours === 'function') vvApplyHonours();
     renderTrajectory();                    // trajectory chart draws NOW , it does not need honours
     var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
     var zone=document.getElementById('seasonZone');
