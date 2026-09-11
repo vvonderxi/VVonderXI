@@ -3106,14 +3106,23 @@
     top_assists:      'The best assists are acts of generosity. To lead a league in them is to have seen the pass others missed, again and again, to have made teammates better and asked for none of the glory. The top creator is the player the goalscorers should thank first.',
   };
   // Drury-wrapped tally per honour type (#4) , poetic .tmeta line; {N} = live goals/assists count.
+  /*  A TALLY, NOT A FLOURISH , 2026-09-11. Five of these used to return a fixed line with no
+      data in it, and every one of them paraphrased the one-liner already printed in .td two
+      lines above: world_cup_winner said "A world champion , the prize of all prizes" under
+      "A world champion. The prize every player covets most." The expand therefore closed by
+      telling the reader what it had just opened by telling them, and because honourRowHTML
+      concatenates drury + meta inside one .tmore, it landed hard against the last word of
+      the Drury paragraph , "...never forgotten.A world champion , the prize of all prizes."
+      That collision is what read as garbled, but the spacing was the symptom. The repetition
+      was the defect, so the repetition is what goes.
+      WHAT SURVIVES IS THE TWO THAT CARRY A NUMBER. golden_boot and top_assists state a figure
+      the one-liner does not have, which is the whole point of a tally, and they keep their
+      null fallbacks because a golden boot with no goals recorded still earned the line.
+      The five removed honours now render drury alone, and .tmeta simply does not appear ,
+      honourRowHTML already guards on `meta ?`, so nothing else changes. */
   const HONOUR_TALLY = {
     golden_boot:      function(h){ return (h.goals!=null ? h.goals+' goals , and the net remembers every one.' : 'The net remembers every one.'); },
     top_assists:      function(h){ return (h.assists!=null ? h.assists+' assists , '+h.assists+' times the final pass was his.' : 'Time and again, the final pass was his.'); },
-    ballon_dor:       function(){ return 'The best in the world , and the world agreed.'; },
-    player_of_season: function(){ return "The season's finest , by common consent."; },
-    league_champion:  function(){ return 'Champions , the long season theirs.'; },
-    world_cup_winner: function(){ return 'A world champion , the prize of all prizes.'; },
-    ucl_winner:       function(){ return 'Champions of Europe , the brightest lights conquered.'; },
   };
   // One honour as a tap-expandable Wonder-Tags row: one-liner (.td) + Drury paragraph & meta (.tmore, #16).
   /*  Marks unconditionally rather than behind an opts.mark like its siblings: this row is
