@@ -3425,10 +3425,21 @@
         ORDERED BY HONOUR_META.tier, WHICH IS ALREADY THE PRESTIGE ORDER , Ballon d'Or, World
         Cup, UCL, League Champion, Player of the Season, Golden Boot, Top Assists, the same
         ranking the Playbook uses. Read off the existing field rather than a second list.
-        YEARS WITHIN A SHELF RUN OLDEST FIRST. Above SHELF_TWO_COL years they wrap into two
-        columns inside that honour's own block , still stacked, still one year per line, about
-        half the height. CSS columns fill down-then-across, so the reading order is preserved.  */
-    const SHELF_TWO_COL = 6;
+        YEARS WITHIN A SHELF RUN OLDEST FIRST AND WRAP AS A PACKED ROW, NOT AS COLUMNS
+        (2026-09-12). They used to stack one per line, and above six years CSS columns split
+        them in two. Measured on the live card, that was the defect: the panel is 780px, so
+        `column-count:2` made two 379px columns each holding one 30px year token at its left
+        edge , 362px of empty space between the two columns of years. The browser had been
+        told to make two columns, not to pack tightly.
+        A WRAPPING FLEX ROW PACKS LEFT AND WRAPS ONLY WHEN IT RUNS OUT OF WIDTH, so the
+        oldest-first reading order survives and the block reads as a record rather than as a
+        list with a canyon in it. Measured: Lewandowski's twelve-year run goes 530px to 354px
+        on desktop and 530px to 405px at 390, and a four-year run goes from four stacked
+        lines to one. NO BULLETS , every year already has the gold rule to its left, and a
+        mark per year would carry no information.
+        NO SHELF_TWO_COL ANY MORE. The constant and the `.two` class are gone rather than
+        left inert, because a dead class in the markup is a decision a later reader has to
+        re-derive.  */
     const cls = (opts && opts.baseClass) || 'cab';
     const byType = new Map();
     for(const h of list){
@@ -3456,10 +3467,9 @@
           "UCL" and "Champion", which are clipped names. HONOUR_META.label already holds the
           full ones, so the cabinet reads that and the strip keeps its own map.  */
       const label = (HONOUR_META[sh.type] && HONOUR_META[sh.type].label) || sh.label || sh.type;
-      const two = sh.years.length > SHELF_TWO_COL ? ' two' : '';
       return '<div class="' + cls + 'sh">'
            + '<span class="chtag chtag-cab" data-tip="' + escAttr(sh.oneliner) + '">' + icon + escHtml(label) + '</span>'
-           + '<div class="' + cls + 'yrs' + two + '">'
+           + '<div class="' + cls + 'yrs">'
            + sh.years.map(function(y){ return '<div class="' + cls + 'y">' + escHtml(y) + '</div>'; }).join('')
            + '</div></div>';
     }).join('') + '</div>';

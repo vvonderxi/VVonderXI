@@ -744,12 +744,14 @@
   /*  THE SHELF RULE IS 3px, NOT 2px, BECAUSE THE YEARS GOT HEAVIER (2026-09-12). A 2px rule
       beside a 12px numeral reads as a pair; beside a 16px one it reads as a hairline the
       numerals have outgrown. The two move together or neither does.  */
-  .cabyrs{padding-left:15px;border-left:3px solid rgba(224,169,58,0.62)}
-  /*  ABOVE SIX YEARS, TWO COLUMNS INSIDE THE SHELF. CSS columns fill DOWN then ACROSS, so
-      oldest-first reading order survives the wrap. Still one year per line, about half the
-      height. column-width keeps it to one column when the card is too narrow to hold two,
-      which is what makes this safe at 390 without a media query.  */
-  .cabyrs.two{column-count:2;column-width:56px;column-gap:22px}
+  /*  A PACKED ROW, NOT COLUMNS (2026-09-12). `column-count:2` was told to make two columns,
+      not to pack tightly: measured on the live card the panel is 780px, so it made two 379px
+      columns each holding one 30px year at its left edge, stranding 362px between them. Flex
+      wrap packs left and breaks only when it runs out of width.
+      GAP IS 4px DOWN, 16px ACROSS , the across gap has to beat the year's own width clearly
+      or two years read as one number, and 16px against a 30px token does that.  */
+  .cabyrs{padding-left:15px;border-left:3px solid rgba(224,169,58,0.62);
+    display:flex;flex-wrap:wrap;gap:4px 16px}
   /*  SIZE AND INK ONLY , THE YEAR IS THE RECORD, SO IT CARRIES ITS OWN WEIGHT (2026-09-12).
       It was Archivo 700 at 12px in #2b2924, the same weight as body text, so a twelve-year run
       read as a list rather than as a record. Now 800 at 16px in #241f1b.
@@ -759,7 +761,7 @@
       doubled the section's height, wrapped half its lines at 390, and had to be built on
       `team_name`, which is null on most individual honours.  */
   .caby{font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;color:#241f1b;
-    font-variant-numeric:tabular-nums;line-height:1.5;letter-spacing:0.01em;break-inside:avoid}
+    font-variant-numeric:tabular-nums;line-height:1.35;letter-spacing:0.01em}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
   /*  WIDENED, NOT COPIED (2026-09-10). The Wonder-Tags prestige row wears the same object
       as the strip's prestige pill, so it reads the SAME declaration block rather than a
@@ -1334,8 +1336,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260912c"></script>
-<script src="/vv-core.js?v=20260912c"></script>
+<script src="/vv-marks.js?v=20260912d"></script>
+<script src="/vv-core.js?v=20260912d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are

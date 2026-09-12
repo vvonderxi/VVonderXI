@@ -144,6 +144,39 @@ across all 8,521 non-empty cabinets.
 
 ---
 
+## THE CAREER-NOT-SEASON RULE IS SAID IN TWO VISUAL LANGUAGES, AND THAT IS NOT A DEFECT (2026-09-12)
+
+**RECORDED SO THAT ANYONE WHO LATER UNIFIES THEM FINDS THE REASON THEY DIVERGED RATHER THAN
+REDISCOVERING IT.** Three surfaces say "this is a career fact, not a season fact", and they say it
+three ways:
+
+- **The cabinet pill** , pale gold `#FAF0CE,#F2DFA4` with an inset ring, `#5a4410` ink. Engraved
+  rather than filled, against the glance's saturated season gold. See the entry below.
+- **The Standard, on the card** , pale blue `#E4F1F4,#D8EAEE` with an inset ring, `#1B5563` ink, on
+  THREE surfaces: `.vvcard .chtagcell-stage[data-tag="The Standard"]` (the face, in `vv-core.js`,
+  so card, compare and rankings share it), `#glChips .chtag-stage[data-tag="The Standard"]`, and
+  `#wonderTags .tagrow[data-tag="The Standard"] .tt .ttl`. Same engraved-not-filled idea, against
+  the solid teal of the other STAGE pills.
+- **The Standard, on the playbook** , a full-width HATCHED band in teal
+  `rgba(47,130,144,0.34 / 0.13)`, `.arcspan-bar::before`. Not a pill at all, because it is not a
+  pill: it is an extent on a career diagram, and `bf4e5eb` removed its coordinates precisely so it
+  would stop making claims it got wrong.
+
+**THE COMMON RULE IS "ENGRAVED, NOT FILLED". THE DIVERGENCE IS IN WHAT EACH SURFACE IS DRAWING.**
+A pill can be engraved by paling its fill; a bar on a diagram has no fill to pale, so it is hatched
+instead. **The colours differ because the FAMILIES differ, not because the rule does** , gold is the
+honours family, teal is the career-stage family, and each pales within its own.
+
+**A CONSEQUENCE WORTH KNOWING BEFORE ANYONE "FIXES" IT: on the LIGHT theme the playbook's hatch
+washes out to a pale blue-grey that reads very like the card's pale blue pill**, which is how the
+two came to be reported as one thing. They are not one thing, and they are not on the same surface,
+so the resemblance costs nothing today.
+
+**IF THEY ARE EVER UNIFIED, UNIFY THE RULE AND NOT THE PIXELS.** Making the playbook bar pale blue
+would put a career-stage element in the honours palette; making the card pill hatched would put a
+diagram texture on a pill. **SS C's sibling-states rule applies , all three Standard surfaces and
+the cabinet pill get looked at together, at the size each ships at, or none of them do.**
+
 ## `.chip.gold.career` HAS NO LIVE INSTANCE, AND THE CABINET IS ITS ONLY CONSUMER (2026-09-12)
 
 **Stated on its own because it is a fact about the CSS, not about any one proposal, and because it
