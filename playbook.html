@@ -350,88 +350,87 @@
       bar. Below the bar it needs no knockout and cannot imply a width.  */
   .arcspan-l{display:block;margin-top:7px;font-family:'Archivo';font-weight:800;font-size:10px;
              letter-spacing:.04em;color:var(--ink-soft);white-space:nowrap}
-  /*  ── THE CABINET IN TIME , WHY A 2019 CARD SHOWS A 2018 TROPHY (2026-09-12) ──────
-      A GENERIC CAREER, NOT A PLAYER, AND THAT IS DELIBERATE. The honour TYPES and their
-      marks are real (shared set, via honMark); the years are a worked example attached to
-      nobody. A real player here would be a checkable claim read out of the database into
-      static HTML, i.e. a fourth embedded snapshot with nothing to warn you when it goes
-      stale , the hazard class RADAR_POOL_REF and KEEPER_SAVE_LADDER already carry. The arc
-      directly above uses the same convention.
-      THE STILL IS THE DESIGN AND THE MOTION IS OPTIONAL. Everything the section teaches is
-      present with no animation: the playhead is parked on the read season, the rail is
-      filled behind it, won trophies are solid and connected DOWN into the cabinet, and the
-      not-yet-won one is a dashed outline with NO connector. Two lines go in, one does not.
-      A reduced-motion reader and a reader who scrolls past mid-cycle see the same complete
-      diagram, which is the whole test.  */
-  .cabtl{margin:22px 0 0;position:relative}
-  /*  THE RAIL RESERVES ITS OWN SPACE. Its trophies (top:-26px) and year labels (top:15px)
-      are ABSOLUTELY POSITIONED, so they contribute ZERO height and the cabinet below
-      rendered straight through them , caught by rendering the still with the caption
-      hidden, not by reading the CSS. The margins are what hold the three bands apart.  */
-  .cabtl-rail{position:relative;height:3px;background:rgba(255,255,255,0.13);border-radius:3px;
-              margin:34px 0 52px}
+  /*  ── THE CABINET, TREATMENT A , THE POSITIONAL SHELF (2026-09-12) ─────────────────
+      PROMOTED OUT OF #s-honours INTO ITS OWN TOP-LEVEL SECTION. The honours grid is the
+      CATALOGUE of honour TYPES; this is the Cabinet. Two siblings, two jobs. **A NEW id and a
+      NEW mark key, never a rename** , `s-honours` is a key in `vv-marks.js` and `.cabwrap` is
+      load-bearing for `vvFoldSections`, so renaming either breaks something silently.
+      EACH HONOUR SITS UNDER THE YEAR IT WAS WON, so POSITION is the connector and there are no
+      lines to draw. That also uses the full width by construction: the old build ran a
+      full-width rail above a 430px box, so the right half was empty and the connectors
+      travelled a long way. Nothing here is decorative , no gradient on a gradient, no glow,
+      and no trophy drawing beyond the shared mark set the honours grid already uses.
+      SAME-YEAR HONOURS STACK VERTICALLY AT THE SAME x, AND THE SPACING NEVER CHANGES. Widening
+      the year gaps to make room would distort the timeline, and the timeline is the thing the
+      section teaches. Stacking reads as "two honours, same year", which is true, and it is what
+      the CARD's cabinet already does with multiple years on one shelf.
+      THE STILL IS THE DESIGN. Playhead parked on the read season, rail filled behind it, won
+      honours solid, the not-yet-won one a DASHED ring with muted ink. Everything the section
+      teaches is present with no motion, which is what a reduced-motion reader and a reader who
+      scrolls past mid-cycle get.  */
+  .cabtl{margin:26px 0 0;position:relative}
+  .cabtl-stage{position:relative;margin:0 14px}
+  .cabtl-rail{position:relative;height:4px;background:rgba(255,255,255,0.13);border-radius:4px;margin:56px 0 0}
   body.light .cabtl-rail{background:rgba(0,0,0,0.12)}
-  .cabtl-fill{position:absolute;left:0;top:0;height:3px;border-radius:3px;background:var(--panel-t)}
-  .cabtl-s{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;
+  .cabtl-fill{position:absolute;left:0;top:0;height:4px;border-radius:4px;background:var(--panel-t)}
+  .cabtl-s{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;
            transform:translate(-50%,-50%);background:#3a3430;border:2px solid var(--page-1)}
   body.light .cabtl-s{background:#c9c2b4;border-color:var(--page-1-l)}
   .cabtl-s.past{background:var(--panel-t)}
-  .cabtl-s.now{background:var(--gold);width:16px;height:16px;box-shadow:0 0 0 5px rgba(232,184,75,0.22)}
-  .cabtl-y{position:absolute;top:15px;transform:translateX(-50%);font-family:'Archivo';
-           font-weight:700;font-size:9.5px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
-  .cabtl-y.now{color:var(--gold);font-size:11px;font-weight:800}
-  /*  THE END LABELS CLIP WITHOUT THIS, AND THE ARC ABOVE ALREADY SOLVED IT , `.arclab`
-      carries the same `.lead` / `.trail` pair for the same reason. A centred label at
-      left:0% loses its left half to the container edge: 2015 rendered as "15" and 2021
-      as "20". Reusing the existing convention rather than inventing a second one.  */
+  .cabtl-s.now{background:var(--gold);width:20px;height:20px;box-shadow:0 0 0 7px rgba(232,184,75,0.20)}
+  .cabtl-y{position:absolute;top:18px;transform:translateX(-50%);font-family:'Archivo';
+           font-weight:700;font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .cabtl-y.now{color:var(--gold);font-size:13px;font-weight:800}
+  /*  End labels clip without this, and the arc above already solved it the same way. */
   .cabtl-y.lead{transform:translateX(0)}
   .cabtl-y.trail{transform:translateX(-100%)}
-  /*  THE PLAYHEAD HAS TO SAY WHAT IT IS. Colour alone does not tell a first-time reader
-      that the gold stop means "the card you are reading" , without this the diagram
-      shows accumulation over time but never states whose viewpoint it is, which is the
-      one thing the section exists to explain. Found by rendering the still with the
-      caption hidden.  */
-  .cabtl-here{position:absolute;top:-46px;transform:translateX(-50%);white-space:nowrap;
-              font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.12em;
+  /*  THE PLAYHEAD HAS TO SAY WHAT IT IS , colour alone never told a first-time reader that the
+      gold stop means "the card you are reading", which is the one thing the section exists to
+      explain. Found by rendering the still with the caption hidden.  */
+  .cabtl-here{position:absolute;top:-34px;transform:translateX(-50%);white-space:nowrap;
+              font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;
               text-transform:uppercase;color:var(--gold)}
-  .cabtl-t{position:absolute;top:-26px;transform:translateX(-50%);width:22px;height:22px;color:var(--gold)}
-  body.light .cabtl-t{color:var(--gold-ink)}
-  .cabtl-t svg{width:100%;height:100%;display:block}
-  /*  NOT-YET-WON IS A DASHED OUTLINE, NOT A FAINTER FILL , THE MEANING IS A DIFFERENT STATE.
-      A lower opacity reads as "the same thing, further away"; an outline reads as "not this
-      yet", which is what the mark means. It also survives at any size, where an opacity of
-      0.18 disappeared at 22px and would have disappeared again on a denser screen.  */
-  .cabtl-t.future{color:transparent}
-  .cabtl-t.future::after{content:'';position:absolute;inset:1px;border-radius:50%;
-      border:1.5px dashed var(--ink-soft)}
-  /*  THE CONNECTOR IS WHAT MAKES THE GRAPHIC TEACH WITHOUT THE CAPTION. Each won trophy
-      drops a line into the cabinet; the future one has none, so the rule is visible rather
-      than only stated.  */
-  .cabtl-c{position:absolute;top:calc(50% + 6px);width:0;border-left:1.5px dotted var(--panel-t);
-           transform:translateX(-50%)}
-  body.light .cabtl-c{border-left-color:var(--panel-t)}
-  .cabtl-box{background:var(--cream);color:#2b2924;border-radius:12px;
-             padding:12px 15px;max-width:430px}
-  .cabtl-h{font-family:'Archivo';font-weight:800;font-size:12px;color:#241f1b}
-  .cabtl-i{font-size:10.5px;color:#5f594e;margin:1px 0 9px}
-  .cabtl-r{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-  .cabtl-r .cabtl-m{width:15px;height:15px;color:#5a4410;flex:0 0 auto}
-  .cabtl-r .cabtl-m svg{width:100%;height:100%;display:block}
-  .cabtl-n{font-family:'Archivo';font-weight:800;font-size:11px;color:#241f1b}
-  .cabtl-yr{font-family:'Archivo';font-weight:800;font-size:14px;color:#241f1b;margin-left:auto;
-            font-variant-numeric:tabular-nums}
-  .cabtl-cap{margin-top:13px;font-size:12.5px;line-height:1.55;color:var(--cream);
+  /*  AN ENTRY IS A COLUMN UNDER ITS YEAR. Same-year honours are siblings inside ONE entry, so
+      they stack without moving the x.  */
+  .cabtl-e{position:absolute;top:44px;transform:translateX(-50%);width:150px;text-align:center}
+  .cabtl-i{margin-bottom:16px}
+  .cabtl-i:last-child{margin-bottom:0}
+  .cabtl-mk{width:30px;height:30px;color:var(--gold);margin:0 auto 7px;position:relative}
+  body.light .cabtl-mk{color:var(--gold-ink)}
+  .cabtl-mk svg{width:100%;height:100%;display:block}
+  .cabtl-n{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);line-height:1.25}
+  body.light .cabtl-n{color:var(--charcoal)}
+  .cabtl-yr{font-family:'Archivo';font-weight:800;font-size:26px;color:var(--gold);
+            font-variant-numeric:tabular-nums;line-height:1.1;margin-top:3px}
+  body.light .cabtl-yr{color:var(--gold-ink)}
+  /*  NOT YET WON IS A DASHED RING, NOT A FAINTER FILL , a different STATE, not the same thing
+      further away, and an outline survives at any size where a low opacity does not.  */
+  .cabtl-i.future .cabtl-mk{color:transparent}
+  .cabtl-i.future .cabtl-mk::after{content:'';position:absolute;inset:2px;border-radius:50%;
+      border:2px dashed var(--ink-soft)}
+  .cabtl-i.future .cabtl-n,.cabtl-i.future .cabtl-yr{color:var(--ink-soft)}
+  /*  THE AXIS CLEARS THE TALLEST ENTRY COLUMN, SET IN JS. The entries are absolutely positioned
+      so they contribute ZERO height , the old build left 75px of dead space here because the
+      clearance was a guess. It is now measured from the tallest rendered column.  */
+  .cabtl-axis{display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.10);
+              padding-top:9px;margin-top:200px}
+  body.light .cabtl-axis{border-top-color:rgba(0,0,0,0.10)}
+  .cabtl-axis span{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.12em;
+                   text-transform:uppercase;color:var(--ink-soft)}
+  .cabtl-cap{margin-top:22px;font-size:13.5px;line-height:1.6;color:var(--cream);
              background:rgba(232,184,75,0.09);border-left:3px solid var(--gold);
-             padding:9px 13px;border-radius:0 8px 8px 0;max-width:620px}
+             padding:11px 15px;border-radius:0 9px 9px 0;max-width:700px}
   body.light .cabtl-cap{color:var(--charcoal);background:rgba(126,90,16,0.08)}
   @media (max-width:720px){
-    .cabtl-t{width:19px;height:19px;top:-23px}
-    .cabtl-y{font-size:9px}
-    .cabtl-box{max-width:none}
+    .cabtl-e{width:98px}
+    .cabtl-yr{font-size:19px}
+    .cabtl-n{font-size:11px}
+    .cabtl-mk{width:24px;height:24px}
+    /*  THE PLAYHEAD LABEL SITS BELOW THE RAIL AT PHONE WIDTH. Above it, measured at 390, it
+        collided with the intro paragraph , the rail is only 56px below the prose there.  */
+    .cabtl-here{top:34px}
+    .cabtl-y.now{font-size:12px}
   }
-  /*  THE SECTION IS LEGIBLE WITH NO MOTION AT ALL, so the guard has nothing to rescue , it
-      only stops the optional reveal. playbook.html carries no other reduced-motion block
-      (logged as hygiene in LAUNCH_STAGE.md); this section does not wait for that sweep.  */
   @media (prefers-reduced-motion:reduce){
     .cabtl,.cabtl *{transition:none!important;animation:none!important}
   }
@@ -1517,7 +1516,7 @@
   </div>
   <div class="gatestrip">Drawn only when the season can carry it: 800 minutes, 60 shots faced, 2015 onward. 1,920 of 2,806 keeper seasons with save data qualify, and every one that does not says which gate it missed. Seasons with no save recorded are not counted at all, because they were never eligible to fail a gate.</div>
 </div>
-</section><section class="section wthresh" id="s-wonder"><div class="wband"><div class="winner"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><p class="wstate">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was&nbsp;, the language of a career, earned not bought.</p><div class="wfams"><a class="wfam" href="#s-prestige"><span class="wfmk" data-sec="s-prestige"></span><span class="wfn">Prestige Tags</span><span class="wfl">The rarest air</span></a><a class="wfam" href="#s-honours"><span class="wfmk" data-sec="s-honours"></span><span class="wfn">Honours</span><span class="wfl">The silverware</span></a><a class="wfam" href="#s-profile"><span class="wfmk" data-sec="s-profile"></span><span class="wfn">Profile Tags</span><span class="wfl">How they play</span></a><a class="wfam" href="#s-verdict"><span class="wfmk" data-sec="s-verdict"></span><span class="wfn">Verdict Tags</span><span class="wfl">Settling debates</span></a></div></div></div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. The VV Score ladder above defines every band; these two are the only ones that get a card of their own.</div><div class="preexhibit"><div class="prerow"><div><div class="pvcard black"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">95 and above</div><h3 class="pr-n">Generational</h3><p class="pr-q">&#8220;Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.&#8221;</p><div class="pr-c">12 seasons, ever</div></div></div><div class="prerow sec"><div><div class="pvcard gold"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">90 and above</div><h3 class="pr-n">Iconic</h3><p class="pr-q">&#8220;The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.&#8221;</p><div class="pr-c">150 seasons at 90 and above</div></div></div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="hgrid"><div class="hcell" id="hc-ballon_dor"><div class="hmk"></div><div class="hn">Ballon d'Or</div><div class="ho">The best player in the world that season.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Ballon d'Or" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-world_cup_winner"><div class="hmk"></div><div class="hn">World Cup Winner</div><div class="ho">A world champion. The prize every player covets most.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="World Cup Winner" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-ucl_winner"><div class="hmk"></div><div class="hn">UCL Winner</div><div class="ho">Champion of Europe, the club game&#8217;s greatest prize.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="UCL Winner" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-league_champion"><div class="hmk"></div><div class="hn">League Champion</div><div class="ho">Champions. Top of the league across a full season.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="League Champion" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-player_of_season"><div class="hmk"></div><div class="hn">Player of the Season</div><div class="ho">The league&#8217;s finest over a full campaign.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Player of the Season" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-golden_boot"><div class="hmk"></div><div class="hn">Golden Boot</div><div class="ho">The league&#8217;s top scorer. Nobody scored more.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Golden Boot" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-top_assists"><div class="hmk"></div><div class="hn">Top Assists</div><div class="ho">The league&#8217;s chief creator. Nobody made more.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Top Assists" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div></div></div><div class="cabtl" id="cabtl"><div class="cabtl-rail" id="cabtlRail"></div><div class="cabtl-box" id="cabtlBox"></div><div class="cabtl-cap" id="cabtlCap"></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
+</section><section class="section wthresh" id="s-wonder"><div class="wband"><div class="winner"><div class="label">The badges of a career</div><h2 class="h2"><span class="se">&#127991;&#65039;</span> Wonder Tags</h2><p class="wstate">A number tells you how good a season was. A Wonder Tag tells you what kind of greatness it was&nbsp;, the language of a career, earned not bought.</p><div class="wfams"><a class="wfam" href="#s-prestige"><span class="wfmk" data-sec="s-prestige"></span><span class="wfn">Prestige Tags</span><span class="wfl">The rarest air</span></a><a class="wfam" href="#s-honours"><span class="wfmk" data-sec="s-honours"></span><span class="wfn">Honours</span><span class="wfl">The silverware</span></a><a class="wfam" href="#s-cabinet"><span class="wfmk" data-sec="s-cabinet"></span><span class="wfn">The Cabinet</span><span class="wfl">What he had won by then</span></a><a class="wfam" href="#s-profile"><span class="wfmk" data-sec="s-profile"></span><span class="wfn">Profile Tags</span><span class="wfl">How they play</span></a><a class="wfam" href="#s-verdict"><span class="wfmk" data-sec="s-verdict"></span><span class="wfn">Verdict Tags</span><span class="wfl">Settling debates</span></a></div></div></div></section><section class="section" id="s-prestige"><div class="label">The rarest air</div><h2 class="h2"><span class="se">&#128081;</span> Prestige Tags</h2><div class="intro">The rarest seasons football produces. Prestige is reserved for the campaigns that set the standard , the years a career is remembered for. The VV Score ladder above defines every band; these two are the only ones that get a card of their own.</div><div class="preexhibit"><div class="prerow"><div><div class="pvcard black"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">95 and above</div><h3 class="pr-n">Generational</h3><p class="pr-q">&#8220;Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.&#8221;</p><div class="pr-c">12 seasons, ever</div></div></div><div class="prerow sec"><div><div class="pvcard gold"><div class="pvm">V<i>V</i></div></div></div><div><div class="pr-t">90 and above</div><h3 class="pr-n">Iconic</h3><p class="pr-q">&#8220;The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.&#8221;</p><div class="pr-c">150 seasons at 90 and above</div></div></div></div></section><section class="section" id="s-honours"><div class="label">The silverware</div><h2 class="h2"><span class="se">&#127942;</span> Honours</h2><div class="intro">Numbers fade. Silverware doesn't. The medals a player actually lifted, when the season was on the line.</div><div class="cabwrap"><div class="hgrid"><div class="hcell" id="hc-ballon_dor"><div class="hmk"></div><div class="hn">Ballon d'Or</div><div class="ho">The best player in the world that season.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Ballon d'Or" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-world_cup_winner"><div class="hmk"></div><div class="hn">World Cup Winner</div><div class="ho">A world champion. The prize every player covets most.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="World Cup Winner" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-ucl_winner"><div class="hmk"></div><div class="hn">UCL Winner</div><div class="ho">Champion of Europe, the club game&#8217;s greatest prize.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="UCL Winner" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-league_champion"><div class="hmk"></div><div class="hn">League Champion</div><div class="ho">Champions. Top of the league across a full season.</div><div class="hleg team">Won by a squad</div><button type="button" class="hmore" data-h="League Champion" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-player_of_season"><div class="hmk"></div><div class="hn">Player of the Season</div><div class="ho">The league&#8217;s finest over a full campaign.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Player of the Season" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-golden_boot"><div class="hmk"></div><div class="hn">Golden Boot</div><div class="ho">The league&#8217;s top scorer. Nobody scored more.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Golden Boot" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div><div class="hcell" id="hc-top_assists"><div class="hmk"></div><div class="hn">Top Assists</div><div class="ho">The league&#8217;s chief creator. Nobody made more.</div><div class="hleg">Won by one player</div><button type="button" class="hmore" data-h="Top Assists" aria-expanded="false">See more &#8250;</button><div class="hdet"><div class="htd"></div><div class="hdq"></div></div></div></div></div></section><section class="section" id="s-cabinet"><div class="label">The silverware, in time</div><h2 class="h2"><span class="se">&#127890;</span> The Cabinet</h2><div class="intro">Every card is one season. The cabinet beneath it is not , it is everything won up to that point in a career. That is why a 2019 card shows a 2018 trophy.</div><div class="cabtl" id="cabtl"><div class="cabtl-stage"><div class="cabtl-rail" id="cabtlRail"></div><div class="cabtl-axis"><span>Early career</span><span>Peak years</span><span>Final seasons</span></div></div><div class="cabtl-cap" id="cabtlCap"></div></div></section><section class="section" id="s-profile"><div class="label">How they play</div><h2 class="h2"><span class="se">&#129516;</span> Profile Tags</h2><div class="pitchwrap"><div class="pitch"><div class="pitch-mk pm-circle"></div><div class="pitch-mk pm-half"></div><div class="pitch-mk pm-box top"></div><div class="pitch-mk pm-box bot"></div><button type="button" class="pspot" data-pos="ST" style="top:10%;left:50%" aria-label="Striker" aria-pressed="false">ST</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:17%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="Winger" style="top:21%;left:83%" aria-label="Winger" aria-pressed="false">WNG</button><button type="button" class="pspot" data-pos="CAM" style="top:33%;left:50%" aria-label="Attacking Midfielder" aria-pressed="false">CAM</button><button type="button" class="pspot" data-pos="CM" style="top:46%;left:50%" aria-label="Central Midfielder" aria-pressed="false">CM</button><button type="button" class="pspot" data-pos="CDM" style="top:58%;left:50%" aria-label="Defensive Midfielder" aria-pressed="false">CDM</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:15%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="FB" style="top:71%;left:85%" aria-label="Full Back" aria-pressed="false">FB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:37%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot" data-pos="CB" style="top:76%;left:63%" aria-label="Centre Back" aria-pressed="false">CB</button><button type="button" class="pspot gk" data-pos="GK" style="top:91%;left:50%" aria-label="Goalkeeper" aria-pressed="false">GK</button></div><div class="pdetail" id="pDetail" aria-live="polite"><div class="pd-hint">Tap a position to see the role, and the profile tags a card in that position can earn. Different positions offer different tags , that is the whole idea.</div></div></div><!--  GENERATED FROM TAG_DEFS + FILTER_TAXONOMY.profile , DO NOT HAND-WRITE ENTRIES HERE.
       This block used to carry six tags typed out by hand, out of twenty-one the engine
       actually awards. Fifteen were undocumented, and of the six that were written down one
       had already drifted: Engine Room read "Covers ground relentlessly, links play, never
@@ -1558,14 +1557,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260912e"></script>
+<script src="/vv-marks.js?v=20260912f"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260912e"></script>
+<script src="/vv-core.js?v=20260912f"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
@@ -1650,40 +1649,70 @@
       of one decision, which is the shape this file keeps recording as a defect.  */
   var CABTL_YEARS = [2015,2016,2017,2018,2019,2020,2021];
   var CABTL_NOW   = 2019;
-  var CABTL_WON   = { 2016:'League Champion', 2018:'Golden Boot', 2020:'UCL Winner' };
+  /*  A year may hold MORE THAN ONE honour, and the shipped example exercises it: 2018 carries
+      two, so the stacking rule is visible on the page rather than only in the code.  */
+  var CABTL_WON   = { 2016:[['league_champion','League Champion']],
+                      2018:[['golden_boot','Golden Boot'],['player_of_season','Player of the Season']],
+                      2020:[['ucl_winner','UCL Winner']] };
   function cabtlBuild(){
-    var rail=document.getElementById('cabtlRail'), box=document.getElementById('cabtlBox'),
-        cap=document.getElementById('cabtlCap');
-    if(!rail||!box||!cap) return;
+    var rail=document.getElementById('cabtlRail'), cap=document.getElementById('cabtlCap');
+    if(!rail||!cap) return;
     var ys=CABTL_YEARS, n=ys.length, nowI=ys.indexOf(CABTL_NOW);
     if(nowI<0) return;
+    /*  GROUP BY YEAR FIRST. Two honours in one season are two items in ONE entry column, which
+        is what keeps the x fixed and the timeline undistorted.  */
+    var byYear={};
+    Object.keys(CABTL_WON).forEach(function(y){
+      var v=CABTL_WON[y]; byYear[y]=Array.isArray(v[0])?v:[v];
+    });
     var h='<div class="cabtl-fill" style="width:'+(nowI/(n-1)*100)+'%"></div>';
     ys.forEach(function(y,i){
-      var L=(i/(n-1))*100, won=CABTL_WON[y], before=i<=nowI;
-      if(won){
-        h+='<div class="cabtl-t'+(before?'':' future')+'" style="left:'+L+'%" '
-         + 'title="'+(before?won+', won in '+y:'not won until '+y)+'">'+(before?honMark(won):'')+'</div>';
-        /* a connector ONLY for what is already in the cabinet , the absence is the lesson */
-        if(before) h+='<div class="cabtl-c" style="left:'+L+'%;height:46px"></div>';
-      }
+      var L=(i/(n-1))*100, before=i<=nowI;
       h+='<div class="cabtl-s '+(y===CABTL_NOW?'now':(i<nowI?'past':''))+'" style="left:'+L+'%"></div>';
       var edge = i===0 ? ' lead' : (i===n-1 ? ' trail' : '');
       h+='<div class="cabtl-y '+(y===CABTL_NOW?'now':'')+edge+'" style="left:'+L+'%">'+y+'</div>';
       if(y===CABTL_NOW) h+='<div class="cabtl-here" style="left:'+L+'%">This card</div>';
+      var items=byYear[y];
+      if(items && items.length){
+        h+='<div class="cabtl-e" style="left:'+L+'%">';
+        items.forEach(function(it){
+          h+='<div class="cabtl-i'+(before?'':' future')+'">'
+           + '<div class="cabtl-mk">'+(before?honMark(it[1]):'')+'</div>'
+           + '<div class="cabtl-n">'+it[1]+'</div><div class="cabtl-yr">'+y+'</div></div>';
+        });
+        h+='</div>';
+      }
     });
     rail.innerHTML=h;
-    var rows=Object.keys(CABTL_WON).map(Number).filter(function(y){return y<=CABTL_NOW;}).sort();
-    var b='<div class="cabtl-h">The Cabinet</div><div class="cabtl-i">What he had won by this season.</div>';
-    rows.forEach(function(y){
-      b+='<div class="cabtl-r"><span class="cabtl-m">'+honMark(CABTL_WON[y])+'</span>'
-       + '<span class="cabtl-n">'+CABTL_WON[y]+'</span><span class="cabtl-yr">'+y+'</span></div>';
-    });
-    box.innerHTML=b;
     cap.innerHTML='This is the <b>'+CABTL_NOW+'/'+String(CABTL_NOW+1).slice(2)+'</b> card. '
       + 'The cabinet holds everything won <b>up to and including</b> that season, which is why a '
       + CABTL_NOW+' card shows a '+(CABTL_NOW-1)+' trophy. The dashed mark ahead of the marker has '
-      + 'not been won yet, so nothing runs down from it.';
+      + 'not been won yet.';
+    cabtlFit();
   }
+  /*  THE AXIS CLEARANCE IS MEASURED, AND IT MUST BE MEASURED WHILE THE SECTION IS VISIBLE.
+      The entries are absolutely positioned so they contribute ZERO height, and the section is
+      FOLDED at build time , every `offsetHeight` reads 0 then, which silently left the CSS
+      fallback in place and 214px of empty panel. Caught by rendering the still, not by reading
+      the code. So this runs again on open and on resize, and it no-ops when the panel is
+      hidden rather than writing a wrong number.  */
+  function cabtlFit(){
+    var rail=document.getElementById('cabtlRail'); if(!rail) return;
+    var ax=rail.parentNode.querySelector('.cabtl-axis'); if(!ax) return;
+    var tallest=0;
+    rail.querySelectorAll('.cabtl-e').forEach(function(e){
+      var h=e.getBoundingClientRect().height; if(h>tallest) tallest=h; });
+    if(!tallest) return;                       // folded or not laid out , leave the CSS value
+    ax.style.marginTop = Math.round(tallest + 56) + 'px';
+  }
+  window.addEventListener('resize', function(){ cabtlFit(); });
+  (function(){
+    var sec=document.getElementById('s-cabinet'); if(!sec) return;
+    /*  vvFoldSections moves the body into a .foldbody and toggles .open on the SECTION, so the
+        class is what changes , watch it rather than guessing at a click target.  */
+    new MutationObserver(function(){ requestAnimationFrame(cabtlFit); })
+      .observe(sec, {attributes:true, attributeFilter:['class']});
+  })();
   var HON_RANK = ["Ballon d'Or","World Cup Winner","UCL Winner","League Champion","Player of the Season","Golden Boot","Top Assists"];
   /*  NOTHING IS PRE-SELECTED ANY MORE, and that is the point of the change. The old case
       always had one honour open because a hero panel cannot be empty; a grid of seven has

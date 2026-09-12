@@ -100,6 +100,12 @@
     's-wonder':          '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.3 3.6h11.5v16.8H9.3L2.4 12Zm1.5 2.6L5.5 12l5.3 5.8h7.9V6.2Z"/> <circle cx="10.4" cy="12" r="1.9"/></g>',
     's-conf':            '<g fill="currentColor"> <circle cx="4" cy="12" r="2.6"/><circle cx="10" cy="12" r="2.6"/><circle cx="16" cy="12" r="2.6"/> <path fill-rule="evenodd" d="M20.6 9.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm0 1.5a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></g>',
     's-prestige':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M1.4 6.2 6 10.4 12 3.6l6 6.8 4.6-4.2-1.7 9.2H3.1Zm4.2 5.9-1 3.5h13.2l-.7-3.5-3.6 3.3L12 8.9l-2.9 5.4Z"/> <path d="M3.4 17.6h17.2v2.6H3.4Z"/></g>',
+    /*  A CASE WITH SHELVES, NOT A TROPHY , DELIBERATE. The section already has trophies in it,
+        one per honour from the shared HONOURS set, and a trophy in the nav would be a second
+        drawing of the same idea at a different size. "Shelf" is also the vocabulary the code
+        already uses: `.cabsh` is a cabinet shelf and `.cabyrs`'s left rule is described as the
+        shelf edge. Same fill-rule convention as every other section mark.  */
+    's-cabinet':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M3.4 2.6h17.2v18.8H3.4Zm2.6 2.6v13.6h12V5.2Z"/> <path d="M7.2 9.4h9.6v1.6H7.2Z M7.2 14h9.6v1.6H7.2Z"/></g>',
     's-honours':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 1.8a6.6 6.6 0 1 0 0 13.2 6.6 6.6 0 0 0 0-13.2Zm0 2.8a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6Z"/> <path d="M7.4 15.4 4.8 22.4l4-1.8 3.2 1.8-1.4-6.2Zm9.2 0-2.2.6 1.6 6.4 1.2-1.8 4 1.2Z"/></g>',
     's-profile':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M2.2 7.2h13.4a5.4 5.4 0 0 1 0 10.8H2.2Zm2.8 2.8v5.2h10.6a2.6 2.6 0 0 0 0-5.2Z"/> <circle cx="17.4" cy="12.6" r="2"/></g>',
     's-verdict':         '<g fill="currentColor"> <path d="M11 2.2h2v19.6h-2Z M3.2 6.6h17.6v2.2H3.2Z"/> <path fill-rule="evenodd" d="M6.2 9.6 9.8 17H2.6Zm0 3.8L4.9 16.4h2.6Z"/> <path fill-rule="evenodd" d="M17.8 9.6 21.4 17h-7.2Zm0 3.8-1.3 3h2.6Z"/></g>',
