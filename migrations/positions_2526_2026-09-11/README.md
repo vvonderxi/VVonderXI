@@ -59,19 +59,25 @@ set statement_timeout = '600s';
 refresh materialized view player_card_mv;
 ```
 
-## Still owed after the refresh, and NOTHING WARNS YOU
+## Everything owed after the refresh is DONE. Nothing here is outstanding.
 
-1. **[DONE 2026-09-12. See the diff above.]** ~~Re-measure against `before.json`~~ , the real rt
-   for all 57,055 cards, diffed. **113 movers, 6 band crossings, 8 pool changes.**
-2. **Regenerate `RADAR_POOL_REF`** (`scripts/gen-radar-ref.js`). It reads `player_card_mv`
-   DIRECTLY, so running it before the refresh writes a snapshot of the pre-write state into a
-   file that looks freshly generated. **Simulated impact: negligible** , the 8 cards sit in
-   reference pools of 1,196 to 9,764, medians move in the fourth decimal (CAM goalThreat/90
-   median 0.1687 -> 0.1692, n 1,196 -> 1,198). Regenerate anyway: a stale embedded snapshot is
-   a standing hazard, and the point is that it stops being stale.
-3. **Re-measure the margin table** (`scripts/separability/gen_margin_table.js`). It descends
-   from the same matview via `pull_inputs.js` -> `bootstrap_se.js`. Path B's crowning gate reads
-   per-card standard errors off these scores, so a moved rt moves a margin.
+1. **[DONE 2026-09-12.]** ~~Re-measure against `before.json`~~ , the real rt for all 57,055 cards,
+   diffed. **113 movers, 6 band crossings, 8 pool changes.** See the table above.
+2. **[DONE 2026-09-12, in `4a9c502` at 11:01.]** ~~Regenerate `RADAR_POOL_REF`~~
+   (`scripts/gen-radar-ref.js`). **Impact was as predicted: negligible** , the 8 cards sit in
+   reference pools of 1,196 to 9,764 and medians moved in the fourth decimal (CAM goalThreat/90
+   median 0.1687 -> 0.1692, n 1,196 -> 1,198). **Re-verified that evening: regenerated into `/tmp`
+   and compared to the committed block, BYTE-IDENTICAL, 5,154 characters both sides.**
+3. **[DONE 2026-09-12, same commit.]** ~~Re-measure the margin table~~
+   (`scripts/separability/gen_margin_table.js`). `4a9c502` carries `vv-margin.js` alongside
+   `vv-core.js` and the `?v=` bump on all five shipping surfaces.
+
+**AND A WARNING ABOUT RE-RUNNING THEM ANYWAY, because an evening draft of the handover said they
+were still due and it was wrong.** The honours work that followed this batch **cannot move rt**:
+on a fresh `pg_get_viewdef`, `rt_new` is fully computed by line 156, the `hon_rows` and `hon` CTEs
+begin after it, and `hon` is consumed only by a `LEFT JOIN` feeding `honours_json` and the seven
+`h_*` display flags. **A regeneration on that basis costs a bootstrap run and changes nothing.**
+The trigger is a write that moves rt, never a refresh on its own.
 
 Cached verdicts need no action , `rt_a`/`rt_b` stamps make a moved card a cache miss.
 

@@ -736,9 +736,27 @@ the read-only staging twin instead of the write path and claimed 19 players held
 earned. False , `top_assists_write.js` already writes every tied player.** An audit of the twin is
 not an audit of the write path.
 
-**NEXT / OPEN:** **Regenerate `RADAR_POOL_REF` (`scripts/gen-radar-ref.js`) then the margin table
-(`scripts/separability/gen_margin_table.js`), in that order, FIRST THING.** They are no longer
-blocked, they are DUE , both read the matview and 113 cards' rt has moved. **Squad numbers (variant
+**7. TWO DIFFERENT QUANTITIES BOTH CAME OUT AS 113 TODAY AND I CONFLATED THEM IN A HANDOVER LINE.
+THE COINCIDENCE IS THE WARNING.** **113 cards carry `h_top_assists`** after the honours writes, and
+**113 cards moved rt** from the POSITION batch measured against `before.json`. They share nothing
+but the number. **Honours are DISPLAY-ONLY and cannot move a score** , read off a fresh
+`pg_get_viewdef` (17,766 chars): `rt_new` is fully computed by line 156, the `hon_rows` and `hon`
+CTEs begin after it, and `hon` is consumed only by a `LEFT JOIN` feeding `honours_json` and the
+seven `h_*` flags. **Zero honours references appear anywhere before `rt_new` is defined.**
+**So today's honour writes moved ZERO scores**, and a NEXT line reading "113 cards' rt has moved"
+as a reason to regenerate was wrong twice over , wrong about the cause, and wrong that anything
+was owed. **When two figures match, check they are the same QUANTITY before reasoning from the
+match** , the same family as SS C's two-fields-for-one-concept rule.
+
+**NEXT / OPEN:** **NO REGENERATION IS OWED, AND THIS LINE PREVIOUSLY SAID THE OPPOSITE.**
+`RADAR_POOL_REF` and the margin table were regenerated after the MORNING refresh, in **`4a9c502`**
+(11:01), which also bumped the `?v=` token on all five shipping surfaces. **Nothing has moved rt
+since**, verified three ways: `RADAR_POOL_REF` regenerated into `/tmp` is **BYTE-IDENTICAL** to the
+committed block (5,154 chars both sides, built from per-90 rates over 25,901 cards, so any write to
+goals, assists, minutes or pools would have moved a breakpoint); the viewdef proof above; and
+**zero rows written to `player_season_cards` or `player_positions` today**, with
+`write_assists_ccc.js` reporting `filled 0 / already-had 28`. **Re-run them when something actually
+moves rt, not on a schedule.** **Squad numbers (variant
 A) is BLOCKED on one unanswered product question and Lucas has said to stop asking** , the blank
 shield decision; he will bring it. The `top_assists` sourcing job has **33 of 46 league-seasons
 left** and its spec now carries a SS 0 and a SS 10 that did not exist this morning; **commission
