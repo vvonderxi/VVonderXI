@@ -961,6 +961,63 @@ fill-only block into their own named script, e.g. `write_assists_ccc.js`, and de
 
 ---
 
+## `league_standings` IS SHALLOW FOR BELGIUM IN 13 OF 16 SEASONS, AND A SELECTION KEYED ON RANK SHRINKS SILENTLY RATHER THAN ERRORING (found 2026-09-12, LOGGED NOT FIXED)
+
+**THE TABLE EXISTS AND IS MOSTLY GOOD, WHICH IS WHY THIS IS EASY TO MISS.** `league_standings`
+holds **2,511 rows, 143 of 144 league-seasons, with `rank`, `points`, `played`, W/D/L and goal
+difference.** It is a real and useful table. **The gap is concentrated in one league and it is
+total there.**
+
+    rows per league-season        10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25
+    PL                            20  20  20  20  20  20  20  20  20  20  20  20  20  20  20  20
+    LL                            20  20  20  20  20  20  20  20  20  20  20  20  20  20  20  20
+    SA                            20  20  20  20  20  20  20  20  20  20  20  20  20  20  20  20
+    BL                            18  18  18  18  18  18  18  18  18  18  18  18  18  18  18  18
+    L1                            20  20  20  20  20  20  20  20  20  20  20  20  20  18  18  18
+    PRT                           16  16  16  16  18  18  18  18  18  18  18  18  18  18  18  18
+    ERE                           18  18  18  18  18  18  18  18  18  18  18  18  18  18  18  18
+    BPL                            6   4   6   4   6   4   6  16   6  16  18   4   4   4   6   6
+    TR                            --   4  18  18  18  18  18  18  18  18  21  20  19  20  19  18
+
+**BELGIUM CARRIES 4 TO 6 ROWS IN 13 OF 16 SEASONS**, which is the shape of the **playoff-group
+table rather than the full league** , the Belgian Pro League splits into a championship group
+after the regular season, and what was captured is that group, not the twelve to eighteen clubs
+that actually played. **Three seasons prove the full table is obtainable: 2017 and 2019 hold 16,
+2020 holds 18.** So this is a capture gap, not a property of the competition.
+**`TR 2010` is absent entirely and `TR 2011` holds 4 rows.**
+
+**TOTALS: 143 of 144 league-seasons present, 14 too shallow to define a top ten, so 129 of 144 are
+usable for any rank-based selection.** Across 2010-2015 specifically it is **46 of 54**.
+
+**THE DANGER IS THE FAILURE MODE, NOT THE MISSING ROWS. A SELECTION KEYED ON `rank <= N` RETURNS
+FEWER ROWS INSTEAD OF FAILING.** Ask for the top ten of every league-season and Belgium quietly
+returns four, or six, and the query succeeds. **Nothing errors, nothing warns, and the job reports
+a clean run.** That is how a batch scoped as "nine leagues" quietly covers seven or eight, and the
+shortfall is invisible in the output because a smaller result set looks like a smaller league.
+- **IT WAS CAUGHT ONLY BECAUSE THE SQUAD-NUMBER SCOPE COUNTED CLUB-SEASONS PER LEAGUE AND SAW
+  BELGIUM AT ZERO.** A count of the SELECTED rows would have shown 460 and looked fine.
+- **THE GUARD IS ONE LINE AND MUST BE IN ANY RANK-KEYED JOB: assert the league-season's row count
+  reaches N BEFORE taking its top N, and refuse the league-season loudly if it does not.** Same
+  shape as the `top_assists` coverage gate , check the denominator before trusting the extreme.
+
+**SEPARATELY, AND ALSO MEASURED 2026-09-12: THE TABLE KEYS ON `team_name`, NOT `team_id`, SO IT
+JOINS TO CARDS BY STRING.** 41 of 494 top-ten club-seasons in 2010-2015 fail that join, because
+**`league_standings` stores ASCII-folded names while the cards store the real ones** , `Bayern
+Munich` against `Bayern München`, `Fenerbahce` against `Fenerbahçe`, `FC Koln` against `1. FC
+Köln`. **A failed join drops a club silently, which biases any selection toward clubs whose names
+happen to match on both sides.**
+- **THE ALIAS MAP MUST BE EXPLICIT AND MUST NOT BE FUZZY.** Sixteen mappings resolve all 41, and
+  the reason to hand-write them is concrete: **`Borussia Monchengladbach` near-matches BOTH
+  `Borussia Mönchengladbach` AND `Borussia Dortmund`.** An automatic near-match is ambiguous on six
+  club-seasons and would attach an entire squad to the wrong club.
+- **Three needed football knowledge rather than string distance:** `Waasland-beveren` to
+  `SK Beveren`, and `Osmanlıspor` to `Ankaraspor` (the same club, renamed). Both were checked in
+  both directions for a collision before being accepted.
+- **This is the same canonicalisation gap SS E already records for the 25/26 duplicate team names.**
+  If a team alias map is ever built, these two callers should share it.
+
+---
+
 ## THE PLAYBOOK KEYS THREE MAPS ON A DISPLAY STRING, SO A COPY CHANGE IS A CODE CHANGE (found 2026-09-12, NOT REFACTORED)
 
 **WHAT IT COST TODAY, WHICH IS THE ONLY REASON THIS IS WORTH WRITING DOWN.** Renaming two honours
