@@ -3082,9 +3082,30 @@
       ZIGZAG. Only Golden Boot and League Champion depicted the same object.
       Everything now reads VVMarks.honour(), keyed on the HONOUR_META key, through vvMark(),
       which fails soft to '' if vv-marks.js is missing or stale. */
+  /*  THE SHORT LABELS FOR THE THREE CAPPED SURFACES , the card face, the rankings grid card and
+      the rankings list/compact rows. The GLANCE no longer reads this map: it wraps, so it takes
+      HONOUR_META.label in full (2026-09-12).
+      TWO CHANGED, AND THE REASON IS MEANING RATHER THAN WIDTH. "Champion" dropped "League" and
+      became an unqualified claim, sitting two pills from "UCL" on the same face , two adjacent
+      pills both meaning champion, only one saying of what. "UCL" alone said the competition and
+      not the achievement. Both now say what was won.
+      MEASURED ON THE RENDERED CARD, NOT MODELLED , the two-up slot at `--cw` 132 holds 37.96px:
+        League Title  30.2  fits, 7.8 spare        UCL Champion  31.9  fits, 6.1 spare
+      and on the rankings grid card at `--cw` 260 the slot is 85.18px, so both clear by 22px+.
+      The rankings ROWS do not clip at all , `.rtag` is `overflow:visible` and the pill grows to
+      its text, so the constraint there is the row, and at 390 the row measured ZERO overflow
+      before and after the swap.
+      WHAT DID NOT CHANGE, AND WHY. `player_of_season` stays POTS by Lucas's call.
+      `world_cup_winner` stays "World Cup" because nothing longer fits: "World Cup Winner" is
+      43.8 against 37.96, and even "World Champion" is 38.8 and misses. It is the only honour
+      left whose label does not say what was done, and it is an open copy decision, NOT an
+      oversight , do not quietly abbreviate it.
+      AND NOTE THE ONE ALREADY AT THE LIMIT: "Top Assists" measures 38.0 against a 37.96 slot,
+      so it is a rounding error from clipping TODAY, unchanged by this edit. Anything that
+      shrinks the slot breaks it first.  */
   const HONOUR_CHIP_LABEL = {
-    ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL',
-    league_champion:'Champion', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
+    ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL Champion',
+    league_champion:'League Title', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
   };
   function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
