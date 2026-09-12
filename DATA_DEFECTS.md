@@ -120,3 +120,27 @@ carries why.
   - **`penalties_saved` DISTRIBUTION:** {0:1599, 1:818, 2:282, 3:87, 4:26, 5:3, 6:1}, mean 0.628. **Zero non-GK cards carry it**, so unlike `saves` it is genuinely keeper-only.
   - **SEVEN NON-KEEPERS CARRY `saves`** , Ocampos LL 19/20, Fares SA 17/18, De Smet L1 23/24, Amadou L1 17/18, Fontán ERE 22/23, Safouri TR 23/24, Demirbağ TR 22/23. All 1 or 2 saves with 0 conceded, across five leagues and five seasons. **This is the plausible shape of an outfielder finishing a match in goal after a keeper is sent off** , explicable, not corrupt, but it means `saves IS NOT NULL` is not a keeper filter on its own.
   - **THE AGREEMENT TEST THAT WAS UNDISCRIMINATING, AND IT NEARLY SHIPPED AS A FINDING.** Asked whether outfield `goals_conceded` was the TEAM total, the test "do all outfielders on one team-season share a value" returned **1,589 of 1,589 in perfect agreement**. That reads as overwhelming support. **It was wrong** , they agree because the value is a constant zero. **Min and max settled it in one query.** Promoted to a rule in §C, beside the existing consistency-cannot-be-the-test rule it sharpens.
+
+## THE WORLD CUP CAREER LEG IS RETIRED IN JS AND STILL COMPUTED IN SQL (2026-09-12, LATENT)
+
+**`29abbe9` retired the career leg on the front end** , `world_cup_winner` now matches its own
+season like every other honour, and the "held as of here" half moved to the Cabinet, which is
+as-of the card's own season. **`player_card_view` did not change.** Read from a fresh
+`pg_get_viewdef` on 2026-09-12, the world_cup CTE still joins
+`ON h.api_player_id = p3.api_player_id AND psc3.season_year >= h.season_year`, so it still
+emits one row per season from the tournament onward and those still land in `honours_json` with
+`leg`.
+
+**NOTHING READS IT, WHICH IS WHY THIS IS LATENT AND NOT LIVE.** The card builds its honours
+from the `honours` table via `fetchHonours`, not from `honours_json`. The seven `h_*` booleans
+are display flags for the filter rail and are LEFT JOINed at the end of the view , verified the
+same day that no rt expression references honours at all, so none of this touches a score.
+
+**THE TRAP IS FOR THE NEXT CONSUMER.** Anything that starts reading `honours_json` , a payload
+field, a tag, a share surface, a rankings column , inherits the leg and with it **333 phantom
+World Cups**: the leg attaches in BOTH directions, so a 2010 card of a 2014 winner carries one.
+Measured 2026-09-11: 496 pairs after the tournament, 91 on it, 333 before it.
+
+**FIX IT IN THE VIEW BEFORE READING THE COLUMN, NOT AFTER.** The change is `>=` to `=` in that
+one join, and it is rt-safe by the paragraph above, but it rides a view edit and therefore the
+capture-before-edit rule in §C.
