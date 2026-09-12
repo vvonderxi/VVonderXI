@@ -76,54 +76,45 @@ eight in passing, **LOG IT IN `DATA_DEFECTS.md` AND DO NOT ACT ON IT.**
 
 ## 2. SOURCE AND THE TWO-READ PROTOCOL
 
-**PRIMARY: Wikipedia per-season league articles**, i.e. the existing `wikipedia_ccc` lane.
-**SECOND, INDEPENDENT READ: Transfermarkt** per-season league assist tables.
-**TIEBREAK ONLY: the league's own archive.**
+**[REWRITTEN 2026-09-12 PM AFTER TESTING EVERY CANDIDATE. THE ORIGINAL ORDERING WAS WRONG:
+WIKIPEDIA WAS APPROVED AS PRIMARY AND CARRIES THE FACT FOR 2 OF 20 CHECKED LEAGUE-SEASONS.]**
 
-**WHY WIKIPEDIA IS PRIMARY , PRECEDENT INSIDE THIS TABLE.** 509 of 620 honour rows already come
-from that lane, including **all 141 `golden_boot` rows**, which is the closest possible analogue:
-per-season, per-league, domestic-only, one winner, ties possible. That lane has produced five
-honour types with no recorded defect, and **the one honour type not sourced that way is precisely
-the one that broke.**
+**PRIMARY: TRANSFERMARKT.** Dedicated per-league-season "Most assists" pages, reachable, complete
+across all nine leagues for 2010-2015. URL shape:
+`transfermarkt.com/<slug>/assistliste/wettbewerb/<code>/saison_id/<year>` (`GB1` Premier League,
+`ES1` LaLiga; `saison_id` 2010 means 2010/11).
 
-**WHY NOT FBref, AND THIS IS THE DECISIVE ARGUMENT , IT IS ABOUT INDEPENDENCE, NOT QUALITY.**
-The ~117 pre-2015 assists we already hold were themselves **CCC-verified against FBref
-domestic-league splits** (`CLAUDE_ARCHIVE_2026-07.md`, the NR-ASSIST FILL). **So an FBref-sourced
-winner would NOT be independent of the column it is correcting.** If FBref's definition diverges
-from the league's own, we would be confirming our own bias and every check would pass for the
-wrong reason. (`CLAUDE.md` SS C also records FBref losing its Opta feed in early 2026, which is a
-second and lesser reason.)
+**SECOND READS, WHERE THEY EXIST:**
+- **Premier League official archive , WORKS.**
+  `premierleague.com/en/stats/top/players/goal-assists/<season>`, e.g. `.../2011-12`.
+  **The slug is `goal-assists` with a hyphen.** `goal_assist` 404s and **`assists` silently routes
+  to the GOALS table**, which is the trap recorded in `SILENT_FAILURES.md`.
+- **Wikipedia , only where a "Top assists" section exists.** Verified present for **La Liga
+  2010/11 and 2011/12** and absent for all five Premier League seasons, all five Serie A and all
+  five Bundesliga seasons checked. **2 of 20.**
 
-**WHY TRANSFERMARKT SECOND.** A genuinely separate editorial chain, already the platform's source
-for shirt and position, and strongest exactly where Wikipedia is thinnest , Portugal, the
-Netherlands, Belgium and Turkey for 2010-2014. **SS E records the Transfermarkt SCRAPING lane
-dying on a markup change at 122 of 474 cards. That failure mode does not apply here: 46 facts is
-small enough to read by hand**, which sidesteps the scraper entirely rather than mitigating it.
+**TESTED AND REJECTED, WITH THE REASON:**
+- **La Liga official archive , NO.** An Assists tab exists at
+  `laliga.com/en-GB/stats/laliga-easports/assists`, but the page is pinned to the CURRENT season,
+  carries **no season selector of any kind** (zero `<select>`, zero season-shaped options), and a
+  season-suffixed URL returns their 404 page. **Current season only.**
+- **Bundesliga official archive , NO.** It has a proper season dropdown and it lists **eight
+  seasons, oldest 2019-2020**. Does not reach 2010-2014. (Reaching it also requires passing a
+  consent wall whose only free path is the cookie banner; **Reject all** was taken.)
+- **FBref , REJECTED, AND THIS MATTERS MORE NOW THAN IT DID.** The ~117 pre-2015 assists already
+  in `player_season_cards` were themselves CCC-verified against FBref domestic-league splits, so an
+  FBref-sourced winner **is not independent of the column it is correcting.** With Transfermarkt now
+  PRIMARY rather than second, the second reader is the only independence in the protocol, so
+  admitting FBref there would leave the whole job with no independent check at all. **The exclusion
+  stands unchanged and is now load-bearing.**
 
-**WHY NOT THE LEAGUE ARCHIVES AS PRIMARY.** Nine sites, nine formats, and several archives do not
-reach 2010. Nine integrations for 46 facts. They are the right authority for a tiebreak and the
-wrong one for the bulk.
+**SERIE A , INCONCLUSIVE, NOT FAILED. See SS 7 for what was tried and what a patient pass needs.**
 
 ### THE HOLD RULE , NO ADJUDICATION
 
 **Write a league-season ONLY where both reads agree on the same player AND the same number.**
-- Disagreement on the player, or on the count, means **HOLD the league-season unwritten.**
-- **The researcher does not adjudicate.** A held league-season goes to the tiebreak archive; if
-  that does not settle it, it stays unwritten and is logged. **Unwritten is a valid outcome and
-  is the same honest state `L1 2023` is deliberately left in.**
-- The source must state the **domestic league competition only**, matching what our `assists`
-  column means where it is populated. A figure covering all competitions is not usable.
-- Record the per-row confidence and both reads in the staged CSV, not just the winner.
-
-### TIES ARE WRITTEN IN FULL
-
-If the source names joint leaders, **every tied player gets a row.** `honours_one_per_award` is
-`UNIQUE (honour_type, season_year, league_code, api_player_id)` and permits this by construction,
-`golden_boot` already stores a tie (TR 2025/26, Shomurodov and Onuachu both on 22), and the
-corrected computation writes ties in full. **Collapsing a tie is the behaviour that was fixed;
-do not reintroduce it.**
-
----
+Disagreement on either holds it unwritten. **The researcher does not adjudicate.** Unwritten is a
+valid outcome, the same honest state `L1 2023` is deliberately left in.
 
 ## 3. WRITE SHAPE
 
@@ -227,3 +218,69 @@ for a second player, or a full table, or "while we are in there", it becomes the
 that was rejected , and that rejection is permanent for a structural reason recorded in
 `DATA_DEFECTS.md`: **the percentile pools carry no `season_year` in any of their eleven
 `PARTITION BY` clauses, so every era-bounded fill is a partial fill of every pool.**
+
+---
+
+## 7. SERIE A , INCONCLUSIVE, SO THE NEXT ATTEMPT DOES NOT START FROM ZERO
+
+**NOT "no assists". NOT verified either. Recorded as UNRESOLVED on purpose.**
+
+**WHAT IS ESTABLISHED AND IS GOOD NEWS:** `legaseriea.it` has by far the deepest season archive of
+any official site tested , **27 seasons, back to 2000/2001**, comfortably covering 2010-2014. The
+English host is `en.legaseriea.it` and the stats path is `/serie-a/statistiche`, with a Players
+view at `/serie-a/statistiche/giocatori`.
+
+**WHAT WAS TRIED, SO IT IS NOT REPEATED:**
+1. `legaseriea.it/en/serie-a/statistics` , redirects to the homepage.
+2. Found the real link by reading the site's own nav: `/serie-a/statistiche`.
+3. Cookie banner , **Reject** taken (it reappears per host, so expect it again on `en.` pages).
+4. Opened the season dropdown: 27 seasons confirmed, 2000/2001 to 2026/2027.
+5. Clicked `2011/2012`, then switched to the **Players** view.
+6. Checked the **General** and **Passes** tabs for an assists column.
+
+**WHERE IT STALLED, AND THE TWO PROBLEMS ARE SEPARABLE:**
+- **The season reset to the current one when the Clubs/Players toggle was used.** So the tab and
+  the season are not independent in the order they were driven. **Set the view FIRST, then the
+  season**, and re-read the rendered season label before trusting anything.
+- **No assists column was found, but the tables expose no `<th>` to read and the body text
+  contained zero occurrences of "assist".** That is as consistent with an extraction failure as
+  with the data being absent, and **it must not be recorded as absence.**
+
+**WHAT A PATIENT PASS NEEDS:**
+- Drive the UI in the order **Players -> Attack/Passes tab -> season**, screenshotting after each
+  step rather than reading the DOM, since the DOM read returned nothing on a page that was visibly
+  rendering data.
+- If assists are genuinely absent from the official site, Serie A joins the one-read group and its
+  five league-seasons take `transfermarkt_leader_only_unverified`.
+- **Do not spend more than one short session on it.** Five league-seasons are at stake and the
+  fallback is already defined.
+
+---
+
+## 8. PHASE 1 RESULT , THE HOLD RATE, MEASURED 2026-09-12
+
+**7 league-seasons had two reads available. 2 agreed. 5 held. HOLD RATE 71.4%.**
+
+    league-season   Transfermarkt          second read                        verdict
+    PL 2010/11      Nani 17                PL official: Nani 14               HOLD, number
+    PL 2011/12      David Silva 15         PL official: David Silva 15        WRITTEN
+    PL 2012/13      Hazard 12, Mata 12     PL official: Mata 12 (Hazard 11)   HOLD, leader set
+    PL 2013/14      Suarez 13, Gerrard 13  PL official: Gerrard 13 (Suarez 12) HOLD, leader set
+    PL 2014/15      Cesc Fabregas 18       PL official: Cesc Fabregas 18      WRITTEN
+    LL 2010/11      Messi 21               Wikipedia: Ozil 18, Messi 18       HOLD, player+number
+    LL 2011/12      Messi 19               Wikipedia: Ozil 17                 HOLD, player+number
+
+**WRITTEN: 2 rows, `source = 'sourced_leader_only_verified'`, ids 635 and 636. honours 620 -> 622.**
+
+**THE PATTERN IN THE DISAGREEMENTS IS SYSTEMATIC, NOT RANDOM, AND THAT IS THE FINDING.**
+Transfermarkt's totals run **equal or higher, never lower**: Nani 17 against 14, Messi 21 against
+18, Ozil 19 against 18, Suarez 13 against 12, Hazard 12 against 11. **Two of the five holds are
+caused purely by Transfermarkt crediting ONE more assist to the runner-up**, which promotes him
+into a tie that the official source does not have. **The leader is usually right; the count is
+usually higher.**
+
+**SO THE DEFINITIONAL SEAM PREDICTED IN SS 2 IS REAL AND IT SHOWED UP ON THE FIRST CHECK**, exactly
+as Lucas said it would. It is not a transcription problem and it will not be fixed by better
+reading , the two sources are counting different things, and where a single extra credited assist
+creates a tie, the two sources disagree about **who led the league**.
+
