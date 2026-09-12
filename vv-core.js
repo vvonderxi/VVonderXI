@@ -3104,7 +3104,17 @@
           defect. The .career class is what makes it read as a different KIND of thing
           rather than a season chip that happens to say a number. */
       const year = (isCareer && h.season_year != null) ? ' ' + h.season_year : '';
-      const label = (HONOUR_CHIP_LABEL[h.type] || h.label) + year;
+      /*  THE GLANCE TAKES THE FULL NAME, BECAUSE THE GLANCE IS NOT CAPPED (2026-09-12).
+          `#glChips` is `display:flex;flex-wrap:wrap` and this function is called with no
+          `max`, so the strip wraps and has no geometry budget to protect , measured, not
+          assumed. `HONOUR_CHIP_LABEL` exists for the surfaces that DO have one: the card
+          face and the two rankings row paths, all capped by `--cw`. It was abbreviating
+          here for no reason, and printing "POTS" on a card, which is an internal shorthand
+          rather than a word.
+          SO THE MAP IS NOW READ BY THREE CONSUMERS, NOT FOUR. Do not "restore" it here for
+          consistency , the consistency that matters is that a surface abbreviates only when
+          it must.  */
+      const label = ((HONOUR_META[h.type] && HONOUR_META[h.type].label) || h.label || h.type) + year;
       const tip = h.oneliner || h.label;   // #15: hover = clean one-liner ONLY (context/tally live in the expand)
       return '<span class="'+cls+' gold'+(isCareer?' career':'')+'" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
     }).join('');
