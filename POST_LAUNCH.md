@@ -1062,3 +1062,47 @@ Only Wonderkid and The Last Dance are `live:true` and carry both.
 card.html's Wonder Tags panel, in the wrong container, without a mark (see `CLAUDE.md` §D).
 **The fix is to make them live, not to flip the flag.** A page that shows a slot which will never fill
 is making a promise the engine has decided not to keep.
+
+
+---
+
+# THE STANDARD, PER-PLAYER SPAN ON THE CARD , SPEC, NOT STARTED (parked 2026-09-12)
+
+**WHY IT IS PARKED RATHER THAN DONE.** The playbook arc is an explainer diagram with no player
+in it, so a real extent cannot be drawn there , that is why the playbook shipped the schematic
+fix instead (full width, hatched, one claim). **This is the same idea on a surface that HAS a
+player, and it is a new feature, which is why it waits.** Evidence and measurements:
+`RULE_EVIDENCE.md`, the career-arc span entry.
+
+**THE DATA IS ALREADY ON THE CARD , NOTHING NEW HAS TO BE FETCHED.** `SEASON_RAW` holds the
+player's whole career and is already used to build the cabinet's team legs
+(`VVCore.cabinetWithTeamLegs(items, SEASON_RAW, D.season_year, null)`), and every row carries
+`rt`, `season_year`, `card_id` and `stage_the_standard`.
+
+**THE SPEC.**
+- **Sort the career by `(season_year, card_id)`**, which is what `stage_seasons`' `row_number()
+  OVER (... ORDER BY yr, card_id)` does in `player_card_view`. **The second key is load-bearing**
+  , 614 players hold two or more cards in one `season_year`, and a sort on the year alone leaves
+  those in whatever order the query returned them.
+- **The bar spans the FIRST to the LAST qualifying season**, positioned by career INDEX, not by
+  year, so a two-card season does not stretch the axis.
+- **Ticks mark each qualifying season** on the bar.
+- **A dashed run marks a gap**, because the qualifying seasons are frequently NOT contiguous ,
+  Firmino qualifies 2013, not 2014, 2015 to 2020, not 2021, then 2022. **Without the dashes the
+  bar asserts a continuous run the player did not have**, which is a second false claim replacing
+  the first.
+- **The label sits BELOW the bar, left-aligned to its start.** Inline, it overflows a narrow bar
+  and reads as part of the extent: measured at 390, track 318px, the narrowest real span renders
+  a 47px bar while the marker plus gap plus label needs 121px, so the label ran **74px past the
+  bar's right edge**.
+
+**DO NOT ADD A DEGENERATE-CASE BRANCH. ZERO AND NEAR-ZERO WIDTH ARE IMPOSSIBLE BY CONSTRUCTION.**
+The rule needs five qualifying cards, so first-to-last is **at least four index steps** and the
+minimum span is `4/(n-1)` , **23.5% at the longest career in the data (n = 18), still 16.7% at a
+hypothetical 25 seasons.** Measured over all 58 holders: minimum 4 index steps, minimum 5 distinct
+qualifying years, narrowest Eriksen at 23.5%. A guard for the single-season case is dead code.
+
+**THE DEFINITION NEEDS NO WORK , IT IS CORRECT AND AGREED IN BOTH IMPLEMENTATIONS.** SQL
+`stage_the_standard = COALESCE(nc.n_all >= 2 AND sa.n80 >= 5 AND sb.rt >= 80, false)`; the JS
+reference `careerStageTags` computes the same; the shipped copy describes it correctly. **Anyone
+picking this up is building a RENDERING, not revisiting a rule.**

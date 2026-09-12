@@ -126,6 +126,15 @@ A patch script searched for `done.map(r => r[0]+...` while the file actually con
 Research tools return `player_name` + `season`, because that is what a human reads. **That pair is NOT unique.** Resolving it against the mv surfaced three live collisions in a 55-row batch, i.e. a rate high enough that it WILL happen again on any future research pass:
 - **`J. Rodríguez`** = **FIVE players, not three. CORRECTED 2026-08-21** by counting `players` directly rather than counting what one batch happened to surface: **api 517, 2616, 2979, 19169, 415155.** The originals named here were **api517 James Rodríguez** (Real Madrid / Bayern, rt 80-81), **api19169 Jay Rodriguez** (West Brom, rt 14-65) and **api2616** (LL). **The count was understated because it was derived from a 55-row batch, so it measured that batch and not the table.** A collision count that is too low weakens the very rule it exists to justify, and the rule is the identity contract every research write depends on.
 - **`João Mário`** = **api206** (Benfica, 17g, rt80) AND **api41734** (FC Porto, a full-back, rt56).
+
+**[EXTENDED 2026-09-12. THE RULE ABOVE IS WRITTEN ENTIRELY ABOUT WRITES , "matching research output on it would have WRITTEN the wrong player's card" , AND IT BITES READS TOO. THE READ CASE IS WORSE.]**
+Measuring the narrowest career-arc span, `ilike '%Eriksen%'` against `player_card_mv` returned **20 career rows for what was treated as one player**. It is two: **api 174 (C. Eriksen, 18 scored cards)** and **api 56296 (N. Frederiksen, 2)**. The substring match caught a name that merely CONTAINS the target.
+
+**WHY THE READ CASE IS THE MORE DANGEROUS OF THE TWO, AND IT IS THE OPPOSITE OF WHAT YOU WOULD EXPECT.** A bad write is loud eventually , a wrong position on a famous card gets noticed, and the diff is inspectable. **A bad read produces a number that is simply a little off.** Twenty rows instead of eighteen moved the measured span from 23.5% to 21.1% and the career length from 18 to 20. **Both are plausible. Neither trips any check.** A two-row discrepancy is exactly the size a reader waves through, and it would have been quoted into a rule entry as a measurement.
+
+**WHAT CAUGHT IT was not suspicion of the number, it was re-running the query grouped by `api_player_id` out of habit.** That is the whole remedy: **group or filter by `api_player_id`, never by a name, even for a throwaway measurement** , and if a name must be used to FIND the id, print the distinct id count and assert it is 1 before using the rows.
+
+**AND NOTE THE ASYMMETRY IN HOW THE TWO FAILURES SURFACE.** The write case has a victim you can name. The read case has only a slightly wrong number in a document, which then becomes the premise for the next decision. **`CLAUDE.md` carries this rule in its write-only form; the read case is recorded here.**
 - **`Nenê`** = **api9970** (PSG, rt 85-89) AND **api41138** (Cagliari, rt 30-58).
 
 ---
