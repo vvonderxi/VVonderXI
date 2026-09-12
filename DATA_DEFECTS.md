@@ -638,7 +638,47 @@ re-measuring, and the re-measurement will show whether the discontinuity is stil
 league-seasons sit anywhere in the 25 to 50% band**, so the bar's exact placement is nearly
 inert in practice, which is itself the evidence that it is not the interesting parameter.
 
-### TIE-BREAKING IS ARBITRARY, AND IT IS A SEPARATE DEFECT THE COVERAGE GATE CANNOT SEE (logged 2026-09-12, NOT FIXED)
+### [CORRECTED 2026-09-12, SAME DAY. THE TIE CLAIM BELOW IS WRONG ABOUT THE DATA AND THE CORRECTION IS THE MORE USEFUL FINDING. READ THIS FIRST.]
+
+**"19 PLAYERS HOLD NO HONOUR THEY EQUALLY EARNED" IS FALSE. EVERY ONE OF THE 14 TIED
+LEAGUE-SEASONS ALREADY HOLDS EVERY TIED PLAYER.** Measured directly: ERE 2018 carries both Ziyech
+and Tadic, L1 2017 all three of Depay, Neymar and Payet, TR 2019 all three of Bayram, Erkin and
+Visca, LL 2017 all three of Messi, Suarez and Fornals, and so on for all fourteen. **110 live rows
+across 93 distinct league-seasons, which is 17 rows MORE than one per season.** Nothing was denied
+and there is nothing to add.
+
+**THE ERROR WAS MINE AND ITS SHAPE IS THE LESSON: I AUDITED THE WRONG FILE.** `compute_top_assists.js`
+does collapse ties, and I read its behaviour as the platform's behaviour. **It is the READ-ONLY
+STAGING TWIN , its own header says "NO DB writes" , and the actual write path is
+`top_assists_write.js`, whose first line reads "Recompute top-assists (ALL tied players) and WRITE
+to honours".** The writer was always correct about ties. **SS C already says to grep the consumer
+for the thing that actually changed; the same rule applies to the producer. Before attributing a
+data defect to a script, confirm that script is the one that wrote the data.**
+
+**AND CORRECTING IT EXPOSED THE REAL STRUCTURAL FAULT, WHICH IS WORSE THAN THE TIE ONE: THE GUARD
+COULD NEVER HAVE FIRED ON ANYTHING IT WROTE.** The writer gated on `mx >= 9` and the staging twin
+warned on `val < 9`. **Every row that could exist was >= 9, and every row that could be warned
+about was < 9, so the overlap is EMPTY.** The suspect-flag was structurally incapable of flagging a
+written row, which is why Van Persie on exactly 9 sailed through both. **A guard and a gate set
+from the same constant in opposite directions do not check each other, they cancel.**
+
+**AND THE FIX LANDED IN THE WRONG TWIN FIRST.** The coverage gate was applied to
+`compute_top_assists.js`, the file that writes nothing, before anyone checked which file writes.
+Both now carry it, and `top_assists_write.js` carries a header saying so. **Same defect class as
+`careerStageTags` and the view's two position keys: one rule, two implementations, and only a
+comment holding them together.**
+
+**TWO GENUINE DIFFS SURFACED FROM THE DRY RUN AND NEITHER IS A TIE, SO NEITHER WAS APPLIED:**
+- **`L1 2023` holds NO top_assists row at all**, while the current data gives a four-way tie on 8
+  (Dembele, A. Gomes, Aubameyang, Del Castillo). A missing league-season, not a tie fix.
+- **`PRT 2020` IS STALE.** The table holds Grimaldo and Nunez on 9; the data now tops out at
+  **Taremi on 10** for FC Porto. **So the honours table has drifted from the data it was computed
+  from**, which is a third defect class , snapshot staleness , and it needs its own decision
+  rather than being smuggled in behind a tie fix.
+
+**NOTHING WAS WRITTEN AND THE MATVIEW WAS NOT REFRESHED**, because no honour row changed.
+
+### [SUPERSEDED, KEPT FOR THE REASONING] TIE-BREAKING IS ARBITRARY IN THE STAGING SCRIPT (logged 2026-09-12)
 
 **THE SCRIPT WRITES WHICHEVER TIED PLAYER IT HAPPENED TO ITERATE FIRST.** `if (!cur || o[metric] >
 cur.val)` keeps the first maximum and every later equal is pushed to a `ties` array that is
@@ -651,8 +691,8 @@ which reported the same 14.
 
     players sharing the top value:  1 player 80 seasons | 2 players 10 | 3 players 3 | 4 players 1
 
-**SO 19 PLAYERS CURRENTLY HOLD NO HONOUR THEY EQUALLY EARNED**, and which one of each tied set got
-it is not a judgement, it is an artefact of row order. Examples: **ERE 2018 Ziyech and Tadic both
+**[FALSE, SEE THE CORRECTION ABOVE: all 19 are already written.] The claim was that 19 players hold
+no honour they equally earned.** It would have been true had the staging script been the writer. Examples: **ERE 2018 Ziyech and Tadic both
 on 13; L1 2017 Depay, Neymar and Payet all on 13; SA 2015 Pjanic and Pogba both on 12; LL 2018
 Sarabia and Messi both on 13; L1 2023 a FOUR-way tie on 8.**
 

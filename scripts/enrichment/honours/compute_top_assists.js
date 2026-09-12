@@ -63,16 +63,30 @@ const esc = v => { v = (v == null) ? '' : String(v); return /[",\n]/.test(v) ? '
   const MIN_COVERAGE = 0.25;
   const covShare = (k, kind) => { const c = cover.get(k); return (!c || !c.tot) ? 0 : (kind === 'a' ? c.aPop : c.gPop) / c.tot; };
 
-  // 2. per league-season: max assists, max goals
-  const topA = new Map(), topG = new Map(); // `${lc}|${sy}` -> {name, api, val, teams, ties:[]}
+  /*  2. per league-season: EVERY player on the maximum, not the first one seen.
+      THE OLD SHAPE KEPT `{winner, ties:[]}` AND WROTE ONLY THE WINNER, so a shared lead was
+      resolved by PAGINATION ORDER and the other holders were logged and discarded. Measured
+      2026-09-12: 14 of 94 resolved league-seasons are tied at the top, so 19 players held no
+      honour they equally earned. A tie is now carried as a LIST and every member is written.
+      THIS MATCHES golden_boot, WHICH ALREADY STORES TIES , two computed rows for TR 2025/26,
+      Shomurodov and Onuachu both on 22. top_assists was the outlier, not the innovation, and
+      honours_one_per_award is UNIQUE on (honour_type, season_year, league_code, api_player_id)
+      precisely so one award can have several holders.  */
+  const topA = new Map(), topG = new Map(); // `${lc}|${sy}` -> {val, holders:[{name,api,team}]}
   for (const o of agg.values()) {
     const k = o.lc + '|' + o.sy;
     for (const [store, metric, known] of [[topA, 'a', 'aKnown'], [topG, 'g', 'gKnown']]) {
       if (!o[known]) continue;            // a player with NO recorded figure is not in the ranking
       const cur = store.get(k);
-      if (!cur || o[metric] > cur.val) store.set(k, { name: o.name, api: o.api, val: o[metric], team: [...o.teams].join('+'), ties: [] });
-      else if (cur && o[metric] === cur.val && o[metric] > 0) cur.ties.push(o.name);
+      const entry = { name: o.name, api: o.api, team: [...o.teams].join('+') };
+      if (!cur || o[metric] > cur.val) store.set(k, { val: o[metric], holders: [entry] });
+      else if (o[metric] === cur.val) cur.holders.push(entry);
     }
+  }
+  // back-compat shim for the validation/cross-check blocks below, which read .name/.api/.ties
+  for (const store of [topA, topG]) for (const t of store.values()) {
+    t.name = t.holders[0].name; t.api = t.holders[0].api; t.team = t.holders[0].team;
+    t.ties = t.holders.slice(1).map(h => h.name);
   }
 
   // 3. golden_boot rows already written
@@ -116,14 +130,28 @@ const esc = v => { v = (v == null) ? '' : String(v); return /[",\n]/.test(v) ? '
   // ---- stage prepared top_assists rows (max>0 only) ----
   const cols = ['honour_type', 'season_year', 'league_code', 'api_player_id', 'player_name', 'assists', 'source'];
   const prepared = [];
-  let gated = 0;
+  let gated = 0, tiedSeasons = 0, tiedExtra = 0;
   for (const lc of LEAGUES) for (const sy of SEASONS) {
     const k = lc + '|' + sy, t = topA.get(k);
     if (!t || t.val <= 0) continue;
     if (covShare(k, 'a') < MIN_COVERAGE) { gated++; continue; }   // THE GATE, applied to the write
-    prepared.push({ honour_type: 'top_assists', season_year: sy, league_code: lc, api_player_id: t.api, player_name: t.name, assists: t.val, source: 'computed' });
+    if (t.holders.length > 1) { tiedSeasons++; tiedExtra += t.holders.length - 1; }
+    for (const h of t.holders) prepared.push({ honour_type: 'top_assists', season_year: sy, league_code: lc, api_player_id: h.api, player_name: h.name, assists: t.val, source: 'computed' });
   }
   console.error('  withheld by the coverage gate: ' + gated + ' league-season(s)');
+  console.error('  shared leads written in full: ' + tiedSeasons + ' league-season(s), ' + tiedExtra + ' extra holder(s)');
+
+  /*  A TIE AT A LOW VALUE IS A SECOND COVERAGE SIGNAL, ALONGSIDE THE VALUE-9 TELL.
+      A real top-five-league assist leader lands around 12 to 20. Several players sharing a
+      LOW maximum is the shape you get when the true leader's assists are among the rows we
+      do not hold, so the ceiling collapses onto a crowd of ordinary totals. It is not caught
+      by the coverage gate: L1 2023 is 84.3% covered and ties four players on 8.  */
+  console.error('\n=== SHARED LEADS, and the low-value ones are suspect ===');
+  for (const lc of LEAGUES) for (const sy of SEASONS) {
+    const k = lc + '|' + sy, t = topA.get(k);
+    if (!t || t.holders.length < 2 || covShare(k, 'a') < MIN_COVERAGE) continue;
+    console.error('  ' + lc + ' ' + sy + ': ' + t.holders.length + ' players on ' + t.val + (t.val <= 10 ? '  <- SUSPECT, low ceiling' : '') + '   ' + t.holders.map(h => h.name).join(', '));
+  }
   fs.writeFileSync(OUT, [cols.join(',')].concat(prepared.map(p => cols.map(c => esc(p[c])).join(','))).join('\n') + '\n');
   console.error('\n=== would write ' + prepared.length + ' top_assists rows (of ' + (LEAGUES.length * SEASONS.length) + ' possible league-seasons) -> ' + OUT + ' ===');
   const tieRows = prepared.filter(p => { const t = topA.get(p.league_code + '|' + p.season_year); return t && t.ties.length; }).length;
