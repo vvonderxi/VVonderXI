@@ -26,6 +26,11 @@ const SELF_TEST = process.argv.includes('--self-test');
     only one the EXPECT figures describe. Above it the pool shrinks, so the band targets
     shrink with it (they are proportional to pool size, not fixed counts) and the G5 gate
     assertion checks RECONCILIATION rather than the surveyed numbers , see the guard.  */
+/*  --tiers RUNS THE v3 TIER ANALYSIS (tables 7 to 11) INSTEAD OF STOPPING AT table 6.
+    It shares this file's POOL, gates and guards by construction rather than by copy , a
+    second script would be a second gate definition, and this project has recorded what two
+    copies of one concept cost more than once.  */
+const TIERS_MODE = process.argv.includes('--tiers');
 const FLOOR_ARG = (process.argv.find(a => a.startsWith('--floor=')) || '').split('=')[1];
 const SHOTS_FLOOR = FLOOR_ARG ? parseInt(FLOOR_ARG, 10) : 60;
 if (FLOOR_ARG && (!Number.isFinite(SHOTS_FLOOR) || SHOTS_FLOOR < 1)) {
@@ -447,6 +452,217 @@ const pct = (a, p) => { if (!a.length) return null; const s = a.slice().sort((x,
   console.log('\n     A band boundary is one of these pairs. If almost none of them clears 1 SE,');
   console.log('     then wherever a boundary is drawn it separates two cards the data cannot');
   console.log('     tell apart, and that is true of the boundary regardless of where it goes.');
+
+  if (TIERS_MODE) {
+  // ===================================================================================
+  // v3 TIER ANALYSIS , tables 7 to 11
+  // ===================================================================================
+  /*  THE SCORE BEING TIERED IS THE STABILISED RATE, SO ITS ERROR MUST BE THE STABILISED
+      ERROR. Shrinking an estimate toward a prior reduces its variance: the posterior mean
+      (x + k p0)/(n + k) has standard error SE_raw * n/(n+k). Using the raw SE against a
+      shrunk spread would overstate the noise and understate N, and using the raw spread
+      against a shrunk score would do the reverse. Both are computed on the same quantity.
+      The tilt multiplies score and error by the same league factor, so it cannot change a
+      ratio of the two , which is why table 10 has to look at COMPOSITION, not at N.  */
+  const seRaw = r => Math.sqrt(RAW(r) * (1 - RAW(r)) / SF(r));
+  const seStab = (r, k) => seRaw(r) * SF(r) / (SF(r) + k);
+  const scoreOf = (r, k, t) => tilted(r, k, t);
+  const seOfScore = (r, k, t) => seStab(r, k) * (1 - (1 - wtFor(r)) * t);
+
+  /*  THE CRITERIA ARE STATED IN FULL AND ALL OF THEM ARE REPORTED, because the promise as
+      written ("conventional confidence, accounting for both measurements being noisy") is a
+      TWO-SAMPLE test and does not evaluate to the 2-SE row of table 6. Two noisy estimates
+      each with error s differ by a pooled error s*sqrt(2), and conventional confidence is
+      1.96 of those. That is 2.77s, not 2s. The difference decides whether N is 2 or 3, so
+      the arithmetic goes on the record rather than the label.  */
+  const CRITERIA = [
+    { key: 'lenient',  mult: 1.00, pooled: false, label: '1 single SE   (lenient, one measurement noisy)' },
+    { key: 'pooled1',  mult: 1.00, pooled: true,  label: '1 pooled SE   (both noisy, ~68% confidence)' },
+    { key: 'cited2',   mult: 2.00, pooled: false, label: '2 single SE   (the table-6 row cited in the brief)' },
+    { key: 'strict',   mult: 1.96, pooled: true,  label: '1.96 pooled SE (STRICT: conventional confidence, both noisy)' }
+  ];
+
+  const analyse = (pool, k, t) => {
+    const sc = pool.map(r => scoreOf(r, k, t));
+    const se = pool.map(r => seOfScore(r, k, t));
+    const lo = pct(sc, 1), hi = pct(sc, 99), spread = hi - lo, medSE = pct(se, 50);
+    const out = {};
+    CRITERIA.forEach(c => { const gap = c.mult * medSE * (c.pooled ? Math.SQRT2 : 1);
+      out[c.key] = { gap, n: Math.floor(spread / gap) }; });
+    return { lo, hi, spread, medSE, crit: out };
+  };
+  /*  EQUAL-WIDTH BANDS OF EXACTLY THE REQUIRED GAP. Any partition of a continuum puts some
+      pair arbitrarily close across a boundary, so "separable tiers" can only mean that a
+      typical member of one tier is separable from a typical member of the next , i.e. the
+      tier is at least one required gap wide. That is what makes N = spread / gap the right
+      count, and it is why table 9 exists: the boundary cases stay coin-flips by
+      construction and the only honest move is to size that population and say so.  */
+  const assign = (r, k, t, lo, gap, N) => {
+    const v = scoreOf(r, k, t);
+    return Math.max(1, Math.min(N, N - Math.floor((v - lo) / gap)));   // tier 1 = best
+  };
+
+  const base = analyse(POOL, K, TILT);
+  console.log('\n' + '='.repeat(78));
+  console.log('TABLE 7 , N UNDER EACH CONFIDENCE PROMISE, WITH BOUNDARIES');
+  console.log('='.repeat(78));
+  console.log('  scored on the stabilised, tilted rate at k = ' + K + (K_IS_PROVISIONAL ? ' (PROVISIONAL)' : '') +
+              ', tilt ' + TILT);
+  console.log('  spread p1 to p99 = ' + (base.spread * 100).toFixed(2) + 'pp   median SE of that score = ' +
+              (base.medSE * 100).toFixed(2) + 'pp\n');
+  console.log('  criterion                                                   gap needed     N');
+  CRITERIA.forEach(c => {
+    const r = base.crit[c.key];
+    console.log('    ' + c.label.padEnd(58) + (r.gap * 100).toFixed(2).padStart(8) + 'pp' + String(r.n).padStart(6) +
+                (c.key === 'strict' ? '   <<< THE DECIDED PROMISE' : ''));
+  });
+  const N = base.crit.strict.n;
+  console.log('\n  *** THE PROMISE AS WRITTEN GIVES N = ' + N + ', NOT 3. ***');
+  console.log('  The brief cites table 6\'s "2 SE" row, which is 2 x the error of ONE card.');
+  console.log('  Comparing two noisy cards needs 1.96 x the POOLED error, which is 2.77 single');
+  console.log('  SEs, not 2. Both are on the table above; N = ' + N + ' is the one the stated promise');
+  console.log('  buys. Everything below runs at N = ' + N + '.');
+  const gap = base.crit.strict.gap;
+  console.log('\n  boundaries, equal width ' + (gap * 100).toFixed(2) + 'pp, anchored at p1:');
+  for (let i = 0; i < N; i++) {
+    const hiE = base.lo + (N - i) * gap, loE = base.lo + (N - i - 1) * gap;
+    const members = POOL.filter(r => assign(r, K, TILT, base.lo, gap, N) === i + 1).length;
+    console.log('     Tier ' + (i + 1) + '   ' + (loE * 100).toFixed(2) + '% to ' + (hiE * 100).toFixed(2) +
+                '%   ' + String(members).padStart(5) + ' seasons (' + (members / POOL.length * 100).toFixed(1) + '%)');
+  }
+  const lenN = base.crit.lenient.n, lenGap = base.crit.lenient.gap;
+  console.log('\n  REJECTED FOR THE RECORD , the lenient promise (1 single SE) gives N = ' + lenN + ':');
+  for (let i = 0; i < lenN; i++) {
+    const members = POOL.filter(r => assign(r, K, TILT, base.lo, lenGap, lenN) === i + 1).length;
+    console.log('     Tier ' + (i + 1) + '   ' + ((base.lo + (lenN - i - 1) * lenGap) * 100).toFixed(2) + '% to ' +
+                ((base.lo + (lenN - i) * lenGap) * 100).toFixed(2) + '%   ' + String(members).padStart(5) + ' seasons');
+  }
+
+  // ---- TABLE 8 , tier-assignment stability across k -----------------------------------
+  console.log('\n' + '='.repeat(78));
+  console.log('TABLE 8 , TIER-ASSIGNMENT STABILITY ACROSS THE PRIOR WEIGHT');
+  console.log('='.repeat(78));
+  console.log('  Ordering stability was the wrong question: a card can move 40 ranks without');
+  console.log('  changing tier. This scores the fraction of the ' + POOL.length + ' seasons whose TIER is');
+  console.log('  unchanged as k moves, against the assignment at the reference k = ' + K + '.\n');
+  const refTier = new Map(POOL.map(r => [r.card_id, assign(r, K, TILT, base.lo, gap, N)]));
+  console.log('       k     same tier as ref      moved 1 tier   moved 2+   N at this k');
+  const stabRows = [];
+  [0, 10, 20, 30, 40, 50, 60, 80, 100, 125, 150, 200, 300, 500].forEach(k => {
+    const a = analyse(POOL, k, TILT);
+    const g = a.crit.strict.gap, n = a.crit.strict.n;
+    let same = 0, one = 0, more = 0;
+    POOL.forEach(r => { const t = assign(r, k, TILT, a.lo, g, n), d = Math.abs(t - refTier.get(r.card_id));
+      if (d === 0) same++; else if (d === 1) one++; else more++; });
+    stabRows.push({ k, frac: same / POOL.length, n });
+    console.log('  ' + String(k).padStart(6) + (same + ' (' + (same / POOL.length * 100).toFixed(1) + '%)').padStart(22) +
+                String(one).padStart(16) + String(more).padStart(11) + String(n).padStart(14));
+  });
+  /*  THE PLATEAU IS CONFOUNDED WITH N AND THE CONTROL IS ONE LINE. Assignment holding
+      still from k = 0 to 40 coincides exactly with N holding at 2 over the same range; the
+      moment N steps to 3 at k = 80, almost every card must move because the boundaries
+      themselves moved. So the first table cannot tell "assignment is robust to k" from "N
+      is robust to k, and assignment follows". Re-run with N PINNED, and the difference
+      between the two columns is the part that is really about k.  */
+  console.log('\n  CONTROL , the same sweep with N PINNED at ' + N + ', so only k moves:');
+  console.log('       k     same tier as ref (N pinned)     vs free-N above');
+  const freeN = new Map(stabRows.map(r => [r.k, r.frac]));
+  const pinned = [];
+  [0, 10, 20, 30, 40, 50, 60, 80, 100, 125, 150, 200, 300, 500].forEach(k => {
+    const a = analyse(POOL, k, TILT);
+    let same = 0;
+    POOL.forEach(r => { if (assign(r, k, TILT, a.lo, gap, N) === refTier.get(r.card_id)) same++; });
+    pinned.push({ k, frac: same / POOL.length });
+    console.log('  ' + String(k).padStart(6) + (same + ' (' + (same / POOL.length * 100).toFixed(1) + '%)').padStart(30) +
+                (freeN.get(k) * 100).toFixed(1).padStart(18) + '%');
+  });
+  /*  THE VERDICT USES THE PINNED COLUMN, NOT THE FREE-N ONE. Judging the plateau on the
+      confounded number would have called k = 0 to 40 robust when half that width came from
+      N moving; and it would have read the collapse to 30% at k = 80 as violent k-sensitivity
+      when it is really N stepping from 2 to 3 and dragging every boundary with it.  */
+  const plateau = pinned.filter(r => r.frac >= 0.95);
+  console.log('\n  rows holding >= 95% of assignments, N PINNED: ' + (plateau.length ? plateau.map(r => 'k=' + r.k).join(', ') : 'NONE'));
+  console.log('  (the free-N column would have said: ' + stabRows.filter(r => r.frac >= 0.95).map(r => 'k=' + r.k).join(', ') + ')');
+  if (plateau.length >= 3) {
+    console.log('  PLATEAUS. Tier assignment is robust to k across that range, which is the');
+    console.log('  result Fable predicted: at floor 60 the pool stays at ' + POOL.length + ' and N does the work.');
+  } else {
+    console.log('  *** DOES NOT PLATEAU. Tier assignment moves with k even at N = ' + N + '. ***');
+    console.log('  Per the brief this is a constraint on N, not a reason to raise the floor.');
+  }
+
+  // ---- TABLE 9 , boundary population --------------------------------------------------
+  console.log('\n' + '='.repeat(78));
+  console.log('TABLE 9 , THE COIN-FLIP POPULATION AT N = ' + N);
+  console.log('='.repeat(78));
+  const edges = []; for (let i = 1; i < N; i++) edges.push(base.lo + i * gap);
+  const nearest = r => { const v = scoreOf(r, K, TILT);
+    return Math.min(...edges.map(e => Math.abs(v - e))) / seOfScore(r, K, TILT); };
+  const within = t => POOL.filter(r => edges.length && nearest(r) <= t).length;
+  console.log('  distance from a card to its nearest tier edge, in its OWN standard errors\n');
+  [0.25, 0.5, 1.0, 1.96].forEach(t => console.log('     within ' + String(t).padEnd(5) + 'SE of an edge: ' +
+    String(within(t)).padStart(5) + '  (' + (within(t) / POOL.length * 100).toFixed(1) + '% of the pool)'));
+  console.log('\n  THE 0.5 SE ROW IS THE HONEST SIZE OF THE CAVEAT. Those seasons could sit either');
+  console.log('  side on a different afternoon, and any card-level wording has to cover them.');
+
+  // ---- TABLE 10 , tilt effect on composition ------------------------------------------
+  console.log('\n' + '='.repeat(78));
+  console.log('TABLE 10 , DOES THE TILT EMPTY TIER 1 OF SMALL-LEAGUE, LOW-SHOT SEASONS?');
+  console.log('='.repeat(78));
+  console.log('  The tilt scales score and error together, so it cannot change N. The only');
+  console.log('  question it can answer is who ends up where.\n');
+  const STRONG = new Set(['PL', 'LL', 'SA', 'BL', 'L1']);
+  [['untilted', 0], ['tilted  ', TILT]].forEach(([lab, t]) => {
+    const a = analyse(POOL, K, t), g = a.crit.strict.gap, n = a.crit.strict.n;
+    const t1 = POOL.filter(r => assign(r, K, t, a.lo, g, n) === 1);
+    const comp = {}; t1.forEach(r => comp[r.league_code] = (comp[r.league_code] || 0) + 1);
+    console.log('  ' + lab + '  Tier 1 = ' + String(t1.length).padStart(4) + ' seasons   top-5-league share ' +
+      (t1.length ? (t1.filter(r => STRONG.has(r.league_code)).length / t1.length * 100).toFixed(0) : '  0') + '%' +
+      '   median shots ' + (t1.length ? med(t1.map(SF)) : 0));
+    console.log('            leagues: ' + Object.keys(comp).sort((x, y) => comp[y] - comp[x]).map(x => x + ':' + comp[x]).join('  '));
+  });
+
+  // ---- TABLE 11 , stability over time -------------------------------------------------
+  console.log('\n' + '='.repeat(78));
+  console.log('TABLE 11 , DOES A SEASON KEEP ITS TIER AS LATER SEASONS ARRIVE?');
+  console.log('='.repeat(78));
+  console.log('  Re-tiered using ONLY data available through each season-end. A tier that');
+  console.log('  reshuffles every August is a ranking with extra steps.\n');
+  const years = [...new Set(POOL.map(r => r.season_year))].sort((a, b) => a - b);
+  console.log('    as of     pool    N    seasons re-tiered vs the previous vintage');
+  let prevAssign = null;
+  years.forEach(y => {
+    const sub = POOL.filter(r => r.season_year <= y);
+    if (sub.length < 50) { console.log('  ' + String(y).padStart(7) + String(sub.length).padStart(8) + '     , too small'); return; }
+    const a = analyse(sub, K, TILT), g = a.crit.strict.gap, n = a.crit.strict.n;
+    const cur = new Map(sub.map(r => [r.card_id, assign(r, K, TILT, a.lo, g, n)]));
+    let flips = 0, comparable = 0;
+    if (prevAssign) prevAssign.forEach((t, id) => { if (cur.has(id)) { comparable++; if (cur.get(id) !== t) flips++; } });
+    console.log('  ' + String(y).padStart(7) + String(sub.length).padStart(8) + String(n).padStart(5) +
+      (prevAssign ? ('     ' + flips + ' of ' + comparable + ' (' + (comparable ? (flips / comparable * 100).toFixed(1) : '0') + '%)') : '     ,'));
+    prevAssign = cur;
+  });
+  console.log('\n  A card already scored is never re-measured, so every flip here is caused by');
+  console.log('  OTHER seasons arriving and moving p1, p99 or the median SE underneath it.');
+  /*  AND THE SAME RUN AT N = 3, BECAUSE TWO TIERS HAVE ONE BOUNDARY AND ARE STABLE ALMOST BY
+      DEFINITION. Reporting only the N = 2 column would let the promise's own strictness take
+      credit for a stability that is really just a shortage of edges to cross.  */
+  console.log('\n  CONTROL , the same vintages re-tiered at N = 3, to show how much of the');
+  console.log('  stability above is the strict promise and how much is simply having one edge:');
+  let prev3 = null;
+  years.forEach(y => {
+    const sub = POOL.filter(r => r.season_year <= y);
+    if (sub.length < 50) return;
+    const a = analyse(sub, K, TILT);
+    const g3 = a.spread / 3;
+    const cur = new Map(sub.map(r => [r.card_id, assign(r, K, TILT, a.lo, g3, 3)]));
+    let flips = 0, comparable = 0;
+    if (prev3) prev3.forEach((t, id) => { if (cur.has(id)) { comparable++; if (cur.get(id) !== t) flips++; } });
+    if (prev3) console.log('     as of ' + y + '   ' + flips + ' of ' + comparable +
+      ' (' + (comparable ? (flips / comparable * 100).toFixed(1) : '0') + '%)');
+    prev3 = cur;
+  });
+  }
 
   console.log('\n' + '='.repeat(78));
   console.log('NOTHING WAS WRITTEN. No table, no view, no file. This run ships nothing.');
