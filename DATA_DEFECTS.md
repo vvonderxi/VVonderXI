@@ -824,7 +824,29 @@ ROW.** Nothing recomputes it, nothing warns, and the stale row looks identical t
 `KEEPER_SAVE_LADDER`** , and unlike those two it is not even documented as a snapshot. **Add it to
 the list of things that must be regenerated after any population-moving write.**
 
-**PRT 2020 AND L1 2023 BOTH REMAIN PARKED, UNTOUCHED, BY DECISION.**
+**[BOTH RESOLVED 2026-09-12, AND THEY RESOLVED DIFFERENTLY, WHICH IS THE POINT.]**
+
+**`PRT 2020` WAS CORRECTED.** It is a genuine winner change caused by a real card arriving, not an
+artefact of sparse data, so the honour moved. **Grimaldo (id 390) and Nunez (id 394) deleted first,
+then Taremi inserted (id 634)** , in that order deliberately, because `honours_one_per_award`
+includes `api_player_id`, so an upsert would have left the stale pair standing and given the
+league-season three holders on two different values. Rollback capture in
+`migrations/top_assists_prt2020_2026-09-12/before_rows.json`. **honours 621 -> 620.** Matview
+refreshed in the SQL editor (`Success. No rows returned`), and verified after: **PRT 2020 flags
+exactly one card, Taremi on 10; Grimaldo's `h_top_assists` is now false; 109 cards flagged
+platform-wide** (110 minus two plus one); matview intact at 57,055.
+
+**`L1 2023` IS DELIBERATELY LEFT UNWRITTEN, AND THIS PARAGRAPH EXISTS SO NOBODY WRITES IT LATER AS
+AN OVERSIGHT.** The computation offers a **four-way tie on 8** (Dembele, A. Gomes, Aubameyang, Del
+Castillo). **A four-way tie at a ceiling of 8 in a top-five league is a coverage tell, not a
+result** , a real Ligue 1 assists leader is 12 to 20, and four players sharing a low maximum is the
+shape you get when the true leader's assists sit among the rows we do not hold. **The season passes
+the 25% coverage gate at 84.3%, so the gate cannot catch it**, which is exactly why the tie-at-a-low
+-value signal was recorded as a second, independent tell.
+- **NO ROW IS THE HONEST STATE HERE.** Writing four honours to record our uncertainty would assert
+  four claims where reality most likely has one, on the platform's most public surface.
+- **DO NOT "COMPLETE" THIS LEAGUE-SEASON.** Its absence is a decision, not a gap. If it is ever
+  filled it must come from an external source naming the actual leader, not from our maximum.
 
 **NOT DONE, DELIBERATELY: external sourcing of the real winners.** It is a separate decision and it
 carries an unsolved problem , see the entry below.
@@ -912,7 +934,16 @@ the 28 holds an honour, so **the live exposure is `gaw` only.** **Reverting woul
 to fix a routing problem**, which is the wrong trade and would leave 28 cards scored on an assumed
 zero , the very defect the COALESCE entry is about. The values are not in question. The ROUTE is.
 
-**WHAT THE ROUTE FIX WOULD TAKE, SCOPED NOT DONE.** Lift the 4-line `ASSIST` const and the ~13-line
+**[DONE 2026-09-12. THE ROUTE IS FIXED; THE VALUES ARE UNTOUCHED.]** The map and its write now live
+in **`scripts/enrichment/write_assists_ccc.js`**, whose header carries the full provenance , the
+three sources in the column, the FBref marquee batch, the Nene consequence, and a pointer back to
+this entry. `write_positions3.js` no longer contains the word `assists` outside comments, and
+carries a line saying not to add a scoring-field write back into it. **Matview refresh ownership is
+now explicit in BOTH files**, each stating it owns its own and may not assume the other ran.
+**Verified by running the new script: `filled 0 / already-had 28`, no refresh attempted**, which is
+the expected steady state and proves the move wrote nothing.
+
+**WHAT THE ROUTE FIX TOOK, AS SCOPED BEFOREHAND.** Lift the 4-line `ASSIST` const and the ~13-line
 fill-only block into their own named script, e.g. `write_assists_ccc.js`, and delete both from
 `write_positions3.js`.
 - **NOTHING BREAKS, CHECKED:** the file is a 117-line standalone CLI, **nothing imports it**

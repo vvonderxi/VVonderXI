@@ -1,0 +1,30 @@
+[
+ {
+  "id": 390,
+  "honour_type": "top_assists",
+  "season_year": 2020,
+  "league_code": "PRT",
+  "team_name": null,
+  "api_player_id": 563,
+  "player_name": "Álex Grimaldo",
+  "source": "computed",
+  "created_at": "2026-07-04T17:02:48.799574+00:00",
+  "honour_context": null,
+  "goals": null,
+  "assists": 9
+ },
+ {
+  "id": 394,
+  "honour_type": "top_assists",
+  "season_year": 2020,
+  "league_code": "PRT",
+  "team_name": null,
+  "api_player_id": 51617,
+  "player_name": "D. Núñez",
+  "source": "computed",
+  "created_at": "2026-07-04T17:02:48.799574+00:00",
+  "honour_context": null,
+  "goals": null,
+  "assists": 9
+ }
+]

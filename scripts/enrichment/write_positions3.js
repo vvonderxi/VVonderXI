@@ -1,7 +1,9 @@
 // WRITE batch-3: 34 CCC-verified REVIEW cards.
 //   POSITIONS (34) -> player_positions (guarded: INSERT if no row / UPDATE where position IN coarse+CM)
-//   ASSISTS (28, fill-only) -> player_season_cards.assists  WHERE id=card_id AND assists IS NULL
-//     (excludes the 6 goals-mismatch cards: Vanaken x5 + Mboyo -> position only, no assist)
+//   [MOVED OUT 2026-09-12] The 28 CCC assist values this script used to write now live in
+//     `write_assists_ccc.js`, with their provenance. An rt-touching write must not hide inside a
+//     job named for positions. See DATA_DEFECTS.md, "A POSITIONS SCRIPT SILENTLY WRITES assists".
+//     (That set excluded the 6 goals-mismatch cards: Vanaken x5 + Mboyo -> position only.)
 //   append all 34 positions to known_players.csv (source='ccc'); attempt matview refresh
 //   RUN (repo root): NODE_PATH=./node_modules node write_positions3.js
 require('dotenv').config({ quiet: true });
@@ -22,12 +24,6 @@ const ASSIGN = {
   174565:'ST',166668:'Winger',167554:'CAM',167555:'FB',175513:'CAM',175841:'CAM',176219:'CAM',
   176597:'CAM',177013:'CAM',180654:'CAM',183949:'CAM',163392:'Winger',160409:'Winger'
 };
-const ASSIST = {
-  172746:9,172351:10,169346:8,169768:11,174592:6,168807:7,156662:2,180202:2,180524:6,181398:8,
-  169343:4,170986:3,170205:9,172521:4,182248:10,184247:5,169280:6,173082:4,161304:8,163158:9,
-  174565:2,166668:8,167554:12,167555:13,180654:4,183949:7,163392:8,160409:5
-};
-
 function parseCSV(text) {
   const lines = text.trim().split('\n'); const head = lines[0].split(',');
   return lines.slice(1).map(line => {
@@ -85,17 +81,9 @@ function parseCSV(text) {
   }
   console.error('POSITIONS written: INSERT ' + insDone + ' / UPDATE ' + updDone);
 
-  // ---- ASSISTS (player_season_cards.assists, fill-only WHERE assists IS NULL) ----
-  let assistFilled = 0, assistNoop = 0;
-  const filledList = [];
-  for (const cid of Object.keys(ASSIST).map(Number)) {
-    const v = ASSIST[cid];
-    const { data, error } = await sb.from('player_season_cards').update({ assists: v }).eq('id', cid).is('assists', null).select('id');
-    if (error) { console.error('ASSIST ERROR', cid, error.message); process.exit(1); }
-    if (data && data.length) { assistFilled++; filledList.push(cid + '=' + v); } else assistNoop++;
-  }
-  console.error('ASSISTS (fill-only): filled ' + assistFilled + ' / already-had ' + assistNoop + '  [rt will move on refresh]');
-  console.error('  filled: ' + filledList.join(', '));
+  /*  ASSISTS ARE NO LONGER WRITTEN HERE (moved 2026-09-12 to write_assists_ccc.js).
+      THIS SCRIPT WRITES POSITIONS AND THE DICTIONARY, NOTHING THAT FEEDS rt DIRECTLY.
+      Do not add a scoring-field write back into this file. */
 
   // ---- dictionary append (all 34 positions, source=ccc) ----
   const existingDict = new Set();
@@ -108,7 +96,10 @@ function parseCSV(text) {
   console.error('\nknown_players.csv: ' + before + ' -> ' + (before + appendRows.length) + ' (+' + appendRows.length + ', source=ccc)');
   if (skipped.length) console.error('  dict skipped (already present): ' + skipped.join(', '));
 
-  // ---- refresh ----
+  /*  ---- matview refresh, OWNED BY THIS SCRIPT ----
+      Explicit since the assists half was split out: write_assists_ccc.js owns ITS refresh and
+      this one owns this. Neither may assume the other ran. A position write moves position_pool,
+      which moves the percentile pools, so this refresh is owed whenever anything above wrote. */
   let refreshed = false;
   for (const fn of ['refresh_player_card_mv', 'refresh_matview', 'refresh_player_card']) {
     const { error } = await sb.rpc(fn); if (!error) { console.error('matview refreshed via ' + fn + '()'); refreshed = true; break; }
