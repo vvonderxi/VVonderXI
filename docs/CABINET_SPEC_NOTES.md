@@ -144,6 +144,67 @@ across all 8,521 non-empty cabinets.
 
 ---
 
+## `.chip.gold.career` HAS NO LIVE INSTANCE, AND THE CABINET IS ITS ONLY CONSUMER (2026-09-12)
+
+**Stated on its own because it is a fact about the CSS, not about any one proposal, and because it
+is the kind of thing a later session will cite as evidence without checking.**
+
+`29abbe9` retired the World Cup career leg. Since then `honours.career` is returned as a literal
+`[]` , both from the honours builder and from `emptyHonours()` , so `isCareer` never fires in
+`renderHonourChips` and **no card renders a `.chip.gold.career` chip.** Measured on Haaland 22/23:
+4 season chips, 0 career chips.
+
+**THE RULE ITSELF IS NOT DEAD, ONLY ITS OLD CONSUMER IS.** The declaration and the comment that
+explains it both survive in `card.html`: saturated `#F0D27A,#E0A93A` means won THIS season, pale
+`#FAF0CE,#F2DFA4` with an inset ring means won in ANOTHER season, engraved rather than filled. The
+cabinet pill `.chtag-cab` reuses that treatment exactly, which is correct , the cabinet is the only
+surface on the card that speaks about other seasons.
+
+**SO: DO NOT CITE A LIVE CAREER CHIP AS EVIDENCE OF THE SEASON-VERSUS-CAREER RULE. THERE ISN'T ONE.**
+The rule is real, the cabinet honours it, and the only way to see it rendered is the cabinet itself.
+**And do not delete `.chip.gold.career` as dead CSS either** , it is the declaration `.chtag-cab`
+was reconciled against, and removing it would leave the cabinet's values unexplained.
+
+## PARKED UNTIL AFTER THE PLAYBOOK SECTION: THE CABINET'S PLACEMENT (2026-09-12, Lucas's call)
+
+**NOT the default state, which is settled , it folds closed like every neighbour. The open question
+is WHERE it sits.** Folded, the cabinet is visually indistinguishable from its nine neighbours and
+sits ninth in the stack, so **its weight comes entirely from its position**, and its position is the
+one thing the original ruling argued about.
+
+**DELIBERATELY NOT REOPENED NOW, and explicitly not to be re-litigated as a default-open remedy**
+, see the placement section above, which records that trade as accepted. **Raise it AFTER the
+Playbook cabinet section ships**, because that section is what explains to a reader what a cabinet
+is for, and placement cannot be judged before the thing has been explained.
+
+## DEFERRED: A GLOSS UNDER EACH YEAR. ITS HONEST HOME IS THE PILL'S TOOLTIP (2026-09-12)
+
+**SHIPPED INSTEAD: SIZE AND INK ONLY.** `.caby` went from Archivo 700 at 12px in `#2b2924` to **800
+at 16px in `#241f1b`**, with the shelf rule from 2px to 3px so it does not read as a hairline the
+numerals have outgrown. No pills on years , a column of pills stops reading as a shelf, because the
+shelf IS the heading and the years are what sit on it.
+
+**THE GLOSS WAS DEMOED AGAINST IT AND DEFERRED ON THREE MEASUREMENTS, not on taste.**
+- **It doubles the section on the cards that already have the most to show.** Lewandowski 23/24,
+  a twelve-year run and an eight-year run: panel **468px to 697px**.
+- **Half its lines wrap at 390.** In a 178px two-column shelf, **10 of 20 glosses run to two lines**
+  , and the first measurement said 0 of 20 because the harness was not loading Inter. See
+  `SILENT_FAILURES.md`.
+- **The data will not support it evenly.** `team_name` is null on most individual honours , the rows
+  literally carry `honour_context: "club not listed in source"` , so a Golden Boot cannot be glossed
+  with a club. What survives is `goals` and `league_code`, plus the club off the career row for a
+  team leg, which makes the gloss **four different rules by honour type**. Rendered, Player of the
+  Season glosses to a bare "Bundesliga", which tells the reader nothing.
+
+**AND IT QUIETLY REINTRODUCES A SCOREBOARD.** "41 goals" beside "2020" invites comparison down the
+column, and `docs/CABINET_SPEC.md` forbids the cabinet ranking or grading by name. That is the same
+objection the count rule already carries, arriving by a different door.
+
+**IF IT IS EVER WANTED, THE HOME IS THE TOOLTIP THE PILL ALREADY HAS, NOT A LINE UNDER EVERY YEAR.**
+The heading pill carries `data-tip` with the honour's one-liner today. A per-year detail belongs
+there, revealed on demand, where it costs no height, cannot wrap, and does not sit in a column
+inviting comparison.
+
 ## CONSIDERED AND REJECTED: THE WONDER TAGS CARVE-OUT (2026-09-12). DO NOT PROPOSE IT AGAIN.
 
 **THE PROPOSAL.** An honour won IN THIS SEASON keeps its pill in the glance strip; honours from

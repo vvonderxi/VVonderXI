@@ -526,3 +526,22 @@ found only because a reported number (1.06 on a red button) looked implausible e
 **THE CONTROL THAT PROVES IT, and it proves two things at once:** re-running from `scripts/separability/` now rewrites the repo-root file and leaves no stray beside the script, and the result is **byte-identical (md5 `62a5eb88...`) to the copy already there** , so the path is fixed AND the table is reproducible from the same inputs.
 
 **GENERALISE IT: any script whose product is a file another surface loads must write an ABSOLUTE path derived from `__dirname`, and must print the path it wrote.** Grep the other generators for the same shape before trusting them , `scripts/gen-radar-ref.js` writes to `/tmp` and is then pasted by hand, which has the opposite risk and is already recorded.
+
+
+---
+
+**A DEMO HARNESS THAT DOES NOT LOAD THE PAGE'S WEBFONTS IS MEASURING A DIFFERENT PAGE, AND IT FAILS IN THE DIRECTION THAT LOOKS SAFE (2026-09-12).**
+
+**THE RULE: ANY DEMO USED FOR A LAYOUT DECISION MUST LOAD THE PAGE'S REAL FONTS AND AWAIT `document.fonts.ready` BEFORE MEASURING.** Declaring `font-family:'Inter'` is not loading it. Without the `<link>`, the browser falls through the stack to the system sans and reports confident numbers for a typeface that will never ship.
+
+**MEASURED, ON A DECISION THAT WAS ABOUT TO BE MADE.** A cabinet demo asked whether a gloss line fits beside a year in a two-column shelf at 390px. The harness set `font-family:'Inter'` and loaded nothing. **First pass: 0 of 20 glosses wrap. With Archivo and Inter actually loaded and `document.fonts.ready` awaited: 10 of 20 wrap.** The same string measures **163.3px in Inter against 154.5px in the fallback, 5.7% wider**, and the column is 178px, so the difference lands exactly on the wrap boundary.
+
+**THE DIRECTION IS THE DANGEROUS PART. The fallback was NARROWER, so the harness under-reported the problem** , it said the layout fits when it does not. A harness that exaggerated would be caught by the first screenshot; one that flatters gets approved.
+
+**AND `document.fonts.check()` LIES BEFORE A LOAD IS REQUESTED.** On a page whose text already uses Archivo, `check('800 11px Archivo')` still returned **false** until `document.fonts.load(...)` was called explicitly. **So `check()` alone is not the assertion** , call `load()` for each family and weight you care about, THEN `ready`, THEN check. A probe span measured against a known fallback is the positive control: if Inter and sans-serif return the same width, the font did not load.
+
+**THE EXPOSURE WAS AUDITED THE SAME DAY, because the rule is worthless without knowing what it invalidates.** Of the harnesses in the tree, **nine set a page font family and never load it**: `_demo_agefilter`, `_demo_cabinet`, `_demo_cabyears`, `_demo_gkcard`, `_demo_gktraj`, `_demo_ladder`, `_demo_mobilec`, `_demo_radar`, `_demo_share`. **Three more are iframe-only shells and are FINE** , `_demo_cabvstags_390`, `_demo_cabyears2_390`, `_demo_carveout_390` , because the fonts come from the framed page, not the shell. **Check that distinction before "fixing" a shell.**
+
+**TWO OF THE DAY'S OWN HARNESSES WERE AMONG THE FONTLESS AND BOTH WERE RE-MEASURED RATHER THAN ASSUMED SAFE.** `_demo_cabvstags` (which decided the gold pill) and `_demo_carveout` (which rejected the carve-out). **Every figure quoted from them survived**, because they were COUNTS , shelves, years, pills , and a colour, none of which a typeface can move. The panel heights re-measured identical at 858 and 631.
+
+**SO THE SHARPENED RULE IS ABOUT WHAT IS BEING MEASURED, NOT ABOUT EVERY DEMO: a count, a colour or a computed style is font-independent; anything that depends on TEXT ADVANCE , wrapping, clipping, column fit, truncation, a pill's width , is not.** The cabinet gloss failed because it was long text in a narrow column, sitting on the wrap boundary, which is precisely where typeface metrics decide. **When a measurement is near a wrap or overflow boundary, the fonts are load-bearing and nothing else about the harness matters.**
