@@ -81,8 +81,13 @@ const out=`/*  vv-margin.js , PER-CARD rt STANDARD ERROR, FOR THE COMPARE MARGIN
   if(typeof module!=='undefined'&&module.exports) module.exports=API;
 })();
 `;
-fs.writeFileSync('vv-margin.js',out);
-console.log('wrote vv-margin.js');
+/*  ABSOLUTE, NEVER RELATIVE. A bare 'vv-margin.js' resolves against the CWD, so running this
+    from scripts/separability/ wrote the table into the SCRIPT directory while still printing
+    "wrote vv-margin.js" , a success message about a file nobody reads. Caught on 2026-09-12 by
+    the repo-root file's timestamp not moving, which is not a check anyone should have to invent.  */
+const OUT = require('path').join(__dirname, '..', '..', 'vv-margin.js');
+fs.writeFileSync(OUT, out);
+console.log('wrote '+OUT);
 console.log('  cards       :', se.length);
 console.log('  card_id span:', BASE, 'to', TOP, '=', span, 'slots');
 console.log('  clamped     :', clamped);

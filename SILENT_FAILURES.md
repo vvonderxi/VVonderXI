@@ -13,7 +13,7 @@ closed history were already spent as levers, so the room had to come from §C. S
 moved; their headline sentences stayed behind, unchanged, so §C still reads top to bottom as a
 complete list of rules.
 
-**TWO MORE WERE ADDED ON 2026-08-23 and the file is now NINETEEN.** The split is not a one-off
+**[DO NOT PUT A NUMBER HERE AGAIN. THIS HEADING SAID "NINETEEN" ON 2026-08-23 AND THE FILE HAS GROWN SINCE WITHOUT THE NUMBER MOVING , count with `grep -c '^\*\*[A-Z]'` instead.]** Entries were added on 2026-08-23 and again on 2026-09-12. The split is not a one-off
 archive , it is where this class of evidence lives from now on, so a new silent failure is written
 here with its headline in §C, rather than growing §C again. The 2026-08-16 note below describes
 that original move and is left as written.
@@ -507,3 +507,22 @@ assume that setting it worked , the same shape as every other instrument fault h
 instrument.** Four faults were found in this one, each after the previous fix, and the fourth was
 found only because a reported number (1.06 on a red button) looked implausible enough to hand-check.
 **Hand-check the implausible ones. The plausible wrong answers are the ones that ship.**
+
+
+---
+
+**A GENERATOR THAT WRITES TO A BARE RELATIVE PATH REPORTS SUCCESS AND PUTS THE FILE WHEREVER THE CWD HAPPENED TO BE (2026-09-12). THE SHIPPED TABLE WAS NEVER TOUCHED AND NOTHING SAID SO.**
+
+**`scripts/separability/gen_margin_table.js` ended in `fs.writeFileSync('vv-margin.js', out)`.** Its own header comment says it generates `/vv-margin.js`, the repo-root file `compare.html` loads, and the run order in `scripts/separability/README.md` is written to be executed from inside that directory. So the documented way to run it was the way that put the output in the wrong place.
+
+**IT PRINTED `wrote vv-margin.js`, WHICH IS TRUE AND USELESS.** The message names a relative path, so it is correct in every directory and identifies none of them. The run also printed a plausible card count, a plausible id span, `clamped: 0` and a plausible byte size , every downstream sanity figure was right, because the table itself was computed correctly. Only its destination was wrong.
+
+**WHAT CAUGHT IT WAS A TIMESTAMP, NOT A CHECK.** `ls -la vv-margin.js` at the repo root still read `sep 9 18:54` after a successful regeneration on 2026-09-12. **Nothing in the pipeline compares the file it wrote to the file the site loads**, so had the timestamp not been glanced at, the margin gate would have gone on serving the pre-refresh table while the session recorded the table as regenerated , and the next reader would have inherited "regenerated" as a fact.
+
+**THIS IS THE SAME FAMILY AS THE `.replace()` NO-OP AND THE SUCCESS-BEFORE-RESOLVE RULES, IN ITS SECOND FORM: the work was done, correctly, and delivered nowhere.** A no-op leaves the target unchanged and says nothing; this leaves the target unchanged and says "wrote".
+
+**FIXED IN THE GENERATOR, NOT IN THE RUNBOOK.** It now resolves `path.join(__dirname, '..', '..', 'vv-margin.js')` and prints the absolute path it actually wrote. **A runbook instruction to `cd` first is not a fix** , it puts the invariant in prose, where the next person does not read it, and the failure is silent when they do not.
+
+**THE CONTROL THAT PROVES IT, and it proves two things at once:** re-running from `scripts/separability/` now rewrites the repo-root file and leaves no stray beside the script, and the result is **byte-identical (md5 `62a5eb88...`) to the copy already there** , so the path is fixed AND the table is reproducible from the same inputs.
+
+**GENERALISE IT: any script whose product is a file another surface loads must write an ABSOLUTE path derived from `__dirname`, and must print the path it wrote.** Grep the other generators for the same shape before trusting them , `scripts/gen-radar-ref.js` writes to `/tmp` and is then pasted by hand, which has the opposite risk and is already recorded.
