@@ -322,6 +322,51 @@ rule that a rule stated in one place and not applied as a class will be violated
 recorded assist total in those years are not a random sample of them , and it cannot be a donor.
 Anyone re-running this must draw from 2024-25 or state why not.
 
+### [DECIDED 2026-09-12: A PARTIAL ASSISTS BACKFILL IS DROPPED, BOTH VARIANTS. IT IS WORSE THAN DOING NOTHING AND WORSE PER CARD THAN DOING EVERYTHING.]
+
+**THE FINDING THAT DECIDES IT, AND IT IS ONE NUMBER: THE SAME IMPUTED ASSIST TOTAL PRODUCES A
+MEDIAN rt GAIN OF 0 UNDER A FULL FILL AND +7 UNDER THE 50-PLAYER VARIANT.** Identical donor,
+identical value, identical card. **So the gain is not the repair arriving, it is the artefact of
+leaving the card's POOL pinned at a hard zero while the card rises out of it.** rt is percentile
+scored within pool, so filling a subset does not correct those cards, it re-ranks them against
+neighbours who keep the defect. A number that moves because of who was NOT fixed is not a
+measurement of the player.
+
+**AND THE DIRECTION IS ABSOLUTE: ZERO CARDS MOVE UP, IN ANY VARIANT, INCLUDING THE FULL FILL.**
+Every card not in the filled set moves DOWN or stays still , 15,056 of them on a full fill, 13,434
+on the top-10-clubs variant, 1,474 on the 50-player variant. A partial fill does not merely fail to
+help the rest of the pool, it demotes it.
+
+**MEASURED WITH A FULL-FILL CONTROL ON THE SAME INSTRUMENT**, so the comparison is like for like
+rather than two harnesses, using `scripts/separability/rt_reimpl.js` with the rank-matched donor and
+the corrected coarse-bucket mapping:
+
+    variant                     filled   their median gain   others moved   crossings   on UNTOUCHED   per 1,000 filled
+    full fill (control)         26,776           0             15,056          908           393            14.7
+    A, top 10 clubs 2010-2015    6,029          +5             13,434          586           272            45.1
+    B, top 50 players            255            +7              1,474           55            31           121.6
+
+**THE PER-UNIT COST IS THE NUMBER TO QUOTE, BECAUSE IT IS THE ONE THAT STOPS THIS BEING PROPOSED
+AGAIN. Per card actually repaired, variant B causes 8.3x more untouched band crossings than a full
+fill, and variant A 3.1x.** The intuition that a smaller write is a safer write is exactly inverted
+here: the smaller the slice, the more of its pool is left holding the zero it is being measured
+against, so the more distortion each repaired card buys.
+
+**POOL SHARE IS THE MECHANISM.** Variant A covers 32.4% of DEF, 33.5% of MID and 31.0% of FWD, so a
+third of each coarse pool moves while two thirds hold a hard zero. Variant B covers 2.1% of MID and
+2.4% of FWD. **Neither is small enough to be harmless and neither is large enough to move the pool
+with the card.**
+
+**THE CASUALTIES ARE CURRENT CARDS NOBODY TOUCHED, WHICH IS WHAT MAKES IT INDEFENSIBLE.** Variant B
+spends **31 untouched band demotions to fill 255 cards**: Salah 2025 falls 80 to 79, Kluivert 2024
+85 to 84, Raphinha 2021 and R. Jimenez 2024 both out of Standout. **A 2010-2014 data repair that
+demotes a live 2025 card is paying with the wrong currency.**
+
+**SO THE ONLY TWO COHERENT POSITIONS REMAIN THE ONES ALREADY RULED ON ABOVE: fill everything, or
+fill nothing and disclose.** "Just the big clubs" and "just the famous players" are not cheaper
+versions of the repair, they are a different and worse operation. **Do not re-propose a subset
+without re-reading this table.**
+
 **AND NOTE WHY IT SURVIVED: every internal check passes it.** The column is populated for 2015+,
 the expression is valid SQL, no row errors, and the scores look plausible. It is only visible if
 you ask what the COALESCE is standing in for , which is the same shape as the `goals_conceded`
