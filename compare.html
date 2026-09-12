@@ -2341,7 +2341,14 @@ body.light .pkmsub{color:var(--ink-soft)}
       // "who" spec), so a decisive gap reads decisive rather than "edges it" beside "A Masterclass".
       // The hardcoded phrasing below is a FALLBACK only , the loading placeholder and any
       // cache-miss/old-cache/error path where the AI line is absent. NOT a client-side tone table.
-      var ai=(whoLine!=null && String(whoLine).trim()) ? String(whoLine).trim() : '';
+      /*  SINK 2 , THE SCORE-STRIP'S INPUT. Prose reaches a sink through vvStripMarkers,
+          never raw. The regex below anchors on the END of the line, so a headline ending
+          "**90 to 88**" put the markers between the numbers and the anchor and the strip
+          silently stopped working , the score then printed twice, once in the headline and
+          once in the scoreline beneath it, which is the exact defect the strip exists to
+          prevent. Stripping first also settles the headline's own treatment: .vwho carries
+          NO emphasis by decision, so there is nothing here to convert.  */
+      var ai=(whoLine!=null && String(whoLine).trim()) ? VVCore.vvStripMarkers(String(whoLine).trim()) : '';
       /* DEFENSIVE STRIP , rows cached before the prompt stopped asking for scores still carry them
          ("Dzeko's Roma season is a demonstration. 92 vs 57."), and the pink line renders the numbers
          again, so the score printed TWICE. Strip a TRAILING scoreline at display time so those rows

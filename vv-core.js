@@ -3352,6 +3352,25 @@
       .replace(/\*+/g, '');
   }
 
+  /*  ── THE SINK RULE , PROSE REACHES A SINK THROUGH vvStripMarkers, NEVER RAW ───────────
+      vvEmphasis above is for a surface that DISPLAYS the emphasis. Everywhere else the model
+      output goes , an image, a caption, a regex, a stored report , the markers are noise and
+      must come off, because nothing downstream converts them and `**` renders as two literal
+      asterisks. `shEsc` escapes & < > and " and does NOT touch an asterisk, so an unstripped
+      string reaching the share frame prints them into the poster.
+      THE TWO SINKS TODAY are the share frame's verdict line and the score-strip's input in
+      compare's vvSetVerdict. If a third appears, it goes through here as well: the point of
+      naming the rule is that "is this path safe?" becomes greppable instead of being a
+      property of the current call order, which is how the poster passed by luck rather than
+      by design.
+      IT DOES NOT ESCAPE. Callers already escape , shEsc on one side, a regex on the other ,
+      and doing it twice would double-encode an ampersand.  */
+  function vvStripMarkers(str){
+    return String(str == null ? '' : str)
+      .replace(/\*\*([^*\n]{1,120}?)\*\*/g, '$1')
+      .replace(/\*+/g, '');
+  }
+
   function emptyHonours(){ return { season:[], career:[], cabinet:[], all:[], count:0, has:false, topHonour:null }; }
 
   /*  ── THE CABINET'S TEAM HALF , docs/CABINET_SPEC.md ────────────────────────────────────
@@ -6085,7 +6104,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
       'gap:' + (16 * S) + 'px;position:relative;z-index:1;' + (wide ? '' : 'text-align:center;') + '">' +
       (win === 'tie' ? '<div class="sf-vtag" style="font-size:' + tagPx + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' : '') +
-      '<div class="sf-verdict" style="font-size:' + shVerdPx(F) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.40 : F.w * 0.78) + 'px">' + shEsc(spec.verdictLine) + '</div>' +
+      '<div class="sf-verdict" style="font-size:' + shVerdPx(F) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.40 : F.w * 0.78) + 'px">' + shEsc(vvStripMarkers(spec.verdictLine)) + '</div>' +
       '<div class="sf-rule" style="width:' + (64 * S) + 'px"></div>' +
       '<div style="display:flex;gap:' + (18 * S) + 'px;align-items:baseline">' +
         '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + a.vv + '</span>' +
@@ -6491,7 +6510,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                cabinetWithTeamLegs, renderCabinet, vvEmphasis,
+                cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvStripMarkers,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,

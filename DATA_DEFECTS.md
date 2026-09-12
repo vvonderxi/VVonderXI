@@ -144,3 +144,32 @@ Measured 2026-09-11: 496 pairs after the tournament, 91 on it, 333 before it.
 **FIX IT IN THE VIEW BEFORE READING THE COLUMN, NOT AFTER.** The change is `>=` to `=` in that
 one join, and it is rt-safe by the paragraph above, but it rides a view edit and therefore the
 capture-before-edit rule in §C.
+
+## THE VERDICT AND NOTES CACHES STORE RAW ** MARKERS, BY DESIGN (2026-09-12, LATENT)
+
+**Same shape as the entry above, and meant to be read beside it: a column that is correct for
+its current reader and a trap for the next one.**
+
+Since the emphasis work the model marks two to three phrases a paragraph with `**double
+asterisks**`, and **`verdict_cache.verdict` and `notes_cache.notes` store that text verbatim.**
+Six display surfaces convert it , compare's `.vquote`, `.vsprose` and `.vwho`, the card's
+`#glDrury`, `#scoutBody` and `#notesBody` , through `VVCore.vvEmphasis`, which escapes first
+and then promotes only `**...**` into `<strong>`.
+
+**WHY IT IS NOT STRIPPED AT WRITE TIME, which is the obvious fix and the wrong one.** The
+markers ARE the emphasis. Strip them on the way into the cache and every surface that wants
+emphasis loses it permanently, recoverable only by regenerating every row at cost. The markers
+are signal in storage and noise at a sink, so the stripping belongs at the sink, where the
+reader knows which it is.
+
+**THE RULE, GREPPABLE ON PURPOSE: prose reaches a sink through `VVCore.vvStripMarkers`, never
+raw.** Two sinks exist today: the share frame's verdict line , `shEsc` escapes `&`, `<`, `>`
+and `"` and does NOT touch an asterisk, so an unstripped string prints two literal asterisks
+into the poster , and the score-strip regex in compare's `vvSetVerdict`.
+
+**THE TRAP FOR THE NEXT CONSUMER.** Anything that starts reading either cache outside those six
+surfaces , an og:description, a title, an alt attribute, an export, a digest mail, a rankings
+column , inherits the markers and renders them. **`textContent` does NOT strip them, it renders
+them.** The share poster passes today only because it reads `textContent` from a node
+`vvEmphasis` has ALREADY converted, which is a property of the call order rather than of the
+data, and one refactor away from breaking silently.
