@@ -1269,6 +1269,47 @@
     font-family:'Archivo';font-weight:700;font-size:12px;color:var(--cream);white-space:nowrap}
   body.light .lgchip{border-color:rgba(28,27,26,0.15);background:rgba(255,255,255,0.6);color:var(--charcoal)}
   .lgchip .f{font-size:15px;line-height:1}
+
+  /*  THE LEAGUE POPOVER , hover on desktop, tap on phone. The strip is the ONE surface
+      whose league chips have a FREE TAP: these are inert spans, where the rankings rail
+      and the Compare picker use tap to apply the filter. Those two get a native `title`
+      instead (see vvfChip in vv-core.js).
+      THE CHIP IS THE ANCHOR ON DESKTOP AND THE STRIP IS THE ANCHOR ON PHONE, and that
+      swap is the whole fix for a MEASURED overflow: chip-anchored (left:50% +
+      translateX(-50%)) the 230px panel runs off the right edge on the last chips , at
+      390 it measured scrollWidth 414 against clientWidth 388, 26px gone, with no
+      scrollbar to say so. Dropping position:relative from .lgchip at phone width makes
+      the absolutely-positioned panel resolve against .lgstrip-r instead, so left:0 /
+      right:0 spans the strip and CANNOT exceed it at any width.
+      THE PHONE BLOCK MUST STAY LAST. A media query adds no specificity (SS C), and the
+      first version of it sat above these rules and silently lost , the computed
+      `position` read `static` while the query itself matched. Verify the COMPUTED value,
+      never that the query fired.  */
+  .lgchip.hasfacts{position:relative;cursor:pointer}
+  .lgchip.hasfacts:hover,.lgchip.hasfacts.open{border-color:rgba(243,237,224,0.42);
+    background:rgba(255,255,255,0.075)}
+  body.light .lgchip.hasfacts:hover,body.light .lgchip.hasfacts.open{
+    border-color:rgba(28,27,26,0.34);background:#fff}
+  .lgtip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 9px);
+    width:232px;white-space:normal;text-align:left;z-index:40;
+    background:#15120f;border:1px solid rgba(243,237,224,0.22);border-radius:9px;
+    padding:10px 12px;box-shadow:0 14px 34px -12px rgba(0,0,0,0.85);
+    opacity:0;visibility:hidden;transition:opacity .13s;pointer-events:none}
+  body.light .lgtip{background:#fffdf7;border-color:rgba(28,27,26,0.2);
+    box-shadow:0 14px 34px -14px rgba(28,27,26,0.3)}
+  .lgchip.hasfacts:hover .lgtip,.lgchip.hasfacts.open .lgtip{opacity:1;visibility:visible}
+  .lgtip .t{display:block;font-family:'Archivo';font-weight:800;font-size:12px;
+    color:var(--cream);margin-bottom:5px}
+  body.light .lgtip .t{color:var(--charcoal)}
+  .lgtip .r{display:block;font-family:'Inter';font-weight:400;font-size:11.5px;
+    line-height:1.5;color:rgba(243,237,224,0.7)}
+  body.light .lgtip .r{color:#4f4a43}
+  .lgtip .r b{font-family:'Archivo';font-weight:700;color:var(--cream);
+    font-variant-numeric:tabular-nums}
+  body.light .lgtip .r b{color:var(--charcoal)}
+  .lgtip:after{content:'';position:absolute;top:100%;left:50%;margin-left:-5px;
+    border:5px solid transparent;border-top-color:rgba(243,237,224,0.22)}
+  body.light .lgtip:after{border-top-color:rgba(28,27,26,0.2)}
   .lgstrip-n{font-family:'Inter';font-size:12.5px;line-height:1.6;color:rgba(243,237,224,0.74);margin-top:12px}
   body.light .lgstrip-n{color:#4f4a43}
   /*  .mut DID NOT EXIST , defined here and scoped to this note, 2026-09-10. The middle
@@ -1289,6 +1330,13 @@
       and cannot drift, so they are safe to name exactly. */
   .lgstrip-n .mut{color:rgba(243,237,224,0.5)}
   body.light .lgstrip-n .mut{color:#6d675e}
+  /*  PHONE , see the note above .lgchip.hasfacts. This block is LAST on purpose.  */
+  @media (max-width:720px){
+    .lgchip.hasfacts{position:static}
+    .lgstrip-r{position:relative}
+    .lgtip{left:0;right:0;width:auto;transform:none;bottom:auto;top:calc(100% + 8px)}
+    .lgtip:after{display:none}
+  }
   @media (max-width:720px){ .lgchip{font-size:11.5px;padding:5px 11px 5px 9px;gap:6px} }
   .pgdefs{margin-top:22px;display:grid;gap:15px;max-width:760px}
   .pgrow{font-family:'Inter';font-size:15px;line-height:1.62;color:rgba(243,237,224,0.78)}
@@ -1557,22 +1605,38 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260912h"></script>
+<script src="/vv-marks.js?v=20260912i"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260912h"></script>
+<script src="/vv-core.js?v=20260912i"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
     var host=document.getElementById('lgStrip');
     if(!host || !window.VVCore || !VVCore.VVFilters || !VVCore.VVFilters.LEAGUES) return;
     var L=VVCore.VVFilters.LEAGUES;
+    /*  The three lines come from vv-core's VVF_LEAGUES, never transcribed here , the
+        filter chip renders the SAME facts as a `title`, and two copies would drift.
+        Fails closed twice over: no vv-core, no strip at all; a league with no `cards`
+        renders as a plain chip with no popover rather than an empty one.  */
+    var ESC=function(t){ return String(t).replace(/[&<>"]/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+    var facts=function(x){
+      if(x.cards==null) return '';
+      return '<span class="lgtip"><span class="t">'+ESC(x.l)+'</span>'+
+        '<span class="r"><b>'+x.cards.toLocaleString('en-GB')+'</b> season cards, 2010/11 to 2025/26</span>'+
+        '<span class="r"><b>'+x.clubs+'</b> clubs a season, <b>'+x.clubsAll+'</b> in all</span>'+
+        '<span class="r">Detailed stats from <b>'+ESC(x.detail)+'</b></span></span>';
+    };
     host.innerHTML='<div class="lgstrip-l">The ground we cover</div><div class="lgstrip-r">'+
-      L.map(function(x){ return '<span class="lgchip"><span class="f">'+x.e+'</span>'+x.l+'</span>'; }).join('')+
+      L.map(function(x){
+        var f=facts(x);
+        return '<span class="lgchip'+(f?' hasfacts':'')+'" data-lg="'+ESC(x.v)+'">'+
+               '<span class="f">'+x.e+'</span>'+x.l+f+'</span>'; }).join('')+
       /*  THE VOLUME LINE IS A FLOOR STATED ONCE, NOT A COUNT PER PILL , DECIDED 2026-09-12.
           Measured the same day, all cards / scored cards per league: SA 7,057/6,806,
           LL 7,032/6,697, PL 6,590/6,333, L1 6,569/6,277, TR 6,365/5,403, PRT 6,006/5,671,
@@ -1587,7 +1651,14 @@
           ~400 cards on the tightest league and counts only grow, so the queued writes
           (transfer halves, position backfill, the null-goals repair) cannot break it.
           IF THIS NUMBER IS EVER RAISED, re-measure first , at 6,000 it stops being true of
-          BL, ERE and BPL on all cards, and of five leagues on scored ones.  */
+          BL, ERE and BPL on all cards, and of five leagues on scored ones.
+          [EXTENDED 2026-09-12, SAME DAY, AND THIS PARAGRAPH DOES NOT FORBID IT , READ BOTH.]
+          The per-pill NUMBER is still rejected and the sentence above is unchanged. What was
+          added is a POPOVER, which is a different thing: a pill has room for a digit and no
+          room for a caveat, so it can only rank; a panel has three lines and can say what the
+          number is OF. The Turkey objection is answered rather than dodged , the tooltips show
+          ALL cards, on which Turkey reads fifth and consistently, and the scored figure that
+          would invert it is disclosed in DATA_DEFECTS.md instead of half-said here.  */
       '</div><div class="lgstrip-n">Every card comes from one of these '+L.length+
       ' competitions, and every league here carries more than 5,000 season cards. '+
       'If a league is not here, no card exists for it. '+
@@ -1596,6 +1667,15 @@
       'the Premier League, which is partly covered in 2014/15 , and in Belgium they begin in '+
       '2020/21.</span> '+
       'Before those points a season is scored on goals, assists and minutes alone.</div>';
+    /*  TAP TO OPEN, ONE AT A TIME, TAP ANYWHERE ELSE TO CLOSE , the page's own
+        interaction model, the same one toggleStory uses. Desktop keeps CSS :hover and
+        needs no JS; this only adds the phone half.  */
+    document.addEventListener('click',function(e){
+      var c=e.target.closest ? e.target.closest('.lgchip.hasfacts') : null;
+      var open=document.querySelectorAll('.lgchip.hasfacts.open');
+      for(var i=0;i<open.length;i++) if(open[i]!==c) open[i].classList.remove('open');
+      if(c) c.classList.toggle('open');
+    });
   })();
   function toggleStory(e,btn){ e.stopPropagation(); const card=btn.parentElement; const open=card.classList.toggle('open'); if(!btn.dataset.label) btn.dataset.label=btn.innerHTML; btn.innerHTML = open ? 'Show less &#8249;' : btn.dataset.label; }
 

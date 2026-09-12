@@ -481,6 +481,50 @@ from the mechanism rather than from the 57% rise, which points at football and i
 
 ---
 
+### THE RELATION IS A STRICT BICONDITIONAL, MEASURED 2026-09-12: NULL `goals` IF AND ONLY IF NULL rt
+
+**THE ENTRY ABOVE ESTABLISHED THE DIRECTION. THIS CLOSES IT IN BOTH.** Measured over all 57,055
+cards:
+
+    cards with rt IS NULL                          3,061
+    of those, goals IS NULL                        3,061      100%
+    cards with goals IS NULL                       3,061
+    of those, rt IS NOT NULL                           0      none
+    unscored cards with minutes < 300                  0
+    SCORED cards with minutes < 300                    0
+    unscored cards before 2015                         0
+
+**SO "UNSCORED" AND "NO GOALS FIGURE" ARE THE SAME POPULATION, EXACTLY , not merely overlapping.**
+`player_card_view`'s `scored` CTE requires `goals IS NOT NULL`, and nothing else in the view
+excludes a card, so the whole of the platform's unscored population has exactly one cause.
+
+**AND IT IS NOT A MINUTES FLOOR, WHICH IS THE OBVIOUS WRONG ANSWER AND WAS TESTED.** Zero unscored
+cards sit under 300 minutes and so do zero SCORED ones , the importer's floor applies before a card
+exists at all, so it cannot be what separates these two groups. The unscored carry a median of
+**1,044 to 1,191 minutes** by season (table above): regular starters.
+
+**THE 2,129 IN THE ENTRY ABOVE IS OUTFIELD-ONLY, AND BOTH FIGURES ARE RIGHT , DO NOT "CORRECT"
+EITHER.** They count different populations and reconcile exactly:
+
+    2019-2025   outfield 2,129  +  keepers   508  =  2,637
+    all seasons outfield 2,497  +  keepers   564  =  3,061
+
+**A figure quoted without its population is the failure this file keeps recording.** The table in
+the entry above is explicitly outfield; this one is every card.
+
+**WHAT THIS UPGRADES.** SS C carries "3,061 of 57,234 cards have a null rt" as a flat fact behind
+the `nullsFirst:false` rule. It now has a cause, a population and a year shape , **and the cause is
+a single column**, which makes it a repair with one input rather than an investigation.
+
+**WHERE IT IS NOW USER-VISIBLE, AND WHY THAT DID NOT CHANGE THE DECISION.** The Playbook's league
+tooltips (2026-09-12) show ALL cards per league, not scored ones. Scored counts invert for exactly
+one league , **Turkey is fifth on all cards (6,365) and last on scored (5,403), because 962 of its
+cards carry a null `goals`** , and a panel printing 6,365 beside 5,403 would pose a question whose
+honest answer is this entry. **Rounding does NOT dissolve it: to the nearest 500, TR and Belgium
+both read 5,500, so the CROSS-LEAGUE inversion vanishes, but the 962-card gap inside Turkey's own
+panel survives any rounding.** All-cards was chosen for that reason. **This is disclosure deferred
+to the right surface, not concealment** , the gap is recorded here in full.
+
 ## `top_assists` WAS COMPUTED FROM OUR OWN 99%-NULL ASSISTS COLUMN, SO THE "LEAGUE LEADER" WAS THE MAX OF A HANDFUL OF ROWS (found and CORRECTED 2026-09-12)
 
 **REPORTED BY LUCAS FROM ONE CARD AND IT WAS REAL: Van Persie's 2011/12 card carried Top Assists on

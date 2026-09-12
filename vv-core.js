@@ -4924,17 +4924,46 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       `c` IS NEW AND IS THE COUNTRY, for surfaces that name the country beside the league.
       KEY OFF `v`, WHICH IS THE CARD'S league_code, NEVER off leagues.code , the view joins
       leagues on league_id, so the Turkish row is 'TSL' there while every card carries 'TR'.  */
+  /*  THE PER-LEAGUE FACTS BELOW ARE AN EMBEDDED SNAPSHOT, MEASURED 2026-09-12 AGAINST
+      `player_card_mv`. Same standing hazard as KEEPER_SAVE_LADDER and RADAR_POOL_REF ,
+      NOTHING WARNS YOU WHEN THEY GO STALE. Re-measure after any re-ingest, the
+      transfer-halves repair, or the null-goals repair. They only grow, so the Playbook's
+      "more than 5,000 season cards" floor cannot be broken by drift, only by a deletion.
+
+      `cards` IS ALL CARDS, NOT SCORED CARDS, AND THAT IS A DECISION , 2026-09-12.
+      Scored counts invert against all-cards for exactly one league: Turkey is FIFTH on all
+      cards (6,365) and LAST on scored (5,403), because 962 of its cards carry a null
+      `goals` and so are never scored. Showing both numbers in one panel would print 6,365
+      beside 5,403 and invite a question whose honest answer is a data gap , see the
+      null-goals entry in DATA_DEFECTS.md. All-cards avoids that without hiding anything:
+      the gap is recorded there, in full, rather than half-said in a tooltip.
+
+      `detail` MUST AGREE WITH THE PLAYBOOK STRIP SENTENCE, which says the same thing in
+      prose: 2015/16 generally, the Premier League partly from 2014/15 (measured 31% of
+      cards carrying `shots_total`, against 95% the next season), Belgium from 2020/21.
+      Change one and change the other, or the page contradicts its own tooltip.  */
   var VVF_LEAGUES=[
-    {v:'PL', l:'Premier League',     c:'England',     e:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}'},
-    {v:'LL', l:'La Liga',            c:'Spain',       e:'🇪🇸'},
-    {v:'SA', l:'Serie A',            c:'Italy',       e:'🇮🇹'},
-    {v:'BL', l:'Bundesliga',         c:'Germany',     e:'🇩🇪'},
-    {v:'L1', l:'Ligue 1',            c:'France',      e:'🇫🇷'},
-    {v:'PRT',l:'Primeira Liga',      c:'Portugal',    e:'🇵🇹'},
-    {v:'ERE',l:'Eredivisie',         c:'Netherlands', e:'🇳🇱'},
-    {v:'BPL',l:'Belgian Pro League', c:'Belgium',     e:'🇧🇪'},
-    {v:'TR', l:'Super Lig',          c:'Turkey',      e:'🇹🇷'}
+    {v:'PL', l:'Premier League',     c:'England',     e:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}',
+     cards:6590, clubs:20, clubsAll:41, detail:'2015/16, partly 2014/15'},
+    {v:'LL', l:'La Liga',            c:'Spain',       e:'🇪🇸', cards:7032, clubs:20, clubsAll:35, detail:'2015/16'},
+    {v:'SA', l:'Serie A',            c:'Italy',       e:'🇮🇹', cards:7057, clubs:20, clubsAll:41, detail:'2015/16'},
+    {v:'BL', l:'Bundesliga',         c:'Germany',     e:'🇩🇪', cards:5900, clubs:18, clubsAll:33, detail:'2015/16'},
+    {v:'L1', l:'Ligue 1',            c:'France',      e:'🇫🇷', cards:6569, clubs:20, clubsAll:37, detail:'2015/16'},
+    {v:'PRT',l:'Primeira Liga',      c:'Portugal',    e:'🇵🇹', cards:6006, clubs:18, clubsAll:36, detail:'2015/16'},
+    {v:'ERE',l:'Eredivisie',         c:'Netherlands', e:'🇳🇱', cards:5838, clubs:21, clubsAll:33, detail:'2015/16'},
+    {v:'BPL',l:'Belgian Pro League', c:'Belgium',     e:'🇧🇪', cards:5698, clubs:16, clubsAll:30, detail:'2020/21'},
+    {v:'TR', l:'Super Lig',          c:'Turkey',      e:'🇹🇷', cards:6365, clubs:18, clubsAll:45, detail:'2015/16'}
   ];
+  /*  ONE DERIVATION, TWO SURFACES. The Playbook strip renders these as three lines in a
+      popover; the filter chip renders the same three as a `title`. Keeping the sentence
+      here rather than in either page is SS C's rule about card rules living in vv-core:
+      a fact transcribed into a page is a fact the next surface will get wrong.  */
+  function vvLeagueFacts(x){
+    if(!x || x.cards==null) return '';
+    return x.cards.toLocaleString('en-GB')+' season cards, 2010/11 to 2025/26'+
+           ' \u00b7 '+x.clubs+' clubs a season, '+x.clubsAll+' in all'+
+           ' \u00b7 Detailed stats from '+x.detail;
+  }
   var VVF_SORTS=[
     {v:'rt',       l:'VV Score',  col:'rt',          asc:false},
     {v:'goals',    l:'Goals',     col:'goals',       asc:false},
@@ -5003,7 +5032,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
        inventing "Young / Prime / Veteran" would put an editorial judgement into a
        filter rail where every other cut is measured. */
     { key:'age',      label:'Age',          select:'multi',  where:'server', kind:'range' },
-    { key:'league',   label:'League',       select:'multi',  where:'server', items:VVF_LEAGUES },
+    { key:'league',   label:'League',       select:'multi',  where:'server',
+      items:VVF_LEAGUES.map(function(x){ return Object.assign({}, x, {tip:vvLeagueFacts(x)}); }) },
     { key:'position', label:'Position',     select:'multi',  where:'server',
       items:FILTER_TAXONOMY.position.map(function(p){ return {v:p.v,l:(p.l||p.v)}; }) },
     /* PRESTIGE GROUP REMOVED , Generational and Iconic are the same cut the VV
@@ -5055,10 +5085,22 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   // ---- markup --------------------------------------------------------------
   var VVF_ESC=function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+  /*  `it.tip` RENDERS AS A NATIVE `title`, WHICH IS DELIBERATE AND IS THE WHOLE POINT.
+      A chip's TAP IS ALREADY SPOKEN FOR , it toggles the filter on rankings and in the
+      Compare picker, which mount this same component , so there is no free tap here and a
+      custom popover would have to fight the one interaction the chip exists for. A `title`
+      costs no markup, no listener and no layout, shows on desktop hover, and is simply
+      absent on a phone. THAT ABSENCE IS ACCEPTED: the same facts are on the Playbook strip,
+      which does have a free tap and gives them the full treatment.
+      REJECTED, and recorded so it is not re-proposed: printing the count INLINE in the
+      `vvf-hint` slot. It fits, but it thickens all nine chips on the busiest surface to
+      print nine numbers that span a 1.24 ratio end to end , the most nearly identical fact
+      we hold about the leagues. Demoed side by side before this was chosen.  */
   function vvfChip(groupKey, it, opts){
     var inert=!!opts.inert;
     var lab=(it.e?it.e+' ':'')+(it.l||it.v);
     return '<button type="button" class="vvf-chip'+(inert?' vvf-inert':'')+'"'+
+      (it.tip?' title="'+VVF_ESC(it.tip)+'"':'')+
       ' data-vvf-group="'+VVF_ESC(groupKey)+'" data-vvf-value="'+VVF_ESC(it.v)+'"'+
       (it.lo!=null?' data-vvf-lo="'+it.lo+'"':'')+(it.hi!=null?' data-vvf-hi="'+it.hi+'"':'')+
       (inert?' disabled aria-disabled="true"':'')+
@@ -5629,7 +5671,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   const VVSeq = { KEY:SEQ_KEY, save:seqSave, load:seqLoad, clear:seqClear,
                   query:seqQuery, clientActive:seqClientActive };
 
-  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES,
+  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES, leagueFacts:vvLeagueFacts,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
