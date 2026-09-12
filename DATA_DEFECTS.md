@@ -848,6 +848,39 @@ the 25% coverage gate at 84.3%, so the gate cannot catch it**, which is exactly 
 - **DO NOT "COMPLETE" THIS LEAGUE-SEASON.** Its absence is a decision, not a gap. If it is ever
   filled it must come from an external source naming the actual leader, not from our maximum.
 
+### [APPROVED AND SCOPED 2026-09-12, NOT STARTED: SOURCING THE WINNER FOR 46 LEAGUE-SEASONS. FULL SPEC IN `docs/TOP_ASSISTS_SOURCING_SPEC.md`.]
+
+**THE PROMINENCE-BIAS RECORD, WRITTEN BEFORE THE FILL RATHER THAN AFTER IT, BECAUSE A FUTURE
+READER CANNOT INFER SELECTION FROM THE VALUES.**
+
+**These 46 rows are externally sourced and SELECTIVE BY CONSTRUCTION.** One fact per league-season,
+the leader only, chosen **because** it is the extreme, for exactly the league-seasons where our own
+data is too sparse to compute one. **No other player in those league-seasons was sourced.**
+**No distribution, ranking, percentile or comparison may be computed over `honours.assists` for
+these rows.** They all look like ordinary assist totals and nothing in the value gives the game
+away , which is the entire reason this paragraph exists.
+
+**THEY CARRY A DISTINCT MARKER: `source = 'wikipedia_ccc_leader_only'`**, separate from
+`wikipedia_ccc` and from `computed`, set at WRITE time. **As of today these 46 are the ONLY rows in
+`honours` carrying that marker**, so a future query can tell whether the set has grown without
+reading any history: `select count(*) from honours where source = 'wikipedia_ccc_leader_only'`
+should return **46**, and any other number means someone extended the selective set and this entry
+needs re-reading.
+
+**WHAT IS DIFFERENT FROM THE FILL THAT CAUSED THE ORIGINAL DEFECT, so nobody over-corrects: the
+winner comes from OUTSIDE our data, so it does not inherit our sampling.** The selectivity is real
+but it is a different kind , we are not choosing famous players, we are choosing the top of each
+league, and we are recording that we did. The original defect was a maximum computed over a set
+someone had filled for fame; this is a maximum stated by a source that saw the whole league.
+
+**AND THE SOURCE CHOICE TURNS ON INDEPENDENCE, WHICH IS WORTH KEEPING BECAUSE IT IS EASY TO GET
+BACKWARDS.** Wikipedia per-season league articles are primary, Transfermarkt is the independent
+second read, the league archive is a tiebreak only. **FBref was REJECTED as primary and not for
+quality: the ~117 pre-2015 assists we already hold were themselves CCC-verified against FBref
+domestic-league splits, so an FBref-sourced winner would NOT be independent of the column it is
+correcting.** If FBref's definition diverged from the league's own we would be confirming our own
+bias and every check would pass for the wrong reason.
+
 **NOT DONE, DELIBERATELY: external sourcing of the real winners.** It is a separate decision and it
 carries an unsolved problem , see the entry below.
 
