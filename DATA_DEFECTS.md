@@ -605,6 +605,77 @@ correct the moment the rows went. **The refresh is Lucas's lane** , re-confirmed
 `exec_sql` route died at **8.5 seconds** with `canceling statement due to statement timeout`
 exactly as SS C records, and the matview was verified intact afterwards at 57,055 rows.
 
+### THE COVERAGE BAR IS 25% AND SOMEONE WILL READ THAT AS LAX. IT IS NOT, AND HERE IS THE NUMBER THAT STOPS THE TIGHTENING.
+
+**THE BAR WAS NOT CHOSEN, IT WAS PLACED IN A MEASURED EMPTY REGION.** Coverage share across the
+120 written rows: **ten rows between 0.5% and 1.9%, then NOTHING AT ALL until 45.0%.** Any bar from
+roughly **5% to 44%** refuses exactly the same ten rows and keeps exactly the same 110. **The value
+25 carries no information; the EMPTINESS on either side of it does.** That is what makes it
+different from the `< 9` guard it replaced, which was a number picked near the symptom and was
+beaten by a single assist.
+
+**AND THE TIGHTENING INSTINCT IS WRONG HERE, BECAUSE A HEALTHY LEAGUE-SEASON IS ONLY 50 TO 70%
+POPULATED.** That is not a defect, it is the importer's 300-minute floor keeping the tail out, and
+SS E records that floor as BY DESIGN. **So the normal case sits barely above the bar, and raising
+the bar eats the normal case immediately:**
+
+    bar    rows refused of 120
+    25%     10      <- exactly the artefacts
+    50%     13
+    60%     78      <- REFUSES 78 OF 120 CORRECT ROWS
+    70%     90
+    80%     92
+    90%     99
+
+**AT 60% THE GATE REFUSES 78 OF 120 CORRECT ROWS.** Write that down before touching the constant.
+A bar that looks "safer" deletes three quarters of the platform's assist honours, and it would do
+it silently, because a withheld season prints as UNRESOLVED rather than as an error.
+
+**THE GENERAL LESSON, AND IT IS THE ONE WORTH KEEPING: WHEN A THRESHOLD SEPARATES TWO POPULATIONS,
+PUT IT IN THE GAP AND RECORD THE GAP, NOT THE NUMBER.** A threshold justified by its value invites
+adjustment by taste. A threshold justified by a measured discontinuity can only be moved by
+re-measuring, and the re-measurement will show whether the discontinuity is still there. **Only 3
+league-seasons sit anywhere in the 25 to 50% band**, so the bar's exact placement is nearly
+inert in practice, which is itself the evidence that it is not the interesting parameter.
+
+### TIE-BREAKING IS ARBITRARY, AND IT IS A SEPARATE DEFECT THE COVERAGE GATE CANNOT SEE (logged 2026-09-12, NOT FIXED)
+
+**THE SCRIPT WRITES WHICHEVER TIED PLAYER IT HAPPENED TO ITERATE FIRST.** `if (!cur || o[metric] >
+cur.val)` keeps the first maximum and every later equal is pushed to a `ties` array that is
+**logged and then discarded.** So the honour goes to an arbitrary member of the tied set, decided
+by pagination order.
+
+**MEASURED 2026-09-12 OVER THE 94 RESOLVED LEAGUE-SEASONS: 14 HAVE A TIE AT THE TOP, 14.9%.**
+Counted independently from the matview and cross-checked against the script's own tie counter,
+which reported the same 14.
+
+    players sharing the top value:  1 player 80 seasons | 2 players 10 | 3 players 3 | 4 players 1
+
+**SO 19 PLAYERS CURRENTLY HOLD NO HONOUR THEY EQUALLY EARNED**, and which one of each tied set got
+it is not a judgement, it is an artefact of row order. Examples: **ERE 2018 Ziyech and Tadic both
+on 13; L1 2017 Depay, Neymar and Payet all on 13; SA 2015 Pjanic and Pogba both on 12; LL 2018
+Sarabia and Messi both on 13; L1 2023 a FOUR-way tie on 8.**
+
+**THE COVERAGE GATE CANNOT CATCH THIS AND IS NOT MEANT TO.** L1 2023 is **84.3% covered**, which is
+among the best on the platform, and still resolves to an arbitrary pick of four.
+
+**THE PROPOSAL, NOT APPLIED: WRITE EVERY TIED PLAYER.** Three things support it:
+- **The schema already permits it.** `honours_one_per_award` is UNIQUE on `(honour_type,
+  season_year, league_code, api_player_id)`, so two players CAN both hold one award for one
+  league-season. The constraint was built for this.
+- **THE PLATFORM ALREADY DOES IT FOR GOLDEN BOOT.** `golden_boot` carries **two** computed rows for
+  TR 2025/26, Shomurodov and Onuachu, both on 22. **So the precedent exists, in the same table,
+  written by the same pass**, and top_assists is the outlier for collapsing a tie rather than the
+  other way round.
+- **It matches the sport.** Shared leadership in assists is ordinary and real awards are shared.
+
+**THE ONE CAVEAT THAT MUST TRAVEL WITH IT: A TIE IN OUR DATA IS NOT PROOF OF A TIE IN THE SEASON.**
+At 84.3% coverage the true leader may simply be one of the 15.7% we do not hold, and **a tie at a
+LOW value is itself a coverage tell** , four players sharing 8 in Ligue 1 is more likely a sign the
+real leader is missing than that four men genuinely led. **Writing all tied players is strictly
+better than picking one at random, and it is still a computed answer from incomplete data.** It
+does not remove the argument for sourcing the winner externally; it removes an arbitrary choice.
+
 **NOT DONE, DELIBERATELY: external sourcing of the real winners.** It is a separate decision and it
 carries an unsolved problem , see the entry below.
 
