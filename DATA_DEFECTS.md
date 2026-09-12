@@ -228,3 +228,46 @@ into a null-safe expression on the way past , it would re-rate a five-year windo
 the expression is valid SQL, no row errors, and the scores look plausible. It is only visible if
 you ask what the COALESCE is standing in for , which is the same shape as the `goals_conceded`
 sentinel that sat unnoticed until someone read min and max.
+
+
+---
+
+## THE PLAYBOOK KEYS THREE MAPS ON A DISPLAY STRING, SO A COPY CHANGE IS A CODE CHANGE (found 2026-09-12, NOT REFACTORED)
+
+**WHAT IT COST TODAY, WHICH IS THE ONLY REASON THIS IS WORTH WRITING DOWN.** Renaming two honours
+(`League Champion` to `League Title`, `UCL Winner` to `UCL Champion`) should have been one edit to
+`HONOUR_META.label`. It was **eight**, across two files, because the Playbook does not read
+`HONOUR_META` at all , it holds its own copies keyed on the NAME:
+
+    playbook.html   <div class="hn">League Champion</div>     the visible label
+                    data-h="League Champion"                  the click key
+                    HON_KEY  {"League Champion": 'league_champion'}   name -> mark key
+                    HON_COPY {"League Champion": {td, dq}}            name -> the expanded copy
+                    HON_RANK ["...","League Champion",...]            name -> display order
+
+**AND THE FAILURE WOULD HAVE BEEN SILENT, IN BOTH DIRECTIONS.** Change `HONOUR_META` alone and the
+Playbook keeps teaching a name nothing else uses. Change the markup alone and `HON_KEY` misses, so
+`honMark()` returns '' and **the trophy renders blank with no error** , the same `<use>`-with-no-
+symbol failure SS C already records. `HON_COPY` misses too, so "See more" opens an empty panel.
+
+**ONE GUARD EXISTS AND IT ONLY COVERS ORDER.** `honFill()` compares the DOM's `data-h` sequence to
+`HON_RANK` and `console.warn`s on a mismatch , deliberately a warn, not a throw, because a wrong
+ORDER is cosmetic. **It cannot see a name that was changed consistently in the markup and not in
+`HON_KEY` or `HON_COPY`**, which is the likelier mistake.
+
+**THIS IS THE TWO-COPIES-OF-ONE-DECISION SHAPE, WHICH SS C RECORDS AGAINST `eligibility()`, AGAINST
+THE VIEW'S TWO POSITION KEYS, AND AGAINST `careerStageTags`.** The distinguishing feature here is
+that the shared key is a **human-readable string that someone will want to edit for copy reasons**,
+so the pair is guaranteed to be pulled apart eventually. It is the same class as the deleted
+`HONOUR_ICON` and `WT_TAG_ICON` lookups, which SS C says must never gain a third member.
+
+**THE FIX, NOT DONE NOW, RECORDED SO THE NEXT PERSON HAS IT: key on the honour KEY, never the
+name.** `HON_KEY` disappears entirely (the key is already the key). `HON_COPY` and `HON_RANK`
+become `{ league_champion: ... }` and `['ballon_dor', ...]`. The markup carries
+`data-h="league_champion"` and the visible `.hn` text is read from `HONOUR_META.label` at load, the
+way `.hmk` already reads its mark. **After that a rename is one edit in `vv-core.js` and the
+Playbook follows automatically** , which is the whole point.
+
+**IT ALSO REMOVES A REAL HAZARD BEYOND TIDINESS:** the `hc-` element ids are ALREADY keyed on the
+honour key (`id="hc-league_champion"`), so the file currently uses both conventions side by side
+and only the string-keyed half breaks on a rename.

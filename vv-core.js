@@ -2888,8 +2888,8 @@
   const HONOUR_META = {
     ballon_dor:        { group:'Individual', label:"Ballon d'Or",         tier:1 },
     world_cup_winner:  { group:'Career',     label:'World Cup Winner',     tier:2 },
-    ucl_winner:        { group:'Team',       label:'UCL Winner',           tier:3 },
-    league_champion:   { group:'Team',       label:'League Champion',      tier:4 },
+    ucl_winner:        { group:'Team',       label:'UCL Champion',         tier:3 },
+    league_champion:   { group:'Team',       label:'League Title',         tier:4 },
     player_of_season:  { group:'Individual', label:'Player of the Season', tier:5 },
     golden_boot:       { group:'Individual', label:'Golden Boot',          tier:6 },
     top_assists:       { group:'Individual', label:'Top Assists',          tier:7 },

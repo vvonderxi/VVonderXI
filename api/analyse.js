@@ -61,7 +61,18 @@ function isModelMissing(status, msg) {
 //   - the VERDICT_TAGS vocabulary (vv-core.js) , tag names/blurbs enter the
 //     USER prompt, which is per-pair and so cannot be fingerprinted globally
 //   - the user-prompt builder in compare.html / scripts/prewarm_verdicts.js
-const PROMPT_REV = 'v2';
+/*  BUMPED v2 -> v3 ON 2026-09-12 FOR A CHANGE THE FINGERPRINT CANNOT SEE , the honour LABELS
+    moved (`League Champion` -> `League Title`, `UCL Winner` -> `UCL Champion`). Those names travel
+    to the model inside the PAYLOAD, not inside the system prompt, so `fingerprint(VERDICT_SYSTEM)`
+    is unchanged and every cached verdict would have survived.
+    WITHOUT THIS BUMP THE ASYMMETRY IS PERMANENT, AND IT IS A CORRECTNESS PROBLEM RATHER THAN A
+    COST ONE. `statsHash` covers payload VALUES, so the NOTES cache invalidates on its own; the
+    VERDICT cache stamps on rt_a/rt_b and cache_version only, and `payloadRev` hashes the KEY SET,
+    never the values. So cached verdict prose would have gone on saying "League Champion" beside a
+    card reading "League Title", with nothing able to flush it.
+    This is exactly the hole the note above describes: bump by hand when the EVIDENCE changes and
+    the fingerprint cannot see it.  */
+const PROMPT_REV = 'v3';
 const fingerprint = (s) => crypto.createHash('sha256').update(s).digest('hex').slice(0, 8);
 
 // Complete freshness signal for the notes cache: hash the exact player payload
