@@ -221,6 +221,66 @@ The theme-contrast harness (`_audit.js`, tracked) reads `backgroundColor` and re
 
 ---
 
+## `scrollWidth` REPORTS "FITS" FOR TEXT THAT WRAPS, BECAUSE WRAPPING GROWS HEIGHT RATHER THAN WIDTH (2026-09-12)
+
+**THE CHECK THAT LOOKS RIGHT AND IS BLIND.** Asked whether a longer pill label clips, the obvious
+test is `el.scrollWidth > el.clientWidth`. On a `white-space: normal` element **that comparison is
+answering a different question**: if the text does not fit, it WRAPS, the element grows taller, and
+`scrollWidth` stays equal to `clientWidth`. **The test returns "fits" for every string you give it.**
+
+**MEASURED: it returned `scrollWidth === clientWidth === 63` for `"Top Assists"`, `"Top Assists, 15"`,
+`"Top Assists, 20"` AND the deliberately absurd `"Top Assists, 100"`.** Four strings of visibly
+different length, one answer. **That uniformity is the tell** , the same shape as SS C's rule that a
+perfect agreement rate is an UNDISCRIMINATING result rather than strong evidence.
+
+**THE CORRECT INSTRUMENT IS `Range.getClientRects()` ON THE TEXT NODE.** It returns **one rectangle
+per LINE BOX**, so wrapping is visible as a count, and the first rect's `right` edge gives the true
+laid-out width:
+
+    const rg = document.createRange(); rg.selectNodeContents(textNode);
+    const rects = [...rg.getClientRects()];      // rects.length > 1  =>  IT WRAPPED
+    rects[0].right > cell.getBoundingClientRect().right   // => it overflowed
+
+Measured that way: one line box in every case, cell height constant at 11.69px, and
+`"Top Assists, 20"` ending 6.96px clear of the cell edge. **The conclusion happened to be the same,
+which is exactly why this is dangerous , the blind instrument agreed with the right one here and
+would not have next time.**
+
+**AND CHECK THE ELEMENT YOU THINK YOU ARE MEASURING.** A first pass measured `.chtag`, the ROW
+container, rather than `.chtagcell`, the pill, and reported the pill width as equal to the whole
+card. A second pass measured a card rendering a SINGLE pill, where the row spans and nothing is
+constrained , **the two-up slot is only exercised when two pills are present**, so a one-pill card
+cannot test it at all.
+
+**THIS IS THE THIRD MEASUREMENT INSTRUMENT IN ONE DAY THAT REPORTED THE WRONG ANSWER CONFIDENTLY**,
+after the `range()` pagination that duplicated rows while reporting a clean pull, and the
+`assist`-matching detector that read **"Assistant referees"** as an assists table. **The pattern is
+one thing: each was a plausible proxy for the question, and none was the question.**
+
+---
+
+## A SINGLE-PAGE APP RETURNS HTTP 200 FOR EVERY PATH, INCLUDING PATHS IT WILL SILENTLY REDIRECT AWAY FROM (2026-09-12)
+
+**`fetch()` CANNOT VALIDATE A ROUTE ON AN SPA, AND NAVIGATION AND FETCH DISAGREE IN OPPOSITE
+DIRECTIONS.** Probing an external stats site for an assists leaderboard:
+- **`fetch('/stats/top/players/assists/2011-12')` returned 200** with a generic title, on every
+  season tried, which reads as "the route exists for all of them".
+- **NAVIGATING to the same URL landed on `/stats/top/players/goals/2011-12`**, title
+  *"Goals - 2011-12"*. The server hands out the same shell for any path and the CLIENT router
+  decides where you actually end up.
+
+**SO A SCRAPE THAT TRUSTED THE 200 WOULD HAVE RECORDED THE GOALS LEADER AS THE ASSISTS LEADER**,
+with no error anywhere , for the Premier League 2011/12 that is van Persie 30 instead of
+David Silva 15, and it would have looked entirely plausible.
+
+**THE CONTROL THAT SETTLED IT, AND IT INVERTED THE FIRST CONCLUSION.** The redirect first looked
+like "the archive has no assists before some season". Testing a RECENT season showed **2024-25
+redirected too**, so the season was never the variable , **the slug was simply wrong.** The real
+one is `goal-assists`, found by reading the site's own UI instead of guessing a fourth time.
+**When a URL guess fails, stop guessing and read the application's own navigation.**
+
+---
+
 ## html2canvas 1.4.1 renders a SUBSET of CSS , the capture is a different renderer from the browser (2026-08-23)
 
 **Rule in `CLAUDE.md` §C. This is the measurement behind it.**

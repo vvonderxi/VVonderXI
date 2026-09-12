@@ -3100,9 +3100,23 @@
       43.8 against 37.96, and even "World Champion" is 38.8 and misses. It is the only honour
       left whose label does not say what was done, and it is an open copy decision, NOT an
       oversight , do not quietly abbreviate it.
-      AND NOTE THE ONE ALREADY AT THE LIMIT: "Top Assists" measures 38.0 against a 37.96 slot,
-      so it is a rounding error from clipping TODAY, unchanged by this edit. Anything that
-      shrinks the slot breaks it first.  */
+      [CORRECTED 2026-09-12 PM. THE "38.0 AGAINST A 37.96 SLOT" LINE IS STALE AND WOULD BLOCK A
+      CORRECT CHANGE.] It said "Top Assists" was a rounding error from clipping. RE-MEASURED ON
+      THE LIVE RANKINGS GRID, the smallest surface that actually renders honour pills:
+        --cw 151   cell inner 58.21px   mark 6.33px
+        "Top Assists"       text 28.55  ->  34.88 used,  23.33 spare
+        "Top Assists, 15"   text 36.56  ->  42.89 used,  15.32 spare
+        "Top Assists, 20"   text 40.42  ->  44.06 used,  14.15 spare
+      WHY THE OLD FIGURE NO LONGER DESCRIBES ANYTHING: rankings declares --cw 165 and the card
+      is clamped by max-width:92%, and 165 x 0.92 = 151.8, so the rendered box is 151. A slot of
+      37.96 implies a --cw near 143 that is not in the CSS on any surface today. --cw 132 is
+      `playbook.html`'s `.pvcard`, a DECORATIVE prestige card that carries no pills at all.
+      MEASURED AT 390, 360, 340 AND 320 VIEWPORT WIDTHS , --cw PINS AT 151 AND DOES NOT SHRINK.
+      AND THE INSTRUMENT MATTERS MORE THAN THE NUMBER , see `SILENT_FAILURES.md`: `scrollWidth`
+      reports "fits" for text that WRAPS, because wrapping grows height rather than width. The
+      correct instrument is `Range.getClientRects()` on the text node, which returns one box per
+      LINE. Measured that way every string above renders on ONE line with the cell height
+      constant at 11.69px, so the value genuinely fits.  */
   const HONOUR_CHIP_LABEL = {
     ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL Champion',
     league_champion:'League Title', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
