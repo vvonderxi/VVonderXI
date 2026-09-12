@@ -1573,8 +1573,24 @@
     var L=VVCore.VVFilters.LEAGUES;
     host.innerHTML='<div class="lgstrip-l">The ground we cover</div><div class="lgstrip-r">'+
       L.map(function(x){ return '<span class="lgchip"><span class="f">'+x.e+'</span>'+x.l+'</span>'; }).join('')+
+      /*  THE VOLUME LINE IS A FLOOR STATED ONCE, NOT A COUNT PER PILL , DECIDED 2026-09-12.
+          Measured the same day, all cards / scored cards per league: SA 7,057/6,806,
+          LL 7,032/6,697, PL 6,590/6,333, L1 6,569/6,277, TR 6,365/5,403, PRT 6,006/5,671,
+          BL 5,900/5,697, ERE 5,838/5,670, BPL 5,698/5,440. The leagues are the SAME SIZE,
+          a 1.24 ratio end to end, so a per-pill number says almost nothing and invites the
+          one contradiction the data does contain: TR is FIFTH on all cards and LAST on
+          scored ones, because 15% of its cards carry a null rt. A reader would rightly ask
+          why Turkey shows less than Belgium when it has more cards, and the honest answer
+          is a data gap, which is not what a league pill should teach.
+          5,000 CLEARS EVERY LEAGUE ON BOTH COUNTING BASES (lowest is TR scored, 5,403), so
+          it also dissolves the all-vs-scored question rather than answering it. Headroom is
+          ~400 cards on the tightest league and counts only grow, so the queued writes
+          (transfer halves, position backfill, the null-goals repair) cannot break it.
+          IF THIS NUMBER IS EVER RAISED, re-measure first , at 6,000 it stops being true of
+          BL, ERE and BPL on all cards, and of five leagues on scored ones.  */
       '</div><div class="lgstrip-n">Every card comes from one of these '+L.length+
-      ' competitions. If a league is not here, no card exists for it. '+
+      ' competitions, and every league here carries more than 5,000 season cards. '+
+      'If a league is not here, no card exists for it. '+
       'Every league runs from 2010/11 onward, but the detailed stats do not run that whole way. '+
       '<span class="mut">Shots, passes, duels and dribbles begin in 2015/16 , a little earlier in '+
       'the Premier League, which is partly covered in 2014/15 , and in Belgium they begin in '+
