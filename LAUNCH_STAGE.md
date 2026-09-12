@@ -498,3 +498,26 @@ wrote.
      - **[DONE 2026-08-29] PAGE-WEIGHT** , the demo markup was never the problem. The two base64 logos duplicated across nine pages are extracted to `assets/spinelogo-{dark,light}.png`; site HTML 2.78 MB -> 0.98 MB.
      - **[DONE 2026-08-29] DEAD-CSS SWEEP** , `.dicon`, `.liblabel`, `.liblede` removed, confirmed zero-reference in markup AND in JS first; **`.libgroup` IS live and was left alone.** The item said TWO dead custom properties; there were FOUR , and **`--pinkglow` died of a missing hyphen: the live token is `--pink-glow`.** A re-scan reports zero declared-but-unreferenced custom properties.
      - **[DONE , VERIFIED 2026-08-30] DELETE `foundations.html`.** Gone from the tree. **It is still named in PRODUCTION's `vercel.json` `builds` array**, harmless only because production still carries the file; the branch's `vercel.json` does not reference it at all.
+
+
+---
+
+## HYGIENE, LOGGED NOT FIXED: `playbook.html` HAS NO `prefers-reduced-motion` SUPPORT AT ALL (found 2026-09-12)
+
+**Measured: 0 occurrences of `prefers-reduced-motion` in `playbook.html`, against 29 `transition`
+declarations and one `@keyframes`.** Three other shipping pages already guard , `card.html`,
+`index.html` and `vvindex.html` , so the playbook is the outlier, not the norm.
+
+**THE PATTERN TO COPY IS ALREADY IN THE TREE, DO NOT INVENT ONE.** `card.html` uses BOTH halves:
+a `@media (prefers-reduced-motion:reduce)` block that keeps opacity and drops transform and blur,
+AND a JS `matchMedia('(prefers-reduced-motion: reduce)')` check that skips the animation and jumps
+straight to the end state. `index.html` has the blunt version, `*{transition:none!important}`.
+
+**DELIBERATELY NOT FIXED IN THE 2026-09-12 PASS.** Sweeping 29 transitions is its own job with its
+own verification, and folding it into a feature commit would make both unreviewable. **The new
+cabinet section carries its own guard**, so this is a pre-existing gap, not one that pass widened.
+
+**WHEN IT IS DONE, IT IS NOT A FIND-AND-REPLACE.** The blunt `*{transition:none!important}` is
+right for a page whose motion is decorative; the playbook's folds and the career arc use transition
+to communicate state change, so those want the opacity-preserving treatment instead. **Judge them
+in two groups, not one.**
