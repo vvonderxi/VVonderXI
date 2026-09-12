@@ -198,7 +198,10 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 - Excluded from season tags: domestic cups. Data is table-shaped (Wikipedia), ~500-800 rows. Build as first piece of tag validation.
 
 **Provenance**
-- Assists = FBref domestic-league. Shirt+position = Transfermarkt. Don't mix within a field.
+- **[CORRECTED 2026-09-12. THIS LINE READ "Assists = FBref domestic-league" AND THAT DESCRIBED ABOUT 117 CARDS, NOT THE FIELD.]** **THE BULK OF `assists` IS API-FOOTBALL:** `scripts/import/import-players.js` calls `https://v3.football.api-sports.io` and maps `goals.assists`. **`FBref` appears in NO code anywhere on the branch, only in docs.**
+  - **WHERE THE CLAIM CAME FROM, TRACED:** the NR-ASSIST FILL in `CLAUDE_ARCHIVE_2026-07.md` , *"71 rt>=85 pre-2016 marquee cards... CCC verified all 71 vs FBref domestic-league splits"* and *"101 assists backfilled (22 marquee + 79 World Class), FBref domestic, verified."* **True of that batch, generalised into a rule about the whole field.** Same failure as reading a per-tag breakdown as a census.
+  - **SO THE FIELD ALREADY MIXES SOURCES AND THE SEAM IS ON THE ERA BOUNDARY.** Pre-2015 populated assists are FBref-verified hand research on elite cards (**117 cards, median rt 88, 89.7% at rt>=85, against a population median of 42**); post-2015 are API-Football bulk. **A third lane, `write_positions3.js`, wrote 28 more by hand.** Full record in `DATA_DEFECTS.md`.
+  - **"Don't mix within a field" STILL STANDS AS THE RULE and is already broken in this one.** Shirt+position = Transfermarkt is unaffected.
 
 **CDM IS ASYMMETRIC , MOVING INTO IT RAISES rt, MOVING OUT OF IT LOWERS rt. Predicting only the inbound half cost two public band crossings (2026-08-10).**  **, evidence in `RULE_EVIDENCE.md`**
 - **MECHANISM: a card in CDM draws a `def_core` benefit from the defensive pool, and moving it out REMOVES that benefit.** So a demotion is prior inflation leaving, not new error. **State it that way when it is questioned**, because a famous name losing a band reads like a bug.

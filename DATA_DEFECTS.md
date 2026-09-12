@@ -716,6 +716,67 @@ real leader is missing than that four men genuinely led. **Writing all tied play
 better than picking one at random, and it is still a computed answer from incomplete data.** It
 does not remove the argument for sourcing the winner externally; it removes an arbitrary choice.
 
+### [DECIDED 2026-09-12: A FULL ERA FILL OF assists IS REJECTED. ONE STRUCTURAL FACT CLOSES IT PERMANENTLY.]
+
+**THE PERCENTILE POOLS ARE NOT PARTITIONED BY SEASON, SO THERE IS NO SUCH THING AS AN ERA-BOUNDED
+FILL.** Read from the LIVE view, 17,115 chars, on 2026-09-12: **eleven `PARTITION BY` clauses and
+not one carries `season_year`.**
+
+    percent_rank() OVER (PARTITION BY (COALESCE(s.pool, s.pos)) ORDER BY s.gaw90) AS pos_pct
+
+**Every pool mixes 2010 with 2025.** So filling 2010-2015 completely would still leave **12,718
+null-assist cards from 2016 onward inside the same pools**, which makes a "full era fill" **a
+PARTIAL FILL of every pool** , the exact operation already measured at 3.1x to 8.3x worse per card
+than a complete one. **The era boundary is a property of the DATA, not of the scoring, and the
+scoring is what the fill would distort.**
+
+**AND THE REAL SCOPE FOLLOWS FROM THAT: 31,040 CARDS ACROSS 2,422 OF 2,740 CLUB-SEASONS, 88% OF THE
+DATABASE.** Not 18,322 across 1,018. The 2016+ half is the larger one by sourcing unit (1,378
+club-seasons against 1,018) and it is **not a fringe tail**: median minutes on a null-assist 2016+
+card is **1,136**, and **7,647 of them have 900+ minutes**. The two eras also differ in shape, and
+the modern one is harder: pre-2015 is all-or-nothing (861 of 1,018 club-seasons are >=90% missing),
+while 2016+ is mostly **half-populated squads** (705 club-seasons at 25-50% missing), which must be
+reconciled against existing values rather than filled into an empty sheet.
+
+**THIS IS THE FINDING THAT CLOSES THE QUESTION, AND IT CLOSES IT FOR ANY FUTURE VARIANT.** Top ten
+clubs, fifty players, one era, one league: all of them are partial fills of a cross-era pool.
+**The only non-distorting fill is all 31,040, and the only other honest option is none.**
+
+**FEASIBILITY, SECONDARY BUT CONSISTENT.** **API-Football holds assists for 117 of 18,322 pre-2015
+cards, 0.6%**, so there is no provider route and the job is scrape or manual research:
+**50,000 to 60,000 player-facts** sourced to write 31,040 values, roughly **13x everything
+`known_players.csv` holds** (2,385 rows, accumulated over months). **And that lane has broken
+mid-job once already** , SS E records the tier-1 Transfermarkt pass dying at **122 of 474 cards**
+after a markup change, leaving ~350 unresolved to this day. **A half-finished assists fill is
+strictly worse than none**, because it is precisely the partial fill rejected above.
+
+### THE PRE-2015 ASSISTS WE DO HOLD ARE A DIFFERENT SOURCE FROM THE POST-2015 ONES, AND THEY WERE SELECTED FOR FAME (found 2026-09-12)
+
+**THE DEFINITIONAL SEAM IS NOT A FUTURE RISK OF SOURCING. IT IS ALREADY IN THE COLUMN, AND IT SITS
+EXACTLY ON THE ERA BOUNDARY.**
+- **Post-2015 assists are API-Football.** `scripts/import/import-players.js` calls
+  `https://v3.football.api-sports.io` and maps `goals.assists`.
+- **Pre-2015 assists are hand research verified against FBref.** `CLAUDE_ARCHIVE_2026-07.md`
+  records the NR-ASSIST FILL: *"71 rt>=85 pre-2016 marquee cards had NULL assists... CCC verified
+  all 71 vs FBref domestic-league splits"*, and *"101 assists backfilled (22 marquee + 79 World
+  Class), FBref domestic, verified."*
+
+**MEASURED, AND THE SELECTION EFFECT IS EXTREME: the 117 pre-2015 cards carrying an assist figure
+have a MEDIAN rt OF 88, and 89.7% of them are rt>=85. The control, all 16,595 scored pre-2015
+cards, has a median rt of 42 and 0.8% at rt>=85.** The populated set is not a sparse random sample
+of the era. **It is the elite, filled deliberately.**
+
+**AND THAT FINALLY EXPLAINS WHY THE BAD top_assists ROWS LOOKED PLAUSIBLE.** The computed "league
+assists leader" for a pre-2015 season was the maximum of a set that had been **selected for fame**,
+so it always landed on Messi, Van Persie, Suarez, Giroud or Nene. **A sparse maximum over a random
+sample looks obviously wrong; a sparse maximum over a hand-picked elite subset looks right.** That
+is why it survived from July to September.
+
+**CONSEQUENCE FOR ANY FUTURE SOURCING: the overlap test cannot use pre-2015 as its control**, because
+that population is both a different source AND a biased sample. Test a new source against
+**2016+ league-seasons at 80%+ coverage**, compare player by player on `api_player_id`, and segment
+disagreements by role , a secondary-assist definition inflates creators and leaves strikers alone.
+
 **NOT DONE, DELIBERATELY: external sourcing of the real winners.** It is a separate decision and it
 carries an unsolved problem , see the entry below.
 
@@ -728,6 +789,78 @@ itself:** measured, David Silva's PL 2011/12 card reads **`assists = NR`**, and 
 **Top Assists pill directly above an ASSISTS column reading NR.** The `honours` table already has
 its own `assists` column, so the likeliest answer is to print the sourced figure in the honour row
 itself, but **that is a copy decision and it must be made before any sourcing, not after.**
+
+---
+
+## A POSITIONS SCRIPT SILENTLY WRITES `assists`, WHICH FEEDS THE SCORE, AND ONE OF ITS 28 VALUES MANUFACTURED A FALSE LEAGUE LEADER (found 2026-09-12, LOGGED NOT REVERTED)
+
+**`scripts/enrichment/write_positions3.js` IS NAMED FOR POSITIONS AND ALSO WRITES A SCORING FIELD.**
+After its position work it runs a second, unannounced pass:
+
+    // ---- ASSISTS (player_season_cards.assists, fill-only WHERE assists IS NULL) ----
+    .update({ assists: v }).eq('id', cid).is('assists', null)
+    console.error('ASSISTS (fill-only): filled ... [rt will move on refresh]')
+
+**Its own log line admits the consequence , `[rt will move on refresh]` , so this was known to the
+author and is invisible to everyone since.** The values come from a hardcoded 28-entry `ASSIST`
+map at the top of the file, keyed on `card_id`.
+
+**WHY IT IS A DEFECT RATHER THAN A SHORTCUT.** A job named for one field writing another is
+undiscoverable by the obvious means: nobody auditing `assists` provenance greps a positions script,
+and SS C's own provenance line was wrong for months partly because of lanes like this one. **The
+fill-only guard (`is('assists', null)`) is correct and is not the problem.** The problem is that
+**an rt-touching write is hidden inside a job whose name promises it touches nothing of the kind.**
+
+**THE SPECIFIC CONSEQUENCE, AND IT IS THE STRONGEST EXAMPLE ON THE PLATFORM OF A SMALL HAND-FILL
+DOING LARGE DAMAGE: `Nene 2010 L1 = 9` CAME FROM THIS MAP, AND THAT SINGLE VALUE MANUFACTURED A
+FALSE LEAGUE ASSISTS LEADER THAT SURVIVED UNTIL 2026-09-12.** Ligue 1 2010/11 held three populated
+assist cards out of 382. `compute_top_assists`/`top_assists_write` took the maximum of those three,
+Nene's hand-written 9 was the largest, and he was crowned the league's top assister. **The honour
+propagated to his card face, his glance, his cabinet and the rankings filter, and it was deleted
+this morning along with nine siblings.** **One research value, entered to fix a different problem,
+produced a public false claim.**
+
+**ALL 28 VALUES, NAMED SO THEY CAN BE CHECKED. Stored value matches the written value on every one
+(verified 2026-09-12), so nothing has drifted since; the question is whether each is CORRECT.**
+Seven are pre-2015 and therefore sit in the sparse window where a single value can decide a league.
+
+    card_id  season lg   player                     club                  assists   rt
+    156662   2010   BL   L. Barrios                 Borussia Dortmund        2      84
+    180524   2010   BPL  J. Vossen                  Genk                     6      87
+    163158   2010   L1   Nene                       Paris Saint Germain      9      85   <- made a false leader
+    180202   2011   BPL  J. Vossen                  Genk                     2      85
+    174565   2011   ERE  O. Toivonen                PSV Eindhoven            2      78
+    174592   2011   ERE  J. Guidetti                Feyenoord                6      84
+    168807   2011   PRT  Rodrigo Jose Lima Dos S.   SC Braga                 7      81
+    173082   2015   ERE  M. Kramer                  Feyenoord                4      79
+    161304   2015   L1   R. Ghezzal                 Lyon                     8      76
+    167554   2015   PRT  Bryan Ruiz                 Sporting CP             12      78
+    167555   2015   PRT  M. Layun                   FC Porto                13      76
+    172746   2016   ERE  J. Toornstra               Feyenoord                9      84
+    172351   2017   ERE  J. Toornstra               Feyenoord               10      76
+    172521   2017   ERE  M. van Ginkel              PSV Eindhoven            4      77
+    160409   2017   L1   Rony Lopes                 Monaco                   5      83
+    166668   2017   PRT  Ricardo Horta              SC Braga                 8      80
+    183949   2017   TR   Talisca                    Besiktas                 7      82
+    184247   2017   TR   Giuliano                   Fenerbahce               5      79
+    170986   2021   ERE  G. Til                     Feyenoord                3      77
+    182248   2021   TR   A. Nwakaeme                Trabzonspor             10      80
+    170205   2023   ERE  J. Bakayoko                PSV Eindhoven            9      79
+    181398   2023   TR   O. Aydin                   Fenerbahce               8      79
+    169768   2024   ERE  I. Saibari                 PSV Eindhoven           11      81
+    169280   2025   ERE  A. Hadj-Moussa             Feyenoord                6      75
+    169343   2025   ERE  G. Til                     PSV Eindhoven            4      78
+    169346   2025   ERE  I. Saibari                 PSV Eindhoven            8      82
+    163392   2025   PRT  Pote                       Sporting CP              8      78
+    180654   2025   TR   Talisca                    Fenerbahce               4      82
+
+**NONE OF THE 28 CURRENTLY HOLDS A `top_assists` HONOUR** , Nene's was deleted, and no other one
+ever won its league-season. **So the live exposure is to rt only, through `gaw`, not to any honour.**
+
+**NOT REVERTED AND THE SCRIPT IS NOT DISABLED, BY DECISION (Lucas, 2026-09-12).** Reverting 28
+values is rt-touching and the list needed reading first. **Do not treat the values as wrong , they
+were researched.** The defect logged here is the ROUTE, not the data: a scoring field written by a
+script named for something else, with no record of it in any provenance note until today.
 
 ---
 
