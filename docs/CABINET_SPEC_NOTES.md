@@ -93,6 +93,20 @@ oversight.
 carries `hidden`, verified `display:none`, height 0, and the other nine sections render), and
 the cabinet still prints no count.
 
+**AND THE SECTION FOLDS CLOSED BY DEFAULT, LIKE EVERY OTHER SECTION (settled 2026-09-12).** A
+build in between defaulted it OPEN whenever it had content, on the argument that a section absent
+from 85.1% of cards is worth seeing rather than worth finding. **That was reversed, and the reason
+is the one the paragraph above is really about: it made ONE section behave differently from its
+nine neighbours.** Measured on Haaland 22/23, it was the only layer other than The Glance carrying
+`open`, and The Glance is the summary, so the cabinet was not joining a pattern, it was inventing
+one. An inconsistent fold does not teach the reader that this section matters; it teaches them the
+folds cannot be predicted.
+**MATCHING THE NEIGHBOURS MEANS WRITING NOTHING** , no `open` in the markup, no `classList`
+call in the wiring. That is now literally true: `grep -c "cabLayer.classList" card.html` returns 0.
+**So the cost recorded two paragraphs above stands as originally written, unmitigated, and it is
+accepted.** Do not re-add a default-open as a remedy for it; if the burying is ever judged too
+expensive, the answer is the PLACEMENT, which is what the ruling actually argued about.
+
 ## THREE FURTHER CHANGES, SAME PASS
 
 1. **Pill treatment.** The cabinet renders through the same markup and classes as the season

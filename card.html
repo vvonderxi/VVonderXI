@@ -1926,12 +1926,12 @@
       var html = VVCore.renderCabinet(items, {mark:true});
       cabBox.innerHTML = html;
       cabLayer.hidden = !html;            // absence IS the empty state , the whole section goes
-      /*  DEFAULTS OPEN WHEN IT HAS CONTENT, REGARDLESS OF SIZE. The section is absent on 85.1%
-          of cards, so when it IS present it is worth seeing rather than worth finding. This
-          also answers the cost the placement departure created , a fold after Wonder Tags put
-          the journeyman's best line one tap away, and defaulting open gives it back without
-          moving the section again. The reader can still collapse it.  */
-      cabLayer.classList.toggle('open', !!html);
+      /*  NO OPEN STATE IS SET HERE, AND THAT IS THE POINT , IT FOLDS CLOSED LIKE EVERY OTHER
+          SECTION. An earlier version defaulted it open when it had content. That was one
+          section behaving differently from its nine neighbours, which teaches the reader that
+          the folds are inconsistent rather than that this one is important. The Glance is the
+          only layer carrying `open` in the markup, and it is the summary. Matching the
+          neighbours means writing nothing: no class, no toggle, no JS.  */
     }
     var wt = document.getElementById('wonderTags');
     if(wt && typeof TAG_DEFS !== 'undefined'){
