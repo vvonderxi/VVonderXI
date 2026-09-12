@@ -772,10 +772,59 @@ so it always landed on Messi, Van Persie, Suarez, Giroud or Nene. **A sparse max
 sample looks obviously wrong; a sparse maximum over a hand-picked elite subset looks right.** That
 is why it survived from July to September.
 
+**THE DURABLE RULE, AND IT IS WHY THIS DEFECT SURVIVED TWO MONTHS: A SELECTIVE FILL MAKES EVERY
+COMPUTED EXTREME LAND ON A FAMOUS NAME AND LOOK CORRECT.** Filling `assists` only for marquee cards
+meant the maximum over the populated set was, by construction, a star , Messi, Van Persie, Suarez,
+Giroud, Nene. **A sparse maximum over a RANDOM sample looks obviously wrong and gets caught. A
+sparse maximum over a sample selected FOR FAME looks exactly like the right answer.** The bias did
+not merely fail to help; it actively disguised the defect from every human who glanced at it.
+
+**GENERALISE IT BEYOND ASSISTS: ANY SELECTIVE FILL OF ANY FIELD HAS THIS PROPERTY.** If a backfill
+is prioritised by prominence , marquee players, big clubs, high rt, the top of a ladder , then every
+maximum, leader, ranking and "best of" computed over that field will be drawn from the prominent
+subset and will therefore look plausible whatever the coverage. **The plausibility is manufactured
+by the selection, not earned by the data.** Two protections follow: **never compute an extremum
+over a field whose fill was prioritised, without gating on coverage first** (which is what the
+`MIN_COVERAGE` gate now does), and **when a fill must be selective, record that it was**, because
+the next reader cannot infer selection from the values.
+
 **CONSEQUENCE FOR ANY FUTURE SOURCING: the overlap test cannot use pre-2015 as its control**, because
 that population is both a different source AND a biased sample. Test a new source against
 **2016+ league-seasons at 80%+ coverage**, compare player by player on `api_player_id`, and segment
 disagreements by role , a secondary-assist definition inflates creators and leaves strikers alone.
+
+### HONOURS DRIFT MEASURED ACROSS ALL 93 LIVE LEAGUE-SEASONS: 92 EXACT, ONE STALE, AND THE CAUSE IS DATED (2026-09-12)
+
+**THE QUESTION WAS WHETHER PRT 2020 AND L1 2023 WERE TWO OF TWENTY. THEY ARE NOT.** Every
+league-season holding a `top_assists` row was recomputed from the matview as it stands today, with
+nulls excluded, and compared to the live row:
+
+    exact match (same holders, same value)   92
+    value drift (same holders, new value)     0
+    WINNER CHANGE                             1
+    league-season with no data at all         0
+
+**THE ONE IS `PRT 2020`: live holds Grimaldo and Nunez on 9, the data now tops out at Taremi on 10.**
+
+**AND THE CAUSE IS DATED, WHICH BOUNDS THE WHOLE CLASS.** The honours rows were created
+**2026-07-04 17:02:48**. Taremi's card `187377` was created **2026-07-23 18:50:13** , the
+**ingestion-gap recovery**, which SS E records as closing on exactly that date with 780 seasons
+recovered. Measured: **exactly 780 cards carry a `created_at` after the honours run, 526 of them
+carry assists, and they touch 69 distinct league-seasons.** Grimaldo's card predates it
+(2026-06-11).
+
+**SO THE EXPOSURE WAS 69 LEAGUE-SEASONS AND EXACTLY ONE ACTUALLY CHANGED HANDS.** The other 68
+gained cards that did not top their league. That is the measurement, and it is reassuring rather
+than alarming.
+
+**THE DURABLE RULE IS THE ONE THIS PLATFORM KEEPS RE-LEARNING: `honours` IS A SNAPSHOT COMPUTED AT
+A MOMENT, AND AN INSERT-ONLY INGESTION CAN INVALIDATE A WINNER WITHOUT TOUCHING A SINGLE EXISTING
+ROW.** Nothing recomputes it, nothing warns, and the stale row looks identical to a correct one.
+**It is the third snapshot of this kind on the platform, after `RADAR_POOL_REF` and
+`KEEPER_SAVE_LADDER`** , and unlike those two it is not even documented as a snapshot. **Add it to
+the list of things that must be regenerated after any population-moving write.**
+
+**PRT 2020 AND L1 2023 BOTH REMAIN PARKED, UNTOUCHED, BY DECISION.**
 
 **NOT DONE, DELIBERATELY: external sourcing of the real winners.** It is a separate decision and it
 carries an unsolved problem , see the entry below.
@@ -857,10 +906,27 @@ Seven are pre-2015 and therefore sit in the sparse window where a single value c
 **NONE OF THE 28 CURRENTLY HOLDS A `top_assists` HONOUR** , Nene's was deleted, and no other one
 ever won its league-season. **So the live exposure is to rt only, through `gaw`, not to any honour.**
 
-**NOT REVERTED AND THE SCRIPT IS NOT DISABLED, BY DECISION (Lucas, 2026-09-12).** Reverting 28
-values is rt-touching and the list needed reading first. **Do not treat the values as wrong , they
-were researched.** The defect logged here is the ROUTE, not the data: a scoring field written by a
-script named for something else, with no record of it in any provenance note until today.
+**[DECIDED 2026-09-12 AFTER READING THE LIST: THE 28 VALUES STAY. DO NOT REVERT THEM.]** They are
+researched values, the marquee batch was verified against FBref domestic-league splits, and none of
+the 28 holds an honour, so **the live exposure is `gaw` only.** **Reverting would remove real data
+to fix a routing problem**, which is the wrong trade and would leave 28 cards scored on an assumed
+zero , the very defect the COALESCE entry is about. The values are not in question. The ROUTE is.
+
+**WHAT THE ROUTE FIX WOULD TAKE, SCOPED NOT DONE.** Lift the 4-line `ASSIST` const and the ~13-line
+fill-only block into their own named script, e.g. `write_assists_ccc.js`, and delete both from
+`write_positions3.js`.
+- **NOTHING BREAKS, CHECKED:** the file is a 117-line standalone CLI, **nothing imports it**
+  (`grep` across every tracked `.js` finds no reference), and the **dictionary append writes
+  POSITIONS ONLY** (`[t.api, t.sy, t.pos, SOURCE, CLASSIFIED_DATE]`), so the assists block shares
+  nothing with it but the Supabase client and the enclosing IIFE.
+- **IT IS ALREADY A NO-OP TO RE-RUN.** The update is `.is('assists', null)` and all 28 are now
+  populated, so re-running either half writes nothing. **The move is therefore zero-risk to data.**
+- **THE ONE REAL COST IS PROVENANCE.** This file is the only record that these 28 values exist and
+  where they came from. **The new script must carry that history in its header, and this entry must
+  point at it**, or splitting the code destroys the paper trail , which is the same mistake as the
+  routing problem, one step later.
+- **AND THE TAIL NEEDS A DECISION:** the script ends by attempting a matview refresh through three
+  RPC names. Whichever half keeps it, the other must not silently skip it.
 
 ---
 
