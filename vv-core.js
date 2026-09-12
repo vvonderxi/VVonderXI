@@ -3434,12 +3434,21 @@
       const ty = (HONOUR_META[y.type] && HONOUR_META[y.type].tier) || 99;
       return tx - ty;
     });
+    /*  THE HEADING IS A TAG PILL , same class, same shape. It extends the platform's existing
+        pill (`chtag`, the one the glance strip and the Wonder Tags rows use) with a fill
+        modifier, rather than declaring a second pill: shape, radius, padding and font come
+        from the shared rule, so a change there reaches the cabinet too.  */
     return '<div class="' + cls + 'shelf">' + shelves.map(function(sh){
       const icon = (opts && opts.mark !== false) ? vvMark('honour', sh.type) : '';
-      const label = HONOUR_CHIP_LABEL[sh.type] || sh.label;
+      /*  FULL NAME, NEVER THE SHORT FORM OR THE KEY. HONOUR_CHIP_LABEL abbreviates for the
+          GLANCE STRIP, where a pill sits in a row of eleven and has no room , that is correct
+          there and wrong here: it printed "POTS" on a card, which is an internal shorthand, and
+          "UCL" and "Champion", which are clipped names. HONOUR_META.label already holds the
+          full ones, so the cabinet reads that and the strip keeps its own map.  */
+      const label = (HONOUR_META[sh.type] && HONOUR_META[sh.type].label) || sh.label || sh.type;
       const two = sh.years.length > SHELF_TWO_COL ? ' two' : '';
       return '<div class="' + cls + 'sh">'
-           + '<div class="' + cls + 'name" data-tip="' + escAttr(sh.oneliner) + '">' + icon + escHtml(label) + '</div>'
+           + '<span class="chtag chtag-cab" data-tip="' + escAttr(sh.oneliner) + '">' + icon + escHtml(label) + '</span>'
            + '<div class="' + cls + 'yrs' + two + '">'
            + sh.years.map(function(y){ return '<div class="' + cls + 'y">' + escHtml(y) + '</div>'; }).join('')
            + '</div></div>';

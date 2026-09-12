@@ -127,3 +127,98 @@ across all 8,521 non-empty cabinets.
 - **A naming collision to settle there:** `playbook.html` already styles `.cabwrap` under a
   "THE TROPHY CABINET" comment for the grid of seven honour TYPES. Two meanings of "cabinet"
   on one page.
+
+---
+
+## CONSIDERED AND REJECTED: THE WONDER TAGS CARVE-OUT (2026-09-12). DO NOT PROPOSE IT AGAIN.
+
+**THE PROPOSAL.** An honour won IN THIS SEASON keeps its pill in the glance strip; honours from
+PRIOR seasons appear only in the cabinet. It came from a real observation: on Haaland 22/23 the
+render shows UCL, Champion, POTS and Golden Boot in the glance strip at the top and the same four
+again in the cabinet at the bottom. **The duplication is real. The proposed remedy was not.**
+
+**IT WAS REJECTED BECAUSE THE PLATFORM ALREADY IMPLEMENTS BOTH HALVES OF IT.**
+1. **The glance strip is ALREADY season-only.** `renderHonourChips` renders `honours.season`, so
+   the first half of the rule describes existing behaviour. Measured on Haaland 22/23 at 390: the
+   glance holds **4 gold pills in the current build, in the gold-pill build, and in the carve-out
+   build , identical in all three.** The carve-out cannot thin a strip it does not touch.
+2. **The season-versus-career distinction is ALREADY a shipped visual rule.** `.chip.gold` is a
+   SATURATED `#F0D27A,#E0A93A` and means won this season; `.chip.gold.career` is a PALE
+   `#FAF0CE,#F2DFA4` with an inset ring and means won in another season. The cabinet pill
+   `.chtag-cab` reuses the career treatment exactly, so the cabinet is already coded as "earlier
+   seasons" in the platform's own language. **The two blocks share a shape and a word, never a fill.**
+
+**ONE PRECISION ON POINT 2, BECAUSE THE REJECTION PARTLY RESTS ON IT AND IT WOULD BE EASY TO
+OVERSTATE. `.chip.gold.career` HAS NO LIVE INSTANCE ANY MORE.** `29abbe9` retired the World Cup
+career leg, and `honours.career` is now returned as a literal `[]` (vv-core, the honours builder and
+`emptyHonours`), so `isCareer` never fires and **zero cards render a career chip** , measured on
+Haaland 22/23: 4 season chips, 0 career chips. **The season-versus-career FILL RULE therefore
+survives in CSS and in the comment that explains it, and the cabinet pill is now its ONLY consumer.**
+That does not weaken the rejection , it sharpens it: the pale gold means "not this season" and the
+cabinet is the only surface that says that, so the cabinet is where the treatment belongs. **But do
+not cite a live career chip as evidence, because there isn't one.**
+
+**SO IT WAS ONE CHANGE, NOT TWO, AND THE CHANGE WAS DESTRUCTIVE.** The only thing it could alter is
+`cabinetWithTeamLegs`, from `yr <= asOfYear` to `yr < asOfYear`. **Measured, that takes Haaland
+22/23 from FOUR SHELVES AND FIVE YEARS DOWN TO ONE SHELF AND ONE YEAR** , a lone "Player of the
+Season, 2020" under a strip of four. On a rt 95 card that is the entire trophy cabinet.
+
+**AND THE DAMAGE LANDS ON EXACTLY THE BEST CARDS.** On a card whose player won nothing that season
+the carve-out does nothing at all: Ronaldo 21/22 (card 132317, rt 87, 18 honours, none in 21/22)
+measured **0 glance honour pills and 5 shelves / 18 years, identical in all three builds.** So the
+effect is zero where there is no overlap and maximal where the player had his best season , it
+empties the cabinets of the players the cabinet exists for.
+
+**`cabinetWithTeamLegs` KEEPS `yr <= asOfYear`. THE CABINET INCLUDES THE CARD'S OWN SEASON.**
+That is the decision, and the duplication thread is closed with it: the cabinet is a record of what
+had been won BY this season, which necessarily includes this one.
+
+**THE GENERAL LESSON, and this file already records its sibling: before proposing a rule, check
+whether the platform implements it.** Both halves were shipped, one in a render function and one in
+a CSS comment that states the reasoning in full. The proposal was a restatement of existing
+behaviour plus one deletion, and only the deletion would have taken effect.
+
+## DEMO-FIRST ITEM, NOT IN THIS PASS: "POTS" REACHES FOUR RENDER PATHS, NOT TWO
+
+**Logged 2026-09-12, deliberately untouched. CORRECTED THE SAME DAY , the first version of this
+item named two surfaces and there are FOUR, which is exactly the failure SS C warns about:
+"THERE ARE FOUR TAG-RENDER PATHS AND A FIX MUST BE CHECKED AGAINST ALL FOUR".**
+`HONOUR_META.label` now supplies full names to the Cabinet, so no abbreviation reaches it.
+`HONOUR_CHIP_LABEL` still feeds every other path, and `POTS` is not a word , it reads as a typo
+rather than as Player of the Season.
+
+**THE FOUR CONSUMERS, counted in the code rather than remembered:**
+- `renderHonourChips` , the GLANCE STRIP (card `chip`, Compare `vchip`)
+- `renderTopHonourPill` , the CARD FACE top slot
+- `renderHonourPillsCompact` , rankings LIST and COMPACT rows, capped at 2
+- the rankings GRID cell, `chtagcell gold`, capped by whatever the tag cap leaves
+
+**AND THEY DO NOT SHARE A CONSTRAINT, WHICH IS WHY ONE FIX WILL NOT SERVE ALL FOUR.**
+**The GLANCE STRIP IS NOT CAPPED AT ALL** , `#glChips{display:flex;flex-wrap:wrap;gap:7px}`,
+and `renderHonourChips` is called with no `max`. It wraps. **It could take the full name today
+with no geometry work**, so filing it beside the card face as a "fit problem" was wrong.
+The card face and the two rankings paths ARE capped, and those are the ones that need a label
+chosen for the narrowest geometry.
+
+**ON THE CAPPED THREE IT IS NOT A RENAME, IT IS A FIT PROBLEM, WHICH IS WHY IT NEEDS A DEMO
+AND NOT A COMMIT.** The face pill is capped by `--cw`, and the narrowest `--cw` in the tree is **132px**
+(rankings compact); the same pill also ships at 138, 145 and 165. "Player of the Season"
+does not fit any of them, so the answer is a THIRD string , a label chosen to be legible at
+the narrowest capped geometry , not the long name and not the current acronym.
+
+**MEASURE BEFORE PROPOSING ONE.** Render the candidate on a real card at `--cw` 132 and 145
+with three tags present, not in isolation: SS C records that the face is already negative on
+clearance at those sizes before the 2026-09-07 re-cut, and a longer label spends the room that
+re-cut bought back.
+
+**SAME CLASS AS THE SIBLING-STATES RULE.** The six season honours share one pill geometry, so
+whatever is decided for Player of the Season gets looked at against the other five at the same
+size, in one pass , not fixed for the one that reads worst.
+
+**THE LIKELY SHAPE OF THE ANSWER, TO BE DEMOED NOT ASSUMED: TWO STRINGS, NOT ONE.** The glance
+strip takes `HONOUR_META.label` like the cabinet (no cap, so no cost), and the three capped paths
+take a third string chosen at 132px. That is one more label map, not two, because `HONOUR_CHIP_LABEL`
+already exists and would simply stop being read by the uncapped surface.
+
+**PROMOTE TO SS D WHEN THE CABINET WORK COMMITS.** It lives here only because this file is the
+cabinet notes; it is a card-face and rankings item, not a cabinet item.

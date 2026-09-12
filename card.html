@@ -725,12 +725,22 @@
       is cream in BOTH themes, so var(--cream) rendered cream on cream at ratio 1.00 in dark
       while looking perfect in light. Measured after pinning: name 6.28, year 12.09.  */
   .cabshelf{display:flex;flex-direction:column;gap:13px}
-  .cabname{display:flex;align-items:center;gap:5px;font-family:'Archivo',sans-serif;
-    font-weight:800;font-size:11px;letter-spacing:0.045em;text-transform:uppercase;
-    color:#5a4410;margin-bottom:5px}
-  .cabname .vvm{width:13px;height:13px;flex-shrink:0}
-  /*  THE RULE IS THE SHELF EDGE. It runs the height of the years, so a ten-year block draws a
-      longer line than a one-year block , the weight is in the geometry, never in a number.  */
+  /*  THE GOLD MODIFIER , A FILL ON THE SHARED PILL, NOT A SECOND PILL. Shape, radius,
+      padding and font come from the `.chtag` rule above, which now lists #cabChips beside
+      #glChips and the Wonder Tags rows. Only the fill, the ink and the ring live here.
+      RECONCILED AGAINST THE SHIPPED TOKENS RATHER THAN HARDCODED FROM THE DEMO:
+        fill   , demo #F5E3AE. The platform already has a pale gold, the career chip's
+                 linear-gradient(135deg,#FAF0CE,#F2DFA4), and the demo value sits between its
+                 two stops. Reusing the gradient keeps one pale gold on the card instead of two.
+        ring   , demo 0.5px #D9BE68. A 0.5px border does not render reliably: on a 1x screen it
+                 either snaps to 1px or disappears. The existing treatment is an inset 1px ring
+                 in the gold ink at 55%, which reads as the hairline the demo asks for, so that
+                 is what is used.
+        ink    , demo #4A3B10. Nearest shipped token is #5a4410, the .chip.gold ink, and it is
+                 also what the Wonder Tags honour row uses at #574210. Taking #5a4410 keeps the
+                 cabinet and the glance honour chips on ONE ink.
+        icon   , inherits by construction. VVMarks.honour() is fill="currentColor" and the
+                 shared .vvm sizing is already 13px inside a gold chip.  */
   .cabyrs{padding-left:16px;border-left:2px solid rgba(224,169,58,0.5)}
   /*  ABOVE SIX YEARS, TWO COLUMNS INSIDE THE SHELF. CSS columns fill DOWN then ACROSS, so
       oldest-first reading order survives the wrap. Still one year per line, about half the
@@ -747,7 +757,12 @@
       Only the prestige rows take these in the accordion , every other row is plain text
       with a coloured mark, which is the whole point of the treatment. */
   #glChips .chtag,
+  #cabChips .chtag,
   #wonderTags .tagrow .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+  #cabChips .chtag.chtag-cab{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);color:#5a4410;
+    box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
+  #cabChips .chtag.chtag-cab .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
+  #cabChips .cabsh .chtag{margin-bottom:6px}
   #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443)}
   #glChips .chtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968)}
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
