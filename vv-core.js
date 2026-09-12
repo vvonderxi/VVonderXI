@@ -3331,6 +3331,27 @@
     const all = season.slice();
     return { season, career: [], all, count: season.length, has: season.length > 0, topHonour: all.length ? all[0] : null };
   }
+  /*  ── AI PROSE EMPHASIS , WHITELIST, NEVER SANITISE (2026-09-12) ───────────────────────
+      The model marks two to three phrases a paragraph with **double asterisks**. This is the
+      ONLY path by which model output may become markup, and it is built the safe way round:
+      ESCAPE FIRST, then promote a single known pattern out of the escaped text.
+      WHY THAT ORDER IS THE WHOLE POINT. Sanitising means letting the string through and
+      hoping the blocklist is complete. Escaping first means any < or & the model emits is
+      already inert text before this function looks for a pattern, so the only tags that can
+      exist in the output are the ones written on the line below. SS D's own rule about
+      vvSetVerdict applies and is not being loosened: those setters take model output and
+      escape it. This function does the escaping, and nothing else reaches innerHTML.
+      UNMATCHED MARKERS ARE DISCARDED, not rendered. A lone ** costs the emphasis rather than
+      leaking an asterisk into the prose, which is what the prompt promises the model.
+      WEIGHT 500, NOT 700 , the brand runs two weights and 700 is the headline voice. The
+      class is named rather than styled inline so each surface keeps its own type scale.  */
+  function vvEmphasis(str){
+    const esc = escHtml(String(str == null ? '' : str));
+    return esc
+      .replace(/\*\*([^*\n]{1,120}?)\*\*/g, '<strong class="vvem">$1</strong>')
+      .replace(/\*+/g, '');
+  }
+
   function emptyHonours(){ return { season:[], career:[], cabinet:[], all:[], count:0, has:false, topHonour:null }; }
 
   /*  ── THE CABINET'S TEAM HALF , docs/CABINET_SPEC.md ────────────────────────────────────
@@ -6470,7 +6491,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                cabinetWithTeamLegs, renderCabinet,
+                cabinetWithTeamLegs, renderCabinet, vvEmphasis,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,

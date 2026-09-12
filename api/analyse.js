@@ -127,8 +127,18 @@ IN A COMPARISON, THE FLAG IS PER CARD. If only one side carries it, the OTHER si
 be named and discussed normally, and the two may still be compared on RECORDED FIGURES. What
 is forbidden is naming or explaining the flagged card's score.
 
-4. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.
-5. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. The "verdict" field must ALSO read as TWO short paragraphs separated by \n\n: the reasoning, then a breath, then the closing beat. It lands harder with the pause. Do NOT break the truly short fields (h2h, who) , those stay single.
+4. EMPHASIS , TWO TO THREE PHRASES PER PARAGRAPH, WRAPPED IN DOUBLE ASTERISKS. Mark the phrase a reader should carry away: the fact that decides the argument, the number that is hard to believe, the turn the season took. Choose by RELEVANCE, never by decoration, and never by rhythm. A **phrase**, two to six words, inside the sentence.
+
+WHAT MAY NEVER BE EMPHASISED , these bind harder than the rule above, and where they conflict with it, they win:
+   , NEVER a VV Score or a band on a card carrying rt_claims: "forbidden". That card's score may not be named at all, so it certainly may not be made to stand out.
+   , NEVER any number on a goalkeeper card. A keeper carries no score on this platform, and emphasis on a save count or a percentage rebuilds the scalar the platform removed.
+   , NEVER a quality claim read off rt for a centre-back, full-back or defensive midfielder. The score for those positions is largely a defensive-share percentile and a minutes curve, so bolding "his 84 rating" there emphasises an artefact.
+   , NEVER a whole sentence or a whole clause. If the marked span runs to the full stop, or reads as a sentence on its own, it is not emphasis, it is shouting. Two to six words.
+   , NEVER the tag name, the player name or the club on its own. Those are already set apart by the page.
+Asterisks that are not a matched pair are discarded before display, so an unclosed marker costs you the emphasis rather than corrupting the line.
+
+5. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.
+6. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. The "verdict" field must ALSO read as TWO short paragraphs separated by \n\n: the reasoning, then a breath, then the closing beat. It lands harder with the pause. Do NOT break the truly short fields (h2h, who) , those stay single.
 
 NAMING CONTRACT , these are proper names. Getting them wrong makes the prose disagree with the card beside it.
 

@@ -600,6 +600,23 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .vstorygrid .vstorycol:nth-child(2) .vsname{color:var(--blue)}
   .vsname .sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
   .vsname .sdot-a{background:var(--pink)} .vsname .sdot-b{background:var(--blue)}
+  /*  EMPHASIS IN AI PROSE , RELATIVE, NEVER ABSOLUTE. The rule is BASE + 100, and it is
+      written out per surface because CSS cannot express "one step up" reliably: `bolder`
+      maps 600 and 700 both to 900 per spec, and 900 is not loaded on Bricolage Grotesque,
+      which is declared 400..800. So each pairing below is the base weight of that surface
+      plus one step, and IF YOU CHANGE A BASE WEIGHT YOU MUST CHANGE ITS EMPHASIS RULE WITH
+      IT , that is the cost of making a relative rule out of absolute declarations.
+      MEASURED, NOT ASSUMED: the prose families are Bricolage Grotesque (400..800) and
+      Archivo (400..900), both variable and both covering the step. Inter is loaded at
+      400/500/600 only and would have failed here, and it is not used by any prose surface.
+      Verified by advance width rather than by the declaration: every pairing below changes
+      the rendered width, so none of it is synthetic bold.
+      COLOUR IS NOT USED. It was considered for the scout report and does not apply there ,
+      scout ink is rgb(58,53,46) at contrast 12.15, effectively full ink, with no headroom to
+      darken. The surface that IS on soft ink is the glance line, which takes the weight step
+      like the rest.  */
+  .vvem{font-weight:700}          /* 600 base , the common case */
+  .vwho .vvem{font-weight:inherit}   /* 30px/800 headline is already the emphasis , none added */
   .vsprose{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:16px;line-height:1.62;color:rgba(243,237,224,0.92)}   /* #102: a hair more reading comfort */
   body.light .vsprose{color:#33302a}
   .vsprose + .vsprose{margin-top:.7em}   /* paragraph spacing when p1/p2 split into 2-3 paras */
@@ -2268,8 +2285,8 @@ body.light .pkmsub{color:var(--ink-soft)}
       var ps=col.querySelectorAll('.vsprose'); var first=ps[0]; for(var i=1;i<ps.length;i++)ps[i].remove(); if(!first)return;   // paragraph split: \n\n -> one .vsprose per para
       if(opts.wait){ first.innerHTML=vvWaitHTML(opts.label||'Reading the seasons'); return; }
       var paras=String(prose==null?'':prose).split(/\n{2,}/).map(function(s){return s.trim();}).filter(Boolean); if(!paras.length)paras=[''];
-      first.textContent=paras[0]; var ref=first;
-      for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.textContent=paras[j]; ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
+      first.innerHTML=VVCore.vvEmphasis(paras[0]); var ref=first;
+      for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.innerHTML=VVCore.vvEmphasis(paras[j]); ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
   }
   /*  ONE PLACE THAT CROWNS A CARD, AND IT TAKES THE SIDE IT IS GIVEN.
@@ -2310,7 +2327,14 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(verdict) String(verdict).split(/\n\s*\n/).map(function(x){return x.trim();})
                     .filter(Boolean).forEach(function(x){ parts.push(x); });
       if(!parts.length) parts=[''];
-    if(!opts.wait) for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i]; if(i===0 && !plain)t='“'+t; if(i===parts.length-1 && !plain)t=t+'”'; vq[i].textContent=t; vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].style.display='none'; } }
+    /*  EMPHASIS GOES THROUGH VVCore.vvEmphasis, WHICH ESCAPES BEFORE IT PROMOTES. That is the
+        only reason innerHTML is acceptable on a line that carries model output, and the
+        escaping is not being loosened , it moved inside the helper. A `plain` line is OUR
+        copy (an outage message), so it keeps textContent and cannot grow markup at all.  */
+    if(!opts.wait) for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i];
+        if(plain){ vq[i].textContent=t; }
+        else { vq[i].innerHTML=(i===0?'“':'')+VVCore.vvEmphasis(t)+(i===parts.length-1?'”':''); }
+        vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     if(who){
       // The AI writes this line to match the selected verdict tag + rt gap (see the /api/analyse
@@ -2361,7 +2385,7 @@ body.light .pkmsub{color:var(--ink-soft)}
         var fb=(VC&&VC.decidedBy==='ai') ? (W.surname+' takes it on the record, not on the number')
              : (VC&&VC.tipped) ? (W.surname+' edges it on age , '+wv+' plays '+lv+', the harder feat at a younger age')
                                : (W.surname+' '+_verb+' , '+wv+' to '+lv);
-        who.textContent = ai || fb;
+        who.innerHTML = VVCore.vvEmphasis(ai || fb);
       } else {
         /*  FALLBACK ONLY , the loading placeholder, a cache miss, an outage. It used to
             read "Level on VV , 95 apiece", which is TRUE of an exact tie and FALSE of a
@@ -2370,7 +2394,7 @@ body.light .pkmsub{color:var(--ink-soft)}
         var _fbTie = (VC && VC.separation === 'inside')
           ? 'Too close for the Index to separate.'
           : ('Level on VV , '+va+' apiece. The Index will not separate them.');
-        who.textContent = ai || _fbTie;
+        who.innerHTML = VVCore.vvEmphasis(ai || _fbTie);
       }
     }
     /* ── THE VERDICT TRIAD , three centred lines, one per state ──────────────

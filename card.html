@@ -260,6 +260,23 @@
   .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--gold-ink);margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
   .narrative{background:rgba(255,255,255,0.03);border-radius:14px;padding:22px 24px}
+  /*  EMPHASIS IN AI PROSE , RELATIVE, NEVER ABSOLUTE. The rule is BASE + 100, and it is
+      written out per surface because CSS cannot express "one step up" reliably: `bolder`
+      maps 600 and 700 both to 900 per spec, and 900 is not loaded on Bricolage Grotesque,
+      which is declared 400..800. So each pairing below is the base weight of that surface
+      plus one step, and IF YOU CHANGE A BASE WEIGHT YOU MUST CHANGE ITS EMPHASIS RULE WITH
+      IT , that is the cost of making a relative rule out of absolute declarations.
+      MEASURED, NOT ASSUMED: the prose families are Bricolage Grotesque (400..800) and
+      Archivo (400..900), both variable and both covering the step. Inter is loaded at
+      400/500/600 only and would have failed here, and it is not used by any prose surface.
+      Verified by advance width rather than by the declaration: every pairing below changes
+      the rendered width, so none of it is synthetic bold.
+      COLOUR IS NOT USED. It was considered for the scout report and does not apply there ,
+      scout ink is rgb(58,53,46) at contrast 12.15, effectively full ink, with no headroom to
+      darken. The surface that IS on soft ink is the glance line, which takes the weight step
+      like the rest.  */
+  .vvem{font-weight:700}          /* 600 base , the common case */
+  #scoutBody .vvem{font-weight:800}  /* 700 base , Bricolage reaches 800, measured */
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:#3a352e;margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
@@ -1552,11 +1569,14 @@
   }
   function vvFillEditorial(){
     if(!EDITORIAL) return;
-    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.classList.remove('na'); gd.textContent='"'+EDITORIAL.glance+'"'; }
+    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.classList.remove('na'); gd.innerHTML='"'+VVCore.vvEmphasis(EDITORIAL.glance)+'"'; }
     var sb=document.getElementById('scoutBody'); var sbox=document.getElementById('scoutBox');
-    if(sb){ sb.textContent='"'+EDITORIAL.scout+'"'; } if(sbox){ sbox.style.display=''; }
+    if(sb){ sb.innerHTML='"'+VVCore.vvEmphasis(EDITORIAL.scout)+'"'; } if(sbox){ sbox.style.display=''; }
     var nb=document.getElementById('notesBody'); var nl=document.getElementById('notesLayer');
-    if(nb){ nb.innerHTML=EDITORIAL.notes.map(function(s){var d=document.createElement('div');d.className='np';d.textContent=s;return d.outerHTML;}).join(''); }
+    /*  vvEmphasis ESCAPES BEFORE IT PROMOTES, so this is the one path by which model output may
+    become markup. The old line built each stanza with textContent and read outerHTML back,
+    which escaped correctly; the escaping has moved into the helper rather than been dropped. */
+    if(nb){ nb.innerHTML=EDITORIAL.notes.map(function(s){return '<div class="np">'+VVCore.vvEmphasis(s)+'</div>';}).join(''); }
     if(nl){ nl.style.display=''; }
   }
   /* NAME THE GAP. This used to hide the glance line, the scout box and the notes layer and
