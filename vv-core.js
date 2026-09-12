@@ -4421,8 +4421,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
           honours_json encodes {leg:'career', year:2014}. Only this file disagreed.
           The card now shows it in the career leg with its TOURNAMENT year printed. */
       { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍' },
-      { v:'ucl_winner',       l:'UCL Winner',            e:'⭐' },
-      { v:'league_champion',  l:'League Champion',       e:'🏆' },
+      { v:'ucl_winner',       l:'UCL Champion',          e:'⭐' },
+      { v:'league_champion',  l:'League Title',          e:'🏆' },
       { v:'player_of_season', l:'Player of the Season',  e:'🎖️' },
       { v:'golden_boot',      l:'Golden Boot',           e:'👟' },
       { v:'top_assists',      l:'Top Assists',           e:'🅰️' },
