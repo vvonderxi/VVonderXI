@@ -1106,3 +1106,42 @@ qualifying years, narrowest Eriksen at 23.5%. A guard for the single-season case
 `stage_the_standard = COALESCE(nc.n_all >= 2 AND sa.n80 >= 5 AND sb.rt >= 80, false)`; the JS
 reference `careerStageTags` computes the same; the shipped copy describes it correctly. **Anyone
 picking this up is building a RENDERING, not revisiting a rule.**
+
+
+---
+
+# TWO UI ITEMS LOGGED 2026-09-12, NEITHER BUILT, NEITHER URGENT
+
+**Both existed nowhere in the tree before this entry.** A reconciliation pass on 2026-09-12 went
+looking for them across every `.md` and every shipping `.html` and found **zero** matches, so they
+were live only in conversation. That is the whole reason they are written down.
+
+## THE PLAYBOOK'S ANNOTATED CARD MOCKUP IS NEARER SQUARE THAN THE REAL CARD
+
+`playbook.html` carries a `.cardmock` block that explains the card's anatomy. **Its proportions are
+closer to square than the card it is teaching**, so a reader learns the parts against a shape the
+product never renders.
+
+**THE RATIO TO MATCH IS NOT THE ONE IN THE CSS, AND SS C RECORDS WHY.** The card's height is
+`--cw * 1.397`, but the RENDERED ratio is **1.518**, because width is clamped by `max-width:92%`.
+SS C states it outright: *"Do not read 1.397 off the CSS and size an image with it."* **A fix that
+reaches for 1.397 will be wrong by the same margin the current mockup is.**
+
+**Measure the rendered card, then the mockup, then decide** , and check it at 390 as well as
+desktop, because the mockup sits in a foldable section whose width changes.
+
+## THE FILTER PANEL AS A POPUP RATHER THAN AN EXPANSION
+
+The filter panel currently EXPANDS in place, pushing the content below it. The proposal is a
+POPUP, so the grid does not move under the reader while they are choosing.
+
+**THIS IS NOT A DRIVE-BY CHANGE, AND SS C NAMES THE TRAP.** The Compare picker deliberately takes
+**no `position:fixed` body lock** , a body lock once collapsed `documentElement.scrollHeight` to
+the viewport while body stayed 2,190px tall, leaving **1,346px unreachable on a phone with no
+scrollbar to say so**. A popup that locks the body reintroduces exactly that. The mobile picker was
+rebuilt as a fixed SHEET for this reason, with the page height unchanged and `body` still
+`position:static`, and **that is the pattern to copy rather than a new one**.
+
+**AND IT TOUCHES A SHARED COMPONENT.** `VVFilters` serves rankings, the Compare picker and the
+filter rail, so a popup is three surfaces, not one , see the FILTER FOLLOW-UP stage in
+`LAUNCH_STAGE.md`, which is where this belongs if that stage is ever run.

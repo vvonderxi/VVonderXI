@@ -521,3 +521,29 @@ cabinet section carries its own guard**, so this is a pre-existing gap, not one 
 right for a page whose motion is decorative; the playbook's folds and the career arc use transition
 to communicate state change, so those want the opacity-preserving treatment instead. **Judge them
 in two groups, not one.**
+
+
+---
+
+## LEAGUE PILL COUNTS ON TAP , A ROUNDED BAND, NOT AN EXACT NUMBER (logged 2026-09-12, Lucas wants it, NOT BUILT)
+
+**Tapping a league pill should say how much is behind it, as a BAND: "more than 10,000 season
+cards", never "10,347".**
+
+**THE BAND IS THE POINT, NOT A HEDGE.** An exact count is a number that goes stale the moment
+anything is ingested, and this file already records what a written count costs , the
+contrast-exceptions heading, the vvindex band populations, the `.chip.gold.career` census. A band
+stays true across a re-ingest, a backfill and the transfer-halves repair, all of which are queued.
+
+**WHERE THE NUMBER COMES FROM MATTERS AND IS NOT SETTLED.** `player_card_mv` holds 57,055 rows but
+**3,061 have a null rt**, and SS C's own rule is that a null-rt row is not a scored card. So decide
+before building whether the band counts ALL cards in the league or only SCORED ones, and say which
+in the copy. **Do not count with a hardcoded total** , SS C: count the population, never quote it.
+
+**BAND THRESHOLDS ARE A COPY DECISION, NOT AN ENGINEERING ONE.** "More than 10,000" reads well for
+a big league and badly for a small one; BPL and the smaller leagues are a fraction of the PL's
+volume, so a single threshold will either flatter the small leagues or insult them. **Bring the
+thresholds to Lucas with the real per-league counts beside them.**
+
+**SS C SIBLING STATES: the league pills appear on rankings, on the Compare picker and in the filter
+rail. Whatever is decided applies to all of them in one pass, or to none.**
