@@ -299,3 +299,37 @@ as Lucas said it would. It is not a transcription problem and it will not be fix
 reading , the two sources are counting different things, and where a single extra credited assist
 creates a tie, the two sources disagree about **who led the league**.
 
+
+---
+
+## 9. THE LINEAGE TEST , RULED 2026-09-12, BEFORE THE FABLE REPORT WAS AUDITED
+
+**A second source that INHERITS the first's numbers is one source with two URLs.** Today's finding
+is that LINEAGE is what matters, not the count of sources, so the confirmation bar is stated in
+terms of lineage from here on.
+
+**THE TEST, AS STRENGTHENED AND APPROVED:**
+1. A row is CONFIRMED only if two reads agree on **player AND number**.
+2. The two reads must come from **genuinely independent lineages**. Opta-derived and
+   Opta-derived is ONE lineage. LFP-derived and LFP-derived is ONE lineage.
+3. **AND, where Transfermarkt is the dissenter, one of the two lineages must be neither Opta nor
+   LFP.** Otherwise we confirm the official record against itself while the one genuinely
+   independent count sits outside, unexplained. **That is the whole shape of the defect recorded in
+   `DATA_DEFECTS.md`: the crowd-maintained count is the outlier, and an official-versus-official
+   agreement says nothing about it.**
+
+**RULINGS ALREADY MADE UNDER THIS TEST:**
+- **PL 2010/11 , HELD.** A third read gives Nani 14, matching the PL official archive, but both
+  are **Opta-derived**: one origin reported twice. It does not explain Transfermarkt's 17.
+- **PL 2011/12 , WRITTEN AND REINFORCED (id 635).** Transfermarkt 15 and PL official 15, i.e. the
+  **crowd-maintained and official lineages CONVERGING**, which is the strongest evidence in the
+  whole set. A third agreeing read adds to it and changes nothing.
+- **PL 2014/15 , WRITTEN (id 636).** Transfermarkt 18 and PL official 18, same converging shape.
+- **BL 2014/15 , HELD.** Player agreed, number split three ways (19 / 20 / 21). **A three-way split
+  is worse than a two-way one: there is no PAIR to confirm against**, so the row cannot clear rule 1
+  regardless of lineage.
+
+**AND A STATUS LABEL DOES NOT OVERRIDE THE EVIDENCE BESIDE IT.** Where a report marks a row
+CONFIRMED while its own notes record a disputed number, **the evidence governs and the row is
+UNRESOLVED.** Check every row's stated status against its stated evidence rather than trusting the
+column.
