@@ -268,6 +268,54 @@ against 53.3% measured here, on different filters.
 which value you substitute only changes who it hurts.** The `sig` case at least RENORMALISED onto
 the facet it still had. `gaw` does not: it adds a hard zero.
 
+**WHICH FIELDS ARE ACTUALLY IN PLAY, BECAUSE THE PARAGRAPH BELOW SAYS "AN ENGINE CHANGE" WITHOUT
+NAMING THEM, AND THE OBVIOUS ANSWER, "ASSISTS", IS WRONG (measured 2026-09-12, read from the view).**
+Of the twelve fields that sit at 84 to 90% null in this window, **TWO feed rt here, three more feed
+it on a different window, and eight feed no scoring expression at all.**
+
+**1. `penalties_scored` IS THE SECOND SCORING FIELD AND IT MOVES CARDS THE OTHER WAY.** It is in
+`gaw` alongside assists, and it is 83.9% null in this window:
+
+    gaw = goals - 0.22 * LEAST(COALESCE(penalties_scored,0), goals) + 0.7 * COALESCE(assists,0)
+
+With the field null the `COALESCE` makes the discount **zero, so the penalty deduction is never
+applied** and a pre-2015 penalty taker is currently scored as though every goal were from open
+play. **Filling it moves those cards DOWN.** That is the same NR-as-zero defect as the assists half,
+pointing the opposite way, and **it does not offset it**: both terms are read through `pos_pct` and
+`posvol_pct`, which are percentiles WITHIN POOL, so a filled card takes its assist lift and its
+penalty discount against a pool where neither has been applied. **Two artefacts, not one, and they
+cannot cancel, because the lift is broad and the discount lands only on designated takers.**
+
+**2. WARNING, AND WRITE IT THIS WAY ROUND SO THE SENTENCE THAT OUTLIVES THIS WINDOW IS THE CORRECT
+ONE: only assists and penalties feed rt HERE. The three defensive fields are held out by a
+`season_year >= 2016` GATE, NOT BY THEIR NATURE, and on any window from 2016 they feed
+`def_share_pct` into `sig` and the FLOOR, which dominates everything else.**
+`tackles_total`, `interceptions` and `tackles_blocks` build `def90`, with **`tackles_total` as the
+gate**: `CASE WHEN tackles_total IS NOT NULL THEN (COALESCE(tackles_total,0) +
+COALESCE(interceptions,0) + COALESCE(tackles_blocks,0)) / (minutes/90) ELSE NULL END`. `def90`
+becomes `def_share`, whose within-pool percentile is `sig`, which sets `FLOOR = min(64, 44 + 22*sig)`
+for CB, FB and CDM. **That is a floor of 44 to 64, so switching it on is a far larger move than
+anything assists does.** SS C measured the identical mechanism in REVERSE, nulling `sig` so the
+floor falls to 0: **306 of 329 cards moved, median 27.07 points of `b`, maximum 44.41.**
+- **WHY IT CANNOT FIRE ON 2010-2015:** the view's pool CTE carries `AND r.season_year >= 2016 AND
+  pp_1."position" IS NOT NULL`, so a pre-2015 card is excluded from the `def_share` percentile pool
+  twice over and its floor is 0 whatever is filled. Confirmed independently in
+  `scripts/separability/rt_reimpl.js`, which carries the same `season_year < 2016` exclusion and
+  validates at 99.56% against stored rt.
+- **SO "CCC DOES NOT TOUCH rt" IS TRUE OF THIS WINDOW AND FALSE OF THE PLATFORM.** Anyone proposing
+  a fill from 2016 onward is in a different regime where the defensive floor is the dominant term.
+
+**3. AND THE EIGHT NON-SCORING FIELDS REACH A SECOND POOL-RELATIVE SURFACE, SO THEY ARE NOT FREE
+EITHER.** `shots_on`, `shots_total`, `passes_key`, `dribbles_success`, `dribbles_attempts`,
+`passes_total`, `duels_won` and `duels_total` feed no scoring expression (`duels_won`/`duels_total`
+did until `sig = def_share_pct` landed on 2026-09-08). **The Proof panel is genuinely safe, because
+it prints per-90 rates and a denominator, which are absolute numbers with no pool in them.** But
+`passes_key`, `dribbles_success` and `passes_total` are **live radar inputs, scored against
+`RADAR_POOL_REF`, an embedded snapshot**. A partial fill hands those cards axes measured against a
+snapshot built while they were NR, and **regenerating the snapshot to correct that re-percentiles
+every card on the platform.** So the partial-fill pathology recorded below is not confined to rt; it
+reaches the radar by the same route.
+
 **FIXING IT IS AN ENGINE CHANGE AND NEEDS THE FULL PROCEDURE, NOT AN EDIT.** Any change here moves
 `gaw`, therefore `gaw90`, therefore the pool percentiles, therefore **cards nobody touched** , the
 same ripple the position batch measured. It needs a simulation against a full `before.json`
