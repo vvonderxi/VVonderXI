@@ -700,14 +700,28 @@
   body.light .seasoncollapse{color:var(--ink-soft);border-top-color:rgba(0,0,0,0.06)}
   body.light .seasoncollapse:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
-  /*  THE CABINET PILLS , the SAME treatment as the season honour chips: same mark, same gold,
-      same shape, because the cabinet is honours and should read as them. The only difference
-      lives INSIDE the pill: a cabinet pill carries its years. .chip.gold supplies everything
-      else, so there is no second colour to keep in sync.  */
-  .cabchips{display:flex;flex-wrap:wrap;gap:7px}
-  .cabyrs{font-family:'Archivo',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.03em;
-    margin-left:6px;padding-left:6px;border-left:1px solid rgba(90,68,16,0.28);
-    font-variant-numeric:tabular-nums;opacity:0.85}
+  /*  THE CABINET , VERTICAL SHELVES (treatment A). The honour is a heading and its years
+      stack beneath it, one per line, so ten seasons reads as ten lines and the height carries
+      the weight. Deliberately NOT the pill treatment: a pill puts the years on one line and a
+      serial winner then reads as a run of digits.
+      THE INK IS PINNED, NOT TOKENISED , SS C's rule, and it already bit once here. The panel
+      is cream in BOTH themes, so var(--cream) rendered cream on cream at ratio 1.00 in dark
+      while looking perfect in light. Measured after pinning: name 6.28, year 12.09.  */
+  .cabshelf{display:flex;flex-direction:column;gap:13px}
+  .cabname{display:flex;align-items:center;gap:5px;font-family:'Archivo',sans-serif;
+    font-weight:800;font-size:11px;letter-spacing:0.045em;text-transform:uppercase;
+    color:#5a4410;margin-bottom:5px}
+  .cabname .vvm{width:13px;height:13px;flex-shrink:0}
+  /*  THE RULE IS THE SHELF EDGE. It runs the height of the years, so a ten-year block draws a
+      longer line than a one-year block , the weight is in the geometry, never in a number.  */
+  .cabyrs{padding-left:16px;border-left:2px solid rgba(224,169,58,0.5)}
+  /*  ABOVE SIX YEARS, TWO COLUMNS INSIDE THE SHELF. CSS columns fill DOWN then ACROSS, so
+      oldest-first reading order survives the wrap. Still one year per line, about half the
+      height. column-width keeps it to one column when the card is too narrow to hold two,
+      which is what makes this safe at 390 without a media query.  */
+  .cabyrs.two{column-count:2;column-width:52px;column-gap:14px}
+  .caby{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:#2b2924;
+    font-variant-numeric:tabular-nums;line-height:1.55;break-inside:avoid}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
   /*  WIDENED, NOT COPIED (2026-09-10). The Wonder-Tags prestige row wears the same object
       as the strip's prestige pill, so it reads the SAME declaration block rather than a
@@ -1246,7 +1260,7 @@
             cabinet widens the same subject to what he had won BY then.
             THE SECTION HIDES ENTIRELY WHEN EMPTY , the ruling's own display rule, and it
             governs 85.1% of cards, so this layer is absent far more often than present.  -->
-      <div class="layer" id="cabinetLayer" hidden><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12v3a6 6 0 0 1-12 0z"/><path d="M6 6H4.2a2.3 2.3 0 0 0 2.3 3.4"/><path d="M18 6h1.8a2.3 2.3 0 0 1-2.3 3.4"/><line x1="12" y1="13.5" x2="12" y2="17"/><line x1="8.8" y1="19.5" x2="15.2" y2="19.5"/></svg></div><div class="layer-t">The Cabinet</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he had won by this season.</div><div class="cabchips" id="cabChips"></div></div></div></div>
+      <div class="layer" id="cabinetLayer" hidden><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12v3a6 6 0 0 1-12 0z"/><path d="M6 6H4.2a2.3 2.3 0 0 0 2.3 3.4"/><path d="M18 6h1.8a2.3 2.3 0 0 1-2.3 3.4"/><line x1="12" y1="13.5" x2="12" y2="17"/><line x1="8.8" y1="19.5" x2="15.2" y2="19.5"/></svg></div><div class="layer-t">The Cabinet</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he had won by this season.</div><div id="cabChips"></div></div></div></div>
       <div class="layer" id="notesLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open'); vvNotesOpen();"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
   <div id="notesBody"></div>
   <div class="nm">Commentator's Notes</div>
@@ -1877,6 +1891,12 @@
       var html = VVCore.renderCabinet(items, {mark:true});
       cabBox.innerHTML = html;
       cabLayer.hidden = !html;            // absence IS the empty state , the whole section goes
+      /*  DEFAULTS OPEN WHEN IT HAS CONTENT, REGARDLESS OF SIZE. The section is absent on 85.1%
+          of cards, so when it IS present it is worth seeing rather than worth finding. This
+          also answers the cost the placement departure created , a fold after Wonder Tags put
+          the journeyman's best line one tap away, and defaulting open gives it back without
+          moving the section again. The reader can still collapse it.  */
+      cabLayer.classList.toggle('open', !!html);
     }
     var wt = document.getElementById('wonderTags');
     if(wt && typeof TAG_DEFS !== 'undefined'){

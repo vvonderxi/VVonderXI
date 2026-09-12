@@ -3364,25 +3364,22 @@
   function renderCabinet(items, opts){
     const list = items || [];
     if(!list.length) return '';
-    const cls = (opts && opts.baseClass) || 'chip';
-    /*  THE CABINET IS RENDERED AS HONOUR PILLS , same mark, same gold, same shape as the
-        season honour chips, because it IS honours and should read as them. The one
-        difference is inside the pill: a cabinet pill carries its YEARS.
-
-        FOLDED, ONE PILL PER HONOUR TYPE. Unfolded, a serial winner read as a list rather
-        than a cabinet , five separate "UCL Winner" pills. Folding is not summarising:
-        every year is still printed, which is what the spec requires. What goes is the
-        repetition of the label.
-
-        ORDERED BY HONOUR_META.tier, WHICH IS ALREADY THE PRESTIGE ORDER , Ballon d'Or,
-        World Cup, UCL, League Champion, Player of the Season, Golden Boot, Top Assists,
-        the same ranking the Playbook cabinet uses. Read off the existing field rather than
-        a second list: SS C's two-sources-for-one-concept rule, and a second copy of this
-        order is exactly the kind of pair that drifts.
-
-        NO COUNT AND NO CAP. A count is what the spec forbids outright ("It never counts,
-        ranks, or grades"). A cap cannot fire: seven honour types means at most seven
-        pills, and measured over all 8,521 non-empty cabinets the maximum really is 7.  */
+    /*  TREATMENT A , VERTICAL SHELVES. The honour is a heading and its years stack beneath it,
+        one per line, so ten seasons READS as ten lines and the section's height carries the
+        weight. A cabinet is shelves, not a row.
+        NO COUNT, ANYWHERE. docs/CABINET_SPEC.md forbids it by name , "It never counts, ranks,
+        or grades: no 5x champion rollups" , and of the three treatments demoed this was the
+        only spec-compliant one. Do not add a tally, a badge or an "x4" here later: the count
+        is what turns a record into a scoreboard, which is the thing the whole section exists
+        to avoid.
+        ORDERED BY HONOUR_META.tier, WHICH IS ALREADY THE PRESTIGE ORDER , Ballon d'Or, World
+        Cup, UCL, League Champion, Player of the Season, Golden Boot, Top Assists, the same
+        ranking the Playbook uses. Read off the existing field rather than a second list.
+        YEARS WITHIN A SHELF RUN OLDEST FIRST. Above SHELF_TWO_COL years they wrap into two
+        columns inside that honour's own block , still stacked, still one year per line, about
+        half the height. CSS columns fill down-then-across, so the reading order is preserved.  */
+    const SHELF_TWO_COL = 6;
+    const cls = (opts && opts.baseClass) || 'cab';
     const byType = new Map();
     for(const h of list){
       const k = h.type || h.label;
@@ -3390,20 +3387,23 @@
       const y = h.season_year != null ? h.season_year : null;
       if(y != null && byType.get(k).years.indexOf(y) === -1) byType.get(k).years.push(y);
     }
-    const pills = Array.from(byType.values());
-    pills.forEach(function(p){ p.years.sort(function(x,y){ return x - y; }); });
-    pills.sort(function(x,y){
+    const shelves = Array.from(byType.values());
+    shelves.forEach(function(sh){ sh.years.sort(function(x,y){ return x - y; }); });
+    shelves.sort(function(x,y){
       const tx = (HONOUR_META[x.type] && HONOUR_META[x.type].tier) || 99;
       const ty = (HONOUR_META[y.type] && HONOUR_META[y.type].tier) || 99;
       return tx - ty;
     });
-    return pills.map(function(p){
-      const icon = (opts && opts.mark !== false) ? vvMark('honour', p.type) : '';
-      const label = HONOUR_CHIP_LABEL[p.type] || p.label;
-      const yrs = p.years.length ? '<span class="cabyrs">' + escHtml(p.years.join(' ')) + '</span>' : '';
-      return '<span class="' + cls + ' gold cab" data-tip="' + escAttr(p.oneliner) + '">'
-           + icon + escHtml(label) + yrs + '</span>';
-    }).join('');
+    return '<div class="' + cls + 'shelf">' + shelves.map(function(sh){
+      const icon = (opts && opts.mark !== false) ? vvMark('honour', sh.type) : '';
+      const label = HONOUR_CHIP_LABEL[sh.type] || sh.label;
+      const two = sh.years.length > SHELF_TWO_COL ? ' two' : '';
+      return '<div class="' + cls + 'sh">'
+           + '<div class="' + cls + 'name" data-tip="' + escAttr(sh.oneliner) + '">' + icon + escHtml(label) + '</div>'
+           + '<div class="' + cls + 'yrs' + two + '">'
+           + sh.years.map(function(y){ return '<div class="' + cls + 'y">' + escHtml(y) + '</div>'; }).join('')
+           + '</div></div>';
+    }).join('') + '</div>';
   }
 
   // Compact gold honour pills for list/compact rows (rankRowHTML) , text-only, up to 2.
