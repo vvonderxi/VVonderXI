@@ -547,3 +547,28 @@ thresholds to Lucas with the real per-league counts beside them.**
 
 **SS C SIBLING STATES: the league pills appear on rankings, on the Compare picker and in the filter
 rail. Whatever is decided applies to all of them in one pass, or to none.**
+
+
+---
+
+## SQUAD NUMBERS FOR 2010-2015 , A SEPARATE AND MUCH SMALLER JOB (logged 2026-09-12, NOT BUILT)
+
+**SPLIT OUT DELIBERATELY FROM THE REJECTED CCC BACKFILL** (`POST_LAUNCH.md`) so it is not lost with
+it. The backfill was rejected because twelve stat fields sit at 84 to 90% null and only assists
+feeds rt. **None of that applies to a squad number.**
+
+**WHY THIS ONE IS TRACTABLE WHERE THE OTHER IS NOT:**
+- **It is a ROSTER FACT with a real source.** A squad list for a club-season is published, stable
+  and checkable, which is the kind of claim the position passes returned at HIGH confidence.
+- **IT HAS NO ENGINE EFFECT.** `shirt_number` appears in no scoring expression, so a fill cannot
+  move a score, cannot ripple across a pool, and needs no simulation or snapshot.
+- **The schema already exists.** `player_positions` carries `shirt_number` and holds **320 rows for
+  2010-2015, of which 164 have a null shirt number**.
+
+**THE SIZE, MEASURED: 19,899 of 20,219 cards in the window (98.4%) have NO `player_positions` row
+at all.** So this is mostly INSERT, not UPDATE , which SS C already records for the pre-2016 era,
+and an insert is the safer of the two.
+
+**DO NOT LET IT GROW BACK INTO THE BACKFILL.** The moment a pass is asked for a shirt number AND an
+assist total in the same breath, it inherits the engine problem and the era-gap problem and stops
+being this job. **One field, one source, no scores touched.**

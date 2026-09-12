@@ -173,3 +173,58 @@ column , inherits the markers and renders them. **`textContent` does NOT strip t
 them.** The share poster passes today only because it reads `textContent` from a node
 `vvEmphasis` has ALREADY converted, which is a property of the call order rather than of the
 data, and one refactor away from breaking silently.
+
+
+---
+
+## `COALESCE(assists, 0)` INSIDE `gaw` IS "NR FOR MISSING DATA, NEVER 0" INVERTED, IN THE ENGINE (found 2026-09-12, LOGGED NOT FIXED)
+
+**THIS IS A LIVE SCORING DEFECT OVER A FIVE-YEAR WINDOW, NOT A COSMETIC ONE.** From the live
+`player_card_view`, read from a fresh `pg_get_viewdef`:
+
+    gaw   = goals - 0.22 * LEAST(COALESCE(penalties_scored,0), goals) + 0.7 * COALESCE(assists, 0)
+    gaw90 = gaw / NULLIF(minutes / 90.0, 0)
+
+**`gaw90` is the engine's output term.** So a card whose assists are UNRECORDED is scored exactly
+as though it recorded ZERO assists, and the 0.7 weight means the difference is not marginal.
+
+**THE POPULATION, MEASURED OVER 2010-2015 (20,219 cards):**
+
+    assists            18,322 null   90.6%
+    tackles_total      17,486        86.5%     shots_on          17,051   84.3%
+    shots_total        17,021        84.2%     passes_key        17,015   84.2%
+    dribbles_success   17,019        84.2%     dribbles_attempts 17,013   84.1%
+    interceptions      17,002        84.1%     passes_total      16,974   84.0%
+    duels_won          16,982        84.0%     duels_total       16,978   84.0%
+    penalties_scored   16,964        83.9%
+    appearances 0%   minutes 0%   goals 0.4%
+
+**18,322 cards are being scored on an assumed zero.**
+
+**THE PRECEDENT IS THIS FILE'S OWN, TWICE, AND IT POINTS THE SAME WAY BOTH TIMES.**
+- **`goals_conceded` zero-filled on 28,549 outfield cards** is recorded in SS E as *"a
+  NOT-APPLICABLE sentinel written as data, which is exactly what NR for missing data, never 0
+  forbids"* , min 0, median 0, max 0, not one outfield row above zero.
+- **The `sig` null policy** (SS C) records the opposite error and rejects it on measurement:
+  nulling `sig` so the floor falls to zero moved 306 of 329 cards, median 27.07 points of `b`,
+  maximum 44.41, and is described as punishing *"327 cards for a missing field, which is this
+  file's own first principle inverted"*.
+
+**SO BOTH DIRECTIONS ARE ALREADY RULED ON. Substituting a value for an absence is the defect;
+which value you substitute only changes who it hurts.** The `sig` case at least RENORMALISED onto
+the facet it still had. `gaw` does not: it adds a hard zero.
+
+**FIXING IT IS AN ENGINE CHANGE AND NEEDS THE FULL PROCEDURE, NOT AN EDIT.** Any change here moves
+`gaw`, therefore `gaw90`, therefore the pool percentiles, therefore **cards nobody touched** , the
+same ripple the position batch measured. It needs a simulation against a full `before.json`
+snapshot, a predicted mover and band-crossing count, and a post-refresh diff against that
+prediction, exactly as `migrations/positions_2526_2026-09-11/` did.
+
+**NO FIX IS PROPOSED HERE, DELIBERATELY.** The options are not symmetric and the choice is a
+product decision about what an unrecorded assist MEANS, not a code decision. **Do not "tidy" this
+into a null-safe expression on the way past , it would re-rate a five-year window silently.**
+
+**AND NOTE WHY IT SURVIVED: every internal check passes it.** The column is populated for 2015+,
+the expression is valid SQL, no row errors, and the scores look plausible. It is only visible if
+you ask what the COALESCE is standing in for , which is the same shape as the `goals_conceded`
+sentinel that sat unnoticed until someone read min and max.

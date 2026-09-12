@@ -1145,3 +1145,49 @@ rebuilt as a fixed SHEET for this reason, with the page height unchanged and `bo
 **AND IT TOUCHES A SHARED COMPONENT.** `VVFilters` serves rankings, the Compare picker and the
 filter rail, so a popup is three surfaces, not one , see the FILTER FOLLOW-UP stage in
 `LAUNCH_STAGE.md`, which is where this belongs if that stage is ever run.
+
+
+---
+
+# CONSIDERED AND REJECTED: THE CCC BACKFILL FOR THE TOP 4 CLUBS, 2010-2015 (2026-09-12)
+
+**THE PROPOSAL.** Fill NR stats and missing squad numbers for the top 4 clubs in each of the 9
+leagues, 2010 to 2015, by a research pass.
+
+**IT FAILS BEFORE FEASIBILITY IS EVEN REACHED, ON THE SHAPE OF THE GAP.** Measured over the window
+(20,219 cards), **twelve fields sit between 84.0% and 90.6% null**: assists 90.6, tackles_total
+86.5, shots_on 84.3, shots_total 84.2, passes_key 84.2, dribbles_success 84.2, dribbles_attempts
+84.1, interceptions 84.1, passes_total 84.0, duels_won 84.0, duels_total 84.0, penalties_scored
+83.9. Only appearances, minutes and goals are populated.
+
+**THIS IS AN ERA GAP, NOT AN ASSISTS GAP , and exactly one of the twelve feeds rt.** `gaw` reads
+`0.7 * COALESCE(assists, 0)`; the other eleven are display and tag inputs. **So filling assists
+alone MOVES THE SCORE while the Proof panel beside it stays empty** , the card gets a new number
+and no new evidence, which is the worst of both. And filling the other eleven changes nothing about
+the score, so the two halves cannot be justified by the same argument.
+
+**THE SCOPE, so a later reader does not re-derive it.** 1,018 club-seasons exist in the window,
+median squad 20 cards on the matview, p90 24. A top-4 selection is **216 club-seasons, roughly
+4,300 to 5,200 cards**. Of the whole window, **18,322 cards have null assists** and **19,899 of
+20,219 (98.4%) have no `player_positions` row at all**; **18,217 have both**.
+
+**AND THE SELECTION CANNOT BE MADE FROM THE DATABASE.** There is **no standings source** ,
+`team_standings`, `standings`, `league_table` and `team_season` are all absent. "Top 4 by final
+league position" needs an external list before a single card can be chosen. The `honours` table
+gives the champion only, never second to fourth.
+
+**WHAT WOULD MAKE IT VIABLE, and it is two things, not one:**
+1. **Fill the ERA, not one field.** A pass that returns assists plus the shot, pass, dribble, duel
+   and tackle block for a club-season, so the card is complete rather than selectively improved.
+2. **A standings table.** Without it the cohort is unselectable and any "top 4" is an assertion.
+
+**AND IT INHERITS THE ENGINE PROBLEM EITHER WAY , see `DATA_DEFECTS.md`.** Because a null assist is
+currently scored as zero, ANY assist backfill raises `gaw` on every filled card, moves `gaw90`,
+moves the pool percentiles and therefore moves **cards nobody touched**. That makes it an engine
+change needing a simulation and a before/after snapshot, not a data fill.
+
+**ON THE RESEARCH ITSELF, recorded so the confidence question is not re-opened from scratch:** the
+position batches returned high confidence where the claim was a ROLE a model has seen described
+many times, and low where it needed a precise split , *"no reliable recall of the split"*. **An
+exact per-season assist total for a mid-table 2011 player is the second kind, and unlike a position
+it feeds rt**, so a confidently wrong answer moves a published score.
