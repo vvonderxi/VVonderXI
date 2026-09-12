@@ -1129,6 +1129,38 @@ criterion.
 - **An undocumented, per-scout judgement does not.** There is nothing to state.
 **This is the finding that closes phase 2 as specified, not merely the 71% hold rate.**
 
+
+### THE +1 SIGNATURE HAS A SECOND INSTANCE, ON A DIFFERENT PROVIDER (added 2026-09-12, from the Fable report)
+
+**worldfootball.net SHOWS THE SAME ONE-DIRECTIONAL +1 AGAINST THE OFFICIAL RECORD, ON THE SAME
+LEAGUE-SEASON THE TABLE ABOVE ALREADY CARRIES.** `PL 2013/14`: **worldfootball gives Gerrard 14 and
+Suarez 13**, against the Premier League official archive's **Gerrard 13, Suarez 12** , **one higher
+on BOTH players, and higher on neither's rival, so it is not a re-ordering, it is a level shift.**
+
+    league-season   provider          leader pair           official record        gap
+    PL 2013/14      Transfermarkt     Suarez 13, Gerrard 13  Gerrard 13, Suarez 12  +1 on Suarez
+    PL 2013/14      worldfootball     Gerrard 14, Suarez 13  Gerrard 13, Suarez 12  +1 on BOTH
+
+**THIS CHANGES THE STANDING OF THE FINDING ABOVE. It was six disagreements from ONE provider, which
+is consistent with a house convention at Transfermarkt. It is now the same signature, same
+direction, same magnitude, on a SECOND and independent provider** , and worldfootball is not
+crowd-maintained in the way Transfermarkt is, so the mechanism recorded above cannot be the whole
+explanation.
+
+**THE READING: THIS IS AN ECOSYSTEM-WIDE DEFINITIONAL SPLIT BETWEEN THE OFFICIAL/OPTA COUNT AND THE
+WIDER FOOTBALL-DATA WORLD, NOT ONE PROVIDER'S QUIRK.** The non-official sources credit assists the
+official count does not , deflections, a pass two touches before the goal, a won free kick, the
+exact cases a published rule exists to exclude.
+
+**WHAT IT CHANGES OPERATIONALLY, AND WHAT IT DOES NOT:**
+- **IT STRENGTHENS THE PHASE-2 CLOSURE RATHER THAN REOPENING IT.** Two providers agreeing with each
+  other and disagreeing with the official record in the same direction is not two independent
+  reads. **A protocol that takes Transfermarkt plus worldfootball as its two reads is measuring one
+  definition twice** , the same trap as the Playmaker award in `docs/TOP_ASSISTS_SOURCING_SPEC.md`.
+- **IT DOES NOT MAKE THE OFFICIAL RECORD "RIGHT" AND THE OTHERS WRONG.** It makes the question
+  "under whose definition" unavoidable, which is exactly what the entry above already concluded.
+- **DO NOT APPLY A -1 CORRECTION.** Two instances of +1 is a pattern, not a calibration, and the
+  LL 2010/11 row in the table above is **+3** on Messi. There is no offset to apply.
 ---
 
 ## THE PLAYBOOK KEYS THREE MAPS ON A DISPLAY STRING, SO A COPY CHANGE IS A CODE CHANGE (found 2026-09-12, NOT REFACTORED)

@@ -9,6 +9,47 @@ separate, approved follow-up: source the winner from outside our data.**
 
 ---
 
+## 0. READ THIS FIRST , CARD RESOLUTION IS A PRECONDITION, NOT A FINAL CHECK
+
+**Establish that the league-season's leader HAS A CARD BEFORE sourcing him. If he has no card,
+the league-season is unwritable and no amount of correct research changes that.** SS 3.2 already
+rules that `api_player_id` comes from the card and never from the research. That rule was written
+as a WRITE-TIME guard and it is being promoted here to a SCOPING gate, because running it last
+means the research is already spent.
+
+**MEASURED 2026-09-12 ON THE 45-ROW FABLE REPORT: card resolution, not source disagreement, was
+the single largest cause of a row not being writable.** The report's sourcing was often right and
+the row still could not exist.
+
+**THE THREE NAMED CASES, each verified against `player_card_mv` this session:**
+
+| league-season | leader | why unwritable |
+|---|---|---|
+| PL 2010/11  | Nani            | NO CARD. His first card in the whole database is 2015 TR Fenerbahçe. |
+| PL 2012/13  | Juan Mata (api 901) | NO CARD. He holds 2010 LL Valencia, then nothing until 2015 PL Man Utd , every Chelsea season is absent. |
+| ERE 2014/15 | Hakim Ziyech    | NO CARD. His first card is 2015 ERE Twente, one season later than the one being sourced. |
+
+**AND THE OBVIOUS EXPLANATION IS WRONG , THE 300-MINUTE IMPORTER FLOOR EXPLAINS NONE OF THE
+THREE, AND IT WAS TESTED RATHER THAN ASSUMED.** The floor (`api/import-players.js`, disclosed in
+`INGESTION_RECOVERY.md`) is a real route to a missing card and it is not this one. Their squads are
+present and deep, and each of the three played far more than the players who DID get a card:
+
+- **Chelsea PL 2012/13 , 14 cards, lowest 868 minutes** (Demba Ba). Mata played the season as the
+  club's most-used attacker and is absent.
+- **Manchester United PL 2010/11 , 21 cards, lowest 427 minutes** (Wes Brown). Nani is absent.
+- **Twente ERE 2014/15 , 20 cards, lowest 313 minutes** (Shadrach Eghan Kwesi). Ziyech is absent.
+
+**So these are SOURCE-ABSENT INDIVIDUALS INSIDE POPULATED SQUADS** , the same class as Rooney,
+Gerrard, Lampard and Kompany in `INGESTION_RECOVERY.md` fact 2, and **a re-ingest will not recover
+them.** Do not file a missing leader as a minutes-floor casualty without counting the squad first;
+the two have different remedies and only one of them has any remedy at all.
+
+**THE PROCEDURE, THEREFORE:** for each league-season in scope, resolve the candidate leader to a
+`card_id` FIRST. **A league-season whose leader has no card is CLOSED, not held** , holding implies
+a second read could settle it, and nothing can.
+
+---
+
 ## 1. SCOPE , 46 ADDITIONS. THE EIGHT 2015/16 ROWS ARE OUT OF SCOPE.
 
 **46 league-seasons carry no `top_assists` row and cannot produce one from our data.** Coverage
@@ -109,6 +150,26 @@ across all nine leagues for 2010-2015. URL shape:
   stands unchanged and is now load-bearing.**
 
 **SERIE A , INCONCLUSIVE, NOT FAILED. See SS 7 for what was tried and what a patient pass needs.**
+
+### A RESEARCH FAILURE MODE , AN AWARD NAMED FOR A METRIC IS NOT THE METRIC
+
+**LOGGED 2026-09-12 FROM THE FABLE REPORT'S `PL 2013-14` ROW.** The report offered *"the official
+Playmaker award went to Suarez"* as evidence for who topped the assists TABLE. **The Premier League
+Playmaker of the Season is awarded for most assists, so the conflation is invisible** , the award
+and the table name the same player for the same reason, and the citation reads as corroboration.
+
+**IT IS NOT CORROBORATION, IT IS THE SAME READING TWICE.** The award is adjudicated from ONE
+provider's count (Opta) at one moment, and the official archive is that same count. Citing both is
+citing one lineage, which is exactly what SS 9's lineage test exists to catch. **On this row it
+mattered:** the award, the official archive and WhoScored all say Suárez, and worldfootball makes
+**Gerrard** the leader. A protocol that scored award-plus-archive as two agreeing reads would have
+written the row as CONFIRMED and never seen the disagreement. `PL 2013-14` is correctly UNRESOLVED.
+
+**THE RULE, AND IT IS GENERAL BEYOND THIS JOB: an award, a trophy, a "player of the season" or any
+adjudicated honour is DOWNSTREAM of a measurement, never a second instance of it.** Golden Boot is
+not the goals table; Playmaker is not the assists table. Where the honour and the table agree it
+adds nothing, and where they disagree the honour tells you about the adjudication, not the count.
+**An award may never be counted as one of the two reads.**
 
 ### THE HOLD RULE , NO ADJUDICATION
 
@@ -333,3 +394,30 @@ terms of lineage from here on.
 CONFIRMED while its own notes record a disputed number, **the evidence governs and the row is
 UNRESOLVED.** Check every row's stated status against its stated evidence rather than trusting the
 column.
+
+---
+
+## 10. BATCH 2 , THE FABLE AUDIT'S TWO WRITABLE ROWS (2026-09-12, WRITTEN AND LIVE)
+
+**A 45-row external sourcing report yielded TWO writable rows. That is the honest headline, and the
+audit is worth more than the rows.** 11 rows arrived marked CONFIRMED; applying SS 9's lineage test
+plus SS 0's card-resolution gate left **4 genuinely two-lineage**, of which **2 had no existing row
+and a resolvable card.**
+
+    + id=637  LL 2014/15  L. Messi   18a   card OK (Barcelona)
+    + id=638  SA 2012/13  M. Hamšík  14a   card OK (Napoli)
+
+Both `source = sourced_leader_only_verified`. Delete-before-insert applied unconditionally per
+SS 3.1; rollback capture in `migrations/top_assists_sourced_2026-09-12/before_rows_batch2.json`.
+**Matview refreshed in Lucas's lane; `h_top_assists` went 111 to 113, verified against
+`player_card_mv`.** `top_assists` honours now stand at 113 of 144 possible league-seasons.
+
+**WHY THE OTHER NINE NOMINAL CONFIRMEDS DID NOT SURVIVE, in order of how many they cost:**
+1. **CARD RESOLUTION** , the leader has no card (SS 0). No research can fix it; the league-season
+   is CLOSED, not held.
+2. **ONE LINEAGE WEARING TWO NAMES** , award plus official archive, or two Opta-derived reads.
+3. **A `CONFIRMED` LABEL CONTRADICTED BY THE ROW'S OWN NOTES** , the evidence governs (SS 9).
+
+**THE STANDING LESSON FOR THE NEXT EXTERNAL PASS: commission card resolution FIRST and send the
+researcher a list of league-seasons whose leader is known to be writable.** Roughly a fifth of this
+report's effort went into seasons that could never have produced a row.

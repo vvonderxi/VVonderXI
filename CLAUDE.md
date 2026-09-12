@@ -32,7 +32,7 @@ Why this file exists: this project has suffered from too many documents and no c
 
 ```
 === VVONDERXI LAUNCH PROGRESS ===
-Data quality   █████████████████░  ~97%   INGESTION-GAP RECOVERY COMPLETE (780 seasons recovered across all 9 leagues, insert-only, 1 public band crossing total); honours 631 live (measured 2026-09-12) + NR-assist fill; KEEPER + PENALTY FIELDS CAPTURED AND NOW LIVE (matview swapped 2026-08-19, 65 columns; saves/conceded/penalties/starts + 4 discipline fields visible to the site); goals-provenance audit open
+Data quality   █████████████████░  ~97%   INGESTION-GAP RECOVERY COMPLETE (780 seasons recovered across all 9 leagues, insert-only, 1 public band crossing total); honours 624 live (measured 2026-09-12 end of day, was 631: 11 false top_assists deleted, 4 sourced and written; top_assists 113 of 144 league-seasons) + NR-assist fill; KEEPER + PENALTY FIELDS CAPTURED AND NOW LIVE (matview swapped 2026-08-19, 65 columns; saves/conceded/penalties/starts + 4 discipline fields visible to the site); goals-provenance audit open
 Tags           ██████████████████  ~97%   TAG ENGINE COMPLETE , thresholds AND eligibility both on position_pool (the field split that mis-bracketed 12.78% is gone), Marksman retired, scoring on two defensible axes, identity tags gated on pool not family, no tag over the ~2% rarity CEILING bar the stated Iron Man exception (the band is a ceiling, not a target , four narrow archetypes sit below it by design). Only the fouls_drawn tag + discipline fields on the mv remain, both post-launch
 Compare        █████████████████░  ~95%   spine + flow-polish COMPLETE (go-to-player, user-fold, back-path, subheading, C8) + VERDICT-TAG SYSTEM shipped (14 tags + age-tiebreaker + Proof/Confidence + crown badge) + the keeper radar hole closed (966 keeper cards drew an outfield pentagon here, card.html always gated and compare.html never did); only optional picker pager + merge remain
 Card editorial █████████████░░░░░  ~71%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED + CHRONICLE REBUILT (72 moments, api-keyed, opponent field, watch CTA) + the card is now EXPLAINED on the playbook + GK confidence no longer claims a completeness it cannot have + SEQUENCE NAVIGATION (walks the list you arrived from, arrows/keys/swipe) + the radar is percentile-within-pool rather than four fixed constants (bar unmoved , it was already rendering, it was rendering wrongly); K4 Proof + K5 VV-line trajectory + honours strip UI remain
@@ -659,6 +659,91 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-09-12 | The assists honour was a maximum over three cards, and the fix was deletion
+
+**1. `top_assists` WAS COMPUTED FROM A COLUMN THAT IS 99%+ NULL BEFORE 2015, AND EVERY INTERNAL
+CHECK PASSED IT.** Van Persie held the PL 2011/12 assists honour on **9**, the maximum of **three**
+populated cards in a **390-card** league-season. **Eleven rows deleted**, rollback captures in
+`migrations/top_assists_sparse_2026-09-12/`. The write path (`top_assists_write.js`) lost its
+`MIN = 9` floor for a **`MIN_COVERAGE = 0.25`** gate, stopped reading null as zero, and now carries
+every tied player rather than one. `honours` ends at **624**, `top_assists` at **113 of 144**.
+
+**2. THE FINDING WITH THE LONGEST REACH , A FILL PRIORITISED BY PROMINENCE MAKES EVERY COMPUTED
+EXTREMUM LOOK CORRECT.** The pre-2015 assists that DO exist were filled for marquee cards only ,
+**117 cards, median rt 88, 89.7% at rt >= 85, against a population median of 42.** So the maximum
+over the populated set was a star **by construction**, and the false honours landed on Messi, Van
+Persie, Suarez, Giroud and Nene. **A sparse maximum over a random sample looks obviously wrong and
+gets caught. Over a sample selected for fame it looks exactly like the right answer**, which is why
+this survived from July to September. **This applies to any selective fill of any field.**
+
+**3. THE ASSISTS BACKFILL IS CLOSED PERMANENTLY, ON ONE STRUCTURAL FACT: THE PERCENTILE POOLS CARRY
+NO `season_year`.** Eleven `PARTITION BY` clauses in the live view, not one of them partitioning by
+season. **So every pool mixes 2010 with 2025 and ANY era-bounded fill is a PARTIAL fill of every
+pool** , measured at **3.1x to 8.3x worse per card than a complete one**, with the same imputed
+value giving a median gain of 0 under a full fill and **+7** under the narrowed variant. Real scope
+is **31,040 cards across 2,422 of 2,740 club-seasons, 88% of the database.** Both narrowed variants
+rejected. **Do not re-propose a subset.**
+
+**4. "WHO WON THE ASSIST CROWN" IS NOT A SINGLE FACT INDEPENDENT OF WHO IS COUNTING, AND THAT IS
+WHAT CLOSED PHASE 2 , NOT THE 71% HOLD RATE.** Transfermarkt is **equal or higher than the official
+record on 5 of 5** disagreements, never lower; a recording error scatters both ways and this does
+not. **And the rule cannot be NAMED**, which is worse than an alternative definition: Transfermarkt
+publishes none anywhere reachable, and its own guide explains why , assists are entered per match
+by **volunteer scouts** and aggregated automatically. **There is no offset to apply because there is
+no rule.** Late in the session a **second provider showed the same signature**: worldfootball gives
+Gerrard 14 / Suarez 13 on PL 2013/14 against the official 13 / 12, **+1 on both, a level shift not
+a re-ordering.** Two providers agreeing with each other and disagreeing with the official record in
+one direction are **NOT two independent reads**. **DO NOT apply a -1 correction** , LL 2010/11 is
++3. **This scope does NOT leak into shirt numbers or positions**, which are roster facts with one
+answer; an assist is a judgement about who touched the ball before a goal.
+
+**5. FOUR ROWS WERE SOURCED AND WRITTEN, FROM TWO RUNS, AND THE AUDIT WAS WORTH MORE THAN THE ROWS.**
+Phase 1 wrote 2 of 7 (**71% hold rate**); a 45-row external report yielded **2 more from 11 nominal
+CONFIRMEDs**. All four carry `source = sourced_leader_only_verified`. The three things that killed
+the rest, in order of cost:
+- **CARD RESOLUTION IS A PRECONDITION, NOT A FINAL CHECK.** Named and verified: **Nani PL 2010/11,
+  Juan Mata PL 2012/13, Hakim Ziyech ERE 2014/15 have NO CARD.** **The 300-minute importer floor
+  explains none of the three** , their squads carry 14 to 21 cards down to **313 minutes**, and
+  each of the three played far more than players who did get one. They are **source-absent
+  individuals**, the Rooney/Gerrard class, and a re-ingest will not recover them. A league-season
+  whose leader has no card is **CLOSED, not held**.
+- **ONE LINEAGE WEARING TWO NAMES.** The confirmation bar is **lineage, not source count**.
+  **AN AWARD NAMED FOR A METRIC IS NOT THE METRIC** , the report cited the PL Playmaker award as
+  evidence for the assists TABLE. The award IS given for most assists, which is exactly why the
+  conflation is invisible, but it is adjudicated from one provider's count, so award-plus-archive
+  is one reading twice. **Golden Boot is not the goals table.**
+- **A `CONFIRMED` LABEL CONTRADICTED BY THE ROW'S OWN NOTES.** The evidence governs, not the column.
+
+**6. A REFRESH RUN FOR ONE JOB LANDS EVERY PENDING WRITE, AND NOTHING ANNOUNCES IT.** The refreshes
+run for the honours work carried the **eight 25/26 position corrections** with them , they had been
+recorded as pending in two documents and are now **live, 8 of 8 verified**. The owed diff is done:
+**113 rt movers (predicted 116), 6 band crossings (predicted 6), median |delta| 1, max 3.**
+**`pool_change_sim.js` is trustworthy on COUNTS and not on NAMES** , it got all four RECLASSIFIED
+crossings exactly right by card and value, and named the wrong two UNTOUCHED ripple cards (predicted
+Vardy 16/17 and Alcacer 18/19; actual **Perisic 16/17 and Lacazette 23/24**, all four 84 -> 85).
+Which of several tied neighbours re-ranks is not stable. **Same shape as SS C's CDM rule: predict
+the direction, never the number, and for a ripple, never the card.**
+
+**INSTRUMENTS THAT LIED, FOUR IN ONE DAY, EACH CAUGHT BY A CONTROL:** `range()` pagination **without
+`ORDER BY`** reported 49.5% of club-seasons carrying a duplicate name against a real **0.10%**;
+`scrollWidth` reported "fits" for wrapping text, returning **63 for four strings of different
+length** (`Range.getClientRects()` is correct); an SPA returned **200 for a path it redirects away
+from**, which would have recorded Van Persie's 30 GOALS as an assists total; and reading a
+Transfermarkt column **by position** gave Drogba 33 assists and turned Silva's AGE into his assist
+count (fixed by keying on the `vorlagen` sort key and reading direct children). **Also: I audited
+the read-only staging twin instead of the write path and claimed 19 players held no honour they had
+earned. False , `top_assists_write.js` already writes every tied player.** An audit of the twin is
+not an audit of the write path.
+
+**NEXT / OPEN:** **Regenerate `RADAR_POOL_REF` (`scripts/gen-radar-ref.js`) then the margin table
+(`scripts/separability/gen_margin_table.js`), in that order, FIRST THING.** They are no longer
+blocked, they are DUE , both read the matview and 113 cards' rt has moved. **Squad numbers (variant
+A) is BLOCKED on one unanswered product question and Lucas has said to stop asking** , the blank
+shield decision; he will bring it. The `top_assists` sourcing job has **33 of 46 league-seasons
+left** and its spec now carries a SS 0 and a SS 10 that did not exist this morning; **commission
+card resolution FIRST on any next external pass** , roughly a fifth of the Fable report's effort
+went into seasons that could never have produced a row.
 
 ### 2026-09-05 | The radar was one denominator for eight pools, and the doc named the wrong axes
 
