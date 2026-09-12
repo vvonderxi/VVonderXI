@@ -246,7 +246,22 @@ view at `/serie-a/statistiche/giocatori`.
   contained zero occurrences of "assist".** That is as consistent with an extraction failure as
   with the data being absent, and **it must not be recorded as absence.**
 
-**WHAT A PATIENT PASS NEEDS:**
+**THE ONE SHORT ATTEMPT WAS MADE, 2026-09-12 PM. RESULT: NO IDENTIFIABLE ASSISTS COLUMN.**
+- **The ordering fix WORKED** , setting the view (Players) BEFORE the tab stopped the reset, and
+  Attack and Passes now switch cleanly. That part of the earlier failure is solved and recorded.
+- **Attack columns:** GP, G, PKA, C, CT, HC, ASP, GD, SRC, INT, RFG, FAT, TS, PT.
+  **Passes columns:** GP, CT, HC, ASP, GD, SRC, INT, RFG, FAT, TS, PT, GOB, SOT, UCC.
+- **None is labelled as assists, there is NO legend or glossary on the page, the headers are not
+  `th` elements so they expose no `title`, and hovering a column code produces no tooltip.**
+- **`ASP` and `GD` are the only plausible candidates and BOTH WERE REFUSED.** Guessing an
+  abbreviation is exactly the error that produced "Assistant referees" as an assists table and
+  Drogba on 33 assists. **A column is not an assists column until the source says so.**
+
+**CONCLUSION: Serie A joins the ONE-READ group.** Its five league-seasons take
+`transfermarkt_leader_only_unverified` if phase 2 ever runs. The deep archive is real and is not
+the problem; the metric simply is not published in a form that can be read with confidence.
+
+**IF SOMEONE RETURNS TO IT ANYWAY, THIS IS WHAT IS LEFT TO TRY:**
 - Drive the UI in the order **Players -> Attack/Passes tab -> season**, screenshotting after each
   step rather than reading the DOM, since the DOM read returned nothing on a page that was visibly
   rendering data.

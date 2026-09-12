@@ -1051,6 +1051,86 @@ happen to match on both sides.**
 
 ---
 
+## TRANSFERMARKT AND THE OFFICIAL LEAGUE RECORD COUNT ASSISTS DIFFERENTLY, IN ONE DIRECTION, 5 OF 5 (measured 2026-09-12)
+
+**THIS IS A DEFINITIONAL DIFFERENCE, NOT AN ERROR IN EITHER SOURCE, AND THE DIRECTION IS THE
+EVIDENCE.** Sourcing the `top_assists` winner for 2010-2015 put two independent sources against
+each other on seven league-seasons. **Two agreed exactly. Five disagreed, and in all five
+Transfermarkt is EQUAL OR HIGHER, never lower.**
+
+    league-season   Transfermarkt            second read                          gap
+    PL 2010/11      Nani 17                  PL official: Nani 14                 +3
+    PL 2011/12      David Silva 15           PL official: David Silva 15          0   AGREE
+    PL 2012/13      Hazard 12, Mata 12       PL official: Mata 12, Hazard 11      +1 on Hazard
+    PL 2013/14      Suarez 13, Gerrard 13    PL official: Gerrard 13, Suarez 12   +1 on Suarez
+    PL 2014/15      Cesc Fabregas 18         PL official: Cesc Fabregas 18        0   AGREE
+    LL 2010/11      Messi 21                 Wikipedia: Ozil 18, Messi 18         +3 Messi, +1 Ozil
+    LL 2011/12      Messi 19                 Wikipedia: Ozil 17                   +1 Ozil, Messi absent
+
+**A ONE-DIRECTIONAL DIFFERENCE ACROSS FIVE INDEPENDENT CHECKS IS NOT NOISE.** Transcription error
+scatters both ways; this does not. **Something in Transfermarkt's definition credits assists that
+the official record does not** , the obvious candidate is a second or pre-assist, or a different
+rule on deflections and rebounds, but see the open question below: **the rule has not been
+established and must not be guessed at.**
+
+**THE CONSEQUENCE IS EXACTLY THE FACT THIS JOB EXISTS TO SOURCE, WHICH IS WHY IT MATTERS MORE THAN
+THE SIZE OF THE GAP.** Where one extra credited assist lifts the runner-up into a tie, **the two
+sources disagree about WHO LED THE LEAGUE.**
+- **PL 2012/13:** Transfermarkt has Hazard and Mata tied on 12. The official record has Mata alone
+  on 12 and Hazard on 11. **One source says two men shared it; the other says one man won it.**
+- **PL 2013/14:** identical shape , Transfermarkt ties Suarez with Gerrard on 13, the official
+  record has Gerrard alone with Suarez on 12.
+- **LL 2010/11 is the worst case: Transfermarkt says Messi led alone on 21; Wikipedia says Ozil and
+  Messi tied on 18.** Different leader count, different names, different numbers.
+
+**SO "WHO WON THE ASSIST CROWN" IS NOT A SINGLE FACT INDEPENDENT OF WHO IS COUNTING.** That is a
+harder problem than a missing number and it is the reason phase 2 was stopped: writing 13 more
+league-seasons from Transfermarkt alone would publish one definition of the assist crown as though
+it were the definition.
+
+**THE PLATFORM'S OWN COLUMN IS A THIRD DEFINITION AGAIN.** `player_season_cards.assists` is
+API-Football for the bulk, CCC-verified-against-FBref for the ~117 pre-2015 marquee cards, and 28
+more written by hand , see the provenance entry in `CLAUDE.md` SS C. **Three sources, three
+possible definitions, one column.**
+
+### THIS IS ABOUT TRANSFERMARKT'S ASSIST DEFINITION, NOT ABOUT TRANSFERMARKT
+
+**DO NOT GENERALISE THIS INTO DISTRUST OF THE SOURCE, AND DO NOT LET IT LEAK INTO THE FIELDS IT IS
+ALREADY TRUSTED FOR.** `CLAUDE.md` SS C records **shirt number and position as Transfermarkt-sourced**,
+and the whole squad-number backfill in `LAUNCH_STAGE.md` rests on it. **Nothing here touches that.**
+- A **shirt number** and a **position** are roster facts with one answer. **An assist is a
+  judgement call about who touched the ball before a goal, and reasonable providers differ.** The
+  finding is about the CLASS of fact, not about the provider's care.
+- Transfermarkt was also the source that got the LEADER right in most cases here. **Its ordering is
+  largely sound; it is the COUNT, and the ties that a count creates, that diverge.**
+- **It remains the correct primary for this job** , it is the only source with full nine-league,
+  2010-2015 coverage. The finding constrains how its numbers may be USED, not whether it may be
+  used.
+
+**ANSWERED 2026-09-12: THE RULE CANNOT BE NAMED, AND THE REASON IS WORSE THAN AN ALTERNATIVE
+DEFINITION.** Transfermarkt publishes no assist definition anywhere reachable:
+- the assists column header carries only `title="Assists"` and no explanatory text
+- the site FAQ contains **one** occurrence of the word, and it is about how to ADD an assist, not
+  what counts as one
+- the data administration guide contains three, all describing the editing workflow
+
+**AND THE GUIDE EXPLAINS THE MECHANISM IN ITS OWN WORDS: the data is CROWD-MAINTAINED.** *"We rely
+on the active support of our registered users, who support our voluntary data scouts... To complete
+or correct a player's assists, for example, you have to edit the according match sheet. Performance
+data of players, managers, and referees is automatically calculated based on saved match sheets."*
+
+**SO THE GAP IS NOT A DIFFERENT RULE, IT IS THE ABSENCE OF AN ENFORCED ONE.** Assists are entered
+per match by volunteers and aggregated automatically. **That cannot be reconciled with a
+rule-based official record by applying an offset**, because there is no offset , there is
+aggregated human judgement across thousands of match sheets, each made without a published
+criterion.
+- **A documented alternative definition would have RESCUED phase 2** , you could state the
+  convention and publish accordingly.
+- **An undocumented, per-scout judgement does not.** There is nothing to state.
+**This is the finding that closes phase 2 as specified, not merely the 71% hold rate.**
+
+---
+
 ## THE PLAYBOOK KEYS THREE MAPS ON A DISPLAY STRING, SO A COPY CHANGE IS A CODE CHANGE (found 2026-09-12, NOT REFACTORED)
 
 **WHAT IT COST TODAY, WHICH IS THE ONLY REASON THIS IS WORTH WRITING DOWN.** Renaming two honours
