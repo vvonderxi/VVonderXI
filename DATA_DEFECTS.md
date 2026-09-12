@@ -481,6 +481,145 @@ from the mechanism rather than from the 57% rise, which points at football and i
 
 ---
 
+## `top_assists` WAS COMPUTED FROM OUR OWN 99%-NULL ASSISTS COLUMN, SO THE "LEAGUE LEADER" WAS THE MAX OF A HANDFUL OF ROWS (found and CORRECTED 2026-09-12)
+
+**REPORTED BY LUCAS FROM ONE CARD AND IT WAS REAL: Van Persie's 2011/12 card carried Top Assists on
+9 assists.** The actual Premier League leader that season had more. **Ten rows were deleted; the
+writer is fixed; no external sourcing was done.**
+
+**THE MECHANISM.** `scripts/enrichment/honours/compute_top_assists.js` ranked on **our own `assists`
+column** and treated a null as a zero-assist season:
+
+    o.a += (r.assists == null ? 0 : r.assists);
+
+**PL 2011/12 holds 390 cards and 387 of them are null on assists, 99.2%.** The entire populated set
+was Van Persie 9, Aguero 8, Yakubu 2. **The league assists leader was selected as the maximum of
+three values.** This is the same NR-as-zero inversion the engine's `COALESCE(assists,0)` commits,
+arriving by a different route, and SS B's house rule names it: NR for missing data, never 0.
+
+**THE VALUE-9 SIGNATURE, AND IT IS THE PART WORTH REMEMBERING.** A genuine top-five-league assists
+leader lands between roughly 12 and 20. **Four of the ten bad rows stored exactly 9** , Van Persie
+twice, Giroud, Nene , because 9 is what the sparse maximum happens to be. **A suspiciously LOW
+winning value is the tell for this defect class**, not a high one.
+
+**THE GUARD EXISTED AND MISSED BY ONE.** The script already flagged suspect league-seasons:
+
+    === COVERAGE GAPS: league-seasons where max assists < 9 (suspect) ===
+    if (t && t.val < 9) { ... }
+
+**The threshold was `< 9` and Van Persie's value was exactly 9, so the worst row on the platform
+passed the guard by a single assist** and was never printed. **The lesson is not to lower the
+threshold** , that is the same guess one notch down. **A guard on the VALUE is guessing at the
+symptom; the gate belongs on COVERAGE, which is the actual cause.**
+
+**THE GOLDEN_BOOT CONTROL CONFIRMS THE MECHANISM RATHER THAN LEAVING IT INFERRED.** Same script,
+same shape, different column: **`goals` is 0.4% null in the same window.** Measured 2026-09-12:
+**13 of 120 `top_assists` rows sat in a league-season that is majority-null on assists, against 0
+of 143 `golden_boot` rows on goals.** Where the underlying column is populated the computed winner
+is sound.
+
+**AND THE STRUCTURAL FACT BEHIND ALL OF IT: `top_assists` IS THE ONLY HONOUR TYPE COMPUTED FROM OUR
+OWN DATA.** Every other type is externally sourced:
+
+    top_assists       computed        120        <- the only one
+    golden_boot       wikipedia_ccc   141   + computed 2 (the live TR 2025/26 tie)
+    league_champion   wikipedia_ccc   143
+    player_of_season  wikipedia_ccc   102
+    world_cup_winner  wikipedia_ccc    93
+    ucl_winner        wikipedia_ccc    16
+    ballon_dor        wikipedia_ccc    14
+
+**So the platform asserts six honours on external authority and derived the seventh from a column
+it knows to be 99% empty.** Nothing flagged the inconsistency because the row looked identical in
+the table once written.
+
+**THE TEN ROWS DELETED, ALL `source='computed'`, ALL PRE-2015, NAMED SO THEY CAN BE RE-CHECKED:**
+
+    id 324  2013 LL  L. Messi          11a      id 337  2012 PL  Robin van Persie   9a
+    id 325  2010 LL  L. Messi          18a      id 339  2011 PL  Robin van Persie   9a
+    id 327  2014 LL  L. Messi          18a      id 342  2013 PL  L. Suarez         12a
+    id 329  2011 LL  L. Messi          16a      id 376  2011 L1  O. Giroud          9a
+    id 330  2012 LL  L. Messi          12a      id 386  2010 L1  Nene               9a
+
+**honours 631 -> 621.** Full rows captured to `migrations/top_assists_sparse_2026-09-12/before_rows.json`
+before the delete. **The Messi rows were probably right BY LUCK** , he genuinely led those La Liga
+seasons and is one of the few players whose assists are populated , but a row that is correct by
+accident is not evidence, and the value cannot be trusted either (16 where the real figure was 15).
+
+**IT HAD TO BE AN EXPLICIT DELETE, NOT AN UPSERT, AND THE INDEX IS THE REASON:**
+
+    CREATE UNIQUE INDEX honours_one_per_award ON public.honours
+      USING btree (honour_type, season_year, league_code, api_player_id) NULLS NOT DISTINCT
+
+**`api_player_id` IS PART OF THE KEY**, so uniqueness is per award-season-league-PLAYER, not per
+award-season-league. **An upsert of a corrected winner carries a different `api_player_id`, so it
+INSERTS A SECOND ROW and leaves the wrong one standing**, giving that league-season two Top Assists
+holders, two sets of pills and two cabinet entries. **Any future correction pass must DELETE
+first.** The index is not wrong , it correctly permits genuine ties , and must not be changed.
+
+**THE BLAST RADIUS, MEASURED, BECAUSE IT IS LARGER THAN THE ROW COUNT.** An honour row reaches the
+card face (`renderTopHonourPill`), the glance (`renderHonourChips`), the Wonder Tags rows, the
+rankings pills and filter rail (via the matview's `h_top_assists` flag), the Compare verdict prompt
+(`compare.html` writes `HONOURS: ...` into the payload, so the model was told he led the league),
+and the share poster. **And THE CABINET MULTIPLIES IT: the cabinet shows everything won up to that
+point, so a wrong 2011 honour appears on every later card that player holds. Ten rows, ten own
+cards, 96 CABINET APPEARANCES.** Messi alone accounted for 55.
+
+**THE FIX TO THE WRITER, AND THE BAR SITS IN A MEASURED EMPTY GAP RATHER THAN BEING TUNED.**
+Nulls are now EXCLUDED rather than zeroed (a player enters the ranking only if at least one of his
+rows for that league-season carries a real figure), and the value guard is replaced by a COVERAGE
+gate, `MIN_COVERAGE = 0.25`. **Coverage share across all 120 written rows splits cleanly:**
+
+    10 rows at 0.5% to 1.9%     <- every one an artefact, and exactly the ten deleted
+     0 rows between 1.9% and 45.0%
+    13 rows at 45% to 52%, the bulk at 50-70%, and 21 rows above 90%
+
+**A healthy league-season is only about 50 to 70% populated**, because the importer's 300-minute
+floor keeps the tail out, so a high bar would refuse legitimate seasons. **0.25 is the midpoint of
+an empty region: any bar from roughly 0.05 to 0.44 refuses exactly the same ten rows, which is what
+makes it robust rather than tuned.** A refused league-season is printed as UNRESOLVED and not
+written , **the leader being unknown to us is not the same as there being no leader.**
+
+**THE GATE WAS RUN BEFORE IT WAS TRUSTED, AND IT AGREES WITH THE DELETE EXACTLY.** The script is
+read-only (it stages a CSV, it does not write), so it was executed against the live database:
+**it now resolves 94 league-seasons and prints 38 as UNRESOLVED, and of the 110 `top_assists` rows
+still live, it refuses ZERO.** So the gate removes precisely the ten rows already deleted and
+contradicts nothing that remains. The withheld seasons are the ones you would expect from the
+coverage the platform already discloses , **BPL 2013 to 2019 at 0.0%, PRT 2013 and 2014 at 0.0%,
+ERE 2010 to 2014 at 0.3 to 1.5%** , and each now prints what it WOULD have written, which is the
+audit trail the old guard never produced (`ERE 2014: only 1 of 334 cards, would have written
+M. Depay on 5`).
+
+**ONE RESIDUAL, AND IT IS A DIFFERENT AND MILDER DEFECT: TIES ARE BROKEN ARBITRARILY.** The fixed
+writer would ADD exactly one row, `L1 2023 O. Dembele 8a`, and that league-season is **84.3%
+covered**, so it is not a sparsity artefact. It is a **four-way tie on 8** (Del Castillo,
+Aubameyang, Dembele, A. Gomes) and the script writes whichever it saw first. **The coverage gate
+cannot catch this and is not meant to.** Only **3 league-seasons** sit in the 25 to 50% coverage
+band at all, so the exact placement of the bar barely matters in practice; tie-breaking does.
+
+**THE MATVIEW LAGS THE FIX AND THAT IS A KNOWN, NAMED STATE.** `h_top_assists` mirrors the honours
+table, so until `player_card_mv` is refreshed the rankings pills and the honours filter still show
+the deleted honour , measured immediately after the delete: **120 cards still flagged, should be
+110.** The card face, glance, cabinet and Compare all read the `honours` table LIVE and were
+correct the moment the rows went. **The refresh is Lucas's lane** , re-confirmed this session, the
+`exec_sql` route died at **8.5 seconds** with `canceling statement due to statement timeout`
+exactly as SS C records, and the matview was verified intact afterwards at 57,055 rows.
+
+**NOT DONE, DELIBERATELY: external sourcing of the real winners.** It is a separate decision and it
+carries an unsolved problem , see the entry below.
+
+**AND THE OPEN PROBLEM IT WOULD CREATE, RECORDED NOW SO IT IS NOT DISCOVERED LATE.** Sourcing the
+true winner for 2010-2015 means **46 of 54 league-seasons are more than 90% null on assists, and 36
+of 54 currently carry no `top_assists` row at all.** `golden_boot` needs NONE of this , it is
+already `wikipedia_ccc` on a 0.4%-null column. **But the sourced winner's own card would contradict
+itself:** measured, David Silva's PL 2011/12 card reads **`assists = NR`**, and `vv-core.js` sets
+`assistsText: (row.assists != null ? String(row.assists) : 'NR')`, so the card face would print a
+**Top Assists pill directly above an ASSISTS column reading NR.** The `honours` table already has
+its own `assists` column, so the likeliest answer is to print the sourced figure in the honour row
+itself, but **that is a copy decision and it must be made before any sourcing, not after.**
+
+---
+
 ## THE PLAYBOOK KEYS THREE MAPS ON A DISPLAY STRING, SO A COPY CHANGE IS A CODE CHANGE (found 2026-09-12, NOT REFACTORED)
 
 **WHAT IT COST TODAY, WHICH IS THE ONLY REASON THIS IS WORTH WRITING DOWN.** Renaming two honours
