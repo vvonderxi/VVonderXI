@@ -179,7 +179,10 @@ data, and one refactor away from breaking silently.
 
 ## `COALESCE(assists, 0)` INSIDE `gaw` IS "NR FOR MISSING DATA, NEVER 0" INVERTED, IN THE ENGINE (found 2026-09-12, LOGGED NOT FIXED)
 
-**THIS IS A LIVE SCORING DEFECT OVER A FIVE-YEAR WINDOW, NOT A COSMETIC ONE.** From the live
+**[FIGURES CORRECTED 2026-09-12, BOTH UNDERSTATED. THE ORIGINAL READ "OVER A FIVE-YEAR WINDOW"
+AND "18,322 CARDS", AND EACH IS WRONG IN THE DIRECTION THAT MAKES THIS LOOK SMALLER THAN IT IS.]**
+
+**THIS IS A LIVE SCORING DEFECT ACROSS A FOURTEEN-YEAR TAIL, NOT A FIVE-YEAR WINDOW.** From the live
 `player_card_view`, read from a fresh `pg_get_viewdef`:
 
     gaw   = goals - 0.22 * LEAST(COALESCE(penalties_scored,0), goals) + 0.7 * COALESCE(assists, 0)
@@ -188,7 +191,44 @@ data, and one refactor away from breaking silently.
 **`gaw90` is the engine's output term.** So a card whose assists are UNRECORDED is scored exactly
 as though it recorded ZERO assists, and the 0.7 weight means the difference is not marginal.
 
-**THE POPULATION, MEASURED OVER 2010-2015 (20,219 cards):**
+**THE POPULATION, AND THE ENGINE-RELEVANT FIGURE IS THE BIGGER ONE.** Two counts exist and they
+answer different questions, so both are recorded rather than one replacing the other:
+- **2010-2015, ALL cards: 20,219, of which 18,322 carry a null assist total.** That is the figure
+  this entry first carried. It counts cards the engine never scores.
+- **SCORED OUTFIELD CARDS ARE WHAT THE ENGINE ACTUALLY RATES** (`minutes >= 300 AND goals IS NOT
+  NULL`, non-GK), and **26,776 of those 50,269 carry a null assist total , 53.3%.** Inside the
+  2010-2015 window the comparable figure is 16,731. **Quote 26,776: over half of every card the
+  platform scores is scored on an assumed zero.**
+
+**IT IS AN ERA STEP TERMINATING IN 2015, WITH A LONG TAIL AFTER IT , NOT A WINDOW THAT CLOSES.**
+Null-assist scored outfield cards by season: **2010 2,977 | 2011 3,032 | 2012 3,032 | 2013 3,049 |
+2014 3,089 | 2015 1,552 | 2016 1,454 | 2017 1,471 | 2018 1,420 | 2019 1,455 | 2020 1,340 |
+2021 1,293 | 2022 1,074 | 2023 535 | 2024 3 | 2025 0.** **11,597 of the 26,776 sit in 2015 or
+later**, so any remedy scoped to "pre-2015" misses 43% of the affected cards.
+
+**THE STEP IS VISIBLE IN THE PUBLISHED SCALE.** Median rt by season runs **41, 41, 41, 40, 41 for
+2010-2014 and then 47, 52, 55, 57, 55 from 2015** , a 15-point step on a ladder whose bands are 5
+points wide. Cards at rt>=80 roughly double, about 50 a year before and 100 to 130 after.
+
+**AND A CONTROL RULES OUT FOOTBALL AS THE CAUSE. THIS IS THE PART THAT MAKES IT A DEFECT RATHER
+THAN AN OBSERVATION.**
+- **Median goals per 90 is FLAT across the boundary:** 0.0700 / 0.0690 / 0.0680 / 0.0683 / 0.0662
+  for 2010-2014, against 0.0723 / 0.0718 / 0.0721 / 0.0786 / 0.0751 for 2015-2019.
+- **Median MINUTES is flat too** , about 1,530 before and 1,510 after. (Minutes is what was
+  measured here; `starts` is unreliable on 774 cards and is not the control to use, see the keeper
+  entry.)
+- **THE CLINCHER: for 2010-2014 median `gaw90` EQUALS median goals90 to four decimal places**
+  , 0.0700 against 0.0700 in 2010, and the same identity holds every year to 2014. **The assist
+  term contributes literally nothing for five seasons.** The doubling of median `gaw90` at 2015
+  (0.066-0.070 to 0.121-0.137) is that term switching on, with goals and minutes unmoved.
+
+**IT IS POSITION-SHAPED, NOT UNIFORM, SO IT DISCRIMINATES BY ROLE.** Simulated median gain if the
+absent totals were supplied: **CAM +7, Winger +5, ST +3**, with **FB reaching p90 +12 and a maximum
+of +20**. Centre-backs barely move, because the donor median for CB assists per 90 is 0.000. **The
+cards punished hardest are the ones whose output IS assists**, which is the defect at its most
+pointed: a creator with no recorded assists is scored as a forward who did nothing.
+
+**THE ORIGINAL 2010-2015 FIELD CENSUS, KEPT (20,219 cards):**
 
     assists            18,322 null   90.6%
     tackles_total      17,486        86.5%     shots_on          17,051   84.3%
@@ -210,6 +250,20 @@ as though it recorded ZERO assists, and the 0.7 weight means the difference is n
   maximum 44.41, and is described as punishing *"327 cards for a missing field, which is this
   file's own first principle inverted"*.
 
+**AND THE SHARPEST EVIDENCE IS INTERNAL: THE TAG ENGINE ALREADY REFUSES TO DO THIS, ON THIS EXACT
+FIELD, TWELVE LINES OF COMMENT DEEP.** `rawFloorOK` in `vv-core.js` carries the house rule in its
+own words , *"NR IS NOT ZERO (house rule). A MISSING raw stat is EXEMPT from a raw floor rather
+than failing it , 54.2% of rows have null assists (the pre-2015 FBref gap), and treating those as 0
+would silently punish a data gap as if it were a bad season."* It even records the cost of getting
+it wrong: a 2026-08-14 change that rejected nulls **dropped 28 Playmaker holders purely for
+unrecorded assists** and was reverted the same pass.
+**SO THE PLATFORM HAS ALREADY RULED ON THIS FIELD AND THE SCORING ENGINE DOES THE OPPOSITE OF WHAT
+THE TAG ENGINE DOES.** The tag engine exempts a null assist; `gaw` adds a hard zero. **That is not
+two defensible choices, it is one rule applied in one place and not the other** , the same
+two-implementations-of-one-decision shape SS C records against `eligibility()` and the view's two
+position keys. It is also independent corroboration of the population: 54.2% measured there
+against 53.3% measured here, on different filters.
+
 **SO BOTH DIRECTIONS ARE ALREADY RULED ON. Substituting a value for an absence is the defect;
 which value you substitute only changes who it hurts.** The `sig` case at least RENORMALISED onto
 the facet it still had. `gaw` does not: it adds a hard zero.
@@ -220,15 +274,117 @@ same ripple the position batch measured. It needs a simulation against a full `b
 snapshot, a predicted mover and band-crossing count, and a post-refresh diff against that
 prediction, exactly as `migrations/positions_2526_2026-09-11/` did.
 
-**NO FIX IS PROPOSED HERE, DELIBERATELY.** The options are not symmetric and the choice is a
-product decision about what an unrecorded assist MEANS, not a code decision. **Do not "tidy" this
-into a null-safe expression on the way past , it would re-rate a five-year window silently.**
+**[DECIDED 2026-09-12, LUCAS: ACCEPT AND DISCLOSE. THE PARAGRAPH BELOW RECORDED IT AS OPEN AND IT
+IS NOT, BUT ITS WARNING STILL STANDS.]** The options are not symmetric and the choice was a product
+decision about what an unrecorded assist MEANS, not a code decision. **Do not "tidy" this into a
+null-safe expression on the way past , it would re-rate half the scored population silently.**
+
+**THE DECISION: ACCEPT THE SCORES AS THEY STAND AND DISCLOSE THE ERA STEP. NO ENGINE CHANGE.**
+- **"ACCEPT" IS THE STATUS QUO, SO THERE IS NOTHING TO BUILD IN THE ENGINE AND NO MIGRATION.** The
+  `gaw` expression stays exactly as it is. **The entire deliverable is the DISCLOSURE**, and if the
+  disclosure does not ship then the decision has not been implemented , the same shape as the
+  null-pool policy, which SS C says is "option A with extra steps" without its disclosure half.
+- **PLACEMENT FOLLOWS THE CONFIDENCE-DOT PRECEDENT** , the platform already tells a reader which
+  cards rest on thin data, and this is the same claim about the same cards.
+
+**THE THREE TREATMENTS WERE SIMULATED BEFORE DECIDING, FULL ENGINE RE-RUN EACH TIME SO THE RIPPLE
+ONTO UNTOUCHED CARDS IS COUNTED, NOT ASSUMED.** Run on the checked-in transcription in
+`scripts/separability/rt_reimpl.js` (99.56% exact), with BOTH sides using the reimplementation so
+its transcription error cancels rather than reporting as movement:
+
+    treatment              cards moved   band crossings   of which UNTOUCHED
+    impute, flat              27,640           304               127
+    impute, rank-matched      29,199           908               393
+    exclude (honest NR)       15,999           513               513
+
+- **EXCLUDE IS NOT VIABLE AND IS NOW MEASURED RATHER THAN ARGUED: it costs 26,776 cards their score
+  entirely**, including every card from 2010 to 2014, and still moves 513 survivors across bands.
+- **NEITHER IMPUTATION IS A FIX , THEY ARE THE DEFECT RESTATED WITH A DIFFERENT VALUE.** They were
+  run to SIZE the distortion, and they bracket the cost of any future repair that hands these cards
+  a plausible assist total: **304 to 908 band crossings, 127 to 393 of them on cards nobody
+  touched.** Named casualties are all modern and all untouched , **Salah 2025 falls 80 to 79, 78 or
+  75 depending on treatment; Bowen 2025 85 to 83; Kluivert 2024 85 to 84.**
+- **SO THE RIPPLE IS THE REAL ARGUMENT FOR ACCEPTING.** Repairing the old cards re-percentiles the
+  pool and demotes current ones, which is a visible, arguable change to live cards in exchange for
+  a number nobody can verify.
+
+**THE METHOD ERROR IN THAT SIMULATION IS RECORDED BECAUSE A WRONG HEADLINE WAS ONE RUN AWAY.** The
+first pass keyed the imputation donor on `position_pool`. For the pre-2016 era that field is null
+and falls back to the coarse DEF / MID / FWD, so the donor drew **n = 2, 7 and 8** cards from
+2024-25 and imputed roughly ZERO , **under-imputing precisely the 16,658 cards the defect is worst
+in, and reporting the era as barely affected.** The figures above are from the corrected run, with
+the coarse buckets mapped onto real donors. **GENERALISE IT: when a donor or a control is keyed on
+a field, check that field is POPULATED in the era you are pointing it at.** Same family as SS C's
+rule that a rule stated in one place and not applied as a class will be violated everywhere else.
+
+**AND THE DONOR CHOICE ITSELF IS A CONSTRAINT WORTH KEEPING: only 2024 and 2025 have assists at
+~100% coverage.** 2015-2021 is 38 to 47% null, so it is a SELECTED subset , the cards that HAVE a
+recorded assist total in those years are not a random sample of them , and it cannot be a donor.
+Anyone re-running this must draw from 2024-25 or state why not.
 
 **AND NOTE WHY IT SURVIVED: every internal check passes it.** The column is populated for 2015+,
 the expression is valid SQL, no row errors, and the scores look plausible. It is only visible if
 you ask what the COALESCE is standing in for , which is the same shape as the `goals_conceded`
 sentinel that sat unnoticed until someone read min and max.
 
+
+---
+
+## `goals` IS NULL ON UP TO 21.4% OF A SEASON'S OUTFIELD CARDS IN 2022-2024, SO THOSE CARDS ARE NEVER SCORED (found 2026-09-12, LOGGED NOT CHASED)
+
+**FOUND WHILE MEASURING SOMETHING ELSE, AND THE ROUTE IN IS WORTH KEEPING BECAUSE THE SYMPTOM
+LOOKED LIKE FOOTBALL.** Median goals per 90 on scored outfield cards rose **57% from 0.0767 in 2021
+to 0.1210 in 2024** while median minutes stayed flat (1,509 to 1,569). A scoring boom is the
+plausible reading and it is wrong.
+
+**THE SHARE OF SCORED CARDS WITH ZERO GOALS IS WHAT GAVE IT AWAY: 32.8% in 2021, 23.7% in 2022,
+25.6% in 2023, 16.1% in 2024, and then 33.5% in 2025.** A real trend does not snap back in one
+season. **The low-output tail is missing from 2022-2024 and present either side of it.**
+
+**THE CAUSE, MEASURED: `goals IS NULL` ON CARDS THAT OTHERWISE LOOK NORMAL.**
+
+    season   outfield cards   goals NULL     %      median minutes of the NULL cards
+    2019          3,292            132      4.0%              948
+    2020          3,524            156      4.4%            1,165
+    2021          3,528            158      4.5%            1,191
+    2022          3,492            527     15.1%            1,044
+    2023          3,447            410     11.9%            1,148
+    2024          3,420            732     21.4%            1,082
+    2025          3,451             14      0.4%              360
+
+**THE TOTAL CARD COUNT IS FLAT THROUGHOUT (3,420 to 3,528), SO NOBODY IS MISSING FROM THE TABLE.**
+What changed is that a growing share of them carry no goal total. **`player_card_view`'s `scored`
+CTE requires `goals IS NOT NULL`, so every one of those cards is excluded from the engine and
+carries a NULL rt** , 732 cards in 2024 alone. They are then absent from the percentile pools, and
+the survivors are the ones who scored, which is exactly the 57% median rise.
+
+**THESE ARE NOT FRINGE PLAYERS, WHICH IS WHAT MAKES IT COSTLY.** The NULL-goal cards carry a median
+of **1,044 to 1,191 minutes** , regular starters, twelve or thirteen full matches. **The platform
+is silently not rating roughly a fifth of the 2024 outfield population**, and because a missing rt
+renders as absence rather than as an error, nothing on any surface says so.
+
+**THIS IS ALSO PART OF AN ALREADY-RECORDED NUMBER WHOSE SHAPE NOBODY HAD LOOKED AT.** SS C records
+"3,061 of 57,234 cards have a null rt" as a flat fact behind the `nullsFirst:false` rule. **It is
+not flat: 2,129 of those sit in 2019-2025 and they are concentrated in 2022-2024.** A total with no
+year breakdown hid a threefold discontinuity.
+
+**WHAT WOULD TEST IT, AND THE FIRST TEST IS EXTERNAL BY NECESSITY.** The question is whether `goals`
+is absent AT SOURCE for these cards or arriving and being discarded by our merge. **That is exactly
+the goalkeeper-fields shape** , SS D records those as "arriving in the API response and being
+discarded by one line in the importer's merge" , and it is the difference between a re-run that
+fixes it and a re-run that fills nothing.
+1. **Pull two or three of the 732 from the provider** (`/players?id=&season=2024`) and read whether
+   `goals.total` is present. SS C: only the external source settles this; no internal check can.
+2. **If it IS present, this is an importer defect and a re-run repairs it** , but note SS C's rule
+   that any re-ingest must be INSERT-ONLY, and that these rows already exist, so the repair is an
+   UPDATE of a single field and needs its own plan, not `--insert-only`.
+3. **Either way it is rt-touching at scale.** Restoring 732 cards to `scored` in 2024 adds them to
+   every percentile pool they belong to, so it moves cards nobody touched. **It needs the same
+   before/after simulation as the COALESCE entry above**, and the two should be considered together
+   because both change who is IN the scored population.
+
+**NOT CHASED, BY INSTRUCTION, 2026-09-12.** Recorded with its numbers so the next session starts
+from the mechanism rather than from the 57% rise, which points at football and is a dead end.
 
 ---
 
