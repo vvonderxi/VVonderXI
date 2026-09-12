@@ -271,3 +271,61 @@ Playbook follows automatically** , which is the whole point.
 **IT ALSO REMOVES A REAL HAZARD BEYOND TIDINESS:** the `hc-` element ids are ALREADY keyed on the
 honour key (`id="hc-league_champion"`), so the file currently uses both conventions side by side
 and only the string-keyed half breaks on a rename.
+
+
+---
+
+## KNOWN LIMITATION, NOT A DEFECT: RANKINGS CAN NEVER SHOW A LEAGUE TITLE OR A UCL CHAMPION (measured 2026-09-12)
+
+**SOMEONE WILL EVENTUALLY NOTICE THAT RANKINGS LOOKS THIN ON HONOURS AND GO HUNTING. This is the
+answer, and it is architecture rather than a bug.** `league_champion` and `ucl_winner` are
+**card-and-compare only, by construction**.
+
+**THE MEASUREMENT, so nobody re-derives it:**
+
+    honours WHERE honour_type = 'league_champion'   143 rows,  0 carry an api_player_id
+    honours WHERE honour_type = 'ucl_winner'         16 rows,  0 carry an api_player_id
+
+**Both are keyed by TEAM, never by player.** They are stored as a club-season fact
+(`team_name` + `season_year` + `league_code`) and reach a card only as a **computed team leg**:
+`loadTeamHonours()` builds a lookup, and `teamHonoursFor(card, cache)` matches the card's club and
+season against it. That match needs the player's CAREER ROWS.
+
+**AND RANKINGS HAS NO CAREER ARRAY.** `grep -c "SEASON_RAW\|cabinetWithTeamLegs\|teamHonoursFor"
+rankings.html` returns **0**. Rankings holds one row per card and never loads the seasons around
+it, so it cannot compute a team leg even in principle.
+
+**CONSEQUENCE, STATED PLAINLY: a rankings row or grid card can show Ballon d'Or, World Cup, Player
+of the Season, Golden Boot and Top Assists , the five that ARE player-keyed , and can never show
+that the player won his league or the Champions League.** Verified rendered on the preview: a
+search for Haaland returns seven cards showing POTS and Golden Boot and neither team honour, while
+the same player's CARD shows UCL Champion and League Title on the face.
+
+**THIS IS ALSO WHY A LABEL CHECK ON RANKINGS CANNOT CONFIRM THOSE TWO STRINGS.** They are in the
+shared `HONOUR_CHIP_LABEL` and rankings reads that map, but no rankings card in the data can
+exercise those two entries. **An absence there is not evidence of a fault, and not evidence of a
+pass either.**
+
+**WHAT IT WOULD TAKE TO CHANGE IT, AND IT IS CHEAPER THAN IT LOOKS , THE DATA IS ALREADY THERE.**
+The 2026-09-04 matview swap added six `h_*` honour flags, and two of them are exactly these:
+**measured 2026-09-12, `h_league_champion` is true on 2,872 cards and `h_ucl_winner` on 335.** Those
+columns are ON `player_card_mv`, so **rankings already has them on every row it renders** , that is
+precisely why the honours FILTER works server-side there.
+
+**So a rankings pill needs no career array and no fan-out: the flag is enough to say "he won it".**
+A pill is a label plus a mark, both keyed on the honour type, and the type is implied by the flag.
+**What the flag CANNOT give is the YEAR or the count**, which the card's cabinet shows and which
+would simply be absent here , the same shape as the glance, which is uncapped and prints no count.
+
+**NOT PROPOSED, DELIBERATELY.** It changes what a rankings row asserts, and SS C's tag-cap rules
+already govern that space , prestige renders outside the cap, honours compete with profile tags for
+`remaining` slots, and there are FOUR tag-render paths a change would have to be checked against.
+**It is a product decision about row density, not a missing feature.** The alternative route,
+loading a career array into rankings, is the expensive one and is the thing rankings deliberately
+avoids.
+
+**AND NOTE THE ASYMMETRY THAT MAKES THIS CONFUSING: the honours FILTER on rankings already works
+for league champion and UCL**, because it reads `h_league_champion` and `h_ucl_winner` off the
+matview. So a reader can FILTER rankings to league champions and then see no league-champion pill
+on any of the results. That is the limitation at its most visible, and it is worth knowing before
+anyone reports it as a rendering bug.
