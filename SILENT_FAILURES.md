@@ -532,7 +532,12 @@ found only because a reported number (1.06 on a red button) looked implausible e
 
 **A DEMO HARNESS THAT DOES NOT LOAD THE PAGE'S WEBFONTS IS MEASURING A DIFFERENT PAGE, AND IT FAILS IN THE DIRECTION THAT LOOKS SAFE (2026-09-12).**
 
-**THE RULE: ANY DEMO USED FOR A LAYOUT DECISION MUST LOAD THE PAGE'S REAL FONTS AND AWAIT `document.fonts.ready` BEFORE MEASURING.** Declaring `font-family:'Inter'` is not loading it. Without the `<link>`, the browser falls through the stack to the system sans and reports confident numbers for a typeface that will never ship.
+**THE RULE, IN ITS SHARPER FORM, AND THIS ONE SUPERSEDES THE BLANKET VERSION BELOW: THE BOUNDARY IS WHAT IS BEING MEASURED, NOT WHETHER THE PAGE IS A DEMO.**
+- **FONT-INDEPENDENT, measure freely:** counts (shelves, years, pills, rows), colours, and computed styles. A typeface cannot move any of them.
+- **FONT-DEPENDENT, the real fonts must be loaded first:** anything resting on TEXT ADVANCE , wrapping, column fit, truncation, clipping, overflow, a pill's or chip's width, and any height that follows from a line count.
+**The same applies to a real page measured before its fonts have loaded, which is why this is not a rule about demos.**
+
+**KEEP THE BLANKET RULE AS THE SAFE DEFAULT: ANY DEMO USED FOR A LAYOUT DECISION LOADS THE PAGE'S REAL FONTS AND AWAITS `document.fonts.ready` BEFORE MEASURING.** It costs one `<link>` and one `await`, and it removes the need to judge which half of the boundary you are on while you are mid-measurement. Declaring `font-family:'Inter'` is not loading it. Without the `<link>`, the browser falls through the stack to the system sans and reports confident numbers for a typeface that will never ship.
 
 **MEASURED, ON A DECISION THAT WAS ABOUT TO BE MADE.** A cabinet demo asked whether a gloss line fits beside a year in a two-column shelf at 390px. The harness set `font-family:'Inter'` and loaded nothing. **First pass: 0 of 20 glosses wrap. With Archivo and Inter actually loaded and `document.fonts.ready` awaited: 10 of 20 wrap.** The same string measures **163.3px in Inter against 154.5px in the fallback, 5.7% wider**, and the column is 178px, so the difference lands exactly on the wrap boundary.
 
@@ -540,7 +545,20 @@ found only because a reported number (1.06 on a red button) looked implausible e
 
 **AND `document.fonts.check()` LIES BEFORE A LOAD IS REQUESTED.** On a page whose text already uses Archivo, `check('800 11px Archivo')` still returned **false** until `document.fonts.load(...)` was called explicitly. **So `check()` alone is not the assertion** , call `load()` for each family and weight you care about, THEN `ready`, THEN check. A probe span measured against a known fallback is the positive control: if Inter and sans-serif return the same width, the font did not load.
 
-**THE EXPOSURE WAS AUDITED THE SAME DAY, because the rule is worthless without knowing what it invalidates.** Of the harnesses in the tree, **nine set a page font family and never load it**: `_demo_agefilter`, `_demo_cabinet`, `_demo_cabyears`, `_demo_gkcard`, `_demo_gktraj`, `_demo_ladder`, `_demo_mobilec`, `_demo_radar`, `_demo_share`. **Three more are iframe-only shells and are FINE** , `_demo_cabvstags_390`, `_demo_cabyears2_390`, `_demo_carveout_390` , because the fonts come from the framed page, not the shell. **Check that distinction before "fixing" a shell.**
+**THE EXPOSURE WAS AUDITED THE SAME DAY, because the rule is worthless without knowing what it invalidates. THE LIST IS HERE SO THE NEXT PERSON HITS IT BEFORE THE BUG.**
+
+**NINE HARNESSES SET A PAGE FONT FAMILY AND NEVER LOAD IT. NOT FIXED, DELIBERATELY , they are fine for counts and colours, and only a text-advance measurement makes them wrong:**
+
+        _demo_agefilter.html      _demo_gktraj.html     _demo_radar.html
+        _demo_cabinet.html        _demo_ladder.html     _demo_share.html
+        _demo_cabyears.html       _demo_mobilec.html    _demo_gkcard.html
+
+**Before measuring anything font-dependent in one of those, add the `<link>` and await `ready` , or do not trust the number.**
+
+**THREE MORE LOOK IDENTICAL TO THE FAULT AND MUST NOT BE "FIXED": `_demo_cabvstags_390`, `_demo_cabyears2_390`, `_demo_carveout_390`.** They are **iframe-only shells**. The fonts come from the framed page, not from the shell, and their own `font-family` declarations style nothing but a label. **Adding a font link to a shell fixes nothing and makes the audit read as clean when the framed page may not be.** The test is whether the harness renders the subject itself or frames another page that does.
+
+**COUNT IT, DO NOT QUOTE IT.** The figure was briefly reported as seven, by subtracting the two harnesses repaired that day from nine , but those two were repaired BEFORE the audit ran and were never in the nine. The command is
+`grep -L fonts.googleapis.com _demo_*.html | xargs grep -lE "font-family:[^;]*(Archivo|Inter|Bricolage|Barlow)"`, then separate the shells by hand.
 
 **TWO OF THE DAY'S OWN HARNESSES WERE AMONG THE FONTLESS AND BOTH WERE RE-MEASURED RATHER THAN ASSUMED SAFE.** `_demo_cabvstags` (which decided the gold pill) and `_demo_carveout` (which rejected the carve-out). **Every figure quoted from them survived**, because they were COUNTS , shelves, years, pills , and a colour, none of which a typeface can move. The panel heights re-measured identical at 858 and 631.
 
