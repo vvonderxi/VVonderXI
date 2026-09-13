@@ -3,7 +3,10 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 4 of 16 (25%)**
+**COMPLETE: 9 of 18 rows (50%)**
+*Counted as complete only when DONE. The three BUILT rows (2, 5a, 17) are waiting on Lucas or on
+data and are NOT counted , this line read "4 of 16" for four closed items because it was not
+moved with the rows, and an under-reported tracker is as misleading as an over-reported one.*
 
 | ID | Item | Status | Owner | Note |
 |----|------|--------|-------|------|
@@ -16,7 +19,7 @@ Update the row the moment an item moves. Lead every report with this table.
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
 | 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
 | 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
-| 9 | League split as a pie chart styled as a football | NOT STARTED | Claude | Keep the existing hover/tap detail |
+| 9 | League split as a pie chart styled as a football | **DONE** | Claude | Treatment C live on the Playbook. Ring is the data, ball is the object, wedge shares the chip's own popover |
 | 10 | Instagram + X calls to action placed properly | NOT STARTED | Claude | Propose placements, not buried in Me > Contact |
 | 11 | "Add to home screen" prompt | NOT STARTED | Claude | Possibly under Playbook |
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
@@ -538,3 +541,42 @@ the same source.
 
 **NOT BUILT. Lucas picks.** If C, the pentagon placement wants one more pass , they currently
 all point the same way rather than radially, which is visible at size.
+
+### 9 , The league split, as a ball rather than a chart. Treatment C, live on the Playbook.
+
+**THE PICK WAS C AND THE REASON IS THE DATA, NOT THE DRAWING.** The nine leagues span **36.0 to
+44.5 degrees against a perfectly equal 40.0, a 1.24 ratio end to end** , 7,057 cards at the top and
+5,698 at the bottom. A ball whose panels ARE the wedges therefore has to give up one job or the
+other, because a football is five-fold symmetric and the data is nine-fold. **C keeps them apart:
+an outer ring carries the nine, and a drawn football sits inside it carrying nothing.** The caveat
+is written into the stylesheet above `.lgball`, in the same words: an object that carries facts, not
+a chart that reveals a pattern. **Same finding as `ed704f5`**, which rejected a per-pill count for
+the identical reason and wrote one floor sentence instead.
+
+**THE PENTAGON ORIENTATION IS FIXED AND THE FIX IS INVISIBLE, WHICH IS THE CORRECT OUTCOME.** Each
+of the five outer panels is placed with `rotate(k x 72deg) translateY(...)`, and because `rotate`
+runs BEFORE `translateY` each panel is carried out to its own bearing AND turned to face it. **A
+regular pentagon is invariant under a 72-degree rotation, so radial and stamped draw the same
+pixels here.** That is what a real ball looks like; the note in the code says so, so nobody adds an
+offset later to make the difference visible.
+
+**A REAL DEFECT CAME OUT OF BUILDING IT, AND IT WAS IN THE DEMO TOO.** The demo used the CSS
+pie-slice trick for its hit areas , `rotate(a) skewY(90-deg)` on a quarter-size box. **That trick
+needs an `overflow:hidden` clip to become a wedge. Without one the boxes are overlapping
+parallelograms and the LAST one in the DOM wins almost everywhere**: measured on the real page,
+pointing at La Liga's gold wedge opened **Super Lig**. It is replaced by an angular hit test , the
+bearing under the pointer, matched against the same cumulative arcs the conic gradient was built
+from, so what you point at and what you see cannot disagree. **Verified by sampling the midpoint of
+all nine arcs: nine of nine map to themselves, and the football at the centre is inert.**
+
+**ONE SET OF FACTS. A wedge does not open a second panel** , it opens the chip's own popover, the
+one that already shipped, so the ball and the strip can never say different things. A wedge OPENS
+rather than toggles, because on a desktop the click arrives through a hover that has already opened
+it and a toggle would close the panel as you reached for it.
+
+**MEASURED, RENDERED, BOTH THEMES:** ball 168px desktop / 132px at phone widths off one `--bs`
+variable; no horizontal overflow at 1440, 1100, 900, 760, 700, 560, 430 or 360; the ball stays
+inside the plate at every one; side by side down to 560 and stacked below it; the popover at 390
+renders full width under the chip row and fully in the viewport. **The opacity readings taken while
+the tab was hidden are void and were discarded** , a 50ms timer took 768ms, the section C artefact;
+the screenshots are the evidence.
