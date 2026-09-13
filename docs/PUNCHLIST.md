@@ -3,7 +3,7 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 11 of 20 rows (55%)**
+**COMPLETE: 12 of 21 rows (57%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
@@ -31,7 +31,8 @@ that only ever rises is measuring the writing, not the work.**
 | 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
-| 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Treatment A. Fills lifted to tokens in vv-core, closing the three-copy gold drift |
+| 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes collapsed to one, and the card's better contrast values won |
+| 20 | Emphasis invisible in verdict and Story | **DEMO OUT** | Lucas | The bold IS there at 700 on a 600 italic base. The designed gold/upright/800 rule exists and has never rendered |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -691,3 +692,32 @@ hiding it above 720 would restore the exact defect being fixed.
   contradicting the `display:none` above it. **The paste read fine. Measuring the rendered page at
   1200 is what caught it** , the same family SS C records as a block move losing its `@media`
   closer.
+
+### 19 , part two. Compare's accolades, and three palettes becoming one
+
+**THE RENDERER WAS ALREADY SHARED AND ALREADY CARRIED THE FAMILY.** `renderProfileTagRows` lives in
+vv-core, card and compare both call it, and every row has carried `data-fam` and `data-tag` all
+along. **The treatment was the part that was not shared:** it lived as `#wonderTags .tagrow[data-fam]`
+in card.html, scoped to an id only the card has, so compare rendered identical markup as plain text.
+No new renderer, no fourth copy , CSS only.
+
+**AND THE CARD HAD ALREADY DONE THE CONTRAST WORK, BETTER THAN I DID.** Its MID and DEF were
+hand-darkened to `#258652` and `#4374CC` with the note "darkened, see above", against the tokens I
+built yesterday from the gradient's dark stop. Measured against white: **card 4.55 and 4.56, full AA
+, mine 3.00 and 3.89, large-text only.** Three of five families already agreed exactly. The better
+pair won and became the tokens.
+
+**SO THIS CLOSES AN OPEN ITEM RATHER THAN ONLY ADDING A FEATURE:** the Playbook's midfield pill was
+sitting at **exactly 3.00**, flagged the day it shipped as the one at the bar. It is **4.55** now,
+and defence moved 3.89 to 4.56, with no edit to the Playbook at all.
+
+**VERIFIED ON ALL THREE SURFACES:** compare's accolades draw gold silverware, gold Iconic, the
+engraved Standard and the family fills; the CARD is unchanged, ATT and MID computing to the exact
+same values as before; the Playbook improved without being touched.
+
+**AND SECTION C'S OWN TRAP CAUGHT ME TWICE IN ONE EDIT.** Writing the comment for these tokens I used
+backticks around two hex values , inside a CSS comment, inside `VV_CARD_CSS`, which is a template
+literal. It ended the literal early and left the module half-defined. `node --check` passed; the
+require-and-assert guard failed loudly, which is exactly why section C prescribes it. **Then I wrote
+the sentence explaining that mistake, with backticks, and broke it again.** The payload is asserted
+backtick-free now as part of the check.

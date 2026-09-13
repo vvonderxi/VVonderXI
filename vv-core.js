@@ -3806,11 +3806,25 @@
       copy, so it takes the family's DARK stop as a flat fill instead: same colour, same
       family, and white on it clears the large-text bar on all five (att 4.67, def 3.89,
       stage 8.31, cross 9.73, mid 3.00 at the bar).
-      THEY ARE THE GRADIENT'S OWN SECOND STOP, NOT NEW COLOURS. Change a gradient and change
-      its solid with it, in the same edit, or a tag will read as two different families.  */
+      [CORRECTED 2026-09-13, SAME DAY, AND THE CARD GOT THERE FIRST.] MID and DEF are NOT the
+      gradient's second stop any more , they are #258652 and #4374CC, the values card.html's
+      Wonder-Tag rows had already been darkened to, with the comment "darkened, see above".
+      (AND NOTE HOW THIS COMMENT WAS WRITTEN THE FIRST TIME: with BACKTICKS around those two hex
+      values, inside a CSS comment, inside this template literal. It ended the literal early and
+      left the module half-defined, and node --check passed. The require-and-assert guard caught
+      it, which is the whole reason section C prescribes that guard , and then I wrote THIS
+      sentence with backticks too and broke it a second time,
+      which is how sure a habit can be. NO BACKTICKS ANYWHERE IN THIS LITERAL, comments included.)
+      SOMEONE DID THIS CONTRAST WORK BEFORE I DID AND LANDED BETTER: the gradient's own stops
+      measure 3.00 and 3.89 against white, which clears only the large-text bar, while the card's
+      clear FULL AA at 4.55 and 4.56. Three of the five families already agreed exactly; these
+      two did not, and the better pair wins.
+      SO THE RULE IS NOW "match the card's rows", not "take the gradient's stop". ATT, CROSS and
+      STAGE remain identical to their gradient's dark end because there they are the same value.
+      Change a gradient and CHECK its solid rather than assuming it follows.  */
   --vvfam-att-solid:#E70443;
-  --vvfam-mid-solid:#2FA968;
-  --vvfam-def-solid:#4A7FE0;
+  --vvfam-mid-solid:#258652;
+  --vvfam-def-solid:#4374CC;
   --vvfam-cross-solid:#46443F;
   --vvfam-stage-solid:#1B5563;
   --vvfam-hon-solid:#E0A93A;
@@ -3868,6 +3882,45 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
 .vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
 .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
+/*  THE WONDER-TAG ROWS GET THEIR PILLS ON EVERY SURFACE THAT RENDERS THEM , 2026-09-13.
+    renderProfileTagRows is shared and already emits data-fam and data-tag on each row, so the
+    family has always been on the element. The TREATMENT was not: it lived as
+    #wonderTags .tagrow[data-fam=...] in card.html, scoped to an id only the card has, and
+    compare rendered the identical markup as plain text under a chevron. Same renderer, same
+    data, one surface styled.
+    SCOPED WITH THE ATTRIBUTE ON PURPOSE, AND IT IS A SPECIFICITY DECISION RATHER THAN A STYLE
+    ONE. compare.html carries .tagrow .tt .ttl{flex:1} at three classes; this sheet PREPENDS,
+    so an equal-weight rule here would lose to it and the pill would stretch the full row.
+    .tagrow[data-fam] is four, which wins, and it also means a row with no family , an honour ,
+    is untouched by the fill rules and takes the gold below instead.
+    THE CARD'S OWN RULES STILL WIN OVER THESE and are left in place deliberately: they are id
+    scoped, they now read the same tokens, so they can only agree. Deleting them is a separate
+    pass once this has been seen on both surfaces , not the same edit.  */
+.tagrow[data-fam] .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+  border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative;
+  flex:0 0 auto;overflow-wrap:normal;background:var(--vvfam-cross-solid)}
+.tagrow[data-fam="ATT"]   .tt .ttl{background:var(--vvfam-att-solid)}
+.tagrow[data-fam="MID"]   .tt .ttl{background:var(--vvfam-mid-solid)}
+.tagrow[data-fam="DEF"]   .tt .ttl{background:var(--vvfam-def-solid)}
+.tagrow[data-fam="CROSS"] .tt .ttl{background:var(--vvfam-cross-solid)}
+.tagrow[data-fam="STAGE"] .tt .ttl{background:var(--vvfam-stage-solid)}
+/*  THE STANDARD IS ENGRAVED HERE TOO. The panel is where a reader goes to find out what a tag
+    MEANS, so it is the last place a career tag should look like a season one , the same
+    reasoning, and the same two colours, as the card face and the glance.  */
+.tagrow[data-tag="The Standard"] .tt .ttl{background:var(--vvfam-stage-quiet);color:#1B5563;
+  box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
+/*  PRESTIGE IS A GROUND, NOT A HUE , near-black under gold ink, or gold under near-black , so
+    the family alone cannot tell Generational from Iconic and these key on the NAME.  */
+.tagrow[data-fam="PRESTIGE"] .tt .ttl{font-size:10.5px;text-transform:uppercase}
+.tagrow[data-tag="Generational"] .tt .ttl{background:linear-gradient(90deg,#2c2926,#121010);
+  color:#F3DA88;border:1px solid rgba(232,184,75,0.55)}
+.tagrow[data-tag="Iconic"] .tt .ttl{background:linear-gradient(90deg,#F3DA88,#E8B84B);
+  color:#16120e;font-weight:900;letter-spacing:0.08em}
+/*  AND SILVERWARE TAKES THE GOLD. Four classes, so it beats the page rule for the same reason
+    the fills do, and an honour row carries no data-fam so nothing above has touched it.  */
+.tagrow.honour .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+  border-radius:18px;display:inline-flex;align-items:center;flex:0 0 auto;overflow-wrap:normal;
+  background:var(--vvfam-hon);color:#574210}
 .vvcard .chtagcell-att{background:var(--vvfam-att) !important}
 .vvcard .chtagcell-mid{background:var(--vvfam-mid) !important}
 .vvcard .chtagcell-def{background:var(--vvfam-def) !important}

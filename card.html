@@ -435,21 +435,26 @@
 
       IF THIS EVER READS AS TOO LOUD, the retreat is the mark-only cut in 5446516, not a third
       invention.  */
-  #wonderTags .tagrow .tt .ttl{flex:0 0 auto;overflow-wrap:normal;background:#46443F}
-  #wonderTags .tagrow[data-fam="ATT"]   .tt .ttl{background:#E70443}   /* strip dark stop, exact */
-  #wonderTags .tagrow[data-fam="MID"]   .tt .ttl{background:#258652}   /* darkened, see above */
-  #wonderTags .tagrow[data-fam="DEF"]   .tt .ttl{background:#4374CC}   /* darkened, see above */
-  #wonderTags .tagrow[data-fam="STAGE"] .tt .ttl{background:#1B5563}   /* strip dark stop, exact */
+  #wonderTags .tagrow .tt .ttl{flex:0 0 auto;overflow-wrap:normal;background:var(--vvfam-cross-solid)}
+  #wonderTags .tagrow[data-fam="ATT"]   .tt .ttl{background:var(--vvfam-att-solid)}
+  #wonderTags .tagrow[data-fam="MID"]   .tt .ttl{background:var(--vvfam-mid-solid)}
+  #wonderTags .tagrow[data-fam="DEF"]   .tt .ttl{background:var(--vvfam-def-solid)}
+  #wonderTags .tagrow[data-fam="STAGE"] .tt .ttl{background:var(--vvfam-stage-solid)}
   /*  and The Standard is engraved here too , the panel is where a reader goes to find out
       what a tag MEANS, so it is the last place the career tag should look like a season one.
       Same ink and ground as the glance and the card face; see the note on the glance rule. */
+  /*  THESE VALUES NOW LIVE ONCE, IN vv-core , 2026-09-13. The rules stay here because this
+      sheet is PREPENDED and a page rule of equal weight wins; only the colours moved out. The
+      two that were hand-darkened here, MID and DEF, became the shared tokens rather than the
+      other way round: they measure 4.55 and 4.56 against white where the gradient stops they
+      replaced measure 3.00 and 3.89.  */
   #wonderTags .tagrow[data-tag="The Standard"] .tt .ttl{
-    background:linear-gradient(135deg,#E4F1F4,#D8EAEE);color:#1B5563;
+    background:var(--vvfam-stage-quiet);color:#1B5563;
     box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
-  #wonderTags .tagrow[data-fam="CROSS"] .tt .ttl{background:#46443F}   /* strip dark stop, exact */
+  #wonderTags .tagrow[data-fam="CROSS"] .tt .ttl{background:var(--vvfam-cross-solid)}
   /*  The honour pill keeps the strip's gradient because its ground is fine; only the dark ink
       moves, by 3%. Widening .chip.gold was not an option , the accordion ink differs.  */
-  #wonderTags .tagrow.honour .tt .ttl{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#574210}
+  #wonderTags .tagrow.honour .tt .ttl{background:var(--vvfam-hon);color:#574210}
   /*  PRESTIGE KEEPS THE OBJECT, and it is the one row that has to. Its identity is a GROUND
       (near-black under gold ink, or gold under near-black) rather than a hue. The two rules
       that paint it are the STRIP'S OWN, widened, so it cannot drift from the pill above it.
@@ -1337,8 +1342,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913f"></script>
-<script src="/vv-core.js?v=20260913f"></script>
+<script src="/vv-marks.js?v=20260913g"></script>
+<script src="/vv-core.js?v=20260913g"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
