@@ -3,7 +3,7 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 12 of 21 rows (57%)**
+**COMPLETE: 13 of 21 rows (62%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
@@ -12,7 +12,7 @@ that only ever rises is measuring the writing, not the work.**
 
 | ID | Item | Status | Owner | Note |
 |----|------|--------|-------|------|
-| 1 | Verdict reasoning , reason-to-winner, or pick-then-justify? | NOT STARTED | Claude | Report how the crown is actually decided |
+| 1 | Verdict reasoning , reason-to-winner, or pick-then-justify? | **DONE** | Claude | Reason-first BY CONSTRUCTION , `winner` is the last key emitted. Two paths, three server guards, one unguarded seam |
 | 2 | "The Debate Lives On" fires too often | **BUILT, AWAITING LUCAS** | Lucas | Framing A built and verified. Commit held until he sees the render |
 | 3 | BUG , verdict tag renders before the AI finishes | **REBUILT, AWAITING LUCAS** | Lucas | First fix was wrong. Six pre-answer leaks found on a live uncached run, all closed; the wait moved to the top of the matchup |
 | 4 | Verdict tag tappable on phone, hover on desktop | **DONE** | Claude | The verdict chip already worked. The PHONE STRIP tag at the top had no data-tip |
@@ -27,7 +27,7 @@ that only ever rises is measuring the writing, not the work.**
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
 | 14 | VV Index band section duplicates Playbook, reads dense | **DEMO v3, AWAITING LUCAS** | Lucas | Margin removed by his call. Coverage timeline carries it, "Zero." is the quote, five extensions in. **Contact CTA required a real fix: contact.html had NO nav at all** |
-| 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
+| 15 | Continental international honours, five confederations | **SCOPED** | Lucas | No schema change needed. But two confederations are 80% of the reach and two are under 1% each , decide the scope before commissioning |
 | 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
@@ -783,3 +783,70 @@ themes and looked correct. And the box ground is a translucent `rgba(255,255,255
 cream card, so reading the nearest non-transparent background gave **1.84** where compositing every
 layer gives **1.54**. **A contrast number is only worth acting on once every layer beneath it has
 been composited.**
+
+### 1 , how the crown is actually decided
+
+**THE ANSWER IS REASON-FIRST, AND IT IS STRUCTURAL RATHER THAN INSTRUCTED.** The required output
+format is `{"p1", "p2", "h2h", "verdict", "tag", "who", "winner"}` , **`winner` is the LAST key**.
+A model generates left to right, so every token of the argument is emitted before the winner token
+and the field is conditioned on the prose. Nothing has to trust an instruction to "think first".
+
+**AND THERE ARE TWO PATHS, CHOSEN BY THE ENGINE BEFORE THE MODEL IS EVER CALLED.**
+
+**Path 1, the gap clears the margin.** The engine has already decided, and the prompt says so in its
+own words , "the VV Index has already decided the winner: you do not overturn it, you explain it".
+**The model's `winner` is not merely ignored, it is unreachable**: `resolveWinnerId` returns the
+CALLER's `winnerCardId` on this path, and client-side `applyVerdictOutcome` returns early without
+reading the model's answer at all. Here it IS pick-then-justify , but the pick is arithmetic, and
+the thing being justified is a measured gap rather than a preference.
+
+**Path 2, the gap sits inside the margin, outfield pairs only.** The model genuinely decides.
+**Three server-side guards, and they are cheap and total:** the value must be the literal "A" or
+"B", anything else including a card id is a decline; "A"/"B" resolve against the ids THIS REQUEST
+carried, so a hallucinated id cannot enter the table; and the resolved id must be one of the two in
+the pair. **A decline and a failed check both land on `null`, which is the safe state** , no crown,
+no `winner_card_id`.
+
+**THE ONE UNGUARDED SEAM IS AGREEMENT BETWEEN THE PROSE AND THE FIELD.** Every other property of
+that field is verified server-side; whether the headline names the same season the field does is
+not. The prompt names the failure itself , "crowning one season in the prose and returning the
+other puts a badge over the season you argued against" , and then relies on compliance. That is
+what item 17 detects and logs, at about 90% reliability, with no override.
+
+**A NOTE ON THE HEADLINE, because it sharpens the seam:** `who` is emitted BEFORE `winner`. So a
+disagreement is not the model changing its mind between two calls , it is one generation
+contradicting itself in the space of two keys.
+
+### 15 , continental honours, scoped
+
+**NO SCHEMA CHANGE IS NEEDED, AND THAT IS THE CHEAP HALF.** `HONOUR_META.tier` is read only in JS
+and only for sorting; the database stores `{leg, type, year}` and no tier at all. The World Cup
+already ships the exact mechanism a continental honour needs , `leg:"career"`, `wonBy:"team"`, a
+dated cabinet entry on every later card , so this is new META plus new ROWS, not new structure.
+
+**THE EXPENSIVE HALF IS THAT THE FIVE CONFEDERATIONS ARE NOT COMPARABLE, AND THE NUMBERS ARE STARK.**
+Upper-bound reach, measured as every card whose player holds the nationality of a nation that won
+that confederation's tournament in our window:
+
+| confederation | winning nations in window | cards, upper bound |
+|---|---|---|
+| UEFA | Spain, Portugal, Italy | **11,603** |
+| CONMEBOL | Uruguay, Chile, Brazil, Argentina | **5,779** |
+| CAF | Egypt, Zambia, Nigeria, Ivory Coast, Cameroon, Algeria, Senegal | 2,517 |
+| AFC | Japan, Australia, Qatar | **553** |
+| CONCACAF | USA, Mexico | **503** |
+
+**These are ceilings, not counts** , a squad is about 23 players and most hold no card in our nine
+leagues. But the RATIO is the decision: **UEFA and CONMEBOL are roughly 80% of the possible reach,
+and AFC and CONCACAF are under 1% of the database each**, while costing the same per tournament to
+source , 4 Asian Cups and 8 Gold Cups against 4 Euros.
+
+**SO THE RECOMMENDATION IS TO SEQUENCE RATHER THAN COMMISSION ALL FIVE.** Euro first: four
+tournaments, the highest reach, and squads almost entirely inside the nine leagues, which is also
+the easiest set to verify. Then Copa America. **Then decide whether AFC, CONCACAF and OFC are worth
+twenty more tournaments for a combined ceiling near 1,000 cards** , that is a judgement about
+completeness against effort, and it is Lucas's.
+
+**AND IT SHOULD NOT BE COMMISSIONED BEFORE ITEM 16 IS SCORED.** Both are external sourcing passes
+of the same shape, and 16's retrieval prompt is written and un-run. Running a second before the
+first has told us whether retrieval clears its gate is spending the same unknown twice.
