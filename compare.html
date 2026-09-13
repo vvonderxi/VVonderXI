@@ -703,8 +703,16 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       themes for nothing, and a zero-alpha background still creates a painted box the capture
       has to draw. Dark keeps ink alone, measured: the wash COSTS it contrast, 7.45 against
       10.51. Reasoning in full beside --vvem-ink in vv-core.js.  */
+  /*  THE WASH HUGS THE PHRASE , .16em, NOT .3em, 2026-09-13. Lucas read the block as
+      carrying whitespace inside the highlight, and it was not whitespace: measured, no marker
+      in 101 across the live caches has a space inside its asterisks, and the rendered box was
+      exactly 9.6px wider than its text on a 16px line , my own 4.8px-a-side padding. At .3em
+      the wash is a highlighter pen laid over the words; at .16em it is a ground the words sit
+      on. The negative margin matches, so the surrounding line spacing is unchanged either way.
+      SOME PADDING IS STILL RIGHT: at zero the ground touches the glyphs and clips the look of
+      a descender, which reads as a rendering fault rather than a tight fit.  */
   body.light .vsprose b,body.light .vsprose .vvem,body.light .vquote .vvem{
-    background:var(--vvem-wash);border-radius:4px;padding:.06em .3em;margin:0 -.06em}
+    background:var(--vvem-wash);border-radius:3px;padding:.05em .16em;margin:0 -.16em}
   /*  THE WASH IS FOR LONG PROSE ONLY , Lucas, 2026-09-13. A marked block on a two-word phrase
       reads as a highlighter pen, and at that density a page is striped rather than emphasised.
       It belongs on the Story and the verdict, which run to paragraphs, and NOT on h2h, which
@@ -1351,13 +1359,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913n"></script>
+<script src="/vv-marks.js?v=20260913p"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260913n"></script>
+<script src="/vv-core.js?v=20260913p"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};

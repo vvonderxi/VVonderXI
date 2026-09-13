@@ -3475,7 +3475,24 @@
   function vvEmphasis(str){
     const esc = escHtml(String(str == null ? '' : str));
     return esc
-      .replace(/\*\*([^*\n]{1,120}?)\*\*/g, '<strong class="vvem">$1</strong>')
+      /*  WHITESPACE INSIDE THE MARKERS IS PUSHED BACK OUT, 2026-09-13. `**word **` would
+          otherwise put a space INSIDE the emphasis, and once the emphasis carries a
+          background that space becomes a visible block of ground with nothing on it.
+          MEASURED FIRST: zero of 101 markers across the live caches do this today, so this is
+          insurance rather than a fix, and it is the right kind , a render-side trim is
+          deterministic where a prompt instruction is a request. It also costs nothing to
+          ship: VERDICT_VERSION fingerprints the PROMPT, not this file, so no cached row is
+          invalidated by changing it.
+          THE SPACE IS PRESERVED, NOT DROPPED , re-emitted outside the tag, so the sentence
+          reads identically and only the highlight shrinks to the words.  */
+      .replace(/\*\*(\s*)([^*\n]{1,120}?)(\s*)\*\*/g,
+               /*  A MARKER PAIR WITH NOTHING BUT SPACE INSIDE EMITS NO TAG AT ALL. The
+                   non-greedy body can otherwise match a lone space, which produced an empty
+                   emphasis carrying one blank character , invisible without a background and
+                   a small floating block of ground with one.  */
+               (m, lead, body, tail) => body.trim()
+                 ? lead + '<strong class="vvem">' + body.trim() + '</strong>' + tail
+                 : lead + body + tail)
       .replace(/\*+/g, '');
   }
 
