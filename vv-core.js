@@ -5066,6 +5066,22 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       IT IS A SHARE OF THE NINE, NOT OF THE DATABASE, and the two are the same number only
       because the nine ARE the database , SS C: if a tenth league is ever added, this stays
       correct by construction while any hardcoded figure silently would not.  */
+  /*  THE ONE PLACE A LEAGUE CODE BECOMES A NAME , 2026-09-13. The comment above VVF_LEAGUES
+      already said anything needing to NAME a league reads it from there, and three consumers
+      were not: compare's Data Confidence printed the bare code ("L1 . 4 seasons on record"),
+      card.html carried TWO private maps, and one of them, LEAGUE_FULL, had drifted back to
+      "Jupiler Pro League" , the exact name the canonical list was corrected away from.
+      A CODE IS INTERNAL VOCABULARY. It is a join key and a filter value, and it should never
+      reach a reader; `vvfChip` already renders the name, which is why the filter rail looked
+      right while the panels beside it did not.
+      FAILS OPEN, NOT CLOSED: an unknown code returns itself, so a tenth league added to the
+      database shows its code rather than an empty string, which is visible and fixable
+      instead of silent.  */
+  function vvLeagueName(code){
+    if(code==null || code==='') return '';
+    for(var i=0;i<VVF_LEAGUES.length;i++) if(VVF_LEAGUES[i].v===code) return VVF_LEAGUES[i].l;
+    return String(code);
+  }
   function vvLeagueShare(x){
     if(!x || x.cards==null) return null;
     var t=0; for(var i=0;i<VVF_LEAGUES.length;i++){ if(VVF_LEAGUES[i].cards==null) return null; t+=VVF_LEAGUES[i].cards; }
@@ -5786,7 +5802,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   const VVSeq = { KEY:SEQ_KEY, save:seqSave, load:seqLoad, clear:seqClear,
                   query:seqQuery, clientActive:seqClientActive };
 
-  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES, leagueFacts:vvLeagueFacts, leagueShare:vvLeagueShare,
+  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES, leagueFacts:vvLeagueFacts, leagueShare:vvLeagueShare, leagueName:vvLeagueName,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,

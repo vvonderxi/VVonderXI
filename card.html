@@ -1336,8 +1336,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913c"></script>
-<script src="/vv-core.js?v=20260913c"></script>
+<script src="/vv-marks.js?v=20260913d"></script>
+<script src="/vv-core.js?v=20260913d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1533,8 +1533,14 @@
           THE JOIN IS ON league_id, NOT CODE , the leagues row for the Turkish league has
           code 'TSL' while cards carry 'TR'. Key anything new off the card's league_code,
           which is what this map does; keying off leagues.code silently matches nothing.  */
-      var LEAGUE_NAMES = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga',
-        L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Belgian Pro League', TR:'Super Lig' };
+      /*  [REPLACED BY THE SHARED LOOKUP 2026-09-13.] The block above is the reasoning that
+          produced this map and it is all still true; what changed is that the map itself now
+          lives once, in vv-core, beside the canonical nine. Two private copies in this file
+          was the drift the vv-core note warns about, and the OTHER one had already drifted
+          back to "Jupiler Pro League".  */
+      var _lgName=function(code){
+        return (window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueName)
+          ? VVCore.VVFilters.leagueName(code) : (code||''); };
       /* KEEPER FIGURES ARE ADDED ONLY FOR KEEPERS. The prompt used to tell the model no
          goalkeeping data existed. That was true until the 2026-08-19 matview rebuild and
          false afterwards , but the model still could not see the figures, because THIS
@@ -1568,7 +1574,7 @@
       if (_kser) _keeper = Object.assign({}, _keeper || {}, { savePctSeries: _kser });
       var payload = { mode:'notes', cardId:D.card_id, player:Object.assign({
         player_name:D.full, season:D.year, age:D.age, club:D.clubname,
-        league:(LEAGUE_NAMES[D.league]||D.league), position:D.pos,
+        league:_lgName(D.league), position:D.pos,
         goals:D.goals, assists:D.assists,
         /*  FALLBACK C , NO rt FOR A KEEPER. The spec's Fable contract lists what the model
             receives and rt is not on it. Sending it and then telling the prompt to ignore
@@ -1772,7 +1778,12 @@
       _lab('glGoalsLabel',   'Goals');
       _lab('glAssistsLabel', 'Assists');
     }
-    var LEAGUE_FULL = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga', L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Jupiler Pro League', TR:'Süper Lig' };
+    /*  LEAGUE_FULL IS DELETED, NOT EDITED , 2026-09-13. It said "Jupiler Pro League" and
+        "Süper Lig" where the database and the canonical list say Belgian Pro League and
+        Super Lig, so the glance line and the AI payload named the same competition two ways on
+        one page. The vv-core note lists this map by name as one of the four vocabularies that
+        disagreed on 2026-09-06; it was corrected there and left standing here, which is how it
+        drifted back. One lookup now, from vv-core.  */
     var _gp = (D.appearances!=null) ? (D.appearances + (D.appearances===1 ? ' game' : ' games')) : null;
     /* Meta line order: position · age · club · league · season · GAMES.
        Name identifies; position + age frame what KIND of season it was (a
@@ -1785,7 +1796,7 @@
     var _sub=document.getElementById('glSub');
     if(_sub){
       var _meta=[ posFull(D.pos), ('Age '+(D.age||'NR')), D.clubname,   // FULL name here only , the face pill and dense rows keep the short form
-                  (LEAGUE_FULL[D.league]||D.league), D.year ]
+                  (window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueName?VVCore.VVFilters.leagueName(D.league):D.league), D.year ]
         .filter(function(x){ return x!=null && x!==''; });
       if(_gp) _meta.push(_gp);   // appearances is non-null on all 57,234 cards
       _sub.textContent='';

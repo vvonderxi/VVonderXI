@@ -661,6 +661,16 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
   .vsprose-wait,.vquote-wait{color:var(--ink-soft) !important;font-style:normal !important;
     display:flex;align-items:center;gap:8px}
+  /*  AND THE VERDICT PANEL'S WAIT IS CENTRED, BECAUSE text-align DOES NOT REACH A FLEX ITEM
+      , 2026-09-13. `.vfinal` is `text-align:center` and everything in it lines up: the label,
+      the headline, the score. The wait sat hard left anyway, because the rule above makes this
+      element a FLEX CONTAINER and a flex container's items are placed by justify-content, which
+      text-align has no say over. The same property that lays the loader out beside its label is
+      the one that took it out of the column.
+      SCOPED TO THE VERDICT, NOT THE STORY: `.vsprose-wait` sits in the two Story columns, whose
+      headings and prose are left-aligned by design, and centring it there would put the wait out
+      of line with the column it belongs to. Same rule, two surfaces, two right answers.  */
+  .vquote-wait{justify-content:center}
   /*  THE WAIT CHIP IS GONE, DELIBERATELY , 2026-09-13. It used to render "Still watching the
     tape" in the tag slot, which put A CHIP in the tag position and then replaced it with a
     real verdict tag. A wait dressed as the thing it is waiting for is still the thing it is
@@ -1279,13 +1289,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913c"></script>
+<script src="/vv-marks.js?v=20260913d"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260913c"></script>
+<script src="/vv-core.js?v=20260913d"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2865,7 +2875,13 @@ body.light .pkmsub{color:var(--ink-soft)}
       var _goals   = (_rec.goals   === false) ? 'NR goals'   : (c.goals   != null ? c.goals   + ' goals'   : 'NR goals');
       var _assists = (_rec.assists === false) ? 'NR assists' : (c.assists != null ? c.assists + ' assists' : 'NR assists');
       var _vv      = (c.vv == null || c.vv === '') ? 'NR' : c.vv;
-      return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos
+      /*  AND THE MODEL IS NOT HANDED A BARE CODE EITHER. card.html's own note records what
+          happens when it is: the league never gets named in the prose, because "[L1]" is not
+          a competition the model can write a sentence about. Changing a VALUE here does not
+          move payloadRev, which hashes the KEY SET, so no cached verdict is invalidated and
+          this costs nothing.  */
+      var _lgc=(window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueName)?VVCore.VVFilters.leagueName(c.league):(c.league||'');
+      return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(_lgc||'')+'], pos '+c.pos
            +', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')
            +', VV '+_vv+(c.vv!=null&&c.vv!==''&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')
            +', '+_goals+' '+_assists+'; radar per90: '+rad(c)+aiBlock(c, _a); }
@@ -3081,7 +3097,12 @@ body.light .pkmsub{color:var(--ink-soft)}
       // The missing list reads BOTH groups. Scoped to 'advanced' it went silently empty for
       // keepers, so a goalkeeper would claim a "full stat record" while missing clean sheets.
       var miss=(c.confidenceFields||[]).filter(function(f){return (f.group==='advanced'||f.group==='keeper')&&!f.present;}).map(function(f){return f.label;});
-      var sub=(c.league||'')+' · '+seasons+' · '+(miss.length?('missing: '+miss.join(', ')):'full stat record');
+      /*  THE FULL NAME, NEVER THE CODE , 2026-09-13. This line read "L1 · 4 seasons on
+          record". A league code is a join key and a filter value; it is internal vocabulary
+          and it has no business in a panel a visitor reads. One lookup, in vv-core, off the
+          canonical nine.  */
+      var _lg=(window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueName)?VVCore.VVFilters.leagueName(c.league):(c.league||'');
+      var sub=(_lg||'')+' · '+seasons+' · '+(miss.length?('missing: '+miss.join(', ')):'full stat record');
       return '<div class="vcrow"><span class="vc-n '+cls+'">'+vvEsc(c.surname)+'</span><span class="vc-dots">'+dots+'</span><span class="vc-x">'+lvl+' / 5</span></div>'
            + '<div class="vc-sub">'+vvEsc(sub)+'</div>';
     }
