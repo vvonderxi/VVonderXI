@@ -1,7 +1,7 @@
 # VVonderXI , PUNCHLIST
 
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
-**IT IS 26 ROWS NOW, NOT 14.** Items 22 to 26 arrived after the list was written, so the
+**IT IS 27 ROWS NOW, NOT 14.** Items 22 to 27 arrived after the list was written, so the
 denominator moves and the percentage falls without any work being undone. That is the tracker
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
@@ -38,10 +38,11 @@ that only ever rises is measuring the writing, not the work.**
 | 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B on all five prose surfaces. One ink flips, one is pinned, one takes none , the grounds decide, not the theme |
 | 21 | QA_PASS re-scope | **DONE** | Claude | 145 commits / 77 files, and the 119 measured EARLIER THE SAME DAY is kept beside it to show the drift. Re-measuring is now **A0, an item**, not a prerequisite. Stale item count 42 retired, it is 44 |
 | 22 | Branded VV Index PDF, sent on request | **OUTLINE, AWAITING LUCAS** | Lucas | `docs/VVINDEX_PDF_OUTLINE.md`, eight pages. Line drawn: what we measured and could not, never how the number is arrived at. Separability SEs OUT, the consequence published. mailto is the delivery, no hosting. Three questions at the foot |
-| 23 | Season navigation on the card, vertical | **DEMO, AWAITING LUCAS** | Lucas | Not new capability, a shortcut to `switchSeason()`. Options 1 and 3 demoed. Up/Down arrows are unbound and free |
+| 23 | Season navigation on the card, vertical | **OPTION 1 APPROVED, DEMO RE-CUT** | Lucas | Panel STAYS and is where the swipe gets taught, so chips would be furniture. Pure addition, replaces nothing. Up/Down arrows unbound and free |
 | 24 | A published figure nobody can re-derive | **DONE** | Claude | 18,355 did not reproduce. `scripts/gen-index-figures.js` emits every live figure WITH its query. Third snapshot of its kind |
 | 25 | Rule 4 under-marking, verdict field and the card's prose | **MEASURED, NOT ACTED ON** | Lucas | ONE edit, both fields, decided on its own. Rebuilds every cached verdict AND every cached note. Hypothesis to TEST not assume: rule 4 says "per paragraph", notes are four STANZAS |
 | 26 | Transfer shirt-number confidence flag | **SPEC, QUEUED TO THE MATVIEW SITTING** | Claude | 841 cards, 33.3% wrong vs 0.5%. Column joins the queued DROP+CREATE; flag beside `confidenceFields`; RENDERING HELD on Lucas's blank-shield question. Third instance of one-defect-two-consumers |
+| 27 | Pre-warm popular comparisons | **DEFERRED, TRIGGER RECORDED** | Claude | WARM AFTER THE NEXT PROMPT EDIT, NEVER BEFORE , item 25 discards every warmed row. Target is the 3 suggested matchups, which is "what we linked", not "popular". Fame-keyed warming rejected on the anchor guardrail |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
