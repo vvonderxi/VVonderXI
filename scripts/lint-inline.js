@@ -241,6 +241,27 @@ function lintModules(){
     (which supplies .vvw from VV_CARD_CSS) or declare .vvw itself. Six pages load no shared
     script, so they declare it locally, and without this half the swap would have shipped
     five unstyled wordmarks that nothing would have reported.  */
+/*  THE FOLLOW ROW EXISTS TWICE ON PURPOSE AND THIS IS WHAT MAKES THAT ACCEPTABLE.
+    `VVCore.socialRowHTML()` is the source; vvindex loads no shared script so it carries a
+    literal copy. A second copy is only tolerable while something fails when the two drift,
+    so: any page carrying a `.vvsoc` or `.drawersoc` row must use the platform handles and
+    the "X/Twitter" wording, and must never print the word "Follow" beside the marks.  */
+function lintSocial(file, src){
+  if (!isShipping(file)) return [];
+  if (!/class="(vvsoc|drawersoc)"/.test(src)) return [];
+  const f = [];
+  /*  A PAGE THAT CALLS THE HELPER HAS NO HANDLES IN ITS SOURCE, BY DESIGN , that is the
+      helper working, not a fault. Only the LITERAL copies are checked for drift. */
+  const generated = /socialRowHTML/.test(src);
+  if (!generated && src.includes('x.com/vvonderxi') && !src.includes('on X/Twitter'))
+    f.push({ kind:'SOCIAL', file, error: 'X link is not labelled "X/Twitter" , one letter is not a label, and a screen reader hears only "X"' });
+  if (/class="dsl"|>Follow</.test(src))
+    f.push({ kind:'SOCIAL', file, error: 'the word "Follow" is back beside the marks , the logos carry it' });
+  if (!generated) for (const h of ['instagram.com/vvonderxi', 'x.com/vvonderxi'])
+    if (!src.includes(h)) f.push({ kind:'SOCIAL', file, error: 'follow row is missing ' + h });
+  return f;
+}
+
 const WORDMARK_EXEMPT = new Set(['search.html']);
 /*  DEMOS, PROBES AND MOCKS ARE NOT SHIPPING SURFACES and are skipped , a `_demo_` file is a
     disposable argument about a design, and failing the build on one would make the check
@@ -267,7 +288,8 @@ const targets = files.length
 
 const results = targets.map(lintFile);
 const moduleFaults = lintModules().concat(lintStringFloors())
-  .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))));
+  .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))))
+  .concat(targets.flatMap(f => lintSocial(f, fs.readFileSync(f, 'utf8'))));
 const broken = results.filter(r => r.css.faults.length || r.js.length);
 
 if (JSON_OUT) {

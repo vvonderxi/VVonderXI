@@ -3891,7 +3891,25 @@
     VV_CARD_CSS PREPENDS, so a page rule of equal specificity would win. None exists, and if
     one is ever added it must win deliberately rather than by accident.  */
 .vvw{color:var(--pink-ink)}
-body.light{--vvem-ink:#9A6B00}
+/*  ── THE WASH, LIGHT ONLY , 2026-09-13 ─────────────────────────────────────────────────
+    Emphasis in LIGHT is ink on a pale gold ground; in DARK it stays ink alone. Two builds,
+    deliberately, and the reason is a measurement that reversed my own first report.
+    LIGHT GAINS AND DARK LOSES. Ink on wash measures 7.74 in light against 4.42 for the same
+    ink on the panel, and 7.45 in dark against 10.51. I originally reported 7.74 and 7.13 as
+    one treatment winning twice; the second figure did not reproduce and the direction is
+    opposite. A wash on the dark surface COSTS contrast.
+    AND THE LIGHT GAIN IS NOT THE WALL BEING BEATEN, IT IS THE WALL BEING SIDESTEPPED. On
+    light, separation from the body ink is 13.15 divided by contrast-on-white , the two
+    requirements are RECIPROCAL, so at the AA floor the best possible separation is 2.92 for
+    ANY colour that exists. No ink escapes that. The wash does, because the GROUND now carries
+    the signal: the ink drops to #5C4008, which measures 1.37 against the body ink and would
+    be invisible as emphasis on its own, and the run is found by its block rather than read
+    by its colour. That is why wash-against-page at 1.17 is correct rather than a failure.
+    GREEN IS OUT, AND NOT ON AESTHETICS. SS D locks Under-the-Lights green to Compare, and
+    .vvem renders on the card's scout and notes as well, so green here is exactly the bleed
+    that rule exists to prevent. Measured, a green at gold's luminance is numerically
+    IDENTICAL on every axis, so it was never a contrast question.  */
+body.light{--vvem-ink:#5C4008;--vvem-wash:#F6E6BC}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
     .vvcard is a fixed-height flex column (--cw * 1.397). When its children want more room
@@ -5243,6 +5261,29 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       that platform. The LAST occurrence is the one swapped, so a text mentioning us twice ends
       on the linkable form. A text with no brand word gets the handle on its own line, which is
       the convention there.  */
+  /*  ── THE FOLLOW ROW, ONCE ────────────────────────────────────────────────────────────
+      Three surfaces want it , the home drawer, the foot of the Playbook, and the VV Index
+      CTA , and thirty-eight hand-typed pink Vs earlier today are the argument for not
+      writing it three times. `VVCore.socialRowHTML()` is the single source.
+      "X/TWITTER", NOT "X", AND IT IS A READABILITY CALL RATHER THAN PEDANTRY. A single
+      letter is not a recognisable label; the rename is recent enough that the letter alone
+      is ambiguous, and an aria-label reading just "X" tells a screen reader nothing at all.
+      NO "FOLLOW" WORD. The two logos carry it , a row of social marks under a page's last
+      paragraph is unambiguous, and the label was competing with the thing it described.
+      THE ARIA LABELS STAY VERBOSE BECAUSE THEY ARE NOT THE VISIBLE TEXT , removing the word
+      "Follow" from the page does not mean removing the only cue a screen reader gets.  */
+  var VV_SOCIAL = [
+    {k:'instagram', url:'https://www.instagram.com/vvonderxi', label:'VVonderXI on Instagram',
+     svg:'<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7"><rect x="20" y="20" width="60" height="60" rx="18"/><circle cx="50" cy="50" r="15"/><circle cx="70" cy="30" r="4" fill="currentColor" stroke="none"/></svg>'},
+    {k:'x', url:'https://x.com/vvonderxi', label:'VVonderXI on X/Twitter',
+     svg:'<svg viewBox="0 0 100 100" fill="currentColor"><path d="M22 20 h16 l18 26 L78 20 h8 L60 52 l28 28 H72 L52 56 L30 80 h-8 l28 -32 Z"/></svg>'}
+  ];
+  function socialRowHTML(cls){
+    return '<div class="' + (cls || 'vvsoc') + '">' + VV_SOCIAL.map(function(s){
+      return '<a href="' + s.url + '" target="_blank" rel="noopener me" aria-label="' + s.label + '">' + s.svg + '</a>';
+    }).join('') + '</div>';
+  }
+
   var VV_HANDLE_X = '@vvonderxi';
   function vvXText(text){
     var t = String(text == null ? '' : text).trim();
@@ -6920,7 +6961,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvWordmark, vvStripMarkers,
+                cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvWordmark, socialRowHTML, vvStripMarkers,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,

@@ -283,9 +283,9 @@
   .drawersoc a:hover{color:var(--pink-ink)}
   body.light .drawersoc a{color:#6d675e}
   .drawersoc svg{width:19px;height:19px}
-  .drawersoc .dsl{margin-left:auto;font-family:'Archivo';font-weight:700;font-size:10.5px;
-    letter-spacing:.12em;text-transform:uppercase;color:rgba(243,237,224,.34)}
-  body.light .drawersoc .dsl{color:#8a8276}
+  /*  .dsl IS GONE WITH THE WORD IT STYLED , 2026-09-13. Lucas: the logos alone are enough.
+      A label reading "Follow" beside two social marks describes what the marks already say,
+      and it was the only text in the row competing for the eye.  */
   .mlogo{width:118px;height:auto;display:none;margin:4px auto 14px}
   body:not(.light) .drawer .mlogo.d{display:block}
   body.light .drawer .mlogo.l{display:block}
@@ -394,21 +394,20 @@
             The eight content pages navigate by the `.spine` rail, which is `display:none`
             below 720px, so a row placed there would reach desktop only. The home page is
             where a phone visitor lands, which is why this one is worth having on its own. -->
-      <div class="drawersoc">
+      <div class="drawersoc" id="vvSocHome">
         <a href="https://www.instagram.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on Instagram">
           <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7"><rect x="20" y="20" width="60" height="60" rx="18"/><circle cx="50" cy="50" r="15"/><circle cx="70" cy="30" r="4" fill="currentColor" stroke="none"/></svg>
         </a>
-        <a href="https://x.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on X">
+        <a href="https://x.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on X/Twitter">
           <svg viewBox="0 0 100 100" fill="currentColor"><path d="M22 20 h16 l18 26 L78 20 h8 L60 52 l28 28 H72 L52 56 L30 80 h-8 l28 -32 Z"/></svg>
         </a>
-        <span class="dsl">Follow</span>
       </div>
     </nav>
   </div>
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20260913j"></script>
+<script src="/vv-core.js?v=20260913k"></script>
 <script>
   // rotating placeholder examples
   /*  EVERY SUGGESTION IS A PROMISE THE SEARCH HAS TO HONOUR, AND TWO OF THESE WERE NOT.

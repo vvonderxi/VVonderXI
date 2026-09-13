@@ -28,7 +28,19 @@
 <meta name="twitter:description" content="The rules behind the platform. Score bands, wonder tags, verdict tags, and how to read a card.">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
-<style>  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--green-fill:#5FC98A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--page-1:#1b1617;--page-2:#141011;--page-3:#0e0b0c;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
+<style>
+  /*  THE FOLLOW ROW , MARKUP COMES FROM `VVCore.socialRowHTML()`, NEVER TYPED HERE.
+      Only the placement and the ink are this page's business. Lucas put it at the foot of
+      the Playbook and in the VV Index CTA because those are the two pages a reader FINISHES,
+      which is the moment they are most likely to act , the home drawer catches arrivals and
+      these catch departures.  */
+  .vvsoc{display:flex;align-items:center;justify-content:center;gap:18px;margin:26px 0 0}
+  .vvsoc a{display:inline-flex;color:rgba(243,237,224,.45);transition:color .18s,transform .18s}
+  .vvsoc a:hover{color:var(--pink-ink);transform:translateY(-2px)}
+  body.light .vvsoc a{color:#8a8276}
+  body.light .vvsoc a:hover{color:var(--pink-ink)}
+  .vvsoc svg{width:21px;height:21px}
+  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--green-fill:#5FC98A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--page-1:#1b1617;--page-2:#141011;--page-3:#0e0b0c;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,var(--page-1) 0%,var(--page-2) 50%,var(--page-3) 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
@@ -1706,18 +1718,19 @@
         <a class="cta primary" href="rankings.html"><span>Explore the V<span class="vvw">V</span> Rankings</span></a>
         <a class="cta pink" href="compare.html"><div class="bg"></div><span>Compare players</span></a>
       </div>
+      <div class="vvsoc" id="vvSocPb"></div>
     </section>
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260913j"></script>
+<script src="/vv-marks.js?v=20260913k"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260913j"></script>
+<script src="/vv-core.js?v=20260913k"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
@@ -2359,6 +2372,12 @@
       failure of the two: a control that half works reads as broken rather than absent. */
   document.querySelectorAll('.section,[data-navtarget]').forEach(s=>obs.observe(s));
   links.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.getElementById(a.getAttribute('href').slice(1)).scrollIntoView({behavior:'smooth',block:'start'});}));
+</script>
+<script>
+  /*  ONE LINE, AND IT IS THE WHOLE POINT OF THE HELPER: the row's markup, its handles and
+      its labels live in vv-core, so a change to any of them reaches every surface at once.  */
+  (function(){var e=document.getElementById('vvSocPb');
+    if(e&&window.VVCore&&VVCore.socialRowHTML) e.outerHTML=VVCore.socialRowHTML('vvsoc');})();
 </script>
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});
 window.addEventListener('scroll',function(){var t=document.getElementById('totop');if(t)t.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>520);});
