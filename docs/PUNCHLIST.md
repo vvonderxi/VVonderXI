@@ -27,11 +27,11 @@ that only ever rises is measuring the writing, not the work.**
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
 | 14 | VV Index band section duplicates Playbook, reads dense | **DEMO v3, AWAITING LUCAS** | Lucas | Margin removed by his call. Coverage timeline carries it, "Zero." is the quote, five extensions in. **Contact CTA required a real fix: contact.html had NO nav at all** |
-| 15 | Continental international honours, five confederations | **SCOPED** | Lucas | No schema change needed. But two confederations are 80% of the reach and two are under 1% each , decide the scope before commissioning |
+| 15 | Continental international honours, five confederations | **SCOPED** | Lucas | No schema change needed. Two confederations are 80% of the reach, two are under 1% each. **When built it needs a Playbook entry too** , the Honours section is the dictionary and a tag with no definition is a tag nobody can read |
 | 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
-| 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes collapsed to one, and the card's better contrast values won |
+| 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes to one. **Typeface fixed after Lucas saw it: the Playbook never loaded Barlow Condensed** |
 | 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B on all five prose surfaces. One ink flips, one is pinned, one takes none , the grounds decide, not the theme |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
@@ -850,3 +850,36 @@ completeness against effort, and it is Lucas's.
 **AND IT SHOULD NOT BE COMMISSIONED BEFORE ITEM 16 IS SCORED.** Both are external sourcing passes
 of the same shape, and 16's retrieval prompt is written and un-run. Running a second before the
 first has told us whether retrieval clears its gate is spending the same unknown twice.
+
+### 19 , part three. The pills were the right colour in the wrong typeface
+
+**THE PLAYBOOK NEVER LOADED BARLOW CONDENSED.** `card.html` requests it; `playbook.html` requests
+Bricolage, Archivo and Inter and nothing else. I set the dictionary pills in
+`'Barlow Condensed', Archivo, sans-serif` on the strength of the card's rule, and the stack fell
+straight through to Archivo , which is not condensed, so every pill rendered about a third too
+wide. **Measured rather than eyeballed: "GOAL MACHINE" at 19px/700 came to 155px in the declared
+stack and 155px in Archivo, against 103px once the font actually loads.** That is the whole
+complaint , "the font is wrong on both and the size is wrong on mobile" is one cause with two
+symptoms.
+
+**AND `.cm-sb` ON THE SAME PAGE HAS THE SAME BUG, OLDER THAN MINE.** It has asked for Barlow
+Condensed since before this work and the page has never served it. Fixed by the same font request.
+
+**A SECOND DEFECT THE SAME MEASUREMENT CAUGHT: the honour headings were not pills at all, they were
+BARS.** `.hcell` is a flex column, `align-items` defaults to stretch, and **stretch applies to a
+flex item whatever its own `display` says** , so `display:inline-flex` did not shrink-wrap them.
+All four rendered at exactly 305px at 390 regardless of whether they read "Ballon d'Or" or "World
+Cup Winner", **and four different labels coming back the same width is the tell.** They hug their
+text now: 117, 168, 130, 125, 193. The card's own rows solve this with `flex:0 0 auto`, which I
+carried into the shared `.tagrow` rules and did not carry into this one.
+
+### 9 , reversed. The football comes off the Playbook
+
+**BUILT, THEN REMOVED ON LUCAS SEEING IT IN PLACE: it is irrelevant there.** The plate's job is to
+say which competitions the record covers and where the detail begins, and a drawing of a football
+answers neither.
+
+**NOTHING MEASURED WAS LOST WITH IT**, and that is not a consolation , it is the same finding that
+removed the ring two days earlier. The drawing never carried a measurement. The chips, their
+shares, the popover and the equal-share line all survive, and they are the parts that were ever
+saying anything.

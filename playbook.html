@@ -27,7 +27,7 @@
 <meta name="twitter:title" content="VVonderXI , The Playbook">
 <meta name="twitter:description" content="The rules behind the platform. Score bands, wonder tags, verdict tags, and how to read a card.">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--green-fill:#5FC98A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;--page-1:#1b1617;--page-2:#141011;--page-3:#0e0b0c;--page-1-l:#EEF4F6;--page-2-l:#ECEFE6;--page-3-l:#E9E0D0}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
@@ -944,7 +944,14 @@
       alone: it is older than this change and removing it is a separate sweep.)  */
   /*  HONOURS TAKE THE GOLD, same construction, because silverware is a family like any other
       and the card already paints it that way.  */
-  .hcell .hn{display:inline-flex;align-items:center;gap:7px;
+  /*  align-self KEEPS IT A PILL , 2026-09-13. `.hcell` is a flex COLUMN, and align-items
+      defaults to stretch, which applies to a flex item whatever its own `display` says. So
+      `display:inline-flex` did not shrink-wrap it: every honour rendered as a full-width gold
+      BAR, 305px at 390 regardless of whether it read "Ballon d'Or" or "World Cup Winner".
+      Measured, not eyeballed , all four came back the same width, which is the tell.
+      THE CARD'S OWN ROWS SOLVE IT WITH `flex:0 0 auto`, which I carried into the shared
+      .tagrow rules and did not carry here.  */
+  .hcell .hn{display:inline-flex;align-self:flex-start;align-items:center;gap:7px;
     font-family:'Barlow Condensed',Archivo,sans-serif;font-weight:700;font-size:19px;
     line-height:1.2;letter-spacing:.02em;text-transform:uppercase;
     background:var(--vvfam-hon-solid);color:var(--vvfam-hon-ink);padding:4px 13px;border-radius:9px}
@@ -1327,38 +1334,16 @@
   @media (hover:none),(pointer:coarse){ .lgcue .w::after{content:'Tap'} }
   .lgstrip-r{display:flex;flex-wrap:wrap;gap:7px}
 
-  /*  THE LEAGUE BALL , TREATMENT B, 2026-09-13. THE SECOND VERSION, AND THE DATA RING IS GONE.
-      WHY THE RING WENT, MEASURED RATHER THAN JUDGED. It was a real conic gradient sized by real
-      card counts and it was still unreadable. The wedges span 35.95 to 44.53 degrees against a
-      perfectly equal 40.00, a 1.239 ratio , but the only comparison a reader can actually make is
-      between NEIGHBOURS, and the median gap between two neighbouring leagues is 0.88 degrees,
-      which is 1.14px of arc at 168px and 0.90px at 132px. Sub-pixel. The 11px end-to-end
-      difference is between the largest and smallest wedge, which sit on opposite sides of the
-      ring and can never be held against each other. A CHART CAN BE EXACTLY TO SCALE AND CARRY
-      NOTHING, and this one was.
-      AND TRUE LEAGUE COLOURS MADE IT WORSE, WHICH IS THE ARGUMENT AGAINST RE-ADDING THEM: four of
-      the nine leagues are red and two are navy, so a brand-accurate ring is LESS separable than an
-      invented palette. Colour could never have been the cue here. The flag on each chip is.
-      SO THE NUMBERS MOVED TO WHERE NUMBERS WORK , a share on every chip and the full three lines
-      in the popover , and the drawing went back to being a drawing. Nothing was lost in the move,
-      because the ring never communicated the 1.24 ratio to anybody.
-      DO NOT RE-ADD A RING, A PIE, OR A PER-WEDGE TINT. The measurement above is the reason, and it
-      does not change with styling. Same finding as `ed704f5`, which rejected a per-pill count.
-      WHAT MAKES IT READ AS A FOOTBALL, since the first attempt did not: the panels are CUT BY THE
-      SILHOUETTE and the seams are drawn. A real ball's panels run off its edge; panels floating
-      inside a white disc read as a badge. That, not the pentagon count, was the defect.  */
-  .lgball{--bs:168px;position:relative;width:var(--bs);height:var(--bs);flex:none;
-    filter:drop-shadow(0 14px 26px rgba(0,0,0,.55))}
-  .lgball svg{display:block;width:100%;height:100%}
-  .lgb-skin{fill:#F7F2E6;stroke:rgba(20,17,13,.5);stroke-width:2.5}
-  body.light .lgb-skin{fill:#fffdf7}
-  .lgb-seam{stroke:rgba(20,17,13,.34);stroke-width:2.4;stroke-linecap:round}
-  .lgb-panel{fill:#17140f}
+  /*  THE BALL IS REMOVED , 2026-09-13. It was built to replace a ring that was measured
+      unreadable, and it read as an object rather than a chart, which was the point. Lucas's
+      call on seeing it in place: it is IRRELEVANT on this page. The plate's job is to say which
+      competitions the record covers and where the detail begins, and a drawing of a football
+      answers neither , it decorates a paragraph that was already doing its work.
+      WHAT SURVIVES IS EVERYTHING THAT CARRIED A FACT: the chips with their shares, the popover,
+      and the equal-share line. Nothing measured was lost with it, because the drawing never
+      carried a measurement , that finding is why the ring went in the first place.  */
   .lgtop{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-bottom:2px}
   .lgtop .lgstrip-r{flex:1 1 260px;margin:0}
-  /*  THE EQUAL-SHARE LINE , the one sentence the rejected bar treatment was carrying, kept
-      because it does the ring's job in words and does it legibly: it turns "they are all the
-      same size" from something we assert into something a reader can check against the chips.  */
   .lgeq{font-family:'Inter';font-weight:400;font-size:11.5px;line-height:1.55;margin:12px 0 0;
     color:rgba(243,237,224,0.55)}
   body.light .lgeq{color:#6d675e}
@@ -1366,7 +1351,7 @@
   body.light .lgeq b{color:var(--charcoal)}
   .lgchip .lgpc{font-family:'Archivo';font-weight:800;font-size:10.5px;color:var(--gold);
     font-variant-numeric:tabular-nums;margin-left:1px}
-  @media (max-width:720px){ .lgball{--bs:132px} .lgtop{gap:15px;justify-content:center} }
+  @media (max-width:720px){ .lgtop{gap:15px;justify-content:center} }
   .lgchip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 10px;
     border-radius:999px;border:1px solid rgba(243,237,224,0.15);background:rgba(255,255,255,0.035);
     font-family:'Archivo';font-weight:700;font-size:12px;color:var(--cream);white-space:nowrap}
@@ -1759,34 +1744,6 @@
         league with no `cards`, so a data gap would leave plain pills , and a chip inviting a
         tap that does nothing is worse than no chip. Counted, not assumed.  */
     var anyFacts=L.some(function(x){ return !!facts(x); });
-    /*  THE BALL IS AN OBJECT AND CARRIES NO DATA , TREATMENT B, 2026-09-13. Read the .lgball
-        comment in the stylesheet before changing this: the ring it replaces was exactly to
-        scale and still sub-pixel between neighbours, so the drawing went back to being a
-        drawing and the numbers went to the chips and the popover.
-        IT IS DRAWN, NOT SET IN TYPE, and the geometry is the whole point. One panel at the
-        centre, five on the bearings BETWEEN the seams, pushed far enough out that the
-        silhouette CUTS them, plus the seams joining the two rings of panels. The cut is what
-        makes it read as a ball rather than a badge , the first attempt floated whole
-        pentagons inside a white disc and read as neither.
-        aria-hidden because it says nothing the chips beside it do not.  */
-    var pent=function(cx,cy,r,rot){
-      var q=[],k,a;
-      for(k=0;k<5;k++){ a=(rot+k*72-90)*Math.PI/180;
-        q.push((cx+r*Math.cos(a)).toFixed(2)+','+(cy+r*Math.sin(a)).toFixed(2)); }
-      return 'M'+q.join('L')+'Z';
-    };
-    var ball=(function(){
-      var g='<defs><clipPath id="lgbClip"><circle cx="50" cy="50" r="48"/></clipPath></defs>'+
-            '<circle cx="50" cy="50" r="48" class="lgb-skin"/><g clip-path="url(#lgbClip)">',k,a,b,R=45;
-      for(k=0;k<5;k++){ a=(k*72-90)*Math.PI/180;
-        g+='<line x1="'+(50+13*Math.cos(a)).toFixed(2)+'" y1="'+(50+13*Math.sin(a)).toFixed(2)+
-           '" x2="'+(50+52*Math.cos(a)).toFixed(2)+'" y2="'+(50+52*Math.sin(a)).toFixed(2)+
-           '" class="lgb-seam"/>'; }
-      g+='<path d="'+pent(50,50,15,0)+'" class="lgb-panel"/>';
-      for(k=0;k<5;k++){ b=(36+k*72-90)*Math.PI/180;
-        g+='<path d="'+pent(50+R*Math.cos(b),50+R*Math.sin(b),16,36+k*72+180)+'" class="lgb-panel"/>'; }
-      return '<div class="lgball" aria-hidden="true"><svg viewBox="0 0 100 100">'+g+'</g></svg></div>';
-    })();
     /*  THE SHARE COMES FROM vv-core, NOT FROM ARITHMETIC HERE. VVFilters.leagueShare derives it
         from the same `cards` figures the popover quotes, so the chip, the popover and the filter
         chip's title cannot disagree. Fails closed: no share, no percentage, and the chip renders
@@ -1800,7 +1757,7 @@
       (anyFacts?'<span class="lgcue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
         'stroke-width="2.4" stroke-linecap="round"><path d="M12 17v-5"/><path d="M12 8h.01"/>'+
         '<circle cx="12" cy="12" r="9"/></svg><span class="w"></span> a league</span>':'')+
-      '</div><div class="lgtop">'+ball+'<div class="lgstrip-r">'+
+      '</div><div class="lgtop">'+'<div class="lgstrip-r">'+
       L.map(function(x){
         var f=facts(x);
         return '<span class="lgchip'+(f?' hasfacts':'')+'" data-lg="'+ESC(x.v)+'">'+
