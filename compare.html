@@ -160,7 +160,23 @@ body.light .cmpsug .sv{color:#AD0332}
     only on a real answer.  */
 .mvwait{display:none}
 .matchup.waiting .mvwait{display:flex;grid-column:1 / -1;flex-direction:column;align-items:center;
-  justify-content:center;gap:2px;margin:0 0 14px;min-height:74px}
+  justify-content:center;gap:2px;margin:0 0 14px;min-height:104px}
+/*  THE WAIT READS AS WORK, NOT AS A LABEL , 2026-09-13. At 40px with a 12.5px caption it was the
+    size of a form hint sitting above two 300px cards, describing something that takes about 26
+    seconds. 64px is where the monogram's interlock is unmistakable and the block reads as the
+    page doing something.
+    WHAT CONSTRAINS IT IS THE CARDS BELOW, NOT THE WIDTH. The block spans the whole grid row, so
+    width is free; every pixel of HEIGHT pushes the pair down. Measured at 1200: the block grows
+    74 to 89px and card A's top moves 281 to 296 , 15px out of a 754px matchup. At 76px the cards
+    start to feel pushed, so 64 is the last comfortable step.
+    THE PHONE TAKES 52. At 390 the pair is two-up and already tight to the fold; 52 keeps the same
+    reading at a size that column can afford.  */
+.mvwait .vvload-l{font-size:15px}
+@media (max-width:720px){
+  .matchup.waiting .mvwait{min-height:88px}
+  .mvwait .vvlmark{width:52px;height:52px}
+  .mvwait .vvload-l{font-size:14px}
+}
 .mvstrip{display:none}
 .mvstrip .mvtag{display:inline-flex;align-items:center;gap:5px;font-family:'Archivo';font-weight:800;
   font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,#F0D27A,#E0A93A);
@@ -2375,7 +2391,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(_mw){
       if(opts.wait){
         _mw.innerHTML = (window.VVCore && VVCore.vvLoader)
-          ? VVCore.vvLoader({size:40, duration:(VVCore.VV_WAIT&&VVCore.VV_WAIT.ai?VVCore.VV_WAIT.ai.duration:2600),
+          ? VVCore.vvLoader({size:64, duration:(VVCore.VV_WAIT&&VVCore.VV_WAIT.ai?VVCore.VV_WAIT.ai.duration:2600),
                              label:(opts.label||'Reading the seasons'), withText:true})
           : '';
       } else { _mw.innerHTML=''; }
