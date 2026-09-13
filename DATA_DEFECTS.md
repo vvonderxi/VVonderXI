@@ -894,6 +894,45 @@ the 25% coverage gate at 84.3%, so the gate cannot catch it**, which is exactly 
 
 ### [APPROVED AND SCOPED 2026-09-12, NOT STARTED: SOURCING THE WINNER FOR 46 LEAGUE-SEASONS. FULL SPEC IN `docs/TOP_ASSISTS_SOURCING_SPEC.md`.]
 
+## A VALIDATION SET BUILT FROM WHATEVER ALREADY EXISTS IS SELECTED BY THE SAME PROCESS THAT FILLED IT, SO IT MEASURES THE EASY CASE AND LICENSES A CONCLUSION ABOUT THE HARD ONE (generalised 2026-09-13, THIRD INSTANCE)
+
+**THIS IS THE GENERAL FORM OF THE PROMINENCE-BIAS FINDING BELOW, AND IT HAS NOW APPEARED THREE
+TIMES IN ONE DAY'S WORK, IN THREE DIFFERENT JOBS.** It is not a fact about assists.
+
+**THE SHAPE.** Somebody fills a field by hand. They start with the players who matter, because that
+is the rational order. Later, someone needs to check a new method and reaches for "the rows we
+already have" as a validation set. **But those rows were not sampled , they were SELECTED, by
+prominence, by the same judgement that is about to be tested.** So the check measures performance
+on famous, well-documented, heavily-covered cards and is then read as a statement about the whole
+population, which is mostly none of those things.
+
+**THE THREE INSTANCES:**
+1. **The `top_assists` honours.** A maximum computed over a marquee-only fill looked correct on
+   every card, because the populated set WAS the stars , 117 cards, median rt 88, against a
+   population median of 42. Survived July to September.
+2. **The pre-2015 assist fill itself.** The same 117 cards, proposed as the basis for extending
+   the fill, which would have measured the method on the cards it was already best at.
+3. **The squad-number control, caught BEFORE it was used, which is the only reason it is worth
+   recording as a rule.** The 134 cards that already carry a shirt number were nominated as the
+   blind control for a Fable research pass. Measured: **median rt 89 against 45 for the 8,771 it
+   was meant to predict, and 99% at rt>=85 against 0%.** Ninety of the 134 wear 7, 9, 10 or 11.
+   **A model finds Aguero's 10 trivially. The pass exists for the squad filler wearing 27.**
+
+**THE TEST, AND IT IS ONE QUERY: BEFORE TRUSTING ANY AGREEMENT RATE, COMPARE THE CONTROL'S rt
+DISTRIBUTION AGAINST THE TARGET POPULATION'S.** Median and share above a high band are enough. If
+they do not overlap, the agreement rate measures the easy case and **says nothing about the hard
+one** , it is a NECESSARY gate, never a sufficient one, and it must be paired with a batch drawn
+from the tail.
+
+**AND NOTE WHY IT KEEPS BEING MISSED: A HIGH AGREEMENT RATE IS THE MOST PERSUASIVE-LOOKING RESULT
+IN THE WHOLE PASS.** It arrives as evidence FOR proceeding, it is easy to compute, and nothing in
+it hints that the sample was chosen rather than drawn. **The bias is invisible in the values and
+visible only in the selection, which is why the check has to be on the POPULATION and not on the
+answers.** Same family as SS C's rule that a check reading our own data to validate our own data
+cannot detect forged-but-consistent corruption.
+
+---
+
 **THE PROMINENCE-BIAS RECORD, WRITTEN BEFORE THE FILL RATHER THAN AFTER IT, BECAUSE A FUTURE
 READER CANNOT INFER SELECTION FROM THE VALUES.**
 
