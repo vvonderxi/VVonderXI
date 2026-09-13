@@ -1261,8 +1261,32 @@
       the right failure , a coverage claim with holes in it is worse than no claim.  */
   .lgstrip{margin:0 0 30px;padding-bottom:26px;border-bottom:1px solid rgba(243,237,224,0.10)}
   body.light .lgstrip{border-bottom-color:rgba(28,27,26,0.10)}
+  /*  THE STRIP IS ONE COMPOSED PLATE , TREATMENT B, 2026-09-13. It used to be a label, a
+      row of pills and a dense paragraph, three loose things stacked. The plate gives them a
+      single layer and lets the note carry structure.
+      THE CUE IS IN THE STILL, NOT IN A HOVER STATE. Every pill carries a dotted underline
+      and a caret, and the header carries one quiet chip, so a reader who never moves the
+      mouse still sees that the pills do something. A treatment that only announces itself
+      on hover has failed the test this page already applies to the cabinet.
+      THE WORD SWAPS ON INPUT TYPE, NOT ON WIDTH , `(hover:none),(pointer:coarse)` gives
+      "Tap" and everything else gives "Hover". Keyed to width, a hovering tablet at 700px
+      would be told to tap and a desktop window dragged narrow would lie.  */
+  .lgplate{border:1px solid rgba(243,237,224,0.12);border-radius:18px;padding:17px 18px 16px;
+    background:radial-gradient(120% 150% at 12% 0%,rgba(241,104,142,0.07),transparent 58%),
+               linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.012))}
+  body.light .lgplate{border-color:rgba(28,27,26,0.12);
+    background:radial-gradient(120% 150% at 12% 0%,rgba(231,4,67,0.05),transparent 58%),
+               linear-gradient(180deg,rgba(255,255,255,0.75),rgba(255,255,255,0.35))}
+  .lgstrip-hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:13px}
   .lgstrip-l{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.2em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:11px}
+    text-transform:uppercase;color:var(--gold)}
+  .lgcue{font-family:'Archivo';font-weight:600;font-size:10.5px;letter-spacing:.04em;
+    color:rgba(243,237,224,0.5);border:1px solid rgba(243,237,224,0.17);border-radius:999px;
+    padding:3px 9px;display:inline-flex;align-items:center;gap:5px}
+  body.light .lgcue{color:#6d675e;border-color:rgba(28,27,26,0.18)}
+  .lgcue svg{width:10px;height:10px;opacity:.75;flex:none}
+  .lgcue .w::after{content:'Hover'}
+  @media (hover:none),(pointer:coarse){ .lgcue .w::after{content:'Tap'} }
   .lgstrip-r{display:flex;flex-wrap:wrap;gap:7px}
   .lgchip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 10px;
     border-radius:999px;border:1px solid rgba(243,237,224,0.15);background:rgba(255,255,255,0.035);
@@ -1285,7 +1309,10 @@
       first version of it sat above these rules and silently lost , the computed
       `position` read `static` while the query itself matched. Verify the COMPUTED value,
       never that the query fired.  */
-  .lgchip.hasfacts{position:relative;cursor:pointer}
+  .lgchip.hasfacts{position:relative;cursor:pointer;padding-right:9px}
+  .lgchip.hasfacts .nm{border-bottom:1px dotted rgba(243,237,224,0.42);padding-bottom:1px}
+  body.light .lgchip.hasfacts .nm{border-bottom-color:rgba(28,27,26,0.34)}
+  .lgchip.hasfacts .cv{opacity:.5;font-size:9px;margin-left:1px;transform:translateY(1px)}
   .lgchip.hasfacts:hover,.lgchip.hasfacts.open{border-color:rgba(243,237,224,0.42);
     background:rgba(255,255,255,0.075)}
   body.light .lgchip.hasfacts:hover,body.light .lgchip.hasfacts.open{
@@ -1310,8 +1337,22 @@
   .lgtip:after{content:'';position:absolute;top:100%;left:50%;margin-left:-5px;
     border:5px solid transparent;border-top-color:rgba(243,237,224,0.22)}
   body.light .lgtip:after{border-top-color:rgba(28,27,26,0.2)}
-  .lgstrip-n{font-family:'Inter';font-size:12.5px;line-height:1.6;color:rgba(243,237,224,0.74);margin-top:12px}
+  /*  THE NOTE IS THREE CLAIMS, SO IT IS THREE ROWS , 2026-09-13. It makes three distinct
+      statements (what we cover, how far back the detail runs, what a season is scored on
+      before that) and used to run them together in one 12.5px paragraph. NUMBERED ROWS
+      rather than three columns: the claims are a SEQUENCE, and three equal columns would
+      invite a comparison between them that does not exist.  */
+  .lgclaims{display:grid;gap:11px;margin-top:15px;padding-top:14px;
+    border-top:1px solid rgba(243,237,224,0.09)}
+  body.light .lgclaims{border-top-color:rgba(28,27,26,0.1)}
+  .lgclaim{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:start}
+  .lgclaim .n{font-family:'Archivo';font-weight:800;font-size:10px;color:var(--gold);
+    border:1px solid rgba(217,166,74,0.4);border-radius:6px;width:20px;height:20px;
+    display:grid;place-items:center;flex:none;margin-top:1px}
+  .lgstrip-n{font-family:'Inter';font-size:13.5px;line-height:1.6;color:rgba(243,237,224,0.74)}
   body.light .lgstrip-n{color:#4f4a43}
+  .lgstrip-n b{font-family:'Archivo';font-weight:700;color:var(--cream)}
+  body.light .lgstrip-n b{color:var(--charcoal)}
   /*  .mut DID NOT EXIST , defined here and scoped to this note, 2026-09-10. The middle
       sentence is the only one carrying dates, and dates are what a reader skims unless they
       are chasing a specific season, so it should sit quieter than the claim around it.
@@ -1632,11 +1673,21 @@
         '<span class="r"><b>'+x.clubs+'</b> clubs a season, <b>'+x.clubsAll+'</b> in all</span>'+
         '<span class="r">Detailed stats from <b>'+ESC(x.detail)+'</b></span></span>';
     };
-    host.innerHTML='<div class="lgstrip-l">The ground we cover</div><div class="lgstrip-r">'+
+    /*  THE CUE ONLY APPEARS IF SOMETHING IS ACTUALLY INTERACTIVE. `facts()` returns '' for a
+        league with no `cards`, so a data gap would leave plain pills , and a chip inviting a
+        tap that does nothing is worse than no chip. Counted, not assumed.  */
+    var anyFacts=L.some(function(x){ return !!facts(x); });
+    host.innerHTML='<div class="lgplate"><div class="lgstrip-hd">'+
+      '<span class="lgstrip-l">The ground we cover</span>'+
+      (anyFacts?'<span class="lgcue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+        'stroke-width="2.4" stroke-linecap="round"><path d="M12 17v-5"/><path d="M12 8h.01"/>'+
+        '<circle cx="12" cy="12" r="9"/></svg><span class="w"></span> a league</span>':'')+
+      '</div><div class="lgstrip-r">'+
       L.map(function(x){
         var f=facts(x);
         return '<span class="lgchip'+(f?' hasfacts':'')+'" data-lg="'+ESC(x.v)+'">'+
-               '<span class="f">'+x.e+'</span>'+x.l+f+'</span>'; }).join('')+
+               '<span class="f">'+x.e+'</span><span class="nm">'+x.l+'</span>'+
+               (f?'<span class="cv">\u25be</span>':'')+f+'</span>'; }).join('')+
       /*  THE VOLUME LINE IS A FLOOR STATED ONCE, NOT A COUNT PER PILL , DECIDED 2026-09-12.
           Measured the same day, all cards / scored cards per league: SA 7,057/6,806,
           LL 7,032/6,697, PL 6,590/6,333, L1 6,569/6,277, TR 6,365/5,403, PRT 6,006/5,671,
@@ -1659,14 +1710,18 @@
           number is OF. The Turkey objection is answered rather than dodged , the tooltips show
           ALL cards, on which Turkey reads fifth and consistently, and the scored figure that
           would invert it is disclosed in DATA_DEFECTS.md instead of half-said here.  */
-      '</div><div class="lgstrip-n">Every card comes from one of these '+L.length+
-      ' competitions, and every league here carries more than 5,000 season cards. '+
-      'If a league is not here, no card exists for it. '+
-      'Every league runs from 2010/11 onward, but the detailed stats do not run that whole way. '+
-      '<span class="mut">Shots, passes, duels and dribbles begin in 2015/16 , a little earlier in '+
-      'the Premier League, which is partly covered in 2014/15 , and in Belgium they begin in '+
-      '2020/21.</span> '+
-      'Before those points a season is scored on goals, assists and minutes alone.</div>';
+      '</div><div class="lgclaims">'+
+      '<div class="lgclaim"><span class="n">1</span><span class="lgstrip-n">Every card comes from '+
+        'one of these <b>'+L.length+' competitions</b>, and every league here carries more than '+
+        '<b>5,000 season cards</b>. <span class="mut">If a league is not here, no card exists for it.</span></span></div>'+
+      '<div class="lgclaim"><span class="n">2</span><span class="lgstrip-n">Every league runs from '+
+        '<b>2010/11</b> onward, but the detailed stats do not run that whole way. '+
+        '<span class="mut">Shots, passes, duels and dribbles begin in 2015/16 , a little earlier in '+
+        'the Premier League, which is partly covered in 2014/15 , and in Belgium they begin in '+
+        '2020/21.</span></span></div>'+
+      '<div class="lgclaim"><span class="n">3</span><span class="lgstrip-n">Before those points a '+
+        'season is scored on <b>goals, assists and minutes</b> alone.</span></div>'+
+      '</div></div>';
     /*  TAP TO OPEN, ONE AT A TIME, TAP ANYWHERE ELSE TO CLOSE , the page's own
         interaction model, the same one toggleStory uses. Desktop keeps CSS :hover and
         needs no JS; this only adds the phone half.  */
