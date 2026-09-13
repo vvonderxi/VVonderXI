@@ -1,0 +1,298 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Season navigation on the card , two options (demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:400 15px/1.6 Inter,system-ui,sans-serif;background:#100e0d;color:#F3EDE0}
+.wrap{max-width:1240px;margin:0 auto;padding:34px 20px 90px}
+h1{font:900 26px/1.15 Archivo;letter-spacing:-.02em;margin:0 0 8px}
+.sub{font:400 14px/1.55 Inter;color:rgba(243,237,224,.62);margin:0 0 6px;max-width:76ch}
+.model{margin:16px 0 0;font:400 13.5px/1.62 Inter;color:rgba(243,237,224,.56);
+  border-left:2px solid rgba(241,104,142,.5);padding:3px 0 3px 14px;max-width:76ch}
+.model b{color:#F1688E;font-weight:700}
+h2{font:800 11.5px Archivo;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,237,224,.45);margin:42px 0 4px}
+.h2s{font:400 13px/1.55 Inter;color:rgba(243,237,224,.5);margin:0 0 16px;max-width:70ch}
+
+.row{display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap}
+.phone{width:390px;flex:none;border:1px solid rgba(243,237,224,.16);border-radius:24px;overflow:hidden;
+  background:linear-gradient(180deg,#17201b 0%,#141210 40%);box-shadow:0 24px 60px -30px #000}
+.phbar{height:26px;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;
+  font:700 9.5px Archivo;letter-spacing:.1em;color:rgba(243,237,224,.34)}
+.phbody{padding:16px 14px 20px;min-height:520px}
+.tl2{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.bk{font:700 12px Archivo;color:rgba(243,237,224,.5)}
+
+/* the card */
+.stage{position:relative;display:flex;justify-content:center;padding:6px 0 0;touch-action:pan-x}
+.card{--cw:210px;width:var(--cw);height:calc(var(--cw)*1.397);border-radius:14px;position:relative;
+  background:linear-gradient(180deg,#2c2824,#211d1a);border:1px solid rgba(243,237,224,.1);
+  box-shadow:0 18px 40px -22px rgba(0,0,0,.85);padding:14px 13px;display:flex;flex-direction:column;
+  transition:transform .26s cubic-bezier(.3,.8,.4,1),opacity .26s}
+.cyr{font:900 11px Archivo;letter-spacing:.08em;color:#E8B84B}
+.cph{flex:1;margin:9px 0;border-radius:9px;background:radial-gradient(70% 60% at 50% 32%,#4a423a,#282320)}
+.cnm{font:900 19px/1.05 Archivo;letter-spacing:-.02em}
+.csb{font:600 10.5px Inter;color:rgba(243,237,224,.56);margin-top:3px}
+.cvv{position:absolute;right:12px;top:12px;font:900 26px/1 Archivo;color:#F3EDE0}
+.chev{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(243,237,224,.18);background:rgba(0,0,0,.3);color:rgba(243,237,224,.6);
+  display:none;align-items:center;justify-content:center;font:700 15px Archivo;cursor:pointer}
+.desk .chev{display:flex}
+.chev.l{left:-42px}.chev.r{right:-42px}
+
+/* ── OPTION 1 , the vertical gesture, with a peek affordance ────────────────── */
+.vpeek{position:absolute;left:50%;transform:translateX(-50%);width:calc(210px - 34px);height:13px;
+  border-radius:12px 12px 0 0;background:linear-gradient(180deg,#2c2824,#211d1a);
+  border:1px solid rgba(243,237,224,.1);border-bottom:0;opacity:.55}
+.vpeek.top{top:-9px;border-radius:12px 12px 0 0}
+.vpeek.bot{bottom:-9px;border-radius:0 0 12px 12px;border-bottom:1px solid rgba(243,237,224,.1);border-top:0}
+.vcue{margin:16px auto 0;width:max-content;font-family:'Archivo';font-weight:600;font-size:10.5px;
+  letter-spacing:.04em;color:rgba(243,237,224,.5);border:1px solid rgba(243,237,224,.17);
+  border-radius:999px;padding:3px 10px;display:flex;align-items:center;gap:6px}
+.vcue svg{width:11px;height:11px;flex:none;opacity:.8}
+.pos{margin:10px auto 0;width:max-content;font:700 10.5px Archivo;letter-spacing:.09em;
+  color:rgba(243,237,224,.4)}
+
+/* ── OPTION 3 , the season chip strip ───────────────────────────────────────── */
+.strip{display:flex;gap:7px;overflow-x:auto;padding:14px 2px 6px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid rgba(243,237,224,.16);border-radius:999px;padding:6px 12px;
+  font:700 11.5px Archivo;letter-spacing:.02em;color:rgba(243,237,224,.62);background:rgba(255,255,255,.03);
+  cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.chip .v{font-weight:900;color:rgba(243,237,224,.42);font-size:10.5px}
+.chip.on{background:#E8B84B;border-color:#E8B84B;color:#231c07}
+.chip.on .v{color:rgba(35,28,7,.62)}
+.striph{font:700 9.5px Archivo;letter-spacing:.11em;text-transform:uppercase;
+  color:rgba(243,237,224,.32);margin:16px 2px 0}
+
+/*  THE PANEL , values lifted from card.html so this reads as the real control.  */
+.szone{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:18px}
+.seasontrigger{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;
+  font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,.55);background:none;border:0;cursor:pointer}
+.seasontrigger::after{content:"\25BE";font-size:.85em;opacity:.7}
+.seasontrigger.open::after{content:"\25B4"}
+.seasonrows{width:300px;max-width:100%;background:rgba(255,255,255,.03);
+  border:1px solid rgba(243,237,224,.1);border-radius:14px;overflow:hidden}
+.srow{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;
+  border-bottom:1px solid rgba(243,237,224,.07);font:600 12.5px Inter}
+.srow:last-child{border-bottom:0}
+.srow:hover{background:rgba(255,255,255,.05)}
+.srow.on{background:rgba(232,184,75,.13)}
+.srow .sy{font:800 11.5px Archivo;letter-spacing:.03em;color:rgba(243,237,224,.75);width:52px;flex:none}
+.srow .sc{color:rgba(243,237,224,.5);flex:1}
+.srow .sv{font:900 13px Archivo;color:#E8B84B}
+
+.note{margin:20px 0 0;padding:16px 18px;border-radius:14px;border:1px solid rgba(243,237,224,.13);
+  background:rgba(255,255,255,.035);font:400 13px/1.6 Inter;color:rgba(243,237,224,.74);width:390px}
+.note h3{font:800 10.5px Archivo;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px;color:#E8B84B}
+.note h3.w{color:#FF7D97}
+.note p{margin:0 0 8px}.note p:last-child{margin:0}
+.note b{color:#F3EDE0;font-weight:700}
+.wide{width:100%;max-width:820px}
+.desk{width:560px;flex:none;border:1px solid rgba(243,237,224,.16);border-radius:16px;
+  background:linear-gradient(180deg,#17201b,#141210);padding:24px 60px 26px}
+kbd{font:700 10.5px Archivo;border:1px solid rgba(243,237,224,.24);border-radius:5px;padding:2px 6px;
+  color:rgba(243,237,224,.72);background:rgba(0,0,0,.3)}
+</style></head><body><div class="wrap">
+
+<h1>Season navigation on the card , two options</h1>
+<p class="sub">Item 23, demo only. Both options call the same existing function,
+<b>switchSeason(card_id)</b>. Neither is new capability: the season list is already fetched, already
+rendered, and already switchable behind "View all 7 seasons".</p>
+
+<p class="model"><b>The axis is free, and that is the whole reason this is cheap.</b> Horizontal is
+already taken , swipe and <kbd>&larr;</kbd> <kbd>&rarr;</kbd> walk <b>the list you arrived from</b>
+(rankings, compare, search), via <code>seqGo</code>. <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> are
+bound to nothing. So the model reads in one sentence: <b>horizontal walks the list you came from,
+vertical walks this player's own seasons.</b></p>
+<p class="model"><b>AND THE PANEL STAYS, WHICH IS WHAT MAKES THE GESTURE SAFE TO ADD.</b> "View all
+7 seasons" is already visible, already labelled, and already says how many there are, so
+discoverability is solved before the swipe exists. <b>The panel is where the swipe gets taught</b>
+, a reader who opens it once has learned that seasons are a dimension of this card, and the peek
+edge then reads as what it is. That is the honest answer to "an undiscoverable swipe is not a
+feature": <b>the gesture does not have to carry its own affordance, because the control beside it
+already does.</b> It is pure addition, and it replaces nothing.</p>
+
+<h2>Option 1 , SHIPPING. The gesture, with the panel that teaches it.</h2>
+<p class="h2s">A flick up or down pages a season. The card peeks above and below so the stack is
+visible before it is used, and <b>the fold/unfold panel below is unchanged</b> , it is the
+discoverable route, the one that shows scores, and the one that teaches the gesture exists.</p>
+<div class="row">
+  <div class="phone"><div class="phbar">390 , OPTION 1</div><div class="phbody">
+    <div class="tl2"><span class="bk">&#8249; Back</span><span class="bk">Search</span></div>
+    <div class="stage" id="st1">
+      <div class="vpeek top"></div>
+      <div class="card" id="c1"><div class="cyr" id="y1">2018/19</div><div class="cvv" id="v1">91</div>
+        <div class="cph"></div><div class="cnm">V. van Dijk</div>
+        <div class="csb" id="s1">CB &#183; Liverpool &#183; Age 27</div></div>
+      <div class="vpeek bot"></div>
+    </div>
+    <div class="vcue" id="cue1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span><span id="cuew">Swipe</span> up and down for seasons</span></div>
+    <div class="pos" id="p1">3 OF 7</div>
+
+    <!--  THE PANEL IS THE REAL card.html CONTROL, NOT A SKETCH , same trigger wording, same
+          chevron, same rows. It is in frame because the gesture must be judged WITH it: on its
+          own a swipe looks like a hidden feature, and beside the panel it is a shortcut past a
+          control the reader has already met.  -->
+    <div class="szone">
+      <button class="seasontrigger" id="strig">View all 7 seasons</button>
+      <div class="seasonrows" id="srows" hidden></div>
+    </div>
+  </div></div>
+
+  <div class="note"><h3>What it buys</h3>
+  <p>One mental model, two axes, and it works identically on phone and desktop. The peek is the
+  affordance: a stack you can <b>see</b> before you know the gesture, which is the same trick the
+  horizontal <code>.peek</code> already uses.</p>
+  <h3 class="w" style="margin-top:14px">What it costs</h3>
+  <p><b>It takes the page's scroll gesture on the card.</b> Today <code>card.html:2608</code>
+  locks to 'y' and means "this is a scroll, leave it alone". Taking that axis means the most
+  prominent element on the page is no longer draggable to scroll. Normal in a card stack,
+  jarring in a document, and the card is currently a document.</p>
+  <p>Mitigated by reusing the existing floors , <b>LOCK_PX 12, DIST 48, SLOW 800</b> , so a slow
+  drag still scrolls and only a flick pages. The demo uses the same numbers.</p></div>
+</div>
+
+<h2>Option 3 , NOT SHIPPING. Kept so the reasoning survives.</h2>
+<p class="h2s"><b>Chips were solving discoverability, and the panel already solves it.</b> A
+permanently visible chip row under every card is a SECOND control for a function that has a
+discoverable one, which is furniture rather than affordance , and it was the only option that
+REPLACED something. Left here because it is a real alternative and the next person to ask
+"why not chips" deserves the answer rather than the conclusion.</p>
+<div class="row">
+  <div class="phone"><div class="phbar">390 , OPTION 3</div><div class="phbody">
+    <div class="tl2"><span class="bk">&#8249; Back</span><span class="bk">Search</span></div>
+    <div class="stage">
+      <div class="card" id="c3"><div class="cyr" id="y3">2018/19</div><div class="cvv" id="v3">91</div>
+        <div class="cph"></div><div class="cnm">V. van Dijk</div>
+        <div class="csb" id="s3">CB &#183; Liverpool &#183; Age 27</div></div>
+    </div>
+    <div class="striph">His seasons</div>
+    <div class="strip" id="strip"></div>
+  </div></div>
+
+  <div class="note"><h3>What it buys</h3>
+  <p><b>No discoverability problem exists.</b> Lucas's own note is that an undiscoverable swipe is
+  not a feature; this has nothing to discover. It also shows the shape of the career at a glance,
+  scores included, which the gesture cannot do without being used.</p>
+  <h3 class="w" style="margin-top:14px">What it costs</h3>
+  <p>It is furniture. It adds a permanent row under the card on every card, and it breaks the
+  symmetry that makes option 1 attractive , seasons become a control while the arrival list stays
+  a gesture. It also replaces, rather than shortcuts, the existing "View all 7 seasons" button.</p>
+  <p>Note it is <b>horizontally</b> scrollable, so it borrows the axis option 1 avoids taking,
+  but inside its own element where there is no ambiguity.</p></div>
+</div>
+
+<h2>Desktop , the same in both options</h2>
+<p class="h2s">Arrow keys plus a position indicator that is itself the control. No vertical
+chevrons: the card already carries horizontal ones and a second pair turns it into a D-pad.</p>
+<div class="row">
+  <div class="desk">
+    <div class="stage">
+      <button class="chev l">&#8249;</button>
+      <div class="card" id="cd"><div class="cyr" id="yd">2018/19</div><div class="cvv" id="vd">91</div>
+        <div class="cph"></div><div class="cnm">V. van Dijk</div>
+        <div class="csb" id="sd">CB &#183; Liverpool &#183; Age 27</div></div>
+      <button class="chev r">&#8250;</button>
+    </div>
+    <div class="vcue" style="cursor:pointer" id="cued"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>2018/19 &#183; <span id="pd">3 of 7</span></div>
+  </div>
+  <div class="note"><h3>Bindings</h3>
+  <p><kbd>&larr;</kbd> <kbd>&rarr;</kbd> , the list you arrived from. Already wired,
+  <code>card.html:2567</code>. Unchanged.</p>
+  <p><kbd>&uarr;</kbd> <kbd>&darr;</kbd> , this player's seasons. <b>Currently bound to nothing.</b>
+  Click the card above and try them.</p>
+  <p>The indicator reads "2018/19 &#183; 3 of 7" and is clickable. It teaches the arrows by showing
+  there is a position in a list, which is what the phone peek does by showing an edge.</p>
+  <p><b>Scroll-wheel was considered and rejected:</b> on a page that scrolls, capturing the wheel
+  over the hero is the desktop version of option 1's problem and worse, because the wheel has no
+  axis-lock gesture to disambiguate intent.</p></div>
+</div>
+
+<script>
+var S=[{y:'2022/23',v:85,c:'Liverpool',a:31},{y:'2021/22',v:89,c:'Liverpool',a:30},
+       {y:'2018/19',v:91,c:'Liverpool',a:27},{y:'2017/18',v:78,c:'Liverpool',a:26},
+       {y:'2016/17',v:74,c:'Southampton',a:25},{y:'2015/16',v:72,c:'Southampton',a:24},
+       {y:'2014/15',v:69,c:'Celtic',a:23}];
+var i=2;
+function paint(){
+  var s=S[i];
+  ['1','3','d'].forEach(function(k){
+    var y=document.getElementById('y'+k),v=document.getElementById('v'+k),b=document.getElementById('s'+k);
+    if(y)y.textContent=s.y; if(v)v.textContent=s.v;
+    if(b)b.innerHTML='CB &#183; '+s.c+' &#183; Age '+s.a;
+  });
+  document.getElementById('p1').textContent=(i+1)+' OF '+S.length;
+  document.getElementById('pd').textContent=(i+1)+' of '+S.length;
+  document.getElementById('cued').lastChild.previousSibling;
+  [].forEach.call(document.querySelectorAll('.chip'),function(c,n){ c.classList.toggle('on',n===i); });
+  [].forEach.call(document.querySelectorAll('.srow'),function(r,n){ r.classList.toggle('on',n===i); });
+  var on=document.querySelector('.chip.on'); if(on&&on.scrollIntoView) on.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+}
+function go(d){
+  var n=i+d; if(n<0||n>=S.length) return;
+  i=n;
+  ['c1','c3','cd'].forEach(function(id){
+    var el=document.getElementById(id); if(!el) return;
+    el.style.transform='translateY('+(d>0?-14:14)+'px)'; el.style.opacity='0';
+    setTimeout(function(){ el.style.transform=''; el.style.opacity=''; },150);
+  });
+  setTimeout(paint,150);
+}
+// the strip
+var strip=document.getElementById('strip');
+S.forEach(function(s,n){
+  var b=document.createElement('button'); b.className='chip';
+  b.innerHTML=s.y+'<span class="v">'+s.v+'</span>';
+  b.onclick=function(){ var d=n-i; i=n; paint(); };
+  strip.appendChild(b);
+});
+// ── the panel, driven by the same state as the gesture ──
+var srows=document.getElementById('srows'), strig=document.getElementById('strig');
+S.forEach(function(s,n){
+  var d=document.createElement('div'); d.className='srow';
+  d.innerHTML='<span class="sy">'+s.y+'</span><span class="sc">'+s.c+'</span><span class="sv">'+s.v+'</span>';
+  d.onclick=function(){ i=n; paint(); };
+  srows.appendChild(d);
+});
+strig.onclick=function(){ var open=srows.hasAttribute('hidden');
+  if(open){srows.removeAttribute('hidden');} else {srows.setAttribute('hidden','');}
+  strig.classList.toggle('open',open); };
+
+paint();
+
+/*  THE GESTURE USES card.html's OWN FLOORS , LOCK_PX 12, DIST 48, SLOW 800 , and the same
+    axis-lock shape, so what this demo feels like is what the real one would feel like. The
+    only difference is that it locks to 'y' and lets 'x' through, the mirror of today.  */
+(function(){
+  var st=document.getElementById('st1'); if(!st) return;
+  var x0=0,y0=0,t0=0,tracking=false,axis=null,LOCK=12,DIST=48,SLOW=800;
+  st.addEventListener('touchstart',function(e){ if(e.touches.length!==1){tracking=false;return;}
+    tracking=true;axis=null;x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now(); },{passive:true});
+  st.addEventListener('touchmove',function(e){ if(!tracking||e.touches.length!==1)return;
+    var dx=e.touches[0].clientX-x0, dy=e.touches[0].clientY-y0;
+    if(axis===null){ if(Math.max(Math.abs(dx),Math.abs(dy))<LOCK) return;
+      axis=Math.abs(dy)>Math.abs(dx)?'y':'x'; }
+    if(axis==='y'&&e.cancelable) e.preventDefault(); },{passive:false});
+  st.addEventListener('touchend',function(e){ if(!tracking)return; tracking=false;
+    var t=e.changedTouches&&e.changedTouches[0]; if(!t||axis!=='y')return;
+    var dy=t.clientY-y0; if(Math.abs(dy)<DIST)return; if(Date.now()-t0>SLOW)return;
+    go(dy<0?1:-1); },{passive:true});
+  // mouse fallback so the demo is usable on a laptop
+  var my=null;
+  st.addEventListener('mousedown',function(e){ my=e.clientY; });
+  window.addEventListener('mouseup',function(e){ if(my==null)return; var d=e.clientY-my; my=null;
+    if(Math.abs(d)>=DIST) go(d<0?1:-1); });
+  document.getElementById('cue1').onclick=function(){ go(1); };
+  document.getElementById('cued').onclick=function(){ go(1); };
+})();
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowDown'){ go(1); e.preventDefault(); }
+  if(e.key==='ArrowUp'){ go(-1); e.preventDefault(); }
+});
+if(window.matchMedia&&window.matchMedia('(hover:none),(pointer:coarse)').matches)
+  document.getElementById('cuew').textContent='Swipe';
+else document.getElementById('cuew').textContent='Drag';
+</script>
+</div></body></html>
