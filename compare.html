@@ -8,6 +8,7 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#F4EFE2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <title>VVonderXI , Compare</title>
@@ -216,6 +217,12 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   /* tagline , the selected tag's one-line blurb, the quiet third line of the triad */
   .vtagline{font-family:'Bricolage Grotesque';font-style:italic;font-size:15px;line-height:1.5;
     margin:10px auto 0;max-width:520px;color:var(--ink-soft)}
+  /*  THE ONE LINE THAT SAYS WHY THE INDEX STEPPED BACK , 2026-09-13. It is quieter than the
+      blurb above it on purpose: the blurb is the tag's own voice and this is a footnote to it.
+      Reading order is tag, then what happened, then why.  */
+  .vtagwhy{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;
+    margin:8px auto 0;max-width:440px;color:var(--ink-soft)}
+  .vtagwhy:empty{display:none}
   /* TIE MARKER , a tie has no side, so ONE centred pill above the VS medal instead of two
      symmetrical flags. display:none when unused (unlike .edge-flag, which reserves its box to
      stop the cards jumping) , this sits in a centred column, so its absence shifts nothing sideways. */
@@ -1247,7 +1254,7 @@ body.light .pkmsub{color:var(--ink-soft)}
                Same content, reweighted , nothing here is hardcoded, see vvSetVerdict. -->
           <div class="vlabel">The Verdict</div>
           <div class="vwho"></div>
-          <div class="vscore" id="vScore"></div><div class="vtagline" id="vTagline"></div>
+          <div class="vscore" id="vScore"></div><div class="vtagline" id="vTagline"></div><div class="vtagwhy" id="vTagWhy"></div>
           <div class="vsplit"></div>
           <div class="vquote vquote-wait">Reading the season</div>
           <div class="vquote vquote2"></div>
@@ -1289,13 +1296,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913e"></script>
+<script src="/vv-marks.js?v=20260913f"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260913e"></script>
+<script src="/vv-core.js?v=20260913f"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2046,8 +2053,12 @@ body.light .pkmsub{color:var(--ink-soft)}
   /* Mirrors card.html's vvShareX / vvShareWhatsApp, on the LEDGER text rather than the
      card text. Both surfaces now offer the same four options beside the main button. */
   function vvVerdictX(){
-    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(vvLedgerText())+
-                '&url='+encodeURIComponent(location.href),'_blank','noopener');
+    /* The handle, not the brand word , see VVCore.vvXText. X only, for the same reason as
+       card.html's vvShareX: the ledger text carries no brand word, so it gets the handle on
+       its own line rather than a swap. */
+    var _t=(window.VVCore&&VVCore.vvXText)?VVCore.vvXText(vvLedgerText()):vvLedgerText();
+    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(_t)+
+      '&url='+encodeURIComponent(location.href),'_blank','noopener');
   }
   function vvVerdictWhatsApp(){
     window.open('https://wa.me/?text='+encodeURIComponent(vvLedgerText()+' '+location.href),'_blank','noopener');
@@ -2563,6 +2574,38 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(tl){
       var _blurb = _tag && (_tag.blurb || _tag.drury) || '';
       tl.textContent=_blurb; tl.style.display = _blurb ? '' : 'none';
+    }
+    /*  WHY THE INDEX STEPPED BACK , ONE LINE, ON ONE TAG, ADDED 2026-09-13. The platform tells
+        a reader THAT the score could not separate two seasons and never told them WHY, and the
+        only published explanation lived on the VV Index page, which has since dropped it by
+        decision. Measured before writing this: the word "margin" appears ZERO times on the
+        Playbook, the card, rankings and the home page. Without this line the behaviour is named
+        on the one surface where a reader meets it and explained on none.
+        NO NUMBER, NO MARGIN, NO APPARATUS , deliberately. The page already declines to print
+        the two scores in this state (see the winNote block in vvGenerateVerdict, and the reason
+        it gives), so printing the error that separates them would be the same leak by another
+        route. "Finer than the Index can reliably read" is the whole idea.
+
+        WHY THIS SENTENCE IS SAFE, AND IT IS A CONDITION SOMEONE COULD LATER BREAK WITHOUT
+        NOTICING. It would be FALSE beside a pairing the platform declined to settle , it says
+        the record decided, by implication , and it is safe only because `decided_on_record`
+        CANNOT fire on a decline. Read from VVCore.applyVerdictOutcome rather than assumed: a
+        null or unresolvable winner id RETURNS EARLY and leaves the floor tag as `the_debate`;
+        `out.floorTag = 'decided_on_record'` is set on the same path that has just set
+        `out.winner = side` and `out.decidedBy = 'ai'`. Winner and tag are assigned together,
+        so the tag is a guarantee that a side was named.
+        IF THAT EVER CHANGES , if the tag is allowed to fire without a winner, or is reused for
+        a decline , THIS LINE MUST GO WITH IT. It will not throw, it will not look wrong in a
+        diff, and it will simply start telling readers a thing that did not happen.
+
+        KEYED ON THE TAG OBJECT, NOT ITS NAME. Identity against VERDICT_TAGS.decided_on_record
+        survives a rename of the display name, and if the key is ever deleted the comparison is
+        false and the line renders nothing rather than attaching itself to the wrong tag.  */
+    var wy=document.getElementById('vTagWhy');
+    if(wy){
+      var _VT=(window.VVCore && VVCore.VERDICT_TAGS) || {};
+      wy.textContent = (_tag && _tag === _VT.decided_on_record)
+        ? 'A gap this small is finer than the Index can reliably read.' : '';
     }
 
     /* TIE MARKER , one centred pill, only in state 3. The two edge flags stay hidden

@@ -7,6 +7,7 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#F4EFE2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <title>VVonderXI , Player Cards</title>
@@ -1336,8 +1337,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913e"></script>
-<script src="/vv-core.js?v=20260913e"></script>
+<script src="/vv-marks.js?v=20260913f"></script>
+<script src="/vv-core.js?v=20260913f"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -3626,7 +3627,10 @@ function vvShareCard(btn){
 }
 
 function vvShareX(){
-  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(vvShareText())+'&url='+encodeURIComponent(vvShareURL()),'_blank','noopener');
+  /* The handle, not the brand word , see VVCore.vvXText. X only: this is the one destination
+     where @vvonderxi is a link rather than text. WhatsApp below keeps the word. */
+  var _t=(window.VVCore&&VVCore.vvXText)?VVCore.vvXText(vvShareText()):vvShareText();
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(_t)+'&url='+encodeURIComponent(vvShareURL()),'_blank','noopener');
 }
 function vvShareWhatsApp(){
   window.open('https://wa.me/?text='+encodeURIComponent(vvShareText()+' '+vvShareURL()),'_blank','noopener');

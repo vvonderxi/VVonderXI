@@ -5114,6 +5114,26 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       FAILS OPEN, NOT CLOSED: an unknown code returns itself, so a tenth league added to the
       database shows its code rather than an empty string, which is visible and fixable
       instead of silent.  */
+  /*  THE HANDLE, ONCE , 2026-09-13. The platform's only follow prompt lived on contact.html,
+      which is linked from exactly ONE place in the whole product: a row inside preferences.
+      Three taps and two page loads from a gear icon. Meanwhile the share text said "VVonderXI"
+      as a WORD, and on X a word is not a link , the handle is. So the single highest-intent
+      moment on the platform, someone posting a card, was the one place we were not asking.
+      X ONLY, AND THAT IS DELIBERATE. WhatsApp renders a handle as dead text and the copy-link
+      payload is read by a person, not a platform, so both keep the brand word. Only the X
+      intent gets the swap.
+      IT REPLACES THE BRAND WORD RATHER THAN APPENDING TO IT. "M. Gotze . 18/19 . VV 78 on
+      VVonderXI via @vvonderxi" says the same thing twice; the handle simply IS the brand on
+      that platform. The LAST occurrence is the one swapped, so a text mentioning us twice ends
+      on the linkable form. A text with no brand word gets the handle on its own line, which is
+      the convention there.  */
+  var VV_HANDLE_X = '@vvonderxi';
+  function vvXText(text){
+    var t = String(text == null ? '' : text).trim();
+    if(!t) return VV_HANDLE_X;
+    if(/VVonderXI/.test(t)) return t.replace(/VVonderXI(?![\s\S]*VVonderXI)/, VV_HANDLE_X);
+    return t + '\n\n' + VV_HANDLE_X;
+  }
   function vvLeagueName(code){
     if(code==null || code==='') return '';
     for(var i=0;i<VVF_LEAGUES.length;i++) if(VVF_LEAGUES[i].v===code) return VVF_LEAGUES[i].l;
@@ -6776,7 +6796,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,

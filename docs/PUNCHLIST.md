@@ -3,7 +3,7 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 9 of 20 rows (45%)**
+**COMPLETE: 11 of 20 rows (55%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
@@ -22,8 +22,8 @@ that only ever rises is measuring the writing, not the work.**
 | 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
 | 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
 | 9 | League split as a pie chart styled as a football | **DONE** | Claude | Ring dropped, measured unreadable at 1.14px per neighbour. Treatment B live: a drawn ball, shares on the chips, equal-share line |
-| 10 | Instagram + X calls to action placed properly | NOT STARTED | Claude | Propose placements, not buried in Me > Contact |
-| 11 | "Add to home screen" prompt | NOT STARTED | Claude | Possibly under Playbook |
+| 10 | Instagram + X calls to action placed properly | **DONE (1 and 2)** | Claude | @vvonderxi in the X share text, follow row in the home drawer. 3 and 4 not now. **Accounts may be dormant , Lucas to confirm** |
+| 11 | "Add to home screen" prompt | **DONE** | Claude | It was built and could not fire: no manifest anywhere. Manifest added, Android/iOS split, hidden when installed, prompt on the HOME page |
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
 | 14 | VV Index band section duplicates Playbook, reads dense | **DEMO OUT, AWAITING LUCAS** | Lucas | 1,645 of 4,153 words (40%) duplicate the Playbook. Rebuilt page demoed: amputated, 10 rows, margin diagram, 97% pull-quote |
@@ -632,3 +632,39 @@ counted the rendered rows: sixteen `.tagdef` elements and **not one carries `.pr
 tags moved to their own exhibit. A rule guarding a class no element has is a selector that matches
 nothing. The older `.tagdef.prestige` block further up the sheet is in the same state and is left
 for its own sweep.
+
+### 10 and 11 , the follow ask, and an install prompt that could never have fired
+
+**10. THE X SHARE TEXT SAID "VVonderXI" AS A WORD, AND ON X A WORD IS NOT A LINK.** The single
+highest-intent moment on the platform , someone posting a card , was the one place we were not
+asking. `VVCore.vvXText` swaps the brand word for the handle on the X intent ONLY: WhatsApp renders
+a handle as dead text, and the copy-link payload is read by a person rather than a platform.
+It REPLACES rather than appends, because "on VVonderXI via @vvonderxi" says the same thing twice.
+
+**AND THE DRAWER ROW REACHES LESS THAN I SAID IT WOULD , CORRECTED HERE RATHER THAN QUIETLY.** I
+proposed it as "one tap from any of the nine pages". **Only `index.html` has a drawer.** The other
+eight navigate by the `.spine` rail, which is `display:none` below 720px, so a row placed there
+would be desktop-only. The home page is where a phone visitor lands, which is why the row is worth
+having on its own , but a genuinely platform-wide follow ask is nine more copies or a vv-core
+injector that reaches only the five surfaces which load it. **Not decided unilaterally.**
+
+**11. THE FEATURE WAS ALREADY BUILT AND COULD NOT WORK ON ANY PLATFORM.** `preferences.html` had
+the row, a `beforeinstallprompt` handler, an iOS fallback sheet, and two helper functions. Three
+faults, and the first disabled the rest:
+- **THERE WAS NO MANIFEST.** Not a broken one , none, and no page linked one. Chrome requires an
+  installable manifest before it fires `beforeinstallprompt`, so the Android path was dead code
+  from the day it was written.
+- **SO EVERY TAP FELL THROUGH TO THE iOS SHEET**, which told Android users to find Safari's Share
+  button.
+- **`isStandalone()` WAS DEFINED AND NEVER CALLED**, so the row offered to install the app to
+  someone already inside the installed app.
+
+**THE LESSON IS THE SHAPE, NOT THE BUG: every piece existed and nothing connected them.** It read
+as finished in the source and had never once appeared correctly on a screen.
+
+**THE PROMPT IS ON THE HOME PAGE, AND IT IS `position:fixed` BECAUSE IT HAS TO BE.** SS D records
+`index.html` as the one page meant to be a single fixed screen, and a defect was fixed in September
+where 86px of dead scroll appeared on an iPhone. **Measured: the strip adds ZERO height and the page
+still does not scroll.** It waits for a second visit, hides for good once dismissed, and only
+appears when there is something real to offer , a waiting prompt, or iOS, where there never will be
+one and the instructions are all we have.

@@ -8,6 +8,7 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#F4EFE2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <title>VVonderXI , Preferences</title>
@@ -442,7 +443,7 @@
       <div class="megroup">
         <div class="meglabel">App</div>
         <div class="mecard">
-          <div class="merow install" id="installRow" onclick="installApp()">
+          <div class="merow install" id="installRow" style="display:none" onclick="installApp()">
             <svg class="meicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M12 17.5v.01"/><path d="M9.5 6.5h5"/></svg><span class="ml">Add to Home Screen</span><span class="mv">Install</span><span class="chev">&#8250;</span>
           </div>
         </div>
@@ -469,7 +470,7 @@
   <div class="iosback" id="iosBack" onclick="closeIos()"></div>
   <div class="iossheet" id="iosSheet">
     <div class="iostitle">Add VVonderXI to your phone</div>
-    <div class="iosbody">Tap the <b>Share</b> icon in your browser bar, then choose <b>Add to Home Screen</b>. VVonderXI opens full screen, just like an app.</div>
+    <div class="iosbody" id="iosBody"></div>
     <button class="iosclose" onclick="closeIos()">Got it</button>
   </div>
 
@@ -484,14 +485,46 @@
 
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);var sw=document.getElementById('meThemeSw');if(sw)sw.classList.toggle('on',document.body.classList.contains('light'));}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();
 function meTheme(sw){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}if(sw)sw.classList.toggle('on');var b=document.querySelector('.modetoggle');if(b)vvSync(b);}
+/*  THE INSTALL ROW WAS BUILT, AND IT COULD NOT WORK ON ANY PLATFORM , FIXED 2026-09-13.
+    THREE FAULTS, AND THE FIRST ONE DISABLED THE OTHER TWO.
+    (1) THERE WAS NO MANIFEST. Not a broken one , none, and no page linked one. Chrome
+        requires an installable manifest before it will fire `beforeinstallprompt`, so
+        `deferredPrompt` was permanently null and the Android path was dead code from the day
+        it was written. `/manifest.webmanifest` now exists and every page links it.
+    (2) SO EVERY TAP FELL THROUGH TO THE iOS SHEET, which tells you to find Safari's Share
+        button. An Android user was being given instructions for a browser they are not using.
+        The fallback is gated on `isiOS()` now, and anything else gets its own line.
+    (3) `isStandalone()` WAS DEFINED AND NEVER CALLED, so the row offered to install the app
+        to someone already inside the installed app. It is called now, and the row hides.
+    THE TWO HELPERS WERE ALREADY HERE AND UNUSED. That is the part worth remembering: the
+    feature looked finished, every piece of it existed, and nothing connected them.  */
 var deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;var r=document.getElementById('installRow');if(r)r.style.display='flex';});
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;vvInstallSync();});
 function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
 function isiOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent);}
-function installApp(){if(deferredPrompt){deferredPrompt.prompt();if(deferredPrompt.userChoice)deferredPrompt.userChoice.finally(function(){deferredPrompt=null;});return;}openIos();}
-function openIos(){document.getElementById('iosBack').classList.add('show');document.getElementById('iosSheet').classList.add('show');}
+/*  ONE FUNCTION DECIDES WHETHER THE ROW EXISTS, and it is called on load AND when Chrome fires,
+    because those arrive in either order. Shown when there is something to offer: a real prompt
+    waiting, or iOS, where there never will be one and the instructions are all we have.  */
+function vvInstallSync(){
+  var r=document.getElementById('installRow'); if(!r) return;
+  var offer = !isStandalone() && (deferredPrompt || isiOS());
+  r.style.display = offer ? 'flex' : 'none';
+}
+function installApp(){
+  if(deferredPrompt){deferredPrompt.prompt();if(deferredPrompt.userChoice)deferredPrompt.userChoice.finally(function(){deferredPrompt=null;vvInstallSync();});return;}
+  openIos();
+}
+function openIos(){
+  /*  THE COPY IS CHOSEN WHEN THE SHEET OPENS, not written into the markup, because the
+      instructions differ by browser and the old ones named Safari's Share button to everybody.
+      The generic line says what to look for without claiming to know where it is.  */
+  var b=document.getElementById('iosBody');
+  if(b) b.innerHTML = isiOS()
+    ? 'Tap the <b>Share</b> icon in your browser bar, then choose <b>Add to Home Screen</b>. VVonderXI opens full screen, just like an app.'
+    : 'Open your browser\u2019s menu and choose <b>Install app</b> or <b>Add to Home screen</b>. VVonderXI opens full screen, just like an app.';
+  document.getElementById('iosBack').classList.add('show');document.getElementById('iosSheet').classList.add('show');}
 function closeIos(){document.getElementById('iosBack').classList.remove('show');document.getElementById('iosSheet').classList.remove('show');}
-document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);var sw=document.getElementById('meThemeSw');if(sw&&document.body.classList.contains('light'))sw.classList.add('on');if(isStandalone()){var r=document.getElementById('installRow');if(r)r.style.display='none';}});
+document.addEventListener('DOMContentLoaded',function(){vvInstallSync();var b=document.querySelector('.modetoggle');if(b)vvSync(b);var sw=document.getElementById('meThemeSw');if(sw&&document.body.classList.contains('light'))sw.classList.add('on');if(isStandalone()){var r=document.getElementById('installRow');if(r)r.style.display='none';}});
 window.addEventListener('scroll',function(){var t=document.getElementById('totop');if(t)t.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>520);});
 </script>
 
