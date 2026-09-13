@@ -14,10 +14,16 @@
       thirty-eight hand-typed `style="color:var(--pink-ink)"` spans across eleven files, plus a
       fifth private copy in compare as `.tjvp`. A rule written thirty-eight times is a rule
       nobody can change, which is how the nav wordmark drifted on two pages as punchlist item 12.
-      THIS PAGE DECLARES IT LOCALLY BECAUSE IT DOES NOT LOAD vv-core.js. The five surfaces that
-      do get it from VV_CARD_CSS instead. `scripts/lint-inline.js` fails the build if a page
-      contains class="vvw" and neither declares this rule nor loads vv-core , without that check
-      the failure is silent, and a black V where a pink one belongs looks like a font problem.  */
+      THIS PAGE DECLARES IT LOCALLY BECAUSE IT LOADS NO SHARED SCRIPT. The five surfaces that
+      do take it from VV_CARD_CSS instead. `scripts/lint-inline.js` fails the build if a page
+      contains class="vvw" and neither declares this rule nor loads the shared core , without
+      that check the failure is silent, and a black V where a pink one belongs looks like a
+      font problem rather than a missing rule.
+      AND NEITHER SHARED SCRIPT IS NAMED ANYWHERE IN THIS COMMENT, ON PURPOSE. SS C's cache-token
+      rule finds the surface list by grepping every .html for those two filenames, so writing
+      either one here put five token-less pages into that result and broke the one check the
+      rule depends on. A COMMENT THAT MENTIONS A FILENAME JOINS EVERY GREP FOR IT , which is
+      how this was introduced and caught within the hour, by running the QA pass's own A2.  */
   .vvw{color:var(--pink-ink)}
   :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0}
   *{margin:0;padding:0;box-sizing:border-box}
