@@ -26,7 +26,7 @@ that only ever rises is measuring the writing, not the work.**
 | 11 | "Add to home screen" prompt | **DONE** | Claude | It was built and could not fire: no manifest anywhere. Manifest added, Android/iOS split, hidden when installed, prompt on the HOME page |
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
-| 14 | VV Index band section duplicates Playbook, reads dense | **DEMO OUT, AWAITING LUCAS** | Lucas | 1,645 of 4,153 words (40%) duplicate the Playbook. Rebuilt page demoed: amputated, 10 rows, margin diagram, 97% pull-quote |
+| 14 | VV Index band section duplicates Playbook, reads dense | **DEMO v3, AWAITING LUCAS** | Lucas | Margin removed by his call. Coverage timeline carries it, "Zero." is the quote, five extensions in. **Contact CTA required a real fix: contact.html had NO nav at all** |
 | 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
 | 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
@@ -668,3 +668,26 @@ where 86px of dead scroll appeared on an iPhone. **Measured: the strip adds ZERO
 still does not scroll.** It waits for a second visit, hides for good once dismissed, and only
 appears when there is something real to offer , a waiting prompt, or iOS, where there never will be
 one and the instructions are all we have.
+
+### 14 , and the one real defect the demo work turned up
+
+**CONTACT.HTML WAS THE ONLY PAGE IN THE PRODUCT WITH NO NAVIGATION AT ALL.** Every other page,
+`preferences` and `myclub` and `iwonder` included, carries the spine rail and the bottom bar. This
+one had a back chevron calling `history.back()` **with no fallback**, so a visitor arriving DIRECTLY
+, a shared link, a search result, or the new CTA on the VV Index , landed on a page with no way
+onward, and the chevron did nothing at all, silently. It now carries the five-destination bar and
+the chevron falls back to the home page.
+
+**THE SPINE IS NOT ADDED, AND THAT IS A DECISION RATHER THAN AN OMISSION.** This page's body is
+`max-width:412px; margin:0 auto` at EVERY viewport , it is a phone-shaped sheet, not a platform
+page, and a rail cannot sit beside a centred 412px column without redesigning it. **That is Lucas's
+call, not something to smuggle into a nav fix.**
+
+**AND THE BOTTOM BAR SHOWS AT EVERY WIDTH HERE, ALONE ON THE PLATFORM.** Everywhere else it is
+`display:none` until 720px because the spine takes over; this page has no spine to hand over to, so
+hiding it above 720 would restore the exact defect being fixed.
+- **THE WAY THAT WAS FOUND IS THE POINT.** I copied the rules across with a line-based regex, which
+  lifted the `display:flex` rule OUT of its `@media (max-width:720px)` wrapper and left it
+  contradicting the `display:none` above it. **The paste read fine. Measuring the rendered page at
+  1200 is what caught it** , the same family SS C records as a block move losing its `@media`
+  closer.
