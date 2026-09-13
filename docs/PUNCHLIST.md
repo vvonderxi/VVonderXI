@@ -3,13 +3,13 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 3 of 14 (21%)**
+**COMPLETE: 4 of 16 (25%)**
 
 | ID | Item | Status | Owner | Note |
 |----|------|--------|-------|------|
 | 1 | Verdict reasoning , reason-to-winner, or pick-then-justify? | NOT STARTED | Claude | Report how the crown is actually decided |
-| 2 | "The Debate Lives On" fires too often , measure tag distribution | IN PROGRESS | Claude | Nani 74 vs Odegaard 67 is a 7pt gap with no winner |
-| 3 | BUG , verdict tag renders before the AI finishes | NOT STARTED | Claude | Needs a loading state, football-flavoured line |
+| 2 | "The Debate Lives On" fires too often | **PENDING DECISION** | Lucas | Gate is right. The COPY asserts closeness the data does not support. Framings owed |
+| 3 | BUG , verdict tag renders before the AI finishes | **DONE** | Claude | Wait chip reads "Still watching the tape", no tooltip, crown badge suppressed too |
 | 4 | Verdict tag tappable on phone, hover on desktop | NOT STARTED | Claude | Meaning available without scrolling |
 | 5 | Individual honours outweigh team honours in the verdict | NOT STARTED | Claude | Story also reads jumbled, as the verdict did |
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
@@ -21,6 +21,8 @@ Update the row the moment an item moves. Lead every report with this table.
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
 | 14 | VV Index band section duplicates Playbook, reads dense | NOT STARTED | Claude | Propose concise + visual |
+| 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
+| 16 | Squad number backfill via Fable | **BLOCKED** | Lucas | Batch 2 FAILED the yield gate at 7.7%. Batch 1 scoring needs Fable's returned numbers |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -68,3 +70,109 @@ it at 1166 while the pill ran to 1182 , **16px gone, which is exactly the rounde
 - Measured: 27px overflows by 36, 24px by 2, **23px fits with 9px to spare**. Cap is now 23px.
 - **`max-width:100%` ADDED AS A HARD GUARD, WHICH IS NOT THE FIX.** A longer address or a font swap
   can never silently clip again , it wraps instead, which is visible. It does not fire at 23px.
+
+
+### 2 , "The Debate Lives On". MEASURED. THE RULE IS WORKING AND THE GATE IS RIGHT.
+
+**THE RULE, verbatim, `vv-core.js` verdictContext:** `const ladder = separation !== 'separated' ? 'the_debate'`
+Any pair the margin gate does not separate gets this tag. There is no second condition.
+
+**THE MARGIN BAND IS PER-PAIR, NOT A CONSTANT.** `margin = 1.96 x pooled SE` of the two cards,
+from `vv-margin.js`. It fails CLOSED: an unknown card returns null and is treated as inside.
+
+**LUCAS'S CASE IS THE GATE WORKING, NOT A BUG.** Nani 16/17 (74) against Odegaard 25/26 (67):
+
+    SE 7.20 and 7.60   ->   margin required 20.52   ->   actual gap 7   ->   the_debate
+
+**The gap would have to be 21 or more to crown.** Both cards sit where the error is widest.
+
+**HOW OFTEN IT FIRES, measured over 120,000 random pairings per pool, BOTH cards in band:**
+
+    both rt >= 90    the_debate  91.4%     mean gap 1.7   mean margin 5.4
+    both rt >= 85    the_debate  96.3%     mean gap 2.7   mean margin 9.5
+    both rt >= 80    the_debate  97.1%     mean gap 4.0   mean margin 13.1
+    both 70 to 79    the_debate 100.0%     mean gap 3.3   mean margin 18.5
+    both 60 to 69    the_debate  97.6%     mean gap 3.2   mean margin 16.1
+
+**97.1% at rt>=80 reproduces the code comment's 97.0% independently.** So for any realistic
+comparison , two seasons worth putting side by side , the tag is effectively the DEFAULT.
+
+**LOOSENING THE GATE IS THE ONLY LEVER AND IT DOES NOT WORK. Crown rate by confidence level:**
+
+    pool          95% (now)    90%     80%    68%    50% coin-flip
+    both >= 85         3.7%   6.1%   11.5%  20.4%   36.8%
+    both >= 80         3.0%   6.2%   14.0%  23.5%   40.3%
+    both 70-79         0.0%   0.1%    0.6%   2.5%   14.9%
+
+**Even at ONE standard error the crown fires 20 to 24% of the time, and at a coin-flip 37 to 40%.**
+There is no Z that produces a confident winner often AND honestly. **Lowering it crowns on noise,
+which is the exact thing the gate was built to stop** , the record says the old behaviour crowned
+an unsupportable winner on 61.9% of real comparisons.
+
+**SO THE PROBLEM IS NOT THE GATE, IT IS THAT THE TAG READS AS A NON-ANSWER.** The engine is right
+that it cannot separate two similar seasons; what is wrong is that the product's headline outcome,
+on nearly every comparison, is a phrase that sounds like a shrug. **That is a copy and presentation
+decision, not a threshold one, and it belongs to Lucas.**
+
+### 3 , the tag renders before the AI finishes. CONFIRMED, with the line.
+
+**`compare.html:2675`, and the comment says so in its own words:**
+
+    vvSetVerdict(null,'',winner,va,vb,VC,TAGS[VC.floorTag],null,false,{wait:true,label:_waitLab});
+    // show deterministic floor tag immediately
+
+`vvSetVerdict` sets the chip **unconditionally**, with no `opts.wait` guard:
+`if(chip && tagObj){ chip.innerHTML=tagObj.emoji+' '+tagObj.name; ... chip.style.display=''; }`
+
+**So the chip shows a client-side floor tag while the request is still out, and is REPLACED with
+`TAGS[chosen]` when the model answers.** A reader sees a conclusion, then sees it change. Worse
+than an empty space, because the first one looks settled.
+
+
+### 3 , DONE. The wait chip.
+`vvSetVerdict` set the chip unconditionally; it is now branched on `opts.wait`. The wait state
+renders **"Still watching the tape"** as a dashed, muted `.vtag-wait` with **no `data-tip`** ,
+there is no meaning to reveal yet, and a tooltip on a loading state invites a tap that answers
+nothing. **The crown BADGE above the winning card is suppressed in the wait too**, for the same
+reason: `opts.wait` passes a deterministic winner, which would crown a side pre-emptively.
+Verified rendered: wait shows the dashed chip with no crown; answered shows the gold tag and its
+tooltip.
+
+### 2 , THE FRAMING. What I found is sharper than "the tag fires too often".
+
+**THE PROSE IS REQUIRED TO NAME A WINNER. Path B's instruction, verbatim from compare.html:**
+> "Weigh the whole record , the honours actually won, the recorded figures with their
+> denominators, where each sits in his own position pool, the role and what that role makes rare,
+> the league, the minutes behind every rate, the career stage and the age , and **NAME THE SEASON
+> YOU JUDGE BETTER**, leading with the reason rather than the name."
+
+**So the model is not overstepping. It is doing what it is told**, and "on those grounds, this one
+belongs to Odegaard" is the instruction being followed.
+
+**AND THE TAG IS ALREADY DESIGNED TO FOLLOW THAT DECISION.** `applyVerdictOutcome` in vv-core says
+so in its own comment: *"THE TAG FOLLOWS THE SAME DECISION, because the one it had contradicts a
+crown. An inside pair floors on 'the_debate', whose blurb reads 'so close it won't end the
+argument' , printed beside a badge naming a winner, on the same row."* When the model names a
+winner and the server verifies the id, `floorTag` becomes **`photo_finish`**, not `the_debate`.
+
+**SO A SCREENSHOT SHOWING BOTH MEANS THE MODEL'S PROSE AND ITS `winner` FIELD DISAGREED.** The
+prose argued for Odegaard while the field came back null (or the id failed verification), so
+`applyVerdictOutcome` returned early and the tag stayed on the floor. **That is a prompt-contract
+violation, not a UI bug**, and it is the thing to watch: the same prompt says *"Return your answer
+in the winner field as well: A, B, or null if you declined."*
+
+**THE CACHE CANNOT MEASURE HOW OFTEN.** Only **3 of 113** cached rows were created after the margin
+gate shipped, and the 13 no-crown rows in it come from the OLD rule. Measured on the cache the
+answer is 0%, and **that 0% is an artefact of staleness, not evidence.** It needs re-measuring once
+the cache refills, same as the emphasis density question.
+
+**THE COPY IS THE PART THAT IS ACTUALLY WRONG, AND IT IS OURS, NOT THE MODEL'S.** Current state:
+
+    headline   "Too close for the Index to separate."
+    blurb      "So close it won't end the argument. Fuel for the next conversation."
+
+**On Nani 74 against Odegaard 67 that is false.** The gap is SEVEN POINTS and the margin required
+is 20.52. They are not close , the measurement is imprecise. **The copy asserts a closeness the
+data does not support**, which is the same class of error as a band claiming reproducibility it
+cannot deliver (SS E, vvindex `.bjury`). The honest statement is "the Index cannot tell these
+apart", and those are different sentences.

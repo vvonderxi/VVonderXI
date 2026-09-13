@@ -648,6 +648,12 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
   .vsprose-wait,.vquote-wait{color:var(--ink-soft) !important;font-style:normal !important;
     display:flex;align-items:center;gap:8px}
+  /*  THE WAIT CHIP , not a tag, so it must not look like one. The gold .vtag is the verdict
+      badge; this drops its fill and weight to a muted outline so nothing on the panel reads
+      as decided while the model is still working. Same reasoning as .vq-na for the prose.  */
+  .vtag.vtag-wait{background:none !important;border:1px dashed rgba(243,237,224,0.28) !important;
+    color:var(--ink-soft) !important;font-style:normal;letter-spacing:.02em;cursor:default}
+  body.light .vtag.vtag-wait{border-color:rgba(28,27,26,0.24) !important;color:var(--ink-soft) !important}
   body.light .vsprose b{color:var(--gold-ink)}
 
   /* ===== Mobile-match: search bar, bar-chart trajectory, proof, data confidence ===== */
@@ -2502,13 +2508,41 @@ body.light .pkmsub{color:var(--ink-soft)}
 
     var chip=document.getElementById('vEdgeTag');   // the ONE verdict-section tag chip (was the hardcoded Henry gold pill)
     // data-tip = the tag's one-line BLURB (from VERDICT_TAGS, not duplicated); shared vv-core tooltip = hover (desktop) + tap (mobile)
-    if(chip && tagObj){ chip.innerHTML=tagObj.emoji+' '+tagObj.name; chip.setAttribute('data-tip', tagObj.blurb||tagObj.drury||''); chip.style.display=''; }
+    /*  THE CHIP MAY NOT SHOW A TAG WHILE THE MODEL IS STILL THINKING , FIXED 2026-09-13.
+        It used to be set unconditionally, and vvGenerateVerdict calls this function in the
+        WAIT state with the client-side floor tag , its own comment said "show deterministic
+        floor tag immediately". So a reader saw a settled-looking conclusion before one had
+        been reached, and then saw it CHANGE when the model answered and `TAGS[chosen]`
+        replaced it. Worse than an empty slot: the first tag looks decided.
+        THE WAIT STATE GETS A WAIT CHIP, NOT A VERDICT. Same register as the prose beside it,
+        which already says "Reading the seasons". It carries NO data-tip: there is no meaning
+        to reveal yet, and a tooltip on a loading state invites a tap that answers nothing.
+        `vq-na`-style muting is deliberate , see .vtag-wait.  */
+    if(chip){
+      if(opts.wait){
+        chip.classList.add('vtag-wait');
+        chip.textContent='Still watching the tape';
+        chip.removeAttribute('data-tip');
+        chip.style.display='';
+      } else if(tagObj){
+        chip.classList.remove('vtag-wait');
+        chip.innerHTML=tagObj.emoji+' '+tagObj.name;
+        chip.setAttribute('data-tip', tagObj.blurb||tagObj.drury||'');
+        chip.style.display='';
+      } else {
+        chip.classList.remove('vtag-wait');
+        chip.style.display='none';
+      }
+    }
     // crown BADGE above the winning card , same selected tag (was a hardcoded winner label over card A)
     var efa=document.getElementById('edgeFlagA'), efb=document.getElementById('edgeFlagB');
     if(efa&&efb){
       efa.classList.remove('ef-show'); efb.classList.remove('ef-show');
       efa.removeAttribute('data-tip'); efb.removeAttribute('data-tip');
-      if(tagObj && (winner==='A'||winner==='B')){
+      /*  AND THE CROWN BADGE STAYS DOWN DURING THE WAIT, for the same reason: it names a
+          winner above a card before the verdict exists. `opts.wait` passes a floor tag and a
+          deterministic winner, which together would crown a side pre-emptively.  */
+      if(!opts.wait && tagObj && (winner==='A'||winner==='B')){
         var winEf=(winner==='A')?efa:efb, winLab=winEf.querySelector('.eflabel');
         if(winLab) winLab.textContent=tagObj.name;
         winEf.setAttribute('data-tip', tagObj.blurb||'');   // same shared tooltip as the chip
