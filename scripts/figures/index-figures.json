@@ -1,0 +1,56 @@
+{
+  "generated": "2026-09-13",
+  "source": "player_card_mv",
+  "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
+  "figures": [
+    {
+      "key": "cards_total",
+      "value": 57055,
+      "claim": "every player season we hold",
+      "definition": "every row on player_card_mv",
+      "query": "select count(*) from player_card_mv"
+    },
+    {
+      "key": "cards_scored",
+      "value": 53994,
+      "claim": "seasons carrying a VV Score",
+      "definition": "rt is not null. 3,061 cards have no score and must never be counted as zero",
+      "query": "select count(*) from player_card_mv where rt is not null"
+    },
+    {
+      "key": "cards_no_detail",
+      "value": 18725,
+      "claim": "seasons with no detailed record at all",
+      "definition": "all four of shots_total, passes_total, duels_total, dribbles_attempts are null. A card missing SOME of them is partial, not absent",
+      "query": "select count(*) from player_card_mv where shots_total is null and passes_total is null and duels_total is null and dribbles_attempts is null"
+    },
+    {
+      "key": "cards_no_detail_share",
+      "value": 32.8,
+      "claim": "share of the record with no detailed stats, per cent",
+      "definition": "cards_no_detail / cards_total",
+      "query": "derived"
+    },
+    {
+      "key": "cards_no_shots",
+      "value": 21447,
+      "claim": "seasons with no shot data",
+      "definition": "shots_total is null. KEPT ON PURPOSE as the near-miss: this is the number a reader would get from the obvious query, and it is NOT the headline figure. 2026-09-13 could not tell which of the two the page meant, which is why this file exists",
+      "query": "select count(*) from player_card_mv where shots_total is null"
+    },
+    {
+      "key": "cards_on_a_band_edge",
+      "value": 872,
+      "claim": "seasons within a single point of a band edge",
+      "definition": "rt in [b-1, b] for each public band edge 95, 90, 85, 80",
+      "query": "select count(*) from player_card_mv where (rt between 94 and 95) or (rt between 89 and 90) or (rt between 84 and 85) or (rt between 79 and 80)"
+    },
+    {
+      "key": "cards_on_a_band_edge_share",
+      "value": 1.61,
+      "claim": "share of SCORED seasons within a point of a band edge, per cent",
+      "definition": "cards_on_a_band_edge / cards_scored. The denominator is SCORED, not total , an unscored card cannot sit near a band edge and counting it dilutes the figure",
+      "query": "derived"
+    }
+  ]
+}
