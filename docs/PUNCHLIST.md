@@ -3,7 +3,7 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 6 of 18 rows (33%)**
+**COMPLETE: 9 of 20 rows (45%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
@@ -21,15 +21,17 @@ that only ever rises is measuring the writing, not the work.**
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
 | 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
 | 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
-| 9 | League split as a pie chart styled as a football | **REOPENED, DEMO OUT** | Lucas | Measured: neighbouring wedges differ by 0.88deg = 1.14px. The chart is to scale and unreadable. Three treatments to pick from |
+| 9 | League split as a pie chart styled as a football | **DONE** | Claude | Ring dropped, measured unreadable at 1.14px per neighbour. Treatment B live: a drawn ball, shares on the chips, equal-share line |
 | 10 | Instagram + X calls to action placed properly | NOT STARTED | Claude | Propose placements, not buried in Me > Contact |
 | 11 | "Add to home screen" prompt | NOT STARTED | Claude | Possibly under Playbook |
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
-| 14 | VV Index band section duplicates Playbook, reads dense | **MEASURED** | Lucas | 1,645 of 4,153 words (40%) duplicate the Playbook. It is bigger than the bands. Framing tested below |
+| 14 | VV Index band section duplicates Playbook, reads dense | **DEMO OUT, AWAITING LUCAS** | Lucas | 1,645 of 4,153 words (40%) duplicate the Playbook. Rebuilt page demoed: amputated, 10 rows, margin diagram, 97% pull-quote |
 | 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
 | 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
+| 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
+| 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Treatment A. Fills lifted to tokens in vv-core, closing the three-copy gold drift |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -597,3 +599,36 @@ inside the plate at every one; side by side down to 560 and stacked below it; th
 renders full width under the chip row and fully in the viewport. **The opacity readings taken while
 the tab was hidden are void and were discarded** , a 50ms timer took 768ms, the section C artefact;
 the screenshots are the evidence.
+
+### 19 , The dictionary starts speaking the card's colour language, and a three-copy drift closes with it
+
+**THE REASON TO DO IT THIS WAY IS THE DRIFT, NOT THE PLAYBOOK.** The family fills were literals
+inside `.vvcard .chtagcell-*`, reachable only from inside a card, and **the honour gold was not in
+`vv-core` at all , it was declared THREE times, in `card.html`, `compare.html` and
+`rankings.html`.** Adding a fourth copy for the Playbook was the obvious build and the wrong one.
+The fills are now tokens declared once, and every existing rule reads them.
+
+**THE RULES ARE NOT MOVED, ONLY THEIR VALUES, AND THAT IS DELIBERATE.** `vv-core`'s own note is
+explicit that `VV_CARD_CSS` PREPENDS and that `.vvcard .chtagcell.gold` in the pages wins only by
+coming later , relocating it would lose the gold on every honour pill. A token changes no cascade:
+same selector, same specificity, same position, one source of colour.
+
+**THE FAMILY IS LOOKED UP, NEVER TRANSCRIBED.** `FILTER_TAXONOMY.profile` already maps every tag
+name to its group and is the same object the filter rail reads. The grey chip beside each name held
+the family as TEXT, which WAS a transcription; it is hidden now. **All 16 tag names classify, zero
+unclassified**, and an unknown name keeps the default charcoal pill rather than rendering unstyled.
+
+**THE ONE THING THE PICK COULD NOT HAVE ANTICIPATED, MEASURED BEFORE SHIPPING: white on the card's
+GRADIENTS runs 2.34 to 7.08**, because a gradient has two stops and the text crosses both. SS C
+accepts that ON THE CARD FACE and scopes the exception to the face, so a dictionary entry , body
+copy on a page of body copy , takes the gradient's DARK stop as a flat fill instead. Measured on
+the shipping page at 19px/700, which is WCAG large text: **att 4.67, def 3.89, cross 9.73, honours
+4.37, and midfield 3.00 exactly at the bar.** That green is the same one SS C already lists as an
+accepted card-face exception at 2.34; here it clears rather than sits under. **If the gradients are
+ever re-cut, re-cut the solids with them in the same edit**, or a tag reads as two families.
+
+**AND A RULE I WROTE WAS DELETED BEFORE IT SHIPPED.** I added a `.tagdef.prestige` override, then
+counted the rendered rows: sixteen `.tagdef` elements and **not one carries `.prestige`** , those
+tags moved to their own exhibit. A rule guarding a class no element has is a selector that matches
+nothing. The older `.tagdef.prestige` block further up the sheet is in the same state and is left
+for its own sweep.

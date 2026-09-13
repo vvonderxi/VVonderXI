@@ -911,6 +911,43 @@
   .tagdef .tt{font-family:'Archivo';font-weight:800;font-size:18px;display:flex;align-items:center;gap:9px;color:var(--cream)}
   body.light .tagdef .tt{color:var(--charcoal)}
   .tagdef .tt .tn{min-width:0}
+  /*  THE TAG NAME IS THE TAG'S OWN PILL , 2026-09-13. A reader learns these colours on the
+      card face; the dictionary that teaches them was rendering every tag as plain text, so the
+      one surface whose job is to teach the language was the one surface not speaking it.
+      NOT A SECOND PALETTE. The fills are tokens declared once in vv-core beside the card's own
+      `.chtagcell-*` rules , see the note there. This surface adds no colour of its own, and
+      the family is looked up from FILTER_TAXONOMY rather than transcribed, so the dictionary
+      cannot drift from the filter rail or from the card.
+      WHY THE SOLID END RATHER THAN THE GRADIENT: white on the card's gradients measures 2.34
+      to 7.08 depending where a glyph lands. SS C accepts that on the CARD FACE and scopes the
+      exception to the face. This is body copy, so it takes the gradient's dark stop flat and
+      sits at large-text size, which clears the bar on all five families.
+      THE GREY FAMILY CHIP GOES. It said "Attack" beside a pill that now says attack in the
+      card's own red , two labels for one fact, and the quieter one was the redundant one.  */
+  .tagdef .tt .tn{font-family:'Barlow Condensed',Archivo,sans-serif;font-weight:700;font-size:19px;
+    line-height:1.2;letter-spacing:.02em;text-transform:uppercase;color:#fff;
+    background:var(--vvfam-cross-solid);padding:4px 13px;border-radius:9px;
+    display:inline-flex;align-items:center;gap:7px}
+  .tagdef .tt .tn.f-att{background:var(--vvfam-att-solid)}
+  .tagdef .tt .tn.f-mid{background:var(--vvfam-mid-solid)}
+  .tagdef .tt .tn.f-def{background:var(--vvfam-def-solid)}
+  .tagdef .tt .tn.f-cross{background:var(--vvfam-cross-solid)}
+  .tagdef .tt .tn.f-stage{background:var(--vvfam-stage-solid)}
+  .tagdef .tt .tn .vvm{width:15px;height:15px;flex:none}
+  .tagdef .tt .pill{display:none}
+  /*  NO PRESTIGE OVERRIDE HERE, AND THAT IS MEASURED RATHER THAN ASSUMED. I wrote one, then
+      counted: the page renders SIXTEEN `.tagdef` rows and NOT ONE carries `.prestige` , the
+      prestige tags moved to their own exhibit in `s-prestige`. A rule guarding a class no
+      element has is a selector that matches nothing, which SS C records as its own trap.
+      (The `.tagdef.prestige` block further up this sheet is in the same state and is left
+      alone: it is older than this change and removing it is a separate sweep.)  */
+  /*  HONOURS TAKE THE GOLD, same construction, because silverware is a family like any other
+      and the card already paints it that way.  */
+  .hcell .hn{display:inline-flex;align-items:center;gap:7px;
+    font-family:'Barlow Condensed',Archivo,sans-serif;font-weight:700;font-size:19px;
+    line-height:1.2;letter-spacing:.02em;text-transform:uppercase;
+    background:var(--vvfam-hon-solid);color:var(--vvfam-hon-ink);padding:4px 13px;border-radius:9px}
+  body.light .hcell .hn{color:var(--vvfam-hon-ink)}
   .pre-i,.hon-i{width:24px;height:24px;flex-shrink:0}
   .tagdef .tt .pill{font-family:'Archivo';font-size:10.5px;font-weight:800;letter-spacing:0.04em;color:rgba(243,237,224,0.6);background:rgba(255,255,255,0.08);padding:3px 9px;border-radius:10px;margin-left:auto;flex-shrink:0}
   body.light .tagdef .tt .pill{color:#6a6256;background:rgba(0,0,0,0.05)}
@@ -1687,14 +1724,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260913d"></script>
+<script src="/vv-marks.js?v=20260913e"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260913d"></script>
+<script src="/vv-core.js?v=20260913e"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
@@ -2046,6 +2083,30 @@
       if(!VVMarks.has('tag', name)) return;
       el.insertAdjacentHTML('afterbegin', VVMarks.tag(name));
     });
+
+    /*  THE FAMILY CLASS IS LOOKED UP, NEVER TRANSCRIBED , 2026-09-13. FILTER_TAXONOMY.profile
+        already maps every tag name to its group and it is the same object the filter rail
+        reads, so the dictionary, the filters and the card face cannot say a tag is three
+        different families. The grey chip beside each name held the family as TEXT and that
+        WAS a transcription , it is hidden now, and this replaces it with a lookup.
+        FAILS OPEN: a name the taxonomy does not carry keeps the default charcoal pill rather
+        than rendering unstyled, so a tag added to the page and not to the taxonomy still looks
+        like a tag while being visibly the wrong colour, which is a thing someone notices.  */
+    (function(){
+      var TAX=(window.VVCore && VVCore.FILTER_TAXONOMY && VVCore.FILTER_TAXONOMY.profile) || [];
+      if(!TAX.length) return;               // no taxonomy, no classes, the pill stays charcoal
+      var SUB={ 'Attack':'att', 'Midfield':'mid', 'Defence':'def',
+                'All-Round':'cross', 'Career-Stage':'stage' };
+      var fam={};
+      TAX.forEach(function(g){
+        var c=SUB[g.sub]||'cross';
+        (g.items||[]).forEach(function(it){ fam[it.v]=c; });
+      });
+      document.querySelectorAll('.tagdef .tn[data-tag]').forEach(function(el){
+        var f=fam[el.getAttribute('data-tag')];
+        if(f) el.classList.add('f-'+f);
+      });
+    })();
 
     /*  THE CAREER-ARC MARKERS. They were empty buttons , CSS dots , so the arc was the
         one Playbook surface naming a tag and drawing nothing for it, including for

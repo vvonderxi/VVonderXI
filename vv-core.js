@@ -3777,7 +3777,44 @@
   //  `.vvcard .chtag .chtagcell`, and it wins today only by coming later , append and the
   //  honour pills lose their gold. So the sheet is inserted as the FIRST child of <head>,
   //  which keeps every page rule winning exactly as it does now.
+  /*  THE TAG FAMILY FILLS ARE TOKENS, DECLARED ONCE , 2026-09-13. They were literals inside
+      `.vvcard .chtagcell-*`, which meant the colours were only reachable INSIDE a card, and
+      the honour gold was worse: it is not in this file at all, it is declared three times, in
+      card.html, compare.html and rankings.html, and the three were free to drift apart.
+      THE RULES ARE NOT MOVED, ONLY THEIR VALUES. The note above is explicit that this sheet
+      PREPENDS and that `.vvcard .chtagcell.gold` in the pages wins only by coming later ,
+      relocating it here would lose the gold on every honour pill. Tokens change no cascade:
+      each page rule keeps its exact selector, specificity and position, and reads its colour
+      from one place instead of holding its own copy.
+      SO A FOURTH SURFACE COSTS NOTHING. Anything outside `.vvcard` , the Playbook's tag
+      dictionary is the first , reads the same token rather than re-picking a gradient by eye,
+      which is how a fifth copy would have started.  */
   var VV_CARD_CSS = `
+:root{
+  --vvfam-att:linear-gradient(90deg,#FF7A5C,#E70443);
+  --vvfam-mid:linear-gradient(90deg,#3FBF7F,#2FA968);
+  --vvfam-def:linear-gradient(90deg,#5C9DFF,#4A7FE0);
+  --vvfam-cross:linear-gradient(90deg,#5A5856,#46443F);
+  --vvfam-stage:linear-gradient(90deg,#2F8290,#1B5563);
+  --vvfam-hon:linear-gradient(90deg,#F0D27A,#E0A93A);
+  --vvfam-hon-ink:#5a4410;
+  /*  THE SOLID END OF EACH FAMILY, FOR SURFACES THAT ARE NOT THE CARD FACE. Measured:
+      white on these gradients runs 2.34 to 7.08 depending on where a glyph lands, because a
+      gradient has two stops and the text crosses both. SS C accepts that ON THE CARD FACE and
+      says why , the fill carries the tag's identity and the card face is the product , and
+      that exception is scoped to the face. A dictionary entry is body copy on a page of body
+      copy, so it takes the family's DARK stop as a flat fill instead: same colour, same
+      family, and white on it clears the large-text bar on all five (att 4.67, def 3.89,
+      stage 8.31, cross 9.73, mid 3.00 at the bar).
+      THEY ARE THE GRADIENT'S OWN SECOND STOP, NOT NEW COLOURS. Change a gradient and change
+      its solid with it, in the same edit, or a tag will read as two different families.  */
+  --vvfam-att-solid:#E70443;
+  --vvfam-mid-solid:#2FA968;
+  --vvfam-def-solid:#4A7FE0;
+  --vvfam-cross-solid:#46443F;
+  --vvfam-stage-solid:#1B5563;
+  --vvfam-hon-solid:#E0A93A;
+  --vvfam-stage-quiet:linear-gradient(135deg,#E4F1F4,#D8EAEE)}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
     .vvcard is a fixed-height flex column (--cw * 1.397). When its children want more room
@@ -3831,14 +3868,14 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
 .vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
 .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
-.vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#E70443) !important}
-.vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
-.vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
-.vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+.vvcard .chtagcell-att{background:var(--vvfam-att) !important}
+.vvcard .chtagcell-mid{background:var(--vvfam-mid) !important}
+.vvcard .chtagcell-def{background:var(--vvfam-def) !important}
+.vvcard .chtagcell-age{background:var(--vvfam-cross) !important}
 /*  STAGE , the career-arc family. Teal is its own colour: charcoal is CROSS (Iron Man,
     Complete) and gold is honours, so a stage tag must read as neither. The -age rule above
     is DEAD as of the family merge and is left in place deliberately while this is unpushed.  */
-.vvcard .chtagcell-stage{background:linear-gradient(90deg,#2F8290,#1B5563) !important}
+.vvcard .chtagcell-stage{background:var(--vvfam-stage) !important}
 /*  THE STANDARD IS ENGRAVED ON THE CARD FACE TOO , career-legged, same rule as the World Cup
     chip. It lands on every season at rt 80+ (413 cards, 58 players, 7.12 each) while Peak and
     Breakout are one card per player, so on any single card a solid pill identical to theirs
@@ -3850,7 +3887,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     shared by card.html, compare.html and rankings.html and all three must draw it the same.
     !important mirrors the rule above it, which needs it to beat the page copies. */
 .vvcard .chtagcell-stage[data-tag="The Standard"]{
-  background:linear-gradient(135deg,#E4F1F4,#D8EAEE) !important;color:#1B5563 !important;
+  background:var(--vvfam-stage-quiet) !important;color:#1B5563 !important;
   box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
 .vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.015)}
 .vvcard .cga .col{text-align:center}
