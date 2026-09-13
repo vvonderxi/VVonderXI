@@ -160,6 +160,43 @@ const MODULES = [
   { file: 'vv-core.js',  expect: 'VVCore'  },
   { file: 'vv-marks.js', expect: 'VVMarks' },
 ];
+
+//  ── STRING FLOORS , A TRUNCATED PROMPT IS STILL VALID JAVASCRIPT (added 2026-09-13) ──
+//  The export check above catches a template literal that ends early and leaves the module
+//  UNDEFINED. It cannot catch one that ends early and leaves the module DEFINED but SHORT,
+//  which is what happens when a stray backtick lands inside a long prompt string: the
+//  remainder still parses, `node --check` passes, the export exists, and the model is served
+//  half its instructions.
+//  MEASURED, 2026-09-13: a backtick pair around `won_by` inside VERDICT_SYSTEM cut it from
+//  19,343 characters to 10,782. Nothing in the toolchain objected except the arithmetic.
+//  THESE ARE TRIPWIRES, NOT TARGETS. The floor sits well below the real length and well above
+//  a truncation. If a DELIBERATE edit takes a prompt under its floor, move the floor in the
+//  same commit , that is a decision, and it should look like one in the diff.
+const STRING_FLOORS = [
+  { file: 'api/analyse.js', export: 'VERDICT_SYSTEM',       min: 16000 },   // 21,403 on 2026-09-13
+  { file: 'api/analyse.js', export: 'NOTES_SYSTEM',         min: 22000 },   // 29,267 on 2026-09-13
+  { file: 'api/analyse.js', export: 'VERDICT_SYSTEM_JUDGE', min: 14000 },   // 19,132 on 2026-09-13
+];
+function lintStringFloors(){
+  const out = [];
+  for (const f of STRING_FLOORS) {
+    if (!fs.existsSync(f.file)) continue;
+    const probe = `const m = require(${JSON.stringify(path.resolve(f.file))});` +
+                  `const v = m[${JSON.stringify(f.export)}];` +
+                  `if (typeof v !== 'string') { console.error('NOTSTRING'); process.exit(4); }` +
+                  `process.stdout.write(String(v.length));`;
+    try {
+      const len = Number(execFileSync(process.execPath, ['-e', probe], { stdio: 'pipe' }).toString().trim());
+      if (!(len >= f.min)) out.push({ file: f.file, expect: f.export,
+        error: `is ${len} characters, floor is ${f.min} , a long template literal has almost certainly ended early (a stray backtick inside it). The module still loads and still exports, which is why nothing else catches this.` });
+    } catch (e) {
+      out.push({ file: f.file, expect: f.export, error: e.status === 4
+        ? 'is exported but is not a string'
+        : String(e.stderr || e.message).split('\n').filter(Boolean).slice(0,3).join(' | ').slice(0,200) });
+    }
+  }
+  return out;
+}
 function lintModules(){
   const out = [];
   for (const m of MODULES) {
@@ -184,7 +221,7 @@ const targets = files.length
   : fs.readdirSync(process.cwd()).filter(f => f.endsWith('.html')).sort();
 
 const results = targets.map(lintFile);
-const moduleFaults = lintModules();
+const moduleFaults = lintModules().concat(lintStringFloors());
 const broken = results.filter(r => r.css.faults.length || r.js.length);
 
 if (JSON_OUT) {
@@ -201,8 +238,11 @@ if (JSON_OUT) {
                   (f.kind === 'stray-close-brace' ? '   , the next rule is discarded by the browser' : ''));
     for (const j of r.js) console.log(`      inline script at ${r.file}:${j.line} , ${j.error}`);
   }
+  /*  THE EXPORT NAME IS PART OF THE MESSAGE. api/analyse.js publishes THREE long prompt
+      strings, so "MODULE api/analyse.js , is 10782 characters" does not say which one ended
+      early , and the whole point of this check is to send someone to the right literal.  */
   for (const m of moduleFaults)
-    console.log(`\n  MODULE ${m.file} , ${m.error}`);
+    console.log(`\n  MODULE ${m.file}${m.expect ? ' , ' + m.expect : ''} , ${m.error}`);
   console.log(broken.length || moduleFaults.length
     ? `\n  ${broken.length} file(s) with a structural break, ${moduleFaults.length} module(s) that do not export. A discarded rule does not error at runtime , it just stops applying.`
     : '\n  All files parse clean, every declared rule survives, every inline script checks, and every shared module exports what it should.');

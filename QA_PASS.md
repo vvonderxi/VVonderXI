@@ -5,7 +5,43 @@ written and never said what it checks. The handover calls it "the only gate". A 
 enumerated is not a gate. **The merge is a clean FAST-FORWARD, so there is no merge commit and
 no review step: whatever is wrong on the branch becomes production the instant it deploys.**
 
-**RE-MEASURED 2026-08-30. THE BRANCH HAS MOVED AGAIN , THIS PASS NOW COVERS ROUGHLY 25% MORE
+## THE SCOPE, RE-MEASURED 2026-09-13. IT IS FIVE TIMES SMALLER THAN EVERY FIGURE BELOW.
+
+| | **measured 2026-09-13** | recorded 2026-08-30 | 2026-08-27 | in SS D |
+|---|---|---|---|---|
+| merge-base | **`32b19dab`** | `5bdbadb` | , | , |
+| commits to review | **119** | 639 | 599 | 517 |
+| files | **65** | 208 | 186 | 167 |
+| lines | **+10,833 / -753** | +208,979 / -10,955 | +205,155 / -10,204 | +201,009 / -9,571 |
+| conflicts (`git merge-tree`) | **ZERO**, over 4.0 MB of output | , | , | , |
+| files on BIGGER absent from redesign | **ZERO** , the merge deletes nothing | , | , | , |
+
+**WHY EVERY OLDER FIGURE IS WRONG, AND IT IS NOT DRIFT , THEY COUNT WORK THAT IS ALREADY
+MERGED.** `4c8ce8a` (2026-09-06) merged `redesign-compare` into `vvonderxi_BIGGER` and the
+platform crossed then. Every figure above it was measured against a merge-base from BEFORE
+that, so it counts the whole platform a second time. **What remains is 119 commits of drift
+since, not a first crossing of 639.**
+
+**AND THE STALE FIGURE IS ITS OWN REASON THE GATE STAYED SHUT.** A pass scoped at 639 commits,
+208 files and +208,979 lines reads as a multi-day audit that needs a clear run at it, so it
+never gets started, and the number goes stale again while it waits , which is exactly what
+happened three times over. **At 65 files and +10,833 lines it is an afternoon.** An inflated
+scope does not just misdescribe the work, it postpones it, and then the postponement
+re-inflates the number. **Re-measure before reading any figure in this file; it is the
+cheapest thing in the whole pass and it has been wrong every time it was not.**
+
+**THE COMMANDS, so the next re-measure is one paste, Terminal C:**
+
+    BASE=$(git merge-base origin/redesign-compare origin/vvonderxi_BIGGER)
+    git rev-list --count $BASE..origin/redesign-compare          # commits
+    git diff --shortstat $BASE origin/redesign-compare           # files + lines
+    git merge-tree $BASE origin/vvonderxi_BIGGER origin/redesign-compare | grep -c '^<<<<<<<'
+    comm -23 <(git ls-tree -r --name-only origin/vvonderxi_BIGGER|sort) \
+             <(git ls-tree -r --name-only origin/redesign-compare|sort) | wc -l
+
+---
+
+**[SUPERSEDED, KEPT SO THE DRIFT IS LEGIBLE.] RE-MEASURED 2026-08-30. THE BRANCH HAS MOVED AGAIN , THIS PASS NOW COVERS ROUGHLY 25% MORE
 SURFACE THAN WHEN IT WAS WRITTEN, AND THE FIGURES HAVE NOW GONE STALE TWICE:**
 
 | | **measured 2026-08-30** | 2026-08-27 | recorded in §D |

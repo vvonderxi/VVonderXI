@@ -509,3 +509,32 @@ pass has already checked.
 **ONE RECORDED PRE-MERGE ITEM IS A CLOSED DECISION AND IS LISTED ONLY SO IT IS NOT REOPENED:**
 SS D step 5 names the API-Football key rotation as pre-merge. **Lucas has declined it and it is
 not to be raised again.** It is recorded here as settled, not as outstanding.
+
+
+### 9 , THE FOOTBALL PIE. THREE TREATMENTS, AND THE GEOMETRY IS THE WHOLE PROBLEM.
+
+**THE DATA FIRST.** Nine leagues spanning **36.0 to 44.5 degrees** against a perfectly equal
+40.0, a **1.24 ratio** end to end. **As a data chart this says almost nothing** , which is the
+same finding that killed the per-pill counts in `ed704f5`. As a BALL it is an advantage: a
+football's panels are supposed to be regular.
+
+**BUT A FOOTBALL IS FIVE-FOLD SYMMETRIC AND OUR DATA IS NINE-FOLD.** Any treatment that makes
+the wedges BE the panels has to give up one job or the other, and A and B both do:
+
+    A  cream panels, hairline seams, dark pentagon centre   reads as a PIE WEARING A PENTAGON
+    B  flag-derived tints, same geometry                    reads as a PIE, plainly
+    C  a real football inside, the nine leagues as an
+       OUTER RING around it                                 both jobs intact
+
+**C IS THE ONLY ONE THAT KEEPS BOTH.** The inner graphic is the recognisable 2D football , one
+centre pentagon, five around it , and the data sits in a ring outside, where 36 to 44.5 degrees
+reads honestly as "near-equal" instead of pretending to be a panel layout. **A and B are shown
+because they are what "pie chart styled as a football" literally asks for, and seeing them is
+the argument for C.**
+
+All three carry the existing hover/tap detail: cards, share of the record, clubs a season,
+clubs in all, and the detailed-stats start , the same facts the league pills already show, from
+the same source.
+
+**NOT BUILT. Lucas picks.** If C, the pentagon placement wants one more pass , they currently
+all point the same way rather than radially, which is visible at size.
