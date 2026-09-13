@@ -216,12 +216,58 @@ function lintModules(){
   return out;
 }
 
+/*  ── THE PRODUCT NAME'S PINK SECOND V ────────────────────────────────────────────────
+    The rule is: in RENDERED PROSE, "VV Score" / "VV Index" / "VV Rankings" is written
+    `V<span class="vvw">V</span> ...`, never as plain "VV". It was thirty-eight hand-typed
+    inline styles before 2026-09-13, which is a rule nobody can change and is how the nav
+    wordmark drifted on two pages (punchlist item 12). This check is what keeps the count
+    from going back up, because the failure is SILENT , a black V where a pink one belongs
+    reads as a font problem, not as a missing span.
+
+    THREE THINGS ARE EXEMPT AND EACH FOR ITS OWN REASON, not one blanket rule:
+      , <meta>, <title> and any attribute. They cannot hold markup at all.
+      , AI prompt strings. VERDICT_VERSION is a fingerprint of the prompt text, so putting a
+        span into a sentence no reader ever sees would regenerate every cached verdict on the
+        platform to change a colour. Those live in vv-core.js and compare.html, inside
+        <script>, which this check already skips.
+      , ESCAPED SINKS. card.html's keeper line and compare's GK_NO_VERDICT_* use textContent
+        on purpose, because the same slot also takes model output; VVFilters' sort and group
+        labels go through VVF_ESC before innerHTML. Switching any of them to raw HTML to win
+        one pink letter reopens an escaping hole. Also inside <script>, also skipped.
+    search.html is listed explicitly: it is a meta-refresh stub with no stylesheet, so a
+    var(--pink-ink) span resolved to nothing and never drew. Plain text there is honest.
+
+    IT ALSO CHECKS THE RULE EXISTS. A page carrying class="vvw" must either load vv-core.js
+    (which supplies .vvw from VV_CARD_CSS) or declare .vvw itself. Six pages load no shared
+    script, so they declare it locally, and without this half the swap would have shipped
+    five unstyled wordmarks that nothing would have reported.  */
+const WORDMARK_EXEMPT = new Set(['search.html']);
+/*  DEMOS, PROBES AND MOCKS ARE NOT SHIPPING SURFACES and are skipped , a `_demo_` file is a
+    disposable argument about a design, and failing the build on one would make the check
+    something people turn off rather than something they fix.  */
+const isShipping = f => !/^_/.test(f) && !/-(?:mock|demo)(?:-[A-Za-z0-9]+)?\.html$/.test(f);
+function lintWordmark(file, src){
+  if (WORDMARK_EXEMPT.has(file) || !isShipping(file)) return [];
+  const faults = [];
+  const body = src.slice(Math.max(0, src.indexOf('<body')))
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<style[\s\S]*?<\/style>/g, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, ' ');
+  const plain = body.match(/VV (?:Score|Index|Rankings)/g);
+  if (plain) faults.push({ kind:'WORDMARK', file, error: `${plain.length} plain "${plain[0]}" in rendered prose , use V<span class="vvw">V</span>` });
+  if (src.includes('class="vvw"') && !/\.vvw\s*\{/.test(src) && !src.includes('vv-core.js'))
+    faults.push({ kind:'WORDMARK', file, error: 'uses class="vvw" but neither declares .vvw nor loads vv-core.js , the V renders unstyled' });
+  return faults;
+}
+
 const targets = files.length
   ? files
   : fs.readdirSync(process.cwd()).filter(f => f.endsWith('.html')).sort();
 
 const results = targets.map(lintFile);
-const moduleFaults = lintModules().concat(lintStringFloors());
+const moduleFaults = lintModules().concat(lintStringFloors())
+  .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))));
 const broken = results.filter(r => r.css.faults.length || r.js.length);
 
 if (JSON_OUT) {
@@ -242,10 +288,10 @@ if (JSON_OUT) {
       strings, so "MODULE api/analyse.js , is 10782 characters" does not say which one ended
       early , and the whole point of this check is to send someone to the right literal.  */
   for (const m of moduleFaults)
-    console.log(`\n  MODULE ${m.file}${m.expect ? ' , ' + m.expect : ''} , ${m.error}`);
+    console.log(`\n  ${m.kind || 'MODULE'} ${m.file}${m.expect ? ' , ' + m.expect : ''} , ${m.error}`);
   console.log(broken.length || moduleFaults.length
-    ? `\n  ${broken.length} file(s) with a structural break, ${moduleFaults.length} module(s) that do not export. A discarded rule does not error at runtime , it just stops applying.`
-    : '\n  All files parse clean, every declared rule survives, every inline script checks, and every shared module exports what it should.');
+    ? `\n  ${broken.length} file(s) with a structural break, ${moduleFaults.length} module or wordmark fault(s). A discarded rule does not error at runtime , it just stops applying.`
+    : '\n  All files parse clean, every declared rule survives, every inline script checks, every shared module exports what it should, and every product name carries its pink V.');
 }
 
 process.exit((broken.length || moduleFaults.length) ? 1 : 0);

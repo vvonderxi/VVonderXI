@@ -3479,6 +3479,26 @@
       .replace(/\*+/g, '');
   }
 
+  /*  ── THE PRODUCT NAME, WITH ITS PINK SECOND V ─────────────────────────────────────────
+      `vvWordmark(' Score')` gives `V<span class="vvw">V</span> Score`. Use it anywhere a
+      product name is BUILT IN JAVASCRIPT; static markup writes the same two tags by hand.
+      IT EXISTED THIRTY-EIGHT TIMES BEFORE THIS, as an inline style repeated across eleven
+      files, plus a private `.tjvp` in compare making thirty-nine. A rule written thirty-nine
+      times cannot be changed, which is exactly how the nav wordmark drifted on two pages.
+      THE ARGUMENT IS ESCAPED, so a caller may pass model output or a player name safely.
+      AND IT IS NOT FOR EVERY OCCURRENCE , three classes of `VV Score` must stay plain text:
+        , <meta> and <title> attributes, which cannot hold markup at all;
+        , the AI prompt strings in this file and in compare.html. VERDICT_VERSION is a
+          FINGERPRINT OF THE PROMPT, so adding a span to a sentence no reader ever sees would
+          regenerate every cached verdict on the platform to change a colour;
+        , the textContent sinks (card.html's keeper line, compare's GK_NO_VERDICT_*). Those
+          use textContent ON PURPOSE because the same slot also takes model output, and
+          switching to innerHTML to win one pink letter reopens an escaping hole.
+      `scripts/lint-inline.js` enforces the rest and knows about all three exemptions.  */
+  function vvWordmark(rest){
+    return 'V<span class="vvw">V</span>' + escHtml(String(rest == null ? '' : rest));
+  }
+
   /*  ── THE SINK RULE , PROSE REACHES A SINK THROUGH vvStripMarkers, NEVER RAW ───────────
       vvEmphasis above is for a surface that DISPLAYS the emphasis. Everywhere else the model
       output goes , an image, a caption, a regex, a stored report , the markers are noise and
@@ -3865,6 +3885,12 @@
     AND THE FIXED TOKEN DOES NOT FOLLOW IT , see --vvem-ink-fixed. The card's boxes are cream
     rather than white, which has less headroom: #9A6B00 measures 3.93 and 4.38 there and FAILS.
     Two grounds, two inks, for the third time in this file.  */
+/*  .vvw IS THE PRODUCT NAME'S PINK SECOND V , see vvWordmark(). It lives here so the five
+    surfaces that load vv-core get it without declaring it; contact, iwonder, myclub,
+    preferences and vvindex declare it locally because they load no shared script.
+    VV_CARD_CSS PREPENDS, so a page rule of equal specificity would win. None exists, and if
+    one is ever added it must win deliberately rather than by accident.  */
+.vvw{color:var(--pink-ink)}
 body.light{--vvem-ink:#9A6B00}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
@@ -6894,7 +6920,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
-                cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvStripMarkers,
+                cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvWordmark, vvStripMarkers,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,
