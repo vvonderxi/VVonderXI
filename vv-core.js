@@ -3822,6 +3822,29 @@
       SO THE RULE IS NOW "match the card's rows", not "take the gradient's stop". ATT, CROSS and
       STAGE remain identical to their gradient's dark end because there they are the same value.
       Change a gradient and CHECK its solid rather than assuming it follows.  */
+  /*  THE EMPHASIS INK, ONCE , 2026-09-13. vvEmphasis emits <strong class="vvem"> on five prose
+      surfaces across two pages and every one of them was deciding for itself what emphasis
+      looks like. This is the value; the rules stay on their pages because each has a different
+      base weight to step up FROM, and because this sheet prepends.
+      TWO VALUES BECAUSE THE GROUND MOVES, NOT BECAUSE THE THEME DOES , section C's rule. The
+      dark gold measures 10.24 and 8.29 on compare's two prose grounds; the light one, 5.90 and
+      6.26. Anything reading this token gets a ratio that has been measured rather than hoped.  */
+  --vvem-ink:#E8B84B;
+  /*  AND A SECOND, PINNED INK, BECAUSE NOT EVERY PROSE GROUND FLIPS , 2026-09-13, and this was
+      caught one measurement before it shipped as a regression. card.html's editorial boxes are
+      CREAM IN BOTH THEMES: composited, their ground is rgb(240,235,218) in dark and
+      rgb(249,247,240) in light, and their base ink is a pinned #3a352e sitting at 10.17 and
+      11.30. Handing those surfaces the flipping token put #E8B84B on cream at 1.54 , WORSE than
+      the weight-only treatment it was replacing.
+      SECTION C SAYS IT IN ONE LINE: match the ink to the GROUND, not to body.light. A surface
+      whose ground does not move needs an ink that does not move either.
+      AND THE FIRST TWO ATTEMPTS TO MEASURE THIS BOTH LIED, in the two ways section C already
+      records: the card page opens in LIGHT, so a reading taken without setting the theme
+      explicitly reports the light value for both; and the ground is a translucent
+      rgba(255,255,255,0.03) over a cream card, so reading the nearest non-transparent
+      background gave 1.84 instead of 1.54. Only compositing every layer down to the page gives
+      a number worth acting on.  */
+  --vvem-ink-fixed:#7e5a10;
   --vvfam-att-solid:#E70443;
   --vvfam-mid-solid:#258652;
   --vvfam-def-solid:#4374CC;
@@ -3829,6 +3852,7 @@
   --vvfam-stage-solid:#1B5563;
   --vvfam-hon-solid:#E0A93A;
   --vvfam-stage-quiet:linear-gradient(135deg,#E4F1F4,#D8EAEE)}
+body.light{--vvem-ink:#7e5a10}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
     .vvcard is a fixed-height flex column (--cw * 1.397). When its children want more room

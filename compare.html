@@ -697,7 +697,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       TWO INKS BECAUSE THE GROUND MOVES: `--gold` is fixed and correct on the dark stage (9.07);
       `--gold-ink` flips to #7e5a10 in light and measures 5.90 there. Section C's rule about
       matching the ink to the ground, not to the theme.  */
-  .vsprose b,.vsprose .vvem,.vquote .vvem{font-style:normal;font-weight:800;color:var(--gold)}
+  .vsprose b,.vsprose .vvem,.vquote .vvem{font-style:normal;font-weight:800;color:var(--vvem-ink)}
   /* Placed after every .vsprose rule AND marked important: `body.light .vsprose` is (0,2,0)
      and beats a single class outright, so position alone would still have lost in light
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
@@ -718,7 +718,8 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
     real verdict tag. A wait dressed as the thing it is waiting for is still the thing it is
     waiting for. NOTHING renders in the tag position until the model has answered; the wait
     lives once, at the top of the matchup, as .mvwait.  */
-  body.light .vsprose b,body.light .vsprose .vvem,body.light .vquote .vvem{color:var(--gold-ink)}
+  /*  THE LIGHT OVERRIDE IS GONE, NOT MOVED , `--vvem-ink` flips on its own in vv-core, so a
+      second rule here would only be a second place for the same value to drift from.  */
 
   /* ===== Mobile-match: search bar, bar-chart trajectory, proof, data confidence ===== */
   .cmpsearch{display:flex;align-items:center;gap:14px;max-width:680px;margin:0 auto 26px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:13px 15px}
@@ -1331,13 +1332,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913g"></script>
+<script src="/vv-marks.js?v=20260913h"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260913g"></script>
+<script src="/vv-core.js?v=20260913h"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};

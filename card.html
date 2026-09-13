@@ -277,7 +277,30 @@
       darken. The surface that IS on soft ink is the glance line, which takes the weight step
       like the rest.  */
   .vvem{font-weight:700}          /* 600 base , the common case */
-  #scoutBody .vvem{font-weight:800}  /* 700 base , Bricolage reaches 800, measured */
+  /*  THE SAME EMPHASIS AS COMPARE, ON THE SAME INK , 2026-09-13, AND THE SURVEY IS THE POINT.
+      All three of this page's prose surfaces run model output through vvEmphasis and all three
+      were deciding separately what emphasis means. Base weights, measured:
+        #scoutBody  , `.darkbox .q`, Bricolage ITALIC 700. Was 800, weight only. The weakest of
+                      the three treatments demoed, on a display face, which is the same defect
+                      compare had.
+        #notesBody  , `.np`, Bricolage ITALIC 600. Took the generic `.vvem{font-weight:700}` ,
+                      a 100-unit step in an italic. Invisible, exactly like compare's.
+        #glDrury    , `.gdrury`, Bricolage ITALIC 800 in pink. Took the SAME generic 700, WHICH
+                      IS LIGHTER THAN ITS OWN BASE. Emphasis there made a phrase less bold than
+                      the line around it. Not invisible , inverted.
+      THE FIRST TWO TAKE THE TREATMENT. Breaking the italic run is the signal and the gold is the
+      reinforcement; both have a base to step up from.
+      THE THIRD TAKES NONE, and that is the `.vwho` decision rather than a new one: the glance
+      drury is ALREADY set apart , one short line, 800, italic, pink , so it is emphasis by
+      construction and anything added inside it can only fight it. Neutralised rather than
+      "fixed" upward.
+      THE INK IS THE PINNED ONE, NOT THE FLIPPING ONE, AND THAT IS THE WHOLE DIFFERENCE FROM
+      COMPARE. These two boxes are cream in BOTH themes , composited grounds rgb(240,235,218)
+      and rgb(249,247,240) , so the theme-aware gold would have landed at 1.54 in dark mode,
+      worse than the weight-only treatment it replaces. `--vvem-ink-fixed` is #7e5a10 and
+      measures 5.82 on both. Section C: match the ink to the ground, not to body.light.  */
+  #scoutBody .vvem,#notesBody .vvem{font-style:normal;font-weight:800;color:var(--vvem-ink-fixed)}
+  #glDrury .vvem{font-weight:inherit;font-style:inherit;color:inherit}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:#3a352e;margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
@@ -1342,8 +1365,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913g"></script>
-<script src="/vv-core.js?v=20260913g"></script>
+<script src="/vv-marks.js?v=20260913h"></script>
+<script src="/vv-core.js?v=20260913h"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are

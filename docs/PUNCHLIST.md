@@ -32,7 +32,7 @@ that only ever rises is measuring the writing, not the work.**
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
 | 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes collapsed to one, and the card's better contrast values won |
-| 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B landed: the designed gold/upright/800 rule repointed from `b` to `.vvem`. Demo held for him to see |
+| 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B on all five prose surfaces. One ink flips, one is pinned, one takes none , the grounds decide, not the theme |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -752,3 +752,34 @@ body, gold `#E8B84B` in dark at **10.24** on the Story ground and **8.29** on th
 a freshly generated preview verdict: p1 two phrases, p2 two, h2h one, **verdict ZERO**. The
 hypothesis is plausible and untested, and `VERDICT_VERSION` fingerprints the prompt, so an edit
 would regenerate every cached row on a guess. **Measure several current verdicts first.**
+
+### 20 , part two. Five prose surfaces, three different right answers
+
+**THE SURVEY WAS THE POINT, AND ONLY ONE OF THE FIVE HAD EVER BEEN LOOKED AT.** Every surface that
+runs model output through `vvEmphasis` was deciding separately what emphasis means:
+
+| surface | base | before | after |
+|---|---|---|---|
+| compare `.vsprose` / `.vquote` | Bricolage italic 600 | 700, invisible | 800 upright, gold |
+| card `#scoutBody` | Bricolage italic 700 | 800, weight only | 800 upright, gold |
+| card `#notesBody` | Bricolage italic 600 | 700, invisible | 800 upright, gold |
+| card `#glDrury` | Bricolage italic **800**, pink | **700 , LIGHTER THAN ITS BASE** | none, neutralised |
+
+**`#glDrury` WAS NOT INVISIBLE, IT WAS INVERTED.** The generic 700 is lighter than that line's own
+800, so an emphasised phrase came out LESS bold than the sentence around it. It now takes none at
+all, which is the `.vwho` decision rather than a new one: one short line at 800 italic in pink is
+already emphasis by construction, and anything added inside it can only fight it.
+
+**AND THE INK IS NOT THE SAME ON BOTH PAGES, WHICH IS THE FINDING WORTH KEEPING.** Compare's prose
+grounds flip with the theme, so it reads the theme-aware `--vvem-ink`. **The card's editorial boxes
+are CREAM IN BOTH THEMES** , composited, rgb(240,235,218) dark and rgb(249,247,240) light, with a
+pinned #3a352e base ink , so handing them the same token put gold on cream at **1.54, WORSE than
+the weight-only treatment it replaced.** They read `--vvem-ink-fixed` instead: **5.24 and 5.82.**
+Section C in one line: match the ink to the GROUND, not to `body.light`.
+
+**TWO MEASUREMENTS LIED FIRST, BOTH IN WAYS SECTION C ALREADY RECORDS.** The card page opens in
+LIGHT, so a reading taken without setting the theme explicitly reported the light value for both
+themes and looked correct. And the box ground is a translucent `rgba(255,255,255,0.03)` over a
+cream card, so reading the nearest non-transparent background gave **1.84** where compositing every
+layer gives **1.54**. **A contrast number is only worth acting on once every layer beneath it has
+been composited.**
