@@ -4564,7 +4564,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
 
   /* ════════════════════════════════════════════════════════════════════
-   *  VERDICT_TAGS , the 14-tag Compare verdict vocabulary (single source).
+   *  VERDICT_TAGS , the 15-tag Compare verdict vocabulary (single source).
    *   - 6 LADDER tags: deterministic by |rt gap| (guarantee tone matches gap).
    *   - 5 CONTEXT tags: AI-selected (judgment, no numeric trigger).
    *   - 3 AGE tags: deterministic by season_age + rt gap (no missed wonderkid).
@@ -4579,7 +4579,22 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     clear_edge:       { name:'A Clear Edge',                  emoji:'⚖️', kind:'ladder', blurb:'The margin is real but not huge: one season clearly shades the other.', drury:'Not a landslide. Not a rout. But when you weigh the two, the scales tip, and they tip with conviction.', trigger:'rt gap 4-6' },
     photo_finish:     { name:'Photo Finish',                  emoji:'📸', kind:'ladder', blurb:'Near-identical scores, but one nicks it at the line.', drury:'They crossed the line together, or so it seemed. Only the closest look could tell them apart. And by a fraction, one was first.', trigger:'rt gap 2-3' },
     var_close:        { name:'VAR close call',               emoji:'📺', kind:'ladder', blurb:'Close enough to send it to the screen. Settled by the finest of margins.', drury:'A breath. A heartbeat. The width of a coat of paint. To separate these two feels almost unkind, and yet a verdict must be given.', trigger:'rt gap 1' },
-    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:"So close it won't end the argument. Fuel for the next conversation.", drury:'There will be no peace tonight. The numbers have spoken, and still the argument burns. Some debates were never meant to end.', trigger:'rt gap 0 (true tie, no age tiebreak)' },
+    /*  THE TWO NO-CROWN TAGS STOPPED CLAIMING CLOSENESS , 2026-09-13. Both asserted it and
+        both were false on the pairing that exposed this: Nani 74 against Odegaard 67 is a
+        SEVEN-POINT gap on a pair whose margin is 20.52. They are not close. The Index cannot
+        resolve them, which is a different sentence, and the copy now says the one that is true.
+        Same class of error as a band claiming a reproducibility it cannot deliver (SS E).  */
+    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:'A real gap, but smaller than the error on the scores. The argument is still open.', drury:'There will be no peace tonight. The number could not part them, and so the argument burns on. Some debates were never meant to end.', trigger:'inside the margin, and the record did not decide it either' },
+    /*  DECIDED ON THE RECORD , the state that had no tag of its own and borrowed one that
+        contradicted it. An inside pair the MODEL judged used to floor on `photo_finish`,
+        whose blurb reads "near-identical scores" , printed beside a headline saying the
+        season was taken ON THE RECORD RATHER THAN ON THE NUMBER, about a seven-point gap.
+        THE HEADLINE WAS ALREADY RIGHT; the tag was the half that disagreed.
+        IT CLAIMS NO MARGIN, which is the property `photo_finish` was chosen for and does not
+        actually have: this names WHERE the decision came from instead of how wide it was.
+        `photo_finish` is untouched and still correct on its own ladder rung (a SEPARATED
+        pair at gap 2-3), which is why this is a new key rather than a rewrite.  */
+    decided_on_record:{ name:'Decided on the Record',        emoji:'⚖️', kind:'ladder', blurb:'The score could not separate them. The record could.', drury:'The numbers came back level, or near enough that no honest eye could split them. So the case was made elsewhere, out of what was actually won.', trigger:'inside the margin, decided by the record rather than the score' },
     // contextual (AI-selected)
     different_worlds: { name:'Different Worlds',              emoji:'🌍', kind:'context', blurb:'They win on totally different things, a creator against a finisher. Both elite, in their own lane.', drury:'One paints, the other scores. One builds the cathedral, the other places the final stone. They are different answers to the same beautiful question.', trigger:'close gap + both elite + divergent radar peaks' },
     across_eras:      { name:'Class Across Eras',            emoji:'🕰️', kind:'context', blurb:'A cross-generation matchup where both players transcend their time.', drury:'Years apart, yet cut from the same cloth. Greatness does not belong to a decade. It echoes across them, and here, two echoes meet.', trigger:'season-year gap >= 8 + both elite' },
@@ -4755,10 +4770,12 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         only where the pairing was DECIDED and the younger season is the one that won. That
         second condition was untestable while nothing decided an inside pair. It is testable
         now, so the rule finally applies where it was always meant to.
-        OTHERWISE 'photo_finish', which is the only ladder tag that is TRUE of this state:
-        near-identical scores, one judged ahead at the line. It claims no margin, which
-        matters , every other ladder tag names one, and the Index has just said it cannot.  */
-    out.floorTag = (ctx.ageTags && ctx.ageTags[0] && ctx.younger === side) ? ctx.ageTags[0] : 'photo_finish';
+        OTHERWISE 'decided_on_record'. IT USED TO BE 'photo_finish' AND THAT WAS WRONG for the
+        same reason the_debate's blurb was: "near-identical scores" is a closeness claim, and
+        this state reaches a seven-point gap. The tag now names WHERE the decision came from
+        rather than how wide it was, which is the property that was actually wanted , every
+        other ladder tag states a margin, and the Index has just said it cannot read one.  */
+    out.floorTag = (ctx.ageTags && ctx.ageTags[0] && ctx.younger === side) ? ctx.ageTags[0] : 'decided_on_record';
     return out;
   }
 

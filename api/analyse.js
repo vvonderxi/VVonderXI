@@ -356,6 +356,57 @@ const VERDICT_VERSION = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM);
     A DECLINE AND A FAILED CHECK BOTH LAND ON null, WHICH IS THE SAFE STATE , no crown, no
     winner_card_id, and the pairing reads as unresolved, which is exactly what shipped before.
     PURE AND EXPORTED so the guard can be exercised without a key or a network call.  */
+/*  ── DOES THE PROSE AGREE WITH THE `winner` FIELD? , DETECT AND LOG ONLY (2026-09-13) ──
+    THE SEAM. The prompt names this failure in its own words , "crowning one season in the
+    prose and returning the other, or null, puts a badge over the season you argued against"
+    , and then relies on the model to comply. Every OTHER property of that field is verified
+    server side by resolveWinnerId; this one was not. It is the defect a screenshot caught.
+
+    IT RECORDS AND CHANGES NOTHING. No override, no retry, no UI difference. The reason is
+    measured: detection is about 90% reliable (54 of 60 cached headlines contain the winner's
+    surname; where both names appear, first-named is the winner 13 of 14). That is enough to
+    FLAG and nowhere near enough to ACT , overriding on a 90% signal produces the same defect
+    from the other side, and a retry would cost a second generation on the slow path AND
+    destroy the very signal this exists to gather.
+
+    IT READS `who`, NOT THE LONG PROSE. `who` is a purpose-built winner headline the prompt
+    already requires to name the winner; p1/p2/h2h argue BOTH sides by design and are the
+    worst place to look for a decision.
+
+    IT REPORTS UNDETECTABLE RATHER THAN GUESSING. Two seasons of the SAME player put the
+    identical surname on both sides and no name-based reading can ever separate them , that
+    is a supported flow, already 2 of 113 cached pairs, and it returns detectable:false
+    instead of a coin flip. Absence of a name is NOT evidence of a decline either: a decline
+    has no positive form, so `prose` is null and `agree` is null rather than false.
+
+    SIDES ARE RECORDED AS CARD IDS, NOT "A"/"B", because the cached row may be SWAPPED into
+    canonical lo/hi order and A/B would then mean the opposite of what was checked.
+    PURE AND EXPORTED, like resolveWinnerId, so it can be exercised without a key.  */
+function checkProseWinner(o) {
+  const who = (typeof o.who === 'string') ? o.who : '';
+  const sa = String(o.surnameA == null ? '' : o.surnameA).trim().toLowerCase();
+  const sbn = String(o.surnameB == null ? '' : o.surnameB).trim().toLowerCase();
+  const field = (o.modelWinner === 'A' || o.modelWinner === 'B') ? o.modelWinner : null;
+  const out = { checked: false, reason: null, prose_card_id: null, field_card_id: null, agree: null };
+  out.field_card_id = field ? (field === 'A' ? (o.idA == null ? null : Number(o.idA)) : (o.idB == null ? null : Number(o.idB))) : null;
+  if (!who)            { out.reason = 'no_headline';   return out; }
+  if (!sa || !sbn)     { out.reason = 'no_names';      return out; }
+  if (sa === sbn)      { out.reason = 'same_surname';  return out; }   // two seasons of one player
+  const w = who.toLowerCase();
+  const iA = w.indexOf(sa), iB = w.indexOf(sbn);
+  let prose = null;
+  if (iA >= 0 && iB >= 0) prose = (iA < iB) ? 'A' : 'B';   // first-named: 13 of 14 on cached rows
+  else if (iA >= 0) prose = 'A';
+  else if (iB >= 0) prose = 'B';
+  out.checked = true;
+  out.both_named = (iA >= 0 && iB >= 0);
+  out.prose_card_id = prose ? (prose === 'A' ? (o.idA == null ? null : Number(o.idA)) : (o.idB == null ? null : Number(o.idB))) : null;
+  if (prose === null)      out.reason = 'prose_named_nobody';
+  else if (field === null) out.reason = 'field_declined';
+  else out.agree = (prose === field);
+  return out;
+}
+
 function resolveWinnerId(o) {
   const idA = Number(o.idA), idB = Number(o.idB);
   const inPair = (v) => { const n = Number(v); return (Number.isFinite(n) && (n === idA || n === idB)) ? n : null; };
@@ -412,7 +463,11 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, judge } = req.body;
+    /*  surnameA / surnameB are carried ONLY for checkProseWinner. They are not sent to the
+        model and they touch no cache stamp , the payload the model sees is `messages`, which
+        is built in compare.html and already contains the names in prose form. Absent simply
+        means the check reports reason:'no_names' and records nothing.  */
+    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, judge, surnameA, surnameB } = req.body;
     /*  THE PATH B GATE. Asserted by the caller because it depends on a fact this payload does
         not carry: whether either season is a goalkeeper. compare.html sends it only for an
         OUTFIELD pair the Index did not separate. Absent or anything else means the prohibiting
@@ -586,13 +641,30 @@ module.exports = async (req, res) => {
     }
     const winnerId = resolveWinnerId({ aiJudge: aiJudge, modelWinner: verdict && verdict.winner,
                                        winnerCardId: winnerCardId, idA: cardIdA, idB: cardIdB });
+    /*  RUN THE CHECK BEFORE `winner` IS DELETED , it is the whole input. Recorded on the row
+        and read by nothing: no override, no retry, no UI difference. See checkProseWinner.  */
+    const winnerCheck = checkProseWinner({ who: verdict && verdict.who, surnameA: surnameA, surnameB: surnameB,
+                                           modelWinner: verdict && verdict.winner, idA: cardIdA, idB: cardIdB });
     if (verdict && 'winner' in verdict) delete verdict.winner;   // internal key, never rendered, never cached
     const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
+    /*  STORED INSIDE THE EXISTING jsonb, NOT AS A NEW COLUMN , no migration, and it travels
+        with the row it describes. Underscore-prefixed because it is OUR annotation and not
+        model output. Query later with:
+          select verdict->'_winner_check' from verdict_cache where verdict ? '_winner_check'
+
+        ON A COPY, SO THE RESPONSE IS BYTE-IDENTICAL TO BEFORE. Mutating `canonical` would
+        reach the client whenever the pair is NOT swapped, because `canonical === verdict`
+        there, and NOT reach it when it is , swapVerdict builds a new object from an explicit
+        key list. An annotation that is present or absent depending on the lo/hi order of two
+        card ids is the kind of difference that is invisible until something starts reading
+        it. This writes the annotation and leaves the returned verdict untouched.
+        IT CARRIES CARD IDS, not "A"/"B", so the swap cannot invert its meaning.  */
+    const stored = Object.assign({}, canonical, { _winner_check: winnerCheck });
     try {
       await sb.from('verdict_cache').upsert({
         pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
         rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge),   // stamps (null rt if caller sent none)
-        verdict: canonical, winner_card_id: winnerId, model: MODEL
+        verdict: stored, winner_card_id: winnerId, model: MODEL
       }, { onConflict: 'pair_key', ignoreDuplicates: false });
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
     return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
@@ -613,6 +685,7 @@ module.exports.MODEL           = MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
 module.exports.VERDICT_SYSTEM_JUDGE = VERDICT_SYSTEM_JUDGE;
 module.exports.resolveWinnerId = resolveWinnerId;
+module.exports.checkProseWinner = checkProseWinner;
 module.exports.NOTES_SYSTEM    = NOTES_SYSTEM;
 module.exports.VERDICT_VERSION = VERDICT_VERSION;
 module.exports.verdictVersionFor = verdictVersionFor;

@@ -1267,13 +1267,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913a"></script>
+<script src="/vv-marks.js?v=20260913b"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260913a"></script>
+<script src="/vv-core.js?v=20260913b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2434,8 +2434,13 @@ body.light .pkmsub{color:var(--ink-soft)}
             read "Level on VV , 95 apiece", which is TRUE of an exact tie and FALSE of a
             pair inside the margin, where the scores genuinely differ. Writing "95 apiece"
             over a 95 and a 92 is the platform stating a number that is not on either card. */
+        /*  "TOO CLOSE" WAS A CLOSENESS CLAIM AND IT WAS FALSE , 2026-09-13. An inside pair
+            reaches a SEVEN-POINT gap (Nani 74 against Odegaard 67, margin 20.52). The scores
+            are not close; the Index cannot resolve them, which is a different sentence and
+            the only one the data supports. The TIE branch below still says "apiece" and is
+            correct , that one genuinely is level.  */
         var _fbTie = (VC && VC.separation === 'inside')
-          ? 'Too close for the Index to separate.'
+          ? 'The Index cannot separate these two.'
           : ('Level on VV , '+va+' apiece. The Index will not separate them.');
         who.innerHTML = VVCore.vvEmphasis(ai || _fbTie);
       }
@@ -2474,11 +2479,23 @@ body.light .pkmsub{color:var(--ink-soft)}
     var mv=document.getElementById('mvStrip');
     if(mv){
       var _mvhi=(winner==='B')?vb:va, _mvlo=(winner==='B')?va:vb;
+      /*  THE PHONE STRIP'S TAG CARRIES THE SAME data-tip AS THE VERDICT CHIP , ADDED 2026-09-13.
+          This is the tag a phone reader meets FIRST: #mvStrip sits at the top of .matchup,
+          above the cards, and the verdict-section chip is a long scroll below it. The chip
+          has been tappable all along through vv-core's shared [data-tip] handler; this one
+          was rendered without the attribute, so the tag you see first was the one you could
+          not ask about.
+          ONE SOURCE, NOT A SECOND STRING , the same tagObj.blurb the chip uses, so the two
+          cannot drift into saying different things about one tag.
+          IT BINDS FOR FREE. vv-core's handler is delegated and keys on [data-tip]; it only
+          skips elements inside .vvcard or [onclick], and #mvStrip is a sibling of the card
+          slots rather than inside one. Verified rendered at 390 rather than assumed.  */
+      var _mvtip = tagObj ? (tagObj.blurb || tagObj.drury || '') : '';
       var _mvtag = tagObj ? ((tagObj.emoji?tagObj.emoji+' ':'')+tagObj.name) : '';
       /*  THE PHONE STRIP IS THE SAME CLAIM IN A SMALLER FONT, so it takes the same rule.
           Suppressing one and not the other would put the ranking back on the surface where
           it is hardest to qualify.  */
-      mv.innerHTML = (_mvtag ? '<span class="mvtag">'+_mvtag+'</span>' : '')
+      mv.innerHTML = (_mvtag ? '<span class="mvtag"'+(_mvtip?' data-tip="'+_mvtip.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'"':'')+'>'+_mvtag+'</span>' : '')
         + (_showScore ? ('<div class="mvscore">' + (_state===1
             ? _mvhi + '<span class="sep">to</span><span class="lo">' + _mvlo + '</span>'
             : va + '<span class="sep">&amp;</span><span class="lo">' + vb + '</span>') + '</div>') : '');
@@ -2873,6 +2890,12 @@ body.light .pkmsub{color:var(--ink-soft)}
     var idA=CMP_A.card_id, idB=CMP_B.card_id;
     if(idA!=null && idB!=null){
       body.cardIdA=idA; body.cardIdB=idB;
+      /*  THE TWO SURNAMES, FOR THE PROSE-VERSUS-FIELD CHECK ONLY , 2026-09-13. They are NOT
+          part of the prompt (the model already has the names in `content`) and they move no
+          cache stamp: payloadRev hashes the vvAIStats KEY SET, not this request body. The
+          server needs them because it cannot reliably recover a surname from prose, and
+          compare.html has them as structured fields. See checkProseWinner in api/analyse.js. */
+      body.surnameA=CMP_A.surname||''; body.surnameB=CMP_B.surname||'';
       /*  THE PAYLOAD SCHEMA TRAVELS WITH THE REQUEST , 2026-09-07. VERDICT_VERSION
           fingerprints the SYSTEM prompt, which lives in api/analyse.js, so it moves when the
           instructions change and does NOT move when the EVIDENCE changes. The user prompt is

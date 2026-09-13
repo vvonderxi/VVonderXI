@@ -8,10 +8,11 @@ Update the row the moment an item moves. Lead every report with this table.
 | ID | Item | Status | Owner | Note |
 |----|------|--------|-------|------|
 | 1 | Verdict reasoning , reason-to-winner, or pick-then-justify? | NOT STARTED | Claude | Report how the crown is actually decided |
-| 2 | "The Debate Lives On" fires too often | **PENDING DECISION** | Lucas | Gate is right. The COPY asserts closeness the data does not support. Framings owed |
+| 2 | "The Debate Lives On" fires too often | **BUILT, AWAITING LUCAS** | Lucas | Framing A built and verified. Commit held until he sees the render |
 | 3 | BUG , verdict tag renders before the AI finishes | **DONE** | Claude | Wait chip reads "Still watching the tape", no tooltip, crown badge suppressed too |
-| 4 | Verdict tag tappable on phone, hover on desktop | NOT STARTED | Claude | Meaning available without scrolling |
-| 5 | Individual honours outweigh team honours in the verdict | NOT STARTED | Claude | Story also reads jumbled, as the verdict did |
+| 4 | Verdict tag tappable on phone, hover on desktop | **DONE** | Claude | The verdict chip already worked. The PHONE STRIP tag at the top had no data-tip |
+| 5a | Individual honours outweigh team honours | **PENDING DECISION** | Lucas | Payload DOES distinguish, prompt says NOTHING about weight. Plus a World Cup mislabel |
+| 5b | The Story reads jumbled | **DONE** | Claude | Already fixed by 078face , same wait-class bug. Needs a hard refresh to see |
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
 | 7 | What is left before merging to main | NOT STARTED | Claude | Definitive list |
 | 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
@@ -23,6 +24,7 @@ Update the row the moment an item moves. Lead every report with this table.
 | 14 | VV Index band section duplicates Playbook, reads dense | NOT STARTED | Claude | Propose concise + visual |
 | 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
 | 16 | Squad number backfill via Fable | **DONE (not proceeding)** | Claude | Both gates scored. ANDed verdict FAILS on yield. Nothing written |
+| 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -237,3 +239,222 @@ same importer that produced everything else. **A disagreement is not evidence th
 is right on any of them, that is a finding about OUR data and it belongs in `DATA_DEFECTS.md`.
 **Four of the five are Fable answering 9 or 10, which is the default pattern above, so the prior
 leans toward our stored value , but a prior is not a check.**
+
+
+### 1 , HOW THE CROWN IS ACTUALLY DECIDED. Reason-first by construction, with one unguarded seam.
+
+**TWO DECIDERS, NEVER BOTH AT ONCE, chosen by whether the margin gate separated the pair.**
+
+**SEPARATED , THE ENGINE DECIDES, AND THE MODEL IS TOLD NOT TO OVERTURN IT.** `verdictContext`
+computes `engineWinner` from rt alone, before any prose exists. The prompt: *"the VV Index has
+already decided the winner: you do not overturn it, you explain why that season prevailed."*
+**The model's `winner` field is IGNORED server-side on this path** , `resolveWinnerId` only reads
+it when `aiJudge` is set. So this path IS pick-then-justify, and that is correct: **the picker is
+the engine, and the score is the platform's own claim.**
+
+**INSIDE THE MARGIN , THE MODEL DECIDES, AND ITS ANSWER IS THE VERDICT.** The caller sends no
+winner. The model weighs the record and names a season. This is the path Lucas's screenshot came
+from.
+
+**ON THE QUESTION ASKED: IT REASONS FIRST, AND THAT IS ARCHITECTURAL RATHER THAN HOPEFUL.** The
+requested JSON key order is:
+
+    p1, p2, h2h, verdict, tag, who, winner
+
+**`winner` is LAST.** A model generates left to right, so it has written both player pieces, the
+head-to-head, the verdict prose and the headline **before** it emits the decision token. The field
+is explicitly *"A MACHINE FIELD AND IT NEVER APPEARS IN YOUR PROSE"*, and the prompt requires it to
+*"agree with what you actually wrote"*.
+
+**THE MODEL'S ANSWER IS TREATED AS UNTRUSTED AND THREE GUARDS HOLD IT** (`resolveWinnerId`, pure
+and exported so it can be tested without a key or a network call):
+1. it must be exactly the string "A" or "B" , anything else, **a card id included**, is a decline
+2. "A"/"B" resolve against the ids THIS REQUEST carried, **never against anything in the model's
+   text**, so a hallucinated id cannot reach the table
+3. the resolved id must be one of the two in the pair
+
+**A decline and a failed check both land on `null`, which is the safe state** , no crown, no
+`winner_card_id`, pairing reads unresolved.
+
+**THE ONE UNGUARDED SEAM, AND IT IS THE ONE THAT PRODUCED THE SCREENSHOT: NOTHING CHECKS THAT THE
+PROSE AND THE `winner` FIELD AGREE.** The prompt names the failure exactly , *"crowning one season
+in the prose and returning the other, or null, puts a badge over the season you argued against"* ,
+and then relies on the model to comply. **Every other property of that field is verified server
+side; this one is not.** It is checkable: the prose is right there in the same response.
+
+### 2 , FRAMING A , BUILT AND VERIFIED. COMMIT HELD FOR LUCAS.
+
+**The contradiction was one tag, and the headline was already right.** An inside pair the model
+judged floored on `photo_finish`, whose blurb reads **"Near-identical scores"** , printed beside a
+headline saying the season was taken **on the record rather than on the number**, about a
+seven-point gap. New tag **`decided_on_record`**, "Decided on the Record", blurb *"The score could
+not separate them. The record could."* It names WHERE the decision came from rather than how wide
+it was, which is the property `photo_finish` was chosen for and does not have.
+
+**`photo_finish` IS UNTOUCHED** , it is still correct on its own ladder rung, a SEPARATED pair at
+gap 2 to 3. That is why this is a new key and not a rewrite.
+
+**`the_debate` AND THE FALLBACK HEADLINE STOPPED CLAIMING CLOSENESS.**
+
+    was   "Too close for the Index to separate."  /  "So close it won't end the argument."
+    now   "The Index cannot separate these two."  /  "A real gap, but smaller than the error
+                                                      on the scores. The argument is still open."
+
+**VERIFIED ON THE RENDERED PAGE WITH REAL PROSE, BOTH STATES:**
+
+    model decided   headline "Odegaard, on creation , eleven assists to Nani's four"
+                    tag      "Decided on the Record"
+                    checks   names a season YES | claims closeness NO | reads as no-result NO
+    model declined  headline "The Index cannot separate these two."
+                    tag      "The Debate Lives On"
+                    checks   names a winner NO | claims closeness NO
+
+**AND THE FIRST ATTEMPT PRINTED THE SAME SENTENCE TWICE** , the fallback headline and the tag blurb
+both read "The Index cannot separate these two", one under the other. Caught by reading the
+rendered output rather than the diff; the blurb now carries the finding instead of repeating the
+headline.
+
+
+### 17 , THE PROSE-VERSUS-FIELD SEAM. SCOPED, NOT BUILT.
+
+**DETECTION , TARGET `who`, NOT THE LONG PROSE.** `who` is a purpose-built winner headline, max
+~14 words, and the prompt already requires it to *"Name the winner"*. The long prose argues both
+sides by design, so it is the worst place to look for a decision; the headline is the model's own
+one-line statement of it. Measured on the 60 cached rows that have a `who` and a crowned winner:
+
+    who contains the WINNER's surname            54 of 60   90%
+    who ALSO contains the loser's surname        15 of 60   25%
+    when both appear, FIRST-NAMED is the winner  13 of 14   93%
+
+**SO THE OBVIOUS ROUTE WORKS ABOUT NINE TIMES IN TEN, AND THAT IS THE WHOLE PROBLEM.** Layered
+(surname present, then first-position when both are), it lands somewhere near 90%, which is
+**enough to FLAG a disagreement and nowhere near enough to OVERRIDE a crown on.**
+
+**WHAT IT GETS WRONG, NAMED:**
+1. **TWO SEASONS OF THE SAME PLAYER , name matching is completely blind.** Messi 11/12 against
+   Messi 14/15 puts the identical surname on both sides, and the prose says "the 2011 season", not
+   the name. **2 of 113 cached pairs are already this**, and it is a deliberate, supported flow ,
+   SS C records the same degenerate case for `.vtname`. No name-based detector can ever read it.
+2. **BOTH NAMES IN THE HEADLINE, 25% of the time.** "Salah edges it, but De Bruyne makes the case"
+   names the loser in the same breath as the winner. First-position rescues 93% of those and fails
+   on the rest.
+3. **SHARED SURNAMES.** 345 of 14,713 distinct `player_name` values belong to more than one player
+   , Paulinho is six people, A. Traore and J. Rodriguez are five each. Within a single pairing it
+   is rare, but the name is not a key, which SS C already records as an identity rule.
+4. **A DECLINE HAS NO POSITIVE FORM.** "Two ways to be great" names nobody, and is correct. Absence
+   of a name is not evidence of a decline , it is also what a detector failure looks like.
+
+**ON A MISMATCH , I WOULD NEITHER TRUST THE PROSE NOR RETRY, AND NOT YET.**
+
+**The case for trusting the prose is good and I nearly agree with it.** It is the reasoned artefact,
+the field is one token, and the generation order means the field is a READOUT of reasoning already
+done , so a disagreement is most likely the readout failing, not the reasoning. **The flaw is that
+it assumes we can read the prose.** We can, about 90% of the time. **Acting on an uncertain reading
+of an uncertain signal compounds two error rates**, and the failure it produces is the worst one
+available: a badge over the season the prose argued against, which is exactly the defect being
+fixed, arrived at from the other side.
+
+**The case for a retry is weaker than it looks.** It costs a second generation on a path that is
+already the slow one, there is no guarantee the second answer is self-consistent either, and
+**it destroys the signal** , you would never learn how often the model contradicts itself, because
+every instance would be silently papered over.
+
+**SO: DETECT, LOG, CHANGE NOTHING IN THE UI. Then decide with a rate instead of an instinct.**
+That is reversible, costs one boolean in the cache row, and answers the question the other two
+options assume the answer to. **If the rate turns out to be near zero the seam is closed for free.
+If it is material, the log will also say WHICH direction it fails in**, which is what decides
+between prose-trust and retry.
+
+**MEASURE IT AFTER THE CACHE REFILLS. Only 3 of 113 rows postdate the margin gate**, and the seam
+only exists on Path B, so today's cache can say nothing about it. Same standing as the emphasis
+density question and for the same reason.
+
+
+### 4 , DONE, AND IT WAS THE OTHER TAG.
+
+**THE VERDICT-SECTION CHIP ALREADY WORKED and I verified it rather than trusting the comment
+beside it.** `#vEdgeTag` binds to vv-core's shared `[data-tip]` handler: **tap folds the blurb open
+inline and tapping again closes it; hover shows a floating box.** Measured on the rendered page,
+both presentations, not read off the source.
+
+**THE DEFECT WAS THE TAG A PHONE READER MEETS FIRST.** Lucas's words were "at the top ... without
+scrolling", and that is a DIFFERENT element: `.mvtag` inside `#mvStrip`, which sits at the top of
+`.matchup` above the cards and is `display:none` on desktop. **It was rendered without a
+`data-tip` at all**, so the tag you see first was the one you could not ask about, while the one a
+long scroll below it had been tappable all along.
+
+**ONE SOURCE, NOT A SECOND STRING.** It now carries the same `tagObj.blurb` the chip uses, so the
+two cannot drift into describing one tag two ways. Verified at a true 390: strip `display:block`,
+top at **83px in a 696px viewport** so it is visible without scrolling, tap opens the blurb, tap
+again closes, and the tip is byte-identical to the verdict chip's.
+
+**AND THE MEASUREMENT NEARLY FAILED FOR A REASON SS C ALREADY RECORDS.** Reading `w.CMP_A` across
+the iframe boundary threw , `CMP_A` is a top-level `let`, which is NOT a property of `window`. The
+frame's own `eval` runs in its global scope and sees it. **That is the exact binding trap in SS C
+("`window.X` IS A DIFFERENT BINDING FROM A SCRIPT-SCOPED `let`/`const` , `let D`, `let CMP_A`,
+`const sb` have all bitten"), hit for the fourth recorded time.**
+
+
+### 17 , BUILT. DETECT AND LOG, NOTHING ELSE.
+
+`checkProseWinner` in `api/analyse.js`, pure and exported like `resolveWinnerId` so it runs without
+a key or a network call. It reads `who` (the purpose-built winner headline), compares it to the
+model's `winner` field, and records the result. **No override, no retry, no UI difference.**
+
+**IT REPORTS UNDETECTABLE RATHER THAN GUESSING**, which is the half that matters:
+
+    agree true        prose and field name the same season
+    agree false       THE DEFECT , prose names one, field returns the other
+    agree null        one side named nobody. A decline has no positive form, and absence of a
+                      name is also what detector failure looks like, so it is NOT a disagreement
+    checked false     same surname (two seasons of one player) or no headline , it refuses to
+                      read what cannot be read
+
+**SIDES ARE CARD IDS, NEVER "A"/"B"**, because the stored row may be swapped into canonical lo/hi
+order and A/B would then mean the opposite of what was checked.
+
+**STORED ON A COPY SO THE RESPONSE IS BYTE-IDENTICAL TO BEFORE.** Mutating `canonical` would have
+leaked the annotation to the client whenever the pair is NOT swapped (`canonical === verdict`
+there) and not when it is (`swapVerdict` builds a new object from a fixed key list). **An
+annotation present or absent depending on the lo/hi order of two card ids is invisible until
+something starts reading it.**
+
+    select verdict->'_winner_check' from verdict_cache where verdict ? '_winner_check'
+
+**THE RATE IS OWED AND CANNOT BE TAKEN YET.** Only 3 of 113 rows postdate the margin gate and the
+seam only exists on Path B. Re-measure when the cache has current rows, same standing as the
+emphasis-density question.
+
+### 5b , ALREADY FIXED BY 078face. No separate cause.
+
+The Story had the SAME defect as the verdict , `.vsprose-wait` set `display:flex` and was never
+removed, so each paragraph split into three anonymous flex items and rendered in the loading voice.
+**`vvSetStory` was worse than the verdict, because `first.cloneNode(false)` copied the wait class
+onto every additional paragraph**, so all four Story paragraphs were affected where the verdict had
+one. Fixed in `078face` and verified rendered at the time.
+**Lucas's complaint predates the fix and it is not deployed yet** , page HTML is not cache-busted,
+so it needs a push and a hard refresh before he can see it.
+
+### 5a , THE PAYLOAD DISTINGUISHES THEM. THE PROMPT SAYS NOTHING ABOUT WEIGHT.
+
+**`won_by` IS ALREADY EMITTED** , `vvAIStats` sends `won_by:'team'` or `'player'` per honour, and
+compare's `aiBlock` prints it. So the model CAN tell a squad medal from a personal award.
+
+**BUT NOTHING TELLS IT TO WEIGH THEM DIFFERENTLY, AND THE PROMPT REPEATEDLY FLATTENS THEM.** Every
+mention treats honours as one class of evidence , *"the honours each won"*, *"A trophy is a fact"*,
+*"if one has the honours and the other has the rarer output"*. **`won_by` exists for ATTRIBUTION,
+not weight** , its own comment says it *"keeps a team title from being written as a personal one"*.
+So Lucas is right: a League Title and a Golden Boot arrive as the same kind of evidence.
+
+**AND THERE IS A MISLABEL UNDERNEATH IT, ON THE HONOUR WHERE IT MATTERS MOST.** The mapping is
+`won_by: h.group === 'Team' ? 'team' : 'player'`, and `world_cup_winner` carries
+`group:'Career'` , so **the World Cup is emitted as `won_by:"player"`.** Verified:
+
+    {"honour":"World Cup Winner","year":2018,"won_by":"player", ...}
+    {"honour":"League Title",    "year":2018,"won_by":"team",   ...}
+    {"honour":"Golden Boot",     "year":2018,"won_by":"player", ...}
+
+**`group` is doing two jobs** , it answers "which shelf does this sit on" (Individual / Team /
+Career) and is being read as "who won it". A World Cup is a squad achievement and Lucas lists it as
+a team honour. **Fixing the label is a small, safe change; adding a weighting rule to the prompt is
+a judgement about how the platform values a medal against an award, and that is Lucas's call.**
