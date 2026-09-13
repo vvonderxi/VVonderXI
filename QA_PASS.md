@@ -470,6 +470,72 @@ instrument that cannot reproduce them is not evidence about anything else on the
 - **STATUS 2026-08-28: PASS.** `git grep -ln "BSD_API_KEY\|sports.bzzoiro.com"` now returns **FOUR** files, down from thirteen, and every one is a deliberate RECORD rather than a credential: `CLAUDE.md`, `QA_PASS.md`, `migrations/bsd_block_cleanup_2026-08-23/README.md`, and a post-mortem COMMENT at `api/import-players.js:133`. **The three BSD endpoints are gone.** `api/` now holds 15 files. **The key still needs revoking at the provider and removing from Vercel's env , code no longer reading it is not the same as it being dead (C5-adjacent, but a separate credential).**
 ---
 
+
+---
+
+## GROUP A , AUTOMATED HALF RUN 2026-09-13. TEN ITEMS, ALL PASS, THREE INSTRUMENT FAULTS, ONE REAL DEFECT.
+
+**Run on the branch with no domain and no human eye. The nine items NOT run here (A6 to A12, A14)
+need a render, a capture or a human, and the visual sweep is deliberately held until the seven
+items awaiting Lucas land , auditing a tree that is about to change guarantees auditing it twice.**
+
+| item | result |
+|---|---|
+| A0 scope | 145 commits / 77 files / +13,955 / -853, LOCAL refs, 6 unpushed. Re-run in Terminal C after a fetch |
+| A1 parse + rules survive | **PASS**, every file, every declared rule, every inline script |
+| A2 cache tokens | **FAILED, FIXED, RE-PASSED.** See the defect below. Five surfaces, all on `20260913j` |
+| A3 share-only names | **PASS**, 3 of 3 keys map, negative control passes through |
+| A4 marks resolve | **PASS**, zero unresolved `<use>`: playbook 48, rankings 298, card 0, compare 0 |
+| A5 loader floor | **PASS**, `VV_LOADER_MIN` 16; 8 and 12 clamp UP to 16; 16/24/48/64 honoured; default 48 |
+| A13 row namespaces | **PASS**, `.vvrows` on all three surfaces, `.vvrows-season` on card and compare |
+| A15 data baselines | **CAPTURED, not asserted**, see below |
+| A16 GK matview | **PASS**, 76 columns, all 13 required present (saves, goals_conceded, penalties_saved, starts, three stage flags, six honour flags) |
+| A17 position vocabulary | **PASS**, unchanged from SS E: `UNK` 71, coarse `FOR` 36, `card_id < 120000` = 6 |
+| A18 secrets | **PASS**, zero BSD references in deployed code, no service key literal in any tracked file, `.env` untracked |
+
+### THE ONE REAL DEFECT, AND IT WAS AN HOUR OLD
+**A2 returned TEN shipping surfaces instead of five**, five of them carrying no `?v=` token,
+because a comment added that morning named `vv-core.js` while explaining that those pages do not
+load it. **The rule's own escape from a stale list is a grep, and prose about the grep joined it.**
+Fixed in `3160ceb`; promoted to a rule in SS C beside the cache-token entry, because the second
+rewrite hit it again by quoting the grep command as its illustration.
+
+### THREE INSTRUMENT FAULTS, ALL MINE, ALL CAUGHT BY A CONTROL
+Recorded because this file's own rule is to hold the instrument to the same standard as the code.
+- **A3 , I typed `complete_vs_specialist` and `league_strength` from memory.** The real keys are
+  `complete_spec` and `league_tips`. Two correct entries read as broken. **Second time a check
+  written against remembered strings has produced a false failure here** , now a pattern in SS C.
+  Re-run reads the keys OUT of the source, asserts the count is 3, and adds a negative control.
+- **A5 , I passed `vvLoader(8)`, a number, where it takes `{size: 8}`.** Every call silently
+  defaulted to 48 and the clamp looked broken. Same family as A3: an API typed from memory.
+- **AND THE PATTERN ACROSS BOTH IS WORTH MORE THAN EITHER: A FUNCTION THAT ACCEPTS ANYTHING AND
+  FALLS BACK TO A DEFAULT CANNOT TELL YOU THAT YOU CALLED IT WRONG.** It answers confidently and
+  the answer is about a question you did not ask. **Read the signature and the keys from the
+  source before writing any check against them, never from a doc and never from memory.**
+
+### A15 , BASELINES CAPTURED 2026-09-13, AND TWO HAVE DRIFTED FROM WHAT SS C/D RECORD
+These are captures, not assertions. **Two figures no longer match the documents and neither is
+wrong , the documents are stale, which is what capturing is for.**
+
+| | captured | recorded elsewhere |
+|---|---|---|
+| `player_card_mv` rows | **57,055** | 57,055 (SS C, agrees) |
+| scored, rt not null | **53,994** | , |
+| honours rows | **624** | 624 (SS A, agrees) |
+| `h_top_assists` cards | **113** | 113 (SS F, agrees) |
+| stage peak / breakout / standard | **327 / 150 / 413** | **329 / 152 / 413** (SS D, 2026-09-07) |
+| matview columns | **76** | **65** (SS C, after the 2026-08-19 swap) |
+| deployed functions | **2** | **13** (SS C and SS D, repeatedly) |
+
+- **THE STAGE COUNTS MOVED BY TWO AND TWO.** Expected: the flags are computed in the view from
+  career shape, so the 25/26 position corrections that landed on 2026-09-12 move them. **Not a
+  defect. Do not "fix" the 329.**
+- **THE FUNCTION COUNT IS THE ONE TO NOTICE.** `git ls-files 'api/*.js'` returns **`api/analyse.js`
+  and `api/get-seasons.js`, and nothing else.** The seven importers moved out of `api/` and BSD was
+  retired, so the deployed surface is **2, not 13**. SS C's plan-limit reasoning (16 against Hobby's
+  12) describes a tree that no longer exists. **Vercel Pro is still the right call for the
+  commercial-use terms, and the function cap is no longer anywhere near binding.**
+
 # GROUP B , NEEDS THE LIVE DOMAIN, AFTER THE MERGE
 
 `vvonderxi.com` IS live and served by Vercel, so these are runnable the moment the merge deploys.
