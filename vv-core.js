@@ -3910,6 +3910,46 @@
     that rule exists to prevent. Measured, a green at gold's luminance is numerically
     IDENTICAL on every axis, so it was never a contrast question.  */
 body.light{--vvem-ink:#5C4008;--vvem-wash:#F6E6BC}
+/*  ── THE THREE GROUNDS, IN ONE BLOCK, EACH NAMED ────────────────────────────────────────
+    Emphasis is a marked run on every prose surface, and the platform has THREE grounds under
+    it. They are declared together, here, because three declarations across three files is the
+    drift this file keeps recording; three grounds honestly served in one place is not
+    duplication. SS C already says an ink matches the GROUND and not the theme class.
+    (No backticks in this comment: it lives inside VV_CARD_CSS, a template literal, and one
+    stray backtick ends the literal early and leaves the module half-defined. Caught here by
+    the require-and-assert, which is the only check that sees it , node --check passes.)
+
+      GROUND                     INK        WASH       why
+      dark page panel            #E8B84B    none       a wash COSTS contrast here, 7.45
+                                                       against 10.51 for ink alone
+      light page panel #FBF8F2   #5C4008    #F6E6BC    7.74, wash 1.17 from the panel
+      card boxes #F0EAD9         #7e5a10    #EBDCA8    4.57 on the wash, and 5.21 on bare
+                                                       cream if the wash never renders
+
+    THE CARD'S GROUND DOES NOT FLIP. #F0EAD9 in BOTH themes , rendered and toggled to confirm
+    rather than inferred , which is why --vvem-ink-fixed exists and must never follow the theme.
+
+    THE CARD'S INK IS THE GRACEFUL ONE AND THAT IS THE WHOLE REASON IT IS NOT #5C4008. The
+    light page's ink scores a beautiful 7.00 on the cream wash and only 1.27 against the scout
+    body ink, so a wash that failed to render would take the emphasis with it. #7e5a10 clears
+    AA ON THE WASH and still reads as emphasis WITHOUT it. D degrades to what ships today.
+
+    AND THE WASH IS THE BINDING GROUND, NOT THE PAPER , it is DARKER, so contrast on it is
+    always the lower of the two. Satisfy AA there and the bare fallback is free. On the cream
+    wash the scout body sits at 8.87, so the best separation any ink can reach while clearing
+    AA is 1.97; #7e5a10 reaches 1.94. There is 0.03 left in the entire colour space. Same
+    reciprocal wall as the light page, one ground further in.
+
+    THE WASH GOES DARKER THAN ITS PAPER, NEVER LIGHTER. Measured and rejected: #FAF6E6 on the
+    card scores a respectable 1.11 against the ground and reads as a HOLE , a patch of
+    different, brighter paper rather than a highlight on this one. On an already-pale surface
+    a lighter tint has nowhere to go but toward white, and white is not a highlight, it is an
+    absence. Direction is a design constraint here, not a ratio.
+
+    NOT ON THIS LIST, DELIBERATELY: #glDrury. Its body ink is #5F594E, 5.78 on cream, so the
+    best separation available at AA is 1.28. It takes NO emphasis, and that is a measurement
+    rather than a preference , see the rule pinning it to inherit.  */
+:root{--vvem-wash-fixed:#EBDCA8}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
     .vvcard is a fixed-height flex column (--cw * 1.397). When its children want more room
