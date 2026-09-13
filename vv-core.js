@@ -4638,10 +4638,95 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     tier = (tier==='black'||tier==='gold') ? tier : 'cream';
     return '<div class="vvmono vvmono-'+tier+'"><div class="vvmonomark">V<span>V</span></div></div>';
   }
+  /*  ── vvCardSlide , THE HORIZONTAL SIBLING OF vvCardFlip ─────────────────────────────
+      The card has two navigation axes and they had opposite polish: switchSeason already
+      called vvCardFlip, while seqGo , stepping through the list you arrived from , was a
+      hard cut. THE MISSING ONE WAS THE ONE THAT LOOKED FINISHED, because a hard cut has no
+      jank, no half-frames and no stutter, so an absence reads as restraint.
+
+      SAME DURATION, SAME EASING, DIFFERENT AXIS. VV_MOVE_MS and VV_MOVE_EASE are shared with
+      the flip below, so the two are one grammar rather than two languages. A reader learns
+      the motion once.
+
+      SLIDE RATHER THAN CROSSFADE, DELIBERATELY: a slide carries DIRECTION and a crossfade
+      does not, and direction is the whole content of this gesture , forward and back through
+      a list. A fade would say "something changed" where the card should say "you moved".
+
+      THE OLD CARD PERSISTS. It is snapshotted into an absolutely positioned layer and moves
+      out while the new one moves in, which is what reads as movement; swapping content under
+      a static frame does not. `work` is awaited BETWEEN the two halves, so the network round
+      trip inside loadCard is covered by the outgoing motion rather than added to it.
+
+      REDUCED MOTION TAKES THE HARD CUT, not a faster slide , the card honours that preference
+      elsewhere and a reader who asks for less movement should get none.  */
+  var VV_MOVE_MS = 800, VV_MOVE_EASE = 'cubic-bezier(.5,0,.5,1)';
+  function vvPrefersReducedMotion(){
+    try{ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch(e){ return false; }
+  }
+  async function vvCardSlide(host, dir, work){
+    if(!host || typeof work !== 'function'){ if(typeof work==='function') await work(); return; }
+    if(vvPrefersReducedMotion() || host._sliding){ await work(); return; }
+    var parent = host.parentNode;
+    if(!parent){ await work(); return; }
+    host._sliding = true;
+    var half = Math.round(VV_MOVE_MS / 2);
+    var out  = dir > 0 ? '-16%' : '16%';
+    var into = dir > 0 ? '16%'  : '-16%';
+    /*  THE SNAPSHOT IS A SIBLING, NOT A CHILD, AND THAT IS THE WHOLE CORRECTION.
+        `work` is loadCard, which sets host.innerHTML , so an overlay parented to HOST is
+        destroyed by the very operation it exists to cover. It never survived to animate, and
+        the symptom was a card that changed correctly with no motion at all, which is
+        indistinguishable from the hard cut this replaces. Measured before the fix: the layer
+        was gone 40ms in while host.position still read `relative`, so the function had
+        started and its content had already been wiped.
+        THE GENERAL SHAPE: an element that must outlive a re-render cannot live inside the
+        thing being re-rendered.  */
+    var box = { t: host.offsetTop, l: host.offsetLeft, w: host.offsetWidth, h: host.offsetHeight };
+    var snap = document.createElement('div');
+    snap.className = 'vvslide-out';
+    snap.setAttribute('aria-hidden','true');
+    snap.innerHTML = host.innerHTML;
+    snap.style.cssText = 'position:absolute;top:'+box.t+'px;left:'+box.l+'px;width:'+box.w+'px;'
+      + 'height:'+box.h+'px;display:flex;justify-content:center;pointer-events:none;z-index:3';
+    var prevParentPos = parent.style.position;
+    if(getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
+    try{
+      parent.appendChild(snap);
+      snap.style.transition = 'transform '+half+'ms '+VV_MOVE_EASE+',opacity '+half+'ms '+VV_MOVE_EASE;
+      void snap.offsetWidth;          // force a frame, or both styles coalesce and nothing moves
+      snap.style.transform = 'translateX('+out+')';
+      snap.style.opacity = '0';
+      await work();
+      var card = host.firstElementChild;
+      if(card){
+        card.style.transition = 'none';
+        card.style.transform = 'translateX('+into+')';
+        card.style.opacity = '0';
+        void card.offsetWidth;
+        card.style.transition = 'transform '+half+'ms '+VV_MOVE_EASE+',opacity '+half+'ms '+VV_MOVE_EASE;
+        card.style.transform = 'none';
+        card.style.opacity = '1';
+        setTimeout(function(){
+          if(card){ card.style.transition=''; card.style.transform=''; card.style.opacity=''; }
+        }, half + 60);
+      }
+      /*  The outgoing layer is removed AFTER the incoming one is in flight, so the two
+          overlap the way the flip's faces do rather than leaving a blank beat between them. */
+      setTimeout(function(){ if(snap.parentNode) snap.parentNode.removeChild(snap); }, 40);
+    } finally {
+      setTimeout(function(){
+        if(snap.parentNode) snap.parentNode.removeChild(snap);
+        parent.style.position = prevParentPos;
+        host._sliding = false;
+      }, half + 80);
+    }
+  }
+
   function vvCardFlip(host, opts){
     if(!host) return;
     opts = opts || {};
-    var dur = opts.duration || 800;
+    var dur = opts.duration || VV_MOVE_MS;
     var swap = !!opts.swap;
     var newHTML = opts.newHTML || null;
     var cw = opts.cw;
@@ -7004,7 +7089,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvWordmark, socialRowHTML, vvStripMarkers,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
                 honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
-                rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,
+                rankRowHTML, rowShieldHTML, vvCardFlip, vvCardSlide, vvPrefersReducedMotion, vvBackFace,
                 VVFilters, VVSeq };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle

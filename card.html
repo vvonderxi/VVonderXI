@@ -1381,8 +1381,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913m"></script>
-<script src="/vv-core.js?v=20260913m"></script>
+<script src="/vv-marks.js?v=20260913n"></script>
+<script src="/vv-core.js?v=20260913n"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2572,7 +2572,22 @@
         history.replaceState({cardId:id}, '', u);
       }catch(e){}
       window.scrollTo({top:0, behavior:'auto'});
-      await loadCard();                             // full load: a different PLAYER needs its own seasons
+      /*  THE HORIZONTAL AXIS NOW MOVES, AND IT IS THE FLIP'S SIBLING , 2026-09-13. This was a
+          hard cut while switchSeason already animated, which is the inversion worth
+          remembering: the axis that LOOKED finished was the one with nothing in it, because a
+          hard cut has no jank and so reads as restraint rather than as an absence.
+          vvCardSlide shares VV_MOVE_MS and VV_MOVE_EASE with vvCardFlip, so the two axes are
+          one grammar. It also AWAITS loadCard BETWEEN its two halves, so the network round
+          trip is covered by the outgoing motion instead of being added to it , which is why
+          the old card is snapshotted rather than the content swapped under a static frame.
+          REDUCED MOTION FALLS THROUGH TO THE OLD BEHAVIOUR, a hard cut, handled inside the
+          helper so no caller has to remember it.  */
+      var _hero = document.getElementById('heroCard');
+      if(_hero && window.VVCore && VVCore.vvCardSlide){
+        await VVCore.vvCardSlide(_hero, delta, loadCard);
+      } else {
+        await loadCard();                           // full load: a different PLAYER needs its own seasons
+      }
       seqRender();
     } finally { SEQ_BUSY=false; }
   }
