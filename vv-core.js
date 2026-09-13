@@ -3852,7 +3852,20 @@
   --vvfam-stage-solid:#1B5563;
   --vvfam-hon-solid:#E0A93A;
   --vvfam-stage-quiet:linear-gradient(135deg,#E4F1F4,#D8EAEE)}
-body.light{--vvem-ink:#7e5a10}
+/*  THE LIGHT-MODE EMPHASIS IS #9A6B00, NOT #7e5a10 , 2026-09-13, and the reason inverts the
+    obvious fix. Lucas: the bold reads well in dark and weakly in light. Measured, the CONTRAST
+    is not the problem , gold against the body ink is 2.75 in light and 1.53 in dark, so light
+    already separates BETTER by ratio. What differs is DIRECTION and CHROMA: in dark the gold
+    sits darker than a cream body and advances as colour; in light #7e5a10 sits LIGHTER than a
+    near-black body and barely reads as gold at all, so it recedes and looks brown.
+    SO DARKENING IT WOULD HAVE BEEN BACKWARDS , it raises contrast on white and lowers the
+    separation that actually matters. The direction is up and more saturated, and AA on white is
+    the wall: #9A6B00 measures 4.69 on white against the 4.5 bar, lifts separation from the body
+    ink 2.75 to 3.67, and is fully saturated where #7e5a10 is not.
+    AND THE FIXED TOKEN DOES NOT FOLLOW IT , see --vvem-ink-fixed. The card's boxes are cream
+    rather than white, which has less headroom: #9A6B00 measures 3.93 and 4.38 there and FAILS.
+    Two grounds, two inks, for the third time in this file.  */
+body.light{--vvem-ink:#9A6B00}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
     .vvcard is a fixed-height flex column (--cw * 1.397). When its children want more room
