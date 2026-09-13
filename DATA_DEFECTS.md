@@ -918,6 +918,48 @@ population, which is mostly none of those things.
    was meant to predict, and 99% at rt>=85 against 0%.** Ninety of the 134 wear 7, 9, 10 or 11.
    **A model finds Aguero's 10 trivially. The pass exists for the squad filler wearing 27.**
 
+### [CLOSED 2026-09-13 , THE FOURTH INSTANCE RAN TO COMPLETION, AND THE RULE PAID FOR ITSELF]
+
+**THE SQUAD-NUMBER PASS WAS STOPPED BY A GATE WRITTEN BEFORE THE RESULTS EXISTED, AND THE HEADLINE
+NUMBER WOULD HAVE SAID PROCEED.**
+
+    GATE 1  batch 1 precision, high-confidence rows   95.9%   PASS  (gate was >=95)
+    GATE 2  batch 2 yield, high-confidence rows        7.7%   FAIL  (gate was <10 stop)
+    ANDED                                                     STOP
+
+**RUN BATCH 1 ALONE AND THE PASS LOOKS VIABLE.** 95.9% precision on 122 scored rows is a good
+number by any reading, and it would have licensed filling 8,771 cards.
+
+**THE PROMINENCE BIAS THEN APPEARED A SECOND TIME, INSIDE THE SAME TEST, ON A DIFFERENT AXIS.** It
+was caught before the run on the rt distribution (median 89 against 45). It came back on the SHIRT
+NUMBER distribution, which nobody had thought to check:
+
+    stored number IS 7/9/10/11      n=83   precision 98.8%
+    stored number is NOT 7/9/10/11  n=39   precision 89.7%
+
+**The control is 68% iconic numbers; a real squad is about 20%.** So the 95.9% is a weighted
+average dominated by the easy rows, and **89.7% , the figure that predicts the actual work , lands
+in the STOP AND READ band the gate defined.**
+
+**AND THE MECHANISM WAS VISIBLE ONLY IN THE ROWS THE GATE EXCLUDED.** All eight medium/low rows
+answered exactly **"9"**, and four of the five high-confidence disagreements were 9 or 10.
+**The model defaults to the striker's number when it cannot place a forward.** That is positional
+inference wearing a confidence label, and scoring high-confidence rows alone cannot see it.
+It is not pure guessing , a constant "always answer 9" scores 26.2% , which is precisely what
+makes it hard to spot.
+
+**SO THE GENERALISATION EXTENDS: THE BIAS IS NOT ONLY IN WHICH CARDS WERE FILLED, IT IS IN EVERY
+PROPERTY THAT CORRELATES WITH BEING FILLED FIRST.** Fame put those cards in the control; fame also
+put iconic numbers on those players. **Check the control against the target on the AXIS THE TASK
+TURNS ON, not only on rt.** For a squad-number job that is the number distribution. For an assists
+job it was rt. The query is the same shape; the column is not.
+
+**WHAT IT COST AND WHAT IT SAVED.** Two batches, 173 rows, one file. Against filling 8,771 cards
+from a method that returned **zero** usable answers for a full Genclerbirligi squad and knew only
+Adler, van der Vaart and Son out of 39 tail cards.
+
+---
+
 **THE TEST, AND IT IS ONE QUERY: BEFORE TRUSTING ANY AGREEMENT RATE, COMPARE THE CONTROL'S rt
 DISTRIBUTION AGAINST THE TARGET POPULATION'S.** Median and share above a high band are enough. If
 they do not overlap, the agreement rate measures the easy case and **says nothing about the hard

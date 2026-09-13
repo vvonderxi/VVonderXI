@@ -22,7 +22,7 @@ Update the row the moment an item moves. Lead every report with this table.
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
 | 14 | VV Index band section duplicates Playbook, reads dense | NOT STARTED | Claude | Propose concise + visual |
 | 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
-| 16 | Squad number backfill via Fable | **BLOCKED** | Lucas | Batch 2 FAILED the yield gate at 7.7%. Batch 1 scoring needs Fable's returned numbers |
+| 16 | Squad number backfill via Fable | **DONE (not proceeding)** | Claude | Both gates scored. ANDed verdict FAILS on yield. Nothing written |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -176,3 +176,64 @@ is 20.52. They are not close , the measurement is imprecise. **The copy asserts 
 data does not support**, which is the same class of error as a band claiming reproducibility it
 cannot deliver (SS E, vvindex `.bjury`). The honest statement is "the Index cannot tell these
 apart", and those are different sentences.
+
+
+### 16 , THE SQUAD-NUMBER PASS. BOTH GATES SCORED. THE ANDED VERDICT IS STOP.
+
+**GATE 1 , BATCH 1 PRECISION, high-confidence rows only, against the stored numbers.**
+
+    high-confidence rows scored   122 of 134
+    agree with stored             117
+    disagree                        5
+    PRECISION                    95.9%     gate was >=95 proceed
+    headline verdict             PASS
+
+**BUT THE HEADLINE IS INFLATED BY THE CONTROL'S OWN NUMBER SKEW, AND THE SPLIT IS THE FINDING:**
+
+    stored number IS 7/9/10/11      n=83   precision 98.8%
+    stored number is NOT 7/9/10/11  n=39   precision 89.7%   <- the 85-94 STOP AND READ band
+
+**The control is 68% iconic numbers (83 of 122). A real squad is about 20%** , four of roughly
+twenty-five numbers on a roster. **The 8,771 cards this job exists to fill are overwhelmingly NOT
+iconic numbers**, so 89.7% is the figure that predicts the work, and it does not clear the gate.
+
+**AND THE MECHANISM IS VISIBLE IN THE UNCERTAIN ROWS: FABLE DEFAULTS TO 9.**
+
+    all 8 medium/low rows answered exactly "9"          100%
+    Fable answered 9 or 10 on 68 of 134 batch-1 rows     51%
+    four of the five disagreements are Fable saying 9 or 10
+
+**That is positional inference, not recall** , a forward it cannot place gets the striker's number.
+It is not pure guessing (a constant "always answer 9" scores only 26.2%), but it means the
+confidence label is doing less work than it appears to on exactly the cards that are hard.
+
+**GATE 2 , BATCH 2 YIELD, high-confidence rows only.**
+
+    Genclerbirligi 2013/14   21 of 21 null, zero at any confidence
+    Hamburger SV 2012/13      8 of 18 filled, 3 at high confidence
+    COMBINED YIELD           3 of 39 = 7.7%     gate was >=30 proceed, 10-29 marginal, <10 stop
+    verdict                  FAIL
+
+**The three it knew are Adler, van der Vaart and Son** , an international goalkeeper, a Real
+Madrid galactico, and a player who became one of the Premier League's best-known forwards. **The
+only cards it knew were the famous ones, inside a batch chosen to contain none.**
+
+**THE ANDED VERDICT: STOP. The pass does not proceed and nothing is written.** Gate 2 fails on its
+own, and Gate 1 passes only on a figure the control's composition inflates.
+
+### THE FIVE DISAGREEMENTS , NOT SCORED AS MISSES. EXTERNAL CHECK OWED BEFORE BLAME IS ASSIGNED.
+
+`player_positions` holds 320 rows for 2010-2015 with 156 numbers, a thin hand-built set from the
+same importer that produced everything else. **A disagreement is not evidence that Fable is wrong.**
+
+    card    player            club, season          stored   Fable   Fable's evidence
+    135628  R. Lukaku         West Brom 2012/13       20       10     loan announcement, WBA squad list
+    143989  Alvaro Negredo    Sevilla 2010/11         18        9     Sevilla squad list
+    161530  A. Gignac         Marseille 2014/15        9       10     Marseille squad list
+    162824  O. Giroud         Montpellier 2011/12     17        9     Montpellier title squad list
+    174256  G. Pelle          Feyenoord 2012/13       19        9     signing announcement, Feyenoord squad list
+
+**Check each against kicker.de / tff.org.tr / the club's own archive before concluding.** If Fable
+is right on any of them, that is a finding about OUR data and it belongs in `DATA_DEFECTS.md`.
+**Four of the five are Fable answering 9 or 10, which is the default pattern above, so the prior
+leans toward our stored value , but a prior is not a check.**
