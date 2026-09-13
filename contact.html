@@ -88,7 +88,20 @@
       miss, against socials that are deliberately quieter below it. */
   .primary{margin:44px 20px 0;text-align:center}
   .mailto{display:inline-flex;align-items:center;gap:14px;text-decoration:none;
-    font-family:'Archivo';font-weight:900;font-size:clamp(19px,3.4vw,27px);letter-spacing:-.015em;
+    /*  THE CAP IS 23px, NOT 27px, AND max-width IS THE GUARD , FIXED 2026-09-13.
+        THE RIGHT-HAND CORNER WAS BEING CUT OFF, and the cause was not the radius: the pill
+        has border-radius 18px and always did. `body` on this page is max-width:412px with
+        overflow-x:hidden, so its content column is 372px. At the old 27px cap the pill
+        measured 408px , 36px wider than the column , and body's own clip cut it at 1166
+        while the pill ran to 1182. Sixteen pixels gone, exactly the rounded corner.
+        THE vw TERM CANNOT SAVE IT: the column is a FIXED 412px at every viewport, so on a
+        wide screen 3.4vw pins to the 27px cap against a column that never grows. Measured:
+        24px overflows by 2, 23px fits with 9px to spare.
+        max-width:100% IS A HARD GUARD, NOT THE FIX , a longer address or a font swap can
+        never silently clip again; it wraps instead, which is visible. It does not fire at
+        23px. Keep `break-word` rather than `anywhere` for the reason below.  */
+    font-family:'Archivo';font-weight:900;font-size:clamp(19px,3.4vw,23px);letter-spacing:-.015em;
+    max-width:100%;
     color:var(--cream);background:rgba(255,255,255,0.07);
     border:1px solid rgba(255,255,255,0.16);border-radius:18px;padding:20px 30px;
     transition:transform .2s,background .2s,border-color .2s;
