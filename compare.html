@@ -705,6 +705,15 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       10.51. Reasoning in full beside --vvem-ink in vv-core.js.  */
   body.light .vsprose b,body.light .vsprose .vvem,body.light .vquote .vvem{
     background:var(--vvem-wash);border-radius:4px;padding:.06em .3em;margin:0 -.06em}
+  /*  THE WASH IS FOR LONG PROSE ONLY , Lucas, 2026-09-13. A marked block on a two-word phrase
+      reads as a highlighter pen, and at that density a page is striped rather than emphasised.
+      It belongs on the Story and the verdict, which run to paragraphs, and NOT on h2h, which
+      `api/analyse.js` rule 6 lists among the truly short fields that stay a single line , it
+      measured 0.82 marked phrases per pair against the Story's 2.00.
+      IT LEAKED BECAUSE h2h SHARES A CLASS WITH THE VERDICT rather than having one of its own.
+      `.vwho` and `#glDrury` were already excluded for exactly this reason; this is the third
+      short surface and the only one that was hiding inside a long one.  */
+  body.light .vquote.vq-h2h .vvem{background:none;padding:0;margin:0;border-radius:0}
   /* Placed after every .vsprose rule AND marked important: `body.light .vsprose` is (0,2,0)
      and beats a single class outright, so position alone would still have lost in light
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
@@ -1342,13 +1351,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913k"></script>
+<script src="/vv-marks.js?v=20260913m"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260913k"></script>
+<script src="/vv-core.js?v=20260913m"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2445,7 +2454,14 @@ body.light .pkmsub{color:var(--ink-soft)}
         else { vq[w].classList.remove('vquote-wait'); vq[w].style.display='none'; }
       }
     }
-    var parts=[]; if(h2h)parts.push(h2h);
+    /*  THE SLOTS ARE BUILT CONDITIONALLY, SO THEIR MEANING IS NOT THEIR POSITION , 2026-09-13.
+        h2h is pushed FIRST when it exists, so slot 1 is the head-to-head line and the verdict
+        occupies 2 and 3; with no h2h the verdict starts at slot 1. `h2hAt` records which slot
+        actually took it, so the CSS can name what a slot HOLDS rather than where it sits.
+        A :nth-child RULE WOULD BE CORRECT ONLY ON THE PAGE IT WAS WRITTEN AGAINST , it would
+        wash the verdict on every pair that has no h2h. This is the same class of bug as
+        reading a table column by position instead of by its header.  */
+    var parts=[], h2hAt=-1; if(h2h){ h2hAt=0; parts.push(h2h); }
       // STYLE RULE 5 asks the model for a TWO-PARAGRAPH verdict separated by a blank line.
       // .vquote is filled with textContent, which COLLAPSES newlines, so the break has to
       // become separate elements , the markup already has 3 .vquote slots with margins.
@@ -2472,7 +2488,11 @@ body.light .pkmsub{color:var(--ink-soft)}
         vq[i].classList.remove('vquote-wait');
         if(plain){ vq[i].textContent=t; }
         else { vq[i].innerHTML=(i===0?'“':'')+VVCore.vvEmphasis(t)+(i===parts.length-1?'”':''); }
-        vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].classList.remove('vquote-wait'); vq[i].style.display='none'; } }
+        vq[i].classList.toggle('vq-na', !!plain);
+        /*  MARK THE SLOT BY WHAT IT HOLDS. Set on every pass, both ways, because a slot that
+            carried h2h on the previous pair must not keep the class on a pair without one.  */
+        vq[i].classList.toggle('vq-h2h', i===h2hAt);
+        vq[i].style.display=''; } else { vq[i].classList.remove('vquote-wait'); vq[i].classList.remove('vq-h2h'); vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     /*  THE HEADLINE IS A CONCLUSION TOO, AND IT WAS BEING WRITTEN DURING THE WAIT , 2026-09-13.
         Measured on the live preview: the panel read "Kurtic wins it outright , 78 to 41" for

@@ -299,8 +299,24 @@
       and rgb(249,247,240) , so the theme-aware gold would have landed at 1.54 in dark mode,
       worse than the weight-only treatment it replaces. `--vvem-ink-fixed` is #7e5a10 and
       measures 5.82 on both. Section C: match the ink to the ground, not to body.light.  */
-  #scoutBody .vvem,#notesBody .vvem{font-style:normal;font-weight:800;color:var(--vvem-ink-fixed)}
-  #glDrury .vvem{font-weight:inherit;font-style:inherit;color:inherit}
+  /*  THE WASH IS SCOPED TO THESE TWO IDS AND NOTHING ELSE , 2026-09-13. Both are LONG PROSE
+      inside their folds: the Scout Report runs to two paragraphs and Commentator's Notes to
+      four stanzas. `.np` is the per-stanza wrapper INSIDE #notesBody, so it inherits and
+      needs no rule of its own. Nothing shorter on this page receives it.
+      THE INK IS --vvem-ink-fixed AND THE WASH IS --vvem-wash-fixed, because these boxes are
+      #F0EAD9 in BOTH themes , the ink and the wash are pinned to the GROUND, not the theme.
+      See the three-ground token block in vv-core.js for why #7e5a10 rather than the light
+      page's #5C4008: it clears AA on the wash AND still reads as emphasis without it.  */
+  #scoutBody .vvem,#notesBody .vvem{font-style:normal;font-weight:800;color:var(--vvem-ink-fixed);
+    background:var(--vvem-wash-fixed);border-radius:4px;padding:.06em .3em;margin:0 -.06em}
+  /*  #glDrury TAKES NO EMPHASIS AT ALL, AND THE `background:none` IS DELIBERATE RATHER THAN
+      REDUNDANT. The rest of this rule speaks only about weight, style and colour, so a wash
+      added to a shared selector later would reach this line and nothing here would say no.
+      That is the never-removed-wait-class shape , a rule that is harmless until something
+      new arrives , and it is cheaper to prevent than to inherit.
+      WHY IT TAKES NONE: its body ink is #5F594E, 5.78 on the cream ground, so the best
+      separation any emphasis can reach while clearing AA is 1.28. A measurement, not taste. */
+  #glDrury .vvem{font-weight:inherit;font-style:inherit;color:inherit;background:none;padding:0;margin:0;border-radius:0}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:#3a352e;margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
@@ -1365,8 +1381,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913k"></script>
-<script src="/vv-core.js?v=20260913k"></script>
+<script src="/vv-marks.js?v=20260913m"></script>
+<script src="/vv-core.js?v=20260913m"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
