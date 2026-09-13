@@ -1207,7 +1207,13 @@
         (list || []).forEach(function(h){
           if (!h || !h.label) return;
           _hl.push({ honour: h.label, year: h.season_year != null ? h.season_year : null,
-                     won_by: h.group === 'Team' ? 'team' : 'player', leg: leg,
+                     /*  READ OFF HONOUR_META.wonBy, NOT OFF `group` , FIXED 2026-09-13.
+                         `group === 'Team' ? 'team' : 'player'` sent the WORLD CUP as won by
+                         the player, because it is filed under 'Career'. `group` answers which
+                         shelf an honour sits on; `wonBy` answers who won it, and they are not
+                         the same question. Falls back to the old reading only if the key is
+                         unknown to HONOUR_META, which cannot happen for a shaped honour.  */
+                     won_by: ((HONOUR_META[h.type] || {}).wonBy) || (h.group === 'Team' ? 'team' : 'player'), leg: leg,
                      context: h.context || null });
         });
       };
@@ -2951,14 +2957,24 @@
   // Honours live in the standalone `honours` table (NOT the matview). Splits a
   // player's honours into SEASON (match card season_year + league_code) and CAREER
   // (world_cup_winner, shows on every card). Attach: D.honours = await fetchHonours(res.data).
+  /*  `wonBy` IS EXPLICIT AND IS NOT DERIVED FROM `group` , ADDED 2026-09-13, AND THE NOTE
+      DIRECTLY BELOW IS WHY IT HAD TO BE. `group` answers two different questions at once
+      (WHO won it for Team/Individual, WHEN it attaches for Career), and `vvAIStats` was
+      reading it for the first: `won_by: h.group === 'Team' ? 'team' : 'player'`. World Cup
+      Winner is filed under Career, so **the World Cup was being sent to the model as won by
+      the PLAYER** , a squad trophy described as a personal one, on the honour where that
+      claim is largest.
+      SS C's rule, applied at the root rather than with a special case: two fields for one
+      concept is a defect even when both are populated, and the fix is to state the fact once
+      rather than infer it from a field that means something else. `group` keeps its job.  */
   const HONOUR_META = {
-    ballon_dor:        { group:'Individual', label:"Ballon d'Or",         tier:1 },
-    world_cup_winner:  { group:'Career',     label:'World Cup Winner',     tier:2 },
-    ucl_winner:        { group:'Team',       label:'UCL Champion',         tier:3 },
-    league_champion:   { group:'Team',       label:'League Title',         tier:4 },
-    player_of_season:  { group:'Individual', label:'Player of the Season', tier:5 },
-    golden_boot:       { group:'Individual', label:'Golden Boot',          tier:6 },
-    top_assists:       { group:'Individual', label:'Top Assists',          tier:7 },
+    ballon_dor:        { group:'Individual', wonBy:'player', label:"Ballon d'Or",         tier:1 },
+    world_cup_winner:  { group:'Career',     wonBy:'team',   label:'World Cup Winner',     tier:2 },
+    ucl_winner:        { group:'Team',       wonBy:'team',   label:'UCL Champion',         tier:3 },
+    league_champion:   { group:'Team',       wonBy:'team',   label:'League Title',         tier:4 },
+    player_of_season:  { group:'Individual', wonBy:'player', label:'Player of the Season', tier:5 },
+    golden_boot:       { group:'Individual', wonBy:'player', label:'Golden Boot',          tier:6 },
+    top_assists:       { group:'Individual', wonBy:'player', label:'Top Assists',          tier:7 },
   };
   /*  THESE THREE GROUPS MIX TWO ORTHOGONAL AXES, AND IT IS WORTH KNOWING BEFORE ANYONE
       TRIES TO "TIDY" THEM. Team and Individual answer WHO won it; Career answers WHEN it

@@ -11,10 +11,10 @@ Update the row the moment an item moves. Lead every report with this table.
 | 2 | "The Debate Lives On" fires too often | **BUILT, AWAITING LUCAS** | Lucas | Framing A built and verified. Commit held until he sees the render |
 | 3 | BUG , verdict tag renders before the AI finishes | **DONE** | Claude | Wait chip reads "Still watching the tape", no tooltip, crown badge suppressed too |
 | 4 | Verdict tag tappable on phone, hover on desktop | **DONE** | Claude | The verdict chip already worked. The PHONE STRIP tag at the top had no data-tip |
-| 5a | Individual honours outweigh team honours | **PENDING DECISION** | Lucas | Payload DOES distinguish, prompt says NOTHING about weight. Plus a World Cup mislabel |
+| 5a | Individual honours outweigh team honours | **BUILT, TEXT AWAITING REVIEW** | Lucas | Mislabel fixed at root. Prompt text drafted, not committed |
 | 5b | The Story reads jumbled | **DONE** | Claude | Already fixed by 078face , same wait-class bug. Needs a hard refresh to see |
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
-| 7 | What is left before merging to main | NOT STARTED | Claude | Definitive list |
+| 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
 | 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
 | 9 | League split as a pie chart styled as a football | NOT STARTED | Claude | Keep the existing hover/tap detail |
 | 10 | Instagram + X calls to action placed properly | NOT STARTED | Claude | Propose placements, not buried in Me > Contact |
@@ -458,3 +458,54 @@ So Lucas is right: a League Title and a Golden Boot arrive as the same kind of e
 Career) and is being read as "who won it". A World Cup is a squad achievement and Lucas lists it as
 a team honour. **Fixing the label is a small, safe change; adding a weighting rule to the prompt is
 a judgement about how the platform values a medal against an award, and that is Lucas's call.**
+
+
+### 7 , WHAT IS LEFT BEFORE MERGING. Measured 2026-09-13, not quoted.
+
+**THE MERGE ITSELF IS NOT THE PROBLEM AND IS NOT WHERE THE RISK IS.**
+
+    merge-base            32b19dab
+    origin/BIGGER         4c8ce8a    11 ahead of base
+    origin/redesign       955ec71   119 ahead of base   (+5 unpushed locally)
+    git merge-tree        4.0 MB of output, ZERO conflict blocks
+    files on BIGGER absent from redesign                 ZERO , the merge deletes nothing
+
+**THREE FIGURES IN THE DOCS ARE STALE AND ALL THREE POINT THE SAME WAY , THE JOB IS SMALLER
+THAN RECORDED.**
+
+1. **THE QA PASS IS SCOPED TO A SURFACE FIVE TIMES TOO BIG.** `QA_PASS.md` and SS D record
+   **599 commits, 186 files, +205,155 / -10,204**. Re-measured against the CURRENT merge-base:
+   **119 commits, 65 files, +10,833 / -753.** The old figures describe the pre-merge world;
+   `4c8ce8a` already took the platform across on 2026-09-06, so what remains is drift, not a
+   first crossing. **Re-scope the pass before running it , SS D's own instruction.**
+2. **THE 12-FUNCTION HOBBY CAP IS A NON-ISSUE NOW.** SS C records the branch shipping 13
+   functions and production 16. Measured: **`api/` holds TWO files on BOTH branches** ,
+   `analyse.js` and `get-seasons.js`. The importers moved out and BSD was retired. Nothing to
+   count, and Pro is on anyway.
+3. **`foundations.html` IS NOT A DANGLING REFERENCE.** SS D warns production's `vercel.json`
+   names a file that no longer exists. Read it: it names `og-image.png` and nothing else. A
+   grep for "foundations" hits PROSE in the tag copy , "the foundations of the team" , on both
+   branches. **False positive; the item is closed.**
+
+**SO THE REAL GATE IS NOT A MERGE, IT IS A SETTING.** Vercel's Production environment tracks
+**`coming-soon`**, which serves vvonderxi.com plus four more domains. **Merging redesign into
+`vvonderxi_BIGGER` deploys NOTHING.** Whoever ships the platform changes Production's branch
+tracking, and THAT is the launch. Read it in the dashboard, never inferred from a branch name.
+
+**WHAT ACTUALLY REMAINS, IN ORDER:**
+
+    1  push the 5 unpushed commits                        Lucas, any time
+    2  re-scope QA_PASS.md to 119/65/+10,833              small, do it before running the pass
+    3  run the QA pass                                    42 items, 4 groups, 10 need Lucas
+    4  punchlist 8, the full audit sweep                  LAST by instruction, after every item
+    5  flip Vercel Production to the platform branch      THE LAUNCH. Lucas, in the dashboard
+
+**OPEN DECISIONS THAT GATE NOTHING TECHNICALLY BUT SHOULD BE SETTLED FIRST:** punchlist 2
+(framing A, built, awaiting his eye), 5a (the weighting text, drafted below), and the four
+unstarted build items 9, 10, 11 and 14 , **none of which is launch-blocking, and all of which
+are cheaper to do before a QA pass than after one**, because each one re-opens a surface the
+pass has already checked.
+
+**ONE RECORDED PRE-MERGE ITEM IS A CLOSED DECISION AND IS LISTED ONLY SO IT IS NOT REOPENED:**
+SS D step 5 names the API-Football key rotation as pre-merge. **Lucas has declined it and it is
+not to be raised again.** It is recorded here as settled, not as outstanding.

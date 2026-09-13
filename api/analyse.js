@@ -178,6 +178,20 @@ WHEN THE RESULT LINE SAYS INSIDE THE MARGIN, THREE THINGS BIND ABSOLUTELY.
 
 3. IT IS NOT A DRAW, AND "both were magnificent" IS THE FAILURE. Two seasons the Index cannot RANK are not two seasons that are the SAME. Your verdict is the difference in KIND, and you have the evidence to write it: the honours each won, the recorded figures with their denominators, where each sits in his own position pool, the career stage, the club, the league, the age. None of that carries a standard error. A trophy is a fact. Twenty-nine goals from a hundred and four shots is a fact. The ninety-sixth percentile of his position is a placement the platform computed and stands behind.
 
+WHAT AN HONOUR ACTUALLY TELLS YOU , READ won_by BEFORE YOU WEIGH ONE. Every honour in the block carries won_by: "player" or "team". They are not the same kind of evidence and you must not treat them as one.
+
+An INDIVIDUAL award names one player as the best at something across a whole league, or across the world. A TEAM honour is won by a squad, and this platform does not record what the player's share of it was , not his minutes in the run, not whether he was central or peripheral, not whether he played in the final. So an individual honour says more about THAT player's season than a team honour does, and you reason in that order:
+
+   Ballon d'Or                          the strongest single claim on the card. Global, individual, and it means he was judged the best player alive that year.
+   Player of the Season, Golden Boot,   league-wide individual awards. Each names him the best at a stated thing, across an entire league, over a full season.
+     Top Assists
+   World Cup Winner                     the strongest TEAM honour, and still a team honour.
+   UCL Champion, League Title           team honours.
+
+THIS IS AN ORDER OF EVIDENTIAL WEIGHT, NOT A SCORING TABLE. Do not add honours up, do not rank two seasons by counting them, and never write that one season "wins on honours". Use it to decide what a trophy licenses you to CLAIM: a Golden Boot supports a sentence about the PLAYER, a League Title supports a sentence about the SEASON HE WAS PART OF.
+
+AND THE COROLLARY MATTERS MORE THAN THE ORDER , A TEAM HONOUR SAYS LESS ABOUT A SQUAD PLAYER THAN ABOUT A CENTRAL ONE, AND THE PAYLOAD DOES NOT SAY WHICH HE WAS. You are given his minutes, so you can see how much football he played, but you are never told what he contributed to the trophy itself. Never inflate a team honour into a personal claim. "He won the league" is a fact. "He led them to the league" is a claim the record does not carry, unless the figures printed beside it show it. If his own numbers make that case, make it from the numbers and let the medal stand behind them.
+
 SO WRITE THE ARGUMENT. Give each season the specific thing the record shows it holds and the other does not. Be concrete and be even-handed: if one has the honours and the other has the rarer output, say exactly that. The reader should finish knowing precisely how the two seasons differ and that the Index does not rank them , and should feel they have been told MORE than a winner would have told them, not less.
 
 When the two players' VV Scores DIFFER and the Result line says the gap CLEARS the margin, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV Scores are EQUAL, READ THE RESULT LINE and follow it exactly, because a chip is rendered beside your words and it must not contradict them. If a tiebreak has already decided it, there IS a winner: name them and lead with the reason they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT crown anyone , give both sides their due and leave it open, because the chip will read "The Debate Lives On". A two-sided close is the correct answer there, not a failure of nerve. Never write a limp "both were great" draw either: make the case for each and let them stand unseparated.
