@@ -678,7 +678,26 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   /* The loader's own wrapper is a column flex meant for a full panel; inside a line of
      prose it must not stretch or add its own gap. */
   .vwait .vvload{flex-direction:row;gap:0}
-  .vsprose b{font-style:normal;font-weight:800;color:var(--gold)}
+  /*  THE EMPHASIS TREATMENT , REPOINTED, NOT REWRITTEN, 2026-09-13. This rule is unchanged in
+      substance and has existed in this file for months carrying gold, upright, 800. It had NEVER
+      ONCE RENDERED, because it targets `b` and nothing emits one: the model writes double
+      asterisks and VVCore.vvEmphasis turns them into <strong class="vvem">. A designed treatment
+      that has never appeared on screen is the same shape as the wait class that was applied in
+      markup and never removed , it reads as settled, and it is not doing anything.
+      WHAT WAS SHIPPING INSTEAD: `.vvem{font-weight:700}` against a 600 italic base. A 100-unit
+      step in a display italic, same colour, same size. Lucas reported "no bold" and he was right
+      , it is there, and it cannot be seen.
+      THE UPRIGHT CUT DOES AS MUCH WORK AS THE COLOUR, which is why 800-in-black would not have
+      been enough and why the rule someone designed here was right. The body is ITALIC: breaking
+      the italic run is the signal a reader's eye catches first, and the gold is the reinforcement
+      rather than the mechanism. Weight alone was demoed and it is the weakest of the three.
+      THE `b` SELECTOR IS KEPT RATHER THAN DELETED. It costs nothing, and if the pipeline ever
+      emits a <b> again , a different model, a pasted string, an editorial field , it lands on the
+      same treatment instead of on nothing.
+      TWO INKS BECAUSE THE GROUND MOVES: `--gold` is fixed and correct on the dark stage (9.07);
+      `--gold-ink` flips to #7e5a10 in light and measures 5.90 there. Section C's rule about
+      matching the ink to the ground, not to the theme.  */
+  .vsprose b,.vsprose .vvem,.vquote .vvem{font-style:normal;font-weight:800;color:var(--gold)}
   /* Placed after every .vsprose rule AND marked important: `body.light .vsprose` is (0,2,0)
      and beats a single class outright, so position alone would still have lost in light
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
@@ -699,7 +718,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
     real verdict tag. A wait dressed as the thing it is waiting for is still the thing it is
     waiting for. NOTHING renders in the tag position until the model has answered; the wait
     lives once, at the top of the matchup, as .mvwait.  */
-  body.light .vsprose b{color:var(--gold-ink)}
+  body.light .vsprose b,body.light .vsprose .vvem,body.light .vquote .vvem{color:var(--gold-ink)}
 
   /* ===== Mobile-match: search bar, bar-chart trajectory, proof, data confidence ===== */
   .cmpsearch{display:flex;align-items:center;gap:14px;max-width:680px;margin:0 auto 26px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:13px 15px}

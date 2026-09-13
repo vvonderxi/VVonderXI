@@ -32,7 +32,7 @@ that only ever rises is measuring the writing, not the work.**
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
 | 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes collapsed to one, and the card's better contrast values won |
-| 20 | Emphasis invisible in verdict and Story | **DEMO OUT** | Lucas | The bold IS there at 700 on a 600 italic base. The designed gold/upright/800 rule exists and has never rendered |
+| 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B landed: the designed gold/upright/800 rule repointed from `b` to `.vvem`. Demo held for him to see |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -721,3 +721,34 @@ literal. It ended the literal early and left the module half-defined. `node --ch
 require-and-assert guard failed loudly, which is exactly why section C prescribes it. **Then I wrote
 the sentence explaining that mistake, with backticks, and broke it again.** The payload is asserted
 backtick-free now as part of the check.
+
+### 20 , the emphasis was there all along and could not be seen
+
+**THREE SEPARATE THINGS, AND ONLY ONE OF THEM WAS VISIBLE.**
+
+**(a) THE VISUAL STEP.** `.vvem` set weight 700 against a body already at 600, in Bricolage
+Grotesque ITALIC, same colour and same size. A 100-unit step in a display italic is not emphasis,
+it is a rounding error. Lucas reported "no bold" and he was right: it was there and it could not be
+seen.
+
+**(b) THE DEAD RULE, AND IT HELD THE ANSWER.** `compare.html` has carried
+`.vsprose b{font-style:normal;font-weight:800;color:var(--gold)}` , gold, upright, 800 , for
+months, **and it has never once rendered**, because it targets `b` and nothing emits one: the model
+writes double asterisks and `vvEmphasis` produces `<strong class="vvem">`. A designed treatment
+that has never appeared is the same shape as the wait class applied in markup and never removed.
+It is REPOINTED rather than deleted, and the `b` selector is kept: if the pipeline ever emits a
+`<b>` again it lands on the same treatment instead of on nothing.
+
+**THE UPRIGHT CUT DOES AS MUCH WORK AS THE COLOUR.** The body is italic, so breaking the italic run
+is the signal a reader's eye catches first and the gold is the reinforcement rather than the
+mechanism. That is why weight-alone at 800 was the weakest of the three demoed, and why the rule
+someone designed here was right the first time.
+
+**MEASURED ON THE REAL PAGE, BOTH PROSE SHAPES, BOTH THEMES:** 800 upright against a 600 italic
+body, gold `#E8B84B` in dark at **10.24** on the Story ground and **8.29** on the verdict ground,
+`#7e5a10` in light at **5.90** and **6.26**. The headline keeps its own rule and takes no emphasis.
+
+**(c) THE MODEL UNDER-MARKING THE VERDICT FIELD , LOGGED IN SECTION C, NOT ACTED ON.** Measured on
+a freshly generated preview verdict: p1 two phrases, p2 two, h2h one, **verdict ZERO**. The
+hypothesis is plausible and untested, and `VERDICT_VERSION` fingerprints the prompt, so an edit
+would regenerate every cached row on a guess. **Measure several current verdicts first.**
