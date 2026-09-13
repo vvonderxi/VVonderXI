@@ -1,12 +1,12 @@
 # VVonderXI , PUNCHLIST
 
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
-**IT IS 24 ROWS NOW, NOT 14.** Items 22, 23 and 24 arrived after the list was written, so the
+**IT IS 25 ROWS NOW, NOT 14.** Items 22 to 25 arrived after the list was written, so the
 denominator moves and the percentage falls without any work being undone. That is the tracker
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 14 of 24 rows (58%)**
+**COMPLETE: 14 of 25 rows (56%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
@@ -40,6 +40,7 @@ that only ever rises is measuring the writing, not the work.**
 | 22 | Branded VV Index PDF, sent on request | **SCOPED, UNBLOCKED** | Claude | Line drawn: what we measured and could not, never how the number is arrived at. Separability SEs OUT, the consequence published. mailto is the delivery, no hosting needed |
 | 23 | Season navigation on the card, vertical | **DEMO, AWAITING LUCAS** | Lucas | Not new capability, a shortcut to `switchSeason()`. Options 1 and 3 demoed. Up/Down arrows are unbound and free |
 | 24 | A published figure nobody can re-derive | **DONE** | Claude | 18,355 did not reproduce. `scripts/gen-index-figures.js` emits every live figure WITH its query. Third snapshot of its kind |
+| 25 | Rule 4 under-marking, verdict field and the card's prose | **MEASURED, NOT ACTED ON** | Lucas | ONE edit, both fields, decided on its own. Rebuilds every cached verdict AND every cached note. Hypothesis to TEST not assume: rule 4 says "per paragraph", notes are four STANZAS |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
