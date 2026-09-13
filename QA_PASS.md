@@ -7,14 +7,23 @@ no review step: whatever is wrong on the branch becomes production the instant i
 
 ## THE SCOPE, RE-MEASURED 2026-09-13. IT IS FIVE TIMES SMALLER THAN EVERY FIGURE BELOW.
 
-| | **measured 2026-09-13** | recorded 2026-08-30 | 2026-08-27 | in SS D |
+| | **measured 2026-09-13, late** | earlier that day | recorded 2026-08-30 | 2026-08-27 | in SS D |
 |---|---|---|---|---|
-| merge-base | **`32b19dab`** | `5bdbadb` | , | , |
-| commits to review | **119** | 639 | 599 | 517 |
-| files | **65** | 208 | 186 | 167 |
-| lines | **+10,833 / -753** | +208,979 / -10,955 | +205,155 / -10,204 | +201,009 / -9,571 |
-| conflicts (`git merge-tree`) | **ZERO**, over 4.0 MB of output | , | , | , |
-| files on BIGGER absent from redesign | **ZERO** , the merge deletes nothing | , | , | , |
+| merge-base | **`32b19dab`** | `32b19dab` | `5bdbadb` | , | , |
+| commits to review | **145** | 119 | 639 | 599 | 517 |
+| files | **77** | 65 | 208 | 186 | 167 |
+| lines | **+13,955 / -853** | +10,833 / -753 | +208,979 / -10,955 | +205,155 / -10,204 | +201,009 / -9,571 |
+| conflicts (`git merge-tree`) | **ZERO**, over 4.0 MB of output | , | , | , | , |
+| files on BIGGER absent from redesign | **ZERO** , the merge deletes nothing | , | , | , | , |
+
+**THE TWO 2026-09-13 COLUMNS ARE THE POINT OF THIS WHOLE SECTION, NOT A BOOKKEEPING DETAIL.**
+They are ONE DAY apart and the figure moved **119 to 145 commits and 65 to 77 files**, because a
+working session kept working. **A scope measured at the start of a pass is already wrong by the
+end of it.** That is why re-measuring is A0 below rather than something you do before opening
+this file , see the note under it.
+**AND THE LATE FIGURE IS FROM LOCAL REFS, HEAD against `origin/vvonderxi_BIGGER`, with six
+commits not yet pushed.** It is the honest number for the tree as it stands and it is NOT the
+number the merge will see. Run A0 in Terminal C after a fetch; do not quote this row.
 
 **WHY EVERY OLDER FIGURE IS WRONG, AND IT IS NOT DRIFT , THEY COUNT WORK THAT IS ALREADY
 MERGED.** `4c8ce8a` (2026-09-06) merged `redesign-compare` into `vvonderxi_BIGGER` and the
@@ -127,6 +136,30 @@ are avoidable if you know about them.
     white and reproduces the same false reading.
   - **AND WHERE THE GROUND IS A SOLID COLOUR THE WALKER IS FINE.** The glance-panel failure it
     found was real and confirmed by pixels.
+
+### A0. RE-MEASURE THE SCOPE , THIS IS AN ITEM, NOT A PREREQUISITE
+
+**It has gone stale THREE TIMES: 517, then 599, then 639, then 119, then 145 , five readings, and
+every one was quoted as current by something.** The reason is structural rather than careless.
+A pass scoped at 639 commits and +208,979 lines reads as a multi-day audit that needs a clear run
+at it, so it waits; while it waits the branch moves; and the number that made it wait is now
+wrong in the other direction too, because most of what it counted had already merged.
+
+**SO RE-MEASURING IS STEP ONE OF THE PASS, PERFORMED AND RECORDED LIKE ANY OTHER ITEM.** Treating
+it as a prerequisite is what produced the stale figures: a prerequisite is something you satisfy
+before you start, and if you never start, you never satisfy it, and nobody notices the gap.
+An item gets run, gets a result, and gets written down.
+
+**HOW TO CHECK:** Terminal C, after `git fetch origin`, run the five commands in the scope section
+above. **WHAT A PASS LOOKS LIKE:** the five numbers are written INTO the table above, in a new
+column, in the same sitting , not read, not compared, WRITTEN. **If conflicts is anything but
+zero, or files-on-BIGGER-absent-from-redesign is anything but zero, STOP.** Neither has ever been
+non-zero and both would mean the merge shape has changed since 2026-09-12, which is a different
+problem from anything else in this file.
+
+**THE CONTROL:** the merge-base must still be `32b19dab`. If it is not, `vvonderxi_BIGGER` has
+received a commit from somewhere else and every other figure in the table is measuring the wrong
+interval. That is a stop, not a note.
 
 ### A1. Every file parses and every declared rule survives
 - **Check:** no syntax error, no silently truncated CSS, every shared module exports what pages expect.

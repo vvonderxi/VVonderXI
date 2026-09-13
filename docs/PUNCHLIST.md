@@ -6,7 +6,7 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 14 of 25 rows (56%)**
+**COMPLETE: 15 of 25 rows (60%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
@@ -36,7 +36,7 @@ that only ever rises is measuring the writing, not the work.**
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
 | 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes to one. **Typeface fixed after Lucas saw it: the Playbook never loaded Barlow Condensed** |
 | 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B on all five prose surfaces. One ink flips, one is pinned, one takes none , the grounds decide, not the theme |
-| 21 | QA_PASS re-scope | **QUEUED, LAST BUT ONE** | Claude | Runs immediately before item 8 so the figure is true when the sweep runs. Has gone stale three times |
+| 21 | QA_PASS re-scope | **DONE** | Claude | 145 commits / 77 files, and the 119 measured EARLIER THE SAME DAY is kept beside it to show the drift. Re-measuring is now **A0, an item**, not a prerequisite. Stale item count 42 retired, it is 44 |
 | 22 | Branded VV Index PDF, sent on request | **OUTLINE, AWAITING LUCAS** | Lucas | `docs/VVINDEX_PDF_OUTLINE.md`, eight pages. Line drawn: what we measured and could not, never how the number is arrived at. Separability SEs OUT, the consequence published. mailto is the delivery, no hosting. Three questions at the foot |
 | 23 | Season navigation on the card, vertical | **DEMO, AWAITING LUCAS** | Lucas | Not new capability, a shortcut to `switchSeason()`. Options 1 and 3 demoed. Up/Down arrows are unbound and free |
 | 24 | A published figure nobody can re-derive | **DONE** | Claude | 18,355 did not reproduce. `scripts/gen-index-figures.js` emits every live figure WITH its query. Third snapshot of its kind |
@@ -512,7 +512,7 @@ tracking, and THAT is the launch. Read it in the dashboard, never inferred from 
 
     1  push the 5 unpushed commits                        Lucas, any time
     2  re-scope QA_PASS.md to 119/65/+10,833              small, do it before running the pass
-    3  run the QA pass                                    42 items, 4 groups, 10 need Lucas
+    3  run the QA pass                                    4 groups, 10 need Lucas, count the headings
     4  punchlist 8, the full audit sweep                  LAST by instruction, after every item
     5  flip Vercel Production to the platform branch      THE LAUNCH. Lucas, in the dashboard
 
