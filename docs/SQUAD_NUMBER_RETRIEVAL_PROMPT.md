@@ -1,245 +1,161 @@
-# SQUAD NUMBERS , THE RETRIEVAL RE-RUN, TWO-PASS WIKIPEDIA (item 16, reopened 2026-09-13)
+# SQUAD NUMBERS , THE TRANSCRIPTION RE-RUN (item 16, third method, 2026-09-13)
 
-**WHY THIS EXISTS, AND IT IS A CORRECTION OF MY OWN GATE RATHER THAN A SECOND ATTEMPT AT THE SAME
-ONE.** The first pass asked Fable what it REMEMBERED. Nobody asked it to look anything up. Its 89.7%
-on batch 1 is a statement about recall on famous cards, and its **7.7% high-confidence yield on the
-tail, 3 rows of 39**, is a statement about the limits of recall , **neither says anything about
-whether a squad list for Genclerbirligi 2013/14 exists on the internet.**
+**THE PREVIOUS RUN DID NOT FAIL. MY GATE DID.** The Hamburger SV 2012/13 season page returned
+**18 of 18 numbers with a verbatim quote each, from one table** , Rudnevs 10, Aogo 6, Diekmeier 2,
+Son 40, van der Vaart 23. It was scored as **0 of 39** because I required a second pass over each
+PLAYER's article to agree, and that pass opened **2 of 37**.
 
-**THE CONTROL IS DELIBERATELY THE SAME 39 CARDS.** Hamburger SV 2012/13 and Genclerbirligi 2013/14,
-identical rows, identical order. Same cards, different method.
+**AND THE REASONING BEHIND THAT RULE WAS BACKWARDS, IN MY OWN WORDS.** I wrote into the prompt:
+*"a player page tends to state a CURRENT number and a season page states the number for THAT
+season, and those disagree precisely where we care."* **The failure mode I named belongs to the
+PLAYER page.** A club-season page is season-specific by construction , it is the source that
+cannot make that mistake. **I required the unreliable source to validate the reliable one, and
+then blocked on the unreliable one being absent.**
 
-**THE GATE IS UNCHANGED AND STAYS PRE-REGISTERED:** high-confidence yield **at or above 30%** makes
-the job live, **10 to 29%** is marginal, **under 10%** closes it. Recall scored 7.7%.
+**THE PLAYER PASS IS DROPPED ENTIRELY.** Hunting for something it could catch that the season page
+gets wrong: a wrong season page opened (a player article without historic numbers cannot detect
+that either), a mid-season shirt change (the player page is no better and usually worse), a squad
+member who never played (irrelevant , a card exists only above the 300-minute floor). The single
+real one is the model misreading a row, and that is a TRANSCRIPTION error with a cheaper
+instrument than a second source.
 
-**WRITE NOTHING TO THE DATABASE.**
+**AND THE GENCLERBIRLIGI RESULT IS VOID, NOT NEGATIVE.** `tr.wikipedia` was cache-only for that
+session, so the hard case was never tested. **The Turkish season page exists.** No zero from that
+club may be read as data until reachability is confirmed , see rule 1.
 
 ---
 
-## THE SOURCE IS WIKIPEDIA, AND IT IS READ TWICE
+## WHAT CHANGES: THE MODEL TRANSCRIBES, WE MATCH
 
-**Lucas's rule, and the reasoning is exactly right: a row is high confidence only when the PLAYER's
-article and the CLUB's season article agree on the number, for that club and that season.**
+**IT IS NO LONGER ASKED TO FILL OUR ROWS. It is asked to copy out a table.** Every
+`(number, name)` pair in the squad list, verbatim, plus the URL. Then WE match those names to our
+cards, on our side, deterministically.
 
-- **PASS 1, the player's article** , the career table, which where it exists carries the number
-  club by club.
-- **PASS 2, the club's season article for that year** , "2012-13 Hamburger SV season" and its
-  equivalents, which carries the squad list as it stood that season.
+**THAT IS NOT A SIMPLIFICATION, IT IS THE IDENTITY RULE.** Section C's oldest data rule is that a
+display name is not a key , `J. Rodriguez` is FIVE different `api_player_id`s, and matching
+research output on a name would have written the wrong player's card. The previous two prompts had
+the MODEL doing that match. **Transcription is verifiable against a quote; identity resolution is
+not.** Moving the match to our side means the model can only be wrong about what the page says, and
+the quote catches exactly that.
 
-**ONE SOURCE ALONE IS NOT ENOUGH, AND THE FAILURE MODE IS SPECIFIC RATHER THAN GENERAL: a player
-page tends to state a CURRENT number and a season page states the number for THAT season, and those
-two disagree precisely where we care** , a player who changed shirt, or moved club, or whose article
-was last edited years after the season we are asking about. An AND across two sources written by
-different editors for different purposes is the cheapest real check available.
+**AND THE UNIQUENESS CHECK FINALLY HAS TEETH, which is the strongest part of this.** It now runs
+across the WHOLE squad rather than our eighteen. A 25-man list read correctly has 25 distinct
+numbers; **a 25-man list with no collision is a far harder test to pass by accident than eighteen
+checked in isolation**, and the seven rows we never asked about are precisely the ones a model
+reconstructing from memory would get wrong.
 
-**THREE THINGS I HAVE ADDED, BECAUSE AN AND-RULE THAT RETURNS ZERO IS UNINTERPRETABLE WITHOUT
-THEM:**
+**OUR 39 CARDS ARE DELIBERATELY NOT IN THE PROMPT.** Naming them invites the model back into
+matching, which is the job we just took away from it.
 
-1. **BOTH NUMBERS ARE REPORTED, ALWAYS, even when they disagree**, in their own columns. The
-   disagreement RATE is the finding: if the two sources rarely disagree, one source may be enough
-   for a later batch; if they disagree often, Lucas's hypothesis is confirmed and the AND rule is
-   load-bearing rather than belt-and-braces. **We cannot learn that if a disagreement is silently
-   discarded as a null.**
-2. **THE NULL REASONS SEPARATE THE TWO PASSES.** `player_no_number` and `season_no_page` are
-   completely different results , the first says Wikipedia's player articles do not carry historic
-   numbers, the second says the club-season article does not exist. Both would read as "0% yield"
-   without the distinction, and only one of them would be worth a second attempt.
-3. **ANY LANGUAGE EDITION OF WIKIPEDIA COUNTS**, and the URL shows which. The German and Turkish
-   editions are far likelier to carry these two squads than the English one, and restricting to
-   English would measure English Wikipedia's coverage rather than Wikipedia's. **The quote stays in
-   the original language, untranslated**, so it can still be checked against the page.
-
-**A HONEST WARNING ABOUT PASS 1, stated before the run so it cannot be read backwards afterwards:
-player articles reliably carry a number in the INFOBOX, which is the CURRENT one, and carry historic
-numbers in the career table only sometimes.** If the run comes back mostly `player_no_number`, that
-is not the method failing , it is the answer, and it says the AND rule cannot be satisfied from
-Wikipedia for tail players. That would be worth knowing in one batch rather than discovering across
-forty-six.
+**WRITE NOTHING TO THE DATABASE.**
 
 ---
 
 ## PASTE THIS, IN A FRESH CHAT, WITH BROWSING ENABLED
 
 ```
-SQUAD NUMBERS , TWO-PASS RETRIEVAL FROM WIKIPEDIA
+SQUAD NUMBER TABLES , TRANSCRIPTION TASK
 
-You are given a fixed list of players. For each row, LOOK UP the squad number that
-player wore for that club in that season, from Wikipedia, TWICE, and return both
-readings. This is a retrieval task, not a recall task. Search first, answer second.
+Copy out two squad tables from Wikipedia, exactly as they appear. You are not
+answering a question about players; you are transcribing a table. Accuracy of
+copying is the whole task.
 
-THE ONE RULE EVERYTHING ELSE SERVES
+THE TWO CLUB-SEASONS
 
-A number without a page you actually opened is not an answer. Do not fill a single
-cell from memory. If you remember a number and cannot find a page stating it, the
-cell is empty and you say why. A page you could not open is not a source.
-
-THE TWO PASSES
-
-PASS 1 , THE PLAYER'S ARTICLE. Open the player's own Wikipedia article and look for
-the number in the career or club table, for THIS club and THIS season. The number in
-the infobox is the player's CURRENT or FINAL number and is NOT an answer to this
-question unless the article states it for this club and this season.
-
-PASS 2 , THE CLUB'S SEASON ARTICLE. Open the Wikipedia article for that club's
-season, for example "2012-13 Hamburger SV season" or its equivalent in any language,
-and read the squad list for that season.
-
-ANY LANGUAGE EDITION OF WIKIPEDIA IS ACCEPTABLE and often necessary , de.wikipedia
-for German clubs, tr.wikipedia for Turkish ones. Give the full URL so the edition is
-visible. Quote in the original language. Do not translate the quote.
+  1. Hamburger SV , 2012-13 season
+  2. Genclerbirligi S.K. , 2013-14 season
 
 RULES
 
-1. DO NOT CHANGE THE IDENTITY COLUMNS. card_id, player_name, club and season are
-   given and are correct. Echo card_id back exactly. Never add a player, never
-   remove one, never re-order, never correct a spelling. If a player looks wrong to
-   you, fill what you find for the row AS GIVEN and say so in the note. Resolving
-   identity is not your task.
+1. CHECK REACHABILITY FIRST AND SAY SO. Before anything else, for EACH club,
+   report whether you can actually open pages on the Wikipedia editions you need,
+   naming them: en.wikipedia, de.wikipedia, tr.wikipedia. If an edition is
+   unavailable, cached-only, or returns stale content, SAY THAT IN THOSE WORDS.
+   A club you could not reach is NOT a club with no data, and reporting the two
+   as if they were the same thing is the one failure that wastes the whole run.
 
-2. REPORT BOTH READINGS, ALWAYS, IN THEIR OWN COLUMNS, even when they disagree, and
-   especially when they disagree. number_player is what pass 1 gave. number_season
-   is what pass 2 gave. Leave a column empty when that pass found nothing. Never
-   copy one column into the other.
+2. ANY LANGUAGE EDITION COUNTS, and for these two it will matter: de.wikipedia
+   for the German club, tr.wikipedia for the Turkish one. Give the full URL so
+   the edition is visible. Quote in the original language. Do not translate.
 
-3. THE AGREED NUMBER IS FILLED ONLY WHEN BOTH PASSES RETURNED A NUMBER AND THE TWO
-   ARE THE SAME. That is the only case where number is filled and confidence is
-   "high". Every other case, including one good source and one silent source, is
-   confidence "null" with an empty number. There is no medium and no low.
+3. TRANSCRIBE THE WHOLE TABLE, NOT A SELECTION. Every row of the squad list for
+   that season, including players you think are irrelevant, players who barely
+   played, goalkeepers, and youth or reserve entries if the table contains them.
+   The rows you are not asked about are the ones that make this checkable.
 
-4. NUMBERS ARE INTEGERS 1 TO 99, or empty. Not a range, not "unknown", not a guess
-   dressed as a number.
+4. COPY, DO NOT NORMALISE. The name goes down exactly as the page prints it ,
+   the same spelling, the same accents, the same order of forename and surname,
+   the same initials. Do not expand "R. Adler" to "Rene Adler". Do not correct
+   what looks like a typo. If the page prints a name twice, print it twice.
 
-5. SAY WHY EACH NULL IS NULL, using exactly one of these words:
-     player_no_article , no Wikipedia article for this player
-     player_no_number  , the player's article exists and does not give a number for
-                         this club and this season
-     season_no_page    , no club-season article exists in any language edition
-     season_no_squad   , the club-season article exists and carries no squad list
-                         with numbers
-     not_in_squad      , the squad list exists and this player is not on it
-     disagree          , both passes returned a number and they differ
-     collision         , rule 8 fired
-     name_pair         , rule 9 fired
-   These reasons are the finding. "player_no_number" across the batch and
-   "season_no_page" across the batch mean completely different things.
+5. A NUMBER YOU CANNOT SEE IS EMPTY, NOT GUESSED. If a row has a name and no
+   number, transcribe the name with an empty number. Never fill one in from
+   knowledge, and never carry one down from the row above.
 
-6. EVIDENCE IS A URL PLUS A VERBATIM QUOTE, FOR EACH PASS SEPARATELY:
-     player_url , the player article you opened, in full
-     player_quote , the exact text from that page carrying this number, copied
-                    character for character, short
-     season_url , the club-season article you opened, in full
-     season_quote , the exact text from the squad list, for example "7 Rafael van
-                    der Vaart" or "7 MF Rafael van der Vaart"
-   Do not paraphrase, do not tidy, do not translate. A pass with no quote counts as
-   having found nothing, whatever you remember.
+6. CHECK THE TABLE AGAINST ITSELF AND REPORT WHAT YOU FIND. After transcribing a
+   club, list any number that appears on more than one row. A correctly read
+   squad list has no duplicates, so a collision means you have misread something
+   , report it, do not resolve it, and do not silently drop a row to make it go
+   away.
 
-7. WORK CLUB BY CLUB FOR PASS 2. One club-season article gives you the whole squad
-   in one page, which is the point of this method. Open it once, read every row you
-   can from it, then move on.
+7. THE QUOTE IS THE EVIDENCE. For each club give ONE verbatim block: the first
+   three rows of the table exactly as they read on the page, characters
+   unchanged, so the transcription can be checked against the source.
 
-8. TWO PLAYERS IN ONE SQUAD CANNOT SHARE A NUMBER. Before returning a club, check
-   your own agreed numbers for that club. If two rows collide you are wrong about at
-   least one: set BOTH to empty with reason "collision" and name the pair in the
-   note. Do not pick one. Keep both number_player and number_season as you found
-   them , the collision is reported, not erased.
+8. IF THE SEASON PAGE DOES NOT EXIST, SAY WHICH PAGES YOU TRIED. Name the exact
+   titles you searched for in each edition. "Not found" without the attempted
+   titles cannot be distinguished from "not looked for".
 
-9. IF TWO ROWS IN THE SAME CLUB SHARE A PLAYER NAME, they are different people,
-   often related. Fill both or neither. Never assign a number by guessing which one
-   is which. If you fill neither, the reason is "name_pair".
+9. DO NOT EXPLAIN, DO NOT SUMMARISE, DO NOT ADD COMMENTARY beyond the lines these
+   rules ask for.
 
-10. AFTER EACH CLUB, REPORT THE SEASON PAGE YOU USED. One line, before that club's
-    rows:
-      CLUB SOURCE | <club> | <season> | <url> | <how many of the given rows it covered>
-    If no such page exists, write:
-      CLUB SOURCE | <club> | <season> | NONE FOUND | 0
-    and say in one short clause what you searched for.
+OUTPUT , in this order, nothing else:
 
-11. DO NOT EXPLAIN, DO NOT SUMMARISE, DO NOT ADD COMMENTARY. The CLUB SOURCE lines
-    and the table are the entire output.
+REACHABILITY | en.wikipedia: <ok | unavailable | cached-only> | de.wikipedia: <...> | tr.wikipedia: <...>
 
-OUTPUT , one row per input row, pipe-separated, header included, nothing else:
+Then, for each club:
 
-card_id | player_name | club | season | number | confidence | null_reason | number_player | player_url | player_quote | number_season | season_url | season_quote | note
+SOURCE | <club> | <season> | <full url> | <number of rows in the table>
+QUOTE  | <the first three rows, verbatim, on one line, separated by  /  >
+DUPES  | <any number appearing twice, and the names, or NONE>
+TRIED  | <only if no page was found: the exact titles you searched>
 
-  number        , integer 1 to 99 only when both passes agree, otherwise empty
-  confidence    , "high" or "null", nothing else
-  null_reason   , one of the rule-5 words, or empty when number is filled
-  number_player , pass 1 reading, or empty
-  number_season , pass 2 reading, or empty
-  note          , empty unless rule 1, 8 or 9 applies
+then one line per table row:
 
-INPUT , card_id | player_name | club | season | league
-185445 | A. Kulusic | Gençlerbirliği S.K. | 2013/14 | TR
-185512 | Ahmet Yılmaz Çalık | Gençlerbirliği S.K. | 2013/14 | TR
-185502 | Bogdan Sorin Stancu | Gençlerbirliği S.K. | 2013/14 | TR
-185498 | D. Tošić | Gençlerbirliği S.K. | 2013/14 | TR
-185711 | Deniz Naki | Gençlerbirliği S.K. | 2013/14 | TR
-185429 | Doga Kaya | Gençlerbirliği S.K. | 2013/14 | TR
-185566 | Ermin Zec | Gençlerbirliği S.K. | 2013/14 | TR
-185659 | F. Kaplan | Gençlerbirliği S.K. | 2013/14 | TR
-185458 | Hakan Aslantaş | Gençlerbirliği S.K. | 2013/14 | TR
-185647 | J. Durmaz | Gençlerbirliği S.K. | 2013/14 | TR
-185591 | J. Gosso | Gençlerbirliği S.K. | 2013/14 | TR
-185677 | M. Çelik | Gençlerbirliği S.K. | 2013/14 | TR
-185657 | N. Çalışkan | Gençlerbirliği S.K. | 2013/14 | TR
-185606 | N. Tomić | Gençlerbirliği S.K. | 2013/14 | TR
-185594 | Oktay Delibalta | Gençlerbirliği S.K. | 2013/14 | TR
-185451 | Özgür İleri | Gençlerbirliği S.K. | 2013/14 | TR
-185648 | R. Köse | Gençlerbirliği S.K. | 2013/14 | TR
-185746 | R. Petrović | Gençlerbirliği S.K. | 2013/14 | TR
-185486 | S. Kurtuluş | Gençlerbirliği S.K. | 2013/14 | TR
-185541 | Sedat Bayrak | Gençlerbirliği S.K. | 2013/14 | TR
-185442 | Serkan Yanik | Gençlerbirliği S.K. | 2013/14 | TR
-155839 | Artoms Rudņevs | Hamburger SV | 2012/13 | BL
-155835 | D. Aogo | Hamburger SV | 2012/13 | BL
-155907 | D. Diekmeier | Hamburger SV | 2012/13 | BL
-155768 | H. Westermann | Hamburger SV | 2012/13 | BL
-155862 | I. Iličević | Hamburger SV | 2012/13 | BL
-156053 | J. Bruma | Hamburger SV | 2012/13 | BL
-155965 | M. Badelj | Hamburger SV | 2012/13 | BL
-155841 | M. Jansen | Hamburger SV | 2012/13 | BL
-155984 | M. Mancienne | Hamburger SV | 2012/13 | BL
-155836 | Maximilian Beister | Hamburger SV | 2012/13 | BL
-155920 | P. Skjelbred | Hamburger SV | 2012/13 | BL
-155865 | Petr Jiráček | Hamburger SV | 2012/13 | BL
-155882 | R. Adler | Hamburger SV | 2012/13 | BL
-156015 | Rafael van der Vaart | Hamburger SV | 2012/13 | BL
-155973 | Slobodan Rajković | Hamburger SV | 2012/13 | BL
-156001 | Son Heung-Min | Hamburger SV | 2012/13 | BL
-155983 | T. Rincón | Hamburger SV | 2012/13 | BL
-155840 | Zhi Gin Andreas Lam | Hamburger SV | 2012/13 | BL
+ROW | <club> | <number or empty> | <name exactly as printed> | <position as printed, or empty>
+
+INPUT , nothing further. The two club-seasons above are the whole task.
 ```
 
 ---
 
 ## HOW THE RE-RUN IS READ
 
-**THE HEADLINE IS ONE NUMBER AGAINST ONE NUMBER: 3 of 39 high from recall, against whatever the
-two-pass AND returns on the same 39 rows.**
+**THE GATE IS UNCHANGED AND IT IS STILL 30%**, but it is now computed on OUR side: match the
+transcribed rows to the 39 control cards by name, and count how many resolve to a number.
+**Recall scored 3 of 39, 7.7%.** Hamburger SV alone should clear the gate on its own if the
+transcription holds, which is the point , the method already demonstrated it and the old rule
+threw it away.
 
-**AND FIVE THINGS ARE READ BESIDE IT:**
+**FIVE THINGS ARE READ, IN THIS ORDER:**
 
-1. **THE DISAGREEMENT RATE IS THE MOST VALUABLE THING IN THE RUN AND IT IS NEW.** Rows where both
-   passes returned a number and the two differ are the direct test of Lucas's reasoning. **A high
-   disagreement rate proves the AND rule is doing real work and that any single-source pass would
-   have written wrong numbers.** A near-zero rate means the two sources are copies of each other,
-   which is a weaker check than it looks , the same "one lineage wearing two names" that closed
-   the assists sourcing.
-2. **THE NULL REASONS DECIDE WHETHER A SECOND ATTEMPT IS WORTH ANYTHING.** `season_no_page` on
-   Genclerbirligi and not on Hamburg is the prominence bias again in a new costume. `player_no_number`
-   across both clubs says pass 1 cannot be satisfied from Wikipedia at all, and the honest response
-   is to bring the rule to Lucas rather than quietly drop it.
-3. **THE CLUB SOURCE LINES ARE CHECKED FIRST.** Two clubs, two season pages, most of each squad
-   covered , that is the method working. Every row citing a different URL is recall with citations.
-4. **TEN QUOTES ARE OPENED BY HAND**, five per club, chosen after the results arrive but BY POSITION
-   in the returned table , rows 1, 6, 11, 16 and 21 of each club , so they cannot be picked to
-   flatter. **A quote that is not on the page voids the run**, whatever the yield says.
-5. **RULE 8 IS A LIVE TEST.** Twenty-one Genclerbirligi rows off one squad list should collide with
-   nothing. A collision it REPORTS is the guard working; a collision it MISSED, two identical agreed
-   numbers sitting in the returned table, voids the run, because the check it was told to run did
-   not run.
+1. **THE REACHABILITY LINE, BEFORE ANYTHING ELSE.** If tr.wikipedia is cached-only again, the
+   Genclerbirligi half is void again and must not be scored. **Void and negative are different
+   results and the run is worthless if they are conflated.** That already happened once.
+2. **DUPES.** A full squad transcribed with zero duplicate numbers is the strongest single signal
+   available here. Any collision the model REPORTS is the guard working. A collision it MISSED ,
+   two identical numbers sitting in the returned rows , voids that club, because the check it was
+   told to run did not run.
+3. **ROW COUNT AGAINST THE QUOTE.** The SOURCE line states how many rows the table has; the
+   returned ROW lines must match it. A short table is a truncated read.
+4. **THE QUOTE, OPENED BY HAND.** Three rows per club, checked character for character against the
+   live page. **A quote that is not on the page voids the run**, whatever the yield says.
+5. **OUR MATCH RATE, AND WHAT IT COSTS.** Names arrive as the page prints them and our
+   `player_name` is abbreviated for 63.6% of players, so the match is fuzzy on OUR side , which is
+   exactly where we want it, because an ambiguous match can be HELD rather than guessed. Count
+   three outcomes: matched, no row found, and ambiguous. **Ambiguous is not a failure, it is the
+   identity rule working.**
 
-**IF THE TWO-PASS AND CLEARS 30% AND THE QUOTES HOLD, THE JOB IS LIVE, AND THE NEXT STEP IS THE
-BATCH-1 CONTROL RE-RUN UNDER THE SAME METHOD.** Precision has to be re-measured too: a source can be
-wrong in ways a memory is not, and the 134 rows we already hold are the only place that can be
-checked.
+**IF HAMBURG TRANSCRIBES CLEANLY AND GENCLERBIRLIGI IS REACHABLE AND DOES TOO, the job is live and
+the next step is the 134-row batch-1 control under the same method** , precision still has to be
+re-measured, because a page can be wrong in ways a memory is not.
