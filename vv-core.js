@@ -5057,9 +5057,25 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       popover; the filter chip renders the same three as a `title`. Keeping the sentence
       here rather than in either page is SS C's rule about card rules living in vv-core:
       a fact transcribed into a page is a fact the next surface will get wrong.  */
+  /*  THE SHARE IS DERIVED HERE, NOT WRITTEN DOWN , 2026-09-13. It is computed from the
+      same `cards` figures three lines above, so it cannot drift from them and it cannot be
+      forgotten when one of them changes. It lives in the SHARED derivation because both
+      surfaces now show it: the Playbook chip and the filter chip's title. A percentage on
+      one and not the other is the two-drawings-of-one-thing defect this function exists to
+      prevent.
+      IT IS A SHARE OF THE NINE, NOT OF THE DATABASE, and the two are the same number only
+      because the nine ARE the database , SS C: if a tenth league is ever added, this stays
+      correct by construction while any hardcoded figure silently would not.  */
+  function vvLeagueShare(x){
+    if(!x || x.cards==null) return null;
+    var t=0; for(var i=0;i<VVF_LEAGUES.length;i++){ if(VVF_LEAGUES[i].cards==null) return null; t+=VVF_LEAGUES[i].cards; }
+    return t ? (100*x.cards/t) : null;
+  }
   function vvLeagueFacts(x){
     if(!x || x.cards==null) return '';
+    var sh=vvLeagueShare(x);
     return x.cards.toLocaleString('en-GB')+' season cards, 2010/11 to 2025/26'+
+           (sh==null?'':' \u00b7 '+sh.toFixed(1)+'% of the record')+
            ' \u00b7 '+x.clubs+' clubs a season, '+x.clubsAll+' in all'+
            ' \u00b7 Detailed stats from '+x.detail;
   }
@@ -5770,7 +5786,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   const VVSeq = { KEY:SEQ_KEY, save:seqSave, load:seqLoad, clear:seqClear,
                   query:seqQuery, clientActive:seqClientActive };
 
-  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES, leagueFacts:vvLeagueFacts,
+  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES, leagueFacts:vvLeagueFacts, leagueShare:vvLeagueShare,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,

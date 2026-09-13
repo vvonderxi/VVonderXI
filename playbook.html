@@ -1289,49 +1289,45 @@
   @media (hover:none),(pointer:coarse){ .lgcue .w::after{content:'Tap'} }
   .lgstrip-r{display:flex;flex-wrap:wrap;gap:7px}
 
-  /*  THE LEAGUE BALL , TREATMENT C, 2026-09-13.
-      READ THIS BEFORE TREATING IT AS A CHART: THE NINE LEAGUES ARE THE SAME SIZE. They span
-      36.0 to 44.5 degrees against a perfectly equal 40.0, a 1.24 ratio end to end , 7,057
-      cards at the top and 5,698 at the bottom. **This is an object that carries facts, not a
-      chart that reveals a pattern**, and nothing about the shape should be read as a finding.
-      It is the SAME conclusion `ed704f5` reached when it rejected a per-pill count and wrote
-      one floor sentence instead: a number that is nearly identical across nine categories
-      says almost nothing, so it is presented as texture and the facts live in the popover.
-      DO NOT later "improve" this by scaling, exploding or ranking the segments. There is no
-      distribution here to reveal.
-
-      WHY THE WEDGES ARE NOT THE PANELS. A football is FIVE-fold symmetric and the data is
-      NINE-fold, so any treatment where the wedges ARE the panels gives up one job or the
-      other , demoed both ways and they read as a pie wearing a pentagon, and as a pie. The
-      ball stays a ball and the data goes in a ring around it.
-
-      THE OUTER PENTAGONS ARE RADIAL AND THAT IS WHY THEY LOOK ALIKE. Each is rotated to its
-      own bearing, k x 72 degrees. A regular pentagon is INVARIANT under a 72-degree rotation,
-      so radial placement and identical placement render the same thing here , which is
-      correct, and is what a real ball looks like. Do not "fix" it by adding an offset.  */
-  /*  ONE SIZE VARIABLE. Every part of the ball is a FRACTION of --bs, taken from the
-      demo Lucas picked (250px: face inset 30, panel radius 44, panels 30, centre 46), so
-      the phone size is a single --bs change and nothing drifts out of proportion.  */
-  .lgball{--bs:168px;position:relative;width:var(--bs);height:var(--bs);flex:none}
-  .lgball .lgb-ring{position:absolute;inset:0;border-radius:50%;
-    box-shadow:0 14px 30px -14px rgba(0,0,0,.75)}
-  .lgball .lgb-face{position:absolute;inset:calc(var(--bs) * .12);border-radius:50%;
-    background:#F7F2E6;box-shadow:inset 0 0 0 2px rgba(20,17,13,.45)}
-  body.light .lgball .lgb-face{background:#fffdf7}
-  .lgball .lgb-p{position:absolute;left:50%;top:50%;background:#17140f;transform-origin:50% 50%;
-    clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%)}
-  .lgball .lgb-c{width:calc(var(--bs) * .184);height:calc(var(--bs) * .176);
-    margin:calc(var(--bs) * -.088) 0 0 calc(var(--bs) * -.092)}
-  .lgball .lgb-o{width:calc(var(--bs) * .12);height:calc(var(--bs) * .116);
-    margin:calc(var(--bs) * -.058) 0 0 calc(var(--bs) * -.06)}
-  /*  ONE HIT LAYER, NO WEDGE ELEMENTS. The CSS pie-slice trick (rotate + skewY on a
-      quarter box) needs an `overflow:hidden` clip to become a wedge; without one the
-      boxes are overlapping parallelograms and the LAST one in the DOM wins almost
-      everywhere , measured, the whole ring answered "Super Lig". The angle is computed
-      from the pointer instead, which is exact and has no shape to get wrong.  */
-  .lgball .lgb-hit{position:absolute;inset:0;border-radius:50%}
+  /*  THE LEAGUE BALL , TREATMENT B, 2026-09-13. THE SECOND VERSION, AND THE DATA RING IS GONE.
+      WHY THE RING WENT, MEASURED RATHER THAN JUDGED. It was a real conic gradient sized by real
+      card counts and it was still unreadable. The wedges span 35.95 to 44.53 degrees against a
+      perfectly equal 40.00, a 1.239 ratio , but the only comparison a reader can actually make is
+      between NEIGHBOURS, and the median gap between two neighbouring leagues is 0.88 degrees,
+      which is 1.14px of arc at 168px and 0.90px at 132px. Sub-pixel. The 11px end-to-end
+      difference is between the largest and smallest wedge, which sit on opposite sides of the
+      ring and can never be held against each other. A CHART CAN BE EXACTLY TO SCALE AND CARRY
+      NOTHING, and this one was.
+      AND TRUE LEAGUE COLOURS MADE IT WORSE, WHICH IS THE ARGUMENT AGAINST RE-ADDING THEM: four of
+      the nine leagues are red and two are navy, so a brand-accurate ring is LESS separable than an
+      invented palette. Colour could never have been the cue here. The flag on each chip is.
+      SO THE NUMBERS MOVED TO WHERE NUMBERS WORK , a share on every chip and the full three lines
+      in the popover , and the drawing went back to being a drawing. Nothing was lost in the move,
+      because the ring never communicated the 1.24 ratio to anybody.
+      DO NOT RE-ADD A RING, A PIE, OR A PER-WEDGE TINT. The measurement above is the reason, and it
+      does not change with styling. Same finding as `ed704f5`, which rejected a per-pill count.
+      WHAT MAKES IT READ AS A FOOTBALL, since the first attempt did not: the panels are CUT BY THE
+      SILHOUETTE and the seams are drawn. A real ball's panels run off its edge; panels floating
+      inside a white disc read as a badge. That, not the pentagon count, was the defect.  */
+  .lgball{--bs:168px;position:relative;width:var(--bs);height:var(--bs);flex:none;
+    filter:drop-shadow(0 14px 26px rgba(0,0,0,.55))}
+  .lgball svg{display:block;width:100%;height:100%}
+  .lgb-skin{fill:#F7F2E6;stroke:rgba(20,17,13,.5);stroke-width:2.5}
+  body.light .lgb-skin{fill:#fffdf7}
+  .lgb-seam{stroke:rgba(20,17,13,.34);stroke-width:2.4;stroke-linecap:round}
+  .lgb-panel{fill:#17140f}
   .lgtop{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-bottom:2px}
   .lgtop .lgstrip-r{flex:1 1 260px;margin:0}
+  /*  THE EQUAL-SHARE LINE , the one sentence the rejected bar treatment was carrying, kept
+      because it does the ring's job in words and does it legibly: it turns "they are all the
+      same size" from something we assert into something a reader can check against the chips.  */
+  .lgeq{font-family:'Inter';font-weight:400;font-size:11.5px;line-height:1.55;margin:12px 0 0;
+    color:rgba(243,237,224,0.55)}
+  body.light .lgeq{color:#6d675e}
+  .lgeq b{font-family:'Archivo';font-weight:700;color:var(--cream)}
+  body.light .lgeq b{color:var(--charcoal)}
+  .lgchip .lgpc{font-family:'Archivo';font-weight:800;font-size:10.5px;color:var(--gold);
+    font-variant-numeric:tabular-nums;margin-left:1px}
   @media (max-width:720px){ .lgball{--bs:132px} .lgtop{gap:15px;justify-content:center} }
   .lgchip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 10px;
     border-radius:999px;border:1px solid rgba(243,237,224,0.15);background:rgba(255,255,255,0.035);
@@ -1691,14 +1687,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260913b"></script>
+<script src="/vv-marks.js?v=20260913c"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260913b"></script>
+<script src="/vv-core.js?v=20260913c"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
@@ -1713,8 +1709,11 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
     var facts=function(x){
       if(x.cards==null) return '';
+      var _sh=(window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueShare)?VVCore.VVFilters.leagueShare(x):null;
       return '<span class="lgtip"><span class="t">'+ESC(x.l)+'</span>'+
-        '<span class="r"><b>'+x.cards.toLocaleString('en-GB')+'</b> season cards, 2010/11 to 2025/26</span>'+
+        '<span class="r"><b>'+x.cards.toLocaleString('en-GB')+'</b> season cards'+
+          (_sh==null?'':', <b>'+_sh.toFixed(1)+'%</b> of the record')+'</span>'+
+        '<span class="r">2010/11 to 2025/26</span>'+
         '<span class="r"><b>'+x.clubs+'</b> clubs a season, <b>'+x.clubsAll+'</b> in all</span>'+
         '<span class="r">Detailed stats from <b>'+ESC(x.detail)+'</b></span></span>';
     };
@@ -1722,44 +1721,42 @@
         league with no `cards`, so a data gap would leave plain pills , and a chip inviting a
         tap that does nothing is worse than no chip. Counted, not assumed.  */
     var anyFacts=L.some(function(x){ return !!facts(x); });
-    /*  THE BALL. Nine wedges of an outer ring, one per league, sized by card count, wrapped
-        around a drawn football. READ THE .lgball COMMENT IN THE STYLESHEET BEFORE CHANGING
-        ANYTHING HERE , the segments span 36.0 to 44.5 degrees against an equal 40.0, a 1.24
-        ratio end to end, so this is an object that carries facts and not a chart that reveals
-        a pattern. Nothing in the shape is a finding.
-        THE COLOURS ARE A LINK, NOT A KEY. Each wedge shares its league's chip, and the chip
-        carries the flag and the name , so nobody has to decode a colour to read this. They
-        are flag-anchored where the flags separate cleanly and chosen for separation where
-        they do not (Germany takes its silver rather than its black, which would vanish into
-        the plate; Turkey takes a teal rather than a second red, because the ring wraps and
-        its wedge touches England's).
-        FAILS CLOSED: one missing or zero `cards` and the ball is not drawn at all, leaving
-        exactly the strip that shipped before it.  */
-    var TINT={PL:'#C8102E',LL:'#E8B84B',SA:'#2B5CC8',BL:'#CFC6B4',L1:'#8E44AD',
-              PRT:'#1C7A3E',ERE:'#F36C21',BPL:'#D94F8C',TR:'#2E8B8B'};
-    var ballOK=L.every(function(x){ return x.cards>0 && TINT[x.v]; });
-    var ball='',arcs=[];
-    if(ballOK){
-      var tot=L.reduce(function(a,x){ return a+x.cards; },0),ang=0,stops=[];
-      L.forEach(function(x){
-        var deg=360*x.cards/tot,a2=ang+deg;
-        stops.push(TINT[x.v]+' '+ang.toFixed(2)+'deg '+a2.toFixed(2)+'deg');
-        arcs.push({v:x.v,a:ang,b:a2});
-        ang=a2;
-      });
-      /*  FIVE OUTER PANELS ON THEIR OWN BEARINGS PLUS ONE AT THE CENTRE. `rotate` runs
-          BEFORE `translateY`, so each panel is carried out to its bearing AND turned to
-          face it , radial, not stamped. A regular pentagon is invariant under 72 degrees,
-          so radial and identical draw the same pixels here, which is what a real ball
-          looks like. Do not add an offset to make the difference visible.  */
-      var pents='';
-      for(var k=0;k<5;k++) pents+='<span class="lgb-p lgb-o" style="transform:rotate('+(k*72)+
-        'deg) translateY(calc(var(--bs) * -0.176))"></span>';
-      ball='<div class="lgball" aria-hidden="true">'+
-        '<div class="lgb-ring" style="background:conic-gradient('+stops.join(',')+')"></div>'+
-        '<div class="lgb-face"><span class="lgb-p lgb-c"></span>'+pents+'</div>'+
-        '<div class="lgb-hit"></div></div>';
-    }
+    /*  THE BALL IS AN OBJECT AND CARRIES NO DATA , TREATMENT B, 2026-09-13. Read the .lgball
+        comment in the stylesheet before changing this: the ring it replaces was exactly to
+        scale and still sub-pixel between neighbours, so the drawing went back to being a
+        drawing and the numbers went to the chips and the popover.
+        IT IS DRAWN, NOT SET IN TYPE, and the geometry is the whole point. One panel at the
+        centre, five on the bearings BETWEEN the seams, pushed far enough out that the
+        silhouette CUTS them, plus the seams joining the two rings of panels. The cut is what
+        makes it read as a ball rather than a badge , the first attempt floated whole
+        pentagons inside a white disc and read as neither.
+        aria-hidden because it says nothing the chips beside it do not.  */
+    var pent=function(cx,cy,r,rot){
+      var q=[],k,a;
+      for(k=0;k<5;k++){ a=(rot+k*72-90)*Math.PI/180;
+        q.push((cx+r*Math.cos(a)).toFixed(2)+','+(cy+r*Math.sin(a)).toFixed(2)); }
+      return 'M'+q.join('L')+'Z';
+    };
+    var ball=(function(){
+      var g='<defs><clipPath id="lgbClip"><circle cx="50" cy="50" r="48"/></clipPath></defs>'+
+            '<circle cx="50" cy="50" r="48" class="lgb-skin"/><g clip-path="url(#lgbClip)">',k,a,b,R=45;
+      for(k=0;k<5;k++){ a=(k*72-90)*Math.PI/180;
+        g+='<line x1="'+(50+13*Math.cos(a)).toFixed(2)+'" y1="'+(50+13*Math.sin(a)).toFixed(2)+
+           '" x2="'+(50+52*Math.cos(a)).toFixed(2)+'" y2="'+(50+52*Math.sin(a)).toFixed(2)+
+           '" class="lgb-seam"/>'; }
+      g+='<path d="'+pent(50,50,15,0)+'" class="lgb-panel"/>';
+      for(k=0;k<5;k++){ b=(36+k*72-90)*Math.PI/180;
+        g+='<path d="'+pent(50+R*Math.cos(b),50+R*Math.sin(b),16,36+k*72+180)+'" class="lgb-panel"/>'; }
+      return '<div class="lgball" aria-hidden="true"><svg viewBox="0 0 100 100">'+g+'</g></svg></div>';
+    })();
+    /*  THE SHARE COMES FROM vv-core, NOT FROM ARITHMETIC HERE. VVFilters.leagueShare derives it
+        from the same `cards` figures the popover quotes, so the chip, the popover and the filter
+        chip's title cannot disagree. Fails closed: no share, no percentage, and the chip renders
+        exactly as it did before.  */
+    var share=function(x){
+      var f=(window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueShare)?VVCore.VVFilters.leagueShare(x):null;
+      return f==null?'':'<span class="lgpc">'+f.toFixed(1)+'%</span>';
+    };
     host.innerHTML='<div class="lgplate"><div class="lgstrip-hd">'+
       '<span class="lgstrip-l">The ground we cover</span>'+
       (anyFacts?'<span class="lgcue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
@@ -1769,7 +1766,7 @@
       L.map(function(x){
         var f=facts(x);
         return '<span class="lgchip'+(f?' hasfacts':'')+'" data-lg="'+ESC(x.v)+'">'+
-               '<span class="f">'+x.e+'</span><span class="nm">'+x.l+'</span>'+
+               '<span class="f">'+x.e+'</span><span class="nm">'+x.l+'</span>'+share(x)+
                (f?'<span class="cv">\u25be</span>':'')+f+'</span>'; }).join('')+
       /*  THE VOLUME LINE IS A FLOOR STATED ONCE, NOT A COUNT PER PILL , DECIDED 2026-09-12.
           Measured the same day, all cards / scored cards per league: SA 7,057/6,806,
@@ -1793,7 +1790,19 @@
           number is OF. The Turkey objection is answered rather than dodged , the tooltips show
           ALL cards, on which Turkey reads fifth and consistently, and the scored figure that
           would invert it is disclosed in DATA_DEFECTS.md instead of half-said here.  */
-      '</div></div><div class="lgclaims">'+
+      '</div></div>'+
+      /*  THE EQUAL-SHARE LINE. The rejected bar treatment carried this as a caption under a
+          chart; it survives as a sentence because the sentence was always the legible half.
+          THE THREE FIGURES ARE DERIVED, NEVER TYPED , an exactly equal ninth, the smallest
+          share and the largest, all from VVFilters.leagueShare, so they cannot go stale when
+          a card count moves and they cannot contradict the percentages on the chips above.  */
+      (function(){ var F=window.VVCore&&VVCore.VVFilters, sh=[];
+        if(F&&F.leagueShare){ for(var i=0;i<L.length;i++){ var v=F.leagueShare(L[i]); if(v==null){sh=[];break;} sh.push(v); } }
+        if(!sh.length) return '';
+        var lo=Math.min.apply(null,sh), hi=Math.max.apply(null,sh);
+        return '<p class="lgeq">An exactly equal share would be <b>'+(100/L.length).toFixed(1)+'%</b> each. '+
+               'Every league sits between <b>'+lo.toFixed(1)+'%</b> and <b>'+hi.toFixed(1)+'%</b>.</p>'; })()+
+      '<div class="lgclaims">'+
       '<div class="lgclaim"><span class="n">1</span><span class="lgstrip-n">Every card comes from '+
         'one of these <b>'+L.length+' competitions</b>, and every league here carries more than '+
         '<b>5,000 season cards</b>. <span class="mut">If a league is not here, no card exists for it.</span></span></div>'+
@@ -1811,59 +1820,21 @@
         A BALL WEDGE IS A PROXY FOR ITS CHIP, HANDLED ON THE SAME PATH , it opens the chip's
         own popover rather than a second one. One set of facts, one panel, so the two can
         never say different things.  */
-    var chipBy=function(v){ return v ? host.querySelector('.lgchip.hasfacts[data-lg="'+v+'"]') : null; };
-    /*  WHICH LEAGUE IS UNDER THE POINTER. Bearing clockwise from twelve o'clock, matched
-        against the same cumulative arcs the conic gradient was built from , one source,
-        so the wedge you point at and the wedge you see can never disagree.
-        THE FACE IS INERT ON PURPOSE: only the ring answers. Dragging across the football
-        would otherwise cycle through leagues on a part of the drawing that carries no
-        data, and the centre is where the bearing is least meaningful.  */
-    var arcAt=function(el,x,y){
-      var r=el.getBoundingClientRect(),R=r.width/2;
-      var dx=x-(r.left+R),dy=y-(r.top+R),d=Math.sqrt(dx*dx+dy*dy);
-      if(d>R || d<R*0.76) return null;
-      var a=(Math.atan2(dx,-dy)*180/Math.PI+360)%360,i;
-      for(i=0;i<arcs.length;i++) if(a>=arcs[i].a && a<arcs[i].b) return arcs[i].v;
-      return arcs.length?arcs[arcs.length-1].v:null;
-    };
-    var chipFor=function(t,x,y){
-      if(!t || !t.closest) return null;
-      var c=t.closest('.lgchip.hasfacts');
-      if(c) return c;
-      var h=t.closest('.lgb-hit');
-      return h ? chipBy(arcAt(h,x,y)) : null;
-    };
+    /*  THE BALL IS NOT A CONTROL ANY MORE, SO ITS HIT TEST AND ITS TWO HANDLERS ARE DELETED
+        RATHER THAN LEFT DORMANT , 2026-09-13. They were an angular hit test over the ring's
+        cumulative arcs, a mousemove that opened a chip's popover, and a mouseleave that shut
+        it. All three answered the question "which league is under the pointer", and with the
+        ring gone there is no league under the pointer to find. An unreachable interaction
+        left in place reads as a feature to a later session and is the same trap as an
+        unmaintained second implementation , see SS D on `careerStageTags`.
+        THE CHIPS KEEP EVERYTHING THEY HAD: CSS `:hover` on desktop, the tap handler below on
+        a phone, one popover, one set of facts.  */
     document.addEventListener('click',function(e){
-      var c=chipFor(e.target,e.clientX,e.clientY);
-      var fromBall=!!(e.target.closest && e.target.closest('.lgb-hit'));
+      var c=e.target.closest ? e.target.closest('.lgchip.hasfacts') : null;
       var open=document.querySelectorAll('.lgchip.hasfacts.open');
       for(var i=0;i<open.length;i++) if(open[i]!==c) open[i].classList.remove('open');
-      /*  A WEDGE ONLY OPENS, IT NEVER TOGGLES. A chip is one target and toggling it is the
-          whole interaction; a wedge on a desktop has ALREADY been opened by the hover that
-          the click arrives through, so toggling would close the panel the moment you tried
-          to click the thing you were reading. Tap anywhere else still closes it, and tapping
-          another wedge still switches.  */
-      if(c) { if(fromBall) c.classList.add('open'); else c.classList.toggle('open'); }
+      if(c) c.classList.toggle('open');
     });
-    /*  DESKTOP HOVER OVER THE BALL. The chips get theirs from CSS `:hover`; a wedge cannot,
-        because the panel it must open is a different element. Bound on the ball only, and
-        cleared on leave, so it can never leave a panel stranded open on a pointer device.  */
-    var ballEl=host.querySelector('.lgball');
-    if(ballEl){
-      ballEl.addEventListener('mousemove',function(e){
-        var c=chipFor(e.target,e.clientX,e.clientY);
-        var hit=ballEl.querySelector('.lgb-hit');
-        if(hit) hit.style.cursor=c?'pointer':'default';
-        if(!c) return;
-        var open=document.querySelectorAll('.lgchip.hasfacts.open');
-        for(var i=0;i<open.length;i++) if(open[i]!==c) open[i].classList.remove('open');
-        c.classList.add('open');
-      });
-      ballEl.addEventListener('mouseleave',function(){
-        var open=document.querySelectorAll('.lgchip.hasfacts.open');
-        for(var i=0;i<open.length;i++) open[i].classList.remove('open');
-      });
-    }
   })();
   function toggleStory(e,btn){ e.stopPropagation(); const card=btn.parentElement; const open=card.classList.toggle('open'); if(!btn.dataset.label) btn.dataset.label=btn.innerHTML; btn.innerHTML = open ? 'Show less &#8249;' : btn.dataset.label; }
 
