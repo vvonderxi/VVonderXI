@@ -147,6 +147,19 @@ body.light .cmpsug .sv{color:#AD0332}
     tagObj and the SAME two scores that fill #vScore, in the same pass. §C: two drawings of
     one thing drift and nothing tells you, so there is one source and two outputs, never two
     sources. The full verdict section below the fold is unchanged and still leads the page. */
+/*  THE WAIT BLOCK , TOP OF THE MATCHUP, ABOVE BOTH CARDS, ON EVERY WIDTH (2026-09-13).
+    It takes the slot the verdict strip will later occupy, so the answer arrives where the
+    waiting happened instead of somewhere else. Desktop gets it too: the strip is phone-only
+    because a desktop has the verdict section beside the cards, but the WAIT has nowhere
+    else to live and the top of the panel is where the eye already is.
+    THE STRIP NOW WAITS FOR `.answered`, NOT `.settled` , THAT WAS THE DEFECT. `.settled`
+    is added the instant Settle is clicked, about 26 seconds before an uncached verdict
+    exists, so the gold tag pill and the score were painted over the cards while the model
+    was still reading. Measured live, not inferred. `.answered` is added by vvSetVerdict
+    only on a real answer.  */
+.mvwait{display:none}
+.matchup.waiting .mvwait{display:flex;grid-column:1 / -1;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;margin:0 0 14px;min-height:74px}
 .mvstrip{display:none}
 .mvstrip .mvtag{display:inline-flex;align-items:center;gap:5px;font-family:'Archivo';font-weight:800;
   font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,#F0D27A,#E0A93A);
@@ -157,7 +170,7 @@ body.light .cmpsug .sv{color:#AD0332}
 body.light .mvstrip .mvscore{color:#AD0332}
 body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
 @media (max-width:820px){
-  .matchup.settled .mvstrip{display:block;grid-column:1 / -1;text-align:center;margin:0 0 12px}
+  .matchup.answered .mvstrip{display:block;grid-column:1 / -1;text-align:center;margin:0 0 12px}
   /*  THE EDGE FLAG IS THE DESKTOP'S WINNER MARKER AND THE STRIP REPLACES IT ON A PHONE.
       Caught in a screenshot, not in the markup: with both live, "A Masterclass" printed
       TWICE in one 390px viewport , once in the strip and once as the crown badge over card
@@ -167,8 +180,8 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       (#cardA.winner .vvcard) and the strip's score leads with the winner's number. The flag
       is the redundant one, so it goes, and its reserved spacer goes with it or the pair sits
       22px lower for a badge that is not there. DESKTOP IS UNTOUCHED. */
-  .matchup.settled .edge-flag{display:none}
-  .matchup.settled .edge-spacer{display:none}
+  .matchup.answered .edge-flag{display:none}
+  .matchup.answered .edge-spacer{display:none}
 }
   .matchup .vscenter{align-self:center}
   .side{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
@@ -648,12 +661,11 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
   .vsprose-wait,.vquote-wait{color:var(--ink-soft) !important;font-style:normal !important;
     display:flex;align-items:center;gap:8px}
-  /*  THE WAIT CHIP , not a tag, so it must not look like one. The gold .vtag is the verdict
-      badge; this drops its fill and weight to a muted outline so nothing on the panel reads
-      as decided while the model is still working. Same reasoning as .vq-na for the prose.  */
-  .vtag.vtag-wait{background:none !important;border:1px dashed rgba(243,237,224,0.28) !important;
-    color:var(--ink-soft) !important;font-style:normal;letter-spacing:.02em;cursor:default}
-  body.light .vtag.vtag-wait{border-color:rgba(28,27,26,0.24) !important;color:var(--ink-soft) !important}
+  /*  THE WAIT CHIP IS GONE, DELIBERATELY , 2026-09-13. It used to render "Still watching the
+    tape" in the tag slot, which put A CHIP in the tag position and then replaced it with a
+    real verdict tag. A wait dressed as the thing it is waiting for is still the thing it is
+    waiting for. NOTHING renders in the tag position until the model has answered; the wait
+    lives once, at the top of the matchup, as .mvwait.  */
   body.light .vsprose b{color:var(--gold-ink)}
 
   /* ===== Mobile-match: search bar, bar-chart trajectory, proof, data confidence ===== */
@@ -1134,7 +1146,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   <span class="mt-wrap mt-fixed"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="mvstrip" id="mvStrip"></div><div class="tie-flag" id="tieFlag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M4 7h16M4 12h16M4 17h16"/></svg> <span class="tflabel"></span></div><div class="side"><div class="edge-flag" id="edgeFlagA"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><div class="pkpanel" id="pkPanel_A"></div><a class="seecard" id="seeA" href="#" style="display:none">See full card &rarr;</a><div class="sidecta"><button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></div><div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div><div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div><div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="navspacer"></div><div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div></nav><div class="canvas"><div class="topline"><div style="display:flex;align-items:center"><button class="backbtn" onclick="vvBack()">&#8249; Back</button><div class="crumb"><span class="va">C</span>ompare</div></div></div><div class="matchup"><div class="mvwait" id="mvWait"></div><div class="mvstrip" id="mvStrip"></div><div class="tie-flag" id="tieFlag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M4 7h16M4 12h16M4 17h16"/></svg> <span class="tflabel"></span></div><div class="side"><div class="edge-flag" id="edgeFlagA"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div><div id="cardA" class="cardslot" onclick="openPicker('A')"></div><div class="pkpanel" id="pkPanel_A"></div><a class="seecard" id="seeA" href="#" style="display:none">See full card &rarr;</a><div class="sidecta"><button class="addclub" onclick="vvTrySave('Saving players is coming, once accounts are live.')">&#9733; Add to my club</button></div></div><div class="vscenter"><div class="vsmedal">VS</div></div>
         <div class="side">
           <div class="edge-flag" id="edgeFlagB"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 8l4.5 4L12 4l4.5 8L21 8l-2 11H5z"/></svg> <span class="eflabel"></span></div>
           <div id="cardB" class="cardslot" onclick="openPicker('B')"></div><div class="pkpanel" id="pkPanel_B"></div><a class="seecard" id="seeB" href="#" style="display:none">See full card &rarr;</a>
@@ -1291,7 +1303,11 @@ body.light .pkmsub{color:var(--ink-soft)}
   function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);}
   function vvResetVerdict(){
     var v=document.getElementById('verdict'); if(v) v.classList.remove('show');
-    var m=document.querySelector('.matchup'); if(m) m.classList.remove('settled');
+    /*  ALL THREE STATES COME OFF TOGETHER. `settled` is the layout, `waiting` is the loader
+        and `answered` is the verdict strip; leaving either of the last two on would carry a
+        finished state into the next pairing.  */
+    var m=document.querySelector('.matchup'); if(m) m.classList.remove('settled','waiting','answered');
+    var w=document.getElementById('mvWait'); if(w) w.innerHTML='';
   }
   // #109 Compare reveal-through-back flip , routes to the shared VVCore.vvCardFlip
   // (360deg, VV monogram mid-turn, lands on the new card). A first pick into an EMPTY
@@ -2325,6 +2341,25 @@ body.light .pkmsub{color:var(--ink-soft)}
      it as a quote is the same error as the card's fallback wearing the Drury italic. */
   function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine,plain,opts){
     opts=opts||{};
+    /*  ONE STATE SWITCH FOR THE WHOLE PRE-ANSWER PANEL , 2026-09-13. `waiting` and
+        `answered` are set HERE rather than at the three call sites (wait, success, outage),
+        so a path added later cannot forget one. `.settled` keeps its own job, which is the
+        two-up layout, and is NOT the same question as "has the model answered" , conflating
+        them is what painted a verdict over the cards 26 seconds early.
+        THE WAIT ALSO SUPPRESSES tagObj ITSELF, which is the belt to the switch's braces:
+        every consumer below reads `_tag`, so nothing downstream has to know about the wait.  */
+    var _mm=document.querySelector('.matchup');
+    if(_mm){ _mm.classList.toggle('waiting', !!opts.wait); if(!opts.wait) _mm.classList.add('answered'); }
+    var _mw=document.getElementById('mvWait');
+    if(_mw){
+      if(opts.wait){
+        _mw.innerHTML = (window.VVCore && VVCore.vvLoader)
+          ? VVCore.vvLoader({size:40, duration:(VVCore.VV_WAIT&&VVCore.VV_WAIT.ai?VVCore.VV_WAIT.ai.duration:2600),
+                             label:(opts.label||'Reading the seasons'), withText:true})
+          : '';
+      } else { _mw.innerHTML=''; }
+    }
+    var _tag = opts.wait ? null : tagObj;
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
     /* The waiting state is markup , see the note above vvWaitHTML. It also carries no
        quotation marks: nothing has been said yet, so dressing the wait as a pull-quote
@@ -2372,7 +2407,15 @@ body.light .pkmsub{color:var(--ink-soft)}
         else { vq[i].innerHTML=(i===0?'“':'')+VVCore.vvEmphasis(t)+(i===parts.length-1?'”':''); }
         vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].classList.remove('vquote-wait'); vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
-    if(who){
+    /*  THE HEADLINE IS A CONCLUSION TOO, AND IT WAS BEING WRITTEN DURING THE WAIT , 2026-09-13.
+        Measured on the live preview: the panel read "Kurtic wins it outright , 78 to 41" for
+        the whole 26-second wait, then the model's own headline replaced it. That is not a tag,
+        so it sits outside the letter of the fix, and it is the LARGEST element on the panel, so
+        leaving it would have put a finished sentence above a spinning loader. The fallback keeps
+        every other job it has , a cache miss, an outage, a model that returns no line , and
+        loses only the one state where the answer does not exist yet.  */
+    if(who && opts.wait){ who.textContent=''; }
+    else if(who){
       // The AI writes this line to match the selected verdict tag + rt gap (see the /api/analyse
       // "who" spec), so a decisive gap reads decisive rather than "edges it" beside "A Masterclass".
       // The hardcoded phrasing below is a FALLBACK only , the loading placeholder and any
@@ -2477,7 +2520,11 @@ body.light .pkmsub{color:var(--ink-soft)}
         rebuild it is how two renderers start to drift. Hidden by CSS until .settled, and on
         desktop it never displays at all. */
     var mv=document.getElementById('mvStrip');
-    if(mv){
+    /*  EMPTY DURING THE WAIT, not merely hidden. CSS already keeps the strip down until
+        `.answered`, so this changes nothing on screen today , it stops a later CSS edit
+        from revealing a score that was written before the verdict existed.  */
+    if(mv && opts.wait){ mv.innerHTML=''; }
+    else if(mv){
       var _mvhi=(winner==='B')?vb:va, _mvlo=(winner==='B')?va:vb;
       /*  THE PHONE STRIP'S TAG CARRIES THE SAME data-tip AS THE VERDICT CHIP , ADDED 2026-09-13.
           This is the tag a phone reader meets FIRST: #mvStrip sits at the top of .matchup,
@@ -2490,8 +2537,8 @@ body.light .pkmsub{color:var(--ink-soft)}
           IT BINDS FOR FREE. vv-core's handler is delegated and keys on [data-tip]; it only
           skips elements inside .vvcard or [onclick], and #mvStrip is a sibling of the card
           slots rather than inside one. Verified rendered at 390 rather than assumed.  */
-      var _mvtip = tagObj ? (tagObj.blurb || tagObj.drury || '') : '';
-      var _mvtag = tagObj ? ((tagObj.emoji?tagObj.emoji+' ':'')+tagObj.name) : '';
+      var _mvtip = _tag ? (_tag.blurb || _tag.drury || '') : '';
+      var _mvtag = _tag ? ((_tag.emoji?_tag.emoji+' ':'')+_tag.name) : '';
       /*  THE PHONE STRIP IS THE SAME CLAIM IN A SMALLER FONT, so it takes the same rule.
           Suppressing one and not the other would put the ranking back on the surface where
           it is hardest to qualify.  */
@@ -2504,7 +2551,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     /* tagline , the selected tag's one-line blurb, straight from VERDICT_TAGS */
     var tl=document.getElementById('vTagline');
     if(tl){
-      var _blurb = tagObj && (tagObj.blurb || tagObj.drury) || '';
+      var _blurb = _tag && (_tag.blurb || _tag.drury) || '';
       tl.textContent=_blurb; tl.style.display = _blurb ? '' : 'none';
     }
 
@@ -2513,9 +2560,9 @@ body.light .pkmsub{color:var(--ink-soft)}
     var tf=document.getElementById('tieFlag');
     if(tf){
       var tfl=tf.querySelector('.tflabel');
-      if(_state===3 && tagObj){
-        if(tfl) tfl.textContent=tagObj.name;
-        tf.setAttribute('data-tip', tagObj.blurb||'');
+      if(_state===3 && _tag){
+        if(tfl) tfl.textContent=_tag.name;
+        tf.setAttribute('data-tip', _tag.blurb||'');
         tf.classList.add('tf-show');
       } else {
         tf.classList.remove('tf-show'); tf.removeAttribute('data-tip');
@@ -2525,29 +2572,27 @@ body.light .pkmsub{color:var(--ink-soft)}
 
     var chip=document.getElementById('vEdgeTag');   // the ONE verdict-section tag chip (was the hardcoded Henry gold pill)
     // data-tip = the tag's one-line BLURB (from VERDICT_TAGS, not duplicated); shared vv-core tooltip = hover (desktop) + tap (mobile)
-    /*  THE CHIP MAY NOT SHOW A TAG WHILE THE MODEL IS STILL THINKING , FIXED 2026-09-13.
-        It used to be set unconditionally, and vvGenerateVerdict calls this function in the
-        WAIT state with the client-side floor tag , its own comment said "show deterministic
-        floor tag immediately". So a reader saw a settled-looking conclusion before one had
-        been reached, and then saw it CHANGE when the model answered and `TAGS[chosen]`
-        replaced it. Worse than an empty slot: the first tag looks decided.
-        THE WAIT STATE GETS A WAIT CHIP, NOT A VERDICT. Same register as the prose beside it,
-        which already says "Reading the seasons". It carries NO data-tip: there is no meaning
-        to reveal yet, and a tooltip on a loading state invites a tap that answers nothing.
-        `vq-na`-style muting is deliberate , see .vtag-wait.  */
+    /*  NOTHING RENDERS IN THE TAG POSITION UNTIL THE MODEL HAS ANSWERED , 2026-09-13, and
+        this is the SECOND pass at it. The first hid the verdict tag behind a wait CHIP, which
+        still put a chip in the tag slot and still replaced it with a real tag a moment later.
+        The whole slot now stays empty and the wait lives once, at the top of the matchup.
+        FOUR OTHER PLACES PRINTED THE DETERMINISTIC TAG DURING THE WAIT AND ONLY THE CHIP WAS
+        EVER GUARDED. Measured on an uncached pair on the live preview, 26 seconds of wait:
+        #mvStrip printed the gold pill "A Masterclass" plus the score; #vTagline printed that
+        tag's blurb; #tieFlag prints tagObj.name on a tie; and .vwho printed a finished
+        headline, "Kurtic wins it outright , 78 to 41", which the model's own headline then
+        replaced. vvGenerateVerdict hands this function TAGS[VC.floorTag] in the wait state,
+        so every unguarded consumer of tagObj was publishing a conclusion early.
+        THE GUARD IS ONE SWITCH AT THE TOP OF THE FUNCTION, NOT FIVE, so a sixth consumer
+        added later inherits it instead of having to remember it.  */
     if(chip){
       if(opts.wait){
-        chip.classList.add('vtag-wait');
-        chip.textContent='Still watching the tape';
-        chip.removeAttribute('data-tip');
-        chip.style.display='';
-      } else if(tagObj){
-        chip.classList.remove('vtag-wait');
-        chip.innerHTML=tagObj.emoji+' '+tagObj.name;
-        chip.setAttribute('data-tip', tagObj.blurb||tagObj.drury||'');
+        chip.textContent=''; chip.removeAttribute('data-tip'); chip.style.display='none';
+      } else if(_tag){
+        chip.innerHTML=_tag.emoji+' '+_tag.name;
+        chip.setAttribute('data-tip', _tag.blurb||_tag.drury||'');
         chip.style.display='';
       } else {
-        chip.classList.remove('vtag-wait');
         chip.style.display='none';
       }
     }
@@ -2707,7 +2752,14 @@ body.light .pkmsub{color:var(--ink-soft)}
         +'Check the <script src="/vv-margin.js"> tag and its ?v= token.');
     }
     var winner=VC.winner;   // the ENGINE's answer, and on an inside-margin pair that is 'tie' until the model answers
-    vvSetWinner(winner);
+    /*  THE RING IS THE PHONE'S CROWN, SO IT WAITS LIKE THE CROWN , 2026-09-13. Found in the
+        RENDER, not in the code: at 390 the winning card wore its gold ring for the whole wait,
+        while the crown badge it replaces was correctly held back. The CSS note by the phone
+        strip says it outright , "the winning card keeps its gold ring" is how a phone reader
+        is told who won , so leaving it on during the wait crowned a winner before the verdict
+        existed, in the one place a phone reader was looking. vvSetWinner is called again with
+        the real outcome on every answer path, including the outage fallback.  */
+    vvSetWinner(null);
     /*  PATH B , WHO DECIDES THIS PAIRING, AND WHY THE GATE LIVES HERE. The licence to judge
         an unseparated pair is granted for OUTFIELD pairs only, and position is a fact this
         page holds and the API payload does not, so the gate is asserted here and the server

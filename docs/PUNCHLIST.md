@@ -3,30 +3,32 @@
 **The single tracker for Lucas's 14-item list. Opened 2026-09-13.**
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 9 of 18 rows (50%)**
-*Counted as complete only when DONE. The three BUILT rows (2, 5a, 17) are waiting on Lucas or on
-data and are NOT counted , this line read "4 of 16" for four closed items because it was not
-moved with the rows, and an under-reported tracker is as misleading as an over-reported one.*
+**COMPLETE: 6 of 18 rows (33%)**
+*Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
+**IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
+reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
+scale and unreadable, and 16 was closed on a gate that measured the wrong thing. **A percentage
+that only ever rises is measuring the writing, not the work.**
 
 | ID | Item | Status | Owner | Note |
 |----|------|--------|-------|------|
 | 1 | Verdict reasoning , reason-to-winner, or pick-then-justify? | NOT STARTED | Claude | Report how the crown is actually decided |
 | 2 | "The Debate Lives On" fires too often | **BUILT, AWAITING LUCAS** | Lucas | Framing A built and verified. Commit held until he sees the render |
-| 3 | BUG , verdict tag renders before the AI finishes | **DONE** | Claude | Wait chip reads "Still watching the tape", no tooltip, crown badge suppressed too |
+| 3 | BUG , verdict tag renders before the AI finishes | **REBUILT, AWAITING LUCAS** | Lucas | First fix was wrong. Six pre-answer leaks found on a live uncached run, all closed; the wait moved to the top of the matchup |
 | 4 | Verdict tag tappable on phone, hover on desktop | **DONE** | Claude | The verdict chip already worked. The PHONE STRIP tag at the top had no data-tip |
-| 5a | Individual honours outweigh team honours | **BUILT, TEXT AWAITING REVIEW** | Lucas | Mislabel fixed at root. Prompt text drafted, not committed |
+| 5a | Individual honours outweigh team honours | **BUILT, TEXT AWAITING REVIEW** | Lucas | Mislabel fixed at root. Emphasis verified reaching a CURRENT verdict, 5 markers , the Messi screenshot predates it |
 | 5b | The Story reads jumbled | **DONE** | Claude | Already fixed by 078face , same wait-class bug. Needs a hard refresh to see |
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
 | 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
 | 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
-| 9 | League split as a pie chart styled as a football | **DONE** | Claude | Treatment C live on the Playbook. Ring is the data, ball is the object, wedge shares the chip's own popover |
+| 9 | League split as a pie chart styled as a football | **REOPENED, DEMO OUT** | Lucas | Measured: neighbouring wedges differ by 0.88deg = 1.14px. The chart is to scale and unreadable. Three treatments to pick from |
 | 10 | Instagram + X calls to action placed properly | NOT STARTED | Claude | Propose placements, not buried in Me > Contact |
 | 11 | "Add to home screen" prompt | NOT STARTED | Claude | Possibly under Playbook |
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
-| 14 | VV Index band section duplicates Playbook, reads dense | NOT STARTED | Claude | Propose concise + visual |
+| 14 | VV Index band section duplicates Playbook, reads dense | **MEASURED** | Lucas | 1,645 of 4,153 words (40%) duplicate the Playbook. It is bigger than the bands. Framing tested below |
 | 15 | Continental international honours, five confederations | NOT STARTED | Claude | One tier below the World Cup, Fable-sourced. Scoped, not started |
-| 16 | Squad number backfill via Fable | **DONE (not proceeding)** | Claude | Both gates scored. ANDed verdict FAILS on yield. Nothing written |
+| 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
 | 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
@@ -543,6 +545,21 @@ the same source.
 all point the same way rather than radially, which is visible at size.
 
 ### 9 , The league split, as a ball rather than a chart. Treatment C, live on the Playbook.
+
+**[SUPERSEDED THE SAME DAY, AND THE WRITE-UP BELOW IS KEPT BECAUSE THE PARTS THAT ARE STILL TRUE
+ARE STILL SHIPPED.] Lucas saw the render and it reads as a ring with a football pasted into the
+middle. The measurement he asked for settles it: the wedges ARE to scale, and the median gap
+between two NEIGHBOURING leagues is 0.88 degrees, which is 1.14px of arc at 168px and 0.90px at
+132px. The 11px end-to-end difference is between the largest and smallest, which sit on opposite
+sides of the ring and can never be compared directly. THE CHART IS TO SCALE AND UNREADABLE AT THE
+SAME TIME , decorative, whatever the caveat in the stylesheet says.**
+- **AND TRUE LEAGUE COLOURS MAKE IT WORSE: four of the nine leagues are red and two are navy**, so
+  real colours are LESS separable than the invented palette. Colour cannot be the cue here; the
+  flag on each chip already is.
+- **STILL TRUE AND STILL SHIPPED: the angular hit test, the popover sharing one set of facts with
+  the chip, and the pentagon-orientation finding.** Three replacement treatments are demoed in
+  `_demo_ball2.html`; the recommendation is to stop drawing the data as a ring.
+
 
 **THE PICK WAS C AND THE REASON IS THE DATA, NOT THE DRAWING.** The nine leagues span **36.0 to
 44.5 degrees against a perfectly equal 40.0, a 1.24 ratio end to end** , 7,057 cards at the top and
