@@ -2283,10 +2283,21 @@ body.light .pkmsub{color:var(--ink-soft)}
     var cols=document.querySelectorAll('#verdict .vstorycol');
     function fill(col,dot,name,prose){ if(!col)return; var nm=col.querySelector('.vsname'); if(nm)nm.innerHTML='<span class="sdot '+dot+'"></span>'+vvEsc(name);
       var ps=col.querySelectorAll('.vsprose'); var first=ps[0]; for(var i=1;i<ps.length;i++)ps[i].remove(); if(!first)return;   // paragraph split: \n\n -> one .vsprose per para
-      if(opts.wait){ first.innerHTML=vvWaitHTML(opts.label||'Reading the seasons'); return; }
+      /*  SAME FIX AS vvSetVerdict, AND THIS SURFACE WAS WORSE , 2026-09-13. `.vsprose-wait`
+          shares the rule with `.vquote-wait`, so it carries the same display:flex and the same
+          !important loading ink, and it was applied in markup and never removed either.
+          AND THE CLONE CARRIED IT FORWARD: `first.cloneNode(false)` copies the class list, so
+          every additional paragraph inherited the wait class from the one above it. Four Story
+          paragraphs rendered split into three columns and in the loading voice.
+          THE ORDER BELOW IS LOAD-BEARING: the class comes off `first` BEFORE it is cloned, so
+          the clones are born clean. The explicit remove on `d` is kept anyway , relying on
+          statement order for correctness is exactly the kind of thing that breaks when somebody
+          reorders two lines that look independent.  */
+      if(opts.wait){ first.classList.add('vsprose-wait'); first.innerHTML=vvWaitHTML(opts.label||'Reading the seasons'); return; }
+      first.classList.remove('vsprose-wait');
       var paras=String(prose==null?'':prose).split(/\n{2,}/).map(function(s){return s.trim();}).filter(Boolean); if(!paras.length)paras=[''];
       first.innerHTML=VVCore.vvEmphasis(paras[0]); var ref=first;
-      for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.innerHTML=VVCore.vvEmphasis(paras[j]); ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
+      for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.classList.remove('vsprose-wait'); d.innerHTML=VVCore.vvEmphasis(paras[j]); ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
   }
   /*  ONE PLACE THAT CROWNS A CARD, AND IT TAKES THE SIDE IT IS GIVEN.
@@ -2316,8 +2327,14 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(opts.wait){
       for(var w=0;w<vq.length;w++){
         if(w===0){ vq[w].innerHTML=vvWaitHTML(opts.label||'Reading the seasons');
+                   /*  THE WAIT CLASS IS STATE, SO IT IS ADDED HERE AND REMOVED BELOW.
+                       It carries display:flex, which is what lays the loader mark out beside
+                       its label , a real job, which is why it is not simply deleted. The bug
+                       was that it was applied in MARKUP and never taken off, so a slot stayed
+                       flex for the life of the page. See the note on the render loop.  */
+                   vq[w].classList.add('vquote-wait');
                    vq[w].classList.add('vq-na'); vq[w].style.display=''; }
-        else vq[w].style.display='none';
+        else { vq[w].classList.remove('vquote-wait'); vq[w].style.display='none'; }
       }
     }
     var parts=[]; if(h2h)parts.push(h2h);
@@ -2331,10 +2348,23 @@ body.light .pkmsub{color:var(--ink-soft)}
         only reason innerHTML is acceptable on a line that carries model output, and the
         escaping is not being loosened , it moved inside the helper. A `plain` line is OUR
         copy (an outage message), so it keeps textContent and cannot grow markup at all.  */
+    /*  REMOVE THE WAIT CLASS BEFORE WRITING REAL PROSE , THIS LINE IS THE FIX, 2026-09-13.
+        `.vquote-wait` sets `display:flex` (for the loader) and `color:--ink-soft !important;
+        font-style:normal` (for the status voice). Applied in markup and never removed, it did
+        two things at once to every rendered verdict:
+        (1) A FLEX CONTAINER WRAPS BARE TEXT RUNS IN ANONYMOUS FLEX ITEMS. While the prose was
+            one text node that was invisible , one item, laid out as normal text. The moment
+            vvEmphasis added a <strong>, `text <strong> text` became THREE flex items in a row
+            and one sentence rendered across three columns with the emphasis marooned in the
+            middle. Measured: items at x687 w293, x991 w67, x1067 w236.
+        (2) The prose rendered in the LOADING voice, grey and upright, instead of cream italic.
+            Nobody reported that for months because it looked deliberate.
+        BOTH SYMPTOMS ARE THIS ONE CLASS. The emphasis work did not cause it, it exposed it.  */
     if(!opts.wait) for(var i=0;i<vq.length;i++){ if(i<parts.length){ var t=parts[i];
+        vq[i].classList.remove('vquote-wait');
         if(plain){ vq[i].textContent=t; }
         else { vq[i].innerHTML=(i===0?'“':'')+VVCore.vvEmphasis(t)+(i===parts.length-1?'”':''); }
-        vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].style.display='none'; } }
+        vq[i].classList.toggle('vq-na', !!plain); vq[i].style.display=''; } else { vq[i].classList.remove('vquote-wait'); vq[i].style.display='none'; } }
     var who=document.querySelector('#verdict .vwho');
     if(who){
       // The AI writes this line to match the selected verdict tag + rt gap (see the /api/analyse
@@ -2556,6 +2586,10 @@ body.light .pkmsub{color:var(--ink-soft)}
         said ABOUT these two, so it must not be dressed as a pull-quote.  */
     var vq=document.querySelectorAll('#verdict .vfinal .vquote');
     for(var i=0;i<vq.length;i++){
+      /*  The wait class comes off here too. This branch writes REAL content (our own
+          registered copy), so the slot is no longer waiting , and vq-na already supplies
+          the plain, unquoted status treatment this state wants.  */
+      vq[i].classList.remove('vquote-wait');
       if(i===0){ vq[i].textContent = bothKeepers ? GK_NO_VERDICT_PAIR : GK_NO_VERDICT_MIXED;
                  vq[i].classList.add('vq-na'); vq[i].style.display=''; }
       else { vq[i].textContent=''; vq[i].style.display='none'; }

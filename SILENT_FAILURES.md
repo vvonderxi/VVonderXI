@@ -221,6 +221,67 @@ The theme-contrast harness (`_audit.js`, tracked) reads `backgroundColor` and re
 
 ---
 
+## A LOADING CLASS APPLIED IN MARKUP AND NEVER REMOVED IS INVISIBLE UNTIL SOMETHING ADDS AN ELEMENT CHILD, THEN IT IS A LAYOUT DEFECT (found and fixed 2026-09-13)
+
+**THE SHAPE, WHICH IS THE REUSABLE PART.** A class that sets `display:flex` (or grid) is put on a
+container in the STATIC MARKUP to lay out a loading state, and the render path that later fills that
+container with real content never takes it off. **While the content is ONE TEXT NODE this is
+completely invisible** , a flex container wraps a bare text run in a single anonymous item, which
+lays out exactly like normal text. **The moment anything adds an ELEMENT child, the text splits into
+separate anonymous flex items and renders as columns.**
+
+**THE INSTANCE.** `.vquote-wait` and `.vsprose-wait` in `compare.html` share one rule:
+`color:var(--ink-soft) !important; font-style:normal; display:flex; align-items:center; gap:8px`.
+Applied at markup lines 1152/1156/1224, read at 1891 to inject the loader, **removed nowhere.**
+When `vvEmphasis` began emitting `<strong class="vvem">`, every affected paragraph became
+`text` + `<strong>` + `text` = THREE flex items in a row. Measured on the rendered page: items at
+**x687 w293, x991 w67, x1067 w236** , one sentence across three columns with the emphasised phrase
+marooned in the middle and the remainder starting mid-clause in the third.
+
+**IT WAS FIVE SLOTS, NOT THE ONE THAT WAS REPORTED.** The verdict pull-quote plus **all four Story
+paragraphs**, because `vvSetStory` builds extra paragraphs with `first.cloneNode(false)`, **which
+copies the class list**, so every paragraph inherited the wait class from the one above it.
+
+**AND THE SECOND SYMPTOM IS THE ONE NOBODY REPORTED FOR MONTHS: THE SAME RULE ALSO PINS THE LOADING
+VOICE.** Those five paragraphs rendered in `--ink-soft` grey and upright instead of cream italic ,
+the platform's prose showing in its own placeholder styling. **It looked deliberate, so it was never
+questioned.** A defect that renders as a plausible design choice has no reporter.
+
+**THE FIX IS TO MAKE THE CLASS STATEFUL, NOT TO DELETE IT.** It has a real job: `display:flex` is
+what sets the loader mark beside its label. So the wait branch now ADDS it and the content branch
+REMOVES it, in both `vvSetVerdict` and `vvSetStory`, and the clone is stripped explicitly as well as
+being cloned from an already-stripped source. **Verified round-trip:** content to wait to content,
+with zero wait classes left and the loader intact in the wait state.
+
+### THE AUDIT , NO OTHER INSTANCE ON THE PLATFORM, AND THE DISTINGUISHING TEST IS NOT THE NAME
+
+Every other loading class was checked. **`.srwait` (index.html), `.vvcard-wait` (card.html) and
+`.vwait`/`.vwaitlab` (compare.html) all set flex and are all never removed , AND NONE OF THEM IS
+THIS DEFECT.** A grep for "added once, removed never" flags all three and is the wrong test.
+
+**THE TEST IS WHETHER THE CLASS SITS ON A CONTAINER THAT SURVIVES THE STATE CHANGE.**
+- **Disposable markup, SAFE:** the class is created as part of the wait content and destroyed with
+  it. `index.html:515` builds `<div class="srwait">` inside the string it passes to `open()`;
+  `card.html:1981` writes `<div class="vvcard vvcard-wait">` into `heroCard.innerHTML`;
+  `compare.html:2277` builds `<span class="vwait">` inside `vvWaitHTML`. **Each is replaced
+  wholesale when real content arrives, so "never removed" is irrelevant , the element is gone.**
+- **Persistent container, THE DEFECT:** the class sits in the page's static markup on the element
+  whose `innerHTML` is later overwritten. Only `.vquote-wait` and `.vsprose-wait` were this.
+
+**A RENDERED CHECK THAT GENERALISES BEYOND THE NAMING, since a future one may not be called `-wait`:
+enumerate every element that computes to flex or grid, holds a run of text, and has no block-level
+element children.** Run over the verdict and the arena after the fix it returns **NONE**. That test
+does not care what the class is called, which is the point , the first version of this investigation
+went looking for `column-count` and for a multi-column layout, and **compare.html has neither.**
+
+**RELATED AND NOT THE SAME: `.glancestats` on the card is `display:flex` and CONTAINS `#glDrury`,
+which carries emphasised prose , and it is FINE.** The split only happens when the element holding
+the text runs is itself flex. `#glDrury` is a block and is one flex item; its own text lays out
+normally inside it. **Checked on the rendered card: `#glDrury`, `#scoutBody` and `#notesBody` are
+all `display:block`.**
+
+---
+
 ## `scrollWidth` REPORTS "FITS" FOR TEXT THAT WRAPS, BECAUSE WRAPPING GROWS HEIGHT RATHER THAN WIDTH (2026-09-12)
 
 **THE CHECK THAT LOOKS RIGHT AND IS BLIND.** Asked whether a longer pill label clips, the obvious
