@@ -146,6 +146,7 @@ WHAT MAY NEVER BE EMPHASISED , these bind harder than the rule above, and where 
    , NEVER a quality claim read off rt for a centre-back, full-back or defensive midfielder. The score for those positions is largely a defensive-share percentile and a minutes curve, so bolding "his 84 rating" there emphasises an artefact.
    , NEVER a whole sentence or a whole clause. If the marked span runs to the full stop, or reads as a sentence on its own, it is not emphasis, it is shouting. Two to six words.
    , NEVER the tag name, the player name or the club on its own. Those are already set apart by the page.
+   , NEVER a statement that something was not recorded. An absence is a limit of OUR record, not a finding about the player, and emphasis would make the gap the most prominent thing on a card it is not about. Rule C already tells you to name the limit plainly, once, where it bears on the case , plainly means in plain weight. Say it and move on.
 Asterisks that are not a matched pair are discarded before display, so an unclosed marker costs you the emphasis rather than corrupting the line.
 
 5. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.

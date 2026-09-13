@@ -1261,13 +1261,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260912i"></script>
+<script src="/vv-marks.js?v=20260913a"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260912i"></script>
+<script src="/vv-core.js?v=20260913a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2688,7 +2688,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     /* THE SAME ENRICHED BLOCK THE CARD SENDS, via VVCore.vvAIStats, so one card cannot look
        like two different players across two surfaces. Serialised compactly because this is a
        prompt line, not JSON. passes_accuracy is deliberately absent , see the prompt rule. */
-    function aiBlock(c){ var a=(window.VVCore&&VVCore.vvAIStats)?VVCore.vvAIStats(c):{}; var b=[];
+    function aiBlock(c, pre){ var a=pre||((window.VVCore&&VVCore.vvAIStats)?VVCore.vvAIStats(c):{}); var b=[];
       if(a.passes_per90!=null) b.push('passes/90 '+a.passes_per90+(a.pool_passes_per90_p80!=null?' (pool p80 '+a.pool_passes_per90_p80+', p90 '+a.pool_passes_per90_p90+')':''));
       if(a.key_passes_per90!=null) b.push('key passes/90 '+a.key_passes_per90);
       /*  DENOMINATORS AS BOUND PAIRS , FACTS, STATED AND NEVER GRADED. Written as "X of Y"
@@ -2697,10 +2697,12 @@ body.light .pkmsub{color:var(--ink-soft)}
           rather than emitting the success count alone , a bare "60 dribbles" is exactly
           the unanchored number this block exists to remove, and pre-2015 cards have the
           successes without the attempts.  */
-      if(a.shots_total!=null && c.goals!=null) b.push('goals '+c.goals+' of '+a.shots_total+' shots');
+      /*  SAME GUARD AS line() , the pair is dropped when goals were never recorded, rather
+          than printing "goals 0 of 41 shots" for a card that has no goals figure at all.  */
+      if(a.shots_total!=null && c.goals!=null && (a.recorded?a.recorded.goals!==false:true)) b.push('goals '+c.goals+' of '+a.shots_total+' shots');
       if(a.dribbles_success!=null && a.dribbles_attempts!=null) b.push('dribbles '+a.dribbles_success+' of '+a.dribbles_attempts);
       if(a.duels_won!=null && a.duels_total!=null) b.push('duels won '+a.duels_won+' of '+a.duels_total);
-      if(a.penalties_scored!=null && c.goals!=null) b.push('of those goals, '+a.penalties_scored+' from the spot');
+      if(a.penalties_scored!=null && c.goals!=null && (a.recorded?a.recorded.goals!==false:true)) b.push('of those goals, '+a.penalties_scored+' from the spot');
       /*  HONOURS , THE CLAIMS BLOCK. Asserted outright: the platform already asserted them
           on the card face. won_by keeps a team title from being written as a personal one,
           and leg keeps a 2018 World Cup from being read as something he won in this
@@ -2736,7 +2738,34 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(a.confidence!=null) b.push('data confidence '+a.confidence+'/5'+(a.missing&&a.missing.length?', NOT RECORDED: '+a.missing.join(', '):', all fields recorded'));
       if(a.era) b.push(a.era);
       return b.length? '; '+b.join('; ') : ''; }
-    function line(c,wk){ return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos+', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')+', VV '+c.vv+(c.vv!=null&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')+', '+c.goals+'G '+c.assists+'A; radar per90: '+rad(c)+aiBlock(c); }
+    /*  NR, NOT A NUMBER, WHEN THE FIGURE WAS NEVER RECORDED , FIXED 2026-09-13.
+        This line used to read `c.goals+'G '+c.assists+'A'` with no guard, and it sent the
+        model two different wrong things:
+          , "0G" on a card whose goals were NEVER RECORDED, because rowToCard coalesces
+            goals to 0. A FALSE NUMBER, on 2,497 outfield cards, in front of a model that
+            was otherwise correctly told in the same payload that Goals are missing.
+          , the literal token "nullA" on a card with no assists, because assists is NOT
+            coalesced. Measured live: "Dempsey, 11/12, Fulham, pos FWD, age 28, VV 86,
+            17G nullA".
+        The NR convention already existed two lines from the value in rowToCard , see
+        `assistsText` , and this line was already applying it to `age` and to nothing else.
+        UNITS ARE SPELLED OUT rather than kept as the G/A shorthand: "NR G" reads as a
+        quantity of something, "NR goals" cannot.
+        VV TAKES NR TOO. `c.vv` is an empty string on every null-rt card, so this line was
+        emitting "VV , " with a hole in it on 3,061 cards.
+        THE TRUTH COMES FROM vvAIStats.recorded, NOT FROM c.goals , the card's goals have
+        been coalesced by the time this runs, so `c.goals != null` is TRUE on a card that
+        never had any. Reading the coalesced field here would look correct and be wrong.  */
+    function line(c,wk){
+      var _a = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(c) : {};
+      var _rec = _a.recorded || {};
+      var _goals   = (_rec.goals   === false) ? 'NR goals'   : (c.goals   != null ? c.goals   + ' goals'   : 'NR goals');
+      var _assists = (_rec.assists === false) ? 'NR assists' : (c.assists != null ? c.assists + ' assists' : 'NR assists');
+      var _vv      = (c.vv == null || c.vv === '') ? 'NR' : c.vv;
+      return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(c.league||'')+'], pos '+c.pos
+           +', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')
+           +', VV '+_vv+(c.vv!=null&&c.vv!==''&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')
+           +', '+_goals+' '+_assists+'; radar per90: '+rad(c)+aiBlock(c, _a); }
     /*  ONE SPEC PER STATE, AND THEY NO LONGER OVERLAP. The `who` instruction used to send the
         "THERE IS NO WINNER TO NAME" paragraph AND the "Name the winner" paragraph in the same
         prompt on every unseparated pairing , a conditional prepend followed by an

@@ -1287,8 +1287,45 @@
        The payload must agree with the Data Confidence panel the reader is looking at. */
     const cf = (Array.isArray(row.confidenceFields) && row.confidenceFields.length)
       ? row.confidenceFields : (confidenceFields(row) || []);
-    out.confidence = (row.confidence != null) ? row.confidence : confidenceFor(row);
+    /*  CAPPED OFF `cf`, NOT OFF THE ROW. Whether the confidence arrived precomputed from
+        rowToCard or is derived here, a basic absent from `cf` caps it at 4 , so the number
+        in the payload can never contradict the `missing` list travelling beside it.  */
+    var _rawConf = (row.confidence != null) ? row.confidence : confidenceFor(row);
+    var _basicGone = cf.some(function(f){
+      return !f.present && (f.label === 'Goals' || f.label === 'Assists' || f.label === 'Minutes played');
+    });
+    out.confidence = (_rawConf != null && _basicGone) ? Math.min(_rawConf, 4) : _rawConf;
     out.missing = cf.filter(function(f){ return !f.present; }).map(function(f){ return f.label; });
+
+    /*  ── WAS IT RECORDED, AS A FACT SEPARATE FROM ITS VALUE , ADDED 2026-09-13 ──────────
+        THE DEFECT THIS CLOSES: the user-prompt builder printed `c.goals+'G '+c.assists+'A'`
+        with no guard, and rowToCard coalesces goals to 0 while leaving assists null. So a
+        card whose GOALS were never recorded sent the model a literal "0G" , a false number,
+        on 2,497 outfield cards , and a card with no assists sent the literal token "nullA".
+        Both contradicted this payload's own `missing` list in the same breath.
+
+        DERIVED FROM `cf`, THE SAME ARRAY `missing` IS BUILT FROM, AND THAT IS THE WHOLE
+        POINT. It must NOT read `row.goals != null`: vvAIStats is called with a CARD, and a
+        card's goals have already been coalesced to 0, so the truth is not in that field any
+        more. `cf` comes from rowToCard, which computed it from the RAW row. Reading the
+        coalesced field here would reproduce the exact bug this block exists to remove, and
+        it would look correct.
+        ONE SOURCE, TWO OUTPUTS , `missing` and `recorded` cannot disagree because they are
+        two projections of one array. SS C's two-fields-for-one-concept rule, applied in
+        advance rather than after it bites.
+
+        `not_recorded_basics` IS EMITTED ONLY WHEN NON-EMPTY, AND THAT IS DELIBERATE. The key
+        SET is what `payloadRev` hashes, so a complete card's key set is unchanged and its
+        cached verdict survives; only a card with a real gap gains the key and invalidates.
+        `recorded` is always emitted, so the stamp moves once for every pair on this ship and
+        the 110 verdicts written against "0G" and "nullA" are all re-generated.  */
+    var _cfPresent = function(label){
+      for (var i = 0; i < cf.length; i++) if (cf[i].label === label) return !!cf[i].present;
+      return null;                               // not part of this card's field set at all
+    };
+    out.recorded = { goals: _cfPresent('Goals'), assists: _cfPresent('Assists') };
+    var _nrb = ['Goals','Assists'].filter(function(l){ return _cfPresent(l) === false; });
+    if (_nrb.length) out.not_recorded_basics = _nrb;
     const y = row.season_year;
     out.era = (y != null && y < AI_GRANULAR_ERA)
       ? 'pre-2015: ONLY appearances, minutes, goals and discipline exist for this season. Every other measure is absent, not zero.'
@@ -1949,13 +1986,42 @@
       rows.length+' seasons</b> carry shot data; the rest predate it.</div></div>';
   }
 
+  /*  ── THE SCORE AND THE MISSING LIST WERE COMPUTED FROM TWO DIFFERENT FIELD SETS ────────
+      FOUND 2026-09-13. This function scored over GRANULAR (seven advanced measures) while
+      `confidenceFields` reports those SEVEN PLUS the three basics , Minutes, Goals, Assists.
+      So a missing BASIC never moved the score, and a card could display a full 5 of 5 with
+      "Goals" sitting in its own missing list. Ndicka 24/25 is the worked example: six of
+      seven granular present, goals never recorded, panel reads 5/5.
+      MEASURED: 11,435 cards displayed 5/5 with a basic absent (9,843 assists, 2,322 goals,
+      730 both), and 14,344 read 4 or 5. `minutes` is never null on any card, so this is
+      entirely goals and assists.
+
+      THE OBVIOUS FIX IS WRONG AND IS RECORDED SO IT IS NOT PROPOSED AGAIN. Scoring over the
+      SAME TEN fields the missing list reports moves 22,989 cards, 40.3% of the database, and
+      19,329 of them go UP. Adding three usually-present basics to numerator and denominator
+      INFLATES sparse cards: a pre-2015 card with nothing granular rises from an honest 2 to
+      a 3. It makes the panel LESS truthful, which is the opposite of the intent, and it is
+      the answer anyone reaching for "just use one list" will land on.
+
+      WHAT SHIPPED IS A CAP, NOT A RESCORE. A missing basic caps the score at 4: the minimum
+      intervention that removes the false claim. It only ever moves a card DOWN, it never
+      touches a card whose basics are complete, and it leaves the 2..5 scale's meaning
+      intact. Capping at 3 was modelled (14,344 movers) and NOT taken , how SERIOUS a missing
+      basic is, is a product judgement, and this is a defect fix.
+      READER-FACING: 11,435 cards lose one dot on the Data Confidence panel.  */
   function confidenceFor(row){
     const keeper = isGK(row);
     const total = keeper ? KEEPER_SET.length : GRANULAR.length;
     let present = 0;
     if (keeper) { for (const m of KEEPER_SET) if (m.key && row[m.key]!=null) present++; }
     else        { for (const f of GRANULAR)   if (row[f]!=null) present++; }
-    return Math.round(2 + (present/total)*3);      // linear 2..5, unchanged for outfielders
+    const score = Math.round(2 + (present/total)*3);   // linear 2..5, unchanged for outfielders
+    /*  CALLED FROM rowToCard WITH THE RAW ROW, which is where the true nulls are. On a
+        card-shaped input goals has already been coalesced to 0 and this cap cannot see it ,
+        that is the rowToCard defect logged separately, not a fault here. vvAIStats caps a
+        second time off `cf` so the payload is correct on either input.  */
+    const basicMissing = (row.goals == null) || (row.assists == null) || (row.minutes == null);
+    return basicMissing ? Math.min(score, 4) : score;
   }
   function confidenceFields(row){
     var LABELS = {
