@@ -79,56 +79,35 @@
   .cardnf-go:hover{text-decoration:underline}
   .seqpos{font-family:'Archivo',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.01em;
           color:var(--ink-soft);white-space:nowrap;min-width:64px;text-align:center}
-  /*  ── THE SEASON STEPPER , THE VERTICAL AXIS'S AFFORDANCE (item 2, 2026-09-14) ──────
-      THE GRAMMAR OF THE HORIZONTAL CUE IS A CONTROL ON THE THING THAT CHANGES, NOT A CUT
-      EDGE. The peek below works by showing a card sliced at the frame's edge, and that is
-      its MECHANISM, not its language. Its language is: put the control on whatever the
-      gesture moves, in the page's own ink , arrows flank the card because the CARD is what
-      changes. On the vertical axis the thing that changes is the SEASON, and the season is
-      already printed on the card face, so the control belongs on the year. Mirroring the
-      arrows would copy the mechanism and lose the sentence.
-      AND A VERTICAL PEEK WAS THE OBVIOUS ANSWER AND IS WRONG , it needs a frame edge to be
-      cut off by, and the card's bottom edge has the PAGE behind it rather than a frame, so
-      the sliver reads as a second card that half-loaded. Demonstrated in _demo_vertical.html
-      rather than argued.
-      SCOPED TO #heroCard AND NOWHERE ELSE. Every other surface that draws a .vvcard ,
-      compare, rankings, preferences, myclub , renders a card nobody can step through, and
-      VV_CARD_CSS is deliberately sufficient on its own for those. This is page furniture on
-      one hero, not part of the card.
-      IT ATTACHES TO .yr WITHOUT TOUCHING .yr's OWN POSITION. `.vvcard .yr` is
-      position:absolute WITH a transform, so it is ALREADY a containing block and an absolute
-      child resolves against it. Setting position:relative to "make" one would drop the year
-      out of its absolute placement in .ctop and into normal flow , the exact shape vv-core's
-      own comment above .ctop warns about, where the year spills into .cimg and is painted
-      over. Sizes are --cw-relative so the control scales with the card like everything else
-      on the face.  */
-  #heroCard .yrstep{position:absolute;right:calc(100% + var(--cw)*0.028);top:50%;
-    transform:translateY(-50%);display:flex;flex-direction:column;gap:calc(var(--cw)*0.004);
-    line-height:1;z-index:2}
-  /*  THE INK IS INHERITED FROM .yr AND IS NEVER A LITERAL , FOUND RENDERED 2026-09-14, AND
-      IT IS SECTION C's CARD-FACE GROUND TRAP EXACTLY. The first build hardcoded
-      rgba(243,237,224,.62), cream, which is correct on the GENERATIONAL face and INVISIBLE
-      on the plain one , and the plain face is the common case. It measured as present the
-      whole time: display flex, opacity 1, unclipped, 16x29 at the right coordinates, and
-      nothing on screen. It passed because the card I tested first, Salah 24/25, is
-      Generational, so I had checked the one face where the literal happens to work.
-      THE CARD FACE DOES NOT FLIP WITH THE THEME AND IT HAS THREE GROUNDS , plain cream,
-      iconic gold, generational dark , so no single literal can serve them. `.yr` is already
-      pinned per face (charcoal rgb(28,27,26) on the plain face), so INHERITING it is correct
-      on all three by construction and cannot drift when a fourth face is added.
-      PRESENCE IS THEREFORE OPACITY, NOT COLOUR. That is the only lever that means the same
-      thing on every ground.  */
-  #heroCard .yrstep button{background:none;border:0;padding:0 calc(var(--cw)*0.006);margin:0;
-    cursor:pointer;font-family:'Archivo',sans-serif;font-weight:900;
-    font-size:calc(var(--cw)*0.037);color:inherit;opacity:.5;
-    transition:opacity .16s,transform .16s;-webkit-tap-highlight-color:transparent}
-  #heroCard .yrstep button:hover{opacity:1;transform:translateY(-1px)}
-  #heroCard .yrstep button:last-child:hover{transform:translateY(1px)}
-  /*  A DIRECTION WITH NO SEASON IS DIMMED AND INERT, NOT REMOVED , a control that appears
-      and disappears as you step through a career reads as a glitch, and a one-armed stepper
-      on the first and last season says less about where you are than a dimmed one does.  */
-  #heroCard .yrstep button[disabled]{opacity:.16;cursor:default;pointer-events:none}
-  #heroCard .yrstep button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+  /*  ── THE SEASON STEPPER , BESIDE THE TRIGGER, NOT ON THE CARD FACE (moved 2026-09-14) ──
+      THE TWO CONTROLS DO ONE JOB AND NOW SIT TOGETHER: expand the whole list, or step
+      through it one season at a time. Putting the chevrons on the card's year separated a
+      pair of controls that answer the same question, and it put furniture on the product ,
+      the card face is the thing being looked at, not a place to hang UI.
+      THE GRAMMAR IS UNCHANGED AND STILL THE HORIZONTAL ONE'S: a control on the thing that
+      changes, in the page's own ink. What changed is WHERE the thing that changes is named
+      , the trigger already says "View all 13 seasons", so the season is named there.
+      QUIET BY CONSTRUCTION: it inherits the trigger's own muted ink rather than picking a
+      literal, so it can never be louder than the words beside it, and it follows the theme
+      because THIS ground does flip , the opposite of the card face, where the ink had to be
+      pinned per prestige face. Section C: match the ink to the GROUND.  */
+  /*  A ROW WRAPPER, BECAUSE #seasonZone IS A COLUMN , found rendered, not reasoned.
+      `#seasonZone{display:flex;flex-direction:column}`, so the stepper became its own flex
+      ITEM and stacked underneath the trigger however it was styled inline. `inline-flex` on
+      the child cannot beat the parent's direction. The pair now share one row container and
+      the zone keeps stacking that row above the panel, which is what it is for.  */
+  .seasonhead{display:flex;align-items:center;justify-content:center;gap:2px}
+  .seasonstep{display:inline-flex;align-items:center;gap:2px;margin-left:6px}
+  .seasonstep button{background:none;border:0;padding:0 3px;margin:0;cursor:pointer;
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;line-height:1;
+    color:rgba(243,237,224,0.55);transition:color .16s,transform .16s;
+    -webkit-tap-highlight-color:transparent}
+  .seasonstep button:hover{color:rgba(243,237,224,0.92);transform:translateY(-1px)}
+  .seasonstep button:last-child:hover{transform:translateY(1px)}
+  .seasonstep button[disabled]{opacity:.25;cursor:default;pointer-events:none}
+  .seasonstep button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+  body.light .seasonstep button{color:var(--ink-soft)}
+  body.light .seasonstep button:hover{color:#1C1B1A}
   /* ── PEEK , the phone affordance, replacing the old "‹ swipe ›" text ──────────
      A sliver of the REAL next card at the right edge. The gesture explains itself: a
      card half off-screen is a thing to pull, and nobody has to read anything first.
@@ -476,45 +455,23 @@
      the large-text cutoff, so 3:1 does not apply). --gold gives 8.16:1 / 9.65:1.
      Reading var(--gold) instead of var(--gold-ink) is what takes it out of that override. */
   .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
-  /*  THE CHRONICLE TAKES THE WASH ON THE WHOLE PULL-QUOTE, NOT ON A MARKED PHRASE, AND THE
-      REASON IS PROVENANCE RATHER THAN TASTE (item 4, 2026-09-14).
-      `SIGNATURE_MOMENTS` is HAND-AUTHORED editorial living in this file , 72 moments, and
-      MEASURED: ZERO `**` markers across all 72 narratives. `vvWireChronicle` renders every
-      paragraph with `textContent`, so there is no marker path here and nothing to wash in
-      the Scout/Notes sense. The quote is already the emphasised line of the block, so it
-      takes the wash as an element.
-      OPTION 1 WAS CONSIDERED AND REJECTED , DO NOT PROPOSE HAND-MARKING THE CHRONICLE AS AN
-      OBVIOUS IMPROVEMENT. It would mean writing `**...**` into 72 narratives x 3 paragraphs,
-      216 paragraphs of editorial markup on shipped copy, and then routing that data through
-      `vvEmphasis`. THE COST IS NOT THE REASON IT WAS REFUSED. `vvEmphasis` is the path
-      UNTRUSTED MODEL OUTPUT arrives by , Section D records that `vvSetVerdict`/`vvSetStory`
-      use `textContent` precisely BECAUSE they take model output, with the marker parser as
-      the one narrow exception. Feeding hand-written data through that same parser is safe
-      today and erases the distinction the exception exists to keep, so the next reader
-      cannot tell which strings are trusted. Keep the Chronicle on `textContent`.
-      INK UNCHANGED AT #2a2620, MEASURED 10.98 ON THE WASH (12.51 on the bare #F0EAD9 paper),
-      so the wash costs 1.5 points of a 12.5 and lands nowhere near the 4.5 bar. It is NOT
-      recoloured to --vvem-ink-fixed: that gold marks a phrase INSIDE prose, and this is the
-      whole line. The wash ground is the shared --vvem-wash-fixed because `.layer` is
-      --cream #F0EAD9 in BOTH themes, the same pinned ground the two boxes above use.
-      `display:inline` + `box-decoration-break:clone` are load-bearing: `.chronicle-one` is a
-      centred BLOCK, and a background on it paints a full-width band rather than a highlight
-      hugging the words. The clone makes the padding and radius reappear on every wrapped
-      line instead of only the first and last.  */
-  #chronicleLayer .chronicle-one{text-align:center}
-  /*  THE WASH GOES ON AN INNER SPAN, NOT ON `.chronicle-one` ITSELF, AND THAT IS THE WHOLE
-      REASON `.cq` EXISTS. `.chronicle-one` is a centred BLOCK carrying margin-bottom:16px;
-      a background on it paints a full-width band rather than a highlight hugging the words,
-      and making it `display:inline` to fix that DROPS the margin and collides the narrative
-      into the quote's last line. An inner inline span keeps both: the block keeps its box
-      and its centring, the span carries the wash.
-      `box-decoration-break:clone` is load-bearing , the quote wraps to two or three lines
-      at phone width, and without the clone the padding and radius appear only on the first
-      and last fragment, so the middle lines run edge to edge and the highlight reads as a
-      broken band. The -webkit- prefix is kept for iOS Safari.  */
-  #chronicleLayer .chronicle-one .cq{background:var(--vvem-wash-fixed);
-    border-radius:3px;padding:.05em .16em;
-    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  /*  THE CHRONICLE OPENER TAKES NO WASH , BUILT 2026-09-14 AND WITHDRAWN THE SAME DAY.
+      I washed the whole pull-quote when the ask was "the wash should reach the Chronicle",
+      and RENDERED IT IS WRONG for the reason the wash exists: a highlight marks a PHRASE
+      inside long prose so a reader can filter it. The pull-quote is the block's OPENER and
+      is already the emphasised line , large, italic, centred , so washing all 751px of it
+      highlights the one thing nobody needs help finding, and teaches the eye that the wash
+      means nothing in particular.
+      MEASURED ON THE DEPLOYED PREVIEW, WHICH IS THE ONLY PLACE THE AI PROSE EXISTS: seven
+      washed elements on the card, two in the Scout Report, four in Commentator's Notes, and
+      this one. **The six in long prose are 184 to 235px marked phrases; this was the whole
+      line.** That contrast is the argument.
+      IT WAS NOT A STRAY SELECTOR AND THE SEARCH FOR ONE WOULD HAVE FOUND NOTHING , it was
+      a deliberate rule, approved from a description and wrong in the render, which is what
+      Section C means by a visual change not being verified until it is rendered.
+      THE CHRONICLE NOW TAKES NO WASH AT ALL, and that is correct rather than a gap: its
+      narrative is HAND-AUTHORED and carries zero markers, so there is no marked phrase to
+      wash. `.cq` stays as the span the quote is rendered into; only the paint is gone.  */
   #chronicleLayer .narrative .np{text-align:center}
   #chronicleLayer .narrative .nm{text-align:center}
   /* wonder tag expand */
@@ -1478,8 +1435,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260914c"></script>
-<script src="/vv-core.js?v=20260914c"></script>
+<script src="/vv-marks.js?v=20260914d"></script>
+<script src="/vv-core.js?v=20260914d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2142,10 +2099,11 @@
       re-attach will eventually not. The two paths that build the face WITHOUT renderHero ,
       the first load and vvCardFlip's newHTML , call it explicitly, and both are marked.  */
   function vvSeasonStepper(){
-    var yr=document.querySelector('#heroCard .yr');
-    if(!yr) return;
-    var old=yr.querySelector('.yrstep'); if(old) old.remove();   // idempotent: never two
-    if(!SEASON_ROWS || SEASON_ROWS.length<2) return;             // one season is not a sequence
+    var zone=document.getElementById('seasonZone');
+    var trig=zone && zone.querySelector('.seasontrigger');
+    if(!trig) return;
+    var old=zone.querySelector('.seasonstep'); if(old) old.remove();   // idempotent: never two
+    if(!SEASON_ROWS || SEASON_ROWS.length<2) return;                   // one season is not a sequence
     var i=-1;
     for(var k=0;k<SEASON_ROWS.length;k++) if(SEASON_ROWS[k].card_id===SEASON_CARDID){ i=k; break; }
     if(i<0) return;
@@ -2155,19 +2113,24 @@
       var sl=(window.VVCore&&VVCore.vvSeasonLabel)?VVCore.vvSeasonLabel:function(y){return y;};
       return r ? (dir+' season, '+sl(r.season_year)) : ('No '+dir.toLowerCase()+' season');
     }
-    var wrap=document.createElement('div');
-    wrap.className='yrstep';
+    var wrap=document.createElement('span');
+    wrap.className='seasonstep';
     wrap.innerHTML=
       '<button type="button" aria-label="'+lbl(newer,'Newer')+'"'+(newer?'':' disabled')+'>&#9650;</button>'+
       '<button type="button" aria-label="'+lbl(older,'Older')+'"'+(older?'':' disabled')+'>&#9660;</button>';
     var b=wrap.querySelectorAll('button');
-    /*  stopPropagation IS LOAD-BEARING: #heroCard's own click handler flips the card, so a
-        tap on the stepper would switch the season AND flip it in the same gesture.  */
+    /*  stopPropagation KEEPS THE TRIGGER OUT OF IT , the stepper sits INSIDE #seasonZone
+        beside a button that opens the panel, so a bubbling click would step the season and
+        expand the list in one tap. Stepping and expanding are alternatives, not a sequence.  */
     if(newer) b[0].addEventListener('click', function(e){ e.stopPropagation(); switchSeason(newer.card_id); });
     if(older) b[1].addEventListener('click', function(e){ e.stopPropagation(); switchSeason(older.card_id); });
-    yr.appendChild(wrap);
+    trig.insertAdjacentElement('afterend', wrap);
   }
-  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); vvSeasonStepper(); drawRadar(); }
+  /*  renderHero NO LONGER TOUCHES THE STEPPER. It replaces #heroCard's innerHTML, and the
+      stepper now lives in #seasonZone, which renderHero does not own. Leaving the call here
+      would be harmless and misleading , the next reader would look for the control inside
+      the card. It is attached where the SEASON STATE changes instead.  */
+  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
   // in either direction, and its geometry is measured from the hero's rect.
@@ -2303,9 +2266,13 @@
         to step through and correctly produced nothing. This is the attach that gives the
         control its reason to exist. (This line previously read "season switcher lives below
         the card; no in-card caret" and bound an unused variable , that is now false.)  */
-    vvSeasonStepper();
     var zone=document.getElementById('seasonZone');
-    if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
+    if(zone){ zone.innerHTML='<div class="seasonhead"><button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button></div>'; }
+    /*  AFTER THE TRIGGER, NEVER BEFORE , the line above REPLACES the zone's innerHTML, so a
+        stepper attached first is wiped by it and the control simply never appears. That is
+        what happened on the first build of this move, and it rendered as "the edit did not
+        land" rather than as an ordering mistake.  */
+    vvSeasonStepper();
     attachHonoursBatch(rows).catch(function(){});   // honour pills for the season list fill in after (non-blocking; mutates rows in place)
   }
   /*  ── THE MIXED-COLUMN LINE , ONE PER PANEL, NEVER ONE PER CARD ───────────────────────
@@ -2328,7 +2295,7 @@
     var rows=(SEASON_ROWS||[]);
     var html=rows.map(function(r,idx){
       return rankRowHTML(r, idx, { cap:3, showRank:false, seasonLed:true, active:(r.card_id===SEASON_CARDID),
-        onClick:function(d){ return 'switchSeason('+(d.card_id==null?'':d.card_id)+')'; } });
+        onClick:function(d){ return 'switchSeason('+(d.card_id==null?'':d.card_id)+',true)'; } });
     }).join('');
     var anyBlank=rows.some(function(r){ return r.shirt_number==null || r.shirt_number===''; });
     if(anyBlank && rows.length>1){
@@ -2433,8 +2400,16 @@
     finally{ el.classList.remove('resolving'); }
   }
 
-  async function switchSeason(cardId){
+  /*  `fromPanel` IS WHY THE FOLD IS NOT UNCONDITIONAL , item 2, 2026-09-14.
+      CHOOSING FROM THE LIST IS THE ACT THAT ENDS THE TASK, so the panel closes itself and
+      the reader is not left scrolling back up to dismiss what they have finished with.
+      BUT THE STEPPER CALLS THE SAME FUNCTION, and someone stepping with the list open has
+      deliberately opened it , closing it under them would punish the one gesture that wants
+      it visible, because the list is what shows where in the career they now are. The panel
+      rows pass the flag; the chevrons do not.  */
+  async function switchSeason(cardId, fromPanel){
     if(cardId===SEASON_CARDID) return;
+    if(fromPanel) seasonPanelClose();   // BEFORE the await , the tap should feel instant
     var sb=vvClient(); if(!sb) return;
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
     if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
@@ -2456,7 +2431,6 @@
           because that branch calls renderHero, which re-attaches anyway , but honours can
           fail or arrive for a season already switched away from, and in either of those
           cases this is the only attach that happens.  */
-      vvSeasonStepper();
       _honP.then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
     } });
     renderPanels(D);
@@ -2472,8 +2446,14 @@
       history.replaceState({cardId:cardId}, '', _u);
     }catch(e){}
     renderTrajectory();
+    /*  THE STEPPER'S LABELS NAME THE ADJACENT SEASONS, so they must be rebuilt whenever the
+        current one moves. SYNCHRONOUS AND HERE, not in the flip's onDone: the zone is not
+        part of the card, so the flip never touches it, and waiting for the animation would
+        leave the chevrons describing the season just left.  */
+    vvSeasonStepper();
     var _sp=document.getElementById('seasonPanel');
     if(_sp){ _sp.innerHTML=seasonRowsHTML(); }   // rebuild rows with the new active season highlighted
+                                                 // (null when the panel folded on selection , the guard already covers it)
     /*  NO STEPPER ATTACH HERE, AND THE REASON IS WORTH KEEPING: vvCardFlip IS ASYNCHRONOUS.
         It swaps `newHTML` inside a setTimeout at the flip's midpoint and replaces the host's
         innerHTML in a second one, so a synchronous attach at this point binds to the
