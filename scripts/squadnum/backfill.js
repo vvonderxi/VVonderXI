@@ -73,36 +73,80 @@ async function targets() {
   const batch = all.filter(([k]) => !done.has(k)).slice(0, SIZE);
   console.log((APPLY ? 'BATCH' : 'DRY RUN') + ': ' + batch.length + ' club-seasons of ' + all.length + ' remaining\n');
 
-  const stats = { clubSeasons: batch.length, resolved: 0, parsed: 0, cards: 0, matched: 0, held: { norow: 0, ambiguous: 0 }, written: 0, skipped: [] };
+  /*  SKIPS ARE STRUCTURED AND CARRY THEIR CARD COUNT , 2026-09-14. They used to be a
+      sentence per club-season, which reads fine in a terminal and cannot be counted: it
+      could not say how many CARDS a skip costs, and the cost is the whole reason the
+      second pass exists. `skipSeason` records the key, the reason, the card count and the
+      resolved page, and appends to `held.jsonl` so the list ACCUMULATES across batches
+      instead of living in whichever stats file was written last.
+      THE HELD SET IS A COMMISSION, NOT A RESIDUE. It is the entire scope of the Fable job
+      that follows this backfill, so it has to arrive as a list with counts and reasons
+      rather than as whatever the terminal happened to print.  */
+  const stats = { clubSeasons: batch.length, resolved: 0, parsed: 0, cards: 0, matched: 0, held: { norow: 0, ambiguous: 0 }, written: 0, skipped: [], skippedCards: 0 };
+  const heldLog = [];
+  const skipSeason = (key, reason, cardCount, title, wiki) => {
+    stats.skipped.push(key + ' , ' + reason);
+    stats.skippedCards += cardCount;
+    heldLog.push({ key, reason, cards: cardCount, title: title || null, wiki: wiki || null,
+                   batch: null, at: new Date().toISOString() });
+  };
   const writes = [], flags = [];
   for (const [key, cards] of batch) {
     const [lg, yr, club] = key.split('|');
     stats.cards += cards.length;
     const r = await resolve(club, lg, Number(yr), gate);
-    if (!r.title) { stats.skipped.push(key + ' , no page'); continue; }
+    if (!r.title) { skipSeason(key, 'no page', cards.length); continue; }
     stats.resolved++;
     let p; try { p = await (await fetch(`https://${r.wiki}.wikipedia.org/w/api.php?format=json&action=parse&prop=wikitext&page=` + encodeURIComponent(r.title), { headers: UA })).json(); }
-    catch (e) { stats.skipped.push(key + ' , fetch failed'); continue; }
-    if (p.error) { stats.skipped.push(key + ' , ' + p.error.code); continue; }
+    catch (e) { skipSeason(key, 'fetch failed', cards.length, r.title, r.wiki); continue; }
+    if (p.error) { skipSeason(key, 'api ' + p.error.code, cards.length, r.title, r.wiki); continue; }
     const blocks = extract(p.parse.wikitext['*']);
-    if (!blocks.length) { stats.skipped.push(key + ' , no squad block'); continue; }
+    if (!blocks.length) { skipSeason(key, 'no squad block', cards.length, r.title, r.wiki); continue; }
     /*  MANY BLOCKS ARE HELD FOR FABLE, NOT GUESSED AT , it buys yield and nothing in
         precision, and running it during the backfill would put two sources of change in one
         write, so a surprise in the diff would have two possible causes instead of one.  */
-    if (blocks.length > 1) { stats.skipped.push(key + ' , ' + blocks.length + ' blocks, held for adjudication'); continue; }
+    if (blocks.length > 1) { skipSeason(key, blocks.length + ' blocks, held for adjudication', cards.length, r.title, r.wiki); continue; }
     const rows = blocks[0].rows;
     const nums = rows.map((x) => x.no);
-    if (nums.length - new Set(nums).size) { stats.skipped.push(key + ' , duplicate numbers in the block'); continue; }
+    if (nums.length - new Set(nums).size) {
+      /*  THE DUPLICATE ITSELF IS RECORDED, NOT JUST THE FACT OF ONE. A repeated number on a
+          SEASON roster can be entirely real , a shirt freed in January is reissued , so this
+          skip may be refusing a correct page. Carrying which numbers repeat, and who holds
+          them, is what lets the second pass tell that shape from a parser that has wandered
+          into a fixture table.  */
+      const seen = {}, dupes = [];
+      rows.forEach((x) => { if (seen[x.no]) dupes.push({ no: x.no, names: [seen[x.no], x.name] }); else seen[x.no] = x.name; });
+      skipSeason(key, 'duplicate numbers in the block', cards.length, r.title, r.wiki);
+      heldLog[heldLog.length - 1].dupes = dupes;
+      heldLog[heldLog.length - 1].rosterSize = rows.length;
+      continue;
+    }
     stats.parsed++;
     const fl = reviewFlag(club, r.title); if (fl) flags.push(key + ' , ' + fl);
+    let matchedHere = 0;
     for (const c of cards) {
       const m = matchOne(c.player_name, rows);
       if (m.kind !== 'match') { stats.held[m.kind]++; continue; }
       const n = Number(m.row.no);
       if (!(n >= 1 && n <= 99)) { stats.held.norow++; continue; }
-      stats.matched++;
+      stats.matched++; matchedHere++;
       writes.push({ api_player_id: c.api_player_id, season_year: c.season_year, league_code: c.league_code,
         shirt_number: n, card_id: c.card_id, name: c.player_name, page: m.row.name, club, title: r.title, wiki: r.wiki });
+    }
+    /*  PARSED AND MATCHED NOTHING IS A THIRD OUTCOME, AND IT WAS INVISIBLE , 2026-09-14.
+        A club-season either skipped (in held.jsonl) or produced rows (in written.jsonl) ,
+        except when the page parsed cleanly and NOT ONE card matched a row. That left it in
+        neither ledger, and `held-report.js`'s reconciliation is what found it: attempted 350
+        against held 245 + produced 103, a gap of two, ADO Den Haag and Heerenveen 2010.
+        IT IS A DIFFERENT PROBLEM FROM A MISSING PAGE AND MUST ROUTE DIFFERENTLY. The page is
+        there, the block is there, the roster parsed , what failed is NAME MATCHING across
+        every card in the club-season, which points at a naming convention the matcher does
+        not handle rather than at a source gap. That is a matcher question, not Fable's.  */
+    if (matchedHere === 0 && cards.length) {
+      skipSeason(key, 'parsed, zero cards matched', cards.length, r.title, r.wiki);
+      heldLog[heldLog.length - 1].rosterSize = rows.length;
+      heldLog[heldLog.length - 1].sampleOurs = cards.slice(0, 3).map((c) => c.player_name);
+      heldLog[heldLog.length - 1].samplePage = rows.slice(0, 3).map((x) => x.name);
     }
     await new Promise((x) => setTimeout(x, 90));
   }
@@ -112,7 +156,7 @@ async function targets() {
   console.log('  cards in scope ' + stats.cards);
   console.log('  matched        ' + stats.matched + '   (' + pc(stats.matched, stats.cards) + ' YIELD)');
   console.log('  held: no row ' + stats.held.norow + ', ambiguous ' + stats.held.ambiguous);
-  console.log('  skipped club-seasons: ' + stats.skipped.length);
+  console.log('  skipped club-seasons: ' + stats.skipped.length + '   (' + stats.skippedCards + ' cards held)');
   stats.skipped.slice(0, 14).forEach((s) => console.log('     ' + s));
   if (flags.length) { console.log('  REVIEW FLAGS:'); flags.forEach((f) => console.log('     ' + f)); }
 
@@ -156,6 +200,15 @@ async function targets() {
       return n;
     } catch (e) { return null; }
   })();
+  /*  THE HELD LEDGER IS APPEND-ONLY, LIKE written.jsonl, AND FOR THE SAME REASON , it is the
+      scope of the next job and it must survive a stats file being overwritten. Stamped with
+      the batch number so a second pass can tell when a club-season was held.  */
+  if (heldLog.length) {
+    heldLog.forEach((h) => { h.batch = batchNo; });
+    fs.appendFileSync(path.join(DIR, 'held.jsonl'),
+      heldLog.map((h) => JSON.stringify(h)).join('\n') + '\n');
+    console.log('  held -> held.jsonl (+' + heldLog.length + ')');
+  }
   const named = batchNo == null ? 'batch-unknown-stats.json' : ('batch' + batchNo + '-stats.json');
   fs.writeFileSync(path.join(DIR, named),
     JSON.stringify({ batch: batchNo, at: new Date().toISOString(), ...stats }, null, 2) + '\n');

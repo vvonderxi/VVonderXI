@@ -1,0 +1,450 @@
+[
+  {
+    "key": "BPL|2011|OH Leuven",
+    "title": "2011–12 Oud-Heverlee Leuven season",
+    "wiki": "en",
+    "cards": 22,
+    "rosterSize": 32,
+    "repeatedCount": 2,
+    "shareRepeated": 0.07,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "9",
+        "names": [
+          "Ibrahim Salou",
+          "Patrick Amoah"
+        ]
+      },
+      {
+        "no": "11",
+        "names": [
+          "Sacha Iakovenko",
+          "Tail Schoonjans"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Yves Lenaerts",
+      "2 Frederik Boi",
+      "3 Nicky Hayen",
+      "4 Wim Raymaekers"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2012|Genk",
+    "title": "KRC Genk in het seizoen 2012/13",
+    "wiki": "nl",
+    "cards": 21,
+    "rosterSize": 31,
+    "repeatedCount": 3,
+    "shareRepeated": 0.11,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "2",
+        "names": [
+          "Kara Mbodj",
+          "Nadson"
+        ]
+      },
+      {
+        "no": "6",
+        "names": [
+          "David Hubert",
+          "Kim Ojo"
+        ]
+      },
+      {
+        "no": "21",
+        "names": [
+          "Kristof Van Hout",
+          "Dugary Ndabashinze"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "21 Kristof Van Hout",
+      "26 László Köteles",
+      "53 Stijn Wertelaers",
+      "2 Kara Mbodj"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2012|Gent",
+    "title": "KAA Gent in het seizoen 2012/13",
+    "wiki": "nl",
+    "cards": 23,
+    "rosterSize": 38,
+    "repeatedCount": 6,
+    "shareRepeated": 0.19,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "6",
+        "names": [
+          "Milan Savić",
+          "Melli"
+        ]
+      },
+      {
+        "no": "10",
+        "names": [
+          "Renato Neto",
+          "Shlomi Arbeitman"
+        ]
+      },
+      {
+        "no": "11",
+        "names": [
+          "Jordan Remacle",
+          "Hervé Kage"
+        ]
+      },
+      {
+        "no": "18",
+        "names": [
+          "Armin Ćerimagić",
+          "Elimane Coulibaly"
+        ]
+      },
+      {
+        "no": "23",
+        "names": [
+          "Ervin Zukanovic",
+          "Stijn De Smet"
+        ]
+      },
+      {
+        "no": "30",
+        "names": [
+          "Jorge López",
+          "Magnus Eriksson"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Frank Boeckx",
+      "20 Kristof Maes",
+      "33 Sergio Padt",
+      "2 Pau Cendrós López"
+    ],
+    "shape": "UNCLEAR"
+  },
+  {
+    "key": "BPL|2012|OH Leuven",
+    "title": "2012–13 Oud-Heverlee Leuven season",
+    "wiki": "en",
+    "cards": 17,
+    "rosterSize": 32,
+    "repeatedCount": 1,
+    "shareRepeated": 0.03,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "2",
+        "names": [
+          "Tomislav Mikulić",
+          "Frederik Boi"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Yves Lenaerts",
+      "2 Tomislav Mikulić",
+      "3 Robson",
+      "4 Wim Raymaekers"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2013|Gent",
+    "title": "KAA Gent in het seizoen 2013/14",
+    "wiki": "nl",
+    "cards": 28,
+    "rosterSize": 28,
+    "repeatedCount": 1,
+    "shareRepeated": 0.04,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "12",
+        "names": [
+          "Jari Vandeputte",
+          "Tom Boere"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Matz Sels",
+      "20 Kristof Maes",
+      "33 Sergio Padt",
+      "2 Uroš Vitas"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2013|Kortrijk",
+    "title": "KV Kortrijk in het seizoen 2013/14",
+    "wiki": "nl",
+    "cards": 18,
+    "rosterSize": 23,
+    "repeatedCount": 1,
+    "shareRepeated": 0.05,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "22",
+        "names": [
+          "Jimmy Kamghain",
+          "Elimane Coulibaly"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Rémi Pillot",
+      "16 Darren Keet",
+      "30 Jordy Mervilde",
+      "2 Maxime Chanot"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2013|Lierse",
+    "title": "Koninklijke Lierse Sportkring in het seizoen 2013/14",
+    "wiki": "nl",
+    "cards": 21,
+    "rosterSize": 13,
+    "repeatedCount": 1,
+    "shareRepeated": 0.08,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "21",
+        "names": [
+          "Kostadin Hazurov",
+          "Karim Saïdi"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "32 Tony Watt",
+      "25 Rachid Bourabia",
+      "26 Mbaye Diagne",
+      "10 Hernan Losada"
+    ],
+    "shape": "UNCLEAR"
+  },
+  {
+    "key": "BPL|2013|OH Leuven",
+    "title": "2013–14 Oud-Heverlee Leuven season",
+    "wiki": "en",
+    "cards": 20,
+    "rosterSize": 31,
+    "repeatedCount": 1,
+    "shareRepeated": 0.03,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "12",
+        "names": [
+          "Ibou",
+          "Marvin Ogunjimi"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Yves Lenaerts",
+      "21 Dean Michiels",
+      "26 Logan Bailly",
+      "2 Tom Pettersson"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2014|KVC Westerlo",
+    "title": "KVC Westerlo in het seizoen 2014/15",
+    "wiki": "nl",
+    "cards": 20,
+    "rosterSize": 31,
+    "repeatedCount": 3,
+    "shareRepeated": 0.11,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "10",
+        "names": [
+          "Evander Sno",
+          "Mbaye Diagne"
+        ]
+      },
+      {
+        "no": "20",
+        "names": [
+          "Stef Vervoort",
+          "Alassane Diallo"
+        ]
+      },
+      {
+        "no": "22",
+        "names": [
+          "Gilles Ruyssen",
+          "Jeffrey Rentmeister"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Michael Cordier",
+      "29 Brian Gielen",
+      "30 Koen Van Langendonck",
+      "31 Thibaut Rausin"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2014|Lierse",
+    "title": "Koninklijke Lierse Sportkring in het seizoen 2014/15",
+    "wiki": "nl",
+    "cards": 23,
+    "rosterSize": 22,
+    "repeatedCount": 2,
+    "shareRepeated": 0.1,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "19",
+        "names": [
+          "Uche Nwofor",
+          "Daniel Mojsov"
+        ]
+      },
+      {
+        "no": "20",
+        "names": [
+          "Anas Tahiri",
+          "Josias Roulez"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "11 Alhassane Keita",
+      "9 Faysel Kasmi",
+      "23 Etien Velikonja",
+      "40 Ayub Masika"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2014|Standard Liege",
+    "title": "Standard Luik in het seizoen 2014/15",
+    "wiki": "nl",
+    "cards": 22,
+    "rosterSize": 37,
+    "repeatedCount": 2,
+    "shareRepeated": 0.06,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "11",
+        "names": [
+          "Jonathan Viera",
+          "Jiloan Hamad"
+        ]
+      },
+      {
+        "no": "30",
+        "names": [
+          "Samy Mmaee",
+          "Jonathan Legear"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Eiji Kawashima",
+      "16 Yohann Thuram",
+      "28 Guillaume Hubert",
+      "29 Lucas Pirard"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "BPL|2015|OH Leuven",
+    "title": "2015–16 Oud-Heverlee Leuven season",
+    "wiki": "en",
+    "cards": 20,
+    "rosterSize": 30,
+    "repeatedCount": 1,
+    "shareRepeated": 0.03,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "24",
+        "names": [
+          "Nicolas Delporte",
+          "Kevin Tapoko§"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Yves Lenaerts",
+      "21 Nick Gillekens",
+      "26 Rudy Riou",
+      "2 Kenny Van Hoevelen"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "TR|2011|Trabzonspor",
+    "title": "2011–12 Trabzonspor season",
+    "wiki": "en",
+    "cards": 15,
+    "rosterSize": 31,
+    "repeatedCount": 1,
+    "shareRepeated": 0.03,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "28",
+        "names": [
+          "Ondrej Celustka",
+          "Olcan Adın"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Onur Kıvrak",
+      "29 Tolga Zengin",
+      "89 Zeki Ayvaz",
+      "91 Bora Sevim"
+    ],
+    "shape": "BENFICA (real reissue)"
+  },
+  {
+    "key": "TR|2012|Beşiktaş",
+    "title": "2012–13 Beşiktaş J.K. season",
+    "wiki": "en",
+    "cards": 19,
+    "rosterSize": 34,
+    "repeatedCount": 1,
+    "shareRepeated": 0.03,
+    "namesLookLikeNames": true,
+    "repeated": [
+      {
+        "no": "7",
+        "names": [
+          "Dentinho",
+          "Ricardo Quaresma"
+        ]
+      }
+    ],
+    "sampleRows": [
+      "1 Cenk Gönen",
+      "3 İsmail Köybaşı",
+      "4 Manuel Fernandes",
+      "5 İbrahim Toraman"
+    ],
+    "shape": "BENFICA (real reissue)"
+  }
+]
