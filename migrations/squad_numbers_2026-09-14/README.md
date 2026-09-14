@@ -142,3 +142,31 @@ because a sample that changes every run can hide a persistent mover by never loo
 **THE TRIGGER IS ONE MOVER.** Not a threshold and not a percentage: batch 0 established the
 expected value is exactly zero, so any movement means the model of this write is wrong and the
 next read is the full 57,055. **A spot check without a trigger is a ritual.**
+
+
+## A BATCH DIED MID-RUN AND MY OWN OUTPUT FILTER HID THE REASON (2026-09-14)
+
+**BATCH 14 MATCHED 301 CARDS, PRINTED ITS SKIP LINE, AND THEN WROTE NOTHING.** It was run
+through `| grep -E "matched|skipped club-seasons|zero cards matched|WRITTEN"`, a filter built
+out of the lines a SUCCESSFUL batch prints. **So when the run failed, the filter had nothing
+to show and the absence looked like truncated output rather than a fault.** The wrapping
+command still exited 0, because grep had matched earlier lines.
+
+**THE RULE, AND IT IS NOT NEW , IT IS THE MONITOR GUIDANCE APPLIED TO A PIPE: A FILTER BUILT
+FROM SUCCESS SIGNALS CANNOT REPORT A FAILURE, AND SILENCE THEN LOOKS IDENTICAL TO PROGRESS.**
+Before filtering a long-running job, ask what it would emit if it crashed on the next line, and
+widen the pattern until the answer is "something". `tail -25` would have shown it; the clever
+filter did not.
+
+**NOTHING WAS HALF-WRITTEN, AND THAT WAS CHECKED RATHER THAN ASSUMED.** The write is a single
+batched call after the whole batch is matched, so a death before it leaves no partial state ,
+but "should" is not a measurement. Verified three ways: the ledger stood at 3,742 (exactly the
+total after batch 13), `batch-index.json` still read 13, and `batch14-stats.json` did not
+exist. **Then the database itself was scanned**: `player_positions` holds 3,898 pre-2016 rows
+with a shirt number, and the 156 the ledger does not name all carry a POSITION, which this job
+never writes , they are the pre-existing population recorded before batch 0. **Zero untracked
+writes.**
+
+**AND THAT SCAN IS THE CHECK WORTH REPEATING AFTER ANY INTERRUPTED RUN**, because it is the
+only one that tests the DATABASE against the ledger rather than the ledger against itself:
+every row the job created is named, and nothing exists that the ledger cannot account for.
