@@ -1,0 +1,32 @@
+{
+  "batch": 10,
+  "at": "2026-09-14T17:21:04.771Z",
+  "clubSeasons": 50,
+  "resolved": 48,
+  "parsed": 35,
+  "cards": 987,
+  "matched": 593,
+  "held": {
+    "norow": 82,
+    "ambiguous": 18
+  },
+  "written": 592,
+  "skipped": [
+    "L1|2011|Dijon , duplicate numbers in the block",
+    "L1|2011|Evian TG , duplicate numbers in the block",
+    "L1|2011|Lyon , 2 blocks, held for adjudication",
+    "L1|2011|Nancy , duplicate numbers in the block",
+    "L1|2011|Rennes , no page",
+    "L1|2011|Toulouse , duplicate numbers in the block",
+    "L1|2011|Valenciennes , no squad block",
+    "L1|2012|Bastia , 2 blocks, held for adjudication",
+    "L1|2012|Bordeaux , no squad block",
+    "L1|2012|Lille , 2 blocks, held for adjudication",
+    "L1|2012|Lyon , 2 blocks, held for adjudication",
+    "L1|2012|Rennes , no page",
+    "L1|2012|Valenciennes , no squad block",
+    "L1|2013|Lyon , 2 blocks, held for adjudication",
+    "L1|2013|Monaco , 3 blocks, held for adjudication"
+  ],
+  "skippedCards": 294
+}

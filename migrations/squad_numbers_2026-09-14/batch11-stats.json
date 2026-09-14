@@ -1,0 +1,33 @@
+{
+  "batch": 11,
+  "at": "2026-09-14T17:22:04.888Z",
+  "clubSeasons": 50,
+  "resolved": 47,
+  "parsed": 34,
+  "cards": 1034,
+  "matched": 641,
+  "held": {
+    "norow": 61,
+    "ambiguous": 19
+  },
+  "written": 640,
+  "skipped": [
+    "L1|2013|Paris Saint Germain , 2 blocks, held for adjudication",
+    "L1|2013|Rennes , no page",
+    "L1|2013|Toulouse , no squad block",
+    "L1|2014|Bordeaux , 2 blocks, held for adjudication",
+    "L1|2014|Lyon , 2 blocks, held for adjudication",
+    "L1|2014|Marseille , 2 blocks, held for adjudication",
+    "L1|2014|Monaco , 2 blocks, held for adjudication",
+    "L1|2014|Paris Saint Germain , 2 blocks, held for adjudication",
+    "L1|2014|Rennes , no page",
+    "L1|2014|Saint Etienne , 2 blocks, held for adjudication",
+    "L1|2015|Lyon , 2 blocks, held for adjudication",
+    "L1|2015|Monaco , 4 blocks, held for adjudication",
+    "L1|2015|Paris Saint Germain , 2 blocks, held for adjudication",
+    "L1|2015|Rennes , no page",
+    "L1|2015|Saint Etienne , 2 blocks, held for adjudication",
+    "LL|2010|Almeria , 2 blocks, held for adjudication"
+  ],
+  "skippedCards": 313
+}
