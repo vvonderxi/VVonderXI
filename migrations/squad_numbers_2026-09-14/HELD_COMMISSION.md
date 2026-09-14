@@ -176,3 +176,44 @@ confirms this is a PAGE STRUCTURE and not a one-off.
 - **DO NOT "FIX" IT BY LOOSENING THE MATCHER TO GET THOSE CARDS FILLED.** The zero is the
   alarm. A looser matcher against the Heerenveen block writes goal ranks into the shirt column
   on cards that currently stay honestly empty.
+
+
+---
+
+## THE BACKFILL IS FINISHED , FINAL STATE, 2026-09-14
+
+**1,018 OF 1,018 CLUB-SEASONS ATTEMPTED. 5,993 ROWS WRITTEN AND LIVE.** The matview was
+refreshed in one pass at the end: pre-2016 cards carrying a squad number went from **156 to
+6,149**, which is the 156 that predated this job plus exactly the 5,993 in the ledger. Sampled
+across the whole run rather than the newest batch , Benfica 2010 from batch 1 through Swansea
+2015 from batch 21 , **15 of 15 agree with the ledger**.
+
+**COVERAGE OF THE PRE-2016 TARGET WENT FROM 0.8% TO 30.4%. 14,070 CARDS REMAIN UNFILLED**, and
+that number is the honest headline: the automated pass took the third of the target that a
+deterministic parser can take, and the rest is the commission below.
+
+**SPOT DIFFS RETURNED 0 MOVERS ON ALL TWENTY-ONE BATCHES**, the largest across 5,771 cards. The
+trigger was ONE mover and it never fired, which is what batch 0 predicted from the view
+definition rather than from hope: `position_pool` reads `pp."position"` directly with no
+COALESCE, so a row carrying a null position leaves an already-null pool null.
+
+### THE THREE ROUTES, SIZED
+
+| route | reasons | club-seasons | cards |
+|---|---|---|---|
+| **1. Fable , adjudication only** | 2, 3, 4, 5 blocks | 200 | 4,015 |
+| **2. Ours , parser and matcher** | no squad block, plus 1,529+ per-card holds | 147 | 2,665 + 1,529 |
+| **3. Neither , read by a human first** | parsed, zero cards matched | 10 | 192 |
+| *not a route* | no page | 85 | 1,700 |
+| *ours, and self-inflicted* | UNRECORDED, batches 1 and 2 | 77 | 1,542 |
+| *nobody , the skip is wrong* | duplicate numbers | 121 | **2,406** |
+
+**THE LARGEST SINGLE RECOVERABLE POPULATION IS THE DUPLICATE-NUMBER SKIP, 2,406 CARDS, AND IT
+NEEDS NO RESEARCH AT ALL , THE GUARD IS SIMPLY WRONG.** All 14 sampled were the Benfica shape,
+a January reissue, and a repeated number cannot harm a match that keys on the NAME. It is the
+cheapest 2,406 cards available and it is a write-path change, which is why it was not made
+while batches were running.
+
+**THE 1,529 PER-CARD HOLDS ARE A FLOOR AND THE REAL FIGURE IS UNKNOWABLE**, because batches 1
+and 2 lost their stats. Re-probing the 77 UNRECORDED club-seasons is the first thing the second
+pass should do, since a fifth of its scope currently arrives unsorted.
