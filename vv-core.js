@@ -4687,56 +4687,73 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var parent = host.parentNode;
     if(!parent){ await work(); return; }
     host._sliding = true;
-    var half = Math.round(VV_MOVE_MS / 2);
-    var out  = dir > 0 ? '-16%' : '16%';
-    var into = dir > 0 ? '16%'  : '-16%';
-    /*  THE SNAPSHOT IS A SIBLING, NOT A CHILD, AND THAT IS THE WHOLE CORRECTION.
-        `work` is loadCard, which sets host.innerHTML , so an overlay parented to HOST is
-        destroyed by the very operation it exists to cover. It never survived to animate, and
-        the symptom was a card that changed correctly with no motion at all, which is
-        indistinguishable from the hard cut this replaces. Measured before the fix: the layer
-        was gone 40ms in while host.position still read `relative`, so the function had
-        started and its content had already been wiped.
-        THE GENERAL SHAPE: an element that must outlive a re-render cannot live inside the
-        thing being re-rendered.  */
+    var out  = dir > 0 ? '-18%' : '18%';
+    var into = dir > 0 ? '18%'  : '-18%';
     var box = { t: host.offsetTop, l: host.offsetLeft, w: host.offsetWidth, h: host.offsetHeight };
     var snap = document.createElement('div');
     snap.className = 'vvslide-out';
     snap.setAttribute('aria-hidden','true');
     snap.innerHTML = host.innerHTML;
+    /*  translateZ(0) AND will-change PROMOTE THE LAYER BEFORE IT MOVES. Without them the
+        snapshot animates on the main thread and every frame repaints a 43-node card and its
+        portrait , measured `will-change:auto`, `transform:none` on the first build, which is
+        the jitter a human saw on a real phone and this harness cannot see at all.  */
     snap.style.cssText = 'position:absolute;top:'+box.t+'px;left:'+box.l+'px;width:'+box.w+'px;'
-      + 'height:'+box.h+'px;display:flex;justify-content:center;pointer-events:none;z-index:3';
+      + 'height:'+box.h+'px;display:flex;justify-content:center;pointer-events:none;z-index:3;'
+      + 'will-change:transform,opacity;transform:translateZ(0);backface-visibility:hidden';
     var prevParentPos = parent.style.position;
     if(getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
     try{
       parent.appendChild(snap);
-      snap.style.transition = 'transform '+half+'ms '+VV_MOVE_EASE+',opacity '+half+'ms '+VV_MOVE_EASE;
-      void snap.offsetWidth;          // force a frame, or both styles coalesce and nothing moves
-      snap.style.transform = 'translateX('+out+')';
-      snap.style.opacity = '0';
+      /*  ── EVERYTHING EXPENSIVE HAPPENS BEFORE ANY MOTION ────────────────────────────────
+          The first build awaited `work` BETWEEN the two halves, so a network round trip sat
+          inside the gesture: the outgoing half finished, the card stalled for however long
+          the fetch took, then the incoming half began. MEASURED: the fetch is 91ms on
+          localhost and the JS either side is 0.6ms and 0.8ms , so the stall IS the network
+          and nothing else, and on a phone on mobile data it is several times worse.
+          A VARIABLE GAP BETWEEN TWO FIXED HALVES CANNOT BE EASED AWAY. It is not jitter and
+          no curve fixes it; the work has to move out of the window entirely.
+          So: the snapshot covers the card, `work` runs behind it, the new portrait is
+          DECODED, and only then does anything move. The cost is that motion starts later on
+          a slow connection , but a card that sits still and then moves once reads as
+          deliberate, where one that moves, freezes and moves again reads as broken.  */
       await work();
       var card = host.firstElementChild;
       if(card){
-        card.style.transition = 'none';
-        card.style.transform = 'translateX('+into+')';
-        card.style.opacity = '0';
-        void card.offsetWidth;
-        card.style.transition = 'transform '+half+'ms '+VV_MOVE_EASE+',opacity '+half+'ms '+VV_MOVE_EASE;
-        card.style.transform = 'none';
-        card.style.opacity = '1';
-        setTimeout(function(){
-          if(card){ card.style.transition=''; card.style.transform=''; card.style.opacity=''; }
-        }, half + 60);
+        card.style.cssText += ';will-change:transform,opacity;transform:translateZ(0);backface-visibility:hidden';
+        var img = card.querySelector('img');
+        if(img && img.decode){ try{ await img.decode(); }catch(e){} }
+        else if(img && !img.complete){ await new Promise(function(r){ img.onload=img.onerror=r; setTimeout(r,300); }); }
       }
-      /*  The outgoing layer is removed AFTER the incoming one is in flight, so the two
-          overlap the way the flip's faces do rather than leaving a blank beat between them. */
-      setTimeout(function(){ if(snap.parentNode) snap.parentNode.removeChild(snap); }, 40);
+      /*  ONE CONTINUOUS MOTION, BOTH LAYERS, TRANSFORM AND OPACITY ONLY. No layout and no
+          paint inside the window , the full VV_MOVE_MS rather than two halves, because there
+          is no longer a midpoint to wait at.  */
+      var dur = VV_MOVE_MS;
+      if(card){
+        card.style.transition='none';
+        card.style.transform='translateZ(0) translateX('+into+')';
+        card.style.opacity='0';
+      }
+      void snap.offsetWidth;
+      snap.style.transition='transform '+dur+'ms '+VV_MOVE_EASE+',opacity '+dur+'ms '+VV_MOVE_EASE;
+      snap.style.transform='translateZ(0) translateX('+out+')';
+      snap.style.opacity='0';
+      if(card){
+        card.style.transition='transform '+dur+'ms '+VV_MOVE_EASE+',opacity '+dur+'ms '+VV_MOVE_EASE;
+        card.style.transform='translateZ(0)';
+        card.style.opacity='1';
+      }
+      /*  will-change IS RELEASED WHEN THE MOTION ENDS , left on, it pins a compositor layer
+          per card for the life of the page, which is the opposite of the fix.  */
+      setTimeout(function(){
+        if(card){ card.style.transition=''; card.style.transform=''; card.style.opacity=''; card.style.willChange=''; }
+      }, dur + 60);
     } finally {
       setTimeout(function(){
         if(snap.parentNode) snap.parentNode.removeChild(snap);
         parent.style.position = prevParentPos;
         host._sliding = false;
-      }, half + 80);
+      }, VV_MOVE_MS + 90);
     }
   }
 

@@ -539,7 +539,19 @@
     .vcard{width:88px}
     .arcmk{width:28px;height:28px}
     .arcmk .vvm{width:15px;height:15px}
+    /*  WONDERKID AND BREAKOUT COLLIDE AT PHONE WIDTH , MEASURED AT 390: Wonderkid runs
+        42.1 to 93.7 and Breakout 81.4 to 125.7, a 12.3px overlap. The cause is the
+        .lead rule: Wonderkid anchors translateX(0) so it runs RIGHTWARD from its marker,
+        straight into its neighbour, and shrinking the type does not fix it , at 9px the two
+        still meet, because the stage narrows faster than the words do.
+        BREAKOUT DROPS TO A SECOND ROW RATHER THAN EITHER MARKER MOVING. SS C's note above
+        is explicit that the marker positions are computed from the bezier and must NOT be
+        moved to fix a label, and Peak already sets the precedent for a label leaving its
+        neighbours' row , it clears its marker upward. This is the same move downward.
+        ONLY AT PHONE WIDTH. Above 720 the stage is wide enough that they never touch, and a
+        staggered row there would look like a mistake rather than a fit.  */
     .arclab{font-size:9px}
+    .arclab.lead + .arcmk + .arclab, .arclab:not(.lead):not(.apex):not(.trail){transform:translate(-50%,13px)}
     .vchip{padding:8px 13px;font-size:12.5px}
     /* TOUCH TARGETS , the dot stays 19px and the slider track stays 5px, but the tappable box
        grows. Measured at 390px: the marker was 19px and the slider 26px, both under the 44px
@@ -1723,14 +1735,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260914a"></script>
+<script src="/vv-marks.js?v=20260914b"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260914a"></script>
+<script src="/vv-core.js?v=20260914b"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
