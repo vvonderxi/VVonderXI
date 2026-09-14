@@ -165,19 +165,57 @@ async function targets() {
     return; }
 
   /*  NEVER OVERWRITE , every key is checked for an existing row first. These are inserts and
-      the rollback is a delete of exactly what was inserted; an update would make that false. */
+      the rollback is a delete of exactly what was inserted; an update would make that false.
+      THIS CHECK WAS SILENTLY INCOMPLETE UNTIL 2026-09-14 AND BATCH 14 IS HOW WE FOUND OUT.
+      It queried `.in('api_player_id', <300 ids>)` with no pagination, and PostgREST CAPS A
+      RESPONSE AT 1000 ROWS BY DEFAULT , the exact trap CLAUDE.md SS C records. A player has one
+      `player_positions` row per season per league, so 300 ids routinely exceed 1000 rows and
+      the tail was DISCARDED WITH NO ERROR. Measured on this database: 133 ids returned exactly
+      1000 against 1001 that exist.
+      SO THE GUARD WAS CHECKING WHATEVER FIT, AND ITS COMMENT SAID "EVERY KEY".
+      THE FAILURE IS FAIL-SAFE AND THAT IS WHY IT SURVIVED THIRTEEN BATCHES: a truncated
+      `existing` set marks FEWER keys as taken, so more rows are attempted, and a genuine
+      collision is then refused by the primary key , loudly, aborting the batch before any
+      write. It can never overwrite. Batch 14 was simply the first batch whose players carried
+      enough history to cross the cap.
+      THE FIX IS TO PAGINATE UNTIL A PAGE COMES BACK SHORT, not to raise the chunk size, which
+      only moves the cliff. A page of exactly 1000 is the signal that there is more.  */
   const keys = writes.map((w) => w.api_player_id);
   const existing = new Set();
   for (let i = 0; i < keys.length; i += 300) {
-    const { data } = await sb.from('player_positions').select('api_player_id,season_year,league_code').in('api_player_id', keys.slice(i, i + 300));
-    (data || []).forEach((r) => existing.add(r.api_player_id + '|' + r.season_year + '|' + r.league_code));
+    const slice = keys.slice(i, i + 300);
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await sb.from('player_positions')
+        .select('api_player_id,season_year,league_code')
+        .in('api_player_id', slice)
+        .order('api_player_id', { ascending: true })
+        .order('season_year', { ascending: true })
+        .order('league_code', { ascending: true })
+        .range(from, from + 999);
+      if (error) { console.error('  EXISTENCE CHECK FAILED: ' + error.message); process.exit(1); }
+      (data || []).forEach((r) => existing.add(r.api_player_id + '|' + r.season_year + '|' + r.league_code));
+      if (!data || data.length < 1000) break;
+    }
   }
+  /*  AND THE INSERT NO LONGER TRUSTS IT BLINDLY , a PK violation now reports which key
+      collided rather than only that one did, because "duplicate key" with no key is what made
+      this take a database scan to diagnose.  */
   const fresh = writes.filter((w) => !existing.has(w.api_player_id + '|' + w.season_year + '|' + w.league_code));
   console.log('\n  would insert ' + fresh.length + ', skipping ' + (writes.length - fresh.length) + ' that already have a row');
   for (let i = 0; i < fresh.length; i += 200) {
     const chunk = fresh.slice(i, i + 200).map((w) => ({ api_player_id: w.api_player_id, season_year: w.season_year, league_code: w.league_code, shirt_number: w.shirt_number }));
     const { error } = await sb.from('player_positions').insert(chunk);
-    if (error) { console.error('  INSERT FAILED at ' + i + ': ' + error.message); process.exit(1); }
+    if (error) {
+      console.error('  INSERT FAILED at ' + i + ': ' + error.message);
+      if (/duplicate key/.test(error.message || '')) {
+        const probe = await sb.from('player_positions').select('api_player_id,season_year,league_code')
+          .in('api_player_id', chunk.map((c) => c.api_player_id));
+        const have = new Set((probe.data || []).map((r) => r.api_player_id + '|' + r.season_year + '|' + r.league_code));
+        const hits = chunk.filter((c) => have.has(c.api_player_id + '|' + c.season_year + '|' + c.league_code));
+        console.error('  COLLIDING KEYS (' + hits.length + '): ' + JSON.stringify(hits.slice(0, 10)));
+      }
+      process.exit(1);
+    }
     stats.written += chunk.length;
   }
   fs.appendFileSync(path.join(DIR, 'written.jsonl'), fresh.map((w) => JSON.stringify(w)).join('\n') + '\n');
