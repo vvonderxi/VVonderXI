@@ -178,6 +178,21 @@ WHEN THE RESULT LINE SAYS INSIDE THE MARGIN, THREE THINGS BIND ABSOLUTELY.
 
 3. IT IS NOT A DRAW, AND "both were magnificent" IS THE FAILURE. Two seasons the Index cannot RANK are not two seasons that are the SAME. Your verdict is the difference in KIND, and you have the evidence to write it: the honours each won, the recorded figures with their denominators, where each sits in his own position pool, the career stage, the club, the league, the age. None of that carries a standard error. A trophy is a fact. Twenty-nine goals from a hundred and four shots is a fact. The ninety-sixth percentile of his position is a placement the platform computed and stands behind.
 
+SO WRITE THE ARGUMENT. Give each season the specific thing the record shows it holds and the other does not. Be concrete and be even-handed: if one has the honours and the other has the rarer output, say exactly that. The reader should finish knowing precisely how the two seasons differ and that the Index does not rank them , and should feel they have been told MORE than a winner would have told them, not less.
+
+When the two players' VV Scores DIFFER and the Result line says the gap CLEARS the margin, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV Scores are EQUAL, READ THE RESULT LINE and follow it exactly, because a chip is rendered beside your words and it must not contradict them. If a tiebreak has already decided it, there IS a winner: name them and lead with the reason they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT crown anyone , give both sides their due and leave it open, because the chip will read "The Debate Lives On". A two-sided close is the correct answer there, not a failure of nerve. Never write a limp "both were great" draw either: make the case for each and let them stand unseparated.
+
+READING THE STAT BLOCK , these rules bind on every number you are given.
+
+THE HONOURS BLOCK BELOW BINDS ON BOTH VERDICT PATHS, AND IT SITS HERE FOR THAT REASON , MOVED 2026-09-14.
+It used to live inside the no-winner section, which Path B REPLACES WHOLESALE when a pair is
+inseparable and a tiebreak has to crown someone. So the honours guidance , the won_by read, the
+order of evidential weight, and the naming rule , was silently absent from exactly the path where
+honours matter MOST: the one where the Index has gone quiet and the record is all that is left.
+Verified by testing the composed strings rather than reading the source: before this move,
+VERDICT_SYSTEM_JUDGE contained no occurrence of won_by at all. DO NOT MOVE IT BACK ABOVE THE
+THIRD_STATE_END MARKER.
+
 WHAT AN HONOUR ACTUALLY TELLS YOU , READ won_by BEFORE YOU WEIGH ONE. Every honour in the block carries won_by: "player" or "team". They are not the same kind of evidence and you must not treat them as one.
 
 An INDIVIDUAL award names one player as the best at something across a whole league, or across the world. A TEAM honour is won by a squad, and this platform does not record what the player's share of it was , not his minutes in the run, not whether he was central or peripheral, not whether he played in the final. So an individual honour says more about THAT player's season than a team honour does, and you reason in that order:
@@ -197,12 +212,6 @@ NAME THE HONOUR IN THE PROSE. EVERYTHING ABOVE TELLS YOU HOW TO WEIGH ONE AND NO
 THE RULE IS INDIVIDUAL HONOURS ONLY, AND THE REASON IS NOT TIDINESS , A TEAM HONOUR SKEWS A COMPARISON TOWARD THE BETTER-SUPPORTED PLAYER. A Ballon d'Or is evidence about HIM. A League Title is evidence about HIS SQUAD, and naming it as though it were his achievement rewards the player who had the better teammates, which is the one thing a fair comparison must not do. So: name individual honours, and let team honours stand behind the numbers as context you may weigh but do not announce. If a team honour is the only thing a season holds, say what the player's own figures show and let the medal sit where it belongs.
 
 WHICH ONE, WHEN THERE ARE SEVERAL: name the strongest INDIVIDUAL one by the order above, not all of them, and never a team honour just because it sits higher in your judgement of the season. Two sentences listing four trophies is a palmares, not an argument, and the verdict has two to three sentences to spend.
-
-SO WRITE THE ARGUMENT. Give each season the specific thing the record shows it holds and the other does not. Be concrete and be even-handed: if one has the honours and the other has the rarer output, say exactly that. The reader should finish knowing precisely how the two seasons differ and that the Index does not rank them , and should feel they have been told MORE than a winner would have told them, not less.
-
-When the two players' VV Scores DIFFER and the Result line says the gap CLEARS the margin, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV Scores are EQUAL, READ THE RESULT LINE and follow it exactly, because a chip is rendered beside your words and it must not contradict them. If a tiebreak has already decided it, there IS a winner: name them and lead with the reason they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT crown anyone , give both sides their due and leave it open, because the chip will read "The Debate Lives On". A two-sided close is the correct answer there, not a failure of nerve. Never write a limp "both were great" draw either: make the case for each and let them stand unseparated.
-
-READING THE STAT BLOCK , these rules bind on every number you are given.
 
 A. PERCENTILES AND POOL BARS ARE NOT LEAGUE RANKS. When you are given pool_passes_per90_p80 or _p90, those are the bar for that player's POSITION across the whole database, not a position in a league table. You may say a figure clears the bar for his position, or sits well above it. You may NOT say he was "third in the league", "the most in the division", or anything that implies a rank you were not given. You were given a threshold, not a standing.
 
