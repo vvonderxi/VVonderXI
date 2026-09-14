@@ -138,6 +138,27 @@ async function targets() {
   }
   fs.appendFileSync(path.join(DIR, 'written.jsonl'), fresh.map((w) => JSON.stringify(w)).join('\n') + '\n');
   fs.writeFileSync(path.join(DIR, 'clubseasons-done.json'), JSON.stringify([...done, ...batch.map(([k]) => k)], null, 1) + '\n');
-  fs.writeFileSync(path.join(DIR, 'batch1-stats.json'), JSON.stringify(stats, null, 2) + '\n');
+  /*  PER-BATCH STATS, NOT ONE FILE OVERWRITTEN EVERY RUN , FIXED 2026-09-14.
+      This wrote a FIXED `batch1-stats.json` on every batch, so batch 2 silently replaced
+      batch 1's summary and batch 3 replaced batch 2's, while the filename went on claiming
+      to be batch 1. Nothing errored and nothing in the output said a record had been lost.
+      NO WRITTEN ROW WAS EVER AT RISK , `written.jsonl` is append-only and reconciles
+      exactly (142 + 144 + 146 = 432 at the time of the fix), which is why this is a
+      record-keeping defect and not a data one. The batch NUMBER is derived from the ledger
+      rather than passed in, so it cannot disagree with what is actually on disk.
+      Same shape as the snapshot hazards already recorded: a file that looks freshly
+      generated, is, and describes something other than what its name says.  */
+  const batchNo = (() => {
+    try {
+      const f = path.join(DIR, 'batch-index.json');
+      const n = (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')).lastBatch : 0) + 1;
+      fs.writeFileSync(f, JSON.stringify({ lastBatch: n }, null, 1) + '\n');
+      return n;
+    } catch (e) { return null; }
+  })();
+  const named = batchNo == null ? 'batch-unknown-stats.json' : ('batch' + batchNo + '-stats.json');
+  fs.writeFileSync(path.join(DIR, named),
+    JSON.stringify({ batch: batchNo, at: new Date().toISOString(), ...stats }, null, 2) + '\n');
+  console.log('  stats -> ' + named);
   console.log('  WRITTEN ' + stats.written + ' rows. Logged to written.jsonl.');
 })().catch((e) => { console.error('FAILED,', e.message); process.exit(1); });

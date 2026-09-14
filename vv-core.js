@@ -7045,10 +7045,22 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       el.setAttribute('aria-label', filesOK ? base : (base + ' , posts a link only, without the image'));
       el.setAttribute('title', filesOK ? base : (base + ' , posts a link only'));
     });
+    /*  AN EMPTY HINT IS A CHOICE AND `||` COULD NOT EXPRESS IT , FIXED 2026-09-14 (item 6).
+        A caller passing '' meant "this state needs no hint" and got the DEFAULT SENTENCE
+        instead, because an empty string is falsy. `!= null` lets a caller opt out while an
+        omitted option still takes the default, so card.html is unaffected.
+        AND THE ELEMENT IS HIDDEN WHEN EMPTY, not merely blanked: `.vshare-hint` carries
+        margin-top:12px, so an empty node leaves a 12px gap that reads as a layout bug.
+        `hidden` is set AND the rule is asserted , Section C: an override that silently
+        loses is indistinguishable from one that was never written.  */
     const hint = root.querySelector('[data-vvshare="hint"]');
-    if (hint) hint.textContent = filesOK
-      ? (opts.hintShare || 'Sends the image itself , Instagram, X, WhatsApp and anywhere else you share.')
-      : (opts.hintSave  || 'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.');
+    if (hint) {
+      const hintText = filesOK
+        ? (opts.hintShare != null ? opts.hintShare : 'Sends the image itself , Instagram, X, WhatsApp and anywhere else you share.')
+        : (opts.hintSave  != null ? opts.hintSave  : 'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.');
+      hint.textContent = hintText;
+      hint.hidden = !hintText;
+    }
     root.setAttribute('data-vvshare-cap', cap);
     return cap;
   }

@@ -852,6 +852,18 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .h2hbar-nr{font-family:'Inter';font-size:11.5px;color:var(--ink-soft);font-style:italic;display:flex;align-items:center}   /* italic, NOT a fade , see the note above; colour comes from the .vsect rule at the end of this sheet */
   #vradarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 16px}
     .vshare-hint{margin-top:12px;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft);max-width:440px;margin-inline:auto}
+    /*  THE FOLLOW ROW , SAME GRAMMAR AS THE PLAYBOOK FOOT, NOT A NEW ONE. Sizes, gap and the
+        hover lift are copied deliberately so the mark reads the same wherever it appears;
+        Section C's sibling-states rule means these move together or not at all.
+        THE GROUND HERE IS THE PAGE, WHICH DOES FLIP, so the resting ink is the theme-aware
+        pair rather than a pinned literal , the opposite of the card's boxes. Section C:
+        match the ink to the GROUND, not to body.light.  */
+    .vvsoc{display:flex;align-items:center;justify-content:center;gap:18px;margin:18px 0 0}
+    .vvsoc a{display:inline-flex;color:rgba(243,237,224,.45);transition:color .18s,transform .18s}
+    .vvsoc a:hover{color:var(--pink-ink);transform:translateY(-2px)}
+    body.light .vvsoc a{color:#8a8276}
+    body.light .vvsoc a:hover{color:var(--pink-ink)}
+    .vvsoc svg{width:21px;height:21px}
   #cardA,#cardB{transition:transform .45s cubic-bezier(.4,0,.2,1),filter .45s}
   #cardA.winner,#cardB.winner{transform:translateY(-6px)}
   #cardA.winner .vvcard,#cardB.winner .vvcard{box-shadow:0 0 0 3px var(--gold),0 0 22px -2px rgba(232,184,75,.5),0 22px 48px -14px rgba(232,184,75,.55)!important}
@@ -1353,19 +1365,24 @@ body.light .pkmsub{color:var(--ink-soft)}
               <a class="vshare-opt" href="#" onclick="event.preventDefault();vvVerdictSave(this)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6.5" width="18" height="13.5" rx="2.5"/><circle cx="12" cy="13.2" r="3.4"/><path d="M8.6 6.5l1.1-2h4.6l1.1 2"/></svg> <span class="lbl">Save image</span></a>
             </div>
             <div class="vshare-hint" data-vvshare="hint"></div>
+            <!-- THE FOLLOW ROW , MARKUP COMES FROM `VVCore.socialRowHTML()`, NEVER TYPED HERE.
+                 Fourth surface to take it, after the home drawer, the Playbook foot and the
+                 VV Index CTA. Typing the two marks again is how the three palettes on the
+                 Wonder Tags happened. The placeholder is replaced outerHTML at wire time. -->
+            <div class="vvsoc" id="vshareSocial"></div>
           </div>
         </div>
       </div>
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260914b"></script>
+<script src="/vv-marks.js?v=20260914c"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260914b"></script>
+<script src="/vv-core.js?v=20260914c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2131,11 +2148,27 @@ body.light .pkmsub{color:var(--ink-soft)}
      this control downloads a file, so it must not read "Share this verdict" , see
      VVCore.vvShareCapability. Called once at load and never again: capability does not
      change within a page's life. */
+  /*  THE FOLLOW ROW IS WIRED ONCE, FROM THE SHARED SOURCE. `outerHTML` replaces the
+      placeholder outright so the class list comes from `socialRowHTML` too , a second
+      copy of the markup here is exactly what the helper exists to prevent.  */
+  function vvWireShareSocial(){
+    var e=document.getElementById('vshareSocial');
+    if(e && window.VVCore && VVCore.socialRowHTML) e.outerHTML=VVCore.socialRowHTML('vvsoc');
+  }
   function vvShareRelabel(){
     if(!(window.VVCore && VVCore.vvApplyShareCapability)) return;
     VVCore.vvApplyShareCapability(document.querySelector('.vshare'), {
       shareLabel:'Share this verdict', saveLabel:'Save post image',
-      hintShare:'Sends the verdict as an image , Instagram, X, WhatsApp and anywhere else you share.',
+      /*  THE SHARE HINT IS DELIBERATELY EMPTY , item 6, 2026-09-14. It used to read "Sends
+          the verdict as an image , Instagram, X, WhatsApp and anywhere else you share",
+          which NAMED two platforms in prose directly above a row of platform controls. The
+          follow row below says the same thing in marks a reader can act on, so the sentence
+          was describing the furniture beside it.
+          THE SAVE HINT STAYS AND MUST STAY. It is not a list of platforms, it is the one
+          place the page admits a limitation , a web page cannot attach the file to a post
+          for you , and Section D records that this control must never report an outcome
+          that did not happen. Deleting both would have removed an instruction, not a label.  */
+      hintShare:'',
       hintSave:'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.'});
     /* "Save POST image", not "Save image": the row below already has a Save image, and the
        two make DIFFERENT pictures , this button composes the wide 1200x675 social frame
@@ -3263,6 +3296,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     vvGenerateVerdict();
   });
   vvShareRelabel();   // before any visitor can read the button, not at click time
+  vvWireShareSocial();  // item 6 , the follow row, same call site, same reason
   // redraw radar on mode toggle (grid contrast)
   var _mt=document.querySelector('.modetoggle'); if(_mt) _mt.addEventListener('click',function(){
     if(document.getElementById('verdict').classList.contains('show')) setTimeout(drawDualRadar,40);
