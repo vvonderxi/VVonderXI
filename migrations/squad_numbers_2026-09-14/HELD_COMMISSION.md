@@ -88,3 +88,61 @@ extractor does not know, and that is cheaper to fix than to adjudicate.
 **"No page" is nobody's job.** The Portugal finding governs: for those clubs the season article
 was never written, in any edition, and searching harder cannot produce a page that does not
 exist. Those cards want a different source or no fill at all.
+
+---
+
+## THE ZERO-MATCH CATEGORY , OURS, AND IT IS A SAFETY SIGNAL RATHER THAN A DEFECT TO FIX
+
+**COUNT FIRST: 3 club-seasons in the 350 with surviving stats , a handful, not dozens.**
+`ERE|2010|ADO Den Haag`, `ERE|2010|Heerenveen`, `ERE|2012|Heerenveen`. Batches 1 and 2 cannot
+be separated, because their skip lists were clobbered. **So it is not a naming convention
+bleeding across a league, and it does not need fixing before the second pass.**
+
+**AND THE COUNT IS THE LEAST INTERESTING THING ABOUT IT. IT IS NOT A NAMING PROBLEM AT ALL ,
+IT IS THE ONLY THING THAT CAUGHT A STATISTICS TABLE BEING READ AS A SQUAD.**
+
+**HEERENVEEN , THE PARSER LANDED ON A TOP-SCORERS TABLE.** Eight rows, numbers 1, 2, 4, 5, 6,
+7, 9, 11, and names like `Assaidi Väyrynen`, `Janmaat Elm`, `Grindheim Đuričić` , TWO PLAYERS
+TIED ON A COUNT, SHARING ONE CELL. Those numbers are goal tallies, not shirts. Bas Dost on
+"#1" is the top scorer, not the goalkeeper.
+- **EVERY EXISTING GUARD WAS BLIND TO IT.** The duplicate-number check passes, because ranks
+  are distinct by construction. `looksLikeNames` passes, because two capitalised surnames look
+  exactly like a name. The club guard passes, because it IS Heerenveen's page.
+- **NOTHING WAS WRITTEN, AND THAT WAS LUCK RATHER THAN DESIGN.** Not one of our 19 cards
+  matched its 8 mangled rows, so the club-season produced nothing. **Had a single name matched
+  , our `B. Dost` against its bare `Dost` , we would have written shirt #1 for Bas Dost, a
+  goal rank, silently, and it would have looked entirely plausible on the card.**
+
+**ADO DEN HAAG IS A DIFFERENT FAULT WITH THE SAME SYMPTOM:** 11 rows carrying plausible shirt
+numbers (7, 9, 10, 13, 14, 16, 17, 19, 20, 23, 40) but ELEVEN PLAYERS WE DO NOT HOLD , Soltani,
+Milic, Knopper, Ignacio , against our 15 cards. A partial or wrong block, not a stats table.
+**Two causes, one signal.**
+
+### THE DETECTOR I TRIED DOES NOT WORK, AND THE MEASUREMENT IS WORTH MORE THAN THE IDEA
+
+The obvious guard is a shape test on the NUMBERS: a rank table reads 1, 2, 3, 4, 5, dense and
+low; a real squad is sparse and spread across 1 to 99. **Measured across all 117 written
+club-seasons, it does not separate them.**
+- **Real squads: density (count / highest number) runs min 0.09, median 0.23, p95 0.65, MAX 0.74.**
+- **The Heerenveen rank table: 0.73 , BELOW the densest real squad we have written.**
+- The densest is `RKC Waalwijk in het seizoen 2011/12` at 0.74, and it was FETCHED AND READ
+  ROW BY ROW to be sure: 23 real Dutch players, Jeroen Zoet the keeper on #1, numbers 1 to 24.
+  **Small Dutch clubs genuinely number densely**, so the premise behind the test is false for
+  the Eredivisie, which is exactly where the rank table lives.
+- **THE FIRST VERSION OF THIS TEST REPORTED "0 SUSPECT CLUB-SEASONS" AND THAT WAS NOT
+  EVIDENCE** , a positive control showed it MISSED its own motivating case, at 0.73 against a
+  0.75 bar. **A guard that never fires is indistinguishable from one that does not work**, and
+  only the control separated them.
+
+### SO THE ROUTE IS: KEEP THE SIGNAL, DO NOT FIX IT AWAY
+
+**`parsed, zero cards matched` is now a first-class reason in `held.jsonl`**, carrying the
+roster size and a sample of both name lists so a human can see the mismatch without re-fetching.
+It fired again on its first live batch, `ERE|2012|Heerenveen` in batch 8, which is what
+confirms this is a PAGE STRUCTURE and not a one-off.
+- **IT IS OURS, NOT FABLE'S.** The page was found, the block was found, the roster parsed. No
+  adjudication is needed; what is needed is an extractor that can tell a squad table from a
+  scorers table, and that is a parser question.
+- **DO NOT "FIX" IT BY LOOSENING THE MATCHER TO GET THOSE CARDS FILLED.** The zero is the
+  alarm. A looser matcher against the Heerenveen block writes goal ranks into the shirt column
+  on cards that currently stay honestly empty.

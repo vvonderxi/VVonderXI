@@ -245,3 +245,71 @@
 {"key":"ERE|2012|GO Ahead Eagles","reason":"no squad block","cards":5,"title":"2012 Philadelphia Eagles season","wiki":"en","batch":7,"at":"2026-09-14T17:11:42.221Z"}
 {"key": "ERE|2010|ADO Den Haag", "reason": "parsed, zero cards matched", "cards": 15, "title": null, "wiki": null, "batch": 7, "at": null, "source": "backfilled after held-report.js reconciliation found the gap; detail needs a re-probe"}
 {"key": "ERE|2010|Heerenveen", "reason": "parsed, zero cards matched", "cards": 19, "title": null, "wiki": null, "batch": 7, "at": null, "source": "backfilled after held-report.js reconciliation found the gap; detail needs a re-probe"}
+{"key":"ERE|2012|Groningen","reason":"no squad block","cards":18,"title":"FC Groningen in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:25.144Z"}
+{"key":"ERE|2012|Heerenveen","reason":"parsed, zero cards matched","cards":17,"title":"Sc Heerenveen in het seizoen 2012/13 (mannen)","wiki":"nl","batch":8,"at":"2026-09-14T17:14:26.770Z","rosterSize":8,"sampleOurs":["R. Zomer","C. Kum","Arnold Kruiswijk"],"samplePage":["Gouweleeuw","De Roon","Kums"]}
+{"key":"ERE|2012|Heracles","reason":"no squad block","cards":19,"title":"Heracles Almelo in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:28.491Z"}
+{"key":"ERE|2012|NAC Breda","reason":"no squad block","cards":17,"title":"NAC Breda in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:29.788Z"}
+{"key":"ERE|2012|NEC Nijmegen","reason":"no page","cards":21,"title":null,"wiki":null,"batch":8,"at":"2026-09-14T17:14:31.349Z"}
+{"key":"ERE|2012|PEC Zwolle","reason":"no squad block","cards":19,"title":"PEC Zwolle in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:32.914Z"}
+{"key":"ERE|2012|PSV Eindhoven","reason":"3 blocks, held for adjudication","cards":18,"title":"2012–13 PSV Eindhoven season","wiki":"en","batch":8,"at":"2026-09-14T17:14:33.657Z"}
+{"key":"ERE|2012|Roda","reason":"2 blocks, held for adjudication","cards":22,"title":"Roda JC Kerkrade in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:36.170Z"}
+{"key":"ERE|2012|Twente","reason":"5 blocks, held for adjudication","cards":19,"title":"2012–13 FC Twente season","wiki":"en","batch":8,"at":"2026-09-14T17:14:36.997Z"}
+{"key":"ERE|2012|Utrecht","reason":"no squad block","cards":18,"title":"FC Utrecht in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:38.224Z"}
+{"key":"ERE|2012|Vitesse","reason":"no squad block","cards":13,"title":"Vitesse in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:39.804Z"}
+{"key":"ERE|2012|VVV Venlo","reason":"duplicate numbers in the block","cards":19,"title":"VVV-Venlo in het seizoen 2012/13","wiki":"nl","batch":8,"at":"2026-09-14T17:14:43.780Z","dupes":[{"no":"3","names":["Maya Yoshida","Nils Röseler"]},{"no":"20","names":["Matheus Diovany","Kaj Ramsteijn"]},{"no":"17","names":["Quin Kruijsen","Yūki Ōtsu"]}],"rosterSize":30}
+{"key":"ERE|2012|Willem II","reason":"no page","cards":22,"title":null,"wiki":null,"batch":8,"at":"2026-09-14T17:14:47.123Z"}
+{"key":"ERE|2013|ADO Den Haag","reason":"no squad block","cards":17,"title":"ADO Den Haag in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:14:48.571Z"}
+{"key":"ERE|2013|Ajax","reason":"duplicate numbers in the block","cards":23,"title":"2013–14 AFC Ajax season","wiki":"en","batch":8,"at":"2026-09-14T17:14:49.323Z","dupes":[{"no":"8","names":["Lerin Duarte","Christian Eriksen"]},{"no":"26","names":["Dico Koppers","Eyong Enoh"]},{"no":"42","names":["Jaïro Riedewald","Joeri de Kamps"]},{"no":"43","names":["Ricardo Kishna","Ilan Boccara"]}],"rosterSize":50}
+{"key":"ERE|2013|AZ Alkmaar","reason":"no page","cards":16,"title":null,"wiki":null,"batch":8,"at":"2026-09-14T17:14:50.982Z"}
+{"key":"ERE|2013|De Graafschap","reason":"no squad block","cards":1,"title":"BV De Graafschap in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:14:53.863Z"}
+{"key":"ERE|2013|Dordrecht","reason":"no squad block","cards":3,"title":"FC Dordrecht in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:14:55.881Z"}
+{"key":"ERE|2013|Feyenoord","reason":"duplicate numbers in the block","cards":16,"title":"2013–14 Feyenoord season","wiki":"en","batch":8,"at":"2026-09-14T17:14:58.441Z","dupes":[{"no":"35","names":["Rodney Lopes Cabral","Jeff Hardeveld"]}],"rosterSize":33}
+{"key":"ERE|2013|Heerenveen","reason":"no squad block","cards":16,"title":"Sc Heerenveen in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:15:03.603Z"}
+{"key":"ERE|2013|NEC Nijmegen","reason":"no page","cards":21,"title":null,"wiki":null,"batch":8,"at":"2026-09-14T17:15:08.927Z"}
+{"key":"ERE|2013|PEC Zwolle","reason":"no squad block","cards":19,"title":"PEC Zwolle in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:15:10.295Z"}
+{"key":"ERE|2013|PSV Eindhoven","reason":"4 blocks, held for adjudication","cards":22,"title":"2013–14 PSV Eindhoven season","wiki":"en","batch":8,"at":"2026-09-14T17:15:10.956Z"}
+{"key":"ERE|2013|Roda","reason":"3 blocks, held for adjudication","cards":20,"title":"Roda JC Kerkrade in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:15:12.834Z"}
+{"key":"ERE|2013|Sparta Rotterdam","reason":"no squad block","cards":1,"title":"Sparta Rotterdam in het seizoen 2013/14","wiki":"nl","batch":8,"at":"2026-09-14T17:15:15.028Z"}
+{"key":"ERE|2013|Twente","reason":"3 blocks, held for adjudication","cards":14,"title":"2013–14 FC Twente season","wiki":"en","batch":8,"at":"2026-09-14T17:15:15.798Z"}
+{"key":"ERE|2013|Utrecht","reason":"no squad block","cards":24,"title":"2013–14 FC Utrecht season","wiki":"en","batch":8,"at":"2026-09-14T17:15:16.353Z"}
+{"key":"ERE|2014|ADO Den Haag","reason":"no squad block","cards":17,"title":"2014–15 ADO Den Haag season","wiki":"en","batch":8,"at":"2026-09-14T17:15:23.497Z"}
+{"key":"ERE|2014|Ajax","reason":"duplicate numbers in the block","cards":18,"title":"2014–15 AFC Ajax season","wiki":"en","batch":8,"at":"2026-09-14T17:15:24.207Z","dupes":[{"no":"1","names":["Jasper Cillessen","Kenneth Vermeer"]},{"no":"8","names":["Daley Sinkgraven","Lerin Duarte"]},{"no":"24","names":["André Onana","Stefano Denswil"]}],"rosterSize":35}
+{"key":"ERE|2014|AZ Alkmaar","reason":"no squad block","cards":16,"title":"2014–15 AZ Alkmaar season","wiki":"en","batch":8,"at":"2026-09-14T17:15:24.945Z"}
+{"key":"ERE|2014|De Graafschap","reason":"no squad block","cards":3,"title":"BV De Graafschap in het seizoen 2014/15","wiki":"nl","batch":8,"at":"2026-09-14T17:15:28.562Z"}
+{"key":"ERE|2014|FC Volendam","reason":"no page","cards":1,"title":null,"wiki":null,"batch":8,"at":"2026-09-14T17:15:33.792Z"}
+{"key":"ERE|2014|GO Ahead Eagles","reason":"no squad block","cards":19,"title":"Go Ahead Eagles in het seizoen 2014/15","wiki":"nl","batch":8,"at":"2026-09-14T17:15:36.367Z"}
+{"key":"ERE|2014|Heerenveen","reason":"no squad block","cards":16,"title":"Sc Heerenveen in het seizoen 2014/15","wiki":"nl","batch":8,"at":"2026-09-14T17:15:40.086Z"}
+{"key":"ERE|2014|Heracles","reason":"duplicate numbers in the block","cards":17,"title":"Heracles Almelo in het seizoen 2014/15","wiki":"nl","batch":8,"at":"2026-09-14T17:15:41.738Z","dupes":[{"no":"19","names":["Oussama Tannane","Wout Weghorst"]}],"rosterSize":30}
+{"key":"ERE|2014|NAC Breda","reason":"no squad block","cards":21,"title":"NAC Breda in het seizoen 2014/15","wiki":"nl","batch":8,"at":"2026-09-14T17:15:43.831Z"}
+{"key":"ERE|2014|PEC Zwolle","reason":"duplicate numbers in the block","cards":15,"title":"PEC Zwolle in het seizoen 2014/15 (mannen)","wiki":"nl","batch":9,"at":"2026-09-14T17:15:50.643Z","dupes":[{"no":"1","names":["Diederik Boer","Warner Hahn"]},{"no":"22","names":["Aleksandar Bjelica","Kamohelo Mokotjo"]},{"no":"9","names":["Eli Babalj","Nikolaos Ioannidis"]},{"no":"17","names":["Sheraldo Becker","Denis Mahmudov"]}],"rosterSize":34}
+{"key":"ERE|2014|PSV Eindhoven","reason":"3 blocks, held for adjudication","cards":17,"title":"2014–15 PSV Eindhoven season","wiki":"en","batch":9,"at":"2026-09-14T17:15:51.308Z"}
+{"key":"ERE|2014|Twente","reason":"no squad block","cards":20,"title":"FC Twente in het seizoen 2014/15","wiki":"nl","batch":9,"at":"2026-09-14T17:15:52.637Z"}
+{"key":"ERE|2014|VVV Venlo","reason":"duplicate numbers in the block","cards":1,"title":"VVV-Venlo in het seizoen 2014/15","wiki":"nl","batch":9,"at":"2026-09-14T17:15:58.488Z","dupes":[{"no":"1","names":["Danny Wintjens","Alex Tabakis"]},{"no":"10","names":["Yūki Ōtsu","Gianluca Nijholt"]},{"no":"9","names":["Uche Nwofor","Melvin Platje"]},{"no":"23","names":["Ramon Voorn","Travis Cooper"]}],"rosterSize":31}
+{"key":"ERE|2014|Willem II","reason":"no page","cards":18,"title":null,"wiki":null,"batch":9,"at":"2026-09-14T17:15:59.994Z"}
+{"key":"ERE|2015|Almere City FC","reason":"no squad block","cards":3,"title":"Almere City FC in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:04.819Z"}
+{"key":"ERE|2015|AZ Alkmaar","reason":"no squad block","cards":21,"title":"2015–16 AZ Alkmaar season","wiki":"en","batch":9,"at":"2026-09-14T17:16:05.420Z"}
+{"key":"ERE|2015|Cambuur","reason":"no squad block","cards":23,"title":"SC Cambuur in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:07.188Z"}
+{"key":"ERE|2015|De Graafschap","reason":"no squad block","cards":23,"title":"BV De Graafschap in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:09.194Z"}
+{"key":"ERE|2015|Excelsior","reason":"duplicate numbers in the block","cards":18,"title":"2015–16 Excelsior Rotterdam season","wiki":"en","batch":9,"at":"2026-09-14T17:16:10.231Z","dupes":[{"no":"3","names":["Danilho Doekhi","Kevin van Diermen"]},{"no":"27","names":["Stanley Elbers","Yoell van Nieff"]}],"rosterSize":25}
+{"key":"ERE|2015|Feyenoord","reason":"no squad block","cards":18,"title":"2015–16 Feyenoord season","wiki":"en","batch":9,"at":"2026-09-14T17:16:10.846Z"}
+{"key":"ERE|2015|GO Ahead Eagles","reason":"no squad block","cards":2,"title":"Go Ahead Eagles in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:12.802Z"}
+{"key":"ERE|2015|Heerenveen","reason":"no squad block","cards":17,"title":"Sc Heerenveen in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:14.869Z"}
+{"key":"ERE|2015|Heracles","reason":"duplicate numbers in the block","cards":15,"title":"Heracles Almelo in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:16.813Z","dupes":[{"no":"26","names":["Michael Brouwer","Rick Hemmink"]}],"rosterSize":27}
+{"key":"ERE|2015|MVV","reason":"no page","cards":2,"title":null,"wiki":null,"batch":9,"at":"2026-09-14T17:16:18.272Z"}
+{"key":"ERE|2015|NAC Breda","reason":"no squad block","cards":1,"title":"NAC Breda in het seizoen 2015/16","wiki":"nl","batch":9,"at":"2026-09-14T17:16:19.785Z"}
+{"key":"ERE|2015|NEC Nijmegen","reason":"no page","cards":19,"title":null,"wiki":null,"batch":9,"at":"2026-09-14T17:16:21.581Z"}
+{"key":"ERE|2015|PEC Zwolle","reason":"duplicate numbers in the block","cards":19,"title":"2015–16 PEC Zwolle season","wiki":"en","batch":9,"at":"2026-09-14T17:16:22.176Z","dupes":[{"no":"23","names":["Ben Rienstra","Dario Tanda"]}],"rosterSize":38}
+{"key":"ERE|2015|Twente","reason":"duplicate numbers in the block","cards":21,"title":"2015–16 FC Twente season","wiki":"en","batch":9,"at":"2026-09-14T17:16:27.663Z","dupes":[{"no":"11","names":["Thomas Agyepong","Jesús Corona"]}],"rosterSize":30}
+{"key":"ERE|2015|Vitesse","reason":"no squad block","cards":18,"title":"2015–16 SBV Vitesse season","wiki":"en","batch":9,"at":"2026-09-14T17:16:30.599Z"}
+{"key":"ERE|2015|Willem II","reason":"no page","cards":21,"title":null,"wiki":null,"batch":9,"at":"2026-09-14T17:16:32.236Z"}
+{"key":"L1|2010|Arles","reason":"duplicate numbers in the block","cards":26,"title":"Saison 2010-2011 de l'AC Arles Avignon","wiki":"fr","batch":9,"at":"2026-09-14T17:16:35.708Z","dupes":[{"no":"21","names":["Driss Himmes","Anthony Guise"]}],"rosterSize":28}
+{"key":"L1|2010|Lens","reason":"duplicate numbers in the block","cards":20,"title":"Saison 2010-2011 du Racing Club de Lens","wiki":"fr","batch":9,"at":"2026-09-14T17:16:41.988Z","dupes":[{"no":"33","names":["Geoffrey Kondogbia","Abdelhakim Omrani"]}],"rosterSize":27}
+{"key":"L1|2010|Lorient","reason":"no squad block","cards":16,"title":"Saison 2010-2011 du FC Lorient","wiki":"fr","batch":9,"at":"2026-09-14T17:16:46.017Z"}
+{"key":"L1|2010|Marseille","reason":"2 blocks, held for adjudication","cards":17,"title":"2010–11 Olympique de Marseille season","wiki":"en","batch":9,"at":"2026-09-14T17:16:49.193Z"}
+{"key":"L1|2010|Monaco","reason":"2 blocks, held for adjudication","cards":26,"title":"2010–11 AS Monaco FC season","wiki":"en","batch":9,"at":"2026-09-14T17:16:49.653Z"}
+{"key":"L1|2010|Nancy","reason":"no squad block","cards":20,"title":"Saison 2010-2011 de l'AS Nancy-Lorraine","wiki":"fr","batch":9,"at":"2026-09-14T17:16:53.630Z"}
+{"key":"L1|2010|Nice","reason":"no squad block","cards":19,"title":"2010 Paris–Nice","wiki":"en","batch":9,"at":"2026-09-14T17:16:54.713Z"}
+{"key":"L1|2010|Paris Saint Germain","reason":"2 blocks, held for adjudication","cards":17,"title":"2010–11 Paris Saint-Germain FC season","wiki":"en","batch":9,"at":"2026-09-14T17:16:55.642Z"}
+{"key":"L1|2010|Rennes","reason":"no page","cards":21,"title":null,"wiki":null,"batch":9,"at":"2026-09-14T17:16:57.419Z"}
+{"key":"L1|2010|Saint Etienne","reason":"2 blocks, held for adjudication","cards":17,"title":"2010–11 Paris Saint-Germain FC season","wiki":"en","batch":9,"at":"2026-09-14T17:16:58.092Z"}
+{"key":"L1|2010|Valenciennes","reason":"no squad block","cards":17,"title":"Saison 2010-2011 du Valenciennes FC","wiki":"fr","batch":9,"at":"2026-09-14T17:17:07.753Z"}
