@@ -1779,14 +1779,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20260914d"></script>
+<script src="/vv-marks.js?v=20260914e"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20260914d"></script>
+<script src="/vv-core.js?v=20260914e"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
@@ -1940,7 +1940,7 @@
   }
 
   /* the cabinet , same expand-in-place model as the arc and the pitch */
-  var HON_COPY = {"Ballon d'Or":{"td":"Named the <b>single best player in the world</b> that year. Football's most prestigious individual prize.","dq":"\"The highest honour the game can bestow on one man. Not a team's triumph, but a singular coronation, the season the whole of football looked up and agreed: above all others, this one.\""},"League Title":{"td":"A <b>champion</b>. Part of the team that won the league that season.","dq":"\"In the end, the only number that never fades: champions. Form is temporary. This is forever.\""},"UCL Champion":{"td":"Lifted the <b>Champions League</b>, the grandest prize in club football.","dq":"\"Under the brightest lights, on the grandest stage. He did not shrink. He rose.\""},"Player of the Season":{"td":"Voted the <b>standout individual</b> of the entire campaign.","dq":"\"When the votes were counted, one name stood above the rest. Across ten long months, no one shone brighter.\""},"Golden Boot":{"td":"Led the league for <b>goals</b> that season. The sharpest shooter of them all.","dq":"\"Goal after goal after goal, until the boot itself turned to gold. The oldest honour in the game, earned the only way it can be.\""},"Top Assists":{"td":"Led the league for <b>assists</b> that season. The supreme provider.","dq":"\"He did not always take the glory. He made it, time and again, with the pass that mattered.\""},"World Cup Winner":{"td":"A world champion. The prize every player covets most. It is a season honour like the others, on the year it was won, and it appears in the Cabinet of every later card with that year against it.","dq":"\"Every four years a nation holds its breath, and for one squad it ends in glory. The World Cup is the prize a career is measured against, the one that turns a great player into an immortal. Some of the finest never lift it. Those who do are never forgotten.\""}};
+  var HON_COPY = {"Ballon d'Or":{"td":"Named the <b>single best player in the world</b> that year. Football's most prestigious individual prize.","dq":"\"The highest honour the game can bestow on one man. Not a team's triumph, but a singular coronation, the season the whole of football looked up and agreed: above all others, this one.\""},"League Title":{"td":"A <b>champion</b>. Part of the team that won the league that season.","dq":"\"In the end, the only number that never fades: champions. Form is temporary. This is forever.\""},"UCL Champion":{"td":"Lifted the <b>Champions League</b>, the grandest prize in club football.","dq":"\"Under the brightest lights, on the grandest stage. He did not shrink. He rose.\""},"Player of the Season":{"td":"Voted the <b>standout individual</b> of the entire campaign.","dq":"\"When the votes were counted, one name stood above the rest. Across ten long months, no one shone brighter.\""},"Golden Boot":{"td":"Led the league for <b>goals</b> that season. The sharpest shooter of them all.","dq":"\"Goal after goal after goal, until the boot itself turned to gold. The oldest honour in the game, earned the only way it can be.\""},"Top Assists":{"td":"Led the league for <b>assists</b> that season. The supreme provider.","dq":"\"He did not always take the glory. He made it, time and again, with the pass that mattered.\""},"World Cup Winner":{"td":"A world champion. The prize every player covets most. It is a season honour like the others, on the year it was won, and it appears in the Cabinet of every later card with that year against it.","dq":"\"Every four years a nation holds its breath, and for one squad it ends in glory. The World Cup is the prize a career is measured against, the one that turns a great player into an immortal. Some of the finest never lift it. Those who do are never forgotten.\""},"European Champion":{"td":"Champion of Europe with his country. The <b>European Championship</b> is the hardest tournament to win outside the World Cup , no easy group, no distant qualifier, only neighbours who know exactly how you play.","dq":"\"A continent settles it every four years, and you have to beat the best of it back to back.\"","leg":"Won with the national team, dated to the year it was won."},"Copa América Champion":{"td":"Champion of South America. The <b>Copa América</b> is the oldest international tournament in the game, played in front of crowds who have been arguing about it for a hundred years.","dq":"\"The oldest prize there is, and the one that carries the most history per match.\"","leg":"Won with the national team, dated to the year it was won."},};
   /*  HON_TIER IS GONE. It labelled the retired hero panel's eyebrow ("The individual
       summit", "Team honours", "League awards"), a THIRD grouping on top of the leg the
       data carries and the order HON_RANK sets. The grid states the leg per cell instead.  */
@@ -1956,7 +1956,20 @@
   var HON_KEY = {"Ballon d'Or":'ballon_dor',"World Cup Winner":'world_cup_winner',
                  "UCL Champion":'ucl_winner',"League Title":'league_champion',
                  "Player of the Season":'player_of_season',"Golden Boot":'golden_boot',
-                 "Top Assists":'top_assists'};
+                 "Top Assists":'top_assists',
+                 /*  CONTINENTAL HONOURS , item 15, 2026-09-14. THEY HAVE NO MARK YET AND THAT
+                     IS A KNOWN GAP RATHER THAN AN OVERSIGHT: `VVMarks.honour()` returns an
+                     empty string for an unknown key, and `honMark` above is already fail-soft
+                     by design , "no icon, and the case still names and explains the honour".
+                     So these two render as a named, explained cell with no trophy drawn.
+                     DRAWING THEM IS A SEPARATE, DEMO-FIRST TASK. Section C is explicit that a
+                     new mark is judged as a SET, every pair rasterised at the 16px the pill
+                     ships at and checked against the section marks too , that is a design
+                     pass, not a line of JSON, and shipping a guessed drawing would put two
+                     pictures of one idea on the platform, which is the drift this page's own
+                     comment above exists to record.  */
+                 "European Champion":'euro_winner',
+                 "Copa América Champion":'copa_winner'};
   function honMark(name){
     // fail-soft: no vv-marks.js, no icon, and the case still names and explains the honour
     if(!window.VVMarks || !VVMarks.honour) return '';
@@ -2032,7 +2045,11 @@
     new MutationObserver(function(){ requestAnimationFrame(cabtlFit); })
       .observe(sec, {attributes:true, attributeFilter:['class']});
   })();
-  var HON_RANK = ["Ballon d'Or","World Cup Winner","UCL Champion","League Title","Player of the Season","Golden Boot","Top Assists"];
+  /*  ORDER IS EVIDENTIAL WEIGHT, AND THE TWO CONTINENTAL TITLES SIT DIRECTLY BELOW THE WORLD
+      CUP AND ABOVE THE CLUB TROPHIES. That is the same ladder the AI prompt states: a team
+      honour won with your COUNTRY against a continent outranks one won with your club, and
+      both sit under the World Cup. It is a ranking of what an honour EVIDENCES, never a score.  */
+  var HON_RANK = ["Ballon d'Or","World Cup Winner","European Champion","Copa América Champion","UCL Champion","League Title","Player of the Season","Golden Boot","Top Assists"];
   /*  NOTHING IS PRE-SELECTED ANY MORE, and that is the point of the change. The old case
       always had one honour open because a hero panel cannot be empty; a grid of seven has
       no such problem, so every cell starts closed and any number may be opened at once.

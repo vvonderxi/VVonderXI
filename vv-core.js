@@ -2975,6 +2975,24 @@
     player_of_season:  { group:'Individual', wonBy:'player', label:'Player of the Season', tier:5 },
     golden_boot:       { group:'Individual', wonBy:'player', label:'Golden Boot',          tier:6 },
     top_assists:       { group:'Individual', wonBy:'player', label:'Top Assists',          tier:7 },
+    /*  ── CONTINENTAL HONOURS , item 15, 2026-09-14 ────────────────────────────────────────
+        EURO AND COPA AMERICA ONLY. UEFA and CONMEBOL are ~80% of the reachable cards and
+        their squads resolve almost completely; CAF, AFC and CONCACAF are twenty more
+        tournaments for a ceiling near 1,000 cards, FOUR of which provably yield zero because
+        not one player of that nationality holds a card here. See
+        docs/CONTINENTAL_HONOURS_SCOPE.md , that is a completeness-against-effort call with
+        numbers under it, and it is Lucas's to make.
+        `group:'Career'` PUTS THEM ON THE SAME SHELF AS THE WORLD CUP, WHICH IS THE RIGHT
+        SHELF AND THE WRONG WORD , this object already mixes two axes and says so above.
+        Nothing about the BEHAVIOUR is career-wide: the honour matches its own season like
+        every other type (its league_code is null, so the season clause passes it) and it
+        reaches later cards only through the CABINET, as-of and carrying its year. That is
+        the shape `29abbe9` retired the World Cup's real career leg in favour of.
+        `wonBy:'team'` IS LOAD-BEARING , a continental title is won by a squad, so the prompt
+        must not let it become a personal claim. It is the same evidential class as the World
+        Cup and a tier below it.  */
+    euro_winner:       { group:'Career',     wonBy:'team',   label:'European Champion',    tier:2.5 },
+    copa_winner:       { group:'Career',     wonBy:'team',   label:'Copa América Champion', tier:2.5 },
   };
   /*  THESE THREE GROUPS MIX TWO ORTHOGONAL AXES, AND IT IS WORTH KNOWING BEFORE ANYONE
       TRIES TO "TIDY" THEM. Team and Individual answer WHO won it; Career answers WHEN it
@@ -2993,6 +3011,8 @@
     player_of_season: 'The league’s finest over a full campaign.',
     golden_boot:      'The league’s top scorer. Nobody scored more.',
     top_assists:      'The league’s chief creator. Nobody made more.',
+    euro_winner:      'Champion of Europe with his country, the hardest tournament to win outside the World Cup.',
+    copa_winner:      'Champion of South America, the oldest international tournament in the game.',
   };
 
   // ── Team-keyed honours (league_champion + ucl_winner) ────────────────────
@@ -3246,6 +3266,8 @@
     player_of_season: 'Some seasons, one player stands apart. Not merely the top scorer or the finest creator, but the man who bent the whole campaign to his will, week after week, until his name was the only answer. This is the honour his peers and the watching game give to that season’s defining figure.',
     golden_boot:      'There is a purity to the Golden Boot. Not the most complete player, not the prettiest to watch, simply the one who did the thing everyone came to see, more than anyone else. To lead a league in goals across a whole season is to answer the same question every week, and never once flinch.',
     top_assists:      'The best assists are acts of generosity. To lead a league in them is to have seen the pass others missed, again and again, to have made teammates better and asked for none of the glory. The top creator is the player the goalscorers should thank first.',
+    euro_winner:      'A continent settles it every four years, and the winner has beaten the best of it back to back. The European Championship is the World Cup with no easy group, no distant qualifier, nothing but neighbours who know exactly how you play.',
+    copa_winner:      'The oldest international tournament there is, and the one that carries the most history per match. To win the Copa América is to win in front of crowds who have been arguing about it for a hundred years.',
   };
   // Drury-wrapped tally per honour type (#4) , poetic .tmeta line; {N} = live goals/assists count.
   /*  A TALLY, NOT A FLOURISH , 2026-09-11. Five of these used to return a fixed line with no
