@@ -1477,7 +1477,27 @@
       Section E: if these two are ever unified it goes Playbook-ward, never the other way.
       ONE COST, RECORDED SO IT IS A CHOICE: the five definitions used to be readable at a
       glance, stacked. Four of five are now behind a tap, which is what was asked for , but
-      it does make a dictionary page less scannable, and that is the trade.  */
+      THE PLAYBOOK IS A PAGE PEOPLE CONSULT RATHER THAN READ, and hiding four fifths of a
+      reference list is a real loss, not a notional one. A reader who wants to compare
+      Creation against Progression now has to tap twice and hold one in their head.
+      **THE REVERT IS ONE LINE AND IT IS IN THE SCRIPT, NOT IN THIS SHEET: in the tablist
+      wiring at the foot of the page, change `p.hidden=!on;` to `p.hidden=false;`.** All five
+      definitions then show at once, the tabs keep working, the selected vertex still
+      brightens its dot and label, and the page is scannable again. VERIFIED RENDERED, not
+      reasoned: 5 of 5 panels visible, the click still moves the selection, the dot still
+      grows to r=7.
+      **AND THE OBVIOUS REVERT DOES NOT WORK , I NAMED IT FIRST AND IT IS WRONG, SO IT IS
+      RECORDED RATHER THAN QUIETLY REPLACED.** Deleting `.pgrow[hidden]{display:none}` below
+      changes NOTHING: the browser's OWN stylesheet carries `[hidden]{display:none}`, so the
+      author rule is redundant and removing it leaves the UA rule hiding all four. Measured
+      by deleting the rule from the live sheet , visible panels stayed at 1.
+      **THE CSS-ONLY ROUTE ALSO SPLITS THE PAGE IN TWO FOR DIFFERENT READERS.**
+      `.pgrow[hidden]{display:block}` does show all five to a sighted reader, but the four
+      keep their `hidden` ATTRIBUTE, which removes them from the accessibility tree whatever
+      CSS says. Five panels on screen, one in the tree. That is why the revert belongs in the
+      script, where the attribute is set, and not here.
+      If this is disliked, revert it rather than defending it; the interaction was the ask
+      and the hiding is only how it was implemented.  */
   .pghint{text-align:center;font-family:'Archivo';font-weight:700;font-size:11px;
     letter-spacing:.1em;text-transform:uppercase;color:rgba(243,237,224,.42);margin:4px 0 0}
   body.light .pghint{color:#8a8276}

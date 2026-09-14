@@ -26,6 +26,33 @@ cards nobody had touched, one of them across a public band.
 | `before-rt.json` | rt for all 57,055 cards, the diff baseline |
 | `before-pool.json` | `position_pool` for all 57,055, because that is the column the write could plausibly disturb |
 | `batch0-result.json` | the canary run, kept whether it passed or failed |
+| `written.jsonl` | **THE LEDGER. Every row this backfill has written, one JSON object per line, append-only. TRACKED IN GIT , see below.** |
+| `clubseasons-done.json` | resume state: which club-seasons have been attempted, so a re-run does not redo them |
+| `batchN-stats.json` | one per batch, numbered from `batch-index.json` |
+
+**`written.jsonl` IS THE ROLLBACK AND IT MUST TRAVEL WITH THE REPO. DO NOT PRUNE IT AS
+GENERATED OUTPUT , 2026-09-14.** It is the only record of WHICH rows this job created, and
+therefore the only thing that can undo them: the three `before-*.json` captures are a rt
+BASELINE, they say what the scores were, and they cannot tell you which `player_positions`
+rows to delete. Reverting the backfill means replaying this file.
+- **IT LOOKS EXACTLY LIKE DISPOSABLE LOG OUTPUT, WHICH IS WHY THIS PARAGRAPH EXISTS.** A
+  `.jsonl` written by a script, in a migration directory, beside three files the README
+  itself says are deliberately untracked, is the obvious candidate for a tidy-up. It is not
+  one. `batch0-result.json` was already tracked for the same reason.
+- **IT IS ALSO THE RECONCILIATION.** Batch stats were overwritten by a fixed filename for
+  three batches and nobody noticed; the ledger is what proved nothing was lost, because
+  142 + 144 + 146 summed exactly to its 432 lines. **A per-row record survives a
+  summary-level mistake, and that is the argument for keeping it rather than a total.**
+- **IT CONTAINS EN DASHES AND THEY MUST NOT BE SWEPT.** Every row carries the SOURCE PAGE
+  TITLE verbatim, and Wikipedia writes seasons as `2010–11 S.L. Benfica season`. The house
+  no-dash rule governs OUR prose; these are a provenance record of a page that exists under
+  that exact name, and rewriting them would make the ledger disagree with the source it
+  cites. **The em/en-dash sweep in the launch plan must skip this file**, the same way the
+  regex character class in `compare.html` is tooling for the rule rather than a breach of it.
+- **SIZE IS NOT A REASON TO DROP IT.** It is under 100 KB at 432 rows, so the whole 20,063
+  card target would land near 4 MB , large for a repo file and small against losing the
+  ability to undo. If it ever needs to leave git, the replacement has to be something that
+  can still name every written row, not a count of them.
 
 **THE THREE CAPTURE FILES ARE ON DISK AND DELIBERATELY NOT IN GIT , 2.4 MB, and that follows
 the precedent of `positions_2526_2026-09-11` (2.7 MB, 2 files tracked) and
