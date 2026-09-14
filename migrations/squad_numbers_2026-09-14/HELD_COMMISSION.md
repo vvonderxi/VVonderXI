@@ -77,6 +77,36 @@ signature), and otherwise proceed. **Worth 289 cards on the 250 club-seasons see
 roughly four times that if the rate holds to 1,018. Changing it mid-backfill would put two
 sources of change in one write, which is the rule this job has followed since batch 0.
 
+## THREE ROUTES, NOT TWO , THE HELD SET DOES NOT SPLIT INTO "OURS" AND "FABLE'S"
+
+**THE OBVIOUS SPLIT IS A BINARY AND IT IS WRONG.** A held club-season is not either a research
+question or a parser bug; there is a third kind that is neither, and it is the one carrying a
+live risk. Route every reason to one of these three, and note that the third is the smallest
+by count and the most consequential.
+
+**ROUTE 1 , FABLE. ADJUDICATION, AND ONLY ADJUDICATION.** The multi-block pages: a page
+carrying two to five squad blocks, where something has to decide WHICH is the league season's
+roster. That is a judgement about football and about page structure, it cannot be made
+deterministically, and it is precisely what a model is for. Commission it as "pick the block,
+give your evidence", never as "read the numbers".
+
+**ROUTE 2 , THE MATCHER AND THE EXTRACTOR. OURS, AND MOSTLY MECHANICAL.** "No squad block" is
+a page shape the extractor does not know. The per-card holds inside otherwise-successful
+club-seasons , the no-row and ambiguous counts , are name-matching, and the strict three-clause
+rule is deliberately conservative there. Both are fixable in code, both are cheap, and neither
+needs an external source.
+
+**ROUTE 3 , THE ZERO-MATCH GUARD. NEITHER, AND IT MUST NOT BE HANDED TO EITHER.** A club-season
+that parsed cleanly and matched nothing. **It looks like Route 2 and it is not**, because the
+fix that Route 2 suggests , loosen the matcher until the cards fill , is the one action that
+destroys it. See the entry in this file below and the invariant in `CLAUDE.md` SS C. **Anything
+in this route is READ BY A HUMAN before anything is changed**, and the correct outcome is
+sometimes that the cards stay empty.
+
+**AND "NO PAGE" IS A FOURTH THING THAT IS NOT A ROUTE AT ALL** , the season article does not
+exist in any edition, the Portugal finding governs, and no amount of effort on our side or
+Fable's produces one. Those cards want a different source or no fill.
+
 ## WHAT IS GENUINELY FABLE'S
 
 **The multi-block cases: 19 club-seasons, 389 cards.** A page carrying two to four squad blocks
