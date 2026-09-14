@@ -757,6 +757,12 @@
   body.light .seasontrigger{color:var(--ink-soft)}
   body.light .seasontrigger:hover{color:#1C1B1A}
   /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with compare.html */
+  /*  Quiet by construction: it is a footnote to a list, not a warning. Same muted ink as
+      the panel's own secondary text, and it sits INSIDE the panel so it scrolls away with
+      the rows rather than persisting as a banner.  */
+  .seasonnote{padding:9px 13px 11px;font-family:'Inter',sans-serif;font-weight:400;font-size:11px;
+    line-height:1.5;color:rgba(243,237,224,0.42);border-top:1px solid rgba(243,237,224,0.07)}
+  body.light .seasonnote{color:#6d675e;border-top-color:rgba(28,27,26,0.09)}
   .seasoncollapse{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;border-top:1px solid rgba(255,255,255,0.06);padding:11px;cursor:pointer;transition:color .18s}
   .seasoncollapse:hover{color:rgba(243,237,224,0.9)}
   body.light .seasoncollapse{color:var(--ink-soft);border-top-color:rgba(0,0,0,0.06)}
@@ -1381,8 +1387,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260913p"></script>
-<script src="/vv-core.js?v=20260913p"></script>
+<script src="/vv-marks.js?v=20260914a"></script>
+<script src="/vv-core.js?v=20260914a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2158,11 +2164,34 @@
     if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
     attachHonoursBatch(rows).catch(function(){});   // honour pills for the season list fill in after (non-blocking; mutates rows in place)
   }
+  /*  ── THE MIXED-COLUMN LINE , ONE PER PANEL, NEVER ONE PER CARD ───────────────────────
+      The squad-number backfill fills roughly 43% of the 20,063 cards that have none, so a
+      season panel will show some rows with a number and some without. ON THE CARD FACE a
+      blank shield is fine , a reader meeting one card has no sample to compare it against,
+      and the badge keeps its club colours so it reads as a crest. IN A COLUMN OF FIVE TO
+      TWENTY ROWS it is different: the mix is the first thing visible, and an unexplained
+      mix reads as somebody stopping halfway rather than as a gap in the record.
+      IT SAYS THE RECORD IS INCOMPLETE, NOT THAT WE ARE , the same distinction the Data
+      Confidence panel makes with "what else was recorded for that season. NR means not
+      recorded." The second clause is the load-bearing one: it tells a reader the rows that
+      DO carry a number are better recorded, not luckier.
+      NO ERA IN THE COPY. "Before 2016" is true today and the backfill makes it false, and a
+      line that dates itself needs changing the moment the first batch lands.
+      ONLY WHEN A ROW IS ACTUALLY BLANK. On a complete panel it would be an apology for
+      nothing, and a caveat that shows when there is nothing to caveat teaches readers to
+      stop reading caveats.  */
   function seasonRowsHTML(){
-    return (SEASON_ROWS||[]).map(function(r,idx){
+    var rows=(SEASON_ROWS||[]);
+    var html=rows.map(function(r,idx){
       return rankRowHTML(r, idx, { cap:3, showRank:false, seasonLed:true, active:(r.card_id===SEASON_CARDID),
         onClick:function(d){ return 'switchSeason('+(d.card_id==null?'':d.card_id)+')'; } });
     }).join('');
+    var anyBlank=rows.some(function(r){ return r.shirt_number==null || r.shirt_number===''; });
+    if(anyBlank && rows.length>1){
+      html+='<div class="seasonnote">Squad numbers are not recorded for every season. '
+          + 'A blank shield means the number is missing from the record, not that the player had none.</div>';
+    }
+    return html;
   }
   function seasonPanelOpen(){
     if(!SEASON_ROWS) return;
