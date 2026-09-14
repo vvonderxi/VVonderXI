@@ -61,3 +61,57 @@ immediately and the matview only on refresh, and SS C records that the refresh c
 from Claude Code , it is Lucas's lane in the Supabase SQL editor:
 
     set statement_timeout = '600s'; refresh materialized view player_card_mv;
+
+
+---
+
+# BATCH 1 , WRITTEN 2026-09-14. 142 ROWS, ZERO rt MOVERS.
+
+**THE REAL YIELD IS 14.8%, AND IT IS A FLOOR RATHER THAN A HEADLINE.** 964 cards in scope
+across 50 club-seasons, 143 matched, 142 written (one already had a row). The last measured
+figure before this was 43.4%, from the 2016/17 pilot.
+
+**THE DROP IS THE BATCH ORDER WORKING, NOT THE METHOD FAILING.** Batch 1 is worst-covered
+first: **every club-season in it is Portuguese**, and yesterday's link-and-category check
+already established that `pt.wikipedia` carries club-season pages for the big clubs only ,
+`Primeira Liga de 2010-11` links to three, the category holds three. The skip list says it in
+one column: **Academica, Beira-Mar, Guimaraes, Maritimo, Naval, Olhanense, Pacos Ferreira,
+Portimonense, Rio Ave, Uniao de Leiria, Vitoria Setubal , all "no page".** 20 of 50
+club-seasons resolved, 12 parsed.
+
+**SO 14.8% IS THE NUMBER FOR THE WORST LEAGUE ON THE LIST AND NOT AN ESTIMATE OF THE JOB.**
+Turkey measured 66.7% on tr.wikipedia and the big-five leagues have near-total en coverage.
+**Quoting 14.8% as the project figure would be as wrong as quoting 43.4% was**, in the other
+direction , and the honest position is that neither is known until the leagues with coverage
+have run.
+
+## WHAT WAS WRITTEN
+
+| | |
+|---|---|
+| rows inserted | **142**, all `PRT` |
+| `player_positions` | 43,659 -> **43,801** |
+| rows with a NULL position | 0 -> **142** , the new shape, as designed |
+| **rt movers, FULL read of 57,055** | **0** |
+| held , no row | 78 |
+| held , ambiguous | 21 |
+| held , many blocks | Sporting CP 2010/11, for adjudication |
+| held , duplicate numbers | 0 in this batch |
+
+The full diff was run twice and agreed both times: `mode full compared 57055 MOVERS 0`.
+
+## THE DIFF POLICY FROM BATCH 2
+
+**Full on batch 1, spot after**, because batch 0 measured the row shape as inert across the
+whole database and the residual risk is a WRONG NUMBER, which an rt diff cannot see at all.
+
+**THE SPOT SET IS NOT A SAMPLE, IT IS THE THREE PLACES A RIPPLE COULD COME FROM** , see
+`scripts/squadnum/diff-rt.js`: every card written in the batch; their partition neighbours,
+because the engine's percentiles partition on `COALESCE(pool, pos)`; and **a FIXED global
+control of 1,000 cards** spread across every league and season, which is the only one of the
+three that can catch a route nobody has thought of. The control is fixed rather than re-drawn,
+because a sample that changes every run can hide a persistent mover by never looking twice.
+
+**THE TRIGGER IS ONE MOVER.** Not a threshold and not a percentage: batch 0 established the
+expected value is exactly zero, so any movement means the model of this write is wrong and the
+next read is the full 57,055. **A spot check without a trigger is a ritual.**
