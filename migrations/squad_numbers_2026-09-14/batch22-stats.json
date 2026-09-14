@@ -1,0 +1,24 @@
+{
+  "batch": 22,
+  "at": "2026-09-14T18:04:12.658Z",
+  "clubSeasons": 121,
+  "resolved": 121,
+  "parsed": 117,
+  "cards": 2406,
+  "matched": 1951,
+  "held": {
+    "norow": 319,
+    "ambiguous": 56
+  },
+  "written": 1935,
+  "skipped": [
+    "TR|2014|Başakşehir , most numbers repeat, extraction suspect",
+    "TR|2014|Kasımpaşa , most numbers repeat, extraction suspect",
+    "TR|2014|Kayseri Erciyesspor , most numbers repeat, extraction suspect",
+    "TR|2015|Kayserispor , most numbers repeat, extraction suspect",
+    "LL|2011|Athletic Club , parsed, zero cards matched",
+    "LL|2012|Athletic Club , parsed, zero cards matched",
+    "BL|2012|SpVgg Greuther Fürth , parsed, zero cards matched"
+  ],
+  "skippedCards": 142
+}

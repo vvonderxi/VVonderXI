@@ -10,7 +10,7 @@ const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { resolve } = require('./resolve.js');
 const { gate, reviewFlag } = require('./resolve-guard.js');
-const { extract } = require('./extract.js');
+const { extract, looksLikeNames } = require('./extract.js');
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 const UA = { 'User-Agent': 'VVonderXI-squadnum/1.0 (hello@vvonderxi.com)' };
 const DIR = path.join(__dirname, '..', '..', 'migrations', 'squad_numbers_2026-09-14');
@@ -70,8 +70,25 @@ async function targets() {
   const done = fs.existsSync(path.join(DIR, 'clubseasons-done.json'))
     ? new Set(JSON.parse(fs.readFileSync(path.join(DIR, 'clubseasons-done.json'), 'utf8'))) : new Set();
   const all = await targets();
-  const batch = all.filter(([k]) => !done.has(k)).slice(0, SIZE);
-  console.log((APPLY ? 'BATCH' : 'DRY RUN') + ': ' + batch.length + ' club-seasons of ' + all.length + ' remaining\n');
+  /*  ── RE-PROCESS A HELD REASON , `--redo=<reason substring>` ──────────────────────────
+      A club-season refused by a guard that later turns out to be WRONG is not reachable by
+      a normal run: it sits in `clubseasons-done.json` and is filtered out forever. Rather
+      than editing that ledger by hand , which would lose the record that it was ever held ,
+      this reads `held.jsonl`, takes the club-seasons whose reason matches, and runs only
+      those. BOTH LEDGERS STAY APPEND-ONLY, so the history reads correctly afterwards: the
+      club-season was held for a reason, the reason was withdrawn, and the rows arrived on a
+      later batch.  */
+  const REDO = (process.argv.find((a) => a.startsWith('--redo=')) || '').split('=')[1];
+  let batch;
+  if (REDO) {
+    const held = fs.readFileSync(path.join(DIR, 'held.jsonl'), 'utf8').trim().split('\n').map(JSON.parse);
+    const want = new Set(held.filter((h) => h.reason.includes(REDO)).map((h) => h.key));
+    batch = all.filter(([k]) => want.has(k)).slice(0, SIZE);
+    console.log('REDO "' + REDO + '": ' + want.size + ' club-seasons held under it, running ' + batch.length + '\n');
+  } else {
+    batch = all.filter(([k]) => !done.has(k)).slice(0, SIZE);
+  }
+  if (!REDO) console.log((APPLY ? 'BATCH' : 'DRY RUN') + ': ' + batch.length + ' club-seasons of ' + all.length + ' remaining\n');
 
   /*  SKIPS ARE STRUCTURED AND CARRY THEIR CARD COUNT , 2026-09-14. They used to be a
       sentence per club-season, which reads fine in a terminal and cannot be counted: it
@@ -107,16 +124,37 @@ async function targets() {
         write, so a surprise in the diff would have two possible causes instead of one.  */
     if (blocks.length > 1) { skipSeason(key, blocks.length + ' blocks, held for adjudication', cards.length, r.title, r.wiki); continue; }
     const rows = blocks[0].rows;
+    /*  ── WHAT THE OLD DUPLICATE GUARD GOT WRONG , REPLACED 2026-09-14 ──────────────────
+        IT REFUSED ANY BLOCK WHOSE NUMBERS REPEATED, AND THAT IS THREE MISTAKES AT ONCE.
+        (1) A REPEATED NUMBER ON A SEASON ROSTER IS REAL DATA. A shirt freed in January is
+            reissued, so two genuine squad members share it. All 14 sampled cases were this
+            shape , Trabzonspor 2011 #28 Celustka and Adin, Besiktas 2012 #7 Dentinho and
+            Quaresma , and NONE was a parser fault. The guard was refusing correct pages.
+        (2) THE NUMBER IS NOT WHAT THE MATCH CONSULTS, SO A COLLISION CANNOT MISLEAD IT.
+            `matchOne` filters rows by SURNAME, then by forename, and requires exactly one
+            hit; it reads `.no` only AFTER a unique name match. Two rows sharing #21 under
+            different names resolve independently and both are correct. The guard was
+            protecting a column the matcher never uses to decide anything.
+        (3) IT DID NOT CATCH THE THING IT EXISTED FOR. The shape worth refusing is a parser
+            that has wandered into a STATISTICS table , the Heerenveen top-scorers block,
+            where the "numbers" are goal tallies. Those are DISTINCT by construction, so the
+            duplicate test passes them. It refused the safe case and admitted the dangerous
+            one.
+        WHAT REPLACES IT IS A TEST OF THE EXTRACTION, NOT OF THE NUMBERS: names that do not
+        read as names, or MOST of the distinct numbers repeating, which is what a fixture or
+        results table looks like. A handful of repeats among plausible names is a squad.
+        THE REMAINING EXPOSURE IS NAMED RATHER THAN IMPLIED: a stats table whose rows are
+        distinct and name-like still passes, which is exactly the Heerenveen case. The guard
+        for that one is the ZERO-MATCH signal, not this test , see CLAUDE.md SS C.  */
     const nums = rows.map((x) => x.no);
-    if (nums.length - new Set(nums).size) {
-      /*  THE DUPLICATE ITSELF IS RECORDED, NOT JUST THE FACT OF ONE. A repeated number on a
-          SEASON roster can be entirely real , a shirt freed in January is reissued , so this
-          skip may be refusing a correct page. Carrying which numbers repeat, and who holds
-          them, is what lets the second pass tell that shape from a parser that has wandered
-          into a fixture table.  */
+    const distinct = new Set(nums).size;
+    const repeated = nums.length - distinct;
+    const namesOK = looksLikeNames(rows.map((x) => x.name));
+    if (!namesOK || (distinct > 0 && repeated / distinct > 0.5)) {
       const seen = {}, dupes = [];
       rows.forEach((x) => { if (seen[x.no]) dupes.push({ no: x.no, names: [seen[x.no], x.name] }); else seen[x.no] = x.name; });
-      skipSeason(key, 'duplicate numbers in the block', cards.length, r.title, r.wiki);
+      skipSeason(key, namesOK ? 'most numbers repeat, extraction suspect' : 'rows do not read as names',
+                 cards.length, r.title, r.wiki);
       heldLog[heldLog.length - 1].dupes = dupes;
       heldLog[heldLog.length - 1].rosterSize = rows.length;
       continue;
