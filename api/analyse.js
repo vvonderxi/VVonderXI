@@ -724,10 +724,25 @@ module.exports = async (req, res) => {
         it. This writes the annotation and leaves the returned verdict untouched.
         IT CARRIES CARD IDS, not "A"/"B", so the swap cannot invert its meaning.  */
     const stored = Object.assign({}, canonical, { _winner_check: winnerCheck });
+    /*  A ROW WE CANNOT STAMP IS A ROW WE CAN NEVER SERVE, SO DO NOT WRITE ONE , 2026-09-15.
+        The read treats `rt_a == null` as UNSTAMPED and misses on it, by design, so a row
+        written with a null rt is unreadable BY CONSTRUCTION: it costs a write, occupies the
+        pair_key, and regenerates on every single view of that pair for ever. The old line
+        wrote it anyway and annotated the fact , "null rt if caller sent none" , which
+        described the behaviour accurately and did not notice it was self-defeating.
+        ZERO ROWS ARE IN THAT STATE TODAY and none can be from the live client: compare.html
+        sends `+CMP_A.vv||0`, always a finite number. It is reachable only by a caller that
+        omits rtA/rtB entirely, and `Number(null)` is 0 rather than NaN, so even an explicit
+        null arrives as a score of zero rather than as an absence , the two branches the
+        server thinks it has are not distinguishable from outside.
+        THE 0 SENTINEL IS SAFE AND IS NOT WHAT THIS GUARDS: rt runs 11 to 97, so 0 cannot
+        collide with a real score, and it still invalidates correctly the moment a real one
+        arrives. What is fixed here is only the write that could never be read.  */
+    const stampable = rtLo != null && rtHi != null;
     try {
-      await sb.from('verdict_cache').upsert({
+      if (stampable) await sb.from('verdict_cache').upsert({
         pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem),   // stamps (null rt if caller sent none)
+        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem),   // stamps
         verdict: stored, winner_card_id: winnerId, model: MODEL
       }, { onConflict: 'pair_key', ignoreDuplicates: false });
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
