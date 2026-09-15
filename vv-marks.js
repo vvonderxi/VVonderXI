@@ -88,6 +88,24 @@
     'player_of_season':  '<g fill="currentColor"> <path d="M12 1.8 15.1 8.5 22.4 9.4 17 14.4 18.5 21.6 12 18 5.5 21.6 7 14.4 1.6 9.4 8.9 8.5Z"/></g>',
     'golden_boot':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M4.2 6.2h4.4v5.1c1.9.3 3.6 1 5.2 2 1.9 1.2 4.2 1.9 6.8 2.1v3.4H4.2Zm2.6 8.9v1.6h2.1v-1.6Z"/></g>',
     'top_assists':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.2 1.6a6.6 6.6 0 0 0-2.6 12.7v6.1l3.4 2 3.4-2v-2.4h-2.4v-2.6h2.4v-1.1A6.6 6.6 0 0 0 9.2 1.6Zm0 3.2a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z"/></g>',
+    /*  ── CONTINENTAL TROPHIES , item 15, 2026-09-15 ──────────────────────────────────────
+        BOTH ARE TEAM HONOURS, SO BOTH OBEY THE SET'S DESIGN RULE: footed and vertical, where
+        individual awards are unfooted objects. That rule is what tells a reader at a glance
+        whether a trophy was won by a squad or by a person, and it is measured rather than
+        asserted , see the Playbook comment on the display case.
+        THEY ARE DRAWN AGAINST THE THREE TEAM MARKS THAT ALREADY EXIST, NOT IN ISOLATION,
+        because the collision that matters is between SILHOUETTES at the 16px a pill ships at:
+          world_cup_winner  a GLOBE, ring with a hole, on a tapered stem and a wide base
+          ucl_winner        BIG SIDE EARS, the two outsized handles are the whole signature
+          league_champion   a WIDE SHALLOW BOWL over a boxed plinth with a window
+        So the two new ones take the two silhouettes that family leaves free:
+          euro_winner       a TALL SLIM amphora, small handles high on the shoulder, round foot
+          copa_winner       a SMALL WIDE bowl over a TALL STEPPED plinth , base-dominant, the
+                            inverse of the Euro's body-dominant shape
+        AT 16px THE DISCRIMINATOR IS THE BODY-TO-BASE RATIO, which survives rasterisation when
+        handle detail does not. That is why the pair differ in proportion and not in ornament.  */
+    'euro_winner':       '<g fill="currentColor"> <path d="M10.4 2.2h3.2v11.4a1.6 1.6 0 0 1-3.2 0Z"/> <path fill-rule="evenodd" d="M10.5 3H9.4a2.5 2.5 0 0 0 0 5h1.1V6.6H9.4a1.1 1.1 0 0 1 0-2.2h1.1Z"/> <path fill-rule="evenodd" d="M13.5 3h1.1a2.5 2.5 0 0 1 0 5h-1.1V6.6h1.1a1.1 1.1 0 0 0 0-2.2h-1.1Z"/> <path d="M11.3 15.2h1.4v5.1h-1.4Z"/> <path d="M9.8 20.3h4.4v1.5H9.8Z"/></g>',
+    'copa_winner':       '<g fill="currentColor"> <path d="M9.2 2.4h5.6v2.1a2.8 2.8 0 0 1-5.6 0Z"/> <path d="M11.4 7.6h1.2v2.2h-1.2Z"/> <path fill-rule="evenodd" d="M12 9.4 19.2 22H4.8Zm0 4.6L8.9 19.9h6.2Z"/></g>',
   };
 
   // Playbook section marks. Keys are the ids in playbook.html.
