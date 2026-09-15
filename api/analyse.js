@@ -511,6 +511,131 @@ const verdictVersionFor = (rev, judge, custom) => {
 };
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
 
+/*  ── THE RATE LIMIT , 30 NEW GENERATIONS PER HOUR PER IP, 2 CONCURRENT (built 2026-09-15) ──
+    THE HONEST LIMIT, BESIDE THE ALLOWLIST'S. The origin allowlist stops another WEBSITE
+    spending our credit from its visitors' browsers. THIS stops a SCRIPTED client running up
+    the bill from one address. It does NOT stop a DISTRIBUTED one , anybody with a pool of
+    addresses gets 30 an hour from each, and no per-IP rule can see that. Detecting
+    distributed abuse needs a different instrument entirely (spend alerting at the provider),
+    and none is in place.
+    AND THE CACHE IS STILL DOING MOST OF THE DEFENCE. This check runs AFTER the cache lookup,
+    so a repeat pair or a warm card is never counted and never billed. The limiter only has
+    to bound what is genuinely new, which at measured traffic is 2.6 verdicts and 3.7 notes
+    a day.
+
+    WHERE 30 COMES FROM , IT IS A MEASUREMENT, NOT A ROUND NUMBER. The busiest 60 minutes in
+    the platform's whole history is 5 verdict generations and 9 notes generations, ACROSS ALL
+    USERS. A single session's maximum is 7 comparisons. 30 per IP per hour is therefore about
+    six times the busiest hour the platform has ever had, from one address.
+
+    WHAT WOULD FALSIFY IT , SO THE NEXT PERSON RAISES IT ON EVIDENCE RATHER THAN ON A
+    COMPLAINT. A refusal is written into this same table as kind 'refused:hourly' or
+    'refused:concurrent', so the check is a query and not a log hunt:
+      (1) THE REAL-USER SIGNATURE: an IP that was refused in an hour where it ALSO generated
+          successfully several times, i.e. a browsing session that walked into the wall rather
+          than a script that hammered it. One of these is enough to raise the cap.
+      (2) HEADROOM GONE: any IP whose successful generations in a single hour reach 10 , a
+          third of the cap. At that point 30 is no longer six times the observed peak and the
+          margin this number was chosen for has evaporated.
+      (3) SHARED EGRESS: a launch behind school, office or carrier NAT puts many real people
+          on one address, which is per-IP's known failure mode. The tell is a single IP with
+          many DISTINCT pair_keys rather than repeats.
+    The query, and it needs no new tooling:
+      select ip, date_trunc('hour', started_at) h,
+             count(*) filter (where kind in ('verdict','notes')) AS ok,
+             count(*) filter (where kind like 'refused%') AS refused
+      from api_rate_events group by 1,2 having count(*) filter (where kind like 'refused%') > 0;
+    IF THAT RETURNS A ROW WITH BOTH `ok` AND `refused` NON-ZERO, 30 IS TOO LOW. Raise it and
+    change this comment in the same commit.
+
+    IT FAILS OPEN, DELIBERATELY AND LOUDLY. If the ledger is unreachable the request proceeds,
+    because a Supabase blip must not take the site down for a counter that ticks three times a
+    day. CLAUDE.md's own rule applies though , fail-safe is a property of the CONSEQUENCE and
+    never evidence about the guard , so every fail-open logs at error level. A silent
+    fail-open is a limiter that has stopped working and nobody has noticed.  */
+const RL_PER_HOUR   = 30;
+const RL_CONCURRENT = 2;
+const RL_STALE_MIN  = 5;    // a slot older than this is a dead function, not a live request
+
+/*  x-forwarded-for is a LIST and the client's address is the FIRST entry; everything after it
+    is proxies. Taking the last, or the whole string, keys the limit on Vercel's edge rather
+    than on the caller, which would put every visitor in one bucket.  */
+function clientIP(req) {
+  const h = req.headers || {};
+  const xff = h['x-forwarded-for'];
+  if (typeof xff === 'string' && xff.length) return xff.split(',')[0].trim();
+  return h['x-real-ip'] || h['x-vercel-forwarded-for'] || null;
+}
+
+let _rlClient = null;
+function rlClient() {
+  if (_rlClient) return _rlClient;
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return null;
+  const { createClient } = require('@supabase/supabase-js');
+  _rlClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  return _rlClient;
+}
+
+/*  Returns { ok:true, id } to proceed, or { ok:false, reason, retryAfter } to refuse.
+    `id` is the ledger row to close in a finally , see rlEnd.  */
+async function rlBegin(ip, kind) {
+  const sb = rlClient();
+  if (!sb || !ip) { console.error('[vv] RATE LIMIT FAILED OPEN , ' + (!ip ? 'no client ip' : 'no service key')); return { ok: true, id: null }; }
+  try {
+    const hourAgo  = new Date(Date.now() - 3600e3).toISOString();
+    const staleAgo = new Date(Date.now() - RL_STALE_MIN * 60e3).toISOString();
+    /*  BOTH COUNTS EXCLUDE REFUSAL ROWS. A refused request cost nothing, so counting it
+        toward the cap would punish a user for having been refused once.  */
+    const [hourly, inflight] = await Promise.all([
+      sb.from('api_rate_events').select('id', { count: 'exact', head: true })
+        .eq('ip', ip).in('kind', ['verdict', 'notes']).gte('started_at', hourAgo),
+      sb.from('api_rate_events').select('id', { count: 'exact', head: true })
+        .eq('ip', ip).in('kind', ['verdict', 'notes']).is('finished_at', null).gte('started_at', staleAgo)
+    ]);
+    if (hourly.error || inflight.error) {
+      console.error('[vv] RATE LIMIT FAILED OPEN , ledger read error:', (hourly.error || inflight.error).message);
+      return { ok: true, id: null };
+    }
+    if (hourly.count >= RL_PER_HOUR) {
+      await sb.from('api_rate_events').insert({ ip, kind: 'refused:hourly', finished_at: new Date().toISOString() });
+      return { ok: false, reason: 'hourly', retryAfter: 600 };
+    }
+    if (inflight.count >= RL_CONCURRENT) {
+      await sb.from('api_rate_events').insert({ ip, kind: 'refused:concurrent', finished_at: new Date().toISOString() });
+      /*  A SHORT RETRY, BECAUSE THIS ONE CAN CATCH A REAL PERSON. Two tabs open on one
+          connection is an ordinary thing to do, and a generation takes roughly 26 seconds, so
+          a third tab is refused for at most that long. 30s is longer than the wait it is
+          protecting, which is what makes a retry actually succeed.  */
+      return { ok: false, reason: 'concurrent', retryAfter: 30 };
+    }
+    const { data, error } = await sb.from('api_rate_events').insert({ ip, kind }).select('id').single();
+    if (error) { console.error('[vv] RATE LIMIT FAILED OPEN , ledger write error:', error.message); return { ok: true, id: null }; }
+    /*  Opportunistic retention, ~5% of calls: nothing here is needed beyond the sliding
+        window, and a per-call delete would cost more than the limit saves.  */
+    if (Math.random() < 0.05) {
+      sb.from('api_rate_events').delete().lt('started_at', new Date(Date.now() - 86400e3).toISOString())
+        .then(() => {}, () => {});
+    }
+    return { ok: true, id: data.id };
+  } catch (e) {
+    console.error('[vv] RATE LIMIT FAILED OPEN , threw:', e && e.message);
+    return { ok: true, id: null };
+  }
+}
+
+/*  CLOSING THE SLOT IS WHAT MAKES CONCURRENCY WORK, so it runs from a finally on EVERY exit
+    path , success, upstream error, parse failure. A slot left open blocks the caller for
+    RL_STALE_MIN minutes, which is the one way this limiter can break someone who did nothing
+    wrong. The staleness floor is the backstop for the case where the function dies before
+    reaching the finally at all.  */
+async function rlEnd(id) {
+  if (!id) return;
+  const sb = rlClient();
+  if (!sb) return;
+  try { await sb.from('api_rate_events').update({ finished_at: new Date().toISOString() }).eq('id', id); }
+  catch (e) { console.error('[vv] rate limit: slot not closed, it will expire in ' + RL_STALE_MIN + 'min:', e && e.message); }
+}
+
 module.exports = async (req, res) => {
   /*  Fire the model probe WITHOUT awaiting it. It must never add latency to a
       request, and its answer is for the LOG, not for this response , the
@@ -693,133 +818,159 @@ module.exports = async (req, res) => {
 
       const notesMessages = [{ role: 'user', content: 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2) }];
 
-      const nResp = await fetch('https://api.anthropic.com/v1/messages', {
+      /*  THE LIMIT IS TAKEN HERE, AFTER THE CACHE LOOKUP, AND THAT PLACEMENT IS THE DESIGN.
+          A cache hit has already returned above, so it is never counted and never billed , the
+          limiter only bounds what is genuinely new. The slot is closed from a finally so that an
+          upstream error or a parse failure frees it exactly like a success does.  */
+      const _rl = await rlBegin(clientIP(req), 'notes');
+      if (!_rl.ok) {
+        res.setHeader('Retry-After', String(_rl.retryAfter));
+        return res.status(429).json({ error: _rl.reason === 'concurrent'
+          ? 'too many generations in flight from this connection, try again shortly'
+          : 'hourly generation limit reached for this connection' });
+      }
+      try {
+        const nResp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+          // system sent as a cacheable block: it is byte-identical on every notes
+          // call and well over the 1024-token minimum, so reads bill at ~0.1x.
+          body: JSON.stringify({
+            model: MODEL, max_tokens: 1500, messages: notesMessages,
+            system: [{ type: 'text', text: NOTES_SYSTEM, cache_control: { type: 'ephemeral' } }]
+          })
+        });
+        const nData = await nResp.json();
+        if (!nResp.ok) {
+          const nMsg = (nData.error && nData.error.message) || 'Anthropic API error';
+          if (isModelMissing(nResp.status, nMsg)) {
+            console.error('[vv] notes generate failed because MODEL "' + MODEL + '" is not served.');
+            return res.status(503).json({ error: 'model_not_served', model: MODEL });
+          }
+          console.error('[vv] notes upstream ' + nResp.status + ':', nMsg);   // logged, not echoed , see the catch at the end
+          return res.status(nResp.status).json({ error: 'upstream error' });
+        }
+
+        let parsed = null;
+        try {
+          let t = (nData && nData.content && nData.content[0] && nData.content[0].text) || '';
+          t = t.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+          parsed = JSON.parse(t);
+        } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
+        if (!parsed || typeof parsed.glance !== 'string' || typeof parsed.scout !== 'string' || !Array.isArray(parsed.notes) || !parsed.notes.length) {
+          return res.status(502).json({ error: 'notes shape invalid' });
+        }
+        if (canCache) {
+          try {
+            await nsb.from('notes_cache').upsert({
+              card_id: cid, notes: parsed, model: MODEL,
+              rt: nRt, stats_hash: nHash, cache_version: NOTES_VERSION   // stamps
+            }, { onConflict: 'card_id', ignoreDuplicates: false });
+          } catch (e) { /* non-fatal */ }
+        }
+        return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
+      } finally { await rlEnd(_rl.id); }
+    }
+
+    /*  THE LIMIT IS TAKEN HERE, AFTER THE CACHE LOOKUP, AND THAT PLACEMENT IS THE DESIGN.
+        A cache hit has already returned above, so it is never counted and never billed , the
+        limiter only bounds what is genuinely new. The slot is closed from a finally so that an
+        upstream error or a parse failure frees it exactly like a success does.  */
+    const _rl = await rlBegin(clientIP(req), 'verdict');
+    if (!_rl.ok) {
+      res.setHeader('Retry-After', String(_rl.retryAfter));
+      return res.status(429).json({ error: _rl.reason === 'concurrent'
+        ? 'too many generations in flight from this connection, try again shortly'
+        : 'hourly generation limit reached for this connection' });
+    }
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        // system sent as a cacheable block: it is byte-identical on every notes
-        // call and well over the 1024-token minimum, so reads bill at ~0.1x.
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
         body: JSON.stringify({
-          model: MODEL, max_tokens: 1500, messages: notesMessages,
-          system: [{ type: 'text', text: NOTES_SYSTEM, cache_control: { type: 'ephemeral' } }]
+          model: MODEL,
+          max_tokens,
+          // ~1,508-token system prompt, identical on every verdict call -> cache it.
+          // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
+          // below the 1024-token minimum simply won't cache; that is silent + safe.
+          system: [{ type: 'text', text: verdictSystemFor(aiJudge, customSystem), cache_control: { type: 'ephemeral' } }],
+          messages
         })
       });
-      const nData = await nResp.json();
-      if (!nResp.ok) {
-        const nMsg = (nData.error && nData.error.message) || 'Anthropic API error';
-        if (isModelMissing(nResp.status, nMsg)) {
-          console.error('[vv] notes generate failed because MODEL "' + MODEL + '" is not served.');
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const vMsg = data.error?.message || 'Anthropic API error';
+        if (isModelMissing(response.status, vMsg)) {
+          console.error('[vv] verdict generate failed because MODEL "' + MODEL + '" is not served.');
           return res.status(503).json({ error: 'model_not_served', model: MODEL });
         }
-        console.error('[vv] notes upstream ' + nResp.status + ':', nMsg);   // logged, not echoed , see the catch at the end
-        return res.status(nResp.status).json({ error: 'upstream error' });
+        console.error('[vv] verdict upstream ' + response.status + ':', vMsg);   // logged, not echoed
+        return res.status(response.status).json({ error: 'upstream error' });
       }
 
-      let parsed = null;
+      // Generic path (no card ids): behave exactly as before.
+      if (!cacheable) return res.json(data);
+
+      // Cacheable path: parse the verdict JSON, cache it (awaited, Hobby-safe), return normalized.
+      let verdict = null;
       try {
-        let t = (nData && nData.content && nData.content[0] && nData.content[0].text) || '';
-        t = t.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-        parsed = JSON.parse(t);
-      } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
-      if (!parsed || typeof parsed.glance !== 'string' || typeof parsed.scout !== 'string' || !Array.isArray(parsed.notes) || !parsed.notes.length) {
-        return res.status(502).json({ error: 'notes shape invalid' });
+        let text = (data && data.content && data.content[0] && data.content[0].text) || '';
+        text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+        verdict = JSON.parse(text);
+      } catch (e) {
+        return res.json(data);   // couldn't parse -> return raw, do not cache garbage
       }
-      if (canCache) {
-        try {
-          await nsb.from('notes_cache').upsert({
-            card_id: cid, notes: parsed, model: MODEL,
-            rt: nRt, stats_hash: nHash, cache_version: NOTES_VERSION   // stamps
-          }, { onConflict: 'card_id', ignoreDuplicates: false });
-        } catch (e) { /* non-fatal */ }
-      }
-      return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
-    }
+      const winnerId = resolveWinnerId({ aiJudge: aiJudge, modelWinner: verdict && verdict.winner,
+                                         winnerCardId: winnerCardId, idA: cardIdA, idB: cardIdB });
+      /*  RUN THE CHECK BEFORE `winner` IS DELETED , it is the whole input. Recorded on the row
+          and read by nothing: no override, no retry, no UI difference. See checkProseWinner.  */
+      const winnerCheck = checkProseWinner({ who: verdict && verdict.who, surnameA: surnameA, surnameB: surnameB,
+                                             modelWinner: verdict && verdict.winner, idA: cardIdA, idB: cardIdB });
+      if (verdict && 'winner' in verdict) delete verdict.winner;   // internal key, never rendered, never cached
+      const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
+      /*  STORED INSIDE THE EXISTING jsonb, NOT AS A NEW COLUMN , no migration, and it travels
+          with the row it describes. Underscore-prefixed because it is OUR annotation and not
+          model output. Query later with:
+            select verdict->'_winner_check' from verdict_cache where verdict ? '_winner_check'
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens,
-        // ~1,508-token system prompt, identical on every verdict call -> cache it.
-        // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
-        // below the 1024-token minimum simply won't cache; that is silent + safe.
-        system: [{ type: 'text', text: verdictSystemFor(aiJudge, customSystem), cache_control: { type: 'ephemeral' } }],
-        messages
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      const vMsg = data.error?.message || 'Anthropic API error';
-      if (isModelMissing(response.status, vMsg)) {
-        console.error('[vv] verdict generate failed because MODEL "' + MODEL + '" is not served.');
-        return res.status(503).json({ error: 'model_not_served', model: MODEL });
-      }
-      console.error('[vv] verdict upstream ' + response.status + ':', vMsg);   // logged, not echoed
-      return res.status(response.status).json({ error: 'upstream error' });
-    }
-
-    // Generic path (no card ids): behave exactly as before.
-    if (!cacheable) return res.json(data);
-
-    // Cacheable path: parse the verdict JSON, cache it (awaited, Hobby-safe), return normalized.
-    let verdict = null;
-    try {
-      let text = (data && data.content && data.content[0] && data.content[0].text) || '';
-      text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-      verdict = JSON.parse(text);
-    } catch (e) {
-      return res.json(data);   // couldn't parse -> return raw, do not cache garbage
-    }
-    const winnerId = resolveWinnerId({ aiJudge: aiJudge, modelWinner: verdict && verdict.winner,
-                                       winnerCardId: winnerCardId, idA: cardIdA, idB: cardIdB });
-    /*  RUN THE CHECK BEFORE `winner` IS DELETED , it is the whole input. Recorded on the row
-        and read by nothing: no override, no retry, no UI difference. See checkProseWinner.  */
-    const winnerCheck = checkProseWinner({ who: verdict && verdict.who, surnameA: surnameA, surnameB: surnameB,
-                                           modelWinner: verdict && verdict.winner, idA: cardIdA, idB: cardIdB });
-    if (verdict && 'winner' in verdict) delete verdict.winner;   // internal key, never rendered, never cached
-    const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
-    /*  STORED INSIDE THE EXISTING jsonb, NOT AS A NEW COLUMN , no migration, and it travels
-        with the row it describes. Underscore-prefixed because it is OUR annotation and not
-        model output. Query later with:
-          select verdict->'_winner_check' from verdict_cache where verdict ? '_winner_check'
-
-        ON A COPY, SO THE RESPONSE IS BYTE-IDENTICAL TO BEFORE. Mutating `canonical` would
-        reach the client whenever the pair is NOT swapped, because `canonical === verdict`
-        there, and NOT reach it when it is , swapVerdict builds a new object from an explicit
-        key list. An annotation that is present or absent depending on the lo/hi order of two
-        card ids is the kind of difference that is invisible until something starts reading
-        it. This writes the annotation and leaves the returned verdict untouched.
-        IT CARRIES CARD IDS, not "A"/"B", so the swap cannot invert its meaning.  */
-    const stored = Object.assign({}, canonical, { _winner_check: winnerCheck });
-    /*  A ROW WE CANNOT STAMP IS A ROW WE CAN NEVER SERVE, SO DO NOT WRITE ONE , 2026-09-15.
-        The read treats `rt_a == null` as UNSTAMPED and misses on it, by design, so a row
-        written with a null rt is unreadable BY CONSTRUCTION: it costs a write, occupies the
-        pair_key, and regenerates on every single view of that pair for ever. The old line
-        wrote it anyway and annotated the fact , "null rt if caller sent none" , which
-        described the behaviour accurately and did not notice it was self-defeating.
-        ZERO ROWS ARE IN THAT STATE TODAY and none can be from the live client: compare.html
-        sends `+CMP_A.vv||0`, always a finite number. It is reachable only by a caller that
-        omits rtA/rtB entirely, and `Number(null)` is 0 rather than NaN, so even an explicit
-        null arrives as a score of zero rather than as an absence , the two branches the
-        server thinks it has are not distinguishable from outside.
-        THE 0 SENTINEL IS SAFE AND IS NOT WHAT THIS GUARDS: rt runs 11 to 97, so 0 cannot
-        collide with a real score, and it still invalidates correctly the moment a real one
-        arrives. What is fixed here is only the write that could never be read.  */
-    const stampable = rtLo != null && rtHi != null;
-    try {
-      if (stampable) await sb.from('verdict_cache').upsert({
-        pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem),   // stamps
-        verdict: stored, winner_card_id: winnerId, model: MODEL
-      }, { onConflict: 'pair_key', ignoreDuplicates: false });
-    } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
-    return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
+          ON A COPY, SO THE RESPONSE IS BYTE-IDENTICAL TO BEFORE. Mutating `canonical` would
+          reach the client whenever the pair is NOT swapped, because `canonical === verdict`
+          there, and NOT reach it when it is , swapVerdict builds a new object from an explicit
+          key list. An annotation that is present or absent depending on the lo/hi order of two
+          card ids is the kind of difference that is invisible until something starts reading
+          it. This writes the annotation and leaves the returned verdict untouched.
+          IT CARRIES CARD IDS, not "A"/"B", so the swap cannot invert its meaning.  */
+      const stored = Object.assign({}, canonical, { _winner_check: winnerCheck });
+      /*  A ROW WE CANNOT STAMP IS A ROW WE CAN NEVER SERVE, SO DO NOT WRITE ONE , 2026-09-15.
+          The read treats `rt_a == null` as UNSTAMPED and misses on it, by design, so a row
+          written with a null rt is unreadable BY CONSTRUCTION: it costs a write, occupies the
+          pair_key, and regenerates on every single view of that pair for ever. The old line
+          wrote it anyway and annotated the fact , "null rt if caller sent none" , which
+          described the behaviour accurately and did not notice it was self-defeating.
+          ZERO ROWS ARE IN THAT STATE TODAY and none can be from the live client: compare.html
+          sends `+CMP_A.vv||0`, always a finite number. It is reachable only by a caller that
+          omits rtA/rtB entirely, and `Number(null)` is 0 rather than NaN, so even an explicit
+          null arrives as a score of zero rather than as an absence , the two branches the
+          server thinks it has are not distinguishable from outside.
+          THE 0 SENTINEL IS SAFE AND IS NOT WHAT THIS GUARDS: rt runs 11 to 97, so 0 cannot
+          collide with a real score, and it still invalidates correctly the moment a real one
+          arrives. What is fixed here is only the write that could never be read.  */
+      const stampable = rtLo != null && rtHi != null;
+      try {
+        if (stampable) await sb.from('verdict_cache').upsert({
+          pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
+          rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem),   // stamps
+          verdict: stored, winner_card_id: winnerId, model: MODEL
+        }, { onConflict: 'pair_key', ignoreDuplicates: false });
+      } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
+      return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
+    } finally { await rlEnd(_rl.id); }
   } catch (err) {
     /*  LOG THE DETAIL, RETURN A GENERIC MESSAGE. `err.message` on a public endpoint hands a
         stranger whatever the failure happened to say , Supabase table and column names, a
