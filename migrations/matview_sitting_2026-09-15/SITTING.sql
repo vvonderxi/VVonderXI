@@ -3,8 +3,22 @@
 -- CLAUDE CODE: the refresh exceeds the service role's statement_timeout and
 -- cannot be run through exec_sql (CLAUDE.md SS C, measured 2026-09-11).
 --
--- WHAT IT DOES: adds 9 columns , 1 for the transfer flag (item 26) and 8 for the
--- Proof percentiles (item 22's sibling). 76 existing + 9 = 85.
+-- WHAT IT DOES: adds 11 columns , 1 for the transfer flag (item 26), 8 for the
+-- Proof percentiles (item 22's sibling), and 2 for the continental honours so the
+-- honours FILTER can include them. 76 existing + 11 = 87.
+--
+-- THE COUNT HAS ALREADY BEEN WRONG ONCE, WHICH IS WHY IT IS ARITHMETIC AND NOT A
+-- FIGURE. It was specified as 78 and measured as 85, because the eight percentile
+-- columns come from PROOF_DIMS in card.html, which names eight distinct stats, and
+-- nobody had counted that list. It is now 87 for a third passenger. DO NOT QUOTE 85.
+--
+-- THE THIRD PASSENGER IS A REAL BLOCKER, NOT A TIDY-UP. `euro_winner` and
+-- `copa_winner` exist in HONOUR_META, carry marks, carry prose and render on cards ,
+-- and they have NO h_* column, so the honours filter cannot offer them. The filter's
+-- chip list now DERIVES from HONOUR_META, which means a derived list over an
+-- incomplete schema would generate a chip that filters on a column that is not
+-- there. They render as inert `soon` chips until these two columns land, and they go
+-- live with no code change on the day they do.
 --
 -- THE THREE PROOF DECISIONS, AND THE REASON THEY HANG TOGETHER:
 --   pool      : the 8-bucket position pool the SCORE uses, via COALESCE(pool, pos)
@@ -44,7 +58,15 @@ select relacl from pg_class where relname='player_card_mv';
 -- CREATE OR REPLACE VIEW can only APPEND columns and the existing order must be
 -- preserved , build this from a FRESH pg_get_viewdef, never from a repo copy.
 --
--- Append these 9 expressions to the END of the select list in player_card_view:
+-- Append these 11 expressions to the END of the select list in player_card_view:
+--
+--   -- item 8: the two continental honours. Same shape as the seven h_* flags the
+--   -- 2026-09-04 swap added, read off the same `hon` CTE. Without them the honours
+--   -- filter has no column to query and its chips stay inert.
+--   COALESCE((hon.types ? 'euro_winner'), false) AS h_euro_winner,
+--   COALESCE((hon.types ? 'copa_winner'), false) AS h_copa_winner,
+--   -- NOTE: match the exact expression the existing seven use in a FRESH viewdef ,
+--   -- the line above is the SHAPE, not a transcription. Never hand-retype engine SQL.
 --
 --   -- item 26: the transfer flag's input. The player_positions row is keyed at
 --   -- league-season grain while the card is per club, so a row covering MORE
@@ -109,7 +131,7 @@ select relacl from pg_class where relname='player_card_mv';
 -- Then verify BEFORE touching the matview:
 select count(*) as view_columns
   from pg_attribute where attrelid='player_card_view'::regclass and attnum>0 and not attisdropped;
--- expect 85
+-- expect 87
 
 
 -- ---------------------------------------------------------------------------
@@ -119,7 +141,7 @@ drop materialized view player_card_mv;
 
 
 -- ---------------------------------------------------------------------------
--- STEP 3 , CREATE at 85 columns, enumerated explicitly.
+-- STEP 3 , CREATE at 87 columns, enumerated explicitly.
 -- The matview's query is FROZEN at creation, which is why every column is named
 -- here rather than select * , and why adding one costs this whole sitting.
 -- ---------------------------------------------------------------------------
@@ -198,6 +220,8 @@ select
   h_player_of_season,
   h_golden_boot,
   h_top_assists,
+  h_euro_winner,          -- new, item 8
+  h_copa_winner,          -- new, item 8
   stage_peak,
   stage_breakout,
   stage_the_standard,
@@ -242,7 +266,7 @@ grant select on player_card_mv to anon, authenticated, service_role;
 -- ---------------------------------------------------------------------------
 select count(*) as columns_now
   from pg_attribute where attrelid='player_card_mv'::regclass and attnum>0 and not attisdropped;
--- expect 85
+-- expect 87
 
 select count(*) as indexes_now from pg_indexes where tablename='player_card_mv';
 -- expect 11
