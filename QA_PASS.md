@@ -604,6 +604,14 @@ deploying:**
 - **THE 308 IS REAL BUT IT IS THE CHEAPER HALF OF THE TRADE.** 97 internal links still use `.html`, so every internal click takes a redirect to the clean path. **The fix is to rewrite the LINKS to extensionless, never to drop `cleanUrls`** , that also makes them agree with `og:url`. Queued, not done. **`search.html` is the one page with a `rel="canonical"`, and it points at `rankings.html`, which disagrees with the extensionless scheme; fold it into the same pass.**
 - **AND NOTE THAT THIS ITEM ALREADY CARRIED THE ANSWER.** The pass line above has said the og:url values are extensionless since it was written. The proposal to drop `cleanUrls` was made without reading it , the same failure as the Vercel function cap, which was also sitting in this file unread.
 
+### B4a. `api/analyse.js` is a public, unauthenticated, billable endpoint , ORIGIN AND RATE LIMIT , LAUNCH-BLOCKING DECISION
+- **Check:** whether a stranger can spend our Anthropic credit, and whether they choose how much per call.
+- **Why this is not paranoia:** it is the **ONLY** deployed serverless function, it sets `Access-Control-Allow-Origin: *`, it has no auth and no rate limit, and `messages`, `system` and `max_tokens` all arrive from the request body and go to Anthropic on our key. Unbounded, that is a general-purpose Claude proxy pointed at our billing.
+- **DONE 2026-09-15, THE CHEAP HALF ONLY:** output ceiling clamped to **2048** tokens (both real callers send 1024 and a hardcoded 1500), input capped at **120,000 chars** with a 413, `messages` shape validated with a 400, and the upstream error text and `err.message` are logged rather than echoed. Control-tested with a mocked upstream: every bound fires, a normal call is unaffected, and a planted secret in an upstream message does not reach the response.
+- **STILL OPEN AND IT IS THE ACTUAL FIX:** an **ORIGIN ALLOWLIST** and a **RATE LIMIT**. Both need the launch domain list (vvonderxi.com plus the preview domains), so both are a decision rather than an edit. **The bounds above cap the cost PER CALL. Nothing caps the number of calls.**
+- **How:** from a machine that is not the site, `curl -s -X POST https://<domain>/api/analyse -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"say hi"}]}'` and see whether it generates.
+- **Pass:** a request with no `Origin`, or an `Origin` that is not ours, is refused; a burst from one address is throttled. **Until then, treat every deploy of this endpoint as an open Anthropic proxy and price it accordingly.**
+
 ### B5. Functions still deploy
 - **Check:** the function set survives the merge.
 - **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument. **`/api/db` IS GONE , deleted 2026-08-31 with `db.json`; do not probe it and do not restore it as a liveness check.**

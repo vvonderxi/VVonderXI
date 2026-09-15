@@ -531,7 +531,33 @@ module.exports = async (req, res) => {
         model and they touch no cache stamp , the payload the model sees is `messages`, which
         is built in compare.html and already contains the names in prose form. Absent simply
         means the check reports reason:'no_names' and records nothing.  */
-    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, judge, surnameA, surnameB } = req.body;
+    const { messages, max_tokens: _maxTokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, judge, surnameA, surnameB } = req.body;
+    /*  THIS IS A PUBLIC, UNAUTHENTICATED, BILLABLE ENDPOINT AND IT IS THE ONLY ONE WE DEPLOY.
+        `Access-Control-Allow-Origin: *`, no auth, no rate limit, and `messages`, `system` and
+        `max_tokens` all arrive from the request body and go to Anthropic on OUR key. Without
+        the three bounds below it is a general-purpose Claude proxy that anyone can point at our
+        credit, and the caller chooses how much each call costs.
+        THESE BOUNDS ARE THE CHEAP HALF AND THEY ARE NOT THE FIX. An ORIGIN ALLOWLIST and a RATE
+        LIMIT are the fix, and both need the launch domain list, so they are a decision rather
+        than an edit , recorded in CLAUDE.md and QA_PASS.md, NOT silently deferred.
+        WHAT IS BOUNDED HERE: the output ceiling (the caller no longer picks the bill), the
+        input size, and the message shape. Both real callers are unaffected , compare.html
+        sends max_tokens 1024 and the notes branch hardcodes 1500.  */
+    const MAX_OUTPUT_TOKENS = 2048;      // above both real callers, far below what a caller could ask for
+    const MAX_INPUT_CHARS   = 120000;    // input tokens are billed too, so the prompt is a cost lever
+    const _mt = Number(_maxTokens);
+    const max_tokens = Number.isFinite(_mt) ? Math.min(Math.max(1, Math.floor(_mt)), MAX_OUTPUT_TOKENS) : 1024;
+    if (req.body.mode !== 'notes') {
+      if (!Array.isArray(messages) || !messages.length)
+        return res.status(400).json({ error: 'messages must be a non-empty array' });
+      const shaped = messages.every(m => m && typeof m === 'object'
+        && (m.role === 'user' || m.role === 'assistant')
+        && (typeof m.content === 'string' || Array.isArray(m.content)));
+      if (!shaped) return res.status(400).json({ error: 'each message needs a role of user or assistant and string or array content' });
+      let chars = 0;
+      try { chars = JSON.stringify(messages).length + (typeof customSystem === 'string' ? customSystem.length : 0); } catch (e) { chars = Infinity; }
+      if (!(chars <= MAX_INPUT_CHARS)) return res.status(413).json({ error: 'prompt too large' });
+    }
     /*  THE PATH B GATE. Asserted by the caller because it depends on a fact this payload does
         not carry: whether either season is a goalkeeper. compare.html sends it only for an
         OUTFIELD pair the Index did not separate. Absent or anything else means the prohibiting
@@ -637,9 +663,10 @@ module.exports = async (req, res) => {
         const nMsg = (nData.error && nData.error.message) || 'Anthropic API error';
         if (isModelMissing(nResp.status, nMsg)) {
           console.error('[vv] notes generate failed because MODEL "' + MODEL + '" is not served.');
-          return res.status(503).json({ error: 'model_not_served', model: MODEL, detail: nMsg });
+          return res.status(503).json({ error: 'model_not_served', model: MODEL });
         }
-        return res.status(nResp.status).json({ error: nMsg });
+        console.error('[vv] notes upstream ' + nResp.status + ':', nMsg);   // logged, not echoed , see the catch at the end
+        return res.status(nResp.status).json({ error: 'upstream error' });
       }
 
       let parsed = null;
@@ -686,9 +713,10 @@ module.exports = async (req, res) => {
       const vMsg = data.error?.message || 'Anthropic API error';
       if (isModelMissing(response.status, vMsg)) {
         console.error('[vv] verdict generate failed because MODEL "' + MODEL + '" is not served.');
-        return res.status(503).json({ error: 'model_not_served', model: MODEL, detail: vMsg });
+        return res.status(503).json({ error: 'model_not_served', model: MODEL });
       }
-      return res.status(response.status).json({ error: vMsg });
+      console.error('[vv] verdict upstream ' + response.status + ':', vMsg);   // logged, not echoed
+      return res.status(response.status).json({ error: 'upstream error' });
     }
 
     // Generic path (no card ids): behave exactly as before.
@@ -748,8 +776,13 @@ module.exports = async (req, res) => {
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
     return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
   } catch (err) {
+    /*  LOG THE DETAIL, RETURN A GENERIC MESSAGE. `err.message` on a public endpoint hands a
+        stranger whatever the failure happened to say , Supabase table and column names, a
+        constraint, a URL, a key fragment in an upstream error. The log is where diagnosis
+        belongs; the response is not. The caller learns that it failed, which is all it can
+        act on anyway , compare.html renders `data.error` straight into the page.  */
     console.error('analyse error:', err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: 'generation failed' });
   }
 };
 
