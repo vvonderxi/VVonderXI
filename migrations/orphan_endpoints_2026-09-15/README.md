@@ -49,10 +49,26 @@ content, paginated, asserted against expected counts and read back off disk.
 pairs people actually chose, recoverable from nothing else , which is why it was captured before
 the endpoint went rather than after.
 
-## WHAT IS NOT DONE , A DECISION REMAINS
+## THE TABLES ARE DROPPED , DECIDED AND RUN 2026-09-15
 
-**The two TABLES still exist and still hold 55 session-linked rows.** Removing the endpoint stops
-new writes; it does not remove what is stored. `session_id` is a client-generated token with no
-account behind it, so this is low-sensitivity, but it is still data nobody chose to keep.
-**Drop-or-keep on `comparison_log` and `search_log` is a separate decision and has not been
-taken.** The capture beside this file means dropping them later costs nothing.
+**`comparison_log` and `search_log` no longer exist.** `drop table if exists ... cascade` through
+the `exec_sql` RPC, both verified gone by a SELECT that now **ERRORS** with `42P01 relation does
+not exist` rather than returning empty , an empty read cannot distinguish "dropped" from
+"present but unreadable", which is the same trap CLAUDE.md records for matview grants.
+
+**THE BEHAVIOURAL RECORD NOW LIVES IN THIS DIRECTORY, NOT IN THE DATABASE.** If anyone wants to
+know which pairs people actually compared, the answer is
+`log_tables_capture_2026-09-15.json` , **43 distinct pairings across 33 sessions**, every row
+carrying both player names, a winner and a deciding factor. There is no longer any live table to
+query, and a future session looking for one must read this file instead. `log_tables_shape_2026-09-15.json`
+holds the column list of both tables so the shape is recoverable as well as the content.
+
+**VERIFIED BEFORE DROPPING, on the same discipline as the notes-orphan delete:** the capture was
+re-read against the live tables **row-for-row and id-for-id, 44 and 11, identical on both**, and
+content-checked (44 of 44 rows carry both names, a winner and a deciding factor) so it could not
+be a file of empty shells. **Only then was anything dropped.**
+
+**WHY DROPPING WAS RIGHT: live tables no code reads add nothing, and they are a session-linked
+personal-data surface nobody chose to keep.** `session_id` is a client-generated token with no
+account behind it, so the sensitivity is low , but low is not a reason to keep data with no
+consumer, and the endpoint that wrote them has not existed since `a69b45c`.
