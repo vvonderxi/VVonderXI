@@ -75,9 +75,26 @@ function isModelMissing(status, msg) {
 const PROMPT_REV = 'v3';
 const fingerprint = (s) => crypto.createHash('sha256').update(s).digest('hex').slice(0, 8);
 
-// Complete freshness signal for the notes cache: hash the exact player payload
-// the prompt cites, key-sorted so field order can't false-invalidate, tags
-// sorted for the same reason.
+/*  Freshness signal for the notes cache: hash the player payload the prompt cites.
+    IT NORMALISES THE TOP LEVEL ONLY, AND THE PAYLOAD IS TWO LEVELS DEEP , say so, because
+    this comment used to claim "key-sorted so field order can't false-invalidate" without
+    qualification, and that is a completeness claim the code does not support. Same shape as
+    the backfill's "every key is checked for an existing row first", which is the sentence
+    that stopped anyone checking.
+    WHAT WOULD FALSIFY IT: `vvAIStats` emits nested OBJECTS , `recorded {goals, assists}` on
+    every card and `keeper {...14 keys}` on a goalkeeper , and neither is reached by the sort
+    below, so their key ORDER goes into the hash verbatim. Today both are built by object
+    literals, so the order is deterministic and the hash is stable. REORDER EITHER LITERAL,
+    or add a key to one conditionally, and every cached note silently re-hashes and
+    regenerates, with nothing in the diff to say why.
+    IT IS PINNED RATHER THAN FIXED, DELIBERATELY. Sorting recursively is two lines and would
+    change the hash of ALL 366 cached notes immediately , `recorded` is present on every card
+    and its keys are not in alphabetical order , which would discard the very population the
+    item 25 measurement is waiting to settle. `scripts/lint-inline.js` pins the hash of a
+    canonical payload instead, so the latent defect can no longer land in silence, and the
+    recursive version rides the NEXT notes prompt edit, which invalidates the cache anyway.
+    Same reasoning as the `sig` COALESCE in CLAUDE.md: a change that buys only clarity waits
+    for a commit that was already paying the cost.  */
 const statsHash = (p) => {
   if (!p || typeof p !== 'object') return null;
   const norm = {};
@@ -745,3 +762,4 @@ module.exports.VERDICT_VERSION_JUDGE = VERDICT_VERSION_JUDGE;
 module.exports.verdictVersionFor = verdictVersionFor;
 module.exports.verdictSystemFor  = verdictSystemFor;
 module.exports.NOTES_VERSION   = NOTES_VERSION;
+module.exports.statsHash       = statsHash;   // exported so the linter can pin it , see the note above its definition

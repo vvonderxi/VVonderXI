@@ -246,6 +246,54 @@ function lintModules(){
     literal copy. A second copy is only tolerable while something fails when the two drift,
     so: any page carrying a `.vvsoc` or `.drawersoc` row must use the platform handles and
     the "X/Twitter" wording, and must never print the word "Follow" beside the marks.  */
+/*  THE NOTES CACHE KEY IS PINNED, BECAUSE NOTHING ELSE GUARDS IT , 2026-09-15.
+    `statsHash` in api/analyse.js normalises the TOP LEVEL of the notes payload only, and
+    `vvAIStats` emits nested objects (`recorded` on every card, `keeper` on a goalkeeper).
+    Their key ORDER therefore goes into the cache key verbatim. Reorder either literal and
+    every cached note re-hashes and regenerates , a mass invalidation that costs a model call
+    per card and leaves NOTHING in the diff to explain itself, because reordering keys in an
+    object literal is the most innocent-looking edit there is.
+    A COMMENT SAYING "DO NOT REORDER THESE" WOULD BE A RULE THAT DEPENDS ON SOMEBODY
+    REMEMBERING, WHICH IS THE RULE THAT HAS ALREADY BEEN FORGOTTEN. So the hash of a fixed
+    canonical payload is asserted here instead. If this check fails, the payload shape moved:
+    either restore the order, or update the constant DELIBERATELY, knowing that doing so
+    discards every cached note. It is a tripwire, not a correctness proof , it says the shape
+    changed, never that the change was wrong.  */
+const STATS_HASH_PIN = { outfield: 'cb1a80e2a75814b3', keeper: '8bd90b9aa47cceaf' };
+function lintCacheStamps(){
+  const out = [];
+  let A, VVCore;
+  try {
+    global.window = global.window || global;
+    require(path.join(__dirname, '..', 'vv-core.js'));
+    VVCore = global.VVCore || global.window.VVCore;
+    A = require(path.join(__dirname, '..', 'api', 'analyse.js'));
+  } catch (e) {
+    return [{ kind: 'CACHE STAMP', file: 'api/analyse.js', error: 'could not load the modules , ' + e.message }];
+  }
+  if (typeof A.statsHash !== 'function' || !VVCore || typeof VVCore.vvAIStats !== 'function')
+    return [{ kind: 'CACHE STAMP', file: 'api/analyse.js', error: 'statsHash or vvAIStats is not exported , the pin cannot be checked' }];
+  const mk = (row, extra) => Object.assign(
+    { player_name: 'Pin Probe', season: 2016, age: 27, club: 'Pin FC', league: 'Premier League',
+      position: 'ST', goals: 11, assists: 4, tags: ['b', 'a'] },
+    extra || {}, VVCore.vvAIStats(row, { radar: true }));
+  const got = {
+    outfield: A.statsHash(mk({ position_pool: 'ST', minutes: 3000, goals: 11, assists: 4, passes_total: 900,
+      passes_key: 60, shots_total: 90, dribbles_success: 30, dribbles_attempts: 60, duels_won: 120,
+      duels_total: 240, penalties_scored: 2, starts: 33, appearances: 34 })),
+    keeper: A.statsHash(mk({ position_pool: 'GK', minutes: 3060, saves: 80, goals_conceded: 30,
+      penalties_saved: 1, starts: 34, appearances: 34 }, { position: 'GK' }))
+  };
+  for (const k of Object.keys(STATS_HASH_PIN)) {
+    if (got[k] !== STATS_HASH_PIN[k]) out.push({ kind: 'CACHE STAMP', file: 'api/analyse.js',
+      expect: k + ' payload',
+      error: 'statsHash moved , ' + STATS_HASH_PIN[k] + ' -> ' + got[k] +
+             '. The notes payload shape changed, so EVERY cached note will regenerate. Restore the ' +
+             'field order, or update STATS_HASH_PIN in this file on purpose.' });
+  }
+  return out;
+}
+
 function lintSocial(file, src){
   if (!isShipping(file)) return [];
   if (!/class="(vvsoc|drawersoc)"/.test(src)) return [];
@@ -287,7 +335,7 @@ const targets = files.length
   : fs.readdirSync(process.cwd()).filter(f => f.endsWith('.html')).sort();
 
 const results = targets.map(lintFile);
-const moduleFaults = lintModules().concat(lintStringFloors())
+const moduleFaults = lintModules().concat(lintStringFloors()).concat(lintCacheStamps())
   .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))))
   .concat(targets.flatMap(f => lintSocial(f, fs.readFileSync(f, 'utf8'))));
 const broken = results.filter(r => r.css.faults.length || r.js.length);
