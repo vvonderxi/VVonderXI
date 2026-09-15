@@ -470,8 +470,26 @@ function resolveWinnerId(o) {
     other and does not flip, but a row must never be served under a prompt that did not write
     it, and nothing else in the table records which one did.  */
 const VERDICT_VERSION_JUDGE = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM_JUDGE);
-const verdictVersionFor = (rev, judge) => {
-  const base = judge ? VERDICT_VERSION_JUDGE : VERDICT_VERSION;
+/*  THE STAMP IS FINGERPRINTED FROM THE TEXT THAT WAS ACTUALLY SENT , 2026-09-15.
+    It used to pick a base from the `judge` FLAG, which is the same shape of mistake as the
+    Path B splice: a value computed from one thing while a different thing is used. A caller
+    may override the system prompt with `system` in the request body, and that request still
+    reaches the cache write below, because `cacheable` gates on the two card ids and nothing
+    else. So a row could be written by a prompt nobody on this platform has ever seen and
+    STAMPED with the fingerprint of VERDICT_SYSTEM , served to every later visitor for that
+    pair, and counted by any version-filtered measurement as if the named prompt wrote it.
+    A cache key that can describe text it did not hash is not a cache key, it is a label.
+    verdictSystemFor() is now the ONE place the prompt is chosen, and the version is taken
+    from its return value, so the two cannot disagree by construction. NOTHING REGENERATES:
+    with no override the text is byte-identical to before, so every real caller's version is
+    unchanged , verified, not assumed.
+    The notes path never had this hole; it hardcodes NOTES_SYSTEM at its own fetch. */
+const verdictSystemFor = (judge, custom) => custom || (judge ? VERDICT_SYSTEM_JUDGE : VERDICT_SYSTEM);
+const verdictVersionFor = (rev, judge, custom) => {
+  const sys  = verdictSystemFor(judge, custom);
+  const base = (sys === VERDICT_SYSTEM)       ? VERDICT_VERSION
+             : (sys === VERDICT_SYSTEM_JUDGE) ? VERDICT_VERSION_JUDGE
+             : PROMPT_REV + '-' + fingerprint(sys);
   return rev ? (base + '-' + rev) : base;
 };
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
@@ -537,7 +555,7 @@ module.exports = async (req, res) => {
         // A request that supplies no rt cannot check (3), but (1) and (2) still
         // apply, so a legacy row is never served as valid.
         const unstamped = !row || row.rt_a == null || row.rt_b == null || row.cache_version == null;
-        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge);
+        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge, customSystem);
         const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
         if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
@@ -640,7 +658,7 @@ module.exports = async (req, res) => {
         // ~1,508-token system prompt, identical on every verdict call -> cache it.
         // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
         // below the 1024-token minimum simply won't cache; that is silent + safe.
-        system: [{ type: 'text', text: customSystem || (aiJudge ? VERDICT_SYSTEM_JUDGE : VERDICT_SYSTEM), cache_control: { type: 'ephemeral' } }],
+        system: [{ type: 'text', text: verdictSystemFor(aiJudge, customSystem), cache_control: { type: 'ephemeral' } }],
         messages
       })
     });
@@ -692,7 +710,7 @@ module.exports = async (req, res) => {
     try {
       await sb.from('verdict_cache').upsert({
         pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge),   // stamps (null rt if caller sent none)
+        rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem),   // stamps (null rt if caller sent none)
         verdict: stored, winner_card_id: winnerId, model: MODEL
       }, { onConflict: 'pair_key', ignoreDuplicates: false });
     } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
@@ -717,5 +735,13 @@ module.exports.resolveWinnerId = resolveWinnerId;
 module.exports.checkProseWinner = checkProseWinner;
 module.exports.NOTES_SYSTEM    = NOTES_SYSTEM;
 module.exports.VERDICT_VERSION = VERDICT_VERSION;
+/*  PATH B'S VERSION IS EXPORTED BECAUSE THERE ARE THREE PROMPTS AND THE MODULE ONLY ANNOUNCED
+    TWO , 2026-09-15. `verdict_cache` holds Path A and Path B rows in one table keyed by
+    pair_key, and the ONLY thing distinguishing them is this fingerprint. Un-exported, any
+    script asking "which rows are on the current prompt" had to re-run the splice itself to
+    find out, or quietly measure Path A and call it the cache. Same lesson as the splice
+    audit: a composed artefact that is not exported is a composed artefact nobody checks. */
+module.exports.VERDICT_VERSION_JUDGE = VERDICT_VERSION_JUDGE;
 module.exports.verdictVersionFor = verdictVersionFor;
+module.exports.verdictSystemFor  = verdictSystemFor;
 module.exports.NOTES_VERSION   = NOTES_VERSION;
