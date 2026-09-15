@@ -619,9 +619,17 @@ deploying:**
 - **DONE 2026-09-15, THE CHEAP HALF ONLY:** output ceiling clamped to **2048** tokens (both real callers send 1024 and a hardcoded 1500), input capped at **120,000 chars** with a 413, `messages` shape validated with a 400, and the upstream error text and `err.message` are logged rather than echoed. Control-tested with a mocked upstream: every bound fires, a normal call is unaffected, and a planted secret in an upstream message does not reach the response.
 - **DONE 2026-09-15: THE ORIGIN ALLOWLIST IS IN**, built from the FOUR domains read off the Vercel project (`vvonderxi.com`, `www.vvonderxi.com`, `v-vonder-xi.vercel.app`, `vvonderxi-preview.vercel.app`) plus a wildcard for Vercel's GENERATED per-branch URLs, which are not in the domain list at all. Absent Origin is refused. Control-tested against suffix, scheme and wildcard-prefix near-misses.
 - **DONE 2026-09-15: THE RATE LIMIT IS IN** , 30 new generations per hour per IP, 2 concurrent, on `api_rate_events`. Refusals are recorded in the ledger so the cap can be raised on a query rather than a complaint. 15 of 15 control checks pass, including the concurrency case specifically.
-- **WHAT REMAINS OPEN AND IS NOT CLOSED BY EITHER: DISTRIBUTED ABUSE.** A pool of addresses gets 30 an hour from each and no per-IP rule can see it. **The instrument for that is spend alerting at the provider, and none is configured.** That is the next item on this line, and it is Lucas's to set up in the Anthropic console.
+- **WHAT REMAINS OPEN AND IS NOT CLOSED BY EITHER: DISTRIBUTED ABUSE , SEE B4b.** A pool of addresses gets 30 an hour from each and no per-IP rule can see it.
 - **How:** from a machine that is not the site, `curl -s -X POST https://<domain>/api/analyse -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"say hi"}]}'` and see whether it generates.
 - **Pass:** a request with no `Origin`, or an `Origin` that is not ours, is refused; a burst from one address is throttled. **Until then, treat every deploy of this endpoint as an open Anthropic proxy and price it accordingly.**
+
+### B4b. Anthropic spend cap and alerts , LUCAS, FIVE MINUTES, AND IT IS THE LAST BACKSTOP
+- **Check:** that a monthly spend cap and two alerts exist in the Anthropic Console (Settings > Limits).
+- **Why:** the rate limit bounds ONE address. **Nothing in the code sees a DISTRIBUTED client**, and the cap is the only thing that does. Full derivation in `docs/MERGE_READINESS_2026-09-15.md` section 4.
+- **Set:** monthly cap **$100**; alert at **$20**; second alert at **$50**.
+- **The numbers, from the shipped prompts rather than estimated:** a cached verdict is **$0.018** and a cached note **$0.024**; legitimate use measures **$0.14/day, about $4/month**; one abusive IP at the limiter's ceiling is **$17/day**; ten IPs are **$175/day**. So $20 is five times legitimate use and about one day of a single abuser, and $100 is 25x the legitimate month.
+- **Pass:** the cap is set, both alerts are set, and the alert email reaches an address Lucas reads.
+- **EXPECT THE $20 ALERT TO FIRE ON LAUNCH DAY IF THE PLATFORM FINDS AN AUDIENCE. That is the threshold working, not a false alarm** , re-derive at 5x the busiest legitimate day and 25x the legitimate month, and write the new figures into the merge-readiness note in the same change. **A threshold whose derivation is not recorded becomes a number nobody dares touch, which is how alerting gets switched off instead of raised.**
 
 ### B5. Functions still deploy
 - **Check:** the function set survives the merge.
