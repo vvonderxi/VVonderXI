@@ -138,6 +138,7 @@ are avoidable if you know about them.
     found was real and confirmed by pixels.
 
 ### A0. RE-MEASURE THE SCOPE , THIS IS AN ITEM, NOT A PREREQUISITE
+- **STATUS 2026-09-15: RE-MEASURED, AND THE RECORDED SCOPE IS THREE TIMES TOO BIG.** Against the CURRENT merge-base `32b19dab`: **200 commits, 130 files, +36,080 / -933**. The plan records 599 commits, 186 files, +205,155 / -10,204 from 2026-08-27. **The difference is not drift, it is a different BASE** , the 2026-09-06 merge `4c8ce8a` already absorbed most of that surface, so the base moved forward and the remaining diff shrank. **A session scoping this pass to 599 commits would over-scope by a factor of three.** SS D's instruction "if the figures have moved, the surface has moved" is right, and the movement was DOWNWARD, which is the direction nobody expects.
 
 **It has gone stale THREE TIMES: 517, then 599, then 639, then 119, then 145 , five readings, and
 every one was quoted as current by something.** The reason is structural rather than careless.
@@ -168,6 +169,9 @@ interval. That is a stop, not a note.
 
 - **STATUS 2026-08-29: PASS, re-run.** `node scripts/lint-inline.js` returns the exact pass string across all files, including the export assertion that is the load-bearing half.
 ### A2. Cache-token discipline
+- **STATUS 2026-09-15: PASS, AND NO BUMP IS OWED , CHECKED RATHER THAN BUMPED.** The five shipping surfaces all carry **`20260915b`**, and that token was set in **`3da9296`, the same commit that last touched `vv-core.js`**. `git log 3da9296..HEAD -- vv-core.js vv-marks.js` is **empty**, and both files are clean in the working tree. **A bump with no change behind it is not caution, it is churn** , it forces every client to re-download two modules to get bytes they already have.
+- **THE PAIRING HOLDS: card, compare, rankings and playbook carry the same token on BOTH tags; `index.html` carries it on `vv-core.js` only, which is correct** , it does not load `vv-marks.js`.
+- **AND THE GREP RULE EARNED ITS KEEP AGAIN: `grep -l` returns 46 files, of which FIVE ship.** The other 41 are demos, mocks and probes carrying deliberately stale or nonsense tokens (`radar-1`, `harness-2`, `20260823b`). **Any check that reads that list as a surface list, or counts it, is wrong by a factor of nine.**
 - **Check:** `vv-core.js` and `vv-marks.js` carry the SAME `?v=` on all three shipping pages.
 - **How:** `for f in card.html compare.html rankings.html playbook.html; do grep -o 'vv-\(core\|marks\).js?v=[0-9a-z]*' $f; done | sort -u` **(playbook added 2026-08-28 , it loads vv-marks.js and was missing from this check.)**
 - **Pass:** exactly TWO lines, one per file, the SAME token. Today: `20260827g`. **Any third value means a page was missed and one file will be served fresh against a cached copy of the other.** Ignore the gitignored demos and the two `myclub-mock*` files, which reference vv-core only in a comment.
@@ -191,6 +195,11 @@ interval. That is a stop, not a note.
 - **STATUS 2026-08-28: PASS.** Checked on rankings, card, compare and playbook. **39 symbols injected, zero dangling `<use>` refs, zero hollow symbols**, and all 11 section headings resolve including `s-gk`. Positive control: a planted `<use>` at a missing symbol was caught, and bogus keys return falsy.
 - **METHOD NOTE: the first attempt looked for inline `<path>` children and reported "294 painted, 294 empty" on marks that visibly render.** The architecture is `<use>` pointing at `<symbol>`, which is the whole point of the item. Resolve hrefs against the symbol table.
 ### A5. The loader, at every wired size
+- **STATUS 2026-09-15: PASS AT EVERY WIRED SIZE, MEASURED RATHER THAN LOOKED AT.** Sizes found by grep, not from a list: **22 (compare, twice), 40 (card, three), 44 (rankings, index), 48 (card), 64 (compare)**. Each rasterised with the real inks read off the live DOM (cream `rgb(240,234,217)`, pink `rgb(231,4,67)`) against a 256px reference.
+- **STRUCTURE IS IDENTICAL FROM 22px TO 256px.** Ink-run counts along four scanlines read **[2,3,3,3] at every shipped size and at the reference** , the arms stay separate and nothing merges.
+- **THE TWO-TONE SPLIT HOLDS: 46 to 47% cream against 51 to 53% pink at every size, blended pixels under 2.5%.** The colour boundary is what carries the interlock on this mark, and it survives.
+- **AND THIS CLOSES A MEASUREMENT SS C SAYS WAS NEVER TAKEN.** That entry lowered `VV_LOADER_MIN` from 40 to 16 when the mark went two-tone and states plainly that *"the two-tone mark's behaviour at 16px is NOT re-measured here"*. **Measured now: 16px passes both tests, so the floor is correct.** The caveat worth keeping: at 16px the whole mark is **42 solid pixels**, and it is the ONLY size whose run count differs from the reference at any scanline (a rounding artefact at one y, not a structural loss). **The floor is right at the edge rather than comfortably inside it.**
+- **NO CALLER SITS BELOW THE FLOOR, so the clamp never fires in production** , which means the clamp's own correctness rests on unit behaviour alone and is untested by any shipping path.
 - **Check:** the two-tone mark renders as a W, in both themes, at every size actually used.
 - **How:** serve locally; render `VVCore.vvLoader({size:n})` at 64/48/44/40/22/16 in both themes; screenshot.
 - **Pass:** the interlock reads at every size, the base V is visible in both themes, and the pink wipes without the base disappearing. **The base must never vanish , that is the whole design guarantee.**
