@@ -2979,13 +2979,13 @@
       concept is a defect even when both are populated, and the fix is to state the fact once
       rather than infer it from a field that means something else. `group` keeps its job.  */
   const HONOUR_META = {
-    ballon_dor:        { group:'Individual', wonBy:'player', label:"Ballon d'Or",         tier:1 },
-    world_cup_winner:  { group:'Career',     wonBy:'team',   label:'World Cup Winner',     tier:2 },
-    ucl_winner:        { group:'Team',       wonBy:'team',   label:'UCL Champion',         tier:3 },
-    league_champion:   { group:'Team',       wonBy:'team',   label:'League Title',         tier:4 },
-    player_of_season:  { group:'Individual', wonBy:'player', label:'Player of the Season', tier:5 },
-    golden_boot:       { group:'Individual', wonBy:'player', label:'Golden Boot',          tier:6 },
-    top_assists:       { group:'Individual', wonBy:'player', label:'Top Assists',          tier:7 },
+    ballon_dor:        { group:'Individual', wonBy:'player', label:"Ballon d'Or",         emoji:'🥇', tier:1 },
+    world_cup_winner:  { group:'Career',     wonBy:'team',   label:'World Cup Winner',     emoji:'🌍', tier:2 },
+    ucl_winner:        { group:'Team',       wonBy:'team',   label:'UCL Champion',         emoji:'⭐', tier:3 },
+    league_champion:   { group:'Team',       wonBy:'team',   label:'League Title',         emoji:'🏆', tier:4 },
+    player_of_season:  { group:'Individual', wonBy:'player', label:'Player of the Season', emoji:'🎖️', tier:5 },
+    golden_boot:       { group:'Individual', wonBy:'player', label:'Golden Boot',          emoji:'👟', tier:6 },
+    top_assists:       { group:'Individual', wonBy:'player', label:'Top Assists',          emoji:'🅰️', tier:7 },
     /*  ── CONTINENTAL HONOURS , item 15, 2026-09-14 ────────────────────────────────────────
         EURO AND COPA AMERICA ONLY. UEFA and CONMEBOL are ~80% of the reachable cards and
         their squads resolve almost completely; CAF, AFC and CONCACAF are twenty more
@@ -3230,10 +3230,21 @@
       correct instrument is `Range.getClientRects()` on the text node, which returns one box per
       LINE. Measured that way every string above renders on ONE line with the cell height
       constant at 11.69px, so the value genuinely fits.  */
-  const HONOUR_CHIP_LABEL = {
-    ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL Champion',
-    league_champion:'League Title', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
-  };
+  /*  DERIVED FROM HONOUR_META, WITH TWO OVERRIDES , 2026-09-15. This used to be a hand list of
+      SEVEN, and when the two continental honours landed it silently covered neither: a
+      euro_winner chip fell through to its raw key. That is the second list in one day keyed on
+      something other than the honour key, and the fix is the same both times , derive, and keep
+      only what genuinely differs.
+      FIVE OF THE SEVEN LABELS WERE ALREADY IDENTICAL TO HONOUR_META's. Only two are real chip
+      forms, shortened because the chip is narrow: World Cup Winner -> "World Cup", Player of
+      the Season -> "POTS". Same shape as VERDICT_SHARE_NAME, which this file already blesses:
+      an override map consulted on a miss, and everything else shares its own name.
+      SO A NEW HONOUR TYPE NOW NEEDS NOTHING HERE. It gets its HONOUR_META label automatically,
+      and only earns an entry below if that label is too long for a chip.  */
+  const HONOUR_CHIP_SHORT = { world_cup_winner:'World Cup', player_of_season:'POTS' };
+  const HONOUR_CHIP_LABEL = Object.keys(HONOUR_META).reduce(function(m,k){
+    m[k] = HONOUR_CHIP_SHORT[k] || HONOUR_META[k].label || k; return m;
+  }, {});
   function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   // GLANCE STRIP: gold honour chips , prepend into #glChips (before prestige+profile).
@@ -4886,24 +4897,41 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       { v:'Iconic',       l:'Iconic',       e:'🏅' },
     ],
     // DEFERRED (Option C , needs honour flags on the matview). Rendered "soon", inert.
-    honours: [
-      { v:'ballon_dor',       l:"Ballon d'Or",          e:'🥇' },
-      /*  world_cup_winner WAS THE ONE INERT HONOUR AND IS NOW LIVE. It was held back because
-          the column and the renderer disagreed: h_world_cup_winner is a CAREER leg, true on
-          every season of a winner's career (587 cards from 93 honours rows), while
-          fetchHonours matched it on season_year and its career array was dead code. 496 of
-          those 587 cards returned from the filter and displayed no World Cup at all.
-          FIXED IN THE RENDERER, NOT THE COLUMN, because the column was right: the Playbook
-          calls it a career honour, HONOUR_META has always had group:'Career', and
-          honours_json encodes {leg:'career', year:2014}. Only this file disagreed.
-          The card now shows it in the career leg with its TOURNAMENT year printed. */
-      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍' },
-      { v:'ucl_winner',       l:'UCL Champion',          e:'⭐' },
-      { v:'league_champion',  l:'League Title',          e:'🏆' },
-      { v:'player_of_season', l:'Player of the Season',  e:'🎖️' },
-      { v:'golden_boot',      l:'Golden Boot',           e:'👟' },
-      { v:'top_assists',      l:'Top Assists',           e:'🅰️' },
-    ],
+    /*  DERIVED FROM HONOUR_META AND ORDERED BY TIER , 2026-09-15, AND DERIVING ALONE WOULD
+        NOT HAVE CLOSED THE REPORTED GAP. The two continental honours were missing from this
+        list, and they are ALSO missing from the matview: `h_euro_winner` and `h_copa_winner`
+        do not exist, so a chip for either would have filtered on a column that is not there.
+        Measured from pg_attribute, not assumed , seven `h_*` columns exist and nine honour
+        types are defined.
+        SO THE ONE HAND-MAINTAINED LIST LEFT IS HONOUR_FILTER_COLUMNS, AND IT IS KEYED ON THE
+        DATABASE RATHER THAN ON THE VOCABULARY. That is the honest place for it: the client
+        cannot ask the matview what columns it has without a round trip on every page load, and
+        a label list drifting is cosmetic while a column list drifting is a broken query.
+        A TYPE WITH NO COLUMN RENDERS AS A `soon` CHIP RATHER THAN BEING HIDDEN, which is this
+        file's existing rule , the inert chips teach the vocabulary before the data exists, and
+        they go live the moment the column lands, with no edit here.
+        WHAT A NEW HONOUR TYPE NEEDS AFTER THIS: a HONOUR_META entry, a mark, and a matview
+        column. Nothing in this file and nothing in the chip-label map.  */
+    /*  THE EMOJI NOW LIVES ON HONOUR_META TOO, so this derives completely , 2026-09-15.
+        CLAUDE.md's rule is that two separate icon lookups once shadowed the shared mark set and
+        both were deleted, with "do not add a third". A chip emoji list here would have been
+        exactly that third. Putting it on the vocabulary instead means the filter, the chip
+        label and the mark all key on the same object.
+        THE TWO CONTINENTAL TYPES DELIBERATELY CARRY NO EMOJI. They are `soon` chips, inert, and
+        picking two glyphs that do not collide with 🌍 (World Cup) or 🏆 (League) at chip size is
+        a VISUAL choice, which this platform demos before it builds. It is deferred with the
+        column rather than guessed now, and an absent emoji renders as label-only, which the
+        position group already does.  */
+    honours: (function(){
+      var HONOUR_FILTER_COLUMNS = ['ballon_dor','world_cup_winner','ucl_winner','league_champion',
+                                   'player_of_season','golden_boot','top_assists'];
+      return Object.keys(HONOUR_META)
+        .sort(function(a,b){ return (HONOUR_META[a].tier||99) - (HONOUR_META[b].tier||99); })
+        .map(function(k){
+          return { v:k, l:HONOUR_META[k].label || k, e:HONOUR_META[k].emoji || '',
+                   soon: HONOUR_FILTER_COLUMNS.indexOf(k) < 0 };
+        });
+    })(),
     // ability tags , grouped by getVVTags family. v = the tag name the engine emits.
     profile: [
       { sub:'Attack',       items:[ {v:'Goal Machine',e:'⚽'},{v:'Clinical',e:'🔫'},{v:'Provider',e:'🅰️'},{v:'Poacher',e:'🦊'},{v:'The Winger',e:'🪄'} ] },
