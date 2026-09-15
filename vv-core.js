@@ -1852,7 +1852,18 @@
         const a = Math.min.apply(null, miss), b = Math.max.apply(null, miss);
         g += '<rect x="' + (X(a) - 5).toFixed(1) + '" y="' + PT + '" width="' +
              (X(b) - X(a) + 10).toFixed(1) + '" height="' + (H - PT - PB) +
-             '" fill="var(--gkt-band)"/>';
+             /*  `--gkt-band` IS DEFINED NOWHERE ON THE PLATFORM , fixed 2026-09-15. Grepped
+                 across every html and js: no rule sets it, so this fill was invalid and the
+                 band drew as an inherited or initial fill rather than the quiet wash the
+                 comment above describes. The SINGLE-card sibling below (`keeperTrajectoryHTML`)
+                 paints the identical treatment with `--gkt-absent`, which IS defined on `.gkt`
+                 in BOTH themes. This is a typo-class defect, not a second design.
+                 REACHABILITY WAS NOT ESTABLISHED AND IS RECORDED AS SUCH: this lane is only
+                 reached from compare.html behind `gkA && gkB`, and three probes on a real
+                 keeper-versus-keeper pair never rendered a `.gkt` node. Live or latent, the
+                 fix is the same and carries no risk , it replaces an undefined token with the
+                 defined one its own sibling already uses.  */
+             '" fill="var(--gkt-absent)"/>';
       }
       // the pool median , same height in BOTH lanes, because the scale is shared
       if (KEEPER_POOL.median >= lo && KEEPER_POOL.median <= hi){

@@ -54,7 +54,12 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',sans-serif;color:var(--cream);max-width:412px;margin:0 auto;min-height:100vh;width:100%;padding-bottom:78px;
     background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(620px 360px at 50% -6%, rgba(255,92,122,0.14), transparent 58%),linear-gradient(180deg,#211a1a 0%,#181314 46%,#110e0f 100%)}
-  body.light{--pink-ink:#AD0332;color:var(--charcoal);background:radial-gradient(620px 360px at 50% -6%, rgba(255,92,122,0.1), transparent 58%),linear-gradient(180deg,#EAF4F8 0%,#E8EFE6 32%,#EDE6D6 66%,#E6DCC6 100%)}
+  /*  `--ink-soft` WAS USED BY .bn-item AND DEFINED NOWHERE ON THIS PAGE , contact.html does not
+      load the shared module, so it gets no token from there. The bottom nav therefore kept its
+      dark-mode 0.5-alpha cream in LIGHT mode. Defined here with the same value every other
+      surface uses, rather than inlining a literal at the one call site: CLAUDE.md's rule is to
+      define every ground on the TOKEN, so the next consumer does not have to know.  */
+  body.light{--ink-soft:#5f594e;--pink-ink:#AD0332;color:var(--charcoal);background:radial-gradient(620px 360px at 50% -6%, rgba(255,92,122,0.1), transparent 58%),linear-gradient(180deg,#EAF4F8 0%,#E8EFE6 32%,#EDE6D6 66%,#E6DCC6 100%)}
   .modetoggle{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:50%;cursor:pointer;flex:0 0 auto;box-sizing:border-box}
   .mt-wrap{position:relative;display:inline-flex}
   .mt-fixed{position:fixed;top:13px;right:13px;z-index:200}

@@ -281,7 +281,14 @@
   .vseg.on{background:var(--pink);color:#fff}
   body.light .vseg{color:var(--ink-soft)}
   body.light .vseg.on{color:#fff}
-  .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--ink);background:var(--pillbg);border:1px solid var(--pill-b);border-radius:999px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  /*  --ink, --pillbg AND --pill-b WERE ALL UNDEFINED , THREE ON ONE RULE, FIXED 2026-09-15.
+      An undefined custom property makes the whole declaration invalid at computed-value time,
+      so this button was rendering with NO background (transparent) and NO border (0px none),
+      with its ink inherited rather than set. Measured on the live page before the fix.
+      The values are taken from `.rankmore` above, which is the same control at a lighter
+      weight, rather than invented , and `--cream` is the house dark-ink pattern with a
+      body.light override beneath, because this ground flips with the theme.  */
+  .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
   .rankfbtn.on{background:var(--pink);color:#fff;border-color:transparent}
   .rankfbtn .chev{transition:transform .2s}
   .rankfbtn.on .chev{transform:rotate(180deg)}
@@ -344,7 +351,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   @media (max-width:560px){
     .cardgrid{gap:14px}
   }
-  .crumb .va{color:var(--ink)} .crumb .vb{color:var(--pink-ink)}
+  /*  `--ink` DOES NOT EXIST , the two-tone VV pair was rendering half-coloured, .vb pink and
+      .va inheriting the crumb's own 0.55 muted cream. CLAUDE.md: the identity is one charcoal
+      V and one pink V, and on a dark ground the charcoal V is cream.  */
+  .crumb .va{color:var(--cream)} .crumb .vb{color:var(--pink-ink)}
+  body.light .crumb .va{color:var(--charcoal)}
 .fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:var(--ink-soft)}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:6px;padding:1px 5px;margin-left:7px}body.light .flsoon{color:var(--ink-soft);border-color:rgba(0,0,0,.16)}
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
@@ -416,8 +427,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260915b"></script>
-<script src="/vv-core.js?v=20260915b"></script>
+<script src="/vv-marks.js?v=20260915c"></script>
+<script src="/vv-core.js?v=20260915c"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the

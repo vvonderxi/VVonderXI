@@ -516,11 +516,56 @@ module.exports = async (req, res) => {
       request, and its answer is for the LOG, not for this response , the
       per-call classifier below is what protects the caller. Once per process. */
   if (MODEL_OK === null) { try { probeModel(); } catch (e) {} }
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  /*  THE ORIGIN ALLOWLIST , 2026-09-15. READ WHAT IT DOES AND DOES NOT DO BEFORE TRUSTING IT.
+      WHAT IT STOPS: another WEBSITE embedding this endpoint and spending our Anthropic credit
+      from its visitors' browsers. That is browser-enforced and it is real.
+      WHAT IT DOES NOT STOP, AND THIS MUST NOT BE OVERCLAIMED: a scripted client. `Origin` is a
+      request header like any other, and curl will send whatever string you tell it to. This
+      raises the bar from "POST and it works" to "POST with one extra header", which is a speed
+      bump and not a wall. THE RATE LIMIT IS THE ACTUAL CONTROL and it is not built yet.
+      ABSENT ORIGIN IS REFUSED, and that is the decision this usually gets wrong. Allowing a
+      missing header is a one-flag bypass, which makes the whole list decorative. VERIFIED
+      EMPIRICALLY rather than assumed: a same-origin POST from a real browser DOES send Origin
+      (measured against an echo server , `origin: http://localhost:8901`, `sec-fetch-site:
+      same-origin`), while curl sends none. So refusing costs a normal visitor NOTHING.
+      WHAT IT COSTS A REAL PERSON: a browser or extension that strips Origin gets no verdict and
+      no notes, and sees the generic failure. That population is very small and the alternative
+      is a list that any script walks straight through.
+      THE DOMAINS ARE READ OFF THE VERCEL PROJECT, NOT TYPED FROM MEMORY , four, not five:
+      vvonderxi.com, www.vvonderxi.com, v-vonder-xi.vercel.app, and vvonderxi-preview.vercel.app
+      (pinned to the redesign-compare branch). The wildcard covers Vercel's GENERATED per-branch
+      and per-deployment URLs, which are NOT in the domain list , the live branch preview is
+      `v-vonder-xi-git-redesign-compare-...vercel.app`, and an allowlist built from the domain
+      list alone would block development on every preview deploy.
+      LOCALHOST IS ALLOWED AND IT COSTS NOTHING: a script that would spoof `http://localhost`
+      could equally spoof `https://vvonderxi.com`, so excluding it buys no security and breaks
+      local development.  */
+  const ALLOWED_ORIGINS = new Set([
+    'https://vvonderxi.com',
+    'https://www.vvonderxi.com',
+    'https://v-vonder-xi.vercel.app',
+    'https://vvonderxi-preview.vercel.app'
+  ]);
+  const ALLOWED_PATTERNS = [
+    /^https:\/\/v-vonder-xi-[a-z0-9-]+\.vercel\.app$/,   // Vercel's generated branch + deployment URLs
+    /^http:\/\/localhost(:\d+)?$/,
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/
+  ];
+  const origin = req.headers && req.headers.origin;
+  const originOK = !!origin && (ALLOWED_ORIGINS.has(origin) || ALLOWED_PATTERNS.some(re => re.test(origin)));
+  /*  ECHO THE ORIGIN, NEVER `*`. A wildcard tells every browser the endpoint is public, which
+      is the thing being withdrawn. Vary:Origin so a shared cache cannot serve one site's
+      allowed response to another.  */
+  if (originOK) res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'OPTIONS') return res.status(originOK ? 200 : 403).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!originOK) {
+    console.error('[vv] refused origin:', origin || '(absent)');
+    return res.status(403).json({ error: 'origin not allowed' });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });

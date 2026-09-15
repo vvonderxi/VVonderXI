@@ -135,7 +135,10 @@
   body.light .band .bdef{color:#5a544a}
   .band.open .bdef{max-height:240px;margin-top:11px}
   .band.open.showmore .bdef{max-height:560px}
-  .bjury{display:none;margin-top:13px;padding-top:13px;border-top:1px solid var(--pill-b);font-family:'Bricolage Grotesque';font-style:italic;font-size:14.5px;line-height:1.55;color:var(--pink-ink)}
+  /*  `--pill-b` IS UNDEFINED ON THIS PAGE, so the whole border-top shorthand was invalid and
+      the rule drew no line at all. Value matched to `.wmc-b` below, which is the same kind of
+      divider, with the same body.light override.  */
+  .bjury{display:none;margin-top:13px;padding-top:13px;border-top:1px solid rgba(255,255,255,0.09);font-family:'Bricolage Grotesque';font-style:italic;font-size:14.5px;line-height:1.55;color:var(--pink-ink)}
   .band.showmore .bjury{display:block}
   .bmore{display:block;margin-top:10px;background:none;border:none;padding:0;cursor:pointer;font-family:'Archivo';font-weight:800;font-size:12px;color:var(--pink-ink);letter-spacing:.02em}
   .bmore::before{content:'See more \203A'}
