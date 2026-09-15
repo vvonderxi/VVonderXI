@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-13",
+  "generated": "2026-09-15",
   "source": "player_card_mv",
   "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
   "figures": [

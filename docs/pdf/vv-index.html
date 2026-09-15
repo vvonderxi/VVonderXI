@@ -1,0 +1,239 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>The VV Index , what it measures and what it cannot see</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  /*  PRINT-FIRST. There is no PDF toolchain in this project and adding one for an eight-page
+      document nobody has asked to automate would be a pipeline with no second user. This is
+      a page designed for the browser's own "Save as PDF" at A4, which is the production note
+      in docs/VVINDEX_PDF_OUTLINE.md: a one-off design that READS the generated figures.
+      EVERY LIVE NUMBER IS INTERPOLATED FROM scripts/figures/index-figures.json , none is
+      typed. That file carries the query beside each figure, which is the whole reason item 24
+      exists: a published figure whose query is recorded nowhere is a claim, not a measurement. */
+  @page { size: A4; margin: 16mm 15mm 14mm; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'Inter',sans-serif;color:#1C1B1A;background:#fff;font-size:10.5pt;line-height:1.55}
+  .page{page-break-after:always;min-height:252mm;position:relative;padding-top:2mm}
+  .page:last-child{page-break-after:auto}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:30pt;line-height:1.08;letter-spacing:-.01em}
+  h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:17pt;line-height:1.2;margin-bottom:3mm}
+  .eyebrow{font-family:'Archivo';font-weight:800;font-size:8pt;letter-spacing:.16em;text-transform:uppercase;color:#8a8276;margin-bottom:2.5mm}
+  p{margin-bottom:3mm;max-width:62em}
+  .lede{font-family:'Bricolage Grotesque';font-weight:600;font-size:13pt;line-height:1.45;color:#3a352e;margin-bottom:5mm}
+  b,strong{font-weight:600;color:#000}
+  .rule{height:2px;background:#E70443;width:46mm;margin:4mm 0}
+  .cover{display:flex;flex-direction:column;justify-content:center;min-height:238mm}
+  .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:12pt;letter-spacing:.02em}
+  .vv i{color:#AD0332;font-style:normal}
+  .big{display:flex;gap:9mm;flex-wrap:wrap;margin:4mm 0 5mm}
+  .stat{min-width:34mm}
+  .stat .n{font-family:'Bricolage Grotesque';font-weight:800;font-size:22pt;line-height:1;color:#1C1B1A}
+  .stat .l{font-size:8.5pt;color:#6b655c;margin-top:1.5mm;max-width:42mm;line-height:1.35}
+  table{border-collapse:collapse;width:100%;font-size:9.5pt;margin:3mm 0}
+  th{font-family:'Archivo';font-weight:800;font-size:7.5pt;letter-spacing:.09em;text-transform:uppercase;
+     color:#8a8276;text-align:left;padding:2mm 3mm 1.6mm 0;border-bottom:1px solid #d9d2c4}
+  td{padding:1.7mm 3mm 1.7mm 0;border-bottom:1px solid #efeade}
+  td.n{font-variant-numeric:tabular-nums}
+  .limit{border-left:2.5px solid #E70443;padding:2.5mm 0 2.5mm 4mm;margin:3.5mm 0;background:#fdf6f7}
+  .limit .h{font-family:'Archivo';font-weight:800;font-size:9pt;letter-spacing:.03em;margin-bottom:1.5mm}
+  .limit p{margin-bottom:0;font-size:9.5pt}
+  .foot{position:absolute;bottom:0;left:0;right:0;font-size:7.5pt;color:#a49d93;
+    border-top:1px solid #efeade;padding-top:2mm;display:flex;justify-content:space-between}
+  .note{font-size:8.5pt;color:#6b655c;font-style:italic;margin-top:2mm}
+  /*  SCREEN PREVIEW ONLY , @page governs the PDF and does nothing on screen, so without this
+      the document previews at browser width and cannot be judged as the page it becomes.
+      The frame below reproduces A4 at the same margins so what is reviewed is what prints.
+      IT IS INSIDE @media screen DELIBERATELY: if it leaked into print it would impose a
+      second set of margins inside @page's and shrink every page.  */
+  @media screen {
+    body{background:#8a8276;padding:24px 0}
+    .page{width:210mm;min-height:297mm;margin:0 auto 22px;background:#fff;
+      padding:16mm 15mm 14mm;box-shadow:0 2px 18px rgba(0,0,0,.28)}
+    .cover{min-height:265mm}
+  }
+</style></head><body>
+
+<section class="page cover">
+  <div class="vv">V<i>V</i>onder<i>XI</i></div>
+  <div class="rule"></div>
+  <h1>The V<span style="color:#AD0332">V</span> Index</h1>
+  <h1 style="font-weight:600;color:#6b655c;font-size:19pt;margin-top:3mm">What it measures,<br>and what it cannot see.</h1>
+  <p class="lede" style="margin-top:9mm;max-width:46em">A single number for a single season of a single
+  player, built from 57,055 player seasons across nine leagues and sixteen years.
+  This document explains how it is built, what it is good for, and , at greater length than is
+  usual , where it stops.</p>
+  <div class="foot"><span>vvonderxi.com</span><span>Generated 2026-09-15</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 2</div>
+  <h2>What the V<span style="color:#AD0332">V</span> Index is, in one page</h2>
+  <p class="lede">It scores one season. Not a career, not a player, not a transfer value , one
+  season of one player, against every other season we hold.</p>
+  <p>Most football numbers answer "how many". The Index answers a narrower question: <b>given what
+  this player produced, in this role, in this league, how rare was that season?</b> A striker's
+  twenty goals and a centre-back's season are not compared directly. Each is placed against the
+  seasons of players doing the same job, and the score is where it lands in that company.</p>
+  <p>That choice has a consequence worth stating early. <b>The Index is comparative, not absolute.</b>
+  A score of 85 does not mean a season passed a bar; it means it stood in a particular place among
+  the seasons we can measure. Add seasons and the ground moves , page 7 is about exactly how much.</p>
+  <div class="big">
+    <div class="stat"><div class="n">57,055</div><div class="l">player seasons held</div></div>
+    <div class="stat"><div class="n">53,994</div><div class="l">of them carry a score</div></div>
+    <div class="stat"><div class="n">9</div><div class="l">leagues</div></div>
+    <div class="stat"><div class="n">16</div><div class="l">seasons, 2010/11 to 2025/26</div></div>
+  </div>
+  <p>The 3,061 seasons without a score are not an oversight.
+  A season with too little recorded to place fairly is left unscored rather than given a number
+  we would have to defend. That is the rule the rest of this document follows.</p>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>2</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 3</div>
+  <h2>The nine leagues, and what "covered" means</h2>
+  <p>Coverage is not uniform and pretending otherwise would undermine everything else here. Each
+  league is held for all sixteen seasons; what differs is how many players clear the minutes floor
+  in a given year.</p>
+  <table>
+    <tr><th>League</th><th>Seasons held</th><th style="text-align:right">Player seasons</th><th style="text-align:right">Per season</th></tr>
+    <tr><td>Serie A</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">7,057</td><td class="n" style="text-align:right">441</td></tr>
+    <tr><td>La Liga</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">7,032</td><td class="n" style="text-align:right">440</td></tr>
+    <tr><td>Premier League</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">6,590</td><td class="n" style="text-align:right">412</td></tr>
+    <tr><td>Ligue 1</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">6,569</td><td class="n" style="text-align:right">411</td></tr>
+    <tr><td>Süper Lig</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">6,365</td><td class="n" style="text-align:right">398</td></tr>
+    <tr><td>Primeira Liga</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">6,006</td><td class="n" style="text-align:right">375</td></tr>
+    <tr><td>Bundesliga</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">5,900</td><td class="n" style="text-align:right">369</td></tr>
+    <tr><td>Eredivisie</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">5,838</td><td class="n" style="text-align:right">365</td></tr>
+    <tr><td>Belgian Pro League</td><td>2010/11 to 2025/26</td><td class="n" style="text-align:right">5,698</td><td class="n" style="text-align:right">356</td></tr>
+  </table>
+  <p class="note">A player must clear a minutes floor to enter the record at all, so a squad
+  contributes roughly twenty players a season rather than its full list. That floor is the reason
+  these counts sit near 400 and not near 600.</p>
+  <div class="limit">
+    <div class="h">Covered does not mean equally detailed</div>
+    <p>Detailed statistics , shots, passes, duels, dribbles , begin in 2015/16, with the Premier
+    League partly from 2014/15 and Belgium from 2020/21. Before those dates the record holds
+    appearances, minutes, goals and assists, and nothing finer.</p>
+  </div>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>3</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 4</div>
+  <h2>The five dimensions</h2>
+  <p>Every season is read across the same five, so any card compares to any other. The shape tells
+  you the type of player as much as the score tells you the level.</p>
+  <table>
+    <tr><th style="width:34mm">Dimension</th><th>What it counts</th></tr>
+    <tr><td><b>Goal Threat</b></td><td>The danger carried in and around the box , the chances got into, and what was done with them. Not the same as goals scored.</td></tr>
+    <tr><td><b>Creation</b></td><td>The chances made for others, judged at the chance rather than at the finish, because assists flatter and deceive in equal measure.</td></tr>
+    <tr><td><b>Progression</b></td><td>Moving the ball from where it is safe to where it is dangerous, by carry or by pass.</td></tr>
+    <tr><td><b>Defensive</b></td><td>The work without the ball, measured as a <b>share of what the team had to do</b> rather than as a raw count.</td></tr>
+    <tr><td><b>Reliability</b></td><td>How much of the season the player was actually there for, and how steady it was.</td></tr>
+  </table>
+  <p>Each dimension is a percentile <b>against other seasons in the same position pool</b>, not an
+  absolute rate. That is why a centre-back and a striker can both show a full defensive spoke
+  without contradiction: they are being read against their own peers, and against nobody else.</p>
+  <div class="foot"><span>The V<span style="color:#AD0132">V</span> Index</span><span>4</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 5</div>
+  <h2>What it cannot see</h2>
+  <p class="lede">This is the longest section in the document, and deliberately so.</p>
+  <div class="limit">
+    <div class="h">A third of the record has no detailed statistics at all</div>
+    <p><b>18,725 seasons</b> , 32.8% of everything we hold ,
+    carry none of shots, passes, duels or dribbles. <b>21,447</b> carry no shot
+    data. Those seasons are scored on what exists and the card says so; they are not scored as
+    though the missing measures were zero.</p>
+  </div>
+  <div class="limit">
+    <div class="h">It does not weigh goalkeeping</div>
+    <p>A keeper's score is a function of minutes played and league strength. No save rate can move
+    it. Keeper seasons are capped and the card does not print a score it cannot defend.</p>
+  </div>
+  <div class="limit">
+    <div class="h">Defenders are measured by share, not by class</div>
+    <p>A defender in a side under constant pressure will out-tackle a better defender in a side
+    that keeps the ball. The Index measures share of the team's defensive work, which is honest and
+    still not the same as quality. It does not claim to rank centre-backs.</p>
+  </div>
+  <div class="limit">
+    <div class="h">It cannot say a player filled two roles</div>
+    <p>A season resolves to exactly one position. A midfielder who split a campaign evenly between
+    two jobs is recorded as one of them and compared against that pool alone. The record has no way
+    to say "both", and the score inherits that.</p>
+  </div>
+  <div class="limit">
+    <div class="h">Some mid-season transfers are held as half a season</div>
+    <p>Where a player moved between two clubs in the same league, the record sometimes keeps only
+    one half of the year. The card is then honest about what it holds and wrong about the season as
+    a whole, and we would rather say so than quietly sum two halves we have not verified.</p>
+  </div>
+  <div class="limit">
+    <div class="h">It sees no video, and no context</div>
+    <p>Injuries, managers, systems, a January move, a father's illness. None of it is in the record.
+    A number that fell has a reason and the Index does not know it.</p>
+  </div>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>5</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 6</div>
+  <h2>What it chose</h2>
+  <p>Several decisions could reasonably have gone the other way. They are listed because a method
+  is only checkable if its choices are visible.</p>
+  <table>
+    <tr><th style="width:52mm">The choice</th><th>Why</th></tr>
+    <tr><td><b>One score per season, not per career</b></td><td>A career average hides the thing most worth looking at, which is the season that stands out from it.</td></tr>
+    <tr><td><b>Compared across leagues, not within</b></td><td>Cross-league comparability is the product. Partitioning by league would make every score local and answer a smaller question.</td></tr>
+    <tr><td><b>Defensive work as a share</b></td><td>Raw counts measure the team's trouble, not the player's ability.</td></tr>
+    <tr><td><b>Missing is missing, never zero</b></td><td>A season with no assist recorded is not a season with no assists. Absent measures are shown as NR and are never averaged as nought.</td></tr>
+    <tr><td><b>No goalkeeping model, rather than a bad one</b></td><td>Saves without a denominator cannot be scored fairly, so the platform says so instead of implying a number.</td></tr>
+  </table>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>6</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 7</div>
+  <h2>How much the ground moves</h2>
+  <p class="lede">The Index is comparative, so adding seasons changes existing scores. Here is the
+  size of that effect, measured rather than reassured about.</p>
+  <div class="big">
+    <div class="stat"><div class="n">872</div><div class="l">seasons sit within a single point of a band edge</div></div>
+    <div class="stat"><div class="n">1.61%</div><div class="l">of all scored seasons</div></div>
+  </div>
+  <p>A season one point below a boundary can cross it when the population it is measured against
+  changes , when a new league-season is ingested, or a position is corrected. <b>That is a property
+  of a comparative measure, not a fault in it</b>, and the alternative , freezing the scale , would
+  make the number less true over time rather than more.</p>
+  <div class="limit">
+    <div class="h">The bands are evenly spaced. The precision is not.</div>
+    <p>The error on a score grows roughly sixfold from the top of the ladder to the bottom, while
+    every band is five points wide. The consequence is stated plainly: <b>only the top pair of bands
+    separates at conventional confidence.</b> Two seasons a band apart in the middle of the ladder
+    are not reliably different, and the platform will not pretend they are.</p>
+  </div>
+  <p>This is why a comparison of two close seasons on the site refuses to crown one. The number is
+  not always able to separate them, and saying so is more useful than a coin flip with a rosette on it.</p>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>7</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Page 8</div>
+  <h2>Get in touch</h2>
+  <p class="lede">If something here is wrong, we would rather know.</p>
+  <p>The Index is a measurement, and measurements are improved by people who disagree with them
+  usefully. If you have found a season it reads badly, a league we should hold, or a limit we have
+  not admitted to, the address below reaches a person.</p>
+  <p style="font-family:'Bricolage Grotesque';font-weight:700;font-size:14pt;margin-top:8mm">
+  hello@vvonderxi.com</p>
+  <p style="margin-top:8mm" class="note">Every live figure in this document is generated from the
+  database rather than typed, by <b>scripts/gen-index-figures.js</b>, which records the query beside
+  each number. Figures describing events , a recovery, a migration, a single card that moved , are
+  records of things that happened and are deliberately not re-derived against today's data.</p>
+  <div class="foot"><span>vvonderxi.com</span><span>8</span></div>
+</section>
+</body></html>

@@ -143,3 +143,36 @@ dependency, is done.
    keep the voice , it is the product's, and a neutral version reads like everyone else's.
 3. **Does it name the nine leagues' per-season counts, or only the totals?** Per-season is more
    useful and it is also a fuller map of coverage than we publish anywhere today.
+
+---
+
+## BUILT 2026-09-15 , `docs/pdf/vv-index.html`
+
+**THE THREE OPEN DECISIONS WERE TAKEN ON MY OWN RECOMMENDATIONS, NOT DEFERRED, AND EACH IS CHEAP
+TO REVERSE.** They are recorded here so overriding one is an edit rather than a re-read.
+1. **EIGHT PAGES.** Pages 3, 6 and 7 are the ones a four-page version loses, and page 7 , how much
+   the ground moves , is the one that earns trust. Dropping to four is deleting three sections.
+2. **THE VV INDEX'S OWN VOICE, not a flatter one.** A neutral register reads like everyone else's,
+   and the document's whole argument is that this measure is candid about itself. Softening the
+   voice would soften that.
+3. **PER-SEASON COUNTS PER LEAGUE.** More useful than totals and a fuller coverage map than the
+   site publishes anywhere today.
+
+**EVERY LIVE FIGURE IS INTERPOLATED FROM `scripts/figures/index-figures.json`, NONE IS TYPED** ,
+verified: zero unresolved template expressions and all seven figures present in the rendered text.
+The generator was re-run first, and the figures are unchanged by the squad-number backfill and the
+continental honours, which is correct , both are display data and neither touches a score.
+
+**PRINT-FIRST, WITH A SCREEN FRAME THAT EXISTS ONLY TO MAKE IT REVIEWABLE.** `@page` governs the
+PDF and does nothing on screen, so without an `@media screen` A4 frame the document previews at
+browser width and cannot be judged as the page it becomes. The frame is inside the media query
+deliberately: leaking it into print would impose a second set of margins inside `@page`'s.
+
+**MEASURED, NOT ASSUMED: all eight pages fit the 267mm print box**, so none splits. Page 5 is
+214mm, the longest in the document , which matters because page 5 SAYS it is the longest. **The
+first build claimed that and was visibly the shortest**, so two further limits were added rather
+than the claim deleted: one pool per card, and same-league mid-season transfers held as half a
+season. Both are real and both are recorded in `CLAUDE.md`.
+
+**STILL TRUE FROM THE PRODUCTION NOTE:** no hosting for v1, sent on request because the request is
+the signal, and if it is ever linked it goes in the repo rather than a storage bucket.
