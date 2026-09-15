@@ -1398,6 +1398,26 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
   function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);}
+  /*  EVERY SLOT A TAG CAN REACH , ONE LIST, WRITTEN BY vvSetVerdict AND CLEARED HERE.
+      SEVENTH TAG LEAK, 2026-09-15, AND THE FIRST SIX WERE ALL FIXED IN THE WRITER. Those six
+      were the WAIT state: vvSetVerdict suppresses tagObj when `opts.wait`, so nothing prints a
+      conclusion during the 26 seconds. THIS ONE IS THE OPPOSITE END , a FINISHED tag surviving
+      into the NEXT pairing, which no amount of wait-suppression can reach.
+      THE MECHANISM: `.tie-flag` is a direct child of `.matchup`, sits ABOVE the two cards, and
+      is gated ONLY by its own `.tf-show` class , not by `.answered` and not by `.settled`. So
+      when a comparison ended in a tie and the reader then opened the picker, the three matchup
+      classes came off, #mvStrip went dark with them, #vEdgeTag and #vTagline went with
+      #verdict's `.show` , and the tie flag stayed lit, printing the previous pairing's tag
+      over an unanswered screen. Reported as "Different Worlds" above the cards before Compare
+      was pressed.
+      WHY A LIST RATHER THAN FIVE MORE LINES. vvSetVerdict writes five slots; this function
+      cleared NONE of them and relied entirely on class gates it happened to know about. That
+      is the same shape as the splice and the wait class: a mechanism that undoes what it
+      remembers rather than what exists. The next consumer added to the writer is now the one
+      that breaks this , so the list lives beside a comment saying to add to it, and the
+      `.tf-show` / `data-tip` strip is explicit because a class and an attribute both carry
+      state that innerHTML does not.  */
+  var VV_TAG_SLOTS = ['mvStrip','vTagline','vTagWhy','vEdgeTag','tieFlag'];
   function vvResetVerdict(){
     var v=document.getElementById('verdict'); if(v) v.classList.remove('show');
     /*  ALL THREE STATES COME OFF TOGETHER. `settled` is the layout, `waiting` is the loader
@@ -1405,6 +1425,24 @@ body.light .pkmsub{color:var(--ink-soft)}
         finished state into the next pairing.  */
     var m=document.querySelector('.matchup'); if(m) m.classList.remove('settled','waiting','answered');
     var w=document.getElementById('mvWait'); if(w) w.innerHTML='';
+    VV_TAG_SLOTS.forEach(function(id){
+      var el=document.getElementById(id); if(!el) return;
+      if(id==='tieFlag'){
+        el.classList.remove('tf-show'); el.removeAttribute('data-tip');
+        var lb=el.querySelector('.tflabel'); if(lb) lb.textContent='';
+        return;                                  // its markup is structural, only the label is content
+      }
+      el.innerHTML=''; el.removeAttribute('data-tip');
+      if(el.style) el.style.display='';
+    });
+    /*  THE TWO EDGE FLAGS CARRY THE SAME KIND OF FINISHED STATE in a class rather than text.  */
+    ['edgeFlagA','edgeFlagB'].forEach(function(id){
+      var e=document.getElementById(id); if(!e) return;
+      e.classList.remove('ef-show'); e.removeAttribute('data-tip');
+      var l=e.querySelector('.eflabel'); if(l) l.textContent='';
+    });
+    var ca=document.getElementById('cardA'), cb=document.getElementById('cardB');
+    if(ca) ca.classList.remove('winner'); if(cb) cb.classList.remove('winner');
   }
   // #109 Compare reveal-through-back flip , routes to the shared VVCore.vvCardFlip
   // (360deg, VV monogram mid-turn, lands on the new card). A first pick into an EMPTY
