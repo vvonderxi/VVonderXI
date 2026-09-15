@@ -3402,6 +3402,24 @@
          + sec('INDIVIDUAL HONOURS', individual.map(honourRowHTML).join(''))
          + sec('THE PLAYER', profileRowsHtml || '');
   }
+  /*  ── PARKED, AND SAFE ONLY WHILE IT STAYS PARKED , audited 2026-09-15 ────────────────
+      NOTHING CALLS THIS. It is declared here and exported, and no shipping surface and no
+      other function in this module references it , it has waited since it was written for
+      "the priority decision" in the line below, which was never made.
+      THE TIER ORDERING IS FINE AND THAT WAS CHECKED RATHER THAN ASSUMED. `topHonour` is
+      `all[0]` off a list already sorted by `season.sort((a,b)=> a.tier - b.tier)`, the sort
+      is NUMERIC, and the continental honours added at tier 2.5 land exactly where intended:
+      ballon_dor(1) > world_cup(2) > euro(2.5) > copa(2.5) > ucl(3). No mis-ranking.
+      WHAT IS ACTUALLY MISSING IS THE CHIP LABEL. `HONOUR_CHIP_LABEL` covers the original
+      SEVEN types only, so `euro_winner` and `copa_winner` fall through to `h.label` and
+      would render "European Champion" and "Copa América Champion" on a CARD FACE chip sized
+      for short forms , the map exists precisely because `world_cup_winner` has to read
+      "World Cup", since nothing longer fits. **Anyone wiring this must add both short labels
+      first.**
+      SO THE TRAP IS THE USUAL ONE: a parked renderer is harmless until someone calls it, and
+      the platform has changed underneath it twice since it was written , two new honour
+      types and a new mark set. If it is ever judged not worth wiring, DELETE it rather than
+      leaving it to read as authoritative.  */
   // TOP-SLOT honour pill (card face, wired with the priority decision later).
   function renderTopHonourPill(honours, opts){
     if(!honours || !honours.topHonour) return '';
