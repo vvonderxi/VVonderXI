@@ -38,7 +38,7 @@ Data quality   █████████████████░  ~97%   IN
 Tags           ██████████████████  ~97%   TAG ENGINE COMPLETE , thresholds AND eligibility both on position_pool (the field split that mis-bracketed 12.78% is gone), Marksman retired, scoring on two defensible axes, identity tags gated on pool not family, no tag over the ~2% rarity CEILING bar the stated Iron Man exception (the band is a ceiling, not a target , four narrow archetypes sit below it by design). Only the fouls_drawn tag + discipline fields on the mv remain, both post-launch
 Compare        █████████████████░  ~95%   spine + flow-polish COMPLETE (go-to-player, user-fold, back-path, subheading, C8) + VERDICT-TAG SYSTEM shipped (14 tags + age-tiebreaker + Proof/Confidence + crown badge) + the keeper radar hole closed (966 keeper cards drew an outfield pentagon here, card.html always gated and compare.html never did); only optional picker pager + merge remain
 Card editorial █████████████░░░░░  ~71%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED + CHRONICLE REBUILT (72 moments, api-keyed, opponent field, watch CTA) + the card is now EXPLAINED on the playbook + GK confidence no longer claims a completeness it cannot have + SEQUENCE NAVIGATION (walks the list you arrived from, arrows/keys/swipe) + the radar is percentile-within-pool rather than four fixed constants (bar unmoved , it was already rendering, it was rendering wrongly); K4 Proof + K5 VV-line trajectory + honours strip UI remain
-Hygiene        █████░░░░░░░░░░░░░  ~28%   key rotation + QA pass outstanding (QA_PASS.md written, four groups, Group A recorded , COUNT the `### [A-D]<n>` headings, do not quote a number); 2026-08-29 closed the dead-CSS sweep, the page-weight extraction (2.78 MB -> 0.98 MB) and two 390px defects (picker scroll chaining, 30px view toggles); 2026-08-18 polish batch closed 7 items
+Hygiene        █████████░░░░░░░░░  ~50%   [2026-09-15] the deployed surface is ONE function and it is bounded, allowlisted and rate-limited , NONE OF IT LIVE until the production-branch flip, see docs/MERGE_READINESS_2026-09-15.md; A-group QA substantially recorded (A0/A2/A5 closed this session, scope re-measured at 200 commits not 599); remaining: the A14 contrast re-run, the spend cap (B4b, Lucas), and the B/D groups which need the deployed site. key rotation + QA pass outstanding (QA_PASS.md written, four groups, Group A recorded , COUNT the `### [A-D]<n>` headings, do not quote a number); 2026-08-29 closed the dead-CSS sweep, the page-weight extraction (2.78 MB -> 0.98 MB) and two 390px defects (picker scroll chaining, 30px view toggles); 2026-08-18 polish batch closed 7 items
 Engine         █████████████████░  ~93%   Stages 0-4 done+live (def recalib + best-of + output boost + computed league strength + CDM-mislabel cleanup); RADAR PERCENTILE-WITHIN-POOL SHIPPED 2026-09-05 (the last non-optional engine item, parked since the Blueprint , CB/ST goalThreat gap 6/40 closed to 48/46), as an embedded snapshot, with percent_rank columns still owed at the shared matview rebuild; recalibration COMPLETE, remaining ideas post-launch/optional
 Merge          ░░░░░░░░░░░░░░░░░░    0%    redesign-compare -> vvonderxi_BIGGER
 ```
@@ -942,6 +942,82 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-09-15 | The most-audited file on the platform was an open Anthropic proxy
+
+**1. THE ENDPOINT TOOK `messages`, `system` AND `max_tokens` FROM THE REQUEST BODY AND SENT THEM
+TO ANTHROPIC ON OUR KEY**, with `Access-Control-Allow-Origin: *`, no auth and no rate limit. **The
+caller chose what each call cost.** Not a broken code path , every line did what it said , which
+is why no behavioural sweep found it. **It survived because every prior review asked whether the
+file WORKED**: the cache stamps, the A/B swap, the winner check and the prompt splice were all
+audited hard and repeatedly, and every one is a question about correctness for a caller we trust.
+**Nobody asked what an untrusted caller could do with the same three fields.** A file can be the
+most-audited on the platform and unexamined in one direction.
+Now bounded (2048 output tokens, 120k input chars, message shape), behind an **origin allowlist**
+built from the FOUR domains read off the Vercel project plus a wildcard for Vercel's GENERATED
+branch URLs, which are not in the domain list at all , and behind a **rate limit**, 30 new
+generations per hour per IP and 2 concurrent, on one Supabase table rather than a new vendor.
+**Each states its own limit in the code**: the allowlist stops another WEBSITE, not a script;
+the limiter stops one ADDRESS, not a pool; and the cache is doing most of the defence, since the
+check runs after the cache lookup so nothing repeated is ever billed.
+
+**2. A CACHE VERSION COULD DESCRIBE A PROMPT THAT DID NOT WRITE IT , THE SAME SHAPE AS THE PATH B
+SPLICE.** `customSystem` overrode the prompt while the stamp was picked from the `judge` FLAG, so
+a row could be written by a prompt nobody has seen and stamped as ours, then served to every later
+visitor for that pair. Fixed by fingerprinting the function's RETURN VALUE, so the two cannot
+disagree by construction. **Zero rows regenerate , all three versions byte-identical, asserted.**
+`VERDICT_VERSION_JUDGE` is now exported: there are THREE prompts and the module announced two.
+
+**3. ITEM 25 IS WITHDRAWN AND MUST BE RETAKEN FROM SCRATCH.** The verdict figures were taken over
+"every row on a v3 prompt", which spans **FIVE prompt bases including Path B** , a mixture with
+no named composition. The NOTES figures survive that (notes versions carry no payloadRev, so an
+exact match IS a base match) **but fall for a better reason: the pre-edit baseline MOVED, 1.08 to
+1.30, as its own population kept filling.** So 1.08-to-0.88 read flat and 1.30-to-0.88 is a DROP
+of 0.42 , the edit may have made marking WORSE. **1.53 pooled SEs, under the 1.96 bar, so it is a
+signed direction at a sample size that cannot carry a verdict.** The gate is now explicit: both
+bases must stop moving, and the current Path A prompt has ZERO rows.
+
+**4. THE BASELINE ERROR, THREE TIMES IN ONE DAY, AND THE REPETITION IS THE FINDING.** The stale
+0.43 measured a cache mid-refill; the 1.08 measured a base still filling; the cache-health counts
+measured a population half of which could never participate (194 of 366 notes rows were orphans
+that the read path treats as a MISS). **Each time the number was right about the rows it saw and
+wrong about what those rows were.** Before quoting any figure over a cache, ask what fraction of
+the denominator is ELIGIBLE to be counted, not merely what fraction has arrived.
+
+**5. THE DEPLOYED SURFACE IS ONE FUNCTION.** `api/log.js` was already gone (SS E described it as
+live, and the same entry's BSD claim was stale too). `api/get-seasons.js` was deleted , and it had
+**no caller in any `.html` in the entire history of any branch**, so it was stillborn rather than
+orphaned. It was fixed hours before it was deleted and **both the record and the migration README
+say so**, because a later reader finding `034b91e` must not conclude it was in use. It had been
+asserting a recorded **0** for assists on **31,040 rows, 54.8% of the database**, from a
+machine-readable endpoint.
+
+**6. FIVE UNDEFINED CSS VARIABLES, ALL LIVE, AND `var(--ink)` ALREADY HAD ITS OWN RULE HERE.**
+Rankings' visible "Filters" button carried THREE on one rule , measured live as
+`background: rgba(0,0,0,0)` and `border: 0px none`, so the pill had no background and no border.
+**A per-file scan reported 22 and the real count is 5** , `vv-core` consumes tokens the PAGES
+define, the same shape as the dead-export scan that accused `VVSeq` , and one flag was PROSE, the
+comment about this exact trap.
+
+**7. DATA REMOVED, ALL CAPTURED AND VERIFIED FIRST:** 194 orphan notes rows, and the
+`comparison_log` / `search_log` tables, whose 43 pairings across 33 sessions now live in
+`migrations/orphan_endpoints_2026-09-15/`. Both verified by a read-back that ERRORS rather than
+returning empty, since an empty read cannot tell "dropped" from "unreadable".
+
+**INSTRUMENT FAULTS, ALL MINE:** replacing `global.fetch` made the limiter's own ledger reads hang
+on the same latch as the model call (supabase-js uses fetch); latching two calls while keeping one
+resolver, where a never-resolved promise is not an open handle so node exited silently reporting
+success; `grep -c` counting LINES not occurrences, which made a correct doc look stale; and
+**`pkill -f <pattern>` matching the shell running it, twice.**
+
+**NEXT / OPEN:** **`docs/MERGE_READINESS_2026-09-15.md` leads with the thing this repo would
+otherwise mislead a reader about , none of today's protections are live, because production
+tracks `coming-soon`.** The one gap with a cost attached is **distributed abuse**, which nothing
+in the code can see: **QA_PASS B4b**, five minutes in the Anthropic console, cap $100 and alerts
+at $20 and $50, derived from a cached verdict at $0.018 and legitimate use at $4 a month.
+**QA A14, the platform contrast re-run, is the only sweep left and is deliberately its own
+session.** Item 26's SITTING.sql, item 22's PDF, item 25's measurement and the blank-shield
+question are all Lucas's.
 
 ### 2026-09-12 | The assists honour was a maximum over three cards, and the fix was deletion
 
