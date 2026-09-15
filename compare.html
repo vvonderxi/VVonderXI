@@ -1376,13 +1376,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260915c"></script>
+<script src="/vv-marks.js?v=20260915d"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260915c"></script>
+<script src="/vv-core.js?v=20260915d"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1391,7 +1391,34 @@ body.light .pkmsub{color:var(--ink-soft)}
   // icon, not the pill. Runs once at parse time, after vv-core.js has loaded.
   try { VVCore.useCardMarks(true); } catch(e){}
 
-  function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();}
+  /*  WHICH CARD EACH FOLD IS MOUNTED FOR , the guard that lets vvLoadSlotSeasons be called
+      from the STATE rather than from one path. DECLARED HERE, ABOVE vvSizeCards, AND THAT
+      POSITION IS LOAD-BEARING: vvSizeCards runs once at module init, well before the slot-state
+      block further down, so a `var` declared beside SLOT_SEASONS/SLOT_OPEN is still `undefined`
+      when the first call happens and setting a key on it throws , which is exactly what it did,
+      silently taking the rest of init with it and leaving the folds unmounted. The symptom was
+      identical to the bug being fixed, which is the trap worth recording.  */
+  var SLOT_MOUNTED={};
+  function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();vvEnsureSeasonFolds();}
+  /*  THE SEASON FOLD BELONGS TO THE STATE "this slot holds a card", NOT TO ONE CODE PATH ,
+      2026-09-15. vvLoadSlotSeasons was called from exactly TWO places, both inside
+      vvFlipReveal, so a card that arrived through the pick-or-change path got a season control
+      and a card that arrived through a DEEP LINK got none. Reported as the stepper "not working
+      at all" on ?a=&b= , and it was literal: there was nothing on the page to press.
+      MEASURED, NOT REASONED: on a deep-linked pair the page had ZERO season controls, and
+      driving vvLoadSlotSeasons('A') by hand mounted the fold immediately with 13 seasons and a
+      working trigger. The loader was never the problem; the call site was.
+      SO IT HANGS OFF vvSizeCards, WHICH IS THE ONE FUNCTION THAT KNOWS WHETHER A SLOT HOLDS A
+      CARD , every path that fills or empties a slot goes through it, including the deep link,
+      the picker, a season switch, Compare New and a resize. A path added later cannot forget,
+      which is the whole point: this is the THIRD time a behaviour attached to a path rather
+      than to its state has gone missing on the second path.
+      THE LOADER IS IDEMPOTENT (see its own note), so calling it on every resize is free.  */
+  function vvEnsureSeasonFolds(){ ['A','B'].forEach(function(s){
+    var c = s==='A'?CMP_A:CMP_B;
+    if(c && c.card_id!=null) { try { vvLoadSlotSeasons(s); } catch(e){} }
+    else { var el=document.getElementById('seasons'+s); if(el) el.remove(); SLOT_MOUNTED[s]=null; }
+  }); }
   function vvUpdateSeeLinks(){
     [['seeA',CMP_A],['seeB',CMP_B]].forEach(function(p){ var el=document.getElementById(p[0]); if(!el) return;
       var c=p[1]; if(c && c.card_id!=null){ el.href='card.html?id='+encodeURIComponent(c.card_id); el.style.display=''; } else { el.style.display='none'; } });
@@ -1588,13 +1615,22 @@ body.light .pkmsub{color:var(--ink-soft)}
     var cmp = slot==='A'?CMP_A:CMP_B;
     var host = document.getElementById('card'+slot);
     var old = document.getElementById('seasons'+slot);
+    /*  IDEMPOTENT, SO ANY NUMBER OF PATHS MAY CALL IT , 2026-09-15. This used to rebuild
+        unconditionally, which was safe only because exactly two call sites existed and both
+        followed a real card change. It is now also called from vvSizeCards, which fires on
+        every RESIZE, and each rebuild costs a network round trip plus a batched honours query.
+        KEYED ON card_id, SO A SEASON SWITCH STILL REBUILDS (a different season is a different
+        card_id) while a resize does not. The DOM check is deliberately ANDed with it: the
+        record alone would go stale if something removed the fold, and the fold alone cannot
+        tell which card it belongs to.  */
+    if(cmp && cmp.card_id!=null && old && SLOT_MOUNTED[slot]===cmp.card_id) return;
     // User-controlled fold: preserve open state across a season switch. AUTHORITATIVE flag,
     // not a DOM read , the old `old.querySelector('.seasonrows')` check depended on the list
     // still being in the DOM at this moment (after an async flip + two awaits), which is a
     // timing race. SLOT_OPEN is set the instant the user opens/folds, so it cannot be lost.
     var wasOpen = !!SLOT_OPEN[slot];
     if(old) old.remove();
-    SLOT_SEASONS[slot]=null;
+    SLOT_SEASONS[slot]=null; SLOT_MOUNTED[slot]=null;
     if(!host || !cmp || cmp.api_player_id==null) return;
     var sb=vvClient(); if(!sb) return;
     var res=await sb.from('player_card_mv').select('*').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false});
@@ -1605,6 +1641,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var wrap=document.createElement('div'); wrap.id='seasons'+slot; wrap.className='cmp-seasonfold';
     wrap.innerHTML='<button class="cmp-seasontrigger" onclick="event.stopPropagation();vvSlotSeasonsToggle(\''+slot+'\')">All '+rows.length+' seasons <span class="chev">&#9662;</span></button>';
     host.insertAdjacentElement('afterend', wrap);
+    SLOT_MOUNTED[slot] = cmp.card_id;
     if(wasOpen) vvSlotSeasonsToggle(slot);   // re-open with the new active season highlighted; only an explicit trigger/Collapse folds it
   }
   // Compare-only season row , Option B (card.html keeps the shared rankRowHTML seasonLed).
