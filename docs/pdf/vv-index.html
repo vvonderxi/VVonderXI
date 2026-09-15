@@ -23,6 +23,9 @@
   b,strong{font-weight:600;color:#000}
   .rule{height:2px;background:#E70443;width:46mm;margin:4mm 0}
   .cover{display:flex;flex-direction:column;justify-content:center;min-height:238mm}
+  /*  32mm reads as a mark rather than a banner at A4, and the asset is 260x116 so the height
+      follows the ratio rather than being asserted.  */
+  .covermark{position:absolute;top:0;right:0;width:32mm;height:auto}
   .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:12pt;letter-spacing:.02em}
   .vv i{color:#AD0332;font-style:normal}
   .big{display:flex;gap:9mm;flex-wrap:wrap;margin:4mm 0 5mm}
@@ -54,6 +57,19 @@
 </style></head><body>
 
 <section class="page cover">
+  <!--  THE MARK, TOP RIGHT OF THE COVER , 2026-09-15. The home page's own asset, in its LIGHT
+        variant, because this document prints on white and the dark one is drawn for a dark
+        ground. Positioned against .cover, which is already position:relative.
+        THREE THINGS HAD TO BE RIGHT AND NONE OF THEM SHOWS ON SCREEN:
+        (1) the path is ROOT-ABSOLUTE, so this file must be opened through the server rather
+            than as file://, which is how it is meant to be printed anyway;
+        (2) print-color-adjust:exact is already set on <html> at the top of this file, which is
+            what stops a browser dropping the image when it strips backgrounds for print;
+        (3) the width is in MILLIMETRES, not pixels, because every other measure on this page is
+            and a px width does not scale with the @page box.
+        VERIFIED IN PRINT PREVIEW, NOT ON SCREEN. A mark that renders in the viewport and
+        vanishes in the PDF is the whole failure mode here.  -->
+  <img class="covermark" src="/assets/spinelogo-light.png" alt="VVonderXI">
   <div class="vv">V<i>V</i>onder<i>XI</i></div>
   <div class="rule"></div>
   <h1>The V<span style="color:#AD0332">V</span> Index</h1>
