@@ -753,8 +753,29 @@
   .vvflipinner{position:relative;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}
   .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
   .vvflipfront{position:relative}
-  .vvflipfront .vvcard{max-width:none}
-  .vvflipback{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}
+  /*  THE CARD KEEPS ITS RESTING BOX THROUGH THE TRANSITION , 2026-09-15. These two rules used
+      to read `max-width:none`, whose comment said "just drop the 92% cap so flip width == wrap".
+      That did make the front match the wrapper, and it did it by MAKING THE CARD BIGGER than it
+      was a frame earlier: measured +8.7% wide, 0% tall, so the card stretched horizontally when
+      the flip began and snapped back when the wrapper was torn down. Reported as the stepper
+      "scaling up then settling".
+      IT IS NOT AN EASING PROBLEM AND NO CURVE CAN REACH IT. The jump happens OUTSIDE the
+      animated interval, at the instant the wrapper is inserted and again when it is removed.
+      The animation itself is clean , transform and opacity only, and deliberately NO
+      will-change, which Section C records as a Safari flattener that breaks preserve-3d.
+      THE FIX IS THE OTHER DIRECTION: keep the resting clamp on the card and bring the BACK FACE
+      down to the clamped width, so front and back agree at the size the card already was.
+      Measured after: 0.00px change on both axes, desktop and at 390, front and back matching.
+      AND IT IS SURFACE-DEPENDENT, WHICH IS THE PART THAT WILL WASTE SOMEBODY'S AFTERNOON:
+      `max-width:92%` is 92% of the PARENT, not of `--cw`. On card.html the slot is wide, so the
+      clamp binds and the jump is real , 26px on a 300px card. On compare's two-up PHONE layout
+      the slot is narrow enough that the clamp never binds at all and the measured jump is ZERO.
+      ANYONE CHASING THIS LATER WILL OPEN COMPARE FIRST, because it is the smaller surface and
+      the obvious place to look, AND THEY WILL FIND NOTHING. Reproduce it on the card page.
+      The 0.92 is the same constant Section C records as the reason the RENDERED card ratio is
+      1.518 rather than 1.397; it is not a new number.  */
+  .vvflipfront .vvcard{max-width:92%}
+  .vvflipback{position:absolute;top:0;left:0;width:calc(var(--cw)*0.92);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}
   .vvsheen{position:absolute;inset:0;overflow:hidden;border-radius:calc(var(--cw)*0.073);pointer-events:none;z-index:6}
   .vvsheen i{position:absolute;top:-25%;bottom:-25%;left:-70%;width:48%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-16deg);filter:blur(1px)}
   .vvsheen.go i{animation:vvsheenmove .8s cubic-bezier(.5,0,.5,1)}
@@ -770,8 +791,8 @@
   .vvmono-black .vvmonomark{color:#F0EAD9}
   .vvscalewrap{position:relative;margin:0 auto;transform-origin:center center}
   .vvscalefront{position:relative}
-  .vvscalefront .vvcard{max-width:none}
-  .vvscalecover{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}
+  .vvscalefront .vvcard{max-width:92%}   /* same rule as the desktop front above , see the note there */
+  .vvscalecover{position:absolute;top:0;left:0;width:calc(var(--cw)*0.92);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}
   /* season list , shared rankings-style season rows (one player), namespaced .seasonrows. Card sizing: */
   #seasonZone .seasonrows{width:330px;max-width:100%;margin:16px auto 0;animation:seasonIn .18s ease}
   /* ===== .seasonrows shared block (identical in compare.html) ===== */
@@ -1435,8 +1456,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260915d"></script>
-<script src="/vv-core.js?v=20260915d"></script>
+<script src="/vv-marks.js?v=20260916a"></script>
+<script src="/vv-core.js?v=20260916a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are

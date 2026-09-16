@@ -1021,8 +1021,29 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .vvflipinner{position:relative;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}   /* iOS Safari needs -webkit- or it flattens; NO will-change (it promotes to a flattened layer, killing children's 3D) */
   .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
   .vvflipfront{position:relative}                                              /* IN FLOW: the real .vvcard defines the box at its natural height */
-  .vvflipfront .vvcard{max-width:none}                                         /* keep natural width:var(--cw) + height:calc(--cw*1.397); just drop the 92% cap so flip width == wrap */
-  .vvflipback{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}   /* overlay , no flow impact. BOTH dims explicit off --cw (like the working .vvback); width:100%/height:100% resolve to 0 against the auto-sized in-flow inner */
+  /*  THE CARD KEEPS ITS RESTING BOX THROUGH THE TRANSITION , 2026-09-15. These two rules used
+      to read `max-width:none`, whose comment said "just drop the 92% cap so flip width == wrap".
+      That did make the front match the wrapper, and it did it by MAKING THE CARD BIGGER than it
+      was a frame earlier: measured +8.7% wide, 0% tall, so the card stretched horizontally when
+      the flip began and snapped back when the wrapper was torn down. Reported as the stepper
+      "scaling up then settling".
+      IT IS NOT AN EASING PROBLEM AND NO CURVE CAN REACH IT. The jump happens OUTSIDE the
+      animated interval, at the instant the wrapper is inserted and again when it is removed.
+      The animation itself is clean , transform and opacity only, and deliberately NO
+      will-change, which Section C records as a Safari flattener that breaks preserve-3d.
+      THE FIX IS THE OTHER DIRECTION: keep the resting clamp on the card and bring the BACK FACE
+      down to the clamped width, so front and back agree at the size the card already was.
+      Measured after: 0.00px change on both axes, desktop and at 390, front and back matching.
+      AND IT IS SURFACE-DEPENDENT, WHICH IS THE PART THAT WILL WASTE SOMEBODY'S AFTERNOON:
+      `max-width:92%` is 92% of the PARENT, not of `--cw`. On card.html the slot is wide, so the
+      clamp binds and the jump is real , 26px on a 300px card. On compare's two-up PHONE layout
+      the slot is narrow enough that the clamp never binds at all and the measured jump is ZERO.
+      ANYONE CHASING THIS LATER WILL OPEN COMPARE FIRST, because it is the smaller surface and
+      the obvious place to look, AND THEY WILL FIND NOTHING. Reproduce it on the card page.
+      The 0.92 is the same constant Section C records as the reason the RENDERED card ratio is
+      1.518 rather than 1.397; it is not a new number.  */
+  .vvflipfront .vvcard{max-width:92%}
+  .vvflipback{position:absolute;top:0;left:0;width:calc(var(--cw)*0.92);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}   /* overlay , no flow impact. BOTH dims explicit off --cw (like the working .vvback); width:100%/height:100% resolve to 0 against the auto-sized in-flow inner */
   /* glossy sheen sweep (Option A) , one diagonal light pass per flip */
   .vvsheen{position:absolute;inset:0;overflow:hidden;border-radius:calc(var(--cw)*0.073);pointer-events:none;z-index:6}
   .vvsheen i{position:absolute;top:-25%;bottom:-25%;left:-70%;width:48%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-16deg);filter:blur(1px)}
@@ -1041,8 +1062,8 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   /* #109 MOBILE reveal , scale-swap through the VV coin (no 3D; built by vvCardFlip when <=720px). Reuses .vvmono* coin. */
   .vvscalewrap{position:relative;margin:0 auto;transform-origin:center center}
   .vvscalefront{position:relative}                                             /* in-flow card , defines the box (no collapse) */
-  .vvscalefront .vvcard{max-width:none}
-  .vvscalecover{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}   /* tier VV coin overlay , explicit dims off --cw (like .vvback) */
+  .vvscalefront .vvcard{max-width:92%}   /* same rule as the desktop front above , see the note there */
+  .vvscalecover{position:absolute;top:0;left:0;width:calc(var(--cw)*0.92);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}   /* tier VV coin overlay , explicit dims off --cw (like .vvback) */
 .cardslot:hover{transform:translateY(-3px)}
 .cardslot::after{content:'\21BB Tap to change';position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:rgba(243,237,224,.32);pointer-events:none}
 body.light .cardslot::after{color:var(--ink-soft)}
@@ -1376,13 +1397,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260915d"></script>
+<script src="/vv-marks.js?v=20260916a"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260915d"></script>
+<script src="/vv-core.js?v=20260916a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
