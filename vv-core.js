@@ -5771,8 +5771,46 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     if(st.sort && st.sort!=='rt') return true;
     if(st.score && (st.score.lo!=null || st.score.hi!=null || st.score.bands.length)) return true;
     if(st.age && (st.age.lo!=null || st.age.hi!=null)) return true;
-    return ['league','position','profile','stage','trajectory']
+    /*  `honours` WAS MISSING FROM THIS LIST , fixed 2026-09-16. The honours group went live on
+        2026-09-12 when the matview gained its flags, and this predicate was not updated, so a
+        state carrying ONLY honour chips read as NOT ACTIVE. Every caller that gates on
+        isActive , the active-filter strip, the clear-all affordance, and now the carry-over
+        offer , silently treated an honours-only filter as no filter at all.  */
+    return ['league','position','profile','stage','trajectory','honours']
       .some(function(k){ return (st[k]||[]).length>0; });
+  }
+
+  /*  NAME THE FILTERS, DO NOT COUNT THEM , 2026-09-16, for the carry-over offer (item 7).
+      "Keep the 6 filters" tells a reader nothing about whether those filters still make sense
+      in the place they are about to land. "Keep position CB, band Iconic, 2015 onward" lets
+      them decide, which is the whole point of offering rather than assuming.
+      IT NAMES UP TO `max` AND COUNTS THE REST, because six named filters is a paragraph and
+      the offer has to fit on one line. Three is the default: enough to recognise the set,
+      short enough to read at a glance.
+      LABELS COME FROM labelFor AND THE GROUP DEFINITIONS, never from the raw value , a chip
+      reading `ballon_dor` in a sentence is the raw key leaking into prose.  */
+  function summarise(st, max){
+    if(!st) return { count:0, text:'' };
+    max = max || 3;
+    var parts=[];
+    if(st.sort && st.sort!=='rt') parts.push('sorted by '+(labelFor('sort', st.sort)||st.sort).toLowerCase());
+    if(st.score && st.score.bands && st.score.bands.length)
+      parts.push(st.score.bands.length===1 ? 'band '+st.score.bands[0]
+                                           : st.score.bands.length+' bands');
+    if(st.score && (st.score.lo!=null || st.score.hi!=null))
+      parts.push('score '+(st.score.lo!=null?st.score.lo:'any')+' to '+(st.score.hi!=null?st.score.hi:'any'));
+    if(st.age && (st.age.lo!=null || st.age.hi!=null))
+      parts.push('age '+(st.age.lo!=null?st.age.lo:'any')+' to '+(st.age.hi!=null?st.age.hi:'any'));
+    ['league','position','honours','profile','stage','trajectory'].forEach(function(k){
+      var v=st[k]||[]; if(!v.length) return;
+      var g=vvfGroup(k), name=(g&&g.label?g.label:k).toLowerCase();
+      if(v.length===1) parts.push(name+' '+(labelFor(k, v[0])||v[0]));
+      else parts.push(v.length+' '+name+(/s$/.test(name)?'':'s'));
+    });
+    var shown=parts.slice(0, max), rest=parts.length-shown.length;
+    var text=shown.join(', ');
+    if(rest>0) text += ', and '+rest+' more';
+    return { count:parts.length, text:text };
   }
 
   // ---- server half ---------------------------------------------------------
@@ -6200,6 +6238,44 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         f.style.left=(((lo-MIN)/span)*100)+'%'; f.style.width=((((hi-lo))/span)*100)+'%'; }
     });
   }
+  /*  THE SETTER THE COMPONENT NEVER HAD , 2026-09-16, and the carry-over offer (item 7) is
+      what needed it. `mount` could render and `clear` could empty, so state moved OUT through
+      readState and could not move back IN. A feature that restores a filter set is impossible
+      without it, and rebuilding one chip-click at a time from outside would depend on the
+      click handler's internals, which is the coupling the delegated handler exists to avoid.
+      IT CLEARS FIRST, so applying a state is a REPLACE rather than a merge , anything else
+      makes the result depend on what happened to be selected beforehand.
+      IT SKIPS WHAT IT CANNOT HONOUR RATHER THAN FAILING: a chip that is disabled or absent on
+      this surface (the compact card-search mount renders fewer groups than rankings) is simply
+      not set, and the returned count says how many landed. A carry-over that silently applied
+      a filter the reader cannot see or remove would be worse than not offering it.  */
+  function applyState(root, st){
+    root = root || document;
+    if(!st) return { applied:0, skipped:0 };
+    clear(root);
+    var applied=0, skipped=0;
+    function setChip(gk, v){
+      var sel='.vvf-chip[data-vvf-group="'+gk+'"][data-vvf-value="'+String(v).replace(/"/g,'')+'"]';
+      var c=root.querySelector(sel);
+      if(!c || c.hasAttribute('disabled') || c.disabled){ skipped++; return; }
+      c.classList.add('on'); c.setAttribute('aria-pressed','true'); applied++;
+    }
+    if(st.sort && st.sort!=='rt') setChip('sort', st.sort);
+    ((st.score && st.score.bands) || []).forEach(function(v){ setChip('score', v); });
+    ['league','position','honours','profile','stage','trajectory'].forEach(function(k){
+      (st[k]||[]).forEach(function(v){ setChip(k, v); });
+    });
+    VVF_RANGES.forEach(function(r){
+      var v=st[r.group]; if(!v) return;
+      var mn=root.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=root.querySelector('[data-vvf-role="'+r.role+'max"]');
+      if(!mn||!mx){ if(v.lo!=null||v.hi!=null) skipped++; return; }
+      if(v.lo!=null){ mn.value=v.lo; applied++; }
+      if(v.hi!=null){ mx.value=v.hi; applied++; }
+    });
+    try{ paintRange(root); }catch(e){}
+    return { applied:applied, skipped:skipped };
+  }
   function clear(host){
     host.querySelectorAll('.vvf-chip.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
     VVF_RANGES.forEach(function(r){
@@ -6258,7 +6334,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
-    emptyState, readState, isActive, applyServer, clientPredicate, describe };
+    emptyState, readState, isActive, summarise, applyState, applyServer, clientPredicate, describe };
 
   // ══════════════════════════════════════════════════════════════════════════════
   //  THE VV LOADER , the waiting state, shared by card, compare and rankings.
