@@ -757,6 +757,31 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       return;
     }
     FINST=VVFilters.mount(FHOST,{ onChange:function(){ onFiltersChanged(); } });
+    /*  THE HAND-OFF FROM THE HOME PAGE , item 9, 2026-09-16. index.html offers starter pills
+        and does NOT filter in place: it navigates here with `?f=group:value`, and rankings owns
+        the filtering from that point. ONE FILTER IMPLEMENTATION, NOT TWO , a full rail on the
+        home page would be a third consumer of VVFilters to keep in step with this one and the
+        compare picker, and the three would drift.
+        A READER OF index.html MAY TAKE THE HAND-OFF FOR UNFINISHED WORK. It is deliberate: the
+        home page STARTS the query and this page OWNS it.
+        VALUES ARE APPLIED THROUGH applyState, which skips any chip that does not exist rather
+        than trusting the URL , a hand-typed or stale `?f=` must not be able to put this rail
+        into a state its own controls cannot show or undo.  */
+    try{
+      var _f=new URLSearchParams(window.location.search).getAll('f');
+      if(_f.length){
+        var _st=VVFilters.emptyState();
+        _f.forEach(function(pair){
+          var i=pair.indexOf(':'); if(i<1) return;
+          var g=pair.slice(0,i), v=pair.slice(i+1);
+          if(g==='score'){ _st.score.bands.push(v); }
+          else if(Array.isArray(_st[g])){ _st[g].push(v); }
+        });
+        var _r=VVFilters.applyState(FHOST, _st);
+        if(_r.skipped) console.warn('[VV] hand-off: '+_r.skipped+' filter(s) in ?f= match no chip and were ignored.');
+        if(_r.applied) onFiltersChanged();
+      }
+    }catch(e){}
     renderActiveChips();
     refreshFacets();
   })();

@@ -187,6 +187,21 @@
   .srvv.nr{font-size:13px;color:var(--muted)}   /* NR is never 0 */
   .srhead{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--muted);padding:11px 18px 6px}
+  /*  The band pills carry the ENGINE value (`Elite`) and the PUBLIC label ("Iconic"), because
+      the chip on rankings is keyed on the engine name while Section C fixes the public word
+      everywhere a reader can see it. Getting that backwards sends a ?f= that matches no chip.  */
+  .startpills{display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:center;
+    max-width:560px;margin:14px auto 0}
+  .startpills .sp-l{width:100%;text-align:center;font-family:'Archivo';font-weight:800;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .startpills .sp{font-family:'Archivo';font-weight:700;font-size:12px;text-decoration:none;
+    color:#cfc8ba;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.13);
+    border-radius:999px;padding:6px 12px;transition:color .15s,border-color .15s,background .15s}
+  .startpills .sp:hover{border-color:var(--pink-ink);color:#fff;background:rgba(231,4,67,.10)}
+  .startpills .sp:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+  body.light .startpills .sp{color:#5f594e;background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.12)}
+  body.light .startpills .sp:hover{color:#111;border-color:var(--pink-ink)}
+  @media (max-width:420px){ .startpills{gap:6px} .startpills .sp{font-size:11.5px;padding:5px 10px} }
   .srwait{display:flex;align-items:center;justify-content:center;gap:12px;padding:26px 18px;
     color:var(--muted);font-size:12.5px}
   .srempty{padding:20px 18px 22px;font-size:13.5px;line-height:1.55}
@@ -359,6 +374,29 @@
         <button class="go">Search</button>
       </div>
       <div class="srpanel" id="srPanel" role="listbox" aria-label="Search results"></div>
+      <!--  STARTER PILLS , item 9, 2026-09-16. ALWAYS VISIBLE, not revealed on typing: these
+            are the only thing on this screen that says what the platform can be ASKED, and a
+            control that appears once you already know what you are doing teaches nobody.
+            THEY HAND OFF, THEY DO NOT FILTER HERE. Each navigates to rankings with ?f=, and
+            rankings owns the filtering , ONE filter implementation rather than two. A reader
+            may take that for unfinished work; it is deliberate. The home page starts the
+            query, rankings owns it.
+            POSITION AND BAND ONLY. Honours is deliberately absent and the matview columns for
+            the two continental types are the LESSER reason. The stronger one: honours is the
+            group most likely to return NOTHING from the front door, because most players hold
+            none , and on the screen everyone sees first, an empty result reads as broken
+            rather than as narrow. It joins when the sitting lands.  -->
+      <div class="startpills" aria-label="Start from a position or a band">
+        <span class="sp-l">or start from</span>
+        <a class="sp" href="/rankings?f=position:ST">ST</a>
+        <a class="sp" href="/rankings?f=position:Winger">Winger</a>
+        <a class="sp" href="/rankings?f=position:CM">CM</a>
+        <a class="sp" href="/rankings?f=position:CB">CB</a>
+        <a class="sp" href="/rankings?f=position:GK">GK</a>
+        <a class="sp" href="/rankings?f=score:Generational">Generational</a>
+        <a class="sp" href="/rankings?f=score:Elite">Iconic</a>
+        <a class="sp" href="/rankings?f=score:World Class">World Class</a>
+      </div>
     </div>
 
     <div class="pills">
