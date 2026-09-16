@@ -1139,7 +1139,23 @@
   /* the provisional disclosure , the flag has been on every card object and never shown */
   #radarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 14px}
   #cardSearch .cs-clearall{margin-top:10px}
-  #cardSearch .vvf-active{margin:0 0 10px}
+  #cardSearch   /*  THE CARRY-OVER OFFER , item 7, 2026-09-16. OFFERED, NEVER ASSUMED: moving to another
+      season is a page load, so filters die, and silently restoring them would mean a reader
+      lands on a grid narrowed by a decision they made on a different screen and may not
+      remember. An empty result would then read as broken rather than as filtered , the same
+      reasoning that keeps honours off the home page.  */
+  .cs-carry{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:2px 0 8px;padding:9px 12px;
+    background:rgba(231,4,67,0.07);border:1px solid rgba(231,4,67,0.26);border-radius:12px;
+    font-family:'Inter';font-size:13px;color:var(--cream)}
+  body.light .cs-carry{background:rgba(231,4,67,0.05);border-color:rgba(231,4,67,0.2);color:var(--charcoal)}
+  .cs-carry .cc-t{flex:1 1 220px;min-width:0}
+  .cs-carry .cc-n{font-weight:600}
+  .cs-carry button{font-family:'Archivo';font-weight:800;font-size:11.5px;border-radius:999px;
+    padding:6px 13px;cursor:pointer;border:1px solid transparent}
+  .cs-carry .cc-yes{background:var(--pink);color:#fff}
+  .cs-carry .cc-no{background:none;border-color:rgba(255,255,255,0.18);color:var(--ink-soft)}
+  body.light .cs-carry .cc-no{border-color:rgba(0,0,0,0.16)}
+.vvf-active{margin:0 0 10px}
 
   /* results scroll region , the curtain owns the viewport below the bar */
   /*  dvh, NOT vh , 2026-09-10. On iOS Safari vh is the LARGE viewport and does not shrink
@@ -1348,6 +1364,7 @@
           </div>
         </div>
         <div class="cs-filters" id="csFilters" hidden><div id="csFilterHost"></div><button type="button" class="cs-clearall vvf-clear" id="csClearAll" onclick="csClearFilters()">Clear all</button></div>
+        <div class="cs-carry" id="csCarry" hidden></div>
         <div class="vvf-active" id="csActive"></div>
         <div class="cs-recent" id="csRecent" hidden><div class="cs-rlabel">Recent</div><div class="cs-rlist" id="csRecentList"></div></div>
         <div class="cs-results"><div class="cardgrid vvrows" id="csGrid"></div></div>
@@ -1456,8 +1473,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260916a"></script>
-<script src="/vv-core.js?v=20260916a"></script>
+<script src="/vv-marks.js?v=20260916b"></script>
+<script src="/vv-core.js?v=20260916b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -4088,11 +4105,63 @@ function csSyncFilterUI(st){
   var bar=document.getElementById('csActive');
   if(bar) bar.innerHTML=VVFilters.renderActive(st);
   var n=(st.score.bands||[]).length + (st.score.lo!=null||st.score.hi!=null?1:0)
-      + ['league','position','profile','stage','trajectory'].reduce(function(a,k){ return a+(st[k]||[]).length; },0);
+      /*  `honours` was missing here too , the same stale-list bug as VVFilters.isActive,
+          recorded in CLAUDE.md. The badge undercounted an honours filter as zero.  */
+      + ['league','position','honours','profile','stage','trajectory'].reduce(function(a,k){ return a+(st[k]||[]).length; },0);
   var c=document.getElementById('csFCount');
   if(c) c.textContent = n ? String(n) : '';
   var b=document.getElementById('csFiltBtn');
   if(b && !document.getElementById('csFilters').hidden) b.classList.add('on');
+}
+/*  STASHED ON THE WAY OUT, OFFERED ON THE WAY IN , item 7, 2026-09-16.
+    sessionStorage is the right scope on purpose: it survives a same-tab navigation, which is
+    exactly what "moving between seasons" is, and dies with the tab. localStorage would carry a
+    filter set across days and offer it to someone who had forgotten building it.
+    beforeunload rather than a click handler on the results, because EVERY way out of this page
+    loses the filters , a result, the back button, a typed URL , and a handler bound to one of
+    them is the code-path mistake this file has already recorded three times.  */
+var CS_CARRY_KEY='vvCardSearchFilters';
+function csStashFilters(){
+  try{
+    if(!window.VVFilters || !CSF_HOST) return;
+    var st=VVFilters.readState(CSF_HOST);
+    if(VVFilters.isActive(st)) sessionStorage.setItem(CS_CARRY_KEY, JSON.stringify(st));
+  }catch(e){}
+}
+window.addEventListener('beforeunload', csStashFilters);
+function csCarryDismiss(){
+  try{ sessionStorage.removeItem(CS_CARRY_KEY); }catch(e){}
+  var el=document.getElementById('csCarry'); if(el) el.hidden=true;
+}
+function csCarryAccept(){
+  var el=document.getElementById('csCarry');
+  try{
+    var raw=sessionStorage.getItem(CS_CARRY_KEY);
+    if(raw && window.VVFilters && CSF_HOST){
+      var r=VVFilters.applyState(CSF_HOST, JSON.parse(raw));
+      /*  SAY SO WHEN SOMETHING DID NOT FIT. The card search mounts COMPACT and renders fewer
+          groups than rankings, so a carried filter can have no chip here. Applying it
+          invisibly would leave a grid narrowed by something the reader cannot see or undo.  */
+      if(r && r.skipped) console.warn('[VV] carry-over: '+r.skipped+' filter(s) have no control on this surface and were not applied.');
+    }
+  }catch(e){}
+  csCarryDismiss();
+  csOnFilters();
+}
+function csCarryOffer(){
+  var el=document.getElementById('csCarry'); if(!el || !window.VVFilters) return;
+  var st=null;
+  try{ var raw=sessionStorage.getItem(CS_CARRY_KEY); if(raw) st=JSON.parse(raw); }catch(e){}
+  if(!st || !VVFilters.isActive(st)) return;
+  /*  NAME THEM, DO NOT COUNT THEM. "Keep the 6 filters" says nothing about whether those
+      filters still make sense on this season; "band Iconic, 2 leagues, position CB" lets the
+      reader decide, which is the entire point of offering rather than assuming.  */
+  var sum=VVFilters.summarise(st, 3);
+  el.innerHTML='<span class="cc-t">Keep your filters , <span class="cc-n">'+
+    String(sum.text).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>?</span>'+
+    '<button type="button" class="cc-yes" onclick="csCarryAccept()">Keep</button>'+
+    '<button type="button" class="cc-no" onclick="csCarryDismiss()">Start fresh</button>';
+  el.hidden=false;
 }
 (function csMountFilters(){
   CSF_HOST=document.getElementById('csFilterHost');
@@ -4109,6 +4178,7 @@ function csSyncFilterUI(st){
     csOnFilters();
   });
   csSyncFilterUI();
+  csCarryOffer();
 })();
 
 function csBuildQ(sb,withSeason,nameQ,seasonYear){

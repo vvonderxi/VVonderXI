@@ -5794,8 +5794,14 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     max = max || 3;
     var parts=[];
     if(st.sort && st.sort!=='rt') parts.push('sorted by '+(labelFor('sort', st.sort)||st.sort).toLowerCase());
+    /*  THE BAND GOES THROUGH labelFor, AND FORGETTING IT LEAKED THE ENGINE WORD INTO PROSE.
+        The chip VALUE is the engine name , `Elite`, `Exceptional` , while the public ladder
+        says `Iconic` and `Standout`, which Section C records as a display rename that must hold
+        everywhere. Caught by reading the offer against the chip beside it: the sentence said
+        "band Elite" while the control on screen said "Iconic 90-94". Every other group here
+        was already routed through labelFor; this one was not.  */
     if(st.score && st.score.bands && st.score.bands.length)
-      parts.push(st.score.bands.length===1 ? 'band '+st.score.bands[0]
+      parts.push(st.score.bands.length===1 ? 'band '+(labelFor('score', st.score.bands[0])||st.score.bands[0])
                                            : st.score.bands.length+' bands');
     if(st.score && (st.score.lo!=null || st.score.hi!=null))
       parts.push('score '+(st.score.lo!=null?st.score.lo:'any')+' to '+(st.score.hi!=null?st.score.hi:'any'));
