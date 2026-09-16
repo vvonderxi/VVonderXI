@@ -25,7 +25,12 @@
   .cover{display:flex;flex-direction:column;justify-content:center;min-height:238mm}
   /*  32mm reads as a mark rather than a banner at A4, and the asset is 260x116 so the height
       follows the ratio rather than being asserted.  */
-  .covermark{position:absolute;top:0;right:0;width:32mm;height:auto}
+  /*  INSET, NOT FLUSH , 2026-09-16. top:0/right:0 puts the mark on the corner of the CONTENT
+      box, which is already the @page margin, so it read as jammed into the corner rather than
+      placed. 8mm down and 4mm in gives it air on both sides without moving it off the corner,
+      and it is still clear of the headline below. Millimetres because every other measure on
+      this page is , a px inset does not scale with the @page box.  */
+  .covermark{position:absolute;top:8mm;right:4mm;width:30mm;height:auto}
   .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:12pt;letter-spacing:.02em}
   .vv i{color:#AD0332;font-style:normal}
   .big{display:flex;gap:9mm;flex-wrap:wrap;margin:4mm 0 5mm}
@@ -40,8 +45,15 @@
   .limit{border-left:2.5px solid #E70443;padding:2.5mm 0 2.5mm 4mm;margin:3.5mm 0;background:#fdf6f7}
   .limit .h{font-family:'Archivo';font-weight:800;font-size:9pt;letter-spacing:.03em;margin-bottom:1.5mm}
   .limit p{margin-bottom:0;font-size:9.5pt}
+  /*  THE FOOTER TAKES THE PLATFORM'S FONTS , 2026-09-16. It had no font-family of its own, so
+      the wordmark and the page numbers inherited body's Inter. On the platform the wordmark is
+      ARCHIVO and numerals are Archivo tabular; Inter here is not a missing-font fallback, it is
+      the body face standing in for the brand face, which reads as a document that was set
+      quickly. tabular-nums so the page number does not shift width between 1 and 8.  */
   .foot{position:absolute;bottom:0;left:0;right:0;font-size:7.5pt;color:#a49d93;
+    font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:.03em;
     border-top:1px solid #efeade;padding-top:2mm;display:flex;justify-content:space-between}
+  .foot .pn{font-variant-numeric:tabular-nums}
   .note{font-size:8.5pt;color:#6b655c;font-style:italic;margin-top:2mm}
   /*  SCREEN PREVIEW ONLY , @page governs the PDF and does nothing on screen, so without this
       the document previews at browser width and cannot be judged as the page it becomes.
@@ -78,11 +90,11 @@
   player, built from 57,055 player seasons across nine leagues and sixteen years.
   This document explains how it is built, what it is good for, and , at greater length than is
   usual , where it stops.</p>
-  <div class="foot"><span>vvonderxi.com</span><span>Generated 2026-09-15</span></div>
+  <div class="foot"><span>vvonderxi.com</span><span>Generated 2026-09-16</span></div>
 </section>
 
 <section class="page">
-  <div class="eyebrow">Page 2</div>
+<div class="eyebrow">Page 2</div>
   <h2>What the V<span style="color:#AD0332">V</span> Index is, in one page</h2>
   <p class="lede">It scores one season. Not a career, not a player, not a transfer value , one
   season of one player, against every other season we hold.</p>
@@ -102,11 +114,11 @@
   <p>The 3,061 seasons without a score are not an oversight.
   A season with too little recorded to place fairly is left unscored rather than given a number
   we would have to defend. That is the rule the rest of this document follows.</p>
-  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>2</span></div>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span class="pn">2</span></div>
 </section>
 
 <section class="page">
-  <div class="eyebrow">Page 3</div>
+<div class="eyebrow">Page 3</div>
   <h2>The nine leagues, and what "covered" means</h2>
   <p>Coverage is not uniform and pretending otherwise would undermine everything else here. Each
   league is held for all sixteen seasons; what differs is how many players clear the minutes floor
@@ -132,11 +144,10 @@
     League partly from 2014/15 and Belgium from 2020/21. Before those dates the record holds
     appearances, minutes, goals and assists, and nothing finer.</p>
   </div>
-  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>3</span></div>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span class="pn">3</span></div>
 </section>
-
 <section class="page">
-  <div class="eyebrow">Page 4</div>
+<div class="eyebrow">Page 4</div>
   <h2>The five dimensions</h2>
   <p>Every season is read across the same five, so any card compares to any other. The shape tells
   you the type of player as much as the score tells you the level.</p>
@@ -151,11 +162,25 @@
   <p>Each dimension is a percentile <b>against other seasons in the same position pool</b>, not an
   absolute rate. That is why a centre-back and a striker can both show a full defensive spoke
   without contradiction: they are being read against their own peers, and against nobody else.</p>
-  <div class="foot"><span>The V<span style="color:#AD0132">V</span> Index</span><span>4</span></div>
+
+  <div class="rule"></div>
+<div class="eyebrow">Page 6</div>
+  <h2>What it chose</h2>
+  <p>Several decisions could reasonably have gone the other way. They are listed because a method
+  is only checkable if its choices are visible.</p>
+  <table>
+    <tr><th style="width:52mm">The choice</th><th>Why</th></tr>
+    <tr><td><b>One score per season, not per career</b></td><td>A career average hides the thing most worth looking at, which is the season that stands out from it.</td></tr>
+    <tr><td><b>Compared across leagues, not within</b></td><td>Cross-league comparability is the product. Partitioning by league would make every score local and answer a smaller question.</td></tr>
+    <tr><td><b>Defensive work as a share</b></td><td>Raw counts measure the team's trouble, not the player's ability.</td></tr>
+    <tr><td><b>Missing is missing, never zero</b></td><td>A season with no assist recorded is not a season with no assists. Absent measures are shown as NR and are never averaged as nought.</td></tr>
+    <tr><td><b>No goalkeeping model, rather than a bad one</b></td><td>Saves without a denominator cannot be scored fairly, so the platform says so instead of implying a number.</td></tr>
+  </table>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span class="pn">4</span></div>
 </section>
 
 <section class="page">
-  <div class="eyebrow">Page 5</div>
+<div class="eyebrow">Page 5</div>
   <h2>What it cannot see</h2>
   <p class="lede">This is the longest section in the document, and deliberately so.</p>
   <div class="limit">
@@ -193,27 +218,10 @@
     <p>Injuries, managers, systems, a January move, a father's illness. None of it is in the record.
     A number that fell has a reason and the Index does not know it.</p>
   </div>
-  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>5</span></div>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span class="pn">5</span></div>
 </section>
-
 <section class="page">
-  <div class="eyebrow">Page 6</div>
-  <h2>What it chose</h2>
-  <p>Several decisions could reasonably have gone the other way. They are listed because a method
-  is only checkable if its choices are visible.</p>
-  <table>
-    <tr><th style="width:52mm">The choice</th><th>Why</th></tr>
-    <tr><td><b>One score per season, not per career</b></td><td>A career average hides the thing most worth looking at, which is the season that stands out from it.</td></tr>
-    <tr><td><b>Compared across leagues, not within</b></td><td>Cross-league comparability is the product. Partitioning by league would make every score local and answer a smaller question.</td></tr>
-    <tr><td><b>Defensive work as a share</b></td><td>Raw counts measure the team's trouble, not the player's ability.</td></tr>
-    <tr><td><b>Missing is missing, never zero</b></td><td>A season with no assist recorded is not a season with no assists. Absent measures are shown as NR and are never averaged as nought.</td></tr>
-    <tr><td><b>No goalkeeping model, rather than a bad one</b></td><td>Saves without a denominator cannot be scored fairly, so the platform says so instead of implying a number.</td></tr>
-  </table>
-  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>6</span></div>
-</section>
-
-<section class="page">
-  <div class="eyebrow">Page 7</div>
+<div class="eyebrow">Page 7</div>
   <h2>How much the ground moves</h2>
   <p class="lede">The Index is comparative, so adding seasons changes existing scores. Here is the
   size of that effect, measured rather than reassured about.</p>
@@ -234,11 +242,9 @@
   </div>
   <p>This is why a comparison of two close seasons on the site refuses to crown one. The number is
   not always able to separate them, and saying so is more useful than a coin flip with a rosette on it.</p>
-  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span>7</span></div>
-</section>
 
-<section class="page">
-  <div class="eyebrow">Page 8</div>
+  <div class="rule"></div>
+<div class="eyebrow">Page 8</div>
   <h2>Get in touch</h2>
   <p class="lede">If something here is wrong, we would rather know.</p>
   <p>The Index is a measurement, and measurements are improved by people who disagree with them
@@ -250,6 +256,9 @@
   database rather than typed, by <b>scripts/gen-index-figures.js</b>, which records the query beside
   each number. Figures describing events , a recovery, a migration, a single card that moved , are
   records of things that happened and are deliberately not re-derived against today's data.</p>
-  <div class="foot"><span>vvonderxi.com</span><span>8</span></div>
+  <div class="foot"><span>The V<span style="color:#AD0332">V</span> Index</span><span class="pn">6</span></div>
 </section>
+
+
+
 </body></html>
