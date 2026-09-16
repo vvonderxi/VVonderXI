@@ -3988,6 +3988,36 @@
     .vvem renders on the card's scout and notes as well, so green here is exactly the bleed
     that rule exists to prevent. Measured, a green at gold's luminance is numerically
     IDENTICAL on every axis, so it was never a contrast question.  */
+/*  ══ THE WASH IS LIGHT-ONLY, AND THAT IS NOW A DECLARED DECISION , 2026-09-16 ══════════
+    RULED BY LUCAS: emphasis takes a wash in LIGHT and stays ink-only in DARK.
+    IT IS WRITTEN DOWN BECAUSE IT USED TO BE AN ABSENCE. "--vvem-wash" was declared under
+    body.light and nowhere else, and the rule applying it was gated on body.light too, so the
+    two agreed and dark rendered ink-only by accident rather than by decision. This file's own
+    rule , a token declared in one theme is not a token , makes that a trap: the next person
+    reading it finds a gap, fills it, and undoes a choice nobody recorded.
+    SO: THERE IS NO --vvem-wash-dark AND THERE MUST NOT BE ONE. If you came here to add it,
+    this comment is the reason not to.
+
+    WHAT THE MEASUREMENTS ACTUALLY SAY, and they support the decision WITHOUT supporting the
+    tidier story that dark "does not need" separation:
+      , DARK GOLD ALREADY SITS HIGH ON ITS GROUNDS: #E8B84B measures 8.29 on the verdict's
+        solid charcoal rgb(42,36,34) and 6.70 on the story's green gradient. The LIGHT gold
+        #5C4008 measures 5.90 and 6.26 on its grounds. The dark ink has the greater headroom.
+      , AND A DARK WASH BUYS ALMOST NOTHING. Four candidates were rasterised against their real
+        grounds and the best separation any of them reached was 1.31 (#43371F on the charcoal);
+        the others ran 1.03 to 1.21. On a dark ground you cannot lift a block far before it
+        stops being a wash and becomes a bar of colour. The light wash #F6E6BC sits 1.17 from
+        its own ground, so the light case is not dramatically better on that measure , what
+        differs is that in light the ink has less room, so the block is doing work the ink
+        cannot do alone.
+      , WHAT IS **NOT** THE REASON: emphasis-against-surrounding-prose is near-identical in the
+        two themes , 1.46 and 1.37 in dark, 1.37 and 1.27 in light. Anyone justifying this split
+        on "the emphasis does not separate in light" is quoting a figure that does not exist.
+    THE TWO GROUNDS ARE THE OTHER HALF OF WHY A DARK WASH IS AWKWARD. Dark prose sits on TWO
+    different grounds , solid charcoal for the verdict, the Under-the-Lights green gradient for
+    the story , so a single dark value cannot serve both and the split would have to be per
+    ground, exactly as --vvem-ink already is. That is two more tokens to keep in step for a
+    lift of 1.3.  */
 body.light{--vvem-ink:#5C4008;--vvem-wash:#F6E6BC}
 /*  ── THE THREE GROUNDS, IN ONE BLOCK, EACH NAMED ────────────────────────────────────────
     Emphasis is a marked run on every prose surface, and the platform has THREE grounds under
