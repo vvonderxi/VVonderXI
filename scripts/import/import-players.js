@@ -4,6 +4,22 @@
 //  Source: https://v3.football.api-sports.io  (header: x-apisports-key)
 //  /players?league={id}&season={year}&page={n}  → player-season cards WITH stats
 //
+//  ══ THE PROVIDER CHANGED HOW IT REPORTS A ZERO, PART-WAY THROUGH 2023, AND NOTHING HERE
+//     RECORDED THAT IT HAD (found 2026-09-16). READ THIS BEFORE CHANGING INGESTION.
+//     A zero-assist season arrived as NULL until part-way through 2023 and as 0 from 2024.
+//     Measured on our own rows: 2021 and 2022 contain ZERO cards with assists = 0, while 2024
+//     contains 1,558. Every league flipped at once, so it is the provider or our mapping of it,
+//     not a per-competition quirk. 11,015 cards carried a NULL that meant zero and rendered NR
+//     for eight years , repaired 2026-09-16, see migrations/assists_null_zero_2026-09-16/.
+//     WHAT TO DO ABOUT IT HERE: a field arriving as null is NOT self-evidently absent. Before
+//     mapping any provider null straight through, check whether a sibling field in the same
+//     block is populated , if the detailed block arrived, the null is a reported zero. That is
+//     the test the repair used (`passes_key IS NOT NULL`) and it is the only one that
+//     distinguishes the two meanings after the fact.
+//     AND RECORD THE DATE IF IT CHANGES AGAIN. The cost here was not the wrong value, it was
+//     that the change left no trace, so the platform reasoned for three years about a "gap"
+//     that was a third smaller than it looked.
+//
 //  DESIGN (defensive, resumable, idempotent):
 //   • Rate-limit aware: paces calls + backs off on 429 (Retry-After honoured).
 //   • Resumable: checkpoints each (league, season) in import_progress; a dropped
