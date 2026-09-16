@@ -1,4 +1,51 @@
-# ASSISTS , NULL THAT MEANS ZERO. SCOPED, NOT RUN.
+# ASSISTS , NULL THAT MEANS ZERO. **RUN 2026-09-16.**
+
+## RESULT
+
+**11,015 rows written. 0 remaining in the target shape. The genuine gap of 20,025 untouched.**
+`assists = 0` now stands on 15,051 rows (11,015 new plus the 4,036 written as 0 since 2023).
+
+**rt IS UNCHANGED ON ALL 57,055 CARDS, MEASURED OVER THE FULL POPULATION RATHER THAN SPOT-CHECKED.**
+An md5 of every `(card_id, rt)` pair in card order, taken from the LIVE view either side of the
+write, is **byte-identical**: `88cd61c9e6d4345a51d017bc0ae021e4`, with `sum(rt)` 2,661,188 and
+min/max 11/97 on both sides. Captures in `rt-fingerprint-before.json` / `-after.json`.
+
+**AND THE METHOD IS THE PART WORTH REUSING.** Paging 57,055 rows out of the live view was not
+possible , it times out at depth , and reading the MATVIEW would have measured the pre-write
+state, because the matview is stale until a refresh nobody can run from here. **One SQL statement
+that fingerprints the whole population inside the database has neither problem**, and an
+identical md5 is a stronger claim than a row diff assembled client-side.
+
+**TWO COLUMNS CAME BACK.** `output` and `adj_output` are `goals + assists` uncoalesced, and
+`NULL + x` is `NULL`, so both were null on all 11,015 cards. Calvert-Lewin 20/21 now reads
+`goals 16, assists 0, output 16, adj_output 16`.
+
+## STILL OWED , AND BLOCKED ON A REFRESH THIS SESSION CANNOT RUN
+
+**`RADAR_POOL_REF` and `KEEPER_SAVE_LADDER` have NOT been regenerated, deliberately.** Both
+generators read `player_card_mv`, and **the matview is stale until it is refreshed** , so running
+them now would write a file that looks fresh and encodes the pre-write state. That is the exact
+hazard CLAUDE.md records against `gen-radar-ref.js`.
+
+**ORDER: refresh the matview (SQL editor), THEN regenerate both snapshots.** The radar shift is
+real and expected , 11,015 cards join the creation pool and every card's breakpoints move.
+
+## THE vvindex COPY NEEDED THE REPAIR, NOT A REWRITE
+
+It reads: *"For seasons before 2015, and for some competitions beyond Europe's principal leagues,
+figures like assists were never logged at source... A player who created nothing and a player
+whose creation was never counted are different players, and we will not flatten one into the
+other."*
+
+**Measured against what remains, that is now accurate: pre-2015 is 98.6% gap, Belgium 50.5%, and
+the other eight leagues 3.3% to 5.4%.** Before today the platform was flattening 11,015 players
+who created nothing into players whose creation was never counted , **the precise thing the copy
+promises it does not do.** The sentence was aspirational and the data was wrong; the data now
+matches the sentence.
+
+---
+
+## THE ORIGINAL SCOPING FOLLOWS
 
 **11,015 rows.** `assists IS NULL AND passes_key IS NOT NULL` , the detailed block arrived and
 said zero, and the platform has been rendering **NR** for it.
