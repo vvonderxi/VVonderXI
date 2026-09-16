@@ -179,8 +179,21 @@
   .vvnd b{color:var(--cream);font-weight:600} body.light .vvnd{color:#4a443c} body.light .vvnd b{color:var(--charcoal)}
   .vvceiling{font-family:'Inter';font-weight:400;font-size:15px;line-height:1.5;color:rgba(243,237,224,0.75);background:rgba(232,184,75,0.12);border:1px solid rgba(232,184,75,0.3);border-radius:13px;padding:14px 16px;margin-bottom:14px}
   .vvceiling b{font-family:'Archivo';font-weight:800;color:var(--gold)} body.light .vvceiling{color:#5a5248} body.light .vvceiling b{color:var(--gold-ink)}
-  .vvstory{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px 18px}
-  body.light .vvstory{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
+  /*  NOT A BOX , 2026-09-16, item 11's second half. Once the fold went, the card that had held
+      it stayed, and a boxed panel sitting after plain prose reads as a former fold left open
+      rather than as part of the page.
+      THE PAGE ALREADY HAS A TREATMENT FOR THIS VOICE AND IT IS NOT A BOX. `.drurybox` carries
+      the same elevated register and marks it with a hairline rule and breathing room , no
+      background, no border, no radius. Matching it means the register shift is signalled the
+      way this page already signals it, rather than by a container invented to hold a toggle.
+      THE TYPE ALREADY DOES THE WORK. `.vvstory-d` is Bricolage Grotesque 600 at 16px against
+      the surrounding Inter 400 at 15.5px, so the voice is distinct before any decoration is
+      added; the box was saying a second time what the typeface already said.
+      NOT MADE ITALIC. `.drurybox-q` is italic and this is not, and that is left alone rather
+      than harmonised , it is a change to the reading of two long passages, which is Lucas's
+      call and not a side effect of removing a border.  */
+  .vvstory{margin-top:18px;padding-top:17px;border-top:1px solid rgba(255,255,255,0.1)}
+  body.light .vvstory{border-top-color:rgba(0,0,0,0.1)}
   /*  NOT FOLDED , RULED 2026-09-16, ITEM 11. This used to collapse to max-height:0 behind a
       "Read the full story" button, and the label overpromised: the two blocks it governs run
       118 and 108 words, six sentences each, about 25 seconds of reading.
