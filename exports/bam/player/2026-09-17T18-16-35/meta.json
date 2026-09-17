@@ -573,5 +573,1372 @@
     "why_the_net_figure_is_misleading": "The net is -12, which reads as twelve scattered gaps. It is not. It is ONE hole of -18 (TR 2010) offset by +6 net across 42 other league-seasons where the API team count and our card team count differ by 1 to 6. A net that small concealed the only real defect.",
     "largest_other_differences": "ERE 2020-2024 the API reports 24 teams against our 18-21, and ERE 2011-2018 reports 18 against our 19-22. Worth a look before trusting Eredivisie squad aggregates: 24 exceeds an 18-team top flight, which suggests /teams includes clubs beyond the season proper.",
     "differing_league_seasons": 43
+  },
+  "membership": {
+    "adjudicator": "KNOWN_SIZE , clubs per division per season",
+    "known_size_source": "division history (competition season records / RSSSF), not /standings and not /players",
+    "known_size_confidence": {
+      "PL": "high",
+      "LL": "high",
+      "SA": "high",
+      "BL": "high",
+      "ERE": "high",
+      "L1": "high",
+      "PRT": "high",
+      "BPL": "medium",
+      "TR": "medium"
+    },
+    "why_not_either_endpoint": "/standings under-reports on some league-seasons (Super Lig 2015 returns 14 clubs, a size the division has never had) and the player export over-reports on others (24 Eredivisie clubs in an 18-team division). A dispute between two sources is not settled by preferring one. Division size is fixed before a season starts and is published.",
+    "rule": {
+      "CONTAMINATED": "export > known AND standings >= known -> filtered to standings membership",
+      "STANDINGS_GAP": "standings < known -> NOT filtered at any export count; membership UNVERIFIED",
+      "CLEAN": "export == known -> untouched"
+    },
+    "both_contaminated_and_short": "left UNFILTERED and flagged. Filtering on an incomplete membership list drops real clubs indistinguishably from contamination.",
+    "tally": {
+      "CLEAN": 123,
+      "CONTAMINATED": 16,
+      "STANDINGS_GAP": 4
+    },
+    "per_league_season": {
+      "PL|2010": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2011": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2012": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2013": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2014": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2015": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2016": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2017": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2018": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2019": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2020": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2021": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2022": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2023": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2024": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "PL|2025": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2010": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2011": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2012": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2013": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2014": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2015": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2016": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2017": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2018": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2019": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2020": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2021": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2022": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2023": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2024": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "LL|2025": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2010": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2011": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2012": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2013": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2014": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2015": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2016": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2017": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2018": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2019": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2020": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2021": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2022": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2023": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2024": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "SA|2025": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "BL|2010": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2011": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2012": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2013": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2014": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2015": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2016": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2017": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2018": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Union Berlin"
+        ],
+        "minutes_dropped": 180
+      },
+      "BL|2019": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2020": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2021": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2022": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Hamburger SV"
+        ],
+        "minutes_dropped": 72
+      },
+      "BL|2023": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2024": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BL|2025": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "SC Paderborn 07"
+        ],
+        "minutes_dropped": 2317
+      },
+      "L1|2010": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2011": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2012": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2013": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2014": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2015": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2016": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2017": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2018": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2019": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2020": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2021": {
+        "classification": "CONTAMINATED",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 21,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Auxerre"
+        ],
+        "minutes_dropped": 210
+      },
+      "L1|2022": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "high"
+      },
+      "L1|2023": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Saint Etienne"
+        ],
+        "minutes_dropped": 210
+      },
+      "L1|2024": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Metz"
+        ],
+        "minutes_dropped": 403
+      },
+      "L1|2025": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Saint Etienne"
+        ],
+        "minutes_dropped": 2953
+      },
+      "PRT|2010": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "high"
+      },
+      "PRT|2011": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "high"
+      },
+      "PRT|2012": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "high"
+      },
+      "PRT|2013": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "high"
+      },
+      "PRT|2014": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2015": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2016": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2017": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2018": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2019": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2020": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Arouca"
+        ],
+        "minutes_dropped": 1806
+      },
+      "PRT|2021": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 19,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Chaves"
+        ],
+        "minutes_dropped": 900
+      },
+      "PRT|2022": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2023": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2024": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "PRT|2025": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2010": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2011": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2012": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2013": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2014": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2015": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2016": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2017": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2018": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2019": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "ERE|2020": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 24,
+        "confidence": "high",
+        "clubs_dropped": [
+          "De Graafschap",
+          "NAC Breda",
+          "NEC Nijmegen",
+          "Roda",
+          "FC Volendam",
+          "Almere City FC"
+        ],
+        "minutes_dropped": 5688
+      },
+      "ERE|2021": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 24,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Excelsior",
+          "ADO Den Haag",
+          "De Graafschap",
+          "NAC Breda",
+          "Roda",
+          "FC Eindhoven"
+        ],
+        "minutes_dropped": 17517
+      },
+      "ERE|2022": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 24,
+        "confidence": "high",
+        "clubs_dropped": [
+          "Willem II",
+          "NAC Breda",
+          "VVV Venlo",
+          "MVV",
+          "Almere City FC",
+          "FC Eindhoven"
+        ],
+        "minutes_dropped": 18868
+      },
+      "ERE|2023": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 24,
+        "confidence": "high",
+        "clubs_dropped": [
+          "ADO Den Haag",
+          "De Graafschap",
+          "NAC Breda",
+          "Emmen",
+          "Dordrecht",
+          "Roda"
+        ],
+        "minutes_dropped": 17800
+      },
+      "ERE|2024": {
+        "classification": "CONTAMINATED",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 20,
+        "confidence": "high",
+        "clubs_dropped": [
+          "De Graafschap",
+          "Dordrecht"
+        ],
+        "minutes_dropped": 427
+      },
+      "ERE|2025": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "high"
+      },
+      "BPL|2010": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2011": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2012": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2013": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2014": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2015": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2016": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2017": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2018": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 19,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2019": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2020": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "BPL|2021": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "BPL|2022": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "BPL|2023": {
+        "classification": "CONTAMINATED",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 17,
+        "confidence": "medium",
+        "clubs_dropped": [
+          "Lommel United"
+        ],
+        "minutes_dropped": 0
+      },
+      "BPL|2024": {
+        "classification": "CLEAN",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 16,
+        "confidence": "medium"
+      },
+      "BPL|2025": {
+        "classification": "CONTAMINATED",
+        "known_size": 16,
+        "standings_count": 16,
+        "export_count": 20,
+        "confidence": "medium",
+        "clubs_dropped": [
+          "Lommel United",
+          "Beerschot VA",
+          "Liège",
+          "Patro Eisden"
+        ],
+        "minutes_dropped": 14539
+      },
+      "TR|2011": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2012": {
+        "classification": "STANDINGS_GAP",
+        "known_size": 18,
+        "standings_count": 15,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2013": {
+        "classification": "STANDINGS_GAP",
+        "known_size": 18,
+        "standings_count": 17,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2014": {
+        "classification": "STANDINGS_GAP",
+        "known_size": 18,
+        "standings_count": 15,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2015": {
+        "classification": "STANDINGS_GAP",
+        "known_size": 18,
+        "standings_count": 14,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2016": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2017": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2018": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2019": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      },
+      "TR|2020": {
+        "classification": "CLEAN",
+        "known_size": 21,
+        "standings_count": 21,
+        "export_count": 21,
+        "confidence": "medium"
+      },
+      "TR|2021": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "medium"
+      },
+      "TR|2022": {
+        "classification": "CLEAN",
+        "known_size": 19,
+        "standings_count": 19,
+        "export_count": 19,
+        "confidence": "medium"
+      },
+      "TR|2023": {
+        "classification": "CLEAN",
+        "known_size": 20,
+        "standings_count": 20,
+        "export_count": 20,
+        "confidence": "medium"
+      },
+      "TR|2024": {
+        "classification": "CLEAN",
+        "known_size": 19,
+        "standings_count": 19,
+        "export_count": 19,
+        "confidence": "medium"
+      },
+      "TR|2025": {
+        "classification": "CLEAN",
+        "known_size": 18,
+        "standings_count": 18,
+        "export_count": 18,
+        "confidence": "medium"
+      }
+    },
+    "club_seasons_dropped": 40,
+    "minutes_dropped": 83890,
+    "dropped_detail": [
+      {
+        "league": "BL",
+        "season": 2018,
+        "club": "Union Berlin",
+        "minutes": 180
+      },
+      {
+        "league": "BL",
+        "season": 2022,
+        "club": "Hamburger SV",
+        "minutes": 72
+      },
+      {
+        "league": "BL",
+        "season": 2025,
+        "club": "SC Paderborn 07",
+        "minutes": 2317
+      },
+      {
+        "league": "L1",
+        "season": 2021,
+        "club": "Auxerre",
+        "minutes": 210
+      },
+      {
+        "league": "L1",
+        "season": 2023,
+        "club": "Saint Etienne",
+        "minutes": 210
+      },
+      {
+        "league": "L1",
+        "season": 2024,
+        "club": "Metz",
+        "minutes": 403
+      },
+      {
+        "league": "L1",
+        "season": 2025,
+        "club": "Saint Etienne",
+        "minutes": 2953
+      },
+      {
+        "league": "PRT",
+        "season": 2020,
+        "club": "Arouca",
+        "minutes": 1806
+      },
+      {
+        "league": "PRT",
+        "season": 2021,
+        "club": "Chaves",
+        "minutes": 900
+      },
+      {
+        "league": "ERE",
+        "season": 2020,
+        "club": "De Graafschap",
+        "minutes": 280
+      },
+      {
+        "league": "ERE",
+        "season": 2020,
+        "club": "NAC Breda",
+        "minutes": 1914
+      },
+      {
+        "league": "ERE",
+        "season": 2020,
+        "club": "NEC Nijmegen",
+        "minutes": 1332
+      },
+      {
+        "league": "ERE",
+        "season": 2020,
+        "club": "Roda",
+        "minutes": 1267
+      },
+      {
+        "league": "ERE",
+        "season": 2020,
+        "club": "FC Volendam",
+        "minutes": 529
+      },
+      {
+        "league": "ERE",
+        "season": 2020,
+        "club": "Almere City FC",
+        "minutes": 366
+      },
+      {
+        "league": "ERE",
+        "season": 2021,
+        "club": "Excelsior",
+        "minutes": 5781
+      },
+      {
+        "league": "ERE",
+        "season": 2021,
+        "club": "ADO Den Haag",
+        "minutes": 4854
+      },
+      {
+        "league": "ERE",
+        "season": 2021,
+        "club": "De Graafschap",
+        "minutes": 694
+      },
+      {
+        "league": "ERE",
+        "season": 2021,
+        "club": "NAC Breda",
+        "minutes": 1234
+      },
+      {
+        "league": "ERE",
+        "season": 2021,
+        "club": "Roda",
+        "minutes": 1679
+      },
+      {
+        "league": "ERE",
+        "season": 2021,
+        "club": "FC Eindhoven",
+        "minutes": 3275
+      },
+      {
+        "league": "ERE",
+        "season": 2022,
+        "club": "Willem II",
+        "minutes": 1924
+      },
+      {
+        "league": "ERE",
+        "season": 2022,
+        "club": "NAC Breda",
+        "minutes": 3806
+      },
+      {
+        "league": "ERE",
+        "season": 2022,
+        "club": "VVV Venlo",
+        "minutes": 3215
+      },
+      {
+        "league": "ERE",
+        "season": 2022,
+        "club": "MVV",
+        "minutes": 1695
+      },
+      {
+        "league": "ERE",
+        "season": 2022,
+        "club": "Almere City FC",
+        "minutes": 6235
+      },
+      {
+        "league": "ERE",
+        "season": 2022,
+        "club": "FC Eindhoven",
+        "minutes": 1993
+      },
+      {
+        "league": "ERE",
+        "season": 2023,
+        "club": "ADO Den Haag",
+        "minutes": 3940
+      },
+      {
+        "league": "ERE",
+        "season": 2023,
+        "club": "De Graafschap",
+        "minutes": 1980
+      },
+      {
+        "league": "ERE",
+        "season": 2023,
+        "club": "NAC Breda",
+        "minutes": 3960
+      },
+      {
+        "league": "ERE",
+        "season": 2023,
+        "club": "Emmen",
+        "minutes": 3960
+      },
+      {
+        "league": "ERE",
+        "season": 2023,
+        "club": "Dordrecht",
+        "minutes": 1980
+      },
+      {
+        "league": "ERE",
+        "season": 2023,
+        "club": "Roda",
+        "minutes": 1980
+      },
+      {
+        "league": "ERE",
+        "season": 2024,
+        "club": "De Graafschap",
+        "minutes": 37
+      },
+      {
+        "league": "ERE",
+        "season": 2024,
+        "club": "Dordrecht",
+        "minutes": 390
+      },
+      {
+        "league": "BPL",
+        "season": 2023,
+        "club": "Lommel United",
+        "minutes": 0
+      },
+      {
+        "league": "BPL",
+        "season": 2025,
+        "club": "Lommel United",
+        "minutes": 5947
+      },
+      {
+        "league": "BPL",
+        "season": 2025,
+        "club": "Beerschot VA",
+        "minutes": 4290
+      },
+      {
+        "league": "BPL",
+        "season": 2025,
+        "club": "Liège",
+        "minutes": 1987
+      },
+      {
+        "league": "BPL",
+        "season": 2025,
+        "club": "Patro Eisden",
+        "minutes": 2315
+      }
+    ],
+    "files": {
+      "filtered": "club_seasons.csv",
+      "unfiltered": "club_seasons_unfiltered.csv"
+    },
+    "player_seasons_untouched": true
   }
 }
