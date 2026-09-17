@@ -418,7 +418,7 @@ so the platform says one thing about its own boundaries , with its own copy as a
 than an empty box.
 
 **AND IT NAMES THE CAUSE THE REPAIR QUEUE CREATES:** seasons split across two clubs are being merged
-into one card, so older links stop resolving. That is a growing population , §E puts it near 1,600
+into one card, so older links stop resolving. That is a growing population , §E puts it at 1,462 measured
 cards , and this is what a reader will hit.
 
 | id | | |

@@ -6,9 +6,38 @@
       document nobody has asked to automate would be a pipeline with no second user. This is
       a page designed for the browser's own "Save as PDF" at A4, which is the production note
       in docs/VVINDEX_PDF_OUTLINE.md: a one-off design that READS the generated figures.
-      EVERY LIVE NUMBER IS INTERPOLATED FROM scripts/figures/index-figures.json , none is
-      typed. That file carries the query beside each figure, which is the whole reason item 24
-      exists: a published figure whose query is recorded nowhere is a claim, not a measurement. */
+      THE LIVE NUMBERS ARE WRITTEN BY scripts/apply-figures.js FROM
+      scripts/figures/index-figures.json. That file carries the query beside each figure, which
+      is the whole reason item 24 exists: a published figure whose query is recorded nowhere is
+      a claim, not a measurement.
+
+      [CORRECTED 2026-09-17.] THIS COMMENT USED TO SAY "EVERY LIVE NUMBER IS INTERPOLATED ...
+      NONE IS TYPED" AND THAT WAS FALSE , 18,725, 32.8% and 872 were typed literals, there was
+      no fetch and no build step, and nothing read the generator at all. A file that ASSERTS it
+      is generated and is not is worse than one that admits it is typed, because the claim is
+      what stops anyone checking. Same shape as the backfill comment that said "every key is
+      checked for an existing row first".
+
+      WHAT IS GENERATED AND WHAT IS NOT , the three classes are different and only the first
+      belongs in a generator:
+        LIVE      counts over the matview     -> carried in a figure span (the attribute is
+                                                 named in apply-figures.js, deliberately NOT
+                                                 written out here: this comment sits inside a
+                                                 file that script scans, and spelling the
+                                                 pattern made the regex match this very line
+                                                 and die on a figure called "key". SS C, third
+                                                 instance: prose about a pattern-based rule,
+                                                 inside a file the rule scans, defeats it).
+        EVENTS    780 recovered, 10,770 moved -> typed, and deliberately so. They are records
+                                                 of things that HAPPENED; re-deriving them
+                                                 against today's data rewrites history.
+        CONSTANTS 300-minute floor, band
+                  thresholds, and the
+                  rank-anchored 12/150/650/138 -> typed. SS C: the band populations are fixed
+                                                 BY CONSTRUCTION because the edges are rank
+                                                 anchors, so querying them returns them by
+                                                 definition. They move on a RECUT only, and
+                                                 then every copy changes in one commit. */
   @page { size: A4; margin: 16mm 15mm 14mm; }
   *{margin:0;padding:0;box-sizing:border-box}
   html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -185,7 +214,7 @@
   <p class="lede">This is the longest section in the document, and deliberately so.</p>
   <div class="limit">
     <div class="h">A third of the record has no detailed statistics at all</div>
-    <p><b>18,725 seasons</b> , 32.8% of everything we hold ,
+    <p><b><span data-fig="cards_no_detail">18,725</span> seasons</b> , <span data-fig="cards_no_detail_share">32.8</span>% of everything we hold ,
     carry none of shots, passes, duels or dribbles. <b>21,447</b> carry no shot
     data. Those seasons are scored on what exists and the card says so; they are not scored as
     though the missing measures were zero.</p>
@@ -226,7 +255,7 @@
   <p class="lede">The Index is comparative, so adding seasons changes existing scores. Here is the
   size of that effect, measured rather than reassured about.</p>
   <div class="big">
-    <div class="stat"><div class="n">872</div><div class="l">seasons sit within a single point of a band edge</div></div>
+    <div class="stat"><div class="n"><span data-fig="cards_on_a_band_edge">872</span></div><div class="l">seasons sit within a single point of a band edge</div></div>
     <div class="stat"><div class="n">1.61%</div><div class="l">of all scored seasons</div></div>
   </div>
   <p>A season one point below a boundary can cross it when the population it is measured against

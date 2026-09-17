@@ -1251,6 +1251,27 @@ body.light .pkmsub{color:var(--ink-soft)}
   /* the join sheet is white in BOTH themes, so these are theme-independent */
   .joinsheet #joinSub, .joinsheet .js-optin, .joinsheet .js-later{color:#5f594e}
   .pkmore .pkmgl{color:rgba(243,237,224,0.58)}
+
+  /*  PICKER FOLD , the filter rail is bounded at phone width so the results keep the screen.
+      MEASURED on a rendered 390x667 frame, viewport asserted from inside, not modelled:
+      with the filters OPEN the results list falls to 92px visible of 347. Default state
+      (filters closed) is already fine at 347 of 347, so this touches only the open state.
+      Capping the rail at 140px lifts results to 176px visible , +84px.
+
+      THE RAIL'S 1310px CONTENT IS NOT 1310px OF FLOW. It is already internally bounded and
+      contributes about 321px to the panel, which is why a 200px cap buys only 24px and 140
+      buys 84. Do not re-derive the fix from the 1,310 figure; it is the content height.
+
+      THIS BLOCK MUST STAY LAST IN THE SHEET. SS C: a media query adds no specificity, so an
+      override placed above a competing rule silently loses while the query still matches.
+      Verified by reading the COMPUTED value on the live panel, never by the query matching.
+
+      NOT FIXED HERE, AND DELIBERATELY: results still cap at 176 of 347 because .pkpanel is
+      position:fixed and bottom-anchored to the viewport with 106px of chrome above the rail.
+      Going past 176 means re-anchoring the panel, which is a flow rework, not this change.  */
+  @media (max-width:720px){
+    .pkpanel .vvf{max-height:140px;overflow-y:auto;overscroll-behavior:contain}
+  }
 </style>
 </head>
 <body class="light">

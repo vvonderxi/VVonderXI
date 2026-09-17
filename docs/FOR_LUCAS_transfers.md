@@ -39,7 +39,7 @@ tested the current version against the provider it correctly kept both halves on
 cases. So this is not a bug that is still happening to new data , it is old data that was
 written badly and has been sitting there since.
 
-**How many: we know of about 1,600 cards in this state, and that figure is an estimate from
+**How many: 1,462 cards, measured against the provider on 4 September. The older "about 1,600" was an estimate from
 three league-seasons, not a count.**
 
 ---
@@ -49,7 +49,7 @@ three league-seasons, not a count.**
 Two reasons, and the second is the real one.
 
 **First**, re-running the import rewrites every card, not just the broken ones. All ~57,000.
-That would shift scores across the whole platform for the sake of fixing 1,600, and we would
+That would shift scores across the whole platform for the sake of fixing 1,462, and we would
 have no clean before-and-after to check the repair against.
 
 **Second, and this is the part worth understanding: the two halves cannot both be kept as
@@ -73,7 +73,7 @@ and after.
   432 players with cards in two leagues in one season and none of them is affected.
 
 **Broken, and known:**
-- About 1,600 cards hold only one half of a same-league mid-season move, with nothing on the
+- 1,462 cards hold only one half of a same-league mid-season move, with nothing on the
   card to say so. **Semenyo 25/26 is one of them.**
 - A related fault: on a card like this the **shirt number** can be the one he wore at the club
   he left, because the number is stored per season-and-league rather than per club. Measured at
@@ -91,4 +91,4 @@ and after.
 
 **One card per club per season is the design and it is right. Semenyo showing only Bournemouth
 is not that design working , it is an old import that kept one half of his year and dropped the
-other, on about 1,600 cards, waiting on a careful repair rather than a re-run.**
+other, on 1,462 cards, waiting on a careful repair rather than a re-run.**

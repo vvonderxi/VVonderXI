@@ -538,8 +538,8 @@ Luiz's 2025/26 card reads "Aston Villa" for a season of which 331 minutes were p
 Forest. The season is now complete and the club line is now partial.
 
 **THE SCALE IS THE ARGUMENT FOR TAKING IT SERIOUSLY, NOT THE THREE CARDS.** §E measures roughly
-**1,600 halved cards** across the database. Every one of them, once repaired, lands in exactly this
-position. **Deciding this AFTER repairing 1,600 cards means deciding it twice.**
+**1,462 halved cards** across the database (measured 2026-09-04). Every one of them, once repaired, lands in exactly this
+position. **Deciding this AFTER repairing 1,462 cards means deciding it twice.**
 
 **THE HARD CONSTRAINT, AND IT IS WHY THIS IS NOT A ONE-LINE CHANGE: `team_id` MUST RESOLVE TO ONE
 CLUB.** The view joins `teams` through it for `primary_colour` / `secondary_colour` / `accent_colour`,
@@ -549,7 +549,7 @@ paint would disagree, on the product's most recognisable surface.
 
 **THE OPTIONS, AS THEY STAND:**
 1. **Leave it , one club, the destination.** What ships today. Simple, consistent, and silently
-   incomplete for ~1,600 cards.
+   incomplete for 1,462 cards.
 2. **Name both in the text, paint one.** Cheapest to build, and it introduces a card whose words and
    colours disagree. **§C's display-case lesson applies: two representations of one thing drift and
    nothing says so.**

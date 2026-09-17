@@ -157,7 +157,7 @@ what `UNIQUE (api_player_id, season, league_code)` always implied.
 
 **THE ACCEPTED COST, STATED PLAINLY: each card now names ONE of the two clubs.** Douglas Luiz's card
 reads "Aston Villa" for a season of which 331 minutes were played at Forest. That is what one card
-per player-season forces, it is permanent, and it applies to roughly 1,600 more halved cards.
+per player-season forces, it is permanent, and it applies to 1,462 more halved cards (measured 2026-09-04).
 **Whether a card may ever name two clubs is logged as its own platform decision in `POST_LAUNCH.md`
 , it is not a repair question.**
 

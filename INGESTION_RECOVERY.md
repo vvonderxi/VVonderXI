@@ -59,7 +59,7 @@ Everything below is the full record, preserved verbatim.
     **THE DEFECT.** Same-league mid-season transfers are stored as ONE half on roughly two thirds of
     genuine splits. Measured against the provider across three league-seasons: **34 of 51 halved**
     (PL 2023/24 7/12, PL 2025/26 9/13, SA 2023/24 18/26). Worst seen: Semenyo 1,798 of 3,200 minutes.
-    **Extrapolated ~1,600 cards across 144 league-seasons , an ORDER from a three-season sample, NOT a count.**
+    **SUPERSEDED: the measured figure is 1,462 (measured against the provider 2026-09-04, `docs/HANDOVER_2026-09-04.md`), 968 of them material. The old ~1,600 extrapolation is removed.**
 
     **THE CAUSE IS STALE DATA, NOT THE CODE.** Run against real provider blocks, the current resolver
     sums 49 of 51. The stored rows were written by an earlier summing path. **So this is a RE-RUN,
@@ -70,7 +70,7 @@ Everything below is the full record, preserved verbatim.
     `--insert-only` cannot repair a halved row , ON CONFLICT DO NOTHING leaves it exactly as it is.
     Default mode DOES rewrite it, but it rewrites **all ~57,000 rows** from today's provider data,
     folding in every unrelated drift since each row was written. That is a far larger change than the
-    ~1,600 rows that are actually wrong, and it is the blanket rewrite §C tells us not to reach for.
+    1,462 rows that are actually wrong, and it is the blanket rewrite §C tells us not to reach for.
 
     **THE PROPOSED SHAPE , TARGETED, in the same staging as the 2026-08-21 engine pass.**
     1. **Identify externally.** Fetch all 144 league-seasons' squads from the provider and find players
@@ -88,13 +88,13 @@ Everything below is the full record, preserved verbatim.
        listing every card that moved and every public band crossing.
 
     **COST BEYOND THE CALLS, and this is the part that decides the timing.** Minutes drive the
-    availability term and EVERY per-90 rate, so ~1,600 cards change on both. Percentiles are global
+    availability term and EVERY per-90 rate, so 1,462 cards change on both. Percentiles are global
     and unpartitioned (see §E engine exposure), so **the ripple reaches cards that were never touched**
     and band OCCUPANCY moves even though the counts hold. Expect public band crossings and expect to
     have to explain them. **This is the same blast radius as the WRONG-BLOCK pass and belongs beside it.**
 
     **IT GROWS WHILE IT WAITS, SLOWLY.** The live season is still being imported, so every pass keeps
-    adding halved cards and the ~1,600 rises. **The `sharesStat` fix reduces the rate but does not stop
+    adding halved cards and the 1,462 rises. **The `sharesStat` fix reduces the rate but does not stop
     it** , that guard accounted for 1 of 3 resolver misses, and the rest of the halving was never the
     resolver at all. So the population drifts upward until the repair runs. **It drifts slowly: a
     league-season yields on the order of ten, and only the live season is still being written.**
