@@ -1580,7 +1580,7 @@
         "clubs_dropped": [
           "Lommel United",
           "Beerschot VA",
-          "Liège",
+          "Li\u00e8ge",
           "Patro Eisden"
         ],
         "minutes_dropped": 14539
@@ -1925,7 +1925,7 @@
       {
         "league": "BPL",
         "season": 2025,
-        "club": "Liège",
+        "club": "Li\u00e8ge",
         "minutes": 1987
       },
       {
@@ -1939,6 +1939,32 @@
       "filtered": "club_seasons.csv",
       "unfiltered": "club_seasons_unfiltered.csv"
     },
-    "player_seasons_untouched": true
+    "player_seasons_untouched": true,
+    "coverage": {
+      "league_seasons_in_scope": 144,
+      "league_seasons_classified": 143,
+      "league_seasons_excluded": 1,
+      "excluded": [
+        {
+          "league_season": "TR|2010",
+          "reason": "/teams?league=203&season=2010 returned ZERO teams, so no team-seasons were enumerated and player_seasons.csv has no rows for it. There is nothing to classify. Our own cards hold 370 Turkish 2010 player-seasons, so the data exists on our side and the API team list does not. Recorded as a coverage gap, not re-pulled."
+        }
+      ],
+      "note": "143 of 144 = 9 leagues x 16 seasons minus TR|2010. Stated explicitly so a reader does not have to notice the arithmetic."
+    },
+    "known_size_external_support": {
+      "measured": "agreement between KNOWN_SIZE and /standings, per league, all 16 seasons",
+      "BPL": {
+        "agree": 15,
+        "of": 16,
+        "divergence": "2018 , standings 19 vs table 16. Likely the 16 top-flight clubs plus Division 1B entrants to that era's Europa League play-offs, which supports the table rather than contradicting it."
+      },
+      "TR": {
+        "agree": 11,
+        "of": 16,
+        "divergence": "2010 (0), 2012 (15), 2013 (17), 2014 (15), 2015 (14) , standings SHORT on all five, and none is a size the Super Lig has had."
+      },
+      "THE_ASYMMETRY": "BPL rests on 15 of 16 independent agreements. TR 2020-2025 is corroborated 6 of 6, but TR 2010-2019 rests on this table ALONE , standings is short or empty across exactly that range, which is also the range every STANDINGS_GAP decision sits in. That is the half with no external support."
+    }
   }
 }

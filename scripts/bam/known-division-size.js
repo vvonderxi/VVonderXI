@@ -26,12 +26,31 @@
       - CONFIDENCE is declared per league, and the two I am least sure of say so
       - the classifier reports where standings AGREES, which is corroboration
 
-    CONFIDENCE:
+    CONFIDENCE, AND WHICH ENTRIES HAVE EXTERNAL SUPPORT , measured, not assumed:
       high   PL, LL, SA, BL, ERE , unchanged sizes across the whole window
       high   L1, PRT             , one documented change each, well known
-      MEDIUM BPL, TR             , both restructured repeatedly. Verify these two
-                                    before relying on a filter decision that
-                                    turns on them.
+      MEDIUM BPL, TR             , both restructured repeatedly
+
+    THE TWO MEDIUMS ARE NOT EQUALLY SUPPORTED, AND IT IS THE OPPOSITE WAY ROUND
+    FROM WHAT YOU WOULD GUESS. /standings agreement with this table:
+
+      BPL  15 of 16 seasons agree. The only divergence is 2018, where standings
+           returns 19 against this table's 16 , and 19 is almost certainly the
+           16 top-flight clubs PLUS Division 1B entrants to that era's Europa
+           League play-offs, which is a documented feature of the Belgian format
+           and therefore evidence FOR the table rather than against it.
+      TR   11 of 16 seasons agree. Five diverge and standings is SHORT on every
+           one: 2010 (0 clubs), 2012 (15), 2013 (17), 2014 (15), 2015 (14). None
+           of those is a size the Super Lig has ever had.
+
+    SO: BPL rests on 15 of 16 independent agreements with one explicable outlier.
+    TR's 2020-2025 entries are corroborated (6 of 6), but TR 2010-2019 rest on
+    this table ALONE , standings cannot confirm them because it is short or empty
+    across exactly that range. THAT is the half with no external support, and it
+    is the half a STANDINGS_GAP decision turns on.
+
+    A future reader changing either league should know which cells are propped up
+    by a second source and which are not. The TR 2010-2019 block is not.
 */
 'use strict';
 
