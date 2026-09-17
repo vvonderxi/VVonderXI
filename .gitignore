@@ -95,3 +95,10 @@ _demo_gkcompare.html
 _demo_btp.html
 _demo_gktraj2.html
 _demo_gktraj3.html
+
+# BAM player export , CSVs are regenerable bulk data and stay out of history.
+# meta.json IS tracked: it carries the included/excluded competition ids, the
+# null rates and the actual call count, which is the auditable part.
+# Pattern is **/ because the files live in exports/bam/player/<timestamp>/ ,
+# a bare exports/bam/player/*.csv matches nothing.
+exports/bam/player/**/*.csv

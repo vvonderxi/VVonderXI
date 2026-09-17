@@ -1,0 +1,577 @@
+{
+  "source": "https://v3.football.api-sports.io",
+  "started_at": "2026-09-17T18:16:35.074Z",
+  "out": "exports/bam/player/2026-09-17T18-16-35",
+  "scope": {
+    "leagues": [
+      {
+        "code": "PL",
+        "id": 39,
+        "name": "Premier League"
+      },
+      {
+        "code": "LL",
+        "id": 140,
+        "name": "La Liga"
+      },
+      {
+        "code": "SA",
+        "id": 135,
+        "name": "Serie A"
+      },
+      {
+        "code": "BL",
+        "id": 78,
+        "name": "Bundesliga"
+      },
+      {
+        "code": "L1",
+        "id": 61,
+        "name": "Ligue 1"
+      },
+      {
+        "code": "PRT",
+        "id": 94,
+        "name": "Primeira Liga"
+      },
+      {
+        "code": "ERE",
+        "id": 88,
+        "name": "Eredivisie"
+      },
+      {
+        "code": "BPL",
+        "id": 144,
+        "name": "Belgian Pro League"
+      },
+      {
+        "code": "TR",
+        "id": 203,
+        "name": "Super Lig"
+      }
+    ],
+    "seasons": "2010-2025",
+    "season_count": 16
+  },
+  "included_competition_ids": [
+    {
+      "id": 39,
+      "name": "Premier League"
+    },
+    {
+      "id": 140,
+      "name": "La Liga"
+    },
+    {
+      "id": 135,
+      "name": "Serie A"
+    },
+    {
+      "id": 78,
+      "name": "Bundesliga"
+    },
+    {
+      "id": 61,
+      "name": "Ligue 1"
+    },
+    {
+      "id": 94,
+      "name": "Primeira Liga"
+    },
+    {
+      "id": 88,
+      "name": "Eredivisie"
+    },
+    {
+      "id": 144,
+      "name": "Belgian Pro League"
+    },
+    {
+      "id": 203,
+      "name": "Super Lig"
+    }
+  ],
+  "excluded_competition_ids": "WHITELIST , every competition id not in the included list is dropped. Observed and dropped in testing: UEFA Champions League (2), Europa League (3), Europa Conference League (848), Friendlies Clubs, domestic cups (League Cup, FA Cup, etc.), Super Cups, and ALL second tiers. A promoted club's prior season yields ZERO rows.",
+  "league_seasons": {
+    "PL|2010": {
+      "teams": 20
+    },
+    "PL|2011": {
+      "teams": 20
+    },
+    "PL|2012": {
+      "teams": 20
+    },
+    "PL|2013": {
+      "teams": 20
+    },
+    "PL|2014": {
+      "teams": 20
+    },
+    "PL|2015": {
+      "teams": 20
+    },
+    "PL|2016": {
+      "teams": 20
+    },
+    "PL|2017": {
+      "teams": 20
+    },
+    "PL|2018": {
+      "teams": 20
+    },
+    "PL|2019": {
+      "teams": 20
+    },
+    "PL|2020": {
+      "teams": 20
+    },
+    "PL|2021": {
+      "teams": 20
+    },
+    "PL|2022": {
+      "teams": 20
+    },
+    "PL|2023": {
+      "teams": 20
+    },
+    "PL|2024": {
+      "teams": 20
+    },
+    "PL|2025": {
+      "teams": 20
+    },
+    "LL|2010": {
+      "teams": 20
+    },
+    "LL|2011": {
+      "teams": 20
+    },
+    "LL|2012": {
+      "teams": 20
+    },
+    "LL|2013": {
+      "teams": 20
+    },
+    "LL|2014": {
+      "teams": 20
+    },
+    "LL|2015": {
+      "teams": 20
+    },
+    "LL|2016": {
+      "teams": 20
+    },
+    "LL|2017": {
+      "teams": 20
+    },
+    "LL|2018": {
+      "teams": 20
+    },
+    "LL|2019": {
+      "teams": 20
+    },
+    "LL|2020": {
+      "teams": 20
+    },
+    "LL|2021": {
+      "teams": 20
+    },
+    "LL|2022": {
+      "teams": 20
+    },
+    "LL|2023": {
+      "teams": 20
+    },
+    "LL|2024": {
+      "teams": 20
+    },
+    "LL|2025": {
+      "teams": 20
+    },
+    "SA|2010": {
+      "teams": 20
+    },
+    "SA|2011": {
+      "teams": 20
+    },
+    "SA|2012": {
+      "teams": 20
+    },
+    "SA|2013": {
+      "teams": 20
+    },
+    "SA|2014": {
+      "teams": 20
+    },
+    "SA|2015": {
+      "teams": 20
+    },
+    "SA|2016": {
+      "teams": 20
+    },
+    "SA|2017": {
+      "teams": 20
+    },
+    "SA|2018": {
+      "teams": 20
+    },
+    "SA|2019": {
+      "teams": 20
+    },
+    "SA|2020": {
+      "teams": 20
+    },
+    "SA|2021": {
+      "teams": 20
+    },
+    "SA|2022": {
+      "teams": 20
+    },
+    "SA|2023": {
+      "teams": 20
+    },
+    "SA|2024": {
+      "teams": 20
+    },
+    "SA|2025": {
+      "teams": 20
+    },
+    "BL|2010": {
+      "teams": 18
+    },
+    "BL|2011": {
+      "teams": 18
+    },
+    "BL|2012": {
+      "teams": 18
+    },
+    "BL|2013": {
+      "teams": 18
+    },
+    "BL|2014": {
+      "teams": 18
+    },
+    "BL|2015": {
+      "teams": 18
+    },
+    "BL|2016": {
+      "teams": 18
+    },
+    "BL|2017": {
+      "teams": 18
+    },
+    "BL|2018": {
+      "teams": 19
+    },
+    "BL|2019": {
+      "teams": 19
+    },
+    "BL|2020": {
+      "teams": 19
+    },
+    "BL|2021": {
+      "teams": 19
+    },
+    "BL|2022": {
+      "teams": 19
+    },
+    "BL|2023": {
+      "teams": 19
+    },
+    "BL|2024": {
+      "teams": 19
+    },
+    "BL|2025": {
+      "teams": 19
+    },
+    "L1|2010": {
+      "teams": 20
+    },
+    "L1|2011": {
+      "teams": 20
+    },
+    "L1|2012": {
+      "teams": 20
+    },
+    "L1|2013": {
+      "teams": 20
+    },
+    "L1|2014": {
+      "teams": 20
+    },
+    "L1|2015": {
+      "teams": 20
+    },
+    "L1|2016": {
+      "teams": 20
+    },
+    "L1|2017": {
+      "teams": 20
+    },
+    "L1|2018": {
+      "teams": 20
+    },
+    "L1|2019": {
+      "teams": 20
+    },
+    "L1|2020": {
+      "teams": 21
+    },
+    "L1|2021": {
+      "teams": 21
+    },
+    "L1|2022": {
+      "teams": 20
+    },
+    "L1|2023": {
+      "teams": 19
+    },
+    "L1|2024": {
+      "teams": 19
+    },
+    "L1|2025": {
+      "teams": 19
+    },
+    "PRT|2010": {
+      "teams": 16
+    },
+    "PRT|2011": {
+      "teams": 16
+    },
+    "PRT|2012": {
+      "teams": 16
+    },
+    "PRT|2013": {
+      "teams": 16
+    },
+    "PRT|2014": {
+      "teams": 18
+    },
+    "PRT|2015": {
+      "teams": 18
+    },
+    "PRT|2016": {
+      "teams": 18
+    },
+    "PRT|2017": {
+      "teams": 18
+    },
+    "PRT|2018": {
+      "teams": 18
+    },
+    "PRT|2019": {
+      "teams": 18
+    },
+    "PRT|2020": {
+      "teams": 19
+    },
+    "PRT|2021": {
+      "teams": 19
+    },
+    "PRT|2022": {
+      "teams": 19
+    },
+    "PRT|2023": {
+      "teams": 19
+    },
+    "PRT|2024": {
+      "teams": 19
+    },
+    "PRT|2025": {
+      "teams": 19
+    },
+    "ERE|2010": {
+      "teams": 18
+    },
+    "ERE|2011": {
+      "teams": 18
+    },
+    "ERE|2012": {
+      "teams": 18
+    },
+    "ERE|2013": {
+      "teams": 18
+    },
+    "ERE|2014": {
+      "teams": 18
+    },
+    "ERE|2015": {
+      "teams": 18
+    },
+    "ERE|2016": {
+      "teams": 18
+    },
+    "ERE|2017": {
+      "teams": 18
+    },
+    "ERE|2018": {
+      "teams": 18
+    },
+    "ERE|2019": {
+      "teams": 18
+    },
+    "ERE|2020": {
+      "teams": 24
+    },
+    "ERE|2021": {
+      "teams": 24
+    },
+    "ERE|2022": {
+      "teams": 24
+    },
+    "ERE|2023": {
+      "teams": 24
+    },
+    "ERE|2024": {
+      "teams": 24
+    },
+    "ERE|2025": {
+      "teams": 18
+    },
+    "BPL|2010": {
+      "teams": 16
+    },
+    "BPL|2011": {
+      "teams": 16
+    },
+    "BPL|2012": {
+      "teams": 16
+    },
+    "BPL|2013": {
+      "teams": 16
+    },
+    "BPL|2014": {
+      "teams": 16
+    },
+    "BPL|2015": {
+      "teams": 16
+    },
+    "BPL|2016": {
+      "teams": 16
+    },
+    "BPL|2017": {
+      "teams": 16
+    },
+    "BPL|2018": {
+      "teams": 16
+    },
+    "BPL|2019": {
+      "teams": 16
+    },
+    "BPL|2020": {
+      "teams": 19
+    },
+    "BPL|2021": {
+      "teams": 19
+    },
+    "BPL|2022": {
+      "teams": 18
+    },
+    "BPL|2023": {
+      "teams": 17
+    },
+    "BPL|2024": {
+      "teams": 17
+    },
+    "BPL|2025": {
+      "teams": 20
+    },
+    "TR|2010": {
+      "teams": 0
+    },
+    "TR|2011": {
+      "teams": 18
+    },
+    "TR|2012": {
+      "teams": 18
+    },
+    "TR|2013": {
+      "teams": 18
+    },
+    "TR|2014": {
+      "teams": 18
+    },
+    "TR|2015": {
+      "teams": 18
+    },
+    "TR|2016": {
+      "teams": 18
+    },
+    "TR|2017": {
+      "teams": 18
+    },
+    "TR|2018": {
+      "teams": 18
+    },
+    "TR|2019": {
+      "teams": 18
+    },
+    "TR|2020": {
+      "teams": 21
+    },
+    "TR|2021": {
+      "teams": 20
+    },
+    "TR|2022": {
+      "teams": 19
+    },
+    "TR|2023": {
+      "teams": 20
+    },
+    "TR|2024": {
+      "teams": 19
+    },
+    "TR|2025": {
+      "teams": 18
+    }
+  },
+  "calls": {
+    "teams": 144,
+    "transfers": 331,
+    "players": 6875,
+    "total": 7350,
+    "estimate_was": 8720,
+    "actual": 7350,
+    "undershoot_cause": "estimate assumed 3.00 pages/team-season, actual mean 2.49"
+  },
+  "notes": [
+    "Every aggregate is computed AFTER the whitelist filter.",
+    "top11_mean_rating = mean rating of the 11 players with the most minutes.",
+    "paging.total asserted on every call; /teams and /transfers required single-page."
+  ],
+  "transfers": {
+    "rows": 203987,
+    "null_dates": 0,
+    "null_rate_pct": 0,
+    "earliest_transfer_date": "1926-01-01",
+    "latest_transfer_date": "2026-09-14",
+    "rows_on_or_after_2010_07_01": 193057,
+    "rows_before_2010_07_01": 10930,
+    "date_filter": "NONE , unfiltered. /transfers is all-time per team and takes no season parameter",
+    "scope_note": "/transfers is ALL-TIME per team and accepts no season parameter (verified: \"The Season field do not exist.\"), so this file is UNFILTERED by date. 10930 of 203987 rows predate 2010-07-01 and are outside the stated 2010/11-2025/26 scope. Kept unfiltered deliberately , BAM can cut it , but the file says what it contains."
+  },
+  "player_seasons": {
+    "rows": 103787,
+    "non_whitelist_dropped": 154565,
+    "pages_per_team_season": "NOT RECORDED in this run , the script was instrumented after it started. Derived from the log at block level: mean 2.49 pages, range 2.27 to 2.91 across 200-team-season blocks. The estimate assumed 3.00 flat, which is the entire 8,720-to-7,350 undershoot. The VARIATION is the evidence it is a squad-size effect and not a pagination cap , a cap pins the rate flat at a round number."
+  },
+  "club_seasons": {
+    "rows": 2711
+  },
+  "finished_at": "2026-09-17T18:39:46.413Z",
+  "team_season_reconciliation": {
+    "api_teams_total": 2728,
+    "db_teams_total": 2740,
+    "net_delta": -12,
+    "COVERAGE_GAP": {
+      "league_seasons_with_zero_teams": [
+        "TR|2010"
+      ],
+      "detail": "/teams?league=203&season=2010 returned ZERO teams. Our own cards hold 370 Turkish player-seasons for 2010, so the data exists on our side and the API team list for that league-season does not. player_seasons.csv therefore has NO rows for TR 2010."
+    },
+    "why_the_net_figure_is_misleading": "The net is -12, which reads as twelve scattered gaps. It is not. It is ONE hole of -18 (TR 2010) offset by +6 net across 42 other league-seasons where the API team count and our card team count differ by 1 to 6. A net that small concealed the only real defect.",
+    "largest_other_differences": "ERE 2020-2024 the API reports 24 teams against our 18-21, and ERE 2011-2018 reports 18 against our 19-22. Worth a look before trusting Eredivisie squad aggregates: 24 exceeds an 18-team top flight, which suggests /teams includes clubs beyond the season proper.",
+    "differing_league_seasons": 43
+  }
+}
