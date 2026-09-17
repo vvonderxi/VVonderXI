@@ -1,0 +1,159 @@
+<meta charset="utf-8">
+<style>
+:root{--cream:#F3EDE0;--gold:#E8B84B;--pink:#F1688E;--ink:rgba(243,237,224,.74);--mut:rgba(243,237,224,.5)}
+*{box-sizing:border-box}
+body{margin:0;background:#17140f;color:var(--cream);font-family:Archivo,system-ui,sans-serif;padding:22px 16px 80px}
+h2{font:800 10px Archivo;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:32px 0 4px}
+.sub{font:400 11.5px Inter,system-ui;color:var(--mut);margin:0 0 14px;max-width:720px;line-height:1.55}
+.plate{border:1px solid rgba(243,237,224,.12);border-radius:18px;padding:20px;max-width:760px;
+  background:radial-gradient(120% 150% at 12% 0%,rgba(241,104,142,.07),transparent 58%),
+             linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.012))}
+.row{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.ballwrap{position:relative;width:250px;height:250px;flex:none}
+.ball{width:250px;height:250px;border-radius:50%;position:relative;overflow:hidden}
+.seams{position:absolute;inset:0;border-radius:50%;pointer-events:none}
+.seams i{position:absolute;left:50%;top:50%;width:1.5px;height:50%;transform-origin:0 0;background:rgba(20,17,13,.55)}
+.pent{position:absolute;left:50%;top:50%;width:74px;height:74px;transform:translate(-50%,-50%);
+  background:#17140f;clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);
+  display:grid;place-items:center;text-align:center;border-radius:4px}
+.pent b{display:block;font:900 19px Archivo;color:var(--cream);line-height:1}
+.pent span{display:block;font:700 7.5px Archivo;letter-spacing:.13em;color:var(--gold);margin-top:2px}
+.ring{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(20,17,13,.5),0 18px 40px -18px rgba(0,0,0,.8)}
+.hit{position:absolute;inset:0;border-radius:50%}
+.hit i{position:absolute;left:50%;top:50%;width:50%;height:50%;transform-origin:0 0;cursor:pointer}
+.legend{flex:1;min-width:250px;display:grid;gap:5px}
+.lg{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;
+  font:600 12px Archivo;padding:4px 7px;border-radius:7px;cursor:pointer}
+.lg:hover,.lg.on{background:rgba(255,255,255,.07)}
+.lg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.lg .n{color:var(--cream)} .lg .v{color:var(--mut);font-variant-numeric:tabular-nums;font-size:11px}
+.det{margin-top:13px;padding-top:12px;border-top:1px solid rgba(243,237,224,.09);
+  font:400 12.5px Inter,system-ui;color:var(--ink);line-height:1.6;min-height:56px}
+.det b{font-family:Archivo;font-weight:700;color:var(--cream)}
+.det .none{color:var(--mut);font-style:italic}
+.ring2{position:absolute;inset:0;border-radius:50%}
+.realball{position:absolute;inset:30px;border-radius:50%;background:#F7F2E6;
+  box-shadow:inset 0 0 0 2px rgba(20,17,13,.5),0 14px 32px -14px rgba(0,0,0,.8)}
+.rb-c{position:absolute;left:50%;top:50%;width:46px;height:44px;transform:translate(-50%,-50%);
+  background:#17140f;clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%)}
+.rb-s i{position:absolute;left:50%;top:50%;width:30px;height:29px;margin:-14px 0 0 -15px;
+  background:#17140f;clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);transform-origin:50% 50%}
+.cap{font:400 11px Inter,system-ui;color:var(--mut);margin-top:10px;max-width:640px;line-height:1.5}
+</style>
+
+<h2>The data, before any styling</h2>
+<p class="sub">Nine leagues spanning 36.0&deg; to 44.5&deg; against a perfectly equal 40.0&deg;. A 1.24 ratio
+end to end. <b>As a data chart this says almost nothing , and that is exactly why it works as a ball</b>,
+because a football's panels are supposed to be regular.</p>
+
+<h2>A , The panel ball. Reads as a football first.</h2>
+<p class="sub">Cream panels, hairline seams, a dark pentagon at the centre carrying the total. The
+league is identified on hover or tap, not by a colour you have to decode.</p>
+<div class="plate"><div class="row">
+  <div class="ballwrap"><div class="ball" id="ballA"></div><div class="seams" id="seamA"></div>
+    <div class="ring"></div><div class="pent"><b id="totA">57k</b><span>CARDS</span></div>
+    <div class="hit" id="hitA"></div></div>
+  <div class="legend" id="legA"></div>
+</div><div class="det" id="detA"><span class="none">Hover a panel, or a league in the list.</span></div></div>
+
+<h2>B , The tinted ball. Each league takes its own colour.</h2>
+<p class="sub">Same geometry, flag-derived tints, gold seams. More chart-like, and the colour does
+work the legend would otherwise have to do , at the cost of looking less like a ball.</p>
+<div class="plate"><div class="row">
+  <div class="ballwrap"><div class="ball" id="ballB"></div><div class="seams" id="seamB"></div>
+    <div class="ring"></div><div class="pent"><b id="totB">57k</b><span>CARDS</span></div>
+    <div class="hit" id="hitB"></div></div>
+  <div class="legend" id="legB"></div>
+</div><div class="det" id="detB"><span class="none">Hover a panel, or a league in the list.</span></div></div>
+
+<h2>C , The ball stays a ball. The data goes round it.</h2>
+<p class="sub">A football's panels are FIVE-fold symmetric and our data is NINE-fold, so any
+attempt to make the wedges BE the panels gives up one job or the other , A is a pie wearing a
+pentagon, B is a pie. This keeps a recognisable ball and puts the nine leagues in a ring around
+it, where 36&deg; to 44.5&deg; is legible as "near-equal" rather than pretending to be a panel layout.</p>
+<div class="plate"><div class="row">
+  <div class="ballwrap"><div class="ring2" id="ringC"></div>
+    <div class="realball"><div class="rb-c"></div><div class="rb-s" id="rbS"></div></div>
+    <div class="hit" id="hitC"></div></div>
+  <div class="legend" id="legC"></div>
+</div><div class="det" id="detC"><span class="none">Hover a segment, or a league in the list.</span></div></div>
+
+<script>
+var L=[
+ {v:'SA', l:'Serie A',            c:6,  cards:7057, clubs:20, all:41, det:'2015/16'},
+ {v:'LL', l:'La Liga',            c:1,  cards:7032, clubs:20, all:35, det:'2015/16'},
+ {v:'PL', l:'Premier League',     c:0,  cards:6590, clubs:20, all:41, det:'2015/16, partly 2014/15'},
+ {v:'L1', l:'Ligue 1',            c:4,  cards:6569, clubs:20, all:37, det:'2015/16'},
+ {v:'TR', l:'Süper Lig',     c:8,  cards:6365, clubs:18, all:45, det:'2015/16'},
+ {v:'PRT',l:'Primeira Liga',      c:5,  cards:6006, clubs:18, all:36, det:'2015/16'},
+ {v:'BL', l:'Bundesliga',         c:3,  cards:5900, clubs:18, all:33, det:'2015/16'},
+ {v:'ERE',l:'Eredivisie',         c:2,  cards:5838, clubs:21, all:33, det:'2015/16'},
+ {v:'BPL',l:'Belgian Pro League', c:7,  cards:5698, clubs:16, all:30, det:'2020/21'}
+];
+var TINT=['#C8102E','#E8B84B','#F36C21','#2B2B2B','#2B5CC8','#1C7A3E','#D94F8C','#8E44AD','#C0392B'];
+var TOT=L.reduce(function(a,x){return a+x.cards},0);
+function build(id,tinted){
+  var stops=[],ang=0,seams='',hits='';
+  L.forEach(function(x,i){
+    var deg=360*x.cards/TOT, a2=ang+deg;
+    var col = tinted ? TINT[i] : (i%2 ? '#EFE7D6' : '#F7F2E6');
+    stops.push(col+' '+ang.toFixed(2)+'deg '+a2.toFixed(2)+'deg');
+    seams+='<i style="transform:rotate('+(ang-90)+'deg)"></i>';
+    hits+='<i data-i="'+i+'" style="transform:rotate('+(ang-90)+'deg) skewY('+(90-deg)+'deg)"></i>';
+    ang=a2;
+  });
+  document.getElementById('ball'+id).style.background='conic-gradient('+stops.join(',')+')';
+  document.getElementById('seam'+id).innerHTML=seams;
+  document.getElementById('hit'+id).innerHTML=hits;
+  document.getElementById('tot'+id).textContent=Math.round(TOT/1000)+'k';
+  document.getElementById('leg'+id).innerHTML=L.map(function(x,i){
+    return '<div class="lg" data-i="'+i+'"><span class="sw" style="background:'+(tinted?TINT[i]:(i%2?'#EFE7D6':'#F7F2E6'))+'"></span>'+
+      '<span class="n">'+x.l+'</span><span class="v">'+(100*x.cards/TOT).toFixed(1)+'%</span></div>'; }).join('');
+  function show(i){
+    var x=L[i];
+    document.getElementById('det'+id).innerHTML=
+      '<b>'+x.l+'</b> , <b>'+x.cards.toLocaleString('en-GB')+'</b> season cards, '+
+      (100*x.cards/TOT).toFixed(1)+'% of the record. <b>'+x.clubs+'</b> clubs a season, <b>'+x.all+
+      '</b> in all since 2010/11. Detailed stats from <b>'+x.det+'</b>.';
+    Array.prototype.forEach.call(document.querySelectorAll('#leg'+id+' .lg'),function(e){
+      e.classList.toggle('on', +e.dataset.i===i); });
+  }
+  document.getElementById('leg'+id).addEventListener('mouseover',function(e){
+    var t=e.target.closest('.lg'); if(t) show(+t.dataset.i); });
+  document.getElementById('leg'+id).addEventListener('click',function(e){
+    var t=e.target.closest('.lg'); if(t) show(+t.dataset.i); });
+  document.getElementById('hit'+id).addEventListener('mouseover',function(e){
+    if(e.target.dataset.i!=null) show(+e.target.dataset.i); });
+  document.getElementById('hit'+id).addEventListener('click',function(e){
+    if(e.target.dataset.i!=null) show(+e.target.dataset.i); });
+}
+build('A',false); build('B',true);
+// C , outer data ring, inner football
+(function(){
+  var stops=[],ang=0,hits='';
+  L.forEach(function(x,i){
+    var deg=360*x.cards/TOT,a2=ang+deg;
+    stops.push(TINT[i]+' '+ang.toFixed(2)+'deg '+a2.toFixed(2)+'deg');
+    hits+='<i data-i="'+i+'" style="transform:rotate('+(ang-90)+'deg) skewY('+(90-deg)+'deg)"></i>';
+    ang=a2;
+  });
+  document.getElementById('ringC').style.background='conic-gradient('+stops.join(',')+')';
+  document.getElementById('hitC').innerHTML=hits;
+  // five outer pentagons + one centre = the recognisable 2D football
+  var s='';
+  for(var k=0;k<5;k++) s+='<i style="transform:rotate('+(k*72)+'deg) translateY(-44px)"></i>';
+  document.getElementById('rbS').innerHTML=s;
+  document.getElementById('legC').innerHTML=L.map(function(x,i){
+    return '<div class="lg" data-i="'+i+'"><span class="sw" style="background:'+TINT[i]+'"></span>'+
+      '<span class="n">'+x.l+'</span><span class="v">'+(100*x.cards/TOT).toFixed(1)+'%</span></div>'; }).join('');
+  function show(i){ var x=L[i];
+    document.getElementById('detC').innerHTML='<b>'+x.l+'</b> , <b>'+x.cards.toLocaleString('en-GB')+
+      '</b> season cards, '+(100*x.cards/TOT).toFixed(1)+'% of the record. <b>'+x.clubs+'</b> clubs a season, <b>'+
+      x.all+'</b> in all since 2010/11. Detailed stats from <b>'+x.det+'</b>.';
+    Array.prototype.forEach.call(document.querySelectorAll('#legC .lg'),function(e){e.classList.toggle('on',+e.dataset.i===i);}); }
+  ['mouseover','click'].forEach(function(ev){
+    document.getElementById('legC').addEventListener(ev,function(e){var t=e.target.closest('.lg'); if(t) show(+t.dataset.i);});
+    document.getElementById('hitC').addEventListener(ev,function(e){ if(e.target.dataset.i!=null) show(+e.target.dataset.i);});
+  });
+})();
+</script>

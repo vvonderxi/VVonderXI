@@ -1,0 +1,17 @@
+<title>Shipped cabinet, four cases</title>
+<style>body{margin:0;padding:12px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif}
+h1{font-size:13px;margin:0 0 8px}.r{display:flex;gap:12px;align-items:flex-start}
+.c{flex:0 0 auto}.l{font-size:10px;color:#E0A93A;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+iframe{border:1px solid #33302c;border-radius:8px;display:block;background:#fff}</style>
+<h1 id="t">Shipped flex row , four cases</h1>
+<div class="r" id="r"></div>
+<script>
+var W=+(location.search.match(/w=(\d+)/)||[0,1100])[1];
+var S=[['Lewandowski , 12-year run',137523],['Ronaldo , 4-year run',132317],
+       ['Higuaín , single year',148701],['Haaland 19/20 , EMPTY cabinet',153428]];
+document.getElementById('t').textContent='Shipped flex row , four cases, at '+W+'px';
+var r=document.getElementById('r');
+S.forEach(function(s){var d=document.createElement('div');d.className='c';
+ d.innerHTML='<div class="l">'+s[0]+'</div><iframe width="'+W+'" height="760" src="/card.html?id='+s[1]+'&cb=sh2"></iframe>';
+ r.appendChild(d);});
+</script>

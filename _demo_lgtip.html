@@ -1,0 +1,139 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>League chip detail , demo</title>
+<style>
+:root{--cream:#F0EAD9;--mut:#8a8276;--ink:#2c2824;--pink:#F1688E}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(#1a1714,#221e1a);color:var(--cream);
+  font-family:Archivo,system-ui,sans-serif;padding:22px 16px 60px}
+h2{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#6e675e;
+  margin:26px 0 8px;font-weight:700}
+.note{color:var(--mut);font-size:12px;line-height:1.5;margin:0 0 12px;max-width:640px}
+.frame{border:1px solid #332e28;border-radius:10px;padding:14px;background:rgba(0,0,0,.18);margin-bottom:6px}
+
+/* ---- playbook strip, real classes ---- */
+.lgstrip-l{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6e675e;font-weight:700;margin-bottom:8px}
+.lgstrip-r{display:flex;flex-wrap:wrap;gap:7px}
+.lgchip{display:inline-flex;align-items:center;gap:6px;border:1px solid #3a3430;
+  border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600;
+  background:rgba(255,255,255,.02);position:relative;cursor:default}
+.lgchip .f{font-size:13px;line-height:1}
+.lgchip.hasTip{cursor:pointer}
+.lgchip.hasTip:hover,.lgchip.open{border-color:#5d5349;background:rgba(255,255,255,.06)}
+.lgstrip-n{color:var(--mut);font-size:11.5px;line-height:1.55;margin-top:10px;max-width:620px}
+
+/* ---- the popover ---- */
+.lgtip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 9px);
+  width:230px;background:#15120f;border:1px solid #443c34;border-radius:9px;
+  padding:10px 12px;z-index:40;box-shadow:0 14px 34px -12px rgba(0,0,0,.85);
+  opacity:0;visibility:hidden;transition:opacity .13s;pointer-events:none;text-align:left}
+.lgchip.hasTip:hover .lgtip,.lgchip.open .lgtip{opacity:1;visibility:visible}
+.lgtip .t{font-size:12px;font-weight:700;color:var(--cream);margin-bottom:5px}
+.lgtip .r{font-size:11.5px;color:#b3aa9c;line-height:1.5;display:flex;gap:6px}
+.lgtip .r b{color:var(--cream);font-weight:700;font-variant-numeric:tabular-nums}
+.lgtip:after{content:'';position:absolute;top:100%;left:50%;margin-left:-5px;
+  border:5px solid transparent;border-top-color:#443c34}
+
+/* ---- filter chip, real classes ---- */
+.vvf-chips{display:flex;flex-wrap:wrap;gap:6px}
+.vvf-chip{appearance:none;border:1px solid #3a3430;background:rgba(255,255,255,.02);
+  color:var(--cream);border-radius:999px;padding:6px 12px;font:600 12.5px Archivo,system-ui;
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.vvf-chip:hover{border-color:#5d5349}
+.vvf-hint{font-style:normal;font-family:Archivo;font-weight:700;font-size:10px;
+  opacity:.62;margin-left:5px;font-variant-numeric:tabular-nums}
+.phone{max-width:390px;margin:0 auto;border:1px solid #332e28;border-radius:14px;padding:14px}
+.tapnote{color:#6e675e;font-size:10.5px;margin-top:8px}
+
+/*  PHONE: THE POPOVER ANCHORS TO THE STRIP, NOT TO THE CHIP.
+    Chip-anchored (left:50% + translateX(-50%)) overflows the right edge on the
+    last chips , MEASURED at 390: scrollWidth 414 vs clientWidth 388, 26px over,
+    with no scrollbar to say so. Dropping position:relative from .lgchip makes the
+    absolutely-positioned tip resolve against .lgstrip-r instead, so left:0/right:0
+    spans the strip and can never exceed it. Same defect class as the unclamped
+    .tip[data-tip] in SS D, except that one is unreachable and this one would not be.  */
+@media (max-width:720px){
+  .lgchip{position:static}
+  .lgstrip-r{position:relative}
+  .lgtip{left:0;right:0;width:auto;transform:none;bottom:auto;top:calc(100% + 8px)}
+  .lgtip:after{display:none}
+}
+</style></head><body>
+
+<h2>The numbers, so nothing here is a mockup</h2>
+<p class="note">Every figure below is read from <code>player_card_mv</code> on 2026-09-12. Season
+range is 2010/11 to 2025/26 for all nine, so it is reassurance rather than a differentiator and is
+already said once in the strip note.</p>
+
+<h2>A , Playbook strip &middot; hover on desktop, tap on phone (free tap, full treatment)</h2>
+<div class="frame">
+  <div class="lgstrip-l">The ground we cover</div>
+  <div class="lgstrip-r" id="stripA"></div>
+  <div class="lgstrip-n">Every card comes from one of these 9 competitions, and every league here
+  carries more than 5,000 season cards. If a league is not here, no card exists for it.</div>
+</div>
+<p class="note">Hover any pill. The strip sentence from <code>ed704f5</code> is untouched.</p>
+
+<h2>B , Rankings rail and Compare picker &middot; the same shared VVFilters chip</h2>
+<div class="frame">
+  <div style="font-size:10.5px;letter-spacing:.07em;color:#6e675e;font-weight:700;margin-bottom:8px">B1 , INLINE, using vvfChip's existing it.hint slot</div>
+  <div class="vvf-chips" id="chipsB1"></div>
+  <div style="font-size:10.5px;letter-spacing:.07em;color:#6e675e;font-weight:700;margin:16px 0 8px">B2 , HOVER ONLY on desktop, nothing on phone (tap stays the filter)</div>
+  <div class="vvf-chips" id="chipsB2"></div>
+</div>
+
+<h2>C , Phone, 390 &middot; tap to open, tap elsewhere to close</h2>
+<div class="phone">
+  <div class="lgstrip-l">The ground we cover</div>
+  <div class="lgstrip-r" id="stripC"></div>
+  <p class="tapnote">Tap a pill. Only the Playbook strip does this , the filter chips keep tap for filtering.</p>
+</div>
+
+<script>
+var D=[
+ {v:'PL', l:'Premier League',    e:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}', all:6590, scored:6333, per:20, tot:41, det:'2014/15'},
+ {v:'LL', l:'La Liga',           e:'\u{1F1EA}\u{1F1F8}', all:7032, scored:6697, per:20, tot:35, det:'2015/16'},
+ {v:'SA', l:'Serie A',           e:'\u{1F1EE}\u{1F1F9}', all:7057, scored:6806, per:20, tot:41, det:'2015/16'},
+ {v:'BL', l:'Bundesliga',        e:'\u{1F1E9}\u{1F1EA}', all:5900, scored:5697, per:18, tot:33, det:'2015/16'},
+ {v:'L1', l:'Ligue 1',           e:'\u{1F1EB}\u{1F1F7}', all:6569, scored:6277, per:20, tot:37, det:'2015/16'},
+ {v:'PRT',l:'Primeira Liga',     e:'\u{1F1F5}\u{1F1F9}', all:6006, scored:5671, per:18, tot:36, det:'2015/16'},
+ {v:'ERE',l:'Eredivisie',        e:'\u{1F1F3}\u{1F1F1}', all:5838, scored:5670, per:21, tot:33, det:'2015/16'},
+ {v:'BPL',l:'Belgian Pro League',e:'\u{1F1E7}\u{1F1EA}', all:5698, scored:5440, per:16, tot:30, det:'2020/21'},
+ {v:'TR', l:'Super Lig',         e:'\u{1F1F9}\u{1F1F7}', all:6365, scored:5403, per:18, tot:45, det:'2015/16'}
+];
+var N=function(n){return n.toLocaleString('en-GB');};
+function tip(d){
+  return '<span class="lgtip"><span class="t">'+d.l+'</span>'+
+    '<span class="r"><b>'+N(d.all)+'</b> season cards, 2010/11 to 2025/26</span>'+
+    '<span class="r"><b>'+d.per+'</b> clubs a season, <b>'+d.tot+'</b> in all</span>'+
+    '<span class="r">Detailed stats from <b>'+d.det+'</b></span></span>';
+}
+function strip(host){
+  document.getElementById(host).innerHTML=D.map(function(d){
+    return '<span class="lgchip hasTip" data-v="'+d.v+'"><span class="f">'+d.e+'</span>'+d.l+tip(d)+'</span>';
+  }).join('');
+}
+strip('stripA'); strip('stripC');
+/* phone mode: render ONLY the strip, so the iframe is a true 390 viewport test */
+if(location.search.indexOf('phone=1')>-1){
+  document.body.style.padding='14px 12px';
+  Array.prototype.forEach.call(document.body.children,function(el){
+    if(el.tagName==='SCRIPT') return;
+    if(!el.classList.contains('phone')) el.style.display='none';
+  });
+  var ph=document.querySelector('.phone');
+  ph.style.cssText='max-width:none;margin:0;border:0;padding:0';
+  ph.style.display='block';
+}
+document.getElementById('chipsB1').innerHTML=D.map(function(d){
+  return '<button class="vvf-chip">'+d.e+' '+d.l+' <em class="vvf-hint">'+N(d.all)+'</em></button>';
+}).join('');
+document.getElementById('chipsB2').innerHTML=D.map(function(d){
+  return '<button class="vvf-chip" title="'+d.all.toLocaleString('en-GB')+' season cards · '+d.per+' clubs a season · detailed stats from '+d.det+'">'+d.e+' '+d.l+'</button>';
+}).join('');
+document.addEventListener('click',function(e){
+  var c=e.target.closest('.lgchip.hasTip');
+  document.querySelectorAll('.lgchip.open').forEach(function(x){ if(x!==c) x.classList.remove('open'); });
+  if(c) c.classList.toggle('open');
+});
+</script></body></html>

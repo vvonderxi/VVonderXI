@@ -1,0 +1,106 @@
+<title>The Standard, the schematic</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;padding:16px;background:#1b1617;color:#F0EAD9;font-family:'Inter',system-ui,sans-serif}
+ h1{font-family:'Archivo';font-size:15px;margin:0 0 4px}
+ .sub{font-size:11.5px;color:#a49d93;margin:0 0 16px;max-width:1300px;line-height:1.5}
+ .subj{margin-bottom:26px;max-width:1300px}
+ .sh{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin:0 0 1px}
+ .sn{font-size:11px;color:#a49d93;margin-bottom:10px}
+ .oh{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#E0A93A;margin:14px 0 3px}
+ .ow{font-size:11px;color:#a49d93;line-height:1.45;margin-bottom:8px}
+ .stage{--arcmk:28px;position:relative;width:calc(100% - var(--arcmk));margin:0 auto;padding:4px 0}
+ /* ---- SHIPPED .arcspan ---- */
+ .arcspan{position:relative;display:flex;align-items:center;gap:9px;
+   margin:2px calc(var(--arcmk,28px)/2) 10px;padding-left:23%;width:auto}
+ .arcspan::before{content:'';position:absolute;left:23%;right:0;top:50%;height:3px;
+   transform:translateY(-50%);border-radius:3px;
+   background:linear-gradient(90deg,#1B5563,#2F8290 72%,rgba(47,130,144,0.18))}
+ .arcmk-span{position:relative;flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:none;
+   background:linear-gradient(135deg,#2F8290,#1B5563);cursor:pointer}
+ .arcspan-l{position:relative;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.04em;
+   color:#a49d93;white-space:nowrap;background:#1b1617;padding:0 6px}
+ /* ---- DEMO 1 , REAL EXTENT. left/right set inline from the data, ticks mark actual seasons ---- */
+ .d1 .arcspan{padding-left:0}
+ .d1 .arcspan::before{background:linear-gradient(90deg,#1B5563,#2F8290)}
+ .tick{position:absolute;top:50%;width:7px;height:7px;border-radius:50%;background:#8FD3DF;
+   transform:translate(-50%,-50%);box-shadow:0 0 0 2px #1b1617}
+ .gap{position:absolute;top:50%;height:3px;transform:translateY(-50%);
+   background:repeating-linear-gradient(90deg,rgba(47,130,144,0.30) 0 3px,transparent 3px 7px)}
+ /* ---- DEMO 2 , VISIBLY SCHEMATIC. Full width, no coordinates to read off ---- */
+ .d2 .arcspan{padding-left:0}
+ .d2 .arcspan::before{left:0;right:0;height:8px;border-radius:4px;
+   background:repeating-linear-gradient(135deg,rgba(47,130,144,0.34) 0 6px,rgba(47,130,144,0.13) 6px 12px)}
+ .d2 .arcspan-l{color:#cfc8bd}
+ /* season axis, shown under every treatment so the claim can be checked */
+ .seasons{position:relative;height:34px;margin:0 calc(var(--arcmk,28px)/2)}
+ .sq{position:absolute;top:8px;width:9px;height:9px;border-radius:2px;transform:translateX(-50%)}
+ .sq.on{background:#8FD3DF}
+ .sq.off{background:rgba(255,255,255,0.16)}
+ .syr{position:absolute;top:20px;font-size:8.5px;color:#6f6a62;transform:translateX(-50%)}
+ .axl{display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.10);
+   padding-top:7px;margin:0 calc(var(--arcmk,28px)/2)}
+ .axl span{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.11em;
+   text-transform:uppercase;color:#a49d93}
+ .panel{background:#211c1d;border-radius:12px;padding:14px 16px}
+</style>
+<h1>The Standard , the bar against the seasons it claims</h1>
+<p class="sub">Real careers. A filled square is a season the shipped rule flags
+(<code>stage_the_standard</code>); a hollow one is a season it does not. The shipped bar is
+<code>left:23%; right:0</code>, hardcoded, so it draws the same on all three.</p>
+<div id="host"></div>
+<script>
+var SUBJ=[
+ {n:'Falcao', note:'10 seasons. Real extent 0% to 44%. The bar starts after his run began and runs long past where it ended.',
+  s:[[2011,90,1],[2012,91,1],[2016,86,1],[2017,84,1],[2018,80,1],[2019,62,0],[2020,62,0],[2021,62,0],[2022,35,0],[2023,25,0]]},
+ {n:'Son Heung-Min', note:'15 seasons. Real extent 43% to 100%. The bar starts far too early.',
+  s:[[2010,49,0],[2011,58,0],[2012,78,0],[2013,70,0],[2014,74,0],[2015,60,0],[2016,87,1],[2017,85,1],[2018,85,1],[2019,87,1],[2020,90,1],[2021,91,1],[2022,83,1],[2023,89,1],[2024,82,1]]},
+ {n:'Eriksen', note:'18 seasons, exactly 5 qualifying and contiguous , the NARROWEST span any holder can have. Real extent 29% to 53%. Nothing renders thinner than this.',
+  s:[[2010,61,0],[2011,62,0],[2012,70,0],[2013,74,0],[2013,44,0],[2014,80,1],[2015,85,1],[2016,87,1],[2017,86,1],[2018,88,1],[2019,58,0],[2019,41,0],[2020,52,0],[2021,61,0],[2022,74,0],[2023,55,0],[2024,55,0],[2025,70,0]]},
+ {n:'Firmino', note:'13 seasons. Real extent 25% to 100%, the case where the bar is roughly right , but his qualifying seasons are NOT contiguous.',
+  s:[[2010,50,0],[2011,63,0],[2012,56,0],[2013,81,1],[2014,61,0],[2015,83,1],[2016,83,1],[2017,87,1],[2018,85,1],[2019,80,1],[2020,80,1],[2021,71,0],[2022,81,1]]}
+];
+function pos(i,n){ return n<2?0:(i/(n-1))*100; }
+function seasons(s){
+  var n=s.length, h='<div class="seasons">';
+  s.forEach(function(x,i){
+    h+='<div class="sq '+(x[2]?'on':'off')+'" style="left:'+pos(i,n)+'%"></div>';
+    if(i===0||i===n-1||i%3===0) h+='<div class="syr" style="left:'+pos(i,n)+'%">'+String(x[0]).slice(2)+'</div>';
+  });
+  return h+'</div>';
+}
+function bar(s,mode){
+  var n=s.length, q=s.map(function(x,i){return x[2]?i:-1;}).filter(function(i){return i>=0;});
+  var a=pos(q[0],n), b=pos(q[q.length-1],n);
+  if(mode==='cur') return '<div class="arcspan"><button class="arcmk-span"></button><span class="arcspan-l">The Standard</span></div>';
+  if(mode==='d2')  return '<div class="arcspan"><button class="arcmk-span"></button><span class="arcspan-l">The Standard , across his career</span></div>';
+  // d1: real extent, with the actual qualifying seasons ticked and the gaps dashed
+  var inner='';
+  q.forEach(function(i){ inner+='<div class="tick" style="left:'+((pos(i,n)-a)/(b-a||1)*100)+'%"></div>'; });
+  for(var k=1;k<q.length;k++){ if(q[k]-q[k-1]>1){
+    var g0=(pos(q[k-1],n)-a)/(b-a||1)*100, g1=(pos(q[k],n)-a)/(b-a||1)*100;
+    inner+='<div class="gap" style="left:'+g0+'%;width:'+(g1-g0)+'%"></div>'; } }
+  return '<div class="arcspan" style="margin-left:calc('+a+'% + 14px);margin-right:calc('+(100-b)+'% + 14px)">'
+       + '<button class="arcmk-span"></button><span class="arcspan-l">The Standard</span>'+inner+'</div>';
+}
+var MODES=[
+ ['0 , ships today','left:23%; right:0, hardcoded. Identical on every card, in a position a reader takes as data.','cur',''],
+ ['1 , encode the real extent','The bar spans his actual first to last qualifying season. Ticks mark the seasons that qualify; a dashed run marks a gap, because the seasons are not always contiguous.','d1','d1'],
+ ['2 , make it visibly schematic','Full width, hatched, no start or end to read a year off. It says "this ran through his career" and claims no coordinates.','d2','d2']
+];
+var host=document.getElementById('host');
+var Q=location.search, ONLY=(Q.match(/only=(\d)/)||[])[1], SU=(Q.match(/subj=(\d)/)||[])[1];
+if(ONLY!=null||SU!=null){ document.querySelector('h1').style.display='none';
+  document.querySelector('.sub').style.display='none'; document.body.style.padding='6px'; }
+(SU!=null?[SUBJ[+SU]]:SUBJ).forEach(function(s){
+  var d=document.createElement('div'); d.className='subj';
+  var body=(ONLY!=null?[MODES[+ONLY]]:MODES).map(function(m){
+    return '<div class="oh">'+m[0]+'</div><div class="ow">'+m[1]+'</div>'
+      + '<div class="panel '+m[3]+'"><div class="stage">'+bar(s.s,m[2])+seasons(s.s)
+      + '<div class="axl"><span>Early career</span><span>Peak years</span><span>Final seasons</span></div></div></div>';
+  }).join('');
+  d.innerHTML='<div class="sh">'+s.n+'</div><div class="sn">'+s.note+'</div>'+body;
+  host.appendChild(d);
+});
+</script>

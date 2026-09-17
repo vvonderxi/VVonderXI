@@ -1,0 +1,4129 @@
+{
+ "captured_at": "2026-09-16T19:57:46.764Z",
+ "verdict_cache_rows": 126,
+ "notes_cache_rows": 172,
+ "total_references": 424,
+ "distinct_card_ids": 253,
+ "by_card": {
+  "130266": [
+   {
+    "table": "notes_cache",
+    "key": "130266"
+   }
+  ],
+  "130267": [
+   {
+    "table": "verdict_cache",
+    "key": "130267-151585"
+   }
+  ],
+  "130281": [
+   {
+    "table": "verdict_cache",
+    "key": "130281-130687"
+   }
+  ],
+  "130288": [
+   {
+    "table": "verdict_cache",
+    "key": "130288-134697"
+   },
+   {
+    "table": "notes_cache",
+    "key": "130288"
+   }
+  ],
+  "130340": [
+   {
+    "table": "notes_cache",
+    "key": "130340"
+   }
+  ],
+  "130362": [
+   {
+    "table": "notes_cache",
+    "key": "130362"
+   }
+  ],
+  "130412": [
+   {
+    "table": "verdict_cache",
+    "key": "130412-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130412-131911"
+   }
+  ],
+  "130415": [
+   {
+    "table": "notes_cache",
+    "key": "130415"
+   }
+  ],
+  "130422": [
+   {
+    "table": "verdict_cache",
+    "key": "130422-130966"
+   }
+  ],
+  "130474": [
+   {
+    "table": "verdict_cache",
+    "key": "130474-150885"
+   },
+   {
+    "table": "notes_cache",
+    "key": "130474"
+   }
+  ],
+  "130490": [
+   {
+    "table": "verdict_cache",
+    "key": "130490-140934"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130490-141999"
+   }
+  ],
+  "130499": [
+   {
+    "table": "verdict_cache",
+    "key": "130499-131105"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130499-133289"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130499-138886"
+   }
+  ],
+  "130520": [
+   {
+    "table": "notes_cache",
+    "key": "130520"
+   }
+  ],
+  "130522": [
+   {
+    "table": "verdict_cache",
+    "key": "130522-156952"
+   },
+   {
+    "table": "notes_cache",
+    "key": "130522"
+   }
+  ],
+  "130523": [
+   {
+    "table": "verdict_cache",
+    "key": "130523-183024"
+   }
+  ],
+  "130524": [
+   {
+    "table": "verdict_cache",
+    "key": "130524-186833"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130524-131129"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130524-131533"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130524-157034"
+   },
+   {
+    "table": "notes_cache",
+    "key": "130524"
+   }
+  ],
+  "130544": [
+   {
+    "table": "verdict_cache",
+    "key": "130544-141130"
+   }
+  ],
+  "130552": [
+   {
+    "table": "notes_cache",
+    "key": "130552"
+   }
+  ],
+  "130577": [
+   {
+    "table": "verdict_cache",
+    "key": "130577-131583"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130577-130796"
+   }
+  ],
+  "130685": [
+   {
+    "table": "verdict_cache",
+    "key": "130685-130891"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130685-180943"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130685-131105"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130685-131551"
+   }
+  ],
+  "130686": [
+   {
+    "table": "notes_cache",
+    "key": "130686"
+   }
+  ],
+  "130687": [
+   {
+    "table": "verdict_cache",
+    "key": "130281-130687"
+   }
+  ],
+  "130699": [
+   {
+    "table": "notes_cache",
+    "key": "130699"
+   }
+  ],
+  "130728": [
+   {
+    "table": "verdict_cache",
+    "key": "130728-182002"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130728-135966"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130728-141853"
+   },
+   {
+    "table": "notes_cache",
+    "key": "130728"
+   }
+  ],
+  "130729": [
+   {
+    "table": "verdict_cache",
+    "key": "130729-161191"
+   }
+  ],
+  "130744": [
+   {
+    "table": "verdict_cache",
+    "key": "130744-132293"
+   }
+  ],
+  "130780": [
+   {
+    "table": "notes_cache",
+    "key": "130780"
+   }
+  ],
+  "130781": [
+   {
+    "table": "verdict_cache",
+    "key": "130781-177523"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130781-181521"
+   }
+  ],
+  "130796": [
+   {
+    "table": "verdict_cache",
+    "key": "130577-130796"
+   }
+  ],
+  "130814": [
+   {
+    "table": "verdict_cache",
+    "key": "130814-131105"
+   }
+  ],
+  "130855": [
+   {
+    "table": "notes_cache",
+    "key": "130855"
+   }
+  ],
+  "130869": [
+   {
+    "table": "verdict_cache",
+    "key": "130869-132477"
+   }
+  ],
+  "130887": [
+   {
+    "table": "notes_cache",
+    "key": "130887"
+   }
+  ],
+  "130891": [
+   {
+    "table": "verdict_cache",
+    "key": "130891-175137"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130685-130891"
+   }
+  ],
+  "130966": [
+   {
+    "table": "verdict_cache",
+    "key": "130422-130966"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130966-133053"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130966-143526"
+   }
+  ],
+  "131105": [
+   {
+    "table": "verdict_cache",
+    "key": "130814-131105"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131105-131889"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131105-175137"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130685-131105"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131105-183024"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130499-131105"
+   }
+  ],
+  "131110": [
+   {
+    "table": "notes_cache",
+    "key": "131110"
+   }
+  ],
+  "131111": [
+   {
+    "table": "verdict_cache",
+    "key": "131111-134720"
+   }
+  ],
+  "131113": [
+   {
+    "table": "notes_cache",
+    "key": "131113"
+   }
+  ],
+  "131129": [
+   {
+    "table": "verdict_cache",
+    "key": "131129-172141"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130524-131129"
+   },
+   {
+    "table": "notes_cache",
+    "key": "131129"
+   }
+  ],
+  "131140": [
+   {
+    "table": "notes_cache",
+    "key": "131140"
+   }
+  ],
+  "131182": [
+   {
+    "table": "verdict_cache",
+    "key": "131182-133289"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131182-145201"
+   },
+   {
+    "table": "notes_cache",
+    "key": "131182"
+   }
+  ],
+  "131183": [
+   {
+    "table": "verdict_cache",
+    "key": "131183-157413"
+   },
+   {
+    "table": "notes_cache",
+    "key": "131183"
+   }
+  ],
+  "131220": [
+   {
+    "table": "notes_cache",
+    "key": "131220"
+   }
+  ],
+  "131221": [
+   {
+    "table": "verdict_cache",
+    "key": "131221-131296"
+   }
+  ],
+  "131296": [
+   {
+    "table": "verdict_cache",
+    "key": "131221-131296"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131296-175142"
+   },
+   {
+    "table": "notes_cache",
+    "key": "131296"
+   }
+  ],
+  "131386": [
+   {
+    "table": "verdict_cache",
+    "key": "131386-158484"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131386-143372"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131386-142695"
+   }
+  ],
+  "131475": [
+   {
+    "table": "verdict_cache",
+    "key": "131475-148277"
+   }
+  ],
+  "131490": [
+   {
+    "table": "verdict_cache",
+    "key": "131490-135197"
+   }
+  ],
+  "131533": [
+   {
+    "table": "verdict_cache",
+    "key": "131533-141130"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130524-131533"
+   }
+  ],
+  "131538": [
+   {
+    "table": "notes_cache",
+    "key": "131538"
+   }
+  ],
+  "131551": [
+   {
+    "table": "verdict_cache",
+    "key": "130685-131551"
+   }
+  ],
+  "131555": [
+   {
+    "table": "notes_cache",
+    "key": "131555"
+   }
+  ],
+  "131583": [
+   {
+    "table": "verdict_cache",
+    "key": "131583-147130"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130577-131583"
+   },
+   {
+    "table": "notes_cache",
+    "key": "131583"
+   }
+  ],
+  "131585": [
+   {
+    "table": "verdict_cache",
+    "key": "131585-152972"
+   },
+   {
+    "table": "notes_cache",
+    "key": "131585"
+   }
+  ],
+  "131684": [
+   {
+    "table": "notes_cache",
+    "key": "131684"
+   }
+  ],
+  "131865": [
+   {
+    "table": "verdict_cache",
+    "key": "131865-150806"
+   }
+  ],
+  "131889": [
+   {
+    "table": "verdict_cache",
+    "key": "131105-131889"
+   }
+  ],
+  "131911": [
+   {
+    "table": "verdict_cache",
+    "key": "131911-140670"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130412-131911"
+   }
+  ],
+  "131969": [
+   {
+    "table": "notes_cache",
+    "key": "131969"
+   }
+  ],
+  "132116": [
+   {
+    "table": "notes_cache",
+    "key": "132116"
+   }
+  ],
+  "132265": [
+   {
+    "table": "verdict_cache",
+    "key": "132265-132293"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "132265-148715"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "132265-132714"
+   }
+  ],
+  "132293": [
+   {
+    "table": "verdict_cache",
+    "key": "132265-132293"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130744-132293"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "132293-148715"
+   }
+  ],
+  "132316": [
+   {
+    "table": "notes_cache",
+    "key": "132316"
+   }
+  ],
+  "132477": [
+   {
+    "table": "verdict_cache",
+    "key": "130869-132477"
+   }
+  ],
+  "132515": [
+   {
+    "table": "notes_cache",
+    "key": "132515"
+   }
+  ],
+  "132658": [
+   {
+    "table": "verdict_cache",
+    "key": "132658-138323"
+   },
+   {
+    "table": "notes_cache",
+    "key": "132658"
+   }
+  ],
+  "132669": [
+   {
+    "table": "verdict_cache",
+    "key": "132669-143526"
+   },
+   {
+    "table": "notes_cache",
+    "key": "132669"
+   }
+  ],
+  "132714": [
+   {
+    "table": "verdict_cache",
+    "key": "132265-132714"
+   },
+   {
+    "table": "notes_cache",
+    "key": "132714"
+   }
+  ],
+  "132785": [
+   {
+    "table": "notes_cache",
+    "key": "132785"
+   }
+  ],
+  "132787": [
+   {
+    "table": "notes_cache",
+    "key": "132787"
+   }
+  ],
+  "133053": [
+   {
+    "table": "verdict_cache",
+    "key": "130966-133053"
+   }
+  ],
+  "133071": [
+   {
+    "table": "verdict_cache",
+    "key": "133071-146062"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133071-161191"
+   }
+  ],
+  "133095": [
+   {
+    "table": "verdict_cache",
+    "key": "133095-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-181943"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-133289"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-133614"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-141575"
+   }
+  ],
+  "133121": [
+   {
+    "table": "notes_cache",
+    "key": "133121"
+   }
+  ],
+  "133287": [
+   {
+    "table": "notes_cache",
+    "key": "133287"
+   }
+  ],
+  "133289": [
+   {
+    "table": "verdict_cache",
+    "key": "131182-133289"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-133289"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-161191"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130499-133289"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-133583"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-150885"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-143526"
+   }
+  ],
+  "133460": [
+   {
+    "table": "verdict_cache",
+    "key": "133460-137874"
+   }
+  ],
+  "133583": [
+   {
+    "table": "verdict_cache",
+    "key": "133289-133583"
+   }
+  ],
+  "133614": [
+   {
+    "table": "verdict_cache",
+    "key": "133095-133614"
+   },
+   {
+    "table": "notes_cache",
+    "key": "133614"
+   }
+  ],
+  "133659": [
+   {
+    "table": "notes_cache",
+    "key": "133659"
+   }
+  ],
+  "133676": [
+   {
+    "table": "verdict_cache",
+    "key": "133676-140934"
+   }
+  ],
+  "133870": [
+   {
+    "table": "notes_cache",
+    "key": "133870"
+   }
+  ],
+  "134055": [
+   {
+    "table": "notes_cache",
+    "key": "134055"
+   }
+  ],
+  "134093": [
+   {
+    "table": "verdict_cache",
+    "key": "134093-138409"
+   }
+  ],
+  "134288": [
+   {
+    "table": "verdict_cache",
+    "key": "134288-147839"
+   },
+   {
+    "table": "notes_cache",
+    "key": "134288"
+   }
+  ],
+  "134313": [
+   {
+    "table": "verdict_cache",
+    "key": "134313-148277"
+   },
+   {
+    "table": "notes_cache",
+    "key": "134313"
+   }
+  ],
+  "134393": [
+   {
+    "table": "notes_cache",
+    "key": "134393"
+   }
+  ],
+  "134462": [
+   {
+    "table": "verdict_cache",
+    "key": "134462-135435"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "134462-137184"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "134462-140012"
+   }
+  ],
+  "134542": [
+   {
+    "table": "notes_cache",
+    "key": "134542"
+   }
+  ],
+  "134697": [
+   {
+    "table": "verdict_cache",
+    "key": "130288-134697"
+   }
+  ],
+  "134720": [
+   {
+    "table": "verdict_cache",
+    "key": "131111-134720"
+   }
+  ],
+  "134812": [
+   {
+    "table": "notes_cache",
+    "key": "134812"
+   }
+  ],
+  "135197": [
+   {
+    "table": "verdict_cache",
+    "key": "131490-135197"
+   }
+  ],
+  "135435": [
+   {
+    "table": "verdict_cache",
+    "key": "134462-135435"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "135435-137184"
+   }
+  ],
+  "135556": [
+   {
+    "table": "verdict_cache",
+    "key": "135556-148701"
+   },
+   {
+    "table": "notes_cache",
+    "key": "135556"
+   }
+  ],
+  "135586": [
+   {
+    "table": "notes_cache",
+    "key": "135586"
+   }
+  ],
+  "135966": [
+   {
+    "table": "verdict_cache",
+    "key": "130728-135966"
+   },
+   {
+    "table": "notes_cache",
+    "key": "135966"
+   }
+  ],
+  "136348": [
+   {
+    "table": "notes_cache",
+    "key": "136348"
+   }
+  ],
+  "136835": [
+   {
+    "table": "notes_cache",
+    "key": "136835"
+   }
+  ],
+  "136932": [
+   {
+    "table": "notes_cache",
+    "key": "136932"
+   }
+  ],
+  "137015": [
+   {
+    "table": "notes_cache",
+    "key": "137015"
+   }
+  ],
+  "137022": [
+   {
+    "table": "notes_cache",
+    "key": "137022"
+   }
+  ],
+  "137024": [
+   {
+    "table": "verdict_cache",
+    "key": "137024-156950"
+   },
+   {
+    "table": "notes_cache",
+    "key": "137024"
+   }
+  ],
+  "137108": [
+   {
+    "table": "notes_cache",
+    "key": "137108"
+   }
+  ],
+  "137171": [
+   {
+    "table": "verdict_cache",
+    "key": "137171-148277"
+   }
+  ],
+  "137184": [
+   {
+    "table": "verdict_cache",
+    "key": "134462-137184"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "135435-137184"
+   },
+   {
+    "table": "notes_cache",
+    "key": "137184"
+   }
+  ],
+  "137467": [
+   {
+    "table": "notes_cache",
+    "key": "137467"
+   }
+  ],
+  "137523": [
+   {
+    "table": "notes_cache",
+    "key": "137523"
+   }
+  ],
+  "137842": [
+   {
+    "table": "notes_cache",
+    "key": "137842"
+   }
+  ],
+  "137874": [
+   {
+    "table": "verdict_cache",
+    "key": "133460-137874"
+   }
+  ],
+  "137957": [
+   {
+    "table": "verdict_cache",
+    "key": "137957-146545"
+   },
+   {
+    "table": "notes_cache",
+    "key": "137957"
+   }
+  ],
+  "138323": [
+   {
+    "table": "verdict_cache",
+    "key": "138323-183024"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "138323-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "132658-138323"
+   }
+  ],
+  "138409": [
+   {
+    "table": "verdict_cache",
+    "key": "134093-138409"
+   },
+   {
+    "table": "notes_cache",
+    "key": "138409"
+   }
+  ],
+  "138747": [
+   {
+    "table": "notes_cache",
+    "key": "138747"
+   }
+  ],
+  "138819": [
+   {
+    "table": "notes_cache",
+    "key": "138819"
+   }
+  ],
+  "138886": [
+   {
+    "table": "verdict_cache",
+    "key": "130499-138886"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "138886-181163"
+   }
+  ],
+  "139209": [
+   {
+    "table": "verdict_cache",
+    "key": "139209-141579"
+   },
+   {
+    "table": "notes_cache",
+    "key": "139209"
+   }
+  ],
+  "139635": [
+   {
+    "table": "notes_cache",
+    "key": "139635"
+   }
+  ],
+  "139650": [
+   {
+    "table": "notes_cache",
+    "key": "139650"
+   }
+  ],
+  "139818": [
+   {
+    "table": "verdict_cache",
+    "key": "139818-186765"
+   }
+  ],
+  "140012": [
+   {
+    "table": "verdict_cache",
+    "key": "134462-140012"
+   },
+   {
+    "table": "notes_cache",
+    "key": "140012"
+   }
+  ],
+  "140068": [
+   {
+    "table": "verdict_cache",
+    "key": "140068-157546"
+   },
+   {
+    "table": "notes_cache",
+    "key": "140068"
+   }
+  ],
+  "140489": [
+   {
+    "table": "notes_cache",
+    "key": "140489"
+   }
+  ],
+  "140669": [
+   {
+    "table": "notes_cache",
+    "key": "140669"
+   }
+  ],
+  "140670": [
+   {
+    "table": "verdict_cache",
+    "key": "131911-140670"
+   }
+  ],
+  "140934": [
+   {
+    "table": "verdict_cache",
+    "key": "133676-140934"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130490-140934"
+   },
+   {
+    "table": "notes_cache",
+    "key": "140934"
+   }
+  ],
+  "141117": [
+   {
+    "table": "notes_cache",
+    "key": "141117"
+   }
+  ],
+  "141130": [
+   {
+    "table": "verdict_cache",
+    "key": "131533-141130"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130544-141130"
+   }
+  ],
+  "141249": [
+   {
+    "table": "verdict_cache",
+    "key": "141249-181521"
+   }
+  ],
+  "141402": [
+   {
+    "table": "notes_cache",
+    "key": "141402"
+   }
+  ],
+  "141441": [
+   {
+    "table": "verdict_cache",
+    "key": "141441-159701"
+   },
+   {
+    "table": "notes_cache",
+    "key": "141441"
+   }
+  ],
+  "141575": [
+   {
+    "table": "verdict_cache",
+    "key": "133095-141575"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141575-157034"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141575-151580"
+   },
+   {
+    "table": "notes_cache",
+    "key": "141575"
+   }
+  ],
+  "141579": [
+   {
+    "table": "verdict_cache",
+    "key": "139209-141579"
+   },
+   {
+    "table": "notes_cache",
+    "key": "141579"
+   }
+  ],
+  "141853": [
+   {
+    "table": "verdict_cache",
+    "key": "141853-181360"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141853-181943"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141853-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130728-141853"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141853-157034"
+   },
+   {
+    "table": "notes_cache",
+    "key": "141853"
+   }
+  ],
+  "141999": [
+   {
+    "table": "verdict_cache",
+    "key": "130490-141999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141999-143372"
+   },
+   {
+    "table": "notes_cache",
+    "key": "141999"
+   }
+  ],
+  "142265": [
+   {
+    "table": "verdict_cache",
+    "key": "142265-148277"
+   },
+   {
+    "table": "notes_cache",
+    "key": "142265"
+   }
+  ],
+  "142422": [
+   {
+    "table": "notes_cache",
+    "key": "142422"
+   }
+  ],
+  "142695": [
+   {
+    "table": "verdict_cache",
+    "key": "131386-142695"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "142695-143372"
+   },
+   {
+    "table": "notes_cache",
+    "key": "142695"
+   }
+  ],
+  "142838": [
+   {
+    "table": "notes_cache",
+    "key": "142838"
+   }
+  ],
+  "143372": [
+   {
+    "table": "verdict_cache",
+    "key": "143372-175142"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131386-143372"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143372-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "142695-143372"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141999-143372"
+   },
+   {
+    "table": "notes_cache",
+    "key": "143372"
+   }
+  ],
+  "143526": [
+   {
+    "table": "verdict_cache",
+    "key": "141853-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143526-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "132669-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143526-150885"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130966-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130412-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143372-143526"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143526-148277"
+   },
+   {
+    "table": "notes_cache",
+    "key": "143526"
+   }
+  ],
+  "143808": [
+   {
+    "table": "verdict_cache",
+    "key": "143808-159701"
+   },
+   {
+    "table": "notes_cache",
+    "key": "143808"
+   }
+  ],
+  "143875": [
+   {
+    "table": "notes_cache",
+    "key": "143875"
+   }
+  ],
+  "143928": [
+   {
+    "table": "notes_cache",
+    "key": "143928"
+   }
+  ],
+  "143953": [
+   {
+    "table": "notes_cache",
+    "key": "143953"
+   }
+  ],
+  "144034": [
+   {
+    "table": "notes_cache",
+    "key": "144034"
+   }
+  ],
+  "144775": [
+   {
+    "table": "notes_cache",
+    "key": "144775"
+   }
+  ],
+  "144933": [
+   {
+    "table": "notes_cache",
+    "key": "144933"
+   }
+  ],
+  "145201": [
+   {
+    "table": "verdict_cache",
+    "key": "145201-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131182-145201"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "145201-146545"
+   }
+  ],
+  "145763": [
+   {
+    "table": "notes_cache",
+    "key": "145763"
+   }
+  ],
+  "146062": [
+   {
+    "table": "verdict_cache",
+    "key": "146062-151977"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133071-146062"
+   },
+   {
+    "table": "notes_cache",
+    "key": "146062"
+   }
+  ],
+  "146263": [
+   {
+    "table": "notes_cache",
+    "key": "146263"
+   }
+  ],
+  "146545": [
+   {
+    "table": "verdict_cache",
+    "key": "145201-146545"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "137957-146545"
+   },
+   {
+    "table": "notes_cache",
+    "key": "146545"
+   }
+  ],
+  "146946": [
+   {
+    "table": "verdict_cache",
+    "key": "146946-146972"
+   }
+  ],
+  "146972": [
+   {
+    "table": "verdict_cache",
+    "key": "146946-146972"
+   }
+  ],
+  "147015": [
+   {
+    "table": "notes_cache",
+    "key": "147015"
+   }
+  ],
+  "147022": [
+   {
+    "table": "notes_cache",
+    "key": "147022"
+   }
+  ],
+  "147130": [
+   {
+    "table": "verdict_cache",
+    "key": "131583-147130"
+   },
+   {
+    "table": "notes_cache",
+    "key": "147130"
+   }
+  ],
+  "147239": [
+   {
+    "table": "verdict_cache",
+    "key": "147239-177599"
+   }
+  ],
+  "147398": [
+   {
+    "table": "notes_cache",
+    "key": "147398"
+   }
+  ],
+  "147533": [
+   {
+    "table": "notes_cache",
+    "key": "147533"
+   }
+  ],
+  "147839": [
+   {
+    "table": "verdict_cache",
+    "key": "134288-147839"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "147839-180848"
+   }
+  ],
+  "147879": [
+   {
+    "table": "notes_cache",
+    "key": "147879"
+   }
+  ],
+  "147926": [
+   {
+    "table": "notes_cache",
+    "key": "147926"
+   }
+  ],
+  "147949": [
+   {
+    "table": "verdict_cache",
+    "key": "147949-148056"
+   }
+  ],
+  "148056": [
+   {
+    "table": "verdict_cache",
+    "key": "147949-148056"
+   }
+  ],
+  "148218": [
+   {
+    "table": "notes_cache",
+    "key": "148218"
+   }
+  ],
+  "148277": [
+   {
+    "table": "verdict_cache",
+    "key": "131475-148277"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "137171-148277"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "134313-148277"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "142265-148277"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143526-148277"
+   },
+   {
+    "table": "notes_cache",
+    "key": "148277"
+   }
+  ],
+  "148701": [
+   {
+    "table": "verdict_cache",
+    "key": "135556-148701"
+   },
+   {
+    "table": "notes_cache",
+    "key": "148701"
+   }
+  ],
+  "148715": [
+   {
+    "table": "verdict_cache",
+    "key": "132265-148715"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "132293-148715"
+   },
+   {
+    "table": "notes_cache",
+    "key": "148715"
+   }
+  ],
+  "149088": [
+   {
+    "table": "notes_cache",
+    "key": "149088"
+   }
+  ],
+  "149155": [
+   {
+    "table": "notes_cache",
+    "key": "149155"
+   }
+  ],
+  "149497": [
+   {
+    "table": "notes_cache",
+    "key": "149497"
+   }
+  ],
+  "150011": [
+   {
+    "table": "notes_cache",
+    "key": "150011"
+   }
+  ],
+  "150585": [
+   {
+    "table": "notes_cache",
+    "key": "150585"
+   }
+  ],
+  "150806": [
+   {
+    "table": "verdict_cache",
+    "key": "131865-150806"
+   },
+   {
+    "table": "notes_cache",
+    "key": "150806"
+   }
+  ],
+  "150885": [
+   {
+    "table": "verdict_cache",
+    "key": "130474-150885"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143526-150885"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-150885"
+   },
+   {
+    "table": "notes_cache",
+    "key": "150885"
+   }
+  ],
+  "151580": [
+   {
+    "table": "verdict_cache",
+    "key": "141575-151580"
+   }
+  ],
+  "151585": [
+   {
+    "table": "verdict_cache",
+    "key": "130267-151585"
+   }
+  ],
+  "151601": [
+   {
+    "table": "notes_cache",
+    "key": "151601"
+   }
+  ],
+  "151977": [
+   {
+    "table": "verdict_cache",
+    "key": "146062-151977"
+   },
+   {
+    "table": "notes_cache",
+    "key": "151977"
+   }
+  ],
+  "152603": [
+   {
+    "table": "notes_cache",
+    "key": "152603"
+   }
+  ],
+  "152626": [
+   {
+    "table": "notes_cache",
+    "key": "152626"
+   }
+  ],
+  "152972": [
+   {
+    "table": "verdict_cache",
+    "key": "152972-156950"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131585-152972"
+   },
+   {
+    "table": "notes_cache",
+    "key": "152972"
+   }
+  ],
+  "153358": [
+   {
+    "table": "notes_cache",
+    "key": "153358"
+   }
+  ],
+  "153473": [
+   {
+    "table": "notes_cache",
+    "key": "153473"
+   }
+  ],
+  "154092": [
+   {
+    "table": "notes_cache",
+    "key": "154092"
+   }
+  ],
+  "154477": [
+   {
+    "table": "notes_cache",
+    "key": "154477"
+   }
+  ],
+  "154687": [
+   {
+    "table": "notes_cache",
+    "key": "154687"
+   }
+  ],
+  "154840": [
+   {
+    "table": "notes_cache",
+    "key": "154840"
+   }
+  ],
+  "154943": [
+   {
+    "table": "notes_cache",
+    "key": "154943"
+   }
+  ],
+  "155046": [
+   {
+    "table": "notes_cache",
+    "key": "155046"
+   }
+  ],
+  "155215": [
+   {
+    "table": "notes_cache",
+    "key": "155215"
+   }
+  ],
+  "155750": [
+   {
+    "table": "notes_cache",
+    "key": "155750"
+   }
+  ],
+  "155955": [
+   {
+    "table": "notes_cache",
+    "key": "155955"
+   }
+  ],
+  "156294": [
+   {
+    "table": "notes_cache",
+    "key": "156294"
+   }
+  ],
+  "156404": [
+   {
+    "table": "notes_cache",
+    "key": "156404"
+   }
+  ],
+  "156948": [
+   {
+    "table": "verdict_cache",
+    "key": "156948-157034"
+   }
+  ],
+  "156950": [
+   {
+    "table": "verdict_cache",
+    "key": "137024-156950"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "156950-175142"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "152972-156950"
+   },
+   {
+    "table": "notes_cache",
+    "key": "156950"
+   }
+  ],
+  "156952": [
+   {
+    "table": "verdict_cache",
+    "key": "130522-156952"
+   }
+  ],
+  "157034": [
+   {
+    "table": "verdict_cache",
+    "key": "156948-157034"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130524-157034"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141853-157034"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141575-157034"
+   }
+  ],
+  "157062": [
+   {
+    "table": "notes_cache",
+    "key": "157062"
+   }
+  ],
+  "157413": [
+   {
+    "table": "verdict_cache",
+    "key": "131183-157413"
+   },
+   {
+    "table": "notes_cache",
+    "key": "157413"
+   }
+  ],
+  "157546": [
+   {
+    "table": "verdict_cache",
+    "key": "140068-157546"
+   },
+   {
+    "table": "notes_cache",
+    "key": "157546"
+   }
+  ],
+  "157949": [
+   {
+    "table": "notes_cache",
+    "key": "157949"
+   }
+  ],
+  "157988": [
+   {
+    "table": "notes_cache",
+    "key": "157988"
+   }
+  ],
+  "158081": [
+   {
+    "table": "notes_cache",
+    "key": "158081"
+   }
+  ],
+  "158399": [
+   {
+    "table": "notes_cache",
+    "key": "158399"
+   }
+  ],
+  "158484": [
+   {
+    "table": "verdict_cache",
+    "key": "131386-158484"
+   },
+   {
+    "table": "notes_cache",
+    "key": "158484"
+   }
+  ],
+  "158548": [
+   {
+    "table": "verdict_cache",
+    "key": "158548-159701"
+   }
+  ],
+  "158681": [
+   {
+    "table": "notes_cache",
+    "key": "158681"
+   }
+  ],
+  "159130": [
+   {
+    "table": "notes_cache",
+    "key": "159130"
+   }
+  ],
+  "159701": [
+   {
+    "table": "verdict_cache",
+    "key": "143808-159701"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "158548-159701"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141441-159701"
+   },
+   {
+    "table": "notes_cache",
+    "key": "159701"
+   }
+  ],
+  "160245": [
+   {
+    "table": "notes_cache",
+    "key": "160245"
+   }
+  ],
+  "160337": [
+   {
+    "table": "notes_cache",
+    "key": "160337"
+   }
+  ],
+  "160750": [
+   {
+    "table": "notes_cache",
+    "key": "160750"
+   }
+  ],
+  "161191": [
+   {
+    "table": "verdict_cache",
+    "key": "133289-161191"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133071-161191"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130729-161191"
+   }
+  ],
+  "161999": [
+   {
+    "table": "verdict_cache",
+    "key": "145201-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "161999-182002"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "143526-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "138323-161999"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133289-161999"
+   }
+  ],
+  "162403": [
+   {
+    "table": "notes_cache",
+    "key": "162403"
+   }
+  ],
+  "164053": [
+   {
+    "table": "notes_cache",
+    "key": "164053"
+   }
+  ],
+  "164296": [
+   {
+    "table": "notes_cache",
+    "key": "164296"
+   }
+  ],
+  "167141": [
+   {
+    "table": "notes_cache",
+    "key": "167141"
+   }
+  ],
+  "169394": [
+   {
+    "table": "notes_cache",
+    "key": "169394"
+   }
+  ],
+  "169905": [
+   {
+    "table": "notes_cache",
+    "key": "169905"
+   }
+  ],
+  "170284": [
+   {
+    "table": "notes_cache",
+    "key": "170284"
+   }
+  ],
+  "170663": [
+   {
+    "table": "notes_cache",
+    "key": "170663"
+   }
+  ],
+  "172141": [
+   {
+    "table": "verdict_cache",
+    "key": "131129-172141"
+   },
+   {
+    "table": "notes_cache",
+    "key": "172141"
+   }
+  ],
+  "172502": [
+   {
+    "table": "notes_cache",
+    "key": "172502"
+   }
+  ],
+  "173239": [
+   {
+    "table": "notes_cache",
+    "key": "173239"
+   }
+  ],
+  "174287": [
+   {
+    "table": "notes_cache",
+    "key": "174287"
+   }
+  ],
+  "174532": [
+   {
+    "table": "notes_cache",
+    "key": "174532"
+   }
+  ],
+  "175137": [
+   {
+    "table": "verdict_cache",
+    "key": "130891-175137"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131105-175137"
+   }
+  ],
+  "175142": [
+   {
+    "table": "verdict_cache",
+    "key": "143372-175142"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "156950-175142"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "175142-178538"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131296-175142"
+   },
+   {
+    "table": "notes_cache",
+    "key": "175142"
+   }
+  ],
+  "175513": [
+   {
+    "table": "notes_cache",
+    "key": "175513"
+   }
+  ],
+  "175910": [
+   {
+    "table": "notes_cache",
+    "key": "175910"
+   }
+  ],
+  "177523": [
+   {
+    "table": "verdict_cache",
+    "key": "130781-177523"
+   },
+   {
+    "table": "notes_cache",
+    "key": "177523"
+   }
+  ],
+  "177599": [
+   {
+    "table": "verdict_cache",
+    "key": "147239-177599"
+   }
+  ],
+  "178538": [
+   {
+    "table": "verdict_cache",
+    "key": "175142-178538"
+   }
+  ],
+  "180848": [
+   {
+    "table": "verdict_cache",
+    "key": "147839-180848"
+   }
+  ],
+  "180943": [
+   {
+    "table": "verdict_cache",
+    "key": "130685-180943"
+   }
+  ],
+  "181163": [
+   {
+    "table": "verdict_cache",
+    "key": "138886-181163"
+   }
+  ],
+  "181360": [
+   {
+    "table": "verdict_cache",
+    "key": "141853-181360"
+   }
+  ],
+  "181521": [
+   {
+    "table": "verdict_cache",
+    "key": "130781-181521"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "141249-181521"
+   },
+   {
+    "table": "notes_cache",
+    "key": "181521"
+   }
+  ],
+  "181943": [
+   {
+    "table": "verdict_cache",
+    "key": "141853-181943"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "133095-181943"
+   }
+  ],
+  "182002": [
+   {
+    "table": "verdict_cache",
+    "key": "130728-182002"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "161999-182002"
+   }
+  ],
+  "182897": [
+   {
+    "table": "verdict_cache",
+    "key": "182897-183206"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "182897-183024"
+   }
+  ],
+  "183024": [
+   {
+    "table": "verdict_cache",
+    "key": "182897-183024"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "138323-183024"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "130523-183024"
+   },
+   {
+    "table": "verdict_cache",
+    "key": "131105-183024"
+   }
+  ],
+  "183206": [
+   {
+    "table": "verdict_cache",
+    "key": "182897-183206"
+   }
+  ],
+  "184721": [
+   {
+    "table": "notes_cache",
+    "key": "184721"
+   }
+  ],
+  "186265": [
+   {
+    "table": "notes_cache",
+    "key": "186265"
+   }
+  ],
+  "186765": [
+   {
+    "table": "verdict_cache",
+    "key": "139818-186765"
+   },
+   {
+    "table": "notes_cache",
+    "key": "186765"
+   }
+  ],
+  "186833": [
+   {
+    "table": "verdict_cache",
+    "key": "130524-186833"
+   },
+   {
+    "table": "notes_cache",
+    "key": "186833"
+   }
+  ]
+ },
+ "verdict_rows": [
+  {
+   "pair_key": "131490-135197",
+   "card_id_a": 131490,
+   "card_id_b": 135197,
+   "cache_version": null,
+   "created_at": "2026-06-19T14:47:58.640707+00:00"
+  },
+  {
+   "pair_key": "133676-140934",
+   "card_id_a": 133676,
+   "card_id_b": 140934,
+   "cache_version": null,
+   "created_at": "2026-06-19T15:39:17.166806+00:00"
+  },
+  {
+   "pair_key": "131911-140670",
+   "card_id_a": 131911,
+   "card_id_b": 140670,
+   "cache_version": null,
+   "created_at": "2026-06-19T16:43:23.959767+00:00"
+  },
+  {
+   "pair_key": "139209-141579",
+   "card_id_a": 139209,
+   "card_id_b": 141579,
+   "cache_version": null,
+   "created_at": "2026-06-21T07:49:26.077949+00:00"
+  },
+  {
+   "pair_key": "131182-133289",
+   "card_id_a": 131182,
+   "card_id_b": 133289,
+   "cache_version": null,
+   "created_at": "2026-06-21T08:58:06.080336+00:00"
+  },
+  {
+   "pair_key": "130490-140934",
+   "card_id_a": 130490,
+   "card_id_b": 140934,
+   "cache_version": null,
+   "created_at": "2026-06-25T10:58:37.332736+00:00"
+  },
+  {
+   "pair_key": "145201-161999",
+   "card_id_a": 145201,
+   "card_id_b": 161999,
+   "cache_version": null,
+   "created_at": "2026-06-26T11:55:48.883226+00:00"
+  },
+  {
+   "pair_key": "131182-145201",
+   "card_id_a": 131182,
+   "card_id_b": 145201,
+   "cache_version": null,
+   "created_at": "2026-06-27T10:22:34.804518+00:00"
+  },
+  {
+   "pair_key": "130728-182002",
+   "card_id_a": 130728,
+   "card_id_b": 182002,
+   "cache_version": null,
+   "created_at": "2026-06-28T17:39:34.650131+00:00"
+  },
+  {
+   "pair_key": "161999-182002",
+   "card_id_a": 161999,
+   "card_id_b": 182002,
+   "cache_version": null,
+   "created_at": "2026-06-28T17:42:50.797861+00:00"
+  },
+  {
+   "pair_key": "182897-183206",
+   "card_id_a": 182897,
+   "card_id_b": 183206,
+   "cache_version": null,
+   "created_at": "2026-06-28T18:36:52.040858+00:00"
+  },
+  {
+   "pair_key": "141853-181360",
+   "card_id_a": 141853,
+   "card_id_b": 181360,
+   "cache_version": null,
+   "created_at": "2026-06-28T20:25:25.395813+00:00"
+  },
+  {
+   "pair_key": "141853-181943",
+   "card_id_a": 141853,
+   "card_id_b": 181943,
+   "cache_version": null,
+   "created_at": "2026-06-28T20:25:35.380181+00:00"
+  },
+  {
+   "pair_key": "141853-143526",
+   "card_id_a": 141853,
+   "card_id_b": 143526,
+   "cache_version": null,
+   "created_at": "2026-06-28T20:25:42.049815+00:00"
+  },
+  {
+   "pair_key": "133095-161999",
+   "card_id_a": 133095,
+   "card_id_b": 161999,
+   "cache_version": null,
+   "created_at": "2026-06-28T21:45:17.647921+00:00"
+  },
+  {
+   "pair_key": "133095-181943",
+   "card_id_a": 133095,
+   "card_id_b": 181943,
+   "cache_version": null,
+   "created_at": "2026-06-28T21:45:20.464253+00:00"
+  },
+  {
+   "pair_key": "143526-161999",
+   "card_id_a": 143526,
+   "card_id_b": 161999,
+   "cache_version": null,
+   "created_at": "2026-06-28T21:45:38.285091+00:00"
+  },
+  {
+   "pair_key": "134093-138409",
+   "card_id_a": 134093,
+   "card_id_b": 138409,
+   "cache_version": null,
+   "created_at": "2026-06-28T22:00:33.180776+00:00"
+  },
+  {
+   "pair_key": "131111-134720",
+   "card_id_a": 131111,
+   "card_id_b": 134720,
+   "cache_version": null,
+   "created_at": "2026-06-28T22:18:26.627893+00:00"
+  },
+  {
+   "pair_key": "130490-141999",
+   "card_id_a": 130490,
+   "card_id_b": 141999,
+   "cache_version": null,
+   "created_at": "2026-06-29T15:50:27.243351+00:00"
+  },
+  {
+   "pair_key": "131221-131296",
+   "card_id_a": 131221,
+   "card_id_b": 131296,
+   "cache_version": null,
+   "created_at": "2026-06-29T16:49:43.881426+00:00"
+  },
+  {
+   "pair_key": "130814-131105",
+   "card_id_a": 130814,
+   "card_id_b": 131105,
+   "cache_version": null,
+   "created_at": "2026-06-29T21:23:59.855152+00:00"
+  },
+  {
+   "pair_key": "132669-143526",
+   "card_id_a": 132669,
+   "card_id_b": 143526,
+   "cache_version": null,
+   "created_at": "2026-06-30T19:41:12.227744+00:00"
+  },
+  {
+   "pair_key": "143372-175142",
+   "card_id_a": 143372,
+   "card_id_b": 175142,
+   "cache_version": null,
+   "created_at": "2026-07-05T16:32:15.154366+00:00"
+  },
+  {
+   "pair_key": "131105-131889",
+   "card_id_a": 131105,
+   "card_id_b": 131889,
+   "cache_version": null,
+   "created_at": "2026-07-07T00:42:58.146334+00:00"
+  },
+  {
+   "pair_key": "130891-175137",
+   "card_id_a": 130891,
+   "card_id_b": 175137,
+   "cache_version": null,
+   "created_at": "2026-07-07T01:25:05.190514+00:00"
+  },
+  {
+   "pair_key": "131105-175137",
+   "card_id_a": 131105,
+   "card_id_b": 175137,
+   "cache_version": null,
+   "created_at": "2026-07-07T16:52:50.48303+00:00"
+  },
+  {
+   "pair_key": "130685-130891",
+   "card_id_a": 130685,
+   "card_id_b": 130891,
+   "cache_version": null,
+   "created_at": "2026-07-07T17:28:05.425547+00:00"
+  },
+  {
+   "pair_key": "182897-183024",
+   "card_id_a": 182897,
+   "card_id_b": 183024,
+   "cache_version": null,
+   "created_at": "2026-07-07T18:27:38.981274+00:00"
+  },
+  {
+   "pair_key": "130685-180943",
+   "card_id_a": 130685,
+   "card_id_b": 180943,
+   "cache_version": null,
+   "created_at": "2026-07-07T18:57:24.171671+00:00"
+  },
+  {
+   "pair_key": "138323-183024",
+   "card_id_a": 138323,
+   "card_id_b": 183024,
+   "cache_version": null,
+   "created_at": "2026-07-07T20:17:52.407727+00:00"
+  },
+  {
+   "pair_key": "130523-183024",
+   "card_id_a": 130523,
+   "card_id_b": 183024,
+   "cache_version": null,
+   "created_at": "2026-07-07T20:27:32.86721+00:00"
+  },
+  {
+   "pair_key": "146946-146972",
+   "card_id_a": 146946,
+   "card_id_b": 146972,
+   "cache_version": null,
+   "created_at": "2026-07-07T20:52:50.464955+00:00"
+  },
+  {
+   "pair_key": "145201-146545",
+   "card_id_a": 145201,
+   "card_id_b": 146545,
+   "cache_version": null,
+   "created_at": "2026-07-08T10:54:54.278418+00:00"
+  },
+  {
+   "pair_key": "130474-150885",
+   "card_id_a": 130474,
+   "card_id_b": 150885,
+   "cache_version": null,
+   "created_at": "2026-07-10T11:34:27.85019+00:00"
+  },
+  {
+   "pair_key": "133095-133289",
+   "card_id_a": 133095,
+   "card_id_b": 133289,
+   "cache_version": null,
+   "created_at": "2026-07-14T16:08:56.322724+00:00"
+  },
+  {
+   "pair_key": "138323-161999",
+   "card_id_a": 138323,
+   "card_id_b": 161999,
+   "cache_version": null,
+   "created_at": "2026-07-15T17:31:00.414597+00:00"
+  },
+  {
+   "pair_key": "143526-150885",
+   "card_id_a": 143526,
+   "card_id_b": 150885,
+   "cache_version": null,
+   "created_at": "2026-07-16T21:12:00.843063+00:00"
+  },
+  {
+   "pair_key": "130267-151585",
+   "card_id_a": 130267,
+   "card_id_b": 151585,
+   "cache_version": null,
+   "created_at": "2026-07-16T21:46:40.257999+00:00"
+  },
+  {
+   "pair_key": "130685-131105",
+   "card_id_a": 130685,
+   "card_id_b": 131105,
+   "cache_version": null,
+   "created_at": "2026-07-17T16:01:51.002173+00:00"
+  },
+  {
+   "pair_key": "131105-183024",
+   "card_id_a": 131105,
+   "card_id_b": 183024,
+   "cache_version": null,
+   "created_at": "2026-07-17T16:02:17.19322+00:00"
+  },
+  {
+   "pair_key": "130499-131105",
+   "card_id_a": 130499,
+   "card_id_b": 131105,
+   "cache_version": null,
+   "created_at": "2026-07-17T19:41:05.492707+00:00"
+  },
+  {
+   "pair_key": "130422-130966",
+   "card_id_a": 130422,
+   "card_id_b": 130966,
+   "cache_version": null,
+   "created_at": "2026-07-17T19:41:49.186565+00:00"
+  },
+  {
+   "pair_key": "130966-133053",
+   "card_id_a": 130966,
+   "card_id_b": 133053,
+   "cache_version": null,
+   "created_at": "2026-07-19T09:57:12.769367+00:00"
+  },
+  {
+   "pair_key": "133289-161191",
+   "card_id_a": 133289,
+   "card_id_b": 161191,
+   "cache_version": null,
+   "created_at": "2026-07-19T15:21:32.892077+00:00"
+  },
+  {
+   "pair_key": "130966-143526",
+   "card_id_a": 130966,
+   "card_id_b": 143526,
+   "cache_version": null,
+   "created_at": "2026-07-19T17:57:12.138632+00:00"
+  },
+  {
+   "pair_key": "146062-151977",
+   "card_id_a": 146062,
+   "card_id_b": 151977,
+   "cache_version": null,
+   "created_at": "2026-07-19T22:05:08.864001+00:00"
+  },
+  {
+   "pair_key": "133071-146062",
+   "card_id_a": 133071,
+   "card_id_b": 146062,
+   "cache_version": null,
+   "created_at": "2026-07-19T22:07:42.919569+00:00"
+  },
+  {
+   "pair_key": "133071-161191",
+   "card_id_a": 133071,
+   "card_id_b": 161191,
+   "cache_version": null,
+   "created_at": "2026-07-19T22:07:52.370462+00:00"
+  },
+  {
+   "pair_key": "130499-133289",
+   "card_id_a": 130499,
+   "card_id_b": 133289,
+   "cache_version": null,
+   "created_at": "2026-07-19T22:24:38.260208+00:00"
+  },
+  {
+   "pair_key": "130499-138886",
+   "card_id_a": 130499,
+   "card_id_b": 138886,
+   "cache_version": null,
+   "created_at": "2026-07-19T22:26:19.115649+00:00"
+  },
+  {
+   "pair_key": "130729-161191",
+   "card_id_a": 130729,
+   "card_id_b": 161191,
+   "cache_version": null,
+   "created_at": "2026-07-22T19:50:41.205019+00:00"
+  },
+  {
+   "pair_key": "139818-186765",
+   "card_id_a": 139818,
+   "card_id_b": 186765,
+   "cache_version": null,
+   "created_at": "2026-07-22T20:18:31.953861+00:00"
+  },
+  {
+   "pair_key": "133289-133583",
+   "card_id_a": 133289,
+   "card_id_b": 133583,
+   "cache_version": null,
+   "created_at": "2026-07-24T16:46:06.815013+00:00"
+  },
+  {
+   "pair_key": "132265-132293",
+   "card_id_a": 132265,
+   "card_id_b": 132293,
+   "cache_version": null,
+   "created_at": "2026-07-24T16:46:47.403628+00:00"
+  },
+  {
+   "pair_key": "133289-161999",
+   "card_id_a": 133289,
+   "card_id_b": 161999,
+   "cache_version": null,
+   "created_at": "2026-07-24T17:24:03.9911+00:00"
+  },
+  {
+   "pair_key": "132265-148715",
+   "card_id_a": 132265,
+   "card_id_b": 148715,
+   "cache_version": null,
+   "created_at": "2026-07-24T19:07:49.558386+00:00"
+  },
+  {
+   "pair_key": "132265-132714",
+   "card_id_a": 132265,
+   "card_id_b": 132714,
+   "cache_version": null,
+   "created_at": "2026-07-24T19:07:58.666715+00:00"
+  },
+  {
+   "pair_key": "131386-158484",
+   "card_id_a": 131386,
+   "card_id_b": 158484,
+   "cache_version": null,
+   "created_at": "2026-07-25T05:30:10.806071+00:00"
+  },
+  {
+   "pair_key": "130744-132293",
+   "card_id_a": 130744,
+   "card_id_b": 132293,
+   "cache_version": null,
+   "created_at": "2026-07-25T14:19:09.445824+00:00"
+  },
+  {
+   "pair_key": "131865-150806",
+   "card_id_a": 131865,
+   "card_id_b": 150806,
+   "cache_version": null,
+   "created_at": "2026-07-26T14:09:59.888821+00:00"
+  },
+  {
+   "pair_key": "130412-143526",
+   "card_id_a": 130412,
+   "card_id_b": 143526,
+   "cache_version": null,
+   "created_at": "2026-07-27T16:32:10.28694+00:00"
+  },
+  {
+   "pair_key": "130412-131911",
+   "card_id_a": 130412,
+   "card_id_b": 131911,
+   "cache_version": null,
+   "created_at": "2026-07-27T16:32:17.646929+00:00"
+  },
+  {
+   "pair_key": "133289-150885",
+   "card_id_a": 133289,
+   "card_id_b": 150885,
+   "cache_version": null,
+   "created_at": "2026-07-28T18:24:56.404012+00:00"
+  },
+  {
+   "pair_key": "131475-148277",
+   "card_id_a": 131475,
+   "card_id_b": 148277,
+   "cache_version": null,
+   "created_at": "2026-07-28T18:46:58.189369+00:00"
+  },
+  {
+   "pair_key": "133289-143526",
+   "card_id_a": 133289,
+   "card_id_b": 143526,
+   "cache_version": null,
+   "created_at": "2026-07-28T20:10:36.538214+00:00"
+  },
+  {
+   "pair_key": "131386-143372",
+   "card_id_a": 131386,
+   "card_id_b": 143372,
+   "cache_version": null,
+   "created_at": "2026-07-28T21:15:19.794658+00:00"
+  },
+  {
+   "pair_key": "143372-143526",
+   "card_id_a": 143372,
+   "card_id_b": 143526,
+   "cache_version": "v2-347d0962",
+   "created_at": "2026-07-07T21:45:46.485008+00:00"
+  },
+  {
+   "pair_key": "131386-142695",
+   "card_id_a": 131386,
+   "card_id_b": 142695,
+   "cache_version": "v2-347d0962",
+   "created_at": "2026-08-01T23:28:04.701284+00:00"
+  },
+  {
+   "pair_key": "132293-148715",
+   "card_id_a": 132293,
+   "card_id_b": 148715,
+   "cache_version": "v2-347d0962",
+   "created_at": "2026-08-01T23:36:44.334032+00:00"
+  },
+  {
+   "pair_key": "137957-146545",
+   "card_id_a": 137957,
+   "card_id_b": 146545,
+   "cache_version": "v2-347d0962",
+   "created_at": "2026-08-02T19:19:59.022507+00:00"
+  },
+  {
+   "pair_key": "138886-181163",
+   "card_id_a": 138886,
+   "card_id_b": 181163,
+   "cache_version": "v2-eb105f1a",
+   "created_at": "2026-08-03T20:27:16.524467+00:00"
+  },
+  {
+   "pair_key": "143808-159701",
+   "card_id_a": 143808,
+   "card_id_b": 159701,
+   "cache_version": "v2-eb105f1a",
+   "created_at": "2026-08-04T06:37:29.215038+00:00"
+  },
+  {
+   "pair_key": "158548-159701",
+   "card_id_a": 158548,
+   "card_id_b": 159701,
+   "cache_version": "v2-eb105f1a",
+   "created_at": "2026-08-04T06:41:46.854486+00:00"
+  },
+  {
+   "pair_key": "133095-133614",
+   "card_id_a": 133095,
+   "card_id_b": 133614,
+   "cache_version": "v2-eb105f1a",
+   "created_at": "2026-08-04T10:53:30.7556+00:00"
+  },
+  {
+   "pair_key": "137171-148277",
+   "card_id_a": 137171,
+   "card_id_b": 148277,
+   "cache_version": "v2-eb105f1a",
+   "created_at": "2026-08-04T14:37:57.957893+00:00"
+  },
+  {
+   "pair_key": "134313-148277",
+   "card_id_a": 134313,
+   "card_id_b": 148277,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-04T15:45:40.539617+00:00"
+  },
+  {
+   "pair_key": "141441-159701",
+   "card_id_a": 141441,
+   "card_id_b": 159701,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-04T06:40:22.567928+00:00"
+  },
+  {
+   "pair_key": "137024-156950",
+   "card_id_a": 137024,
+   "card_id_b": 156950,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-06T09:23:59.609833+00:00"
+  },
+  {
+   "pair_key": "156950-175142",
+   "card_id_a": 156950,
+   "card_id_b": 175142,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-06T09:25:00.481323+00:00"
+  },
+  {
+   "pair_key": "152972-156950",
+   "card_id_a": 152972,
+   "card_id_b": 156950,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-08T06:50:00.843552+00:00"
+  },
+  {
+   "pair_key": "142265-148277",
+   "card_id_a": 142265,
+   "card_id_b": 148277,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-08T06:55:26.29486+00:00"
+  },
+  {
+   "pair_key": "132658-138323",
+   "card_id_a": 132658,
+   "card_id_b": 138323,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-13T05:48:54.054126+00:00"
+  },
+  {
+   "pair_key": "140068-157546",
+   "card_id_a": 140068,
+   "card_id_b": 157546,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-13T05:50:26.897002+00:00"
+  },
+  {
+   "pair_key": "175142-178538",
+   "card_id_a": 175142,
+   "card_id_b": 178538,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-13T16:49:29.719848+00:00"
+  },
+  {
+   "pair_key": "133460-137874",
+   "card_id_a": 133460,
+   "card_id_b": 137874,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-15T21:16:54.081667+00:00"
+  },
+  {
+   "pair_key": "131296-175142",
+   "card_id_a": 131296,
+   "card_id_b": 175142,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-15T21:36:48.506176+00:00"
+  },
+  {
+   "pair_key": "143526-148277",
+   "card_id_a": 143526,
+   "card_id_b": 148277,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-24T18:45:34.312005+00:00"
+  },
+  {
+   "pair_key": "134462-135435",
+   "card_id_a": 134462,
+   "card_id_b": 135435,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-24T18:47:03.85585+00:00"
+  },
+  {
+   "pair_key": "134288-147839",
+   "card_id_a": 134288,
+   "card_id_b": 147839,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-25T21:46:33.802569+00:00"
+  },
+  {
+   "pair_key": "130522-156952",
+   "card_id_a": 130522,
+   "card_id_b": 156952,
+   "cache_version": "v2-0a430509",
+   "created_at": "2026-08-27T16:04:07.154016+00:00"
+  },
+  {
+   "pair_key": "130524-186833",
+   "card_id_a": 130524,
+   "card_id_b": 186833,
+   "cache_version": "v2-33a36098",
+   "created_at": "2026-08-29T15:51:49.035291+00:00"
+  },
+  {
+   "pair_key": "131129-172141",
+   "card_id_a": 131129,
+   "card_id_b": 172141,
+   "cache_version": "v2-33a36098",
+   "created_at": "2026-08-29T15:52:59.934926+00:00"
+  },
+  {
+   "pair_key": "130524-131129",
+   "card_id_a": 130524,
+   "card_id_b": 131129,
+   "cache_version": "v2-33a36098",
+   "created_at": "2026-08-29T21:56:01.441703+00:00"
+  },
+  {
+   "pair_key": "147839-180848",
+   "card_id_a": 147839,
+   "card_id_b": 180848,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-08-31T15:40:54.60011+00:00"
+  },
+  {
+   "pair_key": "130781-177523",
+   "card_id_a": 130781,
+   "card_id_b": 177523,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-08-31T19:39:10.007726+00:00"
+  },
+  {
+   "pair_key": "133095-141575",
+   "card_id_a": 133095,
+   "card_id_b": 141575,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-09-01T20:57:04.580935+00:00"
+  },
+  {
+   "pair_key": "134462-137184",
+   "card_id_a": 134462,
+   "card_id_b": 137184,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-09-02T17:38:51.722307+00:00"
+  },
+  {
+   "pair_key": "135435-137184",
+   "card_id_a": 135435,
+   "card_id_b": 137184,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-09-02T18:39:53.168302+00:00"
+  },
+  {
+   "pair_key": "134462-140012",
+   "card_id_a": 134462,
+   "card_id_b": 140012,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-09-04T21:01:53.506327+00:00"
+  },
+  {
+   "pair_key": "131583-147130",
+   "card_id_a": 131583,
+   "card_id_b": 147130,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-09-05T20:25:49.962318+00:00"
+  },
+  {
+   "pair_key": "156948-157034",
+   "card_id_a": 156948,
+   "card_id_b": 157034,
+   "cache_version": "v2-f0c4c980",
+   "created_at": "2026-09-06T09:37:27.712483+00:00"
+  },
+  {
+   "pair_key": "130728-135966",
+   "card_id_a": 130728,
+   "card_id_b": 135966,
+   "cache_version": "v2-e630b75a",
+   "created_at": "2026-09-06T18:31:26.702228+00:00"
+  },
+  {
+   "pair_key": "130781-181521",
+   "card_id_a": 130781,
+   "card_id_b": 181521,
+   "cache_version": "v2-e630b75a",
+   "created_at": "2026-09-06T18:34:55.757605+00:00"
+  },
+  {
+   "pair_key": "141249-181521",
+   "card_id_a": 141249,
+   "card_id_b": 181521,
+   "cache_version": "v2-e630b75a",
+   "created_at": "2026-09-06T18:38:41.623342+00:00"
+  },
+  {
+   "pair_key": "130288-134697",
+   "card_id_a": 130288,
+   "card_id_b": 134697,
+   "cache_version": "v2-4fd1affd-dfde85aa",
+   "created_at": "2026-09-08T19:36:09.427885+00:00"
+  },
+  {
+   "pair_key": "130728-141853",
+   "card_id_a": 130728,
+   "card_id_b": 141853,
+   "cache_version": "v2-bd4364a4-4c0d2e74",
+   "created_at": "2026-09-09T17:16:15.288111+00:00"
+  },
+  {
+   "pair_key": "135556-148701",
+   "card_id_a": 135556,
+   "card_id_b": 148701,
+   "cache_version": "v2-bd4364a4-dfde85aa",
+   "created_at": "2026-09-10T18:49:07.858692+00:00"
+  },
+  {
+   "pair_key": "130685-131551",
+   "card_id_a": 130685,
+   "card_id_b": 131551,
+   "cache_version": "v3-7ea85d88-dfde85aa",
+   "created_at": "2026-09-12T20:14:33.845979+00:00"
+  },
+  {
+   "pair_key": "131533-141130",
+   "card_id_a": 131533,
+   "card_id_b": 141130,
+   "cache_version": "v3-7b94e70f-dfde85aa",
+   "created_at": "2026-09-12T21:06:36.37752+00:00"
+  },
+  {
+   "pair_key": "130544-141130",
+   "card_id_a": 130544,
+   "card_id_b": 141130,
+   "cache_version": "v3-7b94e70f-b0f76141",
+   "created_at": "2026-09-12T21:07:59.937527+00:00"
+  },
+  {
+   "pair_key": "130524-131533",
+   "card_id_a": 130524,
+   "card_id_b": 131533,
+   "cache_version": "v3-05c0052b-c0ab45ca",
+   "created_at": "2026-09-09T20:50:17.176085+00:00"
+  },
+  {
+   "pair_key": "130524-157034",
+   "card_id_a": 130524,
+   "card_id_b": 157034,
+   "cache_version": "v3-a1145443-c0ab45ca",
+   "created_at": "2026-09-13T11:48:02.290159+00:00"
+  },
+  {
+   "pair_key": "141853-157034",
+   "card_id_a": 141853,
+   "card_id_b": 157034,
+   "cache_version": "v3-a1145443-c0ab45ca",
+   "created_at": "2026-09-13T11:48:08.88157+00:00"
+  },
+  {
+   "pair_key": "147239-177599",
+   "card_id_a": 147239,
+   "card_id_b": 177599,
+   "cache_version": "v3-a1145443-b3b63b0",
+   "created_at": "2026-09-13T12:04:12.589623+00:00"
+  },
+  {
+   "pair_key": "141575-157034",
+   "card_id_a": 141575,
+   "card_id_b": 157034,
+   "cache_version": "v3-a1145443-c0ab45ca",
+   "created_at": "2026-09-13T12:26:32.845976+00:00"
+  },
+  {
+   "pair_key": "141575-151580",
+   "card_id_a": 141575,
+   "card_id_b": 151580,
+   "cache_version": "v3-a1145443-c0ab45ca",
+   "created_at": "2026-09-13T13:47:25.218323+00:00"
+  },
+  {
+   "pair_key": "147949-148056",
+   "card_id_a": 147949,
+   "card_id_b": 148056,
+   "cache_version": "v3-05c0052b-c03a795f",
+   "created_at": "2026-09-13T13:56:57.393565+00:00"
+  },
+  {
+   "pair_key": "131183-157413",
+   "card_id_a": 131183,
+   "card_id_b": 157413,
+   "cache_version": "v3-a1145443-c0ab45ca",
+   "created_at": "2026-09-13T14:56:26.388491+00:00"
+  },
+  {
+   "pair_key": "130577-131583",
+   "card_id_a": 130577,
+   "card_id_b": 131583,
+   "cache_version": "v3-05c0052b-c03a795f",
+   "created_at": "2026-09-13T19:03:55.086281+00:00"
+  },
+  {
+   "pair_key": "142695-143372",
+   "card_id_a": 142695,
+   "card_id_b": 143372,
+   "cache_version": "v3-05c0052b-48099cd4",
+   "created_at": "2026-09-13T19:05:40.036515+00:00"
+  },
+  {
+   "pair_key": "130577-130796",
+   "card_id_a": 130577,
+   "card_id_b": 130796,
+   "cache_version": "v3-05c0052b-c03a795f",
+   "created_at": "2026-09-14T15:10:18.203875+00:00"
+  },
+  {
+   "pair_key": "131585-152972",
+   "card_id_a": 131585,
+   "card_id_b": 152972,
+   "cache_version": "v3-05c0052b-c0ab45ca",
+   "created_at": "2026-09-14T15:12:39.096417+00:00"
+  },
+  {
+   "pair_key": "141999-143372",
+   "card_id_a": 141999,
+   "card_id_b": 143372,
+   "cache_version": "v3-ddd9c19c-c0ab45ca",
+   "created_at": "2026-09-06T11:07:41.070101+00:00"
+  },
+  {
+   "pair_key": "130281-130687",
+   "card_id_a": 130281,
+   "card_id_b": 130687,
+   "cache_version": "v3-9bf2be0f-c03a795f",
+   "created_at": "2026-09-15T19:07:27.379594+00:00"
+  },
+  {
+   "pair_key": "130869-132477",
+   "card_id_a": 130869,
+   "card_id_b": 132477,
+   "cache_version": "v3-ddd9c19c-f03433d6",
+   "created_at": "2026-09-16T14:47:52.148649+00:00"
+  }
+ ],
+ "notes_rows": [
+  {
+   "card_id": 133614,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "81969496531a3d1f",
+   "created_at": "2026-06-28T14:22:42.807237+00:00"
+  },
+  {
+   "card_id": 158484,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "b262890e23adb8b6",
+   "created_at": "2026-06-27T23:33:00.771796+00:00"
+  },
+  {
+   "card_id": 139209,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "9c99b12182a36991",
+   "created_at": "2026-06-27T23:44:10.749156+00:00"
+  },
+  {
+   "card_id": 158081,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "6f9547084712cd32",
+   "created_at": "2026-06-27T23:43:52.249585+00:00"
+  },
+  {
+   "card_id": 140934,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "355be163242c05a6",
+   "created_at": "2026-07-07T18:13:48.336365+00:00"
+  },
+  {
+   "card_id": 141402,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "4e74601a04392f58",
+   "created_at": "2026-06-27T23:45:20.062228+00:00"
+  },
+  {
+   "card_id": 154840,
+   "cache_version": "v2-92390483",
+   "stats_hash": "0187b96375a275c0",
+   "created_at": "2026-09-10T12:37:29.355055+00:00"
+  },
+  {
+   "card_id": 134542,
+   "cache_version": "v2-2218c700",
+   "stats_hash": "fcc220e649b20782",
+   "created_at": "2026-09-11T19:59:54.999567+00:00"
+  },
+  {
+   "card_id": 131110,
+   "cache_version": "v2-e5495ea5",
+   "stats_hash": "9255ea89f0d84923",
+   "created_at": "2026-06-28T05:38:24.411314+00:00"
+  },
+  {
+   "card_id": 143928,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "21a6889c998f76ef",
+   "created_at": "2026-06-28T05:51:54.984084+00:00"
+  },
+  {
+   "card_id": 134812,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "4889b31b91a06f36",
+   "created_at": "2026-06-28T05:52:51.64684+00:00"
+  },
+  {
+   "card_id": 143372,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "216ef1d2e3b5fa7f",
+   "created_at": "2026-06-27T23:03:43.37569+00:00"
+  },
+  {
+   "card_id": 143808,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "83eff28ea8f6aeb9",
+   "created_at": "2026-07-04T15:23:07.716925+00:00"
+  },
+  {
+   "card_id": 162403,
+   "cache_version": "v2-2218c700",
+   "stats_hash": "018061f3a4be167d",
+   "created_at": "2026-09-11T22:04:11.747917+00:00"
+  },
+  {
+   "card_id": 150806,
+   "cache_version": "v2-2218c700",
+   "stats_hash": "d179ac9aa69b0448",
+   "created_at": "2026-09-11T22:04:15.641253+00:00"
+  },
+  {
+   "card_id": 146062,
+   "cache_version": "v2-2218c700",
+   "stats_hash": "5fa2642a05760989",
+   "created_at": "2026-09-11T22:04:21.73338+00:00"
+  },
+  {
+   "card_id": 131220,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "e8fd36fa13357281",
+   "created_at": "2026-06-28T14:23:47.482875+00:00"
+  },
+  {
+   "card_id": 142838,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "9feab6a53acc6367",
+   "created_at": "2026-06-28T14:24:08.396286+00:00"
+  },
+  {
+   "card_id": 147022,
+   "cache_version": "v2-fe64c2e0",
+   "stats_hash": "08dd8d7005d22fd6",
+   "created_at": "2026-09-12T11:14:22.667609+00:00"
+  },
+  {
+   "card_id": 141117,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "70e49b208fcaab29",
+   "created_at": "2026-06-28T14:27:51.089432+00:00"
+  },
+  {
+   "card_id": 149497,
+   "cache_version": "v3-fe64c2e0",
+   "stats_hash": "278aa205daa62b92",
+   "created_at": "2026-09-12T12:52:00.823116+00:00"
+  },
+  {
+   "card_id": 134313,
+   "cache_version": "v2-92390483",
+   "stats_hash": "3628e7dec07ff55a",
+   "created_at": "2026-06-28T15:30:11.488713+00:00"
+  },
+  {
+   "card_id": 143875,
+   "cache_version": "v3-fe64c2e0",
+   "stats_hash": "d88351d67e20e284",
+   "created_at": "2026-09-12T13:53:13.100378+00:00"
+  },
+  {
+   "card_id": 136348,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "077f46f6dd8c7fd9",
+   "created_at": "2026-07-08T21:54:13.472367+00:00"
+  },
+  {
+   "card_id": 164053,
+   "cache_version": "v3-fe64c2e0",
+   "stats_hash": "46ed7c98dd17bc80",
+   "created_at": "2026-09-12T21:10:11.012001+00:00"
+  },
+  {
+   "card_id": 138409,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "36cf70d3ba9745a6",
+   "created_at": "2026-06-28T21:59:40.935547+00:00"
+  },
+  {
+   "card_id": 157413,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "461a297d786f5418",
+   "created_at": "2026-09-13T14:58:29.872116+00:00"
+  },
+  {
+   "card_id": 131583,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "19285f72826879eb",
+   "created_at": "2026-09-13T19:05:24.067594+00:00"
+  },
+  {
+   "card_id": 141575,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "ca69e74d9ccbe2c6",
+   "created_at": "2026-09-13T20:55:31.541304+00:00"
+  },
+  {
+   "card_id": 140068,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "4c9c8c2ec0c92be8",
+   "created_at": "2026-07-04T15:23:08.87135+00:00"
+  },
+  {
+   "card_id": 131585,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "0e69e80d04da950e",
+   "created_at": "2026-09-08T17:27:17.766737+00:00"
+  },
+  {
+   "card_id": 132658,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "46de56365a69c51b",
+   "created_at": "2026-06-30T20:01:23.092185+00:00"
+  },
+  {
+   "card_id": 130728,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "55d8444ab0dfd4cf",
+   "created_at": "2026-09-08T17:28:54.674358+00:00"
+  },
+  {
+   "card_id": 143953,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "1da857136994201e",
+   "created_at": "2026-09-13T20:55:26.953701+00:00"
+  },
+  {
+   "card_id": 141853,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "4d9b40dc80c10ae4",
+   "created_at": "2026-06-27T23:43:34.908326+00:00"
+  },
+  {
+   "card_id": 154092,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "ce31416c9c0a05f2",
+   "created_at": "2026-07-04T09:40:04.445067+00:00"
+  },
+  {
+   "card_id": 133870,
+   "cache_version": "v2-92390483",
+   "stats_hash": "0c86718bb81c5e23",
+   "created_at": "2026-07-04T13:17:22.651443+00:00"
+  },
+  {
+   "card_id": 140489,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "13e1fa2fc5716bbf",
+   "created_at": "2026-09-13T20:55:27.017549+00:00"
+  },
+  {
+   "card_id": 139650,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "e86aaed01729b859",
+   "created_at": "2026-07-04T15:23:05.643253+00:00"
+  },
+  {
+   "card_id": 131129,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "5ce80699e3159ac0",
+   "created_at": "2026-07-04T22:55:18.650919+00:00"
+  },
+  {
+   "card_id": 175513,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "a636d4b6110d09a0",
+   "created_at": "2026-07-05T17:24:11.19415+00:00"
+  },
+  {
+   "card_id": 146545,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "10dabd1689c8cff5",
+   "created_at": "2026-07-07T20:23:49.047629+00:00"
+  },
+  {
+   "card_id": 135586,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "572ca5a11c0d53ff",
+   "created_at": "2026-07-08T21:54:21.904549+00:00"
+  },
+  {
+   "card_id": 130474,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "1ae7ec59fef67f3e",
+   "created_at": "2026-07-10T11:34:09.447379+00:00"
+  },
+  {
+   "card_id": 151977,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "75a6a30f8bef22c4",
+   "created_at": "2026-07-19T22:04:41.829081+00:00"
+  },
+  {
+   "card_id": 150885,
+   "cache_version": "v2-2218c700",
+   "stats_hash": "1abc1f914f237fc3",
+   "created_at": "2026-07-19T22:09:01.714335+00:00"
+  },
+  {
+   "card_id": 149088,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "6594e2a98b030879",
+   "created_at": "2026-06-29T15:52:21.033438+00:00"
+  },
+  {
+   "card_id": 130266,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "3ec102ae98b643f2",
+   "created_at": "2026-07-12T12:37:19.37951+00:00"
+  },
+  {
+   "card_id": 148218,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "080a598876784e6b",
+   "created_at": "2026-08-01T13:35:11.998056+00:00"
+  },
+  {
+   "card_id": 131140,
+   "cache_version": "v2-849adb80",
+   "stats_hash": "d0e716888e5b926f",
+   "created_at": "2026-06-28T15:30:16.889977+00:00"
+  },
+  {
+   "card_id": 131555,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "f4fdf86cbe8dc92e",
+   "created_at": "2026-08-01T13:34:43.443284+00:00"
+  },
+  {
+   "card_id": 132787,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "303074e2f79c2903",
+   "created_at": "2026-08-01T13:35:05.159453+00:00"
+  },
+  {
+   "card_id": 172502,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "5c83d8df016b65bf",
+   "created_at": "2026-08-01T14:10:26.768631+00:00"
+  },
+  {
+   "card_id": 169905,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "8c2f63a88985c880",
+   "created_at": "2026-08-01T14:10:29.796774+00:00"
+  },
+  {
+   "card_id": 169394,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "9ed2e89d0efcef7e",
+   "created_at": "2026-08-01T14:10:30.166137+00:00"
+  },
+  {
+   "card_id": 170663,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "8d7161371cc83526",
+   "created_at": "2026-08-01T14:10:34.953273+00:00"
+  },
+  {
+   "card_id": 170284,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "2c303323dcf7e289",
+   "created_at": "2026-08-01T14:10:31.521243+00:00"
+  },
+  {
+   "card_id": 148715,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "1cf66c42729ec82c",
+   "created_at": "2026-08-01T23:37:10.866853+00:00"
+  },
+  {
+   "card_id": 132714,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "847b44b25011fa5c",
+   "created_at": "2026-08-02T07:05:55.810768+00:00"
+  },
+  {
+   "card_id": 133121,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "e1655a7d10ebb4ba",
+   "created_at": "2026-08-02T07:06:01.655382+00:00"
+  },
+  {
+   "card_id": 173239,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "23021ab53895aa71",
+   "created_at": "2026-08-02T11:14:54.980511+00:00"
+  },
+  {
+   "card_id": 158681,
+   "cache_version": "v2-8aa073e5",
+   "stats_hash": "b3f05e9d21e0b8d4",
+   "created_at": "2026-08-02T11:29:36.029453+00:00"
+  },
+  {
+   "card_id": 145763,
+   "cache_version": "v2-0404cb75",
+   "stats_hash": "df25c6bea7f99258",
+   "created_at": "2026-08-02T11:30:21.840839+00:00"
+  },
+  {
+   "card_id": 159701,
+   "cache_version": "v2-fe64c2e0",
+   "stats_hash": "e36daf98df07e712",
+   "created_at": "2026-08-03T11:06:37.779482+00:00"
+  },
+  {
+   "card_id": 138819,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "35e23b7f8a0ba34c",
+   "created_at": "2026-08-04T16:42:25.860454+00:00"
+  },
+  {
+   "card_id": 137022,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "2347409e7a31ad8b",
+   "created_at": "2026-08-04T16:42:30.828022+00:00"
+  },
+  {
+   "card_id": 137015,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "7308d389c6e107ff",
+   "created_at": "2026-08-05T03:43:27.356119+00:00"
+  },
+  {
+   "card_id": 141579,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "ddbb85ecc18e83f3",
+   "created_at": "2026-08-05T09:53:40.816296+00:00"
+  },
+  {
+   "card_id": 175142,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "73ff9af46d351f3b",
+   "created_at": "2026-08-06T09:47:18.205951+00:00"
+  },
+  {
+   "card_id": 137024,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "1c3e21b86dd11b13",
+   "created_at": "2026-08-06T09:47:49.205459+00:00"
+  },
+  {
+   "card_id": 138747,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "64b40bae914c2282",
+   "created_at": "2026-08-08T03:16:55.968011+00:00"
+  },
+  {
+   "card_id": 156950,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "8bf8ca54b4a2bc2b",
+   "created_at": "2026-08-06T09:48:18.221624+00:00"
+  },
+  {
+   "card_id": 137467,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "49221590eee2acc4",
+   "created_at": "2026-08-08T03:17:42.216939+00:00"
+  },
+  {
+   "card_id": 136835,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "32c23b97eb4e9536",
+   "created_at": "2026-08-07T15:11:25.139013+00:00"
+  },
+  {
+   "card_id": 152972,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "e5d726e03c710619",
+   "created_at": "2026-08-08T06:49:33.742034+00:00"
+  },
+  {
+   "card_id": 142265,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "27148854f6fd6f5a",
+   "created_at": "2026-08-08T06:55:09.743886+00:00"
+  },
+  {
+   "card_id": 137842,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "20aee4e52fe54682",
+   "created_at": "2026-08-10T19:30:48.264694+00:00"
+  },
+  {
+   "card_id": 157949,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "e2818d560242e9f6",
+   "created_at": "2026-08-10T19:32:04.911302+00:00"
+  },
+  {
+   "card_id": 157062,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "0f31d5a144e1610b",
+   "created_at": "2026-08-11T12:21:01.406359+00:00"
+  },
+  {
+   "card_id": 131296,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "552e3c5c499eb702",
+   "created_at": "2026-06-29T16:49:27.834978+00:00"
+  },
+  {
+   "card_id": 131684,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "f3c9057e091c5a1d",
+   "created_at": "2026-08-11T14:13:56.973138+00:00"
+  },
+  {
+   "card_id": 130552,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "9491971e8442808c",
+   "created_at": "2026-08-11T14:15:10.199368+00:00"
+  },
+  {
+   "card_id": 134055,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "baf9ffcff5659fbe",
+   "created_at": "2026-06-28T14:54:15.631277+00:00"
+  },
+  {
+   "card_id": 147015,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "1126fddfef096fff",
+   "created_at": "2026-08-11T14:16:37.350602+00:00"
+  },
+  {
+   "card_id": 186265,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "98569d23b731827d",
+   "created_at": "2026-08-11T14:28:49.135317+00:00"
+  },
+  {
+   "card_id": 130520,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "119282e3320b7e88",
+   "created_at": "2026-06-28T22:24:18.599848+00:00"
+  },
+  {
+   "card_id": 141441,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "409213fac90e48d9",
+   "created_at": "2026-08-11T19:15:07.352626+00:00"
+  },
+  {
+   "card_id": 158399,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "fd5a95d59088e03f",
+   "created_at": "2026-08-03T11:06:16.752079+00:00"
+  },
+  {
+   "card_id": 148277,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "42329b41b302db95",
+   "created_at": "2026-08-11T19:15:26.31793+00:00"
+  },
+  {
+   "card_id": 154477,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "57013b2ace38908f",
+   "created_at": "2026-08-11T19:25:12.994118+00:00"
+  },
+  {
+   "card_id": 174532,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "698fac4be9944b09",
+   "created_at": "2026-08-11T19:46:09.000371+00:00"
+  },
+  {
+   "card_id": 152626,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "e67e352f6f8e9cdc",
+   "created_at": "2026-08-11T20:04:23.498558+00:00"
+  },
+  {
+   "card_id": 148701,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "f5a43d0f301ae8e6",
+   "created_at": "2026-07-07T19:18:27.396215+00:00"
+  },
+  {
+   "card_id": 154943,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "8ab9b3c7aa72fc49",
+   "created_at": "2026-08-12T07:11:17.165615+00:00"
+  },
+  {
+   "card_id": 167141,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "6c48f02b1743149f",
+   "created_at": "2026-08-12T20:37:10.290154+00:00"
+  },
+  {
+   "card_id": 149155,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "c64acffb2556dd75",
+   "created_at": "2026-08-15T21:14:24.188164+00:00"
+  },
+  {
+   "card_id": 131969,
+   "cache_version": "v2-81e8059a",
+   "stats_hash": "e10b1c374c623d5b",
+   "created_at": "2026-06-29T15:52:14.139036+00:00"
+  },
+  {
+   "card_id": 131183,
+   "cache_version": "v2-849adb80",
+   "stats_hash": "f030c2d96d650c5b",
+   "created_at": "2026-08-11T19:45:47.589573+00:00"
+  },
+  {
+   "card_id": 130780,
+   "cache_version": "v2-849adb80",
+   "stats_hash": "aae915b7cf74abfa",
+   "created_at": "2026-08-17T20:07:17.790777+00:00"
+  },
+  {
+   "card_id": 130524,
+   "cache_version": "v2-fe64c2e0",
+   "stats_hash": "438f69e611a03d41",
+   "created_at": "2026-07-01T19:28:12.407114+00:00"
+  },
+  {
+   "card_id": 186765,
+   "cache_version": "v2-849adb80",
+   "stats_hash": "22b08b6430367759",
+   "created_at": "2026-07-10T13:51:32.510441+00:00"
+  },
+  {
+   "card_id": 130855,
+   "cache_version": "v2-849adb80",
+   "stats_hash": "4372ff8c06017def",
+   "created_at": "2026-08-17T20:07:19.238697+00:00"
+  },
+  {
+   "card_id": 147398,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "6d45a370314ba500",
+   "created_at": "2026-08-20T20:39:06.525168+00:00"
+  },
+  {
+   "card_id": 147926,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "8e15473b563922f9",
+   "created_at": "2026-06-28T15:05:20.222779+00:00"
+  },
+  {
+   "card_id": 150011,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "694391cae35a1d93",
+   "created_at": "2026-08-20T20:39:27.922992+00:00"
+  },
+  {
+   "card_id": 150585,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "f5422b65b7c7feb1",
+   "created_at": "2026-08-20T20:39:30.233213+00:00"
+  },
+  {
+   "card_id": 153358,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "f6e9d55e55146cd9",
+   "created_at": "2026-08-20T20:39:40.432695+00:00"
+  },
+  {
+   "card_id": 137108,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "005f11c8455e5e58",
+   "created_at": "2026-08-20T20:39:41.429564+00:00"
+  },
+  {
+   "card_id": 137523,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "eb975e7e5c48c962",
+   "created_at": "2026-08-20T20:39:46.29485+00:00"
+  },
+  {
+   "card_id": 155215,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "efb94b5295f1df15",
+   "created_at": "2026-08-20T20:40:02.274543+00:00"
+  },
+  {
+   "card_id": 130340,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "7da676be8e88b8ba",
+   "created_at": "2026-08-20T21:10:03.311331+00:00"
+  },
+  {
+   "card_id": 154687,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "0f426b9cb69d67a2",
+   "created_at": "2026-08-21T21:25:59.549076+00:00"
+  },
+  {
+   "card_id": 155046,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "23d3f5003aa08d9c",
+   "created_at": "2026-08-21T21:26:08.526043+00:00"
+  },
+  {
+   "card_id": 155750,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "6007cd8381c28fed",
+   "created_at": "2026-08-21T21:26:09.917718+00:00"
+  },
+  {
+   "card_id": 159130,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "5422b82f8e3a8b32",
+   "created_at": "2026-08-24T18:54:10.352127+00:00"
+  },
+  {
+   "card_id": 160337,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "33f7d49c6c1de82f",
+   "created_at": "2026-08-24T18:54:29.09216+00:00"
+  },
+  {
+   "card_id": 160245,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "854a18492a9661b8",
+   "created_at": "2026-08-24T18:54:29.496143+00:00"
+  },
+  {
+   "card_id": 160750,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "63966caebf785522",
+   "created_at": "2026-08-24T18:54:31.515043+00:00"
+  },
+  {
+   "card_id": 134393,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "81b642d4c89500e8",
+   "created_at": "2026-06-28T05:52:59.432238+00:00"
+  },
+  {
+   "card_id": 130522,
+   "cache_version": "v2-ecd58106",
+   "stats_hash": "13f84c7823f1879f",
+   "created_at": "2026-08-27T16:02:05.778141+00:00"
+  },
+  {
+   "card_id": 136932,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "ef8c78b1c9e760fd",
+   "created_at": "2026-08-28T21:46:43.981691+00:00"
+  },
+  {
+   "card_id": 132116,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "32715f1fa8d85303",
+   "created_at": "2026-08-27T18:17:44.924509+00:00"
+  },
+  {
+   "card_id": 144775,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "bd5d5321fc0378ed",
+   "created_at": "2026-08-29T11:15:59.341078+00:00"
+  },
+  {
+   "card_id": 144034,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "c4454adb7c84a6af",
+   "created_at": "2026-08-29T11:16:01.329007+00:00"
+  },
+  {
+   "card_id": 132515,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "5d0305b997ef7e9f",
+   "created_at": "2026-08-29T11:16:21.317119+00:00"
+  },
+  {
+   "card_id": 131113,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "0d8bf1e447b06f6f",
+   "created_at": "2026-08-29T15:45:36.712892+00:00"
+  },
+  {
+   "card_id": 130699,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "bb28b40b287f8456",
+   "created_at": "2026-08-29T15:47:03.335196+00:00"
+  },
+  {
+   "card_id": 186833,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "a4347a28f3698789",
+   "created_at": "2026-08-29T15:47:59.690134+00:00"
+  },
+  {
+   "card_id": 172141,
+   "cache_version": "v2-26f8c07d",
+   "stats_hash": "406431aa60ca8f7a",
+   "created_at": "2026-07-05T14:06:52.429454+00:00"
+  },
+  {
+   "card_id": 131538,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "8de1d78b7fb8280d",
+   "created_at": "2026-08-30T05:07:23.738227+00:00"
+  },
+  {
+   "card_id": 152603,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "9a547690b195dc74",
+   "created_at": "2026-08-20T20:39:33.925197+00:00"
+  },
+  {
+   "card_id": 130362,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "c86a4e249ee87471",
+   "created_at": "2026-08-30T08:22:27.375198+00:00"
+  },
+  {
+   "card_id": 130415,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "f92600b484aa328f",
+   "created_at": "2026-08-30T12:46:50.964094+00:00"
+  },
+  {
+   "card_id": 184721,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "93fb5acdad666449",
+   "created_at": "2026-08-31T19:07:33.692476+00:00"
+  },
+  {
+   "card_id": 174287,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "4c31bc2cf1b7b2ae",
+   "created_at": "2026-08-31T19:37:15.543006+00:00"
+  },
+  {
+   "card_id": 177523,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "a3e6af3c234a7b5e",
+   "created_at": "2026-08-31T19:38:02.334498+00:00"
+  },
+  {
+   "card_id": 164296,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "2acce2c1eea3821b",
+   "created_at": "2026-09-01T16:50:01.845742+00:00"
+  },
+  {
+   "card_id": 142422,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "b269e1ef8932db71",
+   "created_at": "2026-06-28T15:40:40.846246+00:00"
+  },
+  {
+   "card_id": 144933,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "181a6800bb66cc6b",
+   "created_at": "2026-09-02T17:06:44.288976+00:00"
+  },
+  {
+   "card_id": 140669,
+   "cache_version": "v3-73cc852a",
+   "stats_hash": "0f50740232bb5ff3",
+   "created_at": "2026-09-01T17:25:16.821248+00:00"
+  },
+  {
+   "card_id": 137184,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "ebe7c7467e3beb89",
+   "created_at": "2026-09-02T17:38:26.48416+00:00"
+  },
+  {
+   "card_id": 140012,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "b6745581f7d9c778",
+   "created_at": "2026-09-04T21:01:06.150536+00:00"
+  },
+  {
+   "card_id": 135556,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "e83be9eef5635d04",
+   "created_at": "2026-09-04T21:03:48.673354+00:00"
+  },
+  {
+   "card_id": 137957,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "fb3feebbb86f8a12",
+   "created_at": "2026-06-28T14:06:00.095143+00:00"
+  },
+  {
+   "card_id": 130887,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "1774571c6d3de6c3",
+   "created_at": "2026-09-05T19:49:10.08725+00:00"
+  },
+  {
+   "card_id": 133287,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "3f7ff958f3c42e42",
+   "created_at": "2026-08-16T18:22:39.700098+00:00"
+  },
+  {
+   "card_id": 130686,
+   "cache_version": "v2-9f26b1c5",
+   "stats_hash": "01274cb3fbbfc45b",
+   "created_at": "2026-09-05T20:26:10.928573+00:00"
+  },
+  {
+   "card_id": 141999,
+   "cache_version": "v2-862a0510",
+   "stats_hash": "8b4ff3ef359b9657",
+   "created_at": "2026-06-28T11:32:14.731798+00:00"
+  },
+  {
+   "card_id": 142695,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "e5edf695f1e25eeb",
+   "created_at": "2026-06-27T23:44:15.82871+00:00"
+  },
+  {
+   "card_id": 143526,
+   "cache_version": "v3-279c6350",
+   "stats_hash": "3ad2c05231370190",
+   "created_at": "2026-06-28T14:23:38.320571+00:00"
+  },
+  {
+   "card_id": 147533,
+   "cache_version": "v2-5b06d4f1",
+   "stats_hash": "926bcbdf72d5605d",
+   "created_at": "2026-09-06T17:15:21.513503+00:00"
+  },
+  {
+   "card_id": 175910,
+   "cache_version": "v2-5b06d4f1",
+   "stats_hash": "2f9ce1caed590e01",
+   "created_at": "2026-09-06T17:14:36.573069+00:00"
+  },
+  {
+   "card_id": 181521,
+   "cache_version": "v2-5b06d4f1",
+   "stats_hash": "5eabff30a8dda96e",
+   "created_at": "2026-09-05T19:52:21.885584+00:00"
+  },
+  {
+   "card_id": 151601,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "f2ed05f6bd7f5875",
+   "created_at": "2026-09-06T19:31:21.205686+00:00"
+  },
+  {
+   "card_id": 155955,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "1c32423100815689",
+   "created_at": "2026-09-06T19:31:29.272426+00:00"
+  },
+  {
+   "card_id": 156294,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "f026164475e89ada",
+   "created_at": "2026-09-06T19:31:30.285259+00:00"
+  },
+  {
+   "card_id": 153473,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "592467f0c4d0cde0",
+   "created_at": "2026-09-06T19:31:30.544213+00:00"
+  },
+  {
+   "card_id": 157546,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "dd1ab049548ebcbc",
+   "created_at": "2026-09-06T19:31:30.801494+00:00"
+  },
+  {
+   "card_id": 156404,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "1115c72b76376dc8",
+   "created_at": "2026-09-06T19:31:32.039551+00:00"
+  },
+  {
+   "card_id": 157988,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "6e4ba16d0654c194",
+   "created_at": "2026-09-06T19:31:33.065305+00:00"
+  },
+  {
+   "card_id": 146263,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "9ec898f0e7d1048e",
+   "created_at": "2026-09-07T16:29:42.076329+00:00"
+  },
+  {
+   "card_id": 133659,
+   "cache_version": "v2-ed97146e",
+   "stats_hash": "4657508fb25ebc4d",
+   "created_at": "2026-09-07T16:31:08.224417+00:00"
+  },
+  {
+   "card_id": 139635,
+   "cache_version": "v2-5461d166",
+   "stats_hash": "bf96e460b0bbd338",
+   "created_at": "2026-09-08T17:10:58.531904+00:00"
+  },
+  {
+   "card_id": 132785,
+   "cache_version": "v2-5461d166",
+   "stats_hash": "30c1896f54ee2e3f",
+   "created_at": "2026-09-08T17:11:28.335605+00:00"
+  },
+  {
+   "card_id": 131182,
+   "cache_version": "v2-5461d166",
+   "stats_hash": "e9438faa84184949",
+   "created_at": "2026-09-08T17:11:57.472964+00:00"
+  },
+  {
+   "card_id": 132316,
+   "cache_version": "v2-5461d166",
+   "stats_hash": "c9c66c048dc6d131",
+   "created_at": "2026-09-08T17:12:24.704154+00:00"
+  },
+  {
+   "card_id": 130288,
+   "cache_version": "v2-7d17d5f1",
+   "stats_hash": "4b83ea07062f5867",
+   "created_at": "2026-09-08T19:35:37.810616+00:00"
+  },
+  {
+   "card_id": 135966,
+   "cache_version": "v2-92390483",
+   "stats_hash": "431cd77c69864666",
+   "created_at": "2026-06-28T09:57:35.385421+00:00"
+  },
+  {
+   "card_id": 134288,
+   "cache_version": "v2-92390483",
+   "stats_hash": "af6804732dea15a5",
+   "created_at": "2026-07-19T19:36:52.869779+00:00"
+  },
+  {
+   "card_id": 132669,
+   "cache_version": "v2-92390483",
+   "stats_hash": "09186bfa77683625",
+   "created_at": "2026-06-30T19:41:00.696233+00:00"
+  },
+  {
+   "card_id": 147879,
+   "cache_version": "v2-92390483",
+   "stats_hash": "4a624b655223a99f",
+   "created_at": "2026-09-09T20:48:08.298841+00:00"
+  },
+  {
+   "card_id": 147130,
+   "cache_version": "v2-92390483",
+   "stats_hash": "8e2200e143476f7f",
+   "created_at": "2026-07-11T15:42:10.625785+00:00"
+  }
+ ]
+}

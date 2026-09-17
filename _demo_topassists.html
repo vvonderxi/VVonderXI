@@ -1,0 +1,80 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Top Assists , sourced value on the pill</title>
+<script src="/vv-marks.js?v=20260912h"></script>
+<script src="/vv-core.js?v=20260912h"></script>
+<style>
+ body{margin:0;background:#171412;color:#F0EAD9;font:14px/1.55 system-ui,sans-serif;padding:22px}
+ h1{font:700 19px system-ui;margin:0 0 4px} h2{font:700 12px system-ui;margin:24px 0 8px;color:#E8B84B;letter-spacing:.05em;text-transform:uppercase}
+ .sub{color:#9a9186;font-size:13px;max-width:860px;margin:0 0 10px}
+ .pair{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+ .one{flex:0 0 auto;text-align:center}
+ .cap{font:600 11px system-ui;color:#9a9186;margin-top:7px}
+ .cap b{color:#F0EAD9} .bad{color:#F1688E} .ok{color:#7fd1a0}
+ table{border-collapse:collapse;font-size:12.5px;margin-top:8px}
+ td,th{padding:4px 14px 4px 0;text-align:left}th{color:#E8B84B}
+ td.n{text-align:right;font-variant-numeric:tabular-nums}
+ .slot{display:inline-block;border:1px dashed #E70443;padding:0}
+</style></head><body>
+<h1>Top Assists , printing the sourced value on the pill</h1>
+<p class="sub">Real card: <b>David Silva, Manchester City, PL 2011/12</b>, card 136016. His <code>assists</code> column is genuinely <b>NR</b>. The honour and the value 15 are illustrative of a sourced winner, which is the whole question.</p>
+<div id="out">building…</div>
+<script>
+const ROW = {"card_id": 136016, "player_id": 36527, "api_player_id": 634, "player_name": "David Silva", "nationality": "Spain", "date_of_birth": "1986-01-08", "is_retired": false, "is_legacy": false, "legacy_tier": null, "season": "1112", "season_year": 2011, "league_code": "PL", "league_name": "Premier League", "league_flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f", "league_strength_weight": 1, "team_name": "Manchester City", "primary_colour": "#6CABDD", "secondary_colour": "#FFFFFF", "accent_colour": "#1C2C5B", "position": "MID", "age": 37, "appearances": 36, "minutes": 2818, "goals": 6, "assists": null, "output": null, "adj_output": null, "rating": null, "rt": 70, "shots_total": null, "shots_on": null, "passes_total": null, "passes_key": null, "passes_accuracy": null, "dribbles_attempts": null, "dribbles_success": null, "tackles_total": null, "tackles_blocks": null, "interceptions": null, "duels_total": null, "duels_won": null, "estimated_market_value": null, "season_age": 25, "position_pool": null, "shirt_number": null, "player_name_norm": "david silva david josue jimenez silva", "team_name_norm": "manchester city", "def90": null, "defvol_pct": null, "team_def90": null, "def_share": null, "def_share_pct": null, "def90_pool_pct": null, "duel_rate": null, "duel_quality_pct": null, "starts": 33, "goals_conceded": null, "saves": null, "penalties_scored": null, "penalties_missed": null, "penalties_saved": null, "fouls_drawn": null, "fouls_committed": null, "cards_yellow": 0, "cards_red": 0, "honours_json": [{"leg": "career", "type": "world_cup_winner", "year": 2010}, {"leg": "team", "type": "league_champion", "year": 2011}], "h_ballon_dor": false, "h_world_cup_winner": true, "h_ucl_winner": false, "h_league_champion": true, "h_player_of_season": false, "h_golden_boot": false, "h_top_assists": false, "stage_peak": false, "stage_breakout": false, "stage_the_standard": false};
+/*  TWO honours, because the constrained case is the TWO-UP slot. With a single pill the row
+    spans and nothing is tested , SS C's 37.96px figure is the two-up slot at --cw 132. */
+function hon(withValue){
+  const ta={type:'top_assists',label:'Top Assists',group:'Individual',tier:7,
+    oneliner: withValue? '15 assists , 15 times the final pass was his.' : 'Time and again, the final pass was his.',
+    context:null, goals:null, assists: withValue?15:null, season_year:2011, league_code:'PL'};
+  const lt={type:'league_champion',label:'League Title',group:'Team',tier:4,
+    oneliner:'Champions.',context:null,goals:null,assists:null,season_year:2011,league_code:'PL'};
+  const all=[lt,ta];
+  return {season:all,career:[],cabinet:[],groups:{Team:[lt],Individual:[ta]},all:all,count:2,has:true,topHonour:lt};
+}
+function card(withValue,cw){
+  const d=VVCore.rowToCard(Object.assign({},ROW));
+  d.honours=hon(withValue);
+  return VVCore.buildCard(d,cw);
+}
+let h='';
+h+='<h2>1 , the card face, the constrained surface</h2>';
+h+='<p class="sub">The two-up pill slot at <code>--cw</code> 132 holds <b>37.96px</b>, and "Top Assists" already measures <b>38.0</b>. This is the surface that cannot take the value.</p>';
+h+='<div class="pair"><div class="one" style="width:132px">'+card(false,132)+'<div class="cap">TODAY , label only</div></div>'
+  +'<div class="one" style="width:132px" data-inject="15">'+card(true,132)+'<div class="cap">PROPOSED , with the value</div></div>'
+  +'<div class="one" style="width:300px" data-inject="15">'+card(true,300)+'<div class="cap">PROPOSED at <b>--cw 300</b></div></div>'
+  +'<div class="one" style="width:260px" data-inject="15">'+card(true,260)+'<div class="cap">PROPOSED at <b>--cw 260</b>, the rankings grid card</div></div></div>';
+h+='<h2>2 , the contradiction this is meant to fix</h2>';
+h+='<p class="sub">The honour says he led the league for assists. The card\'s own ASSISTS figure says NR, because our record genuinely has no number for him.</p>';
+h+='<div id="m2"></div>';
+document.getElementById('out').innerHTML=h;
+if(window.VVMarks&&VVMarks.inject) VVMarks.inject();
+if(VVCore.vvInjectCardCSS) VVCore.vvInjectCardCSS();
+/*  SIMULATE THE PROPOSED RENDERER CHANGE. vv-core is NOT edited , this is a scope demo, so the
+    pill text is rewritten in the DOM after render to show what "Top Assists, 15" would do to the
+    slot. The label itself comes from HONOUR_CHIP_LABEL, which is what a real change would edit. */
+document.querySelectorAll('.one[data-inject]').forEach(function(box){
+  const v=box.getAttribute('data-inject');
+  box.querySelectorAll('.chtag,.chtagcell').forEach(function(p){
+    p.childNodes.forEach(function(n){
+      if(n.nodeType===3 && /Top Assists/.test(n.nodeValue)) n.nodeValue=n.nodeValue.replace('Top Assists','Top Assists, '+v);
+    });
+  });
+});
+// ---- measure ----
+(async()=>{
+ await document.fonts.ready; await new Promise(r=>setTimeout(r,200));
+ const rows=[];
+ document.querySelectorAll('.vvcard').forEach((c,i)=>{
+   const pill=[...c.querySelectorAll('.chtag,.chtagcell')].find(p=>/Top Assists/.test(p.textContent));
+   const ga=[...c.querySelectorAll('.cga .col')].map(x=>x.textContent.replace(/\s+/g,' ').trim());
+   if(!pill) { rows.push({i,cw:Math.round(c.getBoundingClientRect().width),pill:'(none)',w:0,slot:0,over:'',ga:ga.join(' | ')}); return; }
+   const pw=pill.getBoundingClientRect().width, slot=pill.parentElement.getBoundingClientRect().width;
+   rows.push({i,cw:Math.round(c.getBoundingClientRect().width),pill:pill.textContent.trim(),
+     w:+pw.toFixed(2),slot:+slot.toFixed(2),over:(pw>slot+0.01?'CLIPS':'fits'),ga:ga.join(' | ')});
+ });
+ let t='<table><tr><th>#</th><th>--cw</th><th>pill text</th><th class="n">pill px</th><th class="n">slot px</th><th>result</th></tr>';
+ rows.forEach(r=>t+='<tr><td>'+r.i+'</td><td>'+r.cw+'</td><td>'+r.pill+'</td><td class="n">'+r.w+'</td><td class="n">'+r.slot+'</td><td class="'+(r.over==='CLIPS'?'bad':'ok')+'">'+r.over+'</td></tr>');
+ t+='</table><p class="sub">G/A block as rendered: <b>'+(rows[1]?rows[1].ga:'')+'</b></p>';
+ document.getElementById('m2').innerHTML=t;
+})();
+</script></body></html>

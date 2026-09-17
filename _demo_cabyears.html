@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cabinet years , three treatments</title>
+<script src="/vv-marks.js?v=20260912a"></script>
+<script src="/vv-core.js?v=20260912a"></script>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:18px;background:#17161a;color:#F0EAD9;
+       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  h1{font-size:17px;margin:0 0 4px}
+  .sub{color:#a49d93;font-size:12.5px;line-height:1.55;margin-bottom:8px;max-width:820px}
+  .warn{color:#F1A8A8;font-size:12px;line-height:1.5;margin:0 0 18px;max-width:820px;
+        border-left:2px solid #8E2A2A;padding-left:10px}
+  .cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));max-width:1500px}
+  .col{min-width:0}
+  .colh{font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.1em;
+        text-transform:uppercase;color:#E0A93A;margin:0 0 4px}
+  .colw{color:#a49d93;font-size:11.5px;line-height:1.45;margin-bottom:12px;min-height:46px}
+  .panel{background:#F0EAD9;border-radius:14px;padding:14px 16px 16px;color:#2b2924;margin-bottom:12px}
+  .who{font-family:'Archivo',sans-serif;font-weight:800;font-size:14px}
+  .meta{font-size:11px;color:#5f594e;margin-bottom:10px}
+  .rt{display:inline-block;background:#2b2924;color:#F0EAD9;border-radius:5px;padding:1px 6px;font-weight:800;font-size:10.5px;margin-left:6px}
+  .tall{font-size:10.5px;color:#8a8276;margin-top:10px;border-top:1px solid rgba(0,0,0,0.12);padding-top:8px}
+  /* shared pill base, from card.html */
+  .chip{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;
+        font-family:'Archivo',sans-serif;font-weight:700;font-size:11px}
+  .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
+  .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
+  .cabchips{display:flex;flex-wrap:wrap;gap:7px}
+  /* A , vertical shelves */
+  .shelf{display:flex;flex-direction:column;gap:11px}
+  .shname{display:flex;align-items:center;gap:5px;font-family:'Archivo',sans-serif;font-weight:800;
+          font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#5a4410;margin-bottom:4px}
+  .shname .vvm{width:13px;height:13px}
+  .shyrs{display:flex;flex-direction:column;gap:1px;padding-left:18px;
+         border-left:2px solid rgba(224,169,58,0.45)}
+  .shy{font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;color:#2b2924;
+       font-variant-numeric:tabular-nums;line-height:1.5}
+  /* B , count-led */
+  .cabx{margin-left:6px;padding-left:6px;border-left:1px solid rgba(90,68,16,0.28);
+        font-size:10.5px;font-weight:800;font-variant-numeric:tabular-nums}
+  /* C , hybrid */
+  .hyb{display:flex;flex-direction:column;gap:10px}
+  .hybh{display:flex;align-items:center;gap:5px;font-family:'Archivo',sans-serif;font-weight:800;
+        font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#5a4410}
+  .hybh .vvm{width:13px;height:13px}
+  .hybc{background:#5a4410;color:#F0D27A;border-radius:4px;padding:0 5px;font-size:10px;margin-left:2px}
+  .hyby{padding-left:18px;font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;
+        color:#5f594e;font-variant-numeric:tabular-nums;line-height:1.6}
+</style></head><body>
+<h1>Cabinet years , three treatments</h1>
+<div class="sub">Same three cards down every column. Messi 22/23 carries 41 honours with a longest run of ten;
+De Bruyne 19/20 carries eight; Simons 24/25 carries one. The single-honour card is the one to judge hardest ,
+it is the shape 6,661 of the 8,521 non-empty cabinets take.</div>
+<div class="warn"><b>B and C use a count, which the ruling forbids by name:</b> "It never counts, ranks, or grades:
+no &ldquo;5x champion&rdquo; rollups". Demoed because you asked for them, and a choice of B or C overrules the spec
+on that point , which is yours to make, and I will record it as a departure rather than edit the spec.</div>
+<div class="cols" id="cols"></div>
+<script>
+var CARDS = [{"card_id": 158081, "name": "L. Messi", "season": "22/23", "club": "Paris Saint Germain", "rt": 88, "pos": "ST", "items": [{"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2010}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2011}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2014}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2018}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2020}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2022}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2011}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2012}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2016}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2017}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2018}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2019}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2020}, {"type": "top_assists", "label": "Top Assists", "season_year": 2011}, {"type": "top_assists", "label": "Top Assists", "season_year": 2012}, {"type": "top_assists", "label": "Top Assists", "season_year": 2013}, {"type": "top_assists", "label": "Top Assists", "season_year": 2014}, {"type": "top_assists", "label": "Top Assists", "season_year": 2015}, {"type": "top_assists", "label": "Top Assists", "season_year": 2017}, {"type": "top_assists", "label": "Top Assists", "season_year": 2018}, {"type": "top_assists", "label": "Top Assists", "season_year": 2019}, {"type": "top_assists", "label": "Top Assists", "season_year": 2022}, {"type": "top_assists", "label": "Top Assists", "season_year": 2010}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2010}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2011}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2012}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2014}, {"type": "world_cup_winner", "label": "World Cup Winner", "season_year": 2022}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2016}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2017}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2018}, {"type": "league_champion", "label": "League Champion", "season_year": 2014}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2014}, {"type": "league_champion", "label": "League Champion", "season_year": 2012}, {"type": "league_champion", "label": "League Champion", "season_year": 2022}, {"type": "league_champion", "label": "League Champion", "season_year": 2021}, {"type": "league_champion", "label": "League Champion", "season_year": 2015}, {"type": "league_champion", "label": "League Champion", "season_year": 2017}, {"type": "league_champion", "label": "League Champion", "season_year": 2010}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2010}, {"type": "league_champion", "label": "League Champion", "season_year": 2018}]}, {"card_id": 133095, "name": "K. De Bruyne", "season": "19/20", "club": "Manchester City", "rt": 91, "pos": "CAM", "items": [{"type": "top_assists", "label": "Top Assists", "season_year": 2016}, {"type": "top_assists", "label": "Top Assists", "season_year": 2017}, {"type": "top_assists", "label": "Top Assists", "season_year": 2019}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2019}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2014}, {"type": "league_champion", "label": "League Champion", "season_year": 2017}, {"type": "league_champion", "label": "League Champion", "season_year": 2010}, {"type": "league_champion", "label": "League Champion", "season_year": 2018}]}, {"card_id": 151584, "name": "X. Simons", "season": "24/25", "club": "RB Leipzig", "rt": 80, "pos": "CAM", "items": [{"type": "golden_boot", "label": "Golden Boot", "season_year": 2022}]}];
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var TIER={ballon_dor:1,world_cup_winner:2,ucl_winner:3,league_champion:4,player_of_season:5,golden_boot:6,top_assists:7};
+var SHORT={ballon_dor:"Ballon d'Or",world_cup_winner:'World Cup',ucl_winner:'UCL',league_champion:'Champion',
+           player_of_season:'POTS',golden_boot:'Golden Boot',top_assists:'Top Assists'};
+function fold(items){
+  var m={};
+  items.forEach(function(h){ (m[h.type]=m[h.type]||{type:h.type,label:h.label,years:[]}).years.push(h.season_year); });
+  var out=Object.keys(m).map(function(k){ m[k].years.sort(function(a,b){return a-b;}); return m[k]; });
+  out.sort(function(a,b){ return (TIER[a.type]||99)-(TIER[b.type]||99); });
+  return out;
+}
+function mark(t){ return (window.VVCore&&VVCore.vvMark)?VVCore.vvMark('honour',t):((window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''); }
+var T={
+ A:{name:'A , vertical shelves',why:'Honour as a heading, years stacked beneath. Ten seasons is visibly ten lines and the section height carries the weight.',
+    render:function(f){ return '<div class="shelf">'+f.map(function(p){
+      return '<div><div class="shname">'+mark(p.type)+(SHORT[p.type]||p.label)+'</div><div class="shyrs">'+
+             p.years.map(function(y){return '<div class="shy">'+y+'</div>';}).join('')+'</div></div>';}).join('')+'</div>'; }},
+ B:{name:'B , count-led pills',why:'Multiples carry a count, singles carry their year. Weight at a glance, detail on tap. USES A COUNT.',
+    render:function(f){ return '<div class="cabchips">'+f.map(function(p){
+      var tail = p.years.length>1 ? '<span class="cabx">&times;'+p.years.length+'</span>'
+                                  : '<span class="cabx">'+p.years[0]+'</span>';
+      return '<span class="chip gold">'+mark(p.type)+(SHORT[p.type]||p.label)+tail+'</span>';}).join('')+'</div>'; }},
+ C:{name:'C , hybrid',why:'Heading with a count, years listed beneath it. Weight and detail together. USES A COUNT.',
+    render:function(f){ return '<div class="hyb">'+f.map(function(p){
+      return '<div><div class="hybh">'+mark(p.type)+(SHORT[p.type]||p.label)+
+             (p.years.length>1?'<span class="hybc">'+p.years.length+'</span>':'')+'</div>'+
+             '<div class="hyby">'+p.years.join(' &middot; ')+'</div></div>';}).join('')+'</div>'; }}
+};
+var host=document.getElementById('cols');
+['A','B','C'].forEach(function(k){
+  var col=document.createElement('div'); col.className='col';
+  col.innerHTML='<div class="colh">'+T[k].name+'</div><div class="colw">'+T[k].why+'</div>';
+  CARDS.forEach(function(c){
+    var f=fold(c.items);
+    var d=document.createElement('div'); d.className='panel';
+    d.innerHTML='<div class="who">'+c.name+'<span class="rt">'+c.rt+'</span></div>'+
+      '<div class="meta">'+c.pos+' &middot; '+c.club+' &middot; '+c.season+'</div>'+
+      T[k].render(f)+
+      '<div class="tall">'+c.items.length+' entries / '+f.length+' types</div>';
+    col.appendChild(d);
+  });
+  host.appendChild(col);
+});
+</script>
+</body></html>

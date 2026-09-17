@@ -1,0 +1,114 @@
+BIGCLUB_HOLD.csv , READ-ONLY TRIAGE   (54 rows)
+==============================================================================
+
+1. CONFIDENCE
+      22  low
+      32  medium
+
+2. UNIQUE PLAYERS: 46   (so 46 Transfermarkt reads cover all 54 rows)
+     8 player(s) with 2 held row(s)
+     38 player(s) with 1 held row(s)
+   multi-row players:
+     2  C. Eriksen            api174     top rt 88
+     2  H. Çalhanoğlu         api1640    top rt 85
+     2  E. Fernández          api5996    top rt 85
+     2  Fermín                api340626  top rt 80
+     2  Philippe Coutinho     api147     top rt 78
+     2  M. Pjanić             api872     top rt 78
+     2  Mata                  api901     top rt 75
+     2  M. Reus               api25      top rt 74
+
+3. TRANSITIONS
+      18  CM -> CAM
+      11  CM -> Winger
+      10  CDM -> CM
+       9  CM -> CDM
+       5  CDM -> CAM
+       1  CDM -> Winger
+
+   *** CDM-TOUCHING , these can move rt and cross bands: 25 rows
+       C. Eriksen           1819  CDM->CAM       rt 88  medium
+       E. Fernández         2526  CDM->CM        rt 85  medium
+       H. Çalhanoğlu        2122  CDM->CM        rt 85  medium
+       F. Kessié            2021  CM->CDM        rt 83  medium
+       D. Rice              2324  CM->CDM        rt 82  medium
+       E. Fernández         2425  CDM->CM        rt 82  medium
+       H. Mkhitaryan        1819  CDM->Winger    rt 80  low
+       C. Gallagher         2324  CDM->CM        rt 80  medium
+       É. Banega            1617  CDM->CAM       rt 80  low
+       A. Rabiot            2223  CDM->CM        rt 79  medium
+       R. Nainggolan        1819  CDM->CAM       rt 79  low
+       Philippe Coutinho    1920  CDM->CAM       rt 78  low
+       A. Ramsey            1819  CDM->CM        rt 78  low
+       M. Pjanić            1718  CM->CDM        rt 78  medium
+       S. McTominay         2324  CDM->CM        rt 77  low
+       M. Brozović          1718  CM->CDM        rt 77  low
+       H. Çalhanoğlu        2425  CM->CDM        rt 75  medium
+       J. Kimmich           2122  CM->CDM        rt 74  medium
+       Jorginho             2021  CM->CDM        rt 74  medium
+       C. Eriksen           2223  CDM->CM        rt 73  medium
+       M. Özil              1819  CDM->CAM       rt 73  medium
+       K. Thuram            2425  CDM->CM        rt 72  medium
+       F. Valverde          2425  CDM->CM        rt 71  medium
+       Fred                 2122  CM->CDM        rt 71  medium
+       M. Pjanić            1819  CM->CDM        rt 70  medium
+
+4. rt DISTRIBUTION
+       3  rt >= 85  (World Class+)
+      10  rt 80-84  (Standout)
+      41  rt 70-79
+       0  below 70
+   highest-rt rows:
+     rt 88  C. Eriksen           1819  CDM->CAM       medium
+     rt 85  E. Fernández         2526  CDM->CM        medium
+     rt 85  H. Çalhanoğlu        2122  CDM->CM        medium
+     rt 84  Koke                 1516  CM->Winger     low
+     rt 83  F. Kessié            2021  CM->CDM        medium
+     rt 82  D. Rice              2324  CM->CDM        medium
+     rt 82  E. Fernández         2425  CDM->CM        medium
+     rt 81  Santi Cazorla        1213  CM->CAM        medium
+     rt 80  Fermín               2526  CM->CAM        low
+     rt 80  İ. Gündoğan          2223  CM->CAM        medium
+
+5. LIVE 25/26 SEASONS , cannot be verified until the season completes: 5 rows
+     E. Fernández         CDM->CM        rt 85  medium
+     Fermín               CM->CAM        rt 80  low
+     Pedro Neto           CM->Winger     rt 77  medium
+     F. Wirtz             CM->CAM        rt 72  medium
+     L. Karl              CM->Winger     rt 70  low
+
+6. CROSS-REFERENCE vs known_players.csv (date >= 2026-08-09, per the §C rule)
+     rows already resolved by an earlier write this session: 0
+       none , no overlap, every row is genuinely unresolved
+     players with a DIFFERENT season already written this session: 9
+       C. Eriksen            api174     2 held row(s)
+       H. Çalhanoğlu         api1640    2 held row(s)
+       Philippe Coutinho     api147     2 held row(s)
+       H. Mkhitaryan         api1457    1 held row(s)
+       D. Szoboszlai         api1096    1 held row(s)
+       D. Kulusevski         api30435   1 held row(s)
+       K. De Bruyne          api629     1 held row(s)
+       P. Foden              api631     1 held row(s)
+       J. Kimmich            api502     1 held row(s)
+
+7. EVIDENCE , top 5 by rt, verbatim
+     C. Eriksen 1819  rt88  (CDM -> CAM, medium)
+       "CORRECTION to pool (CDM): advanced creator with some deeper late-Poch use"
+     E. Fernández 2526  rt85  (CDM -> CM, medium)
+       "CORRECTION to pool (CDM): advanced left-8 (10 goals) with Caicedo holding; autumn-verified, spring beyond coverage"
+     H. Çalhanoğlu 2122  rt85  (CDM -> CM, medium)
+       "CORRECTION to pool (CDM): left 8 in his first Inter season - Brozovic held the regista role"
+     Koke 1516  rt84  (CM -> Winger, low)
+       "Left mid in Simeone's flat 4-4-2 for most of 15/16 (14 assists from wide) - wide-mid/CM boundary"
+     F. Kessié 2021  rt83  (CM -> CDM, medium)
+       "CORRECTION to pool (CM): Pioli's double pivot beside Bennacer/Tonali - penalties inflated the 13 goals"
+
+   rows whose evidence describes GENUINE MULTI-ROLE ambiguity (not missing info): 15 of 54
+     rt 88  C. Eriksen         1819  CDM->CAM      CORRECTION to pool (CDM): advanced creator with some deeper late-Poch use
+     rt 80  H. Mkhitaryan      1819  CDM->Winger   CORRECTION to pool (CDM): RW/AM rotation under Emery - wide plurality (164
+     rt 80  É. Banega          1617  CDM->CAM      CORRECTION to pool (CDM): 10/8 rotation under De Boer/Pioli - advanced plu
+     rt 78  Philippe Coutinho  1920  CDM->CAM      CORRECTION to pool (CDM): Kovac's 10, then LW/AM rotation under Flick - ad
+     rt 78  A. Ramsey          1819  CDM->CM       CORRECTION to pool (CDM): 8/10 rotation (1327 min) - advanced-central spli
+     rt 77  M. Mount           2021  CM->CAM       CORRECTION to pool (CM): one of the dual 10s in Tuchel's 3-4-2-1 from Jan;
+     rt 76  P. Foden           2425  CM->CAM       CORRECTION to pool (CM): rotated 10/wings in the down season - advanced-ce
+     rt 74  J. Rodríguez       1819  CM->CAM       1142 rotation min under Kovac split 10/8 - advanced plurality, close call

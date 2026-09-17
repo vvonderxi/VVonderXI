@@ -1,0 +1,23 @@
+<title>Cabinet years at 390</title>
+<style>body{margin:0;padding:12px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif}
+h1{font-size:13px;margin:0 0 8px}h2{font-size:10.5px;color:#F0EAD9;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:14px 0 5px}
+.r{display:flex;gap:12px;align-items:flex-start}.c{width:390px;flex:0 0 390px}
+.l{font-size:10px;color:#E0A93A;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+iframe{width:390px;border:1px solid #33302c;border-radius:8px;display:block;background:#17161a}</style>
+<h1>The three treatments at 390px</h1>
+<div id="h"></div>
+<script>
+var S=[['Lewandowski , 12-year run',0],['Ronaldo , 4-year run',1],['Higuaín , single year',2]];
+var M=['0 , ships today','1 , flex row','2 , flex + narrow panel'];
+var h=document.getElementById('h');
+S.forEach(function(s){
+  var t=document.createElement('h2'); t.textContent=s[0]; h.appendChild(t);
+  var r=document.createElement('div'); r.className='r';
+  M.forEach(function(m,i){
+    var c=document.createElement('div'); c.className='c';
+    c.innerHTML='<div class="l">'+m+'</div><iframe src="/_demo_cabyrs3.html?subj='+s[1]+'&only='+i+'" height="420"></iframe>';
+    r.appendChild(c);
+  });
+  h.appendChild(r);
+});
+</script>

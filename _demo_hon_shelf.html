@@ -1,0 +1,161 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink-ink:#F1688E;--gold:#E8B84B;--page-2:#141011}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page-2);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 40px}
+.demohdr{padding:54px 0 0;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
+.demoname{font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;letter-spacing:-.02em;margin:10px 0 0}
+.demonote{font-size:13px;line-height:1.65;color:var(--ink-soft);max-width:62ch;margin:12px 0 0}
+.seprule{height:1px;background:rgba(255,255,255,.07);margin:38px 0 0}
+.tail{padding:80px 0 100px}
+/* the shared marks inherit colour and take their size from here */
+.hm svg{display:block;color:var(--gold)}
+@media(max-width:720px){.wrap{padding:0 20px}.demohdr{padding-top:34px}}
+</style>
+<style>
+/*  DEMO 3 , THE SHELF.
+    The marks ALREADY encode the distinction. playbook.html records it as a measured design
+    rule: "team honours stand footed and vertical, individual awards are unfooted objects."
+    So the layout does not need to label the difference, it needs to STOP HIDING it , seven
+    identical circles in a strip threw away the one thing the drawings were built to say.
+    One shelf. The footed trophies stand on it. The unfooted awards do not touch it.
+    That is the whole idea, and it is legible before a word is read.
+    THE CAREER EXCEPTION IS MARKED, NOT GROUPED. World Cup is honestly BOTH , vv-core's own
+    note says so , a team trophy that attaches to a whole career. Filing it in a third group
+    would make it look like a third KIND of honour. It stands with the team trophies, where
+    it belongs, and carries the one line that makes it different.  */
+.reg{margin-top:54px}
+.reglab{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.regsub{font-size:13.5px;line-height:1.65;color:var(--ink-soft);margin-top:7px;max-width:58ch}
+/*  TWO STRUCTURES, ONE BASELINE, AND THE DIFFERENCE IS DELIBERATE.
+    THE TEAM REGISTER uses two bands sharing columns , marks, then the shelf, then names ,
+    because that is the only way the marks can actually stand ON the line. Appending the
+    shelf after a single row put it under the one-liners and the idea did not render at all:
+    the marks floated 100px above their own shelf. And align-items:end on a cell holding
+    mark + name + caption aligns the CELL rather than the mark, so World Cup's extra caption
+    lifted its trophy 19px above the other two. Separate bands fix both.
+    THE INDIVIDUAL REGISTER uses INTEGRATED cells instead, because it has no shelf and does
+    not need the split , and at 390 the split actively breaks: four marks wrap to two rows,
+    then four names wrap to two more, and every mark is orphaned from its name. A fixed
+    mark box gives the same shared baseline with none of that.  */
+.mband{display:grid;gap:20px;align-items:end}
+.nband{display:grid;gap:20px;margin-top:14px}
+.reg.ind .icells{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:30px}
+.icell{text-align:center;cursor:pointer;background:none;border:0;padding:0;color:inherit;font:inherit;
+       display:flex;flex-direction:column;align-items:center;justify-content:flex-start;width:100%}
+.icell .imk{display:flex;align-items:flex-end;justify-content:center;height:78px}
+/*  THE GOLD LIVES ON `.hm svg` IN THE SHARED HEAD, and renaming this wrapper to .imk
+    stopped it matching, so the four individual marks silently rendered cream while the
+    three team ones stayed gold. A mark set that inherits `color` fails exactly this
+    quietly , nothing errors, the shape still draws. Restated here rather than renaming
+    back, so the rule is visible next to the size it travels with.  */
+.icell .imk svg{width:60px;height:60px;color:var(--gold)}
+.reg.team .mband,.reg.team .nband{grid-template-columns:repeat(3,1fr)}
+.mcell{display:flex;justify-content:center;align-items:flex-end;height:78px;cursor:pointer;background:none;border:0;padding:0;color:inherit}
+.mcell svg{width:60px;height:60px}
+/*  A <button> CENTRES ITS CONTENT VERTICALLY, which is invisible until one button has an
+    extra line. World Cup carries the career caption, so with the cells stretched to equal
+    height its name sat 10px ABOVE the other two , measured, not noticed by eye. Flex with
+    justify-content:flex-start pins every name to the same baseline whatever follows it.  */
+.hit{text-align:center;cursor:pointer;background:none;border:0;padding:0;color:inherit;font:inherit;
+     display:flex;flex-direction:column;align-items:center;justify-content:flex-start;width:100%}
+/*  THE SHELF. Only the team register has one, and its marks sit directly on it. The
+    individual register has the identical structure with the line simply absent, so the
+    presence or absence of the shelf is the ONLY difference between the two , which is the
+    whole teaching, and it is legible before a word is read.  */
+.shelf{height:1px;background:linear-gradient(90deg,rgba(232,184,75,0),rgba(232,184,75,.55) 12%,rgba(232,184,75,.55) 88%,rgba(232,184,75,0))}
+.noshelf{height:1px}
+.hn{font-family:'Bricolage Grotesque';font-weight:700;font-size:17px;letter-spacing:-.018em;color:var(--cream)}
+.ho{font-size:13px;line-height:1.55;color:rgba(240,234,217,.66);margin-top:6px}
+.hcareer{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:9px}
+.hit.on .hn{color:var(--pink-ink)}
+.hdet{max-height:0;overflow:hidden;opacity:0;transition:max-height .45s ease,opacity .35s ease;margin-top:0}
+.hdet.open{max-height:420px;opacity:1;margin-top:24px}
+.hdin{border-top:1px solid rgba(255,255,255,.08);padding-top:22px}
+.htd{font-size:15px;line-height:1.7;color:rgba(240,234,217,.82);max-width:58ch}
+.htd b{color:var(--cream);font-weight:600}
+.hdq{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:18px;line-height:1.62;
+     color:var(--cream);max-width:50ch;margin-top:15px;padding-left:20px;border-left:1px solid rgba(232,184,75,.34)}
+.hhint{font-size:12.5px;color:var(--ink-soft);margin-top:26px}
+@media(max-width:720px){
+  .reg.ind .icells{grid-template-columns:repeat(2,1fr);gap:16px}
+  .icell .imk{height:60px}.icell .imk svg{width:46px;height:46px}
+  .reg.team .mband,.reg.team .nband{grid-template-columns:repeat(3,1fr);gap:8px}
+  .mcell{height:60px}.mcell svg{width:46px;height:46px}
+  .reg.team .mcell svg{width:40px;height:40px}
+  .hn{font-size:15px;margin-top:11px}.ho{font-size:12px}
+  .hdq{font-size:16.5px;padding-left:15px}
+}
+</style>
+<div class="wrap">
+  <div class="demohdr">Playbook , honours , demo 3</div>
+  <div class="demoname">The shelf</div>
+  <p class="demonote">The seven marks already carry the distinction: the platform&#8217;s own rule is that team honours stand footed and vertical while individual awards are unfooted objects. Seven identical circles in a strip threw that away. One shelf: the footed trophies stand on it, the unfooted awards do not touch it. Legible before a word is read.</p>
+  <div class="seprule"></div>
+  <div id="out"></div>
+  <div class="tail"></div>
+</div>
+<script>
+function render(){
+  function mcell(o){ return '<button class="mcell hm" data-k="'+o.k+'">'+honMark(o.k)+'</button>'; }
+  function ncell(o){
+    return '<button class="hit" data-k="'+o.k+'"><div class="hn">'+o.n+'</div>'
+         + '<div class="ho">'+o.one+'</div>'
+         + (o.leg==='career'?'<div class="hcareer">Every season of a career</div>':'')
+         + '</button>';
+  }
+  function teamBand(items){
+    return '<div class="mband">'+items.map(mcell).join('')+'</div>'
+         + '<div class="shelf"></div>'
+         + '<div class="nband">'+items.map(ncell).join('')+'</div>';
+  }
+  function indCells(items){
+    return '<div class="icells">'+items.map(function(o){
+      return '<button class="icell" data-k="'+o.k+'"><div class="imk">'+honMark(o.k)+'</div>'
+           + '<div class="hn">'+o.n+'</div><div class="ho">'+o.one+'</div></button>';
+    }).join('')+'</div>';
+  }
+  var ind=HON.filter(function(o){return o.leg==='player';});
+  var team=HON.filter(function(o){return o.leg==='team'||o.leg==='career';})
+              .sort(function(a,b){return a.rank-b.rank;});
+  var h='';
+  h+='<div class="reg ind"><div class="reglab">Won by one player</div>'
+   + '<div class="regsub">A jury, a vote or a scoring chart picks a single name. These are unfooted objects, and they rest on nothing.</div>'
+   + indCells(ind)+'</div>';
+  h+='<div class="reg team"><div class="reglab">Won by a squad</div>'
+   + '<div class="regsub">A medal every player in the team collects. These are footed trophies, and they stand.</div>'
+   + teamBand(team)+'</div>';
+  h+='<div class="hdet" id="det"><div class="hdin"><div class="htd" id="dtd"></div><div class="hdq" id="ddq"></div></div></div>';
+  h+='<div class="hhint">Tap any trophy for the full read.</div>';
+  var out=document.getElementById('out'); out.innerHTML=h;
+  var cur=null;
+  out.addEventListener('click',function(e){
+    var b=e.target.closest('.hit')||e.target.closest('.mcell')||e.target.closest('.icell'); if(!b) return;
+    var k=b.getAttribute('data-k'), o=HON.filter(function(x){return x.k===k;})[0];
+    var det=document.getElementById('det');
+    out.querySelectorAll('.hit,.mcell,.icell').forEach(function(x){
+      x.classList.toggle('on', x.getAttribute('data-k')===k && cur!==k); });
+    if(cur===k){ det.classList.remove('open'); cur=null; return; }
+    document.getElementById('dtd').innerHTML=o.td;
+    document.getElementById('ddq').innerHTML=o.dq;
+    det.classList.add('open'); cur=k;
+  });
+}
+</script>
+<script src="/vv-marks.js"></script>
+<script src="/_demo_hon_data.js"></script>
+<script>
+  if(window.VVMarks && VVMarks.inject) VVMarks.inject();
+  render();
+  /*  THE MARK SET IS SHARED, SO A MISSING SYMBOL IS A REAL FAILURE, NOT A STYLING SLIP.
+      A <use> pointing at a symbol that is not in the document renders BLANK with no error,
+      which is exactly the silent failure section C records. Count them and say so.  */
+  var unresolved=[...document.querySelectorAll('use')].filter(function(u){
+    var h=(u.getAttribute('href')||u.getAttribute('xlink:href')||'').replace('#','');
+    return h && !document.getElementById(h); }).length;
+  console.log('[demo] honours rendered:', document.querySelectorAll('.hm').length,
+              '| unresolved <use>:', unresolved);
+</script>

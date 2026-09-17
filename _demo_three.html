@@ -1,0 +1,100 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Three for Lucas , stepper geometry, the Playbook fold, the PDF mark</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--muted:#a49d93}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#14100f;color:var(--cream);font-family:'Inter',sans-serif;line-height:1.6;padding:26px 20px 80px}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:27px;line-height:1.15;margin-bottom:6px}
+  h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:19px;margin:34px 0 4px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1)}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:16px}
+  .lede{font-size:15px;color:#d8d2c4;margin-bottom:8px}
+  b{font-weight:600;color:#fff}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.09)}
+  th{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  td.n{font-variant-numeric:tabular-nums;text-align:right}
+  .bad{color:#ff8fa3;font-weight:600}.good{color:#7ddba4;font-weight:600}
+  .stage{display:flex;gap:26px;flex-wrap:wrap;margin:16px 0 6px;align-items:flex-start}
+  .col{flex:1 1 220px;min-width:200px}
+  .cap{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  /* THE REAL MECHANISM, copied verbatim from the shipping rule */
+  .slot{background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.18);padding:10px;border-radius:10px}
+  .card{--cw:240px;width:var(--cw);max-width:92%;height:calc(var(--cw)*1.397);
+        background:radial-gradient(130% 60% at 50% 0%,#F7F2E6 0%,#F0EAD9 48%,#E2D8C4 100%);
+        border-radius:14px;color:#1C1B1A;font-family:'Archivo';font-weight:900;
+        display:flex;align-items:center;justify-content:center;font-size:13px}
+  .unclamped .card{max-width:none}          /* what .vvflipfront / .vvscalefront do today */
+  .fixed .card{max-width:92%}               /* the proposal */
+  .meas{font-family:'Archivo';font-weight:800;font-size:11.5px;color:var(--pink-ink);margin-top:8px;font-variant-numeric:tabular-nums}
+  .opt{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:15px 17px;margin:12px 0}
+  .opt h3{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--pink-ink);margin-bottom:9px}
+  .pill{background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:16px 18px;color:#3a352e;max-width:560px}
+  .pill.dark{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08);color:#fff}
+  .more{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.04em;color:#AD0332;background:none;border:none;cursor:pointer;padding:0}
+  .pill.dark .more{color:var(--pink-ink)}
+  .story{font-family:'Bricolage Grotesque';font-weight:600;font-size:15px;line-height:1.6;color:#3a352e;margin-bottom:10px}
+  .note{font-size:13.5px;color:var(--muted);border-left:2px solid var(--pink);padding-left:12px;margin:12px 0}
+  .ask{background:rgba(231,4,67,.09);border:1px solid rgba(231,4,67,.3);border-radius:12px;padding:13px 15px;margin-top:14px;font-size:14px}
+  code{font-family:ui-monospace,monospace;font-size:12.5px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+</style></head><body><div class="wrap">
+
+<h1>Three things to look at</h1>
+<div class="sub">The season stepper, the Playbook fold, and the PDF mark. Every number here was measured, not estimated.</div>
+
+<h2>1 , The stepper "bounce" is geometry, not easing</h2>
+<div class="lede">There is no curve to choose. The card changes <b>size</b> at the two moments the transition starts and ends, which is outside the animated interval, so no easing can reach it.</div>
+
+<div class="note">At rest a card is <code>width:var(--cw)</code> with <code>max-width:92%</code>. The flip wraps it in an element carrying <code>max-width:none</code> , on <b>both</b> the desktop and mobile paths , which removes the clamp. The card jumps wider, the animation runs, and the wrapper is torn down, so it snaps back.</div>
+
+<div class="stage">
+  <div class="col"><div class="cap">At rest</div><div class="slot"><div class="card">RESTING</div></div><div class="meas" id="m1"></div></div>
+  <div class="col unclamped"><div class="cap">During the flip , today</div><div class="slot"><div class="card">WIDER</div></div><div class="meas" id="m2"></div></div>
+  <div class="col fixed"><div class="cap">During the flip , proposed</div><div class="slot"><div class="card">UNCHANGED</div></div><div class="meas" id="m3"></div></div>
+</div>
+
+<table><tr><th>surface</th><th class="n">--cw</th><th class="n">at rest</th><th class="n">in flip</th><th class="n">width</th><th class="n">height</th></tr>
+<tr><td>card.html, desktop</td><td class="n">330</td><td class="n">303.6</td><td class="n">330.0</td><td class="n bad">+8.7%</td><td class="n">0%</td></tr>
+<tr><td>card.html, phone 390</td><td class="n">326</td><td class="n">299.9</td><td class="n">326.0</td><td class="n bad">+8.7%</td><td class="n">0%</td></tr>
+<tr><td>compare.html, phone 390</td><td class="n">145</td><td class="n">145.0</td><td class="n">145.0</td><td class="n good">0%</td><td class="n">0%</td></tr></table>
+
+<div class="note"><b>It is surface-dependent, and that is the part I did not expect.</b> <code>max-width:92%</code> is 92% of the <b>parent</b>, not of <code>--cw</code>. On compare's two-up phone layout the slot is narrow enough that the clamp never binds, so there is no jump at all. <b>You are seeing this on the card page, and you would not see it on compare.</b> The jump is <b>26px</b> on a 300px card.</div>
+
+<div class="ask"><b>The fix:</b> keep the resting clamp inside the flip and size the back face to match it , <code>max-width:92%</code> on the two flip-front rules, and <code>width:calc(var(--cw)*0.92)</code> on the back face and the mobile coin cover. <b>Measured after: 0.00px change on both axes, on desktop and at 390, with front and back matching.</b> It is a no-op where the clamp does not bind, so compare is unaffected.</div>
+
+<h2>2 , "Read the full story" , the label and the pill</h2>
+<div class="lede">Two things, and the second is the stronger argument.</div>
+<div class="note"><b>The label overpromises:</b> the fold opens <b>108 words, six sentences</b>. <br><b>And it breaks the page's own convention:</b> "See more ›" is used <b>29 times</b> on the Playbook for exactly this fold. "Read the full story ›" is used <b>twice</b> , here and in one other place , for <i>less</i> content than most of the 29.</div>
+
+<div class="opt"><h3>Current , the closed state is the problem</h3>
+  <div class="pill"><button class="more">Read the full story &#8250;</button></div>
+  <div class="sub" style="margin-top:8px">A white box styled to hold content, containing only its own toggle. That is the awkwardness , the pill is sized for prose that is not there yet.</div></div>
+
+<div class="opt"><h3>A , same fold, the page's own label</h3>
+  <div class="pill"><button class="more">See more &#8250;</button></div>
+  <div class="sub" style="margin-top:8px">One word changed. Consistent with 29 other folds, and no longer promising an essay.</div></div>
+
+<div class="opt"><h3>B , no box until it opens</h3>
+  <button class="more" style="color:#F1688E">See more &#8250;</button>
+  <div class="sub" style="margin-top:8px">The container goes transparent while closed, so the link sits in the flow and the box appears only with the prose. Removes the floating pill entirely.</div></div>
+
+<div class="opt"><h3>C , do not fold it at all</h3>
+  <div class="pill"><div class="story">Five numbers, but never only numbers. They are the shape of a player , the fingerprint no two careers share. One man lives for the goal; another for the pass that breathes it into being&#8230;</div></div>
+  <div class="sub" style="margin-top:8px">108 words is about 25 seconds. A fold costs a tap and hides the best writing on the page. <b>This is the one I would pick</b> , the fold exists to protect the reader from length, and there is not enough length to protect them from.</div></div>
+
+<h2>3 , The PDF has no mark at all</h2>
+<div class="lede">Not misplaced , <b>absent</b>. <code>docs/pdf/vv-index.html</code> contains zero images and zero SVG.</div>
+<div class="note">The home-page mark is two PNGs, dark and light, swapped by theme. <b>The PDF prints on white, so it takes the light one.</b> Two things have to be right and neither shows on screen: the path must resolve when the file is opened from the site root, and <code>print-color-adjust</code> must keep it from being dropped. <b>Verified in print preview, not on screen</b> , that is where a background image silently disappears.</div>
+
+<script>
+  function meas(id,sel){ const el=document.querySelector(sel); const r=el.getBoundingClientRect();
+    document.getElementById(id).textContent = r.width.toFixed(1)+' x '+r.height.toFixed(1)+' px'; }
+  addEventListener('load',()=>{ meas('m1','.col:not(.unclamped):not(.fixed) .card'); meas('m2','.unclamped .card'); meas('m3','.fixed .card');
+    const a=document.querySelector('.col:not(.unclamped):not(.fixed) .card').getBoundingClientRect().width;
+    const b=document.querySelector('.unclamped .card').getBoundingClientRect().width;
+    document.getElementById('m2').textContent += '  (+'+(100*(b-a)/a).toFixed(1)+'%)';
+    document.getElementById('m3').textContent += '  (0.0%)';
+  });
+</script>
+</div></body></html>

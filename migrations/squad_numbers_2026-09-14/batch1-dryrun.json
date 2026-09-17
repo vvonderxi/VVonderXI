@@ -1,0 +1,146 @@
+{
+  "stats": {
+    "clubSeasons": 121,
+    "resolved": 121,
+    "parsed": 117,
+    "cards": 2406,
+    "matched": 1951,
+    "held": {
+      "norow": 317,
+      "ambiguous": 58
+    },
+    "written": 0,
+    "skipped": [
+      "TR|2014|Başakşehir , most numbers repeat, extraction suspect",
+      "TR|2014|Kasımpaşa , most numbers repeat, extraction suspect",
+      "TR|2014|Kayseri Erciyesspor , most numbers repeat, extraction suspect",
+      "TR|2015|Kayserispor , most numbers repeat, extraction suspect",
+      "LL|2011|Athletic Club , parsed, zero cards matched",
+      "LL|2012|Athletic Club , parsed, zero cards matched",
+      "BL|2012|SpVgg Greuther Fürth , parsed, zero cards matched"
+    ],
+    "skippedCards": 142
+  },
+  "sample": [
+    {
+      "api_player_id": 114069,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 16,
+      "card_id": 179947,
+      "name": "J. Vermeulen",
+      "page": "Jorn Vermeulen",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 114132,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 2,
+      "card_id": 179958,
+      "name": "F. Boi",
+      "page": "Frederik Boi",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 38774,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 15,
+      "card_id": 179981,
+      "name": "Pieter Nys",
+      "page": "Pieter Nys",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 114039,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 1,
+      "card_id": 179987,
+      "name": "Y. Lenaerts",
+      "page": "Yves Lenaerts",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 114156,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 6,
+      "card_id": 179989,
+      "name": "K. Van Goethem",
+      "page": "Kenneth Van Goethem",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 114178,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 4,
+      "card_id": 179990,
+      "name": "Wim Raymaekers",
+      "page": "Wim Raymaekers",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 114339,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 26,
+      "card_id": 180003,
+      "name": "L. Gendarme",
+      "page": "Lionel Gendarme",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 14918,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 22,
+      "card_id": 180038,
+      "name": "Emmerik De Vriese",
+      "page": "Emmerik De Vriese",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 17019,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 23,
+      "card_id": 180039,
+      "name": "Derick Chuka Ogbu",
+      "page": "Derick Ogbu",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    },
+    {
+      "api_player_id": 40978,
+      "season_year": 2011,
+      "league_code": "BPL",
+      "shirt_number": 24,
+      "card_id": 180053,
+      "name": "Radek Dejmek",
+      "page": "Radek Dejmek",
+      "club": "OH Leuven",
+      "title": "2011–12 Oud-Heverlee Leuven season",
+      "wiki": "en"
+    }
+  ]
+}

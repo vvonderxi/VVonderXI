@@ -1,0 +1,47 @@
+<title>All seven, consequence check</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+ body{margin:0;padding:18px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif;font-size:12px}
+ table{border-collapse:collapse;font-size:11.5px}
+ th,td{padding:4px 11px;border-bottom:1px solid #33302c;font-variant-numeric:tabular-nums;text-align:right}
+ th{color:#E0A93A;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:9px}
+ td.l,th.l{text-align:left}
+ .ok{color:#5FC98A}.no{color:#FF7A5C}.warn{color:#E0A93A}
+ p.n{color:#a49d93;max-width:840px;line-height:1.55}
+ #p{position:absolute;visibility:hidden;white-space:nowrap}
+</style>
+<h3 style="font-size:13px;margin:0 0 4px">If POTS becomes "Season's Best" (33px), does anything else have to move?</h3>
+<div id="out">measuring…</div><span id="p"></span>
+<script>
+var CW=132, FS=CW*0.045, ROOM=(CW*0.86-CW*0.025)/2 - CW*0.032 - (CW*0.042+CW*0.016);
+var SET=[
+ ['Ballon d’Or','Ballon d’Or'],
+ ['World Cup','World Cup Winner'],
+ ['UCL','UCL Winner'],
+ ['Champion','League Champion'],
+ ['Season’s Best','Player of the Season'],
+ ['Golden Boot','Golden Boot'],
+ ['Top Assists','Top Assists']
+];
+(async function(){
+  await document.fonts.load('600 12px "Barlow Condensed"'); await document.fonts.ready;
+  var p=document.getElementById('p');
+  function w(t){ p.style.font='600 '+FS+'px "Barlow Condensed"'; p.style.letterSpacing=(FS*0.02)+'px';
+    p.style.textTransform='uppercase'; p.textContent=t; return p.getBoundingClientRect().width; }
+  var h='<p class="n">Two-up slot at --cw 132 is <b>'+Math.round(ROOM)+'px</b>. '
+   +'"proposed" is what would ship; "full name" is what it would cost to stop abbreviating that one too.</p>'
+   +'<table><tr><th class="l">proposed</th><th>px</th><th class="l">full name</th><th>px</th>'
+   +'<th>full name fits 43px?</th></tr>';
+  var maxProp=0;
+  SET.forEach(function(r){
+    var a=w(r[0]), b=w(r[1]); if(a>maxProp) maxProp=a;
+    var fits=b<=ROOM;
+    h+='<tr><td class="l"><b>'+r[0]+'</b></td><td>'+Math.round(a)+'</td>'
+      +'<td class="l">'+r[1]+'</td><td>'+Math.round(b)+'</td>'
+      +'<td class="'+(fits?'ok':'no')+'">'+(fits?'YES, '+Math.round(ROOM-b)+' spare':'no, over by '+Math.round(b-ROOM))+'</td></tr>';
+  });
+  h+='</table><p class="n">Widest proposed label: <b>'+Math.round(maxProp)+'px</b> against the '
+   +Math.round(ROOM)+'px slot.</p>';
+  document.getElementById('out').innerHTML=h;
+})();
+</script>

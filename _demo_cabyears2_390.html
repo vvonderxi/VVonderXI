@@ -1,0 +1,29 @@
+<title>Cabinet years at 390</title>
+<style>
+ body{margin:0;padding:14px;background:#17161a;color:#F0EAD9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+ h1{font-size:14px;margin:0 0 4px}
+ .n{font-size:11px;color:#a49d93;margin:0 0 12px}
+ h2{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#F0EAD9;margin:16px 0 6px}
+ .rail{display:flex;gap:14px;align-items:flex-start}
+ .cell{width:390px;flex:0 0 390px}
+ .oh{font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#E0A93A;margin:0 0 5px}
+ iframe{width:390px;border:1px solid #33302c;border-radius:8px;background:#F0EAD9;display:block}
+</style>
+<h1>The same three at 390px</h1>
+<p class="n">Real 390px iframes, innerWidth asserted. The two-column rule fires above six years, so the long runs split at this width too.</p>
+<div id="host"></div>
+<script>
+var L=['0 , ships today','1 , size and ink','2 , year plus gloss'];
+var S=[['Lewandowski 23/24',0],['Higuaín 15/16',1]];
+var host=document.getElementById('host');
+S.forEach(function(s){
+  var h2=document.createElement('h2'); h2.textContent=s[0]; host.appendChild(h2);
+  var rail=document.createElement('div'); rail.className='rail';
+  L.forEach(function(t,i){
+    var d=document.createElement('div'); d.className='cell';
+    d.innerHTML='<div class="oh">'+t+'</div><iframe src="/_demo_cabyears2.html?subj='+s[1]+'&only='+i+'" height="600"></iframe>';
+    rail.appendChild(d);
+  });
+  host.appendChild(rail);
+});
+</script>

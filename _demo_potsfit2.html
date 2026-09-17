@@ -1,0 +1,61 @@
+<title>Face labels at --cw 132</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+ body{margin:0;padding:18px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif;font-size:12px}
+ h3{font-size:13px;margin:18px 0 4px}
+ p.n{color:#a49d93;max-width:820px;line-height:1.55;margin:0 0 10px}
+ table{border-collapse:collapse;font-size:11.5px;margin-bottom:6px}
+ th,td{padding:4px 11px;border-bottom:1px solid #33302c;font-variant-numeric:tabular-nums;text-align:right}
+ th{color:#E0A93A;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:9px}
+ td:first-child,th:first-child,td.l,th.l{text-align:left}
+ .ok{color:#5FC98A}.tight{color:#E0A93A}.no{color:#FF7A5C}
+ .rule{color:#8a8276}
+ #p{position:absolute;visibility:hidden;white-space:nowrap}
+</style>
+<div id="out">measuring…</div><span id="p"></span>
+<script>
+var CW=132, FS=CW*0.045, ROOM=(CW*0.86-CW*0.025)/2 - CW*0.032 - (CW*0.042+CW*0.016);
+var CURRENT=[
+ ['ballon_dor','Ballon d’Or','Ballon d’Or','identical, already short'],
+ ['world_cup_winner','World Cup','World Cup Winner','truncated, drops "Winner"'],
+ ['ucl_winner','UCL','UCL Winner','INITIALISM, drops "Winner" too'],
+ ['league_champion','Champion','League Champion','truncated, drops "League"'],
+ ['player_of_season','POTS','Player of the Season','ACRONYM, not a truncation'],
+ ['golden_boot','Golden Boot','Golden Boot','identical, already short'],
+ ['top_assists','Top Assists','Top Assists','identical, already short']
+];
+var CAND=['Player of the Season','Player of Season','Season’s Best','Best in League',
+          'Season MVP','League’s Best','Best Player','Top Player','Player of Yr'];
+(async function(){
+  await document.fonts.load('600 12px "Barlow Condensed"'); await document.fonts.ready;
+  var p=document.getElementById('p');
+  function w(t){ p.style.font='600 '+FS+'px "Barlow Condensed"'; p.style.letterSpacing=(FS*0.02)+'px';
+    p.style.textTransform='uppercase'; p.textContent=t; return p.getBoundingClientRect().width; }
+  var widths=CURRENT.map(function(r){return w(r[1]);});
+  var ceiling=Math.max.apply(null,widths);
+  var widestName=CURRENT[widths.indexOf(ceiling)][1];
+  var h='<h3>1. The seven labels as they render on the FACE today, --cw 132</h3>'
+   +'<p class="n">Barlow Condensed 600 at '+FS.toFixed(1)+'px, tracking 0.02em, uppercase. '
+   +'The two-up slot holds <b>'+Math.round(ROOM)+'px</b>.</p><table>'
+   +'<tr><th class="l">key</th><th class="l">renders as</th><th>px</th><th class="l">full name</th><th class="l">what the convention did</th></tr>';
+  CURRENT.forEach(function(r,i){
+    h+='<tr><td class="l rule">'+r[0]+'</td><td class="l"><b>'+r[1]+'</b></td><td>'+Math.round(widths[i])+'</td>'
+      +'<td class="l rule">'+r[2]+'</td><td class="l">'+r[3]+'</td></tr>';
+  });
+  h+='</table><p class="n">The widest label the face carries today is <b>'+widestName+'</b> at <b>'
+   +Math.round(ceiling)+'px</b>. That is the convention’s own ceiling, and it is what "comfort" '
+   +'means below: a candidate at or under it is no wider than something the face already ships.</p>';
+  h+='<h3>2. Candidates at --cw 132</h3><table>'
+   +'<tr><th class="l">candidate</th><th>px</th><th>vs 43px hard limit</th><th>vs '+Math.round(ceiling)+'px shipped ceiling</th><th class="l">note</th></tr>';
+  CAND.forEach(function(c){
+    var ww=w(c), hard=ROOM-ww, comf=ceiling-ww;
+    h+='<tr><td class="l"><b>'+c+'</b></td><td>'+Math.round(ww)+'</td>'
+      +'<td class="'+(hard<0?'no':(hard<6?'tight':'ok'))+'">'+(hard<0?'over by '+Math.round(-hard):Math.round(hard)+' spare')+'</td>'
+      +'<td class="'+(comf<0?'no':'ok')+'">'+(comf<0?'wider by '+Math.round(-comf):Math.round(comf)+' spare')+'</td>'
+      +'<td class="l rule">'+(c==='Player of Season'?'not English':(c==='Season MVP'?'MVP is US sport':''))+'</td></tr>';
+  });
+  h+='</table>';
+  document.getElementById('out').innerHTML=h;
+  window.__ceiling=ceiling;
+})();
+</script>

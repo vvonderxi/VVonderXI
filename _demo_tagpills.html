@@ -1,0 +1,123 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wonder Tags , pill colours demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F3EDE0;--charcoal:#1c1b1a;--gold:#E8B84B;--mut:rgba(243,237,224,.52);--line:rgba(243,237,224,.11);
+  /*  THE FAMILY FILLS, LIFTED OUT OF `.vvcard .chtagcell-*` VERBATIM. In the build these
+      become tokens declared once in VV_CARD_CSS and read by BOTH the card rule and this one,
+      so there is one source of colour and two scopes , never a second palette. */
+  --fam-att:linear-gradient(90deg,#FF7A5C,#E70443);
+  --fam-mid:linear-gradient(90deg,#3FBF7F,#2FA968);
+  --fam-def:linear-gradient(90deg,#5C9DFF,#4A7FE0);
+  --fam-cross:linear-gradient(90deg,#5A5856,#46443F);
+  --fam-stage:linear-gradient(90deg,#2F8290,#1B5563);
+  --fam-hon:linear-gradient(90deg,#F0D27A,#E0A93A)}
+*{box-sizing:border-box}
+body{margin:0;background:#141210;color:var(--cream);font:400 15px/1.6 Inter,system-ui,sans-serif;padding:34px 20px 90px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font:900 24px Archivo;margin:0 0 6px}
+h2{font:800 13px Archivo;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:40px 0 6px}
+p.sub{color:var(--mut);font-size:13px;line-height:1.6;max-width:74ch;margin:0 0 16px}
+p.sub b{color:var(--cream);font-family:Archivo;font-weight:700}
+.libgroup-h{font:900 13px Archivo;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin:20px 0 11px}
+.taggrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media (max-width:860px){.taggrid{grid-template-columns:1fr}}
+.tagdef{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:16px 17px}
+.tagdef .tt{font:800 18px Archivo;display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:var(--cream)}
+.tagdef .td{font:400 15px/1.55 Inter;color:rgba(243,237,224,.7);margin-top:9px}
+.pill{font:800 10.5px Archivo;letter-spacing:.04em;color:rgba(243,237,224,.6);background:rgba(255,255,255,.07);
+  padding:3px 8px;border-radius:999px}
+.mk{width:17px;height:17px;border-radius:5px;background:rgba(243,237,224,.22);flex:none;display:inline-block}
+
+/* ---------- TREATMENT A : the name IS the pill, card language ---------- */
+.A .tagdef .tn{font-family:'Barlow Condensed';font-weight:600;font-size:16.5px;letter-spacing:.02em;
+  text-transform:uppercase;color:#fff;padding:4px 12px;border-radius:8px;display:inline-flex;
+  align-items:center;gap:7px;line-height:1.15}
+.A .tagdef .pill{display:none}
+.A .tn.f-att{background:var(--fam-att)} .A .tn.f-mid{background:var(--fam-mid)}
+.A .tn.f-def{background:var(--fam-def)} .A .tn.f-cross{background:var(--fam-cross)}
+.A .tn.f-stage{background:var(--fam-stage)}
+.A .tn.f-hon{background:var(--fam-hon);color:#5a4410}
+.A .tn .mk{background:rgba(255,255,255,.75)}
+.A .tn.f-hon .mk{background:rgba(90,68,16,.6)}
+
+/* ---------- TREATMENT B : a colour edge, the name stays a heading ---------- */
+.B .tagdef{border-left:4px solid transparent;padding-left:15px}
+.B .tagdef.f-att{border-left-color:#E70443} .B .tagdef.f-mid{border-left-color:#2FA968}
+.B .tagdef.f-def{border-left-color:#4A7FE0} .B .tagdef.f-cross{border-left-color:#5A5856}
+.B .tagdef.f-stage{border-left-color:#1B5563} .B .tagdef.f-hon{border-left-color:#E0A93A}
+.B .tagdef .pill{color:#fff}
+.B .pill.f-att{background:var(--fam-att)} .B .pill.f-mid{background:var(--fam-mid)}
+.B .pill.f-def{background:var(--fam-def)} .B .pill.f-cross{background:var(--fam-cross)}
+.B .pill.f-stage{background:var(--fam-stage)}
+.B .pill.f-hon{background:var(--fam-hon);color:#5a4410}
+</style></head><body><div class="wrap">
+
+<h1>Wonder Tags , should the dictionary speak the card's colour language?</h1>
+<p class="sub">A reader learns these colours on the card face: <b>red is attack, green is midfield,
+blue is defence, charcoal is all-round, teal is career stage, gold is silverware.</b> The dictionary
+that teaches them currently renders every tag as plain text. Both treatments below use the card's
+exact gradients, lifted verbatim, never re-picked.</p>
+
+<h2>Today</h2>
+<div id="now"></div>
+
+<h2>A , the name is the pill</h2>
+<p class="sub">The card's own object, at reading size: condensed, uppercase, the family fill. The grey
+family chip becomes redundant and goes. <b>Strongest recognition, heaviest page</b> , about thirty of
+these run down the section.</p>
+<div id="a" class="A"></div>
+
+<h2>B , a colour edge, the name stays a heading</h2>
+<p class="sub">The family colour arrives on the card's left edge and on the family chip, which keeps
+the tag NAME as readable type. <b>Quieter, and the colour is still learnable</b> , but it is a cue
+about the row rather than the card's actual pill.</p>
+<div id="b" class="B"></div>
+
+<script src="/vv-core.js?v=20260913c"></script>
+<script>
+var FAM={Attack:'att',Midfield:'mid',Defence:'def','All-Round':'cross','Career-Stage':'stage'};
+/*  THE FAMILY IS LOOKED UP, NEVER TRANSCRIBED. FILTER_TAXONOMY.profile already maps every tag
+    name to its group, and it is the same source the filter rail reads, so the dictionary cannot
+    drift from the filters or from the card. */
+function famOf(name){
+  var T=(window.VVCore&&VVCore.FILTER_TAXONOMY&&VVCore.FILTER_TAXONOMY.profile)||[];
+  for(var i=0;i<T.length;i++) for(var j=0;j<T[i].items.length;j++)
+    if(T[i].items[j].v===name) return {cls:FAM[T[i].sub]||'cross', sub:T[i].sub};
+  return {cls:'cross', sub:'All-Round'};
+}
+var HON=[['Ballon d’Or','The best player in the world that season.'],
+         ['Golden Boot','The league’s top scorer. Nobody scored more.'],
+         ['UCL Champion','Champion of Europe.']];
+var SHOW=['Goal Machine','Clinical','Playmaker','Regista','The Wall','Destroyer','Complete','Iron Man','Wonderkid','Peak'];
+function rows(mode){
+  var T=(window.VVCore&&VVCore.TAG_DEFS)||{};
+  var h='<div class="taggrid">';
+  SHOW.forEach(function(n){
+    var f=famOf(n), d=T[n]||{};
+    var tnCls=(mode==='A')?('tn f-'+f.cls):'tn';
+    var pillCls=(mode==='B')?('pill f-'+f.cls):'pill';
+    var rowCls=(mode==='B')?('tagdef f-'+f.cls):'tagdef';
+    h+='<div class="'+rowCls+'"><div class="tt">'+
+       (mode==='A'?'':'<span class="mk"></span>')+
+       '<span class="'+tnCls+'">'+(mode==='A'?'<span class="mk"></span>':'')+n+'</span>'+
+       '<span class="'+pillCls+'">'+f.sub+'</span></div>'+
+       '<div class="td">'+(d.oneLiner||'')+'</div></div>';
+  });
+  HON.forEach(function(p){
+    var tnCls=(mode==='A')?'tn f-hon':'tn';
+    var pillCls=(mode==='B')?'pill f-hon':'pill';
+    var rowCls=(mode==='B')?'tagdef f-hon':'tagdef';
+    h+='<div class="'+rowCls+'"><div class="tt">'+
+       (mode==='A'?'':'<span class="mk"></span>')+
+       '<span class="'+tnCls+'">'+(mode==='A'?'<span class="mk"></span>':'')+p[0]+'</span>'+
+       '<span class="'+pillCls+'">Honour</span></div>'+
+       '<div class="td">'+p[1]+'</div></div>';
+  });
+  return h+'</div>';
+}
+document.getElementById('now').innerHTML=rows('now');
+document.getElementById('a').innerHTML=rows('A');
+document.getElementById('b').innerHTML=rows('B');
+</script></div></body></html>

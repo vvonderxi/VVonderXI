@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emphasis , 700 against the designed treatment</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800;900&family=Inter:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F0EAD9;--charcoal:#1C1B1A;--gold-ink:#E8B84B;--ink-soft:#a49d93;
+  --surf-hero:#2A2422;--surf-stage:#141011;--pink-ink:#F1688E}
+.light{--ink-soft:#5f594e;--gold-ink:#7e5a10;--surf-hero:#FFFFFF;--surf-stage:#EFE8DA}
+*{box-sizing:border-box}
+body{margin:0;background:#141210;color:var(--cream);font:400 15px Inter,system-ui,sans-serif;padding:30px 18px 80px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font:900 21px Archivo;margin:0 0 6px}
+p.sub{color:var(--ink-soft);font-size:12.5px;line-height:1.6;max-width:76ch;margin:0 0 22px}
+p.sub b{color:var(--cream);font-family:Archivo;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.col h2{font:800 11px Archivo;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 8px}
+.col .note{font:400 11.5px/1.5 Inter;color:var(--ink-soft);margin:0 0 12px;min-height:46px}
+.stage{background:var(--surf-stage);border-radius:16px;padding:18px 16px;margin-bottom:14px}
+.gnd{background:var(--surf-hero);border-radius:14px;padding:20px 18px;text-align:center}
+/* the two prose shapes, copied from compare */
+.vsprose{font-family:'Bricolage Grotesque';font-style:italic;font-weight:600;font-size:16px;
+  line-height:1.62;color:var(--cream);text-align:left;margin:0}
+.light .vsprose{color:#33302a}
+.vquote{font-family:'Bricolage Grotesque';font-style:italic;font-weight:600;font-size:18.5px;
+  line-height:1.55;color:var(--cream);margin:0}
+.light .vquote{color:var(--charcoal)}
+.lbl{font:800 10px Archivo;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-ink);
+  margin-bottom:9px;display:block}
+
+/* A , what ships today */
+.A .vvem{font-weight:700}
+/* B , the designed treatment, currently keyed on an element nothing emits */
+.B .vvem{font-style:normal;font-weight:800;color:var(--gold-ink)}
+/* C , weight only, the answer the card's scout panel already uses */
+.C .vvem{font-weight:800}
+</style></head><body><div class="wrap">
+
+<h1>Emphasis , the current 700 against the treatment already designed for it</h1>
+<p class="sub">The prose is Bricolage Grotesque <b>italic at weight 600</b>. Today <code>.vvem</code>
+sets <b>700</b> , a 100-unit step in an italic display face, same colour, same size. Treatment B is
+<code>.vsprose b</code>, which has sat in compare.html carrying <b>gold, upright, 800</b> and has
+never rendered, because nothing emits a <code>&lt;b&gt;</code>. C is weight-only, the answer
+<code>#scoutBody .vvem</code> already uses on the card. Both grounds shown; the gold flips to
+<b>#7e5a10</b> in light and measures <b>5.9</b> there and <b>9.07</b> on the dark stage.</p>
+
+<div class="grid" id="g"></div>
+
+<script>
+var STORY='His Reliability dimension sat at 90.8, and the Iron Man tag is not decoration here: **3,107 minutes across 37 appearances** in a side that finished nineteenth. He was the one thing Palermo could count on.';
+var QUOTE='The record gives this to Nestorovski, but it is narrower than the goal tally suggests. **Eleven goals to seven** on a team that went down, against **a dribble success rate of 70 percent** from a striker who was doing something else entirely.';
+function em(s){ return s.replace(/\*\*([^*\n]{1,120}?)\*\*/g,'<strong class="vvem">$1</strong>'); }
+var T=[['A','What ships today','<code>.vvem{font-weight:700}</code> against a 600 base.'],
+       ['B','The designed treatment','Gold, upright, 800 , the rule that has never rendered.'],
+       ['C','Weight only','800, no colour. What the card’s scout panel uses.']];
+document.getElementById('g').innerHTML=T.map(function(t){
+  return '<div class="col '+t[0]+'"><h2>'+t[0]+' , '+t[1]+'</h2><div class="note">'+t[2]+'</div>'+
+    ['','light'].map(function(mode){
+      return '<div class="stage '+mode+'"><div class="gnd">'+
+        '<span class="lbl">The Story</span><p class="vsprose">'+em(STORY)+'</p>'+
+        '</div><div style="height:12px"></div><div class="gnd">'+
+        '<span class="lbl">The Verdict</span><p class="vquote">“'+em(QUOTE)+'”</p>'+
+        '</div></div>';
+    }).join('')+'</div>';
+}).join('');
+</script></div></body></html>

@@ -1,0 +1,283 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VV Index , rebuilt (demo 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*  THIS ROW IS A LITERAL COPY AND THAT IS DELIBERATE, WITH A COST STATED: vvindex loads no
+    shared script, so `VVCore.socialRowHTML()` cannot reach it. The source of truth is that
+    function; if the handles or the labels change, this copy changes in the SAME commit.
+    `scripts/lint-inline.js` fails the build when they drift, which is the only thing that
+    makes a second copy acceptable at all.  */
+.vvsoc{display:flex;align-items:center;justify-content:center;gap:18px;margin:20px 0 0}
+.vvsoc a{display:inline-flex;color:rgba(243,237,224,.45);transition:color .18s,transform .18s}
+.vvsoc a:hover{color:var(--pink);transform:translateY(-2px)}
+.vvsoc svg{width:21px;height:21px}
+
+:root{--bg:#141210;--cream:#F3EDE0;--gold:#E8B84B;--pink:#F1688E;
+  --mut:rgba(243,237,224,.52);--ink:rgba(243,237,224,.80);--line:rgba(243,237,224,.11)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--cream);font:400 15px/1.6 Inter,system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:46px 20px 110px}
+
+h1{font:900 clamp(30px,5.4vw,48px)/1.08 Archivo;letter-spacing:-.025em;margin:0 0 14px}
+h1 .idx{display:block;font-size:.52em;letter-spacing:.01em;color:var(--mut);font-weight:800;margin-bottom:6px}
+h1 .v2{color:var(--pink)}
+/*  .vvw IS THE PLATFORM'S CLASS AND .v2 WAS THIS PAGE'S PRIVATE ONE, SCOPED TO `h1`. The Zero
+    pull-quote carried a `.v2` span that matched no rule at all, so its second V rendered in
+    the body cream , measured rgb(243,237,224), identical to the text around it. A span that
+    matches nothing is invisible in the markup and in the diff, which is the whole reason the
+    wordmark moved to one class today.  */
+.vvw{color:var(--pink)}
+.lede{font:400 clamp(16px,2.6vw,20px)/1.45 Inter;color:var(--ink);max-width:44ch;margin:0}
+
+.pq{margin:44px 0 0;padding:30px 30px 28px;border-radius:20px;
+  background:linear-gradient(150deg,rgba(232,184,75,.13),rgba(232,184,75,.03) 62%,transparent);
+  border:1px solid rgba(232,184,75,.30)}
+.pq .n{font:900 clamp(54px,12vw,92px)/0.9 Archivo;letter-spacing:-.03em;color:var(--gold);display:block}
+/*  800, NOT 700, AND THE REQUEST NOW MATCHES THE PLATFORM'S , 2026-09-13. Same shape as the
+    Playbook's Barlow Condensed bug: the face was NAMED in the CSS and never REQUESTED at the
+    weight being used. This demo asked for Bricolage at two discrete weights, `400;700`, while
+    every shipping page asks for the variable range `400..800` and sets its statements at 800.
+    So the demo could not render 800 even if it asked, and at 700 it was a different typeface
+    from the one beside it on vvindex. Request copied verbatim from vvindex.html.  */
+.pq .t{font:800 clamp(19px,3.2vw,26px)/1.33 'Bricolage Grotesque',Archivo,serif;margin:14px 0 0;max-width:26ch;letter-spacing:-.01em}
+.pq .s{font:400 12.5px/1.55 Inter;color:var(--mut);margin:12px 0 0;max-width:50ch}
+
+h2{font:800 13px Archivo;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);
+  margin:56px 0 6px;display:flex;align-items:center;gap:10px}
+h2::after{content:'';flex:1;height:1px;background:var(--line)}
+.h2sub{font:400 13.5px/1.55 Inter;color:var(--mut);margin:0 0 20px;max-width:62ch}
+
+/*  THE TIMELINE IS HTML, NOT SVG, AND THAT IS THE LESSON FROM THE FIGURE IT REPLACES. An SVG
+    scales as one unit, so its type shrinks with the drawing and the margin chart became
+    unreadable at 390. Built from positioned divs, every label stays at its real size at every
+    width and the only thing that changes is the track. */
+.fig{border:1px solid var(--line);border-radius:18px;padding:24px 22px 18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.tl{position:relative;height:64px;margin:6px 0 0}
+.tl-track{position:absolute;left:0;right:0;top:16px;height:30px;border-radius:8px;overflow:hidden;
+  background:rgba(243,237,224,.09)}
+.tl-seg{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 11px;
+  font:700 10.5px Archivo;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.tl-early{left:0;color:rgba(243,237,224,.62)}
+.tl-full{background:linear-gradient(90deg,rgba(232,184,75,.85),rgba(232,184,75,.6));color:#3a2c07}
+.tl-mk{position:absolute;top:2px;bottom:2px;width:16px;margin-left:-8px;padding:0;border:0;
+  background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tl-mk::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;border-radius:2px;
+  background:var(--pink)}
+.tl-mk::after{content:'';position:absolute;left:4px;top:0;width:8px;height:8px;border-radius:50%;
+  background:var(--pink);transition:transform .15s}
+.tl-mk:hover::after,.tl-mk.on::after{transform:scale(1.6)}
+.tl-mk:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+/*  THE CUE SAYS HOVER OR TAP DEPENDING ON THE POINTER, the same construction the Playbook's
+    league cue uses , one rule, no user-agent sniffing, and it is correct on a laptop with a
+    touchscreen because it asks about the POINTER rather than about the device.
+
+    AND IT IS NOW THE PLAYBOOK'S TREATMENT, NOT JUST ITS CONSTRUCTION , 2026-09-13. The first
+    version said the right words and nobody saw them: .34 alpha, 400 weight, italic, no border,
+    measured 2.84 against this panel's #1B1917, BELOW even the 3.0 large-text bar, at 11.5px,
+    sitting under a caption that is itself at 4.9. It read as a footnote to the caption rather
+    than as a control, which is exactly the complaint the marks themselves drew.
+    .lgcue in playbook.html is the same problem already solved , .50 alpha, 600 Archivo, a pill
+    border and a glyph , and it measures 4.65. Copied rather than re-invented, because a second
+    drawing of one thing is the drift this codebase keeps recording.
+    THE GLYPH IS THE MARK ITSELF, not a generic icon. The cue has to say WHICH thing is
+    interactive, and on a gold track carrying pink dots the answer is the pink dot.  */
+.tlwhen{font-family:'Archivo';font-weight:600;font-size:10.5px;letter-spacing:.03em;
+  color:var(--mut);margin:9px 2px 0}
+.tlwhen b{color:var(--ink);font-weight:800}
+.tlwhen i{font-style:normal;opacity:.4;padding:0 3px}
+.tl-ends{display:flex;justify-content:space-between;margin-top:2px;font:700 10.5px Archivo;
+  color:rgba(243,237,224,.45);letter-spacing:.06em}
+.tl-key{display:grid;gap:7px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.tl-key div{font:400 12.5px/1.5 Inter;color:var(--mut);display:flex;gap:9px;align-items:baseline}
+.tl-key i{width:7px;height:7px;border-radius:50%;background:var(--pink);flex:none;transform:translateY(-2px)}
+.tl-key i.sq{border-radius:3px;width:9px;height:9px}
+.tl-key i.e{background:rgba(243,237,224,.30)}
+.tl-key i.f{background:rgba(232,184,75,.8)}
+.tl-key b{font-family:Archivo;font-weight:700;color:var(--cream)}
+/*  THE TRACK'S OWN LABELS COME OUT WHEN THEY STOP FITTING, AND THEY WERE MEASURED RATHER THAN
+    EYEBALLED: at 390 the track is 289px and both labels were CLIPPED by the overflow that makes
+    the bar a bar , "Goals, assists, minutes" wanted more than its 96px and the gold segment more
+    than its 193px, and neither said so. They move into the key below instead, which is already a
+    list and already legible. Nothing is duplicated at any width: the in-track text and the two
+    swatch rows are never both on screen.  */
+.tl-key .segkey{display:none}
+@media (max-width:660px){
+  .tl-seg span{display:none}
+  .tl-key .segkey{display:flex}
+}
+.figcap{font:400 12px/1.55 Inter;color:var(--mut);margin:16px 2px 0}
+.figcap b{font-family:Archivo;font-weight:700;color:var(--cream)}
+
+.rows{display:grid;margin-top:4px;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;
+  padding:15px 2px;border-bottom:1px solid var(--line)}
+.row .n{font:900 clamp(22px,3.8vw,29px)/1 Archivo;letter-spacing:-.02em;color:var(--cream);
+  text-align:right;font-variant-numeric:tabular-nums}
+.row .n.g{color:var(--gold)} .row .n.p{color:var(--pink)}
+.row .n small{display:block;font:700 9.5px Archivo;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mut);margin-top:6px}
+.row .l{font:400 15px/1.5 Inter;color:var(--ink)}
+.row .l b{font-family:Archivo;font-weight:700;color:var(--cream)}
+@media (max-width:560px){
+  .row{grid-template-columns:1fr;gap:4px;padding:14px 2px}
+  .row .n{text-align:left} .row .n small{display:inline;margin-left:9px}
+  .tl-seg{font-size:9.5px;padding:0 7px}
+}
+.close{margin-top:52px;padding:26px 28px;border-radius:18px;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.close p{margin:0;font:700 clamp(17px,2.7vw,21px)/1.4 'Bricolage Grotesque',Archivo,serif;max-width:40ch}
+.close .s{margin-top:10px;font:400 12.5px/1.55 Inter;color:var(--mut);max-width:56ch}
+.foot{margin-top:40px;font:400 12.5px/1.6 Inter;color:var(--mut);max-width:62ch}
+.cta{margin-top:30px;padding:26px 28px;border-radius:18px;border:1px solid rgba(232,184,75,.26);
+  background:linear-gradient(160deg,rgba(232,184,75,.10),transparent 70%)}
+.ctat{margin:0;font:800 clamp(17px,2.6vw,20px)/1.3 Archivo;letter-spacing:-.01em}
+.ctas{margin:9px 0 0;font:400 13px/1.6 Inter;color:var(--mut);max-width:56ch}
+.ctab{display:inline-block;margin-top:16px;font:800 12px Archivo;letter-spacing:.05em;
+  text-transform:uppercase;padding:11px 20px;border-radius:999px;text-decoration:none;
+  background:linear-gradient(135deg,#FF5C7A,#E70443);color:#fff}
+.foot a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(232,184,75,.35)}
+</style></head><body><div class="wrap">
+
+  <h1><span class="idx">The V<span class="v2">V</span> Index</span>Behind the Numbers.</h1>
+  <p class="lede">What it can and cannot do.</p>
+
+  <div class="pq">
+    <span class="n">Zero.</span>
+    <p class="t">The points a trophy adds to a V<span class="vvw">V</span> Score.</p>
+    <p class="s">Honours sit beside the number and never inside it. A medal is a team's outcome
+      with one player's name on it, and the Index scores the season he played, not the one his
+      club had.</p>
+  </div>
+
+  <h2>Where the record thins</h2>
+  <p class="h2sub">Not every league has kept the same records, and not in every year. This is
+  the shape of what exists.</p>
+
+  <div class="fig">
+    <div class="tl">
+      <div class="tl-track">
+        <div class="tl-seg tl-early" style="width:33.3%"><span>Goals, assists, minutes</span></div>
+        <div class="tl-seg tl-full" style="left:33.3%;right:0"><span>+ shots, passes, duels, dribbles</span></div>
+      </div>
+      <button type="button" class="tl-mk" style="left:26.7%" data-k="pl" aria-label="2014/15, the Premier League"></button>
+      <button type="button" class="tl-mk" style="left:33.3%" data-k="all" aria-label="2015/16, every other league"></button>
+      <button type="button" class="tl-mk" style="left:66.7%" data-k="bel" aria-label="2020/21, Belgium"></button>
+    </div>
+    <div class="tl-ends"><span>2010/11</span><span>2025/26</span></div>
+    <div class="tl-key">
+      <div class="segkey"><i class="sq e"></i><span><b>To 2015/16</b> , goals, assists and minutes.</span></div>
+      <div class="segkey"><i class="sq f"></i><span><b>From 2015/16</b> , shots, passes, duels and dribbles as well.</span></div>
+    </div>
+    <!--  THE BOUNDARIES ANSWER WHEN ASKED. Three marks, three different stories, and the
+          caption below is the one that changes , a reader who wants the detail taps for it and
+          a reader who does not is not made to read three footnotes. The default text is the
+          claim the figure is making; the rest are answers. -->
+    <p class="figcap" id="tlNote">Every league runs the whole way. <b>The detail does not.</b> A
+      season before its league&#8217;s mark is scored on goals, assists and minutes, and the card
+      says so rather than filling the gap.</p>
+    <!--  THE BOUNDARIES ARE NAMED IN THE OPEN, NOT BEHIND THE HOVER (2026-09-17).
+          The three marks sit at 26.7%, 33.3% and 66.7%, so two of them are 6.6% apart ,
+          51px on a 774px track , and neither carried a visible label. A reader had to
+          discover the hover to learn that anything had happened at all, and then had to
+          tell two near-touching marks apart to learn WHICH thing.
+          Naming the three years in one static line answers both without an interaction.
+          THE HOVER IS KEPT AND IS NOW THE DETAIL RATHER THAN THE ONLY ROUTE , the marks
+          still swap #tlNote for the fuller sentence, which is the design the comment
+          below describes. The instruction line is gone because the information it was
+          pointing at is now on the page.  -->
+    <p class="tlwhen">Detail begins <b>2014/15</b> Premier League <i>·</i> <b>2015/16</b>
+      every other league <i>·</i> <b>2020/21</b> Belgium</p>
+  </div>
+
+  <div class="rows">
+    <div class="row"><div class="n g"><span data-fig="cards_no_detail">18,725</span></div><div class="l">Seasons with no detailed record at all , <b>roughly one in three.</b> The Playbook says when the detail begins; this is how much of the record sits before it.</div></div>
+    <div class="row"><div class="n">2015</div><div class="l">Where penalties enter the record. <b>A taker before then is scored without them</b>, and nothing about his card pretends otherwise.</div></div>
+    <div class="row"><div class="n">300<small>minutes</small></div><div class="l">The floor. <b>Below it we hold back rather than rate a fragment</b> , a hot month is not a season.</div></div>
+    <div class="row"><div class="n p">4</div><div class="l"><b>Some famous players are simply not here.</b> Rooney, Gerrard, Lampard and Kompany have no cards, because the source we import from never linked those seasons to them. We could have filled the gap by hand and guessed at the rest. We would rather a player be missing than be wrong.</div></div>
+  </div>
+
+  <h2>What the number cannot see</h2>
+  <p class="h2sub">Two limits that no amount of data collection fixes, because they are about what
+  football records, not about what we gathered.</p>
+  <div class="rows">
+    <div class="row"><div class="n">Half<small>of the job</small></div><div class="l">The game records what a defender <b>does</b> far more faithfully than what he <b>prevents</b>. The tackle is counted. The run that made the tackle unnecessary is not, and neither is the pass a striker never attempted because the space was gone.<br><br><b>So the best defenders score lower here than their reputation, and we are not going to fix that by inventing a number.</b> Van Dijk sits in the low seventies, and we publish that with the reason rather than quietly moving him. <b>A score that agrees with every reputation is not measuring reputation, it is copying it.</b></div></div>
+    <div class="row"><div class="n">Top<small>of the ladder</small></div><div class="l">Positions are verified by hand near the top of the ladder and get coarser below it. <b>A high score is a claim we have checked. A low one is an estimate.</b></div></div>
+  </div>
+
+  <h2>What the number chose</h2>
+  <p class="h2sub">Not a limit. A decision, and one that shapes every score on the platform.</p>
+  <div class="rows">
+    <div class="row"><div class="n">Attack<small>the lean</small></div><div class="l">The scale tilts toward attacking output, because <b>that is where the evidence is</b> , goals and assists are recorded everywhere and back to 2010, and defending is not. We say so rather than claiming a balance the record cannot support.</div></div>
+  </div>
+
+  <h2>Where the ground still moves</h2>
+  <p class="h2sub">A score is a standing, not a mark out of ten, so it answers to every season
+  measured beside it.</p>
+  <div class="rows">
+    <div class="row"><div class="n"><span data-fig="cards_on_a_band_edge">872</span><small>cards</small></div><div class="l">Sit within a single point of a band edge , <b><span data-fig="cards_on_a_band_edge_share">1.61</span>% of every scored season.</b> They are the ones a growing record can move.</div></div>
+    <div class="row"><div class="n g">1</div><div class="l">Seasons that changed band the last time the record grew. <b>We recovered 780 missing seasons across all nine leagues, and exactly one card crossed a line</b> , nothing about that player changed, only the company he was being measured against.</div></div>
+  </div>
+
+  <div class="close">
+    <p>We changed how defenders are scored. 10,770 seasons moved. Not one crossed a band, and we
+      are telling you anyway.</p>
+    <p class="s">The defensive signal was two measures blended into one number. It is one measure
+      now, and the biggest single mover was Azpilicueta's 2018, from 70 to 72.</p>
+  </div>
+
+  <p class="foot">Every figure here is measured rather than asserted. The words themselves , bands,
+  dimensions, tags, confidence dots , live on <a href="playbook.html">the Playbook</a>.</p>
+
+  <!--  THE CTA BELONGS ON THIS PAGE SPECIFICALLY. A page whose whole argument is "here is what
+        we cannot do" has just spent ten claims inviting disagreement, and the reader most worth
+        hearing from is the one who finished it. It asks for a conversation rather than a follow.
+        IT IS AN INVITATION AND NOT A CONFESSION , 2026-09-13, and the first draft had it
+        backwards: "Found something we have wrong?" over "some of them will be wrong" asks the
+        reader to arrive with a complaint, and a page that has just published its own limits for
+        ten claims has earned a warmer ask than that. The SPECIFICS stay, because they are what
+        make the invitation answerable , "get in touch" alone is a contact box, and a named list
+        of things worth telling us is a brief.  -->
+  <div class="cta">
+    <p class="ctat">Want to look into this further?</p>
+    <p class="ctas">Every figure here can be checked, and we would rather you did. A career you
+      cannot find, a position that does not match what you watched, a season that reads oddly, or
+      just a question about how any of it works , tell us and we will look at it.</p>
+    <a class="ctab" href="contact.html">Get in touch</a>
+    <div class="vvsoc" id="vvSocIdx">
+      <a href="https://www.instagram.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on Instagram"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7"><rect x="20" y="20" width="60" height="60" rx="18"/><circle cx="50" cy="50" r="15"/><circle cx="70" cy="30" r="4" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://x.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on X/Twitter"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M22 20 h16 l18 26 L78 20 h8 L60 52 l28 28 H72 L52 56 L30 80 h-8 l28 -32 Z"/></svg></a>
+    </div>
+  </div>
+
+</div>
+<script>
+/*  THE BOUNDARY MARKS , hover on a pointer device, tap on a touch one, and the SAME handler
+    serves both because a click follows a tap everywhere that matters. The caption is restored
+    on leave so the figure never sits on an answer to a question nobody asked.
+    THE DEFAULT IS READ FROM THE DOM RATHER THAN DUPLICATED IN THIS SCRIPT. Two copies of one
+    sentence is how the two drift, and the markup is the one a reader sees first.  */
+(function(){
+  var note=document.getElementById('tlNote'); if(!note) return;
+  var DEF=note.innerHTML;
+  var TXT={
+    pl:  '<b>2014/15, the Premier League.</b> Its detailed record starts one season before everyone else’s, so an English season from that year carries shots and passes while a Spanish one does not.',
+    all: '<b>2015/16, and this is the line that matters.</b> Seven of the nine leagues begin their detailed record here. Before it, every season on this platform is scored on goals, assists and minutes.',
+    bel: '<b>2020/21, Belgium.</b> Five years later than the rest. A Belgian season from 2016 is scored on less than a Spanish one from the same year, and its card carries fewer confidence dots because of it.'
+  };
+  var marks=[].slice.call(document.querySelectorAll('.tl-mk'));
+  function show(k,el){ note.innerHTML=TXT[k]||DEF; marks.forEach(function(m){ m.classList.toggle('on', m===el); }); }
+  function clear(){ note.innerHTML=DEF; marks.forEach(function(m){ m.classList.remove('on'); }); }
+  marks.forEach(function(m){
+    var k=m.getAttribute('data-k');
+    m.addEventListener('mouseenter',function(){ show(k,m); });
+    m.addEventListener('focus',function(){ show(k,m); });
+    m.addEventListener('click',function(e){ e.preventDefault(); (m.classList.contains('on')?clear:function(){show(k,m);})(); });
+  });
+  var fig=document.querySelector('.fig');
+  if(fig) fig.addEventListener('mouseleave',clear);
+})();
+</script>
+</body></html>

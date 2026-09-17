@@ -1,0 +1,126 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>League strip , two treatments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+:root{--cream:#F3EDE0;--gold:#D9A64A;--pink:#F1688E;--ink:rgba(243,237,224,0.74);--mut:rgba(243,237,224,0.5)}
+*{box-sizing:border-box}
+body{margin:0;background:#17140f;color:var(--cream);font-family:Archivo,system-ui,sans-serif;padding:20px 16px 70px}
+h2{font:800 10px Archivo;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:30px 0 4px}
+.sub{font:400 11.5px Inter,system-ui;color:var(--mut);margin:0 0 12px;max-width:720px;line-height:1.5}
+.wrap{max-width:1000px}
+.phonewrap{width:390px;border:1px solid #322c24;border-radius:14px;padding:12px;margin-top:10px}
+
+/* ============ SHARED PILLS ============ */
+.lgchip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 10px;border-radius:999px;
+  border:1px solid rgba(243,237,224,0.15);background:rgba(255,255,255,0.035);
+  font:700 12px Archivo;color:var(--cream);white-space:nowrap;position:relative}
+.lgchip .f{font-size:15px;line-height:1}
+.lgstrip-r{display:flex;flex-wrap:wrap;gap:7px}
+
+/* the AFFORDANCE , visible with NO interaction: a dotted underline on the label + a caret */
+.lgchip.cue{cursor:pointer;padding-right:9px}
+.lgchip.cue .nm{border-bottom:1px dotted rgba(243,237,224,0.42);padding-bottom:1px}
+.lgchip.cue .cv{opacity:.5;font-size:9px;margin-left:1px;transform:translateY(1px)}
+.lgchip.cue:hover{border-color:rgba(243,237,224,0.42);background:rgba(255,255,255,0.075)}
+
+/* ============ TREATMENT A , THE LEDGER ============ */
+.A{border:1px solid rgba(243,237,224,0.12);border-radius:18px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.012))}
+.A .hd{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:15px 18px 12px;border-bottom:1px solid rgba(243,237,224,0.09)}
+.A .hd .t{font:800 10px Archivo;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.A .hint{font:600 10.5px Archivo;letter-spacing:.04em;color:var(--mut);display:inline-flex;align-items:center;gap:5px}
+.A .hint .dot{width:4px;height:4px;border-radius:50%;background:var(--pink);opacity:.85;flex:none}
+.A .pills{padding:15px 18px 16px}
+.A .claims{border-top:1px solid rgba(243,237,224,0.09);display:grid;grid-template-columns:repeat(3,1fr)}
+.A .cl{padding:14px 18px 15px;border-left:1px solid rgba(243,237,224,0.07)}
+.A .cl:first-child{border-left:0}
+.A .cl .k{font:800 9.5px Archivo;letter-spacing:.16em;text-transform:uppercase;color:rgba(243,237,224,0.42);margin-bottom:6px}
+.A .cl .v{font:400 13px Inter,system-ui;line-height:1.58;color:var(--ink)}
+.A .cl .v b{font-family:Archivo;font-weight:700;color:var(--cream)}
+.A .cl .v .q{color:var(--mut)}
+@media(max-width:720px){ .A .claims{grid-template-columns:1fr} .A .cl{border-left:0;border-top:1px solid rgba(243,237,224,0.07)} .A .cl:first-child{border-top:0} }
+
+/* ============ TREATMENT B , THE PLATE ============ */
+.B{border:1px solid rgba(243,237,224,0.12);border-radius:18px;padding:17px 18px 16px;
+  background:radial-gradient(120% 150% at 12% 0%,rgba(241,104,142,0.07),transparent 58%),
+             linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.012))}
+.B .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:13px}
+.B .hd .t{font:800 10px Archivo;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.B .hint{font:600 10.5px Archivo;letter-spacing:.04em;color:var(--mut);
+  border:1px solid rgba(243,237,224,0.17);border-radius:999px;padding:3px 9px;display:inline-flex;align-items:center;gap:5px}
+.B .hint svg{width:10px;height:10px;opacity:.75;flex:none}
+.B .pills{margin-bottom:15px}
+.B .claims{display:grid;gap:11px;padding-top:14px;border-top:1px solid rgba(243,237,224,0.09)}
+.B .cl{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:start}
+.B .n{font:800 10px Archivo;color:var(--gold);border:1px solid rgba(217,166,74,0.4);border-radius:6px;
+  width:20px;height:20px;display:grid;place-items:center;flex:none;margin-top:1px}
+.B .cl .v{font:400 13.5px Inter,system-ui;line-height:1.6;color:var(--ink)}
+.B .cl .v b{font-family:Archivo;font-weight:700;color:var(--cream)}
+.B .cl .v .q{color:var(--mut)}
+
+/* the hint swaps word by INPUT TYPE, not by width , a tablet hovers, a phone does not */
+.tapword::after{content:'Hover'}
+@media (hover:none),(pointer:coarse){ .tapword::after{content:'Tap'} }
+body.narrow .tapword::after{content:'Tap'}   /* demo only: the iframe still reports hover:hover on a desktop, so the phone WORDING is forced here to show what a phone gets */
+</style></head><body>
+
+<div class="wrap">
+<h2>Treatment A , The Ledger</h2>
+<p class="sub">One bordered plate, three zones: header with the cue, pills, then the three claims as three
+labelled columns that stack on phone. The cue is a dotted underline and caret on every pill, so the
+affordance is in the STILL, not in a hover state.</p>
+<div class="A" id="A"></div>
+
+<h2>Treatment B , The Plate</h2>
+<p class="sub">One softer panel, no internal rules. The cue is a bordered chip beside the label. The three
+claims are numbered rows, which reads as a sequence rather than a table.</p>
+<div class="B" id="B"></div>
+
+<h2>Phone, 390 , both, no interaction</h2>
+<p class="sub">TRUE 390 IFRAMES, not 390px divs. A media query keys off the VIEWPORT, so a narrow div
+inside a 1920 window never fires it , the first version of this demo showed the claims still in three
+columns and only the computed value said so.</p>
+<div style="display:flex;gap:14px;flex-wrap:wrap">
+  <iframe src="/_demo_lgstrip.html?only=A" style="width:390px;height:520px;border:1px solid #322c24;border-radius:14px;background:#17140f"></iframe>
+  <iframe src="/_demo_lgstrip.html?only=B" style="width:390px;height:520px;border:1px solid #322c24;border-radius:14px;background:#17140f"></iframe>
+</div>
+</div>
+
+<script>
+var L=[['🏴󠁧󠁢󠁥󠁮󠁧󠁿','Premier League'],['🇪🇸','La Liga'],['🇮🇹','Serie A'],['🇩🇪','Bundesliga'],['🇫🇷','Ligue 1'],
+       ['🇵🇹','Primeira Liga'],['🇳🇱','Eredivisie'],['🇧🇪','Belgian Pro League'],['🇹🇷','Süper Lig']];
+function pills(){ return '<div class="lgstrip-r">'+L.map(function(x){
+  return '<span class="lgchip cue"><span class="f">'+x[0]+'</span><span class="nm">'+x[1]+'</span><span class="cv">▾</span></span>';
+}).join('')+'</div>'; }
+
+var C=[['The ground','<b>Nine competitions</b>, and every league here carries more than <b>5,000 season cards</b>. '+
+        '<span class="q">If a league is not here, no card exists for it.</span>'],
+       ['The span','Every league runs from <b>2010/11</b> onward, but the detailed stats do not run that whole way. '+
+        '<span class="q">Shots, passes, duels and dribbles begin in 2015/16, a little earlier in the Premier League, and in Belgium in 2020/21.</span>'],
+       ['Before then','A season is scored on <b>goals, assists and minutes</b> alone.']];
+
+function A(){ return '<div class="hd"><span class="t">The ground we cover</span>'+
+  '<span class="hint"><span class="dot"></span><span class="tapword"></span> a league for its record</span></div>'+
+  '<div class="pills">'+pills()+'</div>'+
+  '<div class="claims">'+C.map(function(c){ return '<div class="cl"><div class="k">'+c[0]+'</div><div class="v">'+c[1]+'</div></div>'; }).join('')+'</div>'; }
+
+function B(){ return '<div class="hd"><span class="t">The ground we cover</span>'+
+  '<span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 17v-5"/><path d="M12 8h.01"/><circle cx="12" cy="12" r="9"/></svg><span class="tapword"></span> a league</span></div>'+
+  '<div class="pills">'+pills()+'</div>'+
+  '<div class="claims">'+C.map(function(c,i){ return '<div class="cl"><div class="n">'+(i+1)+'</div><div class="v">'+c[1]+'</div></div>'; }).join('')+'</div>'; }
+
+document.getElementById('A').innerHTML=A();
+document.getElementById('B').innerHTML=B();
+/* single-treatment mode for the 390 iframes */
+var only=(location.search.match(/only=(\w+)/)||[])[1];
+if(only){
+  document.body.classList.add('narrow');
+  document.body.style.padding='14px 12px';
+  document.querySelectorAll('h2,.sub,iframe').forEach(function(e){e.style.display='none'});
+  ['A','B'].forEach(function(k){ if(k!==only) document.getElementById(k).style.display='none'; });
+  var keep=document.getElementById(only);
+  var h=keep.previousElementSibling; /* nothing to keep */
+}
+</script></body></html>

@@ -1,0 +1,101 @@
+TRANSFERMARKT AUTOMATED FETCH , FEASIBILITY TEST   (read-only, nothing written)
+====================================================================================
+delay between requests: 1500ms
+
+PER-PLAYER RESULT
+
+1. T. Müller 1516  (Bayern München, rt88)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 58358   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Attacking Midfield 24, Right Winger 10, Second Striker 9, Centre-Forward 6
+     TM plurality      : Attacking Midfield
+     our verified sibling seasons say: CAM
+     requests used     : 6
+
+2. L. Sané 1718  (Manchester City, rt88)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 192565   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Left Winger 44, Right Winger 3, Attacking Midfield 1
+     TM plurality      : Left Winger
+     our verified sibling seasons say: Winger
+     requests used     : 5
+
+3. A. Martial 1920  (Manchester United, rt88)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 182877   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Centre-Forward 46, Left Winger 2
+     TM plurality      : Centre-Forward
+     our verified sibling seasons say: Winger
+     requests used     : 4
+
+4. M. Rashford 2223  (Manchester United, rt87)   our pool = ST
+     search candidates : 3   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 258923   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Left Winger 32, Centre-Forward 19, Right Winger 4
+     TM plurality      : Left Winger
+     our verified sibling seasons say: Winger
+     requests used     : 5
+
+5. J. Bowen 2324  (West Ham, rt87)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 314875   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Centre-Forward 23, Right Winger 19, Right Midfield 1
+     TM plurality      : Centre-Forward
+     our verified sibling seasons say: Winger
+     requests used     : 5
+
+6. M. Greenwood 2425  (Marseille, rt87)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 532826   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Right Winger 16, Second Striker 8, Attacking Midfield 7, Centre-Forward 4
+     TM plurality      : Right Winger
+     our verified sibling seasons say: Winger
+     requests used     : 6
+
+7. Rodrigo 1718  (Valencia, rt87)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 357565   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Defensive Midfield 45, Central Midfield 2
+     TM plurality      : Defensive Midfield
+     our verified sibling seasons say: CAM
+     requests used     : 4
+
+8. Matheus Cunha 2425  (Wolves, rt87)   our pool = ST
+     search candidates : 6   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 517894   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Attacking Midfield 13, Second Striker 13, Centre-Forward 6, Left Winger 3, Right Winger 1
+     TM plurality      : Attacking Midfield
+     our verified sibling seasons say: CAM
+     requests used     : 7
+
+9. M. Mount 2122  (Chelsea, rt87)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 346483   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Attacking Midfield 41, Central Midfield 6, Right Winger 2, Centre-Forward 2, Left Winger 1
+     TM plurality      : Attacking Midfield
+     our verified sibling seasons say: CAM
+     requests used     : 7
+
+10. Á. Di María 1819  (Paris Saint Germain, rt86)   our pool = ST
+     search candidates : 10   <- AMBIGUOUS, needed club disambiguation
+     chosen TM id      : 45320   club confirmed: YES
+     season page parsed: YES
+     breakdown         : Right Winger 16, Left Winger 12, Attacking Midfield 9, Second Striker 6, Left Midfield 2
+     TM plurality      : Right Winger
+     our verified sibling seasons say: Winger
+     requests used     : 7
+
+====================================================================================
+TOTALS: 56 requests · 0 throttled (429/503) · 9 slow (>4s)
+  parsed successfully : 10 of 10
+  needed disambiguation: 10 of 10
+  mean requests/card   : 5.6

@@ -1,0 +1,25 @@
+player_name,season,club,current_pool,TM_main,goals,assists,minutes,dribbles_success,passes_key
+A. Martial,1617,Manchester United,CAM,Centre-Forward,4,6,1559,44,25
+A. Martial,1718,Manchester United,CAM,Centre-Forward,9,5,1583,43,33
+D. Tadić,1819,Ajax,CAM,Left Winger,28,13,2819,46,91
+D. Tadić,2122,Ajax,CAM,Left Winger,13,19,2941,39,142
+K. Havertz,1718,Bayer Leverkusen,CAM,Attacking Midfield,3,8,2139,27,31
+K. Havertz,1819,Bayer Leverkusen,CAM,Attacking Midfield,17,3,2899,48,36
+K. Havertz,1920,Bayer Leverkusen,CAM,Attacking Midfield,12,6,2462,57,60
+M. Rashford,1617,Manchester United,CAM,Left Winger,5,1,1702,39,21
+M. Rashford,1718,Manchester United,CAM,Left Winger,7,5,1805,45,22
+M. Rashford,1920,Manchester United,CAM,Left Winger,17,7,2655,60,33
+M. Rashford,2021,Manchester United,CAM,Left Winger,11,9,2927,82,43
+M. Rashford,2122,Manchester United,CAM,Left Winger,4,2,1233,22,9
+M. Rashford,2324,Manchester United,CAM,Left Winger,7,2,2278,48,25
+M. Rashford,2425,Aston Villa,CAM,Left Winger,2,2,441,9,13
+N. Fekir,1617,Lyon,CAM,Attacking Midfield,9,4,2223,56,64
+N. Fekir,1718,Lyon,CAM,Attacking Midfield,18,8,2480,90,59
+N. Fekir,1819,Lyon,CAM,Attacking Midfield,9,7,1991,47,51
+N. Fekir,1920,Real Betis,CAM,Attacking Midfield,7,4,2649,98,42
+N. Fekir,2021,Real Betis,CAM,Attacking Midfield,5,5,2637,85,52
+N. Fekir,2122,Real Betis,CAM,Attacking Midfield,6,8,2812,82,86
+N. Fekir,2223,Real Betis,CAM,Attacking Midfield,2,2,965,17,23
+N. Fekir,2324,Real Betis,CAM,Attacking Midfield,1,2,1047,21,30
+Richarlison,1718,Watford,CAM,Centre-Forward,5,4,2827,47,26
+Richarlison,1819,Everton,CAM,Centre-Forward,13,1,2679,38,22

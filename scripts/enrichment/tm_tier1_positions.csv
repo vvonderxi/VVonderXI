@@ -1,0 +1,344 @@
+card_id,api_player_id,tm_id,player_name,season,club,current_pool,verified_position,confidence,evidence,source,fetched_at
+152626,25,35207,M. Reus,2122,Borussia Dortmund,Winger,CAM,high,"Attacking Midfield 23, Left Winger 7, Right Winger 7, Second Striker 3, Centre-Forward 1  (base 41, CAM 63%)",transfermarkt,2026-08-11T12:53:53.386Z
+154850,25,35207,M. Reus,1516,Borussia Dortmund,Winger,Winger,high,"Left Winger 24, Right Winger 9, Attacking Midfield 5, Centre-Forward 5  (base 43, Winger 77%)",transfermarkt,2026-08-11T12:55:10.127Z
+148244,57,36371,N. Kalinić,1617,Fiorentina,ST,ST,high,"Centre-Forward 35  (base 35, ST 100%)",transfermarkt,2026-08-11T12:56:36.714Z
+146603,59,128223,Álvaro Morata,2021,Juventus,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T19:44:34.855Z
+138071,59,128223,Álvaro Morata,2324,Atletico Madrid,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-11T19:50:18.497Z
+139847,59,128223,Álvaro Morata,1920,Atletico Madrid,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T19:50:36.268Z
+147823,207,42460,I. Perišić,1718,Inter,Winger,Winger,high,"Left Winger 36, Central Midfield 1, Left Midfield 1, Attacking Midfield 1  (base 39, Winger 95%)",transfermarkt,2026-08-11T19:51:28.788Z
+148260,207,42460,I. Perišić,1617,Inter,Winger,Winger,high,"Left Winger 28, Attacking Midfield 3, Left Midfield 1, Right Winger 1  (base 33, Winger 91%)",transfermarkt,2026-08-11T19:53:08.195Z
+172122,244,284165,S. Bergwijn,1819,PSV Eindhoven,ST,Winger,high,"Left Winger 23, Right Winger 18  (base 41, Winger 100%)",transfermarkt,2026-08-11T19:54:07.981Z
+172385,248,316889,H. Lozano,1718,PSV Eindhoven,Winger,Winger,high,"Left Winger 16, Right Winger 16, Centre-Forward 2  (base 34, Winger 94%)",transfermarkt,2026-08-11T19:56:27.157Z
+171381,249,326029,D. Malen,2021,PSV Eindhoven,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T19:56:57.573Z
+152306,269,344381,C. Nkunku,2223,RB Leipzig,ST,CAM,high,"Second Striker 21, Attacking Midfield 6, Left Winger 2, Centre-Forward 2, Right Winger 1  (base 32, CAM 84%)",transfermarkt,2026-08-11T19:58:00.150Z
+160595,278,342229,Kylian Mbappé,1617,Monaco,ST,UNSURE,low,NETWORK TimeoutError,transfermarkt,2026-08-11T20:00:20.150Z
+134299,302,,Roberto Firmino,1617,Liverpool,ST,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:00:57.536Z
+131877,302,,Roberto Firmino,2223,Liverpool,ST,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:00:57.536Z
+133084,302,,Roberto Firmino,1920,Liverpool,Winger,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:00:57.539Z
+132685,302,,Roberto Firmino,2021,Liverpool,Winger,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:00:57.540Z
+133894,304,,S. Mané,1718,Liverpool,Winger,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:02:08.628Z
+134710,304,,S. Mané,1516,Southampton,,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:02:08.628Z
+133931,307,,X. Shaqiri,1718,Stoke City,Winger,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:02:26.662Z
+147617,330,,José Callejón,1718,Napoli,ST,UNSURE,low,"NETWORK ETIMEDOUT during identity , card not attempted",transfermarkt,2026-08-11T20:13:05.058Z
+147263,331,133964,L. Insigne,1819,Napoli,ST,CAM,high,"Second Striker 29, Left Winger 12  (base 41, CAM 71%)",transfermarkt,2026-08-12T05:32:19.464Z
+147693,331,133964,L. Insigne,1718,Napoli,Winger,Winger,high,"Left Winger 47  (base 47, Winger 100%)",transfermarkt,2026-08-12T05:32:50.510Z
+183958,443,278654,E. Akbaba,1718,Alanyaspor,CM,CAM,high,"Attacking Midfield 27, Left Midfield 6, Centre-Forward 1  (base 34, CAM 79%)",transfermarkt,2026-08-12T05:34:04.892Z
+153469,510,159471,S. Gnabry,1920,Bayern München,Winger,Winger,high,"Right Winger 28, Left Winger 16, Second Striker 1, Centre-Forward 1  (base 46, Winger 96%)",transfermarkt,2026-08-12T05:35:33.386Z
+152336,510,159471,S. Gnabry,2223,Bayern München,Winger,Winger,high,"Right Winger 20, Second Striker 9, Left Winger 8, Centre-Forward 6, Right Midfield 2  (base 45, Winger 67%)",transfermarkt,2026-08-12T05:37:29.607Z
+152731,510,159471,S. Gnabry,2122,Bayern München,Winger,Winger,high,"Right Winger 22, Right Midfield 9, Left Winger 9, Second Striker 3  (base 43, Winger 93%)",transfermarkt,2026-08-12T05:38:37.592Z
+154110,522,58358,T. Müller,1718,Bayern München,CAM,UNSURE,low,"Right Winger 21, Second Striker 12, Attacking Midfield 9, Centre-Forward 2  (base 44, CAM 48%)",transfermarkt,2026-08-12T05:40:44.161Z
+170671,554,36139,D. Tadić,2223,Ajax,ST,Winger,high,"Centre-Forward 17, Left Winger 16, Right Winger 10, Attacking Midfield 4  (base 47, Winger 55%)",transfermarkt,2026-08-12T05:42:10.727Z
+181162,554,36139,D. Tadić,2425,Fenerbahçe,Winger,Winger,high,"Attacking Midfield 24, Right Winger 24, Left Winger 5  (base 53, Winger 55%)",transfermarkt,2026-08-12T05:43:09.104Z
+181533,554,36139,D. Tadić,2324,Fenerbahçe,Winger,Winger,high,"Left Winger 53, Attacking Midfield 3  (base 56, Winger 95%)",transfermarkt,2026-08-12T05:43:53.483Z
+132907,634,35518,David Silva,1920,Manchester City,Winger,CAM,high,"Attacking Midfield 24, Central Midfield 15, Left Winger 1  (base 40, CAM 60%)",transfermarkt,2026-08-12T05:45:05.907Z
+133286,634,35518,David Silva,1819,Manchester City,Winger,CAM,high,"Attacking Midfield 38, Central Midfield 12  (base 50, CAM 76%)",transfermarkt,2026-08-12T05:45:48.131Z
+159516,666,229004,M. Dembélé,1920,Lyon,Winger,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-12T05:46:42.448Z
+159915,666,229004,M. Dembélé,1819,Lyon,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-12T05:47:22.475Z
+154194,726,46580,A. Kramarić,1718,1899 Hoffenheim,ST,ST,low,"Centre-Forward 18, Attacking Midfield 7, Left Winger 7, Second Striker 5, Right Winger 4  (base 41, ST 44%)",transfermarkt,2026-08-12T05:49:08.304Z
+151604,726,46580,A. Kramarić,2425,1899 Hoffenheim,ST,CAM,high,"Attacking Midfield 29, Left Winger 6, Second Striker 5, Centre-Forward 1  (base 41, CAM 83%)",transfermarkt,2026-08-12T05:50:20.574Z
+137947,762,371998,Vinícius Júnior,2324,Real Madrid,ST,ST,high,"Centre-Forward 33, Left Winger 5  (base 38, ST 87%)",transfermarkt,2026-08-12T05:51:22.486Z
+137510,762,371998,Vinícius Júnior,2425,Real Madrid,ST,Winger,high,"Left Winger 34, Centre-Forward 20, Right Winger 2, Second Striker 1  (base 57, Winger 63%)",transfermarkt,2026-08-12T05:52:31.911Z
+147374,771,46156,A. Kolarov,1819,AS Roma,FB,FB,high,"Left-Back 41, Centre-Back 1, Left Midfield 1  (base 43, FB 95%)",transfermarkt,2026-08-12T05:53:51.400Z
+147912,875,206050,P. Dybala,1617,Juventus,ST,CAM,high,"Second Striker 40, Right Winger 3, Attacking Midfield 2  (base 45, CAM 93%)",transfermarkt,2026-08-12T05:55:23.246Z
+145336,875,206050,P. Dybala,2223,AS Roma,ST,CAM,high,"Second Striker 33, Centre-Forward 3, Right Winger 2  (base 38, CAM 87%)",transfermarkt,2026-08-12T05:56:21.514Z
+146627,875,206050,P. Dybala,1920,Juventus,ST,ST,high,"Centre-Forward 25, Second Striker 10, Right Winger 5, Attacking Midfield 3, Left Winger 1  (base 44, ST 57%)",transfermarkt,2026-08-12T05:57:46.540Z
+144788,903,315969,S. McTominay,2425,Napoli,CM,CM,high,"Central Midfield 31, Attacking Midfield 7, Left Winger 1  (base 39, CM 79%)",transfermarkt,2026-08-12T05:58:57.928Z
+140807,933,27389,K. Gameiro,1617,Atletico Madrid,ST,ST,high,"Centre-Forward 45, Second Striker 1  (base 46, ST 98%)",transfermarkt,2026-08-12T05:59:53.602Z
+153555,984,187492,J. Brandt,1819,Bayer Leverkusen,CAM,Winger,high,"Attacking Midfield 20, Left Winger 15, Right Winger 5, Central Midfield 1, Right Midfield 1, Left Midfield 1  (base 43, Winger 51%)",transfermarkt,2026-08-12T06:02:30.897Z
+154197,1166,170527,T. Werner,1718,RB Leipzig,ST,ST,high,"Centre-Forward 42, Left Winger 2, Right Winger 1  (base 45, ST 93%)",transfermarkt,2026-08-12T06:04:02.615Z
+133936,1459,50057,A. Ramsey,1718,Arsenal,Winger,CDM,high,"Defensive Midfield 17, Central Midfield 9, Attacking Midfield 2  (base 28, CDM 61%)",transfermarkt,2026-08-12T06:05:22.069Z
+132697,1467,93720,A. Lacazette,2021,Arsenal,Winger,ST,high,"Centre-Forward 41, Attacking Midfield 1  (base 42, ST 98%)",transfermarkt,2026-08-12T06:07:28.167Z
+133087,1467,93720,A. Lacazette,1920,Arsenal,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-12T06:07:58.999Z
+157469,1467,93720,A. Lacazette,2425,Lyon,ST,ST,high,"Centre-Forward 35  (base 35, ST 100%)",transfermarkt,2026-08-12T06:08:28.420Z
+140200,1578,348795,G. Lo Celso,1819,Real Betis,CM,CM,high,"Central Midfield 24, Attacking Midfield 16, Defensive Midfield 4, Right Midfield 1, Second Striker 1  (base 46, CM 52%)",transfermarkt,2026-08-12T06:11:10.990Z
+146412,1642,294808,F. Kessié,2021,AC Milan,CM,CDM,high,"Defensive Midfield 36, Central Midfield 14  (base 50, CDM 72%)",transfermarkt,2026-08-12T06:12:12.478Z
+181354,1651,327757,K. Piątek,2425,Başakşehir,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-12T06:12:53.363Z
+147442,1651,327757,K. Piątek,1819,AC Milan,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-12T06:13:24.038Z
+160767,1922,184892,F. Thauvin,1617,Marseille,Winger,Winger,high,"Right Winger 40, Attacking Midfield 1, Left Winger 1  (base 42, Winger 98%)",transfermarkt,2026-08-12T06:14:34.051Z
+146235,1938,207877,R. Malinovskyi,2021,Atalanta,ST,CAM,high,"Attacking Midfield 27, Right Midfield 4, Second Striker 3, Central Midfield 2, Defensive Midfield 1  (base 37, CAM 81%)",transfermarkt,2026-08-12T06:16:22.845Z
+141069,2056,74230,Pablo Sarabia,1617,Sevilla,CAM,Winger,high,"Attacking Midfield 15, Left Winger 11, Right Winger 8, Left Midfield 4, Centre-Forward 3, Right Midfield 1  (base 42, Winger 57%)",transfermarkt,2026-08-12T06:18:34.650Z
+161005,2059,146854,W. Ben Yedder,1516,Toulouse,ST,ST,high,"Centre-Forward 30, Second Striker 10  (base 40, ST 75%)",transfermarkt,2026-08-12T06:19:31.094Z
+140846,2059,146854,W. Ben Yedder,1617,Sevilla,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-12T06:20:01.828Z
+157523,2059,146854,W. Ben Yedder,2324,Monaco,ST,ST,high,"Centre-Forward 27, Right Winger 1  (base 28, ST 96%)",transfermarkt,2026-08-12T06:20:43.684Z
+133676,2296,50202,E. Hazard,1718,Chelsea,ST,CAM,high,"Attacking Midfield 23, Second Striker 13, Centre-Forward 11, Left Winger 5  (base 52, CAM 69%)",transfermarkt,2026-08-12T06:22:08.550Z
+146629,2763,205938,M. Pašalić,1920,Atalanta,CDM,CM,low,"Central Midfield 21, Attacking Midfield 19, Defensive Midfield 3, Second Striker 1  (base 44, CM 48%)",transfermarkt,2026-08-12T06:23:30.725Z
+134665,2795,90466,G. Sigurðsson,1516,Swansea,,CAM,high,"Attacking Midfield 28, Left Winger 4, Centre-Forward 4, Right Winger 1  (base 37, CAM 76%)",transfermarkt,2026-08-12T06:24:55.434Z
+172782,6840,39522,R. Ghoochannejhad,1617,Heerenveen,Winger,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-12T06:25:39.731Z
+157340,8489,59016,J. David,2425,Lille,ST,CB,high,"Centre-Back 11, Left-Back 3  (base 14, CB 79%)",transfermarkt,2026-08-12T06:26:45.196Z
+154727,12859,39743,S. Wagner,1516,SV Darmstadt 98,,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-12T06:27:45.638Z
+145643,18767,406040,A. Lookman,2223,Atalanta,ST,CAM,high,"Second Striker 18, Right Winger 5, Left Winger 3, Centre-Forward 3, Attacking Midfield 2  (base 31, CAM 65%)",transfermarkt,2026-08-12T06:29:24.576Z
+145223,18767,406040,A. Lookman,2324,Atalanta,ST,CAM,low,"Second Striker 21, Centre-Forward 16, Left Winger 6, Attacking Midfield 1  (base 44, CAM 50%)",transfermarkt,2026-08-12T06:35:37.773Z
+134742,18830,41384,M. Arnautović,1516,Stoke City,,Winger,high,"Left Winger 39, Centre-Forward 1  (base 40, Winger 98%)",transfermarkt,2026-08-12T06:36:43.770Z
+133512,18830,41384,M. Arnautović,1819,West Ham,ST,ST,high,"Centre-Forward 42, Right Winger 1  (base 43, ST 98%)",transfermarkt,2026-08-12T06:37:32.158Z
+146090,18830,41384,M. Arnautović,2122,Bologna,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-12T06:38:03.952Z
+133281,18852,74300,L. Milivojević,1819,Crystal Palace,Winger,CDM,high,"Defensive Midfield 31, Central Midfield 10, Attacking Midfield 1  (base 42, CDM 74%)",transfermarkt,2026-08-12T06:39:20.916Z
+133669,18852,74300,L. Milivojević,1718,Crystal Palace,Winger,CM,high,"Central Midfield 21, Defensive Midfield 15, Attacking Midfield 1  (base 37, CM 57%)",transfermarkt,2026-08-12T06:40:28.795Z
+132871,18931,532826,C. Wood,1920,Burnley,ST,Winger,high,"Right Winger 30, Centre-Forward 17, Second Striker 2  (base 49, Winger 61%)",transfermarkt,2026-08-12T10:03:35.153Z
+132497,18931,532826,C. Wood,2021,Burnley,ST,Winger,high,"Right Winger 35, Centre-Forward 15, Second Striker 1  (base 51, Winger 69%)",transfermarkt,2026-08-12T10:05:08.012Z
+182287,21447,,U. Bozok,2122,Kasımpaşa,ST,UNSURE,low,identity not resolved: club 'Kasımpaşa' on none of 4 candidate(s),transfermarkt,2026-08-12T10:07:33.898Z
+154960,24811,50512,A. Modeste,1516,1. FC Köln,,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-12T10:08:32.102Z
+172885,25321,182932,D. Klaassen,1617,Ajax,Winger,CM,high,"Central Midfield 34, Attacking Midfield 16  (base 50, CM 68%)",transfermarkt,2026-08-12T10:10:16.464Z
+154947,25331,532,C. Pizarro,1516,Werder Bremen,,ST,high,"Centre-Forward 24, Second Striker 7, Attacking Midfield 1  (base 32, ST 75%)",transfermarkt,2026-08-12T10:12:28.817Z
+153872,25349,232418,O. Duda,1819,Hertha BSC,CM,CAM,high,"Attacking Midfield 30, Central Midfield 5  (base 35, CAM 86%)",transfermarkt,2026-08-12T10:14:20.541Z
+152327,25391,75489,N. Füllkrug,2223,Werder Bremen,ST,ST,high,"Centre-Forward 30  (base 30, ST 100%)",transfermarkt,2026-08-12T10:15:12.180Z
+151958,25391,75489,N. Füllkrug,2324,Borussia Dortmund,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-12T10:15:46.787Z
+154175,25391,75489,N. Füllkrug,1718,Hannover 96,ST,ST,high,"Centre-Forward 33, Left Winger 1  (base 34, ST 97%)",transfermarkt,2026-08-12T10:16:37.626Z
+172544,25416,228645,W. Weghorst,1718,AZ Alkmaar,Winger,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-12T10:17:42.463Z
+153526,25416,228645,W. Weghorst,1920,VfL Wolfsburg,ST,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-12T10:18:16.799Z
+172918,25416,228645,W. Weghorst,1617,AZ Alkmaar,Winger,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-12T10:18:50.919Z
+160286,25646,167329,A. Pléa,1718,Nice,Winger,ST,high,"Centre-Forward 30, Left Winger 17  (base 47, ST 64%)",transfermarkt,2026-08-12T10:20:06.898Z
+153379,25646,167329,A. Pléa,1920,Borussia Mönchengladbach,ST,ST,high,"Centre-Forward 29, Left Winger 2, Right Winger 2  (base 33, ST 88%)",transfermarkt,2026-08-12T10:21:14.655Z
+153745,25646,167329,A. Pléa,1819,Borussia Mönchengladbach,Winger,Winger,high,"Left Winger 18, Centre-Forward 16, Second Striker 1  (base 35, Winger 51%)",transfermarkt,2026-08-12T10:23:02.931Z
+170536,26845,523318,T. Douvikas,2223,Utrecht,ST,ST,high,"Centre-Forward 37, Right Winger 1  (base 38, ST 97%)",transfermarkt,2026-08-12T10:24:55.121Z
+145786,30414,282388,G. Simeone,2122,Hellas Verona,ST,ST,high,"Centre-Forward 35  (base 35, ST 100%)",transfermarkt,2026-08-12T10:31:25.018Z
+147506,30414,282388,G. Simeone,1718,Fiorentina,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-12T10:32:03.129Z
+145953,30460,146752,G. Caprari,2122,Hellas Verona,ST,CAM,high,"Second Striker 29, Attacking Midfield 5  (base 34, CAM 100%)",transfermarkt,2026-08-12T10:33:20.824Z
+145397,30537,177843,D. Berardi,2223,Sassuolo,Winger,Winger,high,"Right Winger 26  (base 26, Winger 100%)",transfermarkt,2026-08-12T10:34:25.724Z
+146561,30562,129129,J. Galvão,2021,Cagliari,ST,CAM,high,"Second Striker 15, Attacking Midfield 13, Centre-Forward 6, Left Winger 4, Right Winger 1  (base 39, CAM 72%)",transfermarkt,2026-08-12T10:36:39.349Z
+146130,30562,129129,J. Galvão,2122,Cagliari,ST,ST,high,"Centre-Forward 20, Second Striker 18  (base 38, ST 53%)",transfermarkt,2026-08-12T10:37:35.838Z
+148345,30573,64793,L. Pavoletti,1516,Genoa,,ST,high,"Centre-Forward 23  (base 23, ST 100%)",transfermarkt,2026-08-12T10:38:32.930Z
+144884,36899,360518,T. Koopmeiners,2324,Atalanta,ST,CAM,high,"Attacking Midfield 37, Defensive Midfield 8, Central Midfield 5, Right Winger 1  (base 51, CAM 73%)",transfermarkt,2026-08-12T10:40:43.100Z
+145327,36899,360518,T. Koopmeiners,2223,Atalanta,CDM,CDM,low,"Defensive Midfield 15, Central Midfield 11, Attacking Midfield 8, Right Winger 1  (base 35, CDM 43%)",transfermarkt,2026-08-12T10:42:17.181Z
+172364,37134,82410,B. Linssen,1718,Vitesse,Winger,Winger,high,"Left Winger 42, Left Midfield 1, Attacking Midfield 1  (base 44, Winger 98%)",transfermarkt,2026-08-12T10:44:00.042Z
+173173,37445,175912,L. Veldwijk,1516,PEC Zwolle,,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-12T10:44:59.481Z
+151783,39071,656681,V. Boniface,2324,Bayer Leverkusen,ST,ST,high,"Centre-Forward 33, Attacking Midfield 1  (base 34, ST 97%)",transfermarkt,2026-08-12T10:46:19.273Z
+137982,46746,46413,A. Budimir,2324,Osasuna,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-12T10:47:16.790Z
+139738,46746,46413,A. Budimir,1920,Mallorca,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-12T10:47:57.837Z
+140395,47266,51510,Ángel Rodríguez,1718,Getafe,UNK,ST,high,"Centre-Forward 33, Second Striker 1  (base 34, ST 97%)",transfermarkt,2026-08-12T10:49:36.157Z
+140343,47282,34601,Raúl García,1718,Athletic Club,CDM,CAM,high,"Attacking Midfield 47, Second Striker 1  (base 48, CAM 100%)",transfermarkt,2026-08-12T10:51:08.253Z
+140802,47282,34601,Raúl García,1617,Athletic Club,CDM,CAM,high,"Attacking Midfield 41, Right Midfield 2, Right Winger 2, Centre-Forward 1  (base 46, CAM 89%)",transfermarkt,2026-08-12T10:52:43.181Z
+141273,47282,34601,Raúl García,1516,Athletic Club,,CAM,high,"Attacking Midfield 35, Central Midfield 1, Right Winger 1  (base 37, CAM 95%)",transfermarkt,2026-08-12T10:53:58.901Z
+140186,47319,122155,Willian José,1819,Real Sociedad,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-12T10:54:56.564Z
+141075,47319,122155,Willian José,1617,Real Sociedad,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-12T10:55:34.132Z
+140883,47395,81988,Sergi Enrich,1617,Eibar,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-12T10:57:04.172Z
+181319,47422,,Y. En-Nesyri,2425,Fenerbahçe,ST,UNSURE,low,"NETWORK TimeoutError during identity , card not attempted",transfermarkt,2026-08-12T10:58:56.087Z
+138066,47422,,Y. En-Nesyri,2324,Sevilla,ST,UNSURE,low,"NETWORK TimeoutError during identity , card not attempted",transfermarkt,2026-08-12T10:58:56.088Z
+160860,47436,77826,R. Boudebouz,1617,Montpellier,CDM,CAM,high,"Attacking Midfield 27, Right Winger 3, Second Striker 2, Right Midfield 1, Centre-Forward 1  (base 34, CAM 85%)",transfermarkt,2026-08-12T11:02:01.462Z
+139796,47445,72047,Iago Aspas,1920,Celta Vigo,ST,ST,high,"Centre-Forward 30, Right Winger 6, Second Striker 1  (base 37, ST 81%)",transfermarkt,2026-08-12T11:03:40.876Z
+140008,47467,252677,José Luis Morales,1819,Levante,ST,ST,high,"Centre-Forward 19, Left Winger 15, Right Winger 3  (base 37, ST 51%)",transfermarkt,2026-08-12T11:05:15.182Z
+140458,47467,252677,José Luis Morales,1718,Levante,ST,Winger,high,"Left Winger 30, Right Winger 5, Centre-Forward 4  (base 39, Winger 90%)",transfermarkt,2026-08-12T11:06:35.055Z
+138646,47467,252677,José Luis Morales,2122,Levante,ST,Winger,high,"Left Winger 17, Centre-Forward 15, Right Winger 1  (base 33, Winger 55%)",transfermarkt,2026-08-12T11:07:50.323Z
+139132,47467,252677,José Luis Morales,2021,Levante,ST,Winger,high,"Left Winger 21, Centre-Forward 18  (base 39, Winger 54%)",transfermarkt,2026-08-12T11:08:47.245Z
+139947,47551,162038,Raúl de Tomás,1819,Rayo Vallecano,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-12T11:09:45.870Z
+183952,49860,109217,E. Višća,1718,Başakşehir,CM,Winger,high,"Right Midfield 43  (base 43, Winger 100%)",transfermarkt,2026-08-12T11:11:01.613Z
+183173,49860,109217,E. Višća,1920,Başakşehir,CM,Winger,high,"Right Midfield 47  (base 47, Winger 100%)",transfermarkt,2026-08-12T11:11:39.834Z
+184345,50126,216662,D. Türüç,1617,Kayserispor,CM,Winger,high,"Right Midfield 15, Attacking Midfield 8, Left Midfield 6, Right Winger 5, Central Midfield 1, Left Winger 1  (base 36, Winger 75%)",transfermarkt,2026-08-12T11:14:18.663Z
+176717,70100,435648,J. Zirkzee,2122,Anderlecht,ST,ST,high,"Centre-Forward 46, Attacking Midfield 1  (base 47, ST 98%)",transfermarkt,2026-08-12T11:15:35.917Z
+176144,72155,589128,A. Ueda,2223,Cercle Brugge,ST,ST,high,"Centre-Forward 26, Attacking Midfield 5, Second Striker 5, Left Winger 1, Right Winger 1  (base 38, ST 68%)",transfermarkt,2026-08-12T11:17:55.574Z
+148243,91319,5825,Marco Borriello,1617,Cagliari,ST,ST,high,"Centre-Forward 31  (base 31, ST 100%)",transfermarkt,2026-08-12T11:18:51.987Z
+157433,147831,,A. Kalimuendo,2425,Rennes,ST,UNSURE,low,identity not resolved: club 'Rennes' on none of 1 candidate(s),transfermarkt,2026-08-12T11:19:14.089Z
+175638,161800,451677,C. Tzolis,2425,Club Brugge KV,Winger,Winger,high,"Left Winger 44, Right Winger 9  (base 53, Winger 100%)",transfermarkt,2026-08-12T11:20:30.416Z
+146457,9,398073,A. Hakimi,2021,Inter,CDM,Winger,high,"Right Midfield 39, Right-Back 6  (base 45, Winger 87%)",transfermarkt,2026-08-12T11:22:00.974Z
+160409,111,174694,Rony Lopes,1718,Monaco,Winger,Winger,high,"Right Winger 28, Left Winger 18, Attacking Midfield 1  (base 47, Winger 98%)",transfermarkt,2026-08-12T11:24:06.646Z
+141148,152,16922,K. Boateng,1617,Las Palmas,CDM,Winger,low,"Centre-Forward 12, Right Winger 8, Left Winger 5, Attacking Midfield 3, Right Midfield 1  (base 29, Winger 48%)",transfermarkt,2026-08-12T11:27:59.316Z
+147390,216,68863,M. Icardi,1819,Inter,Winger,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-12T11:29:06.639Z
+146650,217,406625,Lautaro Martínez,1920,Inter,ST,ST,high,"Centre-Forward 27, Second Striker 21, Right Winger 1  (base 49, ST 55%)",transfermarkt,2026-08-12T11:30:43.378Z
+158548,276,68290,Neymar,2122,Paris Saint Germain,ST,Winger,high,"Left Winger 25, Attacking Midfield 1, Second Striker 1, Centre-Forward 1  (base 28, Winger 89%)",transfermarkt,2026-08-12T11:32:36.383Z
+159395,276,68290,Neymar,1920,Paris Saint Germain,Winger,UNSURE,low,NETWORK UND_ERR_CONNECT_TIMEOUT,transfermarkt,2026-08-12T18:09:32.325Z
+133459,283,314353,T. Alexander-Arnold,1819,Liverpool,FB,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:10:16.785Z
+131857,283,314353,T. Alexander-Arnold,2223,Liverpool,FB,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:10:35.003Z
+146206,329,,P. Zieliński,2021,Napoli,CM,UNSURE,low,identity not resolved: club 'Napoli' on none of 4 candidate(s),transfermarkt,2026-08-12T18:11:49.394Z
+167597,462,,Konstantinos Mitroglou,1516,Benfica,ST,UNSURE,low,identity not resolved: club 'Benfica' on none of 1 candidate(s),transfermarkt,2026-08-12T18:12:08.528Z
+172370,543,123349,Z. Labyad,1718,Utrecht,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:12:45.303Z
+172811,550,283196,K. Dolberg,1617,Ajax,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:13:22.108Z
+172396,552,,David Neres,1718,Ajax,Winger,UNSURE,low,identity not resolved: club 'Ajax' on none of 1 candidate(s),transfermarkt,2026-08-12T18:13:40.644Z
+131949,643,,Gabriel Jesus,2122,Manchester City,Winger,UNSURE,low,identity not resolved: club 'Manchester City' on none of 4 candidate(s),transfermarkt,2026-08-12T18:14:54.148Z
+159916,667,167850,M. Depay,1819,Lyon,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:15:30.871Z
+140948,759,,K. Benzema,1617,Real Madrid,ST,UNSURE,low,identity not resolved: club 'Real Madrid' on none of 4 candidate(s),transfermarkt,2026-08-12T18:16:46.597Z
+146111,790,28396,E. Džeko,2122,Inter,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:17:28.385Z
+147410,790,28396,E. Džeko,1819,AS Roma,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:17:46.637Z
+133460,909,258923,M. Rashford,1819,Manchester United,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:18:23.637Z
+140461,928,59561,Dani Parejo,1718,Valencia,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:19:02.905Z
+141376,928,59561,Dani Parejo,1516,Valencia,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:19:32.645Z
+140301,934,,Santi Mina,1718,Valencia,ST,UNSURE,low,identity not resolved: club 'Valencia' on none of 1 candidate(s),transfermarkt,2026-08-12T18:20:30.229Z
+131820,935,,Rodrigo,2223,Leeds,ST,UNSURE,low,identity not resolved: club 'Leeds' on none of 4 candidate(s),transfermarkt,2026-08-12T18:22:14.954Z
+148174,1706,,C. Bacca,1617,AC Milan,Winger,UNSURE,low,identity not resolved: club 'AC Milan' on none of 4 candidate(s),transfermarkt,2026-08-12T18:23:56.657Z
+158950,1709,315110,K. Toko Ekambi,2021,Lyon,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:24:43.926Z
+158503,1709,315110,K. Toko Ekambi,2122,Lyon,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:25:02.315Z
+145548,1856,,S. Milinković-Savić,2223,Lazio,CM,UNSURE,low,identity not resolved: club 'Lazio' on none of 2 candidate(s),transfermarkt,2026-08-12T18:25:39.561Z
+147729,1856,,S. Milinković-Savić,1718,Lazio,CM,UNSURE,low,identity not resolved: club 'Lazio' on none of 2 candidate(s),transfermarkt,2026-08-12T18:25:39.561Z
+160416,1917,,M. Balotelli,1718,Nice,ST,UNSURE,low,identity not resolved: club 'Nice' on none of 4 candidate(s),transfermarkt,2026-08-12T18:26:53.135Z
+182646,1917,,M. Balotelli,2122,Adana Demirspor,Winger,UNSURE,low,identity not resolved: club 'Adana Demirspor' on none of 4 candidate(s),transfermarkt,2026-08-12T18:26:53.135Z
+140415,2060,,M. El Haddadi,1718,Alaves,ST,UNSURE,low,identity not resolved: club 'Alaves' on none of 4 candidate(s),transfermarkt,2026-08-12T18:28:07.141Z
+167145,2063,198008,André Silva,1617,FC Porto,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:28:44.014Z
+134347,2295,,O. Giroud,1617,Arsenal,Winger,UNSURE,low,identity not resolved: club 'Arsenal' on none of 4 candidate(s),transfermarkt,2026-08-12T18:30:01.288Z
+145654,2295,,O. Giroud,2223,AC Milan,ST,UNSURE,low,identity not resolved: club 'AC Milan' on none of 4 candidate(s),transfermarkt,2026-08-12T18:30:01.288Z
+131154,2413,378710,Richarlison,2324,Tottenham,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:30:38.025Z
+132805,2413,378710,Richarlison,1920,Everton,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:30:56.331Z
+131987,2413,378710,Richarlison,2122,Everton,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:31:14.717Z
+146355,2472,,R. De Paul,2021,Udinese,Winger,UNSURE,low,identity not resolved: club 'Udinese' on none of 4 candidate(s),transfermarkt,2026-08-12T18:32:29.444Z
+131869,2507,,M. Almirón,2223,Newcastle,Winger,UNSURE,low,identity not resolved: club 'Newcastle' on none of 4 candidate(s),transfermarkt,2026-08-12T18:33:42.807Z
+166192,2679,,Dyego Sousa,1819,SC Braga,ST,UNSURE,low,identity not resolved: club 'SC Braga' on none of 2 candidate(s),transfermarkt,2026-08-12T18:34:19.748Z
+145003,2799,,A. Guðmundsson,2324,Genoa,ST,UNSURE,low,identity not resolved: club 'Genoa' on none of 4 candidate(s),transfermarkt,2026-08-12T18:35:34.847Z
+140950,2923,,Y. Carrasco,1617,Atletico Madrid,Winger,UNSURE,low,identity not resolved: club 'Atletico Madrid' on none of 4 candidate(s),transfermarkt,2026-08-12T18:36:48.443Z
+139228,2923,,Y. Carrasco,2021,Atletico Madrid,Winger,UNSURE,low,identity not resolved: club 'Atletico Madrid' on none of 4 candidate(s),transfermarkt,2026-08-12T18:36:48.444Z
+153400,2929,,T. Hazard,1920,Borussia Dortmund,ST,UNSURE,low,identity not resolved: club 'Borussia Dortmund' on none of 4 candidate(s),transfermarkt,2026-08-12T18:38:02.207Z
+131110,2937,357662,D. Rice,2324,Arsenal,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:38:40.204Z
+132491,2938,,J. Ward-Prowse,2021,Southampton,CM,UNSURE,low,identity not resolved: club 'Southampton' on none of 1 candidate(s),transfermarkt,2026-08-12T18:38:59.342Z
+131358,2938,,J. Ward-Prowse,2324,West Ham,CM,UNSURE,low,identity not resolved: club 'West Ham' on none of 1 candidate(s),transfermarkt,2026-08-12T18:38:59.342Z
+131734,2938,,J. Ward-Prowse,2223,Southampton,CM,UNSURE,low,identity not resolved: club 'Southampton' on none of 1 candidate(s),transfermarkt,2026-08-12T18:38:59.345Z
+132357,3247,145988,W. Zaha,2122,Crystal Palace,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:39:36.374Z
+130809,5996,648195,E. Fernández,2425,Chelsea,CDM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:40:14.122Z
+153081,7722,,S. Kalajdzic,2021,VfB Stuttgart,ST,UNSURE,low,identity not resolved: club 'VfB Stuttgart' on none of 4 candidate(s),transfermarkt,2026-08-12T18:41:27.743Z
+178907,8572,,J. Perbet,1516,Charleroi,ST,UNSURE,low,identity not resolved: club 'Charleroi' on none of 1 candidate(s),transfermarkt,2026-08-12T18:41:46.327Z
+176841,8682,,G. Bruno,2021,Zulte Waregem,ST,UNSURE,low,identity not resolved: club 'Zulte Waregem' on none of 4 candidate(s),transfermarkt,2026-08-12T18:42:59.816Z
+176589,8920,,D. Vanzeir,2122,Union St. Gilloise,ST,UNSURE,low,identity not resolved: club 'Union St. Gilloise' on none of 2 candidate(s),transfermarkt,2026-08-12T18:43:36.673Z
+184349,9084,,R. Bajić,1617,Konyaspor,ST,UNSURE,low,identity not resolved: club 'Konyaspor' on none of 4 candidate(s),transfermarkt,2026-08-12T18:44:51.272Z
+131255,10135,,Bruno Guimarães,2324,Newcastle,CM,UNSURE,low,identity not resolved: club 'Newcastle' on none of 4 candidate(s),transfermarkt,2026-08-12T18:46:04.950Z
+131156,15911,,M. Kudus,2324,West Ham,CM,UNSURE,low,identity not resolved: club 'West Ham' on none of 4 candidate(s),transfermarkt,2026-08-12T18:47:22.754Z
+130947,18746,429014,M. Gibbs-White,2425,Nottingham Forest,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:48:01.172Z
+131331,18746,429014,M. Gibbs-White,2324,Nottingham Forest,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:48:19.441Z
+186878,18746,429014,M. Gibbs-White,2223,Nottingham Forest,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:48:37.742Z
+130865,18778,398065,H. Barnes,2425,Newcastle,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:49:14.797Z
+132430,18778,398065,H. Barnes,2021,Leicester,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:49:33.119Z
+146089,18809,129476,Deulofeu,2122,Udinese,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:50:09.886Z
+133525,18809,129476,Deulofeu,1819,Watford,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:50:28.274Z
+139789,18833,,Lucas Pérez,1920,Alaves,ST,UNSURE,low,identity not resolved: club 'Alaves' on none of 4 candidate(s),transfermarkt,2026-08-12T18:51:42.158Z
+131480,18970,,P. Groß,2324,Brighton,CDM,UNSURE,low,identity not resolved: club 'Brighton' on none of 4 candidate(s),transfermarkt,2026-08-12T18:52:57.549Z
+133878,18970,,P. Groß,1718,Brighton,ST,UNSURE,low,identity not resolved: club 'Brighton' on none of 4 candidate(s),transfermarkt,2026-08-12T18:52:57.549Z
+132607,19126,158764,S. Dallas,2021,Leeds,CDM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:53:52.985Z
+130892,19170,,M. Rogers,2425,Aston Villa,Winger,UNSURE,low,identity not resolved: club 'Aston Villa' on none of 4 candidate(s),transfermarkt,2026-08-12T18:55:06.696Z
+183143,19511,,M. Diouf,2021,Hatayspor,Winger,UNSURE,low,identity not resolved: club 'Hatayspor' on none of 4 candidate(s),transfermarkt,2026-08-12T18:56:29.165Z
+181270,20674,344869,S. Banza,2425,Trabzonspor,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:57:06.733Z
+164447,20674,344869,S. Banza,2324,SC Braga,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T18:57:28.357Z
+159904,22102,,W. Khazri,1819,Saint Etienne,ST,UNSURE,low,identity not resolved: club 'Saint Etienne' on none of 4 candidate(s),transfermarkt,2026-08-12T18:59:31.669Z
+159050,22264,,L. Ajorque,2021,Strasbourg,ST,UNSURE,low,identity not resolved: club 'Strasbourg' on none of 2 candidate(s),transfermarkt,2026-08-12T19:00:08.844Z
+158616,22264,,L. Ajorque,2122,Strasbourg,ST,UNSURE,low,identity not resolved: club 'Strasbourg' on none of 2 candidate(s),transfermarkt,2026-08-12T19:00:08.844Z
+158726,24288,594991,M. Bayo,2122,Clermont Foot,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:01:04.738Z
+131365,24888,292246,Hwang Hee-Chan,2324,Wolves,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:02:04.146Z
+153886,25329,,M. Kruse,1819,Werder Bremen,ST,UNSURE,low,identity not resolved: club 'Werder Bremen' on none of 4 candidate(s),transfermarkt,2026-08-12T19:03:18.867Z
+154962,25412,85352,Y. Mallı,1516,FSV Mainz 05,,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:04:20.825Z
+151642,25464,,M. Ducksch,2324,Werder Bremen,ST,UNSURE,low,identity not resolved: club 'Werder Bremen' on none of 1 candidate(s),transfermarkt,2026-08-12T19:04:44.149Z
+151485,26248,185077,V. Grifo,2425,SC Freiburg,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:05:21.947Z
+152863,26248,185077,V. Grifo,2021,SC Freiburg,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:05:40.258Z
+146198,30509,167727,A. Belotti,2021,Torino,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:06:17.432Z
+148360,30509,167727,A. Belotti,1516,Torino,,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:06:35.677Z
+140661,30515,,S. Zaza,1718,Valencia,ST,UNSURE,low,identity not resolved: club 'Valencia' on none of 4 candidate(s),transfermarkt,2026-08-12T19:07:49.431Z
+145230,30544,315867,G. Scamacca,2324,Atalanta,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:08:29.583Z
+146061,30544,315867,G. Scamacca,2122,Sassuolo,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:08:47.929Z
+147757,30876,83458,M. Antenucci,1718,Spal,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:09:55.977Z
+148677,32138,3713,Massimo Maccarone,1516,Empoli,,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:11:23.680Z
+164009,36798,324503,V. Pavlidis,2425,Benfica,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:12:31.581Z
+171000,36798,324503,V. Pavlidis,2122,AZ Alkmaar,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:18:10.106Z
+170397,36937,,V. van Crooij,2223,Sparta Rotterdam,Winger,UNSURE,low,identity not resolved: club 'Sparta Rotterdam' on none of 2 candidate(s),transfermarkt,2026-08-12T19:18:51.604Z
+172018,37268,,Adrián Dalmau,1819,Heracles,Winger,UNSURE,low,identity not resolved: club 'Heracles' on none of 1 candidate(s),transfermarkt,2026-08-12T19:19:13.090Z
+165807,41111,,Paulinho,1920,SC Braga,ST,UNSURE,low,identity not resolved: club 'SC Braga' on none of 4 candidate(s),transfermarkt,2026-08-12T19:20:34.964Z
+187377,42315,,M. Taremi,2021,FC Porto,ST,UNSURE,low,identity not resolved: club 'FC Porto' on none of 4 candidate(s),transfermarkt,2026-08-12T19:21:57.236Z
+139465,46666,63056,Roberto Torres,1920,Osasuna,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:22:40.316Z
+137836,47291,340205,Gorka Guruzeta,2324,Athletic Club,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:23:42.133Z
+140101,47366,,Jony,1819,Alaves,Winger,UNSURE,low,identity not resolved: club 'Alaves' on none of 4 candidate(s),transfermarkt,2026-08-12T19:25:48.628Z
+139956,47471,,Roger,1819,Levante,ST,UNSURE,low,identity not resolved: club 'Levante' on none of 4 candidate(s),transfermarkt,2026-08-12T19:27:12.640Z
+139067,47471,,Roger,2021,Levante,ST,UNSURE,low,identity not resolved: club 'Levante' on none of 4 candidate(s),transfermarkt,2026-08-12T19:27:12.640Z
+146500,51070,3455,Z. Ibrahimović,2021,AC Milan,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:28:23.696Z
+146946,51070,3455,Z. Ibrahimović,1920,AC Milan,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:28:44.457Z
+130939,178077,473050,K. Schade,2425,Brentford,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:29:25.780Z
+137461,386828,937958,Lamine Yamal,2425,Barcelona,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:30:23.143Z
+133093,17,,C. Pulišić,1920,Chelsea,Winger,UNSURE,low,identity not resolved: club 'Chelsea' on none of 2 candidate(s),transfermarkt,2026-08-12T19:31:44.748Z
+132336,80,,E. Dennis,2122,Watford,ST,UNSURE,low,identity not resolved: club 'Watford' on none of 4 candidate(s),transfermarkt,2026-08-12T19:33:07.667Z
+166061,104,,Carlos Vinícius,1920,Benfica,ST,UNSURE,low,identity not resolved: club 'Benfica' on none of 4 candidate(s),transfermarkt,2026-08-12T19:34:45.707Z
+159983,119,39152,R. Falcao,1819,Monaco,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:35:26.785Z
+140668,147,,Philippe Coutinho,1718,Barcelona,CAM,UNSURE,low,identity not resolved: club 'Barcelona' on none of 1 candidate(s),transfermarkt,2026-08-12T19:35:47.596Z
+133946,147,,Philippe Coutinho,1718,Liverpool,CAM,UNSURE,low,identity not resolved: club 'Liverpool' on none of 1 candidate(s),transfermarkt,2026-08-12T19:35:47.596Z
+134751,176,111630,E. Lamela,1516,Tottenham,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:36:28.862Z
+131062,186,,Son Heung-Min,2425,Tottenham,Winger,UNSURE,low,identity not resolved: club 'Tottenham' on none of 1 candidate(s),transfermarkt,2026-08-12T19:37:15.007Z
+131876,186,,Son Heung-Min,2223,Tottenham,ST,UNSURE,low,identity not resolved: club 'Tottenham' on none of 1 candidate(s),transfermarkt,2026-08-12T19:37:15.007Z
+148063,202,25488,A. Candreva,1617,Inter,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:38:10.325Z
+148526,202,25488,A. Candreva,1516,Lazio,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:38:30.570Z
+169910,246,,L. de Jong,2425,PSV Eindhoven,ST,UNSURE,low,identity not resolved: club 'PSV Eindhoven' on none of 4 candidate(s),transfermarkt,2026-08-12T19:39:52.711Z
+181739,332,56416,D. Mertens,2324,Galatasaray,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:40:34.325Z
+146568,332,56416,D. Mertens,2021,Napoli,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:40:54.640Z
+147015,332,56416,D. Mertens,1920,Napoli,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:41:14.890Z
+153903,410,,D. Caligiuri,1718,FC Schalke 04,CDM,UNSURE,low,identity not resolved: club 'FC Schalke 04' on none of 4 candidate(s),transfermarkt,2026-08-12T19:42:44.827Z
+141576,517,,J. Rodríguez,1516,Real Madrid,CAM,UNSURE,low,identity not resolved: club 'Real Madrid' on none of 4 candidate(s),transfermarkt,2026-08-12T19:44:17.531Z
+141118,517,,J. Rodríguez,1617,Real Madrid,CAM,UNSURE,low,identity not resolved: club 'Real Madrid' on none of 4 candidate(s),transfermarkt,2026-08-12T19:44:17.531Z
+177041,544,583189,N. Lang,2021,Club Brugge KV,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:44:59.206Z
+169911,544,583189,N. Lang,2425,PSV Eindhoven,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:45:19.525Z
+172539,548,,H. Ziyech,1718,Ajax,Winger,UNSURE,low,identity not resolved: club 'Ajax' on none of 1 candidate(s),transfermarkt,2026-08-12T19:45:40.359Z
+166405,573,238055,Rafa,1819,Benfica,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:46:44.437Z
+164424,573,238055,Rafa,2324,Benfica,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:47:04.811Z
+132686,635,171424,R. Mahrez,2021,Manchester City,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:47:46.724Z
+140568,757,,Lucas Vázquez,1718,Real Madrid,FB,UNSURE,low,identity not resolved: club 'Real Madrid' on none of 4 candidate(s),transfermarkt,2026-08-12T19:49:08.738Z
+147054,791,94529,S. El Shaarawy,1819,AS Roma,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:49:53.817Z
+147330,878,34572,M. Mandžukić,1819,Juventus,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:50:36.037Z
+133661,900,,J. Lingard,1718,Manchester United,CAM,UNSURE,low,identity not resolved: club 'Manchester United' on none of 4 candidate(s),transfermarkt,2026-08-12T19:52:09.665Z
+134476,908,,A. Martial,1516,Manchester United,ST,UNSURE,low,identity not resolved: club 'Manchester United' on none of 4 candidate(s),transfermarkt,2026-08-12T19:53:31.692Z
+138914,930,372246,Carlos Soler,2122,Valencia,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:54:12.427Z
+130697,1460,433177,B. Saka,2425,Arsenal,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T19:54:53.751Z
+148266,1650,,Suso,1617,AC Milan,Winger,UNSURE,low,identity not resolved: club 'AC Milan' on none of 4 candidate(s),transfermarkt,2026-08-12T19:56:16.254Z
+140655,1697,,Pablo Fornals,1718,Villarreal,CM,UNSURE,low,identity not resolved: club 'Villarreal' on none of 1 candidate(s),transfermarkt,2026-08-12T19:56:36.911Z
+140922,1707,,Gerard Moreno,1617,Espanyol,ST,UNSURE,low,identity not resolved: club 'Espanyol' on none of 2 candidate(s),transfermarkt,2026-08-12T19:57:17.923Z
+145702,1863,,C. Immobile,2223,Lazio,ST,UNSURE,low,identity not resolved: club 'Lazio' on none of 3 candidate(s),transfermarkt,2026-08-12T19:58:18.967Z
+147860,2002,,A. Ljajić,1718,Torino,CM,UNSURE,low,identity not resolved: club 'Torino' on none of 4 candidate(s),transfermarkt,2026-08-12T19:59:40.961Z
+133140,2294,1056993,Willian,1920,Chelsea,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:00:48.746Z
+133543,2412,,Felipe Anderson,1819,West Ham,CM,UNSURE,low,identity not resolved: club 'West Ham' on none of 1 candidate(s),transfermarkt,2026-08-12T20:02:36.051Z
+151264,2598,,R. Dōan,2425,SC Freiburg,CM,UNSURE,low,identity not resolved: club 'SC Freiburg' on none of 4 candidate(s),transfermarkt,2026-08-12T20:04:20.478Z
+184291,2664,,Trézéguet,1718,Kasımpaşa,CM,UNSURE,low,identity not resolved: club 'Kasımpaşa' on none of 4 candidate(s),transfermarkt,2026-08-12T20:05:42.274Z
+132536,2778,,K. Ịheanachọ,2021,Leicester,ST,UNSURE,low,identity not resolved: club 'Leicester' on none of 4 candidate(s),transfermarkt,2026-08-12T20:07:03.854Z
+146115,2780,,V. Osimhen,2122,Napoli,ST,UNSURE,low,identity not resolved: club 'Napoli' on none of 1 candidate(s),transfermarkt,2026-08-12T20:07:24.293Z
+159531,2780,,V. Osimhen,1920,Lille,ST,UNSURE,low,identity not resolved: club 'Lille' on none of 1 candidate(s),transfermarkt,2026-08-12T20:07:24.293Z
+130921,2887,,R. Jiménez,2425,Fulham,ST,UNSURE,low,identity not resolved: club 'Fulham' on none of 4 candidate(s),transfermarkt,2026-08-12T20:09:51.453Z
+141378,3033,,C. Bakambu,1516,Villarreal,,UNSURE,low,identity not resolved: club 'Villarreal' on none of 1 candidate(s),transfermarkt,2026-08-12T20:10:11.991Z
+159928,3244,,M. Gradel,1819,Toulouse,CM,UNSURE,low,identity not resolved: club 'Toulouse' on none of 4 candidate(s),transfermarkt,2026-08-12T20:11:34.407Z
+182747,3244,,M. Gradel,2021,Sivasspor,Winger,UNSURE,low,identity not resolved: club 'Sivasspor' on none of 4 candidate(s),transfermarkt,2026-08-12T20:11:34.407Z
+131549,6716,,A. Mac Allister,2223,Brighton,CM,UNSURE,low,identity not resolved: club 'Brighton' on none of 4 candidate(s),transfermarkt,2026-08-12T20:12:56.762Z
+132398,18784,,J. Maddison,2021,Leicester,ST,UNSURE,low,identity not resolved: club 'Leicester' on none of 4 candidate(s),transfermarkt,2026-08-12T20:14:18.321Z
+133212,18784,,J. Maddison,1819,Leicester,CM,UNSURE,low,identity not resolved: club 'Leicester' on none of 4 candidate(s),transfermarkt,2026-08-12T20:14:18.321Z
+132630,18819,,M. Antonio,2021,West Ham,ST,UNSURE,low,identity not resolved: club 'West Ham' on none of 4 candidate(s),transfermarkt,2026-08-12T20:15:42.849Z
+133035,18819,,M. Antonio,1920,West Ham,ST,UNSURE,low,identity not resolved: club 'West Ham' on none of 4 candidate(s),transfermarkt,2026-08-12T20:15:42.850Z
+131664,18973,209212,S. March,2223,Brighton,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:17:09.029Z
+133363,18982,45693,G. Murray,1819,Brighton,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:17:53.075Z
+130761,19281,,A. Semenyo,2425,Bournemouth,Winger,UNSURE,low,identity not resolved: club 'Bournemouth' on none of 2 candidate(s),transfermarkt,2026-08-12T20:18:37.305Z
+131244,20589,,B. Mbeumo,2324,Brentford,Winger,UNSURE,low,identity not resolved: club 'Brentford' on none of 2 candidate(s),transfermarkt,2026-08-12T20:19:18.521Z
+131642,20589,,B. Mbeumo,2223,Brentford,Winger,UNSURE,low,identity not resolved: club 'Brentford' on none of 2 candidate(s),transfermarkt,2026-08-12T20:19:18.521Z
+131262,20649,,Y. Wissa,2324,Brentford,ST,UNSURE,low,identity not resolved: club 'Brentford' on none of 4 candidate(s),transfermarkt,2026-08-12T20:20:40.427Z
+157324,20732,,G. Perrin,2425,Auxerre,Winger,UNSURE,low,identity not resolved: club 'Auxerre' on none of 4 candidate(s),transfermarkt,2026-08-12T20:22:02.437Z
+152289,21509,,M. Thuram,2223,Borussia Mönchengladbach,ST,UNSURE,low,identity not resolved: club 'Borussia Mönchengladbach' on none of 4 candidate(s),transfermarkt,2026-08-12T20:23:23.859Z
+153419,21509,,M. Thuram,1920,Borussia Mönchengladbach,ST,UNSURE,low,identity not resolved: club 'Borussia Mönchengladbach' on none of 4 candidate(s),transfermarkt,2026-08-12T20:23:23.860Z
+158761,21591,,A. Delort,2122,Nice,Winger,UNSURE,low,identity not resolved: club 'Nice' on none of 2 candidate(s),transfermarkt,2026-08-12T20:24:04.593Z
+158617,25008,,J. Clauss,2122,Lens,CDM,UNSURE,low,identity not resolved: club 'Lens' on none of 4 candidate(s),transfermarkt,2026-08-12T20:25:26.237Z
+154948,25352,,Salomon Armand Magloire Kalou,1516,Hertha BSC,,UNSURE,low,identity not resolved: club 'Hertha BSC' on none of 1 candidate(s),transfermarkt,2026-08-12T20:25:46.806Z
+153817,25927,,J. Mateta,1819,FSV Mainz 05,ST,UNSURE,low,identity not resolved: club 'FSV Mainz 05' on none of 4 candidate(s),transfermarkt,2026-08-12T20:27:08.314Z
+153315,26257,,F. Niederlechner,1920,FC Augsburg,ST,UNSURE,low,identity not resolved: club 'FC Augsburg' on none of 2 candidate(s),transfermarkt,2026-08-12T20:27:49.212Z
+153916,26258,42936,N. Petersen,1718,SC Freiburg,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:28:53.368Z
+154027,26307,,Daniel Didavi,1718,VfL Wolfsburg,CDM,UNSURE,low,identity not resolved: club 'VfL Wolfsburg' on none of 1 candidate(s),transfermarkt,2026-08-12T20:29:14.607Z
+154635,26314,,M. Gómez,1617,VfL Wolfsburg,ST,UNSURE,low,identity not resolved: club 'VfL Wolfsburg' on none of 4 candidate(s),transfermarkt,2026-08-12T20:30:36.282Z
+176543,27104,,H. Cuypers,2122,KV Mechelen,ST,UNSURE,low,identity not resolved: club 'KV Mechelen' on none of 4 candidate(s),transfermarkt,2026-08-12T20:31:57.748Z
+147704,30433,,P. Gómez,1718,Atalanta,ST,UNSURE,low,identity not resolved: club 'Atalanta' on none of 4 candidate(s),transfermarkt,2026-08-12T20:33:19.156Z
+147284,30461,,G. Defrel,1819,Sampdoria,ST,UNSURE,low,identity not resolved: club 'Sampdoria' on none of 2 candidate(s),transfermarkt,2026-08-12T20:34:00.013Z
+140964,30483,44412,R. Soriano,1617,Villarreal,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:35:21.335Z
+146248,30483,44412,R. Soriano,2021,Bologna,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:35:41.547Z
+148030,30559,26105,V. Birsa,1617,Chievo,CDM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:36:22.685Z
+172764,30632,55751,S. Armenteros,1617,Heracles,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:37:03.443Z
+146133,30803,,A. Barák,2122,Hellas Verona,Winger,UNSURE,low,identity not resolved: club 'Hellas Verona' on none of 4 candidate(s),transfermarkt,2026-08-12T20:38:25.430Z
+178488,30817,157849,Łukasz Teodorczyk,1617,Anderlecht,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:39:06.251Z
+145389,30937,283735,M. Zaccagni,2223,Lazio,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:39:47.336Z
+144577,30937,283735,M. Zaccagni,2425,Lazio,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:40:07.687Z
+185070,33255,,Ł. Podolski,1516,Galatasaray,Winger,UNSURE,low,identity not resolved: club 'Galatasaray' on none of 0 candidate(s),transfermarkt,2026-08-12T20:40:48.628Z
+141567,33413,7767,Fernando Torres,1516,Atletico Madrid,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:41:30.116Z
+171976,36982,673081,M. Vlap,1819,Heerenveen,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:43:12.246Z
+172135,37160,,S. Berghuis,1819,Feyenoord,ST,UNSURE,low,identity not resolved: club 'Feyenoord' on none of 4 candidate(s),transfermarkt,2026-08-12T20:44:34.731Z
+171763,37160,,S. Berghuis,1920,Feyenoord,ST,UNSURE,low,identity not resolved: club 'Feyenoord' on none of 4 candidate(s),transfermarkt,2026-08-12T20:44:34.731Z
+172408,37930,88968,A. El Khayati,1718,ADO Den Haag,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:45:15.866Z
+184247,44317,,Giuliano,1718,Fenerbahçe,CAM,UNSURE,low,identity not resolved: club 'Fenerbahçe' on none of 4 candidate(s),transfermarkt,2026-08-12T20:46:38.086Z
+140746,47012,25316,Rubén Castro,1617,Real Betis,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-12T20:47:19.205Z
+140306,47283,,Ibai Gómez,1718,Alaves,CM,UNSURE,low,identity not resolved: club 'Alaves' on none of 1 candidate(s),transfermarkt,2026-08-12T20:47:39.828Z
+138401,47348,,Borja Iglesias,2223,Real Betis,ST,UNSURE,low,identity not resolved: club 'Real Betis' on none of 1 candidate(s),transfermarkt,2026-08-12T20:48:00.369Z
+140007,47440,,Brais Méndez,1819,Celta Vigo,CM,UNSURE,low,identity not resolved: club 'Celta Vigo' on none of 1 candidate(s),transfermarkt,2026-08-12T20:48:20.834Z
+138966,47499,,E. Ünal,2122,Getafe,ST,UNSURE,low,identity not resolved: club 'Getafe' on none of 4 candidate(s),transfermarkt,2026-08-12T20:49:42.634Z
+172920,47499,,E. Ünal,1617,Twente,ST,UNSURE,low,identity not resolved: club 'Twente' on none of 4 candidate(s),transfermarkt,2026-08-12T20:49:42.634Z
+140447,47520,99353,Portu,1718,Girona,Winger,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:04:23.305Z
+171047,48390,41355,R. van Wolfswinkel,2122,Twente,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:05:04.143Z
+184697,49892,,H. Rodallega,1516,Akhisarspor,,UNSURE,low,identity not resolved: club 'Akhisarspor' on none of 4 candidate(s),transfermarkt,2026-08-13T05:06:25.636Z
+173285,93990,,Dirk Kuijt,1516,Feyenoord,Winger,UNSURE,low,identity not resolved: club 'Feyenoord' on none of 1 candidate(s),transfermarkt,2026-08-13T05:06:46.487Z
+151580,115589,,B. Šeško,2425,RB Leipzig,ST,UNSURE,low,identity not resolved: club 'RB Leipzig' on none of 1 candidate(s),transfermarkt,2026-08-13T05:07:06.899Z
+137429,128398,571020,Oihan Sancet,2425,Athletic Club,CM,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:07:47.753Z
+175834,129126,,A. Bertaccini,2324,St. Truiden,ST,UNSURE,low,identity not resolved: club 'St. Truiden' on none of 4 candidate(s),transfermarkt,2026-08-13T05:09:10.135Z
+157432,137303,,E. Guessand,2425,Nice,ST,UNSURE,low,identity not resolved: club 'Nice' on none of 3 candidate(s),transfermarkt,2026-08-13T05:10:11.374Z
+176634,147859,435772,C. De Ketelaere,2122,Club Brugge KV,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:10:52.252Z
+187105,147859,435772,C. De Ketelaere,2324,Atalanta,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:11:12.463Z
+130692,153430,,A. Elanga,2425,Nottingham Forest,Winger,UNSURE,low,identity not resolved: club 'Nottingham Forest' on none of 4 candidate(s),transfermarkt,2026-08-13T05:12:33.916Z
+130814,283058,776890,N. Jackson,2425,Chelsea,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:13:15.447Z
+152012,8,170986,Raphaël Guerreiro,2223,Borussia Dortmund,FB,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-13T05:13:57.516Z
+160594,45,,T. Lemar,1617,Monaco,Winger,UNSURE,low,identity not resolved: club 'Monaco' on none of 4 candidate(s),transfermarkt,2026-08-13T05:15:19.517Z
+138748,53,,Á. Correa,2122,Atletico Madrid,ST,UNSURE,low,identity not resolved: club 'Atletico Madrid' on none of 4 candidate(s),transfermarkt,2026-08-13T05:16:42.184Z
+170952,86,,L. Openda,2122,Vitesse,ST,UNSURE,low,identity not resolved: club 'Vitesse' on none of 3 candidate(s),transfermarkt,2026-08-13T05:17:43.666Z

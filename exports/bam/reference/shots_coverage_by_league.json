@@ -1,0 +1,627 @@
+{
+  "_what_this_is": "Per-league availability of shot statistics (HS/AS/HST/AST) on API-Football, so BAM knows how many seasons of shots each league can actually supply BEFORE fitting.",
+  "generated_at": "2026-09-16T17:51:11.353997+00:00",
+  "headline": "THE BOUNDARY MOVES. It ranges from 2014/15 to 2021/22 across these leagues, and one league (Armenia) has no shot statistics at any point.",
+  "xg": "NOT SERVED for any league on this plan. Probed on Eredivisie, Premier League and La Liga: 16 statistic types, none expected_goals. HxG/AxG are empty in every CSV and are NOT derived.",
+  "CRITICAL_CAVEAT": {
+    "claim": "The per-league flag below is FIRST APPEARANCE, not completeness. It is an upper bound on usable seasons, not a count of them.",
+    "evidence_eredivisie": "the flag says 2015/16, and measured per match: 2015/16 is 58.3% covered, 2016/17 53.8%, 2017/18 52.6%, 2018/19 52.6%. Coverage only reaches 100% from 2019/20.",
+    "consequence": "Eredivisie's flag implies 12 seasons of shots. Only 8 are complete (2019/20 onward, including the live season). Four are roughly half covered.",
+    "how_to_get_the_real_number": "read rows_with_shots against rows_total in each meta_<SEASON>.json. Every export records it per season. Do not infer it from the flag."
+  },
+  "per_league_flag": {
+    "Ligue 1": {
+      "league_id": 61,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Belgian Pro League": {
+      "league_id": 144,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Premier League": {
+      "league_id": 39,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2014,
+      "shots_flag_label": "2014/15",
+      "seasons_with_shots_flag": 13
+    },
+    "Bundesliga": {
+      "league_id": 78,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Serie A": {
+      "league_id": 135,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Eredivisie": {
+      "league_id": 88,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Primeira Liga": {
+      "league_id": 94,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "La Liga": {
+      "league_id": 140,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2014,
+      "shots_flag_label": "2014/15",
+      "seasons_with_shots_flag": 13
+    },
+    "Scotland Premiership": {
+      "league_id": 179,
+      "fixtures_from": 2010,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "England League One": {
+      "league_id": 41,
+      "fixtures_from": 2011,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "England League Two": {
+      "league_id": 42,
+      "fixtures_from": 2011,
+      "shots_flag_first_season": 2017,
+      "shots_flag_label": "2017/18",
+      "seasons_with_shots_flag": 10
+    },
+    "Super Lig": {
+      "league_id": 203,
+      "fixtures_from": 2011,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Greece Super League 1": {
+      "league_id": 197,
+      "fixtures_from": 2011,
+      "shots_flag_first_season": 2016,
+      "shots_flag_label": "2016/17",
+      "seasons_with_shots_flag": 11
+    },
+    "Austria Bundesliga": {
+      "league_id": 218,
+      "fixtures_from": 2011,
+      "shots_flag_first_season": 2015,
+      "shots_flag_label": "2015/16",
+      "seasons_with_shots_flag": 12
+    },
+    "Armenia Premier League": {
+      "league_id": 342,
+      "fixtures_from": 2012,
+      "shots_flag_first_season": null,
+      "shots_flag_label": "NEVER",
+      "seasons_with_shots_flag": 0
+    },
+    "Israel Ligat Ha'al": {
+      "league_id": 383,
+      "fixtures_from": 2016,
+      "shots_flag_first_season": 2021,
+      "shots_flag_label": "2021/22",
+      "seasons_with_shots_flag": 6
+    },
+    "Czech Liga": {
+      "league_id": 345,
+      "fixtures_from": 2018,
+      "shots_flag_first_season": 2019,
+      "shots_flag_label": "2019/20",
+      "seasons_with_shots_flag": 8
+    },
+    "Slovenia 1. SNL": {
+      "league_id": 373,
+      "fixtures_from": 2018,
+      "shots_flag_first_season": 2019,
+      "shots_flag_label": "2019/20",
+      "seasons_with_shots_flag": 8
+    },
+    "Poland Ekstraklasa": {
+      "league_id": 106,
+      "fixtures_from": 2018,
+      "shots_flag_first_season": 2018,
+      "shots_flag_label": "2018/19",
+      "seasons_with_shots_flag": 9
+    },
+    "Bulgaria First League": {
+      "league_id": 172,
+      "fixtures_from": 2018,
+      "shots_flag_first_season": 2018,
+      "shots_flag_label": "2018/19",
+      "seasons_with_shots_flag": 9
+    },
+    "Cyprus 1. Division": {
+      "league_id": 318,
+      "fixtures_from": 2018,
+      "shots_flag_first_season": 2018,
+      "shots_flag_label": "2018/19",
+      "seasons_with_shots_flag": 9
+    }
+  },
+  "eredivisie_measured_per_season": {
+    "2010/11": {
+      "played": 312,
+      "with_shots": 0,
+      "pct": 0.0
+    },
+    "2011/12": {
+      "played": 312,
+      "with_shots": 0,
+      "pct": 0.0
+    },
+    "2012/13": {
+      "played": 312,
+      "with_shots": 0,
+      "pct": 0.0
+    },
+    "2013/14": {
+      "played": 312,
+      "with_shots": 0,
+      "pct": 0.0
+    },
+    "2014/15": {
+      "played": 312,
+      "with_shots": 0,
+      "pct": 0.0
+    },
+    "2015/16": {
+      "played": 312,
+      "with_shots": 182,
+      "pct": 58.3
+    },
+    "2016/17": {
+      "played": 312,
+      "with_shots": 168,
+      "pct": 53.8
+    },
+    "2017/18": {
+      "played": 312,
+      "with_shots": 164,
+      "pct": 52.6
+    },
+    "2018/19": {
+      "played": 312,
+      "with_shots": 164,
+      "pct": 52.6
+    },
+    "2019/20": {
+      "played": 232,
+      "with_shots": 232,
+      "pct": 100.0
+    },
+    "2020/21": {
+      "played": 315,
+      "with_shots": 315,
+      "pct": 100.0
+    },
+    "2021/22": {
+      "played": 324,
+      "with_shots": 324,
+      "pct": 100.0
+    },
+    "2022/23": {
+      "played": 324,
+      "with_shots": 324,
+      "pct": 100.0
+    },
+    "2023/24": {
+      "played": 321,
+      "with_shots": 321,
+      "pct": 100.0
+    },
+    "2024/25": {
+      "played": 321,
+      "with_shots": 321,
+      "pct": 100.0
+    },
+    "2025/26": {
+      "played": 309,
+      "with_shots": 309,
+      "pct": 100.0
+    },
+    "2026/27": {
+      "played": 54,
+      "with_shots": 54,
+      "pct": 100.0
+    }
+  },
+  "bam_leagues": {
+    "eredivisie": {
+      "league_id": 88,
+      "name": "Eredivisie",
+      "country": "Netherlands",
+      "api_first_season": 2010,
+      "api_last_season": 2026,
+      "requested_floor": 2010,
+      "expected_seasons": [
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 17,
+      "shots_first_season": 2015,
+      "shots_label": "2015/16",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "scotland-premiership": {
+      "league_id": 179,
+      "name": "Premiership",
+      "country": "Scotland",
+      "api_first_season": 2010,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": 2015,
+      "shots_label": "2015/16",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "england-national-league": {
+      "league_id": 43,
+      "name": "National League",
+      "country": "England",
+      "api_first_season": 2011,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": null,
+      "shots_label": "NEVER",
+      "shots_absent_entirely": true,
+      "season_gaps": []
+    },
+    "england-league-one": {
+      "league_id": 41,
+      "name": "League One",
+      "country": "England",
+      "api_first_season": 2011,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": 2015,
+      "shots_label": "2015/16",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "england-league-two": {
+      "league_id": 42,
+      "name": "League Two",
+      "country": "England",
+      "api_first_season": 2011,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": 2017,
+      "shots_label": "2017/18",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "greece-super-league": {
+      "league_id": 197,
+      "name": "Super League 1",
+      "country": "Greece",
+      "api_first_season": 2011,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": 2016,
+      "shots_label": "2016/17",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "austria-bundesliga": {
+      "league_id": 218,
+      "name": "Bundesliga",
+      "country": "Austria",
+      "api_first_season": 2011,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": 2015,
+      "shots_label": "2015/16",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "armenia-premier-league": {
+      "league_id": 342,
+      "name": "Premier League",
+      "country": "Armenia",
+      "api_first_season": 2012,
+      "api_last_season": 2026,
+      "requested_floor": 2014,
+      "expected_seasons": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 13,
+      "shots_first_season": null,
+      "shots_label": "NEVER",
+      "shots_absent_entirely": true,
+      "season_gaps": []
+    },
+    "israel-ligat-haal": {
+      "league_id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "api_first_season": 2016,
+      "api_last_season": 2026,
+      "requested_floor": 2016,
+      "expected_seasons": [
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 11,
+      "shots_first_season": 2021,
+      "shots_label": "2021/22",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "czech-liga": {
+      "league_id": 345,
+      "name": "Czech Liga",
+      "country": "Czech-Republic",
+      "api_first_season": 2018,
+      "api_last_season": 2026,
+      "requested_floor": 2018,
+      "expected_seasons": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 9,
+      "shots_first_season": 2019,
+      "shots_label": "2019/20",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "slovenia-prvaliga": {
+      "league_id": 373,
+      "name": "1. SNL",
+      "country": "Slovenia",
+      "api_first_season": 2018,
+      "api_last_season": 2026,
+      "requested_floor": 2018,
+      "expected_seasons": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 9,
+      "shots_first_season": 2019,
+      "shots_label": "2019/20",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "ekstraklasa": {
+      "league_id": 106,
+      "name": "Ekstraklasa",
+      "country": "Poland",
+      "api_first_season": 2018,
+      "api_last_season": 2026,
+      "requested_floor": 2018,
+      "expected_seasons": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 9,
+      "shots_first_season": 2018,
+      "shots_label": "2018/19",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "bulgaria-first-league": {
+      "league_id": 172,
+      "name": "First League",
+      "country": "Bulgaria",
+      "api_first_season": 2018,
+      "api_last_season": 2026,
+      "requested_floor": 2018,
+      "expected_seasons": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 9,
+      "shots_first_season": 2018,
+      "shots_label": "2018/19",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    },
+    "cyprus-first-division": {
+      "league_id": 318,
+      "name": "1. Division",
+      "country": "Cyprus",
+      "api_first_season": 2018,
+      "api_last_season": 2026,
+      "requested_floor": 2018,
+      "expected_seasons": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "expected_season_count": 9,
+      "shots_first_season": 2018,
+      "shots_label": "2018/19",
+      "shots_absent_entirely": false,
+      "season_gaps": []
+    }
+  },
+  "bam_league_count": 14,
+  "regenerated_at": "2026-09-17T16:33:00.118393+00:00",
+  "_gap_note": "English National League (43) was absent from the first version of this file , it was added to BAM's list after generation. That is the class of gap the coverage check exists to catch: a league joins the list and a reference file generated earlier does not know."
+}

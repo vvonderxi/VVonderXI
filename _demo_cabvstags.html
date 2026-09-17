@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cabinet vs Wonder Tags , three options</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260912a"></script>
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;padding:16px;background:#17161a;color:#F0EAD9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+ h1{font-size:16px;margin:0 0 12px}
+ .cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));max-width:1500px}
+ .opt{min-width:0}
+ .oh{font-family:'Archivo',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#E0A93A;margin:0 0 3px}
+ .ow{color:#a49d93;font-size:11px;line-height:1.45;margin-bottom:10px;min-height:42px}
+ .panel{background:#F0EAD9;border-radius:14px;padding:14px 16px;color:#2b2924}
+ .sect{font-family:'Archivo',sans-serif;font-weight:800;font-size:12.5px;color:#241f1b;margin:0 0 2px}
+ .intro{font-size:11px;color:#5f594e;margin-bottom:9px}
+ .grp{font-family:'Archivo',sans-serif;font-weight:700;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8a7c4e;margin:9px 0 5px}
+ .row{background:#FBF7EF;border-radius:9px;padding:8px 10px;margin-bottom:5px}
+ .rowtxt{font-size:11px;color:#3a352e;margin-top:5px}
+ .rule{height:1px;background:rgba(0,0,0,0.10);margin:13px 0}
+ /* SHIPPED , copied from card.html */
+ .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+ .chtag .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
+ .gold{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);color:#5a4410;box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
+ .att{background:linear-gradient(90deg,#FF7A5C,#E70443)}
+ .stage{background:linear-gradient(90deg,#2F8290,#1B5563)}
+ .neu{background:#3A352C;color:#F0EAD9}
+ .neu .vvm{color:#E0A93A}
+ .neupale{background:#EDE6D6;color:#3A352C;box-shadow:inset 0 0 0 1px rgba(58,53,44,0.28)}
+ .neupale .vvm{color:#B8892B}
+ .cabsh{margin-bottom:11px}
+ .cabsh .chtag{margin-bottom:6px}
+ .cabyrs{padding-left:16px;border-left:2px solid rgba(224,169,58,0.5)}
+ .cabyrs.neuline{border-left-color:rgba(58,53,44,0.28)}
+ .caby{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:#2b2924;font-variant-numeric:tabular-nums;line-height:1.55}
+</style></head><body>
+<h1>The cabinet against the Wonder Tags strip , Ibrahimovic 15/16, both in frame</h1>
+<div class="cols" id="cols"></div>
+<script>
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var M=function(t){ return (window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''; };
+var HON=[['league_champion','League Champion','Champions. Top of the league across a full season.'],
+         ['player_of_season','Player of the Season',"The league's finest over a full campaign."],
+         ['golden_boot','Golden Boot',"The league's top scorer. Nobody scored more."]];
+var PROFILE=[['stage','Peak','The best season of his career, and a genuinely elite one.'],
+             ['att','Goal Machine','Goals by the season, not the handful.']];
+var CAB=[['league_champion','League Champion',[2010,2012,2013,2014,2015]],
+         ['player_of_season','Player of the Season',[2010,2012,2013,2015]],
+         ['golden_boot','Golden Boot',[2011,2012,2013,2015]]];
+function wonderTags(showHonours){
+  var h='<div class="sect">Wonder Tags</div><div class="intro">What he won, and what he was.</div>';
+  if(showHonours){
+    h+='<div class="grp">Silverware</div>';
+    h+='<div class="row"><span class="chtag gold">'+M('league_champion')+'League Champion</span><div class="rowtxt">'+HON[0][2]+'</div></div>';
+    h+='<div class="grp">Individual honours</div>';
+    for(var i=1;i<HON.length;i++)
+      h+='<div class="row"><span class="chtag gold">'+M(HON[i][0])+HON[i][1]+'</span><div class="rowtxt">'+HON[i][2]+'</div></div>';
+  }
+  h+='<div class="grp">The player</div>';
+  PROFILE.forEach(function(p){
+    h+='<div class="row"><span class="chtag '+p[0]+'">'+p[1]+'</span><div class="rowtxt">'+p[2]+'</div></div>';
+  });
+  return h;
+}
+function cabinet(neutral){
+  var h='<div class="sect">The Cabinet</div><div class="intro">What he had won by this season.</div>';
+  CAB.forEach(function(c){
+    h+='<div class="cabsh"><span class="chtag '+(neutral?'neu':'gold')+'">'+M(c[0])+c[1]+'</span>'
+      +'<div class="cabyrs'+(neutral?' neuline':'')+'">'+c[2].map(function(y){return '<div class="caby">'+y+'</div>';}).join('')+'</div></div>';
+  });
+  return h;
+}
+var OPTS=[
+ ['1 , current build','Gold cabinet, Wonder Tags keeps its honour pills. League Champion appears twice in identical styling, nine lines apart.', wonderTags(true)+'<div class="rule"></div>'+cabinet(false)],
+ ['2 , cabinet neutral','Gold stays in the icon only. Charcoal body, cream ink, gold mark , the platform\'s own .chtag base. A PALE neutral was tried first and rejected: on cream it reads as a lighter gold.', wonderTags(true)+'<div class="rule"></div>'+cabinet(true)+'<div class="rule"></div><div class="grp">rejected: pale neutral</div><div class="cabsh"><span class="chtag neupale">'+M('league_champion')+'League Champion</span></div>'],
+ ['3 , honours leave Wonder Tags','The cabinet supersedes them. Wonder Tags becomes what he WAS, the cabinet what he WON.', wonderTags(false)+'<div class="rule"></div>'+cabinet(false)]
+];
+var host=document.getElementById('cols');
+var ONLY=parseInt((location.search.match(/only=(\d)/)||[])[1]||'0',10);
+if(ONLY){ document.querySelector('h1').style.display='none'; document.body.style.padding='0'; OPTS=[OPTS[ONLY-1]]; host.style.gridTemplateColumns='1fr'; }
+OPTS.forEach(function(o){
+  var d=document.createElement('div'); d.className='opt';
+  d.innerHTML='<div class="oh">'+o[0]+'</div><div class="ow">'+o[1]+'</div><div class="panel">'+o[2]+'</div>';
+  host.appendChild(d);
+});
+</script></body></html>

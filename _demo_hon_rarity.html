@@ -1,0 +1,107 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink-ink:#F1688E;--gold:#E8B84B;--page-2:#141011}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page-2);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 40px}
+.demohdr{padding:54px 0 0;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
+.demoname{font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;letter-spacing:-.02em;margin:10px 0 0}
+.demonote{font-size:13px;line-height:1.65;color:var(--ink-soft);max-width:62ch;margin:12px 0 0}
+.seprule{height:1px;background:rgba(255,255,255,.07);margin:38px 0 0}
+.tail{padding:80px 0 100px}
+/* the shared marks inherit colour and take their size from here */
+.hm svg{display:block;color:var(--gold)}
+@media(max-width:720px){.wrap{padding:0 20px}.demohdr{padding-top:34px}}
+</style>
+<style>
+/*  DEMO 2 , GROUPED BY RARITY.
+    Ordered by how many players can hold it in a season, rarest first. This is the football
+    statement the section currently never makes: a Golden Boot is rarer than a league medal,
+    which is not most people's instinct.
+    NO COUNTS ARE PRINTED. The rarity line is STRUCTURAL , a fact about the competition ,
+    because the honours table stores team honours once per winning TEAM and individual ones
+    once per PLAYER, so row counts sort them wrongly, and any count drifts on every ingest.
+    THE SCALE IS THE ORGANISING ELEMENT: a single rule running down the page, marks hung off
+    it, getting quieter as the honour gets more common. Nothing is diminished , the last one
+    is still a title , but the eye reads the ladder without being told to.  */
+.hscale{position:relative;margin-top:46px;padding-left:38px}
+.hscale:before{content:'';position:absolute;left:9px;top:14px;bottom:14px;width:1px;
+  background:linear-gradient(180deg,var(--gold),rgba(232,184,75,.12))}
+.hstep{position:relative;padding:0 0 40px}
+.hdot{position:absolute;left:-34px;top:16px;width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.hstep.q2 .hdot{background:rgba(232,184,75,.72)}
+.hstep.q3 .hdot{background:rgba(232,184,75,.45)}
+.hstep.q4 .hdot{background:rgba(232,184,75,.28)}
+.hband{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:16px}
+.hstep.q2 .hband{color:rgba(232,184,75,.82)}
+.hstep.q3 .hband{color:rgba(232,184,75,.62)}
+.hstep.q4 .hband{color:rgba(232,184,75,.5)}
+.hitem{display:grid;grid-template-columns:64px 1fr;gap:22px;align-items:center;padding:13px 0}
+.hitem .hm svg{width:48px;height:48px}
+.hstep.q3 .hitem .hm svg,.hstep.q4 .hitem .hm svg{width:40px;height:40px}
+.hn{font-family:'Bricolage Grotesque';font-weight:700;font-size:21px;letter-spacing:-.02em}
+.hstep.q3 .hn,.hstep.q4 .hn{font-size:19px}
+.ho{font-size:14.5px;line-height:1.6;color:rgba(240,234,217,.7);margin-top:5px;max-width:50ch}
+.hlead{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:17px;line-height:1.6;
+  color:var(--cream);max-width:46ch;margin:10px 0 0;padding-left:20px;border-left:1px solid rgba(232,184,75,.34)}
+@media(max-width:720px){
+  .hscale{padding-left:28px}.hscale:before{left:6px}.hdot{left:-25px}
+  .hitem{grid-template-columns:48px 1fr;gap:16px}
+  .hitem .hm svg{width:40px;height:40px}
+  .hstep.q3 .hitem .hm svg,.hstep.q4 .hitem .hm svg{width:34px;height:34px}
+  .hn{font-size:19px}.hstep.q3 .hn,.hstep.q4 .hn{font-size:17.5px}
+  .hlead{font-size:16px;padding-left:15px}
+}
+</style>
+<div class="wrap">
+  <div class="demohdr">Playbook , honours , demo 2</div>
+  <div class="demoname">By how rare it is</div>
+  <p class="demonote">Ordered by how many players can hold one in a season, rarest first. It makes the argument the section never makes: a Golden Boot is rarer than a league medal. No counts are printed , the rarity line is a fact about the competition, not a row count, because the table stores team honours per winning team and individual ones per player, so counting sorts them wrongly.</p>
+  <div class="seprule"></div>
+  <div id="out"></div>
+  <div class="tail"></div>
+</div>
+<script>
+function render(){
+  var STEPS=[
+    {q:'q1',band:'The rarest thing in football',keys:['ballon_dor'],
+     lead:'“Not a team’s triumph, but a singular coronation.”'},
+    {q:'q2',band:'Once every four years',keys:['world_cup_winner'],
+     lead:'“The prize a career is measured against. Some of the finest never lift it.”'},
+    {q:'q3',band:'One player in each league, every season',keys:['player_of_season','golden_boot','top_assists'],
+     lead:''},
+    {q:'q4',band:'A squad, every season',keys:['ucl_winner','league_champion'],
+     lead:''}
+  ];
+  var h='<div class="hscale">';
+  STEPS.forEach(function(s){
+    h+='<div class="hstep '+s.q+'"><span class="hdot"></span><div class="hband">'+s.band+'</div>';
+    s.keys.forEach(function(k){
+      var o=HON.filter(function(x){return x.k===k;})[0];
+      h+='<div class="hitem"><div class="hm">'+honMark(o.k)+'</div><div>'
+       + '<div class="hn">'+o.n+'</div><div class="ho">'+o.one+'</div></div></div>';
+    });
+    if(s.lead) h+='<div class="hlead">'+s.lead+'</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  document.getElementById('out').innerHTML=h;
+}
+</script>
+<script src="/vv-marks.js"></script>
+<script src="/_demo_hon_data.js"></script>
+<script>
+  if(window.VVMarks && VVMarks.inject) VVMarks.inject();
+  render();
+  /*  THE MARK SET IS SHARED, SO A MISSING SYMBOL IS A REAL FAILURE, NOT A STYLING SLIP.
+      A <use> pointing at a symbol that is not in the document renders BLANK with no error,
+      which is exactly the silent failure section C records. Count them and say so.  */
+  var unresolved=[...document.querySelectorAll('use')].filter(function(u){
+    var h=(u.getAttribute('href')||u.getAttribute('xlink:href')||'').replace('#','');
+    return h && !document.getElementById(h); }).length;
+  console.log('[demo] honours rendered:', document.querySelectorAll('.hm').length,
+              '| unresolved <use>:', unresolved);
+</script>

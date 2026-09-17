@@ -1,0 +1,129 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink-ink:#F1688E;--gold:#E8B84B;--green-fill:#5FC98A;--page-2:#141011;--page-3:#0e0b0c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page-2);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+.demohdr{padding:54px 0 0;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
+.demoname{font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;letter-spacing:-.02em;margin:10px 0 0;color:var(--cream)}
+.demonote{font-size:13px;line-height:1.6;color:var(--ink-soft);max-width:58ch;margin:12px 0 0}
+.seprule{height:1px;background:rgba(255,255,255,0.07);margin:44px 0 0}
+@media(max-width:720px){.wrap{padding:0 20px}.demohdr{padding-top:34px}}
+</style>
+<style>
+/*  DEMO 3 , SHOW THE TIER, DO NOT DESCRIBE IT.
+    The brief says the card is the product and everything else is a consumer of it. This
+    section exists to teach what a band IS, and a band is a card tier, so the card does the
+    teaching. Every gradient, rim, shadow and monogram colour below is quoted from
+    BRAND_BRIEF.md section 5, and the geometry is derived from --cw exactly as the product
+    derives it (ratio 1.397, radius 0.073, monogram 0.34).
+    THE BLACK TIER CARRIES NO GOLD RIM, following the holding page: beside the gold card the
+    rim reads as two golds. That is the brief's own ruling and it applies here for the same
+    reason, because all three tiers appear together.
+    HOLDS FOR FIVE BY CONSTRUCTION: there are three tiers and five bands, and the lower three
+    all take cream. Repeating the cream card is not a flaw, it is the fact , the ladder has
+    five names and the object has three faces, and this is the only layout that says so.  */
+/*  THE CARD COLUMN IS A FIXED WIDTH, NOT `auto`. With `auto` the column shrinks with the
+    card, so the text's left edge walked left down the ladder , 455, 440, 428 , and a ragged
+    spine is exactly the kind of small wrongness that reads as cheap on a page selling
+    restraint. One column width, cards centred in it, one edge all the way down.  */
+.b3{display:grid;grid-template-columns:112px 1fr;gap:44px;align-items:start;padding:66px 0 0}
+.b3>:first-child{display:flex;flex-direction:column;align-items:center}
+.b3:last-of-type{padding-bottom:110px}
+/*  THE CARD SIZE CARRIES THE LADDER'S HIERARCHY. Section C rules that Generational and
+    Iconic "side by side made them equals, which is exactly what they are not , Generational
+    takes the frame; Iconic follows". Equal cards would re-open that. The descent is gentle
+    rather than the recorded "half the weight", because the Playbook's own Accomplished copy
+    says the Index rates every band "with the same honesty it gives the summit", and a card
+    shrunk to half would contradict the sentence beside it.  */
+.b3.r1 .vvc{--cw:112px}.b3.r1 .b3-tier{width:112px}
+.b3.r2 .vvc{--cw:92px}.b3.r2 .b3-tier{width:92px}
+.vvc{--cw:76px;width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vvc .mono{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1}
+.vvc.cream{background:linear-gradient(158deg,#FBF7EF,#E4DAC6);
+  box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.7),inset 0 0 0 calc(var(--cw)*0.026) rgba(140,120,90,.35),0 24px 60px -20px rgba(0,0,0,.5)}
+.vvc.cream .mono{color:#1C1B1A}.vvc.cream .mono i{color:#AD0332;font-style:normal}
+.vvc.gold{background:linear-gradient(158deg,#F6DE93,#DC9E2C);
+  box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
+.vvc.gold .mono{color:#2b1d05}.vvc.gold .mono i{color:#AD0332;font-style:normal}
+.vvc.black{background:linear-gradient(158deg,#2c2926,#121010);
+  box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.07),inset 0 0 0 calc(var(--cw)*0.026) rgba(255,255,255,.11),0 24px 60px -20px rgba(0,0,0,.72)}
+.vvc.black .mono{color:#F0EAD9}.vvc.black .mono i{color:#F1688E;font-style:normal}
+.b3-r{font-family:'Archivo';font-weight:900;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+.b3-w{font-family:'Bricolage Grotesque';font-weight:700;font-size:38px;line-height:1.06;letter-spacing:-.025em;margin:10px 0 0;color:var(--cream)}
+.b3-d{font-size:15.5px;line-height:1.75;color:rgba(240,234,217,0.72);max-width:52ch;margin:16px 0 0}
+.b3-q{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:18px;line-height:1.68;letter-spacing:-.01em;color:rgba(240,234,217,0.94);max-width:48ch;margin:26px 0 0}
+.b3-s{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin:24px 0 0}
+.b3-tier{width:76px;font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);opacity:.8;margin-top:12px;text-align:center}
+@media(max-width:720px){
+  .b3{grid-template-columns:74px 1fr;gap:18px;padding-top:48px}
+  .b3.r1 .vvc{--cw:74px}.b3.r1 .b3-tier{width:74px}
+  .b3.r2 .vvc{--cw:66px}.b3.r2 .b3-tier{width:66px}
+  .vvc{--cw:56px}
+  .b3-tier{width:56px;font-size:8.5px;letter-spacing:.12em}
+  .b3-w{font-size:27px}
+  .b3-r{font-size:11px}
+  .b3-d{font-size:14.5px;margin-top:12px}
+  .b3-q{font-size:16px;margin-top:20px}
+}
+</style>
+<div class="wrap">
+<div class="demohdr">Playbook , band section , demo 3</div>
+<div class="demoname">Show the tier, do not describe it</div>
+<p class="demonote">A band is a card tier, so the card teaches it. Gradients, rims, shadows and monogram colours are quoted from the brand brief; geometry is derived from --cw the way the product derives it. The black tier carries no gold rim, following the holding page&#8217;s ruling that beside gold it reads as two golds. Five names, three faces, and the repeated cream card is the point rather than a flaw.</p>
+<div class="seprule"></div>
+
+<section class="b3 r1">
+  <div><div class="vvc black"><div class="mono">V<i>V</i></div></div><div class="b3-tier">Black</div></div>
+  <div>
+    <div class="b3-r">95 and above</div>
+    <h3 class="b3-w">Generational</h3>
+    <p class="b3-d">The highest grade the Index awards. Reserved for the rarest seasons in the history of the game, the ones that stand entirely alone.</p>
+    <p class="b3-q">Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.</p>
+    <div class="b3-s">12 seasons, ever</div>
+  </div>
+</section>
+
+<section class="b3 r2">
+  <div><div class="vvc gold"><div class="mono">V<i>V</i></div></div><div class="b3-tier">Gold</div></div>
+  <div>
+    <div class="b3-r">90 and above</div>
+    <h3 class="b3-w">Iconic</h3>
+    <p class="b3-d">One of the 150 greatest seasons ever measured.</p>
+    <p class="b3-q">The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.</p>
+  </div>
+</section>
+
+<section class="b3">
+  <div><div class="vvc cream"><div class="mono">V<i>V</i></div></div><div class="b3-tier">Cream</div></div>
+  <div>
+    <div class="b3-r">85 and above</div>
+    <h3 class="b3-w">World Class</h3>
+    <p class="b3-d">A season among the best of its year.</p>
+    <p class="b3-q">Not quite the summit, but within clear sight of it. The seasons that would headline almost any other year, the work of a player operating at the very top of their craft.</p>
+  </div>
+</section>
+
+<section class="b3">
+  <div><div class="vvc cream"><div class="mono">V<i>V</i></div></div><div class="b3-tier">Cream</div></div>
+  <div>
+    <div class="b3-r">80 and above</div>
+    <h3 class="b3-w">Standout</h3>
+    <p class="b3-d">A clear cut above the rest.</p>
+    <p class="b3-q">A season that tilted matches, weekend after weekend. A clear difference-maker who left no doubt they belonged among the very best on the pitch.</p>
+  </div>
+</section>
+
+<section class="b3">
+  <div><div class="vvc cream"><div class="mono">V<i>V</i></div></div><div class="b3-tier">Cream</div></div>
+  <div>
+    <div class="b3-r">79 and below</div>
+    <h3 class="b3-w">Accomplished</h3>
+    <p class="b3-d">The honest backbone of the professional game.</p>
+    <p class="b3-q">Every team needs them. The dependable, useful seasons that keep a side ticking over, the work that rarely makes the montage but always makes the difference. The Index rates every one of them with the same honesty it gives the summit.</p>
+  </div>
+</section>
+</div>

@@ -1,0 +1,847 @@
+{
+  "generated_at": "2026-07-19T17:04:11.797Z",
+  "steps": {
+    "types": {
+      "total": 500,
+      "found": {
+        "defensive": {
+          "tackle": [
+            {
+              "id": 78,
+              "name": "Tackles"
+            },
+            {
+              "id": 583,
+              "name": "Last Man Tackle"
+            }
+          ],
+          "interception": [
+            {
+              "id": 66,
+              "name": "Successful Interceptions"
+            },
+            {
+              "id": 100,
+              "name": "Interceptions"
+            }
+          ],
+          "clearance": [
+            {
+              "id": 101,
+              "name": "Clearances"
+            },
+            {
+              "id": 102,
+              "name": "Clearances Won"
+            },
+            {
+              "id": 582,
+              "name": "Clearance Offline"
+            }
+          ],
+          "block": [
+            {
+              "id": 58,
+              "name": "Shots Blocked"
+            },
+            {
+              "id": 97,
+              "name": "Blocked Shots"
+            }
+          ],
+          "duel": [
+            {
+              "id": 105,
+              "name": "Total Duels"
+            },
+            {
+              "id": 106,
+              "name": "Duels Won"
+            }
+          ],
+          "aerial": [
+            {
+              "id": 107,
+              "name": "Aerials Won"
+            }
+          ],
+          "recover": [],
+          "dispossess": [
+            {
+              "id": 94,
+              "name": "Dispossessed"
+            }
+          ],
+          "error": [
+            {
+              "id": 571,
+              "name": "Error Lead To Goal"
+            }
+          ],
+          "last man": [
+            {
+              "id": 583,
+              "name": "Last Man Tackle"
+            }
+          ],
+          "ball won": [],
+          "ball lost": []
+        },
+        "attacking_advanced": {
+          "expected goal": [],
+          "xg": [],
+          "expected assist": [],
+          "xa": [],
+          "big chance": [
+            {
+              "id": 580,
+              "name": "Big Chances Created"
+            },
+            {
+              "id": 581,
+              "name": "Big Chances Missed"
+            }
+          ],
+          "key pass": [
+            {
+              "id": 117,
+              "name": "Key Passes"
+            }
+          ],
+          "through ball": [
+            {
+              "id": 124,
+              "name": "Through Balls"
+            },
+            {
+              "id": 125,
+              "name": "Through Balls Won"
+            }
+          ],
+          "dribble": [
+            {
+              "id": 108,
+              "name": "Dribble Attempts"
+            },
+            {
+              "id": 109,
+              "name": "Successful Dribbles"
+            },
+            {
+              "id": 110,
+              "name": "Dribbled Past"
+            }
+          ],
+          "touch": [
+            {
+              "id": 120,
+              "name": "Touches"
+            }
+          ],
+          "progressive": [],
+          "shots on target": [
+            {
+              "id": 86,
+              "name": "Shots On Target"
+            }
+          ],
+          "shots total": [
+            {
+              "id": 42,
+              "name": "Shots Total"
+            }
+          ],
+          "cross": [
+            {
+              "id": 98,
+              "name": "Total Crosses"
+            },
+            {
+              "id": 99,
+              "name": "Accurate Crosses"
+            }
+          ]
+        },
+        "baseline": {
+          "goal": [
+            {
+              "id": 14,
+              "name": "Goal"
+            },
+            {
+              "id": 15,
+              "name": "Own Goal"
+            },
+            {
+              "id": 23,
+              "name": "Penalty Shootout Goal"
+            },
+            {
+              "id": 24,
+              "name": "Goalkeeper"
+            },
+            {
+              "id": 52,
+              "name": "Goals"
+            },
+            {
+              "id": 53,
+              "name": "Goal Kicks"
+            },
+            {
+              "id": 54,
+              "name": "Goal Attempts"
+            },
+            {
+              "id": 76,
+              "name": "Goalkeeper Comes Out"
+            },
+            {
+              "id": 88,
+              "name": "Goals Conceded"
+            },
+            {
+              "id": 133,
+              "name": "Overal Goals Scored"
+            },
+            {
+              "id": 134,
+              "name": "Overall Goals Conceded"
+            },
+            {
+              "id": 139,
+              "name": "Home Goals Scored"
+            },
+            {
+              "id": 140,
+              "name": "Home Goals Conceded"
+            },
+            {
+              "id": 145,
+              "name": "Away Goals Scored"
+            },
+            {
+              "id": 146,
+              "name": "Away Goals Conceded"
+            },
+            {
+              "id": 171,
+              "name": "Goal Difference, Matches Played, Goals Scored"
+            },
+            {
+              "id": 174,
+              "name": "Goals For"
+            },
+            {
+              "id": 175,
+              "name": "Goals Against"
+            },
+            {
+              "id": 179,
+              "name": "Goal Difference"
+            },
+            {
+              "id": 191,
+              "name": "Number Of Goals"
+            },
+            {
+              "id": 195,
+              "name": "Goalkeeper Cleansheets"
+            },
+            {
+              "id": 197,
+              "name": "Goal Line"
+            },
+            {
+              "id": 208,
+              "name": "Goal Topscorer"
+            },
+            {
+              "id": 227,
+              "name": "Goalkeeping Coach"
+            },
+            {
+              "id": 324,
+              "name": "Own Goals"
+            },
+            {
+              "id": 571,
+              "name": "Error Lead To Goal"
+            }
+          ],
+          "assist": [
+            {
+              "id": 7,
+              "name": "1st Assistant"
+            },
+            {
+              "id": 8,
+              "name": "2nd Assistant"
+            },
+            {
+              "id": 79,
+              "name": "Assists"
+            },
+            {
+              "id": 209,
+              "name": "Assist Topscorer"
+            },
+            {
+              "id": 226,
+              "name": "Assistant Coach"
+            }
+          ],
+          "minutes": [
+            {
+              "id": 119,
+              "name": "Minutes Played"
+            },
+            {
+              "id": 196,
+              "name": "Scoring Minutes"
+            },
+            {
+              "id": 213,
+              "name": "Conceded Scoring Minutes"
+            }
+          ],
+          "appearance": [
+            {
+              "id": 321,
+              "name": "Appearances"
+            }
+          ],
+          "rating": [
+            {
+              "id": 118,
+              "name": "Rating"
+            }
+          ]
+        }
+      },
+      "all_names": [
+        "1 1st Half",
+        "10 VAR",
+        "100 Interceptions",
+        "101 Clearances",
+        "102 Clearances Won",
+        "103 Punches",
+        "104 Saves Insidebox",
+        "105 Total Duels",
+        "106 Duels Won",
+        "107 Aerials Won",
+        "108 Dribble Attempts",
+        "109 Successful Dribbles",
+        "11 Lineup",
+        "110 Dribbled Past",
+        "111 Penalties Scored",
+        "112 Penalties Missed",
+        "113 Penalties Saved",
+        "114 Penalties Committed",
+        "115 Penalties Won",
+        "116 Accurate Passes",
+        "117 Key Passes",
+        "118 Rating",
+        "119 Minutes Played",
+        "12 Bench",
+        "120 Touches",
+        "121 Turn Over",
+        "122 Long Balls",
+        "123 Long Balls Won",
+        "124 Through Balls",
+        "125 Through Balls Won",
+        "126 Corner",
+        "129 Overall Matches Played",
+        "13 Sidelined",
+        "130 Overall Won",
+        "131 Overall Draw",
+        "132 Overall Lost",
+        "133 Overal Goals Scored",
+        "134 Overall Goals Conceded",
+        "135 Home Matched Played",
+        "136 Home Won",
+        "137 Home Draw",
+        "138 Home Lost",
+        "139 Home Goals Scored",
+        "14 Goal",
+        "140 Home Goals Conceded",
+        "141 Away Matched Played",
+        "142 Away Won",
+        "143 Away Draw",
+        "144 Away Lost",
+        "145 Away Goals Scored",
+        "146 Away Goals Conceded",
+        "147 Promotion",
+        "148 Centre Back",
+        "149 Defensive Midfield",
+        "15 Own Goal",
+        "150 Attacking Midfield",
+        "151 Centre Forward",
+        "152 Left Wing",
+        "153 Central Midfield",
+        "154 Right Back",
+        "155 Left Back",
+        "156 Right Wing",
+        "157 Left Midfield",
+        "158 Right Midfield",
+        "159 Formation",
+        "16 Penalty",
+        "160 Ball Coordinates",
+        "161 Home Participant Colors",
+        "162 Away Participant Colors",
+        "163 Secondary Striker",
+        "164 Has Standings",
+        "165 Has Topscorers",
+        "168 8th Finals",
+        "169 Points",
+        "17 Missed Penalty",
+        "170 Head to Head",
+        "171 Goal Difference, Matches Played, Goals Scored",
+        "172 Split Points Rule",
+        "173 Points",
+        "174 Goals For",
+        "175 Goals Against",
+        "176 Streak",
+        "179 Goal Difference",
+        "18 Substitution",
+        "180 UEFA Champions League",
+        "181 UEFA Europa League",
+        "182 Relegation",
+        "183 Championship Round",
+        "184 Relegation Round",
+        "185 Home Points",
+        "186 Away Points",
+        "187 Overall Points",
+        "188 Season Matches",
+        "189 Season Teams",
+        "19 Yellowcard",
+        "190 Matches Ended In Draw",
+        "191 Number Of Goals",
+        "192 Both Teams To Score",
+        "193 Cards",
+        "194 Cleansheets",
+        "195 Goalkeeper Cleansheets",
+        "196 Scoring Minutes",
+        "197 Goal Line",
+        "2 2nd Half",
+        "20 Redcard",
+        "201 Win Percentage",
+        "202 Defeat Percentage",
+        "203 Draw Percentage",
+        "204 Most Scored",
+        "205 Most Conceded",
+        "206 Most Scored Per Match",
+        "207 Most Conceded Per Match",
+        "208 Goal Topscorer",
+        "209 Assist Topscorer",
+        "21 Yellow/Red card",
+        "210 Card Topscorer",
+        "211 Highest Rated Player",
+        "212 Highest Rated Team",
+        "213 Conceded Scoring Minutes",
+        "214 Team Wins",
+        "215 Team Draws",
+        "216 Team Lost",
+        "217 Major League",
+        "218 Loan",
+        "219 Transfer",
+        "22 Penalty Shootout Miss",
+        "220 Free Transfer",
+        "221 Coach",
+        "222 Provides News",
+        "223 Group Stage",
+        "224 Knock Out",
+        "225 Qualifying",
+        "226 Assistant Coach",
+        "227 Goalkeeping Coach",
+        "228 Forward Coach",
+        "229 Preferred Foot",
+        "23 Penalty Shootout Goal",
+        "230 Rule Color",
+        "231 Both Teams To Score Probability",
+        "232 Half Time/Full Time Probability",
+        "233 First Half Winner Probability",
+        "234 Over/Under 1.5 Probability",
+        "235 Over/Under 2.5 Probability",
+        "236 Over/Under 3.5 Probability",
+        "237 Fulltime Result Probability",
+        "238 Team To Score First Probability",
+        "239 Double Chance Probability",
+        "24 Goalkeeper",
+        "240 Correct Score Probability",
+        "241 Historical Log Loss",
+        "242 Model Hit Ratio",
+        "243 Model Predictability",
+        "244 Model Predictive Power",
+        "245 Models Log Loss",
+        "246 UEFA Champions League Qualifiers",
+        "247 UEFA Cup",
+        "248 Intertoto Cup",
+        "249 Relegation Play-off",
+        "25 Defender",
+        "250 Possible Relegation",
+        "251 Promotion Group",
+        "252 Relegation Group",
+        "254 Champions League Qualifiers Play-off",
+        "255 Next Round",
+        "256 Semi-finals",
+        "257 Final Tournament",
+        "258 Intercontinental Play-off",
+        "259 Final Tournament or Play-offs",
+        "26 Midfielder",
+        "260 AFC Champions League Qualifiers",
+        "261 AFC Cup",
+        "262 Possible 8th Finals",
+        "263 UEFA Europa League Play-off",
+        "264 Promotion Play-off",
+        "265 UEFA Europa League Qualifiers",
+        "266 Middle Play-off",
+        "267 Champion",
+        "268 CONMEBOL Libertadores",
+        "269 Final Series Play-offs",
+        "27 Attacker",
+        "270 Possible Final",
+        "271 Possible Final Tournament",
+        "272 Possible Next Round",
+        "273 CAF Champions League",
+        "274 CAF Confederation Cup",
+        "275 Quarter-finals",
+        "276 Possible Semi-finals",
+        "277 World Cup",
+        "278 Play-off",
+        "279 Final Series",
+        "28 Unknown",
+        "280 Final",
+        "281 CONCACAF Champions League",
+        "282 Lower Table Round",
+        "283 CAF Champions League Qualifiers",
+        "284 AFC Champions League",
+        "285 CFU Club Championship",
+        "286 CONMEBOL Libertadores Qualifiers",
+        "287 CONMEBOL Sudamericana",
+        "288 Champion Play-off",
+        "289 UEFA Conference League Qualifiers",
+        "29 Video",
+        "290 AFC Cup Play-offs",
+        "291 Championship Round Play-offs",
+        "292 Possible Promotion Play-off",
+        "293 UEFA Conference League Play-offs",
+        "294 3rd Place Final",
+        "295 Bottom Play-offs",
+        "296 OFC Champions League",
+        "297 Possible Quarter-finals",
+        "298 16th Finals",
+        "299 UEFA Conference League Qualifiers Play-off",
+        "3 Extra Time",
+        "30 Clip",
+        "300 Preliminary Promotion Play-off",
+        "301 Final Round Play-off",
+        "302 CAF Confederation Cup Qualifiers",
+        "303 5th-8th Place Play-offs",
+        "304 5th Place Final",
+        "305 7th Place Final",
+        "306 Final Serie",
+        "307 Play-offs",
+        "308 9th Place Final",
+        "309 11th Place Final",
+        "31 File",
+        "310 Possible Final Series",
+        "311 Possible Play-off",
+        "312 Possible Relegation Play-off",
+        "313 Possible Promotion",
+        "314 VAR Moments",
+        "315 Has Outgroup Matches",
+        "316 Championship Round Relegation Round",
+        "32 Probability",
+        "321 Appearances",
+        "322 Lineups",
+        "323 Bench",
+        "324 Own Goals",
+        "326 Home Over/Under 3.5 Probability",
+        "327 Away Over/Under 3.5 Probability",
+        "328 Away Over/Under 2.5 Probability",
+        "33 Valuebet",
+        "330 Home Over/Under 2.5 Probability",
+        "331 Home Over/Under 1.5 Probability",
+        "332 Away Over/Under 1.5 Probability",
+        "333 Away Over/Under 0.5 Probability",
+        "334 Home Over/Under 0.5 Probability",
+        "335 Over/Under 0.5 Probability",
+        "336 Ill",
+        "337 Cruciate Ligament Rupture",
+        "339 Groin Injury",
+        "34 Corners",
+        "35 Neutral Venue",
+        "36 Kickoff",
+        "37 Match Details",
+        "39 Extra Time - 2nd Half",
+        "40 Captain",
+        "41 Shots Off Target",
+        "42 Shots Total",
+        "43 Attacks",
+        "44 Dangerous Attacks",
+        "45 Ball Possession %",
+        "46 Ball Safe",
+        "47 Penalties",
+        "49 Shots Insidebox",
+        "5 Penalties",
+        "50 Shots Outsidebox",
+        "51 Offsides",
+        "52 Goals",
+        "53 Goal Kicks",
+        "531 Knock",
+        "532 Calf Injury",
+        "533 Thigh Problems",
+        "534 Fibula Fracture",
+        "535 Hamstring Injury",
+        "536 Knee Injury",
+        "537 Ankle Injury",
+        "538 COVID 19",
+        "54 Goal Attempts",
+        "540 Knee Surgery",
+        "541 Ankle Fracture",
+        "542 Metatarsal Fracture",
+        "543 Pubitis",
+        "544 Thigh muscle rupture",
+        "545 Shoulder Injury",
+        "546 Ruptured cruciate ligament",
+        "547 Fitness",
+        "548 Groin Surgery",
+        "549 Foot Injury",
+        "55 Free Kicks",
+        "550 Concussion",
+        "551 Hip Injury",
+        "552 Leg Injury",
+        "553 Inguinal Hernia",
+        "554 Muscle Injury",
+        "555 Thumb Injury",
+        "556 Heart Condition",
+        "557 Cruciate Ligament Injury",
+        "558 Foot surgery",
+        "559 Calculates Trophies",
+        "56 Fouls",
+        "560 Caretaker Manager",
+        "561 Suspended",
+        "562 Twisted knee",
+        "563 Skip Season Topscorer Calculation",
+        "567 Pitch",
+        "568 Offside",
+        "569 Shot On Target",
+        "57 Saves",
+        "570 Shot Off Target",
+        "571 Error Lead To Goal",
+        "572 Lineup Confirmed",
+        "573 None",
+        "574 Referees",
+        "575 Failed To Score",
+        "576 Possible Championship Round",
+        "577 Points Wins Balance Scored",
+        "578 Attendance",
+        "58 Shots Blocked",
+        "580 Big Chances Created",
+        "581 Big Chances Missed",
+        "582 Clearance Offline",
+        "583 Last Man Tackle",
+        "584 Good High Claim",
+        "585 Tear in a joint capsule",
+        "587 Unknown Injury",
+        "588 Adductor problems",
+        "589 Muscle Fatigue",
+        "59 Substitutions",
+        "590 Rest",
+        "591 Distortion of the ankle",
+        "592 Ruptured intraarticular ligament initiation in knee",
+        "593 Thigh Muscle Strain",
+        "594 Meniscal Injury",
+        "595 Back Injury",
+        "596 Biceps femoris muscle injury",
+        "597 Tear in the abductor muscle",
+        "598 Muscular problems",
+        "599 Torn muscle bundle",
+        "6 Referee",
+        "60 Throwins",
+        "600 Dead Leg",
+        "601 Abdominal Influenza",
+        "602 Femoral fracture",
+        "603 Achilles tendon problems",
+        "604 Achilles tendon rupture",
+        "605 Hip problems",
+        "606 Fractured Finger",
+        "607 Bruised Foot",
+        "608 Surgery",
+        "609 Torn Knee Ligament",
+        "61 Beats",
+        "610 Flu",
+        "611 Fractured Jaw",
+        "612 Heel Bone Injury",
+        "613 Hashtag",
+        "614 Herniated Disc",
+        "615 Peroneus Tendon Injury",
+        "616 Fractures Eye Socket",
+        "618 Ruptured Knee Ligament",
+        "619 Back Trouble",
+        "62 Long Passes",
+        "620 Ruptured Ankle",
+        "621 Syndesmotic Ligament Tear",
+        "622 Pulled Hamstring At Adductors",
+        "623 Fractured Toe",
+        "624 Facial Fracture",
+        "625 Acromioclavicular Saparation",
+        "626 Frontal Bone Fracture",
+        "627 Cancer",
+        "628 Fractured Leg",
+        "629 Injury",
+        "63 Short Passes",
+        "630 Head Injury",
+        "631 Cheekbone Fracture",
+        "632 Torn Muscle Fibre",
+        "633 Cartilage Damage",
+        "636 Ruptured Meniscus",
+        "637 Inflammation",
+        "638 Fractured Arm",
+        "639 Arthroscopie",
+        "64 Hit Woodwork",
+        "640 Lumbago",
+        "641 Lymphome",
+        "642 Pubalgia",
+        "643 Tibia Fracture",
+        "644 Mensical Laceration",
+        "645 Patella Rupture",
+        "646 Forearm Fracture",
+        "647 Disrupted Calf Muscle",
+        "648 Medial Collateral Ligament Injury",
+        "649 Fractured Rib",
+        "65 Successful Headers",
+        "650 Bruised Rib",
+        "651 Sideband Team in Knee",
+        "652 Cold",
+        "653 Gastric Problems",
+        "654 Virus Infection",
+        "655 Traffic Accident",
+        "656 Shinbone Injury",
+        "658 Bruise",
+        "659 Nose Surgery",
+        "66 Successful Interceptions",
+        "660 Nose Injury",
+        "661 Calf Problems",
+        "662 Back Bruise",
+        "663 Pneumonia",
+        "664 Hand Injury",
+        "665 Quarantine",
+        "666 Collarbone Fracture",
+        "667 Torn Muscle Bundle",
+        "669 Abscess",
+        "67 Successful Centers",
+        "670 Medial Collateral Ligament Tear",
+        "671 Ankle Surgery",
+        "672 Ankle Problems",
+        "673 Toe Injury",
+        "674 Cals Sclerosis",
+        "675 Appendectomy",
+        "676 Eye Injury",
+        "677 Minor Knock",
+        "678 Overstretching",
+        "679 Knee Inflammation",
+        "68 Substitutions Overtime",
+        "680 Fatigue Fracture",
+        "681 Inflamed Ligaments Of The Knee",
+        "682 Sprain",
+        "683 Bruised Knee",
+        "684 Chickenpox",
+        "687 Knee Problems",
+        "688 Heelspur",
+        "69 Offsides Overtime",
+        "690 Tendon Irritation",
+        "691 Fever",
+        "692 Arch Pain",
+        "693 Achilles Irritation",
+        "694 Muscle Fiber Tear",
+        "695 Flesh Wound",
+        "696 Meniscus Damage",
+        "697 Calf Muscle Strain",
+        "7 1st Assistant",
+        "70 Headers",
+        "700 Fractured Hand",
+        "701 Fractured Foot",
+        "702 Stretched Ligament",
+        "703 Compression Of Spinal",
+        "704 Bone Bruise",
+        "705 Torn Collateral Ligament",
+        "706 Sprained Ankle",
+        "708 Torn Muscle",
+        "709 Arm Injury",
+        "71 Last Substituttion",
+        "711 Heel Pain",
+        "712 Metatarsal Bone Bruise",
+        "713 Finger Injury",
+        "714 Partial Damage To The Cruciate Ligament",
+        "715 Torn Meniscus",
+        "716 Pelvis Injury",
+        "717 Ruptured Ankle Aigament",
+        "718 Torn Tendon",
+        "72 First Substitution",
+        "720 Fibula Shaft Fractures",
+        "721 Stomach Complaints",
+        "722 Dental Surgery",
+        "723 Whiplash",
+        "724 Pubis Bone Irritation",
+        "726 Shoulder Fracture",
+        "728 Torn Ligament",
+        "729 Nasal Bone Fracture",
+        "73 Successful Center",
+        "730 Mononucleosis",
+        "731 Bone Chipping",
+        "733 Vertebra Injury",
+        "734 Pubis Bone Contusion",
+        "735 Fracture Of The Orbit",
+        "736 Stress Response Of The Bone",
+        "74 Yellowcards Overtime",
+        "75 Corners Overtime",
+        "76 Goalkeeper Comes Out",
+        "77 Challenges",
+        "78 Tackles",
+        "79 Assists",
+        "8 2nd Assistant",
+        "80 Passes",
+        "81 Successful Passes",
+        "82 Successful Passes Percentage",
+        "83 Redcards",
+        "84 Yellowcards",
+        "85 Yellowred Cards",
+        "86 Shots On Target",
+        "87 Injuries",
+        "88 Goals Conceded",
+        "9 4th Official",
+        "91 First Offside",
+        "92 Last Offside",
+        "94 Dispossessed",
+        "95 Offsides Provoked",
+        "96 Fouls Drawn",
+        "97 Blocked Shots",
+        "98 Total Crosses",
+        "99 Accurate Crosses"
+      ]
+    },
+    "leagues": {
+      "Süper Lig": {
+        "error": "not found or not on plan"
+      },
+      "Pro League": {
+        "error": "not found or not on plan"
+      },
+      "Eredivisie": {
+        "error": "not found or not on plan"
+      }
+    },
+    "probe": {}
+  },
+  "verdict": {
+    "rows": [],
+    "verdict": "PASS , defensive data present across full era. Proceed to Phase 1."
+  },
+  "rate_limit": {
+    "resets_in_seconds": 3599,
+    "remaining": 2997,
+    "requested_entity": "League"
+  }
+}

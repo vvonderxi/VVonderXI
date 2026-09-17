@@ -1,0 +1,64 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VVonderXI , honours demos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--gold:#E8B84B;--pink-ink:#F1688E;--page-2:#141011}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page-2);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.w{max-width:640px;margin:0 auto;padding:56px 24px 80px}
+.eyebrow{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
+h1{font-family:'Bricolage Grotesque';font-weight:700;font-size:30px;letter-spacing:-.025em;line-height:1.15;margin:12px 0 0}
+.lede{font-size:14.5px;line-height:1.7;color:rgba(240,234,217,.72);margin:14px 0 0}
+a.card{display:block;text-decoration:none;color:inherit;margin-top:16px;padding:20px 22px;border:1px solid rgba(255,255,255,.10);border-radius:14px;transition:border-color .2s,background .2s}
+a.card:hover,a.card:focus{border-color:rgba(232,184,75,.45);background:rgba(255,255,255,.03)}
+.n{font-family:'Archivo';font-weight:900;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.t{font-family:'Bricolage Grotesque';font-weight:700;font-size:21px;letter-spacing:-.02em;margin-top:7px}
+.d{font-size:13.5px;line-height:1.6;color:rgba(240,234,217,.66);margin-top:8px}
+.go{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.06em;color:var(--pink-ink);margin-top:12px}
+.foot{margin-top:40px;font-size:12.5px;line-height:1.65;color:var(--ink-soft);border-top:1px solid rgba(255,255,255,.07);padding-top:18px}
+</style>
+<div class="w">
+  <div class="eyebrow">Playbook , honours</div>
+  <h1>Three directions</h1>
+  <p class="lede">All seven honours visible in each, drawn from the shared vv-marks set. Open on a phone and each renders its own mobile layout, so this page is the 390 test too.</p>
+
+  <a class="card" style="border-color:rgba(232,184,75,.4)" href="/_demo_hon_grid4_3.html">
+    <div class="n">Grid option A</div>
+    <div class="t">Four, then three</div>
+    <div class="d">Row lengths are the grouping: four awards one player can win, three medals a squad collects. Detail opens inside its own cell.</div>
+    <div class="go">Open &#8250;</div>
+  </a>
+
+  <a class="card" href="/_demo_hon_grid3.html">
+    <div class="n">Grid option B</div>
+    <div class="t">Three across</div>
+    <div class="d">One continuous grid, 3 + 3 + 1, leg carried per cell as a tag. Wider cells, but the last row is one cell and two gaps.</div>
+    <div class="go">Open &#8250;</div>
+  </a>
+
+  <div class="eyebrow" style="margin-top:34px">The row version, and the two it came from</div>
+
+  <a class="card" href="/_demo_hon_cabinet.html">
+    <div class="n">Demo 1 , rows</div>
+    <div class="t">The cabinet</div>
+    <div class="d">All seven at one size, grouped by the leg the data carries. No hero, no strip, no selection. Detail opens in place.</div>
+    <div class="go">Open &#8250;</div>
+  </a>
+
+  <a class="card" href="/_demo_hon_rarity.html">
+    <div class="n">Demo 2</div>
+    <div class="t">By how rare it is</div>
+    <div class="d">Ordered by how many players can hold one in a season. Makes the football argument, but drops the axis the data actually carries.</div>
+    <div class="go">Open &#8250;</div>
+  </a>
+
+  <a class="card" href="/_demo_hon_shelf.html">
+    <div class="n">Demo 3</div>
+    <div class="t">The shelf</div>
+    <div class="d">The marks already encode it: team trophies are footed, individual awards are not. One shelf, and the distinction is legible before a word is read.</div>
+    <div class="go">Open &#8250;</div>
+  </a>
+
+  <p class="foot">Demos only, nothing injected into playbook.html and nothing committed. The section&#8217;s fold body is <b>.cabwrap</b>, referenced twice in vvFoldSections , any real build keeps that class or updates both references.</p>
+</div>

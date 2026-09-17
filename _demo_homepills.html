@@ -1,0 +1,109 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Home search , starter pills</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--muted:#a49d93}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#14100f;color:var(--cream);font-family:'Inter',sans-serif;padding:24px 18px 70px}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:25px;margin-bottom:5px}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:8px}
+  h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;margin:30px 0 4px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1)}
+  .note{font-size:13.5px;color:var(--muted);border-left:2px solid var(--pink);padding-left:12px;margin:12px 0}
+  b{color:#fff;font-weight:600}
+  /* --- the real home-page search shell, simplified to the parts that matter --- */
+  .stage{background:radial-gradient(700px 320px at 50% 0,rgba(231,4,67,.10),transparent 60%),#171312;
+         border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:30px 22px 26px;margin:14px 0}
+  .logo{font-family:'Archivo';font-weight:900;font-size:19px;letter-spacing:-.02em;text-align:center;margin-bottom:6px}
+  .logo .v2{color:var(--pink-ink)}
+  .tag{text-align:center;font-family:'Bricolage Grotesque';font-weight:600;font-size:15px;color:#d8d2c4;margin-bottom:18px}
+  .search{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+          border-radius:999px;padding:10px 12px 10px 16px;max-width:560px;margin:0 auto}
+  .search input{flex:1;background:none;border:none;outline:none;color:var(--cream);font-size:15px;font-family:'Inter'}
+  .search input::placeholder{color:var(--muted)}
+  .go{font-family:'Archivo';font-weight:800;font-size:12.5px;background:var(--pink);color:#fff;border:none;
+      border-radius:999px;padding:8px 16px;cursor:pointer}
+  /* --- the pills --- */
+  .pills{max-width:560px;margin:14px auto 0;display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:center}
+  .plabel{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+          width:100%;text-align:center;margin-bottom:2px}
+  .pill{font-family:'Archivo';font-weight:700;font-size:12px;color:#cfc8ba;background:rgba(255,255,255,.055);
+        border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:6px 12px;cursor:pointer;transition:.15s}
+  .pill:hover{border-color:var(--pink-ink);color:#fff}
+  .pill.on{background:var(--pink);border-color:var(--pink);color:#fff}
+  .hint{max-width:560px;margin:10px auto 0;text-align:center;font-size:12.5px;color:var(--muted);min-height:18px}
+  .hint b{color:var(--pink-ink);font-weight:700}
+  .hidden{display:none}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13.5px}
+  th,td{text-align:left;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.09)}
+  th{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .ask{background:rgba(231,4,67,.09);border:1px solid rgba(231,4,67,.3);border-radius:12px;padding:12px 15px;margin-top:14px;font-size:14px}
+  code{font-family:ui-monospace,monospace;font-size:12.5px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+</style></head><body><div class="wrap">
+
+<h1>The home page starts the query. Rankings owns it.</h1>
+<div class="sub">Two pill groups, position and band. Tapping one hands off to Rankings with the filter already applied , it does not filter in place.</div>
+
+<div class="note"><b>Why hand off rather than filter here.</b> A full filter rail on the home page would be a <b>second</b> implementation to keep in step with rankings and the compare picker , three consumers instead of two. The home page starts the query and rankings owns it, so there is <b>one filter implementation, not two</b>. A future reader seeing a home page that hands off may read it as unfinished; it is deliberate.</div>
+
+<h2>A , always visible <span style="font-size:12px;color:var(--pink-ink);font-family:Archivo">RECOMMENDED</span></h2>
+<div class="stage">
+  <div class="logo">V<span class="v2">V</span>onderXI</div>
+  <div class="tag">Every Season Tells a Different <span style="color:var(--pink-ink)">Story</span></div>
+  <div class="search"><input placeholder='Try "Messi vs Bellingham"'><button class="go">Search</button></div>
+  <div class="pills" id="pA">
+    <div class="plabel">or start from</div>
+    <button class="pill" data-g="position" data-v="ST">ST</button>
+    <button class="pill" data-g="position" data-v="Winger">Winger</button>
+    <button class="pill" data-g="position" data-v="CM">CM</button>
+    <button class="pill" data-g="position" data-v="CB">CB</button>
+    <button class="pill" data-g="position" data-v="GK">GK</button>
+    <button class="pill" data-g="score" data-v="Generational">Generational</button>
+    <button class="pill" data-g="score" data-v="Iconic">Iconic</button>
+    <button class="pill" data-g="score" data-v="World Class">World Class</button>
+  </div>
+  <div class="hint" id="hA">The pills are the only thing on this screen that says what can be asked.</div>
+</div>
+
+<h2>B , appears once you type</h2>
+<div class="stage">
+  <div class="logo">V<span class="v2">V</span>onderXI</div>
+  <div class="tag">Every Season Tells a Different <span style="color:var(--pink-ink)">Story</span></div>
+  <div class="search"><input id="qB" placeholder='Try "Messi vs Bellingham"'><button class="go">Search</button></div>
+  <div class="pills hidden" id="pB">
+    <div class="plabel">narrow it</div>
+    <button class="pill" data-g="position" data-v="ST">ST</button>
+    <button class="pill" data-g="position" data-v="Winger">Winger</button>
+    <button class="pill" data-g="position" data-v="CM">CM</button>
+    <button class="pill" data-g="score" data-v="Generational">Generational</button>
+    <button class="pill" data-g="score" data-v="Iconic">Iconic</button>
+  </div>
+  <div class="hint" id="hB">Type three characters to see it. <b>That is the objection</b> , a control that appears only once you already know what you are doing teaches nobody.</div>
+</div>
+
+<h2>What each pill does</h2>
+<table><tr><th>pill</th><th>group</th><th>hands off as</th></tr>
+<tr><td>ST, Winger, CM, CB, GK</td><td>position</td><td><code>rankings.html?f=position:ST</code></td></tr>
+<tr><td>Generational, Iconic, World Class</td><td>band</td><td><code>rankings.html?f=score:Iconic</code></td></tr></table>
+
+<div class="note"><b>Honours is deliberately not in the first cut, and the columns are the lesser reason.</b> The two continental types need their matview columns, which ride the sitting. The stronger reason is that <b>honours is the group most likely to return nothing from the front door</b> , most players hold none. On rankings an empty grid is browsing; on the screen everyone sees first, <b>an empty result reads as broken, not as narrow</b>.</div>
+
+<div class="ask"><b>Pick one:</b> A always-visible, or B on-type. A is built here as the recommendation , the pills are the only thing on that screen that teaches what the platform can be asked, and a control that hides until you already know is teaching nobody.</div>
+
+<script>
+  function wire(pid,hid,tmpl){
+    const p=document.getElementById(pid), h=document.getElementById(hid);
+    p.addEventListener('click',e=>{
+      const b=e.target.closest('.pill'); if(!b) return;
+      p.querySelectorAll('.pill[data-g="'+b.dataset.g+'"]').forEach(x=>{ if(x!==b) x.classList.remove('on'); });
+      const on=b.classList.toggle('on');
+      const sel=[...p.querySelectorAll('.pill.on')].map(x=>x.dataset.g+':'+x.dataset.v);
+      h.innerHTML = sel.length ? ('Hands off to <b>rankings.html?f='+sel.join('&amp;f=')+'</b>') : tmpl;
+    });
+  }
+  wire('pA','hA','The pills are the only thing on this screen that says what can be asked.');
+  wire('pB','hB','Type three characters to see it. <b>That is the objection</b> , a control that appears only once you already know what you are doing teaches nobody.');
+  const qb=document.getElementById('qB'), pb=document.getElementById('pB');
+  qb.addEventListener('input',()=>{ pb.classList.toggle('hidden', qb.value.trim().length<3); });
+</script>
+</div></body></html>
