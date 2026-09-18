@@ -102,3 +102,7 @@ _demo_gktraj3.html
 # Pattern is **/ because the files live in exports/bam/player/<timestamp>/ ,
 # a bare exports/bam/player/*.csv matches nothing.
 exports/bam/player/**/*.csv
+
+# BAM match backfill , CSVs regenerable bulk data, meta sidecars tracked.
+exports/bam/*-matches/**/*.csv
+exports/bam/*-matches/*.csv
