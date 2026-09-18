@@ -1,0 +1,131 @@
+{
+  "league_id": 203,
+  "slug": "tr-matches",
+  "format": "football-data.co.uk columns",
+  "retrieved_at": "2026-09-18T19:26:58.372Z",
+  "xg": "NOT SERVED by API-Football; HxG/AxG are empty by design",
+  "seasons": [
+    {
+      "season": 2011,
+      "through": "12/05/2012",
+      "match_count": 330,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2012,
+      "through": "19/05/2013",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2013,
+      "through": "18/05/2014",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2014,
+      "through": "30/05/2015",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2015,
+      "through": "19/05/2016",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 305
+    },
+    {
+      "season": 2016,
+      "through": "03/06/2017",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 306
+    },
+    {
+      "season": 2017,
+      "through": "19/05/2018",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 306
+    },
+    {
+      "season": 2018,
+      "through": "26/05/2019",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 305
+    },
+    {
+      "season": 2019,
+      "through": "26/07/2020",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 306
+    },
+    {
+      "season": 2020,
+      "through": "15/05/2021",
+      "match_count": 420,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 420
+    },
+    {
+      "season": 2021,
+      "through": "22/05/2022",
+      "match_count": 380,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 380
+    },
+    {
+      "season": 2022,
+      "through": "07/06/2023",
+      "match_count": 341,
+      "missing_count": 1,
+      "shots": true,
+      "rows_with_shots": 313
+    },
+    {
+      "season": 2023,
+      "through": "26/05/2024",
+      "match_count": 380,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 380
+    },
+    {
+      "season": 2024,
+      "through": "01/06/2025",
+      "match_count": 342,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 342
+    },
+    {
+      "season": 2025,
+      "through": "17/05/2026",
+      "match_count": 306,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 306
+    }
+  ],
+  "total_calls": 3730,
+  "through": "17/05/2026"
+}
