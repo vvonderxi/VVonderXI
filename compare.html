@@ -246,9 +246,14 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .vtagline{font-family:'Bricolage Grotesque';font-style:normal;font-weight:400;font-size:20px;
     line-height:1.48;margin:22px auto 24px;max-width:46ch;color:var(--cream)}
   body.light .vtagline{color:var(--charcoal)}
-  /*  The masthead block , label, headline, deck, score , stays centred above the left-aligned
-      body. Two alignments on purpose: the conclusion is a masthead, the argument is prose.  */
-  .vfinal .vlabel,.vfinal .vwho,.vfinal .vtagline,.vfinal .vscore{text-align:center}
+  /*  THE PLATE IS A TOKEN PER GROUND, NOT ONE VALUE , SS C: define every ground on the token
+      itself so a new consumer does not have to know which themes it was tested in. The `-0`
+      pair is the same colour at zero alpha, because a gradient to `transparent` interpolates
+      through transparent BLACK in some engines and greys the middle of the fade.  */
+  :root{--vfinal-plate:#1A1614;--vfinal-plate-0:rgba(26,22,20,0)}
+  body.light{--vfinal-plate:#EFE7D6;--vfinal-plate-0:rgba(239,231,214,0)}
+  /*  [WAS THE TWO-ALIGNMENT RULE, NOW REDUNDANT , the panel is centred throughout, so these
+      four no longer need to opt in. Kept as one line for .vtagline's centring margin only.  */
   .vfinal .vtagline{margin-inline:auto}
   /*  THE ONE LINE THAT SAYS WHY THE INDEX STEPPED BACK , 2026-09-13. It is quieter than the
       blurb above it on purpose: the blurb is the tag's own voice and this is a footnote to it.
@@ -385,8 +390,19 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
     THE WAIT STATE MOVES WITH IT. `.vquote-wait` is a FLEX container and text-align has no
     say over flex items , that is recorded further down this sheet , so its justify-content
     is switched to flex-start in the same edit rather than left centred and forgotten.  */
-.vfinal{margin-top:38px;padding:38px 34px 32px;text-align:left;position:relative;
-  background:var(--surf-hero);border:1px solid var(--edge-hero);border-radius:20px;
+/*  A , FULLY CENTRED, AND THE GROUND FADES (2026-09-19, replacing the left-aligned build of
+    the same day). The left alignment was taken to fix a reading problem that turned out not
+    to be the alignment: the pull quote set to 42 characters behind an 18px indent and a 2px
+    rule, which reads as a quotation lifted from somewhere else rather than as the lead. With
+    the rule and the indent gone the quote is a centred statement, and the panel can be one
+    thing again.
+    THE GROUND IS A DARKER PLATE THAT FADES OUT BEFORE THE EVIDENCE BEGINS, so the payoff sits
+    on its own surface and the separation comes from the fade rather than from a border. The
+    fade has to land before the green panel starts or the two edges fight , that join is the
+    reason it was demoed in context rather than alone.  */
+.vfinal{margin-top:38px;padding:38px 34px 32px;text-align:center;position:relative;
+  background:linear-gradient(180deg,var(--vfinal-plate) 0%,var(--vfinal-plate) 58%,var(--vfinal-plate-0) 100%),var(--surf-hero);
+  border:1px solid var(--edge-hero);border-radius:20px;
   box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)}
 .vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
   width:168px;height:4px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--pink),var(--gold))}
@@ -400,14 +416,16 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       paragraph keeps the italic and becomes the pull quote, which is what the italic was
       always for. Every paragraph in italic is emphasis spent evenly, which is emphasis spent
       on nothing.  */
-  .vfinal .vquote{max-width:66ch;margin-inline:0;font-style:normal;font-size:16.5px;line-height:1.62}
+  .vfinal .vquote{max-width:66ch;margin-inline:auto;font-style:normal;font-size:16.5px;line-height:1.62}
   /*  THE PULL QUOTE IS SELECTED BY CLASS, NOT BY :first-of-type , CORRECTED BEFORE SHIPPING.
       `:first-of-type` matches on ELEMENT type, not class: `.vlabel` is the first <div> in
       `.vfinal`, so `.vquote:first-of-type` matched NOTHING and the rule was silently inert ,
       the exact shape SS C records, an override that loses is indistinguishable from one never
       written. The first quote is the one carrying neither `.vquote2` nor `.vquote3`.  */
+  /*  NO RULE AND NO INDENT , that pair is what made it read as an insertion. Measured: with
+      them it sets to 42 characters, without them to 46 of the same text.  */
   .vfinal .vquote:not(.vquote2):not(.vquote3){font-style:italic;font-size:20px;line-height:1.46;
-    max-width:48ch;padding-left:18px;border-left:2px solid var(--pink-ink);margin-block:4px 22px}
+    max-width:52ch;margin:22px auto 24px;padding-left:0;border-left:0}
   /*  except while it is the WAIT line, which is a status and not the season's voice , the
       existing .vquote-wait rule already drops the italic with !important; this drops the rule
       that would otherwise draw a pull-quote bar around "Reading the season".  */
