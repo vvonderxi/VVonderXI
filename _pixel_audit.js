@@ -111,13 +111,26 @@
     // FAILURE 2: absolute floor, not a share.
     const floor = Math.max(25, Math.round(w*h*0.0005));
     // FAILURE 1: ink is the FURTHEST cluster by luminance that clears the floor.
-    let ink = null, best = -1;
-    for (const c of cl.slice(1)){
-      if (c.n < floor) continue;
-      const d = Math.abs(LUM(c.c) - LUM(ground.c));
-      if (d > best){ best = d; ink = c; }
+    /*  ACCUMULATE THE INK CORE RATHER THAN DEMANDING ONE FAT BIN , FIXED 2026-09-19 after the
+        first playbook run declined `em`, `span.mut` and `span.lgpc`. 3-bit binning splits
+        ANTIALIASED small text across many bins, so at 8 to 11px no single bin clears the
+        absolute floor and the element reads as unmeasurable. Requiring one bin therefore
+        fails on exactly the text this harness exists to judge , the chips are 8.5 to 11px.
+        SO: take every non-ground bin, order by luminance DISTANCE from the ground (furthest
+        first , failure 1 still holds, the nearest bins are the antialiased edge), and
+        accumulate until the floor is met. The ink is the count-weighted mean of that core.
+        This keeps both earlier guarantees: the edge tones are added LAST and only if the
+        core is still short, and the floor stays ABSOLUTE. The control is what proves it ,
+        `.pspot` must still read 3.89 after this change, or the change is wrong.  */
+    const cand = cl.slice(1).map(c => ({ c:c.c, n:c.n, d:Math.abs(LUM(c.c) - LUM(ground.c)) }))
+                            .sort((a,b) => b.d - a.d);
+    let acc = 0, R = 0, G = 0, B = 0;
+    for (const c of cand){
+      if (acc >= floor) break;
+      acc += c.n; R += c.c[0]*c.n; G += c.c[1]*c.n; B += c.c[2]*c.n;
     }
-    if (!ink) return { skip:'no ink cluster above the absolute floor , text too sparse to measure here' };
+    const ink = acc >= floor ? { n:acc, c:[Math.round(R/acc), Math.round(G/acc), Math.round(B/acc)] } : null;
+    if (!ink) return { skip:'no ink mass above the absolute floor , nothing painted in this crop' };
     return { ratio: CR(ink.c, ground.c), ink:ink.c, ground:ground.c,
              inkPx:ink.n, groundPx:ground.n, floor, px:cs.fontSize, weight:cs.fontWeight,
              text:(el.textContent||'').trim().slice(0,22) };
