@@ -6,7 +6,7 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 23 of 36 rows (64%)**
+**COMPLETE: 24 of 36 rows (67%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **THE COUNT WAS WRONG AND IS CORRECTED (2026-09-19): it read 15 of 25 when the list holds 35
 rows and 23 are DONE.** And the first correction got it wrong too , 20 of 34 , because I counted
@@ -57,7 +57,7 @@ that only ever rises is measuring the writing, not the work.**
 | 33 | Season toggle placement, beside the trigger | **DONE** | Claude | Moved off the card face into `#seasonZone`. **Needed a row wrapper** , the zone is a COLUMN flex, so `inline-flex` on the child stacked it underneath. Ink inherits the trigger's, measured identical |
 | 34 | The season panel should fold on selection | **DONE** | Claude | `switchSeason(id, fromPanel)` , the panel rows pass the flag, the stepper does not. **Stepping with the list open must not close it**, that gesture wants it visible |
 | 35 | The wash is on the card's opener | **DONE** | Claude | **NOT a stray selector , my own Chronicle build, approved from a description and wrong in the render.** Measured on the deployed preview: 7 washed elements, 6 are 184-235px marked phrases in Scout and Notes, the 7th was the 751px pull-quote. Removed. **Trajectory has NO AI prose to wash , only a static caption** |
-| 36 | BAM club-name check reads false on every completed season | **OPEN , DEFECT** | Claude | 93 of 94 platform-export seasons read `match:false`; 87 because the unplayed set is EMPTY, not because names differ. **6 have real unplayed names and are unexamined** |
+| 36 | BAM club-name check reads false on every completed season | **DONE** | Claude | Two checks now, `scripts/bam/club-identity.js`: in-season names (a completed season is NOT APPLICABLE, never a pass) and identity across seasons by ApiTeamId. On the platform exports: 87 N/A, 7 OK, 0 differ; one RENAME found, Bastia / SC Bastia (id 1305). The six unexamined seasons were real football, not splits |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -943,4 +943,33 @@ finished season , the regular-season `club_set` already in the same meta is the 
 , rather than against the unplayed set. **Do not "fix" it by treating an empty unplayed set as a
 pass:** that turns the check off on exactly the seasons BAM fits on, and a name split in a
 finished season is the case with the most rows behind it.
+
+### 36 , CLOSED. Two checks, because one comparison cannot cover both states of a season
+
+**THE SIX SEASONS WERE READ FIRST, AND ALL SIX ARE REAL FOOTBALL.** Every one had an EMPTY
+`only_in_unplayed`: BPL 2011-2014 are cancelled legs of the Belgian relegation play-off
+(Play-offs III, a best-of-five that ended early), L1 2013 is an AWARDED Nantes v Bastia, and TR
+2022 is Gaziantep FK v Trabzonspor, never played after Gaziantep withdrew following the February
+2023 earthquake. **So all 93 false readings were the artefact, and zero were name splits.**
+
+**THE FIX, `scripts/bam/club-identity.js`, read by `check-coverage.js`:**
+- **In-season:** a fixture-only name is a split; a results-only name is a split only while the
+  season is still running. **A completed season is NOT_APPLICABLE** , printed as such, never
+  counted as a pass, which is the trap this row's own note warned against.
+- **Across seasons:** `names_<slug>.csv` by `ApiTeamId`. Overlapping spans under one id = SPLIT,
+  one name under two ids = COLLISION, disjoint spans = RENAME (reported, not a defect).
+
+**MEASURED ON THE 94 PLATFORM SEASONS: 87 not applicable, 7 OK, 0 differ.** Controls, each of
+which had to change the answer: the OLD check on the same two leagues printed `CLUB NAMES
+DIFFER` on every season and FAILED; the NEW check with one planted fixture-only name reports
+exactly that season and FAILS; planted SPLIT and COLLISION rows are both caught.
+
+**AND THE ID CHECK FOUND SOMETHING THE NAME CHECK NEVER COULD: l1 team 1305 is "Bastia" 2012-2015
+and "SC Bastia" 2016.** A provider rename, consistent within each season, so not an export defect
+, but **a consumer keying clubs by name splits Bastia's history at 2016/17**. It is now listed in
+the generated README for BAM, with the instruction to join on `ApiTeamId`.
+
+**NOT CHANGED, DELIBERATELY: the exporter's `match` field.** The 94 delivered metas keep it, and
+the README now says it is not meaningful on a completed season. Rewriting delivered files, or
+changing a field BAM may already read, is Lucas's call.
 

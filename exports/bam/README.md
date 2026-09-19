@@ -72,6 +72,13 @@ because it measures the brief. Read from each `manifest.json`:
 
 Total: **31,405 matches**, **16,650 calls** as recorded in the manifests.
 
+**Club identity across seasons**, read from each `names_<dir>.csv` by `ApiTeamId`:
+
+- `l1-matches` RENAME (ApiTeamId 1305): "Bastia" 2012-2015, "SC Bastia" 2016-2016
+
+A RENAME is not a defect in the export, but a consumer that keys clubs by NAME will split that
+club's history at the rename. Join on `ApiTeamId`.
+
 **OVERLAP, UNRESOLVED: `ere-matches` carries API league 88, the same id as the brief's `eredivisie`.**
 `check-coverage.js` looks under `eredivisie/` and does not read `ere-matches/`. Whether that export satisfies the
 brief's row is not established here , it is a decision, not something this file can derive.
@@ -142,10 +149,23 @@ Date,HomeTeam,AwayTeam,FTHG,FTAG,HTHG,HTAG,HS,AS,HST,AST,HxG,AxG,Round,RegularSe
 ## THE CLUB-NAME CHECK
 
 A fixture list naming clubs differently from the results splits a club's rating with nothing
-failing. Every season's meta carries `club_names`: the played and unplayed name counts, any
-name appearing in only one set, and a `match` boolean. Verified on Eredivisie 2026/27 before
-the format was settled , 18 clubs on both sides, zero asymmetry, because both sets come from
-the same response.
+failing. Every season's meta carries `club_names`: the played and unplayed name counts and
+any name appearing in only one set. **Two checks read it, because one comparison cannot cover
+both states of a season** (`scripts/bam/club-identity.js`):
+
+- **In-season.** A fixture naming a club the results never do is a split, and so, while the
+  season is still running, is a results-only name. **On a COMPLETED season there are no unplayed
+  fixtures, so the comparison is NOT APPLICABLE** , reported as such, never counted as a pass.
+- **Across seasons.** `names_<slug>.csv` carries `ApiTeamId`. One id under two names with
+  overlapping seasons is a SPLIT, one name under two ids a COLLISION; disjoint seasons are a
+  RENAME, listed for any consumer that keys on names.
+
+**The `match` boolean in each meta is NOT meaningful on a completed season**: it compares
+played against an empty unplayed set and reads false on 93 of 94 platform seasons, none of them
+a real split. Read `only_in_unplayed`, or the check output above, not `match`.
+
+The in-season comparison was verified on Eredivisie 2026/27 before the format was settled , 18
+clubs on both sides, zero asymmetry, because both sets come from the same response.
 
 `reference/canonical_clubs.json` holds our club vocabulary to map against, and
 `reference/club_alias_map.json` the 33 aliases we derived, with the traps named , `Verona`

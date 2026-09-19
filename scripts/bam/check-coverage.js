@@ -17,8 +17,12 @@
          a bad pull, and neither announces itself. The bar is the league's OWN
          modal value, never a hardcoded season length: this project has paid
          twice for a hand-written table of league sizes.
-      4. CLUB-NAME IDENTITY , played vs unplayed name sets per season, read from
-         club_names.match. The one failure mode in the format with no symptom.
+      4. CLUB-NAME IDENTITY , in-season and across seasons, via club-identity.js. It USED to
+         read club_names.match, which is false on every COMPLETED season by construction
+         (the unplayed set is empty, so every club reads "only in played") , 93 of 94
+         platform seasons, zero real splits. Punchlist 36. A completed season is now
+         NOT_APPLICABLE in-season, reported and never counted as a pass, and identity across
+         seasons is read from ApiTeamId in names_<slug>.csv.
       5. ZERO-FIXTURE SEASONS, CLASSIFIED THREE WAYS , and only one is ours.
          A season whose file carries no fixtures is not one thing:
            NOT_PUBLISHED  the season exists and its fixture list is not out yet.
@@ -37,6 +41,7 @@ const fs=require('fs'), path=require('path');
 const ROOT=path.resolve(__dirname,'..','..'), BAM=path.join(ROOT,'exports','bam');
 const REF=path.join(BAM,'reference','shots_coverage_by_league.json');
 const ref=JSON.parse(fs.readFileSync(REF,'utf8')).bam_leagues;
+const {seasonNames, idNames}=require('./club-identity.js');
 
 let problems=0, leaguesSeen=0;
 const line=(s)=>console.log(s);
@@ -64,10 +69,14 @@ for(const [slug,spec] of Object.entries(ref).sort()){
   const odd=metas.filter(m=>m.season!==2026 && modal && Math.abs(m.fixtures_listed-modal)/modal>0.25)
                  .map(m=>`${m.season}:${m.fixtures_listed}`);
   // club-name identity
-  const nameFail=metas.filter(m=>m.club_names && m.club_names.match===false).map(m=>m.season);
-  const noNameCheck=metas.filter(m=>!m.club_names).map(m=>m.season);
+  const nameRes=metas.map(m=>({season:m.season, r:seasonNames(m)}));
+  const nameFail=nameRes.filter(x=>x.r.state==='DIFFER').map(x=>`${x.season} (${x.r.names.join('/')})`);
+  const noNameCheck=nameRes.filter(x=>x.r.state==='NO_CHECK').map(x=>x.season);
+  const nameNA=nameRes.filter(x=>x.r.state==='NOT_APPLICABLE').length;
+  const ids=idNames(path.join(BAM,'names_'+slug+'.csv'));
+  const idDefects=ids.findings.filter(f=>f.kind!=='RENAME'), idRenames=ids.findings.filter(f=>f.kind==='RENAME');
 
-  const bad=missing.length||noCsv.length||odd.length||nameFail.length;
+  const bad=missing.length||noCsv.length||odd.length||nameFail.length||idDefects.length;
   if(bad) problems++;
   line(`  ${slug.padEnd(24)} ${String(metas.length).padStart(2)}/${spec.expected_season_count} seasons`
      + `  shots flag ${String(spec.shots_label).padEnd(9)} measured ${measured?measured+'/'+String(measured+1).slice(2):'NONE'}`);
@@ -77,6 +86,10 @@ for(const [slug,spec] of Object.entries(ref).sort()){
   if(odd.length)          line(`      FIXTURE COUNT ODD    : ${odd.join(', ')} (league modal ${modal})`);
   if(nameFail.length)     line(`      CLUB NAMES DIFFER    : ${nameFail.join(', ')}`);
   if(noNameCheck.length)  line(`      no club-name check   : ${noNameCheck.join(', ')} (older format)`);
+  if(nameNA)              line(`      club names in-season : ${nameNA} season(s) complete, not applicable , identity read by team id instead`);
+  if(ids.state==='NO_MAP')line(`      NO names_${slug}.csv , identity across seasons UNCHECKED`);
+  idDefects.forEach(f=>   line(`      CLUB ID ${f.kind.padEnd(9)}: ${f.detail}`));
+  idRenames.forEach(f=>   line(`      club renamed (id ${f.id}): ${f.detail} , not a defect; a name-keyed consumer must join on the id`));
   /*  THE THREE-WAY CLASSIFICATION. api_results is what the provider returned for
       that season; written is what we put in the CSV. Only a season where the
       provider gave rows and we wrote none is ours to fix.  */

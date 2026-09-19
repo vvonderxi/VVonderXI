@@ -28,6 +28,7 @@ const OUT=path.join(BAM,'README.md');
 const refDoc=JSON.parse(fs.readFileSync(path.join(BAM,'reference','shots_coverage_by_league.json'),'utf8'));
 const ref=refDoc.bam_leagues;
 const aliases=JSON.parse(fs.readFileSync(path.join(BAM,'reference','club_alias_map.json'),'utf8'));
+const {idNames}=require('./club-identity.js');
 
 // ---- status: check-coverage.js verbatim. It exits 1 on any gap, which is data, not failure.
 const cov=cp.spawnSync(process.execPath,[path.join(__dirname,'check-coverage.js')],{encoding:'utf8'});
@@ -102,6 +103,15 @@ if(platform.length){
     P(`| \`${dir}\` | ${m.league_id} | ${m.seasons.length} | ${yy(Math.min(...ss))} | ${yy(Math.max(...ss))} | ${n(m.seasons.reduce((x,s)=>x+s.match_count,0))} | ${m.seasons.reduce((x,s)=>x+s.missing_count,0)} | ${m.seasons.filter(s=>s.shots).length} | ${String(m.retrieved_at).slice(0,10)} | ${m.total_calls!=null?n(m.total_calls):'NR'} |`);
   }
   P('',`Total: **${n(tot.matches)} matches**, **${n(tot.calls)} calls** as recorded in the manifests.`,'');
+  // club identity across seasons, from each names_<dir>.csv , the finding BAM most needs if it keys on names
+  const idf=[];
+  for(const {dir} of platform){ const r=idNames(path.join(BAM,'names_'+dir+'.csv'));
+    if(r.state==='NO_MAP') idf.push(`- \`${dir}\`: **no names map, identity across seasons unchecked**`);
+    r.findings.forEach(f=>idf.push(`- \`${dir}\` ${f.kind}${f.id?' (ApiTeamId '+f.id+')':''}: ${f.detail}`)); }
+  P('**Club identity across seasons**, read from each `names_<dir>.csv` by `ApiTeamId`:','',
+    ...(idf.length?idf:['- none: every id carries one name and every name one id']),'',
+    'A RENAME is not a defect in the export, but a consumer that keys clubs by NAME will split that',
+    'club\'s history at the rename. Join on `ApiTeamId`.','');
   const overlap=platform.filter(({m})=>byId.some(([,s])=>s.league_id===m.league_id));
   for(const {dir,m} of overlap){
     const [bslug]=byId.find(([,s])=>s.league_id===m.league_id);
@@ -168,10 +178,20 @@ P('## FILE FORMAT','',
 
 P('## THE CLUB-NAME CHECK','',
 'A fixture list naming clubs differently from the results splits a club\'s rating with nothing',
-'failing. Every season\'s meta carries `club_names`: the played and unplayed name counts, any',
-'name appearing in only one set, and a `match` boolean. Verified on Eredivisie 2026/27 before',
-'the format was settled , 18 clubs on both sides, zero asymmetry, because both sets come from',
-'the same response.','',
+'failing. Every season\'s meta carries `club_names`: the played and unplayed name counts and',
+'any name appearing in only one set. **Two checks read it, because one comparison cannot cover',
+'both states of a season** (`scripts/bam/club-identity.js`):','',
+'- **In-season.** A fixture naming a club the results never do is a split, and so, while the',
+'  season is still running, is a results-only name. **On a COMPLETED season there are no unplayed',
+'  fixtures, so the comparison is NOT APPLICABLE** , reported as such, never counted as a pass.',
+'- **Across seasons.** `names_<slug>.csv` carries `ApiTeamId`. One id under two names with',
+'  overlapping seasons is a SPLIT, one name under two ids a COLLISION; disjoint seasons are a',
+'  RENAME, listed for any consumer that keys on names.','',
+'**The `match` boolean in each meta is NOT meaningful on a completed season**: it compares',
+'played against an empty unplayed set and reads false on 93 of 94 platform seasons, none of them',
+'a real split. Read `only_in_unplayed`, or the check output above, not `match`.','',
+'The in-season comparison was verified on Eredivisie 2026/27 before the format was settled , 18',
+'clubs on both sides, zero asymmetry, because both sets come from the same response.','',
 '`reference/canonical_clubs.json` holds our club vocabulary to map against, and',
 `\`reference/club_alias_map.json\` the ${aliases.alias_entries} aliases we derived, with the traps named , \`Verona\``,
 'fuzzy-matches `Everton` above the correct `Hellas Verona`.','');
