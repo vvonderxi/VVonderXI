@@ -1,4 +1,23 @@
-# THE MATVIEW SITTING , WRITTEN, NOT RUN
+# THE MATVIEW SITTING , RUN 2026-09-19, AND THE DOWNTIME IS MEASURED FOR THE FIRST TIME
+
+**OUTAGE: ROUGHLY 42 SECONDS.** Steps 2 to 5 in the Supabase SQL editor, timed by Lucas:
+
+| step | what | time |
+|---|---|---|
+| 2 | `DROP` + `CREATE MATERIALIZED VIEW` (87 columns, 57,055 rows) | **11s** |
+| 3 | eleven indexes, including the three GIN trigram | **30s** |
+| 4 | grants | **1s** |
+| | **total matview unavailable** | **~42s** |
+
+**THE 11 SECONDS IS THE NUMBER TO CARRY FORWARD, AND IT SETTLES THE LANE QUESTION PERMANENTLY.**
+The service role's `statement_timeout` is **8 seconds**, so the `CREATE` alone exceeds it by
+three. Step 1, the `CREATE OR REPLACE VIEW`, ran fine through `exec_sql` in **812ms** , it
+rewrites a catalog entry and never computes the body. **Steps 2 and 3 could not have run from
+Claude Code, and a `CREATE` killed at 8 seconds leaves no matview and no route back from that
+lane.** The split was right, and it was right by three seconds rather than by principle.
+
+**THE INDEXES ARE THE EXPENSIVE HALF , 30s of the 42, not the rebuild.** Anyone budgeting a
+future sitting should size it on the index count, not on the row count.
 
 **It is 87 columns. Not 85, and not 78.** The count has been wrong once already and the
 arithmetic is written out in `SITTING.sql` so it cannot drift again: **76 existing + 11 new**.
@@ -27,9 +46,26 @@ chip that filters on a column which does not exist, which is a broken query rath
 missing feature.** A missing feature is visible and inert. A broken query returns an error to a
 reader who pressed a filter chip.
 
-So they render as **inert `soon` chips** until these two columns land, and they go live **with no
-code change** on the day they do. That is the mechanism working as designed, and it is the
-reason the derivation was safe to ship before the sitting.
+So they render as **inert `soon` chips** until these two columns land.
+
+**[CORRECTED 2026-09-19. THIS SAID THEY GO LIVE "WITH NO CODE CHANGE" AND THAT IS FALSE ,
+MEASURED AFTER THE SITTING, NOT REASONED.]** The columns exist, they are populated
+(`h_euro_winner` 73 cards, `h_copa_winner` 82), and they are reachable through PostgREST as the
+site's own role. **The chips are still inert**, because `soon` is derived from
+`HONOUR_FILTER_COLUMNS` , a hardcoded seven-element list in `vv-core.js` , and not from the
+database. Two keys have to be added by hand.
+
+**THE SAME PARAGRAPH CONTRADICTED ITSELF AND NOBODY CAUGHT IT.** The comment above that list
+says, correctly, "THE ONE HAND-MAINTAINED LIST LEFT IS HONOUR_FILTER_COLUMNS, AND IT IS KEYED ON
+THE DATABASE", and then four lines later says the chips "go live the moment the column lands,
+with no edit here". **Both cannot be true: a hand-maintained list keyed on the database is
+exactly a list that must be edited when the database changes.** The first sentence is right.
+
+This is CLAUDE.md's own recorded shape , a predicate that governs behaviour going stale when the
+behaviour changes, and a hardcoded list of a vocabulary's members surviving an addition to that
+vocabulary. **The rule it breaks is the one directly above it: when a type is added, grep for
+every hardcoded list of that type.** The derivation removed three such lists and left one, and
+the one it left is the one that gates the feature.
 
 ## RUNNING IT
 
