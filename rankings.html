@@ -289,6 +289,20 @@
       weight, rather than invented , and `--cream` is the house dark-ink pattern with a
       body.light override beneath, because this ground flips with the theme.  */
   .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  /*  LIGHT MODE , ADDED 2026-09-19. The base rule pins `color: var(--cream)`, which does NOT
+      flip with the theme while this page's ground DOES, so in light the pill painted cream on
+      cream and MEASURED 1.04 , invisible text on a live surface. SS C's own rule: an ink pinned
+      to a ground that moves. The 2026-09-15 pass fixed a different defect on this same element
+      (three undefined tokens left it with no background and no border) and took `.rankmore`'s
+      VALUES without taking its theme handling , `.rankmore` has had a body.light override all
+      along, two rules above this one.
+      #5f594e reads 5.52 on the pill's own wash (the page cream under rgba(0,0,0,0.04)), against
+      `.rankmore`'s #6a6256 at 4.78. The heavier control is the darker one, which is the
+      hierarchy the dark theme already has.
+      `:not(.on)` IS LOAD-BEARING, NOT TIDINESS. `body.light .rankfbtn` is (0,2,1) and would
+      outrank `.rankfbtn.on` at (0,2,0), repainting the ACTIVE pill's white-on-pink dark , a
+      fix that breaks the state it was not looking at.  */
+  body.light .rankfbtn:not(.on){color:#5f594e;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   .rankfbtn.on{background:var(--pink);color:#fff;border-color:transparent}
   .rankfbtn .chev{transition:transform .2s}
   .rankfbtn.on .chev{transform:rotate(180deg)}
