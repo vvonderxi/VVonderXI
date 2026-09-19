@@ -1002,6 +1002,41 @@
       served. That is the same duplication trap section C keeps recording.
       djb2, not sha , this is a change detector, not a security boundary, and it has to run
       in a browser with no crypto import.  */
+  /*  ── vvPayloadStats , THE VALUE-AWARE TWIN OF vvPayloadRev (2026-09-19) ────────────
+      WHY IT EXISTS. `verdict_cache` had three invalidators and none of them could see a
+      changed VALUE: `cache_version` catches changed instructions, `payloadRev` a changed
+      KEY SET, `rt_a`/`rt_b` a moved score. The 2026-09-16 assists repair changed a value,
+      added no key and left rt byte-identical, so a cached verdict saying assists were not
+      recorded stayed served and could never regenerate on its own. The NOTES side already
+      had this cover, through `stats_hash`; the verdict side did not.
+      IT RECURSES, AND THAT IS DELIBERATE. `statsHash` on the notes side stops at depth 1
+      and is pinned rather than fixed, because fixing it would re-hash every cached note.
+      This stamp is NEW, so it has no population to protect and inherits no bug: nested
+      objects (`recorded`, `keeper`) are walked, and key order cannot leak in because every
+      path is sorted before hashing.
+      IT IS CLIENT-DERIVED, like payloadRev, because the server never sees the payload , the
+      values live inside `messages`. Same standing as payloadRev: unvalidated client input,
+      used as a cache key and nothing else, so the worst a bad value does is cost a
+      regeneration. ABSENT IS NOT ZERO , a caller that sends none gets the old stamp shape.
+      djb2, to match its sibling, and because this has to run in a browser.  */
+  function vvPayloadStats(cards){
+    try{
+      var parts = [];
+      var walk = function(prefix, o){
+        Object.keys(o).sort().forEach(function(k){
+          var v = o[k], p = prefix ? prefix + '.' + k : k;
+          if (v && typeof v === 'object' && !Array.isArray(v)) walk(p, v);
+          else parts.push(p + '=' + (Array.isArray(v) ? v.slice().sort().join('~') : String(v)));
+        });
+      };
+      (cards || []).forEach(function(c, i){ walk('c' + i, vvAIStats(c) || {}); });
+      var src = parts.join('|');
+      var h = 5381;
+      for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;
+      return h.toString(16);
+    }catch(e){ return null; }   // never block a verdict on the stamp
+  }
+
   function vvPayloadRev(cards){
     try{
       var ks = {};
@@ -7322,7 +7357,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,

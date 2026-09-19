@@ -502,12 +502,28 @@ const VERDICT_VERSION_JUDGE = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM_JUDG
     unchanged , verified, not assumed.
     The notes path never had this hole; it hardcodes NOTES_SYSTEM at its own fetch. */
 const verdictSystemFor = (judge, custom) => custom || (judge ? VERDICT_SYSTEM_JUDGE : VERDICT_SYSTEM);
-const verdictVersionFor = (rev, judge, custom) => {
+/*  THE FOURTH SEGMENT IS A VALUE STAMP , ADDED 2026-09-19, AND IT CLOSES A HOLE THE OTHER
+    THREE COULD NOT SEE. cache_version catches changed INSTRUCTIONS, payloadRev a changed
+    KEY SET, rt_a/rt_b a moved SCORE. A stat corrected in place , shots_total, duels_won,
+    appearances , changes a VALUE, adds no key, and need not move rt, so all three stay
+    silent and the cached prose is served for ever citing the old figure. Measured: those
+    three each move statsRev and move neither payloadRev nor rt.
+    WHAT PROMPTED IT DID NOT NEED IT, AND THAT IS WORTH RECORDING. The 2026-09-16 assists
+    repair looked like the case for this, and it is not: vvAIStats emits
+    `not_recorded_basics` only while assists is null, so the KEY SET moved and payloadRev
+    already caught it. The instance was covered; the CLASS was not.
+    NO SCHEMA CHANGE. verdict_cache has no stats_hash column and cache_version is already a
+    multi-segment string, so the value stamp rides as a fourth segment. SS C's rule , filter
+    on the FIRST TWO dash-delimited segments for the prompt base , is unaffected.
+    ABSENT IS NOT ZERO. A caller that sends no statsRev (prewarm_verdicts.js, an older
+    client) gets the old stamp shape rather than a stamp claiming an empty payload.  */
+const verdictVersionFor = (rev, judge, custom, statsRev) => {
   const sys  = verdictSystemFor(judge, custom);
   const base = (sys === VERDICT_SYSTEM)       ? VERDICT_VERSION
              : (sys === VERDICT_SYSTEM_JUDGE) ? VERDICT_VERSION_JUDGE
              : PROMPT_REV + '-' + fingerprint(sys);
-  return rev ? (base + '-' + rev) : base;
+  const withRev = rev ? (base + '-' + rev) : base;
+  return statsRev ? (withRev + '-' + statsRev) : withRev;
 };
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
 
@@ -701,7 +717,7 @@ module.exports = async (req, res) => {
         model and they touch no cache stamp , the payload the model sees is `messages`, which
         is built in compare.html and already contains the names in prose form. Absent simply
         means the check reports reason:'no_names' and records nothing.  */
-    const { messages, max_tokens: _maxTokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, judge, surnameA, surnameB } = req.body;
+    const { messages, max_tokens: _maxTokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, statsRev, judge, surnameA, surnameB } = req.body;
     /*  THIS IS A PUBLIC, UNAUTHENTICATED, BILLABLE ENDPOINT AND IT IS THE ONLY ONE WE DEPLOY.
         `Access-Control-Allow-Origin: *`, no auth, no rate limit, and `messages`, `system` and
         `max_tokens` all arrive from the request body and go to Anthropic on OUR key. Without
@@ -768,7 +784,7 @@ module.exports = async (req, res) => {
         // A request that supplies no rt cannot check (3), but (1) and (2) still
         // apply, so a legacy row is never served as valid.
         const unstamped = !row || row.rt_a == null || row.rt_b == null || row.cache_version == null;
-        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge, customSystem);
+        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge, customSystem, statsRev);
         const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
         if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
@@ -965,7 +981,7 @@ module.exports = async (req, res) => {
       try {
         if (stampable) await sb.from('verdict_cache').upsert({
           pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-          rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem),   // stamps
+          rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem, statsRev),   // stamps
           verdict: stored, winner_card_id: winnerId, model: MODEL
         }, { onConflict: 'pair_key', ignoreDuplicates: false });
       } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }

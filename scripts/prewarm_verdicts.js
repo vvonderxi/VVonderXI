@@ -175,7 +175,7 @@ async function callClaude(userPrompt, attempt = 0) {
     const r = byKey.get(p.key);
     if (!r || !r.verdict || r.model !== MODEL) return false;
     if (r.rt_a == null || r.rt_b == null || r.cache_version == null) return false;   // legacy -> regenerate
-    if (r.cache_version !== verdictVersionFor(VVCore.vvPayloadRev([A, B]))) return false;
+    if (r.cache_version !== verdictVersionFor(VVCore.vvPayloadRev([A, B]), false, undefined, VVCore.vvPayloadStats([A, B]))) return false;
     return r.rt_a === (+p.A.vv || 0) && r.rt_b === (+p.B.vv || 0);
   };
   /*  ── PATH B PAIRS ARE NOT PRE-WARMABLE FROM HERE , 2026-09-11 ──────────────────────
@@ -236,7 +236,7 @@ async function callClaude(userPrompt, attempt = 0) {
               never served, with nothing to show for it but the bill. Both halves come from
               the two modules that own them (analyse.js, vv-core.js) so neither can drift. */
           rt_a: +p.A.vv || 0, rt_b: +p.B.vv || 0,
-          cache_version: verdictVersionFor(VVCore.vvPayloadRev([p.A, p.B])),
+          cache_version: verdictVersionFor(VVCore.vvPayloadRev([p.A, p.B]), false, undefined, VVCore.vvPayloadStats([p.A, p.B])),
           verdict, winner_card_id: winnerId, model: MODEL
         }, { onConflict: 'pair_key', ignoreDuplicates: false });
         if (werr) throw new Error('DB write: ' + werr.message);
