@@ -138,6 +138,7 @@
         `opts.backdrop` overrides it, which is the one-parameter escape for any surface where
         even this is wrong.  */
     let backdrop = opts.backdrop || opaqueGround(host) || (bodyOpaque ? bodyBg : null);
+    const groundWasSampled = !backdrop;          //  nothing in the tree paints a flat colour
     if (!backdrop) backdrop = await sampleGround(hr);
     if (!backdrop) return { skip:'VOID , no backdrop resolvable and the page sample failed' };
     const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -156,7 +157,35 @@
     const cl = clusters(px,w,h);
     if (!cl.length) return { skip:'no opaque pixels' };
 
-    const ground = cl[0];
+    /*  THE MODAL CLUSTER IS NOT THE GROUND WHEN THE CROP IS MOSTLY GLYPH , FOUND 2026-09-19
+        ON `.lmed`, AN 85x11 LABEL. In a small, dense box the most common colour is the TEXT,
+        so ink and ground INVERT and the ratio comes out as ink-against-ink. It reported 1.97
+        for an element that measures 6.50 against its real ground. SS D records this exact
+        failure for `.vmono` under the CSS walker; it is not specific to that instrument.
+        SO THE GROUND IS TAKEN FROM BESIDE THE ELEMENT WHENEVER THAT SAMPLE SUCCEEDS, and the
+        modal cluster is the fallback rather than the default. The sample cannot be fooled by
+        glyph density because it contains no glyphs.
+        AND WHERE NEITHER IS TRUSTWORTHY THE ELEMENT VOIDS , if the modal cluster holds less
+        than half the opaque pixels and no sample is available, the crop is glyph-dominated
+        and there is no ground to report.  */
+    let ground = cl[0];
+    /*  ONLY WHERE NOTHING PAINTS. The control caught the first version of this immediately:
+        taking the ground from beside the element moved `.pspot` from 3.89 to 12.08, because
+        `.pspot` paints its OWN pink fill , so the colour beside it is the page, not the chip,
+        and the measurement became cream-on-page instead of cream-on-pink.
+        The beside-sample is valid exactly when the element and its ancestors paint nothing,
+        which is the same condition that made the backdrop need sampling at all. Where a host
+        does paint, the ground IS in the crop and the modal cluster is right.  */
+    const besideRGB = groundWasSampled ? await sampleGround(r) : null;
+    if (besideRGB){
+      const n = besideRGB.match(/\d+/g).map(Number);
+      ground = { n: ground.n, c: [n[0], n[1], n[2]] };
+    } else {
+      const opaque = cl.reduce((a,c)=>a+c.n, 0);
+      if (cl[0].n / opaque < 0.5)
+        return { skip:'VOID , crop is glyph-dominated (' + Math.round(100*cl[0].n/opaque)
+                      + '% modal) and no ground sample was available' };
+    }
     // FAILURE 2: absolute floor, not a share.
     const floor = Math.max(25, Math.round(w*h*0.0005));
     // FAILURE 1: ink is the FURTHEST cluster by luminance that clears the floor.
@@ -171,7 +200,10 @@
         This keeps both earlier guarantees: the edge tones are added LAST and only if the
         core is still short, and the floor stays ABSOLUTE. The control is what proves it ,
         `.pspot` must still read 3.89 after this change, or the change is wrong.  */
-    const cand = cl.slice(1).map(c => ({ c:c.c, n:c.n, d:Math.abs(LUM(c.c) - LUM(ground.c)) }))
+    /*  every cluster is an ink CANDIDATE now, because the ground may have come from beside the
+        crop rather than from inside it , cl[0] is no longer necessarily the ground.  */
+    const cand = cl.filter(c => Math.abs(LUM(c.c) - LUM(ground.c)) > 0.02)
+                   .map(c => ({ c:c.c, n:c.n, d:Math.abs(LUM(c.c) - LUM(ground.c)) }))
                             .sort((a,b) => b.d - a.d);
     let acc = 0, R = 0, G = 0, B = 0;
     for (const c of cand){

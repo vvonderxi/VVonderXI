@@ -1260,8 +1260,18 @@
   body.light .gk3 .lcap{color:#5f594e}
   .gk3 .lax{position:relative;display:flex;justify-content:space-between;gap:10px;margin:10px 0 0;
     font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;color:rgba(243,237,224,.42)}
-  body.light .gk3 .lax{color:#7a736a}
+    text-transform:uppercase;color:#a49d93}
+  body.light .gk3 .lax{color:#5f594e}
+  /*  THESE TWO WERE WRONG IN BOTH THEMES BY TWO DIFFERENT MECHANISMS , fixed 2026-09-19 after
+      the pixel harness could finally read this page. Dark was `rgba(243,237,224,.42)`, an ALPHA
+      with no ink of its own, and measured 3.66; light was the literal `#7a736a` and measured
+      1.71, against a 4.5 bar.
+      `.lmed` is the span that surfaced it , it is absolutely positioned, so it carries no
+      colour and inherits this one , but the fix belongs HERE, because all three axis labels
+      (Worst, Median, Best) share this ink and fixing only the one that was measured would have
+      left its two siblings exactly as wrong. SS C's sibling-states rule.
+      NOTE THE LIGHT VALUE WAS NOT ABSENT, IT WAS PRESENT AND WRONG, which is worse: an override
+      that exists reads as handled, so nothing prompts a second look.  */
   .gk3 .lnote{font-family:'Inter';font-size:13px;line-height:1.6;
     color:rgba(243,237,224,.5);margin:16px 0 0;max-width:64ch}
   body.light .gk3 .lnote{color:#6d675e}
