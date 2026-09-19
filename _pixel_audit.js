@@ -90,7 +90,21 @@
 
     const host = (opts.host && el.closest(opts.host)) || el.parentElement || el;
     const hr = host.getBoundingClientRect();
-    const backdrop = opaqueGround(host) || getComputedStyle(document.body).backgroundColor;
+    /*  FAILURE 5, FOUND 2026-09-19 ON PLAYBOOK , AN UNRESOLVABLE BACKDROP MUST VOID, NOT
+        REPORT. `opaqueGround` returns null when the nearest painting ancestor uses a
+        background-IMAGE, and the old fallback was `document.body`'s background-color , which
+        on playbook and vvindex is `rgba(0,0,0,0)`. html2canvas then composited the host onto
+        TRANSPARENT, so the crop's modal cluster was not the rendered ground at all and every
+        element on those pages read 1.2 to 2.3 on text that is plainly legible.
+        THAT IS THE SAME CLASS OF ERROR THE CSS WALKER MAKES ON THESE PAGES, arrived at by a
+        different route, and it would have been reported as five confident failures. A harness
+        whose ground is unknown must say so , SS C: a guard that never fires is
+        indistinguishable from one that does not work, and a WRONG ground is worse than none.  */
+    const bodyBg = getComputedStyle(document.body).backgroundColor;
+    const bodyOpaque = bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent';
+    const backdrop = opaqueGround(host) || (bodyOpaque ? bodyBg : null);
+    if (!backdrop) return { skip:'VOID , no opaque backdrop resolvable (gradient-painted page); '
+                                 + 'this surface needs a backdrop supplied explicitly' };
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const canvas = await window.html2canvas(host, { backgroundColor: backdrop, scale: dpr,
       logging:false, useCORS:true, width:Math.ceil(hr.width), height:Math.ceil(hr.height) });
