@@ -31,7 +31,7 @@
 <meta name="twitter:title" content="VVonderXI , Compare">
 <meta name="twitter:description" content="Put any two player seasons side by side. The VV Index weighs output, league strength and role, then gives a verdict.">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel-t:#1C6038;--panel-b:#0F3A22;
     /* ── TONAL DEPTH , four surface tiers (dark values; light overridden in body.light).
@@ -222,6 +222,37 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .verdict{max-width:920px;margin:38px auto 0;background:var(--surf-stage);border-radius:20px;padding:40px 44px;display:none;text-align:center;box-shadow:0 30px 60px -24px rgba(0,0,0,0.6);overflow-x:clip}   /* green-scope: OUTER stage is standard dark; the green lives on the .vsect finding boxes */   /* #109: contain verdict-side horizontal drift here (cards stay clip-free) */
   .verdict.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  /*  ── THE SERIF , FRAUNCES UPRIGHT, 66 KB, VERDICT PANEL ONLY (2026-09-19) ──────────────
+      WHAT WAS BOUGHT AND WHAT WAS NOT. One VARIABLE file covers weights 400 and 600, so the
+      upright range costs 66 KB of latin woff2. THE ITALIC IS A SECOND 42 KB FILE AND IS NOT
+      LOADED , the pull quote stays Bricolage italic, which this page already ships and which
+      is a real italic rather than a synthesised slant.
+      THE FALLBACK IS BRICOLAGE, NOT A SYSTEM SERIF. Before Fraunces arrives the reader sees a
+      face this page already has, so the pre-swap state is the platform's own type. Georgia
+      sits last as the resort if both webfonts fail.
+      `display=swap` ON THE LINK, AND IT IS MEASURED RATHER THAN ARGUED. With Fraunces
+      genuinely applying (control: 1ch is 9.80px in Bricolage against 9.72px in Fraunces, so
+      the face IS active , an earlier run of this test silently compared Bricolage with
+      itself and reported a confident zero), the swap reflows NOTHING across eight
+      combinations: two prose blocks at 700, 560, 440 and 340px, identical heights and
+      identical line counts every time. Fraunces is ~0.8% narrower per character, which is
+      not enough to move a break on these texts.
+      SO `optional` WAS REJECTED: it would leave some visitors never seeing the face that was
+      just paid for, to avoid a reflow that does not happen. The residual risk is a line
+      already within about one character of breaking, which is small and not zero.
+      SCOPE IS `.vfinal` ONLY. The story columns, the head-to-head, and the card's scout,
+      notes and chronicle are the same question and are NOT changed here.  */
+  /*  SCOPED THROUGH `.verdict` BECAUSE `.vfinal` ALONE LOSES. `.verdict .vwho` and
+      `.verdict .vquote` are both (0,2,0) and sit LATER in this sheet, so a `.vfinal .vquote`
+      of equal specificity is beaten on source order , the rule rendered nothing and looked
+      exactly like a rule that was never written, which is SS C's own recorded shape. These
+      are (0,3,0) and win outright.  */
+  .verdict .vfinal .vwho{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif;font-weight:600}
+  .verdict .vfinal .vtagline{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif}
+  .verdict .vfinal .vquote{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif}
+  /*  the pull quote is the ONE element that does not take it , it is the element the italic
+      file would have been bought for, and the italic file is not bought.  */
+  .verdict .vfinal .vquote:not(.vquote2):not(.vquote3){font-family:'Bricolage Grotesque',Georgia,serif}
   .verdict .vlabel{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#7e5a10;margin-bottom:16px}
   body:not(.light) .verdict .vlabel{color:var(--gold)}   /* bright gold reads on charcoal; on the white hero it measured 1.84 */
   .verdict .vquote{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:18.5px;line-height:1.55;color:var(--cream)}   /* #102: punchier statement */
