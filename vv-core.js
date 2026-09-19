@@ -4918,7 +4918,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
    *  so the two UIs CANNOT drift from the engine vocabulary again.
    *   - profile[].items[].v MUST equal a TAG_DEFS key (verified in test).
    *   - prestige mirrors the two prestige badges; honours mirror HONOUR_META
-   *     types (honour filtering is DEFERRED , rendered visibly "soon");
+   *     types (all nine filter server-side since 2026-09-19; a type with no
+   *     matview column would render visibly "soon" and inert);
    *     position mirrors the locked 8-bucket position_pool.
    * ════════════════════════════════════════════════════════════════════ */
   const FILTER_TAXONOMY = {
@@ -4926,22 +4927,27 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       { v:'Generational', l:'Generational', e:'👑' },
       { v:'Iconic',       l:'Iconic',       e:'🏅' },
     ],
-    // DEFERRED (Option C , needs honour flags on the matview). Rendered "soon", inert.
+    // All nine honour types filter server-side off the h_* flags on the matview.
     /*  DERIVED FROM HONOUR_META AND ORDERED BY TIER , 2026-09-15, AND DERIVING ALONE WOULD
         NOT HAVE CLOSED THE REPORTED GAP. The two continental honours were missing from this
-        list, and they are ALSO missing from the matview: `h_euro_winner` and `h_copa_winner`
-        do not exist, so a chip for either would have filtered on a column that is not there.
-        Measured from pg_attribute, not assumed , seven `h_*` columns exist and nine honour
-        types are defined.
-        SO THE ONE HAND-MAINTAINED LIST LEFT IS HONOUR_FILTER_COLUMNS, AND IT IS KEYED ON THE
+        list AND from the matview, so a chip for either would have filtered on a column that
+        was not there. [BOTH COLUMNS LANDED 2026-09-19 in the matview sitting , `h_euro_winner`
+        73 cards, `h_copa_winner` 82, verified through PostgREST as the site's own role , and
+        the two keys are in the list below. Nine `h_*` columns now, nine honour types.]
+        THE ONE HAND-MAINTAINED LIST LEFT IS HONOUR_FILTER_COLUMNS, AND IT IS KEYED ON THE
         DATABASE RATHER THAN ON THE VOCABULARY. That is the honest place for it: the client
         cannot ask the matview what columns it has without a round trip on every page load, and
         a label list drifting is cosmetic while a column list drifting is a broken query.
         A TYPE WITH NO COLUMN RENDERS AS A `soon` CHIP RATHER THAN BEING HIDDEN, which is this
-        file's existing rule , the inert chips teach the vocabulary before the data exists, and
-        they go live the moment the column lands, with no edit here.
-        WHAT A NEW HONOUR TYPE NEEDS AFTER THIS: a HONOUR_META entry, a mark, and a matview
-        column. Nothing in this file and nothing in the chip-label map.  */
+        file's existing rule , the inert chips teach the vocabulary before the data exists.
+        [CORRECTED 2026-09-19. THIS SAID THEY "go live the moment the column lands, with no
+        edit here", AND THAT CONTRADICTED THE SENTENCE FOUR LINES ABOVE IT.] A list that is
+        hand-maintained and keyed on the database is exactly a list that must be EDITED when
+        the database changes. The columns landed and the chips stayed inert until these two
+        keys were added by hand, because `soon` is computed from THIS ARRAY and not from the
+        schema. Both halves cannot be true; the hand-maintained half is the true one.
+        WHAT A NEW HONOUR TYPE NEEDS: a HONOUR_META entry, a mark, a matview column, AND a key
+        here. Four things, not three. Nothing in the chip-label map.  */
     /*  THE EMOJI NOW LIVES ON HONOUR_META TOO, so this derives completely , 2026-09-15.
         CLAUDE.md's rule is that two separate icon lookups once shadowed the shared mark set and
         both were deleted, with "do not add a third". A chip emoji list here would have been
@@ -4954,7 +4960,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         position group already does.  */
     honours: (function(){
       var HONOUR_FILTER_COLUMNS = ['ballon_dor','world_cup_winner','ucl_winner','league_champion',
-                                   'player_of_season','golden_boot','top_assists'];
+                                   'player_of_season','golden_boot','top_assists',
+                                   'euro_winner','copa_winner'];
       return Object.keys(HONOUR_META)
         .sort(function(a,b){ return (HONOUR_META[a].tier||99) - (HONOUR_META[b].tier||99); })
         .map(function(k){
