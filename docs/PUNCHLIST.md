@@ -6,7 +6,7 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 23 of 35 rows (66%)**
+**COMPLETE: 23 of 36 rows (64%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **THE COUNT WAS WRONG AND IS CORRECTED (2026-09-19): it read 15 of 25 when the list holds 35
 rows and 23 are DONE.** And the first correction got it wrong too , 20 of 34 , because I counted
@@ -57,6 +57,7 @@ that only ever rises is measuring the writing, not the work.**
 | 33 | Season toggle placement, beside the trigger | **DONE** | Claude | Moved off the card face into `#seasonZone`. **Needed a row wrapper** , the zone is a COLUMN flex, so `inline-flex` on the child stacked it underneath. Ink inherits the trigger's, measured identical |
 | 34 | The season panel should fold on selection | **DONE** | Claude | `switchSeason(id, fromPanel)` , the panel rows pass the flag, the stepper does not. **Stepping with the list open must not close it**, that gesture wants it visible |
 | 35 | The wash is on the card's opener | **DONE** | Claude | **NOT a stray selector , my own Chronicle build, approved from a description and wrong in the render.** Measured on the deployed preview: 7 washed elements, 6 are 184-235px marked phrases in Scout and Notes, the 7th was the 751px pull-quote. Removed. **Trajectory has NO AI prose to wash , only a static caption** |
+| 36 | BAM club-name check reads false on every completed season | **OPEN , DEFECT** | Claude | 93 of 94 platform-export seasons read `match:false`; 87 because the unplayed set is EMPTY, not because names differ. **6 have real unplayed names and are unexamined** |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
@@ -910,3 +911,36 @@ answers neither.
 removed the ring two days earlier. The drawing never carried a measurement. The chips, their
 shares, the popover and the equal-share line all survive, and they are the parts that were ever
 saying anything.
+
+### 36 , the BAM club-name check cannot tell a finished season from a broken one
+
+**THE MECHANISM.** `export-league-csv.js` builds `club_names` by splitting a season's fixtures
+into a PLAYED name set and an UNPLAYED one, and sets `match` only when neither holds a name the
+other lacks. **On a completed season the unplayed set is EMPTY, so every club reads as "only in
+played" and `match` is false by construction.** The check is only meaningful while a season still
+has fixtures to play , which is exactly the case it was verified on, Eredivisie 2026/27.
+
+**MEASURED 2026-09-19 over the nine platform-league exports, counted rather than quoted: 93 of 94
+seasons read `match:false`.** 87 of them have an unplayed set of zero, so the false is the
+empty set and says nothing about names. **The only season reading true is Eredivisie 2019/20**,
+and only because 74 `CANC` fixtures populate its unplayed set.
+**My first report of this said "94 of 108". Both numbers were wrong** , there are 94 seasons,
+and I quoted a denominator I had not counted. Corrected before it was written here.
+
+**THE CONSEQUENCE IS FOR THE BRIEF, NOT THE PLATFORM EXPORTS.** `check-coverage.js` does not read
+the platform directories today, so nothing prints. **Once the fourteen brief leagues are exported,
+it will print `CLUB NAMES DIFFER` on every completed season of every league**, and FAIL each one.
+A guard that fires on every row is a guard nobody reads , the real mismatch it exists for would
+arrive inside a wall of false ones.
+
+**SIX SEASONS DO CARRY UNPLAYED NAMES AND I HAVE NOT LOOKED AT THEM:** BPL 2011, 2012, 2013 and
+2014 (two unplayed names each), L1 2013 (two) and TR 2022 (two). **They may be real name
+asymmetries, abandoned fixtures, or play-off entrants , unknown.** Read them before the fix,
+because the fix changes what they report.
+
+**THE FIX IS NOT SCOPED.** The shape it needs is a comparison against a vocabulary that exists on a
+finished season , the regular-season `club_set` already in the same meta is the obvious candidate
+, rather than against the unplayed set. **Do not "fix" it by treating an empty unplayed set as a
+pass:** that turns the check off on exactly the seasons BAM fits on, and a name split in a
+finished season is the case with the most rows behind it.
+
