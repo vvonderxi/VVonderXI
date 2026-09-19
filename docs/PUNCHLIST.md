@@ -538,9 +538,12 @@ unstarted build items 9, 10, 11 and 14 , **none of which is launch-blocking, and
 are cheaper to do before a QA pass than after one**, because each one re-opens a surface the
 pass has already checked.
 
-**ONE RECORDED PRE-MERGE ITEM IS A CLOSED DECISION AND IS LISTED ONLY SO IT IS NOT REOPENED:**
-SS D step 5 names the API-Football key rotation as pre-merge. **Lucas has declined it and it is
-not to be raised again.** It is recorded here as settled, not as outstanding.
+**[SUPERSEDED 2026-09-19 BY `QA_PASS.md` C5. THE ROTATION WAS NOT DECLINED, IT WAS DONE.]**
+C5 records it rotated on 2026-08-31 with the fingerprint changing, `8dab9c72ec3e` ->
+`0c6a1822ce7b`, and the local key fingerprints to the new value. Lucas has no memory of
+declining a rotation. **The item is closed because it was done, not because it was dropped** ,
+and that difference matters: "declined" reads as an accepted risk. The one open half is
+confirming the OLD key is dead, which is Lucas's, in the provider dashboard.
 
 
 ### 9 , THE FOOTBALL PIE. THREE TREATMENTS, AND THE GEOMETRY IS THE WHOLE PROBLEM.
