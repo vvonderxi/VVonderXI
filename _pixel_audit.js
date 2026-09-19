@@ -78,6 +78,29 @@
                              .sort((x,y)=>y.n-x.n);
   }
 
+  /*  Read the page's own rendered colour next to a box. Returns a css rgb() string, or null
+      if the capture cannot be trusted , never a guess.  */
+  async function sampleGround(hr){
+    try{
+      const dpr = 1;
+      const W = 10, H = Math.max(4, Math.min(40, Math.round(hr.height)));
+      // a strip immediately LEFT of the host, clamped into the viewport
+      let x = Math.round(hr.left - W - 2);
+      if (x < 0) x = Math.round(hr.right + 2);
+      if (x < 0 || x + W > document.documentElement.scrollWidth) return null;
+      const y = Math.round(hr.top + window.scrollY);
+      const c = await window.html2canvas(document.body, { backgroundColor:null, scale:dpr,
+        logging:false, x, y, width:W, height:H, scrollX:0, scrollY:0,
+        windowWidth:document.documentElement.clientWidth });
+      if (!c || !c.width || !c.height) return null;
+      const d = c.getContext('2d').getImageData(0,0,c.width,c.height).data;
+      const cl = clusters(d, c.width, c.height);
+      if (!cl.length) return null;
+      const g = cl[0].c;
+      return 'rgb(' + g[0] + ',' + g[1] + ',' + g[2] + ')';
+    }catch(e){ return null; }
+  }
+
   async function measure(el, opts){
     const r = el.getBoundingClientRect();
     if (!r.width || !r.height) return { skip:'zero box' };
@@ -102,9 +125,21 @@
         indistinguishable from one that does not work, and a WRONG ground is worse than none.  */
     const bodyBg = getComputedStyle(document.body).backgroundColor;
     const bodyOpaque = bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent';
-    const backdrop = opaqueGround(host) || (bodyOpaque ? bodyBg : null);
-    if (!backdrop) return { skip:'VOID , no opaque backdrop resolvable (gradient-painted page); '
-                                 + 'this surface needs a backdrop supplied explicitly' };
+    /*  AND WHERE NOTHING PAINTS A FLAT COLOUR, SAMPLE THE PAGE AS RENDERED , added
+        2026-09-19, closing the void that left playbook and vvindex unmeasured.
+        Those pages DO paint a ground, just not as a background-color: playbook's `body`
+        stacks thirteen gradients ending in an opaque linear-gradient between --page-1 and
+        --page-3. So the colour is real, it is position-dependent, and it can only be read
+        by rendering it. `sampleGround` captures a small strip of BODY beside the host and
+        takes its modal cluster , body is what paints, so the strip contains the true ground.
+        IT SAMPLES BESIDE THE HOST, NOT INSIDE IT, so text cannot contaminate the sample, and
+        it crops rather than capturing the page , a full-body capture is the drift failure
+        already recorded above (20090px against an 18732px box).
+        `opts.backdrop` overrides it, which is the one-parameter escape for any surface where
+        even this is wrong.  */
+    let backdrop = opts.backdrop || opaqueGround(host) || (bodyOpaque ? bodyBg : null);
+    if (!backdrop) backdrop = await sampleGround(hr);
+    if (!backdrop) return { skip:'VOID , no backdrop resolvable and the page sample failed' };
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const canvas = await window.html2canvas(host, { backgroundColor: backdrop, scale: dpr,
       logging:false, useCORS:true, width:Math.ceil(hr.width), height:Math.ceil(hr.height) });
