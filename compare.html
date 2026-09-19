@@ -214,7 +214,8 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .arena-cta{display:none}
   .vscenter{display:flex;flex-direction:column;align-items:center;gap:16px;align-self:center}
   .vscenter .settle{margin-top:2px}
-  .settle{font-family:'Archivo';font-weight:900;font-size:16px;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(135deg,#E70443,#FF8FA3);color:#fff;border:none;border-radius:16px;padding:17px 46px;cursor:pointer;box-shadow:0 20px 44px -12px rgba(255,92,122,0.75);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
+  /* D , THE 85% IS MEASURED, NOT CHOSEN. White on this gradient's light stop is 2.16 and across the actual glyph band 2.77, against a 4.5 bar (16px/900 is NOT WCAG large). Shifting the flat section to 70% still FAILS at 4.34 because the band reaches past it; 85% is the first value where the whole band sits on flat brand pink, at 4.67. The light stop is kept and moved past the text rather than removed. */
+  .settle{font-family:'Archivo';font-weight:900;font-size:16px;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(135deg,#E70443 0%,#E70443 85%,#FF8FA3 100%);color:#fff;border:none;border-radius:16px;padding:17px 46px;cursor:pointer;box-shadow:0 20px 44px -12px rgba(255,92,122,0.75);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
   .settle:hover{transform:translateY(-2px);box-shadow:0 26px 52px -12px rgba(255,92,122,0.85)}
   /* verdict reveal , editorial pull-quote treatment */
   /* TIER 1 , the STAGE. Holds every section; the payoff (.vfinal) sits ON it. */
@@ -834,7 +835,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   body:not(.light){color-scheme:dark} body.light{color-scheme:light}
   .vshare{margin-top:24px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.1)}
   body.light .vshare{border-top-color:rgba(0,0,0,0.1)}
-  .vshare-main{background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:999px;padding:13px 32px;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.01em;cursor:pointer;box-shadow:0 12px 30px -10px rgba(255,92,122,.6);transition:transform .15s}
+  .vshare-main{background:linear-gradient(135deg,var(--pink) 0%,var(--pink) 85%,var(--pink-glow) 100%);color:#fff;border:none;border-radius:999px;padding:13px 32px;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.01em;cursor:pointer;box-shadow:0 12px 30px -10px rgba(255,92,122,.6);transition:transform .15s}
   .vshare-main:hover{transform:translateY(-2px)}
   .vshare-row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
   .vshare-opt{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-family:'Archivo';font-weight:700;font-size:12.5px;color:var(--pink-ink);border:1.5px solid rgba(255,92,122,.4);border-radius:999px;padding:8px 16px;cursor:pointer;transition:.15s}
