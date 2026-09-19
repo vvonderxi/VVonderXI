@@ -1,0 +1,85 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coverage bars , beneath or beside</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Fraunces:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{ --cream:#F0EAD9; --pink-ink:#F1688E; --blue:#7FB2FF;
+  --page:#141311; --ink:var(--cream); --muted:rgba(240,234,217,.68); --rule:rgba(240,234,217,.16);
+  --panel-t:#1C6038; --panel-b:#0F3A22; }
+body.light{ --page:#F4EFE2; --ink:#1C1B1A; --muted:#5f594e; --rule:rgba(28,27,26,.16);
+  --pink-ink:#AD0332; --blue:#2C5AA0; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:Archivo,system-ui,sans-serif;padding:30px 26px 80px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:20px;font-weight:900;margin:0 0 4px}
+.sub{font-size:13px;color:var(--muted);max-width:82ch;line-height:1.55;margin:0 0 26px}
+section{border-top:1px solid var(--rule);padding:24px 0 6px;margin-top:20px}
+h2{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 16px}
+.note{font-size:12px;color:var(--muted);line-height:1.6;max-width:80ch;margin:14px 0 0}
+.tog{position:fixed;top:14px;right:14px;z-index:9;font:800 11px Archivo;padding:8px 13px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+.panel{background:linear-gradient(160deg,var(--panel-t),var(--panel-b));border-radius:16px;padding:22px 24px;color:var(--cream)}
+body.light .panel{background:#FBF8F2;color:#1C1B1A}
+.plabel{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.72;margin:0 0 16px}
+/* radar */
+svg .ring{fill:none;stroke:currentColor;stroke-opacity:.16}
+svg .spoke{stroke:currentColor;stroke-opacity:.12}
+svg .pA{fill:var(--pink-ink);fill-opacity:.24;stroke:var(--pink-ink);stroke-width:2}
+svg .pB{fill:var(--blue);fill-opacity:.20;stroke:var(--blue);stroke-width:2}
+svg .axlbl{font:700 9.5px Archivo;fill:currentColor;fill-opacity:.72}
+/* coverage bars */
+.cov{max-width:430px}
+.cvhead,.cvfoot,.cvrow{display:grid;grid-template-columns:96px 1fr 1fr;gap:11px;align-items:center}
+.cvhead{margin:0 0 11px} .cvfoot{margin:13px 0 0} .cvrow{margin:0 0 8px}
+.cvk{font-size:11px;font-weight:800;letter-spacing:.03em}
+.cvka{color:var(--pink-ink)} .cvkb{color:var(--blue)}
+.cvname{font-size:11.5px;color:var(--muted);text-align:right}
+.cvtrack{height:10px;border-radius:99px;background:currentColor;opacity:.14;position:relative}
+.cvtrack i{position:absolute;inset:0;border-radius:99px;display:block}
+.cva{background:var(--pink-ink)} .cvb{background:var(--blue)}
+.cvfoot b{font-size:11px;font-weight:800}
+.cva-t{color:var(--pink-ink)} .cvb-t{color:var(--blue)}
+.cov.compact .cvrow{margin:0 0 5px} .cov.compact .cvtrack{height:7px}
+.cov.compact .cvname{font-size:11px}
+/* layouts */
+.beneath{display:flex;flex-direction:column;align-items:center;gap:20px}
+.beneath .cov{width:100%;max-width:400px}
+.beneath hr{width:100%;max-width:400px;border:0;border-top:1px solid currentColor;opacity:.14;margin:0}
+.beside{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+@media(max-width:760px){.beside{grid-template-columns:1fr;justify-items:center}}
+</style></head><body>
+<button class="tog" onclick="document.body.classList.toggle('light')">theme</button>
+<div class="wrap">
+<h1>Coverage bars: beneath the radar, or beside it</h1>
+<p class="sub">The 4-to-5 shared case only , <strong>Messi 20/21 (VV 92, Winger) vs Haaland 22/23 (VV 95, ST)</strong>,
+both 5 of 5 measured, real percentiles from the shipped <code>radarFor</code>. Below the threshold the radar does not
+render at all and the bars stand alone, which is already decided.</p>
+
+<section><h2>A , beneath, in the same panel</h2>
+<div class="panel">
+  <p class="plabel">The five dimensions</p>
+  <div class="beneath"><svg viewBox="0 0 210 210" width="210" height="210"><polygon points="105.0,34.0 172.5,83.1 146.7,162.4 63.3,162.4 37.5,83.1" class="ring"/><polygon points="105.0,51.8 155.6,88.5 136.3,148.1 73.7,148.1 54.4,88.5" class="ring"/><polygon points="105.0,69.5 138.8,94.0 125.9,133.7 84.1,133.7 71.2,94.0" class="ring"/><polygon points="105.0,87.2 121.9,99.5 115.4,119.4 94.6,119.4 88.1,99.5" class="ring"/><line x1="105.0" y1="105.0" x2="105.0" y2="34.0" class="spoke"/><line x1="105.0" y1="105.0" x2="172.5" y2="83.1" class="spoke"/><line x1="105.0" y1="105.0" x2="146.7" y2="162.4" class="spoke"/><line x1="105.0" y1="105.0" x2="63.3" y2="162.4" class="spoke"/><line x1="105.0" y1="105.0" x2="37.5" y2="83.1" class="spoke"/><polygon points="105.0,36.1 167.1,84.8 145.5,160.7 98.7,113.6 45.6,85.7" class="pA"/><polygon points="105.0,36.1 139.4,93.8 108.8,110.2 104.2,106.1 50.3,87.2" class="pB"/><text x="105.0" y="21.0" text-anchor="middle" class="axlbl">Goal threat</text><text x="187.7" y="81.1" text-anchor="start" class="axlbl">Creation</text><text x="156.1" y="178.4" text-anchor="start" class="axlbl">Progression</text><text x="53.9" y="178.4" text-anchor="end" class="axlbl">Defensive</text><text x="22.3" y="81.1" text-anchor="end" class="axlbl">Availability</text></svg><hr><div class="cov compact"><div class="cvhead"><span></span><span class="cvk cvka">Messi 20/21</span><span class="cvk cvkb">Haaland 22/23</span></div><div class="cvrow"><div class="cvname">Goal threat</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Creation</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Progression</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Defensive</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Availability</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvfoot"><span></span><b class="cva-t">5 of 5 measured</b><b class="cvb-t">5 of 5 measured</b></div></div></div>
+</div>
+<p class="note">One column, one reading order: shape first, then what the shape is built on. The bars inherit the
+panel's full width so the two players' columns line up under the radar's own left-right split. Taller , about 250px
+more , which on a phone is a second scroll.</p>
+</section>
+
+<section><h2>B , beside, in the same panel</h2>
+<div class="panel">
+  <p class="plabel">The five dimensions</p>
+  <div class="beside"><svg viewBox="0 0 210 210" width="210" height="210"><polygon points="105.0,34.0 172.5,83.1 146.7,162.4 63.3,162.4 37.5,83.1" class="ring"/><polygon points="105.0,51.8 155.6,88.5 136.3,148.1 73.7,148.1 54.4,88.5" class="ring"/><polygon points="105.0,69.5 138.8,94.0 125.9,133.7 84.1,133.7 71.2,94.0" class="ring"/><polygon points="105.0,87.2 121.9,99.5 115.4,119.4 94.6,119.4 88.1,99.5" class="ring"/><line x1="105.0" y1="105.0" x2="105.0" y2="34.0" class="spoke"/><line x1="105.0" y1="105.0" x2="172.5" y2="83.1" class="spoke"/><line x1="105.0" y1="105.0" x2="146.7" y2="162.4" class="spoke"/><line x1="105.0" y1="105.0" x2="63.3" y2="162.4" class="spoke"/><line x1="105.0" y1="105.0" x2="37.5" y2="83.1" class="spoke"/><polygon points="105.0,36.1 167.1,84.8 145.5,160.7 98.7,113.6 45.6,85.7" class="pA"/><polygon points="105.0,36.1 139.4,93.8 108.8,110.2 104.2,106.1 50.3,87.2" class="pB"/><text x="105.0" y="21.0" text-anchor="middle" class="axlbl">Goal threat</text><text x="187.7" y="81.1" text-anchor="start" class="axlbl">Creation</text><text x="156.1" y="178.4" text-anchor="start" class="axlbl">Progression</text><text x="53.9" y="178.4" text-anchor="end" class="axlbl">Defensive</text><text x="22.3" y="81.1" text-anchor="end" class="axlbl">Availability</text></svg><div class="cov"><div class="cvhead"><span></span><span class="cvk cvka">Messi 20/21</span><span class="cvk cvkb">Haaland 22/23</span></div><div class="cvrow"><div class="cvname">Goal threat</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Creation</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Progression</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Defensive</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvrow"><div class="cvname">Availability</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:100%"></i></div></div><div class="cvfoot"><span></span><b class="cva-t">5 of 5 measured</b><b class="cvb-t">5 of 5 measured</b></div></div></div>
+</div>
+<p class="note">Shorter, and the dimension names appear once as the bars' row labels instead of twice. But at phone
+width it stacks anyway, so B becomes A below 760px , which is an argument for A being the real layout and B being a
+desktop optimisation of it.</p>
+</section>
+
+<section><h2>The same panel below the threshold , for reference, already decided</h2>
+<div class="panel">
+  <p class="plabel">The five dimensions</p>
+  <div class="cov"><div class="cvhead"><span></span><span class="cvk cvka">Messi 20/21</span><span class="cvk cvkb">Ronaldo 14/15</span></div><div class="cvrow"><div class="cvname">Goal threat</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:0%"></i></div></div><div class="cvrow"><div class="cvname">Creation</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:0%"></i></div></div><div class="cvrow"><div class="cvname">Progression</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:0%"></i></div></div><div class="cvrow"><div class="cvname">Defensive</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:0%"></i></div></div><div class="cvrow"><div class="cvname">Availability</div><div class="cvtrack"><i class="cva" style="width:100%"></i></div><div class="cvtrack"><i class="cvb" style="width:0%"></i></div></div><div class="cvfoot"><span></span><b class="cva-t">5 of 5 measured</b><b class="cvb-t">1 of 5 measured</b></div></div>
+</div>
+<p class="note">No pentagon. The last row keeps its full blue bar because availability is the one dimension recorded
+for a pre-2015 season , the others read empty, which is the point.</p>
+</section>
+</div></body></html>
