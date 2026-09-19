@@ -6,8 +6,15 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 15 of 25 rows (60%)**
+**COMPLETE: 23 of 35 rows (66%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
+**THE COUNT WAS WRONG AND IS CORRECTED (2026-09-19): it read 15 of 25 when the list holds 35
+rows and 23 are DONE.** And the first correction got it wrong too , 20 of 34 , because I counted
+by eye instead of counting the rows. **Derive it, never type it:**
+`awk -F'|' '/^\| [0-9]/{c++; gsub(/\*/,"",$4); gsub(/^ +| +$/,"",$4); if($4 ~ /^DONE/) d++} END{print d" of "c}' docs/PUNCHLIST.md` A tracker whose own denominator is stale is the same failure it exists
+to catch. **THERE IS NO ITEM 32** , it is referenced inside item 25's text but has never had a
+row, so the list runs 1-31 and 33-35. Do not add one retrospectively; the reference is to work
+that was folded into item 25.
 **IT WENT DOWN, AND THAT IS THE TRACKER WORKING.** Items 3, 9 and 16 were marked DONE and are
 reopened: 3 shipped a wait state that was not what was asked for, 9 shipped a chart that is to
 scale and unreadable, and 16 was closed on a gate that measured the wrong thing. **A percentage
@@ -30,9 +37,9 @@ that only ever rises is measuring the writing, not the work.**
 | 12 | VV Score on VV Index not using the pink second V | **DONE** | Claude | Was a 2-page nav drift, rankings + vvindex. Eight pages were already correct |
 | 13 | hello@vvonderxi.com pill has a cut right edge | **DONE** | Claude | Not the radius. Pill was 408px in a 372px column, clipped by body's overflow-x. Font cap 27px to 23px |
 | 14 | VV Index band section duplicates Playbook, reads dense | **DEMO v3, AWAITING LUCAS** | Lucas | Margin removed by his call. Coverage timeline carries it, "Zero." is the quote, five extensions in. **Contact CTA required a real fix: contact.html had NO nav at all** |
-| 15 | Continental international honours, five confederations | **BUILT , Euro + Copa, 180 rows LIVE** | Claude | Ten tournaments. Strict matcher ported; **the direction had to be INVERTED** (the squad is the closed set, not our nationality pool) after it produced 27 rows for a 26-man squad. **Portugal 2016 silently returned 4 of 23** because the block wraps names in `{{sortname}}`. Nationality guard: 0 refused of 153. **No MARK yet , renders named and explained with no trophy, a demo-first design task** |
+| 15 | Continental international honours, five confederations | **DONE , Euro + Copa, 180 rows LIVE** | Claude | Ten tournaments. Strict matcher ported; **the direction had to be INVERTED** (the squad is the closed set, not our nationality pool) after it produced 27 rows for a 26-man squad. **Portugal 2016 silently returned 4 of 23** because the block wraps names in `{{sortname}}`. Nationality guard: 0 refused of 153. **No MARK yet , renders named and explained with no trophy, a demo-first design task** |
 | 16 | Squad number backfill via Fable | **REOPENED , RETRIEVAL** | Lucas | The gate measured RECALL, not retrieval. Prompt rewritten as a lookup task, same 39 control cards, same 30% gate |
-| 17 | Verify the prose and the winner field agree | **BUILT (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
+| 17 | Verify the prose and the winner field agree | **DONE (detect + log)** | Claude | No override, no retry, no UI change. Rate owed once the cache refills |
 | 18 | Does the card section need its own Cabinet explanation? | **DONE** | Claude | No. The card section carries NO links and points in prose; that clause now names the Cabinet's own section |
 | 19 | Wonder Tags render as plain text, not the card's pills | **DONE** | Claude | Playbook, then Compare's accolades. Three palettes to one. **Typeface fixed after Lucas saw it: the Playbook never loaded Barlow Condensed** |
 | 20 | Emphasis invisible in verdict and Story | **BUILT, AWAITING LUCAS** | Lucas | Treatment B on all five prose surfaces + the Chronicle pull-quote (item 4, 2026-09-14). One ink flips, one is pinned, one takes the fixed pair. **The Chronicle takes the wash as an ELEMENT, not a marked phrase , its data is hand-authored and carries zero markers** |

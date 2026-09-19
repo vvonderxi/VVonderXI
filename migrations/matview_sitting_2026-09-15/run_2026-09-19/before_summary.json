@@ -1,0 +1,10 @@
+{
+  "captured_at": "2026-09-19T09:18:45.498Z",
+  "mv_columns": "76",
+  "mv_rows": "57055",
+  "indexes": "11",
+  "grants": "postgres=arwdDxtm/postgres | anon=arwdDxtm/postgres | authenticated=arwdDxtm/postgres | service_role=arwdDxtm/postgres",
+  "view_len": "17115",
+  "rt_md5": "d06844487ff76dda543ddbf19800d565",
+  "timeout": "8s"
+}
