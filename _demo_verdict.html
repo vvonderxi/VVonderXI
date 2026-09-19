@@ -1,0 +1,185 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verdict and compare , four demos</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F0EAD9; --charcoal:#2A2422; --pink-ink:#F1688E; --gold:#E8B84B;
+  --panel-t:#1C6038; --panel-b:#0F3A22;
+  --page:#141311; --ink:var(--cream); --muted:rgba(240,234,217,.68); --rule:rgba(240,234,217,.16);
+  --vvem-ink:#E8B84B; --vvem-wash:transparent;
+}
+body.light{
+  --page:#F4EFE2; --ink:#1C1B1A; --muted:#5f594e; --rule:rgba(28,27,26,.16);
+  --vvem-ink:#5C4008; --vvem-wash:rgba(232,184,75,.22);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:Archivo,system-ui,sans-serif;padding:30px 26px 90px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:20px;font-weight:900;margin:0 0 3px}
+.sub{font-size:13px;color:var(--muted);margin:0 0 26px;max-width:80ch;line-height:1.55}
+section{border-top:1px solid var(--rule);padding:26px 0 8px;margin-top:20px}
+h2{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 16px}
+.note{font-size:12px;color:var(--muted);line-height:1.6;max-width:78ch;margin:12px 0 0}
+.tog{position:fixed;top:14px;right:14px;z-index:9;font:800 11px Archivo;padding:8px 13px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:820px){.pair{grid-template-columns:1fr}}
+.card{border:1px solid var(--rule);border-radius:14px;padding:18px}
+.lbl{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+/* ---- the green prose panel, as compare ships it ---- */
+.vsect{background:linear-gradient(160deg,var(--panel-t),var(--panel-b));border-radius:16px;padding:22px 24px;color:var(--cream)}
+body.light .vsect{background:#FBF8F2;color:#1C1B1A}
+.vsect p{font-family:Fraunces,Georgia,serif;font-size:16px;line-height:1.66;margin:0 0 13px}
+.vsect p:last-child{margin-bottom:0}
+/* EMPHASIS , the two treatments under test */
+.vvem{font-style:normal}
+.t-now .vvem{color:var(--vvem-ink);background:var(--vvem-wash);font-weight:600;padding:0 .12em;border-radius:3px}
+.t-new .vvem{color:inherit;background:var(--vvem-wash);font-weight:700;padding:0 .14em;border-radius:3px}
+body:not(.light) .t-new .vvem{background:rgba(240,234,217,.10)}
+</style>
+<style>
+.cvhead,.cvfoot{display:grid;grid-template-columns:104px 1fr 1fr;gap:12px;align-items:center;margin:0 0 12px}
+.cvfoot{margin:14px 0 0}
+.cvk{font-size:11px;font-weight:800;letter-spacing:.04em}
+.cvka{color:var(--pink-ink)} .cvkb{color:#7FB2FF}
+body.light .cvka{color:#AD0332} body.light .cvkb{color:#2C5AA0}
+.cvrow{display:grid;grid-template-columns:104px 1fr 1fr;gap:12px;align-items:center;margin:0 0 9px}
+.cvname{font-size:12px;color:var(--muted);text-align:right}
+.cvtrack{height:11px;border-radius:99px;background:currentColor;opacity:.13;position:relative}
+.cvtrack i{position:absolute;inset:0;border-radius:99px;display:block}
+.cva{background:var(--pink-ink)} .cvb{background:#7FB2FF}
+body.light .cva{background:#AD0332} body.light .cvb{background:#2C5AA0}
+.cvfoot b{font-size:11px;font-weight:800;letter-spacing:.03em}
+.cva-t{color:var(--pink-ink)} .cvb-t{color:var(--muted)}
+body.light .cva-t{color:#AD0332}
+.scoreband{display:flex;flex-wrap:wrap;align-items:center;gap:26px;padding:0 0 22px;margin:0 0 22px;border-bottom:1px solid var(--rule)}
+.sb-pair{display:flex;align-items:baseline;gap:14px}
+.sb-pair b{font-family:Archivo;font-size:58px;font-weight:900;line-height:1}
+.sb-a{color:var(--pink-ink)} .sb-b{color:#7FB2FF}
+body.light .sb-a{color:#AD0332} body.light .sb-b{color:#2C5AA0}
+.sb-v{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.sb-meta{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+.sb-meta em{font-style:normal;opacity:.85}
+.verdictlabel{font-family:Archivo;font-size:19px;font-weight:900;letter-spacing:.01em;margin:0 0 12px}
+.evlabel{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:26px 0 9px}
+.prose{max-width:66ch}
+.prose p{font-family:Fraunces,Georgia,serif;font-size:15.5px;line-height:1.66;margin:0 0 12px}
+.pull{font-family:Fraunces,Georgia,serif;font-style:italic;font-size:21px;line-height:1.45;margin:24px 0;padding:0 0 0 18px;border-left:2px solid var(--pink-ink);max-width:48ch}
+body.light .pull{border-left-color:#AD0332}
+</style>
+</head><body>
+<button class="tog" onclick="document.body.classList.toggle('light')">theme</button>
+<div class="wrap">
+<h1>Verdict and compare , four demos</h1>
+<p class="sub">Real prose, real pair: <strong>Messi 20/21 (VV 92) vs Ronaldo 14/15 (VV 96)</strong>, pulled from
+<code>verdict_cache</code>. Nothing here is built , every section is a proposal rendered beside what ships today.</p>
+
+<section><h2>1 , Emphasis: drop the gold ink, keep the wash and the weight</h2>
+<div class="pair">
+  <div class="card"><p class="lbl">Ships today , gold ink + wash + weight</p>
+    <div class="vsect t-now"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div></div>
+  <div class="card"><p class="lbl">Proposed , wash + weight only</p>
+    <div class="vsect t-new"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div></div>
+</div>
+<p class="note">Two mechanisms for one job, and the gold carries a second meaning , it is the honours colour on the
+card face and reads as a link in running prose. The wash already does the marking; the weight already does the
+stress. <strong>Applies to every surface carrying this treatment</strong> , the verdict, both story columns, the
+head-to-head and the card's scout and notes , not the verdict alone.
+<br><br>In dark the wash is a 10% cream rather than gold: SS C records that no dark wash token exists and that four
+candidates reached at best 1.31 separation, so this is a light lift on the existing ground, not a new colour.</p>
+</section>
+
+<section><h2>2 , The deck: a standfirst, not a caption</h2>
+<div class="pair">
+  <div class="card"><p class="lbl">Ships today , caption under the headline</p>
+    <h3 style="font-family:Archivo;font-size:30px;font-weight:900;line-height:1.14;margin:0 0 8px">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</h3>
+    <p style="font-size:12px;color:var(--muted);font-style:italic;background:var(--vvem-wash);display:inline-block;padding:2px 6px;border-radius:4px;margin:0">The margin is real but not huge: one season clearly shades the other</p>
+  </div>
+  <div class="card"><p class="lbl">Proposed , 20px standfirst, no wash, no italic</p>
+    <h3 style="font-family:Archivo;font-size:30px;font-weight:900;line-height:1.14;margin:0 0 18px">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</h3>
+    <p style="font-family:Fraunces,Georgia,serif;font-size:20px;line-height:1.48;font-weight:400;color:var(--ink);opacity:.92;margin:0 0 20px;max-width:46ch">The margin is real but not huge: one season clearly shades the other</p>
+  </div>
+</div>
+<p class="note">It is the sentence that tells a reader what the comparison concluded. At 12px italic in a wash it reads
+as a UI chip attached to the headline; at 20px with air it reads as the second thing on the page, which is what it is.</p>
+</section>
+
+<section><h2>3 , The thin comparison: coverage bars in the radar's footprint</h2>
+<div class="pair">
+  <div class="card"><p class="lbl">Ships today , empty pentagon + caption</p>
+    <div style="height:268px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+      <svg viewBox="0 0 200 190" width="215" height="204" aria-hidden="true">
+        <polygon points="100,18 178,74 148,168 52,168 22,74" fill="none" stroke="currentColor" stroke-opacity=".20"/>
+        <polygon points="100,53 152,90 133,152 67,152 48,90" fill="none" stroke="currentColor" stroke-opacity=".12"/>
+        <polygon points="100,88 126,106 118,136 82,136 74,106" fill="none" stroke="currentColor" stroke-opacity=".12"/>
+      </svg>
+      <p style="font-size:12px;color:var(--muted);margin:0;text-align:center;max-width:30ch">
+        Not enough shared measures to draw a comparison</p>
+    </div>
+  </div>
+  <div class="card"><p class="lbl">Proposed , coverage, same footprint</p>
+    <div style="height:268px;display:flex;flex-direction:column;justify-content:center">
+      <div class="cvhead"><span></span><span class="cvk cvka">Messi 20/21</span><span class="cvk cvkb">Ronaldo 14/15</span></div>
+      
+    <div class="cvrow">
+      <div class="cvname">Goal threat</div>
+      <div class="cvtrack"><i class="cva" style="width:100%"></i></div>
+      <div class="cvtrack"><i class="cvb" style="width:0%"></i></div>
+    </div>
+    <div class="cvrow">
+      <div class="cvname">Creation</div>
+      <div class="cvtrack"><i class="cva" style="width:100%"></i></div>
+      <div class="cvtrack"><i class="cvb" style="width:0%"></i></div>
+    </div>
+    <div class="cvrow">
+      <div class="cvname">Progression</div>
+      <div class="cvtrack"><i class="cva" style="width:100%"></i></div>
+      <div class="cvtrack"><i class="cvb" style="width:0%"></i></div>
+    </div>
+    <div class="cvrow">
+      <div class="cvname">Defensive</div>
+      <div class="cvtrack"><i class="cva" style="width:100%"></i></div>
+      <div class="cvtrack"><i class="cvb" style="width:0%"></i></div>
+    </div>
+    <div class="cvrow">
+      <div class="cvname">Availability</div>
+      <div class="cvtrack"><i class="cva" style="width:100%"></i></div>
+      <div class="cvtrack"><i class="cvb" style="width:100%"></i></div>
+    </div>
+      <div class="cvfoot"><span></span><b class="cva-t">5 of 5 measured</b><b class="cvb-t">1 of 5 measured</b></div>
+    </div>
+  </div>
+</div>
+<p class="note"><strong>The asymmetry becomes the content.</strong> Ronaldo 14/15 predates the detailed-stat era, so
+only availability is recorded , that is a fact about the archive, and the verdict prose already argues it
+("partly a comparison between two different states of data"). An empty pentagon says the page is broken; this says
+the record is uneven and names which half is missing.</p>
+</section>
+
+<section><h2>4 , The payoff: four treatments, combined</h2>
+<div class="card" style="padding:26px 28px">
+  <p class="lbl">Proposed , verdict opens, score band, 64ch measure, one pull quote, distinct labels</p>
+
+  <div class="scoreband">
+    <div class="sb-pair"><b class="sb-a">92</b><span class="sb-v">vs</span><b class="sb-b">96</b></div>
+    <div class="sb-meta"><span>Messi 20/21 , Iconic</span><span>Ronaldo 14/15 , Generational</span>
+      <em>margin 4 points , clear of the 1.96 SE bar at this band</em></div>
+  </div>
+
+  <p class="verdictlabel">The verdict</p>
+  <div class="vsect t-new" style="max-width:66ch"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+
+  <blockquote class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</blockquote>
+
+  <p class="evlabel">Evidence , Messi 20/21</p>
+  <div class="prose t-new"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div>
+  <p class="evlabel">Evidence , Ronaldo 14/15</p>
+  <div class="prose t-new"><p>Real Madrid, 2014/15. Ronaldo at 29, the age when a player who has prepared his body as a life&#x27;s work hits the ceiling of what that preparation unlocks. <em class="vvem">48 goals and 16 assists</em> across 35 starts in La Liga is a figure that sits outside normal vocabulary for a winger. The Goals thread runs at a rate that, in any system, bends the table.</p><p>The era means the record is thin: shots, key passes, dribbles and duels were never collected for this season, so the granular picture that Messi&#x27;s card carries simply does not exist here. What does exist is the output line, and that line is a statement. <em class="vvem">Ninety-six minutes, on average, of La Liga football produced a goal or an assist</em> at a collective rate that the Index has placed in the Generational band.</p></div>
+</div>
+<p class="note">Four changes at once, because they interact: the verdict <strong>opens</strong> rather than closes;
+the two scores get their own band with the margin beside them; body is left-aligned at 66ch; italic is spent on
+<strong>one</strong> pull quote instead of every paragraph. And the labels are separated , "The verdict" is a
+heading, the two evidence labels are quieter small-caps. Today all four wear the same small-caps wash, so the
+conclusion and its supporting columns look like peers.</p>
+</section>
+</div></body></html>
