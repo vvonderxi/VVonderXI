@@ -141,7 +141,7 @@
     const groundWasSampled = !backdrop;          //  nothing in the tree paints a flat colour
     if (!backdrop) backdrop = await sampleGround(hr);
     if (!backdrop) return { skip:'VOID , no backdrop resolvable and the page sample failed' };
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = opts.scale || Math.min(2, window.devicePixelRatio || 1);
     const canvas = await window.html2canvas(host, { backgroundColor: backdrop, scale: dpr,
       logging:false, useCORS:true, width:Math.ceil(hr.width), height:Math.ceil(hr.height) });
 

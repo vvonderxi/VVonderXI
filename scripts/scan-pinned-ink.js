@@ -32,9 +32,15 @@ const ALL=process.argv.includes('--all');
 const files=fs.readdirSync(ROOT).filter(f=>f.endsWith('.html'))
   .filter(f=>ALL || !/^_(demo|probe)|mock/.test(f));
 
-const HEXCOL=/color\s*:\s*(#[0-9a-fA-F]{3,8}|rgba?\([^)]*\))/;
+/*  THE PROPERTY MUST BE `color`, NOT SOMETHING ENDING IN `color` , CORRECTED 2026-09-19
+    BEFORE ANY NUMBER WAS QUOTED. The first version matched `color\s*:` as a SUBSTRING, so
+    `border-color:`, `background-color:` and `outline-color:` all counted as inks. A contrast
+    rule is about the ink a reader reads; a border is a different question with a different
+    bar. The anchor is a `{` or `;` (or the start of the body) before the property name.  */
+const HEXCOL=/(?:^|[;{])\s*color\s*:\s*(#[0-9a-fA-F]{3,8}|rgba?\([^)]*\))/;
 let total=0;
 const report=[];
+const ALLHITS=[];
 
 for(const f of files){
   const src=fs.readFileSync(path.join(ROOT,f),'utf8');
@@ -77,6 +83,7 @@ for(const f of files){
     }
   }
   if(hits.length){ total+=hits.length; report.push({file:f, hits}); }
+  ALLHITS.push(...hits.map(h=>Object.assign({file:f},h)));
 }
 
 console.log('\nPINNED-INK / BARE-ALPHA CANDIDATES , static scan, NOT measurements\n');
@@ -93,3 +100,24 @@ for(const r of report){
 }
 console.log('\n  '+total+' candidates. EVERY ONE NEEDS THE PIXEL HARNESS , a static scan cannot\n'
           + '  know a ground, so none of these is a defect until it has been measured.\n');
+
+/*  ── CATEGORY C, SPLIT BY WHETHER A READER READS IT ────────────────────────────────────
+    C is the only category that is decidable FROM THE SOURCE: a light override that carries
+    the same value as dark is wrong whatever the ground, because one of the two grounds must
+    be the wrong one for it. A and B both need rendering , a literal with no override is
+    perfectly correct where the ground does not flip.
+    THE TEXT SPLIT IS A JUDGEMENT AND IS MARKED AS ONE. `color` also feeds `currentColor`, so
+    it can reach an icon stroke, a chevron or a rule line, and those are not text and do not
+    take the 4.5 bar. Anything whose selector names a state or an ornament is set aside.  */
+const NOTTEXT=/:hover|:focus|:active|:visited|::before|::after|\bsvg\b|\bi\b$|\bhr\b|chev|arrow|icon|dot|divider|rule|bar\b|line\b|tick|spinner|caret/i;
+const cs=ALLHITS.filter(h=>/^C /.test(h.kind));
+const cText=cs.filter(h=>!NOTTEXT.test(h.sel));
+const cOther=cs.filter(h=>NOTTEXT.test(h.sel));
+console.log('  ══ CATEGORY C , same value in both themes, decidable from source ══\n');
+console.log('  C total                     : '+cs.length);
+console.log('  C on text a reader reads    : '+cText.length);
+console.log('  C on states / ornaments     : '+cOther.length+'  (set aside , not the 4.5 bar)\n');
+cText.forEach(h=>console.log('    '+h.file.padEnd(18)+h.sel.slice(0,52).padEnd(52)+' '+h.val));
+if(cOther.length){ console.log('\n  set aside:');
+  cOther.forEach(h=>console.log('    '+h.file.padEnd(18)+h.sel.slice(0,52).padEnd(52)+' '+h.val)); }
+console.log('');
