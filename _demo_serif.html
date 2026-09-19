@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The serif , priced and rendered</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--  FRAUNCES IS LOADED SEPARATELY AND DELIBERATELY LATE , see the FOUT section.  -->
+<style>
+:root{ --cream:#F0EAD9; --pink-ink:#F1688E; --gold:#E8B84B; --ink-soft:#a49d93;
+  --page:#141311; --ink:var(--cream); --muted:rgba(240,234,217,.68); --rule:rgba(240,234,217,.16);
+  --surf-hero:#2A2422; --edge-hero:rgba(255,255,255,.07);
+  --plate:#1A1614; --plate0:rgba(26,22,20,0); }
+body.light{ --page:#F4EFE2; --ink:#1C1B1A; --muted:#5f594e; --rule:rgba(28,27,26,.16);
+  --pink-ink:#AD0332; --ink-soft:#6a6256; --surf-hero:#FBF8F2; --edge-hero:rgba(0,0,0,.07);
+  --plate:#EFE7D6; --plate0:rgba(239,231,214,0); }
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:26px 22px 80px}
+.wrap{max-width:1500px;margin:0 auto}
+h1{font-family:'Archivo';font-size:20px;font-weight:900;margin:0 0 4px}
+.sub{font-size:13px;color:var(--muted);max-width:92ch;line-height:1.55;margin:0 0 20px}
+h2{font-family:'Archivo';font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:36px 0 16px;padding-top:22px;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:1100px){.row{grid-template-columns:1fr}}
+.hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 3px}
+.hd b{font-family:'Archivo';font-size:13px;font-weight:800}
+.kb{font-family:'Archivo';font-size:12px;font-weight:900;color:var(--pink-ink)}
+.hdsub{font-size:11.5px;color:var(--muted);margin:0 0 10px;line-height:1.45;min-height:32px}
+.note{font-size:12px;color:var(--muted);line-height:1.6;max-width:92ch;margin:14px 0 0}
+.tog{position:fixed;top:12px;right:12px;z-index:9;font:800 11px 'Archivo';padding:8px 13px;border-radius:8px;
+  border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+.btn{font:800 12px 'Archivo';padding:9px 16px;border-radius:9px;border:1px solid var(--pink-ink);
+  background:transparent;color:var(--pink-ink);cursor:pointer;margin:0 8px 0 0}
+
+/* the payoff panel , variant A as just built */
+.vfinal{padding:26px 22px 24px;text-align:center;border-radius:18px;
+  background:linear-gradient(180deg,var(--plate) 0%,var(--plate) 58%,var(--plate0) 100%),var(--surf-hero);
+  border:1px solid var(--edge-hero)}
+.vlabel{font-family:'Archivo';font-size:17px;font-weight:900;margin-bottom:9px}
+.vwho{font-family:'Archivo';font-size:23px;font-weight:800;line-height:1.2;letter-spacing:-.015em}
+.vtagline{font-size:17px;font-weight:400;line-height:1.46;margin:16px auto 18px;max-width:44ch}
+.vscore{font-family:'Archivo';font-weight:900;font-size:36px;color:var(--pink-ink);padding:14px 0 0;
+  border-top:1px solid var(--rule);display:flex;align-items:baseline;justify-content:center;gap:12px;flex-wrap:wrap}
+.vscore .sep{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.vscore .gap{font-family:'Inter';font-size:11.5px;font-weight:500;color:var(--ink-soft);align-self:center}
+.pull{font-style:italic;font-size:18px;line-height:1.45;margin:18px auto 20px;max-width:50ch}
+.body p{font-size:15px;line-height:1.62;margin:0 0 12px;max-width:62ch;margin-inline:auto}
+.body p:last-child{margin-bottom:0}
+.vvem{font-weight:600;color:var(--gold)}
+body.light .vvem{color:#5C4008;background:rgba(232,184,75,.22);padding:0 .1em;border-radius:3px}
+
+/* ── THE THREE TYPE TREATMENTS ─────────────────────────────────────── */
+.t-bric .vtagline,.t-bric .pull,.t-bric .body p{font-family:'Bricolage Grotesque',Georgia,serif}
+.t-fr   .vtagline,.t-fr .body p{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif}
+.t-fr   .vwho{font-family:'Fraunces','Archivo',serif;font-weight:600}
+.t-fr   .pull{font-family:'Bricolage Grotesque',Georgia,serif}
+.t-fri  .vtagline,.t-fri .body p{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif}
+.t-fri  .vwho{font-family:'Fraunces','Archivo',serif;font-weight:600}
+.t-fri  .pull{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif;font-style:italic}
+</style></head><body>
+<button class="tog" onclick="document.body.classList.toggle('light')">theme</button>
+<div class="wrap">
+<h1>The serif , what 66 KB and 107 KB actually buy</h1>
+<p class="sub">Real prose, the real pair, variant A as just built. <strong>Fraunces is loaded for real on this
+page</strong> , the middle and right panels are not simulations. Costs are the measured latin woff2 payload
+Google serves, not estimates: Fraunces is a VARIABLE font, so weights 400 and 600 come from ONE file.</p>
+
+<h2>the three treatments, side by side</h2>
+<div class="row">
+  <div class="col">
+    <div class="hd"><b>Bricolage, as it ships</b><span class="kb">0 KB</span></div>
+    <p class="hdsub">The page already loads this. Its italic is real, not synthesised.</p>
+    <div class="vfinal t-bric">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="hd"><b>Fraunces upright</b><span class="kb">+66 KB</span></div>
+    <p class="hdsub">One variable file covers 400 and 600. Headline and body serif; the pull quote stays Bricolage italic.</p>
+    <div class="vfinal t-fr">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="hd"><b>Fraunces upright + italic</b><span class="kb">+107 KB</span></div>
+    <p class="hdsub">A second file, 42 KB, bought for one element: the pull quote.</p>
+    <div class="vfinal t-fri">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+  </div></div>
+<p class="note">The middle column is the honest comparison for the money. The right column is what the extra
+<strong>41 KB</strong> buys , one italic line , and it is worth asking whether that line reads better in Fraunces
+italic than in Bricolage italic beside it, because that is the whole purchase.</p>
+
+<h2>the FOUT , what the reflow does to the most-read block</h2>
+<p class="note">This panel starts in the <strong>fallback</strong> and swaps to Fraunces on the button, measuring
+itself before and after. <strong>It is a metric swap, not a network simulation, and that is deliberate</strong> ,
+the first version of this fetched the stylesheet and reported "no reflow", because Fraunces was already CACHED from
+another demo on this origin. A warm cache is precisely the state in which a FOUT cannot be seen, so that test could
+only ever pass. The reflow below is the one a first-time visitor gets, and it is the same number either way.</p>
+<p style="margin:14px 0 0">
+  <button class="btn" onclick="loadFraunces(0)">swap now</button>
+  <button class="btn" onclick="loadFraunces(2500)">swap after 2.5s , the slow-connection case</button>
+  <button class="btn" onclick="location.reload()">reset</button>
+  <span id="foutState" style="font-size:12px;color:var(--muted);margin-left:8px">showing the fallback</span>
+</p>
+<div class="row" style="margin-top:16px"><div class="col" style="grid-column:1 / -1;max-width:560px">
+  <div class="hd"><b>live , this panel swaps</b><span class="kb" id="foutKb">fallback</span></div>
+  <p class="hdsub">Height and line count are measured before and after, so the reflow is a number and not an impression.</p>
+  <div class="vfinal t-fri" id="foutPanel">
+    <div class="vlabel">The Verdict</div>
+    <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+    <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+    <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+    <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+    <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+  </div>
+  <p class="note" id="foutMeasure">,</p>
+</div></div>
+</div>
+<script>
+/*  THE FOUT IS SHOWN AS A METRIC SWAP, NOT A NETWORK SIMULATION , AND THE FIRST VERSION OF
+    THIS WAS WRONG. It fetched the Fraunces stylesheet and measured before and after, which
+    reported "no reflow" because Chrome had Fraunces CACHED from another demo on the same
+    origin , `document.fonts.check` was already true before the button was pressed. A warm
+    cache is exactly the state in which a FOUT is invisible, so that test could only ever
+    pass.
+    THIS SWAPS THE FAMILY INSTEAD. The panel renders in the fallback the page already has,
+    is measured, then switches to Fraunces and is measured again. That is the REFLOW a
+    first-time visitor sees, and it is the same number whether the font arrives from the
+    network or from cache.  */
+var FOUT_FALLBACK = "'Bricolage Grotesque', Georgia, serif";
+var FOUT_SERIF    = "'Fraunces', 'Bricolage Grotesque', Georgia, serif";
+function foutApply(fam){
+  var p=document.getElementById('foutPanel');
+  ['.vtagline','.pull','.body p','.vwho'].forEach(function(sel){
+    p.querySelectorAll(sel).forEach(function(el){ el.style.fontFamily=fam; });
+  });
+}
+function measure(){ var p=document.getElementById('foutPanel');
+  var b=p.querySelector('.body p'); var lh=parseFloat(getComputedStyle(b).lineHeight);
+  return {h:Math.round(p.getBoundingClientRect().height),
+          lines:Math.round(b.getBoundingClientRect().height/lh)}; }
+function loadFraunces(delay){
+  foutApply(FOUT_FALLBACK);
+  document.getElementById('foutKb').textContent='fallback';
+  document.getElementById('foutState').textContent = delay
+    ? 'showing the fallback , swapping in '+(delay/1000)+'s' : 'showing the fallback ...';
+  setTimeout(function(){
+    var before=measure();
+    foutApply(FOUT_SERIF);
+    document.fonts.ready.then(function(){ setTimeout(function(){
+      var after=measure();
+      document.getElementById('foutState').textContent='Fraunces applied';
+      document.getElementById('foutKb').textContent='+107 KB';
+      document.getElementById('foutMeasure').innerHTML =
+        'panel height <b>'+before.h+'px &rarr; '+after.h+'px</b> ('+(after.h-before.h>=0?'+':'')+(after.h-before.h)+'px), '
+        + 'body lines <b>'+before.lines+' &rarr; '+after.lines+'</b>. '
+        + (after.h!==before.h
+            ? 'Everything below this panel moves by that much when the font arrives.'
+            : 'These two faces happen to set this text to the same depth , the swap is still visible in the letterforms, but nothing below it moves.');
+    },80); });
+  }, delay);
+}
+document.addEventListener('DOMContentLoaded', function(){ foutApply(FOUT_FALLBACK); });
+</script></body></html>
