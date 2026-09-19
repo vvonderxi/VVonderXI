@@ -56,10 +56,12 @@ function treat(html,mode,d){
   if(t&&mode==='B'){ t.remove(); }
   if(t&&mode==='C'){ t.setAttribute('fill-opacity','0.5'); if(!split){const eff=mix(ink,c1,.5); note='number '+ratio(ink,c1)+' &rarr; <b>'+ratio(eff,c1)+'</b> on the badge';} else note='split badge, ratio not computed'; }
   if(t&&mode==='D'){ const r=document.createElementNS('http://www.w3.org/2000/svg','circle'); r.setAttribute('cx','76');r.setAttribute('cy','30');r.setAttribute('r','7');r.setAttribute('fill','none');r.setAttribute('stroke',split?'#fff':ink);r.setAttribute('stroke-width','3'); svg.appendChild(r); }
+  if(t&&mode==='E'){ const ts=document.createElementNS('http://www.w3.org/2000/svg','tspan'); ts.setAttribute('font-size','0.62em'); ts.setAttribute('dy','-0.28em'); ts.textContent='*'; t.appendChild(ts); }
+  if(t&&mode==='F'){ t.setAttribute('fill','none'); t.setAttribute('stroke',split?'#fff':ink); t.setAttribute('stroke-width','3'); t.removeAttribute('paint-order'); }
   if(t&&mode==='A'&&!split) note='number '+ratio(ink,c1)+' on the badge';
   return {html:w.innerHTML,note};
 }
-const MODES={A:'As today , number shown',B:'Suppressed , blank, same as "not found"',C:'Muted , number at half strength',D:'Marked , number kept, ring in the corner'};
+const MODES={A:'As today , number shown',B:'Suppressed , blank, same as "not found"',C:'Muted , number at half strength',D:'Marked , number kept, ring in the corner (REJECTED: reads as a degree sign)',E:'Footnoted , number kept, an asterisk',F:'Hollow , number drawn in outline'};
 const CASES=[
  [134303,'Fonte 16/17, West Ham. <b>A real January move.</b> #6 is his Southampton number (gap 17).'],
  [130281,'Semenyo 25/26, Bournemouth. <b>Flagged, and the number is RIGHT</b> , the card holds the Bournemouth half and #24 is Bournemouth\'s.'],
@@ -75,7 +77,7 @@ function cardHTML(row,cw){ return VVCore.buildCard(VVCore.rowToCard(Object.assig
     for(const [id,cap] of CASES){
       const row=byId[id]; const base=cardHTML(row,cw); const d=VVCore.rowToCard(Object.assign({},row));
       h+='<div class="dm-rowlab">'+cap+'</div><div class="dm-row">';
-      for(const m of ['A','B','C','D']){ const r=treat(base,m,d); h+='<div class="dm-cell" style="width:'+Math.max(cw,170)+'px">'+r.html+'<div class="dm-cap"><b>'+m+'</b> , '+MODES[m]+(r.note?'<br>'+r.note:'')+'</div></div>'; }
+      for(const m of (new URLSearchParams(location.search).get('modes')||'ABCDEF').split('')){ const r=treat(base,m,d); h+='<div class="dm-cell" style="width:'+Math.max(cw,170)+'px">'+r.html+'<div class="dm-cap"><b>'+m+'</b> , '+MODES[m]+(r.note?'<br>'+r.note:'')+'</div></div>'; }
       h+='</div>';
     }
     const blank=byId[135433];
