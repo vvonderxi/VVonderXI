@@ -259,7 +259,15 @@ function lintModules(){
     either restore the order, or update the constant DELIBERATELY, knowing that doing so
     discards every cached note. It is a tripwire, not a correctness proof , it says the shape
     changed, never that the change was wrong.  */
-const STATS_HASH_PIN = { outfield: 'cb1a80e2a75814b3', keeper: '8bd90b9aa47cceaf' };
+/*  UPDATED ON PURPOSE 2026-09-19, and the asymmetry is the evidence for why.
+    The outfield pin moved and the KEEPER pin did not, because the payload carries
+    `dimensions` under {radar:true} and a keeper's radar is suppressed at source. So the
+    mover was RADAR_POOL_REF, which was repasted that day after the 2026-09-16 assists
+    repair had silently moved every creation breakpoint. That is the stamp working: a note
+    citing "87th percentile for creation" is wrong once the percentile moves, and it SHOULD
+    regenerate. MEASURED COST: 97 of 172 cached notes, the rest unaffected or radar-NR.
+    Only ever change these two values with the reason written down.  */
+const STATS_HASH_PIN = { outfield: '2ca5d8ac83db868c', keeper: '8bd90b9aa47cceaf' };
 function lintCacheStamps(){
   const out = [];
   let A, VVCore;
