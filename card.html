@@ -598,6 +598,9 @@
 
   /* Data Confidence footer (bottom of every card) */
   .dataconf{background:none;border:0;padding:0;margin:0}
+  .dc-flag{font-family:'Inter';font-size:12.5px;line-height:1.5;color:#46433c;margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.04);transition:box-shadow .3s}
+  .dc-flag b{font-weight:600;color:#1C1B1A}
+  .dc-flag.flash{box-shadow:0 0 0 2px var(--pink,#E70443)}
   .dc-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:12px}
   body.light .dc-t{color:var(--ink-soft)}
   .dc-row{display:flex;align-items:center;gap:13px}
@@ -1453,6 +1456,7 @@
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
         <div class="dc-row"><span class="dc-dots" id="dcDots"></span><span class="dc-x" id="dcX">NR</span></div>
         <div class="dc-note">How complete the data behind this card is. It measures the record, not the player.</div>
+        <div id="dcFlags"></div>
         <button class="dc-see" onclick="var d=this.nextElementSibling;var o=d.classList.toggle('show');this.classList.toggle('on');this.querySelector('span').textContent=o?'Hide the breakdown':'See the breakdown';"><span>See the breakdown</span><i class="dc-chev">&#9662;</i></button>
         <div class="dc-detail">
           <div class="dc-note" style="margin-bottom:10px">The dots run from 2 to 5. Every card has verified minutes, the baseline. Goals, assists and the deeper fields below show what else was recorded for that season. NR means not recorded.</div>
@@ -1464,7 +1468,7 @@
         <a class="ca-btn ca-compare" id="compareCta2" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare this player</a>
         <div class="ca-row">
           
-          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300);document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
+          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300,{numberMark:true});document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
           <button class="ca-btn ca-top" onclick="document.querySelectorAll('.layer.open').forEach(function(l){l.classList.remove('open')});window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg> Fold all</button>
         </div>
       </div>
@@ -1473,8 +1477,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260919c"></script>
-<script src="/vv-core.js?v=20260919c"></script>
+<script src="/vv-marks.js?v=20260919d"></script>
+<script src="/vv-core.js?v=20260919d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2024,6 +2028,18 @@
       for(var i=1;i<=5;i++){ dots += (i<=c) ? '<i class="on"></i>' : '<i></i>'; }
       dcDots.innerHTML = dots;
     }
+    /*  ITEM 26 , the explanation the shield mark points at. It sits OUTSIDE the breakdown
+        fold because the mark's tap lands here and must not land on a closed box.
+        BOTH LINES ARE CONDITIONAL AND THAT IS THE POINT: the detector is right about seven
+        in ten at gap 3 and up, so neither may state the move as fact. The second leans on
+        the first ("if he did") and they always render together, from the one flag.  */
+    var dcFlags = document.getElementById('dcFlags');
+    if(dcFlags){
+      dcFlags.innerHTML = D.numberClubUncertain
+        ? '<div class="dc-flag" id="dcFlagNumber"><b>Shirt number.</b> This number was recorded for the season as a whole, and the appearance record runs longer than the matches on this card. If the player moved mid-season, the number may be the one he wore at the other club.</div>'
+          + '<div class="dc-flag"><b>Partial season.</b> If he did move, this card holds one club\'s share of the season, and the figures and the score cover that share only, not the full campaign.</div>'
+        : '';
+    }
     var dcNote = document.querySelector('.dc-detail .dc-note');
     if(dcNote){
       // The keeper sentence explains the 4-of-5 ceiling BEFORE anyone wonders why their
@@ -2168,7 +2184,7 @@
       stepper now lives in #seasonZone, which renderHero does not own. Leaving the call here
       would be harmless and misleading , the next reader would look for the control inside
       the card. It is attached where the SEASON STATE changes instead.  */
-  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
+  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow(),{numberMark:true}); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
   // in either direction, and its geometry is measured from the hero's rect.
@@ -2463,7 +2479,7 @@
     EDITORIAL_DEPS = _honP.catch(function(){});
     // honours applied in onDone so they never interrupt the in-flight flip; renderHero re-runs for the
     // card FACE pill (buildCard reads d.honours.all), vvApplyHonours for glance chips + Wonder Tags.
-    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, prestige:D.prestige, onDone:function(){
+    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw,{numberMark:true}), cw:_cw, prestige:D.prestige, onDone:function(){
       drawRadar();
       /*  THE NEW FACE EXISTS ONLY NOW. It must also run BEFORE the honours .then below,
           because that branch calls renderHero, which re-attaches anyway , but honours can
@@ -2861,6 +2877,11 @@
   })();
 
   document.addEventListener('click', function(e){
+    /*  ITEM 26 , the shield mark. Handled FIRST and returned from, exactly as .yr is, because
+        the flip below runs for any tap inside #heroCard. A tap is not a swipe (the swipe
+        needs 48px of travel), so the touch handlers above never see it as one.  */
+    var inXf = e.target.closest && e.target.closest('#heroCard .xfm');
+    if(inXf){ e.stopPropagation(); vvOpenNumberNote(); return; }
     var inYr = e.target.closest && e.target.closest('#heroCard .yr');
     if(inYr && SEASON_ROWS){ e.stopPropagation(); seasonPanelOpen(); return; }   // .yr opens the season list (unchanged)
     var panel=document.getElementById('seasonPanel');
@@ -2871,6 +2892,15 @@
     var inCard = e.target.closest && e.target.closest('#heroCard');
     if(inCard && D && _hero && !_hero._flipping){ var _cw=cwNow(); vvCardFlip(_hero, { swap:false, cw:_cw, prestige:D.prestige }); }   // ignore taps mid-flip
   });
+  function vvOpenNumberNote(){
+    var note=document.getElementById('dcFlagNumber'); if(!note) return;
+    var layer=note.closest('.layer'); if(layer && !layer.classList.contains('open')) layer.classList.add('open');
+    setTimeout(function(){
+      note.scrollIntoView({behavior:'smooth', block:'center'});
+      note.classList.remove('flash'); void note.offsetWidth; note.classList.add('flash');
+      setTimeout(function(){ note.classList.remove('flash'); }, 1600);
+    }, 60);
+  }
   loadCard();
   // Sequence resolves in PARALLEL with the card, never gating it: the card is the hero
   // and must paint on its own round-trip, exactly as loadCard's comment says.

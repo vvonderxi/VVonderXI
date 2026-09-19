@@ -459,7 +459,8 @@
 
   // ── buildCard , canonical Version A, with myclub's hidden-placeholder
   //    empty-tag branch adopted as the standard (keeps grid rows aligned). ──
-  function buildCard(d, cw){
+  function buildCard(d, cw, opts){
+    opts = opts || {};
     const flag = d.flag ? `<span class="cflag">${d.flag}</span> ` : '';
     const full = d.full ? `<div class="full">${d.full}</div>` : '';
     // ── Tag pills (Tag Model v1.1) , built via the shared renderTagPills helper
@@ -539,13 +540,23 @@
         height is a fixed --cw * 0.2, so removing this one changes no other element's
         geometry , verified rendered at all three sizes rather than reasoned about.  */
     const gkFace = vvIsGKCard(d);
+    /*  ITEM 26 , THE MARK SITS UNDER THE SHIELD, NOT ON THE NUMBER. The shield is the badge
+        plus the number, so a mark attached to it marks the PAIRING, which is what is
+        uncertain; the number itself is fine. A ring beside the numeral read as a degree sign
+        and an asterisk read as doubt about the number , both rendered and rejected.
+        OPT-IN, NEVER DEFAULT. buildCard has nine call sites and the mark belongs only where
+        its explanation is one tap away: the card hero (including the season flip) and the
+        card-page share image. A mark in a list with nothing to tap is worse than none.  */
+    const xfm = (opts.numberMark && d.numberClubUncertain && numStr)
+      ? `<button type="button" class="xfm" data-vv-xfm="1" title="This number may be the one worn at the other club" aria-label="Shirt number: may belong to another club this season. Show details."><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h11M10 2l3 3-3 3"/><path d="M14 11H3M6 8l-3 3 3 3"/></svg></button>`
+      : '';
     return `<div class="vvcard${d.prestige==='Generational'?' gen':d.prestige==='Iconic'?' iconic':''}" style="--cw:${cw}px">
       <div class="ctop">
         <div class="ctl">
           <div class="cbadgewrap">
             <svg class="cbadge" viewBox="0 0 100 116"><defs><clipPath id="${uid}"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#${uid})">${badgeFill}</g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>${num}</svg>
             <div class="pos">${posDisplay(d.pos)}</div>
-          </div>
+          </div>${xfm}
         </div>
         <div class="yr">${d.year}</div>
         ${gkFace ? '' : `<div class="ctr"><div class="n">${d.vv}</div><div class="vv"><span class="a">V</span><span class="b">V</span></div></div>`}
@@ -2075,6 +2086,24 @@
     const basicMissing = (row.goals == null) || (row.assists == null) || (row.minutes == null);
     return basicMissing ? Math.min(score, 4) : score;
   }
+  /*  ITEM 26 , THE SHIRT NUMBER MAY BELONG TO THE OTHER CLUB. player_positions is keyed
+      (player, season, league), so a player who moves WITHIN a league has ONE position row
+      covering both clubs and one shirt number, while the card is per club. The tell is that
+      row covering more matches than the card: pos_row_appearances > appearances.
+      THE GAP IS 3, NOT 1, AND THAT IS A MEASURED CHOICE (2026-09-19). A proxy for "really
+      moved" (a different club the season before or after) runs 49% at a gap of 1-2 against
+      a 34% baseline for unflagged cards, and 70-75% from 3 up. Tadic at Ajax 18/19 is gap 1
+      and never moved. Marking a correct card is worse than missing a wrong one.
+      2016+ ONLY, AND THAT IS COVERAGE, NOT A RULING: every pre-2016 position row carries a
+      NULL appearances after the squad-number backfill, so the comparison can never fire
+      there. An unmarked pre-2016 card is unexamined, not cleared.
+      477 cards on 2026-09-19. Count it, do not quote it.  */
+  const NUMBER_CLUB_GAP = 3;
+  function numberClubUncertain(row){
+    if (row.shirt_number == null || row.season_year == null || row.season_year < 2016) return false;
+    if (row.pos_row_appearances == null || row.appearances == null) return false;
+    return (row.pos_row_appearances - row.appearances) >= NUMBER_CLUB_GAP;
+  }
   function confidenceFields(row){
     var LABELS = {
       shots_on:'Shots on target',
@@ -2913,6 +2942,7 @@
 
       // ── Seams: number now sourced from the view; tag/photo still blank by design ──
       number:   row.shirt_number ?? null,   // shirt number (player_positions.shirt_number, via view)
+      numberClubUncertain: numberClubUncertain(row),   // item 26: the number may be the other club's; see the rule above
       tag:      '',                 // legacy placeholder, kept falsy for backward-compat; remove after step 3 verified
       tags:     getVVTags(row),     // Tag Model v1.1 , array of {name,family,tier}; render consumes in step 3
       photo:    row.api_player_id != null ? 'https://media.api-sports.io/football/players/' + row.api_player_id + '.png' : undefined,   // API-Football CDN headshot (URL only, no storage); onerror in buildCard falls back to silhouette
@@ -4113,6 +4143,9 @@ body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, va
 .vvcard .cbadgewrap{display:flex;align-items:center;gap:calc(var(--cw)*0.033)}
 .vvcard .cbadge{width:calc(var(--cw)*0.175);height:calc(var(--cw)*0.203);flex-shrink:0;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,0.32))}
 .vvcard .pos{display:none}
+.vvcard .xfm{position:relative;display:flex;align-items:center;justify-content:center;width:calc(var(--cw)*0.175);height:max(12px,calc(var(--cw)*0.06));margin:calc(var(--cw)*0.012) 0 0;padding:0;border:0;background:none;color:var(--charcoal);cursor:pointer;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent}
+.vvcard .xfm svg{width:max(12px,calc(var(--cw)*0.06));height:100%;display:block;pointer-events:none}
+.vvcard .xfm::before{content:'';position:absolute;left:50%;top:50%;width:32px;height:32px;transform:translate(-50%,-50%)}
 .vvcard .ctr{position:absolute;right:0;top:calc(var(--cw)*-0.01);display:flex;flex-direction:column;align-items:center}
 .vvcard .halo{display:none}
 .vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
@@ -4259,7 +4292,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     9.2px, below the 9.5px its sibling .cga .col .l was given in the same pass, and it still
     leaves the face 2.3px off the edge. Same nowrap+ellipsis pattern as .vvrows .uclub. */
 .vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vvcard.gen .yr{color:rgba(240,234,217,0.85)}
+.vvcard.gen .yr,.vvcard.gen .xfm{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
 .vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
 .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
@@ -4284,7 +4317,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
      SS D rather than silently overwritten here. */
   body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #3a3126, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
   body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #C08A22, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
-.vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
+.vvcard.iconic .yr,.vvcard.iconic .xfm{color:rgba(42,29,3,0.82)}
 .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
 .vvcard.iconic .vv .a{color:#2a1d03}
 /*  THE ICONIC FACE'S TWO MUTED INKS WERE FAILING ON AN ALPHA, NOT ON A DESIGN CONSTRAINT
@@ -6901,7 +6934,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       'flex-direction:column;align-items:center;justify-content:center;' +
       'padding:' + P + 'px ' + P + 'px ' + (P + capZone) + 'px ' + P + 'px">' +
       shChrome(F, vvShareCaption(spec), light) +
-      '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw) + '</div></div>';
+      '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw, { numberMark: true }) + '</div></div>';
   }
 
   //  THE LEDGER. Wide frames put the pair left and the verdict block right; portrait frames
