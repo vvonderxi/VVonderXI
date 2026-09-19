@@ -162,7 +162,17 @@ async function mapLimit(items,limit,fn){
     const pick=(arr,type)=>{ if(!arr)return '';
       const s=arr.find(x=>x.type===type); const v=s?s.value:null; return v==null?'':v; };
 
-    const lines=['Date,HomeTeam,AwayTeam,FTHG,FTAG,HTHG,HTAG,HS,AS,HST,AST,HxG,AxG'];
+    /*  Round and RegularSeason are APPENDED so the agreed column order is unchanged.
+    LABEL AND KEEP, NEVER FILTER AT EXPORT. A play-off between two top-flight clubs
+    is a real match correctly labelled; dropping it here would make the export the
+    place information is lost, and BAM could not recover it. With these two columns
+    every filtering policy is one predicate on the consumer's side:
+      fd-consistent  RegularSeason = 1
+      no 2nd-tier    RegularSeason = 1 OR both clubs in the regular-season set
+      everything     no predicate
+    (fd itself keeps play-offs , B1_2425.csv holds 312 rows against 240 regular-season
+     matches , so filtering here would have made us LESS consistent with fd, not more.) */
+    const lines=['Date,HomeTeam,AwayTeam,FTHG,FTAG,HTHG,HTAG,HS,AS,HST,AST,HxG,AxG,Round,RegularSeason'];
     let shotRows=0;
     /*  EVERY LISTED FIXTURE IS A ROW, PLAYED OR NOT (2026-09-17). BAM cannot price a
         match it cannot see, and the scheduled ones are in the SAME response that carried
@@ -182,6 +192,13 @@ async function mapLimit(items,limit,fn){
       /*  HALF-TIME COMES FREE , score.halftime is in the SAME /fixtures payload as the
           full-time score. No second endpoint, no extra call. Verified on 54 of 54 played
           Eredivisie fixtures before this was written.  */
+      /*  REGULAR SEASON IS DECIDED BY THE API'S OWN ROUND LABEL, not by a list we
+          maintain. 'Regular Season - N' is the league phase; everything else is a
+          play-off, group or final. Verified on four league-seasons: the regular-season
+          rounds match KNOWN_SIZE exactly (ERE 2022 = 18, BPL 2025 = 16, BL 2018 = 18,
+          PL 2015 = 20) while the full fixture list does not.  */
+      const round=(f.league&&f.league.round)||'';
+      const isRegular=/^Regular Season/i.test(round);
       const ht=f.score&&f.score.halftime||{};
       const HTHG=isPlayed&&ht.home!=null?ht.home:'', HTAG=isPlayed&&ht.away!=null?ht.away:'';
       for(const [nm,id] of [[f.teams.home.name,f.teams.home.id],[f.teams.away.name,f.teams.away.id]]){
@@ -191,7 +208,8 @@ async function mapLimit(items,limit,fn){
       lines.push([ddmmyyyy(f.fixture.date),f.teams.home.name,f.teams.away.name,
         isPlayed&&f.goals.home!=null?f.goals.home:'',
         isPlayed&&f.goals.away!=null?f.goals.away:'',
-        HTHG,HTAG,HS,AS,HST,AST,'',''].map(csvCell).join(','));
+        HTHG,HTAG,HS,AS,HST,AST,'','',
+        round, isRegular?1:0].map(csvCell).join(','));
     }
     writeOut(path.join(SLUG,`${SLUG}_${year}.csv`),lines.join('\n')+'\n');
 
@@ -232,6 +250,23 @@ async function mapLimit(items,limit,fn){
           nothing errors. Checked here per season rather than trusted , both sets come
           from the same response, so a mismatch would mean the provider disagreeing with
           itself, but "should be impossible" is not a measurement.  */
+      /*  MEMBERSHIP, RECORDED NOT FILTERED. The regular-season club set is the honest
+          division membership and comes from the API's own round labels , no external
+          table. Everything a consumer needs to reproduce any filtering policy.  */
+      regular_season:(function(){
+        const reg=all.filter(f=>/^Regular Season/i.test((f.league&&f.league.round)||''));
+        const clubs=new Set(); const rounds=new Set();
+        for(const f of reg){ clubs.add(f.teams.home.name); clubs.add(f.teams.away.name);
+                             rounds.add(f.league.round); }
+        const byRound={};
+        for(const f of all){ const r=(f.league&&f.league.round)||'(none)';
+                             byRound[r]=(byRound[r]||0)+1; }
+        return {club_set:[...clubs].sort(), club_count:clubs.size,
+                round_count:rounds.size, matches:reg.length,
+                matches_by_round_label:byRound,
+                note:'club_set is the regular-season membership. Matches outside it are kept '
+                    +'in the CSV and marked RegularSeason=0.'};
+      })(),
       club_names:(function(){
         const P=new Set(),U=new Set();
         for(const f of all){ const t=PLAYED.has(f.fixture.status.short)?P:U;
