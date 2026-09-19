@@ -232,8 +232,24 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .vscore{font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:.01em;margin-top:10px;color:var(--pink-ink)}
   .vscore .vs-sep{opacity:.55;margin:0 8px;font-weight:700}
   /* tagline , the selected tag's one-line blurb, the quiet third line of the triad */
-  .vtagline{font-family:'Bricolage Grotesque';font-style:italic;font-size:15px;line-height:1.5;
-    margin:10px auto 0;max-width:520px;color:var(--ink-soft)}
+  /*  THE DECK , A STANDFIRST, NOT A CAPTION (2026-09-19). This is the sentence that tells a
+      reader what the comparison concluded, and at 15px italic in `--ink-soft` it read as a UI
+      chip hanging off the headline rather than as the second thing on the page. Now 20px,
+      upright, full ink, with air above and below.
+      IT IS SET IN BRICOLAGE, NOT FRAUNCES, AND THAT IS A DELIBERATE SUBSTITUTION. The demo
+      that carried this decision used Fraunces, which THIS PAGE DOES NOT LOAD , compare.html
+      ships Bricolage Grotesque, Archivo, Inter and Barlow Condensed, and no serif at all.
+      Adopting the demo literally would add a fifth webfont family to a live surface for one
+      sentence. Bricolage is the page's own display face and is what `.vquote` already uses.
+      If the serif is wanted, that is a typography decision with a page-weight cost attached
+      and it should be taken on its own, not smuggled in with a size change.  */
+  .vtagline{font-family:'Bricolage Grotesque';font-style:normal;font-weight:400;font-size:20px;
+    line-height:1.48;margin:22px auto 24px;max-width:46ch;color:var(--cream)}
+  body.light .vtagline{color:var(--charcoal)}
+  /*  The masthead block , label, headline, deck, score , stays centred above the left-aligned
+      body. Two alignments on purpose: the conclusion is a masthead, the argument is prose.  */
+  .vfinal .vlabel,.vfinal .vwho,.vfinal .vtagline,.vfinal .vscore{text-align:center}
+  .vfinal .vtagline{margin-inline:auto}
   /*  THE ONE LINE THAT SAYS WHY THE INDEX STEPPED BACK , 2026-09-13. It is quieter than the
       blurb above it on purpose: the blurb is the tag's own voice and this is a footnote to it.
       Reading order is tag, then what happened, then why.  */
@@ -263,6 +279,27 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .vradar-wrap{max-width:100%}
   #vradar{width:100%;max-width:320px;height:auto;display:block}
   .vradar-key{display:flex;gap:20px;margin-top:8px}
+  /*  COVERAGE BARS. Binary per dimension , recorded or not is the question this answers, and
+      a partial bar would invite a reading of DEGREE the underlying flag cannot support.
+      THE NAMES ARE WRITTEN BESIDE THE BARS, which is what lets this use the A/B pink-blue
+      pair at all: SS C accepts those colours only where the element is not colour-only.  */
+  .vcov{width:100%;max-width:400px;margin:18px auto 0;padding-top:16px;
+    border-top:1px solid rgba(255,255,255,.12)}
+  body.light .vcov{border-top-color:rgba(0,0,0,.12)}
+  .vcov[hidden]{display:none!important}
+  .vcov-h,.vcov-f,.vcov-r{display:grid;grid-template-columns:92px 1fr 1fr;gap:10px;align-items:center}
+  .vcov-h{margin-bottom:10px} .vcov-r{margin-bottom:7px} .vcov-f{margin-top:12px}
+  .vcov-k{font-family:'Archivo';font-size:11px;font-weight:800;letter-spacing:.02em}
+  .vcov-ka{color:var(--pink-ink)} .vcov-kb{color:var(--blue)}
+  .vcov-n{font-family:'Inter';font-size:11px;color:var(--ink-soft);text-align:right}
+  .vcov-t{height:8px;border-radius:99px;background:currentColor;opacity:.14;position:relative}
+  .vcov-t i{position:absolute;inset:0;border-radius:99px;display:block;opacity:0}
+  .vcov-t i.on{opacity:1}
+  .vcov-a{background:var(--pink-ink)} .vcov-b{background:var(--blue)}
+  .vcov-f b{font-family:'Archivo';font-size:11px;font-weight:800}
+  .vcov-fa{color:var(--pink-ink)} .vcov-fb{color:var(--blue)}
+  .vcov-cap{font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);
+    margin-top:12px;text-align:left}
   .vk{font-family:'Archivo';font-weight:700;font-size:12px;display:flex;align-items:center;gap:7px;color:rgba(243,237,224,0.75)}
   .vk i{width:12px;height:12px;border-radius:3px}
   .vk-a i{background:var(--pink)} .vk-b i{background:var(--blue)}
@@ -341,7 +378,14 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
    computed to rgba(0,0,0,0) and read as a caption between two solid panels while
    being the thing the whole page builds to. Now the brightest surface, with the
    brand rule inlaid on its top edge. */
-.vfinal{margin-top:38px;padding:38px 34px 32px;text-align:center;position:relative;
+/*  4c , LEFT-ALIGNED AT A READING MEASURE (2026-09-19). Centred prose is fine for one
+    sentence and hostile for four paragraphs: every line starts in a different place, so the
+    eye has to re-find the left edge on every return. The headline, the deck and the score
+    band stay centred as a block; the BODY gets a left edge and a 66ch measure.
+    THE WAIT STATE MOVES WITH IT. `.vquote-wait` is a FLEX container and text-align has no
+    say over flex items , that is recorded further down this sheet , so its justify-content
+    is switched to flex-start in the same edit rather than left centred and forgotten.  */
+.vfinal{margin-top:38px;padding:38px 34px 32px;text-align:left;position:relative;
   background:var(--surf-hero);border:1px solid var(--edge-hero);border-radius:20px;
   box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)}
 .vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
@@ -352,9 +396,44 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      the sheet, so it won on equal specificity and repainted this charcoal in light mode ,
      the same trap that hit .dc-x.dc-nym on the card. This is (0,4,0) and wins outright. */
   body.light .vfinal .vquote.vq-na{color:var(--ink-soft)}
-  .vfinal .vquote{max-width:620px;margin-inline:auto}   /* #102: cap the measure , tight centered pull-quote (~50-58 chars) */
+  /*  4c , ONE MEASURE, AND ITALIC SPENT ONCE. The body runs upright at 66ch; the FIRST
+      paragraph keeps the italic and becomes the pull quote, which is what the italic was
+      always for. Every paragraph in italic is emphasis spent evenly, which is emphasis spent
+      on nothing.  */
+  .vfinal .vquote{max-width:66ch;margin-inline:0;font-style:normal;font-size:16.5px;line-height:1.62}
+  /*  THE PULL QUOTE IS SELECTED BY CLASS, NOT BY :first-of-type , CORRECTED BEFORE SHIPPING.
+      `:first-of-type` matches on ELEMENT type, not class: `.vlabel` is the first <div> in
+      `.vfinal`, so `.vquote:first-of-type` matched NOTHING and the rule was silently inert ,
+      the exact shape SS C records, an override that loses is indistinguishable from one never
+      written. The first quote is the one carrying neither `.vquote2` nor `.vquote3`.  */
+  .vfinal .vquote:not(.vquote2):not(.vquote3){font-style:italic;font-size:20px;line-height:1.46;
+    max-width:48ch;padding-left:18px;border-left:2px solid var(--pink-ink);margin-block:4px 22px}
+  /*  except while it is the WAIT line, which is a status and not the season's voice , the
+      existing .vquote-wait rule already drops the italic with !important; this drops the rule
+      that would otherwise draw a pull-quote bar around "Reading the season".  */
+  .vfinal .vquote.vquote-wait{border-left:0;padding-left:0;font-size:16.5px;max-width:66ch}
   .vfinal .vquote2,.vfinal .vquote3{margin-top:16px}
   .vfinal .vquote3{color:var(--gold)}
+  /*  4b , THE SCORE BAND. The two numbers were a 23px pink line under the headline; they are
+      the result, so they get their own band with the margin stated beside them rather than
+      left for the reader to subtract.  */
+  .vfinal .vscore{font-family:'Archivo';font-weight:900;font-size:46px;letter-spacing:-.01em;
+    color:var(--pink-ink);margin:0;padding:18px 0 0;border-top:1px solid rgba(255,255,255,.10);
+    display:flex;align-items:baseline;justify-content:center;gap:14px;flex-wrap:wrap}
+  .vfinal .vscore .vs-sep{font-size:14px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-soft)}
+  /*  THE MARGIN SITS BESIDE THE NUMBERS, NOT UNDER THEM , it is the reading of the pair, so
+      it is set as a caption at the band's own baseline rather than as a third number.  */
+  .vfinal .vscore .vs-gap{font-family:'Inter';font-size:12.5px;font-weight:500;letter-spacing:.02em;
+    color:var(--ink-soft);align-self:center;padding-left:6px}
+  body.light .vfinal .vscore .vs-gap,body.light .vfinal .vscore .vs-sep{color:var(--ink-soft)}
+  body.light .vfinal .vscore{border-top-color:rgba(0,0,0,.10)}
+  /*  4d , THE VERDICT LABEL IS NOT AN EVIDENCE LABEL. `.vlabel` and the three `.vsect-t`
+      headings all wore the same small-caps treatment, so the conclusion read as a peer of the
+      columns supporting it. This one is a heading; those stay labels.  */
+  .verdict .vfinal .vlabel{font-size:19px;font-weight:900;letter-spacing:.005em;
+    text-transform:none;color:var(--cream);margin-bottom:10px}
+  body.light .verdict .vfinal .vlabel{color:var(--charcoal)}
   /* breakpoints , stack on narrow, keep premium spacing */
   @media (max-width:1040px){.matchup{gap:22px}.hero{padding:24px 32px 4px}.arena{padding:20px 32px 36px}.topline{padding:24px 32px 0}}
   /*  TWO-UP ON A PHONE. This media query used to collapse .matchup to a single column, and
@@ -727,7 +806,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      and beats a single class outright, so position alone would still have lost in light
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
   .vsprose-wait,.vquote-wait{color:var(--ink-soft) !important;font-style:normal !important;
-    display:flex;align-items:center;gap:8px}
+    display:flex;align-items:center;gap:8px;justify-content:flex-start}
   /*  AND THE VERDICT PANEL'S WAIT IS CENTRED, BECAUSE text-align DOES NOT REACH A FLEX ITEM
       , 2026-09-13. `.vfinal` is `text-align:center` and everything in it lines up: the label,
       the headline, the score. The wait sat hard left anyway, because the rule above makes this
@@ -1296,6 +1375,29 @@ body.light .pkmsub{color:var(--ink-soft)}
         <!-- FULL BREAKDOWN FIRST (the analysis builds to the payoff) -->
         <div class="vbreak">
           <!-- THE STORY , per-player Peter Drury intro (bread & butter) -->
+        <!--  THE VERDICT OPENS THE SECTION , MOVED 2026-09-19. It used to sit AFTER every
+              evidence box, as the payoff at the end of the argument. The comment that lived
+              here said "the emotional payoff, AFTER the analysis", and that is the thing that
+              changed: the conclusion now leads and the evidence supports it, which is the
+              order the headline already implied by being the largest element on the page.
+              NOTHING ABOUT THE WRITERS MOVES , vvSetVerdict, #vScore, #vTagline and the wait
+              state all address these nodes by id or class, not by position.  -->
+        <div class="vfinal">
+          <!-- ANSWER-FIRST. .vwho (the conclusion) leads and is the largest element;
+               the prose below the rule is now the supporting "why", not the lead.
+               Same content, reweighted , nothing here is hardcoded, see vvSetVerdict. -->
+          <div class="vlabel">The Verdict</div>
+          <div class="vwho"></div>
+          <div class="vscore" id="vScore"></div><div class="vtagline" id="vTagline"></div><div class="vtagwhy" id="vTagWhy"></div>
+          <div class="vsplit"></div>
+          <div class="vquote vquote-wait">Reading the season</div>
+          <div class="vquote vquote2"></div>
+          <div class="vquote vquote3"></div>
+          <div class="vtags-final">
+            <span class="vtag gold" id="vEdgeTag" data-tip="" style="display:none"></span>
+          </div>
+        </div>
+
           <div class="vsect vsect-wide vstory">
             <div class="vsect-t">The Story</div>
             <div class="vsect-d">Before a single number is weighed, the two seasons in their own words.</div>
@@ -1317,6 +1419,11 @@ body.light .pkmsub{color:var(--ink-soft)}
             <div class="vradar-wrap">
               <svg width="320" height="260" viewBox="0 0 320 260" id="vradar"></svg><small id="vradarNote"></small>
               <div class="vradar-key"><span class="vk vk-a"><i></i> Season A</span><span class="vk vk-b"><i></i> Season B</span></div>
+              <!--  COVERAGE , WHAT EACH CARD ACTUALLY RECORDS. Rendered BENEATH the overlay when
+                    there are enough shared dimensions to draw one, and INSTEAD of it when there
+                    are not. Same boundary as the overlay's own (three shared), which is the same
+                    boundary radarFor already uses on a single card, so it is one rule.  -->
+              <div id="vcoverage" class="vcov" hidden></div>
             </div>
           </div>
           <!-- head to head dimension bars (green dot on the winner) -->
@@ -1365,22 +1472,6 @@ body.light .pkmsub{color:var(--ink-soft)}
           </div>
         </div>
 
-        <!-- THE VERDICT , the emotional payoff, AFTER the analysis -->
-        <div class="vfinal">
-          <!-- ANSWER-FIRST. .vwho (the conclusion) leads and is the largest element;
-               the prose below the rule is now the supporting "why", not the lead.
-               Same content, reweighted , nothing here is hardcoded, see vvSetVerdict. -->
-          <div class="vlabel">The Verdict</div>
-          <div class="vwho"></div>
-          <div class="vscore" id="vScore"></div><div class="vtagline" id="vTagline"></div><div class="vtagwhy" id="vTagWhy"></div>
-          <div class="vsplit"></div>
-          <div class="vquote vquote-wait">Reading the season</div>
-          <div class="vquote vquote2"></div>
-          <div class="vquote vquote3"></div>
-          <div class="vtags-final">
-            <span class="vtag gold" id="vEdgeTag" data-tip="" style="display:none"></span>
-          </div>
-        </div>
 <!-- DATA CONFIDENCE -->
           <div class="vsect vsect-wide">
             <div class="vsect-t">Data Confidence</div>
@@ -2331,17 +2422,55 @@ body.light .pkmsub{color:var(--ink-soft)}
     A_VALS=A_RAW.map(function(v){return v==null?null:v/100;});
     B_VALS=B_RAW.map(function(v){return v==null?null:v/100;});
   }
+  /*  COVERAGE , HOW MUCH OF EACH CARD IS RECORDED AT ALL. Binary per dimension on purpose:
+      the question is whether a measure exists, and the underlying flag cannot support a
+      reading of degree. Names are written beside the bars, which is the condition SS C
+      attaches to using the A/B pink-blue pair anywhere.  */
+  function vvDrawCoverage(usable){
+    var box=document.getElementById('vcoverage'); if(!box) return;
+    var nA=(CMP_A&&CMP_A.surname)||'Season A', nB=(CMP_B&&CMP_B.surname)||'Season B';
+    if(CMP_A&&CMP_A.year) nA+=' '+CMP_A.year;
+    if(CMP_B&&CMP_B.year) nB+=' '+CMP_B.year;
+    var nameOf=['Goal threat','Creation','Progression','Defensive','Availability'];
+    var a=0,b=0,rows='';
+    for(var i=0;i<5;i++){
+      var ha=A_RAW[i]!=null, hb=B_RAW[i]!=null; if(ha)a++; if(hb)b++;
+      rows+='<div class="vcov-r"><div class="vcov-n">'+nameOf[i]+'</div>'
+          + '<div class="vcov-t"><i class="vcov-a'+(ha?' on':'')+'"></i></div>'
+          + '<div class="vcov-t"><i class="vcov-b'+(hb?' on':'')+'"></i></div></div>';
+    }
+    var cap = (usable<3)
+      ? 'The overlay needs three dimensions both cards record. These two share '+usable+'.'
+      : '';
+    box.innerHTML =
+        '<div class="vcov-h"><span></span><span class="vcov-k vcov-ka">'+vvEsc(nA)+'</span>'
+      + '<span class="vcov-k vcov-kb">'+vvEsc(nB)+'</span></div>'
+      + rows
+      + '<div class="vcov-f"><span></span><b class="vcov-fa">'+a+' of 5 measured</b>'
+      + '<b class="vcov-fb">'+b+' of 5 measured</b></div>'
+      + (cap?'<div class="vcov-cap">'+cap+'</div>':'');
+    box.hidden=false;
+  }
   function drawDualRadar(){
     const svg=document.getElementById('vradar'); if(!svg) return;
     const note=document.getElementById('vradarNote');
     const usable=RADAR_OK.reduce(function(a,b){return a+(b?1:0);},0);
     /* FEWER THAN THREE COMPARABLE AXES IS NOT A SHAPE. Same rule as the card: two points
        make a line, and a line reads as a value rather than an absence. */
+    vvDrawCoverage(usable);
     if(usable<3){
-      svg.innerHTML='';
-      if(note) note.textContent='These two seasons share only '+usable+' measured dimension'+(usable===1?'':'s')+', so the overlay is not drawn. The head to head below shows what both cards actually record.';
+      /*  NO EMPTY PENTAGON, EVER. Below three shared dimensions the overlay is not drawn and
+          the COVERAGE BARS take the footprint instead , the asymmetry becomes the content
+          rather than the gap. Measured 2026-09-19: 30.7% of comparisons people have actually
+          run fall below this line, and the distribution is bimodal (pairs share either one
+          dimension or four-to-five), so this is a distinct mode and not a tail.  */
+      svg.innerHTML=''; svg.style.display='none';
+      var key=document.querySelector('.vradar-key'); if(key) key.style.display='none';
+      if(note) note.textContent='';
       return;
     }
+    svg.style.display='';
+    var _key=document.querySelector('.vradar-key'); if(_key) _key.style.display='';
     const cx=160,cy=120,R=72,N=5;
     function pt(i,r){const a=-Math.PI/2+i*2*Math.PI/N;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];}
     let g='';
@@ -2755,8 +2884,15 @@ body.light .pkmsub{color:var(--ink-soft)}
     var sc=document.getElementById('vScore');
     if(sc){
       var _hi=(winner==='B')?vb:va, _lo=(winner==='B')?va:vb;
+      /*  THE MARGIN IS STATED, NOT LEFT AS SUBTRACTION , 2026-09-19. The band shows both
+          scores and then says how far apart they are, because that gap is the thing the
+          verdict is about. Only on the separated state: when the Index cannot separate the
+          pair there is no margin to quote and printing "0 points" would assert a precision
+          the score does not have.  */
+      var _gap = Math.abs((+_hi||0) - (+_lo||0));
       sc.innerHTML = (_state===1)
-        ? _hi + '<span class="vs-sep">to</span>' + _lo          // winner's score leads
+        ? _hi + '<span class="vs-sep">to</span>' + _lo
+          + '<span class="vs-gap">' + _gap + (_gap===1?' point':' points') + '</span>'
         : va  + '<span class="vs-sep">&amp;</span>' + vb;        // level, slot order kept
       sc.style.display = _showScore ? '' : 'none';
     }
