@@ -5784,15 +5784,29 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       `vvf-hint` slot. It fits, but it thickens all nine chips on the busiest surface to
       print nine numbers that span a 1.24 ratio end to end , the most nearly identical fact
       we hold about the leagues. Demoed side by side before this was chosen.  */
+  /*  THE HONOUR CHIPS CARRY THE DRAWN MARKS, NOT EMOJI (2026-09-20). One visual language for
+      the row, and it settles a pair emoji cannot: a globe for the World Cup and a globe for
+      the Americas are the same drawing twice at 13px, while two trophies are two trophies.
+      KEYED ON THE GROUP, not on a new field, so the taxonomy stays the vocabulary and there
+      is no second icon list to drift , CLAUDE.md records two such lookups being deleted with
+      "do not add a third".
+      THE EMOJI STAYS AS THE FALLBACK AND THAT IS LOAD-BEARING. vvMark returns '' when VVMarks
+      is absent (a surface that does not load vv-marks.js) or when a key is missing, and a
+      chip that silently loses its glyph is the exact failure this file keeps recording. With
+      the fallback it degrades to the old behaviour instead of to nothing.
+      THE LABEL IS STILL ESCAPED. The mark is trusted markup from our own sprite and is
+      concatenated OUTSIDE VVF_ESC; everything that came from data stays inside it.  */
   function vvfChip(groupKey, it, opts){
     var inert=!!opts.inert;
-    var lab=(it.e?it.e+' ':'')+(it.l||it.v);
+    var mk = (groupKey==='honours') ? vvMark('honour', it.v) : '';
+    var ico = mk ? '<span class="vvf-ico">'+mk+'</span>' : '';
+    var lab=((!mk && it.e)?it.e+' ':'')+(it.l||it.v);
     return '<button type="button" class="vvf-chip'+(inert?' vvf-inert':'')+'"'+
       (it.tip?' title="'+VVF_ESC(it.tip)+'"':'')+
       ' data-vvf-group="'+VVF_ESC(groupKey)+'" data-vvf-value="'+VVF_ESC(it.v)+'"'+
       (it.lo!=null?' data-vvf-lo="'+it.lo+'"':'')+(it.hi!=null?' data-vvf-hi="'+it.hi+'"':'')+
       (inert?' disabled aria-disabled="true"':'')+
-      ' aria-pressed="false">'+VVF_ESC(lab)+
+      ' aria-pressed="false">'+ico+VVF_ESC(lab)+
       (it.hint?' <em class="vvf-hint">'+VVF_ESC(it.hint)+'</em>':'')+
       (inert?' <em class="vvf-soon">soon</em>':'')+'</button>';
   }
@@ -6244,6 +6258,12 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     '.vvf-compact .vvf-chips{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-ms-overflow-style:none}',
     '.vvf-compact .vvf-chips::-webkit-scrollbar{display:none}',
     '.vvf-compact .vvf-chip{flex:none;font-size:12.5px;padding:7px 11px}',
+    /*  The mark inherits the chip's ink through currentColor, so there is no light-mode
+        branch and no second colour to keep in step , the selected state repaints the glyph
+        with the label by construction.  */
+    '.vvf-chip .vvf-ico{display:inline-flex;width:13px;height:13px;margin-right:6px;vertical-align:-2px;flex:0 0 auto}',
+    '.vvf-chip .vvf-ico svg{width:100%;height:100%;display:block}',
+    '.vvf-compact .vvf-chip .vvf-ico{width:12px;height:12px;margin-right:5px}',
     '.vvf-compact .vvf-sub{margin-top:0}',
     '.vvf-compact .vvf-score{padding:0}',
     '.vvf-compact .vvf-svals{justify-content:flex-start;gap:6px}',

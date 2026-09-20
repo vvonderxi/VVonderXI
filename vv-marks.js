@@ -84,7 +84,21 @@
     'ballon_dor':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.4a9.6 9.6 0 1 0 0 19.2 9.6 9.6 0 0 0 0-19.2Zm0 3.5 2.9 2.1-1.1 3.4h-3.6L9.1 8Z"/></g>',
     'world_cup_winner':  '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.2a4.6 4.6 0 0 0 0 9.2 4.6 4.6 0 0 0 0-9.2Zm0 2.2a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8Z"/> <path d="M9.5 11.2h5l-1.1 6.2h2.4v2.3H8.2v-2.3h2.4Z"/> <path d="M6.6 20.2h10.8v1.9H6.6Z"/></g>',
     'ucl_winner':        '<g fill="currentColor"> <path d="M9 2.4h6v6a3 3 0 0 1-6 0Z"/> <path fill-rule="evenodd" d="M9.2 3H7.4a4.8 4.8 0 0 0 0 9.6h1.8v-2.6H7.4a2.2 2.2 0 0 1 0-4.4h1.8Z"/> <path fill-rule="evenodd" d="M14.8 3h1.8a4.8 4.8 0 0 1 0 9.6h-1.8V10h1.8a2.2 2.2 0 0 0 0-4.4h-1.8Z"/> <path d="M10.9 12.4h2.2v5h-2.2Z"/> <path d="M7.6 17.4h8.8v2H7.6Z"/> <path d="M5.6 19.4h12.8v2.2H5.6Z"/></g>',
-    'league_champion':   '<g fill="currentColor"> <path d="M6.2 3.2h11.6v3.4a5.8 5.8 0 0 1-11.6 0Z"/> <path d="M10.8 11.8h2.4v2.4h-2.4Z"/> <path fill-rule="evenodd" d="M8.4 14.2h7.2v7.6H8.4Zm2 2.2v3.2h3.2v-3.2Z"/></g>',
+    /*  A PENNANT, NOT A TROPHY, AND THAT IS THE WHOLE POINT (2026-09-20). It was a bowl on a
+        stem over a plinth, and world_cup_winner is a ring on a stem over a base , two
+        trophies on stems, which is why they were the tightest pair in the set at EVERY size
+        measured: 0.543 at 13px and 0.493 even at 22px, against a set that otherwise sits
+        near 0.49. The chip row is the first surface where the two sit side by side on one
+        line, which is what made it worth fixing rather than recording.
+        SCORED AGAINST ALL ELEVEN MARKS IT CAN APPEAR BESIDE, not just the one it was drawn
+        to escape: the other eight honours plus Generational and Iconic, which share the card
+        face row. Pennant 0.171 against the World Cup and 0.287 worst overall (UCL), both at
+        13px. TWO REJECTED CANDIDATES ARE THE REASON THAT WIDER CHECK EXISTS: a crown scored
+        0.615 against player_of_season and a shield 0.533 against ballon_dor, so each fixed
+        the World Cup pair and moved the collision somewhere else. Judged only against the
+        World Cup, either would have shipped. Demo and the full table: _demo_league_mark.html.
+        IT SHIPS ON 2,872 CARDS, the most common honour in the record.  */
+    'league_champion':   '<g fill="currentColor"> <path d="M4.4 2.2h2.6v19.6H4.4Z"/> <path d="M7.6 3.1 20.4 7.3 7.6 11.5Z"/></g>',
     'player_of_season':  '<g fill="currentColor"> <path d="M12 1.8 15.1 8.5 22.4 9.4 17 14.4 18.5 21.6 12 18 5.5 21.6 7 14.4 1.6 9.4 8.9 8.5Z"/></g>',
     'golden_boot':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M4.2 6.2h4.4v5.1c1.9.3 3.6 1 5.2 2 1.9 1.2 4.2 1.9 6.8 2.1v3.4H4.2Zm2.6 8.9v1.6h2.1v-1.6Z"/></g>',
     'top_assists':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.2 1.6a6.6 6.6 0 0 0-2.6 12.7v6.1l3.4 2 3.4-2v-2.4h-2.4v-2.6h2.4v-1.1A6.6 6.6 0 0 0 9.2 1.6Zm0 3.2a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z"/></g>',
