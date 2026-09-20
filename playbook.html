@@ -1534,9 +1534,19 @@
       script, where the attribute is set, and not here.
       If this is disliked, revert it rather than defending it; the interaction was the ask
       and the hiding is only how it was implemented.  */
-  .pghint{text-align:center;font-family:'Archivo';font-weight:700;font-size:11px;
-    letter-spacing:.1em;text-transform:uppercase;color:rgba(243,237,224,.42);margin:4px 0 0}
-  body.light .pghint{color:#8a8276}
+  /*  NOT DECORATION, AND THAT IS WHY IT PASSES AA NOW. Item 30 put four of the five
+      definitions behind a tap, so a reader who misses this line sees one dimension and
+      assumes that is all there is. It measured 3.67 dark / 3.35 light against a 4.5 bar.
+      MEASURED WITH THE PIXEL HARNESS ON THIS PAGE (.pspot reproducing 3.89 on every run),
+      not computed: the ink is the QUIETEST value that clears the bar , alpha .50 reads 4.73
+      and #6f6a61 reads 4.75. Full cream was tried and reads 15.66, which is a shout, not a
+      hint. Lower either value and it fails again.
+      THE TYPOGRAPHY CHANGE IS THE OTHER HALF AND IT CARRIES THE SAME INK: 11px uppercase at
+      .1em is what read as fine print, so it is 12.5px, weight 600, sentence case. Demo and
+      the four treatments: _demo_pghint.html.  */
+  .pghint{text-align:center;font-family:'Archivo';font-weight:600;font-size:12.5px;
+    letter-spacing:.02em;color:rgba(243,237,224,.50);margin:4px 0 0}
+  body.light .pghint{color:#6f6a61}
   .pgsvg .fd-v{cursor:pointer}
   .pgsvg .fd-hit{fill:transparent}
   .pgsvg .pgdot{transition:r .18s}
