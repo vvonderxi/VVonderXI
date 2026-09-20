@@ -38,6 +38,16 @@ const TARGETS=process.argv.includes('--only')
   ? [process.argv[process.argv.indexOf('--only')+1]]
   : ['docs/pdf/vv-index.html','_demo_vvindex.html','vvindex.html'];
 
+/*  A FILE WITH NO data-fig SPANS IS A FAILURE UNLESS IT IS EXEMPTED HERE, BY NAME, WITH A
+    REASON. Until 2026-09-20 --check printed "no data-fig spans" and exited 0, so the tripwire
+    reported OK while the page it exists for carried none , a check that passes by finding
+    nothing. The live VV Index is unwired ON PURPOSE (its rebuild is punchlist item 14 and the
+    wiring lands with it, rather than being done twice), and that intent belongs in code where
+    the check can hold it, not in a commit message nobody re-reads.
+    WHEN ITEM 14 SHIPS, DELETE THE ENTRY , the check then fails until the page is wired, which
+    is the reminder.  */
+const UNWIRED={ 'vvindex.html':'rebuild pending, punchlist item 14 , wiring lands with it' };
+
 const doc=JSON.parse(fs.readFileSync(FIG,'utf8'));
 const byKey={}; for(const f of doc.figures) byKey[f.key]=f;
 
@@ -62,12 +72,17 @@ for(const rel of TARGETS){
     return open+want+close;
   });
   files++;
-  if(n===0){ console.log(`  ${rel}: no data-fig spans`); continue; }
+  if(n===0){
+    if(UNWIRED[rel]) console.log(`  ${rel}: no data-fig spans , EXEMPT (${UNWIRED[rel]})`);
+    else { console.log(`  ${rel}: NO data-fig SPANS and not exempt , the figures here are typed, not generated`); bad++; }
+    continue;
+  }
+  if(UNWIRED[rel]){ console.log(`  ${rel}: ${n} data-fig span(s) found, but it is listed UNWIRED , remove the exemption`); bad++; }
   if(CHECK){ bad+=mism; console.log(`  ${rel}: ${n} figures, ${mism} drifted`); }
   else { if(out!==s){ fs.writeFileSync(p,out); touched++; } console.log(`  ${rel}: ${n} figures written`); }
 }
 if(CHECK){
-  console.log(bad? `\nFAIL , ${bad} figure(s) drifted from the generator.`
+  console.log(bad? `\nFAIL , ${bad} problem(s): a figure drifted, or a file is unwired without an exemption.`
                  : `\nOK , every data-fig figure matches the generator (${files} files).`);
   process.exit(bad?1:0);
 }
