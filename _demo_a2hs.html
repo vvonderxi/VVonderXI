@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Add To Home Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style id="demo">
+ body.dm{margin:0!important;padding:18px 16px 80px!important;display:block!important;height:auto!important;max-width:none!important;
+   font:14px/1.55 Inter,system-ui,sans-serif;background:#141210;color:#F0EAD9}
+ body.dm.light{background:#F4EFE2;color:#1C1B1A}
+ .dm-h1{font:800 21px 'Bricolage Grotesque',sans-serif;margin:0 0 6px}
+ .dm-note{max-width:880px;opacity:.85;margin:0 0 10px}
+ .dm-bar{position:sticky;top:0;z-index:40;padding:8px 0;display:flex;gap:10px;background:inherit}
+ .dm-bar button{font:600 13px Inter,sans-serif;padding:8px 14px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+ .dm-lab{font:700 13px Inter,sans-serif;margin:26px 0 3px}
+ .dm-why{font:400 12.5px Inter,sans-serif;opacity:.78;margin:0 0 10px;max-width:880px}
+ .phone{width:390px;max-width:100%;height:230px;position:relative;border:1px dashed rgba(128,128,128,.45);border-radius:14px;overflow:hidden}
+ .phone .fill{position:absolute;inset:0;display:flex;align-items:flex-end;padding:12px}
+ /* ---- the strip, copied from index.html so the demo judges the real thing ---- */
+ .a2hs{position:relative;left:0;right:0;width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;
+   background:rgba(26,23,21,.96);border:1px solid rgba(243,237,224,.16);box-shadow:0 18px 40px -16px rgba(0,0,0,.8)}
+ body.light .a2hs{background:rgba(255,253,247,.97);border-color:rgba(28,27,26,.14)}
+ .a2hs .ico{width:30px;height:30px;border-radius:8px;flex:none}
+ .a2hs .txt{flex:1;min-width:0;font-family:'Inter';font-size:12.5px;line-height:1.4;color:rgba(243,237,224,.72)}
+ body.light .a2hs .txt{color:#3a352e}
+ .a2hs .txt b{font-family:'Archivo';font-weight:800;display:block;font-size:13px;color:#F0EAD9}
+ body.light .a2hs .txt b{color:#1C1B1A}
+ .a2hs .add{flex:none;font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;
+   padding:9px 13px;border-radius:999px;border:0;cursor:pointer;background:#E70443;color:#fff}
+ .a2hs .no{flex:none;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:4px 2px;color:rgba(243,237,224,.42)}
+ body.light .a2hs .no{color:#8a8276}
+ /* ---- the iOS step list, which is the part that does not exist today ---- */
+ .steps{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+ .step{display:flex;align-items:center;gap:10px;font:500 12.5px Inter,sans-serif;color:rgba(243,237,224,.80)}
+ body.light .step{color:#3a352e}
+ .step .n{flex:none;width:19px;height:19px;border-radius:999px;display:grid;place-items:center;
+   font:800 10.5px Archivo,sans-serif;background:rgba(243,237,224,.13);color:#F0EAD9}
+ body.light .step .n{background:rgba(28,27,26,.09);color:#1C1B1A}
+ .step .gl{flex:none;width:19px;height:19px;display:grid;place-items:center;color:#3B6FB0}
+ body.light .step .gl{color:#2B5C9B}
+ .kbd{font:700 11.5px Archivo,sans-serif;padding:2px 7px;border-radius:6px;border:1px solid rgba(243,237,224,.22)}
+ body.light .kbd{border-color:rgba(28,27,26,.2)}
+</style></head><body class="dm">
+<div class="dm-bar"><button onclick="document.body.classList.toggle('light')">Toggle theme</button></div>
+<h1 class="dm-h1">Add to home screen , the three states, and the Android fork</h1>
+<p class="dm-note">The strip is the one that ships on the home page today, copied here so you judge the real thing. <b>What is new is the iOS step list with the share glyph drawn</b>, and the second Android variant. It sits at the bottom of the home page on phones only, after the second visit, and never returns once dismissed.</p>
+<p class="dm-note"><b>The fork is a decision, not a detail:</b> Chrome fires its native prompt only for a site with a service worker that has a real fetch handler. Without one, the browser can still install from its own menu, but our Add button has nothing to call.</p>
+<div id="out"></div>
+<script>
+const SHARE='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+const PLUS='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg>';
+const DOTS='<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>';
+function strip(inner){ return '<div class="phone"><div class="fill"><div class="a2hs">'+inner+'</div></div></div>'; }
+const ICON='<img class="ico" src="/icon-192.png" alt="">';
+const OFFER = ICON+'<div class="txt"><b>Keep VVonderXI one tap away</b>Add it to your home screen. It opens full screen, like an app.</div>'
+  + '<button class="add">Add</button><button class="no">&times;</button>';
+const IOS = ICON+'<div class="txt"><b>Two taps to add it</b><div class="steps">'
+  + '<div class="step"><span class="n">1</span><span class="gl">'+SHARE+'</span><span>Tap Share, at the bottom of Safari</span></div>'
+  + '<div class="step"><span class="n">2</span><span class="gl">'+PLUS+'</span><span>Then <b style="display:inline">Add to Home Screen</b></span></div>'
+  + '</div></div><button class="no">&times;</button>';
+const ANDROID_MENU = ICON+'<div class="txt"><b>Two taps to add it</b><div class="steps">'
+  + '<div class="step"><span class="n">1</span><span class="gl">'+DOTS+'</span><span>Tap the browser menu, top right</span></div>'
+  + '<div class="step"><span class="n">2</span><span class="gl">'+PLUS+'</span><span>Then <b style="display:inline">Install app</b></span></div>'
+  + '</div></div><button class="no">&times;</button>';
+document.getElementById('out').innerHTML =
+   '<div class="dm-lab">1 , the offer, both platforms (ships today)</div>'
+ + '<div class="dm-why">After the second visit. Dismiss once and it never comes back.</div>' + strip(OFFER)
+ + '<div class="dm-lab">2 , iPhone, after Add is tapped , NEW, the glyph is drawn</div>'
+ + '<div class="dm-why">Today this is one line of text saying "Tap the Share icon below, then Add to Home Screen", with no icon. Safari never fires an install event, so instructions are the only honest path.</div>' + strip(IOS)
+ + '<div class="dm-lab">3a , Android WITH a pass-through service worker</div>'
+ + '<div class="dm-why">The Add button calls the browser\'s own install dialog. One tap, no instructions. Requires a worker with a real fetch handler, which is the thing to decide.</div>' + strip(OFFER)
+ + '<div class="dm-lab">3b , Android WITHOUT a service worker , NEW</div>'
+ + '<div class="dm-why">Same two-step shape as iOS, pointing at Chrome\'s own menu. Nothing can go stale because nothing is cached.</div>' + strip(ANDROID_MENU)
+ + '<div class="dm-lab">4 , already installed</div>'
+ + '<div class="dm-why">Nothing renders. <code>display-mode: standalone</code> returns before any of this is built, as it does today.</div>'
+ + '<div class="phone"><div class="fill" style="align-items:center;justify-content:center;opacity:.5;font:600 12.5px Inter">nothing , the strip never mounts</div></div>';
+</script></body></html>
