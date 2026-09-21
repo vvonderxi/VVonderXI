@@ -1017,3 +1017,65 @@ where those two rows were sourced before anything is concluded about them.
 **WHAT IT WOULD TAKE:** the three non-split cards are one provider question each , whether a
 re-pull returns the same short block today. **Nothing here is fixable by changing our code**, and
 the honest interim is that four Belgian cards under-report a season we can name.
+
+### 38 , SECOND-HALF SHIRT NUMBERS. Retrieval is probably solved; STORAGE is the real item
+
+**SCOPED 2026-09-21, NOT BUILT.** The canary made it visible: Semenyo's Manchester City card
+rendered **#24**, his Bournemouth number. His City number is **42**.
+
+**(a) RETRIEVAL , DO NOT COMMISSION A NEW JOB BEFORE READING WHAT EXISTS.** Item 16 was reopened
+because a Fable pass measured RECALL rather than RETRIEVAL, and the same mistake is available here.
+- **`scripts/enrichment/tm_bulk_fetch.js` and `tm_tier1_fetch.js` DO exist and are the wrong
+  shape.** They fetch a PLAYER's season performance page (`/leistungsdatendetails/.../saison/YYYY`)
+  for POSITION, and SS E records that lane as **DEAD** , 122 of 474 fetched before a markup change
+  killed it. Squad numbers are not on that page.
+- **THE RIGHT TOOL IS ALREADY BUILT AND IS CLUB-SCOPED BY CONSTRUCTION: `scripts/squadnum/`.** Its
+  target key is **`league|year|club`**, it resolves a squad page FOR THAT CLUB, and it has written
+  **5,993 rows verified 5,993 of 5,993 club-consistent.** A second-half number is exactly what it
+  already does , nobody has pointed it at the second club of a split. **Point it there before
+  proposing anything new**, and run `resolve-guard.js`'s controls first, as its own rule requires.
+- **THE HONEST LIMIT IS RECORDED ALREADY: Portugal has no club-season pages beyond three clubs**,
+  so PRT's 40 split cards will not fill from this source whatever is tried.
+
+**(b) STORAGE , THE STRUCTURAL HALF, AND ONE OF THE TWO OBVIOUS ANSWERS IS ACTIVELY HARMFUL.**
+Measured: `player_positions` holds **ONE row** for Semenyo 2025 PL , `appearances 37,
+shirt_number 24, position Winger` , and `player_card_mv` reads `shirt_number` from it. One row,
+one number, two clubs.
+- **REJECT: re-keying `player_positions` on `team_id`.** It mirrors the card fix and it **breaks
+  item 26's detector by construction** , that detector is `pp.appearances > card.appearances`, and
+  it works ONLY because the pp row spans both clubs. Splitting pp destroys the very asymmetry the
+  flag is built on, and the flag would silently stop firing rather than fail.
+- **RECOMMEND: `shirt_number` on `player_season_cards`**, which is already per club and already
+  carries `team_id`. `player_positions` keeps its whole-season row, so the detector survives.
+- **THE COST IS A MATVIEW COLUMN, SO IT IS A SITTING** , the card reads the matview, and SS C says
+  a matview's query is frozen at creation. **It should ride the same sitting as something else**,
+  and the fused-cards sitting is the next one queued.
+- **AND THE PRECEDENCE RULE MUST BE WRITTEN WITH IT:** a per-club number, where it exists, beats
+  the whole-season one; where it does not, the season number is still shown and **item 26's mark
+  still applies.** The mark becomes unnecessary only for halves that get a real per-club number ,
+  not for the population.
+
+### 39 , THE G/A LINE LEAVES THE CARD READING EMPTY. Bigger numerals, and the clearance is the constraint
+
+**SCOPED 2026-09-21, NOT BUILT. Lucas's read: the line above the name leaves too much room.**
+- **THE RESERVATION IS REAL AND MUST STAY.** `vv-core.js:470` emits
+  `<div class="chtag one" aria-hidden="true"><span style="visibility:hidden">&middot;</span></div>`
+  , a hidden middot holding the tag row's height so grids align across cards. **Fill the space,
+  do not remove the placeholder.**
+- **THE LEVER IS `.cga .col .v`, today `calc(var(--cw)*0.105)`** (`vv-core.js:4245`), with the
+  label `.l` on a `max(9.5px, ...)` floor beneath it.
+- **THE CONSTRAINT IS THE ONE SS C ALREADY MEASURED, AND IT IS TIGHT AT THE SMALL END.** The
+  2026-09-07 re-cut bought clearance from club line to inner rim of **+1.7 / +3.2 / +4.3 / +4.9 /
+  +5.7 / +6.6 / +7.8 / +9.0 / +9.9 px at `--cw` 132 / 138 / 145 / 165 / 190 / 220 / 260 / 300 /
+  330**, and it bought it **by tightening exactly these gaps**. **A bigger numeral spends that
+  clearance back.** At `--cw` 132 there is **1.7px** of headroom, so a size that reads well at 300
+  may overflow the card at 132. **Measure clearance at every size, not the look at one.**
+- **AND SS C NAMES TWO DEAD ENDS SO THEY ARE NOT RETRIED: `margin-bottom` on `.cname` does nothing**
+  (its `margin-top:auto` computes to 0px, there is no free space to reallocate) **and
+  `padding-bottom` on `.vvcard` measured byte-identical to base at all four sizes.**
+- **THE DEMO MATRIX, as asked: with a tag and without, at `--cw` 300 and 165, all three faces
+  (plain, iconic, generational), both themes.** Twelve cells minimum. **Each face takes its own
+  literal ink** , SS C's rule that the card face does not flip with the theme , so a numeral size
+  is judged on three grounds, not one.
+- **AND THE CARD FACE IS A CAPTURE CONSUMER: verify the chosen size in a captured PNG, not the live
+  DOM**, per SS C's html2canvas rule. A type-size change is low risk there, and the rule is cheap.

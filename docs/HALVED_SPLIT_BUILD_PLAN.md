@@ -139,6 +139,53 @@ before anyone reads it as a bug.** The detector is `pp.appearances > card.appear
 shirt number is still the season's and still ambiguous, and the partial-season note becomes more
 true rather than less.
 
+## 0.7 THREE THINGS THE SITTING MUST CARRY, ADDED AFTER THE CANARY (2026-09-21)
+
+**1. `import-players.js` LINE 632 CHANGES IN THE SAME COMMIT AS THE CONSTRAINT.** Its upsert names
+`onConflict:'api_player_id,season,league_code'` and PostgREST resolves that against a real unique
+index; with the index gone the next run errors. **It becomes
+`onConflict:'api_player_id,season,league_code,team_id'`** , which is also the CORRECT target once
+cards are per club, so this is the importer catching up with the schema rather than a workaround.
+**Nothing is scheduled** , both `.github/workflows` files are `workflow_dispatch` only, there is no
+Vercel cron and no systemd timer touching the repo , so the window is a manual button press, and
+the canary restored the old constraint rather than leaving one open overnight.
+- **AND THAT WORKFLOW HAS ITS OWN DEFECT, LOGGED NOT FIXED: `import-players.yml` ASSIGNS `CMD`
+  TWICE**, so the second line overwrites the first and the job named "Bulk Player Import" runs
+  `import-positions-v2.js` and never `import-players.js` at all. **Do not rest a safety argument on
+  that** , it is a bug, and someone fixing it restores the exposure this note describes.
+
+**2. `player_season_cards.rt` IS A DEAD COLUMN HOLDING PLAUSIBLE WRONG VALUES , LOGGED, NOT THIS
+SITTING.** It reads **84** on Semenyo's Bournemouth card where the engine computes **80**, because
+it is the importer's `ratingToRt` guess and `psc.rt` occurs ZERO times in a 21,846-character
+viewdef. **A dead column with believable numbers is the next false alarm waiting to happen** , it
+is the exact shape SS C records for `goals_conceded` zero-filled on outfielders and for `starts`
+exceeding `appearances`: present, wrong, and indistinguishable from a real value at the point of
+use. It nearly produced one during the canary, and only the stale matview settled it. **Whoever
+opens it decides one of: drop the column, null it, or make it a true snapshot of `rt_new`.**
+
+**3. THE AI MUST KNOW THE CARD IS ONE CLUB'S SHARE , THROUGH THE PAYLOAD, NEVER THE PROMPT.**
+A split season is the most interesting thing on the card and the Verdict, Story and notes are
+currently blind to it.
+- **THE MECHANISM IS ALREADY IN THE FILE AND MUST BE COPIED EXACTLY: EMIT THE KEY ONLY WHEN IT
+  APPLIES.** `vvAIStats` emits `not_recorded_basics` **only while assists is null**, so the key set
+  moves for the affected cards and for nobody else. A `transfer` key emitted unconditionally, even
+  as `null`, changes EVERY card's key set and regenerates the whole platform. **Conditional
+  emission is the difference between 828 regenerations and 57,055.**
+- **WHY NOT THE PROMPT: `PROMPT_REV` IS SHARED WITH `NOTES_VERSION`**, so a prompt edit to explain
+  transfers discards every cached note as collateral , and **item 25 still forbids a prompt edit
+  until the marking measurement is retaken.** A payload change rides `payloadRev` and `stats_hash`,
+  which are per card.
+- **WHAT IS FREE AND WHAT NEEDS STORAGE, SO THE SCOPE IS NOT OPTIMISTIC.** The OTHER CLUB is free:
+  after the split the sibling row is `(api_player_id, season, league_code)` with a different
+  `team_id`, and the card page already loads the player's seasons. **The DIRECTION and the DATE are
+  not in the database at all** , they live in the BAM `transfers.csv`, which is gitignored, so a
+  clone cannot read them at runtime. **Saying "moved to Manchester City in January" requires storing
+  the transfer record; saying "shared with Manchester City" does not.** Do not scope the first as
+  though it were the second.
+- **AND THE COPY MUST NOT SAY "TWO COMPETITIONS"** , SS E records that a cross-competition fusion
+  cannot exist in this data, and that wording was proposed once and would have been false on every
+  card it rendered on.
+
 ## 1. THE TWO GUARDS, BOTH MECHANICAL
 
 **GUARD A , AN EMPTY DEFENSIVE SHARE STOPS THE WRITE.** `def_share` is derived in the view from
