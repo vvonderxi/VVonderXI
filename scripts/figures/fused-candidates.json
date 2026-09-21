@@ -1,0 +1,4892 @@
+[
+ {
+  "key": "49857|2025|TR",
+  "name": "İ. Kahveci",
+  "card_id": 187203,
+  "card_min": 1659,
+  "card_team": "Kasımpaşa",
+  "blocks": [
+   {
+    "team_id": 611,
+    "team": "Fenerbahçe",
+    "apps": 8,
+    "min": 288,
+    "goals": 0
+   },
+   {
+    "team_id": 1004,
+    "team": "Kasımpaşa",
+    "apps": 16,
+    "min": 1371,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31406|2025|LL",
+  "name": "U. Sadiq",
+  "card_id": 186900,
+  "card_min": 1061,
+  "card_team": "Valencia",
+  "blocks": [
+   {
+    "team_id": 548,
+    "team": "Real Sociedad",
+    "apps": 5,
+    "min": 159,
+    "goals": 0
+   },
+   {
+    "team_id": 532,
+    "team": "Valencia",
+    "apps": 20,
+    "min": 902,
+    "goals": 4
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "134926|2025|SA",
+  "name": "D. Maldini",
+  "card_id": 187047,
+  "card_min": 955,
+  "card_team": "Lazio",
+  "blocks": [
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 9,
+    "min": 265,
+    "goals": 0
+   },
+   {
+    "team_id": 487,
+    "team": "Lazio",
+    "apps": 12,
+    "min": 690,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "126757|2024|L1",
+  "name": "L. Brassier",
+  "card_id": 186998,
+  "card_min": 2015,
+  "card_team": "Rennes",
+  "blocks": [
+   {
+    "team_id": 106,
+    "team": "Stade Brestois 29",
+    "apps": 0,
+    "min": 0,
+    "goals": 0
+   },
+   {
+    "team_id": 94,
+    "team": "Rennes",
+    "apps": 14,
+    "min": 1236,
+    "goals": 1
+   },
+   {
+    "team_id": 81,
+    "team": "Marseille",
+    "apps": 12,
+    "min": 779,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "50127|2019|TR",
+  "name": "B. Başaçıkoğlu",
+  "card_id": 187304,
+  "card_min": 555,
+  "card_team": "Kayserispor",
+  "blocks": [
+   {
+    "team_id": 998,
+    "team": "Trabzonspor",
+    "apps": 7,
+    "min": 72,
+    "goals": 0
+   },
+   {
+    "team_id": 1001,
+    "team": "Kayserispor",
+    "apps": 11,
+    "min": 483,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "20439|2015|PL",
+  "name": "Matt Jarvis",
+  "card_id": 186882,
+  "card_min": 431,
+  "card_team": "Norwich",
+  "blocks": [
+   {
+    "team_id": 48,
+    "team": "West Ham",
+    "apps": 3,
+    "min": 73,
+    "goals": 0
+   },
+   {
+    "team_id": 71,
+    "team": "Norwich",
+    "apps": 5,
+    "min": 358,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19195|2021|PL",
+  "name": "A. El Ghazi",
+  "card_id": 186879,
+  "card_min": 394,
+  "card_team": "Aston Villa",
+  "blocks": [
+   {
+    "team_id": 45,
+    "team": "Everton",
+    "apps": 2,
+    "min": 11,
+    "goals": 0
+   },
+   {
+    "team_id": 66,
+    "team": "Aston Villa",
+    "apps": 9,
+    "min": 383,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "451|2023|TR",
+  "name": "B. Ndiaye",
+  "card_id": 187257,
+  "card_min": 601,
+  "card_team": "Pendikspor",
+  "blocks": [
+   {
+    "team_id": 3563,
+    "team": "Adana Demirspor",
+    "apps": 9,
+    "min": 0,
+    "goals": 0
+   },
+   {
+    "team_id": 3601,
+    "team": "Pendikspor",
+    "apps": 10,
+    "min": 601,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "32107|2013|SA",
+  "name": "A. Sestu",
+  "card_id": 187179,
+  "card_min": 641,
+  "card_team": "Chievo",
+  "blocks": [
+   {
+    "team_id": 498,
+    "team": "Sampdoria",
+    "apps": 2,
+    "min": 36,
+    "goals": 0
+   },
+   {
+    "team_id": 491,
+    "team": "Chievo",
+    "apps": 12,
+    "min": 605,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "341646|2025|SA",
+  "name": "V. Carboni",
+  "card_id": 187040,
+  "card_min": 538,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 505,
+    "team": "Inter",
+    "apps": 4,
+    "min": 178,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 12,
+    "min": 360,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "50221|2025|TR",
+  "name": "B. Kapacak",
+  "card_id": 187197,
+  "card_min": 411,
+  "card_team": "Kayserispor",
+  "blocks": [
+   {
+    "team_id": 611,
+    "team": "Fenerbahçe",
+    "apps": 5,
+    "min": 55,
+    "goals": 0
+   },
+   {
+    "team_id": 1001,
+    "team": "Kayserispor",
+    "apps": 12,
+    "min": 356,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8565|2020|BPL",
+  "name": "G. Hendrickx",
+  "card_id": 187572,
+  "card_min": 465,
+  "card_team": "Kortrijk",
+  "blocks": [
+   {
+    "team_id": 734,
+    "team": "Kortrijk",
+    "apps": 6,
+    "min": 292,
+    "goals": 0
+   },
+   {
+    "team_id": 736,
+    "team": "Charleroi",
+    "apps": 4,
+    "min": 173,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "425819|2024|ERE",
+  "name": "G. Zechiël",
+  "card_id": 187486,
+  "card_min": 505,
+  "card_team": "Feyenoord",
+  "blocks": [
+   {
+    "team_id": 209,
+    "team": "Feyenoord",
+    "apps": 9,
+    "min": 253,
+    "goals": 0
+   },
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 17,
+    "min": 252,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "290740|2025|LL",
+  "name": "Ilias Akhomach",
+  "card_id": 186899,
+  "card_min": 897,
+  "card_team": "Rayo Vallecano",
+  "blocks": [
+   {
+    "team_id": 533,
+    "team": "Villarreal",
+    "apps": 9,
+    "min": 185,
+    "goals": 0
+   },
+   {
+    "team_id": 728,
+    "team": "Rayo Vallecano",
+    "apps": 11,
+    "min": 712,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "411702|2024|LL",
+  "name": "Pau Cabanes",
+  "card_id": 186943,
+  "card_min": 357,
+  "card_team": "Alaves",
+  "blocks": [
+   {
+    "team_id": 533,
+    "team": "Villarreal",
+    "apps": 10,
+    "min": 153,
+    "goals": 1
+   },
+   {
+    "team_id": 542,
+    "team": "Alaves",
+    "apps": 17,
+    "min": 204,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8685|2016|SA",
+  "name": "S. Gakpé",
+  "card_id": 187160,
+  "card_min": 555,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 491,
+    "team": "Chievo",
+    "apps": 8,
+    "min": 249,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 7,
+    "min": 306,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "312837|2023|ERE",
+  "name": "L. Zeefuik",
+  "card_id": 187508,
+  "card_min": 822,
+  "card_team": "FC Volendam",
+  "blocks": [
+   {
+    "team_id": 201,
+    "team": "AZ Alkmaar",
+    "apps": 6,
+    "min": 53,
+    "goals": 0
+   },
+   {
+    "team_id": 416,
+    "team": "FC Volendam",
+    "apps": 16,
+    "min": 769,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "7591|2025|SA",
+  "name": "S. Lovrić",
+  "card_id": 187059,
+  "card_min": 535,
+  "card_team": "Hellas Verona",
+  "blocks": [
+   {
+    "team_id": 494,
+    "team": "Udinese",
+    "apps": 6,
+    "min": 169,
+    "goals": 0
+   },
+   {
+    "team_id": 504,
+    "team": "Hellas Verona",
+    "apps": 8,
+    "min": 366,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "20791|2011|L1",
+  "name": "J. Brison",
+  "card_id": 187027,
+  "card_min": 957,
+  "card_team": "Nancy",
+  "blocks": [
+   {
+    "team_id": 1063,
+    "team": "Saint Etienne",
+    "apps": 4,
+    "min": 229,
+    "goals": 0
+   },
+   {
+    "team_id": 102,
+    "team": "Nancy",
+    "apps": 10,
+    "min": 728,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "51463|2014|SA",
+  "name": "Á. González",
+  "card_id": 187173,
+  "card_min": 349,
+  "card_team": "Lazio",
+  "blocks": [
+   {
+    "team_id": 503,
+    "team": "Torino",
+    "apps": 4,
+    "min": 130,
+    "goals": 0
+   },
+   {
+    "team_id": 487,
+    "team": "Lazio",
+    "apps": 4,
+    "min": 219,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "21484|2015|L1",
+  "name": "D. Petrić",
+  "card_id": 187023,
+  "card_min": 990,
+  "card_team": "Estac Troyes",
+  "blocks": [
+   {
+    "team_id": 77,
+    "team": "Angers",
+    "apps": 2,
+    "min": 180,
+    "goals": 0
+   },
+   {
+    "team_id": 110,
+    "team": "Estac Troyes",
+    "apps": 9,
+    "min": 810,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "3415|2017|PRT",
+  "name": "L. Agbenyenu",
+  "card_id": 187387,
+  "card_min": 1641,
+  "card_team": "Portimonense",
+  "blocks": [
+   {
+    "team_id": 228,
+    "team": "Sporting CP",
+    "apps": 7,
+    "min": 126,
+    "goals": 0
+   },
+   {
+    "team_id": 216,
+    "team": "Portimonense",
+    "apps": 17,
+    "min": 1515,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8685|2015|SA",
+  "name": "S. Gakpé",
+  "card_id": 187167,
+  "card_min": 846,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 5,
+    "min": 72,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 13,
+    "min": 774,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "210374|2013|TR",
+  "name": "Engin Baytar",
+  "card_id": 187328,
+  "card_min": 491,
+  "card_team": "Galatasaray",
+  "blocks": [
+   {
+    "team_id": 1007,
+    "team": "Rizespor",
+    "apps": 4,
+    "min": 205,
+    "goals": 2
+   },
+   {
+    "team_id": 645,
+    "team": "Galatasaray",
+    "apps": 7,
+    "min": 286,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "116182|2013|ERE",
+  "name": "A. Lurling",
+  "card_id": 187524,
+  "card_min": 1548,
+  "card_team": "NAC Breda",
+  "blocks": [
+   {
+    "team_id": 210,
+    "team": "Heerenveen",
+    "apps": 5,
+    "min": 244,
+    "goals": 0
+   },
+   {
+    "team_id": 203,
+    "team": "NAC Breda",
+    "apps": 17,
+    "min": 1304,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2741|2020|PL",
+  "name": "M. Ryan",
+  "card_id": 186856,
+  "card_min": 1260,
+  "card_team": "Brighton",
+  "blocks": [
+   {
+    "team_id": 42,
+    "team": "Arsenal",
+    "apps": 3,
+    "min": 270,
+    "goals": 0
+   },
+   {
+    "team_id": 51,
+    "team": "Brighton",
+    "apps": 11,
+    "min": 990,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "26752|2016|SA",
+  "name": "A. Mounier",
+  "card_id": 187162,
+  "card_min": 391,
+  "card_team": "Bologna",
+  "blocks": [
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 5,
+    "min": 98,
+    "goals": 0
+   },
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 6,
+    "min": 293,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "321632|2022|ERE",
+  "name": "N. Naujoks",
+  "card_id": 187510,
+  "card_min": 414,
+  "card_team": "Excelsior",
+  "blocks": [
+   {
+    "team_id": 209,
+    "team": "Feyenoord",
+    "apps": 2,
+    "min": 16,
+    "goals": 0
+   },
+   {
+    "team_id": 196,
+    "team": "Excelsior",
+    "apps": 13,
+    "min": 398,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "195512|2025|L1",
+  "name": "M. Satriano",
+  "card_id": 186981,
+  "card_min": 784,
+  "card_team": "Lyon",
+  "blocks": [
+   {
+    "team_id": 116,
+    "team": "Lens",
+    "apps": 2,
+    "min": 81,
+    "goals": 0
+   },
+   {
+    "team_id": 80,
+    "team": "Lyon",
+    "apps": 11,
+    "min": 703,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "49261|2010|L1",
+  "name": "S. Langil",
+  "card_id": 187028,
+  "card_min": 418,
+  "card_team": "Auxerre",
+  "blocks": [
+   {
+    "team_id": 105,
+    "team": "Valenciennes",
+    "apps": 7,
+    "min": 86,
+    "goals": 1
+   },
+   {
+    "team_id": 108,
+    "team": "Auxerre",
+    "apps": 10,
+    "min": 332,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "25398|2020|BL",
+  "name": "William",
+  "card_id": 153047,
+  "card_min": 477,
+  "card_team": "FC Schalke 04",
+  "blocks": [
+   {
+    "team_id": 174,
+    "team": "FC Schalke 04",
+    "apps": 8,
+    "min": 477,
+    "goals": 0
+   },
+   {
+    "team_id": 161,
+    "team": "VfL Wolfsburg",
+    "apps": 2,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8920|2025|BPL",
+  "name": "D. Vanzeir",
+  "card_id": 187538,
+  "card_min": 950,
+  "card_team": "Cercle Brugge",
+  "blocks": [
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 5,
+    "min": 146,
+    "goals": 0
+   },
+   {
+    "team_id": 741,
+    "team": "Cercle Brugge",
+    "apps": 15,
+    "min": 804,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "91538|2012|SA",
+  "name": "Matteo Contini",
+  "card_id": 187182,
+  "card_min": 1055,
+  "card_team": "Robur Siena",
+  "blocks": [
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 3,
+    "min": 161,
+    "goals": 0
+   },
+   {
+    "team_id": 1583,
+    "team": "Robur Siena",
+    "apps": 10,
+    "min": 894,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8733|2019|BPL",
+  "name": "L. Verstraete",
+  "card_id": 187578,
+  "card_min": 489,
+  "card_team": "Gent",
+  "blocks": [
+   {
+    "team_id": 624,
+    "team": "Oostende",
+    "apps": 4,
+    "min": 223,
+    "goals": 0
+   },
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 5,
+    "min": 266,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "47279|2020|LL",
+  "name": "Iñigo Córdoba",
+  "card_id": 186969,
+  "card_min": 310,
+  "card_team": "Alaves",
+  "blocks": [
+   {
+    "team_id": 542,
+    "team": "Alaves",
+    "apps": 7,
+    "min": 215,
+    "goals": 0
+   },
+   {
+    "team_id": 531,
+    "team": "Athletic Club",
+    "apps": 3,
+    "min": 95,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "161883|2024|ERE",
+  "name": "Y. Regeer",
+  "card_id": 187488,
+  "card_min": 1457,
+  "card_team": "Twente",
+  "blocks": [
+   {
+    "team_id": 194,
+    "team": "Ajax",
+    "apps": 4,
+    "min": 112,
+    "goals": 1
+   },
+   {
+    "team_id": 415,
+    "team": "Twente",
+    "apps": 19,
+    "min": 1345,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "21643|2018|L1",
+  "name": "A. Ndom",
+  "card_id": 187019,
+  "card_min": 401,
+  "card_team": "Reims",
+  "blocks": [
+   {
+    "team_id": 88,
+    "team": "Caen",
+    "apps": 1,
+    "min": 46,
+    "goals": 0
+   },
+   {
+    "team_id": 93,
+    "team": "Reims",
+    "apps": 11,
+    "min": 355,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8682|2014|L1",
+  "name": "G. Bruno",
+  "card_id": 161456,
+  "card_min": 836,
+  "card_team": "Evian TG",
+  "blocks": [
+   {
+    "team_id": 3006,
+    "team": "Evian TG",
+    "apps": 17,
+    "min": 836,
+    "goals": 1
+   },
+   {
+    "team_id": 97,
+    "team": "Lorient",
+    "apps": 12,
+    "min": 0,
+    "goals": 1
+   },
+   {
+    "team_id": 9313,
+    "team": "Thonon Évian",
+    "apps": 17,
+    "min": 0,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "90492|2010|PL",
+  "name": "S. Ireland",
+  "card_id": 186877,
+  "card_min": 553,
+  "card_team": "Aston Villa",
+  "blocks": [
+   {
+    "team_id": 34,
+    "team": "Newcastle",
+    "apps": 2,
+    "min": 49,
+    "goals": 0
+   },
+   {
+    "team_id": 66,
+    "team": "Aston Villa",
+    "apps": 10,
+    "min": 504,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "50180|2014|TR",
+  "name": "S. Gürler",
+  "card_id": 185083,
+  "card_min": 725,
+  "card_team": "Kayseri Erciyesspor",
+  "blocks": [
+   {
+    "team_id": 11099,
+    "team": "Kayseri Erciyesspor",
+    "apps": 10,
+    "min": 725,
+    "goals": 1
+   },
+   {
+    "team_id": 998,
+    "team": "Trabzonspor",
+    "apps": 7,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "128478|2025|SA",
+  "name": "W. Cheddira",
+  "card_id": 187056,
+  "card_min": 1247,
+  "card_team": "Lecce",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 0,
+    "min": 0,
+    "goals": 0
+   },
+   {
+    "team_id": 488,
+    "team": "Sassuolo",
+    "apps": 16,
+    "min": 244,
+    "goals": 1
+   },
+   {
+    "team_id": 867,
+    "team": "Lecce",
+    "apps": 17,
+    "min": 1003,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "145548|2025|ERE",
+  "name": "T. Velthuis",
+  "card_id": 187446,
+  "card_min": 580,
+  "card_team": "PEC Zwolle",
+  "blocks": [
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 3,
+    "min": 10,
+    "goals": 0
+   },
+   {
+    "team_id": 193,
+    "team": "PEC Zwolle",
+    "apps": 11,
+    "min": 570,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "79088|2016|BPL",
+  "name": "S. Ninis",
+  "card_id": 187588,
+  "card_min": 751,
+  "card_team": "Charleroi",
+  "blocks": [
+   {
+    "team_id": 266,
+    "team": "KV Mechelen",
+    "apps": 1,
+    "min": 26,
+    "goals": 0
+   },
+   {
+    "team_id": 736,
+    "team": "Charleroi",
+    "apps": 13,
+    "min": 725,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "44493|2012|SA",
+  "name": "Anselmo",
+  "card_id": 187190,
+  "card_min": 321,
+  "card_team": "Palermo",
+  "blocks": [
+   {
+    "team_id": 522,
+    "team": "Palermo",
+    "apps": 5,
+    "min": 190,
+    "goals": 1
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 5,
+    "min": 131,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30755|2022|SA",
+  "name": "E. Vignato",
+  "card_id": 187133,
+  "card_min": 483,
+  "card_team": "Empoli",
+  "blocks": [
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 8,
+    "min": 238,
+    "goals": 0
+   },
+   {
+    "team_id": 511,
+    "team": "Empoli",
+    "apps": 15,
+    "min": 245,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31069|2016|SA",
+  "name": "M. Sportiello",
+  "card_id": 187157,
+  "card_min": 900,
+  "card_team": "Atalanta",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 2,
+    "min": 180,
+    "goals": 0
+   },
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 8,
+    "min": 720,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "47566|2025|LL",
+  "name": "Javi Galán",
+  "card_id": 186892,
+  "card_min": 1821,
+  "card_team": "Osasuna",
+  "blocks": [
+   {
+    "team_id": 530,
+    "team": "Atletico Madrid",
+    "apps": 5,
+    "min": 147,
+    "goals": 0
+   },
+   {
+    "team_id": 727,
+    "team": "Osasuna",
+    "apps": 20,
+    "min": 1674,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "829|2025|TR",
+  "name": "Rodrigo Becão",
+  "card_id": 187216,
+  "card_min": 1124,
+  "card_team": "Kasımpaşa",
+  "blocks": [
+   {
+    "team_id": 611,
+    "team": "Fenerbahçe",
+    "apps": 1,
+    "min": 10,
+    "goals": 0
+   },
+   {
+    "team_id": 1004,
+    "team": "Kasımpaşa",
+    "apps": 13,
+    "min": 1114,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "25414|2020|ERE",
+  "name": "J. Yeboah",
+  "card_id": 187514,
+  "card_min": 358,
+  "card_team": "Willem II",
+  "blocks": [
+   {
+    "team_id": 419,
+    "team": "Almere City FC",
+    "apps": 1,
+    "min": 52,
+    "goals": 0
+   },
+   {
+    "team_id": 195,
+    "team": "Willem II",
+    "apps": 9,
+    "min": 306,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "1271|2019|L1",
+  "name": "A. Tchouaméni",
+  "card_id": 187018,
+  "card_min": 1175,
+  "card_team": "Bordeaux",
+  "blocks": [
+   {
+    "team_id": 91,
+    "team": "Monaco",
+    "apps": 3,
+    "min": 62,
+    "goals": 0
+   },
+   {
+    "team_id": 78,
+    "team": "Bordeaux",
+    "apps": 15,
+    "min": 1113,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19301|2016|PL",
+  "name": "A. Guédioura",
+  "card_id": 186867,
+  "card_min": 858,
+  "card_team": "Watford",
+  "blocks": [
+   {
+    "team_id": 70,
+    "team": "Middlesbrough",
+    "apps": 5,
+    "min": 135,
+    "goals": 0
+   },
+   {
+    "team_id": 38,
+    "team": "Watford",
+    "apps": 12,
+    "min": 723,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "14277|2017|BPL",
+  "name": "I. Tomečak",
+  "card_id": 187584,
+  "card_min": 999,
+  "card_team": "KV Mechelen",
+  "blocks": [
+   {
+    "team_id": 569,
+    "team": "Club Brugge KV",
+    "apps": 5,
+    "min": 277,
+    "goals": 1
+   },
+   {
+    "team_id": 266,
+    "team": "KV Mechelen",
+    "apps": 9,
+    "min": 722,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2443|2017|PRT",
+  "name": "Y. Osorio",
+  "card_id": 187384,
+  "card_min": 1039,
+  "card_team": "Tondela",
+  "blocks": [
+   {
+    "team_id": 212,
+    "team": "FC Porto",
+    "apps": 1,
+    "min": 72,
+    "goals": 0
+   },
+   {
+    "team_id": 218,
+    "team": "Tondela",
+    "apps": 11,
+    "min": 967,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "292363|2025|TR",
+  "name": "E. Ortakaya",
+  "card_id": 187199,
+  "card_min": 773,
+  "card_team": "Eyüpspor",
+  "blocks": [
+   {
+    "team_id": 611,
+    "team": "Fenerbahçe",
+    "apps": 6,
+    "min": 0,
+    "goals": 0
+   },
+   {
+    "team_id": 3588,
+    "team": "Eyüpspor",
+    "apps": 9,
+    "min": 728,
+    "goals": 0
+   },
+   {
+    "team_id": 1007,
+    "team": "Rizespor",
+    "apps": 3,
+    "min": 45,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "48079|2024|SA",
+  "name": "J. Karlsson",
+  "card_id": 187084,
+  "card_min": 593,
+  "card_team": "Bologna",
+  "blocks": [
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 7,
+    "min": 297,
+    "goals": 1
+   },
+   {
+    "team_id": 867,
+    "team": "Lecce",
+    "apps": 17,
+    "min": 296,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "42246|2014|PL",
+  "name": "W. Bony",
+  "card_id": 186872,
+  "card_min": 1598,
+  "card_team": "Swansea",
+  "blocks": [
+   {
+    "team_id": 50,
+    "team": "Manchester City",
+    "apps": 10,
+    "min": 296,
+    "goals": 2
+   },
+   {
+    "team_id": 76,
+    "team": "Swansea",
+    "apps": 20,
+    "min": 1302,
+    "goals": 9
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "41109|2016|PRT",
+  "name": "Crislan",
+  "card_id": 187389,
+  "card_min": 649,
+  "card_team": "Tondela",
+  "blocks": [
+   {
+    "team_id": 217,
+    "team": "SC Braga",
+    "apps": 1,
+    "min": 61,
+    "goals": 0
+   },
+   {
+    "team_id": 218,
+    "team": "Tondela",
+    "apps": 10,
+    "min": 588,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "162004|2025|TR",
+  "name": "B. Elmaz",
+  "card_id": 187204,
+  "card_min": 1142,
+  "card_team": "Fatih Karagümrük",
+  "blocks": [
+   {
+    "team_id": 611,
+    "team": "Fenerbahçe",
+    "apps": 5,
+    "min": 100,
+    "goals": 0
+   },
+   {
+    "team_id": 3589,
+    "team": "Fatih Karagümrük",
+    "apps": 16,
+    "min": 1042,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2452|2016|SA",
+  "name": "T. Rincón",
+  "card_id": 187164,
+  "card_min": 1693,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 496,
+    "team": "Juventus",
+    "apps": 13,
+    "min": 299,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 16,
+    "min": 1394,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "264627|2025|TR",
+  "name": "B. Kutlu",
+  "card_id": 187206,
+  "card_min": 1144,
+  "card_team": "Konyaspor",
+  "blocks": [
+   {
+    "team_id": 645,
+    "team": "Galatasaray",
+    "apps": 7,
+    "min": 87,
+    "goals": 0
+   },
+   {
+    "team_id": 607,
+    "team": "Konyaspor",
+    "apps": 13,
+    "min": 1057,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "37660|2018|ERE",
+  "name": "A. Etemadi",
+  "card_id": 187518,
+  "card_min": 404,
+  "card_team": "De Graafschap",
+  "blocks": [
+   {
+    "team_id": 419,
+    "team": "Almere City FC",
+    "apps": 2,
+    "min": 180,
+    "goals": 0
+   },
+   {
+    "team_id": 199,
+    "team": "De Graafschap",
+    "apps": 3,
+    "min": 224,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "187987|2024|LL",
+  "name": "Ramón Terrats",
+  "card_id": 186939,
+  "card_min": 1352,
+  "card_team": "Getafe",
+  "blocks": [
+   {
+    "team_id": 533,
+    "team": "Villarreal",
+    "apps": 11,
+    "min": 123,
+    "goals": 0
+   },
+   {
+    "team_id": 546,
+    "team": "Getafe",
+    "apps": 15,
+    "min": 1229,
+    "goals": 4
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30464|2018|SA",
+  "name": "M. Sau",
+  "card_id": 187153,
+  "card_min": 603,
+  "card_team": "Cagliari",
+  "blocks": [
+   {
+    "team_id": 498,
+    "team": "Sampdoria",
+    "apps": 5,
+    "min": 50,
+    "goals": 0
+   },
+   {
+    "team_id": 490,
+    "team": "Cagliari",
+    "apps": 14,
+    "min": 553,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8518|2018|BPL",
+  "name": "M. Sylla",
+  "card_id": 187581,
+  "card_min": 787,
+  "card_team": "Zulte Waregem",
+  "blocks": [
+   {
+    "team_id": 735,
+    "team": "St. Truiden",
+    "apps": 5,
+    "min": 35,
+    "goals": 0
+   },
+   {
+    "team_id": 600,
+    "team": "Zulte Waregem",
+    "apps": 14,
+    "min": 752,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "667|2022|LL",
+  "name": "M. Depay",
+  "card_id": 186961,
+  "card_min": 399,
+  "card_team": "Atletico Madrid",
+  "blocks": [
+   {
+    "team_id": 529,
+    "team": "Barcelona",
+    "apps": 2,
+    "min": 116,
+    "goals": 1
+   },
+   {
+    "team_id": 530,
+    "team": "Atletico Madrid",
+    "apps": 10,
+    "min": 283,
+    "goals": 4
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2433|2015|ERE",
+  "name": "R. Tapia",
+  "card_id": 187522,
+  "card_min": 993,
+  "card_team": "Twente",
+  "blocks": [
+   {
+    "team_id": 209,
+    "team": "Feyenoord",
+    "apps": 3,
+    "min": 144,
+    "goals": 0
+   },
+   {
+    "team_id": 415,
+    "team": "Twente",
+    "apps": 14,
+    "min": 849,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30878|2019|SA",
+  "name": "A. Paloschi",
+  "card_id": 187150,
+  "card_min": 637,
+  "card_team": "Spal",
+  "blocks": [
+   {
+    "team_id": 490,
+    "team": "Cagliari",
+    "apps": 7,
+    "min": 200,
+    "goals": 0
+   },
+   {
+    "team_id": 493,
+    "team": "Spal",
+    "apps": 10,
+    "min": 437,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2933|2024|PL",
+  "name": "B. Chilwell",
+  "card_id": 186883,
+  "card_min": 515,
+  "card_team": "Chelsea",
+  "blocks": [
+   {
+    "team_id": 52,
+    "team": "Crystal Palace",
+    "apps": 8,
+    "min": 253,
+    "goals": 1
+   },
+   {
+    "team_id": 49,
+    "team": "Chelsea",
+    "apps": 12,
+    "min": 262,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "81228|2012|SA",
+  "name": "Rubén Ariel Olivera da Rosa",
+  "card_id": 187187,
+  "card_min": 467,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 5,
+    "min": 165,
+    "goals": 0
+   },
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 4,
+    "min": 302,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "29515|2010|ERE",
+  "name": "W. Pluim",
+  "card_id": 187529,
+  "card_min": 1193,
+  "card_team": "Vitesse",
+  "blocks": [
+   {
+    "team_id": 414,
+    "team": "Roda",
+    "apps": 14,
+    "min": 235,
+    "goals": 0
+   },
+   {
+    "team_id": 200,
+    "team": "Vitesse",
+    "apps": 16,
+    "min": 958,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "36931|2020|ERE",
+  "name": "C. Leemans",
+  "card_id": 187515,
+  "card_min": 660,
+  "card_team": "PEC Zwolle",
+  "blocks": [
+   {
+    "team_id": 199,
+    "team": "De Graafschap",
+    "apps": 1,
+    "min": 73,
+    "goals": 0
+   },
+   {
+    "team_id": 193,
+    "team": "PEC Zwolle",
+    "apps": 16,
+    "min": 587,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "91559|2012|SA",
+  "name": "Cristian Zaccardo",
+  "card_id": 187186,
+  "card_min": 1295,
+  "card_team": "Parma",
+  "blocks": [
+   {
+    "team_id": 489,
+    "team": "AC Milan",
+    "apps": 1,
+    "min": 44,
+    "goals": 0
+   },
+   {
+    "team_id": 523,
+    "team": "Parma",
+    "apps": 15,
+    "min": 1251,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "340597|2025|ERE",
+  "name": "D. Kwakman",
+  "card_id": 187454,
+  "card_min": 837,
+  "card_team": "FC Volendam",
+  "blocks": [
+   {
+    "team_id": 201,
+    "team": "AZ Alkmaar",
+    "apps": 6,
+    "min": 111,
+    "goals": 0
+   },
+   {
+    "team_id": 416,
+    "team": "FC Volendam",
+    "apps": 10,
+    "min": 726,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "90498|2017|PL",
+  "name": "E. Mangala",
+  "card_id": 186860,
+  "card_min": 618,
+  "card_team": "Manchester City",
+  "blocks": [
+   {
+    "team_id": 45,
+    "team": "Everton",
+    "apps": 2,
+    "min": 135,
+    "goals": 0
+   },
+   {
+    "team_id": 50,
+    "team": "Manchester City",
+    "apps": 9,
+    "min": 483,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "62021|2015|TR",
+  "name": "B. Parlak",
+  "card_id": 187325,
+  "card_min": 1271,
+  "card_team": "Eskişehirspor",
+  "blocks": [
+   {
+    "team_id": 1001,
+    "team": "Kayserispor",
+    "apps": 3,
+    "min": 248,
+    "goals": 0
+   },
+   {
+    "team_id": 3572,
+    "team": "Eskişehirspor",
+    "apps": 13,
+    "min": 1023,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "37002|2019|ERE",
+  "name": "M. Pinto",
+  "card_id": 187517,
+  "card_min": 768,
+  "card_team": "Fortuna Sittard",
+  "blocks": [
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 3,
+    "min": 189,
+    "goals": 0
+   },
+   {
+    "team_id": 205,
+    "team": "Fortuna Sittard",
+    "apps": 7,
+    "min": 579,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31686|2012|SA",
+  "name": "E. Calaiò",
+  "card_id": 187185,
+  "card_min": 1724,
+  "card_team": "Robur Siena",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 6,
+    "min": 110,
+    "goals": 0
+   },
+   {
+    "team_id": 1583,
+    "team": "Robur Siena",
+    "apps": 18,
+    "min": 1614,
+    "goals": 4
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "308|2017|PL",
+  "name": "Daniel Andre Sturridge",
+  "card_id": 186881,
+  "card_min": 547,
+  "card_team": "Liverpool",
+  "blocks": [
+   {
+    "team_id": 60,
+    "team": "West Brom",
+    "apps": 6,
+    "min": 116,
+    "goals": 0
+   },
+   {
+    "team_id": 40,
+    "team": "Liverpool",
+    "apps": 9,
+    "min": 431,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "18768|2025|TR",
+  "name": "C. Tosun",
+  "card_id": 187202,
+  "card_min": 468,
+  "card_team": "Kasımpaşa",
+  "blocks": [
+   {
+    "team_id": 611,
+    "team": "Fenerbahçe",
+    "apps": 5,
+    "min": 76,
+    "goals": 0
+   },
+   {
+    "team_id": 1004,
+    "team": "Kasımpaşa",
+    "apps": 11,
+    "min": 392,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "278133|2025|PL",
+  "name": "Oscar Bobb",
+  "card_id": 130484,
+  "card_min": 1050,
+  "card_team": "Fulham",
+  "blocks": [
+   {
+    "team_id": 50,
+    "team": "Manchester City",
+    "apps": 9,
+    "min": 472,
+    "goals": 0
+   },
+   {
+    "team_id": 36,
+    "team": "Fulham",
+    "apps": 14,
+    "min": 578,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19709|2021|TR",
+  "name": "E. Öztümer",
+  "card_id": 187288,
+  "card_min": 954,
+  "card_team": "Fatih Karagümrük",
+  "blocks": [
+   {
+    "team_id": 3563,
+    "team": "Adana Demirspor",
+    "apps": 7,
+    "min": 160,
+    "goals": 1
+   },
+   {
+    "team_id": 3589,
+    "team": "Fatih Karagümrük",
+    "apps": 18,
+    "min": 794,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30440|2021|SA",
+  "name": "R. Piccoli",
+  "card_id": 187139,
+  "card_min": 400,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 5,
+    "min": 215,
+    "goals": 0
+   },
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 12,
+    "min": 185,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "38822|2021|ERE",
+  "name": "T. Oosting",
+  "card_id": 187513,
+  "card_min": 400,
+  "card_team": "Willem II",
+  "blocks": [
+   {
+    "team_id": 195,
+    "team": "Willem II",
+    "apps": 3,
+    "min": 270,
+    "goals": 2
+   },
+   {
+    "team_id": 201,
+    "team": "AZ Alkmaar",
+    "apps": 3,
+    "min": 130,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "861|2025|SA",
+  "name": "D. Rugani",
+  "card_id": 187052,
+  "card_min": 594,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 496,
+    "team": "Juventus",
+    "apps": 6,
+    "min": 266,
+    "goals": 0
+   },
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 5,
+    "min": 328,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "162771|2023|BL",
+  "name": "J. Ngankam",
+  "card_id": 187428,
+  "card_min": 452,
+  "card_team": "Eintracht Frankfurt",
+  "blocks": [
+   {
+    "team_id": 164,
+    "team": "FSV Mainz 05",
+    "apps": 7,
+    "min": 182,
+    "goals": 0
+   },
+   {
+    "team_id": 169,
+    "team": "Eintracht Frankfurt",
+    "apps": 15,
+    "min": 270,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "1643|2014|SA",
+  "name": "D. Laxalt",
+  "card_id": 187175,
+  "card_min": 306,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 8,
+    "min": 213,
+    "goals": 0
+   },
+   {
+    "team_id": 511,
+    "team": "Empoli",
+    "apps": 4,
+    "min": 93,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "3292|2021|L1",
+  "name": "L. Mothiba",
+  "card_id": 158337,
+  "card_min": 520,
+  "card_team": "Estac Troyes",
+  "blocks": [
+   {
+    "team_id": 110,
+    "team": "Estac Troyes",
+    "apps": 13,
+    "min": 520,
+    "goals": 2
+   },
+   {
+    "team_id": 95,
+    "team": "Strasbourg",
+    "apps": 1,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "304686|2025|BL",
+  "name": "Arthur Chaves",
+  "card_id": 187410,
+  "card_min": 1068,
+  "card_team": "FC Augsburg",
+  "blocks": [
+   {
+    "team_id": 167,
+    "team": "1899 Hoffenheim",
+    "apps": 4,
+    "min": 239,
+    "goals": 0
+   },
+   {
+    "team_id": 170,
+    "team": "FC Augsburg",
+    "apps": 11,
+    "min": 829,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "41734|2025|SA",
+  "name": "João Mário",
+  "card_id": 187051,
+  "card_min": 1008,
+  "card_team": "Bologna",
+  "blocks": [
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 10,
+    "min": 741,
+    "goals": 1
+   },
+   {
+    "team_id": 496,
+    "team": "Juventus",
+    "apps": 10,
+    "min": 267,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30563|2020|SA",
+  "name": "P. Faragò",
+  "card_id": 187145,
+  "card_min": 389,
+  "card_team": "Cagliari",
+  "blocks": [
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 1,
+    "min": 22,
+    "goals": 0
+   },
+   {
+    "team_id": 490,
+    "team": "Cagliari",
+    "apps": 8,
+    "min": 367,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "22018|2014|PRT",
+  "name": "Suk Hyun-Jun",
+  "card_id": 167964,
+  "card_min": 1321,
+  "card_team": "Vitoria Setubal",
+  "blocks": [
+   {
+    "team_id": 219,
+    "team": "Vitoria Setubal",
+    "apps": 17,
+    "min": 1321,
+    "goals": 4
+   },
+   {
+    "team_id": 225,
+    "team": "Nacional",
+    "apps": 13,
+    "min": 0,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "28786|2025|ERE",
+  "name": "N. Þórisson",
+  "card_id": 187445,
+  "card_min": 480,
+  "card_team": "Telstar",
+  "blocks": [
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 10,
+    "min": 87,
+    "goals": 0
+   },
+   {
+    "team_id": 427,
+    "team": "Telstar",
+    "apps": 7,
+    "min": 393,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8941|2021|BPL",
+  "name": "J. Van Damme",
+  "card_id": 187570,
+  "card_min": 347,
+  "card_team": "KV Mechelen",
+  "blocks": [
+   {
+    "team_id": 733,
+    "team": "Standard Liege",
+    "apps": 4,
+    "min": 114,
+    "goals": 0
+   },
+   {
+    "team_id": 266,
+    "team": "KV Mechelen",
+    "apps": 6,
+    "min": 233,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "80371|2013|L1",
+  "name": "Túlio Vinícius Froes de Melo",
+  "card_id": 187026,
+  "card_min": 302,
+  "card_team": "Evian TG",
+  "blocks": [
+   {
+    "team_id": 3006,
+    "team": "Evian TG",
+    "apps": 5,
+    "min": 287,
+    "goals": 0
+   },
+   {
+    "team_id": 79,
+    "team": "Lille",
+    "apps": 5,
+    "min": 15,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "393191|2025|ERE",
+  "name": "Gerald Alders",
+  "card_id": 187459,
+  "card_min": 553,
+  "card_team": "Telstar",
+  "blocks": [
+   {
+    "team_id": 194,
+    "team": "Ajax",
+    "apps": 3,
+    "min": 178,
+    "goals": 0
+   },
+   {
+    "team_id": 427,
+    "team": "Telstar",
+    "apps": 7,
+    "min": 375,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "24158|2017|BPL",
+  "name": "N. Verdier",
+  "card_id": 187582,
+  "card_min": 966,
+  "card_team": "AS Eupen",
+  "blocks": [
+   {
+    "team_id": 266,
+    "team": "KV Mechelen",
+    "apps": 6,
+    "min": 124,
+    "goals": 0
+   },
+   {
+    "team_id": 739,
+    "team": "AS Eupen",
+    "apps": 16,
+    "min": 842,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "48389|2024|SA",
+  "name": "N. Okafor",
+  "card_id": 187091,
+  "card_min": 449,
+  "card_team": "AC Milan",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 4,
+    "min": 36,
+    "goals": 0
+   },
+   {
+    "team_id": 489,
+    "team": "AC Milan",
+    "apps": 11,
+    "min": 413,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "312837|2025|ERE",
+  "name": "L. Zeefuik",
+  "card_id": 187458,
+  "card_min": 1179,
+  "card_team": "Heracles",
+  "blocks": [
+   {
+    "team_id": 201,
+    "team": "AZ Alkmaar",
+    "apps": 10,
+    "min": 118,
+    "goals": 0
+   },
+   {
+    "team_id": 206,
+    "team": "Heracles",
+    "apps": 13,
+    "min": 1061,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "91419|2016|SA",
+  "name": "Alberto Gilardino",
+  "card_id": 187161,
+  "card_min": 694,
+  "card_team": "Empoli",
+  "blocks": [
+   {
+    "team_id": 525,
+    "team": "Pescara",
+    "apps": 3,
+    "min": 101,
+    "goals": 0
+   },
+   {
+    "team_id": 511,
+    "team": "Empoli",
+    "apps": 14,
+    "min": 593,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8619|2017|BPL",
+  "name": "D. Marcq",
+  "card_id": 187583,
+  "card_min": 728,
+  "card_team": "Gent",
+  "blocks": [
+   {
+    "team_id": 600,
+    "team": "Zulte Waregem",
+    "apps": 4,
+    "min": 286,
+    "goals": 0
+   },
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 6,
+    "min": 442,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30459|2022|SA",
+  "name": "R. Vieira",
+  "card_id": 187138,
+  "card_min": 828,
+  "card_team": "Sampdoria",
+  "blocks": [
+   {
+    "team_id": 503,
+    "team": "Torino",
+    "apps": 2,
+    "min": 14,
+    "goals": 0
+   },
+   {
+    "team_id": 498,
+    "team": "Sampdoria",
+    "apps": 16,
+    "min": 814,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2938|2025|PL",
+  "name": "J. Ward-Prowse",
+  "card_id": 130408,
+  "card_min": 1109,
+  "card_team": "Burnley",
+  "blocks": [
+   {
+    "team_id": 48,
+    "team": "West Ham",
+    "apps": 5,
+    "min": 415,
+    "goals": 0
+   },
+   {
+    "team_id": 44,
+    "team": "Burnley",
+    "apps": 13,
+    "min": 694,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "129643|2024|PL",
+  "name": "E. Ferguson",
+  "card_id": 186884,
+  "card_min": 411,
+  "card_team": "Brighton",
+  "blocks": [
+   {
+    "team_id": 48,
+    "team": "West Ham",
+    "apps": 8,
+    "min": 150,
+    "goals": 0
+   },
+   {
+    "team_id": 51,
+    "team": "Brighton",
+    "apps": 15,
+    "min": 261,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2288|2019|PL",
+  "name": "D. Drinkwater",
+  "card_id": 186859,
+  "card_min": 322,
+  "card_team": "Aston Villa",
+  "blocks": [
+   {
+    "team_id": 66,
+    "team": "Aston Villa",
+    "apps": 4,
+    "min": 263,
+    "goals": 0
+   },
+   {
+    "team_id": 44,
+    "team": "Burnley",
+    "apps": 1,
+    "min": 59,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "25390|2012|SA",
+  "name": "Jonathas",
+  "card_id": 187191,
+  "card_min": 823,
+  "card_team": "Pescara",
+  "blocks": [
+   {
+    "team_id": 503,
+    "team": "Torino",
+    "apps": 11,
+    "min": 200,
+    "goals": 2
+   },
+   {
+    "team_id": 525,
+    "team": "Pescara",
+    "apps": 12,
+    "min": 623,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "47406|2014|SA",
+  "name": "E. Muñoz",
+  "card_id": 187176,
+  "card_min": 1389,
+  "card_team": "Palermo",
+  "blocks": [
+   {
+    "team_id": 498,
+    "team": "Sampdoria",
+    "apps": 4,
+    "min": 228,
+    "goals": 0
+   },
+   {
+    "team_id": 522,
+    "team": "Palermo",
+    "apps": 13,
+    "min": 1161,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "18861|2016|PL",
+  "name": "N. Aké",
+  "card_id": 186864,
+  "card_min": 831,
+  "card_team": "Bournemouth",
+  "blocks": [
+   {
+    "team_id": 49,
+    "team": "Chelsea",
+    "apps": 2,
+    "min": 98,
+    "goals": 0
+   },
+   {
+    "team_id": 35,
+    "team": "Bournemouth",
+    "apps": 10,
+    "min": 733,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "437|2021|TR",
+  "name": "S. Kaya",
+  "card_id": 187290,
+  "card_min": 1945,
+  "card_team": "Yeni Malatyaspor",
+  "blocks": [
+   {
+    "team_id": 645,
+    "team": "Galatasaray",
+    "apps": 2,
+    "min": 180,
+    "goals": 0
+   },
+   {
+    "team_id": 999,
+    "team": "Yeni Malatyaspor",
+    "apps": 22,
+    "min": 1765,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31433|2010|SA",
+  "name": "N. Pulzetti",
+  "card_id": 187196,
+  "card_min": 1102,
+  "card_team": "Bari",
+  "blocks": [
+   {
+    "team_id": 491,
+    "team": "Chievo",
+    "apps": 7,
+    "min": 216,
+    "goals": 1
+   },
+   {
+    "team_id": 508,
+    "team": "Bari",
+    "apps": 15,
+    "min": 886,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "21105|2013|BPL",
+  "name": "A. Limbombe",
+  "card_id": 187594,
+  "card_min": 743,
+  "card_team": "Genk",
+  "blocks": [
+   {
+    "team_id": 1392,
+    "team": "Lierse",
+    "apps": 7,
+    "min": 277,
+    "goals": 2
+   },
+   {
+    "team_id": 742,
+    "team": "Genk",
+    "apps": 15,
+    "min": 466,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19184|2016|PL",
+  "name": "Thomas James Carroll",
+  "card_id": 134105,
+  "card_min": 1390,
+  "card_team": "Swansea",
+  "blocks": [
+   {
+    "team_id": 76,
+    "team": "Swansea",
+    "apps": 17,
+    "min": 1390,
+    "goals": 1
+   },
+   {
+    "team_id": 47,
+    "team": "Tottenham",
+    "apps": 1,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "50119|2020|TR",
+  "name": "H. Acar",
+  "card_id": 187298,
+  "card_min": 785,
+  "card_team": "Kayserispor",
+  "blocks": [
+   {
+    "team_id": 996,
+    "team": "Alanyaspor",
+    "apps": 4,
+    "min": 85,
+    "goals": 0
+   },
+   {
+    "team_id": 1001,
+    "team": "Kayserispor",
+    "apps": 10,
+    "min": 700,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8540|2020|BPL",
+  "name": "F. Avenatti",
+  "card_id": 187574,
+  "card_min": 550,
+  "card_team": "Standard Liege",
+  "blocks": [
+   {
+    "team_id": 740,
+    "team": "Antwerp",
+    "apps": 4,
+    "min": 22,
+    "goals": 0
+   },
+   {
+    "team_id": 733,
+    "team": "Standard Liege",
+    "apps": 10,
+    "min": 528,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19134|2016|PL",
+  "name": "P. Bamford",
+  "card_id": 186865,
+  "card_min": 314,
+  "card_team": "Middlesbrough",
+  "blocks": [
+   {
+    "team_id": 70,
+    "team": "Middlesbrough",
+    "apps": 8,
+    "min": 281,
+    "goals": 1
+   },
+   {
+    "team_id": 49,
+    "team": "Chelsea",
+    "apps": 0,
+    "min": 0,
+    "goals": 0
+   },
+   {
+    "team_id": 44,
+    "team": "Burnley",
+    "apps": 6,
+    "min": 33,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "129678|2022|L1",
+  "name": "A. Ounahi",
+  "card_id": 187013,
+  "card_min": 1254,
+  "card_team": "Angers",
+  "blocks": [
+   {
+    "team_id": 81,
+    "team": "Marseille",
+    "apps": 7,
+    "min": 117,
+    "goals": 1
+   },
+   {
+    "team_id": 77,
+    "team": "Angers",
+    "apps": 15,
+    "min": 1137,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "22266|2018|L1",
+  "name": "S. Grandsir",
+  "card_id": 187020,
+  "card_min": 699,
+  "card_team": "Monaco",
+  "blocks": [
+   {
+    "team_id": 95,
+    "team": "Strasbourg",
+    "apps": 8,
+    "min": 234,
+    "goals": 0
+   },
+   {
+    "team_id": 91,
+    "team": "Monaco",
+    "apps": 12,
+    "min": 465,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30856|2014|SA",
+  "name": "Felipe",
+  "card_id": 187172,
+  "card_min": 1118,
+  "card_team": "Parma",
+  "blocks": [
+   {
+    "team_id": 505,
+    "team": "Inter",
+    "apps": 4,
+    "min": 189,
+    "goals": 0
+   },
+   {
+    "team_id": 523,
+    "team": "Parma",
+    "apps": 11,
+    "min": 929,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "107702|2023|ERE",
+  "name": "Manel Royo",
+  "card_id": 187499,
+  "card_min": 849,
+  "card_team": "Almere City FC",
+  "blocks": [
+   {
+    "team_id": 203,
+    "team": "NAC Breda",
+    "apps": 4,
+    "min": 181,
+    "goals": 0
+   },
+   {
+    "team_id": 419,
+    "team": "Almere City FC",
+    "apps": 12,
+    "min": 668,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "388547|2025|SA",
+  "name": "Luca Marianucci",
+  "card_id": 187058,
+  "card_min": 691,
+  "card_team": "Torino",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 2,
+    "min": 118,
+    "goals": 0
+   },
+   {
+    "team_id": 503,
+    "team": "Torino",
+    "apps": 10,
+    "min": 573,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "334037|2025|PL",
+  "name": "Tyrique George",
+  "card_id": 186834,
+  "card_min": 382,
+  "card_team": "Everton",
+  "blocks": [
+   {
+    "team_id": 49,
+    "team": "Chelsea",
+    "apps": 4,
+    "min": 151,
+    "goals": 0
+   },
+   {
+    "team_id": 45,
+    "team": "Everton",
+    "apps": 11,
+    "min": 231,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "119182|2025|TR",
+  "name": "R. Baniya",
+  "card_id": 187214,
+  "card_min": 353,
+  "card_team": "Trabzonspor",
+  "blocks": [
+   {
+    "team_id": 998,
+    "team": "Trabzonspor",
+    "apps": 6,
+    "min": 225,
+    "goals": 0
+   },
+   {
+    "team_id": 607,
+    "team": "Konyaspor",
+    "apps": 3,
+    "min": 128,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "56851|2024|SA",
+  "name": "M. Folorunsho",
+  "card_id": 187085,
+  "card_min": 675,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 6,
+    "min": 29,
+    "goals": 0
+   },
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 15,
+    "min": 646,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8483|2016|BPL",
+  "name": "J. Dompé",
+  "card_id": 187589,
+  "card_min": 386,
+  "card_team": "Standard Liege",
+  "blocks": [
+   {
+    "team_id": 739,
+    "team": "AS Eupen",
+    "apps": 2,
+    "min": 82,
+    "goals": 0
+   },
+   {
+    "team_id": 733,
+    "team": "Standard Liege",
+    "apps": 7,
+    "min": 304,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "138822|2023|PL",
+  "name": "A. Broja",
+  "card_id": 186850,
+  "card_min": 534,
+  "card_team": "Chelsea",
+  "blocks": [
+   {
+    "team_id": 36,
+    "team": "Fulham",
+    "apps": 8,
+    "min": 81,
+    "goals": 0
+   },
+   {
+    "team_id": 49,
+    "team": "Chelsea",
+    "apps": 13,
+    "min": 453,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "49896|2013|TR",
+  "name": "M. Akça",
+  "card_id": 185412,
+  "card_min": 861,
+  "card_team": "Kardemir Karabukspor",
+  "blocks": [
+   {
+    "team_id": 1000,
+    "team": "Kardemir Karabukspor",
+    "apps": 14,
+    "min": 861,
+    "goals": 2
+   },
+   {
+    "team_id": 1002,
+    "team": "Sivasspor",
+    "apps": 2,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30506|2021|SA",
+  "name": "D. Baselli",
+  "card_id": 187142,
+  "card_min": 423,
+  "card_team": "Cagliari",
+  "blocks": [
+   {
+    "team_id": 490,
+    "team": "Cagliari",
+    "apps": 9,
+    "min": 283,
+    "goals": 0
+   },
+   {
+    "team_id": 503,
+    "team": "Torino",
+    "apps": 6,
+    "min": 140,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "282706|2023|SA",
+  "name": "D. Seck",
+  "card_id": 187131,
+  "card_min": 719,
+  "card_team": "Torino",
+  "blocks": [
+   {
+    "team_id": 512,
+    "team": "Frosinone",
+    "apps": 11,
+    "min": 292,
+    "goals": 0
+   },
+   {
+    "team_id": 503,
+    "team": "Torino",
+    "apps": 9,
+    "min": 427,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "364809|2025|ERE",
+  "name": "M. Jonathans",
+  "card_id": 187455,
+  "card_min": 493,
+  "card_team": "Utrecht",
+  "blocks": [
+   {
+    "team_id": 207,
+    "team": "Utrecht",
+    "apps": 7,
+    "min": 271,
+    "goals": 0
+   },
+   {
+    "team_id": 196,
+    "team": "Excelsior",
+    "apps": 9,
+    "min": 222,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "11406|2012|SA",
+  "name": "M. Larrondo",
+  "card_id": 187188,
+  "card_min": 341,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 7,
+    "min": 271,
+    "goals": 2
+   },
+   {
+    "team_id": 1583,
+    "team": "Robur Siena",
+    "apps": 3,
+    "min": 70,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8573|2023|BPL",
+  "name": "K. Nkuba",
+  "card_id": 187562,
+  "card_min": 739,
+  "card_team": "Genk",
+  "blocks": [
+   {
+    "team_id": 736,
+    "team": "Charleroi",
+    "apps": 4,
+    "min": 155,
+    "goals": 0
+   },
+   {
+    "team_id": 742,
+    "team": "Genk",
+    "apps": 37,
+    "min": 584,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30486|2019|SA",
+  "name": "M. Destro",
+  "card_id": 187147,
+  "card_min": 328,
+  "card_team": "Bologna",
+  "blocks": [
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 8,
+    "min": 144,
+    "goals": 0
+   },
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 5,
+    "min": 184,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "91314|2012|SA",
+  "name": "Mattia Cassani",
+  "card_id": 187183,
+  "card_min": 486,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 5,
+    "min": 179,
+    "goals": 0
+   },
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 8,
+    "min": 307,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "191879|2024|ERE",
+  "name": "K. Hlynsson",
+  "card_id": 187484,
+  "card_min": 379,
+  "card_team": "Sparta Rotterdam",
+  "blocks": [
+   {
+    "team_id": 194,
+    "team": "Ajax",
+    "apps": 4,
+    "min": 188,
+    "goals": 1
+   },
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 8,
+    "min": 191,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30729|2012|SA",
+  "name": "D. Moscardelli",
+  "card_id": 187184,
+  "card_min": 340,
+  "card_team": "Chievo",
+  "blocks": [
+   {
+    "team_id": 500,
+    "team": "Bologna",
+    "apps": 9,
+    "min": 152,
+    "goals": 1
+   },
+   {
+    "team_id": 491,
+    "team": "Chievo",
+    "apps": 7,
+    "min": 188,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "129172|2025|BPL",
+  "name": "K. Vaesen",
+  "card_id": 187535,
+  "card_min": 863,
+  "card_team": "OH Leuven",
+  "blocks": [
+   {
+    "team_id": 261,
+    "team": "KVC Westerlo",
+    "apps": 19,
+    "min": 292,
+    "goals": 1
+   },
+   {
+    "team_id": 260,
+    "team": "OH Leuven",
+    "apps": 13,
+    "min": 571,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "62253|2016|TR",
+  "name": "E. Nefiz",
+  "card_id": 187313,
+  "card_min": 659,
+  "card_team": "Alanyaspor",
+  "blocks": [
+   {
+    "team_id": 1008,
+    "team": "Gaziantepspor",
+    "apps": 5,
+    "min": 276,
+    "goals": 0
+   },
+   {
+    "team_id": 996,
+    "team": "Alanyaspor",
+    "apps": 12,
+    "min": 383,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30789|2019|SA",
+  "name": "C. Kouamé",
+  "card_id": 187148,
+  "card_min": 1215,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 7,
+    "min": 299,
+    "goals": 1
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 11,
+    "min": 916,
+    "goals": 5
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "29969|2010|PRT",
+  "name": "Vinícius",
+  "card_id": 187405,
+  "card_min": 1050,
+  "card_team": "Olhanense",
+  "blocks": [
+   {
+    "team_id": 217,
+    "team": "SC Braga",
+    "apps": 3,
+    "min": 108,
+    "goals": 0
+   },
+   {
+    "team_id": 807,
+    "team": "Olhanense",
+    "apps": 12,
+    "min": 942,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "41476|2018|PRT",
+  "name": "A. Ebralidze",
+  "card_id": 187379,
+  "card_min": 878,
+  "card_team": "Chaves",
+  "blocks": [
+   {
+    "team_id": 225,
+    "team": "Nacional",
+    "apps": 3,
+    "min": 147,
+    "goals": 0
+   },
+   {
+    "team_id": 223,
+    "team": "Chaves",
+    "apps": 12,
+    "min": 731,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2122|2023|BPL",
+  "name": "R. Emond",
+  "card_id": 187560,
+  "card_min": 827,
+  "card_team": "AS Eupen",
+  "blocks": [
+   {
+    "team_id": 733,
+    "team": "Standard Liege",
+    "apps": 3,
+    "min": 98,
+    "goals": 0
+   },
+   {
+    "team_id": 739,
+    "team": "AS Eupen",
+    "apps": 22,
+    "min": 729,
+    "goals": 4
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "162767|2020|BPL",
+  "name": "A. Colassin",
+  "card_id": 187573,
+  "card_min": 314,
+  "card_team": "Anderlecht",
+  "blocks": [
+   {
+    "team_id": 600,
+    "team": "Zulte Waregem",
+    "apps": 10,
+    "min": 148,
+    "goals": 0
+   },
+   {
+    "team_id": 554,
+    "team": "Anderlecht",
+    "apps": 7,
+    "min": 166,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "10576|2011|SA",
+  "name": "Maximiliano Gastón López",
+  "card_id": 187195,
+  "card_min": 1120,
+  "card_team": "Catania",
+  "blocks": [
+   {
+    "team_id": 489,
+    "team": "AC Milan",
+    "apps": 8,
+    "min": 246,
+    "goals": 1
+   },
+   {
+    "team_id": 1580,
+    "team": "Catania",
+    "apps": 14,
+    "min": 874,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "47373|2018|LL",
+  "name": "D. Rolán",
+  "card_id": 186972,
+  "card_min": 508,
+  "card_team": "Alaves",
+  "blocks": [
+   {
+    "team_id": 542,
+    "team": "Alaves",
+    "apps": 9,
+    "min": 295,
+    "goals": 0
+   },
+   {
+    "team_id": 537,
+    "team": "Leganes",
+    "apps": 6,
+    "min": 213,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "116166|2013|ERE",
+  "name": "B. Schepers",
+  "card_id": 187525,
+  "card_min": 494,
+  "card_team": "Utrecht",
+  "blocks": [
+   {
+    "team_id": 420,
+    "team": "Cambuur",
+    "apps": 6,
+    "min": 229,
+    "goals": 1
+   },
+   {
+    "team_id": 207,
+    "team": "Utrecht",
+    "apps": 10,
+    "min": 265,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8487|2016|BPL",
+  "name": "B. Verstraete",
+  "card_id": 187590,
+  "card_min": 2034,
+  "card_team": "Kortrijk",
+  "blocks": [
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 8,
+    "min": 273,
+    "goals": 0
+   },
+   {
+    "team_id": 734,
+    "team": "Kortrijk",
+    "apps": 20,
+    "min": 1761,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "430816|2025|L1",
+  "name": "N. Edjouma",
+  "card_id": 186987,
+  "card_min": 365,
+  "card_team": "Toulouse",
+  "blocks": [
+   {
+    "team_id": 96,
+    "team": "Toulouse",
+    "apps": 12,
+    "min": 267,
+    "goals": 0
+   },
+   {
+    "team_id": 79,
+    "team": "Lille",
+    "apps": 3,
+    "min": 98,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "96491|2011|PRT",
+  "name": "Luis Alberto",
+  "card_id": 187404,
+  "card_min": 445,
+  "card_team": "Nacional",
+  "blocks": [
+   {
+    "team_id": 217,
+    "team": "SC Braga",
+    "apps": 2,
+    "min": 26,
+    "goals": 0
+   },
+   {
+    "team_id": 225,
+    "team": "Nacional",
+    "apps": 7,
+    "min": 419,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "361888|2024|ERE",
+  "name": "Shiloh Kiesar ’t Zand",
+  "card_id": 187489,
+  "card_min": 1052,
+  "card_team": "Heracles",
+  "blocks": [
+   {
+    "team_id": 209,
+    "team": "Feyenoord",
+    "apps": 2,
+    "min": 40,
+    "goals": 0
+   },
+   {
+    "team_id": 206,
+    "team": "Heracles",
+    "apps": 17,
+    "min": 1012,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "47452|2019|LL",
+  "name": "E. Cabaco",
+  "card_id": 186971,
+  "card_min": 1076,
+  "card_team": "Levante",
+  "blocks": [
+   {
+    "team_id": 546,
+    "team": "Getafe",
+    "apps": 4,
+    "min": 268,
+    "goals": 0
+   },
+   {
+    "team_id": 539,
+    "team": "Levante",
+    "apps": 11,
+    "min": 808,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "1374|2017|PL",
+  "name": "I. Slimani",
+  "card_id": 186863,
+  "card_min": 370,
+  "card_team": "Leicester",
+  "blocks": [
+   {
+    "team_id": 34,
+    "team": "Newcastle",
+    "apps": 4,
+    "min": 130,
+    "goals": 0
+   },
+   {
+    "team_id": 46,
+    "team": "Leicester",
+    "apps": 12,
+    "min": 240,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "50005|2018|TR",
+  "name": "Ali Çamdalı",
+  "card_id": 187307,
+  "card_min": 982,
+  "card_team": "Rizespor",
+  "blocks": [
+   {
+    "team_id": 607,
+    "team": "Konyaspor",
+    "apps": 3,
+    "min": 48,
+    "goals": 0
+   },
+   {
+    "team_id": 1007,
+    "team": "Rizespor",
+    "apps": 11,
+    "min": 934,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30860|2015|SA",
+  "name": "V. Regini",
+  "card_id": 187169,
+  "card_min": 1221,
+  "card_team": "Sampdoria",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 1,
+    "min": 14,
+    "goals": 0
+   },
+   {
+    "team_id": 498,
+    "team": "Sampdoria",
+    "apps": 14,
+    "min": 1207,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "36900|2017|ERE",
+  "name": "A. Maher",
+  "card_id": 172526,
+  "card_min": 1422,
+  "card_team": "Twente",
+  "blocks": [
+   {
+    "team_id": 415,
+    "team": "Twente",
+    "apps": 16,
+    "min": 1422,
+    "goals": 1
+   },
+   {
+    "team_id": 197,
+    "team": "PSV Eindhoven",
+    "apps": 1,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2483|2025|L1",
+  "name": "D. Machado",
+  "card_id": 186985,
+  "card_min": 1186,
+  "card_team": "Nantes",
+  "blocks": [
+   {
+    "team_id": 116,
+    "team": "Lens",
+    "apps": 5,
+    "min": 275,
+    "goals": 0
+   },
+   {
+    "team_id": 83,
+    "team": "Nantes",
+    "apps": 14,
+    "min": 911,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31073|2021|SA",
+  "name": "E. Goldaniga",
+  "card_id": 145759,
+  "card_min": 937,
+  "card_team": "Cagliari",
+  "blocks": [
+   {
+    "team_id": 490,
+    "team": "Cagliari",
+    "apps": 11,
+    "min": 937,
+    "goals": 0
+   },
+   {
+    "team_id": 488,
+    "team": "Sassuolo",
+    "apps": 1,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30422|2021|SA",
+  "name": "R. Gosens",
+  "card_id": 187144,
+  "card_min": 623,
+  "card_team": "Atalanta",
+  "blocks": [
+   {
+    "team_id": 505,
+    "team": "Inter",
+    "apps": 7,
+    "min": 161,
+    "goals": 0
+   },
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 6,
+    "min": 462,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "138967|2011|TR",
+  "name": "Yiğit İsmail Gökoğlan",
+  "card_id": 187334,
+  "card_min": 1265,
+  "card_team": "Manisaspor",
+  "blocks": [
+   {
+    "team_id": 645,
+    "team": "Galatasaray",
+    "apps": 8,
+    "min": 172,
+    "goals": 1
+   },
+   {
+    "team_id": 3598,
+    "team": "Manisaspor",
+    "apps": 16,
+    "min": 1093,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31392|2014|SA",
+  "name": "A. Rosi",
+  "card_id": 187174,
+  "card_min": 536,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 4,
+    "min": 235,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 7,
+    "min": 301,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "343316|2025|BL",
+  "name": "J. Belocian",
+  "card_id": 187413,
+  "card_min": 1757,
+  "card_team": "VfL Wolfsburg",
+  "blocks": [
+   {
+    "team_id": 168,
+    "team": "Bayer Leverkusen",
+    "apps": 8,
+    "min": 292,
+    "goals": 0
+   },
+   {
+    "team_id": 161,
+    "team": "VfL Wolfsburg",
+    "apps": 16,
+    "min": 1465,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30573|2016|SA",
+  "name": "L. Pavoletti",
+  "card_id": 187158,
+  "card_min": 775,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 6,
+    "min": 194,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 9,
+    "min": 581,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "114023|2012|BPL",
+  "name": "Elimane Coulibaly",
+  "card_id": 187596,
+  "card_min": 1182,
+  "card_team": "Beerschot",
+  "blocks": [
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 8,
+    "min": 192,
+    "goals": 2
+   },
+   {
+    "team_id": 4654,
+    "team": "Beerschot",
+    "apps": 11,
+    "min": 990,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "41601|2014|PRT",
+  "name": "João Pedro Azevedo Silva",
+  "card_id": 187398,
+  "card_min": 919,
+  "card_team": "Penafiel",
+  "blocks": [
+   {
+    "team_id": 215,
+    "team": "Moreirense",
+    "apps": 5,
+    "min": 176,
+    "goals": 0
+   },
+   {
+    "team_id": 235,
+    "team": "Penafiel",
+    "apps": 9,
+    "min": 743,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "37020|2020|ERE",
+  "name": "J. Smeets",
+  "card_id": 187516,
+  "card_min": 956,
+  "card_team": "Fortuna Sittard",
+  "blocks": [
+   {
+    "team_id": 419,
+    "team": "Almere City FC",
+    "apps": 1,
+    "min": 90,
+    "goals": 0
+   },
+   {
+    "team_id": 205,
+    "team": "Fortuna Sittard",
+    "apps": 15,
+    "min": 866,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "13246|2019|SA",
+  "name": "K. Agudelo",
+  "card_id": 187146,
+  "card_min": 729,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 3,
+    "min": 63,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 10,
+    "min": 666,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8647|2019|BPL",
+  "name": "S. Marreh",
+  "card_id": 187576,
+  "card_min": 772,
+  "card_team": "AS Eupen",
+  "blocks": [
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 4,
+    "min": 101,
+    "goals": 0
+   },
+   {
+    "team_id": 739,
+    "team": "AS Eupen",
+    "apps": 11,
+    "min": 671,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "50019|2017|TR",
+  "name": "M. Yatabaré",
+  "card_id": 187309,
+  "card_min": 1301,
+  "card_team": "Kardemir Karabukspor",
+  "blocks": [
+   {
+    "team_id": 607,
+    "team": "Konyaspor",
+    "apps": 5,
+    "min": 197,
+    "goals": 0
+   },
+   {
+    "team_id": 1000,
+    "team": "Kardemir Karabukspor",
+    "apps": 15,
+    "min": 1104,
+    "goals": 6
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "5907|2015|LL",
+  "name": "L. Orbán",
+  "card_id": 186974,
+  "card_min": 793,
+  "card_team": "Valencia",
+  "blocks": [
+   {
+    "team_id": 539,
+    "team": "Levante",
+    "apps": 3,
+    "min": 270,
+    "goals": 0
+   },
+   {
+    "team_id": 532,
+    "team": "Valencia",
+    "apps": 7,
+    "min": 523,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "932|2021|LL",
+  "name": "D. Wass",
+  "card_id": 186968,
+  "card_min": 1636,
+  "card_team": "Valencia",
+  "blocks": [
+   {
+    "team_id": 530,
+    "team": "Atletico Madrid",
+    "apps": 1,
+    "min": 44,
+    "goals": 0
+   },
+   {
+    "team_id": 532,
+    "team": "Valencia",
+    "apps": 19,
+    "min": 1592,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "274267|2022|L1",
+  "name": "B. Locko",
+  "card_id": 187014,
+  "card_min": 1327,
+  "card_team": "Reims",
+  "blocks": [
+   {
+    "team_id": 106,
+    "team": "Stade Brestois 29",
+    "apps": 7,
+    "min": 267,
+    "goals": 0
+   },
+   {
+    "team_id": 93,
+    "team": "Reims",
+    "apps": 15,
+    "min": 1060,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8583|2019|BPL",
+  "name": "B. Godeau",
+  "card_id": 187577,
+  "card_min": 1549,
+  "card_team": "Royal Excel Mouscron",
+  "blocks": [
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 1,
+    "min": 14,
+    "goals": 0
+   },
+   {
+    "team_id": 743,
+    "team": "Royal Excel Mouscron",
+    "apps": 20,
+    "min": 1535,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "15795|2017|BPL",
+  "name": "A. Scholz",
+  "card_id": 187585,
+  "card_min": 870,
+  "card_team": "Standard Liege",
+  "blocks": [
+   {
+    "team_id": 569,
+    "team": "Club Brugge KV",
+    "apps": 5,
+    "min": 291,
+    "goals": 0
+   },
+   {
+    "team_id": 733,
+    "team": "Standard Liege",
+    "apps": 11,
+    "min": 579,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "37269|2017|ERE",
+  "name": "D. dos Santos",
+  "card_id": 187520,
+  "card_min": 527,
+  "card_team": "Sparta Rotterdam",
+  "blocks": [
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 8,
+    "min": 281,
+    "goals": 0
+   },
+   {
+    "team_id": 201,
+    "team": "AZ Alkmaar",
+    "apps": 8,
+    "min": 246,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "36937|2025|ERE",
+  "name": "V. van Crooij",
+  "card_id": 187443,
+  "card_min": 1001,
+  "card_team": "Sparta Rotterdam",
+  "blocks": [
+   {
+    "team_id": 413,
+    "team": "NEC Nijmegen",
+    "apps": 8,
+    "min": 252,
+    "goals": 1
+   },
+   {
+    "team_id": 426,
+    "team": "Sparta Rotterdam",
+    "apps": 10,
+    "min": 749,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "2808|2017|BL",
+  "name": "A. Mehmedi",
+  "card_id": 187436,
+  "card_min": 988,
+  "card_team": "Bayer Leverkusen",
+  "blocks": [
+   {
+    "team_id": 161,
+    "team": "VfL Wolfsburg",
+    "apps": 5,
+    "min": 288,
+    "goals": 1
+   },
+   {
+    "team_id": 168,
+    "team": "Bayer Leverkusen",
+    "apps": 12,
+    "min": 700,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8483|2019|BPL",
+  "name": "J. Dompé",
+  "card_id": 187580,
+  "card_min": 323,
+  "card_team": "Zulte Waregem",
+  "blocks": [
+   {
+    "team_id": 600,
+    "team": "Zulte Waregem",
+    "apps": 6,
+    "min": 237,
+    "goals": 0
+   },
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 6,
+    "min": 86,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "3000|2022|SA",
+  "name": "B. Bereszyński",
+  "card_id": 187137,
+  "card_min": 1368,
+  "card_team": "Sampdoria",
+  "blocks": [
+   {
+    "team_id": 492,
+    "team": "Napoli",
+    "apps": 3,
+    "min": 165,
+    "goals": 0
+   },
+   {
+    "team_id": 498,
+    "team": "Sampdoria",
+    "apps": 15,
+    "min": 1203,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "31655|2017|SA",
+  "name": "Luca Rizzo",
+  "card_id": 187155,
+  "card_min": 573,
+  "card_team": "Spal",
+  "blocks": [
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 1,
+    "min": 90,
+    "goals": 0
+   },
+   {
+    "team_id": 493,
+    "team": "Spal",
+    "apps": 11,
+    "min": 483,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "937|2018|LL",
+  "name": "Rubén Sobrino",
+  "card_id": 186973,
+  "card_min": 1154,
+  "card_team": "Alaves",
+  "blocks": [
+   {
+    "team_id": 532,
+    "team": "Valencia",
+    "apps": 4,
+    "min": 192,
+    "goals": 0
+   },
+   {
+    "team_id": 542,
+    "team": "Alaves",
+    "apps": 20,
+    "min": 962,
+    "goals": 3
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "39224|2016|ERE",
+  "name": "L. Marengo",
+  "card_id": 187521,
+  "card_min": 518,
+  "card_team": "ADO Den Haag",
+  "blocks": [
+   {
+    "team_id": 410,
+    "team": "GO Ahead Eagles",
+    "apps": 6,
+    "min": 155,
+    "goals": 0
+   },
+   {
+    "team_id": 198,
+    "team": "ADO Den Haag",
+    "apps": 14,
+    "min": 363,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30494|2013|SA",
+  "name": "A. Rosati",
+  "card_id": 187177,
+  "card_min": 450,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 3,
+    "min": 270,
+    "goals": 0
+   },
+   {
+    "team_id": 488,
+    "team": "Sassuolo",
+    "apps": 2,
+    "min": 180,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "1487|2016|PRT",
+  "name": "Francisco Geraldes",
+  "card_id": 187390,
+  "card_min": 1195,
+  "card_team": "Moreirense",
+  "blocks": [
+   {
+    "team_id": 228,
+    "team": "Sporting CP",
+    "apps": 4,
+    "min": 54,
+    "goals": 0
+   },
+   {
+    "team_id": 215,
+    "team": "Moreirense",
+    "apps": 15,
+    "min": 1141,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "319514|2025|TR",
+  "name": "C. Çanak",
+  "card_id": 187217,
+  "card_min": 489,
+  "card_team": "Gençlerbirliği S.K.",
+  "blocks": [
+   {
+    "team_id": 998,
+    "team": "Trabzonspor",
+    "apps": 4,
+    "min": 46,
+    "goals": 0
+   },
+   {
+    "team_id": 997,
+    "team": "Gençlerbirliği S.K.",
+    "apps": 14,
+    "min": 443,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8518|2021|LL",
+  "name": "M. Sylla",
+  "card_id": 186967,
+  "card_min": 635,
+  "card_team": "Alaves",
+  "blocks": [
+   {
+    "team_id": 728,
+    "team": "Rayo Vallecano",
+    "apps": 12,
+    "min": 245,
+    "goals": 0
+   },
+   {
+    "team_id": 542,
+    "team": "Alaves",
+    "apps": 13,
+    "min": 390,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "104629|2011|PL",
+  "name": "E. Frimpong",
+  "card_id": 186875,
+  "card_min": 510,
+  "card_team": "Wolves",
+  "blocks": [
+   {
+    "team_id": 39,
+    "team": "Wolves",
+    "apps": 5,
+    "min": 294,
+    "goals": 0
+   },
+   {
+    "team_id": 42,
+    "team": "Arsenal",
+    "apps": 6,
+    "min": 216,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19134|2015|PL",
+  "name": "P. Bamford",
+  "card_id": 186869,
+  "card_min": 353,
+  "card_team": "Norwich",
+  "blocks": [
+   {
+    "team_id": 71,
+    "team": "Norwich",
+    "apps": 7,
+    "min": 235,
+    "goals": 0
+   },
+   {
+    "team_id": 52,
+    "team": "Crystal Palace",
+    "apps": 6,
+    "min": 118,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30394|2018|SA",
+  "name": "P. Terracciano",
+  "card_id": 187151,
+  "card_min": 900,
+  "card_team": "Empoli",
+  "blocks": [
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 2,
+    "min": 180,
+    "goals": 0
+   },
+   {
+    "team_id": 511,
+    "team": "Empoli",
+    "apps": 8,
+    "min": 720,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19361|2015|L1",
+  "name": "S. Benrahma",
+  "card_id": 187025,
+  "card_min": 422,
+  "card_team": "Angers",
+  "blocks": [
+   {
+    "team_id": 77,
+    "team": "Angers",
+    "apps": 12,
+    "min": 296,
+    "goals": 1
+   },
+   {
+    "team_id": 84,
+    "team": "Nice",
+    "apps": 9,
+    "min": 126,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "19716|2013|ERE",
+  "name": "Y. Wildschut",
+  "card_id": 187527,
+  "card_min": 835,
+  "card_team": "Heerenveen",
+  "blocks": [
+   {
+    "team_id": 198,
+    "team": "ADO Den Haag",
+    "apps": 7,
+    "min": 264,
+    "goals": 0
+   },
+   {
+    "team_id": 210,
+    "team": "Heerenveen",
+    "apps": 18,
+    "min": 571,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "5983|2014|PL",
+  "name": "M. Zárate",
+  "card_id": 186873,
+  "card_min": 486,
+  "card_team": "West Ham",
+  "blocks": [
+   {
+    "team_id": 72,
+    "team": "QPR",
+    "apps": 4,
+    "min": 71,
+    "goals": 0
+   },
+   {
+    "team_id": 48,
+    "team": "West Ham",
+    "apps": 7,
+    "min": 415,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "30561|2019|SA",
+  "name": "A. Deiola",
+  "card_id": 146643,
+  "card_min": 718,
+  "card_team": "Lecce",
+  "blocks": [
+   {
+    "team_id": 867,
+    "team": "Lecce",
+    "apps": 10,
+    "min": 718,
+    "goals": 1
+   },
+   {
+    "team_id": 490,
+    "team": "Cagliari",
+    "apps": 1,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "62379|2013|TR",
+  "name": "T. Çalış",
+  "card_id": 187330,
+  "card_min": 714,
+  "card_team": "Gaziantepspor",
+  "blocks": [
+   {
+    "team_id": 1003,
+    "team": "Bursaspor",
+    "apps": 4,
+    "min": 189,
+    "goals": 0
+   },
+   {
+    "team_id": 1008,
+    "team": "Gaziantepspor",
+    "apps": 8,
+    "min": 525,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "20474|2010|ERE",
+  "name": "F. Ojo",
+  "card_id": 187530,
+  "card_min": 310,
+  "card_team": "VVV Venlo",
+  "blocks": [
+   {
+    "team_id": 204,
+    "team": "VVV Venlo",
+    "apps": 8,
+    "min": 246,
+    "goals": 0
+   },
+   {
+    "team_id": 197,
+    "team": "PSV Eindhoven",
+    "apps": 2,
+    "min": 64,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "26171|2025|BL",
+  "name": "P. Tietz",
+  "card_id": 187412,
+  "card_min": 1807,
+  "card_team": "FSV Mainz 05",
+  "blocks": [
+   {
+    "team_id": 170,
+    "team": "FC Augsburg",
+    "apps": 10,
+    "min": 189,
+    "goals": 1
+   },
+   {
+    "team_id": 164,
+    "team": "FSV Mainz 05",
+    "apps": 19,
+    "min": 1618,
+    "goals": 5
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "361487|2025|ERE",
+  "name": "J. Slory",
+  "card_id": 187457,
+  "card_min": 843,
+  "card_team": "GO Ahead Eagles",
+  "blocks": [
+   {
+    "team_id": 209,
+    "team": "Feyenoord",
+    "apps": 6,
+    "min": 186,
+    "goals": 0
+   },
+   {
+    "team_id": 410,
+    "team": "GO Ahead Eagles",
+    "apps": 13,
+    "min": 657,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8939|2015|BPL",
+  "name": "R. Schoofs",
+  "card_id": 187591,
+  "card_min": 2300,
+  "card_team": "St. Truiden",
+  "blocks": [
+   {
+    "team_id": 631,
+    "team": "Gent",
+    "apps": 5,
+    "min": 230,
+    "goals": 0
+   },
+   {
+    "team_id": 735,
+    "team": "St. Truiden",
+    "apps": 23,
+    "min": 2070,
+    "goals": 2
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "1639|2025|SA",
+  "name": "M. Brescianini",
+  "card_id": 187046,
+  "card_min": 1044,
+  "card_team": "Fiorentina",
+  "blocks": [
+   {
+    "team_id": 499,
+    "team": "Atalanta",
+    "apps": 9,
+    "min": 178,
+    "goals": 1
+   },
+   {
+    "team_id": 502,
+    "team": "Fiorentina",
+    "apps": 17,
+    "min": 866,
+    "goals": 1
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "8654|2013|BPL",
+  "name": "D. Pollet",
+  "card_id": 187595,
+  "card_min": 2134,
+  "card_team": "Charleroi",
+  "blocks": [
+   {
+    "team_id": 554,
+    "team": "Anderlecht",
+    "apps": 12,
+    "min": 267,
+    "goals": 2
+   },
+   {
+    "team_id": 736,
+    "team": "Charleroi",
+    "apps": 22,
+    "min": 1867,
+    "goals": 11
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "115223|2013|SA",
+  "name": "Thomas Manfredini",
+  "card_id": 187180,
+  "card_min": 1519,
+  "card_team": "Genoa",
+  "blocks": [
+   {
+    "team_id": 488,
+    "team": "Sassuolo",
+    "apps": 3,
+    "min": 270,
+    "goals": 0
+   },
+   {
+    "team_id": 495,
+    "team": "Genoa",
+    "apps": 15,
+    "min": 1249,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "36847|2022|ERE",
+  "name": "T. Boere",
+  "card_id": 187509,
+  "card_min": 651,
+  "card_team": "Cambuur",
+  "blocks": [
+   {
+    "team_id": 203,
+    "team": "NAC Breda",
+    "apps": 2,
+    "min": 37,
+    "goals": 0
+   },
+   {
+    "team_id": 420,
+    "team": "Cambuur",
+    "apps": 13,
+    "min": 614,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "161894|2025|ERE",
+  "name": "N. Ünüvar",
+  "card_id": 187450,
+  "card_min": 838,
+  "card_team": "Heracles",
+  "blocks": [
+   {
+    "team_id": 415,
+    "team": "Twente",
+    "apps": 8,
+    "min": 182,
+    "goals": 2
+   },
+   {
+    "team_id": 206,
+    "team": "Heracles",
+    "apps": 10,
+    "min": 656,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "161980|2023|TR",
+  "name": "E. Gedikli",
+  "card_id": 187260,
+  "card_min": 443,
+  "card_team": "İstanbulspor",
+  "blocks": [
+   {
+    "team_id": 3578,
+    "team": "İstanbulspor",
+    "apps": 7,
+    "min": 286,
+    "goals": 1
+   },
+   {
+    "team_id": 607,
+    "team": "Konyaspor",
+    "apps": 5,
+    "min": 157,
+    "goals": 0
+   },
+   {
+    "team_id": 998,
+    "team": "Trabzonspor",
+    "apps": 0,
+    "min": 0,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ },
+ {
+  "key": "62491|2013|TR",
+  "name": "A. Akgün",
+  "card_id": 187329,
+  "card_min": 913,
+  "card_team": "Trabzonspor",
+  "blocks": [
+   {
+    "team_id": 1007,
+    "team": "Rizespor",
+    "apps": 5,
+    "min": 200,
+    "goals": 0
+   },
+   {
+    "team_id": 998,
+    "team": "Trabzonspor",
+    "apps": 12,
+    "min": 713,
+    "goals": 0
+   }
+  ],
+  "verdict": "G3_already_fused"
+ }
+]

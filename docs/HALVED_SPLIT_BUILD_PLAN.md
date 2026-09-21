@@ -186,6 +186,91 @@ currently blind to it.
   cannot exist in this data, and that wording was proposed once and would have been false on every
   card it rendered on.
 
+## 0.8 THE FOUR SITTINGS, IN ORDER, ALL BEFORE THE FLIP (agreed 2026-09-21)
+
+1. **HALVED SPLIT , 828.** This file. Changes the constraint and **leaves it changed.**
+2. **`shirt_number` ON THE CARD ROW, plus a small table holding the transfer rows for those 828**
+   , date, direction, both clubs. **Only the relevant rows, never the whole BAM export.**
+3. **THE 202 FUSED CARDS** , `docs/FUSED_CARDS_SCOPE.md`. Inherits the constraint from 1.
+4. **THE AI PAYLOAD FOR SPLIT CARDS**, using sitting 2's transfer data.
+
+**SITTING 2 IS WHAT MAKES 4 POSSIBLE AND IT IS WHY IT SITS SECOND:** SS 0.7 records that the other
+club is free from the sibling row but **the DIRECTION and the DATE are in no table** , they live
+in the gitignored `transfers.csv`. Sitting 2 is the sitting that gives them somewhere to live.
+
+## 0.9 EVERY WRITE PATH INTO `player_season_cards` , THE CENSUS, AND ONE OF THEM FAILS SILENTLY
+
+**THE CONSTRAINT CHANGE BREAKS MORE THAN LINE 632, AND THE SECOND ONE IS THE DANGEROUS KIND.**
+Census taken 2026-09-21 over every `.js`, `.html`, `.yml` and `.sql` in the tree.
+
+| path | verb | after the constraint change |
+|---|---|---|
+| `scripts/import/import-players.js:631` | `upsert`, `onConflict:'api_player_id,season,league_code'` | **ERRORS, loudly.** Fix: add `,team_id` |
+| `scripts/enrichment/gk_pen_backfill.js:254` | `update` filtered `.eq(api_player_id).eq(season).eq(league_code)` | **WRITES BOTH HALVES, SILENTLY.** Fix: add `.eq('team_id', ...)` or key on `id` |
+| `scripts/enrichment/write_assists_ccc.js:63` | `update ... .eq('id', cid)` | safe , keyed by row id |
+| `scripts/halved-canary.js` and the sitting's own writer | `insert` / `delete` by `id` | safe |
+| `migrations/**/*.sql` | historical `update`/`delete`, already applied | not re-runnable |
+| `schema.sql:309-310` | RLS policies permitting service insert/update | not a writer |
+
+**`gk_pen_backfill.js` IS THE ONE TO FIX FIRST, BECAUSE IT IS THE ONE THAT WILL NOT TELL YOU.** Its
+filter is the OLD unique key written out as three `.eq()` calls, so after the split it matches BOTH
+cards of a split player-season and writes one club's keeper and penalty figures onto both. **And
+its own assertion cannot catch it: the comment above says "0 rows means the card is not in our
+table", so it tests for ZERO and a two-row update passes.** That is SS C's rule exactly , a guard
+is only evidence inside its own scope, and this one's scope was "did anything match", never "did
+exactly one thing match".
+
+**AND NEITHER CI WORKFLOW ACTUALLY RUNS WHAT ITS NAME SAYS, WHICH IS WHY THE CENSUS HAD TO BE A
+GREP AND NOT A READ OF THE WORKFLOWS:**
+- **`import-players.yml` assigned `CMD` twice**, so the job named "Bulk Player Import" ran
+  `import-positions-v2.js` and never `import-players.js`. **`cd80460` dutifully updated BOTH
+  invocations when the importers moved out of `api/`** , which is how a dead line survives a
+  refactor: it still looks maintained. **FIXED 2026-09-21.**
+- **`seed-supabase.yml` runs `node api/seed-from-html.js`, which `06c884d` DELETED.** The workflow
+  is dead and still listed. **Logged, not touched** , deleting a workflow is Lucas's call.
+
+**AND FIXING THE `CMD` BUG WAS NOT COSMETIC: THAT BUG WAS THE ONLY THING KEEPING A THIRD DEFECT
+HARMLESS.** The workflow invoked `import-players.js` with **no `--insert-only`**, and SS E is
+explicit that the default write is an upsert that rewrites rows and shifts existing rt. **So
+repairing the double assignment on its own would have armed a one-button rewrite of ~57,000 cards.**
+The rewritten workflow therefore makes the job an explicit CHOICE, **defaults `insert_only` to
+true**, wires the `dry_run` input that was being offered and discarded, and keeps `positions` as
+the default job so pressing the button still does exactly what it did yesterday.
+
+## 0.10 THE NEW HALF CARRIES NO SHIRT NUMBER , MEASURED, AND THE ANSWER SPLITS BY ERA
+
+**The canary showed it: Semenyo's Manchester City card rendered #24, his Bournemouth number. His
+City number is 42.** Both halves read one number from one `player_positions` row.
+
+**MEASURED OVER THE 828, AND THE TWO ERAS HAVE DIFFERENT ANSWERS FOR DIFFERENT REASONS:**
+
+| | cards | whose number is it |
+|---|---|---|
+| **pre-2016** | **380** | **the ORIGINAL half's, BY CONSTRUCTION** |
+| **2016+** | **448** | the **MODAL** number across the season |
+
+- **PRE-2016 IS NOT A STATISTIC, IT IS A PROPERTY.** Those rows exist only because
+  `scripts/squadnum/` created them (SS E: 5,993 rows carrying only a shirt number), and that
+  pipeline resolves a squad page **for the club the card names** and is verified **5,993 of 5,993
+  club-consistent**. So the number is the original half's and the new half genuinely has none.
+  **129 of the 380 are named explicitly in `written.jsonl`.**
+- **2016+ IS THE MODAL NUMBER, read out of `import-positions-v2.js:128-129`** , the most frequent
+  number across grid-positioned starts in that league-season. **It therefore belongs to whichever
+  club he started more matches for, which is not the same thing as the club the card names.**
+  Measured by appearances: **original 278 (62.1%), the MISSING half 142 (31.7%), undecidable 28.**
+- **SO OVERALL IT IS THE ORIGINAL ON ROUGHLY 658 OF 828, ABOUT 79%** , which supports the ruling:
+  **the new half carries NO number until sitting 2 lands. Blank means "not found", and for that
+  club it genuinely was not found.**
+- **AND THE INVERSION MATTERS MORE THAN THE HEADLINE: ON THOSE 142 CARDS THE NUMBER ON THE
+  EXISTING CARD IS ALREADY THE OTHER CLUB'S.** The split does not create that error, it exposes
+  it, and blanking the new half does not fix it. **Item 26's mark is what covers those**, and it
+  stays until sitting 2 supplies a real per-club number.
+- **THE LIMIT ON THE 2016+ FIGURE, STATED RATHER THAN GLOSSED: APPEARANCES ARE A PROXY FOR
+  GRID-POSITIONED STARTS.** The modal rule counts lineup entries carrying a `grid`; I compared
+  block `appearances`. A player with more appearances at one club and more STARTS at the other is
+  counted wrongly here. **And the margin is thin: the median difference is 6 appearances, but 112
+  of the 448 sit within 2** , near a coin flip, where the modal rule is weak evidence either way.
+
 ## 1. THE TWO GUARDS, BOTH MECHANICAL
 
 **GUARD A , AN EMPTY DEFENSIVE SHARE STOPS THE WRITE.** `def_share` is derived in the view from
