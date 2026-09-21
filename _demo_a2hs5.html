@@ -1,0 +1,97 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Install Instructions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style id="demo">
+ body.dm{margin:0!important;padding:18px 16px 90px!important;display:block!important;height:auto!important;max-width:none!important;
+   font:14px/1.55 Inter,system-ui,sans-serif;background:#141210;color:#F0EAD9}
+ body.dm.light{background:#F4EFE2;color:#1C1B1A}
+ .dm-h1{font:800 21px 'Bricolage Grotesque',sans-serif;margin:0 0 6px}
+ .dm-note{max-width:900px;opacity:.86;margin:0 0 10px}
+ .dm-bar{position:sticky;top:0;z-index:40;padding:8px 0;display:flex;gap:10px;background:inherit}
+ .dm-bar button{font:600 13px Inter,sans-serif;padding:8px 14px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+ .grid{display:flex;gap:20px;flex-wrap:wrap;margin-top:8px}
+ .case{width:390px;max-width:100%}
+ .case h3{font:700 13px Inter,sans-serif;margin:18px 0 2px}
+ .case .src{font:500 11.5px Inter,sans-serif;opacity:.62;margin:0 0 8px}
+ /* the strip, copied from index.html */
+ .a2hs{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:16px;
+   background:rgba(26,23,21,.96);border:1px solid rgba(243,237,224,.16);box-shadow:0 18px 40px -16px rgba(0,0,0,.8)}
+ body.light .a2hs{background:rgba(255,253,247,.97);border-color:rgba(28,27,26,.14)}
+ .a2hs .ico{width:30px;height:30px;border-radius:8px;flex:none;margin-top:2px}
+ .a2hs .txt{flex:1;min-width:0;font-family:'Inter';font-size:12.5px;line-height:1.4;color:rgba(243,237,224,.72)}
+ body.light .a2hs .txt{color:#3a352e}
+ .a2hs .txt b.hd{font-family:'Archivo';font-weight:800;display:block;font-size:13px;color:#F0EAD9;margin-bottom:2px}
+ body.light .a2hs .txt b.hd{color:#1C1B1A}
+ .a2hs .no{flex:none;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:2px;color:rgba(243,237,224,.42)}
+ body.light .a2hs .no{color:#8a8276}
+ .steps{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+ .step{display:flex;align-items:center;gap:9px;font:500 12.5px Inter,sans-serif}
+ .step .n{flex:none;width:18px;height:18px;border-radius:999px;display:grid;place-items:center;
+   font:800 10px Archivo,sans-serif;background:rgba(243,237,224,.13);color:#F0EAD9}
+ body.light .step .n{background:rgba(28,27,26,.09);color:#1C1B1A}
+ .step .gl{flex:none;width:18px;height:18px;display:grid;place-items:center;opacity:.95}
+ .step b{font-weight:700}
+ /* where the control sits, drawn rather than described */
+ .chrome{position:relative;height:34px;border-radius:9px;border:1px dashed rgba(243,237,224,.22);margin-top:9px;display:flex;align-items:center;padding:0 8px;gap:6px}
+ body.light .chrome{border-color:rgba(28,27,26,.2)}
+ .chrome.bottom{align-items:center}
+ .chrome .bar{flex:1;height:18px;border-radius:999px;background:rgba(243,237,224,.09)}
+ body.light .chrome .bar{background:rgba(28,27,26,.07)}
+ .chrome .spot{width:20px;height:20px;display:grid;place-items:center;border-radius:6px;background:rgba(231,4,67,.22);outline:1.5px solid #E70443}
+ .chrome .cap{position:absolute;right:8px;top:-8px;font:700 9px Archivo,sans-serif;letter-spacing:.04em;color:#E70443;background:inherit;padding:0 4px}
+</style></head><body class="dm">
+<div class="dm-bar"><button onclick="document.body.classList.toggle('light')">Toggle theme</button></div>
+<h1 class="dm-h1">Install instructions, one per browser</h1>
+<p class="dm-note">No service worker, so no native prompt anywhere: every platform gets its own true steps. <b>Each case draws its own glyph in its own position</b>, because a Chrome instruction shown to a Samsung user is wrong rather than roughly right. Labels below are quoted from the vendors' current documentation, not from memory , the Android one in particular is no longer what either of us would have written.</p>
+<div class="grid" id="out"></div>
+<script>
+const G={
+ share_ios:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3B6FB0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>',
+ plus:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg>',
+ dots:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>',
+ burger:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+ down:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v13"/><path d="M6.5 11.5 12 17l5.5-5.5"/></svg>'
+};
+function chrome(pos,glyph,label){
+  const bar='<span class="bar"></span>', spot='<span class="spot">'+glyph+'</span>';
+  /*  POSITION IS THE POINT OF THIS DRAWING, so each is placed where the browser actually puts
+      it: Safari's Share is the MIDDLE of the bottom bar, Samsung's menu is the bottom RIGHT,
+      Chrome's is beside the address bar at the top.  */
+  const half='<span class="bar"></span>';
+  const inner = pos==='right' ? bar+spot
+              : pos==='centre' ? half+spot+half
+              : pos==='bottom-right' ? bar+spot : bar+spot;
+  return '<div class="chrome'+(pos==='bottom'?' bottom':'')+'">'+inner+'<span class="cap">'+label+'</span></div>';
+}
+const CASES=[
+ {k:'iPhone , Safari', src:'Apple: tap Share, scroll, Add to Home Screen (Edit Actions if missing)',
+  hd:'Two taps to add it',
+  steps:[[G.share_ios,'Tap <b>Share</b>, in the bar at the bottom'],[G.plus,'Scroll, then <b>Add to Home Screen</b>']],
+  bar:chrome('centre',G.share_ios,'MIDDLE OF THE BOTTOM BAR')},
+ {k:'iPhone , Chrome', src:'Google: on the right of the address bar, tap Share, then Add to Home Screen',
+  hd:'Two taps to add it',
+  steps:[[G.share_ios,'Tap <b>Share</b>, right of the address bar'],[G.plus,'Then <b>Add to Home Screen</b>']],
+  bar:chrome('right',G.share_ios,'TOP, IN THE ADDRESS BAR')},
+ {k:'Android , Chrome', src:'Google: tap More, then Install and create shortcut',
+  hd:'Two taps to add it',
+  steps:[[G.dots,'Tap the <b>three-dot menu</b>, by the address bar'],[G.down,'Then <b>Install and create shortcut</b>']],
+  bar:chrome('right',G.dots,'BESIDE THE ADDRESS BAR'),
+  note:'Older versions of Chrome say <b>Add to Home screen</b> instead.'},
+ {k:'Android , Samsung Internet', src:'Samsung: menu at the bottom, Add page to, Home screen',
+  hd:'Three taps to add it',
+  steps:[[G.burger,'Tap the <b>menu</b>, bottom right'],[G.plus,'<b>Add page to</b>, then <b>Home screen</b>']],
+  bar:chrome('bottom-right',G.burger,'BOTTOM RIGHT')},
+ {k:'Anything else', src:'No steps claimed, because the wrong specific steps are worse than none',
+  hd:'Add it to your home screen',
+  steps:[[G.plus,'Look for <b>Add to Home screen</b> or <b>Install</b> in your browser’s own menu']],
+  bar:''}
+];
+document.getElementById('out').innerHTML = CASES.map(c=>{
+  const steps=c.steps.map(([g,t],i)=>'<div class="step"><span class="n">'+(i+1)+'</span><span class="gl">'+g+'</span><span>'+t+'</span></div>').join('');
+  return '<div class="case"><h3>'+c.k+'</h3><p class="src">'+c.src+'</p>'
+   + '<div class="a2hs"><img class="ico" src="/icon-maskable-512.png" alt="">'
+   + '<div class="txt"><b class="hd">'+c.hd+'</b><div class="steps">'+steps+'</div>'
+   + (c.note?'<div style="margin-top:8px;opacity:.72;font-size:11.5px">'+c.note+'</div>':'')
+   + c.bar + '</div><button class="no">&times;</button></div></div>';
+}).join('');
+</script></body></html>
