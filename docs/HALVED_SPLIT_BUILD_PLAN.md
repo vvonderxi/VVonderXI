@@ -54,6 +54,44 @@ the ruled rule working exactly as written, and it is the kind of outcome that re
 anyone who meets it cold. **It is one card and it is the only one**, so it is a decision to take
 with open eyes rather than a reason to re-open the rule.
 
+## 0.5 THE DRY RUN , 833 OF 1,740, RUN 2026-09-21, NOTHING WRITTEN
+
+`scripts/halved-dryrun.js`, read-only. Per-row detail in `scripts/figures/halved-dryrun.jsonl`,
+counts in `halved-dryrun.json`. **Every figure below is reproducible from that ledger rather than
+by re-running 1,740 provider calls.**
+
+| outcome | cards | |
+|---|---|---|
+| **WRITE** | **833** | 836 rows, 3 candidates missing two clubs |
+| never played for the other club | 447 + 156 | 447 return one team; 156 return a second with no football |
+| **already correctly fused** | **202** | the card already equals the sum , see below |
+| provider repeats ONE total under BOTH clubs | 48 | 45 identical in every field, so unsplittable |
+| card matches neither a block nor the sum | 39 | stale against the provider; held |
+| missing block has zero appearances | 10 | |
+| no block for our league id | 5 | |
+
+**833 IS 47.9%, NOT THE TWO THIRDS THE SCOPE SAMPLED, AND THE SAMPLE IS WHAT WAS WRONG.** The 15
+of 18 came from cards the `pos_row` detector had ALREADY identified as halved , a set selected by
+the same property being tested, which is the validation-set rule in SS C almost word for word.
+**The 1,740 are everyone who moved mid-season inside a league, most of whom simply did not play
+twice.** 47.9% is the honest rate and the attrition is fully accounted for: every bucket above is
+a correct skip, not a failure.
+
+**TWO THINGS THE DRY RUN FOUND THAT THIS PLAN DID NOT ANTICIPATE, BOTH LUCAS'S CALL:**
+1. **202 cards are ALREADY FUSED** , one card holding two clubs' football under one club's name.
+   SS E records **four**, from a ceiling-based detector, and says in terms that a fusion whose
+   halves are both mid-table is invisible to it. This measured them from the provider instead.
+   **They are the same defect seen from the other side and this sitting does not touch them**:
+   splitting a fused card is an UPDATE or a DELETE, which breaks the insert-only rollback the
+   whole plan rests on. **A separate decision, and it should not ride along.**
+2. **5 WRITE candidates name a club that is not the block their minutes match** , Belec 2017
+   says Sampdoria and matches Benevento; also Marafona, Crivelli, Thiam, Amilton. Writing the
+   other half would leave a mislabelled card beside a new correct one. **Recommend HOLDING all
+   five**, which is a sixth gate and therefore a change to the agreed number: 828, not 833.
+
+**AND 357 OF THE 836 ROWS (42.7%) FALL UNDER THE 300-MINUTE FLOOR**, so those cards carry NR
+rather than a score , exactly what the scope predicted, at the scale it predicted.
+
 ## 1. THE TWO GUARDS, BOTH MECHANICAL
 
 **GUARD A , AN EMPTY DEFENSIVE SHARE STOPS THE WRITE.** `def_share` is derived in the view from

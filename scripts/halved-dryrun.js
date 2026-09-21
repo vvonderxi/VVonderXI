@@ -107,7 +107,7 @@ async function allCards() {
   console.log(`candidates WITH a card: ${cand.length}`);
   const lim = +arg('--limit') || 0; if (lim) cand = cand.slice(0, lim);
 
-  const G = { G0:0, G1:0, G2:0, G3:0, G4:0 };
+  const G = { G0:0, G1:0, G2:0, G2b:0, G3:0, G4:0 };
   const reasons = {}, writes = [], lines = [];
   const bump = r => reasons[r] = (reasons[r] || 0) + 1;
 
@@ -146,6 +146,17 @@ async function allCards() {
     if (blocks.length < 2) { rec.verdict = 'G2_single_team_not_a_split'; bump(rec.verdict); lines.push(rec); continue; }
     G.G2++;
 
+
+    /*  THE ZERO-MINUTE BLOCK IS TESTED FIRST, AND THE ORDER IS THE WHOLE POINT. A block with no
+        minutes makes `sum` equal the other block by arithmetic, so a fused-test placed above this
+        one labels "he never played for the second club" as "already fused". It did, on 164 of 350
+        , the bucket read as a population five times its real size, and the wrong number was the
+        plausible one. A gate that can be satisfied by arithmetic rather than by meaning has to be
+        ordered after the gate that removes the arithmetic.  */
+    const playing = blocks.filter(b => b.min > 0 || b.apps > 0);
+    if (playing.length < 2) { rec.verdict = 'G2b_never_played_for_the_other_club'; bump(rec.verdict); lines.push(rec); continue; }
+
+    G.G2b++;
     const sum = blocks.reduce((a, b) => a + b.min, 0);
     const match = blocks.filter(b => b.min === c.card.minutes);
     if (c.card.minutes === sum && blocks.length > 1) { rec.verdict = 'G3_already_fused'; bump(rec.verdict); lines.push(rec); continue; }
