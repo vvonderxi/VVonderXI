@@ -38,7 +38,16 @@
  .chrome .bar{flex:1;height:18px;border-radius:999px;background:rgba(243,237,224,.09)}
  body.light .chrome .bar{background:rgba(28,27,26,.07)}
  .chrome .spot{width:20px;height:20px;display:grid;place-items:center;border-radius:6px;background:rgba(231,4,67,.22);outline:1.5px solid #E70443}
- .chrome .cap{position:absolute;right:8px;top:-8px;font:700 9px Archivo,sans-serif;letter-spacing:.04em;color:#E70443;background:inherit;padding:0 4px}
+ /*  THE CAPTION IS ITS OWN LINE UNDER THE BAR, NOT A LEGEND ON IT. Absolutely positioned over
+     the dashed edge with background:inherit, it inherited a TRANSPARENT background, so the line
+     ran straight through the words , and the three spot positions meant a fix that cleared one
+     could still collide on another. Under the bar it cannot collide at any width.  */
+ .chrome .cap{position:static;display:block;margin-top:5px;font:700 9.5px Archivo,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#F1688E;padding:0}
+ body.light .chrome .cap{color:#AD0332}
+ .chrome{flex-wrap:wrap;height:auto;border:0;padding:0;margin-top:9px}
+ .chrome .inner{display:flex;align-items:center;gap:6px;width:100%;height:30px;border-radius:9px;border:1px dashed rgba(243,237,224,.22);padding:0 7px}
+ body.light .chrome .inner{border-color:rgba(28,27,26,.2)}
+ .chrome .cap.c{text-align:center} .chrome .cap.r{text-align:right}
 </style></head><body class="dm">
 <div class="dm-bar"><button onclick="document.body.classList.toggle('light')">Toggle theme</button></div>
 <h1 class="dm-h1">Install instructions, one per browser</h1>
@@ -61,7 +70,8 @@ function chrome(pos,glyph,label){
   const inner = pos==='right' ? bar+spot
               : pos==='centre' ? half+spot+half
               : pos==='bottom-right' ? bar+spot : bar+spot;
-  return '<div class="chrome'+(pos==='bottom'?' bottom':'')+'">'+inner+'<span class="cap">'+label+'</span></div>';
+  return '<div class="chrome"><div class="inner">'+inner+'</div>'
+       + '<span class="cap '+(pos==='centre'?'c':'r')+'">'+label+'</span></div>';
 }
 const CASES=[
  {k:'iPhone , Safari', src:'Apple: tap Share, scroll, Add to Home Screen (Edit Actions if missing)',
