@@ -8,7 +8,7 @@ that can see the 36% of cards the pos_row detector cannot examine and every pre-
 DEDUPE FIRST: the export repeats rows (203,997 -> 151,557), so a count taken without it is
 wrong. Full scope and the measured rt impact: docs/HALVED_CARDS_SCOPE.md
 """
-import csv, glob, collections, os
+import csv, glob, collections, os, sys
 D='exports/bam/player/2026-09-17T18-16-35'
 # club -> league slug, from the nine match-export name maps (same provider, same club names)
 club2league={}
@@ -44,3 +44,14 @@ print('  unmappable club    ', nomap)
 byl=collections.Counter(l for p,n,s,l,a,b,d in same); print('  by league', dict(byl.most_common()))
 bys=collections.Counter(s for p,n,s,l,a,b,d in same); print('  by season', dict(sorted(bys.items())))
 sem=[r for r in same if r[0]=='19281']; print('  Semenyo:', sem)
+
+# --json <path> emits the distinct keys the dry run and the sitting both consume, so the two
+# can never drift from this count. Names come from the FIRST transfer row seen for a key.
+if '--json' in sys.argv:
+    import json
+    first={}
+    for pid,name,s,l,fc,tc,d in same:
+        first.setdefault((pid,s,l), {'api_player_id':int(pid),'name':name,'season':s,'code':l.upper()})
+    out=sys.argv[sys.argv.index('--json')+1]
+    json.dump(list(first.values()), open(out,'w'))
+    print('  wrote', len(first), 'keys ->', out)

@@ -974,3 +974,46 @@ the generated README for BAM, with the instruction to join on `ApiTeamId`.
 the README now says it is not meaningful on a completed season. Rewriting delivered files, or
 changing a field BAM may already read, is Lucas's call.
 
+
+### 37 , Four Belgian award cards are short of the award, and every one of them is faithful to the provider
+
+**OPEN , A FINDING, NOT A REPAIR. It is NOT part of the halved-cards sitting**, which is where the
+question came from; only one of the four is a split season.
+
+**THE QUESTION, asked of every Belgian Golden Boot and Top Assists card, split or not: does the
+card show fewer goals than the award was won with? THE ANSWER IS NO, NOT GENERALLY , 19 of 23
+match exactly**, including 38-, 39- and 40-appearance seasons.
+
+| | |
+|---|---|
+| BPL award rows with a card | **23** |
+| exact match | **19** |
+| card SHORT of the award | **4** |
+| card OVER the award | **2** , Perbet 2015 (24 v 22), Cuypers 2022 (27 v 24) |
+| every other league | PRT 2 short by exactly **1**; LL, PL, SA, BL, L1, ERE, TR all **zero** |
+
+**THE FOUR, AND THE IMPORTER IS NOT THE CAUSE , EACH CARD REPRODUCES THE PROVIDER'S OWN LEAGUE-144
+BLOCK EXACTLY, VERIFIED BLOCK BY BLOCK:**
+- **Denkey 2023**, card 17a/1310m/10g against an award of 27 , and **the missing half is visible at
+  the provider under league 147, "Cup", at 38 appearances and 2,591 minutes.** A league season
+  filed as a cup run. **This one is the clearest and it is a provider defect, not a gap.**
+- **Undav 2021**, card 25a/2186m/18g against 26. Provider identical.
+- **Harbaoui 2018**, card 27a/2369m/18g against 25. Provider identical.
+- **Harbaoui 2017**, the split season: 6 at Zulte Waregem + 3 at Anderlecht = **9** against 22.
+
+**NO PLAY-OFF MECHANISM , THE OBVIOUS STORY WAS MEASURED AND IS FALSE.** "Belgian play-offs sit
+outside the league id" explains it neatly and does not survive: **Cuypers 2022 carries 39
+appearances under league 144 and Tresoldi 2025 carries 40**, so play-off rounds are normally
+inside it. The build plan carried this claim and has been corrected.
+
+**AND BELGIAN COVERAGE IS NOT THIN , checked rather than assumed.** Max appearances per BPL season
+runs **39 to 45** in every year except 2019, with medians in line with PL and ERE; 2019 is the
+abandoned COVID season and shows the same truncation in ERE (28) as in BPL (29).
+
+**THE TWO OVER-CASES ARE THE HONOURS ROW, NOT THE CARD**, and they point the other way: the card
+carries MORE than the award, so the award's own count is the narrower one. Worth one look at
+where those two rows were sourced before anything is concluded about them.
+
+**WHAT IT WOULD TAKE:** the three non-split cards are one provider question each , whether a
+re-pull returns the same short block today. **Nothing here is fixable by changing our code**, and
+the honest interim is that four Belgian cards under-report a season we can name.

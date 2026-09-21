@@ -36,10 +36,23 @@ showing six goals.
 
 **ONE CAVEAT THAT MUST TRAVEL WITH THIS CASE, because the numbers will not agree on screen.** The
 honour row records **22 goals**; the provider's league blocks for that season sum to **9**
-(Zulte Waregem 6 + Anderlecht 3). Belgian play-off rounds sit outside the league id, so the
-season-total line will read 17 appearances and 9 goals beside a Golden Boot won with 22. **Do not
-"fix" this by summing across competitions** , SS E is explicit that a card is one league. State
-it, or the single most scrutinised card on the platform contradicts itself.
+(Zulte Waregem 6 + Anderlecht 3), so the season-total line will read 17 appearances and 9 goals
+beside a Golden Boot won with 22. **Do not "fix" this by summing across competitions** , SS E is
+explicit that a card is one league. State it, or the single most scrutinised card on the platform
+contradicts itself.
+- **NO MECHANISM IS CLAIMED FOR THE SHORTFALL, AND AN EARLIER DRAFT OF THIS LINE CLAIMED ONE THAT
+  IS FALSE.** It read "Belgian play-off rounds sit outside the league id". **Measured 2026-09-21:
+  they are normally INSIDE it** , Cuypers 2022 carries 39 appearances under league 144 and
+  Tresoldi 2025 carries 40. The provider's own league-144 block for this player-season is simply
+  short, and **the card reproduces it exactly**. Full measurement and the three other Belgian
+  cases in the punchlist item; they are not this sitting's business.
+
+**AND THE FLAG LANDS ON THE WORSE HALF , SAY IT BEFORE THE RUN, NOT AFTER.** Zulte Waregem is
+**540 minutes and 6 goals**; Anderlecht is **551 minutes and 3 goals**. The minutes tie-break
+therefore puts the Golden Boot on the card showing **three**, by an eleven-minute margin. That is
+the ruled rule working exactly as written, and it is the kind of outcome that reads as a bug to
+anyone who meets it cold. **It is one card and it is the only one**, so it is a decision to take
+with open eyes rather than a reason to re-open the rule.
 
 ## 1. THE TWO GUARDS, BOTH MECHANICAL
 
@@ -82,9 +95,19 @@ Into `migrations/halved_split_<date>/before/`:
 
 ## 3. THE WRITE , INSERT ONLY, ONE CALL PER CARD, LEDGER PER ROW
 
+0. **RESOLVE THE MISSING CLUB TO A `teams` ROW BY NAME, AND REFUSE TO CREATE ONE.** This is a
+   precondition the first draft of this plan did not name. **`teams.api_team_id` is NULL on all
+   337 rows** (measured 2026-09-21), so the provider's `team.id` cannot reach ours and the only
+   link is the club NAME. SS C records name matching as the exact mechanism that split seven
+   Premier League clubs into two `teams` rows in 25/26. **A missing block whose club name does
+   not match an existing row is HELD, never inserted** , creating the team row would fragment the
+   club, and the damage would surface later as Guard A's null `def_share`. The dry run reports
+   how many rows clear this before the sitting starts.
 1. **Constraint change**, in the SQL editor: drop `UNIQUE (api_player_id, season, league_code)`,
    add `UNIQUE (api_player_id, season, league_code, team_id)`. **No column is added** , the table
-   already carries `team_id`, `league_id` and `team_name`.
+   already carries `team_id`, `league_id` and `team_name`. **Note `player_card_mv` does NOT expose
+   `team_id`** (87 columns, none of them it), so anything that needs the club id reads
+   `player_season_cards`, which is the write target anyway.
 2. **Per candidate card** (~1,740, one provider call each, ~1,740 calls against a 75,000/day
    allowance): fetch, filter to the league id, **dedupe blocks by `team.id`**, then apply the six
    gates from the scope. **Anything that fails a gate is logged and skipped, never guessed.**

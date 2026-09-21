@@ -1,0 +1,43 @@
+{
+  "generated": "2026-09-21T16:58:30.108Z",
+  "source": "exports/bam/player/2026-09-17T18-16-35/transfers.csv, deduped, Dec/Jan/Feb, both clubs in our nine leagues",
+  "candidates_with_card": 25,
+  "gates": {
+    "G0": 25,
+    "G1": 25,
+    "G2": 16,
+    "G3": 9,
+    "G4": 8
+  },
+  "reasons": {
+    "WRITE": 8,
+    "G2_single_team_not_a_split": 9,
+    "G3_card_matches_no_block": 1,
+    "G3_already_fused": 6,
+    "G4_zero_appearance_block": 1
+  },
+  "cards_to_split": 8,
+  "rows_to_insert": 8,
+  "precondition_missing_club_resolves_to_a_teams_row": {
+    "rows_resolving": 8,
+    "rows_unresolved": 0,
+    "unresolved_names": []
+  },
+  "by_league": {
+    "L1": 2,
+    "BL": 1,
+    "TR": 1,
+    "PRT": 2,
+    "ERE": 1,
+    "LL": 1
+  },
+  "by_season": {
+    "2017": 1,
+    "2018": 2,
+    "2021": 1,
+    "2022": 1,
+    "2023": 2,
+    "2025": 1
+  },
+  "note": "READ-ONLY. Nothing was written to Supabase. Per-row detail in halved-dryrun.jsonl."
+}
