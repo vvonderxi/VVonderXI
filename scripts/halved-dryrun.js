@@ -17,6 +17,8 @@
                                                                      card is already fused (SS E)
       G4  every missing block has at least one appearance          , a zero-minute spell is a
                                                                      transfer, not a season
+      G5  the card NAMES the club whose minutes it matches         , added after the first run;
+                                                                     833 candidates became 828
 
     WHY DEDUPE ON `team.id` AND NOT ON THE NAME: the first pass of this measurement summed
     duplicate blocks and produced 1,594 to 3,188 minutes , entirely plausible figures for a
@@ -107,7 +109,7 @@ async function allCards() {
   console.log(`candidates WITH a card: ${cand.length}`);
   const lim = +arg('--limit') || 0; if (lim) cand = cand.slice(0, lim);
 
-  const G = { G0:0, G1:0, G2:0, G2b:0, G3:0, G4:0 };
+  const G = { G0:0, G1:0, G2:0, G2b:0, G3:0, G4:0, G5:0 };
   const reasons = {}, writes = [], lines = [];
   const bump = r => reasons[r] = (reasons[r] || 0) + 1;
 
@@ -167,8 +169,14 @@ async function allCards() {
         names, the card is odd in some other way and the split would inherit it. Counted and
         named rather than folded into the pass rate, because adding a sixth gate after the fact
         would change the number this run exists to produce.  */
+    /*  G5, ADDED 2026-09-21 AFTER THE FIRST FULL RUN AND RULED BY LUCAS. If the block whose minutes
+        match is not the club the card NAMES, the card is already wrong in some other way, and
+        writing its sibling would leave a mislabelled card beside a new correct one. Five cards:
+        Belec 2017 says Sampdoria and matches Benevento; Marafona, Crivelli, Thiam, Amilton.
+        HELD, never skipped in silence , the ledger names each one.  */
     rec.team_agrees = match[0].team === c.card.team_name;
-    if (!rec.team_agrees) bump('note_matched_block_club_differs_from_card');
+    if (!rec.team_agrees) { rec.verdict = 'G5_card_club_disagrees'; bump(rec.verdict); lines.push(rec); continue; }
+    G.G5++;
 
     const missing = blocks.filter(b => b.team_id !== match[0].team_id);
     if (missing.some(b => b.apps < 1)) { rec.verdict = 'G4_zero_appearance_block'; bump(rec.verdict); lines.push(rec); continue; }

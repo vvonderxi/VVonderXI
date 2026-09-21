@@ -24,13 +24,25 @@ the only compound club name in all 804 honour rows.
 alone: **540 minutes, 6 goals, and `h_golden_boot` true.** The league's top scorer, on a card
 showing six goals.
 
-**THE RULE, as ruled:**
-- **The `h_*` flag goes on the half with more MINUTES**, so filters, rankings and the Cabinet
-  count the award exactly once. **Deterministic tie-break, because this case is a knife-edge:**
-  more minutes, then more appearances, then the lower `team_id`. Harbaoui is **Anderlecht 551**
-  against **Zulte Waregem 540** , an eleven-minute margin, so **the flag MOVES off the card that
-  carries it today.** That is the rule working, and it must be stated in the run record rather
-  than discovered later.
+**THE RULE, as RE-RULED 2026-09-21. THE FLAG GOES ON THE HALF THAT WON THE AWARD, MEASURED BY THE
+STAT THE AWARD IS FOR:**
+
+| honour | tie-break stat |
+|---|---|
+| `golden_boot` | **goals** |
+| `top_assists` | **assists** |
+| `player_of_season`, `ballon_dor` | **minutes** (no single stat defines them) |
+
+- **Then, always, the same deterministic chain: more minutes, then more appearances, then the lower
+  `team_id`.** So the award stat decides it and the chain only ever breaks an exact tie.
+- **MINUTES ALONE WAS THE FIRST RULE AND IT WAS WRONG, AND THE CASE THAT SHOWS IT IS THE ONLY CASE
+  WE HAVE.** Harbaoui is **Zulte Waregem 540 minutes and 6 goals** against **Anderlecht 551 and 3**.
+  Under minutes the Golden Boot lands on the half showing **three goals**, by an eleven-minute
+  margin. Under goals it stays on the six. **A scoring award settled by availability is a tie-break
+  that contradicts the thing being awarded.**
+- **CONSEQUENCE: THE FLAG DOES NOT MOVE AT ALL.** It sits on Zulte Waregem today and stays there,
+  so this rule change makes the one live case a no-op rather than a visible edit. **That is the
+  check that it is right, not a reason it did not matter** , the minutes rule would have moved it.
 - **The season-total line names the honour**, since it shows the combined output that won it.
 - **Team honours need nothing.**
 
@@ -46,13 +58,6 @@ contradicts itself.
   Tresoldi 2025 carries 40. The provider's own league-144 block for this player-season is simply
   short, and **the card reproduces it exactly**. Full measurement and the three other Belgian
   cases in the punchlist item; they are not this sitting's business.
-
-**AND THE FLAG LANDS ON THE WORSE HALF , SAY IT BEFORE THE RUN, NOT AFTER.** Zulte Waregem is
-**540 minutes and 6 goals**; Anderlecht is **551 minutes and 3 goals**. The minutes tie-break
-therefore puts the Golden Boot on the card showing **three**, by an eleven-minute margin. That is
-the ruled rule working exactly as written, and it is the kind of outcome that reads as a bug to
-anyone who meets it cold. **It is one card and it is the only one**, so it is a decision to take
-with open eyes rather than a reason to re-open the rule.
 
 ## 0.5 THE DRY RUN , 833 OF 1,740, RUN 2026-09-21, NOTHING WRITTEN
 
@@ -78,19 +83,61 @@ twice.** 47.9% is the honest rate and the attrition is fully accounted for: ever
 a correct skip, not a failure.
 
 **TWO THINGS THE DRY RUN FOUND THAT THIS PLAN DID NOT ANTICIPATE, BOTH LUCAS'S CALL:**
-1. **202 cards are ALREADY FUSED** , one card holding two clubs' football under one club's name.
-   SS E records **four**, from a ceiling-based detector, and says in terms that a fusion whose
-   halves are both mid-table is invisible to it. This measured them from the provider instead.
-   **They are the same defect seen from the other side and this sitting does not touch them**:
-   splitting a fused card is an UPDATE or a DELETE, which breaks the insert-only rollback the
-   whole plan rests on. **A separate decision, and it should not ride along.**
-2. **5 WRITE candidates name a club that is not the block their minutes match** , Belec 2017
-   says Sampdoria and matches Benevento; also Marafona, Crivelli, Thiam, Amilton. Writing the
-   other half would leave a mislabelled card beside a new correct one. **Recommend HOLDING all
-   five**, which is a sixth gate and therefore a change to the agreed number: 828, not 833.
+1. **[RULED , ITS OWN SITTING, NEXT, BEFORE THE FLIP. SCOPED AFTER THIS ONE LANDS.] 202 cards are
+   ALREADY FUSED** , one card holding two clubs' football under one club's name. SS E records
+   **four**, from a ceiling-based detector, and says in terms that a fusion whose halves are both
+   mid-table is invisible to it. This measured them from the provider instead, which is the
+   instrument SS E said did not exist. **This sitting does not touch them**: splitting a fused card
+   is an UPDATE or a DELETE, which breaks the insert-only rollback the whole plan rests on, and
+   mixing the two would leave one rollback covering two different operations.
+2. **[RULED , HELD. THE WRITE SET IS 828, NOT 833.] 5 WRITE candidates name a club that is not
+   the block their minutes match** , Belec 2017 says Sampdoria and matches Benevento; also
+   Marafona, Crivelli, Thiam, Amilton. Writing the other half would leave a mislabelled card
+   beside a new correct one. **They are a sixth gate, `G5_card_club_disagrees`**, and they are
+   held rather than skipped silently: each is a card that is wrong in some other way, and the
+   ledger names all five.
 
-**AND 357 OF THE 836 ROWS (42.7%) FALL UNDER THE 300-MINUTE FLOOR**, so those cards carry NR
-rather than a score , exactly what the scope predicted, at the scale it predicted.
+**AND 357 OF THE 836 ROWS FALL UNDER THE 300-MINUTE FLOOR, SO THEY CARRY NR RATHER THAN A SCORE.
+THAT IS A NEAR-DOUBLING OF THE PREDICTED RATE, NOT A CONFIRMATION OF IT , 42.7% AGAINST THE SCOPE'S
+ROUGHLY 26%** (about 450 of ~1,700).
+- **THE ABSOLUTE COUNT WENT DOWN AND THE RATE WENT UP, WHICH IS HOW THIS GOT MISREAD ONCE ALREADY.**
+  357 is fewer cards than 450, so at a glance the prediction looks met. **The population fell from
+  ~1,700 to 836 and the sub-floor halves did not fall with it** , the gates removed full seasons and
+  fused cards, which are the ones that were never near the floor. **Quote the RATE for a prediction
+  about a rate; an absolute count over a changed denominator is a different quantity.**
+
+## 0.6 THE CANARY , SEMENYO, WRITTEN AND MEASURED 2026-09-21
+
+`scripts/halved-canary.js`, record in `migrations/halved_split_canary_2026-09-21/`. **Card 130281
+Bournemouth keeps 20a/1798m/10g; new card 187598 Manchester City carries 17a/1402m/7g/1as at rt 71.**
+
+**THREE THINGS IT ESTABLISHED THAT THE PLAN DID NOT KNOW:**
+
+1. **DROPPING THE CONSTRAINT BREAKS `import-players.js` UNTIL ITS `onConflict` IS CHANGED.** Line
+   632 upserts with `onConflict:'api_player_id,season,league_code'`, and PostgREST resolves that
+   against a REAL unique index. With the index gone the next import run **errors** , loud rather
+   than silent, which is the good failure mode, and it is still a break. **The sitting must change
+   that line in the same commit as the constraint.** The canary restores the old constraint, so
+   nothing is left broken by it.
+2. **ONE INSERT MOVED TWELVE OTHER CARDS, EVERY ONE BY EXACTLY 1, AND NONE CROSSED A BAND.**
+   Measured by joining the live view to the STALE matview, which is a free before-snapshot until
+   the refresh runs. The movers are **Rodri, Munetsi, Kike Barja, Ezzalzouli, Machis, Laporte
+   2016, Depaoli, Vagnoman, Osako, Joosten, Sylla, Tresor** , five leagues and nine seasons, from
+   a Manchester City card. **That is SS E's ingestion rule 4 rendered on one row: the percentile
+   pools carry no league and no season, so a card added anywhere moves cards everywhere.** The
+   PL 2025 Winger pool went 52 to 53 and the ripple left the league entirely.
+3. **`player_season_cards.rt` IS A DEAD COLUMN AND IT ALMOST PRODUCED A FALSE ALARM.** The stored
+   value on the Bournemouth card is **84** while the view computes **80**, and the matview served
+   80 before the insert too , so the split moved that card by NOTHING and the 84 is the importer's
+   own `ratingToRt` guess, which the engine has never read. **`psc.rt`, `psc_1.rt` and `\.rt\b`
+   occur ZERO times in a 21,846-character viewdef.** The new half is therefore written with
+   `rt: null` rather than a manufactured number.
+
+**AND THE ITEM 26 MARK REMAINS CORRECT ON BOTH HALVES AFTER A SPLIT, which is worth knowing
+before anyone reads it as a bug.** The detector is `pp.appearances > card.appearances` and the
+`player_positions` row still covers the whole season, so it fires on 20 and on 17 alike. The
+shirt number is still the season's and still ambiguous, and the partial-season note becomes more
+true rather than less.
 
 ## 1. THE TWO GUARDS, BOTH MECHANICAL
 
