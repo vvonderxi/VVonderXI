@@ -1,4 +1,11 @@
-# HALVED CARDS , SCOPE, MEASURED 2026-09-21. NOTHING BUILT, NOTHING WRITTEN.
+# HALVED CARDS , SCOPE. NOTHING BUILT, NOTHING WRITTEN.
+
+**[RE-SCOPED FOR SPLIT, 2026-09-21. THE FIRST VERSION MEASURED SUMMING AND SAID SO ONLY IN
+PASSING.] THE DECISION IS ONE CARD PER CLUB.** Everything under "a)" below (the count, the
+source, Semenyo) holds unchanged. **Section c) and e) as first written describe the SUMMED
+shape and are superseded by the SPLIT sections at the end of this file** , they are kept
+because the contrast is the argument: summing moves far more of the platform than splitting
+does, which is the opposite of what it looks like from the outside.
 
 **The defect:** a player who moves between two clubs INSIDE one league has two blocks of a season
 at the provider and one row here, because `player_season_cards` carries
@@ -50,14 +57,18 @@ is not optional.
 ## c) THE MIGRATION , THREE SHAPES, AND THE RECOMMENDED ONE NEEDS NO SCHEMA CHANGE
 
 1. **`team_id` in the key** , `UNIQUE (api_player_id, season, league_code, team_id)`. Two cards
-   per split season, one per club, each honest on its own. **It reverses SS E's one-summed-card
+   per split season, one per club, each honest on its own. **[THIS IS THE CHOSEN SHAPE , see the
+   SPLIT re-scope at the end of this file, where the consumer list below is answered surface by
+   surface and the rt impact is re-measured.]** **It reverses SS E's one-summed-card
    ruling and touches every consumer that assumes one card per player-season-league:** season
    navigation, the compare picker, the honours join, the filters, `card_id` as "the whole card
    state". It also doubles the rows a split player contributes to every percentile pool.
 2. **One card, both halves SUMMED** , no schema change at all. This is what SS E already ruled and
    what `resolveSeasonStat()` already does when it sees both blocks; the failure is that the
    second block never arrived. The club shown is where most of the season was played, and the
-   confidence field says the season was split. **Recommended.**
+   confidence field says the season was split. **[WAS "Recommended" , SUPERSEDED 2026-09-21.
+   REJECTED: a summed card still puts one club's badge, colours and shirt number on output from
+   two, and Semenyo's Manchester City season still does not exist.]**
 3. **A separate spell table** , `player_season_spells (player, season, league, club, minutes,
    goals, ...)`, the card stays summed and the spells carry the per-club breakdown for display.
    This is the only shape that can answer "what did he do at each club" without changing the card
@@ -125,3 +136,108 @@ after** , the disclosure is honest, and a rushed rescore is not.
 
 **Do not hand-edit.** A manual fix hits the same unique constraint the importer does, and the
 source is a script away.
+
+---
+
+# SPLIT , THE RE-SCOPE, 2026-09-21
+
+**WHAT I MEASURED FIRST AND WHAT IT WAS.** The 80 to 87 on Semenyo was ONE card given 3,200
+minutes and 17 goals from two clubs. That is the fused shape, and it leaves Bournemouth's badge,
+colours and shirt number on output from two clubs , the worse shape SS C already records, and
+still no Manchester City season. **The `def_share` caveat in the sum section is about that
+summed card, not about split.**
+
+## 1) THE MIGRATION , THE COLUMN IS ALREADY THERE
+
+**`player_season_cards` ALREADY CARRIES `team_id`, `league_id` and `team_name`.** The change is
+the constraint alone: `UNIQUE (api_player_id, season, league_code)` becomes
+`UNIQUE (api_player_id, season, league_code, team_id)`. No column is added and no row is
+rewritten; the repair INSERTS the missing half.
+
+**AND `def_share` IS NOT STORED , IT IS COMPUTED IN THE VIEW**, from a `team_def` CTE that
+aggregates each club's defensive totals. **So a correctly written half gets its OWN defensive
+share automatically at the next refresh**, provided `team_id` and `team_name` are right. That
+matters, because the simulation below shows what happens when it is missing.
+
+**WHAT EVERY SURFACE THAT ASSUMES ONE CARD PER PLAYER-SEASON-LEAGUE DOES WITH TWO:**
+
+| surface | what happens | needs work? |
+|---|---|---|
+| **card page season list** | two rows for one year, and the sub line ALREADY reads `club · pos · age · G · A`, so they read "25/26 · Bournemouth" and "25/26 · Manchester City" | **no code change**; the repeated year is a visual judgement |
+| **compare picker** | same renderer, same outcome | no |
+| **season navigation** (`seqGo`, `switchSeason`) | walks `card_id`, which stays the key , SS C's "`card_id` IS the player-season key" is unaffected | no |
+| **rankings** | a split player contributes TWO rows to one season. **The `range()` pagination rule already demands a unique tiebreak** (SS C), so this is a pre-existing requirement, not a new one | check the tiebreak |
+| **percentile pools** | gain roughly 1,200 scored halves, which is the ripple measured below | no code |
+| **honours** | the table is keyed `(honour_type, season_year, league_code, team_name, api_player_id)`. **A TEAM honour carries `team_name`, so it lands on the correct half by construction.** An INDIVIDUAL honour (Golden Boot, Ballon d'Or, Top Assists) is season-level and has no club , it would attach to both halves, or to neither, or to the club where most of the season was played. **This is the one real design question and it is named here rather than answered** |
+| **the Cabinet** | reads honours, so it follows whatever that decision is | follows |
+| **published counts** | "57,055 seasons" grows by the number of halves written | figures regenerate |
+
+## 2) rt MOVEMENT FOR SPLIT , RE-MEASURED, SAME 19, SAME METHOD
+
+The existing card keeps its own stats and a NEW card is added for the other club, so the pools
+GAIN members rather than members changing value. Whole population, twice, nothing written.
+
+| | split | (sum, for contrast) |
+|---|---|---|
+| existing cards whose rt moved | **73** | 201 |
+| of which the 19 originals | **0** | 16 |
+| **band crossings** | **0** | 12 |
+
+**SPLIT IS THE GENTLER OPERATION ON THE EXISTING PLATFORM, AND THAT IS NOT THE INTUITION.**
+Summing rewrites 19 scores and pushes ten untouched cards across band edges; splitting leaves
+every existing score where it is and moves 73 cards by percentile pressure alone, crossing
+nothing. **The 19 originals do not move at all.**
+
+**The new halves score on their own minutes, which is the point:** Semenyo's Manchester City
+half is **71** beside his Bournemouth **80**. Piatek's two halves are 80 and 80. Ranocchia's
+second half is 55 against a kept 45.
+
+**THE DEFENSIVE-SHARE VARIANT, AND WHY IT IS A MODELLING ARTEFACT RATHER THAN A RISK.** Run with
+the new half carrying NO `def_share`, defenders collapse , Rose 61 to **21**, Ballo-Toure 64 to
+**38** , because the defensive FLOOR is lost. **That cannot happen in the real repair**, since
+the view derives `def_share` per club. It is recorded because it is exactly what a half written
+with a wrong or missing `team_id` would look like, and it would look like a scoring bug.
+
+## 3) THE 300-MINUTE FLOOR , A QUARTER OF THE HALVES ARRIVE UNSCORED
+
+**5 of the 19 halves fall under 300 minutes** and are therefore not scored at all: Walker-Peters
+242, Bernat 245, Rabiot 198, Rony Lopes 115, Bruun Larsen 2019 64. **Extrapolated, roughly 450
+of ~1,700 halves.**
+
+The short one is almost always the SECOND half , the January arrival , so the card that appears
+is the one with less football on it. Those cards exist, carry NR rather than a score, and join
+the 3,061 cards that already have a null rt. **That is the honest outcome and it is not a
+failure: a 198-minute spell is not a season, and the alternative is a score built on nothing.**
+
+## 4) A SEASON-TOTAL LINE , YES, AND IT NEEDS NO NEW DATA
+
+**Recommended.** Split makes every field on the card true and loses the campaign: two cards of
+1,798 and 1,402 minutes never say 3,200. The sibling is joinable on
+`(api_player_id, season, league_code)`, so the line is derivable on the card page with no new
+column and no second query beyond the seasons already loaded.
+
+Wording, so it states a fact rather than implying a score: *"Across the season: 37 appearances,
+17 goals at two clubs. Each card scores the club it names."* **It must NOT present a combined
+rt** , there is no such number, and inventing one re-creates the fused card in prose.
+
+## 5) TELLING A REAL SPLIT FROM A FALSE ONE , A PRECONDITION, NOT A HEURISTIC
+
+One in three candidates is not genuinely halved, and **writing a false split is worse than
+leaving a real one**: it invents a season that did not happen. Every write is therefore gated on
+the provider's own answer for that exact card, checked in this order:
+
+1. **Fetch** `/players?id=<api_player_id>&season=<season_year>`, one call.
+2. **Keep only blocks for that league id**, then **DEDUPE BY `team.id`** , the provider returns
+   duplicate blocks for one club on some rows, and a naive sum doubles it. I hit this on the
+   first pass and the numbers looked entirely plausible (1,594 to 3,188).
+3. **Require two or more DISTINCT teams.** One team means there was no split; skip.
+4. **Require the stored card to match exactly ONE block's minutes, not the sum.** If it already
+   equals the sum, the card is ALREADY fused and must not be split , that is SS E's four fused
+   cards, and splitting them would be a second wrong answer.
+5. **Require the missing block to have at least one appearance.** A zero-minute spell is a
+   transfer, not a season.
+6. Anything failing any gate is **logged and skipped**, never guessed.
+
+**The ledger is append-only and names the source block for every row written**, the same shape
+as the squad-number backfill, so a bad write is findable per row rather than by re-running the
+whole job.
