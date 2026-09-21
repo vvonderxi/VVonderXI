@@ -1212,3 +1212,11 @@ The list's value is that it names where to look next, and looking is post-launch
 **THE ONE THING THAT MUST TRAVEL WITH IT:** the scanner matches COMMENT TEXT as selectors unless
 comments are stripped first (432 before that fix, 295 after), and SS C now records that any scan
 of a source file strips comments before matching.
+
+**AND ONE TOKEN-LEVEL CANDIDATE FROM THE 2026-09-21 A14 RE-RUN, LOGGED RATHER THAN CHASED:**
+`--ink-soft` (#5f594e in light) is calibrated against the PAGE, where it reads 6.66. On compare's
+`.matchup` panel, which is `rgb(220,210,190)` in light, the same token reads **4.31** , under the
+bar before any element adds its own darkening. `.cmp-seasontrigger` was pinned to `#565045` (4.95)
+because it was the one caught by the buttons-and-chips sweep. **Every other `--ink-soft` text on
+that panel has the same ceiling and none of it has been measured**, because the sweep's selector
+was controls, not prose. It is a token question, not eight element questions.

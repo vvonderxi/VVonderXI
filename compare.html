@@ -542,7 +542,15 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .cmp-seasontrigger:hover{color:#F3EDE0;border-color:rgba(255,255,255,.3)}
   .cmp-seasontrigger .chev{transition:transform .18s;font-size:.9em;opacity:.8}
   .cmp-seasontrigger.open .chev{transform:rotate(180deg)}
-  body.light .cmp-seasontrigger{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.14);color:var(--ink-soft)}
+  /*  NOT var(--ink-soft) IN LIGHT , MEASURED 2026-09-21, A14. The token is #5f594e, which is
+      6.66 on the page's cream but only 4.31 on THIS panel: .matchup is rgb(220,210,190) in light,
+      darker than the page, and the trigger's own rgba(0,0,0,.035) darkens it again to
+      rgb(212,203,183). #565045 is the quietest value that clears 4.5 on that ground, at 4.95.
+      DARK IS UNTOUCHED AND PASSES at 5.87 (cream at .6 on rgb(35,32,30)).
+      THE GENERAL CASE IS LOGGED, NOT FIXED HERE: any --ink-soft text sitting on .matchup in light
+      has the same ~4.3 ceiling, because the token is calibrated against the page and not against
+      this panel. See POST_LAUNCH.md, pinned-ink candidates.  */
+  body.light .cmp-seasontrigger{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.14);color:#565045}
   body.light .cmp-seasontrigger:hover{color:#1d1a1b;border-color:rgba(0,0,0,.3)}
   /* expanded season list = ABSOLUTE dropdown , does NOT grow the .side/.matchup, so the open fold no longer
      displaces the Compare button (holds in all four states + at 390px). Solid bg + z-index so it reads as an overlay. */

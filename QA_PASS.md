@@ -296,6 +296,34 @@ interval. That is a stop, not a note.
 - **How:** run the contrast harness on card, compare, rankings, playbook, vvindex, index, in BOTH themes. **On any SVG, ink is `fill` not `color`, the ground is sibling geometry (hit-test, topmost = last in document order), and a stroke counts toward legibility.**
 - **Pass:** the only failures are the recorded exceptions , card-face chips 2.04 and 2.34, `.prenum` 1.00 by construction, the waiting-box edge 1.88, `.pspot` 3.89. **Anything else is new.**
 
+**[2026-09-21] THE BUTTONS-AND-CHIPS HALF IS RE-RUN ACROSS ALL SIX SURFACES. ONE NEW DEFECT,
+FIXED; EVERYTHING ELSE IS A RECORDED EXCEPTION.** The 2026-09-01 survey grounded self-painting
+controls against their parent, so every button, chip and pill in it was void. Re-measured with
+`_contrast_probe.js`, which composites the CSS (exact for solid and gradient fills) beside the
+pixel harness, which reads the rendered ground (right for text on a gradient or a photo). **Neither
+is the answer everywhere and that is why both exist.**
+
+| surface | measured | new failures |
+|---|---|---|
+| compare | 15 | `.cmp-seasontrigger` in light, **4.30**, FIXED to 4.95 |
+| rankings | 199 | none , the three flags are the card-face chips at their recorded bounds 4.37 / 4.45 / 2.56 |
+| card | 19 | none , `.chtagcell.gold` and `.chip.gold` 4.37, `.ca-compare` 2.16 (bound) |
+| playbook | 65 | none , the only flag is `.pspot` at **exactly 3.89**, the recorded exception |
+| vvindex | 4 controls | none , 5.50 dark / 7.12 light |
+| index | 7 | none |
+
+- **THE GRADIENT CTAs REPORT A BOUND, NOT A READING, AND MUST NOT BE QUOTED AS A FAILURE.**
+  `.settle` / `.ca-compare` score 2.16 against their lightest stop; the glyph band sits on the flat
+  brand-pink section at **4.67**, measured 2026-09-19. A bound is not a reading.
+- **`.pspot` REPRODUCING AT 3.89 IS THE CROSS-CHECK THAT MATTERS**: the CSS probe and the pixel
+  harness reach the same number by different routes, and it is also the harness's own control.
+- **THE ONE FIX, and it is a token calibrated against the wrong ground:** `--ink-soft` is 6.66 on
+  the page's cream but **4.31 on `.matchup`**, which is darker in light, and the trigger's own
+  `rgba(0,0,0,.035)` darkens it again. Pinned to `#565045` there. **The general case is logged in
+  `POST_LAUNCH.md`, not fixed: any `--ink-soft` text on that panel has the same ceiling.**
+- **A BLIND SPOT WORTH KNOWING: a label in `::before` or `::after` is invisible to `textContent`,
+  so vvindex's four controls were skipped until they were measured by hand.** They pass.
+
 **[2026-09-21] CATEGORIES A AND B OF THE PINNED-INK SCAN HAVE LEFT THIS ITEM , they are in
 `POST_LAUNCH.md` under "PINNED-INK CANDIDATES". They are 295 CANDIDATES from a static scan, not
 failures; category C was the decidable one and closed at 0. A14 does not wait on them.**
