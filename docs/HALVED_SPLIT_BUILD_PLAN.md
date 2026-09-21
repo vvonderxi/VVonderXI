@@ -212,13 +212,25 @@ Census taken 2026-09-21 over every `.js`, `.html`, `.yml` and `.sql` in the tree
 | `migrations/**/*.sql` | historical `update`/`delete`, already applied | not re-runnable |
 | `schema.sql:309-310` | RLS policies permitting service insert/update | not a writer |
 
-**`gk_pen_backfill.js` IS THE ONE TO FIX FIRST, BECAUSE IT IS THE ONE THAT WILL NOT TELL YOU.** Its
-filter is the OLD unique key written out as three `.eq()` calls, so after the split it matches BOTH
-cards of a split player-season and writes one club's keeper and penalty figures onto both. **And
-its own assertion cannot catch it: the comment above says "0 rows means the card is not in our
-table", so it tests for ZERO and a two-row update passes.** That is SS C's rule exactly , a guard
-is only evidence inside its own scope, and this one's scope was "did anything match", never "did
-exactly one thing match".
+**`gk_pen_backfill.js` WAS THE ONE TO FIX FIRST , FIXED 2026-09-21, IN THE SAME COMMIT AS THE
+CONSTRAINT.** Its filter was the OLD unique key written out as three `.eq()` calls, so after the
+split it matches BOTH cards of a split player-season and writes one club's keeper and penalty
+figures onto both. It now resolves the card first and writes by `id`, and its assertion is
+**exactly one** rather than **not zero**.
+- **[I RECORDED THIS AS SILENT AND THAT WAS WRONG , THE CORRECTION MATTERS MORE THAN THE CLAIM.]**
+  A `data.length > 1` KEY GUARD already sat one line below the zero-check and throws. **I read the
+  comment and the first branch and stopped**, which is the exact failure this file keeps recording:
+  a completeness claim made about code that was not read to the end.
+- **WHAT IS TRUE IS WORSE-SOUNDING AND BETTER-BEHAVED: THE GUARD FIRES TOO LATE, NOT NEVER.**
+  `.update(patch).select('id')` APPLIES the write and then returns the rows, so on a split it
+  writes both halves and aborts afterwards , one wrong card and a half-finished run, loudly.
+  **Keying on the id prevents it rather than detecting it**, which is why the fix is the key and
+  not the assertion. The assertion is tightened because a primary-key update that does not match
+  exactly one row means the world is not what the script assumes.
+- **AND THE CLUB NOW DECIDES WHICH HALF GETS THE PATCH** where a player-season holds two cards ,
+  keeper and penalty figures are per club, so the wrong half would be a wrong VALUE rather than a
+  duplicated one. **Behaviour is deliberately unchanged where one card exists**, which is every
+  row today. An unresolvable club is a MISS and is never guessed.
 
 **AND NEITHER CI WORKFLOW ACTUALLY RUNS WHAT ITS NAME SAYS, WHICH IS WHY THE CENSUS HAD TO BE A
 GREP AND NOT A READ OF THE WORKFLOWS:**
@@ -270,6 +282,94 @@ City number is 42.** Both halves read one number from one `player_positions` row
   block `appearances`. A player with more appearances at one club and more STARTS at the other is
   counted wrongly here. **And the margin is thin: the median difference is 6 appearances, but 112
   of the 448 sit within 2** , near a coin flip, where the modal rule is weak evidence either way.
+
+## 0.11 THE INTERIM BLANK SHIRT NUMBER IS SKIPPED , IT NEEDS A VIEW CHANGE (answered 2026-09-21)
+
+**THE QUESTION: can the new half show a blank number without touching the view? NO.**
+- **`player_card_view:346` selects `pp.shirt_number`, and the join at line 394 is
+  `ON pp.api_player_id = p.api_player_id AND pp.season_year = psc.season_year AND pp.league_code =
+  psc.league_code`.** No `team_id`. **All four `player_positions` joins in the view are keyed the
+  same way**, so both halves read the SAME row by construction and there is no per-row
+  discriminator the view could use.
+- **The matview cannot help either** , its definition is 1,591 characters, a flat
+  `SELECT <87 columns> FROM player_card_view`. It carries whatever the view computed.
+- **THE CHEAPEST POSSIBLE VERSION IS STILL A VIEW CHANGE**, and it is worth writing down so it is
+  not re-derived: a `CASE WHEN psc.source = 'apifootball_split' THEN NULL ELSE pp.shirt_number END`
+  would need a view edit and a **plain REFRESH**, not a rebuild , SS D's `player_name_norm`
+  distinction, where changing a VALUE is cheap and appending a COLUMN is the sitting. **It is still
+  a view change**, and SS C records that `CREATE OR REPLACE VIEW` has silently destroyed this
+  view's body before.
+- **SO THE INTERIM IS SKIPPED AND SITTINGS 1 AND 2 RUN BACK TO BACK.** Production serves
+  `coming-soon`, so nobody sees the state in between. **Between them, 828 new halves carry the
+  season's number, which on roughly a fifth of them is the other club's** , that is a known,
+  bounded, unseen state, and item 26's mark already describes it.
+
+**AND SITTING 2 MUST NOT USE THE MODAL RULE FOR 2016+ , RULED 2026-09-21.** It resolves the right
+club on 278 of 448 and the wrong one on 142, and **112 of the 448 sit within two appearances**,
+which is a coin toss rather than a weak signal. **Source both halves from `scripts/squadnum/`,
+which is club-scoped by construction and verified on 5,993 rows**, and hold what it cannot find.
+The modal number is what created this problem; it cannot also be the thing that settles it.
+
+## 0.12 THE RUN , 2026-09-21. 830 HALVES WRITTEN, ONE WITHDRAWN, GUARD A PASSES
+
+| | |
+|---|---|
+| candidates | 828 (the 5 G5 holds already excluded) |
+| cards split | **828** , every one, **0 held, 0 failed** |
+| rows inserted | **831**, then **830** , see G6 below |
+| `player_season_cards` | 57,055 -> **57,885** |
+| rt md5 | `2e1e4e5621203b12bfaa5ea7df402e8f` -> **`021af5200b584f9f50c74d8fe49dae22`** |
+| bands | **gen 12, iconic 138, wc 500 unchanged**; standout 754 -> 766 |
+| the new halves | **463 scored, 367 NR (44.2%)**, rt median 45, max 84, four at 80+, none at 85+ |
+
+**THE ANCHOR-PINNED COUNTS HELD EXACTLY, WHICH IS THE CONTROL THAT MATTERS.** SS C says the band
+edges are RANK anchors, so 12 / 150 / 650 / 138 are structural constants. They are unmoved after
+830 new cards entered the pools. **Standout is not anchor-pinned and grew by 12.**
+
+## 0.13 G6 , "IS THE CLUB EVEN IN THIS LEAGUE THIS SEASON?" , FOUND BY WRITING THE ONE CARD THAT FAILED IT
+
+**One row was written and withdrawn: `187910`, J. Le Cardinal, "Saint Etienne", Ligue 1 2025/26.**
+The provider returned a **Ligue 1** block for Saint-Etienne that season. **They are in Ligue 2** ,
+the same response carries their Ligue 2 block at 11 appearances and 927 minutes, and **our own
+data agrees: 23 Saint Etienne cards in L1 2024/25 and zero in 2025/26.**
+
+**EVERY STRUCTURAL GATE PASSED IT, AND THAT IS THE POINT.** Two clubs, the stored minutes matching
+exactly one block, the card naming that block's club, the missing club resolving to a real `teams`
+row. **None of them asks whether the club PLAYED that competition**, because none of them was
+written to. G0 to G5 check the SHAPE of the provider's answer; G6 checks it against the world.
+
+**THE TEST COSTS NOTHING BECAUSE OUR OWN DATA ANSWERS IT: a real top-flight club-season holds about
+twenty cards.** Measured across all 831 written halves, **the separation is total** , this was the
+only one with fewer than eight other cards in its club-season, and it had **zero**. Everything else
+sat comfortably above. **A gate whose populations separate that cleanly is worth having even though
+it fired once.**
+
+**AND IT WAS FOUND BY A SIDE-COUNT, NOT BY A GATE.** The club-identity guard reported "club had no
+other card that season: 1" as an oddity beside its real answer. **An anomaly counter printed next
+to a passing result is the cheapest detector there is, and it only works if somebody reads it.**
+Record: `migrations/halved_split_2026-09-21/withdrawn.jsonl`, with the full row.
+
+## 0.14 GUARD A WAS WRONG TWICE BEFORE IT WAS RIGHT, AND IT FAILED 155 AND THEN 43 CORRECT ROWS
+
+**The guard as the plan wrote it , "every newly written half must have a non-null `def_share`" ,
+is not a test of what it was built to catch.** `def_share` is null for FOUR reasons:
+1. **THE CARD IS NOT SCORED.** `scored` requires `minutes >= 300 AND goals IS NOT NULL`. **367 of
+   830 halves are unscored by design** , the NR population the scope predicted.
+2. **THE SEASON IS PRE-2016.** `pool_ingr` and `team_def` both cut there.
+3. **THE CARD HAS NO DEFENSIVE BLOCK.** `def90` needs `tackles_total`, and detailed coverage ramps
+   through 2016 to 2018. **All 43 of the second version's failures were exactly this**, clustered
+   in BPL, PRT, TR and L1 2016 and 2017.
+4. **A WRONG `team_id`** , the only one the guard exists for.
+
+**SO THE GUARD IS NOW A DIRECT TEST WITH NO CONFOUNDERS: does the half resolve to the SAME
+`team_id` the rest of its club-season already uses?** Measured: **830 checked, ZERO mismatches.**
+The `def_share` check survives as a SECONDARY, scoped to rows eligible for one , scored, 2016+,
+outfield, `tackles_total` present , where it now reports **NONE**.
+
+**THE CONTROL THAT SETTLED IT WAS THE SIBLING.** Comparing a new half against the card it was split
+from is the only thing that can separate "this half is wrong" from "this player-season was never
+scored". **A guard measured against an absolute threshold, where a sibling is available, is
+measuring the population rather than the change.**
 
 ## 1. THE TWO GUARDS, BOTH MECHANICAL
 

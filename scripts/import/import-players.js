@@ -629,7 +629,12 @@ async function importLeagueSeason(code, year){
       // insert-only => ON CONFLICT DO NOTHING (belt-and-braces with the pre-skip above);
       // default (fresh import) => upsert overwrites as before.
       const { error } = await supabase.from('player_season_cards')
-        .upsert(card, { onConflict:'api_player_id,season,league_code', ignoreDuplicates: INSERT_ONLY });
+        //  [CHANGED 2026-09-21 WITH THE HALVED SPLIT.] The unique key gained `team_id`, because a
+        //  mid-season move inside one league is two cards, not one. PostgREST resolves this list
+        //  against a REAL unique index, so the old three-column target errors once the index is
+        //  gone. This is the importer catching up with the schema, not a workaround: a card has
+        //  always been per club, and the constraint is what forced two of them into one row.
+        .upsert(card, { onConflict:'api_player_id,season,league_code,team_id', ignoreDuplicates: INSERT_ONLY });
       if (error){ stats.errors++; console.error(`  ❌ card: ${error.message}`); } else { stats.cards++; seasonCards++; }
     }
     await checkpoint(code, year, page, totalPages, false);

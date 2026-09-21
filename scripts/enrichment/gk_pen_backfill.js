@@ -196,18 +196,32 @@ async function backfillLeagueSeason(code, year, st){
   // comfort about precisely the failure this script exists to prevent. So in dry run we
   // pull the existing (api_player_id) set for this league-season once and check membership
   // in memory: same answer as the real run's affected-row assertion, zero writes, one query.
-  const existing = new Set();
-  if (!WRITE) {
+  //  [CHANGED 2026-09-21, BEFORE THE HALVED SPLIT.] THIS MAP IS NOW BUILT ON EVERY RUN, NOT ONLY
+  //  IN DRY RUN, BECAUSE THE WRITE BELOW IS KEYED ON THE ROW id RATHER THAN ON THREE COLUMNS.
+  //  The old filter was `.eq(api_player_id).eq(season).eq(league_code)` , the three columns of
+  //  the unique key that the split sitting REMOVES. Once one player-season can hold two cards,
+  //  that filter matches BOTH halves and writes one club's keeper figures onto both.
+  //
+  //  IT WAS NOT SILENT , I recorded it as silent and that was wrong. A `data.length > 1` KEY
+  //  GUARD sits below and throws. But `.update(...).select()` applies the write and THEN returns
+  //  the rows, so the guard fires AFTER both halves are already wrong: it aborts the run rather
+  //  than preventing the damage. Keying on the id prevents it instead of detecting it.
+  const cardsByPlayer = new Map();               // api_player_id -> [{ id, team_name }]
+  {
     let f = 0;
     while (true) {
       const { data, error } = await supabase.from('player_season_cards')
-        .select('api_player_id').eq('season_year', year).eq('league_code', code).range(f, f + 999);
+        .select('id,api_player_id,team_name').eq('season_year', year).eq('league_code', code).range(f, f + 999);
       if (error) throw new Error(`existing-fetch ${code} ${year}: ${error.message}`);
-      (data || []).forEach(r => existing.add(r.api_player_id));
+      (data || []).forEach(r => {
+        if (!cardsByPlayer.has(r.api_player_id)) cardsByPlayer.set(r.api_player_id, []);
+        cardsByPlayer.get(r.api_player_id).push({ id: r.id, team_name: r.team_name });
+      });
       if (!data || data.length < 1000) break;
       f += 1000;                                 // paginate past the 1000-row cap (§C)
     }
   }
+  const existing = cardsByPlayer;                // .has() reads the same as the old Set
 
   do {
     const j = await af(`/players?league=${L}&season=${year}&page=${page}`);
@@ -251,19 +265,35 @@ async function backfillLeagueSeason(code, year, st){
         continue;
       }  // dry run: count what WOULD land
 
+      //  RESOLVE THE CARD FIRST, THEN WRITE BY id. Behaviour is deliberately UNCHANGED where a
+      //  player-season holds ONE card, which is every row today: the old three-column filter
+      //  matched exactly that row, so keying on its id is the same write. Where it holds TWO,
+      //  the block's own club decides which half gets the patch , keeper and penalty figures
+      //  are per club, so writing them to the wrong half would be a wrong value, not a
+      //  duplicated one. An unresolvable club is a MISS and is never guessed.
+      const held = cardsByPlayer.get(row.player.id) || [];
+      let target = null;
+      if (held.length === 1) target = held[0];
+      else if (held.length > 1) {
+        const blockClub = s.team?.name || '';
+        const hit = held.filter(h => h.team_name === blockClub);
+        if (hit.length === 1) target = hit[0];
+        else { local.missed++; S.missed++;
+               console.warn(`  ⚠ ${row.player.name} ${sCode} ${code}: ${held.length} cards, `
+                          + `${hit.length} match "${blockClub}" , HELD, not guessed`); continue; }
+      }
+      if (!target) { local.missed++; S.missed++; continue; }   // no card: below the 300-min floor, or never ingested
+
       const { data, error } = await supabase.from('player_season_cards')
         .update(patch)
-        .eq('api_player_id', row.player.id)
-        .eq('season', sCode)
-        .eq('league_code', code)
+        .eq('id', target.id)
         .select('id');
 
       if (error) { S.errors++; console.error(`  ❌ ${row.player.name}: ${error.message}`); continue; }
-      // THE ASSERTION THAT MATTERS. 0 rows means the card is not in our table (below the
-      // 300-min floor at ingest, or never ingested). That is a MISS, not a success, and
-      // it is never turned into an insert.
-      if (!data || data.length === 0) { local.missed++; S.missed++; continue; }
-      if (data.length > 1) throw new Error(`KEY GUARD: ${data.length} rows matched ${row.player.id}/${sCode}/${code}. Aborting.`);
+      // THE ASSERTION IS NOW "EXACTLY ONE", NOT "NOT ZERO". A primary-key update cannot match
+      // two rows, so anything other than 1 means the world is not what this script assumes and
+      // the run stops rather than continuing over a wrong premise.
+      if (!data || data.length !== 1) throw new Error(`KEY GUARD: ${(data||[]).length} rows for card id ${target.id} (${row.player.name} ${sCode}/${code}). Aborting.`);
       local.updated++; S.updated++;
     }
     page++;

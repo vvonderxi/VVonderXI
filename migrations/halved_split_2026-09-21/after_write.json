@@ -1,0 +1,10 @@
+{
+  "label": "after_write",
+  "at": "2026-09-21T19:31:25.487Z",
+  "rt_md5": "898ee0550b22eb2f2f5bb373875322fe",
+  "rows": "57886",
+  "view_rows": "57886",
+  "constraints": "player_season_cards_api_player_id_season_league_code_team_id_ke :: UNIQUE (api_player_id, season, league_code, team_id) | player_season_cards_pkey :: PRIMARY KEY (id)",
+  "indexes": "11",
+  "bands": "gen 12 iconic 138 wc 500 standout 766"
+}
