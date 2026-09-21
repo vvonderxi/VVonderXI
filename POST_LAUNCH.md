@@ -1191,3 +1191,24 @@ position batches returned high confidence where the claim was a ROLE a model has
 many times, and low where it needed a precise split , *"no reliable recall of the split"*. **An
 exact per-season assist total for a mid-table 2011 player is the second kind, and unlike a position
 it feeds rt**, so a confidently wrong answer moves a published score.
+
+## PINNED-INK CANDIDATES , CATEGORIES A AND B, MOVED OUT OF QA A14 ON 2026-09-21
+
+**They are CANDIDATES FROM A STATIC SCAN, NOT FAILURES, and that is why they left the launch
+gate.** `scripts/scan-pinned-ink.js` flags 295 of them across 12 surfaces (card 80, myclub 65,
+compare 43, preferences 33, playbook 31, rankings 13, vvindex 9, index 5):
+- **A** , a literal `color` with no `body.light` counterpart.
+- **B** , `opacity` on a rule that sets no colour of its own.
+**C was the decidable one and it is CLOSED: 15 instances, narrowed to 0**, because 13 paint their
+own ground (an active state on its own fill, a gold chip on gold, the card face, which SS C rules
+must NOT flip) and `.chronicle-one` is pinned to a ground that does not move either. The single
+genuine instance, `.gk3 .lax`, was fixed.
+
+**WHY THEY ARE NOT A GATE.** A static scan cannot know a ground, and SS C is explicit that only a
+rendered measurement settles contrast. Three of these were found and fixed as REAL defects
+(`#rankFBtn`, `.gk3 .lax`, `.lgfoot`) , each one surfaced by a rendered reading, not by the list.
+The list's value is that it names where to look next, and looking is post-launch work.
+
+**THE ONE THING THAT MUST TRAVEL WITH IT:** the scanner matches COMMENT TEXT as selectors unless
+comments are stripped first (432 before that fix, 295 after), and SS C now records that any scan
+of a source file strips comments before matching.

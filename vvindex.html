@@ -261,16 +261,21 @@
   body.light .lgc{border-color:rgba(28,27,26,0.10);background:rgba(255,255,255,0.55)}
   .lgf{font-size:19px;line-height:1.1}
   .lgn{font-family:'Archivo';font-weight:700;font-size:13px;margin-top:4px}
-  .lgco{font-family:'Inter';font-size:11.5px;opacity:.55}
+  .lgco{font-family:'Inter';font-size:11.5px;color:var(--ink-soft)}
+  body.light .lgco{color:#5f594e}
   /*  AN ALPHA IS NOT AN INK , FIXED 2026-09-19. This carried `opacity:.55` and NO colour of
       its own, so it inherited and then dimmed. On dark that composites to about 5.4 and is
       fine; on light it MEASURED 1.19, which is invisible. Same family as the `.h2hlabel` /
       `.h2hbar-nr` pair SS C already holds: the ink is correct and the element alpha compounds
       with it, and the rule there is readable or dimmed, not both.
-      `.lgco` two lines above carries the IDENTICAL `opacity:.55` shape and is deliberately NOT
-      changed here , it reads VOID under the harness, so it is unmeasured rather than passing,
-      and changing it on inference is what this file keeps recording against. It is in the
-      class sweep instead.  */
+      `.lgco` ABOVE CARRIED THE IDENTICAL SHAPE AND IS NOW FIXED THE SAME WAY (2026-09-21).
+      It was left alone on 2026-09-19 because it reads VOID under the pixel harness , small
+      text sitting close to its neighbours, so neither ground method is clean , and changing
+      it on inference is what this file records against. THE ANSWER WAS NOT A BETTER
+      INSTRUMENT: it is the same `opacity:.55` with no ink of its own as `.lgfoot`, which
+      measured 1.19 in light, so it is closed BY CONSTRUCTION rather than by measurement and
+      confirmed by arithmetic, exactly as `.lgfoot` was. An element that cannot be measured
+      can still be given an ink that does not depend on measurement.  */
   .lgfoot{font-size:12px;color:var(--ink-soft);margin-top:11px}
   body.light .lgfoot{color:#5f594e}
   @media (max-width:640px){ .lggrid{grid-template-columns:1fr 1fr;gap:7px}

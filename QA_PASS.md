@@ -296,6 +296,17 @@ interval. That is a stop, not a note.
 - **How:** run the contrast harness on card, compare, rankings, playbook, vvindex, index, in BOTH themes. **On any SVG, ink is `fill` not `color`, the ground is sibling geometry (hit-test, topmost = last in document order), and a stroke counts toward legibility.**
 - **Pass:** the only failures are the recorded exceptions , card-face chips 2.04 and 2.34, `.prenum` 1.00 by construction, the waiting-box edge 1.88, `.pspot` 3.89. **Anything else is new.**
 
+**[2026-09-21] CATEGORIES A AND B OF THE PINNED-INK SCAN HAVE LEFT THIS ITEM , they are in
+`POST_LAUNCH.md` under "PINNED-INK CANDIDATES". They are 295 CANDIDATES from a static scan, not
+failures; category C was the decidable one and closed at 0. A14 does not wait on them.**
+
+**[2026-09-21] `span.lgco` IS CLOSED BY CONSTRUCTION RATHER THAN BY MEASUREMENT.** It reads VOID
+under the harness (small text sitting close to its neighbours, so neither ground method is clean),
+and it carried the identical `opacity:.55`-with-no-ink-of-its-own shape as `.lgfoot`, which measured
+**1.19** in light. It now takes a real colour per ground, and the arithmetic is over every stop of
+the page's own gradient, worst case: **6.20 dark, 6.17 light** against a 4.5 bar. **An element that
+cannot be measured can still be given an ink that does not depend on measurement.**
+
 **STATUS 2026-09-19: THE PIXEL HARNESS EXISTS, IS COMMITTED, AND IS `_pixel_audit.js`. THREE THINGS ABOUT IT MUST TRAVEL WITH ANY NUMBER IT PRODUCES.**
 
 - **1. THERE IS NO `.pspot` ON `vvindex.html`, SO THAT SURFACE HAS NO ON-PAGE CONTROL.** Its readings , `h2` 14.31/14.54, `p` 9.81/8.13, `p.lgfoot` 1.19 light , rest on a harness validated on PLAYBOOK, in the same session, on the same build. **That is true and it is weaker than a control on the page itself**, because a per-page fault (a transform, a stacking context, a scroll offset) is exactly what an on-page control catches and a neighbouring one does not. **Written down rather than remembered.** If vvindex is ever re-measured for a decision that matters, put a known element on it first.
