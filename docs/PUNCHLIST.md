@@ -6,7 +6,7 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 24 of 36 rows (67%)**
+**COMPLETE: 24 of 37 rows (65%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **THE COUNT WAS WRONG AND IS CORRECTED (2026-09-19): it read 15 of 25 when the list holds 35
 rows and 23 are DONE.** And the first correction got it wrong too , 20 of 34 , because I counted
@@ -58,6 +58,7 @@ that only ever rises is measuring the writing, not the work.**
 | 34 | The season panel should fold on selection | **DONE** | Claude | `switchSeason(id, fromPanel)` , the panel rows pass the flag, the stepper does not. **Stepping with the list open must not close it**, that gesture wants it visible |
 | 35 | The wash is on the card's opener | **DONE** | Claude | **NOT a stray selector , my own Chronicle build, approved from a description and wrong in the render.** Measured on the deployed preview: 7 washed elements, 6 are 184-235px marked phrases in Scout and Notes, the 7th was the 751px pull-quote. Removed. **Trajectory has NO AI prose to wash , only a static caption** |
 | 36 | BAM club-name check reads false on every completed season | **DONE** | Claude | Two checks now, `scripts/bam/club-identity.js`: in-season names (a completed season is NOT APPLICABLE, never a pass) and identity across seasons by ApiTeamId. On the platform exports: 87 N/A, 7 OK, 0 differ; one RENAME found, Bastia / SC Bastia (id 1305). The six unexamined seasons were real football, not splits |
+| 37 | Halved cards , the second half of a same-league mid-season move is refused | **SCOPED, AWAITING LUCAS** | Lucas | `docs/HALVED_CARDS_SCOPE.md`. **1,740 carded candidates from the BAM transfer log against the detector's 841, overlapping on only 306**, and 724 of them pre-2016 where the detector is blind. Measured: repairing NINETEEN cards moved 201, median 9 points, 12 band crossings, 10 on untouched cards. Recommended BEFORE the flip, as its own sitting |
 
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
