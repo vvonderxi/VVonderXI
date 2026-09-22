@@ -242,4 +242,3 @@ that order leaves a window where the site reads a column that is being emptied u
 a plain refresh, not a rebuild, so 10 to 13 seconds rather than 42.
 
 **THE ACCEPTANCE CHECK IS ONE PAIR: Semenyo's Manchester City half reads 42 with NO ARROWS, and his Bournemouth half still reads 24.** Aggregate coverage is an estimate and will be argued about; that pair either reads 42 and 24 clean, or the sitting failed.
-is the scope's estimate and will be argued about; that card either says 42 or the sitting failed.
