@@ -191,6 +191,9 @@ currently blind to it.
 1. **HALVED SPLIT , 828.** This file. Changes the constraint and **leaves it changed.**
 2. **`shirt_number` ON THE CARD ROW, plus a small table holding the transfer rows for those 828**
    , date, direction, both clubs. **Only the relevant rows, never the whole BAM export.**
+   **SCOPED: `docs/SHIRT_AND_TRANSFERS_SCOPE.md`. It does NOT need a matview rebuild** , 
+   `shirt_number` is already an enumerated matview column, so it is a view edit and a PLAIN refresh.
+   It also carries the honour tiebreak, which is **SIX** double-counted pairs and not one.
 3. **THE 202 FUSED CARDS** , `docs/FUSED_CARDS_SCOPE.md`. Inherits the constraint from 1.
 4. **THE AI PAYLOAD FOR SPLIT CARDS**, using sitting 2's transfer data.
 
