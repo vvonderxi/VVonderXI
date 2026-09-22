@@ -251,8 +251,26 @@ if (require.main !== module) return;
   const fresh = writes.filter((w) => !existing.has(w.api_player_id + '|' + w.season_year + '|' + w.league_code));
   console.log('\n  would insert ' + fresh.length + ', skipping ' + (writes.length - fresh.length) + ' that already have a row');
   for (let i = 0; i < fresh.length; i += 200) {
-    const chunk = fresh.slice(i, i + 200).map((w) => ({ api_player_id: w.api_player_id, season_year: w.season_year, league_code: w.league_code, shirt_number: w.shirt_number }));
-    const { error } = await sb.from('player_positions').insert(chunk);
+    /*  [REDIRECTED 2026-09-22, SITTING 2.] The number now lives on the CARD ROW. Writing it to
+        `player_positions` after the view stopped reading that column would be a job reporting
+        thousands of writes and changing nothing on screen , a silent no-op wearing a success
+        message, which is this file's most-recorded failure shape.
+        THE LEDGER ALREADY CARRIED `card_id` PER ROW, so this is a smaller write than the one it
+        replaces: the pipeline was always card-shaped and only wrote to pp because that is where
+        the column lived.
+        IT MAY IMPROVE A MODAL NUMBER AND MAY NOT OVERWRITE ANOTHER SOURCED ONE. The old promise
+        was "never overwrite", which is now too strong , a `modal_single` guess SHOULD be replaced
+        by a number read off that club's own squad page. `squadnum` is what it will not touch.  */
+    const chunk = fresh.slice(i, i + 200);
+    let error = null;
+    for (const w of chunk) {
+      const r = await sb.from('player_season_cards')
+        .update({ shirt_number: w.shirt_number, shirt_number_source: 'squadnum' })
+        .eq('id', w.card_id)
+        .or('shirt_number_source.is.null,shirt_number_source.neq.squadnum')
+        .select('id');
+      if (r.error) { error = r.error; break; }
+    }
     if (error) {
       console.error('  INSERT FAILED at ' + i + ': ' + error.message);
       if (/duplicate key/.test(error.message || '')) {

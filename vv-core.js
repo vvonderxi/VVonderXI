@@ -2099,8 +2099,28 @@
       there. An unmarked pre-2016 card is unexamined, not cleared.
       477 cards on 2026-09-19. Count it, do not quote it.  */
   const NUMBER_CLUB_GAP = 3;
+  /*  [CHANGED 2026-09-22, SITTING 2.] THIS IS NOW A READ, NOT A DETECTOR.
+      It used to derive the uncertainty on every render from `pos_row_appearances - appearances`,
+      because the number came from a `player_positions` row covering the WHOLE season and nothing
+      recorded which club it belonged to. The number now lives on the CARD ROW with its
+      provenance, so the question is answered once, at write time, with the evidence in hand.
+        squadnum      , read off that club's own squad and appearance tables. NO arrows.
+        modal_single  , the modal number, and the player-season holds ONE card, so no club
+                        ambiguity exists. NO arrows. This is what keeps the mark off the ~44,000
+                        cards that were never split, without special-casing them here.
+        modal_split   , the modal number attributed across a split by the appearance margin.
+                        ARROWS , this is the only value that earns them.
+      THE WORD IS "SOURCED", NEVER "VERIFIED". `squadnum` names WHERE a number came from and
+      claims nothing about its truth: Wikipedia squad tables, club-scoped, cross-checked against
+      each other where a page carries more than one. Calling it verified is what would let a later
+      session treat it as beating a disagreeing external source, which inverts SS E's rule.
+      THE FALLBACK IS THE OLD DETECTOR AND IT IS DELIBERATE , until the matview rebuild lands,
+      `shirt_number_source` is absent from every row, and a card must not silently lose its mark
+      in the window between the view edit and the rebuild.  */
   function numberClubUncertain(row){
-    if (row.shirt_number == null || row.season_year == null || row.season_year < 2016) return false;
+    if (row.shirt_number == null) return false;
+    if (row.shirt_number_source != null) return row.shirt_number_source === 'modal_split';
+    if (row.season_year == null || row.season_year < 2016) return false;
     if (row.pos_row_appearances == null || row.appearances == null) return false;
     return (row.pos_row_appearances - row.appearances) >= NUMBER_CLUB_GAP;
   }
