@@ -30,7 +30,16 @@ const RANKED=/goalscor|top scor|scorers|assists|disciplin|hat-?trick|clean sheet
   Object.entries(targets).forEach(([k,cs])=>cs.forEach(c=>{cardKey[c.card_id]=k;cardName[c.card_id]=c.player_name;}));
   const held=fs.readFileSync(D+'/held.jsonl','utf8').trim().split('\n').map(JSON.parse);
   const titleOf={}; found.forEach(f=>titleOf[`${f.league_code}|${f.season_year}|${f.club}`]={title:f.title,wiki:f.wiki});
-  held.forEach(h=>{ if(h.title&&!titleOf[h.key]) titleOf[h.key]={title:h.title,wiki:h.wiki}; });
+  /*  A CLUB-SEASON CAN APPEAR TWICE IN held.jsonl AND THE FIRST ENTRY IS NOT THE RIGHT ONE.
+      Manchester City 2025/26 is held under the WOMEN'S page (pre-gate-fix, `parsed, zero cards
+      matched`) and again under the men's page (`5 blocks, held for adjudication`). Taking the
+      first put the W.F.C. title against Semenyo's 42 in a report , the NUMBER was right, because
+      the agreement run read each held record directly, but the provenance column lied about
+      where it came from. PREFER THE MULTI-BLOCK RECORD, which is the one that produced a number. */
+  held.forEach(h=>{ if(!h.title) return;
+    const better = /blocks, held/.test(h.reason);
+    if (!titleOf[h.key] || (better && !titleOf[h.key].fromBlocks))
+      titleOf[h.key]={title:h.title,wiki:h.wiki,fromBlocks:better}; });
 
   // every card that would get a number, with how it was obtained
   const want=[...found.map(f=>({card_id:f.card_id,n:f.shirt_number,how:'clean_page'})),

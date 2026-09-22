@@ -181,3 +181,47 @@ number and only 171 of them wear the arrows.**
 real size of the defect this sitting exists to fix, and it is larger than the 145 the first pass
 saw, because the agreement rule recovered the multi-block pages. **Semenyo 24 to 42 and Guéhi 6 to
 15 are two of the 295.**
+
+
+## D. A SAMPLE OF THE 295 CORRECTIONS , AND A REPORTING DEFECT FOUND WHILE BUILDING IT
+
+| player | club | season | lg | shows | sourced | half | Wikipedia page |
+|---|---|---|---|---|---|---|---|
+| A. Semenyo | Manchester City | 2025 | PL | 24 | **42** | new | 2025–26 Manchester City F.C. season (en) |
+| M. Guéhi | Manchester City | 2025 | PL | 6 | **15** | new | 2025–26 Manchester City F.C. season (en) |
+| D. Hubert | Genk | 2012 | BPL | 14 | **6** | new | KRC Genk in het seizoen 2012/13 (nl) |
+| N. Benezet | Evian TG | 2014 | L1 | 7 | **10** | new | Saison 2013-2014 de l'Évian Thonon Gaillard FC (fr) |
+| V. Şen | Trabzonspor | 2017 | TR | 14 | **9** | new | Trabzonspor 2017-18 sezonu (tr) |
+| S. Klaiber | Utrecht | 2014 | ERE | 17 | **26** | new | 2014–15 FC Utrecht season (en) |
+| Y. Regäsel | Hertha BSC | 2015 | BL | 2 | **39** | new | 2015–16 Hertha BSC season (en) |
+| G. Sertic | Marseille | 2016 | L1 | 27 | **13** | ORIGINAL | 2016–17 Olympique de Marseille season (en) |
+| I. Sylla | Montpellier | 2022 | L1 | 12 | **3** | ORIGINAL | 2022–23 Montpellier HSC season (en) |
+| S. Zuber | 1899 Hoffenheim | 2018 | BL | 9 | **17** | new | 2018–19 TSG 1899 Hoffenheim season (en) |
+| M. Bodmer | Nice | 2016 | L1 | 27 | **24** | new | 2016–17 OGC Nice season (en) |
+| M. Gómez | VfL Wolfsburg | 2017 | BL | 27 | **33** | new | 2017–18 VfL Wolfsburg season (en) |
+| S. Sow | NEC Nijmegen | 2023 | ERE | 9 | **19** | ORIGINAL | 2023–24 NEC Nijmegen season (en) |
+| S. Wagner | Bayern München | 2017 | BL | 14 | **2** | ORIGINAL | 2017–18 FC Bayern Munich season (en) |
+| P. Joosten | Groningen | 2021 | ERE | 11 | **14** | new | 2021–22 FC Groningen season (en) |
+
+**Quotas: 4 pre-2016, 11 from 2016 on, 6 leagues, 3 non-English wikis, 4 on an ORIGINAL half.**
+
+**FOUR ROWS RE-READ OFF THE LIVE PAGES AS A CONTROL, INCLUDING THE ONE THAT LOOKS WRONG:**
+Sandro Wagner really does wear **#2** at Bayern 2017/18 , odd for a striker, which is why it was
+checked , and Joosten 14, Hubert 6 and Şen 9 all reproduce, the last two off Dutch and Turkish
+pages. **The row that looks like an error is the one to verify, not the one to drop.**
+
+**AND BUILDING THIS TABLE FOUND A REPORTING DEFECT , THE PAGE COLUMN LIED ON THE TWO KNOWN
+ANSWERS.** The first draft showed Semenyo and Guéhi as sourced from
+**"2025–26 Manchester City W.F.C. season"**, the women's page.
+- **THE NUMBERS WERE NEVER WRONG.** The agreement run iterates the held records directly, so it
+  read the men's page and returned 42 and 15. What was wrong was the title lookup in the REPORT: a
+  first-wins map keyed by club-season, and **City is held TWICE** , once under the women's page
+  from before the gate fix, once under the men's page. Measured: it is the **only** club-season
+  held twice, so no other row was affected.
+- **IT IS THE SAME SHAPE AS GUARD A AND AS THE `def_share` TEST: A VALUE COMPUTED FROM ONE THING
+  WHILE A DIFFERENT THING IS USED.** The number came from one record and its provenance from
+  another, and only putting them side by side in a table for a human showed it.
+- **Fixed in `section-audit.js` by preferring the record that PRODUCED the number** , the
+  multi-block one , rather than whichever was written first. **A provenance column that can
+  disagree with the value it describes is worse than no provenance column**, because it is the
+  thing a reviewer trusts to check everything else.
