@@ -1,0 +1,94 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Confidence Notes</title>
+<!--  THE PLAYBOOK'S OWN FOUR FAMILIES, COPIED FROM ITS HEAD. SS C: a demo that introduces a face
+      the target does not load is proposing two changes while naming one.  -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+ body{margin:0;padding:22px 18px 80px;background:#F4EFE2;color:#1C1B1A;font:14px/1.55 Inter,system-ui,sans-serif}
+ .wrap{max-width:760px;margin:0 auto}
+ h1{font:800 22px 'Bricolage Grotesque',sans-serif;margin:0 0 4px}
+ .sub{font:400 13px Inter;color:#6a6256;margin:0 0 20px}
+ h2{font:800 15px 'Bricolage Grotesque',sans-serif;margin:30px 0 4px;padding-top:18px;border-top:1px solid rgba(0,0,0,.1)}
+ .why{font:400 12.5px Inter;color:#6a6256;margin:0 0 12px}
+ .state{font:600 11px Archivo,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#AD0332;margin:18px 0 6px}
+ .meta{font:500 11.5px Inter;color:#8a8276;margin:0 0 6px}
+ /*  THE CARD'S OWN .dc-flag RULE, COPIED FROM card.html:601 , judged as it will render  */
+ .dc-flag{font-family:'Inter';font-size:12.5px;line-height:1.5;color:#46433c;margin-top:8px;
+   padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.04)}
+ .dc-flag b{font-weight:600;color:#1C1B1A}
+ .arrows{display:inline-block;font:700 11px Archivo;color:#AD0332;letter-spacing:.06em;margin-left:6px}
+ .pb{background:#FBF8F2;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:14px 16px;margin-top:10px}
+ .pb .lbl{font:600 10.5px Archivo;letter-spacing:.09em;text-transform:uppercase;color:#8a8276;margin-bottom:6px}
+ .pb p{font:400 13px/1.62 Inter;color:#3a352e;margin:0 0 10px}
+ .pb p:last-child{margin-bottom:0}
+ .pb b{font-weight:600;color:#1C1B1A}
+ .note{font:400 12px Inter;color:#8a8276;margin-top:8px}
+ code{font:500 11.5px ui-monospace,monospace;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+</style></head><body><div class="wrap">
+
+<h1>Data Confidence , the notes, redrafted</h1>
+<p class="sub">Rendered in the Playbook's four families and the card's own <code>.dc-flag</code> rule.
+Nothing here is wired. <b>The two notes are gated separately now</b>: the shirt-number note on
+<code>shirt_number_source = modal_split</code>, the partial-season note on the card having a sibling.
+That separation is the fix , today they share one flag, so 1,499 split halves that got a sourced
+number lost the partial-season disclosure with the arrows.</p>
+
+<h2>1 , Split, SOURCED number. The worked example.</h2>
+<p class="why">Semenyo, Manchester City 2025/26, card 188350. Number 42, read off City's own squad
+page. <b>No arrows</b> , and until now, no partial-season note either, which was the defect.</p>
+<div class="meta">17 of 37 appearances &middot; other club Bournemouth &middot; Bournemouth to Manchester City, 8 January 2026, Transfer</div>
+<div class="dc-flag"><b>Partial season.</b> He moved from Bournemouth to Manchester City on 8 January 2026. This card holds his Manchester City share, 17 of 37 appearances. The figures and the score cover that share only.</div>
+
+<h2>2 , Split, INFERRED number. Both notes, arrows.</h2>
+<p class="why">Vandenberghe, Gent 2024/25, card 187669. Number 32 from the season-wide line-ups.</p>
+<div class="meta">14 of 23 appearances &middot; other club Kortrijk &middot; Kortrijk to Gent, 7 January 2025, Transfer</div>
+<div class="dc-flag"><b>Shirt number.</b><span class="arrows">&#8645; arrows</span> This is the number he wore most often across the season, read from the line-ups. He played for two clubs, so it may be the one he wore at Kortrijk.</div>
+<div class="dc-flag"><b>Partial season.</b> He moved from Kortrijk to Gent on 7 January 2025. This card holds his Gent share, 14 of 23 appearances. The figures and the score cover that share only.</div>
+
+<h2>3 , Split, NO number.</h2>
+<p class="why">Mei&szlig;ner, Willem II 2017/18, card 172416. Nothing found for that club-season, so the
+shield is blank and there is no number to qualify. <b>The partial-season note still applies.</b></p>
+<div class="meta">4 of 14 appearances &middot; other club ADO Den Haag &middot; loan, 30 January 2018</div>
+<div class="dc-flag"><b>Partial season.</b> He joined Willem II on loan from ADO Den Haag on 30 January 2018. This card holds his Willem II share, 4 of 14 appearances. The figures and the score cover that share only.</div>
+
+<h2>4 , LOAN, and the direction is named.</h2>
+<p class="why">Walter, Estac Troyes 2017/18, card 160369. The same loan reads differently on each
+half, because the direction is a fact and "moved" would be wrong.</p>
+<div class="meta">12 of 20 appearances &middot; Nice to Estac Troyes, 18 January 2018, Loan</div>
+<div class="dc-flag"><b>Partial season.</b> He joined Estac Troyes on loan from Nice on 18 January 2018. This card holds his Estac Troyes share, 12 of 20 appearances. The figures and the score cover that share only.</div>
+<div class="note">and on the other half, the Nice card:</div>
+<div class="dc-flag"><b>Partial season.</b> He left Nice on loan for Estac Troyes on 18 January 2018. This card holds his Nice share, 8 of 20 appearances. The figures and the score cover that share only.</div>
+
+<h2>5 , UNDATED. The 27 pairs with no transfer row.</h2>
+<p class="why">Peter, Getafe 2023/24, card 187613. <b>No date and no direction is claimed</b> , the
+note says only what is known, which is that he played for two clubs.</p>
+<div class="meta">16 of 31 appearances &middot; other club Valencia &middot; no transfer row</div>
+<div class="dc-flag"><b>Partial season.</b> He played for two clubs in this league that season, Getafe and Valencia. This card holds his Getafe share, 16 of 31 appearances. The figures and the score cover that share only.</div>
+
+<h2>6 , THREE clubs. Six pairs, and the transfer row covers only two of the three.</h2>
+<p class="why">So the dated wording cannot be used, and it falls back to the undated form naming all
+three. <b>Stated rather than discovered later.</b></p>
+<div class="dc-flag"><b>Partial season.</b> He played for three clubs in this league that season, Fiorentina, Pisa and Sassuolo. This card holds his Pisa share, 21 of 38 appearances. The figures and the score cover that share only.</div>
+
+<h2>The Playbook , the card section gets ONE line</h2>
+<p class="why">Prose pointer, no link, per that section's existing rule.</p>
+<div class="pb"><div class="lbl">The Card &middot; #s-card</div>
+<p>A small pair of arrows beneath the shield means the shirt number is inferred rather than sourced. The Data Confidence section below says where a number comes from, and when it cannot be pinned to one club.</p></div>
+
+<h2>The Playbook , Data Confidence holds the only full explanation</h2>
+<p class="why">These three sentences are the strings the card reads too , one copy in
+<code>vv-core.js</code> as <code>SHIRT_SOURCE_NOTE</code>, rendered on both surfaces, so they cannot
+drift. <b>Never "verified".</b></p>
+<div class="pb"><div class="lbl">Data Confidence &middot; #s-conf</div>
+<p><b>Shirt numbers.</b> Every number on a card records where it came from, and there are three answers.</p>
+<p><b>Sourced.</b> Read off that club's own squad and appearance tables for that season, and cross-checked against each other where a page carries more than one. No arrows.</p>
+<p><b>One club that season.</b> He played for a single club, so there is no question whose number it is. No arrows.</p>
+<p><b>Inferred.</b> He moved mid-season, and this is the number he wore most often across the whole season, which may belong to either club. These are the cards that carry the arrows.</p>
+<p class="note">Sourced is not the same as confirmed. These numbers come from squad tables written by volunteers, and we say where a number came from rather than that it is right.</p></div>
+
+<h2>What changes in the code</h2>
+<div class="pb"><div class="lbl">card.html &middot; the gate</div>
+<p>Today both notes render from <code>D.numberClubUncertain</code>. They split: the shirt-number note keeps that flag, and the partial-season note moves to a new one that is true whenever the card has a sibling in the same player, season and league , which is now knowable exactly.</p>
+<p><b>1,499 split halves gain the partial-season note</b> and 158 keep both. No card loses anything.</p></div>
+
+</div></body></html>
