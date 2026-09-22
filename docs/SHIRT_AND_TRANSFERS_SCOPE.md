@@ -25,59 +25,63 @@ puts IN that column is a view edit plus a PLAIN REFRESH**, not a DROP and CREATE
 
 ## 1. `shirt_number` ON THE CARD ROW
 
-**THE RULE, as ruled: a half shows the number squadnum found FOR ITS OWN CLUB, or NOTHING. It never
-inherits the season's number.** Blank means "not found", and for that club it was not found.
+**THE RULE , REVISED 2026-09-22. A NUMBER IS ONLY REMOVED WHERE THERE IS EVIDENCE IT IS WRONG.**
+The first version of this file said "the number squadnum found for its own club, or nothing", and
+that is too strong: **it would have wiped several hundred numbers that are correct**, because
+squadnum failing to re-source a club-season is not evidence about the number already there.
 
-**TWO IMPLEMENTATIONS, AND THE SECOND IS RECOMMENDED:**
-- **(a) A `CASE` in the view** , read `psc.shirt_number` when the player-season holds more than one
-  card, else `COALESCE(psc.shirt_number, pp.shirt_number)`. Smallest write, most complex view.
-- **(b) BACKFILL `psc.shirt_number` FOR EVERY CARD AND HAVE THE VIEW READ `psc.shirt_number` ALONE.**
-  **Recommended.** The number then lives where it belongs , on the per-club row , and the
-  `player_positions` join for shirt number disappears entirely, **which removes the whole class of
-  bug rather than special-casing it.** Cost: a one-time write to the 36,829 cards that carry a
-  number. **It is rt-neutral , `shirt_number` occurs ONCE in the viewdef, at line 346, in the final
-  select list, and nowhere in the scoring region** (the same check that cleared `appearances`).
-- **`player_positions` KEEPS ITS WHOLE-SEASON ROW EITHER WAY.** Re-keying it on `team_id` is the
-  obvious third option and is ACTIVELY HARMFUL: item 26's detector is
-  `pp.appearances > card.appearances`, which works ONLY because that row spans both clubs.
-  **Splitting it would make the flag stop firing silently.**
+| population | rule |
+|---|---|
+| **ORIGINAL half, pre-2016** | **KEEP, always** |
+| **ORIGINAL half, 2016+** | **KEEP** where this club leads by **3 or more appearances**; **BLANK** where the other club leads, or the margin is within 2 |
+| **NEW half** | squadnum where it resolves, **BLANK** otherwise |
 
-### EXPECTED COVERAGE , MEASURED AGAINST WHAT SQUADNUM HAS ALREADY DONE
+**PRE-2016 "KEEP ALWAYS" COSTS NOTHING AND IS PROVABLE, NOT A CONCESSION.** Of the 380 pre-2016
+original halves, **129 carry a number and ALL 129 are in squadnum's ledger** , zero came from
+anywhere else. They were read off that club's own squad page and are verified club-consistent
+(SS E: 5,993 of 5,993). **The other 251 have no number today**, so there is nothing to keep or
+remove. The rule is exact rather than approximately safe.
 
-**1,657 halves** (830 new + 827 siblings; three pairs have three clubs).
+### THE REVISED COUNTS, MEASURED
 
-| | new halves | siblings |
-|---|---|---|
-| total | 830 | 827 |
-| pre-2016 / 2016+ | 380 / 450 | 380 / 447 |
-| club-season squadnum RESOLVED | 174 | 188 |
-| club-season squadnum HELD | 206 | 192 |
-| never attempted (all 2016+) | 450 | 447 |
+**ORIGINAL halves , 827**
 
-**THE PER-CARD MATCH RATE ON TRANSFER HALVES IS 68.6%, MEASURED RATHER THAN ASSUMED** , of the 188
-pre-2016 siblings sitting in a club-season squadnum resolved, **129 got a number**. That is the rate
-to apply, not squadnum's global 38.5% (7,928 numbers against 20,599 pre-2016 cards), which is
-dragged down by club-seasons that never resolved at all.
+| | |
+|---|---|
+| pre-2016, KEEP | **129** (251 more have no number today) |
+| 2016+, KEEP , this club leads by 3+ | **241** |
+| 2016+, BLANK , the other club leads | **94** |
+| 2016+, BLANK , within 2 appearances | **111** |
+| **kept / blanked / never had one** | **370 / 205 / 252** |
 
-**THE ESTIMATE, WITH ITS METHOD, SO IT CAN BE ARGUED WITH:**
-- **362 halves in a RESOLVED club-season x 68.6% = about 248 numbers.**
-- **398 halves in a HELD club-season = about 0.** squadnum already failed those pages , 147 "no
-  squad block", 85 "no page", 121 "duplicate numbers". **197 of the 647 holds are "N blocks, held
-  for adjudication" and are recoverable by hand**, so this is a floor rather than a verdict.
-- **897 halves never attempted (all 2016+) x 48.3% x 68.6% = about 297.** The 48.3% is squadnum's
-  own club-season resolution rate (492 resolved of 1,018 attempted) on 2010 to 2015.
-- **TOTAL: ROUGHLY 545 OF 1,657 FILLED, ABOUT 33%, AND ROUGHLY 1,110 BLANK.**
+**NEW halves , 830**
 
-**THE WEAK PART IS NAMED: the 2016+ third of that estimate applies a PRE-2016 resolution rate to a
-LATER era.** Wikipedia club-season coverage improves with recency, so **297 is more likely a floor
-than a ceiling, and the honest band is about 500 to 800 filled.** It will not be known until
-squadnum is pointed at 2016+, which it never has been.
-- **PORTUGAL IS A KNOWN CEILING AND WILL NOT MOVE: 78 PRT halves, and SS D records that pt.wikipedia
-  carries season pages for THREE clubs.** Expect almost all of those blank, and do not read it as a
-  pipeline failure , SS D already measured that it is the source, not the query.
-- **AND SEMENYO SHOULD COME THROUGH:** Manchester City 2025/26 is exactly the kind of club-season
-  that resolves. **If his card does not read 42 after this sitting, the sitting has not worked**,
-  whatever the aggregate says.
+| | |
+|---|---|
+| club-season squadnum resolved , 174 x 68.6% | **about 119** |
+| club-season squadnum held , 206 | **0** |
+| never attempted, all 2016+ , 450 x 48.3% x 68.6% | **about 149** |
+| **filled / blank** | **about 268 / 562** |
+
+**TOTAL: ABOUT 638 OF 1,657 FILLED, AND ONLY 205 EXISTING NUMBERS REMOVED.** The earlier version of
+this scope reached ~545 filled and would have blanked originals wholesale. **The difference is not
+the estimate, it is which originals survive** , 241 correct 2016+ numbers are kept on evidence
+rather than discarded for want of a re-source.
+
+**AND THE COST OF THE TWO BLANK GROUPS IS DIFFERENT, SO BOTH ARE STATED:**
+- **THE 94 WHERE THE OTHER CLUB LEADS ARE CLEARLY WORTH BLANKING.** At the measured 68% rate that
+  removes roughly 64 wrong numbers to lose about 30 right ones.
+- **THE 111 WITHIN-2 CASES ARE CLOSE TO A COIN FLIP, AND BLANKING THEM IS A JUDGEMENT, NOT A
+  CORRECTION.** It removes roughly 55 wrong and 55 right. **It is defensible , a blank is honest
+  about a margin that cannot decide , and it is the same trade SS D already weighs for the 841**,
+  where blanking removes a correct number from two cards in three. **Recorded so nobody later reads
+  those 111 as errors that were found.**
+
+**THE THRESHOLD IS APPLIED TO A PROXY AND THAT MUST TRAVEL WITH IT.** The modal rule in
+`import-positions-v2.js:128` counts **grid-positioned STARTS**; this rule compares **appearances**,
+because that is what the card carries. A player with more appearances at one club and more starts
+at the other is judged wrongly here. **`starts` is not the escape** , SS E records it as the wrong
+field on 774 cards.
 
 **RUN `scripts/squadnum/guard-test.js` BEFORE ANY BATCH** , the resolver's controls, which SS C says
 must pass first, and which caught a false refusal the 119-pair live run did not.
@@ -101,6 +105,12 @@ MID-SEASON DATE.** 26 have no row naming both, 1 falls outside the December-Janu
   "joined on loan" where the type says so, and the table must carry the type for it to.
 - **SHAPE:** `(api_player_id, season_year, league_code, from_club, to_club, transfer_date,
   transfer_type)`, one row per split. **No matview impact** , sitting 4 reads it directly.
+- **`transfer_type` IS NOT OPTIONAL AND IS NOT DECORATION , IT IS 430 OF 800 ROWS.** Without it
+  sitting 4 writes "moved to Manchester City" for a majority of cards where the truth is "joined on
+  loan", and a loan back to a parent club reads as a transfer that never happened. **Carry the
+  provider's own string rather than a derived label** , the vocabulary is Loan, Free, Transfer,
+  Swap, N/A and a tail of fees, and collapsing it now loses the fee, which is the one part nobody
+  can reconstruct later.
 - **DIRECTION IS RESOLVED BY NAME, against each half's `team_name`.** The 26 unmatched pairs carry
   no direction and no date; **they get a club name and nothing else, rather than a guess.**
 
@@ -132,24 +142,32 @@ Across all nine `h_*` columns there are **SIX** double-counted pairs:
 - **'career' leg** joins `world_cup_winner` on player with `psc3.season_year >= h.season_year`, no
   club. Also double-counts.
 
-**THE RULE TO IMPLEMENT, EXTENDED FROM THE AGREED ONE BECAUSE THE AGREED ONE DOES NOT COVER SIX
-CASES:**
+**THE RULE TO IMPLEMENT , RULED 2026-09-22, AND IT IS NARROWER THAN THE VERSION THIS FILE FIRST
+CARRIED. ONLY PERFORMANCE HONOURS ARE TOUCHED.**
 
-| honour | tie-break |
-|---|---|
-| `golden_boot` | **goals** |
-| `top_assists` | **assists** |
-| `ballon_dor`, `player_of_season` | **minutes** |
-| `world_cup_winner`, `euro_winner`, `copa_winner` | **minutes** |
-| `league_champion`, `ucl_winner` | **nothing , already club-joined and correct** |
+| honour | what it is | tie-break |
+|---|---|---|
+| `golden_boot` | earned by the season's performance | **goals** |
+| `top_assists` | earned by the season's performance | **assists** |
+| `player_of_season`, `ballon_dor` | earned by the season's performance | **minutes** |
+| `world_cup_winner` | **career status** | **NOTHING , leave on both halves** |
+| `euro_winner`, `copa_winner` | won with the NATIONAL TEAM | **NOTHING , leave on both halves** |
+| `league_champion`, `ucl_winner` | club honour, already club-joined | nothing , already correct |
 
-**THE NATIONAL HONOURS ARE THE EXTENSION AND THE REASONING IS THAT THERE IS NO CLUB STAT TO USE.**
-A Euro is not won with goals for Southampton. **So they follow the same fallback as Ballon d'Or:
-the half with more minutes is the season's primary club card.** Then the deterministic chain , more
-minutes, then more appearances, then the lower `team_id`.
-- **HARBAOUI STILL DOES NOT MOVE.** Zulte Waregem has 6 goals against Anderlecht's 3, so the Golden
-  Boot stays where it already sits. **The change is a no-op on the one case everyone will look at**,
-  which is the check that the rule is right rather than a reason it did not matter.
+**SO THE VIEW CHANGE TOUCHES FOUR HONOUR TYPES AND, ON TODAY'S DATA, EXACTLY ONE CARD PAIR.**
+Harbaoui's Golden Boot is the only performance honour sitting on a split season. The other five
+double-counts are left alone **on purpose**, and the reason is different for each group:
+- **WORLD CUP IS CAREER STATUS AND THE VIEW ALREADY TREATS IT THAT WAY.** The 'career' leg attaches
+  it to EVERY card from the winning season onward, so a winner holds it on dozens of cards already.
+  **Both halves carrying it is consistent with that, not an exception to it** , Torres 2010 and
+  Llorente 2020 are correct as they stand.
+- **EURO AND COPA ARE WON WITH THE NATIONAL TEAM, SO NO CLUB STAT CAN ARBITRATE THEM.** This file
+  previously proposed a MINUTES tiebreak for them and that was wrong: **it would pick a club at
+  random and present the result as a finding.** Fonte's Euro was not won at West Ham rather than
+  Southampton. Leaving it on both halves says something true; picking one says something false.
+- **THE DISTINCTION IS "WAS THIS EARNED BY THIS CLUB SEASON", NOT "IS THIS INDIVIDUAL".** Both
+  groups are individual; only one is a property of the football on the card.
+
 - **IT IS A VIEW EDIT INSIDE `hon_rows`, AND THE OUTPUT COLUMN LIST DOES NOT CHANGE** , so
   `CREATE OR REPLACE VIEW` accepts it. **Capture `pg_get_viewdef` to a timestamped file first**, and
   assert its length on the way back in; SS C records this view being silently destroyed once.
