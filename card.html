@@ -1477,8 +1477,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260922a"></script>
-<script src="/vv-core.js?v=20260922a"></script>
+<script src="/vv-marks.js?v=20260922b"></script>
+<script src="/vv-core.js?v=20260922b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2030,15 +2030,63 @@
     }
     /*  ITEM 26 , the explanation the shield mark points at. It sits OUTSIDE the breakdown
         fold because the mark's tap lands here and must not land on a closed box.
-        BOTH LINES ARE CONDITIONAL AND THAT IS THE POINT: the detector is right about seven
-        in ten at gap 3 and up, so neither may state the move as fact. The second leans on
-        the first ("if he did") and they always render together, from the one flag.  */
+        THE TWO NOTES ARE GATED SEPARATELY (2026-09-22) AND THAT IS THE FIX. They used to share
+        `numberClubUncertain`, and sitting 2 changed that flag from "is this a split" to "is the
+        number inferred" , so 1,499 split halves that gained a SOURCED number silently lost the
+        partial-season disclosure along with the arrows. One flag was answering two questions.
+          shirt-number note , `shirt_number_source === 'modal_split'`. About the NUMBER.
+          partial-season note , the card has a sibling in the same player, season and league.
+                                About the FOOTBALL, and true whatever the number turned out to be.
+        AND THE HEDGES ARE GONE. "If he did move" was right while the move was inferred from an
+        appearance gap; `split_transfers` now carries the date and the direction for 800 of 827
+        pairs, so the note states it. Where there is no row it claims neither, rather than
+        guessing , SS C's rule that an unverified premise is most costly when it argues for
+        saying MORE.  */
+    renderDcFlags();
+  }
+
+  /*  CALLED TWICE, ON PURPOSE. renderPanels paints the card on one round-trip and SEASON_RAW is
+      still in flight then, so the first call can only draw the shirt-number note, which needs
+      nothing but the card's own row. The second runs once the seasons and, for a split, the
+      transfer row have landed. Attaching it to the STATE rather than to one call site is SS C's
+      rule: a behaviour hung on the path in front of you is missing from every other path.  */
+  var DC_TX_FOR=null;                     // which card_id DC_TRANSFER was fetched for
+  function renderDcFlags(){
+    if(typeof D==='undefined' || !D) return;
+    /*  THE TRANSFER ROW IS FETCHED HERE, LAZILY, AND ONLY FOR A SPLIT , about 1,657 cards of
+        57,885, so 97% of loads pay nothing, and whether the card IS a split is answered from
+        SEASON_RAW with no request at all. SS E refused a per-card query for the shirt-number
+        FLAG and was right; the flag is a matview column now, and this is the NOTE.
+        IT LIVES IN THE RENDERER RATHER THAN AT A CALL SITE so the season stepper gets it too ,
+        that path re-renders without re-running the load, and a fetch bolted to the load alone
+        would leave a switched season showing the undated wording.  */
+    if(DC_RAW && typeof SEASON_RAW !== 'undefined' && SEASON_RAW && DC_TX_FOR !== DC_RAW.card_id){
+      var isSplit = SEASON_RAW.some(function(r){ return r.card_id !== DC_RAW.card_id
+                      && r.season_year === DC_RAW.season_year && r.league_code === DC_RAW.league_code; });
+      DC_TX_FOR = DC_RAW.card_id;
+      if(isSplit){
+        var want = DC_RAW.card_id;
+        sb.from('split_transfers').select('*').eq('api_player_id', DC_RAW.api_player_id)
+          .eq('season_year', DC_RAW.season_year).eq('league_code', DC_RAW.league_code).limit(1)
+          .then(function(t){ if(DC_RAW && DC_RAW.card_id===want){ DC_TRANSFER=(t&&t.data&&t.data[0])||null; renderDcFlags(); } })
+          .catch(function(){});                    // no row is a STATE, not a failure , the note then claims no date
+      }
+    }
     var dcFlags = document.getElementById('dcFlags');
     if(dcFlags){
-      dcFlags.innerHTML = D.numberClubUncertain
-        ? '<div class="dc-flag" id="dcFlagNumber"><b>Shirt number.</b> This number was recorded for the season as a whole, and the appearance record runs longer than the matches on this card. If the player moved mid-season, the number may be the one he wore at the other club.</div>'
-          + '<div class="dc-flag"><b>Partial season.</b> If he did move, this card holds one club\'s share of the season, and the figures and the score cover that share only, not the full campaign.</div>'
-        : '';
+      var sibs = (typeof SEASON_RAW !== 'undefined' && SEASON_RAW ? SEASON_RAW : [])
+        .filter(function(r){ return r.card_id !== D.card_id
+                          && r.season_year === D.season_year && r.league_code === D.league_code; });
+      var shirtNote = VVCore.shirtNumberNote(DC_RAW || {}, sibs.map(function(r){ return r.team_name; }));
+      var partNote = sibs.length ? VVCore.partialSeasonNote({
+        thisClub: D.clubname, thisApps: D.appearances,
+        totalApps: sibs.reduce(function(a,r){ return a + (r.appearances || 0); }, D.appearances || 0),
+        others: sibs.map(function(r){ return r.team_name; }),
+        transfer: DC_TRANSFER
+      }) : null;
+      dcFlags.innerHTML =
+          (shirtNote ? '<div class="dc-flag" id="dcFlagNumber">' + shirtNote + '</div>' : '')
+        + (partNote  ? '<div class="dc-flag">' + partNote + '</div>' : '');
     }
     var dcNote = document.querySelector('.dc-detail .dc-note');
     if(dcNote){
@@ -2262,7 +2310,7 @@
       vvCardNotFound(id, missing);
       return;
     }
-    D=rowToCard(res.data);
+    D=rowToCard(res.data); DC_RAW=res.data; DC_TRANSFER=null;
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
@@ -2274,6 +2322,11 @@
     var _honP0 = fetchHonours(res.data);
     var _seaP0 = loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
     EDITORIAL_DEPS = Promise.all([_honP0.catch(function(){}), _seaP0.catch(function(){})]);
+    /*  THE TRANSFER ROW IS FETCHED ONLY FOR A SPLIT , about 1,657 cards of 57,885, so 97% of
+        loads pay nothing. SS E refused a per-card query for the shirt-number FLAG and was right;
+        the flag is a matview column now, and this is the NOTE, which only a split card renders.
+        Whether the card IS a split is answered from SEASON_RAW with no request at all.  */
+    _seaP0.then(function(){ renderDcFlags(); }).catch(function(){});   // siblings have landed; the renderer does the rest
     renderPanels(D);                         // CARD CORE VISIBLE on ONE round-trip (score/stats/tags/radar/proof)
     // Drop the holding class once real values are in. A state class left on settled content
     // is a small lie about what the element is doing, and the next person to style .vv-wait
@@ -2288,6 +2341,7 @@
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
+  var DC_RAW=null, DC_TRANSFER=null;   // the raw matview row, and the split_transfers row when this card is a split
 
   async function loadSeasons(apiPlayerId, currentCardId){
     SEASON_CARDID=currentCardId; SEASON_ROWS=null; SEASON_RAW=null;
@@ -2467,7 +2521,7 @@
     var sb=vvClient(); if(!sb) return;
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
     if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
-    D=rowToCard(res.data);
+    D=rowToCard(res.data); DC_RAW=res.data; DC_TRANSFER=null;
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; honours fill in after the flip lands (they don't gate the reveal)
     var _cw=cwNow();   // #109 reveal to the new season: desktop 3D flip / mobile scale-swap, coin = destination tier (D.vv)

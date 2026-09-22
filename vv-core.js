@@ -2124,6 +2124,76 @@
     if (row.pos_row_appearances == null || row.appearances == null) return false;
     return (row.pos_row_appearances - row.appearances) >= NUMBER_CLUB_GAP;
   }
+  /*  ── THE DATA-CONFIDENCE NOTES , ONE COPY, READ BY THE CARD AND THE PLAYBOOK ──────────────
+      Both surfaces render these, so they cannot drift into two versions of one explanation.
+      THE WORD IS "SOURCED", NEVER "VERIFIED". `squadnum` names WHERE a number came from and
+      claims nothing about its truth.  */
+  var SHIRT_SOURCE_NOTE = {
+    intro:        'Every number on a card records where it came from, and there are three answers.',
+    squadnum:     'Read off that club\'s own squad and appearance tables for that season, and cross-checked against each other where a page carries more than one. No arrows.',
+    modal_single: 'He played for a single club, so there is no question whose number it is. No arrows.',
+    modal_split:  'He moved mid-season, and this is the number he wore most often across the whole season, which may belong to either club. These are the cards that carry the arrows.',
+    standing:     'Sourced is not the same as confirmed. These numbers come from squad tables written by volunteers, and we say where a number came from rather than that it is right.'
+  };
+  var SHIRT_SOURCE_LABEL = { squadnum:'Sourced', modal_single:'One club that season', modal_split:'Inferred' };
+
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function vvLongDate(iso){
+    if (!iso) return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); if (!m) return null;
+    return Number(m[3]) + ' ' + MONTHS[Number(m[2]) - 1] + ' ' + m[1];
+  }
+  function andList(a){
+    if (!a || !a.length) return '';
+    if (a.length === 1) return a[0];
+    return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  }
+
+  /*  THE SHIRT-NUMBER NOTE , ONLY on `modal_split`. It used to say the number "was recorded for
+      the season as a whole" and that the appearance record "runs longer than the matches on this
+      card", which described the OLD detector's evidence rather than the number. And an earlier
+      draft said he "wore it that season", which fights its own next sentence: if it may be the
+      other club's, it is not the number he wore at this one.  */
+  function shirtNumberNote(row, otherClubs){
+    if (!row || row.shirt_number_source !== 'modal_split') return null;
+    var n = (otherClubs || []).length;
+    var where = n === 1 ? 'it may be the one he wore at ' + otherClubs[0]
+              : n  >  1 ? 'it may be one he wore elsewhere'
+              : 'it may belong to either club';
+    return '<b>Shirt number.</b> This number is inferred from line-ups across the season. He played for '
+         + (n > 1 ? 'more than one other club' : 'two clubs') + ', so ' + where + '.';
+  }
+
+  /*  THE PARTIAL-SEASON NOTE , on EVERY half of a split, which is a DIFFERENT question from the
+      one above and is why they no longer share a flag. Sitting 2 changed `numberClubUncertain`
+      from "is this a split" to "is the number inferred", and 1,499 halves silently lost this.
+      NO HEDGE. "If he did move" is gone: `split_transfers` carries the date and the direction for
+      800 of 827 pairs, and where it does not, the note claims neither.
+      THE DENOMINATOR IS NAMED , "17 appearances of the 37 he made across both clubs" , because a
+      card showing 17 beside a bare "of 37" reads as the card contradicting itself.  */
+  function partialSeasonNote(o){
+    if (!o || !o.thisClub || !o.others || !o.others.length) return null;
+    var clubs = o.others.length + 1;
+    var across = clubs > 2 ? 'across all ' + (clubs === 3 ? 'three' : clubs) + ' clubs that season'
+                           : 'across both clubs that season';
+    var tail = ' This card holds his ' + o.thisClub + ' share, ' + o.thisApps + ' appearance'
+             + (o.thisApps === 1 ? '' : 's') + ' of the ' + o.totalApps + ' he made ' + across
+             + '. The figures and the score cover that share only.';
+    var t = o.transfer, d = t && vvLongDate(t.transfer_date);
+    /*  A THREE-CLUB SEASON FALLS BACK TO THE UNDATED FORM: `split_transfers` holds one row per
+        player-season, so it covers two of the three and the dated wording would be a half-truth. */
+    if (t && d && clubs === 2) {
+      var loan = /loan/i.test(t.transfer_type || '');
+      var head;
+      if (!loan) head = 'He moved from ' + t.from_club + ' to ' + t.to_club + ' on ' + d + '.';
+      else if (o.thisClub === t.to_club) head = 'He joined ' + t.to_club + ' on loan from ' + t.from_club + ' on ' + d + '.';
+      else head = 'He left ' + t.from_club + ' on loan for ' + t.to_club + ' on ' + d + '.';
+      return '<b>Partial season.</b> ' + head + tail;
+    }
+    return '<b>Partial season.</b> He played for ' + (clubs === 2 ? 'two' : clubs === 3 ? 'three' : clubs)
+         + ' clubs in this league that season, ' + andList([o.thisClub].concat(o.others).sort()) + '.' + tail;
+  }
+
   function confidenceFields(row){
     var LABELS = {
       shots_on:'Shots on target',
@@ -7434,7 +7504,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
