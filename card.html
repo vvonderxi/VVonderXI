@@ -1477,8 +1477,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260922b"></script>
-<script src="/vv-core.js?v=20260922b"></script>
+<script src="/vv-marks.js?v=20260922c"></script>
+<script src="/vv-core.js?v=20260922c"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1596,7 +1596,11 @@
   function renderTrajectory(){
     var host=document.getElementById('trajHost'); if(!host) return;
     if(!SEASON_ROWS || !SEASON_ROWS.length){ host.innerHTML=''; return; }        // no seasons -> clear (never leave seed bars)
-    var rows=SEASON_ROWS.slice().reverse().map(function(r){                       // chronological (oldest -> newest)
+    /*  ORDERED, NOT REVERSED. `.reverse()` on a year-DESC array flips the WITHIN-season pair
+        too, which put Semenyo's Manchester City half before the Bournemouth half he left in
+        January. orderSeasonRows takes the club he left first where split_transfers knows,
+        and falls back to appearances then card_id where it does not.  */
+    var rows=VVCore.orderSeasonRows(SEASON_ROWS, SEASON_TX, {oldestFirst:true}).map(function(r){
       return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), selected:(r.card_id===SEASON_CARDID) };
     });
     /*  A KEEPER GETS THE SAVE-RATE CHART, NOT THE SHARED ONE. The shared renderer stacks
@@ -2050,7 +2054,6 @@
       nothing but the card's own row. The second runs once the seasons and, for a split, the
       transfer row have landed. Attaching it to the STATE rather than to one call site is SS C's
       rule: a behaviour hung on the path in front of you is missing from every other path.  */
-  var DC_TX_FOR=null;                     // which card_id DC_TRANSFER was fetched for
   function renderDcFlags(){
     if(typeof D==='undefined' || !D) return;
     /*  THE TRANSFER ROW IS FETCHED HERE, LAZILY, AND ONLY FOR A SPLIT , about 1,657 cards of
@@ -2060,18 +2063,11 @@
         IT LIVES IN THE RENDERER RATHER THAN AT A CALL SITE so the season stepper gets it too ,
         that path re-renders without re-running the load, and a fetch bolted to the load alone
         would leave a switched season showing the undated wording.  */
-    if(DC_RAW && typeof SEASON_RAW !== 'undefined' && SEASON_RAW && DC_TX_FOR !== DC_RAW.card_id){
-      var isSplit = SEASON_RAW.some(function(r){ return r.card_id !== DC_RAW.card_id
-                      && r.season_year === DC_RAW.season_year && r.league_code === DC_RAW.league_code; });
-      DC_TX_FOR = DC_RAW.card_id;
-      if(isSplit){
-        var want = DC_RAW.card_id;
-        sb.from('split_transfers').select('*').eq('api_player_id', DC_RAW.api_player_id)
-          .eq('season_year', DC_RAW.season_year).eq('league_code', DC_RAW.league_code).limit(1)
-          .then(function(t){ if(DC_RAW && DC_RAW.card_id===want){ DC_TRANSFER=(t&&t.data&&t.data[0])||null; renderDcFlags(); } })
-          .catch(function(){});                    // no row is a STATE, not a failure , the note then claims no date
-      }
-    }
+    /*  DC_TRANSFER IS DERIVED, NOT FETCHED. loadSeasons already pulled this player's rows for the
+        season ORDER, and the note wants the same row, so a second query would ask the database a
+        question it has just answered.  */
+    DC_TRANSFER = DC_RAW ? ((SEASON_TX||[]).filter(function(t){
+      return t.season_year===DC_RAW.season_year && t.league_code===DC_RAW.league_code; })[0] || null) : null;
     var dcFlags = document.getElementById('dcFlags');
     if(dcFlags){
       var sibs = (typeof SEASON_RAW !== 'undefined' && SEASON_RAW ? SEASON_RAW : [])
@@ -2342,6 +2338,7 @@
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
   var DC_RAW=null, DC_TRANSFER=null;   // the raw matview row, and the split_transfers row when this card is a split
+  var SEASON_TX=[];                    // split_transfers for THIS player , one fetch, serves the notes and the order
 
   async function loadSeasons(apiPlayerId, currentCardId){
     SEASON_CARDID=currentCardId; SEASON_ROWS=null; SEASON_RAW=null;
@@ -2358,6 +2355,24 @@
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
     SEASON_ROWS=rows; SEASON_RAW=res.data||[];
+    /*  ONE FETCH PER PLAYER, AND ONLY WHEN A SEASON REPEATS , it serves the partial-season note
+        AND the season order, which used to be two problems and are one question: which club came
+        first. A player with no split never issues it.  */
+    SEASON_TX=[];
+    var _dupe={}, _needTx=false;
+    (SEASON_RAW||[]).forEach(function(r){ var k=r.season_year+'|'+r.league_code;
+      if(_dupe[k]) _needTx=true; _dupe[k]=1; });
+    if(_needTx){
+      try{
+        var _tx=await sb.from('split_transfers').select('*').eq('api_player_id',apiPlayerId);
+        SEASON_TX=(_tx && _tx.data) || [];
+      }catch(e){ SEASON_TX=[]; }   // no rows is a STATE: the order falls back and the note drops its date
+    }
+    /*  RE-ORDER SEASON_ROWS ITSELF, so the stepper inherits it rather than carrying its own
+        rule. It is newest-first here, which is what the stepper's "UP is newer" assumes, and
+        the chronological list asks for the same rows the other way round.  */
+    SEASON_ROWS = VVCore.orderSeasonRows(SEASON_ROWS, SEASON_TX);
+    SEASON_RAW  = VVCore.orderSeasonRows(SEASON_RAW,  SEASON_TX);
     /*  CAREER-STAGE TAGS NO LONGER LAND HERE. Peak, Breakout and The Standard are columns
         on player_card_mv now (stage_peak / stage_breakout / stage_the_standard), so
         getVVTags reads them off the row like every other tag and every surface gets them,

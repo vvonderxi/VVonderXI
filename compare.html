@@ -1567,13 +1567,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260922b"></script>
+<script src="/vv-marks.js?v=20260922c"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260922b"></script>
+<script src="/vv-core.js?v=20260922c"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1824,7 +1824,22 @@ body.light .pkmsub{color:var(--ink-soft)}
     SLOT_SEASONS[slot]=null; SLOT_MOUNTED[slot]=null;
     if(!host || !cmp || cmp.api_player_id==null) return;
     var sb=vvClient(); if(!sb) return;
-    var res=await sb.from('player_card_mv').select('*').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false});
+    /*  A SPLIT SEASON PUTS TWO ROWS UNDER ONE YEAR, so ordering by `season_year` alone is not a
+        total order , SS C , and Postgres may hand the pair back either way round on different
+        loads. The rows are re-ordered below with `split_transfers`, which knows which club he
+        left; where it does not, the fallback is appearances then card_id, which is stable and is
+        NOT a claim about time.  */
+    var res=await sb.from('player_card_mv').select('*').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false}).order('card_id',{ascending:true});
+    if(res && res.data && res.data.length){
+      var _yr={}, _dup=false;
+      res.data.forEach(function(r){ var k=r.season_year+'|'+r.league_code; if(_yr[k]) _dup=true; _yr[k]=1; });
+      if(_dup){
+        try{
+          var _tx=await sb.from('split_transfers').select('*').eq('api_player_id',cmp.api_player_id);
+          res.data = VVCore.orderSeasonRows(res.data, (_tx && _tx.data) || []);
+        }catch(e){ res.data = VVCore.orderSeasonRows(res.data, []); }
+      }
+    }
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
     try{ await attachHonoursBatch(rows); }catch(e){}   // honour pills, one batched query

@@ -2194,6 +2194,44 @@
          + ' clubs in this league that season, ' + andList([o.thisClub].concat(o.others).sort()) + '.' + tail;
   }
 
+  /*  ── SEASON ORDER WHERE ONE SEASON HAS TWO CARDS ────────────────────────────────────────
+      A split season puts two rows under one `season_year`, so ANY sort on the year alone is
+      arbitrary , SS C's rule that a low-cardinality sort is not a total order, hit again. The
+      card page made it worse: it sorted year DESC then reversed the whole array for the
+      chronological list, which flips the WITHIN-season pair too, so Semenyo's Manchester City
+      half came before the Bournemouth half he actually left in January.
+      WHERE THE ORDER IS KNOWABLE IT IS TAKEN, NOT GUESSED: `split_transfers` carries from_club
+      and to_club, so the club he left comes first.
+      AND WHERE IT IS NOT KNOWABLE, THE FALLBACK IS DECLARED RATHER THAN ARBITRARY , appearances
+      descending, then card_id. IT IS NOT A CLAIM ABOUT TIME. It says "the club he played most
+      for, first", which is stable across loads and honest about what it is. Two cases need it:
+      the 27 pairs with no transfer row, and the 6 three-club seasons, where the single transfer
+      row covers two of the three and ordering all three from it would be a half-truth.  */
+  function orderSeasonRows(rows, txList, opts){
+    opts = opts || {};
+    var tx = {};
+    (txList || []).forEach(function(t){ tx[t.api_player_id+'|'+t.season_year+'|'+t.league_code] = t; });
+    var dir = opts.oldestFirst ? 1 : -1;
+    return (rows || []).slice().sort(function(a, b){
+      if (a.season_year !== b.season_year) return (a.season_year - b.season_year) * dir;
+      if (a.league_code !== b.league_code) return String(a.league_code||'').localeCompare(String(b.league_code||''));
+      var t = tx[a.api_player_id+'|'+a.season_year+'|'+a.league_code];
+      var group = (rows||[]).filter(function(r){ return r.season_year===a.season_year && r.league_code===a.league_code; });
+      /*  THE WITHIN-SEASON ORDER DOES FOLLOW THE YEAR DIRECTION, AND I TALKED MYSELF OUT OF THAT
+          ONCE BEFORE TALKING MYSELF BACK. It is chronology either way: in a list running oldest
+          to newest the club he LEFT comes first, and in one running newest to oldest the club he
+          JOINED does, exactly as 2025 precedes 2024 there. Pinning it to from-club always would
+          make the compare picker read backwards against its own years.  */
+      if (t && group.length === 2) {
+        if (a.team_name === t.from_club && b.team_name === t.to_club) return -dir;
+        if (a.team_name === t.to_club && b.team_name === t.from_club) return  dir;
+      }
+      var ad = (a.appearances||0), bd = (b.appearances||0);
+      if (ad !== bd) return bd - ad;                 // most appearances first, both directions
+      return (a.card_id||0) - (b.card_id||0);        // a unique tiebreak, so the order is stable
+    });
+  }
+
   function confidenceFields(row){
     var LABELS = {
       shots_on:'Shots on target',
@@ -7504,7 +7542,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
