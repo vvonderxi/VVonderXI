@@ -2133,6 +2133,7 @@
     squadnum:     'Read off that club\'s own squad and appearance tables for that season, and cross-checked against each other where a page carries more than one. No arrows.',
     modal_single: 'He played for a single club, so there is no question whose number it is. No arrows.',
     modal_split:  'He moved mid-season, and this is the number he wore most often across the whole season, which may belong to either club. These are the cards that carry the arrows.',
+    blank:        'A blank shield means no number was found for that club and season, not that the player had none. Numbers are held per club, so a season split between two clubs can carry one on each card, or on neither.',
     standing:     'Sourced is not the same as confirmed. These numbers come from squad tables written by volunteers, and we say where a number came from rather than that it is right.'
   };
   var SHIRT_SOURCE_LABEL = { squadnum:'Sourced', modal_single:'One club that season', modal_split:'Inferred' };
@@ -2222,9 +2223,16 @@
           to newest the club he LEFT comes first, and in one running newest to oldest the club he
           JOINED does, exactly as 2025 precedes 2024 there. Pinning it to from-club always would
           make the compare picker read backwards against its own years.  */
+      /*  IT MUST READ BOTH SHAPES. The raw matview row carries `team_name`; `rowToCard` renames it
+          to `clubname` and leaves `team_name` UNDEFINED. The card page orders SEASON_ROWS, which
+          is the rowToCard shape, so the first version compared undefined against a club name,
+          never matched, and fell silently through to the appearances fallback , Bournemouth 20
+          ahead of Manchester City 17, which is the wrong order wearing a deterministic one.
+          THERE WAS NO ERROR AND NO EMPTY LIST, which is why it had to be seen rather than read.  */
+      var an = a.team_name || a.clubname, bn = b.team_name || b.clubname;
       if (t && group.length === 2) {
-        if (a.team_name === t.from_club && b.team_name === t.to_club) return -dir;
-        if (a.team_name === t.to_club && b.team_name === t.from_club) return  dir;
+        if (an === t.from_club && bn === t.to_club) return -dir;
+        if (an === t.to_club && bn === t.from_club) return  dir;
       }
       var ad = (a.appearances||0), bd = (b.appearances||0);
       if (ad !== bd) return bd - ad;                 // most appearances first, both directions

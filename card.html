@@ -1477,8 +1477,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260922c"></script>
-<script src="/vv-core.js?v=20260922c"></script>
+<script src="/vv-marks.js?v=20260922d"></script>
+<script src="/vv-core.js?v=20260922d"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2422,8 +2422,12 @@
     }).join('');
     var anyBlank=rows.some(function(r){ return r.shirt_number==null || r.shirt_number===''; });
     if(anyBlank && rows.length>1){
-      html+='<div class="seasonnote">Squad numbers are not recorded for every season. '
-          + 'A blank shield means the number is missing from the record, not that the player had none.</div>';
+      /*  READ FROM THE SHARED STRING, NOT A FOURTH COPY (2026-09-22). This said the number was
+          "missing from the record", which was true while a number belonged to a SEASON. After
+          sitting 2 it belongs to a CLUB and a card, so blank means not found for THAT club ,
+          and a split season can carry a number on one half and not the other, which the old
+          sentence could not express.  */
+      html+='<div class="seasonnote">'+VVCore.SHIRT_SOURCE_NOTE.blank+'</div>';
     }
     return html;
   }
