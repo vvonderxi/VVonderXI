@@ -2,7 +2,7 @@
 
 Runs straight after sitting 1, back to back, because the interim state needs a view change and is
 therefore skipped (`HALVED_SPLIT_BUILD_PLAN.md` SS 0.11). **Semenyo is the acceptance check: after
-this sitting his Manchester City card must read 42, not 24.**
+this sitting his Manchester City card reads 42 with NO arrows, and his Bournemouth card still reads 24.**
 
 ---
 
@@ -25,68 +25,118 @@ puts IN that column is a view edit plus a PLAIN REFRESH**, not a DROP and CREATE
 
 ## 1. `shirt_number` ON THE CARD ROW
 
-**THE RULE , REVISED 2026-09-22. A NUMBER IS ONLY REMOVED WHERE THERE IS EVIDENCE IT IS WRONG.**
-The first version of this file said "the number squadnum found for its own club, or nothing", and
-that is too strong: **it would have wiped several hundred numbers that are correct**, because
-squadnum failing to re-source a club-season is not evidence about the number already there.
+**THE IMPLEMENTATION IS (b) , `psc.shirt_number` BACKFILLED FOR EVERY CARD, AND THE VIEW READS IT
+ALONE.** The number lives on the per-club row and the `player_positions` join for it disappears,
+**which removes the class of bug rather than special-casing it.** rt-neutral: `shirt_number` occurs
+once in the viewdef, at line 346, in the final select list and nowhere in the scoring region.
+**`player_positions` keeps its whole-season row** , re-keying it on `team_id` is the obvious third
+option and is ACTIVELY HARMFUL, because item 26's detector works ONLY while that row spans both
+clubs.
+
+### (b) FREEZES THE SITE ON TODAY'S NUMBERS UNLESS EVERY WRITER MOVES WITH IT
+
+**Once the view reads `psc.shirt_number` alone, anything still writing to `player_positions` is
+improving a column nobody reads.** The next squadnum run would report thousands of numbers written
+and change nothing on screen , **a silent no-op that looks like a successful job**, which is this
+file's most-recorded failure shape. **The census, taken 2026-09-22:**
+
+| writer | what it writes | after (b) |
+|---|---|---|
+| **`scripts/import/import-positions-v2.js:132`** | the MODAL number across a whole league-season | **fix AT SOURCE, below** |
+| **`scripts/squadnum/backfill.js:244`** | the club-scoped verified number | **redirect to the card row** |
+| `scripts/squadnum/batch0-canary.js:58` | one canary row | redirect with it |
+| `write_positions.js:49`, `write_positions2.js:84`, `write_positions3.js:70`, `cm_bug_fill.js:82` | pp rows with `shirt_number` explicitly NULL | **no change** , position-only, and all four use `ignoreDuplicates`, so none can overwrite a number |
+
+- **`import-positions.js` (v1) DOES NOT WRITE `shirt_number` AT ALL** , checked, not assumed.
+- **SQUADNUM'S REDIRECT IS NEARLY FREE, BECAUSE IT WAS ALWAYS CARD-SHAPED.** Its ledger already
+  carries `card_id` per row (`backfill.js:172`); it wrote to `player_positions` only because that
+  is where the column lived. **Writing to `player_season_cards` by `id` is a SMALLER change than
+  what it does today** , it removes the reason its existence-check needed pagination at all.
+- **AND THE IMPORTER CAN BE FIXED AT SOURCE, WHICH RETIRES THE DEFECT FOR EVERY FUTURE IMPORT.** It
+  aggregates `agg[pl.id].numbers` across the league-season, and **`team` is in scope in that same
+  loop**. **Key the aggregation by `(player, team)`** and the modal number becomes club-specific by
+  construction, written to that club's card, with no attribution rule needed. **Without this the
+  importer must simply STOP writing the number**, because a season-wide modal value has no card to
+  belong to.
+
+### THE ATTRIBUTION RULE , REVISED 2026-09-22. A NUMBER IS MOVED OR MARKED, NOT DISCARDED
 
 | population | rule |
 |---|---|
-| **ORIGINAL half, pre-2016** | **KEEP, always** |
-| **ORIGINAL half, 2016+** | **KEEP** where this club leads by **3 or more appearances**; **BLANK** where the other club leads, or the margin is within 2 |
-| **NEW half** | squadnum where it resolves, **BLANK** otherwise |
+| **ORIGINAL, pre-2016** | **KEEP, always** , verified |
+| **ORIGINAL, 2016+, leads by 3+ appearances** | **KEEP**, marked inferred |
+| **ORIGINAL, 2016+, within 2 appearances** | **KEEP**, marked inferred |
+| **ORIGINAL, 2016+, other club leads by 3+** | **MOVE the number to the new half** |
+| **NEW half** | squadnum where it resolves; else the moved number where there is one; else blank |
 
-**PRE-2016 "KEEP ALWAYS" COSTS NOTHING AND IS PROVABLE, NOT A CONCESSION.** Of the 380 pre-2016
-original halves, **129 carry a number and ALL 129 are in squadnum's ledger** , zero came from
-anywhere else. They were read off that club's own squad page and are verified club-consistent
-(SS E: 5,993 of 5,993). **The other 251 have no number today**, so there is nothing to keep or
-remove. The rule is exact rather than approximately safe.
+**PRE-2016 "KEEP ALWAYS" IS EXACT, NOT APPROXIMATELY SAFE.** Of 380 pre-2016 originals, **129 carry
+a number and ALL 129 are in squadnum's ledger** , zero from anywhere else. The other **251 have no
+number today**, so there is nothing to keep or remove.
+
+**THE TWO CHANGES ARE BOTH ABOUT NOT THROWING EVIDENCE AWAY:**
+- **THE 94 ARE MOVED, NOT BLANKED.** The margin that says the number is not the original's says, by
+  the same evidence, that it IS the other club's. **Blanking used half the finding and discarded
+  the other half.**
+- **THE 111 WITHIN 2 ARE KEPT WITH THE ARROWS** , item 26's own ruling, applied where I had failed
+  to apply it. **Blank means "not found"; blanking these would claim we found nothing when we found
+  a number we cannot place**, which is weaker and less true than what the arrows already say.
 
 ### THE REVISED COUNTS, MEASURED
 
 **ORIGINAL halves , 827**
 
-| | |
-|---|---|
-| pre-2016, KEEP | **129** (251 more have no number today) |
-| 2016+, KEEP , this club leads by 3+ | **241** |
-| 2016+, BLANK , the other club leads | **94** |
-| 2016+, BLANK , within 2 appearances | **111** |
-| **kept / blanked / never had one** | **370 / 205 / 252** |
+| | | arrows |
+|---|---|---|
+| verified, pre-2016 squadnum | **129** | no |
+| inferred, leads by 3+ | **241** | **yes** |
+| inferred, within 2 | **111** | **yes** |
+| number MOVED to the new half | **94** | , |
+| no number today | **252** | , |
+| **carrying a number** | **481** | |
 
 **NEW halves , 830**
 
-| | |
-|---|---|
-| club-season squadnum resolved , 174 x 68.6% | **about 119** |
-| club-season squadnum held , 206 | **0** |
-| never attempted, all 2016+ , 450 x 48.3% x 68.6% | **about 149** |
-| **filled / blank** | **about 268 / 562** |
+| | | arrows |
+|---|---|---|
+| squadnum verified (estimate) | **about 268** | no |
+| moved numbers landing where squadnum finds nothing | **about 63** of the 94 | **yes** |
+| **carrying a number / blank** | **about 331 / 499** | |
 
-**TOTAL: ABOUT 638 OF 1,657 FILLED, AND ONLY 205 EXISTING NUMBERS REMOVED.** The earlier version of
-this scope reached ~545 filled and would have blanked originals wholesale. **The difference is not
-the estimate, it is which originals survive** , 241 correct 2016+ numbers are kept on evidence
-rather than discarded for want of a re-source.
+**TOTAL , 1,657 HALVES: ABOUT 812 CARRY A NUMBER , 397 VERIFIED WITHOUT ARROWS, 415 INFERRED WITH
+THEM , AND ABOUT 845 BLANK.** Against 638 under the previous rule and 545 under the first.
+**Only 94 numbers leave a card at all, and every one lands on its sibling.**
+- **Two of the 94 come from a three-club season**; the number goes to the half with the most
+  appearances and the third card stays blank.
+- **PRECEDENCE IS EXPLICIT: `squadnum` BEATS a moved or modal number.** About 31 of the 94 land on
+  a new half squadnum is expected to resolve anyway, and there the verified value wins and the
+  arrows come off.
 
-**AND THE COST OF THE TWO BLANK GROUPS IS DIFFERENT, SO BOTH ARE STATED:**
-- **THE 94 WHERE THE OTHER CLUB LEADS ARE CLEARLY WORTH BLANKING.** At the measured 68% rate that
-  removes roughly 64 wrong numbers to lose about 30 right ones.
-- **THE 111 WITHIN-2 CASES ARE CLOSE TO A COIN FLIP, AND BLANKING THEM IS A JUDGEMENT, NOT A
-  CORRECTION.** It removes roughly 55 wrong and 55 right. **It is defensible , a blank is honest
-  about a margin that cannot decide , and it is the same trade SS D already weighs for the 841**,
-  where blanking removes a correct number from two cards in three. **Recorded so nobody later reads
-  those 111 as errors that were found.**
+### PROVENANCE , STORED BESIDE THE NUMBER, AND THE ARROWS READ IT
 
-**THE THRESHOLD IS APPLIED TO A PROXY AND THAT MUST TRAVEL WITH IT.** The modal rule in
-`import-positions-v2.js:128` counts **grid-positioned STARTS**; this rule compares **appearances**,
-because that is what the card carries. A player with more appearances at one club and more starts
-at the other is judged wrongly here. **`starts` is not the escape** , SS E records it as the wrong
-field on 774 cards.
+**`player_season_cards.shirt_number_source`, four values, each a FACT rather than a judgement:**
 
-**RUN `scripts/squadnum/guard-test.js` BEFORE ANY BATCH** , the resolver's controls, which SS C says
-must pass first, and which caught a false refusal the 119-pair live run did not.
+| value | meaning | arrows |
+|---|---|---|
+| `squadnum` | read off that club's own squad page, club-scoped | **NO** |
+| `modal_single` | the modal number, and the player-season holds ONE card, so no club ambiguity exists | **NO** |
+| `modal_split` | the modal number attributed across a split by the appearance margin | **YES** |
+| `null` | no number | nothing to qualify |
 
----
+- **THIS IS WHAT REMOVES THE CONTRADICTION: a verified 42 under arrows saying it may be the other
+  club's is FALSE.** The arrows must describe the number beneath them.
+- **ITEM 26'S TRIGGER BECOMES A READ RATHER THAN A DETECTOR.** Today `numberClubUncertain` derives
+  uncertainty from `pp.appearances > card.appearances` at a gap of 3, 2016+. **After this sitting
+  it reads `shirt_number_source === 'modal_split'`** , resolved once, at write time, with the
+  evidence in hand, rather than re-derived on every render from the column this sitting retires.
+- **THE PARTIAL-SEASON NOTE IS UNAFFECTED AND STAYS ON ALL OF THEM.** It is about the figures and
+  the score, not the number. **Only the shirt-number line is gated on provenance.**
+- **`modal_single` IS NOT A FORMALITY** , it keeps the arrows off the ~36,000 cards that were never
+  split, without special-casing them in the renderer.
+
+**SEMENYO, TRACED THROUGH THE RULE:** Manchester City 2025/26 and Bournemouth 2025/26 are both
+club-seasons squadnum should resolve, so **both halves land `squadnum`: City 42 with NO arrows,
+Bournemouth 24 with NO arrows.** If squadnum fails Bournemouth, that half falls to `modal_split` at
+24 WITH arrows , a weaker pass, **to be reported as one rather than counted as success.**
 
 ## 2. A TRANSFERS TABLE FOR THE 830 SPLITS
 
@@ -191,5 +241,5 @@ that order leaves a window where the site reads a column that is being emptied u
 **HANDED TO LUCAS: `set statement_timeout = '600s'; refresh materialized view player_card_mv;`** ,
 a plain refresh, not a rebuild, so 10 to 13 seconds rather than 42.
 
-**THE ACCEPTANCE CHECK IS ONE CARD: Semenyo's Manchester City half reads 42.** Aggregate coverage
+**THE ACCEPTANCE CHECK IS ONE PAIR: Semenyo's Manchester City half reads 42 with NO ARROWS, and his Bournemouth half still reads 24.** Aggregate coverage is an estimate and will be argued about; that pair either reads 42 and 24 clean, or the sitting failed.
 is the scope's estimate and will be argued about; that card either says 42 or the sitting failed.
