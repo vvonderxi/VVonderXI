@@ -66,6 +66,16 @@ async function targets() {
   });
 }
 
+/*  THE MATCHER AND ITS HELPERS ARE EXPORTED, AND THE RUN IS GUARDED BEHIND `require.main`
+    (2026-09-22). `scripts/squadnum/split-run.js` needs the SAME strict matcher , an abbreviated
+    name may match on an initial, a FULL name must match in full, anything else sharing a surname
+    is HELD. Copying it would be two implementations of the one rule that has already produced a
+    wrong-PLAYER match once, which is the drift SS C records against `careerStageTags`.
+    WITHOUT THE GUARD, REQUIRING THIS FILE RUNS THE BACKFILL.  */
+module.exports = { matchOne, split, fold, isAb, targets };
+
+if (require.main !== module) return;
+
 (async () => {
   const done = fs.existsSync(path.join(DIR, 'clubseasons-done.json'))
     ? new Set(JSON.parse(fs.readFileSync(path.join(DIR, 'clubseasons-done.json'), 'utf8'))) : new Set();

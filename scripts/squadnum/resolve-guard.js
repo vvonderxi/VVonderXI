@@ -27,7 +27,19 @@ const UA = { 'User-Agent': 'VVonderXI-squadnum/1.0 (hello@vvonderxi.com)' };
     and against every label the page offers about itself, because the disqualifying word
     appeared in the Wikidata label ("PEC Zwolle Vrouwen", "Fenerbahce Men's Basketball") while
     the title carried only "(women)" or "(basketball)". Either alone would have missed one.  */
-const DISQUALIFIER = /\b(women|womens|vrouwen|feminin|feminine|femminile|femenino|femenina|dames|ladies|girls|basketball|basquet|basquete|baloncesto|handball|volleyball|futsal|hockey|rugby|cricket|esports|youth|academy|reserve|reserves|u1[6-9]|u2[0-3]|amateure?|II|B)\b/i;
+/*  W.F.C. WAS THE GAP, AND THE ZERO-MATCH GUARD IS WHAT FOUND IT (2026-09-22). Resolving
+    "Manchester City" for PL 2025 returned "2025-26 Manchester City W.F.C. season" and this
+    gate PASSED it: the list held `women` and `ladies` but not the ABBREVIATION, and the test
+    runs on the raw label where "W.F.C." contains neither. 35 rows parsed, Cumings, Shimizu,
+    Greenwood, Shaw, Miedema , a women's squad about to be matched against men's cards.
+    NOTHING WAS WRITTEN, because `parsed, zero cards matched` refused the club-season. That is
+    the second time that guard has caught a wrong page nothing else could see, and it is why
+    SS C forbids ever closing it by loosening the matcher.
+    THE ABBREVIATIONS AND THE NON-ENGLISH FORMS ARE NOW HERE TOO, scoped to the nine leagues:
+    W.F.C., Frauen (de), Kadin (tr), Damen. `L.F.C.` is deliberately NOT added , it is
+    Liverpool as often as it is Ladies, and a disqualifier that refuses a correct club is
+    worse than one that misses, because the zero-match guard catches the miss.  */
+const DISQUALIFIER = /\b(women|womens|w\.?f\.?c|frauen|damen|kadi?n|kadın|vrouwen|feminin|feminine|femminile|femenino|femenina|dames|ladies|girls|basketball|basquet|basquete|baloncesto|handball|volleyball|futsal|hockey|rugby|cricket|esports|youth|academy|reserve|reserves|u1[6-9]|u2[0-3]|amateure?|II|B)\b/i;
 
 const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
   .replace(/ı/gi, 'i').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
