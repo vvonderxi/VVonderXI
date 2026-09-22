@@ -43,7 +43,7 @@ file's most-recorded failure shape. **The census, taken 2026-09-22:**
 | writer | what it writes | after (b) |
 |---|---|---|
 | **`scripts/import/import-positions-v2.js:132`** | the MODAL number across a whole league-season | **fix AT SOURCE, below** |
-| **`scripts/squadnum/backfill.js:244`** | the club-scoped verified number | **redirect to the card row** |
+| **`scripts/squadnum/backfill.js:244`** | the club-scoped sourced number | **redirect to the card row** |
 | `scripts/squadnum/batch0-canary.js:58` | one canary row | redirect with it |
 | `write_positions.js:49`, `write_positions2.js:84`, `write_positions3.js:70`, `cm_bug_fill.js:82` | pp rows with `shirt_number` explicitly NULL | **no change** , position-only, and all four use `ignoreDuplicates`, so none can overwrite a number |
 
@@ -63,7 +63,7 @@ file's most-recorded failure shape. **The census, taken 2026-09-22:**
 
 | population | rule |
 |---|---|
-| **ORIGINAL, pre-2016** | **KEEP, always** , verified |
+| **ORIGINAL, pre-2016** | **KEEP, always** , sourced |
 | **ORIGINAL, 2016+, leads by 3+ appearances** | **KEEP**, marked inferred |
 | **ORIGINAL, 2016+, within 2 appearances** | **KEEP**, marked inferred |
 | **ORIGINAL, 2016+, other club leads by 3+** | **MOVE the number to the new half** |
@@ -87,7 +87,7 @@ number today**, so there is nothing to keep or remove.
 
 | | | arrows |
 |---|---|---|
-| verified, pre-2016 squadnum | **129** | no |
+| sourced, pre-2016 squadnum | **129** | no |
 | inferred, leads by 3+ | **241** | **yes** |
 | inferred, within 2 | **111** | **yes** |
 | number MOVED to the new half | **94** | , |
@@ -98,7 +98,7 @@ number today**, so there is nothing to keep or remove.
 
 | | | arrows |
 |---|---|---|
-| squadnum verified (estimate) | **about 268** | no |
+| squadnum sourced (estimate) | **about 268** | no |
 | moved numbers landing where squadnum finds nothing | **about 63** of the 94 | **yes** |
 | **carrying a number / blank** | **about 331 / 499** | |
 
@@ -108,21 +108,33 @@ THEM , AND ABOUT 845 BLANK.** Against 638 under the previous rule and 545 under 
 - **Two of the 94 come from a three-club season**; the number goes to the half with the most
   appearances and the third card stays blank.
 - **PRECEDENCE IS EXPLICIT: `squadnum` BEATS a moved or modal number.** About 31 of the 94 land on
-  a new half squadnum is expected to resolve anyway, and there the verified value wins and the
+  a new half squadnum is expected to resolve anyway, and there the sourced value wins and the
   arrows come off.
 
 ### PROVENANCE , STORED BESIDE THE NUMBER, AND THE ARROWS READ IT
+
+**THE WORD IS "SOURCED", NEVER "VERIFIED" , RULED 2026-09-22, AND IT IS A CLAIM ABOUT EVIDENCE.**
+These numbers come from Wikipedia squad and appearance tables, club-scoped and cross-checked
+against each other where a page carries more than one. **That is sourcing, not confirmation.**
+Nobody has put them to the club, and the pages are edited by volunteers , the same reason SS F
+records that an assist total is a judgement by a scout rather than a fact with one answer.
+- **THE STORED VALUE STAYS `squadnum`**, which names WHERE the number came from and claims nothing
+  about its truth. That is why the column records a source rather than a confidence.
+- **NO CARD TEXT, TOOLTIP OR DOCUMENT MAY CALL THESE NUMBERS VERIFIED.** If a word is needed in
+  copy, it is **sourced**. **This is not pedantry: "verified" is the word that would let a later
+  session treat a squadnum number as beating a disagreeing external source**, which inverts SS E's
+  rule that a disagreement with our own data is not evidence the source is wrong.
 
 **`player_season_cards.shirt_number_source`, four values, each a FACT rather than a judgement:**
 
 | value | meaning | arrows |
 |---|---|---|
-| `squadnum` | read off that club's own squad page, club-scoped | **NO** |
+| `squadnum` | read off that club's own squad and appearance tables, club-scoped and cross-checked | **NO** |
 | `modal_single` | the modal number, and the player-season holds ONE card, so no club ambiguity exists | **NO** |
 | `modal_split` | the modal number attributed across a split by the appearance margin | **YES** |
 | `null` | no number | nothing to qualify |
 
-- **THIS IS WHAT REMOVES THE CONTRADICTION: a verified 42 under arrows saying it may be the other
+- **THIS IS WHAT REMOVES THE CONTRADICTION: a sourced 42 under arrows saying it may be the other
   club's is FALSE.** The arrows must describe the number beneath them.
 - **ITEM 26'S TRIGGER BECOMES A READ RATHER THAN A DETECTOR.** Today `numberClubUncertain` derives
   uncertainty from `pp.appearances > card.appearances` at a gap of 3, 2016+. **After this sitting

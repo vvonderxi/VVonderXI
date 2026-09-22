@@ -112,3 +112,72 @@ same club-season as the acceptance case.
   not a gate, so nothing was refused by it**, but every one of those ten is noise and the flag is
   not doing what SS C records it doing (Sparta Rotterdam against Excelsior Rotterdam). **Logged,
   not fixed , it sits outside this sitting.**
+
+
+---
+
+# ADDENDUM , 2026-09-22, THE THREE CHECKS BEFORE THE SITTING
+
+## A. THE UNCORROBORATED NUMBERS ARE NOT COMING FROM RANKED TABLES , ZERO OF 735
+
+**735 of the 940 numbers rest on a SINGLE block that nothing else on the page checks** , 218 from
+multi-block pages where only one block matched, and 517 from pages carrying one block. Lucas's
+question is the right one: if that block were a top-scorers or discipline table, the "number" is a
+rank and it would be stored as sourced.
+
+**`scripts/squadnum/section-audit.js` names the section each number came from**, by splitting the
+wikitext into sections and extracting inside each , not by searching for a surname, which is the
+method that reported a first-team squad as sitting under "Pre-season".
+
+| section | numbers |
+|---|---|
+| Appearances and goals | 337 |
+| Squad information | 114 |
+| First-team squad | 96 |
+| Squad statistics | 45 |
+| Players / Squad / Current squad | 92 |
+| Appearances | 22 |
+| Spelerskern, Kadro, Selectie (nl, tr) | 32 |
+| Disciplinary record | 20 |
+
+**FROM A RANKED TABLE: ZERO.** The audit flagged three and **all three are my own instruments:**
+- **Andy Carroll, Newcastle 2010/11, #9, section "Appearances, goals and cards".** My `RANKED`
+  pattern matched the word **cards**, which is part of an ordinary squad table's heading. #9 is his
+  correct number. **Pattern fixed; `disciplin` already covers the real disciplinary tables.**
+- **Two Kortrijk club-seasons reported "section could not be located".** The Dutch page carries its
+  squad under `Spelerskern` with `Doel / Verdediging / Middenveld / Aanval` SUB-headings, so the
+  table spans them and per-section extraction sees nothing. **Read directly: one block, a genuine
+  squad list, 1 Rémi Pillot, 16 Darren Keet, 3 Baptiste Martin.** A limit of the audit, not a
+  defect in the number.
+- **All 20 "Disciplinary record" numbers also appear under a squad-like heading on the same page**,
+  so none rests on a ranked table alone.
+
+## B. THE FIXED REVIEW FLAG CAUGHT A WRONG-CLUB NUMBER IMMEDIATELY
+
+`reviewFlag` was comparing our club's lead token against the page's **YEAR** , `"oh" vs "2011"` ,
+because `sig()` kept pure-digit tokens. **Ten flags in the run, all noise.** Digits are now stripped,
+symmetrically, so clubs whose names contain numbers are unaffected (1899 Hoffenheim, Schalke 04 and
+Mainz 05 all still pass the gate, checked).
+
+**After the fix: 13 flags across 977 club/title pairs, and one of them is real.**
+**`Sparta Rotterdam` resolved to `Excelsior Rotterdam`'s page on three seasons**, which is the exact
+case SS C records, and it produced **one number: card 169534, L. Duijvestijn, #10 from Excelsior's
+squad, where the card shows 70.** **Excluded.** The other twelve are abbreviation-against-expansion
+(OH Leuven / Oud-Heverlee, St. Truiden / Sint-Truidense, Estac Troyes / ES Troyes, Robur Siena / AC
+Siena) , twelve false flags to catch one wrong club is the trade SS C already accepts.
+
+## C. FINAL COUNTS, SOURCED OVERRIDING THE EARLIER RULES
+
+| | sourced, NO arrows | inferred, ARROWS | blank |
+|---|---|---|---|
+| **ORIGINAL halves (827)** | **504** | 109 | 214 |
+| **NEW halves (830)** | **435** | 62 | 333 |
+| **TOTAL (1,657)** | **939** | **171** | **547** |
+
+All 62 inferred numbers on new halves are the MOVED numbers. **1,110 of 1,657 halves carry a
+number and only 171 of them wear the arrows.**
+
+**CORRECTIONS , a sourced number that DIFFERS from what the card shows today: 295.** That is the
+real size of the defect this sitting exists to fix, and it is larger than the 145 the first pass
+saw, because the agreement rule recovered the multi-block pages. **Semenyo 24 to 42 and Guéhi 6 to
+15 are two of the 295.**

@@ -47,7 +47,17 @@ const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
 /*  LEGAL-FORM TOKENS ARE NOISE ON BOTH SIDES. Every club label carries some and our team_name
     usually carries none, so leaving them in would refuse nearly every correct pair.  */
 const NOISE = new Set(['fc','afc','cf','sc','ac','as','sk','jk','sl','cd','rc','rcd','sd','ud','ss','ssc','us','kv','kaa','krc','rsc','sv','tsg','vfl','vfb','fsv','bv','psv','nec','pec','rkc','sbv','vvv','ogc','osc','fco','acf','bc','cfc','fk','club','de','del','la','le','du','des','di','da','of','the','and','season']);
-const sig = (s) => fold(s).split(' ').filter((t) => t.length > 1 && !NOISE.has(t));
+/*  PURE-DIGIT TOKENS ARE STRIPPED (2026-09-22), AND THE BUG THEY CAUSED WAS IN THE REVIEW FLAG.
+    A page title carries its season , "2011-12 Oud-Heverlee Leuven season" folds to tokens that
+    BEGIN with "2011", so `reviewFlag` compared our club's lead token against a YEAR and printed
+    `lead token "oh" vs "2011"` on ten club-seasons in one run. Every one was noise.
+    IT IS THE GUARD A LESSON WEARING DIFFERENT CLOTHES: a flag that fires on nonsense trains the
+    reader to skip it, and the one real case it exists for , Sparta Rotterdam against Excelsior
+    Rotterdam , goes with it.
+    CLUB NAMES THAT CONTAIN NUMBERS ARE UNAFFECTED, because the strip is SYMMETRIC: "1899
+    Hoffenheim" and "TSG 1899 Hoffenheim" both lose "1899" and still share "hoffenheim". Same for
+    Schalke 04 and Mainz 05.  */
+const sig = (s) => fold(s).split(' ').filter((t) => t.length > 1 && !NOISE.has(t) && !/^\d+$/.test(t));
 
 /*  TOKENS MATCH ON A PREFIX, NOT ON EQUALITY, BECAUSE CLUB NAMES TAKE ADJECTIVAL AND COMPOUND
     FORMS. "Lyon" against "Olympique LYONNAIS" shares no whole token and is a correct pair;
