@@ -863,15 +863,22 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       a descender, which reads as a rendering fault rather than a tight fit.  */
   body.light .vsprose b,body.light .vsprose .vvem,body.light .vquote .vvem{
     background:var(--vvem-wash);border-radius:3px;padding:.05em .16em;margin:0 -.16em}
-  /*  THE WASH IS FOR LONG PROSE ONLY , Lucas, 2026-09-13. A marked block on a two-word phrase
-      reads as a highlighter pen, and at that density a page is striped rather than emphasised.
-      It belongs on the Story and the verdict, which run to paragraphs, and NOT on h2h, which
-      `api/analyse.js` rule 6 lists among the truly short fields that stay a single line , it
-      measured 0.82 marked phrases per pair against the Story's 2.00.
-      IT LEAKED BECAUSE h2h SHARES A CLASS WITH THE VERDICT rather than having one of its own.
-      `.vwho` and `#glDrury` were already excluded for exactly this reason; this is the third
-      short surface and the only one that was hiding inside a long one.  */
-  body.light .vquote.vq-h2h .vvem{background:none;padding:0;margin:0;border-radius:0}
+  /*  [THE h2h WASH EXCLUSION IS DELETED , 2026-09-22. ITS PREMISE EXPIRED; IT WAS NOT WRONG.
+      DO NOT RE-ADD IT ON THE OLD REASONING, WHICH IS WHY THAT REASONING IS RECORDED HERE.]
+      The rule was `body.light .vquote.vq-h2h .vvem{background:none;padding:0;margin:0;
+      border-radius:0}`, ruled by Lucas on 2026-09-13 on a measured premise: the wash belongs
+      on prose that runs to paragraphs, and h2h was one of the truly short single-line fields
+      `api/analyse.js` rule 6 names, measured at 0.82 marked phrases per pair against the
+      Story's 2.00. `.vwho` and `#glDrury` are excluded for the same reason and STAY excluded.
+      WHAT CHANGED IS THE ELEMENT, NOT THE RULING. h2h is pushed into slot 0, which is the
+      PULL QUOTE , 20px, italic, the largest prose on the panel , and measured on a live pair
+      it runs to 121 words over 10 lines. It is no longer a short field, so the premise that
+      excluded it no longer describes it.
+      THE DEFECT IT LEFT WAS ONE MECHANISM WEARING TWO APPEARANCES IN ONE PANEL: gold ink with
+      no wash in the pull quote, gold ink WITH the wash in the two paragraphs directly beneath
+      it. Reported by Lucas as an inconsistency, and it was.
+      IF h2h EVER STOPS BEING THE PULL QUOTE, re-read this before deciding anything , the
+      exclusion becomes correct again the moment the field is short again.  */
   /* Placed after every .vsprose rule AND marked important: `body.light .vsprose` is (0,2,0)
      and beats a single class outright, so position alone would still have lost in light
      mode. The waiting line is a STATUS, not the season's voice, so it drops the italic. */
