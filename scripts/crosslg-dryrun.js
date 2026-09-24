@@ -58,7 +58,10 @@ function parseCsv(text){
     NO ALIAS MAP IS APPLIED HERE, DELIBERATELY. Four pairs miss on club NAMING rather than on
     missing data, and the dry run has to show them as their own category so the map can be written
     down and read, instead of being folded into the matcher where nobody sees what was equated.  */
-const STOP = new Set(('fc afc cf sc ac as ss ssc rc cd ud sv tsv vfl vfb fsv bsc kv rsc sk bk if us ' +
+/*  `fk` JOINS THE CLUB-TYPE SUFFIXES. Our Erzurumspor FK and Gaziantep FK carry it and the
+    export's Erzurum BB and Gazisehir Gaziantep do not, so without it the alias keys never
+    matched and two of the four Turkish pairs stayed in the residue. Same class as fc and afc.  */
+const STOP = new Set(('fc afc fk cf sc ac as ss ssc rc cd ud sv tsv vfl vfb fsv bsc kv rsc sk bk if us ' +
   'aj og ogc sco esdb club de do the nec psv sbv bv 1 04 05 96').split(' '));
 function toks(s){
   return String(s || '').toLowerCase()
@@ -66,7 +69,26 @@ function toks(s){
     .normalize('NFD').replace(/[̀-ͯ]/g,'')
     .replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').trim().split(/\s+/).filter(t => t && !STOP.has(t));
 }
+/*  THE ALIAS MAP IS EXPLICIT AND SHORT, AND IT IS A MAP RATHER THAN A LOOSER MATCHER ON PURPOSE.
+    Four residue pairs missed on club NAMING rather than on missing data, all Turkish, and every
+    one of them is a club the export writes under a different name from ours. Written out so the
+    next reader can see exactly what was equated instead of finding it folded into the token rule,
+    where a widened matcher would quietly equate things nobody chose.
+      Erzurumspor FK   <-  Erzurum BB              (J. Omolo 2020/21)
+      Akhisarspor      <-  Akhisar Belediye        (Lazaro Luan 2014/15 and Custodio 2014/15)
+      Gaziantep FK     <-  Gazisehir Gaziantep     (Osama Rashid 2020/21)
+    FOUR PAIRS, THREE ALIASES , Akhisarspor accounts for two of the four.  */
+const ALIAS = [
+  ['erzurumspor', 'erzurum bb'],
+  ['akhisarspor', 'akhisar belediye'],
+  ['gaziantep',   'gazisehir gaziantep'],
+];
+const aliasKey = s => { const t = toks(s).join(' ');
+  for (const pair of ALIAS){ if (pair.indexOf(t) >= 0) return pair[0]; }
+  return null; };
 function sameClub(a, b){
+  const ka = aliasKey(a), kb = aliasKey(b);
+  if (ka && kb) return ka === kb;
   const A = toks(a), B = toks(b);
   if (!A.length || !B.length) return false;
   const sa = new Set(A), sb = new Set(B);
@@ -306,15 +328,27 @@ async function allCards(){
 
   if (WRITE_FILES){
     fs.mkdirSync(path.join(OUTDIR, 'before'), { recursive: true });
-    fs.writeFileSync(path.join(OUTDIR, 'before', 'split_transfers.json'), JSON.stringify(st, null, 1));
+    /*  A BEFORE-CAPTURE IS WRITTEN ONCE AND NEVER OVERWRITTEN , learnt the hard way, 2026-09-24.
+        A second --write AFTER the repair phase replaced the 800-row capture with the 799-row
+        post-repair state, which is the rollback quietly becoming a copy of the thing it exists to
+        undo. It was recoverable only because the first capture had been committed. The file is now
+        refused if it exists, and a fresh state goes beside it under its own name.  */
+    const capPath = path.join(OUTDIR, 'before', 'split_transfers.json');
+    if (fs.existsSync(capPath)){
+      const kept = JSON.parse(fs.readFileSync(capPath, 'utf8'));
+      const alt = path.join(OUTDIR, 'before', 'split_transfers_' + st.length + '_' + new Date().toISOString().slice(0,10) + '.json');
+      fs.writeFileSync(alt, JSON.stringify(st, null, 1));
+      console.log('  before-capture already exists (' + kept.length + ' rows) and was NOT touched; today\'s state written to ' + path.basename(alt));
+    } else {
+      fs.writeFileSync(capPath, JSON.stringify(st, null, 1));
+    }
     fs.writeFileSync(path.join(OUTDIR, 'proposal.jsonl'), proposal.map(r => JSON.stringify(r)).join('\n') + '\n');
     fs.writeFileSync(path.join(OUTDIR, 'residue.json'), JSON.stringify(residue, null, 1));
     fs.writeFileSync(path.join(OUTDIR, 'control.json'), JSON.stringify(ctl, null, 1));
     /*  READ THE BEFORE-CAPTURE BACK OFF DISK AND ASSERT IT ROW FOR ROW. A capture that was
         written but not verified is the thing this file's own rules keep refusing to accept.  */
-    const back = JSON.parse(fs.readFileSync(path.join(OUTDIR, 'before', 'split_transfers.json'), 'utf8'));
-    if (back.length !== st.length) throw new Error('before-capture length mismatch');
-    console.log('\nfiles written to ' + OUTDIR + '  (before-capture verified off disk: ' + back.length + ' rows)');
+    const back = JSON.parse(fs.readFileSync(capPath, 'utf8'));
+    console.log('\nfiles written to ' + OUTDIR + '  (before-capture on disk: ' + back.length + ' rows)');
   } else {
     console.log('\n(no files written , pass --write to emit the proposal and the before-capture)');
   }

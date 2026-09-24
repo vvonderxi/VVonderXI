@@ -1,47 +1,13 @@
 {
- "total": 800,
- "reproduced": 792,
+ "total": 799,
+ "reproduced": 796,
  "wrongRung": [],
- "reversed": [
-  {
-   "key": "90513|2010|PL",
-   "stored": "Tottenham -> Everton",
-   "ladder": "Everton -> Tottenham",
-   "evidence": "Everton -> Tottenham 2011-01-19 (€ 3.6M)",
-   "storedSound": false
-  },
-  {
-   "key": "30786|2014|SA",
-   "stored": "Juventus -> Genoa",
-   "ladder": "Genoa -> Juventus",
-   "evidence": "Genoa -> Juventus 2015-02-02 (N/A)",
-   "storedSound": false
-  },
-  {
-   "key": "115227|2011|SA",
-   "stored": "Genoa -> Lazio",
-   "ladder": "Lazio -> Genoa",
-   "evidence": "Lazio -> Genoa 2012-01-19 (Loan)",
-   "storedSound": false
-  },
-  {
-   "key": "50100|2015|TR",
-   "stored": "Trabzonspor -> Gaziantepspor",
-   "ladder": "Gaziantepspor -> Trabzonspor",
-   "evidence": "Gaziantepspor -> Trabzonspor 2016-01-23 (€ 2.8M)",
-   "storedSound": false
-  }
- ],
+ "reversed": [],
  "noPair": [
   {
    "key": "43092|2025|TR",
    "cards": 3,
    "clubs": "Trabzonspor -> Gaziantep FK"
-  },
-  {
-   "key": "711|2024|SA",
-   "cards": 3,
-   "clubs": "Bologna -> Como"
   },
   {
    "key": "30747|2020|SA",
@@ -67,27 +33,7 @@
    "stored": "2025-12-30",
    "ladder": "2026-01-02",
    "storedSound": true
-  },
-  {
-   "key": "31802|2010|SA",
-   "stored": "2013-01-01",
-   "ladder": "2011-01-18",
-   "storedSound": false
-  },
-  {
-   "key": "31406|2024|LL",
-   "stored": "2026-01-07",
-   "ladder": "2025-01-04",
-   "storedSound": false
   }
  ],
- "storedOutOfWindow": [
-  "90513|2010|PL  Tottenham -> Everton  2012-01-02",
-  "30786|2014|SA  Juventus -> Genoa  2019-01-24",
-  "711|2024|SA  Bologna -> Como  2026-01-20",
-  "115227|2011|SA  Genoa -> Lazio  2011-01-18",
-  "31802|2010|SA  Udinese -> Genoa  2013-01-01",
-  "50100|2015|TR  Trabzonspor -> Gaziantepspor  2017-01-10",
-  "31406|2024|LL  Real Sociedad -> Valencia  2026-01-07"
- ]
+ "storedOutOfWindow": []
 }
