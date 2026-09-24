@@ -1,4 +1,29 @@
-# CROSS-LEAGUE SEASON ORDER , SCOPE ONLY. NOTHING BUILT, NOTHING WRITTEN.
+# CROSS-LEAGUE SEASON ORDER , THE SCOPE. **IT IS BUILT NOW. READ THIS BLOCK FIRST.**
+
+> **[SUPERSEDED IN PART, 2026-09-24. THE TITLE SAID "NOTHING BUILT" AND THE FIGURES BELOW ARE THE
+> PRE-ALIAS ONES. Both were true when this was written and neither is now, and SEC C's own rule is
+> that a superseded paragraph left above its correction gets read first and acted on.]**
+>
+> **WHAT SHIPPED:** the schema change (`3562ab4`), the seven wrong-season repairs (`ef237c8`), the
+> four Turkish aliases (`27678db`), **609** rows written with `orderSeasonRows`'s league-code branch
+> deleted (`c8a87b8`), and the three stale fetch gates that meant nothing asked for the new rows
+> (`de36ea3`).
+>
+> **WHAT THE NUMBERS BECAME.** Sections 1 and 3 below record the ladder at **605 of 614, 98.5%**,
+> with an 8-pair residue, because they were measured BEFORE the alias map. With the aliases and
+> `fk` added to the club-type suffixes it is **609 of 613, 99.3%**, and the residue is exactly the
+> **four players the export does not carry**: Cisse 2011/12, van Bommel 2010/11, Ghezzal 2011/12,
+> Simao 2010/11. The rung split shipped as transfer_row 529, arrival_both 39, arrival_one 36,
+> next_departure 5.
+>
+> **AND TWO RUNGS CHANGED SHAPE AFTER THE CONTROL RAN**, which sections 1 and 2 predate: rung 1
+> ignores rows dated at either season boundary (a 1 July line closes the previous loan, a late-June
+> line closes this one), and rung 3 reads the phase, because an arrival in July is the club he
+> STARTED at rather than the one he joined. Taking the earliest direct row reversed 17 of the 800
+> control rows and taking the latest reversed 39; after both corrections, zero.
+>
+> **Section 5 is the one part still unbuilt**, and it is scope.
+
 
 **THE DEFECT.** A player who plays in two different leagues in one season holds two cards, and
 `VVCore.orderSeasonRows` puts them in order by **league code, alphabetically**:
@@ -175,3 +200,59 @@ in the one place we cannot check is how the `top_assists` defect survived two mo
 - **Whether the card's own season list changes order visibly.** Reordering a cross-league season
   changes what the season stepper walks and what the picker shows, on 614 seasons. It is a visible
   change to a live surface, so it wants a before-and-after and Lucas, exactly like any other.
+
+---
+
+## 5. ADDENDUM , THE THREE-CARD SEASONS. SCOPE ONLY, MEASURED 2026-09-24
+
+Section 4 left "the one three-card player-season" as needing its own look. Measured against all
+57,885 cards, **there are FOUR, and none has four**:
+
+| player | season | cards | rows held |
+|---|---|---|---|
+| D. Drăguş | 2025/26 | Trabzonspor (TR) a6, Eyüpspor (TR) a12, Gaziantep FK (TR) a11 | `Trabzonspor -> Gaziantep FK` |
+| F. Depaoli | 2020/21 | Atalanta (SA) a5, Benevento (SA) a15, Sampdoria (SA) a2 | `Sampdoria -> Benevento` |
+| S. Posch | 2024/25 | Atalanta (SA) a5, Como (SA) a5, Bologna (SA) a14 | **none** |
+| Unai Núñez | 2025/26 | Celta Vigo (LL) a4, Hellas Verona (SA) a17, Valencia (LL) a13 | `Celta Vigo -> Valencia` |
+
+Three are one league throughout; Núñez is the only mixed one, two leagues across three cards.
+**Posch holds none because his row was DELETED in the repair pass** , it carried a 2025/26 move on
+a 2024/25 season, and one from-to row cannot order three clubs anyway.
+
+### What they fall back to, and it is wrong on at least two
+
+`orderSeasonRows` consults a transfer row only when `group.length === 2`, so **a three-card season
+never reaches the evidence even when a row exists**. All four take the fallback, appearances
+descending then `card_id`:
+
+```
+Drăguş      Eyüpspor a12   ->  Gaziantep FK a11  ->  Trabzonspor a6
+Depaoli     Benevento a15  ->  Atalanta a5       ->  Sampdoria a2
+Posch       Bologna a14    ->  Atalanta a5       ->  Como a5
+Núñez       Hellas Verona a17 -> Valencia a13    ->  Celta Vigo a4
+```
+
+**Depaoli is exactly reversed.** The export holds `Sampdoria -> Atalanta 2020-10-02` and
+`Sampdoria -> Benevento 2021-01-26`, so he went Sampdoria, then Atalanta, then Benevento, and the
+chart draws Benevento first. **Drăguş is wrong too**: `Trabzonspor -> Eyüpspor 2025-07-18`,
+`Eyüpspor -> Trabzonspor 2026-01-07`, `Trabzonspor -> Gaziantep FK 2026-01-08`.
+
+**AND NOTHING SAYS SO.** There is no marker, no null date, no `decided_by` , the fallback is
+indistinguishable from an ordered pair, which is the same shape as the league-code sort this scope
+was written to remove.
+
+### What it would take, and why it is not being done here
+
+- **The schema already admits it.** The new key `(api_player_id, season_year, from_club, to_club)`
+  holds two rows for one player-season, which is what a three-club season needs.
+- **The ladder does not.** Every rung answers "which of these TWO came first". Ordering three
+  clubs is a different question: it needs a sequence built from arrivals and departures, and the
+  `group.length === 2` guard in `orderSeasonRows` would have to become a sort over several rows
+  rather than a pairwise swap.
+- **Four seasons, highest rt 62, nothing at rt 80 or above.** The whole population is in the tail,
+  so this is a correctness item rather than a visible one.
+
+**THE HONEST INTERIM IS TO SAY NOTHING RATHER THAN TO GUESS.** The order shown is the fallback's,
+it is wrong on at least two of the four, and until the sequence work is done no surface should
+state or imply that a three-card season is in time order , which is the same rule already written
+for the four undated cross-league pairs.
