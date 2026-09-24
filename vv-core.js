@@ -3913,9 +3913,27 @@
     if(!Array.isArray(rows) || !rows.length) return '';
     var data = rows.map(function(r){
       return { season:r.season, g:(+r.goals||0), a:(+r.assists||0),
-               rt:(r.rt==null?null:+r.rt), selected:!!r.selected };
+               rt:(r.rt==null?null:+r.rt), selected:!!r.selected,
+               /*  CARRIED FOR THE SPLIT-SEASON LABEL ONLY , see the block below. Both callers
+                   already hold it: the card maps SEASON_ROWS and compare maps its own rows,
+                   and neither was passing it, so a repeated year drew twice with nothing to
+                   tell the two apart.  */
+               club:(r.team_name || r.clubname || '') };
     });
     var n = data.length;
+    /*  A REPEATED YEAR ON THIS AXIS MEANS TWO CARDS IN ONE SEASON, AND THE AXIS COULD NOT SAY
+        WHICH WAS WHICH , fixed 2026-09-22. Sitting 1 made that shape common: a same-league
+        mid-season move now produces two cards, so the axis read "’24 | ’25 | ’26 | ’26".
+        It also happens for a CROSS-LEAGUE season, which 432 players have, and the same label
+        answers both , the two bars are two clubs either way.
+        THE ALTERNATIVE WAS TO SUM THE PAIR INTO ONE BAR AND IT WAS REJECTED BY LUCAS: that
+        rebuilds the fused card inside a chart, which is the shape sitting 1 exists to undo.
+        THE MEMBERS OF A REPEATED GROUP ARE NEVER THINNED. `xStep` drops labels on a dense
+        chart, and dropping one half of a pair would leave a split season rendering as one
+        labelled year beside an unexplained bar , worse than the defect being fixed.  */
+    var xlabs = data.map(function(d){ return '’' + String(fmtSeason(d.season)).split('/').pop(); });
+    var labN = {}; xlabs.forEach(function(l){ labN[l] = (labN[l]||0) + 1; });
+    var isSplit = xlabs.map(function(l){ return labN[l] > 1; });
     // LEFT axis , goals + assists (dynamic max)
     var maxGA = 0; data.forEach(function(d){ var t=d.g+d.a; if(t>maxGA) maxGA=t; });
     var lstep = maxGA>40?20:(maxGA>20?10:(maxGA>8?5:2));   // finer steps at low values so a sparse chart fills the axis
@@ -3960,9 +3978,26 @@
       /* invariant: thinning stays (i%xStep) and the last season is always labelled.
          The d.selected clause was REMOVED , it inserted an off-rhythm label; the selected
          season already carries the full-height .tjsel highlight band, so it was redundant. */
-      if(i%xStep===0 || i===n-1){
-        var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
-        s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
+      if(i%xStep===0 || i===n-1 || isSplit[i]){
+        s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle">'+escHtml(xlabs[i])+'</text>';
+        /*  THE CLUB SITS UNDER THE YEAR, NOT INSTEAD OF IT. The year is still the axis; the
+            club is what separates two bars sharing one year. It takes the axis ink rather
+            than gold , gold on this chart is `.tjpeak`, which means "the notable one", and a
+            routine label wearing that ink would read as a highlight.  */
+        /*  IT IS EMITTED HIDDEN AND REVEALED BY MEASUREMENT , `vvTrajFit`, below. The label is
+            centred on its bar, so two adjacent halves collide the moment a name is wider than
+            a slot: measured at 8.5px Archivo 700 with getBBox, "Chelsea" is 35.8px, "Aston
+            Villa" 47.1, "Borussia Dortmund" 84.4 and "Borussia Monchengladbach" 121.6, against
+            a slot of 72px at four seasons, 36.3 at eight and 16.1 at eighteen. Unguarded it
+            overlapped by 42.6px on a real card (Aubameyang, 17 seasons).
+            A WIDTH MODEL WAS TRIED FIRST AND IT IS NOT POSSIBLE , recorded so it is not
+            retried. `5.6 * chars + 2` failed on FOUR of the 284 real club names, all of them
+            SHORT: `MVV` measures 30.2px against a predicted 18.8, `Emmen` 32.7 against 30.0,
+            `QPR` and `Como` the same shape. Per-character arithmetic cannot bound a
+            proportional face, because a three-letter name in wide capitals is broader than a
+            five-letter one in narrow lowercase. You cannot size text without measuring it,
+            and a string builder cannot measure.  */
+        if(isSplit[i] && d.club) s+='<text class="tjclub" data-tjy="'+escAttr(xlabs[i])+'" x="'+x.toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle">'+escHtml(d.club)+'</text>';
       }
     });
     if(hasVV){
@@ -3988,6 +4023,76 @@
       ? 'One season on record , the numbers so far, not yet a trajectory.'
       : 'The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.')+'</div>';
     return head+legend+svg+caption;
+  }
+
+  /*  THE SPLIT-SEASON CLUB LABELS ARE REVEALED BY MEASUREMENT, NEVER BY A MODEL , 2026-09-22.
+      Call this on the element a trajectory was just injected into. It reads each label's real
+      painted box with getBBox and shows only the ones that collide with nothing.
+      IT FAILS TO THE SAFE SIDE BY CONSTRUCTION, WHICH IS THE POINT. `.tjclub` is hidden in
+      CSS, so a surface that renders a trajectory and forgets to call this shows NO club labels
+      , the axis exactly as it was before the feature, a state we already know , rather than
+      overlapping text nothing on screen would explain. CLAUDE.md SEC C records the opposite
+      arrangement three times: a behaviour attached to a code path is missing from every other
+      path, silently. Here the silence is the harmless outcome.
+      ALL OF A YEAR'S LABELS SHOW OR NONE DO. Naming one of two bars and leaving the other bare
+      says the unnamed one is not a club, which is worse than naming neither.
+      MEASURED POPULATION, so nobody re-derives it: 1,291 players hold a repeated year, and on
+      the true widths every label fits on 375 of them and none fits on 611. The dense case is
+      an OPEN DESIGN QUESTION, not a defect , a 17-season axis has 16px a slot and no typeface
+      puts a club name in it.  */
+  function vvTrajFit(root){
+    if(!root || !root.querySelectorAll) return 0;
+    var shown = 0;
+    Array.prototype.forEach.call(root.querySelectorAll('svg.tjsvg'), function(svg){
+      var clubs = Array.prototype.slice.call(svg.querySelectorAll('.tjclub'));
+      if(!clubs.length) return;
+      /*  A CHART INSIDE A CLOSED FOLD HAS NO BOX, AND MEASURING IT THERE HIDES EVERY LABEL
+          FOR GOOD , caught by rendering, 2026-09-22. The card's trajectory lives inside a
+          `<details>` that starts shut, so `getBBox` threw on every label and the whole set
+          was marked as colliding; compare's section is open by default, so it worked there
+          and the card silently showed nothing. Two surfaces, one call, opposite outcomes.
+          SO IT WAITS FOR THE STATE, NOT FOR A CALLER. A ResizeObserver fires when the chart
+          first gets a box , a fold opening, a tab showing, a panel expanding , which is the
+          transition every one of those paths passes through. CLAUDE.md SEC C: attach a
+          behaviour to the state it depends on, so a route added later cannot forget it.  */
+      if(!svg.getBoundingClientRect().width){
+        if(!svg.__tjRO && typeof ResizeObserver === 'function'){
+          svg.__tjRO = new ResizeObserver(function(){
+            if(svg.getBoundingClientRect().width && svg.isConnected){
+              svg.__tjRO.disconnect(); svg.__tjRO = null; vvTrajFit(svg.parentNode || svg);
+            }
+          });
+          svg.__tjRO.observe(svg);
+        }
+        return;
+      }
+      var box = function(el){ try { var b = el.getBBox(); return {x1:b.x, x2:b.x+b.width}; }
+                              catch(e){ return null; } };   // getBBox throws on a detached or undisplayed node
+      var cb = clubs.map(box);
+      /*  THE TEST IS CLUB AGAINST CLUB, ON X ONLY, AND THE YEAR ROW IS DELIBERATELY NOT IN IT.
+          Every club label sits on ONE line of its own, 9px below the year row, so a horizontal
+          reading is the whole question , two names on that line either touch or they do not.
+          THE FIRST VERSION ALSO TESTED AGAINST THE YEAR LABELS AND SUPPRESSED EVERY LABEL ON
+          EVERY CHART, INCLUDING ONES THAT VISIBLY FIT. A club label is centred under its OWN
+          year, so it always overlaps it on x, and Chrome's getBBox on SVG text returns a box
+          built from font ASCENT AND DESCENT rather than tight glyph bounds , so the two rows
+          touch by a fraction of a pixel and every label read as a collision. The symptom was
+          total silence, which looks exactly like a feature that was never wired.  */
+      var pad = function(b){ return b && {x1:b.x1-1, x2:b.x2+1}; };
+      var hit = function(a,b){ return a && b && a.x1 < b.x2 && b.x1 < a.x2; };
+      var bad = {};
+      clubs.forEach(function(el,i){
+        if(!cb[i]){ bad[el.getAttribute('data-tjy')] = 1; return; }
+        var me = pad(cb[i]), clash = false;
+        cb.forEach(function(o,j){ if(j!==i && hit(me, pad(o))) clash = true; });
+        if(clash) bad[el.getAttribute('data-tjy')] = 1;
+      });
+      clubs.forEach(function(el){
+        if(!bad[el.getAttribute('data-tjy')]){ el.classList.add('tjfit'); shown++; }
+        else el.classList.remove('tjfit');
+      });
+    });
+    return shown;   // returned so a caller or a probe can assert it rather than assume it
   }
 
   // ── Unified rank/season row (.urow) , shared by rankings List + Compact AND
@@ -7556,7 +7661,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
                 cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvWordmark, socialRowHTML, vvStripMarkers,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
-                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows, useWonderTagPills,
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, vvTrajFit, renderProfileTagRows, useWonderTagPills,
                 rankRowHTML, rowShieldHTML, vvCardFlip, vvCardSlide, vvPrefersReducedMotion, vvBackFace,
                 VVFilters, VVSeq };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites

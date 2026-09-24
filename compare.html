@@ -460,6 +460,18 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
 .vfinal{margin-top:38px;padding:38px 34px 32px;text-align:center;position:relative;
   background:linear-gradient(180deg,var(--vfinal-plate) 0%,var(--vfinal-plate) 58%,var(--vfinal-plate-0) 100%),var(--surf-hero);
   border:1px solid var(--edge-hero);border-radius:20px;
+  /*  STAGE , the panel is lifted off the page rather than printed on it, 2026-09-22, Lucas's
+      pick from three depths rendered on real prose in both themes at 390 and desktop.
+      IT REPLACES A SHADOW, IT DOES NOT ADD ONE. The old value was
+      `0 30px 56px -26px rgba(0,0,0,.34)`: a 56px blur pulled back 26px, so almost all of it
+      landed UNDER the panel and barely any escaped the edge, which is why a panel that had a
+      shadow still read as flat.
+      THREE LAYERS, EACH DOING ONE JOB. A tight contact shadow so the bottom edge sits on
+      something; a long soft throw so the panel has height above the page; and a hairline ring
+      so the TOP edge is drawn rather than implied , the throw is downward, so without it the
+      top of the panel has nothing separating it from the page at all.
+      THE PINK HALO IS UNCHANGED AND IS NOT PART OF THIS. It is a brand glow at 0.055 alpha,
+      not depth, and it is listed last so the depth layers paint behind it.  */
   box-shadow:0 8px 18px rgba(0,0,0,.10), 0 48px 96px -18px rgba(0,0,0,.36),
              0 0 0 1px var(--vfinal-rim), 0 0 0 7px rgba(255,92,122,.055)}
 .vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
@@ -723,7 +735,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   body.light .vsect{--vs-muted:#5f594e}
   .vsect .vsect-t, .vsect .vsect-d, .vsect .h2hlabel, .vsect .vd-l,
   .vsect .vtraj-t, .vsect .vtcap, .vsect .vtavg .gl, .vsect .pkmgl{ color:var(--vs-muted) }
-  .vsect .tjyl, .vsect .tjyr, .vsect .tjxl, .vsect .tylab, .vsect .txlab{ fill:var(--vs-muted) }
+  .vsect .tjyl, .vsect .tjyr, .vsect .tjxl, .vsect .tjclub, .vsect .tylab, .vsect .txlab{ fill:var(--vs-muted) }
 
   /*  THE PROOF VALUES ARE A DELIBERATE EXCEPTION AND GET 0.55, NOT 0.80.
       .vp-va/.vp-vb are the LOSING figure, dimmed against a .win sibling that renders at full
@@ -942,7 +954,13 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   .tjvp{color:var(--vvw-ink,var(--pink-ink))}
   .tjsvg{display:block;width:100%;height:auto}
   .tjgrid{stroke:rgba(243,237,224,0.09);stroke-width:1}
-  .tjyl,.tjyr,.tjxl{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  .tjyl,.tjyr,.tjxl,.tjclub{fill:rgba(243,237,224,0.55);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  /*  THE SPLIT-SEASON CLUB LINE , it takes the axis ink from the rule above and only
+      overrides its SIZE, so it can never be the element that forgets a theme. It appears
+      ONLY under a year that repeats, which is a same-league mid-season move or a season
+      played in two leagues. See renderTrajectory in vv-core.js.  */
+  .tjclub{font-size:8.5px;letter-spacing:.04em;visibility:hidden}
+  .tjclub.tjfit{visibility:visible}
   .tjtot{fill:#F0EAD9;font-family:'Archivo';font-weight:800;font-size:10px;paint-order:stroke;stroke:#164A2D;stroke-width:3.4px;stroke-linejoin:round}  /* dark theme: halo = mid of the .vsect green gradient. Compare renders with
      transparent:true so it has NO .tjmask (invariant 7) , the halo is what stops the VV
      line cutting through the season total here. */
@@ -964,7 +982,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
     light, and the light half measures 5.90. Match the ink to the ground, not to a hex. */
   .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:var(--gold-ink);text-align:center;margin-top:14px;padding:0 4px}
   body.light .tjhead,body.light .tjlg{color:#5a544a}
-  body.light .tjyl,body.light .tjyr,body.light .tjxl,body.light .tjtot{fill:#5a544a}
+  body.light .tjyl,body.light .tjyr,body.light .tjxl,body.light .tjclub,body.light .tjtot{fill:#5a544a}
   body.light .tjtot{stroke:#FBF8F2}   /* light theme: halo = the .vsect panel colour */
   body.light .tjgrid{stroke:rgba(0,0,0,0.09)}
   .vtchart{text-align:center}
@@ -1601,13 +1619,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260922d"></script>
+<script src="/vv-marks.js?v=20260922g"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260922d"></script>
+<script src="/vv-core.js?v=20260922g"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -2693,7 +2711,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     // mark each player's CURRENT compare season (CMP_*) as selected (pink highlight)
     function mark(rows,cmp){ if(!Array.isArray(rows)) return [];
       var selY = (cmp && cmp.season_year!=null) ? +cmp.season_year : null;
-      return rows.map(function(r){ return {season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, selected:(selY!=null && +r.season_year===selY)}; });
+      return rows.map(function(r){ return {season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, team_name:r.team_name, selected:(selY!=null && +r.season_year===selY)}; });
     }
     var ra=mark(rowsA,CMP_A), rb=mark(rowsB,CMP_B);
     // bare charts (no per-chart chrome), transparent on the verdict panel
@@ -2738,6 +2756,11 @@ body.light .pkmsub{color:var(--ink-soft)}
       +   '<div class="vtchart"><div class="vtname tB">'+(nameB||'B')+'</div>'+chartB+'</div>'
       + '</div>'
       + caption;
+    /*  MEASURE THE SPLIT-SEASON CLUB LABELS AFTER THE CHART IS IN THE DOCUMENT. They are
+        emitted hidden and `vvTrajFit` shows only the ones whose painted box collides with
+        nothing , see the note beside it in vv-core.js. It has to run here, after innerHTML,
+        because getBBox needs a laid-out node.  */
+    if(VVCore.vvTrajFit) VVCore.vvTrajFit(box);
   }
 
   // load a player's multi-season G+A history (summed per season_year across leagues); last ~4 seasons
@@ -2746,14 +2769,42 @@ body.light .pkmsub{color:var(--ink-soft)}
     var sb=vvClient(); if(!sb) return [];
     // keeper fields ride along: a GK gets the save-rate chart, which needs saves/conceded and
     // the season list fields. Same query, more columns , no extra round trip.
-    var res=await sb.from('player_card_mv').select('season,season_year,goals,assists,rt,saves,goals_conceded,minutes,appearances,team_name').eq('api_player_id',apiId).order('season_year',{ascending:true});
+    var res=await sb.from('player_card_mv').select('card_id,season,season_year,league_code,api_player_id,goals,assists,rt,saves,goals_conceded,minutes,appearances,team_name').eq('api_player_id',apiId).order('season_year',{ascending:true}).order('card_id',{ascending:true});
     if(res.error || !res.data){ if(res.error) console.error('trajectory load failed:', res.error.message); return []; }
+    /*  A SPLIT SEASON PLOTS BOTH HALVES (2026-09-22). This used to keep the highest-rt card per
+        season_year, a rule written when a duplicate year could only mean a player in TWO LEAGUES.
+        Sitting 1 made a duplicate year mean a mid-season move as well, and the old rule then
+        dropped one half in silence , a card that exists with nothing saying so, which is the same
+        shape as the disclosure regression the notes had to be gated apart to fix.
+        SUMMING THEM WAS THE OTHER OPTION AND IS WORSE: it rebuilds the fused card the whole
+        sitting existed to take apart.
+        THE CROSS-LEAGUE INTENT IS KEPT, and it has to be separated from the split by LEAGUE, not
+        by year: within one league the halves are one season and both belong on the chart; across
+        two leagues the strongest league-season is still picked, as before.  */
     var byYear={};
     res.data.forEach(function(r){ var y=r.season_year; if(y==null) return;
-      // highest-rt card per season_year (cross-league seasons pick the strongest)
-      if(!byYear[y] || (r.rt!=null && (byYear[y].rt==null || r.rt>byYear[y].rt))) byYear[y]={season:r.season, goals:r.goals, assists:r.assists, rt:r.rt, season_year:y, saves:r.saves, goals_conceded:r.goals_conceded, minutes:r.minutes, appearances:r.appearances, team_name:r.team_name};
+      (byYear[y]=byYear[y]||{})[r.league_code] = (byYear[y][r.league_code]||[]).concat([r]);
     });
-    return Object.keys(byYear).map(Number).sort(function(a,b){return a-b;}).map(function(y){return byYear[y];});   // chronological, ALL seasons
+    var out=[];
+    Object.keys(byYear).map(Number).sort(function(a,b){return a-b;}).forEach(function(y){
+      var lgs=byYear[y], best=null, bestRt=-1;
+      Object.keys(lgs).forEach(function(lc){
+        var top=lgs[lc].reduce(function(m,r){ return (r.rt!=null && r.rt>m)?r.rt:m; }, -1);
+        if(top>bestRt){ bestRt=top; best=lgs[lc]; }
+      });
+      (best||[]).forEach(function(r){ out.push(r); });
+    });
+    /*  ORDERED WITH THE TRANSFER ROW where a year repeats, so the two halves read left to right
+        in the order they were played. Only fetched when a year actually repeats.  */
+    var dup=Object.keys(byYear).some(function(y){ return Object.keys(byYear[y]).some(function(lc){ return byYear[y][lc].length>1; }); });
+    if(dup){
+      try{ var _tx=await sb.from('split_transfers').select('*').eq('api_player_id',apiId);
+           out = VVCore.orderSeasonRows(out, (_tx && _tx.data) || [], {oldestFirst:true}); }
+      catch(e){ out = VVCore.orderSeasonRows(out, [], {oldestFirst:true}); }
+    }
+    return out.map(function(r){ return {season:r.season, goals:r.goals, assists:r.assists, rt:r.rt,
+      season_year:r.season_year, saves:r.saves, goals_conceded:r.goals_conceded, minutes:r.minutes,
+      appearances:r.appearances, team_name:r.team_name}; });
   }
 
   // ── Live AI verdict (generation only; caching is a later step) ──

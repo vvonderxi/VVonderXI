@@ -254,7 +254,13 @@
   /* 0.72, matching .tjyl/.tjyr. This is the SAME green panel and the same 10.5px, and it was
      left at 0.55 when the y-axis was raised , half a fix, which is worse than none because
      the rule looks applied. Measured 3.63 before, 5.04 after. */
-  .tjxl{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  .tjxl,.tjclub{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  /*  THE SPLIT-SEASON CLUB LINE , same ink as the year above it, smaller. It renders only
+      under a repeated year. This is a SECOND copy of the rule that also lives in
+      compare.html, which is how every .tj* style on this chart already works , the shared
+      renderer emits the markup and each page supplies the ink for its own ground.  */
+  .tjclub{font-size:8.5px;letter-spacing:.04em;visibility:hidden}
+  .tjclub.tjfit{visibility:visible}
   .tjxlsel{fill:#E70443;font-weight:800}
   .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
   .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
@@ -1477,8 +1483,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260922d"></script>
-<script src="/vv-core.js?v=20260922d"></script>
+<script src="/vv-marks.js?v=20260922g"></script>
+<script src="/vv-core.js?v=20260922g"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1601,7 +1607,7 @@
         January. orderSeasonRows takes the club he left first where split_transfers knows,
         and falls back to appearances then card_id where it does not.  */
     var rows=VVCore.orderSeasonRows(SEASON_ROWS, SEASON_TX, {oldestFirst:true}).map(function(r){
-      return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), selected:(r.card_id===SEASON_CARDID) };
+      return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), team_name:(r.team_name||r.clubname||''), selected:(r.card_id===SEASON_CARDID) };
     });
     /*  A KEEPER GETS THE SAVE-RATE CHART, NOT THE SHARED ONE. The shared renderer stacks
         goals+assists as bars and plots rt as the line; for a keeper the bars are 0+0 on
@@ -1612,6 +1618,10 @@
       return;
     }
     host.innerHTML = VVCore.renderTrajectory(rows);                              // shared dual-axis renderer (single-season safe)
+    /*  The split-season club labels are emitted hidden and revealed by measurement , see
+        vvTrajFit in vv-core.js. getBBox needs the node laid out, so this runs after the
+        injection and not inside the renderer.  */
+    if(VVCore.vvTrajFit) VVCore.vvTrajFit(host);
   }
   function vvNotesOpen(){ /* editorial loads on card load; nothing to do on open */ }
   var EDITORIAL_FOR = null;
