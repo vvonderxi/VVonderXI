@@ -369,8 +369,21 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   body.light .vd-l{color:var(--ink-soft)}
   body.light .vwbtn{background:var(--charcoal);color:var(--cream)}
   @media (max-width:760px){.vbreak{grid-template-columns:minmax(0,1fr)}}
-  /* tags section (spans both columns) */
-  .vsect-wide{grid-column:1 / -1}
+  /*  THE SPAN IS DECLARED ONCE AND `.vfinal` IS A MEMBER OF IT , 2026-09-22.
+      `.vbreak` is a two-column grid above 760px and every section that wants the full width
+      opts in here. `.vfinal` is the verdict panel and it is NOT a `.vsect`, so it never
+      joined this selector and has been a grid item in COLUMN ONE since the file was first
+      committed: measured at 1920 it was 851.5px wide inside a 1731px row, with 879.5px of
+      empty page to its right, and its own `text-align:center` centred the words inside that
+      half. That is why it read as a centred panel sitting off-centre.
+      IT ONLY BECAME OBVIOUS ON 2026-08-02. `8327cb4` moved the panel from the LAST child of
+      this grid to the FIRST , the answer-first reorder , and that commit's own note says
+      "nothing about the writers moves, vvSetVerdict addresses these nodes by id or class,
+      not by position". The move was checked for JS breakage and not for LAYOUT, and a panel
+      that is half-width reads very differently at the top of a page than at the bottom.
+      BELOW 760px the grid is a single column and `1 / -1` still spans it, so nothing changes
+      on a phone , measured 0px dead either side at 390, 720 and 760.  */
+  .vsect-wide,.vfinal{grid-column:1 / -1}
   .vtags{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   @media (max-width:720px){.vtags{grid-template-columns:1fr}}
   .vtcol .vtname{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;margin-bottom:11px}
