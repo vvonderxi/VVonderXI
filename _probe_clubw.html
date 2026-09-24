@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Club label widths</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#222;color:#eee;font:12px monospace;padding:10px;white-space:pre-wrap}
+ svg{position:absolute;left:-9999px}
+ .tjclub{font-family:'Archivo';font-weight:700;font-size:8.5px;letter-spacing:.04em}</style>
+</head><body><svg id="s" width="4000" height="4000"></svg><div id="out">measuring</div>
+<script>
+const NAMES=["Benfica", "Borussia Dortmund", "Villarreal", "1899 Hoffenheim", "VfB Stuttgart", "Werder Bremen", "VfL Wolfsburg", "Osasuna", "Atletico Madrid", "Las Palmas", "Chelsea", "AC Milan", "Galatasaray", "Zulte Waregem", "Club Brugge KV", "1. FC K\u00f6ln", "Monaco", "Groningen", "Hellas Verona", "Torino", "Espanyol", "OH Leuven", "FC Schalke 04", "Rio Ave", "Lille", "Alanyaspor", "Farense", "Mallorca", "Estoril", "Sevilla", "Nancy", "Sampdoria", "Celta Vigo", "Real Betis", "Barcelona", "Getafe", "Alaves", "Liverpool", "Inter", "Aston Villa", "Be\u015fikta\u015f", "Fiorentina", "Ajax", "Tottenham", "Newcastle", "Southampton", "Everton", "Toulouse", "Udinese", "Napoli", "Genoa", "Hull City", "Fenerbah\u00e7e", "Paris Saint Germain", "Lazio", "Cesena", "Atalanta", "Cagliari", "AS Roma", "West Ham", "Monza", "Sivasspor", "Utrecht", "PSV Eindhoven", "Manchester City", "RB Leipzig", "Trabzonspor", "Bayern M\u00fcnchen", "Bolton", "Saint Etienne", "FC Porto", "Vitoria Setubal", "FSV Mainz 05", "Kas\u0131mpa\u015fa", "Heerenveen", "Leeds", "Juventus", "Chaves", "Standard Liege", "Valencia", "Almeria", "Stoke City", "West Brom", "Denizlispor", "Twente", "Sparta Rotterdam", "Manchester United", "Olhanense", "Fulham", "Athletic Club", "Hannover 96", "Lyon", "Bordeaux", "Como", "Leicester", "Bologna", "Union Berlin", "Bayer Leverkusen", "Ey\u00fcpspor", "Valladolid", "Norwich", "Livorno", "Rennes", "Fortuna Sittard", "Lecce", "Levante", "Wolves", "Marseille", "Arsenal", "Real Madrid", "SC Braga", "FC Augsburg", "Eintracht Frankfurt", "Charleroi", "Gent", "Nimes", "Catania", "GO Ahead Eagles", "Sunderland", "Ankarag\u00fcc\u00fc", "Hertha BSC", "Empoli", "Antwerp", "Sporting CP", "Anderlecht", "Stade Brestois 29", "Genk", "Nantes", "Sporting Gijon", "Gaziantepspor", "Emmen", "St. Truiden", "Watford", "AS Eupen", "Crystal Palace", "G\u00f6ztepe", "Malaga", "Estac Troyes", "Moreirense", "Boavista", "Royal Excel Mouscron", "KVC Westerlo", "Parma", "Palermo", "Real Sociedad", "Granada CF", "Pendikspor", "Fatih Karag\u00fcmr\u00fck", "Kayserispor", "Burnley", "Kortrijk", "Leganes", "Chievo", "Nice", "Montpellier", "Sheffield Utd", "Brighton", "Swansea", "KV Mechelen", "Bursaspor", "Feyenoord", "Cambuur", "Angers", "Guingamp", "Adana Demirspor", "Reims", "Strasbourg", "Lokeren", "Benevento", "Willem II", "AZ Alkmaar", "Fortuna D\u00fcsseldorf", "Feirense", "Borussia M\u00f6nchengladbach", "Nottingham Forest", "Eski\u015fehirspor", "Lens", "Paris FC", "Ba\u015fak\u015fehir", "Cercle Brugge", "Erzurumspor FK", "Caen", "Guimaraes", "Oostende", "Gen\u00e7lerbirli\u011fi S.K.", "Hatayspor", "Metz", "Auxerre", "Amiens", "Sochaux", "Hamburger SV", "Zaragoza", "Maritimo", "Beerschot", "Spal", "Lorient", "Vitesse", "Crotone", "Union St. Gilloise", "Venezia", "Mons", "PEC Zwolle", "Beira-Mar", "Akhisarspor", "GIL Vicente", "Belenenses", "ADO Den Haag", "Antalyaspor", "SC Freiburg", "1. FC Kaiserslautern", "Konyaspor", "Heracles", "FC St. Pauli", "Bournemouth", "Cardiff", "Deportivo La Coruna", "Huddersfield", "Le Havre", "Bastia", "QPR", "Evian TG", "Famalicao", "Blackburn", "1. FC N\u00fcrnberg", "Rizespor", "Rayo Vallecano", "Sassuolo", "Brescia", "SV Darmstadt 98", "Kardemir Karabukspor", "NAC Breda", "NEC Nijmegen", "Arouca", "Carpi", "Cremonese", "Excelsior", "Frosinone", "Bari", "Robur Siena", "Pescara", "Novara", "Luton", "Roda", "Waalwijk", "Arminia Bielefeld", "De Graafschap", "Dordrecht", "MVV", "VVV Venlo", "Beerschot VA", "Samsunspor", "Estrela", "Eibar", "Huesca", "Santa Clara", "Gaziantep FK", "Bal\u0131kesirspor", "Portimonense", "Nacional", "Yeni Malatyaspor", "Kayseri Erciyesspor", "Aves", "Pacos Ferreira", "Tondela", "Arles", "Elche", "Cadiz", "Girona", "Ankaraspor", "Dijon", "Orduspor", "Alverca", "Spezia", "Elaz\u0131\u011fspor", "Academica", "Reading", "Almere City FC", "Valenciennes", "Lierse", "Ajaccio", "Birmingham", "Casa Pia", "Telstar", "Pisa"];
+(async()=>{
+ await document.fonts.load('700 8.5px Archivo'); await document.fonts.ready;
+ const s=document.getElementById('s'), res=[];
+ NAMES.forEach(function(n,i){ const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+   t.setAttribute('class','tjclub'); t.setAttribute('x','10'); t.setAttribute('y', 12+i*12);
+   t.textContent=n; s.appendChild(t); });
+ await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+ [...s.querySelectorAll('text')].forEach(function(t){ const b=t.getBBox();
+   res.push({n:t.textContent, w:+b.width.toFixed(2), c:t.textContent.length, k:+(b.width/t.textContent.length).toFixed(3)}); });
+ res.sort((a,b)=>b.w-a.w);
+ const ks=res.map(r=>r.k).sort((a,b)=>a-b);
+ document.getElementById('out').textContent =
+   'FONT LOADED: '+document.fonts.check('700 8.5px Archivo')+'\n'
+   +'n names: '+res.length+'\n'
+   +'widest 8: '+res.slice(0,8).map(r=>r.n+'='+r.w).join(', ')+'\n'
+   +'narrowest 5: '+res.slice(-5).map(r=>r.n+'='+r.w).join(', ')+'\n'
+   +'per-char advance k: min '+ks[0]+'  median '+ks[Math.floor(ks.length/2)]+'  max '+ks[ks.length-1]+'\n'
+   +'MAX_K (safe constant) = '+ks[ks.length-1];
+ window.__RES=res; document.title='READY';
+})();
+</script></body></html>

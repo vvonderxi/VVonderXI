@@ -1,0 +1,49 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Verdict 390</title>
+<!--  THE REAL compare.html IN A 390 FRAME. SS C: the browser will not resize here, and a resize
+      call reports success while the page stays desktop-width, so an iframe is the only honest
+      form. The frame asserts its own innerWidth and matchMedia into the caption below it.  -->
+<style>body{margin:0;background:#4a4a4a;font:12px Inter,system-ui,sans-serif;color:#eee;
+  display:flex;gap:18px;align-items:flex-start;padding:10px}
+ iframe{width:390px;height:760px;border:0;background:#fff}
+ .cap{font:700 11px Archivo,sans-serif;letter-spacing:.06em;margin:0 0 6px}
+ .col{display:flex;flex-direction:column}</style></head><body>
+<div class="col"><p class="cap" id="cL">LIGHT 390</p><iframe id="fL"></iframe></div>
+<div class="col"><p class="cap" id="cD">DARK 390</p><iframe id="fD"></iframe></div>
+<script>
+const CACHED = {"verdict": {"p1": "Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: **27 open-play goals from 141 shots** is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.\n\nThe Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool's 90th-percentile bar. **159 successful dribbles from 247 attempts** across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d'Or 2020 and the Golden Boot that season are his alone.", "p2": "Real Madrid, 2014/15. Ronaldo at 29, the age when a player who has prepared his body as a life's work hits the ceiling of what that preparation unlocks. **48 goals and 16 assists** across 35 starts in La Liga is a figure that sits outside normal vocabulary for a winger. The Goals thread runs at a rate that, in any system, bends the table.\n\nThe era means the record is thin: shots, key passes, dribbles and duels were never collected for this season, so the granular picture that Messi's card carries simply does not exist here. What does exist is the output line, and that line is a statement. **Ninety-six minutes, on average, of La Liga football produced a goal or an assist** at a collective rate that the Index has placed in the Generational band.", "h2h": "Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that **Ronaldo's raw output in 2014/15 sits at a different altitude** from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.", "tag": "clear_edge", "who": "Ronaldo's Generational peak clears Messi's Iconic defiance", "verdict": "The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. **Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees**, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.\n\nThis is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most."}, "winner_card_id": 141999};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function run(f, cap, dark){
+  await new Promise(r=>{ f.onload=r; f.src='/compare.html?a=139209&b=141999&cb='+Date.now(); });
+  const w=f.contentWindow, d=f.contentDocument;
+  const _f=w.fetch; w.__h=0;
+  w.fetch=function(u){ if(String(u).indexOf('/api/analyse')>=0){ w.__h++;
+      return Promise.resolve(new w.Response(JSON.stringify(CACHED),{status:200,headers:{'Content-Type':'application/json'}})); }
+    return _f.apply(this,arguments); };
+  /*  WAIT FOR THE CARDS, NOT FOR THE BUTTON. `button.settle` is static markup so it exists
+      immediately, and its handler returns early until both slots hold a card , clicking on
+      the button's existence measured a panel that was never revealed and reported 0px.  */
+  let t=Date.now(); while(Date.now()-t<25000){
+    if(d.querySelector('#cardA .vvcard') && d.querySelector('#cardB .vvcard')) break; await sleep(200); }
+  if(dark) d.body.classList.remove('light');
+  d.querySelector('button.settle').click();
+  t=Date.now(); while(Date.now()-t<25000){ await sleep(200);
+    const q=d.querySelector('#verdict .vfinal .vquote'); if(q&&q.textContent.trim().length>20&&w.__h) break; }
+  const vf=d.querySelector('#verdict .vfinal');
+  /*  SCROLL INSIDE THE PROBE, NOT FROM A LATER TOOL CALL. Post-load JS in this harness has
+      twice returned all-zero geometry on a tab that was still painting correctly, so the
+      frame is positioned here, before the page reports READY, and the screenshot is the
+      only thing taken afterwards.  */
+  const rr = vf.getBoundingClientRect();
+  const edge = new URLSearchParams(location.search).get('edge') || 'top';
+  const topAbs = rr.top + w.scrollY, botAbs = rr.bottom + w.scrollY;
+  w.scrollTo(0, edge==='bottom' ? (botAbs - w.innerHeight + 170) : (topAbs - 150));
+  await sleep(300);
+  const r=vf.getBoundingClientRect();
+  cap.textContent = (dark?'DARK':'LIGHT')+' , innerWidth '+w.innerWidth
+    + ' , mq720 '+w.matchMedia('(max-width:720px)').matches
+    + ' , panel '+Math.round(r.width)+'x'+Math.round(r.height)+' , '+(new URLSearchParams(location.search).get('edge')||'top')+' edge , theme '+(d.body.className||'(dark)');
+}
+(async()=>{ await run(document.getElementById('fL'), document.getElementById('cL'), false);
+            await run(document.getElementById('fD'), document.getElementById('cD'), true);
+            document.title='READY'; })();
+</script></body></html>

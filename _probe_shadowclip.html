@@ -1,0 +1,36 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Shadow Clip Probe</title>
+<!--  THE .vfinal RULE BELOW IS EXTRACTED FROM compare.html BY SCRIPT, NOT RETYPED. The question
+      is a RENDERER question , can an outer box-shadow paint inside a background that fades to
+      transparent , so a minimal page is the right instrument, but the declarations must still
+      be the page's own or it is testing something else.  -->
+<style>
+:root{--surf-stage:#EFE8DA;--surf-hero:#FFFFFF;--edge-hero:rgba(255,92,122,.34);
+  --vfinal-plate:#EFE7D6;--vfinal-plate-0:rgba(239,231,214,0)}
+.dark{--surf-stage:#141011;--surf-hero:#2A2422;--edge-hero:rgba(255,92,122,.30);
+  --vfinal-plate:#1A1614;--vfinal-plate-0:rgba(26,22,20,0)}
+body{margin:0;font:13px Inter,system-ui,sans-serif;background:#888}
+.pane{padding:70px 40px 90px;background:var(--surf-stage)}
+.lab{font:700 11px Archivo,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+  color:#666;margin:0 0 10px}
+.dark .lab{color:#aaa}
+.vfinal{margin-top:38px;padding:38px 34px 32px;text-align:center;position:relative;
+  background:linear-gradient(180deg,var(--vfinal-plate) 0%,var(--vfinal-plate) 58%,var(--vfinal-plate-0) 100%),var(--surf-hero);
+  border:1px solid var(--edge-hero);border-radius:20px;
+  
+  box-shadow:0 8px 18px rgba(0,0,0,.10), 0 48px 96px -18px rgba(0,0,0,.36),
+             0 0 0 1px rgba(0,0,0,.06), 0 0 0 7px rgba(255,92,122,.055)}
+.vfinal{height:150px;margin-top:0}
+/*  THE CONTROL. Saturated red, big blur, big spread. If an outer shadow can reach inside the
+    border box at all, this makes it unmissable in the bottom 42% where the plate is
+    transparent. A control that cannot fail is not evidence.  */
+.ctl{box-shadow:0 0 70px 20px rgba(255,0,0,1) !important}
+</style></head><body>
+<div class="pane">
+  <p class="lab">Light , STAGE as it now ships</p><div class="vfinal"></div>
+  <p class="lab" style="margin-top:60px">Light , CONTROL: red 70px blur, 20px spread</p><div class="vfinal ctl"></div>
+</div>
+<div class="pane dark">
+  <p class="lab">Dark , STAGE as it now ships</p><div class="vfinal"></div>
+  <p class="lab" style="margin-top:60px">Dark , CONTROL: red 70px blur, 20px spread</p><div class="vfinal ctl"></div>
+</div>
+</body></html>

@@ -1,0 +1,54 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Traj Probe</title>
+<style>body{margin:0;background:#3a3a3a;font:12px Inter,system-ui,sans-serif;color:#eee;padding:8px}
+ .row{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+ iframe{width:620px;height:520px;border:0;background:#fff}
+ .cap{font:700 10.5px Archivo,sans-serif;letter-spacing:.05em;margin:0 0 5px;white-space:pre}
+ .col{display:flex;flex-direction:column}</style></head><body>
+<div class="row">
+ <div class="col"><p class="cap" id="c1">CARD , SEMENYO (split 25/26)</p><iframe id="f1"></iframe></div>
+ <div class="col"><p class="cap" id="c2">CARD , MESSI (control, never split)</p><iframe id="f2"></iframe></div>
+ <div class="col"><p class="cap" id="c3">COMPARE , SEMENYO</p><iframe id="f3"></iframe></div>
+</div>
+<script>
+const CACHED = {"verdict": {"p1": "Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: **27 open-play goals from 141 shots** is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.\n\nThe Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool's 90th-percentile bar. **159 successful dribbles from 247 attempts** across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d'Or 2020 and the Golden Boot that season are his alone.", "p2": "Real Madrid, 2014/15. Ronaldo at 29, the age when a player who has prepared his body as a life's work hits the ceiling of what that preparation unlocks. **48 goals and 16 assists** across 35 starts in La Liga is a figure that sits outside normal vocabulary for a winger. The Goals thread runs at a rate that, in any system, bends the table.\n\nThe era means the record is thin: shots, key passes, dribbles and duels were never collected for this season, so the granular picture that Messi's card carries simply does not exist here. What does exist is the output line, and that line is a statement. **Ninety-six minutes, on average, of La Liga football produced a goal or an assist** at a collective rate that the Index has placed in the Generational band.", "h2h": "Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that **Ronaldo's raw output in 2014/15 sits at a different altitude** from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.", "tag": "clear_edge", "who": "Ronaldo's Generational peak clears Messi's Iconic defiance", "verdict": "The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. **Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees**, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.\n\nThis is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most."}, "winner_card_id": 139209};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function texts(d, sel){ return [...d.querySelectorAll(sel)].map(function(t){return t.textContent;}); }
+async function card(f,cap,id,label){
+  await new Promise(r=>{ f.onload=r; f.src='/card.html?id='+id+'&cb='+Date.now(); });
+  const w=f.contentWindow, d=f.contentDocument;
+  let t=Date.now(); while(Date.now()-t<25000){ if(d.querySelector('#trajHost .tjsvg')) break; await sleep(200); }
+  /*  THE CARD'S FOLDS ARE `.layer` PLUS AN `open` CLASS, NOT <details>. Opening the fold is
+      the state the chart needs: inside a closed one it has no box, so nothing can be
+      measured and every club label stays hidden.  */
+  const host=d.getElementById('trajHost');
+  const lay=host?host.closest('.layer'):null; if(lay) lay.classList.add('open');
+  if(host) host.scrollIntoView({block:'center'});
+  await sleep(600);
+  cap.textContent = label+'  |  years: '+texts(d,'#trajHost .tjxl').join(' ')
+    + '  |  SHOWN clubs: '+(texts(d,'#trajHost .tjclub.tjfit').join(' / ')||'(none)');
+}
+async function cmp(f,cap,a,b,label){
+  await new Promise(r=>{ f.onload=r; f.src='/compare.html?a='+a+'&b='+b+'&cb='+Date.now(); });
+  const w=f.contentWindow, d=f.contentDocument;
+  const _f=w.fetch; w.__h=0;
+  w.fetch=function(u){ if(String(u).indexOf('/api/analyse')>=0){ w.__h++;
+      return Promise.resolve(new w.Response(JSON.stringify(CACHED),{status:200,headers:{'Content-Type':'application/json'}})); }
+    return _f.apply(this,arguments); };
+  let t=Date.now(); while(Date.now()-t<25000){
+    if(d.querySelector('#cardA .vvcard') && d.querySelector('#cardB .vvcard')) break; await sleep(200); }
+  d.querySelector('button.settle').click();
+  t=Date.now(); while(Date.now()-t<25000){ await sleep(250); if(d.querySelector('.vtrajgrid .tjsvg, #verdict .tjsvg')) break; }
+  const svg=d.querySelector('#verdict .tjsvg');
+  if(svg) svg.scrollIntoView({block:'center'});
+  await sleep(300);
+  const scope='#verdict ';
+  cap.textContent = label+'  |  years: '+texts(d,scope+'.tjxl').join(' ')
+    + '  |  SHOWN clubs: '+(texts(d,scope+'.tjclub.tjfit').join(' / ')||'(none)');
+}
+(async()=>{
+  await card(document.getElementById('f1'),document.getElementById('c1'),130281,'CARD SEMENYO');
+  await card(document.getElementById('f2'),document.getElementById('c2'),139209,'CARD MESSI (control)');
+  await cmp(document.getElementById('f3'),document.getElementById('c3'),130281,139209,'COMPARE SEMENYO');
+  document.title='READY';
+})();
+</script></body></html>
