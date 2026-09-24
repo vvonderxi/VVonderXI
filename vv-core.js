@@ -2210,14 +2210,24 @@
       row covers two of the three and ordering all three from it would be a half-truth.  */
   function orderSeasonRows(rows, txList, opts){
     opts = opts || {};
+    /*  KEYED BY PLAYER AND SEASON, AS A LIST , the league is not part of it any more, 2026-09-24.
+        The old key named a league and the comparator returned on `league_code` BEFORE it reached
+        the lookup, so a cross-league pair was ordered ALPHABETICALLY BY LEAGUE CODE and never saw
+        the transfer evidence at all. LL sorts before PL, so Aubameyang 2021/22 drew Barcelona
+        before Arsenal, and he left Arsenal for Barcelona in January 2022. 613 player-seasons were
+        ordered that way, and the trajectory club labels are what made it visible.
+        THE ROW IS NOW FOUND BY THE TWO CLUBS RATHER THAN BY A LEAGUE, which works for both kinds:
+        `split_transfers` holds 799 same-league rows keyed to one league and 609 cross-league rows
+        whose `league_code` is NULL, because a move between two leagues belongs to neither.  */
     var tx = {};
-    (txList || []).forEach(function(t){ tx[t.api_player_id+'|'+t.season_year+'|'+t.league_code] = t; });
+    (txList || []).forEach(function(t){
+      var k = t.api_player_id + '|' + t.season_year;
+      (tx[k] = tx[k] || []).push(t);
+    });
     var dir = opts.oldestFirst ? 1 : -1;
     return (rows || []).slice().sort(function(a, b){
       if (a.season_year !== b.season_year) return (a.season_year - b.season_year) * dir;
-      if (a.league_code !== b.league_code) return String(a.league_code||'').localeCompare(String(b.league_code||''));
-      var t = tx[a.api_player_id+'|'+a.season_year+'|'+a.league_code];
-      var group = (rows||[]).filter(function(r){ return r.season_year===a.season_year && r.league_code===a.league_code; });
+      var group = (rows||[]).filter(function(r){ return r.season_year===a.season_year; });
       /*  THE WITHIN-SEASON ORDER DOES FOLLOW THE YEAR DIRECTION, AND I TALKED MYSELF OUT OF THAT
           ONCE BEFORE TALKING MYSELF BACK. It is chronology either way: in a list running oldest
           to newest the club he LEFT comes first, and in one running newest to oldest the club he
@@ -2230,6 +2240,11 @@
           ahead of Manchester City 17, which is the wrong order wearing a deterministic one.
           THERE WAS NO ERROR AND NO EMPTY LIST, which is why it had to be seen rather than read.  */
       var an = a.team_name || a.clubname, bn = b.team_name || b.clubname;
+      /*  THE ROW THAT NAMES THESE TWO CLUBS, in either direction. A player-season can now hold more
+          than one transfer row, so it is a search rather than a lookup.  */
+      var t = (tx[a.api_player_id+'|'+a.season_year] || []).filter(function(x){
+        return (x.from_club === an && x.to_club === bn) || (x.from_club === bn && x.to_club === an);
+      })[0];
       if (t && group.length === 2) {
         if (an === t.from_club && bn === t.to_club) return -dir;
         if (an === t.to_club && bn === t.from_club) return  dir;

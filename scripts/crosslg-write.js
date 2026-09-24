@@ -64,10 +64,23 @@ const REPAIRS = [
   { k:[711,2024,'SA'], del:true, was:'Bologna -> Como 2026-01-20 , a 2025/26 move on a 2024/25 season' },
 ];
 
+/*  PAGINATED, AND IT HAS TO BE , CLAUDE.md SEC C: a query that returns exactly 1000 rows has hit
+    PostgREST's default max-rows cap, not the end of the data. The first run of the insert phase
+    reported "table 1000 rows" after adding 609 to 799, which is 1,408, and read 505 cross-league
+    rows instead of 609. Nothing was wrong with the write; the COUNT was truncated at exactly the
+    number this file warns about, and it still took a second look to see it.  */
 async function fetchAll(){
-  const { data, error } = await sb.from('split_transfers').select('*');
-  if (error) throw new Error(error.message);
-  return data;
+  let rows = [], from = 0;
+  for (;;){
+    const { data, error } = await sb.from('split_transfers').select('*')
+      .order('api_player_id', { ascending: true }).order('season_year', { ascending: true })
+      .order('from_club', { ascending: true }).range(from, from + 999);
+    if (error) throw new Error(error.message);
+    rows = rows.concat(data);
+    if (data.length < 1000) break;
+    from += 1000;
+  }
+  return rows;
 }
 
 (async () => {
