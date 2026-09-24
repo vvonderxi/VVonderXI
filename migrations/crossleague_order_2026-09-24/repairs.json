@@ -1,0 +1,109 @@
+[
+ {
+  "key": "90513|2010|PL",
+  "action": "corrected",
+  "was": {
+   "from": "Tottenham",
+   "to": "Everton",
+   "date": "2012-01-02"
+  },
+  "now": {
+   "from": "Everton",
+   "to": "Tottenham",
+   "date": "2011-01-19",
+   "type": "€ 3.6M"
+  },
+  "why": "the stored transfer_date fell outside its own season window, so a previous sitting matched a move from a different season"
+ },
+ {
+  "key": "30786|2014|SA",
+  "action": "corrected",
+  "was": {
+   "from": "Juventus",
+   "to": "Genoa",
+   "date": "2019-01-24"
+  },
+  "now": {
+   "from": "Genoa",
+   "to": "Juventus",
+   "date": "2015-02-02",
+   "type": "N/A"
+  },
+  "why": "the stored transfer_date fell outside its own season window, so a previous sitting matched a move from a different season"
+ },
+ {
+  "key": "711|2024|SA",
+  "action": "deleted",
+  "was": {
+   "from": "Bologna",
+   "to": "Como",
+   "date": "2026-01-20"
+  },
+  "now": null,
+  "why": "the stored date was a 2025/26 move on a 2024/25 season, and that season carries THREE cards, which one from-to row cannot order"
+ },
+ {
+  "key": "115227|2011|SA",
+  "action": "corrected",
+  "was": {
+   "from": "Genoa",
+   "to": "Lazio",
+   "date": "2011-01-18"
+  },
+  "now": {
+   "from": "Lazio",
+   "to": "Genoa",
+   "date": "2012-01-19",
+   "type": "Loan"
+  },
+  "why": "the stored transfer_date fell outside its own season window, so a previous sitting matched a move from a different season"
+ },
+ {
+  "key": "31802|2010|SA",
+  "action": "corrected",
+  "was": {
+   "from": "Udinese",
+   "to": "Genoa",
+   "date": "2013-01-01"
+  },
+  "now": {
+   "from": "Udinese",
+   "to": "Genoa",
+   "date": "2011-01-18",
+   "type": "Loan"
+  },
+  "why": "the stored transfer_date fell outside its own season window, so a previous sitting matched a move from a different season"
+ },
+ {
+  "key": "50100|2015|TR",
+  "action": "corrected",
+  "was": {
+   "from": "Trabzonspor",
+   "to": "Gaziantepspor",
+   "date": "2017-01-10"
+  },
+  "now": {
+   "from": "Gaziantepspor",
+   "to": "Trabzonspor",
+   "date": "2016-01-23",
+   "type": "€ 2.8M"
+  },
+  "why": "the stored transfer_date fell outside its own season window, so a previous sitting matched a move from a different season"
+ },
+ {
+  "key": "31406|2024|LL",
+  "action": "corrected",
+  "was": {
+   "from": "Real Sociedad",
+   "to": "Valencia",
+   "date": "2026-01-07"
+  },
+  "now": {
+   "from": "Real Sociedad",
+   "to": "Valencia",
+   "date": "2025-01-04",
+   "type": "Loan"
+  },
+  "why": "the stored transfer_date fell outside its own season window, so a previous sitting matched a move from a different season"
+ }
+]
