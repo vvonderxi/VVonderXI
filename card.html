@@ -1483,8 +1483,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260924a"></script>
-<script src="/vv-core.js?v=20260924a"></script>
+<script src="/vv-marks.js?v=20260924b"></script>
+<script src="/vv-core.js?v=20260924b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2369,8 +2369,15 @@
         AND the season order, which used to be two problems and are one question: which club came
         first. A player with no split never issues it.  */
     SEASON_TX=[];
+    /*  THE GATE KEYS ON THE YEAR ALONE , it named the league until 2026-09-24 and that made it
+        stale the moment split_transfers gained cross-league rows. A season played in two leagues
+        has two different league codes, so `year|league` never repeats, the fetch never fired, the
+        array was empty and the order fell back , on exactly the 609 seasons the new rows exist to
+        fix. The rows were in the table and nothing asked for them.
+        CLAUDE.md SEC C records this shape twice already: a predicate that governs a behaviour goes
+        stale when the behaviour changes, and it disables its consumers silently.  */
     var _dupe={}, _needTx=false;
-    (SEASON_RAW||[]).forEach(function(r){ var k=r.season_year+'|'+r.league_code;
+    (SEASON_RAW||[]).forEach(function(r){ var k=String(r.season_year);
       if(_dupe[k]) _needTx=true; _dupe[k]=1; });
     if(_needTx){
       try{

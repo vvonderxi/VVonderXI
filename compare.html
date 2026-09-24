@@ -1619,13 +1619,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260924a"></script>
+<script src="/vv-marks.js?v=20260924b"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260924a"></script>
+<script src="/vv-core.js?v=20260924b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1883,8 +1883,15 @@ body.light .pkmsub{color:var(--ink-soft)}
         NOT a claim about time.  */
     var res=await sb.from('player_card_mv').select('*').eq('api_player_id',cmp.api_player_id).order('season_year',{ascending:false}).order('card_id',{ascending:true});
     if(res && res.data && res.data.length){
+    /*  THE GATE KEYS ON THE YEAR ALONE , it named the league until 2026-09-24 and that made it
+        stale the moment split_transfers gained cross-league rows. A season played in two leagues
+        has two different league codes, so `year|league` never repeats, the fetch never fired, the
+        array was empty and the order fell back , on exactly the 609 seasons the new rows exist to
+        fix. The rows were in the table and nothing asked for them.
+        CLAUDE.md SEC C records this shape twice already: a predicate that governs a behaviour goes
+        stale when the behaviour changes, and it disables its consumers silently.  */
       var _yr={}, _dup=false;
-      res.data.forEach(function(r){ var k=r.season_year+'|'+r.league_code; if(_yr[k]) _dup=true; _yr[k]=1; });
+      res.data.forEach(function(r){ var k=String(r.season_year); if(_yr[k]) _dup=true; _yr[k]=1; });
       if(_dup){
         try{
           var _tx=await sb.from('split_transfers').select('*').eq('api_player_id',cmp.api_player_id);
@@ -2796,7 +2803,10 @@ body.light .pkmsub{color:var(--ink-soft)}
     });
     /*  ORDERED WITH THE TRANSFER ROW where a year repeats, so the two halves read left to right
         in the order they were played. Only fetched when a year actually repeats.  */
-    var dup=Object.keys(byYear).some(function(y){ return Object.keys(byYear[y]).some(function(lc){ return byYear[y][lc].length>1; }); });
+    /*  SAME GATE, SAME FIX , count the CARDS in the year rather than the cards in one league of
+        it, or a cross-league season never asks for its transfer row.  */
+    var dup=Object.keys(byYear).some(function(y){
+      return Object.keys(byYear[y]).reduce(function(n,lc){ return n + byYear[y][lc].length; }, 0) > 1; });
     if(dup){
       try{ var _tx=await sb.from('split_transfers').select('*').eq('api_player_id',apiId);
            out = VVCore.orderSeasonRows(out, (_tx && _tx.data) || [], {oldestFirst:true}); }
