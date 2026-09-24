@@ -3948,7 +3948,17 @@
         labelled year beside an unexplained bar , worse than the defect being fixed.  */
     var xlabs = data.map(function(d){ return '’' + String(fmtSeason(d.season)).split('/').pop(); });
     var labN = {}; xlabs.forEach(function(l){ labN[l] = (labN[l]||0) + 1; });
-    var isSplit = xlabs.map(function(l){ return labN[l] > 1; });
+    /*  EXACTLY TWO, NOT "MORE THAN ONE" , 2026-09-24. Naming the clubs under a repeated year puts
+        them in left-to-right order, and left to right on a time axis reads as sequence. For a pair
+        that is a claim `split_transfers` can support; for THREE cards in one season it is not.
+        `orderSeasonRows` consults a transfer row only when the group holds exactly two cards, so a
+        three-card season takes the appearances fallback , and that fallback is measurably wrong on
+        two of the four such seasons the platform holds (Depaoli 2020/21 is exactly reversed
+        against the export, Dragus 2025/26 is wrong too). Labelling them would print three club
+        names in an order we do not have.
+        THE BARS STILL IMPLY AN ORDER AND THAT IS NOT FIXED HERE , what is fixed is the platform
+        NAMING one. See docs/CROSS_LEAGUE_ORDER_SCOPE.md section 5.  */
+    var isSplit = xlabs.map(function(l){ return labN[l] === 2; });
     // LEFT axis , goals + assists (dynamic max)
     var maxGA = 0; data.forEach(function(d){ var t=d.g+d.a; if(t>maxGA) maxGA=t; });
     var lstep = maxGA>40?20:(maxGA>20?10:(maxGA>8?5:2));   // finer steps at low values so a sparse chart fills the axis

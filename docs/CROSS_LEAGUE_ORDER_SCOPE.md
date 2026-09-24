@@ -252,6 +252,46 @@ was written to remove.
 - **Four seasons, highest rt 62, nothing at rt 80 or above.** The whole population is in the tail,
   so this is a correctness item rather than a visible one.
 
+### The sitting, as agreed , FOUR SEASONS, SO THE CANARY IS THE POPULATION
+
+**1. THE GUARD BECOMES A SEQUENCE.** `orderSeasonRows` swaps a PAIR when a transfer row names both
+clubs. For three cards it needs an ORDER over the group: build each club's arrival date from the
+export the ladder already reads (a dated arrival, a dated departure from the club before it), sort
+by it, and fall through to the existing appearances rule for any club the evidence cannot place.
+**The pairwise swap stays for two-card seasons, untouched** , 796 same-league and 609 cross-league
+pairs are verified on it and none of them may move.
+
+**2. EVERY ORDERED THREE-CARD SEASON CARRIES `decided_by`.** That is the whole point of doing this
+rather than leaving it: today the fallback is indistinguishable from an ordering, and after this it
+must not be. A club placed from evidence carries its rung; a club left to the fallback carries
+nothing, and **a season with any unplaced club is not an ordered season** and keeps the "say
+nothing" treatment below.
+
+**3. THE ROWS FIT THE TABLE ALREADY.** The key `(api_player_id, season_year, from_club, to_club)`
+holds two rows for one player-season, which is what a three-club season needs. No DDL.
+
+**4. THE CANARY IS ONE OF THE FOUR, AND THE POPULATION IS THE OTHER THREE.** Write one season's
+rows, report the order it produces against the export, **prove the restore column by column**, then
+the rest. At four seasons the canary is a third of the job, which is the right ratio for a change
+that alters an ordering function three surfaces read.
+
+**5. WHAT WOULD STOP IT.** A two-card pair moving, at all. A season ordered with a club the evidence
+did not place. `decided_by` absent on any row written here. And the same control as last time: every
+existing row re-derived through the changed function, unchanged.
+
+**IN THE MEANTIME, NO SURFACE NAMES THEM , CONFIRMED, NOT ASSUMED.**
+- **The trajectory axis labels a year holding EXACTLY TWO cards and leaves three unlabelled**
+  (`renderTrajectory`, 2026-09-24). Verified on all four: Dragus, Depaoli, Posch 2024/25 and Nunez
+  emit no club labels, while Semenyo's pair and Posch's OTHER season, a genuine two-card split,
+  still do.
+- **The Data Confidence note was already right** and needed no change: `partialSeasonNote` falls
+  back to the undated form for three clubs and lists them **alphabetically**, which states no
+  sequence. The dated wording is reached only when the group is a pair.
+- **The A2 caption is a DEMO and carries the same constraint in writing**, so a decision taken from
+  it cannot ship a caption that names three clubs in order.
+- **The bars themselves still sit left to right and that is NOT fixed.** A time axis implies
+  sequence by construction. What is fixed is the platform naming one.
+
 **THE HONEST INTERIM IS TO SAY NOTHING RATHER THAN TO GUESS.** The order shown is the fallback's,
 it is wrong on at least two of the four, and until the sequence work is done no surface should
 state or imply that a three-card season is in time order , which is the same rule already written

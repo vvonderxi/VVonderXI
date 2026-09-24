@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>html2canvas probe</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<!-- ══════════════════════════════════════════════════════════════════════
+     PROBE ONLY , answers three questions about html2canvas before any share
+     feature is built. It does NOT eyeball the result: it captures, then reads
+     the CANVAS PIXELS back in the regions where each thing should be, because
+     all three failure modes are silent. A mark that does not resolve renders
+     BLANK, a blocked photo renders BLANK, and a font that falls back renders
+     perfectly legible text in the wrong typeface.
+     ══════════════════════════════════════════════════════════════════════ -->
+<style>
+  body{margin:0;background:#0b0a09;color:#F5EFE6;font-family:system-ui,sans-serif;padding:24px}
+  h1{font-size:19px;margin:0 0 14px}
+  #cap{background:#12100e;padding:22px;display:inline-block}
+  .fontrow{display:flex;gap:26px;margin-top:18px;align-items:baseline}
+  .fontrow span{font-size:34px;font-weight:900;color:#F5EFE6;white-space:nowrap}
+  .fA{font-family:'Archivo',serif}
+  .fB{font-family:'Bricolage Grotesque',serif}
+  .fS{font-family:serif}
+  #out{margin-top:22px;font-family:ui-monospace,monospace;font-size:12.5px;
+       white-space:pre-wrap;line-height:1.65;background:#151311;padding:16px;border-radius:6px}
+  .ok{color:#7fd18b}.bad{color:#ff8b8b}.warn{color:#e6c56a}
+  canvas{max-width:460px;border:1px solid #333;margin-top:14px}
+
+  /* card CSS copied from card.html , buildCard emits markup only. Without it the card
+     renders unstyled and the probe samples the wrong regions, which is what happened first. */
+.plinth .vvcard{position:relative;z-index:1}
+.chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
+.chip.gold .ci{width:13px;height:13px}
+.chip.gold .ci path,.chip.gold .ci circle,.chip.gold .ci rect{fill:#5a4410}
+/* ============================================================
+     ★ THE BEDROCK CARD , canonical, reusable everywhere ★
+     Scale a whole card by changing --cw (card width).
+     Everything inside scales proportionally off --cw.
+     ============================================================ */
+  .vvcard{--cw:300px;position:relative;width:var(--cw);max-width:92%;height:calc(var(--cw)*1.397);box-sizing:border-box;display:flex;flex-direction:column;border-radius:calc(var(--cw)*0.073);
+    background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;
+    box-shadow:0 26px 50px -22px rgba(0,0,0,0.6), inset 0 0 0 calc(var(--cw)*0.02) var(--cream), inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.55) !important;
+    padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A !important;font-family:'Barlow Condensed',sans-serif}
+body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
+.vvcard .ctop{position:relative;height:calc(var(--cw)*0.2);margin-bottom:calc(var(--cw)*0.02)}
+.vvcard .ctl{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:flex-start}
+.vvcard .yr{position:absolute;left:50%;top:calc(var(--cw)*0.015);transform:translateX(-50%);font-family:'Barlow Condensed';font-weight:700;font-size:calc(var(--cw)*0.1);letter-spacing:0.02em;color:var(--charcoal);white-space:nowrap;display:inline-flex;align-items:center}
+.vvcard .cbadgewrap{display:flex;align-items:center;gap:calc(var(--cw)*0.033)}
+.vvcard .cbadge{width:calc(var(--cw)*0.175);height:calc(var(--cw)*0.203);flex-shrink:0;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,0.32))}
+.vvcard .pos{display:none}
+.vvcard .ctr{position:absolute;right:0;top:calc(var(--cw)*-0.01);display:flex;flex-direction:column;align-items:center}
+.vvcard .halo{display:none}
+.vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
+.vvcard .vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:calc(var(--cw)*0.08);letter-spacing:0.02em;line-height:1;margin-top:calc(var(--cw)*0.025)}
+.vvcard .vv .a{color:var(--charcoal)}
+.vvcard .vv .b{color:var(--pink)}
+.vvcard .cimg{width:60%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
+.vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
+body.show-photos .vvcard .cimg .cphoto{display:block}
+body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
+.vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
+.vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}
+/* #4: odd count -> last tag spans both cols, no blank cell */
+  .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
+.vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
+.vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
+.vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#E70443) !important}
+.vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
+.vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
+.vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+/* Career-Stage (Wonderkid / The Last Dance) , neutral profile tag, NOT the honour gold */
+  .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+.vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
+/* MARKS ON THE CARD FACE. Sized against --cw so a mark scales with the card , the face
+     renders at 300px on the hero and 150px in the compare pair, and a fixed px mark would
+     dominate the small one. currentColor is inherited from the pill, which is why the gold
+     honour pill needs no rule of its own: .chtagcell.gold sets color:#5a4410 above and the
+     gradient is identical in both themes. */
+  .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
+/* .chtagcell ONLY. The .chtag CONTAINER is a 2-column grid (see .vvcard .chtag above) and
+     including it here overrode display:grid with inline-flex, flattening the tag row into a
+     single line , grid-template-columns stayed set and inert. The mark needs the PILL to be
+     a flex box so icon and label align; the row around it must stay a grid. */
+  .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
+.vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
+.vvcard .cga .col{text-align:center}
+.vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
+.vvcard .cga .col .l{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.04);letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.vvcard .cga .divider{width:1px;background:rgba(0,0,0,0.12);align-self:stretch}
+.vvcard .cname{text-align:center;margin-top:auto}
+.vvcard .cname .nm{width:100%;font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:calc(var(--cw)*0.135);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.03);white-space:nowrap}
+.vvcard .cname .nm.long{font-size:calc(var(--cw)*0.09)}
+.vvcard .cname .nm .cflag{font-size:calc(var(--cw)*0.07)}
+.vvcard .cname .full{display:none}
+.vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.05);letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-top:calc(var(--cw)*0.01)}
+/* ===== Prestige whole-card treatment ===== */
+  /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+.vvcard.gen .yr{color:rgba(240,234,217,0.85)}
+.vvcard.gen .n{color:#F0EAD9}
+.vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
+.vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
+.vvcard.gen .vv .a{color:#F0EAD9}
+.vvcard.gen .cga .col .l{color:rgba(240,234,217,0.5)}
+.vvcard.gen .cga .divider{background:rgba(255,255,255,0.15)}
+.vvcard.gen .cname .full,.vvcard.gen .cname .sub{color:rgba(240,234,217,0.6)}
+/* ICONIC , bright GOLD card, dark text */
+  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #E8B84B, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
+.vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
+.vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
+.vvcard.iconic .vv .a{color:#2a1d03}
+.vvcard.iconic .cga .col .l{color:rgba(42,29,3,0.6)}
+.vvcard.iconic .cga .divider{background:rgba(0,0,0,0.18)}
+.vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.65)}
+/* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
+  .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
+.vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.sb-vv .b{color:var(--pink)}
+.dc-src .v{font-size:11.5px;color:var(--ink-soft);font-weight:500}
+.yr.switchable{ cursor:pointer; position:relative; }
+.yr.switchable::after{ content:"\25BE"; font-size:.5em; opacity:.45; margin-left:.2em; }
+.yr.switchable:hover::after{ opacity:.85; }
+.vvflipfront .vvcard{max-width:none}
+.vvscalefront .vvcard{max-width:none}
+#glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+/* ===================== MOTION , treatment B, "Settle" =====================
+     The old motion read as a PAGE CHANGE, for three reasons, all fixed here:
+     the card dimmed to 0.2 (reads as gone, not behind), the panel appeared with
+     no motion of its own, and everything moved at once so nothing appeared to
+     CAUSE anything. Settle keeps the card legible at 0.45, gives the panel its
+     own entrance, and STAGGERS , stage, then panel +60ms, then rows +120ms after
+     the panel and 55ms apart. The stagger is the whole point.
+
+     RESTING STATE IS VISIBLE and the animations are pure decoration. An earlier
+     version faded the panel in via a double-rAF class; rAF is THROTTLED in a
+     background tab, so the panel could open invisible. Never gate visibility on
+     motion , if none of these animations run, the panel is simply already there. */
+  /* SCRIM , full-viewport, behind the panel, above the stage.
+     Z-ORDER, checked against the real landscape in this file: .glow 0,
+     .plinth .vvcard 1, .bottomnav 60, .joinscrim 90, .sharemodal 200. The scrim
+     sits at 70 so it covers the stage, the card AND the escaped .glow (which
+     resolves against BODY at <=1040px), and the bottom nav, while staying BELOW
+     the join sheet and share modal , those are true modals and must win.
+     POINTER-EVENTS:NONE AT REST is load-bearing, not caution: an always-on
+     full-viewport layer that swallows taps is exactly the .glow bug we just
+     fixed. It only becomes interactive while body.searching is set.
+     RESTING OPACITY IS 1 so that if the animation never runs the scrim is simply
+     there , same fail-safe as the panel, no rAF gate anywhere. */
+  #cardSearch .cs-scrim{position:fixed;inset:0;background:rgba(28,27,26,.55);z-index:70;opacity:1;pointer-events:none}
+#cardSearch .cardgrid .vvcard{cursor:pointer}
+</style>
+</head><body class="show-photos">
+<h1>html2canvas probe , marks, photos, fonts</h1>
+
+<div id="cap">
+  <div id="card"></div>
+  <div class="fontrow">
+    <span class="fA" id="tA">Handgloves</span>
+    <span class="fB" id="tB">Handgloves</span>
+    <span class="fS" id="tS">Handgloves</span>
+  </div>
+</div>
+<div id="out">running…</div>
+<div id="shot"></div>
+
+<script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/vv-marks.js?v=20260823b"></script>
+<script src="/vv-core.js?v=20260823b"></script>
+<script>
+(async function(){
+  const log=[]; const P=(s,cls)=>log.push(cls?`<span class="${cls}">${s}</span>`:s);
+  const out=document.getElementById('out');
+  const flush=()=>out.innerHTML=log.join('\n');
+  try{
+    VVCore.useCardMarks(true);
+    const sb=VVCore.vvClient();
+    const {data,error}=await sb.from('player_card_mv').select('*').eq('card_id',143372).single();
+    if(error) throw new Error(error.message);
+    const c=VVCore.rowToCard(data);
+    try{ c.honours=await VVCore.fetchHonours(data); }catch(e){}
+    document.getElementById('card').innerHTML=VVCore.buildCard(c,300);
+
+    // fonts must be settled BEFORE capture or the test measures the wrong thing
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(r=>setTimeout(r,600));
+
+    const capNode=document.getElementById('cap');
+    // reference geometry, taken from the LIVE DOM, converted to capture-local coords
+    const base=capNode.getBoundingClientRect();
+    const rel=el=>{const r=el.getBoundingClientRect();
+      return {x:r.x-base.x,y:r.y-base.y,w:r.width,h:r.height};};
+
+    const markEl  = capNode.querySelector('svg.vvm');
+    const photoEl = capNode.querySelector('img.cphoto');
+    const rMark   = markEl?rel(markEl):null;
+    const rPhoto  = photoEl?rel(photoEl):null;
+    const rA=rel(document.getElementById('tA')), rB=rel(document.getElementById('tB')), rS=rel(document.getElementById('tS'));
+
+    P('DOM before capture');
+    P('  marks in DOM        : '+capNode.querySelectorAll('svg.vvm').length);
+    P('  unresolved <use>    : '+[...capNode.querySelectorAll('use[href^="#vvm-"]')].filter(u=>!document.querySelector(u.getAttribute('href'))).length);
+    P('  photo natural size  : '+(photoEl?photoEl.naturalWidth+'x'+photoEl.naturalHeight:'(none)'));
+    P('  Archivo loaded      : '+(document.fonts?document.fonts.check('900 34px Archivo'):'?'));
+    P('  Bricolage loaded    : '+(document.fonts?document.fonts.check('900 34px "Bricolage Grotesque"'):'?'));
+    P('  DOM widths A/B/serif: '+rA.w.toFixed(1)+' / '+rB.w.toFixed(1)+' / '+rS.w.toFixed(1));
+    flush();
+
+    // load html2canvas exactly as the live code does
+    await new Promise((res,rej)=>{ const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload=res; s.onerror=()=>rej(new Error('html2canvas failed to load')); document.head.appendChild(s); });
+
+    const SCALE=2;
+    const cv=await html2canvas(capNode,{backgroundColor:'#12100e',scale:SCALE,useCORS:true,logging:false});
+    document.getElementById('shot').appendChild(cv);
+    const ctx=cv.getContext('2d');
+
+    // read a region back and describe it. A silent failure is a UNIFORM region.
+    function region(r,label){
+      if(!r) return {label,err:'no element'};
+      const x=Math.max(0,Math.round(r.x*SCALE)), y=Math.max(0,Math.round(r.y*SCALE));
+      const w=Math.max(1,Math.round(r.w*SCALE)), h=Math.max(1,Math.round(r.h*SCALE));
+      const d=ctx.getImageData(x,y,w,h).data;
+      const seen=new Set(); let min=255,max=0,ink=0;
+      for(let i=0;i<d.length;i+=4){
+        const L=Math.round(0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2]);
+        seen.add((d[i]>>4)+','+(d[i+1]>>4)+','+(d[i+2]>>4));
+        if(L<min)min=L; if(L>max)max=L;
+      }
+      return {label,colours:seen.size,minL:min,maxL:max,range:max-min,px:w*h};
+    }
+    // ink width , how many COLUMNS contain a pixel that differs from the row background
+    function inkWidth(r){
+      if(!r) return 0;
+      const x=Math.round(r.x*SCALE), y=Math.round(r.y*SCALE);
+      const w=Math.round(r.w*SCALE), h=Math.round(r.h*SCALE);
+      const d=ctx.getImageData(x,y,w,h).data;
+      let first=-1,last=-1;
+      for(let cx=0;cx<w;cx++){
+        let hit=false;
+        for(let cy=0;cy<h;cy++){
+          const i=(cy*w+cx)*4;
+          const L=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+          if(L>90){hit=true;break;}          // light glyph on a dark field
+        }
+        if(hit){ if(first<0)first=cx; last=cx; }
+      }
+      return first<0?0:(last-first+1)/SCALE;
+    }
+
+    const m=region(rMark,'mark'), ph=region(rPhoto,'photo');
+    P('\nCAPTURED CANVAS  '+cv.width+'x'+cv.height);
+    P('\n1. MARKS , <use href="#vvm-..."> against the injected sprite');
+    P('   region colours: '+m.colours+'   luminance range: '+m.range+'   ('+m.px+' px sampled)');
+    const markOK = m.colours>2 && m.range>18;
+    P('   VERDICT: '+(markOK?'RESOLVED , the mark drew':'BLANK , <use> did NOT resolve'), markOK?'ok':'bad');
+
+    P('\n2. PHOTO , cross-origin media.api-sports.io');
+    P('   region colours: '+ph.colours+'   luminance range: '+ph.range+'   ('+ph.px+' px sampled)');
+    const photoOK = ph.colours>8 && ph.range>40;
+    P('   VERDICT: '+(photoOK?'CAPTURED':'BLANK or flat , the image did not make it'), photoOK?'ok':'bad');
+
+    P('\n3. FONTS , Archivo and Bricolage vs a serif control');
+    const iA=inkWidth(rA), iB=inkWidth(rB), iS=inkWidth(rS);
+    P('   canvas ink width A/B/serif: '+iA.toFixed(1)+' / '+iB.toFixed(1)+' / '+iS.toFixed(1));
+    P('   DOM    width    A/B/serif: '+rA.w.toFixed(1)+' / '+rB.w.toFixed(1)+' / '+rS.w.toFixed(1));
+    // if a webfont fell back, its captured width collapses toward the serif control
+    const dA=Math.abs(iA-iS), dB=Math.abs(iB-iS);
+    const fontsOK = dA>6 && dB>6;
+    P('   separation from serif: A '+dA.toFixed(1)+'px, B '+dB.toFixed(1)+'px');
+    P('   VERDICT: '+(fontsOK?'BOTH RENDERED , distinct from the control':'FELL BACK , widths collapsed toward serif'), fontsOK?'ok':'bad');
+
+    P('\nSUMMARY  marks '+(markOK?'PASS':'FAIL')+'   photo '+(photoOK?'PASS':'FAIL')+'   fonts '+(fontsOK?'PASS':'FAIL'));
+    window.__PROBE__={markOK,photoOK,fontsOK,m,ph,iA,iB,iS,rA:rA.w,rB:rB.w,rS:rS.w};
+    flush();
+  }catch(e){
+    P('\nPROBE ERROR: '+(e&&e.message||e),'bad'); flush();
+    window.__PROBE__={error:String(e&&e.message||e)};
+  }
+})();
+</script>
+</body></html>
