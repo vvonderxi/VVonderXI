@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Confidence Notes</title>
+<!--  THE PLAYBOOK'S OWN FOUR FAMILIES, COPIED FROM ITS HEAD. SS C: a demo that introduces a face
+      the target does not load is proposing two changes while naming one.  -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+ body{margin:0;padding:22px 18px 80px;background:#F4EFE2;color:#1C1B1A;font:14px/1.55 Inter,system-ui,sans-serif}
+ .wrap{max-width:760px;margin:0 auto}
+ h1{font:800 22px 'Bricolage Grotesque',sans-serif;margin:0 0 4px}
+ .sub{font:400 13px Inter;color:#6a6256;margin:0 0 20px}
+ h2{font:800 15px 'Bricolage Grotesque',sans-serif;margin:30px 0 4px;padding-top:18px;border-top:1px solid rgba(0,0,0,.1)}
+ .why{font:400 12.5px Inter;color:#6a6256;margin:0 0 12px}
+ .state{font:600 11px Archivo,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#AD0332;margin:18px 0 6px}
+ .meta{font:500 11.5px Inter;color:#8a8276;margin:0 0 6px}
+ /*  THE CARD'S OWN .dc-flag RULE, COPIED FROM card.html:601 , judged as it will render  */
+ .dc-flag{font-family:'Inter';font-size:12.5px;line-height:1.5;color:#46433c;margin-top:8px;
+   padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.04)}
+ .dc-flag b{font-weight:600;color:#1C1B1A}
+ .arrows{display:inline-block;font:700 11px Archivo;color:#AD0332;letter-spacing:.06em;margin-left:6px}
+ .pb{background:#FBF8F2;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:14px 16px;margin-top:10px}
+ .pb .lbl{font:600 10.5px Archivo;letter-spacing:.09em;text-transform:uppercase;color:#8a8276;margin-bottom:6px}
+ .pb p{font:400 13px/1.62 Inter;color:#3a352e;margin:0 0 10px}
+ .pb p:last-child{margin-bottom:0}
+ .pb b{font-weight:600;color:#1C1B1A}
+ .note{font:400 12px Inter;color:#8a8276;margin-top:8px}
+ code{font:500 11.5px ui-monospace,monospace;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+</style></head><body><div class="wrap">
+
+<h1>Not scored , the two new notes</h1>
+<p class="sub">Rendered in the Playbook&rsquo;s four families and the card&rsquo;s own
+<code>.dc-flag</code> rule, beside the partial-season sentence they will sit with. <b>Nothing here is
+wired.</b> Sitting 3 splits 202 fused cards; 205 of the 208 halves it inserts fall under the
+300-minute scoring floor, and 44 of the 202 cards it reduces fall under it too. Those are different
+events and they do not share a sentence.</p>
+
+<h2>A , THE 205 INSERTED HALVES. Never scored, nobody saw a number.</h2>
+<p class="why">Kahveci, Fener&#231;bah&#231;e 2025/26 , the smaller half of a fused Turkish season.
+This card is new: it did not exist yesterday, so nothing has been taken away.</p>
+<div class="meta">8 of 24 appearances &middot; 288 minutes &middot; other club Kasımpaşa</div>
+<div class="dc-flag"><b>Partial season.</b> He played for two clubs in this league that season, Fenerbah&#231;e and Kasımpaşa. This card holds his Fenerbah&#231;e share, 8 appearances of the 24 he made across both clubs that season. The figures and the score cover that share only.</div>
+<div class="dc-flag"><b>Not scored.</b> He played 8 matches for this club that season, short of the 300 minutes the VV Index needs before it will score a season. The figures here are his; the score is not missing, it was never earned over a sample this small.</div>
+
+<h2>B , THE 44 REDUCED CARDS. A number was there yesterday.</h2>
+<p class="why">Zechi&#235;l, Feyenoord 2024/25 , the highest of the 44, rt 53 today. The card
+existed, carried a score, and the score was earned across two clubs&rsquo; minutes added together.</p>
+<div class="meta">505 minutes becomes 253 &middot; other club NEC Nijmegen</div>
+<div class="dc-flag"><b>Partial season.</b> He played for two clubs in this league that season, Feyenoord and NEC Nijmegen. This card holds his Feyenoord share. The figures and the score cover that share only.</div>
+<div class="dc-flag"><b>Not scored.</b> This card used to cover two clubs in one season and the score it carried was earned across both. Split to the club it names, the season is 253 minutes, short of the 300 the VV Index needs. The figures here are this club&rsquo;s alone.</div>
+
+<h2>Why not one sentence for both</h2>
+<p class="note">A single &ldquo;not scored, under 300 minutes&rdquo; would be true of both and would
+tell the reader of B nothing about the thing they noticed , that there used to be a 53 there. And
+telling the reader of A that a score was &ldquo;split away&rdquo; would be false: their card is new.
+<b>B names the real minutes and says &ldquo;used to cover two clubs&rdquo; rather than
+&ldquo;used to score 53&rdquo;</b> , the platform explains why there is no number, it does not
+publish the number it has just withdrawn.</p>
+
+<h2>What the other surfaces show, measured</h2>
+<p class="note">The flag rides <code>confidenceFields</code> in <code>rowToCard</code>, so it is in
+the data on every surface , but <b>only the card page renders prose</b>. On an unscored card today
+(de Gea 2022/23, one of 3,266 already in the database): the <b>card</b> shows a blank where the
+number was, with no band chip; <b>rankings grid</b> the same; a <b>rankings List row</b> carries no
+score and <b>no band pill</b>, where a scored row beside it carries ICONIC and its tags; and the
+<b>compare picker</b> emits an empty score div with no prestige tier. The explanation lives on the
+card and the other surfaces show an absence , the same shape as the halved sitting.</p>
+</div></body></html>

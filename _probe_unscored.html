@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Unscored card, every surface</title>
+<style>body{margin:0;background:#3a3a3a;font:12px Inter,system-ui,sans-serif;color:#eee;padding:8px}
+ iframe{width:640px;height:470px;border:0;background:#fff}
+ .cap{font:700 11px Archivo,sans-serif;margin:0 0 5px;white-space:pre-wrap;max-width:640px}
+ .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+ .col{display:flex;flex-direction:column}</style></head><body>
+<div class="row">
+ <div class="col"><p class="cap" id="c1">CARD , loading</p><iframe id="f1"></iframe></div>
+ <div class="col"><p class="cap" id="c2">RANKINGS , loading</p><iframe id="f2"></iframe></div>
+ <div class="col"><p class="cap" id="c3">COMPARE PICKER , loading</p><iframe id="f3"></iframe></div>
+</div>
+<script>
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const txt=e=>(e&&e.textContent||'').replace(/\s+/g,' ').trim();
+(async()=>{
+ /*  EVERY PROBE ASSERTS ITS PRECONDITION, NOT ITS RESULT. Each panel below states whether the
+     module it loaded carries the function it is being judged on, and whether the row it measured
+     actually matched , a selector that matches nothing reads as "nothing to see".  */
+ // 1 , the card page
+ {const f=document.getElementById('f1'), cap=document.getElementById('c1');
+  await new Promise(r=>{f.onload=r; f.src='/card.html?id=131753&cb='+Date.now();});
+  const d=f.contentDocument, w=f.contentWindow;
+  let t=Date.now(); while(Date.now()-t<25000){ if(d.querySelector('.vvcard .cname')) break; await sleep(200); }
+  const card=d.querySelector('.vvcard');
+  cap.textContent='CARD de Gea 22/23 (131753, rt null)\n'
+    + ' VVCore loaded: '+(!!w.VVCore)+'   card node found: '+(!!card)+'\n'
+    + ' score element .cvv : '+JSON.stringify(txt(d.querySelector('.vvcard .cvv')))+'\n'
+    + ' band chip .chip    : '+JSON.stringify(txt(d.querySelector('.vvcard .chip')))+'\n'
+    + ' card text (first 90): '+txt(card).slice(0,90);}
+ // 2 , rankings
+ {const f=document.getElementById('f2'), cap=document.getElementById('c2');
+  await new Promise(r=>{f.onload=r; f.src='/rankings.html?q=de%20gea&cb='+Date.now();});
+  const d=f.contentDocument, w=f.contentWindow;
+  let t=Date.now(); while(Date.now()-t<25000){ if(d.querySelectorAll('#cardgrid .vvcard, .urow').length) break; await sleep(250); }
+  /*  THE GRID DRAWS CARDS, NOT ROWS. The .urow form only exists in List/Compact, so the first
+      run measured zero and said so. Switch the view, then measure.  */
+  const grid=d.getElementById('cardgrid'); if(grid) grid.classList.add('pillmode');
+  await sleep(900);
+  const rows=[...d.querySelectorAll('.urow')];
+  const mine=rows.filter(r=>/de gea/i.test(txt(r)));
+  cap.textContent='RANKINGS , search "de gea"\n'
+    + ' rows rendered: '+rows.length+'   matched de Gea: '+mine.length+(mine.length?'':'   <- PRECONDITION FAILED, nothing measured')+'\n'
+    + (mine.slice(0,3).map(r=>' row: '+txt(r).slice(0,110)).join('\n'));}
+ // 3 , compare picker
+ {const f=document.getElementById('f3'), cap=document.getElementById('c3');
+  await new Promise(r=>{f.onload=r; f.src='/compare.html?cb='+Date.now();});
+  const d=f.contentDocument, w=f.contentWindow;
+  let t=Date.now(); while(Date.now()-t<20000){ if(d.querySelector('#cardA')) break; await sleep(200); }
+  if(w.openPicker) w.openPicker('A');
+  await sleep(600);
+  const inp=d.querySelector('#pkPanel_A input, .pkinput, input[type=text]');
+  if(inp){ inp.value='de gea'; inp.dispatchEvent(new w.Event('input',{bubbles:true})); }
+  await sleep(3500);
+  const rows=[...d.querySelectorAll('.pkresults > *')].filter(x=>txt(x).length>4);
+  const mine=rows.filter(r=>/de gea/i.test(txt(r)));
+  cap.textContent='COMPARE PICKER , typed "de gea"\n'
+    + ' openPicker reachable: '+(!!w.openPicker)+'   input found: '+(!!inp)+'\n'
+    + ' rows rendered: '+rows.length+'   matched: '+mine.length+(mine.length?'':'   <- PRECONDITION FAILED, nothing measured')+'\n'
+    + (mine.slice(0,3).map(r=>' row: '+txt(r).slice(0,110)).join('\n'));}
+ document.title='READY';
+})();
+</script></body></html>

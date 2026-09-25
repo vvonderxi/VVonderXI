@@ -46,8 +46,79 @@ options are not obvious and none is free:
 - **Split all 202 and disclose the unscored halves**, the way the halved sitting disclosed partial
   seasons. Most work, and the only one where a reader can tell why a card has no number.
 
+**[ANSWERED 2026-09-25, LUCAS: OPTION 3. SPLIT ALL 202 AND DISCLOSE.]**
+
+**OPTION 2 IS REJECTED EXPLICITLY, IN HIS WORDS, SO IT IS NOT RE-PROPOSED AS A COMPROMISE LATER.**
+"Split only where both halves clear the floor" means **telling the truth where the truth is
+scoreable and leaving a fused card where it is not.** That is the shape he refused on halved cards,
+on keeper scoring and on the VV Index page. A card is not left holding two clubs' football under
+one name because the honest version would not earn a number.
+
+### The two notes , and they are two, not one
+
+**A CARD THAT NEVER HAD A SCORE AND A CARD THAT LOSES ONE ARE DIFFERENT EVENTS.** A new half
+arriving under the floor was never scored and nobody saw a number on it. A card reading 53 today
+and nothing tomorrow has had a score taken away, and a reader who saw it will notice. One sentence
+cannot do both without lying to one of them.
+
+**NOTE A , THE 205 INSERTED HALVES THAT ARE UNDER THE FLOOR.** (The other 3 inserted rows clear it
+and are scored normally; they take the existing partial-season note and nothing else.)
+
+> **Not scored.** He played 8 matches for this club that season, short of the 300 minutes the
+> V<span class="vvw">V</span> Index needs before it will score a season. The figures here are his;
+> the score is not missing, it was never earned over a sample this small.
+
+**NOTE B , THE 44 CARDS THAT FALL UNDER THE FLOOR WHEN THEY ARE REDUCED.**
+
+> **Not scored.** This card used to cover two clubs in one season and the score it carried was
+> earned across both. Split to the club it names, the season is 253 minutes, short of the 300 the
+> V<span class="vvw">V</span> Index needs. The figures here are this club's alone.
+
+**WHO GETS WHAT, EXACTLY:**
+
+| population | count | note |
+|---|---|---|
+| inserted halves under 300 minutes | **205** | **A** , plus the existing partial-season note |
+| inserted halves that clear 300 | **3** | partial-season note only, scored as normal |
+| reduced cards that fall under 300 | **44** | **B** , plus the existing partial-season note |
+| reduced cards that keep a score | **157** | partial-season note only |
+
+**NOTE B NAMES THE REAL MINUTES, NOT A ROUND NUMBER**, and it says "used to cover two clubs" rather
+than "used to score 53" , the platform explains why there is no number, it does not publish the
+number it has withdrawn.
+
+### Where the disclosure rides, and what the other surfaces actually show
+
+**IT RIDES `confidenceFields(row)` IN `rowToCard`, WHICH IS THE CHOKE POINT , CONFIRMED.** Every
+card object on every surface is built there, so the flag is present in the data everywhere.
+
+**BUT ONLY THE CARD PAGE RENDERS THE PROSE, AND THAT IS WORTH STATING PLAINLY RATHER THAN LETTING
+"one choke point" IMPLY OTHERWISE.** Measured: `confidenceFields` is read by `card.html` (the Data
+Confidence panel), by `compare.html` for its missing-field list, and by `vv-core` to cap the numeric
+confidence. **Rankings and the compare picker consume the NUMBER, not the field list.**
+
+**SO WHAT A READER SEES ON AN UNSCORED CARD TODAY, measured on a real one (de Gea 2022/23, rt null,
+one of 3,266 already in the database):**
+
+- **The card page:** the score element renders `""` and the band chip renders `""` , **a blank
+  where the number was.** Verified by rendering.
+- **Rankings, grid view:** the same card, blank where the score sits. Verified by rendering.
+- **Rankings, List and Compact rows:** **no score and no band pill.** The row keeps the name,
+  season, club, position, age and the stats; a scored row beside it carries ICONIC and its tags.
+  Measured through the shared renderer on a real row.
+- **The compare picker:** `pkRow` emits `<div class="cmpvv">` around an empty string and
+  `prestigeFor(bandFor(''))` yields no tier, so the row shows a **blank score and no prestige
+  treatment**. Read from source, NOT rendered , the picker's results were not reachable in the
+  harness.
+
+**THAT IS CONSISTENT WITH THE HALVED SITTING AND IT IS STILL A DECISION.** The explanation lives on
+the card and the other surfaces show an absence. If a blank score in a rankings row is not
+acceptable, that is its own change and it is not in this sitting.
+
+---
+
 **SEC E's own rule applies: a job scoped before a finding lands does not automatically survive it.**
-Nothing is written until this is answered.
+The finding has been answered; the canary is next.
 
 ---
 
