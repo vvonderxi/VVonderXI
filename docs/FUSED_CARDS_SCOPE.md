@@ -12,6 +12,45 @@ did not exist**, and it finds 202 because it asks the provider instead of asking
 
 ---
 
+## 0. PRE-CHECK, 2026-09-25 , THE THREE FIGURES HOLD AND ONE CONSEQUENCE IS MISSING
+
+Re-derived by `scripts/fused-precheck.js`, read-only, against the live matview:
+
+- **202 of 202 candidates still present**, 6 with three clubs, and **202 of 202 still name their
+  largest half** , the counter-example the plan says would turn "reduce" into "reduce and rename"
+  does not exist.
+
+**AND THE THING THE PLAN DOES NOT CONTAIN: THE 300-MINUTE FLOOR.** `scored` in `player_card_view`
+requires `minutes >= 300 AND goals IS NOT NULL`. A fused card carries TWO clubs' minutes, so
+reducing it to the named club's share can push it under the floor:
+
+| | |
+|---|---|
+| cards that keep a scored rt | **157** |
+| **cards that LOSE a live rt** | **44** , 22% |
+| already unscored | 1 |
+| rows the split inserts | 208, of which **205 are under the floor and can never be scored (99%)** |
+
+**SO THE SITTING'S REAL SHAPE IS NOT "ALMOST NO VISIBLE EXPOSURE".** That line was about rt BANDS
+and it is true of bands , one card at rt 80, none above. It is not true of cards LOSING a score:
+44 cards go from carrying a number to carrying none, the highest at **rt 53** (Zechiel 2024
+Feyenoord, 505m to 253m; Depay 2022 Atletico Madrid, 399m to 283m), and **205 new cards arrive that
+can never be scored at all.**
+
+**THIS IS A DECISION ABOUT SHAPE AND IT IS LUCAS'S, NOT A DETAIL TO RESOLVE INSIDE THE RUN.** The
+options are not obvious and none is free:
+- **Split all 202 anyway.** The figures become true per club, and 44 cards lose their score because
+  the score was only ever earned by two clubs' minutes added together. Honest, and visibly lossy.
+- **Split only where both halves clear the floor.** Fewer cards change, but the rule is then
+  "we tell the truth when the truth is scoreable", which is the shape this platform keeps refusing.
+- **Split all 202 and disclose the unscored halves**, the way the halved sitting disclosed partial
+  seasons. Most work, and the only one where a reader can tell why a card has no number.
+
+**SEC E's own rule applies: a job scoped before a finding lands does not automatically survive it.**
+Nothing is written until this is answered.
+
+---
+
 ## 1. WHAT THE POPULATION IS, MEASURED
 
 | | |
