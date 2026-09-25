@@ -279,6 +279,12 @@ that alters an ordering function three surfaces read.
 did not place. `decided_by` absent on any row written here. And the same control as last time: every
 existing row re-derived through the changed function, unchanged.
 
+**THEY ARE MARKED, NOT FIXED , DO NOT READ THE 2026-09-24 CHANGE AS CLOSING THIS.** The bars are
+still drawn in the appearances order, that order is still wrong on **Depaoli 2020/21** (exactly
+reversed against the export) and on **Dragus 2025/26**, and nothing about tonight changed a single
+card's position. What changed is that the platform stopped NAMING the order it does not have. The
+work below is still owed.
+
 **IN THE MEANTIME, NO SURFACE NAMES THEM , CONFIRMED, NOT ASSUMED.**
 - **The trajectory axis labels a year holding EXACTLY TWO cards and leaves three unlabelled**
   (`renderTrajectory`, 2026-09-24). Verified on all four: Dragus, Depaoli, Posch 2024/25 and Nunez
