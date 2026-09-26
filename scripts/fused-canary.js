@@ -88,6 +88,32 @@ async function blocks(apiId, year){
 
 (async () => {
   fs.mkdirSync(path.join(DIR, 'before'), { recursive: true });
+
+  /*  RESTORE RUNS FIRST AND SKIPS THE WRITE-PATH GUARDS , found by running it, 2026-09-26.
+      Those guards ask "is this card still a fusion", and after a successful write it is NOT: the
+      first restore attempt died on `stored 253m != block sum 505m`. The guard was right and it was
+      in the wrong place, which is worse than a guard that is simply wrong , it blocked the one
+      operation that undoes the thing it was protecting against. A rollback path must depend on
+      the CAPTURE and nothing else.  */
+  if (arg('--restore')){
+    const cap = JSON.parse(fs.readFileSync(path.join(DIR, 'before', 'card_' + CARD_ID + '.json'), 'utf8'));
+    const wrote = JSON.parse(fs.readFileSync(path.join(DIR, 'canary_written.json'), 'utf8'));
+    const del = await sb.from('player_season_cards').delete().eq('id', wrote.inserted_card_id);
+    if (del.error) throw new Error('delete: ' + del.error.message);
+    const put = await sb.from('player_season_cards').update(cap).eq('id', CARD_ID);
+    if (put.error) throw new Error('restore: ' + put.error.message);
+    const now = await base();
+    /*  COLUMN BY COLUMN, NOT A ROW COUNT. A restore that writes the right NUMBER of rows with one
+        wrong value passes a count and fails the thing the capture exists for.  */
+    const diff = Object.keys(cap).filter(k => String(cap[k]) !== String(now[k]));
+    const gone = await sb.from('player_season_cards').select('id').eq('id', wrote.inserted_card_id);
+    console.log('RESTORE');
+    console.log('  inserted row ' + wrote.inserted_card_id + ' now returns ' + (gone.data || []).length + ' rows (want 0)');
+    console.log('  columns compared: ' + Object.keys(cap).length + '   differing: ' + diff.length +
+                (diff.length ? '  -> ' + diff.map(k => k + ' cap=' + cap[k] + ' now=' + now[k]).join(', ') : '  , identical'));
+    return;
+  }
+
   const row = await base();
   const { player, same } = await blocks(row.api_player_id, row.season_year);
 
@@ -159,23 +185,5 @@ async function blocks(apiId, year){
     return;
   }
 
-  if (arg('--restore')){
-    const cap = JSON.parse(fs.readFileSync(path.join(DIR, 'before', 'card_' + CARD_ID + '.json'), 'utf8'));
-    const wrote = JSON.parse(fs.readFileSync(path.join(DIR, 'canary_written.json'), 'utf8'));
-    const del = await sb.from('player_season_cards').delete().eq('id', wrote.inserted_card_id);
-    if (del.error) throw new Error('delete: ' + del.error.message);
-    const put = await sb.from('player_season_cards').update(cap).eq('id', CARD_ID);
-    if (put.error) throw new Error('restore: ' + put.error.message);
-    const now = await base();
-    /*  COLUMN BY COLUMN, NOT A ROW COUNT. A restore that writes the right NUMBER of rows with one
-        wrong value passes a count and fails the thing the capture exists for.  */
-    const diff = Object.keys(cap).filter(k => String(cap[k]) !== String(now[k]));
-    const gone = await sb.from('player_season_cards').select('id').eq('id', wrote.inserted_card_id);
-    console.log('RESTORE');
-    console.log('  inserted row ' + wrote.inserted_card_id + ' now returns ' + (gone.data || []).length + ' rows (want 0)');
-    console.log('  columns compared: ' + Object.keys(cap).length + '   differing: ' + diff.length +
-                (diff.length ? '  -> ' + diff.map(k => k + ' cap=' + cap[k] + ' now=' + now[k]).join(', ') : '  , identical'));
-    return;
-  }
   console.log('\npick a phase: --dry | --write | --restore');
 })().catch(e => { console.error('FAILED:', e.message); process.exit(1); });

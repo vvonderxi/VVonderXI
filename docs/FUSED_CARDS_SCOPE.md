@@ -122,6 +122,38 @@ The finding has been answered; the canary is next.
 
 ---
 
+## 0.5 THE MARGIN , HOW CLOSE IS "THE LARGER HALF", MEASURED 2026-09-26
+
+The canary's two clubs were **one minute apart**, which is worth knowing the shape of before 201
+more run.
+
+Of the **196** two-club fused cards (the other 6 hold three clubs):
+
+- **5 are decided by under 5% of the season's minutes.** All five, named:
+
+| card | player | named club | other club | margin |
+|---|---|---|---|---|
+| 187084 | J. Karlsson 2024/25 SA | Bologna 297m / 7a | Lecce 296m / **17a** | **0.17%** |
+| 187486 | G. Zechiel 2024/25 ERE | Feyenoord 253m / 9a | Sparta Rotterdam 252m / **17a** | **0.20%** |
+| 187484 | K. Hlynsson 2024/25 ERE | Sparta Rotterdam 191m / 8a | Ajax 188m / 4a | 0.79% |
+| 187133 | E. Vignato 2022/23 SA | Empoli 245m / 15a | Bologna 238m / 8a | 1.45% |
+| 186883 | B. Chilwell 2024/25 PL | Chelsea 262m / 12a | Crystal Palace 253m / 8a | 1.75% |
+
+- **15 of 196 have APPEARANCES pointing the other way** , the named club has more minutes and the
+  other club has more matches. The widest of those is comfortable on minutes (Frimpong, Wolves 294m
+  in 5 against Arsenal 216m in 6).
+- **TWO are both**: Karlsson and Zechiel, the two at the top of that table. **Karlsson is the most
+  arguable card in the population** , one minute of separation and more than twice the appearances
+  at the other club.
+
+**AND IT CHANGES NOTHING ABOUT THE OPERATION, WHICH IS THE POINT OF MEASURING IT.** The card keeps
+the name it already carries; "names the largest half" is a CHECK that the existing name and the
+largest block agree, not a choice being made now. All 202 pass it. Had the check been written on
+appearances instead, 15 would have failed it , so the check is sensitive to a definition, and that
+is worth knowing before anyone reads "202 of 202" as a stronger statement than it is.
+
+---
+
 ## 1. WHAT THE POPULATION IS, MEASURED
 
 | | |
