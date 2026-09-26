@@ -1483,8 +1483,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260924c"></script>
-<script src="/vv-core.js?v=20260924c"></script>
+<script src="/vv-marks.js?v=20260926a"></script>
+<script src="/vv-core.js?v=20260926a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2084,15 +2084,40 @@
         .filter(function(r){ return r.card_id !== D.card_id
                           && r.season_year === D.season_year && r.league_code === D.league_code; });
       var shirtNote = VVCore.shirtNumberNote(DC_RAW || {}, sibs.map(function(r){ return r.team_name; }));
+      /*  IS THIS CARD SCORED? READ IT OFF THE RAW ROW, NOT OFF `D.vv`. `rowToCard` maps a null rt
+          to the EMPTY STRING for rendering, so `D.vv` cannot distinguish "no score" from a score
+          that failed to render , and an empty string is falsy, which would make a wrong answer
+          look like a correct one.  */
+      var isScored = !!(DC_RAW && DC_RAW.rt != null);
+      /*  WHICH HALF WAS THE WHOLE , GEOMETRY STANDING IN FOR HISTORY, AND THE COMMENT IS THE
+          DISCLOSURE. Nothing on the row records that a card was REDUCED by the fused split, so
+          the largest half is taken as the one that was there before: the split keeps the club the
+          card already named, and 202 of 202 fused cards name their largest block (measured,
+          `scripts/figures/fused-candidates.json`, zero minute ties).
+          THE TIEBREAK IS `card_id` ASCENDING and it is not decoration , an inserted row takes a
+          NEW sequence id, so on a tie the lower id is the pre-existing card. Without it a tie
+          would hand BOTH halves the "used to cover two clubs" claim.  */
+      var splitRows = sibs.map(function(r){ return { card_id: r.card_id, minutes: r.minutes }; })
+                          .concat([{ card_id: D.card_id, minutes: D.minutes }]);
+      splitRows.sort(function(a,b){ return (b.minutes||0) - (a.minutes||0) || (a.card_id||0) - (b.card_id||0); });
+      var wasWhole = splitRows[0].card_id === D.card_id;
       var partNote = sibs.length ? VVCore.partialSeasonNote({
         thisClub: D.clubname, thisApps: D.appearances,
         totalApps: sibs.reduce(function(a,r){ return a + (r.appearances || 0); }, D.appearances || 0),
         others: sibs.map(function(r){ return r.team_name; }),
-        transfer: DC_TRANSFER
+        transfer: DC_TRANSFER,
+        scored: isScored          // drops "and the score" where there is none , see the note
       }) : null;
+      var nsNote = sibs.length ? VVCore.notScoredNote({
+        scored: isScored, minutes: D.minutes, apps: D.appearances,
+        others: sibs.map(function(r){ return r.team_name; }), wasWhole: wasWhole
+      }) : null;
+      /*  ORDER: the missing SCORE is the loudest absence on the card, so it is answered first.
+          The shirt note is last of the three because it is about the smallest thing on the face.  */
       dcFlags.innerHTML =
-          (shirtNote ? '<div class="dc-flag" id="dcFlagNumber">' + shirtNote + '</div>' : '')
-        + (partNote  ? '<div class="dc-flag">' + partNote + '</div>' : '');
+          (nsNote    ? '<div class="dc-flag" id="dcFlagNotScored">' + nsNote + '</div>' : '')
+        + (partNote  ? '<div class="dc-flag">' + partNote + '</div>' : '')
+        + (shirtNote ? '<div class="dc-flag" id="dcFlagNumber">' + shirtNote + '</div>' : '');
     }
     var dcNote = document.querySelector('.dc-detail .dc-note');
     if(dcNote){

@@ -229,3 +229,70 @@ insert moving twelve unrelated cards across five leagues**.
 - A restored row that does not match its captured original column for column.
 - The rt md5 failing to return to its before value on rollback.
 - **Any figure that cannot be reproduced from the ledger plus the before-capture.**
+
+---
+
+## 6. THE TWO NOTES ARE WIRED , 2026-09-26, VERIFIED RENDERED ON BOTH HALVES OF THE CANARY
+
+**THE DISCLOSURE LANDED BEFORE THE RUN, WHICH WAS THE CONDITION.** 44 reduced cards and 205
+inserted halves must not sit blank waiting for a second pass, so the notes ship first and the
+other 201 follow.
+
+**WHERE IT LIVES.** `VVCore.notScoredNote` in `vv-core.js`, beside `partialSeasonNote`, called
+from `renderDcFlags` in `card.html`. It is the same shape as the two notes already there: the
+card page composes it from data it already holds, and **no new query is issued.**
+
+### The discriminator, and it is geometry standing in for history
+
+**NOTHING ON THE ROW RECORDS THAT A CARD WAS REDUCED.** Note B's premise is an EVENT (a score was
+withdrawn) and the matview carries only state. So the call site derives it: **within a split
+player-season the card with the most minutes is the one that was there before**, because the
+split keeps the club the card already named and **202 of 202 fused cards name their largest
+block, with ZERO minute ties** (re-measured from `scripts/figures/fused-candidates.json`).
+Tie-break is `card_id` ascending, since an inserted row takes a new sequence id.
+
+- **THIS IS AN EVENT BEING RE-DERIVED FROM TODAY'S ROWS, WHICH SS C WARNS AGAINST**, and it is
+  taken because the durable fix is a provenance column and the matview's query is frozen.
+- **IT IS SOUND ON THE MEASURED POPULATION AND IS NOT A GUARANTEE ABOUT A ROW WRITTEN LATER.**
+  If a later operation ever splits a card and keeps the SMALLER half, this silently inverts.
+- **THE CANARY IS THE WORST CASE AND IT STILL RESOLVES:** Zechiël is decided by **one minute**,
+  253 against 252. Correct, and a vivid illustration that the test is geometry.
+
+### A contradiction only rendering found, now fixed
+
+**THE PARTIAL-SEASON NOTE ASSERTED A SCORE THE CARD DOES NOT HAVE.** Its tail read *"The figures
+and the score cover that share only"* , on a card whose score had just been removed, directly
+above a second note explaining that there is no score. **Two notes in one box contradicting each
+other.** `partialSeasonNote` now takes `scored` and drops "and the score" when it is `false`.
+**The polarity is opt-in (`=== false`), so every existing caller renders byte-identically** ,
+asserted, not assumed.
+
+### What was verified, rendered rather than read
+
+Against the live matview, which still held the canary state, so **no second write was needed**:
+
+| | 187486 Feyenoord | 188430 Sparta Rotterdam |
+|---|---|---|
+| minutes / apps | 253 / 9 | 252 / 17 |
+| score | none | none |
+| note | **B** , "used to cover two clubs" | **A** , "never earned over a sample this small" |
+
+- **Contrast, composited exactly to the first opaque layer rather than walked:** prose **7.53**,
+  bold **13.12**, the pink V in "VV Index" **5.65**, all on the panel's `rgb(230,225,208)`.
+- **THE PANEL DOES NOT FLIP WITH THE THEME** , ground and ink measure identical in both, which
+  is why its pinned literals are correct. **Proved with a positive control**: the same toggle
+  moves the page ink from `rgb(240,234,217)` to `rgb(28,27,26)`, so the theme did apply.
+- **390 in a single iframe with the viewport asserted:** no horizontal overflow, all three notes
+  fit at 307px wide.
+- **Seven unit cases including FIVE negative controls** , still-scored, clears-the-floor,
+  not-a-split, unscored-for-a-different-reason, minutes-unknown. All five return null.
+
+### Two things for Lucas to judge, neither changed unilaterally
+
+1. **THE THREE NOTES STACK TO 361px AT 390 AND ALL THREE SAY "TWO CLUBS".** Read together they
+   are repetitive. Note B could lose its first clause, since the partial note directly beneath
+   already establishes the split. **Approved copy, so it ships as approved and the tightening is
+   offered rather than taken.**
+2. **NOTE A ON A SUBSTITUTE READS ODDLY: "He played 17 matches for this club that season, short
+   of the 300 minutes".** True and self-consistent (17 appearances, 252 minutes), and the two
+   units sit awkwardly in one sentence. Naming the minutes would settle it.

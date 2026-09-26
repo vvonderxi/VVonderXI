@@ -2179,7 +2179,14 @@
                            : 'across both clubs that season';
     var tail = ' This card holds his ' + o.thisClub + ' share, ' + o.thisApps + ' appearance'
              + (o.thisApps === 1 ? '' : 's') + ' of the ' + o.totalApps + ' he made ' + across
-             + '. The figures and the score cover that share only.';
+             /*  "and the score" IS DROPPED ON AN UNSCORED CARD, AND ONLY RENDERING FOUND IT.
+                 A card reduced below the 300-minute floor has NO score, so the original tail
+                 asserted one that is not on the page , beside a second note explaining that it
+                 is absent. The two notes contradicted each other in the same box.
+                 THE POLARITY IS OPT-IN (`=== false`) so every existing caller, none of which
+                 passes `scored`, renders byte-identically.  */
+             + '. The figures ' + (o.scored === false ? 'cover' : 'and the score cover')
+             + ' that share only.';
     var t = o.transfer, d = t && vvLongDate(t.transfer_date);
     /*  A THREE-CLUB SEASON FALLS BACK TO THE UNDATED FORM: `split_transfers` holds one row per
         player-season, so it covers two of the three and the dated wording would be a half-truth. */
@@ -2193,6 +2200,53 @@
     }
     return '<b>Partial season.</b> He played for ' + (clubs === 2 ? 'two' : clubs === 3 ? 'three' : clubs)
          + ' clubs in this league that season, ' + andList([o.thisClub].concat(o.others).sort()) + '.' + tail;
+  }
+
+  /*  THE 300-MINUTE SCORING FLOOR, MIRRORED FROM SQL AND NOT DERIVED FROM IT.
+      `scored` in `player_card_view` is `minutes >= 300 AND goals IS NOT NULL`, so this is a
+      SECOND implementation of one rule , the shape SS C records against `eligibility()`, the
+      view's two position keys and `careerStageTags`. Nothing enforces the agreement.
+      IT IS A CONSTANT RATHER THAN A QUERY ON PURPOSE: the note runs client-side on a card that
+      has already loaded, and asking the database what its own floor is would cost a round trip
+      per card to restate a number that has never moved. If the floor ever changes, change it
+      in the view and here, in one commit, and re-read this comment first.  */
+  var SCORE_MIN_MINUTES = 300;
+
+  /*  THE NOT-SCORED NOTE , TWO VARIANTS, BECAUSE A CARD THAT NEVER HAD A SCORE AND A CARD THAT
+      LOST ONE ARE DIFFERENT EVENTS (ruled 2026-09-26, `docs/FUSED_CARDS_SCOPE.md` SS 0).
+        A , an inserted half. Never scored, nobody ever saw a number on it.
+        B , a card that carried a score earned across two clubs and fell under the floor when it
+            was split to one. A reader who saw the old number will notice it has gone.
+      WHY IT IS NOT ONE SENTENCE: the honest version of B says a score was taken away, and the
+      honest version of A says one was never earned. One sentence has to lie to one of them.
+
+      `wasWhole` IS THE CALLER'S JOB AND IT IS GEOMETRY STANDING IN FOR HISTORY , SAY SO.
+      No column records that a card was reduced, so the call site derives it from which half is
+      largest (see the derivation at the call site in `card.html`). That is an EVENT being
+      re-derived from today's rows, which SS C warns against for published figures, and it is
+      taken because the durable fix is a provenance column and the matview's query is frozen.
+      It is sound on the measured population , 202 of 202 fused cards name their largest block
+      and there are ZERO minute ties , and it is not a guarantee about a row written later.
+
+      THE FLOOR IS THE ONLY REASON THIS NOTE MAY FIRE. A card can be unscored for a second
+      reason (`goals IS NULL`), and this note would be false about it, so `minutes` is tested
+      rather than inferred from the absent score.  */
+  function notScoredNote(o){
+    if (!o || !o.others || !o.others.length) return null;   // a split card only
+    if (o.scored) return null;                              // 157 reduced + 3 inserted keep a score
+    if (o.minutes == null || o.minutes >= SCORE_MIN_MINUTES) return null;
+    if (o.wasWhole) {
+      return '<b>Not scored.</b> This card used to cover two clubs in one season and the score it '
+           + 'carried was earned across both. Split to the club it names, the season is '
+           + o.minutes + ' minutes, short of the ' + SCORE_MIN_MINUTES
+           + ' the V<span class="vvw">V</span> Index needs. The figures here are this club\'s alone.';
+    }
+    if (o.apps == null) return null;   // note A names the matches; without them it has no sentence
+    return '<b>Not scored.</b> He played ' + o.apps + ' match' + (o.apps === 1 ? '' : 'es')
+         + ' for this club that season, short of the ' + SCORE_MIN_MINUTES
+         + ' minutes the V<span class="vvw">V</span> Index needs before it will score a season. '
+         + 'The figures here are his; the score is not missing, it was never earned over a '
+         + 'sample this small.';
   }
 
   /*  ── SEASON ORDER WHERE ONE SEASON HAS TWO CARDS ────────────────────────────────────────
@@ -7680,7 +7734,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
