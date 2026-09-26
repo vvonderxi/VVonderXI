@@ -2236,8 +2236,14 @@
     if (o.scored) return null;                              // 157 reduced + 3 inserted keep a score
     if (o.minutes == null || o.minutes >= SCORE_MIN_MINUTES) return null;
     if (o.wasWhole) {
-      return '<b>Not scored.</b> This card used to cover two clubs in one season and the score it '
-           + 'carried was earned across both. Split to the club it names, the season is '
+      /*  THE CLUB COUNT IS READ, NOT ASSUMED. The approved copy said "two clubs", and SIX of the
+          202 fused cards hold THREE , on those the sentence would have been simply false. Its
+          sibling `partialSeasonNote` was already written for three ("across all three clubs that
+          season"), so this is the two notes agreeing rather than a new decision.  */
+      var n = o.others.length + 1;
+      var head = n === 2 ? 'This card used to cover two clubs in one season and the score it carried was earned across both.'
+                         : 'This card used to cover all ' + (n === 3 ? 'three' : n) + ' clubs he played for in this league that season, and the score it carried was earned across them.';
+      return '<b>Not scored.</b> ' + head + ' Split to the club it names, the season is '
            + o.minutes + ' minutes, short of the ' + SCORE_MIN_MINUTES
            + ' the V<span class="vvw">V</span> Index needs. The figures here are this club\'s alone.';
     }
