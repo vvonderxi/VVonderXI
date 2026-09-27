@@ -3516,7 +3516,20 @@ body.light .pkmsub{color:var(--ink-soft)}
         branch is the new one.  */
     var winNote;
     if(VC.separation==='tie'){
-      winNote='GENUINELY LEVEL ('+va+'='+vb+'), identical scores. Do NOT name a winner and do NOT say either "edges it". Give both sides their due and leave it unresolved , the chip beside your line reads "The Debate Lives On". Then do what the INSIDE THE MARGIN rule in your instructions asks: name what each season holds that the other does not, from the record.';
+      /*  "IDENTICAL SCORES" WAS THE PROSE ASSERTING SOMETHING THE ENGINE DID NOT SAY , Lucas,
+          2026-09-27. Equal rt is equal DISPLAY, not an equal season. Measured on Messi 14/15
+          against Ronaldo 14/15, both stored 96: the underlying figures are 134.594 and 138.556,
+          which map to 96.361 and 96.730, and the engine FLOORS rather than rounds, so Ronaldo
+          is 0.369 of a point ahead and the two print the same number.
+          IT IS WORST EXACTLY HERE, at the top, and that is structural rather than bad luck: the
+          piecewise compresses about 10.7 points of the underlying figure into one published
+          point above 95, against 1.0 below 80. Ties are manufactured up here far more often
+          than anywhere else on the ladder.
+          THIS COSTS NOTHING TO CHANGE , the verdict cache keys on the two card ids, the prompt
+          fingerprint, payloadRev (a hash of the payload's KEY SET, not of this text) and rt. So
+          rewording it invalidates no row. The rows already cached under the old wording keep
+          their prose until something else invalidates them, which is stated rather than hidden.  */
+      winNote='LEVEL ON THE PUBLISHED SCORE ('+va+'='+vb+'). The two scores are equal as DISPLAYED. The Index does not say the seasons are equal: above 95 roughly ten points of the underlying figure fit inside one published point, so equal here means closer than the Index can report, not identical. Do NOT name a winner and do NOT say either "edges it", and do NOT claim they are the same season. Give both sides their due and leave it unresolved , the chip beside your line reads "The Debate Lives On". Then do what the INSIDE THE MARGIN rule in your instructions asks: name what each season holds that the other does not, from the record.';
     } else if(_aiJudge){
       /*  PATH B , THE MARGIN AS EVIDENCE. The same two numbers, handed over for the opposite
           purpose. The old branch told the model the gap was smaller than the error and

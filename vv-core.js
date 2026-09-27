@@ -3254,6 +3254,21 @@
       SS C's rule, applied at the root rather than with a special case: two fields for one
       concept is a defect even when both are populated, and the fix is to state the fact once
       rather than infer it from a field that means something else. `group` keeps its job.  */
+  /*  `tier` IS RARITY AND DISPLAY ORDER. IT IS NOT EVIDENTIAL WEIGHT AND MUST NEVER BE READ AS
+      SUCH , guard added 2026-09-27 after the change that would have read it that way was
+      scoped, measured and REFUSED.
+      WHAT IT DOES: every consumer sorts by it , `season.sort((a,b)=> a.tier - b.tier)`, "rarer
+      first", and the row-tag priority cap. It answers "which honour leads on the card".
+      WHY IT MUST NOT REACH THE AI PAYLOAD: `api/analyse.js` already carries an ordered honours
+      hierarchy in prose, and the two DISAGREE where it matters most. The prompt puts the
+      league-wide individual awards ABOVE the World Cup, because a Golden Boot says more about
+      THAT player's season than a squad medal does. `tier` puts the World Cup at 2 and Player of
+      the Season, Golden Boot and Top Assists at 5, 6 and 7, because the World Cup is RARER.
+      BOTH ARE CORRECT FOR THEIR OWN QUESTION, and that is exactly why shipping `tier` into the
+      payload beside the prompt's list would hand the model two contradictory rankings of the
+      same objects , SS C's two-fields-for-one-concept, arriving by a new route.
+      SO: if a weighting question ever comes up again, the answer is in the PROMPT, not here.
+      Change that list, and leave this number to the card face.  */
   const HONOUR_META = {
     ballon_dor:        { group:'Individual', wonBy:'player', label:"Ballon d'Or",         emoji:'🥇', tier:1 },
     world_cup_winner:  { group:'Career',     wonBy:'team',   label:'World Cup Winner',     emoji:'🌍', tier:2 },

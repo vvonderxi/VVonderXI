@@ -6,7 +6,7 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 24 of 37 rows (65%)**
+**COMPLETE: 25 of 37 rows (68%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **THE COUNT WAS WRONG AND IS CORRECTED (2026-09-19): it read 15 of 25 when the list holds 35
 rows and 23 are DONE.** And the first correction got it wrong too , 20 of 34 , because I counted
@@ -26,7 +26,7 @@ that only ever rises is measuring the writing, not the work.**
 | 2 | "The Debate Lives On" fires too often | **BUILT, AWAITING LUCAS** | Lucas | Framing A built and verified. Commit held until he sees the render |
 | 3 | BUG , verdict tag renders before the AI finishes | **REBUILT, AWAITING LUCAS** | Lucas | First fix was wrong. Six pre-answer leaks found on a live uncached run, all closed; the wait moved to the top of the matchup |
 | 4 | Verdict tag tappable on phone, hover on desktop | **DONE** | Claude | The verdict chip already worked. The PHONE STRIP tag at the top had no data-tip |
-| 5a | Individual honours outweigh team honours | **BUILT, TEXT AWAITING REVIEW** | Lucas | Mislabel fixed at root. Emphasis verified reaching a CURRENT verdict, 5 markers , the Messi screenshot predates it |
+| 5a | Individual honours outweigh team honours | **DONE** | Claude | Mislabel fixed at root AND the weighting rule is in the prompt, verified on all three COMPOSED strings 2026-09-27: an ordered hierarchy with Ballon d'Or first, the league-wide individual awards above the World Cup, and "an individual honour says more about THAT player's season than a team honour does". **The row read AWAITING LUCAS after the work had shipped.** Text approved 2026-09-27. **`HONOUR_META.tier` was scoped as a payload addition and REFUSED** , it is rarity and display order and it INVERTS the prompt's order on the individual awards; guard written beside it |
 | 5b | The Story reads jumbled | **DONE** | Claude | Already fixed by 078face , same wait-class bug. Needs a hard refresh to see |
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
 | 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
@@ -63,6 +63,40 @@ that only ever rises is measuring the writing, not the work.**
 **ORDER AGREED:** 6, 12, 13 first (small). Then 2 and 3 (substantive verdict problems).
 Item 8 is last by instruction.
 
+
+---
+
+### 25 , HELD, AND THE GATE IS A NUMBER SO NOBODY RE-DERIVES IT (2026-09-27)
+
+**THE MEASUREMENT IS TAKEABLE AGAIN AND IT IS STILL TOO THIN ON THE HALF THAT MATTERS.** Retaken
+on the current bases, filtered on the first two dash-delimited segments as SEC C prescribes:
+
+| base | n | verdict | p1 | p2 | h2h | who |
+|---|---|---|---|---|---|---|
+| Path A `v3-9bf2be0f` | **3** | 0.67 | 2.00 | 1.33 | 1.00 | 0.00 |
+| Path B `v3-ddd9c19c` | **8** | 0.63 | 1.63 | 1.75 | 1.00 | 0.00 |
+| Notes `v3-279c6350` | **25** | glance **0.00** | scout **1.08** | stanza **0.80** | | |
+
+**THE GATE IS 20 ROWS ON EACH VERDICT BASE, AND THAT NUMBER IS DERIVED RATHER THAN PICKED.**
+Per-row marker counts are small integers with a standard deviation near 0.8 (SEC C records 0.67
+and 0.70 on the scout field). To separate a half-marker change at the 1.96 pooled SE this platform
+uses as its strict bar everywhere else: `1.96 x 0.8 x sqrt(2/n) = 0.5` gives **n = 20 per side**.
+Below that the comparison cannot carry a verdict whichever way it falls, which is exactly what
+happened to the withdrawn 2026-09-13 figures.
+**AND BOTH BASES MUST HAVE STOPPED MOVING**, not merely reached 20 , SEC C's refill trap bit on
+both sides of one comparison already.
+
+**WHAT THE NOTES SIDE ALREADY SUPPORTS, at n=25:** the one LONG field complies (p1 at 2.00) and
+every SHORT field falls short , verdict 0.63, stanza 0.80, h2h 1.00, scout 1.08. **The diagnosis
+is a tension inside rule 4 rather than the prohibition list:** it asks a fixed two to three phrases
+per block regardless of the block's LENGTH, while its own prohibitions forbid marking a whole
+clause, so a two-sentence stanza cannot satisfy it without becoming the shouting it forbids.
+
+**THE GLANCE EXEMPTION RIDES THIS HELD EDIT AND IS NOT WAITING ON ANY n , Lucas, 2026-09-27:
+"the prompt asking for marks the page discards is a defect whatever the n is".** `glance` measures
+0.00 on 25 of 25 and that is CORRECT , item 20 deliberately neutralised emphasis there because the
+line is already 800 italic pink. **Rule 4 exempts `who` and does not exempt `glance`**, so the
+model is being asked for marks that are stripped before they render.
 
 ---
 
