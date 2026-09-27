@@ -15,8 +15,8 @@ const sets = {
   'C  ALTERNATE   press NOT_LEADING': { ...base, pressRule: 'NOT_LEADING', initiative: 'ALTERNATE' },
   'D  WINNER_KEEPS press NOT_LEADING':{ ...base, pressRule: 'NOT_LEADING', initiative: 'WINNER_KEEPS' },
   'E  ALTERNATE   press late only':   { ...base, initiative: 'ALTERNATE', verdicts: late },
-  'F  C + hand 6':                    { ...base, pressRule: 'NOT_LEADING', initiative: 'ALTERNATE', handSize: 6 },
-  'G  E + hand 6':                    { ...base, initiative: 'ALTERNATE', verdicts: late, handSize: 6 },
+  'F  C + hand 5':                    { ...base, pressRule: 'NOT_LEADING', initiative: 'ALTERNATE', handSize: 5 },
+  'G  E + hand 5':                    { ...base, initiative: 'ALTERNATE', verdicts: late, handSize: 5 },
 };
 const out = {};
 console.log('set'.padEnd(36), 'skill  pressWR  rounds  active  leader4  comeback  startQ  verdicts(E/C/D/X/S)');

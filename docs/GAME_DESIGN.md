@@ -1,7 +1,7 @@
-# VVonderXI Card Game , DESIGN BIBLE v1.1
+# VVonderXI Card Game , DESIGN BIBLE v1.3
 
 Companion to `GAME_V1_ARCHITECTURE.md`. That file says how it is built; this one says what it is.
-Rules numbers live in `game/engine/config.js` (`v1.1-moments`). If this doc and config disagree, config wins.
+Rules numbers live in `game/engine/config.js` (`v1.3`). If this doc and config disagree, config wins.
 
 **The fantasy:** put legendary football seasons against each other and settle the debate, one moment at a time.
 **Working title:** VVonderXI Duels.
@@ -10,7 +10,7 @@ Rules numbers live in `game/engine/config.js` (`v1.1-moments`). If this doc and 
 
 ## 1. THE 30-SECOND PITCH (read this out loud to a new player)
 
-> Get all five of your seasons into your **Legacy** before your rival does.
+> Get all six of your seasons into your **Legacy** before your rival does.
 > Every turn is a **match moment**. Whoever has possession picks it, after the other side strikes one of three off.
 > You both play a season face-down. Reveal. **Bigger number wins the moment.**
 > Win it, and that season walks into your Legacy. Win it big, and you choose how to hurt them.
@@ -22,9 +22,9 @@ Four sentences, no exceptions, no tables. If a rule cannot be taught inside this
 ## 2. THE RULES
 
 **Setup**
-- Each player gets a **Squad** of 5 seasons, one from each strength tier, so nobody starts with all the stars.
-- The other 30 cards are the **Bench**, face-down.
-- Toss for **Possession**. Each player has 2 **Tactical Switch** tokens.
+- Each player gets a **Squad** of 6 seasons dealt by strength tier (one from each of the five tiers, plus a second from the top tier), so nobody starts with all the stars.
+- The other 15 cards are the **Bench**, face-down.
+- Toss for **Possession**. Each player has **3 Substitutions** for the match.
 
 **A turn**
 1. **Three moments flip up** (never the one just played).
@@ -34,6 +34,13 @@ Four sentences, no exceptions, no tables. If a rule cannot be taught inside this
 5. **The winner takes the reward.** The loser's season goes back to their Squad.
 6. **Possession switches.**
 
+**Substitutions** (3 per player, at most one a round, used at the start of a round in your own decision:
+the defender while striking a moment off, the attacker while picking one). Your Squad never changes size.
+- **Substitution:** swap any number of your Squad seasons with random seasons from the Bench, face-down.
+- **Tactical Switch** (attacker only): redraw the three moments.
+- **Forced Change:** one random season from your rival's Squad goes to the Bench and a random Bench season
+  replaces it. **Not allowed when your rival is down to their last season.**
+
 **The verdict** (margin between the two numbers , the same words the Compare page uses)
 
 | Verdict | Margin (six moments) | Margin in Big Game (rt points, Compare's own ranges) | Reward (choose) |
@@ -41,15 +48,18 @@ Four sentences, no exceptions, no tables. If a rule cannot be taught inside this
 | **The Debate Lives On , no decision** | 0 to 1 | 0 to 1 | Nothing. Both seasons go home. No round winner. |
 | **Photo Finish** | 2+ | 2 to 3 | Into Legacy |
 | **A Clear Edge** | 9+ | 4 to 6 | Into Legacy **or** High Press |
-| **Bragging Rights Settled** | 18+ | 7 to 9 | Into Legacy, High Press **or** Assist, plus a Tactical Switch token |
+| **Bragging Rights Settled** | 18+ | 7 to 9 | Into Legacy, High Press **or** Assist |
 | **Masterclass** | 31+ | 10+ | **Any two** of those |
 
-Values as of config `v1.2-real`; `game/engine/config.js` is the source and wins on any conflict.
+Values as of config `v1.3`; `game/engine/config.js` is the source and wins on any conflict.
 
 - **Into Legacy:** your winning season leaves your Squad for good. One step closer.
 - **High Press:** keep your season; your rival brings a card on from the Bench. **Only if you hold at least as many cards as they do** , it is a way back into a game, not a way to finish one.
 - **Assist:** your winning season stays, and sends a *different* season from your Squad into Legacy. Keep the hero, clear the passenger.
-- **Tactical Switch** (token): before choosing, redraw the three moments.
+
+**Optional playtest rule, off by default , The Captain:** each player secretly names one season at kick-off,
+and it can only go into Legacy last. Measured strong on skill, but it overlaps with Substitutions (it cannot
+be swapped), so V1 ships without it. `captain: true` in config turns it on.
 
 **Win:** empty Squad. Everyone understands "get rid of your hand" from Uno; the football twist is that getting rid of a card means it earned its place in your Legacy.
 
@@ -69,7 +79,7 @@ The side in possession **attacks**; the other **defends**. Asymmetric moments re
 | **Full Ninety** | Ever Present | Ever Present | Stadium clock runs 0 to 90, one figure fades |
 | **Master of Role** | Role mastery (vs own position) | Role mastery | Each performs their position's signature move |
 
-**Measured (synthetic deck, 1,200 matches):** every position wins 44% to 53% of the rounds it is played in. Centre-backs 49%, strikers 52%. No dead cards.
+**Measured (real 400-card deck, v1.3, 1,200 matches, CPU v CPU):** every position wins 39% to 53% of the rounds it is played in. Strikers 53%, wingers 48%, centre-backs 43%, full-backs 39%. No position is dead, but full-backs are the weakest and the spread (14 points) is wider than on the synthetic deck; watch it in playtests.
 
 **Honesty note, same as the VV Index:** Defensive Wall reads the platform's thinnest data. The game is balanced because every number is a percentile within the deck, but game copy must never call a defensive number precise.
 
@@ -122,7 +132,7 @@ Two speeds from the same event stream. **Cinematic** the first time each moment 
 | 2.0 | **Standoff** | Camera arcs from table view to side-on broadcast angle. Stat plaques rise: **ATT 91 · vs · DEF 88**, counting up. | plaques only |
 | 2.8 | **Duel** | The choreography for (moment, who won, verdict) plays, 2 to 3 s. | cut |
 | 5.0 | **Verdict** | The tag stamps across the pitch in the Compare voice: *Photo Finish*. Intensity scales with severity. | kept |
-| 6.0 | **Consequence** | Into Legacy: winner hologram bows out, card dissolves into gold particles that stream to your Legacy pedestal, counter ticks 5 → 4. Loser hologram de-rezzes, card slides home. High Press: a card fires from the Bench into the rival's Squad. | kept |
+| 6.0 | **Consequence** | Into Legacy: winner hologram bows out, card dissolves into gold particles that stream to your Legacy pedestal, counter ticks 6 → 5. Loser hologram de-rezzes, card slides home. High Press: a card fires from the Bench into the rival's Squad. | kept |
 | 7.5 | **Reset** | Camera returns to table view, hands re-fan. | kept |
 
 ~7.5 s cinematic, ~2.5 s fast. Over an ~8-round match that is the 5-minute target without the spectacle going stale.

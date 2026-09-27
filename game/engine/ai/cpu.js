@@ -35,7 +35,12 @@ export function GreedyCPU(ai) {
   return {
     name: 'Greedy',
     decide(ctx, view, me, legal, rng) {
-      const hand = view.players[me].hand;
+      if (legal[0].type === 'NAME_CAPTAIN') return best(legal, a => ai.worth[a.cardId]);
+      legal = legal.filter(a => a.type !== 'USE_SUB'); // Greedy never uses substitutions
+      // Greedy holds its captain back too, and simply never sends it while other cards remain.
+      const cap = view.players[me].captain, full = view.players[me].hand;
+      const hand = cap != null && full.length > 1 ? full.filter(id => id !== cap) : full;
+      if (legal[0].type === 'LOCK_CARD' && hand !== full) legal = legal.filter(a => a.cardId !== cap);
       const t = legal[0].type;
       if (t === 'CHOOSE_CATEGORY' || t === 'USE_TOKEN') {
         const cats = legal.filter(a => a.type === 'CHOOSE_CATEGORY');
@@ -52,18 +57,31 @@ export function GreedyCPU(ai) {
 // ------------------------------------------------------------------ TACTICIAN
 // Models the opponent's hand from public info, then plays the weakest card that
 // probably wins. Params exposed so the sim can search them.
+// SUBSTITUTION HEURISTIC , deliberately simple, so every result on the substitution rules is a LOWER
+// BOUND on what a thinking player gets from them. At most one sub a round, checked in this order:
+//   1. FORCED CHANGE when the rival holds <= forcedAt cards (2) and I am not ahead (I hold >= theirs):
+//      disrupt a rival who is about to finish.
+//   2. SWAP every eligible card whose worth is below swapBelow (0.35; an average Bench card is ~0.5),
+//      weakest first, up to the variant's N. With N = ALL it also fires when my mean worth is below
+//      swapMeanBelow (0.40), then swapping every card below 0.5.
+//   3. REDRAW the moments when the best one on offer looks poor (the old token rule, rerollBelow).
+// The captain is never swapped (the engine excludes it). THE CAPTAIN: name the highest-worth card.
 export function TacticianCPU(ai, params = {}) {
-  const P = { samples: 24, oppBestProb: 0.6, shedWeight: 1.0, conserve: 1.0, pressValue: 0.7, keepStrong: 0.5, rerollBelow: 0.25, ...params };
+  const P = { samples: 24, oppBestProb: 0.6, shedWeight: 1.0, conserve: 1.0, pressValue: 0.7, keepStrong: 0.5, rerollBelow: 0.25,
+              useSubs: true, forcedAt: 2, swapBelow: 0.35, swapMeanBelow: 0.40, ...params };
   return {
     name: params.name ?? 'Tactician',
     decide(ctx, view, me, legal, rng) {
+      if (legal[0].type === 'NAME_CAPTAIN') return best(legal, a => ai.worth[a.cardId]);
+      if (P.useSubs) { const s = chooseSub(ctx, ai, view, me, legal, P); if (s) return s; }
+      legal = legal.filter(a => a.type !== 'USE_SUB' || (P.useSubs && a.sub === 'REDRAW'));
       const t = legal[0].type;
       const model = oppModel(ctx, view, me, ai);
       if (t === 'CHOOSE_CATEGORY' || t === 'USE_TOKEN') {
         const cats = legal.filter(a => a.type === 'CHOOSE_CATEGORY');
         const scored = cats.map(a => ({ a, s: bestCardUtility(ctx, ai, view, me, a.category, model, rng, P).u }));
         const top = scored.reduce((x, y) => (y.s > x.s ? y : x));
-        const reroll = legal.find(a => a.type === 'USE_TOKEN');
+        const reroll = legal.find(a => a.type === 'USE_TOKEN' || a.type === 'USE_SUB');
         if (reroll && top.s < P.rerollBelow) return reroll;
         return top.a;
       }
@@ -92,13 +110,40 @@ export function TacticianCPU(ai, params = {}) {
   };
 }
 
+function chooseSub(ctx, ai, view, me, legal, P) {
+  const subs = legal.filter(a => a.type === 'USE_SUB');
+  if (!subs.length) return null;
+  const opp = other(me);
+  const myN = view.players[me].hand.length;
+  const oppN = typeof view.players[opp].hand === 'number' ? view.players[opp].hand : view.players[opp].hand.length;
+  const forced = subs.find(a => a.sub === 'FORCED');
+  if (forced && oppN <= P.forcedAt && myN >= oppN) return forced;
+  const swaps = subs.filter(a => a.sub === 'SWAP');
+  if (swaps.length) {
+    const cap = view.players[me].captain;
+    const elig = view.players[me].hand.filter(id => id !== cap).sort((a, b) => ai.worth[a] - ai.worth[b]);
+    const maxK = Math.max(...swaps.map(a => a.cards.length));
+    const mean = elig.reduce((s, id) => s + ai.worth[id], 0) / (elig.length || 1);
+    const bar = ctx.config.substitutions?.swapMax === 'ALL' && mean < P.swapMeanBelow ? 0.5 : P.swapBelow;
+    const pickIds = new Set(elig.filter(id => ai.worth[id] < bar).slice(0, maxK));
+    if (pickIds.size) {
+      const hit = swaps.find(a => a.cards.length === pickIds.size && a.cards.every(id => pickIds.has(id)));
+      if (hit) return hit;
+    }
+  }
+  return null; // REDRAW is decided with the moment choice, as the old token was
+}
+
 function oppModel(ctx, view, me, ai) {
   const opp = other(me);
   const discard = new Set(view.discard);
   const mine = new Set(view.players[me].hand);
-  // cards the opponent revealed and still holds
+  // cards the opponent revealed and still holds. After a sub that moved THEIR squad (their SWAP, my
+  // FORCED CHANGE) we cannot know which revealed cards left, so only later reveals count as known.
+  const since = (view.subLog ?? []).filter(s => (s.sub === 'SWAP' && s.player === opp) || (s.sub === 'FORCED' && s.player === me))
+    .reduce((m, s) => Math.max(m, s.round), 0);
   const known = new Set();
-  for (const h of view.history) { const id = h.played[opp]; if (!discard.has(id)) known.add(id); }
+  for (const h of view.history) { if (h.round < since) continue; const id = h.played[opp]; if (!discard.has(id)) known.add(id); }
   // A locked card is face-down on the table, not gone: the opponent chose it from the full hand.
   const oppSize = (typeof view.players[opp].hand === 'number' ? view.players[opp].hand : view.players[opp].hand.length) + (view.players[opp].locked ? 1 : 0);
   const knownArr = [...known].slice(0, oppSize);
@@ -123,14 +168,19 @@ function bestCardUtility(ctx, ai, view, me, cat, model, rng, P) {
     const vals = oh.map(id => valueOf(ctx.cards[id], cat, roleOf(view, other(me))) ?? -1);
     oppPlays.push(rng() < P.oppBestProb ? Math.max(...vals) : vals[Math.floor(rng() * vals.length)]);
   }
-  let bestU = -Infinity, bestId = hand[0];
+  // THE CAPTAIN is held back: played only as the last card, or when it is the only card that can win.
+  // A captain that wins while others remain cannot leave, so sending it early wastes the round.
+  const cap = view.players[me].captain, holdCap = cap != null && hand.length > 1 && hand.includes(cap);
+  let bestU = -Infinity, bestId = holdCap ? hand.find(id => id !== cap) : hand[0], bestP = 0, capU = -Infinity, capP = 0;
   for (const id of hand) {
     const v = valueOf(ctx.cards[id], cat, roleOf(view, me)) ?? -1;
     const pWin = oppPlays.filter(o => v - o >= edge).length / oppPlays.length;
     const conserve = hand.length === 1 ? 1 : 1 + P.conserve * (1 - ai.worth[id]);
     const u = pWin * conserve;
-    if (u > bestU) { bestU = u; bestId = id; }
+    if (holdCap && id === cap) { capU = u; capP = pWin; continue; }
+    if (u > bestU) { bestU = u; bestId = id; bestP = pWin; }
   }
+  if (holdCap && bestP === 0 && capP > 0) return { id: cap, u: capU };
   return { id: bestId, u: bestU };
 }
 

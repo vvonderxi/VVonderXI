@@ -1,5 +1,5 @@
 // Headless CPU-vs-CPU simulation. No Three.js, no DOM. `node game/sim/simulate.js`
-import { createGame, applyAction, legalActions, viewFor } from '../engine/game.js';
+import { createGame, applyAction, legalActions, viewFor, actorFor } from '../engine/game.js';
 import { makeConfig } from '../engine/config.js';
 import { rngFrom } from '../engine/core.js';
 import { prepareAI, RandomCPU, GreedyCPU, TacticianCPU } from '../engine/ai/cpu.js';
@@ -11,14 +11,10 @@ export function runMatch(ctx, bots, seed, firstActive) {
   const rng = rngFrom(seed * 7919 + 13);
   let { state } = createGame(ctx, ctx.deckIds, seed, firstActive);
   const start = { A: state.players.A.hand.slice(), B: state.players.B.hand.slice() };
-  const m = { draws: 0, discards: 0, maxDeficit: { A: 0, B: 0 }, leaderAfter4: null, tokensUsed: 0 };
+  const m = { draws: 0, discards: 0, maxDeficit: { A: 0, B: 0 }, leaderAfter4: null, tokensUsed: 0, subs: {}, stalled: false };
   let guard = 0;
   while (state.phase !== 'OVER' && guard++ < 2000) {
-    let actor;
-    if (state.phase === 'CATEGORY') actor = state.active;
-    else if (state.phase === 'BAN') actor = other(state.active);
-    else if (state.phase === 'SELECT') actor = !state.players.A.locked ? 'A' : 'B';
-    else actor = state.pending.winner;
+    const actor = actorFor(state);
     const legal = legalActions(ctx, state, actor);
     const action = bots[actor].decide(ctx, viewFor(state, actor), actor, legal, rng);
     const res = applyAction(ctx, state, action);
@@ -27,6 +23,7 @@ export function runMatch(ctx, bots, seed, firstActive) {
       if (e.type === 'CARD_DRAWN') m.draws++;
       if (e.type === 'CARD_DISCARDED') m.discards++;
       if (e.type === 'TOKEN_USED') m.tokensUsed++;
+      if (e.type === 'SUB_USED') m.subs[e.sub] = (m.subs[e.sub] ?? 0) + 1;
       if (e.type === 'ROUND_START') {
         const h = e.hands;
         m.maxDeficit.A = Math.max(m.maxDeficit.A, h.A - h.B);
@@ -35,6 +32,7 @@ export function runMatch(ctx, bots, seed, firstActive) {
       }
     }
   }
+  m.stalled = state.phase !== 'OVER'; // hit the 2000-action guard: a match that never finished
   return { state, start, m };
 }
 
@@ -45,7 +43,7 @@ export function simulate({ n = 2000, config = makeConfig(), deck = loadDeck(), b
   const bots = { A: mk(botA), B: mk(botB) };
   const S = { games: 0, wins: { A: 0, B: 0, draw: 0 }, firstActiveWins: 0, rounds: [], verdicts: {}, cats: {}, draws: 0, discards: 0,
     comebacks: 0, comebackEligible: 0, snowball: 0, snowballEligible: 0, activeRoundWins: 0, crownedRounds: 0, strongerHandWins: 0, strongerHandGames: 0,
-    elitePlays: 0, eliteWins: 0, capped: 0, tokens: 0, catCrowned: {}, catActiveWins: {}, catVerdicts: {} };
+    elitePlays: 0, eliteWins: 0, capped: 0, tokens: 0, stalled: 0, subs: {}, catCrowned: {}, catActiveWins: {}, catVerdicts: {} };
   for (let i = 0; i < n; i++) {
     const first = i % 2 ? 'B' : 'A';
     const { state, start, m } = runMatch(ctx, bots, seed0 + i, first);
@@ -53,6 +51,8 @@ export function simulate({ n = 2000, config = makeConfig(), deck = loadDeck(), b
     const w = state.winner; S.wins[w ?? 'draw']++;
     if (w === first) S.firstActiveWins++;
     if (state.endReason === 'ROUND_CAP') S.capped++;
+    if (m.stalled) S.stalled++;
+    for (const [k, v] of Object.entries(m.subs)) S.subs[k] = (S.subs[k] ?? 0) + v;
     S.rounds.push(state.history.length); S.draws += m.draws; S.discards += m.discards; S.tokens += m.tokensUsed;
     for (const h of state.history) {
       S.verdicts[h.verdict] = (S.verdicts[h.verdict] ?? 0) + 1;
@@ -90,7 +90,8 @@ export function simulate({ n = 2000, config = makeConfig(), deck = loadDeck(), b
     drawsPerGame: +(S.draws / S.games).toFixed(2), discardsPerGame: +(S.discards / S.games).toFixed(2), tokensPerGame: +(S.tokens / S.games).toFixed(2),
     comebackRate: pct(S.comebacks, S.comebackEligible), leaderAfter4Wins: pct(S.snowball, S.snowballEligible),
     strongerStartWins: pct(S.strongerHandWins, S.strongerHandGames), eliteCardRoundWin: pct(S.eliteWins, S.elitePlays),
-    roundCapHits: pct(S.capped, S.games),
+    roundCapHits: pct(S.capped, S.games), stalledRate: pct(S.stalled, S.games),
+    subsPerGame: Object.fromEntries(Object.entries(S.subs).map(([k, v]) => [k, +(v / S.games).toFixed(2)])),
   };
 }
 

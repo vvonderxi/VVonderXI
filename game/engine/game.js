@@ -23,8 +23,8 @@ export function createGame(ctx, deckIds, seed, firstActive = 'A') {
     configVersion: config.version,
     phase: 'CATEGORY', round: 1, active: firstActive,
     players: {
-      A: { hand: pool.slice(0, config.handSize), tokens: config.tokensPerPlayer, locked: null },
-      B: { hand: pool.slice(config.handSize, config.handSize * 2), tokens: config.tokensPerPlayer, locked: null },
+      A: { hand: pool.slice(0, config.handSize), ...playerExtras(config) },
+      B: { hand: pool.slice(config.handSize, config.handSize * 2), ...playerExtras(config) },
     },
     pile: pool.slice(config.handSize * 2),
     discard: [],
@@ -32,9 +32,30 @@ export function createGame(ctx, deckIds, seed, firstActive = 'A') {
     pending: null, winner: null, endReason: null,
     history: [],
   };
+  if (config.substitutions) state.subLog = []; // public: who used which sub, never which cards
   const events = [{ type: 'GAME_START', active: firstActive }];
-  dealCategories(ctx, state, events);
+  if (config.captain) { state.phase = 'CAPTAIN'; events.push({ type: 'CAPTAIN_PROMPT' }); }
+  else dealCategories(ctx, state, events);
   return { state, events };
+}
+
+// Tokens and substitutions are alternatives: with substitutions on, tokens start at 0 and are never offered.
+function playerExtras(config) {
+  const s = config.substitutions;
+  return {
+    tokens: s ? 0 : config.tokensPerPlayer, locked: null,
+    ...(s ? { subs: s.perPlayer, lastSubRound: 0 } : {}),
+    ...(config.captain ? { captain: null } : {}),
+  };
+}
+
+/** Who must act next. One definition for the sims, the tests and the UI. */
+export function actorFor(state) {
+  if (state.phase === 'CAPTAIN') return state.players.A.captain == null ? 'A' : 'B';
+  if (state.phase === 'CATEGORY') return state.active;
+  if (state.phase === 'BAN') return other(state.active);
+  if (state.phase === 'SELECT') return !state.players.A.locked ? 'A' : 'B';
+  return state.pending?.winner ?? null;
 }
 
 // Each hand gets one card from each dealTier (1..handSize), so neither player starts
@@ -75,28 +96,56 @@ const handCounts = s => ({ A: s.players.A.hand.length, B: s.players.B.hand.lengt
 // ------------------------------------------------------------------ legality
 export function legalActions(ctx, state, player) {
   const me = state.players[player];
+  if (state.phase === 'CAPTAIN')
+    return me.captain == null && actorFor(state) === player ? me.hand.map(id => ({ type: 'NAME_CAPTAIN', player, cardId: id })) : [];
   if (state.phase === 'BAN' && player !== state.active)
-    return state.categoryOptions.map(c => ({ type: 'BAN_CATEGORY', player, category: c }));
+    return [...state.categoryOptions.map(c => ({ type: 'BAN_CATEGORY', player, category: c })), ...subActions(ctx, state, player, false)];
   if (state.phase === 'CATEGORY' && player === state.active) {
     const acts = state.categoryOptions.map(c => ({ type: 'CHOOSE_CATEGORY', player, category: c }));
-    if (me.tokens > 0 && ctx.config.enabledTokens.includes('REROLL_CATEGORIES'))
+    if (me.tokens > 0 && ctx.config.enabledTokens.includes('REROLL_CATEGORIES') && !ctx.config.substitutions)
       acts.push({ type: 'USE_TOKEN', player, token: 'REROLL_CATEGORIES' });
-    return acts;
+    return [...acts, ...subActions(ctx, state, player, true)];
   }
   if (state.phase === 'SELECT' && !me.locked) return me.hand.map(id => ({ type: 'LOCK_CARD', player, cardId: id }));
   if (state.phase === 'EFFECT' && state.pending.winner === player) return effectCombos(ctx, state, player);
   return [];
 }
 
+// SUBSTITUTIONS, offered at the start of a round in the player's own decision window (the rival while
+// banning, the possessor while choosing), at most one per player per round. Squad size never changes.
+function subActions(ctx, state, player, possession) {
+  const S = ctx.config.substitutions, me = state.players[player];
+  if (!S || me.subs <= 0 || (S.onePerRound && me.lastSubRound === state.round)) return [];
+  const acts = [];
+  if (S.redraw && possession) acts.push({ type: 'USE_SUB', player, sub: 'REDRAW' });
+  const eligible = me.hand.filter(id => id !== me.captain);
+  const maxK = Math.min(S.swapMax === 'ALL' ? eligible.length : S.swapMax, eligible.length, state.pile.length);
+  for (const cards of subsetsUpTo(eligible, maxK)) acts.push({ type: 'USE_SUB', player, sub: 'SWAP', cards });
+  const opp = state.players[other(player)];
+  if (S.forcedChange && state.pile.length && opp.hand.some(id => id !== opp.captain) && (!S.forcedNotOnLast || opp.hand.length > 1))
+    acts.push({ type: 'USE_SUB', player, sub: 'FORCED' });
+  return acts;
+}
+function subsetsUpTo(arr, k) {
+  const out = [];
+  const go = (start, cur) => { if (cur.length) out.push(cur.slice()); if (cur.length === k) return;
+    for (let i = start; i < arr.length; i++) { cur.push(arr[i]); go(i + 1, cur); cur.pop(); } };
+  go(0, []);
+  return out;
+}
+
 function effectCombos(ctx, state, player) {
   const { verdict, played } = state.pending;
   const hand = state.players[player].hand; // played card already back in hand at this point
-  const others = hand.filter(id => id !== played[player]);
+  // THE CAPTAIN only goes into Legacy last: never an Assist target, and never Into Legacy while others remain.
+  const cap = ctx.config.captain ? state.players[player].captain : null;
+  const others = hand.filter(id => id !== played[player] && id !== cap);
   const oppN = state.players[other(player)].hand.length;
   // FINAL WHISTLE: your last card only leaves on a big enough verdict, so a finisher must be kept back.
   const finishing = hand.length === 1 && verdict.severity < (ctx.config.finishMinSeverity ?? 0);
   const opts = verdict.availableEffects.filter(e => {
     if (finishing && e === 'DISCARD_PLAYED') return false;
+    if (e === 'DISCARD_PLAYED' && cap && played[player] === cap && hand.length > 1) return false;
     if (e === 'DISCARD_OTHER') return others.length > 0;
     // NOT_LEADING: you may only attack the other hand if you hold at least as many cards (catch-up tool, not a finisher)
     if (e === 'PRESS' && ctx.config.pressRule === 'NOT_LEADING') return hand.length >= oppN;
@@ -125,13 +174,28 @@ export function applyAction(ctx, prev, action) {
     case 'USE_TOKEN': {
       state.players[action.player].tokens -= 1;
       events.push({ type: 'TOKEN_USED', player: action.player, token: action.token });
-      if (action.token === 'REROLL_CATEGORIES') {
-        const exclude = new Set(state.categoryOptions);
-        let pool = ctx.config.categoryPool.filter(c => !exclude.has(c));
-        if (pool.length < ctx.config.categoryChoices) pool = ctx.config.categoryPool.slice();
+      if (action.token === 'REROLL_CATEGORIES') rerollCategories(ctx, state, events);
+      break;
+    }
+    case 'NAME_CAPTAIN': {
+      state.players[action.player].captain = action.cardId;
+      events.push({ type: 'CAPTAIN_NAMED', player: action.player }); // which card stays secret
+      if (state.players.A.captain != null && state.players.B.captain != null) { state.phase = 'CATEGORY'; dealCategories(ctx, state, events); }
+      break;
+    }
+    case 'USE_SUB': {
+      const me = state.players[action.player];
+      me.subs -= 1; me.lastSubRound = state.round;
+      const count = action.sub === 'SWAP' ? action.cards.length : action.sub === 'FORCED' ? 1 : 0;
+      state.subLog.push({ round: state.round, player: action.player, sub: action.sub, count });
+      events.push({ type: 'SUB_USED', player: action.player, sub: action.sub, count }); // no card ids: face-down
+      if (action.sub === 'REDRAW') rerollCategories(ctx, state, events);
+      if (action.sub === 'SWAP') for (const id of action.cards) exchangeWithBench(state, action.player, id);
+      if (action.sub === 'FORCED') {
+        const opp = other(action.player), o = state.players[opp];
+        const elig = o.hand.filter(id => id !== o.captain);
         const [r, next] = roll(state.rng); state.rng = next;
-        state.categoryOptions = shuffle(pool, Math.floor(r * 2 ** 31)).slice(0, ctx.config.categoryChoices);
-        events.push({ type: 'CATEGORY_OPTIONS', options: state.categoryOptions.slice(), active: state.active, reroll: true });
+        exchangeWithBench(state, opp, elig[Math.floor(r * elig.length)]);
       }
       break;
     }
@@ -164,9 +228,29 @@ export function applyAction(ctx, prev, action) {
   return { state, events };
 }
 
-const sameAction = (a, b) => a.type === b.type && a.player === b.player && a.category === b.category &&
+const sameAction = (a, b) => a.sub === b.sub && JSON.stringify(a.cards ?? null) === JSON.stringify(b.cards ?? null) &&
+  a.type === b.type && a.player === b.player && a.category === b.category &&
   a.cardId === b.cardId && a.token === b.token && a.target === b.target &&
   JSON.stringify(a.effects ?? null) === JSON.stringify(b.effects ?? null);
+
+function rerollCategories(ctx, state, events) {
+  const exclude = new Set(state.categoryOptions);
+  let pool = ctx.config.categoryPool.filter(c => !exclude.has(c));
+  if (pool.length < ctx.config.categoryChoices) pool = ctx.config.categoryPool.slice();
+  const [r, next] = roll(state.rng); state.rng = next;
+  state.categoryOptions = shuffle(pool, Math.floor(r * 2 ** 31)).slice(0, ctx.config.categoryChoices);
+  events.push({ type: 'CATEGORY_OPTIONS', options: state.categoryOptions.slice(), active: state.active, reroll: true });
+}
+
+// One squad card goes to a random Bench slot and that slot's card comes into the squad, in its place.
+function exchangeWithBench(state, player, id) {
+  const [r, next] = roll(state.rng); state.rng = next;
+  const i = Math.floor(r * state.pile.length);
+  const incoming = state.pile[i];
+  state.pile[i] = id;
+  const hand = state.players[player].hand;
+  hand[hand.indexOf(id)] = incoming;
+}
 
 function resolveBattle(ctx, state, events) {
   const idA = state.players.A.locked, idB = state.players.B.locked;
@@ -193,7 +277,8 @@ function resolveBattle(ctx, state, events) {
   const w = comparison.winner, l = comparison.loser;
   // winner's card returns to hand for now; effects decide whether it leaves
   state.players[w].hand.push(played[w]);
-  if (ctx.config.loserCardFate === 'DISCARD') {
+  const loserCap = ctx.config.captain ? state.players[l].captain : null;
+  if (ctx.config.loserCardFate === 'DISCARD' && !(played[l] === loserCap && state.players[l].hand.length > 0)) {
     state.discard.push(played[l]);
     events.push({ type: 'CARD_DISCARDED', player: l, cardId: played[l], reason: 'LOST' });
   } else {
@@ -236,7 +321,7 @@ function applyOne(ctx, state, events, w, effect, target) {
       } else events.push({ type: 'EFFECT_FIZZLED', effect, reason: state.pile.length ? 'MAX_HAND' : 'PILE_EMPTY' });
       break;
     case 'GAIN_TOKEN':
-      if (me.tokens < ctx.config.maxTokens) { me.tokens++; events.push({ type: 'TOKEN_GAINED', player: w }); }
+      if (!ctx.config.substitutions && me.tokens < ctx.config.maxTokens) { me.tokens++; events.push({ type: 'TOKEN_GAINED', player: w }); }
       break;
     default: throw new Error('Unknown effect ' + effect);
   }
@@ -279,6 +364,7 @@ export function viewFor(state, player) {
   v.players[opp].hand = v.players[opp].hand.length;
   v.players[opp].locked = !!state.players[opp].locked;
   v.pile = state.pile.length;
+  if ('captain' in v.players[opp]) delete v.players[opp].captain;
   delete v.rng; delete v.seed;
   return v;
 }

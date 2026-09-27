@@ -82,8 +82,12 @@ game/
     ai/cpu.js                     Random / Greedy / Tactician behind one interface (built)
   sim/
     simulate.js  sweep.js  grid.js   headless CPU-vs-CPU harness (built)
-    synthetic-deck.js             stand-in deck until the real one exists (built)
-    test-engine.js                determinism, conservation, hidden info, legality (built, passing)
+    moments.js                    per-moment and per-position read-out (built)
+    deck.js                       GAME_DECK=synthetic|real loader, validated (built)
+    synthetic-deck.js             stand-in deck, still the default for the sims (built)
+    ladder-sweep.js               verdict-ladder sweep (built)
+    rules-experiment.js           hand / Bench / substitutions / Captain experiment (built)
+    test-engine.js                determinism, conservation, hidden info, legality, subs, Captain (built, passing)
   ui2d/                           Phase 5: DOM prototype, playtest the loop
   render3d/                       Phase 6+: Three.js
     scene.js  table.js  card3d.js  hologram.js  fx.js  director.js (event queue -> animations)
@@ -193,24 +197,31 @@ by the game (cost, latency, and a battle needs a number, not an essay).
 
 ---
 
-## G. V1 rules (set C from the sweep , provisional until re-run on the real deck)
+## G. V1 rules (v1.3, the default since 2026-09-27; `config.js` wins on any conflict)
 
-1. Deal: 5 cards each, **tiered** (one card from each strength tier), 30 in the draw pile.
-2. Three categories appear (never last round's). **The non-active player bans one; the active player picks from the two left.**
-3. Both players secretly lock a card. Reveal.
-4. Compare on the category. Verdict by margin:
+1. Deal: 6 cards each, **tiered** (tiers 1, 1, 2, 3, 4, 5, so two from the top tier), 15 on the Bench.
+2. Three moments appear (never last round's). **The non-active player bans one; the active player picks from the two left.**
+3. **Substitutions, 3 per player, at most one a round, in your own decision window** (non-active while banning,
+   active while choosing): SWAP any number of squad cards with random Bench cards; REDRAW the moments
+   (active only); FORCED CHANGE one random rival squad card with the Bench, **not on their last card**.
+   Squad size never changes. Bragging Rights no longer grants anything extra.
+4. Both players secretly lock a card. Reveal.
+5. Compare on the moment. Verdict by margin:
 
-| Verdict | Margin (percentile pts; Season Impact uses 0.25x in rt) | Winner chooses |
-|---|---|---|
-| STALEMATE (`var_close`) | 0 to 2 | nothing, both cards go home |
-| EDGE | 3+ | discard your played card |
-| CLEAR | 10+ | discard it **or** PRESS |
-| DOMINANT | 20+ | discard it, PRESS, or discard a different card; +1 token |
-| DEMOLITION | 34+ | any two of those |
+| Verdict | Six moments (percentile pts) | Big Game (rt pts, Compare's ranges) | Winner chooses |
+|---|---|---|---|
+| STALEMATE (`the_debate`) | 0 to 1 | 0 to 1 | nothing, both cards go home, no round winner |
+| EDGE | 2+ | 2 to 3 | discard your played card |
+| CLEAR | 9+ | 4 to 6 | discard it **or** PRESS |
+| DOMINANT | 18+ | 7 to 9 | discard it, PRESS, or discard a different card |
+| DEMOLITION | 31+ | 10+ | any two of those |
 
-5. **PRESS** = keep your card, opponent draws one. **Only allowed if you hold at least as many cards as your opponent.**
-6. Loser's card returns to hand. Initiative **alternates**. 2 tokens each: reroll the three categories.
-7. First to zero cards wins.
+6. **PRESS** = keep your card, opponent draws one. **Only allowed if you hold at least as many cards as your opponent.**
+7. Loser's card returns to hand. Initiative **alternates**.
+8. First to zero cards wins.
+
+The v1.2 rules (hand 5, Bench 30, 2 tokens, +1 token on DOMINANT) are `V1_2` in `config.js`:
+`makeConfig(V1_2)` reproduces the committed v1.2 behaviour byte-for-byte (300 of 300 seeds, both decks).
 
 ---
 
@@ -350,3 +361,78 @@ Break the Lines 62.1, Counter 62.7, **Big Game 68.7**, Full Ninety 63.7, Master 
    version gave Big Game its own on-target mix (Master 17%) but not Compare's ranges.
 4. **Full Ninety is a real contest now**: chosen 16.1% (was 11.5%).
 
+
+## Rules experiment and v1.3 (2026-09-27, real deck, 1,200 matches per simulation, seeded)
+
+`GAME_DECK=real node game/sim/rules-experiment.js 1200`: 60 rule sets (hand 5 / 6 / 7 x Bench 30 / 15 x
+tokens or four substitution variants x Captain off / on), each run as Tactician v Greedy (skill), a
+Tactician mirror (match shape) and, where subs exist, **subs value** = Tactician with subs v Tactician
+without, same rules. Minutes assume 30 s a round and exclude time spent on subs.
+
+**Read every figure here as a lower bound on the rules and partly a measure of the bots:**
+- The substitution heuristic is deliberately simple (`cpu.js`, documented above `TacticianCPU`). Without the
+  last-card guard it forces a change on the rival's last card, which after good play is usually their
+  weakest, so it helps them; that is why the no-guard variants score lower.
+- **Greedy never uses substitutions**, so "skill" mixes thinking with having subs. Subs value isolates the subs.
+- **The first Captain run was void.** Both bots named their best card Captain and kept playing it; it won but
+  could not leave, so 4 to 13.6% of matches hit the round cap. With captain-aware bots (hold it back unless
+  it is the last card or the only one that can win) **no rule set in the experiment leaves a match unfinished.**
+
+**Hand and Bench, v1.2 rules (tokens, no Captain):** hand 5 skill 63.2, 7.5 rounds, comebacks 37.1, leader
+after R4 64.3; hand 6: 61.2, 9.4, 40.7, 60.3; hand 7: 61.8, 11.4, 43.8, 56.5. **Bench 30 and 15 are identical
+under tokens**: a 15-card Bench never runs out and holds the same first 15 cards. It only matters once SWAP
+draws from it.
+
+**Substitutions and the Captain, hand 5, Bench 30:**
+
+| Rule set | Skill | Subs value | Rounds | Comebacks | Lead R4 | SWAP / REDRAW / FORCED per match |
+|---|---|---|---|---|---|---|
+| tokens (v1.2) | 63.2 | n/a | 7.5 | 37.1 | 64.3 | none |
+| tokens + Captain | 70.5 | n/a | 7.8 | 31.5 | 69.8 | none |
+| subs N2, guard | 65.8 | 66.8 | 7.7 | 34.9 | 66.3 | 2.07 / 0.49 / 1.60 |
+| subs N2, no guard | 61.9 | 63.2 | 7.6 | 33.6 | 68.5 | 2.10 / 0.31 / 2.54 |
+| subs ALL, guard | 66.6 | 66.4 | 7.7 | 33.2 | 67.6 | 2.16 / 0.47 / 1.60 |
+| subs ALL, no guard | 62.3 | 63.2 | 7.6 | 33.4 | 68.0 | 2.21 / 0.27 / 2.53 |
+| subs N2 + Captain | 66.4 | 55.8 | 7.5 | 29.7 | 71.0 | 2.01 / 0.33 / 1.61 |
+| subs ALL + Captain | 68.1 | 57.5 | 7.6 | 30.1 | 70.1 | 2.24 / 0.31 / 1.61 |
+
+With a Captain the guard never applies (your last card is always the Captain, which Forced Change cannot
+pick), so guard and no-guard are identical and shown once.
+
+**Under the v1.3 rules (subs ALL, guard, no Captain), by hand size:**
+
+| Hand / Bench | Skill | Subs value | Rounds | Min | Comebacks | Lead R4 |
+|---|---|---|---|---|---|---|
+| 5 / 15 | 65.5 | 69.0 | 7.8 | 3.9 | 34.7 | 66.8 |
+| 5 / 30 | 66.6 | 66.4 | 7.7 | 3.8 | 33.2 | 67.6 |
+| **6 / 15 (v1.3)** | **66.3** | **67.4** | **9.8** | **4.9** | **39.9** | **59.8** |
+| 6 / 30 | 63.9 | 67.0 | 9.8 | 4.9 | 38.6 | 61.1 |
+| 7 / 15 | 62.8 | 66.8 | 11.7 | 5.9 | 42.6 | 58.0 |
+| 7 / 30 | 63.5 | 65.7 | 11.7 | 5.9 | 42.1 | 58.7 |
+
+**Why v1.3 is hand 6, Bench 15, subs ALL with the guard, Captain off (decided 2026-09-27):** hand 6 is where
+comebacks rise and the round-4 leader stops deciding games (59.8) without losing skill; hand 7 adds a little
+more comeback for 3.5 points of skill and a minute a match. Substitutions are worth 67% to a thinking player.
+The Captain was strong on skill but snowbally at hand 5 and overlaps with substitutions (subs value falls to
+56 to 58% with it), so it stays a flag for playtests.
+
+**v1.3 re-run (grid set C and moments, real deck):** skill 66.3, PRESS-lover 56.3, 9.8 rounds (~4.9 min),
+comebacks 39.9, leader after R4 59.8, zero unfinished matches.
+
+| Verdict mix | STALEMATE | Photo | Clear | Brag | Master |
+|---|---|---|---|---|---|
+| Target (set on v1.2) | 7-8 | 25-28 | 25 | 22 | 17-18 |
+| v1.3, all moments | 9.7 | **35.4** | 25.0 | **16.8** | **13.1** |
+| v1.3, Big Game | 28.7 | 34.8 | 23.2 | 8.9 | 4.5 |
+
+Attacker round-win: One on One 63.3, Killer Ball 67.7, Break the Lines 60.5, Counter 56.5, Big Game 63.7,
+Full Ninety 60.5, Master of Role 56.3. Big Game is chosen 9.1%. By position: ST 53, W 48, CAM 44, CM 42,
+CDM 44, FB 39, CB 43.
+
+**Open after v1.3, in order:**
+1. **The verdict ladder has drifted off target.** 2/9/18/31 was tuned at hand 5 with tokens; with swaps
+   clearing weak cards, hands are closer in strength and gaps shrink (Photo 35%, Master 13%). Re-run
+   `ladder-sweep.js` on v1.3 before playtests.
+2. **PRESS-lover beats the Tactician 56.3%** (52.2 on v1.2): High Press is slightly strong again.
+3. **Full-backs win 39% of rounds**, the weakest position, and the spread is 14 points.
+4. The grid's F and G sets were changed from "hand 6" to "hand 5" variants, since hand 6 is now the default.
