@@ -6,7 +6,7 @@ denominator moves and the percentage falls without any work being undone. That i
 doing its job; a list that only shrinks is a list nobody is adding to.
 Update the row the moment an item moves. Lead every report with this table.
 
-**COMPLETE: 25 of 37 rows (68%)**
+**COMPLETE: 26 of 37 rows (70%)**
 *Counted as complete only when DONE. Rows waiting on Lucas or on data are NOT counted.*
 **THE COUNT WAS WRONG AND IS CORRECTED (2026-09-19): it read 15 of 25 when the list holds 35
 rows and 23 are DONE.** And the first correction got it wrong too , 20 of 34 , because I counted
@@ -30,7 +30,7 @@ that only ever rises is measuring the writing, not the work.**
 | 5b | The Story reads jumbled | **DONE** | Claude | Already fixed by 078face , same wait-class bug. Needs a hard refresh to see |
 | 6 | Nani 24/25 has no Cabinet | **DONE** | Claude | DATA GAP, not a UI defect. api50940 holds ZERO honour rows, and that is correct for all six seasons we hold |
 | 7 | What is left before merging to main | **DONE** | Claude | Definitive list below. The merge is clean; the GATE is a Vercel setting |
-| 8 | FULL AUDIT SWEEP, mobile + desktop | NOT STARTED | Claude | **LAST**, after everything else |
+| 8 | FULL AUDIT SWEEP, mobile + desktop | **DONE** | Claude | `docs/AUDIT_SWEEP_2026-09-27.md`. 9 surfaces x 2 widths x 2 themes = 40 runs, harness `_sweep_audit.js`. **ONE real defect: card.html threw `isKeeper is not defined` on every load since 06b08e4, and the Data Confidence field rows never rendered** , 0 rows became 10 outfield / 7 keeper. Clean platform-wide: overflow, blank marks, broken images, console errors, cache tokens. Contrast has exactly one failure and it is `.pspot` 3.89, the recorded exception. Also fixed: 4 undefined-token reads, 3 over-wide prose runs. **The self-test caught 3 of 8 checks not firing before any result was trusted** |
 | 9 | League split as a pie chart styled as a football | **DONE** | Claude | Ring dropped, measured unreadable at 1.14px per neighbour. Treatment B live: a drawn ball, shares on the chips, equal-share line |
 | 10 | Instagram + X calls to action placed properly | **DONE (1 and 2)** | Claude | @vvonderxi in the X share text, follow row in the home drawer. 3 and 4 not now. **Accounts may be dormant , Lucas to confirm** |
 | 11 | "Add to home screen" prompt | **DONE** | Claude | It was built and could not fire: no manifest anywhere. Manifest added, Android/iOS split, hidden when installed, prompt on the HOME page |
