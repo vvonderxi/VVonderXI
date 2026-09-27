@@ -684,6 +684,7 @@ deploying:**
 
 ### B5. Functions still deploy
 - **Check:** the function set survives the merge.
+- **[THE PROBE IN THIS LINE IS STALE AND WOULD REPORT A FALSE FAILURE , CORRECTED 2026-09-27.** `api/get-seasons.js` was DELETED on 2026-09-15, so a 404 from it is now the CORRECT answer and proves nothing. `git ls-files 'api/*.js'` returns **`api/analyse.js` alone**. **The live probe is a POST to `/api/analyse` with an allowed `Origin` and an empty body: its own validator answers `400 {"error":"messages must be a non-empty array"}`, which proves the function executed without generating anything.]**
 - **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument. **`/api/db` IS GONE , deleted 2026-08-31 with `db.json`; do not probe it and do not restore it as a liveness check.**
 - **STATUS 2026-09-06: PASS ON PREVIEW.** `GET /api/get-seasons` with no argument returned **400 `{"error":"api_id required"}`** , the function's own guard, so it executed rather than 404ing. `vercel.json` carries no `functions` block or build override, so a preview builds `api/` identically to production; the branch ships exactly two, `analyse.js` and `get-seasons.js`. **D6 still stands as the post-deploy confirmation.**
 - **Pass:** `{"error":"api_id required"}` with 400 , the function's OWN guard is the proof it executed. **The deployed set is now TWO, `analyse` and `get-seasons`, and only `/api/analyse` has a caller.** **DO NOT probe the importers: `import-*` and `refresh-players` write to the database.**
@@ -695,6 +696,36 @@ deploying:**
 - **THE VERDICT IS TRIGGER-BASED, NOT AUTOMATIC, AND POLLING ON LOAD LOOKS LIKE A FAILURE.** The panel is `display:none` carrying scaffold text until the `.settle` button is clicked. Anyone re-running this who simply watches the page load will record a false failure.
 - **After the click: real prose, no outage line, loader replaced.** 414 characters, opening "Fifty goals to 48, 16 assists apiece, **97 to 96 on the VV Index**." That phrasing is rule A of the naming contract from `351d64f` working on a live deployment rather than only in the file. **One Anthropic call was made and one `verdict_cache` row written** , unavoidable for this item, and cheap because the same commit had already invalidated every cached verdict by fingerprint. **D5 still stands as the post-deploy confirmation.**
 - **Pass:** prose arrives and the panel does not show the outage line. **Vercel holds `ANTHROPIC_API_KEY`; the local `.env` may not, so this CANNOT be verified before deploy.**
+
+---
+
+### GROUP B RE-RUN ON THE PREVIEW, 2026-09-27 , EVERY ITEM THAT COSTS NOTHING IS NOW GREEN
+
+**Run against `https://vvonderxi-preview.vercel.app`, which was first confirmed current rather
+than assumed:** `?v=` token `20260926b` matching local HEAD, `vv-core.js` **byte-identical** to
+the branch (and `origin/vvonderxi_BIGGER` carries zero `notScoredNote`, so it is provably not
+that branch), and the **preview's own publishable key** returns `58066` rows and both halves of
+the 186900 split , so the deployment, the branch and the database are all the live ones.
+
+- **B1 PASS.** Nine pages, nine distinct titles, zero "Intelligence", zero em or en dashes.
+- **B2 PASS.** Every page `og:9 / twitter:5 / description:1`, nine UNIQUE absolute `og:url`.
+- **B3 PASS, and the ASSET HAS CHANGED since the 2026-09-06 pass** , 193,595 bytes against the
+  recorded 346,002. **Dimensions re-read from the PNG header rather than trusted: 1200 x 630.**
+  Somebody re-encoded it; the pass criterion still holds. **A recorded byte count is not a
+  measurement of today's file.**
+- **B4 PASS.** 200 on all eight extensionless paths, 308 on every `.html` form.
+- **B4a PASS, AND THIS IS THE FIRST TIME IT HAS BEEN VERIFIED ON A REAL DEPLOYMENT** rather than
+  against a mocked upstream. Three refusals, all `403 {"error":"origin not allowed"}`: **no Origin
+  header**, a foreign origin, and the SUFFIX near-miss `https://vvonderxi.com.evil.com`. The
+  input bound also fires live: a 120k-char body returns `413 {"error":"prompt too large"}`.
+  **Every one of these costs nothing, because a refusal never reaches Anthropic.**
+- **B5 PASS on the corrected probe** (see the correction on the item itself).
+- **B6 , THE KEY GATE IS SETTLED WITHOUT GENERATING.** The key check runs BEFORE the body is read
+  and returns a distinct 500; we reached a 400 instead, so **`ANTHROPIC_API_KEY` is configured for
+  Preview**. Only the real generation remains, and that one costs money, so it is left for a
+  deliberate run rather than spent on a re-confirmation.
+- **B4b is the one group-B item that is NOT verifiable from here at all** , it is a setting in the
+  Anthropic Console. Lucas, five minutes.
 
 ---
 

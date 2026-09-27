@@ -1220,3 +1220,80 @@ bar before any element adds its own darkening. `.cmp-seasontrigger` was pinned t
 because it was the one caught by the buttons-and-chips sweep. **Every other `--ink-soft` text on
 that panel has the same ceiling and none of it has been measured**, because the sweep's selector
 was controls, not prose. It is a token question, not eight element questions.
+
+---
+
+# LUCAS'S TEN, 2026-09-27 , RECORDED, NOT BUILT
+
+**His wording is kept verbatim in the quoted line of each item.** Only item 1 was investigated as
+a possible defect; everything else is queued and nothing was built. **Item 8 of the punchlist (the
+full audit sweep) still waits for his word and is not one of these ten.**
+
+### 1. The thin red bar in rankings , INVESTIGATED, NOT A HORIZONTAL BAR
+> "A thin red bar sits under the filter row in rankings search, above the card grid. Is it an
+> element or a stray? If a defect, fix it. If intentional, tell me what it is."
+
+**PARTIALLY ANSWERED AND NOT CLOSED.** A scan of every element at 1920 that is wide, under 14px
+tall and red by computed style found **nothing** between the filter row and the grid. What IS
+there is a thin pink mark at the **right edge**, vertical rather than horizontal , consistent with
+a styled scrollbar thumb on the grid container, not a rule under the filter row.
+**The investigation was interrupted and must be finished before this is called either way.** The
+two things not yet done: reproduce at HIS width (the scan was at 1920 and he may be narrower or on
+a phone), and drive the page into the SEARCH state, which is the state he named.
+
+### 2. The home page suggestions , ANSWERED, NO ACTION
+> "The 'start from' suggestions on the home page: fixed set or randomised per load? Just answer."
+
+**FIXED, AND HARDCODED IN THE MARKUP.** Eight `<a class="sp">` pills in `index.html`: five
+positions (ST, Winger, CM, CB, GK) and three bands (Generational, Iconic, World Class). They never
+change. **A SECOND THING ON THAT PAGE DOES ROTATE AND IS PROBABLY WHAT PROMPTED THE QUESTION:** the
+search box PLACEHOLDER cycles six examples every 2.6 seconds, in fixed order (`k=(k+1)%ex.length`),
+so it is a rotation and not a randomisation either. **Honours is deliberately absent from the
+pills** , the page's own comment records why: most players hold none, and an empty result on the
+first screen anyone sees reads as broken rather than as narrow.
+
+### 3. A transfer indicator on both halves of a split season , NEW WORK
+> "Semenyo shows no arrows on either 25/26 card. I now understand that is correct, since both
+> numbers are squadnum. What I actually want is a TRANSFER indicator on both halves of a split
+> season."
+
+**NOTE THE DEPENDENCY, because it is the whole cost:** 180 of the 181 seasons split on 2026-09-26
+have NO `split_transfers` row, so the platform currently cannot say a transfer happened, only that
+two clubs appear. An indicator that fires on "two rows in one season" would be asserting a move it
+has not verified , the hedge SS E already ruled on for the shirt-number mark.
+
+### 4. The Data Confidence radar section wants a visual
+> "The Data Confidence radar section is too text-heavy, wants a visual."
+
+### 5. The shirt-number section wants a visual
+> "The shirt-number section wants a visual, this is item 2 already queued."
+**His own cross-reference: punchlist item 2, already queued.**
+
+### 6. VV Index still the old format
+> "VV Index still the old format, that is item 14 awaiting my re-approval."
+**Blocked on him, not on work.**
+
+### 7. AFCON absent from the Cabinet
+> "AFCON absent from the Cabinet, that is AFCON part 1, not built."
+**Scoped in `docs/AFCON_SCOPE.md`; part 1 is the extraction and the honour rows, no schema change.**
+
+### 8. Fluid navigation
+> "Page transitions are robotic. I want fluid navigation, Apple-like."
+**Cross-reference: SS D already records that the card's two navigation AXES have opposite polish ,
+`switchSeason` calls `vvCardFlip` and `seqGo` is a hard cut , and that they move together or not
+at all. This is the larger version of that item and should absorb it.**
+
+### 9. Compare trajectory, one overlapped chart
+> "Compare trajectory: overlap the two players' G+A in the middle rather than two separate charts.
+> Demo before building."
+**Demo first, his instruction. `renderTrajectory` is SHARED, so any change must be checked on card
+AND compare , SS D records that constraint on the existing trajectory item.**
+
+### 10. The saved verdict image
+> "The saved verdict image should use the verdict's own typography rather than plain text, and
+> carry the X and Instagram handles bottom right, small. Demo before building."
+**Demo first, his instruction. TWO RECORDED CONSTRAINTS APPLY AND BOTH ARE MEASURED:** the frame is
+judged at 600px because X renders it at roughly half size, and **the bottom of `igf`/`igs` is
+already at 94% of its usable width**, so handles added bottom-right must be measured on `igf`
+first, never on `x`. And html2canvas is a different renderer from the browser, so the typography
+has to be verified in a captured PNG rather than in the live DOM.
