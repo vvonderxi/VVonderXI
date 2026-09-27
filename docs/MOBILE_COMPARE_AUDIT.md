@@ -121,3 +121,106 @@ and the VERIFICATION is the work, because SEC C records exactly how this went wr
    that cannot be fixed by getting a number right.
 
 **NOTHING HERE IS BUILT.**
+
+---
+
+# BUILT 2026-09-27 , ITEMS 1 AND 2. ITEM 3 IS SCOPED BELOW AND NOT BUILT.
+
+`27a35fa` (lock + toggle + visual-viewport height) and `0c65b65` (the flex crush the first commit
+introduced). Harness: `_probe_pkkbd.html`, which re-takes every number here. `_probe_pkdt.html` is
+the 1440 regression guard.
+
+## THE NUMBERS, BEFORE AND AFTER, SAME DEFINITION BOTH SIDES
+
+Visible results area = the part of `#pkResults_A` inside the VISUAL viewport band, at 390x780 with
+a revealed comparison behind the sheet (6,284px tall, 5,504px of scroll).
+
+| state | before | after |
+|---|---|---|
+| no keyboard | 406 | **440** |
+| iOS small, 291 | 122 | **305** |
+| Android, 300 | 113 | **296** |
+| iOS large, 336 | 77 | **260** |
+| filter open, no keyboard | 264 | **257** |
+| filter open, kb 336 | **0** | **84**, sheet scrollable |
+
+The no-keyboard gain is the sheet finally honouring its declared 78vh ceiling instead of stopping
+34px short, because `.pkresults` carried a second and different fraction of a different viewport.
+
+## THE 1,346px FAILURE, ANSWERED AS THE AUDIT DEMANDED
+
+The audit said the modern lock "has to be verified against that exact failure before it is
+trusted." Measured either side of the lock: `documentElement.scrollHeight` **6284 -> 6284
+UNCHANGED**, 0px stranded, `body` still `static`, scroll offset **400 -> 400**, and all 6,284px
+reachable after the sheet closes. `position:fixed` takes body out of flow and that is what
+collapsed scrollHeight; `overflow:hidden` leaves every box where it was, so there is no offset to
+save and no height to lose.
+
+**Stated honestly: `overflow:hidden` does not stop a PROGRAMMATIC scroll and must not**, because
+this page depends on `scrollTo` elsewhere. A synthetic wheel or touch cannot test the user half
+either, since an untrusted event never scrolls, so that half rests on the computed value plus the
+CSS contract rather than on a test that could not fail.
+
+**Desktop is untouched by construction.** Both effects live inside `@media (max-width:820px)`, so
+the WIDTH decides whether the class does anything. Verified at 1440: `pklock` is on
+`documentElement`, `html` overflow is still `visible`, the page still scrolls, and the panel is
+still the anchored in-flow one , which SEC C requires, because compare auto-opens both slots and the
+page must reach slot B.
+
+## TWO THINGS THE FIRST BUILD GOT WRONG, BOTH CAUGHT BY MEASURING
+
+- **The settle floor was 60px** to shut out an iOS URL-bar collapse. A URL bar collapses ON SCROLL,
+  which item 1 has just made impossible while the sheet is up, so the case it was sized for cannot
+  happen , and at 60 it measurably ignored 291 -> 300 -> 336, leaving the panel where it was. It is
+  24px, which follows a keyboard swap (alphabetic to numeric is roughly 40px).
+- **`flex:1 1 auto` on the list** stretched a two-row result to fill a 608px sheet, and separately
+  the flex column crushed `.pkmore` from 182px to 36px. Only `.pkresults` may give way now.
+
+## ITEM 3, THE FILTER , SCOPED, NOT BUILT. LUCAS PICKS AFTER LAUNCH.
+
+**THE PROBLEM IS NOT A NUMBER, WHICH IS WHY IT IS HERE AND NOT ABOVE.** The rail is 1,316px of
+content in 8 groups and 58 chips, inside a `.vvf` scroller capped at 140px , **9.4 screenfuls**,
+and ONE group fully visible. It is a desktop COLUMN beside a grid, stacked into a phone sheet.
+There are now THREE viewport fractions nested inside each other on this surface: the sheet at 78vh,
+`.pkmore` at 40vh, and `.vvf` at 140px. Two of the three are invisible to the reader.
+
+### Option A , the cheap version (about half a session)
+
+Raise the `.vvf` cap and open one group at a time.
+
+- Raise `max-height:140px` to a share of the SHEET rather than a constant, and make the groups an
+  accordion: one open, the rest collapsed to their labels.
+- 8 labels at ~28px is 224px of always-visible structure, so the reader sees the whole taxonomy and
+  scrolls inside one group instead of through all eight.
+- **Cost:** two CSS values and a click handler on the group headers. No new mode, no new control,
+  nothing to dismiss. Reversible in one commit.
+- **What it does not fix:** the filter still competes with the results inside one sheet. At kb 336
+  with the filter open the list is at its 88px floor whatever the rail does, because the sheet is
+  428px and the fold takes 183 of it. A reader filtering with the keyboard up still cannot see what
+  they are filtering.
+
+### Option B , overlay with Apply (about a session and a half)
+
+The filter becomes its own full-height sheet over the picker, with Cancel and Apply.
+
+- Gets the whole 780px band, so all 8 groups and 58 chips fit with room to breathe , no nested
+  scrollers at all, which removes the three-fractions problem rather than tuning it.
+- Apply means the query runs ONCE instead of on every chip, so the results do not churn underneath.
+- Cancel means a reader can explore the taxonomy and back out, which the live rail cannot offer.
+- **Cost:** a new mode and a new dismissal path on a surface that already has five fixed layers,
+  plus draft state (chips chosen but not applied) that must survive a Cancel and must not leak into
+  the live query. `VVFilters.mount` is shared with rankings and the card page, so the draft cannot
+  live in the component without touching them , it has to be held by compare and diffed on Apply.
+- **The real risk is the one SEC C keeps recording:** a second modal over a modal is how the layer
+  management got confusing in the first place. It would have to REPLACE the picker sheet rather than
+  stack on it.
+
+### WHICH I WOULD TAKE, AND WHY IT IS STILL LUCAS'S CALL
+
+**B is the right phone pattern and A is the right next commit.** A is cheap, reversible, and
+recovers the taxonomy, which is the complaint a reader would actually voice ("I cannot see what the
+filters are"). B is a better product and a genuine piece of design work with draft state and a
+shared component behind it, and it is not a thing to build in the week of a launch.
+
+**Do not do both.** A's accordion is the thing B deletes, so building A and then B means writing
+the group-collapse logic to throw it away. If B is the answer, go straight to B after launch.
