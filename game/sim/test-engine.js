@@ -38,10 +38,21 @@ assert.throws(() => applyAction(ctx, state, { type: 'LOCK_CARD', player: 'A', ca
 assert.ok(gapStalemates > 0, 'control: no STALEMATE with a non-zero gap occurred, so the winner rule was never exercised');
 console.log(`ok , ${n} matches replayed deterministically, card conservation held, hidden info redacted, illegal action rejected, no-decision rounds carry no winner (${gapStalemates} with a gap)`);
 
+// ---- EXPLICIT DEAL TIERS: an extra card from the middle still spans every tier; a bad plan is refused
+{
+  const cx = { cards: deck, config: makeConfig({ dealTiers: [1, 2, 3, 3, 4, 5] }), deckIds: Object.keys(deck) };
+  for (let seed = 1; seed <= 50; seed++) {
+    const { state } = createGame(cx, cx.deckIds, seed, 'A');
+    for (const p of ['A', 'B']) assert.deepEqual(state.players[p].hand.map(id => deck[id].dealTier).sort(), [1, 2, 3, 3, 4, 5], 'hand follows dealTiers');
+  }
+  assert.throws(() => createGame({ ...cx, config: makeConfig({ dealTiers: [1, 2, 3, 4, 5] }) }, cx.deckIds, 1, 'A'), /dealTiers/);
+  assert.throws(() => createGame({ ...cx, config: makeConfig({ dealTiers: [1, 2, 3, 3, 4, 9] }) }, cx.deckIds, 1, 'A'), /dealTiers/);
+}
+
 // ---- SUBSTITUTIONS + CAPTAIN (experiment flags). Driven action by action so every rule is checked
 // at the moment it applies, not inferred from the end state.
 {
-  const cfg = makeConfig({ substitutions: { perPlayer: 3, swapMax: 'ALL', forcedChange: true, forcedNotOnLast: false, redraw: true, onePerRound: true }, captain: true, handSize: 7, drawPileSize: 15 });
+  const cfg = makeConfig({ substitutions: { perPlayer: 3, swapMax: 'ALL', forcedChange: true, forcedNotOnLast: false, redraw: true, onePerRound: true }, captain: true, handSize: 7, drawPileSize: 15, dealTiers: null });
   const cx = { cards: deck, config: cfg, deckIds: Object.keys(deck) };
   const aix = prepareAI(cx, cx.deckIds);
   const used = { SWAP: 0, REDRAW: 0, FORCED: 0 };

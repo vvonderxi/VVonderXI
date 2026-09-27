@@ -197,9 +197,9 @@ by the game (cost, latency, and a battle needs a number, not an essay).
 
 ---
 
-## G. V1 rules (v1.3, the default since 2026-09-27; `config.js` wins on any conflict)
+## G. V1 rules (v1.3.1, the default since 2026-09-27; `config.js` wins on any conflict)
 
-1. Deal: 6 cards each, **tiered** (tiers 1, 1, 2, 3, 4, 5, so two from the top tier), 15 on the Bench.
+1. Deal: 6 cards each, **tiered** (tiers 1, 2, 3, 3, 4, 5, so the extra card comes from the middle), 15 on the Bench.
 2. Three moments appear (never last round's). **The non-active player bans one; the active player picks from the two left.**
 3. **Substitutions, 3 per player, at most one a round, in your own decision window** (non-active while banning,
    active while choosing): SWAP any number of squad cards with random Bench cards; REDRAW the moments
@@ -212,16 +212,18 @@ by the game (cost, latency, and a battle needs a number, not an essay).
 |---|---|---|---|
 | STALEMATE (`the_debate`) | 0 to 1 | 0 to 1 | nothing, both cards go home, no round winner |
 | EDGE | 2+ | 2 to 3 | discard your played card |
-| CLEAR | 9+ | 4 to 6 | discard it **or** PRESS |
-| DOMINANT | 18+ | 7 to 9 | discard it, PRESS, or discard a different card |
-| DEMOLITION | 31+ | 10+ | any two of those |
+| CLEAR | 7+ | 4 to 6 | discard it **or** PRESS |
+| DOMINANT | 14+ | 7 to 9 | discard it, PRESS, or discard a different card |
+| DEMOLITION | 26+ | 10+ | any two of those |
 
 6. **PRESS** = keep your card, opponent draws one. **Only allowed if you hold at least as many cards as your opponent.**
 7. Loser's card returns to hand. Initiative **alternates**.
 8. First to zero cards wins.
 
-The v1.2 rules (hand 5, Bench 30, 2 tokens, +1 token on DOMINANT) are `V1_2` in `config.js`:
-`makeConfig(V1_2)` reproduces the committed v1.2 behaviour byte-for-byte (300 of 300 seeds, both decks).
+Earlier rule sets are presets in `config.js`, each proven to reproduce its committed behaviour byte-for-byte
+(300 of 300 final states, both decks): `makeConfig(V1_3)` = v1.3 (deal 1,1,2,3,4,5, ladder 2/9/18/31) and
+`makeConfig(V1_2)` = v1.2-real (hand 5, Bench 30, 2 tokens, +1 token on DOMINANT). Any override that changes
+`handSize` must also name `dealTiers` (or `null` for the formula); a mismatched list is refused, not guessed.
 
 ---
 
@@ -436,3 +438,37 @@ CDM 44, FB 39, CB 43.
 2. **PRESS-lover beats the Tactician 56.3%** (52.2 on v1.2): High Press is slightly strong again.
 3. **Full-backs win 39% of rounds**, the weakest position, and the spread is 14 points.
 4. The grid's F and G sets were changed from "hand 6" to "hand 5" variants, since hand 6 is now the default.
+
+## v1.3.1 tuning pass (2026-09-27, real deck, 1,200 matches per simulation, seeded)
+
+**Deal: the 6th card from the middle tier (1, 2, 3, 3, 4, 5) instead of a second top-tier card (1, 1, 2, 3, 4, 5).**
+New flag `dealTiers`. On the v1.3 ladder the middle deal cut PRESS-lover from 56.3 to 52.7 and lifted the two
+weakest positions (FB 41 to 44, CB 42 to 48, spread 11 to 8 points), at a cost of 2 comebacks and ~4 points
+of round-4 leader.
+
+**Ladder: 2 / 7 / 14 / 26 for the six moments** (was 2/9/18/31), from a 160-ladder sweep on each deal, Big Game
+kept on Compare's ranges. EDGE stays at 2: with no-decision rounds carrying no winner, the six moments' real tie
+rate is lower than first estimated, so EDGE 2 lands them at 7.3% (on target) and EDGE 1 would drop them to 2.5%.
+The overall no-decision share (~9%) is Big Game's, whose 24 to 28% comes from Compare's fixed ranges.
+
+| Verdict mix | No decision | Photo | Clear | Brag | Master |
+|---|---|---|---|---|---|
+| Target | 7-8 | 25-28 | 25 | 22 | 17-18 |
+| v1.3 | 9.7 | 35.4 | 25.0 | 16.8 | 13.1 |
+| **v1.3.1, all moments** | **8.9** | **25.8** | **24.3** | **23.0** | **17.9** |
+| v1.3.1, six moments | 7.3 | 24.7 | 24.4 | 24.6 | 19.1 |
+| v1.3.1, Big Game | 24.4 | 37.0 | 23.7 | 8.7 | 6.1 |
+
+**v1.3.1 re-run (grid set C and moments):** skill 66.5, PRESS-lover 54.3, 9.2 rounds (~4.6 min), comebacks
+37.9, **leader after R4 64.7** (v1.3: 59.8), zero unfinished matches. Attacker round-win 58.7 to 65.0 across
+the moments (Killer Ball highest, Big Game 60.3). By position: ST 50, W 47, CAM 44, CM 41, CDM 44, FB 43, CB 49.
+
+**Also fixed:** `ladder-sweep.js quantiles` read "no round winner" as an exact tie, which stopped being true
+when no-decision rounds lost their winner; it overstated ties (7.8% against a real 2.6%). It now reads the raw
+gap of every round. The v1.2 sweep ran before that change and is unaffected.
+
+**Open after v1.3.1:**
+1. **The round-4 leader wins 64.7%**, the price of the middle deal plus the steeper ladder. Watch it in playtests.
+2. **Big Game still ends in no decision 24% of the time** and is chosen least (9.6%), by design of Compare's ranges.
+3. **CM is now the weakest position at 41%**; FB and CB improved.
+

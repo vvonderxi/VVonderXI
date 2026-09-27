@@ -3,11 +3,13 @@
 // Per rule set: skill (Tactician v Greedy; Greedy never uses subs), a Tactician mirror for the match
 // shape, and SUBS VALUE (Tactician with subs v Tactician without, same rules) wherever subs exist.
 // The CPU's sub use is a simple documented heuristic (cpu.js), so every sub figure is a LOWER BOUND.
+// Pinned to the deal formula and the ladder it was run on (2/9/18/31, +1 token on DOMINANT in token mode;
+// the token does nothing under substitutions), so it reproduces its recorded results.
 
 import { fork } from 'child_process';
 import fs from 'fs';
 import { simulate } from './simulate.js';
-import { makeConfig } from '../engine/config.js';
+import { makeConfig, V1_2 } from '../engine/config.js';
 import { loadDeckInfo } from './deck.js';
 
 const SUB_BASE = { perPlayer: 3, forcedChange: true, redraw: true, onePerRound: true };
@@ -21,7 +23,7 @@ const RULES = {
 const cells = [];
 for (const handSize of [5, 6, 7]) for (const drawPileSize of [30, 15]) for (const [rules, substitutions] of Object.entries(RULES))
   for (const captain of [false, true]) cells.push({ key: `hand ${handSize} bench ${drawPileSize} | ${rules}${captain ? ' + captain' : ''}`,
-    handSize, drawPileSize, rules, captain, over: { handSize, drawPileSize, substitutions, captain } });
+    handSize, drawPileSize, rules, captain, over: { handSize, drawPileSize, substitutions, captain, dealTiers: null, verdicts: V1_2.verdicts } });
 
 function run(cell, n) {
   const config = makeConfig(cell.over);

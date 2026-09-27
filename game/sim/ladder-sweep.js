@@ -20,11 +20,14 @@ export const TARGET = { STALEMATE: 7.5, EDGE: 26.5, CLEAR: 25, DOMINANT: 22, DEM
 const SKILL_FLOOR = 62;
 const TOP = 8;
 
+// spec.base = rule overrides the whole sweep runs on (e.g. dealTiers). bigGame 'compare' keeps the
+// explicit Big Game ladder from config (Compare's rt-gap ranges); a number sweeps a scale instead.
+let BASE = {};
 const ladderConfig = ({ edge, clear, dominant, demolition, bigGame }) => makeConfig({
+  ...BASE,
   verdicts: DEFAULT_CONFIG.verdicts.map(v => ({ ...v, minDiff:
     v.id === 'EDGE' ? edge : v.id === 'CLEAR' ? clear : v.id === 'DOMINANT' ? dominant : v.id === 'DEMOLITION' ? demolition : v.minDiff })),
-  thresholdScales: { bigGame },
-  ladders: {},   // a swept scale only means something without the explicit Big Game ladder
+  ...(bigGame === 'compare' ? {} : { thresholdScales: { bigGame }, ladders: {} }),
 });
 
 // Combine per-moment verdict mixes into one mix, weighted by how often each moment was played.
@@ -53,7 +56,8 @@ function fullRow(row, n) {
 
 // ---- child process: mirror a slice of ladders, send rows back
 if (process.env.LADDER_CHILD) {
-  process.on('message', ({ ladders, n, full }) => {
+  process.on('message', ({ ladders, n, full, base }) => {
+    BASE = base ?? {};
     process.send(ladders.map(x => full ? fullRow(x, n) : mirrorRow(x, n)));
     process.exit(0);
   });
@@ -62,25 +66,27 @@ if (process.env.LADDER_CHILD) {
   const mode = process.argv[2];
   const N = +(process.argv[3] ?? 600);
   console.log(info);
-  if (mode === 'quantiles') quantiles(N);
-  else if (mode === 'grid') await grid(N, JSON.parse(process.argv[4]));
+  if (mode === 'quantiles') { BASE = JSON.parse(process.argv[4] ?? '{}'); quantiles(N); }
+  else if (mode === 'grid') { const spec = JSON.parse(process.argv[4]); BASE = spec.base ?? {}; await grid(N, spec); }
   else { console.error('mode: quantiles N | grid N <json>'); process.exit(1); }
 }
 
 function quantiles(N) {
-  const deck = loadDeckInfo().cards, config = makeConfig();
+  const deck = loadDeckInfo().cards, config = makeConfig(BASE);
   const ctx = { cards: deck, config, deckIds: Object.keys(deck) };
   const ai = prepareAI(ctx, ctx.deckIds);
-  const gaps = { others: [], bigGame: [] };  // gap in LADDER units (difference / scale); ties stay VAR whatever the ladder
+  // Gap in LADDER units (difference / scale) for EVERY round, decided or not. A round's winner is null on
+  // any no-decision, so the winner cannot mark ties; an exact tie is a gap of 0 and stays no-decision under any ladder.
+  const gaps = { others: [], bigGame: [] };
   for (let i = 0; i < N; i++) {
     const { state } = runMatch(ctx, { A: TacticianCPU(ai), B: TacticianCPU(ai) }, 1 + i, i % 2 ? 'B' : 'A');
-    for (const h of state.history) (h.category === 'bigGame' ? gaps.bigGame : gaps.others).push(h.winner ? h.diff / scaleFor(h.category, config) : -1);
+    for (const h of state.history) (h.category === 'bigGame' ? gaps.bigGame : gaps.others).push(h.diff / scaleFor(h.category, config));
   }
   const cum = [TARGET.STALEMATE, TARGET.STALEMATE + TARGET.EDGE, TARGET.STALEMATE + TARGET.EDGE + TARGET.CLEAR,
                100 - TARGET.DEMOLITION].map(x => x / 100);
   for (const [k, g] of Object.entries({ ...gaps, all: [...gaps.others, ...gaps.bigGame] })) {
     const s = g.slice().sort((a, b) => a - b), q = p => s[Math.min(s.length - 1, Math.floor(p * s.length))];
-    const ties = (100 * s.filter(x => x < 0).length / s.length).toFixed(1);
+    const ties = (100 * s.filter(x => x === 0).length / s.length).toFixed(1);
     console.log(`${k.padEnd(8)} rounds ${String(s.length).padStart(6)} | exact ties ${ties}% | cuts for target: EDGE ${q(cum[0]).toFixed(1)}  CLEAR ${q(cum[1]).toFixed(1)}  DOMINANT ${q(cum[2]).toFixed(1)}  DEMOLITION ${q(cum[3]).toFixed(1)}`);
   }
 }
@@ -95,7 +101,7 @@ async function grid(N, spec) {
     const out = await Promise.all(parts.map(p => new Promise((res, rej) => {
       const c = fork(new URL(import.meta.url).pathname, [], { env: { ...process.env, LADDER_CHILD: '1' } });
       c.on('message', res); c.on('error', rej); c.on('exit', code => code && rej(new Error('child exit ' + code)));
-      c.send({ ladders: p, n, full });
+      c.send({ ladders: p, n, full, base: BASE });
     })));
     return out.flat();
   };

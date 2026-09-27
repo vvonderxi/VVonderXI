@@ -3,12 +3,13 @@ import { makeConfig } from '../engine/config.js';
 import { loadDeckInfo } from './deck.js';
 import { prepareAI, TacticianCPU } from '../engine/ai/cpu.js';
 const N = +(process.argv[2] ?? 1000);
+const OVER = JSON.parse(process.argv[3] ?? '{}'); // rule overrides on top of the default config, e.g. '{"dealTiers":[1,2,3,3,4,5]}'
 const ABSTRACT = ['impact', 'goalThreat', 'creation', 'progression', 'defensive', 'reliability', 'roleMastery'];
 const MOMENTS  = ['oneOnOne', 'killerBall', 'breakLines', 'counter', 'bigGame', 'ninety', 'roleDuel'];
 const { cards: deck, info } = loadDeckInfo();
 console.log(info);
 for (const [label, pool] of [['ABSTRACT stats', ABSTRACT], ['FOOTBALL MOMENTS', MOMENTS]]) {
-  const config = makeConfig({ categoryPool: pool });
+  const config = makeConfig({ ...OVER, categoryPool: pool });
   const skill = simulate({ n: N, config, deck, botA: {}, botB: 'greedy' });
   const press = simulate({ n: N, config, deck, botA: { params: { pressValue: 1.6 } }, botB: {} });
   const m = simulate({ n: N, config, deck, botA: {}, botB: {} });
@@ -16,7 +17,7 @@ for (const [label, pool] of [['ABSTRACT stats', ABSTRACT], ['FOOTBALL MOMENTS', 
   const ctx = { cards: deck, config, deckIds: Object.keys(deck) };
   const ai = prepareAI(ctx, ctx.deckIds);
   const plays = {}, wins = {};
-  for (let i = 0; i < 400; i++) {
+  for (let i = 0; i < N; i++) {
     const { state } = runMatch(ctx, { A: TacticianCPU(ai), B: TacticianCPU(ai) }, 9000 + i, i % 2 ? 'B' : 'A');
     for (const h of state.history) for (const p of ['A', 'B']) {
       const pos = deck[h.played[p]].position; plays[pos] = (plays[pos] ?? 0) + 1;

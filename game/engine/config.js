@@ -6,11 +6,12 @@
 /** @typedef {'WINNER_KEEPS'|'LOSER_GETS'|'ALTERNATE'} InitiativeRule */
 
 export const DEFAULT_CONFIG = {
-  version: 'v1.3', // v1.2-real ladder + hand 6, Bench 15, substitutions (ALL, last-card guard), from the 2026-09-27 rules experiment.
+  version: 'v1.3.1', // v1.3 + deal 1,2,3,3,4,5 and ladder 2/7/14/26, from the 2026-09-27 v1.3 tuning pass.
 
   // ---- hands and deck
   handSize: 6,
   dealMode: 'TIERED',      // 'RANDOM' | 'TIERED' (one card per dealTier per hand)
+  dealTiers: [1, 2, 3, 3, 4, 5], // tier of each squad slot; the extra 6th card comes from the MIDDLE tier. null = formula
   maxHandSize: 9,          // a draw that would exceed this is skipped
   drawPileSize: 15,        // cards left in the shared pile after the deal (the Bench)
   roundCap: 60,            // safety stop; fewer cards wins, tie = draw
@@ -35,9 +36,9 @@ export const DEFAULT_CONFIG = {
   verdicts: [
     { id: 'STALEMATE',  minDiff: 0,  severity: 0, crowns: false, tagKey: 'the_debate', options: [], picks: 0, bonus: [] },
     { id: 'EDGE',       minDiff: 2,  severity: 1, crowns: true,  tagKey: 'photo_finish', options: ['DISCARD_PLAYED'], picks: 1, bonus: [] },
-    { id: 'CLEAR',      minDiff: 9,  severity: 2, crowns: true,  tagKey: 'clear_edge', options: ['DISCARD_PLAYED', 'PRESS'], picks: 1, bonus: [] },
-    { id: 'DOMINANT',   minDiff: 18, severity: 3, crowns: true,  tagKey: 'bragging_rights', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 1, bonus: [] },
-    { id: 'DEMOLITION', minDiff: 31, severity: 4, crowns: true,  tagKey: 'masterclass', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 2, bonus: [] },
+    { id: 'CLEAR',      minDiff: 7,  severity: 2, crowns: true,  tagKey: 'clear_edge', options: ['DISCARD_PLAYED', 'PRESS'], picks: 1, bonus: [] },
+    { id: 'DOMINANT',   minDiff: 14, severity: 3, crowns: true,  tagKey: 'bragging_rights', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 1, bonus: [] },
+    { id: 'DEMOLITION', minDiff: 26, severity: 4, crowns: true,  tagKey: 'masterclass', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 2, bonus: [] },
   ],
 
   pressRule: 'NOT_LEADING',
@@ -80,10 +81,15 @@ export const DEFAULT_CONFIG = {
   },
 };
 
-/** The v1.2-real rules as overrides, for playtests and for proving old seeds still reproduce. */
+// Earlier rule sets as overrides, for playtests and for proving old seeds still reproduce byte-for-byte.
+const LADDER_2_9_18_31 = { EDGE: 2, CLEAR: 9, DOMINANT: 18, DEMOLITION: 31 };
+const withLadder = (mins, extra = {}) => DEFAULT_CONFIG.verdicts.map(v => ({ ...v, minDiff: mins[v.id] ?? v.minDiff, ...(extra[v.id] ?? {}) }));
+/** v1.3: hand 6, formula deal 1,1,2,3,4,5, ladder 2/9/18/31, substitutions. */
+export const V1_3 = { version: 'v1.3', dealTiers: null, verdicts: withLadder(LADDER_2_9_18_31) };
+/** v1.2-real: hand 5, Bench 30, two tokens, +1 token on DOMINANT, ladder 2/9/18/31. */
 export const V1_2 = {
-  version: 'v1.2-real', handSize: 5, drawPileSize: 30, substitutions: null,
-  verdicts: DEFAULT_CONFIG.verdicts.map(v => v.id === 'DOMINANT' ? { ...v, bonus: ['GAIN_TOKEN'] } : v),
+  version: 'v1.2-real', handSize: 5, drawPileSize: 30, substitutions: null, dealTiers: null,
+  verdicts: withLadder(LADDER_2_9_18_31, { DOMINANT: { bonus: ['GAIN_TOKEN'] } }),
 };
 
 /** Merge overrides (shallow, verdicts replaced wholesale). */

@@ -1,7 +1,7 @@
-# VVonderXI Card Game , DESIGN BIBLE v1.3
+# VVonderXI Card Game , DESIGN BIBLE v1.3.1
 
 Companion to `GAME_V1_ARCHITECTURE.md`. That file says how it is built; this one says what it is.
-Rules numbers live in `game/engine/config.js` (`v1.3`). If this doc and config disagree, config wins.
+Rules numbers live in `game/engine/config.js` (`v1.3.1`). If this doc and config disagree, config wins.
 
 **The fantasy:** put legendary football seasons against each other and settle the debate, one moment at a time.
 **Working title:** VVonderXI Duels.
@@ -22,7 +22,7 @@ Four sentences, no exceptions, no tables. If a rule cannot be taught inside this
 ## 2. THE RULES
 
 **Setup**
-- Each player gets a **Squad** of 6 seasons dealt by strength tier (one from each of the five tiers, plus a second from the top tier), so nobody starts with all the stars.
+- Each player gets a **Squad** of 6 seasons dealt by strength tier (one from each of the five tiers, plus a second from the middle tier), so nobody starts with all the stars.
 - The other 15 cards are the **Bench**, face-down.
 - Toss for **Possession**. Each player has **3 Substitutions** for the match.
 
@@ -47,11 +47,11 @@ the defender while striking a moment off, the attacker while picking one). Your 
 |---|---|---|---|
 | **The Debate Lives On , no decision** | 0 to 1 | 0 to 1 | Nothing. Both seasons go home. No round winner. |
 | **Photo Finish** | 2+ | 2 to 3 | Into Legacy |
-| **A Clear Edge** | 9+ | 4 to 6 | Into Legacy **or** High Press |
-| **Bragging Rights Settled** | 18+ | 7 to 9 | Into Legacy, High Press **or** Assist |
-| **Masterclass** | 31+ | 10+ | **Any two** of those |
+| **A Clear Edge** | 7+ | 4 to 6 | Into Legacy **or** High Press |
+| **Bragging Rights Settled** | 14+ | 7 to 9 | Into Legacy, High Press **or** Assist |
+| **Masterclass** | 26+ | 10+ | **Any two** of those |
 
-Values as of config `v1.3`; `game/engine/config.js` is the source and wins on any conflict.
+Values as of config `v1.3.1`; `game/engine/config.js` is the source and wins on any conflict.
 
 - **Into Legacy:** your winning season leaves your Squad for good. One step closer.
 - **High Press:** keep your season; your rival brings a card on from the Bench. **Only if you hold at least as many cards as they do** , it is a way back into a game, not a way to finish one.
@@ -79,7 +79,7 @@ The side in possession **attacks**; the other **defends**. Asymmetric moments re
 | **Full Ninety** | Ever Present | Ever Present | Stadium clock runs 0 to 90, one figure fades |
 | **Master of Role** | Role mastery (vs own position) | Role mastery | Each performs their position's signature move |
 
-**Measured (real 400-card deck, v1.3, 1,200 matches, CPU v CPU):** every position wins 39% to 53% of the rounds it is played in. Strikers 53%, wingers 48%, centre-backs 43%, full-backs 39%. No position is dead, but full-backs are the weakest and the spread (14 points) is wider than on the synthetic deck; watch it in playtests.
+**Measured (real 400-card deck, v1.3.1, 1,200 matches, CPU v CPU):** every position wins 41% to 50% of the rounds it is played in. Strikers 50%, centre-backs 49%, wingers 47%, full-backs 43%, central midfielders 41%. No position is dead; the spread is 9 points.
 
 **Honesty note, same as the VV Index:** Defensive Wall reads the platform's thinnest data. The game is balanced because every number is a percentile within the deck, but game copy must never call a defensive number precise.
 

@@ -65,8 +65,13 @@ function tieredPool(ctx, deckIds, seed, need) {
   const byTier = {};
   for (const id of shuffle(deckIds, seed)) (byTier[ctx.cards[id].dealTier] ??= []).push(id);
   const K = Math.max(...Object.keys(byTier).map(Number));
+  // config.dealTiers names the tier of each squad slot explicitly (e.g. [1, 2, 3, 3, 4, 5]);
+  // null spreads handSize slots over the K tiers by formula (6 cards -> 1, 1, 2, 3, 4, 5).
+  const plan = ctx.config.dealTiers ?? Array.from({ length: handSize }, (_, t) => 1 + Math.floor(t * K / handSize));
+  if (plan.length !== handSize || plan.some(x => !byTier[x]))
+    throw new Error(`config.dealTiers must list ${handSize} tiers from 1..${K}, got ${JSON.stringify(plan)}`);
   const hands = [[], []];
-  for (let t = 0; t < handSize; t++) { const tier = 1 + Math.floor(t * K / handSize); for (const h of hands) h.push(byTier[tier].pop()); }
+  for (const tier of plan) for (const h of hands) h.push(byTier[tier].pop());
   const used = new Set(hands.flat());
   const rest = shuffle(deckIds.filter(id => !used.has(id)), seed + 1).slice(0, need - handSize * 2);
   return [...shuffle(hands[0], seed + 2), ...shuffle(hands[1], seed + 3), ...rest];
