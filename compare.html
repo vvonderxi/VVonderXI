@@ -1708,13 +1708,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260926b"></script>
+<script src="/vv-marks.js?v=20260927a"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20260926b"></script>
+<script src="/vv-core.js?v=20260927a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -3554,6 +3554,20 @@ body.light .pkmsub{color:var(--ink-soft)}
     var _waitLab='Reading the seasons';
     vvSetStory(nameA,nameB,null,null,{wait:true,label:_waitLab});
     vvSetVerdict(null,'',winner,va,vb,VC,TAGS[VC.floorTag],null,false,{wait:true,label:_waitLab});   // show deterministic floor tag immediately
+    /*  HOLD THE LOADERS FOR 250ms, AND NOTHING ELSE , see VVCore.vvHoldLoader.
+        THE TWO CALLS ABOVE STAY IMMEDIATE AND THAT DISTINCTION IS THE WHOLE CARE HERE. They
+        do far more than paint a spinner: they set `.matchup.waiting`, clear `answered`,
+        suppress the tag object and hide the unused quote slots. That is STATE, and it is what
+        stops a previous verdict standing while a new one generates. Deferring the CALLS would
+        leave a stale answer on screen for 250ms and delay the deterministic floor tag, which
+        is real information and is meant to be instant.
+        So the hold is applied to the three nodes that hold LOADER MARKUP and to no others.
+        Released in the same place the prose lands (and on the outage path), after the content.  */
+    var _vHold = (window.VVCore && VVCore.vvHoldLoader) ? VVCore.vvHoldLoader([
+      document.getElementById('mvWait'),
+      document.querySelector('#verdict .vfinal .vquote'),
+      document.querySelector('#verdict .vstorycol .vsprose')
+    ]) : function(){};
     /*  THE TAG MENU IS WHAT THE MODEL MAY ADD, NOT WHAT IT DECIDES , and under Path B that
         distinction becomes load-bearing. Thirteen of the fourteen tags are derived from the
         gap, and on an unseparated pair the gap is the one thing the platform has just said it
@@ -3795,6 +3809,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             result: OUT.floorTag is VC.floorTag, and the floor was the first key offered.  */
         var chosen=(v.tag&&VC.contextHints.indexOf(v.tag)>=0)?v.tag:OUT.floorTag;
         vvSetVerdict(v.verdict||'',v.h2h||'',OUT.winner,va,vb,OUT,TAGS[chosen],v.who);
+        _vHold();          // after the prose, so a cached pair never shows the loader at all
       })
       .catch(function(e){
         console.error('verdict generation failed:', e&&e.message);
@@ -3813,6 +3828,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             pairing is the verdict that failed to arrive.  */
         VV_OUTCOME=VC; vvSetWinner(VC.winner);
         vvSetStory(nameA,nameB,'',''); vvSetVerdict(msg,'',winner,va,vb,VC,TAGS[VC.floorTag],null,true);
+        _vHold();          // and after the outage line, which is content too
       });
   }
   // ── Accolades , wire BOTH slots (real name + gold honours + profile tags) from CMP_A/CMP_B

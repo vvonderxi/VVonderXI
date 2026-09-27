@@ -1483,8 +1483,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260926b"></script>
-<script src="/vv-core.js?v=20260926b"></script>
+<script src="/vv-marks.js?v=20260927a"></script>
+<script src="/vv-core.js?v=20260927a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1666,6 +1666,15 @@
     var sb0=document.getElementById('scoutBody');
     if(sb0) sb0.innerHTML=_wait;
     var sbox0=document.getElementById('scoutBox'); if(sbox0) sbox0.style.display='';
+    /*  HOLD THE LOADER FOR 250ms , see VVCore.vvHoldLoader for why, and note WHICH THREE
+        nodes are held. The panel FRAMES (notesLayer, scoutBox) are revealed immediately and
+        are not held: hiding those would pop two panels into the page 250ms late and reflow
+        everything under them. Only the three loader CONTENTS are held, so the layout is
+        final from the first frame and the mark inside it is what waits.
+        RELEASED IN A `finally` AFTER THE CONTENT IS WRITTEN, never before: releasing first
+        would reveal the loader for one frame on exactly the fast path this exists to clean
+        up. The timer releases it anyway, so a throw cannot strand the panels. */
+    var _relWait = (window.VVCore && VVCore.vvHoldLoader) ? VVCore.vvHoldLoader([gd, nb0, sb0]) : function(){};
     /*  WAIT FOR THE PAYLOAD'S INPUTS BEFORE BUILDING IT. See EDITORIAL_DEPS above. This
         costs nothing perceptible: both fetches are ALREADY IN FLIGHT and this call is the
         longest wait on the site by an order of magnitude, so it is one already-running
@@ -1755,6 +1764,7 @@
       EDITORIAL = { glance:data.glance, scout:data.scout, notes:data.notes };
       vvFillEditorial();
     }catch(e){ vvEditorialFail(); }
+    finally{ _relWait(); }   // after the content on every path, including the outage line
   }
   function vvFillEditorial(){
     if(!EDITORIAL) return;

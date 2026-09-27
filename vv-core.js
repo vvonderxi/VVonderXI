@@ -6896,7 +6896,50 @@ body.light .vvload{color:#1A1917}
   .vvload .wipe{animation:none;transform:translateX(-24px)}
   .vvload .pink.p1{display:none}
 }
+/*  THE HOLD , see vvHoldLoader. visibility, NOT display, and that is the whole reason it is
+    one line of CSS instead of a second render path. visibility:hidden keeps the box, so the
+    panel does not resize when the loader appears and does not resize again when prose
+    replaces it; display:none would reflow twice for every generation. It also keeps the
+    wipe ANIMATING while hidden, so a loader that does become visible is already mid-cycle
+    rather than starting from a standstill 250ms late.
+    AN ATTRIBUTE AND NOT A CLASS, deliberately: the wait states on compare already add and
+    remove .vquote-wait and .vsprose-wait as state, and SS C records what happened the last
+    time a loading class outlived the thing it was laying out. An attribute cannot collide
+    with that logic, and grep finds it in one place. */
+[data-vvhold]{visibility:hidden}
 `;
+  /*  ─── DO NOT PAINT A LOADER UNTIL THE REQUEST HAS EARNED ONE ──────────────────
+      250ms. Below that a spinner is not information, it is a flash: the reader sees
+      something appear and vanish and learns nothing except that the page twitched.
+      WHAT IT IS FOR, AND IT IS NOT THE SLOW CASE. /api/analyse takes about 26 seconds
+      COLD and a few hundred milliseconds WARM, because the cache lookup happens server
+      side, and card.html painted its wait BEFORE the fetch either way , so a cached card
+      showed a fraction of a 2.6s animation cycle and then the prose. This is what turns
+      pre-warming from "a shorter wait" into NO wait, which is the thing the money is
+      actually buying.
+      AND IT IS THE FIX FOR THE 2.6s CYCLE MISMATCH RATHER THAN A SEPARATE ONE. The cycle
+      was only ever wrong for SHORT waits; anything that still paints after this hold is
+      waiting on a real generation, where 2.6s is right. Shortening the cycle would have
+      treated the symptom on the wrong population.
+      THE TIMER REMOVES THE ATTRIBUTE UNCONDITIONALLY, WHICH IS THE SAFETY PROPERTY.
+      release() is an optimisation for the fast path, not a gate: if a caller throws before
+      calling it, the worst outcome is content that is invisible for 250ms and then is not.
+      A hold that could strand content permanently would be a worse defect than the flash
+      it removes. */
+  const VV_LOADER_HOLD_MS = 250;
+  function vvHoldLoader(nodes, ms){
+    const els = (Array.isArray(nodes) ? nodes : [nodes]).filter(Boolean);
+    if (!els.length) return function(){};
+    els.forEach(function(e){ try{ e.setAttribute('data-vvhold',''); }catch(_){} });
+    let done = false;
+    function release(){
+      if (done) return; done = true;
+      clearTimeout(t);
+      els.forEach(function(e){ try{ e.removeAttribute('data-vvhold'); }catch(_){} });
+    }
+    const t = setTimeout(release, ms == null ? VV_LOADER_HOLD_MS : ms);
+    return release;
+  }
   let LOADER_CSS_IN = false;
   function vvInjectLoaderCSS(){
     if (LOADER_CSS_IN || typeof document === 'undefined') return;
@@ -7751,7 +7794,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
