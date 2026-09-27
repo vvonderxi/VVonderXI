@@ -137,6 +137,153 @@
       "query": "select round(100.0 * count(*) filter (where league_code <> 'PL') / count(*)) from player_card_mv where rt >= 85"
     },
     {
+      "key": "walk_player",
+      "value": "Mohamed Salah",
+      "claim": "the season the walk follows",
+      "definition": "chosen for a recognisable, unambiguous attacking season",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_season",
+      "value": "24/25",
+      "claim": "its season label",
+      "definition": "derived",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_goals",
+      "value": 29,
+      "claim": "goals",
+      "definition": "player_card_mv.goals",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_assists",
+      "value": 18,
+      "claim": "assists",
+      "definition": "player_card_mv.assists",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pens",
+      "value": 9,
+      "claim": "penalties among those goals",
+      "definition": "player_card_mv.penalties_scored",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_minutes",
+      "value": 3377,
+      "claim": "minutes played",
+      "definition": "player_card_mv.minutes",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_gaw",
+      "value": 39.62,
+      "claim": "the single output number",
+      "definition": "goals - 0.22*min(pens,goals) + 0.7*assists",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_gaw90",
+      "value": 1.056,
+      "claim": "the same number per 90 minutes",
+      "definition": "gaw / (minutes/90)",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_pool_rate",
+      "value": 99.1,
+      "claim": "his rate, ranked inside his position pool",
+      "definition": "percent_rank of gaw90 within pool",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_pool_vol",
+      "value": 99.9,
+      "claim": "his volume, ranked inside his position pool",
+      "definition": "percent_rank of gaw within pool",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_all_rate",
+      "value": 99.6,
+      "claim": "his rate, ranked against every outfielder",
+      "definition": "percent_rank of gaw90, all non-GK",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_all_vol",
+      "value": 100,
+      "claim": "his volume, ranked against every outfielder",
+      "definition": "percent_rank of gaw, all non-GK",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_rank_term",
+      "value": 64.7,
+      "claim": "the ranking half of the performance number",
+      "definition": "0.65 * blended percentile, pool 60 / all 40, rate 50 / volume 50",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_vol_term",
+      "value": 68.2,
+      "claim": "the raw-volume half",
+      "definition": "0.35 * 100 * gaw / the 99th-percentile season",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_perf",
+      "value": 132.9,
+      "claim": "the performance number",
+      "definition": "rank term plus volume term",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_avail",
+      "value": 27,
+      "claim": "the availability number",
+      "definition": "0.30 * min(95, 100*minutes/(minutes+380))",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_weight",
+      "value": 1,
+      "claim": "his league weight that season",
+      "definition": "engine_league_weights, computed from players who moved",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_b",
+      "value": 120,
+      "claim": "the assembled figure, before the ladder",
+      "definition": "(0.70*max(perf,floor) + avail) * (1-(1-weight)*0.35)",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_rt",
+      "value": 95,
+      "claim": "what comes out",
+      "definition": "the rank-anchored ladder applied to the figure above",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_anchors",
+      "value": "85.6,98.9,120.0",
+      "claim": "the ladder anchors at 85, 90 and 95",
+      "definition": "the 650th, 150th and 12th highest figure in the record",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pool",
+      "value": "Winger",
+      "claim": "the position pool he is read against",
+      "definition": "player_card_mv.position_pool",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
       "key": "ballon_dor_seasons",
       "value": 14,
       "claim": "Ballon d'Or seasons the record holds",

@@ -315,7 +315,7 @@
      the widest prose on the page and the last of what made it read as an essay. 68ch at
      13px Inter lands them near the 75 the convention asks for. The cards themselves stay
      full width; only the prose inside them is capped.  */
-  .wmc-b p{font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.65);margin:0 0 10px;max-width:68ch}
+  .wmc-b p{font-family:'Inter';font-weight:400;font-size:14.5px;line-height:1.6;color:rgba(243,237,224,0.65);margin:0 0 10px;max-width:68ch}
   .wmc-b p:last-child{margin-bottom:0}
   body.light .wmc-b p{color:#5a544a}
   .wm-close{margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.08)}
@@ -414,11 +414,19 @@
     border:1px solid var(--vi-pqbd)}
   .vi-pq .n{font:900 clamp(54px,12vw,92px)/0.9 'Archivo';letter-spacing:-.03em;color:var(--vi-gold-num);display:block}
   .vi-pq .t{font:800 clamp(19px,3.2vw,26px)/1.33 'Bricolage Grotesque','Archivo',serif;margin:14px 0 0;max-width:26ch;letter-spacing:-.01em}
-  .vi-pq .s{font:400 12.5px/1.55 'Inter';color:var(--vi-mut);margin:12px 0 0;max-width:50ch}
+  .vi-pq .s{font:400 14px/1.55 'Inter';color:var(--vi-mut);margin:12px 0 0;max-width:50ch}
   .vi-h2{font:800 13px 'Archivo';letter-spacing:.13em;text-transform:uppercase;color:var(--vi-gold-ink);
     margin:56px 0 6px;display:flex;align-items:center;gap:10px}
   .vi-h2::after{content:'';flex:1;height:1px;background:var(--vi-line)}
-  .vi-h2sub{font:400 13.5px/1.55 'Inter';color:var(--vi-mut);margin:0 0 20px;max-width:62ch}
+  /*  TYPE SIZES RAISED 2026-09-27, AND NOT ONE OF THEM WAS EVER A DECISION. Measured across
+      the page: 1,444 words sat below 14px against 974 at 15px , sixty per cent of it. Every
+      one was INHERITED rather than chosen , the standfirsts, captions and panel sub-text came
+      across from the demo, and the keeper body at 13px is the OLD page's component, which the
+      rebuild carried over without looking at it.
+      THE IN-CHART LABELS STAY SMALL, and that is the one real decision here: 10.5px on a
+      timeline segment or a bar label is a label rather than prose, and raising it would push
+      the figure out of the column it sits in.  */
+  .vi-h2sub{font:400 14.5px/1.55 'Inter';color:var(--vi-mut);margin:0 0 20px;max-width:62ch}
   /*  THE TIMELINE IS HTML, NOT SVG, AND THAT IS THE LESSON FROM THE FIGURE IT
       REPLACES. An SVG scales as one unit, so its type shrank with the drawing and
       the old margin chart became unreadable at 390. Built from positioned divs,
@@ -443,7 +451,7 @@
   .vi-tlwhen i{font-style:normal;opacity:.4;padding:0 3px}
   .vi-tl-ends{display:flex;justify-content:space-between;margin-top:2px;font:700 10.5px 'Archivo';color:var(--vi-ends);letter-spacing:.06em}
   .vi-tl-key{display:grid;gap:7px;margin-top:16px;padding-top:14px;border-top:1px solid var(--vi-line)}
-  .vi-tl-key div{font:400 12.5px/1.5 'Inter';color:var(--vi-mut);display:flex;gap:9px;align-items:baseline}
+  .vi-tl-key div{font:400 13.5px/1.5 'Inter';color:var(--vi-mut);display:flex;gap:9px;align-items:baseline}
   .vi-tl-key i{width:7px;height:7px;border-radius:50%;background:var(--pink-ink);flex:none;transform:translateY(-2px)}
   .vi-tl-key i.sq{border-radius:3px;width:9px;height:9px}
   .vi-tl-key i.e{background:var(--vi-swatch-e)}
@@ -455,7 +463,7 @@
       already a list and already legible. Nothing is duplicated at any width.  */
   .vi-tl-key .vi-segkey{display:none}
   @media (max-width:660px){ .vi-tl-seg span{display:none} .vi-tl-key .vi-segkey{display:flex} }
-  .vi-figcap{font:400 12px/1.55 'Inter';color:var(--vi-mut);margin:16px 2px 0}
+  .vi-figcap{font:400 13.5px/1.55 'Inter';color:var(--vi-mut);margin:16px 2px 0}
   .vi-figcap b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
   /*  THE DEFENDER DRAWING , see _demo_defender.html, approved 2026-09-27. One passage of
       play drawn twice, and under each the line the record actually wrote: TACKLE +1 on the
@@ -477,7 +485,7 @@
   .dpan{flex:1 1 210px;min-width:0}
   .dpt{font:800 10px Archivo;letter-spacing:.11em;text-transform:uppercase;margin:0 0 8px;color:var(--vi-mut)}
   .dpan svg{display:block;width:100%;height:auto}
-  .dcap{font:400 12px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
+  .dcap{font:400 13.5px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
   .dcap b{font-family:Archivo;font-weight:700;color:var(--vi-strong)}
   /*  THE CAREER STRIP , Add 1. Twelve seasons of one career as a column each, height by
       score, three marked and the other nine left legible. THE SHAPE IS THE ARGUMENT: a
@@ -529,6 +537,49 @@
       one neutral ink say "not one league" without being told to.  */
   .plad.nolead .pladf{background:var(--vi-mut)}
   .plad.nolead .pladn{text-align:right}
+  /*  THE SCORING WALK , the centrepiece. One real season read downward, each stop a number
+      going in and a number coming out. It is a COLUMN and not a flowchart on purpose: a
+      reader follows one line without deciding where to look next, and every stop reuses the
+      page's existing row shape rather than inventing a diagram language.
+      NO b-VALUE ANCHORS ARE DRAWN. The ladder stop shows the public band numbers and where
+      this season lands; publishing the raw anchor figures beside the assembled figure would
+      invite a reader to notice a coincidence of today's snapshot that moves on every write.  */
+  .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
+  .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .wk{border:1px solid var(--vi-line);border-radius:18px;padding:22px 20px 18px;
+    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
+  .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
+  .wkwho{font:800 clamp(17px,2.4vw,20px)/1.2 'Archivo';letter-spacing:-.01em}
+  .wkwho small{display:block;font:700 10px 'Archivo';letter-spacing:.12em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:5px}
+  .wkin{display:flex;gap:16px;flex-wrap:wrap;font:700 11px 'Archivo';letter-spacing:.06em;
+    text-transform:uppercase;color:var(--vi-mut)}
+  .wkin b{display:block;font:900 17px/1 'Archivo';color:var(--vi-strong);letter-spacing:-.01em;margin-bottom:3px}
+  .wkstep{display:grid;grid-template-columns:20px 1fr auto;gap:13px;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid var(--vi-line)}
+  .wkstep:last-of-type{border-bottom:0}
+  .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
+  .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
+  .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:4px}
+  .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
+  .wkp{border:1px solid var(--vi-line);border-radius:10px;padding:8px 10px}
+  .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
+  .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
+  .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
+    padding-top:16px;border-top:1px solid var(--vi-line)}
+  .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
+  .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
+  @media (max-width:560px){ .wkstep{grid-template-columns:18px 1fr;gap:9px}
+    .wkv{grid-column:2;text-align:left;margin-top:6px} .wkpair{grid-template-columns:1fr}
+    /*  the head stacks rather than competing for one row , side by side at 390 the three
+        inputs were squeezed into a column 144px tall beside a two-line name.  */
+    .wkhead{display:block} .wkin{margin-top:13px;gap:20px}
+    .wkarrow{display:none}
+    .wkout{align-items:flex-end} }
   .vi-rows{display:grid;margin-top:4px;border-top:1px solid var(--vi-line)}
   .vi-row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;padding:15px 2px;border-bottom:1px solid var(--vi-line)}
   .vi-row .n{font:900 clamp(22px,3.8vw,29px)/1 'Archivo';letter-spacing:-.02em;color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums}
@@ -544,13 +595,13 @@
   .vi-close{margin-top:52px;padding:26px 28px;border-radius:18px;border:1px solid var(--vi-line);
     background:linear-gradient(180deg,var(--vi-panel),transparent)}
   .vi-close p{margin:0;font:700 clamp(17px,2.7vw,21px)/1.4 'Bricolage Grotesque','Archivo',serif;max-width:40ch}
-  .vi-close .s{margin-top:10px;font:400 12.5px/1.55 'Inter';color:var(--vi-mut);max-width:56ch}
-  .vi-foot{margin-top:40px;font:400 12.5px/1.6 'Inter';color:var(--vi-mut);max-width:62ch}
+  .vi-close .s{margin-top:10px;font:400 14px/1.55 'Inter';color:var(--vi-mut);max-width:56ch}
+  .vi-foot{margin-top:40px;font:400 13.5px/1.6 'Inter';color:var(--vi-mut);max-width:62ch}
   .vi-foot a{color:var(--vi-gold-ink);text-decoration:none;border-bottom:1px solid var(--vi-goldline)}
   .vi-cta{margin-top:30px;padding:26px 28px;border-radius:18px;border:1px solid var(--vi-ctabd);
     background:linear-gradient(160deg,var(--vi-ctabg),transparent 70%)}
   .vi-ctat{margin:0;font:800 clamp(17px,2.6vw,20px)/1.3 'Archivo';letter-spacing:-.01em}
-  .vi-ctas{margin:9px 0 0;font:400 13px/1.6 'Inter';color:var(--vi-mut);max-width:56ch}
+  .vi-ctas{margin:9px 0 0;font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:56ch}
   .vi-ctab{display:inline-block;margin-top:16px;font:800 12px 'Archivo';letter-spacing:.05em;text-transform:uppercase;
     padding:11px 20px;border-radius:999px;text-decoration:none;background:linear-gradient(135deg,#FF5C7A,#E70443);color:#fff}
   /*  THIS ROW IS A LITERAL COPY AND THE COST IS STATED: this page loads no shared
@@ -584,28 +635,98 @@
     <span class="n"><span data-fig="ballon_dor_top_three_bands">13</span> of <span data-fig="ballon_dor_seasons">14</span></span>
     <p class="t">Ballon d&#8217;Or seasons the Index puts in its top three bands.</p>
     <p class="s">It has never seen an award. No honour, team or individual, adds a single point to a
-      V<span class="vvw">V</span> Score, and a Ballon d&#8217;Or adds nothing at all. Thirteen of the fourteen land at 85 or
-      better anyway, and <span data-fig="ballon_dor_iconic_or_better">10</span> of them at 90.</p>
+      V<span class="vvw">V</span> Score, and a Ballon d&#8217;Or adds nothing at all. They land there anyway, and
+      <span data-fig="ballon_dor_iconic_or_better">10</span> of the fourteen at 90.</p>
   </div>
 
   <h2 class="vi-h2">What it gets right</h2>
-  <p class="vi-h2sub">The Index does not know who these players are. It reads minutes, output, the
-  strength of the league and the position played, and nothing else. The names arrive afterwards, and
-  they are how we check the scale rather than how we set it.</p>
+  <p class="vi-h2sub">The Index does not know who these players are. The names arrive afterwards,
+  and they are how we check the scale rather than how we set it.</p>
   <div class="vi-rows">
-    <div class="vi-row"><div class="n g">10</div><div class="l">Of those fourteen reach 90 or better, and three sit inside the twelve highest-scoring seasons in the entire record. <b>Nothing was tuned to put them there</b> , the band edges are ranks, so no season can be moved into place without moving every season around it.</div></div>
-    <div class="vi-row"><div class="n p">70</div><div class="l">Luka Modri&#263;&#8217;s 2017/18, the season that won the Ballon d&#8217;Or, and <b>the one the Index misses.</b> Two things are true and we publish both. That award leaned heavily on a third straight Champions League, which is a team outcome the Index refuses to count. And the Index under-reads deep midfielders: it sees the pass completed, not the position taken that made the pass available. <b>One of those is a choice. The other is a limit.</b></div></div>
+    <div class="vi-row"><div class="n g">3</div><div class="l">Of those fourteen sit inside the twelve highest-scoring seasons in the entire record. <b>Nothing was tuned to put them there</b> , no season can be moved into place without moving every season around it.</div></div>
+    <div class="vi-row"><div class="n p">70</div><div class="l">Luka Modri&#263;&#8217;s 2017/18, the season that won the Ballon d&#8217;Or, and <b>the one the Index misses.</b> That award leaned heavily on a third straight Champions League, which is a team outcome the Index refuses to count. And the Index under-reads deep midfielders: it sees the pass completed, not the position taken that made the pass available. <b>One of those is a choice. The other is a limit.</b></div></div>
   </div>
 
-  <h2 class="vi-h2">What one number holds</h2>
-  <p class="vi-h2sub">A season, scored against the seasons it should be compared with. Not a career,
-  not a reputation, and not a mark out of ten.</p>
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n"><span data-fig="cards_scored">54,416</span></div><div class="l">Seasons carry a V<span class="vvw">V</span> Score, across nine leagues and sixteen years. <b>The same basis for every one of them</b>, which is the whole reason a 2011 season and a 2025 one can be set against each other at all.</div></div>
-    <div class="vi-row"><div class="n g">12</div><div class="l">Seasons have ever scored 95. <b>Rarity is the point:</b> 150 reach 90, 650 reach 85, and everything else sits below. A score is a standing among all of them rather than a grade.</div></div>
-    <div class="vi-row"><div class="n">Own<small>pool</small></div><div class="l">Every season is read against <b>players in the same position</b>, never against the whole record. A centre-back is measured among centre-backs. That is why a defender&#8217;s number is not a striker&#8217;s number made smaller.</div></div>
-    <div class="vi-row"><div class="n">9</div><div class="l">Leagues, and they are <b>not treated as equal.</b> The weighting is computed from players who actually moved between them, not assigned by reputation.</div></div>
+  <!--  THE SCORING WALK , the page's centrepiece, and it REPLACES prose rather than sitting
+        beside it. It absorbs "What one number holds": that section ASSERTED four properties of
+        the number (one basis, rarity, own pool, unequal leagues) and the walk DEMONSTRATES two
+        of them , the pool step and the league step , so only the two it cannot show survive
+        below it as rows.
+        EVERY FIGURE IS GENERATED. Twenty-one data-fig spans, produced by re-running the engine
+        over one live card and asserting its rt matches the stored one. A hand-typed 132.9 is
+        precisely the thing this page argues against.
+        NO b-VALUE ANCHORS ARE PRINTED , see the .wk CSS block for why.  -->
+  <h2 class="vi-h2">How a season becomes a number</h2>
+  <p class="vi-h2sub">One real season, read downward. Every figure here comes out of the live
+  record and is regenerated with the page.</p>
+
+  <div class="wk">
+    <div class="wkhead">
+      <div class="wkwho"><span data-fig="walk_player">Mohamed Salah</span>
+        <small><span data-fig="walk_season">24/25</span> &#183; read against other
+        <span data-fig="walk_pool">Winger</span> seasons</small></div>
+      <div class="wkin">
+        <div><b><span data-fig="walk_goals">29</span></b>goals</div>
+        <div><b><span data-fig="walk_assists">18</span></b>assists</div>
+        <div><b><span data-fig="walk_minutes">3,377</span></b>minutes</div>
+      </div>
+    </div>
+
+    <div class="wkstep"><div class="wkn">1</div>
+      <div class="wkl">Output becomes one figure , each assist at <b>0.7</b>, a fifth off each of his
+        <span data-fig="walk_pens">9</span> penalties.</div>
+      <div class="wkv"><span data-fig="walk_gaw">39.62</span><small>output</small></div></div>
+
+    <div class="wkstep"><div class="wkn">2</div>
+      <div class="wkl">Divided by minutes, not matches, so <b>a half season and a full one become
+        comparable.</b></div>
+      <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
+
+    <div class="wkstep"><div class="wkn">3</div>
+      <div class="wkl">Then ranked twice , <b>once among wingers</b>, once against every outfielder.
+        <div class="wkpair">
+          <div class="wkp"><span><span data-fig="walk_pool">Winger</span> pool</span>
+            <b><span data-fig="walk_pct_pool_rate">99.1</span> rate &#183;
+               <span data-fig="walk_pct_pool_vol">99.9</span> volume</b></div>
+          <div class="wkp"><span>Every outfielder</span>
+            <b><span data-fig="walk_pct_all_rate">99.6</span> rate &#183;
+               <span data-fig="walk_pct_all_vol">100</span> volume</b></div>
+        </div>
+      </div>
+      <div class="wkv wkarrow">&#8595;</div></div>
+
+    <div class="wkstep"><div class="wkn">4</div>
+      <div class="wkl">Blended, pool first, with the <b>raw size</b> of the output beside it ,
+        <span data-fig="walk_rank_term">64.7</span> for rank,
+        <span data-fig="walk_vol_term">68.2</span> for volume.</div>
+      <div class="wkv"><span data-fig="walk_perf">132.9</span><small>performance</small></div></div>
+
+    <div class="wkstep"><div class="wkn">5</div>
+      <div class="wkl">Availability is added, on a curve that <b>stops rewarding minutes long before
+        the last one.</b></div>
+      <div class="wkv">+&#8201;<span data-fig="walk_avail">27</span><small>availability</small></div></div>
+
+    <div class="wkstep"><div class="wkn">6</div>
+      <div class="wkl">And the league is weighted , <b>not by reputation, but from players who moved
+        between them.</b> The Premier League is the baseline.</div>
+      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">1</span><small>league</small></div></div>
+
+    <div class="wkstep"><div class="wkn">7</div>
+      <div class="wkl">Which assembles to one figure, on a scale nobody sees.</div>
+      <div class="wkv"><span data-fig="walk_b">120</span><small>assembled</small></div></div>
+
+    <div class="wkout">
+      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
+        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
+      <div class="wkrt"><span data-fig="walk_rt">95</span></div>
+    </div>
   </div>
+
+  <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
+  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
+  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
+  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
+  shown beside the score, never inside it.</p>
 
   <h2 class="vi-h2">It rates a season, not a player</h2>
   <p class="vi-h2sub">A rating rates a person, and a person does not have one number. Across
@@ -638,7 +759,7 @@
     <div class="vi-row"><div class="n g"><span data-fig="elite_pairs_inside_margin">97</span><small>of elite pairs</small></div><div class="l"><b>When the Index does crown a season, the gap has cleared its own margin of
     error.</b> At the top of the ladder that is rare: of the
     <span data-fig="elite_pairs_counted">993,345</span> possible pairings between seasons at 80 or better,
-    this is the share it declines to separate at all. <b>That is not a dodge , it is the difference between
+    this is the share it will not separate. <b>That is not a dodge , it is the difference between
     a rating that answers every question and one that answers the questions it can.</b></div></div>
   </div>
 
@@ -662,9 +783,8 @@
   <p class="vi-h2sub">Not gaps in the record. Decisions, and this is the one that shapes every score
   on the platform.</p>
   <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="honours_total">804</span></div><div class="l">Honours the record holds , league titles, Champions Leagues, Ballons d’Or, Golden Boots , and <b>not one of them moves a score by a single point.</b> Honours sit beside the number and never inside it. A medal is a team's outcome
-      with one player's name on it, and the Index scores the season he played, not the one his
-      club had. <b>Individual awards are no different</b> , the score is finished before any honour is even joined to it.</div></div>
+    <div class="vi-row"><div class="n g"><span data-fig="honours_total">804</span></div><div class="l">Honours the record holds , league titles, Champions Leagues, Ballons d’Or, Golden Boots , and <b>not one of them moves a score by a single point.</b> A medal is a team's outcome with one
+      player's name on it, and the Index scores the season he played, not the one his club had. <b>Individual awards are no different</b> , the score is finished before any honour is even joined to it.</div></div>
   </div>
 
 <h2 class="vi-h2">It leans where the evidence is</h2>
@@ -714,10 +834,10 @@
   </div>
 
   <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="cards_with_detail">38,928</span></div><div class="l">Seasons carry the full detailed record , shots, passes, duels and dribbles. The other <span data-fig="cards_no_detail">19,138</span> are scored on goals, assists and minutes, <b>and every one of their cards says so.</b> The Playbook says when the detail begins; this is how much of the record sits before it.</div></div>
+    <div class="vi-row"><div class="n g"><span data-fig="cards_with_detail">38,928</span></div><div class="l">Seasons carry the full detailed record , shots, passes, duels and dribbles. The other <span data-fig="cards_no_detail">19,138</span> are scored on goals, assists and minutes, <b>and every one of their cards says so.</b></div></div>
     <div class="vi-row"><div class="n">2015</div><div class="l">Where penalties enter the record. <b>A taker before then is scored without them</b>, and nothing about his card pretends otherwise.</div></div>
     <div class="vi-row"><div class="n">300<small>minutes</small></div><div class="l">The floor. <b>Below it we hold back rather than rate a fragment</b> , a hot month is not a season.</div></div>
-    <div class="vi-row"><div class="n p">4</div><div class="l"><b>Some famous players are simply not here.</b> Rooney, Gerrard, Lampard and Kompany have no cards, because the source we import from never linked those seasons to them. We could have filled the gap by hand and guessed at the rest. We would rather a player be missing than be wrong.</div></div>
+    <div class="vi-row"><div class="n p">4</div><div class="l"><b>Some famous players are simply not here.</b> Rooney, Gerrard, Lampard and Kompany have no cards, because the source we import from never linked those seasons to them. <b>We would rather a player be missing than be wrong.</b></div></div>
   </div>
 
   <h2 class="vi-h2">It tells you where it is weakest</h2>
@@ -821,7 +941,7 @@
     return '<div class="pladr"><span class="pladn">'+names[i]+'</span>'+
            '<span class="pladt"><span class="pladf" style="width:'+(p/max*100).toFixed(1)+'%"></span></span>'+
            '<span class="pladv">'+p.toFixed(1)+' pts</span></div>';
-  }).join('')+'</div><p class="dcap">How far apart two seasons of the same standing must be before the Index will say one is better. <b>At the very top it can split hairs</b> , three points is a real gap between two of the twelve best seasons ever recorded. Further down it cannot, and rather than guessing, <b>Compare says so on the card:</b> &#8220;a gap this small is finer than the Index can reliably read.&#8221;</p>';
+  }).join('')+'</div><p class="dcap">How far apart two seasons must be before the Index will say one is better. <b>At the very top it can split hairs</b> , three points is a real gap between two of the twelve best seasons ever recorded. Further down it cannot, and rather than guess, <b>Compare says so on the card:</b> &#8220;a gap this small is finer than the Index can reliably read.&#8221;</p>';
 })();
 </script>
 <script>

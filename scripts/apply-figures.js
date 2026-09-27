@@ -138,7 +138,11 @@ for(const rel of TARGETS){
     would be rewritten by nobody and checked by nobody, and every run would still say OK.
     Measured 2026-09-27: the three files carrying figures ARE the three targets, so this guard
     starts clean , which is exactly when to add it, rather than after a page has drifted.  */
-{
+/*  AND THE GUARD IS SCOPED TO A FULL RUN. Under --only TARGETS is one file, so the other two
+    carried-figures pages read as unguarded and the run failed on its own narrowing , a guard
+    that fires when nothing is wrong teaches everyone to ignore it, which SEC C records as worse
+    than no guard at all.  */
+if(!process.argv.includes('--only')){
   const roots=['.','docs/pdf'];
   const seen=new Set(TARGETS.map(t=>path.normalize(t)));
   for(const dir of roots){

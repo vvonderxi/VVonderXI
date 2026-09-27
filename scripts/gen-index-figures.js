@@ -310,6 +310,75 @@ async function main() {
       'because a decimal here implies a precision the claim does not need',
       `select round(100.0 * count(*) filter (where league_code <> 'PL') / count(*)) from ${MV} where rt >= ${ELITE_BAR}`);
 
+  /*  ── THE SCORING WALK. Every number the page shows of one season being scored, produced
+      by RUNNING THE ENGINE rather than by reading a card. A hand-typed 132.90 is exactly
+      what this page argues against, and an intermediate like PERF exists nowhere in the
+      database , it is a step, not a column, so it can only come from the engine itself.
+
+      IT RUNS `scripts/separability/rt_reimpl.js`, the independent re-implementation that
+      validates at 99.57% exact against stored rt. That is deliberate and it is the one
+      place on this page where a SECOND implementation is the right tool: the stored rt is
+      the answer, and what the walk needs is the working, which the view does not expose.
+      The walk ASSERTS its own rt against the stored one below , if the transcription ever
+      drifts from the SQL, this throws rather than publishing a plausible wrong chain.  */
+  const RT = require(path.join(__dirname, 'separability', 'rt_reimpl.js'));
+  const ENGINE_COLS = 'card_id,position,position_pool,season_year,league_code,minutes,goals,' +
+    'assists,penalties_scored,tackles_total,interceptions,tackles_blocks,duels_won,duels_total,' +
+    'team_def90,def90,def_share,def_share_pct,rt,league_strength_weight,player_name';
+  const engCards = await pageAll(MV, ENGINE_COLS);
+  const engW = await sb.from('engine_league_weights').select('league_code,season_year,weight')
+    .then(r => { if (r.error) throw new Error(r.error.message); return r.data; });
+  const E = RT.buildEngine({ cards: engCards, weights: engW });
+  const bAll = E.out.map(x => RT.bFor(x, E));
+  const anchors = RT.anchorsOf(bAll);
+
+  const WALK_NAME = 'Mohamed Salah', WALK_YEAR = 2024;
+  const wi = E.out.findIndex(x => x.name === WALK_NAME && x.season_year === WALK_YEAR && x.minutes > 3000);
+  if (wi < 0) throw new Error(`the scoring walk needs ${WALK_NAME} ${WALK_YEAR} and did not find it`);
+  const W = E.out[wi], wb = bAll[wi], wrt = RT.rtFrom(wb, anchors);
+  if (wrt !== W.rt_stored)
+    throw new Error(`walk mismatch: re-implementation says ${wrt}, the database says ${W.rt_stored} , ` +
+                    'the transcription has drifted and the walk would publish a wrong chain');
+
+  const pp = E.posPct.get(W.pool).get(W.gaw90), pv = E.posvolPct.get(W.pool).get(W.gaw);
+  const ap = E.absPctMap.get(W.gaw90),          av = E.absvolPctMap.get(W.gaw);
+  const blended = (0.50 * (0.60 * pp + 0.40 * ap) + 0.50 * (0.60 * pv + 0.40 * av)) * 100;
+  const rankTerm = 0.65 * blended;
+  const volTerm  = 0.35 * (100 * W.gaw / E.gaw_ref);
+  const PERF  = rankTerm + volTerm;
+  const AVAIL = 0.30 * Math.min(95, 100 * (W.minutes / (W.minutes + 380)));
+
+  const w1 = (k, v, claim, def) => add(k, v, claim, def, 'scripts/separability/rt_reimpl.js, run over the live matview');
+  w1('walk_player', W.name, 'the season the walk follows', 'chosen for a recognisable, unambiguous attacking season');
+  w1('walk_season', String(W.season_year).slice(2) + '/' + String(W.season_year + 1).slice(2), 'its season label', 'derived');
+  w1('walk_goals', W.goals, 'goals', 'player_card_mv.goals');
+  w1('walk_assists', W.assists, 'assists', 'player_card_mv.assists');
+  /*  THE ENGINE'S OWN OBJECTS DO NOT CARRY EVERY RAW FIELD , it normalises to what the
+      score needs, so `penalties_scored` is consumed into gaw and then gone. The walk shows
+      the penalty count as an INPUT, so it comes from the source row rather than the
+      normalised one. Reading it off W returned undefined and the printer threw on it,
+      which is the friendly version of this mistake.  */
+  const wRaw = engCards.find(c => c.card_id === W.card_id);
+  if (!wRaw) throw new Error('the walk card vanished between the read and the engine');
+  w1('walk_pens', wRaw.penalties_scored, 'penalties among those goals', 'player_card_mv.penalties_scored');
+  w1('walk_minutes', W.minutes, 'minutes played', 'player_card_mv.minutes');
+  w1('walk_gaw', +W.gaw.toFixed(2), 'the single output number', 'goals - 0.22*min(pens,goals) + 0.7*assists');
+  w1('walk_gaw90', +W.gaw90.toFixed(3), 'the same number per 90 minutes', 'gaw / (minutes/90)');
+  w1('walk_pct_pool_rate', +(pp * 100).toFixed(1), 'his rate, ranked inside his position pool', 'percent_rank of gaw90 within pool');
+  w1('walk_pct_pool_vol', +(pv * 100).toFixed(1), 'his volume, ranked inside his position pool', 'percent_rank of gaw within pool');
+  w1('walk_pct_all_rate', +(ap * 100).toFixed(1), 'his rate, ranked against every outfielder', 'percent_rank of gaw90, all non-GK');
+  w1('walk_pct_all_vol', +(av * 100).toFixed(1), 'his volume, ranked against every outfielder', 'percent_rank of gaw, all non-GK');
+  w1('walk_rank_term', +rankTerm.toFixed(1), 'the ranking half of the performance number', '0.65 * blended percentile, pool 60 / all 40, rate 50 / volume 50');
+  w1('walk_vol_term', +volTerm.toFixed(1), 'the raw-volume half', '0.35 * 100 * gaw / the 99th-percentile season');
+  w1('walk_perf', +PERF.toFixed(1), 'the performance number', 'rank term plus volume term');
+  w1('walk_avail', +AVAIL.toFixed(1), 'the availability number', '0.30 * min(95, 100*minutes/(minutes+380))');
+  w1('walk_weight', +W.wt.toFixed(3), 'his league weight that season', 'engine_league_weights, computed from players who moved');
+  w1('walk_b', +wb.toFixed(1), 'the assembled figure, before the ladder', '(0.70*max(perf,floor) + avail) * (1-(1-weight)*0.35)');
+  w1('walk_rt', wrt, 'what comes out', 'the rank-anchored ladder applied to the figure above');
+  w1('walk_anchors', [anchors.b85, anchors.b90, anchors.b95].map(v => v.toFixed(1)).join(','),
+     'the ladder anchors at 85, 90 and 95', 'the 650th, 150th and 12th highest figure in the record');
+  w1('walk_pool', W.pool, 'the position pool he is read against', 'player_card_mv.position_pool');
+
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))
     .filter(r => r.honour_type === 'ballon_dor' && r.api_player_id != null);
