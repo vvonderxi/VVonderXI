@@ -1402,3 +1402,77 @@ rediscovering them:**
 - **The card face does NOT follow the theme and has three grounds** , plain cream, iconic gold,
   generational dark. "Gold edge to edge" is the iconic ground only, and any new ink introduced at
   that size must be seen on all three before it is called done.
+
+---
+
+## THE ONE PROMPT EDIT , FOUR CHANGES, PRICED ONCE. NOT BUILT; THE DIFF COMES FIRST.
+
+**Lucas's rule: one rebuild, not four.** The edit carries, in his order:
+
+1. **Item 25's rule 4 fix** , the under-marking measurement, still gated on both prompt bases
+   settling.
+2. **Item 5a's weighting** , honours are not one flat class of evidence.
+3. **The honour TIER in the payload, plus the prompt sentence that reads it.** The hierarchy
+   already exists as `HONOUR_META.tier` (1 Ballon d'Or through 7 Top Assists) and **the payload
+   does not carry it** , `vvAIStats` emits `honour, year, won_by, leg, context` and no tier, so
+   the model has been relying on its own world knowledge of what outranks what.
+4. **The identical-scores wording** , Lucas's call, 2026-09-27. `compare.html` tells the model
+   *"GENUINELY LEVEL (96=96), identical scores"* whenever the two rt values match. **At the top of
+   the ladder 10.73 points of `b` fit inside one rt point**, so equal rt is equal DISPLAY and not
+   equal score. Measured on Messi 14/15 against Ronaldo 14/15: `b` 134.594 against 138.556,
+   unrounded 96.361 against 96.730, and the engine FLOORS rather than rounds, so both land on 96
+   with **Ronaldo 0.369 of a point ahead**. The prose was asserting something the engine did not
+   say.
+
+**COST, MEASURED 2026-09-27: about $1.48.** Only **11 verdicts and 25 notes** sit on a current
+prompt base; the other 123 and 152 are already stale and regenerate on view regardless. The whole
+cache re-viewed would be $12.57 cold, $4.18 warm , **do not quote those as the price of the edit.**
+
+**Adding `tier` also moves `payloadRev`**, so verdicts invalidate by a second mechanism. Same
+rebuild, no extra cost.
+
+---
+
+## WHAT WARMING ACTUALLY BUYS ON SCREEN , MEASURED, AND IT IS NOT WHAT THE PLAN ASSUMED
+
+**A WARMED CARD STILL SHOWS "READING THE SEASON". Warming shortens the wait; it does not remove
+it.** `card.html` paints the wait into `#glDrury`, `#notesBody` and `#scoutBody`
+**unconditionally, before the fetch** , the client cannot know it is a cache hit until the
+response arrives, so there is no branch that could skip it.
+
+**Measured on the preview, on a card whose notes are cached on the current base (143372):**
+
+| | |
+|---|---|
+| wait first painted | **765 ms** |
+| prose replaced it | **1,756 ms** |
+| **"Reading the season" visible for** | **about 1 second** |
+
+Against roughly **26 seconds** cold. **So the money buys 26 seconds down to one, not one down to
+zero**, and a visitor still sees the loader.
+
+**AND THERE IS A SECOND-ORDER EFFECT WORTH A LOOK BEFORE ANY WARMING IS PAID FOR:** the AI
+loader's own cycle is **2.6 s** (`VV_WAIT.ai.duration`), so at one second it appears and is
+replaced **mid-animation**. A loader that never completes a cycle can read as a flicker rather
+than as a load. **If warming happens, that duration should be looked at in the same pass.**
+
+---
+
+## UNDER THE LIGHTS , OPTION C CHOSEN 2026-09-27. DECIDED, NOT BUILT.
+
+From `_demo_lights.html`, run against the real compare page.
+
+**C , the bigger pool of light:** brighter and taller, `88%` to `118%`, lifted so the spill reaches
+the floor under the card, blur `44px`.
+
+    dark   radial-gradient(ellipse at center,rgba(255,143,163,0.50),rgba(255,143,163,0.16) 44%,transparent 74%)
+    light  radial-gradient(ellipse at center,rgba(255,143,163,0.32),rgba(255,143,163,0.10) 44%,transparent 74%)
+    height 118%   top 2%   filter blur(44px)
+
+**It is one rule, `#cardA::before,#cardB::before` in `compare.html`.** Cost measured at **1.64x the
+control's blur work** (0.311 Mpx against 0.232, radius 44 against 36, one layer either way).
+
+**AND THE COST IS PAID ONCE, NOT PER FRAME** , the glow is a static background that paints on
+load, on resize and on a theme flip. Nothing animates it. **"Frame time" is the wrong unit here**,
+which is why the demo computes area x radius x layers instead: SS C records that a hidden tab
+cannot measure frames at all.
