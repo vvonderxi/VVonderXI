@@ -100,11 +100,13 @@ docs/GAME_V1_ARCHITECTURE.md      this file
 ```
 player_card_mv (anon key, read-only)
   │  scripts/gen-game-deck.js , run by hand, like gen-radar-ref.js
-  │    filter: outfield only, rt >= DECK_MIN_RT, radarFor non-null on all 5 axes, minutes floor
+  │    filter: outfield, 7 named pools, 900+ minutes, rt not null, radarFor non-null on all axes
+  │    select: quota per position, best rt first, one card per player (400 cards)
   │    battle.impact       = rt                                   (position-aware by construction)
-  │    battle.goalThreat…  = GLOBAL percentile of radarFor .raw within the deck
-  │    battle.roleMastery  = mean of radarFor .scaled (already percentile within pool)
-  │    dealTier            = quintile of overall strength
+  │    battle.goalThreat…  = percent_rank of radarFor .raw across the deck
+  │    battle.reliability  = percent_rank of minutes within own league-season (all outfield 900+)
+  │    battle.roleMastery  = mean of the 4 radarFor .scaled percentiles (not reliability)
+  │    dealTier            = quintile of overall strength (withDealTiers, reused)
   ▼
 data/game-deck.json  (static, cached, no API call at play time)
   ▼
@@ -115,12 +117,46 @@ compare -> classify -> effects -> events
 renderer (2D, then Three.js)
 ```
 
-**Decision to confirm , global vs within-pool for the named categories.** The radar is percentile
+**Decision taken , global vs within-pool for the named categories: GLOBAL (deck-wide).** The radar is percentile
 *within* pool, where CB and ST both centre near 50 on goalThreat. Used raw in a battle, a good-scoring
 centre-back beats an average striker at **Goal Threat**, which a fan reads as wrong and which spends
 the platform's credibility. Recommendation: named categories use the **global** percentile; the
 position-relative reading gets its own category, **Master of Role**, which is where defenders win
 honestly. Season Impact (rt) is already position-aware.
+
+**Phase 4 decisions (2026-09-27), built into `scripts/gen-game-deck.js`:**
+
+1. **Selection is a quota per position, best rt first, not one rt floor.** rt is output-first, so a
+   floor at 75 gives 765 ST against 41 CB (42% strikers, 4.8% FB plus CB). Quotas copy the synthetic
+   deck's mix so the sims stay comparable: ST 72, W 72, CAM 40, CM 72, CDM 40, FB 48, CB 56 = 400.
+2. **One card per player**, his highest-rt season among the pools that still had room.
+3. **Ever Present is the percentile of minutes within the card's own league-season.** The pool is
+   every outfield card in that league and season with 900+ minutes, not only deck cards (38,784 cards,
+   144 league-seasons). `radarFor`'s reliability divides by 38 x 90, which a 34-game league can never
+   reach; ranking inside the league-season makes season length cancel.
+4. **Master of Role is the mean of the four `radarFor` .scaled percentiles.** `.scaled.reliability`
+   is raw availability, not a percentile, so it is left out.
+
+Percentile convention everywhere: fraction strictly below x100, rounded (Postgres `percent_rank`), the
+same as `RADAR_POOL_REF`. Nothing is re-implemented: `radarFor`, `getVVTags`, `bandFor`, `bandPublic`,
+`fmtSeason` and `vvDisplayName` are called on vv-core, and `dealTier` comes from `withDealTiers`.
+
+**First generation (matview 58,066 rows): the deck is 2015/16 to 2025/26 only.** The radar needs
+detailed stats, which do not exist before 2015 (and the Premier League only partly in 2014/15). So 7 of
+the 12 seasons at rt 95+ can never enter the deck, including Messi 11/12 (97), the highest card on the
+platform. The top of the deck is 95 (Salah 24/25, Haaland 22/23, Messi 17/18, Suárez 15/16).
+
+**DECIDED: V1 is the Modern Era deck, by design.** It holds the seasons with full radar data, about
+2015/16 onward. Pre-2015 seasons are a later, separate **Legends** deck with its own moment set.
+**Not a defect**, and not to be "fixed" by loosening the radar filter.
+
+**Placeholder club colours on 122 of the 400 deck cards (measured 2026-09-27).** 62 clubs share the
+identical palette `#1a1a2e` / `#ffffff` / `#e94560` (Brighton, Nottingham Forest and Brentford among
+them); one more pair of clubs shares `#000000` / `#FFFFFF` / `#e94560`. The values come straight from
+`primary_colour` / `secondary_colour` / `accent_colour` on `player_card_mv`, so this is a data gap
+upstream, not a generator fault. **It blocks decision (c)'s club-coloured silhouette for about 30% of
+the deck** and needs real colours in the database (Terminal A's lane) before the silhouette art ships.
+Regenerate the deck after that fix.
 
 **Standing hazard, same as `RADAR_POOL_REF`:** `game-deck.json` is a snapshot. Regenerate it after
 any matview refresh, re-ingest or position backfill, and only AFTER the refresh (the generator reads
