@@ -1297,3 +1297,108 @@ judged at 600px because X renders it at roughly half size, and **the bottom of `
 already at 94% of its usable width**, so handles added bottom-right must be measured on `igf`
 first, never on `x`. And html2canvas is a different renderer from the browser, so the typography
 has to be verified in a captured PNG rather than in the live DOM.
+
+---
+
+## ITEM 10 LANDED , 2026-09-27. DECIDED, DEMOED, NOT BUILT.
+
+**Lucas picked AFTER 1 from `_demo_share10b.html`.** What ships when it is built:
+
+- **The verdict line in Fraunces**, the face `compare.html` already loads, at the ORIGINAL size
+  (`0.060` of the short side, 41px on the 1200x675 frame).
+- **Emphasis is the INK alone. NO WASH, in either theme.** Gold `#E8B84B` on dark, brand red
+  `#AD0332` on light.
+- **The emphasised phrase is the WINNER'S SURNAME**, derived from `winner_card_id` and the card's
+  own name. Nothing reads the sentence.
+- **The scoreline replaces the caption row** , two numerals, the loser at 0.55 opacity, the winner
+  in the identity colour, and a gold chip naming the MARGIN and never the victor.
+- **Handles top left.**
+
+### The deliberate trade, with the number beside it
+
+**AFTER 1 FAILS THE THUMBNAIL THRESHOLD AND WAS TAKEN ANYWAY. THIS IS A DECISION, NOT AN
+OVERSIGHT, AND IT IS RECORDED HERE SO NOBODY LATER "FIXES" IT.**
+
+- A share image is read at roughly **300px** in a feed first, which is a quarter of the 1200px
+  frame, so the displayed line size is the file size over four.
+- **AFTER 1 renders 41px in the file and 10.3px in the tile.** My own measurement called that
+  texture rather than type.
+- **The two variants that clear it were shown and declined: 0.085 reads 14.3px, and a lead-clause
+  crop at 0.105 reads 17.8px.**
+- **Lucas's reason, in his words: "the line is right at full size, and the cards plus the
+  scoreline carry the thumbnail."** The cards are the platform's strongest asset at any size and
+  the numerals are large; the sentence is for the reader who stops.
+
+**IF THIS IS EVER REOPENED, THE LEVER IS `SH_TYPE.verdict` AND THE NUMBER TO BEAT IS 14.3px
+DISPLAYED.** Do not re-derive it from scratch; the three measured points are above.
+
+### Why the emphasis is honest, measured rather than argued
+
+**The winner's surname is STRUCTURAL: it comes from `winner_card_id`, never from parsing the
+sentence.** Measured over every cached verdict with a decided winner, **n=72**:
+
+| | |
+|---|---|
+| winner's surname appears in `who` | **69 (95.8%)** |
+| appears first | 68 of 69 |
+| appears more than once | **0** , no ambiguity about which occurrence to mark |
+| neither surname appears | 2 , those render with **no emphasis**, which is the honest fallback |
+
+**This is the same justification SEC C already accepts for the A/B identity colours on compare:** a
+tint on text that already says who it is, never colour carrying meaning on its own. The gold rim
+and the verdict tag still carry the winner.
+
+**AND TWO ROUTES WERE REFUSED ON PRINCIPLE, BY LUCAS:** a prompt edit to mark `who` (item 25 is
+pending and rebuilding every cached verdict is not worth a coloured phrase) and a heuristic that
+picks a phrase (**"we do not invent emphasis the writer did not choose"**).
+
+### The colour numbers
+
+**Brand red `#AD0332` on the `.sf.light` gradient: 6.93 / 6.24 / 5.69 across the three stops,
+worst 5.69, clears AA everywhere.** Raw brand `#E70443` is **3.59** at the worst stop and FAILS,
+which is why the red is the darkened one `--pink-ink` already takes in light mode.
+
+**On separation from the surrounding prose the red BEATS the dark gold it replaces: 2.21 against
+1.70.** For scale, gold against cream on the dark frame is **1.61**, so light becomes the
+STRONGER of the two grounds. **Verified in the captured PNG, not the DOM:** the darkest pixel
+inside the emphasis span is `rgb(173,3,50)` and the prose beside it `rgb(28,27,26)`.
+
+### Handles , top left, and it contradicts the original brief
+
+Measured against the real chrome on all three formats:
+
+- **The tagline row has 60px spare on igf and igs**, against the **247px** two handles need. Out.
+- **Room below the caption block is 41px on igf and igs but only 26px on `x`**, so a dedicated row
+  would need per-format handling , which is how that bottom block got full in the first place.
+- **The top-left corner is EMPTY on all three.** It costs no vertical space where height binds and
+  sits diagonally opposite the wordmark, so it cannot compete with it.
+
+**Bottom right was asked for and the measurement does not support it** , the caption block is
+already there on every format, and the collision was measured at 156x11 on `x` and 247x17 on igf
+and igs. Putting them bottom right means the caption gives up room, which is a change to shipped
+chrome rather than an addition.
+
+---
+
+## ITEM 11 , THE SAVED CARD ON A PHONE. HIS WORDING, NOT SCOPED, NOT BUILT.
+
+> The saved card for a phone should be the CARD, not a card on a page. Full bleed to the screen
+> edges, the plate colour carried to the edge so an Iconic card is gold edge to edge, and a tap
+> flips it to the back. It should feel like you have the card itself on your phone, not a
+> screenshot of one.
+
+**Scope it when it comes up. His four questions for then, verbatim:** what "full screen" means
+across phone aspect ratios; whether the flip is the card page's existing flip or a new one;
+whether it saves as an image or is a live page; and what the back shows at that size.
+
+**THREE RECORDED CONSTRAINTS WILL BEAR ON IT, so whoever scopes it reads these first rather than
+rediscovering them:**
+- **The mobile flip is a SCALE-SWAP, not 3D** (SEC C, invariant 5: at <=720px the card does not
+  rotate, it swaps through the VV coin, and the coin tier is derived from prestige so the colour
+  matches by construction). "A tap flips it" therefore already has an implementation, and it is
+  not the desktop one.
+- **NO overflow clip on any flip ancestor** (invariant 4) , iOS flattens `preserve-3d` under a
+  clip, and "full bleed to the screen edges" is exactly the kind of change that introduces one.
+- **The card face does NOT follow the theme and has three grounds** , plain cream, iconic gold,
+  generational dark. "Gold edge to edge" is the iconic ground only, and any new ink introduced at
+  that size must be seen on all three before it is called done.

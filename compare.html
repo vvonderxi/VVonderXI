@@ -1721,7 +1721,13 @@ body.light .pkmsub{color:var(--ink-soft)}
   function vvFlipReveal(slot, card, cw){
     vvResetVerdict();
     var host=document.getElementById('card'+slot); if(!host){ vvSizeCards(); return; }
-    if(!host.querySelector('.vvcard')){ host.innerHTML=buildCard(card,cw); vvSizeCards(); vvLoadSlotSeasons(slot); return; }   // empty slot: static
+    if(!host.querySelector('.vvcard')){ host.innerHTML=buildCard(card,cw); vvSizeCards(); return; }   // empty slot: static
+    /*  THE DIRECT `vvLoadSlotSeasons(slot)` THAT USED TO SIT ON THAT LINE IS GONE, 2026-09-27.
+        `vvSizeCards` reaches the loader through `vvEnsureSeasonFolds`, so the call was a
+        duplicate of the line before it, and the two racing is what rendered the trigger twice.
+        It is removed rather than left harmless-under-the-token because the second entry also
+        costs a second query and a second batched honours lookup per pick , the exact cost the
+        idempotency note was written to avoid.  */
     vvCardFlip(host, { swap:true, newHTML:buildCard(card,cw), cw:cw, prestige:card.prestige, onDone:function(){ vvLoadSlotSeasons(slot); } });
   }
   function vvUpdateCompareGate(){
@@ -1854,6 +1860,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
   var SLOT_SEASONS={};   // slot -> rowToCard-mapped seasons (with honours), for the per-slot fold
   var SLOT_OPEN={};      // slot -> is the fold open? AUTHORITATIVE user-fold state (see vvLoadSlotSeasons)
+  var SLOT_REQ={};       // slot -> monotonic request id; the newest call wins, see vvLoadSlotSeasons
   async function vvLoadSlotSeasons(slot){
     var cmp = slot==='A'?CMP_A:CMP_B;
     var host = document.getElementById('card'+slot);
@@ -1867,6 +1874,24 @@ body.light .pkmsub{color:var(--ink-soft)}
         record alone would go stale if something removed the fold, and the fold alone cannot
         tell which card it belongs to.  */
     if(cmp && cmp.card_id!=null && old && SLOT_MOUNTED[slot]===cmp.card_id) return;
+    /*  THE IDEMPOTENCY GUARD ABOVE RUNS BEFORE THE FIRST `await`, SO IT CANNOT SEE A CALL THAT
+        IS ALREADY IN FLIGHT , and that is how the trigger came to render TWICE, reported on the
+        preview 2026-09-27 as "All 13 seasons" followed by "All 13 seasons" again.
+        REPRODUCED, not reasoned: with no fold mounted, `vvSizeCards(); vvLoadSlotSeasons('A')`
+        (which is `vvFlipReveal`'s empty-slot branch verbatim) yields TWO elements both carrying
+        `id="seasonsA"`. Both entries pass the guard because neither has inserted yet, both await
+        the query, and both insert. `getElementById` then returns only the first, so the next
+        call's `old.remove()` removes one and the duplicate survives every later pass.
+        IT STARTED 2026-09-15 IN `004ad8c`, the commit that hung the fold off `vvSizeCards` so a
+        deep link would get one. That was right, and it left the older path-based call in place
+        beside it, so the function acquired a third caller and its first concurrent one on the
+        same day. The commit message reads "the season fold hangs off the state, not off one code
+        path" , the state half landed and the path half was not removed.
+        THE FIX IS A REQUEST TOKEN RATHER THAN A LATCH. A latch would drop a LATER call, and a
+        later call is exactly what a season switch is , the guard above is keyed on card_id for
+        that reason. A token lets the newest call win and makes every superseded one abandon
+        before it touches the DOM.  */
+    var _req = (SLOT_REQ[slot] = (SLOT_REQ[slot] || 0) + 1);
     // User-controlled fold: preserve open state across a season switch. AUTHORITATIVE flag,
     // not a DOM read , the old `old.querySelector('.seasonrows')` check depended on the list
     // still being in the DOM at this moment (after an async flip + two awaits), which is a
@@ -1909,7 +1934,16 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
     try{ await attachHonoursBatch(rows); }catch(e){}   // honour pills, one batched query
+    /*  EVERY AWAIT ABOVE IS A PLACE A NEWER CALL CAN OVERTAKE THIS ONE. Checked HERE, after
+        the last of them, because this is the first statement that mutates shared state.  */
+    if(SLOT_REQ[slot] !== _req) return;
     SLOT_SEASONS[slot]=rows;
+    /*  AND A HARD INVARIANT ON TOP OF THE TOKEN: at most one fold per slot, enforced at the
+        only place one is ever inserted. The token is the correct fix and this is the one that
+        cannot be reasoned wrong , if anything ever reaches here twice, the page still holds a
+        single trigger. It also cleans up a duplicate left by a session that loaded before this
+        change, without needing a reload.  */
+    var stray; while((stray = document.getElementById('seasons'+slot))) stray.remove();
     var wrap=document.createElement('div'); wrap.id='seasons'+slot; wrap.className='cmp-seasonfold';
     wrap.innerHTML='<button class="cmp-seasontrigger" onclick="event.stopPropagation();vvSlotSeasonsToggle(\''+slot+'\')">All '+rows.length+' seasons <span class="chev">&#9662;</span></button>';
     host.insertAdjacentElement('afterend', wrap);
