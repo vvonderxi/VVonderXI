@@ -140,3 +140,23 @@ beyond that waits for real traffic to define it.
 **The fix for comparisons is therefore item 1 above and then streaming, not cache.** A 26-second
 wait that shows the numbers immediately, paints no loader until it has earned one, and then writes
 in front of you is a different product from a blank 26 seconds. That is where the effort belongs.
+
+---
+
+## THE GATE, RESTATED AS LUCAS SET IT (2026-09-27) , TWO CONDITIONS, AND THE REMINDING IS CLAUDE'S JOB
+
+1. **The rule 4 edit must have SHIPPED.** Not agreed, not scoped , shipped. Every version is a
+   prompt fingerprint, so anything warmed before it is discarded by it.
+2. **Lucas tops the balance up BEFORE the spend.** $32.94 remains with auto-reload OFF, so $20 of
+   warming would leave about a thousand cold first views and then a hard stop.
+
+**AND HE ASKED NOT TO BE THE ONE WHO REMEMBERS: "Remind me at that point rather than assuming I
+remember."** So it is written into the punchlist row for item 27 as well as here, because a
+reminder that depends on somebody remembering is the rule this project has already recorded as
+forgotten. **When item 25 ships, say so in the same breath and put the three tiers back on the
+table.**
+
+**ITEM 1 ON THIS PAGE IS DONE , `9d0744d`, the 250ms loader hold.** So the "no wait" half of what
+warming buys is already in place and free: a warmed card now shows no loader at all rather than a
+flash of one. That changes the value of warming from "a shorter wait" to "no wait", which is the
+version worth $20 rather than the version worth arguing about.
