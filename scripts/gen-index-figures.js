@@ -101,6 +101,68 @@ async function main() {
       'card cannot sit near a band edge and counting it dilutes the figure',
       'derived');
 
+  /*  ── THE OPENER , THE MOST PROMINENT NUMBER ON THE SITE, SO IT IS THE LEAST ALLOWED
+      TO BE TYPED. The page leads on "thirteen of fourteen Ballon d'Or seasons land in the
+      Index's top three bands". Both halves are generated here.
+
+      IT IS A READ-OUT AND NEVER A DIAL. CLAUDE.md's anchor guardrail says famous names
+      validate the scale and must never tune it. A headline built on agreement is exactly
+      where that slips, so: this figure is REPORTED, and nothing in the engine may ever be
+      changed to move it. If a recalibration drops it, the honest act is to publish the
+      lower number, not to re-tune until it comes back.
+
+      THE MATCH IS PLAYER-AND-SEASON, NOT PLAYER-SEASON-LEAGUE. A Ballon d'Or is a global
+      award and its league_code is whichever league we recorded it against, so binding on
+      league would silently drop a winner who moved. Where a player holds two cards in one
+      season (a cross-league move) the HIGHEST scored card is taken, because the award is
+      for the player's year rather than for one of its halves.  */
+  const BANDS = { top3: 85, iconic: 90, gen: 95 };
+  const pageAll = async (t, sel) => {
+    let a = [], i = 0;
+    for (;;) {
+      const r = await sb.from(t).select(sel).range(i, i + 999);
+      if (r.error) throw new Error(r.error.message);
+      a = a.concat(r.data);
+      if (r.data.length < 1000) break;
+      i += 1000;
+    }
+    return a;
+  };
+  const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))
+    .filter(r => r.honour_type === 'ballon_dor' && r.api_player_id != null);
+  const allCards = await pageAll(MV, 'api_player_id,season_year,rt');
+  const byPlayerSeason = {};
+  for (const c of allCards) {
+    if (c.rt == null) continue;
+    const k = c.api_player_id + '|' + c.season_year;
+    if (!byPlayerSeason[k] || c.rt > byPlayerSeason[k]) byPlayerSeason[k] = c.rt;
+  }
+  const bdScores = bd.map(r => byPlayerSeason[r.api_player_id + '|' + r.season_year])
+                     .filter(v => v != null);
+
+  /*  A COUNT THAT CANNOT FAIL TELLS YOU NOTHING. Every award row must resolve to a scored
+      card, or the headline is quietly measuring a subset. This throws rather than reporting
+      a smaller, wrong-looking-but-plausible number.  */
+  if (bdScores.length !== bd.length)
+    throw new Error(`ballon d'or: ${bd.length} award rows but ${bdScores.length} scored cards , ` +
+                    'the headline would be measuring a subset. Resolve the missing card first.');
+
+  add('ballon_dor_seasons', bd.length, 'Ballon d\'Or seasons the record holds',
+      'honours rows with honour_type = ballon_dor and a non-null api_player_id, each resolving ' +
+      'to a scored card. season_year is the SEASON the award was for, so it runs one behind the ' +
+      'award year; 2019/20 is correctly absent because that award was cancelled',
+      "select count(*) from honours where honour_type='ballon_dor' and api_player_id is not null");
+
+  add('ballon_dor_top_three_bands', bdScores.filter(v => v >= BANDS.top3).length,
+      'of those, the number scoring 85 or better , World Class, Iconic or Generational',
+      `rt >= ${BANDS.top3} on the highest scored card for that player-season. THE MISS IS PART ` +
+      'OF THE CLAIM and is published beside it, not hidden',
+      `-- join honours to ${MV} on (api_player_id, season_year), take max(rt), count rt >= ${BANDS.top3}`);
+
+  add('ballon_dor_iconic_or_better', bdScores.filter(v => v >= BANDS.iconic).length,
+      'of those, the number scoring 90 or better',
+      `rt >= ${BANDS.iconic}, same join`, `-- as above, rt >= ${BANDS.iconic}`);
+
   const stamp = new Date().toISOString().slice(0, 10);
   const out = {
     generated: stamp,

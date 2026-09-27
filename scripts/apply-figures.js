@@ -46,7 +46,12 @@ const TARGETS=process.argv.includes('--only')
     the check can hold it, not in a commit message nobody re-reads.
     WHEN ITEM 14 SHIPS, DELETE THE ENTRY , the check then fails until the page is wired, which
     is the reminder.  */
-const UNWIRED={ 'vvindex.html':'rebuild pending, punchlist item 14 , wiring lands with it' };
+/*  vvindex.html WAS EXEMPT UNTIL 2026-09-27 , the exemption named item 14 as its trigger and
+    item 14 has now landed, so it is gone. Every figure on that page is generated.
+    IT EARNED ITSELF ON THE WAY OUT: the page had been carrying 18,725 and 872, generated on
+    2026-09-19, and a fresh run returns 19,138 and 878. The numbers had aged by 413 and 6 while
+    reading as facts, which is the entire argument for this file.  */
+const UNWIRED={};
 
 const doc=JSON.parse(fs.readFileSync(FIG,'utf8'));
 const byKey={}; for(const f of doc.figures) byKey[f.key]=f;
