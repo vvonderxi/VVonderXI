@@ -782,6 +782,7 @@ environment, which is itself the reason they are listed.
 
 
 ### C11. Seven deployed importer endpoints are public, unauthenticated and write to the database
+- **[RE-VERIFIED 2026-09-27 AGAINST THE LIVE DEPLOYMENTS, NOT THE RECORD. THE DECISION HELD AND THERE IS NOTHING LEFT TO DECIDE.** `git ls-tree -r` per branch: `redesign-compare` ships **`api/analyse.js` ALONE**; `vvonderxi_BIGGER` ships two (`analyse` + the since-deleted `get-seasons`, which the merge removes); **`coming-soon`, which is what production actually serves, ships NO `api/` directory at all.** Probed live: all seven importer paths plus `auth`, `log`, `db`, `get-seasons`, `refresh-players` and `search-player` return **404 on the preview**, and **`https://vvonderxi.com/api/*` returns 404 for every one of them including `analyse`** , production has zero serverless functions today. **And C11's one genuine residue is closed too: `comparison_log` and `search_log` are BOTH DROPPED**, so the 55 rows are no longer an open question.]**
 - **Found 2026-08-31 while tracing C5. Not covered by any other item, and it is a decision, not a bug report.**
 - **Check:** `import-players`, `import-positions`, `import-positions-v2`, `import-standings`,
   `verify-positions`, `verify-squad-positions`, `apifootball-probe` are tracked, therefore deployed,
