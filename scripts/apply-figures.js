@@ -133,6 +133,30 @@ for(const rel of TARGETS){
   if(CHECK){ bad+=mism; console.log(`  ${rel}: ${n} figures, ${mism} drifted`); }
   else { if(out!==s){ fs.writeFileSync(p,out); touched++; } console.log(`  ${rel}: ${n} figures written`); }
 }
+/*  NOTHING CARRYING FIGURES MAY SIT OUTSIDE THE TARGET LIST. TARGETS is hand-written, which
+    makes it the same shape of blind spot as the anchored regex: a new page with data-fig spans
+    would be rewritten by nobody and checked by nobody, and every run would still say OK.
+    Measured 2026-09-27: the three files carrying figures ARE the three targets, so this guard
+    starts clean , which is exactly when to add it, rather than after a page has drifted.  */
+{
+  const roots=['.','docs/pdf'];
+  const seen=new Set(TARGETS.map(t=>path.normalize(t)));
+  for(const dir of roots){
+    const abs=path.join(ROOT,dir);
+    if(!fs.existsSync(abs)) continue;
+    for(const f of fs.readdirSync(abs)){
+      if(!f.endsWith('.html')) continue;
+      const rel=path.normalize(path.join(dir,f));
+      if(seen.has(rel)) continue;
+      const body=fs.readFileSync(path.join(abs,f),'utf8');
+      if(/\bdata-fig(-series)?(-[a-z]+)?="/.test(body)){
+        console.log(`  ${rel}: carries generated figures but is NOT in TARGETS , nothing checks it`);
+        bad++;
+      }
+    }
+  }
+}
+
 if(CHECK){
   console.log(bad? `\nFAIL , ${bad} problem(s): a figure drifted, or a file is unwired without an exemption.`
                  : `\nOK , every data-fig figure matches the generator (${files} files).`);
