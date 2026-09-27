@@ -1330,6 +1330,17 @@ body.light .pkpanel{background:var(--cream);border-color:rgba(28,27,26,.28)}
       rule wins on ORDER at equal specificity , a media query adds none. It must
       stay below it. */
   .pkpanel.open{display:flex;flex-direction:column}
+  /*  ONLY THE LIST MAY GIVE WAY. A flex item shrinks by default, so the moment the
+      panel sat at its height cap EVERY child started paying for the overflow, and
+      the one that paid was the filter fold: .pkmore needs 182px, has max-height
+      312px, and rendered at THIRTY-SIX. Opening the filters produced a 36px sliver
+      while the results list below kept its 440. Measured on the page, not read off
+      the rule , as a display:block panel it had always taken its natural height,
+      and nothing about the change to flex says out loud that it would stop.
+      So the chrome and the fold are fixed, and .pkresults is the single item that
+      absorbs the pressure. That is also the right priority: the thing you just
+      opened gets its space and the list gives it up. */
+  .pkpanel.open > *{flex:0 0 auto}
   /*  `0 1 auto` , SHRINK, NEVER GROW, AND THE DIFFERENCE IS A SHORT LIST. With
       `1 1 auto` the list stretches to fill the sheet, so a search matching two
       seasons drew a 608px sheet holding two rows and a lot of nothing. Measured.
