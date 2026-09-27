@@ -1,7 +1,7 @@
 // CPU opponents. One interface: decide(ctx, view, player, legal, rng) -> action.
 // They see ONLY viewFor(state, player) plus public history. Swappable for a better AI later.
 
-import { valueOf, fieldFor, CATEGORIES } from '../core.js';
+import { valueOf, fieldFor, ladderFor, CATEGORIES } from '../core.js';
 const roleOf = (view, p) => (view.active === p ? 'attack' : 'defence');
 
 const other = p => (p === 'A' ? 'B' : 'A');
@@ -114,7 +114,8 @@ function sampleOppHand(model, rng) {
 
 function bestCardUtility(ctx, ai, view, me, cat, model, rng, P) {
   const hand = view.players[me].hand;
-  const edge = ctx.config.verdicts.filter(v => v.crowns).reduce((m, v) => Math.min(m, v.minDiff), Infinity) * (CATEGORIES[cat].thresholdScale ?? 1);
+  const mins = ladderFor(cat, ctx.config);
+  const edge = ctx.config.verdicts.filter(v => v.crowns).reduce((m, v) => Math.min(m, mins[v.id]), Infinity);
   const oppPlays = [];
   for (let s = 0; s < P.samples; s++) {
     const oh = sampleOppHand(model, rng);

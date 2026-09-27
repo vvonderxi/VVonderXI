@@ -174,11 +174,14 @@ function resolveBattle(ctx, state, events) {
   const comparison = compare(ctx.cards[idA], ctx.cards[idB], state.category, state.active);
   const verdict = classify(comparison, ctx.config);
   events.push({ type: 'COMPARISON', ...comparison });
-  events.push({ type: 'VERDICT', winner: comparison.winner, ...verdict });
+  // A verdict that does not crown has no round winner. COMPARISON keeps who was numerically ahead;
+  // VERDICT, pending and history say null, so initiative, effects and every stat see a no-decision.
+  const roundWinner = verdict.crowns ? comparison.winner : null;
+  events.push({ type: 'VERDICT', winner: roundWinner, ...verdict });
 
   const played = { A: idA, B: idB };
   state.players.A.locked = null; state.players.B.locked = null;
-  state.pending = { comparison, verdict, winner: comparison.winner, played };
+  state.pending = { comparison, verdict, winner: roundWinner, played };
 
   if (!verdict.crowns) {
     // Stalemate: both cards go home. The margin class, in game form.

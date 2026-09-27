@@ -80,11 +80,31 @@ export function compare(cardA, cardB, categoryId, attacker = 'A') {
 }
 
 // ---------------------------------------------------------------- VERDICT
+/** A moment's threshold scale: config.thresholdScales overrides the CATEGORIES default (tunable, swept). */
+export function scaleFor(categoryId, config) {
+  return config?.thresholdScales?.[categoryId] ?? CATEGORIES[categoryId].thresholdScale ?? 1;
+}
+
+/** Minimum difference, in the moment's own units, for each verdict id.
+ *  config.ladders[id] = [varMax, photoMin, clearMin, bragMin, masterMin] replaces the scaled
+ *  shared ladder outright for that moment (Big Game reads Compare's rt-gap ranges this way). */
+export function ladderFor(categoryId, config) {
+  const own = config?.ladders?.[categoryId];
+  if (own) {
+    const [varMax, edge, clear, dominant, demolition] = own;
+    if (!(varMax < edge && edge < clear && clear < dominant && dominant < demolition))
+      throw new Error(`config.ladders.${categoryId} must be strictly increasing, got ${JSON.stringify(own)}`);
+    return { STALEMATE: 0, EDGE: edge, CLEAR: clear, DOMINANT: dominant, DEMOLITION: demolition };
+  }
+  const scale = scaleFor(categoryId, config);
+  return Object.fromEntries(config.verdicts.map(v => [v.id, v.minDiff * scale]));
+}
+
 /** Classify a comparison against the config ladder. Renderer receives this as-is. */
 export function classify(comparison, config) {
-  const scale = CATEGORIES[comparison.category].thresholdScale ?? 1;
-  const ladder = [...config.verdicts].sort((x, y) => y.minDiff - x.minDiff);
-  let v = ladder.find(t => comparison.difference >= t.minDiff * scale) ?? ladder[ladder.length - 1];
+  const mins = ladderFor(comparison.category, config);
+  const ladder = [...config.verdicts].sort((x, y) => mins[y.id] - mins[x.id]);
+  let v = ladder.find(t => comparison.difference >= mins[t.id]) ?? ladder[ladder.length - 1];
   if (!comparison.winner) v = config.verdicts.find(t => !t.crowns) ?? v;
   return {
     verdictId: v.id,

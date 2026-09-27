@@ -6,7 +6,7 @@
 /** @typedef {'WINNER_KEEPS'|'LOSER_GETS'|'ALTERNATE'} InitiativeRule */
 
 export const DEFAULT_CONFIG = {
-  version: 'v1.1-moments', // set C from the 2026-09-27 sweep, synthetic deck. Re-run on real deck.
+  version: 'v1.2-real', // set C rules; ladder 2/9/18/31 + Big Game on Compare's rt-gap ranges, from the 2026-09-27 real-deck sweep.
 
   // ---- hands and deck
   handSize: 5,
@@ -28,14 +28,16 @@ export const DEFAULT_CONFIG = {
 
   // ---- verdict ladder. minDiff is in battle points (0-100 scale).
   // A category can rescale these via its own thresholdScale (VV Score uses real rt points).
-  // tagKey links to an existing VERDICT_TAGS key in vv-core (the 5 rt-gap ladder tags, verified 2026-09-27).
-  // Display names are read from VERDICT_TAGS at runtime; only the key lives here. Thresholds stay game-owned.
+  // tagKey links to an existing VERDICT_TAGS key in vv-core, verified 2026-09-27. The four crowning verdicts
+  // borrow Compare's rt-gap tags; STALEMATE borrows the margin-gated the_debate ("The Debate Lives On"), because
+  // it crowns no one and var_close on Compare does crown. Display names are read from VERDICT_TAGS at runtime;
+  // only the key lives here. Thresholds stay game-owned.
   verdicts: [
-    { id: 'STALEMATE',  minDiff: 0,  severity: 0, crowns: false, tagKey: 'var_close', options: [], picks: 0, bonus: [] },
-    { id: 'EDGE',       minDiff: 3,  severity: 1, crowns: true,  tagKey: 'photo_finish', options: ['DISCARD_PLAYED'], picks: 1, bonus: [] },
-    { id: 'CLEAR',      minDiff: 10, severity: 2, crowns: true,  tagKey: 'clear_edge', options: ['DISCARD_PLAYED', 'PRESS'], picks: 1, bonus: [] },
-    { id: 'DOMINANT',   minDiff: 20, severity: 3, crowns: true,  tagKey: 'bragging_rights', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 1, bonus: ['GAIN_TOKEN'] },
-    { id: 'DEMOLITION', minDiff: 34, severity: 4, crowns: true,  tagKey: 'masterclass', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 2, bonus: [] },
+    { id: 'STALEMATE',  minDiff: 0,  severity: 0, crowns: false, tagKey: 'the_debate', options: [], picks: 0, bonus: [] },
+    { id: 'EDGE',       minDiff: 2,  severity: 1, crowns: true,  tagKey: 'photo_finish', options: ['DISCARD_PLAYED'], picks: 1, bonus: [] },
+    { id: 'CLEAR',      minDiff: 9,  severity: 2, crowns: true,  tagKey: 'clear_edge', options: ['DISCARD_PLAYED', 'PRESS'], picks: 1, bonus: [] },
+    { id: 'DOMINANT',   minDiff: 18, severity: 3, crowns: true,  tagKey: 'bragging_rights', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 1, bonus: ['GAIN_TOKEN'] },
+    { id: 'DEMOLITION', minDiff: 31, severity: 4, crowns: true,  tagKey: 'masterclass', options: ['DISCARD_PLAYED', 'PRESS', 'DISCARD_OTHER'], picks: 2, bonus: [] },
   ],
 
   pressRule: 'NOT_LEADING',
@@ -49,6 +51,15 @@ export const DEFAULT_CONFIG = {
   tokensPerPlayer: 2,
   maxTokens: 3,
   enabledTokens: ['REROLL_CATEGORIES'],
+
+  // Per-moment override of CATEGORIES[id].thresholdScale, e.g. { bigGame: 0.25 }. Empty = use the defaults.
+  thresholdScales: {},
+
+  // Per-moment explicit ladder, in the moment's own units, replacing the scaled shared ladder:
+  // [VAR max, Photo min, Clear min, Brag min, Master min]. Big Game reads rt, so it uses Compare's
+  // own gap tags (vv-core.js VERDICT_TAGS 5448-5452): VAR 1, Photo 2-3, Clear 4-6, Brag 7-9,
+  // Master 10+. A gap of 0 or 1 is STALEMATE (The Debate Lives On), no decision.
+  ladders: { bigGame: [1, 2, 4, 7, 10] },
 
   // Player-facing names. Engine ids never change; rename freely here.
   labels: {

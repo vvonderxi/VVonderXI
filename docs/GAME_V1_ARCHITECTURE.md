@@ -29,7 +29,7 @@ Verified read-only against the tree at `7e7a35b`.
 
 a) **`vv-core.js` loads on 5 shipping pages:** `card.html`, `compare.html`, `index.html`, `playbook.html`, `rankings.html` (all on token `20260927a`). `game.html` will be the 6th and **must join the cache-token bump**. Find the surfaces by grep, never by this count.
 
-b) **Compare has 5 rt-gap verdict tags plus 2 margin-gated tags** (`the_debate`, `decided_on_record`). The game borrows the 5 gap-tag NAMES one to one: STALEMATE -> `var_close`, EDGE -> `photo_finish`, CLEAR -> `clear_edge`, DOMINANT -> `bragging_rights`, DEMOLITION -> `masterclass`. Display names are read from `VERDICT_TAGS` at runtime, never hardcoded. Thresholds stay in game config.
+b) **Compare has 5 rt-gap verdict tags plus 2 margin-gated tags** (`the_debate`, `decided_on_record`). The game borrows the 5 gap-tag NAMES one to one: STALEMATE -> `var_close`, EDGE -> `photo_finish`, CLEAR -> `clear_edge`, DOMINANT -> `bragging_rights`, DEMOLITION -> `masterclass`. **[Changed in v1.2-real: STALEMATE -> `the_debate`, see the tuning section. `var_close` crowns a winner on Compare, and a game STALEMATE crowns no one.]** Display names are read from `VERDICT_TAGS` at runtime, never hardcoded. Thresholds stay in game config.
 
 c) **LOCKED: card art is silhouette-first.** The VV silhouette in club colours is the default. The API-Football headshot is an optional layer behind a config flag, **OFF by default**, until image rights are cleared with a lawyer. Holograms are designed around the silhouette.
 
@@ -307,3 +307,46 @@ What moved, and what it means:
 6. **Sets A and B produce identical mirror results on both decks** (the Tactician mirror never reaches a
    state where PRESS NOT_LEADING differs from ALWAYS); only the PRESS-lover column separates them.
    Pre-existing, not introduced by the loader.
+
+## Tuning pass v1.2-real (2026-09-27, real deck, 1,200 matches per cell, seeded)
+
+**What changed:**
+1. **Full Ninety spreads 0 to 100.** The league-season percentile of minutes (unchanged, it removes the
+   34-game-league bias) is re-ranked, unrounded, across the 400 deck cards. Before, every position sat at
+   a median of 81 to 91; now the medians run CM 37 to ST 61. Same 400 cards; 114 changed `dealTier`.
+   Deck md5 `1c0d4868`.
+2. **Shared ladder 2 / 9 / 18 / 31** for the six percentile moments (was 3 / 10 / 20 / 34), picked from a
+   540-ladder sweep (`game/sim/ladder-sweep.js`). EDGE cannot sit between 2 and 3: gaps are whole numbers,
+   so VAR on those six is about 6% at 2 and 9% at 3, never 7 to 8.
+3. **Big Game uses Compare's own rt-gap ranges, not a scale.** `config.ladders.bigGame = [1, 2, 4, 7, 10]`
+   (vv-core.js VERDICT_TAGS 5448-5452): Photo 2-3, Clear 4-6, Brag 7-9, Master 10+, and a gap of 0 or 1 is
+   STALEMATE. `ladderFor()` in `core.js` serves both `classify` and the CPU's edge estimate.
+4. **STALEMATE maps to `the_debate` ("The Debate Lives On").** `var_close` is no longer used by the game.
+5. **A verdict that does not crown has no round winner.** VERDICT, pending and history carry `winner: null`;
+   COMPARISON keeps who was numerically ahead. `test-engine.js` now asserts it on every round and fails on
+   the old engine. Under set C (ALTERNATE) no outcome changes; only the statistics do, because a
+   gap-STALEMATE was being counted as a win. Under LOSER_GETS and WINNER_KEEPS it also changes initiative.
+
+**Set C results:**
+
+| | STALEMATE | Photo | Clear | Brag | Master |
+|---|---|---|---|---|---|
+| Target | 7-8 | 25-28 | 25 | 22 | 17-18 |
+| All moments | 7.6 | 30.3 | 24.7 | 20.5 | 16.9 |
+| Big Game alone | 21.7 | 34.1 | 23.5 | 11.9 | 8.7 |
+
+Skill (Tact v Greedy) 63.2 (floor 62). PRESS-lover 52.2. Rounds 7.5. Comebacks 37.1. Leader after R4
+wins 64.3. Attacker round-win, crowned rounds only: overall 63.9; One on One 64.1, Killer Ball 65.2,
+Break the Lines 62.1, Counter 62.7, **Big Game 68.7**, Full Ninety 63.7, Master of Role 62.7.
+
+**What it means:**
+1. **Big Game is now a high-variance moment the CPU avoids.** The deck's rt runs only 72 to 95, so 21.7% of
+   Big Game rounds end within a point and decide nothing, and Masterclass there is rare (8.7%). The CPU
+   picks it 10.3% of the time against 14 to 16% for the rest. When it does decide, the attacker takes it
+   68.7%. Compare's ranges were built for any two seasons, not only elite ones; this is the cost of using
+   them exactly.
+2. **The overall mix is on target within about 2 points**; Photo runs high and Brag low, mostly from Big Game.
+3. **Skill fell 2 points** against the same ladder with Big Game at scale 0.20 (65.2 in the sweep). That
+   version gave Big Game its own on-target mix (Master 17%) but not Compare's ranges.
+4. **Full Ninety is a real contest now**: chosen 16.1% (was 11.5%).
+

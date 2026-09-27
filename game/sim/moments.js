@@ -27,5 +27,8 @@ for (const [label, pool] of [['ABSTRACT stats', ABSTRACT], ['FOOTBALL MOMENTS', 
   console.log(`\n${label}\n  skill T>G ${skill.winRateA}  | press-lover ${press.winRateA}  | rounds ${m.roundsMean}  | attacker/active wins round ${m.activePlayerRoundWin}  | leader@R4 ${m.leaderAfter4Wins}  | comeback ${m.comebackRate}`);
   console.log(`  round win rate when played:  ${posLine}`);
   console.log(`  moment mix: ${JSON.stringify(m.categoryMix)}`);
+  const vm = mx => ['STALEMATE', 'EDGE', 'CLEAR', 'DOMINANT', 'DEMOLITION'].map(v => `${v} ${mx?.[v] ?? 0}`).join('  ');
+  console.log(`  verdict mix, all moments:  ${vm(m.verdictMix)}`);
+  if (m.verdictMixByCategory.bigGame) console.log(`  verdict mix, Big Game:     ${vm(m.verdictMixByCategory.bigGame)}`);
   console.log(`  attacker round-win: ` + pool.map(c => `${c} ${m.activeWinByCategory[c] == null ? 'NR' : m.activeWinByCategory[c] + '%'}`).join('  '));
 }

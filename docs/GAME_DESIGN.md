@@ -36,13 +36,15 @@ Four sentences, no exceptions, no tables. If a rule cannot be taught inside this
 
 **The verdict** (margin between the two numbers , the same words the Compare page uses)
 
-| Verdict | Margin | Reward (choose) |
-|---|---|---|
-| **VAR , no decision** | 0 to 2 | Nothing. Both seasons go home. |
-| **Photo Finish** | 3+ | Into Legacy |
-| **A Clear Edge** | 10+ | Into Legacy **or** High Press |
-| **Bragging Rights Settled** | 20+ | Into Legacy, High Press **or** Assist, plus a Tactical Switch token |
-| **Masterclass** | 34+ | **Any two** of those |
+| Verdict | Margin (six moments) | Margin in Big Game (rt points, Compare's own ranges) | Reward (choose) |
+|---|---|---|---|
+| **The Debate Lives On , no decision** | 0 to 1 | 0 to 1 | Nothing. Both seasons go home. No round winner. |
+| **Photo Finish** | 2+ | 2 to 3 | Into Legacy |
+| **A Clear Edge** | 9+ | 4 to 6 | Into Legacy **or** High Press |
+| **Bragging Rights Settled** | 18+ | 7 to 9 | Into Legacy, High Press **or** Assist, plus a Tactical Switch token |
+| **Masterclass** | 31+ | 10+ | **Any two** of those |
+
+Values as of config `v1.2-real`; `game/engine/config.js` is the source and wins on any conflict.
 
 - **Into Legacy:** your winning season leaves your Squad for good. One step closer.
 - **High Press:** keep your season; your rival brings a card on from the Bench. **Only if you hold at least as many cards as they do** , it is a way back into a game, not a way to finish one.
@@ -128,7 +130,7 @@ Two speeds from the same event stream. **Cinematic** the first time each moment 
 **Severity escalation, premium not tacky:**
 | Verdict | Treatment |
 |---|---|
-| VAR | A VAR-screen overlay, freeze, "no decision". Both figures reset. |
+| The Debate Lives On | A VAR-screen overlay, freeze, "no decision". Both figures reset. |
 | Photo Finish | One pulse. Final frame of the duel in slow motion. |
 | A Clear Edge | Rim light flares on the winner, short particle burst. |
 | Bragging Rights | Shockwave ring across the pitch, camera push-in, crowd swell. |
@@ -142,7 +144,7 @@ Gold (#E8B84B) and pink (#E70443) carry the effects. No rainbow, no lens-flare s
 
 The engine never knows animations exist. `render3d/choreo.json` maps each outcome to clips:
 
-| Moment | Attacker wins | Defender wins | VAR |
+| Moment | Attacker wins | Defender wins | No decision |
 |---|---|---|---|
 | One on One | dribble → shoot → celebrate | sprint → slide_tackle → ball away | shoot → block, both reset |
 | Killer Ball | through_pass → receiver ghost runs in | intercept → clear | pass → deflection |

@@ -16,10 +16,14 @@
  *      so a single floor at 75 gives 42% strikers and 4.8% defenders; the attack-versus-defence
  *      moments need defenders. The quotas are the synthetic deck's mix, so sims stay comparable.
  *   2. ONE CARD PER PLAYER, his highest-rt season among the pools that still had room.
- *   3. EVER PRESENT (battle.reliability) IS THE PERCENTILE OF MINUTES WITHIN THE CARD'S OWN
- *      LEAGUE-SEASON. THE POOL IS EVERY OUTFIELD CARD IN THAT LEAGUE AND SEASON WITH 900+
- *      MINUTES, NOT ONLY DECK CARDS. radarFor's reliability divides by 38 x 90, which a 34-game
- *      league can never reach; ranking inside the league-season makes season length cancel.
+ *   3. EVER PRESENT (battle.reliability) IS TWO RANKS. FIRST the percentile of minutes within
+ *      the card's own league-season, where THE POOL IS EVERY OUTFIELD CARD IN THAT LEAGUE AND
+ *      SEASON WITH 900+ MINUTES, NOT ONLY DECK CARDS. radarFor's reliability divides by 38 x 90,
+ *      which a 34-game league can never reach; ranking inside the league-season makes season
+ *      length cancel. THEN that value, UNROUNDED, is re-ranked across the 400 deck cards, so it
+ *      spreads 0 to 100 (tuning pass, 2026-09-27). Elite seasons are nearly all ever-presents,
+ *      so the first rank alone left every position at a median of 81 to 91 and the moment was
+ *      barely a contest. It now reads "more available than other elite seasons".
  *   4. MASTER OF ROLE IS THE MEAN OF THE FOUR radarFor .scaled PERCENTILES (goalThreat, creation,
  *      progression, defensive). .scaled.reliability is raw availability, not a percentile.
  *  The four named stats are percentiles of radarFor .raw ACROSS THE DECK, so a good-scoring
@@ -101,14 +105,15 @@ async function fetchAll(table, select, filter) {
 }
 
 // fraction strictly below, x100, rounded (Postgres percent_rank)
-function percentRank(values) {
+// round=false keeps the fraction, for a value that is ranked a second time
+function percentRank(values, round = true) {
   const s = values.filter(v => v != null).sort((a, b) => a - b);
   const n = s.length;
   return v => {
     if (v == null || n < 2) return null;
     let lo = 0, hi = n;
     while (lo < hi) { const m = (lo + hi) >> 1; if (s[m] < v) lo = m + 1; else hi = m; }
-    return Math.round(100 * lo / (n - 1));
+    return round ? Math.round(100 * lo / (n - 1)) : 100 * lo / (n - 1);
   };
 }
 const median = a => { const s = [...a].sort((x, y) => x - y); const n = s.length;
@@ -124,7 +129,7 @@ async function main() {
     .filter(r => r.position_pool !== 'GK');
   const lsGroups = {};
   for (const r of outfield) (lsGroups[r.league_code + '|' + r.season_year] ??= []).push(r.minutes);
-  const lsRank = Object.fromEntries(Object.entries(lsGroups).map(([k, v]) => [k, percentRank(v)]));
+  const lsRank = Object.fromEntries(Object.entries(lsGroups).map(([k, v]) => [k, percentRank(v, false)]));
 
   // ---- 2. Candidates: named outfield pool, a score, and every radar input present.
   const candFilter = 'minutes=gte.' + MIN_MINUTES + '&position=neq.GK&rt=not.is.null'
@@ -173,6 +178,8 @@ async function main() {
 
   // ---- 5. Battle values and card payload.
   const deckRank = Object.fromEntries(AXES.map(a => [a, percentRank(deck.map(c => c.radar.raw[a]))]));
+  const lsOf = row => lsRank[row.league_code + '|' + row.season_year](row.minutes);
+  const deckEver = percentRank(deck.map(c => lsOf(c.row)));
   const cards = {};
   for (const { row, radar } of deck) {
     const base = row.player_name || '';
@@ -184,7 +191,7 @@ async function main() {
       creation: deckRank.creation(radar.raw.creation),
       progression: deckRank.progression(radar.raw.progression),
       defensive: deckRank.defensive(radar.raw.defensive),
-      reliability: lsRank[row.league_code + '|' + row.season_year](row.minutes),
+      reliability: deckEver(lsOf(row)),
       roleMastery: Math.round(AXES.reduce((s, a) => s + radar.scaled[a], 0) / AXES.length),
     };
     for (const [k, v] of Object.entries(battle)) if (v == null) fail('card ' + row.card_id + ' battle.' + k + ' is null');
@@ -225,7 +232,7 @@ async function main() {
     battle: {
       impact: 'rt',
       goalThreat: 'percent_rank of radarFor .raw across the deck', creation: 'same', progression: 'same', defensive: 'same',
-      reliability: 'percent_rank of minutes within own league-season, pool = all outfield cards with 900+ minutes',
+      reliability: 'percent_rank of minutes within own league-season (pool = all outfield cards with 900+ minutes), unrounded, then re-ranked across the deck',
       roleMastery: 'mean of radarFor .scaled goalThreat, creation, progression, defensive',
       convention: 'fraction strictly below x100, rounded (Postgres percent_rank)',
     },
