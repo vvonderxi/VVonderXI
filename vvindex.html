@@ -98,7 +98,15 @@
   body.light .hero .lede{color:#5a544a}
   @media (max-width:1040px){.hero{padding:26px 32px 6px}.topline{padding:24px 32px 0}.hero h1{font-size:34px}}
   @media (max-width:720px){.spine{display:none}.hero{padding:22px 18px 4px}.topline{padding:18px 18px 0}.hero h1{font-size:28px}}
-  .idxwrap{padding:20px 48px 60px;max-width:1680px}
+  /*  THE MEASURE IS THE DEMO'S, 820px OF CONTENT, AND IT WAS LOST IN THE REBUILD.
+      1680 is the OLD page's width, set for a two-column hero and a band grid that no
+      longer exist. The approved design is a single reading column: its section subs are
+      capped at 62ch and its row prose has no cap at all, so at 1680 the longest rows ran
+      past 200 characters a line. Measured on the live page before this: the timeline
+      figure rendered 1,584px wide. That is not a styling nicety , a 200-character
+      measure is most of why the page still read as an essay after the word count came
+      down. 916 = 820 of content plus the 48px padding either side.  */
+  .idxwrap{padding:20px 48px 60px;max-width:916px;margin-inline:auto}
   .idx-hero{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.08),transparent 60%);border:1px solid rgba(255,255,255,0.06);border-radius:24px;padding:36px 40px;margin-bottom:34px}
   body.light .idx-hero{border-color:rgba(0,0,0,0.06);background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.06),transparent 60%)}
   .idx-num{position:relative;display:flex;flex-direction:column;align-items:center}
@@ -442,6 +450,28 @@
   @media (max-width:660px){ .vi-tl-seg span{display:none} .vi-tl-key .vi-segkey{display:flex} }
   .vi-figcap{font:400 12px/1.55 'Inter';color:var(--vi-mut);margin:16px 2px 0}
   .vi-figcap b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  /*  THE DEFENDER DRAWING , see _demo_defender.html, approved 2026-09-27. One passage of
+      play drawn twice, and under each the line the record actually wrote: TACKLE +1 on the
+      left, an empty dashed strip on the right. THE ARGUMENT IS THE EMPTINESS, which is what
+      makes this replace a paragraph rather than illustrate one.
+      Every colour is a --vi-* token, so it follows the page into light without a second
+      drawing. The strip text is 12px, which is BODY text at a 4.5 bar, so it takes
+      --vi-gold-ink and NOT --vi-gold-num , the large-numeral gold reads 3.59 in light and
+      that is the mistake this comment exists to stop being made again.  */
+  .dfig{border:1px solid var(--vi-line);border-radius:18px;padding:20px 18px 16px;max-width:660px;margin-inline:auto;
+    background:linear-gradient(180deg,var(--vi-panel),transparent)}
+  /*  CAPPED, AND THE CAP IS THE APPROVED PROPORTION RATHER THAN A TASTE CALL. This column
+      is 860px, so an uncapped pair drew each panel at ~390 against the ~240 of the demo that
+      was signed off, and the strip type scales with the viewBox: the drawing stopped being a
+      diagram and became a banner. The timeline above it IS full width and should stay that
+      way , it is a bar chart and width is information there. This is a diagram, and width
+      only dilutes it.  */
+  .dpair{display:flex;gap:16px;flex-wrap:wrap}
+  .dpan{flex:1 1 210px;min-width:0}
+  .dpt{font:800 10px Archivo;letter-spacing:.11em;text-transform:uppercase;margin:0 0 8px;color:var(--vi-mut)}
+  .dpan svg{display:block;width:100%;height:auto}
+  .dcap{font:400 12px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
+  .dcap b{font-family:Archivo;font-weight:700;color:var(--vi-strong)}
   .vi-rows{display:grid;margin-top:4px;border-top:1px solid var(--vi-line)}
   .vi-row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;padding:15px 2px;border-bottom:1px solid var(--vi-line)}
   .vi-row .n{font:900 clamp(22px,3.8vw,29px)/1 'Archivo';letter-spacing:-.02em;color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums}
@@ -585,8 +615,8 @@
   <h2 class="vi-h2">What the number cannot see</h2>
   <p class="vi-h2sub">Two limits that no amount of data collection fixes, because they are about what
   football records, not about what we gathered.</p>
+  <div class="dfig" id="defFig"></div>
   <div class="vi-rows">
-    <div class="vi-row"><div class="n">Half<small>of the job</small></div><div class="l">The game records what a defender <b>does</b> far more faithfully than what he <b>prevents</b>. The tackle is counted. The run that made the tackle unnecessary is not, and neither is the pass a striker never attempted because the space was gone.<br><br><b>So the best defenders score lower here than their reputation, and we are not going to fix that by inventing a number.</b> Van Dijk sits in the low seventies, and we publish that with the reason rather than quietly moving him. <b>A score that agrees with every reputation is not measuring reputation, it is copying it.</b></div></div>
     <div class="vi-row"><div class="n">Top<small>of the ladder</small></div><div class="l">Positions are verified by hand near the top of the ladder and get coarser below it. <b>A high score is a claim we have checked. A low one is an estimate.</b></div></div>
   </div>
 
@@ -651,6 +681,73 @@
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 
+<script>
+/*  THE DEFENDER DRAWING , built once and injected, so the two panels cannot drift
+    apart the way two hand-written SVGs would.  */
+function panel(o){
+  const atk=o.atk, def=o.def, W=232, H=150;
+  return `
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.alt}">
+    <!-- the lane -->
+    <rect x="1" y="1" width="${W-2}" height="104" rx="10"
+          fill="var(--vi-panel)" stroke="var(--vi-line)"/>
+    <line x1="${W/2}" y1="6" x2="${W/2}" y2="100" stroke="var(--vi-line)" stroke-dasharray="3 5"/>
+    <!-- the goal the attacker is running at -->
+    <path d="M${W-14} 34 v38" stroke="var(--vi-mut)" stroke-width="3" stroke-linecap="round"/>
+    <!-- attacker -->
+    <circle cx="${atk[0]}" cy="${atk[1]}" r="9" fill="var(--pink-ink)"/>
+    <!-- intended ball path -->
+    <path d="${o.ball}" fill="none" stroke="var(--pink-ink)" stroke-width="2.5"
+          stroke-linecap="round" ${o.ballDash?'stroke-dasharray="5 5" opacity=".55"':''}/>
+    ${o.ballHead?`<path d="${o.ballHead}" fill="var(--pink-ink)" ${o.ballDash?'opacity=".55"':''}/>`:''}
+    <!-- defender -->
+    <circle cx="${def[0]}" cy="${def[1]}" r="9" fill="none" stroke="var(--vi-strong)" stroke-width="2.5"/>
+    ${o.mark||''}
+    <!-- ══ THE RECORD STRIP , the whole argument lives here ══ -->
+    <rect x="1" y="116" width="${W-2}" height="32" rx="8"
+          fill="${o.filled?'var(--vi-panel)':'none'}" stroke="var(--vi-line)"
+          ${o.filled?'':'stroke-dasharray="4 5"'}/>
+    ${o.filled
+      ? `<text x="14" y="136" font-family="Archivo" font-weight="800" font-size="12"
+               letter-spacing="1.2" fill="var(--vi-gold-ink)">TACKLE</text>
+         <text x="${W-14}" y="136" text-anchor="end" font-family="Archivo" font-weight="800"
+               font-size="12" fill="var(--vi-gold-ink)">+1</text>`
+      : `<text x="14" y="136" font-family="Archivo" font-weight="800" font-size="12"
+               letter-spacing="1.2" fill="var(--vi-mut)">NOTHING RECORDED</text>`}
+  </svg>`;
+}
+const COUNTED = panel({
+  alt:'A defender meets the ball and wins it. The record writes: tackle, plus one.',
+  atk:[46,66], def:[142,66],
+  ball:'M56 66 H128', ballHead:'M124 61 l10 5 -10 5 z',
+  mark:'<circle cx="135" cy="66" r="17" fill="none" stroke="var(--vi-gold-num)" stroke-width="2.5"/>',
+  filled:true
+});
+/*  THE SECOND PANEL SAYS "NEVER ATTEMPTED", AND THE FIRST DRAWING SAID THE OPPOSITE.
+    It carried a dashed path running PAST the defender to an arrowhead at the goal,
+    which reads as a pass that got through , the exact reverse of the argument. The
+    path now dies at the defender, carries no arrowhead, and fades: the line stops
+    because the pass was never played. Found by looking at it, not by measuring it.  */
+const PREVENTED = panel({
+  alt:'The same defender, standing in the lane a second earlier. The pass is never attempted and the record writes nothing.',
+  atk:[46,66], def:[104,66],
+  ball:'M56 66 H92', ballDash:true,
+  mark:'<path d="M104 96 L104 80" fill="none" stroke="var(--vi-strong)" stroke-width="2.5" '
+      +'stroke-linecap="round" opacity=".45"/>'
+      +'<path d="M100 84 l4 -6 4 6 z" fill="var(--vi-strong)" opacity=".45"/>',
+  filled:false
+});
+const FIG = `
+  <div class="dpair">
+    <div class="dpan"><p class="dpt">He makes the tackle</p>${COUNTED}</div>
+    <div class="dpan"><p class="dpt">He makes it unnecessary</p>${PREVENTED}</div>
+  </div>
+  <p class="dcap">The game records what a defender <b>does</b> far more faithfully than what he
+  <b>prevents</b>, so the best defenders score lower here than their reputation. Van Dijk sits in
+  the low seventies. <b>We publish that with the reason rather than quietly moving him</b> , a score
+  that agrees with every reputation is not measuring reputation, it is copying it.</p>`;
+document.getElementById('defFig').innerHTML=FIG;
+</script>
 <script>
 /*  THE BOUNDARY MARKS , hover on a pointer device, tap on a touch one, and the SAME handler
     serves both because a click follows a tap everywhere that matters. The caption is restored
