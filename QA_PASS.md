@@ -675,6 +675,11 @@ deploying:**
 - **Pass:** a request with no `Origin`, or an `Origin` that is not ours, is refused; a burst from one address is throttled. **Until then, treat every deploy of this endpoint as an open Anthropic proxy and price it accordingly.**
 
 ### B4b. Anthropic spend cap and alerts , LUCAS, FIVE MINUTES, AND IT IS THE LAST BACKSTOP
+- **[DONE 2026-09-27, AND LUCAS SET IT TIGHTER THAN SPECIFIED: cap $50, alerts at $10 and $25**, against the $100/$20/$50 derived below. Tighter is the right direction for a platform with no traffic yet, and the derivation below still governs where the numbers go when traffic arrives.]
+- **[AND THE CAP IS NOT THE BINDING CONSTRAINT , THE BALANCE IS. LAUNCH RISK, RECORDED 2026-09-27.** The account holds **$32.94 with auto-reload OFF**, so the spend cap at $50 can never be reached: **API requests stop dead when the balance empties.** A live site would lose verdict and notes generation with **no warning to a visitor and no alert to us** , the $10 and $25 alerts fire on SPEND, and the failure happens at a BALANCE the alerts do not watch.
+  - **WHAT A VISITOR SEES WHEN IT HAPPENS:** `api/analyse.js` classifies a failed generate and the front end shows its outage line, so it degrades honestly rather than rendering something false. **That is the good half. The bad half is that it is indistinguishable from a model outage**, so nobody would know to top up.
+  - **THE CHEAP MITIGATIONS, NEITHER BUILT, BOTH Lucas's call:** turn auto-reload ON with a low ceiling, which converts a hard stop into a charge; or treat the balance as the thing to watch and check it before launch day rather than relying on spend alerts that cannot see it.
+  - **AND IT BOUNDS THE PRELOAD DECISION, WHICH IS WHY IT IS RECORDED HERE RATHER THAN ONLY IN A NOTE:** any warming run spends from the same $32.94, so a batch is priced against the balance and not against the cap.]
 - **Check:** that a monthly spend cap and two alerts exist in the Anthropic Console (Settings > Limits).
 - **Why:** the rate limit bounds ONE address. **Nothing in the code sees a DISTRIBUTED client**, and the cap is the only thing that does. Full derivation in `docs/MERGE_READINESS_2026-09-15.md` section 4.
 - **Set:** monthly cap **$100**; alert at **$20**; second alert at **$50**.
