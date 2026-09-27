@@ -1476,3 +1476,33 @@ control's blur work** (0.311 Mpx against 0.232, radius 44 against 36, one layer 
 load, on resize and on a theme flip. Nothing animates it. **"Frame time" is the wrong unit here**,
 which is why the demo computes area x radius x layers instead: SS C records that a hidden tab
 cannot measure frames at all.
+
+---
+
+# CONSIDERED AND REJECTED: "THE VV INDEX IS NOT A GOAL COUNT" (2026-09-27)
+
+**Proposed as a trust claim for the VV Index page , the argument that the Index reads more than
+goals and therefore beats a raw scoring table. IT WAS MEASURED BEFORE IT WAS WRITTEN AND IT IS
+FALSE. Do not re-propose it.**
+
+**THE MEASUREMENT, over all 54,416 scored cards.** Of the 650 seasons at rt 85 or better:
+- **by pool: ST 395, Winger 164, CAM 40, CDM 17, CM 16, FWD 14, FB 3, MID 1.**
+- **94.3% are forwards, wingers or tens.** Thirty-seven of 650 are anything else.
+- **ZERO of the 650 have no goals.** Not one.
+
+**SO THE TOP BAND IS AN ATTACKING BAND, AND THE PLATFORM ALREADY SAYS SO IN ITS OWN WORDS.** The
+page's "It leans where the evidence is" section states the lean as a deliberate choice: goals and
+assists are recorded everywhere and back to 2010, and defending is not. **A "not a goal count"
+claim would have been contradicted by the page's own disclosure two sections further down**, which
+is worse than saying nothing , it would have made the honest section read as a retraction.
+
+**WHAT WAS SHIPPED INSTEAD, and it survives the same test:** "It rates a season, not a player"
+(median 37-point spread across 4,387 players with five or more scored seasons), "It tells you how
+sure it is" (the separability work), and "Nine leagues, one ladder" (all 650 come from all nine
+leagues, 70% from outside the Premier League).
+
+**THE GENERAL RULE THIS IS AN INSTANCE OF: a claim proposed for a public page gets measured BEFORE
+it is written, not after.** This one was sound in the abstract, obvious-sounding, and wrong, and
+the only thing that caught it was running the query. SS C already records that an unverified
+premise is most costly when it argues for REMOVING something; this is its twin , a premise that
+argues for PUBLISHING something.

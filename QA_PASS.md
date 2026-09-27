@@ -522,6 +522,36 @@ instrument that cannot reproduce them is not evidence about anything else on the
 
 - **STATUS 2026-08-28: PASS, measured two ways.** Band populations **12 / 150 / 650**, holding exactly. And read straight out of `pg_get_viewdef`: `percent_rank() OVER (PARTITION BY s.pos ORDER BY s.minutes) AS rel_pct` , the COARSE field, and **no `coalesce(r.pool` anywhere in the view**, so the repartition is genuinely parked rather than half-applied. Viewdef is 12,440 chars and contains `rt_new`, so the engine is intact (§C: under ~2,000 chars means damaged).
 - **NOTE, not a failure: the 80+ band reads 1,406 against the 1,412 recorded in §E.** The three RANK-ANCHORED bands are 95/90/85 and those hold by construction; 1,412 was a modelled figure, not an anchor. Worth a line in §E rather than a re-audit.
+### A19. Prose is set to a readable measure, on every page that carries prose
+
+**WHAT TO CHECK.** That no run of body prose renders wider than about 95 characters a line.
+
+**WHY IT IS AN ITEM AT ALL , IT SHIPPED ONCE AND NOTHING SAW IT.** The VV Index rebuild spliced
+a design drawn for an 860px column into a wrapper still carrying `max-width:1680px` from the page
+it replaced. Contrast passed, horizontal overflow was zero, every count was right, both themes
+rendered, 390 was clean. **The timeline figure measured 1,584px wide and the longest paragraph ran
+about 200 characters a line**, and the only symptom anybody could name was that the page "read as
+an essay" , which was being treated as a word-count problem when most of it was line length.
+
+**HOW TO CHECK.** Serve the page, inject `_measure_audit.js`, call `__vvMeasure()`. It force-opens
+every `<details>` first and restores them after, because a reading taken through a collapsed fold
+is not a reading , the first run of that harness reported 123 characters a line on rects that had
+merged inside a closed fold.
+
+**WHAT A PASS LOOKS LIKE.** Zero runs over 95 characters a line. Between 80 and 95 is a warning and
+a judgement call, not a failure. Headings, pull-quotes and one-line captions are allowed to be wide
+and the harness reports rather than throws.
+
+**THE CONTROL, AND IT IS NOT OPTIONAL.** Set the content wrapper back to its old width and re-run:
+the count must RISE. A harness that reports zero failures and cannot be made to report any is
+indistinguishable from one that does not work. On vvindex that control reads 0 at 916px and 11 at
+1680px.
+
+**DO NOT USE `scrollWidth` FOR THIS.** For wrapping text it reports the content box rather than the
+drawn text and returns the same value for four strings of different length , SS F records that
+exact failure. `Range.getClientRects()` returns one rect per rendered line, which is the only
+direct read available.
+
 ### A18. No secret is reachable from a deployed endpoint
 - **Check:** the BSD credential and base URL surface.
 - **How:** `git grep -ln "BSD_API_KEY\|sports.bzzoiro.com"`

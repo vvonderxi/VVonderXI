@@ -310,7 +310,12 @@
   .wmc>summary:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:6px}
   .wmc-b{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.09)}
   body.light .wmc-b{border-top-color:rgba(0,0,0,0.09)}
-  .wmc-b p{font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.65);margin:0 0 10px}
+  /*  A MEASURE CAP, NOT A CONTENT CHANGE , the words are untouched. `_measure_audit.js`
+     reports these paragraphs at 109 to 123 characters a line in an 820px column, which is
+     the widest prose on the page and the last of what made it read as an essay. 68ch at
+     13px Inter lands them near the 75 the convention asks for. The cards themselves stay
+     full width; only the prose inside them is capped.  */
+  .wmc-b p{font-family:'Inter';font-weight:400;font-size:13px;line-height:1.6;color:rgba(243,237,224,0.65);margin:0 0 10px;max-width:68ch}
   .wmc-b p:last-child{margin-bottom:0}
   body.light .wmc-b p{color:#5a544a}
   .wm-close{margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.08)}
@@ -550,22 +555,22 @@
     <div class="vi-row"><div class="n">9</div><div class="l">Leagues, and they are <b>not treated as equal.</b> The weighting is computed from players who actually moved between them, not assigned by reputation.</div></div>
   </div>
 
-  <h2 class="vi-h2">What it will not count</h2>
+  <h2 class="vi-h2">It scores the season, not the trophy</h2>
   <p class="vi-h2sub">Not gaps in the record. Decisions, and this is the one that shapes every score
   on the platform.</p>
   <div class="vi-rows">
-    <div class="vi-row"><div class="n g">Zero</div><div class="l">The points a trophy adds to a V<span class="vvw">V</span> Score. Honours sit beside the number and never inside it. A medal is a team's outcome
+    <div class="vi-row"><div class="n g"><span data-fig="honours_total">804</span></div><div class="l">Honours the record holds , league titles, Champions Leagues, Ballons d’Or, Golden Boots , and <b>not one of them moves a score by a single point.</b> Honours sit beside the number and never inside it. A medal is a team's outcome
       with one player's name on it, and the Index scores the season he played, not the one his
       club had. <b>Individual awards are no different</b> , the score is finished before any honour is even joined to it.</div></div>
   </div>
 
-<h2 class="vi-h2">What the number chose</h2>
+<h2 class="vi-h2">It leans where the evidence is</h2>
   <p class="vi-h2sub">Not a limit. A decision, and one that shapes every score on the platform.</p>
   <div class="vi-rows">
     <div class="vi-row"><div class="n">Attack<small>the lean</small></div><div class="l">The scale tilts toward attacking output, because <b>that is where the evidence is</b> , goals and assists are recorded everywhere and back to 2010, and defending is not. We say so rather than claiming a balance the record cannot support.</div></div>
   </div>
 
-  <h2 class="vi-h2">Where the record thins</h2>
+  <h2 class="vi-h2">It knows when the record begins</h2>
   <p class="vi-h2sub">Not every league has kept the same records, and not in every year. This is
   the shape of what exists.</p>
 
@@ -606,13 +611,13 @@
   </div>
 
   <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="cards_no_detail">19,138</span></div><div class="l">Seasons with no detailed record at all , <b>roughly one in three.</b> The Playbook says when the detail begins; this is how much of the record sits before it.</div></div>
+    <div class="vi-row"><div class="n g"><span data-fig="cards_with_detail">38,928</span></div><div class="l">Seasons carry the full detailed record , shots, passes, duels and dribbles. The other <span data-fig="cards_no_detail">19,138</span> are scored on goals, assists and minutes, <b>and every one of their cards says so.</b> The Playbook says when the detail begins; this is how much of the record sits before it.</div></div>
     <div class="vi-row"><div class="n">2015</div><div class="l">Where penalties enter the record. <b>A taker before then is scored without them</b>, and nothing about his card pretends otherwise.</div></div>
     <div class="vi-row"><div class="n">300<small>minutes</small></div><div class="l">The floor. <b>Below it we hold back rather than rate a fragment</b> , a hot month is not a season.</div></div>
     <div class="vi-row"><div class="n p">4</div><div class="l"><b>Some famous players are simply not here.</b> Rooney, Gerrard, Lampard and Kompany have no cards, because the source we import from never linked those seasons to them. We could have filled the gap by hand and guessed at the rest. We would rather a player be missing than be wrong.</div></div>
   </div>
 
-  <h2 class="vi-h2">What the number cannot see</h2>
+  <h2 class="vi-h2">It tells you where it is weakest</h2>
   <p class="vi-h2sub">Two limits that no amount of data collection fixes, because they are about what
   football records, not about what we gathered.</p>
   <div class="dfig" id="defFig"></div>
@@ -628,7 +633,7 @@
 <details class="wmc neutral"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="50" r="30"/><path d="M50 20 L50 80"/><path d="M20 50 L80 50"/></svg></span>Shots faced is context, not credit</span><span class="wmc-g">How busy a keeper was is a fact about the team in front of him.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>A keeper behind a poor defence faces more shots and makes more saves, and neither fact says he kept goal well. Volume tracks the weakness of the side, near enough one for one.</p><p>So the saved-and-conceded bar is drawn plainly, in ink rather than in the colour the score uses, and the number of shots sits beneath it as context. It is there to tell you what kind of season it was, never to argue that it was a good one.</p></div></details><details class="wmc neutral"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="58" r="14"/><path d="M22 30 L78 30"/><path d="M22 30 L22 44"/><path d="M78 30 L78 44"/></svg></span>Penalties saved is a fact, not a score</span><span class="wmc-g">We count them. We cannot count how many he faced.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>Stopping a penalty is genuinely the keeper&#8217;s own act, so it is stated on his card. But a count with no denominator is not a rate, and scoring it would reward whoever happened to face the most.</p><p>So it stays a stated figure and is kept out of the number. Tested as a scoring term it promoted keepers with a lucky night and demoted the best save rate in the record, which is the whole argument against it.</p></div></details><details class="wmc neutral"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 50 C28 28 72 28 86 50 C72 72 28 72 14 50Z"/><path d="M20 80 L80 20"/></svg></span>We record whether a shot was saved, never how hard it was</span><span class="wmc-g">Twenty close-range chances and twenty from distance score the same here.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>There is nothing in the record that tells a tap-in from a top corner, so save percentage separates keepers partially and not fully. We would rather say that than let the rate imply a precision it does not have.</p><p>Nor does anything here measure distribution, command of the area or sweeping. A keeper who reads danger before it arrives and one who waits on his line are, to us, the same keeper. That is a limit of the record, not a judgement on either of them.</p></div></details><details class="wmc closing"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 34 L80 34"/><path d="M50 34 L50 78"/><path d="M32 78 L68 78"/></svg></span>And a keeper carries no score at all</span><span class="wmc-g">A keeper&#8217;s card shows no V<span class="vvw">V</span> Score, because the Index cannot yet earn one.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>The V<span class="vvw">V</span> Index does not yet weigh goalkeeping. The engine still holds a number for every keeper, capped at 75 and built from minutes played and the strength of his league rather than from anything he did with his hands.</p><p>That is why no card shows it. A number that cannot move would read as a verdict on the keeper rather than as a boundary of the platform, and it would sit directly above a save-rate ladder measuring something else entirely. What his card carries instead is his save rate against other keepers, and the figures it was built from.</p><p>The held number has not stopped working, though, and one place still shows its effect: <strong>keepers appear in ranked lists in the order it gives them, while no card prints it.</strong> The ordering is visible and the number behind it is not, so it is named here rather than left for a reader to infer. Lifting the cap is a change to the engine, not to the card.</p></div></details>
   </div>
 
-  <h2 class="vi-h2">Where the ground still moves</h2>
+  <h2 class="vi-h2">It answers to every season beside it</h2>
   <p class="vi-h2sub">A score is a standing, not a mark out of ten, so it answers to every season
   measured beside it.</p>
   <div class="vi-rows">

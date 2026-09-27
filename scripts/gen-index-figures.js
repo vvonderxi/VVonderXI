@@ -78,6 +78,15 @@ async function main() {
       'share of the record with no detailed stats, per cent',
       'cards_no_detail / cards_total', 'derived');
 
+  /*  THE COMPLEMENT, AND IT EXISTS BECAUSE OF HOW THE PAGE READS RATHER THAN WHAT IT KNOWS.
+      The coverage section used to open on cards_no_detail, which leads a section on an
+      absence. Same fact, counted the other way up: this is what the record DOES hold, and
+      the absence follows it in the same sentence. Derived rather than queried so the two
+      can never disagree.  */
+  add('cards_with_detail', total - noDetail, 'seasons that carry the full detailed record',
+      'cards_total minus cards_no_detail, so the pair always sums to the whole record',
+      'derived');
+
   const noShots = await head(q => q.is('shots_total', null));
   add('cards_no_shots', noShots, 'seasons with no shot data',
       'shots_total is null. KEPT ON PURPOSE as the near-miss: this is the number a reader ' +
@@ -116,6 +125,19 @@ async function main() {
       league would silently drop a winner who moved. Where a player holds two cards in one
       season (a cross-league move) the HIGHEST scored card is taken, because the award is
       for the player's year rather than for one of its halves.  */
+  /*  EVERY HONOUR IN THE RECORD, AND NOT ONE OF THEM MOVES A SCORE. The page leads its
+      refusal section on this rather than on "zero", because a count is a thing the platform
+      HAS and a zero is a thing it lacks , the fact is identical either way.
+      IT IS THE WHOLE TABLE ON PURPOSE, team and individual together, because the claim is
+      about honours as a category. Verified against a fresh view definition: rt_new is fully
+      computed before the honours CTEs are joined, so no honour of any kind can reach a score.  */
+  const honours = await sb.from('honours').select('id', { count: 'exact', head: true })
+    .then(r => { if (r.error) throw new Error(r.error.message); return r.count; });
+  add('honours_total', honours, 'honours the record holds, none of which moves a score',
+      'every row of the honours table, team and individual. The score is computed before ' +
+      'honours are joined to it, so the count is independent of the engine by construction',
+      'select count(*) from honours');
+
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const pageAll = async (t, sel) => {
     let a = [], i = 0;

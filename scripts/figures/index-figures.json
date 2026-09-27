@@ -32,6 +32,13 @@
       "query": "derived"
     },
     {
+      "key": "cards_with_detail",
+      "value": 38928,
+      "claim": "seasons that carry the full detailed record",
+      "definition": "cards_total minus cards_no_detail, so the pair always sums to the whole record",
+      "query": "derived"
+    },
+    {
       "key": "cards_no_shots",
       "value": 21935,
       "claim": "seasons with no shot data",
@@ -51,6 +58,13 @@
       "claim": "share of SCORED seasons within a point of a band edge, per cent",
       "definition": "cards_on_a_band_edge / cards_scored. The denominator is SCORED, not total , an unscored card cannot sit near a band edge and counting it dilutes the figure",
       "query": "derived"
+    },
+    {
+      "key": "honours_total",
+      "value": 804,
+      "claim": "honours the record holds, none of which moves a score",
+      "definition": "every row of the honours table, team and individual. The score is computed before honours are joined to it, so the count is independent of the engine by construction",
+      "query": "select count(*) from honours"
     },
     {
       "key": "ballon_dor_seasons",
