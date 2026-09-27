@@ -1,11 +1,12 @@
 import { simulate, runMatch } from './simulate.js';
 import { makeConfig } from '../engine/config.js';
-import { syntheticDeck } from './synthetic-deck.js';
+import { loadDeckInfo } from './deck.js';
 import { prepareAI, TacticianCPU } from '../engine/ai/cpu.js';
 const N = +(process.argv[2] ?? 1000);
 const ABSTRACT = ['impact', 'goalThreat', 'creation', 'progression', 'defensive', 'reliability', 'roleMastery'];
 const MOMENTS  = ['oneOnOne', 'killerBall', 'breakLines', 'counter', 'bigGame', 'ninety', 'roleDuel'];
-const deck = syntheticDeck();
+const { cards: deck, info } = loadDeckInfo();
+console.log(info);
 for (const [label, pool] of [['ABSTRACT stats', ABSTRACT], ['FOOTBALL MOMENTS', MOMENTS]]) {
   const config = makeConfig({ categoryPool: pool });
   const skill = simulate({ n: N, config, deck, botA: {}, botB: 'greedy' });
@@ -26,4 +27,5 @@ for (const [label, pool] of [['ABSTRACT stats', ABSTRACT], ['FOOTBALL MOMENTS', 
   console.log(`\n${label}\n  skill T>G ${skill.winRateA}  | press-lover ${press.winRateA}  | rounds ${m.roundsMean}  | attacker/active wins round ${m.activePlayerRoundWin}  | leader@R4 ${m.leaderAfter4Wins}  | comeback ${m.comebackRate}`);
   console.log(`  round win rate when played:  ${posLine}`);
   console.log(`  moment mix: ${JSON.stringify(m.categoryMix)}`);
+  console.log(`  attacker round-win: ` + pool.map(c => `${c} ${m.activeWinByCategory[c] == null ? 'NR' : m.activeWinByCategory[c] + '%'}`).join('  '));
 }

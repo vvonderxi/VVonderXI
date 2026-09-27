@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import { createGame, applyAction, legalActions, viewFor } from '../engine/game.js';
 import { makeConfig } from '../engine/config.js';
 import { rngFrom } from '../engine/core.js';
-import { syntheticDeck } from './synthetic-deck.js';
+import { loadDeckInfo } from './deck.js';
 import { runMatch } from './simulate.js';
 import { prepareAI, TacticianCPU, RandomCPU } from '../engine/ai/cpu.js';
 
-const deck = syntheticDeck();
+const { cards: deck, info } = loadDeckInfo();
+console.log(info);
 const ctx = { cards: deck, config: makeConfig(), deckIds: Object.keys(deck) };
 const ai = prepareAI(ctx, ctx.deckIds);
 let n = 0;

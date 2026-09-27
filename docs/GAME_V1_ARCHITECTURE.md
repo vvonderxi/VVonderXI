@@ -259,3 +259,51 @@ What the sweep found:
 
 Every number above is on a synthetic deck and moves when the real one lands. The harness is the
 deliverable; these figures are its first run.
+
+## Real-deck balance results (2026-09-27, 1,200 matches per cell, seeded)
+
+Same code, same seeds, deck swapped: `GAME_DECK=real` (400-card Modern Era deck, md5 `efa43134`) against
+the synthetic default. Both use the football-moment pool that is now the default, so the synthetic
+column here is NOT the table above (that one was run on the abstract stat pool). Run with
+`GAME_DECK=real node game/sim/grid.js 1200` and `GAME_DECK=real node game/sim/moments.js 1200`.
+
+**Set C (the V1 rules), synthetic -> real:**
+
+| Measure | Synthetic | Real |
+|---|---|---|
+| Skill (Tact v Greedy) | 64.0 | 65.4 |
+| PRESS-lover v Tact | 53.8 | 51.9 |
+| Rounds | 7.4 | **8.1** |
+| Attacker wins round | 63.3 | 63.9 |
+| Leader after R4 wins | 65.3 | 63.5 |
+| Comebacks | 35.4 | 36.9 |
+| Better start wins | 56.7 | 57.3 |
+| Verdicts EDGE / CLEAR / DOMINANT / DEMOLITION / STALEMATE | 26 / 24 / 24 / 18 / 8 | **33 / 25 / 19 / 12 / 11** |
+
+**Attacker round-win per moment (share of crowned rounds won by the player in possession, who also chose the moment):**
+
+| Deck | One on One | Killer Ball | Break the Lines | Counter | **Big Game** | Full Ninety | Master of Role |
+|---|---|---|---|---|---|---|---|
+| Synthetic | 63.2 | 63.3 | 60.4 | 63.8 | **65.1** | 62.7 | 64.5 |
+| Real | 60.6 | 63.1 | 61.8 | 64.6 | **67.8** | 65.9 | 64.5 |
+
+**Round win rate when played, by position (real):** ST 56, W 53, CAM 47, CM 43, CDM 46, FB 45, CB 47.
+Moment mix (real): Full Ninety and Master of Role are chosen least, 11.5% each, against 15 to 16% for the rest.
+
+What moved, and what it means:
+1. **The set C conclusion holds.** Every rule set keeps its rank on skill and PRESS; ALTERNATE is still
+   the balance point, WINNER_KEEPS still kills the early game (leader after R4 at 50.5).
+2. **The real deck is compressed at the top, so verdicts shrink.** Every card is an elite season, so big
+   gaps are rarer: DEMOLITION falls from 18% to 12%, EDGE rises to 33%, STALEMATE to 11%. Matches run
+   0.7 rounds longer (~4 min at 30s a round). The verdict thresholds were set on the synthetic spread and
+   are the first thing to re-tune.
+3. **Big Game is the most attacker-favoured moment at 67.8%**, about 4 points above the average. It is
+   rt with a 0.25 threshold scale on a deck whose rt runs 72 to 95, and the attacker chose it.
+   Not broken; the number to watch.
+4. **Full Ninety is barely a contest on this deck.** Ever Present medians are 81 to 91 in every position,
+   so the CPU rarely picks it. A deck of elite seasons is a deck of ever-presents.
+5. **Position spread is 13 points (ST 56 against CM 43)**, wider than synthetic (44 to 52). Strikers and
+   wingers win more rounds than midfielders. A CPU finding, not yet a player one.
+6. **Sets A and B produce identical mirror results on both decks** (the Tactician mirror never reaches a
+   state where PRESS NOT_LEADING differs from ALWAYS); only the PRESS-lover column separates them.
+   Pre-existing, not introduced by the loader.

@@ -1,6 +1,9 @@
 import { simulate } from './simulate.js';
 import { makeConfig } from '../engine/config.js';
 import fs from 'fs';
+import { loadDeckInfo } from './deck.js';
+const { name: DECK, info } = loadDeckInfo();
+console.log(info);
 const N = +(process.argv[2] ?? 1000);
 import { DEFAULT_CONFIG } from '../engine/config.js';
 // 'late press' ladder: PRESS only from DOMINANT up, CLEAR offers DISCARD_OTHER instead
@@ -28,4 +31,4 @@ for (const [k, cfg] of Object.entries(sets)) {
     String(mirror.activePlayerRoundWin).padStart(7), String(mirror.leaderAfter4Wins).padStart(8), String(mirror.comebackRate).padStart(9),
     String(mirror.strongerStartWins).padStart(7), `  ${v.EDGE}/${v.CLEAR}/${v.DOMINANT}/${v.DEMOLITION}/${v.STALEMATE}`);
 }
-fs.writeFileSync(new URL('./grid-results.json', import.meta.url), JSON.stringify(out, null, 1));
+fs.writeFileSync(new URL(`./grid-results.${DECK}.json`, import.meta.url), JSON.stringify(out, null, 1));

@@ -3,7 +3,7 @@ import { createGame, applyAction, legalActions, viewFor } from '../engine/game.j
 import { makeConfig } from '../engine/config.js';
 import { rngFrom } from '../engine/core.js';
 import { prepareAI, RandomCPU, GreedyCPU, TacticianCPU } from '../engine/ai/cpu.js';
-import { syntheticDeck } from './synthetic-deck.js';
+import { loadDeck } from './deck.js';
 
 const other = p => (p === 'A' ? 'B' : 'A');
 
@@ -38,14 +38,14 @@ export function runMatch(ctx, bots, seed, firstActive) {
   return { state, start, m };
 }
 
-export function simulate({ n = 2000, config = makeConfig(), deck = syntheticDeck(), botA, botB, seed0 = 1 } = {}) {
+export function simulate({ n = 2000, config = makeConfig(), deck = loadDeck(), botA, botB, seed0 = 1 } = {}) {
   const ctx = { cards: deck, config, deckIds: Object.keys(deck) };
   const ai = prepareAI(ctx, ctx.deckIds);
   const mk = spec => spec === 'random' ? RandomCPU : spec === 'greedy' ? GreedyCPU(ai) : TacticianCPU(ai, spec?.params ?? {});
   const bots = { A: mk(botA), B: mk(botB) };
   const S = { games: 0, wins: { A: 0, B: 0, draw: 0 }, firstActiveWins: 0, rounds: [], verdicts: {}, cats: {}, draws: 0, discards: 0,
     comebacks: 0, comebackEligible: 0, snowball: 0, snowballEligible: 0, activeRoundWins: 0, crownedRounds: 0, strongerHandWins: 0, strongerHandGames: 0,
-    elitePlays: 0, eliteWins: 0, capped: 0, tokens: 0 };
+    elitePlays: 0, eliteWins: 0, capped: 0, tokens: 0, catCrowned: {}, catActiveWins: {} };
   for (let i = 0; i < n; i++) {
     const first = i % 2 ? 'B' : 'A';
     const { state, start, m } = runMatch(ctx, bots, seed0 + i, first);
@@ -57,7 +57,10 @@ export function simulate({ n = 2000, config = makeConfig(), deck = syntheticDeck
     for (const h of state.history) {
       S.verdicts[h.verdict] = (S.verdicts[h.verdict] ?? 0) + 1;
       S.cats[h.category] = (S.cats[h.category] ?? 0) + 1;
-      if (h.winner) { S.crownedRounds++; if (h.winner === h.active) S.activeRoundWins++; }
+      if (h.winner) {
+        S.crownedRounds++; S.catCrowned[h.category] = (S.catCrowned[h.category] ?? 0) + 1;
+        if (h.winner === h.active) { S.activeRoundWins++; S.catActiveWins[h.category] = (S.catActiveWins[h.category] ?? 0) + 1; }
+      }
       for (const p of ['A', 'B']) if (ai.worth[h.played[p]] >= 0.85) { S.elitePlays++; if (h.winner === p) S.eliteWins++; }
     }
     if (w) {
@@ -80,6 +83,8 @@ export function simulate({ n = 2000, config = makeConfig(), deck = syntheticDeck
     activePlayerRoundWin: pct(S.activeRoundWins, S.crownedRounds),
     verdictMix: Object.fromEntries(Object.entries(S.verdicts).map(([k, v]) => [k, pct(v, totalRounds)])),
     categoryMix: Object.fromEntries(Object.entries(S.cats).map(([k, v]) => [k, pct(v, totalRounds)])),
+    // per category: share of CROWNED rounds won by the player in possession (the attacker, who also chose it)
+    activeWinByCategory: Object.fromEntries(Object.entries(S.catCrowned).map(([k, v]) => [k, pct(S.catActiveWins[k] ?? 0, v)])),
     drawsPerGame: +(S.draws / S.games).toFixed(2), discardsPerGame: +(S.discards / S.games).toFixed(2), tokensPerGame: +(S.tokens / S.games).toFixed(2),
     comebackRate: pct(S.comebacks, S.comebackEligible), leaderAfter4Wins: pct(S.snowball, S.snowballEligible),
     strongerStartWins: pct(S.strongerHandWins, S.strongerHandGames), eliteCardRoundWin: pct(S.eliteWins, S.elitePlays),
