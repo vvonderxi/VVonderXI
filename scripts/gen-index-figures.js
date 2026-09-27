@@ -153,7 +153,7 @@ async function main() {
     }
     return a;
   };
-  const allCards = await pageAll(MV, 'card_id,api_player_id,player_name,season_year,rt');
+  const allCards = await pageAll(MV, 'card_id,api_player_id,player_name,season_year,league_code,rt');
 
   /*  ── IT RATES A SEASON, NOT A PLAYER. The claim the page turns on, and the one thing a
       FIFA rating or a pundit's number cannot say about itself: those rate a PERSON, and a
@@ -259,6 +259,56 @@ async function main() {
 
   add('elite_pairs_counted', pairs, 'pairings the figure above is computed over',
       'unordered pairs of rt >= 80 cards carrying a standard error', 'derived');
+
+  /*  ── NINE LEAGUES, ONE LADDER. Answers the obvious suspicion about a cross-league index:
+      that it is a Premier League index wearing nine badges.
+
+      THE TOTAL IS NOT GENERATED AND MUST NOT BE. 650 at rt 85+ is ANCHOR-PINNED , the band
+      edges are rank anchors, so that population is fixed by construction and SS C warns
+      against "correcting" it as stale. What IS live, and what this generates, is WHICH
+      seasons occupy those slots. The page states the 650 as the structural constant it is
+      and generates the split.  */
+  const ELITE_BAR = 85;
+  const eliteRows = allCards.filter(c => c.rt != null && c.rt >= ELITE_BAR);
+  /*  THE NAME COMES FROM vv-core's CANONICAL MAP, NOT FROM THE `leagues` TABLE, AND THAT
+      IS NOT tidiness , the join MISSES. SS C records it: the leagues row for the Turkish
+      league carries code 'TSL' while every card carries 'TR', so a lookup keyed on the
+      card's league_code silently returns nothing and the page would have printed a bare
+      "TR" beside eight real league names. Keying off vv-core means the page and the rest of
+      the platform cannot disagree about what a league is called.  */
+  global.window = global.window || global;
+  require(path.join(__dirname, '..', 'vv-core.js'));
+  const lgName = (code) => {
+    const f = global.VVCore && global.VVCore.VVFilters;
+    const n = f && f.leagueName ? f.leagueName(code) : null;
+    if (!n || n === code) throw new Error(`no canonical name for league code "${code}" , vv-core's map is short`);
+    return n;
+  };
+  const byLeague = {};
+  eliteRows.forEach(c => { byLeague[c.league_code] = (byLeague[c.league_code] || 0) + 1; });
+  const ordered = Object.entries(byLeague).sort((a, b) => b[1] - a[1]);
+
+  /*  A RECONCILIATION THAT CAN FAIL. The per-league counts must sum to the band population,
+      or the split is being taken over a different set from the one the page names.  */
+  const lgSum = ordered.reduce((t, [, n]) => t + n, 0);
+  if (lgSum !== eliteRows.length)
+    throw new Error(`league split sums to ${lgSum} against ${eliteRows.length} cards at ${ELITE_BAR}+`);
+
+  add('elite_league_names', ordered.map(([code]) => lgName(code)).join('|'),
+      'leagues holding seasons at 85 or better, most first',
+      'display names from vv-core\'s canonical map, NOT the leagues table , that table keys ' +
+      'the Turkish league as TSL while cards carry TR. Pipe-separated, since a name may hold a comma',
+      `select league_code, count(*) from ${MV} where rt >= ${ELITE_BAR} group by 1 order by 2 desc`);
+
+  add('elite_league_counts', ordered.map(([, n]) => n).join(','),
+      'their counts, in the same order', 'same query', 'as above');
+
+  const outsidePL = eliteRows.filter(c => c.league_code !== 'PL').length;
+  add('elite_outside_pl_share', Math.round(100 * outsidePL / eliteRows.length),
+      'share of seasons at 85 or better from outside the Premier League, per cent',
+      'the direct answer to "is this just a Premier League index". Rounded to a whole number ' +
+      'because a decimal here implies a precision the claim does not need',
+      `select round(100.0 * count(*) filter (where league_code <> 'PL') / count(*)) from ${MV} where rt >= ${ELITE_BAR}`);
 
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))

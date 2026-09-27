@@ -116,6 +116,27 @@
       "query": "derived"
     },
     {
+      "key": "elite_league_names",
+      "value": "Premier League|La Liga|Serie A|Bundesliga|Ligue 1|Eredivisie|Super Lig|Belgian Pro League|Primeira Liga",
+      "claim": "leagues holding seasons at 85 or better, most first",
+      "definition": "display names from vv-core's canonical map, NOT the leagues table , that table keys the Turkish league as TSL while cards carry TR. Pipe-separated, since a name may hold a comma",
+      "query": "select league_code, count(*) from player_card_mv where rt >= 85 group by 1 order by 2 desc"
+    },
+    {
+      "key": "elite_league_counts",
+      "value": "196,117,101,83,61,36,21,18,17",
+      "claim": "their counts, in the same order",
+      "definition": "same query",
+      "query": "as above"
+    },
+    {
+      "key": "elite_outside_pl_share",
+      "value": 70,
+      "claim": "share of seasons at 85 or better from outside the Premier League, per cent",
+      "definition": "the direct answer to \"is this just a Premier League index\". Rounded to a whole number because a decimal here implies a precision the claim does not need",
+      "query": "select round(100.0 * count(*) filter (where league_code <> 'PL') / count(*)) from player_card_mv where rt >= 85"
+    },
+    {
       "key": "ballon_dor_seasons",
       "value": 14,
       "claim": "Ballon d'Or seasons the record holds",

@@ -84,13 +84,45 @@ for(const rel of TARGETS){
       picture confidently drawing last month's career.
       RAW, NOT FORMATTED: a series is machine input for the renderer, so it must not go
       through render(), which inserts thousands separators.  */
-  const reS=/(<[a-z-]+\b[^>]*\bdata-fig-series="([a-z_]+)"[^>]*\bdata-series=")([^"]*)(")/g;
-  out=out.replace(reS,(m,open,key,cur,close)=>{
+  /*  SERIES, NOT ONLY SCALARS , and this exists because a DRAWING goes stale exactly the way
+      a number does, only more quietly. The strips on the VV Index plot real rt values and real
+      league counts. Typed into the markup they would be embedded snapshots, and SS C records
+      that every one of those on this platform has gone stale in silence.
+
+      THE SUFFIX FORM IS THE WHOLE POINT AND THE FIRST VERSION MISSED IT. A figure often needs
+      a PARALLEL series , values plus their year labels, counts plus their league names , so
+      the attribute is `data-fig-series-<name>` paired with `data-<name>`, and the bare
+      `data-fig-series` pairs with `data-series`. Two such pairs were live and untracked while
+      this checker reported OK, which is the failure mode it exists to prevent: a check that
+      passes over the thing it cannot see.
+
+      RAW, NOT FORMATTED: a series is machine input for a renderer, so it must not go through
+      render(), which inserts thousands separators.  */
+  /*  LAZY, NOT GREEDY, AND THE GREEDY VERSION FAILED SILENTLY. With `[^>]*` the engine
+      skipped PAST `data-series` to a later `data-years` on the same element, the suffix
+      check then refused the pair, and both series went untracked while the run reported
+      "0 drifted". A quantifier is a correctness decision here, not a style one.  */
+  /*  NO TAG ANCHOR, AND THAT ANCHOR MADE THIS A CHECK THAT COULD NOT FAIL. Anchoring on
+      `<tag` meant the scan resumed INSIDE the element it had just matched, so a second
+      series on the SAME element was unreachable , the career strip's year labels and the
+      league split's names were both invisible. Proven rather than reasoned: two deliberate
+      drifts were planted and the run reported "17 figures, 0 drifted". The pair is matched
+      on its own, bounded by the tag because `[^>]` cannot leave it.  */
+  const reS=/(\bdata-fig-series(?:-([a-z]+))?="([a-z_]+)"[^>]*?\bdata-([a-z]+)=")([^"]*)(")/g;
+  out=out.replace(reS,(m,open,suffix,key,attr,cur,close)=>{
+    const want=(suffix||'series');
+    if(attr!==want) return m;            // the pair does not match, leave it and let the audit below shout
     const f=byKey[key]; if(!f) throw new Error(`unknown figure key: ${key}`);
-    const want=String(f.value); n++;
-    if(cur!==want){ mism++; if(CHECK) console.log(`  DRIFT ${rel} ${key}: page "${cur}" vs generated "${want}"`); }
-    return open+want+close;
+    const val=String(f.value); n++;
+    if(cur!==val){ mism++; if(CHECK) console.log(`  DRIFT ${rel} ${key}: page "${cur}" vs generated "${val}"`); }
+    return open+val+close;
   });
+  /*  AND AN UNPAIRED SERIES IS A FAILURE, NOT A SHRUG. A `data-fig-series-x` with no matching
+      `data-x` is a figure the generator believes it owns and does not.  */
+  const declared=(out.match(/data-fig-series(?:-[a-z]+)?="/g)||[]).length;
+  const paired=(out.match(/data-fig-series(?:-[a-z]+)?="[a-z_]+"[^>]*?\bdata-[a-z]+="/g)||[]).length;
+  if(declared!==paired){ console.log(`  ${rel}: ${declared-paired} series declared with no matching data- attribute`); bad++; }
+
   files++;
   if(n===0){
     if(UNWIRED[rel]) console.log(`  ${rel}: no data-fig spans , EXEMPT (${UNWIRED[rel]})`);

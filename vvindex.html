@@ -521,6 +521,14 @@
   .pladf{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--vi-bar)}
   .pladv{font:800 12px 'Archivo';color:var(--vi-strong);min-width:66px;text-align:right;font-variant-numeric:tabular-nums}
   @media (max-width:560px){ .pladr{grid-template-columns:78px 1fr auto;gap:8px} .pladn{font-size:8.5px} }
+  /*  THE LEAGUE SPLIT , Add 3. It reuses `.plad`, the precision ladder's row, rather than
+      bringing a third bar treatment onto the page, and it carries NO ACCENT COLOUR AT ALL.
+      The page already runs gold numerals throughout, gold and pink marks on the career
+      strip, a pink numeral on Modric and a pink ball path in the defender drawing; a fourth
+      highlight here would be colour spent on a point the SHAPE already makes. Nine bars in
+      one neutral ink say "not one league" without being told to.  */
+  .plad.nolead .pladf{background:var(--vi-mut)}
+  .plad.nolead .pladn{text-align:right}
   .vi-rows{display:grid;margin-top:4px;border-top:1px solid var(--vi-line)}
   .vi-row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;padding:15px 2px;border-bottom:1px solid var(--vi-line)}
   .vi-row .n{font:900 clamp(22px,3.8vw,29px)/1 'Archivo';letter-spacing:-.02em;color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums}
@@ -632,6 +640,22 @@
     <span data-fig="elite_pairs_counted">993,345</span> possible pairings between seasons at 80 or better,
     this is the share it declines to separate at all. <b>That is not a dodge , it is the difference between
     a rating that answers every question and one that answers the questions it can.</b></div></div>
+  </div>
+
+  <h2 class="vi-h2">Nine leagues, one ladder</h2>
+  <p class="vi-h2sub">A cross-league index invites one obvious suspicion: that it is a Premier League
+  index wearing nine badges. The 650 seasons at 85 or better come from <b>all nine</b>.</p>
+
+  <div class="csfig" id="lgFig"
+       data-fig-series="elite_league_counts" data-series="196,117,101,83,61,36,21,18,17"
+       data-fig-series-names="elite_league_names"
+       data-names="Premier League|La Liga|Serie A|Bundesliga|Ligue 1|Eredivisie|Super Lig|Belgian Pro League|Primeira Liga"></div>
+
+  <div class="vi-rows">
+    <div class="vi-row"><div class="n g"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></div><div class="l">Of
+    those 650 seasons were played <b>outside the Premier League.</b> The ladder is one ladder: a
+    season is placed against every other season we can measure, and the league it was played in
+    <b>enters as a weight computed from players who moved</b>, never as a reputation.</div></div>
   </div>
 
   <h2 class="vi-h2">It scores the season, not the trophy</h2>
@@ -765,6 +789,24 @@
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 
+<script>
+/*  THE LEAGUE SPLIT. Counts AND names both come from the host's attributes, which
+    apply-figures owns , the names are generated from vv-core's canonical map rather than
+    the `leagues` table, because that table carries the Turkish league as TSL while every
+    card carries TR, and the join silently returns nothing.  */
+(function(){
+  var host=document.getElementById('lgFig'); if(!host) return;
+  var n=host.getAttribute('data-series').split(',').map(Number);
+  var names=host.getAttribute('data-names').split('|');
+  if(n.length!==names.length) return;
+  var max=Math.max.apply(null,n);
+  host.innerHTML='<div class="plad nolead">'+n.map(function(v,i){
+    return '<div class="pladr"><span class="pladn">'+names[i]+'</span>'+
+           '<span class="pladt"><span class="pladf" style="width:'+(v/max*100).toFixed(1)+'%"></span></span>'+
+           '<span class="pladv">'+v+'</span></div>';
+  }).join('')+'</div><p class="dcap">Seasons at 85 or better, by league. <b>The shape is the claim</b> , the Premier League leads and does not dominate, and no league in the record is absent from the top band. The 650 itself is fixed by construction, because the band edges are ranks; <b>what moves is which seasons fill the slots.</b></p>';
+})();
+</script>
 <script>
 /*  THE PRECISION LADDER. Thresholds come from the HOST'S data-series, which apply-figures
     owns and which is derived from `vv-margin.js` , the same table the live Compare gate
