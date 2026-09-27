@@ -95,6 +95,27 @@
       "query": "derived"
     },
     {
+      "key": "elite_pairs_inside_margin",
+      "value": 97,
+      "claim": "share of pairings between seasons at 80+ that the Index cannot separate, per cent",
+      "definition": "every unordered pair of scored cards at rt >= 80 present in vv-margin.js. A pair is INSIDE when |rt difference| < 1.96 * sqrt(se_a^2 + se_b^2), which is the same test the live Compare gate applies. Cards absent from the table are excluded, not counted",
+      "query": "derived from vv-margin.js, the table the live gate reads"
+    },
+    {
+      "key": "margin_separation_points",
+      "value": "2.8,5.5,10.0,16.1",
+      "claim": "points two seasons of the same standing must differ by before the Index separates them",
+      "definition": "per public band, 1.96 * sqrt(2) * the median standard error in that band, read from vv-margin.js. Order: Generational, Iconic, World Class, Standout",
+      "query": "derived from vv-margin.js"
+    },
+    {
+      "key": "elite_pairs_counted",
+      "value": 993345,
+      "claim": "pairings the figure above is computed over",
+      "definition": "unordered pairs of rt >= 80 cards carrying a standard error",
+      "query": "derived"
+    },
+    {
       "key": "ballon_dor_seasons",
       "value": 14,
       "claim": "Ballon d'Or seasons the record holds",

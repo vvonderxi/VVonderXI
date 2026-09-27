@@ -153,7 +153,7 @@ async function main() {
     }
     return a;
   };
-  const allCards = await pageAll(MV, 'api_player_id,player_name,season_year,rt');
+  const allCards = await pageAll(MV, 'card_id,api_player_id,player_name,season_year,rt');
 
   /*  ── IT RATES A SEASON, NOT A PLAYER. The claim the page turns on, and the one thing a
       FIFA rating or a pundit's number cannot say about itself: those rate a PERSON, and a
@@ -202,6 +202,63 @@ async function main() {
       `select rt from ${MV} where player_name = '${HAZARD}' and rt is not null order by season_year`);
   add('career_spread_hazard_years', hz.map(c => String(c.season_year).slice(2) + '/' + String(c.season_year + 1).slice(2)).join(','),
       'the illustrated career, season labels', 'derived from the same rows, same order', 'derived');
+
+  /*  ── IT TELLS YOU HOW SURE IT IS. Read from the SHIPPED margin table, `vv-margin.js`,
+      rather than re-derived, because that file is what the live Compare gate actually reads:
+      a figure generated from a second implementation would describe a platform nobody uses.
+
+      WHAT MAKES IT CONCRETE, WHICH IS THE WHOLE REQUIREMENT. "A standard error of 5.58
+      points" is unusable to a reader. What it LETS THEM DO is know when a crown means
+      something, and the platform already acts on it , Compare refuses to name a winner when
+      the gap between two seasons is inside their own pooled margin. This counts how often
+      that happens at the top of the ladder, which is the answer to "so what".
+
+      EVERY PAIR, NOT A SAMPLE. 1,414 cards at rt 80+ is 999,291 pairings, which is a
+      second of arithmetic, and a sampled figure on a page about precision would be a poor
+      joke. Cards the table does not know are EXCLUDED rather than counted either way: the
+      gate fails closed on them, so counting them as "inside" would flatter the figure.  */
+  const margin = require(path.join(__dirname, '..', 'vv-margin.js'));
+  const Z_BAR = margin.Z;   // 1.96, read from the shipped table so the page cannot disagree with the gate
+  const elite = allCards.filter(c => c.rt != null && c.rt >= 80 && margin.seFor(c.card_id) != null);
+  let inside = 0, pairs = 0;
+  for (let i = 0; i < elite.length; i++) {
+    for (let j = i + 1; j < elite.length; j++) {
+      const m = margin.marginFor(elite[i].card_id, elite[j].card_id);
+      if (m == null) continue;
+      pairs++;
+      if (Math.abs(elite[i].rt - elite[j].rt) < m) inside++;
+    }
+  }
+  if (pairs < 100000) throw new Error(`margin coverage collapsed: only ${pairs} pairings at rt 80+ , the table may be stale`);
+  add('elite_pairs_inside_margin', +(100 * inside / pairs).toFixed(1),
+      'share of pairings between seasons at 80+ that the Index cannot separate, per cent',
+      'every unordered pair of scored cards at rt >= 80 present in vv-margin.js. A pair is ' +
+      'INSIDE when |rt difference| < 1.96 * sqrt(se_a^2 + se_b^2), which is the same test the ' +
+      'live Compare gate applies. Cards absent from the table are excluded, not counted',
+      'derived from vv-margin.js, the table the live gate reads');
+
+  /*  AND THE PART A READER CAN USE. "A standard error of 5.8 points" is unusable; "two
+      Generational seasons have to be three points apart before the Index will separate them"
+      is a fact somebody can carry to a card. The error is NOT constant , it runs about
+      sixfold down the ladder , so a single number would be wrong everywhere except at the
+      median. Per band: 1.96 * sqrt(2) * median SE, the gap two seasons of that standing need.  */
+  const BAND_EDGES = [['Generational',95,200],['Iconic',90,95],['World Class',85,90],['Standout',80,85]];
+  const sep = BAND_EDGES.map(([name,lo,hi]) => {
+    const ses = allCards.filter(c => c.rt != null && c.rt >= lo && c.rt < hi)
+                        .map(c => margin.seFor(c.card_id)).filter(v => v != null)
+                        .sort((a,b) => a-b);
+    if (!ses.length) throw new Error(`no standard errors for the ${name} band , the table is stale or the bands moved`);
+    const med = ses[Math.floor(ses.length/2)];
+    return (Z_BAR * Math.sqrt(2) * med).toFixed(1);
+  });
+  add('margin_separation_points', sep.join(','),
+      'points two seasons of the same standing must differ by before the Index separates them',
+      'per public band, 1.96 * sqrt(2) * the median standard error in that band, read from ' +
+      'vv-margin.js. Order: Generational, Iconic, World Class, Standout',
+      'derived from vv-margin.js');
+
+  add('elite_pairs_counted', pairs, 'pairings the figure above is computed over',
+      'unordered pairs of rt >= 80 cards carrying a standard error', 'derived');
 
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))

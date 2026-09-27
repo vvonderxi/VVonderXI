@@ -509,6 +509,18 @@
   .csclub{display:flex;justify-content:space-between;margin:10px 2px 0;
     font:800 9.5px 'Archivo';letter-spacing:.12em;text-transform:uppercase;color:var(--vi-mut)}
   @media (max-width:560px){ .cstrip{height:132px;gap:3px} .csyr{font-size:7px} .csv{font-size:9px} }
+  /*  THE PRECISION LADDER , Add 2. Four bands, and how far apart two seasons of that
+      standing must be before the Index will separate them. A bar per band, because the
+      point is that the number is NOT constant: it runs sixfold down the ladder, and a
+      reader who takes 2.8 points from the top of the page and applies it at Standout has
+      been misled by a figure that was accurate once.  */
+  .plad{display:grid;gap:9px;margin:2px 0 0}
+  .pladr{display:grid;grid-template-columns:104px 1fr auto;gap:12px;align-items:center}
+  .pladn{font:800 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut);text-align:right}
+  .pladt{height:13px;border-radius:3px;background:var(--vi-barq);position:relative;overflow:hidden}
+  .pladf{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--vi-bar)}
+  .pladv{font:800 12px 'Archivo';color:var(--vi-strong);min-width:66px;text-align:right;font-variant-numeric:tabular-nums}
+  @media (max-width:560px){ .pladr{grid-template-columns:78px 1fr auto;gap:8px} .pladn{font-size:8.5px} }
   .vi-rows{display:grid;margin-top:4px;border-top:1px solid var(--vi-line)}
   .vi-row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;padding:15px 2px;border-bottom:1px solid var(--vi-line)}
   .vi-row .n{font:900 clamp(22px,3.8vw,29px)/1 'Archivo';letter-spacing:-.02em;color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums}
@@ -605,6 +617,21 @@
     <div class="vi-row"><div class="n">63<small>15/16</small></div><div class="l">And the dip is the part
     that matters, because a decline alone could be put down to age. This one sits <b>in the middle of his
     best years</b>, between an 83 and an 87, and he went straight back up to 87 the season after.</div></div>
+  </div>
+
+  <h2 class="vi-h2">It tells you how sure it is</h2>
+  <p class="vi-h2sub">Every V<span class="vvw">V</span> Score carries a measured margin of error, and the Index acts on it
+  rather than filing it away. <b>We have not found another football rating that publishes one at all.</b></p>
+
+  <div class="csfig" id="pladFig"
+       data-fig-series="margin_separation_points" data-series="2.8,5.5,10.0,16.1"></div>
+
+  <div class="vi-rows">
+    <div class="vi-row"><div class="n g"><span data-fig="elite_pairs_inside_margin">97</span><small>of elite pairs</small></div><div class="l"><b>When the Index does crown a season, the gap has cleared its own margin of
+    error.</b> At the top of the ladder that is rare: of the
+    <span data-fig="elite_pairs_counted">993,345</span> possible pairings between seasons at 80 or better,
+    this is the share it declines to separate at all. <b>That is not a dodge , it is the difference between
+    a rating that answers every question and one that answers the questions it can.</b></div></div>
   </div>
 
   <h2 class="vi-h2">It scores the season, not the trophy</h2>
@@ -738,6 +765,23 @@
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 
+<script>
+/*  THE PRECISION LADDER. Thresholds come from the HOST'S data-series, which apply-figures
+    owns and which is derived from `vv-margin.js` , the same table the live Compare gate
+    reads. The page therefore cannot claim a precision the product does not act on.  */
+(function(){
+  var host=document.getElementById('pladFig'); if(!host) return;
+  var pts=host.getAttribute('data-series').split(',').map(Number);
+  var names=['Generational','Iconic','World Class','Standout'];
+  if(pts.length!==names.length) return;
+  var max=Math.max.apply(null,pts);
+  host.innerHTML='<div class="plad">'+pts.map(function(p,i){
+    return '<div class="pladr"><span class="pladn">'+names[i]+'</span>'+
+           '<span class="pladt"><span class="pladf" style="width:'+(p/max*100).toFixed(1)+'%"></span></span>'+
+           '<span class="pladv">'+p.toFixed(1)+' pts</span></div>';
+  }).join('')+'</div><p class="dcap">How far apart two seasons of the same standing must be before the Index will say one is better. <b>At the very top it can split hairs</b> , three points is a real gap between two of the twelve best seasons ever recorded. Further down it cannot, and rather than guessing, <b>Compare says so on the card:</b> &#8220;a gap this small is finer than the Index can reliably read.&#8221;</p>';
+})();
+</script>
 <script>
 /*  THE CAREER STRIP. Values and season labels are read from the HOST'S OWN ATTRIBUTES, which
     apply-figures owns, so this script never carries a number of its own , the same reason the
