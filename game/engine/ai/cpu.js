@@ -1,22 +1,28 @@
 // CPU opponents. One interface: decide(ctx, view, player, legal, rng) -> action.
 // They see ONLY viewFor(state, player) plus public history. Swappable for a better AI later.
 
-import { valueOf, CATEGORIES } from '../core.js';
+import { valueOf, fieldFor, CATEGORIES } from '../core.js';
+const roleOf = (view, p) => (view.active === p ? 'attack' : 'defence');
 
 const other = p => (p === 'A' ? 'B' : 'A');
 const pick = (arr, rng) => arr[Math.floor(rng() * arr.length)];
 
 /** Per-deck percentile tables so "worth" is comparable across categories. Call once per deck. */
 export function prepareAI(ctx, deckIds) {
-  const pct = {};
-  for (const cat of ctx.config.categoryPool) {
-    const vals = deckIds.map(id => valueOf(ctx.cards[id], cat) ?? -1).sort((a, b) => a - b);
-    pct[cat] = v => { let lo = 0, hi = vals.length; while (lo < hi) { const m = (lo + hi) >> 1; if (vals[m] < v) lo = m + 1; else hi = m; } return lo / vals.length; };
+  const fields = Object.keys(ctx.cards[deckIds[0]].battle);
+  const byField = {};
+  for (const f of fields) {
+    const vals = deckIds.map(id => ctx.cards[id].battle[f] ?? -1).sort((a, b) => a - b);
+    byField[f] = v => { let lo = 0, hi = vals.length; while (lo < hi) { const m = (lo + hi) >> 1; if (vals[m] < v) lo = m + 1; else hi = m; } return lo / vals.length; };
   }
+  // pct(cat, role)(value) , percentile of a value on the field that category/role reads
+  const pct = (cat, role) => byField[fieldFor(cat, role)];
+  const roles = ['attack', 'defence'];
   const worth = {};
   for (const id of deckIds) {
-    const c = ctx.cards[id];
-    worth[id] = ctx.config.categoryPool.reduce((s, cat) => s + pct[cat](valueOf(c, cat) ?? -1), 0) / ctx.config.categoryPool.length;
+    const c = ctx.cards[id]; let s = 0, n = 0;
+    for (const cat of ctx.config.categoryPool) for (const r of roles) { s += pct(cat, r)(valueOf(c, cat, r) ?? -1); n++; }
+    worth[id] = s / n;
   }
   return { deckIds, pct, worth };
 }
@@ -33,10 +39,10 @@ export function GreedyCPU(ai) {
       const t = legal[0].type;
       if (t === 'CHOOSE_CATEGORY' || t === 'USE_TOKEN') {
         const cats = legal.filter(a => a.type === 'CHOOSE_CATEGORY');
-        return best(cats, a => Math.max(...hand.map(id => ai.pct[a.category](valueOf(ctx.cards[id], a.category) ?? -1))));
+        return best(cats, a => Math.max(...hand.map(id => ai.pct(a.category, roleOf(view, me))(valueOf(ctx.cards[id], a.category, roleOf(view, me)) ?? -1))));
       }
-      if (t === 'BAN_CATEGORY') return best(legal, a => -Math.max(...hand.map(id => ai.pct[a.category](valueOf(ctx.cards[id], a.category) ?? -1))));
-      if (t === 'LOCK_CARD') return best(legal, a => valueOf(ctx.cards[a.cardId], view.category) ?? -1);
+      if (t === 'BAN_CATEGORY') return best(legal, a => -Math.max(...hand.map(id => ai.pct(a.category, roleOf(view, me))(valueOf(ctx.cards[id], a.category, roleOf(view, me)) ?? -1))));
+      if (t === 'LOCK_CARD') return best(legal, a => valueOf(ctx.cards[a.cardId], view.category, roleOf(view, me)) ?? -1);
       // effects: shed as much as possible, dump the weakest other card
       return best(legal, a => a.effects.filter(e => e.startsWith('DISCARD')).length * 10 + (a.target ? 1 - ai.worth[a.target] : 0) + (a.effects.includes('PRESS') ? 1 : 0));
     },
@@ -113,12 +119,12 @@ function bestCardUtility(ctx, ai, view, me, cat, model, rng, P) {
   for (let s = 0; s < P.samples; s++) {
     const oh = sampleOppHand(model, rng);
     if (!oh.length) { oppPlays.push(-1); continue; }
-    const vals = oh.map(id => valueOf(ctx.cards[id], cat) ?? -1);
+    const vals = oh.map(id => valueOf(ctx.cards[id], cat, roleOf(view, other(me))) ?? -1);
     oppPlays.push(rng() < P.oppBestProb ? Math.max(...vals) : vals[Math.floor(rng() * vals.length)]);
   }
   let bestU = -Infinity, bestId = hand[0];
   for (const id of hand) {
-    const v = valueOf(ctx.cards[id], cat) ?? -1;
+    const v = valueOf(ctx.cards[id], cat, roleOf(view, me)) ?? -1;
     const pWin = oppPlays.filter(o => v - o >= edge).length / oppPlays.length;
     const conserve = hand.length === 1 ? 1 : 1 + P.conserve * (1 - ai.worth[id]);
     const u = pWin * conserve;

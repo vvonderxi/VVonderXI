@@ -171,7 +171,7 @@ const sameAction = (a, b) => a.type === b.type && a.player === b.player && a.cat
 function resolveBattle(ctx, state, events) {
   const idA = state.players.A.locked, idB = state.players.B.locked;
   events.push({ type: 'REVEAL', cards: { A: idA, B: idB }, category: state.category });
-  const comparison = compare(ctx.cards[idA], ctx.cards[idB], state.category);
+  const comparison = compare(ctx.cards[idA], ctx.cards[idB], state.category, state.active);
   const verdict = classify(comparison, ctx.config);
   events.push({ type: 'COMPARISON', ...comparison });
   events.push({ type: 'VERDICT', winner: comparison.winner, ...verdict });

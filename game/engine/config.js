@@ -6,7 +6,7 @@
 /** @typedef {'WINNER_KEEPS'|'LOSER_GETS'|'ALTERNATE'} InitiativeRule */
 
 export const DEFAULT_CONFIG = {
-  version: 'v1.0-sim-C', // set C from the 2026-09-27 sweep, synthetic deck. Re-run on real deck.
+  version: 'v1.1-moments', // set C from the 2026-09-27 sweep, synthetic deck. Re-run on real deck.
 
   // ---- hands and deck
   handSize: 5,
@@ -18,7 +18,8 @@ export const DEFAULT_CONFIG = {
   // ---- categories
   categoryMode: /** @type {CategoryMode} */ ('CHOOSE_FROM_OPTIONS'),
   categoryChoices: 3,
-  categoryPool: ['impact', 'goalThreat', 'creation', 'progression', 'defensive', 'reliability', 'roleMastery'],
+  // Football moments (attacker in possession vs defender). The abstract stat ids still work for experiments.
+  categoryPool: ['oneOnOne', 'killerBall', 'breakLines', 'counter', 'bigGame', 'ninety', 'roleDuel'],
   noRepeatLastCategory: true,
   categoryBan: true,        // non-active player bans one of the options first // last round's category is not offered again
 
@@ -48,6 +49,13 @@ export const DEFAULT_CONFIG = {
   tokensPerPlayer: 2,
   maxTokens: 3,
   enabledTokens: ['REROLL_CATEGORIES'],
+
+  // Player-facing names. Engine ids never change; rename freely here.
+  labels: {
+    hand: 'Squad', pile: 'Bench', discard: 'Legacy', active: 'Possession',
+    DISCARD_PLAYED: 'Into Legacy', PRESS: 'High Press', DISCARD_OTHER: 'Assist',
+    GAIN_TOKEN: '+1 Tactical Switch', REROLL_CATEGORIES: 'Tactical Switch',
+  },
 };
 
 /** Merge overrides (shallow, verdicts replaced wholesale). */

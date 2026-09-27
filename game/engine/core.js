@@ -40,11 +40,25 @@ export const CATEGORIES = {
   defensive:   { id: 'defensive',   label: 'Defensive Wall',  field: 'defensive',   thresholdScale: 1 },
   reliability: { id: 'reliability', label: 'Ever Present',    field: 'reliability', thresholdScale: 1 },
   roleMastery: { id: 'roleMastery', label: 'Master of Role',  field: 'roleMastery', thresholdScale: 1, hint: 'Percentile within own position pool. Where defenders shine.' },
+
+  // ---- MOMENTS: football scenarios. Asymmetric ones read a different number for each side.
+  // The player in POSSESSION attacks; the other defends.
+  oneOnOne:   { id: 'oneOnOne',   label: 'One on One',        attackField: 'goalThreat',  defenceField: 'defensive',   thresholdScale: 1 },
+  killerBall: { id: 'killerBall', label: 'The Killer Ball',   attackField: 'creation',    defenceField: 'defensive',   thresholdScale: 1 },
+  breakLines: { id: 'breakLines', label: 'Break the Lines',   attackField: 'progression', defenceField: 'defensive',   thresholdScale: 1 },
+  counter:    { id: 'counter',    label: 'Counter-Attack',    field: 'progression', thresholdScale: 1 },
+  bigGame:    { id: 'bigGame',    label: 'Big Game',          field: 'impact',      thresholdScale: 0.25 },
+  ninety:     { id: 'ninety',     label: 'Full Ninety',       field: 'reliability', thresholdScale: 1 },
+  roleDuel:   { id: 'roleDuel',   label: 'Master of Role',    field: 'roleMastery', thresholdScale: 1 },
 };
 
-export function valueOf(card, categoryId) {
+/** role: 'attack' (in possession) or 'defence'. Symmetric categories ignore it. */
+export function fieldFor(categoryId, role = 'attack') {
   const c = CATEGORIES[categoryId];
-  const v = card.battle[c.field];
+  return role === 'defence' ? (c.defenceField ?? c.field) : (c.attackField ?? c.field);
+}
+export function valueOf(card, categoryId, role = 'attack') {
+  const v = card.battle[fieldFor(categoryId, role)];
   return v == null ? null : v; // null = NR. Never coerce to 0 (platform rule).
 }
 
@@ -53,16 +67,16 @@ export function valueOf(card, categoryId) {
  * @returns {{category:string, aValue:number|null, bValue:number|null, difference:number,
  *            winner:'A'|'B'|null, loser:'A'|'B'|null}}
  */
-export function compare(cardA, cardB, categoryId) {
-  const a = valueOf(cardA, categoryId);
-  const b = valueOf(cardB, categoryId);
+export function compare(cardA, cardB, categoryId, attacker = 'A') {
+  const a = valueOf(cardA, categoryId, attacker === 'A' ? 'attack' : 'defence');
+  const b = valueOf(cardB, categoryId, attacker === 'B' ? 'attack' : 'defence');
   // NR rule for the game: an NR value loses to any real value; NR vs NR is level.
   // The deck generator should exclude NR cards from categories they cannot contest.
   const av = a == null ? -1 : a;
   const bv = b == null ? -1 : b;
   const difference = Math.abs(av - bv);
   const winner = av === bv ? null : av > bv ? 'A' : 'B';
-  return { category: categoryId, aValue: a, bValue: b, difference, winner, loser: winner ? (winner === 'A' ? 'B' : 'A') : null };
+  return { category: categoryId, attacker, aValue: a, bValue: b, difference, winner, loser: winner ? (winner === 'A' ? 'B' : 'A') : null };
 }
 
 // ---------------------------------------------------------------- VERDICT
