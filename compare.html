@@ -1301,11 +1301,42 @@ body.light .pkpanel{background:var(--cream);border-color:rgba(28,27,26,.28)}
       drew a full-width horizontal scrollbar for 3px of overflow (scrollWidth 391 against
       clientWidth 388, the vertical scrollbar's own width). Measured on the sheet, not read
       off the markup. Nothing meaningful is clipped at 3px. */
-  .pkpanel{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;margin:0;z-index:80;
-    padding:10px 13px 6px;border-radius:18px 18px 0 0;max-height:78vh;
+  /*  THE SHEET IS SIZED FROM THE VISUAL VIEWPORT, NOT FROM vh, BECAUSE A KEYBOARD
+      MOVES NEITHER. Both iOS Safari and Chrome Android default to
+      interactive-widget=resizes-visual: the keyboard shrinks the VISUAL viewport
+      and leaves the LAYOUT viewport alone, so innerHeight does not move and vh
+      does not recompute. `bottom:0` therefore put the sheet's foot UNDER the
+      keyboard and `max-height:78vh` kept sizing it against the whole screen.
+      MEASURED at 390x780, sheet open, before this change: the panel read
+      206..780 at every keyboard size, and the visible slice of the results list
+      went 406 -> 122 (iOS small, 291) -> 113 (Android, 300) -> 77 (iOS large,
+      336). A 70 to 81 per cent loss, the list still SAYING it was 406 tall.
+      --pkvb is the keyboard gap and --pkvh the visible height, both set from
+      visualViewport by pkViewportBind. The min() keeps the OLD 78vh ceiling, so
+      with no keyboard up nothing moves; the 100vh fallback means a browser with
+      no visualViewport, or JS that never ran, lands on exactly 78vh as before. */
+  .pkpanel{position:fixed;left:0;right:0;bottom:var(--pkvb,0px);top:auto;width:auto;margin:0;z-index:80;
+    padding:10px 13px 6px;border-radius:18px 18px 0 0;max-height:min(78vh, var(--pkvh,100vh));
     overflow-y:auto;overflow-x:hidden;
     box-shadow:0 -18px 44px rgba(0,0,0,.55)}
-  .pkpanel .pkresults{max-height:52vh}
+  /*  A COLUMN, SO THE RESULTS ABSORB WHATEVER THE CHROME LEAVES. The list used to
+      carry its own 52vh, a second fraction of a viewport that is not the visible
+      one, and two independent caps cannot both be right once the height is
+      dynamic. Now ONE number is set from JS and the list takes the remainder.
+      The panel's own overflow-y:auto stays as the floor case: chrome measures a
+      constant 168px, so below about 256px of visible height the sheet scrolls
+      rather than crushing the list past min-height.
+      .pkpanel.open{display:block} sits above this file's media queries, so this
+      rule wins on ORDER at equal specificity , a media query adds none. It must
+      stay below it. */
+  .pkpanel.open{display:flex;flex-direction:column}
+  /*  `0 1 auto` , SHRINK, NEVER GROW, AND THE DIFFERENCE IS A SHORT LIST. With
+      `1 1 auto` the list stretches to fill the sheet, so a search matching two
+      seasons drew a 608px sheet holding two rows and a lot of nothing. Measured.
+      `0` keeps the base size at the content height, so a long list shrinks to the
+      space available (440px at 390x780) and a short one leaves the sheet the size
+      of its own content, which is what it did before any of this. */
+  .pkpanel .pkresults{max-height:none;flex:0 1 auto;min-height:88px}
   /*  A FILLED slot hides its card while its panel is open, which is right for an in-flow
       panel that REPLACES the card and wrong for a sheet that covers it: hiding it collapses
       the grid column behind the sheet, so closing the sheet snaps the layout. The card stays. */
@@ -1313,6 +1344,53 @@ body.light .pkpanel{background:var(--cream);border-color:rgba(28,27,26,.28)}
   .pkscrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:79;display:none}
   .pkscrim.on{display:block}
   body.light .pkscrim{background:rgba(0,0,0,.32)}
+  /*  THE SCROLL LOCK , `overflow`, NEVER `position:fixed`. THE 2026-08-29 LOCK
+      THAT WAS REMOVED IS NOT THE ONE BEING RE-ADDED, AND THE DIFFERENCE IS THE
+      WHOLE ENTRY. That one put position:fixed on BODY, which takes the body out
+      of flow: documentElement's scrollHeight collapsed to the viewport while
+      body stayed 2,190px tall, so 1,346px of page became unreachable with no
+      scrollbar to say so. `overflow:hidden` takes nothing out of flow , it makes
+      the scrolling box unscrollable and leaves every box where it was, so
+      scrollHeight cannot collapse and there is no offset to save and restore.
+      MEASURED at 390x780 on a revealed comparison (6,284px tall, 5,504px of
+      scroll): de.scrollHeight 6284 -> 6284 UNCHANGED, body still `static`,
+      0px stranded, and every pixel still reachable after the sheet closes.
+      WHAT IT FIXES, AND STATED AS PRECISELY AS IT WAS MEASURED: the page was
+      scrollable behind the open sheet , scrollTo(2000) moved the document 1,600px
+      while the sheet stayed pinned at top 206 , which is the "layers are badly
+      managed" complaint, a fixed sheet with the page running underneath it.
+      `overflow:hidden` propagated from the root is what stops a USER scrolling it.
+      IT DOES NOT, AND MUST NOT, STOP A PROGRAMMATIC ONE: overflow:hidden leaves
+      the box a scroll container, so scrollTo still works by spec, and this page
+      depends on that elsewhere (vvBack, the season stepper, the reveal). So the
+      proof of this half is the computed value plus the CSS contract, not a
+      scrollTo that would report the same number either way , a synthetic wheel or
+      touch cannot settle it either, since an untrusted event never scrolls, and a
+      test that cannot fail is not a test. What IS measured, either side of the
+      lock: scrollHeight 6284 -> 6284, body static, scroll offset 400 -> 400, and
+      every one of the 6,284px still reachable afterwards.
+      overscroll-behavior:contain on .pkresults was already stopping the CHAINING
+      at the end of the list; it was never able to stop the page scrolling from a
+      gesture that started outside the list. The `none` on body below is the same
+      family one level up , it keeps the rubber-band and pull-to-refresh off the
+      page behind the sheet. It is a belt to the overflow's braces and is not
+      separately measured here.
+      DESKTOP IS UNTOUCHED BY CONSTRUCTION, and that matters more than it reads:
+      above 820px .pkpanel is an ANCHORED IN-FLOW panel and compare auto-opens
+      BOTH slots on a bare load, so the page MUST keep scrolling to reach slot
+      B's panel. Both effects live inside this media query, so the WIDTH decides
+      whether the class does anything and no JS branch can get it wrong , a
+      rotation to landscape releases the lock with nothing to remember. */
+  html.pklock, html.pklock body{overflow:hidden}
+  html.pklock body{overscroll-behavior:none}
+  /*  AND THE THEME TOGGLE GOES UNDER THE SCRIM. It is position:fixed at z-index
+      200 against the scrim's 79, so it stayed hit-testable ON TOP of the dim ,
+      measured with elementFromPoint, which returned the toggle, not the scrim.
+      A control floating above a modal that ignores the modal is the third of the
+      three layer faults. 78 puts it one below the scrim: it is still visible
+      through the dim, and a tap there now closes the sheet like any other tap on
+      the scrim, rather than silently changing the theme behind it. */
+  html.pklock .mt-fixed{z-index:78}
 }
 @media (min-width:821px){ .pkscrim{display:none} }
 .pkgrab{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.18);margin:4px auto 14px}
@@ -2192,6 +2270,65 @@ body.light .pkmsub{color:var(--ink-soft)}
     el.classList.toggle('on', !!on);
   }
   function pkAnyOpen(){ return !!(PK.A.open || PK.B.open); }
+  /*  ─── THE SHEET'S STATE FLAG, ONE CLASS, WIDTH-GATED IN CSS ────────────────
+      pkLock is called from openPicker and closePicker with pkAnyOpen(), so it
+      hangs off the STATE ("a sheet is up") and not off either route into it.
+      Both things it drives , the scroll lock and the toggle's z-index , live
+      inside the max-width:820px block, so the class is inert on desktop and a
+      rotation needs no JS to release it. See the CSS for why this lock is not
+      the position:fixed one that was removed on 2026-08-29. */
+  function pkLock(on){
+    document.documentElement.classList.toggle('pklock', !!on);
+    pkViewportBind(!!on);
+  }
+  /*  ─── FIX 2: THE PANEL IS SIZED FROM visualViewport, AND IT SETTLES ────────
+      IT SETTLES RATHER THAN TRACKS, DELIBERATELY. visualViewport fires resize
+      continuously while the keyboard animates, and re-laying out the sheet on
+      every frame RESIZES A PANEL THE THUMB IS ALREADY IN , the same reason a
+      naive dvh swap was rejected for .pkresults. THE DEBOUNCE IS WHAT DELIVERS
+      THAT, not the floor, and the floor was nearly set on the wrong reasoning: it
+      began at 60px to shut out an iOS URL-bar collapse, which moves the visual
+      viewport by 44 to 88px , and a URL bar collapses ON SCROLL, which fix 1 has
+      just made impossible while the sheet is up. So the case the floor was sized
+      for cannot happen, and at 60 it MEASURABLY ignored real keyboard changes:
+      291 -> 300 -> 336 all left the panel where it was, because each step is
+      under 60. 24px keeps out rounding noise and follows a keyboard swap, which
+      is the movement that actually happens (alphabetic to numeric or emoji is
+      roughly 40px).
+      IT READS visualViewport AND NOT innerHeight, WHICH IS THE ENTIRE POINT.
+      innerHeight does not move when a keyboard opens on either platform, so a
+      version of this built on innerHeight would compute a gap of 0, change
+      nothing, and look exactly like a version that works. */
+  var PKVV={ t:0, last:0, on:false };
+  function pkVVApply(){
+    var vv=window.visualViewport, r=document.documentElement;
+    if(!vv) return;
+    var h=Math.round(vv.height);
+    var gap=Math.max(0, Math.round(window.innerHeight - (h + vv.offsetTop)));
+    r.style.setProperty('--pkvb', gap+'px');
+    r.style.setProperty('--pkvh', Math.max(180, h-16)+'px');   // 16px sliver of page behind
+    PKVV.last=h;
+  }
+  function pkVVSettle(){
+    var vv=window.visualViewport; if(!vv || !PKVV.on) return;
+    if(Math.abs(Math.round(vv.height)-PKVV.last) < 24) return; // rounding noise, not a keyboard
+    clearTimeout(PKVV.t);
+    PKVV.t=setTimeout(function(){ if(PKVV.on) pkVVApply(); }, 180);
+  }
+  function pkViewportBind(on){
+    var vv=window.visualViewport, r=document.documentElement;
+    if(!vv) return;                                  // no visualViewport: CSS falls back to 78vh
+    if(on){
+      if(PKVV.on) return;
+      PKVV.on=true; PKVV.last=Math.round(vv.height);
+      pkVVApply();
+      vv.addEventListener('resize', pkVVSettle);
+    } else {
+      PKVV.on=false; clearTimeout(PKVV.t);
+      vv.removeEventListener('resize', pkVVSettle);
+      r.style.removeProperty('--pkvb'); r.style.removeProperty('--pkvh');
+    }
+  }
   function pkPanelHTML(slot){
     return '<div class="pkhead-row"><h2>Choose <span class="s">Season '+slot+'</span></h2>'+
              '<button class="pkx" onclick="closePicker(\''+slot+'\')" aria-label="Close">&times;</button></div>'+
@@ -2231,6 +2368,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       });
       loadPool(slot);
     }
+    pkLock(pkAnyOpen());        // AFTER the block, so a re-open of an already-open slot still locks
     var i=pkQ(slot,'Search'); if(i) i.focus();
   }
   function closePicker(slot){
@@ -2240,18 +2378,25 @@ body.light .pkmsub{color:var(--ink-soft)}
     var side=panel.closest('.side'); if(side) side.classList.remove('picking');
     PK[slot]={pool:[],host:null,inst:null,miss:null,open:false};
     pkScrim(pkAnyOpen());                              // the OTHER slot may still be open
+    pkLock(pkAnyOpen());
   }
 
-  /*  NO BODY LOCK HERE, AND THE REASON IS MEASURED , DO NOT ADD ONE.
-      The obvious companion to overscroll-behavior is to lock the page while the picker is
-      up. It is wrong for THIS picker, because .pkpanel is an ANCHORED IN-FLOW panel inside
-      its own .side, not an overlay: the page must keep scrolling to reach the second slot's
-      panel below the first. And compare.html auto-opens BOTH slots on a bare load, so a lock
-      engages before the reader has touched anything. Measured with position:fixed on body at
-      a bare load: documentElement.scrollHeight collapsed to the viewport while body stayed
-      1,365px tall at 1440x900 and 2,190px at 390x844 , 465px of content unreachable on
-      desktop and 1,346px on mobile, with no scrollbar to say so.
-      overscroll-behavior:contain alone stops the chaining, which was the actual defect. */
+  /*  NO position:fixed BODY LOCK HERE, EVER , AND THAT RULING IS UNCHANGED BY THE
+      overflow LOCK ADDED ABOVE. The two are not the same thing and must not be conflated
+      by whoever reads this next.
+      WHY position:fixed IS STILL FORBIDDEN: it takes body out of flow. Measured at a bare
+      load, documentElement.scrollHeight collapsed to the viewport while body stayed 1,365px
+      tall at 1440x900 and 2,190px at 390x844 , 465px of content unreachable on desktop and
+      1,346px on mobile, with no scrollbar to say so. Nothing about `overflow:hidden` has
+      that shape: it leaves every box in flow, so scrollHeight is untouched (measured
+      6284 -> 6284) and there is no scroll offset to save and restore.
+      WHY THE overflow LOCK IS NARROW-ONLY: above 820px .pkpanel is an ANCHORED IN-FLOW
+      panel inside its own .side, and compare auto-opens BOTH slots on a bare load, so the
+      page must keep scrolling to reach the second panel below the first. The CSS is inside
+      the max-width:820px block, so the width decides and no JS branch can get it wrong.
+      overscroll-behavior:contain on .pkresults stops the CHAINING at the end of the list and
+      never could stop the page scrolling under a gesture that began outside the list , which
+      is what the lock is for. Both are needed; neither replaces the other. */
   function pkToggleFilters(slot){
     var p=pkQ(slot,'More'), b=pkQ(slot,'FiltBtn');
     if(!p||!b) return;
