@@ -76,6 +76,21 @@ for(const rel of TARGETS){
     if(cur!==want){ mism++; if(CHECK) console.log(`  DRIFT ${rel} ${key}: page "${cur}" vs generated "${want}"`); }
     return open+want+close;
   });
+  /*  SERIES, NOT ONLY SCALARS , and this exists because a DRAWING goes stale exactly the way
+      a number does, only more quietly. The career-spread strip plots twelve real rt values.
+      Typed into the markup they would be a fourth embedded snapshot, and SS C records that
+      every one of those has gone stale in silence. A `data-series` attribute is rewritten and
+      checked here by the same mechanism as a span, so a recalibration cannot leave the
+      picture confidently drawing last month's career.
+      RAW, NOT FORMATTED: a series is machine input for the renderer, so it must not go
+      through render(), which inserts thousands separators.  */
+  const reS=/(<[a-z-]+\b[^>]*\bdata-fig-series="([a-z_]+)"[^>]*\bdata-series=")([^"]*)(")/g;
+  out=out.replace(reS,(m,open,key,cur,close)=>{
+    const f=byKey[key]; if(!f) throw new Error(`unknown figure key: ${key}`);
+    const want=String(f.value); n++;
+    if(cur!==want){ mism++; if(CHECK) console.log(`  DRIFT ${rel} ${key}: page "${cur}" vs generated "${want}"`); }
+    return open+want+close;
+  });
   files++;
   if(n===0){
     if(UNWIRED[rel]) console.log(`  ${rel}: no data-fig spans , EXEMPT (${UNWIRED[rel]})`);

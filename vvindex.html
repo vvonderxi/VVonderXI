@@ -380,6 +380,7 @@
     --vi-panel:rgba(255,255,255,.03); --vi-track:rgba(243,237,224,.09);
     --vi-early:rgba(243,237,224,.62); --vi-ends:rgba(243,237,224,.45);
     --vi-swatch-e:rgba(243,237,224,.30); --vi-swatch-f:rgba(232,184,75,.8);
+    --vi-bar:#E8B84B; --vi-barq:rgba(243,237,224,.22);
     --vi-pqbg1:rgba(232,184,75,.13); --vi-pqbg2:rgba(232,184,75,.03);
     --vi-pqbd:rgba(232,184,75,.30);
     --vi-ctabg:rgba(232,184,75,.10); --vi-ctabd:rgba(232,184,75,.26);
@@ -402,6 +403,7 @@
     --vi-panel:rgba(0,0,0,.035); --vi-track:rgba(28,27,26,.10);
     --vi-early:rgba(28,27,26,.66); --vi-ends:rgba(28,27,26,.50);
     --vi-swatch-e:rgba(28,27,26,.28); --vi-swatch-f:rgba(168,118,15,.75);
+    --vi-bar:#A8760F; --vi-barq:rgba(28,27,26,.26);
     --vi-pqbg1:rgba(232,184,75,.22); --vi-pqbg2:rgba(232,184,75,.06);
     --vi-pqbd:rgba(168,118,15,.34);
     --vi-ctabg:rgba(232,184,75,.17); --vi-ctabd:rgba(168,118,15,.30);
@@ -477,6 +479,36 @@
   .dpan svg{display:block;width:100%;height:auto}
   .dcap{font:400 12px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
   .dcap b{font-family:Archivo;font-weight:700;color:var(--vi-strong)}
+  /*  THE CAREER STRIP , Add 1. Twelve seasons of one career as a column each, height by
+      score, three marked and the other nine left legible. THE SHAPE IS THE ARGUMENT: a
+      reader has to be able to see the line move, not just read three highlights, so the
+      unmarked columns keep a real fill rather than fading to a hint.
+      THE VALUES ARE GENERATED , data-fig-series on the host, rewritten and checked by
+      apply-figures. A drawing with its numbers typed in is an embedded snapshot, and every
+      one of those on this platform has gone stale in silence.  */
+  .csfig{border:1px solid var(--vi-line);border-radius:18px;padding:22px 20px 16px;
+    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
+  .cstrip{display:flex;align-items:flex-end;gap:6px;height:168px;margin:4px 0 0}
+  /*  THE BAR GETS ITS OWN TRACK, AND THE FIRST VERSION DID NOT , the columns were a flex
+      stack and the bar was a flex ITEM, so the value and year labels competed with it for
+      the 168px and flex-shrink quietly clamped five different scores to the same height.
+      Measured: 81, 82, 83, 85 and 87 all drew 135px, and 90 drew 133, which is the shape
+      arguing the opposite of the claim. The track flexes, the bar is positioned inside it,
+      and a percentage of the track is a percentage of the track.  */
+  .cscol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;height:100%}
+  .cstrack{flex:1 1 auto;position:relative;min-height:0}
+  .csbar{position:absolute;left:0;right:0;bottom:0;border-radius:4px 4px 2px 2px;background:var(--vi-barq)}
+  .cscol.mk .csbar{background:var(--vi-bar)}
+  .cscol.lo .csbar{background:var(--pink-ink)}
+  .csv{font:800 11px 'Archivo';text-align:center;color:var(--vi-mut);margin:0 0 5px}
+  .cscol.mk .csv{color:var(--vi-strong);font-size:13px}
+  .cscol.lo .csv{color:var(--pink-ink);font-size:13px}
+  .csyr{font:700 8.5px 'Archivo';letter-spacing:.02em;text-align:center;color:var(--vi-mut);
+    margin:7px 0 0;white-space:nowrap}
+  .cscol.mk .csyr,.cscol.lo .csyr{color:var(--vi-strong)}
+  .csclub{display:flex;justify-content:space-between;margin:10px 2px 0;
+    font:800 9.5px 'Archivo';letter-spacing:.12em;text-transform:uppercase;color:var(--vi-mut)}
+  @media (max-width:560px){ .cstrip{height:132px;gap:3px} .csyr{font-size:7px} .csv{font-size:9px} }
   .vi-rows{display:grid;margin-top:4px;border-top:1px solid var(--vi-line)}
   .vi-row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;padding:15px 2px;border-bottom:1px solid var(--vi-line)}
   .vi-row .n{font:900 clamp(22px,3.8vw,29px)/1 'Archivo';letter-spacing:-.02em;color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums}
@@ -553,6 +585,26 @@
     <div class="vi-row"><div class="n g">12</div><div class="l">Seasons have ever scored 95. <b>Rarity is the point:</b> 150 reach 90, 650 reach 85, and everything else sits below. A score is a standing among all of them rather than a grade.</div></div>
     <div class="vi-row"><div class="n">Own<small>pool</small></div><div class="l">Every season is read against <b>players in the same position</b>, never against the whole record. A centre-back is measured among centre-backs. That is why a defender&#8217;s number is not a striker&#8217;s number made smaller.</div></div>
     <div class="vi-row"><div class="n">9</div><div class="l">Leagues, and they are <b>not treated as equal.</b> The weighting is computed from players who actually moved between them, not assigned by reputation.</div></div>
+  </div>
+
+  <h2 class="vi-h2">It rates a season, not a player</h2>
+  <p class="vi-h2sub">A rating rates a person, and a person does not have one number. Across
+  <span data-fig="career_spread_players">4,387</span> players with five or more scored seasons, the
+  median gap between a career&#8217;s best season and its worst is
+  <span data-fig="career_spread_median">37</span> points.</p>
+
+  <div class="csfig" id="csFig"
+       data-fig-series="career_spread_hazard" data-series="58,85,71,82,83,63,87,81,90,51,53,26"
+       data-fig-series-years="career_spread_hazard_years"
+       data-years="10/11,11/12,12/13,13/14,14/15,15/16,16/17,17/18,18/19,19/20,20/21,21/22"></div>
+
+  <div class="vi-rows">
+    <div class="vi-row"><div class="n g">64</div><div class="l">Points between Eden Hazard&#8217;s best
+    scored season and his worst, against a median of 37. <b>The Index is not describing a player here,
+    it is describing twelve different years of work.</b></div></div>
+    <div class="vi-row"><div class="n">63<small>15/16</small></div><div class="l">And the dip is the part
+    that matters, because a decline alone could be put down to age. This one sits <b>in the middle of his
+    best years</b>, between an 83 and an 87, and he went straight back up to 87 the season after.</div></div>
   </div>
 
   <h2 class="vi-h2">It scores the season, not the trophy</h2>
@@ -686,6 +738,33 @@
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 
+<script>
+/*  THE CAREER STRIP. Values and season labels are read from the HOST'S OWN ATTRIBUTES, which
+    apply-figures owns, so this script never carries a number of its own , the same reason the
+    boundary marks read their default caption out of the DOM rather than duplicating it here.
+    HEIGHTS ARE SCALED FROM ZERO, NOT FROM THE MINIMUM. Baselining at the lowest season would
+    draw Hazard's 26 as nothing and exaggerate every gap above it; the claim is about the size
+    of a real spread and a truncated axis would be arguing it dishonestly.  */
+(function(){
+  var host=document.getElementById('csFig'); if(!host) return;
+  var vals=host.getAttribute('data-series').split(',').map(Number);
+  var yrs=host.getAttribute('data-years').split(',');
+  if(vals.length!==yrs.length) return;                 // mismatched series, draw nothing
+  var TOP=100, MARK={}; 
+  var best=Math.max.apply(null,vals), worst=Math.min.apply(null,vals);
+  MARK[vals.indexOf(best)]='mk'; MARK[vals.indexOf(worst)]='lo';
+  MARK[vals.indexOf(63)]='mk';                          // the mid-career dip, named in the copy
+  var cols=vals.map(function(v,i){
+    var cls='cscol'+(MARK[i]?' '+MARK[i]:'');
+    return '<div class="'+cls+'"><p class="csv">'+v+'</p>'+
+           '<div class="cstrack"><div class="csbar" style="height:'+(v/TOP*100).toFixed(1)+'%"></div></div>'+
+           '<p class="csyr">'+yrs[i]+'</p></div>';
+  }).join('');
+  host.innerHTML='<div class="cstrip">'+cols+'</div>'+
+    '<div class="csclub"><span>Lille</span><span>Chelsea</span><span>Real Madrid</span></div>'+
+    '<p class="dcap">The three Madrid seasons were wrecked by injury, and that is exactly the point: <b>a season score registers it and a career rating hides it.</b> One number for this career would have been wrong about nine of these twelve seasons , and that is a failure of the rating, not of the player.</p>';
+})();
+</script>
 <script>
 /*  THE DEFENDER DRAWING , built once and injected, so the two panels cannot drift
     apart the way two hand-written SVGs would.  */

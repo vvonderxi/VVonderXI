@@ -138,7 +138,10 @@ async function main() {
       'honours are joined to it, so the count is independent of the engine by construction',
       'select count(*) from honours');
 
-  const BANDS = { top3: 85, iconic: 90, gen: 95 };
+  /*  ONE PAGINATED READ OF THE MATVIEW, SHARED BY BOTH BLOCKS BELOW. PostgREST caps a
+      select at 1000 rows SILENTLY, which SS C records as the defect that returns a plausible
+      number rather than an error. player_name rides along because the spread illustration
+      needs one named career.  */
   const pageAll = async (t, sel) => {
     let a = [], i = 0;
     for (;;) {
@@ -150,9 +153,59 @@ async function main() {
     }
     return a;
   };
+  const allCards = await pageAll(MV, 'api_player_id,player_name,season_year,rt');
+
+  /*  ── IT RATES A SEASON, NOT A PLAYER. The claim the page turns on, and the one thing a
+      FIFA rating or a pundit's number cannot say about itself: those rate a PERSON, and a
+      person does not have one number.
+      FIVE SEASONS IS THE GATE and it is not arbitrary , a spread computed over two or three
+      seasons is mostly noise about which two, and the claim is about careers. 4,387 players
+      clear it.  */
+  const SPREAD_MIN_SEASONS = 5;
+  const careers = {};
+  for (const c of allCards) {
+    if (c.rt == null) continue;
+    (careers[c.api_player_id] = careers[c.api_player_id] || []).push(c.rt);
+  }
+  const spreads = Object.values(careers)
+    .filter(a => a.length >= SPREAD_MIN_SEASONS)
+    .map(a => Math.max(...a) - Math.min(...a))
+    .sort((x, y) => x - y);
+
+  add('career_spread_players', spreads.length,
+      `players with ${SPREAD_MIN_SEASONS} or more scored seasons`,
+      `count of api_player_id having >= ${SPREAD_MIN_SEASONS} cards with a non-null rt`,
+      `select count(*) from (select api_player_id from ${MV} where rt is not null ` +
+      `group by 1 having count(*) >= ${SPREAD_MIN_SEASONS}) t`);
+
+  add('career_spread_median', spreads[Math.floor(spreads.length / 2)],
+      'median gap between a player\'s best scored season and his worst',
+      'median of max(rt) - min(rt) per player, over players clearing the five-season gate. ' +
+      'MEDIAN and not mean, because a handful of enormous spreads would carry a mean and the ' +
+      'claim is about the typical career',
+      `select percentile_cont(0.5) within group (order by s) from (select max(rt)-min(rt) s ` +
+      `from ${MV} where rt is not null group by api_player_id having count(*) >= ${SPREAD_MIN_SEASONS}) t`);
+
+  /*  THE ILLUSTRATION IS GENERATED TOO, AND THAT IS THE WHOLE REASON THIS BLOCK EXISTS.
+      A drawing of one career with its numbers typed into the markup is an embedded snapshot,
+      and SS C records that all of those go stale in silence. A recalibration would move these
+      twelve values and the strip would go on drawing the old ones, confidently.
+      Emitted as a series so apply-figures can rewrite and check it exactly like a span.  */
+  const HAZARD = 'E. Hazard';
+  const hz = allCards.filter(c => c.player_name === HAZARD && c.rt != null)
+                     .sort((a, b) => a.season_year - b.season_year);
+  if (hz.length < 10) throw new Error(`the spread illustration needs ${HAZARD}'s career and found ${hz.length} scored seasons`);
+  add('career_spread_hazard', hz.map(c => c.rt).join(','),
+      'the illustrated career, oldest season first',
+      `every scored card for ${HAZARD}, ordered by season_year. The drawing marks his best, ` +
+      'his worst and the mid-career dip; the other nine stay legible so the SHAPE is visible',
+      `select rt from ${MV} where player_name = '${HAZARD}' and rt is not null order by season_year`);
+  add('career_spread_hazard_years', hz.map(c => String(c.season_year).slice(2) + '/' + String(c.season_year + 1).slice(2)).join(','),
+      'the illustrated career, season labels', 'derived from the same rows, same order', 'derived');
+
+  const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))
     .filter(r => r.honour_type === 'ballon_dor' && r.api_player_id != null);
-  const allCards = await pageAll(MV, 'api_player_id,season_year,rt');
   const byPlayerSeason = {};
   for (const c of allCards) {
     if (c.rt == null) continue;

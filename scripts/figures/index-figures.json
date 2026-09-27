@@ -67,6 +67,34 @@
       "query": "select count(*) from honours"
     },
     {
+      "key": "career_spread_players",
+      "value": 4387,
+      "claim": "players with 5 or more scored seasons",
+      "definition": "count of api_player_id having >= 5 cards with a non-null rt",
+      "query": "select count(*) from (select api_player_id from player_card_mv where rt is not null group by 1 having count(*) >= 5) t"
+    },
+    {
+      "key": "career_spread_median",
+      "value": 37,
+      "claim": "median gap between a player's best scored season and his worst",
+      "definition": "median of max(rt) - min(rt) per player, over players clearing the five-season gate. MEDIAN and not mean, because a handful of enormous spreads would carry a mean and the claim is about the typical career",
+      "query": "select percentile_cont(0.5) within group (order by s) from (select max(rt)-min(rt) s from player_card_mv where rt is not null group by api_player_id having count(*) >= 5) t"
+    },
+    {
+      "key": "career_spread_hazard",
+      "value": "58,85,71,82,83,63,87,81,90,51,53,26",
+      "claim": "the illustrated career, oldest season first",
+      "definition": "every scored card for E. Hazard, ordered by season_year. The drawing marks his best, his worst and the mid-career dip; the other nine stay legible so the SHAPE is visible",
+      "query": "select rt from player_card_mv where player_name = 'E. Hazard' and rt is not null order by season_year"
+    },
+    {
+      "key": "career_spread_hazard_years",
+      "value": "10/11,11/12,12/13,13/14,14/15,15/16,16/17,17/18,18/19,19/20,20/21,21/22",
+      "claim": "the illustrated career, season labels",
+      "definition": "derived from the same rows, same order",
+      "query": "derived"
+    },
+    {
       "key": "ballon_dor_seasons",
       "value": 14,
       "claim": "Ballon d'Or seasons the record holds",
