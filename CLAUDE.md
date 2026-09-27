@@ -34,7 +34,7 @@ Why this file exists: this project has suffered from too many documents and no c
 
 ```
 === VVONDERXI LAUNCH PROGRESS ===
-Data quality   █████████████████░  ~97%   INGESTION-GAP RECOVERY COMPLETE (780 seasons recovered across all 9 leagues, insert-only, 1 public band crossing total); honours 624 live (measured 2026-09-12 end of day, was 631: 11 false top_assists deleted, 4 sourced and written; top_assists 113 of 144 league-seasons) + NR-assist fill; KEEPER + PENALTY FIELDS CAPTURED AND NOW LIVE (matview swapped 2026-08-19, 65 columns; saves/conceded/penalties/starts + 4 discipline fields visible to the site); goals-provenance audit open
+Data quality   █████████████████░  ~97%   [2026-09-26] SITTING 3 SPLIT 181 FUSED CARDS (181 rows inserted, 20 held, 0 failed, reversible from migrations/fused_split_2026-09-26); the matview refresh after it is OUTSTANDING, so the site still serves the pre-split state. INGESTION-GAP RECOVERY COMPLETE (780 seasons recovered across all 9 leagues, insert-only, 1 public band crossing total); honours 624 live (measured 2026-09-12 end of day, was 631: 11 false top_assists deleted, 4 sourced and written; top_assists 113 of 144 league-seasons) + NR-assist fill; KEEPER + PENALTY FIELDS CAPTURED AND NOW LIVE (matview swapped 2026-08-19, 65 columns; saves/conceded/penalties/starts + 4 discipline fields visible to the site); goals-provenance audit open
 Tags           ██████████████████  ~97%   TAG ENGINE COMPLETE , thresholds AND eligibility both on position_pool (the field split that mis-bracketed 12.78% is gone), Marksman retired, scoring on two defensible axes, identity tags gated on pool not family, no tag over the ~2% rarity CEILING bar the stated Iron Man exception (the band is a ceiling, not a target , four narrow archetypes sit below it by design). Only the fouls_drawn tag + discipline fields on the mv remain, both post-launch
 Compare        █████████████████░  ~95%   spine + flow-polish COMPLETE (go-to-player, user-fold, back-path, subheading, C8) + VERDICT-TAG SYSTEM shipped (14 tags + age-tiebreaker + Proof/Confidence + crown badge) + the keeper radar hole closed (966 keeper cards drew an outfield pentagon here, card.html always gated and compare.html never did); only optional picker pager + merge remain
 Card editorial █████████████░░░░░  ~71%   Glance/Scout/Notes/Profile-blurb/Data-Confidence/Wonder-Tags WIRED + CHRONICLE REBUILT (72 moments, api-keyed, opponent field, watch CTA) + the card is now EXPLAINED on the playbook + GK confidence no longer claims a completeness it cannot have + SEQUENCE NAVIGATION (walks the list you arrived from, arrows/keys/swipe) + the radar is percentile-within-pool rather than four fixed constants (bar unmoved , it was already rendering, it was rendering wrongly); K4 Proof + K5 VV-line trajectory + honours strip UI remain
@@ -979,6 +979,13 @@ Nothing below is launch-blocking. This is the INDEX; the detail lives in `POST_L
     - **NEITHER IS CROSS-COMPETITION. `resolveSeasonStat()` filters to ONE `league.id` before it sums**, so a card can never mix competitions, and a "cross-competition fusion" has been proposed repeatedly and does not exist in this data. **Both shapes are two clubs inside one league.**
   - **AND THE HALVED DEFECT IS SMALLER THAN ITS NAME: the median halved card holds 79% of its season** (p10 43%, p90 97%), with **129 of 841 under half**. "Halved" is the shape, not the magnitude.
   - **NO rt DELTA HAS BEEN MEASURED FOR THE HALVED SHAPE AND NONE SHOULD BE QUOTED.** Computing it needs the engine re-run on a row that does not exist , a write, or the `scripts/separability/` re-implementation (99.56% exact against stored rt), which is the honest route and has not been taken. **An attempt to measure the RATE delta from summed API blocks came back CONTAMINATED** , Diouf L1 24/25 summed to 6,330 minutes, which no 38-game season can hold, because duplicate blocks entered the sum. **Any figure offered for this without naming its method is not a measurement.**
+- **[SITTING 3 RAN 2026-09-26 AND SPLIT 181 OF THEM. THE ENTRY BELOW DESCRIBES A POPULATION OF FOUR FOUND BY A DIFFERENT INSTRUMENT AND IS NOT SUPERSEDED , BOTH ARE TRUE, AND THE DIFFERENCE IS WHICH DETECTOR WAS POINTED AT THEM.** `scripts/fusion-detect.js` asked which cards EXCEED a league-season ceiling and found 4; `scripts/halved-dryrun.js` asked the provider directly and found 202, which SS E's own text predicted ("a fused card whose components are both mid-table produces an ordinary appearance count and is invisible to this test"). **Do not reconcile the two numbers; they answer different questions.]**
+  - **WHAT WAS WRITTEN: 181 cards reduced to the club they name, 181 rows inserted for the other club, 20 held, 0 failed.** Ledger, per-card before-captures and the pre-run rt snapshot: `migrations/fused_split_2026-09-26/`. Reversible with `node scripts/fused-run.js --rollback`.
+  - **THE HOLDS ARE THE INTERESTING HALF. Four are held by decision** (the margin cards, SS 0.5 of the scope). **SIXTEEN were refused by guard G1 because the provider now returns FEWER blocks than the candidates file measured four days earlier** , including all six three-club cards. **That is a finding about the source, not about the cards: the provider's history is not stable, so a candidates file ages and must be re-derived rather than trusted.**
+  - **SIX CARDS LOST THEIR SCORE TO A NULL, NOT TO THE FLOOR, AND THE DECISION IS DEFERRED TO AFTER LAUNCH (Lucas, 2026-09-27: "leave them, log them, do not patch a zero we cannot prove").** `187384` Tondela 967m, `187562` Genk 584m, `187085` Fiorentina 646m, `187313` Alanyaspor 383m, `186860` Manchester City 483m, `187510` Excelsior 398m. **All six are ABOVE the 300-minute floor.** Their fused row recorded `goals = 0`; the provider's per-club block records `goals = null`, so the split turned a stored zero into an NR and `scored` (which needs `goals IS NOT NULL`) dropped them.
+    - **THE OBVIOUS FIX IS THE ONE TO AVOID.** Writing 0 back looks safe because a total of 0 implies each part is 0 , **but the stored 0 was itself produced by the importer summing blocks, and SS E already records that `goals` is coalesced.** So the 0 may never have been measured, and asserting it is this file's own first principle inverted.
+    - **NOTHING FALSE IS SHOWN , VERIFIED, NOT ASSUMED.** `notScoredNote` refuses to fire above the floor, so none of the six carries the "short of the 300" sentence. **What they carry is no explanation at all**, which is a gap rather than a lie, and is the argument for a third note variant if this is ever taken up.
+  - **AND THE PRE-RUN rt SNAPSHOT EXISTS ONLY BECAUSE THE MATVIEW HAD NOT BEEN REFRESHED , A NARROW ESCAPE WORTH THE RULE.** I recorded failing to capture one before the run. The matview was frozen at 19:27:02, before the run started, so it still HELD that state; it was dumped to `before_rt_prerun.csv` and its md5 reproduces the live matview exactly (`a918ff3b...`, 57,885 rows). **The next refresh would have destroyed it.** **A stale matview is a liability for reading and an ASSET for recovery, and it is only an asset until somebody refreshes.**
 - **THE FUSED CARDS ARE A LABELLING DEFECT, NOT A SCORING ONE , 4 CARDS, DISCLOSE, DO NOT REPAIR. THE RE-IMPORT IS CLOSED ON THIS FINDING (measured 2026-09-16, read-only, nothing written).**
   - **THE POPULATION IS 4, VERIFIED CARD BY CARD AGAINST THE PROVIDER** , 246 candidates above a usable league-season ceiling, of which **231 are single-block at source** (the excess is playoff rounds those leagues actually play), **7 are the provider DUPLICATING a block** (stored equals one block, source "sum" is exactly double , our data is right), and **4 are genuine two-club fusions**: Ibrahimović BL 25/26, Pflücke BPL 25/26, Rits BPL 23/24, Nkuba BPL 23/24. `scripts/fusion-detect.js` re-runs this read-only.
   - **WHY THE SCORE IS SUBSTANTIALLY RIGHT, AND IT IS A MECHANISM RATHER THAN A SMALL NUMBER: `resolveSeasonStat()` FILTERS TO ONE `league.id` BEFORE IT SUMS**, so a fusion is always two clubs inside ONE league. The player genuinely did play those 36 Bundesliga matches. **Minutes, availability, every per-90 rate and the position pool are all correct on the fused total** , the fusion raises numerator and denominator together, and rate-based scoring absorbs it.
@@ -1145,6 +1152,53 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-09-26/27 | Sitting 3, and three times the instrument was the thing that was wrong
+
+**Commits `5597739` to `23f0db2`.** `git log` is the record; this entry keeps what it cannot say.
+
+**1. THE TWO NOT-SCORED NOTES SHIPPED BEFORE THE RUN, WHICH WAS THE CONDITION.** 44 reduced
+cards and ~200 inserted halves must not sit blank waiting for a second pass. `notScoredNote`
+in vv-core, two variants, because a card that never had a score and a card that LOST one are
+different events. **A contradiction that only rendering found: `partialSeasonNote` asserted
+"the figures AND THE SCORE cover that share only" on a card whose score had just been removed,
+in the box directly above a note explaining there is no score.** Fixed opt-in, so every
+existing caller renders byte-identically. **And the approved copy said "two clubs" where six
+of the 202 hold three** , caught by counting the population rather than by reading the note.
+
+**2. SITTING 3 RAN: 181 split, 181 inserted, 20 held, 0 failed.** Full record in SS E.
+
+**3. THE MATVIEW WAS OUT OF STEP AND A CORRECT REFRESH WAS THE CAUSE.** Refreshed 18:12:58;
+the canary rollback landed 18:19:58. **Seven minutes.** It photographed a base table that
+still held the canary. **The verification that followed read `player_card_view`, which is
+computed on READ and therefore always agrees with the base table , the one check that can
+never fail.** The drift check in SS C came out of this and has now fired on both sides: 0/true
+after the rollback refresh, **and `-181`/false the next morning, which is how we learned the
+post-run refresh had not been run at all.**
+
+**4. THE UNIQUE KEY IS FOUR COLUMNS, NOT THREE**, found because the canary's insert succeeded
+where the recorded key says it cannot. Four entries marked. **Nothing about the 841 halved
+cards is re-scoped on it.**
+
+**5. THREE INSTRUMENT FAULTS, ALL MINE, ALL CAUGHT BEFORE A WRITE.** `league_id` is OUR key
+and the canary had the provider's HARDCODED, so the first run held all 197 with "provider now
+returns 0 blocks" , **a message that reads as the source having changed rather than as my own
+tool being wrong.** 23 Turkish cards carry a null `league_id` and say `TR` where the leagues
+table says `TSL`. And the `--limit 1` control is the only reason either was found: **an empty
+capture directory was the sole evidence the first run had done nothing.**
+**A guard that holds everything looks exactly like caution.**
+
+**6. A NARROW ESCAPE WORTH KEEPING.** I recorded failing to capture a pre-run rt snapshot. The
+matview had not been refreshed, so it still HELD that state , dumped to disk, md5 reproduces
+(`a918ff3b...`). **A stale matview is a liability for reading and an asset for recovery, and
+only until somebody refreshes.**
+
+**NEXT / OPEN:** **The post-run refresh is outstanding**, so the site still serves the pre-split
+state , correct and consistent, just old. Run it, then the drift check; expect **58,066 rows**
+and `06bf3e41820b92d6b2f4e5fd4c93ea63`. **Six cards unscored by a NULL rather than the floor are
+LOGGED AND DEFERRED to after launch by Lucas** , do not patch a zero we cannot prove. **Next
+from Claude is item 8, the full audit sweep, and nothing before it**; the preview URL, QA groups
+B/C/D, the six punchlist reviews, the comparisons, the spend cap and the old API key are Lucas's.
 
 ### 2026-09-19 | A day of claims that had no derivation behind them, and the tools that now supply one
 

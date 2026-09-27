@@ -1,0 +1,17 @@
+{
+  "what": "The rt state immediately BEFORE the 181-card fused split, and the state after it.",
+  "why_this_file_exists": "The full snapshot is before_rt_prerun.csv, which .gitignore keeps out of the repo (migrations/*/before*.csv, deliberate). A clone therefore has this fingerprint and NOT the per-card rows. That is the honest limit of what is committed.",
+  "provenance": "The matview had not been refreshed since 19:27:02 on 2026-09-26, which was the canary-rollback verification refresh, and the run started at 21:42. So player_card_mv was still HOLDING the pre-run state and was dumped from it. It was captured on 2026-09-27, hours after the run, and the next refresh destroys it.",
+  "before": {
+    "rows": 57885,
+    "md5_card_id_rt": "a918ff3bc01e6d3504358fed941c48c1",
+    "source": "player_card_mv, frozen at 2026-09-26T19:27:02Z"
+  },
+  "after": {
+    "rows": 58066,
+    "md5_card_id_rt": "06bf3e41820b92d6b2f4e5fd4c93ea63",
+    "source": "player_card_view, computed on read 2026-09-26 after the run"
+  },
+  "how_to_use_it": "After `node scripts/fused-run.js --rollback`, the md5 over player_card_view must return to the BEFORE value. That is the aggregate check; the per-card before-captures in before/ are the stronger one, and the canary proved the column-for-column form.",
+  "caveat": "md5 covers card_id and rt only. A column that moves while rt holds still is invisible to it, which is the shape the assists repair took."
+}
