@@ -22,17 +22,30 @@ it still reads `coming-soon`. That single reading is what makes everything below
 ```
 merge-base        32b19dabe859ed6deb7f978dc6102919febd0798   (2026-09-06)
 origin/vvonderxi_BIGGER   4c8ce8a      11 commits ahead of base
-origin/redesign-compare   448a55e     366 commits ahead of base
-local redesign-compare    a6d8047       1 commit not yet pushed
+origin/redesign-compare   49048b7     372 commits ahead of base
+local redesign-compare    49048b7       nothing outstanding
 ```
+**RE-MEASURED 2026-09-28, LATE , the branch moved 6 commits after this file was written (AFCON,
+the shirt block, the tap targets, the honour derivation). The merge-base and BIGGER's count are
+UNCHANGED; only redesign's count moved, 366 to 372.**
 
 The 11 on BIGGER are the coming-soon holding page plus the 2026-09-06 merge. **It is NOT a
 fast-forward** , a real merge commit is required, which is better: SS D notes a fast-forward has
 no merge commit and no review point.
 
-**DRY RUN ALREADY DONE, in a throwaway worktree, nothing touched:**
-`Automatic merge went well`, **0 unmerged files**, 714 files changed, +249,293 / -1,307.
-`git merge-tree` over 46.8 MB of output reports **0 conflict blocks** and **0 "changed in both"**.
+**DRY RUN RE-DONE AT 372 COMMITS, in a throwaway worktree, nothing touched:**
+`Automatic merge went well`, **0 unmerged files**, **719 files changed, +252,006 / -1,307**.
+`git merge-tree` reports **0 conflict blocks**, and 0 for `^changed in both`, `^added in both`
+and `^removed in both`.
+
+**AND THE CONFLICT CHECK CAUGHT THIS DOCUMENT DEFEATING IT , worth knowing before you run it.**
+An unanchored `grep -c 'changed in both'` now returns **1**, and the hit is THIS FILE'S OWN
+SENTENCE about the check, arriving inside the merge's diff output. It is SEC C's recorded trap
+exactly: prose about a grep-based rule joins the grep. **Anchor it at column 0**, which is
+merge-tree's real syntax, or you will chase a conflict that does not exist:
+```
+grep -c '^changed in both' /tmp/mt.txt      # must be 0, not 'changed in both'
+```
 
 **ONE FILE IS DELETED AND IT IS DELIBERATE: `api/get-seasons.js`.** Removed from the branch at
 `cc3776c` (2026-09-15) as a stillborn endpoint with no caller in any `.html` in the history of any
@@ -55,9 +68,10 @@ git fetch origin
 git log --oneline -1 origin/redesign-compare
 ```
 
-**Check:** `git status` says clean. After the push, `origin/redesign-compare` reads **`a6d8047`**
-(it currently reads `448a55e`; one commit is outstanding). **Do not merge from a branch whose
-local and origin disagree** , the merge would carry work nobody else can see.
+**Check:** `git status` says clean and `origin/redesign-compare` reads **`49048b7`**, matching
+local , **verified 2026-09-28, nothing is outstanding**, so this step is already satisfied and
+the push is a no-op. **Do not merge from a branch whose local and origin disagree** , the merge
+would carry work nobody else can see.
 
 ### Step 2 , re-measure, because this runbook is already a day old
 
@@ -69,8 +83,7 @@ git rev-list --count $(git merge-base origin/vvonderxi_BIGGER origin/redesign-co
 comm -23 <(git ls-tree -r --name-only origin/vvonderxi_BIGGER | sort) <(git ls-tree -r --name-only origin/redesign-compare | sort)
 ```
 
-**Check:** merge-base is `32b19dab`, BIGGER is **11** ahead, redesign is **367** (366 plus the
-commit you just pushed). The last command must print **exactly one line, `api/get-seasons.js`**.
+**Check:** merge-base is `32b19dab`, BIGGER is **11** ahead, redesign is **372**. The last command must print **exactly one line, `api/get-seasons.js`**.
 **If it prints anything else, STOP** , a second line is a file that exists only on BIGGER and the
 merge would silently delete it, which is the failure `4c8ce8a`'s own message records from a
 previous attempt (22 conflicts, 183 files dropped).
@@ -122,7 +135,7 @@ node scripts/apply-figures.js --check | tail -2
 ```
 
 **Check, each one:**
-- the stat line reads about **714 files changed, +249,293 / -1,307**
+- the stat line reads **719 files changed, +252,006 / -1,307**
 - the deletion list is **exactly `api/get-seasons.js`**
 - `git ls-files 'api/*.js'` prints **one line, `api/analyse.js`** (SS C: `git ls-files`, never
   `ls` , a disk count over-reports the deployed surface)
