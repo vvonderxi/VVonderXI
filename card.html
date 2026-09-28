@@ -105,6 +105,23 @@
   .seasonstep button:hover{color:rgba(243,237,224,0.92);transform:translateY(-1px)}
   .seasonstep button:last-child:hover{transform:translateY(1px)}
   .seasonstep button[disabled]{opacity:.25;cursor:default;pointer-events:none}
+  /*  ── THE CHEVRONS GET A TALLER TARGET, NOT A 44px ONE, AND THE REASON IS MEASURED ──────
+      They render 17x11 , the second smallest control on the platform , and the audit sweep
+      named them. A transparent pseudo enlarges the reach and paints nothing, the same way
+      `.vvcard .xfm::before` already does for the shirt mark.
+      BUT 44 WIDE IS NOT FREE HERE AND IS NOT TAKEN. Measured on a live card: the two chevrons
+      sit SIDE BY SIDE with a 2px gap and the "View all N seasons" trigger is 8px to the left.
+      A 44px-wide area on each would overlap its sibling by ~25px and eat the trigger, so one
+      chevron would swallow the other's taps , invisibly, which is the exact failure SEC C
+      records for decorative absolutely-positioned elements.
+      VERTICAL IS FREE: the nearest interactive neighbour below is the club pill at 26px, so a
+      43px-tall area clears it. Each chevron also takes 1px into the shared 2px gap, so they
+      meet and never overlap. 17x11 to 19x43 , 4.4x the area, no pixel moved.
+      GETTING THEM TO 44 WIDE NEEDS THE ROW RE-LAID OUT, which moves things a reader can see,
+      so it stays in POST_LAUNCH with the bottom nav.  */
+  .seasonstep button{position:relative}
+  .seasonstep button::after{content:'';position:absolute;left:-1px;right:-1px;top:50%;
+    height:43px;transform:translateY(-50%)}
   .seasonstep button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
   body.light .seasonstep button{color:var(--ink-soft)}
   body.light .seasonstep button:hover{color:#1C1B1A}

@@ -58,6 +58,19 @@ anything previously recorded , the 12px fold triggers and the 17x11 chevrons.
 - **AND SS C's SIBLING-STATES RULE APPLIES: the fold triggers are 31 instances of one control.**
   They move together or not at all, and the same is true of `.bn-item` across nine pages.
 
+**[THE FREE HALF SHIPPED 2026-09-28. WHAT IS LEFT HERE IS ONLY WHAT MOVES A PIXEL.]** A
+transparent `::after` now gives the 31 fold triggers and the 5 arc marks a full **44px** area,
+and the card's season chevrons **19x43** , no paint, no layout, no pixel moved, verified by
+probing points outside each button's own box. **The chevrons could NOT take 44 WIDE and that is
+measured, not conceded:** they sit side by side with a **2px** gap and the season trigger is
+**8px** to the left, so a 44px-wide area on each would overlap its sibling by about 25px and eat
+the trigger. **Getting them to 44 wide needs the row re-laid out, which is a visual change, so it
+belongs to this entry rather than to that one.**
+**STILL OPEN AND STILL THE ONE THAT MATTERS: the bottom nav at 34px tall on all nine surfaces**,
+plus `.modetoggle` 38x38, `.avatar` 36x42, `.backbtn` 55x26, `.addclub` 162x31, `a#seeA`/`a#seeB`
+145x27, `.cm-mk` 32x32, `.pspot` 42x42 and `a.sp` 37-93x24. Every one of those changes what a
+page looks like.
+
 **THE INSTRUMENT: `_sweep_audit.js`, `tapTargets()`.** It reports every VISIBLE interactive
 element under 44px in either dimension, with its rendered size. Re-run it after any change and
 compare counts per surface , and note it counts an element once per surface per width, so the

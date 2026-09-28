@@ -1038,6 +1038,26 @@
   .dim .ds{font-family:'Inter';font-weight:400;font-size:14.5px;color:rgba(243,237,224,0.62);margin-top:5px;line-height:1.5} body.light .dim .ds{color:#5a544b}
 
   /* percentile + data confidence (dark feature panels both modes) */
+  /*  ── TAP TARGETS: A 44px TARGET DOES NOT NEED A 44px BOX (2026-09-28, item 3) ───────────
+      The audit sweep found 31 fold triggers on this page at 65x12 and 62x12, and five arc
+      marks at 24x24 , the smallest controls on the platform. The bottom nav at 34px tall and
+      everything else that would MOVE a pixel is deliberately untouched and stays in
+      POST_LAUNCH; this is only the half that costs nothing to look at.
+      THE PATTERN IS ALREADY ON THE PLATFORM: `.vvcard .xfm::before` gives a 20px mark a 32px
+      hit area the same way. A transparent pseudo-element enlarges what a thumb can reach and
+      paints nothing.
+      IT IS ONLY FREE IF IT TAKES NOTHING FROM A NEIGHBOUR, and SEC C records that a
+      decorative absolutely-positioned element intercepts taps in whatever region it occupies,
+      INVISIBLY. So the room was measured per control before a number was chosen: the tightest
+      clearance to another INTERACTIVE element anywhere in this set is 40px (an arc mark,
+      downward) against the 10 to 16px these expansions need. Prose cannot lose a tap, so only
+      interactive neighbours bound it.
+      WIDTH IS ALREADY PAST 44 on every fold trigger (62 to 74px), so only the height moves.  */
+  .tagdef .more, .vvband .more, .hmore, .drurybox-more{position:relative}
+  .tagdef .more::after, .vvband .more::after, .hmore::after, .drurybox-more::after{
+    content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
+  .arcmk::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;
+    transform:translate(-50%,-50%)}
   .pctbox{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:24px 26px;max-width:680px}
   body.light .pctbox{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
   .pctbox .t{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--cream);margin-bottom:10px}
