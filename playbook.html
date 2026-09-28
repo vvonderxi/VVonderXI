@@ -2588,13 +2588,41 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
 <button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 
 <style>
- .shirtsrc{background:#FBF8F2;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:14px 16px;margin:14px 0 4px}
- .shirtsrc h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;margin:0 0 8px;color:#1C1B1A}
- .shirtsrc p{font-family:'Inter';font-size:13px;line-height:1.62;color:#3a352e;margin:0 0 9px}
+ .shirtsrc{background:#FBF8F2;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:16px 18px;margin:14px 0 4px}
+ .shirtsrc h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;margin:0 0 6px;color:#1C1B1A}
+ /*  ONE MEASURE FOR EVERY PARAGRAPH IN THE PANEL , the sweep clamped `.standing` alone to
+     65ch and left its neighbours at the panel's full width, so the closing line broke across
+     three short lines under three that ran edge to edge. Either all four share a measure or
+     none do. 62ch measured ~70 characters a line in this face, which is inside convention.  */
+ .shirtsrc p{font-family:'Inter';font-size:14.5px;line-height:1.6;color:#3a352e;margin:0 0 10px;max-width:62ch}
  .shirtsrc p:last-child{margin-bottom:0}
  .shirtsrc b{font-weight:600;color:#1C1B1A}
- .shirtsrc .standing{font-size:12px;color:#6a6256;max-width:65ch}
+ .shirtsrc .standing{color:#6a6256}
  body.light .shirtsrc p{color:#3a352e}
+ /*  ── THE THREE SPECIMENS. The block used to explain a visual mark in three labelled
+     paragraphs with NO MARK SHOWN. It now shows the shield three times and the words are
+     labels beside it: 118 rendered words to 58.
+     THE FIRST TWO ARE DELIBERATELY IDENTICAL, AND THAT IS THE INFORMATION RATHER THAN A
+     DUPLICATE. Only `modal_split` earns the arrows (see numberClubUncertain in vv-core);
+     `squadnum` and `modal_single` are different ROUTES to the same certainty and a card
+     cannot tell them apart. Drawing them the same is what says so.
+     PLAYBOOK TOKENS, NOT CARD TOKENS , the shield here is the page's charcoal on the page's
+     panel, never a club colour, because this is a diagram of a mark and not a card. The
+     PATH is the card's, which is the one thing that must not diverge; it is already the
+     same path the avatar carries in every page's nav.  */
+ /*  THE FIGURE TAKES THE SAME MEASURE AS THE PROSE. Left unclamped it spread across the
+     panel's full ~1,320px while every paragraph sat at 62ch, so the block read as a wide
+     diagram wedged between two narrow columns of text , the same mismatch as the one
+     being fixed, arriving through the figure instead of through a paragraph.  */
+ .shspec{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0 14px;max-width:62ch}
+ .shsp{flex:1 1 168px;min-width:150px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+ .shsp-fig{display:flex;align-items:center;gap:7px;min-height:52px}
+ .shsp svg.shsh{width:38px;height:44px;display:block;flex-shrink:0}
+ .shsp-arrows{width:17px;height:17px;display:block;color:#8a6d1f;flex-shrink:0}
+ .shsp-l{font-family:'Archivo',sans-serif;font-weight:800;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#1C1B1A}
+ .shsp-t{font-family:'Inter';font-size:13.5px;line-height:1.5;color:#3a352e;margin:0}
+ .shsp.flagged .shsp-l{color:#7a5c12}
+ body.light .shsp-t{color:#3a352e}
 </style>
 <script>
 /*  RENDERED FROM THE SHARED STRINGS , see the comment at #s-conf. If VVCore is not loaded the
@@ -2603,10 +2631,36 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
   var host=document.getElementById('shirtSrc');
   if(!host || !window.VVCore || !VVCore.SHIRT_SOURCE_NOTE) return;
   var N=VVCore.SHIRT_SOURCE_NOTE, L=VVCore.SHIRT_SOURCE_LABEL;
+  /*  THE SHIELD PATH IS THE CARD'S, VERBATIM. It is the one part that must not diverge, and
+      it is already the same path every page's nav avatar carries , so this is a third use of
+      one geometry rather than a second drawing of one idea, which is the failure SEC C
+      records against the display-case trophies.
+      THE ARROWS ARE THE CARD'S `xfm` GLYPH, same viewBox and same strokes, because a reader
+      is being taught to recognise exactly that mark on a card.  */
+  var SHIELD='M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z';
+  function shield(num){
+    return '<svg class="shsh" viewBox="0 0 100 116" aria-hidden="true" focusable="false">'
+      + '<path d="'+SHIELD+'" fill="#2a2320"/>'
+      + '<path d="'+SHIELD+'" fill="none" stroke="#FBF8F2" stroke-opacity=".55" stroke-width="6" stroke-linejoin="round"'
+      + ' transform="translate(50 58) scale(0.84) translate(-50 -58)"/>'
+      + '<text x="50" y="58" font-family="Archivo, Helvetica Neue, Arial, sans-serif" font-weight="900" font-size="46"'
+      + ' fill="#F0EAD9" text-anchor="middle" dominant-baseline="central">'+num+'</text></svg>';
+  }
+  var ARROWS='<svg class="shsp-arrows" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"'
+    + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+    + '<path d="M2.5 5.5h9M9 3l2.5 2.5L9 8"/><path d="M13.5 10.5h-9M7 8l-2.5 2.5L7 13"/></svg>';
+  /*  TWO OF THE THREE CARRY NO ARROWS AND THAT IS WHY THEY ARE DRAWN THE SAME , see
+      numberClubUncertain: `modal_split` is the only value that earns the mark.  */
+  var SPEC=[{k:'squadnum',n:9,f:false},{k:'modal_single',n:9,f:false},{k:'modal_split',n:9,f:true}];
   host.innerHTML='<h4>Shirt numbers</h4><p>'+N.intro+'</p>'
-    +['squadnum','modal_single','modal_split'].map(function(k){
-        return '<p><b>'+L[k]+'.</b> '+N[k]+'</p>'; }).join('')
-    +'<p class="standing">'+N.standing+'</p>';
+    + '<div class="shspec">'
+    + SPEC.map(function(o){
+        return '<div class="shsp'+(o.f?' flagged':'')+'">'
+          + '<div class="shsp-fig">'+shield(o.n)+(o.f?ARROWS:'')+'</div>'
+          + '<div class="shsp-l">'+L[o.k]+'</div>'
+          + '<p class="shsp-t">'+N[o.k]+'</p></div>'; }).join('')
+    + '</div>'
+    + '<p class="standing">'+N.standing+'</p>';
 })();
 </script>
 </body></html>

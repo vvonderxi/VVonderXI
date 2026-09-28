@@ -2128,13 +2128,23 @@
       Both surfaces render these, so they cannot drift into two versions of one explanation.
       THE WORD IS "SOURCED", NEVER "VERIFIED". `squadnum` names WHERE a number came from and
       claims nothing about its truth.  */
+  /*  ── THESE FOUR SHRANK ON 2026-09-28 BECAUSE A VISUAL TOOK OVER THEIR JOB ────────────────
+      The Playbook used to explain a visual MARK in three labelled paragraphs with no mark
+      shown , 118 rendered words describing a shield a reader could not see. It now draws the
+      shield three times and these strings are the labels beside it, so each says only what
+      the picture cannot.
+      THE PHRASE "No arrows" / "carry the arrows" IS GONE FROM ALL THREE, and that is the
+      point rather than a trim: the specimens show which one carries them. A sentence that
+      narrates a mark standing next to the mark is the thing this change removes.
+      `blank` IS UNTOUCHED AND MUST STAY LONG , card.html renders it verbatim in a season note
+      with no picture beside it, so it is the one string still doing the whole job alone.  */
   var SHIRT_SOURCE_NOTE = {
-    intro:        'Every number on a card records where it came from, and there are three answers.',
-    squadnum:     'Read off that club\'s own squad and appearance tables for that season, and cross-checked against each other where a page carries more than one. No arrows.',
-    modal_single: 'He played for a single club, so there is no question whose number it is. No arrows.',
-    modal_split:  'He moved mid-season, and this is the number he wore most often across the whole season, which may belong to either club. These are the cards that carry the arrows.',
+    intro:        'Every number records where it came from.',
+    squadnum:     'Read off that club\'s own squad table for that season.',
+    modal_single: 'One club all season, so no question.',
+    modal_split:  'He moved mid-season, so it may be either club\'s.',
     blank:        'A blank shield means no number was found for that club and season, not that the player had none. Numbers are held per club, so a season split between two clubs can carry one on each card, or on neither.',
-    standing:     'Sourced is not the same as confirmed. These numbers come from squad tables written by volunteers, and we say where a number came from rather than that it is right.'
+    standing:     'Sourced is not confirmed. These come from volunteer-written squad tables: we name the source, not the truth.'
   };
   var SHIRT_SOURCE_LABEL = { squadnum:'Sourced', modal_single:'One club that season', modal_split:'Inferred' };
 
