@@ -42,13 +42,18 @@
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* RADIUS SCALE , four values, measured 2026-09-28. sm hairline, md small controls and bars,
+   lg panels, pill fully round. 50% is a CIRCLE and is a separate idiom, deliberately not folded in.
+   See scripts/radius-census.js for the mapping and what it declines to touch. */
+:root{--r-sm:3px;--r-md:8px;--r-lg:14px;--r-pill:999px}
+
   :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#175030;--panel-t:#1C6038;--panel-b:#0F3A22}
   *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;overflow-x:clip}
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:var(--r-lg);cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}.navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}.navitem .lbl{font-family:'Archivo';font-weight:700;font-size:15.5px;opacity:0;transition:opacity .25s}
   .spine:hover .navitem .lbl{opacity:1}.navspacer{flex:1}
@@ -61,7 +66,7 @@
   .seqnav{display:flex;align-items:center;gap:6px}
   .seqnav[hidden]{display:none}
   .seqbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0;
-          border:1px solid rgba(243,237,224,.22);border-radius:999px;background:transparent;
+          border:1px solid rgba(243,237,224,.22);border-radius:var(--r-pill);background:transparent;
           color:var(--cream);cursor:pointer;transition:background .16s,border-color .16s,opacity .16s}
   .seqbtn svg{width:15px;height:15px}
   .seqbtn:hover:not(:disabled){background:rgba(243,237,224,.10);border-color:rgba(243,237,224,.40)}
@@ -79,7 +84,7 @@
   body.nocard .sharebox, body.nocard .watchcta, body.nocard #seasonZone{display:none !important}
   /* the not-found state , plain by design, see vvCardNotFound */
   .cardnf{max-width:520px;margin:40px auto;padding:26px 24px;text-align:left;
-          border:1px dashed rgba(243,237,224,.22);border-radius:16px}
+          border:1px dashed rgba(243,237,224,.22);border-radius:var(--r-lg)}
   body.light .cardnf{border-color:rgba(28,27,26,.20)}
   .cardnf b{display:block;font-family:'Archivo';font-weight:800;font-size:19px;margin-bottom:10px}
   .cardnf p{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 10px}
@@ -132,7 +137,7 @@
   .seasonstep button{position:relative}
   .seasonstep button::after{content:'';position:absolute;left:-1px;right:-1px;top:50%;
     height:43px;transform:translateY(-50%)}
-  .seasonstep button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+  .seasonstep button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:var(--r-sm)}
   body.light .seasonstep button{color:var(--ink-soft)}
   body.light .seasonstep button:hover{color:#1C1B1A}
   /* ── PEEK , the phone affordance, replacing the old "‹ swipe ›" text ──────────
@@ -164,7 +169,7 @@
   .modetoggle .mt-ic{width:18px;height:18px;transition:opacity .2s}
   .modetoggle:hover{border-color:rgba(255,255,255,.28)} body.light .modetoggle:hover{border-color:rgba(0,0,0,.22)}
   .modetoggle.spin .mt-ic{animation:mtspin .55s cubic-bezier(.4,0,.2,1)}@keyframes mtspin{to{transform:rotate(360deg)}}
-  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:999px;opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:var(--r-pill);opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
   /* VV shield badge , THEME-AWARE. Dark ground needs a CREAM shield (a dark shield on
@@ -182,7 +187,7 @@
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
   .avatar svg{height:42px;width:auto;display:block}
-  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
   body.light{color:var(--charcoal);--ink-soft:#5f594e;--gold-ink:#7e5a10;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
   body.light .navitem{color:var(--ink-soft)}body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
@@ -196,7 +201,7 @@
   .plinth .vvcard{position:relative;z-index:1}
   .plinth .pcap{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58);text-align:center;max-width:300px;line-height:1.5;position:relative;z-index:1}
   body.light .plinth .pcap{color:var(--ink-soft)}
-  .depth{display:flex;flex-direction:column;gap:0;padding-top:6px;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px -24px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06)}
+  .depth{display:flex;flex-direction:column;gap:0;padding-top:6px;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 16px 40px -24px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06)}
   /* each layer = a cream dashboard panel (so charts/colours read), with a header bar */
   .layer{background:var(--cream);overflow:hidden;color:var(--charcoal)}
   /* .layer is cream in BOTH themes (it IS the physical card), so every text token inside it is
@@ -220,7 +225,7 @@
   .sectitle{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px}
   /* glance image + stats */
   .glancegrid{display:flex;gap:22px;align-items:flex-start}
-  .glanceimg{width:120px;aspect-ratio:200/208;border-radius:14px;overflow:hidden;background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);flex-shrink:0;position:relative}
+  .glanceimg{width:120px;aspect-ratio:200/208;border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);flex-shrink:0;position:relative}
   .glanceimg img{width:100%;height:100%;object-fit:cover}
   .glancestats{flex:1;display:flex;flex-direction:column;gap:10px}
   .gstat{display:flex;flex-direction:column;align-items:center;flex:1;gap:2px}
@@ -243,8 +248,8 @@
   .radarwrap svg{max-width:100%;height:auto}
   .attr{display:flex;align-items:center;gap:12px;margin-bottom:10px}
   .attr .an{font-family:'Archivo';font-weight:700;font-size:12px;width:92px;flex-shrink:0;color:#3a352e}
-  .attr .abar{flex:1;height:10px;border-radius:5px;background:rgba(0,0,0,0.06);overflow:hidden}
-  .attr .abar i{display:block;height:100%;border-radius:5px}
+  .attr .abar{flex:1;height:10px;border-radius:var(--r-sm);background:rgba(0,0,0,0.06);overflow:hidden}
+  .attr .abar i{display:block;height:100%;border-radius:var(--r-sm)}
   .attr .av{font-family:'Archivo';font-weight:900;font-size:14px;width:32px;text-align:right;flex-shrink:0}
   .attrtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
   .attrtop span{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft)}
@@ -255,11 +260,11 @@
     rule was the survivor. The comment further down this file already says --panel must never
     bleed into card.html , that rule and this panel disagreed until 2026-08-29. Do NOT
     re-consolidate this to var(--panel). */
-  .tjbox{background:#17151a;border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
+  .tjbox{background:#17151a;border-radius:var(--r-lg);padding:14px 12px 8px;margin-bottom:14px}
   .tjhead{font-family:'Inter';font-weight:500;font-size:14.5px;line-height:1.5;color:rgba(243,237,224,0.95);text-align:center;margin-bottom:12px}
   .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:8px}
   .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
-  .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .tjlg i{width:11px;height:11px;border-radius:var(--r-sm);display:inline-block}
   .tjlg i.tjlgline{width:16px;height:0;border-radius:0;border-top:2.4px solid #F0EAD9}
   /* PINK-INK DOES NOT GO ON GREEN. --pink-ink on the Under-the-Lights panel measured 1.27,
      the worst text ratio on the platform. Cream reads at 7.85 on the same ground. The pink
@@ -302,7 +307,7 @@
           font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
   .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:12px;padding:0 4px}
   /* proof table */
-  .proofexplain{font-family:'Archivo';font-weight:500;font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;background:rgba(0,0,0,0.03);border-radius:10px;padding:11px 13px}
+  .proofexplain{font-family:'Archivo';font-weight:500;font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;background:rgba(0,0,0,0.03);border-radius:var(--r-md);padding:11px 13px}
   .proofexplain b{color:#3a352e;font-weight:800}
   .proofrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.07)}
   .proofrow .pl{font-family:'Archivo';font-weight:700;font-size:12px;color:#3a352e}
@@ -315,14 +320,14 @@
   .proofhead .h90{width:42px}
   .proofhead .htot{width:38px}
   .pctn{font-family:'Archivo';font-weight:800;font-size:11px;color:#2E8C5A;width:36px;text-align:right}
-  .pct{width:70px;height:7px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden}
+  .pct{width:70px;height:7px;border-radius:var(--r-sm);background:rgba(0,0,0,0.08);overflow:hidden}
   .pct i{display:block;height:100%}
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
-  .darkbox{background:rgba(255,255,255,0.03);border-radius:14px;padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
+  .darkbox{background:rgba(255,255,255,0.03);border-radius:var(--r-lg);padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
   .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:#3a352e;line-height:1.55;white-space:pre-line}
   .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--gold-ink);margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
-  .narrative{background:rgba(255,255,255,0.03);border-radius:14px;padding:22px 24px}
+  .narrative{background:rgba(255,255,255,0.03);border-radius:var(--r-lg);padding:22px 24px}
   /*  EMPHASIS IN AI PROSE , RELATIVE, NEVER ABSOLUTE. The rule is BASE + 100, and it is
       written out per surface because CSS cannot express "one step up" reliably: `bolder`
       maps 600 and 700 both to 900 per spec, and 900 is not loaded on Bricolage Grotesque,
@@ -373,7 +378,7 @@
       See the three-ground token block in vv-core.js for why #7e5a10 rather than the light
       page's #5C4008: it clears AA on the wash AND still reads as emphasis without it.  */
   #scoutBody .vvem,#notesBody .vvem{font-style:normal;font-weight:800;color:var(--vvem-ink-fixed);
-    background:var(--vvem-wash-fixed);border-radius:3px;padding:.05em .16em;margin:0 -.16em}
+    background:var(--vvem-wash-fixed);border-radius:var(--r-sm);padding:.05em .16em;margin:0 -.16em}
   /*  #glDrury TAKES NO EMPHASIS AT ALL, AND THE `background:none` IS DELIBERATE RATHER THAN
       REDUNDANT. The rest of this rule speaks only about weight, style and colour, so a wash
       added to a shared selector later would reach this line and nothing here would say no.
@@ -387,7 +392,7 @@
   .narrative .np:first-child{font-size:16.5px}
   .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-ink);margin-top:16px;text-align:right}
   /* wonder tag rows */
-  .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px}
+  .tagrow{background:rgba(255,255,255,0.03);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:9px}
   body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}
   /* CLASS 1: these live on the always-cream .layer, so they are dark in BOTH themes now , the
      body.light override corrected the one theme that was already fine. */   /* prose text override , container went light, cream text would be invisible */   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
@@ -418,7 +423,7 @@
   .gkcapline[hidden]{display:none}
   /* honour chips (glance / profile) */
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-  .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
+  .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:var(--r-lg);display:inline-flex;align-items:center;gap:6px}
   .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
   .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
   /*  CAREER HONOURS READ AS A DIFFERENT KIND OF THING, NOT A DIFFERENT COLOUR. World Cup
@@ -438,7 +443,7 @@
       and needs no per-shape rule. Verified rendered rather than assumed. */
   .chip.prof{background:rgba(255,92,122,0.12);color:#c43a55;border:1px solid rgba(255,92,122,0.3)}
   /* watch CTA */
-  .watchcta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--charcoal);color:var(--cream);border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:4px}
+  .watchcta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--charcoal);color:var(--cream);border-radius:var(--r-lg);padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:4px}
   .watchcta svg{width:16px;height:16px}
   /* The Chronicle CTA is the SAME .watchcta component , only the top margin differs, because
      here it sits under the scoreline inside .narrative rather than as a standalone block. */
@@ -474,7 +479,7 @@
   /* tag info: tap-toggle inline reveal (shared handler in vv-core.js). The panel is a
      full-width sibling injected right after the tapped chip, so it can never exceed the
      row width , no floating bubble, no viewport overflow, no touch-stick. */
-  .chiptip{flex-basis:100%;width:100%;box-sizing:border-box;margin:2px 0 3px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:10px;box-shadow:0 10px 24px -12px rgba(0,0,0,.55);animation:chiptipin .16s ease}
+  .chiptip{flex-basis:100%;width:100%;box-sizing:border-box;margin:2px 0 3px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:var(--r-md);box-shadow:0 10px 24px -12px rgba(0,0,0,.55);animation:chiptipin .16s ease}
   .chiptip-float{position:fixed;z-index:200;flex-basis:auto;width:auto;max-width:240px;margin:0;pointer-events:none}
   @keyframes chiptipin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
   /* chronicle one-liner above the expanded box */
@@ -487,7 +492,7 @@
      2.40:1 at the gradient top, 2.85:1 at the bottom, against a 4.5 requirement (9.5px is below
      the large-text cutoff, so 3:1 does not apply). --gold gives 8.16:1 / 9.65:1.
      Reading var(--gold) instead of var(--gold-ink) is what takes it out of that override. */
-  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
+  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:var(--r-pill);padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
   /*  THE CHRONICLE OPENER TAKES NO WASH , BUILT 2026-09-14 AND WITHDRAWN THE SAME DAY.
       I washed the whole pull-quote when the ask was "the wash should reach the Chronicle",
       and RENDERED IT IS WRONG for the reason the wash exists: a highlight marks a PHRASE
@@ -580,7 +585,7 @@
       that paint it are the STRIP'S OWN, widened, so it cannot drift from the pill above it.
       flex:0 0 auto is on the base rule; this only restores the strip's uppercase treatment. */
   #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .ttl{font-size:10.5px;text-transform:uppercase}
-  .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
+  .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:var(--r-lg);padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
   .clubpill:hover{background:rgba(255,255,255,0.1)}
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
   .clubpill .cp-star{font-size:15px}
@@ -588,7 +593,7 @@
   body.light .clubpill.on{background:rgba(232,184,75,0.18);border-color:rgba(232,184,75,0.55);color:var(--gold-ink)}
   .comparepill{text-decoration:none}   /* #111: .clubpill styling on an <a> , kill the anchor underline */
   /* compare-next CTA under watch */
-  .comparecta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--pink);color:#fff;border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:10px;box-shadow:0 14px 30px -12px rgba(255,92,122,0.6)}
+  .comparecta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--pink);color:#fff;border-radius:var(--r-lg);padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:10px;box-shadow:0 14px 30px -12px rgba(255,92,122,0.6)}
   .comparecta svg{width:16px;height:16px}
   @media (max-width:1040px){.stage{grid-template-columns:1fr;gap:34px;padding:18px 32px 50px;justify-items:center}.plinth{position:static}.depth{width:100%;max-width:580px}.topline{padding:24px 32px 0}}
   @media (max-width:720px){.spine{display:none}.stage{padding:14px 18px 40px}.topline{padding:18px 18px 0}.glancegrid{flex-direction:column}
@@ -631,7 +636,7 @@
 
   /* Data Confidence footer (bottom of every card) */
   .dataconf{background:none;border:0;padding:0;margin:0}
-  .dc-flag{font-family:'Inter';font-size:12.5px;line-height:1.5;color:#46433c;margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.04);transition:box-shadow .3s}
+  .dc-flag{font-family:'Inter';font-size:12.5px;line-height:1.5;color:#46433c;margin-top:12px;padding:10px 12px;border-radius:var(--r-md);background:rgba(0,0,0,.04);transition:box-shadow .3s}
   .dc-flag b{font-weight:600;color:#1C1B1A}
   .dc-flag.flash{box-shadow:0 0 0 2px var(--pink,#E70443)}
   .dc-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:12px}
@@ -646,13 +651,13 @@
   body.light .dc-x{color:var(--charcoal)}
   .dc-note{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:#6a6256;margin-top:12px}
   body:not(.light){color-scheme:dark} body.light{color-scheme:light}
-  .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;margin-right:14px;transition:.15s}
+  .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
   body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   .spinelogo{width:58px;height:27px;margin-bottom:12px;background:url('/assets/spinelogo-dark.png') center/contain no-repeat}
   body.light .spinelogo{background-image:url('/assets/spinelogo-light.png')}
-  .cardshare{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:999px;padding:8px 16px;font-family:'Archivo';font-weight:800;font-size:12.5px;cursor:pointer;margin-right:12px;box-shadow:0 8px 22px -10px rgba(255,92,122,.6);transition:transform .15s}
+  .cardshare{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:var(--r-pill);padding:8px 16px;font-family:'Archivo';font-weight:800;font-size:12.5px;cursor:pointer;margin-right:12px;box-shadow:0 8px 22px -10px rgba(255,92,122,.6);transition:transform .15s}
   .cardshare:hover{transform:translateY(-1px)}
   .cardshare.done span::after{content:' \2713'}
   .glancebadge{align-self:flex-start;margin-top:2px}
@@ -673,14 +678,14 @@
   body.light .vvcard-wait{background:rgba(28,27,26,0.045) !important;border-color:rgba(28,27,26,0.14) !important}
   .gsub.vv-wait,.chips.vv-wait{display:block;min-height:1.1em}
   .gdrury.na{font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;font-size:12.5px;color:var(--ink-soft)}
-  .gdrury.gen{position:relative;min-height:1.2em;border-radius:6px;background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
+  .gdrury.gen{position:relative;min-height:1.2em;border-radius:var(--r-md);background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
   @keyframes gdShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   /* SHARE MODAL */
   .sharemodal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,8,9,.66);backdrop-filter:blur(6px)}
   .sharemodal.on{display:flex}
-  .sharebox{position:relative;width:352px;max-width:94vw;background:#0f0c0d;border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:18px 18px 16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.8)}
+  .sharebox{position:relative;width:352px;max-width:94vw;background:#0f0c0d;border:1px solid rgba(255,255,255,.08);border-radius:var(--r-lg);padding:18px 18px 16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.8)}
   .sb-x{position:absolute;top:12px;right:14px;z-index:3;background:rgba(255,255,255,.08);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer}
-  .sb-card{position:relative;overflow:hidden;border-radius:18px;padding:54px 20px 22px;text-align:center;
+  .sb-card{position:relative;overflow:hidden;border-radius:var(--r-lg);padding:54px 20px 22px;text-align:center;
     background:radial-gradient(140% 320px at 50% -90px,rgba(255,244,224,.12),transparent 76%),
       radial-gradient(circle 14px at 30% -8px,rgba(255,255,255,.85),transparent 70%),
       radial-gradient(circle 16px at 50% -8px,rgba(255,255,255,.92),transparent 70%),
@@ -689,23 +694,23 @@
   .sb-eyebrow{position:absolute;top:16px;left:0;right:0;font-family:'Archivo';font-weight:800;font-size:8px;letter-spacing:.28em;color:rgba(240,234,217,.45)}
   .sb-wm{position:absolute;top:13px;right:16px;font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:#fff}.sb-wm span{color:var(--pink-ink)}
   .sb-vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;color:#fff}.sb-vv .b{color:var(--pink)}.sb-vv em{font-style:normal;color:var(--gold);margin-left:4px}
-  .sb-photo{width:84px;height:84px;margin:12px auto 0;border-radius:14px;background:linear-gradient(160deg,#2a2724,#161412);display:flex;align-items:flex-end;justify-content:center}
+  .sb-photo{width:84px;height:84px;margin:12px auto 0;border-radius:var(--r-lg);background:linear-gradient(160deg,#2a2724,#161412);display:flex;align-items:flex-end;justify-content:center}
   .sb-photo svg{width:50px;height:50px;color:rgba(240,234,217,.22)}
-  .sb-tag{display:inline-block;margin-top:12px;background:linear-gradient(135deg,#2c2926,#171514);border:1px solid rgba(232,184,75,.5);color:var(--cream);font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+  .sb-tag{display:inline-block;margin-top:12px;background:linear-gradient(135deg,#2c2926,#171514);border:1px solid rgba(232,184,75,.5);color:var(--cream);font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:var(--r-pill)}
   .sb-name{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;color:#fff;margin-top:10px}.sb-name .fl{font-size:13px;vertical-align:-1px}
   .sb-lock{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;color:#fff;margin-top:16px}.sb-lock i{font-style:normal;color:var(--gold)}.sb-lock span{color:var(--pink-ink)}
   .sb-meta{font-family:'Bricolage Grotesque';font-style:italic;font-weight:800;font-size:11px;color:var(--pink-ink);margin-top:5px}
   .sb-slogan{font-family:'Archivo';font-weight:700;font-size:8px;letter-spacing:.18em;color:rgba(240,234,217,.4);margin-top:12px}.sb-slogan span{color:var(--pink-ink)}
   .sb-opts{display:flex;gap:8px;margin-top:14px}
-  .sb-share{width:100%;margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#E70443,#E84867);color:#fff;border:none;border-radius:14px;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.02em;padding:13px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(255,92,122,.65)}
+  .sb-share{width:100%;margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#E70443,#E84867);color:#fff;border:none;border-radius:var(--r-lg);font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.02em;padding:13px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(255,92,122,.65)}
   .sb-share:hover{filter:brightness(1.05)}
   .sb-hint{text-align:center;font-family:'Inter';font-size:11px;color:rgba(240,234,217,.45);margin-top:8px}
-  .wallpill{display:none;margin:9px auto 0;align-items:center;gap:7px;background:transparent;border:1px solid var(--pink);color:var(--pink-ink);font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.02em;padding:8px 16px;border-radius:999px;cursor:pointer;width:max-content}
+  .wallpill{display:none;margin:9px auto 0;align-items:center;gap:7px;background:transparent;border:1px solid var(--pink);color:var(--pink-ink);font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.02em;padding:8px 16px;border-radius:var(--r-pill);cursor:pointer;width:max-content}
   .wallpill.show{display:inline-flex}
   .wallpill.on{background:var(--pink);color:#fff}
   .wallpill .wp-ic{flex:0 0 auto}
-  .sb-capture{background:#0f0c0d;border-radius:18px;padding:4px 2px 0}
-  .sb-opt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:11.5px;padding:10px 6px;border-radius:12px;cursor:pointer;text-decoration:none;transition:.15s}
+  .sb-capture{background:#0f0c0d;border-radius:var(--r-lg);padding:4px 2px 0}
+  .sb-opt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:11.5px;padding:10px 6px;border-radius:var(--r-lg);cursor:pointer;text-decoration:none;transition:.15s}
   .sb-opt:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   .sb-opt.ig:hover{color:var(--pink-ink)}
   .bottomnav{display:none}
@@ -726,7 +731,7 @@
   .cardactions{display:flex;flex-direction:column;gap:11px;max-width:560px;margin:26px auto 6px;padding:0 4px}
   .ca-row{display:flex;gap:11px;justify-content:center}
   .ca-row .ca-btn{flex:0 1 auto;min-width:150px}
-  .ca-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 14px;border-radius:15px;font-family:'Archivo';font-weight:800;font-size:14px;cursor:pointer;border:none;text-decoration:none;transition:.15s;flex:1}
+  .ca-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 14px;border-radius:var(--r-lg);font-family:'Archivo';font-weight:800;font-size:14px;cursor:pointer;border:none;text-decoration:none;transition:.15s;flex:1}
   .ca-compare{background:linear-gradient(135deg,var(--pink) 0%,var(--pink) 85%,var(--pink-glow) 100%);color:#fff;box-shadow:0 14px 30px -14px rgba(255,92,122,.6)}
   .ca-share,.ca-top{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream)}
   body.light .ca-share,body.light .ca-top{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.12);color:var(--charcoal)}
@@ -748,15 +753,15 @@
   .joinscrim.on{opacity:1;pointer-events:auto}
   .joinsheet{position:fixed;left:0;right:0;bottom:0;z-index:91;background:#fff;border-radius:24px 24px 0 0;transform:translateY(101%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding:8px 24px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -24px 70px -24px rgba(0,0,0,.5);text-align:center;max-width:440px;margin:0 auto}
   .joinsheet.open{transform:translateY(0)}
-  .js-grip{width:38px;height:4px;border-radius:2px;background:rgba(0,0,0,.16);margin:10px auto 18px}
+  .js-grip{width:38px;height:4px;border-radius:var(--r-sm);background:rgba(0,0,0,.16);margin:10px auto 18px}
   .js-star{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#E70443,#FF8FA3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 14px 30px -12px rgba(255,92,122,.6)}
   .js-title{font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:22px;color:#1C1B1A}
   .js-sub{font-size:14px;color:var(--ink-soft);margin:8px 0 20px;line-height:1.5}
-  .js-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:#1C1B1A;cursor:pointer}
+  .js-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:var(--r-lg);border:1px solid rgba(0,0,0,.14);background:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:#1C1B1A;cursor:pointer}
   .js-optin{display:flex;align-items:flex-start;gap:9px;text-align:left;font-size:12.5px;color:var(--ink-soft);margin:14px 2px 2px;cursor:pointer;line-height:1.4}
   .js-optin input{margin-top:1px;width:16px;height:16px;accent-color:#E70443;flex:none}
   .js-later{background:none;border:none;color:var(--ink-soft);font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;padding:14px;cursor:pointer;margin-top:6px}
-  .dc-see{margin-top:12px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:#1C1B1A;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  .dc-see{margin-top:12px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:#1C1B1A;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.1);border-radius:var(--r-pill);padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
   .dc-see.on{background:var(--pink,#E70443);color:#fff;border-color:transparent}
   .dc-chev{transition:transform .2s} .dc-see.on .dc-chev{transform:rotate(180deg)}
   .dc-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
@@ -832,7 +837,7 @@
   /* season list , shared rankings-style season rows (one player), namespaced .seasonrows. Card sizing: */
   #seasonZone .seasonrows{width:330px;max-width:100%;margin:16px auto 0;animation:seasonIn .18s ease}
   /* ===== .seasonrows shared block (identical in compare.html) ===== */
-  .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
+  .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-lg);overflow:hidden}
   body.light .seasonrows{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
 
   
@@ -927,7 +932,7 @@
       with a coloured mark, which is the whole point of the treatment. */
   #glChips .chtag,
   #cabChips .chtag,
-  #wonderTags .tagrow .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+  #wonderTags .tagrow .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:var(--r-lg);color:#fff;display:inline-flex;align-items:center;position:relative}
   #cabChips .chtag.chtag-cab{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);color:#5a4410;
     box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
   #cabChips .chtag.chtag-cab .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
@@ -995,7 +1000,7 @@
   /* GROWS INTO THE TOPLINE GAP. .topline is justify-content:space-between, so the pill
      was pinned to its intrinsic 102px inside a 1569px gap at 1920. flex:1 fills it;
      max-width stops it sprawling on ultrawide. Mobile reverts to icon-only below. */
-  .searchtrigger{flex:1 1 auto;max-width:460px;margin:0 24px;justify-content:flex-start;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px 14px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
+  .searchtrigger{flex:1 1 auto;max-width:460px;margin:0 24px;justify-content:flex-start;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:8px 14px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
   .searchtrigger:hover{background:rgba(255,255,255,0.09)}
   .searchtrigger svg{width:16px;height:16px;flex:none}
   .searchtrigger:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
@@ -1063,7 +1068,7 @@
      color:var(--cream)}). Deliberately NOT var(--panel) , that resolves to
      #175030, the Under-the-Lights green, which CLAUDE.md locks to Compare only
      and must never bleed into card.html. */
-  #cardSearch .cs-panel{position:relative;z-index:71;padding:14px;border-radius:18px;
+  #cardSearch .cs-panel{position:relative;z-index:71;padding:14px;border-radius:var(--r-lg);
     background:var(--charcoal);
     border:1.5px solid rgba(255,255,255,.28);box-shadow:0 14px 36px rgba(0,0,0,.5);
     opacity:1;transform:none}
@@ -1112,7 +1117,7 @@
   }
 
   /* search bar , mirrors rankings' .ranksearch tokens exactly */
-  #cardSearch .cs-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px}
+  #cardSearch .cs-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:11px 14px}
   #cardSearch .cs-bar svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   #cardSearch .cs-bar input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}
   #cardSearch .cs-bar input::placeholder{color:rgba(243,237,224,0.58)}
@@ -1127,9 +1132,9 @@
   #cardSearch .cs-count{font-family:'Archivo';font-weight:700;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);font-variant-numeric:tabular-nums}
   #cardSearch .cs-hint{font-family:'Inter';font-size:13px;color:rgba(243,237,224,0.58)}
   body.light #cardSearch .cs-count,body.light #cardSearch .cs-hint{color:var(--ink-soft)}
-  #cardSearch .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
+  #cardSearch .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:3px;gap:2px;flex-shrink:0}
   body.light #cardSearch .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
-  #cardSearch .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
+  #cardSearch .vseg{width:36px;height:30px;border:none;background:none;border-radius:var(--r-md);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   #cardSearch .vseg.on{background:var(--pink);color:#fff}
   body.light #cardSearch .vseg{color:var(--ink-soft)}
   body.light #cardSearch .vseg.on{color:#fff}
@@ -1139,7 +1144,7 @@
   #cardSearch .cs-rlabel{font-family:'Archivo';font-weight:700;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px}
   body.light #cardSearch .cs-rlabel{color:var(--ink-soft)}
   #cardSearch .cs-rlist{display:flex;flex-wrap:wrap;gap:8px}
-  #cardSearch .cs-rchip{display:inline-flex;align-items:baseline;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--cream);transition:background .15s,border-color .15s;max-width:100%}
+  #cardSearch .cs-rchip{display:inline-flex;align-items:baseline;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-pill);padding:7px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--cream);transition:background .15s,border-color .15s;max-width:100%}
   #cardSearch .cs-rchip:hover{background:rgba(255,255,255,0.1)}
   #cardSearch .cs-rchip .rn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   #cardSearch .cs-rchip .rs{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--row-muted);font-variant-numeric:tabular-nums;flex:none}
@@ -1153,15 +1158,15 @@
      (count, hint, Filters, viewseg), so space-between scattered the pill into the
      middle: neither right-aligned nor centred. The auto margin absorbs the free
      space so count and hint stay left while Filters and the view pills sit right. */
-  #cardSearch .cs-filtbtn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
+  #cardSearch .cs-filtbtn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
   #cardSearch .cs-filtbtn:hover{background:rgba(255,255,255,0.1)}
   #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
   body.light #cardSearch .cs-filtbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--ink-soft)}
   body.light #cardSearch .cs-filtbtn:hover{background:rgba(0,0,0,0.07)}
   body.light #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
-  #cardSearch .cs-fcount{font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(255,255,255,.18);border-radius:999px;padding:1px 5px;min-width:15px;text-align:center}
+  #cardSearch .cs-fcount{font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(255,255,255,.18);border-radius:var(--r-pill);padding:1px 5px;min-width:15px;text-align:center}
   #cardSearch .cs-filtbtn.on .cs-fcount{background:rgba(0,0,0,.22)}
-  #cardSearch .cs-filters{margin:0 0 10px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
+  #cardSearch .cs-filters{margin:0 0 10px;padding:12px 13px;border-radius:var(--r-lg);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
   body.light #cardSearch .cs-filters{background:rgba(0,0,0,0.025);border-color:rgba(0,0,0,0.07)}
   /* Appearance comes from vv-core's .vvf-clear , see the note there. This rule now
      carries POSITION only, which is the one thing that is genuinely per-surface. */
@@ -1181,12 +1186,12 @@
       remember. An empty result would then read as broken rather than as filtered , the same
       reasoning that keeps honours off the home page.  */
   .cs-carry{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:2px 0 8px;padding:9px 12px;
-    background:rgba(231,4,67,0.07);border:1px solid rgba(231,4,67,0.26);border-radius:12px;
+    background:rgba(231,4,67,0.07);border:1px solid rgba(231,4,67,0.26);border-radius:var(--r-lg);
     font-family:'Inter';font-size:13px;color:var(--cream)}
   body.light .cs-carry{background:rgba(231,4,67,0.05);border-color:rgba(231,4,67,0.2);color:var(--charcoal)}
   .cs-carry .cc-t{flex:1 1 220px;min-width:0}
   .cs-carry .cc-n{font-weight:600}
-  .cs-carry button{font-family:'Archivo';font-weight:800;font-size:11.5px;border-radius:999px;
+  .cs-carry button{font-family:'Archivo';font-weight:800;font-size:11.5px;border-radius:var(--r-pill);
     padding:6px 13px;cursor:pointer;border:1px solid transparent}
   .cs-carry .cc-yes{background:var(--pink);color:#fff}
   .cs-carry .cc-no{background:none;border-color:rgba(255,255,255,0.18);color:var(--ink-soft)}
@@ -1209,7 +1214,7 @@
     fraction wants to be left alone. */
 #cardSearch .cs-results{max-height:calc(100dvh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
   #cardSearch .cs-results::-webkit-scrollbar{width:6px}
-  #cardSearch .cs-results::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:3px}
+  #cardSearch .cs-results::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:var(--r-sm)}
   /*  BOTH SPAN THE GRID , copied from rankings.html:103-104, which already had them and
       the overlay never did. #csGrid is a grid in Cards view (two columns on a phone since
       4d95fa0), so a single status child lands in CELL ONE: the loader rendered

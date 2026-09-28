@@ -41,6 +41,11 @@
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+/* RADIUS SCALE , four values, measured 2026-09-28. sm hairline, md small controls and bars,
+   lg panels, pill fully round. 50% is a CIRCLE and is a separate idiom, deliberately not folded in.
+   See scripts/radius-census.js for the mapping and what it declines to touch. */
+:root{--r-sm:3px;--r-md:8px;--r-lg:14px;--r-pill:999px}
+
   /*  THE PRODUCT NAME'S SECOND V IS PINK, AND IT IS ONE RULE NOW , 2026-09-13. This was
       thirty-eight hand-typed `style="color:var(--pink-ink)"` spans across eleven files, plus a
       fifth private copy in compare as `.tjvp`. A rule written thirty-eight times is a rule
@@ -63,7 +68,7 @@
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:30}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:var(--r-lg);cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}.navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}.navitem .lbl{font-family:'Archivo';font-weight:700;font-size:15.5px;opacity:0;transition:opacity .25s}
   .spine:hover .navitem .lbl{opacity:1}.navspacer{flex:1}
@@ -77,7 +82,7 @@
   .modetoggle .mt-ic{width:18px;height:18px;transition:opacity .2s}
   .modetoggle:hover{border-color:rgba(255,255,255,.28)} body.light .modetoggle:hover{border-color:rgba(0,0,0,.22)}
   .modetoggle.spin .mt-ic{animation:mtspin .55s cubic-bezier(.4,0,.2,1)}@keyframes mtspin{to{transform:rotate(360deg)}}
-  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:999px;opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:var(--r-pill);opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
   /* VV shield badge , THEME-AWARE. Dark ground needs a CREAM shield (a dark shield on
@@ -96,7 +101,7 @@
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
   .avatar svg{height:42px;width:auto;display:block}
-  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
   .hero{padding:34px 48px 8px;max-width:1240px}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:44px;line-height:1.02;letter-spacing:-0.02em}
   .hero h1 .b{color:var(--pink-ink)}
@@ -117,7 +122,7 @@
       measure is most of why the page still read as an essay after the word count came
       down. 916 = 820 of content plus the 48px padding either side.  */
   .idxwrap{padding:20px 48px 60px;max-width:916px;margin-inline:auto}
-  .idx-hero{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.08),transparent 60%);border:1px solid rgba(255,255,255,0.06);border-radius:24px;padding:36px 40px;margin-bottom:34px}
+  .idx-hero{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.08),transparent 60%);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r-lg);padding:36px 40px;margin-bottom:34px}
   body.light .idx-hero{border-color:rgba(0,0,0,0.06);background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.06),transparent 60%)}
   .idx-num{position:relative;display:flex;flex-direction:column;align-items:center}
   .idx-num .halo{position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,var(--pink-glow),rgba(255,143,163,0.25) 45%,transparent 70%);filter:blur(6px);top:8px}
@@ -132,7 +137,7 @@
   body.light .idx-sectitle{color:var(--ink-soft)}
   @media (max-width:980px){.idx-hero{grid-template-columns:1fr;gap:20px;text-align:center}.idx-num .big{font-size:76px}}
   /* bands */
-  .band{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:11px;cursor:pointer;transition:border-color .2s}
+  .band{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:11px;cursor:pointer;transition:border-color .2s}
   .band:hover{border-color:rgba(255,92,122,0.25)}
   body.light .band{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
   .band .bhead{display:flex;align-items:center;gap:12px}
@@ -144,8 +149,8 @@
      tiers deliberately carry NO colour so they inherit body colour , cream in dark
      (13.53:1), charcoal in light (16.53:1). Setting a literal black would be
      1.06:1 in dark mode, which is why "black text" is expressed as INHERIT. */
-  .band .bv-gen{background:var(--charcoal);color:var(--gold);padding:2px 9px;border-radius:6px}
-  .band .bv-ico{background:var(--gold);color:var(--charcoal);padding:2px 9px;border-radius:6px}
+  .band .bv-gen{background:var(--charcoal);color:var(--gold);padding:2px 9px;border-radius:var(--r-md)}
+  .band .bv-ico{background:var(--gold);color:var(--charcoal);padding:2px 9px;border-radius:var(--r-md)}
   .band .bv-wc {color:var(--green-ink)}
   .band .bchev{font-size:13px;opacity:0.4;transition:transform .25s}
   .band.open .bchev{transform:rotate(180deg)}
@@ -163,7 +168,7 @@
   .band.showmore .bmore::before{content:'See less \2039'}
   /* Desktop-only band-card type scale (mobile provably untouched: min-width never fires below 1041px) */
   @media (min-width:1041px){
-    .band{padding:20px 24px;border-radius:16px;margin-bottom:14px}
+    .band{padding:20px 24px;border-radius:var(--r-lg);margin-bottom:14px}
     .band .bnm{font-size:24px}
     .band .bv{font-size:19px}
     .band .bdef{font-size:16px;line-height:1.65;max-width:62ch}
@@ -173,10 +178,10 @@
     .bmore{font-size:13px}
   }
   /* dimensions */
-  .dim{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:11px}
+  .dim{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:11px}
   body.light .dim{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06)}
   .dim .dt{font-family:'Bricolage Grotesque';font-weight:800;font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:9px}
-  .dim .dt .dnum{font-family:'Archivo';font-weight:900;font-size:12px;color:#fff;background:var(--pink);width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center}
+  .dim .dt .dnum{font-family:'Archivo';font-weight:900;font-size:12px;color:#fff;background:var(--pink);width:22px;height:22px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center}
   .dim .dd{font-family:'Inter';font-weight:400;font-size:13px;line-height:1.55;color:rgba(243,237,224,0.65)}
   body.light .dim .dd{color:#5a544a}
   .dim{cursor:pointer;transition:border-color .2s}
@@ -229,7 +234,7 @@
   .fd-hint{margin:4px auto 15px;text-align:center;font-family:'Bricolage Grotesque';font-style:italic;font-size:14px;color:var(--pink-ink);transition:opacity .5s}
   body.light .fd-hint{color:var(--pink-ink)}
   .fd.fd-settled .fd-hint{opacity:0;pointer-events:none}
-  .fd-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-left:2px solid rgba(255,92,122,0.45);border-radius:14px;padding:16px 18px}
+  .fd-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-left:2px solid rgba(255,92,122,0.45);border-radius:var(--r-lg);padding:16px 18px}
   body.light .fd-panel{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06);border-left-color:rgba(222,58,94,0.5)}
   .fd-lead{font-family:'Bricolage Grotesque';font-style:italic;font-size:15.5px;line-height:1.5;color:var(--pink-ink)}
   body.light .fd-lead{color:var(--pink-ink)}
@@ -247,7 +252,7 @@
   /* dual CTAs */
   .idx-ctas{display:flex;gap:16px;flex-wrap:wrap;margin-top:40px;padding-top:34px;border-top:1px solid rgba(255,255,255,0.08)}
   body.light .idx-ctas{border-top-color:rgba(0,0,0,0.08)}
-  .idx-cta{display:inline-flex;align-items:center;gap:11px;font-family:'Archivo';font-weight:800;font-size:15px;border-radius:14px;padding:16px 28px;cursor:pointer;text-decoration:none;transition:transform .2s}
+  .idx-cta{display:inline-flex;align-items:center;gap:11px;font-family:'Archivo';font-weight:800;font-size:15px;border-radius:var(--r-lg);padding:16px 28px;cursor:pointer;text-decoration:none;transition:transform .2s}
   .idx-cta:hover{transform:translateY(-2px)}
   .idx-cta svg{width:18px;height:18px}
   .idx-cta.primary{background:var(--pink);color:#fff;box-shadow:0 16px 34px -12px rgba(255,92,122,0.6)}
@@ -274,7 +279,7 @@
       ENGLAND IS THE SEVEN-CODEPOINT TAG SEQUENCE, not 🇬🇧 and not a bare black flag. Both
       wrong forms were live on 2026-09-06, in the filter rail and in the leagues table.  */
   .lggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0 4px}
-  .lgc{display:flex;flex-direction:column;gap:2px;padding:11px 12px;border-radius:9px;
+  .lgc{display:flex;flex-direction:column;gap:2px;padding:11px 12px;border-radius:var(--r-md);
     border:1px solid rgba(243,237,224,0.10);background:rgba(255,255,255,0.03)}
   body.light .lgc{border-color:rgba(28,27,26,0.10);background:rgba(255,255,255,0.55)}
   .lgf{font-size:19px;line-height:1.1}
@@ -317,7 +322,7 @@
   .wmc-chev{display:inline-block;transition:transform .2s ease;font-size:12px;line-height:1}
   .wmc[open] .wmc-chev{transform:rotate(180deg)}
   .wmc>summary:hover .wmc-more{color:var(--pink-ink)}
-  .wmc>summary:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:6px}
+  .wmc>summary:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:var(--r-md)}
   .wmc-b{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.09)}
   body.light .wmc-b{border-top-color:rgba(0,0,0,0.09)}
   /*  A MEASURE CAP, NOT A CONTENT CHANGE , the words are untouched. `_measure_audit.js`
@@ -419,7 +424,7 @@
     --vi-ctabg:rgba(232,184,75,.17); --vi-ctabd:rgba(168,118,15,.30);
     --vi-goldline:rgba(122,90,16,.38);
   }
-  .vi-pq{margin:38px 0 0;padding:30px 30px 28px;border-radius:20px;
+  .vi-pq{margin:38px 0 0;padding:30px 30px 28px;border-radius:var(--r-lg);
     background:linear-gradient(150deg,var(--vi-pqbg1),var(--vi-pqbg2) 62%,transparent);
     border:1px solid var(--vi-pqbd)}
   .vi-pq .n{font:900 clamp(54px,12vw,92px)/0.9 'Archivo';letter-spacing:-.03em;color:var(--vi-gold-num);display:block}
@@ -441,21 +446,21 @@
       REPLACES. An SVG scales as one unit, so its type shrank with the drawing and
       the old margin chart became unreadable at 390. Built from positioned divs,
       every label stays at its real size at every width and only the track moves. */
-  .vi-fig{border:1px solid var(--vi-line);border-radius:18px;padding:24px 22px 18px;
+  .vi-fig{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:24px 22px 18px;
     background:linear-gradient(180deg,var(--vi-panel),transparent)}
   .vi-tl{position:relative;height:64px;margin:6px 0 0}
-  .vi-tl-track{position:absolute;left:0;right:0;top:16px;height:30px;border-radius:8px;overflow:hidden;background:var(--vi-track)}
+  .vi-tl-track{position:absolute;left:0;right:0;top:16px;height:30px;border-radius:var(--r-md);overflow:hidden;background:var(--vi-track)}
   .vi-tl-seg{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 11px;
     font:700 10.5px 'Archivo';letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
   .vi-tl-early{left:0;color:var(--vi-early)}
   .vi-tl-full{background:linear-gradient(90deg,rgba(232,184,75,.85),rgba(232,184,75,.6));color:#3a2c07}
   .vi-tl-mk{position:absolute;top:2px;bottom:2px;width:16px;margin-left:-8px;padding:0;border:0;
     background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .vi-tl-mk::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;border-radius:2px;background:var(--pink-ink)}
+  .vi-tl-mk::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;border-radius:var(--r-sm);background:var(--pink-ink)}
   .vi-tl-mk::after{content:'';position:absolute;left:4px;top:0;width:8px;height:8px;border-radius:50%;
     background:var(--pink-ink);transition:transform .15s}
   .vi-tl-mk:hover::after,.vi-tl-mk.on::after{transform:scale(1.6)}
-  .vi-tl-mk:focus-visible{outline:2px solid var(--vi-gold-num);outline-offset:2px;border-radius:4px}
+  .vi-tl-mk:focus-visible{outline:2px solid var(--vi-gold-num);outline-offset:2px;border-radius:var(--r-sm)}
   .vi-tlwhen{font-family:'Archivo';font-weight:600;font-size:10.5px;letter-spacing:.03em;color:var(--vi-mut);margin:9px 2px 0}
   .vi-tlwhen b{color:var(--vi-ink);font-weight:800}
   .vi-tlwhen i{font-style:normal;opacity:.4;padding:0 3px}
@@ -463,7 +468,7 @@
   .vi-tl-key{display:grid;gap:7px;margin-top:16px;padding-top:14px;border-top:1px solid var(--vi-line)}
   .vi-tl-key div{font:400 13.5px/1.5 'Inter';color:var(--vi-mut);display:flex;gap:9px;align-items:baseline}
   .vi-tl-key i{width:7px;height:7px;border-radius:50%;background:var(--pink-ink);flex:none;transform:translateY(-2px)}
-  .vi-tl-key i.sq{border-radius:3px;width:9px;height:9px}
+  .vi-tl-key i.sq{border-radius:var(--r-sm);width:9px;height:9px}
   .vi-tl-key i.e{background:var(--vi-swatch-e)}
   .vi-tl-key i.f{background:var(--vi-swatch-f)}
   .vi-tl-key b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
@@ -483,7 +488,7 @@
       drawing. The strip text is 12px, which is BODY text at a 4.5 bar, so it takes
       --vi-gold-ink and NOT --vi-gold-num , the large-numeral gold reads 3.59 in light and
       that is the mistake this comment exists to stop being made again.  */
-  .dfig{border:1px solid var(--vi-line);border-radius:18px;padding:20px 18px 16px;max-width:660px;margin-inline:auto;
+  .dfig{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:20px 18px 16px;max-width:660px;margin-inline:auto;
     background:linear-gradient(180deg,var(--vi-panel),transparent)}
   /*  CAPPED, AND THE CAP IS THE APPROVED PROPORTION RATHER THAN A TASTE CALL. This column
       is 860px, so an uncapped pair drew each panel at ~390 against the ~240 of the demo that
@@ -504,7 +509,7 @@
       THE VALUES ARE GENERATED , data-fig-series on the host, rewritten and checked by
       apply-figures. A drawing with its numbers typed in is an embedded snapshot, and every
       one of those on this platform has gone stale in silence.  */
-  .csfig{border:1px solid var(--vi-line);border-radius:18px;padding:22px 20px 16px;
+  .csfig{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 16px;
     background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
   .cstrip{display:flex;align-items:flex-end;gap:6px;height:168px;margin:4px 0 0}
   /*  THE BAR GETS ITS OWN TRACK, AND THE FIRST VERSION DID NOT , the columns were a flex
@@ -535,8 +540,8 @@
   .plad{display:grid;gap:9px;margin:2px 0 0}
   .pladr{display:grid;grid-template-columns:104px 1fr auto;gap:12px;align-items:center}
   .pladn{font:800 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut);text-align:right}
-  .pladt{height:13px;border-radius:3px;background:var(--vi-barq);position:relative;overflow:hidden}
-  .pladf{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--vi-bar)}
+  .pladt{height:13px;border-radius:var(--r-sm);background:var(--vi-barq);position:relative;overflow:hidden}
+  .pladf{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-sm);background:var(--vi-bar)}
   .pladv{font:800 12px 'Archivo';color:var(--vi-strong);min-width:66px;text-align:right;font-variant-numeric:tabular-nums}
   @media (max-width:560px){ .pladr{grid-template-columns:78px 1fr auto;gap:8px} .pladn{font-size:8.5px} }
   /*  THE LEAGUE SPLIT , Add 3. It reuses `.plad`, the precision ladder's row, rather than
@@ -556,7 +561,7 @@
       invite a reader to notice a coincidence of today's snapshot that moves on every write.  */
   .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
   .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
-  .wk{border:1px solid var(--vi-line);border-radius:18px;padding:22px 20px 18px;
+  .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
     background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
   .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
     padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
@@ -576,7 +581,7 @@
   .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
     color:var(--vi-mut);margin-top:4px}
   .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
-  .wkp{border:1px solid var(--vi-line);border-radius:10px;padding:8px 10px}
+  .wkp{border:1px solid var(--vi-line);border-radius:var(--r-md);padding:8px 10px}
   .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
   .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
   .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
@@ -602,18 +607,18 @@
     .vi-row .n{text-align:left} .vi-row .n small{display:inline;margin-left:9px}
     .vi-tl-seg{font-size:9.5px;padding:0 7px}
   }
-  .vi-close{margin-top:52px;padding:26px 28px;border-radius:18px;border:1px solid var(--vi-line);
+  .vi-close{margin-top:52px;padding:26px 28px;border-radius:var(--r-lg);border:1px solid var(--vi-line);
     background:linear-gradient(180deg,var(--vi-panel),transparent)}
   .vi-close p{margin:0;font:700 clamp(17px,2.7vw,21px)/1.4 'Bricolage Grotesque','Archivo',serif;max-width:40ch}
   .vi-close .s{margin-top:10px;font:400 14px/1.55 'Inter';color:var(--vi-mut);max-width:56ch}
   .vi-foot{margin-top:40px;font:400 13.5px/1.6 'Inter';color:var(--vi-mut);max-width:62ch}
   .vi-foot a{color:var(--vi-gold-ink);text-decoration:none;border-bottom:1px solid var(--vi-goldline)}
-  .vi-cta{margin-top:30px;padding:26px 28px;border-radius:18px;border:1px solid var(--vi-ctabd);
+  .vi-cta{margin-top:30px;padding:26px 28px;border-radius:var(--r-lg);border:1px solid var(--vi-ctabd);
     background:linear-gradient(160deg,var(--vi-ctabg),transparent 70%)}
   .vi-ctat{margin:0;font:800 clamp(17px,2.6vw,20px)/1.3 'Archivo';letter-spacing:-.01em}
   .vi-ctas{margin:9px 0 0;font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:56ch}
   .vi-ctab{display:inline-block;margin-top:16px;font:800 12px 'Archivo';letter-spacing:.05em;text-transform:uppercase;
-    padding:11px 20px;border-radius:999px;text-decoration:none;background:linear-gradient(135deg,#FF5C7A,#E70443);color:#fff}
+    padding:11px 20px;border-radius:var(--r-pill);text-decoration:none;background:linear-gradient(135deg,#FF5C7A,#E70443);color:#fff}
   /*  THIS ROW IS A LITERAL COPY AND THE COST IS STATED: this page loads no shared
       script, so the shared social-row builder cannot reach it. That builder is the
       source of truth; if the handles or the labels change, this copy changes in the

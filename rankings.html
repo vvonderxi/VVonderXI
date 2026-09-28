@@ -43,6 +43,11 @@
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* RADIUS SCALE , four values, measured 2026-09-28. sm hairline, md small controls and bars,
+   lg panels, pill fully round. 50% is a CIRCLE and is a separate idiom, deliberately not folded in.
+   See scripts/radius-census.js for the mapping and what it declines to touch. */
+:root{--r-sm:3px;--r-md:8px;--r-lg:14px;--r-pill:999px}
+
   :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--row-muted:rgba(243,237,224,0.6);--row-muted-2:rgba(243,237,224,0.55);--row-dim:rgba(243,237,224,0.52)}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
@@ -55,7 +60,7 @@
     display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:var(--r-lg);cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -74,10 +79,10 @@
   .modetoggle .mt-ic{width:18px;height:18px;transition:opacity .2s}
   .modetoggle:hover{border-color:rgba(255,255,255,.28)} body.light .modetoggle:hover{border-color:rgba(0,0,0,.22)}
   .modetoggle.spin .mt-ic{animation:mtspin .55s cubic-bezier(.4,0,.2,1)}@keyframes mtspin{to{transform:rotate(360deg)}}
-  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:999px;opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:var(--r-pill);opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
-.searchbtn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:20px;padding:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.searchbtn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:var(--r-lg);padding:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .searchbtn svg{width:18px;height:18px}
 .searchbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   /* VV shield badge , THEME-AWARE. Dark ground needs a CREAM shield (a dark shield on
@@ -95,7 +100,7 @@
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
   .avatar svg{height:42px;width:auto;display:block}
-  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
 
   /* hero , editorial, lots of air */
   .hero{padding:30px 48px 6px;max-width:1680px}
@@ -106,7 +111,7 @@
 
   /* the rankings grid , generous, never crammed (premium = space) */
   .gridwrap{padding:30px 48px 60px;max-width:1680px}
-  .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px;margin-bottom:14px}
+  .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:11px 14px;margin-bottom:14px}
   .ranksearch svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   .ranksearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}
   .ranksearch input::placeholder{color:rgba(243,237,224,0.58)}
@@ -222,8 +227,8 @@
   @media (min-width:1560px){.cardgrid{grid-template-columns:repeat(4,1fr)}}
   #cardgrid{max-height:calc(100vh - 270px);overflow-y:auto;overflow-x:hidden;padding-right:8px;padding-bottom:42px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 36px),transparent 100%)}
   #cardgrid::-webkit-scrollbar{width:6px}
-  #cardgrid::-webkit-scrollbar-track{background:rgba(255,255,255,0.04);border-radius:8px}
-  #cardgrid::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+  #cardgrid::-webkit-scrollbar-track{background:rgba(255,255,255,0.04);border-radius:var(--r-md)}
+  #cardgrid::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:var(--r-md);border:2px solid transparent;background-clip:padding-box}
   #cardgrid::-webkit-scrollbar-thumb:hover{background:rgba(255,92,122,0.8)}
   body.light #cardgrid::-webkit-scrollbar-track{background:rgba(0,0,0,0.04)}
   .cardgrid:not(.pillmode):not(.compactmode) > div{display:flex;justify-content:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
@@ -253,7 +258,7 @@
      Scale a whole card by changing --cw (card width).
      Everything inside scales proportionally off --cw.
      ============================================================ */
-  .filterrail{position:sticky;top:30px;align-self:start;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:22px 20px;max-height:calc(100vh - 60px);overflow-y:auto}
+  .filterrail{position:sticky;top:30px;align-self:start;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r-lg);padding:22px 20px;max-height:calc(100vh - 60px);overflow-y:auto}
   body.light .filterrail{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
   .fr-title{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
   body.light .fr-title{color:var(--ink-soft)}
@@ -265,7 +270,7 @@
   body.light .fr-count{color:var(--ink-soft)}
   .rankmore-wrap{display:none;justify-content:center;padding:18px 0 4px;grid-column:1/-1;width:100%}
   .rankmore-wrap.show{display:flex}
-  .rankmore{font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.04em;color:rgba(243,237,224,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:10px 22px;cursor:pointer;transition:all .15s}
+  .rankmore{font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.04em;color:rgba(243,237,224,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-pill);padding:10px 22px;cursor:pointer;transition:all .15s}
   .rankmore:hover{color:#fff;border-color:var(--pink-ink);background:rgba(255,92,122,0.12)}
   body.light .rankmore{color:#6a6256;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .rankmore:hover{color:#111;border-color:var(--pink-ink)}
@@ -282,12 +287,12 @@
   .ranklayout .filterrail{display:none}
   .ranklayout.filters-open .filterrail{display:block}
   .rankfbar{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
+  .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:3px;gap:2px;flex-shrink:0}
   body.light .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   /*  44x44 IS THE TOUCH-TARGET FLOOR. These were 36x30 and sit at y=220 on a 390x844
     screen , the stretch zone , so they were both small and awkward to reach. The ICON
     inside is unchanged; only the hit area grows. */
-  .vseg{width:44px;height:44px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
+  .vseg{width:44px;height:44px;border:none;background:none;border-radius:var(--r-md);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   .vseg.on{background:var(--pink);color:#fff}
   body.light .vseg{color:var(--ink-soft)}
   body.light .vseg.on{color:#fff}
@@ -298,7 +303,7 @@
       The values are taken from `.rankmore` above, which is the same control at a lighter
       weight, rather than invented , and `--cream` is the house dark-ink pattern with a
       body.light override beneath, because this ground flips with the theme.  */
-  .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-pill);padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
   /*  LIGHT MODE , ADDED 2026-09-19. The base rule pins `color: var(--cream)`, which does NOT
       flip with the theme while this page's ground DOES, so in light the pill painted cream on
       cream and MEASURED 1.04 , invisible text on a live surface. SS C's own rule: an ink pinned
@@ -380,7 +385,7 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       V and one pink V, and on a dark ground the charcoal V is cream.  */
   .crumb .va{color:var(--cream)} .crumb .vb{color:var(--pink-ink)}
   body.light .crumb .va{color:var(--charcoal)}
-.fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:var(--ink-soft)}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:6px;padding:1px 5px;margin-left:7px}body.light .flsoon{color:var(--ink-soft);border-color:rgba(0,0,0,.16)}
+.fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:var(--ink-soft)}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:var(--r-md);padding:1px 5px;margin-left:7px}body.light .flsoon{color:var(--ink-soft);border-color:rgba(0,0,0,.16)}
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
      #E70443: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */

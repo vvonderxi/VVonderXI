@@ -1601,3 +1601,20 @@ argues for PUBLISHING something.
 **AND THE INSTRUMENT NOTE, because it will otherwise be re-derived wrongly: `Range.getClientRects()` over the cell returns 2 at every floor tested, including floors that plainly do not wrap.** The cell is a flex container and the range measures structure rather than line boxes. **Read the box HEIGHT doubling.** The clearance harness that produced the table above reproduces CLAUDE.md's recorded figures at four of five widths (145 4.3, 165 4.9, 190 5.7, 300 9.0), which is what makes its deltas evidence rather than a reading.
 
 **DO NOT RAISE THE FLOOR ON ITS OWN.** It will wrap, and a wrapped chip reads as a card-layout bug rather than as a type change, so it will be reported as a regression by whoever sees it first.
+
+---
+
+## VVINDEX CHART LABELS AT 7px AND 8.5px , MEASURED, LEGIBLE, AND DELIBERATELY KEPT (ruled by Lucas 2026-09-28)
+
+**THIS ENTRY EXISTS SO THE NEXT PASS DOES NOT "FIX" THEM.** They look exactly like the defect that was fixed on the card face the same day, and they are not the same thing.
+
+**WHAT THEY ARE, MEASURED AT 390 WITH THE VIEWPORT AND MEDIA QUERY ASSERTED:**
+- **`.csyr`, 12 instances at 7px**, weight 700 , the season labels on the case-study strip ("10/11", "11/12"). Each box is about 19 to 20px wide.
+- **`.pladn`, 13 instances at 8.5px**, weight 800 , the band names on the ladder ("Generational", "Iconic", "World Class").
+- **Both measure 6.94 contrast**, so they pass comfortably. The question was never legibility of ink against ground, it was size.
+
+**WHY THEY ARE KEPT AND THE CARD TAGS WERE NOT.** The card tag floor was fixed because the tag NAME is the thing the card is saying and it was rendering at 5.81px with no floor at all. These are **chart labels under a density constraint**: twelve season labels across a 375px strip is about 31px each, and the label already occupies 19 to 20px of it. They are also restated , the strip is read as a series, not as twelve independent facts.
+
+**WHAT WOULD CHANGE THE RULING, so this is revisitable rather than closed:** if the strip ever carries fewer items, or gains horizontal room, the density argument weakens and the size should be re-derived from the room rather than kept out of habit. **Re-measure the strip's per-item width before raising anything** , the figures above are true at 390 on the layout as it stands on 2026-09-28.
+
+**DO NOT read this as a general licence for small type.** The platform's floor on the card face is 7.5px and nothing there renders below it. These sit outside that surface, under a named constraint, with a recorded contrast figure.
