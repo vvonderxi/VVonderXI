@@ -1812,10 +1812,6 @@
       </div>
     </section><section class="section" id="s-conf" data-nav="Data Confidence">
       <div class="label">The Method</div>
-      <!--  THE THREE SHIRT-NUMBER DESCRIPTIONS ARE NOT WRITTEN HERE. They are rendered at load
-            from VVCore.SHIRT_SOURCE_NOTE, which the CARD reads too, so one explanation cannot
-            become two. Hand-writing them here is the drift this file records everywhere else.  -->
-      <div class="shirtsrc" id="shirtSrc"></div>
       <h2 class="h2"><span class="se">&#128270;</span> What "Data Confidence" means</h2>
       <div class="pctbox">
         <div class="t">How complete the record is. Not how good the player was.</div>
@@ -1823,6 +1819,15 @@
         <div class="b">Every card carries a five-dot confidence mark. Five dots means a fully documented season, every match logged, every touch counted. Fewer dots means we had less to work with, and we would rather show you that than pretend otherwise. <b>It measures the record, not the player.</b> A three-dot card is not a worse footballer, it is a season we know a little less about. Where a single statistic was never recorded, you will see <b>NR</b> , Not Recorded , in its place. Older seasons and some leagues never logged assists or detailed actions at all. We mark those as NR rather than write a zero, because a missing number and a number of zero are not the same thing, and we will not let one masquerade as the other.</div>
         <div class="drurybox"><div class="drurybox-q">"Every number here is only as honest as the evidence beneath it. Some seasons left a full and faithful record; others, older or more distant, gave us only fragments, and where the trail runs thin, we will not invent what we cannot see. These five dots are our conscience made visible: the confidence we show is the confidence we have earned, and never a dot more."</div><button class="drurybox-more" onclick="toggleStory(event,this)">See more &#8250;</button></div>
       </div>
+      <!--  THE THREE SHIRT-NUMBER DESCRIPTIONS ARE NOT WRITTEN HERE. They are rendered at load
+            from VVCore.SHIRT_SOURCE_NOTE, which the CARD reads too, so one explanation cannot
+            become two. Hand-writing them here is the drift this file records everywhere else.
+            IT SITS AFTER THE DOTS PANEL, NOT BEFORE THE HEADING , 2026-09-28. It used to be
+            wedged between this section's `.label` and its own `<h2>`, so the heading's wash
+            landed four pixels under the box. The section-boundary gap measured a healthy 46px
+            throughout, because the fault was INSIDE a section and a boundary measurement
+            cannot see it.  -->
+      <div class="shirtsrc" id="shirtSrc"></div>
     </section><section class="ctas">
       <div class="ctahead">You know the language.</div>
       <div class="ctasub">Now go and settle the debates.</div>
@@ -2588,7 +2593,16 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
 <button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 
 <style>
- .shirtsrc{background:#FBF8F2;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:16px 18px;margin:14px 0 4px}
+ /*  THE BOX HUGS THE CONTENT , 2026-09-28. It ran the section's full 1,324px while the
+     content sat at 62ch, leaving ~600px of empty cream. Its own sibling in this section,
+     `.pctbox`, is capped at 680px, so this takes the same cap rather than inventing a
+     second panel width on one page.  */
+ /*  THE BOTTOM MARGIN IS NOT DECORATION , the panel is now the LAST thing in the section,
+     and at the old `4px` it sat four pixels above the call-to-action block below, which
+     is the same collision that was just moved off the heading. Moving a box without
+     giving it the spacing its new position needs relocates the fault rather than fixing
+     it, so this is measured at both ends.  */
+ .shirtsrc{background:#FBF8F2;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:18px 22px;margin:18px 0 6px;max-width:680px}
  .shirtsrc h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;margin:0 0 6px;color:#1C1B1A}
  /*  ONE MEASURE FOR EVERY PARAGRAPH IN THE PANEL , the sweep clamped `.standing` alone to
      65ch and left its neighbours at the panel's full width, so the closing line broke across
@@ -2614,11 +2628,37 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
      panel's full ~1,320px while every paragraph sat at 62ch, so the block read as a wide
      diagram wedged between two narrow columns of text , the same mismatch as the one
      being fixed, arriving through the figure instead of through a paragraph.  */
- .shspec{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0 14px;max-width:62ch}
- .shsp{flex:1 1 168px;min-width:150px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
- .shsp-fig{display:flex;align-items:center;gap:7px;min-height:52px}
- .shsp svg.shsh{width:38px;height:44px;display:block;flex-shrink:0}
- .shsp-arrows{width:17px;height:17px;display:block;color:#8a6d1f;flex-shrink:0}
+ /*  ── TWO GROUPS, AND THE GROUPING IS THE ARGUMENT ────────────────────────────────────
+     The first two specimens are drawn identically because they ARE identical on a card:
+     only `modal_split` earns the arrows, and `squadnum` and `modal_single` are different
+     ROUTES to the same certainty. Shown as three equal columns that read as a mistake , the
+     question "why are these the same?" got asked out loud. So the pair is now boxed
+     together under one label, the flagged one sits apart, and a reader meets the sameness
+     as STRUCTURE before reading a word about it.  */
+ /*  THE GROUPS HUG THEIR CONTENT AND SIT SIDE BY SIDE. At `flex:1 1 auto` the pair's box
+     grew to the full measure and pushed the single flagged one onto its own row, where it
+     sat in a box mostly of empty cream , the panel's own fault reproduced one level down.
+     `flex:0 1 auto` sizes each group to what is in it, so two specimens take twice the room
+     of one and the two boxes sit together.  */
+ .shspec{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 16px;align-items:stretch}
+ .shgrp{display:flex;flex-direction:column;gap:9px;padding:12px 14px 13px;border-radius:10px;
+   border:1px solid rgba(0,0,0,.09);background:rgba(0,0,0,.018);flex:0 1 auto;min-width:0}
+ .shgrp-l{font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.11em;
+   text-transform:uppercase;color:#6a6256}
+ .shgrp.flagged .shgrp-l{color:#7a5c12}
+ .shgrp-row{display:flex;gap:20px;flex-wrap:wrap}
+ .shsp{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;flex:0 1 150px;max-width:180px}
+ /*  THE FIGURE IS DRAWN AT THE CARD'S OWN SCALE, NOT AT A CONVENIENT ONE. Measured on a real
+     modal_split card (Alexis Sanchez 17/18) at --cw:330px: the shield renders 58x67 and the
+     arrows 20x20, sitting 4px BELOW it and centred, in the card's charcoal. The specimen used
+     38px and 17px, put the arrows BESIDE the shield and tinted them gold, so it was a
+     different mark at a different size in a different place from the one it teaches.
+     The gap is the card's 4px; the ROOM comes from the cell's padding around the figure,
+     which is the part that was missing.  */
+ .shsp-fig{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0 2px;min-height:96px}
+ .shsp svg.shsh{width:58px;height:67px;display:block;flex-shrink:0}
+ .shsp-arrows{width:20px;height:20px;display:block;color:#1C1B1A;flex-shrink:0}
+ .shsp-fig.none{padding-bottom:26px}
  .shsp-l{font-family:'Archivo',sans-serif;font-weight:800;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#1C1B1A}
  .shsp-t{font-family:'Inter';font-size:13.5px;line-height:1.5;color:#3a352e;margin:0}
  .shsp.flagged .shsp-l{color:#7a5c12}
@@ -2651,14 +2691,21 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
     + '<path d="M2.5 5.5h9M9 3l2.5 2.5L9 8"/><path d="M13.5 10.5h-9M7 8l-2.5 2.5L7 13"/></svg>';
   /*  TWO OF THE THREE CARRY NO ARROWS AND THAT IS WHY THEY ARE DRAWN THE SAME , see
       numberClubUncertain: `modal_split` is the only value that earns the mark.  */
-  var SPEC=[{k:'squadnum',n:9,f:false},{k:'modal_single',n:9,f:false},{k:'modal_split',n:9,f:true}];
+  /*  THE TWO CERTAIN ROUTES SHARE A BOX AND A LABEL; THE FLAGGED ONE SITS APART. Only
+      `modal_split` earns the arrows (numberClubUncertain), so the pair genuinely cannot be
+      told apart on a card , and the grouping says that before the words do.  */
+  function cell(k, flagged){
+    return '<div class="shsp'+(flagged?' flagged':'')+'">'
+      + '<div class="shsp-fig'+(flagged?'':' none')+'">'+shield(9)+(flagged?ARROWS:'')+'</div>'
+      + '<div class="shsp-l">'+L[k]+'</div>'
+      + '<p class="shsp-t">'+N[k]+'</p></div>';
+  }
   host.innerHTML='<h4>Shirt numbers</h4><p>'+N.intro+'</p>'
     + '<div class="shspec">'
-    + SPEC.map(function(o){
-        return '<div class="shsp'+(o.f?' flagged':'')+'">'
-          + '<div class="shsp-fig">'+shield(o.n)+(o.f?ARROWS:'')+'</div>'
-          + '<div class="shsp-l">'+L[o.k]+'</div>'
-          + '<p class="shsp-t">'+N[o.k]+'</p></div>'; }).join('')
+    +   '<div class="shgrp"><div class="shgrp-l">Certain , one mark, two routes</div>'
+    +     '<div class="shgrp-row">'+cell('squadnum',false)+cell('modal_single',false)+'</div></div>'
+    +   '<div class="shgrp flagged"><div class="shgrp-l">Flagged</div>'
+    +     '<div class="shgrp-row">'+cell('modal_split',true)+'</div></div>'
     + '</div>'
     + '<p class="standing">'+N.standing+'</p>';
 })();
