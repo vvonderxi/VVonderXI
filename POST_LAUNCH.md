@@ -1571,3 +1571,33 @@ it is written, not after.** This one was sound in the abstract, obvious-sounding
 the only thing that caught it was running the query. SS C already records that an unverified
 premise is most costly when it argues for REMOVING something; this is its twin , a premise that
 argues for PUBLISHING something.
+
+---
+
+## HONOUR CHIPS , ONE PER ROW, SO THE LABEL CAN CARRY A REAL TYPE SIZE (deferred by Lucas 2026-09-28, NOT built)
+
+**THE DECISION IS A LAYOUT ONE AND IT IS DEFERRED DELIBERATELY, NOT PARKED FOR WANT OF INFORMATION.** The measurement below is complete; what is missing is a judgement about what a card should look like, and Lucas ruled on 2026-09-28 that it waits until after launch.
+
+**WHAT SHIPPED INSTEAD, AND WHY IT IS THE HONEST CEILING RATHER THAN A COMPROMISE.** `.chtag .chtagcell` now carries `font-size:max(7.5px, calc(var(--cw)*0.045))`. Before the floor the chip rendered at **6.88px in the rankings grid** (`--cw` 153) and **6.53px on compare at 390** (`--cw` 145), against **14.67px** on the hero card. The floor lifts the two small cases and leaves every larger one untouched.
+
+**7.5px IS SET BY GEOMETRY AND NOT BY TASTE , THIS IS THE NUMBER THAT MATTERS.** Chips render **two-up**, so each box is about **55px wide at `--cw` 145**, which is the smallest width the platform draws. Measured at that width:
+
+| chip floor | rendered px | box height | card clearance |
+|---|---|---|---|
+| none (baseline) | 6.53 | 11.4 | **+4.3** |
+| 7.0 | 7.00 | 11.7 | **+4.3** |
+| **7.5 (shipped)** | **7.50** | **12.3** | **+4.3** |
+| 8.0 | 8.00 | **21.6** | **-0.6** |
+| 8.5 | 8.50 | 22.7 | **-1.7** |
+
+**The box height doubling between 7.5 and 8 is the second line.** There is no gentle degradation here: the label fits or it wraps, and the wrap costs about 9px of vertical on a card that has 4.3px to give.
+
+**SO THE ONLY WAY PAST 7.5px IS TO WIDEN THE BOX, WHICH MEANS ONE CHIP PER ROW.** That doubles the chip block's height on every card carrying two, which is **98 of 100** measured live in the rankings grid. The room has to come from somewhere, and the candidates are the photo (already re-cut twice, see CLAUDE.md), the gaps (already tightened in the 2026-09-07 re-cut), or the card's aspect ratio.
+
+**MEASURE THESE BEFORE PROPOSING ANYTHING, because two premises in the older record were false when checked on 2026-09-28:**
+- **`--cw` 132 renders NOWHERE.** The real set is **145, 153, 260, 300, 326, 330**. A design costed against 132 is costed against nothing, and 132 is exactly the column that makes a floor look impossible.
+- **THE WORST CASE IS TWO CHIPS IN TWO ROWS, NOT THREE TAGS.** The row tag cap changed and the clearance table was never re-derived against it. An ordinary top-of-ladder card IS the worst case today.
+
+**AND THE INSTRUMENT NOTE, because it will otherwise be re-derived wrongly: `Range.getClientRects()` over the cell returns 2 at every floor tested, including floors that plainly do not wrap.** The cell is a flex container and the range measures structure rather than line boxes. **Read the box HEIGHT doubling.** The clearance harness that produced the table above reproduces CLAUDE.md's recorded figures at four of five widths (145 4.3, 165 4.9, 190 5.7, 300 9.0), which is what makes its deltas evidence rather than a reading.
+
+**DO NOT RAISE THE FLOOR ON ITS OWN.** It will wrap, and a wrapped chip reads as a card-layout bug rather than as a type change, so it will be reported as a regression by whoever sees it first.
