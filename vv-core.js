@@ -4540,7 +4540,23 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}
 /* #4: odd count -> last tag spans both cols, no blank cell */
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
-.vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
+/*  TYPE FLOORS ON THE TAG LABELS , measured 2026-09-28, and the two are NOT the same problem.
+    Without them these scale linearly to nothing: in the rankings grid at --cw 153 the prestige
+    band rendered at 5.81px and the honour chip at 6.88px, against 12.39 and 14.67 on the hero
+    card. Two of the card's four label families already had floors (.cname .sub at 11.5px,
+    .cga .col .l at 9.5px) and the two carrying the TAG NAMES had none.
+    THE BAND IS VERTICALLY CONSTRAINED AND COSTS NOTHING: it is one line across the full card,
+    so 9.5px (matching .cga .col .l, so nothing on the face now renders below that) is free at
+    every width the platform actually draws.
+    THE CHIP IS HORIZONTALLY CONSTRAINED AND 7.5px IS ITS CEILING, not a preference. Chips sit
+    two-up, so each box is about 55px wide at --cw 145. Measured at 145: 7.5px keeps the label
+    on one line at 12.3px tall; 8px WRAPS and the box jumps to 21.6px, which takes the card's
+    whole remaining clearance and puts it at -0.6. Raising the chip past this needs a LAYOUT
+    change (one chip per row), not a bigger number.
+    The smallest --cw the platform renders is 145 (compare at 390), not the 132 the older
+    clearance table is keyed to , 132 occurs nowhere. Re-measure the rendered set before
+    trusting either figure.  */
+.vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:max(7.5px, calc(var(--cw)*0.045));letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
 .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
 /*  THE WONDER-TAG ROWS GET THEIR PILLS ON EVERY SURFACE THAT RENDERS THEM , 2026-09-13.
     renderProfileTagRows is shared and already emits data-fam and data-tag on each row, so the
@@ -4697,8 +4713,8 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.85)}
 /* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
   .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
-.vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
-.vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:max(9.5px, calc(var(--cw)*0.038));text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:max(9.5px, calc(var(--cw)*0.038));text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
 /* MARK SIZING , belongs here, and was MISSED by the first extraction pass.
    These two rules are byte-identical in card.html, rankings.html and compare.html,
    but each carried a DIFFERENT COMMENT above it, and the extraction compared the
