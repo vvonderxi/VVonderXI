@@ -158,9 +158,24 @@ The shipping set was **derived from the link graph out of `index.html`**, not ty
 records that a written list of surfaces has been wrong three times. It returns nine surfaces.
 Five tracked non-demo pages are NOT reachable from the front door: `iwonder.html` (coming-soon,
 recorded in SEC D), `myclub-mock.html` and `myclub-mock-B.html` (dev mocks, SEC C says
-deliberately unreachable), `search-demo.html` (a QA harness) , **and `search.html`, which is
-tracked, deploys, and is linked from nowhere.** Same class as the orphan endpoints SS E records.
-A decision for Lucas: delete it, or link it.
+deliberately unreachable), `search-demo.html` (a QA harness) , and `search.html`.
+
+**[CORRECTED 2026-09-28. THIS ENTRY CALLED `search.html` "the same class as the orphan
+endpoints" AND THAT FRAMING IS WRONG , IT IS A DELIBERATE REDIRECT AND IT IS KEPT.]** It was a
+258 KB real page, the original Search surface, until `51174b2` on 2026-06-27: *"Unify Search into
+Rankings: repoint all nav to rankings.html, search.html becomes redirect stub"*. It is now 1,517
+bytes carrying a meta-refresh AND a JS redirect, so it works with and without JS, and it forwards
+query params (`?q=messi` to `rankings.html?q=messi`). No stylesheet, no shared module, no
+behaviour, no write path, and it is a static file rather than a serverless function.
+**An orphan endpoint was a live public WRITE surface with no product behind it; this has no
+behaviour at all.** Being unreachable from inside the site is its DESIGN , it exists to catch
+links from outside. Kept.
+
+**THE LESSON IS ABOUT THE SWEEP, NOT THE FILE: "nothing links to it" is a measurement, and "same
+class as X" is an inference, and the two were reported in one breath.** The measurement was
+right and the inference was wrong, and the inference is the half that argued for deleting
+something. SS C already records that an unverified premise is most costly when it argues for
+REMOVING something.
 
 ---
 

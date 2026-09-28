@@ -11,6 +11,58 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 ---
 
+## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
+
+**HELD BY LUCAS ON 2026-09-27: "logged, not now. It is nine live surfaces and a visual change,
+and I am not opening that before the merge."** The measurements are here so the pass can start
+without re-measuring; nothing below has been changed.
+
+**THE HEADLINE IS THAT THIS IS NOT A PLAYBOOK PROBLEM, WHICH IS WHAT THE RAW COUNT SAYS.**
+Playbook reports 85 at desktop and 88 at 390 while every other surface reports 4 to 16, and that
+difference is the page HAVING MORE CONTROLS rather than worse ones. Grouped by what each control
+actually is, the list is short and most of it repeats on every page.
+
+| control | measured size | where | note |
+|---|---|---|---|
+| `button.more` / `.hmore` / `.drurybox-more` | **65x12, 62x12** | playbook, **31 of them** | the smallest targets on the platform , 12px tall |
+| the season stepper chevrons (`button`) | **17x11** | card | second smallest; SS C already records these for a contrast defect |
+| `a.bn-item` (bottom nav) | 73-76 x **34** | **every one of the nine surfaces** | the widest-reach item by far |
+| `button.modetoggle` | 38x38 | every surface | |
+| `div.avatar` | 36x42 | every surface | height passes, width does not |
+| `button.backbtn` | 55x26 | card, compare | already in SS D's compare audit |
+| `button.addclub` | 162x31 | compare | already in SS D |
+| `a#seeA` / `a#seeB` | 145x27 | compare | |
+| `button.arcmk` | 28x28 | playbook, 5 | |
+| `button.cm-mk` | 32x32 | playbook, 6 | **NOT the same element as SS C's `button.cm-mk` contrast entry's subject** , check before conflating |
+| `button.pspot` | 42x42 | playbook, 11 | 2px short; the pitch is a diagram, judge with the redesign |
+| `button.vchip` | 142x33 | playbook, 8 | |
+| `input#vvOptIn` | 16x16 | card, compare | **NOT a defect , it is a checkbox and its LABEL is the target** |
+| `button.searchbtn` / `#csTrigger` / `.hbtn` | 38x38 / 38x34 | rankings, card, contact | |
+| `button.go` | 74x40 | index | |
+| `a.sp` (suggested searches) | 37-93 x **24** | index, 8 of them | |
+| `button#a2hsNo` | **15x26** | index | the install strip's dismiss |
+
+**WHAT SS D ALREADY SAYS, so this does not read as new: the compare three (back 55x26,
+add-to-club 155x31, toggle 38x38) are recorded there as "judgement rather than defect".** This
+sweep says the same judgement is owed PLATFORM-WIDE and names the two that are worse than
+anything previously recorded , the 12px fold triggers and the 17x11 chevrons.
+
+**THREE THINGS TO DECIDE BEFORE ANY OF IT IS BUILT, because they are not the same question:**
+- **THE BOTTOM NAV AT 34px IS THE ONE THAT MATTERS**, because it is on every page and it is the
+  primary navigation on a phone. It is also the most invasive to change: taller nav means less
+  page on every surface at once.
+- **A 44px TARGET DOES NOT REQUIRE A 44px BOX.** Padding, or a pseudo-element hit area
+  (`::after{position:absolute;inset:-Npx}`), enlarges the touch region without moving a pixel of
+  the design. That is the cheap route for the chevrons, the fold triggers and `.arcmk`, and it
+  changes NOTHING visually , which is the whole reason it is worth separating from the rest.
+- **AND SS C's SIBLING-STATES RULE APPLIES: the fold triggers are 31 instances of one control.**
+  They move together or not at all, and the same is true of `.bn-item` across nine pages.
+
+**THE INSTRUMENT: `_sweep_audit.js`, `tapTargets()`.** It reports every VISIBLE interactive
+element under 44px in either dimension, with its rendered size. Re-run it after any change and
+compare counts per surface , and note it counts an element once per surface per width, so the
+390 and desktop numbers differ where a control is hidden at one of them.
+
 ## FLOOR-BOUND FLAG , A BOOLEAN COLUMN, RIDES WITH THE SHARED MATVIEW REBUILD (queued 2026-09-07, NOT built)
 
 **IT REPLACES A POSITION KEY THAT IS DELIBERATELY WRONG ON 2,081 CARDS.** The rt claims licence
