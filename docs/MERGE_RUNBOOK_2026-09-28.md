@@ -114,7 +114,7 @@ When your editor opens for the merge message, use:
 ```
 Merge redesign-compare into vvonderxi_BIGGER , the platform, ready to deploy
 
-366 commits since the 2026-09-06 merge. Nothing on BIGGER is lost: the only
+372 commits since the 2026-09-06 merge. Nothing on BIGGER is lost: the only
 deletion is api/get-seasons.js, removed from the branch at cc3776c as a
 stillborn endpoint with no caller in any .html in any branch's history.
 
@@ -170,7 +170,7 @@ git checkout redesign-compare
 git log --oneline -1
 ```
 
-**Check:** reads `a6d8047`. **Do this before any further work** , SS C says production is never
+**Check:** reads the branch tip you measured at step 2 , `50ae888` or later if anything lands after it. **Do this before any further work** , SS C says production is never
 touched directly, and leaving the terminal sitting on `vvonderxi_BIGGER` is how that happens by
 accident.
 
