@@ -59,10 +59,12 @@
  /*  ── OPTION B , ENTRY RISE. CSS ONLY, NO JS, NO LINK INTERCEPTION. The new page's own
      content lifts into place on load. It cannot animate the EXIT (the old document is gone
      before this runs), so it reads as arrival rather than as a journey.  */
- body.rise .stage{animation:riseIn .42s cubic-bezier(.22,.7,.3,1) both}
- body.rise .bar{animation:riseIn .42s cubic-bezier(.22,.7,.3,1) both;animation-delay:.04s}
+ /*  KEYED OFF <html data-mode>, SET IN THE HEAD , not off a body class set after parse.
+     See the note in the head script: that difference is the whole reason B looked broken.  */
+ [data-mode="rise"] .stage{animation:riseIn .42s cubic-bezier(.22,.7,.3,1) both}
+ [data-mode="rise"] .bar{animation:riseIn .42s cubic-bezier(.22,.7,.3,1) both;animation-delay:.04s}
  @keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
- @media (prefers-reduced-motion:reduce){ body.rise .stage,body.rise .bar{animation:none} }
+ @media (prefers-reduced-motion:reduce){ [data-mode="rise"] .stage,[data-mode="rise"] .bar{animation:none} }
 
  /*  ── OPTION C , CROSS-DOCUMENT VIEW TRANSITION. Two lines of CSS, zero JS, zero bytes of
      library. The browser captures the old page, loads the new one and cross-fades between
@@ -71,12 +73,21 @@
  body.vt{}
 </style>
 <script>
- /*  The at-rule has to be present in the OLD document and the NEW one for a cross-document
-     transition to fire, so it is injected per mode rather than sitting in the stylesheet ,
-     that is a property of the demo's mode switch, not of how it would ship. Shipping it is
-     literally the two lines inside the string below, in each page's CSS.  */
+ /*  THE MODE CLASS IS SET HERE, IN THE HEAD, AND THE FIRST VERSION OF THIS DEMO SET IT AT THE
+     BOTTOM OF THE BODY. THAT WAS A REAL FAULT AND IT UNDERSTATED OPTION B BADLY.
+     Measured on the broken version: at `load` the 420ms animation was already 83ms in and the
+     stage was at 0.563 opacity, so the page could paint at FULL opacity, snap to zero when the
+     class arrived, and rise from halfway. What that reads as is a FLICKER, not a rise.
+     An entry animation driven by a class JavaScript adds after parse races the first paint.
+     In the shipping form there is no class and no JS , the rule sits in the stylesheet and
+     applies at parse time , so the head is where the demo has to set it to be honest.
+
+     The at-rule has to be present in the OLD document and the NEW one for a cross-document
+     transition to fire, which is why it is injected here too rather than sitting in the
+     stylesheet: that is a property of the demo's mode SWITCH, not of how it would ship.  */
  (function(){
    var m = new URLSearchParams(location.search).get('m') || 'none';
+   document.documentElement.setAttribute('data-mode', m);
    if (m === 'vt') {
      var st = document.createElement('style');
      st.textContent = '@view-transition { navigation: auto }';
@@ -116,8 +127,8 @@ the option would actually do between two pages of the platform.</p>
 (function(){
   var q = new URLSearchParams(location.search);
   var m = q.get('m') || 'none', p = q.get('p') === '2' ? 2 : 1;
-  document.body.classList.toggle('rise', m === 'rise');
-  document.body.classList.toggle('vt', m === 'vt');
+  /*  No class is set here on purpose , the mode already lives on <html data-mode>, applied in
+      the head. Setting it from down here is exactly the fault that made B look broken.  */
 
   var MODES = [['none','A , today'],['rise','B , entry rise'],['vt','C , view transition']];
   document.getElementById('bar').innerHTML = MODES.map(function(o){
