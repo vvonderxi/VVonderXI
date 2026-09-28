@@ -1,4 +1,56 @@
-# AFCON AS AN HONOUR , SCOPE ONLY. NOTHING BUILT, NOTHING WRITTEN. 2026-09-26
+# AFCON AS AN HONOUR , **BUILT AND WRITTEN 2026-09-28.** Scope below, outcome first.
+
+## WHAT SHIPPED, AND WHERE THE SCOPE WAS WRONG
+
+**ALL EIGHT EDITIONS EXTRACTED , 8 of 8, 193 squad places.** The scope recorded 2010, 2013 and
+2015 returning ZERO "on both template forms tried" and predicted "a real pass has to find out
+what the remaining three use". They use a THIRD form, the older long-form
+`{{National football squad player}}`, 23 rows each, and it names its fields exactly as the two
+modern forms do , so `nameField()` needed no change at all and only the template alternation did.
+
+**109 ROWS WRITTEN**, inside the scope's predicted 60 to 140, and beside what the platform already
+holds: copa_winner 103, world_cup_winner 93, euro_winner 77. Per edition: 2010 **2**, 2012 **5**,
+2013 **13**, 2015 **16**, 2017 **13**, 2019 **19**, 2021 **19**, 2023 **22**. Honours 804 to 913.
+Record: `migrations/afcon_honours_2026-09-28/`, job `scripts/continental/fetch-afcon.js`.
+
+**19 SQUAD PLACES WERE HELD AS AMBIGUOUS AND NEVER GUESSED**, which is the matcher working: Senegal
+2021 carries TWO Gueyes, so the surname cannot resolve against our abbreviated names. The
+nationality guard refused **0** of 107 players.
+
+**THE NATIONALITY KEY IS AN ISO CODE, AND IT BOUGHT NOTHING ON THIS DATA , SAY SO RATHER THAN
+CLAIM IT MATTERED.** `players` has no nationality id (checked against `pg_attribute`), so the code
+is built: repair the mojibake (UTF-8 bytes read as Latin-1, exact and idempotent, control-tested
+on five strings), fold, then map to alpha-3. It is the right key and it removes a real failure
+mode , Ivory Coast is stored THREE ways and wins two of the eight editions. **Measured after the
+run: every one of the 38 Ivory Coast matches is stored under the clean spelling, so the code
+rescued ZERO rows.** The two mojibake players and the one `Ivory Coast` player are not in those
+squads, or hold no card in those seasons.
+
+**THE CARD NEEDED NO REFRESH.** The scope said rows "appear on cards the moment the view is
+refreshed"; in fact `rowToCard`'s honour path queries the `honours` TABLE live by
+`api_player_id`, so the 109 were on cards immediately. Only the filter flag `h_afcon_winner`
+waits for a matview sitting, and the chip renders inert until then, by design.
+
+**THE MARK COST SEVEN DRAWINGS AND THE MEASUREMENT CHOSE IT, NOT THE REASONING.** SEC C requires a
+new mark to clear the closest pair already in the set. Four round-1 drawings reasoned from the
+trophy family and ALL FAILED (0.466 to 0.627 against a floor of 0.681). What answered it was an
+occupancy map of the shipped nine: the set packs the CENTRAL COLUMN and leaves the far edges and
+extreme top and bottom nearly free, and every round-1 drawing had put its mass exactly where the
+set already was. The shipped mark is edge-weighted and clears at **0.713 / 0.727** against floors
+of **0.681 / 0.688** at 16px and 22px. A refinement that lowered its handles to get them further
+from `ucl_winner` measured WORSE and was discarded. Harness: `_mark_pairscore.html`, checked in,
+with a self-test that scores a mark against itself (0.000) and a solid box (0.434).
+
+**FOUR HAND LISTS HAD TO BE VISITED, AND THE FOURTH WAS FOUND BY ITS OWN WARNING.** `HONOUR_META`,
+the one-liner map and `HONOUR_DRURY` in `vv-core.js`; `HON_RANK` and **`HON_COPY`** in
+`playbook.html`. The Playbook's own comment records that the last two honours reached five places
+and not its dictionary, so it "quietly taught seven of nine" , this time the cell rendered, the
+See-more button hid itself and the console said why. **It now teaches ten of ten.**
+
+---
+
+# THE SCOPE AS WRITTEN, 2026-09-26 , kept because its predictions are the record
+
 
 Three questions were asked. All three are answered from measurement; the third has an answer that
 changes when it can ship.

@@ -120,6 +120,35 @@
         handle detail does not. That is why the pair differ in proportion and not in ornament.  */
     'euro_winner':       '<g fill="currentColor"> <path d="M10.4 2.2h3.2v11.4a1.6 1.6 0 0 1-3.2 0Z"/> <path fill-rule="evenodd" d="M10.5 3H9.4a2.5 2.5 0 0 0 0 5h1.1V6.6H9.4a1.1 1.1 0 0 1 0-2.2h1.1Z"/> <path fill-rule="evenodd" d="M13.5 3h1.1a2.5 2.5 0 0 1 0 5h-1.1V6.6h1.1a1.1 1.1 0 0 0 0-2.2h-1.1Z"/> <path d="M11.3 15.2h1.4v5.1h-1.4Z"/> <path d="M9.8 20.3h4.4v1.5H9.8Z"/></g>',
     'copa_winner':       '<g fill="currentColor"> <path d="M9.2 2.4h5.6v2.1a2.8 2.8 0 0 1-5.6 0Z"/> <path d="M11.4 7.6h1.2v2.2h-1.2Z"/> <path fill-rule="evenodd" d="M12 9.4 19.2 22H4.8Zm0 4.6L8.9 19.9h6.2Z"/></g>',
+    /*  ── AFCON , 2026-09-28. SEVEN DRAWINGS WERE MEASURED AND FOUR OF THEM FAILED. ───────
+        A TEAM HONOUR, so it obeys the set's rule , footed and vertical, where the individual
+        awards are unfooted objects.
+        THE FIVE TEAM SILHOUETTES ALREADY TAKEN, on PROPORTION rather than ornament, because
+        handle detail does not survive rasterisation at 16px:
+          world_cup_winner  a GLOBE, ring with a hole, tapered stem, wide base
+          ucl_winner        BIG SIDE EARS, the two outsized handles are the whole signature
+          league_champion   a WIDE SHALLOW BOWL over a boxed plinth with a window
+          euro_winner       a TALL SLIM amphora, small handles high, round foot
+          copa_winner       a SMALL WIDE bowl over a TALL STEPPED plinth, base-dominant
+        ROUND 1 REASONED ABOUT THAT FAMILY AND ALL FOUR DRAWINGS FAILED , a cone, a pierced
+        cup, a ziggurat and a winged cup, scoring 0.466 to 0.627 against a floor of 0.681.
+        WHAT ACTUALLY ANSWERED IT WAS AN OCCUPANCY MAP, not a sixth idea. Mean alpha over the
+        shipped nine on a 12x12 grid shows the set PACKS THE CENTRAL COLUMN and leaves the far
+        left and right edges and the extreme top and bottom rows nearly empty. Round 1 failed
+        because every drawing put its mass exactly where the set already is.
+        SO THIS ONE IS EDGE-WEIGHTED: a broad cup, two blocks out at the far columns, a thin
+        waist through the crowded middle, and a base spanning almost the full width.
+        AND THE REFINEMENT MADE IT WORSE, WHICH IS WHY THE FIRST VERSION SHIPS. Dropping the
+        handles to the waist to get them away from ucl_winner's ears read as sound and
+        measured as the opposite: 0.682 at 16px (clearing by 0.001) and 0.682 at 22px, which
+        FAILS. A third variant failed both. The measurement, not the reasoning, chose this.
+        SCORED , `_mark_pairscore.html`, which rasterises every pair and compares the ALPHA
+        channel, and whose self-test scores a mark against itself (0.000) and against a solid
+        box (0.434) before any result is read:
+          floor among the shipped nine   0.681 at 16px, 0.688 at 22px  (ballon_dor/player_of_season)
+          this mark's worst pair         0.713 at 16px, 0.727 at 22px  (vs ucl_winner, both sizes)
+        Re-run it before adding a tenth mark; the floor moves as the set grows.  */
+    'afcon_winner':      '<g fill="currentColor"> <path d="M2.4 2.4h4.1v4.1H2.4Z"/> <path d="M17.5 2.4h4.1v4.1h-4.1Z"/> <path d="M8.1 2.4h7.8v5.6a3.9 3.9 0 0 1-7.8 0Z"/> <path d="M11.2 12h1.6v5.6h-1.6Z"/> <path d="M2.4 19.6h19.2v2.2H2.4Z"/> </g>',
   };
 
   // Playbook section marks. Keys are the ids in playbook.html.

@@ -3295,6 +3295,15 @@
         Cup and a tier below it.  */
     euro_winner:       { group:'Career',     wonBy:'team',   label:'European Champion',    tier:2.5 },
     copa_winner:       { group:'Career',     wonBy:'team',   label:'Copa América Champion', tier:2.5 },
+    /*  AFCON , 2026-09-28, 109 rows across eight editions. Same shape as the two above and
+        for the same reasons: `group:'Career'` puts it on the World Cup's shelf, and
+        `wonBy:'team'` is LOAD-BEARING , a continental title is won by a squad, so the prompt
+        must never let it become a personal claim.
+        NO EMOJI, DELIBERATELY, exactly as euro_winner and copa_winner carry none. The chip
+        glyph is a VISUAL choice and this platform demos those before it builds one; an absent
+        emoji renders label-only, which the position group already does. The MARK (the pill
+        icon) is a different thing and it exists , measured against the set's own floor.  */
+    afcon_winner:      { group:'Career',     wonBy:'team',   label:'AFCON Champion',       tier:2.5 },
   };
   /*  THESE THREE GROUPS MIX TWO ORTHOGONAL AXES, AND IT IS WORTH KNOWING BEFORE ANYONE
       TRIES TO "TIDY" THEM. Team and Individual answer WHO won it; Career answers WHEN it
@@ -3315,6 +3324,7 @@
     top_assists:      'The league’s chief creator. Nobody made more.',
     euro_winner:      'Champion of Europe with his country, the hardest tournament to win outside the World Cup.',
     copa_winner:      'Champion of South America, the oldest international tournament in the game.',
+    afcon_winner:     'Champion of Africa, won in the middle of a European season and at the cost of it.',
   };
 
   // ── Team-keyed honours (league_champion + ucl_winner) ────────────────────
@@ -3581,6 +3591,7 @@
     top_assists:      'The best assists are acts of generosity. To lead a league in them is to have seen the pass others missed, again and again, to have made teammates better and asked for none of the glory. The top creator is the player the goalscorers should thank first.',
     euro_winner:      'A continent settles it every four years, and the winner has beaten the best of it back to back. The European Championship is the World Cup with no easy group, no distant qualifier, nothing but neighbours who know exactly how you play.',
     copa_winner:      'The oldest international tournament there is, and the one that carries the most history per match. To win the Copa América is to win in front of crowds who have been arguing about it for a hundred years.',
+    afcon_winner:     'No other continental title is won at this price. It falls in January, so a player leaves his club in the middle of its season, flies to a tournament his league would rather he skipped, and comes back to a shirt someone else has been wearing. To win it anyway is to have been worth the argument.',
   };
   // Drury-wrapped tally per honour type (#4) , poetic .tmeta line; {N} = live goals/assists count.
   /*  A TALLY, NOT A FLOURISH , 2026-09-11. Five of these used to return a fixed line with no
