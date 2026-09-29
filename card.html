@@ -1180,7 +1180,19 @@
   /* the provisional disclosure , the flag has been on every card object and never shown */
   #radarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 14px}
   #cardSearch .cs-clearall{margin-top:10px}
-  #cardSearch   /*  THE CARRY-OVER OFFER , item 7, 2026-09-16. OFFERED, NEVER ASSUMED: moving to another
+  /*  [FIXED 2026-09-29] A STRAY `#cardSearch` SAT ON THIS LINE, BEFORE THIS COMMENT, AND WELDED
+      ITSELF ONTO THE RULE BELOW. A comment is whitespace to the CSS parser, so `#cardSearch`
+      plus a comment plus `.cs-carry` parsed as the DESCENDANT selector `#cardSearch .cs-carry`,
+      which nobody wrote and which no reader of the source can see. It cost two live defects:
+      the rule's specificity became (1,1,0), so the `body.light` override below , written at
+      (0,2,1) and perfectly reasonable against a bare `.cs-carry` , silently lost, and the strip
+      rendered in light mode with the DARK background and CREAM ink (1.12 against its own
+      ground); and `display:flex` defeated the element's own `hidden` attribute, so the offer
+      painted as an empty pink bar across the overlay whenever there was nothing to carry.
+      SEC C already records that a comment is not part of a selector. This is the inverse and
+      the more dangerous direction: a comment BETWEEN two fragments joins them.
+
+      THE CARRY-OVER OFFER , item 7, 2026-09-16. OFFERED, NEVER ASSUMED: moving to another
       season is a page load, so filters die, and silently restoring them would mean a reader
       lands on a grid narrowed by a decision they made on a different screen and may not
       remember. An empty result would then read as broken rather than as filtered , the same
@@ -1188,6 +1200,11 @@
   .cs-carry{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:2px 0 8px;padding:9px 12px;
     background:rgba(231,4,67,0.07);border:1px solid rgba(231,4,67,0.26);border-radius:var(--r-lg);
     font-family:'Inter';font-size:13px;color:var(--cream)}
+  /*  AN AUTHOR `display` BEATS THE `hidden` ATTRIBUTE WHATEVER ITS SPECIFICITY, because [hidden]
+      is a USER-AGENT rule and author rules outrank the UA sheet by origin, not by weight. The
+      markup says `<div class="cs-carry" id="csCarry" hidden>` and meant it. Any element that is
+      hidden in markup AND given a display by CSS needs this line, or the markup is decorative.  */
+  .cs-carry[hidden]{display:none}
   body.light .cs-carry{background:rgba(231,4,67,0.05);border-color:rgba(231,4,67,0.2);color:var(--charcoal)}
   .cs-carry .cc-t{flex:1 1 220px;min-width:0}
   .cs-carry .cc-n{font-weight:600}

@@ -303,11 +303,23 @@
   body.light .lgfoot{color:#5f594e}
   @media (max-width:640px){ .lggrid{grid-template-columns:1fr 1fr;gap:7px}
     .lgc{padding:9px 10px} .lgn{font-size:12.5px} .lgf{font-size:17px} }
-  .wmc{border-left:2px solid var(--gold);background:rgba(255,255,255,0.035);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:9px}
-  .wmc.neutral{border-left-color:rgba(243,237,224,0.3)}
-  .wmc.closing{border-left-color:var(--pink-ink)}
-  body.light .wmc{background:rgba(255,255,255,0.6)}
-  body.light .wmc.neutral{border-left-color:rgba(28,27,26,0.24)}
+  /*  THE THREE KINDS OF METHOD CARD WERE ALREADY CLASSIFIED AND LOOKED IDENTICAL , the only
+    thing separating a strength, a limit and the closing note was a 2px left stripe, so the
+    page's entire colour system was an edge. Each ground is now its OWN stripe colour at a
+    low alpha: no new hue enters the page, the existing classification simply becomes
+    visible. Deliberately NOT band colour , colouring the bands would assert a separability
+    this page publishes its own doubt about.  */
+ .wmc{border-left:2px solid var(--gold);background:rgba(232,184,75,0.055);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:9px}
+   .wmc.neutral{border-left-color:rgba(243,237,224,0.3);background:rgba(255,255,255,0.03)}
+   .wmc.closing{border-left-color:var(--pink-ink);background:rgba(231,4,67,0.06)}
+  body.light  .wmc{background:rgba(232,184,75,0.10)}
+  body.light  .wmc.neutral{border-left-color:rgba(28,27,26,0.24);background:rgba(255,255,255,0.62)}
+  /*  SCOPED TO `body.light`, NOT LEFT BARE. A bare `.wmc.closing` is (0,2,0) and loses to the
+      `body.light .wmc` above it at (0,2,1) , one element selector decides it. Written bare
+      first and caught by the computed value coming back GOLD instead of pink, which is the
+      rule SEC C records about theme overrides and specificity, made by the person who had
+      just written it down.  */
+  body.light .wmc.closing{background:rgba(231,4,67,0.05)}
   .wmc>summary{display:block;list-style:none;cursor:pointer}
   .wmc>summary::-webkit-details-marker{display:none}
   .wmc-t{display:flex;align-items:center;gap:8px;font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;line-height:1.3}
