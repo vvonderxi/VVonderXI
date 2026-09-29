@@ -290,7 +290,14 @@ function resolveBattle(ctx, state, events) {
     state.players[l].hand.push(played[l]);
     events.push({ type: 'CARD_RETURNED', player: l, cardId: played[l] });
   }
-  for (const b of verdict.bonusEffects) applyOne(ctx, state, events, w, b, null);
+  // Automatic bonus effects obey the Captain too: an automatic Into Legacy never takes a captain early.
+  const wCap = ctx.config.captain ? state.players[w].captain : null;
+  for (const b of verdict.bonusEffects) {
+    if (b === 'DISCARD_PLAYED' && played[w] === wCap && state.players[w].hand.length > 1) {
+      events.push({ type: 'EFFECT_FIZZLED', effect: b, reason: 'CAPTAIN' }); continue;
+    }
+    applyOne(ctx, state, events, w, b, null);
+  }
   state.phase = 'EFFECT';
   events.push({ type: 'EFFECT_PROMPT', player: w, options: verdict.availableEffects, picks: verdict.picks });
 
@@ -319,12 +326,17 @@ function applyOne(ctx, state, events, w, effect, target) {
     case 'DISCARD_OTHER':
       me.hand = me.hand.filter(id => id !== target); state.discard.push(target);
       events.push({ type: 'CARD_DISCARDED', player: w, cardId: target, reason: 'DISCARD_OTHER' }); break;
-    case 'PRESS':
-      if (state.pile.length && opp.hand.length < ctx.config.maxHandSize) {
-        const id = state.pile.shift(); opp.hand.push(id);
+    case 'PRESS': {
+      // the rival draws up to pressDraw cards (default 1), stopping at an empty Bench or a full hand
+      let drawn = 0;
+      for (let i = 0; i < (ctx.config.pressDraw ?? 1); i++) {
+        if (!(state.pile.length && opp.hand.length < ctx.config.maxHandSize)) break;
+        const id = state.pile.shift(); opp.hand.push(id); drawn++;
         events.push({ type: 'CARD_DRAWN', player: other(w), cardId: id, reason: 'PRESS' });
-      } else events.push({ type: 'EFFECT_FIZZLED', effect, reason: state.pile.length ? 'MAX_HAND' : 'PILE_EMPTY' });
+      }
+      if (!drawn) events.push({ type: 'EFFECT_FIZZLED', effect, reason: state.pile.length ? 'MAX_HAND' : 'PILE_EMPTY' });
       break;
+    }
     case 'GAIN_TOKEN':
       if (!ctx.config.substitutions && me.tokens < ctx.config.maxTokens) { me.tokens++; events.push({ type: 'TOKEN_GAINED', player: w }); }
       break;

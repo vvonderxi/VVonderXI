@@ -4,6 +4,7 @@ import { createGame, applyAction, legalActions, viewFor, actorFor } from '../eng
 import { makeConfig } from '../engine/config.js';
 import { rngFrom } from '../engine/core.js';
 import { loadDeckInfo } from './deck.js';
+import { core2 } from './core-rules.js';
 import { runMatch } from './simulate.js';
 import { prepareAI, TacticianCPU, RandomCPU, GreedyCPU } from '../engine/ai/cpu.js';
 
@@ -40,13 +41,13 @@ console.log(`ok , ${n} matches replayed deterministically, card conservation hel
 
 // ---- EXPLICIT DEAL TIERS: an extra card from the middle still spans every tier; a bad plan is refused
 {
-  const cx = { cards: deck, config: makeConfig({ dealTiers: [1, 2, 3, 3, 4, 5] }), deckIds: Object.keys(deck) };
+  const cx = { cards: deck, config: makeConfig({ handSize: 6, dealTiers: [1, 2, 3, 3, 4, 5] }), deckIds: Object.keys(deck) };
   for (let seed = 1; seed <= 50; seed++) {
     const { state } = createGame(cx, cx.deckIds, seed, 'A');
     for (const p of ['A', 'B']) assert.deepEqual(state.players[p].hand.map(id => deck[id].dealTier).sort(), [1, 2, 3, 3, 4, 5], 'hand follows dealTiers');
   }
-  assert.throws(() => createGame({ ...cx, config: makeConfig({ dealTiers: [1, 2, 3, 4, 5] }) }, cx.deckIds, 1, 'A'), /dealTiers/);
-  assert.throws(() => createGame({ ...cx, config: makeConfig({ dealTiers: [1, 2, 3, 3, 4, 9] }) }, cx.deckIds, 1, 'A'), /dealTiers/);
+  assert.throws(() => createGame({ ...cx, config: makeConfig({ handSize: 6, dealTiers: [1, 2, 3, 4, 5] }) }, cx.deckIds, 1, 'A'), /dealTiers/);
+  assert.throws(() => createGame({ ...cx, config: makeConfig({ handSize: 6, dealTiers: [1, 2, 3, 3, 4, 9] }) }, cx.deckIds, 1, 'A'), /dealTiers/);
 }
 
 // ---- SUBSTITUTIONS + CAPTAIN (experiment flags). Driven action by action so every rule is checked
@@ -99,5 +100,51 @@ console.log(`ok , ${n} matches replayed deterministically, card conservation hel
   for (const k of Object.keys(used)) assert.ok(used[k] > 0, `control: sub ${k} was never used, so its rules were never exercised`);
   assert.ok(captainBlocks > 0, 'control: the captain rule never had to block anything');
   console.log(`ok , subs + captain: ${games / 2} seeds played twice (hand 7, Bench 15), determinism, conservation, squad size, sub count, captain rules held; used SWAP ${used.SWAP} REDRAW ${used.REDRAW} FORCED ${used.FORCED}, captain blocked ${captainBlocks} times`);
+}
+
+// ---- CORE-2 (experiment): a big win plays Into Legacy automatically, and High Press draws pressDraw cards.
+{
+  const cfg = makeConfig(core2({ press: 2, handSize: 7, dealTiers: [1, 2, 3, 3, 3, 4, 5] }));
+  const cx = { cards: deck, config: cfg, deckIds: Object.keys(deck) };
+  const aix = prepareAI(cx, cx.deckIds);
+  let autoLegacy = 0, press2 = 0, pressShort = 0;
+  const play = (seed, bots) => {
+    const rng = rngFrom(seed * 17 + 3);
+    let { state } = createGame(cx, cx.deckIds, seed, seed % 2 ? 'A' : 'B');
+    const total = cfg.handSize * 2 + cfg.drawPileSize;
+    for (let guard = 0; state.phase !== 'OVER' && guard < 4000; guard++) {
+      const actor = actorFor(state);
+      const action = bots[actor].decide(cx, viewFor(state, actor), actor, legalActions(cx, state, actor), rng);
+      const before = state;
+      const res = applyAction(cx, state, action); state = res.state;
+      const v = res.events.find(e => e.type === 'VERDICT');
+      if (v && v.crowns && (v.verdictId === 'DOMINANT' || v.verdictId === 'DEMOLITION')) {
+        const played = res.events.find(e => e.type === 'REVEAL').cards[v.winner];
+        assert.ok(res.events.some(e => e.type === 'CARD_DISCARDED' && e.cardId === played && e.reason === 'WON'), 'a big win plays Into Legacy automatically');
+        autoLegacy++;
+      }
+      const chosen = res.events.find(e => e.type === 'EFFECTS_CHOSEN');
+      if (chosen?.effects.includes('PRESS')) {
+        const opp = chosen.player === 'A' ? 'B' : 'A', pre = before.phase === 'EFFECT' ? before : null;
+        const drawn = res.events.filter(e => e.type === 'CARD_DRAWN' && e.reason === 'PRESS').length;
+        if (pre) {
+          const room = Math.min(2, pre.pile.length, cfg.maxHandSize - pre.players[opp].hand.length);
+          assert.equal(drawn, Math.max(0, room), 'High Press draws pressDraw cards, capped by Bench and hand size');
+        }
+        if (drawn === 2) press2++; else pressShort++;
+      }
+      const all = [...state.players.A.hand, ...state.players.B.hand, ...state.pile, ...state.discard,
+                   ...['A', 'B'].map(p => state.players[p].locked).filter(Boolean)];
+      assert.equal(new Set(all).size, total, 'CORE-2 conservation');
+    }
+    assert.equal(state.phase, 'OVER', 'CORE-2 match finished');
+    return state;
+  };
+  for (let seed = 1; seed <= 150; seed++) {
+    const bots = { A: TacticianCPU(aix, { pressValue: 1.6 }), B: seed % 2 ? RandomCPU : TacticianCPU(aix) };
+    assert.deepEqual(play(seed, bots), play(seed, bots), 'CORE-2 determinism');
+  }
+  assert.ok(autoLegacy > 0 && press2 > 0, 'control: the automatic Into Legacy and a 2-card High Press both occurred');
+  console.log(`ok , CORE-2 (hand 7, High Press draws 2): 150 seeds played twice, automatic Into Legacy on every big win (${autoLegacy / 2}), 2-card press ${press2 / 2}, capped press ${pressShort / 2}, conservation and determinism held`);
 }
 

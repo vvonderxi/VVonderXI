@@ -25,7 +25,8 @@ const TOP = 8;
 let BASE = {};
 const ladderConfig = ({ edge, clear, dominant, demolition, bigGame }) => makeConfig({
   ...BASE,
-  verdicts: DEFAULT_CONFIG.verdicts.map(v => ({ ...v, minDiff:
+  // thresholds only: every other verdict field (options, bonus, picks) comes from the base rule set
+  verdicts: (BASE.verdicts ?? DEFAULT_CONFIG.verdicts).map(v => ({ ...v, minDiff:
     v.id === 'EDGE' ? edge : v.id === 'CLEAR' ? clear : v.id === 'DOMINANT' ? dominant : v.id === 'DEMOLITION' ? demolition : v.minDiff })),
   ...(bigGame === 'compare' ? {} : { thresholdScales: { bigGame }, ladders: {} }),
 });

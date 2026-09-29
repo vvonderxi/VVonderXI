@@ -100,7 +100,7 @@ export function TacticianCPU(ai, params = {}) {
         for (const e of a.effects) {
           if (e === 'DISCARD_PLAYED') { h = h.filter(x => x !== played); s += P.shedWeight + P.keepStrong * (1 - ai.worth[played]); }
           if (e === 'DISCARD_OTHER') { h = h.filter(x => x !== a.target); s += P.shedWeight + P.keepStrong * (1 - ai.worth[a.target]); }
-          if (e === 'PRESS') s += (view.pile > 0 ? P.pressValue : 0);
+          if (e === 'PRESS') s += (view.pile > 0 ? P.pressValue * (ctx.config.pressDraw ?? 1) : 0); // worth more when it draws more
         }
         if (!a.effects.includes('DISCARD_PLAYED')) s += P.keepStrong * ai.worth[played] * 0.5;
         if (h.length === 0) s += 100; // winning move

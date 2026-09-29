@@ -87,6 +87,7 @@ game/
     synthetic-deck.js             stand-in deck, still the default for the sims (built)
     ladder-sweep.js               verdict-ladder sweep (built)
     rules-experiment.js           hand / Bench / substitutions / Captain experiment (built)
+    core-rules.js  core-experiment.js   CORE-2 rules and their experiment (built)
     test-engine.js                determinism, conservation, hidden info, legality, subs, Captain (built, passing)
   ui2d/                           Phase 5: DOM prototype, playtest the loop
   render3d/                       Phase 6+: Three.js
@@ -197,32 +198,33 @@ by the game (cost, latency, and a battle needs a number, not an essay).
 
 ---
 
-## G. V1 rules (v1.3.1, the default since 2026-09-27; `config.js` wins on any conflict)
+## G. V1 rules (v1.4, the default since 2026-09-28; `config.js` wins on any conflict)
 
-1. Deal: 6 cards each, **tiered** (tiers 1, 2, 3, 3, 4, 5, so the extra card comes from the middle), 15 on the Bench.
+1. Deal: 7 cards each, **tiered** (tiers 1, 2, 2, 3, 4, 4, 5, the extras either side of the middle), 15 on the Bench.
 2. Three moments appear (never last round's). **The non-active player bans one; the active player picks from the two left.**
 3. **Substitutions, 3 per player, at most one a round, in your own decision window** (non-active while banning,
    active while choosing): SWAP any number of squad cards with random Bench cards; REDRAW the moments
-   (active only); FORCED CHANGE one random rival squad card with the Bench, **not on their last card**.
-   Squad size never changes. Bragging Rights no longer grants anything extra.
+   (active only). Squad size never changes. Forced Change was cut in v1.4.
 4. Both players secretly lock a card. Reveal.
 5. Compare on the moment. Verdict by margin:
 
-| Verdict | Six moments (percentile pts) | Big Game (rt pts, Compare's ranges) | Winner chooses |
+| Verdict | Six moments (percentile pts) | Big Game (rt pts, Compare's ranges) | Reward |
 |---|---|---|---|
 | STALEMATE (`the_debate`) | 0 to 1 | 0 to 1 | nothing, both cards go home, no round winner |
-| EDGE | 2+ | 2 to 3 | discard your played card |
-| CLEAR | 7+ | 4 to 6 | discard it **or** PRESS |
-| DOMINANT | 14+ | 7 to 9 | discard it, PRESS, or discard a different card |
-| DEMOLITION | 26+ | 10+ | any two of those |
+| EDGE | 2+ | 2 to 3 | your played card goes Into Legacy |
+| CLEAR | 6+ | 4 to 6 | the same |
+| DOMINANT | 12+ | 7 to 9 | Into Legacy **automatically**, plus choose a different card to Assist into Legacy |
+| DEMOLITION | 23+ | 10+ | the same |
 
-6. **PRESS** = keep your card, opponent draws one. **Only allowed if you hold at least as many cards as your opponent.**
+6. **There is no High Press** (options and bonus in `config.js`; `pressDraw` stays for experiments).
+   Only EDGE (decision or not) and DOMINANT (small or big win) change play; CLEAR and DEMOLITION only name it.
 7. Loser's card returns to hand. Initiative **alternates**.
 8. First to zero cards wins.
 
-Earlier rule sets are presets in `config.js`, each proven to reproduce its committed behaviour byte-for-byte
-(300 of 300 final states, both decks): `makeConfig(V1_3)` = v1.3 (deal 1,1,2,3,4,5, ladder 2/9/18/31) and
-`makeConfig(V1_2)` = v1.2-real (hand 5, Bench 30, 2 tokens, +1 token on DOMINANT). Any override that changes
+Earlier rule sets are presets in `config.js`, each EXPLICIT on every key a later version changed and each
+proven to reproduce its commit byte-for-byte (300 of 300 final states, both decks): `V1_3_1` (vs `575cf3a`),
+`V1_3` (vs `973eab9`, deal 1,1,2,3,4,5, ladder 2/9/18/31) and `V1_2` (vs `9362912`, hand 5, Bench 30,
+2 tokens, +1 token on DOMINANT). Any override that changes
 `handSize` must also name `dealTiers` (or `null` for the formula); a mismatched list is refused, not guessed.
 
 ---
@@ -471,4 +473,61 @@ gap of every round. The v1.2 sweep ran before that change and is unaffected.
 1. **The round-4 leader wins 64.7%**, the price of the middle deal plus the steeper ladder. Watch it in playtests.
 2. **Big Game still ends in no decision 24% of the time** and is chosen least (9.6%), by design of Compare's ranges.
 3. **CM is now the weakest position at 41%**; FB and CB improved.
+
+## CORE-2 experiment and v1.4 (2026-09-28, real deck, 1,200 matches per simulation, seeded)
+
+`GAME_DECK=real node game/sim/core-experiment.js 1200`; rules in `game/sim/core-rules.js`, built on v1.3.1 so
+the run reproduces. CORE-2: Forced Change off; Photo Finish and Clear Edge give Into Legacy only; Bragging
+Rights and Masterclass give Into Legacy automatically plus one of High Press or Assist.
+
+| Rule set | Skill | Press-lover | Rounds | Min | Lead R4 | Comebacks |
+|---|---|---|---|---|---|---|
+| v1.3.1 (reference), hand 6 | 66.5 | 54.3 | 9.2 | 4.6 | 64.7 | 37.9 |
+| CORE-2, press 1, hand 6 | 66.4 | 45.3 | 7.8 | 3.9 | 61.2 | 43.2 |
+| CORE-2, press 1, hand 7 (1,2,2,3,4,4,5) | 68.5 | 44.0 | 9.6 | 4.8 | 56.8 | 50.3 |
+| (a) press 2, hand 6 | 64.7 | 48.1 | 12.7 | 6.3 | 60.4 | 62.3 |
+| (a) press 2, hand 7 (1,2,2,3,4,4,5) | 64.5 | 51.1 | 15.0 | 7.5 | 56.4 | 65.5 |
+| (b) no press, hand 6 | 66.4 | n/a | 7.8 | 3.9 | 61.2 | 43.2 |
+| **(b) no press, hand 7 (1,2,2,3,4,4,5)** | **68.5** | n/a | **9.6** | **4.8** | **56.8** | **50.3** |
+
+Hand 7 with the extras from the middle (1,2,3,3,3,4,5) was worse on every measure (skill 66.1, lead R4 61.8).
+
+**Findings:**
+1. **At one card, High Press is dead.** The Tactician chose Assist on 89% of big wins and High Press on none;
+   a player who favours High Press wins 44 to 45%. So press 1 and (b) play identically, and (b) has one rule fewer.
+2. **A two-card High Press is a real choice (about 50/50) and breaks the match**: 12.7 to 15 rounds, comebacks
+   62 to 65%, skill down to 61.5 at one deal. Ruled out.
+3. The chat's synthetic CORE-2 figures (skill 69.6, lead R4 58.6, comebacks 44.6) held in direction.
+
+**v1.4 = CORE-2 (b) at hand 7, deal 1,2,2,3,4,4,5, ladder 2/6/12/23 (decided 2026-09-28).** From a 120-ladder
+sweep on that rule set, Big Game on Compare's ranges. **Under these rules only two thresholds change play**:
+EDGE (decision or not) and DOMINANT (small or big win), because Photo Finish and Clear Edge share a reward and so
+do Bragging Rights and Masterclass. CLEAR and DEMOLITION only choose the name shown; sweep rows that share EDGE
+and DOMINANT have identical skill and length. The sweep tool was fixed on the way: it built ladders from the
+default verdicts, which would have dropped CORE-2's rewards; it now keeps the base rule set's options and bonus.
+
+**v1.4 re-run (grid set C and moments):** skill 67.9, 9.2 rounds (4.6 min), leader after R4 59.0, comebacks 50.0,
+zero unfinished matches. Big wins: Assist on 89.6%, nothing on 10.4% (no other card left). Subs per match:
+SWAP 2.01, REDRAW 0.64.
+
+| Verdict mix | No decision | Photo | Clear | Brag | Master |
+|---|---|---|---|---|---|
+| Target | 7-8 | 25-28 | 25 | 22 | 17-18 |
+| v1.4, all moments | 9.6 | 25.6 | 25.1 | 22.3 | 17.4 |
+| v1.4, Big Game | 24.5 | 37.3 | 25.6 | 8.5 | 4.0 |
+
+Attacker round-win: One on One 63.8, Killer Ball 63.9, Break the Lines 52.3, Counter 59.9, Big Game 61.6,
+Full Ninety 61.0, Master of Role 59.0. By position: ST 51, W 47, CAM 45, CM 42, CDM 44, FB 42, CB 45.
+
+**A real engine bug found and fixed on the way:** an AUTOMATIC Into Legacy (a verdict bonus) skipped the Captain
+rule, so with `captain: true` a Captain could leave early. The Captain pass in `test-engine.js` caught it the
+moment v1.4's automatic Into Legacy became the default. The bonus now fizzles on a Captain while other cards
+remain. With the Captain off (the default) it changes nothing: `V1_3_1` still reproduces byte-for-byte.
+
+**Open after v1.4:**
+1. **Comebacks at 50%** is the most back-and-forth rule set yet; skill rising with it says it is not luck, but
+   playtests should say whether it feels earned.
+2. **Grid sets A, B (press rules) are now identical**: with no High Press, the press rule has nothing to act on.
+3. **Break the Lines is nearly neutral for the attacker (52.3%)**, the one moment that is.
+4. Big Game still ends in no decision 24.5% of the time, by design of Compare's ranges.
 
