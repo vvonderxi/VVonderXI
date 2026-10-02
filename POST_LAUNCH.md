@@ -11,18 +11,14 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 ---
 
-## THE VV INDEX PDF , ITEM 22, OUTLINED AND NOT BUILT. IT NOW HAS A WAITING LIST, WHICH IS WHAT MAKES IT URGENT RATHER THAN OPTIONAL (logged 2026-10-02)
+## THE VV INDEX PDF , ITEM 22, OUTLINED AND NOT BUILT. NOTHING DEPENDS ON IT (re-scoped 2026-10-02)
 
-**THE SPEC EXISTS AND IS APPROVED: `docs/VVINDEX_PDF_OUTLINE.md`** , eight pages, every figure sourced, with a draft page at `docs/pdf/vv-index.html`. **It has never been built.**
+**THE SPEC EXISTS AND IS APPROVED: `docs/VVINDEX_PDF_OUTLINE.md`** , eight pages, every figure sourced, with a draft page at `docs/pdf/vv-index.html`. **It has never been built, and it is an ordinary post-launch item with no deadline attached to it.**
 
-**WHAT CHANGED ON 2026-10-02: THE CAPTURE SHIPPED FIRST, DELIBERATELY, AND THAT INVERTS THE USUAL ORDER.** `vvindex.html` now carries a `.vi-cap` block that collects an address against this artefact. **It promises nothing it cannot send** , the copy says "It is not finished", the button reads "Send it when it's ready", and the success line is "It goes to you the day it is finished". So nothing is currently false. **But every address collected is an obligation with no delivery date**, and the longer the PDF is unbuilt the worse that reads.
-
-- **THE REASON THE CAPTURE WENT FIRST IS THAT THE OUTLINE ALREADY ASSUMED ONE.** Its governing sentence is *"It is sent in reply to a request, so it is written for ONE reader who already showed interest"* , **a request mechanism implied by the artefact's own copy and never built.** That gap is what made the block feel, in memory, like something that had shipped and been deleted (SS C, 2026-10-02).
-- **THE UNBLOCKING ORDER IS: BUILD THE PDF, THEN SEND TO WHOEVER IS ON THE LIST, THEN DECIDE WHETHER THE BLOCK'S COPY CHANGES.** Once it exists the three honest strings are wrong in the kind direction , "It is not finished" becomes false, and the button should offer an immediate send. **Change all three in one commit or the page starts under-promising**, which is cheaper than the reverse and still wrong.
-- **THE LIST IS IN FORMSPREE `maqzaooq` UNDER `source: "VV Index PDF waitlist"`**, the same form as the My Club and iWonder waitlists, distinguished only by that field. **There is no table and no export job** , retrieving the addresses is a manual read of the Formspree inbox, filtered on `source`. That is adequate at this volume and would not be at any other.
-- **IF THE PDF IS CUT RATHER THAN BUILT, THE BLOCK COMES OUT IN THE SAME DECISION**, and anyone on the list is told. A capture whose artefact has been cancelled is the success-state lie SS C forbids, arriving by neglect instead of by code.
-
----
+**[THIS ENTRY USED TO SAY THE OPPOSITE AND THE REASON IS GONE.]** For a few hours on 2026-10-02 `vvindex.html` carried a capture block collecting addresses against this artefact, which made the PDF urgent: every address was an obligation with no delivery date. **The block was removed the same day , form, copy, wiring, CSS and JS, 83 lines.** Nothing now collects against it, **no addresses were ever collected** (it was never pushed to a deployed branch), and no list exists to disappoint.
+- **SO THE ORDER IS BACK TO THE OBVIOUS ONE: build the PDF if and when it is wanted, then decide whether to offer it.** Not the reverse. The capture went first because the outline's own governing sentence , *"It is sent in reply to a request"* , implies a request mechanism, and building the mechanism before the artefact put the obligation before the thing.
+- **DO NOT RE-ADD A CAPTURE BEFORE THE PDF EXISTS.** That is the whole lesson of the short-lived version: a form whose artefact does not exist can only ever be honest by apologising for itself, and the copy spent three separate sentences doing that.
+- **IF THE PDF IS CUT RATHER THAN BUILT, nothing has to be unwound** , which is the position the removal restored.
 
 ## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
 
