@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-27",
+  "generated": "2026-10-02",
   "source": "player_card_mv",
   "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
   "figures": [
@@ -61,10 +61,31 @@
     },
     {
       "key": "honours_total",
-      "value": 804,
+      "value": 913,
       "claim": "honours the record holds, none of which moves a score",
       "definition": "every row of the honours table, team and individual. The score is computed before honours are joined to it, so the count is independent of the engine by construction",
       "query": "select count(*) from honours"
+    },
+    {
+      "key": "generational_seasons",
+      "value": 12,
+      "claim": "seasons in the Generational band, ever",
+      "definition": "rt >= 95. Anchor-pinned: the band edge is a rank, so the population is fixed by construction",
+      "query": "select count(*) from player_card_mv where rt >= 95"
+    },
+    {
+      "key": "elite_centrebacks",
+      "value": 0,
+      "claim": "centre-back seasons among the 650 at 85 or better",
+      "definition": "position_pool = CB and rt >= 85. The 15 cards with no pool were read individually and are 14 FWD and 1 MID, which is what makes a published zero sayable rather than merely true of what we can see",
+      "query": "select count(*) from player_card_mv where rt >= 85 and position_pool = 'CB'"
+    },
+    {
+      "key": "keeper_seasons",
+      "value": 4315,
+      "claim": "goalkeeper seasons read on a measure of their own",
+      "definition": "position = 'GK'. The plain count, NOT a count of keepers without a score , Fallback C removed the keeper score from the card face and not from the column, so a no-score count would be false",
+      "query": "select count(*) from player_card_mv where position = 'GK'"
     },
     {
       "key": "career_spread_players",

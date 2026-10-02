@@ -138,6 +138,64 @@ async function main() {
       'honours are joined to it, so the count is independent of the engine by construction',
       'select count(*) from honours');
 
+  /*  THE TWO LIMITS FIGURES, ADDED 2026-10-01 FOR THE VV INDEX REBUILD. A THIRD WAS DERIVED
+      AND REFUSED , see CLAUDE.md: a position-verification figure came back at 97.7% against
+      64.9% and measures GRANULARITY, not whether a person checked it, so the claim it was
+      meant to support stays unnumbered. Do not re-derive it; the flag it needs is not
+      collected.  */
+
+  /*  NOT ONE CENTRE-BACK IN THE TOP BAND. The claim is that the game records what a defender
+      DOES and not what he prevents, so the best defenders score below their reputation.
+      ITS RECONCILIATION IS THE 650 ITSELF: the band edges are RANK anchors, so that count is
+      a structural constant (SEC C, anchor-pinned populations). If it ever reads anything but
+      650 the anchors have moved, and every sentence on the page built on 650 went stale in
+      the same instant , so this throws rather than quietly publishing a new denominator.  */
+  const eliteTotal = await head(q => q.gte('rt', 85));
+  if (eliteTotal !== 650)
+    throw new Error(`the 85+ band holds ${eliteTotal}, not the anchor-pinned 650 , the anchors have moved and every figure keyed to 650 is stale`);
+  const eliteCB = await head(q => q.gte('rt', 85).eq('position_pool', 'CB'));
+  const eliteNoPool = await head(q => q.gte('rt', 85).is('position_pool', null));
+  /*  AND THE UNCLASSIFIED REMAINDER IS CHECKED RATHER THAN WAVED AT, because one defender
+      hiding among them would falsify a published ZERO. Read individually on 2026-10-01: 14
+      forwards and one midfielder. If any of them ever resolves to a DEF coarse position the
+      zero is no longer sayable, so that throws too.  */
+  const eliteNoPoolDef = await head(q => q.gte('rt', 85).is('position_pool', null).eq('position', 'DEF'));
+  if (eliteNoPoolDef > 0)
+    throw new Error(`${eliteNoPoolDef} of the ${eliteNoPool} unclassified top-band seasons are coarse DEF , the "zero centre-backs" claim can no longer be published without reading them`);
+  /*  THE GENERATIONAL POPULATION , anchor-pinned like the 650 and checked the same way. SEC C
+      records that the band edges are RANK anchors, so this is a STRUCTURAL CONSTANT: it does
+      not drift as the record grows, and a future session must not "correct" it as stale. It is
+      generated rather than typed precisely so that if it ever stops being 12 the page finds out
+      in the same instant the anchors move.  */
+  const generational = await head(q => q.gte('rt', 95));
+  if (generational !== 12)
+    throw new Error(`the Generational band holds ${generational}, not the anchor-pinned 12 , the anchors have moved and the rarity copy is stale`);
+  add('generational_seasons', generational, 'seasons in the Generational band, ever',
+      'rt >= 95. Anchor-pinned: the band edge is a rank, so the population is fixed by construction',
+      `select count(*) from ${MV} where rt >= 95`);
+
+  add('elite_centrebacks', eliteCB, 'centre-back seasons among the 650 at 85 or better',
+      'position_pool = CB and rt >= 85. The 15 cards with no pool were read individually and ' +
+      'are 14 FWD and 1 MID, which is what makes a published zero sayable rather than merely true of what we can see',
+      `select count(*) from ${MV} where rt >= 85 and position_pool = 'CB'`);
+
+  /*  KEEPERS ARE READ ON A DIFFERENT MEASURE, AND THE FIGURE IS THE PLAIN COUNT. A first
+      version counted keepers with no rt and would have been FALSE: Fallback C removed the
+      keeper score from the CARD FACE and the share caption, NOT from the column, so 3,734 of
+      these carry an rt and the count would have published the minutes floor as "not scored".
+      ITS RECONCILIATION IS THE POSITION VOCABULARY: keepers plus outfielders must be the
+      whole record. SEC E records that the coarse column has already gained UNK and FOR, and
+      a fifth value would silently shrink one side of this figure.  */
+  const gk = await head(q => q.eq('position', 'GK'));
+  const notGk = await head(q => q.neq('position', 'GK'));
+  const noPos = await head(q => q.is('position', null));
+  if (gk + notGk + noPos !== total)
+    throw new Error(`GK ${gk} + non-GK ${notGk} + null ${noPos} = ${gk + notGk + noPos}, not the ${total} cards on the matview , the position vocabulary has changed under this figure`);
+  add('keeper_seasons', gk, 'goalkeeper seasons read on a measure of their own',
+      "position = 'GK'. The plain count, NOT a count of keepers without a score , Fallback C " +
+      'removed the keeper score from the card face and not from the column, so a no-score count would be false',
+      `select count(*) from ${MV} where position = 'GK'`);
+
   /*  ONE PAGINATED READ OF THE MATVIEW, SHARED BY BOTH BLOCKS BELOW. PostgREST caps a
       select at 1000 rows SILENTLY, which SS C records as the defect that returns a plausible
       number rather than an error. player_name rides along because the spread illustration

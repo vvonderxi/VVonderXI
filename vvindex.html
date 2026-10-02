@@ -607,6 +607,83 @@
     .wkhead{display:block} .wkin{margin-top:13px;gap:20px}
     .wkarrow{display:none}
     .wkout{align-items:flex-end} }
+
+/*  THE LIMITS SECTION , eight siblings, added 2026-10-01 for the marketing rebuild.
+    EQUAL WEIGHT IS THE WHOLE SPECIFICATION AND IT IS A RULE, NOT A PREFERENCE. Eight panels,
+    one type scale, one ground, one spacing. Nothing is a bullet because nothing is in a list,
+    and there is no ordering by severity , the grid places them and the reader picks.
+    NOTHING IN HERE MOVES. No reveal, no counter, no stagger, not even on the figures. A limit
+    that animates reads as a performance of candour, which is the opposite of candour. The
+    proofs above may count up; this section is still by rule.
+    NEUTRAL GROUND THROUGHOUT , the page's colour vocabulary says "limit" before a word is read.
+    TWO OF THE EIGHT CARRY NO NUMERAL, AND THAT IS DESIGNED RATHER THAN HIDDEN. `.vl.nofig`
+    runs its claim at display weight AS WORDS where the others run a figure, so the absence is
+    legible as a choice. A manufactured number for either would be the one dishonest figure on
+    a page whose whole argument is that it does not manufacture figures.  */
+
+  /*  THE METHOD LAYER , folds, 2026-10-02. Quieter than the sections above by design: this is
+      the layer a reader chooses, not one they are walked through. Nothing here is a limit.  */
+
+  /*  MOVEMENT 4 , three ideas, equal weight, gold ground (a strength). `vi-still` marks the
+      margin block as exempt from every reveal on the page: uncertainty does not perform.  */
+
+  .vi-end{margin:34px 0 10px;background:rgba(231,4,67,.055);border:1px solid rgba(231,4,67,.20);border-radius:var(--r-lg);padding:22px 24px 24px}
+  .vi-end-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.12;margin:0 0 14px;color:var(--cream)}
+  .vi-end-row{display:flex;gap:10px;flex-wrap:wrap}
+  .vi-end-a{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:var(--r-pill);
+    border:1px solid rgba(243,237,224,.22);background:transparent;color:var(--cream);text-decoration:none;
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:.01em}
+  .vi-end-a.primary{background:var(--pink);border-color:var(--pink);color:#fff}
+  .vi-end-f{font-family:'Inter';font-size:13px;line-height:1.6;color:var(--ink-soft);margin:16px 0 0;max-width:68ch}
+  .vi-end-f a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  body.light .vi-end{background:rgba(231,4,67,.05);border-color:rgba(231,4,67,.20)}
+  body.light .vi-end-h{color:var(--charcoal)}
+  body.light .vi-end-a{color:var(--charcoal);border-color:rgba(28,27,26,.20)}
+  body.light .vi-end-a.primary{color:#fff}
+  .vi-means{margin:30px 0 8px}
+  .vi-means-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.01em;margin:0 0 16px;color:var(--cream)}
+  .vi-mrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .vi-m{background:rgba(232,184,75,.055);border:1px solid rgba(232,184,75,.20);border-radius:var(--r-lg);padding:17px 19px 18px}
+  .vi-mn{font-family:'Archivo',sans-serif;font-weight:900;font-size:42px;line-height:1;letter-spacing:-.02em;color:var(--cream);display:block}
+  .vi-mn small{display:block;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
+  .vi-mc{font-family:'Inter';font-size:14.5px;line-height:1.55;color:var(--cream);margin:11px 0 0}
+  .vi-mw{font-family:'Inter';font-size:13.5px;line-height:1.55;color:var(--ink-soft);margin:8px 0 0}
+  .vi-mc b{font-weight:600}
+  body.light .vi-means-h,body.light .vi-mn,body.light .vi-mc{color:var(--charcoal)}
+  body.light .vi-m{background:rgba(232,184,75,.10);border-color:rgba(122,92,18,.20)}
+  @media (max-width:720px){ .vi-mrow{grid-template-columns:1fr} .vi-means-h{font-size:23px} }
+  .vi-how{margin:30px 0 6px}
+  .vi-how-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;line-height:1.15;margin:0 0 6px;color:var(--cream)}
+  .vi-how-s{font-family:'Inter';font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 14px;max-width:54ch}
+  .vi-fold{border-top:1px solid var(--vi-line)}
+  .vi-fold:last-of-type{border-bottom:1px solid var(--vi-line)}
+  .vi-fold>summary{display:flex;align-items:center;gap:9px;list-style:none;cursor:pointer;padding:13px 2px;
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:.01em;color:var(--cream)}
+  .vi-fold>summary::-webkit-details-marker{display:none}
+  .vi-fold>summary::after{content:'';margin-left:auto;width:8px;height:8px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(45deg);opacity:.5;transition:transform .18s ease}
+  .vi-fold[open]>summary::after{transform:rotate(225deg)}
+  .vi-fold>summary:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-md)}
+  .vi-foldb{padding:2px 0 18px}
+  body.light .vi-how-h{color:var(--charcoal)}
+  body.light .vi-fold>summary{color:var(--charcoal)}
+  @media (max-width:720px){ .vi-how-h{font-size:19px} }
+  .vi-lims{margin:26px 0 10px}
+  .vi-lims-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.01em;margin:0 0 7px;color:var(--cream)}
+  .vi-lims-s{font-family:'Inter';font-size:15px;line-height:1.55;color:var(--ink-soft);margin:0 0 20px;max-width:56ch}
+  .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .vl{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
+  .vl-n{font-family:'Archivo',sans-serif;font-weight:900;font-size:42px;line-height:1;letter-spacing:-.02em;color:var(--cream);display:block}
+  .vl-n small{display:block;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
+  .vl.nofig .vl-n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;line-height:1.25;letter-spacing:-.005em}
+  .vl-c{font-family:'Inter';font-size:14.5px;line-height:1.55;color:var(--cream);margin:11px 0 0}
+  .vl-w{font-family:'Inter';font-size:13.5px;line-height:1.55;color:var(--ink-soft);margin:8px 0 0}
+  .vl-c b{font-weight:600}
+  body.light .vi-lims-h{color:var(--charcoal)}
+  body.light .vl{background:rgba(255,255,255,.62);border-color:rgba(28,27,26,.10)}
+  body.light .vl-n{color:var(--charcoal)}
+  body.light .vl-c{color:var(--charcoal)}
+  @media (max-width:720px){ .vl-grid{grid-template-columns:1fr} .vi-lims-h{font-size:23px} }
   .vi-rows{display:grid;margin-top:4px;border-top:1px solid var(--vi-line)}
   .vi-row{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:baseline;padding:15px 2px;border-bottom:1px solid var(--vi-line)}
   .vi-row .n{font:900 clamp(22px,3.8vw,29px)/1 'Archivo';letter-spacing:-.02em;color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums}
@@ -655,7 +732,7 @@
   </nav>
   <div class="canvas">
     <div class="topline"><div class="crumb">V<span class="vvw">V</span> Index</div><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#E70443">V</tspan></text></svg></div></div></div>
-    <div class="hero"><h1>The <span class="b">VV</span> Index.</h1><div class="hero-tag">Behind the Numbers</div><div class="lede">One number to hold a whole season, so the greatest careers, across every era, can finally stand against one another. No favourites, no nostalgia, no hiding place. Only what was earned.</div></div>
+    <div class="hero"><h1>The <span class="b">VV</span> Index.</h1><div class="hero-tag">One number for a season, so any two can be argued about on the same terms</div><div class="lede">Across nine leagues and sixteen years. No favourites, no nostalgia, no hiding place. Only what was earned.</div></div>
     <div class="idxwrap">
 
   <div class="vi-pq">
@@ -687,7 +764,136 @@
   <p class="vi-h2sub">One real season, read downward. Every figure here comes out of the live
   record and is regenerated with the page.</p>
 
-  <div class="wk">
+  
+
+  
+
+  <h2 class="vi-h2">It rates a season, not a player</h2>
+  <p class="vi-h2sub">A rating rates a person, and a person does not have one number. Across
+  <span data-fig="career_spread_players">4,387</span> players with five or more scored seasons, the
+  median gap between a career&#8217;s best season and its worst is
+  <span data-fig="career_spread_median">37</span> points.</p>
+
+  
+
+  <div class="vi-rows">
+    <div class="vi-row"><div class="n g">64</div><div class="l">Points between Eden Hazard&#8217;s best
+    scored season and his worst, <b>against a median of 37.</b></div></div>
+    <div class="vi-row"><div class="n">63<small>15/16</small></div><div class="l">The dip is not decline. It sits <b>in the
+    middle of his best years</b>, between an 83 and an 87, and he went straight back to 87 after.</div></div>
+  </div>
+
+  <h2 class="vi-h2">It tells you how sure it is</h2>
+  <p class="vi-h2sub">Every V<span class="vvw">V</span> Score carries a measured margin of error, and the Index acts on it
+  rather than filing it away. <b>We have not found another football rating that publishes one at all.</b></p>
+
+  <div class="csfig" id="pladFig"
+       data-fig-series="margin_separation_points" data-series="2.8,5.5,10.0,16.1"></div>
+
+  <div class="vi-rows">
+    <div class="vi-row"><div class="n g"><span data-fig="elite_pairs_inside_margin">97</span><small>of elite pairs</small></div><div class="l"><b>When the Index does crown a season, the gap has cleared its own margin of
+    error.</b> At the top of the ladder that is rare: of the
+    <span data-fig="elite_pairs_counted">993,345</span> possible pairings between seasons at 80 or better,
+    this is the share it will not separate. <b>That is not a dodge , it is the difference between
+    a rating that answers every question and one that answers the questions it can.</b></div></div>
+  </div>
+
+  <h2 class="vi-h2">Nine leagues, one ladder</h2>
+  <p class="vi-h2sub">A cross-league index invites one obvious suspicion: that it is a Premier League
+  index wearing nine badges. The 650 seasons at 85 or better come from <b>all nine</b>.</p>
+
+  
+
+  <div class="vi-rows">
+    <div class="vi-row"><div class="n g"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></div><div class="l">Of
+    those 650 seasons were played <b>outside the Premier League.</b> The ladder is one ladder: a
+    season is placed against every other season we can measure, and the league it was played in
+    <b>enters as a weight computed from players who moved</b>, never as a reputation.</div></div>
+  </div>
+
+  <h2 class="vi-h2">It scores the season, not the trophy</h2>
+
+<!--  THE LIMITS SECTION , BUILT 2026-10-01, SHOWN FOR REVIEW BEFORE THE REST OF THE PAGE.
+      THE SCATTERED LIMIT BLOCKS IT REPLACES ARE STILL BELOW AND ARE REMOVED ONCE THIS IS
+      APPROVED. Nothing is deleted yet, deliberately: they are working markup, and tearing
+      them out before the replacement has been looked at leaves no way back but git.
+      Every numeral is a data-fig host owned by gen-index-figures.js. Two panels carry no
+      numeral on purpose , see the CSS note above.  -->
+  <section class="vi-lims">
+    <h2 class="vi-lims-h">What it will not tell you</h2>
+    <p class="vi-lims-s">Eight things the Index cannot see, or has decided not to count. Each one is on every card it affects.</p>
+    <div class="vl-grid">
+      <div class="vl"><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
+        <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one of them moves a score by a single point.</p>
+        <p class="vl-w">A medal is a team&rsquo;s outcome with one player&rsquo;s name on it. The Index scores the season he played, not the one his club had. Individual awards are no different: the score is finished before the vote happens.</p></div>
+      <div class="vl nofig"><span class="vl-n">Goals and assists are recorded everywhere, and back to 2010. Defending is not.</span>
+        <p class="vl-c">So the scale tilts toward attacking output, because that is where the evidence is.</p>
+        <p class="vl-w">We say so rather than claiming a balance the record cannot support. There is no number in this panel because there is no honest one to put here.</p></div>
+      <div class="vl"><span class="vl-n"><span data-fig="cards_with_detail">38,928</span><small>seasons with the full record</small></span>
+        <p class="vl-c">The other <b><span data-fig="cards_no_detail">19,138</span></b> are scored on goals, assists and minutes alone, and every one of their cards says so.</p>
+        <p class="vl-w">Shots, passes, duels and dribbles begin in 2015/16. Penalties enter the record in 2015: a taker before then is scored without them, and nothing on his card pretends otherwise.</p></div>
+      <div class="vl"><span class="vl-n"><span data-fig="elite_centrebacks">0</span><small>centre-backs in the top band</small></span>
+        <p class="vl-c">Not one of the 650 seasons at 85 or better was played by a centre-back. Three were played by defenders at all, and all three are full-backs.</p>
+        <p class="vl-w">He makes the tackle and it is recorded. He makes the tackle unnecessary and nothing is. The best defenders score below their reputation , Van Dijk sits in the low seventies , and we publish that with the reason rather than quietly moving him.</p></div>
+      <div class="vl nofig"><span class="vl-n">A high score is checked. A low one is an estimate.</span>
+        <p class="vl-c">Positions are verified by hand near the top of the ladder and get coarser below it.</p>
+        <p class="vl-w">We can tell you how many seasons resolve to a specific position. We cannot tell you how many of those a person checked, because that was never recorded separately , so this one stays a statement rather than a measurement.</p></div>
+      <div class="vl"><span class="vl-n"><span data-fig="keeper_seasons">4,315</span><small>keeper seasons, read differently</small></span>
+        <p class="vl-c">Goalkeepers are not on this scale at all. The five dimensions are outfield measures.</p>
+        <p class="vl-w">A keeper&rsquo;s work is kept out of the same ladder because almost nothing about it is recorded the way outfield play is. His card says which measure it is using.</p></div>
+      <div class="vl"><span class="vl-n"><span data-fig="cards_on_a_band_edge">878</span><small>cards on a band edge</small></span>
+        <p class="vl-c">A score is a standing, not a mark out of ten. These sit within a single point of a boundary.</p>
+        <p class="vl-w">Two seasons either side of a line are closer than the labels make them look, and the Index says so rather than letting the label do the arguing.</p></div>
+      <div class="vl"><span class="vl-n"><span data-fig="career_spread_median">37</span><small>points, best season to worst</small></span>
+        <p class="vl-c">It rates a season, not a player. Across <b><span data-fig="career_spread_players">4,387</span></b> players with five or more scored seasons, that is the median gap.</p>
+        <p class="vl-w">A rating rates a person, and a person does not have one number. Eden Hazard&rsquo;s best and worst sit 64 points apart, and the dip is in the middle of his best years.</p></div>
+    </div>
+  </section>
+
+  <!--  The scattered limit blocks that stood here are REMOVED 2026-10-02 , every one of
+        them is now a panel in the consolidated limits section above, with its figure
+        intact. Nothing was dropped; the keeper block below stays because its six
+        method cards fold rather than being limits.  -->
+
+  <!--  HOW A SCORE IS BUILT , the method layer, 2026-10-02. Everything in here explains a
+        MECHANISM. Nothing in here is a limit: limits cannot fold, which is why the coverage
+        claim sits in the limits section above and only its era band lives down here.
+        THE THREE SERIES HOSTS MOVED WITH ALL FOUR COUPLED ATTRIBUTES. csFig carries
+        data-fig-series / data-series / data-fig-series-years / data-years; lgFig carries the
+        same shape with names. A host that arrives without them renders an EMPTY chart and
+        says nothing, which is the failure mode this move was most likely to produce.  -->
+  <!--  MOVEMENT 4 , WHAT THE NUMBER MEANS, 2026-10-02. Three ideas and no more.
+        THE MARGIN DOES NOT MOVE even though it sits in a proof movement on a gold ground. A
+        statement about uncertainty does not perform , the motion rule wins over the section
+        colour, ruled 2026-10-01. The rarity numeral and the league bars may animate; this
+        block carries `vi-still` and is exempt by rule rather than by oversight.  -->
+  <section class="vi-means">
+    <h2 class="vi-means-h">What the number means</h2>
+    <div class="vi-mrow">
+      <div class="vi-m">
+        <span class="vi-mn"><span data-fig="generational_seasons">12</span></span>
+        <p class="vi-mc">Seasons reach Generational. Ever , out of <b><span data-fig="cards_total">58,066</span></b> in the record.</p>
+        <p class="vi-mw">The band edges are fixed by rank, so that number does not drift as the record grows.</p>
+      </div>
+      <div class="vi-m vi-still">
+        <span class="vi-mn"><span data-fig="elite_pairs_inside_margin">97</span><small>per cent</small></span>
+        <p class="vi-mc">It tells you when it cannot tell you. Every score carries a measured margin of error, and where two seasons fall inside it the Index says so instead of picking one.</p>
+        <p class="vi-mw">At the very top it can split hairs. Further down it will not pretend to.</p>
+      </div>
+      <div class="vi-m">
+        <span class="vi-mn"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></span>
+        <p class="vi-mc">Of the 650 seasons at 85 or better were played outside the Premier League.</p>
+        <p class="vi-mw">It is not a Premier League index wearing nine badges. The ladder is one ladder, and the league a season was played in enters as a weight, not a door.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="vi-how">
+    <h2 class="vi-how-h">How a score is built</h2>
+    <p class="vi-how-s">The method, for anyone who wants it. None of this is needed to read a card.</p>
+
+    <details class="vi-fold"><summary>One real season, step by step</summary>
+      <div class="vi-foldb"><div class="wk">
     <div class="wkhead">
       <div class="wkwho"><span data-fig="walk_player">Mohamed Salah</span>
         <small><span data-fig="walk_season">24/25</span> &#183; read against other
@@ -747,82 +953,20 @@
         650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
       <div class="wkrt"><span data-fig="walk_rt">95</span></div>
     </div>
-  </div>
-
-  <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
+  </div><p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
   that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
   other at all. Minutes, output, position, league, and <b>nothing else , not even the five
   dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
-  shown beside the score, never inside it.</p>
+  shown beside the score, never inside it.</p></div></details>
 
-  <h2 class="vi-h2">It rates a season, not a player</h2>
-  <p class="vi-h2sub">A rating rates a person, and a person does not have one number. Across
-  <span data-fig="career_spread_players">4,387</span> players with five or more scored seasons, the
-  median gap between a career&#8217;s best season and its worst is
-  <span data-fig="career_spread_median">37</span> points.</p>
-
-  <div class="csfig" id="csFig"
+    <details class="vi-fold"><summary>Why it rates a season and not a career</summary>
+      <div class="vi-foldb"><div class="csfig" id="csFig"
        data-fig-series="career_spread_hazard" data-series="58,85,71,82,83,63,87,81,90,51,53,26"
        data-fig-series-years="career_spread_hazard_years"
-       data-years="10/11,11/12,12/13,13/14,14/15,15/16,16/17,17/18,18/19,19/20,20/21,21/22"></div>
+       data-years="10/11,11/12,12/13,13/14,14/15,15/16,16/17,17/18,18/19,19/20,20/21,21/22"></div></div></details>
 
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g">64</div><div class="l">Points between Eden Hazard&#8217;s best
-    scored season and his worst, <b>against a median of 37.</b></div></div>
-    <div class="vi-row"><div class="n">63<small>15/16</small></div><div class="l">The dip is not decline. It sits <b>in the
-    middle of his best years</b>, between an 83 and an 87, and he went straight back to 87 after.</div></div>
-  </div>
-
-  <h2 class="vi-h2">It tells you how sure it is</h2>
-  <p class="vi-h2sub">Every V<span class="vvw">V</span> Score carries a measured margin of error, and the Index acts on it
-  rather than filing it away. <b>We have not found another football rating that publishes one at all.</b></p>
-
-  <div class="csfig" id="pladFig"
-       data-fig-series="margin_separation_points" data-series="2.8,5.5,10.0,16.1"></div>
-
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="elite_pairs_inside_margin">97</span><small>of elite pairs</small></div><div class="l"><b>When the Index does crown a season, the gap has cleared its own margin of
-    error.</b> At the top of the ladder that is rare: of the
-    <span data-fig="elite_pairs_counted">993,345</span> possible pairings between seasons at 80 or better,
-    this is the share it will not separate. <b>That is not a dodge , it is the difference between
-    a rating that answers every question and one that answers the questions it can.</b></div></div>
-  </div>
-
-  <h2 class="vi-h2">Nine leagues, one ladder</h2>
-  <p class="vi-h2sub">A cross-league index invites one obvious suspicion: that it is a Premier League
-  index wearing nine badges. The 650 seasons at 85 or better come from <b>all nine</b>.</p>
-
-  <div class="csfig" id="lgFig"
-       data-fig-series="elite_league_counts" data-series="196,117,101,83,61,36,21,18,17"
-       data-fig-series-names="elite_league_names"
-       data-names="Premier League|La Liga|Serie A|Bundesliga|Ligue 1|Eredivisie|Super Lig|Belgian Pro League|Primeira Liga"></div>
-
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></div><div class="l">Of
-    those 650 seasons were played <b>outside the Premier League.</b> The ladder is one ladder: a
-    season is placed against every other season we can measure, and the league it was played in
-    <b>enters as a weight computed from players who moved</b>, never as a reputation.</div></div>
-  </div>
-
-  <h2 class="vi-h2">It scores the season, not the trophy</h2>
-  <p class="vi-h2sub">Not gaps in the record. Decisions, and this is the one that shapes every score
-  on the platform.</p>
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="honours_total">804</span></div><div class="l">Honours the record holds , league titles, Champions Leagues, Ballons d’Or, Golden Boots , and <b>not one of them moves a score by a single point.</b> A medal is a team's outcome with one
-      player's name on it, and the Index scores the season he played, not the one his club had. <b>Individual awards are no different</b> , the score is finished before any honour is even joined to it.</div></div>
-  </div>
-
-<h2 class="vi-h2">It leans where the evidence is</h2>
-  <p class="vi-h2sub">Not a limit. A decision, and one that shapes every score on the platform.</p>
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n">Attack<small>the lean</small></div><div class="l">The scale tilts toward attacking output, because <b>that is where the evidence is</b> , goals and assists are recorded everywhere and back to 2010, and defending is not. We say so rather than claiming a balance the record cannot support.</div></div>
-  </div>
-
-  <h2 class="vi-h2">It knows when the record begins</h2>
-  <p class="vi-h2sub">Not every league has kept the same records, and not in every year. This is
-  the shape of what exists.</p>
-
-  <div class="vi-fig">
+    <details class="vi-fold"><summary>What the record holds, and from when</summary>
+      <div class="vi-foldb"><div class="vi-fig">
     <div class="vi-tl">
       <div class="vi-tl-track">
         <div class="vi-tl-seg vi-tl-early" style="width:33.3%"><span>Goals, assists, minutes</span></div>
@@ -856,24 +1000,18 @@
           pointing at is now on the page.  -->
     <p class="vi-tlwhen">Detail begins <b>2014/15</b> Premier League <i>·</i> <b>2015/16</b>
       every other league <i>·</i> <b>2020/21</b> Belgium</p>
-  </div>
+  </div></div></details>
 
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="cards_with_detail">38,928</span></div><div class="l">Seasons carry the full detailed record , shots, passes, duels and dribbles. The other <span data-fig="cards_no_detail">19,138</span> are scored on goals, assists and minutes, <b>and every one of their cards says so.</b></div></div>
-    <div class="vi-row"><div class="n">2015</div><div class="l">Where penalties enter the record. <b>A taker before then is scored without them</b>, and nothing about his card pretends otherwise.</div></div>
-    <div class="vi-row"><div class="n">300<small>minutes</small></div><div class="l">The floor. <b>Below it we hold back rather than rate a fragment</b> , a hot month is not a season.</div></div>
-    <div class="vi-row"><div class="n p">4</div><div class="l"><b>Some famous players are simply not here.</b> Rooney, Gerrard, Lampard and Kompany have no cards, because the source we import from never linked those seasons to them. <b>We would rather a player be missing than be wrong.</b></div></div>
-  </div>
+    <details class="vi-fold"><summary>Why defenders score as they do</summary>
+      <div class="vi-foldb"><div class="dfig" id="defFig"></div></div></details>
 
-  <h2 class="vi-h2">It tells you where it is weakest</h2>
-  <p class="vi-h2sub">Two limits that no amount of data collection fixes, because they are about what
-  football records, not about what we gathered.</p>
-  <div class="dfig" id="defFig"></div>
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n">Top<small>of the ladder</small></div><div class="l">Positions are verified by hand near the top of the ladder and get coarser below it. <b>A high score is a claim we have checked. A low one is an estimate.</b></div></div>
-  </div>
+    <details class="vi-fold"><summary>The nine leagues, season by season</summary>
+      <div class="vi-foldb"><div class="csfig" id="lgFig"
+       data-fig-series="elite_league_counts" data-series="196,117,101,83,61,36,21,18,17"
+       data-fig-series-names="elite_league_names"
+       data-names="Premier League|La Liga|Serie A|Bundesliga|Ligue 1|Eredivisie|Super Lig|Belgian Pro League|Primeira Liga"></div></div></details>
+  </section>
 
-    <h2 class="vi-h2">Goalkeepers</h2>
   <div class="vi-gkwrap">
       <div class="wm-lede">The five dimensions above are outfield measures. A keeper is read on a different set, and his card says so.</div>
       <div class="wmg-h">What We Measure</div>
@@ -894,12 +1032,20 @@
     <p class="s">The defensive signal was two measures blended into one number. It is one measure
       now, and the biggest single mover was Azpilicueta's 2018, from 70 to 72.</p>
   </div>
-      <div class="idx-ctas">
-        <a class="idx-cta primary" href="compare.html"><svg viewBox="0 0 100 100" fill="#fff"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg> Compare players</a>
-        <a class="idx-cta secondary" href="playbook.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg> The Playbook</a>
-      </div>
-  <p class="vi-foot">Every figure here is measured rather than asserted. The words themselves , bands,
-  dimensions, tags, confidence dots , live on <a href="playbook.html">the Playbook</a>.</p>
+      <!--  ONE ENDING, 2026-10-02. There were THREE , idx-ctas, vi-foot and vi-cta , about 400px
+      and 85 words between them, and a page that ends three times does not know what it wants.
+      NOTHING WAS DROPPED, the three were merged: the two routes, the pointer to the Playbook
+      for the vocabulary, and the invitation to check the figures. That last one is not filler,
+      it is the posture the whole page argues for, so it survives as a line rather than a block.  -->
+  <section class="vi-end">
+    <h2 class="vi-end-h">Now go and settle something.</h2>
+    <div class="vi-end-row">
+      <a class="vi-end-a primary" href="rankings.html">The Rankings</a>
+      <a class="vi-end-a" href="compare.html">Compare two seasons</a>
+    </div>
+    <p class="vi-end-f">Every figure here is measured rather than asserted, and every one can be checked , we would rather you did. The words themselves , bands, dimensions, tags, confidence dots , live on <a href="playbook.html">the Playbook</a>. Found a season that reads oddly? <a href="contact.html">Tell us</a>.</p>
+  </section>
+  
 
   <!--  THE CTA BELONGS ON THIS PAGE SPECIFICALLY. A page whose whole argument is "here is what
         we cannot do" has just spent ten claims inviting disagreement, and the reader most worth
@@ -910,18 +1056,7 @@
         ten claims has earned a warmer ask than that. The SPECIFICS stay, because they are what
         make the invitation answerable , "get in touch" alone is a contact box, and a named list
         of things worth telling us is a brief.  -->
-  <div class="vi-cta">
-    <p class="vi-ctat">Want to look into this further?</p>
-    <p class="vi-ctas">Every figure here can be checked, and we would rather you did. A career you
-      cannot find, a position that does not match what you watched, a season that reads oddly, or
-      just a question about how any of it works , tell us and we will look at it.</p>
-    <a class="vi-ctab" href="contact.html">Get in touch</a>
-    <div class="vvsoc" id="vvSocIdx">
-      <a href="https://www.instagram.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on Instagram"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7"><rect x="20" y="20" width="60" height="60" rx="18"/><circle cx="50" cy="50" r="15"/><circle cx="70" cy="30" r="4" fill="currentColor" stroke="none"/></svg></a>
-      <a href="https://x.com/vvonderxi" target="_blank" rel="noopener me" aria-label="VVonderXI on X/Twitter"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M22 20 h16 l18 26 L78 20 h8 L60 52 l28 28 H72 L52 56 L30 80 h-8 l28 -32 Z"/></svg></a>
-    </div>
-  </div>
-    </div>
+  
     </div>
   </div>
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});</script>
