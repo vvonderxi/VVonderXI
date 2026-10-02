@@ -36,7 +36,12 @@ const FIG=path.join(ROOT,'scripts','figures','index-figures.json');
 const CHECK=process.argv.includes('--check');
 const TARGETS=process.argv.includes('--only')
   ? [process.argv[process.argv.indexOf('--only')+1]]
-  : ['docs/pdf/vv-index.html','_demo_vvindex.html','vvindex.html'];
+  /*  playbook.html JOINED 2026-10-02, WHEN THE SCORING WALK MOVED THERE FROM THE VV INDEX.
+      The walk carries generated figures, and a page that is not scanned turns them into
+      hardcoded numbers the moment they arrive , the exact failure this script exists to
+      prevent, arriving by a move rather than by an edit. ANY PAGE THAT GAINS A data-fig
+      HOST MUST BE ADDED HERE IN THE SAME CHANGE.  */
+  : ['docs/pdf/vv-index.html','_demo_vvindex.html','vvindex.html','playbook.html'];
 
 /*  A FILE WITH NO data-fig SPANS IS A FAILURE UNLESS IT IS EXEMPTED HERE, BY NAME, WITH A
     REASON. Until 2026-09-20 --check printed "no data-fig spans" and exited 0, so the tripwire

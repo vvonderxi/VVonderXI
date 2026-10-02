@@ -1773,6 +1773,76 @@
       <div class="vvceiling"><b>100 is unreachable by design.</b> The very top is reserved, the ceiling exists so greatness always has somewhere left to climb.</div>
       <div class="vvceiling"><b>The bands are named levels, not precise cuts.</b> A season near a band edge could sit either side of it. The number is measured more finely than the names divide it, so a band is the neighbourhood a season is in, not a line it cleared.</div>
       <div class="vvstory"><div class="vvstory-d">The V<span class="vvw">V</span> Score is <b>not a popularity contest</b>, and <b>not a sum of trophies</b>. It measures a single season's output, weighed against the standard of its position and the strength of its stage. A striker is asked for goals; a playmaker, for creation; a defender, for control, <b>each judged against their own kind</b>. Then the league is accounted for, because <b>thirty goals in the strongest division is not thirty goals in a gentler one</b>. What remains is a single, defensible figure, the closest thing the game has to a <b>common currency</b>, so any two seasons, separated by decades or borders, can finally be set on the same table and asked the only question that matters: <b>who was greater?</b></div></div>
+    
+      <!--  THE WALK. Its 21 figures are generated , playbook.html was added to
+            apply-figures.js TARGETS in the same change, because a page that is not
+            scanned turns a generated figure into a hardcoded number on arrival.  -->
+      <div class="wk">
+    <div class="wkhead">
+      <div class="wkwho"><span data-fig="walk_player">Mohamed Salah</span>
+        <small><span data-fig="walk_season">24/25</span> &#183; read against other
+        <span data-fig="walk_pool">Winger</span> seasons</small></div>
+      <div class="wkin">
+        <div><b><span data-fig="walk_goals">29</span></b>goals</div>
+        <div><b><span data-fig="walk_assists">18</span></b>assists</div>
+        <div><b><span data-fig="walk_minutes">3,377</span></b>minutes</div>
+      </div>
+    </div>
+
+    <div class="wkstep"><div class="wkn">1</div>
+      <div class="wkl">Output becomes one figure , each assist at <b>0.7</b>, a fifth off each of his
+        <span data-fig="walk_pens">9</span> penalties.</div>
+      <div class="wkv"><span data-fig="walk_gaw">39.62</span><small>output</small></div></div>
+
+    <div class="wkstep"><div class="wkn">2</div>
+      <div class="wkl">Divided by minutes, not matches, so <b>a half season and a full one become
+        comparable.</b></div>
+      <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
+
+    <div class="wkstep"><div class="wkn">3</div>
+      <div class="wkl">Then ranked twice , <b>once among wingers</b>, once against every outfielder.
+        <div class="wkpair">
+          <div class="wkp"><span><span data-fig="walk_pool">Winger</span> pool</span>
+            <b><span data-fig="walk_pct_pool_rate">99.1</span> rate &#183;
+               <span data-fig="walk_pct_pool_vol">99.9</span> volume</b></div>
+          <div class="wkp"><span>Every outfielder</span>
+            <b><span data-fig="walk_pct_all_rate">99.6</span> rate &#183;
+               <span data-fig="walk_pct_all_vol">100</span> volume</b></div>
+        </div>
+      </div>
+      <div class="wkv wkarrow">&#8595;</div></div>
+
+    <div class="wkstep"><div class="wkn">4</div>
+      <div class="wkl">Blended, pool first, with the <b>raw size</b> of the output beside it ,
+        <span data-fig="walk_rank_term">64.7</span> for rank,
+        <span data-fig="walk_vol_term">68.2</span> for volume.</div>
+      <div class="wkv"><span data-fig="walk_perf">132.9</span><small>performance</small></div></div>
+
+    <div class="wkstep"><div class="wkn">5</div>
+      <div class="wkl">Availability is added, on a curve that <b>stops rewarding minutes long before
+        the last one.</b></div>
+      <div class="wkv">+&#8201;<span data-fig="walk_avail">27</span><small>availability</small></div></div>
+
+    <div class="wkstep"><div class="wkn">6</div>
+      <div class="wkl">And the league is weighted , <b>not by reputation, but from players who moved
+        between them.</b> The Premier League is the baseline.</div>
+      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">1</span><small>league</small></div></div>
+
+    <div class="wkstep"><div class="wkn">7</div>
+      <div class="wkl">Which assembles to one figure, on a scale nobody sees.</div>
+      <div class="wkv"><span data-fig="walk_b">120</span><small>assembled</small></div></div>
+
+    <div class="wkout">
+      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
+        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
+      <div class="wkrt"><span data-fig="walk_rt">95</span></div>
+    </div>
+  </div>
+      <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
+  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
+  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
+  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
+  shown beside the score, never inside it.</p>
     </section><section class="section" id="s-dim" data-nav="The 5 Dimensions">
       <div class="label">The Foundation</div>
       <h2 class="h2"><span class="se">&#128376;&#65039;</span> The Five Dimensions</h2>
@@ -1786,7 +1856,11 @@
             section intro above now points HERE rather than at Data Confidence, which is the
             coupling that would otherwise have left a sentence pointing at itself.  -->
       <div class="shirtsrc" id="shirtSrc"></div>
-    </section><section class="section" id="s-gk"><div class="label">The different set</div><h2 class="h2"><span class="se">&#129508;</span> Goalkeepers</h2>
+    </section><section class="section" id="s-gk"><div class="label">The different set</div><h2 class="h2"><span class="se">&#129508;</span> Goalkeepers</h2><!--  THE NO-SCORE SENTENCE, LANDED 2026-10-02 BEFORE THE VV INDEX CUT THAT DEPENDS ON IT.
+      It was on vvindex and NOT here , checked, not assumed , so cutting that page first
+      would have made a real disclosure disappear while both surfaces each assumed the
+      other carried it. Fallback C is the spec: the card face shows no keeper score.  -->
+<p class="intro"><b>A keeper carries no V<span class="vvw">V</span> Score at all.</b> The five dimensions are outfield measures, and the Index cannot yet earn a keeper one, so his card shows none rather than showing a number built from minutes. What it shows instead is below.</p>
 <div class="gk3">
   <div class="lede">One keeper, one season, every shot he faced. The rate is not a claim on this page , it is a count you can run yourself.</div>
   <div class="who"><b>David de Gea, Manchester United, 2017/18.</b> The fourteenth best save season of the 1,920 we can measure.</div>
@@ -2733,6 +2807,53 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
  .shsp-t{font-family:'Inter';font-size:13.5px;line-height:1.5;color:#3a352e;margin:0}
  .shsp.flagged .shsp-l{color:#7a5c12}
  body.light .shsp-t{color:#3a352e}
+
+/*  THE SCORING WALK , MOVED HERE FROM vvindex.html ON 2026-10-02.
+    IT IS METHOD, AND THE VV INDEX IS A PROOF. SEC E already rules that this page is the
+    dictionary and that one a proof, so seven computational steps belong here. Nothing was
+    deleted in the move; vvindex now carries a single pointer line.
+    ITS SIX TOKENS ARE SCOPED TO `.wk` RATHER THAN ADDED GLOBALLY. They are vvindex's own
+    (--vi-line, --vi-mut, --vi-ink, --vi-panel, --vi-strong, --vi-gold-num) and this page
+    defines none of them. Declaring them on the block keeps the walk self-contained and leaves
+    the Playbook's namespace untouched , SEC C: a token defined for one ground is not a token,
+    so BOTH grounds are declared here, not just the one that was looked at.  */
+.wk{--vi-gold-num:#E8B84B;--vi-ink:rgba(243,237,224,.80);--vi-line:rgba(243,237,224,.11);
+    --vi-mut:rgba(243,237,224,.52);--vi-panel:rgba(255,255,255,.03);--vi-strong:var(--cream)}
+body.light .wk{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(28,27,26,.14);
+    --vi-mut:#5f594e;--vi-panel:rgba(0,0,0,.035);--vi-strong:var(--charcoal)}
+  .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
+  .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
+    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
+  .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
+  .wkwho{font:800 clamp(17px,2.4vw,20px)/1.2 'Archivo';letter-spacing:-.01em}
+  .wkwho small{display:block;font:700 10px 'Archivo';letter-spacing:.12em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:5px}
+  .wkin{display:flex;gap:16px;flex-wrap:wrap;font:700 11px 'Archivo';letter-spacing:.06em;
+    text-transform:uppercase;color:var(--vi-mut)}
+  .wkin b{display:block;font:900 17px/1 'Archivo';color:var(--vi-strong);letter-spacing:-.01em;margin-bottom:3px}
+  .wkstep{display:grid;grid-template-columns:20px 1fr auto;gap:13px;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid var(--vi-line)}
+  .wkstep:last-of-type{border-bottom:0}
+  .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
+  .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
+  .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:4px}
+  .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
+  .wkp{border:1px solid var(--vi-line);border-radius:var(--r-md);padding:8px 10px}
+  .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
+  .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
+  .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
+    padding-top:16px;border-top:1px solid var(--vi-line)}
+  .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
+  .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
+    .wkv{grid-column:2;text-align:left;margin-top:6px}
+    .wkhead{display:block}
+    .wkarrow{display:none}
+    .wkout{align-items:flex-end}
 </style>
 <script>
 /*  RENDERED FROM THE SHARED STRINGS , see the comment at #s-conf. If VVCore is not loaded the

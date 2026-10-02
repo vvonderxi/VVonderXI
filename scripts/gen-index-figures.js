@@ -361,6 +361,21 @@ async function main() {
   add('elite_league_counts', ordered.map(([, n]) => n).join(','),
       'their counts, in the same order', 'same query', 'as above');
 
+  /*  THE FLOOR, NOT JUST THE SHARE , ADDED 2026-10-02 WHEN THE NINE-LEAGUE CHART WAS CUT.
+      A bare "70 per cent outside the Premier League" is true even if eight leagues contribute
+      one season each, so the share alone does not answer the suspicion it is quoted against.
+      The MINIMUM does: no league below this number means the spread is real, in one clause,
+      and it replaced a chart rather than summarising it.
+      IT THROWS IF A LEAGUE EVER DROPS OUT ENTIRELY, because a missing league would make the
+      minimum describe eight leagues while the sentence says nine.  */
+  if (ordered.length !== 9)
+    throw new Error(`the top band spans ${ordered.length} leagues, not 9 , the "no league has fewer than" sentence names nine`);
+  add('elite_league_min', Math.min(...ordered.map(([, n]) => n)),
+      'the smallest number of seasons at 85 or better any one league holds',
+      'min of elite_league_counts. The floor is what makes the 70 per cent meaningful , a share ' +
+      'can hide a long tail of ones and a floor cannot',
+      'derived from the same query as elite_league_counts');
+
   const outsidePL = eliteRows.filter(c => c.league_code !== 'PL').length;
   add('elite_outside_pl_share', Math.round(100 * outsidePL / eliteRows.length),
       'share of seasons at 85 or better from outside the Premier League, per cent',
@@ -471,6 +486,39 @@ async function main() {
   add('ballon_dor_iconic_or_better', bdScores.filter(v => v >= BANDS.iconic).length,
       'of those, the number scoring 90 or better',
       `rt >= ${BANDS.iconic}, same join`, `-- as above, rt >= ${BANDS.iconic}`);
+
+  /*  THE TWO FIGURES THAT MOVED UP BESIDE THE HEADLINE ON 2026-10-02, AND WERE TYPED UNTIL
+      THEN. The page claimed "3 sit inside the twelve highest-scoring seasons" and "70" for
+      Modric with no generator entry behind either , exactly the shape CLAUDE.md records as a
+      claim rather than a measurement.  */
+  const topTwelve = allCards.filter(c => c.rt != null).sort((x, y) => y.rt - x.rt).slice(0, 12);
+  const topTwelveKeys = new Set(topTwelve.map(c => c.api_player_id + '|' + c.season_year));
+  add('ballon_dor_in_top_twelve', bd.filter(r => topTwelveKeys.has(r.api_player_id + '|' + r.season_year)).length,
+      "Ballon d'Or seasons that also sit inside the twelve highest-scoring seasons in the record",
+      'the twelve highest rt values, joined to the Ballon d\'Or rows. Twelve is the Generational ' +
+      'band, which is anchor-pinned, so the denominator is a structural constant',
+      'top 12 by rt, intersected with the ballon_dor honour rows');
+
+  /*  THE NAMED MISS. The page states the one Ballon d'Or season the Index does NOT place in
+      the top three bands, by name and by score, which is the counterweight to the 13 of 14 and
+      is the reason that claim is believable. IT THROWS IF THERE IS NOT EXACTLY ONE , two
+      misses and the sentence is wrong, zero and it is boasting.  */
+  const bdWithScores = bd.map(r => ({ r, v: byPlayerSeason[r.api_player_id + '|' + r.season_year] }))
+                         .filter(x => x.v != null);
+  /*  `BANDS.top3`, NOT `BANDS.worldClass` , the object is { top3, iconic, gen } and the
+      first draft read a property that does not exist, so `v < undefined` was false for all
+      fourteen and the check reported ZERO misses on data containing exactly one. It threw
+      rather than publishing that, which is the guard doing its job on its own author.  */
+  const missed = bdWithScores.filter(x => x.v < BANDS.top3);
+  if (missed.length !== 1)
+    throw new Error(`${missed.length} Ballon d'Or seasons fall below the top three bands, not 1 , the named-miss sentence says "the one the Index misses"`);
+  add('ballon_dor_miss_score', missed[0].v,
+      "the VV Score of the one Ballon d'Or season the Index does not place in its top three bands",
+      'the single ballon_dor row scoring below the 85 band edge. Throws if there is ever ' +
+      'more than one, because the page names it in the singular',
+      'ballon_dor rows with rt < 85');
+  add('ballon_dor_miss_player', missed[0].r.player_name || 'that season',
+      'who it was', 'the same row', 'as above');
 
   const stamp = new Date().toISOString().slice(0, 10);
   const out = {

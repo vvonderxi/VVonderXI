@@ -640,6 +640,29 @@
   body.light .vi-end-h{color:var(--charcoal)}
   body.light .vi-end-a{color:var(--charcoal);border-color:rgba(28,27,26,.20)}
   body.light .vi-end-a.primary{color:#fff}
+
+  /*  THE POINTER LINE. Quiet on purpose , it is a signpost, not a section. No heading above
+      it, because the heading was most of what made the method layer read as documentation.  */
+
+  /*  THE PROOF PAIR , the hit and the miss, same weight, side by side. The miss is NOT dimmed
+      or set smaller: a page that states its counter-example in a quieter voice than its claim
+      is still choosing which one you read.  */
+
+  /*  THE CLOSING LINE OF THE LIMITS SECTION , not a ninth panel, because it is not a limit.
+      It is the disclosure posture itself: the eight above are what the Index cannot do, and
+      this is what happens when we change what it does. Outside the grid so the eight stay
+      eight and their equal weight is not disturbed by a ninth thing of a different kind.  */
+  .vi-lims-f{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--vi-mut);
+    margin:16px 0 0;padding-top:14px;border-top:1px solid var(--vi-line);max-width:70ch}
+  .vi-lims-f b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .vi-proofpair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0 4px}
+  .vi-pp{font-family:'Inter';font-size:14px;line-height:1.6;color:var(--vi-ink);margin:0;
+    padding:15px 17px;border:1px solid var(--vi-line);border-radius:var(--r-lg);background:var(--vi-panel)}
+  .vi-pp b{font-family:'Archivo';font-weight:900;font-size:26px;line-height:1;color:var(--vi-strong);display:block;margin-bottom:7px}
+  @media (max-width:720px){ .vi-proofpair{grid-template-columns:1fr} }
+  .vi-method-ptr{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--vi-mut);
+    margin:26px 0 10px;padding-top:16px;border-top:1px solid var(--vi-line);max-width:62ch}
+  .vi-method-ptr a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   .vi-means{margin:30px 0 8px}
   .vi-means-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.01em;margin:0 0 16px;color:var(--cream)}
   .vi-mrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -742,83 +765,19 @@
       V<span class="vvw">V</span> Score, and a Ballon d&#8217;Or adds nothing at all. They land there anyway, and
       <span data-fig="ballon_dor_iconic_or_better">10</span> of the fourteen at 90.</p>
   </div>
-
-  <h2 class="vi-h2">What it gets right</h2>
-  <p class="vi-h2sub">The Index does not know who these players are. The names arrive afterwards,
-  and they are how we check the scale rather than how we set it.</p>
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g">3</div><div class="l">Sit inside the twelve highest-scoring seasons in the entire record, <b>and nothing was tuned to put them there.</b></div></div>
-    <div class="vi-row"><div class="n p">70</div><div class="l">Luka Modri&#263;&#8217;s 2017/18, the season that won the Ballon d&#8217;Or, and <b>the one the Index misses.</b> That award leaned heavily on a third straight Champions League, which is a team outcome the Index refuses to count. And the Index under-reads deep midfielders: it sees the pass completed, not the position taken that made the pass available. <b>One of those is a choice. The other is a limit.</b></div></div>
+  <!--  THE PROOF'S TWO COMPANIONS, MOVED UP HERE 2026-10-02 FROM THE OLD SPINE.
+        THE MISS SITS IMMEDIATELY UNDER THE HIT, ON PURPOSE. "13 of 14" invites one question ,
+        which one , and answering it in the next breath is what makes the 13 believable. Burying
+        it four screens down was the page arguing against its own posture.
+        BOTH NUMBERS WERE TYPED UNTIL TODAY. The 3, the 70 and the name are generated now, and
+        the miss carries a guard that throws if there is ever more than one , the sentence says
+        "the one the Index misses" and two would make it false.  -->
+  <div class="vi-proofpair">
+    <p class="vi-pp"><b><span data-fig="ballon_dor_in_top_twelve">3</span></b> of them sit inside the twelve highest-scoring seasons in the entire record, and nothing was tuned to put them there.</p>
+    <p class="vi-pp miss"><b><span data-fig="ballon_dor_miss_score">70</span></b> is the fourteenth , <span data-fig="ballon_dor_miss_player">Luka Modric</span>&rsquo;s 2017/18, the season that won the Ballon d&rsquo;Or and the one the Index misses. That award leaned heavily on a third straight Champions League, which is a team outcome the Index refuses to count, and the Index under-reads deep midfielders: it sees the pass completed, not the position taken that made the pass available. One of those is a choice. The other is a limit.</p>
   </div>
 
-  <!--  THE SCORING WALK , the page's centrepiece, and it REPLACES prose rather than sitting
-        beside it. It absorbs "What one number holds": that section ASSERTED four properties of
-        the number (one basis, rarity, own pool, unequal leagues) and the walk DEMONSTRATES two
-        of them , the pool step and the league step , so only the two it cannot show survive
-        below it as rows.
-        EVERY FIGURE IS GENERATED. Twenty-one data-fig spans, produced by re-running the engine
-        over one live card and asserting its rt matches the stored one. A hand-typed 132.9 is
-        precisely the thing this page argues against.
-        NO b-VALUE ANCHORS ARE PRINTED , see the .wk CSS block for why.  -->
-  <h2 class="vi-h2">How a season becomes a number</h2>
-  <p class="vi-h2sub">One real season, read downward. Every figure here comes out of the live
-  record and is regenerated with the page.</p>
 
-  
-
-  
-
-  <h2 class="vi-h2">It rates a season, not a player</h2>
-  <p class="vi-h2sub">A rating rates a person, and a person does not have one number. Across
-  <span data-fig="career_spread_players">4,387</span> players with five or more scored seasons, the
-  median gap between a career&#8217;s best season and its worst is
-  <span data-fig="career_spread_median">37</span> points.</p>
-
-  
-
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g">64</div><div class="l">Points between Eden Hazard&#8217;s best
-    scored season and his worst, <b>against a median of 37.</b></div></div>
-    <div class="vi-row"><div class="n">63<small>15/16</small></div><div class="l">The dip is not decline. It sits <b>in the
-    middle of his best years</b>, between an 83 and an 87, and he went straight back to 87 after.</div></div>
-  </div>
-
-  <h2 class="vi-h2">It tells you how sure it is</h2>
-  <p class="vi-h2sub">Every V<span class="vvw">V</span> Score carries a measured margin of error, and the Index acts on it
-  rather than filing it away. <b>We have not found another football rating that publishes one at all.</b></p>
-
-  <div class="csfig" id="pladFig"
-       data-fig-series="margin_separation_points" data-series="2.8,5.5,10.0,16.1"></div>
-
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="elite_pairs_inside_margin">97</span><small>of elite pairs</small></div><div class="l"><b>When the Index does crown a season, the gap has cleared its own margin of
-    error.</b> At the top of the ladder that is rare: of the
-    <span data-fig="elite_pairs_counted">993,345</span> possible pairings between seasons at 80 or better,
-    this is the share it will not separate. <b>That is not a dodge , it is the difference between
-    a rating that answers every question and one that answers the questions it can.</b></div></div>
-  </div>
-
-  <h2 class="vi-h2">Nine leagues, one ladder</h2>
-  <p class="vi-h2sub">A cross-league index invites one obvious suspicion: that it is a Premier League
-  index wearing nine badges. The 650 seasons at 85 or better come from <b>all nine</b>.</p>
-
-  
-
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n g"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></div><div class="l">Of
-    those 650 seasons were played <b>outside the Premier League.</b> The ladder is one ladder: a
-    season is placed against every other season we can measure, and the league it was played in
-    <b>enters as a weight computed from players who moved</b>, never as a reputation.</div></div>
-  </div>
-
-  <h2 class="vi-h2">It scores the season, not the trophy</h2>
-
-<!--  THE LIMITS SECTION , BUILT 2026-10-01, SHOWN FOR REVIEW BEFORE THE REST OF THE PAGE.
-      THE SCATTERED LIMIT BLOCKS IT REPLACES ARE STILL BELOW AND ARE REMOVED ONCE THIS IS
-      APPROVED. Nothing is deleted yet, deliberately: they are working markup, and tearing
-      them out before the replacement has been looked at leaves no way back but git.
-      Every numeral is a data-fig host owned by gen-index-figures.js. Two panels carry no
-      numeral on purpose , see the CSS note above.  -->
   <section class="vi-lims">
     <h2 class="vi-lims-h">What it will not tell you</h2>
     <p class="vi-lims-s">Eight things the Index cannot see, or has decided not to count. Each one is on every card it affects.</p>
@@ -848,7 +807,8 @@
         <p class="vl-c">It rates a season, not a player. Across <b><span data-fig="career_spread_players">4,387</span></b> players with five or more scored seasons, that is the median gap.</p>
         <p class="vl-w">A rating rates a person, and a person does not have one number. Eden Hazard&rsquo;s best and worst sit 64 points apart, and the dip is in the middle of his best years.</p></div>
     </div>
-  </section>
+        <p class="vi-lims-f"><b>And when we change how something is scored, we publish the movement.</b> The defensive signal was two measures blended into one number. It is one measure now: <b>10,770</b> seasons moved, not one crossed a band, and the biggest single mover was Azpilicueta&rsquo;s 2018, from 70 to 72. We are telling you anyway.</p>
+</section>
 
   <!--  The scattered limit blocks that stood here are REMOVED 2026-10-02 , every one of
         them is now a panel in the consolidated limits section above, with its figure
@@ -882,163 +842,23 @@
       </div>
       <div class="vi-m">
         <span class="vi-mn"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></span>
-        <p class="vi-mc">Of the 650 seasons at 85 or better were played outside the Premier League.</p>
+        <p class="vi-mc">Of the 650 seasons at 85 or better were played outside the Premier League, and <b>no league has fewer than <span data-fig="elite_league_min">17</span></b> of them.</p>
         <p class="vi-mw">It is not a Premier League index wearing nine badges. The ladder is one ladder, and the league a season was played in enters as a weight, not a door.</p>
       </div>
     </div>
   </section>
 
-  <section class="vi-how">
-    <h2 class="vi-how-h">How a score is built</h2>
-    <p class="vi-how-s">The method, for anyone who wants it. None of this is needed to read a card.</p>
+    <!--  THE METHOD LAYER WAS CUT HERE ON 2026-10-02, NOT REDUCED. Six folds under a
+        heading reading "How a score is built" , and the HEADING was most of the problem:
+        a label announcing machinery tells a reader this is a page about machinery, which
+        is not what this page sells. Nothing is lost: the walk and the keeper no-score
+        sentence MOVED to the Playbook in the same change and were verified rendered there
+        first, and four of the six were already on it. One line, no heading, no section.  -->
+  <p class="vi-method-ptr">The method , how a score is built, what each dimension measures, how keepers are read , is on <a href="playbook.html">the Playbook</a>.</p>
 
-    <details class="vi-fold"><summary>One real season, step by step</summary>
-      <div class="vi-foldb"><div class="wk">
-    <div class="wkhead">
-      <div class="wkwho"><span data-fig="walk_player">Mohamed Salah</span>
-        <small><span data-fig="walk_season">24/25</span> &#183; read against other
-        <span data-fig="walk_pool">Winger</span> seasons</small></div>
-      <div class="wkin">
-        <div><b><span data-fig="walk_goals">29</span></b>goals</div>
-        <div><b><span data-fig="walk_assists">18</span></b>assists</div>
-        <div><b><span data-fig="walk_minutes">3,377</span></b>minutes</div>
-      </div>
-    </div>
-
-    <div class="wkstep"><div class="wkn">1</div>
-      <div class="wkl">Output becomes one figure , each assist at <b>0.7</b>, a fifth off each of his
-        <span data-fig="walk_pens">9</span> penalties.</div>
-      <div class="wkv"><span data-fig="walk_gaw">39.62</span><small>output</small></div></div>
-
-    <div class="wkstep"><div class="wkn">2</div>
-      <div class="wkl">Divided by minutes, not matches, so <b>a half season and a full one become
-        comparable.</b></div>
-      <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
-
-    <div class="wkstep"><div class="wkn">3</div>
-      <div class="wkl">Then ranked twice , <b>once among wingers</b>, once against every outfielder.
-        <div class="wkpair">
-          <div class="wkp"><span><span data-fig="walk_pool">Winger</span> pool</span>
-            <b><span data-fig="walk_pct_pool_rate">99.1</span> rate &#183;
-               <span data-fig="walk_pct_pool_vol">99.9</span> volume</b></div>
-          <div class="wkp"><span>Every outfielder</span>
-            <b><span data-fig="walk_pct_all_rate">99.6</span> rate &#183;
-               <span data-fig="walk_pct_all_vol">100</span> volume</b></div>
-        </div>
-      </div>
-      <div class="wkv wkarrow">&#8595;</div></div>
-
-    <div class="wkstep"><div class="wkn">4</div>
-      <div class="wkl">Blended, pool first, with the <b>raw size</b> of the output beside it ,
-        <span data-fig="walk_rank_term">64.7</span> for rank,
-        <span data-fig="walk_vol_term">68.2</span> for volume.</div>
-      <div class="wkv"><span data-fig="walk_perf">132.9</span><small>performance</small></div></div>
-
-    <div class="wkstep"><div class="wkn">5</div>
-      <div class="wkl">Availability is added, on a curve that <b>stops rewarding minutes long before
-        the last one.</b></div>
-      <div class="wkv">+&#8201;<span data-fig="walk_avail">27</span><small>availability</small></div></div>
-
-    <div class="wkstep"><div class="wkn">6</div>
-      <div class="wkl">And the league is weighted , <b>not by reputation, but from players who moved
-        between them.</b> The Premier League is the baseline.</div>
-      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">1</span><small>league</small></div></div>
-
-    <div class="wkstep"><div class="wkn">7</div>
-      <div class="wkl">Which assembles to one figure, on a scale nobody sees.</div>
-      <div class="wkv"><span data-fig="walk_b">120</span><small>assembled</small></div></div>
-
-    <div class="wkout">
-      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
-        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
-      <div class="wkrt"><span data-fig="walk_rt">95</span></div>
-    </div>
-  </div><p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
-  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
-  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
-  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
-  shown beside the score, never inside it.</p></div></details>
-
-    <details class="vi-fold"><summary>Why it rates a season and not a career</summary>
-      <div class="vi-foldb"><div class="csfig" id="csFig"
-       data-fig-series="career_spread_hazard" data-series="58,85,71,82,83,63,87,81,90,51,53,26"
-       data-fig-series-years="career_spread_hazard_years"
-       data-years="10/11,11/12,12/13,13/14,14/15,15/16,16/17,17/18,18/19,19/20,20/21,21/22"></div></div></details>
-
-    <details class="vi-fold"><summary>What the record holds, and from when</summary>
-      <div class="vi-foldb"><div class="vi-fig">
-    <div class="vi-tl">
-      <div class="vi-tl-track">
-        <div class="vi-tl-seg vi-tl-early" style="width:33.3%"><span>Goals, assists, minutes</span></div>
-        <div class="vi-tl-seg vi-tl-full" style="left:33.3%;right:0"><span>+ shots, passes, duels, dribbles</span></div>
-      </div>
-      <button type="button" class="vi-tl-mk" style="left:26.7%" data-k="pl" aria-label="2014/15, the Premier League"></button>
-      <button type="button" class="vi-tl-mk" style="left:33.3%" data-k="all" aria-label="2015/16, every other league"></button>
-      <button type="button" class="vi-tl-mk" style="left:66.7%" data-k="bel" aria-label="2020/21, Belgium"></button>
-    </div>
-    <div class="vi-tl-ends"><span>2010/11</span><span>2025/26</span></div>
-    <div class="vi-tl-key">
-      <div class="vi-segkey"><i class="sq e"></i><span><b>To 2015/16</b> , goals, assists and minutes.</span></div>
-      <div class="vi-segkey"><i class="sq f"></i><span><b>From 2015/16</b> , shots, passes, duels and dribbles as well.</span></div>
-    </div>
-    <!--  THE BOUNDARIES ANSWER WHEN ASKED. Three marks, three different stories, and the
-          caption below is the one that changes , a reader who wants the detail taps for it and
-          a reader who does not is not made to read three footnotes. The default text is the
-          claim the figure is making; the rest are answers. -->
-    <p class="vi-figcap" id="tlNote">Every league runs the whole way. <b>The detail does not.</b> A
-      season before its league&#8217;s mark is scored on goals, assists and minutes, and the card
-      says so rather than filling the gap.</p>
-    <!--  THE BOUNDARIES ARE NAMED IN THE OPEN, NOT BEHIND THE HOVER (2026-09-17).
-          The three marks sit at 26.7%, 33.3% and 66.7%, so two of them are 6.6% apart ,
-          51px on a 774px track , and neither carried a visible label. A reader had to
-          discover the hover to learn that anything had happened at all, and then had to
-          tell two near-touching marks apart to learn WHICH thing.
-          Naming the three years in one static line answers both without an interaction.
-          THE HOVER IS KEPT AND IS NOW THE DETAIL RATHER THAN THE ONLY ROUTE , the marks
-          still swap #tlNote for the fuller sentence, which is the design the comment
-          below describes. The instruction line is gone because the information it was
-          pointing at is now on the page.  -->
-    <p class="vi-tlwhen">Detail begins <b>2014/15</b> Premier League <i>·</i> <b>2015/16</b>
-      every other league <i>·</i> <b>2020/21</b> Belgium</p>
-  </div></div></details>
-
-    <details class="vi-fold"><summary>Why defenders score as they do</summary>
-      <div class="vi-foldb"><div class="dfig" id="defFig"></div></div></details>
-
-    <details class="vi-fold"><summary>The nine leagues, season by season</summary>
-      <div class="vi-foldb"><div class="csfig" id="lgFig"
-       data-fig-series="elite_league_counts" data-series="196,117,101,83,61,36,21,18,17"
-       data-fig-series-names="elite_league_names"
-       data-names="Premier League|La Liga|Serie A|Bundesliga|Ligue 1|Eredivisie|Super Lig|Belgian Pro League|Primeira Liga"></div></div></details>
-    <details class="vi-fold"><summary>How a keeper is measured</summary>
-      <div class="vi-foldb"><div class="vi-gkwrap">
-      <div class="wm-lede">The five dimensions above are outfield measures. A keeper is read on a different set, and his card says so.</div>
-      <div class="wmg-h">What We Measure</div>
-<details class="wmc"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 78 C22 46 34 26 50 20 C66 26 78 46 78 78"/><path d="M22 78 L78 78"/></svg></span>Save percentage</span><span class="wmc-g">Of the shots that reached his goal, the share he kept out.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>It is the one number on a keeper&#8217;s card that is his own work rather than his team&#8217;s, and it is the only thing his ranking is built from.</p><p>A keeper needs a real season behind him before we will rank it: 800 minutes and 60 shots faced. Below either, the card says he was not scored and shows what was recorded instead. A rate over a handful of shots is noise wearing a decimal point.</p></div></details><details class="wmc"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 62 L84 62"/><path d="M32 62 L32 48"/><path d="M56 62 L56 34"/><path d="M80 62 L80 22"/></svg></span>He is ranked against keepers, and nobody else</span><span class="wmc-g">A save rate means nothing set beside a striker&#8217;s numbers.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>The ladder places a keeper against every other keeper we can measure, which is what makes the percentile mean something. Ranking him in the general population would be arithmetic without a question behind it.</p><p>That pool starts in 2015, because that is when shot data starts. Before it the record holds his minutes and his starts and nothing more, and the card says so rather than filling the gap with a guess.</p></div></details>      <div class="wmg-h neutral">Where We Cannot See</div>
-<details class="wmc neutral"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="50" r="30"/><path d="M50 20 L50 80"/><path d="M20 50 L80 50"/></svg></span>Shots faced is context, not credit</span><span class="wmc-g">How busy a keeper was is a fact about the team in front of him.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>A keeper behind a poor defence faces more shots and makes more saves, and neither fact says he kept goal well. Volume tracks the weakness of the side, near enough one for one.</p><p>So the saved-and-conceded bar is drawn plainly, in ink rather than in the colour the score uses, and the number of shots sits beneath it as context. It is there to tell you what kind of season it was, never to argue that it was a good one.</p></div></details><details class="wmc neutral"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="58" r="14"/><path d="M22 30 L78 30"/><path d="M22 30 L22 44"/><path d="M78 30 L78 44"/></svg></span>Penalties saved is a fact, not a score</span><span class="wmc-g">We count them. We cannot count how many he faced.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>Stopping a penalty is genuinely the keeper&#8217;s own act, so it is stated on his card. But a count with no denominator is not a rate, and scoring it would reward whoever happened to face the most.</p><p>So it stays a stated figure and is kept out of the number. Tested as a scoring term it promoted keepers with a lucky night and demoted the best save rate in the record, which is the whole argument against it.</p></div></details><details class="wmc neutral"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 50 C28 28 72 28 86 50 C72 72 28 72 14 50Z"/><path d="M20 80 L80 20"/></svg></span>We record whether a shot was saved, never how hard it was</span><span class="wmc-g">Twenty close-range chances and twenty from distance score the same here.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>There is nothing in the record that tells a tap-in from a top corner, so save percentage separates keepers partially and not fully. We would rather say that than let the rate imply a precision it does not have.</p><p>Nor does anything here measure distribution, command of the area or sweeping. A keeper who reads danger before it arrives and one who waits on his line are, to us, the same keeper. That is a limit of the record, not a judgement on either of them.</p></div></details><details class="wmc closing"><summary><span class="wmc-t"><span class="picon"><svg class="pi" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 34 L80 34"/><path d="M50 34 L50 78"/><path d="M32 78 L68 78"/></svg></span>And a keeper carries no score at all</span><span class="wmc-g">A keeper&#8217;s card shows no V<span class="vvw">V</span> Score, because the Index cannot yet earn one.</span><span class="wmc-more"><span class="wmc-chev">&#8964;</span></span></summary><div class="wmc-b"><p>The V<span class="vvw">V</span> Index does not yet weigh goalkeeping. The engine still holds a number for every keeper, capped at 75 and built from minutes played and the strength of his league rather than from anything he did with his hands.</p><p>That is why no card shows it. A number that cannot move would read as a verdict on the keeper rather than as a boundary of the platform, and it would sit directly above a save-rate ladder measuring something else entirely. What his card carries instead is his save rate against other keepers, and the figures it was built from.</p><p>The held number has not stopped working, though, and one place still shows its effect: <strong>keepers appear in ranked lists in the order it gives them, while no card prints it.</strong> The ordering is visible and the number behind it is not, so it is named here rather than left for a reader to infer. Lifting the cap is a change to the engine, not to the card.</p></div></details>
-  </div></div></details>
-  </section>
 
   
 
-  <h2 class="vi-h2">It answers to every season beside it</h2>
-  <p class="vi-h2sub">A score is a standing, not a mark out of ten, so it answers to every season
-  measured beside it.</p>
-  <div class="vi-rows">
-    <div class="vi-row"><div class="n"><span data-fig="cards_on_a_band_edge">878</span><small>cards</small></div><div class="l">Sit within a single point of a band edge , <b><span data-fig="cards_on_a_band_edge_share">1.61</span>% of every scored season.</b> They are the ones a growing record can move.</div></div>
-  </div>
-
-  <div class="vi-close">
-    <p>We changed how defenders are scored. 10,770 seasons moved. Not one crossed a band, and we
-      are telling you anyway.</p>
-    <p class="s">The defensive signal was two measures blended into one number. It is one measure
-      now, and the biggest single mover was Azpilicueta's 2018, from 70 to 72.</p>
-  </div>
-      <!--  ONE ENDING, 2026-10-02. There were THREE , idx-ctas, vi-foot and vi-cta , about 400px
-      and 85 words between them, and a page that ends three times does not know what it wants.
-      NOTHING WAS DROPPED, the three were merged: the two routes, the pointer to the Playbook
-      for the vocabulary, and the invitation to check the figures. That last one is not filler,
-      it is the posture the whole page argues for, so it survives as a line rather than a block.  -->
   <section class="vi-end">
     <h2 class="vi-end-h">Now go and settle something.</h2>
     <div class="vi-end-row">

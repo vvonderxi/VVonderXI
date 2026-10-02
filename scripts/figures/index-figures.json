@@ -151,6 +151,13 @@
       "query": "as above"
     },
     {
+      "key": "elite_league_min",
+      "value": 17,
+      "claim": "the smallest number of seasons at 85 or better any one league holds",
+      "definition": "min of elite_league_counts. The floor is what makes the 70 per cent meaningful , a share can hide a long tail of ones and a floor cannot",
+      "query": "derived from the same query as elite_league_counts"
+    },
+    {
       "key": "elite_outside_pl_share",
       "value": 70,
       "claim": "share of seasons at 85 or better from outside the Premier League, per cent",
@@ -324,6 +331,27 @@
       "claim": "of those, the number scoring 90 or better",
       "definition": "rt >= 90, same join",
       "query": "-- as above, rt >= 90"
+    },
+    {
+      "key": "ballon_dor_in_top_twelve",
+      "value": 3,
+      "claim": "Ballon d'Or seasons that also sit inside the twelve highest-scoring seasons in the record",
+      "definition": "the twelve highest rt values, joined to the Ballon d'Or rows. Twelve is the Generational band, which is anchor-pinned, so the denominator is a structural constant",
+      "query": "top 12 by rt, intersected with the ballon_dor honour rows"
+    },
+    {
+      "key": "ballon_dor_miss_score",
+      "value": 70,
+      "claim": "the VV Score of the one Ballon d'Or season the Index does not place in its top three bands",
+      "definition": "the single ballon_dor row scoring below the 85 band edge. Throws if there is ever more than one, because the page names it in the singular",
+      "query": "ballon_dor rows with rt < 85"
+    },
+    {
+      "key": "ballon_dor_miss_player",
+      "value": "Luka Modric",
+      "claim": "who it was",
+      "definition": "the same row",
+      "query": "as above"
     }
   ]
 }
