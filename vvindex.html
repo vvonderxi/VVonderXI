@@ -856,6 +856,25 @@
   body.light .vi-how-h{color:var(--charcoal)}
   body.light .vi-fold>summary{color:var(--charcoal)}
   @media (max-width:720px){ .vi-how-h{font-size:19px} }
+  /*  THREE MEASURES, ASSIGNED BY WHAT A BLOCK IS , 2026-10-02. Measured before: SIX of the
+      seven blocks below the hero were EXACTLY 820px wide and the seventh, the pointer line,
+      was already narrowed to 528. So the page had one variation and it was the right one;
+      what it lacked was the other end.
+      THE RULE IS KIND, NOT IMPORTANCE , the same rule the limits panels follow:
+        a STATEMENT breaks the column        .vi-bleed   980   the pull-quote, the ending
+        a WORKING block keeps the measure                820   proof pair, limits, means, capture
+        an ASIDE sits inside it                          528   the method pointer
+      THE LIMITS SECTION DELIBERATELY DOES NOT BLEED, though it is the page's substance. It is
+      the part a reader READS rather than looks at, so it keeps the reading measure , and the
+      two bleeds bracket it, which is what makes the long middle legible as a middle.
+      BOTH OR NEITHER: widening only the pull-quote would promise a varying rhythm at 366px
+      and then deliver nothing for the next two thousand, which is worse than not varying.
+      THE BREAK-OUT IS BOUNDED BY THE COLUMN'S OWN MARGINS, so it is withdrawn before it can
+      collide: the gutter is (viewport - 84 spine - 916) / 2, which falls under 80px at about
+      1160, and the query turns the bleed off at 1200. Swept 320 to 1920 for overflow.  */
+  .vi-bleed{width:calc(100% + 160px);margin-inline:-80px}
+  @media (max-width:1200px){ .vi-bleed{width:100%;margin-inline:0} }
+
   .vi-lims{margin:26px 0 10px}
   .vi-lims-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.01em;margin:0 0 7px;color:var(--cream)}
   .vi-lims-s{font-family:'Inter';font-size:15px;line-height:1.55;color:var(--ink-soft);margin:0 0 20px;max-width:56ch}
@@ -957,7 +976,7 @@
     <div class="hero"><h1>The <span class="b">VV</span> Index.</h1><div class="hero-tag">One number for a season, so any two can be argued about on the same terms</div><div class="vh-cap">Across nine leagues and sixteen years</div><div class="vh-beats"><span>No favourites,</span><span>no nostalgia,</span><span>no hiding place.</span></div><div class="vh-thesis">Only what was earned.</div></div>
     <div class="idxwrap">
 
-  <div class="vi-pq">
+  <div class="vi-pq vi-bleed">
     <span class="n"><span data-fig="ballon_dor_top_three_bands">13</span> of <span data-fig="ballon_dor_seasons">14</span></span>
     <p class="t">Ballon d&#8217;Or seasons the Index puts in its top three bands.</p>
     <p class="s">It has never seen an award. No honour, team or individual, adds a single point to a
@@ -1112,7 +1131,7 @@
     <p class="vi-cap-fine">One email, once. No list, no follow-ups.</p>
   </section>
 
-  <section class="vi-end">
+  <section class="vi-end vi-bleed">
     <h2 class="vi-end-h">Now go and settle something.</h2>
     <div class="vi-end-row">
       <a class="vi-end-a" href="rankings.html">The Rankings</a>
