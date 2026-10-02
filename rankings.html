@@ -103,14 +103,29 @@
   .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
 
   /* hero , editorial, lots of air */
-  .hero{padding:30px 48px 6px;max-width:1680px}
+  /*  THE CONTENT COLUMN CENTRES , 2026-10-02, the same decision taken on vvindex in the same
+      commit, which is what SS D's "decide ONE rule for both and apply it together" asked for.
+      This page was internally consistent and lopsided: hero and gridwrap both flush left at
+      1680, leaving 141px dead on the right at 1920 and nothing on the left. It only READ as
+      centred because 1680 is wide enough that the gap is small.
+      THE MEASURE STAYS 1680 AND IS NOT ALIGNED WITH vvindex's 916. A card grid and a reading
+      column want different widths; the shared rule is to centre, never the number.
+      `.topline` is excluded here for the same reason as there , it is edge chrome.
+      AND `width:100%` IS LOAD-BEARING, NOT TIDINESS. `.canvas` is a COLUMN flex container, and
+      an auto inline margin on a flex item DISABLES the default `align-items:stretch`, so the
+      box shrink-to-fits its content instead of filling to `max-width`. Measured without it:
+      the rankings hero collapsed from 1680 to 511 and the grid to 1232, while the margins
+      came out perfectly balanced , so a check that asked "are the two margins equal" returned
+      TRUE on a broken layout. Assert the WIDTH, not the symmetry.
+  */
+  .hero{padding:30px 48px 6px;width:100%;max-width:1680px;margin-inline:auto}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:46px;line-height:1.02;letter-spacing:-0.02em}
   .hero h1 .b{color:var(--pink-ink)}
   .hero .lede{font-family:'Bricolage Grotesque';font-weight:600;font-size:22px;line-height:1.2;color:rgba(243,237,224,0.9);max-width:620px;margin-top:2px;letter-spacing:-0.01em}
   .hero .lede .b{color:var(--pink-ink)}
 
   /* the rankings grid , generous, never crammed (premium = space) */
-  .gridwrap{padding:30px 48px 60px;max-width:1680px}
+  .gridwrap{padding:30px 48px 60px;width:100%;max-width:1680px;margin-inline:auto}
   .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:11px 14px;margin-bottom:14px}
   .ranksearch svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   .ranksearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}

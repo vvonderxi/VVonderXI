@@ -102,7 +102,26 @@
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
   .avatar svg{height:42px;width:auto;display:block}
   .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
-  .hero{padding:34px 48px 8px;max-width:1240px}
+  /*  ONE CONTENT COLUMN , 2026-10-02. The page had TWO left edges: `.idxwrap` has been
+      centred at 916 all along, while `.hero` sat flush left at 1240 with no auto margin, so
+      the headline's left edge was at x84 and every word beneath it at x537 , 453px apart,
+      measured. That gap is what reads as dead ground beside the lower half of the page: the
+      body is centred and the thing introducing it is not.
+      THE RULE IS THE CONTENT COLUMN CENTRES AND THE CHROME STAYS AT THE EDGES. `.topline` is
+      deliberately NOT included: it is `justify-content:space-between` holding the breadcrumb
+      against the theme toggle and the avatar, so centring it would pull both controls off
+      the corners they belong in.
+      THE MEASURE IS NOT SHARED WITH rankings AND MUST NOT BE , a reading column and a card
+      grid have different correct widths (916 against 1680). What is shared is the decision
+      to centre, which is the SS D item asking for one rule across both surfaces.
+      AND `width:100%` IS LOAD-BEARING, NOT TIDINESS. `.canvas` is a COLUMN flex container, and
+      an auto inline margin on a flex item DISABLES the default `align-items:stretch`, so the
+      box shrink-to-fits its content instead of filling to `max-width`. Measured without it:
+      the rankings hero collapsed from 1680 to 511 and the grid to 1232, while the margins
+      came out perfectly balanced , so a check that asked "are the two margins equal" returned
+      TRUE on a broken layout. Assert the WIDTH, not the symmetry.
+  */
+  .hero{padding:34px 48px 8px;width:100%;max-width:916px;margin-inline:auto}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:44px;line-height:1.02;letter-spacing:-0.02em}
   .hero h1 .b{color:var(--pink-ink)}
   /*  THE HERO LINE IS THREE KINDS OF SENTENCE AND USED TO BE ONE GREY PARAGRAPH , 2026-10-02.
@@ -174,7 +193,7 @@
       figure rendered 1,584px wide. That is not a styling nicety , a 200-character
       measure is most of why the page still read as an essay after the word count came
       down. 916 = 820 of content plus the 48px padding either side.  */
-  .idxwrap{padding:20px 48px 60px;max-width:916px;margin-inline:auto}
+  .idxwrap{padding:20px 48px 60px;width:100%;max-width:916px;margin-inline:auto}
   .idx-hero{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.08),transparent 60%);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r-lg);padding:36px 40px;margin-bottom:34px}
   body.light .idx-hero{border-color:rgba(0,0,0,0.06);background:radial-gradient(120% 80% at 0% 0%,rgba(255,92,122,0.06),transparent 60%)}
   .idx-num{position:relative;display:flex;flex-direction:column;align-items:center}
@@ -1055,7 +1074,7 @@
         copy and never made. The copy here does not promise a send, and the button says when.  -->
   <section class="vi-cap">
     <h2 class="vi-cap-h">There is more to this than one page can hold</h2>
-    <p class="vi-cap-b">We are setting the whole argument down properly, at length. <b>It is not finished.</b> Leave an address and it comes to you the day it is.</p>
+    <p class="vi-cap-b">The whole argument, at length: how the scale was built, and where it gives way. <b>We will send it the day it is done.</b> Leave an address.</p>
     <div class="vi-cap-f" id="viCapForm">
       <input type="email" id="viCapEmail" placeholder="you@email.com" aria-label="Email address">
       <button type="button" onclick="viCapSend()">Send it when it's ready</button>
