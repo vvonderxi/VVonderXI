@@ -652,6 +652,41 @@
       It is the disclosure posture itself: the eight above are what the Index cannot do, and
       this is what happens when we change what it does. Outside the grid so the eight stay
       eight and their equal weight is not disturbed by a ninth thing of a different kind.  */
+
+  /*  FORM FOLLOWS THE KIND OF CONTENT, NEVER ITS IMPORTANCE , ruled 2026-10-02.
+      A panel gets more room because it holds a MECHANISM TO SHOW or an ABSENCE that needs
+      space to read as deliberate, not because it matters more. The test that keeps it honest:
+      would this form be given to a DULLER panel carrying the same kind of content? If no, it
+      is a hierarchy and it goes back in the grid.
+      WHAT DOES NOT VARY, AND THIS IS THE PART OF THE EQUAL-WEIGHT RULE DOING THE WORK:
+      ground, ink, type scale and reading order are identical across all eight. Those are the
+      hierarchy signals. Cell width and word count are not , provided the shortest panel is
+      never also the quietest, which is why `.short` changes nothing but how much is in it.  */
+  .vl.wide{grid-column:1 / -1}
+  /*  `.short` CHANGES HOW MUCH IS IN A PANEL AND NOTHING ELSE , AND THE FIGURE IS WHY IT STILL
+      READS AS EQUAL. The keeper panel is 20 words against the defender panel's 71, by far the
+      smallest thing in the section, and the ONLY thing holding it at equal weight is that it
+      keeps the full 42px display numeral. Measured in isolation, every panel alone on screen:
+      it survives, and it survives on the numeral.
+      SO DO NOT SHRINK A SHORT PANEL'S FIGURE TO SUIT ITS LENGTH. It is the obvious tidy , a
+      small panel with a big number looks unbalanced in a mockup , and it is the one change that
+      turns a short limit into a footnote. If this panel ever reads as an afterthought, check the
+      figure size before anything else.  */
+  .vl.short .vl-c{margin-top:9px}
+  /*  THE DRAWING , recorded against not recorded, which is the whole limit in two rows. It is
+      DECORATIVE and aria-hidden: the sentence beneath it says the same thing, so a reader who
+      cannot see it loses nothing.  */
+  .vl-draw{margin:13px 0 2px;border-top:1px solid rgba(243,237,224,.10);border-bottom:1px solid rgba(243,237,224,.10)}
+  .vl-dr{display:flex;align-items:center;gap:12px;padding:9px 0;font-family:'Inter';font-size:13.5px;color:var(--vi-ink)}
+  .vl-dr+.vl-dr{border-top:1px solid rgba(243,237,224,.07)}
+  .vl-dl{flex:1 1 auto;min-width:0}
+  .vl-dm{flex:0 0 auto;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--vi-strong);border:1px solid rgba(243,237,224,.22);
+    border-radius:var(--r-pill);padding:4px 11px}
+  .vl-dr.off .vl-dm{color:var(--vi-mut);border-style:dashed;opacity:.75}
+  body.light .vl-draw{border-top-color:rgba(28,27,26,.12);border-bottom-color:rgba(28,27,26,.12)}
+  body.light .vl-dr+.vl-dr{border-top-color:rgba(28,27,26,.08)}
+  body.light .vl-dm{border-color:rgba(28,27,26,.22)}
   .vi-lims-f{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--vi-mut);
     margin:16px 0 0;padding-top:14px;border-top:1px solid var(--vi-line);max-width:70ch}
   .vi-lims-f b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
@@ -780,29 +815,42 @@
 
   <section class="vi-lims">
     <h2 class="vi-lims-h">What it will not tell you</h2>
-    <p class="vi-lims-s">Eight things the Index cannot see, or has decided not to count. Each one is on every card it affects.</p>
+    <!--  THE STANDFIRST IS A LINE, NOT A LIST LABEL. It read "Eight things the Index cannot
+         see, or has decided not to count" , which announces a structure instead of saying
+         something, and counts the panels for a reader who can see there are eight.
+         THE TURN IS THE POINT: cannot do against will not. Four of these are limits of
+         what football records and four are decisions we took, and that distinction is the
+         most honest thing the section can open on. 7 / 4 / 9 words , short, shorter, short.  -->
+    <p class="vi-lims-s">Some of these the Index cannot do. Some it will not. Every one is on the card it affects.</p>
     <div class="vl-grid">
       <div class="vl"><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
-        <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one of them moves a score by a single point.</p>
-        <p class="vl-w">A medal is a team&rsquo;s outcome with one player&rsquo;s name on it. The Index scores the season he played, not the one his club had. Individual awards are no different: the score is finished before the vote happens.</p></div>
-      <div class="vl nofig"><span class="vl-n">Goals and assists are recorded everywhere, and back to 2010. Defending is not.</span>
-        <p class="vl-c">So the scale tilts toward attacking output, because that is where the evidence is.</p>
-        <p class="vl-w">We say so rather than claiming a balance the record cannot support. There is no number in this panel because there is no honest one to put here.</p></div>
+        <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one moves a score by a point.</p>
+        <p class="vl-w">A medal is a team&rsquo;s outcome with one player&rsquo;s name on it. The score is finished before the vote happens.</p></div>
+      <div class="vl nofig wide"><span class="vl-n">Goals and assists are recorded everywhere, and back to 2010. Defending is not.</span>
+        <p class="vl-c">The scale tilts toward attack, because that is where the evidence is.</p>
+        <!--  THESE TWO SENTENCES STAY TWO. "There is no number in this panel. There is no honest
+             one to put here." , joining them into one clause with "because" is the softening
+             this rewrite exists to undo, and it is the obvious edit for anyone tidying prose.  -->
+        <p class="vl-w">There is no number in this panel. There is no honest one to put here.</p></div>
       <div class="vl"><span class="vl-n"><span data-fig="cards_with_detail">38,928</span><small>seasons with the full record</small></span>
         <p class="vl-c">The other <b><span data-fig="cards_no_detail">19,138</span></b> are scored on goals, assists and minutes alone, and every one of their cards says so.</p>
         <p class="vl-w">Shots, passes, duels and dribbles begin in 2015/16. Penalties enter the record in 2015: a taker before then is scored without them, and nothing on his card pretends otherwise.</p></div>
-      <div class="vl"><span class="vl-n"><span data-fig="elite_centrebacks">0</span><small>centre-backs in the top band</small></span>
+      <div class="vl wide drawn"><span class="vl-n"><span data-fig="elite_centrebacks">0</span><small>centre-backs in the top band</small></span>
         <p class="vl-c">Not one of the 650 seasons at 85 or better was played by a centre-back. Three were played by defenders at all, and all three are full-backs.</p>
+        <div class="vl-draw" aria-hidden="true">
+          <div class="vl-dr"><span class="vl-dl">He makes the tackle</span><span class="vl-dm">recorded</span></div>
+          <div class="vl-dr off"><span class="vl-dl">He makes the tackle unnecessary</span><span class="vl-dm">&mdash;</span></div>
+        </div>
         <p class="vl-w">He makes the tackle and it is recorded. He makes the tackle unnecessary and nothing is. The best defenders score below their reputation , Van Dijk sits in the low seventies , and we publish that with the reason rather than quietly moving him.</p></div>
       <div class="vl nofig"><span class="vl-n">A high score is checked. A low one is an estimate.</span>
-        <p class="vl-c">Positions are verified by hand near the top of the ladder and get coarser below it.</p>
-        <p class="vl-w">We can tell you how many seasons resolve to a specific position. We cannot tell you how many of those a person checked, because that was never recorded separately , so this one stays a statement rather than a measurement.</p></div>
-      <div class="vl"><span class="vl-n"><span data-fig="keeper_seasons">4,315</span><small>keeper seasons, read differently</small></span>
-        <p class="vl-c">Goalkeepers are not on this scale at all. The five dimensions are outfield measures.</p>
-        <p class="vl-w">A keeper&rsquo;s work is kept out of the same ladder because almost nothing about it is recorded the way outfield play is. His card says which measure it is using.</p></div>
+        <p class="vl-c">Positions are verified by hand near the top of the ladder and get coarser below.</p>
+        <p class="vl-w">We cannot tell you how many were checked. Nobody recorded that.</p></div>
+      <div class="vl short"><span class="vl-n"><span data-fig="keeper_seasons">4,315</span><small>keeper seasons, read differently</small></span>
+        <p class="vl-c">Goalkeepers are not on this scale at all.</p>
+        <p class="vl-w">Almost nothing a keeper does is recorded the way outfield play is.</p></div>
       <div class="vl"><span class="vl-n"><span data-fig="cards_on_a_band_edge">878</span><small>cards on a band edge</small></span>
         <p class="vl-c">A score is a standing, not a mark out of ten. These sit within a single point of a boundary.</p>
-        <p class="vl-w">Two seasons either side of a line are closer than the labels make them look, and the Index says so rather than letting the label do the arguing.</p></div>
+        <p class="vl-w">Either side of a line, two seasons are closer than the labels make them look.</p></div>
       <div class="vl"><span class="vl-n"><span data-fig="career_spread_median">37</span><small>points, best season to worst</small></span>
         <p class="vl-c">It rates a season, not a player. Across <b><span data-fig="career_spread_players">4,387</span></b> players with five or more scored seasons, that is the median gap.</p>
         <p class="vl-w">A rating rates a person, and a person does not have one number. Eden Hazard&rsquo;s best and worst sit 64 points apart, and the dip is in the middle of his best years.</p></div>
@@ -842,8 +890,8 @@
       </div>
       <div class="vi-m">
         <span class="vi-mn"><span data-fig="elite_outside_pl_share">70</span><small>per cent</small></span>
-        <p class="vi-mc">Of the 650 seasons at 85 or better were played outside the Premier League, and <b>no league has fewer than <span data-fig="elite_league_min">17</span></b> of them.</p>
-        <p class="vi-mw">It is not a Premier League index wearing nine badges. The ladder is one ladder, and the league a season was played in enters as a weight, not a door.</p>
+        <p class="vi-mc">Of the 650 seasons at 85 or better were played outside the Premier League. No league has fewer than <b><span data-fig="elite_league_min">17</span></b>.</p>
+        <p class="vi-mw">It is not a Premier League index wearing nine badges. The league a season was played in enters as a weight, not a door.</p>
       </div>
     </div>
   </section>
