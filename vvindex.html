@@ -412,6 +412,11 @@
     --vi-pqbd:rgba(232,184,75,.30);
     --vi-ctabg:rgba(232,184,75,.10); --vi-ctabd:rgba(232,184,75,.26);
     --vi-goldline:rgba(232,184,75,.35);
+    /*  THE ENDING PLATE CARRIES THE OTHER THEME'S PAGE COLOUR , see the .vi-end comment.
+        These three are the ONLY tokens on the page that do not follow the theme, and that
+        is the whole mechanism: a token that flipped here would un-invert the one block
+        whose job is to be inverted.  */
+    --vi-endbg:var(--cream); --vi-endink:#1C1B1A; --vi-endmut:rgba(28,27,26,.70);
   }
   /*  THE TWO LIGHT GOLDS ARE MEASURED, NOT PICKED, and there are two because the
       bars are different. Against this page's light stops #EEF4F6 and #E9E0D0:
@@ -435,6 +440,7 @@
     --vi-pqbd:rgba(168,118,15,.34);
     --vi-ctabg:rgba(232,184,75,.17); --vi-ctabd:rgba(168,118,15,.30);
     --vi-goldline:rgba(122,90,16,.38);
+    --vi-endbg:var(--charcoal); --vi-endink:var(--cream); --vi-endmut:rgba(243,237,224,.72);
   }
   .vi-pq{margin:38px 0 0;padding:30px 30px 28px;border-radius:var(--r-lg);
     background:linear-gradient(150deg,var(--vi-pqbg1),var(--vi-pqbg2) 62%,transparent);
@@ -627,19 +633,68 @@
   /*  MOVEMENT 4 , three ideas, equal weight, gold ground (a strength). `vi-still` marks the
       margin block as exempt from every reveal on the page: uncertainty does not perform.  */
 
-  .vi-end{margin:34px 0 10px;background:rgba(231,4,67,.055);border:1px solid rgba(231,4,67,.20);border-radius:var(--r-lg);padding:22px 24px 24px}
-  .vi-end-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.12;margin:0 0 14px;color:var(--cream)}
-  .vi-end-row{display:flex;gap:10px;flex-wrap:wrap}
-  .vi-end-a{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:var(--r-pill);
-    border:1px solid rgba(243,237,224,.22);background:transparent;color:var(--cream);text-decoration:none;
-    font-family:'Archivo',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:.01em}
-  .vi-end-a.primary{background:var(--pink);border-color:var(--pink);color:#fff}
-  .vi-end-f{font-family:'Inter';font-size:13px;line-height:1.6;color:var(--ink-soft);margin:16px 0 0;max-width:68ch}
+  /*  THE ENDING INVERTS, AND IT IS THE ONLY BLOCK ON THE PAGE THAT DOES , 2026-10-02.
+      IT USED TO BE A PINK-TINTED PANEL WITH OUTLINED BUTTONS AND IT COULD NOT POSSIBLY POP,
+      because the limits section directly above it is EIGHT tinted panels: same device, eight
+      times the mass. No amount of tint wins that, so the ending stops competing on tint and
+      changes KIND instead , a solid plate carrying the OTHER theme's page colour, ink reversed.
+      Dark page, cream plate. Light page, charcoal plate. Figure and ground genuinely swap,
+      which nothing else here does, and the contrast (14.3:1 either way) is the highest on the
+      page by a wide margin.
+      THE PINK IS SPENT ON THE PILL AND NOWHERE ELSE, which is the point: a pink GROUND would
+      have put the page's most saturated colour behind its most saturated control and flattened
+      the one thing the block exists to point at. One pill, one plain link , a page that has
+      just argued for a single conclusion should point at a single door.
+      MEASURED, not assumed, both grounds: plate ink 14.29, the muted footer 5.81 dark / 7.94
+      light, white on the pink pill 4.67. Every one clears AA at body size.  */
+  .vi-end{margin:34px 0 10px;background:var(--vi-endbg);border-radius:var(--r-lg);padding:26px 26px 26px;
+    box-shadow:0 18px 44px -24px rgba(0,0,0,.55)}
+  .vi-end-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(24px,3.4vw,30px);
+    line-height:1.1;letter-spacing:-.015em;margin:0 0 16px;color:var(--vi-endink)}
+  .vi-end-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .vi-end-a{display:inline-flex;align-items:center;min-height:46px;padding:0 24px;border-radius:var(--r-pill);
+    background:var(--pink);color:#fff;text-decoration:none;
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;letter-spacing:.01em}
+  .vi-end-a:hover{background:#c40039}
+  .vi-end-l{font-family:'Archivo',sans-serif;font-weight:700;font-size:13.5px;color:var(--vi-endink);
+    text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+  .vi-end-f{font-family:'Inter';font-size:13px;line-height:1.6;color:var(--vi-endmut);margin:18px 0 0;max-width:68ch}
   .vi-end-f a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-  body.light .vi-end{background:rgba(231,4,67,.05);border-color:rgba(231,4,67,.20)}
-  body.light .vi-end-h{color:var(--charcoal)}
-  body.light .vi-end-a{color:var(--charcoal);border-color:rgba(28,27,26,.20)}
-  body.light .vi-end-a.primary{color:#fff}
+
+  /*  THE CAPTURE , its own block, deliberately NOT folded into the ending above. The ending
+      says "go and use it"; this says "leave something behind", and a block doing both does
+      neither. It is the only thing on the page that collects rather than explains.
+      IT PROMISES NOTHING IT CANNOT SEND. The PDF (item 22, outlined, not built) does not
+      exist, so the copy and the BUTTON LABEL both say so , a form offering a download that
+      cannot arrive is the success-state lie SEC C already forbids, dressed as marketing.
+      The submit path is `mcNotify()` from myclub.html, not a new one: await the fetch, decide
+      on r.ok, and KEEP THE TYPED ADDRESS on screen when it fails.  */
+  .vi-cap{margin:30px 0 0;padding:24px 26px;border-radius:var(--r-lg);
+    border:1px solid var(--vi-line);background:var(--vi-panel)}
+  .vi-cap-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.01em;
+    margin:0 0 9px;color:var(--vi-strong)}
+  .vi-cap-b{font-family:'Inter';font-size:14px;line-height:1.62;color:var(--vi-ink);margin:0;max-width:62ch}
+  .vi-cap-b b{font-weight:600;color:var(--vi-strong)}
+  /*  CAPPED, because an email field 460px wide reads as a search box rather than as one
+      short answer. The cap is the measure of the paragraph above it, not a round number.  */
+  .vi-cap-f{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 0;max-width:430px}
+  .vi-cap-f input{flex:1 1 220px;min-width:0;min-height:46px;padding:0 15px;border-radius:var(--r-md);
+    font:400 14px 'Inter';color:var(--vi-strong);background:var(--vi-panel);
+    border:1px solid var(--vi-line);outline:none}
+  .vi-cap-f input:focus{border-color:var(--pink-ink)}
+  .vi-cap-f input::placeholder{color:var(--vi-mut)}
+  .vi-cap-f button{min-height:46px;padding:0 20px;border-radius:var(--r-pill);border:1px solid var(--vi-strong);
+    background:transparent;color:var(--vi-strong);cursor:pointer;
+    font:800 13px 'Archivo';letter-spacing:.01em}
+  .vi-cap-f button:hover{background:var(--vi-strong);color:var(--page-2)}
+  .vi-cap-f button[disabled]{opacity:.55;cursor:default}
+  .vi-cap-msg{display:none;font-family:'Inter';font-size:13px;line-height:1.55;margin:11px 0 0;max-width:62ch}
+  .vi-cap-msg.show{display:block}
+  .vi-cap-err{color:var(--pink-ink)}
+  .vi-cap-ok{color:var(--vi-strong);font-weight:600}
+  .vi-cap-fine{font-family:'Inter';font-size:11.5px;line-height:1.5;color:var(--vi-mut);margin:11px 0 0}
+  body.light .vi-cap-f button:hover{color:var(--page-1-l)}
+  body.light .vi-cap-f input{background:#fff;border-color:rgba(28,27,26,.14)}
 
   /*  THE POINTER LINE. Quiet on purpose , it is a signpost, not a section. No heading above
       it, because the heading was most of what made the method layer read as documentation.  */
@@ -907,13 +962,29 @@
 
   
 
+  <!--  THE CAPTURE. The PDF is item 22 , outlined in docs/VVINDEX_PDF_OUTLINE.md, approved,
+        and NOT BUILT. Its own governing sentence is "It is sent in reply to a request", which
+        is why this block exists at all: the request mechanism was implied by the artefact's
+        copy and never made. The copy here does not promise a send, and the button says when.  -->
+  <section class="vi-cap">
+    <h2 class="vi-cap-h">The argument, at length</h2>
+    <p class="vi-cap-b">Eight pages, every figure sourced: how the scale was built, what the defensive signal actually measures, and the three places this Index is weakest. <b>It is not finished.</b> Leave an address and you get it the day it is.</p>
+    <div class="vi-cap-f" id="viCapForm">
+      <input type="email" id="viCapEmail" placeholder="you@email.com" aria-label="Email address">
+      <button type="button" onclick="viCapSend()">Send it when it's ready</button>
+    </div>
+    <p class="vi-cap-msg vi-cap-err" id="viCapErr">That did not send. Your address is still above , try again, or write to <a href="contact.html">hello@vvonderxi.com</a>.</p>
+    <p class="vi-cap-msg vi-cap-ok" id="viCapOk">&#10003; Noted. It goes to you the day it is finished, and nothing else does.</p>
+    <p class="vi-cap-fine">One email, once. No list, no follow-ups.</p>
+  </section>
+
   <section class="vi-end">
     <h2 class="vi-end-h">Now go and settle something.</h2>
     <div class="vi-end-row">
-      <a class="vi-end-a primary" href="rankings.html">The Rankings</a>
-      <a class="vi-end-a" href="compare.html">Compare two seasons</a>
+      <a class="vi-end-a" href="rankings.html">The Rankings</a>
+      <a class="vi-end-l" href="compare.html">Or compare two seasons</a>
     </div>
-    <p class="vi-end-f">Every figure here is measured rather than asserted, and every one can be checked , we would rather you did. The words themselves , bands, dimensions, tags, confidence dots , live on <a href="playbook.html">the Playbook</a>. Found a season that reads oddly? <a href="contact.html">Tell us</a>.</p>
+    <p class="vi-end-f">Every figure here is measured rather than asserted, and every one can be checked , we would rather you did. Found a season that reads oddly? <a href="contact.html">Tell us</a>.</p>
   </section>
   
 
@@ -1094,5 +1165,40 @@ document.getElementById('defFig').innerHTML=FIG;
   var fig=document.querySelector('.vi-fig');
   if(fig) fig.addEventListener('mouseleave',clear);
 })();
+
+/*  THE PDF WAITLIST , the same submit path as mcNotify() in myclub.html and iwNotify() in
+    iwonder.html: the SAME Formspree form, the same JSON shape, distinguished only by `source`.
+    Deliberately not a new endpoint and not a new table.
+    AWAIT THE FETCH, THEN DECIDE. fetch() resolves on 4xx and 5xx, so r.ok is the only honest
+    signal and the thanks line may not appear before it is read , SEC C, and the reason that
+    rule exists is that an earlier version of this exact pattern thanked people whose signup
+    was lost. ON FAILURE THE FORM STAYS UP WITH THE ADDRESS STILL IN IT: the typed address is
+    the only copy that exists, so clearing the field on error destroys the thing they were
+    trying to give us. Never clear the input on error.  */
+async function viCapSend(){
+  var el=document.getElementById('viCapEmail'), e=el.value.trim();
+  if(!e||e.indexOf('@')<1){ el.focus(); return; }
+  var btn=document.querySelector('#viCapForm button'),
+      err=document.getElementById('viCapErr'), ok=document.getElementById('viCapOk');
+  err.classList.remove('show');
+  var label=btn.textContent;
+  btn.disabled=true; btn.textContent='Sending...';
+  var sent=false;
+  try{
+    var r=await fetch('https://formspree.io/f/maqzaooq',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email:e, source:'VV Index PDF waitlist'})
+    });
+    sent=r.ok;
+  }catch(_){ sent=false; }
+  btn.disabled=false; btn.textContent=label;
+  if(sent){
+    document.getElementById('viCapForm').style.display='none';
+    ok.classList.add('show');
+  } else {
+    err.classList.add('show');   // form stays up, address stays in the box
+  }
+}
 </script>
 </body></html>
