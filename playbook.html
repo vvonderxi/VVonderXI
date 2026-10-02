@@ -610,9 +610,8 @@
      World Cup are PROTECTED DESIGNS and the same rule that keeps club badges off the
      cards applies. They must eventually be replaced by the custom mark set, which has to
      be THE SAME FAMILY used by the honour tags on the card.
-     THE STRIP ORDER IS RANK ORDER AND IS NOT ARBITRARY: VVonderXI rates INDIVIDUAL
-     SEASONS, so the individual world prize leads, then the team honours, then the
-     individual league honours. ── */
+     THE STRIP ORDER IS PRESTIGE ORDER AND IS NOT ARBITRARY: the individual world prize
+     leads, then the team honours, then the individual league honours. ── */
   .cabwrap{margin-top:4px}
   /*  ── THE HONOURS GRID , SEVEN VISIBLE, NO HERO, NO STRIP (2026-09-09) ──────────────
       WHAT WENT: a hero panel with a floating disc and a mirrored reflection, fed by a strip
@@ -690,11 +689,25 @@
       Both copies were byte-identical, so later-wins made it invisible , which is the whole
       hazard SS C names about comparing CSS by selector. The surviving copy sits with the
       honours-GRID layout comment above, because this block is about the SVG shapes.  */
-  /* SHELVES ARE ORDERED BY RANK AND THE ORDER IS NOT ARBITRARY , do not reshuffle it.
-     VVonderXI rates INDIVIDUAL SEASONS, not teams, so the individual world prize sits alone
-     at the summit: Ballon d'Or. Below it the team honours (World Cup, Champions League,
-     League), then the individual league honours (Player of the Season, Golden Boot, Top
-     Assists). Reading down the cabinet is reading down the ladder. */
+  /* SHELVES ARE ORDERED BY PRESTIGE AND THE ORDER IS NOT ARBITRARY , do not reshuffle it.
+     The individual world prize sits alone at the summit: Ballon d'Or. Below it the team
+     honours (World Cup, Champions League, League), then the individual league honours
+     (Player of the Season, Golden Boot, Top Assists). Reading down the cabinet is reading
+     down the ladder of standing.
+
+     THIS IS A PRESTIGE LADDER AND NOT AN EVIDENTIAL ONE, AND THE DISTINCTION IS LOAD-BEARING
+     , ruled 2026-10-02 after the two orders were found to disagree. `VERDICT_SYSTEM` in
+     api/analyse.js weighs the SAME honours in a DIFFERENT order, because it answers a
+     different question: Ballon d'Or, then the league-wide INDIVIDUAL awards, then the World
+     Cup as the strongest team honour, then UCL and League Title. There an individual honour
+     outranks a team one, because nothing on this platform records a player's share of a
+     trophy, so a team honour says less about HIS season.
+     BOTH ARE CORRECT AND NEITHER IS TO BE RECONCILED WITH THE OTHER. A World Cup is more
+     prestigious than a Golden Boot and tells you less about the player who holds it.
+     THE OLD COMMENT GAVE THIS ORDER AN INDIVIDUAL-SEASONS RATIONALE , "VVonderXI rates
+     individual seasons, not teams" , which is the argument for the PROMPT's order, written
+     above an order that does the opposite. That read as a contradiction and was reported as
+     one. The order never changed; only the reason it states. */
   /* the summit gets the room, it is not stretched across the row */
   /* the cabinet is dark in BOTH themes, like the card face , no body.light repaint */
 
