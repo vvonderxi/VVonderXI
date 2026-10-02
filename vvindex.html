@@ -854,6 +854,28 @@
       WHAT IT COSTS, STATED: visual order can diverge from DOM order (panel 3 moves up one
       slot). Acceptable HERE and not in general , these panels hold no focusable content, so
       there is no tab order to disagree with. Re-check that if a link is ever put in one.  */
+  /*  THE STANDFIRST AND THE CARD SIT SIDE BY SIDE, AND THE CARD STACKS RATHER THAN VANISHING.
+      It is deliberately IN THE FLOW and not in the right-hand margin: that column does not
+      exist at 390, so a card there would be invisible to most readers , which is the whole
+      complaint it was added to answer. Same reason the section rail was refused.
+      The image is capped by HEIGHT, not width, so it keeps its 1.518 rendered ratio (SS C:
+      the face is --cw x 1.397 and the width is clamped by max-width:92%, so reading 1.397
+      off the CSS and sizing an image with it is wrong , this sizes from the capture's own
+      912x1383 instead).  */
+  /*  CENTRED, NOT TOP-ALIGNED. The standfirst is two lines and the card is 250px, so
+      flex-start left ~210px of dead column under the text , the same ragged hole this
+      section's grid was just fixed for. Centring splits it above and below, which reads as
+      the card being set beside the sentence rather than hung off its first line.  */
+  .vi-lims-top{display:flex;gap:30px;align-items:center;margin:0 0 20px}
+  .vi-lims-top .vi-lims-s{margin:0;flex:1 1 auto}
+  .vi-lims-card{margin:0;flex:0 0 auto;line-height:0}
+  .vi-lims-card img{height:250px;width:auto;max-width:100%;border-radius:var(--r-lg);
+    box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
+  @media (max-width:720px){
+    .vi-lims-top{flex-direction:column;gap:18px;align-items:center}
+    .vi-lims-top .vi-lims-s{order:-1}
+    .vi-lims-card img{height:auto;width:232px}
+  }
   .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;grid-auto-flow:row dense}
   .vl{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
   .vl-n{font-family:'Archivo',sans-serif;font-weight:900;font-size:42px;line-height:1;letter-spacing:-.02em;color:var(--cream);display:block}
@@ -970,7 +992,29 @@
          THE TURN IS THE POINT: cannot do against will not. Four of these are limits of
          what football records and four are decisions we took, and that distinction is the
          most honest thing the section can open on. 7 / 4 / 9 words , short, shorter, short.  -->
-    <p class="vi-lims-s">Some of these the Index cannot do. Some it will not. Every one is on the card it affects.</p>
+    <!--  THE CARD IS EVIDENCE, NOT DECORATION, AND THAT IS WHY IT IS THIS CARD , 2026-10-02.
+          The page explains cards for four thousand pixels and never showed one. This one is
+          Van Dijk 18/19, and the section NAMES HIM four panels down ("Van Dijk sits in the
+          low seventies"): the card reads 72. He is a CENTRE-BACK, which is the panel saying
+          none of them reach the top band. And he carries an INDIVIDUAL award beside a team
+          one on a card scoring 72, which is the panel saying 913 honours move nothing. One
+          card, evidence for three of the eight.
+          IT IS A STATIC IMAGE AND NOT A RENDER. This page loads neither vv-core nor
+          vv-marks, so a live card would mean a shared module, a sixth cache-token surface
+          and a query on a page that makes none , all for an illustration.
+          AND IT NEEDS NO SECOND FILE FOR LIGHT MODE: the card face does NOT flip with the
+          theme (SS C , plain cream, iconic gold, gen dark), verified on this very card by
+          reading its computed background and ink in both grounds and finding them identical.
+          IT IS THE FIFTH EMBEDDED SNAPSHOT ON THE PLATFORM. `scripts/check-card-image.js`
+          is what stops it going stale in silence: it fingerprints the card face and queries
+          the card's live figures. Run it after anything that moves either.  -->
+    <div class="vi-lims-top">
+      <p class="vi-lims-s">Some of these the Index cannot do. Some it will not. Every one is on the card it affects.</p>
+      <figure class="vi-lims-card">
+        <img src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" loading="lazy" decoding="async"
+             alt="A VVonderXI card: Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72, carrying Champions League and Player of the Season tags.">
+      </figure>
+    </div>
     <div class="vl-grid">
       <div class="vl kchoice"><span class="vl-k">A choice</span><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
         <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one moves a score by a point.</p>
