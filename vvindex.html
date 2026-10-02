@@ -538,6 +538,9 @@
       every label stays at its real size at every width and only the track moves. */
   .vi-fig{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:24px 22px 18px;
     background:linear-gradient(180deg,var(--vi-panel),transparent)}
+  /*  NESTED IN A LIMITS PANEL THE FIGURE DROPS ITS OWN CHROME , the panel already supplies the
+      border, the ground and the radius, and keeping both draws a box inside a box.  */
+  .vl .vi-fig{border:0;background:none;border-radius:0;padding:14px 0 0}
   .vi-tl{position:relative;height:64px;margin:6px 0 0}
   .vi-tl-track{position:absolute;left:0;right:0;top:16px;height:30px;border-radius:var(--r-md);overflow:hidden;background:var(--vi-track)}
   .vi-tl-seg{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 11px;
@@ -993,9 +996,34 @@
              one to put here." , joining them into one clause with "because" is the softening
              this rewrite exists to undo, and it is the obvious edit for anyone tidying prose.  -->
         <p class="vl-w">There is no number in this panel. There is no honest one to put here.</p></div>
-      <div class="vl"><span class="vl-n"><span data-fig="cards_with_detail">38,928</span><small>seasons with the full record</small></span>
+      <div class="vl wide"><span class="vl-n"><span data-fig="cards_with_detail">38,928</span><small>seasons with the full record</small></span>
         <p class="vl-c">The other <b><span data-fig="cards_no_detail">19,138</span></b> are scored on goals, assists and minutes alone, and every one of their cards says so.</p>
-        <p class="vl-w">Shots, passes, duels and dribbles begin in 2015/16. Penalties enter the record in 2015: a taker before then is scored without them, and nothing on his card pretends otherwise.</p></div>
+        <!--  THE COVERAGE TIMELINE, RESTORED 2026-10-02 INTO THE PANEL IT DESCRIBES. It was not
+              judged and removed , it sat inside a method fold, so it went out as a passenger when
+              the method layer was cut on 598aeec, and its CSS and JS have been sitting here dead
+              ever since. The panel's "why" line used to open "Shots, passes, duels and dribbles
+              begin in 2015/16", which is verbatim what the key below the track already says, so
+              the prose loses that sentence and keeps the penalties one, which the figure cannot
+              show. The claim and the figure are untouched.  -->
+        <div class="vi-fig">
+          <div class="vi-tl">
+            <div class="vi-tl-track">
+              <div class="vi-tl-seg vi-tl-early" style="width:33.3%"><span>Goals, assists, minutes</span></div>
+              <div class="vi-tl-seg vi-tl-full" style="left:33.3%;right:0"><span>+ shots, passes, duels, dribbles</span></div>
+            </div>
+            <button type="button" class="vi-tl-mk" style="left:26.7%" data-k="pl" aria-label="2014/15, the Premier League"></button>
+            <button type="button" class="vi-tl-mk" style="left:33.3%" data-k="all" aria-label="2015/16, every other league"></button>
+            <button type="button" class="vi-tl-mk" style="left:66.7%" data-k="bel" aria-label="2020/21, Belgium"></button>
+          </div>
+          <div class="vi-tl-ends"><span>2010/11</span><span>2025/26</span></div>
+          <div class="vi-tl-key">
+            <div class="vi-segkey"><i class="sq e"></i><span><b>To 2015/16</b> , goals, assists and minutes.</span></div>
+            <div class="vi-segkey"><i class="sq f"></i><span><b>From 2015/16</b> , shots, passes, duels and dribbles as well.</span></div>
+          </div>
+          <p class="vi-figcap" id="tlNote">Every league runs the whole way. <b>The detail does not.</b> A season before its league&#8217;s mark is scored on goals, assists and minutes, and the card says so rather than filling the gap.</p>
+          <p class="vi-tlwhen">Detail begins <b>2014/15</b> Premier League <i>&middot;</i> <b>2015/16</b> every other league <i>&middot;</i> <b>2020/21</b> Belgium</p>
+        </div>
+        <p class="vl-w">Penalties enter the record in 2015: a taker before then is scored without them, and nothing on his card pretends otherwise.</p></div>
       <div class="vl wide drawn"><span class="vl-n"><span data-fig="elite_centrebacks">0</span><small>centre-backs in the top band</small></span>
         <p class="vl-c">Not one of the 650 seasons at 85 or better was played by a centre-back. Three were played by defenders at all, and all three are full-backs.</p>
         <div class="vl-draw" aria-hidden="true">
