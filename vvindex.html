@@ -837,7 +837,17 @@
   .vi-lims{margin:26px 0 10px}
   .vi-lims-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.01em;margin:0 0 7px;color:var(--cream)}
   .vi-lims-s{font-family:'Inter';font-size:15px;line-height:1.55;color:var(--ink-soft);margin:0 0 20px;max-width:56ch}
-  .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  /*  `dense` CLOSES THE HOLES AND KEEPS THEM CLOSED , 2026-10-02. A `wide` panel between two
+      plain ones breaks the pairing, so panels 1 and 3 each sat ALONE in a two-column row with
+      the other cell empty: measured 6 rows, 2 holes, 1,364px. Dense backfills them , 5 rows,
+      0 holes, 1,150px. A panel alone in a row reads as special, and nothing here is.
+      IT IS CHOSEN OVER REORDERING THE MARKUP BECAUSE IT GUARANTEES THE INVARIANT RATHER THAN
+      ACHIEVING IT ONCE: a ninth panel re-packs without a hole, where a hand-placed order
+      quietly reopens one and nobody notices. Same reasoning as the hero's container query.
+      WHAT IT COSTS, STATED: visual order can diverge from DOM order (panel 3 moves up one
+      slot). Acceptable HERE and not in general , these panels hold no focusable content, so
+      there is no tab order to disagree with. Re-check that if a link is ever put in one.  */
+  .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;grid-auto-flow:row dense}
   .vl{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
   .vl-n{font-family:'Archivo',sans-serif;font-weight:900;font-size:42px;line-height:1;letter-spacing:-.02em;color:var(--cream);display:block}
   .vl-n small{display:block;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
@@ -845,6 +855,30 @@
   .vl-c{font-family:'Inter';font-size:14.5px;line-height:1.55;color:var(--cream);margin:11px 0 0}
   .vl-w{font-family:'Inter';font-size:13.5px;line-height:1.55;color:var(--ink-soft);margin:8px 0 0}
   .vl-c b{font-weight:600}
+
+  /*  THE SECTION PROMISED TWO KINDS AND SHOWED ONE , 2026-10-02. Its standfirst says "Some of
+      these the Index cannot do. Some it will not", and all eight panels then rendered in one
+      ink: measured, the whole section carried THREE distinct inks across 41 text elements and
+      not one of them was chromatic, while the pull-quote 40px away uses gold and pink.
+      SO THE COLOUR ENCODES THE DISTINCTION THE COPY ALREADY MAKES , three refusals gold,
+      five limits neutral. That matches the platform's own rule, which is that colour marks a
+      CATEGORY (tag family, prestige tier, A against B) and never decorates. An all-gold wash
+      would have looked livelier and meant nothing, which is the version to refuse.
+      AND GOLD ALONE IS NOT LEGIBLE, SO IT IS LABELLED. Three gold figures among eight is a
+      pattern a reader notices and cannot decode, and an undecodable pattern IS decoration by
+      another name. One word on the marked panels; the five unmarked ones need nothing,
+      because the standfirst's other half already names them.
+      THE TWO GOLDS ARE THE PAGE'S EXISTING PAIR AND THE SPLIT IS THE REASON THEY EXIST:
+      `--vi-gold-num` for the 42px numeral (LARGE text, bar 3.0, measured 8.91 dark / 3.61
+      light on the panel ground) and `--vi-gold-ink` for this 10px label (bar 4.5, measured
+      8.91 / 5.77). Using the numeral gold at label size would read 3.61 against a 4.5 bar
+      and fail, which is exactly the distinction SEC C records those two tokens for.  */
+  .vl-k{display:block;font:800 10px 'Archivo',sans-serif;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--vi-gold-ink);margin:0 0 9px}
+  .vl.kchoice .vl-n{color:var(--vi-gold-num)}
+  .vl.kchoice{border-color:rgba(232,184,75,.30)}
+  body.light .vl.kchoice{border-color:rgba(168,118,15,.32)}
+  body.light .vl.kchoice .vl-n{color:var(--vi-gold-num)}
   body.light .vi-lims-h{color:var(--charcoal)}
   body.light .vl{background:rgba(255,255,255,.62);border-color:rgba(28,27,26,.10)}
   body.light .vl-n{color:var(--charcoal)}
@@ -931,7 +965,7 @@
          most honest thing the section can open on. 7 / 4 / 9 words , short, shorter, short.  -->
     <p class="vi-lims-s">Some of these the Index cannot do. Some it will not. Every one is on the card it affects.</p>
     <div class="vl-grid">
-      <div class="vl"><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
+      <div class="vl kchoice"><span class="vl-k">A choice</span><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
         <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one moves a score by a point.</p>
         <p class="vl-w">A medal is a team&rsquo;s outcome with one player&rsquo;s name on it. The score is finished before the vote happens.</p></div>
       <div class="vl nofig wide"><span class="vl-n">Goals and assists are recorded everywhere, and back to 2010. Defending is not.</span>
@@ -953,13 +987,13 @@
       <div class="vl nofig"><span class="vl-n">A high score is checked. A low one is an estimate.</span>
         <p class="vl-c">Positions are verified by hand near the top of the ladder and get coarser below.</p>
         <p class="vl-w">We cannot tell you how many were checked. Nobody recorded that.</p></div>
-      <div class="vl short"><span class="vl-n"><span data-fig="keeper_seasons">4,315</span><small>keeper seasons, read differently</small></span>
+      <div class="vl short kchoice"><span class="vl-k">A choice</span><span class="vl-n"><span data-fig="keeper_seasons">4,315</span><small>keeper seasons, read differently</small></span>
         <p class="vl-c">Goalkeepers are not on this scale at all.</p>
         <p class="vl-w">Almost nothing a keeper does is recorded the way outfield play is.</p></div>
       <div class="vl"><span class="vl-n"><span data-fig="cards_on_a_band_edge">878</span><small>cards on a band edge</small></span>
         <p class="vl-c">A score is a standing, not a mark out of ten. These sit within a single point of a boundary.</p>
         <p class="vl-w">Either side of a line, two seasons are closer than the labels make them look.</p></div>
-      <div class="vl"><span class="vl-n"><span data-fig="career_spread_median">37</span><small>points, best season to worst</small></span>
+      <div class="vl kchoice"><span class="vl-k">A choice</span><span class="vl-n"><span data-fig="career_spread_median">37</span><small>points, best season to worst</small></span>
         <p class="vl-c">It rates a season, not a player. Across <b><span data-fig="career_spread_players">4,387</span></b> players with five or more scored seasons, that is the median gap.</p>
         <p class="vl-w">A rating rates a person, and a person does not have one number. Eden Hazard&rsquo;s best and worst sit 64 points apart, and the dip is in the middle of his best years.</p></div>
     </div>
