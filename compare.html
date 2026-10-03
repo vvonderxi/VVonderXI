@@ -1618,12 +1618,36 @@ body.light .pkmsub{color:var(--ink-soft)}
         a pinned button rather than a broken page.
         THE PADDING FOLLOWS THE BAR. Leaving body at 133px with no bar renders 61px of dead
         space above the nav, which is the kind of gap nobody reports and everybody feels.  */
+    /*  THE BAR STANDS DOWN IN TWO STATES AND NEITHER IS "SETTLED" ANY MORE.
+        It hides when there is nothing to compare (.settle.disabled, toggled in
+        vvUpdateCompareGate) and when the reader has REACHED the verdict (body.vvseen, set by
+        the observer). Between settling and arriving it stays, carrying "Read the verdict" ,
+        which is the whole of fix A. An earlier version hid it on `#verdict.show` and that was
+        the defect: it left "Compare New" as the most prominent control on the screen at the
+        exact moment the reader should be going forward.  */
     body:has(.settle.disabled) .settlerow,
-    body:has(#verdict.show) .settlerow{display:none}
+    body.vvseen .settlerow{display:none}
     body:has(.settle.disabled),
-    body:has(#verdict.show){padding-bottom:calc(var(--vvnavh) + 18px)}
+    body.vvseen{padding-bottom:calc(var(--vvnavh) + 18px)}
     body:has(.settle.disabled) .vv-totop,
-    body:has(#verdict.show) .vv-totop{bottom:calc(var(--vvnavh) + 30px)}
+    body.vvseen .vv-totop{bottom:calc(var(--vvnavh) + 30px)}
+
+    /*  ── B , LET THE VERDICT PEEK, BY REMOVING DEAD SPACE RATHER THAN BY SCROLLING ───────
+        MEASURED AT 390 BEFORE THE TRIM: the verdict panel starts 608px down and its first
+        legible words sit 131px INSIDE it , 28 of its own padding, then .vbreak's 34 of margin
+        and 30 of padding. So the band between "Compare New" and the first word was about
+        144px of nothing, and what showed above the chrome was an empty panel edge.
+        THE TRIM IS 56px AND IT IS ALL PADDING: the panel's top padding 28 -> 16, and .vbreak
+        34/30 -> 10/10. Nothing is moved, nothing is resized, and no scroll is taken from the
+        reader , the content simply starts where it can be seen. PHONE ONLY; the desktop
+        composition has the room and is untouched.  */
+    #verdict{padding-top:16px}
+    #verdict .vbreak{margin-top:10px;padding-top:10px}
+
+    /*  THE TWO LABELS. One button, one state machine, no second control in the markup.  */
+    .settlerow .sl-read{display:none}
+    body:has(#verdict.show) .settlerow .sl-go{display:none}
+    body:has(#verdict.show) .settlerow .sl-read{display:inline}
   }
 
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
@@ -1685,7 +1709,7 @@ body.light .pkmsub{color:var(--ink-soft)}
           </div>
         </div>
       </div>
-            <div class="settlerow"><button class="settle" onclick="if(!(CMP_A&&CMP_B))return; vvCloseSeasonFolds(); document.getElementById('verdict').classList.add('show')"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><rect x="0.8" y="12.3" width="9.2" height="4.3" rx="2"/><rect x="8.5" y="5" width="4.2" height="3.2" rx="1.4"/><path fill-rule="evenodd" d="M10.5 8.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3.7a2.3 2.3 0 1 0 0.01 0z"/><path d="M18.4 10c1.6 1.4 1.6 5.6 0 7M21.4 7.6c2.6 2.4 2.6 9.4 0 11.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Compare</button></div>
+            <div class="settlerow"><button class="settle" onclick="vvSettleTap()"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><rect x="0.8" y="12.3" width="9.2" height="4.3" rx="2"/><rect x="8.5" y="5" width="4.2" height="3.2" rx="1.4"/><path fill-rule="evenodd" d="M10.5 8.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3.7a2.3 2.3 0 1 0 0.01 0z"/><path d="M18.4 10c1.6 1.4 1.6 5.6 0 7M21.4 7.6c2.6 2.4 2.6 9.4 0 11.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="sl-go">Compare</span><span class="sl-read">Read the verdict <span aria-hidden="true">&#8595;</span></span></button></div>
             <div class="cmpsug" id="cmpSug"></div><div class="settle-newrow"><button class="settlenew" id="compareNewBtn" onclick="vvCompareNew()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 1 2.3 5.6"/><path d="M4 20v-4h4"/></svg> Compare New</button></div>
             <div class="verdict" id="verdict">
         <!-- FULL BREAKDOWN FIRST (the analysis builds to the payoff) -->
@@ -2001,6 +2025,63 @@ body.light .pkmsub{color:var(--ink-soft)}
         idempotency note was written to avoid.  */
     vvCardFlip(host, { swap:true, newHTML:buildCard(card,cw), cw:cw, prestige:card.prestige, onDone:function(){ vvLoadSlotSeasons(slot); } });
   }
+  /*  ── THE ACTION BECOMES THE NEXT ACTION (2026-10-03) ───────────────────────────────
+      THE DEFECT: after pressing Compare, the verdict is below the fold and the screen gave
+      no sign. Measured at 390, the first legible words , "The Verdict" , sit 131px INSIDE the
+      panel, which itself starts 608px down, so what a reader actually saw was a band of empty
+      padding and the top edge of a panel. Worse, the settle bar hid itself on settling, which
+      left "Compare New" as the most prominent control on the screen , pointing BACKWARDS, at
+      the exact moment the reader should be going forward.
+      THE FIX IS NOT A NEW ELEMENT. The bar is already there and the reader has just used it,
+      so it is the one control on the page they already trust. On settling it becomes "Read
+      the verdict", and tapping it takes them there. Nothing is added, nothing shouts, and the
+      page states its next move with a control that was already in their hand.
+      REJECTED, AND RECORDED SO THEY ARE NOT RE-PROPOSED: a gradient fade at the viewport edge
+      (it says something continues and cannot say WHAT), and auto-scrolling on settle (it takes
+      the viewport at the one moment a reader may want another look at the two cards).  */
+  function vvSettleTap(){
+    var v=document.getElementById('verdict');
+    if(v && v.classList.contains('show')){
+      /*  Already settled, so this control's job is now to take you to what it produced.
+          `block:'start'` lands the panel's own top at the top of the screen, which is where
+          the heading and the headline are , not the middle of a 5,600px section.  */
+      try{ v.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){ v.scrollIntoView(); }
+      return;
+    }
+    if(!(CMP_A&&CMP_B)) return;
+    vvCloseSeasonFolds();
+    if(v) v.classList.add('show');
+    vvVerdictSeen();        // the state changed, so re-read it now rather than on the next scroll
+  }
+
+  /*  AND THE BAR STANDS DOWN WHEN THE READER HAS ARRIVED, WHICH IS A STATE AND NOT A TAP.
+      It is derived from geometry rather than set in the tap handler, because the reader can
+      get there by scrolling, by the back button, or by a deep link that arrives already
+      settled , SS C's rule that a behaviour attached to a code path is missing from every
+      other path.
+      AN IntersectionObserver WAS WRITTEN FIRST AND REPLACED, FOR TWO REASONS WORTH KEEPING.
+      It was pointed at `.vfinal`, which DOES NOT EXIST AT BOOT , the panel's contents are
+      built when it is shown , so it silently fell back to observing `#verdict`, which is
+      about 5,600px tall and therefore intersects the instant its top edge appears. That is
+      exactly the state the bar exists FOR, so the observer would have dismissed the bar at
+      the moment it was most needed. A fallback that quietly observes the wrong element is the
+      same shape as every other silent-fallback defect in this codebase.
+      And it could not be verified: IntersectionObserver is frame-driven, and frames do not
+      run in the hidden tab where this gets checked. A geometry read on scroll has no frame
+      dependency, can be driven and measured directly, and says what it means , the panel's
+      top has passed the upper half of the screen, so the reader is there.  */
+  function vvVerdictSeen(){
+    var v=document.getElementById('verdict');
+    if(!v || !v.classList.contains('show')){ document.body.classList.remove('vvseen'); return; }
+    var top=v.getBoundingClientRect().top;
+    document.body.classList.toggle('vvseen', top < window.innerHeight*0.45);
+  }
+  function vvWatchVerdictSeen(){
+    window.addEventListener('scroll',vvVerdictSeen,{passive:true});
+    window.addEventListener('resize',vvVerdictSeen);
+    vvVerdictSeen();
+  }
+
   function vvUpdateCompareGate(){
     var btn=document.querySelector('.settle');if(btn)btn.classList.toggle('disabled',!(CMP_A&&CMP_B));
     var nb=document.getElementById('compareNewBtn');if(nb)nb.classList.toggle('show',!!(CMP_A||CMP_B));   // offer a reset once anything is filled
@@ -2024,6 +2105,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       an rAF-deferred first measurement is a line that cannot be checked before it ships. The
       first measurement happens inside vvSizeCards instead, once, when _cwVal is still null.  */
   window.addEventListener('resize',function(){ cwMeasure(); vvSizeCards(); });
+  vvWatchVerdictSeen();
 
   // ── Back control (same pattern as card.html) ──
   function vvBack(){var inApp=false;try{inApp=document.referrer&&new URL(document.referrer).origin===location.origin;}catch(e){}if(inApp&&history.length>1)history.back();else location.href='rankings.html';}
