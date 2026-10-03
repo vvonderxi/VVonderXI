@@ -50,6 +50,35 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 **DO NOT SPEND RETRIES ON IT.** Five attempts, zero successes, and each one pays for a truncated response. **The population is ONE pair as of 2026-10-03** , everything else at rt>=95 and rt>=93 is warm , so the cost of leaving it is one marquee comparison, and the cost of chasing it with retries is unbounded.
 
+## A GLOBAL GENERATION CEILING , THE IP POOL IS THE HOLE AND PER-IP LIMITS CANNOT SEE IT (scoped 2026-10-03, NOT built, LAUNCH BLOCKER)
+
+**THE PER-IP LIMIT IS CORRECT AND IT IS NOT A DEFENCE AGAINST A SCRIPT POOL. MEASURED, NOT REASONED, ON THE LIVE PREVIEW:** 40 sequential calls with a forged `Origin` header returned **24 allowed and then HTTP 429 from call #25** , exactly 30 once the ~6 already spent from that address are added, with `Retry-After: 600`. **The limit is real and exact. It bounds ONE address.**
+- **AND THE ORIGIN ALLOWLIST DOES NOT HELP HERE, WHICH THE SAME TEST PROVED.** A browser on another site is blocked (4 of 5 forged origins returned 403), but `Origin` is a request header and a script sends whatever it likes , **the 200s above came from node, with the header set by hand.** The allowlist raises the bar from "POST and it works" to "POST with one extra header". It is worth having and it is not a cost control.
+
+**THE COST CEILING, DECOMPOSED, BECAUSE THE NUMBER DECIDES THE DESIGN:**
+
+| | per call |
+|---|---|
+| system prompt, 8,801 tok as a CACHE READ (0.1x) | $0.0026 |
+| messages at the current 120,000-char cap, ~33k tok | $0.1000 |
+| output, clamped at 2,048 tok | $0.0307 |
+| **worst case today** | **$0.1334** |
+| a real call (2,163 chars in, ~540 out) | **$0.0125** |
+
+**THE FIRST FIX IS FREE AND IT IS NOT THE CAP YOU ASKED FOR: `MAX_INPUT_CHARS` IS 120,000 AND THE LARGEST REAL REQUEST IS 2,163 CHARS.** Measured over 40 notes payloads at rt>=85: **median 1,337, max 2,163.** The cap is **55x** the largest thing any caller legitimately sends. **Dropping it to 12,000 , still 5.5x headroom , cuts the worst case from $0.1334 to $0.0434, a 3.1x reduction, and costs a legitimate visitor exactly nothing.** One constant, one line.
+- **AFTER THAT, OUTPUT DOMINATES AND CANNOT BE CUT MUCH.** 2,048 tokens is $0.0307 of the remaining $0.0434, and the real callers already ask for 1,024 and 1,500. Clamping to 1,500 saves $0.008 and risks truncating the notes path, which SS E records as already truncating on some pairs. **Not worth it.**
+
+**THE GLOBAL CEILING , THE SHAPE, AND IT IS A SECOND QUERY OVER A TABLE THAT ALREADY EXISTS.** `api_rate_events` already records every generation with an `ip` and a `started_at`. The per-IP check is a count over that table filtered by address; the global check is **the same count without the filter**. There is no new vendor, no new table and no new dependency.
+
+**SIZING IT, AND THE TENSION IS REAL RATHER THAN RHETORICAL.** SS C records the busiest 60 minutes in the platform's history as **5 verdicts and 9 notes across ALL users , 14 generations**. A ceiling of 300/hour is **21x** the busiest hour ever recorded, and at the tightened input cap it bounds the hour at **300 x $0.0434 = $13.02**.
+- **THE RISK IS LAUNCH DAY, AND IT IS THE OPPOSITE OF THE ABUSE RISK.** The 14/hour figure comes from a platform with no traffic. A launch could legitimately exceed it by an order of magnitude, and a ceiling set from history would then refuse real visitors on the one day it matters. **Set it generously and let the spend cap be the brake**, rather than tuning it tight from a pre-launch baseline that measures nothing.
+- **WHAT A LEGITIMATE VISITOR LOSES, HONESTLY: at 300/hour, nothing, until the hour the platform has 300 real generations in it** , and on that day the right response is to raise the number, not to have set it low.
+
+**AND THE HONEST LIMIT OF THE WHOLE IDEA: A CODE-SIDE CEILING BUYS TIME, IT DOES NOT BOUND THE BALANCE.** At 300/hour the worst case is $13.02 an hour, so a prepaid balance of ~$24 still empties in under two hours of sustained abuse. **The only hard stop is the provider's own spend cap, which is QA_PASS B4b and is still not set.** A global ceiling without B4b slows the drain; B4b without a global ceiling allows a fast one inside the cap. **They are complements and the cap is the one that actually stops.**
+
+**COST TO BUILD: about an hour.** One constant change (`MAX_INPUT_CHARS`), one unfiltered count beside the existing one, one refusal kind (`refused:global`) so the ledger can be queried afterwards exactly as `refused:hourly` already is, and the same fail-open behaviour with the same error-level log , SS C's rule that fail-safe is a property of the consequence and never evidence about the guard.
+- **AND IT MUST SIT WHERE THE PER-IP CHECK SITS: AFTER the cache lookup.** A cached pair is free and must never be counted, or a popular shared link would consume the global allowance for everybody.
+
 ## A SHARED LINK SHOULD SHOW THE VERDICT WHEN IT COSTS NOTHING , AUTO-GENERATE ON A CACHE HIT ONLY (scoped 2026-10-03, NOT built)
 
 **THE BEHAVIOUR TODAY: `?a=&b=` renders both cards and a COMPARE button, and nothing else.** That is the right default , a page load must never spend a model call , but it means **the recipient of a shared link gets the setup without the payoff**, which is the one thing a share exists to deliver. Verified on the live preview: both cards render correctly, the button is present, and no request fires until it is pressed.
@@ -1406,7 +1435,7 @@ has not verified , the hedge SS E already ruled on for the shirt-number mark.
 > "The shirt-number section wants a visual, this is item 2 already queued."
 **His own cross-reference: punchlist item 2, already queued.**
 
-### 6. VV Index still the old format
+### 6. VV Index still the old format , CLOSED 2026-10-03. Lucas approved the rebuild and it SHIPPED; the row said "awaiting my re-approval" after the approval had been given and the work had landed.
 > "VV Index still the old format, that is item 14 awaiting my re-approval."
 **Blocked on him, not on work.**
 
