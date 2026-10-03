@@ -31,6 +31,25 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 - **THE TRIGGER TO BUILD IT IS EVIDENCE, NOT A DATE.** Any of: junk rows appearing in `waitlist_emails`; the row count rising faster than real traffic explains; or a single source producing many addresses that never confirm. **Query it; do not wait to be told.**
 - **AND IF IT IS BUILT, THE UNIQUE INDEX STAYS.** It is cheap, it is the thing that makes a repeat signup a clean no-op rather than a duplicate, and an endpoint does not replace it , the two defend different things.
 
+## THE VERDICT OUTPUT CEILING , ONE PAIR CANNOT BE GENERATED AT ALL, AND IT IS A DECISION ABOUT `max_tokens` RATHER THAN A RETRY (measured 2026-10-03, NOT built)
+
+**THE CASE IS ONE PAIR AND IT IS A MARQUEE ONE: `Messi 12/13 vs Ronaldo 11/12`, two 96s.** Every other pair in the rt>=95 pool warmed; this one has now failed on five separate attempts across two prompts' worth of retries, and it is the ONLY pair in the pool that cannot be produced.
+
+**IT IS TRUNCATION, NOT THE PREAMBLE DEFECT, AND THE TWO WERE SEPARATED BY MEASUREMENT.** The 2026-10-03 fix (`vvParseModelJSON`) recovers a response whose JSON is merely PREFIXED by reasoning prose , it takes the first `{` to the last `}` , and it fixed the sibling case `Messi 14/15 vs Messi 12/13`, which had failed twice before and succeeded immediately after. **This one returns `stop_reason=max_tokens`, so the closing brace was never written and there is nothing for any parser to find.** A more forgiving parser cannot help and would only hide it.
+
+**THE MEASUREMENTS, SO WHOEVER PICKS THIS UP STARTS FROM THEM RATHER THAN RE-DERIVING THEM:**
+- at `max_tokens: 1024` (what `compare.html` sends today) , **4,191 characters, `stop_reason=max_tokens`**, cut mid-sentence
+- at `max_tokens: 2048` , **7,270 characters, STILL `stop_reason=max_tokens`**. Doubling the ceiling did not reach the end of the answer.
+- the server already clamps at `MAX_OUTPUT_TOKENS` **2048**, so 1024 -> 2048 needs no server change and **was tested and is not sufficient**
+- the model spends the budget on reasoning prose before the JSON, and it reasons longest on TIES , which is why this lands on two 96s rather than anywhere random
+
+**SO THE DECISION IS NOT "RAISE IT TO 2048", WHICH IS THE OBVIOUS MOVE AND IS MEASURED NOT TO WORK.** The real options, none taken:
+1. **Raise `MAX_OUTPUT_TOKENS` past 2048 and the client with it.** Costs output tokens on every verdict that uses them, and the §C bound on `api/analyse.js` exists precisely to stop a caller choosing an unbounded cost. Any change here is a change to the public endpoint's cost ceiling and belongs with that entry.
+2. **Stop the preamble at the prompt** , an instruction to emit nothing before the JSON. **This is the cheapest fix and the most disruptive to schedule: `VERDICT_VERSION` is a fingerprint of the prompt, so it discards every cached verdict, and `PROMPT_REV` is SHARED with `NOTES_VERSION`, so it discards every cached note too.** It therefore rides with item 25's rule-4 edit or not at all.
+3. **Accept one unproducible pair.** The reader gets the outage line on that pairing and a retry sometimes succeeds, since the preamble is probabilistic.
+
+**DO NOT SPEND RETRIES ON IT.** Five attempts, zero successes, and each one pays for a truncated response. **The population is ONE pair as of 2026-10-03** , everything else at rt>=95 and rt>=93 is warm , so the cost of leaving it is one marquee comparison, and the cost of chasing it with retries is unbounded.
+
 ## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
 
 **HELD BY LUCAS ON 2026-09-27: "logged, not now. It is nine live surfaces and a visual change,
