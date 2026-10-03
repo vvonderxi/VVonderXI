@@ -4997,7 +4997,32 @@ body.light .vvrows .rtag.purple{color:#784eac}
   .vvrows.vvrows.pillmode > .urow > .utags{grid-column:2/7;grid-row:3;justify-content:flex-start;margin-top:2px}
   .vvrows.vvrows.pillmode .rtag{font-size:8.5px;padding:2.5px 8px}
   .vvrows.vvrows.pillmode > .urow > .rmini{grid-column:7;grid-row:1/4;align-self:center;justify-self:end;margin:0;width:42px;height:48px}
-  .vvrows.vvrows.compactmode > .urow{grid-template-columns:22px minmax(0,1fr) 34px 30px 30px 40px;grid-template-rows:auto auto;column-gap:9px;row-gap:1px;padding:7px 12px;align-items:center}
+  /*  ── THE NAME GETS THE ROOM, COMPACT LIST AT PHONE WIDTH (2026-10-03) ───────────────
+      MEASURED BEFORE: the row has 305px of content and the NAME got 47px of it , 15%. The
+      rest went to a 22px flag, a 13px shield, two 11px gaps and 94px of position, goals and
+      assists. 56 OF 100 VISIBLE NAMES TRUNCATED, and "Touré" rendered as "To...".
+      THE NAME IS THE ONE THING A READER IS SCANNING FOR AND IT WAS THE FIRST THING CUT.
+      WHAT GAVE, AND IT IS SPACING RATHER THAN INFORMATION: column gap 9 -> 6, row padding
+      12 -> 10, the three stat columns 34/30/30 -> 26/24/24, the rank 22 -> 20, the mini 40 ->
+      38, the flag 22 -> 16, and the ident's own gaps 11 -> 6. Nothing is removed and nothing
+      moves rows , every field the row carried before, it still carries.
+      AFTER: column two goes 104 -> 147px and the name's own box 47 -> 106px. TRUNCATION IS
+      0 OF 100 on the live grid.
+      AND THE TAIL WAS CHECKED RATHER THAN THE TOP, BECAUSE THE TOP 100 IS SELECTED BY FAME
+      AND FAMOUS SURNAMES ARE SHORT , SS C's rule about a validation set built from whatever
+      already exists. Measured against the 300 LONGEST surnames in the database: 247 of 300
+      fit, against 0 of 300 before. The widest, "dos Santos Goncalves", needs 144px.
+      SO ROUGHLY 0.5% OF DISTINCT SURNAMES STILL CLIP, AND THAT IS THE DECISION RATHER THAN
+      AN OVERSIGHT. A fuller reformat was built and measured , one row for the name, one meta
+      line for everything else , and it fits 300 of 300 at 188px. It was REFUSED because it
+      crowds position, goals and assists onto the meta line of EVERY row to serve one row in
+      two hundred, and the names it rescues are the least likely to be scanned for.  */
+  .vvrows.vvrows.compactmode > .urow{grid-template-columns:20px minmax(0,1fr) 26px 24px 24px 38px;grid-template-rows:auto auto;column-gap:6px;row-gap:1px;padding:7px 10px;align-items:center}
+  /*  SCOPED TO compactmode, NOT TO .vvrows. The demo tightened ".vvrows .uident" globally,
+      which would have reached pillmode and the season rows too , surfaces that are not short
+      of width and did not ask for it.  */
+  .vvrows.vvrows.compactmode .uident{gap:6px}
+  .vvrows.vvrows.compactmode .uflag{width:16px}
   .vvrows.vvrows.compactmode > .urow > .urank{grid-column:1;grid-row:1/3;align-self:center;font-size:11px}
   .vvrows.vvrows.compactmode > .urow > .uident{grid-column:2;grid-row:1;min-width:0}
   .vvrows.vvrows.compactmode .uname{font-size:13.5px}
