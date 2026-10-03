@@ -5368,6 +5368,13 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
    *     matview column would render visibly "soon" and inert);
    *     position mirrors the locked 8-bucket position_pool.
    * ════════════════════════════════════════════════════════════════════ */
+  /*  WHICH HONOUR TYPES ARE FILTERED BY `honours_json` CONTAINMENT RATHER THAN BY AN
+      `h_*` COLUMN. Declared out here because BOTH the chip list and the query builder
+      read it, and CLAUDE.md's standing lesson is that one vocabulary kept in two places
+      drifts. Keep it beside HONOUR_FILTER_COLUMNS in the taxonomy below , the two
+      together are the whole answer to "can this chip filter yet".  */
+  const HONOUR_JSON_FILTERED = ['afcon_winner'];
+
   const FILTER_TAXONOMY = {
     prestige: [
       { v:'Generational', l:'Generational', e:'👑' },
@@ -5408,11 +5415,30 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       var HONOUR_FILTER_COLUMNS = ['ballon_dor','world_cup_winner','ucl_winner','league_champion',
                                    'player_of_season','golden_boot','top_assists',
                                    'euro_winner','copa_winner'];
+      /*  AND A SECOND WAY TO BE FILTERABLE, ADDED 2026-10-03 , WITHOUT A COLUMN.
+          `afcon_winner` has 109 honour rows and 74 cards and no `h_afcon_winner` column,
+          and adding one means a matview DROP+CREATE: a ~42s outage plus reindex and
+          regrant, for one boolean. It does not need one. `honours_json` is already on the
+          matview and PostgREST can filter it server-side with jsonb containment, which was
+          tested before this was written rather than after:
+            or=(h_ballon_dor.is.true,honours_json.cs.[{"type":"afcon_winner"}])  ->  88
+          against 14 for the Ballon d'Or alone and 74 for AFCON alone. Exactly the union,
+          inside the SAME .or() the column terms use, so OR-within-group still holds.
+          IT IS SLOWER THAN A COLUMN AND THAT IS THE TRADE, accepted deliberately: a
+          containment test has no index behind it where `h_*` is a plain boolean. One chip
+          of ten, on a filter that already round-trips.
+          SO THERE ARE NOW THREE STATES, NOT TWO , column, json, or genuinely soon , and
+          `soon` is the fallthrough rather than a thing listed. A new honour type lands as
+          an inert chip until it appears in ONE of the two arrays.
+          THE JSON LIST IS `HONOUR_JSON_FILTERED`, DECLARED ABOVE THIS OBJECT AND NOT HERE.
+          The first version of this change declared a second copy inside this closure, which
+          is the one-vocabulary-two-places drift the comment above it was already warning
+          about , caught by re-reading rather than by anything firing.  */
       return Object.keys(HONOUR_META)
         .sort(function(a,b){ return (HONOUR_META[a].tier||99) - (HONOUR_META[b].tier||99); })
         .map(function(k){
           return { v:k, l:HONOUR_META[k].label || k, e:HONOUR_META[k].emoji || '',
-                   soon: HONOUR_FILTER_COLUMNS.indexOf(k) < 0 };
+                   soon: HONOUR_FILTER_COLUMNS.indexOf(k) < 0 && HONOUR_JSON_FILTERED.indexOf(k) < 0 };
         });
     })(),
     // ability tags , grouped by getVVTags family. v = the tag name the engine emits.
@@ -6389,9 +6415,24 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         .or() gives OR within honours; because it is a separate call from the score-band
         .or(), the two AND across groups, which is the platform's stated filter rule. */
     if(st.honours && st.honours.length){
-      var hcols=st.honours.filter(function(v){ return /^[a-z_]+$/.test(v); })
-                          .map(function(v){ return 'h_'+v+'.is.true'; });
-      if(hcols.length){ query=query.or(hcols.join(',')); applied.push('honours'); }
+      /*  TWO PREDICATE SHAPES IN ONE .or() , 2026-10-03. Most honour types have an `h_*`
+          boolean on the matview; `afcon_winner` does not and is filtered by jsonb
+          containment on `honours_json` instead. Both forms are legal inside one PostgREST
+          .or(), verified against the live matview, so OR-within-group and AND-across-groups
+          are unchanged.
+          THE JSON CARRIES NO COMMA ON PURPOSE. PostgREST splits an .or() list on commas, so
+          `[{"type":"x"}]` is safe where a two-key object would not be. If a future filter
+          ever needs a second key, it cannot go in the .or() like this.
+          THE `^[a-z_]+$` GUARD IS WHAT MAKES THE INTERPOLATION SAFE and now matters more,
+          because the value lands inside a JSON literal as well as a column name. Anything
+          that is not a plain honour_type is dropped before either form is built.  */
+      var terms=st.honours.filter(function(v){ return /^[a-z_]+$/.test(v); })
+                          .map(function(v){
+                            return HONOUR_JSON_FILTERED.indexOf(v) >= 0
+                              ? 'honours_json.cs.[{"type":"'+v+'"}]'
+                              : 'h_'+v+'.is.true';
+                          });
+      if(terms.length){ query=query.or(terms.join(',')); applied.push('honours'); }
     }
     if(!opts.headCount){
       var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0]||VVF_SORTS[0];
