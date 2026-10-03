@@ -489,8 +489,19 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       not depth, and it is listed last so the depth layers paint behind it.  */
   box-shadow:0 8px 18px rgba(0,0,0,.10), 0 48px 96px -18px rgba(0,0,0,.36),
              0 0 0 1px var(--vfinal-rim), 0 0 0 7px rgba(255,92,122,.055)}
-.vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-  width:168px;height:4px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--pink),var(--gold))}
+/*  THE PINK-TO-GOLD CREST ON THE PANEL'S TOP EDGE IS REMOVED, 2026-10-03, AND IT COST
+    NOTHING STRUCTURALLY , CHECKED BEFORE IT WENT RATHER THAN ASSUMED.
+    It was 168px x 4px centred at `top:-1px`, so it never spanned and was never a divider.
+    THE TOP EDGE IS DRAWN BY SOMETHING ELSE AND ALWAYS WAS: the hairline ring in the panel's
+    own box-shadow, `0 0 0 1px var(--vfinal-rim)`, whose comment eight lines up says it exists
+    precisely because "the throw is downward, so without it the top of the panel has nothing
+    separating it from the page at all". The ring is the structure; this was a brand mark on
+    top of it. And it was unique , that gradient appears nowhere else in compare.html,
+    card.html or vv-core.js , so no visual family breaks with it.
+    WHAT IT BOUGHT, SO THE TRADE IS ON THE RECORD: the payoff panel was the only one carrying
+    a brand mark on its edge, which said "this is the answer" before a word was read. Lucas's
+    call: the verdict should not open on a contrasting colour, and the ring already draws the
+    edge. Do not reinstate it without that conversation.  */
   /* the unavailable state , plain, muted, not a quotation (see vvSetVerdict's `plain`) */
   .vfinal .vquote.vq-na{font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;font-size:13px;color:var(--ink-soft)}
   /* NEEDED, not redundant: `body.light .verdict .vquote` is ALSO (0,3,0) and sits later in
@@ -3174,13 +3185,29 @@ body.light .pkmsub{color:var(--ink-soft)}
       return;
     }
 
+    /*  ── ONE LINE PER ABSENCE, NOT ONE PER DIMENSION (2026-10-03) ──────────────────────
+        A card with no detailed block produced FOUR OR FIVE consecutive "Not recorded" rows,
+        which stack on a phone and read as a broken panel rather than an honest one. The
+        information was right and the impression was wrong.
+        THE TREATMENT IS NOT NEW , IT IS THE KEEPER BRANCH'S, FORTY LINES ABOVE. When both
+        sides are keepers this function already collapses all five dimensions into ONE
+        sentence. Coverage produced five rows for the same kind of absence. This makes the
+        function consistent with itself rather than adding a vocabulary.
+        AND IT IS NOT AN EDGE CASE: 18,915 of 54,416 scored cards (34.8%) carry no detailed
+        block at all, so a random pair contains one 57.4% of the time.
+        THE MEASURED ROWS COME FIRST AND THE ABSENCES ARE GROUPED AFTER THEM, by which SIDE
+        is missing , so a reader meets the comparison that exists before the list of what
+        does not. Worst case three lines, typical case one, against five.
+        THE SEASONS ARE NAMED. "The first season" and "the second season" make a reader map a
+        position back to a card; the page knows both names and should use them.  */
+    const miss={A:[],B:[],both:[]};
     let h='';
     for(let i=0;i<DIMS.length;i++){
       const a=A_RAW[i], b=B_RAW[i];
       /* NO WINNER ON AN AXIS EITHER SIDE NEVER MEASURED. The old code compared a>b with
          nulls already coerced to 0, so it awarded a dot for a dimension nobody recorded. */
       if(a==null||b==null){
-        h+=`<div class="h2hrow h2hnr"><div class="h2hlabel">${DIMS[i]}</div><div class="h2hbar h2hbar-nr">Not recorded for ${a==null&&b==null?'either season':(a==null?'the first season':'the second season')}</div></div>`;
+        miss[(a==null&&b==null)?'both':(a==null?'A':'B')].push(DIMS[i]);
         continue;
       }
       const aWins=a>b, bWins=b>a;
@@ -3188,6 +3215,41 @@ body.light .pkmsub{color:var(--ink-soft)}
       const bDot=`<span class="hwin${bWins?'':' hide'}"></span>`;
       h+=`<div class="h2hrow"><div class="h2hlabel">${DIMS[i]}</div><div class="h2hbar">${aDot}<span class="hav">${a}</span><span class="ha"><i style="width:${a}%"></i></span><span class="hb"><i style="width:${b}%"></i></span><span class="hbv">${b}</span>${bDot}</div></div>`;
     }
+
+    /*  "a, b and c" , an Oxford-free list, because these are dimension names and never a
+        sentence fragment that could be misread without the comma.  */
+    const listOf = xs => xs.length<2 ? (xs[0]||'')
+      : xs.slice(0,-1).join(', ')+' and '+xs[xs.length-1];
+    /*  THE SEASON'S OWN NAME, falling back to a positional word ONLY if the card carries
+        neither a name nor a season , which the live client cannot produce, but a malformed
+        deep link could, and an undefined in this sentence would be worse than "the first".  */
+    const nameOf = (c,fallback) => {
+      try{
+        const sn = (window.VVCore && VVCore.surnameOf) ? VVCore.surnameOf(c&&c.full||'') : '';
+        const ss = (window.VVCore && VVCore.fmtSeason && c && c.season!=null) ? VVCore.fmtSeason(c.season) : '';
+        const s2 = (sn+' '+ss).trim();
+        return s2 || fallback;
+      }catch(e){ return fallback; }
+    };
+    const nA = nameOf(CMP_A,'the first season'), nB = nameOf(CMP_B,'the second season');
+    const nrRow = txt => `<div class="h2hrow h2hnr"><div class="h2hbar h2hbar-nr">${txt}</div></div>`;
+
+    /*  AN ALL-FIVE BRANCH WAS WRITTEN HERE AND DELETED BEFORE IT SHIPPED, because it CANNOT
+        FIRE and a branch that never runs is indistinguishable from one that does not work.
+        Lucas asked for the no-head-to-head case to get one sentence in the keeper branch's
+        register, and it is the right instinct , it is simply already unreachable:
+          `reliability` is `min(100, (minutes||0)/(38*90)*100)`, so it is a NUMBER on every
+          scored card and never null. The fifth dimension is therefore always measured on
+          both sides, and `miss` cannot reach five.
+          A keeper pair, the one case where every dimension really is unmeasured, returns at
+          the branch forty lines above this one before reaching here.
+        SO THE CASE IS COVERED AND THE CODE FOR IT WOULD BE DEAD. If the dimension set ever
+        changes so that a fifth absence becomes possible, this is the note that says what to
+        restore and why it was not here.  */
+    const is = xs => xs.length===1 ? 'is' : 'are';
+    if(miss.both.length) h += nrRow(`${listOf(miss.both)} ${is(miss.both)} not recorded for either season.`);
+    if(miss.A.length)    h += nrRow(`${listOf(miss.A)} ${is(miss.A)} not recorded for ${nA}.`);
+    if(miss.B.length)    h += nrRow(`${listOf(miss.B)} ${is(miss.B)} not recorded for ${nB}.`);
     box.innerHTML=h;
   }
 
