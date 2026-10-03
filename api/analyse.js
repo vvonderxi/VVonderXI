@@ -608,6 +608,28 @@ const RL_PER_HOUR   = 30;
 const RL_CONCURRENT = 2;
 const RL_STALE_MIN  = 5;    // a slot older than this is a dead function, not a live request
 
+/*  ── THE GLOBAL CEILING , BECAUSE A PER-IP LIMIT CANNOT SEE A POOL OF ADDRESSES (2026-10-03) ──
+    MEASURED ON THE LIVE PREVIEW RATHER THAN REASONED: 40 sequential calls carrying a forged
+    `Origin` header returned 24 allowed and then HTTP 429 from call #25 , exactly 30 once the
+    six already spent from that address are counted. The per-IP limit is real and exact, and it
+    bounds ONE address. A hundred addresses get thirty each and nothing in this file can see it.
+    THE ORIGIN ALLOWLIST IS NOT A SECOND LINE HERE, and the same test proved it: four forged
+    origins were refused 403, and the 200s above came from node with the header set by hand.
+    `Origin` is a request header. It stops another WEBSITE's browser, never a script.
+
+    300 IS 21x THE BUSIEST HOUR THE PLATFORM HAS EVER HAD , five verdicts and nine notes across
+    all users. At the tightened input cap it bounds the hour at about $13.
+    AND IT IS SET GENEROUSLY ON PURPOSE. That 14/hour baseline comes from a platform with no
+    traffic, so a ceiling tuned from it would refuse real visitors on launch day, which is the
+    one day it matters. If a real hour ever reaches 300, RAISE THIS , do not read the refusals
+    as abuse without checking the grouping query above for many DISTINCT addresses.
+
+    AND IT BUYS TIME RATHER THAN BOUNDING THE BALANCE , SAY SO RATHER THAN LETTING IT READ AS A
+    SOLUTION. At 300/hour a prepaid balance of ~$24 still empties in under two hours of
+    sustained abuse. The hard stop is the provider's own spend cap (QA_PASS B4b). This ceiling
+    and that cap are complements; the cap is the one that actually stops.  */
+const RL_GLOBAL_PER_HOUR = 300;
+
 /*  x-forwarded-for is a LIST and the client's address is the FIRST entry; everything after it
     is proxies. Taking the last, or the whole string, keys the limit on Vercel's edge rather
     than on the caller, which would put every visitor in one bucket.  */
@@ -637,19 +659,38 @@ async function rlBegin(ip, kind) {
     const staleAgo = new Date(Date.now() - RL_STALE_MIN * 60e3).toISOString();
     /*  BOTH COUNTS EXCLUDE REFUSAL ROWS. A refused request cost nothing, so counting it
         toward the cap would punish a user for having been refused once.  */
-    const [hourly, inflight] = await Promise.all([
+    /*  THE GLOBAL COUNT IS THE SAME QUERY WITHOUT THE IP FILTER , no new table, no new vendor,
+        and it runs in the SAME Promise.all so it costs no extra round trip. It is bound as
+        `allIPs` rather than `global` because `global` is Node's own object and shadowing a
+        host builtin inside the one function that must never throw is not worth the nicer name.  */
+    const [hourly, inflight, allIPs] = await Promise.all([
       sb.from('api_rate_events').select('id', { count: 'exact', head: true })
         .eq('ip', ip).in('kind', ['verdict', 'notes']).gte('started_at', hourAgo),
       sb.from('api_rate_events').select('id', { count: 'exact', head: true })
-        .eq('ip', ip).in('kind', ['verdict', 'notes']).is('finished_at', null).gte('started_at', staleAgo)
+        .eq('ip', ip).in('kind', ['verdict', 'notes']).is('finished_at', null).gte('started_at', staleAgo),
+      sb.from('api_rate_events').select('id', { count: 'exact', head: true })
+        .in('kind', ['verdict', 'notes']).gte('started_at', hourAgo)
     ]);
-    if (hourly.error || inflight.error) {
-      console.error('[vv] RATE LIMIT FAILED OPEN , ledger read error:', (hourly.error || inflight.error).message);
+    if (hourly.error || inflight.error || allIPs.error) {
+      console.error('[vv] RATE LIMIT FAILED OPEN , ledger read error:', (hourly.error || inflight.error || allIPs.error).message);
       return { ok: true, id: null };
     }
     if (hourly.count >= RL_PER_HOUR) {
       await sb.from('api_rate_events').insert({ ip, kind: 'refused:hourly', finished_at: new Date().toISOString() });
       return { ok: false, reason: 'hourly', retryAfter: 600 };
+    }
+    /*  THE GLOBAL CHECK SITS AFTER THE PER-IP ONE DELIBERATELY. An address that is already over
+        its own limit should be told so , 'refused:hourly' names the caller's problem, where
+        'refused:global' would blame the platform for something that one address caused.
+        IT IS ITS OWN KIND SO THE LEDGER CAN ANSWER "was this abuse or a busy hour" WITHOUT A
+        LOG HUNT, exactly as the per-IP refusals already can: group refused:global rows by hour
+        and count DISTINCT ips. Many addresses means a real crowd and the ceiling wants raising;
+        a few means a pool and the ceiling did its job.  */
+    if (allIPs.count >= RL_GLOBAL_PER_HOUR) {
+      await sb.from('api_rate_events').insert({ ip, kind: 'refused:global', finished_at: new Date().toISOString() });
+      console.error('[vv] GLOBAL CEILING HIT , ' + allIPs.count + ' generations in the last hour across all callers. ' +
+                    'If this is real traffic, raise RL_GLOBAL_PER_HOUR; check distinct ips on refused:global first.');
+      return { ok: false, reason: 'global', retryAfter: 300 };
     }
     if (inflight.count >= RL_CONCURRENT) {
       await sb.from('api_rate_events').insert({ ip, kind: 'refused:concurrent', finished_at: new Date().toISOString() });
@@ -775,14 +816,29 @@ module.exports = async (req, res) => {
         `max_tokens` all arrive from the request body and go to Anthropic on OUR key. Without
         the three bounds below it is a general-purpose Claude proxy that anyone can point at our
         credit, and the caller chooses how much each call costs.
-        THESE BOUNDS ARE THE CHEAP HALF AND THEY ARE NOT THE FIX. An ORIGIN ALLOWLIST and a RATE
-        LIMIT are the fix, and both need the launch domain list, so they are a decision rather
-        than an edit , recorded in CLAUDE.md and QA_PASS.md, NOT silently deferred.
+        [THE PARAGRAPH THAT STOOD HERE SAID THE ALLOWLIST AND THE RATE LIMIT WERE STILL A
+        DECISION RATHER THAN AN EDIT. BOTH SHIPPED ON 2026-09-15 AND THE GLOBAL CEILING ON
+        2026-10-03, so a reader was being told the fix was outstanding while it sat 150 lines
+        up. Corrected rather than deleted: it is the same stale-governing-statement shape
+        CLAUDE.md records against `VVFilters.isActive`.]
+        WHAT NOW BOUNDS THIS ENDPOINT, IN ORDER: the origin allowlist (stops another website's
+        browsers, never a script), the per-IP rate limit (30/hour, 2 concurrent), the global
+        ceiling (300/hour across all callers), and the three per-call bounds below. The hard
+        stop on the balance is the provider's own spend cap, QA_PASS B4b, which is Lucas's.
         WHAT IS BOUNDED HERE: the output ceiling (the caller no longer picks the bill), the
         input size, and the message shape. Both real callers are unaffected , compare.html
         sends max_tokens 1024 and the notes branch hardcodes 1500.  */
     const MAX_OUTPUT_TOKENS = 2048;      // above both real callers, far below what a caller could ask for
-    const MAX_INPUT_CHARS   = 120000;    // input tokens are billed too, so the prompt is a cost lever
+    /*  12,000 AND THE NUMBER IS MEASURED, NOT PICKED. The largest body any real caller sends
+        is 2,163 chars (40 notes payloads at rt>=85, median 1,337), so 120,000 was 55x anything
+        legitimate and the whole gap was an attacker's budget. Worst case per call falls from
+        $0.1334 to $0.0434, a 3.1x cut, and no real visitor can reach it. 5.5x headroom is left
+        for the payload to grow.
+        AFTER THIS, OUTPUT DOMINATES AND IS DELIBERATELY NOT CUT FURTHER , 2,048 tokens is
+        $0.0307 of the remaining $0.0434, the real callers ask for 1,024 and 1,500, and SEC E
+        already records some verdicts truncating at max_tokens. Clamping lower trades a cent
+        against prose that fails to close.  */
+    const MAX_INPUT_CHARS   = 12000;
     const _mt = Number(_maxTokens);
     const max_tokens = Number.isFinite(_mt) ? Math.min(Math.max(1, Math.floor(_mt)), MAX_OUTPUT_TOKENS) : 1024;
     if (req.body.mode !== 'notes') {
@@ -795,6 +851,23 @@ module.exports = async (req, res) => {
       let chars = 0;
       try { chars = JSON.stringify(messages).length + (typeof customSystem === 'string' ? customSystem.length : 0); } catch (e) { chars = Infinity; }
       if (!(chars <= MAX_INPUT_CHARS)) return res.status(413).json({ error: 'prompt too large' });
+    } else {
+      /*  THE NOTES BRANCH TAKES THE SAME CAP, AND IT WAS THE BIGGER HOLE OF THE TWO , FOUND
+          2026-10-03 WHILE CONTROL-TESTING THE CAP ITSELF. The check above is gated on
+          `mode !== 'notes'`, so for two weeks the cap bounded the branch whose payload is a
+          fixed shape built by compare.html and left UNBOUNDED the branch that stringifies a
+          free-form `player` object straight from the request body into the prompt. And it
+          needs no card id to reach the model: a non-finite `cardId` only turns the cache off,
+          it does not refuse the call. So the uncapped path was also the uncacheable one.
+          MEASURED THE SAME WAY AS THE OTHER: 40 real notes payloads at rt>=85 run 2,163 chars
+          at the largest and 1,337 at the median, so 12,000 is the same 5.5x headroom.
+          THE LESSON IS THE ONE CLAUDE.md KEEPS RECORDING , a rule applied inside one branch of
+          a conditional is a note, not a rule. The cap read as platform-wide because the
+          constant is declared above the branch.  */
+      let nchars = 0;
+      try { nchars = JSON.stringify(req.body.player == null ? '' : req.body.player).length
+                   + (typeof customSystem === 'string' ? customSystem.length : 0); } catch (e) { nchars = Infinity; }
+      if (!(nchars <= MAX_INPUT_CHARS)) return res.status(413).json({ error: 'prompt too large' });
     }
     /*  THE PATH B GATE. Asserted by the caller because it depends on a fact this payload does
         not carry: whether either season is a goalkeeper. compare.html sends it only for an
@@ -893,8 +966,14 @@ module.exports = async (req, res) => {
       const _rl = await rlBegin(clientIP(req), 'notes');
       if (!_rl.ok) {
         res.setHeader('Retry-After', String(_rl.retryAfter));
+        /*  A GLOBAL REFUSAL SAYS "the platform", NOT "this connection" , a visitor refused
+            by the site-wide ceiling has done nothing wrong, and telling them they have hit
+            THEIR limit is false and unactionable. The three reasons are distinguishable to
+            the reader as well as to the ledger.  */
         return res.status(429).json({ error: _rl.reason === 'concurrent'
           ? 'too many generations in flight from this connection, try again shortly'
+          : _rl.reason === 'global'
+          ? 'the platform is at its hourly generation ceiling, try again shortly'
           : 'hourly generation limit reached for this connection' });
       }
       try {
@@ -945,8 +1024,14 @@ module.exports = async (req, res) => {
     const _rl = await rlBegin(clientIP(req), 'verdict');
     if (!_rl.ok) {
       res.setHeader('Retry-After', String(_rl.retryAfter));
+      /*  A GLOBAL REFUSAL SAYS "the platform", NOT "this connection" , a visitor refused
+          by the site-wide ceiling has done nothing wrong, and telling them they have hit
+          THEIR limit is false and unactionable. The three reasons are distinguishable to
+          the reader as well as to the ledger.  */
       return res.status(429).json({ error: _rl.reason === 'concurrent'
         ? 'too many generations in flight from this connection, try again shortly'
+        : _rl.reason === 'global'
+        ? 'the platform is at its hourly generation ceiling, try again shortly'
         : 'hourly generation limit reached for this connection' });
     }
     try {
