@@ -516,6 +516,82 @@ button,.board,.card{touch-action:manipulation}
 .card:has(.cface) .cmeta{padding-right:44px}
 .lpd image{pointer-events:none}
 @media (max-width:700px){ .card:has(.cface) .cmeta{padding-right:0} .hand .card .cface{top:18px; bottom:auto; left:50%; right:auto; transform:translateX(-50%); width:30px; height:30px; border-width:1.5px} .hand .card .cname{margin-top:34px} }
+/* ===== UX batch: bigger faces, cards left, verdict colours ===== */
+.card.vvc .vart{width:72px; height:62px; margin:4px auto 3px}
+.hand .card.vvc .vtag{margin-top:1px}
+.reveal .card.vvc .vart,.smini .card.vvc .vart{width:72px; height:62px}
+.scoreboard .left{display:flex; align-items:baseline; gap:3px} .scoreboard .left b{font-size:22px !important} .scoreboard .left small{font-family:var(--label); font-size:11px; color:var(--muted)}
+.pips{display:inline-flex; gap:3px} .pips i{width:9px; height:13px; border-radius:2px; border:1.5px solid var(--line); background:transparent}
+.pips i.in.me{background:var(--gold); border-color:var(--gold)} .pips i.in.them{background:var(--pink); border-color:var(--pink)}
+.scoreboard .pile.hid{display:none !important}
+.myicons{display:inline-flex} .myicons i{width:14px; height:20px; margin-left:-6px; border-radius:3px; background:linear-gradient(160deg,#F7F2E6,#E2D8C4); border:1px solid rgba(28,27,26,.35); box-shadow:0 1px 3px rgba(0,0,0,.25)} .myicons i:first-child{margin-left:0}
+.scoreboard .opphand .cardback{width:20px; height:29px; margin-left:-8px}
+:root{--vd-debate:#8a8275; --vd-photo:#b9ab86; --vd-clear:#E8B84B; --vd-brag:#d98a1c; --vd-master:#E70443}
+.vchip{display:inline-block; padding:2px 10px; border-radius:999px; font-family:var(--display); font-weight:800; color:#1C1B1A; white-space:nowrap}
+.vchip.vd-debate{background:var(--vd-debate); color:#fff} .vchip.vd-photo{background:var(--vd-photo)} .vchip.vd-clear{background:var(--vd-clear)} .vchip.vd-brag{background:var(--vd-brag)} .vchip.vd-master{background:var(--vd-master); color:#fff}
+.sres b.vchip{font-size:17px !important; color:#1C1B1A} .sres b.vchip.vd-master,.sres b.vchip.vd-debate{color:#fff}
+.vout{display:inline-block; font-family:var(--label); font-size:11px; padding:1px 7px; border-radius:6px; margin-right:4px}
+.vout.none{background:var(--panel); color:var(--muted)} .vout.win{background:rgba(232,184,75,.28)} .vout.big{background:var(--gold); color:#1C1B1A}
+.vladder{display:flex; align-items:flex-end; gap:5px; height:34px; margin:4px 0 2px} .vladder i{flex:1; border-radius:5px}
+.vladder i:nth-child(1){height:20%; background:var(--vd-debate)} .vladder i:nth-child(2){height:40%; background:var(--vd-photo)} .vladder i:nth-child(3){height:60%; background:var(--vd-clear)} .vladder i:nth-child(4){height:80%; background:var(--vd-brag)} .vladder i:nth-child(5){height:100%; background:var(--vd-master)}
+.vlegend{display:flex; justify-content:space-between; margin:0 0 8px; font-size:12px; color:var(--muted)}
+.stamp.show.vd-photo{text-shadow:0 0 22px var(--vd-photo)} .stamp.show.vd-clear{text-shadow:0 0 22px var(--vd-clear)} .stamp.show.vd-brag{color:#F6B05A; text-shadow:0 0 24px var(--vd-brag)} .stamp.show.vd-master{color:#FF4F7E; text-shadow:0 0 26px var(--vd-master)}
+@media (max-width:700px){
+  .hand .card.vvc .vart{width:42px; height:40px; margin:2px auto 1px}
+  .scoreboard .side{gap:5px} .scoreboard .left b{font-size:17px !important} .scoreboard .left small{font-size:9px}
+  .pips{gap:2px} .pips i{width:5px; height:9px; border-width:1px; border-radius:1px}
+  .scoreboard .side > span.left{display:inline-flex !important}
+  .scoreboard .opphand .cardback{width:11px; height:16px; margin-left:-7px}
+  .pips{display:none !important}
+  .myicons i{width:9px; height:13px; margin-left:-4px}
+  .scoreboard .opphand .cardback{width:9px; height:13px; margin-left:-4px; border-radius:2px}
+  .vchip{padding:2px 8px} .sres b.vchip{font-size:14px !important}
+}
+@media (max-width:700px){
+  .scoreboard{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:4px; padding:4px 5px}
+  #possession{font-size:12.5px; padding:3px 8px; gap:4px} #possession .ballchip{width:10px; height:10px}
+  .scoreboard .side{gap:4px; padding:3px 5px; overflow:visible; min-width:0}
+  .scoreboard .side .who{font-size:12.5px; margin:0; min-width:0; flex:none}
+  .scoreboard .left small{display:none}
+  .scoreboard .myicons,.scoreboard .opphand{display:inline-flex !important; flex:none}
+  .scoreboard .side > span.left{flex:none} .scoreboard .left b{font-size:16px !important} .scoreboard .left small{font-size:9px}
+  .scoreboard .myicons i,.scoreboard .opphand .cardback{width:8px; height:12px; margin-left:-4px; border-radius:2px}
+  .scoreboard .myicons i:first-child,.scoreboard .opphand .cardback:first-child{margin-left:0}
+  #rules table,#rules tbody{display:block}
+  #rules tr:first-child{display:none}
+  #rules tr{display:grid; grid-template-columns:auto 1fr; gap:3px 10px; padding:8px 0; border-bottom:1px solid var(--line)}
+  #rules td{border:0; padding:0; font-size:13.5px}
+  #rules td:nth-child(1){grid-column:1 / -1}
+  #rules td:nth-child(2)::before{content:"Margin "; color:var(--muted)} #rules td:nth-child(3)::before{content:"Big Game "; color:var(--muted)}
+  #rules td:nth-child(4){grid-column:1 / -1}
+}
+/* reveal: both cards face-up */
+.reveal{position:absolute; inset:0; z-index:6; display:flex; align-items:center; justify-content:center; gap:22px; background:rgba(10,14,11,.72); perspective:900px}
+.reveal[hidden]{display:none} .reveal.out{opacity:0; transition:opacity .3s}
+.reveal .rv{display:flex; flex-direction:column; align-items:center; gap:8px; font-family:var(--label); font-size:13px; transform:scale(1.18)}
+.reveal .rv.me span{color:var(--gold)} .reveal .rv.them span{color:var(--pink-t)}
+.reveal .rvvs{font-family:var(--display); font-weight:800; font-size:30px; color:#F0EAD9}
+.reveal .card.vvc,.smini .card.vvc{width:122px; height:172px; padding:9px 9px 8px; border-width:3px; border-radius:12px; flex:none}
+.reveal .card.vvc{animation:rvflip .55s cubic-bezier(.2,.9,.3,1.2) both} .reveal .rv.them .card.vvc{animation-delay:.18s}
+@keyframes rvflip{from{transform:rotateY(95deg) scale(.85); opacity:0} to{transform:none; opacity:1}}
+.reveal .card.vvc .vseason,.smini .card.vvc .vseason,.reveal .card.vvc .vtag,.smini .card.vvc .vtag,.reveal .card.vvc .vmeta,.smini .card.vvc .vmeta{display:block}
+.reveal .card.vvc .vvv i,.smini .card.vvc .vvv i,.reveal .card.vvc .vstat span,.smini .card.vvc .vstat span{display:inline}
+.reveal .card.vvc .vtag.none,.smini .card.vvc .vtag.none{visibility:hidden}
+.smini{display:flex; align-items:center; gap:4px; flex:none}
+.smini .smc{width:61px; height:86px; position:relative; flex:none} .smini .smc .card.vvc{position:absolute; left:0; top:0; transform:scale(.5); transform-origin:top left; box-shadow:0 4px 10px rgba(0,0,0,.4)}
+.smini .smc.won .card.vvc{box-shadow:0 0 0 4px #E8B84B, 0 4px 10px rgba(0,0,0,.4)}
+.smini .smvs{font-family:var(--display); font-weight:800; font-size:14px; color:rgba(240,234,217,.6)}
+@media (max-width:700px){
+  .reveal{gap:8px} .reveal .rv{transform:scale(.92)} .reveal .rvvs{font-size:20px}
+  .reveal .card.vvc .vshield,.smini .card.vvc .vshield{width:21px; height:25px; font-size:10.5px; padding-top:4px}
+  .reveal .card.vvc .vvv b,.smini .card.vvc .vvv b{font-size:23px}
+  .reveal .card.vvc .vart,.smini .card.vvc .vart{width:56px; height:50px; margin:5px auto; border-radius:9px} .reveal .card.vvc .vart::before{font-size:18px}
+  .reveal .card.vvc .vname,.smini .card.vvc .vname{font-size:12.5px; text-align:left; margin-top:auto}
+  .reveal .card.vvc .vstat,.smini .card.vvc .vstat{margin-top:3px; min-height:22px} .reveal .card.vvc .vstat b,.smini .card.vvc .vstat b{font-size:21px}
+  .reveal .card.vvc::after,.smini .card.vvc::after{inset:4px; border-width:1.5px; border-radius:8px}
+  .smini .smc{width:49px; height:69px} .smini .smc .card.vvc{transform:scale(.4)}
+  .summary .sduel{display:none}
+}
 /* playtest */
 .settings .deck,.settings label[for="deckFile"],.settings #demoDeck{display:none}
 .endbtns{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
@@ -552,9 +628,12 @@ button,.board,.card{touch-action:manipulation}
   <main class="arena">
     <div class="scoreboard" id="scoreboard">
       <div class="side you"><b class="who">You</b>
-        <span>Squad <b id="myCount">6</b></span><span class="pile" id="myLegacyPile"><span class="stack legacy"></span>Legacy <b id="myLegacy">0</b></span><span>Subs <b id="myTokens">3</b></span></div>
+        <div class="myicons" id="myIcons" aria-hidden="true"></div><span class="left"><b id="myCount">7</b><small>left</small></span><span class="pips" id="myPips" aria-label="Your Legacy"></span><span class="subsn">Subs <b id="myTokens">3</b></span>
+        <span class="pile hid" id="myLegacyPile">Legacy <b id="myLegacy">0</b></span></div>
       <div class="mid"><div id="possession"></div><span id="round"></span></div>
-      <div class="side them"><span class="known" id="known"></span><span>Subs <b id="oppTokens">3</b></span><span class="pile" id="oppLegacyPile"><span class="stack legacy"></span>Legacy <b id="oppLegacy">0</b></span><div class="opphand" id="oppHand" aria-label="Their squad, face down"></div><span class="sr">Squad <b id="oppCount">6</b></span>
+      <div class="side them"><span class="known" id="known"></span><span class="subsn">Subs <b id="oppTokens">3</b></span><span class="pips" id="oppPips" aria-label="Their Legacy"></span>
+        <div class="opphand" id="oppHand" aria-label="Their squad, face down"></div><span class="left"><b id="oppLeft">7</b><small>left</small></span>
+        <span class="pile hid" id="oppLegacyPile">Legacy <b id="oppLegacy">0</b></span><span class="sr">Squad <b id="oppCount">6</b></span>
         <b class="who">Them</b></div>
     </div>
     <section class="stage" id="stage" aria-label="Live match view">
@@ -563,6 +642,7 @@ button,.board,.card{touch-action:manipulation}
       <div id="momentTitle"></div>
       <div class="engline" id="engLine"></div>
       <div class="duelbar" id="duelbar" hidden></div>
+      <div class="reveal" id="revealPane" hidden></div>
       <div class="stamp" id="stamp" role="status"></div>
     </section>
     <div class="actionbar" id="actionbar">
@@ -578,13 +658,15 @@ button,.board,.card{touch-action:manipulation}
 <dialog id="rules">
   <h2>How to play</h2>
   <blockquote>Get all seven of your seasons into your Legacy before your rival does. Every turn is a match moment: whoever has possession picks it, after the other side strikes one of three off. You both play a season face-down. Reveal. Bigger number wins the moment. Win it, and that season walks into your Legacy. Win it big, and it takes a teammate with it.</blockquote>
+  <div class="vladder" aria-hidden="true"><i class="vd-debate"></i><i class="vd-photo"></i><i class="vd-clear"></i><i class="vd-brag"></i><i class="vd-master"></i></div>
+  <p class="vlegend"><span>small margin</span><span>big margin</span></p>
   <div class="tw"><table>
-    <tr><th>Verdict</th><th>Margin</th><th>Big Game (VV points)</th><th>You get</th></tr>
-    <tr><td>The Debate Lives On</td><td>0 to 1</td><td>0 to 1</td><td>No decision, both seasons go home</td></tr>
-    <tr><td>Photo Finish</td><td>2 to 5</td><td>2 to 3</td><td>Your season walks into your Legacy</td></tr>
-    <tr><td>A Clear Edge</td><td>6 to 11</td><td>4 to 6</td><td>Your season walks into your Legacy</td></tr>
-    <tr><td>Bragging Rights Settled</td><td>12 to 22</td><td>7 to 9</td><td>Big win: your season <b>and a teammate you choose</b> walk in</td></tr>
-    <tr><td>Masterclass</td><td>23+</td><td>10+</td><td>Big win: your season and a teammate walk in</td></tr>
+    <tr><th>Verdict</th><th>Margin</th><th>Big Game (VV pts)</th><th>Outcome</th></tr>
+    <tr><td><span class="vchip vd-debate">The Debate Lives On</span></td><td>0 to 1</td><td>0 to 1</td><td><span class="vout none">No decision</span> both seasons go home</td></tr>
+    <tr><td><span class="vchip vd-photo">Photo Finish</span></td><td>2 to 5</td><td>2 to 3</td><td><span class="vout win">Win</span> your season walks into your Legacy</td></tr>
+    <tr><td><span class="vchip vd-clear">A Clear Edge</span></td><td>6 to 11</td><td>4 to 6</td><td><span class="vout win">Win</span> your season walks into your Legacy</td></tr>
+    <tr><td><span class="vchip vd-brag">Bragging Rights Settled</span></td><td>12 to 22</td><td>7 to 9</td><td><span class="vout big">Big win</span> your season <b>and a teammate you choose</b> walk in</td></tr>
+    <tr><td><span class="vchip vd-master">Masterclass</span></td><td>23+</td><td>10+</td><td><span class="vout big">Big win</span> your season and a teammate walk in</td></tr>
   </table></div>
   <p><b>Two outcomes, four names.</b> A win sends your season into your Legacy. A big win sends a teammate of your choice in with him (an <b>Assist</b>). The loser's season goes back to their squad. <b>Substitutions:</b> three per match, at most one per turn, used while you strike off or pick a moment: <b>change players</b> (swap any of your seasons for random ones from the Bench) or a <b>Tactical Switch</b> (three new moments, only when you attack). <b>Captain mode:</b> you secretly name one season Captain at kick-off; it can only go into your Legacy last. Big Game is played on real VV Score points and uses the Compare page's own margins.</p>
   <p><button class="btn" id="rulesClose">Back to the match</button></p>
@@ -638,6 +720,20 @@ function seasonLabel(c) {
   if (y > 1900) { const a = String(y).slice(2), b = String(y + 1).slice(2); return `${a}/${b}`; }
   return s ? String(s) : '';
 }
+// surnameOf: the site's particle-aware version (vv-core.js), so the game names players exactly as the site does.
+const SURNAME_OVERRIDES = { 'Vinícius Júnior': 'Vinícius' };
+const PARTICLES = new Set(['de','del','della','dello','degli','di','da','dos','das','do','van','von','der','den','ter','ten','te','le','la','du','bin','ibn','al','el','mac','mc',"o'",'san','santa','st']);
+const MULTI_PARTICLES = [['van','der'],['van','den'],['van','de'],['de','la'],['de','los'],['de','las'],['dos','santos']];
+function surnameOf(name) {
+  if (!name) return '';
+  const raw = String(name).trim();   // exactly as vv-core: an initial is handled by the rules, stripping it first loses particles
+  if (SURNAME_OVERRIDES[raw]) return SURNAME_OVERRIDES[raw];
+  const parts = raw.split(/\s+/); if (parts.length === 1) return parts[0];
+  const lower = parts.map(x => x.toLowerCase()), last = parts.length - 1;
+  for (const seq of MULTI_PARTICLES) { const st = last - seq.length; if (st >= 1 && seq.every((t, i) => lower[st + i] === t)) return parts.slice(st).join(' '); }
+  if (last - 1 >= 1 && PARTICLES.has(lower[last - 1])) return parts.slice(last - 1).join(' ');
+  return parts[last];
+}
 function adaptReal(json) {
   const list = Array.isArray(json.cards) ? json.cards : Object.values(json.cards || json);
   const out = {};
@@ -650,7 +746,7 @@ function adaptReal(json) {
     const placeholder = p && p.toLowerCase() === '#1a1a2e';
     if (!p || placeholder) { p = '#F0EAD9'; s = '#E70443'; a = '#E8B84B'; }
     const rt = +pick(c, 'rt', 'vv', 'vv_score');
-    const short = String(pick(c, 'player_name', 'display_name', 'name') || full).replace(/^(\p{Lu}\.\s*)+/u, '').trim();
+    const short = surnameOf(pick(c, 'display_name', 'full_name', 'player_name', 'name') || full);
     out[id] = { id, name: short || full, fullName: pick(c, 'display_name', 'full_name') || full, season: seasonLabel(c),
       pos: pick(c, 'position', 'game_position', 'pos', 'pool') || '', club: pick(c, 'team_name', 'club', 'team') || '',
       colours: { p, s: s || '#FFFFFF', a: a || '#E8B84B' }, placeholderColours: !!placeholder,
@@ -672,6 +768,7 @@ const $ = s => document.querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const other = p => p === 'A' ? 'B' : 'A';
 const ME = 'A', CPU = 'B';
+const VERDICT_CLASS = { the_debate: 'vd-debate', var_close: 'vd-debate', photo_finish: 'vd-photo', clear_edge: 'vd-clear', bragging_rights: 'vd-brag', masterclass: 'vd-master' };
 const VERDICT_NAME = { the_debate: 'The Debate Lives On', var_close: 'VAR close call', photo_finish: 'Photo Finish', clear_edge: 'A Clear Edge', bragging_rights: 'Bragging Rights Settled', masterclass: 'Masterclass' };
 const STAT_NAME = { goalThreat: 'Goal Threat', creation: 'Creation', progression: 'Progression', defensive: 'Defensive Wall', reliability: 'Ever Present', roleMastery: 'Role mastery', impact: 'VV Score' };
 const MOMENT_LINE = {
@@ -739,7 +836,8 @@ function cardFace(id, opts = {}) {
   const c = card(id);
   const sur = n => n.replace(/^(\p{Lu}\.\s*)+/u, '');
   const mine = state ? state.players[ME].hand : [];
-  const shown = mine.filter(x => x !== id && sur(card(x).name) === sur(c.name)).length ? c.name : sur(c.name);
+  const dupe = mine.filter(x => x !== id && sur(card(x).name) === sur(c.name)).length;
+  const shown = dupe && c.fullName && c.fullName !== c.name ? `${c.fullName.trim()[0]}. ${sur(c.name)}` : sur(c.name);
   // Same three faces as the site's .vvcard: Generational = dark face + gold hairline, Iconic = gold, else cream.
   const face = /generational/i.test(c.band) ? 'gen' : /iconic|elite/i.test(c.band) ? 'iconic' : 'cream';
   const f = el('div', `card vvc face-${face}`);
@@ -775,6 +873,12 @@ function render() {
   const known = [...new Set(state.history.filter(x => x.round >= since).map(x => x.played[CPU]))].filter(id => state.players[CPU].hand.includes(id));
   $('#known').innerHTML = known.length ? 'Known: ' + known.slice(0, 3).map(id => `<b>${card(id).name.replace(/^(\p{Lu}\.\s*)+/u, '')}</b> ${card(id).pos}`).join(', ') : '';
   $('#myCount').textContent = state.players[ME].hand.length + (state.players[ME].locked ? 1 : 0);
+  const oppLeftN = state.players[CPU].hand.length + (state.players[CPU].locked ? 1 : 0), myLeftN = state.players[ME].hand.length + (state.players[ME].locked ? 1 : 0);
+  $('#oppLeft').textContent = oppLeftN;
+  $('#myIcons').innerHTML = '<i></i>'.repeat(myLeftN);
+  const pips = (n, cls) => Array.from({ length: ctx.config.handSize }, (_, i) => `<i class="${i < n ? cls : ''}"></i>`).join('');
+  $('#myPips').innerHTML = pips(legacy[ME], 'in me'); $('#myPips').title = `Your Legacy: ${legacy[ME]} of ${ctx.config.handSize}`;
+  $('#oppPips').innerHTML = pips(legacy[CPU], 'in them'); $('#oppPips').title = `Their Legacy: ${legacy[CPU]} of ${ctx.config.handSize}`;
   $('#round').textContent = `Round ${state.round}`;
   const mine = state.active === ME;
   $('#myRole').innerHTML = mine ? '<i class="ballchip"></i>Attacking, has the ball' : 'Defending';
@@ -785,7 +889,7 @@ function render() {
   $('#ballMark').innerHTML = mine ? '<i class="ballchip big"></i><span>You attack &#8594;</span>' : '<span>&#8592; They attack</span><i class="ballchip big"></i>';
   $('#stateLine').textContent = stateLine();
   const opp = $('#oppHand'); opp.innerHTML = '';
-  for (let i = 0; i < v.players[CPU].hand; i++) opp.append(el('div', 'cardback', '<span>VV</span>'));
+  for (let i = 0; i < v.players[CPU].hand + (v.players[CPU].locked ? 1 : 0); i++) opp.append(el('div', 'cardback', '<span>VV</span>'));
   const hand = $('#hand'); hand.innerHTML = '';
   const selecting = state.phase === 'SELECT' && !state.players[ME].locked;
   state.players[ME].hand.forEach((id, i, arr) => {
@@ -921,12 +1025,24 @@ function countUp(node, to, ms) {
   const t0 = performance.now(); const d = reduce ? 1 : ms * speed;
   return new Promise(res => { const tick = t => { const k = Math.min(1, (t - t0) / d); node.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); k < 1 ? requestAnimationFrame(tick) : res(); }; requestAnimationFrame(tick); });
 }
+// Both cards flip face-up side by side before the duel, so you see exactly what you are up against.
+async function showReveal(rv, cmp) {
+  const pane = $('#revealPane'); pane.innerHTML = '';
+  const side = p => { const r = cmp.attacker === p ? 'attack' : 'defence';
+    const w = el('div', `rv ${p === ME ? 'me' : 'them'}`, `<span>${p === ME ? 'You' : 'Them'}, ${r === 'attack' ? 'attacking' : 'defending'}</span>`);
+    w.append(cardFace(rv.cards[p], { cat: rv.category, role: r })); return w; };
+  pane.append(side('A'), el('b', 'rvvs', 'v'), side('B'));
+  pane.classList.remove('out'); pane.hidden = false;
+  await wait(2100);
+  pane.classList.add('out'); await wait(320); pane.hidden = true; pane.innerHTML = '';
+}
 async function playDuel(ev) {
   const { REVEAL: rv, COMPARISON: cmp, VERDICT: vd } = ev;
   hideMoments(); lpBoards(null); setMoment(rv.category); lpZone(rv.category, cmp.attacker);
   say(''); setTurn('play', 'the moment plays out on the pitch');
   const statTxt = p => `${Math.round(p === 'A' ? cmp.aValue : cmp.bValue)} ${STAT_NAME[fieldFor(rv.category, cmp.attacker === p ? 'attack' : 'defence')]}`;
   cm(`Reveal: your ${nm(rv.cards.A)} with ${statTxt('A')}, against their ${nm(rv.cards.B)} with ${statTxt('B')}.`);
+  await showReveal(rv, cmp);
   await lpDuel(rv, cmp, vd);
   const name = VERDICT_NAME[vd.verdictTagKey] || vd.verdictId;
   const marg = Math.round(cmp.difference);
@@ -934,7 +1050,7 @@ async function playDuel(ev) {
     : `Margin ${marg}: <b>${name}</b>. ${who(vd.winner, true)} win the moment${vd.picks > 1 ? ' and choose two rewards' : vd.availableEffects.length > 1 ? ' and choose a reward' : ''}.`, vd.winner === ME ? 'me verdict' : vd.winner === CPU ? 'them verdict' : 'verdict');
   const st = $('#stamp');
   st.textContent = name;
-  st.className = `stamp show sev${vd.severity} ${vd.winner === ME ? 'mine' : vd.winner === CPU ? 'theirs' : ''}`;
+  st.className = `stamp show sev${vd.severity} ${vd.winner === ME ? 'mine' : vd.winner === CPU ? 'theirs' : ''} ${VERDICT_CLASS[vd.verdictTagKey] || ''}`;
   $('#stage').classList.add(`sev${vd.severity}`);
   await wait(1500 + vd.severity * 250);
   st.className = 'stamp'; $('#stage').classList.remove('sev0', 'sev1', 'sev2', 'sev3', 'sev4');
@@ -1226,15 +1342,19 @@ function showSummary(final) {
   const side = p => { const r = cmp.attacker === p ? 'attack' : 'defence'; const v = Math.round(p === 'A' ? cmp.aValue : cmp.bValue);
     return `<span class="${vd.winner === p ? 'w' : ''}">${p === ME ? 'You' : 'Them'}: <b>${card(rv.cards[p]).name}</b> ${v} ${STAT_NAME[fieldFor(rv.category, r)]} <small>(VV ${card(rv.cards[p]).rt})</small></span>`; };
   const res = !vd.crowns ? 'No decision' : vd.winner === ME ? 'You win the moment' : 'They win the moment';
-  box.innerHTML = `<div class="sres ${vd.winner === ME ? 'me' : vd.winner === CPU ? 'them' : ''}"><b>${name}</b><span>${res}, margin ${Math.round(cmp.difference)}</span></div>
+  box.innerHTML = `<div class="sres ${vd.winner === ME ? 'me' : vd.winner === CPU ? 'them' : ''}"><b class="vchip ${VERDICT_CLASS[vd.verdictTagKey] || ''}">${name}</b><span>${res}, margin ${Math.round(cmp.difference)}</span></div>
     <div class="sduel">${side('A')} <em>v</em> ${side('B')}</div>
     <ul class="scons">${turnLog.map(t => `<li>${t}</li>`).join('')}</ul>
     <div class="snav"><button class="btn primary" id="sNext"><span class="sprog"></span>${final ? 'See the result' : 'Next turn'}</button><button class="btn" id="sPause">${paused ? 'Auto on' : 'Pause'}</button></div>`;
+  const mini = el('div', 'smini');
+  for (const p of ['A', 'B']) { const r = cmp.attacker === p ? 'attack' : 'defence'; const w = el('div', `smc ${vd.winner === p ? 'won' : ''}`); w.append(cardFace(rv.cards[p], { cat: rv.category, role: r })); mini.append(w); if (p === 'A') mini.append(el('b', 'smvs', 'v')); }
+  box.prepend(mini);
   box.hidden = false; setTurn('play', 'the turn is settled');
   const btn = box.querySelector('#sNext'); btn.focus({ preventScroll: true });
   return new Promise(res => { let auto; const go = () => { clearTimeout(auto); box.hidden = true; box.innerHTML = ''; res(); };
-    const ms = speed < 1 ? 2200 : 3500, prog = box.querySelector('.sprog');
-    const arm = () => { clearTimeout(auto); if (paused || final) { prog.style.transition = 'none'; prog.style.width = '0'; return; }
+    const ms = 2200, prog = box.querySelector('.sprog');
+    if (speed >= 1) box.querySelector('#sPause').hidden = true;
+    const arm = () => { clearTimeout(auto); if (paused || final || speed >= 1) { prog.style.transition = 'none'; prog.style.width = '0'; return; }
       prog.style.transition = 'none'; prog.style.width = '0'; void prog.offsetWidth; prog.style.transition = `width ${ms}ms linear`; prog.style.width = '100%'; auto = setTimeout(go, ms); };
     btn.onclick = go;
     box.querySelector('#sPause').onclick = e => { paused = !paused; e.target.textContent = paused ? 'Auto on' : 'Pause'; arm(); };
