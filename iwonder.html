@@ -276,26 +276,41 @@
     </div>
   </div>
 <script>
+  /*  THE SIGNUP WRITES TO SUPABASE NOW, NOT TO A THIRD-PARTY FORM SERVICE , 2026-10-03.
+      A waitlist you have to read out of an inbox cannot answer "who wants I Wonder", and
+      that question is the whole reason for collecting it. One table, with `source` telling
+      the two lists apart, so the answer is one query.
+      THE WRITE PATH IS THE NARROWEST ONE THAT WORKS. On 2026-10-03 the anon role lost
+      every verb on every relation; this is the single grant handed back , INSERT on this
+      one table, under an RLS policy scoped to anon. The key below cannot read this table,
+      cannot change a row and cannot delete one. It can only add.
+      SO THERE IS NO .select() AND Prefer IS return=minimal. Asking PostgREST to hand the
+      inserted row back needs a SELECT privilege anon deliberately does not have, and the
+      write would land while the response 401'd.
+      A REPEAT ADDRESS IS A SUCCESS, NOT AN ERROR. A unique index on lower(email) is what
+      bounds abuse here, so a second signup from the same person returns 409. They ARE on
+      the list, so reporting a failure would be false and would invite them to retry
+      something that cannot work. 409 is treated exactly like 201.
+      AWAIT THE REQUEST, THEN DECIDE , unchanged, and it is the rule that matters most on
+      this page. fetch resolves on 4xx and 5xx too, so only an inspected status may unlock
+      the thanks line. ON FAILURE THE FORM STAYS UP WITH THE ADDRESS STILL IN IT: the typed
+      address is the only copy that exists, and clearing it destroys the thing they were
+      trying to give us. Never clear the input on error.  */
   async function iwNotify(){
     var el=document.getElementById('iwemail'); var e=el.value.trim();
     if(!e||e.indexOf('@')<1){el.focus();return;}
     var btn=document.querySelector('#iwform button'), err=document.getElementById('iwerr');
     err.style.display='none';
     btn.disabled=true; btn.textContent='Sending...';
-    // AWAIT THE FETCH, THEN DECIDE. This used to show the thanks line BEFORE the request
-    // was made and swallow every failure in a bare .catch(function(){}), so a visitor was
-    // thanked and the signup was lost whenever Formspree was down, rate-limited or over
-    // quota. The only honest signal is r.ok. Same pattern the contact page already used.
-    // On failure the form STAYS UP with the address still in it, so the visitor can retry
-    // or copy it. Never clear the input on error.
     var ok=false;
     try{
-      var r=await fetch('https://formspree.io/f/maqzaooq',{
+      var r=await fetch('https://krqthvroetbxgnvwwjar.supabase.co/rest/v1/waitlist_emails',{
         method:'POST',
-        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        headers:{'Content-Type':'application/json','apikey':'sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp',
+                 'Authorization':'Bearer sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp','Prefer':'return=minimal'},
         body:JSON.stringify({email:e, source:'I Wonder waitlist'})
       });
-      ok=r.ok;
+      ok = r.ok || r.status===409;          // 409 = already on the list, which is success
     }catch(_){ ok=false; }
     btn.disabled=false; btn.textContent='Notify me';
     if(ok){

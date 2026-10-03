@@ -20,6 +20,17 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 - **DO NOT RE-ADD A CAPTURE BEFORE THE PDF EXISTS.** That is the whole lesson of the short-lived version: a form whose artefact does not exist can only ever be honest by apologising for itself, and the copy spent three separate sentences doing that.
 - **IF THE PDF IS CUT RATHER THAN BUILT, nothing has to be unwound** , which is the position the removal restored.
 
+## ROUTE B , THE WAITLIST THROUGH A SERVERLESS ENDPOINT. THE STRONGER ANSWER, HELD UNTIL ABUSE APPEARS (scoped 2026-10-03, NOT built)
+
+**WHAT SHIPPED INSTEAD, SO THIS IS NOT RE-DERIVED: ROUTE A.** `iwonder.html` and `myclub.html` POST straight to `waitlist_emails` with the publishable key, under one grant , `INSERT`, no SELECT, no UPDATE, no DELETE , and an RLS policy scoped to anon. A unique index on `lower(email)` is the only throttle, so a repeat address 409s and the client treats that as success.
+
+**ROUTE A'S WEAKNESS IS NAMED RATHER THAN DISCOVERED LATER: there is no rate limit.** The ceiling on abuse is one row per DISTINCT address, so a script with a thousand addresses writes a thousand rows and nothing stops it. What it cannot do is read the list, change a row or delete one , so the worst case is a polluted table, not a leak and not data loss. **That is the trade, and it was taken deliberately because the alternative costs a deployed function and a code change.**
+
+**ROUTE B IS: a serverless endpoint holding the service key, with the client posting to it instead.** The pieces already exist in `api/analyse.js` and would be reused rather than written , the origin allowlist, and the `api_rate_events` limiter (30/hour/IP, 2 concurrent). Anon would then hold **zero** write grants anywhere, which is the position the 2026-10-03 lockdown otherwise achieved.
+- **WHAT IT COSTS, AND WHY IT WAS NOT TAKEN NOW:** a SECOND deployed function (the surface has been exactly one since 2026-09-15, and that is a number worth defending), plus a code change to two shipping pages, which per the merge rule has to land before the merge rather than whenever.
+- **THE TRIGGER TO BUILD IT IS EVIDENCE, NOT A DATE.** Any of: junk rows appearing in `waitlist_emails`; the row count rising faster than real traffic explains; or a single source producing many addresses that never confirm. **Query it; do not wait to be told.**
+- **AND IF IT IS BUILT, THE UNIQUE INDEX STAYS.** It is cheap, it is the thing that makes a repeat signup a clean no-op rather than a duplicate, and an endpoint does not replace it , the two defend different things.
+
 ## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
 
 **HELD BY LUCAS ON 2026-09-27: "logged, not now. It is nine live surfaces and a visual change,
