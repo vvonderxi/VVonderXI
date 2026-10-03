@@ -50,6 +50,39 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 **DO NOT SPEND RETRIES ON IT.** Five attempts, zero successes, and each one pays for a truncated response. **The population is ONE pair as of 2026-10-03** , everything else at rt>=95 and rt>=93 is warm , so the cost of leaving it is one marquee comparison, and the cost of chasing it with retries is unbounded.
 
+## A SHARED LINK SHOULD SHOW THE VERDICT WHEN IT COSTS NOTHING , AUTO-GENERATE ON A CACHE HIT ONLY (scoped 2026-10-03, NOT built)
+
+**THE BEHAVIOUR TODAY: `?a=&b=` renders both cards and a COMPARE button, and nothing else.** That is the right default , a page load must never spend a model call , but it means **the recipient of a shared link gets the setup without the payoff**, which is the one thing a share exists to deliver. Verified on the live preview: both cards render correctly, the button is present, and no request fires until it is pressed.
+
+**AND THE PAIRS PEOPLE SHARE ARE EXACTLY THE PAIRS THAT ARE ALREADY WARM**, which is what makes this nearly free rather than a new cost. A link gets shared because someone generated it; generating it cached it.
+
+**THE ENDPOINT ALREADY DOES THE EXPENSIVE HALF OF THIS. `api/analyse.js` checks `verdict_cache` FIRST and returns `{verdict, winner_card_id, cached:true}` before any model call** , the hit path costs one Supabase read. What is missing is a way to ask WITHOUT committing to generate on a miss.
+
+**THE SHAPE: a `cacheOnly` flag on the request, and an early return where the handler currently falls through to the model.** On a miss it answers `{cached:false}` and the client shows the button exactly as today. Roughly one flag, one early return, one client branch.
+
+**THE FOUR THINGS THAT MAKE IT CORRECT RATHER THAN MERELY SMALL, and the third is the one that will be missed:**
+1. **THE MISS PATH MUST RETURN BEFORE THE RATE LIMITER, NOT AFTER.** SS C records that the limiter runs AFTER the cache lookup precisely so a warm pair is never counted. A `cacheOnly` miss must not consume a slot either , otherwise a page LOAD spends one of a visitor's 30 per hour without generating anything, and a few shared links would lock a reader out of the feature the link is advertising.
+2. **THE CLIENT MUST STILL SEND `payloadRev` AND `statsRev`.** They are two of the four cache-version segments, so without them the freshness test cannot run and every probe reads as a miss , the feature would look built and do nothing. `compare.html` already computes both.
+3. **PATH B IS THE SUBTLE ONE: a pair inside the margin was generated under `VERDICT_SYSTEM_JUDGE` and stamped with a DIFFERENT version.** The probe must send the same `judge` flag the live generate path would, or the version comparison fails and a warm Path B pair reads as cold. **The marquee pairs are disproportionately Path B** , all three of compare's own suggested matchups are , so getting this wrong would miss exactly the links most likely to be shared.
+4. **It changes no cache semantics and invalidates nothing**, which is why it can ship independently of any prompt work.
+
+**WHAT IT IS NOT: a reason to pre-warm more pairs.** The value is in serving what is already there. Warming to make shares look better is the fame-keyed warm list SS C's anchor guardrail rules out, arriving by a different door.
+
+
+## `A. Robertson` IS STORED AS `CB` AND HE IS A LEFT-BACK , A NAMED INSTANCE OF THE POSITION-POOL THREAD, ON A PROMINENT CARD (found 2026-10-03, NOT fixed)
+
+**Measured: `card_id 132785`, Robertson 2019 Liverpool, `position_pool = CB`, rt 84.** The 2021 card (`131966`, rt 83) carries the same. He is a full-back, so the correct pool is **FB**.
+
+**IT IS NOT A NEW DEFECT CLASS , SS E already records position-pool accuracy as open, with Nico Williams as its named case.** This is recorded because it is a SECOND named instance, at rt 84, on a player most readers can check by eye, which is the kind that costs credibility rather than accuracy.
+
+**THE POOL IS READ AT FULL STRENGTH BY FOUR CONSUMERS, so a wrong pool is wrong four times over and SS C already lists them:**
+1. **IDENTITY-TAG GATING** , a tag whose name asserts a position gates on `position_pool`, so he is eligible for centre-back tags and ineligible for full-back ones.
+2. **THE RADAR'S PERCENTILE POOL** , every axis is scored against CB seasons, and a full-back's attacking output read against centre-backs flatters it on creation and progression.
+3. **THE ENGINE'S `pos_pct` / `posvol_pct`** , these partition on `COALESCE(pool, pos)`, so the rt itself is computed against the wrong population.
+4. **COMPARE'S POOL ARGUMENT** , the verdict prose cites the pool by name, so a comparison can tell a reader he is a centre-back.
+
+**DO NOT SPOT-FIX IT.** SS E's 2026-09-11 ruling is explicit: hand-patching the top of a systemic position defect spends untouched cards' band positions to move a handful , the dry run put 9 cards across band lines to correct 13. **The same reasoning applies here, and more so, because `sig = def_share_pct` makes the defensive pools the ones where a pool change moves rt most.** It belongs with the position work, not ahead of it.
+
 ## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
 
 **HELD BY LUCAS ON 2026-09-27: "logged, not now. It is nine live surfaces and a visual change,
