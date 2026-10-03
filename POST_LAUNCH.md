@@ -552,6 +552,8 @@ whoever opens this file should read that entry first.
 **Parked deliberately. The two cheap fixes from the same audit shipped; this one did not, because it is a
 layout change to the main grid and belongs with the Compare/rankings filter redesign rather than the merge run.**
 
+**[THE BOTTOM ACTION BAR IS ALREADY BUILT, 2026-10-03, IN `compare.html` , ADOPT IT, DO NOT REBUILD IT.** The settle-button fix below was constructed as this pattern on purpose: 61px by declaration, stacked flush on `.bottomnav` at the 720 breakpoint with a measured 0px seam, every target at 44px, and two state tokens (`--vvnavh`, `--vvbarh`) the dependents are written against. **What Option C adds here is the SHEET and the slim top bar, not the bar.** And the 720-to-1100 seam in risk 1 is still open , the settle bar deliberately did not widen it and deliberately did not close it either.]**
+
 **WHAT IT IS.** Replace the stacked mobile chrome (search + view toggles + filter rail, all in flow) with a
 **52px slim bar** at the top and a **61px action bar** at the bottom that opens the filters as a **sheet** over
 the page instead of pushing 1,572px of panel into the document.
@@ -582,7 +584,32 @@ no touch target falls under 44px. **Cost: 5 to 6 hours.**
    desktop renders in the rail, so every control exists twice in markup or moves between containers. Moving
    is correct; duplicating drifts, which is what §C already records about the four tag-render paths.
 
-## COMPARE , THE SETTLE BUTTON SITS BELOW THE FOLD ON MOBILE (measured 2026-08-29, NOT FIXED)
+## COMPARE , THE SETTLE BUTTON SITS BELOW THE FOLD ON MOBILE (measured 2026-08-29, **FIXED 2026-10-03**)
+
+**BUILT AS THE SHARED BOTTOM-ACTION BAR, WHICH IS WHY IT IS RECORDED HERE AND NOT ONLY IN THE COMMIT: RANKINGS OPTION C INHERITS THESE RULES RATHER THAN INVENTING A SECOND BAR.** The entry below says doing it separately means building the same bar twice, and that is still the governing instruction , Option C adopts `.settlerow`'s block in `compare.html` and changes only what it holds.
+
+**MEASURED ON THE RENDERED PAGE AT 390x844, BOTH THEMES, DEEP-LINKED PAIR:**
+
+| | before | after |
+|---|---|---|
+| Compare button below the fold | **693 to 734px** | **0** , on screen at `scrollY` 0 |
+| button box | 213x53 floating | **358x44**, full-bar width |
+| bar height | , | **61px**, Option C's figure, by declaration |
+| seam between bar and nav | , | **0px** (bar bottom 790 == nav top 790) |
+
+**THE TWO HEIGHTS ARE DECLARED AS TOKENS AND THE FIRST ATTEMPT GOT BOTH WRONG, WHICH IS THE PART WORTH KEEPING.** I read `body{padding-bottom:72px}` as "the nav's height". It is not , **72 is the nav's 54 PLUS 18px of clearance** , so the bar sat 18px too high and a strip of the page scrolled through the slot between bar and nav. And the bar came out **68px against the pattern's 61**, because its height was an emergent consequence of padding plus whatever the button happened to be. Both are now named: `--vvnavh` written the same way the nav writes its own padding so a device safe-area moves them together, and `--vvbarh:61px` with the button given an explicit 44px, so the arithmetic is **8 + 44 + 8 + 1** rather than a number that fell out.
+
+**THE CONTROL MOVES, IT IS NOT DUPLICATED** , Option C's third recorded risk. There is exactly one `.settlerow` in the markup and the block changes where it sits.
+
+**THE BREAKPOINT IS 720, MATCHING `.bottomnav` RATHER THAN BEING CHOSEN.** Option C's first risk is the 720-to-1100 seam where `.filterrail` is static and no bottom bar exists. **This does not widen it** , the bar appears exactly where the nav it stacks on appears , and that seam is still open and still Option C's to close.
+
+**THE BAR HIDES IN THE TWO STATES THAT HAVE NOTHING TO SETTLE, AND IT IS THE PLATFORM'S FIRST `:has()`.** Before both slots are filled (`.settle.disabled`, already toggled by `vvUpdateCompareGate`) and after the verdict is open (`#verdict.show`). **The reason it is CSS and not a JS flag is SS C's own rule**: a behaviour attached to a code path is missing from every other path, and `#verdict.show` is added by the button's handler, removed by `vvCompareNew`, and can arrive already set on a deep link. The cascade reads the state, so no path can forget. **It degrades safe** , unsupported, the rule does not apply and the bar stays visible, which is the old behaviour plus a pinned button.
+
+**VERIFIED WITH THE NEGATIVE CONTROL BOTH WAYS, because a gate that only ever hides is indistinguishable from a bar that never worked:** enabled reads `display:flex` / `padding-bottom:133px`, disabled and settled both read `display:none` / `72px`, and the back-to-top moves 145 to 84 with them. Harness: `_probe_390.html`.
+
+---
+
+## [THE ORIGINAL ENTRY, KEPT FOR THE MEASUREMENT AND THE REASONING]
 
 **At 390x844 on a deep-linked pair, the "Compare" button's top is 1,537px into a 1,715px page , 693px below
 the fold, 1.82 screens down.** The button itself is fine (213x53). **The reader has to scroll almost two

@@ -1530,6 +1530,83 @@ body.light .pkmsub{color:var(--ink-soft)}
   body.light .vv-totop{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.10);color:var(--charcoal)}
   @media (max-width:720px){.vv-totop{bottom:84px}}
 
+  /*  ── THE SETTLE BAR , THE SHARED BOTTOM-ACTION PATTERN, PHONE ONLY (built 2026-10-03) ───
+      THE DEFECT, MEASURED 2026-08-29 AND QUOTED AS A RANGE BECAUSE IT IS PAIR-DEPENDENT: on a
+      deep-linked pair at 390x844 the Compare button's top sat 693 to 734px BELOW the fold,
+      about 1.8 screens past two cards. The button was never the problem , it measures 213x53
+      , the problem was that the control which does the thing the page exists for could not be
+      reached without scrolling past everything it operates on.
+
+      IT IS BUILT AS THE PATTERN RANKINGS OPTION C INTRODUCES, NOT AS A ONE-OFF, because
+      POST_LAUNCH is explicit that doing it separately means building the same bar twice. The
+      shape it inherits: a bottom action bar that STACKS ABOVE the existing nav with zero
+      overlap, phone-only, every target at or above 44px. When Option C lands on rankings it
+      adopts these rules rather than inventing a second bar.
+
+      THE CONTROL MOVES, IT IS NOT DUPLICATED. Option C's third recorded risk is that a
+      mobile bar tempts you to render the same control twice and let the copies drift , which
+      is what SS C already records about the four tag-render paths. So there is exactly ONE
+      .settlerow in the markup and this block changes where it sits; no second button exists.
+
+      THE BREAKPOINT IS 720, MATCHING .bottomnav RATHER THAN BEING CHOSEN. Option C's first
+      risk is that .filterrail goes static at 1100 while .bottomnav appears at 720, so 720 to
+      1100 gets neither treatment. That seam is pre-existing and this does not widen it: the
+      bar appears exactly where the nav it stacks on appears.  */
+  @media (max-width:720px){
+    /*  ── THE TWO HEIGHTS ARE DECLARED, NOT ASSUMED, AND THE FIRST ATTEMPT GOT BOTH WRONG ──
+        I reached for 72px as "the nav's height" because that is what body{padding-bottom}
+        reserves for it. It is not: 72 is the nav PLUS 18px of clearance, and the nav itself
+        measures 54. Sitting the bar at bottom:72px left an 18px strip of the page scrolling
+        through between the bar and the nav , a seam that reads as a defect rather than as
+        spacing. And my bar came out 68px against the pattern's 61, because its height was a
+        consequence of padding plus whatever the button happened to be.
+        BOTH ARE NOW NAMED. --vvnavh is the nav's real height, written the same way the nav
+        writes its own padding so a device safe-area moves them together; --vvbarh is 61px
+        BY DECLARATION, which is Option C's figure, and the button is given an explicit 44px
+        so the arithmetic is 8 + 44 + 8 + 1 rather than an emergent number.  */
+    body{--vvnavh:calc(54px + env(safe-area-inset-bottom,0px));--vvbarh:61px}
+    .settlerow{position:fixed;left:0;right:0;bottom:var(--vvnavh);z-index:59;margin:0;
+      max-width:none;height:var(--vvbarh);padding:8px 16px;align-items:center;
+      background:rgba(20,16,17,.93);backdrop-filter:blur(12px);
+      border-top:1px solid rgba(255,255,255,.08);box-sizing:border-box}
+    body.light .settlerow{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
+    /*  FULL WIDTH ON THE BAR. The 340px cap is right for a button floating in a centred
+        column and wrong for one that IS the bar , a 340px pill inside a 390px bar leaves two
+        dead margins and reads as a button that failed to fill its container.
+        44px EXACTLY, which is the pattern's own floor for a touch target and is what makes
+        the bar's 61 arithmetic rather than emergent.  */
+    .settlerow .settle{width:100%;max-width:none;height:44px;padding:0 20px;font-size:15px;
+      justify-content:center;box-shadow:none}
+    /*  THE PAGE CLEARS BOTH, KEEPING THE NAV'S OWN 18px OF BREATHING ROOM rather than
+        inventing a second spacing value: 72 was 54 + 18, so this is 54 + 61 + 18.  */
+    body{padding-bottom:calc(var(--vvnavh) + var(--vvbarh) + 18px)}
+    /*  AND THE BACK-TO-TOP MOVES WITH IT. At bottom:84px it sat INSIDE the new bar. 84 was
+        the nav's 54 plus 30, so this keeps the same 30 above the bar instead.  */
+    .vv-totop{bottom:calc(var(--vvnavh) + var(--vvbarh) + 30px)}
+
+    /*  ── WHEN THE BAR IS NOT THERE, AND WHY IT IS :has() ───────────────────────────────
+        TWO STATES HAVE NOTHING TO SETTLE: before both slots are filled (.settle already
+        carries .disabled, toggled in vvUpdateCompareGate) and after the verdict is open
+        (#verdict carries .show). In both the bar would be 61px of permanent chrome offering
+        an action that is unavailable or already taken , and it would sit under the
+        back-to-top for the whole length of a 2,000px verdict.
+        :has() RATHER THAN A JS FLAG BECAUSE OF THIS FILE'S OWN RULE: a behaviour attached to
+        a CODE PATH is missing from every other path. #verdict.show is added by the button's
+        own handler and removed by vvCompareNew, and a deep-linked pair can arrive settled; a
+        flag set in one of those forgets the others. The cascade reads the STATE, so no path
+        can forget. It is the platform's first :has() and it DEGRADES SAFE , unsupported, the
+        rule simply does not apply and the bar stays visible, which is the old behaviour plus
+        a pinned button rather than a broken page.
+        THE PADDING FOLLOWS THE BAR. Leaving body at 133px with no bar renders 61px of dead
+        space above the nav, which is the kind of gap nobody reports and everybody feels.  */
+    body:has(.settle.disabled) .settlerow,
+    body:has(#verdict.show) .settlerow{display:none}
+    body:has(.settle.disabled),
+    body:has(#verdict.show){padding-bottom:calc(var(--vvnavh) + 18px)}
+    body:has(.settle.disabled) .vv-totop,
+    body:has(#verdict.show) .vv-totop{bottom:calc(var(--vvnavh) + 30px)}
+  }
+
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
      #E70443: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
