@@ -98,11 +98,15 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 **WHAT IT IS NOT: a reason to pre-warm more pairs.** The value is in serving what is already there. Warming to make shares look better is the fame-keyed warm list SS C's anchor guardrail rules out, arriving by a different door.
 
 
-## `A. Robertson` IS STORED AS `CB` AND HE IS A LEFT-BACK , A NAMED INSTANCE OF THE POSITION-POOL THREAD, ON A PROMINENT CARD (found 2026-10-03, NOT fixed)
+## TWO FULL-BACKS ARE STORED AS `CB` , NAMED INSTANCES OF THE POSITION-POOL THREAD, BOTH ON PROMINENT CARDS (found 2026-10-03, NOT fixed)
 
 **Measured: `card_id 132785`, Robertson 2019 Liverpool, `position_pool = CB`, rt 84.** The 2021 card (`131966`, rt 83) carries the same. He is a full-back, so the correct pool is **FB**.
 
-**IT IS NOT A NEW DEFECT CLASS , SS E already records position-pool accuracy as open, with Nico Williams as its named case.** This is recorded because it is a SECOND named instance, at rt 84, on a player most readers can check by eye, which is the kind that costs credibility rather than accuracy.
+**AND MARCELO 2017 REAL MADRID IS THE SECOND, FOUND IN THE SAME VERDICT PASS AND STORED THE SAME WAY.** He is a left-back of a far more attacking kind than Robertson, which makes consumer 2 below worse rather than equally bad: a flying full-back's creation and progression read against centre-backs is the most flattering possible comparison, and the radar is where a reader would notice.
+
+**TWO IS WHY THIS IS A SHAPE RATHER THAN TWO CARDS. Both are LEFT-backs stored as CB, and SS E's Nico Williams case is a left winger stored as CAM then CM** , every named instance so far is a wide attacking player collapsed one step toward the middle. **Check whether the defect is directional before scoping the fix**: if the importer's depth arithmetic is systematically pulling wide players inward, the population is far larger than a list of names and a hand pass would be the wrong instrument , which is exactly SS E's 2026-09-11 ruling.
+
+**IT IS NOT A NEW DEFECT CLASS , SS E already records position-pool accuracy as open, with Nico Williams as its named case.** These are recorded because they are named instances at rt 84 and rt 83, on players most readers can check by eye, which is the kind that costs credibility rather than accuracy.
 
 **THE POOL IS READ AT FULL STRENGTH BY FOUR CONSUMERS, so a wrong pool is wrong four times over and SS C already lists them:**
 1. **IDENTITY-TAG GATING** , a tag whose name asserts a position gates on `position_pool`, so he is eligible for centre-back tags and ineligible for full-back ones.
