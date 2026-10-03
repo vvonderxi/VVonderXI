@@ -7250,9 +7250,42 @@ body.light .vvload{color:#1A1917}
   const VV_SHARE_CSS = `
 .sf{display:flex;position:relative;overflow:hidden;
     background:radial-gradient(120% 90% at 20% 0%,#1e1a16 0%,#12100e 55%,#0d0b0a 100%);
-    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--quiet:#a49c90}
+    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--quiet:#a49c90;--vemph:#E8B84B}
 .sf.light{background:radial-gradient(120% 90% at 20% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
-          color:#241f1a;--emph:#AD0332;--quiet:#6b6357}
+          color:#241f1a;--emph:#AD0332;--quiet:#6b6357;--vemph:#AD0332}
+/*  ── ITEM 10 , THE VERDICT'S OWN TYPOGRAPHY (decided 2026-09-27, built 2026-10-03) ──────
+    "--vemph" IS DECLARED ON BOTH GROUNDS, which is this file's own rule about a token with
+    only one ground's value. On LIGHT it is the SAME value as "--emph", so light carries one
+    ink; on DARK it diverges to gold, and that divergence is the decision.
+    MEASURED BEFORE IT SHIPPED, against the dark frame's own three gradient stops:
+      gold #E8B84B  9.38 / 10.30 / 10.65   , clears AA at every stop with room to spare
+      red  #AD0332  6.93 /  6.24 /  5.69   , on the light stops, reproduces the recorded run
+    AND THE COLLISION QUESTION WAS ASKED AND ANSWERED RATHER THAN ASSUMED. Gold against the
+    pink "--emph" measures 1.60 in luminance, which looks alarming and is not the test: the
+    two are far apart in HUE and they never do the same job. Pink is IDENTITY , the wordmark's
+    second V and both numerals in the scoreline. Gold is EDITORIAL , the winner's surname and
+    the margin chip. That is one emphasis ink and one identity ink, which is the same split
+    compare.html already ships, not two emphasis inks competing.
+    NO WASH ON EITHER GROUND. SS C ruled that emphasis takes a wash in light and stays
+    ink-only in dark; a share frame has no prose column to wash, so it is ink-only on both. */
+.sf-vem{color:var(--vemph);font-weight:600}
+/*  THE LOSER DIMS RATHER THAN CHANGING COLOUR, so the scoreline distinguishes by WEIGHT and
+    never by a second hue , which is what keeps the two-ink split above honest.  */
+.sf-lose{opacity:.55}
+/*  THE MARGIN CHIP NAMES THE GAP AND NEVER THE VICTOR. The winner is already carried three
+    ways (the gold rim, the verdict tag above the card, and the full-strength numeral), so a
+    fourth statement would be noise; what the image cannot otherwise say is HOW FAR APART.  */
+.sf-margin{display:inline-flex;align-items:center;border:1px solid var(--vemph);color:var(--vemph);
+    border-radius:999px;font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:.1em;
+    text-transform:uppercase;white-space:nowrap}
+/*  HANDLES TOP LEFT, AND THE CORNER WAS CHOSEN BY MEASUREMENT RATHER THAN TASTE , the
+    recorded scope: the tagline row has 60px spare on igf/igs against the 247px two handles
+    need, and the bottom-right corner is already the caption's. The top-left corner is EMPTY
+    on all three formats, costs no vertical space where height binds, and sits diagonally
+    opposite the wordmark so it cannot compete with it.  */
+.sf-handles{position:absolute;display:flex;align-items:center;color:var(--quiet);
+    font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:.08em;opacity:.9}
+.sf-handles svg{display:block;flex:none}
 /* VVonderXI IS ONE WORD, SO THE LOCKUP GETS NO WORD SPACE.
    .sf-brand is a flex row and carried gap:7px, and .sf-vv added margin-right:.16em on top
    of it. At the 16px brand size that is 7 + 2.56 = 9.56px between the second V and the O,
@@ -7294,7 +7327,19 @@ body.light .vvload{color:#1A1917}
 .sf-tag .sf-vv2{font-weight:800;letter-spacing:.02em}
 .sf-rule{height:1px;background:currentColor;opacity:.18}
 .sf-sub{color:var(--quiet);font-weight:600;letter-spacing:.07em;text-transform:uppercase}
-.sf-verdict{line-height:1.42}
+/*  FRAUNCES 600, AND IT IS SAFE BECAUSE OF WHERE THIS ELEMENT RENDERS. ".sf-verdict" exists
+    only in the COMPARE frame, and "compare.html" has loaded Fraunces (opsz 9..144, weights
+    400 and 600) since 2026-09-19. "card.html" loads none and draws no verdict line, so the
+    face is never asked for on a surface that lacks it. Georgia is the fallback rather than a
+    bare "serif" because it is OS-resolved and therefore survives an html2canvas capture ,
+    SS C records that a webfont fails only inside a SERIALISED SVG, and this is HTML.
+    SHIPPED AT SH_TYPE.verdict 0.052, UNCHANGED. The POST_LAUNCH entry records the decision as
+    "the ORIGINAL size (0.060, 41px)", and 0.052 is what the file has shipped since 2026-09-07
+    , twenty days BEFORE that decision , so 0.060 is a slip in the write-up rather than a size
+    anybody chose. Ruled by Lucas 2026-10-03: unchanged means what the page does today.
+    CONSEQUENCE, STATED RATHER THAN BURIED: 35px in the file is 8.8px in a 300px feed tile,
+    not the 10.3px the entry quotes. The trade is the same trade and the number is smaller.  */
+.sf-verdict{line-height:1.42;font-family:'Fraunces',Georgia,serif;font-weight:600}
 .sf-vtag{display:inline-flex;align-items:center;border-radius:999px;background:linear-gradient(90deg,#F0D27A,#E0A93A);
          color:#5a4410;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 /* Reserves the winner tag's height above the losing card so the pair stays aligned. It is
@@ -7413,9 +7458,29 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       is what was designed and the output should match it.
       A container named for a job it does not do is its own trap , the name is the reason
       nobody noticed for as long as they didn't.  */
+  /*  ITEM 10 , THE HANDLES. Both platforms use the SAME handle, so the string is written
+      once and the two marks disambiguate which platform it is. The marks come from VV_SOCIAL,
+      the same list the follow row on three pages already renders, rather than a fourth copy
+      of two SVGs , SS C records two shadow icon lookups that drifted into different
+      metaphors, and this is the cheapest possible way not to make a third.
+      THE CAPTURE CAN DRAW THESE. SS C's html2canvas sweep records that <use> REFERENCES are
+      dropped and inline shapes are kept; these are inline rect/circle/path with no <use>, so
+      they survive. VERIFIED IN A CAPTURED PNG rather than in the DOM, which is the standard
+      that entry sets.  */
+  function shHandles(F){
+    const P = shPad(F), hp = Math.round(shShort(F) * 0.022), gap = Math.round(hp * 0.55);
+    const marks = VV_SOCIAL.map(function(x){
+      return x.svg.replace('<svg ', '<svg width="' + hp + '" height="' + hp + '" ');
+    }).join('');
+    return '<div class="sf-handles" style="top:' + (P * 0.8) + 'px;left:' + P + 'px;gap:' + gap +
+           'px;font-size:' + Math.round(hp * 0.82) + 'px">' + marks +
+           '<span style="margin-left:' + Math.round(gap * 0.4) + 'px">' + shEsc(VV_HANDLE_X) + '</span></div>';
+  }
+
   function shChrome(F, capText, light){
     const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F), tp = shTagPx(F);
-    return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp, light) + '</div>' +
+    return shHandles(F) +
+           '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp, light) + '</div>' +
            '<div class="sf-capwrap" style="bottom:' + (P * 0.7) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
              'width:' + (F.w - P * 2) + 'px">' +
              '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText) + '</div>' +
@@ -7474,6 +7539,42 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   //  THE LEDGER. Wide frames put the pair left and the verdict block right; portrait frames
   //  stack them. Chosen against rendered mocks , the wide frame's empty right half was the
   //  open question and the ledger is what answers it.
+  /*  ── ITEM 10 , THE EMPHASISED PHRASE IS STRUCTURAL, NOT CHOSEN (built 2026-10-03) ──────
+      THE WINNER'S SURNAME, derived from spec.winner and the card's own name through the same
+      surnameOf() the rest of the platform uses. NOTHING READS THE SENTENCE. Two routes were
+      refused by Lucas and both refusals are the reason this one exists: a PROMPT EDIT to make
+      the model mark it (every cached verdict rebuilds for a coloured phrase), and a HEURISTIC
+      that picks a phrase ("we do not invent emphasis the writer did not choose").
+      MEASURED OVER EVERY CACHED VERDICT WITH A DECIDED WINNER, n=72:
+        the winner's surname appears in "who"  69 (95.8%)
+        it appears FIRST                       68 of 69
+        it appears MORE THAN ONCE               0        , so there is no ambiguity to resolve
+        neither surname appears                 2        , and those get NO emphasis at all
+      THE 2 ARE THE HONEST FALLBACK AND NOT A GAP TO CLOSE. A line that never names the winner
+      has no phrase that could truthfully be marked, and marking something else would be the
+      heuristic that was refused.
+      WHY A SCAN RATHER THAN A REGEX: a word boundary in JS is defined on [A-Za-z0-9_], so it
+      misfires on every accented surname the platform holds , Mbappe, Haland, Odegaard. The
+      flanking characters are tested directly instead, which has no such blind spot, and the
+      surname needs no regex escaping because indexOf takes it literally.
+      AND THE ESCAPE HAPPENS FIRST. The line is escaped, THEN searched, so the span is the only
+      markup in the string and no model output can introduce any.  */
+  const SH_LETTER = /[A-Za-z\u00C0-\u024F\u0400-\u04FF]/;
+  function shVerdictHTML(spec, win){
+    const line = shEsc(vvStripMarkers(spec.verdictLine));
+    const card = win === 'A' ? spec.a : win === 'B' ? spec.b : null;
+    if (!card) return line;                      /*  a tie crowns nobody, so it marks nobody  */
+    let name = '';
+    try { name = shEsc(surnameOf(card.full || '')); } catch(e){ name = ''; }
+    if (!name) return line;
+    const i = line.indexOf(name);
+    if (i < 0) return line;                      /*  the 2 of 72 , no emphasis, by design  */
+    const before = i > 0 ? line.charAt(i - 1) : '';
+    const after  = line.charAt(i + name.length);
+    if (SH_LETTER.test(before) || SH_LETTER.test(after)) return line;   /*  inside a longer word  */
+    return line.slice(0, i) + '<span class="sf-vem">' + name + '</span>' + line.slice(i + name.length);
+  }
+
   function shCmpFrame(spec, F, light){
     const P = shPad(F), S = shShort(F) / 1000, wide = F.w / F.h > 1.2;
     const a = spec.a, b = spec.b;
@@ -7511,17 +7612,65 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const pair = '<div style="display:flex;gap:' + (34 * S) + 'px;position:relative;z-index:1;align-items:flex-start">' +
       slot(a, 'A') + slot(b, 'B') + '</div>';
     const last = n => shEsc(String(n || '').split(' ').slice(-1)[0]);
+    /*  A SIDE DIMS ONLY WHEN THERE IS A DECIDED WINNER AND IT IS NOT THIS SIDE.  */
+    const lose = side => (win === 'A' || win === 'B') && win !== side ? ' sf-lose' : '';
+    /*  THE MARGIN IS DERIVED, NEVER PASSED, so it cannot disagree with the numerals printed
+        beside it. It renders only when BOTH scores are finite , a keeper card carries no
+        score at all since Fallback C, so a pair involving one has no margin to name and the
+        chip is simply absent rather than reading "NaN" or inventing a zero.  */
+    /*  Number(null) IS 0, NOT NaN , SS C records this exactly, and a Number()-then-isFinite
+        guard therefore PASSES a keeper whose score Fallback C removed. Caught by the control
+        set rather than by reading: it printed "91 points" for a pair with one unscored card.
+        An absent score has to be tested as absent BEFORE it is coerced.  */
+    const shNum = v => (v == null || v === '' || !Number.isFinite(Number(v))) ? null : Number(v);
+    const vA = shNum(a.vv), vB = shNum(b.vv);
+    const gap = (vA != null && vB != null) ? Math.abs(vA - vB) : null;
+    const marginChip = gap == null ? '' :
+      '<span class="sf-margin" style="font-size:' + (30 * S) + 'px;padding:' + (7 * S) + 'px ' + (16 * S) +
+      'px;margin-left:' + (8 * S) + 'px">' + (gap === 0 ? 'Level' : gap + (gap === 1 ? ' point' : ' points')) + '</span>';
     const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
       'gap:' + (16 * S) + 'px;position:relative;z-index:1;' + (wide ? '' : 'text-align:center;') + '">' +
       (win === 'tie' ? '<div class="sf-vtag" style="font-size:' + tagPx + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' : '') +
-      '<div class="sf-verdict" style="font-size:' + shVerdPx(F) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.40 : F.w * 0.78) + 'px">' + shEsc(vvStripMarkers(spec.verdictLine)) + '</div>' +
+      '<div class="sf-verdict" style="font-size:' + shVerdPx(F) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.40 : F.w * 0.78) + 'px">' + shVerdictHTML(spec, win) + '</div>' +
       '<div class="sf-rule" style="width:' + (64 * S) + 'px"></div>' +
-      '<div style="display:flex;gap:' + (18 * S) + 'px;align-items:baseline">' +
-        '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + a.vv + '</span>' +
-        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px">' + last(a.full) + '</span>' +
-        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px;opacity:.45">/</span>' +
-        '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + b.vv + '</span>' +
-        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px">' + last(b.full) + '</span>' +
+      /*  THE LOSING SIDE DIMS, THE WINNING SIDE DOES NOT CHANGE COLOUR. Both numerals stay on
+          the identity ink; only opacity separates them. That is what keeps gold meaning
+          EDITORIAL and pink meaning IDENTITY rather than both meaning "winner".
+          ON A TIE NEITHER DIMS , `win` is 'tie', so `lose()` returns '' for both sides and
+          the two read as equals, which is the whole point of the third state.
+
+          ── SIZED FOR 340, NOT FOR 1200 (raised 2026-10-03) ────────────────────────────
+          THE NUMERALS WENT 26*S TO 68*S, AND THE NUMBER IS DERIVED FROM THE WIDTH THE IMAGE
+          IS JUDGED AT RATHER THAN THE WIDTH IT IS WRITTEN AT. A shared image sits about 340px
+          wide in a phone thread, which is 0.283 of this frame, so everything here is divided
+          by three and a half before anybody reads it.
+            26*S = 17.6px in the file =  5.0px at 340   , a blur
+            68*S = 45.9px in the file = 13.0px at 340   , reads
+          THE FLOOR IS DEMONSTRATED ON THIS SAME IMAGE RATHER THAN ASSERTED: the caption row is
+          0.046 of the short side, 8.8px at 340, and it is legible there. Anything meant to
+          carry the thumbnail has to clear that, and 13.0 does with room.
+          THE REASON IT MATTERS IS LUCAS'S OWN, AND IT WAS CONDITIONAL: the small verdict line
+          was accepted because "the cards plus the scoreline carry the thumbnail". At 5px the
+          scoreline carried nothing, so the condition failed and the size had to change with it.
+
+          ── WHAT GAVE: THE SURNAMES IN THIS ROW, AND ONLY THEM ─────────────────────────
+          They are stated THREE other times in the same image , on each card face, in the
+          caption row beneath, and in the verdict prose above , so this was the fourth. The
+          numerals are stated only on the card faces, and the margin nowhere else at all.
+          So the row now carries what nothing else says and drops what everything else says.
+          NOTHING ELSE IN THE BLOCK WAS SQUEEZED. The verdict line, the rule and the tag are
+          untouched; the room came from deleting a duplicate, not from shaving every element.
+
+          ── AND THE CHIP IS HONESTLY A 600-AND-ABOVE ELEMENT ──────────────────────────
+          At 30*S it is 20.3px in the file, 10.1px at X's 600 and 5.7px at 340. It reads where
+          the image is read full-size and it does not read in a phone thread. That is stated
+          rather than fixed: making it clear 340 would mean sizing a secondary chip like the
+          primary numerals, and the margin is context, not the headline.  */
+      '<div style="display:flex;gap:' + (14 * S) + 'px;align-items:baseline;flex-wrap:wrap">' +
+        '<span class="sf-score' + lose('A') + '" style="font-size:' + (68 * S) + 'px">' + a.vv + '</span>' +
+        '<span class="sf-sub" style="font-size:' + (30 * S) + 'px;opacity:.45">/</span>' +
+        '<span class="sf-score' + lose('B') + '" style="font-size:' + (68 * S) + 'px">' + b.vv + '</span>' +
+        marginChip +
       '</div></div>';
     const inner = wide
       ? '<div style="flex:none">' + pair + '</div><div style="flex:1;min-width:0">' + block + '</div>'

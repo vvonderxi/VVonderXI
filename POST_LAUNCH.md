@@ -1470,7 +1470,17 @@ has to be verified in a captured PNG rather than in the live DOM.
 
 ---
 
-## ITEM 10 LANDED , 2026-09-27. DECIDED, DEMOED, NOT BUILT.
+## ITEM 10 , BUILT AND SHIPPED 2026-10-03. THE ENTRY BELOW IS THE DECISION; THIS BLOCK IS WHAT CHANGED BETWEEN DECIDING AND BUILDING.
+
+**THREE THINGS IN THE SPEC DID NOT SURVIVE CONTACT, AND ALL THREE WERE RULED BY LUCAS ON THE DAY:**
+1. **THE SIZE: `0.060` IS A SLIP IN THE WRITE-UP, NOT A DECISION.** `SH_TYPE.verdict` has shipped at **0.052** since 2026-09-07, **twenty days before** this entry was written, so "the ORIGINAL size" is 0.052 and 41px was never the status quo. Shipped unchanged at 0.052 = **35px in the file, 8.8px in a 300px tile**, not the 10.3px recorded. Same trade, smaller number. **The lever and the number to beat (14.3px displayed, `0.085`) are unaffected.**
+2. **THE SCORELINE DOES NOT REPLACE THE CAPTION ROW , BOTH SHIP.** The caption is the only place the SEASONS appear, and an image naming two players and no years is worse than the row it replaces (Lucas, 2026-10-03).
+3. **AND THE SCORELINE HAD TO BE RAISED, BECAUSE THIS ENTRY'S OWN REASONING WAS CONDITIONAL AND THE CONDITION FAILED.** The small verdict line was accepted on *"the cards plus the scoreline carry the thumbnail"*. **Measured: the numerals shipped at `26*S` = 17.6px in the file, which is 8.8px at X's 600 and 5.0px at a phone's 340.** At 5px the scoreline carried nothing, so half the stated reason was untrue. Raised to **`68*S` = 45.9px = 13.0px at 340**, against a demonstrated floor of 8.8px , the caption row's own size on the same image, which is legible there.
+   - **WHAT GAVE: THE SURNAMES IN THE SCORELINE ROW, AND NOTHING ELSE.** They are stated three other times in the same image (each card face, the caption row, the verdict prose). The numerals are stated only on the card faces and the margin nowhere at all. **The verdict line, the rule and the tag were not touched** , the room came from deleting a duplicate rather than shaving every element.
+   - **THE MARGIN CHIP IS HONESTLY A 600-AND-ABOVE ELEMENT:** `30*S` = 20.3px file, **10.1px at X and 5.7px at 340**. Stated rather than fixed; sizing a secondary chip like the primary numerals would be the wrong trade.
+- **THE COLLISION QUESTION WAS ASKED AND MEASURED RATHER THAN ASSUMED.** Gold `#E8B84B` on the dark frame's three stops: **9.38 / 10.30 / 10.65**, clearing AA everywhere. **Against the pink `--emph` it measures 1.60**, which looks alarming and is the wrong test , the two are far apart in HUE and never do the same job. **Pink is IDENTITY (the wordmark's second V, both numerals); gold is EDITORIAL (the winner's surname, the margin chip).** One emphasis ink and one identity ink, the same split compare.html already ships.
+- **ZERO OVERFLOW ON ALL FOUR FORMATS, MEASURED ON THE RENDERED FRAME** , `x` 26px clear, `igf` 41px, `igs` 41px, `dl` 38px, every one matching the clearances this file already records, so the bottom block did not move.
+- **CONTROL SET: `scripts/share10_control.js`, 15 checks, run it before touching any of this.** The one that earned its keep: **`Number(null)` is 0, not NaN**, so the first margin guard passed an unscored keeper and printed "91 points". **And the control's own precondition was the broken part of the overflow pass** , it grepped for `font-size:45.9px` where the real string is `45.900000000000006`, so it read `raised:false` on raised code while the computed style said 45.9px. The corroborating reading is what saved it.
 
 **Lucas picked AFTER 1 from `_demo_share10b.html`.** What ships when it is built:
 

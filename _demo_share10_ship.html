@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Item 10 , option A refined: ink-only emphasis, and the 300px fix</title>
+<!-- THE EXACT FONT SET compare.html SHIPS, copied from its own link tag rather than chosen.
+     SS C: a demo that introduces a face the target does not load is proposing two changes
+     while naming one. Fraunces IS on that list since 2026-09-19, so the options may use it. -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  /*  THE TOKENS AND THE CARD BOX, COPIED FROM compare.html RATHER THAN INVENTED.
+      SS C is explicit on both and I walked into both:
+        , vv-core consumes tokens the PAGES define (--cream, --pink-ink, --charcoal ...),
+          so a demo that omits them measures its own absence, not the page.
+        , "VV_CARD_CSS holds 58 rules and the card BOX stays in the pages ... a new surface
+          must supply its own box." Without it `.vvcard` computed to ZERO width here, its
+          radial-gradient resolved against a zero box, and html2canvas threw
+          "addColorStop: non-finite" , on the SHIPPING frame as well as on mine, which is
+          how I knew the fault was the harness and not the proposal.  */
+  /*  AND THE RESET, WHICH IS THE THIRD THING I HAD TO COPY AFTER THE TOKENS AND THE CARD BOX.
+      compare.html opens with `*{margin:0;padding:0;box-sizing:border-box}`. Without it `.sf`
+      is CONTENT-box, so its 51.8px of horizontal padding was ADDED to the declared 1200 and
+      the frame rendered 1304 wide , which pushed the wordmark past the right edge, where
+      `overflow:hidden` clipped it to "VOND". The capture was honest; the harness was not.
+      THE PATTERN WORTH KEEPING: a demo has to inherit the target's RESET as well as its
+      tokens and its box rules. SS C says a demo that supplies its own values cannot test the
+      page's values; this is the same rule pointed at the things a page sets ONCE and never
+      thinks about again.  */
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;
+        --pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0}
+  .vvcard{--cw:300px;position:relative;width:var(--cw);max-width:92%;height:calc(var(--cw)*1.397);box-sizing:border-box;
+    display:flex;flex-direction:column;border-radius:calc(var(--cw)*0.073);
+    background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;
+    box-shadow:0 26px 50px -22px rgba(0,0,0,0.6), inset 0 0 0 calc(var(--cw)*0.02) var(--cream), inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.55) !important;
+    padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A !important;font-family:'Barlow Condensed',sans-serif}
+  /*  AND THE ONE LINE THAT IS MINE: .sf-slotcard is shrink-to-fit inside .sf-slot's
+      align-items:center, so `max-width:92%` had no definite parent to resolve against.
+      Giving the slotcard the slot's width makes the chain definite end to end. It changes
+      nothing about the proposal , it is harness scaffolding, and it is called out so nobody
+      reads it as a suggested change to the shipping frame.  */
+  .sf-slotcard{align-self:stretch}
+  body{background:#0b0a09;color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;padding:22px 26px}
+  h1{font-size:20px;margin:0 0 6px} h2{font-size:15px;margin:30px 0 6px;color:#E0A93A}
+  h3{font-size:12.5px;margin:16px 0 6px;color:#F5EFE6;font-weight:600}
+  .note{font-size:12.5px;line-height:1.62;color:#a49c90;max-width:104ch;margin:0 0 10px}
+  .note b{color:#F5EFE6}
+  #stage{position:fixed;left:-20000px;top:0}
+  .row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin:8px 0 14px}
+  .cell{background:#151311;border:1px solid #2a2622;border-radius:8px;padding:10px}
+  .cell .lbl{margin:0 0 7px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#a49c90;font-weight:700}
+  .cell img{display:block;border:1px solid #333;background:#000}
+  #out{font-family:ui-monospace,monospace;font-size:12px;white-space:pre-wrap;line-height:1.62;
+       background:#151311;padding:14px;border-radius:6px;margin-top:8px}
+  .ok{color:#7fd18b}.bad{color:#ff8b8b}.warn{color:#e6c56a}
+</style>
+</head><body>
+
+<h1>Item 10 as built , the verdict's own typography, at the sizes it is actually read</h1>
+<p class="note">
+  Every image below is a <b>real html2canvas capture</b> of the shipping <code>vvShareFrameHTML</code>,
+  not a mock. Three widths because the file is never the thing anyone reads:
+  <b>340px</b> is roughly how wide an image sits in a WhatsApp thread on a 390 phone,
+  <b>600px</b> is what X renders inline (SS C: judge the frame at 600), and the full 1200 is the file.
+  Pair 1 names the winner in the line, so the surname is marked. Pair 2 <b>does not name anybody</b> ,
+  that is the honest no-emphasis fallback, live in the demo data rather than contrived.
+</p>
+
+<div id="stage"></div>
+<div id="mount"></div>
+<h2>Instrument checks</h2>
+<div id="out">running…</div>
+
+<script src="vv-marks.js?v=20261003a"></script>
+<script src="vv-core.js?v=20261003a"></script>
+<script src="demo_pairs.js"></script>
+<script src="_demo_share10_ship_run.js"></script>
+</body></html>
