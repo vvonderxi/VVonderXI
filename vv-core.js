@@ -6657,6 +6657,29 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     ['league','position','profile','stage','trajectory'].forEach(function(gk){
       (st[gk]||[]).forEach(function(v){ parts.push(labelFor(gk,v)); });
     });
+    /*  ── SAY THE SPECIFIC TRUE THING WHEN THERE IS ONE (2026-10-03) ────────────────────
+        Filtering to GK while the list is ranked by VV Score returns nothing, and the generic
+        sentence made that read as a broken chip. It is not: `applyServer` runs
+        `neq('position','GK')` whenever rt is in play, because the Index does not score
+        goalkeepers and a card with no score cannot sit in a list ordered by score.
+        THE CHIP IS NOT DISABLED AND MUST NOT BE , that was the first instinct and it is
+        wrong. Only ONE of the six sorts puts rt in play. GK with Recent, A-Z, Goals, Assists
+        or Total G/A returns keepers perfectly well, so marking the chip inert would break
+        five combinations to explain one. The honour chips are inert because their DATA does
+        not exist; this data exists and one ordering excludes it.
+        SO THE EMPTY STATE TEACHES AND THEN SAYS WHAT TO DO. A reader learns a real thing
+        about the platform , keepers are not scored , and is given the one action that works.
+        It is deliberately NOT an apology: nothing here failed.  */
+    /*  IT REUSES `.vvf-empty-state` AND TAKES ITS OWN CLASS FOR THE SECOND LINE. The action
+        sentence is NOT `.vvf-es-scope`: `card.html` and `index.html` both scrape that class
+        out of this HTML to reuse the coverage sentence elsewhere, so putting keeper advice
+        in it would let "Sort by Recent" surface on a card-not-found page. Styled by the same
+        rule as the scope line, so there is still one place to change the look. */
+    var gkRanked = rtInPlay(st, opts.lookup) && (st.position||[]).indexOf('GK') >= 0;
+    if(gkRanked)
+      return '<div class="vvf-empty-state">The VV Index does not score goalkeepers.'
+           + '<span class="vvf-es-act">They are left out whenever the list is ranked by VV Score. '
+           + 'Sort by Recent or A-Z to see them.</span></div>';
     var head=opts.searching ? 'No seasons match your search.' : 'No seasons match these filters.';
     /* A SEARCH THAT FINDS NOTHING MUST EXPLAIN THE SCOPE, NOT JUST REPORT THE ABSENCE.
        The platform is a FIXED SCORED DATASET , nine leagues, 2010 onward , and it no longer
@@ -6769,7 +6792,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     /* empty state , names the clauses that have to hold at once */
     '.vvf-empty-state{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;padding:40px 14px;font-family:\'Inter\';font-size:15px;color:rgba(243,237,224,0.6)}',
     'body.light .vvf-empty-state{color:var(--ink-soft)}',
-    '.vvf-es-scope{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}',
+    /* .vvf-es-act is the keeper line. Same treatment, separate class , see emptyStateHTML. */
+    '.vvf-es-scope,.vvf-es-act{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}',
     '.vvf-es-why{font-size:12.5px;opacity:.75;max-width:36ch;line-height:1.45}',
     /* ── CLEAR ALL , A PILL, AND ONE TREATMENT FOR ALL THREE SURFACES ────────
        It sat in a bar made entirely of pills and was the only bare text button on it,

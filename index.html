@@ -498,7 +498,13 @@
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20261003f"></script>
+<script src="/vv-core.js?v=20261003g"></script>
+<!--  vv-a2hs.js , the per-browser Add-to-Home-Screen steps. SHARED WITH preferences.html,
+      which is why they are no longer inline here: the labels move between browser versions
+      and two copies means a correction lands in one of them. It carries its own ?v= token
+      (there is no build step and nothing bumps it for you), so bump this tag AND the one in
+      preferences.html together, or one page is served fresh against a cached copy.  -->
+<script src="/vv-a2hs.js?v=20261003a"></script>
 <script>
   // rotating placeholder examples
   /*  EVERY SUGGESTION IS A PROMISE THE SEARCH HAS TO HONOUR, AND TWO OF THESE WERE NOT.
@@ -880,6 +886,17 @@
     the whole script with it , and this script sits on the front door.  */
 (function(){
   var el=document.getElementById('a2hs'); if(!el) return;
+  /*  NO MODULE, NO STRIP. The steps live in vv-a2hs.js now, so if that request fails the Add
+      button would render and then throw on the tap , a visible control that does nothing,
+      which is worse than no offer at all. Failing closed is right here precisely because the
+      strip is an invitation rather than something the reader came for.
+      CONTROL-TESTED 2026-10-03 by planting the fault rather than reading the line: the page
+      was fetched, the module's script tag stripped (47 bytes), and the result run in an
+      `<iframe srcdoc>` , NOT `document.write`, which reuses the current window so globals
+      survive and a "load without X" test measures the page it was launched from. With the
+      module genuinely absent (asserted, not assumed) the strip stayed `display:none` and
+      never took `.show`. Two loads, because the strip is gated on `visits >= 2` below.  */
+  if(!window.VVA2HS) return;
   var K='vvA2HS';
   function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
@@ -902,61 +919,35 @@
 
   document.getElementById('a2hsNo').onclick=function(){ el.classList.remove('show'); set(K,'no'); };
 
-  /*  FIVE CASES, ONE PER BROWSER, BECAUSE THE STEPS GENUINELY DIFFER AND A CHROME INSTRUCTION
-      SHOWN TO A SAMSUNG USER IS WRONG RATHER THAN ROUGHLY RIGHT. Labels and positions were
-      read off the vendors' current documentation on 2026-09-21, not from memory , the Android
-      one in particular has moved to "Install and create shortcut". SS C carries the list and
-      the warning that they drift between versions.
-      DETECTION IS DELIBERATELY COARSE AND FAILS TO THE GENERIC CASE. Every branch below is a
-      user-agent guess, and the honest failure for a guess is a line that is true everywhere
-      rather than confident steps for the wrong browser.  */
-  var UA=navigator.userAgent||'';
-  var GL={
-    share:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3B6FB0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>',
-    plus:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg>',
-    dots:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>',
-    burger:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
-    down:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v13"/><path d="M6.5 11.5 12 17l5.5-5.5"/></svg>'
-  };
+  /*  THE FIVE PER-BROWSER CASES MOVED TO vv-a2hs.js ON 2026-10-03, because preferences.html
+      now needs the same steps and SS C rules that a second consumer turns the `__a2hs` seam
+      into a real export. The labels drift between browser versions, so one copy only.
+      WHAT STAYS HERE IS PRESENTATION: the phone mockup and the strip's own markup. `plan()`
+      returns a `hint` descriptor and this page draws it; preferences.html draws a line.  */
   function mock(pos,glyph,label){
     var fill='<span class="fill"></span>', spot='<span class="spot">'+glyph+'</span>';
     var inner = pos==='centre' ? fill+spot+fill : fill+spot;   // centre for Safari, right otherwise
     return '<div class="mock"><div class="mockbar">'+inner+'</div>'
          + '<div class="mockcap '+(pos==='centre'?'c':'r')+'">'+label+'</div></div>';
   }
-  function plan(ua){
-    ua = ua || UA;
-    var iOS=/iphone|ipad|ipod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1 && !/Android/i.test(ua));
-    var samsung=/SamsungBrowser/i.test(ua);
-    var criOS=/CriOS/i.test(ua);
-    var androidChrome=/Android/i.test(ua) && /Chrome\//i.test(ua) && !samsung && !/EdgA|OPR|Firefox/i.test(ua);
-    if(iOS && criOS) return {hd:'Two taps to add it',
-      steps:[[GL.share,'Tap <b>Share</b>, right of the address bar'],[GL.plus,'Then <b>Add to Home Screen</b>']],
-      mock:mock('right',GL.share,'top, in the address bar')};
-    if(iOS && !/FxiOS|EdgiOS|OPT\//i.test(ua)) return {hd:'Two taps to add it',
-      steps:[[GL.share,'Tap <b>Share</b>, in the bar at the bottom'],[GL.plus,'Scroll, then <b>Add to Home Screen</b>']],
-      mock:mock('centre',GL.share,'middle of the bottom bar')};
-    if(samsung) return {hd:'Three taps to add it',
-      steps:[[GL.burger,'Tap the <b>menu</b>, bottom right'],[GL.plus,'<b>Add page to</b>, then <b>Home screen</b>']],
-      mock:mock('right',GL.burger,'bottom right')};
-    if(androidChrome) return {hd:'Two taps to add it',
-      steps:[[GL.dots,'Tap the <b>three-dot menu</b>, by the address bar'],[GL.down,'Then <b>Install and create shortcut</b>']],
-      mock:mock('right',GL.dots,'beside the address bar'),
-      note:'Older versions of Chrome say <b>Add to Home screen</b> instead.'};
-    return {hd:'Add it to your home screen',
-      steps:[[GL.plus,'Look for <b>Add to Home screen</b> or <b>Install</b> in your browser\u2019s own menu']]};
-  }
   function renderSteps(p){
     var steps=p.steps.map(function(s,i){ return '<div class="st"><span class="n">'+(i+1)+'</span>'
       + '<span class="gl">'+s[0]+'</span><span>'+s[1]+'</span></div>'; }).join('');
+    /*  THE MOCKUP IS BUILT HERE FROM `p.hint`, not handed over as HTML by `plan()`. The
+        module returns a descriptor, so the same branching can serve a bottom sheet that
+        has no room for a phone drawing.  */
+    var h=p.hint, drawn = h ? mock(h.pos, h.glyph, h.label) : '';
     document.getElementById('a2hsTxt').innerHTML='<b class="hd">'+p.hd+'</b><div class="ss">'+steps+'</div>'
-      + (p.note?'<div class="note">'+p.note+'</div>':'') + (p.mock||'');
+      + (p.note?'<div class="note">'+p.note+'</div>':'') + drawn;
     el.classList.add('steps','show');
   }
   /*  A TEST SEAM, and a deliberate one: the case is chosen from a user-agent string captured at
       load, so the five branches cannot be checked by driving the page normally , which is how
       the old Android path shipped broken and unseen. This lets a probe render each case on the
-      REAL page rather than on a copy of it, which SS C prefers to reasoning about markup.  */
+      REAL page rather than on a copy of it, which SS C prefers to reasoning about markup.
+      `plan` now comes from vv-a2hs.js and is a real export , it is re-exposed here only so a
+      probe can reach the PAIR in one place, which is what made the A14 pass possible.  */
+  function plan(ua){ return VVA2HS.plan(ua); }
   window.__a2hs={ plan:plan, render:renderSteps };
   document.getElementById('a2hsAdd').onclick=function(){
     renderSteps(plan());

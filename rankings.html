@@ -137,6 +137,10 @@
   body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:var(--ink-soft)}
   body.light .ranksearch input{color:var(--charcoal)}
   body.light .rankempty{color:var(--ink-soft)}
+  /* #cardgrid is a GRID, and the shared empty state carries no column span of its own
+     (card.html mounts it in flow). Without this it renders in column 1 and reads as a
+     narrow stripe at desktop width. The panel supplies its own padding and colour. */
+  #cardgrid .vvf-empty-state{grid-column:1/-1}
   /* ===== Unified rank row (.urow) , shared by List (pillmode) + Compact (compactmode).
      ONE fixed-column grid in both modes -> every column aligns row-to-row (no max-content).
      Only padding / font-size / column-gap differ (Compact = denser). Score = .rmini VV badge. ===== */
@@ -471,8 +475,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261003f"></script>
-<script src="/vv-core.js?v=20261003f"></script>
+<script src="/vv-marks.js?v=20261003g"></script>
+<script src="/vv-core.js?v=20261003g"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the
@@ -569,6 +573,20 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function rankEmptyHTML(){
     if(RANK_STATE==='error') return '<div class="rankempty">Those rankings could not be loaded. Check your connection and try again.</div>';
     if(RANK_STATE!=='ready')  return (window.VVCore && VVCore.vvLoader) ? VVCore.vvLoader({size:44, label:'Loading rankings'}) : '';
+    /*  THE SHARED EMPTY STATE, NOT A LOCAL SENTENCE (2026-10-03). This said "No seasons
+        match your search" whatever had happened , including when nothing was searched and
+        a filter was responsible, and including the one case that is not a miss at all:
+        goalkeepers filtered while the list is ranked by VV Score, which `applyServer`
+        excludes by design. `card.html` has called `VVFilters.emptyStateHTML` for months
+        and rankings, the surface the filters actually live on, carried the hardcoded line.
+        LOOKUP IS DERIVED EXACTLY AS `rankQuery` DERIVES IT , `!!nameQ`, via the same
+        `vvParseSearch`. A different rule here and the panel would explain a filter the
+        query did not apply. */
+    if(window.VVFilters && VVFilters.emptyStateHTML){
+      var _q=(document.getElementById('rankSearch')||{value:''}).value.trim();
+      var _nq=(window.vvParseSearch ? vvParseSearch(_q).nameQ : _q);
+      return VVFilters.emptyStateHTML(fState(), { searching: !!_q, lookup: !!_nq });
+    }
     return '<div class="rankempty">No seasons match your search.</div>';
   }
   /* Show more is gone , infinite scroll replaces the 300 cap (see loadRankings). */
