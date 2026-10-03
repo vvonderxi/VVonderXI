@@ -5,7 +5,16 @@
  *  warns you when it goes stale. Regenerate it after any matview refresh, re-ingest or position
  *  backfill, and only AFTER the refresh: this script reads the matview, so running it before
  *  the refresh encodes the old state in a file that looks freshly generated.
- *  Terminal G:  node scripts/gen-game-deck.js
+ *  Terminal G:  node scripts/gen-game-deck.js                 -> data/game-deck.json (the Modern Era deck)
+ *               node scripts/gen-game-deck.js --mode popular  -> data/game-deck-popular.json
+ *
+ *  --mode popular (2026-10-03): the most recognisable players across a hand-picked list of famous clubs
+ *  (POPULAR_CLUBS, Lucas's list, stored with the database's exact spellings). Per player, his best Modern Era
+ *  season at one of those clubs is his card; players are ranked by that card's rt, honours as the tie-break
+ *  (no popularity column is populated: estimated_market_value and legacy_tier are empty on every candidate row).
+ *  Every club first gets POPULAR_MIN cards, best-ranked first; the rest go by rank up to POPULAR_CAP per club.
+ *  Position quotas, one card per player, outfield and Modern Era all as in the standard deck, and the battle
+ *  numbers are re-ranked within this deck, so they are not comparable card-for-card with the standard deck.
  *
  *  READ-ONLY, AND IT NEEDS NO .env. It uses the site's own public URL and anon key, read out of
  *  card.html, so it can only see what any visitor can see. SUPABASE_URL / SUPABASE_ANON_KEY in
@@ -41,7 +50,17 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
-const OUT = path.join(ROOT, 'data', 'game-deck.json');
+const MODE = process.argv.includes('--mode') ? process.argv[process.argv.indexOf('--mode') + 1] : 'standard';
+const OUT = path.join(ROOT, 'data', MODE === 'popular' ? 'game-deck-popular.json' : 'game-deck.json');
+
+// --mode popular. Names are the database's team_name spellings, matched exactly (Lucas wrote "Bayern Munchen").
+const POPULAR_CLUBS = ['Manchester City', 'Liverpool', 'Arsenal', 'Chelsea', 'Manchester United', 'Tottenham', 'Newcastle',
+  'Real Madrid', 'Barcelona', 'Atletico Madrid', 'Bayern München', 'Borussia Dortmund', 'Bayer Leverkusen', 'RB Leipzig',
+  'Paris Saint Germain', 'Lyon', 'Monaco', 'Marseille', 'Juventus', 'Inter', 'AC Milan', 'Napoli', 'AS Roma',
+  'Ajax', 'PSV Eindhoven', 'Feyenoord', 'Benfica', 'FC Porto', 'Sporting CP'];
+const POPULAR_MIN = 8, POPULAR_CAP = 16;
+const HONOUR_FLAGS = ['h_ballon_dor', 'h_world_cup_winner', 'h_ucl_winner', 'h_league_champion', 'h_player_of_season',
+  'h_golden_boot', 'h_top_assists', 'h_euro_winner', 'h_copa_winner'];
 
 const MIN_MINUTES = 900;
 const QUOTAS = { ST: 72, Winger: 72, CAM: 40, CM: 72, CDM: 40, FB: 48, CB: 56 };   // 400 cards
@@ -52,6 +71,7 @@ const RADAR_INPUTS = ['goals', 'shots_on', 'passes_key', 'assists', 'dribbles_su
                       'passes_total', 'tackles_total', 'interceptions', 'duels_won'];
 
 function fail(msg) { console.error('FAIL: ' + msg); process.exit(1); }
+if (!['standard', 'popular'].includes(MODE)) fail('--mode must be standard or popular, got ' + MODE);
 
 // ---------------------------------------------------------------- vv-core, asserted not assumed
 // A syntax check proves a file parses, never that it defined anything (CLAUDE.md, the stray
@@ -152,14 +172,41 @@ async function main() {
   if (excluded.poolMismatch) fail(excluded.poolMismatch + ' cards: radarFor pool differs from position_pool');
 
   // ---- 3. Select: best rt first, per-position quota, one card per player. Total order, no ties.
-  cands.sort((a, b) => b.row.rt - a.row.rt || b.row.minutes - a.row.minutes || a.row.card_id - b.row.card_id);
   const taken = Object.fromEntries(Object.keys(QUOTAS).map(p => [p, 0]));
-  const players = new Set();
   const deck = [];
-  for (const c of cands) {
-    const p = c.row.position_pool;
-    if (taken[p] >= QUOTAS[p] || players.has(c.row.api_player_id)) continue;
-    taken[p]++; players.add(c.row.api_player_id); deck.push(c);
+  const clubCount = {};
+  if (MODE === 'popular') {
+    const present = new Set(cands.map(c => c.row.team_name));
+    const absent = POPULAR_CLUBS.filter(n => !present.has(n));
+    if (absent.length) fail('POPULAR_CLUBS not found among candidate rows: ' + absent.join(', '));
+    const club = new Set(POPULAR_CLUBS);
+    const byPlayer = {};
+    for (const c of cands) (byPlayer[c.row.api_player_id] ??= []).push(c);
+    const ranked = Object.values(byPlayer).map(list => ({
+      honours: list.reduce((s, c) => s + HONOUR_FLAGS.filter(h => c.row[h]).length, 0),
+      best: list.filter(c => club.has(c.row.team_name))
+        .sort((a, b) => b.row.rt - a.row.rt || b.row.minutes - a.row.minutes || a.row.card_id - b.row.card_id)[0],
+    })).filter(p => p.best)
+      .sort((a, b) => b.best.row.rt - a.best.row.rt || b.honours - a.honours || a.best.row.card_id - b.best.row.card_id);
+    const total = Object.values(QUOTAS).reduce((a, b) => a + b, 0);
+    const picked = new Set();
+    const tryAdd = (p, limit) => {
+      const r = p.best.row, pos = r.position_pool;
+      if (picked.has(r.api_player_id) || taken[pos] >= QUOTAS[pos] || (clubCount[r.team_name] ?? 0) >= limit) return;
+      taken[pos]++; clubCount[r.team_name] = (clubCount[r.team_name] ?? 0) + 1; picked.add(r.api_player_id); deck.push(p.best);
+    };
+    for (const p of ranked) tryAdd(p, POPULAR_MIN);                          // every club to its minimum first
+    for (const p of ranked) if (deck.length < total) tryAdd(p, POPULAR_CAP);  // then the rest by rank
+    const under = POPULAR_CLUBS.filter(n => (clubCount[n] ?? 0) < POPULAR_MIN);
+    if (under.length) fail('clubs under the minimum of ' + POPULAR_MIN + ': ' + under.join(', '));
+  } else {
+    cands.sort((a, b) => b.row.rt - a.row.rt || b.row.minutes - a.row.minutes || a.row.card_id - b.row.card_id);
+    const players = new Set();
+    for (const c of cands) {
+      const p = c.row.position_pool;
+      if (taken[p] >= QUOTAS[p] || players.has(c.row.api_player_id)) continue;
+      taken[p]++; players.add(c.row.api_player_id); deck.push(c);
+    }
   }
   for (const p of Object.keys(QUOTAS)) if (taken[p] !== QUOTAS[p]) fail(p + ' filled ' + taken[p] + ' of ' + QUOTAS[p]);
 
@@ -228,7 +275,12 @@ async function main() {
     source: { table: 'player_card_mv', rows_at_generation: matviewRows },
     hazard: 'Snapshot. Regenerate only AFTER a matview refresh, re-ingest or position backfill.',
     filters: { min_minutes: MIN_MINUTES, outfield_only: true, pools: Object.keys(QUOTAS), radar_all_axes: true, rt_not_null: true },
-    quotas: QUOTAS, one_card_per_player: true,
+    quotas: QUOTAS, one_card_per_player: true, mode: MODE,
+    ...(MODE === 'popular' ? { popular: {
+      clubs: POPULAR_CLUBS, min_per_club: POPULAR_MIN, cap_per_club: POPULAR_CAP,
+      ranking: "rt of the player's best Modern Era season at one of the clubs; tie-break career honour flags, then card_id",
+      selection: 'every club to the minimum first (best-ranked first), then the rest by rank up to the cap',
+      per_club: Object.fromEntries(POPULAR_CLUBS.map(n => [n, clubCount[n] ?? 0])) } } : {}),
     battle: {
       impact: 'rt',
       goalThreat: 'percent_rank of radarFor .raw across the deck', creation: 'same', progression: 'same', defensive: 'same',
