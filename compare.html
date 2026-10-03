@@ -1849,7 +1849,10 @@ body.light .pkmsub{color:var(--ink-soft)}
       silently taking the rest of init with it and leaving the folds unmounted. The symptom was
       identical to the bug being fixed, which is the trap worth recording.  */
   var SLOT_MOUNTED={};
-  function vvSizeCards(){var w=window.innerWidth,mob=w<700;var cw=Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();vvEnsureSeasonFolds();}
+  function vvSizeCards(){/*  FIRST CALL MEASURES, LATER CALLS REUSE. The mid-flip hazard is in RE-measuring, not in
+    measuring once at init when the layout is settled and nothing is animating.  */
+    if(_cwVal===null) cwMeasure();
+    var cw=cwNow();var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();vvEnsureSeasonFolds();}
   /*  THE SEASON FOLD BELONGS TO THE STATE "this slot holds a card", NOT TO ONE CODE PATH ,
       2026-09-15. vvLoadSlotSeasons was called from exactly TWO places, both inside
       vvFlipReveal, so a card that arrived through the pick-or-change path got a season control
@@ -1874,7 +1877,68 @@ body.light .pkmsub{color:var(--ink-soft)}
       var c=p[1]; if(c && c.card_id!=null){ el.href='card.html?id='+encodeURIComponent(c.card_id); el.style.display=''; } else { el.style.display='none'; } });
   }
   function vvEmptySlot(slot,cw){return '<div class="vvback" style="--cw:'+cw+'px"><div class="vbtop">Season '+slot+'</div><div class="vlogo"><span class="a">V</span><span class="b">V</span></div><div class="vbsub">Tap to choose</div></div>';}
-  function cwNow(){var w=window.innerWidth,mob=w<700;return Math.round(mob?Math.min(162,Math.max(138,(w-100)/2)):300);}
+  /*  ── ASK THE SLOT, DO NOT GUESS THE CHROME (2026-10-03) ─────────────────────────────
+      THE OLD LINE WAS `min(162, max(138, (w-100)/2))`, AND THE 100 WAS A GUESS AT HOW MUCH
+      THE VS COLUMN, THE GAPS AND THE PLINTH PADDING TAKE. The real figure at 390 is 64 , 38
+      for the VS column, 12 of gap, 14 of padding , so the card was sized 145 into a slot that
+      measures 162. SEVENTEEN PIXELS OF ROOM IT ALREADY HAD.
+
+      AND THE COST WAS NOT THE WIDTH, IT WAS THE RATIO, WHICH IS WHY IT READ AS "CRAMPED"
+      RATHER THAN "NARROW". SS C records that the card's RENDERED ratio is 1.518 and its
+      declared one is 1.397: height is `--cw * 1.397` while width is clamped by
+      `max-width:92%`. That clamp only binds when `--cw` EXCEEDS 92% of the parent. At 145 in
+      a 162 slot it never bound, so compare drew the declared 1.397 , a squat card , while
+      card.html drew 1.519. Measured side by side at 390: bottom clearance 5.0px on compare
+      against 17.9px on the card page, which is the club line sitting on the rim.
+      THE INTERNALS WERE THE SECOND HALF AND THE SAME FIX PAYS FOR BOTH. The fixed type floors
+      do not scale, so at 145 `.cname .sub` was 0.079 of the card against 0.050 on the card
+      page and `.cga .col .l` 0.066 against 0.040 , 58% and 65% larger in proportion. Sizing
+      off the real slot lifts `--cw` 145 -> 162 and takes those to 0.071 and 0.059.
+
+      SO THE RULE IS: READ THE BOX, DO NOT MODEL IT. The slot is a `minmax(0,1fr)` grid column
+      whose width does not depend on its contents, so measuring it before filling it is safe,
+      and it stays correct if the VS column, the gap or the plinth padding ever change , which
+      a hardcoded 100 does not. The old estimate survives ONLY as the first-paint fallback,
+      for the case where the slot has no box yet.  */
+  /*  AND IT IS MEASURED ONCE PER WIDTH, NOT ONCE PER CALL , THE FLIP CHECK CAUGHT THIS.
+      Reading a live box is right; reading it at an arbitrary MOMENT is not. The first version
+      measured on every call, so a season switch , which calls this mid-flip, while the slot's
+      children are being replaced , read 155 where the settled layout reads 162, and the card
+      came back at ratio 1.453 instead of 1.519. The defect was invisible on first paint and
+      appeared only after an interaction, which is exactly the kind a static check cannot see.
+      SO THE MEASUREMENT IS TAKEN ON RESIZE AND NEVER INSIDE A RENDER, AND THAT SEPARATION IS
+      THE WHOLE FIX , IT TOOK THREE ATTEMPTS AND THE FLIP CHECK CAUGHT EVERY ONE.
+        1. Measuring on every call read 155 mid-flip against a settled 162, and the card came
+           back at ratio 1.453.
+        2. Caching against `innerWidth` held 162 while a season fold made the page one pixel
+           too tall, a desktop scrollbar appeared and the columns really did go to 154.5 , so
+           the card rendered 142 wide against a 226 height, ratio 1.592. Worse than the 1.397
+           this change set out to fix.
+        3. Caching against `clientWidth` tracked that correctly and still lost, because the
+           invalidation fired DURING the transient rather than after it.
+      THE LESSON IS NOT ABOUT SCROLLBARS. A render asks "how wide am I" at the one moment the
+      layout is least settled , mid-swap, mid-fold, mid-scrollbar. `resize` is the event that
+      means the available width actually changed, and it fires after the layout settles. So
+      `cwMeasure()` is wired to it beside `vvSizeCards`, and `cwNow()` is a pure read.
+      ON A PHONE THE GUTTER IS ZERO , iOS and Android overlay their scrollbars , so case 2 is
+      a narrow-desktop one. It is handled rather than dismissed because a narrow desktop
+      window is a real reader.
+      THE FALLBACK IS NEVER CACHED OVER A REAL MEASUREMENT , it is the pre-layout case only,
+      and it is the old estimate so first paint is unchanged from what shipped before.  */
+  var _cwVal=null;
+  function cwMeasure(){
+    if(window.innerWidth>=700){ _cwVal=300; return _cwVal; }
+    var slot=document.getElementById('cardA');
+    var sw=slot?Math.round(slot.getBoundingClientRect().width):0;
+    if(sw) _cwVal=Math.max(138,sw);
+    return _cwVal;
+  }
+  function cwNow(){
+    if(_cwVal!==null) return _cwVal;
+    if(window.innerWidth>=700) return 300;
+    var avail=document.documentElement.clientWidth||window.innerWidth;
+    return Math.round(Math.min(162,Math.max(138,(avail-100)/2)));   // pre-layout only, never stored
+  }
   /*  EVERY SLOT A TAG CAN REACH , ONE LIST, WRITTEN BY vvSetVerdict AND CLEARED HERE.
       SEVENTH TAG LEAK, 2026-09-15, AND THE FIRST SIX WERE ALL FIXED IN THE WRITER. Those six
       were the WAIT state: vvSetVerdict suppresses tagObj when `opts.wait`, so nothing prints a
@@ -1953,7 +2017,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     try{ history.replaceState(null,'',location.pathname); }catch(e){}   // drop ?a=/?b= so a reload starts empty
     var m=document.querySelector('.matchup'); if(m) m.scrollIntoView({block:'start',behavior:'smooth'});
   }
-  CMP_A=null; CMP_B=null; vvSizeCards(); window.addEventListener('resize',vvSizeCards);
+  CMP_A=null; CMP_B=null; vvSizeCards();
+  /*  MEASURE THEN RENDER, IN THAT ORDER, AND ONLY ON A REAL RESIZE , see cwNow above.
+      NO requestAnimationFrame HERE, AND THAT IS A VERIFIABILITY DECISION RATHER THAN A
+      TECHNICAL ONE: rAF does not fire in a hidden tab, which is where this gets measured, so
+      an rAF-deferred first measurement is a line that cannot be checked before it ships. The
+      first measurement happens inside vvSizeCards instead, once, when _cwVal is still null.  */
+  window.addEventListener('resize',function(){ cwMeasure(); vvSizeCards(); });
 
   // ── Back control (same pattern as card.html) ──
   function vvBack(){var inApp=false;try{inApp=document.referrer&&new URL(document.referrer).origin===location.origin;}catch(e){}if(inApp&&history.length>1)history.back();else location.href='rankings.html';}
