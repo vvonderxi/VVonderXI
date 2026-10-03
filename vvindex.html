@@ -581,18 +581,20 @@
       drawing. The strip text is 12px, which is BODY text at a 4.5 bar, so it takes
       --vi-gold-ink and NOT --vi-gold-num , the large-numeral gold reads 3.59 in light and
       that is the mistake this comment exists to stop being made again.  */
-  .dfig{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:20px 18px 16px;max-width:660px;margin-inline:auto;
-    background:linear-gradient(180deg,var(--vi-panel),transparent)}
-  /*  CAPPED, AND THE CAP IS THE APPROVED PROPORTION RATHER THAN A TASTE CALL. This column
-      is 860px, so an uncapped pair drew each panel at ~390 against the ~240 of the demo that
-      was signed off, and the strip type scales with the viewBox: the drawing stopped being a
-      diagram and became a banner. The timeline above it IS full width and should stay that
-      way , it is a bar chart and width is information there. This is a diagram, and width
-      only dilutes it.  */
-  .dpair{display:flex;gap:16px;flex-wrap:wrap}
-  .dpan{flex:1 1 210px;min-width:0}
-  .dpt{font:800 10px Archivo;letter-spacing:.11em;text-transform:uppercase;margin:0 0 8px;color:var(--vi-mut)}
-  .dpan svg{display:block;width:100%;height:auto}
+  /*  .dcap IS RETAINED PENDING A DECISION, NOT BECAUSE IT IS LIVE , AND THE FIRST VERSION OF
+      THIS COMMENT SAID THE OPPOSITE, WHICH IS WHY IT IS WRITTEN OUT.
+      I kept it on the grounds that two figures further down this page still use it. Measured
+      on the rendered page: `.dcap` renders ZERO times, because those builders are orphaned
+      too. `598aeec` ("cut the method layer and the old spine") removed FOUR figure containers
+      and left all four builders behind , defFig, lgFig, pladFig and csFig.
+      THE DIFFERENCE BETWEEN THEM IS ONLY WHETHER THEY GUARD. defFig did `getElementById(...)
+      .innerHTML = FIG` with no check and threw on every page load; the other three open with
+      `if(!host) return` and fail in complete silence. The guarded ones are the more dangerous
+      shape: a page that throws at least leaves a message.
+      THE DEFENDER DRAWING WAS DELETED ON LUCAS'S WORD. The other three are HIS DECISION and
+      not mine , SS C's rule that a thing deliberately cut and a thing accidentally lost need
+      opposite responses, and only the record tells them apart. `.dcap`, `.plad*`, `.cstrip`
+      and `.cscol` stay until that call is made.  */
   .dcap{font:400 13.5px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
   .dcap b{font-family:Archivo;font-weight:700;color:var(--vi-strong)}
   /*  THE CAREER STRIP , Add 1. Twelve seasons of one career as a column each, height by
@@ -1257,73 +1259,6 @@
     '<div class="csclub"><span>Lille</span><span>Chelsea</span><span>Real Madrid</span></div>'+
     '<p class="dcap">The three Madrid seasons were wrecked by injury, and that is exactly the point: <b>a season score registers it and a career rating hides it.</b> One number for this career would have been wrong about nine of these twelve seasons , and that is a failure of the rating, not of the player.</p>';
 })();
-</script>
-<script>
-/*  THE DEFENDER DRAWING , built once and injected, so the two panels cannot drift
-    apart the way two hand-written SVGs would.  */
-function panel(o){
-  const atk=o.atk, def=o.def, W=232, H=150;
-  return `
-  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.alt}">
-    <!-- the lane -->
-    <rect x="1" y="1" width="${W-2}" height="104" rx="10"
-          fill="var(--vi-panel)" stroke="var(--vi-line)"/>
-    <line x1="${W/2}" y1="6" x2="${W/2}" y2="100" stroke="var(--vi-line)" stroke-dasharray="3 5"/>
-    <!-- the goal the attacker is running at -->
-    <path d="M${W-14} 34 v38" stroke="var(--vi-mut)" stroke-width="3" stroke-linecap="round"/>
-    <!-- attacker -->
-    <circle cx="${atk[0]}" cy="${atk[1]}" r="9" fill="var(--pink-ink)"/>
-    <!-- intended ball path -->
-    <path d="${o.ball}" fill="none" stroke="var(--pink-ink)" stroke-width="2.5"
-          stroke-linecap="round" ${o.ballDash?'stroke-dasharray="5 5" opacity=".55"':''}/>
-    ${o.ballHead?`<path d="${o.ballHead}" fill="var(--pink-ink)" ${o.ballDash?'opacity=".55"':''}/>`:''}
-    <!-- defender -->
-    <circle cx="${def[0]}" cy="${def[1]}" r="9" fill="none" stroke="var(--vi-strong)" stroke-width="2.5"/>
-    ${o.mark||''}
-    <!-- ══ THE RECORD STRIP , the whole argument lives here ══ -->
-    <rect x="1" y="116" width="${W-2}" height="32" rx="8"
-          fill="${o.filled?'var(--vi-panel)':'none'}" stroke="var(--vi-line)"
-          ${o.filled?'':'stroke-dasharray="4 5"'}/>
-    ${o.filled
-      ? `<text x="14" y="136" font-family="Archivo" font-weight="800" font-size="12"
-               letter-spacing="1.2" fill="var(--vi-gold-ink)">TACKLE</text>
-         <text x="${W-14}" y="136" text-anchor="end" font-family="Archivo" font-weight="800"
-               font-size="12" fill="var(--vi-gold-ink)">+1</text>`
-      : `<text x="14" y="136" font-family="Archivo" font-weight="800" font-size="12"
-               letter-spacing="1.2" fill="var(--vi-mut)">NOTHING RECORDED</text>`}
-  </svg>`;
-}
-const COUNTED = panel({
-  alt:'A defender meets the ball and wins it. The record writes: tackle, plus one.',
-  atk:[46,66], def:[142,66],
-  ball:'M56 66 H128', ballHead:'M124 61 l10 5 -10 5 z',
-  mark:'<circle cx="135" cy="66" r="17" fill="none" stroke="var(--vi-gold-num)" stroke-width="2.5"/>',
-  filled:true
-});
-/*  THE SECOND PANEL SAYS "NEVER ATTEMPTED", AND THE FIRST DRAWING SAID THE OPPOSITE.
-    It carried a dashed path running PAST the defender to an arrowhead at the goal,
-    which reads as a pass that got through , the exact reverse of the argument. The
-    path now dies at the defender, carries no arrowhead, and fades: the line stops
-    because the pass was never played. Found by looking at it, not by measuring it.  */
-const PREVENTED = panel({
-  alt:'The same defender, standing in the lane a second earlier. The pass is never attempted and the record writes nothing.',
-  atk:[46,66], def:[104,66],
-  ball:'M56 66 H92', ballDash:true,
-  mark:'<path d="M104 96 L104 80" fill="none" stroke="var(--vi-strong)" stroke-width="2.5" '
-      +'stroke-linecap="round" opacity=".45"/>'
-      +'<path d="M100 84 l4 -6 4 6 z" fill="var(--vi-strong)" opacity=".45"/>',
-  filled:false
-});
-const FIG = `
-  <div class="dpair">
-    <div class="dpan"><p class="dpt">He makes the tackle</p>${COUNTED}</div>
-    <div class="dpan"><p class="dpt">He makes it unnecessary</p>${PREVENTED}</div>
-  </div>
-  <p class="dcap">The game records what a defender <b>does</b> far more faithfully than what he
-  <b>prevents</b>, so the best defenders score lower here than their reputation. Van Dijk sits in
-  the low seventies. <b>We publish that with the reason rather than quietly moving him</b> , a score
-  that agrees with every reputation is not measuring reputation, it is copying it.</p>`;
-document.getElementById('defFig').innerHTML=FIG;
 </script>
 <script>
 /*  THE BOUNDARY MARKS , hover on a pointer device, tap on a touch one, and the SAME handler
