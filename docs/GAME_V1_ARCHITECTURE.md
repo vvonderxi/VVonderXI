@@ -98,7 +98,10 @@ game/
     scene.js  table.js  card3d.js  hologram.js  fx.js  director.js (event queue -> animations)
   vendor/three.module.min.js      one pinned version, vendored, not a CDN
 data/game-deck.json               generated
-playtest/game-deck.json           a COPY of data/game-deck.json for the playtest page: re-copy it after every deck regeneration
+data/game-deck-popular.json       generated (gen-game-deck.js --mode popular): 29 famous clubs, min 8 / cap 16 per club
+playtest/game-deck.json           since 2026-10-03 a COPY of data/game-deck-popular.json for the playtest page: re-copy it
+                                  after every regeneration of that file. PSV Eindhoven's 16 cards use placeholder colours
+                                  until the club-colour fix lands in the database (Terminal A, later).
 scripts/gen-game-deck.js          generator (Phase 4)
 docs/GAME_V1_ARCHITECTURE.md      this file
 ```
