@@ -1549,6 +1549,21 @@ body.light .pkmsub{color:var(--ink-soft)}
   body.light .vv-totop{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.10);color:var(--charcoal)}
   @media (max-width:720px){.vv-totop{bottom:84px}}
 
+  /*  ── THE TWO LABELS, AND THEY ARE DELIBERATELY NOT INSIDE THE PHONE MEDIA QUERY ────────
+      One button, one state machine, no second control in the markup: `.sl-go` reads "Compare"
+      and `.sl-read` reads "Read the verdict", and exactly one is displayed.
+      THEY SHIPPED INSIDE `@media (max-width:720px)` FOR ABOUT AN HOUR AND THE FINAL PASS
+      CAUGHT IT. Above 720 neither rule applied, so `.sl-read` had no `display:none` and the
+      desktop button read "CompareRead the verdict" , BOTH labels, on a fresh load, before
+      anything had been settled. The sticky POSITIONING is phone-only; the LABEL belongs to
+      the button's state and the button exists at every width.
+      SEC C records the media-query trap three times and it is always this shape: a rule that
+      looks like it belongs with its neighbours, scoped to a width where only half of its job
+      makes sense. The positioning is responsive. The state machine is not.  */
+  .settlerow .sl-read{display:none}
+  body:has(#verdict.show) .settlerow .sl-go{display:none}
+  body:has(#verdict.show) .settlerow .sl-read{display:inline}
+
   /*  ── THE SETTLE BAR , THE SHARED BOTTOM-ACTION PATTERN, PHONE ONLY (built 2026-10-03) ───
       THE DEFECT, MEASURED 2026-08-29 AND QUOTED AS A RANGE BECAUSE IT IS PAIR-DEPENDENT: on a
       deep-linked pair at 390x844 the Compare button's top sat 693 to 734px BELOW the fold,
@@ -1644,10 +1659,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     #verdict{padding-top:16px}
     #verdict .vbreak{margin-top:10px;padding-top:10px}
 
-    /*  THE TWO LABELS. One button, one state machine, no second control in the markup.  */
-    .settlerow .sl-read{display:none}
-    body:has(#verdict.show) .settlerow .sl-go{display:none}
-    body:has(#verdict.show) .settlerow .sl-read{display:inline}
+
   }
 
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
