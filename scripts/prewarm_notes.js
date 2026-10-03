@@ -200,13 +200,30 @@ async function callClaude(player, attempt = 0) {
     return r && r.stats_hash && r.cache_version === NOTES_VERSION && r.model === MODEL;
   });
   let vOK = 0, vBad = [];
-  for (const c of checkable.slice(0, 40)) {
+  const shapeOK = { outfield: 0, keeper: 0 }, shapeSeen = { outfield: 0, keeper: 0 };
+  for (const c of checkable.slice(0, 60)) {
+    const shape = c.keeper ? 'keeper' : 'outfield';
+    shapeSeen[shape]++;
     const seasonRaw = c.keeper ? await seasonRowsFor(c.api_player_id) : null;
     await withHonours(c, rawById.get(c.card_id));
     const mine = statsHash(buildPlayer(c, seasonRaw));
-    if (mine === byId.get(c.card_id).stats_hash) vOK++;
-    else vBad.push(`${c.surname} ${c.year}${c.keeper ? ' [GK]' : ''}  ours ${mine}  stored ${byId.get(c.card_id).stats_hash}`);
+    if (mine === byId.get(c.card_id).stats_hash) { vOK++; shapeOK[shape]++; }
+    else vBad.push(`${c.surname} ${c.year}${c.keeper ? ' [GK]' : ''}`);
   }
+  /*  A MISMATCH HAS TWO CAUSES AND ONLY ONE IS A REASON TO STOP , the first version of this
+      check conflated them and refused to run on a builder that was CORRECT.
+        DRIFT  , this script builds a different object from card.html. Fatal: every row it
+                 writes is a permanent miss.
+        STALE  , the stored row was written before a payload change and the PAGE would
+                 regenerate it too. Not a problem: warming it is the repair.
+      They are told apart by whether ANY row matches. A drifted builder matches NOTHING,
+      because every payload would carry the same structural difference. So the gate is "at
+      least one match per payload SHAPE" , outfield and keeper are different shapes and a
+      builder can be right about one and wrong about the other, which is why both are
+      required rather than a single count.
+      Worked example, 2026-10-03: the honours key landed in the payload on 2026-09-08
+      (c3021be), so rows older than that carry 32 keys and newer ones 33. Checking a mixed
+      sample gave 16/25 one way and 9/25 the other, and NEITHER number meant drift.  */
   console.log(`  PAYLOAD VERIFICATION , rebuilt against rows card.html already wrote`);
   if (!checkable.length) {
     console.log(`    NO FRESH CACHED NOTES IN THIS POOL TO CHECK AGAINST.`);
@@ -214,14 +231,23 @@ async function callClaude(player, attempt = 0) {
     console.log(`    threshold first, then re-run , do not spend against an unchecked payload.\n`);
     if (!DRY) process.exit(1);
   } else {
-    console.log(`    matched ${vOK} / ${vOK + vBad.length}`);
-    vBad.slice(0, 5).forEach(b => console.log(`    MISMATCH  ${b}`));
-    if (vBad.length) {
-      console.log(`\n    REFUSING TO RUN. Every row written with a mismatched hash is a permanent`);
-      console.log(`    miss , paid for and never served. Fix buildPlayer() against card.html first.\n`);
+    console.log(`    matched ${vOK} / ${vOK + vBad.length}   (outfield ${shapeOK.outfield}/${shapeSeen.outfield}, keeper ${shapeOK.keeper}/${shapeSeen.keeper})`);
+    const dead = [];
+    if (shapeSeen.outfield && !shapeOK.outfield) dead.push('OUTFIELD');
+    if (shapeSeen.keeper   && !shapeOK.keeper)   dead.push('KEEPER');
+    if (dead.length) {
+      console.log(`\n    REFUSING TO RUN , NOT ONE ${dead.join(' or ')} payload matched, which is DRIFT, not`);
+      console.log(`    staleness: a stale row is one the page would regenerate too, and some would still`);
+      console.log(`    match. Every row written with a drifted hash is a permanent miss. Fix buildPlayer()`);
+      console.log(`    against card.html before spending.\n`);
       process.exit(1);
     }
-    console.log(`    the payload this script builds is byte-equivalent to card.html's.\n`);
+    if (vBad.length) {
+      console.log(`    ${vBad.length} stored row(s) differ and are STALE, not drift , written before a payload`);
+      console.log(`    change, so the page would regenerate them too. Warming them is the repair.`);
+      console.log(`    e.g. ${vBad.slice(0, 4).join(', ')}`);
+    }
+    console.log(`    the payload this script builds reproduces card.html's on every current row.\n`);
   }
   if (VERIFY_ONLY) process.exit(0);
 
