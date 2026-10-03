@@ -581,72 +581,6 @@
       drawing. The strip text is 12px, which is BODY text at a 4.5 bar, so it takes
       --vi-gold-ink and NOT --vi-gold-num , the large-numeral gold reads 3.59 in light and
       that is the mistake this comment exists to stop being made again.  */
-  /*  .dcap IS RETAINED PENDING A DECISION, NOT BECAUSE IT IS LIVE , AND THE FIRST VERSION OF
-      THIS COMMENT SAID THE OPPOSITE, WHICH IS WHY IT IS WRITTEN OUT.
-      I kept it on the grounds that two figures further down this page still use it. Measured
-      on the rendered page: `.dcap` renders ZERO times, because those builders are orphaned
-      too. `598aeec` ("cut the method layer and the old spine") removed FOUR figure containers
-      and left all four builders behind , defFig, lgFig, pladFig and csFig.
-      THE DIFFERENCE BETWEEN THEM IS ONLY WHETHER THEY GUARD. defFig did `getElementById(...)
-      .innerHTML = FIG` with no check and threw on every page load; the other three open with
-      `if(!host) return` and fail in complete silence. The guarded ones are the more dangerous
-      shape: a page that throws at least leaves a message.
-      THE DEFENDER DRAWING WAS DELETED ON LUCAS'S WORD. The other three are HIS DECISION and
-      not mine , SS C's rule that a thing deliberately cut and a thing accidentally lost need
-      opposite responses, and only the record tells them apart. `.dcap`, `.plad*`, `.cstrip`
-      and `.cscol` stay until that call is made.  */
-  .dcap{font:400 13.5px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
-  .dcap b{font-family:Archivo;font-weight:700;color:var(--vi-strong)}
-  /*  THE CAREER STRIP , Add 1. Twelve seasons of one career as a column each, height by
-      score, three marked and the other nine left legible. THE SHAPE IS THE ARGUMENT: a
-      reader has to be able to see the line move, not just read three highlights, so the
-      unmarked columns keep a real fill rather than fading to a hint.
-      THE VALUES ARE GENERATED , data-fig-series on the host, rewritten and checked by
-      apply-figures. A drawing with its numbers typed in is an embedded snapshot, and every
-      one of those on this platform has gone stale in silence.  */
-  .csfig{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 16px;
-    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
-  .cstrip{display:flex;align-items:flex-end;gap:6px;height:168px;margin:4px 0 0}
-  /*  THE BAR GETS ITS OWN TRACK, AND THE FIRST VERSION DID NOT , the columns were a flex
-      stack and the bar was a flex ITEM, so the value and year labels competed with it for
-      the 168px and flex-shrink quietly clamped five different scores to the same height.
-      Measured: 81, 82, 83, 85 and 87 all drew 135px, and 90 drew 133, which is the shape
-      arguing the opposite of the claim. The track flexes, the bar is positioned inside it,
-      and a percentage of the track is a percentage of the track.  */
-  .cscol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;height:100%}
-  .cstrack{flex:1 1 auto;position:relative;min-height:0}
-  .csbar{position:absolute;left:0;right:0;bottom:0;border-radius:4px 4px 2px 2px;background:var(--vi-barq)}
-  .cscol.mk .csbar{background:var(--vi-bar)}
-  .cscol.lo .csbar{background:var(--pink-ink)}
-  .csv{font:800 11px 'Archivo';text-align:center;color:var(--vi-mut);margin:0 0 5px}
-  .cscol.mk .csv{color:var(--vi-strong);font-size:13px}
-  .cscol.lo .csv{color:var(--pink-ink);font-size:13px}
-  .csyr{font:700 8.5px 'Archivo';letter-spacing:.02em;text-align:center;color:var(--vi-mut);
-    margin:7px 0 0;white-space:nowrap}
-  .cscol.mk .csyr,.cscol.lo .csyr{color:var(--vi-strong)}
-  .csclub{display:flex;justify-content:space-between;margin:10px 2px 0;
-    font:800 9.5px 'Archivo';letter-spacing:.12em;text-transform:uppercase;color:var(--vi-mut)}
-  @media (max-width:560px){ .cstrip{height:132px;gap:3px} .csyr{font-size:7px} .csv{font-size:9px} }
-  /*  THE PRECISION LADDER , Add 2. Four bands, and how far apart two seasons of that
-      standing must be before the Index will separate them. A bar per band, because the
-      point is that the number is NOT constant: it runs sixfold down the ladder, and a
-      reader who takes 2.8 points from the top of the page and applies it at Standout has
-      been misled by a figure that was accurate once.  */
-  .plad{display:grid;gap:9px;margin:2px 0 0}
-  .pladr{display:grid;grid-template-columns:104px 1fr auto;gap:12px;align-items:center}
-  .pladn{font:800 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut);text-align:right}
-  .pladt{height:13px;border-radius:var(--r-sm);background:var(--vi-barq);position:relative;overflow:hidden}
-  .pladf{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-sm);background:var(--vi-bar)}
-  .pladv{font:800 12px 'Archivo';color:var(--vi-strong);min-width:66px;text-align:right;font-variant-numeric:tabular-nums}
-  @media (max-width:560px){ .pladr{grid-template-columns:78px 1fr auto;gap:8px} .pladn{font-size:8.5px} }
-  /*  THE LEAGUE SPLIT , Add 3. It reuses `.plad`, the precision ladder's row, rather than
-      bringing a third bar treatment onto the page, and it carries NO ACCENT COLOUR AT ALL.
-      The page already runs gold numerals throughout, gold and pink marks on the career
-      strip, a pink numeral on Modric and a pink ball path in the defender drawing; a fourth
-      highlight here would be colour spent on a point the SHAPE already makes. Nine bars in
-      one neutral ink say "not one league" without being told to.  */
-  .plad.nolead .pladf{background:var(--vi-mut)}
-  .plad.nolead .pladn{text-align:right}
   /*  THE SCORING WALK , the centrepiece. One real season read downward, each stop a number
       going in and a number coming out. It is a COLUMN and not a flowchart on purpose: a
       reader follows one line without deciding where to look next, and every stop reuses the
@@ -1118,10 +1052,16 @@
   <!--  HOW A SCORE IS BUILT , the method layer, 2026-10-02. Everything in here explains a
         MECHANISM. Nothing in here is a limit: limits cannot fold, which is why the coverage
         claim sits in the limits section above and only its era band lives down here.
-        THE THREE SERIES HOSTS MOVED WITH ALL FOUR COUPLED ATTRIBUTES. csFig carries
-        data-fig-series / data-series / data-fig-series-years / data-years; lgFig carries the
-        same shape with names. A host that arrives without them renders an EMPTY chart and
-        says nothing, which is the failure mode this move was most likely to produce.  -->
+        [THE THREE SERIES HOSTS WERE NOT MOVED, THEY WERE CUT , CORRECTED 2026-10-03.] This
+        said csFig and lgFig "moved with all four coupled attributes" and warned that a host
+        arriving without them renders an empty chart. Neither host arrived at all: the same
+        commit removed csFig, lgFig, pladFig and defFig and left all four builders behind.
+        The figures were the point of the cut rather than casualties of it (Lucas, 2026-10-03),
+        so the builders and their CSS are now deleted too and nothing here is pending.
+        THE WARNING IT GAVE WAS STILL THE RIGHT ONE AND IS WORTH KEEPING IN THE ABSTRACT: a
+        host without its data attributes renders an EMPTY chart and says nothing. Three of the
+        four builders guarded with `if(!host) return` and failed in total silence; the fourth
+        did not and threw on every load for days. The guarded ones were the harder to find.  -->
   <!--  MOVEMENT 4 , WHAT THE NUMBER MEANS, 2026-10-02. Three ideas and no more.
         THE MARGIN DOES NOT MOVE even though it sits in a proof movement on a gold ground. A
         statement about uncertainty does not perform , the motion rule wins over the section
@@ -1198,68 +1138,6 @@
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 
-<script>
-/*  THE LEAGUE SPLIT. Counts AND names both come from the host's attributes, which
-    apply-figures owns , the names are generated from vv-core's canonical map rather than
-    the `leagues` table, because that table carries the Turkish league as TSL while every
-    card carries TR, and the join silently returns nothing.  */
-(function(){
-  var host=document.getElementById('lgFig'); if(!host) return;
-  var n=host.getAttribute('data-series').split(',').map(Number);
-  var names=host.getAttribute('data-names').split('|');
-  if(n.length!==names.length) return;
-  var max=Math.max.apply(null,n);
-  host.innerHTML='<div class="plad nolead">'+n.map(function(v,i){
-    return '<div class="pladr"><span class="pladn">'+names[i]+'</span>'+
-           '<span class="pladt"><span class="pladf" style="width:'+(v/max*100).toFixed(1)+'%"></span></span>'+
-           '<span class="pladv">'+v+'</span></div>';
-  }).join('')+'</div><p class="dcap">Seasons at 85 or better, by league. <b>The shape is the claim</b> , the Premier League leads and does not dominate, and no league in the record is absent from the top band. The 650 itself is fixed by construction, because the band edges are ranks; <b>what moves is which seasons fill the slots.</b></p>';
-})();
-</script>
-<script>
-/*  THE PRECISION LADDER. Thresholds come from the HOST'S data-series, which apply-figures
-    owns and which is derived from `vv-margin.js` , the same table the live Compare gate
-    reads. The page therefore cannot claim a precision the product does not act on.  */
-(function(){
-  var host=document.getElementById('pladFig'); if(!host) return;
-  var pts=host.getAttribute('data-series').split(',').map(Number);
-  var names=['Generational','Iconic','World Class','Standout'];
-  if(pts.length!==names.length) return;
-  var max=Math.max.apply(null,pts);
-  host.innerHTML='<div class="plad">'+pts.map(function(p,i){
-    return '<div class="pladr"><span class="pladn">'+names[i]+'</span>'+
-           '<span class="pladt"><span class="pladf" style="width:'+(p/max*100).toFixed(1)+'%"></span></span>'+
-           '<span class="pladv">'+p.toFixed(1)+' pts</span></div>';
-  }).join('')+'</div><p class="dcap">How far apart two seasons must be before the Index will say one is better. <b>At the very top it can split hairs</b> , three points is a real gap between two of the twelve best seasons ever recorded. Further down it cannot, and rather than guess, <b>Compare says so on the card:</b> &#8220;a gap this small is finer than the Index can reliably read.&#8221;</p>';
-})();
-</script>
-<script>
-/*  THE CAREER STRIP. Values and season labels are read from the HOST'S OWN ATTRIBUTES, which
-    apply-figures owns, so this script never carries a number of its own , the same reason the
-    boundary marks read their default caption out of the DOM rather than duplicating it here.
-    HEIGHTS ARE SCALED FROM ZERO, NOT FROM THE MINIMUM. Baselining at the lowest season would
-    draw Hazard's 26 as nothing and exaggerate every gap above it; the claim is about the size
-    of a real spread and a truncated axis would be arguing it dishonestly.  */
-(function(){
-  var host=document.getElementById('csFig'); if(!host) return;
-  var vals=host.getAttribute('data-series').split(',').map(Number);
-  var yrs=host.getAttribute('data-years').split(',');
-  if(vals.length!==yrs.length) return;                 // mismatched series, draw nothing
-  var TOP=100, MARK={}; 
-  var best=Math.max.apply(null,vals), worst=Math.min.apply(null,vals);
-  MARK[vals.indexOf(best)]='mk'; MARK[vals.indexOf(worst)]='lo';
-  MARK[vals.indexOf(63)]='mk';                          // the mid-career dip, named in the copy
-  var cols=vals.map(function(v,i){
-    var cls='cscol'+(MARK[i]?' '+MARK[i]:'');
-    return '<div class="'+cls+'"><p class="csv">'+v+'</p>'+
-           '<div class="cstrack"><div class="csbar" style="height:'+(v/TOP*100).toFixed(1)+'%"></div></div>'+
-           '<p class="csyr">'+yrs[i]+'</p></div>';
-  }).join('');
-  host.innerHTML='<div class="cstrip">'+cols+'</div>'+
-    '<div class="csclub"><span>Lille</span><span>Chelsea</span><span>Real Madrid</span></div>'+
-    '<p class="dcap">The three Madrid seasons were wrecked by injury, and that is exactly the point: <b>a season score registers it and a career rating hides it.</b> One number for this career would have been wrong about nine of these twelve seasons , and that is a failure of the rating, not of the player.</p>';
-})();
-</script>
 <script>
 /*  THE BOUNDARY MARKS , hover on a pointer device, tap on a touch one, and the SAME handler
     serves both because a click follows a tap everywhere that matters. The caption is restored
