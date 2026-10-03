@@ -869,12 +869,20 @@
   .vi-lims-top{display:flex;gap:30px;align-items:center;margin:0 0 20px}
   .vi-lims-top .vi-lims-s{margin:0;flex:1 1 auto}
   .vi-lims-card{margin:0;flex:0 0 auto;line-height:0}
+  /*  THE CAPTION IS THE WIDTH OF THE CARD AND NOT OF THE ROW, so it reads as belonging to
+      the image rather than as another column of body copy beside it. line-height is reset
+      because .vi-lims-card sets 0 for the image's sake.  */
+  .vi-lims-cap{font-family:'Inter';font-size:12.5px;line-height:1.55;color:var(--ink-soft);
+    margin:12px 0 0;max-width:34ch;text-align:left}
+  .vi-lims-cap b{color:var(--cream);font-weight:600}
+  body.light .vi-lims-cap b{color:var(--charcoal)}
   .vi-lims-card img{height:250px;width:auto;max-width:100%;border-radius:var(--r-lg);
     box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
   @media (max-width:720px){
     .vi-lims-top{flex-direction:column;gap:18px;align-items:center}
     .vi-lims-top .vi-lims-s{order:-1}
     .vi-lims-card img{height:auto;width:232px}
+    .vi-lims-cap{max-width:300px;margin-inline:auto}
   }
   .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;grid-auto-flow:row dense}
   .vl{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
@@ -1026,6 +1034,17 @@
       <figure class="vi-lims-card">
         <img src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" loading="lazy" decoding="async"
              alt="A VVonderXI card: Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72, carrying Champions League and Player of the Season tags.">
+        <!--  THE CAPTION CARRIES THE ARGUMENT, OR THE CARD IS DECORATION , 2026-10-03.
+              The reasoning for THIS card was written in the comment above and nowhere a reader
+              could see it, so the figure had no caption at all. Lucas looked at it and asked why
+              it was there, which is the only test that matters for an illustration.
+              IT NAMES THE THREE PANELS IT IS EVIDENCE FOR, in the order they appear below, and
+              each clause states the card's own value rather than describing it: 72, centre-back,
+              two honours beside that 72. A reader can check every one against the image.
+              IT DOES NOT SAY "three of the eight" , a count of a list that grows is a promise
+              the caption cannot keep, which is the lesson this file records against the
+              contrast-exceptions heading.  -->
+        <figcaption class="vi-lims-cap">Virgil van Dijk, Liverpool 2018/19. One card, and the evidence for three of the panels below. He scores <b>72</b>, because the record counts what a defender does and not what he prevents. He is a <b>centre&#8209;back</b>, and not one of them reaches the top band. And he carries a <b>Champions League and a Player of the Season</b> beside that 72, because no honour moves a score.</figcaption>
       </figure>
     </div>
     <div class="vl-grid">
