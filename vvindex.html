@@ -946,6 +946,19 @@
   .vvsoc a{display:inline-flex;color:var(--vi-mut);transition:color .18s,transform .18s}
   .vvsoc a:hover{color:var(--pink-ink);transform:translateY(-2px)}
   .vvsoc svg{width:21px;height:21px}
+
+  /*  ── BACK TO TOP , COPIED FROM playbook.html VERBATIM, 2026-10-03 ───────────────────
+      The VV Index is one of the longest pages on the platform and had no way back; the
+      Playbook has had one for months. This is the Playbook's rule, its scroll listener and
+      its button, lifted rather than re-authored , SS C records what happens when one thing
+      gets drawn twice (the display-case trophies, the two shadow icon lookups), and a
+      second back-to-top differing by a few pixels would be the same shape.
+      THE 88px BOTTOM IS NOT ARBITRARY AND IS WHY THE COPY HAS TO BE EXACT: it clears the
+      bottom nav, which this page also carries. The 721 breakpoint drops it to 28 where the
+      nav is gone. Both pages agree because both run the same two lines.  */
+  .totop{position:fixed;right:18px;bottom:88px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(255,92,122,.6);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:60}
+  .totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+  @media (min-width:721px){ .totop{bottom:28px} }
 </style></head>
 <body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
@@ -1320,5 +1333,7 @@ document.getElementById('defFig').innerHTML=FIG;
   if(fig) fig.addEventListener('mouseleave',clear);
 })();
 
+window.addEventListener('scroll',function(){var t=document.getElementById('totop');if(t)t.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>520);});
 </script>
+<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 </body></html>
