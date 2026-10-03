@@ -687,8 +687,25 @@ module.exports = async (req, res) => {
     'https://v-vonder-xi.vercel.app',
     'https://vvonderxi-preview.vercel.app'
   ]);
+  /*  [CORRECTED 2026-10-03 , THE WILDCARD NEVER MATCHED A REAL PREVIEW HOST.]
+      It was `^https://v-vonder-xi-[a-z0-9-]+\.vercel\.app$`, written against the PROJECT
+      SLUG (`v-vonder-xi`) on the assumption that Vercel prefixes generated hosts with it.
+      It does not. The live preview is
+          v-vonder-by5k2ln3p-lucsa-vanlauwe-s-projects.vercel.app
+      , `v-vonder-` then a per-deployment hash, with no `xi` anywhere, so the pattern could
+      not match and the endpoint 403'd its own preview. Every AI feature was dead on every
+      preview deploy: no verdicts on Compare, no notes or scout report on a card. Measured
+      against the live host, not reasoned about.
+      SO IT ANCHORS ON THE ACCOUNT SUFFIX, WHICH IS OBSERVED, RATHER THAN ON THE PROJECT
+      PREFIX, WHICH WAS GUESSED. `-lucsa-vanlauwe-s-projects.vercel.app` is the account
+      scope: Vercel derives it from the account and no other account can produce it, so a
+      stranger cannot register a project that satisfies it. The hash regenerates per
+      deployment; the suffix does not, which is exactly why it is the half to anchor on.
+      IT IS DELIBERATELY NOT `[a-z0-9-]+\.vercel\.app` , that would admit EVERY project
+      on the platform, including an attacker's, and turn the allowlist into decoration.  */
   const ALLOWED_PATTERNS = [
-    /^https:\/\/v-vonder-xi-[a-z0-9-]+\.vercel\.app$/,   // Vercel's generated branch + deployment URLs
+    /^https:\/\/[a-z0-9-]+-lucsa-vanlauwe-s-projects\.vercel\.app$/,  // this account's generated hosts
+    /^https:\/\/v-vonder-xi-[a-z0-9-]+\.vercel\.app$/,                // kept: older alias shape
     /^http:\/\/localhost(:\d+)?$/,
     /^http:\/\/127\.0\.0\.1(:\d+)?$/
   ];
