@@ -3243,9 +3243,21 @@ body.light .pkmsub{color:var(--ink-soft)}
             are not close; the Index cannot resolve them, which is a different sentence and
             the only one the data supports. The TIE branch below still says "apiece" and is
             correct , that one genuinely is level.  */
+        /*  THE NUMBER CAME OUT OF THE TIE BRANCH, 2026-10-03, AND NOT BECAUSE THE OLD
+            REASONING WAS WRONG. The note above argues the "apiece" form is correct on a
+            genuine tie , one shared number is not two numbers side by side, so it ranks
+            nothing , and that is true as far as it goes.
+            WHAT IT MISSES IS WHEN THIS STRING IS ACTUALLY SHOWN. It is the FALLBACK, used
+            whenever the model's own headline is absent , which includes every FAILED
+            generation. Measured on Muller 23/24 vs Vanaken 20/21: the reader got
+            "Level on VV , 74 apiece. The Index will not separate them." sitting directly
+            above "The written verdict is unavailable right now."
+            A HEADLINE THAT ASSERTS A FINDING ON TOP OF A BODY THAT SAYS WE HAVE NONE is
+            worse than a quieter headline, and the number is the part doing the asserting.
+            Both cards already print their score, so the line loses nothing by dropping it.  */
         var _fbTie = (VC && VC.separation === 'inside')
           ? 'The Index cannot separate these two.'
-          : ('Level on VV , '+va+' apiece. The Index will not separate them.');
+          : 'Level on the Index. It will not separate them.';
         who.innerHTML = VVCore.vvEmphasis(ai || _fbTie);
       }
     }
@@ -3810,7 +3822,21 @@ body.light .pkmsub{color:var(--ink-soft)}
       body.winnerCardId = winner==='A'?idA : (winner==='B'?idB : null);   // post-tiebreak winner; null on true tie
     }
     fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
-      .then(function(resp){ return resp.json().then(function(data){ if(!resp.ok) throw new Error((data&&data.error)||('HTTP '+resp.status)); return data; }); })
+      /*  THE STATUS IS STAMPED ON THE ERROR HERE BECAUSE THIS IS THE ONLY PLACE IT EXISTS.
+          By the time the catch runs, `resp` is out of scope and every failure looks like a
+          bare Error , which is exactly why a 429 and a truncated body were indistinguishable
+          downstream. `retryAfter` travels too: it is the one number that makes a rate-limit
+          failure actionable rather than merely named.  */
+      .then(function(resp){ return resp.json().catch(function(){ return null; }).then(function(data){
+          if(!resp.ok){
+            var err=new Error((data&&data.error)||('HTTP '+resp.status));
+            err.vvStatus=resp.status;
+            var ra=resp.headers&&resp.headers.get&&resp.headers.get('retry-after');
+            if(ra) err.vvRetryAfter=+ra||null;
+            throw err;
+          }
+          if(!data) { var e2=new Error('empty body'); e2.vvStatus=resp.status; throw e2; }
+          return data; }); })
       .then(function(data){
         var v;
         if(data && data.verdict){ v=data.verdict; }                       // normalized (cache hit or freshly cached)
@@ -3838,7 +3864,37 @@ body.light .pkmsub{color:var(--ink-soft)}
         _vHold();          // after the prose, so a cached pair never shows the loader at all
       })
       .catch(function(e){
-        console.error('verdict generation failed:', e&&e.message);
+        /*  WHY IT FAILED, NOT JUST THAT IT DID , 2026-10-03. Every failure used to render the
+            identical outage line and log one string, so a rate-limit refusal, a truncated
+            response and an upstream 5xx were indistinguishable from the front end. Measured
+            on 11 comparisons: 2 failed and nothing on the page or in the console said which
+            kind, which is the same shape as the warm script's old catch that threw away the
+            parse error , SEC C: an error is only as useful as the smallest thing it lets you
+            look at next.
+            THE THREE KINDS ARE DISTINGUISHABLE FROM WHAT WE ALREADY HAVE, so classify them:
+              RATE LIMIT  , the endpoint answers 429 and sets Retry-After. OURS, recoverable,
+                            and the only one where waiting is the right advice.
+              TRUNCATION  , the model ran past max_tokens, so the JSON never closed and the
+                            parse threw on a SyntaxError. The response arrived; it is incomplete.
+              UPSTREAM    , 5xx or an error body from the model provider. Not ours to fix.
+            `e.vvStatus` is stamped on the throw above where the status is still in scope; a
+            SyntaxError reaching here with no status is a parse failure by elimination.  */
+        var _st = (e && e.vvStatus) || 0;
+        var _kind = _st === 429 ? 'rate-limit'
+                  : _st === 413 ? 'payload-too-large'
+                  : (_st >= 500 || /upstream/i.test((e&&e.message)||'')) ? 'upstream'
+                  : (e instanceof SyntaxError || /JSON|Unexpected token/i.test((e&&e.message)||'')) ? 'truncated-or-malformed'
+                  : _st >= 400 ? 'rejected-'+_st
+                  : 'unknown';
+        /*  ONE LINE, GREPPABLE, AND IT NAMES THE PAIR , so a failure can be reproduced from
+            the console alone without opening a log. The pair ids are what make it actionable:
+            they are the whole input.  */
+        console.error('[vv] verdict FAILED kind=' + _kind + ' status=' + (_st||'-') +
+                      ' pair=' + idA + 'x' + idB + ' msg=' + ((e&&e.message)||'').slice(0,140));
+        /*  AND IT IS READABLE WITHOUT THE CONSOLE , the last failure is parked on the page so
+            it can be read off a phone, where there is no console at all.  */
+        try{ window.VV_LAST_VERDICT_FAIL = {kind:_kind, status:_st||null, a:idA, b:idB,
+             msg:((e&&e.message)||'').slice(0,200), at:new Date().toISOString()}; }catch(_){}
         window._vvVerdictPair=null;   // allow a retry on the next Compare
         /* Same treatment as the card: name the gap once, plainly. "right now" says OUTAGE,
            not data gap , no apology, no cause, nothing that reads as permanent.
@@ -3848,7 +3904,16 @@ body.light .pkmsub{color:var(--ink-soft)}
            THE TAG STILL RENDERS , VC.floorTag is deterministic and needs no AI, so the
            verdict tag and the scores survive an outage. Only the prose is missing, and
            only the prose is disclaimed. */
-        var msg='The written verdict is unavailable right now.';
+        /*  THE READER GETS A DIFFERENT SENTENCE FOR THE ONE FAILURE THEY CAN ACT ON. A rate
+            limit is OURS, it is temporary, and a retry genuinely works , SEC C records the
+            Retry-After as 30s, shorter than the ~26s generation it protects. Telling that
+            reader "unavailable right now" sends them away from something that would have
+            worked on a second press. Every other kind keeps the original line, because
+            there is nothing useful to tell them and a cause they cannot act on reads as an
+            excuse.  */
+        var msg = (_kind === 'rate-limit')
+          ? 'Too many verdicts at once. Press Compare again in a moment.'
+          : 'The written verdict is unavailable right now.';
         /*  THE ENGINE'S ANSWER IS WHAT SURVIVES AN OUTAGE, WHICH ON A PATH B PAIRING MEANS NO
             CROWN. That is the honest state: the only thing that could have decided this
             pairing is the verdict that failed to arrive.  */

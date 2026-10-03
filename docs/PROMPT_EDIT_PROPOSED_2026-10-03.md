@@ -161,6 +161,13 @@ itself on screen, and the same mechanism would "correct" a field that was RIGHT.
 +IF A FIELD LOOKS WRONG TO YOU, WRITE AROUND IT. Describe the output, the honours and the
 +role as the figures show it, and leave the label alone. Never announce the discrepancy either
 +, "listed as a centre-back but really a full-back" is the same error wearing a hedge.
++REFINING A FIELD IS ALLOWED. CROSSING IT IS NOT, AND THE LINE IS THE FIELD'S OWN MEANING.
++`FB` covers both flanks, so writing "right-back" about an FB is the same claim said more
++precisely, and it is better writing. `CB` and `FB` are DIFFERENT buckets, so writing
++"left-back" about a CB replaces our answer with yours.
++THE TEST: could the card's value and your word both be true of the same player at once? A
++right-back IS a full-back, so yes. A left-back is NOT a centre-back, so no. When the honest
++answer is no, use the card's word.
 ```
 
 ---
