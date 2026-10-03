@@ -139,14 +139,13 @@ async function callClaude(userPrompt, attempt = 0) {
   const data = await resp.json();
   if (!resp.ok) throw new Error((data.error && data.error.message) || ('HTTP ' + resp.status));
   let text = (data.content && data.content[0] && data.content[0].text) || '';
-  text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
   let verdict;
   /*  THE OLD CATCH THREW AWAY BOTH THE PARSE ERROR AND THE TEXT, so a 29% failure rate on
       the 2026-10-03 warm run could not be diagnosed at all , it reported the same eight
       words whatever had happened. SEC C: an error is only as useful as the smallest thing
       it lets you look at next. `stop_reason` is the decisive one: `max_tokens` means the
       response was TRUNCATED mid-JSON and the fix is the token ceiling, not the parser.  */
-  try { verdict = JSON.parse(text); }
+  try { verdict = VVCore.vvParseModelJSON(text); }   // shared with the live path, see vv-core
   catch (e) {
     throw new Error('verdict JSON parse failed , stop_reason=' + (data.stop_reason || '?') +
       ' len=' + text.length + ' | ' + e.message + ' | tail: ' + JSON.stringify(text.slice(-90)));

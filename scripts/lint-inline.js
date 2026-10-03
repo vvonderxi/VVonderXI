@@ -343,7 +343,46 @@ const targets = files.length
   : fs.readdirSync(process.cwd()).filter(f => f.endsWith('.html')).sort();
 
 const results = targets.map(lintFile);
-const moduleFaults = lintModules().concat(lintStringFloors()).concat(lintCacheStamps())
+/*  THE MODEL-JSON PARSER EXISTS TWICE ON PURPOSE AND THIS IS WHAT STOPS IT DRIFTING.
+    `VVCore.vvParseModelJSON` serves the browser and the warm script; `parseModelJSON` inside
+    api/analyse.js serves the serverless function, which requires `crypto` and nothing else and
+    must not pull the whole browser module in for eight lines. Two bodies, one behaviour , so
+    the behaviour is pinned rather than trusted to memory.
+    THE LAST TWO CASES MUST STILL THROW. A truncated response has no closing brace, and a parser
+    that got forgiving enough to accept one would be hiding the max_tokens problem instead of
+    reporting it , which is the failure this whole fix was written to stop.  */
+function lintParseModelJSON(){
+  const out = [];
+  let a, b;
+  try {
+    global.window = global.window || global;
+    require(path.join(__dirname, '..', 'vv-core.js'));
+    a = (global.VVCore || global.window.VVCore || {}).vvParseModelJSON;
+    b = require(path.join(__dirname, '..', 'api', 'analyse.js')).parseModelJSON;
+  } catch (e) { return [{ kind: 'PARSE PIN', file: 'api/analyse.js', error: 'could not load both implementations , ' + e.message }]; }
+  const fault = (error) => ({ kind: 'PARSE PIN', file: 'api/analyse.js', error });
+  if (typeof a !== 'function') out.push(fault('VVCore.vvParseModelJSON is not exported'));
+  if (typeof b !== 'function') out.push(fault('api/analyse.js does not export parseModelJSON'));
+  if (out.length) return out;
+  const ok = '{"tag":"the_debate","who":"X edges it"}';
+  const cases = [
+    ['plain',            ok,                                   true],
+    ['fenced',           '```json\n' + ok + '\n```',           true],
+    ['prose prefix',     'I need to compare these.\n\n' + ok,  true],
+    ['prose both sides', 'Thinking.\n' + ok + '\nDone.',       true],
+    ['truncated',        'I need to ' + ok.slice(0, 20),       false],
+    ['no object',        'I cannot answer that.',              false],
+  ];
+  for (const [label, input, shouldParse] of cases) {
+    const run = (fn) => { try { const v = fn(input); return v && v.tag === 'the_debate' ? 'ok' : 'wrong-shape'; } catch (e) { return 'throw'; } };
+    const ra = run(a), rb = run(b);
+    if (ra !== rb) out.push(fault(`the two implementations DISAGREE on "${label}" , vv-core ${ra}, analyse.js ${rb}`));
+    else if ((ra === 'ok') !== shouldParse) out.push(fault(`"${label}" should ${shouldParse ? 'parse' : 'throw'} and both ${ra}`));
+  }
+  return out;
+}
+
+const moduleFaults = lintModules().concat(lintStringFloors()).concat(lintCacheStamps()).concat(lintParseModelJSON())
   .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))))
   .concat(targets.flatMap(f => lintSocial(f, fs.readFileSync(f, 'utf8'))));
 const broken = results.filter(r => r.css.faults.length || r.js.length);

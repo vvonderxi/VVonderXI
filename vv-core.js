@@ -1048,6 +1048,40 @@
     }catch(e){ return null; }   // never block a verdict on the stamp
   }
 
+  /*  ── vvParseModelJSON , THE MODEL PREAMBLES, AND WE WERE BINNING GOOD VERDICTS (2026-10-03) ──
+      Measured on the rt>=95 warm run: 29% of pairs failed to parse, and the decisive case came
+      back `stop_reason=end_turn` with COMPLETE, VALID JSON at the end of the string, prefixed
+      by "I need to ...". The model had finished cleanly and been paid for; we threw the answer
+      away and showed the reader an outage message. It bites hardest on TIES, because that is
+      where the model reasons longest , so it concentrated on exactly the marquee pairings
+      (Messi 12/13 vs Ronaldo 11/12) that a visitor is most likely to ask for.
+
+      Both callers already stripped ``` fences and nothing else. Prose is not a fence.
+
+      IT TRIES THE PLAIN PARSE FIRST AND ONLY THEN FALLS BACK, which is what makes it safe to
+      ship on a live render path: every string that parses today still parses by the identical
+      route, so this cannot regress the ~71% that already worked. The fallback takes the span
+      from the FIRST `{` to the LAST `}`, which discards prose on either side.
+
+      IT IS NOT A FIX FOR TRUNCATION, and must not be read as one. A response cut off at
+      max_tokens has no closing brace, so this correctly still throws , that case needs a real
+      decision about the ceiling, not a more forgiving parser. Raising it to 2048 was tested
+      and did NOT solve it (one pair ran to 7,270 chars and still truncated).
+
+      ONE IMPLEMENTATION, TWO CALLERS , compare.html (the live path) and
+      scripts/prewarm_verdicts.js, whose whole design is zero-drift with the live path. A third
+      copy is the duplication this file records against everywhere else.  */
+  function vvParseModelJSON(text){
+    var t = String(text == null ? '' : text)
+      .replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+    try { return JSON.parse(t); }                       // the path every working response takes
+    catch (e) {
+      var i = t.indexOf('{'), j = t.lastIndexOf('}');
+      if (i < 0 || j <= i) throw e;                     // no object present , rethrow the REAL error
+      return JSON.parse(t.slice(i, j + 1));             // throws on its own if still truncated
+    }
+  }
+
   function vvPayloadRev(cards){
     try{
       var ks = {};
@@ -7890,7 +7924,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,

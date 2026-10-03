@@ -3,6 +3,41 @@
 
 const crypto = require('crypto');
 
+/*  ── parseModelJSON , THE MODEL PREAMBLES AND WE WERE BINNING GOOD ANSWERS (2026-10-03) ──
+    Measured on the rt>=95 warm run: 29% of pairs failed to parse, and the decisive case came
+    back `stop_reason=end_turn` carrying COMPLETE, VALID JSON prefixed by "I need to ...".
+    The model had finished and been paid for; we discarded the answer.
+    It concentrates on TIES, because that is where the model reasons longest, so it hits the
+    marquee pairings a visitor is most likely to ask for.
+
+    BOTH BRANCHES OF THIS FILE STRIPPED ``` FENCES AND NOTHING ELSE, and prose is not a fence:
+      - the NOTES branch answered 502 "notes parse failed", so a card lost its Commentator's
+        Notes and Scout Report outright , the first prose a visitor meets;
+      - the VERDICT branch returned raw AND DID NOT CACHE, so every later visitor to that pair
+        paid for a regeneration that failed again and no cache could ever form.
+
+    IT TRIES THE PLAIN PARSE FIRST and only then falls back, so every string that parses today
+    still parses by the identical route , this cannot regress what already works.
+
+    IT IS NOT A TRUNCATION FIX. A response cut at max_tokens has no closing brace and still
+    throws, correctly; raising the ceiling to 2048 was tested and did NOT solve that case.
+
+    THIS IS A DELIBERATE TWIN OF `VVCore.vvParseModelJSON`, NOT AN OVERSIGHT. This file requires
+    `crypto` and nothing else, and pulling the whole browser module into the serverless bundle
+    for eight lines is the wrong trade. `lintParseModelJSON()` in scripts/lint-inline.js runs
+    BOTH implementations over one control set and fails if they ever disagree , a tripwire,
+    because SEC C records that a rule depending on somebody remembering is already forgotten.  */
+function parseModelJSON(text){
+  let t = String(text == null ? '' : text)
+    .replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  try { return JSON.parse(t); }
+  catch (e) {
+    const i = t.indexOf('{'), j = t.lastIndexOf('}');
+    if (i < 0 || j <= i) throw e;
+    return JSON.parse(t.slice(i, j + 1));
+  }
+}
+
 const MODEL = 'claude-sonnet-4-6';
 
 /* ── MODEL EXISTENCE , the check that did not exist when production died ───────
@@ -886,9 +921,7 @@ module.exports = async (req, res) => {
 
         let parsed = null;
         try {
-          let t = (nData && nData.content && nData.content[0] && nData.content[0].text) || '';
-          t = t.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-          parsed = JSON.parse(t);
+          parsed = parseModelJSON((nData && nData.content && nData.content[0] && nData.content[0].text) || '');
         } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
         if (!parsed || typeof parsed.glance !== 'string' || typeof parsed.scout !== 'string' || !Array.isArray(parsed.notes) || !parsed.notes.length) {
           return res.status(502).json({ error: 'notes shape invalid' });
@@ -953,9 +986,7 @@ module.exports = async (req, res) => {
       // Cacheable path: parse the verdict JSON, cache it (awaited, Hobby-safe), return normalized.
       let verdict = null;
       try {
-        let text = (data && data.content && data.content[0] && data.content[0].text) || '';
-        text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-        verdict = JSON.parse(text);
+        verdict = parseModelJSON((data && data.content && data.content[0] && data.content[0].text) || '');
       } catch (e) {
         return res.json(data);   // couldn't parse -> return raw, do not cache garbage
       }
@@ -1040,3 +1071,4 @@ module.exports.verdictVersionFor = verdictVersionFor;
 module.exports.verdictSystemFor  = verdictSystemFor;
 module.exports.NOTES_VERSION   = NOTES_VERSION;
 module.exports.statsHash       = statsHash;   // exported so the linter can pin it , see the note above its definition
+module.exports.parseModelJSON = parseModelJSON;   // exported so the linter can pin it against VVCore.vvParseModelJSON
