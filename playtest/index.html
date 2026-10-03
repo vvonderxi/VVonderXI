@@ -467,6 +467,55 @@ button,.board,.card{touch-action:manipulation}
 }
 @media (max-height:500px) and (orientation:landscape){ body{overflow:auto} .wrap{height:auto} .arena{height:auto} .stage{height:78vh; flex:none} }
 
+
+/* ===== VVonderXI card faces (cream / Iconic gold / Generational dark), after the site's .vvcard ===== */
+.card.vvc{--ink:#1C1B1A; --soft:#5b554c; --hair:rgba(28,27,26,0.55); --v2:#AD0332;
+  padding:9px 9px 8px; border-radius:12px; border:3px solid #F0EAD9; color:var(--ink); display:flex; flex-direction:column; align-items:stretch; overflow:hidden;
+  background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, #F0EAD9 48%, #E2D8C4 100%); box-shadow:0 8px 18px rgba(0,0,0,.35)}
+.card.vvc::after{content:""; position:absolute; inset:4px; border:1.5px solid var(--hair); border-radius:8px; pointer-events:none}
+.card.vvc.face-iconic{--ink:#2a1d03; --soft:#4a3a14; --hair:rgba(42,29,3,0.55); background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%); border-color:#C08A22}
+.card.vvc.face-gen{--ink:#F0EAD9; --soft:rgba(240,234,217,.72); --hair:rgba(232,184,75,0.7); --v2:#F1688E; background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%); border-color:#3a3126}
+.card.vvc.face-gen::before{content:""; position:absolute; inset:0; background:linear-gradient(115deg,transparent 35%,rgba(232,184,75,.18) 48%,transparent 60%); background-size:260% 100%; animation:foil 5s linear infinite; pointer-events:none}
+.vtop{display:flex; justify-content:space-between; align-items:flex-start; gap:4px; position:relative; z-index:1}
+.vshield{width:21px; height:25px; flex:none; background:var(--p); color:var(--s); clip-path:polygon(0 0,100% 0,100% 68%,50% 100%,0 68%); display:flex; justify-content:center; padding-top:4px; box-sizing:border-box; font-family:var(--label); font-size:10.5px}
+.vseason{font-family:var(--display); font-weight:800; font-size:13px; padding-top:3px}
+.vvv{text-align:right; line-height:.85} .vvv b{display:block; font-family:var(--display); font-weight:800; font-size:23px; letter-spacing:-.03em}
+.vvv i{font-style:normal; font-family:var(--label); font-size:9px; letter-spacing:-.6px} .vvv i span{color:var(--v2)}
+.vart{width:56px; height:50px; margin:5px auto 5px; border-radius:9px; background:#2B2926; position:relative; overflow:hidden; display:grid; place-items:center; flex:none; z-index:1}
+.vart::before{content:"VV"; font-family:var(--display); font-weight:800; font-size:18px; color:rgba(240,234,217,.13)}
+.vart img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top}
+.face-gen .vart{background:#0E0D0C; box-shadow:inset 0 0 0 1px rgba(232,184,75,.45)}
+.vtag{align-self:center; max-width:100%; font-family:var(--label); font-size:7.5px; letter-spacing:.3px; text-transform:uppercase; padding:2px 7px; border-radius:999px; background:#E70443; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; z-index:1}
+.vtag.none{visibility:hidden}
+.vstat{display:flex; align-items:baseline; justify-content:center; gap:4px; margin-top:3px; min-height:22px; z-index:1}
+.vstat b{font-family:var(--display); font-weight:800; font-size:21px; line-height:1}
+.vstat span{font-family:var(--label); font-size:7px; text-transform:uppercase; letter-spacing:.6px; color:var(--soft); max-width:46px; line-height:1.05}
+.face-cream .vstat b{color:#1C1B1A} .face-gen .vstat b{color:#E8B84B}
+.vname{margin-top:auto; font-family:var(--label); font-size:12.5px; text-transform:uppercase; letter-spacing:-.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; z-index:1}
+.vmeta{font-family:var(--label); font-size:7px; text-transform:uppercase; letter-spacing:1px; color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; z-index:1} .vmeta em{font-style:normal}
+.hand .card.vvc{width:122px; height:172px; padding:9px 9px 8px}
+.hand{height:186px; padding-top:4px !important; align-items:flex-start}
+.hand.choosing .card.vvc{box-shadow:0 0 0 2px rgba(232,184,75,.6), 0 10px 24px rgba(0,0,0,.35)}
+.card.vvc .capbadge{top:-2px; right:-2px; z-index:3} .card.vvc .newbadge{top:-2px; left:-2px; z-index:3}
+.card.vvc.picked::after{content:"Off"; inset:auto; top:42%; left:50%; transform:translate(-50%,-50%) rotate(-12deg); border:0; font-family:var(--display); font-weight:800; font-size:24px; color:var(--pink); background:rgba(240,234,217,.92); padding:0 8px; border-radius:6px; z-index:4}
+@media (max-height:760px){ .hand{height:168px} .hand .card.vvc{height:156px; width:112px} .vart{height:42px; width:50px} }
+@media (max-width:700px){
+  .hand{height:110px; padding-top:2px !important}
+  .hand .card.vvc{width:calc((100vw - 28px) / 7 + 6px); height:100px; padding:5px 4px 4px; border-width:2px; border-radius:8px}
+  .card.vvc::after{inset:2px; border-width:1px; border-radius:6px}
+  .vshield{width:12px; height:15px; font-size:7px; padding-top:2px} .vseason,.vtag,.vmeta,.vvv i,.vstat span{display:none}
+  .vvv b{font-size:13px} .vart{width:30px; height:28px; margin:2px auto 2px; border-radius:6px} .vart::before{font-size:10px}
+  .vname{font-size:8.5px; letter-spacing:-.3px; text-align:center; margin-top:2px}
+  .vstat{margin-top:auto; min-height:18px} .vstat b{font-size:17px}
+  .card.vvc.picked::after{font-size:13px}
+}
+@media (max-width:700px) and (max-height:700px){ .hand{height:106px} .hand .card.vvc{height:96px} .vart{height:24px} }
+
+/* player photos */
+.card .cface{position:absolute; top:58px; right:7px; width:40px; height:40px; border-radius:50%; object-fit:cover; object-position:top; background:#e6dec9; border:2px solid var(--p,#ccc); box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.card:has(.cface) .cmeta{padding-right:44px}
+.lpd image{pointer-events:none}
+@media (max-width:700px){ .card:has(.cface) .cmeta{padding-right:0} .hand .card .cface{top:18px; bottom:auto; left:50%; right:auto; transform:translateX(-50%); width:30px; height:30px; border-width:1.5px} .hand .card .cname{margin-top:34px} }
 /* playtest */
 .settings .deck,.settings label[for="deckFile"],.settings #demoDeck{display:none}
 .endbtns{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
@@ -490,6 +539,7 @@ button,.board,.card{touch-action:manipulation}
     <label class="btn" for="deckFile">Load my real deck</label>
     <input class="sr" type="file" id="deckFile" accept=".json,application/json">
     <button class="btn" id="demoDeck">Use demo deck</button>
+    <label class="fast"><input type="checkbox" id="facesToggle" checked> Player photos</label>
     <label class="fast"><input type="checkbox" id="speed"> Fast mode</label>
     <label class="fast"><input type="checkbox" id="captainMode"> Captain mode</label>
   </div></details>
@@ -604,7 +654,8 @@ function adaptReal(json) {
     out[id] = { id, name: short || full, fullName: pick(c, 'display_name', 'full_name') || full, season: seasonLabel(c),
       pos: pick(c, 'position', 'game_position', 'pos', 'pool') || '', club: pick(c, 'team_name', 'club', 'team') || '',
       colours: { p, s: s || '#FFFFFF', a: a || '#E8B84B' }, placeholderColours: !!placeholder,
-      number: pick(c, 'shirt', 'shirt_number', 'number', 'squad_number') || '', rt, band: pick(c, 'band_public', 'band', 'band_name') || bandOf(rt),
+      number: pick(c, 'shirt', 'shirt_number', 'number', 'squad_number') || '',
+      photo: pick(c, 'api_player_id') ? `https://media.api-sports.io/football/players/${pick(c, 'api_player_id')}.png` : null, rt, band: pick(c, 'band_public', 'band', 'band_name') || bandOf(rt),
       tags: (pick(c, 'tags', 'wonder_tags', 'tag_names') || []).map(t => typeof t === 'string' ? t : (t.name || '')).filter(Boolean).slice(0, 2),
       battle: c.battle, dealTier: +pick(c, 'dealTier', 'deal_tier') };
   }
@@ -646,6 +697,7 @@ function setMoment(cat) {
 const EFFECT_NAME = { DISCARD_PLAYED: 'Into Legacy', PRESS: 'High Press', DISCARD_OTHER: 'Assist' };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+let showFaces = (() => { try { return localStorage.getItem('vvduels-faces') !== '0'; } catch { return true; } })();
 let subOpen = false, paused = false, lastLockId = null, captainMode = false, newIds = new Set(), subMode = false, subPick = new Set();
 let offered = [], struck = null, turnLog = [], lastDuel = null;
 let deck, ctx, ai, cpu, state, legacy, speed = 1, busy = false, rounds = [];
@@ -685,20 +737,26 @@ const statOf = (id, cat, r) => valueOf(card(id), cat, r);
 
 function cardFace(id, opts = {}) {
   const c = card(id);
-  const f = el('div', `card band-${c.band.replace(/\s/g, '')}${opts.small ? ' small' : ''}`);
+  const sur = n => n.replace(/^(\p{Lu}\.\s*)+/u, '');
+  const mine = state ? state.players[ME].hand : [];
+  const shown = mine.filter(x => x !== id && sur(card(x).name) === sur(c.name)).length ? c.name : sur(c.name);
+  // Same three faces as the site's .vvcard: Generational = dark face + gold hairline, Iconic = gold, else cream.
+  const face = /generational/i.test(c.band) ? 'gen' : /iconic|elite/i.test(c.band) ? 'iconic' : 'cream';
+  const f = el('div', `card vvc face-${face}`);
   f.style.setProperty('--p', c.colours.p); f.style.setProperty('--s', c.colours.s);
   let stat = '';
   if (opts.cat) {
     const r = opts.role, fld = fieldFor(opts.cat, r);
-    stat = `<div class="cstat"><span>${r === 'attack' ? 'Attack' : 'Defend'} with ${STAT_NAME[fld]}</span><b>${Math.round(statOf(id, opts.cat, r))}</b></div>`;
+    stat = `<div class="vstat"><b>${Math.round(statOf(id, opts.cat, r))}</b><span>${STAT_NAME[fld]}</span></div>`;
   }
-  f.innerHTML = `<div class="cband"><span>${c.band}</span><span class="cpos">${c.pos}</span></div>
-    <div class="cswatch"></div>
-    <div class="cname">${(() => { const sur = n => n.replace(/^(\p{Lu}\.\s*)+/u, ''); const mine = state ? state.players[ME].hand : []; return mine.filter(x => x !== id && sur(card(x).name) === sur(c.name)).length ? c.name : sur(c.name); })()}</div>
-    <div class="cmeta">${c.season}<br>${c.club}</div>
-    ${c.tags.length ? `<div class="ctag">${c.tags[0]}</div>` : ''}
-    <div class="cvv"><span>VV</span><b>${c.rt}</b></div>${stat}`;
-  f.title = `${c.fullName || c.name}, ${c.season}, ${c.club}`;
+  f.innerHTML = `<div class="vtop"><div class="vshield">${String(c.number || '').slice(0, 2)}</div><div class="vseason">${c.season}</div><div class="vvv"><b>${c.rt}</b><i>V<span>V</span></i></div></div>
+    <div class="vart"></div>
+    ${c.tags.length ? `<div class="vtag">${c.tags[0]}</div>` : '<div class="vtag none"></div>'}
+    ${stat || '<div class="vstat empty"></div>'}
+    <div class="vname">${shown}</div>
+    <div class="vmeta">${c.club}<em> · </em>${c.pos}</div>`;
+  if (showFaces && c.photo) { const im = new Image(); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.src = c.photo; im.onerror = () => im.remove(); f.querySelector('.vart').append(im); }
+  f.title = `${c.fullName || c.name}, ${c.season}, ${c.club}, ${c.band}, VV ${c.rt}`;
   return f;
 }
 
@@ -1042,6 +1100,7 @@ function lpInit() {
     <rect x="38" y="-8.5" width="24" height="6" rx="1.5" fill="rgba(28,27,26,.8)"/><text x="50" y="-4.6">Bench</text>
     <rect x="-3" y="66" width="20" height="6" rx="1.5" fill="rgba(232,184,75,.25)"/><text x="7" y="70">Your Legacy</text>
     <rect x="83" y="66" width="20" height="6" rx="1.5" fill="rgba(231,4,67,.25)"/><text x="93" y="70">Their Legacy</text></g>
+  <defs><clipPath id="lpClip"><circle r="2.2"/></clipPath></defs>
   <g id="lpDots"></g><g id="lpBall"><circle r="1.15" fill="#fff" stroke="#1C1B1A" stroke-width=".3"/></g>`;
   LP.mine.clear(); LP.opp = []; LP.oppLocked = null; LP.ball = $('#lpBall');
   lpPlace(LP.ball, [50, 32], 0);
@@ -1061,6 +1120,14 @@ function lpLabel(g, id) {
   circ.setAttribute('fill', c ? c.colours.p : '#2a2826'); circ.setAttribute('stroke', g.classList.contains('me') ? '#E8B84B' : '#F1688E'); circ.setAttribute('stroke-width', '.55');
   t[0].textContent = c ? String(c.number || '').slice(0, 2) : '?'; t[0].setAttribute('fill', c ? c.colours.s : '#F1688E');
   t[1].textContent = c ? c.name : '';
+  g.querySelector('image')?.remove();
+  if (c && c.photo && showFaces) {
+    const im = document.createElementNS(SVGNS, 'image');
+    im.setAttribute('href', c.photo); im.setAttribute('x', -2.2); im.setAttribute('y', -2.2); im.setAttribute('width', 4.4); im.setAttribute('height', 4.4);
+    im.setAttribute('clip-path', 'url(#lpClip)'); im.setAttribute('preserveAspectRatio', 'xMidYMin slice');
+    im.addEventListener('error', () => { im.remove(); t[0].style.display = ''; });
+    t[0].style.display = 'none'; circ.after(im);
+  } else t[0].style.display = '';
 }
 function formation(side, n, ids) {
   // three lines: defence, midfield, attack; your half on the left, theirs mirrored
@@ -1335,6 +1402,9 @@ function endGame() {
 /* ---------------- controls ---------------- */
 $('#newGame').onclick = () => { if (!busy) newGame(); };
 $('#again').onclick = () => newGame();
+$('#facesToggle').checked = showFaces;
+$('#facesToggle').onchange = e => { showFaces = e.target.checked; try { localStorage.setItem('vvduels-faces', showFaces ? '1' : '0'); } catch { }
+  render(); document.querySelectorAll('#lpDots .lpd').forEach(g => lpLabel(g, g.dataset.card || null)); };
 $('#speed').onchange = e => { speed = e.target.checked ? 0.35 : 1; };
 $('#captainMode').onchange = e => { if (busy) { e.target.checked = captainMode; return; } captainMode = e.target.checked; loadDeck(deck); newGame(); };
 /* ---------------- feedback (insert-only Supabase table) ---------------- */

@@ -32,6 +32,10 @@ a) **`vv-core.js` loads on 5 shipping pages:** `card.html`, `compare.html`, `ind
 b) **Compare has 5 rt-gap verdict tags plus 2 margin-gated tags** (`the_debate`, `decided_on_record`). The game borrows the 5 gap-tag NAMES one to one: STALEMATE -> `var_close`, EDGE -> `photo_finish`, CLEAR -> `clear_edge`, DOMINANT -> `bragging_rights`, DEMOLITION -> `masterclass`. **[Changed in v1.2-real: STALEMATE -> `the_debate`, see the tuning section. `var_close` crowns a winner on Compare, and a game STALEMATE crowns no one.]** Display names are read from `VERDICT_TAGS` at runtime, never hardcoded. Thresholds stay in game config.
 
 c) **LOCKED: card art is silhouette-first.** The VV silhouette in club colours is the default. The API-Football headshot is an optional layer behind a config flag, **OFF by default**, until image rights are cleared with a lawyer. Holograms are designed around the silhouette.
+   **[2026-10-03] PLAYTEST OVERRIDE, decided by Lucas:** the playtest link (`vv-duels`, `playtest/index.html`) shows
+   API-Football headshots (`media.api-sports.io/football/players/<api_player_id>.png`), with a "Player photos"
+   toggle that defaults to on. This overrides (c) **for the playtest ONLY.** The launch decision still waits on
+   legal advice: the game itself stays silhouette-first, and its photo flag stays OFF, until a lawyer clears image rights.
 
 d) **The headshot host sends `Access-Control-Allow-Origin: *`** (`media.api-sports.io/football/players/<api_player_id>.png`, checked with `curl -sI`), so no proxy is needed if photos are ever enabled.
 
