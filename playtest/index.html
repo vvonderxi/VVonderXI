@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1C1B1A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VV Duels">
+<title>VVonderXI Duels, playtest</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Put legendary football seasons head to head and settle the debate, one moment at a time. A VVonderXI playtest.">
+<meta property="og:title" content="VVonderXI Duels: playtest">
+<meta property="og:description" content="Seven seasons each. Win the moment, send them into your Legacy. Help us test the game.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@800&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --charcoal:#1C1B1A; --cream:#F0EAD9; --pink:#E70443; --pink-t:#F1688E; --gold:#E8B84B;
+  --bg:#1C1B1A; --fg:#F0EAD9; --muted:rgba(240,234,217,.62); --line:rgba(240,234,217,.14); --panel:#252321;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --label:"Archivo", "Arial Black", system-ui, sans-serif;
+  --cond:"Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){ --bg:#F0EAD9; --fg:#1C1B1A; --muted:rgba(28,27,26,.64); --line:rgba(28,27,26,.16); --panel:#E6DEC9; } }
+:root[data-theme="light"]{ --bg:#F0EAD9; --fg:#1C1B1A; --muted:rgba(28,27,26,.64); --line:rgba(28,27,26,.16); --panel:#E6DEC9; }
+:root[data-theme="dark"]{ --bg:#1C1B1A; --fg:#F0EAD9; --muted:rgba(240,234,217,.62); --line:rgba(240,234,217,.14); --panel:#252321; }
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--cond); font-size:17px; line-height:1.35; min-height:100%}
+button,label.btn{font:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--gold); outline-offset:3px}
+
+/* top bar */
+.top{display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; padding:14px 22px; border-bottom:1px solid var(--line)}
+.brand{font-family:var(--display); font-weight:800; font-size:24px; letter-spacing:-.01em; margin-right:auto}
+.brand small{font-weight:500; font-size:15px; color:var(--muted); margin-left:8px}
+.deck{display:flex; flex-direction:column; max-width:34ch; font-size:14px; color:var(--muted)}
+.deck b{color:var(--fg); font-family:var(--label); font-size:13px}
+.btn{background:transparent; color:var(--fg); border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-size:15px}
+.btn:hover{border-color:var(--gold)}
+.btn.primary{background:var(--pink); border-color:var(--pink); color:#fff}
+.fast{display:flex; gap:6px; align-items:center; font-size:15px; color:var(--muted)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+
+/* layout */
+.wrap{display:grid; grid-template-columns:minmax(0,1fr) 270px; gap:0; min-height:calc(100vh - 70px)}
+@media (max-width:980px){ .wrap{grid-template-columns:1fr} .feed{border-left:0; border-top:1px solid var(--line)} }
+.arena{display:flex; flex-direction:column; padding:14px 18px 22px; gap:10px; min-width:0}
+.feed{border-left:1px solid var(--line); padding:16px 18px; overflow:auto; max-height:calc(100vh - 70px)}
+.feed h3{font-family:var(--display); font-weight:800; font-size:18px; margin:0 0 10px}
+#log{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+#log li{padding:8px 10px; border-radius:8px; background:var(--panel); font-size:15px; border-left:3px solid var(--line)}
+#log li.me{border-left-color:var(--gold)} #log li.them{border-left-color:var(--pink)}
+#log li.round{background:transparent; border-left:0; padding:10px 2px 2px; font-family:var(--display); font-weight:800; font-size:15px; border-top:1px solid var(--line); margin-top:4px}
+#log li.note{background:transparent; border-left:0; color:var(--muted)}
+#log li.verdict{font-size:16px} #log li.me.verdict{background:rgba(232,184,75,.18)} #log li.them.verdict{background:rgba(231,4,67,.14)}
+#log .yr{color:var(--muted); font-size:13px}
+.feed{scroll-behavior:smooth}
+#turn{flex-basis:100%; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding:10px 16px; border-radius:12px; background:var(--panel); border:2px solid transparent}
+#turn b{font-family:var(--display); font-weight:800; font-size:22px; white-space:nowrap}
+#turn span{font-size:17px}
+#turn[data-side="me"]{background:var(--gold); color:var(--charcoal); border-color:var(--gold); animation:yourmove 1.8s ease-in-out infinite}
+#turn[data-side="them"]{background:transparent; border-color:var(--pink); color:var(--fg)}
+#turn[data-side="them"] b{color:var(--pink-t)}
+@keyframes yourmove{50%{box-shadow:0 0 0 5px rgba(232,184,75,.28)}}
+.dots{display:inline-flex; gap:3px; margin-left:6px; vertical-align:middle}
+.dots i{width:5px; height:5px; border-radius:50%; background:currentColor; animation:dot 1s infinite}
+.dots i:nth-child(2){animation-delay:.2s} .dots i:nth-child(3){animation-delay:.4s}
+@keyframes dot{50%{opacity:.2}}
+.hand.waiting .card{opacity:.6; filter:saturate(.7)}
+#prompt:empty{display:none}
+#log li span{color:var(--muted); font-size:14px}
+
+/* side rails */
+.rail{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.who{font-family:var(--display); font-weight:800; font-size:18px; min-width:70px}
+.pile{display:flex; align-items:center; gap:8px; font-size:15px; color:var(--muted)}
+.pile b{font-family:var(--display); font-size:24px; color:var(--fg); min-width:1ch}
+.stack{width:34px; height:46px; border-radius:6px; position:relative}
+.stack.legacy{background:linear-gradient(160deg,#f3d27e,var(--gold)); box-shadow:3px 3px 0 #b88d2d, 6px 6px 0 #8f6c1f}
+.stack.bench{background:var(--charcoal); border:1px solid rgba(240,234,217,.3); box-shadow:3px 3px 0 #2c2a27, 6px 6px 0 #3a3733}
+.pop .stack{animation:pop .6s ease-out}
+@keyframes pop{40%{transform:scale(1.35) rotate(-6deg); filter:brightness(1.4)}}
+.fire .stack{animation:fire .6s ease-out}
+@keyframes fire{40%{transform:translateY(-10px); box-shadow:0 0 22px var(--gold)}}
+.opphand{display:flex; margin-left:auto}
+.opphand .cardback{width:44px; height:62px; margin-left:-16px; font-size:15px}
+.receive{animation:receive .6s ease-out}
+@keyframes receive{30%{filter:drop-shadow(0 0 14px var(--gold))}}
+
+/* stage */
+.stage{position:relative; height:clamp(390px,56vh,560px); border-radius:22px; overflow:hidden; isolation:isolate;
+  background:radial-gradient(ellipse 60% 55% at 20% 0%,rgba(255,250,230,.16),transparent 70%),radial-gradient(ellipse 60% 55% at 80% 0%,rgba(255,250,230,.16),transparent 70%),radial-gradient(ellipse at 50% 120%,#0d1f15,#121110 70%); color:#F0EAD9}
+.pitch{position:absolute; left:6%; right:6%; top:26%; bottom:-6%; transform:perspective(900px) rotateX(46deg); transform-origin:50% 100%; border-radius:16px;
+  background:repeating-linear-gradient(90deg,#1d4a32 0 7.14%,#22573a 7.14% 14.28%); box-shadow:0 30px 80px rgba(0,0,0,.7), inset 0 0 90px rgba(0,0,0,.45)}
+.pitch svg{position:absolute; inset:0; width:100%; height:100%}
+.stage.whistle .pitch{animation:breathe 1.2s ease-out}
+@keyframes breathe{30%{filter:brightness(1.18)}}
+.stage.sev3{animation:push .9s ease-out}
+@keyframes push{30%{transform:scale(1.02)}}
+.stage.sev4{animation:surge 1.2s ease-out}
+@keyframes surge{15%{filter:brightness(1.8) saturate(1.2)}30%{transform:translateX(-5px)}45%{transform:translateX(5px)}60%{transform:none}}
+#momentTitle{position:absolute; top:16px; left:0; right:0; text-align:center; font-family:var(--display); font-weight:800; font-size:clamp(26px,4.2vw,48px); letter-spacing:-.02em; color:rgba(240,234,217,.92); text-shadow:0 2px 30px rgba(0,0,0,.6); pointer-events:none}
+.zone{position:absolute; bottom:8%; width:min(30%,220px); height:78%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end}
+#zoneA{left:15%} #zoneB{right:15%}
+.zone::before{content:""; position:absolute; bottom:2%; width:92%; aspect-ratio:3/1; border-radius:50%; border:2px solid rgba(240,234,217,.35); box-shadow:0 0 0 6px rgba(240,234,217,.05); transition:.4s}
+#zoneA::before{border-color:rgba(232,184,75,.6)} #zoneB::before{border-color:rgba(241,104,142,.55)}
+.zone.won::before{box-shadow:0 0 40px 8px rgba(232,184,75,.45); border-color:var(--gold)}
+.zone > .cardback{width:92px; height:128px; margin-bottom:12%; transform:rotateX(50deg); font-size:26px}
+.slam{animation:slam .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes slam{0%{transform:translateY(-120px) rotateX(50deg) scale(1.3); opacity:0}}
+.cardback{border-radius:9px; background:linear-gradient(145deg,#2a2826,#1C1B1A); border:1px solid rgba(232,184,75,.45); display:grid; place-items:center; box-shadow:0 6px 16px rgba(0,0,0,.45)}
+.cardback span{font-family:var(--display); font-weight:800; color:var(--pink-t)}
+
+/* hologram */
+.holo{position:absolute; bottom:12%; left:0; right:0; display:flex; flex-direction:column; align-items:center; pointer-events:none; z-index:2}
+.beam{position:absolute; bottom:-6%; width:58%; height:112%; background:linear-gradient(to top,color-mix(in srgb,var(--hp) 55%,transparent),transparent 85%); filter:blur(10px); opacity:0; transform-origin:bottom; transform:scaleY(.2); transition:opacity .5s, transform .8s}
+.figure{position:relative; height:clamp(170px,30vh,250px); aspect-ratio:120/260; clip-path:inset(100% 0 0 0); transition:clip-path 1.1s cubic-bezier(.3,.7,.2,1); filter:drop-shadow(0 0 10px var(--hp)) drop-shadow(0 0 2px #fff); opacity:.9}
+.figure::after{content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg,rgba(255,255,255,.16) 0 1px,transparent 1px 4px); mix-blend-mode:overlay; animation:scan 2.4s linear infinite}
+@keyframes scan{to{background-position:0 40px}}
+.sil{width:100%; height:100%; display:block}
+.holo.rise .figure{clip-path:inset(0 0 0 0); animation:float 3s ease-in-out 1.1s infinite}
+.holo.rise .beam{opacity:.9; transform:scaleY(1)}
+@keyframes float{50%{transform:translateY(-5px)}}
+.plate{margin-top:6px; text-align:center; opacity:0; transform:translateY(6px); transition:.4s .9s}
+.plate b{display:block; font-family:var(--display); font-weight:800; font-size:20px; line-height:1.05}
+.plate span{font-size:14px; color:rgba(240,234,217,.7)}
+.holo.rise .plate{opacity:1; transform:none}
+.zone.won .figure{filter:drop-shadow(0 0 16px var(--gold)) drop-shadow(0 0 3px #fff)}
+.zone.lost .figure{opacity:.3; filter:grayscale(1); animation:glitch .5s steps(3) 2}
+@keyframes glitch{50%{transform:translateX(3px) skewX(6deg)}}
+.zone.ascend .holo{transition:transform 1s, opacity 1s, filter 1s; transform:translateY(-60px); opacity:0; filter:brightness(2) sepia(1) saturate(4) hue-rotate(-10deg)}
+.card.onpitch{position:absolute; bottom:3%; transform:rotateX(55deg) scale(.62); transform-origin:bottom; z-index:1}
+.plaque{position:absolute; top:4%; background:rgba(28,27,26,.86); border:1px solid rgba(240,234,217,.25); border-radius:10px; padding:4px 12px; text-align:center; z-index:3; animation:plq .4s ease-out}
+@keyframes plq{from{opacity:0; transform:translateY(8px)}}
+.plaque span{display:block; font-size:13px; color:rgba(240,234,217,.7)}
+.plaque b{font-family:var(--display); font-weight:800; font-size:34px; line-height:1}
+.zone.won .plaque{border-color:var(--gold)} .zone.won .plaque b{color:var(--gold)}
+
+
+/* match engine */
+.engine{position:absolute; inset:0; z-index:4; background:#10261a; display:flex; flex-direction:column; opacity:0; transition:opacity .35s}
+.engine[hidden]{display:none}
+.engine.on{opacity:1}
+.engsvg{flex:1; width:100%; min-height:0; display:block}
+.pl{transition:transform 1s} .pl circle{transition:r .3s, opacity .3s, filter .3s}
+.pl.mine circle{filter:drop-shadow(0 0 1.2px #E8B84B)}
+.pl.hot circle{filter:drop-shadow(0 0 2.2px #E8B84B); r:3.3}
+.pl.cold{opacity:.45}
+.engine[data-fx="goal"] .engsvg{animation:flash .6s ease-out}
+@keyframes flash{30%{filter:brightness(1.5)}}
+.engine[data-fx="aura"] #engA circle,.engine[data-fx="aura"] #engD circle{animation:aura 1s ease-in-out infinite}
+@keyframes aura{50%{filter:drop-shadow(0 0 3px #E8B84B)}}
+.engline{position:absolute; left:50%; top:10px; transform:translateX(-50%); width:min(92%,640px); text-align:center; font-family:var(--display); font-weight:500; font-size:clamp(16px,2.2vw,21px); color:#F0EAD9; background:rgba(28,27,26,.82); padding:8px 14px; border-radius:10px; line-height:1.25}
+.engline.in{animation:linein .35s ease-out}
+@keyframes linein{from{opacity:0; transform:translate(-50%,-6px)}}
+.duelbar{display:grid; grid-template-columns:1fr minmax(120px,2fr) 1fr; gap:10px; align-items:center; padding:8px 14px; background:rgba(28,27,26,.92); color:#F0EAD9; font-size:15px}
+.duelbar b{font-family:var(--display); font-weight:800} .duelbar span{color:var(--gold); font-weight:700}
+.duelbar .dr{text-align:right} .duelbar .dr span{color:var(--pink-t)}
+.track{height:12px; border-radius:6px; background:var(--pink); overflow:hidden}
+.fillA{height:100%; width:50%; background:var(--gold)}
+#log li.play{background:transparent; border-left:0; padding:2px 10px; color:var(--muted); font-size:14.5px}
+@media (max-width:640px){ .duelbar{grid-template-columns:1fr 1fr; font-size:13px} .duelbar .track{grid-column:1 / -1; order:3} }
+
+/* roles, phases, strike, result card */
+.role{font-family:var(--label); font-size:12.5px; padding:4px 11px; border-radius:999px; display:inline-flex; align-items:center; gap:6px}
+.role[data-side="att"]{background:var(--gold); color:var(--charcoal)}
+.role[data-side="def"]{border:1.5px solid var(--pink); color:var(--pink-t)}
+.ballchip{width:13px; height:13px; border-radius:50%; background:#fff; border:2px solid var(--charcoal); display:inline-block}
+.phases{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px; flex-basis:100%}
+.phases li{font-size:14.5px; padding:4px 10px 4px 4px; border-radius:999px; background:var(--panel); color:var(--muted); display:flex; align-items:center; gap:7px}
+.phases li b{width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-family:var(--label); font-size:11px; background:var(--line); color:var(--fg)}
+.phases li.now{background:var(--fg); color:var(--bg); font-weight:700} .phases li.now b{background:var(--gold); color:var(--charcoal)}
+.phases li.done{opacity:.55} .phases li.done b{background:var(--gold); color:var(--charcoal)}
+.mfoot{font-style:normal; margin-top:6px; font-family:var(--label); font-size:12px; color:var(--gold)}
+.moment.struck.stay{opacity:.5} .moment.struck .mfoot{color:var(--pink-t)}
+.summary{position:absolute; inset:0; z-index:7; display:grid; place-items:center; background:rgba(16,15,14,.86); padding:12px; overflow:auto}
+.summary[hidden]{display:none}
+.sbox{background:var(--charcoal); color:var(--cream); border:1px solid rgba(240,234,217,.25); border-radius:18px; padding:16px 20px; width:min(620px,100%); text-align:center}
+.skick{margin:0; color:rgba(240,234,217,.7); font-size:15px}
+.sbox h3{font-family:var(--display); font-weight:800; font-size:clamp(24px,3.4vw,34px); margin:2px 0 10px; color:var(--gold)}
+.scols{display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center}
+.svs{font-family:var(--display); font-weight:800; font-size:22px; color:rgba(240,234,217,.6)}
+.scol{display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px; border-radius:14px; border:2px solid transparent}
+.scol.won{border-color:var(--gold); background:rgba(232,184,75,.08)} .scol.lost{opacity:.6}
+.swho{font-family:var(--label); font-size:12.5px}
+.sslot .card{transform:scale(.8); margin:-18px -12px}
+.sstat span{display:block; font-size:14px; color:rgba(240,234,217,.7)} .sstat b{font-family:var(--display); font-weight:800; font-size:34px; line-height:1}
+.scol.won .sstat b{color:var(--gold)}
+.sres{font-size:14px; font-weight:700}
+.scons{list-style:none; padding:0; margin:12px 0 6px; font-size:15.5px; display:flex; flex-direction:column; gap:3px}
+.ssq{margin:6px 0 12px; font-size:15px; color:rgba(240,234,217,.8)}
+/* turn visibility */
+.stage{transition:box-shadow .3s}
+.stage[data-turn="me"]{box-shadow:inset 0 0 0 5px var(--gold)}
+.stage[data-turn="them"]{box-shadow:inset 0 0 0 5px var(--pink)}
+#ballMark{position:absolute; top:44%; display:flex; align-items:center; gap:10px; z-index:1; font-family:var(--display); font-weight:800; font-size:clamp(16px,2vw,22px); color:#F0EAD9; text-shadow:0 2px 12px rgba(0,0,0,.7); pointer-events:none}
+.stage[data-att="me"] #ballMark{left:6%} .stage[data-att="them"] #ballMark{right:6%}
+.ballchip.big{width:30px; height:30px; border-width:3px; box-shadow:0 0 16px rgba(255,255,255,.5)}
+#momentTitle small{display:block; font-family:var(--cond); font-weight:500; font-size:clamp(15px,1.8vw,19px); letter-spacing:0; color:rgba(240,234,217,.82); margin-top:4px}
+.stateline{margin:0; flex-basis:100%; font-family:var(--display); font-weight:500; font-size:17px; color:var(--muted)}
+#turn b{font-size:26px}
+.handwrap{border-radius:16px; padding:4px 6px 2px; border:2px solid transparent; transition:border-color .3s, background .3s}
+.handwrap[data-turn="me"]{border-color:var(--gold); background:rgba(232,184,75,.07)}
+.moment q{quotes:none; font-size:14.5px; color:rgba(240,234,217,.9); line-height:1.2}
+.rewards{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.reward{display:flex; flex-direction:column; gap:2px; text-align:left; min-width:180px; max-width:240px; padding:10px 14px; border-radius:14px; background:rgba(28,27,26,.92); color:#F0EAD9; border:1.5px solid rgba(240,234,217,.35)}
+.reward b{font-family:var(--display); font-weight:800; font-size:19px} .reward span{font-size:14.5px; color:rgba(240,234,217,.75)}
+.reward:hover{border-color:var(--gold)} .reward.on{background:var(--gold); color:var(--charcoal); border-color:var(--gold)} .reward.on span{color:var(--charcoal)}
+.hand.targeting .card{opacity:.4} .hand.targeting .card.target{opacity:1; cursor:pointer; box-shadow:0 0 0 3px var(--gold), 0 0 22px rgba(232,184,75,.6); animation:tpulse 1.2s ease-in-out infinite}
+@keyframes tpulse{50%{transform:translateY(-10px) rotate(0)}}
+/* substitutions and captain */
+.subbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin-top:2px}
+.subnote{font-size:15px; background:rgba(28,27,26,.85); padding:5px 12px; border-radius:999px}
+.switch.go{background:var(--gold); color:var(--charcoal); border-color:var(--gold)} .switch:disabled{opacity:.45; cursor:default}
+.hand .card.swappable{cursor:pointer; box-shadow:0 0 0 2px rgba(241,104,142,.7)}
+.hand .card.picked{transform:translateY(-16px) rotate(0); box-shadow:0 0 0 3px var(--pink), 0 0 20px rgba(231,4,67,.5)}
+.hand .card.picked::after{content:"Off"; position:absolute; top:40%; left:50%; transform:translate(-50%,-50%) rotate(-12deg); font-family:var(--display); font-weight:800; font-size:24px; color:var(--pink); background:rgba(240,234,217,.9); padding:0 8px; border-radius:6px}
+.capbadge{position:absolute; top:26px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--gold); color:var(--charcoal); font-family:var(--display); font-weight:800; font-style:normal; font-size:14px; display:grid; place-items:center; box-shadow:0 0 0 2px var(--charcoal)}
+.newbadge{position:absolute; top:26px; left:8px; font-style:normal; font-family:var(--label); font-size:10px; background:var(--pink); color:#fff; padding:2px 6px; border-radius:999px}
+
+/* live pitch */
+.stage{height:clamp(360px,54vh,560px); background:#0f1a13}
+#live{position:absolute; inset:0; width:100%; height:100%}
+.lpd{transition:opacity .4s}
+.lpd circle{transition:r .3s, filter .3s}
+.lpd.me circle{filter:drop-shadow(0 0 .8px #E8B84B)}
+#lpDots.dueling .lpd:not(.duel){opacity:.28}
+.lpd.locked circle{stroke-dasharray:1.2 .8; r:2.9}
+.lpd.hot circle{filter:drop-shadow(0 0 2.4px #E8B84B); r:3.3}
+.lpd.cold{opacity:.5}
+.stage.goalflash #live{animation:flash .6s ease-out}
+.boards{position:absolute; top:34px; left:0; right:0; display:flex; gap:8px; justify-content:center; z-index:3; pointer-events:none; padding:0 10px}
+.boards[hidden]{display:none}
+.board{background:rgba(28,27,26,.88); color:#F0EAD9; border:1px solid rgba(240,234,217,.3); border-radius:10px; padding:5px 10px; text-align:center; min-width:120px; position:relative; transition:opacity .4s, transform .4s}
+.board b{display:block; font-family:var(--display); font-weight:800; font-size:15px} .board span{font-size:12.5px; color:rgba(240,234,217,.72)}
+.board.struck{opacity:.55} .board.struck::after{content:""; position:absolute; left:8%; right:8%; top:50%; height:3px; background:var(--pink); transform:rotate(-8deg)}
+.board.struck span{color:var(--pink-t)}
+.board.chosen{border-color:var(--gold); box-shadow:0 0 0 2px var(--gold); transform:scale(1.06)} .board.chosen span{color:var(--gold)}
+.stage .engline{top:auto; bottom:52px}
+.stage .engline:empty{display:none}
+.stage .duelbar{position:absolute; left:0; right:0; bottom:0; z-index:4}
+.stage .duelbar[hidden]{display:none}
+#momentTitle{top:6px; font-size:clamp(20px,3vw,32px)}
+#momentTitle small{font-size:clamp(13px,1.6vw,16px)}
+.panel .overlay{position:static; inset:auto; padding:6px 0 2px}
+.panel .overlay[hidden]{display:none}
+.panel .mhead{background:var(--panel); color:var(--fg)}
+.panel .moment{backdrop-filter:none}
+#ballMark{top:auto; bottom:62px}
+
+/* verdict stamp */
+.stamp{position:absolute; left:50%; top:44%; transform:translate(-50%,-50%) scale(1.6); opacity:0; font-family:var(--display); font-weight:800; font-size:clamp(26px,4.6vw,58px); letter-spacing:-.02em; white-space:nowrap; z-index:5; pointer-events:none; text-align:center}
+.stamp.show{opacity:1; transform:translate(-50%,-50%) scale(1); transition:transform .45s cubic-bezier(.2,1.5,.4,1), opacity .2s}
+.stamp.sev0{color:rgba(240,234,217,.85); font-size:clamp(20px,3vw,34px); padding:8px 16px; background:rgba(28,27,26,.8); border:1px solid rgba(240,234,217,.3); border-radius:8px}
+.stamp.mine{color:var(--cream); text-shadow:0 0 24px rgba(232,184,75,.9)}
+.stamp.theirs{color:var(--cream); text-shadow:0 0 24px rgba(231,4,67,.9)}
+.stamp.sev3::after,.stamp.sev4::after{content:""; position:absolute; left:50%; top:50%; width:40px; height:40px; border-radius:50%; border:3px solid var(--gold); transform:translate(-50%,-50%); animation:ring 1s ease-out forwards}
+.stamp.theirs.sev3::after,.stamp.theirs.sev4::after{border-color:var(--pink)}
+@keyframes ring{to{width:900px; height:900px; opacity:0}}
+.stamp.sev4{color:var(--gold)} .stamp.theirs.sev4{color:var(--pink-t)}
+
+/* overlays: moments and rewards */
+.overlay[hidden]{display:none}
+.overlay{position:absolute; inset:auto 0 6% 0; display:flex; flex-direction:column; align-items:center; gap:12px; z-index:6; padding:0 14px}
+.mhead{margin:0; padding:6px 14px; border-radius:999px; background:rgba(28,27,26,.85); font-size:16px}
+.mrow{display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
+.moment{width:200px; min-height:128px; text-align:left; padding:14px 16px; border-radius:14px; background:rgba(28,27,26,.9); border:1px solid rgba(240,234,217,.28); color:#F0EAD9; display:flex; flex-direction:column; gap:6px; backdrop-filter:blur(6px); position:relative}
+button.moment:hover{border-color:var(--gold); transform:translateY(-3px); transition:.15s}
+.moment b{font-family:var(--display); font-weight:800; font-size:22px; line-height:1.05}
+.moment span{font-size:15px; color:rgba(240,234,217,.75)}
+.moment em{font-style:normal; margin-top:auto; color:var(--gold); font-size:15px}
+.moment.struck{opacity:.35; transition:.4s}
+.moment.struck::after{content:""; position:absolute; left:8%; right:8%; top:50%; height:3px; background:var(--pink); transform:rotate(-12deg)}
+.switch,.effect{background:rgba(28,27,26,.92); color:#F0EAD9; border:1px solid rgba(240,234,217,.35); border-radius:999px; padding:9px 16px; font-size:16px}
+.effect{border-color:var(--gold); max-width:560px; text-align:left}
+.switch:hover,.effect:hover{background:var(--charcoal); border-color:var(--gold)}
+#effects .effect:first-of-type{background:var(--gold); color:var(--charcoal)}
+
+/* status */
+.status{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 16px}
+#possession{font-family:var(--label); font-size:13px; padding:4px 10px; border-radius:999px; background:var(--panel)}
+#possession[data-side="me"]{background:var(--gold); color:var(--charcoal)}
+#possession[data-side="them"]{background:var(--pink); color:#fff}
+#round{color:var(--muted); font-size:15px}
+#prompt{margin:0; font-family:var(--display); font-weight:500; font-size:20px; flex-basis:100%}
+
+/* hand and cards */
+.hand{display:flex; justify-content:center; align-items:flex-end; min-height:210px; padding:10px 0 0; flex-wrap:nowrap; overflow-x:auto; overflow-y:visible}
+.hand .card{margin:0 -6px; transform:translateY(var(--lift)) rotate(var(--rot)); transition:transform .18s, box-shadow .18s; flex:none}
+.hand.choosing .card{box-shadow:0 0 0 2px rgba(232,184,75,.5), 0 10px 24px rgba(0,0,0,.35)}
+.hand .card.playable:hover,.hand .card.playable:focus-visible{transform:translateY(-22px) rotate(0) scale(1.05); z-index:5}
+.card{width:132px; height:192px; border-radius:11px; background:#F0EAD9; color:#1C1B1A; border:3px solid var(--bandc,#B9B09E); padding:8px 9px 8px; display:flex; flex-direction:column; position:relative; box-shadow:0 8px 20px rgba(0,0,0,.35); overflow:hidden; user-select:none}
+.card.band-Generational{--bandc:#E8B84B}
+.card.band-Generational::before{content:""; position:absolute; inset:0; background:linear-gradient(115deg,transparent 30%,rgba(255,236,170,.55) 45%,transparent 60%); background-size:250% 100%; animation:foil 4s linear infinite; pointer-events:none}
+@keyframes foil{from{background-position:120% 0}to{background-position:-120% 0}}
+.card.band-Iconic{--bandc:#E70443} .card.band-WorldClass{--bandc:#1C1B1A} .card.band-Standout{--bandc:#8C8375} .card.band-Accomplished{--bandc:#C9C0AC}
+.cband{display:flex; justify-content:space-between; align-items:center; font-family:var(--label); font-size:10.5px; color:#5b554c}
+.cpos{background:#1C1B1A; color:#F0EAD9; border-radius:4px; padding:1px 5px}
+.cswatch{height:5px; border-radius:3px; margin:6px 0 7px; background:linear-gradient(90deg,var(--p) 0 62%,var(--s) 62%)}
+.cname{font-family:var(--display); font-weight:800; font-size:21px; line-height:1; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cmeta{font-size:13.5px; color:#5b554c; margin-top:4px; line-height:1.2; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+.ctag{margin-top:6px; align-self:flex-start; font-size:12px; padding:1px 7px; border-radius:999px; border:1px solid #AD0332; color:#AD0332}
+.cvv{margin-top:auto; display:flex; align-items:baseline; gap:4px}
+.cvv span{font-family:var(--label); font-size:11px; color:#5b554c} .cvv b{font-family:var(--display); font-weight:800; font-size:22px}
+.cstat{position:absolute; left:0; right:0; bottom:0; background:#1C1B1A; color:#F0EAD9; padding:5px 9px 6px; display:flex; justify-content:space-between; align-items:center; gap:6px}
+.cstat span{font-size:12.5px; line-height:1.1; color:rgba(240,234,217,.75)}
+.cstat b{font-family:var(--display); font-weight:800; font-size:28px; color:var(--gold); line-height:1}
+.card.small{width:132px}
+
+/* end + rules */
+#endScreen{position:fixed; inset:0; background:rgba(12,12,11,.8); display:grid; place-items:center; z-index:20; padding:20px}
+#endScreen[hidden]{display:none}
+.endbox{background:var(--charcoal); color:var(--cream); border:1px solid var(--gold); border-radius:18px; padding:28px 30px; max-width:520px; text-align:center}
+.endbox h2{font-family:var(--display); font-weight:800; font-size:34px; line-height:1.05; margin:0 0 10px}
+dialog{max-width:620px; width:calc(100% - 32px); border:1px solid var(--line); border-radius:16px; background:var(--bg); color:var(--fg); padding:22px 26px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog h2{font-family:var(--display); font-weight:800; margin:0 0 8px}
+dialog blockquote{margin:10px 0 16px; padding:10px 14px; border-left:3px solid var(--gold); background:var(--panel); border-radius:0 8px 8px 0}
+dialog table{border-collapse:collapse; width:100%; font-size:15px}
+dialog td,dialog th{padding:5px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top}
+.tw{overflow-x:auto}
+@media (max-width:640px){ .card{width:112px; height:170px} .cname{font-size:18px} .moment{width:100%; min-height:0} #zoneA{left:6%} #zoneB{right:6%} .zone{width:42%} .stage{height:470px} .overlay{bottom:3%} }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important; transition-duration:.01ms!important} .figure{clip-path:none} }
+
+/* ===== ONE-SCREEN LAYOUT (v2) ===== */
+body{overflow:hidden}
+.top{padding:8px 18px; gap:10px}
+.brand{font-size:21px}
+.settings{position:relative}
+.settings summary{list-style:none; cursor:pointer} .settings summary::-webkit-details-marker{display:none}
+.settings .menu{position:absolute; right:0; top:42px; z-index:30; background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; width:280px; box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.wrap{height:calc(100vh - 55px); min-height:0; grid-template-columns:minmax(0,1fr) 250px}
+.arena{height:100%; min-height:0; padding:8px 14px 8px; gap:6px; overflow:hidden}
+.feed{max-height:none; height:100%; padding:10px 12px}
+.feed h3{font-size:16px; margin-bottom:6px}
+#log li{font-size:14px; padding:6px 8px} #log li.play{font-size:13.5px}
+.scoreboard{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px; background:var(--panel); border-radius:12px; padding:6px 12px; flex:none}
+.scoreboard .side{display:flex; align-items:center; gap:14px; font-size:15px; color:var(--muted); padding:4px 10px; border-radius:10px; transition:background .3s}
+.scoreboard .side b{font-family:var(--display); font-weight:800; font-size:20px; color:var(--fg)}
+.scoreboard .side .who{font-size:20px; margin-right:4px}
+.scoreboard .them{justify-content:flex-end}
+.scoreboard[data-att="me"] .you{background:rgba(232,184,75,.22)} .scoreboard[data-att="them"] .them{background:rgba(231,4,67,.16)}
+.scoreboard .stack{width:16px; height:22px; border-radius:3px; box-shadow:2px 2px 0 #b88d2d}
+.scoreboard .pile{gap:6px}
+.scoreboard .mid{display:flex; flex-direction:column; align-items:center; gap:1px}
+#possession{font-family:var(--display); font-weight:800; font-size:20px; padding:4px 14px; border-radius:999px; display:flex; align-items:center; gap:8px; white-space:nowrap}
+#possession[data-side="me"]{background:var(--gold); color:var(--charcoal)}
+#possession[data-side="them"]{background:var(--pink); color:#fff}
+#possession .ballchip{width:15px; height:15px}
+#round{font-size:13px; color:var(--muted)}
+.stage{flex:1 1 auto; height:auto; min-height:230px}
+#momentTitle{top:4px}
+.boards{top:auto; bottom:10px}
+#momentTitle:not(:empty) ~ .boards{top:auto}
+.boards.choose{inset:0; top:0; bottom:0; align-items:center; background:rgba(15,26,19,.55); pointer-events:auto; gap:12px}
+.board{font:inherit}
+button.board{cursor:pointer; text-align:left; width:210px; padding:10px 12px; display:flex; flex-direction:column; gap:4px; border-radius:14px; border:1.5px solid rgba(240,234,217,.4)}
+button.board:hover,button.board:focus-visible{border-color:var(--gold); transform:translateY(-3px)}
+button.board b{font-size:19px} button.board q{quotes:none; font-size:13.5px; color:rgba(240,234,217,.92); line-height:1.2}
+button.board span{font-size:13px} button.board em{font-style:normal; color:var(--gold); font-size:14px}
+button.board i{font-style:normal; font-family:var(--label); font-size:11.5px; color:var(--gold); margin-top:2px}
+.boards.choose .board.struck{width:170px; align-self:center}
+.actionbar{flex:none; display:flex; flex-direction:column; gap:4px}
+.abhead{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+#turn{flex:1 1 auto; flex-basis:auto; padding:6px 14px; animation:none}
+#turn[data-side="me"]{animation:yourmove 1.8s ease-in-out infinite}
+#turn b{font-size:19px} #turn span{font-size:16px}
+.phases{flex-basis:auto; gap:4px} .phases li{font-size:12.5px; padding:2px 8px 2px 2px} .phases li b{width:17px; height:17px; font-size:10px}
+.panel:empty{display:none}
+#moments[hidden],#summary[hidden]{display:none}
+.subbar{margin:0; justify-content:flex-start}
+.panel .overlay{padding:2px 0}
+.panel .mhead{padding:3px 12px; font-size:14.5px}
+.reward{min-width:150px; padding:6px 12px} .reward b{font-size:17px} .reward span{font-size:13.5px}
+.summary{position:static; inset:auto; background:var(--charcoal); color:var(--cream); border-radius:12px; padding:8px 14px; display:flex !important; align-items:center; gap:14px; flex-wrap:wrap; z-index:1}
+.summary[hidden]{display:none !important}
+.sres{display:flex; flex-direction:column; min-width:150px} .sres b{font-family:var(--display); font-weight:800; font-size:20px; color:var(--gold)} .sres.them b{color:var(--pink-t)} .sres span{font-size:13.5px; color:rgba(240,234,217,.75)}
+.sduel{font-size:14.5px; display:flex; gap:8px; align-items:baseline; flex-wrap:wrap} .sduel .w b{color:var(--gold)} .sduel small{color:rgba(240,234,217,.6)} .sduel em{color:rgba(240,234,217,.5)}
+.summary .scons{margin:0; font-size:13.5px; flex:1 1 220px; color:rgba(240,234,217,.85)}
+.summary #sNext{margin-left:auto}
+.handwrap{flex:none; padding:0 4px}
+.hand{min-height:0; height:166px; padding:14px 0 0; overflow:visible}
+.hand .card{width:114px; height:152px; padding:6px 8px} .hand .cname{font-size:18px} .hand .cmeta{font-size:12.5px} .hand .cvv b{font-size:19px} .hand .ctag{font-size:11px}
+.hand .cstat b{font-size:24px} .hand .cstat span{font-size:11.5px}
+.stage .duelbar{font-size:14px; padding:5px 12px}
+.stage .engline{bottom:44px; font-size:clamp(14px,1.7vw,18px)}
+.subnote{color:#F0EAD9}
+.hand .cband{font-size:9px} .hand .cband span:first-child{max-width:70px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+.hand{height:172px}
+/* v2.1 */
+.scoreboard .opphand{display:flex; margin:0 4px 0 0}
+.scoreboard .opphand .cardback{width:26px; height:37px; margin-left:-9px; border-radius:4px; font-size:9px; box-shadow:0 2px 5px rgba(0,0,0,.35)}
+.scoreboard .opphand .cardback:first-child{margin-left:0}
+.known{font-size:13px; color:var(--muted); max-width:210px; line-height:1.15} .known b{font-size:13.5px !important; font-family:var(--cond) !important}
+.snav{display:flex; gap:6px; margin-left:auto}
+#sNext{position:relative; overflow:hidden}
+.summary .btn:not(.primary){color:#F0EAD9; border-color:rgba(240,234,217,.45)} .sprog{position:absolute; left:0; bottom:0; height:3px; width:0; background:rgba(255,255,255,.8)}
+.switch b{font-family:var(--display); margin-left:4px}
+.feed h3{display:flex; justify-content:space-between; align-items:center} .keyl{font-family:var(--cond); font-weight:500; font-size:13px}
+#log.keyonly li.play,#log.keyonly li.note{display:none}
+@media (max-width:980px){ body{overflow:auto} .wrap{height:auto; grid-template-columns:1fr} .arena{height:auto} .stage{height:52vh; flex:none} .feed{height:260px} .scoreboard .side span{display:none} .scoreboard .side .pile{display:flex} }
+@media (max-height:760px){ .top{padding:5px 14px} .hand{height:150px} .hand .card{width:104px; height:140px} .scoreboard{padding:3px 10px} }
+
+
+/* ===== PHONES (portrait) ===== */
+.mob{display:none} .sm{display:none}
+button,.board,.card{touch-action:manipulation}
+@media (hover:none){ .hand .card.playable:hover{transform:translateY(var(--lift)) rotate(var(--rot)) !important} .hand .card.playable:active{transform:translateY(-14px) scale(1.04) !important} button.board:hover{transform:none} }
+@media (max-width:700px){
+  body{overflow:hidden; font-size:15px}
+  .top{padding:6px 10px; padding-top:calc(6px + env(safe-area-inset-top,0px)); gap:6px; flex-wrap:nowrap}
+  .brand{font-size:17px; white-space:nowrap} .brand small{display:none}
+  .top .btn{padding:6px 9px; font-size:13px} .top{gap:5px} .mob{display:inline-block} .lg{display:none} .sm{display:inline}
+  .brand{margin-right:auto}
+  .settings .menu{position:fixed; right:10px; left:10px; top:52px; width:auto}
+  .wrap{display:block; height:calc(100dvh - 46px - env(safe-area-inset-top,0px)); grid-template-columns:1fr}
+  .arena{height:100%; padding:6px 8px calc(4px + env(safe-area-inset-bottom,0px)); gap:5px}
+  .feed{display:none}
+  body.showlog .feed{display:block; position:fixed; left:0; right:0; bottom:0; height:62dvh; z-index:40; background:var(--bg); border-top:2px solid var(--gold); border-left:0; border-radius:16px 16px 0 0; box-shadow:0 -12px 40px rgba(0,0,0,.4); padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+  .scoreboard{padding:4px 6px; gap:4px; grid-template-columns:1fr auto 1fr}
+  .scoreboard .side{gap:6px; padding:3px 5px; font-size:12px}
+  .scoreboard .side > span:not(.pile){display:none}
+  .scoreboard .side .pile{display:flex; font-size:0} .scoreboard .side .pile b{font-size:16px}
+  .scoreboard .side .who{font-size:13.5px; margin:0} .scoreboard .side b{font-size:15px} .scoreboard .side{min-width:0; overflow:hidden}
+  .scoreboard .opphand{margin:0}
+  .scoreboard .opphand .cardback{width:14px; height:20px; margin-left:-6px; font-size:0}
+  #possession{font-size:14px; padding:3px 10px; gap:5px} #possession .ballchip{width:11px; height:11px} #round{display:none}
+  .stage{min-height:0; flex:1 1 auto; border-radius:14px}
+  #momentTitle{font-size:17px; top:2px} #momentTitle small{font-size:11.5px; margin-top:1px}
+  .boards{bottom:4px; gap:4px; padding:0 4px} .board{min-width:0; padding:3px 6px} .board b{font-size:12px} .board span{font-size:10.5px}
+  .boards.choose{flex-direction:column; gap:6px; padding:6px}
+  .boards.choose .board,button.board{width:min(92%,340px); padding:7px 10px; display:grid; grid-template-columns:1fr auto; column-gap:8px; row-gap:1px; align-items:center}
+  button.board b{font-size:15px} button.board q{display:none} button.board span{font-size:11.5px; grid-column:1}
+  button.board em{grid-column:2; grid-row:1; font-size:15px; font-weight:700} button.board i{grid-column:2; grid-row:2; font-size:10.5px}
+  .boards.choose .board.struck{padding:3px 10px} .boards.choose .board.struck b{font-size:13px}
+  .stage .engline{bottom:36px; font-size:12.5px; padding:5px 8px; width:94%}
+  .stage .duelbar{grid-template-columns:1fr 1fr; font-size:11.5px; padding:3px 8px; gap:2px 6px} .stage .duelbar .track{grid-column:1 / -1; order:3; height:8px}
+  .stamp{font-size:28px !important} .stamp.sev0{font-size:17px !important}
+  .abhead{gap:4px} .phases{display:none}
+  #turn{padding:5px 10px} #turn b{font-size:15px} #turn span{font-size:13px}
+  .panel .mhead{font-size:12.5px; padding:3px 10px}
+  .subbar{gap:5px} .switch{font-size:13px; padding:6px 10px} .subnote{font-size:12px}
+  .reward{min-width:0; flex:1} .reward b{font-size:15px} .reward span{font-size:12px}
+  .summary{padding:6px 10px; gap:4px 10px} .sres b{font-size:16px} .sres span,.sduel,.summary .scons{font-size:11.5px} .sres{min-width:0} .sduel small{display:none}
+  .summary .snav .btn{padding:6px 10px; font-size:13px}
+  .handwrap{padding:0} .hand{height:108px; padding:8px 0 0; overflow:visible; justify-content:center}
+  .hand .card{width:calc((100vw - 28px) / 7 + 6px); height:98px; padding:4px 4px; margin:0 -3px; border-width:2px; border-radius:8px}
+  .hand .cname{font-size:11.5px; overflow-wrap:anywhere; text-overflow:clip}
+  .hand .cband span:first-child,.hand .cmeta,.hand .ctag,.hand .cswatch{display:none}
+  .hand .cband{justify-content:flex-end} .hand .cpos{font-size:9px; padding:0 4px}
+  .hand .cname{font-size:13px; margin-top:4px; white-space:normal; line-height:1.05; max-height:2.2em}
+  .hand .cvv{margin-top:auto} .hand .cvv span{font-size:9px} .hand .cvv b{font-size:15px}
+  .hand .cstat{padding:2px 5px; justify-content:center} .hand .cstat span{display:none} .hand .cstat b{font-size:20px}
+  .hand .card.picked::after{font-size:15px}
+  .capbadge{top:18px; right:4px; width:18px; height:18px; font-size:11px} .newbadge{top:18px; left:4px; font-size:8px}
+  .endbox{padding:20px} .endbox h2{font-size:26px}
+  dialog{padding:16px}
+}
+@media (max-width:700px) and (max-height:700px){
+  .hand{height:100px} .hand .card{height:90px} #momentTitle small{display:none}
+}
+@media (max-height:500px) and (orientation:landscape){ body{overflow:auto} .wrap{height:auto} .arena{height:auto} .stage{height:78vh; flex:none} }
+
+/* playtest */
+.settings .deck,.settings label[for="deckFile"],.settings #demoDeck{display:none}
+.endbtns{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
+.endbox .btn:not(.primary){color:#F0EAD9; border-color:rgba(240,234,217,.45)}
+#fb{max-width:520px; max-height:92dvh; overflow:auto}
+#fb h2{margin:0 0 4px} .fbintro{margin:0 0 12px; color:var(--muted)}
+.fbq{display:flex; flex-direction:column; gap:6px; margin:0 0 14px} .fbq b{font-family:var(--display); font-weight:800; font-size:16px} .fbq small{font-weight:500; color:var(--muted); font-family:var(--cond)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chips button{font:inherit; font-size:15px; padding:8px 13px; border-radius:999px; border:1.5px solid var(--line); background:var(--panel); color:var(--fg); cursor:pointer; min-height:40px}
+.chips button.on{background:var(--gold); border-color:var(--gold); color:var(--charcoal)}
+#fb textarea,#fb input{font:inherit; font-size:16px; padding:9px 11px; border-radius:10px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%; box-sizing:border-box}
+.fbbtns{display:flex; gap:8px} .fberr{color:var(--pink-t)} .fbdone p{font-size:17px}
+@media (max-width:700px){ #fb{width:100vw; max-width:100vw; margin:auto 0 0; border-radius:16px 16px 0 0; padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="lg">VVonderXI Duels</span><span class="sm">VV Duels</span> <small>playtest, rules v1.4</small></div>
+  <details class="settings"><summary class="btn"><span class="lg">Settings</span><span class="sm" aria-label="Settings">&#9881;</span></summary><div class="menu">
+    <div class="deck"><b id="deckName"></b><span id="deckNote"></span></div>
+    <label class="btn" for="deckFile">Load my real deck</label>
+    <input class="sr" type="file" id="deckFile" accept=".json,application/json">
+    <button class="btn" id="demoDeck">Use demo deck</button>
+    <label class="fast"><input type="checkbox" id="speed"> Fast mode</label>
+    <label class="fast"><input type="checkbox" id="captainMode"> Captain mode</label>
+  </div></details>
+  <button class="btn" id="fbBtn"><span class="lg">Feedback</span><span class="sm" aria-label="Feedback">&#128172;</span></button>
+  <button class="btn mob" id="logBtn">Log</button>
+  <button class="btn" id="rulesBtn"><span class="lg">How to play</span><span class="sm">Rules</span></button>
+  <button class="btn primary" id="newGame"><span class="lg">New match</span><span class="sm">New</span></button>
+</header>
+<div class="wrap">
+  <main class="arena">
+    <div class="scoreboard" id="scoreboard">
+      <div class="side you"><b class="who">You</b>
+        <span>Squad <b id="myCount">6</b></span><span class="pile" id="myLegacyPile"><span class="stack legacy"></span>Legacy <b id="myLegacy">0</b></span><span>Subs <b id="myTokens">3</b></span></div>
+      <div class="mid"><div id="possession"></div><span id="round"></span></div>
+      <div class="side them"><span class="known" id="known"></span><span>Subs <b id="oppTokens">3</b></span><span class="pile" id="oppLegacyPile"><span class="stack legacy"></span>Legacy <b id="oppLegacy">0</b></span><div class="opphand" id="oppHand" aria-label="Their squad, face down"></div><span class="sr">Squad <b id="oppCount">6</b></span>
+        <b class="who">Them</b></div>
+    </div>
+    <section class="stage" id="stage" aria-label="Live match view">
+      <svg id="live" viewBox="-4 -9 108 82" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      <div id="boards" class="boards" hidden></div>
+      <div id="momentTitle"></div>
+      <div class="engline" id="engLine"></div>
+      <div class="duelbar" id="duelbar" hidden></div>
+      <div class="stamp" id="stamp" role="status"></div>
+    </section>
+    <div class="actionbar" id="actionbar">
+      <div class="abhead"><div id="turn" data-side="play" aria-live="polite"></div><ol class="phases" id="phases" aria-label="Steps of this turn"></ol></div>
+      <div class="panel"><div id="moments" hidden></div><div class="overlay" id="effects" hidden></div><div class="summary" id="summary" hidden></div></div>
+    </div>
+    <div class="handwrap" id="handWrap"><div class="hand" id="hand" aria-label="Your squad"></div></div>
+  </main>
+  <aside class="feed" aria-label="Commentary"><h3>Commentary <label class="fast keyl"><input type="checkbox" id="keyOnly"> Key moments only</label></h3><ol id="log" aria-live="polite"></ol></aside>
+</div>
+<div hidden><span id="myRole"></span><span id="oppRole"></span><p id="stateLine"></p><p id="prompt"></p><div id="ballMark"></div><span id="benchPile"><b id="bench"></b></span></div>
+
+<dialog id="rules">
+  <h2>How to play</h2>
+  <blockquote>Get all seven of your seasons into your Legacy before your rival does. Every turn is a match moment: whoever has possession picks it, after the other side strikes one of three off. You both play a season face-down. Reveal. Bigger number wins the moment. Win it, and that season walks into your Legacy. Win it big, and it takes a teammate with it.</blockquote>
+  <div class="tw"><table>
+    <tr><th>Verdict</th><th>Margin</th><th>Big Game (VV points)</th><th>You get</th></tr>
+    <tr><td>The Debate Lives On</td><td>0 to 1</td><td>0 to 1</td><td>No decision, both seasons go home</td></tr>
+    <tr><td>Photo Finish</td><td>2 to 5</td><td>2 to 3</td><td>Your season walks into your Legacy</td></tr>
+    <tr><td>A Clear Edge</td><td>6 to 11</td><td>4 to 6</td><td>Your season walks into your Legacy</td></tr>
+    <tr><td>Bragging Rights Settled</td><td>12 to 22</td><td>7 to 9</td><td>Big win: your season <b>and a teammate you choose</b> walk in</td></tr>
+    <tr><td>Masterclass</td><td>23+</td><td>10+</td><td>Big win: your season and a teammate walk in</td></tr>
+  </table></div>
+  <p><b>Two outcomes, four names.</b> A win sends your season into your Legacy. A big win sends a teammate of your choice in with him (an <b>Assist</b>). The loser's season goes back to their squad. <b>Substitutions:</b> three per match, at most one per turn, used while you strike off or pick a moment: <b>change players</b> (swap any of your seasons for random ones from the Bench) or a <b>Tactical Switch</b> (three new moments, only when you attack). <b>Captain mode:</b> you secretly name one season Captain at kick-off; it can only go into your Legacy last. Big Game is played on real VV Score points and uses the Compare page's own margins.</p>
+  <p><button class="btn" id="rulesClose">Back to the match</button></p>
+</dialog>
+<dialog id="fb" aria-labelledby="fbTitle">
+  <h2 id="fbTitle">Your feedback</h2>
+  <p id="fbIntro" class="fbintro"></p>
+  <form>
+    <div class="fbq" data-q="clarity"><b>How clear were the rules?</b><div class="chips" data-single="1"><button type="button" data-v="confusing">Confusing</button><button type="button" data-v="mostly">Mostly clear</button><button type="button" data-v="clear">Clear</button></div></div>
+    <div class="fbq" data-q="fun"><b>How fun was it?</b><div class="chips" data-single="1"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div></div>
+    <div class="fbq" data-q="again"><b>Would you play again?</b><div class="chips" data-single="1"><button type="button" data-v="yes">Yes</button><button type="button" data-v="maybe">Maybe</button><button type="button" data-v="no">No</button></div></div>
+    <div class="fbq" data-q="confusing"><b>What was hard to follow? <small>(tap any)</small></b><div class="chips"><button type="button" data-v="moments">The moments</button><button type="button" data-v="strike_off">Striking one off</button><button type="button" data-v="attack_defend">Who attacks</button><button type="button" data-v="verdicts">The verdicts</button><button type="button" data-v="big_win">Big win / Assist</button><button type="button" data-v="subs">Substitutions</button><button type="button" data-v="nothing">Nothing</button></div></div>
+    <label class="fbq"><b>Anything else?</b><textarea id="fbComment" rows="3" maxlength="2000" placeholder="What you liked, what annoyed you, ideas…"></textarea></label>
+    <label class="fbq"><b>Your name <small>(optional)</small></b><input id="fbName" maxlength="60" autocomplete="name"></label>
+    <p class="fberr" hidden>Could not send. Check your connection and try again.</p>
+    <div class="fbbtns"><button class="btn primary" id="fbSend" type="submit">Send feedback</button><button class="btn" id="fbClose" type="button">Not now</button></div>
+  </form>
+  <div class="fbdone" hidden><p><b>Thank you!</b> Your feedback is in.</p><button class="btn primary" id="fbDoneClose" type="button">Back to the game</button></div>
+</dialog>
+<div id="endScreen" hidden><div class="endbox"><h2></h2><p></p><div class="endbtns"><button class="btn primary" id="again">Play again</button><button class="btn" id="fbAgain">Give feedback</button></div></div></div>
+<script>var VVG=(()=>{var k=Object.defineProperty;var fe=Object.getOwnPropertyDescriptor;var de=Object.getOwnPropertyNames;var ue=Object.prototype.hasOwnProperty;var he=(r,e)=>{for(var n in e)k(r,n,{get:e[n],enumerable:!0})},ye=(r,e,n,o)=>{if(e&&typeof e=="object"||typeof e=="function")for(let t of de(e))!ue.call(r,t)&&t!==n&&k(r,t,{get:()=>e[t],enumerable:!(o=fe(e,t))||o.enumerable});return r};var Ee=r=>ye(k({},"__esModule",{value:!0}),r);var Pe={};he(Pe,{CATEGORIES:()=>m,DEFAULT_CONFIG:()=>v,TacticianCPU:()=>le,actorFor:()=>B,applyAction:()=>q,createGame:()=>J,fieldFor:()=>_,legalActions:()=>G,makeConfig:()=>se,prepareAI:()=>ce,syntheticDeck:()=>ae,valueOf:()=>R,viewFor:()=>ee});function I(r){let e=r>>>0;return function(){e=e+1831565813>>>0;let o=e;return o=Math.imul(o^o>>>15,o|1),o^=o+Math.imul(o^o>>>7,o|61),((o^o>>>14)>>>0)/4294967296}}function b(r){return[I(r)(),r+1831565813>>>0]}function D(r,e){let n=I(e),o=r.slice();for(let t=o.length-1;t>0;t--){let s=Math.floor(n()*(t+1));[o[t],o[s]]=[o[s],o[t]]}return o}var m={impact:{id:"impact",label:"Season Impact",field:"impact",thresholdScale:.25,hint:"VV Score. Position-aware by construction."},goalThreat:{id:"goalThreat",label:"Goal Threat",field:"goalThreat",thresholdScale:1},creation:{id:"creation",label:"Creation",field:"creation",thresholdScale:1},progression:{id:"progression",label:"Progression",field:"progression",thresholdScale:1},defensive:{id:"defensive",label:"Defensive Wall",field:"defensive",thresholdScale:1},reliability:{id:"reliability",label:"Ever Present",field:"reliability",thresholdScale:1},roleMastery:{id:"roleMastery",label:"Master of Role",field:"roleMastery",thresholdScale:1,hint:"Percentile within own position pool. Where defenders shine."},oneOnOne:{id:"oneOnOne",label:"One on One",attackField:"goalThreat",defenceField:"defensive",thresholdScale:1},killerBall:{id:"killerBall",label:"The Killer Ball",attackField:"creation",defenceField:"defensive",thresholdScale:1},breakLines:{id:"breakLines",label:"Break the Lines",attackField:"progression",defenceField:"defensive",thresholdScale:1},counter:{id:"counter",label:"Counter-Attack",field:"progression",thresholdScale:1},bigGame:{id:"bigGame",label:"Big Game",field:"impact",thresholdScale:.25},ninety:{id:"ninety",label:"Full Ninety",field:"reliability",thresholdScale:1},roleDuel:{id:"roleDuel",label:"Master of Role",field:"roleMastery",thresholdScale:1}};function _(r,e="attack"){let n=m[r];return e==="defence"?n.defenceField??n.field:n.attackField??n.field}function R(r,e,n="attack"){let o=r.battle[_(e,n)];return o??null}function K(r,e,n,o="A"){let t=R(r,n,o==="A"?"attack":"defence"),s=R(e,n,o==="B"?"attack":"defence"),i=t??-1,l=s??-1,a=Math.abs(i-l),p=i===l?null:i>l?"A":"B";return{category:n,attacker:o,aValue:t,bValue:s,difference:a,winner:p,loser:p?p==="A"?"B":"A":null}}function ge(r,e){return e?.thresholdScales?.[r]??m[r].thresholdScale??1}function M(r,e){let n=e?.ladders?.[r];if(n){let[t,s,i,l,a]=n;if(!(t<s&&s<i&&i<l&&l<a))throw new Error(`config.ladders.${r} must be strictly increasing, got ${JSON.stringify(n)}`);return{STALEMATE:0,EDGE:s,CLEAR:i,DOMINANT:l,DEMOLITION:a}}let o=ge(r,e);return Object.fromEntries(e.verdicts.map(t=>[t.id,t.minDiff*o]))}function W(r,e){let n=M(r.category,e),o=[...e.verdicts].sort((s,i)=>n[i.id]-n[s.id]),t=o.find(s=>r.difference>=n[s.id])??o[o.length-1];return r.winner||(t=e.verdicts.find(s=>!s.crowns)??t),{verdictId:t.id,verdictTagKey:t.tagKey,severity:t.severity,crowns:t.crowns&&!!r.winner,availableEffects:t.crowns?t.options.slice():[],picks:t.crowns?t.picks:0,bonusEffects:t.crowns?t.bonus.slice():[]}}var O=r=>r==="A"?"B":"A",j=r=>structuredClone(r);function J(r,e,n,o="A"){let{config:t}=r,s=t.handSize*2+t.drawPileSize,i=t.dealMode==="TIERED"?Ae(r,e,n,s):D(e,n).slice(0,s),l={seed:n,rng:(n^2654435769)>>>0,configVersion:t.version,phase:"CATEGORY",round:1,active:o,players:{A:{hand:i.slice(0,t.handSize),...V(t)},B:{hand:i.slice(t.handSize,t.handSize*2),...V(t)}},pile:i.slice(t.handSize*2),discard:[],categoryOptions:[],category:null,lastCategory:null,pending:null,winner:null,endReason:null,history:[]};t.substitutions&&(l.subLog=[]);let a=[{type:"GAME_START",active:o}];return t.captain?(l.phase="CAPTAIN",a.push({type:"CAPTAIN_PROMPT"})):F(r,l,a),{state:l,events:a}}function V(r){let e=r.substitutions;return{tokens:e?0:r.tokensPerPlayer,locked:null,...e?{subs:e.perPlayer,lastSubRound:0}:{},...r.captain?{captain:null}:{}}}function B(r){return r.phase==="CAPTAIN"?r.players.A.captain==null?"A":"B":r.phase==="CATEGORY"?r.active:r.phase==="BAN"?O(r.active):r.phase==="SELECT"?r.players.A.locked?"B":"A":r.pending?.winner??null}function Ae(r,e,n,o){let{handSize:t}=r.config,s={};for(let u of D(e,n))(s[r.cards[u].dealTier]??=[]).push(u);let i=Math.max(...Object.keys(s).map(Number)),l=r.config.dealTiers??Array.from({length:t},(u,c)=>1+Math.floor(c*i/t));if(l.length!==t||l.some(u=>!s[u]))throw new Error(`config.dealTiers must list ${t} tiers from 1..${i}, got ${JSON.stringify(l)}`);let a=[[],[]];for(let u of l)for(let c of a)c.push(s[u].pop());let p=new Set(a.flat()),f=D(e.filter(u=>!p.has(u)),n+1).slice(0,o-t*2);return[...D(a[0],n+2),...D(a[1],n+3),...f]}function F(r,e,n){let{config:o}=r,t=o.categoryPool.slice();o.noRepeatLastCategory&&e.lastCategory&&(t=t.filter(a=>a!==e.lastCategory));let[s,i]=b(e.rng);e.rng=i;let l=D(t,Math.floor(s*2**31));o.categoryMode==="OPEN"?e.categoryOptions=t:e.categoryOptions=l.slice(0,o.categoryChoices),n.push({type:"ROUND_START",round:e.round,active:e.active,hands:w(e)}),o.categoryMode==="RANDOM"?(e.category=l[0],e.phase="SELECT",n.push({type:"CATEGORY_CHOSEN",category:e.category,by:null})):(n.push({type:"CATEGORY_OPTIONS",options:e.categoryOptions.slice(),active:e.active}),o.categoryBan&&o.categoryMode==="CHOOSE_FROM_OPTIONS"&&(e.phase="BAN"))}var w=r=>({A:r.players.A.hand.length,B:r.players.B.hand.length});function G(r,e,n){let o=e.players[n];if(e.phase==="CAPTAIN")return o.captain==null&&B(e)===n?o.hand.map(t=>({type:"NAME_CAPTAIN",player:n,cardId:t})):[];if(e.phase==="BAN"&&n!==e.active)return[...e.categoryOptions.map(t=>({type:"BAN_CATEGORY",player:n,category:t})),...z(r,e,n,!1)];if(e.phase==="CATEGORY"&&n===e.active){let t=e.categoryOptions.map(s=>({type:"CHOOSE_CATEGORY",player:n,category:s}));return o.tokens>0&&r.config.enabledTokens.includes("REROLL_CATEGORIES")&&!r.config.substitutions&&t.push({type:"USE_TOKEN",player:n,token:"REROLL_CATEGORIES"}),[...t,...z(r,e,n,!0)]}return e.phase==="SELECT"&&!o.locked?o.hand.map(t=>({type:"LOCK_CARD",player:n,cardId:t})):e.phase==="EFFECT"&&e.pending.winner===n?Z(r,e,n):[]}function z(r,e,n,o){let t=r.config.substitutions,s=e.players[n];if(!t||s.subs<=0||t.onePerRound&&s.lastSubRound===e.round)return[];let i=[];t.redraw&&o&&i.push({type:"USE_SUB",player:n,sub:"REDRAW"});let l=s.hand.filter(f=>f!==s.captain),a=Math.min(t.swapMax==="ALL"?l.length:t.swapMax,l.length,e.pile.length);for(let f of Se(l,a))i.push({type:"USE_SUB",player:n,sub:"SWAP",cards:f});let p=e.players[O(n)];return t.forcedChange&&e.pile.length&&p.hand.some(f=>f!==p.captain)&&(!t.forcedNotOnLast||p.hand.length>1)&&i.push({type:"USE_SUB",player:n,sub:"FORCED"}),i}function Se(r,e){let n=[],o=(t,s)=>{if(s.length&&n.push(s.slice()),s.length!==e)for(let i=t;i<r.length;i++)s.push(r[i]),o(i+1,s),s.pop()};return o(0,[]),n}function Z(r,e,n){let{verdict:o,played:t}=e.pending,s=e.players[n].hand,i=r.config.captain?e.players[n].captain:null,l=s.filter(h=>h!==t[n]&&h!==i),a=e.players[O(n)].hand.length,p=s.length===1&&o.severity<(r.config.finishMinSeverity??0),f=o.availableEffects.filter(h=>p&&h==="DISCARD_PLAYED"||h==="DISCARD_PLAYED"&&i&&t[n]===i&&s.length>1?!1:h==="DISCARD_OTHER"?l.length>0:h==="PRESS"&&r.config.pressRule==="NOT_LEADING"?s.length>=a:!0);if(!f.length)return[{type:"CHOOSE_EFFECTS",player:n,effects:[]}];let c=Math.min(o.picks,f.length)===2?Oe(f):f.map(h=>[h]),d=[];for(let h of c)if(h.includes("DISCARD_OTHER"))for(let y of l)d.push({type:"CHOOSE_EFFECTS",player:n,effects:h,target:y});else d.push({type:"CHOOSE_EFFECTS",player:n,effects:h});return d}var Oe=r=>r.flatMap((e,n)=>r.slice(n+1).map(o=>[e,o]));function q(r,e,n){let o=j(e),t=[];if(!G(r,e,n.player).some(i=>Ce(i,n)))throw new Error(`Illegal action in phase ${e.phase}: ${JSON.stringify(n)}`);switch(n.type){case"USE_TOKEN":{o.players[n.player].tokens-=1,t.push({type:"TOKEN_USED",player:n.player,token:n.token}),n.token==="REROLL_CATEGORIES"&&x(r,o,t);break}case"NAME_CAPTAIN":{o.players[n.player].captain=n.cardId,t.push({type:"CAPTAIN_NAMED",player:n.player}),o.players.A.captain!=null&&o.players.B.captain!=null&&(o.phase="CATEGORY",F(r,o,t));break}case"USE_SUB":{let i=o.players[n.player];i.subs-=1,i.lastSubRound=o.round;let l=n.sub==="SWAP"?n.cards.length:n.sub==="FORCED"?1:0;if(o.subLog.push({round:o.round,player:n.player,sub:n.sub,count:l}),t.push({type:"SUB_USED",player:n.player,sub:n.sub,count:l}),n.sub==="REDRAW"&&x(r,o,t),n.sub==="SWAP")for(let a of n.cards)$(o,n.player,a);if(n.sub==="FORCED"){let a=O(n.player),p=o.players[a],f=p.hand.filter(d=>d!==p.captain),[u,c]=b(o.rng);o.rng=c,$(o,a,f[Math.floor(u*f.length)])}break}case"BAN_CATEGORY":{o.categoryOptions=o.categoryOptions.filter(i=>i!==n.category),o.phase="CATEGORY",t.push({type:"CATEGORY_BANNED",category:n.category,by:n.player,options:o.categoryOptions.slice()});break}case"CHOOSE_CATEGORY":{o.category=n.category,o.phase="SELECT",t.push({type:"CATEGORY_CHOSEN",category:n.category,by:n.player});break}case"LOCK_CARD":{let i=o.players[n.player];i.locked=n.cardId,i.hand=i.hand.filter(l=>l!==n.cardId),t.push({type:"CARD_LOCKED",player:n.player}),o.players.A.locked&&o.players.B.locked&&Re(r,o,t);break}case"CHOOSE_EFFECTS":{X(r,o,t,n),L(r,o,t);break}}return{state:o,events:t}}var Ce=(r,e)=>r.sub===e.sub&&JSON.stringify(r.cards??null)===JSON.stringify(e.cards??null)&&r.type===e.type&&r.player===e.player&&r.category===e.category&&r.cardId===e.cardId&&r.token===e.token&&r.target===e.target&&JSON.stringify(r.effects??null)===JSON.stringify(e.effects??null);function x(r,e,n){let o=new Set(e.categoryOptions),t=r.config.categoryPool.filter(l=>!o.has(l));t.length<r.config.categoryChoices&&(t=r.config.categoryPool.slice());let[s,i]=b(e.rng);e.rng=i,e.categoryOptions=D(t,Math.floor(s*2**31)).slice(0,r.config.categoryChoices),n.push({type:"CATEGORY_OPTIONS",options:e.categoryOptions.slice(),active:e.active,reroll:!0})}function $(r,e,n){let[o,t]=b(r.rng);r.rng=t;let s=Math.floor(o*r.pile.length),i=r.pile[s];r.pile[s]=n;let l=r.players[e].hand;l[l.indexOf(n)]=i}function Re(r,e,n){let o=e.players.A.locked,t=e.players.B.locked;n.push({type:"REVEAL",cards:{A:o,B:t},category:e.category});let s=K(r.cards[o],r.cards[t],e.category,e.active),i=W(s,r.config);n.push({type:"COMPARISON",...s});let l=i.crowns?s.winner:null;n.push({type:"VERDICT",winner:l,...i});let a={A:o,B:t};if(e.players.A.locked=null,e.players.B.locked=null,e.pending={comparison:s,verdict:i,winner:l,played:a},!i.crowns){e.players.A.hand.push(o),e.players.B.hand.push(t),n.push({type:"CARD_RETURNED",player:"A",cardId:o},{type:"CARD_RETURNED",player:"B",cardId:t}),L(r,e,n);return}let p=s.winner,f=s.loser;e.players[p].hand.push(a[p]);let u=r.config.captain?e.players[f].captain:null;r.config.loserCardFate==="DISCARD"&&!(a[f]===u&&e.players[f].hand.length>0)?(e.discard.push(a[f]),n.push({type:"CARD_DISCARDED",player:f,cardId:a[f],reason:"LOST"})):(e.players[f].hand.push(a[f]),n.push({type:"CARD_RETURNED",player:f,cardId:a[f]}));let c=r.config.captain?e.players[p].captain:null;for(let y of i.bonusEffects){if(y==="DISCARD_PLAYED"&&a[p]===c&&e.players[p].hand.length>1){n.push({type:"EFFECT_FIZZLED",effect:y,reason:"CAPTAIN"});continue}Q(r,e,n,p,y,null)}e.phase="EFFECT",n.push({type:"EFFECT_PROMPT",player:p,options:i.availableEffects,picks:i.picks});let d=Z(r,e,p);new Set(d.map(y=>y.effects.join("+"))).size===1&&!(d[0].effects??[]).includes("DISCARD_OTHER")&&(X(r,e,n,d[0]),L(r,e,n))}function X(r,e,n,o){let t=o.player;n.push({type:"EFFECTS_CHOSEN",player:t,effects:o.effects,target:o.target??null});for(let s of o.effects)Q(r,e,n,t,s,o.target)}function Q(r,e,n,o,t,s){let i=e.players[o],l=e.players[O(o)],a=e.pending.played[o];switch(t){case"DISCARD_PLAYED":i.hand=i.hand.filter(p=>p!==a),e.discard.push(a),n.push({type:"CARD_DISCARDED",player:o,cardId:a,reason:"WON"});break;case"DISCARD_OTHER":i.hand=i.hand.filter(p=>p!==s),e.discard.push(s),n.push({type:"CARD_DISCARDED",player:o,cardId:s,reason:"DISCARD_OTHER"});break;case"PRESS":{let p=0;for(let f=0;f<(r.config.pressDraw??1)&&(e.pile.length&&l.hand.length<r.config.maxHandSize);f++){let u=e.pile.shift();l.hand.push(u),p++,n.push({type:"CARD_DRAWN",player:O(o),cardId:u,reason:"PRESS"})}p||n.push({type:"EFFECT_FIZZLED",effect:t,reason:e.pile.length?"MAX_HAND":"PILE_EMPTY"});break}case"GAIN_TOKEN":!r.config.substitutions&&i.tokens<r.config.maxTokens&&(i.tokens++,n.push({type:"TOKEN_GAINED",player:o}));break;default:throw new Error("Unknown effect "+t)}}function L(r,e,n){let o=e.pending;e.history.push({round:e.round,active:e.active,category:e.category,played:o.played,diff:o.comparison.difference,verdict:o.verdict.verdictId,winner:o.winner,handsAfter:w(e)});for(let s of["A","B"])if(e.players[s].hand.length===0){e.phase="OVER",e.winner=s,e.endReason="EMPTY_HAND",n.push({type:"GAME_OVER",winner:s,reason:"EMPTY_HAND"});return}if(e.round>=r.config.roundCap){let{A:s,B:i}=w(e);e.phase="OVER",e.winner=s===i?null:s<i?"A":"B",e.endReason="ROUND_CAP",n.push({type:"GAME_OVER",winner:e.winner,reason:"ROUND_CAP"});return}let t=e.active;o.winner?r.config.initiative==="WINNER_KEEPS"?e.active=o.winner:r.config.initiative==="LOSER_GETS"?e.active=O(o.winner):e.active=O(t):e.active=r.config.initiativeOnStalemate==="KEEP"?t:O(t),e.active!==t&&n.push({type:"INITIATIVE",active:e.active}),e.lastCategory=e.category,e.category=null,e.pending=null,e.round+=1,e.phase="CATEGORY",F(r,e,n)}function ee(r,e){let n=O(e),o=j(r);return o.players[n].hand=o.players[n].hand.length,o.players[n].locked=!!r.players[n].locked,o.pile=r.pile.length,"captain"in o.players[n]&&delete o.players[n].captain,delete o.rng,delete o.seed,o}var v={version:"v1.4",handSize:7,dealMode:"TIERED",dealTiers:[1,2,2,3,4,4,5],maxHandSize:9,drawPileSize:15,roundCap:60,categoryMode:"CHOOSE_FROM_OPTIONS",categoryChoices:3,categoryPool:["oneOnOne","killerBall","breakLines","counter","bigGame","ninety","roleDuel"],noRepeatLastCategory:!0,categoryBan:!0,loserCardFate:"RETURN_TO_HAND",verdicts:[{id:"STALEMATE",minDiff:0,severity:0,crowns:!1,tagKey:"the_debate",options:[],picks:0,bonus:[]},{id:"EDGE",minDiff:2,severity:1,crowns:!0,tagKey:"photo_finish",options:["DISCARD_PLAYED"],picks:1,bonus:[]},{id:"CLEAR",minDiff:6,severity:2,crowns:!0,tagKey:"clear_edge",options:["DISCARD_PLAYED"],picks:1,bonus:[]},{id:"DOMINANT",minDiff:12,severity:3,crowns:!0,tagKey:"bragging_rights",options:["DISCARD_OTHER"],picks:1,bonus:["DISCARD_PLAYED"]},{id:"DEMOLITION",minDiff:23,severity:4,crowns:!0,tagKey:"masterclass",options:["DISCARD_OTHER"],picks:1,bonus:["DISCARD_PLAYED"]}],pressRule:"NOT_LEADING",pressDraw:1,finishMinSeverity:0,initiative:"ALTERNATE",initiativeOnStalemate:"ALTERNATE",substitutions:{perPlayer:3,swapMax:"ALL",forcedChange:!1,forcedNotOnLast:!0,redraw:!0,onePerRound:!0},captain:!1,tokensPerPlayer:2,maxTokens:3,enabledTokens:["REROLL_CATEGORIES"],thresholdScales:{},ladders:{bigGame:[1,2,4,7,10]},labels:{hand:"Squad",pile:"Bench",discard:"Legacy",active:"Possession",DISCARD_PLAYED:"Into Legacy",PRESS:"High Press",DISCARD_OTHER:"Assist",GAIN_TOKEN:"+1 Tactical Switch",REROLL_CATEGORIES:"Tactical Switch",SUB:"Substitution",SWAP:"Substitution",REDRAW:"Tactical Switch",FORCED:"Forced Change",captain:"Captain"}},ne=[{id:"STALEMATE",minDiff:0,severity:0,crowns:!1,tagKey:"the_debate",options:[],picks:0,bonus:[]},{id:"EDGE",minDiff:2,severity:1,crowns:!0,tagKey:"photo_finish",options:["DISCARD_PLAYED"],picks:1,bonus:[]},{id:"CLEAR",minDiff:7,severity:2,crowns:!0,tagKey:"clear_edge",options:["DISCARD_PLAYED","PRESS"],picks:1,bonus:[]},{id:"DOMINANT",minDiff:14,severity:3,crowns:!0,tagKey:"bragging_rights",options:["DISCARD_PLAYED","PRESS","DISCARD_OTHER"],picks:1,bonus:[]},{id:"DEMOLITION",minDiff:26,severity:4,crowns:!0,tagKey:"masterclass",options:["DISCARD_PLAYED","PRESS","DISCARD_OTHER"],picks:2,bonus:[]}],De={perPlayer:3,swapMax:"ALL",forcedChange:!0,forcedNotOnLast:!0,redraw:!0,onePerRound:!0},re=(r,e={})=>ne.map(n=>({...n,minDiff:r[n.id]??n.minDiff,...e[n.id]??{}})),oe={EDGE:2,CLEAR:9,DOMINANT:18,DEMOLITION:31},te={version:"v1.3.1",handSize:6,drawPileSize:15,dealTiers:[1,2,3,3,4,5],pressDraw:1,substitutions:De,captain:!1,verdicts:ne},Fe={...te,version:"v1.3",dealTiers:null,verdicts:re(oe)},Ge={...te,version:"v1.2-real",handSize:5,drawPileSize:30,substitutions:null,dealTiers:null,verdicts:re(oe,{DOMINANT:{bonus:["GAIN_TOKEN"]}})};function se(r={}){return{...v,...r}}var ie=(r,e)=>r.active===e?"attack":"defence",H=r=>r==="A"?"B":"A";function ce(r,e){let n=Object.keys(r.cards[e[0]].battle),o={};for(let l of n){let a=e.map(p=>r.cards[p].battle[l]??-1).sort((p,f)=>p-f);o[l]=p=>{let f=0,u=a.length;for(;f<u;){let c=f+u>>1;a[c]<p?f=c+1:u=c}return f/a.length}}let t=(l,a)=>o[_(l,a)],s=["attack","defence"],i={};for(let l of e){let a=r.cards[l],p=0,f=0;for(let u of r.config.categoryPool)for(let c of s)p+=t(u,c)(R(a,u,c)??-1),f++;i[l]=p/f}return{deckIds:e,pct:t,worth:i}}function le(r,e={}){let n={samples:24,oppBestProb:.6,shedWeight:1,conserve:1,pressValue:.7,keepStrong:.5,rerollBelow:.25,useSubs:!0,forcedAt:2,swapBelow:.35,swapMeanBelow:.4,...e};return{name:e.name??"Tactician",decide(o,t,s,i,l){if(i[0].type==="NAME_CAPTAIN")return Y(i,c=>r.worth[c.cardId]);if(n.useSubs){let c=Te(o,r,t,s,i,n);if(c)return c}i=i.filter(c=>c.type!=="USE_SUB"||n.useSubs&&c.sub==="REDRAW");let a=i[0].type,p=be(o,t,s,r);if(a==="CHOOSE_CATEGORY"||a==="USE_TOKEN"){let h=i.filter(g=>g.type==="CHOOSE_CATEGORY").map(g=>({a:g,s:U(o,r,t,s,g.category,p,l,n).u})).reduce((g,S)=>S.s>g.s?S:g),y=i.find(g=>g.type==="USE_TOKEN"||g.type==="USE_SUB");return y&&h.s<n.rerollBelow?y:h.a}if(a==="BAN_CATEGORY")return Y(i,c=>-U(o,r,t,s,c.category,p,l,n).u);if(a==="LOCK_CARD"){let{id:c}=U(o,r,t,s,t.category,p,l,n);return i.find(d=>d.cardId===c)}let f=t.players[s].hand.slice(),u=t.pending.played[s];return Y(i,c=>{let d=f.slice(),h=0;for(let y of c.effects)y==="DISCARD_PLAYED"&&(d=d.filter(g=>g!==u),h+=n.shedWeight+n.keepStrong*(1-r.worth[u])),y==="DISCARD_OTHER"&&(d=d.filter(g=>g!==c.target),h+=n.shedWeight+n.keepStrong*(1-r.worth[c.target])),y==="PRESS"&&(h+=t.pile>0?n.pressValue*(o.config.pressDraw??1):0);return c.effects.includes("DISCARD_PLAYED")||(h+=n.keepStrong*r.worth[u]*.5),d.length===0&&(h+=100),h})}}}function Te(r,e,n,o,t,s){let i=t.filter(c=>c.type==="USE_SUB");if(!i.length)return null;let l=H(o),a=n.players[o].hand.length,p=typeof n.players[l].hand=="number"?n.players[l].hand:n.players[l].hand.length,f=i.find(c=>c.sub==="FORCED");if(f&&p<=s.forcedAt&&a>=p)return f;let u=i.filter(c=>c.sub==="SWAP");if(u.length){let c=n.players[o].captain,d=n.players[o].hand.filter(A=>A!==c).sort((A,E)=>e.worth[A]-e.worth[E]),h=Math.max(...u.map(A=>A.cards.length)),y=d.reduce((A,E)=>A+e.worth[E],0)/(d.length||1),g=r.config.substitutions?.swapMax==="ALL"&&y<s.swapMeanBelow?.5:s.swapBelow,S=new Set(d.filter(A=>e.worth[A]<g).slice(0,h));if(S.size){let A=u.find(E=>E.cards.length===S.size&&E.cards.every(C=>S.has(C)));if(A)return A}}return null}function be(r,e,n,o){let t=H(n),s=new Set(e.discard),i=new Set(e.players[n].hand),l=(e.subLog??[]).filter(c=>c.sub==="SWAP"&&c.player===t||c.sub==="FORCED"&&c.player===n).reduce((c,d)=>Math.max(c,d.round),0),a=new Set;for(let c of e.history){if(c.round<l)continue;let d=c.played[t];s.has(d)||a.add(d)}let p=(typeof e.players[t].hand=="number"?e.players[t].hand:e.players[t].hand.length)+(e.players[t].locked?1:0),f=[...a].slice(0,p),u=o.deckIds.filter(c=>!s.has(c)&&!i.has(c)&&!a.has(c));return{knownArr:f,unknownN:p-f.length,unknownPool:u}}function _e(r,e){let n=r.knownArr.slice();for(let o=0;o<r.unknownN;o++)n.push(r.unknownPool[Math.floor(e()*r.unknownPool.length)]);return n}function U(r,e,n,o,t,s,i,l){let a=n.players[o].hand,p=M(t,r.config),f=r.config.verdicts.filter(E=>E.crowns).reduce((E,C)=>Math.min(E,p[C.id]),1/0),u=[];for(let E=0;E<l.samples;E++){let C=_e(s,i);if(!C.length){u.push(-1);continue}let T=C.map(N=>R(r.cards[N],t,ie(n,H(o)))??-1);u.push(i()<l.oppBestProb?Math.max(...T):T[Math.floor(i()*T.length)])}let c=n.players[o].captain,d=c!=null&&a.length>1&&a.includes(c),h=-1/0,y=d?a.find(E=>E!==c):a[0],g=0,S=-1/0,A=0;for(let E of a){let C=R(r.cards[E],t,ie(n,o))??-1,T=u.filter(pe=>C-pe>=f).length/u.length,N=a.length===1?1:1+l.conserve*(1-e.worth[E]),P=T*N;if(d&&E===c){S=P,A=T;continue}P>h&&(h=P,y=E,g=T)}return d&&g===0&&A>0?{id:c,u:S}:{id:y,u:h}}function Y(r,e){let n=r[0],o=-1/0;for(let t of r){let s=e(t);s>o&&(o=s,n=t)}return n}var Ie={ST:[85,55,45,20],W:[66,70,72,28],CAM:[60,85,66,30],CM:[40,64,70,55],CDM:[24,46,62,80],FB:[20,50,62,66],CB:[16,22,46,82]},me=[["ST",.18],["W",.18],["CAM",.1],["CM",.18],["CDM",.1],["FB",.12],["CB",.14]];function ae(r=400,e=7){let n=I(e),o=()=>Math.sqrt(-2*Math.log(n()+1e-12))*Math.cos(2*Math.PI*n()),t=()=>{let c=n(),d=0;for(let[h,y]of me)if(d+=y,c<=d)return h;return"CB"},s=[];for(let c=0;c<r;c++){let d=t(),h=Math.min(97,72+Math.floor(-Math.log(n()+1e-9)*6)),y=(h-72)/25,S=Ie[d].map(E=>E+y*18+o()*11),A=55+y*12+(d==="CB"||d==="FB"?6:0)+o()*15;s.push({id:`S${String(c).padStart(3,"0")}`,pos:d,rt:h,lat:S,reliability:A,mastery:y*60+o()*14})}let i=c=>{let d=[...c].sort((h,y)=>h-y);return h=>Math.round(99*d.indexOf(h)/(d.length-1))},l=[0,1,2,3].map(c=>i(s.map(d=>d.lat[c]))),a=i(s.map(c=>c.reliability)),p={};for(let c of s)(p[c.pos]??=[]).push(c.mastery);let f=Object.fromEntries(Object.entries(p).map(([c,d])=>[c,i(d)])),u={};for(let c of s)u[c.id]={id:c.id,name:`${c.pos} ${c.id}`,position:c.pos,rt:c.rt,battle:{impact:c.rt,goalThreat:l[0](c.lat[0]),creation:l[1](c.lat[1]),progression:l[2](c.lat[2]),defensive:l[3](c.lat[3]),reliability:a(c.reliability),roleMastery:f[c.pos](c.mastery)}};return Ne(u,5)}function Ne(r,e){let n=Object.keys(r),o=Object.keys(r[n[0]].battle).filter(s=>s!=="impact"),t=s=>o.reduce((i,l)=>i+(r[s].battle[l]??0),0)+r[s].rt;return n.sort((s,i)=>t(i)-t(s)),n.forEach((s,i)=>{r[s].dealTier=Math.min(e,1+Math.floor(i*e/n.length))}),r}return Ee(Pe);})();
+</script>
+<script>(() => {
+const { actorFor, createGame, applyAction, legalActions, viewFor, makeConfig, CATEGORIES, valueOf, fieldFor, prepareAI, TacticianCPU, syntheticDeck } = VVG;
+
+/* ---------------- deck: demo or real ---------------- */
+const SURN = ['Varga','Okonjo','Lindqvist','Moreau','Castellano','Brandt','Nakamura','Oyelaran','Pereira','Holm','Dufresne','Kovalenko','Aldana','Rask','Mbeki','Sørlie','Quintana','Vollmer','Adeyemo','Lacroix','Tavares','Ekdahl','Rinaldi','Haddad','Osei','Björk','Salcedo','Kerr','Petrakis','Delacourt','Mäkinen','Olabode','Ferro','Straka','Iturbe','Novak','Dagher','Ribeiro','Wendt','Cissé'];
+const CLUBS = [['Harbour City','#2E6FD8','#F0EAD9','#E8B84B'],['Real Montaña','#F0EAD9','#6B2FA3','#E8B84B'],['Nordvik FK','#C8102E','#FFFFFF','#1C1B1A'],['AC Serrano','#1F7A4D','#F0EAD9','#E8B84B'],['Olympique Varenne','#6FB7E8','#1C1B1A','#FFFFFF'],['Borussia Kallen','#F2C230','#1C1B1A','#FFFFFF'],['Sporting Lume','#E0561F','#FFFFFF','#1C1B1A'],['Dynamo Petrel','#7A1F2B','#6FB7E8','#F0EAD9']];
+const bandOf = rt => rt >= 95 ? 'Generational' : rt >= 90 ? 'Iconic' : rt >= 85 ? 'World Class' : rt >= 80 ? 'Standout' : 'Accomplished';
+const TAGS = { ST:['Goal Machine'], W:['Dribbler'], CAM:['Playmaker'], CM:['Engine Room'], CDM:['Ball Winner'], FB:['Overlapper'], CB:['The Wall'] };
+
+function demoDeck() {
+  const raw = syntheticDeck(400, 11);
+  const out = {};
+  Object.values(raw).forEach((c, i) => {
+    const club = CLUBS[i % CLUBS.length];
+    const yr = 15 + (i * 7) % 10;
+    out[c.id] = { id: c.id, name: `${'ABDEFGJKLMNOPRST'[i % 16]}. ${SURN[(i * 13) % SURN.length]}`, season: `${yr}/${yr + 1}`, pos: c.position,
+      club: club[0], colours: { p: club[1], s: club[2], a: club[3] }, number: 1 + (i * 17) % 30,
+      rt: c.rt, band: bandOf(c.rt), tags: c.rt >= 84 ? TAGS[c.position] : [], battle: c.battle, dealTier: c.dealTier };
+  });
+  return { cards: out, label: 'Demo deck', note: 'Invented players, clubs and numbers. Load your real deck to play with actual seasons.' };
+}
+
+const pick = (o, ...ks) => { for (const k of ks) if (o[k] != null && o[k] !== '') return o[k]; return null; };
+function seasonLabel(c) {
+  const s = pick(c, 'season_label', 'season_display', 'season');
+  if (typeof s === 'string' && /^\d{4}$/.test(s)) return `${s.slice(0, 2)}/${s.slice(2)}`;
+  if (typeof s === 'string' && s.includes('/')) return s;
+  const y = +pick(c, 'season_year', 'season');
+  if (y > 1900) { const a = String(y).slice(2), b = String(y + 1).slice(2); return `${a}/${b}`; }
+  return s ? String(s) : '';
+}
+function adaptReal(json) {
+  const list = Array.isArray(json.cards) ? json.cards : Object.values(json.cards || json);
+  const out = {};
+  for (const c of list) {
+    if (!c || !c.battle) continue;
+    const id = String(pick(c, 'card_id', 'id'));
+    const full = pick(c, 'display_name', 'name', 'player_name') || 'Unknown';
+    const col = c.colours || c.colors || {};
+    let p = pick(col, 'p', 'primary') || pick(c, 'primary_colour', 'primary_color'), s = pick(col, 's', 'secondary') || pick(c, 'secondary_colour', 'secondary_color'), a = pick(col, 'a', 'accent') || pick(c, 'accent_colour', 'accent_color');
+    const placeholder = p && p.toLowerCase() === '#1a1a2e';
+    if (!p || placeholder) { p = '#F0EAD9'; s = '#E70443'; a = '#E8B84B'; }
+    const rt = +pick(c, 'rt', 'vv', 'vv_score');
+    const short = String(pick(c, 'player_name', 'display_name', 'name') || full).replace(/^(\p{Lu}\.\s*)+/u, '').trim();
+    out[id] = { id, name: short || full, fullName: pick(c, 'display_name', 'full_name') || full, season: seasonLabel(c),
+      pos: pick(c, 'position', 'game_position', 'pos', 'pool') || '', club: pick(c, 'team_name', 'club', 'team') || '',
+      colours: { p, s: s || '#FFFFFF', a: a || '#E8B84B' }, placeholderColours: !!placeholder,
+      number: pick(c, 'shirt', 'shirt_number', 'number', 'squad_number') || '', rt, band: pick(c, 'band_public', 'band', 'band_name') || bandOf(rt),
+      tags: (pick(c, 'tags', 'wonder_tags', 'tag_names') || []).map(t => typeof t === 'string' ? t : (t.name || '')).filter(Boolean).slice(0, 2),
+      battle: c.battle, dealTier: +pick(c, 'dealTier', 'deal_tier') };
+  }
+  const n = Object.keys(out).length;
+  if (n < 40) throw new Error(`That file has ${n} usable cards. It needs data/game-deck.json from the game-v1 branch.`);
+  const bad = Object.values(out).find(c => !(c.dealTier >= 1 && c.dealTier <= 5));
+  if (bad) throw new Error('Cards are missing their deal tier. Regenerate the deck with scripts/gen-game-deck.js.');
+  const gen = json.meta && (json.meta.generated_at || '').slice(0, 10);
+  return { cards: out, label: 'Modern Era deck', note: `${n} real seasons${gen ? `, generated ${gen}` : ''}.` };
+}
+
+/* ---------------- game wiring ---------------- */
+const $ = s => document.querySelector(s);
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const other = p => p === 'A' ? 'B' : 'A';
+const ME = 'A', CPU = 'B';
+const VERDICT_NAME = { the_debate: 'The Debate Lives On', var_close: 'VAR close call', photo_finish: 'Photo Finish', clear_edge: 'A Clear Edge', bragging_rights: 'Bragging Rights Settled', masterclass: 'Masterclass' };
+const STAT_NAME = { goalThreat: 'Goal Threat', creation: 'Creation', progression: 'Progression', defensive: 'Defensive Wall', reliability: 'Ever Present', roleMastery: 'Role mastery', impact: 'VV Score' };
+const MOMENT_LINE = {
+  oneOnOne: 'One run, one defender. Finishing against defending, nothing else.',
+  killerBall: 'The pass that opens a game. Vision against the man reading it.',
+  breakLines: 'Carry it through the press. The drive against the tackle.',
+  counter: 'Space ahead, legs behind. Pure pace from halfway.',
+  bigGame: 'No tactics here. Whose season was simply bigger.',
+  ninety: 'Who is still running at the end. Availability, not flair.',
+  roleDuel: 'Not who is better. Who is better at his own job.',
+};
+function stateLine() {
+  const me = state.players[ME].hand.length, them = state.players[CPU].hand.length;
+  if (me === 1 && them === 1) return 'One season each left. Whoever wins the next moment wins the match.';
+  if (them === 1) return 'They are one moment from winning. You have to stop this one.';
+  if (me === 1) return 'One more win and the match is yours.';
+  if (me === them) return `Level: ${me} seasons each still to place.`;
+  return me < them ? `You lead: ${me} left to place against their ${them}.` : `They lead: ${them} left to place against your ${me}.`;
+}
+function setMoment(cat) {
+  $('#momentTitle').innerHTML = cat ? `${CATEGORIES[cat].label}<small>${MOMENT_LINE[cat] || ''}</small>` : '';
+}
+const EFFECT_NAME = { DISCARD_PLAYED: 'Into Legacy', PRESS: 'High Press', DISCARD_OTHER: 'Assist' };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let subOpen = false, paused = false, lastLockId = null, captainMode = false, newIds = new Set(), subMode = false, subPick = new Set();
+let offered = [], struck = null, turnLog = [], lastDuel = null;
+let deck, ctx, ai, cpu, state, legacy, speed = 1, busy = false, rounds = [];
+const wait = ms => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 120) : ms * speed));
+
+function loadDeck(d) {
+  deck = d;
+  const cfg = makeConfig({ captain: captainMode });
+  ctx = { cards: {}, config: cfg, deckIds: Object.keys(d.cards) };
+  for (const [id, c] of Object.entries(d.cards)) ctx.cards[id] = { ...c, battle: c.battle, dealTier: c.dealTier };
+  ai = prepareAI(ctx, ctx.deckIds);
+  cpu = TacticianCPU(ai);
+  $('#deckName').textContent = d.label;
+  $('#deckNote').textContent = d.note;
+}
+
+function newGame() {
+  const seed = Math.floor(Math.random() * 1e9);
+  const first = Math.random() < 0.5 ? ME : CPU;
+  const g0 = createGame(ctx, ctx.deckIds, seed, first); state = g0.state;
+  lpInit();
+  offered = state.categoryOptions.slice();
+  legacy = { A: 0, B: 0 }; rounds = []; newIds.clear(); subMode = false; subPick.clear(); offered = state.categoryOptions.slice(); struck = null; lastDuel = null; turnLog = [];
+  $('#log').innerHTML = ''; $('#endScreen').hidden = true;
+  clearDuel(); render(); lpSync(1200); lpBoards(state.phase === 'CAPTAIN' ? null : state.categoryOptions, null, null);
+  say('');
+  cm(`New match. ${deck.label}. Get all seven of your seasons into your Legacy before they do.${captainMode ? ' Captain mode is on: your Captain can only go into Legacy last.' : ''}`, 'note');
+  cm(first === ME ? 'Coin toss: <b>you</b> win it and start with the ball.' : 'Coin toss: <b>they</b> win it and start with the ball. You defend first.', 'note');
+  g0.events.forEach(commentOn);
+  loop();
+}
+
+/* ---------------- rendering ---------------- */
+const card = id => ctx.cards[id];
+const role = p => state.active === p ? 'attack' : 'defence';
+const statOf = (id, cat, r) => valueOf(card(id), cat, r);
+
+function cardFace(id, opts = {}) {
+  const c = card(id);
+  const f = el('div', `card band-${c.band.replace(/\s/g, '')}${opts.small ? ' small' : ''}`);
+  f.style.setProperty('--p', c.colours.p); f.style.setProperty('--s', c.colours.s);
+  let stat = '';
+  if (opts.cat) {
+    const r = opts.role, fld = fieldFor(opts.cat, r);
+    stat = `<div class="cstat"><span>${r === 'attack' ? 'Attack' : 'Defend'} with ${STAT_NAME[fld]}</span><b>${Math.round(statOf(id, opts.cat, r))}</b></div>`;
+  }
+  f.innerHTML = `<div class="cband"><span>${c.band}</span><span class="cpos">${c.pos}</span></div>
+    <div class="cswatch"></div>
+    <div class="cname">${(() => { const sur = n => n.replace(/^(\p{Lu}\.\s*)+/u, ''); const mine = state ? state.players[ME].hand : []; return mine.filter(x => x !== id && sur(card(x).name) === sur(c.name)).length ? c.name : sur(c.name); })()}</div>
+    <div class="cmeta">${c.season}<br>${c.club}</div>
+    ${c.tags.length ? `<div class="ctag">${c.tags[0]}</div>` : ''}
+    <div class="cvv"><span>VV</span><b>${c.rt}</b></div>${stat}`;
+  f.title = `${c.fullName || c.name}, ${c.season}, ${c.club}`;
+  return f;
+}
+
+function render() {
+  const v = viewFor(state, ME);
+  $('#oppCount').textContent = v.players[CPU].hand;
+  $('#oppLegacy').textContent = legacy[CPU];
+  $('#myLegacy').textContent = legacy[ME];
+  $('#bench').textContent = v.pile;
+  $('#myTokens').textContent = state.players[ME].subs ?? state.players[ME].tokens;
+  $('#oppTokens').textContent = state.players[CPU].subs ?? state.players[CPU].tokens;
+  $('#possession').innerHTML = state.active === ME ? '<i class="ballchip"></i> You attack <span>&#8594;</span>' : '<span>&#8592;</span> They attack <i class="ballchip"></i>';
+  $('#possession').dataset.side = state.active === ME ? 'me' : 'them';
+  $('#scoreboard').dataset.att = state.active === ME ? 'me' : 'them';
+  const since = (state.subLog ?? []).filter(x => (x.sub === 'SWAP' && x.player === CPU) || (x.sub === 'FORCED' && x.player === ME)).reduce((m, x) => Math.max(m, x.round), 0);
+  const known = [...new Set(state.history.filter(x => x.round >= since).map(x => x.played[CPU]))].filter(id => state.players[CPU].hand.includes(id));
+  $('#known').innerHTML = known.length ? 'Known: ' + known.slice(0, 3).map(id => `<b>${card(id).name.replace(/^(\p{Lu}\.\s*)+/u, '')}</b> ${card(id).pos}`).join(', ') : '';
+  $('#myCount').textContent = state.players[ME].hand.length + (state.players[ME].locked ? 1 : 0);
+  $('#round').textContent = `Round ${state.round}`;
+  const mine = state.active === ME;
+  $('#myRole').innerHTML = mine ? '<i class="ballchip"></i>Attacking, has the ball' : 'Defending';
+  $('#myRole').dataset.side = mine ? 'att' : 'def';
+  $('#oppRole').innerHTML = mine ? 'Defending' : '<i class="ballchip"></i>Attacking, has the ball';
+  $('#oppRole').dataset.side = mine ? 'def' : 'att';
+  $('#stage').dataset.att = mine ? 'me' : 'them';
+  $('#ballMark').innerHTML = mine ? '<i class="ballchip big"></i><span>You attack &#8594;</span>' : '<span>&#8592; They attack</span><i class="ballchip big"></i>';
+  $('#stateLine').textContent = stateLine();
+  const opp = $('#oppHand'); opp.innerHTML = '';
+  for (let i = 0; i < v.players[CPU].hand; i++) opp.append(el('div', 'cardback', '<span>VV</span>'));
+  const hand = $('#hand'); hand.innerHTML = '';
+  const selecting = state.phase === 'SELECT' && !state.players[ME].locked;
+  state.players[ME].hand.forEach((id, i, arr) => {
+    const f = cardFace(id, state.category ? { cat: state.category, role: role(ME) } : {});
+    const mid = (arr.length - 1) / 2;
+    f.style.setProperty('--rot', `${(i - mid) * 3.5}deg`);
+    f.style.setProperty('--lift', `${Math.abs(i - mid) * 3}px`);
+    f.dataset.id = id;
+    if (state.players[ME].captain === id) f.insertAdjacentHTML('beforeend', '<i class="capbadge" title="Your Captain">C</i>');
+    if (newIds.has(id)) f.insertAdjacentHTML('beforeend', '<i class="newbadge">New</i>');
+    if (subMode && id !== state.players[ME].captain) { f.classList.add('swappable'); if (subPick.has(id)) f.classList.add('picked');
+      f.tabIndex = 0; const tog = () => { subPick.has(id) ? subPick.delete(id) : subPick.add(id); render(); showSubPanel(); };
+      f.onclick = tog; f.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(); } }; }
+    if (selecting) { f.classList.add('playable'); f.tabIndex = 0; f.setAttribute('role', 'button'); f.setAttribute('aria-label', `Play ${card(id).name} ${card(id).season}`);
+      const go = () => humanAct({ type: 'LOCK_CARD', player: ME, cardId: id }); f.onclick = go; f.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }; }
+    hand.append(f);
+  });
+  hand.classList.toggle('choosing', selecting);
+  if ($('#lpDots')) lpSync();
+}
+
+function say(t) { $('#prompt').textContent = t; }
+function setPhase(key) {
+  const att = state.active === ME ? 'you' : 'they', def = state.active === ME ? 'they' : 'you';
+  const steps = [['ban', `Defender strikes one off (${def})`], ['pick', `Attacker picks the moment (${att})`], ['play', 'Both play a card face-down'], ['reveal', 'Reveal and verdict']];
+  const i = steps.findIndex(s => s[0] === key);
+  $('#phases').innerHTML = steps.map((s, k) => `<li class="${k < i ? 'done' : k === i ? 'now' : ''}"><b>${k + 1}</b>${s[1]}</li>`).join('');
+}
+function logRound() {}
+function cm(html, kind = '') {
+  const li = el('li', kind, html); const log = $('#log'); log.append(li);
+  const f = $('.feed'); f.scrollTop = f.scrollHeight;
+}
+const yours = (p, cap) => p === ME ? (cap ? 'Your' : 'your') : (cap ? 'Their' : 'their');
+const who = (p, cap) => p === ME ? (cap ? 'You' : 'you') : (cap ? 'They' : 'they');
+const nm = id => `<b>${card(id).name}</b> <span class="yr">${card(id).season}</span>`;
+function setTurn(side, text) {
+  const t = $('#turn'); t.dataset.side = side;
+  t.innerHTML = side === 'me' ? `<b>Your move</b><span>${text}</span>` : side === 'them' ? `<b>Their move</b><span>${text}<i class="dots"><i></i><i></i><i></i></i></span>` : `<b>Kick-off</b><span>${text}</span>`;
+  $('#hand').classList.toggle('waiting', side !== 'me');
+  $('#handWrap').dataset.turn = side; $('#stage').dataset.turn = side;
+}
+
+/* ---------------- moments panel ---------------- */
+function momentCard(cat, clickable, act, footer) {
+  const C = CATEGORIES[cat];
+  const aF = fieldFor(cat, 'attack'), dF = fieldFor(cat, 'defence');
+  const myR = role(ME);
+  const best = Math.max(...state.players[ME].hand.map(id => statOf(id, cat, myR)));
+  const b = el(clickable ? 'button' : 'div', 'moment');
+  b.innerHTML = `<b>${C.label}</b><q>${MOMENT_LINE[cat] || ''}</q><span>${aF === dF ? `${STAT_NAME[aF]} against ${STAT_NAME[dF]}` : `Attacker's ${STAT_NAME[aF]} against defender's ${STAT_NAME[dF]}`}</span><em>Your best here: ${Math.round(best)}</em>`;
+  b.dataset.cat = cat;
+  if (footer) b.insertAdjacentHTML('beforeend', `<i class="mfoot">${footer}</i>`);
+  if (clickable) b.onclick = () => humanAct(act);
+  return b;
+}
+function showMoments(mode) {
+  const box = $('#moments'); box.innerHTML = ''; box.hidden = false;
+  if (mode === 'view') { lpBoards(offered.length ? offered : state.categoryOptions, struck, null); return; }
+  const acts = legalActions(ctx, state, ME);
+  const b = $('#boards'); b.hidden = false; b.classList.add('choose');
+  const myR = role(ME);
+  b.innerHTML = '';
+  for (const cat of (offered.length ? offered : state.categoryOptions)) {
+    const C = CATEGORIES[cat];
+    if (struck && struck.cat === cat) { b.insertAdjacentHTML('beforeend', `<div class="board struck"><b>${C.label}</b><span>Struck off by ${struck.by === ME ? 'you' : 'them'}</span></div>`); continue; }
+    const act = acts.find(a => a.category === cat);
+    const best = Math.max(...state.players[ME].hand.map(id => statOf(id, cat, myR)));
+    const aF = STAT_NAME[fieldFor(cat, 'attack')], dF = STAT_NAME[fieldFor(cat, 'defence')];
+    const btn = el('button', 'board', `<b>${C.label}</b><q>${MOMENT_LINE[cat] || ''}</q><span>${aF === dF ? aF + ', both sides' : 'Attack: ' + aF + '<br>Defend: ' + dF}</span><em>Your best: ${Math.round(best)}</em><i>${mode === 'ban' ? '&#10005; Strike off' : 'Attack here'}</i>`);
+    btn.dataset.cat = cat; btn.onclick = () => humanAct(act); b.append(btn);
+  }
+  box.append(el('div', 'subbar', '')); showSubPanel();
+}
+function showSubPanel() {
+  const bar = $('#moments .subbar'); if (!bar) return;
+  const me = state.players[ME], acts = legalActions(ctx, state, ME).filter(a => a.type === 'USE_SUB');
+  bar.innerHTML = '';
+  if (me.subs == null) return;
+  if (!acts.length) { bar.innerHTML = `<span class="subnote">Substitutions: ${me.subs} left${me.subs > 0 ? ' (one per turn, already used this turn)' : ''}</span>`; return; }
+  if (subMode) {
+    const order = me.hand.filter(id => subPick.has(id));
+    const act = acts.find(a => a.sub === 'SWAP' && JSON.stringify(a.cards) === JSON.stringify(order));
+    bar.innerHTML = `<span class="subnote">Tap the seasons to take off. They go to the Bench and random seasons come on.</span>`;
+    const ok = el('button', 'switch go', order.length ? `Swap ${order.length} season${order.length > 1 ? 's' : ''}` : 'Pick seasons to swap');
+    ok.disabled = !act; ok.onclick = () => { subMode = false; subPick.clear(); humanAct(act); };
+    const cancel = el('button', 'switch', 'Cancel'); cancel.onclick = () => { subMode = false; subPick.clear(); render(); showSubPanel(); };
+    bar.append(ok, cancel); return;
+  }
+  if (!subOpen) { const b = el('button', 'switch', `Substitution <b>${me.subs}</b>`); b.title = 'Change players, redraw the moments, or force a change'; b.onclick = () => { subOpen = true; showSubPanel(); }; bar.append(b); return; }
+  const lab = el('span', 'subnote', `Substitutions: <b>${me.subs}</b> left`); bar.append(lab);
+  const close = el('button', 'switch', 'Close'); close.onclick = () => { subOpen = false; showSubPanel(); };
+  if (acts.some(a => a.sub === 'SWAP')) { const b = el('button', 'switch', 'Change players'); b.title = 'Swap any of your seasons with random seasons from the Bench'; b.onclick = () => { subMode = true; subPick.clear(); render(); showSubPanel(); }; bar.append(b); }
+  const rd = acts.find(a => a.sub === 'REDRAW'); if (rd) { const b = el('button', 'switch', 'Tactical Switch: new moments'); b.onclick = () => humanAct(rd); bar.append(b); }
+  const fc = acts.find(a => a.sub === 'FORCED'); if (fc) { const b = el('button', 'switch', 'Forced Change: they swap a random season'); b.onclick = () => humanAct(fc); bar.append(b); }
+  bar.append(close);
+}
+function hideMoments() { $('#moments').hidden = true; $('#moments').innerHTML = ''; $('#boards').classList.remove('choose'); }
+
+/* ---------------- the duel ---------------- */
+function clearDuel() {
+  $('#stamp').className = 'stamp'; $('#stamp').textContent = ''; setMoment(null); lpReset();
+}
+function placeFaceDown(p) {
+  const z = $(`#zone${p}`); z.innerHTML = '';
+  z.append(el('div', 'cardback slam', '<span>VV</span>'));
+}
+function silhouette(c) {
+  const n = String(c.number || '').slice(0, 2);
+  return `<svg viewBox="0 0 120 260" class="sil" aria-hidden="true">
+    <circle cx="60" cy="28" r="17" fill="var(--hs)"/>
+    <path d="M52 44h16l2 8H50z" fill="var(--hs)"/>
+    <path d="M30 56 50 50h20l20 6 16 34-14 8-12-22v58H38V76L26 98l-14-8z" fill="var(--hp)"/>
+    <text x="60" y="104" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="28" fill="var(--hs2)">${n}</text>
+    <path d="M38 134h44l4 34H64l-4-14-4 14H34z" fill="var(--hs2)"/>
+    <path d="M36 168h20l-2 58H40zM64 168h20l-4 58H66z" fill="var(--hs)"/>
+    <path d="M40 206h14v22H40zM66 206h14v22H66z" fill="var(--hp)"/>
+    <path d="M36 228h20v8H30zM64 228h22v8H62z" fill="var(--hs2)"/>
+    <circle cx="96" cy="238" r="11" fill="none" stroke="var(--hs2)" stroke-width="3"/>
+  </svg>`;
+}
+async function summon(p, id, won) {
+  const c = card(id), z = $(`#zone${p}`);
+  z.innerHTML = '';
+  const holo = el('div', 'holo');
+  holo.style.setProperty('--hp', c.colours.p); holo.style.setProperty('--hs', 'color-mix(in srgb, ' + c.colours.p + ' 55%, #F0EAD9)'); holo.style.setProperty('--hs2', c.colours.s);
+  holo.innerHTML = `<div class="beam"></div><div class="figure">${silhouette(c)}</div><div class="plate"><b>${c.name}</b><span>${c.season}, ${c.pos}</span></div>`;
+  const f = cardFace(id, { small: true }); f.classList.add('onpitch');
+  z.append(holo, f);
+  await wait(30); holo.classList.add('rise');
+}
+function countUp(node, to, ms) {
+  const t0 = performance.now(); const d = reduce ? 1 : ms * speed;
+  return new Promise(res => { const tick = t => { const k = Math.min(1, (t - t0) / d); node.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); k < 1 ? requestAnimationFrame(tick) : res(); }; requestAnimationFrame(tick); });
+}
+async function playDuel(ev) {
+  const { REVEAL: rv, COMPARISON: cmp, VERDICT: vd } = ev;
+  hideMoments(); lpBoards(null); setMoment(rv.category); lpZone(rv.category, cmp.attacker);
+  say(''); setTurn('play', 'the moment plays out on the pitch');
+  const statTxt = p => `${Math.round(p === 'A' ? cmp.aValue : cmp.bValue)} ${STAT_NAME[fieldFor(rv.category, cmp.attacker === p ? 'attack' : 'defence')]}`;
+  cm(`Reveal: your ${nm(rv.cards.A)} with ${statTxt('A')}, against their ${nm(rv.cards.B)} with ${statTxt('B')}.`);
+  await lpDuel(rv, cmp, vd);
+  const name = VERDICT_NAME[vd.verdictTagKey] || vd.verdictId;
+  const marg = Math.round(cmp.difference);
+  cm(!vd.crowns ? `Margin ${marg}: <b>${name}</b>. Too close to separate, so nobody wins the moment and both seasons go home.`
+    : `Margin ${marg}: <b>${name}</b>. ${who(vd.winner, true)} win the moment${vd.picks > 1 ? ' and choose two rewards' : vd.availableEffects.length > 1 ? ' and choose a reward' : ''}.`, vd.winner === ME ? 'me verdict' : vd.winner === CPU ? 'them verdict' : 'verdict');
+  const st = $('#stamp');
+  st.textContent = name;
+  st.className = `stamp show sev${vd.severity} ${vd.winner === ME ? 'mine' : vd.winner === CPU ? 'theirs' : ''}`;
+  $('#stage').classList.add(`sev${vd.severity}`);
+  await wait(1500 + vd.severity * 250);
+  st.className = 'stamp'; $('#stage').classList.remove('sev0', 'sev1', 'sev2', 'sev3', 'sev4');
+  rounds.push({ round: state.round });
+}
+async function toLegacy(p, reason, cardId) {
+  legacy[p]++;
+  const pile = $(p === ME ? '#myLegacyPile' : '#oppLegacyPile');
+  pile.classList.remove('pop'); void pile.offsetWidth; pile.classList.add('pop');
+  await lpToTunnel(p, cardId);
+}
+async function drawn(p) {
+  lpSync(900); await wait(900);
+}
+function hideEngine() {}
+async function toLegacyOld(p, reason) {
+  legacy[p]++;
+  const pile = $(p === ME ? '#myLegacyPile' : '#oppLegacyPile');
+  pile.classList.remove('pop'); void pile.offsetWidth; pile.classList.add('pop');
+  const z = $(`#zone${p}`);
+  if (reason === 'WON' && z.querySelector('.holo')) z.classList.add('ascend');
+  await wait(700);
+}
+async function drawn(p) {
+  const b = $('#benchPile'); b.classList.remove('fire'); void b.offsetWidth; b.classList.add('fire');
+  const target = $(p === ME ? '#hand' : '#oppHand');
+  target.classList.remove('receive'); void target.offsetWidth; target.classList.add('receive');
+  await wait(600);
+}
+
+/* ---------------- FM-style match engine view ----------------
+   Purely presentational: the engine already decided the result. This plays out a
+   short top-down sequence that ENDS the way the verdict says. Pitch: 100 x 64, attack to the right. */
+const PICK = arr => arr[Math.floor(Math.random() * arr.length)];
+function engineScript(cat, out, sev, A, D) {
+  const big = sev >= 3;
+  const S = (ms, a, d, b, line, fx) => ({ ms, a, d, b, line, fx });
+  const W = { att: 'att', def: 'def', none: 'none' }[out];
+  switch (cat) {
+    case 'oneOnOne': return [
+      S(900, [52, 32], [80, 30], [54, 32], `${A} picks it up on the half-turn. Only ${D} stands between him and goal.`),
+      S(1100, [70, 33], [78, 32], [72, 33], `${A} drives at him…`),
+      ...(W === 'att' ? [S(900, [82, 25], [80, 36], [84, 25], big ? `A nutmeg! ${D} is left sitting on the turf.` : `${A} shifts it past ${D}…`),
+                         S(800, [86, 26], [80, 36], [100, 29], big ? 'Into the top corner. Unstoppable.' : 'and slots it home.', 'goal')]
+      : W === 'def' ? [S(900, [74, 34], [74, 35], [74, 36], `${D} goes to ground…`),
+                        S(800, [72, 36], [75, 34], [66, 54], big ? 'Perfectly timed. He takes the ball and the confidence with it.' : 'and nicks it away. Cleared.', 'block')]
+      : [S(900, [80, 31], [81, 34], [82, 32], `${A} shoots…`), S(800, [80, 31], [82, 33], [86, 44], `Blocked by ${D}! It loops away, nobody can say who won that.`, 'none')]) ];
+    case 'killerBall': return [
+      S(900, [48, 32], [70, 27], [50, 32], `${A} lifts his head. A runner is peeling off the shoulder.`),
+      S(1000, [52, 31], [72, 25], [53, 31], `${D} is reading the pass…`),
+      ...(W === 'att' ? [S(1100, [55, 31], [70, 29], [88, 20], big ? 'A no-look ball, straight through the eye of the needle!' : `${A} threads it past ${D}…`, 'glow'),
+                         S(700, [58, 31], [72, 29], [100, 24], 'The runner is through. Goal.', 'goal')]
+      : W === 'def' ? [S(1100, [55, 31], [67, 28], [67, 28], `${D} steps in front and intercepts.`, 'block'),
+                        S(700, [55, 31], [60, 30], [40, 30], big ? 'Read it from the moment it left the boot.' : 'Danger over.')]
+      : [S(1100, [55, 31], [69, 27], [70, 27], 'A deflection off his heel…'), S(700, [55, 31], [70, 27], [78, 44], 'Loose ball. Too close to call.', 'none')]) ];
+    case 'breakLines': return [
+      S(900, [40, 32], [72, 32], [42, 32], `${A} carries it out of midfield.`),
+      S(1100, [62, 33], [70, 32], [64, 33], `${D} steps out of the line to meet him…`),
+      ...(W === 'att' ? [S(900, [76, 26], [69, 34], [78, 26], big ? 'A drop of the shoulder and he is gone!' : `${A} rides the challenge…`),
+                         S(800, [90, 28], [70, 34], [92, 28], 'Through the lines and into the box.', 'glow')]
+      : W === 'def' ? [S(900, [66, 33], [67, 33], [67, 33], `A standing tackle from ${D}!`, 'block'),
+                        S(800, [64, 34], [60, 30], [50, 26], big ? 'Clean as you like. He walks away with the ball.' : 'Possession turned over.')]
+      : [S(900, [68, 32], [69, 33], [69, 32], 'Shoulder to shoulder…'), S(800, [67, 30], [70, 34], [72, 46], 'The ball squirts out for a throw. Nobody wins it.', 'none')]) ];
+    case 'counter': return [
+      S(800, [48, 26], [50, 40], [58, 32], `Counter-attack! The ball is played into space. ${A} and ${D} both go.`),
+      S(1100, [66, 28], [67, 37], [72, 32], 'Stride for stride…'),
+      ...(W === 'att' ? [S(1000, [82, 30], [78, 36], [84, 31], big ? `${A} leaves him for dead!` : `${A} gets there first.`, 'glow')]
+      : W === 'def' ? [S(1000, [78, 29], [82, 33], [83, 33], big ? `${D} has another gear. Not even close.` : `${D} gets back and gets there first.`, 'block')]
+      : [S(1000, [80, 30], [80, 34], [81, 32], 'They arrive together. A dead heat.', 'none')]) ];
+    case 'bigGame': return [
+      S(900, [40, 32], [60, 32], [50, 32], `The biggest stage. ${A} against ${D}: two seasons that owned the night.`),
+      S(1200, [44, 32], [56, 32], [50, 32], 'The noise rises. Which season was bigger?', 'aura'),
+      ...(W === 'att' ? [S(1000, [47, 32], [58, 32], [50, 32], big ? `${A}'s season towers over this one.` : `${A}'s season edges it.`, 'winA')]
+      : W === 'def' ? [S(1000, [42, 32], [53, 32], [50, 32], big ? `${D}'s season towers over this one.` : `${D}'s season edges it.`, 'winD')]
+      : [S(1000, [45, 32], [55, 32], [50, 32], 'Nothing between them. The debate lives on.', 'none')]) ];
+    case 'ninety': return [
+      S(900, [30, 20], [30, 44], [50, 32], `Kick-off. ${A} and ${D}: who is still going at the end?`, 'clock0'),
+      S(1100, [60, 26], [62, 40], [55, 32], 'Sixty minutes gone. The legs are going…', 'clock60'),
+      ...(W === 'att' ? [S(1000, [84, 28], [70, 40], [80, 30], `Ninety minutes, and ${A} is still sprinting. ${D} is out on his feet.`, 'winA')]
+      : W === 'def' ? [S(1000, [70, 26], [84, 40], [80, 38], `Ninety minutes, and ${D} is still sprinting. ${A} is out on his feet.`, 'winD')]
+      : [S(1000, [80, 28], [80, 38], [80, 32], 'Both finish the ninety standing. Nothing in it.', 'none')]) ];
+    default: return [
+      S(900, [38, 32], [62, 32], [50, 32], `Master of Role: each does what his position does best.`),
+      S(1100, [38, 32], [62, 32], [50, 32], `${A} shows his craft…`, 'spotA'),
+      S(1100, [38, 32], [62, 32], [50, 32], `${D} answers with his.`, 'spotD'),
+      ...(W === 'att' ? [S(900, [40, 32], [62, 32], [50, 32], big ? `${A} is on another level in his role.` : `${A} does it slightly better.`, 'winA')]
+      : W === 'def' ? [S(900, [38, 32], [60, 32], [50, 32], big ? `${D} is on another level in his role.` : `${D} does it slightly better.`, 'winD')]
+      : [S(900, [38, 32], [62, 32], [50, 32], 'Two masters. Nobody can split them.', 'none')]) ];
+  }
+}
+function engineSVG() {
+  const stripes = Array.from({ length: 10 }, (_, i) => `<rect x="${i * 10}" y="0" width="10" height="64" fill="${i % 2 ? '#22573a' : '#1d4a32'}"/>`).join('');
+  return `<svg viewBox="0 0 100 64" class="engsvg" aria-hidden="true">${stripes}
+  <g fill="none" stroke="rgba(240,234,217,.5)" stroke-width=".35"><rect x="1" y="1" width="98" height="62"/><line x1="50" y1="1" x2="50" y2="63"/><circle cx="50" cy="32" r="8"/>
+  <rect x="83" y="14" width="16" height="36"/><rect x="93" y="24" width="6" height="16"/><rect x="1" y="14" width="16" height="36"/></g>
+  <rect x="99" y="27" width="1.2" height="10" fill="#F0EAD9"/>
+  <text id="engClock" x="4" y="7" font-family="Barlow Condensed" font-weight="700" font-size="4" fill="#F0EAD9"></text>
+  <g id="engD" class="pl"><circle r="2.7"/><text y="1.1" text-anchor="middle" font-size="2.6" font-weight="700" font-family="Barlow Condensed"></text><text class="nm" y="6.2" text-anchor="middle" font-size="2.6" font-family="Barlow Condensed" fill="#F0EAD9"></text></g>
+  <g id="engA" class="pl"><circle r="2.7"/><text y="1.1" text-anchor="middle" font-size="2.6" font-weight="700" font-family="Barlow Condensed"></text><text class="nm" y="6.2" text-anchor="middle" font-size="2.6" font-family="Barlow Condensed" fill="#F0EAD9"></text></g>
+  <g id="engB"><circle r="1.15" fill="#fff" stroke="#1C1B1A" stroke-width=".3"/></g></svg>`;
+}
+function place(node, [x, y], ms) {
+  node.style.transition = ms ? `transform ${Math.round(ms * (reduce ? 0.01 : speed))}ms cubic-bezier(.45,.05,.35,1)` : 'none';
+  node.style.transform = `translate(${x}px, ${y}px)`;
+}
+async function runEngine(rv, cmp, vd) {
+  const eng = $('#engine');
+  const attP = cmp.attacker, defP = other(attP);
+  const aId = rv.cards[attP], dId = rv.cards[defP];
+  const aC = card(aId), dC = card(dId);
+  const out = !vd.crowns ? 'none' : vd.winner === attP ? 'att' : 'def';
+  const steps = engineScript(rv.category, out, vd.severity, aC.name, dC.name);
+  const aVal = Math.round(attP === 'A' ? cmp.aValue : cmp.bValue), dVal = Math.round(attP === 'A' ? cmp.bValue : cmp.aValue);
+  const aStat = STAT_NAME[fieldFor(rv.category, 'attack')], dStat = STAT_NAME[fieldFor(rv.category, 'defence')];
+  eng.innerHTML = `${engineSVG()}<div class="engline" id="engLine"></div>
+    <div class="duelbar"><div class="dl"><b>${aC.name}</b> ${attP === ME ? '(you)' : '(them)'} <span>${aStat} ${aVal}</span></div>
+    <div class="track"><div class="fillA" id="fillA"></div></div>
+    <div class="dr"><span>${dStat} ${dVal}</span> <b>${dC.name}</b> ${defP === ME ? '(you)' : '(them)'}</div></div>`;
+  const gA = eng.querySelector('#engA'), gD = eng.querySelector('#engD'), gB = eng.querySelector('#engB');
+  const paint = (g, c) => { g.querySelector('circle').setAttribute('fill', c.colours.p); g.querySelector('circle').setAttribute('stroke', '#F0EAD9'); g.querySelector('circle').setAttribute('stroke-width', '.5');
+    const t = g.querySelectorAll('text'); t[0].textContent = String(c.number || '').slice(0, 2); t[0].setAttribute('fill', c.colours.s); t[1].textContent = c.name; };
+  paint(gA, aC); paint(gD, dC);
+  gA.classList.toggle('mine', attP === ME); gD.classList.toggle('mine', defP === ME);
+  place(gA, steps[0].a, 0); place(gD, steps[0].d, 0); place(gB, steps[0].b, 0);
+  eng.hidden = false; await wait(30); eng.classList.add('on');
+  const share = aVal / Math.max(1, aVal + dVal);
+  const fill = eng.querySelector('#fillA'); fill.style.width = '50%';
+  for (let i = 0; i < steps.length; i++) {
+    const st = steps[i];
+    place(gA, st.a, st.ms); place(gD, st.d, st.ms); place(gB, st.b, st.ms * 0.9);
+    const k = (i + 1) / steps.length;
+    fill.style.transition = `width ${Math.round(st.ms * speed)}ms ease`;
+    fill.style.width = `${Math.min(97, Math.max(3, 50 + (share * 100 - 50) * k * 3)).toFixed(1)}%`;
+    const line = eng.querySelector('#engLine'); line.textContent = st.line; line.classList.remove('in'); void line.offsetWidth; line.classList.add('in');
+    cm(`<i>${st.line}</i>`, 'play');
+    const clock = eng.querySelector('#engClock');
+    if (st.fx === 'clock0') clock.textContent = "0'"; if (st.fx === 'clock60') clock.textContent = "60'"; if (rv.category === 'ninety' && i === steps.length - 1) clock.textContent = "90'";
+    eng.dataset.fx = st.fx || '';
+    if (st.fx === 'winA' || (st.fx === 'goal' || st.fx === 'glow') && out === 'att') { gA.classList.add('hot'); gD.classList.add('cold'); }
+    if (st.fx === 'winD' || st.fx === 'block' && out === 'def') { gD.classList.add('hot'); gA.classList.add('cold'); }
+    if (st.fx === 'spotA') gA.classList.add('hot'); if (st.fx === 'spotD') { gA.classList.remove('hot'); gD.classList.add('hot'); }
+    await wait(st.ms + 450);
+  }
+}
+function hideEngine() { const e = $('#engine'); e.classList.remove('on'); e.hidden = true; e.innerHTML = ''; }
+
+/* ---------------- LIVE PITCH: a persistent top-down view of the whole match ----------------
+   Presentation only. Your six seasons stand in your half, theirs in theirs. Every event moves
+   something: boards for the moments, a lit zone for the pick, players stepping up, the duel,
+   the walk to the Legacy tunnel, substitutes running to and from the Bench. */
+const LP = { mine: new Map(), opp: [], oppLocked: null, ball: null };
+const SVGNS = 'http://www.w3.org/2000/svg';
+const POS_ORDER = { CB: 0, FB: 1, CDM: 2, CM: 3, CAM: 4, W: 5, ST: 6 };
+const BENCH = [50, -5], TUNNEL = { A: [6, 70], B: [94, 70] };
+function lpInit() {
+  const stripes = Array.from({ length: 10 }, (_, i) => `<rect x="${i * 10}" y="0" width="10" height="64" fill="${i % 2 ? '#22573a' : '#1d4a32'}"/>`).join('');
+  $('#live').innerHTML = `${stripes}
+  <rect id="lpZone" x="0" y="0" width="0" height="0" fill="rgba(232,184,75,.16)" stroke="rgba(232,184,75,.7)" stroke-width=".4" rx="1"/>
+  <g fill="none" stroke="rgba(240,234,217,.5)" stroke-width=".35"><rect x="1" y="1" width="98" height="62"/><line x1="50" y1="1" x2="50" y2="63"/><circle cx="50" cy="32" r="8"/>
+  <rect x="83" y="14" width="16" height="36"/><rect x="93" y="24" width="6" height="16"/><rect x="1" y="14" width="16" height="36"/><rect x="1" y="24" width="6" height="16"/></g>
+  <rect x="99" y="27" width="1.2" height="10" fill="#F0EAD9"/><rect x="-0.2" y="27" width="1.2" height="10" fill="#F0EAD9"/>
+  <g font-family="Barlow Condensed" font-size="2.8" fill="rgba(240,234,217,.75)" text-anchor="middle">
+    <rect x="38" y="-8.5" width="24" height="6" rx="1.5" fill="rgba(28,27,26,.8)"/><text x="50" y="-4.6">Bench</text>
+    <rect x="-3" y="66" width="20" height="6" rx="1.5" fill="rgba(232,184,75,.25)"/><text x="7" y="70">Your Legacy</text>
+    <rect x="83" y="66" width="20" height="6" rx="1.5" fill="rgba(231,4,67,.25)"/><text x="93" y="70">Their Legacy</text></g>
+  <g id="lpDots"></g><g id="lpBall"><circle r="1.15" fill="#fff" stroke="#1C1B1A" stroke-width=".3"/></g>`;
+  LP.mine.clear(); LP.opp = []; LP.oppLocked = null; LP.ball = $('#lpBall');
+  lpPlace(LP.ball, [50, 32], 0);
+}
+function lpPlace(g, [x, y], ms) {
+  g.style.transition = ms ? `transform ${Math.round(ms * (reduce ? 0.01 : speed))}ms cubic-bezier(.45,.05,.35,1), opacity .4s` : 'opacity .4s';
+  g.style.transform = `translate(${x}px, ${y}px)`; g._pos = [x, y];
+}
+function lpDot(side, id) {
+  const g = document.createElementNS(SVGNS, 'g'); g.setAttribute('class', `lpd ${side === ME ? 'me' : 'op'}`);
+  g.innerHTML = `<circle r="2.5"/><text class="num" y="1" text-anchor="middle" font-size="2.4" font-weight="700" font-family="Barlow Condensed"></text><text class="nm" y="5.6" text-anchor="middle" font-size="2.4" font-family="Barlow Condensed" fill="#F0EAD9"></text>`;
+  $('#lpDots').append(g); lpLabel(g, id); return g;
+}
+function lpLabel(g, id) {
+  const c = id ? card(id) : null, circ = g.querySelector('circle'), t = g.querySelectorAll('text');
+  g.dataset.card = id || '';
+  circ.setAttribute('fill', c ? c.colours.p : '#2a2826'); circ.setAttribute('stroke', g.classList.contains('me') ? '#E8B84B' : '#F1688E'); circ.setAttribute('stroke-width', '.55');
+  t[0].textContent = c ? String(c.number || '').slice(0, 2) : '?'; t[0].setAttribute('fill', c ? c.colours.s : '#F1688E');
+  t[1].textContent = c ? c.name : '';
+}
+function formation(side, n, ids) {
+  // three lines: defence, midfield, attack; your half on the left, theirs mirrored
+  const lines = [[], [], []];
+  const order = ids ? ids.slice().sort((a, b) => (POS_ORDER[card(a).pos] ?? 3) - (POS_ORDER[card(b).pos] ?? 3)) : Array.from({ length: n }, (_, i) => i);
+  order.forEach((k, i) => { const p = ids ? (POS_ORDER[card(k).pos] ?? 3) : i * 7 / n; lines[p <= 1 ? 0 : p <= 3 ? 1 : 2].push(k); });
+  const pos = new Map();
+  lines.forEach((ln, li) => ln.forEach((k, j) => { const x = 13 + li * 12, y = 32 + (j - (ln.length - 1) / 2) * 13; pos.set(k, [side === ME ? x : 100 - x, y]); }));
+  return pos;
+}
+function lpSync(ms = 700) {
+  const myIds = [...state.players[ME].hand, ...(state.players[ME].locked ? [state.players[ME].locked] : [])];
+  for (const id of myIds) if (!LP.mine.has(id)) { const g = lpDot(ME, id); lpPlace(g, BENCH, 0); LP.mine.set(id, g); }
+  for (const [id, g] of LP.mine) if (!myIds.includes(id)) { lpPlace(g, BENCH, ms); g.style.opacity = 0; LP.mine.delete(id); setTimeout(() => g.remove(), ms * speed + 400); }
+  const pos = formation(ME, myIds.length, myIds);
+  for (const [id, g] of LP.mine) if (!g.classList.contains('duel') && !g.classList.contains('locked')) lpPlace(g, pos.get(id), ms);
+  const oppN = state.players[CPU].hand.length + (state.players[CPU].locked ? 1 : 0);
+  while (LP.opp.length < oppN) { const g = lpDot(CPU, null); lpPlace(g, BENCH, 0); LP.opp.push(g); }
+  while (LP.opp.length > oppN) { const g = LP.opp.find(x => !x.dataset.card) || LP.opp[LP.opp.length - 1]; LP.opp.splice(LP.opp.indexOf(g), 1); lpPlace(g, BENCH, ms); g.style.opacity = 0; setTimeout(() => g.remove(), ms * speed + 400); }
+  const op = formation(CPU, LP.opp.length, null);
+  LP.opp.forEach((g, i) => { if (!g.classList.contains('duel') && !g.classList.contains('locked')) lpPlace(g, op.get(i), ms); });
+}
+async function lpToTunnel(side, cardId) {
+  let g = side === ME ? LP.mine.get(cardId) : LP.opp.find(x => x.dataset.card === cardId) || LP.opp.find(x => !x.dataset.card);
+  if (!g) return;
+  if (side === ME) LP.mine.delete(cardId); else { LP.opp.splice(LP.opp.indexOf(g), 1); lpLabel(g, cardId); }
+  g.classList.add('walk'); lpPlace(g, TUNNEL[side], 800); await wait(820); g.style.opacity = 0; setTimeout(() => g.remove(), 500);
+}
+async function lpOppSwap(k) { // their substitution: k anonymous players off and on; we no longer know who is who
+  LP.opp.forEach(g => lpLabel(g, null));
+  const out = LP.opp.slice(0, k); out.forEach(g => lpPlace(g, BENCH, 700)); await wait(760);
+  lpSync(700); await wait(700);
+}
+function lpBoards(opts, struckCat, chosenCat) {
+  const b = $('#boards'); b.hidden = !opts; b.classList.remove('choose');
+  if (!opts) { b.innerHTML = ''; return; }
+  b.innerHTML = opts.map(c => `<div class="board ${struckCat && struckCat.cat === c ? 'struck' : ''} ${chosenCat === c ? 'chosen' : ''}"><b>${CATEGORIES[c].label}</b><span>${struckCat && struckCat.cat === c ? `Struck off by ${struckCat.by === ME ? 'you' : 'them'}` : chosenCat === c ? 'Chosen' : STAT_NAME[fieldFor(c, 'attack')] + ' v ' + STAT_NAME[fieldFor(c, 'defence')]}</span></div>`).join('');
+}
+const ZONES = { oneOnOne: [74, 12, 25, 40], killerBall: [58, 8, 41, 48], breakLines: [52, 10, 30, 44], counter: [40, 14, 50, 36], bigGame: [34, 16, 32, 32], ninety: [2, 2, 96, 60], roleDuel: [30, 12, 40, 40] };
+function lpZone(cat, attacker) {
+  const z = $('#lpZone'); if (!cat) { z.setAttribute('width', 0); return; }
+  let [x, y, w, h] = ZONES[cat]; if (attacker === CPU) x = 100 - x - w;
+  z.setAttribute('x', x); z.setAttribute('y', y); z.setAttribute('width', w); z.setAttribute('height', h);
+}
+function lpLock(side) {
+  let g;
+  if (side === ME) g = LP.mine.get(lastLockId);
+  else { g = LP.opp[Math.floor(Math.random() * LP.opp.length)]; LP.oppLocked = g; }
+  if (!g) return;
+  g.classList.add('locked'); const [x, y] = g._pos; lpPlace(g, [x + (side === ME ? 4 : -4), y], 400);
+}
+async function lpDuel(rv, cmp, vd) {
+  const attP = cmp.attacker, defP = other(attP);
+  const gOf = p => p === ME ? LP.mine.get(rv.cards.A) : (LP.oppLocked || LP.opp[0]);
+  const gA = gOf(attP), gD = gOf(defP);
+  if (!gA || !gD) return;
+  lpLabel(gOf(CPU), rv.cards.B);
+  const mirror = ([x, y]) => attP === CPU ? [100 - x, y] : [x, y];
+  const aC = card(rv.cards[attP]), dC = card(rv.cards[defP]);
+  const out = !vd.crowns ? 'none' : vd.winner === attP ? 'att' : 'def';
+  const steps = engineScript(rv.category, out, vd.severity, aC.name, dC.name);
+  $('#lpDots').classList.add('dueling'); [gA, gD].forEach(g => g.classList.add('duel'));
+  const aVal = Math.round(attP === 'A' ? cmp.aValue : cmp.bValue), dVal = Math.round(attP === 'A' ? cmp.bValue : cmp.aValue);
+  const bar = $('#duelbar');
+  bar.innerHTML = `<div class="dl"><b>${aC.name}</b> ${attP === ME ? '(you)' : '(them)'} <span>${STAT_NAME[fieldFor(rv.category, 'attack')]} ${aVal}</span></div><div class="track"><div class="fillA" id="fillA"></div></div><div class="dr"><span>${STAT_NAME[fieldFor(rv.category, 'defence')]} ${dVal}</span> <b>${dC.name}</b> ${defP === ME ? '(you)' : '(them)'}</div>`;
+  bar.hidden = false; bar.dataset.att = attP === ME ? 'me' : 'them';
+  lpPlace(gA, mirror(steps[0].a), 700); lpPlace(gD, mirror(steps[0].d), 700); lpPlace(LP.ball, mirror(steps[0].b), 700);
+  await wait(760);
+  const share = aVal / Math.max(1, aVal + dVal), fill = $('#fillA'); fill.style.width = '50%';
+  for (let i = 0; i < steps.length; i++) {
+    const st = steps[i];
+    lpPlace(gA, mirror(st.a), st.ms); lpPlace(gD, mirror(st.d), st.ms); lpPlace(LP.ball, mirror(st.b), st.ms * 0.9);
+    fill.style.transition = `width ${Math.round(st.ms * speed)}ms ease`;
+    fill.style.width = `${Math.min(97, Math.max(3, 50 + (share * 100 - 50) * ((i + 1) / steps.length) * 3)).toFixed(1)}%`;
+    const line = $('#engLine'); line.textContent = st.line; line.classList.remove('in'); void line.offsetWidth; line.classList.add('in');
+    cm(`<i>${st.line}</i>`, 'play');
+    if (out === 'att' && i === steps.length - 1) { gA.classList.add('hot'); gD.classList.add('cold'); }
+    if (out === 'def' && i === steps.length - 1) { gD.classList.add('hot'); gA.classList.add('cold'); }
+    if (st.fx === 'goal') $('#stage').classList.add('goalflash');
+    await wait(st.ms + 450);
+  }
+}
+function lpReset() {
+  $('#lpDots').classList.remove('dueling');
+  document.querySelectorAll('#lpDots .lpd').forEach(g => g.classList.remove('duel', 'hot', 'cold', 'locked', 'walk'));
+  LP.oppLocked = null; $('#duelbar').hidden = true; $('#engLine').textContent = ''; $('#stage').classList.remove('goalflash');
+  lpPlace(LP.ball, [state.active === ME ? 40 : 60, 32], 600); lpZone(null); lpSync(600);
+}
+
+/* ---------------- result card: holds until you continue ---------------- */
+function showSummary(final) {
+  if (!lastDuel) return Promise.resolve();
+  const { rv, cmp, vd } = lastDuel; lastDuel = null;
+  const box = $('#summary');
+  const name = VERDICT_NAME[vd.verdictTagKey] || vd.verdictId;
+  const side = p => { const r = cmp.attacker === p ? 'attack' : 'defence'; const v = Math.round(p === 'A' ? cmp.aValue : cmp.bValue);
+    return `<span class="${vd.winner === p ? 'w' : ''}">${p === ME ? 'You' : 'Them'}: <b>${card(rv.cards[p]).name}</b> ${v} ${STAT_NAME[fieldFor(rv.category, r)]} <small>(VV ${card(rv.cards[p]).rt})</small></span>`; };
+  const res = !vd.crowns ? 'No decision' : vd.winner === ME ? 'You win the moment' : 'They win the moment';
+  box.innerHTML = `<div class="sres ${vd.winner === ME ? 'me' : vd.winner === CPU ? 'them' : ''}"><b>${name}</b><span>${res}, margin ${Math.round(cmp.difference)}</span></div>
+    <div class="sduel">${side('A')} <em>v</em> ${side('B')}</div>
+    <ul class="scons">${turnLog.map(t => `<li>${t}</li>`).join('')}</ul>
+    <div class="snav"><button class="btn primary" id="sNext"><span class="sprog"></span>${final ? 'See the result' : 'Next turn'}</button><button class="btn" id="sPause">${paused ? 'Auto on' : 'Pause'}</button></div>`;
+  box.hidden = false; setTurn('play', 'the turn is settled');
+  const btn = box.querySelector('#sNext'); btn.focus({ preventScroll: true });
+  return new Promise(res => { let auto; const go = () => { clearTimeout(auto); box.hidden = true; box.innerHTML = ''; res(); };
+    const ms = speed < 1 ? 2200 : 3500, prog = box.querySelector('.sprog');
+    const arm = () => { clearTimeout(auto); if (paused || final) { prog.style.transition = 'none'; prog.style.width = '0'; return; }
+      prog.style.transition = 'none'; prog.style.width = '0'; void prog.offsetWidth; prog.style.transition = `width ${ms}ms linear`; prog.style.width = '100%'; auto = setTimeout(go, ms); };
+    btn.onclick = go;
+    box.querySelector('#sPause').onclick = e => { paused = !paused; e.target.textContent = paused ? 'Auto on' : 'Pause'; arm(); };
+    arm(); });
+}
+
+/* ---------------- events director ---------------- */
+function commentOn(e) {
+  if (e.type === 'ROUND_START') { cm(`Round ${e.round}. ${e.active === ME ? 'You have the ball: you attack.' : 'They have the ball: you defend.'} Squads: you ${e.hands.A}, them ${e.hands.B}.`, 'round'); }
+  if (e.type === 'CATEGORY_OPTIONS') cm(`${e.reroll ? 'Fresh moments' : 'Moments on offer'}: ${e.options.map(c => CATEGORIES[c].label).join(', ')}.`);
+  if (e.type === 'CATEGORY_BANNED') cm(`${who(e.by, true)} strike off <b>${CATEGORIES[e.category].label}</b>.`, e.by === ME ? 'me' : 'them');
+  if (e.type === 'CATEGORY_CHOSEN') { const aF = STAT_NAME[fieldFor(e.category, 'attack')], dF = STAT_NAME[fieldFor(e.category, 'defence')];
+    cm(`${who(e.by, true)} pick <b>${CATEGORIES[e.category].label}</b>: ${yours(e.by)} ${aF} against ${e.by === ME ? 'their' : 'your'} ${dF}.`, e.by === ME ? 'me' : 'them'); }
+  if (e.type === 'CARD_LOCKED') cm(e.player === ME ? 'You lock your season in, face-down.' : 'They lock a season in, face-down.', e.player === ME ? 'me' : 'them');
+  if (e.type === 'SUB_USED') cm(e.sub === 'SWAP' ? `${who(e.player, true)} make a substitution: ${e.count} season${e.count > 1 ? 's' : ''} off, ${e.count} on from the Bench.`
+    : e.sub === 'REDRAW' ? `${who(e.player, true)} use a substitution on a Tactical Switch: three new moments.`
+    : `${who(e.player, true)} force a change: one of ${e.player === ME ? 'their' : 'your'} seasons is swapped with the Bench.`, e.player === ME ? 'me' : 'them');
+  if (e.type === 'CAPTAIN_NAMED') cm(`${who(e.player, true)} name a Captain in secret.`, e.player === ME ? 'me' : 'them');
+  if (e.type === 'TOKEN_USED') cm(`${who(e.player, true)} use a Tactical Switch to redraw the moments.`, e.player === ME ? 'me' : 'them');
+  if (e.type === 'EFFECTS_CHOSEN' && e.effects.length) cm(`${who(e.player, true)} take ${e.effects.map(x => `<b>${EFFECT_NAME[x]}</b>`).join(' and ')}.`, e.player === ME ? 'me' : 'them');
+  if (e.type === 'CARD_DISCARDED') cm(`${nm(e.cardId)} walks into ${yours(e.player)} Legacy${e.reason === 'DISCARD_OTHER' ? ', assisted by the winner' : ''}.`, e.player === ME ? 'me' : 'them');
+  if (e.type === 'CARD_DRAWN') cm(e.player === ME ? 'High Press: you have to bring a season on from the Bench. Your squad grows by one.' : 'High Press: they have to bring a season on from the Bench. Their squad grows by one.', e.player === ME ? 'them' : 'me');
+  if (e.type === 'TOKEN_GAINED') cm(`${who(e.player, true)} earn an extra Tactical Switch.`, e.player === ME ? 'me' : 'them');
+  if (e.type === 'GAME_OVER') cm(e.winner === ME ? '<b>Full time. Your whole squad is in the Legacy. You win.</b>' : e.winner === CPU ? '<b>Full time. Their squad is empty first. They win.</b>' : '<b>Full time. Level after the round limit.</b>', 'round');
+}
+
+async function direct(events) {
+  const bag = {};
+  for (const e of events) {
+    commentOn(e);
+    if (e.type === 'CATEGORY_OPTIONS') { offered = e.options.slice(); struck = null; }
+    if (e.type === 'CATEGORY_BANNED') struck = { cat: e.category, by: e.by };
+    if (e.type === 'CATEGORY_BANNED' && e.by === CPU) {
+      const node = $(`#moments [data-cat="${e.category}"]`);
+      if (node) { node.classList.add('struck', 'stay'); node.insertAdjacentHTML('beforeend', '<i class="mfoot">Struck off by them</i>'); await wait(1600); }
+    }
+    if (e.type === 'CATEGORY_CHOSEN' && e.by === CPU) { hideMoments(); }
+    if (e.type === 'CATEGORY_CHOSEN' && e.by === ME) hideMoments();
+    if (e.type === 'CARD_LOCKED') lpLock(e.player);
+    if (e.type === 'CATEGORY_OPTIONS') { lpBoards(e.options, null, null); lpZone(null); }
+    if (e.type === 'CATEGORY_BANNED') { lpBoards(offered, struck, null); await wait(500); }
+    if (e.type === 'CATEGORY_CHOSEN') { lpBoards(offered, struck, e.category); lpZone(e.category, state.active); setMoment(e.category); await wait(600); }
+    if (e.type === 'SUB_USED' && e.player === CPU && e.sub === 'SWAP') await lpOppSwap(e.count);
+    if (e.type === 'SUB_USED' && e.player === ME && e.sub === 'FORCED') await lpOppSwap(1);
+    if (e.type === 'REVEAL') turnLog = [];
+    if (e.type === 'REVEAL' || e.type === 'COMPARISON') bag[e.type] = e;
+    if (e.type === 'CARD_DISCARDED') turnLog.push(`<b>${card(e.cardId).name}</b> walks into ${e.player === ME ? 'your' : 'their'} Legacy${e.reason === 'DISCARD_OTHER' ? ' (Assist)' : ''}.`);
+    if (e.type === 'CARD_RETURNED') turnLog.push(`<b>${card(e.cardId).name}</b> goes back to ${e.player === ME ? 'your' : 'their'} squad.`);
+    if (e.type === 'CARD_DRAWN') turnLog.push(`High Press: ${e.player === ME ? 'you bring' : 'they bring'} a season on from the Bench.`);
+    if (e.type === 'TOKEN_GAINED') turnLog.push(`${e.player === ME ? 'You earn' : 'They earn'} a Tactical Switch.`);
+    if (e.type === 'VERDICT') { bag.VERDICT = e; setPhase('reveal'); await playDuel(bag); lastDuel = { rv: bag.REVEAL, cmp: bag.COMPARISON, vd: e }; }
+    if (e.type === 'GAME_OVER') { render(); await showSummary(true); }
+    if (e.type === 'CARD_DISCARDED') await toLegacy(e.player, e.reason, e.cardId);
+    if (e.type === 'CARD_DRAWN') { await drawn(e.player); }
+    if (e.type === 'ROUND_START') newIds.clear();
+    if (e.type === 'ROUND_START' && e.round > 1) { render(); await wait(300); await showSummary(false); clearDuel(); }
+  }
+  render();
+}
+
+/* ---------------- loop ---------------- */
+function trackNew(before) { const now = state.players[ME].hand; now.forEach(id => { if (!before.includes(id)) newIds.add(id); }); }
+async function humanAct(action) {
+  if (busy) return; busy = true;
+  const before = state.players[ME].hand.slice();
+  if (action.type === 'LOCK_CARD') lastLockId = action.cardId;
+  subMode = false; subOpen = false; subPick.clear(); clearTargets();
+  hideEffects();
+  try { const res = applyAction(ctx, state, action); state = res.state; if (action.type === 'USE_SUB') trackNew(before); await direct(res.events); }
+  finally { busy = false; }
+  loop();
+}
+async function cpuAct() {
+  const before = state.players[ME].hand.slice();
+  const legal = legalActions(ctx, state, CPU);
+  const a = cpu.decide(ctx, viewFor(state, CPU), CPU, legal, Math.random);
+  const res = applyAction(ctx, state, a); state = res.state;
+  if (a.type === 'USE_SUB' && a.sub === 'FORCED') trackNew(before);
+  await direct(res.events);
+}
+function askTarget(played, done, allowed) {
+  const hand = $('#hand'); hand.classList.add('targeting');
+  hand.querySelectorAll('.card').forEach(c => { if (c.dataset.id === played || (allowed && !allowed.has(c.dataset.id))) return; c.classList.add('target'); c.tabIndex = 0;
+    const pick = () => done(c.dataset.id); c.onclick = pick; c.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } }; });
+}
+function clearTargets() { const hand = $('#hand'); hand.classList.remove('targeting'); hand.querySelectorAll('.card.target').forEach(c => { c.classList.remove('target'); c.onclick = null; }); }
+function hideEffects() { $('#effects').hidden = true; $('#effects').innerHTML = ''; }
+function showEffects() {
+  const acts = legalActions(ctx, state, ME);
+  const box = $('#effects'); box.innerHTML = ''; box.hidden = false;
+  const vd = state.pending.verdict;
+  const played = state.pending.played[ME];
+  const need = Math.max(...acts.map(a => a.effects.length));
+  const avail = [...new Set(acts.flatMap(a => a.effects))];
+  const INFO = { DISCARD_PLAYED: ['Into Legacy', `${card(played).name} leaves your squad`], PRESS: ['High Press', 'they take a card from the Bench'], DISCARD_OTHER: ['Assist', 'pick a teammate to walk in with him'] };
+  if (avail.length === 1 && avail[0] === 'DISCARD_OTHER' && need === 1) {
+    box.append(el('p', 'mhead', `${VERDICT_NAME[vd.verdictTagKey]}! ${card(played).name} walks into your Legacy and takes a teammate with him. Tap the season to send in.`));
+    setTurn('me', 'Big win: tap a teammate to walk into your Legacy.');
+    askTarget(played, id => { clearTargets(); const a = acts.find(x => x.target === id); if (a) humanAct(a); }, new Set(acts.filter(a => a.target).map(a => a.target)));
+    return;
+  }
+  const chosen = new Set();
+  box.append(el('p', 'mhead', `${VERDICT_NAME[vd.verdictTagKey]}. ${need > 1 ? 'Choose two rewards.' : 'Choose your reward.'}`));
+  const row = el('div', 'rewards'); box.append(row);
+  const finish = target => {
+    const want = [...chosen].sort().join('+');
+    const a = acts.find(x => [...x.effects].sort().join('+') === want && (x.target ?? null) === (target ?? null));
+    if (a) { clearTargets(); humanAct(a); }
+  };
+  const next = () => {
+    [...row.children].forEach(b => b.classList.toggle('on', chosen.has(b.dataset.e)));
+    if (chosen.size < need) return;
+    if (chosen.has('DISCARD_OTHER')) { askTarget(played, finish, new Set(acts.filter(a => a.target).map(a => a.target))); box.querySelector('.mhead').textContent = 'Assist: tap the card in your squad that walks into your Legacy.'; }
+    else finish(null);
+  };
+  for (const e of avail) {
+    const b = el('button', 'reward', `<b>${INFO[e][0]}</b><span>${INFO[e][1]}</span>`); b.dataset.e = e;
+    b.onclick = () => { if (chosen.has(e)) chosen.delete(e); else if (chosen.size < need) chosen.add(e); clearTargets(); next(); };
+    row.append(b);
+  }
+  if (!avail.length) { const b = el('button', 'reward', '<b>Continue</b>'); b.onclick = () => humanAct(acts[0]); row.append(b); }
+}
+let looping = false;
+async function loop() {
+  if (looping) return; looping = true;
+  try { await loopInner(); } finally { looping = false; }
+}
+async function loopInner() {
+  while (true) {
+    render();
+    if (state.phase === 'OVER') return endGame();
+    let actor = actorFor(state);
+    if (state.phase === 'SELECT') actor = !state.players[CPU].locked ? CPU : ME;
+    if (actor === CPU) {
+      busy = true;
+      setTurn('them', state.phase === 'CAPTAIN' ? 'naming their Captain in secret' : state.phase === 'BAN' ? 'striking one moment off' : state.phase === 'CATEGORY' ? 'picking the moment' : state.phase === 'SELECT' ? 'choosing their season' : 'choosing their reward');
+      say('');
+      setPhase(state.phase === 'CAPTAIN' ? 'captain' : state.phase === 'BAN' ? 'ban' : state.phase === 'CATEGORY' ? 'pick' : state.phase === 'SELECT' ? 'play' : 'reveal');
+      if (state.phase === 'BAN' || state.phase === 'CATEGORY') { showMoments('view'); await wait(900); } else await wait(450);
+      if (state.phase === 'CAPTAIN') clearTargets();
+      try { await cpuAct(); } finally { busy = false; }
+      continue;
+    }
+    if (state.phase === 'CAPTAIN') { hideMoments(); setTurn('me', 'Captain mode: tap the season you want as your Captain. It can only go into your Legacy last, so choose one you trust to finish.'); askTarget(null, id => humanAct({ type: 'NAME_CAPTAIN', player: ME, cardId: id })); }
+    else if (state.phase === 'BAN') { setPhase('ban'); showMoments('ban'); setTurn('me', 'You defend. Strike off the moment you least want to face.'); say(''); }
+    else if (state.phase === 'CATEGORY') { setPhase('pick'); showMoments('pick'); setTurn('me', 'You attack. Pick the moment on the pitch.'); say(''); }
+    else if (state.phase === 'SELECT') { setPhase('play'); const r = role(ME); setTurn('me', `${r === 'attack' ? 'Attack' : 'Defend'} with ${STAT_NAME[fieldFor(state.category, r)]}: tap a card.`); say(''); setMoment(state.category); }
+    else if (state.phase === 'EFFECT') { setTurn('me', 'You won the moment. Choose your reward.'); showEffects(); }
+    return;
+  }
+}
+let matchesPlayed = 0, lastMatch = null;
+function endGame() {
+  matchesPlayed++;
+  lastMatch = { result: state.winner === ME ? 'won' : state.winner ? 'lost' : 'draw', turns: state.history.length, legacy_me: legacy[ME], legacy_them: legacy[CPU],
+    subs_used_me: (state.subLog || []).filter(x => x.player === ME).length, captain_mode: captainMode, fast_mode: speed < 1, deck: deck.label };
+  setTimeout(() => { try { if (!localStorage.getItem('vvduels-fb-asked')) { localStorage.setItem('vvduels-fb-asked', '1'); openFeedback(true); } } catch { } }, 1200);
+  setTurn('play', 'full time');
+  const won = state.winner === ME;
+  const s = $('#endScreen'); s.hidden = false;
+  s.querySelector('h2').textContent = state.winner ? (won ? 'All seven in your Legacy. You win.' : 'They got there first.') : 'Level after the round limit.';
+  s.querySelector('p').textContent = `${state.history.length} moments played. Legacy: you ${legacy[ME]}, them ${legacy[CPU]}.`;
+}
+
+/* ---------------- controls ---------------- */
+$('#newGame').onclick = () => { if (!busy) newGame(); };
+$('#again').onclick = () => newGame();
+$('#speed').onchange = e => { speed = e.target.checked ? 0.35 : 1; };
+$('#captainMode').onchange = e => { if (busy) { e.target.checked = captainMode; return; } captainMode = e.target.checked; loadDeck(deck); newGame(); };
+/* ---------------- feedback (insert-only Supabase table) ---------------- */
+const FEEDBACK = { url: 'https://krqthvroetbxgnvwwjar.supabase.co', key: 'sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp', build: 'playtest-1' };
+const sessionId = (() => { try { let v = localStorage.getItem('vvduels-sid'); if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); localStorage.setItem('vvduels-sid', v); } return v; } catch { return null; } })();
+function openFeedback(afterMatch) {
+  const f = $('#fb'); f.querySelector('#fbIntro').textContent = afterMatch ? 'Thanks for playing! Thirty seconds of feedback helps a lot.' : 'Tell us what you think. Everything is optional.';
+  f.querySelector('form').hidden = false; f.querySelector('.fbdone').hidden = true; f.querySelector('.fberr').hidden = true;
+  f.showModal();
+}
+$('#fbBtn').onclick = () => openFeedback(false);
+$('#fbAgain').onclick = () => { $('#endScreen').hidden = true; openFeedback(true); };
+$('#fbClose').onclick = () => $('#fb').close();
+$('#fbDoneClose').onclick = () => $('#fb').close();
+$('#fb').querySelectorAll('.chips button').forEach(b => b.onclick = () => { const single = b.parentElement.dataset.single; if (single) b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); else b.classList.toggle('on'); });
+$('#fb form').onsubmit = async e => {
+  e.preventDefault();
+  const f = $('#fb'), pick = n => f.querySelector(`[data-q="${n}"] .on`)?.dataset.v ?? null;
+  const body = {
+    build: FEEDBACK.build, rules_version: ctx.config.version, session_id: sessionId,
+    device: matchMedia('(pointer: coarse)').matches ? 'touch' : 'mouse', viewport: `${innerWidth}x${innerHeight}`, user_agent: navigator.userAgent.slice(0, 300),
+    clarity: pick('clarity'), fun: pick('fun') ? +pick('fun') : null, again: pick('again'),
+    confusing: [...f.querySelectorAll('[data-q="confusing"] .on')].map(b => b.dataset.v),
+    comment: f.querySelector('#fbComment').value.trim().slice(0, 2000) || null, name: f.querySelector('#fbName').value.trim().slice(0, 60) || null,
+    matches_played: matchesPlayed, last_match: lastMatch,
+  };
+  const btn = f.querySelector('#fbSend'); btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const r = await fetch(`${FEEDBACK.url}/rest/v1/game_feedback`, { method: 'POST', headers: { apikey: FEEDBACK.key, Authorization: `Bearer ${FEEDBACK.key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    f.querySelector('form').hidden = true; f.querySelector('.fbdone').hidden = false;
+    f.querySelector('form').reset(); f.querySelectorAll('.chips .on').forEach(x => x.classList.remove('on'));
+  } catch (err) { console.warn(err); f.querySelector('.fberr').hidden = false; }
+  btn.disabled = false; btn.textContent = 'Send feedback';
+};
+$('#logBtn').onclick = () => { document.body.classList.toggle('showlog'); $('#logBtn').textContent = document.body.classList.contains('showlog') ? 'Close log' : 'Log'; const f = $('.feed'); f.scrollTop = f.scrollHeight; };
+$('#keyOnly').onchange = e => $('#log').classList.toggle('keyonly', e.target.checked);
+$('#rulesBtn').onclick = () => $('#rules').showModal();
+$('#rulesClose').onclick = () => $('#rules').close();
+$('#deckFile').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const d = adaptReal(JSON.parse(await f.text()));
+    try { localStorage.setItem('vvduels-deck', JSON.stringify(d)); } catch {}
+    loadDeck(d); newGame();
+  } catch (err) { alert(err.message.startsWith('That file') || err.message.startsWith('Cards') ? err.message : 'That file is not a game deck. Choose data/game-deck.json from ~/projects/VVonderXI-game.'); }
+  e.target.value = '';
+};
+$('#demoDeck').onclick = () => { try { localStorage.removeItem('vvduels-deck'); } catch {} loadDeck(demoDeck()); newGame(); };
+
+(async () => {
+  let d = null;
+  try { const r = await fetch('game-deck.json', { cache: 'no-cache' }); if (r.ok) d = adaptReal(await r.json()); } catch (e) { console.warn('real deck unavailable, using demo deck', e); }
+  loadDeck(d || demoDeck()); newGame();
+})();
+})();
+</script>
+</body>
+</html>

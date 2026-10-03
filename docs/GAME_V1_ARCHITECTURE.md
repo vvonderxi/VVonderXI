@@ -94,6 +94,7 @@ game/
     scene.js  table.js  card3d.js  hologram.js  fx.js  director.js (event queue -> animations)
   vendor/three.module.min.js      one pinned version, vendored, not a CDN
 data/game-deck.json               generated
+playtest/game-deck.json           a COPY of data/game-deck.json for the playtest page: re-copy it after every deck regeneration
 scripts/gen-game-deck.js          generator (Phase 4)
 docs/GAME_V1_ARCHITECTURE.md      this file
 ```
