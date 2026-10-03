@@ -36,6 +36,63 @@ note rate in particular depends on prompt caching staying warm across the run.
 
 ---
 
+## 0. RULE 4 BECOMES LENGTH-AWARE , THIS **REPLACES** THE QUEUED ITEM 25 EDIT
+
+**THE QUEUED EDIT WAS TO MAKE RULE 4 LOUDER. MEASURED AT n=654, THAT WOULD HAVE MADE THE
+OUTPUT WORSE**, and the reason is that the model was already complying with a sensible rule we
+had never written.
+
+**WHAT THE MEASUREMENT SAYS.** Emphasis tracks block LENGTH almost linearly:
+
+| stanza length | marks | n |
+|---|---|---|
+| 0-40 words | 0.20 | 245 |
+| 40-70 | 0.67 | 1,461 |
+| 70-100 | 0.99 | 797 |
+| 100+ | 1.30 | 113 |
+
+**That is a constant DENSITY of roughly one phrase per 80 to 90 words**, and it predicts all
+three field readings from their median length alone: glance 23 words -> 0.00, stanza 62 -> 0.75,
+scout 104 -> 1.16. **Rule 4 asks for a fixed COUNT per block; the model delivers a fixed RATE.**
+
+**AND ON A SHORT BLOCK THE RULE IS TYPOGRAPHICALLY IMPOSSIBLE.** Two to three marked phrases of
+two to six words inside a 23-word glance is roughly a third of the line in bold. **The model
+refusing that on 652 of 654 glances is editorial judgement, not disobedience.**
+
+**THE REWORDING LEVER HAS ALREADY BEEN PULLED.** SS C hypothesised that "per paragraph" did not
+bind to a block called a stanza. That fix IS SHIPPED , the live rule reads *"EVERY BLOCK OF
+EVERY FIELD, WHATEVER THAT BLOCK IS CALLED , a paragraph, a stanza"* , and compliance is still
+a third to a half. **Saying it again, louder, is repeating a failed experiment.**
+
+```diff
+@@ api/analyse.js , NOTES_SYSTEM rule 4
+-4. EMPHASIS , TWO TO THREE PHRASES IN EVERY UNIT OF PROSE YOU WRITE, WRAPPED IN DOUBLE
+- ASTERISKS. THIS BINDS ON EVERY BLOCK OF EVERY FIELD, WHATEVER THAT BLOCK IS CALLED , a
+- paragraph, a stanza, a single-paragraph field, the verdict, the head-to-head. If it is prose
+- and it is longer than a headline, it carries two to three marked phrases. The only field
+- exempt is the "who" headline, which is already set apart by its own type.
++4. EMPHASIS , MARKED PHRASES IN PROPORTION TO THE LENGTH OF THE BLOCK, WRAPPED IN DOUBLE
++ ASTERISKS. THIS BINDS ON EVERY BLOCK OF EVERY FIELD, WHATEVER THAT BLOCK IS CALLED , a
++ paragraph, a stanza, a single-paragraph field, the verdict, the head-to-head.
++   A SHORT BLOCK, UNDER ABOUT FORTY-FIVE WORDS: ONE marked phrase, or two at the most.
++   A LONGER BLOCK: TWO TO THREE.
++ TWO FIELDS ARE EXEMPT ENTIRELY AND CARRY NO MARKS AT ALL: the "who" headline and the
++ "glance". Both are set apart by their own type and both are too short to mark honestly , a
++ marked phrase inside a twenty-word line puts a third of it in bold, which is not emphasis,
++ it is shouting. If a block is short enough that a mark would dominate it, leave it unmarked
++ and say so by doing nothing.
+```
+
+**WHAT THIS FIXES AND WHAT IT DOES NOT , STATED RATHER THAN GLOSSED.** It removes an impossible
+demand on short blocks and makes the glance's measured behaviour correct instead of a failure.
+**It does NOT on its own bring long blocks to two or three.** Scout at 104 words currently reads
+**1.16 against a two-to-three ask**, so the gap there is real and survives this edit. **Retake
+the measurement after the edit rather than assuming it closed** , and if 1.16 is what good
+writing actually wants on a 104-word block, the honest move is to change the TARGET rather than
+keep missing it.
+
+---
+
 ## 1. THE THIRD-STATE SCORE LEAK , AND THE CAUSE IS A CONTRADICTION INSIDE THE PROMPT
 
 **OBSERVED, on Messi 14/15 vs Messi 12/13 (96 vs 96, third state):** paragraph 2 opened
@@ -141,7 +198,7 @@ evidence stops , and it is harder to catch because there is nothing to compare i
 
 ## WHAT THE SINGLE EDIT NOW CARRIES
 
-1. rule 4 (the emphasis / under-marking fix , item 25)
+0. **rule 4 made LENGTH-AWARE** , REPLACES the queued item 25 edit, which measurement shows would have made it worse
 2. 5a weighting
 3. the honour tier
 4. the identical-scores wording
