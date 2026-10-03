@@ -5782,7 +5782,25 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var hay=_mnorm(nameStr), best=6;
     for(var i=0;i<toks.length;i++){ var t=toks[i], r;
       if(hay===t) r=0;                                   // exact whole-name
-      else if(hay.indexOf(t)===0) r=1;                   // name starts with token (prefix)
+      /*  TIER 1 REQUIRES A WORD BOUNDARY, AND WITHOUT IT AN EXACT MATCH LOST TO A PREFIX.
+          Measured 2026-10-03 on the live picker: searching "messi" returned MESSIAS
+          (Rio Ave 18/19, rt 48) ABOVE L. Messi (rt 97). Messias' haystack begins
+          "messias ...", so a bare indexOf(t)===0 scored it tier 1, while "L. Messi"
+          begins with the INITIAL and could only reach tier 2 , and tier sorts before rt,
+          so the 97 never got a hearing. SEC C records that player_name is abbreviated for
+          63.6% of players, which is what makes this systematic rather than a Messi quirk:
+          any player whose surname is a strict prefix of a longer name loses to it.
+          The line below already promised "exact surname beats surname-prefix" and tier 1
+          was quietly defeating it one line earlier.
+          REGRESSION-TESTED OVER 32 REALISTIC QUERIES against the live matview: 30 top
+          results byte-identical, 1 changed (this one, to the higher-rated player), 0 made
+          worse. A variant that also stripped leading initials was tried and REJECTED , it
+          did not fix "ronaldo" and it regressed "silva" from Neymar(88) to G. Silva(63).
+          STILL OPEN AND NOT A BUG: "ronaldo" returns Ronaldo Pena(40) above Cristiano
+          Ronaldo(96), because Ronaldo is that player's genuine FIRST name and so takes
+          tier 1 honestly. Ranking a surname match above a first-name match is a product
+          decision about relevance, not a defect, and it is Lucas's.  */
+      else if(hay.indexOf(t)===0 && (hay.length===t.length || hay.charAt(t.length)===' ')) r=1;   // FIRST WORD, whole
       else if((' '+hay+' ').indexOf(' '+t+' ')>=0) r=2;  // token IS a complete word (exact surname beats surname-prefix)
       else if((' '+hay).indexOf(' '+t)>=0) r=3;          // a word starts with token
       else if(hay.indexOf(t)>=0) r=4;                    // mid-string

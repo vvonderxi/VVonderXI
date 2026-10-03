@@ -1447,6 +1447,13 @@ body.light .pkresults{border-color:rgba(28,27,26,.28)}
 .pkhd{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(243,237,224,.4);padding:15px 6px 5px}
 body.light .pkhd{color:var(--ink-soft)}
 .pkempty{padding:30px 10px;text-align:center;font-family:'Archivo';font-weight:700;font-size:13px;color:rgba(243,237,224,.4)}
+/*  MEASURED 1.03:1 IN LIGHT MODE , cream ink at 40% on the cream panel, invisible. The
+    message was in the DOM and on screen the box was blank, so a source read passes it and
+    only a rendered one does not. It is the ONLY member of its run without this override ,
+    .pkhd directly above, .pkhint directly below, and .pkmgl/.pkmsub/.pksbar svg all carry
+    it , so this is one missed member of a class, not a new decision. Measured on the live
+    page against its own ground rgb(240,234,217): 1.03 -> 5.78.  */
+body.light .pkempty{color:var(--ink-soft)}
 .pkhint{padding:8px 12px 10px;font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.02em;color:rgba(243,237,224,.5)}
 body.light .pkhint{color:var(--ink-soft)}
 .cmprow{display:flex;align-items:center;gap:13px;padding:11px 6px;cursor:pointer;transition:background .14s;border-radius:var(--r-md)}
@@ -1723,13 +1730,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261003a"></script>
+<script src="/vv-marks.js?v=20261003b"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20261003a"></script>
+<script src="/vv-core.js?v=20261003b"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
