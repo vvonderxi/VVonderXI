@@ -7446,9 +7446,33 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       In the FRAME it is the third VVonderXI on one image (wordmark, caption, tagline), so
       the rendered copy strips it and the tagline carries the brand instead.
       One plain string remains the single source; only the rendering differs.  */
-  function shCapHTML(text){
+  /*  ── ITEM 10 ON THE CARD FRAME , THE SAME MECHANISM WITH THE HARD HALF REMOVED ────────
+      A card share has NO verdict line, NO winner and NO margin, so the prose half of item 10
+      cannot transfer and Fraunces is deliberately not borrowed , that face is earned by a
+      sentence being said, and a card frame says nothing in prose.
+      WHAT DOES TRANSFER IS THE EMPHASIS ITSELF. The compare frame does not "mark the
+      important phrase"; it marks `surnameOf(winner.full)`, found in a string. A card caption
+      holds a name, so the same derivation applies with no winner to choose and no sentence to
+      parse. The two frames then share an emphasis LANGUAGE as well as their chrome.
+      CARD BRANCH ONLY. The compare caption names BOTH players, and marking either would imply
+      a winner that caption does not claim , so `markName` is passed by shCardFrame alone.
+      THE ESCAPE HAPPENS FIRST, then the surname is found in the escaped string, so the span
+      is the only markup introduced. Same scan as the verdict line, same reason: a word
+      boundary in JS is defined on [A-Za-z0-9_] and misfires on every accented surname.  */
+  function shCapHTML(text, markName){
     const trimmed = String(text == null ? '' : text).replace(/\s*\u00b7\s*VVonderXI\s*$/, '');
-    return shEsc(trimmed).replace(/VVonderXI/g, SH_BRAND_HTML);
+    let html = shEsc(trimmed);
+    if (markName) {
+      const n = shEsc(String(markName));
+      const i = n ? html.indexOf(n) : -1;
+      if (i >= 0) {
+        const before = i > 0 ? html.charAt(i - 1) : '';
+        const after  = html.charAt(i + n.length);
+        if (!SH_LETTER.test(before) && !SH_LETTER.test(after))
+          html = html.slice(0, i) + '<span class="sf-vem">' + n + '</span>' + html.slice(i + n.length);
+      }
+    }
+    return html.replace(/VVonderXI/g, SH_BRAND_HTML);
   }
   /*  THE TAGLINE WAS IN THE PREVIEW AND NOT IN THE FILE, WHICH IS THE WORST OF BOTH.
       card.html's share sheet wraps the card and a `.sb-foot` tagline in a container with
@@ -7477,13 +7501,13 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
            '<span style="margin-left:' + Math.round(gap * 0.4) + 'px">' + shEsc(VV_HANDLE_X) + '</span></div>';
   }
 
-  function shChrome(F, capText, light){
+  function shChrome(F, capText, light, markName){
     const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F), tp = shTagPx(F);
     return shHandles(F) +
            '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp, light) + '</div>' +
            '<div class="sf-capwrap" style="bottom:' + (P * 0.7) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
              'width:' + (F.w - P * 2) + 'px">' +
-             '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText) + '</div>' +
+             '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText, markName) + '</div>' +
              '<div class="sf-tag" style="font-size:' + tp + 'px">' + SH_BRAND_HTML +
                ' \u00b7 <i>Every Season Tells a Different <span class="sf-em">Story</span></i></div>' +
            '</div>';
@@ -7503,6 +7527,14 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const noScore = vvIsGKCard(spec.card);
     return (spec.card.full || '') + ' ' + shSeason(spec.card) +
            (noScore ? '' : ' · ' + spec.card.vv) + ' · VVonderXI';
+  }
+
+  /*  Returns '' rather than throwing on a card with no name, so the caption simply renders
+      unmarked , the same honest fallback the verdict line takes when the winner's surname is
+      absent from the sentence.  */
+  function shCardSurname(spec){
+    try { return surnameOf((spec && spec.card && spec.card.full) || '') || ''; }
+    catch(e){ return ''; }
   }
 
   function shCardFrame(spec, F, light){
@@ -7532,7 +7564,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
       'flex-direction:column;align-items:center;justify-content:center;' +
       'padding:' + P + 'px ' + P + 'px ' + (P + capZone) + 'px ' + P + 'px">' +
-      shChrome(F, vvShareCaption(spec), light) +
+      shChrome(F, vvShareCaption(spec), light, shCardSurname(spec)) +
       '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw, { numberMark: true }) + '</div></div>';
   }
 

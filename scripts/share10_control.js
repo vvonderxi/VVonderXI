@@ -56,5 +56,20 @@ console.log('\n── the chrome ───────────────�
   chk('the caption row survives, so the image still names both seasons',
       /sf-cap/.test(h) && /sf-capwrap/.test(h)); }
 
+console.log('\n── the card frame caption, item 10 proposal A ──────────────────');
+const CF = (full, vv) => V.vvShareFrameHTML({ kind:'card', card: card(full, vv) }, F, false);
+const capEmph = h => { const m = h.match(/sf-cap[^>]*>([\s\S]*?)<\/div>/);
+  const seg = m ? m[1] : ''; const e = seg.match(/<span class="sf-vem">([^<]*)<\/span>/); return e ? e[1] : null; };
+chk('the card caption marks the surname', capEmph(CF('Luis Suárez', 94)) === 'Suárez', capEmph(CF('Luis Suárez', 94)));
+chk('an accented surname is marked here too', capEmph(CF('Kylian Mbappé', 93)) === 'Mbappé');
+chk('a mononym marks the whole name', capEmph(CF('Ronaldinho', 90)) === 'Ronaldinho', capEmph(CF('Ronaldinho', 90)));
+chk('a card with no name renders unmarked rather than throwing',
+    capEmph(V.vvShareFrameHTML({ kind:'card', card: card('', 90) }, F, false)) === null);
+chk('the COMPARE caption is NOT marked , it names both players',
+    capEmph(F_('Messi edges it.', 'A')) === null, String(capEmph(F_('Messi edges it.', 'A'))));
+chk('the wordmark still renders two-tone in the caption', /sf-cap[\s\S]{0,400}sf-vv2/.test(CF('Luis Suárez', 94)));
+chk('no Fraunces on the card frame , the face is earned by a sentence',
+    !/Fraunces/.test(CF('Luis Suárez', 94)));
+
 console.log('\n' + (fail ? '  ' + fail + ' FAILED, ' : '  ') + pass + ' of ' + (pass + fail) + ' checks pass\n');
 process.exit(fail ? 1 : 0);
