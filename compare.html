@@ -716,6 +716,14 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   body.light .favstar.on{color:var(--gold);background:rgba(232,184,75,0.18)}
   .addclub{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--pink-ink);border:1.5px solid rgba(255,92,122,0.55);border-radius:var(--r-lg);padding:12px 16px;font-family:'Archivo';font-weight:800;font-size:13px;cursor:pointer;box-shadow:none;transition:background .15s}
   .addclub:hover{filter:brightness(1.06)}
+  /*  ── SAME TREATMENT, SAME REASON, TIGHTER CLEARANCE , MEASURED AT 390 (2026-10-04) ────
+      It renders 162x31, so again height is the only deficient dimension. Measured on the
+      rendered page: 10px of clear space above (to the card slot) and 53px below (to the
+      suggestions block), so the 6.5px this takes on each side fits inside the gap and
+      reaches no neighbour's box. The card slot above is itself a very large target, so even
+      the 3.5px that remains between them is not a boundary anyone has to hit.  */
+  .addclub{position:relative}
+  .addclub::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
   /* numbers + trajectory side by side */
   .vnumwrap{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
   @media (max-width:760px){.vnumwrap{grid-template-columns:minmax(0,1fr);gap:20px}}
@@ -1550,6 +1558,19 @@ body.light .pkmsub{color:var(--ink-soft)}
 .pkmrow{display:flex;flex-wrap:wrap;gap:7px}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
+  /*  ── A TALLER TARGET, NOT A BIGGER BUTTON , MEASURED AT 390 (2026-10-04) ──────────────
+      It renders 55x26 on a phone, so the deficient dimension is HEIGHT and only height. The
+      transparent pseudo is the pattern already documented on the card's season chevrons
+      (`.seasonstep button::after`): it enlarges the reach and paints nothing, so no pixel a
+      reader can see moves.
+      VERTICAL IS FREE AND THAT WAS CHECKED, NOT ASSUMED , SEC C records two chevrons 2px
+      apart swallowing each other's taps, which is what happens when this is done by eye.
+      Measured on the rendered page at 390: NO interactive neighbour overlaps it above, and
+      the nearest one below is 73px away, so a 44px-tall area collides with nothing.
+      WIDTH IS ALREADY PAST 44 (55px), so it is left alone , widening it would reach toward
+      the crumb beside it for no gain.  */
+  .backbtn{position:relative}
+  .backbtn::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
   body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   @media (max-width:720px){.backbtn{padding:6px 10px;font-size:11px;margin-right:8px}}

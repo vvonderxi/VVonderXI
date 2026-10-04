@@ -653,6 +653,19 @@
   body:not(.light){color-scheme:dark} body.light{color-scheme:light}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
+  /*  ── A TALLER TARGET, NOT A BIGGER BUTTON , MEASURED AT 390 (2026-10-04) ──────────────
+      It renders 55x26 on a phone, so the deficient dimension is HEIGHT and only height. The
+      transparent pseudo is the pattern already documented on the card's season chevrons
+      (`.seasonstep button::after`): it enlarges the reach and paints nothing, so no pixel a
+      reader can see moves.
+      VERTICAL IS FREE AND THAT WAS CHECKED, NOT ASSUMED , SEC C records two chevrons 2px
+      apart swallowing each other's taps, which is what happens when this is done by eye.
+      Measured on the rendered page at 390: NO interactive neighbour overlaps it above, and
+      the nearest one below is 73px away, so a 44px-tall area collides with nothing.
+      WIDTH IS ALREADY PAST 44 (55px), so it is left alone , widening it would reach toward
+      the crumb beside it for no gain.  */
+  .backbtn{position:relative}
+  .backbtn::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
   body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   .spinelogo{width:58px;height:27px;margin-bottom:12px;background:url('/assets/spinelogo-dark.png') center/contain no-repeat}
