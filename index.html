@@ -201,19 +201,25 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .srvv{flex:none;font-family:'Archivo';font-weight:800;font-size:19px;line-height:1;
     text-align:right;min-width:38px}
-  .srvvl{display:block;font-family:'Inter';font-weight:500;font-size:9px;
-    letter-spacing:.1em;color:var(--muted);margin-top:3px}
-  /*  THE SECOND V IS PINK HERE TOO , 2026-10-04. This label rendered a flat "VV" while the
-      card face and the VV Index both paint the pair two-tone, so the one place a reader meets
-      the mark most often, under every score in the live search, was the one place it was not
-      the mark. It is a unit label rather than a title, which is why it sat outside the
-      wordmark lint (that covers "VV Score|Index|Rankings", not a bare VV) and why nothing
-      caught it.
-      ONLY THE SECOND V TAKES INK. The label is deliberately quiet at 9px in --muted, and the
-      convention is that the FIRST V inherits whatever surrounds it while the second carries
-      the pink , on the card face that reads charcoal plus pink, here muted plus pink. Giving
-      the first V full ink would make a 9px unit label shout, which is the opposite of what
-      this element is for.  */
+  /*  THIS IS THE MARK, NOT A UNIT LABEL , REWORKED 2026-10-04 (Lucas: "it is the mark a
+      reader meets most often and it currently whispers").
+      IT WAS A FLAT "VV" IN INTER 500 AT 9px IN --muted, with .1em of label tracking: the one
+      place a reader meets the mark most often, under every score in the live search, was the
+      one place it was not drawn as the mark at all. It also sat outside the wordmark lint,
+      which covers "VV Score|Index|Rankings" and not a bare VV, so nothing reported it.
+      IT NOW TAKES THE PLATFORM'S OWN TREATMENT RATHER THAN A LABEL'S. Bricolage Grotesque
+      800 at .02em is what `.vvcard .vv` uses for the same pair on the card face; the old
+      Inter 500 at .1em is label tracking, which is exactly what fights a wordmark , letters
+      pushed apart read as an abbreviation rather than as a mark.
+      [SUPERSEDES THE NOTE THAT STOOD HERE THIS MORNING, which argued the first V should stay
+      muted so a 9px label would not shout. That was right about a LABEL and wrong about what
+      this element is. Kept visible rather than deleted because the reasoning is sound for any
+      actual unit label on this page.]
+      THE SECOND-V-PINK CONVENTION IS UNCHANGED, and it is the whole point of the rework:
+      first V takes the surrounding ink, second carries the pink. On the card face that reads
+      charcoal plus pink; here it is full ink plus pink in both themes.  */
+  .srvvl{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+    font-size:10px;letter-spacing:.02em;color:var(--ink);margin-top:3px}
   .srvvl .b{color:var(--pink-ink)}
   .srvv.nr{font-size:13px;color:var(--muted)}   /* NR is never 0 */
   .srhead{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.1em;
