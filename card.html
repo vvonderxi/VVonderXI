@@ -1523,7 +1523,7 @@
         <a class="ca-btn ca-compare" id="compareCta2" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare this player</a>
         <div class="ca-row">
           
-          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300,{numberMark:true});document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
+          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300,{numberMark:true,eagerPhoto:true});document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
           <button class="ca-btn ca-top" onclick="document.querySelectorAll('.layer.open').forEach(function(l){l.classList.remove('open')});window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg> Fold all</button>
         </div>
       </div>
@@ -1532,8 +1532,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261003g"></script>
-<script src="/vv-core.js?v=20261003g"></script>
+<script src="/vv-marks.js?v=20261004a"></script>
+<script src="/vv-core.js?v=20261004a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2334,7 +2334,7 @@
       stepper now lives in #seasonZone, which renderHero does not own. Leaving the call here
       would be harmless and misleading , the next reader would look for the control inside
       the card. It is attached where the SEASON STATE changes instead.  */
-  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow(),{numberMark:true}); drawRadar(); }
+  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow(),{numberMark:true,eagerPhoto:true}); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
   // in either direction, and its geometry is measured from the hero's rect.
@@ -2665,7 +2665,7 @@
     EDITORIAL_DEPS = _honP.catch(function(){});
     // honours applied in onDone so they never interrupt the in-flight flip; renderHero re-runs for the
     // card FACE pill (buildCard reads d.honours.all), vvApplyHonours for glance chips + Wonder Tags.
-    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw,{numberMark:true}), cw:_cw, prestige:D.prestige, onDone:function(){
+    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw,{numberMark:true,eagerPhoto:true}), cw:_cw, prestige:D.prestige, onDone:function(){
       drawRadar();
       /*  THE NEW FACE EXISTS ONLY NOW. It must also run BEFORE the honours .then below,
           because that branch calls renderHero, which re-attaches anyway , but honours can

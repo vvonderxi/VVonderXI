@@ -606,7 +606,26 @@ const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
     fail-open is a limiter that has stopped working and nobody has noticed.  */
 const RL_PER_HOUR   = 30;
 const RL_CONCURRENT = 2;
-const RL_STALE_MIN  = 5;    // a slot older than this is a dead function, not a live request
+/*  ── THE STALENESS FLOOR, CUT FROM 5 MINUTES TO 90 SECONDS ON MEASURED DATA (2026-10-04) ──
+    THE NUMBER THIS REPLACES WAS NEVER WRONG, IT WAS UNMEASURED. 5 minutes was chosen before
+    any generation had been timed. The ledger now holds real ones: over 32 closed generations
+    the median is 0.7s (a cache hit or a fast failure) and the MAXIMUM is 23.6s. So 90 seconds
+    is still 3.8x the slowest call this platform has ever made, and 5 minutes was 12.7x it.
+    WHY IT MATTERS RATHER THAN BEING TIDINESS: 17 of 49 generations in the ledger , 35% , never
+    closed their slot, because the client navigated away or the function died before its
+    `finally`. A leaked slot is indistinguishable from a live one until this floor releases it,
+    and RL_CONCURRENT is 2. So two aborted requests inside the window refuse a REAL visitor,
+    and at 5 minutes that refusal lasts up to five. This is the likeliest way a genuine reader
+    meets a 429 on launch day, and it costs nothing to shorten.
+    THE BOUND THAT MUST NOT BE CROSSED IS THE GENERATION ITSELF. If this ever drops below the
+    time a real generation takes, the floor starts releasing slots that are still in use and
+    the concurrency limit stops limiting anything. 23.6s is the measured ceiling; re-read it
+    from the ledger before moving this number again, and never set it from memory:
+      select max(extract(epoch from finished_at - started_at)) from api_rate_events
+       where finished_at is not null and kind in ('notes','verdict');
+    AND THE RETRY-AFTER IS UNCHANGED AT 30s, which is still shorter than this floor, so a
+    refused reader who waits once is not told to come back before a slot can possibly free.  */
+const RL_STALE_MIN  = 1.5;  // 90s , a slot older than this is a dead function, not a live request
 
 /*  ── THE GLOBAL CEILING , BECAUSE A PER-IP LIMIT CANNOT SEE A POOL OF ADDRESSES (2026-10-03) ──
     MEASURED ON THE LIVE PREVIEW RATHER THAN REASONED: 40 sequential calls carrying a forged

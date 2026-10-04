@@ -446,8 +446,17 @@
   </header>
 
   <main class="hero">
-    <img class="logo d" alt="VVonderXI" src="/assets/spinelogo-dark.png">
-    <img class="logo l" alt="VVonderXI" src="/assets/spinelogo-light.png">
+    <!--  width/height RESERVE THE BOX BEFORE THE PNG DECODES, 2026-10-04. `.logo` is
+          `width:min(380px,64vw);height:auto`, so until the image arrives its height is ZERO and
+          the tagline, the pills and the search bar all sit higher than they will end up , the
+          front door reflows downward on first paint, on the one page that is a single fixed
+          screen. The intrinsic size is 760x340 (read from the files, not assumed), and giving
+          both attributes lets the browser compute the ratio and hold the space.
+          IT IS NOT A VISUAL CHANGE: `width` in CSS still wins for layout, so these only supply
+          the aspect ratio. The vvindex WebP already carries its own pair and is the reason this
+          was noticed at all.  -->
+    <img class="logo d" alt="VVonderXI" src="/assets/spinelogo-dark.png" width="760" height="340">
+    <img class="logo l" alt="VVonderXI" src="/assets/spinelogo-light.png" width="760" height="340">
     <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
 
     <div class="searchwrap">
@@ -542,7 +551,7 @@
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20261003g"></script>
+<script src="/vv-core.js?v=20261004a"></script>
 <!--  vv-a2hs.js , the per-browser Add-to-Home-Screen steps. SHARED WITH preferences.html,
       which is why they are no longer inline here: the labels move between browser versions
       and two copies means a correction lands in one of them. It carries its own ?v= token

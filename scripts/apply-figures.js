@@ -85,7 +85,21 @@ for(const rel of TARGETS){
   const p=path.join(ROOT,rel);
   if(!fs.existsSync(p)){ console.log(`  ${rel}: not present, skipped`); continue; }
   let s=fs.readFileSync(p,'utf8');
-  const re=/(<span\b[^>]*\bdata-fig="([a-z_]+)"[^>]*>)([\s\S]*?)(<\/span>)/g;
+  /*  THE KEY CLASS CARRIES DIGITS, AND WITHOUT THEM THIS CHECK CANNOT SEE ITS OWN FIGURE
+      (found 2026-10-04). `([a-z_]+)` excluded every key with a number in it, so
+      `data-fig="walk_gaw90"` matched NOTHING , the span fell out of the scan entirely and the
+      run reported "31 figures, 0 drifted" while the page published 1.056 against a generated
+      1.158. The worked example's own headline number, understated, with a clean bill of health
+      printed beside it.
+      IT IS THE SAME SHAPE AS THE TWO FAULTS ALREADY RECORDED ABOVE , the greedy quantifier and
+      the tag anchor , and that is the point: three times now, a character-level detail in this
+      regex has silently reduced what the checker can reach, and each time the output still read
+      "0 drifted". A key pattern narrower than the keys it must match is a check that passes
+      over the thing it cannot see.
+      SO THE CLASS MUST ADMIT WHATEVER `gen-index-figures.js` CAN EMIT. It writes keys straight
+      from its own `w1(...)` calls with no character restriction, so the only safe pattern here
+      is the full identifier set. Control-tested by planting a drift on this exact key.  */
+  const re=/(<span\b[^>]*\bdata-fig="([a-z0-9_]+)"[^>]*>)([\s\S]*?)(<\/span>)/g;
   let n=0, mism=0, out=s.replace(re,(m,open,key,cur,close)=>{
     const want=render(key); n++;
     if(cur!==want){ mism++; if(CHECK) console.log(`  DRIFT ${rel} ${key}: page "${cur}" vs generated "${want}"`); }
@@ -123,7 +137,12 @@ for(const rel of TARGETS){
       league split's names were both invisible. Proven rather than reasoned: two deliberate
       drifts were planted and the run reported "17 figures, 0 drifted". The pair is matched
       on its own, bounded by the tag because `[^>]` cannot leave it.  */
-  const reS=/(\bdata-fig-series(?:-([a-z]+))?="([a-z_]+)"[^>]*?\bdata-([a-z]+)=")([^"]*)(")/g;
+  /*  THE SAME DIGIT HOLE, CLOSED ON THE SERIES PATH TOO , NOT because a series key with a digit
+      exists today (none does, measured) but because the scalar hole was invisible for exactly as
+      long as nobody wrote such a key, and this path is the one with no second reader. The SUFFIX
+      class stays `[a-z]+`: it pairs with an HTML attribute name, and `data-<suffix>` is matched
+      against the literal attribute, so widening it would admit a pair that cannot exist.  */
+  const reS=/(\bdata-fig-series(?:-([a-z]+))?="([a-z0-9_]+)"[^>]*?\bdata-([a-z]+)=")([^"]*)(")/g;
   out=out.replace(reS,(m,open,suffix,key,attr,cur,close)=>{
     const want=(suffix||'series');
     if(attr!==want) return m;            // the pair does not match, leave it and let the audit below shout
