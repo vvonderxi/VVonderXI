@@ -382,8 +382,22 @@
     .tag{margin-bottom:24px}
     .search{height:58px;padding:0 16px}
     .search .go{padding:0 14px}
-    .pills{gap:8px;display:flex;width:100%}
-    .pill{min-width:0;flex:1 1 0;padding:13px 10px;text-align:center}
+    /*  TWO BY TWO AT PHONE WIDTH , 2026-10-04, FORCED BY THE FOURTH PILL.
+        `flex:1 1 0` splits the row into EQUAL shares, so three pills got ~115px each and a
+        fourth cut every one of them to 84. Measured at 390 with a Range over each label's
+        own contents: "The VV Rankings" paints 116px of ink inside an 84px pill and bleeds
+        17px past its own border, and even "The Playbook" overran by 3. `white-space:nowrap`
+        OVERFLOWS rather than clips, so none of it was visible as damage , the labels simply
+        ran into each other's boxes, which is the silent-overflow shape SS C records for the
+        share frame.
+        AND `scrollWidth` SAID IT FITTED. `.pt` is a flex container, so it grows to its own
+        content and scrollWidth always equals clientWidth , the check can never fail. The
+        Range over the text is what measured it, and the two disagreed by 32px on one pill.
+        Wrapping to two rows gives each pill ~187px against 116px of ink. It costs one row
+        of height (~52px) on a page whose intrinsic content is about 489px, so the
+        one-fixed-screen property this page was repaired for in September survives.  */
+    .pills{gap:8px;display:flex;width:100%;flex-wrap:wrap}
+    .pill{min-width:0;flex:1 1 calc(50% - 4px);padding:13px 10px;text-align:center}
     .pill .pt{font-size:13px;white-space:nowrap}
     .pill .ps{display:none}
   }
@@ -452,9 +466,21 @@
       </div>
     </div>
 
+    <!--  FOUR PILLS, AND THE ORDER IS THE BOTTOM NAV'S , 2026-10-04.
+          THE VV INDEX WAS MISSING: the page offered Rankings, Compare and the Playbook, so the
+          one surface that explains what the score IS was reachable only from the drawer. It sits
+          where every other page puts it, between Compare and the Playbook, because that order is
+          what a reader has already learnt from the bottom nav on all nine of them. (The drawer
+          orders it differently, after the Playbook; the bottom nav is the one readers see.)
+          AND "The" IS NOT DECORATION , IT IS WHAT THE REST OF THE PLATFORM SAYS. The drawer two
+          hundred lines below already reads "The VV Rankings" and "The VV Index". The pill said
+          "VV Rankings", so the same link named the same place two ways on one page.
+          THE SECOND V IS THE PINK ONE, which `.vv .va` / `.vv .vb` already got right here; the
+          new pill reuses that pair rather than introducing a third way to write the mark.  -->
     <div class="pills">
-      <a class="pill" href="rankings.html"><span class="pt"><span class="vv"><span class="va">V</span><span class="vb">V</span></span> Rankings</span></a>
+      <a class="pill" href="rankings.html"><span class="pt">The <span class="vv"><span class="va">V</span><span class="vb">V</span></span> Rankings</span></a>
       <a class="pill" href="compare.html"><span class="pt">Compare</span></a>
+      <a class="pill" href="vvindex.html"><span class="pt">The <span class="vv"><span class="va">V</span><span class="vb">V</span></span> Index</span></a>
       <a class="pill" href="playbook.html"><span class="pt">The Playbook</span></a>
     </div>
   </main>
