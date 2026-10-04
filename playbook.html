@@ -1787,76 +1787,19 @@
       <div class="vvceiling"><b>The bands are named levels, not precise cuts.</b> A season near a band edge could sit either side of it. The number is measured more finely than the names divide it, so a band is the neighbourhood a season is in, not a line it cleared.</div>
       <div class="vvstory"><div class="vvstory-d">The V<span class="vvw">V</span> Score is <b>not a popularity contest</b>, and <b>not a sum of trophies</b>. It measures a single season's output, weighed against the standard of its position and the strength of its stage. A striker is asked for goals; a playmaker, for creation; a defender, for control, <b>each judged against their own kind</b>. Then the league is accounted for, because <b>thirty goals in the strongest division is not thirty goals in a gentler one</b>. What remains is a single, defensible figure, the closest thing the game has to a <b>common currency</b>, so any two seasons, separated by decades or borders, can finally be set on the same table and asked the only question that matters: <b>who was greater?</b></div></div>
     
-      <!--  THE WALK. Its figures are generated , playbook.html was added to
-            apply-figures.js TARGETS in the same change, because a page that is not
-            scanned turns a generated figure into a hardcoded number on arrival.
-            IT HAS A TITLE AND A GAP SINCE 2026-10-04. It used to butt straight onto the
-            Under-the-Lights prose above, so a reader fell out of an argument into a worked
-            example with nothing marking the change of voice , no rule, no label, no heading.
-            The label/heading pair is the page's own idiom, borrowed rather than invented.  -->
-      <div class="wkintro">
-        <div class="wk-label">Worked example</div>
-        <h3 class="wk-h">How a season becomes a number</h3>
-      </div>
-      <div class="wk">
-    <div class="wkhead">
-      <div class="wkwho"><span data-fig="walk_player">Kylian Mbappé</span>
-        <small><span data-fig="walk_season">21/22</span> &#183; read against other
-        <span data-fig="walk_pool">Winger</span> seasons</small></div>
-      <div class="wkin">
-        <div><b><span data-fig="walk_goals">28</span></b>goals</div>
-        <div><b><span data-fig="walk_assists">17</span></b>assists</div>
-        <div><b><span data-fig="walk_minutes">3,032</span></b>minutes</div>
-      </div>
-    </div>
-
-    <!--  THREE STEPS, AND THEY ARE CHOSEN BY SURPRISE RATHER THAN BY COMPLETENESS , 2026-10-04.
-          This was seven steps, then four. Four was still a method: it told a reader that goals
-          outweigh assists, that a penalty counts for less, that rates beat totals and that
-          availability saturates , all of which are either obvious or inferable, and none of
-          which anybody finishes reading and repeats to a friend.
-          WHAT IS LEFT IS THE PART NOBODY GUESSES. That a season is ranked inside its own
-          position rather than against all football, and that league strength is COMPUTED from
-          players who moved between leagues rather than assigned by reputation. The outcome
-          block carries the third: the bands are ranks, not thresholds.
-          THE CUT LINES ARE NOT A LOSS OF RIGOUR. Every figure still exists in
-          index-figures.json beside the query that produced it, so the chain is auditable; what
-          changed is what the page ASSERTS at a reader. A walk that explains everything
-          explains nothing, because nobody reaches the end of it.
-          RED CARRIES THE SURPRISE AND BOLD CARRIES THE STRUCTURE , two devices, not one. The
-          lead clause of each step is `b` (Archivo, the strong ink) and the one unexpected
-          phrase is `.hi` (Inter, --pink-ink). Everything-in-bold is what this replaced, and it
-          flattens a step into one grey weight where the eye has nothing to land on.  -->
-    <div class="wkstep"><div class="wkn">1</div>
-      <div class="wkl"><b>One figure, per minute.</b> His goals and assists become a single
-        number, divided by <span class="hi">minutes on the pitch</span> rather than matches
-        played.</div>
-      <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
-
-    <div class="wkstep"><div class="wkn">2</div>
-      <div class="wkl"><b>Then ranked against his own kind.</b> Not against every footballer:
-        <span class="hi">against every other <span data-fig="walk_pool">Winger</span> season in
-        the record</span>.</div>
-      <div class="wkv"><span data-fig="walk_pct_pool_rate">99.4</span><small>percentile</small></div></div>
-
-    <div class="wkstep"><div class="wkn">3</div>
-      <div class="wkl"><b>And the league is weighed by who left it.</b>
-        <span data-fig="walk_league">Ligue 1</span> is not marked down by reputation. Its weight
-        is computed <span class="hi">from players who moved between leagues</span>, and what
-        happened to them when they did.</div>
-      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">0.796</span><small>league</small></div></div>
-
-    <div class="wkout">
-      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
-        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
-      <div class="wkrt"><span data-fig="walk_rt">92</span></div>
-    </div>
-  </div>
-      <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
-  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
-  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
-  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
-  shown beside the score, never inside it.</p>
+      <!--  THE WALK MOVED TO vvindex.html ON 2026-10-04 AND THIS LINE IS WHAT REPLACES IT.
+            It came here on 2026-10-02 as SEVEN COMPUTATIONAL STEPS, and that was right: method
+            belongs in the dictionary and the VV Index is a proof. It is now THREE, chosen so a
+            reader finishes on a surprise rather than on an arithmetic, which makes it an
+            ARGUMENT and not a definition , so the reason that brought it here no longer
+            describes the thing. The rationale was not re-read when the walk was rewritten,
+            which is the stale-governing-statement shape SS C records.
+            WHAT THIS SECTION KEEPS IS THE PROSE ACCOUNT: `.vvnote` above still says how a
+            score is built, in words, and the five bands, the ceiling notes and the story are
+            untouched. What it loses is the one NUMERIC demonstration, and this points at it.
+            IT MIRRORS vvindex's OWN POINTER, which now sends method here. Each page points at
+            the half the other owns; if either moves, change both or they lie about each other. -->
+      <p class="wkptr">One season, scored step by step, is on <a href="vvindex.html">the V<span class="vvw">V</span> Index</a>.</p>
     </section><section class="section" id="s-dim" data-nav="The 5 Dimensions">
       <div class="label">The Foundation</div>
       <h2 class="h2"><span class="se">&#128376;&#65039;</span> The Five Dimensions</h2>
@@ -2822,119 +2765,12 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
  .shsp.flagged .shsp-l{color:#7a5c12}
  body.light .shsp-t{color:#3a352e}
 
-/*  THE SCORING WALK , MOVED HERE FROM vvindex.html ON 2026-10-02.
-    IT IS METHOD, AND THE VV INDEX IS A PROOF. SEC E already rules that this page is the
-    dictionary and that one a proof, so seven computational steps belong here. Nothing was
-    deleted in the move; vvindex now carries a single pointer line.
-    ITS SIX TOKENS ARE SCOPED TO `.wk` RATHER THAN ADDED GLOBALLY. They are vvindex's own
-    (--vi-line, --vi-mut, --vi-ink, --vi-panel, --vi-strong, --vi-gold-num) and this page
-    defines none of them. Declaring them on the block keeps the walk self-contained and leaves
-    the Playbook's namespace untouched , SEC C: a token defined for one ground is not a token,
-    so BOTH grounds are declared here, not just the one that was looked at.  */
-.wk,.wkintro{--vi-gold-num:#E8B84B;--vi-ink:rgba(243,237,224,.80);--vi-line:rgba(243,237,224,.11);
-    --vi-mut:rgba(243,237,224,.52);--vi-panel:rgba(255,255,255,.03);--vi-strong:var(--cream)}
-body.light .wk,body.light .wkintro{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(28,27,26,.14);
-    --vi-mut:#5f594e;--vi-panel:rgba(0,0,0,.035);--vi-strong:var(--charcoal)}
-  .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
-  .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
-  .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
-    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
-  .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
-    padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
-  .wkwho{font:800 clamp(17px,2.4vw,20px)/1.2 'Archivo';letter-spacing:-.01em}
-  .wkwho small{display:block;font:700 10px 'Archivo';letter-spacing:.12em;text-transform:uppercase;
-    color:var(--vi-mut);margin-top:5px}
-  .wkin{display:flex;gap:16px;flex-wrap:wrap;font:700 11px 'Archivo';letter-spacing:.06em;
-    text-transform:uppercase;color:var(--vi-mut)}
-  .wkin b{display:block;font:900 17px/1 'Archivo';color:var(--vi-strong);letter-spacing:-.01em;margin-bottom:3px}
-  .wkstep{display:grid;grid-template-columns:20px 1fr auto;gap:13px;align-items:baseline;
-    padding:13px 0;border-bottom:1px solid var(--vi-line)}
-  .wkstep:last-of-type{border-bottom:0}
-  .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
-  .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
-  .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
-  /*  THE GAP, THE RULE AND THE TITLE. `.wkintro` carries the same token block as `.wk` (see
-      the selector above) so `--vi-line` resolves here too; without that the hairline would
-      silently draw in whatever the page's own line colour happens to be, or in nothing.
-      The label/heading pair deliberately reuses the page's `.label` + heading idiom at a
-      smaller size, because this is a sub-head inside a section rather than a section of its
-      own, and a full 34px `.h2` would claim to be one.  */
-  .wkintro{max-width:660px;margin:38px auto 16px;padding-top:28px;
-    border-top:1px solid var(--vi-line)}
-  .wk-label{font-family:'Archivo';font-weight:700;font-size:10.5px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--vi-mut);margin-bottom:7px}
-  .wk-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;
-    line-height:1.15;letter-spacing:-.012em;color:var(--vi-strong);margin:0}
-  /*  RED IS A SECOND DEVICE, NOT A LOUDER FIRST ONE. `b` above is Archivo in the strong ink
-      and marks the STRUCTURE of a step; this marks the one thing in it a reader does not
-      expect. It stays in Inter at 600 so the two never read as the same emphasis wearing two
-      colours , if this also went Archivo-700 the step would just be bold twice.
-      --pink-ink is already per-theme on this page (#F1688E dark, #AD0332 light), so it needs
-      no override of its own and cannot drift from the wordmark's pink.  */
-  .wkl .hi{color:var(--pink-ink);font-weight:600}
-  .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
-    color:var(--vi-mut);margin-top:4px}
-  .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
-  .wkp{border:1px solid var(--vi-line);border-radius:var(--r-md);padding:8px 10px}
-  .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
-  .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
-  .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
-    padding-top:16px;border-top:1px solid var(--vi-line)}
-  .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
-  .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
-  /*  THE PHONE LAYOUT GETS ITS QUERY BACK , FIXED 2026-10-04. These four were INDENTED as
-      though they sat in `@media (max-width:720px)` and no such query existed: read from the
-      CSSOM rather than the source, every one reported TOP LEVEL, and `matchMedia` found no
-      query touching .wkv/.wkhead/.wkarrow/.wkout at all. So the walk rendered its PHONE
-      layout at EVERY width , the value dropped under each step instead of sitting in column
-      3, and `.wkhead` was block rather than flex. Measured before, at innerWidth 1920:
-      `.wkstep` computed `20px 572px 0px`, the third column collapsed because nothing was
-      ever placed in it. The desktop layout the grid was written for had never shipped.
-      AN UNCLOSED @media WOULD NOT HAVE PRODUCED THIS, which is worth keeping: CSS
-      auto-closes at EOF, so the rules would still have been inside the query. There was
-      simply no query, and the indentation was the only surviving evidence of the intent.
-      POSITION IS WHAT MAKES THE WRAP WORK, NOT THE QUERY. SS C: a media query adds NO
-      specificity, so these only win below 720 because they sit AFTER the base rules they
-      override. Keep them here, at the end of the walk's block. Moving them above `.wkv` or
-      `.wkhead` would silently restore the desktop layout on a phone.  */
-  @media (max-width:720px){
-    .wkv{grid-column:2;text-align:left;margin-top:6px}
-    .wkhead{display:block}
-    .wkarrow{display:none}
-    .wkout{align-items:flex-end}
-  }
+  /*  THE POINTER THE WALK LEFT BEHIND. It takes the section's own body measure and the muted
+      ink rather than inventing a treatment, because it is a sentence in the flow and not a
+      callout , a bordered box here would claim more attention than the walk itself did.  */
+  .wkptr{font:400 14px/1.6 'Inter';color:var(--ink-soft);max-width:660px;margin:18px auto 0}
+  .wkptr a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 
-  /*  ── SHIRT NUMBERS AT PHONE WIDTH , 2026-10-04 ─────────────────────────────────────
-      MEASURED BEFORE, at 390: the cell is `flex:0 1 150px` inside a 263px row, so each
-      shield sat hard left with 92px of nothing to its right, and the prose wrapped at
-      150px into three cramped lines. Centring the cell was the first instinct and it was
-      measured too: it balances the dead space instead of closing it, and costs HEIGHT ,
-      771px against today's 611px. Laying the shield BESIDE its own words closes the gap by
-      using it and comes out at 432px, 29% SHORTER than today, with the prose on a 256px
-      measure. On a phone that trade beats symmetry.
-      THIS BLOCK IS LAST IN THE SHEET ON PURPOSE. The rules it overrides are top-level, so
-      they apply at every width; SS C records that a media query adds NO specificity, so the
-      only thing making these win is their position. Do not move them above `.shsp`.
-      THE ARROWS ARE DELIBERATELY UNTOUCHED, and that is a finding rather than an omission:
-      measured on a real flagged card (Trossard 22/23, --cw 330) the card's own mark is
-      19.8x19.8 in rgb(28,27,26), and this explainer draws 20.0x20.0 in the same ink. They
-      match. Enlarging or tinting only the explainer would make it misrepresent the thing it
-      exists to teach. That the mark is hard to find at all is true of the CARD, and it is
-      logged as its own item in POST_LAUNCH.md.  */
-  @media (max-width:720px){
-    .shsp{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:14px;row-gap:3px;
-      align-items:start;flex:1 1 100%;max-width:none}
-    .shsp-fig{grid-row:1/3;min-height:0;padding:2px 0 0}
-    .shsp-fig.none{padding-bottom:0}
-    /*  THE TWO-LINE LABEL RESERVE IS DROPPED HERE AND KEPT EVERYWHERE ELSE. It exists so
-        that specimens sitting SIDE BY SIDE start their prose at the same height (the FAULT 2
-        note above). Stacked one per row, there is nothing to align to and the reserve is
-        just dead space in the layout that was rebuilt to remove it.  */
-    .shsp-l{min-height:0;display:block;margin:0}
-    .shsp-t{margin:0}
-    .shgrp-row{gap:18px}
-  }
 </style>
 <script>
 /*  RENDERED FROM THE SHARED STRINGS , see the comment at #s-conf. If VVCore is not loaded the

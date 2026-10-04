@@ -727,6 +727,119 @@
     padding:15px 17px;border:1px solid var(--vi-line);border-radius:var(--r-lg);background:var(--vi-panel)}
   .vi-pp b{font-family:'Archivo';font-weight:900;font-size:26px;line-height:1;color:var(--vi-strong);display:block;margin-bottom:7px}
   @media (max-width:720px){ .vi-proofpair{grid-template-columns:1fr} }
+/*  THE SCORING WALK , BACK ON THIS PAGE 2026-10-04.
+    IT WENT TO THE PLAYBOOK ON 2026-10-02 AND THAT WAS RIGHT AT THE TIME. It was SEVEN
+    computational steps then , 0.7 per assist, a fifth off each penalty, four percentiles, the
+    blend split into its terms , and SEC E rules that the Playbook is the dictionary and this
+    page is a proof, so method belonged there.
+    IT IS THREE STEPS NOW, CHOSEN BY SURPRISE RATHER THAN BY COMPLETENESS, with every weighting
+    and intermediate figure removed. That is an ARGUMENT, not a definition, and this is the page
+    that argues. The thing that moved is not the thing that moved back; the rationale was simply
+    never re-read when the walk was rewritten two days later.
+    ITS SIX TOKENS ARE NO LONGER DECLARED ON THE BLOCK. They are this page's own
+    (--vi-line, --vi-mut, --vi-ink, --vi-panel, --vi-strong, --vi-gold-num), declared globally
+    above for both grounds, so the scoped copies the Playbook needed are redundant here and
+    were dropped rather than carried along as a second source.  */
+  .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
+  .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
+    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
+  .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
+  .wkwho{font:800 clamp(17px,2.4vw,20px)/1.2 'Archivo';letter-spacing:-.01em}
+  .wkwho small{display:block;font:700 10px 'Archivo';letter-spacing:.12em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:5px}
+  .wkin{display:flex;gap:16px;flex-wrap:wrap;font:700 11px 'Archivo';letter-spacing:.06em;
+    text-transform:uppercase;color:var(--vi-mut)}
+  .wkin b{display:block;font:900 17px/1 'Archivo';color:var(--vi-strong);letter-spacing:-.01em;margin-bottom:3px}
+  .wkstep{display:grid;grid-template-columns:20px 1fr auto;gap:13px;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid var(--vi-line)}
+  .wkstep:last-of-type{border-bottom:0}
+  .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
+  .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
+  .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  /*  THE GAP, THE RULE AND THE TITLE. `.wkintro` carries the same token block as `.wk` (see
+      the selector above) so `--vi-line` resolves here too; without that the hairline would
+      silently draw in whatever the page's own line colour happens to be, or in nothing.
+      The label/heading pair deliberately reuses the page's `.label` + heading idiom at a
+      smaller size, because this is a sub-head inside a section rather than a section of its
+      own, and a full 34px `.h2` would claim to be one.  */
+  .wkintro{max-width:660px;margin:38px auto 16px;padding-top:28px;
+    border-top:1px solid var(--vi-line)}
+  .wk-label{font-family:'Archivo';font-weight:700;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--vi-mut);margin-bottom:7px}
+  .wk-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;
+    line-height:1.15;letter-spacing:-.012em;color:var(--vi-strong);margin:0}
+  /*  RED IS A SECOND DEVICE, NOT A LOUDER FIRST ONE. `b` above is Archivo in the strong ink
+      and marks the STRUCTURE of a step; this marks the one thing in it a reader does not
+      expect. It stays in Inter at 600 so the two never read as the same emphasis wearing two
+      colours , if this also went Archivo-700 the step would just be bold twice.
+      --pink-ink is already per-theme on this page (#F1688E dark, #AD0332 light), so it needs
+      no override of its own and cannot drift from the wordmark's pink.  */
+  .wkl .hi{color:var(--pink-ink);font-weight:600}
+  .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:4px}
+  .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
+  .wkp{border:1px solid var(--vi-line);border-radius:var(--r-md);padding:8px 10px}
+  .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
+  .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
+  .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
+    padding-top:16px;border-top:1px solid var(--vi-line)}
+  .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
+  .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
+  /*  THE PHONE LAYOUT GETS ITS QUERY BACK , FIXED 2026-10-04. These four were INDENTED as
+      though they sat in `@media (max-width:720px)` and no such query existed: read from the
+      CSSOM rather than the source, every one reported TOP LEVEL, and `matchMedia` found no
+      query touching .wkv/.wkhead/.wkarrow/.wkout at all. So the walk rendered its PHONE
+      layout at EVERY width , the value dropped under each step instead of sitting in column
+      3, and `.wkhead` was block rather than flex. Measured before, at innerWidth 1920:
+      `.wkstep` computed `20px 572px 0px`, the third column collapsed because nothing was
+      ever placed in it. The desktop layout the grid was written for had never shipped.
+      AN UNCLOSED @media WOULD NOT HAVE PRODUCED THIS, which is worth keeping: CSS
+      auto-closes at EOF, so the rules would still have been inside the query. There was
+      simply no query, and the indentation was the only surviving evidence of the intent.
+      POSITION IS WHAT MAKES THE WRAP WORK, NOT THE QUERY. SS C: a media query adds NO
+      specificity, so these only win below 720 because they sit AFTER the base rules they
+      override. Keep them here, at the end of the walk's block. Moving them above `.wkv` or
+      `.wkhead` would silently restore the desktop layout on a phone.  */
+  @media (max-width:720px){
+    .wkv{grid-column:2;text-align:left;margin-top:6px}
+    .wkhead{display:block}
+    .wkarrow{display:none}
+    .wkout{align-items:flex-end}
+  }
+
+  /*  ── SHIRT NUMBERS AT PHONE WIDTH , 2026-10-04 ─────────────────────────────────────
+      MEASURED BEFORE, at 390: the cell is `flex:0 1 150px` inside a 263px row, so each
+      shield sat hard left with 92px of nothing to its right, and the prose wrapped at
+      150px into three cramped lines. Centring the cell was the first instinct and it was
+      measured too: it balances the dead space instead of closing it, and costs HEIGHT ,
+      771px against today's 611px. Laying the shield BESIDE its own words closes the gap by
+      using it and comes out at 432px, 29% SHORTER than today, with the prose on a 256px
+      measure. On a phone that trade beats symmetry.
+      THIS BLOCK IS LAST IN THE SHEET ON PURPOSE. The rules it overrides are top-level, so
+      they apply at every width; SS C records that a media query adds NO specificity, so the
+      only thing making these win is their position. Do not move them above `.shsp`.
+      THE ARROWS ARE DELIBERATELY UNTOUCHED, and that is a finding rather than an omission:
+      measured on a real flagged card (Trossard 22/23, --cw 330) the card's own mark is
+      19.8x19.8 in rgb(28,27,26), and this explainer draws 20.0x20.0 in the same ink. They
+      match. Enlarging or tinting only the explainer would make it misrepresent the thing it
+      exists to teach. That the mark is hard to find at all is true of the CARD, and it is
+      logged as its own item in POST_LAUNCH.md.  */
+  @media (max-width:720px){
+    .shsp{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:14px;row-gap:3px;
+      align-items:start;flex:1 1 100%;max-width:none}
+    .shsp-fig{grid-row:1/3;min-height:0;padding:2px 0 0}
+    .shsp-fig.none{padding-bottom:0}
+    /*  THE TWO-LINE LABEL RESERVE IS DROPPED HERE AND KEPT EVERYWHERE ELSE. It exists so
+        that specimens sitting SIDE BY SIDE start their prose at the same height (the FAULT 2
+        note above). Stacked one per row, there is nothing to align to and the reserve is
+        just dead space in the layout that was rebuilt to remove it.  */
+    .shsp-l{min-height:0;display:block;margin:0}
+    .shsp-t{margin:0}
+    .shgrp-row{gap:18px}
+  }
   .vi-method-ptr{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--vi-mut);
     margin:26px 0 10px;padding-top:16px;border-top:1px solid var(--vi-line);max-width:62ch}
   .vi-method-ptr a{color:inherit;text-decoration:underline;text-underline-offset:2px}
@@ -978,6 +1091,80 @@
   </div>
 
 
+      <!--  THE WALK. Its figures are generated, and this page was already an apply-figures
+            TARGET, so nothing had to be added for it on arrival.
+            WHY IT SITS HERE, between the proof and the limits: the page has just claimed 13 of
+            14 and shown a card as evidence. "Here is exactly how one season got its number" is
+            the next honest beat, and it has to come BEFORE "what it will not tell you" , the
+            limits are only meaningful once a reader knows what is being limited.
+            IT HAS A TITLE AND A GAP SINCE 2026-10-04. It used to butt straight onto the
+            Under-the-Lights prose above, so a reader fell out of an argument into a worked
+            example with nothing marking the change of voice , no rule, no label, no heading.
+            The label/heading pair is the page's own idiom, borrowed rather than invented.  -->
+      <div class="wkintro">
+        <div class="wk-label">Worked example</div>
+        <h3 class="wk-h">How a season becomes a number</h3>
+      </div>
+      <div class="wk">
+    <div class="wkhead">
+      <div class="wkwho"><span data-fig="walk_player">Kylian Mbappé</span>
+        <small><span data-fig="walk_season">21/22</span> &#183; read against other
+        <span data-fig="walk_pool">Winger</span> seasons</small></div>
+      <div class="wkin">
+        <div><b><span data-fig="walk_goals">28</span></b>goals</div>
+        <div><b><span data-fig="walk_assists">17</span></b>assists</div>
+        <div><b><span data-fig="walk_minutes">3,032</span></b>minutes</div>
+      </div>
+    </div>
+
+    <!--  THREE STEPS, AND THEY ARE CHOSEN BY SURPRISE RATHER THAN BY COMPLETENESS , 2026-10-04.
+          This was seven steps, then four. Four was still a method: it told a reader that goals
+          outweigh assists, that a penalty counts for less, that rates beat totals and that
+          availability saturates , all of which are either obvious or inferable, and none of
+          which anybody finishes reading and repeats to a friend.
+          WHAT IS LEFT IS THE PART NOBODY GUESSES. That a season is ranked inside its own
+          position rather than against all football, and that league strength is COMPUTED from
+          players who moved between leagues rather than assigned by reputation. The outcome
+          block carries the third: the bands are ranks, not thresholds.
+          THE CUT LINES ARE NOT A LOSS OF RIGOUR. Every figure still exists in
+          index-figures.json beside the query that produced it, so the chain is auditable; what
+          changed is what the page ASSERTS at a reader. A walk that explains everything
+          explains nothing, because nobody reaches the end of it.
+          RED CARRIES THE SURPRISE AND BOLD CARRIES THE STRUCTURE , two devices, not one. The
+          lead clause of each step is `b` (Archivo, the strong ink) and the one unexpected
+          phrase is `.hi` (Inter, --pink-ink). Everything-in-bold is what this replaced, and it
+          flattens a step into one grey weight where the eye has nothing to land on.  -->
+    <div class="wkstep"><div class="wkn">1</div>
+      <div class="wkl"><b>One figure, per minute.</b> His goals and assists become a single
+        number, divided by <span class="hi">minutes on the pitch</span> rather than matches
+        played.</div>
+      <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
+
+    <div class="wkstep"><div class="wkn">2</div>
+      <div class="wkl"><b>Then ranked against his own kind.</b> Not against every footballer:
+        <span class="hi">against every other <span data-fig="walk_pool">Winger</span> season in
+        the record</span>.</div>
+      <div class="wkv"><span data-fig="walk_pct_pool_rate">99.4</span><small>percentile</small></div></div>
+
+    <div class="wkstep"><div class="wkn">3</div>
+      <div class="wkl"><b>And the league is weighed by who left it.</b>
+        <span data-fig="walk_league">Ligue 1</span> is not marked down by reputation. Its weight
+        is computed <span class="hi">from players who moved between leagues</span>, and what
+        happened to them when they did.</div>
+      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">0.796</span><small>league</small></div></div>
+
+    <div class="wkout">
+      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
+        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
+      <div class="wkrt"><span data-fig="walk_rt">92</span></div>
+    </div>
+  </div>
+      <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
+  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
+  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
+  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
+  shown beside the score, never inside it.</p>
+
   <section class="vi-lims">
     <h2 class="vi-lims-h">What it will not tell you</h2>
     <!--  THE STANDFIRST IS A LINE, NOT A LIST LABEL. It read "Eight things the Index cannot
@@ -1134,7 +1321,11 @@
         is not what this page sells. Nothing is lost: the walk and the keeper no-score
         sentence MOVED to the Playbook in the same change and were verified rendered there
         first, and four of the six were already on it. One line, no heading, no section.  -->
-  <p class="vi-method-ptr">The method , how a score is built, what each dimension measures, how keepers are read , is on <a href="playbook.html">the Playbook</a>.</p>
+  <!--  "how a score is built" LEFT THIS SENTENCE ON 2026-10-04, because the walk above now
+        does exactly that on this page. Leaving the clause would have pointed a reader at the
+        Playbook for something sitting four screens up. The dimensions and the keepers really
+        are over there, so the rest stands.  -->
+  <p class="vi-method-ptr">The rest of the method , what each dimension measures, how keepers are read, every tag and honour , is on <a href="playbook.html">the Playbook</a>.</p>
 
 
   

@@ -56,7 +56,17 @@ const TARGETS=process.argv.includes('--only')
     IT EARNED ITSELF ON THE WAY OUT: the page had been carrying 18,725 and 872, generated on
     2026-09-19, and a fresh run returns 19,138 and 878. The numbers had aged by 413 and 6 while
     reading as facts, which is the entire argument for this file.  */
-const UNWIRED={};
+/*  playbook.html IS EXEMPT FROM 2026-10-04, and the entry is here rather than in a commit
+    message precisely because this check exists to stop intent living somewhere nobody reads.
+    It was added to TARGETS when the scoring walk moved onto it on 2026-10-02 , the walk was
+    the only generated content it ever carried, plus the `cards_scored` figure in the sentence
+    directly beneath the walk. The walk moved to vvindex.html on 2026-10-04 and took both with
+    it, so the page now has NO generated figures at all. Every number still on it is a band
+    threshold or a constant, which SS D rules must never be re-derived.
+    DELETE THIS ENTRY THE MOMENT ANY data-fig LANDS ON THE PLAYBOOK AGAIN , the file stays in
+    TARGETS so the "carries figures but is NOT in TARGETS" guard keeps watching it, and this
+    line is the only thing stopping a legitimately empty page reading as a failure.  */
+const UNWIRED={ 'playbook.html': 'the scoring walk moved to vvindex.html on 2026-10-04 and took every generated figure with it' };
 
 const doc=JSON.parse(fs.readFileSync(FIG,'utf8'));
 const byKey={}; for(const f of doc.figures) byKey[f.key]=f;
