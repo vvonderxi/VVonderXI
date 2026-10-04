@@ -2883,26 +2883,27 @@ body.light .wk,body.light .wkintro{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,
     padding-top:16px;border-top:1px solid var(--vi-line)}
   .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
   .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
-  /*  ⚠ THESE FOUR ARE INDENTED AS IF THEY SIT IN A MEDIA QUERY AND THEY DO NOT , FOUND
-      2026-10-04, PRE-EXISTING (identical at HEAD~2), AND DELIBERATELY NOT CHANGED HERE.
-      There is no `@media` wrapping them: read from the CSSOM rather than the source, each one
-      reports "TOP LEVEL", and `matchMedia` finds no query touching .wkv/.wkhead/.wkarrow/.wkout
-      at all. So the walk renders its PHONE layout at every width , the value drops under the
-      step instead of sitting in column 3, and `.wkhead` is block instead of flex. Measured at
-      innerWidth 1920: `.wkstep` computes `20px 572px 0px`, the third column collapsed because
-      nothing is in it.
-      THE INDENTATION IS THE ONLY SURVIVING EVIDENCE OF THE INTENT, which is why it is kept
-      rather than tidied: somebody wrote these for `@media (max-width:720px)` and the opening
-      line never arrived. An unclosed @media would NOT produce this , CSS auto-closes at EOF
-      and the rules would still be inside it. There is simply no query.
-      FIXING IT IS A VISUAL CHANGE TO THE DESKTOP WALK and belongs with a render and Lucas,
-      not with a copy edit , so it is reported and left. Whoever takes it: wrap these four in
-      `@media (max-width:720px){ }` and check the desktop walk, because the layout nobody has
-      seen is the one that has never shipped.  */
+  /*  THE PHONE LAYOUT GETS ITS QUERY BACK , FIXED 2026-10-04. These four were INDENTED as
+      though they sat in `@media (max-width:720px)` and no such query existed: read from the
+      CSSOM rather than the source, every one reported TOP LEVEL, and `matchMedia` found no
+      query touching .wkv/.wkhead/.wkarrow/.wkout at all. So the walk rendered its PHONE
+      layout at EVERY width , the value dropped under each step instead of sitting in column
+      3, and `.wkhead` was block rather than flex. Measured before, at innerWidth 1920:
+      `.wkstep` computed `20px 572px 0px`, the third column collapsed because nothing was
+      ever placed in it. The desktop layout the grid was written for had never shipped.
+      AN UNCLOSED @media WOULD NOT HAVE PRODUCED THIS, which is worth keeping: CSS
+      auto-closes at EOF, so the rules would still have been inside the query. There was
+      simply no query, and the indentation was the only surviving evidence of the intent.
+      POSITION IS WHAT MAKES THE WRAP WORK, NOT THE QUERY. SS C: a media query adds NO
+      specificity, so these only win below 720 because they sit AFTER the base rules they
+      override. Keep them here, at the end of the walk's block. Moving them above `.wkv` or
+      `.wkhead` would silently restore the desktop layout on a phone.  */
+  @media (max-width:720px){
     .wkv{grid-column:2;text-align:left;margin-top:6px}
     .wkhead{display:block}
     .wkarrow{display:none}
     .wkout{align-items:flex-end}
+  }
 
   /*  ── SHIRT NUMBERS AT PHONE WIDTH , 2026-10-04 ─────────────────────────────────────
       MEASURED BEFORE, at 390: the cell is `flex:0 1 150px` inside a 263px row, so each

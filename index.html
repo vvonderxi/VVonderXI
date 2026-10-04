@@ -203,6 +203,18 @@
     text-align:right;min-width:38px}
   .srvvl{display:block;font-family:'Inter';font-weight:500;font-size:9px;
     letter-spacing:.1em;color:var(--muted);margin-top:3px}
+  /*  THE SECOND V IS PINK HERE TOO , 2026-10-04. This label rendered a flat "VV" while the
+      card face and the VV Index both paint the pair two-tone, so the one place a reader meets
+      the mark most often, under every score in the live search, was the one place it was not
+      the mark. It is a unit label rather than a title, which is why it sat outside the
+      wordmark lint (that covers "VV Score|Index|Rankings", not a bare VV) and why nothing
+      caught it.
+      ONLY THE SECOND V TAKES INK. The label is deliberately quiet at 9px in --muted, and the
+      convention is that the FIRST V inherits whatever surrounds it while the second carries
+      the pink , on the card face that reads charcoal plus pink, here muted plus pink. Giving
+      the first V full ink would make a 9px unit label shout, which is the opposite of what
+      this element is for.  */
+  .srvvl .b{color:var(--pink-ink)}
   .srvv.nr{font-size:13px;color:var(--muted)}   /* NR is never 0 */
   .srhead{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--muted);padding:11px 18px 6px}
@@ -754,8 +766,8 @@
       + '<span class="srmain"><span class="srnm">' + esc(name) + '</span>'
       + '<span class="srsub">' + esc(sub) + '</span></span>'
       + (vv == null
-          ? '<span class="srvv nr">NR<span class="srvvl">VV</span></span>'
-          : '<span class="srvv">' + vv + '<span class="srvvl">VV</span></span>')
+          ? '<span class="srvv nr">NR<span class="srvvl">V<span class="b">V</span></span></span>'
+          : '<span class="srvv">' + vv + '<span class="srvvl">V<span class="b">V</span></span></span>')
       + '</button>';
   }
 
