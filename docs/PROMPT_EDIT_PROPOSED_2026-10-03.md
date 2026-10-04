@@ -93,49 +93,120 @@ keep missing it.
 
 ---
 
-## 1. THE THIRD-STATE SCORE LEAK , AND THE CAUSE IS A CONTRADICTION INSIDE THE PROMPT
+## 1. THE TIE STATE CROWNS A WINNER IN PROSE , MEASURED AT n=69, AND THE ORIGINAL DIAGNOSIS HERE WAS THE WRONG HALF OF IT
 
-**OBSERVED, on Messi 14/15 vs Messi 12/13 (96 vs 96, third state):** paragraph 2 opened
-**"Both scores read 96."** The `who` line complied , *"Two seasons. No verdict."* , and the
-prose did not.
+**[REWRITTEN 2026-10-04 ON A MEASUREMENT. THE SECTION THIS REPLACES CALLED IT A SCORE LEAK AND
+PROPOSED A FIX FOR THE THIRD STATE. BOTH THE DEFECT AND THE STATE WERE MISIDENTIFIED, AND THE
+PROPOSED DIFF WOULD HAVE BITTEN THE WRONG PAIRINGS.]**
 
-**THE RULE ALREADY EXISTS AND IS EXPLICIT.** Line 229, inside the third-state block:
-*"NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT."* So this is not a missing rule.
+**THE POPULATION, NOT AN ANECDOTE.** Every `verdict_cache` row on the current Path A base whose
+`rt_a` equals its `rt_b` , **69 rows**:
 
-**IT IS A DIRECT CONTRADICTION WITH THE FIELD SPEC, IN THE SAME SYSTEM PROMPT.** Line 304
-specifies the `who` field **unconditionally**: *"Name the winner and include BOTH VV Scores as
-passed."* On a third-state pairing those two sentences cannot both be obeyed, and the model
-resolved it by splitting them , which is the worst available outcome, because it looks like
-compliance until you read the second paragraph.
+| | |
+|---|---|
+| prose using banned winner language (`edges it`, `shades it`, `takes it`, ...) | **63 of 69 (91%)** |
+| `who` headlines containing a VV Score | **65 of 69 (94%)** |
+| `winner` field returning "A" or "B" rather than null | **66 of 69** |
+| `tag` correctly set to `the_debate` | **67 of 69** |
+| Path B control, where a winner IS permitted | 10 of 19, correct |
 
-**THE FIX IS TO MAKE THE FIELD SPEC STATE-AWARE**, so the two never disagree.
+Live headlines, verbatim: *"Messi edges it, barely, 96 to 96. The debate lives on."* and
+*"Salah edges it, 95-95. The full profile decides what the goals alone cannot."*
+
+**THE STATE IS `tie`, NOT `inside`, AND THAT IS WHY THE OLD DIFF WOULD HAVE MISSED.**
+`verdictContext` sets `separation = g === 0 ? 'tie' : (separated ? 'separated' : 'inside')`, so
+a gap of zero never reaches the `inside` branch. The replaced section proposed gating the fix on
+*"WHEN THE RESULT LINE SAYS INSIDE THE MARGIN"*, which is the phrase that governs `inside`
+pairings , the ones measured here at **0 of 19 naming a score**. **It would have tightened the
+state that is already clean and left the state that fails 91% of the time untouched.**
+
+**AND THE SCORE IS NOT THE DEFECT ON A TIE, BECAUSE THE UI PRINTS IT ANYWAY.** `_showScore` in
+`compare.html` is `separation !== 'inside'`, so a tie renders "96 & 96" directly beneath the
+prose, deliberately, with a comment explaining that an exact tie is one of the two cases where
+the score line can be read without implying a rank. **Prose naming a number the page prints four
+inches below it is redundant, not a disclosure.** The old section's prohibition on paraphrase ,
+*"level on ninety-six"*, *"both in the mid-nineties"* , would have forbidden the most natural
+way to write a tie verdict, in order to hide a figure already on screen.
+
+**WHAT IS ACTUALLY WRONG IS THE WINNER, AND IT CONTRADICTS THE CHIP BESIDE IT.** The model picks
+`the_debate` correctly on 67 of 69 , whose blurb reads that the argument is not over , and then
+crowns a season in the prose on 63 of them. One row, two answers.
+
+**SEVERITY, STATED HONESTLY, BECAUSE IT WAS OVER-RANKED ONCE ALREADY TODAY: IT IS PROSE ONLY.
+NO CARD IS EVER BADGED ON A TIE.** `applyVerdictOutcome` opens with
+`if (ctx.separation !== 'inside') return out;`, so a model-returned winner is discarded on a
+tie. **Control-tested rather than read**, the same context with the model crowning A:
+
+```
+separation=tie        -> winner=tie   decidedBy=null    floorTag=(none)
+separation=inside     -> winner=A     decidedBy=ai      floorTag=prodigy
+separation=separated  -> winner=tie   decidedBy=null    floorTag=(none)
+```
+
+The `inside` row is the positive control: the gate CAN fire, so the `tie` row is a refusal
+rather than a dead path. **So the machine state is correct throughout , chip, badge and
+`winner` all say unresolved , and only the sentences disagree.**
+
+**IT CANNOT BE FIXED FROM THE USER PROMPT, AND THAT IS ESTABLISHED RATHER THAN ASSUMED.**
+`compare.html` already carries the prohibition twice. The tie `winNote` says *"Do NOT name a
+winner and do NOT say either 'edges it'"*. The non-separated `_whoSpec` says *"THERE IS NO
+WINNER TO NAME"* and offers **"Salah edges it" as its explicit counter-example** , and the model
+produced that exact string. **A user-prompt line naming the forbidden phrase loses to the system
+prompt 91% of the time, so restating it again is the repeat-a-failed-experiment move SS C
+records against item 25.**
+
+**THE SYSTEM-SIDE CAUSE IS LINE 304, AND THE REPLACED SECTION WAS RIGHT ABOUT THAT MUCH.** The
+`who` field spec is unconditional: *"Name the winner and include BOTH VV Scores as passed."* The
+measured output , 63 of 69 naming a winner, 65 of 69 printing a score , is near-exact compliance
+with those two demands. **The old section identified the right sentence and the wrong trigger.**
+
+**SO THE FIX IS TO MAKE LINE 304 STATE-AWARE ON THE ABSENCE OF A WINNER RATHER THAN ON THE WORDS
+"INSIDE THE MARGIN":**
 
 ```diff
 @@ api/analyse.js , the `who` field spec (currently line 304)
--- who: ONE short winner headline, max ~14 words, in the REGISTER OF THE CHOSEN TAG and the
-- TONE given in the prompt. ... Name the winner and include BOTH VV Scores as passed. If AGE
-- tipped a coin-flip, lead with the younger-age feat.
-+- who: ONE short winner headline, max ~14 words, in the REGISTER OF THE CHOSEN TAG and the
-+ TONE given in the prompt. ... Name the winner and include BOTH VV Scores as passed. If AGE
-+ tipped a coin-flip, lead with the younger-age feat.
-+  THIS SENTENCE DOES NOT APPLY WHEN THE RESULT LINE SAYS INSIDE THE MARGIN. That pairing has
-+  its own rules below and they OVERRIDE this field spec: you name no winner and you print no
-+  score, in `who` and in every other field. If you find yourself about to write a number that
-+  is a VV Score, you are in the wrong branch , go and read the third-state rules again.
+- ... Name the winner and include BOTH VV Scores as passed. If AGE tipped a coin-flip, lead
+- with the younger-age feat.
++ ... Name the winner and include BOTH VV Scores as passed. If AGE tipped a coin-flip, lead
++ with the younger-age feat.
++  THAT SENTENCE APPLIES ONLY WHERE THE RESULT LINE NAMES A WINNER OR ASKS YOU TO JUDGE ONE.
++  WHERE IT SAYS THERE IS NO WINNER , whether because the two scores are LEVEL or because the
++  gap sits inside the margin , `who` names none, and neither does any other field. Banned
++  outright in that state, in prose as well as in the headline: "edges it", "shades it", "takes
++  it", "just ahead", "the better of the two", "gets the nod", "by the narrowest". A closing
++  line that leaves the reader in no doubt which season you preferred IS a winner, whatever
++  words it used, and the chip rendered beside you will read "The Debate Lives On".
++  THE SCORES ARE A SEPARATE QUESTION AND THEY ARE NOT FORBIDDEN ON A LEVEL PAIRING , the page
++  prints both beneath your line there. Do not repeat them in `who`, for the same reason you do
++  not repeat a scoreline on a separated pair: the UI already renders it.
 ```
 
+**AND LINE 235 DESCRIBES A MECHANISM THAT NO LONGER EXISTS, WHICH IS THE SECOND HALF.** It
+reads *"If a tiebreak has already decided it, there IS a winner: name them and lead with the
+reason they took it."* SS C records the age tiebreaker as **retired** , `tipped` is false
+unconditionally , so that clause can never apply and the model is being offered a route to a
+crown that the engine closed.
+
 ```diff
-@@ api/analyse.js , third-state rule 2 (currently line 229)
- 2. NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT. You are given both so you can
- understand why the Index went quiet; you are not given them to print. ...
-+   THIS BINDS EVERY FIELD, NOT JUST THE HEADLINE , `who`, `p1`, `p2`, `h2h` and `verdict`
-+   alike. The field spec further down tells you to include both VV Scores in `who`; on THIS
-+   pairing that instruction does not apply, and the measured failure was exactly this: a
-+   compliant headline followed by "Both scores read 96" in the second paragraph. Writing the
-+   number once, anywhere, breaks the rule as completely as ranking them would.
-+   AND DO NOT PARAPHRASE THE NUMBER EITHER , "level on ninety-six", "both in the mid-nineties"
-+   and "separated by a single point" are the same disclosure in words.
+@@ api/analyse.js , line 235
+- If a tiebreak has already decided it, there IS a winner: name them and lead with the reason
+- they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT
+- crown anyone ...
++ NOTHING BREAKS A TIE ON THIS PLATFORM. Where the two published scores are equal there is no
++ tiebreak, no winner and no crown , age describes a season here, it never awards it. Do NOT
++ crown anyone ...
 ```
+
+**COST AND TIMING, WHICH IS WHY THIS IS STAGED AND NOT APPLIED.** Both diffs touch
+`VERDICT_SYSTEM`, which `VERDICT_VERSION` fingerprints and which `NOTES_SYSTEM` is built from,
+so applying either discards **655 cached notes , the whole rt>=85 band, 650 of 650 cards , and
+88 live-hittable verdicts.** On 2026-10-04 that band is 100% warm and a production flip is
+imminent, so applying a prose-only fix would turn the best-warmed surface on the platform cold
+on launch day. **It rides with the rest of this document, once, deliberately.**
+
+**AND WHEN IT SHIPS, THE 69 EXISTING ROWS DO NOT NEED DELETING** , the fingerprint moves, so
+every one of them becomes a miss and regenerates on next view. Re-measure the same five figures
+afterwards rather than assuming the edit worked; the query is the one in this section's table.
 
 ---
 

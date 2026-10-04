@@ -546,7 +546,15 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 **READING SIX VERDICTS FOUND THREE REASONING DEFECTS THAT NO SWEEP OF RENDERING COULD SEE, AND ALL THREE ARE ONE FAILURE: THE MODEL REASONING FROM WORLD KNOWLEDGE WHERE THE EVIDENCE STOPS (2026-10-03). The edit is WRITTEN AND NOT APPLIED , `docs/PROMPT_EDIT_PROPOSED_2026-10-03.md`.**
 - **THEY WERE FOUND BY READING THE PROSE, NOT BY MEASURING IT.** Every contrast sweep, overflow check and error listener on this platform passes a verdict that says something false , the page lays out perfectly and the sentence is wrong. **Five comparisons produced three distinct defects, which is a rate worth taking seriously before any prompt edit ships.**
 
-**(1) THE THIRD STATE LEAKED A VV SCORE, AND THE CAUSE IS A CONTRADICTION INSIDE THE SYSTEM PROMPT RATHER THAN A MISSING RULE.** On Messi 14/15 against Messi 12/13 (96 against 96) paragraph 2 opened **"Both scores read 96."**
+**[(1) BELOW NAMES THE WRONG STATE AND THE WRONG DEFECT, MEASURED AT n=69 ON 2026-10-04. THE CORRECTION SITS ABOVE IT BECAUSE THIS FILE'S OWN RULE SAYS A SUPERSEDED PARAGRAPH LEFT ABOVE ITS CORRECTION WILL BE READ FIRST AND ACTED ON , AND THIS ONE WAS ALREADY ACTED ON, AS THE DAY'S FIRST MUST-FIX.]**
+- **THE DEFECT IS A WINNER, NOT A SCORE, AND IT IS ON THE `tie` STATE RATHER THAN THE THIRD STATE.** Over every `verdict_cache` row on the current Path A base with `rt_a = rt_b`: **63 of 69 (91%) use banned winner language** , "edges it", "shades it", "takes it" , **65 of 69 print a VV Score in `who`**, and **66 of 69 return a crowned side in the `winner` field.** The model picks `the_debate` correctly on 67 of 69 and then names a winner in the prose beside it.
+- **AND THE STATE MATTERS, BECAUSE THE QUEUED FIX WAS AIMED AT THE CLEAN ONE.** `verdictContext` sets `separation = g === 0 ? 'tie' : (separated ? 'separated' : 'inside')`, so a gap of zero NEVER reaches `inside`. The entry below and `docs/PROMPT_EDIT_PROPOSED_2026-10-03.md` section 1 both gated their fix on the phrase *"WHEN THE RESULT LINE SAYS INSIDE THE MARGIN"*, which governs `inside` pairings , **measured at 0 of 19 naming a score.** It would have tightened the state that already complies perfectly and left the one failing 91% of the time untouched.
+- **THE SCORE IS NOT A LEAK ON A TIE, BECAUSE THE PAGE PRINTS IT ANYWAY.** `_showScore` is `separation !== 'inside'`, so a tie renders "96 & 96" directly beneath the prose, deliberately, with a comment saying an exact tie is one of the two states where a score line cannot imply a rank. **Prose naming a number the UI prints four inches below is redundant, not a disclosure** , and the paraphrase ban the entry below proposes ("level on ninety-six") would have forbidden the most natural way to write a tie verdict in order to hide a figure already on screen.
+- **SEVERITY IS PROSE ONLY , NO CARD IS EVER BADGED ON A TIE, AND THIS WAS CONTROL-TESTED RATHER THAN READ.** `applyVerdictOutcome` opens `if (ctx.separation !== 'inside') return out;`. Driving it with a model-crowned A: **`tie` -> winner `tie`, decidedBy null; `inside` -> winner A, decidedBy `ai`; `separated` -> winner `tie`.** The `inside` row is the positive control, so the `tie` row is a refusal and not a dead path. **Chip, badge and `winner` are all correct; only the sentences disagree.**
+- **IT CANNOT BE FIXED FROM THE USER PROMPT AND THAT IS ESTABLISHED, NOT ASSUMED.** `compare.html` carries the prohibition twice , the tie `winNote` says *"do NOT say either 'edges it'"*, and `_whoSpec` offers **"Salah edges it" as its own counter-example**, which is the exact string the model produced. **The cause is line 304, the unconditional `who` spec: *"Name the winner and include BOTH VV Scores as passed."* The measured output is near-exact compliance with it**, and line 235 compounds it by still offering a tiebreak route that §C records as retired.
+- **STAGED, NOT APPLIED, AND THE REASON IS THE WARM CACHE.** The fix is a `VERDICT_SYSTEM` edit, so it discards **655 notes , the whole rt>=85 band, 650 of 650 cards , and 88 live-hittable verdicts.** Spending that on a prose-only contradiction hours before a production flip is the wrong trade; it rides with the other queued edits, once. **When it ships the 69 rows need no deletion** , the fingerprint moves and they regenerate on next view.
+
+**[SUPERSEDED, KEPT FOR THE ONE THING IT GOT RIGHT: IT IDENTIFIED LINE 304 AS THE CAUSE.] (1) THE THIRD STATE LEAKED A VV SCORE, AND THE CAUSE IS A CONTRADICTION INSIDE THE SYSTEM PROMPT RATHER THAN A MISSING RULE.** On Messi 14/15 against Messi 12/13 (96 against 96) paragraph 2 opened **"Both scores read 96."**
 - **THE RULE IS PRESENT AND EXPLICIT** , third-state rule 2: *"NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT."* So nothing was forgotten.
 - **AND THE FIELD SPEC FOR `who` CONTRADICTS IT UNCONDITIONALLY** , *"Name the winner and include BOTH VV Scores as passed."* On a third-state pairing the two sentences cannot both be obeyed. **The model split them: a compliant headline ("Two seasons. No verdict.") followed by the score in the prose.** That is the worst of the three possible outcomes, because it reads as compliance until the second paragraph.
 - **SO THE FIX IS TO MAKE THE FIELD SPEC STATE-AWARE, NOT TO RESTATE THE PROHIBITION LOUDER.** A rule that loses to another rule is not a rule that needs emphasis; it needs the conflict removed. **The same shape as the splice: a value computed from one thing while a different thing is used.**
@@ -755,6 +763,9 @@ Bar legend: each block ~5.5%. Update honestly , overstating progress hurts the n
 - **THE COMMON SHAPE IS NOT "THE CHECK WAS WRONG", IT IS "THE CHECK WAS NEVER EXERCISED".** Every one of them was READ and looked correct; two were written by someone who had just written the rule they were about to violate. **A check's passing state is uninformative until its failing state has been observed at least once**, because a pass is equally consistent with "nothing is wrong" and "this cannot see anything".
 - **SO THE PROCEDURE IS ONE LINE AND IT IS NOT OPTIONAL: break the thing on purpose, watch the check fail, put it back, watch it pass.** The planted fault should be the CHEAPEST REAL ONE , a wrong year in a series, a stray file, a reordered key , not an exotic case, because the point is to prove the instrument is connected rather than to explore its limits.
 - **AND THE CONTROL BELONGS IN THE RECORD, NOT ONLY IN THE MOMENT.** Where it has been done, the numbers are written beside the check so a later reader can re-run it: A19 reads 0 at 916px and 11 at 1680px; the figures checker reads 19/0 clean and 19/2 with two planted drifts; `lintCacheStamps` moves both probes on a real key reorder and exits 1. **A check with no recorded control is a check nobody has tested, whatever its comments claim.**
+- **[THIRD FAULT IN THE SAME REGEX, 2026-10-04, AND IT PUBLISHED A WRONG NUMBER WHILE REPORTING CLEAN.** `apply-figures` matched its key as `([a-z_]+)`, **with no digits**, so `data-fig="walk_gaw90"` matched NOTHING , the span fell out of the scan and the run printed *"31 figures, 0 drifted"* while the page served **1.056** against a generated **1.158**. The worked example's own headline figure, understated by 9%, with a clean bill of health beside it. Widened to `[a-z0-9_]+` on the scalar and series paths; the run now reads 32 figures and fires. **Control: planting 9.999 on that key reports DRIFT and exits 1; restoring reports OK.]**
+  - **THE PATTERN IS NOW UNARGUABLE AND IT IS ABOUT THIS ONE REGEX: a greedy quantifier, then a tag anchor, now a character class , three separate character-level details, each of which silently SHRANK what the check could reach, and all three printed "0 drifted" while doing it.** None was a logic error and none threw. **So the thing to distrust in a text-matching check is not its logic but its ALPHABET and its BOUNDARIES**, and the only way to see either is to plant a fault on a real key.
+  - **AND THE GENERALISING RULE: A KEY PATTERN MUST ADMIT EVERYTHING ITS PRODUCER CAN EMIT.** `gen-index-figures.js` writes keys straight from its own `w1(...)` calls with no character restriction, so any pattern narrower than the full identifier set is a silent filter on the consumer's side. **Derive the class from the producer, never from the keys that happen to exist today** , `walk_gaw90` was the first key with a digit in it, and it arrived months after the matcher.
 - **THIS GENERALISES PAST CHECKS TO ANY INSTRUMENT.** SS C already records it for a guard that never fires, for the density detector that missed its own motivating case, for the club guard's negative control, and for the probe that must assert its precondition. **This entry is the rule those are all instances of** , and the reason it is worth stating once, at the top of the family, is that each of the three above was written by someone who knew the other two.
 
 **A SECOND LIST KEYED BY DISPLAY LABEL IS THE FRAGILITY, NOT THE DUPLICATION , AND IT FAILS BY GOING QUIET (recorded 2026-09-28, after AFCON).**
@@ -1374,6 +1385,58 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 **WHERE THE LOG STARTS. The surviving log begins at 2026-08-28.** Everything dated **2026-08-24 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-24 and 2026-08-21 entries were relocated on 2026-08-29), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
+
+### 2026-10-04 | A pre-flip pass, and the two biggest findings were both invisible to a disk audit
+
+**Commits `f5d011f` onward.** `git log` is the record; this keeps what it cannot say.
+
+**1. THE FIGURES CHECKER COULD NOT SEE ITS OWN FIGURE.** `apply-figures` matched keys as
+`([a-z_]+)`, no digits, so `data-fig="walk_gaw90"` matched nothing and the run printed
+**"31 figures, 0 drifted"** while the page published **1.056** against a generated **1.158**.
+**Third fault in that one regex**, after the greedy quantifier and the tag anchor, and all
+three shrank what it could reach while reporting clean. Rule in SS C.
+
+**2. AND THE COPY AROUND THAT NUMBER PROMISED A SUM IT DOES NOT COMPUTE.** "His goals and
+assists become a single number" invites 1.336; `gaw` discounts assists to 0.7 and penalties to
+0.78. **The number was right, the sentence was wrong, and the checker could not see either.**
+
+**3. EIGHT COPY DEFECTS, EVERY ONE FOUND BY READING RENDERED PROSE.** The Playbook said a
+keeper carries no score and, 4KB later, that every keeper is capped at 75 and the cap is stated
+on the card , a sentence Fallback C retired. The VV Index had a clause with no verb, a 97%
+with no denominator whose pull line claimed the opposite of the figure above it, 2015/16 on
+both sides of its own boundary, and a "them" with no antecedent. **No sweep on this platform
+can see any of them**: every page laid out perfectly throughout.
+
+**4. ~1.1 MB OF EAGER THIRD-PARTY HEADSHOTS ON THE DEFAULT RANKINGS VIEW** , 100 images,
+mean 22.8 KB, almost all below the fold, **invisible to a disk-based audit because they are
+cross-origin.** More than the 1.8 MB the 2026-08-29 page-weight extraction removed, put back
+by one surface. Now lazy at the single choke point.
+**AND IT WOULD HAVE SHIPPED A BLANK SHARE POSTER:** the capture stage is parked off to the
+LEFT rather than hidden, which is exactly the condition under which a lazy image is never
+fetched, so `vvSettleImages`' 4s bound would have expired and html2canvas drawn nothing.
+Forced eager there rather than at each call site , the state every capture passes through.
+
+**5. THE TIE VERDICT FINDING, AND I RANKED IT WRONG TWICE BEFORE MEASURING IT PROPERLY.**
+91% of tie verdicts crown a winner in prose beside a chip reading "The Debate Lives On".
+**First I called it a documented non-defect; then the day's first must-fix; it is neither.**
+`applyVerdictOutcome` returns early on `tie`, so **no card is ever badged** , control-tested
+with `inside` as the positive. Prose only, and the fix is a system-prompt edit that would
+discard 655 warm notes, so it is staged rather than applied. Full record in SS C and in
+`docs/PROMPT_EDIT_PROPOSED_2026-10-03.md`, whose section 1 was rewritten: it had aimed its fix
+at the `inside` state, measured at **0 of 19** failures, and would have missed this entirely.
+
+**6. TWO OF MY OWN FINDINGS WITHDRAWN.** The "unnamed search input" was a false positive , the
+inputs are `<label>`-wrapped or carry a placeholder, and my name check read only
+`aria-label||title||textContent||placeholder`. And my images pass was **under-measured**: it
+loaded pages with no query string, and `rankings.html` persists its view in `localStorage`
+where List and Compact ship **zero raster**, so it measured a platform with almost no images.
+
+**NEXT / OPEN:** **The spend cap (QA B4b) is the only thing that bounds the bill** , the global
+300/hr ceiling permits **$312/day** against a recorded **$32.94** balance, so the ceiling does
+not protect it. All three suggested matchups on compare's empty state are **cold**, and the
+verdict cache holds **88** live-hittable pairs. The share poster enlarges a 150px headshot
+**3.65x** and no larger source exists , a product call. Nothing today moved a prompt
+fingerprint, so no cached row was discarded.
 
 ### 2026-09-26/27 | Sitting 3, and three times the instrument was the thing that was wrong
 
