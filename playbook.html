@@ -1787,9 +1787,17 @@
       <div class="vvceiling"><b>The bands are named levels, not precise cuts.</b> A season near a band edge could sit either side of it. The number is measured more finely than the names divide it, so a band is the neighbourhood a season is in, not a line it cleared.</div>
       <div class="vvstory"><div class="vvstory-d">The V<span class="vvw">V</span> Score is <b>not a popularity contest</b>, and <b>not a sum of trophies</b>. It measures a single season's output, weighed against the standard of its position and the strength of its stage. A striker is asked for goals; a playmaker, for creation; a defender, for control, <b>each judged against their own kind</b>. Then the league is accounted for, because <b>thirty goals in the strongest division is not thirty goals in a gentler one</b>. What remains is a single, defensible figure, the closest thing the game has to a <b>common currency</b>, so any two seasons, separated by decades or borders, can finally be set on the same table and asked the only question that matters: <b>who was greater?</b></div></div>
     
-      <!--  THE WALK. Its 21 figures are generated , playbook.html was added to
+      <!--  THE WALK. Its figures are generated , playbook.html was added to
             apply-figures.js TARGETS in the same change, because a page that is not
-            scanned turns a generated figure into a hardcoded number on arrival.  -->
+            scanned turns a generated figure into a hardcoded number on arrival.
+            IT HAS A TITLE AND A GAP SINCE 2026-10-04. It used to butt straight onto the
+            Under-the-Lights prose above, so a reader fell out of an argument into a worked
+            example with nothing marking the change of voice , no rule, no label, no heading.
+            The label/heading pair is the page's own idiom, borrowed rather than invented.  -->
+      <div class="wkintro">
+        <div class="wk-label">Worked example</div>
+        <h3 class="wk-h">How a season becomes a number</h3>
+      </div>
       <div class="wk">
     <div class="wkhead">
       <div class="wkwho"><span data-fig="walk_player">Kylian Mbappé</span>
@@ -1802,40 +1810,40 @@
       </div>
     </div>
 
-    <!--  FOUR STEPS, NOT SEVEN, AND NO WEIGHTINGS ON THE PAGE , 2026-10-04.
-          What stood here published the method: each assist at 0.7, a fifth off each penalty,
-          four percentiles across two pools, and the blend split out as "64.7 for rank, 68.2
-          for volume", which states the 0.65/0.35 weighting in all but name. That is more
-          arithmetic than a reader needs and more of the engine than we want published.
-          WHAT THE WALK IS FOR IS THE SHAPE, NOT THE SUM: output becomes one figure, the
-          figure becomes a rate, the rate becomes a rank, and then availability and league
-          are applied. A reader who follows those four sentences understands the score; one
-          who follows seven lines of division understands the spreadsheet.
-          THE SURVIVING VALUES ARE THE THREE A READER CAN USE , a per-90 rate, a percentile
-          and the league weight. The intermediate figures (the combined output, the assembled
-          pre-ladder number) are on a scale nobody sees, which the old step 7 admitted in so
-          many words while printing it anyway. They stay in index-figures.json, with their
-          queries, for anyone who needs to audit the chain; they are simply not published.  -->
+    <!--  THREE STEPS, AND THEY ARE CHOSEN BY SURPRISE RATHER THAN BY COMPLETENESS , 2026-10-04.
+          This was seven steps, then four. Four was still a method: it told a reader that goals
+          outweigh assists, that a penalty counts for less, that rates beat totals and that
+          availability saturates , all of which are either obvious or inferable, and none of
+          which anybody finishes reading and repeats to a friend.
+          WHAT IS LEFT IS THE PART NOBODY GUESSES. That a season is ranked inside its own
+          position rather than against all football, and that league strength is COMPUTED from
+          players who moved between leagues rather than assigned by reputation. The outcome
+          block carries the third: the bands are ranks, not thresholds.
+          THE CUT LINES ARE NOT A LOSS OF RIGOUR. Every figure still exists in
+          index-figures.json beside the query that produced it, so the chain is auditable; what
+          changed is what the page ASSERTS at a reader. A walk that explains everything
+          explains nothing, because nobody reaches the end of it.
+          RED CARRIES THE SURPRISE AND BOLD CARRIES THE STRUCTURE , two devices, not one. The
+          lead clause of each step is `b` (Archivo, the strong ink) and the one unexpected
+          phrase is `.hi` (Inter, --pink-ink). Everything-in-bold is what this replaced, and it
+          flattens a step into one grey weight where the eye has nothing to land on.  -->
     <div class="wkstep"><div class="wkn">1</div>
-      <div class="wkl">Goals and assists become <b>one figure</b>. A goal counts for more than an
-        assist, and a penalty for less than a goal from open play.</div>
-      <div class="wkv wkarrow">&#8595;</div></div>
-
-    <div class="wkstep"><div class="wkn">2</div>
-      <div class="wkl">That figure is measured <b>per minute on the pitch</b>, not per match, so a
-        half season and a full one can be compared at all.</div>
+      <div class="wkl"><b>One figure, per minute.</b> His goals and assists become a single
+        number, divided by <span class="hi">minutes on the pitch</span> rather than matches
+        played.</div>
       <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
 
-    <div class="wkstep"><div class="wkn">3</div>
-      <div class="wkl">The rate is ranked <b>against his own position</b>, and then against every
-        outfielder , how high it was, and how much of it there was.</div>
-      <div class="wkv"><span data-fig="walk_pct_pool_rate">99.4</span><small>percentile,
-        <span data-fig="walk_pool">Winger</span></small></div></div>
+    <div class="wkstep"><div class="wkn">2</div>
+      <div class="wkl"><b>Then ranked against his own kind.</b> Not against every footballer:
+        <span class="hi">against every other <span data-fig="walk_pool">Winger</span> season in
+        the record</span>.</div>
+      <div class="wkv"><span data-fig="walk_pct_pool_rate">99.4</span><small>percentile</small></div></div>
 
-    <div class="wkstep"><div class="wkn">4</div>
-      <div class="wkl">Availability and league are applied last , minutes played, with the reward
-        <b>flattening long before the last one</b>; and a league weight measured
-        <b>from players who moved between them</b>, never from reputation.</div>
+    <div class="wkstep"><div class="wkn">3</div>
+      <div class="wkl"><b>And the league is weighed by who left it.</b>
+        <span data-fig="walk_league">Ligue 1</span> is not marked down by reputation. Its weight
+        is computed <span class="hi">from players who moved between leagues</span>, and what
+        happened to them when they did.</div>
       <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">0.796</span><small>league</small></div></div>
 
     <div class="wkout">
@@ -2823,9 +2831,9 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
     defines none of them. Declaring them on the block keeps the walk self-contained and leaves
     the Playbook's namespace untouched , SEC C: a token defined for one ground is not a token,
     so BOTH grounds are declared here, not just the one that was looked at.  */
-.wk{--vi-gold-num:#E8B84B;--vi-ink:rgba(243,237,224,.80);--vi-line:rgba(243,237,224,.11);
+.wk,.wkintro{--vi-gold-num:#E8B84B;--vi-ink:rgba(243,237,224,.80);--vi-line:rgba(243,237,224,.11);
     --vi-mut:rgba(243,237,224,.52);--vi-panel:rgba(255,255,255,.03);--vi-strong:var(--cream)}
-body.light .wk{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(28,27,26,.14);
+body.light .wk,body.light .wkintro{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(28,27,26,.14);
     --vi-mut:#5f594e;--vi-panel:rgba(0,0,0,.035);--vi-strong:var(--charcoal)}
   .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
   .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
@@ -2845,6 +2853,25 @@ body.light .wk{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(
   .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
   .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
   .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  /*  THE GAP, THE RULE AND THE TITLE. `.wkintro` carries the same token block as `.wk` (see
+      the selector above) so `--vi-line` resolves here too; without that the hairline would
+      silently draw in whatever the page's own line colour happens to be, or in nothing.
+      The label/heading pair deliberately reuses the page's `.label` + heading idiom at a
+      smaller size, because this is a sub-head inside a section rather than a section of its
+      own, and a full 34px `.h2` would claim to be one.  */
+  .wkintro{max-width:660px;margin:38px auto 16px;padding-top:28px;
+    border-top:1px solid var(--vi-line)}
+  .wk-label{font-family:'Archivo';font-weight:700;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--vi-mut);margin-bottom:7px}
+  .wk-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;
+    line-height:1.15;letter-spacing:-.012em;color:var(--vi-strong);margin:0}
+  /*  RED IS A SECOND DEVICE, NOT A LOUDER FIRST ONE. `b` above is Archivo in the strong ink
+      and marks the STRUCTURE of a step; this marks the one thing in it a reader does not
+      expect. It stays in Inter at 600 so the two never read as the same emphasis wearing two
+      colours , if this also went Archivo-700 the step would just be bold twice.
+      --pink-ink is already per-theme on this page (#F1688E dark, #AD0332 light), so it needs
+      no override of its own and cannot drift from the wordmark's pink.  */
+  .wkl .hi{color:var(--pink-ink);font-weight:600}
   .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
     color:var(--vi-mut);margin-top:4px}
@@ -2856,6 +2883,22 @@ body.light .wk{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(
     padding-top:16px;border-top:1px solid var(--vi-line)}
   .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
   .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
+  /*  ⚠ THESE FOUR ARE INDENTED AS IF THEY SIT IN A MEDIA QUERY AND THEY DO NOT , FOUND
+      2026-10-04, PRE-EXISTING (identical at HEAD~2), AND DELIBERATELY NOT CHANGED HERE.
+      There is no `@media` wrapping them: read from the CSSOM rather than the source, each one
+      reports "TOP LEVEL", and `matchMedia` finds no query touching .wkv/.wkhead/.wkarrow/.wkout
+      at all. So the walk renders its PHONE layout at every width , the value drops under the
+      step instead of sitting in column 3, and `.wkhead` is block instead of flex. Measured at
+      innerWidth 1920: `.wkstep` computes `20px 572px 0px`, the third column collapsed because
+      nothing is in it.
+      THE INDENTATION IS THE ONLY SURVIVING EVIDENCE OF THE INTENT, which is why it is kept
+      rather than tidied: somebody wrote these for `@media (max-width:720px)` and the opening
+      line never arrived. An unclosed @media would NOT produce this , CSS auto-closes at EOF
+      and the rules would still be inside it. There is simply no query.
+      FIXING IT IS A VISUAL CHANGE TO THE DESKTOP WALK and belongs with a render and Lucas,
+      not with a copy edit , so it is reported and left. Whoever takes it: wrap these four in
+      `@media (max-width:720px){ }` and check the desktop walk, because the layout nobody has
+      seen is the one that has never shipped.  */
     .wkv{grid-column:2;text-align:left;margin-top:6px}
     .wkhead{display:block}
     .wkarrow{display:none}

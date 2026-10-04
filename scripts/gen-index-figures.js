@@ -462,6 +462,15 @@ async function main() {
   w1('walk_anchors', [anchors.b85, anchors.b90, anchors.b95].map(v => v.toFixed(1)).join(','),
      'the ladder anchors at 85, 90 and 95', 'the 650th, 150th and 12th highest figure in the record');
   w1('walk_pool', W.pool, 'the position pool he is read against', 'player_card_mv.position_pool');
+  /*  THE LEAGUE'S NAME, so step 3 can say which one rather than "his league". The engine's
+      output object does NOT carry league_code (rt_reimpl.js drops it after computing the
+      weight), so it is read back off the card row by card_id and resolved through the SAME
+      `lgName` guard as the elite table above , which throws rather than printing a bare code,
+      and which exists because the `leagues` table says TSL where every card says TR.  */
+  const wRow = engCards.find(c => c.card_id === W.card_id);
+  if (!wRow) throw new Error('the walk card vanished from engCards , cannot name its league');
+  w1('walk_league', lgName(wRow.league_code), 'the league that season was played in',
+     'player_card_mv.league_code, named through vv-core\'s canonical map');
 
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))

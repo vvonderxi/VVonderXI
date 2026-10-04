@@ -312,6 +312,13 @@
       "query": "scripts/separability/rt_reimpl.js, run over the live matview"
     },
     {
+      "key": "walk_league",
+      "value": "Ligue 1",
+      "claim": "the league that season was played in",
+      "definition": "player_card_mv.league_code, named through vv-core's canonical map",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
       "key": "ballon_dor_seasons",
       "value": 14,
       "claim": "Ballon d'Or seasons the record holds",
