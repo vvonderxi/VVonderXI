@@ -405,7 +405,18 @@ async function main() {
   const bAll = E.out.map(x => RT.bFor(x, E));
   const anchors = RT.anchorsOf(bAll);
 
-  const WALK_NAME = 'Mohamed Salah', WALK_YEAR = 2024;
+  /*  THE SUBJECT IS A DECISION, NOT A CONVENIENCE , CHANGED FROM SALAH 24/25 ON 2026-10-04.
+      Salah is Premier League, and the Premier League is the engine's baseline, so his league
+      weight is exactly 1.000 and the walk's last step displayed "x 1" , a step that states a
+      real and unusual property of this platform (league strength is MEASURED, from players
+      who moved, not assigned by reputation) and then demonstrated nothing at all.
+      Mbappe 21/22 is Ligue 1, measured at 0.7958 for that season, so the step finally shows
+      its own point. He also has 28 goals AND 17 assists, so the opening step , that goals and
+      assists become one figure , is visible in the inputs; Kane 17/18 was the other candidate
+      and his 2 assists would have hidden it.
+      THE NAME MUST MATCH THE STORED STRING EXACTLY, accent included, or the guard below
+      throws rather than quietly walking a different season.  */
+  const WALK_NAME = 'Kylian Mbappé', WALK_YEAR = 2021;
   const wi = E.out.findIndex(x => x.name === WALK_NAME && x.season_year === WALK_YEAR && x.minutes > 3000);
   if (wi < 0) throw new Error(`the scoring walk needs ${WALK_NAME} ${WALK_YEAR} and did not find it`);
   const W = E.out[wi], wb = bAll[wi], wrt = RT.rtFrom(wb, anchors);

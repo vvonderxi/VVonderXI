@@ -1792,63 +1792,56 @@
             scanned turns a generated figure into a hardcoded number on arrival.  -->
       <div class="wk">
     <div class="wkhead">
-      <div class="wkwho"><span data-fig="walk_player">Mohamed Salah</span>
-        <small><span data-fig="walk_season">24/25</span> &#183; read against other
+      <div class="wkwho"><span data-fig="walk_player">Kylian Mbappé</span>
+        <small><span data-fig="walk_season">21/22</span> &#183; read against other
         <span data-fig="walk_pool">Winger</span> seasons</small></div>
       <div class="wkin">
-        <div><b><span data-fig="walk_goals">29</span></b>goals</div>
-        <div><b><span data-fig="walk_assists">18</span></b>assists</div>
-        <div><b><span data-fig="walk_minutes">3,377</span></b>minutes</div>
+        <div><b><span data-fig="walk_goals">28</span></b>goals</div>
+        <div><b><span data-fig="walk_assists">17</span></b>assists</div>
+        <div><b><span data-fig="walk_minutes">3,032</span></b>minutes</div>
       </div>
     </div>
 
+    <!--  FOUR STEPS, NOT SEVEN, AND NO WEIGHTINGS ON THE PAGE , 2026-10-04.
+          What stood here published the method: each assist at 0.7, a fifth off each penalty,
+          four percentiles across two pools, and the blend split out as "64.7 for rank, 68.2
+          for volume", which states the 0.65/0.35 weighting in all but name. That is more
+          arithmetic than a reader needs and more of the engine than we want published.
+          WHAT THE WALK IS FOR IS THE SHAPE, NOT THE SUM: output becomes one figure, the
+          figure becomes a rate, the rate becomes a rank, and then availability and league
+          are applied. A reader who follows those four sentences understands the score; one
+          who follows seven lines of division understands the spreadsheet.
+          THE SURVIVING VALUES ARE THE THREE A READER CAN USE , a per-90 rate, a percentile
+          and the league weight. The intermediate figures (the combined output, the assembled
+          pre-ladder number) are on a scale nobody sees, which the old step 7 admitted in so
+          many words while printing it anyway. They stay in index-figures.json, with their
+          queries, for anyone who needs to audit the chain; they are simply not published.  -->
     <div class="wkstep"><div class="wkn">1</div>
-      <div class="wkl">Output becomes one figure , each assist at <b>0.7</b>, a fifth off each of his
-        <span data-fig="walk_pens">9</span> penalties.</div>
-      <div class="wkv"><span data-fig="walk_gaw">39.62</span><small>output</small></div></div>
+      <div class="wkl">Goals and assists become <b>one figure</b>. A goal counts for more than an
+        assist, and a penalty for less than a goal from open play.</div>
+      <div class="wkv wkarrow">&#8595;</div></div>
 
     <div class="wkstep"><div class="wkn">2</div>
-      <div class="wkl">Divided by minutes, not matches, so <b>a half season and a full one become
-        comparable.</b></div>
+      <div class="wkl">That figure is measured <b>per minute on the pitch</b>, not per match, so a
+        half season and a full one can be compared at all.</div>
       <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
 
     <div class="wkstep"><div class="wkn">3</div>
-      <div class="wkl">Then ranked twice , <b>once among wingers</b>, once against every outfielder.
-        <div class="wkpair">
-          <div class="wkp"><span><span data-fig="walk_pool">Winger</span> pool</span>
-            <b><span data-fig="walk_pct_pool_rate">99.1</span> rate &#183;
-               <span data-fig="walk_pct_pool_vol">99.9</span> volume</b></div>
-          <div class="wkp"><span>Every outfielder</span>
-            <b><span data-fig="walk_pct_all_rate">99.6</span> rate &#183;
-               <span data-fig="walk_pct_all_vol">100</span> volume</b></div>
-        </div>
-      </div>
-      <div class="wkv wkarrow">&#8595;</div></div>
+      <div class="wkl">The rate is ranked <b>against his own position</b>, and then against every
+        outfielder , how high it was, and how much of it there was.</div>
+      <div class="wkv"><span data-fig="walk_pct_pool_rate">99.4</span><small>percentile,
+        <span data-fig="walk_pool">Winger</span></small></div></div>
 
     <div class="wkstep"><div class="wkn">4</div>
-      <div class="wkl">Blended, pool first, with the <b>raw size</b> of the output beside it ,
-        <span data-fig="walk_rank_term">64.7</span> for rank,
-        <span data-fig="walk_vol_term">68.2</span> for volume.</div>
-      <div class="wkv"><span data-fig="walk_perf">132.9</span><small>performance</small></div></div>
-
-    <div class="wkstep"><div class="wkn">5</div>
-      <div class="wkl">Availability is added, on a curve that <b>stops rewarding minutes long before
-        the last one.</b></div>
-      <div class="wkv">+&#8201;<span data-fig="walk_avail">27</span><small>availability</small></div></div>
-
-    <div class="wkstep"><div class="wkn">6</div>
-      <div class="wkl">And the league is weighted , <b>not by reputation, but from players who moved
-        between them.</b> The Premier League is the baseline.</div>
-      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">1</span><small>league</small></div></div>
-
-    <div class="wkstep"><div class="wkn">7</div>
-      <div class="wkl">Which assembles to one figure, on a scale nobody sees.</div>
-      <div class="wkv"><span data-fig="walk_b">120</span><small>assembled</small></div></div>
+      <div class="wkl">Availability and league are applied last , minutes played, with the reward
+        <b>flattening long before the last one</b>; and a league weight measured
+        <b>from players who moved between them</b>, never from reputation.</div>
+      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">0.796</span><small>league</small></div></div>
 
     <div class="wkout">
       <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
         650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
-      <div class="wkrt"><span data-fig="walk_rt">95</span></div>
+      <div class="wkrt"><span data-fig="walk_rt">92</span></div>
     </div>
   </div>
       <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
@@ -2867,6 +2860,37 @@ body.light .wk{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(
     .wkhead{display:block}
     .wkarrow{display:none}
     .wkout{align-items:flex-end}
+
+  /*  ── SHIRT NUMBERS AT PHONE WIDTH , 2026-10-04 ─────────────────────────────────────
+      MEASURED BEFORE, at 390: the cell is `flex:0 1 150px` inside a 263px row, so each
+      shield sat hard left with 92px of nothing to its right, and the prose wrapped at
+      150px into three cramped lines. Centring the cell was the first instinct and it was
+      measured too: it balances the dead space instead of closing it, and costs HEIGHT ,
+      771px against today's 611px. Laying the shield BESIDE its own words closes the gap by
+      using it and comes out at 432px, 29% SHORTER than today, with the prose on a 256px
+      measure. On a phone that trade beats symmetry.
+      THIS BLOCK IS LAST IN THE SHEET ON PURPOSE. The rules it overrides are top-level, so
+      they apply at every width; SS C records that a media query adds NO specificity, so the
+      only thing making these win is their position. Do not move them above `.shsp`.
+      THE ARROWS ARE DELIBERATELY UNTOUCHED, and that is a finding rather than an omission:
+      measured on a real flagged card (Trossard 22/23, --cw 330) the card's own mark is
+      19.8x19.8 in rgb(28,27,26), and this explainer draws 20.0x20.0 in the same ink. They
+      match. Enlarging or tinting only the explainer would make it misrepresent the thing it
+      exists to teach. That the mark is hard to find at all is true of the CARD, and it is
+      logged as its own item in POST_LAUNCH.md.  */
+  @media (max-width:720px){
+    .shsp{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:14px;row-gap:3px;
+      align-items:start;flex:1 1 100%;max-width:none}
+    .shsp-fig{grid-row:1/3;min-height:0;padding:2px 0 0}
+    .shsp-fig.none{padding-bottom:0}
+    /*  THE TWO-LINE LABEL RESERVE IS DROPPED HERE AND KEPT EVERYWHERE ELSE. It exists so
+        that specimens sitting SIDE BY SIDE start their prose at the same height (the FAULT 2
+        note above). Stacked one per row, there is nothing to align to and the reserve is
+        just dead space in the layout that was rebuilt to remove it.  */
+    .shsp-l{min-height:0;display:block;margin:0}
+    .shsp-t{margin:0}
+    .shgrp-row{gap:18px}
+  }
 </style>
 <script>
 /*  RENDERED FROM THE SHARED STRINGS , see the comment at #s-conf. If VVCore is not loaded the

@@ -798,30 +798,57 @@
       the face is --cw x 1.397 and the width is clamped by max-width:92%, so reading 1.397
       off the CSS and sizing an image with it is wrong , this sizes from the capture's own
       912x1383 instead).  */
-  /*  CENTRED, NOT TOP-ALIGNED. The standfirst is two lines and the card is 250px, so
-      flex-start left ~210px of dead column under the text , the same ragged hole this
-      section's grid was just fixed for. Centring splits it above and below, which reads as
-      the card being set beside the sentence rather than hung off its first line.  */
-  .vi-lims-top{display:flex;gap:30px;align-items:center;margin:0 0 20px}
-  .vi-lims-top .vi-lims-s{margin:0;flex:1 1 auto}
-  .vi-lims-card{margin:0;flex:0 0 auto;line-height:0}
-  /*  THE CAPTION IS THE WIDTH OF THE CARD AND NOT OF THE ROW, so it reads as belonging to
-      the image rather than as another column of body copy beside it. line-height is reset
-      because .vi-lims-card sets 0 for the image's sake.  */
-  .vi-lims-cap{font-family:'Inter';font-size:12.5px;line-height:1.55;color:var(--ink-soft);
-    margin:12px 0 0;max-width:34ch;text-align:left}
+  /*  [REPLACED 2026-10-04. The rule that stood here centred the card against the standfirst
+      and that was a fix to the SYMPTOM. The cause was where the text was.]
+      MEASURED BEFORE, at 1440: the row is 820x436 and the standfirst is TWO LINES, 47px ,
+      so 89% of the left column was empty, and it was the WIDER column, 64% against the
+      card's 33%. The card rendered 165px wide, NARROWER THAN ITS OWN CAPTION'S COLUMN,
+      because the figure was sized by the caption's 34ch and not by the image.
+      SO THE TEXT MASS WAS IN THE WRONG COLUMN. The caption is 174px of copy and it was in
+      the narrow side; the sentence was 47px and it had the wide one. Moving the caption
+      left closes the hole from 89% to 49% and lets the card grow 165 -> 224px, and neither
+      of those needed a bigger image , only the copy going where the space already was.
+      IT IS A GRID AND NOT FLEX SO THE FIGCAPTION CAN STAY A FIGCAPTION. Grid areas reach
+      DIRECT children only, so the <figure> itself has to be the grid; the caption is then
+      its last child, which is where the spec wants it and keeps the image described.  */
+  /*  FOUR ROWS, AND THE TWO EMPTY ONES ARE THE WHOLE POINT. The first build used two rows
+      and the two texts were shoved to opposite ends of the panel: the card spans both, the
+      card is taller than the text, so the leftover height was split BETWEEN the standfirst
+      and the caption and opened a gap of ~85px where 12 was intended. `align-items:center`
+      centres each row's content inside its own row; it cannot keep two rows together.
+      So the slack is given to a `1fr` above and below the pair instead, and the two text
+      rows stay `auto` , adjacent, 12px apart, and centred AS A BLOCK against the card.  */
+  .vi-lims-top{display:grid;grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:1fr auto auto 1fr;
+    grid-template-areas:". card" "stand card" "cap card" ". card";
+    column-gap:30px;row-gap:0;align-items:center;margin:0 0 20px}
+  .vi-lims-top .vi-lims-s{grid-area:stand;margin:0 0 12px;max-width:46ch}
+  /*  THE CAPTION IS NOW BODY COPY IN THE TEXT COLUMN, not a label under a picture, so it
+      takes a reading measure rather than the image's width.  */
+  .vi-lims-cap{grid-area:cap;font-family:'Inter';font-size:12.5px;line-height:1.55;
+    color:var(--ink-soft);margin:0;max-width:44ch;text-align:left}
   .vi-lims-cap b{color:var(--cream);font-weight:600}
   body.light .vi-lims-cap b{color:var(--charcoal)}
-  .vi-lims-card img{height:250px;width:auto;max-width:100%;border-radius:var(--r-lg);
-    box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
+  .vi-lims-img{grid-area:card;display:block;height:340px;width:auto;max-width:100%;
+    border-radius:var(--r-lg);box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
   @media (max-width:720px){
-    .vi-lims-top{flex-direction:column;gap:18px;align-items:center}
-    .vi-lims-top .vi-lims-s{order:-1}
-    .vi-lims-card img{height:auto;width:232px}
+    /*  ONE COLUMN, AND THE CARD SITS BETWEEN THE TWO TEXTS rather than above both: the
+        standfirst introduces it and the caption reads it, which is the order the words are
+        written in and the only order that works once they are stacked.  */
+    .vi-lims-top{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;
+      grid-template-areas:"stand" "card" "cap";row-gap:16px;justify-items:center}
+    .vi-lims-top .vi-lims-s{margin:0}
+    .vi-lims-img{height:auto;width:232px}
     .vi-lims-cap{max-width:300px;margin-inline:auto}
   }
   .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;grid-auto-flow:row dense}
-  .vl{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
+  /*  THE VAN DIJK EXHIBIT SHARES THIS RULE RATHER THAN RESTATING IT, so the panel and the
+      eight blocks below cannot drift apart , one source for the ground, the hairline, the
+      radius and the padding. It is the BASE .vl and deliberately NOT .vl.kchoice, whose
+      gold border is that one panel's accent and would borrow a meaning the exhibit has
+      no claim to. (The demo this was approved from picked up the kchoice gold by querying
+      the first .vl on the page; the neutral border is what ships.)  */
+  .vl,.vi-lims-top{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
   .vl-n{font-family:'Archivo',sans-serif;font-weight:900;font-size:42px;line-height:1;letter-spacing:-.02em;color:var(--cream);display:block}
   .vl-n small{display:block;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
   .vl.nofig .vl-n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;line-height:1.25;letter-spacing:-.005em}
@@ -853,7 +880,7 @@
   body.light .vl.kchoice{border-color:rgba(168,118,15,.32)}
   body.light .vl.kchoice .vl-n{color:var(--vi-gold-num)}
   body.light .vi-lims-h{color:var(--charcoal)}
-  body.light .vl{background:rgba(255,255,255,.62);border-color:rgba(28,27,26,.10)}
+  body.light .vl,body.light .vi-lims-top{background:rgba(255,255,255,.62);border-color:rgba(28,27,26,.10)}
   body.light .vl-n{color:var(--charcoal)}
   body.light .vl-c{color:var(--charcoal)}
   @media (max-width:720px){ .vl-grid{grid-template-columns:1fr} .vi-lims-h{font-size:23px} }
@@ -965,11 +992,15 @@
           IT IS THE FIFTH EMBEDDED SNAPSHOT ON THE PLATFORM. `scripts/check-card-image.js`
           is what stops it going stale in silence: it fingerprints the card face and queries
           the card's live figures. Run it after anything that moves either.  -->
-    <div class="vi-lims-top">
+    <!--  THE <figure> IS THE GRID ITSELF , 2026-10-04. The caption moved into the TEXT
+          column (see the rule), and grid areas only reach DIRECT children, so the inner
+          figure wrapper is gone and this one carries the layout. The figcaption stays the
+          figure's last child, which is what the spec asks and what keeps the image
+          described rather than leaving it a bare img with the words floating beside it.  -->
+    <figure class="vi-lims-top">
       <p class="vi-lims-s">Some of these the Index cannot do. Some it will not. Every one is on the card it affects.</p>
-      <figure class="vi-lims-card">
-        <img src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" loading="lazy" decoding="async"
-             alt="A VVonderXI card: Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72, carrying Champions League and Player of the Season tags.">
+      <img class="vi-lims-img" src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" loading="lazy" decoding="async"
+           alt="A VVonderXI card: Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72, carrying Champions League and Player of the Season tags.">
         <!--  THE CAPTION CARRIES THE ARGUMENT, OR THE CARD IS DECORATION , 2026-10-03.
               The reasoning for THIS card was written in the comment above and nowhere a reader
               could see it, so the figure had no caption at all. Lucas looked at it and asked why
@@ -981,8 +1012,7 @@
               the caption cannot keep, which is the lesson this file records against the
               contrast-exceptions heading.  -->
         <figcaption class="vi-lims-cap">Virgil van Dijk, Liverpool 2018/19. One card, and the evidence for three of the panels below. He scores <b>72</b>, because the record counts what a defender does and not what he prevents. He is a <b>centre&#8209;back</b>, and not one of them reaches the top band. And he carries a <b>Champions League and a Player of the Season</b> beside that 72, because no honour moves a score.</figcaption>
-      </figure>
-    </div>
+    </figure>
     <div class="vl-grid">
       <div class="vl kchoice"><span class="vl-k">A choice</span><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
         <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one moves a score by a point.</p>

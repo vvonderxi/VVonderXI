@@ -1418,7 +1418,7 @@ B/C/D, the six punchlist reviews, the comparisons, the spend cap and the old API
 
 **4. INSTRUMENT FAULTS, MINE:** an impact check compared OLD with OLD because the snapshot was not exported (caught by a control asserting the two blocks differ); a real click aimed before any screenshot had fixed the coordinate frame landed on the card face and reported a flip; a capture on a hidden tab timed out the evaluator and had nevertheless finished. **Each was caught by a control that had to change, which is the only reason the second reading was trusted.**
 
-**NEXT / OPEN:** Lucas: item 26 on `/card.html?id=134303`, the old API-Football key being dead (C5's open half), B4b's spend cap, the Eredivisie overlap, the Vercel flip. Mine: punchlist 36 (the BAM club-name check reads false on 93 of 94 completed seasons; six with real unplayed names unexamined), `.pghint` and the continental chip glyphs as demos, and whether the story and scout prose take Fraunces. **Item 25 stays gated.**
+**NEXT / OPEN:** Lucas: item 26 on `/card.html?id=131548` [CORRECTED 2026-10-04 , it read 134303, and that card no longer carries the mark: the squad-number backfill sourced West Ham's own table for it, so it is `squadnum` #23 now and correctly unflagged], the old API-Football key being dead (C5's open half), B4b's spend cap, the Eredivisie overlap, the Vercel flip. Mine: punchlist 36 (the BAM club-name check reads false on 93 of 94 completed seasons; six with real unplayed names unexamined), `.pghint` and the continental chip glyphs as demos, and whether the story and scout prose take Fraunces. **Item 25 stays gated.**
 
 ### 2026-09-15 | The most-audited file on the platform was an open Anthropic proxy
 
