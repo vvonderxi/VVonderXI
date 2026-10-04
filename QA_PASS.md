@@ -935,6 +935,13 @@ environment, which is itself the reason they are listed.
     Counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls` (§C: a disk count
     over-reports, and this figure has been miscounted before).
 
+- **[AMENDED 2026-10-04. A SCRIPT-LESS SUBSET SHIPPED, AND THE DECISION BELOW IS OTHERWISE UNCHANGED , READ THIS FIRST OR THE ENTRY BELOW WILL READ AS "THERE IS NO CSP", WHICH IS NOW FALSE.]**
+  - **WHAT SHIPPED: `frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'` AND NOTHING ELSE.** No `default-src`, no `script-src`, no `style-src` , so it cannot touch one of the 53 inline scripts, 12 inline styles, 223 markup handlers or 117 `style=` attributes. **The entry below is right that `unsafe-inline` would make a policy worthless; the point is that these four directives are not defeated by it and are free.** Measured the same day with comments and script bodies stripped: **0 forms, 0 iframes, 0 `<object>`, 0 `<embed>`, 0 `<base>` across all ten pages**, so every one of the four costs nothing today.
+  - **`Permissions-Policy` SHIPPED BESIDE IT, NAMING ONLY FEATURES THE PLATFORM DOES NOT USE.** `clipboard-write` IS DELIBERATELY ABSENT , `navigator.clipboard` is used 11 times and its default allowlist is already `self`, so naming it is the one entry that would break the share flow.
+  - **WHAT IS STILL OUTSTANDING IS EXACTLY WHAT THE ENTRY BELOW DESCRIBES: `script-src` and `style-src`.** Those remain gated on the handler-and-attribute pass, in that order, because shipping the policy first forces `unsafe-inline` and there is no path back from it.
+  - **AND THE PASS BELOW IS MISSING AN ORIGIN, WHICH WOULD BREAK A FEATURE NO SMOKE TEST EXERCISES.** `vv-core.js` injects `https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js` AT RUNTIME, so it appears in no page's markup and any `script-src` derived by scanning the ten pages omits it and silently kills "Save image" on card and compare. **Self-hosting html2canvas is the cleaner fix and is already scoped in `LAUNCH_STAGE.md`.**
+  - **THE COUNTS BELOW ARE STALE IN BOTH DIRECTIONS AND SHOULD BE RE-MEASURED, NOT QUOTED:** 39 inline scripts is now **53**, 149 `style=` is now **117**, 251 handlers is now **223**. The older figures were taken without stripping comments, which this file's own rules warn against.
+
 - **DECIDED 2026-09-06: SHIP WITHOUT A CONTENT-SECURITY-POLICY. Post-launch, and it is coupled to a
   pass that moves inline styles out , not a config line.** There is no `CSP` and no
   `Permissions-Policy`; HSTS is applied by Vercel on custom domains, so that one is covered.
