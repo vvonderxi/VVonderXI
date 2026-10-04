@@ -1,8 +1,95 @@
-api/apifootball-probe.js
-api/bsd-probe.js
-api/import-players.js
-api/import-positions.js
-api/import-positions-v2.js
-api/import-standings.js
-api/verify-positions.js
-api/verify-squad-positions.js
+# ═══════════════════════════════════════════════════════════════════════════
+# WHAT VERCEL IS ALLOWED TO PUBLISH , AN ALLOWLIST, 2026-10-03
+#
+# IT WAS A DENYLIST AND IT NAMED EIGHT API FILES. Everything else in the repo
+# would have been served as a static asset the moment the production branch
+# flipped: 87 .md files INCLUDING CLAUDE.md, 328 files under migrations/, 105
+# _demo_*.html, 97 .csv data captures, 50 .sql, 44 under docs/. So
+# vvonderxi.com/CLAUDE.md would have returned the whole playbook , every known
+# defect, the database shape, the staging tables , alongside DATA_DEFECTS.md,
+# SILENT_FAILURES.md and QA_PASS.md.
+#
+# NOTHING WAS EVER LIVE. The production branch `coming-soon` ships exactly nine
+# files. This is a pre-FLIP blocker, not a breach that happened.
+#
+# AN ALLOWLIST RATHER THAN A LONGER DENYLIST, AND THE REASON IS THE FAILURE
+# DIRECTION. A denylist has to be edited every time a new kind of file is added
+# and fails OPEN when somebody forgets , which is exactly how 328 migration
+# files came to be publishable. An allowlist fails CLOSED: a new file is not
+# served until it is named here, and a missing asset is loud where a published
+# secret is silent.
+#
+# THE LIST IS DERIVED, NOT GUESSED. Every `src`, `href` and `url()` in the ten
+# shipping pages was extracted and resolved against disk, then the manifest's
+# own icon list on top. That pass is what caught `vv-margin.js` and
+# `manifest.webmanifest`, neither of which was in the original brief.
+#
+# IF YOU ADD AN ASSET, ADD IT HERE. The symptom of forgetting is a 404 for that
+# one file on the deployed site and nothing locally, because the dev server
+# serves everything.
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Dotfiles first. Vercel does not normally serve a leading-dot path, but `/*` does
+# not reliably exclude them through every matcher, and `.env.example` came through
+# the first simulation of this file. Relying on the platform's default would be
+# trusting a behaviour instead of stating one.
+/.*
+
+# Exclude everything at the top level, then name what comes back.
+# `/*` is deliberate: a bare `*` would also exclude the CONTENTS of directories
+# re-included below, and gitignore syntax cannot re-include a file whose parent
+# directory is excluded.
+/*
+
+# ── the ten shipping pages ────────────────────────────────────────────────
+!/index.html
+!/rankings.html
+!/card.html
+!/compare.html
+!/playbook.html
+!/vvindex.html
+!/contact.html
+!/iwonder.html
+!/myclub.html
+!/preferences.html
+
+# ── shared modules ────────────────────────────────────────────────────────
+!/vv-core.js
+!/vv-marks.js
+!/vv-margin.js
+
+# ── icons, manifest and the social image ──────────────────────────────────
+# icon-512 and icon-maskable-512 are referenced by the MANIFEST rather than by
+# any page, and og-image.png only by a meta tag, so none of the three appears
+# in a naive scan of src/href. Leaving them out breaks the installed-app icon
+# and every unfurled link, both of which fail silently.
+!/favicon.ico
+!/favicon.svg
+!/apple-touch-icon.png
+!/icon-192.png
+!/icon-512.png
+!/icon-maskable-512.png
+!/og-image.png
+!/manifest.webmanifest
+
+# ── directories ───────────────────────────────────────────────────────────
+!/assets
+!/api
+
+# ── vercel's own config ───────────────────────────────────────────────────
+# Kept because the platform reads it from the deployment: it carries the
+# headers block and `fluid`, and excluding it silently drops both.
+!/vercel.json
+
+# ── and the api files that were already excluded, still excluded ──────────
+# `!/api` above re-includes the whole directory, so the original denylist has
+# to be restated. These are importers and probes that must never be deployed ,
+# one of them, search-player.js, is the corruption path CLAUDE.md records.
+/api/apifootball-probe.js
+/api/bsd-probe.js
+/api/import-players.js
+/api/import-positions.js
+/api/import-positions-v2.js
+/api/import-standings.js
+/api/verify-positions.js
+/api/verify-squad-positions.js

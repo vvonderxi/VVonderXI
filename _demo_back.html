@@ -1,0 +1,207 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coming soon , the card back</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--gold:#E8B84B}
+body.light{--ink-soft:#5f594e}
+*{box-sizing:border-box} html,body{margin:0}
+body.cs{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',system-ui,sans-serif;color:var(--cream);
+  background:radial-gradient(150% 620px at 50% -140px, rgba(255,244,224,.07), transparent 78%),
+             radial-gradient(120% 90% at 50% 0%,#221E1A 0%,#141210 55%,#0e0c0b 100%);background-attachment:fixed}
+body.cs.light{color:#241f1a;
+  background:radial-gradient(150% 620px at 50% -140px, rgba(255,255,255,.7), transparent 78%),
+             radial-gradient(120% 90% at 50% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);background-attachment:fixed}
+.wrap{width:100%;max-width:700px;padding:40px 22px 54px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.mark{display:block;height:32px;width:auto;margin-bottom:30px}
+/*  NO overflow CLIP ON ANY FLIP ANCESTOR , SS C invariant 4. iOS flattens preserve-3d under a
+    clip, so .stage and every wrapper above it stay unclipped. */
+.stage{position:relative;display:flex;justify-content:center;align-items:center;min-height:400px}
+.tag{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;font-size:27px;line-height:1.3;
+     letter-spacing:-.01em;margin:30px 0 0;max-width:15em}
+.tag .pk{color:var(--pink-ink)} body.light .tag .pk{color:#AD0332}
+.brand{font-family:'Archivo',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.2em;
+       text-transform:uppercase;opacity:.45;margin-top:16px}
+.notify{margin-top:28px;width:100%;max-width:440px;text-align:left;
+  background:linear-gradient(135deg,rgba(255,92,122,0.10),rgba(255,255,255,0.04));
+  border:1px solid rgba(255,92,122,0.22);border-radius:16px;padding:18px 20px}
+body.light .notify{background:linear-gradient(135deg,rgba(231,4,67,.06),rgba(0,0,0,.02));border-color:rgba(231,4,67,.18)}
+.notify .nt{font-family:'Archivo',sans-serif;font-weight:900;font-size:14.5px;margin-bottom:4px}
+.notify .nd{font-size:12px;opacity:.72;line-height:1.5;margin-bottom:12px}
+.form{display:flex;gap:9px}
+.form input{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+  border-radius:11px;padding:11px 13px;color:inherit;font:inherit;font-size:15px;outline:none}
+body.light .form input{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.16)}
+.form button{font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;letter-spacing:.04em;
+  padding:11px 17px;border:0;border-radius:11px;background:#E70443;color:#fff;cursor:pointer;white-space:nowrap}
+@media (max-width:820px){.wrap{padding:26px 16px 40px}.tag{font-size:22px;margin-top:24px}.stage{min-height:330px}}
+@media (max-width:420px){.tag{font-size:20px}.form{flex-direction:column}.form button{width:100%}}
+
+/* ===== THE BACK , lifted from vv-core's vvBackFace + compare's .vvmono* ===== */
+.vvmono{width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);
+  display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.vvmonomark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);
+  letter-spacing:-.02em;line-height:1;text-shadow:0 6px 18px rgba(0,0,0,.3)}
+.vvmonomark span{color:var(--pink)}
+.vvmono-cream{background:linear-gradient(158deg,#F7F2E6,#EAE2D0);box-shadow:inset 0 0 0 1px rgba(0,0,0,.10),0 24px 60px -20px rgba(0,0,0,.5)}
+.vvmono-cream .vvmonomark{color:#1C1B1A}
+.vvmono-gold{background:linear-gradient(158deg,#F6DE93,#DC9E2C);box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.55)}
+.vvmono-gold .vvmonomark{color:#3a2708}
+.vvmono-black{background:linear-gradient(158deg,#2c2926,#121010);box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(232,184,75,.55),inset 0 0 0 calc(var(--cw)*0.028) rgba(232,184,75,.9),0 22px 54px -18px rgba(0,0,0,.7),0 0 26px -6px rgba(232,184,75,.25)}
+.vvmono-black .vvmonomark{color:#F0EAD9}
+/*  THE MASTER BACK DOES NOT EXIST AS A COMPONENT YET AND THIS IS NEW.
+    vvBackFace() has three TIER faces , cream, gold, black , and the black one carries the
+    Generational gold rim, so using it as the hero would assert a tier the page has no business
+    asserting. This is the same charcoal ground with a NEUTRAL rim: the monogram on charcoal,
+    nothing else, exactly as the design language describes the master. If it is adopted it
+    belongs in vv-core beside vvBackFace, not here. */
+.vvmono-master{background:linear-gradient(158deg,#2c2926,#121010);
+  box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.07),
+             inset 0 0 0 calc(var(--cw)*0.026) rgba(255,255,255,.11),
+             0 24px 60px -20px rgba(0,0,0,.72)}
+.vvmono-master .vvmonomark{color:#F0EAD9}
+
+/* ===== FLIP , SS C invariants: explicit dims off --cw, front in-flow, back absolute,
+   preserve-3d, NO will-change, card-scaled perspective, no clip on any ancestor. ===== */
+.flipwrap{position:relative;width:var(--cw);height:calc(var(--cw)*1.397);
+  -webkit-perspective:calc(var(--cw)*3.6);perspective:calc(var(--cw)*3.6)}
+.flipinner{position:relative;width:var(--cw);height:calc(var(--cw)*1.397);
+  -webkit-transform-style:preserve-3d;transform-style:preserve-3d;
+  transition:transform 1.05s cubic-bezier(.33,.9,.35,1)}
+.flipface{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:calc(var(--cw)*0.073)}
+.flipfront{transform:rotateY(180deg);display:flex;align-items:center;justify-content:center}
+/* B , turn partway and settle back */
+.b .flipinner{transform:rotateY(0deg)}
+.b.go .flipinner{transform:rotateY(-38deg)}
+.b.settled .flipinner{transform:rotateY(0deg)}
+/* C , the fan */
+.fan{position:relative;display:flex;justify-content:center;align-items:center}
+.fan .fanc{position:absolute;transition:transform .95s cubic-bezier(.22,.61,.36,1),opacity .7s ease}
+.fan .fanc{opacity:0;transform:translateX(0) rotate(0deg) scale(.96)}
+.c.go .fan .fanc{opacity:1}
+.c.go .fan .f1{transform:translateX(-104px) rotate(-9deg);transition-delay:.10s}
+.c.go .fan .f2{transform:translateX(-35px)  rotate(-3deg);transition-delay:.18s}
+.c.go .fan .f3{transform:translateX(35px)   rotate(3deg); transition-delay:.26s}
+.c.go .fan .f4{transform:translateX(104px)  rotate(9deg); transition-delay:.34s}
+@media (max-width:560px){
+  .c.go .fan .f1{transform:translateX(-63px) rotate(-9deg)}
+  .c.go .fan .f2{transform:translateX(-21px) rotate(-3deg)}
+  .c.go .fan .f3{transform:translateX(21px)  rotate(3deg)}
+  .c.go .fan .f4{transform:translateX(63px)  rotate(9deg)}
+}
+/* shared arrival for the words */
+.arr .tag,.arr .brand,.arr .notify{opacity:0;transform:translateY(8px);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.22,.61,.36,1)}
+.arr.go .tag{opacity:1;transform:none;transition-delay:.85s}
+.arr.go .brand{opacity:1;transform:none;transition-delay:1s}
+.arr.go .notify{opacity:1;transform:none;transition-delay:1.15s}
+.a .backhost{opacity:0;transform:translateY(12px) scale(.985);
+  transition:opacity .65s ease,transform .65s cubic-bezier(.22,.61,.36,1)}
+.a.go .backhost{opacity:1;transform:none}
+.b .flipwrap{opacity:0;transition:opacity .6s ease}
+.b.go .flipwrap{opacity:1}
+/*  ONE RULE CANCELS EVERYTHING. The finished state is the default everywhere, so reduced
+    motion removes the transition and the transform rather than running a second code path. */
+@media (prefers-reduced-motion: reduce){
+  .arr *,.arr *::before,.arr *::after{transition:none !important;animation:none !important}
+  .arr .backhost,.arr .flipwrap,.arr .tag,.arr .brand,.arr .notify,.arr .fan .fanc{opacity:1 !important;transform:none !important}
+  .arr .flipinner{transform:none !important}
+  .arr .fan .f1{transform:translateX(-104px) rotate(-9deg) !important}
+  .arr .fan .f2{transform:translateX(-35px) rotate(-3deg) !important}
+  .arr .fan .f3{transform:translateX(35px) rotate(3deg) !important}
+  .arr .fan .f4{transform:translateX(104px) rotate(9deg) !important}
+}
+  .vvcard{--cw:300px;position:relative;width:var(--cw);max-width:92%;height:calc(var(--cw)*1.397);box-sizing:border-box;display:flex;flex-direction:column;border-radius:calc(var(--cw)*0.073);
+    background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;
+    box-shadow:0 26px 50px -22px rgba(0,0,0,0.6), inset 0 0 0 calc(var(--cw)*0.02) var(--cream), inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.55) !important;
+    padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A !important;font-family:'Barlow Condensed',sans-serif}   /* Career-Stage (Wonderkid / The Last Dance) , neutral profile tag, NOT the honour gold */
+  .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+  .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
+
+  /* ===== Prestige whole-card treatment ===== */
+  /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+
+  .coin .coinA{fill:var(--cream)}
+  body.light .coin .coinA{fill:var(--charcoal)}
+
+/* contact sheet */
+body.pv{background:#4a4a4a;font-family:'Inter',system-ui,sans-serif;color:#eee}
+.sheet{padding:16px} h1{font-family:'Archivo';font-size:17px;margin:0 0 4px}
+.lede{font-size:12px;opacity:.78;margin:0 0 14px;max-width:1180px;line-height:1.55}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.ct{font-family:'Archivo';font-weight:800;font-size:12.5px;margin:0 0 3px}
+.cd{font-size:11px;opacity:.7;margin:0 0 6px;line-height:1.45}
+iframe.pv{border:1px solid #000;display:block;background:#111}
+</style></head><body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>window.VV_PUBLIC={SUPABASE_URL:"https://krqthvroetbxgnvwwjar.supabase.co",SUPABASE_ANON_KEY:"sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp"};</script>
+<script src="/vv-marks.js?v=20260901f"></script>
+<script src="/vv-core.js?v=20260901f"></script>
+<script>
+var P=new URLSearchParams(location.search),D=P.get('d'),T=P.get('t');
+var HERO=137014;   // Yamal 25/26 , used only for B's glimpsed front
+function head(light){ return '<img class="mark" src="/assets/spinelogo-'+(light?'light':'dark')+'.png" alt="VVonderXI">'; }
+function copy(){ return '<div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>'
+  +'<div class="brand">The Football Legacy Platform</div>'
+  +'<div class="notify"><div class="nt">Be first through the door.</div>'
+  +'<div class="nd">One message when it opens. Nothing else, ever.</div>'
+  +'<div class="form"><input type="email" placeholder="you@email.com"><button type="button">Notify me</button></div></div>'; }
+function back(tier,cw){ return '<div class="vvmono vvmono-'+tier+'" style="--cw:'+cw+'px"><div class="vvmonomark">V<span>V</span></div></div>'; }
+async function render(){
+  var light=(T==='light');
+  document.body.className='cs arr '+(D||'a')+(light?' light':'');
+  /*  NO show-photos , the silhouette is the default and the page has NO cross-origin
+      dependency at all now. Nothing is fetched from media.api-sports.io. */
+  try{ VVCore.useCardMarks(true); }catch(e){}
+  var cw=window.innerWidth>820?276:Math.min(238,Math.max(184,Math.round(window.innerWidth*0.58)));
+  var w=document.createElement('div'); w.className='wrap'; document.body.appendChild(w);
+  var stage='';
+  if(D==='c'){
+    var fcw=Math.round(cw*0.78);
+    stage='<div class="fan" style="height:'+Math.round(fcw*1.397)+'px">'
+      +'<div class="fanc f1">'+back('cream',fcw)+'</div>'
+      +'<div class="fanc f2">'+back('gold',fcw)+'</div>'
+      +'<div class="fanc f3">'+back('black',fcw)+'</div>'
+      +'<div class="fanc f4">'+back('master',fcw)+'</div></div>';
+    w.innerHTML=head(light)+'<div class="stage">'+stage+'</div>'+copy();
+  } else if(D==='b'){
+    w.innerHTML=head(light)+'<div class="stage">'+(VVCore.vvLoader?VVCore.vvLoader({size:44,label:'Loading'}):'')+'</div>'+copy();
+    var cli=window.supabase.createClient(VV_PUBLIC.SUPABASE_URL,VV_PUBLIC.SUPABASE_ANON_KEY);
+    var r=await cli.from('player_card_mv').select('*').eq('card_id',HERO).single();
+    var front=(r.error||!r.data)?back('master',cw):VVCore.buildCard(VVCore.rowToCard(r.data),cw);
+    stage='<div class="flipwrap" style="--cw:'+cw+'px"><div class="flipinner">'
+      +'<div class="flipface flipback">'+back('master',cw)+'</div>'
+      +'<div class="flipface flipfront">'+front+'</div></div></div>';
+    w.querySelector('.stage').innerHTML=stage;
+  } else {
+    stage='<div class="backhost">'+back('master',cw)+'</div>';
+    w.innerHTML=head(light)+'<div class="stage">'+stage+'</div>'+copy();
+  }
+  function reveal(){ document.body.classList.add('go');
+    if(D==='b') setTimeout(function(){ document.body.classList.add('settled'); }, 1500); }
+  requestAnimationFrame(function(){ requestAnimationFrame(reveal); });
+  setTimeout(reveal,80);                                  /* rAF does not fire in a hidden tab */
+  document.addEventListener('visibilitychange',reveal,{once:true});
+}
+if(D){ render(); }
+else{
+  document.body.className='pv';
+  var PAN=[['a','A , one back, still','The master back, centred, arriving once and then still. Nothing is given away and nothing moves.'],
+           ['b','B , the half turn','Turns 38 degrees, holds, settles back. Enough to see a rim and an edge of the front, not enough to read it.'],
+           ['c','C , the fan of tiers','Four backs , cream, gold, black and master. A reader sees there are tiers without learning what any of them mean.']];
+  var h='<div class="sheet"><h1>Coming soon , the card BACK as hero</h1><p class="lede">'
+   +'No photo, no cross-origin dependency: the silhouette is the default and nothing is fetched from the image host. '
+   +'Copy is index.html\'s real hero line and its real footer brand line, nothing invented. '
+   +'The flip is the shipped prototype\'s technique , rotateY on a preserve-3d inner, backface-visibility on both faces, '
+   +'explicit dims off --cw, front in-flow, no clip on any ancestor.</p>';
+  PAN.forEach(function(p){
+    h+='<div class="ct">'+p[1]+'</div><p class="cd">'+p[2]+'</p><div class="row">';
+    ['dark','light'].forEach(function(t){ [['desktop',900],['390',390]].forEach(function(v){
+      h+='<iframe class="pv" style="width:'+v[1]+'px;height:700px" src="?d='+p[0]+'&t='+t+'"></iframe>'; }); });
+    h+='</div>';
+  });
+  document.body.innerHTML=h+'</div>';
+}
+</script></body></html>

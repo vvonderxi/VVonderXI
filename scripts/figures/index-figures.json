@@ -1,0 +1,357 @@
+{
+  "generated": "2026-10-02",
+  "source": "player_card_mv",
+  "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
+  "figures": [
+    {
+      "key": "cards_total",
+      "value": 58066,
+      "claim": "every player season we hold",
+      "definition": "every row on player_card_mv",
+      "query": "select count(*) from player_card_mv"
+    },
+    {
+      "key": "cards_scored",
+      "value": 54416,
+      "claim": "seasons carrying a VV Score",
+      "definition": "rt is not null. 3,061 cards have no score and must never be counted as zero",
+      "query": "select count(*) from player_card_mv where rt is not null"
+    },
+    {
+      "key": "cards_no_detail",
+      "value": 19138,
+      "claim": "seasons with no detailed record at all",
+      "definition": "all four of shots_total, passes_total, duels_total, dribbles_attempts are null. A card missing SOME of them is partial, not absent",
+      "query": "select count(*) from player_card_mv where shots_total is null and passes_total is null and duels_total is null and dribbles_attempts is null"
+    },
+    {
+      "key": "cards_no_detail_share",
+      "value": 33,
+      "claim": "share of the record with no detailed stats, per cent",
+      "definition": "cards_no_detail / cards_total",
+      "query": "derived"
+    },
+    {
+      "key": "cards_with_detail",
+      "value": 38928,
+      "claim": "seasons that carry the full detailed record",
+      "definition": "cards_total minus cards_no_detail, so the pair always sums to the whole record",
+      "query": "derived"
+    },
+    {
+      "key": "cards_no_shots",
+      "value": 21935,
+      "claim": "seasons with no shot data",
+      "definition": "shots_total is null. KEPT ON PURPOSE as the near-miss: this is the number a reader would get from the obvious query, and it is NOT the headline figure. 2026-09-13 could not tell which of the two the page meant, which is why this file exists",
+      "query": "select count(*) from player_card_mv where shots_total is null"
+    },
+    {
+      "key": "cards_on_a_band_edge",
+      "value": 878,
+      "claim": "seasons within a single point of a band edge",
+      "definition": "rt in [b-1, b] for each public band edge 95, 90, 85, 80",
+      "query": "select count(*) from player_card_mv where (rt between 94 and 95) or (rt between 89 and 90) or (rt between 84 and 85) or (rt between 79 and 80)"
+    },
+    {
+      "key": "cards_on_a_band_edge_share",
+      "value": 1.61,
+      "claim": "share of SCORED seasons within a point of a band edge, per cent",
+      "definition": "cards_on_a_band_edge / cards_scored. The denominator is SCORED, not total , an unscored card cannot sit near a band edge and counting it dilutes the figure",
+      "query": "derived"
+    },
+    {
+      "key": "honours_total",
+      "value": 913,
+      "claim": "honours the record holds, none of which moves a score",
+      "definition": "every row of the honours table, team and individual. The score is computed before honours are joined to it, so the count is independent of the engine by construction",
+      "query": "select count(*) from honours"
+    },
+    {
+      "key": "generational_seasons",
+      "value": 12,
+      "claim": "seasons in the Generational band, ever",
+      "definition": "rt >= 95. Anchor-pinned: the band edge is a rank, so the population is fixed by construction",
+      "query": "select count(*) from player_card_mv where rt >= 95"
+    },
+    {
+      "key": "elite_centrebacks",
+      "value": 0,
+      "claim": "centre-back seasons among the 650 at 85 or better",
+      "definition": "position_pool = CB and rt >= 85. The 15 cards with no pool were read individually and are 14 FWD and 1 MID, which is what makes a published zero sayable rather than merely true of what we can see",
+      "query": "select count(*) from player_card_mv where rt >= 85 and position_pool = 'CB'"
+    },
+    {
+      "key": "keeper_seasons",
+      "value": 4315,
+      "claim": "goalkeeper seasons read on a measure of their own",
+      "definition": "position = 'GK'. The plain count, NOT a count of keepers without a score , Fallback C removed the keeper score from the card face and not from the column, so a no-score count would be false",
+      "query": "select count(*) from player_card_mv where position = 'GK'"
+    },
+    {
+      "key": "career_spread_players",
+      "value": 4387,
+      "claim": "players with 5 or more scored seasons",
+      "definition": "count of api_player_id having >= 5 cards with a non-null rt",
+      "query": "select count(*) from (select api_player_id from player_card_mv where rt is not null group by 1 having count(*) >= 5) t"
+    },
+    {
+      "key": "career_spread_median",
+      "value": 37,
+      "claim": "median gap between a player's best scored season and his worst",
+      "definition": "median of max(rt) - min(rt) per player, over players clearing the five-season gate. MEDIAN and not mean, because a handful of enormous spreads would carry a mean and the claim is about the typical career",
+      "query": "select percentile_cont(0.5) within group (order by s) from (select max(rt)-min(rt) s from player_card_mv where rt is not null group by api_player_id having count(*) >= 5) t"
+    },
+    {
+      "key": "career_spread_hazard",
+      "value": "58,85,71,82,83,63,87,81,90,51,53,26",
+      "claim": "the illustrated career, oldest season first",
+      "definition": "every scored card for E. Hazard, ordered by season_year. The drawing marks his best, his worst and the mid-career dip; the other nine stay legible so the SHAPE is visible",
+      "query": "select rt from player_card_mv where player_name = 'E. Hazard' and rt is not null order by season_year"
+    },
+    {
+      "key": "career_spread_hazard_years",
+      "value": "10/11,11/12,12/13,13/14,14/15,15/16,16/17,17/18,18/19,19/20,20/21,21/22",
+      "claim": "the illustrated career, season labels",
+      "definition": "derived from the same rows, same order",
+      "query": "derived"
+    },
+    {
+      "key": "elite_pairs_inside_margin",
+      "value": 97,
+      "claim": "share of pairings between seasons at 80+ that the Index cannot separate, per cent",
+      "definition": "every unordered pair of scored cards at rt >= 80 present in vv-margin.js. A pair is INSIDE when |rt difference| < 1.96 * sqrt(se_a^2 + se_b^2), which is the same test the live Compare gate applies. Cards absent from the table are excluded, not counted",
+      "query": "derived from vv-margin.js, the table the live gate reads"
+    },
+    {
+      "key": "margin_separation_points",
+      "value": "2.8,5.5,10.0,16.1",
+      "claim": "points two seasons of the same standing must differ by before the Index separates them",
+      "definition": "per public band, 1.96 * sqrt(2) * the median standard error in that band, read from vv-margin.js. Order: Generational, Iconic, World Class, Standout",
+      "query": "derived from vv-margin.js"
+    },
+    {
+      "key": "elite_pairs_counted",
+      "value": 993345,
+      "claim": "pairings the figure above is computed over",
+      "definition": "unordered pairs of rt >= 80 cards carrying a standard error",
+      "query": "derived"
+    },
+    {
+      "key": "elite_league_names",
+      "value": "Premier League|La Liga|Serie A|Bundesliga|Ligue 1|Eredivisie|Super Lig|Belgian Pro League|Primeira Liga",
+      "claim": "leagues holding seasons at 85 or better, most first",
+      "definition": "display names from vv-core's canonical map, NOT the leagues table , that table keys the Turkish league as TSL while cards carry TR. Pipe-separated, since a name may hold a comma",
+      "query": "select league_code, count(*) from player_card_mv where rt >= 85 group by 1 order by 2 desc"
+    },
+    {
+      "key": "elite_league_counts",
+      "value": "196,117,101,83,61,36,21,18,17",
+      "claim": "their counts, in the same order",
+      "definition": "same query",
+      "query": "as above"
+    },
+    {
+      "key": "elite_league_min",
+      "value": 17,
+      "claim": "the smallest number of seasons at 85 or better any one league holds",
+      "definition": "min of elite_league_counts. The floor is what makes the 70 per cent meaningful , a share can hide a long tail of ones and a floor cannot",
+      "query": "derived from the same query as elite_league_counts"
+    },
+    {
+      "key": "elite_outside_pl_share",
+      "value": 70,
+      "claim": "share of seasons at 85 or better from outside the Premier League, per cent",
+      "definition": "the direct answer to \"is this just a Premier League index\". Rounded to a whole number because a decimal here implies a precision the claim does not need",
+      "query": "select round(100.0 * count(*) filter (where league_code <> 'PL') / count(*)) from player_card_mv where rt >= 85"
+    },
+    {
+      "key": "walk_player",
+      "value": "Mohamed Salah",
+      "claim": "the season the walk follows",
+      "definition": "chosen for a recognisable, unambiguous attacking season",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_season",
+      "value": "24/25",
+      "claim": "its season label",
+      "definition": "derived",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_goals",
+      "value": 29,
+      "claim": "goals",
+      "definition": "player_card_mv.goals",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_assists",
+      "value": 18,
+      "claim": "assists",
+      "definition": "player_card_mv.assists",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pens",
+      "value": 9,
+      "claim": "penalties among those goals",
+      "definition": "player_card_mv.penalties_scored",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_minutes",
+      "value": 3377,
+      "claim": "minutes played",
+      "definition": "player_card_mv.minutes",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_gaw",
+      "value": 39.62,
+      "claim": "the single output number",
+      "definition": "goals - 0.22*min(pens,goals) + 0.7*assists",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_gaw90",
+      "value": 1.056,
+      "claim": "the same number per 90 minutes",
+      "definition": "gaw / (minutes/90)",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_pool_rate",
+      "value": 99.1,
+      "claim": "his rate, ranked inside his position pool",
+      "definition": "percent_rank of gaw90 within pool",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_pool_vol",
+      "value": 99.9,
+      "claim": "his volume, ranked inside his position pool",
+      "definition": "percent_rank of gaw within pool",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_all_rate",
+      "value": 99.6,
+      "claim": "his rate, ranked against every outfielder",
+      "definition": "percent_rank of gaw90, all non-GK",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pct_all_vol",
+      "value": 100,
+      "claim": "his volume, ranked against every outfielder",
+      "definition": "percent_rank of gaw, all non-GK",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_rank_term",
+      "value": 64.7,
+      "claim": "the ranking half of the performance number",
+      "definition": "0.65 * blended percentile, pool 60 / all 40, rate 50 / volume 50",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_vol_term",
+      "value": 68.2,
+      "claim": "the raw-volume half",
+      "definition": "0.35 * 100 * gaw / the 99th-percentile season",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_perf",
+      "value": 132.9,
+      "claim": "the performance number",
+      "definition": "rank term plus volume term",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_avail",
+      "value": 27,
+      "claim": "the availability number",
+      "definition": "0.30 * min(95, 100*minutes/(minutes+380))",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_weight",
+      "value": 1,
+      "claim": "his league weight that season",
+      "definition": "engine_league_weights, computed from players who moved",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_b",
+      "value": 120,
+      "claim": "the assembled figure, before the ladder",
+      "definition": "(0.70*max(perf,floor) + avail) * (1-(1-weight)*0.35)",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_rt",
+      "value": 95,
+      "claim": "what comes out",
+      "definition": "the rank-anchored ladder applied to the figure above",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_anchors",
+      "value": "85.6,98.9,120.0",
+      "claim": "the ladder anchors at 85, 90 and 95",
+      "definition": "the 650th, 150th and 12th highest figure in the record",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_pool",
+      "value": "Winger",
+      "claim": "the position pool he is read against",
+      "definition": "player_card_mv.position_pool",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "ballon_dor_seasons",
+      "value": 14,
+      "claim": "Ballon d'Or seasons the record holds",
+      "definition": "honours rows with honour_type = ballon_dor and a non-null api_player_id, each resolving to a scored card. season_year is the SEASON the award was for, so it runs one behind the award year; 2019/20 is correctly absent because that award was cancelled",
+      "query": "select count(*) from honours where honour_type='ballon_dor' and api_player_id is not null"
+    },
+    {
+      "key": "ballon_dor_top_three_bands",
+      "value": 13,
+      "claim": "of those, the number scoring 85 or better , World Class, Iconic or Generational",
+      "definition": "rt >= 85 on the highest scored card for that player-season. THE MISS IS PART OF THE CLAIM and is published beside it, not hidden",
+      "query": "-- join honours to player_card_mv on (api_player_id, season_year), take max(rt), count rt >= 85"
+    },
+    {
+      "key": "ballon_dor_iconic_or_better",
+      "value": 10,
+      "claim": "of those, the number scoring 90 or better",
+      "definition": "rt >= 90, same join",
+      "query": "-- as above, rt >= 90"
+    },
+    {
+      "key": "ballon_dor_in_top_twelve",
+      "value": 3,
+      "claim": "Ballon d'Or seasons that also sit inside the twelve highest-scoring seasons in the record",
+      "definition": "the twelve highest rt values, joined to the Ballon d'Or rows. Twelve is the Generational band, which is anchor-pinned, so the denominator is a structural constant",
+      "query": "top 12 by rt, intersected with the ballon_dor honour rows"
+    },
+    {
+      "key": "ballon_dor_miss_score",
+      "value": 70,
+      "claim": "the VV Score of the one Ballon d'Or season the Index does not place in its top three bands",
+      "definition": "the single ballon_dor row scoring below the 85 band edge. Throws if there is ever more than one, because the page names it in the singular",
+      "query": "ballon_dor rows with rt < 85"
+    },
+    {
+      "key": "ballon_dor_miss_player",
+      "value": "Luka Modric",
+      "claim": "who it was",
+      "definition": "the same row",
+      "query": "as above"
+    }
+  ]
+}

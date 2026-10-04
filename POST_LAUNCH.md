@@ -11,6 +11,212 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 ---
 
+## THE VV INDEX PDF , ITEM 22, OUTLINED AND NOT BUILT. NOTHING DEPENDS ON IT (re-scoped 2026-10-02)
+
+**THE SPEC EXISTS AND IS APPROVED: `docs/VVINDEX_PDF_OUTLINE.md`** , eight pages, every figure sourced, with a draft page at `docs/pdf/vv-index.html`. **It has never been built, and it is an ordinary post-launch item with no deadline attached to it.**
+
+**[THIS ENTRY USED TO SAY THE OPPOSITE AND THE REASON IS GONE.]** For a few hours on 2026-10-02 `vvindex.html` carried a capture block collecting addresses against this artefact, which made the PDF urgent: every address was an obligation with no delivery date. **The block was removed the same day , form, copy, wiring, CSS and JS, 83 lines.** Nothing now collects against it, **no addresses were ever collected** (it was never pushed to a deployed branch), and no list exists to disappoint.
+- **SO THE ORDER IS BACK TO THE OBVIOUS ONE: build the PDF if and when it is wanted, then decide whether to offer it.** Not the reverse. The capture went first because the outline's own governing sentence , *"It is sent in reply to a request"* , implies a request mechanism, and building the mechanism before the artefact put the obligation before the thing.
+- **DO NOT RE-ADD A CAPTURE BEFORE THE PDF EXISTS.** That is the whole lesson of the short-lived version: a form whose artefact does not exist can only ever be honest by apologising for itself, and the copy spent three separate sentences doing that.
+- **IF THE PDF IS CUT RATHER THAN BUILT, nothing has to be unwound** , which is the position the removal restored.
+
+## ROUTE B , THE WAITLIST THROUGH A SERVERLESS ENDPOINT. THE STRONGER ANSWER, HELD UNTIL ABUSE APPEARS (scoped 2026-10-03, NOT built)
+
+**WHAT SHIPPED INSTEAD, SO THIS IS NOT RE-DERIVED: ROUTE A.** `iwonder.html` and `myclub.html` POST straight to `waitlist_emails` with the publishable key, under one grant , `INSERT`, no SELECT, no UPDATE, no DELETE , and an RLS policy scoped to anon. A unique index on `lower(email)` is the only throttle, so a repeat address 409s and the client treats that as success.
+
+**ROUTE A'S WEAKNESS IS NAMED RATHER THAN DISCOVERED LATER: there is no rate limit.** The ceiling on abuse is one row per DISTINCT address, so a script with a thousand addresses writes a thousand rows and nothing stops it. What it cannot do is read the list, change a row or delete one , so the worst case is a polluted table, not a leak and not data loss. **That is the trade, and it was taken deliberately because the alternative costs a deployed function and a code change.**
+
+**ROUTE B IS: a serverless endpoint holding the service key, with the client posting to it instead.** The pieces already exist in `api/analyse.js` and would be reused rather than written , the origin allowlist, and the `api_rate_events` limiter (30/hour/IP, 2 concurrent). Anon would then hold **zero** write grants anywhere, which is the position the 2026-10-03 lockdown otherwise achieved.
+- **WHAT IT COSTS, AND WHY IT WAS NOT TAKEN NOW:** a SECOND deployed function (the surface has been exactly one since 2026-09-15, and that is a number worth defending), plus a code change to two shipping pages, which per the merge rule has to land before the merge rather than whenever.
+- **THE TRIGGER TO BUILD IT IS EVIDENCE, NOT A DATE.** Any of: junk rows appearing in `waitlist_emails`; the row count rising faster than real traffic explains; or a single source producing many addresses that never confirm. **Query it; do not wait to be told.**
+- **AND IF IT IS BUILT, THE UNIQUE INDEX STAYS.** It is cheap, it is the thing that makes a repeat signup a clean no-op rather than a duplicate, and an endpoint does not replace it , the two defend different things.
+
+## THE VERDICT OUTPUT CEILING , ONE PAIR CANNOT BE GENERATED AT ALL, AND IT IS A DECISION ABOUT `max_tokens` RATHER THAN A RETRY (measured 2026-10-03, NOT built)
+
+**THE CASE IS ONE PAIR AND IT IS A MARQUEE ONE: `Messi 12/13 vs Ronaldo 11/12`, two 96s.** Every other pair in the rt>=95 pool warmed; this one has now failed on five separate attempts across two prompts' worth of retries, and it is the ONLY pair in the pool that cannot be produced.
+
+**IT IS TRUNCATION, NOT THE PREAMBLE DEFECT, AND THE TWO WERE SEPARATED BY MEASUREMENT.** The 2026-10-03 fix (`vvParseModelJSON`) recovers a response whose JSON is merely PREFIXED by reasoning prose , it takes the first `{` to the last `}` , and it fixed the sibling case `Messi 14/15 vs Messi 12/13`, which had failed twice before and succeeded immediately after. **This one returns `stop_reason=max_tokens`, so the closing brace was never written and there is nothing for any parser to find.** A more forgiving parser cannot help and would only hide it.
+
+**THE MEASUREMENTS, SO WHOEVER PICKS THIS UP STARTS FROM THEM RATHER THAN RE-DERIVING THEM:**
+- at `max_tokens: 1024` (what `compare.html` sends today) , **4,191 characters, `stop_reason=max_tokens`**, cut mid-sentence
+- at `max_tokens: 2048` , **7,270 characters, STILL `stop_reason=max_tokens`**. Doubling the ceiling did not reach the end of the answer.
+- the server already clamps at `MAX_OUTPUT_TOKENS` **2048**, so 1024 -> 2048 needs no server change and **was tested and is not sufficient**
+- the model spends the budget on reasoning prose before the JSON, and it reasons longest on TIES , which is why this lands on two 96s rather than anywhere random
+
+**SO THE DECISION IS NOT "RAISE IT TO 2048", WHICH IS THE OBVIOUS MOVE AND IS MEASURED NOT TO WORK.** The real options, none taken:
+1. **Raise `MAX_OUTPUT_TOKENS` past 2048 and the client with it.** Costs output tokens on every verdict that uses them, and the §C bound on `api/analyse.js` exists precisely to stop a caller choosing an unbounded cost. Any change here is a change to the public endpoint's cost ceiling and belongs with that entry.
+2. **Stop the preamble at the prompt** , an instruction to emit nothing before the JSON. **This is the cheapest fix and the most disruptive to schedule: `VERDICT_VERSION` is a fingerprint of the prompt, so it discards every cached verdict, and `PROMPT_REV` is SHARED with `NOTES_VERSION`, so it discards every cached note too.** It therefore rides with item 25's rule-4 edit or not at all.
+3. **Accept one unproducible pair.** The reader gets the outage line on that pairing and a retry sometimes succeeds, since the preamble is probabilistic.
+
+**DO NOT SPEND RETRIES ON IT.** Five attempts, zero successes, and each one pays for a truncated response. **The population is ONE pair as of 2026-10-03** , everything else at rt>=95 and rt>=93 is warm , so the cost of leaving it is one marquee comparison, and the cost of chasing it with retries is unbounded.
+
+## A GLOBAL GENERATION CEILING , THE IP POOL IS THE HOLE AND PER-IP LIMITS CANNOT SEE IT (scoped 2026-10-03, NOT built, LAUNCH BLOCKER)
+
+**THE PER-IP LIMIT IS CORRECT AND IT IS NOT A DEFENCE AGAINST A SCRIPT POOL. MEASURED, NOT REASONED, ON THE LIVE PREVIEW:** 40 sequential calls with a forged `Origin` header returned **24 allowed and then HTTP 429 from call #25** , exactly 30 once the ~6 already spent from that address are added, with `Retry-After: 600`. **The limit is real and exact. It bounds ONE address.**
+- **AND THE ORIGIN ALLOWLIST DOES NOT HELP HERE, WHICH THE SAME TEST PROVED.** A browser on another site is blocked (4 of 5 forged origins returned 403), but `Origin` is a request header and a script sends whatever it likes , **the 200s above came from node, with the header set by hand.** The allowlist raises the bar from "POST and it works" to "POST with one extra header". It is worth having and it is not a cost control.
+
+**THE COST CEILING, DECOMPOSED, BECAUSE THE NUMBER DECIDES THE DESIGN:**
+
+| | per call |
+|---|---|
+| system prompt, 8,801 tok as a CACHE READ (0.1x) | $0.0026 |
+| messages at the current 120,000-char cap, ~33k tok | $0.1000 |
+| output, clamped at 2,048 tok | $0.0307 |
+| **worst case today** | **$0.1334** |
+| a real call (2,163 chars in, ~540 out) | **$0.0125** |
+
+**THE FIRST FIX IS FREE AND IT IS NOT THE CAP YOU ASKED FOR: `MAX_INPUT_CHARS` IS 120,000 AND THE LARGEST REAL REQUEST IS 2,163 CHARS.** Measured over 40 notes payloads at rt>=85: **median 1,337, max 2,163.** The cap is **55x** the largest thing any caller legitimately sends. **Dropping it to 12,000 , still 5.5x headroom , cuts the worst case from $0.1334 to $0.0434, a 3.1x reduction, and costs a legitimate visitor exactly nothing.** One constant, one line.
+- **AFTER THAT, OUTPUT DOMINATES AND CANNOT BE CUT MUCH.** 2,048 tokens is $0.0307 of the remaining $0.0434, and the real callers already ask for 1,024 and 1,500. Clamping to 1,500 saves $0.008 and risks truncating the notes path, which SS E records as already truncating on some pairs. **Not worth it.**
+
+**THE GLOBAL CEILING , THE SHAPE, AND IT IS A SECOND QUERY OVER A TABLE THAT ALREADY EXISTS.** `api_rate_events` already records every generation with an `ip` and a `started_at`. The per-IP check is a count over that table filtered by address; the global check is **the same count without the filter**. There is no new vendor, no new table and no new dependency.
+
+**SIZING IT, AND THE TENSION IS REAL RATHER THAN RHETORICAL.** SS C records the busiest 60 minutes in the platform's history as **5 verdicts and 9 notes across ALL users , 14 generations**. A ceiling of 300/hour is **21x** the busiest hour ever recorded, and at the tightened input cap it bounds the hour at **300 x $0.0434 = $13.02**.
+- **THE RISK IS LAUNCH DAY, AND IT IS THE OPPOSITE OF THE ABUSE RISK.** The 14/hour figure comes from a platform with no traffic. A launch could legitimately exceed it by an order of magnitude, and a ceiling set from history would then refuse real visitors on the one day it matters. **Set it generously and let the spend cap be the brake**, rather than tuning it tight from a pre-launch baseline that measures nothing.
+- **WHAT A LEGITIMATE VISITOR LOSES, HONESTLY: at 300/hour, nothing, until the hour the platform has 300 real generations in it** , and on that day the right response is to raise the number, not to have set it low.
+
+**AND THE HONEST LIMIT OF THE WHOLE IDEA: A CODE-SIDE CEILING BUYS TIME, IT DOES NOT BOUND THE BALANCE.** At 300/hour the worst case is $13.02 an hour, so a prepaid balance of ~$24 still empties in under two hours of sustained abuse. **The only hard stop is the provider's own spend cap, which is QA_PASS B4b and is still not set.** A global ceiling without B4b slows the drain; B4b without a global ceiling allows a fast one inside the cap. **They are complements and the cap is the one that actually stops.**
+
+**COST TO BUILD: about an hour.** One constant change (`MAX_INPUT_CHARS`), one unfiltered count beside the existing one, one refusal kind (`refused:global`) so the ledger can be queried afterwards exactly as `refused:hourly` already is, and the same fail-open behaviour with the same error-level log , SS C's rule that fail-safe is a property of the consequence and never evidence about the guard.
+- **AND IT MUST SIT WHERE THE PER-IP CHECK SITS: AFTER the cache lookup.** A cached pair is free and must never be counted, or a popular shared link would consume the global allowance for everybody.
+
+## A SHARED LINK SHOULD SHOW THE VERDICT WHEN IT COSTS NOTHING , AUTO-GENERATE ON A CACHE HIT ONLY (scoped 2026-10-03, NOT built)
+
+**THE BEHAVIOUR TODAY: `?a=&b=` renders both cards and a COMPARE button, and nothing else.** That is the right default , a page load must never spend a model call , but it means **the recipient of a shared link gets the setup without the payoff**, which is the one thing a share exists to deliver. Verified on the live preview: both cards render correctly, the button is present, and no request fires until it is pressed.
+
+**AND THE PAIRS PEOPLE SHARE ARE EXACTLY THE PAIRS THAT ARE ALREADY WARM**, which is what makes this nearly free rather than a new cost. A link gets shared because someone generated it; generating it cached it.
+
+**THE ENDPOINT ALREADY DOES THE EXPENSIVE HALF OF THIS. `api/analyse.js` checks `verdict_cache` FIRST and returns `{verdict, winner_card_id, cached:true}` before any model call** , the hit path costs one Supabase read. What is missing is a way to ask WITHOUT committing to generate on a miss.
+
+**THE SHAPE: a `cacheOnly` flag on the request, and an early return where the handler currently falls through to the model.** On a miss it answers `{cached:false}` and the client shows the button exactly as today. Roughly one flag, one early return, one client branch.
+
+**THE FOUR THINGS THAT MAKE IT CORRECT RATHER THAN MERELY SMALL, and the third is the one that will be missed:**
+1. **THE MISS PATH MUST RETURN BEFORE THE RATE LIMITER, NOT AFTER.** SS C records that the limiter runs AFTER the cache lookup precisely so a warm pair is never counted. A `cacheOnly` miss must not consume a slot either , otherwise a page LOAD spends one of a visitor's 30 per hour without generating anything, and a few shared links would lock a reader out of the feature the link is advertising.
+2. **THE CLIENT MUST STILL SEND `payloadRev` AND `statsRev`.** They are two of the four cache-version segments, so without them the freshness test cannot run and every probe reads as a miss , the feature would look built and do nothing. `compare.html` already computes both.
+3. **PATH B IS THE SUBTLE ONE: a pair inside the margin was generated under `VERDICT_SYSTEM_JUDGE` and stamped with a DIFFERENT version.** The probe must send the same `judge` flag the live generate path would, or the version comparison fails and a warm Path B pair reads as cold. **The marquee pairs are disproportionately Path B** , all three of compare's own suggested matchups are , so getting this wrong would miss exactly the links most likely to be shared.
+4. **It changes no cache semantics and invalidates nothing**, which is why it can ship independently of any prompt work.
+
+**WHAT IT IS NOT: a reason to pre-warm more pairs.** The value is in serving what is already there. Warming to make shares look better is the fame-keyed warm list SS C's anchor guardrail rules out, arriving by a different door.
+
+
+## TWO FULL-BACKS ARE STORED AS `CB` , NAMED INSTANCES OF THE POSITION-POOL THREAD, BOTH ON PROMINENT CARDS (found 2026-10-03, NOT fixed)
+
+**Measured: `card_id 132785`, Robertson 2019 Liverpool, `position_pool = CB`, rt 84.** The 2021 card (`131966`, rt 83) carries the same. He is a full-back, so the correct pool is **FB**.
+
+**AND MARCELO 2017 REAL MADRID IS THE SECOND, FOUND IN THE SAME VERDICT PASS AND STORED THE SAME WAY.** He is a left-back of a far more attacking kind than Robertson, which makes consumer 2 below worse rather than equally bad: a flying full-back's creation and progression read against centre-backs is the most flattering possible comparison, and the radar is where a reader would notice.
+
+**TWO IS WHY THIS IS A SHAPE RATHER THAN TWO CARDS. Both are LEFT-backs stored as CB, and SS E's Nico Williams case is a left winger stored as CAM then CM** , every named instance so far is a wide attacking player collapsed one step toward the middle. **Check whether the defect is directional before scoping the fix**: if the importer's depth arithmetic is systematically pulling wide players inward, the population is far larger than a list of names and a hand pass would be the wrong instrument , which is exactly SS E's 2026-09-11 ruling.
+
+**IT IS NOT A NEW DEFECT CLASS , SS E already records position-pool accuracy as open, with Nico Williams as its named case.** These are recorded because they are named instances at rt 84 and rt 83, on players most readers can check by eye, which is the kind that costs credibility rather than accuracy.
+
+**THE POOL IS READ AT FULL STRENGTH BY FOUR CONSUMERS, so a wrong pool is wrong four times over and SS C already lists them:**
+1. **IDENTITY-TAG GATING** , a tag whose name asserts a position gates on `position_pool`, so he is eligible for centre-back tags and ineligible for full-back ones.
+2. **THE RADAR'S PERCENTILE POOL** , every axis is scored against CB seasons, and a full-back's attacking output read against centre-backs flatters it on creation and progression.
+3. **THE ENGINE'S `pos_pct` / `posvol_pct`** , these partition on `COALESCE(pool, pos)`, so the rt itself is computed against the wrong population.
+4. **COMPARE'S POOL ARGUMENT** , the verdict prose cites the pool by name, so a comparison can tell a reader he is a centre-back.
+
+**DO NOT SPOT-FIX IT.** SS E's 2026-09-11 ruling is explicit: hand-patching the top of a systemic position defect spends untouched cards' band positions to move a handful , the dry run put 9 cards across band lines to correct 13. **The same reasoning applies here, and more so, because `sig = def_share_pct` makes the defensive pools the ones where a pool change moves rt most.** It belongs with the position work, not ahead of it.
+
+## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
+
+**HELD BY LUCAS ON 2026-09-27: "logged, not now. It is nine live surfaces and a visual change,
+and I am not opening that before the merge."** The measurements are here so the pass can start
+without re-measuring; nothing below has been changed.
+
+**THE HEADLINE IS THAT THIS IS NOT A PLAYBOOK PROBLEM, WHICH IS WHAT THE RAW COUNT SAYS.**
+Playbook reports 85 at desktop and 88 at 390 while every other surface reports 4 to 16, and that
+difference is the page HAVING MORE CONTROLS rather than worse ones. Grouped by what each control
+actually is, the list is short and most of it repeats on every page.
+
+| control | measured size | where | note |
+|---|---|---|---|
+| `button.more` / `.hmore` / `.drurybox-more` | **65x12, 62x12** | playbook, **31 of them** | the smallest targets on the platform , 12px tall |
+| the season stepper chevrons (`button`) | **17x11** | card | second smallest; SS C already records these for a contrast defect |
+| `a.bn-item` (bottom nav) | 73-76 x **34** | **every one of the nine surfaces** | the widest-reach item by far |
+| `button.modetoggle` | 38x38 | every surface | |
+| `div.avatar` | 36x42 | every surface | height passes, width does not |
+| `button.backbtn` | 55x26 | card, compare | already in SS D's compare audit |
+| `button.addclub` | 162x31 | compare | already in SS D |
+| `a#seeA` / `a#seeB` | 145x27 | compare | |
+| `button.arcmk` | 28x28 | playbook, 5 | |
+| `button.cm-mk` | 32x32 | playbook, 6 | **NOT the same element as SS C's `button.cm-mk` contrast entry's subject** , check before conflating |
+| `button.pspot` | 42x42 | playbook, 11 | 2px short; the pitch is a diagram, judge with the redesign |
+| `button.vchip` | 142x33 | playbook, 8 | |
+| `input#vvOptIn` | 16x16 | card, compare | **NOT a defect , it is a checkbox and its LABEL is the target** |
+| `button.searchbtn` / `#csTrigger` / `.hbtn` | 38x38 / 38x34 | rankings, card, contact | |
+| `button.go` | 74x40 | index | |
+| `a.sp` (suggested searches) | 37-93 x **24** | index, 8 of them | |
+| `button#a2hsNo` | **15x26** | index | the install strip's dismiss |
+
+**WHAT SS D ALREADY SAYS, so this does not read as new: the compare three (back 55x26,
+add-to-club 155x31, toggle 38x38) are recorded there as "judgement rather than defect".** This
+sweep says the same judgement is owed PLATFORM-WIDE and names the two that are worse than
+anything previously recorded , the 12px fold triggers and the 17x11 chevrons.
+
+**THREE THINGS TO DECIDE BEFORE ANY OF IT IS BUILT, because they are not the same question:**
+- **THE BOTTOM NAV AT 34px IS THE ONE THAT MATTERS**, because it is on every page and it is the
+  primary navigation on a phone. It is also the most invasive to change: taller nav means less
+  page on every surface at once.
+- **A 44px TARGET DOES NOT REQUIRE A 44px BOX.** Padding, or a pseudo-element hit area
+  (`::after{position:absolute;inset:-Npx}`), enlarges the touch region without moving a pixel of
+  the design. That is the cheap route for the chevrons, the fold triggers and `.arcmk`, and it
+  changes NOTHING visually , which is the whole reason it is worth separating from the rest.
+- **AND SS C's SIBLING-STATES RULE APPLIES: the fold triggers are 31 instances of one control.**
+  They move together or not at all, and the same is true of `.bn-item` across nine pages.
+
+**[THE FREE HALF SHIPPED 2026-09-28. WHAT IS LEFT HERE IS ONLY WHAT MOVES A PIXEL.]** A
+transparent `::after` now gives the 31 fold triggers and the 5 arc marks a full **44px** area,
+and the card's season chevrons **19x43** , no paint, no layout, no pixel moved, verified by
+probing points outside each button's own box. **The chevrons could NOT take 44 WIDE and that is
+measured, not conceded:** they sit side by side with a **2px** gap and the season trigger is
+**8px** to the left, so a 44px-wide area on each would overlap its sibling by about 25px and eat
+the trigger. **Getting them to 44 wide needs the row re-laid out, which is a visual change, so it
+belongs to this entry rather than to that one.**
+**STILL OPEN AND STILL THE ONE THAT MATTERS: the bottom nav at 34px tall on all nine surfaces**,
+plus `.modetoggle` 38x38, `.avatar` 36x42, `.backbtn` 55x26, `.addclub` 162x31, `a#seeA`/`a#seeB`
+145x27, `.cm-mk` 32x32, `.pspot` 42x42 and `a.sp` 37-93x24. Every one of those changes what a
+page looks like.
+
+**THE INSTRUMENT: `_sweep_audit.js`, `tapTargets()`.** It reports every VISIBLE interactive
+element under 44px in either dimension, with its rendered size. Re-run it after any change and
+compare counts per surface , and note it counts an element once per surface per width, so the
+390 and desktop numbers differ where a control is hidden at one of them.
+
+## FLOOR-BOUND FLAG , A BOOLEAN COLUMN, RIDES WITH THE SHARED MATVIEW REBUILD (queued 2026-09-07, NOT built)
+
+**IT REPLACES A POSITION KEY THAT IS DELIBERATELY WRONG ON 2,081 CARDS.** The rt claims licence
+shipped 2026-09-07 gating on `position_pool IN ('CB','FB','CDM')`, which covers 12,177 cards to
+reach the 10,096 that are genuinely floor-bound , **17.1% are restricted without needing to be,
+van Dijk 2025 among them.** That was the cheap error on purpose; this is the fix.
+
+**THE EXACT TEST IS `FLOOR >= PERF` AND IT IS NOT COMPUTABLE AT RUNTIME.** Checked against the
+matview's 76 columns: `pos_pct`, `abs_pct`, `posvol_pct`, `absvol_pct`, `gaw` and `gaw_ref` are
+ALL CTE-internal and reach no consumer. `FLOOR`'s inputs (`def_share_pct`, `duel_quality_pct`)
+are on the matview; `PERF`'s are not. So neither vv-core nor api/analyse.js can evaluate it, and
+the flag has to be computed where the switch already lives, in `player_card_view`.
+
+**THE COLUMN.** `floor_bound boolean` = `(FLOOR >= PERF)`, emitted from the `base` CTE where both
+sides are already in scope. **Append-only on the VIEW is safe; the MATVIEW enumerates its columns
+and is frozen at creation (SEC C), so it needs the DROP+CREATE and its 8 indexes.** That is why
+this rides with the shared rebuild rather than triggering one: the Proof percentile columns and
+the known-as name fold are already waiting on the same sitting.
+
+**WHEN IT LANDS:** `vvAIStats` reads `row.floor_bound` and the `pool === 'CB' || 'FB' || 'CDM'`
+test is DELETED , not kept as a fallback. A position key and a measured flag are two fields for
+one concept, which SEC C records as a defect even when both are populated.
+
+**MEASURED 2026-09-07**, by reproducing `player_card_view`'s own formula on all 50,269 outfield
+cards with 0 mismatches: **21,193 flagged overall (42.2%)** , CB 5,260 of 6,102 (86.2%), FB 3,127
+of 3,767 (83.0%), CDM 1,709 of 2,308 (74.0%), CM 2,940 of 5,274 (55.7%), CAM 164 (11.2%), Winger
+357 (8.6%), ST 174 (3.5%). **CM IS NOT GATED TODAY AND IS THE OPEN QUESTION**: at 55.7% it is
+past a coin flip, and the column settles it per card rather than by a judgement about the pool.
+
+**SEPARATE DECISION, NOT COVERED BY EITHER: THE NULL-POOL CARDS.** 22,170 outfield cards carry no
+`position_pool`. **`FLOOR` is 0 for every one of them** (the `ELSE NULL -> COALESCE 0` branch), so
+the 7,451 that satisfy `FLOOR >= PERF` are cards whose PERF is also near zero , **near-EMPTY
+cards, not floor-bound defenders.** Flagging them under this name would be a different claim
+wearing the same name, so they are ungated in both designs. **Decide what they get before the
+column ships**, because `floor_bound` computed naively in SQL WOULD flag all 7,451.
+
 ## §D DEFERRED (post-launch, explicitly NOT launch-blockers)
 
 - Premium/motion pass; accounts/Locker (waitlist for now); language toggle EN/NL/FR.
@@ -81,7 +287,7 @@ Established while retiring Marksman. **Read this before proposing any new profil
   - **BUT THE RAW LEADERBOARD IS NOT CLEAN, and an earlier note in this session overstated it.** The real top ten (shots>=25, min>=900) is **F. Vazquez 1516 5.62, Leo Scienza 2425 5.62, Victor Andrade 1718 5.28 (rt 24), Neymar 1718 5.21 (rt 88), Rochinha 1819 5.14 (rt 35), D. Lezcano 1617 4.87, Francisco Geraldes 1617 4.82 (rt 55), Matheus Pereira 1718 4.66, J. Grealish 1920 4.65 (rt 80), J. Cuadrado 1516 4.58.** Neymar and Grealish are there; so are cards at **rt 24 and rt 35**. **It needs a quality gate like every other rate metric , do not ship it off the raw rate.**
   - **ZAHA IS NOT IN THAT LIST.** He was named in passing when this was logged and the data does not support it: his best is **1617 at 3.60/90, rank #82**. Recorded because a plausible-sounding name in a doc becomes a fact nobody rechecks.
 - **`cards_yellow` / `cards_red` ARE 99.7% POPULATED INCLUDING PRE-2015 (0.0% null 2010-2014).** They are **the ONLY granular fields that survive the 2015 wall**. The complete list of fields usable across the WHOLE record is just four: **appearances, minutes, goals, and the two discipline columns.** Everything else is ~99.3% null before 2015.
-  - **BUT ALL FOUR DISCIPLINE FIELDS ARE ABSENT FROM `player_card_mv`** (`fouls_drawn`, `fouls_committed`, `cards_yellow`, `cards_red` live on `player_season_cards` only), so the tag engine **cannot see them at all** today. Surfacing them means the **matview DROP + CREATE** plus its 8 indexes , see the §C matview trap. **Do it in the SAME sitting as the percentile columns and the known-as work**, never on its own.
+  - **[CORRECTED 2026-09-08 , ALL FOUR ARE NOW ON `player_card_mv`. THIS ENTRY SAID THEY WERE ABSENT AND WOULD HAVE SENT A SESSION TO BUY A REBUILD IT DOES NOT NEED.] `fouls_drawn`, `fouls_committed`, `cards_yellow` and `cards_red` are all present**, verified against `pg_attribute`. The tag engine can see them today. **A `fouls_drawn` tag needs no matview work at all** , only the quality gate this entry already specifies, because the raw leaderboard is not clean.
 - **`passes_accuracy` IS NOT A COVERAGE PROBLEM. IT IS A VALIDITY PROBLEM, AND THAT IS A STRONGER AND DIFFERENT REASON NOT TO GATE ON IT (corrected 2026-08-27, this entry previously said the opposite).** The old wording , "72.4% null overall and getting worse" , framed it as a field we do not have enough of. **We have plenty of it and it does not mean one thing.**
   - **THE EVIDENCE, STRAIGHT FROM THE PROVIDER, NOT FROM OUR COPY: Kroos at Real Madrid, La Liga, reads accuracy 92 in 2019, 67 in 2020 and 67 in 2023, on 2,147 / 2,021 / 2,369 passes.** Same club, same role, same volume, twenty-five points gone in one summer. **The same break runs through the whole archetype: Kimmich 69 -> 62, Jorginho 88 -> 56, and Modric 44-55, Kovacic 41-59, Pedri 42-47 sustained across seasons.** No elite midfielder passes at 44%.
   - **AND IT IS ALSO ABSENT, INTERMITTENTLY, AT SOURCE.** `players?id=...&season=...` returns `"accuracy":null` while `total` and `key` are populated and match our stored values exactly , verified on Bruno Guimaraes 2024 Premier League. **This is NOT the goalkeeper shape.** The keeper fields were arriving and being discarded by one line in our merge; this one never arrives. **A re-run fills nothing.**
@@ -346,6 +552,8 @@ whoever opens this file should read that entry first.
 **Parked deliberately. The two cheap fixes from the same audit shipped; this one did not, because it is a
 layout change to the main grid and belongs with the Compare/rankings filter redesign rather than the merge run.**
 
+**[THE BOTTOM ACTION BAR IS ALREADY BUILT, 2026-10-03, IN `compare.html` , ADOPT IT, DO NOT REBUILD IT.** The settle-button fix below was constructed as this pattern on purpose: 61px by declaration, stacked flush on `.bottomnav` at the 720 breakpoint with a measured 0px seam, every target at 44px, and two state tokens (`--vvnavh`, `--vvbarh`) the dependents are written against. **What Option C adds here is the SHEET and the slim top bar, not the bar.** And the 720-to-1100 seam in risk 1 is still open , the settle bar deliberately did not widen it and deliberately did not close it either.]**
+
 **WHAT IT IS.** Replace the stacked mobile chrome (search + view toggles + filter rail, all in flow) with a
 **52px slim bar** at the top and a **61px action bar** at the bottom that opens the filters as a **sheet** over
 the page instead of pushing 1,572px of panel into the document.
@@ -376,7 +584,32 @@ no touch target falls under 44px. **Cost: 5 to 6 hours.**
    desktop renders in the rail, so every control exists twice in markup or moves between containers. Moving
    is correct; duplicating drifts, which is what §C already records about the four tag-render paths.
 
-## COMPARE , THE SETTLE BUTTON SITS BELOW THE FOLD ON MOBILE (measured 2026-08-29, NOT FIXED)
+## COMPARE , THE SETTLE BUTTON SITS BELOW THE FOLD ON MOBILE (measured 2026-08-29, **FIXED 2026-10-03**)
+
+**BUILT AS THE SHARED BOTTOM-ACTION BAR, WHICH IS WHY IT IS RECORDED HERE AND NOT ONLY IN THE COMMIT: RANKINGS OPTION C INHERITS THESE RULES RATHER THAN INVENTING A SECOND BAR.** The entry below says doing it separately means building the same bar twice, and that is still the governing instruction , Option C adopts `.settlerow`'s block in `compare.html` and changes only what it holds.
+
+**MEASURED ON THE RENDERED PAGE AT 390x844, BOTH THEMES, DEEP-LINKED PAIR:**
+
+| | before | after |
+|---|---|---|
+| Compare button below the fold | **693 to 734px** | **0** , on screen at `scrollY` 0 |
+| button box | 213x53 floating | **358x44**, full-bar width |
+| bar height | , | **61px**, Option C's figure, by declaration |
+| seam between bar and nav | , | **0px** (bar bottom 790 == nav top 790) |
+
+**THE TWO HEIGHTS ARE DECLARED AS TOKENS AND THE FIRST ATTEMPT GOT BOTH WRONG, WHICH IS THE PART WORTH KEEPING.** I read `body{padding-bottom:72px}` as "the nav's height". It is not , **72 is the nav's 54 PLUS 18px of clearance** , so the bar sat 18px too high and a strip of the page scrolled through the slot between bar and nav. And the bar came out **68px against the pattern's 61**, because its height was an emergent consequence of padding plus whatever the button happened to be. Both are now named: `--vvnavh` written the same way the nav writes its own padding so a device safe-area moves them together, and `--vvbarh:61px` with the button given an explicit 44px, so the arithmetic is **8 + 44 + 8 + 1** rather than a number that fell out.
+
+**THE CONTROL MOVES, IT IS NOT DUPLICATED** , Option C's third recorded risk. There is exactly one `.settlerow` in the markup and the block changes where it sits.
+
+**THE BREAKPOINT IS 720, MATCHING `.bottomnav` RATHER THAN BEING CHOSEN.** Option C's first risk is the 720-to-1100 seam where `.filterrail` is static and no bottom bar exists. **This does not widen it** , the bar appears exactly where the nav it stacks on appears , and that seam is still open and still Option C's to close.
+
+**THE BAR HIDES IN THE TWO STATES THAT HAVE NOTHING TO SETTLE, AND IT IS THE PLATFORM'S FIRST `:has()`.** Before both slots are filled (`.settle.disabled`, already toggled by `vvUpdateCompareGate`) and after the verdict is open (`#verdict.show`). **The reason it is CSS and not a JS flag is SS C's own rule**: a behaviour attached to a code path is missing from every other path, and `#verdict.show` is added by the button's handler, removed by `vvCompareNew`, and can arrive already set on a deep link. The cascade reads the state, so no path can forget. **It degrades safe** , unsupported, the rule does not apply and the bar stays visible, which is the old behaviour plus a pinned button.
+
+**VERIFIED WITH THE NEGATIVE CONTROL BOTH WAYS, because a gate that only ever hides is indistinguishable from a bar that never worked:** enabled reads `display:flex` / `padding-bottom:133px`, disabled and settled both read `display:none` / `72px`, and the back-to-top moves 145 to 84 with them. Harness: `_probe_390.html`.
+
+---
+
+## [THE ORIGINAL ENTRY, KEPT FOR THE MEASUREMENT AND THE REASONING]
 
 **At 390x844 on a deep-linked pair, the "Compare" button's top is 1,537px into a 1,715px page , 693px below
 the fold, 1.82 screens down.** The button itself is fine (213x53). **The reader has to scroll almost two
@@ -502,8 +735,8 @@ Luiz's 2025/26 card reads "Aston Villa" for a season of which 331 minutes were p
 Forest. The season is now complete and the club line is now partial.
 
 **THE SCALE IS THE ARGUMENT FOR TAKING IT SERIOUSLY, NOT THE THREE CARDS.** §E measures roughly
-**1,600 halved cards** across the database. Every one of them, once repaired, lands in exactly this
-position. **Deciding this AFTER repairing 1,600 cards means deciding it twice.**
+**1,462 halved cards** across the database (measured 2026-09-04). Every one of them, once repaired, lands in exactly this
+position. **Deciding this AFTER repairing 1,462 cards means deciding it twice.**
 
 **THE HARD CONSTRAINT, AND IT IS WHY THIS IS NOT A ONE-LINE CHANGE: `team_id` MUST RESOLVE TO ONE
 CLUB.** The view joins `teams` through it for `primary_colour` / `secondary_colour` / `accent_colour`,
@@ -513,7 +746,7 @@ paint would disagree, on the product's most recognisable surface.
 
 **THE OPTIONS, AS THEY STAND:**
 1. **Leave it , one club, the destination.** What ships today. Simple, consistent, and silently
-   incomplete for ~1,600 cards.
+   incomplete for 1,462 cards.
 2. **Name both in the text, paint one.** Cheapest to build, and it introduces a card whose words and
    colours disagree. **§C's display-case lesson applies: two representations of one thing drift and
    nothing says so.**
@@ -1026,3 +1259,504 @@ Only Wonderkid and The Last Dance are `live:true` and carry both.
 card.html's Wonder Tags panel, in the wrong container, without a mark (see `CLAUDE.md` §D).
 **The fix is to make them live, not to flip the flag.** A page that shows a slot which will never fill
 is making a promise the engine has decided not to keep.
+
+
+---
+
+# THE STANDARD, PER-PLAYER SPAN ON THE CARD , SPEC, NOT STARTED (parked 2026-09-12)
+
+**WHY IT IS PARKED RATHER THAN DONE.** The playbook arc is an explainer diagram with no player
+in it, so a real extent cannot be drawn there , that is why the playbook shipped the schematic
+fix instead (full width, hatched, one claim). **This is the same idea on a surface that HAS a
+player, and it is a new feature, which is why it waits.** Evidence and measurements:
+`RULE_EVIDENCE.md`, the career-arc span entry.
+
+**THE DATA IS ALREADY ON THE CARD , NOTHING NEW HAS TO BE FETCHED.** `SEASON_RAW` holds the
+player's whole career and is already used to build the cabinet's team legs
+(`VVCore.cabinetWithTeamLegs(items, SEASON_RAW, D.season_year, null)`), and every row carries
+`rt`, `season_year`, `card_id` and `stage_the_standard`.
+
+**THE SPEC.**
+- **Sort the career by `(season_year, card_id)`**, which is what `stage_seasons`' `row_number()
+  OVER (... ORDER BY yr, card_id)` does in `player_card_view`. **The second key is load-bearing**
+  , 614 players hold two or more cards in one `season_year`, and a sort on the year alone leaves
+  those in whatever order the query returned them.
+- **The bar spans the FIRST to the LAST qualifying season**, positioned by career INDEX, not by
+  year, so a two-card season does not stretch the axis.
+- **Ticks mark each qualifying season** on the bar.
+- **A dashed run marks a gap**, because the qualifying seasons are frequently NOT contiguous ,
+  Firmino qualifies 2013, not 2014, 2015 to 2020, not 2021, then 2022. **Without the dashes the
+  bar asserts a continuous run the player did not have**, which is a second false claim replacing
+  the first.
+- **The label sits BELOW the bar, left-aligned to its start.** Inline, it overflows a narrow bar
+  and reads as part of the extent: measured at 390, track 318px, the narrowest real span renders
+  a 47px bar while the marker plus gap plus label needs 121px, so the label ran **74px past the
+  bar's right edge**.
+
+**DO NOT ADD A DEGENERATE-CASE BRANCH. ZERO AND NEAR-ZERO WIDTH ARE IMPOSSIBLE BY CONSTRUCTION.**
+The rule needs five qualifying cards, so first-to-last is **at least four index steps** and the
+minimum span is `4/(n-1)` , **23.5% at the longest career in the data (n = 18), still 16.7% at a
+hypothetical 25 seasons.** Measured over all 58 holders: minimum 4 index steps, minimum 5 distinct
+qualifying years, narrowest Eriksen at 23.5%. A guard for the single-season case is dead code.
+
+**THE DEFINITION NEEDS NO WORK , IT IS CORRECT AND AGREED IN BOTH IMPLEMENTATIONS.** SQL
+`stage_the_standard = COALESCE(nc.n_all >= 2 AND sa.n80 >= 5 AND sb.rt >= 80, false)`; the JS
+reference `careerStageTags` computes the same; the shipped copy describes it correctly. **Anyone
+picking this up is building a RENDERING, not revisiting a rule.**
+
+
+---
+
+# TWO UI ITEMS LOGGED 2026-09-12, NEITHER BUILT, NEITHER URGENT
+
+**Both existed nowhere in the tree before this entry.** A reconciliation pass on 2026-09-12 went
+looking for them across every `.md` and every shipping `.html` and found **zero** matches, so they
+were live only in conversation. That is the whole reason they are written down.
+
+## THE PLAYBOOK'S ANNOTATED CARD MOCKUP IS NEARER SQUARE THAN THE REAL CARD
+
+`playbook.html` carries a `.cardmock` block that explains the card's anatomy. **Its proportions are
+closer to square than the card it is teaching**, so a reader learns the parts against a shape the
+product never renders.
+
+**THE RATIO TO MATCH IS NOT THE ONE IN THE CSS, AND SS C RECORDS WHY.** The card's height is
+`--cw * 1.397`, but the RENDERED ratio is **1.518**, because width is clamped by `max-width:92%`.
+SS C states it outright: *"Do not read 1.397 off the CSS and size an image with it."* **A fix that
+reaches for 1.397 will be wrong by the same margin the current mockup is.**
+
+**Measure the rendered card, then the mockup, then decide** , and check it at 390 as well as
+desktop, because the mockup sits in a foldable section whose width changes.
+
+## THE FILTER PANEL AS A POPUP RATHER THAN AN EXPANSION
+
+The filter panel currently EXPANDS in place, pushing the content below it. The proposal is a
+POPUP, so the grid does not move under the reader while they are choosing.
+
+**THIS IS NOT A DRIVE-BY CHANGE, AND SS C NAMES THE TRAP.** The Compare picker deliberately takes
+**no `position:fixed` body lock** , a body lock once collapsed `documentElement.scrollHeight` to
+the viewport while body stayed 2,190px tall, leaving **1,346px unreachable on a phone with no
+scrollbar to say so**. A popup that locks the body reintroduces exactly that. The mobile picker was
+rebuilt as a fixed SHEET for this reason, with the page height unchanged and `body` still
+`position:static`, and **that is the pattern to copy rather than a new one**.
+
+**AND IT TOUCHES A SHARED COMPONENT.** `VVFilters` serves rankings, the Compare picker and the
+filter rail, so a popup is three surfaces, not one , see the FILTER FOLLOW-UP stage in
+`LAUNCH_STAGE.md`, which is where this belongs if that stage is ever run.
+
+
+---
+
+# CONSIDERED AND REJECTED: THE CCC BACKFILL FOR THE TOP 4 CLUBS, 2010-2015 (2026-09-12)
+
+**THE PROPOSAL.** Fill NR stats and missing squad numbers for the top 4 clubs in each of the 9
+leagues, 2010 to 2015, by a research pass.
+
+**IT FAILS BEFORE FEASIBILITY IS EVEN REACHED, ON THE SHAPE OF THE GAP.** Measured over the window
+(20,219 cards), **twelve fields sit between 84.0% and 90.6% null**: assists 90.6, tackles_total
+86.5, shots_on 84.3, shots_total 84.2, passes_key 84.2, dribbles_success 84.2, dribbles_attempts
+84.1, interceptions 84.1, passes_total 84.0, duels_won 84.0, duels_total 84.0, penalties_scored
+83.9. Only appearances, minutes and goals are populated.
+
+**THIS IS AN ERA GAP, NOT AN ASSISTS GAP , and exactly one of the twelve feeds rt.** `gaw` reads
+`0.7 * COALESCE(assists, 0)`; the other eleven are display and tag inputs. **So filling assists
+alone MOVES THE SCORE while the Proof panel beside it stays empty** , the card gets a new number
+and no new evidence, which is the worst of both. And filling the other eleven changes nothing about
+the score, so the two halves cannot be justified by the same argument.
+
+**THE SCOPE, so a later reader does not re-derive it.** 1,018 club-seasons exist in the window,
+median squad 20 cards on the matview, p90 24. A top-4 selection is **216 club-seasons, roughly
+4,300 to 5,200 cards**. Of the whole window, **18,322 cards have null assists** and **19,899 of
+20,219 (98.4%) have no `player_positions` row at all**; **18,217 have both**.
+
+**AND THE SELECTION CANNOT BE MADE FROM THE DATABASE.** There is **no standings source** ,
+`team_standings`, `standings`, `league_table` and `team_season` are all absent. "Top 4 by final
+league position" needs an external list before a single card can be chosen. The `honours` table
+gives the champion only, never second to fourth.
+
+**WHAT WOULD MAKE IT VIABLE, and it is two things, not one:**
+1. **Fill the ERA, not one field.** A pass that returns assists plus the shot, pass, dribble, duel
+   and tackle block for a club-season, so the card is complete rather than selectively improved.
+2. **A standings table.** Without it the cohort is unselectable and any "top 4" is an assertion.
+
+**AND IT INHERITS THE ENGINE PROBLEM EITHER WAY , see `DATA_DEFECTS.md`.** Because a null assist is
+currently scored as zero, ANY assist backfill raises `gaw` on every filled card, moves `gaw90`,
+moves the pool percentiles and therefore moves **cards nobody touched**. That makes it an engine
+change needing a simulation and a before/after snapshot, not a data fill.
+
+**ON THE RESEARCH ITSELF, recorded so the confidence question is not re-opened from scratch:** the
+position batches returned high confidence where the claim was a ROLE a model has seen described
+many times, and low where it needed a precise split , *"no reliable recall of the split"*. **An
+exact per-season assist total for a mid-table 2011 player is the second kind, and unlike a position
+it feeds rt**, so a confidently wrong answer moves a published score.
+
+## PINNED-INK CANDIDATES , CATEGORIES A AND B, MOVED OUT OF QA A14 ON 2026-09-21
+
+**They are CANDIDATES FROM A STATIC SCAN, NOT FAILURES, and that is why they left the launch
+gate.** `scripts/scan-pinned-ink.js` flags 295 of them across 12 surfaces (card 80, myclub 65,
+compare 43, preferences 33, playbook 31, rankings 13, vvindex 9, index 5):
+- **A** , a literal `color` with no `body.light` counterpart.
+- **B** , `opacity` on a rule that sets no colour of its own.
+**C was the decidable one and it is CLOSED: 15 instances, narrowed to 0**, because 13 paint their
+own ground (an active state on its own fill, a gold chip on gold, the card face, which SS C rules
+must NOT flip) and `.chronicle-one` is pinned to a ground that does not move either. The single
+genuine instance, `.gk3 .lax`, was fixed.
+
+**WHY THEY ARE NOT A GATE.** A static scan cannot know a ground, and SS C is explicit that only a
+rendered measurement settles contrast. Three of these were found and fixed as REAL defects
+(`#rankFBtn`, `.gk3 .lax`, `.lgfoot`) , each one surfaced by a rendered reading, not by the list.
+The list's value is that it names where to look next, and looking is post-launch work.
+
+**THE ONE THING THAT MUST TRAVEL WITH IT:** the scanner matches COMMENT TEXT as selectors unless
+comments are stripped first (432 before that fix, 295 after), and SS C now records that any scan
+of a source file strips comments before matching.
+
+**AND ONE TOKEN-LEVEL CANDIDATE FROM THE 2026-09-21 A14 RE-RUN, LOGGED RATHER THAN CHASED:**
+`--ink-soft` (#5f594e in light) is calibrated against the PAGE, where it reads 6.66. On compare's
+`.matchup` panel, which is `rgb(220,210,190)` in light, the same token reads **4.31** , under the
+bar before any element adds its own darkening. `.cmp-seasontrigger` was pinned to `#565045` (4.95)
+because it was the one caught by the buttons-and-chips sweep. **Every other `--ink-soft` text on
+that panel has the same ceiling and none of it has been measured**, because the sweep's selector
+was controls, not prose. It is a token question, not eight element questions.
+
+---
+
+# LUCAS'S TEN, 2026-09-27 , RECORDED, NOT BUILT
+
+**His wording is kept verbatim in the quoted line of each item.** Only item 1 was investigated as
+a possible defect; everything else is queued and nothing was built. **Item 8 of the punchlist (the
+full audit sweep) still waits for his word and is not one of these ten.**
+
+### 1. The thin red bar in rankings , INVESTIGATED, NOT A HORIZONTAL BAR
+> "A thin red bar sits under the filter row in rankings search, above the card grid. Is it an
+> element or a stray? If a defect, fix it. If intentional, tell me what it is."
+
+**PARTIALLY ANSWERED AND NOT CLOSED.** A scan of every element at 1920 that is wide, under 14px
+tall and red by computed style found **nothing** between the filter row and the grid. What IS
+there is a thin pink mark at the **right edge**, vertical rather than horizontal , consistent with
+a styled scrollbar thumb on the grid container, not a rule under the filter row.
+**The investigation was interrupted and must be finished before this is called either way.** The
+two things not yet done: reproduce at HIS width (the scan was at 1920 and he may be narrower or on
+a phone), and drive the page into the SEARCH state, which is the state he named.
+
+### 2. The home page suggestions , ANSWERED, NO ACTION
+> "The 'start from' suggestions on the home page: fixed set or randomised per load? Just answer."
+
+**FIXED, AND HARDCODED IN THE MARKUP.** Eight `<a class="sp">` pills in `index.html`: five
+positions (ST, Winger, CM, CB, GK) and three bands (Generational, Iconic, World Class). They never
+change. **A SECOND THING ON THAT PAGE DOES ROTATE AND IS PROBABLY WHAT PROMPTED THE QUESTION:** the
+search box PLACEHOLDER cycles six examples every 2.6 seconds, in fixed order (`k=(k+1)%ex.length`),
+so it is a rotation and not a randomisation either. **Honours is deliberately absent from the
+pills** , the page's own comment records why: most players hold none, and an empty result on the
+first screen anyone sees reads as broken rather than as narrow.
+
+### 3. A transfer indicator on both halves of a split season , NEW WORK
+> "Semenyo shows no arrows on either 25/26 card. I now understand that is correct, since both
+> numbers are squadnum. What I actually want is a TRANSFER indicator on both halves of a split
+> season."
+
+**NOTE THE DEPENDENCY, because it is the whole cost:** 180 of the 181 seasons split on 2026-09-26
+have NO `split_transfers` row, so the platform currently cannot say a transfer happened, only that
+two clubs appear. An indicator that fires on "two rows in one season" would be asserting a move it
+has not verified , the hedge SS E already ruled on for the shirt-number mark.
+
+### 4. The Data Confidence radar section wants a visual
+> "The Data Confidence radar section is too text-heavy, wants a visual."
+
+### 5. The shirt-number section wants a visual
+> "The shirt-number section wants a visual, this is item 2 already queued."
+**His own cross-reference: punchlist item 2, already queued.**
+
+### 6. VV Index still the old format , CLOSED 2026-10-03. Lucas approved the rebuild and it SHIPPED; the row said "awaiting my re-approval" after the approval had been given and the work had landed.
+> "VV Index still the old format, that is item 14 awaiting my re-approval."
+**Blocked on him, not on work.**
+
+### 7. AFCON absent from the Cabinet
+> "AFCON absent from the Cabinet, that is AFCON part 1, not built."
+**Scoped in `docs/AFCON_SCOPE.md`; part 1 is the extraction and the honour rows, no schema change.**
+
+### 8. Fluid navigation
+> "Page transitions are robotic. I want fluid navigation, Apple-like."
+**Cross-reference: SS D already records that the card's two navigation AXES have opposite polish ,
+`switchSeason` calls `vvCardFlip` and `seqGo` is a hard cut , and that they move together or not
+at all. This is the larger version of that item and should absorb it.**
+
+### 9. Compare trajectory, one overlapped chart
+> "Compare trajectory: overlap the two players' G+A in the middle rather than two separate charts.
+> Demo before building."
+**Demo first, his instruction. `renderTrajectory` is SHARED, so any change must be checked on card
+AND compare , SS D records that constraint on the existing trajectory item.**
+
+### 10. The saved verdict image
+> "The saved verdict image should use the verdict's own typography rather than plain text, and
+> carry the X and Instagram handles bottom right, small. Demo before building."
+**Demo first, his instruction. TWO RECORDED CONSTRAINTS APPLY AND BOTH ARE MEASURED:** the frame is
+judged at 600px because X renders it at roughly half size, and **the bottom of `igf`/`igs` is
+already at 94% of its usable width**, so handles added bottom-right must be measured on `igf`
+first, never on `x`. And html2canvas is a different renderer from the browser, so the typography
+has to be verified in a captured PNG rather than in the live DOM.
+
+---
+
+## ITEM 10 , BUILT AND SHIPPED 2026-10-03. THE ENTRY BELOW IS THE DECISION; THIS BLOCK IS WHAT CHANGED BETWEEN DECIDING AND BUILDING.
+
+**THREE THINGS IN THE SPEC DID NOT SURVIVE CONTACT, AND ALL THREE WERE RULED BY LUCAS ON THE DAY:**
+1. **THE SIZE: `0.060` IS A SLIP IN THE WRITE-UP, NOT A DECISION.** `SH_TYPE.verdict` has shipped at **0.052** since 2026-09-07, **twenty days before** this entry was written, so "the ORIGINAL size" is 0.052 and 41px was never the status quo. Shipped unchanged at 0.052 = **35px in the file, 8.8px in a 300px tile**, not the 10.3px recorded. Same trade, smaller number. **The lever and the number to beat (14.3px displayed, `0.085`) are unaffected.**
+2. **THE SCORELINE DOES NOT REPLACE THE CAPTION ROW , BOTH SHIP.** The caption is the only place the SEASONS appear, and an image naming two players and no years is worse than the row it replaces (Lucas, 2026-10-03).
+3. **AND THE SCORELINE HAD TO BE RAISED, BECAUSE THIS ENTRY'S OWN REASONING WAS CONDITIONAL AND THE CONDITION FAILED.** The small verdict line was accepted on *"the cards plus the scoreline carry the thumbnail"*. **Measured: the numerals shipped at `26*S` = 17.6px in the file, which is 8.8px at X's 600 and 5.0px at a phone's 340.** At 5px the scoreline carried nothing, so half the stated reason was untrue. Raised to **`68*S` = 45.9px = 13.0px at 340**, against a demonstrated floor of 8.8px , the caption row's own size on the same image, which is legible there.
+   - **WHAT GAVE: THE SURNAMES IN THE SCORELINE ROW, AND NOTHING ELSE.** They are stated three other times in the same image (each card face, the caption row, the verdict prose). The numerals are stated only on the card faces and the margin nowhere at all. **The verdict line, the rule and the tag were not touched** , the room came from deleting a duplicate rather than shaving every element.
+   - **THE MARGIN CHIP IS HONESTLY A 600-AND-ABOVE ELEMENT:** `30*S` = 20.3px file, **10.1px at X and 5.7px at 340**. Stated rather than fixed; sizing a secondary chip like the primary numerals would be the wrong trade.
+- **THE COLLISION QUESTION WAS ASKED AND MEASURED RATHER THAN ASSUMED.** Gold `#E8B84B` on the dark frame's three stops: **9.38 / 10.30 / 10.65**, clearing AA everywhere. **Against the pink `--emph` it measures 1.60**, which looks alarming and is the wrong test , the two are far apart in HUE and never do the same job. **Pink is IDENTITY (the wordmark's second V, both numerals); gold is EDITORIAL (the winner's surname, the margin chip).** One emphasis ink and one identity ink, the same split compare.html already ships.
+- **ZERO OVERFLOW ON ALL FOUR FORMATS, MEASURED ON THE RENDERED FRAME** , `x` 26px clear, `igf` 41px, `igs` 41px, `dl` 38px, every one matching the clearances this file already records, so the bottom block did not move.
+- **CONTROL SET: `scripts/share10_control.js`, 15 checks, run it before touching any of this.** The one that earned its keep: **`Number(null)` is 0, not NaN**, so the first margin guard passed an unscored keeper and printed "91 points". **And the control's own precondition was the broken part of the overflow pass** , it grepped for `font-size:45.9px` where the real string is `45.900000000000006`, so it read `raised:false` on raised code while the computed style said 45.9px. The corroborating reading is what saved it.
+
+**Lucas picked AFTER 1 from `_demo_share10b.html`.** What ships when it is built:
+
+- **The verdict line in Fraunces**, the face `compare.html` already loads, at the ORIGINAL size
+  (`0.060` of the short side, 41px on the 1200x675 frame).
+- **Emphasis is the INK alone. NO WASH, in either theme.** Gold `#E8B84B` on dark, brand red
+  `#AD0332` on light.
+- **The emphasised phrase is the WINNER'S SURNAME**, derived from `winner_card_id` and the card's
+  own name. Nothing reads the sentence.
+- **The scoreline replaces the caption row** , two numerals, the loser at 0.55 opacity, the winner
+  in the identity colour, and a gold chip naming the MARGIN and never the victor.
+- **Handles top left.**
+
+### The deliberate trade, with the number beside it
+
+**AFTER 1 FAILS THE THUMBNAIL THRESHOLD AND WAS TAKEN ANYWAY. THIS IS A DECISION, NOT AN
+OVERSIGHT, AND IT IS RECORDED HERE SO NOBODY LATER "FIXES" IT.**
+
+- A share image is read at roughly **300px** in a feed first, which is a quarter of the 1200px
+  frame, so the displayed line size is the file size over four.
+- **AFTER 1 renders 41px in the file and 10.3px in the tile.** My own measurement called that
+  texture rather than type.
+- **The two variants that clear it were shown and declined: 0.085 reads 14.3px, and a lead-clause
+  crop at 0.105 reads 17.8px.**
+- **Lucas's reason, in his words: "the line is right at full size, and the cards plus the
+  scoreline carry the thumbnail."** The cards are the platform's strongest asset at any size and
+  the numerals are large; the sentence is for the reader who stops.
+
+**IF THIS IS EVER REOPENED, THE LEVER IS `SH_TYPE.verdict` AND THE NUMBER TO BEAT IS 14.3px
+DISPLAYED.** Do not re-derive it from scratch; the three measured points are above.
+
+### Why the emphasis is honest, measured rather than argued
+
+**The winner's surname is STRUCTURAL: it comes from `winner_card_id`, never from parsing the
+sentence.** Measured over every cached verdict with a decided winner, **n=72**:
+
+| | |
+|---|---|
+| winner's surname appears in `who` | **69 (95.8%)** |
+| appears first | 68 of 69 |
+| appears more than once | **0** , no ambiguity about which occurrence to mark |
+| neither surname appears | 2 , those render with **no emphasis**, which is the honest fallback |
+
+**This is the same justification SEC C already accepts for the A/B identity colours on compare:** a
+tint on text that already says who it is, never colour carrying meaning on its own. The gold rim
+and the verdict tag still carry the winner.
+
+**AND TWO ROUTES WERE REFUSED ON PRINCIPLE, BY LUCAS:** a prompt edit to mark `who` (item 25 is
+pending and rebuilding every cached verdict is not worth a coloured phrase) and a heuristic that
+picks a phrase (**"we do not invent emphasis the writer did not choose"**).
+
+### The colour numbers
+
+**Brand red `#AD0332` on the `.sf.light` gradient: 6.93 / 6.24 / 5.69 across the three stops,
+worst 5.69, clears AA everywhere.** Raw brand `#E70443` is **3.59** at the worst stop and FAILS,
+which is why the red is the darkened one `--pink-ink` already takes in light mode.
+
+**On separation from the surrounding prose the red BEATS the dark gold it replaces: 2.21 against
+1.70.** For scale, gold against cream on the dark frame is **1.61**, so light becomes the
+STRONGER of the two grounds. **Verified in the captured PNG, not the DOM:** the darkest pixel
+inside the emphasis span is `rgb(173,3,50)` and the prose beside it `rgb(28,27,26)`.
+
+### Handles , top left, and it contradicts the original brief
+
+Measured against the real chrome on all three formats:
+
+- **The tagline row has 60px spare on igf and igs**, against the **247px** two handles need. Out.
+- **Room below the caption block is 41px on igf and igs but only 26px on `x`**, so a dedicated row
+  would need per-format handling , which is how that bottom block got full in the first place.
+- **The top-left corner is EMPTY on all three.** It costs no vertical space where height binds and
+  sits diagonally opposite the wordmark, so it cannot compete with it.
+
+**Bottom right was asked for and the measurement does not support it** , the caption block is
+already there on every format, and the collision was measured at 156x11 on `x` and 247x17 on igf
+and igs. Putting them bottom right means the caption gives up room, which is a change to shipped
+chrome rather than an addition.
+
+---
+
+## ITEM 11 , THE SAVED CARD ON A PHONE. HIS WORDING, NOT SCOPED, NOT BUILT.
+
+> The saved card for a phone should be the CARD, not a card on a page. Full bleed to the screen
+> edges, the plate colour carried to the edge so an Iconic card is gold edge to edge, and a tap
+> flips it to the back. It should feel like you have the card itself on your phone, not a
+> screenshot of one.
+
+**Scope it when it comes up. His four questions for then, verbatim:** what "full screen" means
+across phone aspect ratios; whether the flip is the card page's existing flip or a new one;
+whether it saves as an image or is a live page; and what the back shows at that size.
+
+**THREE RECORDED CONSTRAINTS WILL BEAR ON IT, so whoever scopes it reads these first rather than
+rediscovering them:**
+- **The mobile flip is a SCALE-SWAP, not 3D** (SEC C, invariant 5: at <=720px the card does not
+  rotate, it swaps through the VV coin, and the coin tier is derived from prestige so the colour
+  matches by construction). "A tap flips it" therefore already has an implementation, and it is
+  not the desktop one.
+- **NO overflow clip on any flip ancestor** (invariant 4) , iOS flattens `preserve-3d` under a
+  clip, and "full bleed to the screen edges" is exactly the kind of change that introduces one.
+- **The card face does NOT follow the theme and has three grounds** , plain cream, iconic gold,
+  generational dark. "Gold edge to edge" is the iconic ground only, and any new ink introduced at
+  that size must be seen on all three before it is called done.
+
+---
+
+## THE ONE PROMPT EDIT , FOUR CHANGES, PRICED ONCE. NOT BUILT; THE DIFF COMES FIRST.
+
+**Lucas's rule: one rebuild, not four.** The edit carries, in his order:
+
+1. **Item 25's rule 4 fix** , the under-marking measurement, still gated on both prompt bases
+   settling.
+2. **Item 5a's weighting** , honours are not one flat class of evidence.
+3. **The honour TIER in the payload, plus the prompt sentence that reads it.** The hierarchy
+   already exists as `HONOUR_META.tier` (1 Ballon d'Or through 7 Top Assists) and **the payload
+   does not carry it** , `vvAIStats` emits `honour, year, won_by, leg, context` and no tier, so
+   the model has been relying on its own world knowledge of what outranks what.
+4. **The identical-scores wording** , Lucas's call, 2026-09-27. `compare.html` tells the model
+   *"GENUINELY LEVEL (96=96), identical scores"* whenever the two rt values match. **At the top of
+   the ladder 10.73 points of `b` fit inside one rt point**, so equal rt is equal DISPLAY and not
+   equal score. Measured on Messi 14/15 against Ronaldo 14/15: `b` 134.594 against 138.556,
+   unrounded 96.361 against 96.730, and the engine FLOORS rather than rounds, so both land on 96
+   with **Ronaldo 0.369 of a point ahead**. The prose was asserting something the engine did not
+   say.
+
+**COST, MEASURED 2026-09-27: about $1.48.** Only **11 verdicts and 25 notes** sit on a current
+prompt base; the other 123 and 152 are already stale and regenerate on view regardless. The whole
+cache re-viewed would be $12.57 cold, $4.18 warm , **do not quote those as the price of the edit.**
+
+**Adding `tier` also moves `payloadRev`**, so verdicts invalidate by a second mechanism. Same
+rebuild, no extra cost.
+
+---
+
+## WHAT WARMING ACTUALLY BUYS ON SCREEN , MEASURED, AND IT IS NOT WHAT THE PLAN ASSUMED
+
+**A WARMED CARD STILL SHOWS "READING THE SEASON". Warming shortens the wait; it does not remove
+it.** `card.html` paints the wait into `#glDrury`, `#notesBody` and `#scoutBody`
+**unconditionally, before the fetch** , the client cannot know it is a cache hit until the
+response arrives, so there is no branch that could skip it.
+
+**Measured on the preview, on a card whose notes are cached on the current base (143372):**
+
+| | |
+|---|---|
+| wait first painted | **765 ms** |
+| prose replaced it | **1,756 ms** |
+| **"Reading the season" visible for** | **about 1 second** |
+
+Against roughly **26 seconds** cold. **So the money buys 26 seconds down to one, not one down to
+zero**, and a visitor still sees the loader.
+
+**AND THERE IS A SECOND-ORDER EFFECT WORTH A LOOK BEFORE ANY WARMING IS PAID FOR:** the AI
+loader's own cycle is **2.6 s** (`VV_WAIT.ai.duration`), so at one second it appears and is
+replaced **mid-animation**. A loader that never completes a cycle can read as a flicker rather
+than as a load. **If warming happens, that duration should be looked at in the same pass.**
+
+---
+
+## UNDER THE LIGHTS , OPTION C CHOSEN 2026-09-27. DECIDED, NOT BUILT.
+
+From `_demo_lights.html`, run against the real compare page.
+
+**C , the bigger pool of light:** brighter and taller, `88%` to `118%`, lifted so the spill reaches
+the floor under the card, blur `44px`.
+
+    dark   radial-gradient(ellipse at center,rgba(255,143,163,0.50),rgba(255,143,163,0.16) 44%,transparent 74%)
+    light  radial-gradient(ellipse at center,rgba(255,143,163,0.32),rgba(255,143,163,0.10) 44%,transparent 74%)
+    height 118%   top 2%   filter blur(44px)
+
+**It is one rule, `#cardA::before,#cardB::before` in `compare.html`.** Cost measured at **1.64x the
+control's blur work** (0.311 Mpx against 0.232, radius 44 against 36, one layer either way).
+
+**AND THE COST IS PAID ONCE, NOT PER FRAME** , the glow is a static background that paints on
+load, on resize and on a theme flip. Nothing animates it. **"Frame time" is the wrong unit here**,
+which is why the demo computes area x radius x layers instead: SS C records that a hidden tab
+cannot measure frames at all.
+
+---
+
+# CONSIDERED AND REJECTED: "THE VV INDEX IS NOT A GOAL COUNT" (2026-09-27)
+
+**Proposed as a trust claim for the VV Index page , the argument that the Index reads more than
+goals and therefore beats a raw scoring table. IT WAS MEASURED BEFORE IT WAS WRITTEN AND IT IS
+FALSE. Do not re-propose it.**
+
+**THE MEASUREMENT, over all 54,416 scored cards.** Of the 650 seasons at rt 85 or better:
+- **by pool: ST 395, Winger 164, CAM 40, CDM 17, CM 16, FWD 14, FB 3, MID 1.**
+- **94.3% are forwards, wingers or tens.** Thirty-seven of 650 are anything else.
+- **ZERO of the 650 have no goals.** Not one.
+
+**SO THE TOP BAND IS AN ATTACKING BAND, AND THE PLATFORM ALREADY SAYS SO IN ITS OWN WORDS.** The
+page's "It leans where the evidence is" section states the lean as a deliberate choice: goals and
+assists are recorded everywhere and back to 2010, and defending is not. **A "not a goal count"
+claim would have been contradicted by the page's own disclosure two sections further down**, which
+is worse than saying nothing , it would have made the honest section read as a retraction.
+
+**WHAT WAS SHIPPED INSTEAD, and it survives the same test:** "It rates a season, not a player"
+(median 37-point spread across 4,387 players with five or more scored seasons), "It tells you how
+sure it is" (the separability work), and "Nine leagues, one ladder" (all 650 come from all nine
+leagues, 70% from outside the Premier League).
+
+**THE GENERAL RULE THIS IS AN INSTANCE OF: a claim proposed for a public page gets measured BEFORE
+it is written, not after.** This one was sound in the abstract, obvious-sounding, and wrong, and
+the only thing that caught it was running the query. SS C already records that an unverified
+premise is most costly when it argues for REMOVING something; this is its twin , a premise that
+argues for PUBLISHING something.
+
+---
+
+## HONOUR CHIPS , ONE PER ROW, SO THE LABEL CAN CARRY A REAL TYPE SIZE (deferred by Lucas 2026-09-28, NOT built)
+
+**THE DECISION IS A LAYOUT ONE AND IT IS DEFERRED DELIBERATELY, NOT PARKED FOR WANT OF INFORMATION.** The measurement below is complete; what is missing is a judgement about what a card should look like, and Lucas ruled on 2026-09-28 that it waits until after launch.
+
+**WHAT SHIPPED INSTEAD, AND WHY IT IS THE HONEST CEILING RATHER THAN A COMPROMISE.** `.chtag .chtagcell` now carries `font-size:max(7.5px, calc(var(--cw)*0.045))`. Before the floor the chip rendered at **6.88px in the rankings grid** (`--cw` 153) and **6.53px on compare at 390** (`--cw` 145), against **14.67px** on the hero card. The floor lifts the two small cases and leaves every larger one untouched.
+
+**7.5px IS SET BY GEOMETRY AND NOT BY TASTE , THIS IS THE NUMBER THAT MATTERS.** Chips render **two-up**, so each box is about **55px wide at `--cw` 145**, which is the smallest width the platform draws. Measured at that width:
+
+| chip floor | rendered px | box height | card clearance |
+|---|---|---|---|
+| none (baseline) | 6.53 | 11.4 | **+4.3** |
+| 7.0 | 7.00 | 11.7 | **+4.3** |
+| **7.5 (shipped)** | **7.50** | **12.3** | **+4.3** |
+| 8.0 | 8.00 | **21.6** | **-0.6** |
+| 8.5 | 8.50 | 22.7 | **-1.7** |
+
+**The box height doubling between 7.5 and 8 is the second line.** There is no gentle degradation here: the label fits or it wraps, and the wrap costs about 9px of vertical on a card that has 4.3px to give.
+
+**SO THE ONLY WAY PAST 7.5px IS TO WIDEN THE BOX, WHICH MEANS ONE CHIP PER ROW.** That doubles the chip block's height on every card carrying two, which is **98 of 100** measured live in the rankings grid. The room has to come from somewhere, and the candidates are the photo (already re-cut twice, see CLAUDE.md), the gaps (already tightened in the 2026-09-07 re-cut), or the card's aspect ratio.
+
+**MEASURE THESE BEFORE PROPOSING ANYTHING, because two premises in the older record were false when checked on 2026-09-28:**
+- **`--cw` 132 renders NOWHERE.** The real set is **145, 153, 260, 300, 326, 330**. A design costed against 132 is costed against nothing, and 132 is exactly the column that makes a floor look impossible.
+- **THE WORST CASE IS TWO CHIPS IN TWO ROWS, NOT THREE TAGS.** The row tag cap changed and the clearance table was never re-derived against it. An ordinary top-of-ladder card IS the worst case today.
+
+**AND THE INSTRUMENT NOTE, because it will otherwise be re-derived wrongly: `Range.getClientRects()` over the cell returns 2 at every floor tested, including floors that plainly do not wrap.** The cell is a flex container and the range measures structure rather than line boxes. **Read the box HEIGHT doubling.** The clearance harness that produced the table above reproduces CLAUDE.md's recorded figures at four of five widths (145 4.3, 165 4.9, 190 5.7, 300 9.0), which is what makes its deltas evidence rather than a reading.
+
+**DO NOT RAISE THE FLOOR ON ITS OWN.** It will wrap, and a wrapped chip reads as a card-layout bug rather than as a type change, so it will be reported as a regression by whoever sees it first.
+
+---
+
+## VVINDEX CHART LABELS AT 7px AND 8.5px , MEASURED, LEGIBLE, AND DELIBERATELY KEPT (ruled by Lucas 2026-09-28)
+
+**THIS ENTRY EXISTS SO THE NEXT PASS DOES NOT "FIX" THEM.** They look exactly like the defect that was fixed on the card face the same day, and they are not the same thing.
+
+**WHAT THEY ARE, MEASURED AT 390 WITH THE VIEWPORT AND MEDIA QUERY ASSERTED:**
+- **`.csyr`, 12 instances at 7px**, weight 700 , the season labels on the case-study strip ("10/11", "11/12"). Each box is about 19 to 20px wide.
+- **`.pladn`, 13 instances at 8.5px**, weight 800 , the band names on the ladder ("Generational", "Iconic", "World Class").
+- **Both measure 6.94 contrast**, so they pass comfortably. The question was never legibility of ink against ground, it was size.
+
+**WHY THEY ARE KEPT AND THE CARD TAGS WERE NOT.** The card tag floor was fixed because the tag NAME is the thing the card is saying and it was rendering at 5.81px with no floor at all. These are **chart labels under a density constraint**: twelve season labels across a 375px strip is about 31px each, and the label already occupies 19 to 20px of it. They are also restated , the strip is read as a series, not as twelve independent facts.
+
+**WHAT WOULD CHANGE THE RULING, so this is revisitable rather than closed:** if the strip ever carries fewer items, or gains horizontal room, the density argument weakens and the size should be re-derived from the room rather than kept out of habit. **Re-measure the strip's per-item width before raising anything** , the figures above are true at 390 on the layout as it stands on 2026-09-28.
+
+**DO NOT read this as a general licence for small type.** The platform's floor on the card face is 7.5px and nothing there renders below it. These sit outside that surface, under a named constraint, with a recorded contrast figure.

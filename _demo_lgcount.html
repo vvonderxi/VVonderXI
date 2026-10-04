@@ -1,0 +1,58 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>League pill counts , three schemes</title>
+<script src="/vv-core.js?v=20260912h"></script>
+<style>
+ body{margin:0;background:#171412;color:#F0EAD9;font:14px/1.55 system-ui,sans-serif;padding:22px}
+ h1{font:700 19px system-ui;margin:0 0 2px}
+ h2{font:700 12.5px system-ui;margin:26px 0 3px;color:#E8B84B;letter-spacing:.05em;text-transform:uppercase}
+ .sub{color:#9a9186;margin:0 0 12px;max-width:840px;font-size:13px}
+ .strip{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+ /* playbook .lgchip, copied from playbook.html so the demo tests the real look */
+ .lgchip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 10px;border:1px solid rgba(240,234,217,0.16);
+   border-radius:999px;background:rgba(240,234,217,0.05);font:600 12.5px system-ui;white-space:nowrap}
+ .lgchip .f{font-size:15px;line-height:1}
+ .lgchip .n{color:#9a9186;font-weight:600;font-variant-numeric:tabular-nums}
+ /* rankings vvf-chip with the EXISTING but unused hint slot */
+ .vvf-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border:1px solid rgba(240,234,217,0.18);
+   border-radius:999px;background:transparent;color:#F0EAD9;font:600 12.5px system-ui;cursor:pointer;white-space:nowrap}
+ .vvf-hint{font-style:normal;opacity:.5;font-weight:600;font-variant-numeric:tabular-nums;font-size:11.5px}
+ .note{color:#9a9186;font-size:12.5px;max-width:720px;margin:4px 0 0}
+ .frame{width:390px;border:1px dashed #443c33;border-radius:8px;padding:11px;background:#1c1815;margin-top:8px}
+ table{border-collapse:collapse;font-size:12.5px;margin:6px 0 0}
+ td,th{padding:3px 12px 3px 0;text-align:left} th{color:#E8B84B;font-weight:700}
+ td.n{text-align:right;font-variant-numeric:tabular-nums}
+</style></head><body>
+<h1>League pill counts , three schemes against the real numbers</h1>
+<p class="sub">Counts measured 2026-09-12 from <code>player_card_mv</code>. "All" is every row; "scored" is <code>rt IS NOT NULL</code>.</p>
+<div id="out">building…</div>
+<script>
+const COUNTS={SA:[7057,6806],LL:[7032,6697],PL:[6590,6333],L1:[6569,6277],TR:[6365,5403],
+              PRT:[6006,5671],BL:[5900,5697],ERE:[5838,5670],BPL:[5698,5440]};
+const L=VVCore.VVFilters.LEAGUES.slice().sort((a,b)=>COUNTS[b.v][0]-COUNTS[a.v][0]);
+const fl=n=>Math.floor(n/500)*500;
+const commas=n=>n.toLocaleString('en-GB');
+function strip(fn,cls){return '<div class="strip">'+L.map(x=>{
+  const t=fn(x); return cls==='lgchip'
+   ? '<span class="lgchip"><span class="f">'+x.e+'</span>'+x.l+(t?' <span class="n">'+t+'</span>':'')+'</span>'
+   : '<button class="vvf-chip">'+x.e+' '+x.l+(t?' <em class="vvf-hint">'+t+'</em>':'')+'</button>';
+}).join('')+'</div>';}
+const SCHEMES=[
+ ['A , one fixed threshold, stated once','Every pill identical, so the number moves to the strip note instead of onto nine pills.',
+  x=>'', '<p class="note">Every league here carries <b>more than 5,000 season cards</b>. Nine competitions, 2010/11 onward.</p>'],
+ ['B , per-league band, rounded down to the nearest 500','Each league gets its own number, ordering preserved, noise removed.',
+  x=>commas(fl(COUNTS[x.v][1]))+'+',''],
+ ['C , exact count','Precise today, stale after the next write.', x=>commas(COUNTS[x.v][1]),'']
+];
+let h='';
+SCHEMES.forEach(([t,d,fn,note])=>{
+  h+='<h2>'+t+'</h2><p class="sub">'+d+'</p>';
+  h+='<div style="color:#6e675e;font:600 10.5px system-ui;letter-spacing:.05em;margin:8px 0 4px">PLAYBOOK STRIP (tap is free here)</div>'+strip(fn,'lgchip')+note;
+  h+='<div style="color:#6e675e;font:600 10.5px system-ui;letter-spacing:.05em;margin:12px 0 4px">RANKINGS / COMPARE FILTER CHIP (tap already toggles the filter, so the count uses the existing vvf-hint slot)</div>'+strip(fn,'vvf-chip');
+  h+='<div class="frame"><div style="color:#6e675e;font:600 10px system-ui;margin-bottom:6px">390</div>'+strip(fn,'lgchip')+note+'</div>';
+});
+h+='<h2>The numbers</h2><table><tr><th>League</th><th>All</th><th>Scored</th><th>B, all</th><th>B, scored</th></tr>'
+ + L.map(x=>'<tr><td>'+x.l+'</td><td class="n">'+commas(COUNTS[x.v][0])+'</td><td class="n">'+commas(COUNTS[x.v][1])
+ +'</td><td class="n">'+commas(fl(COUNTS[x.v][0]))+'+</td><td class="n">'+commas(fl(COUNTS[x.v][1]))+'+</td></tr>').join('')
+ +'<tr><td><b>Total</b></td><td class="n"><b>57,055</b></td><td class="n"><b>53,994</b></td><td></td><td></td></tr></table>';
+document.getElementById('out').innerHTML=h;
+</script></body></html>

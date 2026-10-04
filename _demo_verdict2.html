@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verdict , alignment and ground</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{ --cream:#F0EAD9; --pink-ink:#F1688E; --gold:#E8B84B; --ink-soft:#a49d93;
+  --page:#141311; --ink:var(--cream); --muted:rgba(240,234,217,.68); --rule:rgba(240,234,217,.16);
+  --panel-t:#1C6038; --panel-b:#0F3A22; --surf-hero:#2A2422; --edge-hero:rgba(255,255,255,.07); }
+body.light{ --page:#F4EFE2; --ink:#1C1B1A; --muted:#5f594e; --rule:rgba(28,27,26,.16);
+  --pink-ink:#AD0332; --ink-soft:#6a6256; --surf-hero:#FBF8F2; --edge-hero:rgba(0,0,0,.07); }
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:28px 24px 80px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-family:'Archivo';font-size:20px;font-weight:900;margin:0 0 4px}
+.sub{font-size:13px;color:var(--muted);max-width:84ch;line-height:1.55;margin:0 0 8px}
+h2{font-family:'Archivo';font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+   color:var(--muted);margin:34px 0 14px;padding-top:22px;border-top:1px solid var(--rule)}
+.note{font-size:12px;color:var(--muted);line-height:1.6;max-width:84ch;margin:12px 0 0}
+.tog{position:fixed;top:14px;right:14px;z-index:9;font:800 11px 'Archivo';padding:8px 13px;
+  border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+
+/* ---- the payoff panel, as compare builds it ---- */
+.stage{border-radius:20px;padding:34px 30px 30px;position:relative;margin-bottom:8px;
+  background:var(--surf-hero);border:1px solid var(--edge-hero)}
+.vlabel{font-family:'Archivo';font-size:19px;font-weight:900;margin-bottom:10px;color:var(--ink)}
+.vwho{font-family:'Archivo';font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.015em;margin:0 0 4px}
+.vtagline{font-family:'Bricolage Grotesque';font-size:20px;font-weight:400;line-height:1.48;
+  margin:22px auto 24px;max-width:46ch;color:var(--ink)}
+.vscore{font-family:'Archivo';font-weight:900;font-size:46px;letter-spacing:-.01em;color:var(--pink-ink);
+  padding:18px 0 0;border-top:1px solid var(--rule);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.vscore .sep{font-size:14px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.vscore .gap{font-family:'Inter';font-size:12.5px;font-weight:500;color:var(--ink-soft);align-self:center}
+.pull{font-family:'Bricolage Grotesque';font-style:italic;font-size:20px;line-height:1.46;
+  margin:22px 0;color:var(--ink)}
+.body p{font-family:'Bricolage Grotesque';font-size:16.5px;line-height:1.62;margin:0 0 14px;color:var(--ink)}
+.body p:last-child{margin-bottom:0}
+.vvem{font-weight:600;color:var(--gold);background:transparent;padding:0 .1em;border-radius:3px}
+body.light .vvem{color:#5C4008;background:rgba(232,184,75,.22)}
+
+/* the evidence panel beneath, for context */
+.vsect{background:linear-gradient(180deg,var(--panel-t),var(--panel-b));border-radius:16px;
+  padding:20px 22px;margin-top:20px;color:var(--cream)}
+body.light .vsect{background:rgba(255,255,255,.55);color:#1C1B1A}
+.vsect-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(243,237,224,.58);margin-bottom:14px}
+body.light .vsect-t{color:var(--ink-soft)}
+.prose p{font-family:'Bricolage Grotesque';font-size:15.5px;line-height:1.62;margin:0 0 12px}
+
+/* ---- VARIANT a , everything centred ---- */
+.v-a .vfinal{text-align:center}
+.v-a .vscore{justify-content:center}
+.v-a .pull{max-width:48ch;margin-inline:auto}
+.v-a .body{max-width:66ch;margin-inline:auto}
+
+/* ---- VARIANT b , centred pull, no rule; body stays left ---- */
+.v-b .vlabel,.v-b .vwho,.v-b .vtagline,.v-b .vscore{text-align:center}
+.v-b .vscore{justify-content:center}
+.v-b .pull{text-align:center;max-width:52ch;margin:26px auto 26px;border:0;padding:0}
+.v-b .body{max-width:66ch;margin-inline:0;text-align:left}
+
+/* ---- VARIANT c , as built today ---- */
+.v-c .vfinal{text-align:left}
+.v-c .vlabel,.v-c .vwho,.v-c .vtagline,.v-c .vscore{text-align:center}
+.v-c .vscore{justify-content:center}
+.v-c .vtagline{margin-inline:auto}
+.v-c .pull{max-width:48ch;padding-left:18px;border-left:2px solid var(--pink-ink);margin-block:4px 22px}
+.v-c .body{max-width:66ch}
+
+/* ---- GROUND , a darker surface that fades ---- */
+.g-fade{background:
+  linear-gradient(180deg, #1A1614 0%, #1A1614 58%, rgba(26,22,20,0) 100%), var(--surf-hero);
+  border-color:rgba(255,255,255,.05)}
+body.light .g-fade{background:
+  linear-gradient(180deg, #EFE7D6 0%, #EFE7D6 58%, rgba(239,231,214,0) 100%), var(--surf-hero)}
+</style></head><body>
+<button class="tog" onclick="document.body.classList.toggle('light')">theme</button>
+<div class="wrap">
+<h1>Verdict , alignment, and a ground that fades</h1>
+<p class="sub">Real prose, the real pair (Messi 20/21 vs Ronaldo 14/15), and <strong>the fonts compare.html
+actually ships</strong> , Bricolage Grotesque, Archivo, Inter. No Fraunces anywhere; that is priced separately
+and not shown here, because a demo in a face the page does not load is a demo of something that cannot exist.</p>
+<p class="sub">Each variant is shown <strong>with the evidence panel beneath it</strong>, so the payoff is judged
+in context rather than alone.</p>
+
+<h2>a , everything centred</h2>
+  <div class="stage v-a g-plain">
+    <div class="vfinal">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+    <div class="vsect">
+      <div class="vsect-t">The Story , Messi 20/21</div>
+      <div class="prose"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div>
+    </div>
+  </div>
+<p class="note">Your concern, rendered: the body is twelve lines of ragged-left. The headline, deck and score
+carry centring well because they are short; the argument does not.</p>
+
+<h2>b , centred pull quote, no rule, body stays left at 66ch</h2>
+  <div class="stage v-b g-plain">
+    <div class="vfinal">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+    <div class="vsect">
+      <div class="vsect-t">The Story , Messi 20/21</div>
+      <div class="prose"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div>
+    </div>
+  </div>
+<p class="note"><strong>This is the one that tests your actual hypothesis.</strong> The pull quote stops being an
+inserted blockquote , no left rule, no indent , and becomes a centred statement between the score and the
+argument. The body keeps its left edge. If this reads right, the problem was never the alignment.</p>
+
+<h2>c , as built today</h2>
+  <div class="stage v-c g-plain">
+    <div class="vfinal">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+    <div class="vsect">
+      <div class="vsect-t">The Story , Messi 20/21</div>
+      <div class="prose"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div>
+    </div>
+  </div>
+<p class="note">The 2px rule and the 18px indent are what make it read as an insertion. At 48ch it sets to about
+45 characters, which is short enough to look like a quotation lifted from elsewhere rather than the lead.</p>
+
+<h2>the ground , b, on a darker surface that fades</h2>
+  <div class="stage v-b g-fade">
+    <div class="vfinal">
+      <div class="vlabel">The Verdict</div>
+      <div class="vwho">Ronaldo&#x27;s Generational peak clears Messi&#x27;s Iconic defiance</div>
+      <div class="vtagline">The margin is real but not huge: one season clearly shades the other</div>
+      <div class="vscore">96<span class="sep">to</span>92<span class="gap">4 points</span></div>
+      <div class="pull">Messi's card is richer in evidence, but Ronaldo's is richer in result.</div>
+      <div class="body"><p>The Index separates them by four points, and the recorded figures explain why. Messi&#x27;s season was a personal act of will inside a broken club, authenticated by a Ballon d&#x27;Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <em class="vvem">Ronaldo&#x27;s 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</em>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</p><p>This is a real but contested edge. Messi&#x27;s season deserves to stand on its own terms for what it cost him to produce it. Ronaldo&#x27;s takes the argument on the numbers that matter most.</p></div>
+    </div>
+    <div class="vsect">
+      <div class="vsect-t">The Story , Messi 20/21</div>
+      <div class="prose"><p>Barcelona, 2020/21. Messi at 33, playing inside a club that was fracturing at its foundations, still producing a season that would have defined most careers. The Goal Machine tag earns its place here: <em class="vvem">27 open-play goals from 141 shots</em> is a conversion rate that speaks to precision, not volume-chasing, and the 9 assists sitting beneath it tell you he was never just hunting his own tally.</p><p>The Playmaker and The Dribbler tags carry equal weight. His Creation output at 2.55 per 90 clears the position pool&#x27;s 90th-percentile bar. <em class="vvem">159 successful dribbles from 247 attempts</em> across a fractured Barcelona side is not decoration; it is what kept them in games they had no business being in. The Ballon d&#x27;Or 2020 and the Golden Boot that season are his alone.</p></div>
+    </div>
+  </div>
+<p class="note">A darker plate under the payoff, fading out before the evidence panel begins, so the verdict sits
+on its own surface and the fade does the separating rather than a border. Shown on variant b and with the green
+panel beneath, which is the join that matters , the fade has to land before that panel starts or the two edges
+fight.</p>
+</div></body></html>

@@ -364,6 +364,43 @@
   var CARD_MARKS = false;
   function useCardMarks(on){ CARD_MARKS = (on !== false); }
 
+  /*  WONDER-TAG PILLS , PAGE-LEVEL OPT-IN, SAME SHAPE AND SAME REASON AS useCardMarks
+      ABOVE (2026-09-10). honourRowHTML and renderProfileTagRows are shared by card.html
+      and compare.html, and only card wants the row title wrapped as a pill: the mark has
+      to move INSIDE the .ttl box for a pill to contain it, and CSS cannot group two
+      siblings, so this is a markup change or nothing.
+      compare.html never calls this, so its rows stay byte-identical , which matters more
+      than usual here, because its .ttl carries flex:1 / overflow-wrap:anywhere and its
+      rows sit on the green .vsect ground where the card's pill palette would not survive.
+      Verified after the change: compare renders the unwrapped shape on every row.  */
+  var WT_PILLS = false;
+  function useWonderTagPills(on){ WT_PILLS = (on !== false); }
+  //  The title half of a Wonder-Tags row. Pill mode puts the mark inside .ttl so the pill
+  //  box contains it; default mode is the original sibling shape, character for character.
+  function wtTitle(icon, text){
+    return WT_PILLS
+      ? '<span class="ttl">' + icon + text + '</span>'
+      : icon + ' <span class="ttl">' + text + '</span>';
+  }
+
+  /*  STAGE:0 IS LOAD-BEARING, NOT COSMETIC. famClass in renderTagPills is gated on
+      `family in PRIO`, so a family missing from this map renders with NO colour class at
+      all, silently. And prio() falls back to 1 for an unknown family, which would move
+      Wonderkid and The Last Dance out of first place and DROP THEM OFF the card face and
+      rankings rows entirely at max 2-3. Measured: without STAGE here, 1,230 rendered tag
+      lists change across the database; with it, ZERO. AGE is kept at 0 beside it so the
+      two sort identically while any -age rule is still on disk.
+
+      HOISTED OUT OF renderTagPills 2026-09-10 so the Wonder-Tags rows can sort by the SAME
+      map rather than a second copy of it. The strip and the accordion had drifted into two
+      different orders , the strip sorted, the rows did not , so Peak and The Standard sat
+      6th and 7th on the glance and 11th and 12th in the panel that explains them. That is
+      the two-implementations-of-one-rule shape SS C records against eligibility() and the
+      career-stage tags, and the cheapest time to refuse it is before the second copy
+      exists. ONE map, two readers.  */
+  const TAG_PRIO = { AGE:0, STAGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
+  const tagPrio  = f => (f in TAG_PRIO) ? TAG_PRIO[f] : 1;
+
   function renderTagPills(tags, opts){
     if (!Array.isArray(tags) || !tags.length) return '';
     opts = opts || {};
@@ -371,15 +408,8 @@
     const max       = (opts.max != null) ? opts.max : 3;
     const el        = opts.el || 'span';
     const innerWrap = !!opts.innerWrap;
-    /*  STAGE:0 IS LOAD-BEARING, NOT COSMETIC. famClass below is gated on `family in PRIO`,
-        so a family missing from this map renders with NO colour class at all, silently.
-        And prio() falls back to 1 for an unknown family, which would move Wonderkid and
-        The Last Dance out of first place and DROP THEM OFF the card face and rankings
-        rows entirely at max 2-3. Measured: without STAGE here, 1,230 rendered tag lists
-        change across the database; with it, ZERO. AGE is kept at 0 beside it so the two
-        sort identically while any -age rule is still on disk.  */
-    const PRIO = { AGE:0, STAGE:0, ATT:1, MID:1, DEF:1, CROSS:2 };
-    const prio = f => (f in PRIO) ? PRIO[f] : 1;
+    const PRIO = TAG_PRIO;
+    const prio = tagPrio;
     return tags
       .map((t, i) => ({ t, i }))                                   // keep original index for stable tiebreak
       .sort((a, b) => prio(a.t.family) - prio(b.t.family) || a.i - b.i)
@@ -429,7 +459,8 @@
 
   // ── buildCard , canonical Version A, with myclub's hidden-placeholder
   //    empty-tag branch adopted as the standard (keeps grid rows aligned). ──
-  function buildCard(d, cw){
+  function buildCard(d, cw, opts){
+    opts = opts || {};
     const flag = d.flag ? `<span class="cflag">${d.flag}</span> ` : '';
     const full = d.full ? `<div class="full">${d.full}</div>` : '';
     // ── Tag pills (Tag Model v1.1) , built via the shared renderTagPills helper
@@ -491,16 +522,44 @@
       ? `<rect x="0" width="50" height="116" fill="${c1}"/><rect x="50" width="50" height="116" fill="${c2}"/>`
       : `<rect width="100" height="116" fill="${c1}"/>`;
     const longName = (d.surname && String(d.surname).length > 11) ? ' long' : '';
+    /*  A KEEPER CARD CARRIES NO SCORE, AND NO WORDMARK EITHER , 2026-09-07. The VV Index
+        does not rate goalkeeping (the keeper rt is minutes and league and nothing else, see
+        section C), so the face states nothing rather than stating a number it cannot stand
+        behind. Nothing replaces it: the top-right corner goes genuinely blank and the year
+        is alone in the row.
+        THE WORDMARK GOES WITH THE NUMBER BECAUSE IT LABELS THE NUMBER. Left in place it is a
+        caption with nothing captioned, and it does not stay where it was: .ctr is a
+        top-anchored flex column, so deleting .n pulls VV up by exactly the number's height
+        (20.2 / 36.2 / 41.8px at --cw 145 / 260 / 300) and, because .ctr is align-items:center
+        and its width collapses, slides it right until it touches the padding edge.
+        THE GATE IS POSITION, NOT A NULL rt. An outfield card with a missing rt is a DATA
+        problem , 3,061 cards have a null rt (section C) , and it must keep its wordmark and
+        show the gap, not quietly render as though it were a keeper. rowToCard already emits
+        '' for a null rt, so that case degrades on its own without borrowing this rule.
+        NOTHING ELSE MOVES. All three children of .ctop are position:absolute and .ctop's
+        height is a fixed --cw * 0.2, so removing this one changes no other element's
+        geometry , verified rendered at all three sizes rather than reasoned about.  */
+    const gkFace = vvIsGKCard(d);
+    /*  ITEM 26 , THE MARK SITS UNDER THE SHIELD, NOT ON THE NUMBER. The shield is the badge
+        plus the number, so a mark attached to it marks the PAIRING, which is what is
+        uncertain; the number itself is fine. A ring beside the numeral read as a degree sign
+        and an asterisk read as doubt about the number , both rendered and rejected.
+        OPT-IN, NEVER DEFAULT. buildCard has nine call sites and the mark belongs only where
+        its explanation is one tap away: the card hero (including the season flip) and the
+        card-page share image. A mark in a list with nothing to tap is worse than none.  */
+    const xfm = (opts.numberMark && d.numberClubUncertain && numStr)
+      ? `<button type="button" class="xfm" data-vv-xfm="1" title="This number may be the one worn at the other club" aria-label="Shirt number: may belong to another club this season. Show details."><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h11M10 2l3 3-3 3"/><path d="M14 11H3M6 8l-3 3 3 3"/></svg></button>`
+      : '';
     return `<div class="vvcard${d.prestige==='Generational'?' gen':d.prestige==='Iconic'?' iconic':''}" style="--cw:${cw}px">
       <div class="ctop">
         <div class="ctl">
           <div class="cbadgewrap">
             <svg class="cbadge" viewBox="0 0 100 116"><defs><clipPath id="${uid}"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z"/></clipPath></defs><g clip-path="url(#${uid})">${badgeFill}</g><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(0,0,0,0.30)" stroke-width="5"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>${num}</svg>
             <div class="pos">${posDisplay(d.pos)}</div>
-          </div>
+          </div>${xfm}
         </div>
         <div class="yr">${d.year}</div>
-        <div class="ctr"><div class="n">${d.vv}</div><div class="vv"><span class="a">V</span><span class="b">V</span></div></div>
+        ${gkFace ? '' : `<div class="ctr"><div class="n">${d.vv}</div><div class="vv"><span class="a">V</span><span class="b">V</span></div></div>`}
       </div>
       <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
       ${prestige}${tag}
@@ -706,6 +765,25 @@
     return null;
   }
 
+  /*  THE PUBLIC BAND NAME , THE ONE A READER EVER SEES , 2026-09-08.
+      bandFor emits the ENGINE vocabulary and it is NOT what the platform shows: 'Elite' is
+      published as ICONIC (prestigeFor does that rename directly above) and 'Exceptional' as
+      STANDOUT, while everything below the top four is grouped as ACCOMPLISHED. Section C
+      states all three renames and vvindex's own ladder confirms them , Generational, Iconic,
+      World Class, Standout, Accomplished.
+      IT EXISTS BECAUSE THE AI PAYLOAD NEEDED IT AND ALMOST GOT THE WRONG ONE. Sending
+      bandFor(rt) raw would have told the model 'Elite' and 'Exceptional', words no reader has
+      ever seen, replacing one disagreement between prose and card with another.
+      THE ENGINE'S NINE BANDS ARE NOT COLLAPSED , bandFor is untouched and still returns them.
+      This is a DISPLAY rename on top, which is the same split section C locks: do not collapse
+      the nine, and do not publish their names either.  */
+  const BAND_PUBLIC = { 'Generational':'Generational', 'Elite':'Iconic',
+                        'World Class':'World Class', 'Exceptional':'Standout' };
+  function bandPublic(band){
+    if (!band) return null;
+    return BAND_PUBLIC[band] || 'Accomplished';
+  }
+
   // ── Radar (Contract §4): 5 per-90 spokes, raw + percentile-within-pool 0-100 ─────
   /*  SCALING IS PERCENTILE WITHIN POSITION POOL. This replaced four fixed constants
       (goalThreat 1.5, creation 2.6, progression 4.0, defensive 8.0) that served all eight
@@ -740,16 +818,16 @@
       and read as a regression.  */
   var RADAR_REF_MIN_MINUTES = 900, RADAR_REF_STEP = 5;
   var RADAR_POOL_REF = {
-    CB:{g:[0,0.011,0.018,0.024,0.031,0.043,0.052,0.061,0.07,0.079,0.087,0.097,0.106,0.116,0.128,0.142,0.159,0.18,0.207,0.254,0.912],c:[0.026,0.095,0.142,0.175,0.202,0.228,0.252,0.281,0.315,0.346,0.384,0.425,0.479,0.548,0.633,0.734,0.846,0.979,1.152,1.428,3.473],p:[0.076,0.741,0.85,0.928,0.994,1.042,1.091,1.138,1.188,1.23,1.276,1.335,1.388,1.454,1.513,1.587,1.678,1.785,1.935,2.213,4.523],d:[0.14,1.974,2.226,2.414,2.581,2.718,2.839,2.96,3.069,3.183,3.3,3.425,3.552,3.694,3.833,4.011,4.21,4.445,4.728,5.232,10.713]},
-    FB:{g:[0,0.01,0.016,0.022,0.029,0.038,0.048,0.058,0.067,0.077,0.086,0.095,0.106,0.119,0.13,0.145,0.161,0.183,0.214,0.27,0.693],c:[0.045,0.216,0.294,0.378,0.455,0.527,0.59,0.646,0.71,0.768,0.825,0.886,0.958,1.03,1.092,1.176,1.279,1.393,1.585,1.883,3.574],p:[0.109,0.729,0.856,0.938,1.012,1.069,1.127,1.178,1.231,1.289,1.338,1.392,1.451,1.529,1.62,1.704,1.795,1.914,2.09,2.37,5.295],d:[0.126,2.009,2.282,2.48,2.64,2.803,2.94,3.087,3.217,3.336,3.466,3.625,3.745,3.87,3.993,4.136,4.33,4.561,4.851,5.27,15.155]},
-    CDM:{g:[0,0.023,0.038,0.056,0.069,0.081,0.096,0.11,0.128,0.14,0.155,0.173,0.191,0.212,0.234,0.262,0.293,0.331,0.386,0.471,1.045],c:[0.055,0.379,0.472,0.551,0.606,0.664,0.727,0.791,0.859,0.922,0.977,1.039,1.125,1.23,1.331,1.475,1.618,1.806,2.034,2.357,5.345],p:[0.125,0.861,1.004,1.107,1.192,1.262,1.33,1.39,1.454,1.516,1.573,1.635,1.703,1.79,1.865,1.952,2.046,2.167,2.392,2.68,4.967],d:[0.096,1.901,2.263,2.534,2.719,2.871,3.02,3.155,3.292,3.454,3.59,3.734,3.893,4.053,4.227,4.405,4.612,4.825,5.168,5.648,7.666]},
-    CM:{g:[0,0.026,0.05,0.076,0.095,0.114,0.132,0.153,0.171,0.192,0.214,0.238,0.266,0.291,0.32,0.355,0.391,0.438,0.5,0.607,1.182],c:[0.076,0.456,0.586,0.672,0.766,0.837,0.913,0.991,1.069,1.147,1.244,1.329,1.413,1.497,1.61,1.739,1.863,2.022,2.261,2.604,4.822],p:[0,0.874,1.034,1.136,1.224,1.31,1.389,1.463,1.552,1.629,1.699,1.775,1.864,1.959,2.063,2.174,2.307,2.47,2.68,3.09,7.481],d:[0.1,1.584,1.906,2.14,2.333,2.497,2.661,2.796,2.937,3.09,3.231,3.386,3.563,3.723,3.91,4.137,4.376,4.654,5.001,5.524,9.485]},
-    CAM:{g:[0,0.06,0.105,0.138,0.175,0.204,0.229,0.265,0.294,0.323,0.354,0.383,0.42,0.457,0.499,0.544,0.593,0.64,0.711,0.81,1.536],c:[0.222,0.633,0.788,0.888,0.964,1.063,1.142,1.207,1.286,1.368,1.456,1.555,1.658,1.75,1.872,2.01,2.152,2.359,2.671,3.114,5.021],p:[0.017,0.977,1.173,1.299,1.415,1.532,1.647,1.74,1.84,1.968,2.05,2.166,2.265,2.358,2.484,2.663,2.846,3.039,3.354,3.848,5.508],d:[0.12,1.291,1.555,1.706,1.858,1.978,2.118,2.268,2.379,2.518,2.688,2.861,3.008,3.125,3.255,3.437,3.643,3.954,4.369,4.946,8.283]},
-    Winger:{g:[0,0.048,0.092,0.13,0.166,0.2,0.237,0.277,0.309,0.344,0.382,0.422,0.457,0.506,0.555,0.603,0.665,0.736,0.832,0.99,1.973],c:[0.032,0.592,0.751,0.844,0.935,1.003,1.083,1.164,1.238,1.32,1.399,1.475,1.588,1.676,1.79,1.91,2.018,2.196,2.452,2.782,5.271],p:[0.021,0.807,0.983,1.114,1.233,1.328,1.433,1.523,1.634,1.725,1.83,1.936,2.049,2.18,2.313,2.473,2.631,2.859,3.184,3.735,8.449],d:[0.112,1.129,1.384,1.575,1.719,1.87,2.003,2.132,2.247,2.359,2.485,2.612,2.761,2.905,3.05,3.241,3.447,3.738,4.106,4.657,7.876]},
-    ST:{g:[0.051,0.238,0.316,0.366,0.407,0.447,0.482,0.521,0.554,0.59,0.621,0.659,0.696,0.737,0.782,0.843,0.906,0.98,1.092,1.265,2.244],c:[0.121,0.574,0.677,0.754,0.822,0.882,0.942,1.004,1.062,1.112,1.163,1.224,1.287,1.36,1.446,1.528,1.653,1.814,2.034,2.376,5.195],p:[0.019,0.581,0.7,0.801,0.869,0.944,1.018,1.099,1.183,1.271,1.35,1.442,1.528,1.652,1.783,1.923,2.108,2.312,2.605,3.106,7.532],d:[0.305,0.773,0.916,1.023,1.114,1.203,1.282,1.36,1.437,1.524,1.61,1.692,1.778,1.89,2.024,2.145,2.285,2.471,2.708,3.041,5.729]},
-    DEF:{g:[0,0,0,0.01,0.015,0.021,0.027,0.033,0.045,0.052,0.062,0.072,0.084,0.096,0.108,0.121,0.14,0.16,0.184,0.231,0.579],c:[0.07,0.167,0.219,0.258,0.292,0.332,0.375,0.433,0.505,0.566,0.614,0.685,0.77,0.826,0.897,0.978,1.048,1.159,1.295,1.707,2.628],p:[0,0.213,0.497,0.659,0.739,0.796,0.868,0.924,0.992,1.059,1.115,1.172,1.258,1.318,1.398,1.472,1.58,1.718,1.896,2.273,4.464],d:[0.104,2.557,3.159,3.423,3.704,3.943,4.147,4.291,4.437,4.612,4.772,4.96,5.147,5.334,5.535,5.693,5.932,6.133,6.56,7.157,9.295]},
-    MID:{g:[0,0.015,0.03,0.05,0.069,0.083,0.104,0.128,0.146,0.16,0.179,0.201,0.228,0.251,0.274,0.308,0.354,0.398,0.461,0.549,1.106],c:[0.097,0.381,0.502,0.603,0.683,0.794,0.873,0.954,1.037,1.123,1.21,1.303,1.407,1.529,1.631,1.776,1.906,2.087,2.278,2.549,4.032],p:[0.005,0.241,0.638,0.85,0.998,1.113,1.211,1.304,1.399,1.504,1.641,1.735,1.818,1.922,2.052,2.174,2.372,2.593,2.848,3.299,5.491],d:[0.156,1.68,2.229,2.466,2.779,3.102,3.296,3.475,3.663,3.94,4.218,4.449,4.746,5.007,5.266,5.55,5.808,6.111,6.575,7.092,13.904]},
-    FWD:{g:[0.021,0.169,0.243,0.291,0.338,0.372,0.41,0.438,0.464,0.491,0.519,0.54,0.572,0.614,0.646,0.685,0.736,0.798,0.869,0.959,1.398],c:[0.291,0.614,0.739,0.87,0.926,0.974,1.016,1.087,1.128,1.179,1.252,1.352,1.423,1.483,1.546,1.648,1.743,1.951,2.139,2.407,3.259],p:[0.007,0.395,0.603,0.672,0.801,0.92,1.016,1.088,1.21,1.338,1.45,1.59,1.701,1.915,2.091,2.273,2.487,2.706,3.086,3.852,5.712],d:[0.42,0.902,1.094,1.273,1.416,1.513,1.601,1.772,1.887,1.993,2.084,2.203,2.389,2.491,2.69,2.808,3.003,3.275,3.756,4.153,5.356]}
+    CB:{g:[0,0.011,0.018,0.024,0.031,0.043,0.052,0.061,0.07,0.079,0.087,0.097,0.106,0.116,0.128,0.142,0.159,0.18,0.207,0.253,0.912],c:[0,0.07,0.097,0.129,0.154,0.176,0.198,0.222,0.245,0.273,0.305,0.339,0.378,0.427,0.492,0.58,0.686,0.823,1.006,1.276,3.473],p:[0.076,0.741,0.85,0.928,0.994,1.043,1.091,1.138,1.188,1.23,1.276,1.334,1.388,1.454,1.514,1.587,1.678,1.786,1.935,2.212,4.523],d:[0.14,1.971,2.224,2.414,2.581,2.719,2.839,2.96,3.07,3.184,3.301,3.425,3.552,3.694,3.835,4.012,4.21,4.447,4.728,5.233,10.713]},
+    FB:{g:[0,0.01,0.016,0.022,0.029,0.038,0.048,0.058,0.067,0.077,0.085,0.095,0.106,0.119,0.13,0.145,0.161,0.182,0.214,0.271,0.693],c:[0,0.092,0.148,0.189,0.238,0.29,0.358,0.429,0.503,0.573,0.64,0.712,0.783,0.86,0.945,1.037,1.131,1.253,1.44,1.745,3.574],p:[0.109,0.727,0.856,0.937,1.011,1.068,1.124,1.176,1.229,1.286,1.337,1.391,1.45,1.528,1.617,1.702,1.794,1.914,2.088,2.369,5.295],d:[0.126,2.002,2.282,2.479,2.64,2.803,2.938,3.087,3.217,3.336,3.466,3.625,3.747,3.87,3.993,4.135,4.33,4.561,4.851,5.268,15.155]},
+    CDM:{g:[0,0.023,0.038,0.056,0.069,0.081,0.096,0.11,0.128,0.141,0.155,0.174,0.191,0.212,0.234,0.262,0.293,0.331,0.383,0.471,1.045],c:[0,0.289,0.404,0.477,0.548,0.602,0.656,0.719,0.778,0.846,0.915,0.972,1.038,1.131,1.238,1.372,1.527,1.715,1.933,2.258,5.345],p:[0.125,0.861,1.006,1.108,1.192,1.264,1.331,1.391,1.454,1.516,1.573,1.637,1.703,1.791,1.865,1.953,2.048,2.167,2.393,2.69,4.967],d:[0.096,1.901,2.261,2.533,2.713,2.868,3.019,3.152,3.285,3.453,3.591,3.734,3.892,4.053,4.227,4.404,4.612,4.825,5.167,5.647,7.666]},
+    CM:{g:[0,0.026,0.05,0.076,0.095,0.114,0.132,0.152,0.171,0.192,0.213,0.238,0.265,0.291,0.319,0.354,0.39,0.438,0.499,0.605,1.182],c:[0,0.335,0.447,0.543,0.625,0.701,0.786,0.862,0.938,1.02,1.106,1.199,1.305,1.396,1.495,1.616,1.773,1.924,2.148,2.503,4.822],p:[0,0.873,1.033,1.136,1.224,1.309,1.389,1.462,1.552,1.627,1.697,1.774,1.863,1.956,2.06,2.173,2.306,2.467,2.678,3.075,5.292],d:[0.1,1.584,1.91,2.141,2.333,2.496,2.661,2.796,2.935,3.09,3.231,3.387,3.561,3.722,3.909,4.135,4.373,4.649,4.987,5.515,9.485]},
+    CAM:{g:[0,0.06,0.106,0.139,0.175,0.205,0.23,0.267,0.296,0.323,0.354,0.384,0.42,0.458,0.5,0.545,0.594,0.642,0.711,0.812,1.536],c:[0.06,0.447,0.633,0.764,0.861,0.947,1.031,1.1,1.177,1.25,1.346,1.435,1.542,1.662,1.769,1.913,2.067,2.268,2.551,3.02,5.021],p:[0.017,0.989,1.174,1.299,1.425,1.533,1.649,1.741,1.844,1.97,2.05,2.168,2.266,2.362,2.489,2.665,2.854,3.035,3.352,3.843,5.508],d:[0.12,1.293,1.558,1.707,1.861,1.978,2.118,2.268,2.38,2.525,2.691,2.862,3.015,3.126,3.255,3.442,3.643,3.955,4.37,4.936,8.283]},
+    Winger:{g:[0,0.048,0.093,0.13,0.166,0.2,0.237,0.277,0.309,0.345,0.383,0.423,0.459,0.507,0.556,0.606,0.667,0.736,0.834,0.98,1.973],c:[0,0.481,0.647,0.76,0.852,0.939,1.008,1.091,1.171,1.246,1.333,1.416,1.509,1.619,1.724,1.854,1.971,2.139,2.393,2.739,5.271],p:[0.021,0.8,0.975,1.11,1.23,1.323,1.431,1.522,1.632,1.721,1.827,1.934,2.048,2.178,2.311,2.466,2.628,2.855,3.185,3.728,8.449],d:[0.112,1.12,1.38,1.572,1.708,1.862,1.995,2.128,2.242,2.356,2.48,2.61,2.756,2.899,3.048,3.239,3.444,3.727,4.098,4.651,7.876]},
+    ST:{g:[0.051,0.238,0.316,0.365,0.407,0.447,0.481,0.52,0.554,0.589,0.62,0.658,0.696,0.737,0.781,0.843,0.906,0.98,1.093,1.265,2.244],c:[0,0.504,0.624,0.699,0.77,0.836,0.893,0.957,1.015,1.07,1.124,1.179,1.247,1.317,1.399,1.497,1.604,1.766,1.985,2.338,5.195],p:[0.019,0.577,0.699,0.799,0.868,0.943,1.017,1.098,1.181,1.27,1.347,1.441,1.527,1.652,1.783,1.921,2.108,2.31,2.605,3.099,7.532],d:[0.237,0.771,0.914,1.02,1.113,1.201,1.281,1.358,1.436,1.523,1.609,1.692,1.78,1.89,2.023,2.145,2.284,2.467,2.704,3.036,5.729]},
+    DEF:{g:[0,0,0,0.01,0.015,0.021,0.027,0.033,0.045,0.053,0.062,0.072,0.084,0.096,0.108,0.122,0.14,0.16,0.184,0.231,0.579],c:[0,0,0.061,0.098,0.133,0.167,0.2,0.236,0.265,0.3,0.347,0.404,0.471,0.566,0.624,0.712,0.821,0.945,1.078,1.292,2.628],p:[0,0.214,0.497,0.659,0.74,0.797,0.868,0.924,0.992,1.057,1.111,1.172,1.257,1.317,1.397,1.474,1.579,1.718,1.897,2.27,4.464],d:[0.104,2.553,3.148,3.413,3.699,3.935,4.136,4.286,4.436,4.601,4.765,4.957,5.142,5.327,5.533,5.692,5.926,6.126,6.553,7.157,10.337]},
+    MID:{g:[0,0.015,0.03,0.05,0.069,0.084,0.104,0.128,0.146,0.16,0.179,0.201,0.228,0.251,0.274,0.306,0.353,0.397,0.461,0.549,1.106],c:[0,0.116,0.256,0.381,0.47,0.571,0.648,0.738,0.834,0.919,1.01,1.108,1.212,1.332,1.462,1.582,1.752,1.912,2.157,2.444,4.032],p:[0.005,0.241,0.644,0.857,1.002,1.116,1.212,1.308,1.4,1.507,1.641,1.735,1.818,1.922,2.054,2.174,2.374,2.6,2.85,3.303,5.582],d:[0.156,1.711,2.236,2.477,2.787,3.112,3.305,3.481,3.673,3.946,4.218,4.449,4.748,5.003,5.264,5.546,5.805,6.109,6.573,7.084,13.904]},
+    FWD:{g:[0.021,0.17,0.244,0.292,0.339,0.374,0.413,0.44,0.464,0.492,0.521,0.543,0.577,0.617,0.657,0.688,0.737,0.803,0.871,0.962,1.398],c:[0,0.428,0.598,0.71,0.809,0.906,0.95,1.006,1.074,1.118,1.16,1.219,1.317,1.406,1.475,1.564,1.681,1.857,2.115,2.355,3.259],p:[0.007,0.381,0.601,0.669,0.789,0.919,1.015,1.084,1.204,1.328,1.45,1.586,1.695,1.913,2.087,2.271,2.483,2.697,3.08,3.842,5.712],d:[0.42,0.906,1.091,1.243,1.399,1.501,1.597,1.757,1.877,1.986,2.081,2.196,2.367,2.474,2.677,2.806,3,3.267,3.75,4.151,5.356]}
   };
   /*  poolKeyFor MUST STAY BYTE-EQUIVALENT TO scripts/gen-radar-ref.js's COPY. A card scored
       against a distribution built for a different population is the quietest possible defect
@@ -910,6 +988,117 @@
      as the fix and close that thread. */
   function isGK(row){ return row.position === 'GK' || row.position_pool === 'GK'; }
 
+  /*  isGK ABOVE READS A RAW ROW; THIS READS A CARD OBJECT. They are not interchangeable and
+      keeping them apart is deliberate , rowToCard collapses position_pool and position into
+      a single `pos` (pool first, coarse fallback), so a card has one field where a row has
+      two. Passing a card to isGK returns false on every keeper alive.
+      IT IS EXPORTED BECAUSE THREE SURFACES NOW ASK THE SAME QUESTION: the card face
+      (buildCard), the caption rendered into the share image (vvShareCaption) and the text
+      posted beside it (card.html's vvShareText, which cannot see a module-local). Section C
+      already records what a rule stated in one place and not applied as a class costs.  */
+  function vvIsGKCard(d){ return String((d && d.pos) || '').toUpperCase() === 'GK'; }
+
+  /*  THE VERDICT PAYLOAD'S SCHEMA REVISION , 2026-09-07. api/analyse.js fingerprints the
+      SYSTEM prompt, which lives in that file, so it moves when the INSTRUCTIONS change. The
+      user prompt is assembled from vvAIStats out here, so it moves when the EVIDENCE changes
+      and that fingerprint cannot see it. analyse.js already named the hole in its own comment
+      and answered it with "bump PROMPT_REV by hand", which is a thing a person can forget.
+      KEY SET ONLY , names, sorted, no values. A field added or removed moves it; Salah
+      scoring a different number of goals does not. Values are covered separately by the
+      rt_a/rt_b stamps, and a changed SHAPE and a changed VALUE are different events.
+      IT LIVES HERE BECAUSE TWO CALLERS NEED THE SAME ANSWER. compare.html sends it on the
+      request; scripts/prewarm_verdicts.js writes verdict_cache rows DIRECTLY and stamps the
+      version itself. If those two derived it separately they would drift, and the symptom
+      would be silent: every prewarmed row a permanent miss, generated and paid for and never
+      served. That is the same duplication trap section C keeps recording.
+      djb2, not sha , this is a change detector, not a security boundary, and it has to run
+      in a browser with no crypto import.  */
+  /*  ── vvPayloadStats , THE VALUE-AWARE TWIN OF vvPayloadRev (2026-09-19) ────────────
+      WHY IT EXISTS. `verdict_cache` had three invalidators and none of them could see a
+      changed VALUE: `cache_version` catches changed instructions, `payloadRev` a changed
+      KEY SET, `rt_a`/`rt_b` a moved score. The 2026-09-16 assists repair changed a value,
+      added no key and left rt byte-identical, so a cached verdict saying assists were not
+      recorded stayed served and could never regenerate on its own. The NOTES side already
+      had this cover, through `stats_hash`; the verdict side did not.
+      IT RECURSES, AND THAT IS DELIBERATE. `statsHash` on the notes side stops at depth 1
+      and is pinned rather than fixed, because fixing it would re-hash every cached note.
+      This stamp is NEW, so it has no population to protect and inherits no bug: nested
+      objects (`recorded`, `keeper`) are walked, and key order cannot leak in because every
+      path is sorted before hashing.
+      IT IS CLIENT-DERIVED, like payloadRev, because the server never sees the payload , the
+      values live inside `messages`. Same standing as payloadRev: unvalidated client input,
+      used as a cache key and nothing else, so the worst a bad value does is cost a
+      regeneration. ABSENT IS NOT ZERO , a caller that sends none gets the old stamp shape.
+      djb2, to match its sibling, and because this has to run in a browser.  */
+  function vvPayloadStats(cards){
+    try{
+      var parts = [];
+      var walk = function(prefix, o){
+        Object.keys(o).sort().forEach(function(k){
+          var v = o[k], p = prefix ? prefix + '.' + k : k;
+          if (v && typeof v === 'object' && !Array.isArray(v)) walk(p, v);
+          else parts.push(p + '=' + (Array.isArray(v) ? v.slice().sort().join('~') : String(v)));
+        });
+      };
+      (cards || []).forEach(function(c, i){ walk('c' + i, vvAIStats(c) || {}); });
+      var src = parts.join('|');
+      var h = 5381;
+      for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;
+      return h.toString(16);
+    }catch(e){ return null; }   // never block a verdict on the stamp
+  }
+
+  /*  ── vvParseModelJSON , THE MODEL PREAMBLES, AND WE WERE BINNING GOOD VERDICTS (2026-10-03) ──
+      Measured on the rt>=95 warm run: 29% of pairs failed to parse, and the decisive case came
+      back `stop_reason=end_turn` with COMPLETE, VALID JSON at the end of the string, prefixed
+      by "I need to ...". The model had finished cleanly and been paid for; we threw the answer
+      away and showed the reader an outage message. It bites hardest on TIES, because that is
+      where the model reasons longest , so it concentrated on exactly the marquee pairings
+      (Messi 12/13 vs Ronaldo 11/12) that a visitor is most likely to ask for.
+
+      Both callers already stripped ``` fences and nothing else. Prose is not a fence.
+
+      IT TRIES THE PLAIN PARSE FIRST AND ONLY THEN FALLS BACK, which is what makes it safe to
+      ship on a live render path: every string that parses today still parses by the identical
+      route, so this cannot regress the ~71% that already worked. The fallback takes the span
+      from the FIRST `{` to the LAST `}`, which discards prose on either side.
+
+      IT IS NOT A FIX FOR TRUNCATION, and must not be read as one. A response cut off at
+      max_tokens has no closing brace, so this correctly still throws , that case needs a real
+      decision about the ceiling, not a more forgiving parser. Raising it to 2048 was tested
+      and did NOT solve it (one pair ran to 7,270 chars and still truncated).
+
+      ONE IMPLEMENTATION, TWO CALLERS , compare.html (the live path) and
+      scripts/prewarm_verdicts.js, whose whole design is zero-drift with the live path. A third
+      copy is the duplication this file records against everywhere else.  */
+  function vvParseModelJSON(text){
+    var t = String(text == null ? '' : text)
+      .replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+    try { return JSON.parse(t); }                       // the path every working response takes
+    catch (e) {
+      var i = t.indexOf('{'), j = t.lastIndexOf('}');
+      if (i < 0 || j <= i) throw e;                     // no object present , rethrow the REAL error
+      return JSON.parse(t.slice(i, j + 1));             // throws on its own if still truncated
+    }
+  }
+
+  function vvPayloadRev(cards){
+    try{
+      var ks = {};
+      (cards || []).forEach(function(c){
+        var a = vvAIStats(c) || {};
+        Object.keys(a).forEach(function(k){
+          ks[k] = 1;
+          if (k === 'keeper' && a.keeper) Object.keys(a.keeper).forEach(function(k2){ ks['keeper.' + k2] = 1; });
+        });
+      });
+      var src = Object.keys(ks).sort().join(',');
+      var h = 5381;
+      for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;
+      return h.toString(16);
+    }catch(e){ return null; }   // never block a verdict on the stamp
+  }
+
   // key:null means the measure exists in football but not in our source, so it can never be
   // present. It still gets a row, because "we do not have this" is the honest thing to show.
   const KEEPER_SET = [
@@ -967,7 +1156,7 @@
     return out.some(o => o.savePct != null) ? out : null;
   }
 
-  function vvAIStats(row){
+  function vvAIStats(row, opts){
     if (!row) return {};
     const pool = row.position_pool || null;
     const th   = (pool && TAG_THRESHOLDS_POOL[pool]) || null;
@@ -980,29 +1169,249 @@
       key_passes_per90: aiPer90(row.passes_key, mins)
     };
     // the bar for HIS position, so a number can be read as high or low without a league rank
+    /*  ── THE rt CLAIMS LICENCE , POSITION-KEYED, INTERIM ──────────────────────────
+        MEASURED 2026-09-07 by reproducing player_card_view's own formula on all 50,269
+        outfield cards, 0 mismatches. rt is a rank-anchored map of a base score:
+
+            b = ( 0.70 * GREATEST(PERF, FLOOR) + 0.30 * AVAIL ) * LEAGUE
+
+        GREATEST IS A SWITCH, NOT A BLEND. When FLOOR wins, the whole performance half ,
+        the ranking percentiles, the goals-and-assists term and the defensive bonus , is
+        discarded and contributes EXACTLY ZERO. The score is then a defensive-share
+        percentile, a minutes curve and a league multiplier.
+        IT WINS ON MOST DEFENDERS: 86.2% of CB cards (5,260), 83.0% of FB (3,127), 74.0%
+        of CDM (1,709). Not a tail , even the TOP QUARTILE of centre-backs is 70% floor-
+        bound. Among those cards the LEAGUE MULTIPLIER varies more than the defensive
+        signal does (sd 5.17 against 4.77) and minutes correlate with the score more
+        strongly than the signal it is meant to measure (0.589 against 0.474).
+
+        SO NO QUALITY CLAIM MAY BE DERIVED FROM rt FOR THESE POSITIONS , NOT JUST
+        DEFENDING ONES. Goals and assists contributed zero on the same cards, so an
+        attacking claim read off rt is exactly as unsupported as a defensive one. The
+        figures themselves stay: the model may state what was recorded.
+
+        POSITION-KEYED IS THE INTERIM AND IT IS DELIBERATELY THE OVER-RESTRICTING ERROR.
+        The exact test is FLOOR >= PERF per card, and it is NOT COMPUTABLE at runtime:
+        pos_pct, abs_pct, posvol_pct, absvol_pct, gaw and gaw_ref are all CTE-internal and
+        reach no consumer , checked against the matview's 76 columns, all six absent.
+        Gating on the pool covers 12,177 cards to reach the 10,096 that are genuinely
+        floor-bound, so 2,081 (17.1%) are restricted without needing to be, van Dijk 2025
+        among them. That is the cheap error against narrating defending quality on 5,260
+        centre-back seasons that contain none.
+        IT IS REPLACED BY A BOOLEAN COLUMN AT THE SHARED MATVIEW REBUILD , see POST_LAUNCH.
+        When floor_bound lands, this reads the column and the position key goes.
+
+        NULL-POOL CARDS ARE NOT GATED, AND THAT IS A SEPARATE DECISION. 22,170 outfield
+        cards carry no pool; FLOOR is 0 for every one of them, so the 7,451 that satisfy
+        FLOOR >= PERF are near-EMPTY cards, not floor-bound defenders. Flagging them here
+        would be a different claim wearing the same name. Logged, not decided.  */
+    if (pool === 'CB' || pool === 'FB' || pool === 'CDM'){
+      out.rt_claims = 'forbidden';
+      out.rt_claims_reason =
+        'On this position the VV Score is usually a defensive-share percentile, a minutes ' +
+        'curve and a league weight: the measured performance half of the formula is ' +
+        'discarded on 74 to 86 per cent of these seasons, so goals, assists and the ' +
+        'ranking percentiles contribute nothing to it.';
+      out.rt_claims_rule =
+        'Do not mention the VV Score for this season at all , not the number, not the band, ' +
+        'not its placement. Write about the recorded figures instead.';
+    }
+
     if (th){
       out.pool = pool;
       out.pool_passes_per90_p80 = th.passes90_p80 != null ? th.passes90_p80 : null;
       out.pool_passes_per90_p90 = th.passes90_p90 != null ? th.passes90_p90 : null;
     }
+    /*  ══ FALLBACK C , WHAT THE MODEL RECEIVES ABOUT A KEEPER ═══════════════════════════
+        docs/KEEPER_FALLBACK_C_SPEC.md: "Fable receives recorded figures, band, evidence
+        status, and the limit sentence."
+
+        THE CAP FIELDS ARE GONE. rt_is_capped_at_75 and cap_reason told the model about a
+        number the platform no longer stands behind, and the spec retires that sentence
+        everywhere. Nothing here carries a keeper scalar now.
+
+        THE BAND IS SENT AS A BAND, never as a midpoint, so the model has nothing to round
+        to a point even if it wanted one. evidence_status is the card's own three-state
+        classification, so the prose cannot claim a comparison the card does not make.  */
     if (isGK(row)){
+      var ks = keeperScore(row), kst = keeperState(row);
       out.keeper = {
         saves: row.saves != null ? row.saves : null,
         goals_conceded: row.goals_conceded != null ? row.goals_conceded : null,
+        shots_faced_derived: (row.saves != null && row.goals_conceded != null) ? row.saves + row.goals_conceded : null,
         penalties_saved: row.penalties_saved != null ? row.penalties_saved : null,
+        penalties_saved_note: 'a count with no denominator: we do not know how many he faced',
         starts: row.starts != null ? row.starts : null,
-        rt_is_capped_at_75: true,
-        cap_reason: 'a platform measurement boundary, not a judgement on his goalkeeping'
+        evidence_status: kst ? kst.state : null,       // measured | below_floor | unrecorded
+        save_rate_pct: (ks && ks.eligible) ? +(100 * ks.savePct).toFixed(1) : null,
+        save_rate_se_pp: (ks && ks.eligible) ? +ks.seP.toFixed(1) : null,
+        percentile_band: (ks && ks.eligible) ? [Math.min(ks.bandLo, ks.bandHi), Math.max(ks.bandLo, ks.bandHi)] : null,
+        percentile_band_note: 'a RANGE, not a point. There is no midpoint and none may be inferred.',
+        pool: KEEPER_POOL.n,
+        pool_median_pct: +(100 * KEEPER_POOL.median).toFixed(1),
+        limit: 'The VV Score does not rate goalkeeping: save data resolves too little to stand behind a number. Shot-stopping is shown as recorded, with its uncertainty, and nothing finer is claimed.'
       };
     }
+    /*  ══ THE FACTS BLOCK , DENOMINATORS AS BOUND PAIRS ═══════════════════════════════
+        docs/FABLE_PAYLOAD_BRIEF.md: pairs are FACTS. The prose may STATE 29 from 104 and
+        may NOT GRADE the conversion, because a ratio with no reference is one more number
+        to restate. Grading needs pool percentiles for these ratios and nobody has computed
+        them; until then the pair stays stated and ungraded, which is the correct direction
+        of deferral.
+        `goals` is already on the payload from BOTH callers, so only its partner is added
+        here , sending it twice would put one number in two places and invite them to
+        disagree.  */
+    out.shots_total       = row.shots_total       != null ? row.shots_total       : null;
+    out.dribbles_success  = row.dribbles_success  != null ? row.dribbles_success  : null;
+    out.dribbles_attempts = row.dribbles_attempts != null ? row.dribbles_attempts : null;
+    out.duels_won         = row.duels_won         != null ? row.duels_won         : null;
+    out.duels_total       = row.duels_total       != null ? row.duels_total       : null;
+    out.penalties_scored  = row.penalties_scored  != null ? row.penalties_scored  : null;
+
+    /*  ══ THE CLAIMS BLOCK , HONOURS ════════════════════════════════════════════════════
+        Asserted outright, because the platform already asserted them: these are the same
+        rows the card face and the Wonder Tags render. The brief calls this the highest
+        insight per byte on the platform and it is right , the model has been writing about
+        Salah 24/25 without knowing about the Golden Boot, the Player of the Season award or
+        the title.
+        `won_by` IS THE FIELD THE BRIEF ASKS FOR , whether the PLAYER or the TEAM won it.
+        HONOUR_META's group already carries it and nothing was reading it for prose.
+        `leg` SEPARATES A SEASON HONOUR FROM A CAREER ONE, and it is load-bearing rather
+        than tidy: world_cup_winner attaches to EVERY card a winner holds, so without the
+        leg a 2018 World Cup would read as something he won in the 23/24 season. The year
+        travels with it for the same reason.  */
+    var _hon = row.honours;
+    if (_hon){
+      var _hl = [];
+      var _push = function(list, leg){
+        (list || []).forEach(function(h){
+          if (!h || !h.label) return;
+          _hl.push({ honour: h.label, year: h.season_year != null ? h.season_year : null,
+                     /*  READ OFF HONOUR_META.wonBy, NOT OFF `group` , FIXED 2026-09-13.
+                         `group === 'Team' ? 'team' : 'player'` sent the WORLD CUP as won by
+                         the player, because it is filed under 'Career'. `group` answers which
+                         shelf an honour sits on; `wonBy` answers who won it, and they are not
+                         the same question. Falls back to the old reading only if the key is
+                         unknown to HONOUR_META, which cannot happen for a shaped honour.  */
+                     won_by: ((HONOUR_META[h.type] || {}).wonBy) || (h.group === 'Team' ? 'team' : 'player'), leg: leg,
+                     context: h.context || null });
+        });
+      };
+      _push(_hon.season, 'season');
+      _push(_hon.career, 'career');
+      if (_hl.length) out.honours = _hl;
+    }
+
+    /*  ══ THE CLAIMS BLOCK , CAREER STAGE ═══════════════════════════════════════════════
+        Read off the three matview columns rowToCard now carries, NOT off `tags`. A display
+        list is ordered, capped and family-mixed; a claim is not.  */
+    var _stage = [];
+    if (row.stage_peak         === true) _stage.push('Peak');
+    if (row.stage_breakout     === true) _stage.push('Breakout');
+    if (row.stage_the_standard === true) _stage.push('The Standard');
+    if (_stage.length) out.career_stage = _stage;
+
+    /*  ══ TAG GLOSSES ═══════════════════════════════════════════════════════════════════
+        Tag names have travelled with no meaning attached, so the model either ignored them
+        or guessed at what they sound like. TAG_DEFS' oneLiner IS the platform's one-line
+        definition, already written and already shipping on the Playbook, so this costs
+        nothing but the bytes.
+        ONLY TAGS THAT HAVE ONE ARE SENT. Prestige badges and honour pills also live in
+        `tags` on some surfaces and are NOT in TAG_DEFS; emitting them with a null gloss
+        would be a field carrying no label, which is the thing this block exists to fix.  */
+    var _tg = [];
+    (Array.isArray(row.tags) ? row.tags : []).forEach(function(t){
+      var nm = t && t.name, d = nm ? TAG_DEFS[nm] : null;
+      if (d && d.oneLiner) _tg.push({ tag: nm, means: d.oneLiner });
+    });
+    if (_tg.length) out.tag_glosses = _tg;
+
+    /*  ══ THE PLACEMENTS BLOCK , THE FIVE DIMENSIONS, PAIRED ════════════════════════════
+        OPT-IN, AND THE OPT-IN IS THE POINT. The brief rules that in the VERDICT path the
+        model never compares radars itself: two percentiles differ by amounts the platform
+        has not audited for separability, and the precomputed per-dimension comparison claim
+        that would licence it is NOT BUILT YET. Sending the pairs to compare without that
+        claim would hand the model exactly the arithmetic the brief refuses. So the block is
+        gated and only the NOTES path asks for it.
+        THE NOTES PATH IS WHERE IT WAS MOST MISSING: card.html sent NO radar at all, in any
+        form, while the page renders the chart beside the prose. The brief's sharpest line ,
+        the card page describes a chart it cannot see , was literally true.
+        RELIABILITY IS NOT A PERCENTILE AND IS NOT LABELLED AS ONE. radarFor percentiles
+        four axes and leaves reliability as an ABSOLUTE: minutes played as a share of a full
+        season. Emitting it under `percentile_in_pool` would put a number in the payload
+        under a name the platform does not give it, so it gets its own field and no
+        percentile. This is the one place in the block where the two axes genuinely differ.
+        POOL SIZE IS NOT SENT BECAUSE IT DOES NOT EXIST. RADAR_POOL_REF holds breakpoints
+        and no count, so "of the 5,618 wingers we can measure" cannot be written honestly
+        yet. It is owed at the snapshot's next regeneration; inventing it here would be the
+        opposite of the whole design.  */
+    if (opts && opts.radar){
+      var _rd = row.radar || radarFor(row);
+      if (_rd && !_rd.suppressed && _rd.scaled){
+        var _vals = {};
+        ['goalThreat','creation','progression','defensive'].forEach(function(k){
+          if (_rd.scaled[k] == null) return;              // NR stays absent, never zero
+          _vals[k] = { per90: (_rd.raw && _rd.raw[k] != null) ? _rd.raw[k] : null,
+                       percentile_in_pool: _rd.scaled[k] };
+        });
+        if (_rd.scaled.reliability != null)
+          _vals.reliability = { pct_of_full_season: _rd.scaled.reliability };
+        if (Object.keys(_vals).length)
+          out.dimensions = {
+            pool: _rd.pool || null,
+            note: 'percentile_in_pool is this season ranked against other ' +
+                  (_rd.pool || 'comparable') + ' seasons we can measure, not a rate and not a league rank. ' +
+                  'reliability is not a percentile: it is minutes played as a share of a full season.',
+            values: _vals
+          };
+      }
+    }
+
     /* PREFER THE OBJECT'S OWN CONFIDENCE. rowToCard already computed it FROM THE RAW ROW and
        attached it; recomputing from a card gives a DIFFERENT answer, because a card does not
        carry every granular column. Measured: 5 from the row, 4 from the card, same season.
        The payload must agree with the Data Confidence panel the reader is looking at. */
     const cf = (Array.isArray(row.confidenceFields) && row.confidenceFields.length)
       ? row.confidenceFields : (confidenceFields(row) || []);
-    out.confidence = (row.confidence != null) ? row.confidence : confidenceFor(row);
+    /*  CAPPED OFF `cf`, NOT OFF THE ROW. Whether the confidence arrived precomputed from
+        rowToCard or is derived here, a basic absent from `cf` caps it at 4 , so the number
+        in the payload can never contradict the `missing` list travelling beside it.  */
+    var _rawConf = (row.confidence != null) ? row.confidence : confidenceFor(row);
+    var _basicGone = cf.some(function(f){
+      return !f.present && (f.label === 'Goals' || f.label === 'Assists' || f.label === 'Minutes played');
+    });
+    out.confidence = (_rawConf != null && _basicGone) ? Math.min(_rawConf, 4) : _rawConf;
     out.missing = cf.filter(function(f){ return !f.present; }).map(function(f){ return f.label; });
+
+    /*  ── WAS IT RECORDED, AS A FACT SEPARATE FROM ITS VALUE , ADDED 2026-09-13 ──────────
+        THE DEFECT THIS CLOSES: the user-prompt builder printed `c.goals+'G '+c.assists+'A'`
+        with no guard, and rowToCard coalesces goals to 0 while leaving assists null. So a
+        card whose GOALS were never recorded sent the model a literal "0G" , a false number,
+        on 2,497 outfield cards , and a card with no assists sent the literal token "nullA".
+        Both contradicted this payload's own `missing` list in the same breath.
+
+        DERIVED FROM `cf`, THE SAME ARRAY `missing` IS BUILT FROM, AND THAT IS THE WHOLE
+        POINT. It must NOT read `row.goals != null`: vvAIStats is called with a CARD, and a
+        card's goals have already been coalesced to 0, so the truth is not in that field any
+        more. `cf` comes from rowToCard, which computed it from the RAW row. Reading the
+        coalesced field here would reproduce the exact bug this block exists to remove, and
+        it would look correct.
+        ONE SOURCE, TWO OUTPUTS , `missing` and `recorded` cannot disagree because they are
+        two projections of one array. SS C's two-fields-for-one-concept rule, applied in
+        advance rather than after it bites.
+
+        `not_recorded_basics` IS EMITTED ONLY WHEN NON-EMPTY, AND THAT IS DELIBERATE. The key
+        SET is what `payloadRev` hashes, so a complete card's key set is unchanged and its
+        cached verdict survives; only a card with a real gap gains the key and invalidates.
+        `recorded` is always emitted, so the stamp moves once for every pair on this ship and
+        the 110 verdicts written against "0G" and "nullA" are all re-generated.  */
+    var _cfPresent = function(label){
+      for (var i = 0; i < cf.length; i++) if (cf[i].label === label) return !!cf[i].present;
+      return null;                               // not part of this card's field set at all
+    };
+    out.recorded = { goals: _cfPresent('Goals'), assists: _cfPresent('Assists') };
+    var _nrb = ['Goals','Assists'].filter(function(l){ return _cfPresent(l) === false; });
+    if (_nrb.length) out.not_recorded_basics = _nrb;
     const y = row.season_year;
     out.era = (y != null && y < AI_GRANULAR_ERA)
       ? 'pre-2015: ONLY appearances, minutes, goals and discipline exist for this season. Every other measure is absent, not zero.'
@@ -1056,7 +1465,7 @@
                               0.7500,0.7667,0.8852];
   function keeperScore(row){
     if (!row || !isGK(row)) return null;
-    const out = { eligible:false, reason:null, savePct:null, pct:null,
+    const out = { eligible:false, reason:null, savePct:null,
                   saves:row.saves, conceded:row.goals_conceded, shotsFaced:null,
                   penaltiesSaved:row.penalties_saved, minutes:row.minutes, starts:row.starts };
     if ((row.season_year||0) < KEEPER_ERA){ out.reason = 'pre-2015: shot data was never recorded'; return out; }
@@ -1076,9 +1485,62 @@
       if (svp <= L[i]){ const lo = L[i-1], hi = L[i];
         pct = (i-1)*5 + (hi > lo ? ((svp-lo)/(hi-lo))*5 : 0); break; }
     }
-    out.pct = Math.max(0, Math.min(100, Math.round(pct)));
     out.eligible = true;
+
+    /*  ══ FALLBACK C , SE AND THE PERCENTILE BAND ══════════════════════════════════════
+        docs/KEEPER_FALLBACK_C_SPEC.md. The mark object failed its pre-registered floor
+        (6 above against 20, at every k from 0 to 300) and what ships instead asserts
+        nothing: recorded measurements, their uncertainty, and a platform that says so.
+
+        THE SE IS BINOMIAL ON THE RAW RATE , sqrt(p(1-p)/n), n = shots on target faced.
+        Held as a PROPORTION here and converted once at the point of display. The mark
+        scorer records that two of five design versions died of an unchecked conversion:
+        a rate in percentage points against an SE in proportion compares fine in code and
+        is wrong by 100x. One unit, one conversion, at the edge.
+
+        NO SHRINKAGE. The spec retires the prior-weight constant k , stabilisation existed
+        to protect assertions and Fallback C asserts nothing, so every figure here is a
+        recorded fact or a direct transform of one. This is the RAW rate, deliberately.
+
+        THE BAND IS THE POINT. rate +/- 1 SE, each end mapped through the ladder, whole
+        percentiles. A 60-shot season shows a wide band and a 250-shot season a narrow
+        one, so the reader sees evidence quality without being told about it.
+        out.pct IS GONE , 2026-09-07. It was a POINT percentile, which the spec forbids
+        reaching a surface, and it survived only because compare's keeperVersusHTML read it
+        to place a pin on the shared axis. That function is deleted, so the field was
+        written and read by nothing: a computed point percentile sitting on the object is
+        an invitation for the next surface to render it. The band is the whole answer.  */
+    out.se = Math.sqrt(svp * (1 - svp) / sf);          // proportion
+    out.seP = out.se * 100;                            // percentage points, display only
+    var pctAt = function(v){
+      if (v <= L[0]) return 0;
+      for (var j = 1; j < L.length; j++){
+        if (v <= L[j]){ var a = L[j-1], b = L[j];
+          return (j-1)*5 + (b > a ? ((v-a)/(b-a))*5 : 0); }
+      }
+      return 100;
+    };
+    var whole = function(v){ return Math.max(0, Math.min(100, Math.round(pctAt(v)))); };
+    out.bandLo = whole(svp - out.se);
+    out.bandHi = whole(svp + out.se);
     return out;
+  }
+
+  /*  THE THREE CARD STATES , §"THE CARD SENTENCES". ERA FIRST, THEN FIELDS, THEN FLOOR,
+      and the order is load-bearing rather than stylistic: 10 pre-2015 keeper cards DO
+      carry save data (all of them 2014). Testing "has save data" first would give those
+      ten a band and a comparison the spec puts them outside of. They belong in the
+      unrecorded 1,493, not the below-floor 876.
+      MEASURED, not quoted: 1,920 measured + 876 below floor (559 minutes + 317 shots)
+      + 1,493 unrecorded (1,299 pre-2015 + 194 fields) = 4,289 keeper seasons.  */
+  function keeperState(row){
+    if (!row || !isGK(row)) return null;
+    if ((row.season_year || 0) < KEEPER_ERA) return { state:'unrecorded', why:'era' };
+    if (row.saves == null || row.goals_conceded == null) return { state:'unrecorded', why:'fields' };
+    var sf = row.saves + row.goals_conceded;
+    if ((row.minutes || 0) < KEEPER_MIN_MINUTES) return { state:'below_floor', why:'minutes', shotsFaced:sf };
+    if (sf < KEEPER_MIN_SHOTS) return { state:'below_floor', why:'shots', shotsFaced:sf };
+    return { state:'measured', shotsFaced:sf };
   }
 
 
@@ -1103,66 +1565,26 @@
      in pink. Pink on this panel means the score, and only the ladder carries the score. */
   var VV_GK_CSS = `
 .gkp{margin:2px 0 4px}
-/*  BETWEEN THE POSTS , compare's keeper section. Colours are TOKENS ONLY: this renders on
-    .vsect, which is a dark gradient in dark mode and cream in light, so nothing here may
-    assume a ground the way the gkp- panel does. */
-/*  DIRECTION B , small multiples on one shared pair of scales. Lanes, not an overlay:
-    at 346px an overlaid 3-season line is three points crushed under the other player's.
-    Colours are the A/B identity, matching the names directly above each lane. */
-/*  THE PAIR IS CAPPED, NOT FULL-BLEED. The viewBox is 360x104, so at a full 1180px each lane
-    renders 341px tall , two of those is a wall of chart for a line with ten points. Capping the
-    width at 640 gives ~185px lanes at desktop and the full width on a phone, with no distortion
-    (preserveAspectRatio stays at its default) and no letterboxing, because the cap is on the
-    BOX rather than on the height. */
-.gkt-pair{display:flex;flex-direction:column;gap:10px;max-width:640px;
-  --gkt-ink:var(--vs-muted,var(--ink-soft));--gkt-band:rgba(128,128,128,.10);--gkt-absent-line:var(--vs-muted,var(--ink-soft))}
-.gkt-lane{color:var(--gkt-ink)}
-.gkt-lane.gkt-a{color:var(--pink-ink)}
-.gkt-lane.gkt-b{color:var(--vv-blue,#3B6FB0)}
-body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
-.gkt-lanename{font-family:'Inter';font-weight:700;font-size:11px;color:currentColor;margin-bottom:1px}
-.gkt-svg{display:block;width:100%;height:auto}
-
-.gkt-say{font-size:12.5px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:10px}
-.gkt-say b{color:inherit;font-weight:700}
-.gkv-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--vs-muted,var(--ink-soft));margin-bottom:6px}
-.gkv-scale{position:relative;height:80px;margin-top:2px}
-.gkv-axis{position:absolute;left:0;right:0;top:52px;height:5px;border-radius:99px;background:currentColor;opacity:.14}
-.gkv-seg{position:absolute;top:52px;height:5px;border-radius:99px;background:var(--pink-ink)}
-.gkv-rung{position:absolute;top:46px;width:1px;height:17px;background:currentColor;opacity:.22}
-/*  RUNG LABELS AND ENDPOINT LABELS ARE ONE TYPE TREATMENT, DELIBERATELY IDENTICAL.
-    9px, 400, full --vs-muted with NO opacity dilution. They were 9px/.75 and 9.5px/.8, close
-    enough to look like a mistake and faint enough that neither read cleanly. The rungs and the
-    pins carry the information and the endpoints only frame the axis, so the endpoints must not
-    be heavier , parity is the target, not emphasis. Legibility comes from dropping the opacity
-    multiplier, not from size or weight. */
-.gkv-rlab{position:absolute;top:66px;transform:translateX(-50%);font-size:9px;font-weight:400;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));white-space:nowrap}
-.gkv-pin{position:absolute;top:45px;width:3px;height:19px;border-radius:2px;background:var(--pink-ink);transform:translateX(-1.5px)}
-.gkv-lab{position:absolute;top:6px;transform:translateX(-50%);text-align:center;white-space:nowrap}
-.gkv-v{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:29px;line-height:.92;color:var(--pink-ink)}
-.gkv-n{display:block;font-family:'Inter';font-weight:700;font-size:11px;color:var(--vs-muted,var(--ink-soft))}
-/*  THE ENDPOINTS GET THEIR OWN ROW. They shared one with the rung labels via margin-top:-6px,
-    and at 346px "90th" sits at 90% of a short axis while "strongest" is flush right , measured
-    27px of horizontal overlap, on lines close enough to read as a collision. A row of their own
-    cannot collide at either end regardless of axis width or label length, which is the property
-    worth having; nudging would only move the width at which it breaks. */
-.gkv-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:400;letter-spacing:.03em;color:var(--vs-muted,var(--ink-soft));margin-top:6px}
-.gkv-say{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft));margin-top:14px}
-.gkv-figs{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}
-.gkv-figs div{font-size:10.5px;letter-spacing:.04em;color:var(--vs-muted,var(--ink-soft));opacity:.85}
-.gkv-figs b{display:block;font-family:'Barlow Condensed';font-weight:800;font-size:19px;line-height:1.15;color:inherit;opacity:1}
-.gkv-no{font-size:13px;line-height:1.55;color:var(--vs-muted,var(--ink-soft))}
-/*  NEAR-TIE GUARD: two pins closer than a label's width collide. The labels are centred on
-    their pin, so the pair is nudged apart only in the LABEL layer , the pins stay truthful. */
-.gkv-lab-a{transform:translateX(-50%)}
-.gkv-lab-b{transform:translateX(-50%)}
-/*  the stack fallback , used only when the track cannot hold both labels side by side even
-    after nudging and clamping. Set by vvFitKeeperLabels, never by hand. */
-.gkv-lab-stack{top:-18px}
-/*  the scale DROPS to make room for a raised label , raising the label alone drove it into
-    the kicker above by a measured 10px. Set by vvFitKeeperLabels, never by hand. */
-.gkv-scale.gkv-stacked{margin-top:30px;height:104px}
-@media (max-width:520px){ .gkv-v{font-size:24px} .gkv-scale{height:74px} }
+/*  THE PAIR, AND THE SURFACE THAT MAKES THE PANEL PORTABLE. .gkp above assumes the card's
+    cream ground; compare renders on .vsect, a dark gradient in dark mode. Rather than
+    re-inking the panel , which would fork one component into two , each column carries its
+    own cream surface, so the panel's ink assumptions hold wherever it is dropped.
+    STACKS BELOW 720px. Two panels side by side on a phone is two unreadable columns, and
+    the panel is a block of small figures. Stacked, the registered line still sits under
+    both, which is where a caption for a pair belongs at either width. */
+.gkpair{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.gkpair-solo{grid-template-columns:1fr;max-width:520px}
+.gkpair-col{min-width:0}
+.gkpair-surface{background:var(--cream,#F0EAD9);border-radius:14px;padding:12px 14px;
+  box-shadow:0 10px 26px -18px rgba(0,0,0,.5)}
+.gkpair-h{display:flex;flex-direction:column;gap:1px;margin:0 0 7px 2px}
+.gkpair-n{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;
+  letter-spacing:.02em;color:var(--vs-muted,var(--ink-soft));text-transform:uppercase}
+.gkpair-s{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11.5px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--vs-muted,var(--ink-soft));opacity:.8}
+.gkpair-line{margin:14px auto 0;max-width:640px;text-align:center;
+  font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;color:var(--vs-muted,var(--ink-soft))}
+@media (max-width:720px){ .gkpair{grid-template-columns:1fr;gap:16px} }
 .gkp-k{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px}
 .gkp-k:first-child{margin-top:0}
 .gkp-lad{display:flex;align-items:flex-end;gap:16px}
@@ -1189,6 +1611,19 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
 .gkp-f span{font-family:'Inter';font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase}
 .gkp-lim{margin-top:18px;padding:11px 13px;border-left:2px solid var(--gold);background:rgba(232,184,75,.14);border-radius:0 8px 8px 0;font-family:'Inter';font-size:12px;line-height:1.5;color:var(--ink-soft)}
 .gkp-lim b{color:var(--charcoal);font-weight:700}
+.gkp-rate{font-family:'Bricolage Grotesque';font-weight:700;font-size:30px;line-height:1.1;color:var(--charcoal);margin:2px 0 10px}
+/*  THE SE SHARES THE RATE'S TYPE SIZE. The spec: "it is part of the number, same type
+    size, always" , so this is font-size:inherit and NOT a smaller muted span. Only the
+    weight and colour step down, which is what keeps it readable as one statement rather
+    than two. Anything that shrinks this is a spec violation, not a tidy-up. */
+.gkp-se{font-size:inherit;font-weight:700;color:var(--pink-ink)}
+.gkp-on{font-family:'Inter';font-size:12.5px;font-weight:400;color:var(--ink-soft);white-space:nowrap}
+.gkp-band{position:absolute;top:0;height:100%;border-radius:6px;background:linear-gradient(90deg,rgba(46,140,90,.30),rgba(46,140,90,.62));border:1px solid rgba(46,140,90,.55)}
+.gkp-ref{position:absolute;top:-3px;width:2px;height:calc(100% + 6px);background:var(--charcoal);opacity:.55}
+.gkp-ref-l{font-family:'Inter';font-size:11.5px;line-height:1.5;color:var(--ink-soft);margin:8px 0 2px}
+.gkp-state{font-family:'Inter';font-size:13px;line-height:1.55;color:var(--charcoal);background:rgba(0,0,0,.04);border-radius:10px;padding:12px 13px;margin:10px 0 2px}
+.gkp-figs .gkp-f span i{display:block;font-style:normal;font-size:9.5px;letter-spacing:.02em;color:var(--ink-soft);opacity:.85}
+
 .gkp-no{padding:12px 14px;border:1px dashed rgba(0,0,0,.20);border-radius:10px;font-family:'Inter';font-size:12.5px;color:var(--ink-soft);line-height:1.5}
 .gkp-no b{color:var(--charcoal);font-weight:700}
 @media(max-width:430px){ .gkp-lad{gap:12px} .gkp-pc{font-size:32px} .gkp-figs{gap:18px} }
@@ -1249,201 +1684,178 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       which is the Under-the-Lights GRADIENT in dark mode and #FBF8F2 in light , unlike the
       card's .layer, which is cream in BOTH. The keeper card panel assumes a cream ground and
       goes dark-on-dark if it is dropped here unchanged. See §C: match the ink to the GROUND.  */
-  var GKV_RUNGS = [50, 75, 90];
+  /*  ══ TWO PANELS, NO AXIS , FALLBACK C, COMPARE ═════════════════════════════════
+      docs/KEEPER_FALLBACK_C_SPEC.md, CONSUMER RULES: "Two keeper panels render side by
+      side with bands visible. One line of registered copy between them, always."
 
-  function gkvPin(k, name, side){
-    return '<div class="gkv-pin" style="left:' + k.pct + '%"></div>'
-         + '<div class="gkv-lab gkv-lab-' + side + '" style="left:' + k.pct + '%">'
-         +   '<span class="gkv-v">' + (100 * k.savePct).toFixed(1) + '%</span>'
-         +   '<span class="gkv-n">' + escHtml(name) + '</span>'
-         + '</div>';
+      WHAT WAS HERE AND WHY IT IS GONE. keeperVersusHTML pinned both keepers on ONE shared
+      percentile axis, sorted them into `hi` and `lo`, and wrote a sentence naming the higher
+      first , "de Gea stopped a higher share of the shots he faced than 97% of keeper
+      seasons. Alisson Becker, 84%." That is the ranking the spec exists to refuse, and after
+      the verdict stopped declaring a keeper winner it sat DIRECTLY BENEATH a line saying the
+      Index will not place one above the other. The page contradicted itself in adjacent
+      blocks, which is worse than the state before the verdict was fixed.
+      DELETED WITH IT, because each existed only to serve the axis: GKV_RUNGS (the 50/75/90
+      ticks), gkvPin, gkvSentence, gkvNotScored, gkvFigs, and vvFitKeeperLabels , the
+      measure-after-render pass that pushed two pin labels apart when the pins sat close
+      together. Nothing needs separating when nothing shares a scale.
+
+      THE REPLACEMENT REUSES keeperPanelHTML, THE CARD'S OWN PANEL, RATHER THAN DRAWING A
+      SECOND ONE. Section C records what two drawings of one thing cost, and the panel
+      already handles all three evidence states, prints the band AS A BAND, and carries the
+      limitation block. One implementation, rendered twice.
+
+      THE GROUND IS THE TRAP, AND IT IS RECORDED ONE COMMENT ABOVE: .gkp assumes the card's
+      CREAM ground and compare renders on .vsect, a dark gradient in dark mode. Dropped in
+      unchanged it goes dark-on-dark. Each panel therefore gets its own cream surface here
+      rather than the panel being re-inked, so the card and compare keep ONE panel with one
+      set of ink assumptions.  */
+  var GK_PANELS_LINE =
+    "These panels report each season's measurements against the pool, not against each " +
+    "other. Overlapping bands are not distinguishable on this evidence , and most bands " +
+    "overlap.";
+
+  /*  THE SPEC'S SENTENCE, WITH ONE CHARACTER CHANGED. It is written there with an em dash;
+      the house rule is a spaced comma and section D records the shipping HTML as clean of
+      em dashes but for one regex character class. The WORDS are the spec's, unaltered.  */
+
+  function gkPanelHead(x){
+    var sub = [x.club, x.year].filter(Boolean).join(' , ');
+    return '<div class="gkpair-h"><span class="gkpair-n">' + escHtml(x.name) + '</span>'
+         + (sub ? '<span class="gkpair-s">' + escHtml(sub) + '</span>' : '') + '</div>';
   }
 
-  /*  THE SENTENCE IS WHAT MAKES THE AXIS SAYABLE. A percentile bar is only legible if the
-      reader is told what a position on it MEANS, and the higher keeper is named first so the
-      sentence reads as a finding rather than a table.  */
-  function gkvSentence(hi, lo){
-    return escHtml(hi.name) + ' stopped a higher share of the shots he faced than '
-         + hi.k.pct + '% of keeper seasons. ' + escHtml(lo.name) + ', ' + lo.k.pct + '%.';
+  function gkPanelCol(x){
+    return '<div class="gkpair-col">' + gkPanelHead(x)
+         + '<div class="gkpair-surface">' + keeperPanelHTML(x.k, { state: x.state, why: x.why }) + '</div></div>';
   }
 
-  function keeperVersusHTML(A, B){
-    /*  INJECT THE STYLESHEET HERE TOO. vvInjectGKCSS() was called only from
-        keeperPanelHTML, so compare , which calls this and never that , rendered the whole
-        section as unstyled stacked text: rung labels on their own lines, "weakest keeper"
-        and "strongest" run together, every figure a paragraph. It looked like a layout bug
-        and was a missing <style>. The injector is idempotent (it checks its own id), so
-        calling it from both entry points costs nothing.  */
+  /*  ONE KEEPER ONLY. There is no second panel to put beside it and no comparison to
+      refuse, so the registered line would be answering a question nobody asked. The mixed
+      line states the mismatch instead , and it is deliberately SHORTER than the verdict's,
+      which sits below and carries the ruling. Same reconciliation as the trajectory copy:
+      one block explains, the others do not re-explain.  */
+  function keeperPanelsHTML(A, B){
     vvInjectGKCSS();
     var a = A && A.k, b = B && B.k;
-    var rungs = '';
-    for (var i = 0; i < GKV_RUNGS.length; i++){
-      rungs += '<div class="gkv-rung" style="left:' + GKV_RUNGS[i] + '%"></div>'
-            +  '<div class="gkv-rlab" style="left:' + GKV_RUNGS[i] + '%">' + GKV_RUNGS[i] + 'th</div>';
-    }
+    if (!a && !b) return null;
 
-    /*  ONE KEEPER ONLY. There is no shared axis to draw , the outfielder has no position on
-        the keeper pool at all , so this states the mismatch in the same voice the trajectory
-        already uses, and shows the keeper's own position rather than nothing.  */
     if (!a !== !b){
       var K = a ? A : B, O = a ? B : A;
-      if (!K.k.eligible) return gkvNotScored(K, O);
-      return '<div class="gkv">'
-        + '<div class="gkv-k">Save rate, against every goalkeeper we can measure</div>'
-        + '<div class="gkv-scale gkv-solo">'
-        +   '<div class="gkv-axis"></div>'
-        +   '<div class="gkv-seg" style="left:0;width:' + K.k.pct + '%"></div>'
-        +   rungs + gkvPin(K.k, K.name, 'a')
-        + '</div>'
-        + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
-        + '<div class="gkv-say">' + escHtml(K.name) + ' stopped a higher share of the shots he faced than '
-        +   K.k.pct + '% of keeper seasons. ' + escHtml(O.name) + ' is an outfielder, so there is no '
-        +   'shared measure here , a save rate and a goal tally are not the same kind of evidence.</div>'
-        + gkvFigs([K]) + '</div>';
+      return '<div class="gkpair gkpair-solo">' + gkPanelCol(K) + '</div>'
+           + '<div class="gkpair-line">' + escHtml(O.name) + ' is an outfielder, so there is '
+           + 'one panel here rather than two.</div>';
     }
 
-    if (!a && !b) return null;
-    if (!a.eligible || !b.eligible) return gkvNotScored(A, B);
-
-    var hi = (a.pct >= b.pct) ? A : B, lo = (hi === A) ? B : A;
-    var loP = Math.min(a.pct, b.pct), hiP = Math.max(a.pct, b.pct);
-    return '<div class="gkv">'
-      + '<div class="gkv-k">Save rate, against every goalkeeper we can measure</div>'
-      + '<div class="gkv-scale">'
-      +   '<div class="gkv-axis"></div>'
-      +   '<div class="gkv-seg" style="left:' + loP + '%;width:' + (hiP - loP) + '%"></div>'
-      +   rungs
-      +   gkvPin(a, A.name, 'a') + gkvPin(b, B.name, 'b')
-      + '</div>'
-      + '<div class="gkv-ends"><span>weakest keeper</span><span>strongest</span></div>'
-      + '<div class="gkv-say">' + gkvSentence(hi, lo) + '</div>'
-      + gkvFigs([A, B]) + '</div>';
+    return '<div class="gkpair">' + gkPanelCol(A) + gkPanelCol(B) + '</div>'
+         + '<div class="gkpair-line">' + escHtml(GK_PANELS_LINE) + '</div>';
   }
 
-  /*  NEAR-TIE LABELS , MEASURED AFTER RENDER, NEVER PREDICTED.
-      Two pins a few percentile places apart put their labels on top of each other. The label
-      width is not knowable from the HTML , it depends on the name, the viewport and the font
-      once it has loaded , so this measures the real boxes and moves them, the same
-      measure-after-render shape as vvCentreShareCaption. §C: measure, do not predict.
+  /*  ══ THE PANEL , FALLBACK C SHIPPING SPEC ═══════════════════════════════════════
+      docs/KEEPER_FALLBACK_C_SPEC.md, "THE PANEL SPEC". Order is the spec's order and is
+      not a layout preference: recorded figures, then the rate WITH its uncertainty, then
+      the percentile AS A BAND, then the reference line, then the limitation block.
 
-      THE PINS DO NOT MOVE. Only the label layer does. A pin is the datum; shifting it to make
-      room would be drawing a different number from the one that was measured, which is the one
-      thing this section exists not to do. A label that has been nudged is therefore no longer
-      centred on its pin, and that is the correct trade: an approximate pointer to a truthful
-      mark beats a tidy pointer to a moved one.
+      THE INVARIANT THIS SERVES: there is no keeper scalar. Nothing here prints a single
+      number standing for the season's quality, and nothing here sorts anything.
 
-      THREE STEPS, IN ORDER, AND THE ORDER MATTERS:
-        1. separate , push the pair apart around their shared midpoint until they clear.
-        2. clamp , keep both inside the track, which can undo some of step 1 at an edge.
-        3. stack , if after clamping they STILL overlap the track is too narrow to hold both
-           side by side, so the second label drops to its own line. Verified rather than
-           assumed: the check is re-run after the clamp.  */
-  function vvFitKeeperLabels(root){
-    if (!root || typeof window === 'undefined') return;
-    var scale = root.querySelector('.gkv-scale'); if (!scale) return;
-    var labs = [].slice.call(scale.querySelectorAll('.gkv-lab'));
-    if (labs.length < 2) return;                       // one keeper: nothing can collide
-
-    labs.forEach(function(l){ l.style.marginLeft = ''; l.classList.remove('gkv-lab-stack'); });
-    scale.classList.remove('gkv-stacked');
-
-    var GUTTER = 10;
-    var track = scale.getBoundingClientRect();
-    var a = labs[0].getBoundingClientRect(), b = labs[1].getBoundingClientRect();
-    var left = (a.left <= b.left) ? labs[0] : labs[1];
-    var right = (left === labs[0]) ? labs[1] : labs[0];
-    var lb = left.getBoundingClientRect(), rb = right.getBoundingClientRect();
-
-    var overlap = (lb.right + GUTTER) - rb.left;
-    if (overlap > 0){
-      var push = overlap / 2;
-      left.style.marginLeft  = (-push) + 'px';
-      right.style.marginLeft = ( push) + 'px';
-    }
-
-    // clamp , a nudge must not push a label off the track
-    lb = left.getBoundingClientRect(); rb = right.getBoundingClientRect();
-    var dl = track.left - lb.left, dr = rb.right - track.right;
-    if (dl > 0) left.style.marginLeft  = ((parseFloat(left.style.marginLeft)  || 0) + dl) + 'px';
-    if (dr > 0) right.style.marginLeft = ((parseFloat(right.style.marginLeft) || 0) - dr) + 'px';
-
-    // stack , only if the clamp put them back on top of each other
-    lb = left.getBoundingClientRect(); rb = right.getBoundingClientRect();
-    if ((lb.right + 2) > rb.left){
-      right.classList.add('gkv-lab-stack');
-      /*  The class goes on the SCALE too, not just the label. Two reasons. The stacked label
-          is raised above its partner, and raising it alone put it 10px INTO the kicker above
-          , measured, not guessed , so the whole scale drops to make the room instead. And a
-          class set here does not depend on :has(), which would tie a correctness-critical
-          layout to a selector's support matrix.  */
-      scale.classList.add('gkv-stacked');
-    } else {
-      scale.classList.remove('gkv-stacked');
-    }
-  }
-
-  /*  A CARD THAT DOES NOT MEET THE GATES GETS A NAMED REASON, NEVER A BLANK , the same rule
-      the keeper card follows. 800 minutes AND 60 shots faced, 2015 onward.  */
-  function gkvNotScored(A, B){
-    var parts = [A, B].filter(function(x){ return x && x.k; }).map(function(x){
-      return x.k.eligible ? null : escHtml(x.name) + ': ' + x.k.reason;
-    }).filter(Boolean);
-    return '<div class="gkv"><div class="gkv-k">Save rate</div>'
-      + '<div class="gkv-no"><b>Not scored.</b> ' + parts.join(' ') + '</div></div>';
-  }
-
-  function gkvFigs(list){
-    var cells = list.map(function(x){
-      var last = String(x.name).split(' ').pop();
-      return '<div><b>' + x.k.saves + ' / ' + x.k.conceded + '</b>' + escHtml(last) + ' saved / conceded</div>';
-    }).join('') + '<div><b>' + list.map(function(x){ return x.k.minutes; }).join(' &middot; ') + '</b>minutes</div>';
-    return '<div class="gkv-figs">' + cells + '</div>';
-  }
-
-  function keeperPanelHTML(k){
+      A RATE WITHOUT ITS SE IS A SPEC VIOLATION, so the two are emitted by one expression
+      and share a type size. They cannot drift apart by editing one of them.  */
+  function keeperPanelHTML(k, opts){
     if (!k) return '';
     vvInjectGKCSS();
+    opts = opts || {};
+    var st = opts.state || (k.eligible ? 'measured' : 'below_floor');
+    var why = opts.why || null;
     var h = '<div class="gkp">';
-    if (k.eligible){
-      var rungs = [50,75,90], ticks = '';
-      for (var i=0;i<rungs.length;i++){
-        ticks += '<div class="gkp-rung" style="left:'+rungs[i]+'%"></div>'
-              +  '<div class="gkp-rlab" style="left:'+rungs[i]+'%">'+rungs[i]+'th</div>';
-      }
-      h += '<div class="gkp-k">Save rate, against every goalkeeper we can measure</div>'
-        +  '<div class="gkp-lad">'
-        +    '<div class="gkp-fig"><div class="gkp-pc">'+(100*k.savePct).toFixed(1)
-        +      '<span style="font-size:20px">%</span></div><div class="gkp-pl">shots saved</div></div>'
-        +    '<div class="gkp-tw"><div class="gkp-tr"><div class="gkp-base"></div>'
-        +      '<div class="gkp-fill" style="width:'+k.pct+'%"></div>'+ticks
-        +      '<div class="gkp-mark" style="left:'+k.pct+'%"></div></div>'
-        +      '<div class="gkp-ends"><span>weakest</span><span>strongest</span></div></div></div>'
-        +  '<div class="gkp-say"><b>'+k.pct+'th percentile</b> among goalkeepers with a comparable '
-        +    'sample, 2015 onward.</div>';
-      var pcS = 100 * k.saves / k.shotsFaced;
-      h += '<div class="gkp-k">Saved versus conceded</div>'
-        +  '<div class="gkp-bar"><div class="gkp-s" style="width:'+pcS+'%">'+k.saves+'</div>'
-        +    '<div class="gkp-c" style="width:'+(100-pcS)+'%">'+k.conceded+'</div></div>'
-        +  '<div class="gkp-mid">'+k.shotsFaced+' shots on target faced</div>'
-        +  '<div class="gkp-keys"><span>saved</span><span>conceded</span></div>'
-        +  '<div class="gkp-say" style="color:var(--ink-soft)">How many shots he faced is a fact '
-        +    'about the team in front of him, not a measure of how well he kept goal.</div>';
-    } else {
-      h += '<div class="gkp-k">Save rate</div><div class="gkp-no"><b>Not scored.</b> '
-        +  k.reason + '. This card shows what was recorded and nothing more.</div>';
+
+    if (st === 'unrecorded'){
+      /*  NO PANEL BODY , there is nothing measured to put in one. The spec's own words:
+          "an unrecorded save is not a save that never happened."  */
+      h += '<div class="gkp-state">' +
+           (why === 'era'
+             ? 'Saves were not recorded for this season , coverage begins in 2015.'
+             : 'Saves were not recorded for this season , the fields were not captured.') +
+           ' Nothing is shown because nothing was measured: an unrecorded save is not a ' +
+           'save that never happened.</div></div>';
+      return h;
     }
+
+    // ---- 1. the recorded figures, every state that has them --------------------------
     h += '<div class="gkp-k">Recorded</div><div class="gkp-figs">'
-      +  '<div class="gkp-f"><b>'+gkNum(k.minutes)+'</b><span>minutes</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.starts)+'</b><span>starts</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.penaltiesSaved)+'</b><span>pens saved</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.saves)+'</b><span>saves</span></div>'
-      +  '<div class="gkp-f"><b>'+gkNum(k.conceded)+'</b><span>conceded</span></div></div>'
-      +  '<div class="gkp-lim"><b>What this cannot tell you.</b> We record whether a shot was '
-      +  'saved, never how hard it was. A keeper facing twenty close-range chances and one facing '
-      +  'twenty from distance score the same here. Nothing in these figures measures distribution, '
-      +  'command of the area or sweeping, so this card does not claim any of it. Penalties saved '
-      +  'is a count, not a rate: we do not know how many he faced.</div></div>';
+      +  '<div class="gkp-f"><b>' + gkNum(k.saves) + '</b><span>saves</span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.conceded) + '</b><span>conceded</span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.shotsFaced) + '</b><span>shots faced <i>derived</i></span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.penaltiesSaved) + '</b><span>pens saved <i>no denominator recorded</i></span></div>'
+      +  '<div class="gkp-f"><b>' + gkNum(k.minutes) + '</b><span>minutes</span></div></div>';
+
+    if (k.shotsFaced > 0){
+      var pcS = 100 * k.saves / k.shotsFaced;
+      h += '<div class="gkp-bar"><div class="gkp-s" style="width:' + pcS + '%">' + k.saves + '</div>'
+        +  '<div class="gkp-c" style="width:' + (100 - pcS) + '%">' + k.conceded + '</div></div>'
+        +  '<div class="gkp-keys"><span>saved</span><span>conceded</span></div>';
+    }
+
+    if (st === 'below_floor'){
+      /*  FIGURES YES, COMPARISON NO. NR is never zero and a recorded fact is not hidden
+          for being thin, but no band, no reference line, no percentile.  */
+      h += '<div class="gkp-state">Below the evidence floor , '
+        +  (why === 'shots'
+             ? gkNum(k.shotsFaced) + ' shots on target faced, under the 60-shot minimum.'
+             : gkNum(k.minutes) + ' minutes, under the 800-minute minimum.')
+        +  ' What was recorded is shown; no comparison is made.</div>'
+        +  gkLimitHTML() + '</div>';
+      return h;
+    }
+
+    // ---- 2. the rate WITH its SE, one expression, one type size ----------------------
+    h += '<div class="gkp-k">Save rate</div>'
+      +  '<div class="gkp-rate">' + (100 * k.savePct).toFixed(1) + '%'
+      +    ' <span class="gkp-se">&plusmn; ' + k.seP.toFixed(1) + 'pp</span>'
+      +    ' <span class="gkp-on">on ' + gkNum(k.shotsFaced) + ' shots</span></div>';
+
+    // ---- 3. the percentile as a BAND, never a point ----------------------------------
+    var lo = Math.min(k.bandLo, k.bandHi), hi = Math.max(k.bandLo, k.bandHi);
+    /*  ORDINALS, NOT A BARE 'th'. Caught in review: the band read "92th and 98th". The
+        spec's own example is "38th and 71st", so the suffix has to be real. 11/12/13 are
+        the exception every naive implementation gets wrong, so they are handled first.  */
+    var ord = function(v){
+      var r100 = v % 100, r10 = v % 10;
+      if (r100 >= 11 && r100 <= 13) return v + 'th';
+      return v + (r10 === 1 ? 'st' : r10 === 2 ? 'nd' : r10 === 3 ? 'rd' : 'th');
+    };
+    var med = KEEPER_POOL.median * 100;
+    h += '<div class="gkp-tw"><div class="gkp-tr"><div class="gkp-base"></div>'
+      +    '<div class="gkp-band" style="left:' + lo + '%;width:' + Math.max(1, hi - lo) + '%"></div>'
+      +    '<div class="gkp-ref" style="left:50%"></div>'
+      +  '</div><div class="gkp-ends"><span>0th</span><span>100th</span></div></div>'
+      +  '<div class="gkp-say">Between the <b>' + ord(lo) + '</b> and <b>' + ord(hi) + '</b> percentile of '
+      +    KEEPER_POOL.n.toLocaleString() + ' measurable keeper seasons (2015 onward), on '
+      +    gkNum(k.shotsFaced) + ' shots on target faced.</div>';
+
+    // ---- 4. the reference line, value and vintage ------------------------------------
+    /*  VINTAGE IS WHAT IS KNOWN, NOT WHAT WOULD READ WELL. KEEPER_SAVE_LADDER is an
+        embedded snapshot with no generator and no recorded date, so the label states the
+        pool it was measured over and stops. Inventing a season-close date here would be
+        the fabrication the spec exists to refuse. See the class note at the ladder.  */
+    h += '<div class="gkp-ref-l">Pool median <b>' + med.toFixed(1) + '%</b> , measured over '
+      +  KEEPER_POOL.n.toLocaleString() + ' gated seasons, 2015 onward. Vintage not recorded '
+      +  'on this snapshot.</div>';
+
+    // ---- 5. the limitation block, in the panel ---------------------------------------
+    h += gkLimitHTML() + '</div>';
     return h;
+  }
+
+  /*  CARRIED AND FINAL, per the spec , part of the panel, not a linked page. The three
+      limits are the spec's three: no shot quality, workload independence, penalties.  */
+  function gkLimitHTML(){
+    return '<div class="gkp-lim"><b>What this cannot tell you.</b> We record whether a shot '
+      + 'was saved, never how hard it was , twenty tap-ins and twenty thirty-yard strikes '
+      + 'record identically. Save rate is independent of how busy a keeper was, and its '
+      + 'relationship to the defence in front of him is unknown on this data. Penalties are '
+      + 'inside the rate and cannot be separated from it, so they contaminate it slightly. '
+      + 'Nothing here measures distribution, command of the area or sweeping.</div>';
   }
 
   /* ══ KEEPER TRAJECTORY , save% across the career, NOT rt ══════════════════════
@@ -1520,7 +1932,18 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
         const a = Math.min.apply(null, miss), b = Math.max.apply(null, miss);
         g += '<rect x="' + (X(a) - 5).toFixed(1) + '" y="' + PT + '" width="' +
              (X(b) - X(a) + 10).toFixed(1) + '" height="' + (H - PT - PB) +
-             '" fill="var(--gkt-band)"/>';
+             /*  `--gkt-band` IS DEFINED NOWHERE ON THE PLATFORM , fixed 2026-09-15. Grepped
+                 across every html and js: no rule sets it, so this fill was invalid and the
+                 band drew as an inherited or initial fill rather than the quiet wash the
+                 comment above describes. The SINGLE-card sibling below (`keeperTrajectoryHTML`)
+                 paints the identical treatment with `--gkt-absent`, which IS defined on `.gkt`
+                 in BOTH themes. This is a typo-class defect, not a second design.
+                 REACHABILITY WAS NOT ESTABLISHED AND IS RECORDED AS SUCH: this lane is only
+                 reached from compare.html behind `gkA && gkB`, and three probes on a real
+                 keeper-versus-keeper pair never rendered a `.gkt` node. Live or latent, the
+                 fix is the same and carries no risk , it replaces an undefined token with the
+                 defined one its own sibling already uses.  */
+             '" fill="var(--gkt-absent)"/>';
       }
       // the pool median , same height in BOTH lanes, because the scale is shared
       if (KEEPER_POOL.median >= lo && KEEPER_POOL.median <= hi){
@@ -1660,14 +2083,282 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       rows.length+' seasons</b> carry shot data; the rest predate it.</div></div>';
   }
 
+  /*  ── THE SCORE AND THE MISSING LIST WERE COMPUTED FROM TWO DIFFERENT FIELD SETS ────────
+      FOUND 2026-09-13. This function scored over GRANULAR (seven advanced measures) while
+      `confidenceFields` reports those SEVEN PLUS the three basics , Minutes, Goals, Assists.
+      So a missing BASIC never moved the score, and a card could display a full 5 of 5 with
+      "Goals" sitting in its own missing list. Ndicka 24/25 is the worked example: six of
+      seven granular present, goals never recorded, panel reads 5/5.
+      MEASURED: 11,435 cards displayed 5/5 with a basic absent (9,843 assists, 2,322 goals,
+      730 both), and 14,344 read 4 or 5. `minutes` is never null on any card, so this is
+      entirely goals and assists.
+
+      THE OBVIOUS FIX IS WRONG AND IS RECORDED SO IT IS NOT PROPOSED AGAIN. Scoring over the
+      SAME TEN fields the missing list reports moves 22,989 cards, 40.3% of the database, and
+      19,329 of them go UP. Adding three usually-present basics to numerator and denominator
+      INFLATES sparse cards: a pre-2015 card with nothing granular rises from an honest 2 to
+      a 3. It makes the panel LESS truthful, which is the opposite of the intent, and it is
+      the answer anyone reaching for "just use one list" will land on.
+
+      WHAT SHIPPED IS A CAP, NOT A RESCORE. A missing basic caps the score at 4: the minimum
+      intervention that removes the false claim. It only ever moves a card DOWN, it never
+      touches a card whose basics are complete, and it leaves the 2..5 scale's meaning
+      intact. Capping at 3 was modelled (14,344 movers) and NOT taken , how SERIOUS a missing
+      basic is, is a product judgement, and this is a defect fix.
+      READER-FACING: 11,435 cards lose one dot on the Data Confidence panel.  */
   function confidenceFor(row){
     const keeper = isGK(row);
     const total = keeper ? KEEPER_SET.length : GRANULAR.length;
     let present = 0;
     if (keeper) { for (const m of KEEPER_SET) if (m.key && row[m.key]!=null) present++; }
     else        { for (const f of GRANULAR)   if (row[f]!=null) present++; }
-    return Math.round(2 + (present/total)*3);      // linear 2..5, unchanged for outfielders
+    const score = Math.round(2 + (present/total)*3);   // linear 2..5, unchanged for outfielders
+    /*  CALLED FROM rowToCard WITH THE RAW ROW, which is where the true nulls are. On a
+        card-shaped input goals has already been coalesced to 0 and this cap cannot see it ,
+        that is the rowToCard defect logged separately, not a fault here. vvAIStats caps a
+        second time off `cf` so the payload is correct on either input.  */
+    const basicMissing = (row.goals == null) || (row.assists == null) || (row.minutes == null);
+    return basicMissing ? Math.min(score, 4) : score;
   }
+  /*  ITEM 26 , THE SHIRT NUMBER MAY BELONG TO THE OTHER CLUB. player_positions is keyed
+      (player, season, league), so a player who moves WITHIN a league has ONE position row
+      covering both clubs and one shirt number, while the card is per club. The tell is that
+      row covering more matches than the card: pos_row_appearances > appearances.
+      THE GAP IS 3, NOT 1, AND THAT IS A MEASURED CHOICE (2026-09-19). A proxy for "really
+      moved" (a different club the season before or after) runs 49% at a gap of 1-2 against
+      a 34% baseline for unflagged cards, and 70-75% from 3 up. Tadic at Ajax 18/19 is gap 1
+      and never moved. Marking a correct card is worse than missing a wrong one.
+      2016+ ONLY, AND THAT IS COVERAGE, NOT A RULING: every pre-2016 position row carries a
+      NULL appearances after the squad-number backfill, so the comparison can never fire
+      there. An unmarked pre-2016 card is unexamined, not cleared.
+      477 cards on 2026-09-19. Count it, do not quote it.  */
+  const NUMBER_CLUB_GAP = 3;
+  /*  [CHANGED 2026-09-22, SITTING 2.] THIS IS NOW A READ, NOT A DETECTOR.
+      It used to derive the uncertainty on every render from `pos_row_appearances - appearances`,
+      because the number came from a `player_positions` row covering the WHOLE season and nothing
+      recorded which club it belonged to. The number now lives on the CARD ROW with its
+      provenance, so the question is answered once, at write time, with the evidence in hand.
+        squadnum      , read off that club's own squad and appearance tables. NO arrows.
+        modal_single  , the modal number, and the player-season holds ONE card, so no club
+                        ambiguity exists. NO arrows. This is what keeps the mark off the ~44,000
+                        cards that were never split, without special-casing them here.
+        modal_split   , the modal number attributed across a split by the appearance margin.
+                        ARROWS , this is the only value that earns them.
+      THE WORD IS "SOURCED", NEVER "VERIFIED". `squadnum` names WHERE a number came from and
+      claims nothing about its truth: Wikipedia squad tables, club-scoped, cross-checked against
+      each other where a page carries more than one. Calling it verified is what would let a later
+      session treat it as beating a disagreeing external source, which inverts SS E's rule.
+      THE FALLBACK IS THE OLD DETECTOR AND IT IS DELIBERATE , until the matview rebuild lands,
+      `shirt_number_source` is absent from every row, and a card must not silently lose its mark
+      in the window between the view edit and the rebuild.  */
+  function numberClubUncertain(row){
+    if (row.shirt_number == null) return false;
+    if (row.shirt_number_source != null) return row.shirt_number_source === 'modal_split';
+    if (row.season_year == null || row.season_year < 2016) return false;
+    if (row.pos_row_appearances == null || row.appearances == null) return false;
+    return (row.pos_row_appearances - row.appearances) >= NUMBER_CLUB_GAP;
+  }
+  /*  ── THE DATA-CONFIDENCE NOTES , ONE COPY, READ BY THE CARD AND THE PLAYBOOK ──────────────
+      Both surfaces render these, so they cannot drift into two versions of one explanation.
+      THE WORD IS "SOURCED", NEVER "VERIFIED". `squadnum` names WHERE a number came from and
+      claims nothing about its truth.  */
+  /*  ── THESE FOUR SHRANK ON 2026-09-28 BECAUSE A VISUAL TOOK OVER THEIR JOB ────────────────
+      The Playbook used to explain a visual MARK in three labelled paragraphs with no mark
+      shown , 118 rendered words describing a shield a reader could not see. It now draws the
+      shield three times and these strings are the labels beside it, so each says only what
+      the picture cannot.
+      THE PHRASE "No arrows" / "carry the arrows" IS GONE FROM ALL THREE, and that is the
+      point rather than a trim: the specimens show which one carries them. A sentence that
+      narrates a mark standing next to the mark is the thing this change removes.
+      `blank` IS UNTOUCHED AND MUST STAY LONG , card.html renders it verbatim in a season note
+      with no picture beside it, so it is the one string still doing the whole job alone.  */
+  var SHIRT_SOURCE_NOTE = {
+    intro:        'Every number records where it came from.',
+    squadnum:     'Read off that club\'s own squad table for that season.',
+    modal_single: 'One club all season, so no question.',
+    modal_split:  'He moved mid-season, so it may be either club\'s.',
+    blank:        'A blank shield means no number was found for that club and season, not that the player had none. Numbers are held per club, so a season split between two clubs can carry one on each card, or on neither.',
+    standing:     'Sourced is not confirmed. These come from volunteer-written squad tables: we name the source, not the truth.'
+  };
+  var SHIRT_SOURCE_LABEL = { squadnum:'Sourced', modal_single:'One club that season', modal_split:'Inferred' };
+
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function vvLongDate(iso){
+    if (!iso) return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); if (!m) return null;
+    return Number(m[3]) + ' ' + MONTHS[Number(m[2]) - 1] + ' ' + m[1];
+  }
+  function andList(a){
+    if (!a || !a.length) return '';
+    if (a.length === 1) return a[0];
+    return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  }
+
+  /*  THE SHIRT-NUMBER NOTE , ONLY on `modal_split`. It used to say the number "was recorded for
+      the season as a whole" and that the appearance record "runs longer than the matches on this
+      card", which described the OLD detector's evidence rather than the number. And an earlier
+      draft said he "wore it that season", which fights its own next sentence: if it may be the
+      other club's, it is not the number he wore at this one.  */
+  function shirtNumberNote(row, otherClubs){
+    if (!row || row.shirt_number_source !== 'modal_split') return null;
+    var n = (otherClubs || []).length;
+    var where = n === 1 ? 'it may be the one he wore at ' + otherClubs[0]
+              : n  >  1 ? 'it may be one he wore elsewhere'
+              : 'it may belong to either club';
+    return '<b>Shirt number.</b> This number is inferred from line-ups across the season. He played for '
+         + (n > 1 ? 'more than one other club' : 'two clubs') + ', so ' + where + '.';
+  }
+
+  /*  THE PARTIAL-SEASON NOTE , on EVERY half of a split, which is a DIFFERENT question from the
+      one above and is why they no longer share a flag. Sitting 2 changed `numberClubUncertain`
+      from "is this a split" to "is the number inferred", and 1,499 halves silently lost this.
+      NO HEDGE. "If he did move" is gone: `split_transfers` carries the date and the direction for
+      800 of 827 pairs, and where it does not, the note claims neither.
+      THE DENOMINATOR IS NAMED , "17 appearances of the 37 he made across both clubs" , because a
+      card showing 17 beside a bare "of 37" reads as the card contradicting itself.  */
+  function partialSeasonNote(o){
+    if (!o || !o.thisClub || !o.others || !o.others.length) return null;
+    var clubs = o.others.length + 1;
+    var across = clubs > 2 ? 'across all ' + (clubs === 3 ? 'three' : clubs) + ' clubs that season'
+                           : 'across both clubs that season';
+    var tail = ' This card holds his ' + o.thisClub + ' share, ' + o.thisApps + ' appearance'
+             + (o.thisApps === 1 ? '' : 's') + ' of the ' + o.totalApps + ' he made ' + across
+             /*  "and the score" IS DROPPED ON AN UNSCORED CARD, AND ONLY RENDERING FOUND IT.
+                 A card reduced below the 300-minute floor has NO score, so the original tail
+                 asserted one that is not on the page , beside a second note explaining that it
+                 is absent. The two notes contradicted each other in the same box.
+                 THE POLARITY IS OPT-IN (`=== false`) so every existing caller, none of which
+                 passes `scored`, renders byte-identically.  */
+             + '. The figures ' + (o.scored === false ? 'cover' : 'and the score cover')
+             + ' that share only.';
+    var t = o.transfer, d = t && vvLongDate(t.transfer_date);
+    /*  A THREE-CLUB SEASON FALLS BACK TO THE UNDATED FORM: `split_transfers` holds one row per
+        player-season, so it covers two of the three and the dated wording would be a half-truth. */
+    if (t && d && clubs === 2) {
+      var loan = /loan/i.test(t.transfer_type || '');
+      var head;
+      if (!loan) head = 'He moved from ' + t.from_club + ' to ' + t.to_club + ' on ' + d + '.';
+      else if (o.thisClub === t.to_club) head = 'He joined ' + t.to_club + ' on loan from ' + t.from_club + ' on ' + d + '.';
+      else head = 'He left ' + t.from_club + ' on loan for ' + t.to_club + ' on ' + d + '.';
+      return '<b>Partial season.</b> ' + head + tail;
+    }
+    return '<b>Partial season.</b> He played for ' + (clubs === 2 ? 'two' : clubs === 3 ? 'three' : clubs)
+         + ' clubs in this league that season, ' + andList([o.thisClub].concat(o.others).sort()) + '.' + tail;
+  }
+
+  /*  THE 300-MINUTE SCORING FLOOR, MIRRORED FROM SQL AND NOT DERIVED FROM IT.
+      `scored` in `player_card_view` is `minutes >= 300 AND goals IS NOT NULL`, so this is a
+      SECOND implementation of one rule , the shape SS C records against `eligibility()`, the
+      view's two position keys and `careerStageTags`. Nothing enforces the agreement.
+      IT IS A CONSTANT RATHER THAN A QUERY ON PURPOSE: the note runs client-side on a card that
+      has already loaded, and asking the database what its own floor is would cost a round trip
+      per card to restate a number that has never moved. If the floor ever changes, change it
+      in the view and here, in one commit, and re-read this comment first.  */
+  var SCORE_MIN_MINUTES = 300;
+
+  /*  THE NOT-SCORED NOTE , TWO VARIANTS, BECAUSE A CARD THAT NEVER HAD A SCORE AND A CARD THAT
+      LOST ONE ARE DIFFERENT EVENTS (ruled 2026-09-26, `docs/FUSED_CARDS_SCOPE.md` SS 0).
+        A , an inserted half. Never scored, nobody ever saw a number on it.
+        B , a card that carried a score earned across two clubs and fell under the floor when it
+            was split to one. A reader who saw the old number will notice it has gone.
+      WHY IT IS NOT ONE SENTENCE: the honest version of B says a score was taken away, and the
+      honest version of A says one was never earned. One sentence has to lie to one of them.
+
+      `wasWhole` IS THE CALLER'S JOB AND IT IS GEOMETRY STANDING IN FOR HISTORY , SAY SO.
+      No column records that a card was reduced, so the call site derives it from which half is
+      largest (see the derivation at the call site in `card.html`). That is an EVENT being
+      re-derived from today's rows, which SS C warns against for published figures, and it is
+      taken because the durable fix is a provenance column and the matview's query is frozen.
+      It is sound on the measured population , 202 of 202 fused cards name their largest block
+      and there are ZERO minute ties , and it is not a guarantee about a row written later.
+
+      THE FLOOR IS THE ONLY REASON THIS NOTE MAY FIRE. A card can be unscored for a second
+      reason (`goals IS NULL`), and this note would be false about it, so `minutes` is tested
+      rather than inferred from the absent score.  */
+  function notScoredNote(o){
+    if (!o || !o.others || !o.others.length) return null;   // a split card only
+    if (o.scored) return null;                              // 157 reduced + 3 inserted keep a score
+    if (o.minutes == null || o.minutes >= SCORE_MIN_MINUTES) return null;
+    if (o.wasWhole) {
+      /*  THE CLUB COUNT IS READ, NOT ASSUMED. The approved copy said "two clubs", and SIX of the
+          202 fused cards hold THREE , on those the sentence would have been simply false. Its
+          sibling `partialSeasonNote` was already written for three ("across all three clubs that
+          season"), so this is the two notes agreeing rather than a new decision.  */
+      var n = o.others.length + 1;
+      var head = n === 2 ? 'This card used to cover two clubs in one season and the score it carried was earned across both.'
+                         : 'This card used to cover all ' + (n === 3 ? 'three' : n) + ' clubs he played for in this league that season, and the score it carried was earned across them.';
+      return '<b>Not scored.</b> ' + head + ' Split to the club it names, the season is '
+           + o.minutes + ' minutes, short of the ' + SCORE_MIN_MINUTES
+           + ' the V<span class="vvw">V</span> Index needs. The figures here are this club\'s alone.';
+    }
+    if (o.apps == null) return null;   // note A names the matches; without them it has no sentence
+    return '<b>Not scored.</b> He played ' + o.apps + ' match' + (o.apps === 1 ? '' : 'es')
+         + ' for this club that season, short of the ' + SCORE_MIN_MINUTES
+         + ' minutes the V<span class="vvw">V</span> Index needs before it will score a season. '
+         + 'The figures here are his; the score is not missing, it was never earned over a '
+         + 'sample this small.';
+  }
+
+  /*  ── SEASON ORDER WHERE ONE SEASON HAS TWO CARDS ────────────────────────────────────────
+      A split season puts two rows under one `season_year`, so ANY sort on the year alone is
+      arbitrary , SS C's rule that a low-cardinality sort is not a total order, hit again. The
+      card page made it worse: it sorted year DESC then reversed the whole array for the
+      chronological list, which flips the WITHIN-season pair too, so Semenyo's Manchester City
+      half came before the Bournemouth half he actually left in January.
+      WHERE THE ORDER IS KNOWABLE IT IS TAKEN, NOT GUESSED: `split_transfers` carries from_club
+      and to_club, so the club he left comes first.
+      AND WHERE IT IS NOT KNOWABLE, THE FALLBACK IS DECLARED RATHER THAN ARBITRARY , appearances
+      descending, then card_id. IT IS NOT A CLAIM ABOUT TIME. It says "the club he played most
+      for, first", which is stable across loads and honest about what it is. Two cases need it:
+      the 27 pairs with no transfer row, and the 6 three-club seasons, where the single transfer
+      row covers two of the three and ordering all three from it would be a half-truth.  */
+  function orderSeasonRows(rows, txList, opts){
+    opts = opts || {};
+    /*  KEYED BY PLAYER AND SEASON, AS A LIST , the league is not part of it any more, 2026-09-24.
+        The old key named a league and the comparator returned on `league_code` BEFORE it reached
+        the lookup, so a cross-league pair was ordered ALPHABETICALLY BY LEAGUE CODE and never saw
+        the transfer evidence at all. LL sorts before PL, so Aubameyang 2021/22 drew Barcelona
+        before Arsenal, and he left Arsenal for Barcelona in January 2022. 613 player-seasons were
+        ordered that way, and the trajectory club labels are what made it visible.
+        THE ROW IS NOW FOUND BY THE TWO CLUBS RATHER THAN BY A LEAGUE, which works for both kinds:
+        `split_transfers` holds 799 same-league rows keyed to one league and 609 cross-league rows
+        whose `league_code` is NULL, because a move between two leagues belongs to neither.  */
+    var tx = {};
+    (txList || []).forEach(function(t){
+      var k = t.api_player_id + '|' + t.season_year;
+      (tx[k] = tx[k] || []).push(t);
+    });
+    var dir = opts.oldestFirst ? 1 : -1;
+    return (rows || []).slice().sort(function(a, b){
+      if (a.season_year !== b.season_year) return (a.season_year - b.season_year) * dir;
+      var group = (rows||[]).filter(function(r){ return r.season_year===a.season_year; });
+      /*  THE WITHIN-SEASON ORDER DOES FOLLOW THE YEAR DIRECTION, AND I TALKED MYSELF OUT OF THAT
+          ONCE BEFORE TALKING MYSELF BACK. It is chronology either way: in a list running oldest
+          to newest the club he LEFT comes first, and in one running newest to oldest the club he
+          JOINED does, exactly as 2025 precedes 2024 there. Pinning it to from-club always would
+          make the compare picker read backwards against its own years.  */
+      /*  IT MUST READ BOTH SHAPES. The raw matview row carries `team_name`; `rowToCard` renames it
+          to `clubname` and leaves `team_name` UNDEFINED. The card page orders SEASON_ROWS, which
+          is the rowToCard shape, so the first version compared undefined against a club name,
+          never matched, and fell silently through to the appearances fallback , Bournemouth 20
+          ahead of Manchester City 17, which is the wrong order wearing a deterministic one.
+          THERE WAS NO ERROR AND NO EMPTY LIST, which is why it had to be seen rather than read.  */
+      var an = a.team_name || a.clubname, bn = b.team_name || b.clubname;
+      /*  THE ROW THAT NAMES THESE TWO CLUBS, in either direction. A player-season can now hold more
+          than one transfer row, so it is a search rather than a lookup.  */
+      var t = (tx[a.api_player_id+'|'+a.season_year] || []).filter(function(x){
+        return (x.from_club === an && x.to_club === bn) || (x.from_club === bn && x.to_club === an);
+      })[0];
+      if (t && group.length === 2) {
+        if (an === t.from_club && bn === t.to_club) return -dir;
+        if (an === t.to_club && bn === t.from_club) return  dir;
+      }
+      var ad = (a.appearances||0), bd = (b.appearances||0);
+      if (ad !== bd) return bd - ad;                 // most appearances first, both directions
+      return (a.card_id||0) - (b.card_id||0);        // a unique tiebreak, so the order is stable
+    });
+  }
+
   function confidenceFields(row){
     var LABELS = {
       shots_on:'Shots on target',
@@ -2445,6 +3136,34 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       appearances: row.appearances != null ? row.appearances : null,   // denominator for The Proof + glance games-played
       shots_on:    row.shots_on != null ? row.shots_on : null,
       shots_total: row.shots_total != null ? row.shots_total : null,
+      /*  THE DENOMINATOR HALVES, CARRIED SO THE PAYLOAD CAN BIND A PAIR. Every one of
+          these was ALREADY ARRIVING , the surfaces select('*') from the matview , and
+          rowToCard was dropping them on the floor, so the card object knew successes and
+          not attempts. "29 goals" and "29 from 104 shots" are different sentences and only
+          the second can be read; the same holds for dribbles and duels.
+          radarFor READS dribbles_success AND duels_won OFF THE RAW ROW, which is why their
+          absence here was invisible: the chart drew correctly while the card object, and
+          therefore the AI payload, could not see them.
+          NULL-PRESERVING, §B , NR for missing data, never 0. duels_total sits at 93.3%
+          for 2015+ and near zero before it, and a zero-filled attempt count would invent a
+          0% success rate on every pre-2015 card.
+          duel_quality left the ENGINE on 2026-09-08 and stayed a reported fact (§C). This
+          is that fact reaching the payload; it is not a route back into scoring.  */
+      dribbles_success:  row.dribbles_success  != null ? row.dribbles_success  : null,
+      dribbles_attempts: row.dribbles_attempts != null ? row.dribbles_attempts : null,
+      duels_won:         row.duels_won         != null ? row.duels_won         : null,
+      duels_total:       row.duels_total       != null ? row.duels_total       : null,
+      penalties_scored:  row.penalties_scored  != null ? row.penalties_scored  : null,
+      /*  THE THREE CAREER-STAGE FLAGS, FROM THE MATVIEW COLUMNS AND NOT FROM D.tags.
+          getVVTags already reads these to build the pills, but `tags` is a DISPLAY list ,
+          ordered, capped and family-mixed , so a payload built from it inherits a
+          rendering rule it has no business obeying. The flags are non-null on all 57,055
+          rows, which is what a claims block needs. §D records the second implementation
+          (VVCore.careerStageTags) that is on no render path; this reads the side that
+          ships.  */
+      stage_peak:         row.stage_peak         === true,
+      stage_breakout:     row.stage_breakout     === true,
+      stage_the_standard: row.stage_the_standard === true,
       /* passes_total and position_pool are carried so vvAIStats can build the AI block from
          a CARD as well as a raw row , without them the model gets null passing and no pool
          bar, which is silent rather than an error. */
@@ -2468,11 +3187,17 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       prestige:   prestigeFor(band),    // §3  band-bound badge (Generational / Iconic / null)
       radar:      radarFor(row),        // §4  { raw, scaled, provisional }
       keeper:     keeperScore(row),     // null for an outfielder , the GK-card test
+      /*  THE STATE IS COMPUTED HERE, BESIDE THE SCORE, BECAUSE THIS IS WHERE THE RAW ROW IS.
+          card.html holds D, and D carries no `position` , only `pos` , so a caller trying to
+          derive the state downstream would fail isGK() and silently fall back to the wrong
+          card sentence. Same pattern as `keeper`, same input, no guessing at the call site.  */
+      keeperState: keeperState(row),
       confidence: confidenceFor(row),   // §5  X/5 dots
       confidenceFields: confidenceFields(row),   // §5b per-field present/missing breakdown
 
       // ── Seams: number now sourced from the view; tag/photo still blank by design ──
       number:   row.shirt_number ?? null,   // shirt number (player_positions.shirt_number, via view)
+      numberClubUncertain: numberClubUncertain(row),   // item 26: the number may be the other club's; see the rule above
       tag:      '',                 // legacy placeholder, kept falsy for backward-compat; remove after step 3 verified
       tags:     getVVTags(row),     // Tag Model v1.1 , array of {name,family,tier}; render consumes in step 3
       photo:    row.api_player_id != null ? 'https://media.api-sports.io/football/players/' + row.api_player_id + '.png' : undefined,   // API-Football CDN headshot (URL only, no storage); onerror in buildCard falls back to silhouette
@@ -2563,14 +3288,66 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   // Honours live in the standalone `honours` table (NOT the matview). Splits a
   // player's honours into SEASON (match card season_year + league_code) and CAREER
   // (world_cup_winner, shows on every card). Attach: D.honours = await fetchHonours(res.data).
+  /*  `wonBy` IS EXPLICIT AND IS NOT DERIVED FROM `group` , ADDED 2026-09-13, AND THE NOTE
+      DIRECTLY BELOW IS WHY IT HAD TO BE. `group` answers two different questions at once
+      (WHO won it for Team/Individual, WHEN it attaches for Career), and `vvAIStats` was
+      reading it for the first: `won_by: h.group === 'Team' ? 'team' : 'player'`. World Cup
+      Winner is filed under Career, so **the World Cup was being sent to the model as won by
+      the PLAYER** , a squad trophy described as a personal one, on the honour where that
+      claim is largest.
+      SS C's rule, applied at the root rather than with a special case: two fields for one
+      concept is a defect even when both are populated, and the fix is to state the fact once
+      rather than infer it from a field that means something else. `group` keeps its job.  */
+  /*  `tier` IS RARITY AND DISPLAY ORDER. IT IS NOT EVIDENTIAL WEIGHT AND MUST NEVER BE READ AS
+      SUCH , guard added 2026-09-27 after the change that would have read it that way was
+      scoped, measured and REFUSED.
+      WHAT IT DOES: every consumer sorts by it , `season.sort((a,b)=> a.tier - b.tier)`, "rarer
+      first", and the row-tag priority cap. It answers "which honour leads on the card".
+      WHY IT MUST NOT REACH THE AI PAYLOAD: `api/analyse.js` already carries an ordered honours
+      hierarchy in prose, and the two DISAGREE where it matters most. The prompt puts the
+      league-wide individual awards ABOVE the World Cup, because a Golden Boot says more about
+      THAT player's season than a squad medal does. `tier` puts the World Cup at 2 and Player of
+      the Season, Golden Boot and Top Assists at 5, 6 and 7, because the World Cup is RARER.
+      BOTH ARE CORRECT FOR THEIR OWN QUESTION, and that is exactly why shipping `tier` into the
+      payload beside the prompt's list would hand the model two contradictory rankings of the
+      same objects , SS C's two-fields-for-one-concept, arriving by a new route.
+      SO: if a weighting question ever comes up again, the answer is in the PROMPT, not here.
+      Change that list, and leave this number to the card face.  */
   const HONOUR_META = {
-    ballon_dor:        { group:'Individual', label:"Ballon d'Or",         tier:1 },
-    world_cup_winner:  { group:'Career',     label:'World Cup Winner',     tier:2 },
-    ucl_winner:        { group:'Team',       label:'UCL Winner',           tier:3 },
-    league_champion:   { group:'Team',       label:'League Champion',      tier:4 },
-    player_of_season:  { group:'Individual', label:'Player of the Season', tier:5 },
-    golden_boot:       { group:'Individual', label:'Golden Boot',          tier:6 },
-    top_assists:       { group:'Individual', label:'Top Assists',          tier:7 },
+    ballon_dor:        { group:'Individual', wonBy:'player', label:"Ballon d'Or",         emoji:'🥇', tier:1 },
+    world_cup_winner:  { group:'Career',     wonBy:'team',   label:'World Cup Winner',     emoji:'🌍', tier:2 },
+    ucl_winner:        { group:'Team',       wonBy:'team',   label:'UCL Champion',         emoji:'⭐', tier:3 },
+    league_champion:   { group:'Team',       wonBy:'team',   label:'League Title',         emoji:'🏆', tier:4 },
+    player_of_season:  { group:'Individual', wonBy:'player', label:'Player of the Season', emoji:'🎖️', tier:5 },
+    golden_boot:       { group:'Individual', wonBy:'player', label:'Golden Boot',          emoji:'👟', tier:6 },
+    top_assists:       { group:'Individual', wonBy:'player', label:'Top Assists',          emoji:'🅰️', tier:7 },
+    /*  ── CONTINENTAL HONOURS , item 15, 2026-09-14 ────────────────────────────────────────
+        EURO AND COPA AMERICA ONLY. UEFA and CONMEBOL are ~80% of the reachable cards and
+        their squads resolve almost completely; CAF, AFC and CONCACAF are twenty more
+        tournaments for a ceiling near 1,000 cards, FOUR of which provably yield zero because
+        not one player of that nationality holds a card here. See
+        docs/CONTINENTAL_HONOURS_SCOPE.md , that is a completeness-against-effort call with
+        numbers under it, and it is Lucas's to make.
+        `group:'Career'` PUTS THEM ON THE SAME SHELF AS THE WORLD CUP, WHICH IS THE RIGHT
+        SHELF AND THE WRONG WORD , this object already mixes two axes and says so above.
+        Nothing about the BEHAVIOUR is career-wide: the honour matches its own season like
+        every other type (its league_code is null, so the season clause passes it) and it
+        reaches later cards only through the CABINET, as-of and carrying its year. That is
+        the shape `29abbe9` retired the World Cup's real career leg in favour of.
+        `wonBy:'team'` IS LOAD-BEARING , a continental title is won by a squad, so the prompt
+        must not let it become a personal claim. It is the same evidential class as the World
+        Cup and a tier below it.  */
+    euro_winner:       { group:'Career',     wonBy:'team',   label:'European Champion',    tier:2.5 },
+    copa_winner:       { group:'Career',     wonBy:'team',   label:'Copa América Champion', tier:2.5 },
+    /*  AFCON , 2026-09-28, 109 rows across eight editions. Same shape as the two above and
+        for the same reasons: `group:'Career'` puts it on the World Cup's shelf, and
+        `wonBy:'team'` is LOAD-BEARING , a continental title is won by a squad, so the prompt
+        must never let it become a personal claim.
+        NO EMOJI, DELIBERATELY, exactly as euro_winner and copa_winner carry none. The chip
+        glyph is a VISUAL choice and this platform demos those before it builds one; an absent
+        emoji renders label-only, which the position group already does. The MARK (the pill
+        icon) is a different thing and it exists , measured against the set's own floor.  */
+    afcon_winner:      { group:'Career',     wonBy:'team',   label:'AFCON Champion',       tier:2.5 },
   };
   /*  THESE THREE GROUPS MIX TWO ORTHOGONAL AXES, AND IT IS WORTH KNOWING BEFORE ANYONE
       TRIES TO "TIDY" THEM. Team and Individual answer WHO won it; Career answers WHEN it
@@ -2589,6 +3366,9 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     player_of_season: 'The league’s finest over a full campaign.',
     golden_boot:      'The league’s top scorer. Nobody scored more.',
     top_assists:      'The league’s chief creator. Nobody made more.',
+    euro_winner:      'Champion of Europe with his country, the hardest tournament to win outside the World Cup.',
+    copa_winner:      'Champion of South America, the oldest international tournament in the game.',
+    afcon_winner:     'Champion of Africa, won in the middle of a European season and at the cost of it.',
   };
 
   // ── Team-keyed honours (league_champion + ucl_winner) ────────────────────
@@ -2667,7 +3447,8 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
         honours_json on the matview encodes ({leg:'career', year:2014}). Only this function
         disagreed, and the disagreement was measurable , 496 of 587 flagged cards rendered
         no World Cup at all, Toni Kroos 23/24 among them. */
-    const career = [];   // world_cup_winner , every season of a winner's career
+    const career = [];   // RETIRED, kept as an empty array so no consumer's shape changes
+    const cabinet = [];  // everything held as of THIS season , see docs/CABINET_SPEC.md
     // (a)+(b) fire the PLAYER-keyed query and the (session-memoized) TEAM-honours cache in PARALLEL ,
     // independent reads, so honours cost ONE round-trip not two. Player query resolves to null on error.
     const _playerQ = (row.api_player_id != null)
@@ -2695,11 +3476,25 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
               the renderer can print "World Cup 2014" on a 23/24 card without lying. Every
               other type stays season-matched, which is correct: measured, all six are 100%
               same-year, and world_cup_winner is the only type that ever differs. */
-          if(h.honour_type === 'world_cup_winner'){
-            career.push(item);
-          } else if(seasonYear != null && h.season_year === seasonYear
-             && (!h.league_code || !leagueCode || h.league_code === leagueCode)){
+          /*  THE CAREER LEG IS RETIRED , docs/CABINET_SPEC.md, 2026-09-11. world_cup_winner
+              now matches on its own season like every other honour, and the "held as of here"
+              half of the fact moved to the CABINET below, where it carries its year.
+              WHY THIS IS A DELETION AND NOT A MOVE OF THE BUG: the leg attached to EVERY card
+              a winner holds, in BOTH directions, so 333 card-honour pairs rendered a World Cup
+              the player had not yet won , a 2010 card of a 2014 winner showed it. The cabinet
+              is as-of the card's own season, so those 333 disappear and the 496 later ones
+              become dated entries. The league clause is skipped for the World Cup because it
+              is not a league honour and carries no league_code to match.  */
+          if(seasonYear != null && h.season_year === seasonYear
+             && (h.honour_type === 'world_cup_winner'
+                 || !h.league_code || !leagueCode || h.league_code === leagueCode)){
             season.push(item);
+          }
+          /*  THE CABINET , every honour this player held AS OF this card's season, frozen.
+              Team honours are added by the caller from the player's own career rows, because
+              they are keyed on team+season and this query is keyed on the player.  */
+          if(h.season_year != null && seasonYear != null && h.season_year <= seasonYear){
+            cabinet.push(item);
           }
         }
       }
@@ -2710,7 +3505,7 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       if(!season.some(s => s.type === ti.type && s.season_year === ti.season_year)) season.push(ti);
     }
     season.sort((a,b)=> a.tier - b.tier);   // rarer first
-    career.sort((a,b)=> (a.season_year||0) - (b.season_year||0));   // oldest tournament first
+    cabinet.sort((a,b)=> (a.season_year||0) - (b.season_year||0));   // oldest first , a record reads forwards
     /*  `all` IS SEASON-ONLY AND THAT IS DELIBERATE , IT FEEDS THE CAPPED SURFACES.
         The card FACE has two to four slots and the rankings ROW has three, both filled by
         tier from this list. Letting a career honour into it would put World Cup on 587
@@ -2725,10 +3520,10 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       if(items.length) groups[g] = items;
     }
     return {
-      season, career, groups, all,
+      season, career, cabinet, groups, all,
       count: season.length,                          // count badge = season honours only
-      has: (season.length + career.length) > 0,      // a WC-only card still renders chips
-      topHonour: all.length ? all[0] : null,         // lowest tier present (season+career combined)
+      has: season.length > 0,                        // season honours only , the cabinet has its own gate
+      topHonour: all.length ? all[0] : null,
     };
   }
 
@@ -2745,10 +3540,56 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       ZIGZAG. Only Golden Boot and League Champion depicted the same object.
       Everything now reads VVMarks.honour(), keyed on the HONOUR_META key, through vvMark(),
       which fails soft to '' if vv-marks.js is missing or stale. */
-  const HONOUR_CHIP_LABEL = {
-    ballon_dor:"Ballon d'Or", world_cup_winner:'World Cup', ucl_winner:'UCL',
-    league_champion:'Champion', player_of_season:'POTS', golden_boot:'Golden Boot', top_assists:'Top Assists',
-  };
+  /*  THE SHORT LABELS FOR THE THREE CAPPED SURFACES , the card face, the rankings grid card and
+      the rankings list/compact rows. The GLANCE no longer reads this map: it wraps, so it takes
+      HONOUR_META.label in full (2026-09-12).
+      TWO CHANGED, AND THE REASON IS MEANING RATHER THAN WIDTH. "Champion" dropped "League" and
+      became an unqualified claim, sitting two pills from "UCL" on the same face , two adjacent
+      pills both meaning champion, only one saying of what. "UCL" alone said the competition and
+      not the achievement. Both now say what was won.
+      MEASURED ON THE RENDERED CARD, NOT MODELLED , the two-up slot at `--cw` 132 holds 37.96px:
+        League Title  30.2  fits, 7.8 spare        UCL Champion  31.9  fits, 6.1 spare
+      and on the rankings grid card at `--cw` 260 the slot is 85.18px, so both clear by 22px+.
+      The rankings ROWS do not clip at all , `.rtag` is `overflow:visible` and the pill grows to
+      its text, so the constraint there is the row, and at 390 the row measured ZERO overflow
+      before and after the swap.
+      WHAT DID NOT CHANGE, AND WHY. `player_of_season` stays POTS by Lucas's call.
+      `world_cup_winner` stays "World Cup" because nothing longer fits: "World Cup Winner" is
+      43.8 against 37.96, and even "World Champion" is 38.8 and misses. It is the only honour
+      left whose label does not say what was done, and it is an open copy decision, NOT an
+      oversight , do not quietly abbreviate it.
+      [CORRECTED 2026-09-12 PM. THE "38.0 AGAINST A 37.96 SLOT" LINE IS STALE AND WOULD BLOCK A
+      CORRECT CHANGE.] It said "Top Assists" was a rounding error from clipping. RE-MEASURED ON
+      THE LIVE RANKINGS GRID, the smallest surface that actually renders honour pills:
+        --cw 151   cell inner 58.21px   mark 6.33px
+        "Top Assists"       text 28.55  ->  34.88 used,  23.33 spare
+        "Top Assists, 15"   text 36.56  ->  42.89 used,  15.32 spare
+        "Top Assists, 20"   text 40.42  ->  44.06 used,  14.15 spare
+      WHY THE OLD FIGURE NO LONGER DESCRIBES ANYTHING: rankings declares --cw 165 and the card
+      is clamped by max-width:92%, and 165 x 0.92 = 151.8, so the rendered box is 151. A slot of
+      37.96 implies a --cw near 143 that is not in the CSS on any surface today. --cw 132 is
+      `playbook.html`'s `.pvcard`, a DECORATIVE prestige card that carries no pills at all.
+      MEASURED AT 390, 360, 340 AND 320 VIEWPORT WIDTHS , --cw PINS AT 151 AND DOES NOT SHRINK.
+      AND THE INSTRUMENT MATTERS MORE THAN THE NUMBER , see `SILENT_FAILURES.md`: `scrollWidth`
+      reports "fits" for text that WRAPS, because wrapping grows height rather than width. The
+      correct instrument is `Range.getClientRects()` on the text node, which returns one box per
+      LINE. Measured that way every string above renders on ONE line with the cell height
+      constant at 11.69px, so the value genuinely fits.  */
+  /*  DERIVED FROM HONOUR_META, WITH TWO OVERRIDES , 2026-09-15. This used to be a hand list of
+      SEVEN, and when the two continental honours landed it silently covered neither: a
+      euro_winner chip fell through to its raw key. That is the second list in one day keyed on
+      something other than the honour key, and the fix is the same both times , derive, and keep
+      only what genuinely differs.
+      FIVE OF THE SEVEN LABELS WERE ALREADY IDENTICAL TO HONOUR_META's. Only two are real chip
+      forms, shortened because the chip is narrow: World Cup Winner -> "World Cup", Player of
+      the Season -> "POTS". Same shape as VERDICT_SHARE_NAME, which this file already blesses:
+      an override map consulted on a miss, and everything else shares its own name.
+      SO A NEW HONOUR TYPE NOW NEEDS NOTHING HERE. It gets its HONOUR_META label automatically,
+      and only earns an entry below if that label is too long for a chip.  */
+  const HONOUR_CHIP_SHORT = { world_cup_winner:'World Cup', player_of_season:'POTS' };
+  const HONOUR_CHIP_LABEL = Object.keys(HONOUR_META).reduce(function(m,k){
+    m[k] = HONOUR_CHIP_SHORT[k] || HONOUR_META[k].label || k; return m;
+  }, {});
   function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   // GLANCE STRIP: gold honour chips , prepend into #glChips (before prestige+profile).
@@ -2767,7 +3608,17 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
           defect. The .career class is what makes it read as a different KIND of thing
           rather than a season chip that happens to say a number. */
       const year = (isCareer && h.season_year != null) ? ' ' + h.season_year : '';
-      const label = (HONOUR_CHIP_LABEL[h.type] || h.label) + year;
+      /*  THE GLANCE TAKES THE FULL NAME, BECAUSE THE GLANCE IS NOT CAPPED (2026-09-12).
+          `#glChips` is `display:flex;flex-wrap:wrap` and this function is called with no
+          `max`, so the strip wraps and has no geometry budget to protect , measured, not
+          assumed. `HONOUR_CHIP_LABEL` exists for the surfaces that DO have one: the card
+          face and the two rankings row paths, all capped by `--cw`. It was abbreviating
+          here for no reason, and printing "POTS" on a card, which is an internal shorthand
+          rather than a word.
+          SO THE MAP IS NOW READ BY THREE CONSUMERS, NOT FOUR. Do not "restore" it here for
+          consistency , the consistency that matters is that a surface abbreviates only when
+          it must.  */
+      const label = ((HONOUR_META[h.type] && HONOUR_META[h.type].label) || h.label || h.type) + year;
       const tip = h.oneliner || h.label;   // #15: hover = clean one-liner ONLY (context/tally live in the expand)
       return '<span class="'+cls+' gold'+(isCareer?' career':'')+'" data-tip="'+escAttr(tip)+'">'+icon+label+'</span>';
     }).join('');
@@ -2782,16 +3633,28 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     player_of_season: 'Some seasons, one player stands apart. Not merely the top scorer or the finest creator, but the man who bent the whole campaign to his will, week after week, until his name was the only answer. This is the honour his peers and the watching game give to that season’s defining figure.',
     golden_boot:      'There is a purity to the Golden Boot. Not the most complete player, not the prettiest to watch, simply the one who did the thing everyone came to see, more than anyone else. To lead a league in goals across a whole season is to answer the same question every week, and never once flinch.',
     top_assists:      'The best assists are acts of generosity. To lead a league in them is to have seen the pass others missed, again and again, to have made teammates better and asked for none of the glory. The top creator is the player the goalscorers should thank first.',
+    euro_winner:      'A continent settles it every four years, and the winner has beaten the best of it back to back. The European Championship is the World Cup with no easy group, no distant qualifier, nothing but neighbours who know exactly how you play.',
+    copa_winner:      'The oldest international tournament there is, and the one that carries the most history per match. To win the Copa América is to win in front of crowds who have been arguing about it for a hundred years.',
+    afcon_winner:     'No other continental title is won at this price. It falls in January, so a player leaves his club in the middle of its season, flies to a tournament his league would rather he skipped, and comes back to a shirt someone else has been wearing. To win it anyway is to have been worth the argument.',
   };
   // Drury-wrapped tally per honour type (#4) , poetic .tmeta line; {N} = live goals/assists count.
+  /*  A TALLY, NOT A FLOURISH , 2026-09-11. Five of these used to return a fixed line with no
+      data in it, and every one of them paraphrased the one-liner already printed in .td two
+      lines above: world_cup_winner said "A world champion , the prize of all prizes" under
+      "A world champion. The prize every player covets most." The expand therefore closed by
+      telling the reader what it had just opened by telling them, and because honourRowHTML
+      concatenates drury + meta inside one .tmore, it landed hard against the last word of
+      the Drury paragraph , "...never forgotten.A world champion , the prize of all prizes."
+      That collision is what read as garbled, but the spacing was the symptom. The repetition
+      was the defect, so the repetition is what goes.
+      WHAT SURVIVES IS THE TWO THAT CARRY A NUMBER. golden_boot and top_assists state a figure
+      the one-liner does not have, which is the whole point of a tally, and they keep their
+      null fallbacks because a golden boot with no goals recorded still earned the line.
+      The five removed honours now render drury alone, and .tmeta simply does not appear ,
+      honourRowHTML already guards on `meta ?`, so nothing else changes. */
   const HONOUR_TALLY = {
     golden_boot:      function(h){ return (h.goals!=null ? h.goals+' goals , and the net remembers every one.' : 'The net remembers every one.'); },
     top_assists:      function(h){ return (h.assists!=null ? h.assists+' assists , '+h.assists+' times the final pass was his.' : 'Time and again, the final pass was his.'); },
-    ballon_dor:       function(){ return 'The best in the world , and the world agreed.'; },
-    player_of_season: function(){ return "The season's finest , by common consent."; },
-    league_champion:  function(){ return 'Champions , the long season theirs.'; },
-    world_cup_winner: function(){ return 'A world champion , the prize of all prizes.'; },
-    ucl_winner:       function(){ return 'Champions of Europe , the brightest lights conquered.'; },
   };
   // One honour as a tap-expandable Wonder-Tags row: one-liner (.td) + Drury paragraph & meta (.tmore, #16).
   /*  Marks unconditionally rather than behind an opts.mark like its siblings: this row is
@@ -2810,7 +3673,7 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       : '';
     const isCareerH = (HONOUR_META[h.type] && HONOUR_META[h.type].group === 'Career');
     return '<div class="tagrow honour'+(isCareerH?' career':'')+'" onclick="this.classList.toggle(\'open\')">'
-      + '<div class="tt">'+icon+' <span class="ttl">'+escHtml(h.label + (isCareerH && h.season_year!=null ? ' '+h.season_year : ''))+'</span> <span class="tchev">⌄</span></div>'
+      + '<div class="tt">'+wtTitle(icon, escHtml(h.label + (isCareerH && h.season_year!=null ? ' '+h.season_year : '')))+' <span class="tchev">⌄</span></div>'
       + '<div class="td">'+escHtml(oneLiner)+'</div>'
       + tmore
       + '</div>';
@@ -2834,22 +3697,72 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       Everything now reads VVMarks.tag() on the tag's own name, through vvMark(), which fails
       soft to '' if vv-marks.js is missing or stale. All 20 TAG_DEFS names and both prestige
       values were confirmed present in the mark set BEFORE the swap, so nothing renders blank. */
+  /*  SORTED BY TAG_PRIO, AND IT EMITS THE FAMILY , BOTH ADDED 2026-09-10.
+
+      THE ORDER. renderTagPills sorts the glance strip by TAG_PRIO and this renderer used to
+      emit source order, so the two lists disagreed on a card carrying both. Measured on
+      Salah 24/25: the strip runs GENERATIONAL, Peak, The Standard, Goal Machine, Clinical,
+      Provider, Playmaker, Iron Man; the rows ran Generational, Goal Machine, Clinical,
+      Provider, Playmaker, Iron Man, Peak, The Standard. Peak and The Standard are 6th and
+      7th above and 11th and 12th below, in the panel whose whole job is to explain the
+      thing above it. Reading TAG_PRIO rather than re-declaring it is the point , see the
+      comment on the map.
+      The prestige row is PREPENDED and never sorted, which matches the strip: renderPrestige
+      is a separate call that callers put in front of renderTagPills' output.
+
+      THE FAMILY. data-fam carries what the renderer already knows and used to throw away, so
+      a surface can key off it without re-deriving the family from the tag name. It is DATA,
+      not styling , this renderer is shared with compare.html, whose rows sit on the green
+      .vsect ground where the card's palette would not survive and where SS C deliberately
+      pins the titles neutral. Compare therefore emits the attribute and styles nothing, and
+      card.html supplies the colours for its own cream ground. Honour rows need no attribute:
+      honourRowHTML already marks them .tagrow.honour.  */
   function renderProfileTagRows(tags, prestige){
     var rows=[];
     if(prestige==='Generational' || prestige==='Iconic'){
       var pdef=TAG_DEFS[prestige];
-      if(pdef) rows.push({ icon:vvMark('tag', prestige), name:prestige, one:pdef.oneLiner, full:pdef.def });
+      if(pdef) rows.push({ icon:vvMark('tag', prestige), name:prestige, fam:'PRESTIGE', one:pdef.oneLiner, full:pdef.def });
     }
-    if(Array.isArray(tags)) tags.forEach(function(t){ var def=TAG_DEFS[t.name]; if(def) rows.push({ icon:vvMark('tag', t.name), name:t.name, one:def.oneLiner, full:def.def }); });
+    if(Array.isArray(tags)){
+      tags.map(function(t,i){ return { t:t, i:i }; })                   // original index = stable tiebreak
+        .sort(function(a,b){ return tagPrio(a.t.family) - tagPrio(b.t.family) || a.i - b.i; })
+        .forEach(function(x){
+          var def=TAG_DEFS[x.t.name]; if(!def) return;
+          rows.push({ icon:vvMark('tag', x.t.name), name:x.t.name, fam:x.t.family||'',
+                      one:def.oneLiner, full:def.def });
+        });
+    }
     return rows.map(function(r){
-      return '<div class="tagrow" onclick="this.classList.toggle(\'open\')">'
-        + '<div class="tt">' + r.icon + ' <span class="ttl">' + r.name + '</span> <span class="tchev">&#8964;</span></div>'
+      /*  data-tag mirrors what renderTagPills and renderPrestige already put on the strip
+          pills. Generational and Iconic share family PRESTIGE but are opposite treatments
+          (near-black ground with gold ink against gold ground with near-black ink), so the
+          family alone cannot tell them apart and a surface would otherwise need a third
+          lookup keyed on the tag name , which is exactly the shape of the two icon maps
+          deleted on 2026-09-01. The renderer knows the name; it says the name.  */
+      return '<div class="tagrow"' + (r.fam ? ' data-fam="'+escAttr(r.fam)+'"' : '')
+        + ' data-tag="'+escAttr(r.name)+'"'
+        + ' onclick="this.classList.toggle(\'open\')">'
+        + '<div class="tt">' + wtTitle(r.icon, r.name) + ' <span class="tchev">&#8964;</span></div>'
         + '<div class="td">' + r.one + '</div>'
         + '<div class="tmore">' + r.full + '</div></div>';
     }).join('');
   }
+  /*  READS BOTH LEGS, NOT `all` , 2026-09-10. `all` is season-only BY DESIGN (see the long
+      note in fetchHonours: letting a career honour in would put World Cup on 587 card FACES,
+      displacing a season honour in the one place there is no room to print the tournament
+      year). That note names its two uncapped consumers , "the glance strip and Wonder Tags
+      render season.concat(career) explicitly" , and the strip did while THIS renderer did
+      not, so the World Cup was on the strip and absent from the panel that explains it.
+      THE SILVERWARE FILTER BELOW ALREADY NAMED IT. `world_cup_winner` is group:'Career', so
+      the `|| h.type === 'world_cup_winner'` clause exists for exactly one purpose and was
+      dead code, because it filtered over a list that by design never contained it. Feeding
+      both legs in is the whole fix; the filter, the label and the placement were already right.
+      SCOPED HERE RATHER THAN ON `all`, deliberately. Widening `all` would reach the capped
+      face and row surfaces, which is precisely the failure the fetchHonours note exists to
+      prevent. The batch path keeps returning `career: []`, so rankings is a literal no-op.
+      honourRowHTML already appends the tournament year and marks the row .career. */
   function renderWonderTagsGrouped(honours, profileRowsHtml){
-    const all = (honours && honours.all) ? honours.all : [];
+    const all = honours ? (honours.season || []).concat(honours.career || []) : [];
     const silverware = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && (m.group === 'Team' || h.type === 'world_cup_winner'); });
     const individual = all.filter(function(h){ const m = HONOUR_META[h.type]; return m && m.group === 'Individual'; });
     const sec = function(label, html){ return html ? '<div class="wtsec"><div class="wtsechead">'+label+'</div>'+html+'</div>' : ''; };
@@ -2857,6 +3770,24 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
          + sec('INDIVIDUAL HONOURS', individual.map(honourRowHTML).join(''))
          + sec('THE PLAYER', profileRowsHtml || '');
   }
+  /*  ── PARKED, AND SAFE ONLY WHILE IT STAYS PARKED , audited 2026-09-15 ────────────────
+      NOTHING CALLS THIS. It is declared here and exported, and no shipping surface and no
+      other function in this module references it , it has waited since it was written for
+      "the priority decision" in the line below, which was never made.
+      THE TIER ORDERING IS FINE AND THAT WAS CHECKED RATHER THAN ASSUMED. `topHonour` is
+      `all[0]` off a list already sorted by `season.sort((a,b)=> a.tier - b.tier)`, the sort
+      is NUMERIC, and the continental honours added at tier 2.5 land exactly where intended:
+      ballon_dor(1) > world_cup(2) > euro(2.5) > copa(2.5) > ucl(3). No mis-ranking.
+      WHAT IS ACTUALLY MISSING IS THE CHIP LABEL. `HONOUR_CHIP_LABEL` covers the original
+      SEVEN types only, so `euro_winner` and `copa_winner` fall through to `h.label` and
+      would render "European Champion" and "Copa América Champion" on a CARD FACE chip sized
+      for short forms , the map exists precisely because `world_cup_winner` has to read
+      "World Cup", since nothing longer fits. **Anyone wiring this must add both short labels
+      first.**
+      SO THE TRAP IS THE USUAL ONE: a parked renderer is harmless until someone calls it, and
+      the platform has changed underneath it twice since it was written , two new honour
+      types and a new mark set. If it is ever judged not worth wiring, DELETE it rather than
+      leaving it to read as authoritative.  */
   // TOP-SLOT honour pill (card face, wired with the priority decision later).
   function renderTopHonourPill(honours, opts){
     if(!honours || !honours.topHonour) return '';
@@ -2935,7 +3866,177 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     const all = season.slice();
     return { season, career: [], all, count: season.length, has: season.length > 0, topHonour: all.length ? all[0] : null };
   }
-  function emptyHonours(){ return { season:[], career:[], all:[], count:0, has:false, topHonour:null }; }
+  /*  ── AI PROSE EMPHASIS , WHITELIST, NEVER SANITISE (2026-09-12) ───────────────────────
+      The model marks two to three phrases a paragraph with **double asterisks**. This is the
+      ONLY path by which model output may become markup, and it is built the safe way round:
+      ESCAPE FIRST, then promote a single known pattern out of the escaped text.
+      WHY THAT ORDER IS THE WHOLE POINT. Sanitising means letting the string through and
+      hoping the blocklist is complete. Escaping first means any < or & the model emits is
+      already inert text before this function looks for a pattern, so the only tags that can
+      exist in the output are the ones written on the line below. SS D's own rule about
+      vvSetVerdict applies and is not being loosened: those setters take model output and
+      escape it. This function does the escaping, and nothing else reaches innerHTML.
+      UNMATCHED MARKERS ARE DISCARDED, not rendered. A lone ** costs the emphasis rather than
+      leaking an asterisk into the prose, which is what the prompt promises the model.
+      WEIGHT 500, NOT 700 , the brand runs two weights and 700 is the headline voice. The
+      class is named rather than styled inline so each surface keeps its own type scale.  */
+  function vvEmphasis(str){
+    const esc = escHtml(String(str == null ? '' : str));
+    return esc
+      /*  WHITESPACE INSIDE THE MARKERS IS PUSHED BACK OUT, 2026-09-13. `**word **` would
+          otherwise put a space INSIDE the emphasis, and once the emphasis carries a
+          background that space becomes a visible block of ground with nothing on it.
+          MEASURED FIRST: zero of 101 markers across the live caches do this today, so this is
+          insurance rather than a fix, and it is the right kind , a render-side trim is
+          deterministic where a prompt instruction is a request. It also costs nothing to
+          ship: VERDICT_VERSION fingerprints the PROMPT, not this file, so no cached row is
+          invalidated by changing it.
+          THE SPACE IS PRESERVED, NOT DROPPED , re-emitted outside the tag, so the sentence
+          reads identically and only the highlight shrinks to the words.  */
+      .replace(/\*\*(\s*)([^*\n]{1,120}?)(\s*)\*\*/g,
+               /*  A MARKER PAIR WITH NOTHING BUT SPACE INSIDE EMITS NO TAG AT ALL. The
+                   non-greedy body can otherwise match a lone space, which produced an empty
+                   emphasis carrying one blank character , invisible without a background and
+                   a small floating block of ground with one.  */
+               (m, lead, body, tail) => body.trim()
+                 ? lead + '<strong class="vvem">' + body.trim() + '</strong>' + tail
+                 : lead + body + tail)
+      .replace(/\*+/g, '');
+  }
+
+  /*  ── THE PRODUCT NAME, WITH ITS PINK SECOND V ─────────────────────────────────────────
+      `vvWordmark(' Score')` gives `V<span class="vvw">V</span> Score`. Use it anywhere a
+      product name is BUILT IN JAVASCRIPT; static markup writes the same two tags by hand.
+      IT EXISTED THIRTY-EIGHT TIMES BEFORE THIS, as an inline style repeated across eleven
+      files, plus a private `.tjvp` in compare making thirty-nine. A rule written thirty-nine
+      times cannot be changed, which is exactly how the nav wordmark drifted on two pages.
+      THE ARGUMENT IS ESCAPED, so a caller may pass model output or a player name safely.
+      AND IT IS NOT FOR EVERY OCCURRENCE , three classes of `VV Score` must stay plain text:
+        , <meta> and <title> attributes, which cannot hold markup at all;
+        , the AI prompt strings in this file and in compare.html. VERDICT_VERSION is a
+          FINGERPRINT OF THE PROMPT, so adding a span to a sentence no reader ever sees would
+          regenerate every cached verdict on the platform to change a colour;
+        , the textContent sinks (card.html's keeper line, compare's GK_NO_VERDICT_*). Those
+          use textContent ON PURPOSE because the same slot also takes model output, and
+          switching to innerHTML to win one pink letter reopens an escaping hole.
+      `scripts/lint-inline.js` enforces the rest and knows about all three exemptions.  */
+  function vvWordmark(rest){
+    return 'V<span class="vvw">V</span>' + escHtml(String(rest == null ? '' : rest));
+  }
+
+  /*  ── THE SINK RULE , PROSE REACHES A SINK THROUGH vvStripMarkers, NEVER RAW ───────────
+      vvEmphasis above is for a surface that DISPLAYS the emphasis. Everywhere else the model
+      output goes , an image, a caption, a regex, a stored report , the markers are noise and
+      must come off, because nothing downstream converts them and `**` renders as two literal
+      asterisks. `shEsc` escapes & < > and " and does NOT touch an asterisk, so an unstripped
+      string reaching the share frame prints them into the poster.
+      THE TWO SINKS TODAY are the share frame's verdict line and the score-strip's input in
+      compare's vvSetVerdict. If a third appears, it goes through here as well: the point of
+      naming the rule is that "is this path safe?" becomes greppable instead of being a
+      property of the current call order, which is how the poster passed by luck rather than
+      by design.
+      IT DOES NOT ESCAPE. Callers already escape , shEsc on one side, a regex on the other ,
+      and doing it twice would double-encode an ampersand.  */
+  function vvStripMarkers(str){
+    return String(str == null ? '' : str)
+      .replace(/\*\*([^*\n]{1,120}?)\*\*/g, '$1')
+      .replace(/\*+/g, '');
+  }
+
+  function emptyHonours(){ return { season:[], career:[], cabinet:[], all:[], count:0, has:false, topHonour:null }; }
+
+  /*  ── THE CABINET'S TEAM HALF , docs/CABINET_SPEC.md ────────────────────────────────────
+      league_champion and ucl_winner carry a NULL api_player_id: they are keyed on team and
+      season, so the player query cannot see them. They are reachable only through the
+      player's OWN cards , which club he was at, in which season , and that is the correct
+      test anyway: a trophy won by a club before he arrived is not in his cabinet.
+      AS-OF IS ENFORCED HERE TOO. Only career rows at or before the card's season count, so
+      the cabinet stays frozen at that date exactly as the spec requires.
+      Returns a NEW array; it never mutates what it is given.  */
+  function cabinetWithTeamLegs(cabinet, careerRows, asOfYear, teamCache){
+    const out = (cabinet || []).slice();
+    const cache = teamCache || _teamHonoursCache;
+    if(!cache || !careerRows || asOfYear == null) return out;
+    for(const row of careerRows){
+      const yr = row && row.season_year != null ? row.season_year : null;
+      if(yr == null || yr > asOfYear) continue;
+      for(const ti of teamHonoursFor(row, cache)){
+        if(!out.some(x => x.type === ti.type && x.season_year === ti.season_year
+                          && (x.league_code || null) === (ti.league_code || null))) out.push(ti);
+      }
+    }
+    out.sort((a,b)=> (a.season_year||0) - (b.season_year||0));
+    return out;
+  }
+
+  /*  THE EMPTY CABINET DOES NOT RENDER, AND THAT IS A MEASURED DECISION , see
+      docs/CABINET_SPEC_NOTES.md. 85.1% of cards have no cabinet at all, so a consoling
+      line would print on six cards in seven. Returns '' when there is nothing to show, and
+      the caller hides its container on ''.  */
+  function renderCabinet(items, opts){
+    const list = items || [];
+    if(!list.length) return '';
+    /*  TREATMENT A , VERTICAL SHELVES. The honour is a heading and its years stack beneath it,
+        one per line, so ten seasons READS as ten lines and the section's height carries the
+        weight. A cabinet is shelves, not a row.
+        NO COUNT, ANYWHERE. docs/CABINET_SPEC.md forbids it by name , "It never counts, ranks,
+        or grades: no 5x champion rollups" , and of the three treatments demoed this was the
+        only spec-compliant one. Do not add a tally, a badge or an "x4" here later: the count
+        is what turns a record into a scoreboard, which is the thing the whole section exists
+        to avoid.
+        ORDERED BY HONOUR_META.tier, WHICH IS ALREADY THE PRESTIGE ORDER , Ballon d'Or, World
+        Cup, UCL, League Champion, Player of the Season, Golden Boot, Top Assists, the same
+        ranking the Playbook uses. Read off the existing field rather than a second list.
+        YEARS WITHIN A SHELF RUN OLDEST FIRST AND WRAP AS A PACKED ROW, NOT AS COLUMNS
+        (2026-09-12). They used to stack one per line, and above six years CSS columns split
+        them in two. Measured on the live card, that was the defect: the panel is 780px, so
+        `column-count:2` made two 379px columns each holding one 30px year token at its left
+        edge , 362px of empty space between the two columns of years. The browser had been
+        told to make two columns, not to pack tightly.
+        A WRAPPING FLEX ROW PACKS LEFT AND WRAPS ONLY WHEN IT RUNS OUT OF WIDTH, so the
+        oldest-first reading order survives and the block reads as a record rather than as a
+        list with a canyon in it. Measured: Lewandowski's twelve-year run goes 530px to 354px
+        on desktop and 530px to 405px at 390, and a four-year run goes from four stacked
+        lines to one. NO BULLETS , every year already has the gold rule to its left, and a
+        mark per year would carry no information.
+        NO SHELF_TWO_COL ANY MORE. The constant and the `.two` class are gone rather than
+        left inert, because a dead class in the markup is a decision a later reader has to
+        re-derive.  */
+    const cls = (opts && opts.baseClass) || 'cab';
+    const byType = new Map();
+    for(const h of list){
+      const k = h.type || h.label;
+      if(!byType.has(k)) byType.set(k, { type: k, label: h.label || k, oneliner: h.oneliner || h.label || k, years: [] });
+      const y = h.season_year != null ? h.season_year : null;
+      if(y != null && byType.get(k).years.indexOf(y) === -1) byType.get(k).years.push(y);
+    }
+    const shelves = Array.from(byType.values());
+    shelves.forEach(function(sh){ sh.years.sort(function(x,y){ return x - y; }); });
+    shelves.sort(function(x,y){
+      const tx = (HONOUR_META[x.type] && HONOUR_META[x.type].tier) || 99;
+      const ty = (HONOUR_META[y.type] && HONOUR_META[y.type].tier) || 99;
+      return tx - ty;
+    });
+    /*  THE HEADING IS A TAG PILL , same class, same shape. It extends the platform's existing
+        pill (`chtag`, the one the glance strip and the Wonder Tags rows use) with a fill
+        modifier, rather than declaring a second pill: shape, radius, padding and font come
+        from the shared rule, so a change there reaches the cabinet too.  */
+    return '<div class="' + cls + 'shelf">' + shelves.map(function(sh){
+      const icon = (opts && opts.mark !== false) ? vvMark('honour', sh.type) : '';
+      /*  FULL NAME, NEVER THE SHORT FORM OR THE KEY. HONOUR_CHIP_LABEL abbreviates for the
+          GLANCE STRIP, where a pill sits in a row of eleven and has no room , that is correct
+          there and wrong here: it printed "POTS" on a card, which is an internal shorthand, and
+          "UCL" and "Champion", which are clipped names. HONOUR_META.label already holds the
+          full ones, so the cabinet reads that and the strip keeps its own map.  */
+      const label = (HONOUR_META[sh.type] && HONOUR_META[sh.type].label) || sh.label || sh.type;
+      return '<div class="' + cls + 'sh">'
+           + '<span class="chtag chtag-cab" data-tip="' + escAttr(sh.oneliner) + '">' + icon + escHtml(label) + '</span>'
+           + '<div class="' + cls + 'yrs">'
+           + sh.years.map(function(y){ return '<div class="' + cls + 'y">' + escHtml(y) + '</div>'; }).join('')
+           + '</div></div>';
+    }).join('') + '</div>';
+  }
+
   // Compact gold honour pills for list/compact rows (rankRowHTML) , text-only, up to 2.
   function renderHonourPillsCompact(honours, opts){
     if(!honours || !honours.has) return '';
@@ -2957,9 +4058,37 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
     if(!Array.isArray(rows) || !rows.length) return '';
     var data = rows.map(function(r){
       return { season:r.season, g:(+r.goals||0), a:(+r.assists||0),
-               rt:(r.rt==null?null:+r.rt), selected:!!r.selected };
+               rt:(r.rt==null?null:+r.rt), selected:!!r.selected,
+               /*  CARRIED FOR THE SPLIT-SEASON LABEL ONLY , see the block below. Both callers
+                   already hold it: the card maps SEASON_ROWS and compare maps its own rows,
+                   and neither was passing it, so a repeated year drew twice with nothing to
+                   tell the two apart.  */
+               club:(r.team_name || r.clubname || '') };
     });
     var n = data.length;
+    /*  A REPEATED YEAR ON THIS AXIS MEANS TWO CARDS IN ONE SEASON, AND THE AXIS COULD NOT SAY
+        WHICH WAS WHICH , fixed 2026-09-22. Sitting 1 made that shape common: a same-league
+        mid-season move now produces two cards, so the axis read "’24 | ’25 | ’26 | ’26".
+        It also happens for a CROSS-LEAGUE season, which 432 players have, and the same label
+        answers both , the two bars are two clubs either way.
+        THE ALTERNATIVE WAS TO SUM THE PAIR INTO ONE BAR AND IT WAS REJECTED BY LUCAS: that
+        rebuilds the fused card inside a chart, which is the shape sitting 1 exists to undo.
+        THE MEMBERS OF A REPEATED GROUP ARE NEVER THINNED. `xStep` drops labels on a dense
+        chart, and dropping one half of a pair would leave a split season rendering as one
+        labelled year beside an unexplained bar , worse than the defect being fixed.  */
+    var xlabs = data.map(function(d){ return '’' + String(fmtSeason(d.season)).split('/').pop(); });
+    var labN = {}; xlabs.forEach(function(l){ labN[l] = (labN[l]||0) + 1; });
+    /*  EXACTLY TWO, NOT "MORE THAN ONE" , 2026-09-24. Naming the clubs under a repeated year puts
+        them in left-to-right order, and left to right on a time axis reads as sequence. For a pair
+        that is a claim `split_transfers` can support; for THREE cards in one season it is not.
+        `orderSeasonRows` consults a transfer row only when the group holds exactly two cards, so a
+        three-card season takes the appearances fallback , and that fallback is measurably wrong on
+        two of the four such seasons the platform holds (Depaoli 2020/21 is exactly reversed
+        against the export, Dragus 2025/26 is wrong too). Labelling them would print three club
+        names in an order we do not have.
+        THE BARS STILL IMPLY AN ORDER AND THAT IS NOT FIXED HERE , what is fixed is the platform
+        NAMING one. See docs/CROSS_LEAGUE_ORDER_SCOPE.md section 5.  */
+    var isSplit = xlabs.map(function(l){ return labN[l] === 2; });
     // LEFT axis , goals + assists (dynamic max)
     var maxGA = 0; data.forEach(function(d){ var t=d.g+d.a; if(t>maxGA) maxGA=t; });
     var lstep = maxGA>40?20:(maxGA>20?10:(maxGA>8?5:2));   // finer steps at low values so a sparse chart fills the axis
@@ -3004,9 +4133,26 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       /* invariant: thinning stays (i%xStep) and the last season is always labelled.
          The d.selected clause was REMOVED , it inserted an off-rhythm label; the selected
          season already carries the full-height .tjsel highlight band, so it was redundant. */
-      if(i%xStep===0 || i===n-1){
-        var xlab="’"+String(fmtSeason(d.season)).split('/').pop();   // apostrophe + END year, e.g. 2019
-        s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle">'+escHtml(xlab)+'</text>';
+      if(i%xStep===0 || i===n-1 || isSplit[i]){
+        s+='<text class="tjxl'+(d.selected?' tjxlsel':'')+'" x="'+x.toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle">'+escHtml(xlabs[i])+'</text>';
+        /*  THE CLUB SITS UNDER THE YEAR, NOT INSTEAD OF IT. The year is still the axis; the
+            club is what separates two bars sharing one year. It takes the axis ink rather
+            than gold , gold on this chart is `.tjpeak`, which means "the notable one", and a
+            routine label wearing that ink would read as a highlight.  */
+        /*  IT IS EMITTED HIDDEN AND REVEALED BY MEASUREMENT , `vvTrajFit`, below. The label is
+            centred on its bar, so two adjacent halves collide the moment a name is wider than
+            a slot: measured at 8.5px Archivo 700 with getBBox, "Chelsea" is 35.8px, "Aston
+            Villa" 47.1, "Borussia Dortmund" 84.4 and "Borussia Monchengladbach" 121.6, against
+            a slot of 72px at four seasons, 36.3 at eight and 16.1 at eighteen. Unguarded it
+            overlapped by 42.6px on a real card (Aubameyang, 17 seasons).
+            A WIDTH MODEL WAS TRIED FIRST AND IT IS NOT POSSIBLE , recorded so it is not
+            retried. `5.6 * chars + 2` failed on FOUR of the 284 real club names, all of them
+            SHORT: `MVV` measures 30.2px against a predicted 18.8, `Emmen` 32.7 against 30.0,
+            `QPR` and `Como` the same shape. Per-character arithmetic cannot bound a
+            proportional face, because a three-letter name in wide capitals is broader than a
+            five-letter one in narrow lowercase. You cannot size text without measuring it,
+            and a string builder cannot measure.  */
+        if(isSplit[i] && d.club) s+='<text class="tjclub" data-tjy="'+escAttr(xlabs[i])+'" x="'+x.toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle">'+escHtml(d.club)+'</text>';
       }
     });
     if(hasVV){
@@ -3032,6 +4178,76 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
       ? 'One season on record , the numbers so far, not yet a trajectory.'
       : 'The bars remember what he did. The line remembers what it was worth. The gap tells the story a raw tally can’t.')+'</div>';
     return head+legend+svg+caption;
+  }
+
+  /*  THE SPLIT-SEASON CLUB LABELS ARE REVEALED BY MEASUREMENT, NEVER BY A MODEL , 2026-09-22.
+      Call this on the element a trajectory was just injected into. It reads each label's real
+      painted box with getBBox and shows only the ones that collide with nothing.
+      IT FAILS TO THE SAFE SIDE BY CONSTRUCTION, WHICH IS THE POINT. `.tjclub` is hidden in
+      CSS, so a surface that renders a trajectory and forgets to call this shows NO club labels
+      , the axis exactly as it was before the feature, a state we already know , rather than
+      overlapping text nothing on screen would explain. CLAUDE.md SEC C records the opposite
+      arrangement three times: a behaviour attached to a code path is missing from every other
+      path, silently. Here the silence is the harmless outcome.
+      ALL OF A YEAR'S LABELS SHOW OR NONE DO. Naming one of two bars and leaving the other bare
+      says the unnamed one is not a club, which is worse than naming neither.
+      MEASURED POPULATION, so nobody re-derives it: 1,291 players hold a repeated year, and on
+      the true widths every label fits on 375 of them and none fits on 611. The dense case is
+      an OPEN DESIGN QUESTION, not a defect , a 17-season axis has 16px a slot and no typeface
+      puts a club name in it.  */
+  function vvTrajFit(root){
+    if(!root || !root.querySelectorAll) return 0;
+    var shown = 0;
+    Array.prototype.forEach.call(root.querySelectorAll('svg.tjsvg'), function(svg){
+      var clubs = Array.prototype.slice.call(svg.querySelectorAll('.tjclub'));
+      if(!clubs.length) return;
+      /*  A CHART INSIDE A CLOSED FOLD HAS NO BOX, AND MEASURING IT THERE HIDES EVERY LABEL
+          FOR GOOD , caught by rendering, 2026-09-22. The card's trajectory lives inside a
+          `<details>` that starts shut, so `getBBox` threw on every label and the whole set
+          was marked as colliding; compare's section is open by default, so it worked there
+          and the card silently showed nothing. Two surfaces, one call, opposite outcomes.
+          SO IT WAITS FOR THE STATE, NOT FOR A CALLER. A ResizeObserver fires when the chart
+          first gets a box , a fold opening, a tab showing, a panel expanding , which is the
+          transition every one of those paths passes through. CLAUDE.md SEC C: attach a
+          behaviour to the state it depends on, so a route added later cannot forget it.  */
+      if(!svg.getBoundingClientRect().width){
+        if(!svg.__tjRO && typeof ResizeObserver === 'function'){
+          svg.__tjRO = new ResizeObserver(function(){
+            if(svg.getBoundingClientRect().width && svg.isConnected){
+              svg.__tjRO.disconnect(); svg.__tjRO = null; vvTrajFit(svg.parentNode || svg);
+            }
+          });
+          svg.__tjRO.observe(svg);
+        }
+        return;
+      }
+      var box = function(el){ try { var b = el.getBBox(); return {x1:b.x, x2:b.x+b.width}; }
+                              catch(e){ return null; } };   // getBBox throws on a detached or undisplayed node
+      var cb = clubs.map(box);
+      /*  THE TEST IS CLUB AGAINST CLUB, ON X ONLY, AND THE YEAR ROW IS DELIBERATELY NOT IN IT.
+          Every club label sits on ONE line of its own, 9px below the year row, so a horizontal
+          reading is the whole question , two names on that line either touch or they do not.
+          THE FIRST VERSION ALSO TESTED AGAINST THE YEAR LABELS AND SUPPRESSED EVERY LABEL ON
+          EVERY CHART, INCLUDING ONES THAT VISIBLY FIT. A club label is centred under its OWN
+          year, so it always overlaps it on x, and Chrome's getBBox on SVG text returns a box
+          built from font ASCENT AND DESCENT rather than tight glyph bounds , so the two rows
+          touch by a fraction of a pixel and every label read as a collision. The symptom was
+          total silence, which looks exactly like a feature that was never wired.  */
+      var pad = function(b){ return b && {x1:b.x1-1, x2:b.x2+1}; };
+      var hit = function(a,b){ return a && b && a.x1 < b.x2 && b.x1 < a.x2; };
+      var bad = {};
+      clubs.forEach(function(el,i){
+        if(!cb[i]){ bad[el.getAttribute('data-tjy')] = 1; return; }
+        var me = pad(cb[i]), clash = false;
+        cb.forEach(function(o,j){ if(j!==i && hit(me, pad(o))) clash = true; });
+        if(clash) bad[el.getAttribute('data-tjy')] = 1;
+      });
+      clubs.forEach(function(el){
+        if(!bad[el.getAttribute('data-tjy')]){ el.classList.add('tjfit'); shown++; }
+        else el.classList.remove('tjfit');
+      });
+    });
+    return shown;   // returned so a caller or a probe can assert it rather than assume it
   }
 
   // ── Unified rank/season row (.urow) , shared by rankings List + Compact AND
@@ -3121,7 +4337,189 @@ body:not(.light) .gkt-lane.gkt-b{color:#7FB2E8}
   //  `.vvcard .chtag .chtagcell`, and it wins today only by coming later , append and the
   //  honour pills lose their gold. So the sheet is inserted as the FIRST child of <head>,
   //  which keeps every page rule winning exactly as it does now.
+  /*  THE TAG FAMILY FILLS ARE TOKENS, DECLARED ONCE , 2026-09-13. They were literals inside
+      `.vvcard .chtagcell-*`, which meant the colours were only reachable INSIDE a card, and
+      the honour gold was worse: it is not in this file at all, it is declared three times, in
+      card.html, compare.html and rankings.html, and the three were free to drift apart.
+      THE RULES ARE NOT MOVED, ONLY THEIR VALUES. The note above is explicit that this sheet
+      PREPENDS and that `.vvcard .chtagcell.gold` in the pages wins only by coming later ,
+      relocating it here would lose the gold on every honour pill. Tokens change no cascade:
+      each page rule keeps its exact selector, specificity and position, and reads its colour
+      from one place instead of holding its own copy.
+      SO A FOURTH SURFACE COSTS NOTHING. Anything outside `.vvcard` , the Playbook's tag
+      dictionary is the first , reads the same token rather than re-picking a gradient by eye,
+      which is how a fifth copy would have started.  */
   var VV_CARD_CSS = `
+:root{
+  --vvfam-att:linear-gradient(90deg,#FF7A5C,#E70443);
+  --vvfam-mid:linear-gradient(90deg,#3FBF7F,#2FA968);
+  --vvfam-def:linear-gradient(90deg,#5C9DFF,#4A7FE0);
+  --vvfam-cross:linear-gradient(90deg,#5A5856,#46443F);
+  --vvfam-stage:linear-gradient(90deg,#2F8290,#1B5563);
+  --vvfam-hon:linear-gradient(90deg,#F0D27A,#E0A93A);
+  --vvfam-hon-ink:#5a4410;
+  /*  THE SOLID END OF EACH FAMILY, FOR SURFACES THAT ARE NOT THE CARD FACE. Measured:
+      white on these gradients runs 2.34 to 7.08 depending on where a glyph lands, because a
+      gradient has two stops and the text crosses both. SS C accepts that ON THE CARD FACE and
+      says why , the fill carries the tag's identity and the card face is the product , and
+      that exception is scoped to the face. A dictionary entry is body copy on a page of body
+      copy, so it takes the family's DARK stop as a flat fill instead: same colour, same
+      family, and white on it clears the large-text bar on all five (att 4.67, def 3.89,
+      stage 8.31, cross 9.73, mid 3.00 at the bar).
+      [CORRECTED 2026-09-13, SAME DAY, AND THE CARD GOT THERE FIRST.] MID and DEF are NOT the
+      gradient's second stop any more , they are #258652 and #4374CC, the values card.html's
+      Wonder-Tag rows had already been darkened to, with the comment "darkened, see above".
+      (AND NOTE HOW THIS COMMENT WAS WRITTEN THE FIRST TIME: with BACKTICKS around those two hex
+      values, inside a CSS comment, inside this template literal. It ended the literal early and
+      left the module half-defined, and node --check passed. The require-and-assert guard caught
+      it, which is the whole reason section C prescribes that guard , and then I wrote THIS
+      sentence with backticks too and broke it a second time,
+      which is how sure a habit can be. NO BACKTICKS ANYWHERE IN THIS LITERAL, comments included.)
+      SOMEONE DID THIS CONTRAST WORK BEFORE I DID AND LANDED BETTER: the gradient's own stops
+      measure 3.00 and 3.89 against white, which clears only the large-text bar, while the card's
+      clear FULL AA at 4.55 and 4.56. Three of the five families already agreed exactly; these
+      two did not, and the better pair wins.
+      SO THE RULE IS NOW "match the card's rows", not "take the gradient's stop". ATT, CROSS and
+      STAGE remain identical to their gradient's dark end because there they are the same value.
+      Change a gradient and CHECK its solid rather than assuming it follows.  */
+  /*  THE EMPHASIS INK, ONCE , 2026-09-13. vvEmphasis emits <strong class="vvem"> on five prose
+      surfaces across two pages and every one of them was deciding for itself what emphasis
+      looks like. This is the value; the rules stay on their pages because each has a different
+      base weight to step up FROM, and because this sheet prepends.
+      TWO VALUES BECAUSE THE GROUND MOVES, NOT BECAUSE THE THEME DOES , section C's rule. The
+      dark gold measures 10.24 and 8.29 on compare's two prose grounds; the light one, 5.90 and
+      6.26. Anything reading this token gets a ratio that has been measured rather than hoped.  */
+  --vvem-ink:#E8B84B;
+  /*  AND A SECOND, PINNED INK, BECAUSE NOT EVERY PROSE GROUND FLIPS , 2026-09-13, and this was
+      caught one measurement before it shipped as a regression. card.html's editorial boxes are
+      CREAM IN BOTH THEMES: composited, their ground is rgb(240,235,218) in dark and
+      rgb(249,247,240) in light, and their base ink is a pinned #3a352e sitting at 10.17 and
+      11.30. Handing those surfaces the flipping token put #E8B84B on cream at 1.54 , WORSE than
+      the weight-only treatment it was replacing.
+      SECTION C SAYS IT IN ONE LINE: match the ink to the GROUND, not to body.light. A surface
+      whose ground does not move needs an ink that does not move either.
+      AND THE FIRST TWO ATTEMPTS TO MEASURE THIS BOTH LIED, in the two ways section C already
+      records: the card page opens in LIGHT, so a reading taken without setting the theme
+      explicitly reports the light value for both; and the ground is a translucent
+      rgba(255,255,255,0.03) over a cream card, so reading the nearest non-transparent
+      background gave 1.84 instead of 1.54. Only compositing every layer down to the page gives
+      a number worth acting on.  */
+  --vvem-ink-fixed:#7e5a10;
+  --vvfam-att-solid:#E70443;
+  --vvfam-mid-solid:#258652;
+  --vvfam-def-solid:#4374CC;
+  --vvfam-cross-solid:#46443F;
+  --vvfam-stage-solid:#1B5563;
+  --vvfam-hon-solid:#E0A93A;
+  --vvfam-stage-quiet:linear-gradient(135deg,#E4F1F4,#D8EAEE)}
+/*  THE LIGHT-MODE EMPHASIS IS #9A6B00, NOT #7e5a10 , 2026-09-13, and the reason inverts the
+    obvious fix. Lucas: the bold reads well in dark and weakly in light. Measured, the CONTRAST
+    is not the problem , gold against the body ink is 2.75 in light and 1.53 in dark, so light
+    already separates BETTER by ratio. What differs is DIRECTION and CHROMA: in dark the gold
+    sits darker than a cream body and advances as colour; in light #7e5a10 sits LIGHTER than a
+    near-black body and barely reads as gold at all, so it recedes and looks brown.
+    SO DARKENING IT WOULD HAVE BEEN BACKWARDS , it raises contrast on white and lowers the
+    separation that actually matters. The direction is up and more saturated, and AA on white is
+    the wall: #9A6B00 measures 4.69 on white against the 4.5 bar, lifts separation from the body
+    ink 2.75 to 3.67, and is fully saturated where #7e5a10 is not.
+    AND THE FIXED TOKEN DOES NOT FOLLOW IT , see --vvem-ink-fixed. The card's boxes are cream
+    rather than white, which has less headroom: #9A6B00 measures 3.93 and 4.38 there and FAILS.
+    Two grounds, two inks, for the third time in this file.  */
+/*  .vvw IS THE PRODUCT NAME'S PINK SECOND V , see vvWordmark(). It lives here so the five
+    surfaces that load vv-core get it without declaring it; contact, iwonder, myclub,
+    preferences and vvindex declare it locally because they load no shared script.
+    VV_CARD_CSS PREPENDS, so a page rule of equal specificity would win. None exists, and if
+    one is ever added it must win deliberately rather than by accident.  */
+.vvw{color:var(--pink-ink)}
+/*  ── THE WASH, LIGHT ONLY , 2026-09-13 ─────────────────────────────────────────────────
+    Emphasis in LIGHT is ink on a pale gold ground; in DARK it stays ink alone. Two builds,
+    deliberately, and the reason is a measurement that reversed my own first report.
+    LIGHT GAINS AND DARK LOSES. Ink on wash measures 7.74 in light against 4.42 for the same
+    ink on the panel, and 7.45 in dark against 10.51. I originally reported 7.74 and 7.13 as
+    one treatment winning twice; the second figure did not reproduce and the direction is
+    opposite. A wash on the dark surface COSTS contrast.
+    AND THE LIGHT GAIN IS NOT THE WALL BEING BEATEN, IT IS THE WALL BEING SIDESTEPPED. On
+    light, separation from the body ink is 13.15 divided by contrast-on-white , the two
+    requirements are RECIPROCAL, so at the AA floor the best possible separation is 2.92 for
+    ANY colour that exists. No ink escapes that. The wash does, because the GROUND now carries
+    the signal: the ink drops to #5C4008, which measures 1.37 against the body ink and would
+    be invisible as emphasis on its own, and the run is found by its block rather than read
+    by its colour. That is why wash-against-page at 1.17 is correct rather than a failure.
+    GREEN IS OUT, AND NOT ON AESTHETICS. SS D locks Under-the-Lights green to Compare, and
+    .vvem renders on the card's scout and notes as well, so green here is exactly the bleed
+    that rule exists to prevent. Measured, a green at gold's luminance is numerically
+    IDENTICAL on every axis, so it was never a contrast question.  */
+/*  ══ THE WASH IS LIGHT-ONLY, AND THAT IS NOW A DECLARED DECISION , 2026-09-16 ══════════
+    RULED BY LUCAS: emphasis takes a wash in LIGHT and stays ink-only in DARK.
+    IT IS WRITTEN DOWN BECAUSE IT USED TO BE AN ABSENCE. "--vvem-wash" was declared under
+    body.light and nowhere else, and the rule applying it was gated on body.light too, so the
+    two agreed and dark rendered ink-only by accident rather than by decision. This file's own
+    rule , a token declared in one theme is not a token , makes that a trap: the next person
+    reading it finds a gap, fills it, and undoes a choice nobody recorded.
+    SO: THERE IS NO --vvem-wash-dark AND THERE MUST NOT BE ONE. If you came here to add it,
+    this comment is the reason not to.
+
+    WHAT THE MEASUREMENTS ACTUALLY SAY, and they support the decision WITHOUT supporting the
+    tidier story that dark "does not need" separation:
+      , DARK GOLD ALREADY SITS HIGH ON ITS GROUNDS: #E8B84B measures 8.29 on the verdict's
+        solid charcoal rgb(42,36,34) and 6.70 on the story's green gradient. The LIGHT gold
+        #5C4008 measures 5.90 and 6.26 on its grounds. The dark ink has the greater headroom.
+      , AND A DARK WASH BUYS ALMOST NOTHING. Four candidates were rasterised against their real
+        grounds and the best separation any of them reached was 1.31 (#43371F on the charcoal);
+        the others ran 1.03 to 1.21. On a dark ground you cannot lift a block far before it
+        stops being a wash and becomes a bar of colour. The light wash #F6E6BC sits 1.17 from
+        its own ground, so the light case is not dramatically better on that measure , what
+        differs is that in light the ink has less room, so the block is doing work the ink
+        cannot do alone.
+      , WHAT IS **NOT** THE REASON: emphasis-against-surrounding-prose is near-identical in the
+        two themes , 1.46 and 1.37 in dark, 1.37 and 1.27 in light. Anyone justifying this split
+        on "the emphasis does not separate in light" is quoting a figure that does not exist.
+    THE TWO GROUNDS ARE THE OTHER HALF OF WHY A DARK WASH IS AWKWARD. Dark prose sits on TWO
+    different grounds , solid charcoal for the verdict, the Under-the-Lights green gradient for
+    the story , so a single dark value cannot serve both and the split would have to be per
+    ground, exactly as --vvem-ink already is. That is two more tokens to keep in step for a
+    lift of 1.3.  */
+body.light{--vvem-ink:#5C4008;--vvem-wash:#F6E6BC}
+/*  ── THE THREE GROUNDS, IN ONE BLOCK, EACH NAMED ────────────────────────────────────────
+    Emphasis is a marked run on every prose surface, and the platform has THREE grounds under
+    it. They are declared together, here, because three declarations across three files is the
+    drift this file keeps recording; three grounds honestly served in one place is not
+    duplication. SS C already says an ink matches the GROUND and not the theme class.
+    (No backticks in this comment: it lives inside VV_CARD_CSS, a template literal, and one
+    stray backtick ends the literal early and leaves the module half-defined. Caught here by
+    the require-and-assert, which is the only check that sees it , node --check passes.)
+
+      GROUND                     INK        WASH       why
+      dark page panel            #E8B84B    none       a wash COSTS contrast here, 7.45
+                                                       against 10.51 for ink alone
+      light page panel #FBF8F2   #5C4008    #F6E6BC    7.74, wash 1.17 from the panel
+      card boxes #F0EAD9         #7e5a10    #EBDCA8    4.57 on the wash, and 5.21 on bare
+                                                       cream if the wash never renders
+
+    THE CARD'S GROUND DOES NOT FLIP. #F0EAD9 in BOTH themes , rendered and toggled to confirm
+    rather than inferred , which is why --vvem-ink-fixed exists and must never follow the theme.
+
+    THE CARD'S INK IS THE GRACEFUL ONE AND THAT IS THE WHOLE REASON IT IS NOT #5C4008. The
+    light page's ink scores a beautiful 7.00 on the cream wash and only 1.27 against the scout
+    body ink, so a wash that failed to render would take the emphasis with it. #7e5a10 clears
+    AA ON THE WASH and still reads as emphasis WITHOUT it. D degrades to what ships today.
+
+    AND THE WASH IS THE BINDING GROUND, NOT THE PAPER , it is DARKER, so contrast on it is
+    always the lower of the two. Satisfy AA there and the bare fallback is free. On the cream
+    wash the scout body sits at 8.87, so the best separation any ink can reach while clearing
+    AA is 1.97; #7e5a10 reaches 1.94. There is 0.03 left in the entire colour space. Same
+    reciprocal wall as the light page, one ground further in.
+
+    THE WASH GOES DARKER THAN ITS PAPER, NEVER LIGHTER. Measured and rejected: #FAF6E6 on the
+    card scores a respectable 1.11 against the ground and reads as a HOLE , a patch of
+    different, brighter paper rather than a highlight on this one. On an already-pale surface
+    a lighter tint has nowhere to go but toward white, and white is not a highlight, it is an
+    absence. Direction is a design constraint here, not a ratio.
+
+    NOT ON THIS LIST, DELIBERATELY: #glDrury. Its body ink is #5F594E, 5.78 on cream, so the
+    best separation available at AA is 1.28. It takes NO emphasis, and that is a measurement
+    rather than a preference , see the rule pinning it to inherit.  */
+:root{--vvem-wash-fixed:#EBDCA8}
 body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%) !important;color:#1C1B1A !important}
 /*  flex-shrink:0 IS THE WHOLE FIX FOR THE CRUSHED YEAR, AND THE YEAR IS WHY IT IS HERE.
     .vvcard is a fixed-height flex column (--cw * 1.397). When its children want more room
@@ -3141,6 +4539,9 @@ body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, va
 .vvcard .cbadgewrap{display:flex;align-items:center;gap:calc(var(--cw)*0.033)}
 .vvcard .cbadge{width:calc(var(--cw)*0.175);height:calc(var(--cw)*0.203);flex-shrink:0;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,0.32))}
 .vvcard .pos{display:none}
+.vvcard .xfm{position:relative;display:flex;align-items:center;justify-content:center;width:calc(var(--cw)*0.175);height:max(12px,calc(var(--cw)*0.06));margin:calc(var(--cw)*0.012) 0 0;padding:0;border:0;background:none;color:var(--charcoal);cursor:pointer;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent}
+.vvcard .xfm svg{width:max(12px,calc(var(--cw)*0.06));height:100%;display:block;pointer-events:none}
+.vvcard .xfm::before{content:'';position:absolute;left:50%;top:50%;width:32px;height:32px;transform:translate(-50%,-50%)}
 .vvcard .ctr{position:absolute;right:0;top:calc(var(--cw)*-0.01);display:flex;flex-direction:column;align-items:center}
 .vvcard .halo{display:none}
 .vvcard .n{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.17);line-height:.82;color:var(--charcoal)}
@@ -3164,26 +4565,94 @@ body.light .vvcard{background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, va
     width. The prestige faces below already sit at 55% and never overflowed, so they are
     left alone. This is a real change to every card face at every width, made deliberately:
     the photo is the only element on the face carrying no information. */
-.vvcard .cimg{width:56%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.035);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
+.vvcard .cimg{width:56%;aspect-ratio:1/1;flex:0 0 auto;border-radius:calc(var(--cw)*0.05);background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);margin:0 auto calc(var(--cw)*0.02);position:relative;overflow:hidden;box-shadow:0 10px 22px -12px rgba(0,0,0,0.5),inset 0 0 0 1.5px rgba(0,0,0,0.5),inset 0 1.5px 0 0 rgba(255,255,255,0.12)}
 .vvcard .cimg .silh{width:60%;height:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 .vvcard .cphoto{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:none}
 body.show-photos .vvcard .cimg .cphoto{display:block}
 body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
-.vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.04)}
+.vvcard .chtag{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--cw)*0.025);margin-bottom:calc(var(--cw)*0.015)}
 .vvcard .chtag .chtagcell:last-child:nth-child(odd){grid-column:1 / -1}
 /* #4: odd count -> last tag spans both cols, no blank cell */
   .vvcard .chtag.one{grid-template-columns:1fr;justify-items:center}
-.vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:calc(var(--cw)*0.045);letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
+/*  TYPE FLOORS ON THE TAG LABELS , measured 2026-09-28, and the two are NOT the same problem.
+    Without them these scale linearly to nothing: in the rankings grid at --cw 153 the prestige
+    band rendered at 5.81px and the honour chip at 6.88px, against 12.39 and 14.67 on the hero
+    card. Two of the card's four label families already had floors (.cname .sub at 11.5px,
+    .cga .col .l at 9.5px) and the two carrying the TAG NAMES had none.
+    THE BAND IS VERTICALLY CONSTRAINED AND COSTS NOTHING: it is one line across the full card,
+    so 9.5px (matching .cga .col .l, so nothing on the face now renders below that) is free at
+    every width the platform actually draws.
+    THE CHIP IS HORIZONTALLY CONSTRAINED AND 7.5px IS ITS CEILING, not a preference. Chips sit
+    two-up, so each box is about 55px wide at --cw 145. Measured at 145: 7.5px keeps the label
+    on one line at 12.3px tall; 8px WRAPS and the box jumps to 21.6px, which takes the card's
+    whole remaining clearance and puts it at -0.6. Raising the chip past this needs a LAYOUT
+    change (one chip per row), not a bigger number.
+    The smallest --cw the platform renders is 145 (compare at 390), not the 132 the older
+    clearance table is keyed to , 132 occurs nowhere. Re-measure the rendered set before
+    trusting either figure.  */
+.vvcard .chtag .chtagcell{font-family:'Barlow Condensed';font-weight:600;font-size:max(7.5px, calc(var(--cw)*0.045));letter-spacing:0.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#FF7A5C,#E70443);padding:calc(var(--cw)*0.014) calc(var(--cw)*0.016);border-radius:calc(var(--cw)*0.028);text-align:center;line-height:1.1;overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;min-height:calc(var(--cw)*0.07);box-sizing:border-box}
 .vvcard .chtag.one .chtagcell{width:auto;padding-left:calc(var(--cw)*0.07);padding-right:calc(var(--cw)*0.07)}
-.vvcard .chtagcell-att{background:linear-gradient(90deg,#FF7A5C,#E70443) !important}
-.vvcard .chtagcell-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968) !important}
-.vvcard .chtagcell-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0) !important}
-.vvcard .chtagcell-age{background:linear-gradient(90deg,#5A5856,#46443F) !important}
+/*  THE WONDER-TAG ROWS GET THEIR PILLS ON EVERY SURFACE THAT RENDERS THEM , 2026-09-13.
+    renderProfileTagRows is shared and already emits data-fam and data-tag on each row, so the
+    family has always been on the element. The TREATMENT was not: it lived as
+    #wonderTags .tagrow[data-fam=...] in card.html, scoped to an id only the card has, and
+    compare rendered the identical markup as plain text under a chevron. Same renderer, same
+    data, one surface styled.
+    SCOPED WITH THE ATTRIBUTE ON PURPOSE, AND IT IS A SPECIFICITY DECISION RATHER THAN A STYLE
+    ONE. compare.html carries .tagrow .tt .ttl{flex:1} at three classes; this sheet PREPENDS,
+    so an equal-weight rule here would lose to it and the pill would stretch the full row.
+    .tagrow[data-fam] is four, which wins, and it also means a row with no family , an honour ,
+    is untouched by the fill rules and takes the gold below instead.
+    THE CARD'S OWN RULES STILL WIN OVER THESE and are left in place deliberately: they are id
+    scoped, they now read the same tokens, so they can only agree. Deleting them is a separate
+    pass once this has been seen on both surfaces , not the same edit.  */
+.tagrow[data-fam] .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+  border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative;
+  flex:0 0 auto;overflow-wrap:normal;background:var(--vvfam-cross-solid)}
+.tagrow[data-fam="ATT"]   .tt .ttl{background:var(--vvfam-att-solid)}
+.tagrow[data-fam="MID"]   .tt .ttl{background:var(--vvfam-mid-solid)}
+.tagrow[data-fam="DEF"]   .tt .ttl{background:var(--vvfam-def-solid)}
+.tagrow[data-fam="CROSS"] .tt .ttl{background:var(--vvfam-cross-solid)}
+.tagrow[data-fam="STAGE"] .tt .ttl{background:var(--vvfam-stage-solid)}
+/*  THE STANDARD IS ENGRAVED HERE TOO. The panel is where a reader goes to find out what a tag
+    MEANS, so it is the last place a career tag should look like a season one , the same
+    reasoning, and the same two colours, as the card face and the glance.  */
+.tagrow[data-tag="The Standard"] .tt .ttl{background:var(--vvfam-stage-quiet);color:#1B5563;
+  box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
+/*  PRESTIGE IS A GROUND, NOT A HUE , near-black under gold ink, or gold under near-black , so
+    the family alone cannot tell Generational from Iconic and these key on the NAME.  */
+.tagrow[data-fam="PRESTIGE"] .tt .ttl{font-size:10.5px;text-transform:uppercase}
+.tagrow[data-tag="Generational"] .tt .ttl{background:linear-gradient(90deg,#2c2926,#121010);
+  color:#F3DA88;border:1px solid rgba(232,184,75,0.55)}
+.tagrow[data-tag="Iconic"] .tt .ttl{background:linear-gradient(90deg,#F3DA88,#E8B84B);
+  color:#16120e;font-weight:900;letter-spacing:0.08em}
+/*  AND SILVERWARE TAKES THE GOLD. Four classes, so it beats the page rule for the same reason
+    the fills do, and an honour row carries no data-fam so nothing above has touched it.  */
+.tagrow.honour .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+  border-radius:18px;display:inline-flex;align-items:center;flex:0 0 auto;overflow-wrap:normal;
+  background:var(--vvfam-hon);color:#574210}
+.vvcard .chtagcell-att{background:var(--vvfam-att) !important}
+.vvcard .chtagcell-mid{background:var(--vvfam-mid) !important}
+.vvcard .chtagcell-def{background:var(--vvfam-def) !important}
+.vvcard .chtagcell-age{background:var(--vvfam-cross) !important}
 /*  STAGE , the career-arc family. Teal is its own colour: charcoal is CROSS (Iron Man,
     Complete) and gold is honours, so a stage tag must read as neither. The -age rule above
     is DEAD as of the family merge and is left in place deliberately while this is unpushed.  */
-.vvcard .chtagcell-stage{background:linear-gradient(90deg,#2F8290,#1B5563) !important}
-.vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.03)}
+.vvcard .chtagcell-stage{background:var(--vvfam-stage) !important}
+/*  THE STANDARD IS ENGRAVED ON THE CARD FACE TOO , career-legged, same rule as the World Cup
+    chip. It lands on every season at rt 80+ (413 cards, 58 players, 7.12 each) while Peak and
+    Breakout are one card per player, so on any single card a solid pill identical to theirs
+    claims something about THAT season that the tag does not mean. The family teal stays; the
+    fill-versus-engrave axis carries the distinction. Ink 6.70 on the pale ground against 4.45
+    for white on the solid pill's light stop.
+    IN VV_CARD_CSS RATHER THAN THE PAGES, because SS C records the gen face as exactly this
+    mistake: a card rule that lived in the pages was a trap for the next surface. The face is
+    shared by card.html, compare.html and rankings.html and all three must draw it the same.
+    !important mirrors the rule above it, which needs it to beat the page copies. */
+.vvcard .chtagcell-stage[data-tag="The Standard"]{
+  background:var(--vvfam-stage-quiet) !important;color:#1B5563 !important;
+  box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
+.vvcard .cga{display:flex;justify-content:center;gap:calc(var(--cw)*0.08);margin-bottom:calc(var(--cw)*0.015)}
 .vvcard .cga .col{text-align:center}
 .vvcard .cga .col .v{font-family:'Barlow Condensed';font-weight:800;font-size:calc(var(--cw)*0.105);line-height:.9}
 /*  SAME DEFECT AS .cname .sub DIRECTLY BELOW, AND THE SAME FIX , 2026-09-01. This is the
@@ -3235,7 +4704,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
     9.2px, below the 9.5px its sibling .cga .col .l was given in the same pass, and it still
     leaves the face 2.3px off the edge. Same nowrap+ellipsis pattern as .vvrows .uclub. */
 .vvcard .cname .sub{font-family:'Barlow Condensed';font-weight:600;font-size:max(11.5px, calc(var(--cw)*0.05));letter-spacing:0.04em;text-transform:uppercase;color:#5f594e;margin-top:calc(var(--cw)*0.01);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vvcard.gen .yr{color:rgba(240,234,217,0.85)}
+.vvcard.gen .yr,.vvcard.gen .xfm{color:rgba(240,234,217,0.85)}
 .vvcard.gen .n{color:#F0EAD9}
 .vvcard.gen .cimg,.vvcard.iconic .cimg{width:55%;margin-top:calc(var(--cw)*0.005)}
 .vvcard.gen .pos{color:#E8B84B;background:rgba(232,184,75,0.14)}
@@ -3258,9 +4727,9 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
      rankings, so nothing moves, and preferences/myclub carry a DRIFTED rim (a flat 1.5px
      outline instead of the gold inset, no !important) which is its own decision, logged in
      SS D rather than silently overwritten here. */
-  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
-  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #E8B84B, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
-.vvcard.iconic .yr{color:rgba(42,29,3,0.82)}
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #3a3126, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+  body .vvcard.iconic{background:radial-gradient(130% 60% at 50% 0%, #FBE490 0%, #E8B84B 48%, #D29A2C 100%) !important;color:#2a1d03 !important;box-shadow:0 22px 50px -22px rgba(176,120,20,0.7), inset 0 0 0 calc(var(--cw)*0.02) #C08A22, inset 0 0 0 calc(var(--cw)*0.025) rgba(42,29,3,0.55) !important}
+.vvcard.iconic .yr,.vvcard.iconic .xfm{color:rgba(42,29,3,0.82)}
 .vvcard.iconic .pos{color:#3a2a08;background:rgba(0,0,0,0.12)}
 .vvcard.iconic .vv .a{color:#2a1d03}
 /*  THE ICONIC FACE'S TWO MUTED INKS WERE FAILING ON AN ALPHA, NOT ON A DESIGN CONSTRAINT
@@ -3278,8 +4747,8 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard.iconic .cname .full,.vvcard.iconic .cname .sub{color:rgba(42,29,3,0.85)}
 /* Prestige pills , the LOUDEST tag (reuse .rmini gen/elite language) */
   .vvcard .chtag-prestige-gen,.vvcard .chtag-prestige-ico{display:block;margin-bottom:calc(var(--cw)*0.018)}
-.vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
-.vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:calc(var(--cw)*0.038);text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.vvcard .chtag-prestige-gen span{display:block;text-align:center;background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:800;letter-spacing:0.09em;font-size:max(9.5px, calc(var(--cw)*0.038));text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
+.vvcard .chtag-prestige-ico span{display:block;text-align:center;background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:800;letter-spacing:0.09em;font-size:max(9.5px, calc(var(--cw)*0.038));text-transform:uppercase;padding:calc(var(--cw)*0.013) calc(var(--cw)*0.05);border-radius:calc(var(--cw)*0.028);box-shadow:0 8px 20px -7px rgba(232,184,75,0.85)}
 /* MARK SIZING , belongs here, and was MISSED by the first extraction pass.
    These two rules are byte-identical in card.html, rankings.html and compare.html,
    but each carried a DIFFERENT COMMENT above it, and the extraction compared the
@@ -3306,35 +4775,69 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvm{width:1em;height:1em;flex:none;vertical-align:-0.12em}
 .vvcard .chtag .vvm,.vvcard .chtagcell .vvm{width:calc(var(--cw)*0.042);height:calc(var(--cw)*0.042);flex:none;margin-right:calc(var(--cw)*0.016);vertical-align:-0.09em}
 .vvcard .chtagcell{display:inline-flex;align-items:center;justify-content:center}
-/*  THE OVERFLOW HAS TO GO SOMEWHERE, AND IT COMES OFF THE PHOTO'S WIDTH , NOT ITS HEIGHT.
-    .ctop is pinned above, so on a narrow card the surplus needs another home, and .cimg is
-    the largest element on the face and the only one whose loss costs nothing readable.
+/*  THE PHOTO STEPS DOWN ON SMALL CARDS, AND THE QUERY IS ON THE CARD, NOT THE VIEWPORT
+    , 2026-09-07. This replaced a @media (max-width:720px) override, which was keyed on the
+    wrong thing: crowding is a function of --cw, and --cw is not a function of the viewport.
+    rankings.html:226 is the proof , it sets --cw:165px on (max-width:720px),(max-height:600px),
+    and the max-height branch fires on a WIDE, SHORT desktop window where a viewport-keyed
+    override does not. The media rule protected the phone and left the identical card
+    cropping on a laptop.
+    WHY A STEP AT ALL, when the gaps above already bought most of it: two type sizes on this
+    face have FLOORS that do not scale , .cname .sub at 11.5px and .cga .col .l at 9.5px.
+    At --cw 132 their design sizes are 6.6px and 5.3px, so the floors add about 9px of height
+    that a small card has no room for. That is a fixed cost, so it can only be paid by
+    something that scales, and the photo is the only element on the face carrying no
+    information. It is NOT a reason to lower the floors: measured, dropping .sub from 11.5 to
+    9.5 buys 2.0px at 132 and EXACTLY ZERO at 260 and above, because above --cw 230 the floor
+    does not bind at all. A legibility cost for nothing where the card is largest.
+    46% AND 190px ARE MEASURED. The container query reports the CONTENT box, which is
+    --cw * 0.86 here, so 190px trips at --cw 221 and below. Club line to rim, worst of a
+    prestige card and a three-tag plain card: +1.7 at 132, +3.2 at 138, +4.3 at 145, +4.9 at
+    165, +5.7 at 190, +6.6 at 220, then 55% takes over , +7.8 at 260, +9.0 at 300, +9.9 at 330.
+    Those are read off the LIVE card page, not off an isolated sweep , the sweep said +2.1 and
+    +3.6 for the first two, and the real prestige card is the tighter subject.
+    container-type:inline-size is contain:layout style inline-size. It does NOT clip, so it
+    does not flatten preserve-3d , the flip invariant in section C is unaffected, and that
+    was verified on the rendered card rather than reasoned about.  */
+.vvcard{container-type:inline-size}
+@container (max-width:190px){
+  .vvcard .cimg,.vvcard.gen .cimg,.vvcard.iconic .cimg{width:46%}
+}
+/*  THE PHOTO IS 42% AT EVERY WIDTH, AND THIS USED TO BE A @media (max-width:720px)
+    OVERRIDE OVER 56% / 55% BASES. THE VIEWPORT WAS THE WRONG KEY , 2026-09-06.
+    THE OVERFLOW HAS TO GO SOMEWHERE, AND IT COMES OFF THE PHOTO'S WIDTH , NOT ITS HEIGHT.
+    .ctop is pinned above, so the surplus needs another home, and .cimg is the largest
+    element on the face and the only one whose loss costs nothing readable.
     IT MUST STAY SQUARE. Letting it shrink vertically (flex-shrink:1) also frees the height
     and is one line shorter, and it was tried and rejected: aspect-ratio loses to flex, so the
     window went landscape below 720 and stayed square above it. A card that is square on
     desktop and landscape on mobile is two different objects, and the card is the product.
     Narrowing the width takes the same height out and keeps the ratio, because the height is
     derived from the width through aspect-ratio:1/1.
-    42% IS SET BY THE WORST CARD, NOT BY EYE. The surplus is chip rows: a three-tag card is
-    the heaviest and needs about 24px back at --cw:145px, which is 19 points of the content
-    width. 60% - 19 lands at 41%, and 42 is the measured value at which every test card
-    clears with .ctop at its declared height and nothing else shrinking. Lighter cards give up
-    more than they strictly need; that is the price of one number instead of a per-card one.
-    THIS SITS AT THE END OF THE SHEET ON PURPOSE. A media query adds NO specificity, so the
-    wrapped .vvcard .cimg and the base .vvcard .cimg are both (0,2,0) and the LAST one wins.
-    Placed before the base rule it would parse, validate, and silently do nothing. That
-    trap has bitten this repo three times and is recorded in section C; the fix is position,
-    not !important. */
-@media (max-width:720px){
-  /*  THE TIER SELECTORS ARE REPEATED HERE BECAUSE SPECIFICITY, NOT ORDER, DECIDES THIS ONE.
-      .vvcard.gen .cimg and .vvcard.iconic .cimg set width:55% at (0,3,0). A lone
-      .vvcard .cimg override is (0,2,0) and LOSES to them however late it is written , which
-      is the same trap as the media query, one rung up. Measured before this line existed:
-      the plain card took 42% and Messi's Generational card stayed at 55%, 69px, and his card
-      then overflowed its own box by 10px because .ctop was pinned and nothing else gave.
-      Both prestige faces take the same 42%, so every tier is one object again. */
-  .vvcard .cimg,.vvcard.gen .cimg,.vvcard.iconic .cimg{width:42%}
-}
+    42% IS STILL SET BY THE WORST CARD, NOT BY EYE , the surplus is chip rows and a
+    three-tag card is the heaviest.
+
+    WHY THE MEDIA QUERY WENT. The crowding is a function of --cw, and --cw is NOT a function
+    of the viewport. Measured on the live pages: with the photo at its old widths the club
+    line sat INSIDE the inner rim at EVERY size , clearance -14.7 / -12.0 / -9.2 / -6.8 /
+    -4.1 / -3.6 / -5.4 px at --cw 145 / 165 / 190 / 220 / 260 / 300 / 330. A plain card is
+    the same story once it carries three tags: clear at 0, 1 and 2 tags (+6.6 at 220, +9.0 at
+    300) and -8.0 / -6.7 at three. None of that was reachable by the old rule, because the
+    pages that render a small card on a LARGE viewport never matched max-width:720px.
+    rankings.html:226 is the case that proves it , it sets --cw:165px on
+    (max-width:720px),(max-height:600px), and the max-height branch fires on a wide, short
+    desktop window where the 42% override did not. rankings.html:237 does the same at 190px.
+    So the override protected the phone and left the identical card cropping on a laptop.
+
+    AND THE CLEARANCE CANNOT COME FROM ANYWHERE ELSE. .cname is margin-top:auto and that
+    margin computes to 0px at 145, 260, 300 AND 330 , there is no free space to reallocate,
+    which is why adding margin-bottom to .cname does nothing and why padding-bottom on
+    .vvcard measures IDENTICAL to base at all four sizes. Both were tried and measured. The
+    photo is the only source. Do not retry either.
+
+    42% costs the lighter cards photo they did not need: at 220 and above they were already
+    at the slack ceiling (+6.6 / +9.0) and stay there. That is the price of one number
+    instead of a per-card one, and it is the same trade the old comment already accepted.  */
 `;
   function vvInjectCardCSS(){
     if (typeof document === 'undefined') return;
@@ -3397,6 +4900,19 @@ body.light .vvrows .ugoals span, body.light .vvrows .uassists span{color:var(--i
 .vvrows.compactmode .ugoals, .vvrows.compactmode .uassists{font-size:13px}
 .vvrows.compactmode .ugoals span, .vvrows.compactmode .uassists span{font-size:10px}
 .vvrows.compactmode .rmini{width:40px;height:44px;border-radius:9px}
+/*  THE EMPTY SLOT HOLDS ITS PLACE AND PAINTS NOTHING , 2026-09-07. A keeper row carries no
+    score, and .rmini is a filled tile with a gradient, a border and a shadow, so an EMPTY
+    .rmini renders as a visible empty box , which reads as a missing value rather than as a
+    thing that does not apply. The row is a grid, so the cell cannot simply be dropped
+    either: that shifts every column after it. It keeps its width and loses its paint.
+    BOTH NAMESPACES, AND THE FIRST DRAFT ONLY HAD ONE. Section D records that the row CSS
+    lives under TWO prefixes , .vvrows and .vvrows-season , precisely because both style
+    .rmini with different values. The season dropdown is .vvrows-season, so a rule written
+    against .vvrows alone MATCHED NOTHING and the box kept painting. It read like a
+    specificity fight and it was not; section C: a selector that matches nothing is not a
+    specificity problem. Found by asking the element which rules matched it. */
+.vvrows .rmini-none, .vvrows-season .rmini-none, .rmini.rmini-none{
+  background:none !important;border:0 !important;box-shadow:none !important}
 .vvrows.compactmode .rmvv{font-size:10px}
 .vvrows.compactmode .rmn{font-size:17px}
 .vvrows .rtag .vvm,.vvrows-season .rtag .vvm{width:11px;height:11px;flex:none;margin-right:5px;vertical-align:-1px}\n.vvrows .rtag,.vvrows-season .rtag{display:inline-flex;align-items:center}\n.vvrows .rtag{position:relative;white-space:nowrap;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid}
@@ -3481,7 +4997,32 @@ body.light .vvrows .rtag.purple{color:#784eac}
   .vvrows.vvrows.pillmode > .urow > .utags{grid-column:2/7;grid-row:3;justify-content:flex-start;margin-top:2px}
   .vvrows.vvrows.pillmode .rtag{font-size:8.5px;padding:2.5px 8px}
   .vvrows.vvrows.pillmode > .urow > .rmini{grid-column:7;grid-row:1/4;align-self:center;justify-self:end;margin:0;width:42px;height:48px}
-  .vvrows.vvrows.compactmode > .urow{grid-template-columns:22px minmax(0,1fr) 34px 30px 30px 40px;grid-template-rows:auto auto;column-gap:9px;row-gap:1px;padding:7px 12px;align-items:center}
+  /*  ── THE NAME GETS THE ROOM, COMPACT LIST AT PHONE WIDTH (2026-10-03) ───────────────
+      MEASURED BEFORE: the row has 305px of content and the NAME got 47px of it , 15%. The
+      rest went to a 22px flag, a 13px shield, two 11px gaps and 94px of position, goals and
+      assists. 56 OF 100 VISIBLE NAMES TRUNCATED, and "Touré" rendered as "To...".
+      THE NAME IS THE ONE THING A READER IS SCANNING FOR AND IT WAS THE FIRST THING CUT.
+      WHAT GAVE, AND IT IS SPACING RATHER THAN INFORMATION: column gap 9 -> 6, row padding
+      12 -> 10, the three stat columns 34/30/30 -> 26/24/24, the rank 22 -> 20, the mini 40 ->
+      38, the flag 22 -> 16, and the ident's own gaps 11 -> 6. Nothing is removed and nothing
+      moves rows , every field the row carried before, it still carries.
+      AFTER: column two goes 104 -> 147px and the name's own box 47 -> 106px. TRUNCATION IS
+      0 OF 100 on the live grid.
+      AND THE TAIL WAS CHECKED RATHER THAN THE TOP, BECAUSE THE TOP 100 IS SELECTED BY FAME
+      AND FAMOUS SURNAMES ARE SHORT , SS C's rule about a validation set built from whatever
+      already exists. Measured against the 300 LONGEST surnames in the database: 247 of 300
+      fit, against 0 of 300 before. The widest, "dos Santos Goncalves", needs 144px.
+      SO ROUGHLY 0.5% OF DISTINCT SURNAMES STILL CLIP, AND THAT IS THE DECISION RATHER THAN
+      AN OVERSIGHT. A fuller reformat was built and measured , one row for the name, one meta
+      line for everything else , and it fits 300 of 300 at 188px. It was REFUSED because it
+      crowds position, goals and assists onto the meta line of EVERY row to serve one row in
+      two hundred, and the names it rescues are the least likely to be scanned for.  */
+  .vvrows.vvrows.compactmode > .urow{grid-template-columns:20px minmax(0,1fr) 26px 24px 24px 38px;grid-template-rows:auto auto;column-gap:6px;row-gap:1px;padding:7px 10px;align-items:center}
+  /*  SCOPED TO compactmode, NOT TO .vvrows. The demo tightened ".vvrows .uident" globally,
+      which would have reached pillmode and the season rows too , surfaces that are not short
+      of width and did not ask for it.  */
+  .vvrows.vvrows.compactmode .uident{gap:6px}
+  .vvrows.vvrows.compactmode .uflag{width:16px}
   .vvrows.vvrows.compactmode > .urow > .urank{grid-column:1;grid-row:1/3;align-self:center;font-size:11px}
   .vvrows.vvrows.compactmode > .urow > .uident{grid-column:2;grid-row:1;min-width:0}
   .vvrows.vvrows.compactmode .uname{font-size:13.5px}
@@ -3589,6 +5130,23 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     }, 0);
   }
 
+  /*  A KEEPER ROW CARRIES NO SCORE , 2026-09-07, the last surface that still printed one.
+      The season dropdown on card.html and compare's season list both render through
+      rankRowHTML, so this one helper closes both. Same ruling as the card face: nothing
+      replaces the number, the slot is simply empty, and the VV wordmark goes with it
+      because it labels the number.
+      GATED ON POSITION via vvIsGKCard, never on a null rt. Most recent Premier League
+      keepers carry a null rt while de Gea carries 75, so a null-keyed gate would leave some
+      keepers scored and others not, which is worse than either.
+      THE ROW IS A GRID, so the cell is EMITTED EMPTY rather than omitted: dropping the
+      element would shift every column after it. Section C's lesson from .ctop, one layout
+      down , the absent thing still has to hold its place.  */
+  function gkRowScore(d, tier){
+    if (vvIsGKCard(d)) return '<div class="rmini' + tier + ' rmini-none"></div>';
+    return '<div class="rmini' + tier + '"><span class="rmvv"><span class="a">V</span>'
+         + '<span class="b">V</span></span><span class="rmn">' + d.vv + '</span></div>';
+  }
+
   function rankRowHTML(d,i,opts){
     vvQueueRowAudit();                          // cheap: one deferred check per batch, then never again
     if (typeof opts === 'number') opts = { cap: opts };   // back-compat: 3rd arg was `cap`
@@ -3652,7 +5210,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
           +'<div class="srsub">'+sub+'</div>'
           +(srtags ? '<div class="srtags">'+srtags+'</div>' : '')
         +'</div>'
-        +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+        +gkRowScore(d, tier)
       +'</div>';
     }
     return '<div class="urow'+tier+active+'" onclick="'+click+'">'
@@ -3673,7 +5231,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       +'<div class="utags">'+prestige+honHtml+tags+'</div>'   // prestige FIRST (matches .srtags)
       +'<div class="ugoals">'+goalsCell+'</div>'
       +'<div class="uassists">'+assists+'</div>'
-      +'<div class="rmini'+tier+'"><span class="rmvv"><span class="a">V</span><span class="b">V</span></span><span class="rmn">'+d.vv+'</span></div>'
+      +gkRowScore(d, tier)
     +'</div>';
   }
 
@@ -3694,10 +5252,112 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     tier = (tier==='black'||tier==='gold') ? tier : 'cream';
     return '<div class="vvmono vvmono-'+tier+'"><div class="vvmonomark">V<span>V</span></div></div>';
   }
+  /*  ── vvCardSlide , THE HORIZONTAL SIBLING OF vvCardFlip ─────────────────────────────
+      The card has two navigation axes and they had opposite polish: switchSeason already
+      called vvCardFlip, while seqGo , stepping through the list you arrived from , was a
+      hard cut. THE MISSING ONE WAS THE ONE THAT LOOKED FINISHED, because a hard cut has no
+      jank, no half-frames and no stutter, so an absence reads as restraint.
+
+      SAME DURATION, SAME EASING, DIFFERENT AXIS. VV_MOVE_MS and VV_MOVE_EASE are shared with
+      the flip below, so the two are one grammar rather than two languages. A reader learns
+      the motion once.
+
+      SLIDE RATHER THAN CROSSFADE, DELIBERATELY: a slide carries DIRECTION and a crossfade
+      does not, and direction is the whole content of this gesture , forward and back through
+      a list. A fade would say "something changed" where the card should say "you moved".
+
+      THE OLD CARD PERSISTS. It is snapshotted into an absolutely positioned layer and moves
+      out while the new one moves in, which is what reads as movement; swapping content under
+      a static frame does not. `work` is awaited BETWEEN the two halves, so the network round
+      trip inside loadCard is covered by the outgoing motion rather than added to it.
+
+      REDUCED MOTION TAKES THE HARD CUT, not a faster slide , the card honours that preference
+      elsewhere and a reader who asks for less movement should get none.  */
+  var VV_MOVE_MS = 800, VV_MOVE_EASE = 'cubic-bezier(.5,0,.5,1)';
+  function vvPrefersReducedMotion(){
+    try{ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch(e){ return false; }
+  }
+  async function vvCardSlide(host, dir, work){
+    if(!host || typeof work !== 'function'){ if(typeof work==='function') await work(); return; }
+    if(vvPrefersReducedMotion() || host._sliding){ await work(); return; }
+    var parent = host.parentNode;
+    if(!parent){ await work(); return; }
+    host._sliding = true;
+    var out  = dir > 0 ? '-18%' : '18%';
+    var into = dir > 0 ? '18%'  : '-18%';
+    var box = { t: host.offsetTop, l: host.offsetLeft, w: host.offsetWidth, h: host.offsetHeight };
+    var snap = document.createElement('div');
+    snap.className = 'vvslide-out';
+    snap.setAttribute('aria-hidden','true');
+    snap.innerHTML = host.innerHTML;
+    /*  translateZ(0) AND will-change PROMOTE THE LAYER BEFORE IT MOVES. Without them the
+        snapshot animates on the main thread and every frame repaints a 43-node card and its
+        portrait , measured `will-change:auto`, `transform:none` on the first build, which is
+        the jitter a human saw on a real phone and this harness cannot see at all.  */
+    snap.style.cssText = 'position:absolute;top:'+box.t+'px;left:'+box.l+'px;width:'+box.w+'px;'
+      + 'height:'+box.h+'px;display:flex;justify-content:center;pointer-events:none;z-index:3;'
+      + 'will-change:transform,opacity;transform:translateZ(0);backface-visibility:hidden';
+    var prevParentPos = parent.style.position;
+    if(getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
+    try{
+      parent.appendChild(snap);
+      /*  ── EVERYTHING EXPENSIVE HAPPENS BEFORE ANY MOTION ────────────────────────────────
+          The first build awaited `work` BETWEEN the two halves, so a network round trip sat
+          inside the gesture: the outgoing half finished, the card stalled for however long
+          the fetch took, then the incoming half began. MEASURED: the fetch is 91ms on
+          localhost and the JS either side is 0.6ms and 0.8ms , so the stall IS the network
+          and nothing else, and on a phone on mobile data it is several times worse.
+          A VARIABLE GAP BETWEEN TWO FIXED HALVES CANNOT BE EASED AWAY. It is not jitter and
+          no curve fixes it; the work has to move out of the window entirely.
+          So: the snapshot covers the card, `work` runs behind it, the new portrait is
+          DECODED, and only then does anything move. The cost is that motion starts later on
+          a slow connection , but a card that sits still and then moves once reads as
+          deliberate, where one that moves, freezes and moves again reads as broken.  */
+      await work();
+      var card = host.firstElementChild;
+      if(card){
+        card.style.cssText += ';will-change:transform,opacity;transform:translateZ(0);backface-visibility:hidden';
+        var img = card.querySelector('img');
+        if(img && img.decode){ try{ await img.decode(); }catch(e){} }
+        else if(img && !img.complete){ await new Promise(function(r){ img.onload=img.onerror=r; setTimeout(r,300); }); }
+      }
+      /*  ONE CONTINUOUS MOTION, BOTH LAYERS, TRANSFORM AND OPACITY ONLY. No layout and no
+          paint inside the window , the full VV_MOVE_MS rather than two halves, because there
+          is no longer a midpoint to wait at.  */
+      var dur = VV_MOVE_MS;
+      if(card){
+        card.style.transition='none';
+        card.style.transform='translateZ(0) translateX('+into+')';
+        card.style.opacity='0';
+      }
+      void snap.offsetWidth;
+      snap.style.transition='transform '+dur+'ms '+VV_MOVE_EASE+',opacity '+dur+'ms '+VV_MOVE_EASE;
+      snap.style.transform='translateZ(0) translateX('+out+')';
+      snap.style.opacity='0';
+      if(card){
+        card.style.transition='transform '+dur+'ms '+VV_MOVE_EASE+',opacity '+dur+'ms '+VV_MOVE_EASE;
+        card.style.transform='translateZ(0)';
+        card.style.opacity='1';
+      }
+      /*  will-change IS RELEASED WHEN THE MOTION ENDS , left on, it pins a compositor layer
+          per card for the life of the page, which is the opposite of the fix.  */
+      setTimeout(function(){
+        if(card){ card.style.transition=''; card.style.transform=''; card.style.opacity=''; card.style.willChange=''; }
+      }, dur + 60);
+    } finally {
+      setTimeout(function(){
+        if(snap.parentNode) snap.parentNode.removeChild(snap);
+        parent.style.position = prevParentPos;
+        host._sliding = false;
+      }, VV_MOVE_MS + 90);
+    }
+  }
+
   function vvCardFlip(host, opts){
     if(!host) return;
     opts = opts || {};
-    var dur = opts.duration || 800;
+    var dur = opts.duration || VV_MOVE_MS;
     var swap = !!opts.swap;
     var newHTML = opts.newHTML || null;
     var cw = opts.cw;
@@ -3763,33 +5423,83 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
    *  so the two UIs CANNOT drift from the engine vocabulary again.
    *   - profile[].items[].v MUST equal a TAG_DEFS key (verified in test).
    *   - prestige mirrors the two prestige badges; honours mirror HONOUR_META
-   *     types (honour filtering is DEFERRED , rendered visibly "soon");
+   *     types (all nine filter server-side since 2026-09-19; a type with no
+   *     matview column would render visibly "soon" and inert);
    *     position mirrors the locked 8-bucket position_pool.
    * ════════════════════════════════════════════════════════════════════ */
+  /*  WHICH HONOUR TYPES ARE FILTERED BY `honours_json` CONTAINMENT RATHER THAN BY AN
+      `h_*` COLUMN. Declared out here because BOTH the chip list and the query builder
+      read it, and CLAUDE.md's standing lesson is that one vocabulary kept in two places
+      drifts. Keep it beside HONOUR_FILTER_COLUMNS in the taxonomy below , the two
+      together are the whole answer to "can this chip filter yet".  */
+  const HONOUR_JSON_FILTERED = ['afcon_winner'];
+
   const FILTER_TAXONOMY = {
     prestige: [
       { v:'Generational', l:'Generational', e:'👑' },
       { v:'Iconic',       l:'Iconic',       e:'🏅' },
     ],
-    // DEFERRED (Option C , needs honour flags on the matview). Rendered "soon", inert.
-    honours: [
-      { v:'ballon_dor',       l:"Ballon d'Or",          e:'🥇' },
-      /*  world_cup_winner WAS THE ONE INERT HONOUR AND IS NOW LIVE. It was held back because
-          the column and the renderer disagreed: h_world_cup_winner is a CAREER leg, true on
-          every season of a winner's career (587 cards from 93 honours rows), while
-          fetchHonours matched it on season_year and its career array was dead code. 496 of
-          those 587 cards returned from the filter and displayed no World Cup at all.
-          FIXED IN THE RENDERER, NOT THE COLUMN, because the column was right: the Playbook
-          calls it a career honour, HONOUR_META has always had group:'Career', and
-          honours_json encodes {leg:'career', year:2014}. Only this file disagreed.
-          The card now shows it in the career leg with its TOURNAMENT year printed. */
-      { v:'world_cup_winner', l:'World Cup Winner',      e:'🌍' },
-      { v:'ucl_winner',       l:'UCL Winner',            e:'⭐' },
-      { v:'league_champion',  l:'League Champion',       e:'🏆' },
-      { v:'player_of_season', l:'Player of the Season',  e:'🎖️' },
-      { v:'golden_boot',      l:'Golden Boot',           e:'👟' },
-      { v:'top_assists',      l:'Top Assists',           e:'🅰️' },
-    ],
+    // All nine honour types filter server-side off the h_* flags on the matview.
+    /*  DERIVED FROM HONOUR_META AND ORDERED BY TIER , 2026-09-15, AND DERIVING ALONE WOULD
+        NOT HAVE CLOSED THE REPORTED GAP. The two continental honours were missing from this
+        list AND from the matview, so a chip for either would have filtered on a column that
+        was not there. [BOTH COLUMNS LANDED 2026-09-19 in the matview sitting , `h_euro_winner`
+        73 cards, `h_copa_winner` 82, verified through PostgREST as the site's own role , and
+        the two keys are in the list below. Nine `h_*` columns now, nine honour types.]
+        THE ONE HAND-MAINTAINED LIST LEFT IS HONOUR_FILTER_COLUMNS, AND IT IS KEYED ON THE
+        DATABASE RATHER THAN ON THE VOCABULARY. That is the honest place for it: the client
+        cannot ask the matview what columns it has without a round trip on every page load, and
+        a label list drifting is cosmetic while a column list drifting is a broken query.
+        A TYPE WITH NO COLUMN RENDERS AS A `soon` CHIP RATHER THAN BEING HIDDEN, which is this
+        file's existing rule , the inert chips teach the vocabulary before the data exists.
+        [CORRECTED 2026-09-19. THIS SAID THEY "go live the moment the column lands, with no
+        edit here", AND THAT CONTRADICTED THE SENTENCE FOUR LINES ABOVE IT.] A list that is
+        hand-maintained and keyed on the database is exactly a list that must be EDITED when
+        the database changes. The columns landed and the chips stayed inert until these two
+        keys were added by hand, because `soon` is computed from THIS ARRAY and not from the
+        schema. Both halves cannot be true; the hand-maintained half is the true one.
+        WHAT A NEW HONOUR TYPE NEEDS: a HONOUR_META entry, a mark, a matview column, AND a key
+        here. Four things, not three. Nothing in the chip-label map.  */
+    /*  THE EMOJI NOW LIVES ON HONOUR_META TOO, so this derives completely , 2026-09-15.
+        CLAUDE.md's rule is that two separate icon lookups once shadowed the shared mark set and
+        both were deleted, with "do not add a third". A chip emoji list here would have been
+        exactly that third. Putting it on the vocabulary instead means the filter, the chip
+        label and the mark all key on the same object.
+        THE TWO CONTINENTAL TYPES DELIBERATELY CARRY NO EMOJI. They are `soon` chips, inert, and
+        picking two glyphs that do not collide with 🌍 (World Cup) or 🏆 (League) at chip size is
+        a VISUAL choice, which this platform demos before it builds. It is deferred with the
+        column rather than guessed now, and an absent emoji renders as label-only, which the
+        position group already does.  */
+    honours: (function(){
+      var HONOUR_FILTER_COLUMNS = ['ballon_dor','world_cup_winner','ucl_winner','league_champion',
+                                   'player_of_season','golden_boot','top_assists',
+                                   'euro_winner','copa_winner'];
+      /*  AND A SECOND WAY TO BE FILTERABLE, ADDED 2026-10-03 , WITHOUT A COLUMN.
+          `afcon_winner` has 109 honour rows and 74 cards and no `h_afcon_winner` column,
+          and adding one means a matview DROP+CREATE: a ~42s outage plus reindex and
+          regrant, for one boolean. It does not need one. `honours_json` is already on the
+          matview and PostgREST can filter it server-side with jsonb containment, which was
+          tested before this was written rather than after:
+            or=(h_ballon_dor.is.true,honours_json.cs.[{"type":"afcon_winner"}])  ->  88
+          against 14 for the Ballon d'Or alone and 74 for AFCON alone. Exactly the union,
+          inside the SAME .or() the column terms use, so OR-within-group still holds.
+          IT IS SLOWER THAN A COLUMN AND THAT IS THE TRADE, accepted deliberately: a
+          containment test has no index behind it where `h_*` is a plain boolean. One chip
+          of ten, on a filter that already round-trips.
+          SO THERE ARE NOW THREE STATES, NOT TWO , column, json, or genuinely soon , and
+          `soon` is the fallthrough rather than a thing listed. A new honour type lands as
+          an inert chip until it appears in ONE of the two arrays.
+          THE JSON LIST IS `HONOUR_JSON_FILTERED`, DECLARED ABOVE THIS OBJECT AND NOT HERE.
+          The first version of this change declared a second copy inside this closure, which
+          is the one-vocabulary-two-places drift the comment above it was already warning
+          about , caught by re-reading rather than by anything firing.  */
+      return Object.keys(HONOUR_META)
+        .sort(function(a,b){ return (HONOUR_META[a].tier||99) - (HONOUR_META[b].tier||99); })
+        .map(function(k){
+          return { v:k, l:HONOUR_META[k].label || k, e:HONOUR_META[k].emoji || '',
+                   soon: HONOUR_FILTER_COLUMNS.indexOf(k) < 0 && HONOUR_JSON_FILTERED.indexOf(k) < 0 };
+        });
+    })(),
     // ability tags , grouped by getVVTags family. v = the tag name the engine emits.
     profile: [
       { sub:'Attack',       items:[ {v:'Goal Machine',e:'⚽'},{v:'Clinical',e:'🔫'},{v:'Provider',e:'🅰️'},{v:'Poacher',e:'🦊'},{v:'The Winger',e:'🪄'} ] },
@@ -3847,7 +5557,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
 
   /* ════════════════════════════════════════════════════════════════════
-   *  VERDICT_TAGS , the 14-tag Compare verdict vocabulary (single source).
+   *  VERDICT_TAGS , the 15-tag Compare verdict vocabulary (single source).
    *   - 6 LADDER tags: deterministic by |rt gap| (guarantee tone matches gap).
    *   - 5 CONTEXT tags: AI-selected (judgment, no numeric trigger).
    *   - 3 AGE tags: deterministic by season_age + rt gap (no missed wonderkid).
@@ -3862,7 +5572,22 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     clear_edge:       { name:'A Clear Edge',                  emoji:'⚖️', kind:'ladder', blurb:'The margin is real but not huge: one season clearly shades the other.', drury:'Not a landslide. Not a rout. But when you weigh the two, the scales tip, and they tip with conviction.', trigger:'rt gap 4-6' },
     photo_finish:     { name:'Photo Finish',                  emoji:'📸', kind:'ladder', blurb:'Near-identical scores, but one nicks it at the line.', drury:'They crossed the line together, or so it seemed. Only the closest look could tell them apart. And by a fraction, one was first.', trigger:'rt gap 2-3' },
     var_close:        { name:'VAR close call',               emoji:'📺', kind:'ladder', blurb:'Close enough to send it to the screen. Settled by the finest of margins.', drury:'A breath. A heartbeat. The width of a coat of paint. To separate these two feels almost unkind, and yet a verdict must be given.', trigger:'rt gap 1' },
-    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:"So close it won't end the argument. Fuel for the next conversation.", drury:'There will be no peace tonight. The numbers have spoken, and still the argument burns. Some debates were never meant to end.', trigger:'rt gap 0 (true tie, no age tiebreak)' },
+    /*  THE TWO NO-CROWN TAGS STOPPED CLAIMING CLOSENESS , 2026-09-13. Both asserted it and
+        both were false on the pairing that exposed this: Nani 74 against Odegaard 67 is a
+        SEVEN-POINT gap on a pair whose margin is 20.52. They are not close. The Index cannot
+        resolve them, which is a different sentence, and the copy now says the one that is true.
+        Same class of error as a band claiming a reproducibility it cannot deliver (SS E).  */
+    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:'A real gap, but smaller than the error on the scores. The argument is still open.', drury:'There will be no peace tonight. The number could not part them, and so the argument burns on. Some debates were never meant to end.', trigger:'inside the margin, and the record did not decide it either' },
+    /*  DECIDED ON THE RECORD , the state that had no tag of its own and borrowed one that
+        contradicted it. An inside pair the MODEL judged used to floor on `photo_finish`,
+        whose blurb reads "near-identical scores" , printed beside a headline saying the
+        season was taken ON THE RECORD RATHER THAN ON THE NUMBER, about a seven-point gap.
+        THE HEADLINE WAS ALREADY RIGHT; the tag was the half that disagreed.
+        IT CLAIMS NO MARGIN, which is the property `photo_finish` was chosen for and does not
+        actually have: this names WHERE the decision came from instead of how wide it was.
+        `photo_finish` is untouched and still correct on its own ladder rung (a SEPARATED
+        pair at gap 2-3), which is why this is a new key rather than a rewrite.  */
+    decided_on_record:{ name:'Decided on the Record',        emoji:'⚖️', kind:'ladder', blurb:'The score could not separate them. The record could.', drury:'The numbers came back level, or near enough that no honest eye could split them. So the case was made elsewhere, out of what was actually won.', trigger:'inside the margin, decided by the record rather than the score' },
     // contextual (AI-selected)
     different_worlds: { name:'Different Worlds',              emoji:'🌍', kind:'context', blurb:'They win on totally different things, a creator against a finisher. Both elite, in their own lane.', drury:'One paints, the other scores. One builds the cathedral, the other places the final stone. They are different answers to the same beautiful question.', trigger:'close gap + both elite + divergent radar peaks' },
     across_eras:      { name:'Class Across Eras',            emoji:'🕰️', kind:'context', blurb:'A cross-generation matchup where both players transcend their time.', drury:'Years apart, yet cut from the same cloth. Greatness does not belong to a decade. It echoes across them, and here, two echoes meet.', trigger:'season-year gap >= 8 + both elite' },
@@ -3915,10 +5640,48 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     let winner = engineWinner, tipped = false, younger = null, older = null, ageDiff = null;
     if (ageA != null && ageB != null) {
       younger = ageA <= ageB ? 'A' : 'B'; older = ageA <= ageB ? 'B' : 'A'; ageDiff = Math.abs(ageA - ageB);
-      if (g <= 2 && ageDiff >= 4) { winner = younger; tipped = true; }   // coin-flip band only; never overrides gap>=3
     }
-    const tone = g === 0 ? 'tie' : (g <= 2 ? 'razor' : (g <= 6 ? 'clear' : 'decisive'));
-    const ladder = g === 0 ? 'the_debate' : g === 1 ? 'var_close' : g <= 3 ? 'photo_finish' : g <= 6 ? 'clear_edge' : g <= 9 ? 'bragging_rights' : 'masterclass';
+
+    /*  ══ THE MARGIN GATE , THE PAIR'S OWN ERROR, NOT A CONSTANT GAP (2026-09-09) ═══════
+        MEASURED, TWICE, INDEPENDENTLY: the standard error of a VV Score runs from 0.96 rt
+        at Generational to 5.79 at Standout and varies 1.5x WITHIN a single rt value, while
+        the old classes cut at a fixed 0 / 2 / 6. So "decisive" meant a 7-point gap whether
+        that was six pooled standard errors or two thirds of one. Against the pair's own
+        error, 97.0% of ALL pairings at rt 80+ sit inside the margin, and 61.9% of the
+        comparisons people have actually made crowned a winner the engine cannot support.
+        Full record: docs/FABLE_PAYLOAD_BRIEF_NOTES.md NOTE 3 and NOTE 4.
+
+        THREE STATES, and the middle one is the new one:
+          separated : the gap clears 1.96 pooled SE. The Index HAS decided. Crown as before.
+          inside    : a real gap the Index cannot resolve. NO winner, NO crown.
+          tie       : identical scores. The degenerate case of `inside`, kept apart only
+                      because "level on 95" is a different sentence from "we cannot separate
+                      95 and 92", and the UI already had copy for it.
+
+        IT FAILS CLOSED. A card the SE snapshot does not know returns a null margin and the
+        pair is treated as INSIDE. An unknown error cannot justify a crown, and a stale
+        table therefore under-crowns rather than crowning wrongly.
+
+        THE AGE TIEBREAKER IS RETIRED FROM CROWNING, and this is a consequence rather than a
+        separate decision. It fired at gap <= 2, which is now inside the margin on all but
+        the very tightest pairs , and where a gap of 2 DOES separate, the Index has decided
+        and age must not overturn it. Widening it to fill the new silence would mean crowning
+        almost every elite pairing on date of birth, which is worse than what it replaced.
+        `tipped` is therefore always false and the AGE TAGS below are untouched: they
+        describe a season, they do not award it.  */
+    const _mg = (typeof window !== 'undefined' && window.VVMargin) ? window.VVMargin
+              : (typeof VVMargin !== 'undefined' ? VVMargin : null);
+    const marginRaw = (_mg && A && B) ? _mg.marginFor(A.card_id, B.card_id) : null;
+    const margin = marginRaw;
+    const separated = (margin != null) && (g >= margin);
+    const separation = g === 0 ? 'tie' : (separated ? 'separated' : 'inside');
+    if (separation !== 'separated') winner = 'tie';   // no side is crowned
+
+    const tone = separation === 'separated'
+               ? (g <= 2 ? 'razor' : (g <= 6 ? 'clear' : 'decisive'))
+               : 'tie';
+    const ladder = separation !== 'separated' ? 'the_debate'
+                 : g === 1 ? 'var_close' : g <= 3 ? 'photo_finish' : g <= 6 ? 'clear_edge' : g <= 9 ? 'bragging_rights' : 'masterclass';
     const age = [];
     if (younger) {
       const yAge = younger === 'A' ? ageA : ageB, oAge = older === 'A' ? ageA : ageB;
@@ -3949,10 +5712,64 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     if (Math.abs((A.season_year || 0) - (B.season_year || 0)) >= 8 && va >= 80 && vb >= 80) ctx.push('across_eras');
     if (((A.goals || 0) > (B.goals || 0) && va < vb) || ((B.goals || 0) > (A.goals || 0) && vb < va)) ctx.push('eye_test');
     if (g <= 3 && varc(A) != null && varc(B) != null && Math.abs(varc(A) - varc(B)) >= 14) ctx.push('complete_spec');
-    const floorTag = age[0] || ladder;   // deterministic default (AGE priority 2, else LADDER 3); AI may up-rank to a contextHint
+    /*  AN AGE TAG NAMES ONE SIDE, SO IT CANNOT HEADLINE A VERDICT THAT HAS NO SIDE.
+        Found rendered, not reasoned: Salah 24/25 against Messi 14/15 is INSIDE the margin ,
+        no winner, no crown , and the tie pill read "The Ascendant", which points at the
+        younger player as plainly as a crown would. `age[0] || ladder` was written when an
+        age tag meant the age TIEBREAK had decided it, and that tiebreak is now retired.
+        TWO CONDITIONS, and the second is the one the old code assumed rather than checked:
+        the pair must be SEPARATED, and the younger player must be the one who won. An age
+        tag over a younger player who LOST points the headline at the wrong season.
+        The age tags stay in `ageTags` and remain available as hints , they describe a
+        season honestly, they just cannot be the verdict's own word for the pairing.  */
+    const floorTag = (separation === 'separated' && age[0] && younger && winner === younger)
+                   ? age[0] : ladder;
     return { gap: g, engineWinner, winner, tipped, tone, ladder, ageTags: age, contextHints: ctx, floorTag,
+             separation, margin, seA: _mg ? _mg.seFor(A && A.card_id) : null,
+             seB: _mg ? _mg.seFor(B && B.card_id) : null, marginKnown: margin != null,
       ageA, ageB, younger, older, ageDiff,
       wonderkidA: (ageA != null && ageA <= 21 && va >= 82), wonderkidB: (ageB != null && ageB <= 21 && vb >= 82) };
+  }
+
+  /*  ══ THE DISPLAY DECISION, AFTER THE MODEL HAS ANSWERED , PATH B (2026-09-11) ═════════
+      verdictContext runs BEFORE the request and can only read the two scores, so for a pair
+      the Index cannot separate it returns winner 'tie' , correctly, because at that moment
+      nothing has decided. Under Path B the model then judges the pairing on the rest of the
+      record and the server returns the winning card_id, verified against the pair.
+      THIS FOLDS THAT ANSWER BACK INTO THE SAME CONTEXT OBJECT, which is the whole point:
+      the crown, the card's gold ring, the tie pill, the tag chip and the share frame then
+      read ONE decision instead of each re-deriving a winner from the rt gap. Four surfaces
+      deriving the same thing four times is how they come to disagree, and here they would
+      disagree in the one direction that matters , the gap says 'tie' and the verdict beside
+      it names a winner.
+      IT NEVER OVERTURNS THE INDEX. On a SEPARATED pair the engine's winner stands and a
+      disagreeing id is ignored: the score line renders that gap underneath, so a crown on
+      the lower number would contradict the page. On an exact TIE nothing was asked of the
+      model. Only the 'inside' state is Path B's.
+      A NULL ID IS A DECLINE, and a decline leaves the context exactly as it was.  */
+  function applyVerdictOutcome(ctx, winnerCardId, A, B){
+    if (!ctx) return ctx;
+    const out = Object.assign({}, ctx, { decidedBy: (ctx.winner === 'A' || ctx.winner === 'B') ? 'engine' : null });
+    if (ctx.separation !== 'inside') return out;
+    const id = (winnerCardId == null) ? NaN : Number(winnerCardId);
+    if (!Number.isFinite(id)) return out;
+    const side = (id === Number(A && A.card_id)) ? 'A' : (id === Number(B && B.card_id)) ? 'B' : null;
+    if (!side) return out;
+    out.winner = side; out.decidedBy = 'ai';
+    /*  THE TAG FOLLOWS THE SAME DECISION, because the one it had contradicts a crown. An
+        inside pair floors on 'the_debate', whose blurb reads "so close it won't end the
+        argument" , printed beside a badge naming a winner, on the same row.
+        THE AGE RULE IS THE ONE ALREADY WRITTEN ABOVE, not a new one: an age tag may headline
+        only where the pairing was DECIDED and the younger season is the one that won. That
+        second condition was untestable while nothing decided an inside pair. It is testable
+        now, so the rule finally applies where it was always meant to.
+        OTHERWISE 'decided_on_record'. IT USED TO BE 'photo_finish' AND THAT WAS WRONG for the
+        same reason the_debate's blurb was: "near-identical scores" is a closeness claim, and
+        this state reaches a seven-point gap. The tag now names WHERE the decision came from
+        rather than how wide it was, which is the property that was actually wanted , every
+        other ladder tag states a margin, and the Index has just said it cannot read one.  */
+    out.floorTag = (ctx.ageTags && ctx.ageTags[0] && ctx.younger === side) ? ctx.ageTags[0] : 'decided_on_record';
+    return out;
   }
 
   // ── Expose ────────────────────────────────────────────────────────────
@@ -4024,7 +5841,25 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var hay=_mnorm(nameStr), best=6;
     for(var i=0;i<toks.length;i++){ var t=toks[i], r;
       if(hay===t) r=0;                                   // exact whole-name
-      else if(hay.indexOf(t)===0) r=1;                   // name starts with token (prefix)
+      /*  TIER 1 REQUIRES A WORD BOUNDARY, AND WITHOUT IT AN EXACT MATCH LOST TO A PREFIX.
+          Measured 2026-10-03 on the live picker: searching "messi" returned MESSIAS
+          (Rio Ave 18/19, rt 48) ABOVE L. Messi (rt 97). Messias' haystack begins
+          "messias ...", so a bare indexOf(t)===0 scored it tier 1, while "L. Messi"
+          begins with the INITIAL and could only reach tier 2 , and tier sorts before rt,
+          so the 97 never got a hearing. SEC C records that player_name is abbreviated for
+          63.6% of players, which is what makes this systematic rather than a Messi quirk:
+          any player whose surname is a strict prefix of a longer name loses to it.
+          The line below already promised "exact surname beats surname-prefix" and tier 1
+          was quietly defeating it one line earlier.
+          REGRESSION-TESTED OVER 32 REALISTIC QUERIES against the live matview: 30 top
+          results byte-identical, 1 changed (this one, to the higher-rated player), 0 made
+          worse. A variant that also stripped leading initials was tried and REJECTED , it
+          did not fix "ronaldo" and it regressed "silva" from Neymar(88) to G. Silva(63).
+          STILL OPEN AND NOT A BUG: "ronaldo" returns Ronaldo Pena(40) above Cristiano
+          Ronaldo(96), because Ronaldo is that player's genuine FIRST name and so takes
+          tier 1 honestly. Ranking a surname match above a first-name match is a product
+          decision about relevance, not a defect, and it is Lucas's.  */
+      else if(hay.indexOf(t)===0 && (hay.length===t.length || hay.charAt(t.length)===' ')) r=1;   // FIRST WORD, whole
       else if((' '+hay+' ').indexOf(' '+t+' ')>=0) r=2;  // token IS a complete word (exact surname beats surname-prefix)
       else if((' '+hay).indexOf(' '+t)>=0) r=3;          // a word starts with token
       else if(hay.indexOf(t)>=0) r=4;                    // mid-string
@@ -4183,17 +6018,121 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       `c` IS NEW AND IS THE COUNTRY, for surfaces that name the country beside the league.
       KEY OFF `v`, WHICH IS THE CARD'S league_code, NEVER off leagues.code , the view joins
       leagues on league_id, so the Turkish row is 'TSL' there while every card carries 'TR'.  */
+  /*  THE PER-LEAGUE FACTS BELOW ARE AN EMBEDDED SNAPSHOT, MEASURED 2026-09-12 AGAINST
+      `player_card_mv`. Same standing hazard as KEEPER_SAVE_LADDER and RADAR_POOL_REF ,
+      NOTHING WARNS YOU WHEN THEY GO STALE. Re-measure after any re-ingest, the
+      transfer-halves repair, or the null-goals repair. They only grow, so the Playbook's
+      "more than 5,000 season cards" floor cannot be broken by drift, only by a deletion.
+
+      `cards` IS ALL CARDS, NOT SCORED CARDS, AND THAT IS A DECISION , 2026-09-12.
+      Scored counts invert against all-cards for exactly one league: Turkey is FIFTH on all
+      cards (6,365) and LAST on scored (5,403), because 962 of its cards carry a null
+      `goals` and so are never scored. Showing both numbers in one panel would print 6,365
+      beside 5,403 and invite a question whose honest answer is a data gap , see the
+      null-goals entry in DATA_DEFECTS.md. All-cards avoids that without hiding anything:
+      the gap is recorded there, in full, rather than half-said in a tooltip.
+
+      `detail` MUST AGREE WITH THE PLAYBOOK STRIP SENTENCE, which says the same thing in
+      prose: 2015/16 generally, the Premier League partly from 2014/15 (measured 31% of
+      cards carrying `shots_total`, against 95% the next season), Belgium from 2020/21.
+      Change one and change the other, or the page contradicts its own tooltip.  */
   var VVF_LEAGUES=[
-    {v:'PL', l:'Premier League',     c:'England',     e:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}'},
-    {v:'LL', l:'La Liga',            c:'Spain',       e:'🇪🇸'},
-    {v:'SA', l:'Serie A',            c:'Italy',       e:'🇮🇹'},
-    {v:'BL', l:'Bundesliga',         c:'Germany',     e:'🇩🇪'},
-    {v:'L1', l:'Ligue 1',            c:'France',      e:'🇫🇷'},
-    {v:'PRT',l:'Primeira Liga',      c:'Portugal',    e:'🇵🇹'},
-    {v:'ERE',l:'Eredivisie',         c:'Netherlands', e:'🇳🇱'},
-    {v:'BPL',l:'Belgian Pro League', c:'Belgium',     e:'🇧🇪'},
-    {v:'TR', l:'Super Lig',          c:'Turkey',      e:'🇹🇷'}
+    {v:'PL', l:'Premier League',     c:'England',     e:'\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}',
+     cards:6590, clubs:20, clubsAll:41, detail:'2015/16, partly 2014/15'},
+    {v:'LL', l:'La Liga',            c:'Spain',       e:'🇪🇸', cards:7032, clubs:20, clubsAll:35, detail:'2015/16'},
+    {v:'SA', l:'Serie A',            c:'Italy',       e:'🇮🇹', cards:7057, clubs:20, clubsAll:41, detail:'2015/16'},
+    {v:'BL', l:'Bundesliga',         c:'Germany',     e:'🇩🇪', cards:5900, clubs:18, clubsAll:33, detail:'2015/16'},
+    {v:'L1', l:'Ligue 1',            c:'France',      e:'🇫🇷', cards:6569, clubs:20, clubsAll:37, detail:'2015/16'},
+    {v:'PRT',l:'Primeira Liga',      c:'Portugal',    e:'🇵🇹', cards:6006, clubs:18, clubsAll:36, detail:'2015/16'},
+    {v:'ERE',l:'Eredivisie',         c:'Netherlands', e:'🇳🇱', cards:5838, clubs:21, clubsAll:33, detail:'2015/16'},
+    {v:'BPL',l:'Belgian Pro League', c:'Belgium',     e:'🇧🇪', cards:5698, clubs:16, clubsAll:30, detail:'2020/21'},
+    {v:'TR', l:'Super Lig',          c:'Turkey',      e:'🇹🇷', cards:6365, clubs:18, clubsAll:45, detail:'2015/16'}
   ];
+  /*  ONE DERIVATION, TWO SURFACES. The Playbook strip renders these as three lines in a
+      popover; the filter chip renders the same three as a `title`. Keeping the sentence
+      here rather than in either page is SS C's rule about card rules living in vv-core:
+      a fact transcribed into a page is a fact the next surface will get wrong.  */
+  /*  THE SHARE IS DERIVED HERE, NOT WRITTEN DOWN , 2026-09-13. It is computed from the
+      same `cards` figures three lines above, so it cannot drift from them and it cannot be
+      forgotten when one of them changes. It lives in the SHARED derivation because both
+      surfaces now show it: the Playbook chip and the filter chip's title. A percentage on
+      one and not the other is the two-drawings-of-one-thing defect this function exists to
+      prevent.
+      IT IS A SHARE OF THE NINE, NOT OF THE DATABASE, and the two are the same number only
+      because the nine ARE the database , SS C: if a tenth league is ever added, this stays
+      correct by construction while any hardcoded figure silently would not.  */
+  /*  THE ONE PLACE A LEAGUE CODE BECOMES A NAME , 2026-09-13. The comment above VVF_LEAGUES
+      already said anything needing to NAME a league reads it from there, and three consumers
+      were not: compare's Data Confidence printed the bare code ("L1 . 4 seasons on record"),
+      card.html carried TWO private maps, and one of them, LEAGUE_FULL, had drifted back to
+      "Jupiler Pro League" , the exact name the canonical list was corrected away from.
+      A CODE IS INTERNAL VOCABULARY. It is a join key and a filter value, and it should never
+      reach a reader; `vvfChip` already renders the name, which is why the filter rail looked
+      right while the panels beside it did not.
+      FAILS OPEN, NOT CLOSED: an unknown code returns itself, so a tenth league added to the
+      database shows its code rather than an empty string, which is visible and fixable
+      instead of silent.  */
+  /*  THE HANDLE, ONCE , 2026-09-13. The platform's only follow prompt lived on contact.html,
+      which is linked from exactly ONE place in the whole product: a row inside preferences.
+      Three taps and two page loads from a gear icon. Meanwhile the share text said "VVonderXI"
+      as a WORD, and on X a word is not a link , the handle is. So the single highest-intent
+      moment on the platform, someone posting a card, was the one place we were not asking.
+      X ONLY, AND THAT IS DELIBERATE. WhatsApp renders a handle as dead text and the copy-link
+      payload is read by a person, not a platform, so both keep the brand word. Only the X
+      intent gets the swap.
+      IT REPLACES THE BRAND WORD RATHER THAN APPENDING TO IT. "M. Gotze . 18/19 . VV 78 on
+      VVonderXI via @vvonderxi" says the same thing twice; the handle simply IS the brand on
+      that platform. The LAST occurrence is the one swapped, so a text mentioning us twice ends
+      on the linkable form. A text with no brand word gets the handle on its own line, which is
+      the convention there.  */
+  /*  ── THE FOLLOW ROW, ONCE ────────────────────────────────────────────────────────────
+      Three surfaces want it , the home drawer, the foot of the Playbook, and the VV Index
+      CTA , and thirty-eight hand-typed pink Vs earlier today are the argument for not
+      writing it three times. `VVCore.socialRowHTML()` is the single source.
+      "X/TWITTER", NOT "X", AND IT IS A READABILITY CALL RATHER THAN PEDANTRY. A single
+      letter is not a recognisable label; the rename is recent enough that the letter alone
+      is ambiguous, and an aria-label reading just "X" tells a screen reader nothing at all.
+      NO "FOLLOW" WORD. The two logos carry it , a row of social marks under a page's last
+      paragraph is unambiguous, and the label was competing with the thing it described.
+      THE ARIA LABELS STAY VERBOSE BECAUSE THEY ARE NOT THE VISIBLE TEXT , removing the word
+      "Follow" from the page does not mean removing the only cue a screen reader gets.  */
+  var VV_SOCIAL = [
+    {k:'instagram', url:'https://www.instagram.com/vvonderxi', label:'VVonderXI on Instagram',
+     svg:'<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7"><rect x="20" y="20" width="60" height="60" rx="18"/><circle cx="50" cy="50" r="15"/><circle cx="70" cy="30" r="4" fill="currentColor" stroke="none"/></svg>'},
+    {k:'x', url:'https://x.com/vvonderxi', label:'VVonderXI on X/Twitter',
+     svg:'<svg viewBox="0 0 100 100" fill="currentColor"><path d="M22 20 h16 l18 26 L78 20 h8 L60 52 l28 28 H72 L52 56 L30 80 h-8 l28 -32 Z"/></svg>'}
+  ];
+  function socialRowHTML(cls){
+    return '<div class="' + (cls || 'vvsoc') + '">' + VV_SOCIAL.map(function(s){
+      return '<a href="' + s.url + '" target="_blank" rel="noopener me" aria-label="' + s.label + '">' + s.svg + '</a>';
+    }).join('') + '</div>';
+  }
+
+  var VV_HANDLE_X = '@vvonderxi';
+  function vvXText(text){
+    var t = String(text == null ? '' : text).trim();
+    if(!t) return VV_HANDLE_X;
+    if(/VVonderXI/.test(t)) return t.replace(/VVonderXI(?![\s\S]*VVonderXI)/, VV_HANDLE_X);
+    return t + '\n\n' + VV_HANDLE_X;
+  }
+  function vvLeagueName(code){
+    if(code==null || code==='') return '';
+    for(var i=0;i<VVF_LEAGUES.length;i++) if(VVF_LEAGUES[i].v===code) return VVF_LEAGUES[i].l;
+    return String(code);
+  }
+  function vvLeagueShare(x){
+    if(!x || x.cards==null) return null;
+    var t=0; for(var i=0;i<VVF_LEAGUES.length;i++){ if(VVF_LEAGUES[i].cards==null) return null; t+=VVF_LEAGUES[i].cards; }
+    return t ? (100*x.cards/t) : null;
+  }
+  function vvLeagueFacts(x){
+    if(!x || x.cards==null) return '';
+    var sh=vvLeagueShare(x);
+    return x.cards.toLocaleString('en-GB')+' season cards, 2010/11 to 2025/26'+
+           (sh==null?'':' \u00b7 '+sh.toFixed(1)+'% of the record')+
+           ' \u00b7 '+x.clubs+' clubs a season, '+x.clubsAll+' in all'+
+           ' \u00b7 Detailed stats from '+x.detail;
+  }
   var VVF_SORTS=[
     {v:'rt',       l:'VV Score',  col:'rt',          asc:false},
     {v:'goals',    l:'Goals',     col:'goals',       asc:false},
@@ -4262,7 +6201,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
        inventing "Young / Prime / Veteran" would put an editorial judgement into a
        filter rail where every other cut is measured. */
     { key:'age',      label:'Age',          select:'multi',  where:'server', kind:'range' },
-    { key:'league',   label:'League',       select:'multi',  where:'server', items:VVF_LEAGUES },
+    { key:'league',   label:'League',       select:'multi',  where:'server',
+      items:VVF_LEAGUES.map(function(x){ return Object.assign({}, x, {tip:vvLeagueFacts(x)}); }) },
     { key:'position', label:'Position',     select:'multi',  where:'server',
       items:FILTER_TAXONOMY.position.map(function(p){ return {v:p.v,l:(p.l||p.v)}; }) },
     /* PRESTIGE GROUP REMOVED , Generational and Iconic are the same cut the VV
@@ -4314,14 +6254,40 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   // ---- markup --------------------------------------------------------------
   var VVF_ESC=function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+  /*  `it.tip` RENDERS AS A NATIVE `title`, WHICH IS DELIBERATE AND IS THE WHOLE POINT.
+      A chip's TAP IS ALREADY SPOKEN FOR , it toggles the filter on rankings and in the
+      Compare picker, which mount this same component , so there is no free tap here and a
+      custom popover would have to fight the one interaction the chip exists for. A `title`
+      costs no markup, no listener and no layout, shows on desktop hover, and is simply
+      absent on a phone. THAT ABSENCE IS ACCEPTED: the same facts are on the Playbook strip,
+      which does have a free tap and gives them the full treatment.
+      REJECTED, and recorded so it is not re-proposed: printing the count INLINE in the
+      `vvf-hint` slot. It fits, but it thickens all nine chips on the busiest surface to
+      print nine numbers that span a 1.24 ratio end to end , the most nearly identical fact
+      we hold about the leagues. Demoed side by side before this was chosen.  */
+  /*  THE HONOUR CHIPS CARRY THE DRAWN MARKS, NOT EMOJI (2026-09-20). One visual language for
+      the row, and it settles a pair emoji cannot: a globe for the World Cup and a globe for
+      the Americas are the same drawing twice at 13px, while two trophies are two trophies.
+      KEYED ON THE GROUP, not on a new field, so the taxonomy stays the vocabulary and there
+      is no second icon list to drift , CLAUDE.md records two such lookups being deleted with
+      "do not add a third".
+      THE EMOJI STAYS AS THE FALLBACK AND THAT IS LOAD-BEARING. vvMark returns '' when VVMarks
+      is absent (a surface that does not load vv-marks.js) or when a key is missing, and a
+      chip that silently loses its glyph is the exact failure this file keeps recording. With
+      the fallback it degrades to the old behaviour instead of to nothing.
+      THE LABEL IS STILL ESCAPED. The mark is trusted markup from our own sprite and is
+      concatenated OUTSIDE VVF_ESC; everything that came from data stays inside it.  */
   function vvfChip(groupKey, it, opts){
     var inert=!!opts.inert;
-    var lab=(it.e?it.e+' ':'')+(it.l||it.v);
+    var mk = (groupKey==='honours') ? vvMark('honour', it.v) : '';
+    var ico = mk ? '<span class="vvf-ico">'+mk+'</span>' : '';
+    var lab=((!mk && it.e)?it.e+' ':'')+(it.l||it.v);
     return '<button type="button" class="vvf-chip'+(inert?' vvf-inert':'')+'"'+
+      (it.tip?' title="'+VVF_ESC(it.tip)+'"':'')+
       ' data-vvf-group="'+VVF_ESC(groupKey)+'" data-vvf-value="'+VVF_ESC(it.v)+'"'+
       (it.lo!=null?' data-vvf-lo="'+it.lo+'"':'')+(it.hi!=null?' data-vvf-hi="'+it.hi+'"':'')+
       (inert?' disabled aria-disabled="true"':'')+
-      ' aria-pressed="false">'+VVF_ESC(lab)+
+      ' aria-pressed="false">'+ico+VVF_ESC(lab)+
       (it.hint?' <em class="vvf-hint">'+VVF_ESC(it.hint)+'</em>':'')+
       (inert?' <em class="vvf-soon">soon</em>':'')+'</button>';
   }
@@ -4405,8 +6371,52 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     if(st.sort && st.sort!=='rt') return true;
     if(st.score && (st.score.lo!=null || st.score.hi!=null || st.score.bands.length)) return true;
     if(st.age && (st.age.lo!=null || st.age.hi!=null)) return true;
-    return ['league','position','profile','stage','trajectory']
+    /*  `honours` WAS MISSING FROM THIS LIST , fixed 2026-09-16. The honours group went live on
+        2026-09-12 when the matview gained its flags, and this predicate was not updated, so a
+        state carrying ONLY honour chips read as NOT ACTIVE. Every caller that gates on
+        isActive , the active-filter strip, the clear-all affordance, and now the carry-over
+        offer , silently treated an honours-only filter as no filter at all.  */
+    return ['league','position','profile','stage','trajectory','honours']
       .some(function(k){ return (st[k]||[]).length>0; });
+  }
+
+  /*  NAME THE FILTERS, DO NOT COUNT THEM , 2026-09-16, for the carry-over offer (item 7).
+      "Keep the 6 filters" tells a reader nothing about whether those filters still make sense
+      in the place they are about to land. "Keep position CB, band Iconic, 2015 onward" lets
+      them decide, which is the whole point of offering rather than assuming.
+      IT NAMES UP TO `max` AND COUNTS THE REST, because six named filters is a paragraph and
+      the offer has to fit on one line. Three is the default: enough to recognise the set,
+      short enough to read at a glance.
+      LABELS COME FROM labelFor AND THE GROUP DEFINITIONS, never from the raw value , a chip
+      reading `ballon_dor` in a sentence is the raw key leaking into prose.  */
+  function summarise(st, max){
+    if(!st) return { count:0, text:'' };
+    max = max || 3;
+    var parts=[];
+    if(st.sort && st.sort!=='rt') parts.push('sorted by '+(labelFor('sort', st.sort)||st.sort).toLowerCase());
+    /*  THE BAND GOES THROUGH labelFor, AND FORGETTING IT LEAKED THE ENGINE WORD INTO PROSE.
+        The chip VALUE is the engine name , `Elite`, `Exceptional` , while the public ladder
+        says `Iconic` and `Standout`, which Section C records as a display rename that must hold
+        everywhere. Caught by reading the offer against the chip beside it: the sentence said
+        "band Elite" while the control on screen said "Iconic 90-94". Every other group here
+        was already routed through labelFor; this one was not.  */
+    if(st.score && st.score.bands && st.score.bands.length)
+      parts.push(st.score.bands.length===1 ? 'band '+(labelFor('score', st.score.bands[0])||st.score.bands[0])
+                                           : st.score.bands.length+' bands');
+    if(st.score && (st.score.lo!=null || st.score.hi!=null))
+      parts.push('score '+(st.score.lo!=null?st.score.lo:'any')+' to '+(st.score.hi!=null?st.score.hi:'any'));
+    if(st.age && (st.age.lo!=null || st.age.hi!=null))
+      parts.push('age '+(st.age.lo!=null?st.age.lo:'any')+' to '+(st.age.hi!=null?st.age.hi:'any'));
+    ['league','position','honours','profile','stage','trajectory'].forEach(function(k){
+      var v=st[k]||[]; if(!v.length) return;
+      var g=vvfGroup(k), name=(g&&g.label?g.label:k).toLowerCase();
+      if(v.length===1) parts.push(name+' '+(labelFor(k, v[0])||v[0]));
+      else parts.push(v.length+' '+name+(/s$/.test(name)?'':'s'));
+    });
+    var shown=parts.slice(0, max), rest=parts.length-shown.length;
+    var text=shown.join(', ');
+    if(rest>0) text += ', and '+rest+' more';
+    return { count:parts.length, text:text };
   }
 
   // ---- server half ---------------------------------------------------------
@@ -4420,8 +6430,42 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   }
   /* Applies ONLY the server-side groups. Returns {query, applied}. The caller
      must ALSO run clientPredicate() , this half cannot see computed tags. */
+  /*  ══ FALLBACK C , KEEPERS LEAVE EVERY rt-SORTED AND rt-FILTERED SURFACE ═══════════
+      docs/KEEPER_FALLBACK_C_SPEC.md, CONSUMER RULES: "Keepers excluded from every
+      rt-sorted or rt-filtered surface. A keeper row in an rt list is a release blocker."
+
+      THE TEST IS ON THE QUERY, NOT ON THE PAGE, which is why it lives here: applyServer
+      is the ONE place the sort is applied (the order() call below is the only one in
+      this file), so rankings, the card overlay and the compare picker are all covered by
+      this single clause. The five queries that order by rt WITHOUT coming through here
+      carry their own .neq, each marked with this same rule.
+
+      CONDITIONAL, NOT UNCONDITIONAL, AND THE DISTINCTION IS THE SPEC'S OWN. The rule
+      names rt-sorted and rt-filtered surfaces. Sorting A-Z or by Recent with no rt
+      constraint is neither, so keepers still appear there , and they still carry a 75
+      badge, because the badge is the card-face pass and not this one. That residue is
+      known and recorded rather than silently swept in here.
+
+      MEASURED BEFORE: 3,725 keepers carry an rt, 1,305 of them sit inside a 70-80 slider
+      (29% of that result set), and the first keeper reaches the default rt-desc view at
+      about rank 2,299, which infinite scroll gets to.  */
+  /*  A NAME QUERY MAKES IT A LOOKUP, AND A LOOKUP IS NOT AN rt LIST. opts.lookup is
+      threaded from every caller that has a name query in scope. Without it this guard
+      caught the card overlay's SEARCH as well as its browse , testing found a keeper
+      searched by name returning "No seasons match your search", which is false of a card
+      that exists. Excluding a keeper from an ORDERING is not denying the card exists.  */
+  function rtInPlay(st, lookup){
+    if(!st) return false;
+    if(lookup) return false;                                          // named lookup, not a list
+    if((st.sort || 'rt') === 'rt') return true;                       // rt is VVF_SORTS[0], the default
+    if(st.score && st.score.bands && st.score.bands.length) return true;
+    if(st.score && (st.score.lo != null || st.score.hi != null)) return true;
+    return false;
+  }
+
   function applyServer(query, st, opts){
     opts=opts||{}; var applied=[];
+    if(rtInPlay(st, opts.lookup)){ query=query.neq('position','GK'); applied.push('fallbackC:noGK'); }
     if(st.league.length){   query=query.in('league_code', st.league);      applied.push('league'); }
     if(st.position.length){ query=query.in('position_pool', st.position);  applied.push('position'); }
     /* NUMERIC RANGES , every instance, server-side, because each is a real column.
@@ -4448,9 +6492,24 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         .or() gives OR within honours; because it is a separate call from the score-band
         .or(), the two AND across groups, which is the platform's stated filter rule. */
     if(st.honours && st.honours.length){
-      var hcols=st.honours.filter(function(v){ return /^[a-z_]+$/.test(v); })
-                          .map(function(v){ return 'h_'+v+'.is.true'; });
-      if(hcols.length){ query=query.or(hcols.join(',')); applied.push('honours'); }
+      /*  TWO PREDICATE SHAPES IN ONE .or() , 2026-10-03. Most honour types have an `h_*`
+          boolean on the matview; `afcon_winner` does not and is filtered by jsonb
+          containment on `honours_json` instead. Both forms are legal inside one PostgREST
+          .or(), verified against the live matview, so OR-within-group and AND-across-groups
+          are unchanged.
+          THE JSON CARRIES NO COMMA ON PURPOSE. PostgREST splits an .or() list on commas, so
+          `[{"type":"x"}]` is safe where a two-key object would not be. If a future filter
+          ever needs a second key, it cannot go in the .or() like this.
+          THE `^[a-z_]+$` GUARD IS WHAT MAKES THE INTERPOLATION SAFE and now matters more,
+          because the value lands inside a JSON literal as well as a column name. Anything
+          that is not a plain honour_type is dropped before either form is built.  */
+      var terms=st.honours.filter(function(v){ return /^[a-z_]+$/.test(v); })
+                          .map(function(v){
+                            return HONOUR_JSON_FILTERED.indexOf(v) >= 0
+                              ? 'honours_json.cs.[{"type":"'+v+'"}]'
+                              : 'h_'+v+'.is.true';
+                          });
+      if(terms.length){ query=query.or(terms.join(',')); applied.push('honours'); }
     }
     if(!opts.headCount){
       var so=VVF_SORTS.filter(function(x){ return x.v===st.sort; })[0]||VVF_SORTS[0];
@@ -4598,6 +6657,29 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     ['league','position','profile','stage','trajectory'].forEach(function(gk){
       (st[gk]||[]).forEach(function(v){ parts.push(labelFor(gk,v)); });
     });
+    /*  ── SAY THE SPECIFIC TRUE THING WHEN THERE IS ONE (2026-10-03) ────────────────────
+        Filtering to GK while the list is ranked by VV Score returns nothing, and the generic
+        sentence made that read as a broken chip. It is not: `applyServer` runs
+        `neq('position','GK')` whenever rt is in play, because the Index does not score
+        goalkeepers and a card with no score cannot sit in a list ordered by score.
+        THE CHIP IS NOT DISABLED AND MUST NOT BE , that was the first instinct and it is
+        wrong. Only ONE of the six sorts puts rt in play. GK with Recent, A-Z, Goals, Assists
+        or Total G/A returns keepers perfectly well, so marking the chip inert would break
+        five combinations to explain one. The honour chips are inert because their DATA does
+        not exist; this data exists and one ordering excludes it.
+        SO THE EMPTY STATE TEACHES AND THEN SAYS WHAT TO DO. A reader learns a real thing
+        about the platform , keepers are not scored , and is given the one action that works.
+        It is deliberately NOT an apology: nothing here failed.  */
+    /*  IT REUSES `.vvf-empty-state` AND TAKES ITS OWN CLASS FOR THE SECOND LINE. The action
+        sentence is NOT `.vvf-es-scope`: `card.html` and `index.html` both scrape that class
+        out of this HTML to reuse the coverage sentence elsewhere, so putting keeper advice
+        in it would let "Sort by Recent" surface on a card-not-found page. Styled by the same
+        rule as the scope line, so there is still one place to change the look. */
+    var gkRanked = rtInPlay(st, opts.lookup) && (st.position||[]).indexOf('GK') >= 0;
+    if(gkRanked)
+      return '<div class="vvf-empty-state">The VV Index does not score goalkeepers.'
+           + '<span class="vvf-es-act">They are left out whenever the list is ranked by VV Score. '
+           + 'Sort by Recent or A-Z to see them.</span></div>';
     var head=opts.searching ? 'No seasons match your search.' : 'No seasons match these filters.';
     /* A SEARCH THAT FINDS NOTHING MUST EXPLAIN THE SCOPE, NOT JUST REPORT THE ABSENCE.
        The platform is a FIXED SCORED DATASET , nine leagues, 2010 onward , and it no longer
@@ -4695,6 +6777,12 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     '.vvf-compact .vvf-chips{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-ms-overflow-style:none}',
     '.vvf-compact .vvf-chips::-webkit-scrollbar{display:none}',
     '.vvf-compact .vvf-chip{flex:none;font-size:12.5px;padding:7px 11px}',
+    /*  The mark inherits the chip's ink through currentColor, so there is no light-mode
+        branch and no second colour to keep in step , the selected state repaints the glyph
+        with the label by construction.  */
+    '.vvf-chip .vvf-ico{display:inline-flex;width:13px;height:13px;margin-right:6px;vertical-align:-2px;flex:0 0 auto}',
+    '.vvf-chip .vvf-ico svg{width:100%;height:100%;display:block}',
+    '.vvf-compact .vvf-chip .vvf-ico{width:12px;height:12px;margin-right:5px}',
     '.vvf-compact .vvf-sub{margin-top:0}',
     '.vvf-compact .vvf-score{padding:0}',
     '.vvf-compact .vvf-svals{justify-content:flex-start;gap:6px}',
@@ -4704,7 +6792,8 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     /* empty state , names the clauses that have to hold at once */
     '.vvf-empty-state{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;padding:40px 14px;font-family:\'Inter\';font-size:15px;color:rgba(243,237,224,0.6)}',
     'body.light .vvf-empty-state{color:var(--ink-soft)}',
-    '.vvf-es-scope{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}',
+    /* .vvf-es-act is the keeper line. Same treatment, separate class , see emptyStateHTML. */
+    '.vvf-es-scope,.vvf-es-act{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}',
     '.vvf-es-why{font-size:12.5px;opacity:.75;max-width:36ch;line-height:1.45}',
     /* ── CLEAR ALL , A PILL, AND ONE TREATMENT FOR ALL THREE SURFACES ────────
        It sat in a bar made entirely of pills and was the only bare text button on it,
@@ -4800,6 +6889,44 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         f.style.left=(((lo-MIN)/span)*100)+'%'; f.style.width=((((hi-lo))/span)*100)+'%'; }
     });
   }
+  /*  THE SETTER THE COMPONENT NEVER HAD , 2026-09-16, and the carry-over offer (item 7) is
+      what needed it. `mount` could render and `clear` could empty, so state moved OUT through
+      readState and could not move back IN. A feature that restores a filter set is impossible
+      without it, and rebuilding one chip-click at a time from outside would depend on the
+      click handler's internals, which is the coupling the delegated handler exists to avoid.
+      IT CLEARS FIRST, so applying a state is a REPLACE rather than a merge , anything else
+      makes the result depend on what happened to be selected beforehand.
+      IT SKIPS WHAT IT CANNOT HONOUR RATHER THAN FAILING: a chip that is disabled or absent on
+      this surface (the compact card-search mount renders fewer groups than rankings) is simply
+      not set, and the returned count says how many landed. A carry-over that silently applied
+      a filter the reader cannot see or remove would be worse than not offering it.  */
+  function applyState(root, st){
+    root = root || document;
+    if(!st) return { applied:0, skipped:0 };
+    clear(root);
+    var applied=0, skipped=0;
+    function setChip(gk, v){
+      var sel='.vvf-chip[data-vvf-group="'+gk+'"][data-vvf-value="'+String(v).replace(/"/g,'')+'"]';
+      var c=root.querySelector(sel);
+      if(!c || c.hasAttribute('disabled') || c.disabled){ skipped++; return; }
+      c.classList.add('on'); c.setAttribute('aria-pressed','true'); applied++;
+    }
+    if(st.sort && st.sort!=='rt') setChip('sort', st.sort);
+    ((st.score && st.score.bands) || []).forEach(function(v){ setChip('score', v); });
+    ['league','position','honours','profile','stage','trajectory'].forEach(function(k){
+      (st[k]||[]).forEach(function(v){ setChip(k, v); });
+    });
+    VVF_RANGES.forEach(function(r){
+      var v=st[r.group]; if(!v) return;
+      var mn=root.querySelector('[data-vvf-role="'+r.role+'min"]'),
+          mx=root.querySelector('[data-vvf-role="'+r.role+'max"]');
+      if(!mn||!mx){ if(v.lo!=null||v.hi!=null) skipped++; return; }
+      if(v.lo!=null){ mn.value=v.lo; applied++; }
+      if(v.hi!=null){ mx.value=v.hi; applied++; }
+    });
+    try{ paintRange(root); }catch(e){}
+    return { applied:applied, skipped:skipped };
+  }
   function clear(host){
     host.querySelectorAll('.vvf-chip.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
     VVF_RANGES.forEach(function(r){
@@ -4841,7 +6968,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
                    : sb.from('player_card_mv').select(o.select || '*');
     if(o.nameQ){ const sf = tokenAndFilter(o.nameQ); if(sf) q = q.or(sf); }
     if(o.seasonYear != null) q = q.eq('season_year', o.seasonYear);
-    q = applyServer(q, o.st, { headCount: !!o.head }).query;
+    q = applyServer(q, o.st, { headCount: !!o.head, lookup: !!o.nameQ }).query;   // a name query is a lookup, not an rt list
     if(!o.head && o.from != null) q = q.range(o.from, o.to != null ? o.to : o.from);
     return q;
   }
@@ -4854,11 +6981,11 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
   const VVSeq = { KEY:SEQ_KEY, save:seqSave, load:seqLoad, clear:seqClear,
                   query:seqQuery, clientActive:seqClientActive };
 
-  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES,
+  const VVFilters = { GROUPS:VVF_GROUPS, SORTS:VVF_SORTS, LEAGUES:VVF_LEAGUES, leagueFacts:vvLeagueFacts, leagueShare:vvLeagueShare, leagueName:vvLeagueName,
     bandRanges, bandRange, bandPresets, rtFloorForPrestige,
     renderGroup, renderAll, mountStyles, mount, clear, paintRange,
     labelFor, renderActive, removeFrom, facetPlan, setAvailability, emptyStateHTML,
-    emptyState, readState, isActive, applyServer, clientPredicate, describe };
+    emptyState, readState, isActive, summarise, applyState, applyServer, clientPredicate, describe };
 
   // ══════════════════════════════════════════════════════════════════════════════
   //  THE VV LOADER , the waiting state, shared by card, compare and rankings.
@@ -4948,7 +7075,50 @@ body.light .vvload{color:#1A1917}
   .vvload .wipe{animation:none;transform:translateX(-24px)}
   .vvload .pink.p1{display:none}
 }
+/*  THE HOLD , see vvHoldLoader. visibility, NOT display, and that is the whole reason it is
+    one line of CSS instead of a second render path. visibility:hidden keeps the box, so the
+    panel does not resize when the loader appears and does not resize again when prose
+    replaces it; display:none would reflow twice for every generation. It also keeps the
+    wipe ANIMATING while hidden, so a loader that does become visible is already mid-cycle
+    rather than starting from a standstill 250ms late.
+    AN ATTRIBUTE AND NOT A CLASS, deliberately: the wait states on compare already add and
+    remove .vquote-wait and .vsprose-wait as state, and SS C records what happened the last
+    time a loading class outlived the thing it was laying out. An attribute cannot collide
+    with that logic, and grep finds it in one place. */
+[data-vvhold]{visibility:hidden}
 `;
+  /*  ─── DO NOT PAINT A LOADER UNTIL THE REQUEST HAS EARNED ONE ──────────────────
+      250ms. Below that a spinner is not information, it is a flash: the reader sees
+      something appear and vanish and learns nothing except that the page twitched.
+      WHAT IT IS FOR, AND IT IS NOT THE SLOW CASE. /api/analyse takes about 26 seconds
+      COLD and a few hundred milliseconds WARM, because the cache lookup happens server
+      side, and card.html painted its wait BEFORE the fetch either way , so a cached card
+      showed a fraction of a 2.6s animation cycle and then the prose. This is what turns
+      pre-warming from "a shorter wait" into NO wait, which is the thing the money is
+      actually buying.
+      AND IT IS THE FIX FOR THE 2.6s CYCLE MISMATCH RATHER THAN A SEPARATE ONE. The cycle
+      was only ever wrong for SHORT waits; anything that still paints after this hold is
+      waiting on a real generation, where 2.6s is right. Shortening the cycle would have
+      treated the symptom on the wrong population.
+      THE TIMER REMOVES THE ATTRIBUTE UNCONDITIONALLY, WHICH IS THE SAFETY PROPERTY.
+      release() is an optimisation for the fast path, not a gate: if a caller throws before
+      calling it, the worst outcome is content that is invisible for 250ms and then is not.
+      A hold that could strand content permanently would be a worse defect than the flash
+      it removes. */
+  const VV_LOADER_HOLD_MS = 250;
+  function vvHoldLoader(nodes, ms){
+    const els = (Array.isArray(nodes) ? nodes : [nodes]).filter(Boolean);
+    if (!els.length) return function(){};
+    els.forEach(function(e){ try{ e.setAttribute('data-vvhold',''); }catch(_){} });
+    let done = false;
+    function release(){
+      if (done) return; done = true;
+      clearTimeout(t);
+      els.forEach(function(e){ try{ e.removeAttribute('data-vvhold'); }catch(_){} });
+    }
+    const t = setTimeout(release, ms == null ? VV_LOADER_HOLD_MS : ms);
+    return release;
+  }
   let LOADER_CSS_IN = false;
   function vvInjectLoaderCSS(){
     if (LOADER_CSS_IN || typeof document === 'undefined') return;
@@ -5099,10 +7269,24 @@ body.light .vvload{color:#1A1917}
       before anyone reads it. The old 0.026/0.024 put the caption at 18px and the wordmark
       at 16px in the file , 9px and 8px as actually seen, which is not readable at arm's
       length on a phone. Judge any change at 600px wide, never at 100%.  */
-  const SH_TYPE = { cap: 0.046, brand: 0.044, tag: 0.034, sub: 0.68 };
+  /*  THE VERDICT LINE JOINED SH_TYPE ON 2026-09-07, AND UNTIL IT DID IT WAS HALF THE SIZE
+      OF THE CAPTION. It was written inline in shCmpFrame as (wide ? 23 : 21) * S, so the
+      2026-08-27 pass that doubled cap and brand for exactly this reason never touched it.
+      As a fraction of the short side those constants were 0.023 and 0.021 against the
+      caption's 0.046 , the headline the image exists to say, rendering at 7.8px once X
+      halves it, under a 15.5px line of metadata naming the two players.
+      0.052 IS ABOVE THE CAPTION, NOT LEVEL WITH IT. Parity is the wrong bar: the verdict is
+      the content and the caption is the label. At 0.052 the longest real headline measured
+      (78 chars) sets in 3 lines on the wide frame with 219px still clear of the caption
+      block, and no format overflows , dl 294px clear, igf 172px, igs 457px, all measured on
+      the rendered frame rather than predicted.
+      ONE NUMBER FOR BOTH ORIENTATIONS. The old pair differed by 2 points of a raw multiplier
+      and by 0.002 as a fraction, which was not a decision anybody made.  */
+  const SH_TYPE = { cap: 0.046, brand: 0.044, tag: 0.034, sub: 0.68, verdict: 0.052 };
   const shCapPx  = F => Math.round(shShort(F) * SH_TYPE.cap);
   const shBrndPx = F => Math.round(shShort(F) * SH_TYPE.brand);
   const shTagPx  = F => Math.round(shShort(F) * SH_TYPE.tag);
+  const shVerdPx = F => Math.round(shShort(F) * SH_TYPE.verdict);
   const shPad    = F => Math.round(shShort(F) * 0.055);
   const shCardW  = (F, frac) => Math.round(Math.min(shShort(F) * frac, (F.h - shPad(F) * 3.4) / SHARE_RATIO));
   const shEsc    = v => String(v == null ? '' : v).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -5115,9 +7299,42 @@ body.light .vvload{color:#1A1917}
   const VV_SHARE_CSS = `
 .sf{display:flex;position:relative;overflow:hidden;
     background:radial-gradient(120% 90% at 20% 0%,#1e1a16 0%,#12100e 55%,#0d0b0a 100%);
-    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--quiet:#a49c90}
+    color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;--emph:#F1688E;--quiet:#a49c90;--vemph:#E8B84B}
 .sf.light{background:radial-gradient(120% 90% at 20% 0%,#FBF7EF 0%,#F2EBDD 55%,#E9E1D0 100%);
-          color:#241f1a;--emph:#AD0332;--quiet:#6b6357}
+          color:#241f1a;--emph:#AD0332;--quiet:#6b6357;--vemph:#AD0332}
+/*  ── ITEM 10 , THE VERDICT'S OWN TYPOGRAPHY (decided 2026-09-27, built 2026-10-03) ──────
+    "--vemph" IS DECLARED ON BOTH GROUNDS, which is this file's own rule about a token with
+    only one ground's value. On LIGHT it is the SAME value as "--emph", so light carries one
+    ink; on DARK it diverges to gold, and that divergence is the decision.
+    MEASURED BEFORE IT SHIPPED, against the dark frame's own three gradient stops:
+      gold #E8B84B  9.38 / 10.30 / 10.65   , clears AA at every stop with room to spare
+      red  #AD0332  6.93 /  6.24 /  5.69   , on the light stops, reproduces the recorded run
+    AND THE COLLISION QUESTION WAS ASKED AND ANSWERED RATHER THAN ASSUMED. Gold against the
+    pink "--emph" measures 1.60 in luminance, which looks alarming and is not the test: the
+    two are far apart in HUE and they never do the same job. Pink is IDENTITY , the wordmark's
+    second V and both numerals in the scoreline. Gold is EDITORIAL , the winner's surname and
+    the margin chip. That is one emphasis ink and one identity ink, which is the same split
+    compare.html already ships, not two emphasis inks competing.
+    NO WASH ON EITHER GROUND. SS C ruled that emphasis takes a wash in light and stays
+    ink-only in dark; a share frame has no prose column to wash, so it is ink-only on both. */
+.sf-vem{color:var(--vemph);font-weight:600}
+/*  THE LOSER DIMS RATHER THAN CHANGING COLOUR, so the scoreline distinguishes by WEIGHT and
+    never by a second hue , which is what keeps the two-ink split above honest.  */
+.sf-lose{opacity:.55}
+/*  THE MARGIN CHIP NAMES THE GAP AND NEVER THE VICTOR. The winner is already carried three
+    ways (the gold rim, the verdict tag above the card, and the full-strength numeral), so a
+    fourth statement would be noise; what the image cannot otherwise say is HOW FAR APART.  */
+.sf-margin{display:inline-flex;align-items:center;border:1px solid var(--vemph);color:var(--vemph);
+    border-radius:999px;font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:.1em;
+    text-transform:uppercase;white-space:nowrap}
+/*  HANDLES TOP LEFT, AND THE CORNER WAS CHOSEN BY MEASUREMENT RATHER THAN TASTE , the
+    recorded scope: the tagline row has 60px spare on igf/igs against the 247px two handles
+    need, and the bottom-right corner is already the caption's. The top-left corner is EMPTY
+    on all three formats, costs no vertical space where height binds, and sits diagonally
+    opposite the wordmark so it cannot compete with it.  */
+.sf-handles{position:absolute;display:flex;align-items:center;color:var(--quiet);
+    font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:.08em;opacity:.9}
+.sf-handles svg{display:block;flex:none}
 /* VVonderXI IS ONE WORD, SO THE LOCKUP GETS NO WORD SPACE.
    .sf-brand is a flex row and carried gap:7px, and .sf-vv added margin-right:.16em on top
    of it. At the 16px brand size that is 7 + 2.56 = 9.56px between the second V and the O,
@@ -5159,7 +7376,19 @@ body.light .vvload{color:#1A1917}
 .sf-tag .sf-vv2{font-weight:800;letter-spacing:.02em}
 .sf-rule{height:1px;background:currentColor;opacity:.18}
 .sf-sub{color:var(--quiet);font-weight:600;letter-spacing:.07em;text-transform:uppercase}
-.sf-verdict{line-height:1.42}
+/*  FRAUNCES 600, AND IT IS SAFE BECAUSE OF WHERE THIS ELEMENT RENDERS. ".sf-verdict" exists
+    only in the COMPARE frame, and "compare.html" has loaded Fraunces (opsz 9..144, weights
+    400 and 600) since 2026-09-19. "card.html" loads none and draws no verdict line, so the
+    face is never asked for on a surface that lacks it. Georgia is the fallback rather than a
+    bare "serif" because it is OS-resolved and therefore survives an html2canvas capture ,
+    SS C records that a webfont fails only inside a SERIALISED SVG, and this is HTML.
+    SHIPPED AT SH_TYPE.verdict 0.052, UNCHANGED. The POST_LAUNCH entry records the decision as
+    "the ORIGINAL size (0.060, 41px)", and 0.052 is what the file has shipped since 2026-09-07
+    , twenty days BEFORE that decision , so 0.060 is a slip in the write-up rather than a size
+    anybody chose. Ruled by Lucas 2026-10-03: unchanged means what the page does today.
+    CONSEQUENCE, STATED RATHER THAN BURIED: 35px in the file is 8.8px in a 300px feed tile,
+    not the 10.3px the entry quotes. The trade is the same trade and the number is smaller.  */
+.sf-verdict{line-height:1.42;font-family:'Fraunces',Georgia,serif;font-weight:600}
 .sf-vtag{display:inline-flex;align-items:center;border-radius:999px;background:linear-gradient(90deg,#F0D27A,#E0A93A);
          color:#5a4410;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 /* Reserves the winner tag's height above the losing card so the pair stays aligned. It is
@@ -5266,9 +7495,33 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       In the FRAME it is the third VVonderXI on one image (wordmark, caption, tagline), so
       the rendered copy strips it and the tagline carries the brand instead.
       One plain string remains the single source; only the rendering differs.  */
-  function shCapHTML(text){
+  /*  ── ITEM 10 ON THE CARD FRAME , THE SAME MECHANISM WITH THE HARD HALF REMOVED ────────
+      A card share has NO verdict line, NO winner and NO margin, so the prose half of item 10
+      cannot transfer and Fraunces is deliberately not borrowed , that face is earned by a
+      sentence being said, and a card frame says nothing in prose.
+      WHAT DOES TRANSFER IS THE EMPHASIS ITSELF. The compare frame does not "mark the
+      important phrase"; it marks `surnameOf(winner.full)`, found in a string. A card caption
+      holds a name, so the same derivation applies with no winner to choose and no sentence to
+      parse. The two frames then share an emphasis LANGUAGE as well as their chrome.
+      CARD BRANCH ONLY. The compare caption names BOTH players, and marking either would imply
+      a winner that caption does not claim , so `markName` is passed by shCardFrame alone.
+      THE ESCAPE HAPPENS FIRST, then the surname is found in the escaped string, so the span
+      is the only markup introduced. Same scan as the verdict line, same reason: a word
+      boundary in JS is defined on [A-Za-z0-9_] and misfires on every accented surname.  */
+  function shCapHTML(text, markName){
     const trimmed = String(text == null ? '' : text).replace(/\s*\u00b7\s*VVonderXI\s*$/, '');
-    return shEsc(trimmed).replace(/VVonderXI/g, SH_BRAND_HTML);
+    let html = shEsc(trimmed);
+    if (markName) {
+      const n = shEsc(String(markName));
+      const i = n ? html.indexOf(n) : -1;
+      if (i >= 0) {
+        const before = i > 0 ? html.charAt(i - 1) : '';
+        const after  = html.charAt(i + n.length);
+        if (!SH_LETTER.test(before) && !SH_LETTER.test(after))
+          html = html.slice(0, i) + '<span class="sf-vem">' + n + '</span>' + html.slice(i + n.length);
+      }
+    }
+    return html.replace(/VVonderXI/g, SH_BRAND_HTML);
   }
   /*  THE TAGLINE WAS IN THE PREVIEW AND NOT IN THE FILE, WHICH IS THE WORST OF BOTH.
       card.html's share sheet wraps the card and a `.sb-foot` tagline in a container with
@@ -5278,12 +7531,32 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       is what was designed and the output should match it.
       A container named for a job it does not do is its own trap , the name is the reason
       nobody noticed for as long as they didn't.  */
-  function shChrome(F, capText, light){
+  /*  ITEM 10 , THE HANDLES. Both platforms use the SAME handle, so the string is written
+      once and the two marks disambiguate which platform it is. The marks come from VV_SOCIAL,
+      the same list the follow row on three pages already renders, rather than a fourth copy
+      of two SVGs , SS C records two shadow icon lookups that drifted into different
+      metaphors, and this is the cheapest possible way not to make a third.
+      THE CAPTURE CAN DRAW THESE. SS C's html2canvas sweep records that <use> REFERENCES are
+      dropped and inline shapes are kept; these are inline rect/circle/path with no <use>, so
+      they survive. VERIFIED IN A CAPTURED PNG rather than in the DOM, which is the standard
+      that entry sets.  */
+  function shHandles(F){
+    const P = shPad(F), hp = Math.round(shShort(F) * 0.022), gap = Math.round(hp * 0.55);
+    const marks = VV_SOCIAL.map(function(x){
+      return x.svg.replace('<svg ', '<svg width="' + hp + '" height="' + hp + '" ');
+    }).join('');
+    return '<div class="sf-handles" style="top:' + (P * 0.8) + 'px;left:' + P + 'px;gap:' + gap +
+           'px;font-size:' + Math.round(hp * 0.82) + 'px">' + marks +
+           '<span style="margin-left:' + Math.round(gap * 0.4) + 'px">' + shEsc(VV_HANDLE_X) + '</span></div>';
+  }
+
+  function shChrome(F, capText, light, markName){
     const P = shPad(F), bp = shBrndPx(F), cp = shCapPx(F), tp = shTagPx(F);
-    return '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp, light) + '</div>' +
+    return shHandles(F) +
+           '<div class="sf-brand" style="top:' + (P * 0.8) + 'px;right:' + P + 'px;font-size:' + bp + 'px">' + shBrand(bp, light) + '</div>' +
            '<div class="sf-capwrap" style="bottom:' + (P * 0.7) + 'px;left:' + (F.w / 2) + 'px;transform:translateX(-50%);' +
              'width:' + (F.w - P * 2) + 'px">' +
-             '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText) + '</div>' +
+             '<div class="sf-cap" style="font-size:' + cp + 'px">' + shCapHTML(capText, markName) + '</div>' +
              '<div class="sf-tag" style="font-size:' + tp + 'px">' + SH_BRAND_HTML +
                ' \u00b7 <i>Every Season Tells a Different <span class="sf-em">Story</span></i></div>' +
            '</div>';
@@ -5293,7 +7566,24 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   function vvShareCaption(spec){
     if (spec.kind === 'compare')
       return (spec.a.full || '') + ' ' + shSeason(spec.a) + ' v ' + (spec.b.full || '') + ' ' + shSeason(spec.b) + ' · VVonderXI';
-    return (spec.card.full || '') + ' ' + shSeason(spec.card) + ' · ' + spec.card.vv + ' · VVonderXI';
+    /*  A KEEPER CARRIES NO SCORE HERE EITHER , 2026-09-07. buildCard stopped drawing the
+        number on a keeper face, and this line kept stating it, so a keeper poster showed a
+        blank-scored card above a caption naming the score. The middle survives its own
+        removal: `full` and the season are joined by a SPACE, not a separator, so dropping
+        the score segment leaves ONE dot rather than two adjacent ones or a trailing one.
+        "David de Gea 17/18 · 75 · VVonderXI" becomes "David de Gea 17/18 · VVonderXI".
+        THE COMPARE PATH ABOVE NEVER CARRIED A SCORE and is untouched.  */
+    const noScore = vvIsGKCard(spec.card);
+    return (spec.card.full || '') + ' ' + shSeason(spec.card) +
+           (noScore ? '' : ' · ' + spec.card.vv) + ' · VVonderXI';
+  }
+
+  /*  Returns '' rather than throwing on a card with no name, so the caption simply renders
+      unmarked , the same honest fallback the verdict line takes when the winner's surname is
+      absent from the sentence.  */
+  function shCardSurname(spec){
+    try { return surnameOf((spec && spec.card && spec.card.full) || '') || ''; }
+    catch(e){ return ''; }
   }
 
   function shCardFrame(spec, F, light){
@@ -5323,13 +7613,49 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     return '<div class="sf' + (light ? ' light' : '') + '" style="width:' + F.w + 'px;height:' + F.h + 'px;' +
       'flex-direction:column;align-items:center;justify-content:center;' +
       'padding:' + P + 'px ' + P + 'px ' + (P + capZone) + 'px ' + P + 'px">' +
-      shChrome(F, vvShareCaption(spec), light) +
-      '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw) + '</div></div>';
+      shChrome(F, vvShareCaption(spec), light, shCardSurname(spec)) +
+      '<div style="width:' + cw + 'px;position:relative;z-index:1">' + buildCard(spec.card, cw, { numberMark: true }) + '</div></div>';
   }
 
   //  THE LEDGER. Wide frames put the pair left and the verdict block right; portrait frames
   //  stack them. Chosen against rendered mocks , the wide frame's empty right half was the
   //  open question and the ledger is what answers it.
+  /*  ── ITEM 10 , THE EMPHASISED PHRASE IS STRUCTURAL, NOT CHOSEN (built 2026-10-03) ──────
+      THE WINNER'S SURNAME, derived from spec.winner and the card's own name through the same
+      surnameOf() the rest of the platform uses. NOTHING READS THE SENTENCE. Two routes were
+      refused by Lucas and both refusals are the reason this one exists: a PROMPT EDIT to make
+      the model mark it (every cached verdict rebuilds for a coloured phrase), and a HEURISTIC
+      that picks a phrase ("we do not invent emphasis the writer did not choose").
+      MEASURED OVER EVERY CACHED VERDICT WITH A DECIDED WINNER, n=72:
+        the winner's surname appears in "who"  69 (95.8%)
+        it appears FIRST                       68 of 69
+        it appears MORE THAN ONCE               0        , so there is no ambiguity to resolve
+        neither surname appears                 2        , and those get NO emphasis at all
+      THE 2 ARE THE HONEST FALLBACK AND NOT A GAP TO CLOSE. A line that never names the winner
+      has no phrase that could truthfully be marked, and marking something else would be the
+      heuristic that was refused.
+      WHY A SCAN RATHER THAN A REGEX: a word boundary in JS is defined on [A-Za-z0-9_], so it
+      misfires on every accented surname the platform holds , Mbappe, Haland, Odegaard. The
+      flanking characters are tested directly instead, which has no such blind spot, and the
+      surname needs no regex escaping because indexOf takes it literally.
+      AND THE ESCAPE HAPPENS FIRST. The line is escaped, THEN searched, so the span is the only
+      markup in the string and no model output can introduce any.  */
+  const SH_LETTER = /[A-Za-z\u00C0-\u024F\u0400-\u04FF]/;
+  function shVerdictHTML(spec, win){
+    const line = shEsc(vvStripMarkers(spec.verdictLine));
+    const card = win === 'A' ? spec.a : win === 'B' ? spec.b : null;
+    if (!card) return line;                      /*  a tie crowns nobody, so it marks nobody  */
+    let name = '';
+    try { name = shEsc(surnameOf(card.full || '')); } catch(e){ name = ''; }
+    if (!name) return line;
+    const i = line.indexOf(name);
+    if (i < 0) return line;                      /*  the 2 of 72 , no emphasis, by design  */
+    const before = i > 0 ? line.charAt(i - 1) : '';
+    const after  = line.charAt(i + name.length);
+    if (SH_LETTER.test(before) || SH_LETTER.test(after)) return line;   /*  inside a longer word  */
+    return line.slice(0, i) + '<span class="sf-vem">' + name + '</span>' + line.slice(i + name.length);
+  }
+
   function shCmpFrame(spec, F, light){
     const P = shPad(F), S = shShort(F) / 1000, wide = F.w / F.h > 1.2;
     const a = spec.a, b = spec.b;
@@ -5367,17 +7693,65 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const pair = '<div style="display:flex;gap:' + (34 * S) + 'px;position:relative;z-index:1;align-items:flex-start">' +
       slot(a, 'A') + slot(b, 'B') + '</div>';
     const last = n => shEsc(String(n || '').split(' ').slice(-1)[0]);
+    /*  A SIDE DIMS ONLY WHEN THERE IS A DECIDED WINNER AND IT IS NOT THIS SIDE.  */
+    const lose = side => (win === 'A' || win === 'B') && win !== side ? ' sf-lose' : '';
+    /*  THE MARGIN IS DERIVED, NEVER PASSED, so it cannot disagree with the numerals printed
+        beside it. It renders only when BOTH scores are finite , a keeper card carries no
+        score at all since Fallback C, so a pair involving one has no margin to name and the
+        chip is simply absent rather than reading "NaN" or inventing a zero.  */
+    /*  Number(null) IS 0, NOT NaN , SS C records this exactly, and a Number()-then-isFinite
+        guard therefore PASSES a keeper whose score Fallback C removed. Caught by the control
+        set rather than by reading: it printed "91 points" for a pair with one unscored card.
+        An absent score has to be tested as absent BEFORE it is coerced.  */
+    const shNum = v => (v == null || v === '' || !Number.isFinite(Number(v))) ? null : Number(v);
+    const vA = shNum(a.vv), vB = shNum(b.vv);
+    const gap = (vA != null && vB != null) ? Math.abs(vA - vB) : null;
+    const marginChip = gap == null ? '' :
+      '<span class="sf-margin" style="font-size:' + (30 * S) + 'px;padding:' + (7 * S) + 'px ' + (16 * S) +
+      'px;margin-left:' + (8 * S) + 'px">' + (gap === 0 ? 'Level' : gap + (gap === 1 ? ' point' : ' points')) + '</span>';
     const block = '<div style="display:flex;flex-direction:column;align-items:' + (wide ? 'flex-start' : 'center') + ';' +
       'gap:' + (16 * S) + 'px;position:relative;z-index:1;' + (wide ? '' : 'text-align:center;') + '">' +
       (win === 'tie' ? '<div class="sf-vtag" style="font-size:' + tagPx + 'px;padding:' + (7 * S) + 'px ' + (17 * S) + 'px">' + shEsc(spec.verdictTag) + '</div>' : '') +
-      '<div class="sf-verdict" style="font-size:' + ((wide ? 23 : 21) * S) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.34 : F.w * 0.78) + 'px">' + shEsc(spec.verdictLine) + '</div>' +
+      '<div class="sf-verdict" style="font-size:' + shVerdPx(F) + 'px;opacity:.92;max-width:' + (wide ? F.w * 0.40 : F.w * 0.78) + 'px">' + shVerdictHTML(spec, win) + '</div>' +
       '<div class="sf-rule" style="width:' + (64 * S) + 'px"></div>' +
-      '<div style="display:flex;gap:' + (18 * S) + 'px;align-items:baseline">' +
-        '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + a.vv + '</span>' +
-        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px">' + last(a.full) + '</span>' +
-        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px;opacity:.45">/</span>' +
-        '<span class="sf-score" style="font-size:' + (26 * S) + 'px">' + b.vv + '</span>' +
-        '<span class="sf-sub" style="font-size:' + (12 * S) + 'px">' + last(b.full) + '</span>' +
+      /*  THE LOSING SIDE DIMS, THE WINNING SIDE DOES NOT CHANGE COLOUR. Both numerals stay on
+          the identity ink; only opacity separates them. That is what keeps gold meaning
+          EDITORIAL and pink meaning IDENTITY rather than both meaning "winner".
+          ON A TIE NEITHER DIMS , `win` is 'tie', so `lose()` returns '' for both sides and
+          the two read as equals, which is the whole point of the third state.
+
+          ── SIZED FOR 340, NOT FOR 1200 (raised 2026-10-03) ────────────────────────────
+          THE NUMERALS WENT 26*S TO 68*S, AND THE NUMBER IS DERIVED FROM THE WIDTH THE IMAGE
+          IS JUDGED AT RATHER THAN THE WIDTH IT IS WRITTEN AT. A shared image sits about 340px
+          wide in a phone thread, which is 0.283 of this frame, so everything here is divided
+          by three and a half before anybody reads it.
+            26*S = 17.6px in the file =  5.0px at 340   , a blur
+            68*S = 45.9px in the file = 13.0px at 340   , reads
+          THE FLOOR IS DEMONSTRATED ON THIS SAME IMAGE RATHER THAN ASSERTED: the caption row is
+          0.046 of the short side, 8.8px at 340, and it is legible there. Anything meant to
+          carry the thumbnail has to clear that, and 13.0 does with room.
+          THE REASON IT MATTERS IS LUCAS'S OWN, AND IT WAS CONDITIONAL: the small verdict line
+          was accepted because "the cards plus the scoreline carry the thumbnail". At 5px the
+          scoreline carried nothing, so the condition failed and the size had to change with it.
+
+          ── WHAT GAVE: THE SURNAMES IN THIS ROW, AND ONLY THEM ─────────────────────────
+          They are stated THREE other times in the same image , on each card face, in the
+          caption row beneath, and in the verdict prose above , so this was the fourth. The
+          numerals are stated only on the card faces, and the margin nowhere else at all.
+          So the row now carries what nothing else says and drops what everything else says.
+          NOTHING ELSE IN THE BLOCK WAS SQUEEZED. The verdict line, the rule and the tag are
+          untouched; the room came from deleting a duplicate, not from shaving every element.
+
+          ── AND THE CHIP IS HONESTLY A 600-AND-ABOVE ELEMENT ──────────────────────────
+          At 30*S it is 20.3px in the file, 10.1px at X's 600 and 5.7px at 340. It reads where
+          the image is read full-size and it does not read in a phone thread. That is stated
+          rather than fixed: making it clear 340 would mean sizing a secondary chip like the
+          primary numerals, and the margin is context, not the headline.  */
+      '<div style="display:flex;gap:' + (14 * S) + 'px;align-items:baseline;flex-wrap:wrap">' +
+        '<span class="sf-score' + lose('A') + '" style="font-size:' + (68 * S) + 'px">' + a.vv + '</span>' +
+        '<span class="sf-sub" style="font-size:' + (30 * S) + 'px;opacity:.45">/</span>' +
+        '<span class="sf-score' + lose('B') + '" style="font-size:' + (68 * S) + 'px">' + b.vv + '</span>' +
+        marginChip +
       '</div></div>';
     const inner = wide
       ? '<div style="flex:none">' + pair + '</div><div style="flex:1;min-width:0">' + block + '</div>'
@@ -5701,10 +8075,22 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
       el.setAttribute('aria-label', filesOK ? base : (base + ' , posts a link only, without the image'));
       el.setAttribute('title', filesOK ? base : (base + ' , posts a link only'));
     });
+    /*  AN EMPTY HINT IS A CHOICE AND `||` COULD NOT EXPRESS IT , FIXED 2026-09-14 (item 6).
+        A caller passing '' meant "this state needs no hint" and got the DEFAULT SENTENCE
+        instead, because an empty string is falsy. `!= null` lets a caller opt out while an
+        omitted option still takes the default, so card.html is unaffected.
+        AND THE ELEMENT IS HIDDEN WHEN EMPTY, not merely blanked: `.vshare-hint` carries
+        margin-top:12px, so an empty node leaves a 12px gap that reads as a layout bug.
+        `hidden` is set AND the rule is asserted , Section C: an override that silently
+        loses is indistinguishable from one that was never written.  */
     const hint = root.querySelector('[data-vvshare="hint"]');
-    if (hint) hint.textContent = filesOK
-      ? (opts.hintShare || 'Sends the image itself , Instagram, X, WhatsApp and anywhere else you share.')
-      : (opts.hintSave  || 'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.');
+    if (hint) {
+      const hintText = filesOK
+        ? (opts.hintShare != null ? opts.hintShare : 'Sends the image itself , Instagram, X, WhatsApp and anywhere else you share.')
+        : (opts.hintSave  != null ? opts.hintSave  : 'Saves the image and copies the caption. Attach the image to your post yourself , a web page cannot attach it for you.');
+      hint.textContent = hintText;
+      hint.hidden = !hintText;
+    }
     root.setAttribute('data-vvshare-cap', cap);
     return cap;
   }
@@ -5768,17 +8154,18 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
-                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, keeperScore, keeperPanelHTML, keeperVersusHTML, keeperTrajectoryPairHTML, vvFitKeeperLabels, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,
+                cabinetWithTeamLegs, renderCabinet, vvEmphasis, vvWordmark, socialRowHTML, vvStripMarkers,
                 loadTeamHonours, teamHonoursFor, honTeamNorm,
-                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, renderProfileTagRows,
-                rankRowHTML, rowShieldHTML, vvCardFlip, vvBackFace,
+                honourRowHTML, renderWonderTagsGrouped, HONOUR_DRURY, renderTrajectory, vvTrajFit, renderProfileTagRows, useWonderTagPills,
+                rankRowHTML, rowShieldHTML, vvCardFlip, vvCardSlide, vvPrefersReducedMotion, vvBackFace,
                 VVFilters, VVSeq };
   for (const k in api) root[k] = api[k];   // globals, matching the inline-copy call sites
   root.VVCore = api;                        // namespaced handle

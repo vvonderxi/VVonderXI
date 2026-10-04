@@ -1,0 +1,45 @@
+<title>Capped honour pill, real geometry</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+ body{margin:0;padding:16px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif;font-size:12px}
+ table{border-collapse:collapse;font-size:11.5px}
+ th,td{padding:4px 10px;text-align:right;border-bottom:1px solid #33302c;font-variant-numeric:tabular-nums}
+ th{color:#E0A93A;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:9px;text-align:right}
+ td:first-child,th:first-child{text-align:left}
+ .fit{color:#5FC98A}.tight{color:#E0A93A}.no{color:#FF7A5C}
+ #p{position:absolute;visibility:hidden;white-space:nowrap}
+</style>
+<h3 style="font-size:13px;margin:0 0 4px">What the capped honour pill actually has room for</h3>
+<p style="color:#a49d93;max-width:780px;line-height:1.5;margin:0 0 12px">
+Geometry read from the shipped rules, not modelled: grid <code>1fr 1fr</code> gap <code>cw*0.025</code>,
+cell padding <code>cw*0.016</code> each side, mark <code>cw*0.042</code> plus <code>cw*0.016</code> gap,
+type Barlow Condensed 600 at <code>cw*0.045</code>, tracking 0.02em, uppercase. Card content box is
+<code>cw*0.86</code>.</p>
+<div id="out">measuring…</div><span id="p"></span>
+<script>
+var CW=[132,138,145,165,190,220,260];
+var CAND=['Player of the Season','Player of Season','Season’s Best','Best Player','Top Player','Player of Yr','POTS'];
+(async function(){
+  await document.fonts.load('600 12px "Barlow Condensed"'); await document.fonts.ready;
+  var p=document.getElementById('p');
+  function w(t,fs){ p.style.font='600 '+fs+'px "Barlow Condensed"'; p.style.letterSpacing=(fs*0.02)+'px';
+    p.style.textTransform='uppercase'; p.textContent=t; return p.getBoundingClientRect().width; }
+  var rows='';
+  CW.forEach(function(cw){
+    var fs=cw*0.045;
+    var content=cw*0.86;
+    var twoUp=(content-cw*0.025)/2 - cw*0.032 - (cw*0.042+cw*0.016);
+    var oneUp=content - cw*0.14 - (cw*0.042+cw*0.016);
+    rows+='<tr><td>'+cw+'</td><td>'+fs.toFixed(1)+'</td><td>'+Math.round(twoUp)+'</td><td>'+Math.round(oneUp)+'</td>';
+    CAND.forEach(function(c){ var ww=w(c,fs);
+      var cls = ww<=twoUp?'fit' : (ww<=oneUp?'tight':'no');
+      rows+='<td class="'+cls+'">'+Math.round(ww)+'</td>'; });
+    rows+='</tr>';
+  });
+  document.getElementById('out').innerHTML='<table><tr><th>--cw</th><th>font px</th>'
+   +'<th>room two-up</th><th>room lone</th>'+CAND.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr>'
+   +rows+'</table><p style="color:#a49d93;max-width:780px;line-height:1.6;margin-top:10px">'
+   +'<span class="fit">green</span> fits the two-up slot, which is the binding case , the face shows two honour pills side by side. '
+   +'<span class="tight">amber</span> fits only when it is the ONLY pill. <span class="no">red</span> does not fit at all.</p>';
+})();
+</script>

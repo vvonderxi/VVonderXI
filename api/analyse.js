@@ -3,6 +3,41 @@
 
 const crypto = require('crypto');
 
+/*  ── parseModelJSON , THE MODEL PREAMBLES AND WE WERE BINNING GOOD ANSWERS (2026-10-03) ──
+    Measured on the rt>=95 warm run: 29% of pairs failed to parse, and the decisive case came
+    back `stop_reason=end_turn` carrying COMPLETE, VALID JSON prefixed by "I need to ...".
+    The model had finished and been paid for; we discarded the answer.
+    It concentrates on TIES, because that is where the model reasons longest, so it hits the
+    marquee pairings a visitor is most likely to ask for.
+
+    BOTH BRANCHES OF THIS FILE STRIPPED ``` FENCES AND NOTHING ELSE, and prose is not a fence:
+      - the NOTES branch answered 502 "notes parse failed", so a card lost its Commentator's
+        Notes and Scout Report outright , the first prose a visitor meets;
+      - the VERDICT branch returned raw AND DID NOT CACHE, so every later visitor to that pair
+        paid for a regeneration that failed again and no cache could ever form.
+
+    IT TRIES THE PLAIN PARSE FIRST and only then falls back, so every string that parses today
+    still parses by the identical route , this cannot regress what already works.
+
+    IT IS NOT A TRUNCATION FIX. A response cut at max_tokens has no closing brace and still
+    throws, correctly; raising the ceiling to 2048 was tested and did NOT solve that case.
+
+    THIS IS A DELIBERATE TWIN OF `VVCore.vvParseModelJSON`, NOT AN OVERSIGHT. This file requires
+    `crypto` and nothing else, and pulling the whole browser module into the serverless bundle
+    for eight lines is the wrong trade. `lintParseModelJSON()` in scripts/lint-inline.js runs
+    BOTH implementations over one control set and fails if they ever disagree , a tripwire,
+    because SEC C records that a rule depending on somebody remembering is already forgotten.  */
+function parseModelJSON(text){
+  let t = String(text == null ? '' : text)
+    .replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  try { return JSON.parse(t); }
+  catch (e) {
+    const i = t.indexOf('{'), j = t.lastIndexOf('}');
+    if (i < 0 || j <= i) throw e;
+    return JSON.parse(t.slice(i, j + 1));
+  }
+}
+
 const MODEL = 'claude-sonnet-4-6';
 
 /* ── MODEL EXISTENCE , the check that did not exist when production died ───────
@@ -61,12 +96,40 @@ function isModelMissing(status, msg) {
 //   - the VERDICT_TAGS vocabulary (vv-core.js) , tag names/blurbs enter the
 //     USER prompt, which is per-pair and so cannot be fingerprinted globally
 //   - the user-prompt builder in compare.html / scripts/prewarm_verdicts.js
-const PROMPT_REV = 'v2';
+/*  BUMPED v2 -> v3 ON 2026-09-12 FOR A CHANGE THE FINGERPRINT CANNOT SEE , the honour LABELS
+    moved (`League Champion` -> `League Title`, `UCL Winner` -> `UCL Champion`). Those names travel
+    to the model inside the PAYLOAD, not inside the system prompt, so `fingerprint(VERDICT_SYSTEM)`
+    is unchanged and every cached verdict would have survived.
+    WITHOUT THIS BUMP THE ASYMMETRY IS PERMANENT, AND IT IS A CORRECTNESS PROBLEM RATHER THAN A
+    COST ONE. `statsHash` covers payload VALUES, so the NOTES cache invalidates on its own; the
+    VERDICT cache stamps on rt_a/rt_b and cache_version only, and `payloadRev` hashes the KEY SET,
+    never the values. So cached verdict prose would have gone on saying "League Champion" beside a
+    card reading "League Title", with nothing able to flush it.
+    This is exactly the hole the note above describes: bump by hand when the EVIDENCE changes and
+    the fingerprint cannot see it.  */
+const PROMPT_REV = 'v3';
 const fingerprint = (s) => crypto.createHash('sha256').update(s).digest('hex').slice(0, 8);
 
-// Complete freshness signal for the notes cache: hash the exact player payload
-// the prompt cites, key-sorted so field order can't false-invalidate, tags
-// sorted for the same reason.
+/*  Freshness signal for the notes cache: hash the player payload the prompt cites.
+    IT NORMALISES THE TOP LEVEL ONLY, AND THE PAYLOAD IS TWO LEVELS DEEP , say so, because
+    this comment used to claim "key-sorted so field order can't false-invalidate" without
+    qualification, and that is a completeness claim the code does not support. Same shape as
+    the backfill's "every key is checked for an existing row first", which is the sentence
+    that stopped anyone checking.
+    WHAT WOULD FALSIFY IT: `vvAIStats` emits nested OBJECTS , `recorded {goals, assists}` on
+    every card and `keeper {...14 keys}` on a goalkeeper , and neither is reached by the sort
+    below, so their key ORDER goes into the hash verbatim. Today both are built by object
+    literals, so the order is deterministic and the hash is stable. REORDER EITHER LITERAL,
+    or add a key to one conditionally, and every cached note silently re-hashes and
+    regenerates, with nothing in the diff to say why.
+    IT IS PINNED RATHER THAN FIXED, DELIBERATELY. Sorting recursively is two lines and would
+    change the hash of ALL 366 cached notes immediately , `recorded` is present on every card
+    and its keys are not in alphabetical order , which would discard the very population the
+    item 25 measurement is waiting to settle. `scripts/lint-inline.js` pins the hash of a
+    canonical payload instead, so the latent defect can no longer land in silence, and the
+    recursive version rides the NEXT notes prompt edit, which invalidates the cache anyway.
+    Same reasoning as the `sig` COALESCE in CLAUDE.md: a change that buys only clarity waits
+    for a commit that was already paying the cost.  */
 const statsHash = (p) => {
   if (!p || typeof p !== 'object') return null;
   const norm = {};
@@ -92,14 +155,60 @@ STYLE RULES , these override any tendency toward generic prose:
 1. NEVER use em-dashes (—) or en-dashes (–). Use commas, periods, or restructure. Absolute.
 2. BANNED phrases: "It's not just X, it's Y" / "not just X but Y" / "more than just" / "a testament to" / "stands as" / "a different kind of" / "a masterclass in" / "proof that" / "the kind of X that" / "cements" / "in a league of his own" / "rewrote the book" / "etched". Avoid these and close variants.
 3. VOICE , two registers: WINTER (sharp, authoritative, analytical) for engine explanation, dimension analysis, and reasoning; DRURY (poetic, elevated, earned not purple) for the Verdict's closing beat. Match register to purpose.
-4. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.
-5. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. The "verdict" field must ALSO read as TWO short paragraphs separated by \n\n: the reasoning, then a breath, then the closing beat. It lands harder with the pause. Do NOT break the truly short fields (h2h, who) , those stay single.
+THE VV SCORE RULE IS CONDITIONAL. READ THE CARD BEFORE APPLYING IT.
+
+DEFAULT , NO rt_claims FIELD ON THE CARD: the VV Score is honest for this season and you may
+use it exactly as you always have. Name it, name its band, place it on the ladder, build the
+case around it. THE BAND IS SENT TO YOU AS A FIELD , USE IT AND NEVER DERIVE ONE. You do not
+have the ladder's thresholds and you have got this wrong every time you have guessed: a 95 has
+been called World Class, Standout and "World Class by any measure the platform applies", on a
+card whose face reads Generational. If the band field is present, that word is the answer. If
+it is absent, do not name a band at all. This is the normal state and it covers most cards. DO NOT CARRY THE
+RESTRICTION BELOW ACROSS TO A CARD THAT DOES NOT HAVE THE FIELD , a measured 95 on a striker
+is a real fact about a real season, and going quiet about it loses something true.
+
+ONLY WHEN THE CARD ITSELF CARRIES rt_claims: "forbidden": do not mention the VV Score for
+THAT card at all. Not the number, not the band, not its placement, not "the Index rates him",
+not "a 74 season", not "the score sits at 84". Do not name it and then support it with the
+recorded figures either , naming it and justifying it is the thing this rule exists to stop.
+The card face already shows the number; prose that adds nothing to it is the correct output.
+Write about the season instead: the recorded figures, the honours, the minutes, the club and
+the year are all yours and they are enough.
+
+WHY, for that card only: measured on the engine, for those positions the score is usually a
+defensive-share percentile, a minutes curve and a league weight, because the performance half
+of the formula is discarded on 74 to 86 per cent of such seasons. Goals, assists and the
+ranking percentiles contributed NOTHING to the number. Same reason as the keeper contract:
+prose must not assert through description what the platform refuses to assert through
+measurement. There no scalar exists; here one exists and does not mean what a reader would
+take it to mean.
+
+rt_claims, rt_claims_reason AND rt_claims_rule ARE INTERNAL KEYS. They never appear in output.
+Say it in words or not at all.
+
+IN A COMPARISON, THE FLAG IS PER CARD. If only one side carries it, the OTHER side's score may
+be named and discussed normally, and the two may still be compared on RECORDED FIGURES. What
+is forbidden is naming or explaining the flagged card's score.
+
+4. EMPHASIS , TWO TO THREE PHRASES IN EVERY UNIT OF PROSE YOU WRITE, WRAPPED IN DOUBLE ASTERISKS. THIS BINDS ON EVERY BLOCK OF EVERY FIELD, WHATEVER THAT BLOCK IS CALLED , a paragraph, a stanza, a single-paragraph field, the verdict, the head-to-head. If it is prose and it is longer than a headline, it carries two to three marked phrases. The only field exempt is the "who" headline, which is already set apart by its own type. Mark the phrase a reader should carry away: the fact that decides the argument, the number that is hard to believe, the turn the season took. Choose by RELEVANCE, never by decoration, and never by rhythm. A **phrase**, two to six words, inside the sentence.
+
+WHAT MAY NEVER BE EMPHASISED , these bind harder than the rule above, and where they conflict with it, they win:
+   , NEVER a VV Score or a band on a card carrying rt_claims: "forbidden". That card's score may not be named at all, so it certainly may not be made to stand out.
+   , NEVER any number on a goalkeeper card. A keeper carries no score on this platform, and emphasis on a save count or a percentage rebuilds the scalar the platform removed.
+   , NEVER a quality claim read off rt for a centre-back, full-back or defensive midfielder. The score for those positions is largely a defensive-share percentile and a minutes curve, so bolding "his 84 rating" there emphasises an artefact.
+   , NEVER a whole sentence or a whole clause. If the marked span runs to the full stop, or reads as a sentence on its own, it is not emphasis, it is shouting. Two to six words.
+   , NEVER the tag name, the player name or the club on its own. Those are already set apart by the page.
+   , NEVER a statement that something was not recorded. An absence is a limit of OUR record, not a finding about the player, and emphasis would make the gap the most prominent thing on a card it is not about. Rule C already tells you to name the limit plainly, once, where it bears on the case , plainly means in plain weight. Say it and move on.
+Asterisks that are not a matched pair are discarded before display, so an unclosed marker costs you the emphasis rather than corrupting the line.
+
+5. Write like a human football expert, not a model describing a player. Concrete over abstract, specific over sweeping.
+6. PARAGRAPHS , the longer prose fields (p1, p2) must read as 2, at most 3, short paragraphs, NOT one dense block. Separate paragraphs with a blank line (two newline characters, \n\n) inside the JSON string value. Each paragraph is 1-2 sentences. The "verdict" field must ALSO read as TWO short paragraphs separated by \n\n: the reasoning, then a breath, then the closing beat. It lands harder with the pause. Do NOT break the truly short fields (h2h, who) , those stay single.
 
 NAMING CONTRACT , these are proper names. Getting them wrong makes the prose disagree with the card beside it.
 
 A. VV Score is the NUMBER a season receives. VV Index is the SYSTEM that produces it. "Neves scores 63 on the VV Index." Never use VV Index to mean the number, and never write "VV index" or "vv score".
 
-B. DESCRIBE FREELY, NAME ACCURATELY. There are exactly five dimensions and they are Goal Threat, Creation, Progression, Defensive, Reliability. You are NOT required to name them, and usually should not: characterising what a player did in your own words is better writing than labelling it. "The connector, the tempo-setter, the one the team breathes through" beats "his Creation dimension was high" every time, and that freedom is the point of this voice. But the moment you NAME a dimension of the VV Index, the name must be one of those five, capitalised, with the following common noun lowercase: "his Creation dimension", "the Goal Threat spoke". Never invent a sixth, and never name one that is not in that list.
+B. THE FIVE DIMENSIONS ARE A CLOSED VOCABULARY. NAMING ONE IS OPTIONAL; NAMING A SIXTH IS NOT. There are exactly five dimensions and they are Goal Threat, Creation, Progression, Defensive, Reliability. You are NOT required to name them, and usually should not: characterising what a player did in your own words is better writing than labelling it. "The connector, the tempo-setter, the one the team breathes through" beats "his Creation dimension was high" every time, and that freedom is the point of this voice. But the moment you NAME a dimension of the VV Index, the name must be one of those five, capitalised, with the following common noun lowercase: "his Creation dimension", "the Goal Threat spoke". Never invent a sixth, and never name one that is not in that list.
 
 C. The bands are proper names: Generational, Iconic, World Class, Standout. "an Iconic season", lowercase noun. Iconic is the word for the 90 to 94 band; do not call it Elite.
 
@@ -109,15 +218,59 @@ E. Verdict tags are titles and take title case, as they are given to you.
 
 F. The Chronicle and the Verdict take capitals when the prose names them as parts of the card. The lowercase "verdict" key in the JSON below is a field name, not prose, and stays lowercase.
 
-When the two players' VV Scores DIFFER, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV Scores are EQUAL, READ THE RESULT LINE and follow it exactly, because a chip is rendered beside your words and it must not contradict them. If a tiebreak has already decided it, there IS a winner: name them and lead with the reason they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT crown anyone , give both sides their due and leave it open, because the chip will read "The Debate Lives On". A two-sided close is the correct answer there, not a failure of nerve. Never write a limp "both were great" draw either: make the case for each and let them stand unseparated.
+THE THIRD VERDICT STATE , WHEN THE INDEX CANNOT SEPARATE THEM. READ THE RESULT LINE.
+
+A VV Score is an estimate and it carries a measured error. Where two seasons sit closer together than that error, the Index does not rank them, and the Result line will say so in those words. This is not a hedge, a draw, or a failure of nerve. It is the platform reporting what it measured, and it is the correct answer far more often than it is the rare one.
+
+WHEN THE RESULT LINE SAYS INSIDE THE MARGIN, THREE THINGS BIND ABSOLUTELY.
+
+1. NO WINNER, IN ANY FORM. Not named, not implied, not smuggled into the last sentence. Banned outright: "edges it", "shades it", "just ahead", "the better of the two", "takes it", "wins the argument", "if pushed", "on balance", and every near variant. A closing line that leaves the reader in no doubt which season you preferred is a winner, whatever words it used.
+
+2. NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT. You are given both so you can understand why the Index went quiet; you are not given them to print. Two numbers side by side ARE a ranking to a reader, and the bands do not separate either, so naming one Iconic and the other World Class does the same work by another route. The card faces carry the numbers. This is the same rule as a card carrying rt_claims, applied to a pair instead of a season.
+
+3. IT IS NOT A DRAW, AND "both were magnificent" IS THE FAILURE. Two seasons the Index cannot RANK are not two seasons that are the SAME. Your verdict is the difference in KIND, and you have the evidence to write it: the honours each won, the recorded figures with their denominators, where each sits in his own position pool, the career stage, the club, the league, the age. None of that carries a standard error. A trophy is a fact. Twenty-nine goals from a hundred and four shots is a fact. The ninety-sixth percentile of his position is a placement the platform computed and stands behind.
+
+SO WRITE THE ARGUMENT. Give each season the specific thing the record shows it holds and the other does not. Be concrete and be even-handed: if one has the honours and the other has the rarer output, say exactly that. The reader should finish knowing precisely how the two seasons differ and that the Index does not rank them , and should feel they have been told MORE than a winner would have told them, not less.
+
+When the two players' VV Scores DIFFER and the Result line says the gap CLEARS the margin, the VV Index has already decided the winner: you do not overturn it, you explain why that season prevailed. When the two VV Scores are EQUAL, READ THE RESULT LINE and follow it exactly, because a chip is rendered beside your words and it must not contradict them. If a tiebreak has already decided it, there IS a winner: name them and lead with the reason they took it. If the Result line says the pairing is GENUINELY LEVEL with no tiebreak, do NOT crown anyone , give both sides their due and leave it open, because the chip will read "The Debate Lives On". A two-sided close is the correct answer there, not a failure of nerve. Never write a limp "both were great" draw either: make the case for each and let them stand unseparated.
 
 READING THE STAT BLOCK , these rules bind on every number you are given.
+
+THE HONOURS BLOCK BELOW BINDS ON BOTH VERDICT PATHS, AND IT SITS HERE FOR THAT REASON , MOVED 2026-09-14.
+It used to live inside the no-winner section, which Path B REPLACES WHOLESALE when a pair is
+inseparable and a tiebreak has to crown someone. So the honours guidance , the won_by read, the
+order of evidential weight, and the naming rule , was silently absent from exactly the path where
+honours matter MOST: the one where the Index has gone quiet and the record is all that is left.
+Verified by testing the composed strings rather than reading the source: before this move,
+VERDICT_SYSTEM_JUDGE contained no occurrence of won_by at all. DO NOT MOVE IT BACK ABOVE THE
+THIRD_STATE_END MARKER.
+
+WHAT AN HONOUR ACTUALLY TELLS YOU , READ won_by BEFORE YOU WEIGH ONE. Every honour in the block carries won_by: "player" or "team". They are not the same kind of evidence and you must not treat them as one.
+
+An INDIVIDUAL award names one player as the best at something across a whole league, or across the world. A TEAM honour is won by a squad, and this platform does not record what the player's share of it was , not his minutes in the run, not whether he was central or peripheral, not whether he played in the final. So an individual honour says more about THAT player's season than a team honour does, and you reason in that order:
+
+   Ballon d'Or                          the strongest single claim on the card. Global, individual, and it means he was judged the best player alive that year.
+   Player of the Season, Golden Boot,   league-wide individual awards. Each names him the best at a stated thing, across an entire league, over a full season.
+     Top Assists
+   World Cup Winner                     the strongest TEAM honour, and still a team honour.
+   UCL Champion, League Title           team honours.
+
+THIS IS AN ORDER OF EVIDENTIAL WEIGHT, NOT A SCORING TABLE. Do not add honours up, do not rank two seasons by counting them, and never write that one season "wins on honours". Use it to decide what a trophy licenses you to CLAIM: a Golden Boot supports a sentence about the PLAYER, a League Title supports a sentence about the SEASON HE WAS PART OF.
+
+AND THE COROLLARY MATTERS MORE THAN THE ORDER , A TEAM HONOUR SAYS LESS ABOUT A SQUAD PLAYER THAN ABOUT A CENTRAL ONE, AND THE PAYLOAD DOES NOT SAY WHICH HE WAS. You are given his minutes, so you can see how much football he played, but you are never told what he contributed to the trophy itself. Never inflate a team honour into a personal claim. "He won the league" is a fact. "He led them to the league" is a claim the record does not carry, unless the figures printed beside it show it. If his own numbers make that case, make it from the numbers and let the medal stand behind them.
+
+NAME THE HONOUR IN THE PROSE. EVERYTHING ABOVE TELLS YOU HOW TO WEIGH ONE AND NONE OF IT TELLS YOU TO SAY IT OUT LOUD, SO SAY IT: when a season holds an INDIVIDUAL honour, the words "Ballon d'Or" or "Golden Boot" or "Player of the Season" or "Top Assists" appear in your text, with the season it was won. A trophy reasoned about silently is a trophy the reader never learns about, and it is the most concrete evidence on the card.
+
+THE RULE IS INDIVIDUAL HONOURS ONLY, AND THE REASON IS NOT TIDINESS , A TEAM HONOUR SKEWS A COMPARISON TOWARD THE BETTER-SUPPORTED PLAYER. A Ballon d'Or is evidence about HIM. A League Title is evidence about HIS SQUAD, and naming it as though it were his achievement rewards the player who had the better teammates, which is the one thing a fair comparison must not do. So: name individual honours, and let team honours stand behind the numbers as context you may weigh but do not announce. If a team honour is the only thing a season holds, say what the player's own figures show and let the medal sit where it belongs.
+
+WHICH ONE, WHEN THERE ARE SEVERAL: name the strongest INDIVIDUAL one by the order above, not all of them, and never a team honour just because it sits higher in your judgement of the season. Two sentences listing four trophies is a palmares, not an argument, and the verdict has two to three sentences to spend.
 
 A. PERCENTILES AND POOL BARS ARE NOT LEAGUE RANKS. When you are given pool_passes_per90_p80 or _p90, those are the bar for that player's POSITION across the whole database, not a position in a league table. You may say a figure clears the bar for his position, or sits well above it. You may NOT say he was "third in the league", "the most in the division", or anything that implies a rank you were not given. You were given a threshold, not a standing.
 
 B. A RATE WITHOUT ITS SAMPLE IS NOT EVIDENCE. minutes, starts and appearances are given so you can weigh them. Twelve starts and thirty-eight starts do not carry the same claim, and a per-90 figure over a part-season is thinner than the same figure over a full one. Say so when it matters.
 
 C. HEDGE WHERE HEDGING IS EARNED, AND ONLY THERE. The block carries a confidence score out of 5 and a "missing" list naming exactly which measures were never recorded. A missing field is NOT a zero and NOT a weakness: it is an absence in the record. If the thing you want to praise or criticise is on that list, you may not assert it. Name the limit plainly once if it matters to the case, then write what the present data does support. Do not sprinkle hedges over a card whose fields are all present.
+THE CONFIDENCE SCORE IS OURS, NOT THE READER'S, AND IT NEVER APPEARS IN THE PROSE. It is internal bookkeeping about how complete OUR record is , "a confidence rating of 5 with no missing fields" tells a reader nothing about the player and asks them to interpret a number they have never seen explained. Let it govern what you claim; never report it. Name the MISSING MEASURE in plain words when it matters ("clean sheets are not recorded for this season"), and never the score, the denominator or the phrase "missing fields".
 
 D. ERA. The "era" line tells you what existed for that season. For a pre-2015 card only appearances, minutes, goals and discipline exist; passing, defending, dribbling and duels were never recorded. Write those seasons with the confidence the record allows and no more. Do not describe a 2012 season in the vocabulary of a 2024 one, and never fill the gap by inference.
 
@@ -139,7 +292,7 @@ OUTPUT FORMAT:
 You respond ONLY with valid JSON. No markdown. No code blocks. No preamble. No explanation outside the JSON.
 
 Required format:
-{"p1": "...", "p2": "...", "h2h": "...", "verdict": "...", "tag": "...", "who": "..."}
+{"p1": "...", "p2": "...", "h2h": "...", "verdict": "...", "tag": "...", "who": "...", "winner": "A"}
 
 OUTPUT LENGTH:
 - p1: 3-4 sentences, split into 2 short paragraphs (blank line between). Club, role, VV Tags, what this season meant. Precise and poetic.
@@ -147,12 +300,73 @@ OUTPUT LENGTH:
 - h2h: 2-3 sentences. The real argument. What does context change?
 - verdict: 2-3 sentences. Authoritative. Final. One quotable closing sentence.
 - tag: when the user prompt provides a VERDICT TAG list, return the single chosen KEY verbatim (one of the provided keys, nothing else). Default to the first key; up-rank only if another clearly fits better. If no tag list is provided, omit this field.
+- winner: WHICH SEASON YOU JUDGE BETTER , the string "A", the string "B", or null. THIS IS A MACHINE FIELD AND IT NEVER APPEARS IN YOUR PROSE. It is how the platform knows which card to crown, so it must agree with what you actually wrote: crowning one season in the prose and returning the other, or null, puts a badge over the season you argued against. Read the Result line for which of three things it asks. If the Index has already decided, return that winner. If it says there is no winner to name, return null. If it asks YOU to judge, return the season you named, or null if you declined. Never return a name, a score, a card id or a sentence here.
 - who: ONE short winner headline, max ~14 words, in the REGISTER OF THE CHOSEN TAG and the TONE given in the prompt. This is a headline, not prose. The margin must MATCH the words: a decisive gap reads decisive and settled; the finest of margins keeps the restraint of "edges it"; a tie reads as unresolved, the argument continuing, never a flat draw. Name the winner and include BOTH VV Scores as passed. If AGE tipped a coin-flip, lead with the younger-age feat. Do NOT write "edges it" for a decisive gap. If no verdict tag list is provided, omit this field.
-WHEN ONE SIDE IS A GOALKEEPER, SAY SO RATHER THAN WRITING AROUND IT. A save rate and a goal tally are not the same kind of evidence and the two are not like-for-like. State plainly, once, that the pair are measured on different evidence, in the same register as a measurement boundary: it is a limit of what we record, not a hedge and not a criticism of either player. Do not manufacture a common axis, do not rank them as though the numbers were comparable, and do not quietly favour the outfielder because his figures are easier to narrate. Note also that rt is capped at 75 for a goalkeeper and reflects availability and league strength rather than goalkeeping, so a keeper's lower score is not evidence he was the lesser player.
+WHEN ONE SIDE IS A GOALKEEPER, SAY SO RATHER THAN WRITING AROUND IT. A save rate and a goal tally are not the same kind of evidence and the two are not like-for-like. State plainly, once, that the pair are measured on different evidence, in the same register as a measurement boundary: it is a limit of what we record, not a hedge and not a criticism of either player. Do not manufacture a common axis, do not rank them as though the numbers were comparable, and do not quietly favour the outfielder because his figures are easier to narrate. Note also that a goalkeeper carries NO SCORE AT ALL on this platform , there is no rt in a keeper payload and none may be inferred. Where the keeper's evidence_status is measured you are given a save rate with its standard error and a percentile BAND; quote the band as a range and never as a point, and do not use it to rank him against the outfielder or against anyone else.
 
 A SAVE-RATE SERIES IS NOT A GOALS SERIES, AND MOST OF ITS MOVEMENT IS NOISE. A keeper's season save percentage carries roughly SIX POINTS of standard error against a competitive range of about TEN, so a swing from 74 to 70 is the same keeper, not a decline. Never narrate a small movement as form or ageing. A null season means shots faced were never recorded, not that he saved nothing, and shot data begins in 2015.
 
 Write tight. Every word earns its place.`;
+
+/*  ══ PATH B , THE SECOND SYSTEM PROMPT, FOR A PAIR THE SCORE CANNOT SEPARATE ═══════════
+    THE PREMISE IS INVERTED, AND ONLY FOR THIS STATE. Everywhere else the VV Score decides
+    and the model explains. Measured twice, independently: 97.0% of pairings at rt 80+ sit
+    inside the pair's own margin of error, so on the pairings people actually make, the
+    number usually cannot decide anything. The prompt above answers that by forbidding the
+    model to decide either, which is honest about the Index and leaves the reader with no
+    verdict at all. Path B hands the model the margin AS EVIDENCE , a fact about the score,
+    not an instruction to abstain , and asks it to judge the football on the record that
+    carries no standard error: the honours, the figures with their denominators, the pool
+    placement, the role, the league, the minutes, the age.
+
+    IT IS A SWAP OF ONE BLOCK, NOT A SECOND PROMPT. Everything else , the voice, the style
+    rules, the naming contract, the stat-block rules, the keeper contract , is the SAME
+    TEXT, read from the same constant. Two hand-maintained prompts would drift, and the
+    drift would be invisible because each looks complete on its own.
+
+    IT IS SELECTED PER REQUEST AND IT DEFAULTS CLOSED. The caller asks for it with
+    judge:'ai', which compare.html sends only when the pair is OUTFIELD and the Index did
+    not separate them. Position is known on the client and not in this payload, so the gate
+    lives where the fact lives; a request that says nothing gets the prohibiting prompt.
+    KEEPER PAIRS THEREFORE KEEP EVERY PROHIBITION, which is the point: there is no keeper
+    score to sit inside a margin, and the keeper contract further down forbids ranking one
+    against an outfielder at all.
+
+    THE SWAP ASSERTS. A .replace() that matches nothing is a silent no-op that would ship
+    the prohibition under the licence's name, so the markers are located explicitly, the
+    result is checked against the input, and the prohibition is grepped for afterwards.
+    Failing here fails every request loudly, which is the correct trade for a prompt that
+    would otherwise be wrong in a way only the prose could reveal.  */
+const THIRD_STATE_START = 'THE THIRD VERDICT STATE';
+const THIRD_STATE_END   = 'READING THE STAT BLOCK';
+const JUDGE_BLOCK = `WHEN THE INDEX CANNOT SEPARATE THEM , YOU STILL HAVE A VERDICT TO REACH.
+
+A VV Score is an estimate and it carries a measured error. Where two seasons sit closer together than that error, the Index does not rank them, and the Result line will tell you so with the figures. THAT IS EVIDENCE HANDED TO YOU, NOT AN INSTRUCTION TO ABSTAIN. It tells you one specific thing: the single number cannot settle this pairing. It tells you nothing about whether the FOOTBALL can.
+
+SO READ EVERYTHING ELSE AND REACH A VERDICT. You have the output and its efficiency, the minutes and the starts behind every rate, the role and what that role makes rare, the league and its strength, the age and the career stage, the five dimensions, the tags, the honours actually won. None of that carries the standard error that stopped the Index. A trophy is a fact. Thirty-six goals from a striker who took few shots is a fact. The ninety-sixth percentile of his own position is a placement the platform computed and stands behind. A verdict built on those is not a guess dressed as a finding, it is what a good judge of football does with a complete record.
+
+NAME THE SEASON YOU JUDGE BETTER, AND SAY WHY IN THE SAME BREATH. Lead with the reason, not the name. The case must be specific enough that a reader who disagrees knows exactly which piece of evidence to argue with.
+
+BE HONEST ABOUT WHAT KIND OF VERDICT IT IS. You are not reporting a measurement, you are making a judgement, and the prose should carry that difference without apologising for it. "The record favours X, and here is the part of it that does" is right. Pretending the Index crowned X is wrong.
+
+NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT. You are given both so you can understand why the Index went quiet; you are not given them to print. Two numbers side by side ARE a ranking to a reader, and the bands do the same work by another route. Your verdict rests on the rest of the record, so write it from the rest of the record. The card faces carry the numbers.
+
+YOU MAY DECLINE, AND SOMETIMES YOU SHOULD. If the two seasons are strong in genuinely different currencies and nothing in the record puts one above the other without inventing a preference, say that, say precisely what the difference in kind is, and leave it unresolved. Declining is a real answer when the evidence earns it. It is NOT the safe default, and it is NOT available merely because the scores are close , close scores are the situation you were asked to judge, not a reason to refuse.
+
+NEVER WRITE A LIMP DRAW. "Both were magnificent" is the failure whether you crown or decline. Two seasons the Index cannot rank are not two seasons that are the same: the difference is in KIND, and naming it exactly is the minimum you owe the reader.
+
+RETURN YOUR ANSWER IN THE "winner" FIELD AS WELL AS IN THE PROSE. "A" or "B" if you judged one better, null if you declined. The badge on the page is drawn from that field, so the two must say the same thing.
+
+`;
+const VERDICT_SYSTEM_JUDGE = (() => {
+  const i0 = VERDICT_SYSTEM.indexOf(THIRD_STATE_START);
+  const i1 = VERDICT_SYSTEM.indexOf(THIRD_STATE_END);
+  if (i0 < 0 || i1 < 0 || i1 <= i0) throw new Error('[vv] Path B: the third-state block was not found in VERDICT_SYSTEM , the markers have moved.');
+  const out = VERDICT_SYSTEM.slice(0, i0) + JUDGE_BLOCK + VERDICT_SYSTEM.slice(i1);
+  if (out === VERDICT_SYSTEM) throw new Error('[vv] Path B: the block swap changed nothing.');
+  if (out.indexOf('NO WINNER, IN ANY FORM') >= 0) throw new Error('[vv] Path B: the ordering prohibition survived the swap.');
+  return out;
+})();
 
 const NOTES_SYSTEM = VERDICT_SYSTEM + `
 
@@ -169,7 +383,23 @@ CLEAN SHEETS ARE NOT IN OUR SOURCE. Do not state one, estimate one, or imply one
 
 READ THE SAVE COUNT HONESTLY , THIS IS THE EASIEST MISTAKE TO MAKE. A save total measures how much work a keeper was given at least as much as how well he did it. A keeper behind a poor defence faces more shots and makes more saves; a keeper at a dominant side can be excellent and make very few. NEVER present a high save count as proof of quality on its own, and never let a low one read as criticism. Goals conceded carries the same warning in reverse: it is largely a fact about the team in front of him.
 
-THE SCORE IS NOT A KEEPER RATING. rt is capped at 75 for goalkeepers and reflects availability and league strength, NOT goalkeeping. Nothing in these figures feeds it. NAME THE CAP AS A MEASUREMENT BOUNDARY OF THE PLATFORM, not as a judgement on the player: the number is low because we do not measure goalkeeping, not because he kept goal badly. Say it plainly, once, in the scout paragraph, so a reader never takes the number as a verdict on his keeping.
+THE PLATFORM DOES NOT RATE GOALKEEPING AND YOU ARE NOT GIVEN A KEEPER SCORE. There is no rt in a keeper payload. Do not ask for one, infer one, or describe the season as though one existed. If a number is wanted, the platform's own sentence is in keeper.limit and you may use it.
+
+WHAT YOU RECEIVE ABOUT A KEEPER, AND THE WHOLE OF IT: the recorded figures (saves, goals_conceded, shots_faced_derived, penalties_saved, starts), the save rate WITH its standard error, a percentile BAND, an evidence_status of measured, below_floor or unrecorded, and the limit sentence.
+
+THE BAND IS A RANGE AND MUST BE QUOTED AS ONE. percentile_band is [low, high]. Write it as a range , "between the 38th and 71st percentile". Never average it, never take a midpoint, never call it "around the 55th", and never turn it into a single place. A wide band means thin evidence and that is worth saying plainly; a narrow one means the opposite.
+
+THE SAVE RATE TRAVELS WITH ITS ERROR. Where you give the rate, give the +/- with it. A rate alone overstates what one season of shots can tell you.
+
+YOU MAY NOT GRADE, RANK OR COMPARE KEEPER SEASONS. Not against each other, not against a pool position, not against an era. Do not say one keeper season was better, stronger or worse than another, and do not order them.
+
+NO QUALITY ADJECTIVES ABOUT SHOT-STOPPING. Not strong, elite, poor, outstanding, mediocre, world-class, commanding, assured, shaky, or any synonym, applied to how he kept goal. THIS IS THE NAMED FAILURE: attaching a quality word to a keeper season is the platform asserting through prose exactly what it refuses to assert in numbers, and it is the one thing this contract exists to prevent. Describing the FIGURES is not a violation , "he faced 176 shots and saved 116" is a fact. Describing the KEEPING is.
+
+PENALTIES SAVED IS A COUNT WITH NO DENOMINATOR AND YOU MAY NOT INVENT ONE. The payload gives how many he SAVED. It does NOT give how many he FACED, and that number exists nowhere on this platform. Do not write "the one he faced", "both of them", "every penalty he faced", "none of the three", or any phrasing that implies a total, a rate or a share. Saying "he saved two penalties" is a fact. Saying "he saved two of the four he faced" is a fabrication, and so is "he saved none of the penalties he faced", because it asserts he faced some. A zero means we recorded no save, not that he faced one and missed it. THE SPEC REFUSES MANUFACTURED DENOMINATORS BY NAME; this is that rule.
+
+THE FIELD NAMES IN THIS PAYLOAD ARE INTERNAL KEYS AND NEVER APPEAR IN YOUR OUTPUT. Do not write evidence_status, below_floor, unrecorded, measured, percentile_band, save_rate_se_pp, shots_faced_derived or penalties_saved_note. Say it in words: "below the evidence floor", "the save was never recorded", "shots faced, derived from saves and goals conceded". A reader sees prose, not a payload.
+
+WHERE THE EVIDENCE IS BELOW THE FLOOR OR WAS NEVER RECORDED there is no rate and no band. Say what was recorded, say the platform makes no comparison at that sample size, and stop. Do not fill the gap with impressions.
 
 A SAVE-RATE SERIES IS NOT A GOALS SERIES, AND MOST OF ITS MOVEMENT IS NOISE. Where savePctSeries is present it is the keeper's save percentage by season, and a season's rate carries roughly SIX POINTS of standard error against a competitive range of about TEN. So a swing from 74 to 70 is not a decline, it is the same keeper. Do NOT narrate small movements as form, momentum, ageing or loss of confidence. Only a sustained move across several seasons, or a gap far larger than six points, is worth a sentence. A striker going 22 goals to 5 has changed; a keeper going 74 to 70 has not.
 
@@ -191,25 +421,459 @@ Never use em-dashes, use spaced commas. Every word earns its place. Do not wrap 
 
 // Derived AFTER the prompts, so each fingerprint tracks the exact text it governs.
 const VERDICT_VERSION = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM);
+
+/*  ── WHO WON, AND WHO IS ALLOWED TO SAY SO , PATH B (2026-09-11) ───────────────────────
+    TWO SOURCES, NEVER BOTH AT ONCE, chosen by the same flag that chose the prompt.
+      PATH B (aiJudge): the pair sits inside the Index's own margin, the caller sent no
+      winner, and the MODEL's answer is the verdict. It is untrusted input, and three things
+      guard it: it must be the string "A" or "B" (anything else, a card id included, is a
+      decline); "A"/"B" resolve against the ids THIS REQUEST carried, never against anything
+      in the model's text, so a hallucinated id cannot enter the table; and the resolved id
+      must be one of the two in the pair.
+      ENGINE (anything else): the caller computed the winner from a gap the Index does
+      separate, and the model was told not to overturn it. Its "winner" is ignored here,
+      because the score line renders that gap beneath the verdict and a crown on the lower
+      number would contradict the page.
+    A DECLINE AND A FAILED CHECK BOTH LAND ON null, WHICH IS THE SAFE STATE , no crown, no
+    winner_card_id, and the pairing reads as unresolved, which is exactly what shipped before.
+    PURE AND EXPORTED so the guard can be exercised without a key or a network call.  */
+/*  ── DOES THE PROSE AGREE WITH THE `winner` FIELD? , DETECT AND LOG ONLY (2026-09-13) ──
+    THE SEAM. The prompt names this failure in its own words , "crowning one season in the
+    prose and returning the other, or null, puts a badge over the season you argued against"
+    , and then relies on the model to comply. Every OTHER property of that field is verified
+    server side by resolveWinnerId; this one was not. It is the defect a screenshot caught.
+
+    IT RECORDS AND CHANGES NOTHING. No override, no retry, no UI difference. The reason is
+    measured: detection is about 90% reliable (54 of 60 cached headlines contain the winner's
+    surname; where both names appear, first-named is the winner 13 of 14). That is enough to
+    FLAG and nowhere near enough to ACT , overriding on a 90% signal produces the same defect
+    from the other side, and a retry would cost a second generation on the slow path AND
+    destroy the very signal this exists to gather.
+
+    IT READS `who`, NOT THE LONG PROSE. `who` is a purpose-built winner headline the prompt
+    already requires to name the winner; p1/p2/h2h argue BOTH sides by design and are the
+    worst place to look for a decision.
+
+    IT REPORTS UNDETECTABLE RATHER THAN GUESSING. Two seasons of the SAME player put the
+    identical surname on both sides and no name-based reading can ever separate them , that
+    is a supported flow, already 2 of 113 cached pairs, and it returns detectable:false
+    instead of a coin flip. Absence of a name is NOT evidence of a decline either: a decline
+    has no positive form, so `prose` is null and `agree` is null rather than false.
+
+    SIDES ARE RECORDED AS CARD IDS, NOT "A"/"B", because the cached row may be SWAPPED into
+    canonical lo/hi order and A/B would then mean the opposite of what was checked.
+    PURE AND EXPORTED, like resolveWinnerId, so it can be exercised without a key.  */
+function checkProseWinner(o) {
+  const who = (typeof o.who === 'string') ? o.who : '';
+  const sa = String(o.surnameA == null ? '' : o.surnameA).trim().toLowerCase();
+  const sbn = String(o.surnameB == null ? '' : o.surnameB).trim().toLowerCase();
+  const field = (o.modelWinner === 'A' || o.modelWinner === 'B') ? o.modelWinner : null;
+  const out = { checked: false, reason: null, prose_card_id: null, field_card_id: null, agree: null };
+  out.field_card_id = field ? (field === 'A' ? (o.idA == null ? null : Number(o.idA)) : (o.idB == null ? null : Number(o.idB))) : null;
+  if (!who)            { out.reason = 'no_headline';   return out; }
+  if (!sa || !sbn)     { out.reason = 'no_names';      return out; }
+  if (sa === sbn)      { out.reason = 'same_surname';  return out; }   // two seasons of one player
+  const w = who.toLowerCase();
+  const iA = w.indexOf(sa), iB = w.indexOf(sbn);
+  let prose = null;
+  if (iA >= 0 && iB >= 0) prose = (iA < iB) ? 'A' : 'B';   // first-named: 13 of 14 on cached rows
+  else if (iA >= 0) prose = 'A';
+  else if (iB >= 0) prose = 'B';
+  out.checked = true;
+  out.both_named = (iA >= 0 && iB >= 0);
+  out.prose_card_id = prose ? (prose === 'A' ? (o.idA == null ? null : Number(o.idA)) : (o.idB == null ? null : Number(o.idB))) : null;
+  if (prose === null)      out.reason = 'prose_named_nobody';
+  else if (field === null) out.reason = 'field_declined';
+  else out.agree = (prose === field);
+  return out;
+}
+
+function resolveWinnerId(o) {
+  const idA = Number(o.idA), idB = Number(o.idB);
+  const inPair = (v) => { const n = Number(v); return (Number.isFinite(n) && (n === idA || n === idB)) ? n : null; };
+  if (o.aiJudge) {
+    const w = (typeof o.modelWinner === 'string') ? o.modelWinner.trim().toUpperCase() : null;
+    if (w !== 'A' && w !== 'B') return null;
+    return inPair(w === 'A' ? idA : idB);
+  }
+  return (o.winnerCardId == null) ? null : inPair(o.winnerCardId);
+}
+
+/*  THE VERDICT'S CACHE VERSION IS THE SYSTEM PROMPT *AND* THE PAYLOAD SCHEMA , 2026-09-07.
+    VERDICT_VERSION above fingerprints the SYSTEM text, which lives in this file, so it moves
+    when the INSTRUCTIONS change. The user prompt is assembled in compare.html, so it moves
+    when the EVIDENCE changes and this fingerprint cannot see it. The note above PROMPT_REV
+    already named that hole and answered it with "bump PROMPT_REV by hand" , which is a thing
+    a person can forget, and forgetting it serves prose written without a field to a reader
+    looking at a page that has it. That is the stale-prose trap, and it was avoided rather
+    than closed.
+    The client now derives payloadRev from the KEY SET vvAIStats emits (names only, sorted,
+    no values) and sends it. Folding it in here means the existing staleVersion test does all
+    the work, and no column had to be added to verdict_cache.
+    ABSENT IS NOT ZERO. A caller that sends no payloadRev , scripts/prewarm_verdicts.js, an
+    older client, a hand-rolled request , gets the bare VERDICT_VERSION, exactly what it got
+    before. It does NOT get a version that collides with a stamped one, because the stamped
+    form always carries the extra segment.
+    IT DOES NOT REPLACE rt_a/rt_b. Those catch a moved SCORE; this catches a changed SHAPE.
+    A field being added and a value changing are different events and need different tests. */
+/*  ONE VERSION PER PROMPT, STILL DERIVED. Path B is a different system prompt, so it is a
+    different cache version by the same rule that governs every other prompt edit here , the
+    fingerprint tracks the text that was actually sent. In practice a pair is one kind or the
+    other and does not flip, but a row must never be served under a prompt that did not write
+    it, and nothing else in the table records which one did.  */
+const VERDICT_VERSION_JUDGE = PROMPT_REV + '-' + fingerprint(VERDICT_SYSTEM_JUDGE);
+/*  THE STAMP IS FINGERPRINTED FROM THE TEXT THAT WAS ACTUALLY SENT , 2026-09-15.
+    It used to pick a base from the `judge` FLAG, which is the same shape of mistake as the
+    Path B splice: a value computed from one thing while a different thing is used. A caller
+    may override the system prompt with `system` in the request body, and that request still
+    reaches the cache write below, because `cacheable` gates on the two card ids and nothing
+    else. So a row could be written by a prompt nobody on this platform has ever seen and
+    STAMPED with the fingerprint of VERDICT_SYSTEM , served to every later visitor for that
+    pair, and counted by any version-filtered measurement as if the named prompt wrote it.
+    A cache key that can describe text it did not hash is not a cache key, it is a label.
+    verdictSystemFor() is now the ONE place the prompt is chosen, and the version is taken
+    from its return value, so the two cannot disagree by construction. NOTHING REGENERATES:
+    with no override the text is byte-identical to before, so every real caller's version is
+    unchanged , verified, not assumed.
+    The notes path never had this hole; it hardcodes NOTES_SYSTEM at its own fetch. */
+const verdictSystemFor = (judge, custom) => custom || (judge ? VERDICT_SYSTEM_JUDGE : VERDICT_SYSTEM);
+/*  THE FOURTH SEGMENT IS A VALUE STAMP , ADDED 2026-09-19, AND IT CLOSES A HOLE THE OTHER
+    THREE COULD NOT SEE. cache_version catches changed INSTRUCTIONS, payloadRev a changed
+    KEY SET, rt_a/rt_b a moved SCORE. A stat corrected in place , shots_total, duels_won,
+    appearances , changes a VALUE, adds no key, and need not move rt, so all three stay
+    silent and the cached prose is served for ever citing the old figure. Measured: those
+    three each move statsRev and move neither payloadRev nor rt.
+    WHAT PROMPTED IT DID NOT NEED IT, AND THAT IS WORTH RECORDING. The 2026-09-16 assists
+    repair looked like the case for this, and it is not: vvAIStats emits
+    `not_recorded_basics` only while assists is null, so the KEY SET moved and payloadRev
+    already caught it. The instance was covered; the CLASS was not.
+    NO SCHEMA CHANGE. verdict_cache has no stats_hash column and cache_version is already a
+    multi-segment string, so the value stamp rides as a fourth segment. SS C's rule , filter
+    on the FIRST TWO dash-delimited segments for the prompt base , is unaffected.
+    ABSENT IS NOT ZERO. A caller that sends no statsRev (prewarm_verdicts.js, an older
+    client) gets the old stamp shape rather than a stamp claiming an empty payload.  */
+const verdictVersionFor = (rev, judge, custom, statsRev) => {
+  const sys  = verdictSystemFor(judge, custom);
+  const base = (sys === VERDICT_SYSTEM)       ? VERDICT_VERSION
+             : (sys === VERDICT_SYSTEM_JUDGE) ? VERDICT_VERSION_JUDGE
+             : PROMPT_REV + '-' + fingerprint(sys);
+  const withRev = rev ? (base + '-' + rev) : base;
+  return statsRev ? (withRev + '-' + statsRev) : withRev;
+};
 const NOTES_VERSION   = PROMPT_REV + '-' + fingerprint(NOTES_SYSTEM);
+
+/*  ── THE RATE LIMIT , 30 NEW GENERATIONS PER HOUR PER IP, 2 CONCURRENT (built 2026-09-15) ──
+    THE HONEST LIMIT, BESIDE THE ALLOWLIST'S. The origin allowlist stops another WEBSITE
+    spending our credit from its visitors' browsers. THIS stops a SCRIPTED client running up
+    the bill from one address. It does NOT stop a DISTRIBUTED one , anybody with a pool of
+    addresses gets 30 an hour from each, and no per-IP rule can see that. Detecting
+    distributed abuse needs a different instrument entirely (spend alerting at the provider),
+    and none is in place.
+    AND THE CACHE IS STILL DOING MOST OF THE DEFENCE. This check runs AFTER the cache lookup,
+    so a repeat pair or a warm card is never counted and never billed. The limiter only has
+    to bound what is genuinely new, which at measured traffic is 2.6 verdicts and 3.7 notes
+    a day.
+
+    WHERE 30 COMES FROM , IT IS A MEASUREMENT, NOT A ROUND NUMBER. The busiest 60 minutes in
+    the platform's whole history is 5 verdict generations and 9 notes generations, ACROSS ALL
+    USERS. A single session's maximum is 7 comparisons. 30 per IP per hour is therefore about
+    six times the busiest hour the platform has ever had, from one address.
+
+    WHAT WOULD FALSIFY IT , SO THE NEXT PERSON RAISES IT ON EVIDENCE RATHER THAN ON A
+    COMPLAINT. A refusal is written into this same table as kind 'refused:hourly' or
+    'refused:concurrent', so the check is a query and not a log hunt:
+      (1) THE REAL-USER SIGNATURE: an IP that was refused in an hour where it ALSO generated
+          successfully several times, i.e. a browsing session that walked into the wall rather
+          than a script that hammered it. One of these is enough to raise the cap.
+      (2) HEADROOM GONE: any IP whose successful generations in a single hour reach 10 , a
+          third of the cap. At that point 30 is no longer six times the observed peak and the
+          margin this number was chosen for has evaporated.
+      (3) SHARED EGRESS: a launch behind school, office or carrier NAT puts many real people
+          on one address, which is per-IP's known failure mode. The tell is a single IP with
+          many DISTINCT pair_keys rather than repeats.
+    The query, and it needs no new tooling:
+      select ip, date_trunc('hour', started_at) h,
+             count(*) filter (where kind in ('verdict','notes')) AS ok,
+             count(*) filter (where kind like 'refused%') AS refused
+      from api_rate_events group by 1,2 having count(*) filter (where kind like 'refused%') > 0;
+    IF THAT RETURNS A ROW WITH BOTH `ok` AND `refused` NON-ZERO, 30 IS TOO LOW. Raise it and
+    change this comment in the same commit.
+
+    IT FAILS OPEN, DELIBERATELY AND LOUDLY. If the ledger is unreachable the request proceeds,
+    because a Supabase blip must not take the site down for a counter that ticks three times a
+    day. CLAUDE.md's own rule applies though , fail-safe is a property of the CONSEQUENCE and
+    never evidence about the guard , so every fail-open logs at error level. A silent
+    fail-open is a limiter that has stopped working and nobody has noticed.  */
+const RL_PER_HOUR   = 30;
+const RL_CONCURRENT = 2;
+const RL_STALE_MIN  = 5;    // a slot older than this is a dead function, not a live request
+
+/*  ── THE GLOBAL CEILING , BECAUSE A PER-IP LIMIT CANNOT SEE A POOL OF ADDRESSES (2026-10-03) ──
+    MEASURED ON THE LIVE PREVIEW RATHER THAN REASONED: 40 sequential calls carrying a forged
+    `Origin` header returned 24 allowed and then HTTP 429 from call #25 , exactly 30 once the
+    six already spent from that address are counted. The per-IP limit is real and exact, and it
+    bounds ONE address. A hundred addresses get thirty each and nothing in this file can see it.
+    THE ORIGIN ALLOWLIST IS NOT A SECOND LINE HERE, and the same test proved it: four forged
+    origins were refused 403, and the 200s above came from node with the header set by hand.
+    `Origin` is a request header. It stops another WEBSITE's browser, never a script.
+
+    300 IS 21x THE BUSIEST HOUR THE PLATFORM HAS EVER HAD , five verdicts and nine notes across
+    all users. At the tightened input cap it bounds the hour at about $13.
+    AND IT IS SET GENEROUSLY ON PURPOSE. That 14/hour baseline comes from a platform with no
+    traffic, so a ceiling tuned from it would refuse real visitors on launch day, which is the
+    one day it matters. If a real hour ever reaches 300, RAISE THIS , do not read the refusals
+    as abuse without checking the grouping query above for many DISTINCT addresses.
+
+    AND IT BUYS TIME RATHER THAN BOUNDING THE BALANCE , SAY SO RATHER THAN LETTING IT READ AS A
+    SOLUTION. At 300/hour a prepaid balance of ~$24 still empties in under two hours of
+    sustained abuse. The hard stop is the provider's own spend cap (QA_PASS B4b). This ceiling
+    and that cap are complements; the cap is the one that actually stops.  */
+const RL_GLOBAL_PER_HOUR = 300;
+
+/*  x-forwarded-for is a LIST and the client's address is the FIRST entry; everything after it
+    is proxies. Taking the last, or the whole string, keys the limit on Vercel's edge rather
+    than on the caller, which would put every visitor in one bucket.  */
+function clientIP(req) {
+  const h = req.headers || {};
+  const xff = h['x-forwarded-for'];
+  if (typeof xff === 'string' && xff.length) return xff.split(',')[0].trim();
+  return h['x-real-ip'] || h['x-vercel-forwarded-for'] || null;
+}
+
+let _rlClient = null;
+function rlClient() {
+  if (_rlClient) return _rlClient;
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return null;
+  const { createClient } = require('@supabase/supabase-js');
+  _rlClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  return _rlClient;
+}
+
+/*  Returns { ok:true, id } to proceed, or { ok:false, reason, retryAfter } to refuse.
+    `id` is the ledger row to close in a finally , see rlEnd.  */
+async function rlBegin(ip, kind) {
+  const sb = rlClient();
+  if (!sb || !ip) { console.error('[vv] RATE LIMIT FAILED OPEN , ' + (!ip ? 'no client ip' : 'no service key')); return { ok: true, id: null }; }
+  try {
+    const hourAgo  = new Date(Date.now() - 3600e3).toISOString();
+    const staleAgo = new Date(Date.now() - RL_STALE_MIN * 60e3).toISOString();
+    /*  BOTH COUNTS EXCLUDE REFUSAL ROWS. A refused request cost nothing, so counting it
+        toward the cap would punish a user for having been refused once.  */
+    /*  THE GLOBAL COUNT IS THE SAME QUERY WITHOUT THE IP FILTER , no new table, no new vendor,
+        and it runs in the SAME Promise.all so it costs no extra round trip. It is bound as
+        `allIPs` rather than `global` because `global` is Node's own object and shadowing a
+        host builtin inside the one function that must never throw is not worth the nicer name.  */
+    const [hourly, inflight, allIPs] = await Promise.all([
+      sb.from('api_rate_events').select('id', { count: 'exact', head: true })
+        .eq('ip', ip).in('kind', ['verdict', 'notes']).gte('started_at', hourAgo),
+      sb.from('api_rate_events').select('id', { count: 'exact', head: true })
+        .eq('ip', ip).in('kind', ['verdict', 'notes']).is('finished_at', null).gte('started_at', staleAgo),
+      sb.from('api_rate_events').select('id', { count: 'exact', head: true })
+        .in('kind', ['verdict', 'notes']).gte('started_at', hourAgo)
+    ]);
+    if (hourly.error || inflight.error || allIPs.error) {
+      console.error('[vv] RATE LIMIT FAILED OPEN , ledger read error:', (hourly.error || inflight.error || allIPs.error).message);
+      return { ok: true, id: null };
+    }
+    if (hourly.count >= RL_PER_HOUR) {
+      await sb.from('api_rate_events').insert({ ip, kind: 'refused:hourly', finished_at: new Date().toISOString() });
+      return { ok: false, reason: 'hourly', retryAfter: 600 };
+    }
+    /*  THE GLOBAL CHECK SITS AFTER THE PER-IP ONE DELIBERATELY. An address that is already over
+        its own limit should be told so , 'refused:hourly' names the caller's problem, where
+        'refused:global' would blame the platform for something that one address caused.
+        IT IS ITS OWN KIND SO THE LEDGER CAN ANSWER "was this abuse or a busy hour" WITHOUT A
+        LOG HUNT, exactly as the per-IP refusals already can: group refused:global rows by hour
+        and count DISTINCT ips. Many addresses means a real crowd and the ceiling wants raising;
+        a few means a pool and the ceiling did its job.  */
+    if (allIPs.count >= RL_GLOBAL_PER_HOUR) {
+      await sb.from('api_rate_events').insert({ ip, kind: 'refused:global', finished_at: new Date().toISOString() });
+      console.error('[vv] GLOBAL CEILING HIT , ' + allIPs.count + ' generations in the last hour across all callers. ' +
+                    'If this is real traffic, raise RL_GLOBAL_PER_HOUR; check distinct ips on refused:global first.');
+      return { ok: false, reason: 'global', retryAfter: 300 };
+    }
+    if (inflight.count >= RL_CONCURRENT) {
+      await sb.from('api_rate_events').insert({ ip, kind: 'refused:concurrent', finished_at: new Date().toISOString() });
+      /*  A SHORT RETRY, BECAUSE THIS ONE CAN CATCH A REAL PERSON. Two tabs open on one
+          connection is an ordinary thing to do, and a generation takes roughly 26 seconds, so
+          a third tab is refused for at most that long. 30s is longer than the wait it is
+          protecting, which is what makes a retry actually succeed.  */
+      return { ok: false, reason: 'concurrent', retryAfter: 30 };
+    }
+    const { data, error } = await sb.from('api_rate_events').insert({ ip, kind }).select('id').single();
+    if (error) { console.error('[vv] RATE LIMIT FAILED OPEN , ledger write error:', error.message); return { ok: true, id: null }; }
+    /*  Opportunistic retention, ~5% of calls: nothing here is needed beyond the sliding
+        window, and a per-call delete would cost more than the limit saves.  */
+    if (Math.random() < 0.05) {
+      sb.from('api_rate_events').delete().lt('started_at', new Date(Date.now() - 86400e3).toISOString())
+        .then(() => {}, () => {});
+    }
+    return { ok: true, id: data.id };
+  } catch (e) {
+    console.error('[vv] RATE LIMIT FAILED OPEN , threw:', e && e.message);
+    return { ok: true, id: null };
+  }
+}
+
+/*  CLOSING THE SLOT IS WHAT MAKES CONCURRENCY WORK, so it runs from a finally on EVERY exit
+    path , success, upstream error, parse failure. A slot left open blocks the caller for
+    RL_STALE_MIN minutes, which is the one way this limiter can break someone who did nothing
+    wrong. The staleness floor is the backstop for the case where the function dies before
+    reaching the finally at all.  */
+async function rlEnd(id) {
+  if (!id) return;
+  const sb = rlClient();
+  if (!sb) return;
+  try { await sb.from('api_rate_events').update({ finished_at: new Date().toISOString() }).eq('id', id); }
+  catch (e) { console.error('[vv] rate limit: slot not closed, it will expire in ' + RL_STALE_MIN + 'min:', e && e.message); }
+}
 
 module.exports = async (req, res) => {
   /*  Fire the model probe WITHOUT awaiting it. It must never add latency to a
       request, and its answer is for the LOG, not for this response , the
       per-call classifier below is what protects the caller. Once per process. */
   if (MODEL_OK === null) { try { probeModel(); } catch (e) {} }
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  /*  THE ORIGIN ALLOWLIST , 2026-09-15. READ WHAT IT DOES AND DOES NOT DO BEFORE TRUSTING IT.
+      WHAT IT STOPS: another WEBSITE embedding this endpoint and spending our Anthropic credit
+      from its visitors' browsers. That is browser-enforced and it is real.
+      WHAT IT DOES NOT STOP, AND THIS MUST NOT BE OVERCLAIMED: a scripted client. `Origin` is a
+      request header like any other, and curl will send whatever string you tell it to. This
+      raises the bar from "POST and it works" to "POST with one extra header", which is a speed
+      bump and not a wall. THE RATE LIMIT IS THE ACTUAL CONTROL and it is not built yet.
+      ABSENT ORIGIN IS REFUSED, and that is the decision this usually gets wrong. Allowing a
+      missing header is a one-flag bypass, which makes the whole list decorative. VERIFIED
+      EMPIRICALLY rather than assumed: a same-origin POST from a real browser DOES send Origin
+      (measured against an echo server , `origin: http://localhost:8901`, `sec-fetch-site:
+      same-origin`), while curl sends none. So refusing costs a normal visitor NOTHING.
+      WHAT IT COSTS A REAL PERSON: a browser or extension that strips Origin gets no verdict and
+      no notes, and sees the generic failure. That population is very small and the alternative
+      is a list that any script walks straight through.
+      THE DOMAINS ARE READ OFF THE VERCEL PROJECT, NOT TYPED FROM MEMORY , four, not five:
+      vvonderxi.com, www.vvonderxi.com, v-vonder-xi.vercel.app, and vvonderxi-preview.vercel.app
+      (pinned to the redesign-compare branch). The wildcard covers Vercel's GENERATED per-branch
+      and per-deployment URLs, which are NOT in the domain list , the live branch preview is
+      `v-vonder-xi-git-redesign-compare-...vercel.app`, and an allowlist built from the domain
+      list alone would block development on every preview deploy.
+      LOCALHOST IS ALLOWED AND IT COSTS NOTHING: a script that would spoof `http://localhost`
+      could equally spoof `https://vvonderxi.com`, so excluding it buys no security and breaks
+      local development.  */
+  const ALLOWED_ORIGINS = new Set([
+    'https://vvonderxi.com',
+    'https://www.vvonderxi.com',
+    'https://v-vonder-xi.vercel.app',
+    'https://vvonderxi-preview.vercel.app'
+  ]);
+  /*  [CORRECTED 2026-10-03 , THE WILDCARD NEVER MATCHED A REAL PREVIEW HOST.]
+      It was `^https://v-vonder-xi-[a-z0-9-]+\.vercel\.app$`, written against the PROJECT
+      SLUG (`v-vonder-xi`) on the assumption that Vercel prefixes generated hosts with it.
+      It does not. The live preview is
+          v-vonder-by5k2ln3p-lucsa-vanlauwe-s-projects.vercel.app
+      , `v-vonder-` then a per-deployment hash, with no `xi` anywhere, so the pattern could
+      not match and the endpoint 403'd its own preview. Every AI feature was dead on every
+      preview deploy: no verdicts on Compare, no notes or scout report on a card. Measured
+      against the live host, not reasoned about.
+      SO IT ANCHORS ON THE ACCOUNT SUFFIX, WHICH IS OBSERVED, RATHER THAN ON THE PROJECT
+      PREFIX, WHICH WAS GUESSED. `-lucsa-vanlauwe-s-projects.vercel.app` is the account
+      scope: Vercel derives it from the account and no other account can produce it, so a
+      stranger cannot register a project that satisfies it. The hash regenerates per
+      deployment; the suffix does not, which is exactly why it is the half to anchor on.
+      IT IS DELIBERATELY NOT `[a-z0-9-]+\.vercel\.app` , that would admit EVERY project
+      on the platform, including an attacker's, and turn the allowlist into decoration.  */
+  const ALLOWED_PATTERNS = [
+    /^https:\/\/[a-z0-9-]+-lucsa-vanlauwe-s-projects\.vercel\.app$/,  // this account's generated hosts
+    /^https:\/\/v-vonder-xi-[a-z0-9-]+\.vercel\.app$/,                // kept: older alias shape
+    /^http:\/\/localhost(:\d+)?$/,
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/
+  ];
+  const origin = req.headers && req.headers.origin;
+  const originOK = !!origin && (ALLOWED_ORIGINS.has(origin) || ALLOWED_PATTERNS.some(re => re.test(origin)));
+  /*  ECHO THE ORIGIN, NEVER `*`. A wildcard tells every browser the endpoint is public, which
+      is the thing being withdrawn. Vary:Origin so a shared cache cannot serve one site's
+      allowed response to another.  */
+  if (originOK) res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'OPTIONS') return res.status(originOK ? 200 : 403).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!originOK) {
+    console.error('[vv] refused origin:', origin || '(absent)');
+    return res.status(403).json({ error: 'origin not allowed' });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
   }
 
   try {
-    const { messages, max_tokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB } = req.body;
+    /*  surnameA / surnameB are carried ONLY for checkProseWinner. They are not sent to the
+        model and they touch no cache stamp , the payload the model sees is `messages`, which
+        is built in compare.html and already contains the names in prose form. Absent simply
+        means the check reports reason:'no_names' and records nothing.  */
+    const { messages, max_tokens: _maxTokens = 1024, system: customSystem, cardIdA, cardIdB, winnerCardId, rtA, rtB, payloadRev, statsRev, judge, surnameA, surnameB } = req.body;
+    /*  THIS IS A PUBLIC, UNAUTHENTICATED, BILLABLE ENDPOINT AND IT IS THE ONLY ONE WE DEPLOY.
+        `Access-Control-Allow-Origin: *`, no auth, no rate limit, and `messages`, `system` and
+        `max_tokens` all arrive from the request body and go to Anthropic on OUR key. Without
+        the three bounds below it is a general-purpose Claude proxy that anyone can point at our
+        credit, and the caller chooses how much each call costs.
+        [THE PARAGRAPH THAT STOOD HERE SAID THE ALLOWLIST AND THE RATE LIMIT WERE STILL A
+        DECISION RATHER THAN AN EDIT. BOTH SHIPPED ON 2026-09-15 AND THE GLOBAL CEILING ON
+        2026-10-03, so a reader was being told the fix was outstanding while it sat 150 lines
+        up. Corrected rather than deleted: it is the same stale-governing-statement shape
+        CLAUDE.md records against `VVFilters.isActive`.]
+        WHAT NOW BOUNDS THIS ENDPOINT, IN ORDER: the origin allowlist (stops another website's
+        browsers, never a script), the per-IP rate limit (30/hour, 2 concurrent), the global
+        ceiling (300/hour across all callers), and the three per-call bounds below. The hard
+        stop on the balance is the provider's own spend cap, QA_PASS B4b, which is Lucas's.
+        WHAT IS BOUNDED HERE: the output ceiling (the caller no longer picks the bill), the
+        input size, and the message shape. Both real callers are unaffected , compare.html
+        sends max_tokens 1024 and the notes branch hardcodes 1500.  */
+    const MAX_OUTPUT_TOKENS = 2048;      // above both real callers, far below what a caller could ask for
+    /*  12,000 AND THE NUMBER IS MEASURED, NOT PICKED. The largest body any real caller sends
+        is 2,163 chars (40 notes payloads at rt>=85, median 1,337), so 120,000 was 55x anything
+        legitimate and the whole gap was an attacker's budget. Worst case per call falls from
+        $0.1334 to $0.0434, a 3.1x cut, and no real visitor can reach it. 5.5x headroom is left
+        for the payload to grow.
+        AFTER THIS, OUTPUT DOMINATES AND IS DELIBERATELY NOT CUT FURTHER , 2,048 tokens is
+        $0.0307 of the remaining $0.0434, the real callers ask for 1,024 and 1,500, and SEC E
+        already records some verdicts truncating at max_tokens. Clamping lower trades a cent
+        against prose that fails to close.  */
+    const MAX_INPUT_CHARS   = 12000;
+    const _mt = Number(_maxTokens);
+    const max_tokens = Number.isFinite(_mt) ? Math.min(Math.max(1, Math.floor(_mt)), MAX_OUTPUT_TOKENS) : 1024;
+    if (req.body.mode !== 'notes') {
+      if (!Array.isArray(messages) || !messages.length)
+        return res.status(400).json({ error: 'messages must be a non-empty array' });
+      const shaped = messages.every(m => m && typeof m === 'object'
+        && (m.role === 'user' || m.role === 'assistant')
+        && (typeof m.content === 'string' || Array.isArray(m.content)));
+      if (!shaped) return res.status(400).json({ error: 'each message needs a role of user or assistant and string or array content' });
+      let chars = 0;
+      try { chars = JSON.stringify(messages).length + (typeof customSystem === 'string' ? customSystem.length : 0); } catch (e) { chars = Infinity; }
+      if (!(chars <= MAX_INPUT_CHARS)) return res.status(413).json({ error: 'prompt too large' });
+    } else {
+      /*  THE NOTES BRANCH TAKES THE SAME CAP, AND IT WAS THE BIGGER HOLE OF THE TWO , FOUND
+          2026-10-03 WHILE CONTROL-TESTING THE CAP ITSELF. The check above is gated on
+          `mode !== 'notes'`, so for two weeks the cap bounded the branch whose payload is a
+          fixed shape built by compare.html and left UNBOUNDED the branch that stringifies a
+          free-form `player` object straight from the request body into the prompt. And it
+          needs no card id to reach the model: a non-finite `cardId` only turns the cache off,
+          it does not refuse the call. So the uncapped path was also the uncacheable one.
+          MEASURED THE SAME WAY AS THE OTHER: 40 real notes payloads at rt>=85 run 2,163 chars
+          at the largest and 1,337 at the median, so 12,000 is the same 5.5x headroom.
+          THE LESSON IS THE ONE CLAUDE.md KEEPS RECORDING , a rule applied inside one branch of
+          a conditional is a note, not a rule. The cap read as platform-wide because the
+          constant is declared above the branch.  */
+      let nchars = 0;
+      try { nchars = JSON.stringify(req.body.player == null ? '' : req.body.player).length
+                   + (typeof customSystem === 'string' ? customSystem.length : 0); } catch (e) { nchars = Infinity; }
+      if (!(nchars <= MAX_INPUT_CHARS)) return res.status(413).json({ error: 'prompt too large' });
+    }
+    /*  THE PATH B GATE. Asserted by the caller because it depends on a fact this payload does
+        not carry: whether either season is a goalkeeper. compare.html sends it only for an
+        OUTFIELD pair the Index did not separate. Absent or anything else means the prohibiting
+        prompt and the caller's own winner , the gate defaults closed.  */
+    const aiJudge = (judge === 'ai');
 
     // ── Verdict self-cache (server-side, service key). Active only when both
     //    card ids are present + numeric; otherwise this stays a generic proxy. ──
@@ -245,7 +909,7 @@ module.exports = async (req, res) => {
         // A request that supplies no rt cannot check (3), but (1) and (2) still
         // apply, so a legacy row is never served as valid.
         const unstamped = !row || row.rt_a == null || row.rt_b == null || row.cache_version == null;
-        const staleVersion = !!row && row.cache_version !== VERDICT_VERSION;
+        const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge, customSystem, statsRev);
         const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
         if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
@@ -295,101 +959,175 @@ module.exports = async (req, res) => {
 
       const notesMessages = [{ role: 'user', content: 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2) }];
 
-      const nResp = await fetch('https://api.anthropic.com/v1/messages', {
+      /*  THE LIMIT IS TAKEN HERE, AFTER THE CACHE LOOKUP, AND THAT PLACEMENT IS THE DESIGN.
+          A cache hit has already returned above, so it is never counted and never billed , the
+          limiter only bounds what is genuinely new. The slot is closed from a finally so that an
+          upstream error or a parse failure frees it exactly like a success does.  */
+      const _rl = await rlBegin(clientIP(req), 'notes');
+      if (!_rl.ok) {
+        res.setHeader('Retry-After', String(_rl.retryAfter));
+        /*  A GLOBAL REFUSAL SAYS "the platform", NOT "this connection" , a visitor refused
+            by the site-wide ceiling has done nothing wrong, and telling them they have hit
+            THEIR limit is false and unactionable. The three reasons are distinguishable to
+            the reader as well as to the ledger.  */
+        return res.status(429).json({ error: _rl.reason === 'concurrent'
+          ? 'too many generations in flight from this connection, try again shortly'
+          : _rl.reason === 'global'
+          ? 'the platform is at its hourly generation ceiling, try again shortly'
+          : 'hourly generation limit reached for this connection' });
+      }
+      try {
+        const nResp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+          // system sent as a cacheable block: it is byte-identical on every notes
+          // call and well over the 1024-token minimum, so reads bill at ~0.1x.
+          body: JSON.stringify({
+            model: MODEL, max_tokens: 1500, messages: notesMessages,
+            system: [{ type: 'text', text: NOTES_SYSTEM, cache_control: { type: 'ephemeral' } }]
+          })
+        });
+        const nData = await nResp.json();
+        if (!nResp.ok) {
+          const nMsg = (nData.error && nData.error.message) || 'Anthropic API error';
+          if (isModelMissing(nResp.status, nMsg)) {
+            console.error('[vv] notes generate failed because MODEL "' + MODEL + '" is not served.');
+            return res.status(503).json({ error: 'model_not_served', model: MODEL });
+          }
+          console.error('[vv] notes upstream ' + nResp.status + ':', nMsg);   // logged, not echoed , see the catch at the end
+          return res.status(nResp.status).json({ error: 'upstream error' });
+        }
+
+        let parsed = null;
+        try {
+          parsed = parseModelJSON((nData && nData.content && nData.content[0] && nData.content[0].text) || '');
+        } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
+        if (!parsed || typeof parsed.glance !== 'string' || typeof parsed.scout !== 'string' || !Array.isArray(parsed.notes) || !parsed.notes.length) {
+          return res.status(502).json({ error: 'notes shape invalid' });
+        }
+        if (canCache) {
+          try {
+            await nsb.from('notes_cache').upsert({
+              card_id: cid, notes: parsed, model: MODEL,
+              rt: nRt, stats_hash: nHash, cache_version: NOTES_VERSION   // stamps
+            }, { onConflict: 'card_id', ignoreDuplicates: false });
+          } catch (e) { /* non-fatal */ }
+        }
+        return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
+      } finally { await rlEnd(_rl.id); }
+    }
+
+    /*  THE LIMIT IS TAKEN HERE, AFTER THE CACHE LOOKUP, AND THAT PLACEMENT IS THE DESIGN.
+        A cache hit has already returned above, so it is never counted and never billed , the
+        limiter only bounds what is genuinely new. The slot is closed from a finally so that an
+        upstream error or a parse failure frees it exactly like a success does.  */
+    const _rl = await rlBegin(clientIP(req), 'verdict');
+    if (!_rl.ok) {
+      res.setHeader('Retry-After', String(_rl.retryAfter));
+      /*  A GLOBAL REFUSAL SAYS "the platform", NOT "this connection" , a visitor refused
+          by the site-wide ceiling has done nothing wrong, and telling them they have hit
+          THEIR limit is false and unactionable. The three reasons are distinguishable to
+          the reader as well as to the ledger.  */
+      return res.status(429).json({ error: _rl.reason === 'concurrent'
+        ? 'too many generations in flight from this connection, try again shortly'
+        : _rl.reason === 'global'
+        ? 'the platform is at its hourly generation ceiling, try again shortly'
+        : 'hourly generation limit reached for this connection' });
+    }
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        // system sent as a cacheable block: it is byte-identical on every notes
-        // call and well over the 1024-token minimum, so reads bill at ~0.1x.
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
         body: JSON.stringify({
-          model: MODEL, max_tokens: 1500, messages: notesMessages,
-          system: [{ type: 'text', text: NOTES_SYSTEM, cache_control: { type: 'ephemeral' } }]
+          model: MODEL,
+          max_tokens,
+          // ~1,508-token system prompt, identical on every verdict call -> cache it.
+          // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
+          // below the 1024-token minimum simply won't cache; that is silent + safe.
+          system: [{ type: 'text', text: verdictSystemFor(aiJudge, customSystem), cache_control: { type: 'ephemeral' } }],
+          messages
         })
       });
-      const nData = await nResp.json();
-      if (!nResp.ok) {
-        const nMsg = (nData.error && nData.error.message) || 'Anthropic API error';
-        if (isModelMissing(nResp.status, nMsg)) {
-          console.error('[vv] notes generate failed because MODEL "' + MODEL + '" is not served.');
-          return res.status(503).json({ error: 'model_not_served', model: MODEL, detail: nMsg });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const vMsg = data.error?.message || 'Anthropic API error';
+        if (isModelMissing(response.status, vMsg)) {
+          console.error('[vv] verdict generate failed because MODEL "' + MODEL + '" is not served.');
+          return res.status(503).json({ error: 'model_not_served', model: MODEL });
         }
-        return res.status(nResp.status).json({ error: nMsg });
+        console.error('[vv] verdict upstream ' + response.status + ':', vMsg);   // logged, not echoed
+        return res.status(response.status).json({ error: 'upstream error' });
       }
 
-      let parsed = null;
+      // Generic path (no card ids): behave exactly as before.
+      if (!cacheable) return res.json(data);
+
+      // Cacheable path: parse the verdict JSON, cache it (awaited, Hobby-safe), return normalized.
+      let verdict = null;
       try {
-        let t = (nData && nData.content && nData.content[0] && nData.content[0].text) || '';
-        t = t.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-        parsed = JSON.parse(t);
-      } catch (e) { return res.status(502).json({ error: 'notes parse failed' }); }
-      if (!parsed || typeof parsed.glance !== 'string' || typeof parsed.scout !== 'string' || !Array.isArray(parsed.notes) || !parsed.notes.length) {
-        return res.status(502).json({ error: 'notes shape invalid' });
+        verdict = parseModelJSON((data && data.content && data.content[0] && data.content[0].text) || '');
+      } catch (e) {
+        return res.json(data);   // couldn't parse -> return raw, do not cache garbage
       }
-      if (canCache) {
-        try {
-          await nsb.from('notes_cache').upsert({
-            card_id: cid, notes: parsed, model: MODEL,
-            rt: nRt, stats_hash: nHash, cache_version: NOTES_VERSION   // stamps
-          }, { onConflict: 'card_id', ignoreDuplicates: false });
-        } catch (e) { /* non-fatal */ }
-      }
-      return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
-    }
+      const winnerId = resolveWinnerId({ aiJudge: aiJudge, modelWinner: verdict && verdict.winner,
+                                         winnerCardId: winnerCardId, idA: cardIdA, idB: cardIdB });
+      /*  RUN THE CHECK BEFORE `winner` IS DELETED , it is the whole input. Recorded on the row
+          and read by nothing: no override, no retry, no UI difference. See checkProseWinner.  */
+      const winnerCheck = checkProseWinner({ who: verdict && verdict.who, surnameA: surnameA, surnameB: surnameB,
+                                             modelWinner: verdict && verdict.winner, idA: cardIdA, idB: cardIdB });
+      if (verdict && 'winner' in verdict) delete verdict.winner;   // internal key, never rendered, never cached
+      const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
+      /*  STORED INSIDE THE EXISTING jsonb, NOT AS A NEW COLUMN , no migration, and it travels
+          with the row it describes. Underscore-prefixed because it is OUR annotation and not
+          model output. Query later with:
+            select verdict->'_winner_check' from verdict_cache where verdict ? '_winner_check'
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens,
-        // ~1,508-token system prompt, identical on every verdict call -> cache it.
-        // Cuts per-verdict cost ~27% ($0.0149 -> $0.0108). A short customSystem
-        // below the 1024-token minimum simply won't cache; that is silent + safe.
-        system: [{ type: 'text', text: customSystem || VERDICT_SYSTEM, cache_control: { type: 'ephemeral' } }],
-        messages
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      const vMsg = data.error?.message || 'Anthropic API error';
-      if (isModelMissing(response.status, vMsg)) {
-        console.error('[vv] verdict generate failed because MODEL "' + MODEL + '" is not served.');
-        return res.status(503).json({ error: 'model_not_served', model: MODEL, detail: vMsg });
-      }
-      return res.status(response.status).json({ error: vMsg });
-    }
-
-    // Generic path (no card ids): behave exactly as before.
-    if (!cacheable) return res.json(data);
-
-    // Cacheable path: parse the verdict JSON, cache it (awaited, Hobby-safe), return normalized.
-    let verdict = null;
-    try {
-      let text = (data && data.content && data.content[0] && data.content[0].text) || '';
-      text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-      verdict = JSON.parse(text);
-    } catch (e) {
-      return res.json(data);   // couldn't parse -> return raw, do not cache garbage
-    }
-    const _w = (winnerCardId != null) ? Number(winnerCardId) : NaN;
-    const winnerId = Number.isFinite(_w) ? _w : null;
-    const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
-    try {
-      await sb.from('verdict_cache').upsert({
-        pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
-        rt_a: rtLo, rt_b: rtHi, cache_version: VERDICT_VERSION,   // stamps (null rt if caller sent none)
-        verdict: canonical, winner_card_id: winnerId, model: MODEL
-      }, { onConflict: 'pair_key', ignoreDuplicates: false });
-    } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
-    return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
+          ON A COPY, SO THE RESPONSE IS BYTE-IDENTICAL TO BEFORE. Mutating `canonical` would
+          reach the client whenever the pair is NOT swapped, because `canonical === verdict`
+          there, and NOT reach it when it is , swapVerdict builds a new object from an explicit
+          key list. An annotation that is present or absent depending on the lo/hi order of two
+          card ids is the kind of difference that is invisible until something starts reading
+          it. This writes the annotation and leaves the returned verdict untouched.
+          IT CARRIES CARD IDS, not "A"/"B", so the swap cannot invert its meaning.  */
+      const stored = Object.assign({}, canonical, { _winner_check: winnerCheck });
+      /*  A ROW WE CANNOT STAMP IS A ROW WE CAN NEVER SERVE, SO DO NOT WRITE ONE , 2026-09-15.
+          The read treats `rt_a == null` as UNSTAMPED and misses on it, by design, so a row
+          written with a null rt is unreadable BY CONSTRUCTION: it costs a write, occupies the
+          pair_key, and regenerates on every single view of that pair for ever. The old line
+          wrote it anyway and annotated the fact , "null rt if caller sent none" , which
+          described the behaviour accurately and did not notice it was self-defeating.
+          ZERO ROWS ARE IN THAT STATE TODAY and none can be from the live client: compare.html
+          sends `+CMP_A.vv||0`, always a finite number. It is reachable only by a caller that
+          omits rtA/rtB entirely, and `Number(null)` is 0 rather than NaN, so even an explicit
+          null arrives as a score of zero rather than as an absence , the two branches the
+          server thinks it has are not distinguishable from outside.
+          THE 0 SENTINEL IS SAFE AND IS NOT WHAT THIS GUARDS: rt runs 11 to 97, so 0 cannot
+          collide with a real score, and it still invalidates correctly the moment a real one
+          arrives. What is fixed here is only the write that could never be read.  */
+      const stampable = rtLo != null && rtHi != null;
+      try {
+        if (stampable) await sb.from('verdict_cache').upsert({
+          pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
+          rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem, statsRev),   // stamps
+          verdict: stored, winner_card_id: winnerId, model: MODEL
+        }, { onConflict: 'pair_key', ignoreDuplicates: false });
+      } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
+      return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
+    } finally { await rlEnd(_rl.id); }
   } catch (err) {
+    /*  LOG THE DETAIL, RETURN A GENERIC MESSAGE. `err.message` on a public endpoint hands a
+        stranger whatever the failure happened to say , Supabase table and column names, a
+        constraint, a URL, a key fragment in an upstream error. The log is where diagnosis
+        belongs; the response is not. The caller learns that it failed, which is all it can
+        act on anyway , compare.html renders `data.error` straight into the page.  */
     console.error('analyse error:', err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: 'generation failed' });
   }
 };
 
@@ -402,6 +1140,20 @@ module.exports.probeModel      = probeModel;
 module.exports.isModelMissing  = isModelMissing;
 module.exports.MODEL           = MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
+module.exports.VERDICT_SYSTEM_JUDGE = VERDICT_SYSTEM_JUDGE;
+module.exports.resolveWinnerId = resolveWinnerId;
+module.exports.checkProseWinner = checkProseWinner;
 module.exports.NOTES_SYSTEM    = NOTES_SYSTEM;
 module.exports.VERDICT_VERSION = VERDICT_VERSION;
+/*  PATH B'S VERSION IS EXPORTED BECAUSE THERE ARE THREE PROMPTS AND THE MODULE ONLY ANNOUNCED
+    TWO , 2026-09-15. `verdict_cache` holds Path A and Path B rows in one table keyed by
+    pair_key, and the ONLY thing distinguishing them is this fingerprint. Un-exported, any
+    script asking "which rows are on the current prompt" had to re-run the splice itself to
+    find out, or quietly measure Path A and call it the cache. Same lesson as the splice
+    audit: a composed artefact that is not exported is a composed artefact nobody checks. */
+module.exports.VERDICT_VERSION_JUDGE = VERDICT_VERSION_JUDGE;
+module.exports.verdictVersionFor = verdictVersionFor;
+module.exports.verdictSystemFor  = verdictSystemFor;
 module.exports.NOTES_VERSION   = NOTES_VERSION;
+module.exports.statsHash       = statsHash;   // exported so the linter can pin it , see the note above its definition
+module.exports.parseModelJSON = parseModelJSON;   // exported so the linter can pin it against VVCore.vvParseModelJSON

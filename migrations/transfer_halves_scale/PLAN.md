@@ -8,7 +8,7 @@ refresh, diff, assert. Nothing here is applied.
 
 ## 1. HOW MANY, AND HOW THEY ARE IDENTIFIED , THE HONEST ANSWER IS THAT WE DO NOT KNOW YET
 
-**There is no per-card halved flag, and ~1,600 is not a count.** `INGESTION_RECOVERY.md` is
+**[UPDATED 2026-09-16] There is no per-card halved flag, and the population is 1,462, measured against the provider on 2026-09-04 (968 material). The ~1,600 this plan was written against was an extrapolation and is retired.** `INGESTION_RECOVERY.md` is
 explicit: *"Extrapolated ~1,600 cards across 144 league-seasons , an ORDER from a three-season
 sample, NOT a count."* It rests on 34 of 51 splits verified against the provider in PL 2023/24,
 PL 2025/26 and SA 2023/24. **Any plan that opens by asserting 1,600 cards is asserting an

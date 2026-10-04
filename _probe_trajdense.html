@@ -1,0 +1,54 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Traj Dense</title>
+<style>body{margin:0;background:#3a3a3a;font:12px Inter,system-ui,sans-serif;color:#eee;padding:8px}
+ .row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+ iframe{width:460px;height:430px;border:0;background:#fff}
+ .cap{font:700 10px Archivo,sans-serif;letter-spacing:.04em;margin:0 0 5px;white-space:pre-wrap;max-width:460px}
+ .col{display:flex;flex-direction:column}
+ .bad{color:#ff8d8d}.ok{color:#9be49b}</style></head><body>
+<div class="row" id="row"></div>
+<script>
+const CASES=[{id:131906,label:'COUTINHO 16 seasons, 3 split years'},
+             {id:157004,label:'AUBAMEYANG 17 seasons, Borussia Dortmund'},
+             {id:144328,label:'MATIC 18 seasons, 2 split years'},
+             {id:151202,label:'ERIKSEN 18 seasons, 2 split years'}];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+/*  OVERLAP IS MEASURED WITH getBBox ON THE SVG TEXT ITSELF, in viewBox units. SS F records
+    scrollWidth returning the same number for four strings of different length , it cannot
+    measure text. getBBox is the element's own painted box and is exact.  */
+function boxes(d, sel){ return [...d.querySelectorAll(sel)].map(function(t){
+   var b=t.getBBox(); return {t:t.textContent, x1:b.x, x2:b.x+b.width, w:b.width}; }); }
+function overlaps(bs){ var out=[]; for(var i=1;i<bs.length;i++){
+   var gap = bs[i].x1 - bs[i-1].x2; if(gap < 0) out.push(bs[i-1].t+' / '+bs[i].t+' overlap '+(-gap).toFixed(1)+'px'); }
+   return out; }
+(async()=>{
+ const row=document.getElementById('row');
+ for(const c of CASES){
+   const col=document.createElement('div'); col.className='col';
+   const cap=document.createElement('p'); cap.className='cap'; cap.textContent=c.label+' , loading';
+   const f=document.createElement('iframe'); col.appendChild(cap); col.appendChild(f); row.appendChild(col);
+   await new Promise(r=>{ f.onload=r; f.src='/card.html?id='+c.id+'&cb='+Date.now(); });
+   const d=f.contentDocument;
+   let t=Date.now(); while(Date.now()-t<25000){ if(d.querySelector('#trajHost .tjsvg')) break; await sleep(200); }
+   // open the fold so the chart is on screen for the eye as well as the measurement
+   /*  THE FOLD IS `.layer` + an `open` CLASS, NOT <details>. With it shut the chart has no
+       box, the fitter measures nothing and every label stays hidden , which reads as a pass
+       and proves nothing. The fold must be OPEN before this is evidence.  */
+   const lay=d.querySelector('#trajHost')?d.querySelector('#trajHost').closest('.layer'):null;
+   if(lay) lay.classList.add('open');
+   const host=d.getElementById('trajHost'); if(host) host.scrollIntoView({block:'center'});
+   await sleep(700);
+   /*  ONLY WHAT IS SHOWN COUNTS. `.tjclub` is emitted hidden and `vvTrajFit` adds .tjfit to
+       the ones it measured as clear, so the overlap test must read `.tjclub.tjfit`. Measuring
+       all of them would report the hidden ones as defects.  */
+   const clubs=boxes(d,'#trajHost .tjclub.tjfit'), years=boxes(d,'#trajHost .tjxl');
+   const emitted=d.querySelectorAll('#trajHost .tjclub').length;
+   const ovC=overlaps(clubs), ovY=overlaps(years);
+   const widest=clubs.slice().sort((a,b)=>b.w-a.w)[0];
+   cap.innerHTML = c.label+'\n emitted '+emitted+' , SHOWN '+clubs.length+': '+(clubs.map(x=>x.t).join(' / ')||'(none shown)')
+     +'\n widest club label: '+(widest?widest.t+' '+widest.w.toFixed(1)+'px':'(none)')
+     +'\n <span class="'+((ovC.length||ovY.length)?'bad':'ok')+'">overlaps: '
+     +((ovC.concat(ovY)).join(' ; ')||'NONE')+'</span>';
+ }
+ document.title='READY';
+})();
+</script></body></html>

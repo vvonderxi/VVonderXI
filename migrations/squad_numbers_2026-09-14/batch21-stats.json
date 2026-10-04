@@ -1,0 +1,27 @@
+{
+  "batch": 21,
+  "at": "2026-09-14T17:38:10.671Z",
+  "clubSeasons": 18,
+  "resolved": 18,
+  "parsed": 9,
+  "cards": 364,
+  "matched": 156,
+  "held": {
+    "norow": 24,
+    "ambiguous": 1
+  },
+  "written": 152,
+  "skipped": [
+    "PL|2015|Everton , duplicate numbers in the block",
+    "PL|2015|Liverpool , 5 blocks, held for adjudication",
+    "PL|2015|Norwich , no squad block",
+    "PL|2015|Southampton , no squad block",
+    "PL|2015|Stoke City , duplicate numbers in the block",
+    "PL|2015|Sunderland , duplicate numbers in the block",
+    "PL|2015|Tottenham , no squad block",
+    "PL|2015|Watford , no squad block",
+    "PL|2015|West Brom , 2 blocks, held for adjudication",
+    "PL|2015|West Ham , parsed, zero cards matched"
+  ],
+  "skippedCards": 204
+}

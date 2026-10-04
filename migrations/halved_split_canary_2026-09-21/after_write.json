@@ -1,0 +1,8 @@
+{
+  "label": "after_write",
+  "at": "2026-09-21T17:21:47.280Z",
+  "rt_md5": "d9304299421af25b7d5fb16dfcaec385",
+  "rows": "57056",
+  "view_rows": "57056",
+  "constraints": "player_season_cards_api_player_id_season_league_code_team_id_ke :: UNIQUE (api_player_id, season, league_code, team_id) | player_season_cards_pkey :: PRIMARY KEY (id)"
+}

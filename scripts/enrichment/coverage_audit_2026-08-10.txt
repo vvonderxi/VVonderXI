@@ -1,0 +1,79 @@
+COVERAGE AUDIT , 2026-08-10   (read-only)
+================================================================================
+
+provenance sets: written 196 · confirmed 256 (from 779 verified rows) · held 587 · queued 45
+  NOTE: 'confirmed' requires the verified file to EXPLICITLY agree with the pool.
+        Appearing in a batch is not enough , change rows are excluded.
+
+1. TIER SIZES
+   Tier 1  cards at rt >= 80                       : 1468
+   Tier 2  all cards of players with any rt>=80 card: 5690   (696 players)
+   overlap (Tier 1 is a SUBSET of Tier 2)          : 1468
+   combined unique cards                            : 5690
+
+2. TIER 1 BREAKDOWN   (1468 cards)
+        71    4.8%  written
+        87    5.9%  confirmed
+        24    1.6%  held
+        11    0.7%  queued
+      1275   86.9%  NEVER CHECKED
+
+3. TIER 2 BREAKDOWN   (5690 cards)
+       139    2.4%  written
+       166    2.9%  confirmed
+        99    1.7%  held
+        33    0.6%  queued
+      5253   92.3%  NEVER CHECKED
+
+4. THE GAP , never checked, within Tier 1 + Tier 2
+   total: 5253   of which Tier 1 (rt>=80): 1275
+   by league:
+      1191  PL
+       977  LL
+       839  SA
+       695  BL
+       463  L1
+       372  ERE
+       292  TR
+       234  BPL
+       190  PRT
+   by position pool:
+      2112  ST
+      1273  null
+       909  Winger
+       572  CM
+       155  CDM
+        82  FB
+        76  CAM
+        64  CB
+         8  UNK
+         2  GK
+   *** touching CDM (the pool where rt moves): 155
+
+5. CHAIN INCONSISTENCY , unchecked season in a bucket none of that player's VERIFIED seasons use
+   rows: 709   players: 136   worst 20 by rt:
+     rt 88  T. Müller            1516  Bayern München    unchecked=ST      verified=CAM
+     rt 88  L. Sané              1718  Manchester City   unchecked=ST      verified=Winger
+     rt 88  A. Martial           1920  Manchester United unchecked=ST      verified=Winger
+     rt 87  M. Greenwood         2425  Marseille         unchecked=ST      verified=Winger
+     rt 87  M. Rashford          2223  Manchester United unchecked=ST      verified=Winger
+     rt 87  Rodrigo              1718  Valencia          unchecked=ST      verified=CAM
+     rt 87  Matheus Cunha        2425  Wolves            unchecked=ST      verified=CAM
+     rt 87  Luis Alberto         1718  Lazio             unchecked=Winger  verified=CM
+     rt 87  G. Sigurðsson        1617  Swansea           unchecked=Winger  verified=CAM
+     rt 87  M. Mount             2122  Chelsea           unchecked=ST      verified=CAM
+     rt 87  J. Bowen             2324  West Ham          unchecked=ST      verified=Winger
+     rt 86  Á. Di María          1819  Paris Saint Germa unchecked=ST      verified=Winger
+     rt 86  David Silva          1718  Manchester City   unchecked=Winger  verified=CAM
+     rt 86  R. Mahrez            1920  Manchester City   unchecked=ST      verified=Winger
+     rt 86  K. Havertz           2324  Arsenal           unchecked=ST      verified=CAM
+     rt 86  H. Mkhitaryan        2021  AS Roma           unchecked=ST      verified=CAM/Winger
+     rt 86  J. Maddison          2223  Leicester         unchecked=Winger  verified=CAM
+     rt 86  J. Bowen             2425  West Ham          unchecked=ST      verified=Winger
+     rt 85  G. Wijnaldum         1516  Newcastle         unchecked=null    verified=CM
+     rt 85  M. Uth               1718  1899 Hoffenheim   unchecked=ST      verified=CAM
+
+6. GAP COMPOSITION
+   pre-2015 (coarse position by design, research may not resolve): 1173   (22.3%)
+   live 25/26 (unverifiable until the season completes)          : 309   (5.9%)
+   remainder, genuinely researchable now                          : 3771

@@ -1,0 +1,38 @@
+<title>How many sub-lines truncate</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>body{margin:0;padding:16px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif;font-size:12px}
+table{border-collapse:collapse;font-size:11.5px}th,td{padding:4px 12px;border-bottom:1px solid #33302c;text-align:right;font-variant-numeric:tabular-nums}
+th{color:#E0A93A;font-size:9px;text-transform:uppercase;letter-spacing:.06em}td.l,th.l{text-align:left}
+#p{position:absolute;visibility:hidden;white-space:nowrap}</style>
+<div id="out">measuring…</div><span id="p"></span>
+<script>
+(async function(){
+  await document.fonts.load('600 11.5px "Barlow Condensed"'); await document.fonts.ready;
+  var J=await (await fetch('/_tmp_sublines.json')).json();
+  var p=document.getElementById('p');
+  p.style.font='600 11.5px "Barlow Condensed"'; p.style.letterSpacing='0.04em'; p.style.textTransform='uppercase';
+  var W={};
+  J.uniq.forEach(function(s){ p.textContent=s; W[s]=p.getBoundingClientRect().width; });
+  var ROOMS=[[107,'340px phone'],[116,'360px phone'],[119,'375px iPhone SE/mini'],[125,'390px reference'],[132,'405px'],[139,'430px']];
+  var rows='';
+  ROOMS.forEach(function(R){
+    var cards=0, uniqN=0, worst=0, worstS='';
+    J.uniq.forEach(function(s){ var over=W[s]-R[0];
+      if(over>0.5){ uniqN++; cards+=J.counts[s]; if(over>worst){worst=over;worstS=s;} } });
+    rows+='<tr><td class="l">'+R[1]+'</td><td>'+R[0]+'</td><td>'+cards+'</td><td>'
+      +(100*cards/J.total).toFixed(1)+'%</td><td>'+uniqN+'</td><td>'+Math.round(worst)+'</td><td class="l">'+worstS+'</td></tr>';
+  });
+  var bruno='Manchester United · CM · 31';
+  var bw=W[bruno]||0;
+  var rank=J.uniq.filter(function(s){return W[s]>bw;}).length;
+  document.getElementById('out').innerHTML=
+    '<h3 style="font-size:13px;margin:0 0 8px">How many cards truncate the card-face sub-line</h3>'
+    +'<p style="color:#a49d93;max-width:820px;line-height:1.5">'+J.total.toLocaleString()+' cards, '
+    +J.uniq.length.toLocaleString()+' distinct strings. Barlow Condensed 600 at 11.5px, tracking 0.04em, uppercase '
+    +', the shipped <code>.vvcard .cname .sub</code> rule. Room is the measured clientWidth at that viewport.</p>'
+    +'<table><tr><th class="l">viewport</th><th>room px</th><th>cards clipped</th><th>share</th>'
+    +'<th>distinct</th><th>worst over</th><th class="l">worst string</th></tr>'+rows+'</table>'
+    +'<p style="color:#a49d93;margin-top:10px">Bruno, "'+bruno+'", measures <b>'+Math.round(bw)+'px</b> and is the '
+    +'<b>'+(rank+1)+'th</b> widest of '+J.uniq.length.toLocaleString()+' distinct strings.</p>';
+})();
+</script>

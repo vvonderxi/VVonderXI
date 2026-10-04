@@ -1,0 +1,168 @@
+<meta charset="utf-8"><title>loader hold probe</title>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     THE 250ms LOADER HOLD , VERIFICATION. Gitignored.
+
+     IT ASSERTS ORDER, NOT DURATION, AND THAT IS NOT A SHORTCUT , IT IS THE ONLY
+     HONEST FORM HERE. This tab reports hidden and a 50ms timer measures ~730ms,
+     a ~15x throttle, so every number a stopwatch produces is about Chrome's
+     background policy rather than about the hold. What the hold actually claims
+     is an ORDERING: on a fast response the content arrives while the loader is
+     still held, and on a slow one the hold expires first. Both are observable as
+     a sequence of DOM mutations with no clock involved.
+
+     THE LATENCY IS CONTROLLED BY A PROMISE THIS HARNESS RESOLVES BY HAND, not by
+     a timer, so "fast" and "slow" are facts rather than races. `window.fetch` is
+     stubbed in the frame; fetch is a global and the page calls it as one, so the
+     stub is reached (unlike patching an exported VVCore.* function, which does
+     not reach a module-local caller).
+
+     THREE CONTROLS, because a stub is an instrument:
+       C1  the stub must be in force , fetch !== the original.
+       C2  the CSS must be doing the hiding , computed visibility reads `hidden`
+           while data-vvhold is set. An inert attribute would pass every
+           order-based assertion below and hide nothing.
+       C3  THE SLOW CASE MUST SHOW THE LOADER. Without it, "no loader on the fast
+           path" is equally consistent with a hold that never releases, which
+           would be a far worse defect than the flash it removes.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<style>
+ html,body{margin:0;background:#0b0a09;color:#F0EAD9;font:12px/1.55 ui-monospace,monospace}
+ #f{width:1280px;height:900px;border:0;position:fixed;left:0;top:0}
+ #out{position:fixed;left:1290px;top:0;right:0;bottom:0;overflow:auto;padding:10px;white-space:pre-wrap}
+</style>
+<iframe id="f" src=""></iframe><pre id="out">ready</pre>
+<script>
+document.getElementById('f').src = '/card.html?id=141853&cb=' + Date.now();   // a page's HTML carries no ?v= token
+window.H = (function(){
+  var f=document.getElementById('f'), LOG=[];
+  function say(s){ LOG.push(s); document.getElementById('out').textContent=LOG.join('\n'); return s; }
+  function W(){ return f.contentWindow; } function D(){ return f.contentDocument; }
+  var HOSTS=['glDrury','notesBody','scoutBody'];
+  function hosts(){ return HOSTS.map(function(id){ return D().getElementById(id); }); }
+
+  var realFetch=null, gate=null, TIMELINE=[], obs=null;
+
+  /*  THE TIMELINE. One MutationObserver over the three loader hosts, recording only
+      what matters: when the hold attribute goes, and when the content changes and
+      whether the hold was still on at that instant. That last flag IS the result. */
+  function watch(){
+    TIMELINE=[];
+    obs=new (W().MutationObserver)(function(recs){
+      recs.forEach(function(r){
+        var el=r.target.nodeType===1?r.target:r.target.parentNode;
+        if(!el||!el.id) return;
+        if(r.type==='attributes' && r.attributeName==='data-vvhold'){
+          TIMELINE.push({ev:'hold-'+(el.hasAttribute('data-vvhold')?'on':'off'), id:el.id});
+        } else {
+          /*  NO `held` FLAG HERE, AND THE FIRST VERSION HAD ONE AND IT LIED. A
+              MutationObserver callback runs as a microtask AFTER the batch of mutations,
+              so by the time it reads the attribute the release has already removed it ,
+              every prose write reported held=false including the ones written while the
+              hold was on. ORDER is the observable that survives that: the position of
+              hold-off relative to the first prose write is the whole result. */
+          var isLoader=!!el.querySelector('.vvload,.vwait');
+          TIMELINE.push({ev:'content', id:el.id,
+                         loader:isLoader, chars:(el.textContent||'').trim().length});
+        }
+      });
+    });
+    hosts().forEach(function(e){ if(e) obs.observe(e,{attributes:true,attributeFilter:['data-vvhold'],childList:true,characterData:true,subtree:true}); });
+  }
+
+  /*  THE STUB. Only /api/analyse is intercepted; honours and season queries go to the
+      real fetch, so the page boots normally. Resolution waits on `gate`. */
+  function stub(){
+    var w=W();
+    if(!realFetch) realFetch=w.fetch;
+    var payload={ glance:'A season that answers the question before it is asked.',
+                  scout:'Held the line and broke it. Two paragraphs would not do it justice.\n\nSo here is the second.',
+                  notes:['One.','Two.','Three.','Four.'] };
+    w.fetch=function(u,o){
+      if(String(u).indexOf('/api/analyse')>=0){
+        return new Promise(function(res){
+          gate=function(){ res({ ok:true, json:function(){ return Promise.resolve(payload); } }); };
+        });
+      }
+      return realFetch.call(w,u,o);
+    };
+    return w.fetch!==realFetch;
+  }
+
+  function computed(){
+    var w=W();
+    return hosts().map(function(e){ return e? (e.id+' vis='+w.getComputedStyle(e).visibility+
+      ' held='+e.hasAttribute('data-vvhold')) : 'missing'; });
+  }
+
+  return {
+    log:function(){ return LOG.join('\n'); },
+    timeline:function(){ return TIMELINE; },
+
+    boot:function(){
+      var w=W(), d=D();
+      var pre={ innerWidth:w.innerWidth, bootReady:typeof w.vvLoadEditorial==='function',
+                hasHold:!!(w.VVCore&&w.VVCore.vvHoldLoader), holdMs:w.VVCore&&w.VVCore.VV_LOADER_HOLD_MS,
+                cardLoaded:!!d.querySelector('.cname'), hostHidden:document.hidden };
+      say('BOOT '+JSON.stringify(pre));
+      return pre;
+    },
+
+    /*  C2 , the CSS, measured on a node the page is not currently using. Proves the
+        rule is in the sheet and applies, independently of any run below. */
+    cssControl:function(){
+      var w=W(), d=D();
+      var probe=d.createElement('div'); probe.textContent='x';
+      d.body.appendChild(probe);
+      var before=w.getComputedStyle(probe).visibility;
+      probe.setAttribute('data-vvhold','');
+      var after=w.getComputedStyle(probe).visibility;
+      probe.remove();
+      var ok=(before==='visible' && after==='hidden');
+      say('\nC2 CSS CONTROL  no attribute -> '+before+' | with attribute -> '+after+'   '+
+          (ok?'THE RULE IS IN FORCE':'*** THE ATTRIBUTE IS INERT , every result below is void ***'));
+      return ok;
+    },
+
+    arm:function(){ var ok=stub(); watch(); gate=null;
+      say('\nC1 STUB  fetch replaced: '+ok);
+      return ok; },
+
+    /*  Drive the page through ITS OWN loader , vvLoadEditorial, the real function, with a
+        real rowToCard card. EDITORIAL_FOR is a module-local `let` and cannot be reset from
+        out here (SS C: window.X is a different binding), so each run is given a card_id
+        nobody has used, which is what makes the guard fall through. */
+    run:async function(tag, cardId){
+      var w=W(), sb=w.vvClient();
+      var r=await sb.from('player_card_mv').select('*').eq('card_id',141853).single();
+      var card=w.VVCore.rowToCard(r.data);
+      card.card_id=cardId;
+      say('\n=== RUN '+tag+'  (card_id '+cardId+') ===');
+      TIMELINE=[];
+      w.vvLoadEditorial(card);
+      return 'driving';
+    },
+
+    snapAfterPaint:function(){ var c=computed(); say('  at paint: '+c.join(' | ')); return c; },
+    open:function(){ if(gate){ gate(); return 'resolved'; } return 'no gate yet'; },
+    isGated:function(){ return !!gate; },
+
+    report:function(tag){
+      var t=TIMELINE.slice();
+      var contentEvents=t.filter(function(e){ return e.ev==='content' && !e.loader && e.chars>0; });
+      var loaderEvents =t.filter(function(e){ return e.ev==='content' &&  e.loader; });
+      var holdOff      =t.filter(function(e){ return e.ev==='hold-off'; });
+      var firstProse   =contentEvents[0]||null;
+      var revealedBeforeProse = holdOff.length>0 && (!firstProse || t.indexOf(holdOff[0]) < t.indexOf(firstProse));
+      say('  loader painted into: '+loaderEvents.length+' host writes');
+      say('  hold released      : '+holdOff.length+' hosts');
+      say('  order              : '+t.map(function(e){return e.ev==='content'?(e.loader?'loader':'prose'):e.ev;}).join(' > '));
+      say('  LOADER WAS VISIBLE : '+(revealedBeforeProse?'YES':'NO')+
+          '   (hold released before prose arrived = the reader saw it)');
+      return { tag:tag, loaderWrites:loaderEvents.length, holdOff:holdOff.length,
+               firstProse:firstProse, loaderVisible:revealedBeforeProse, timeline:t };
+    },
+    disarm:function(){ if(obs) obs.disconnect(); if(realFetch) W().fetch=realFetch; return 'restored'; }
+  };
+})();
+'harness ready';
+</script>

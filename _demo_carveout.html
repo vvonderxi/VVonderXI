@@ -1,0 +1,127 @@
+<title>Wonder Tags carve-out</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260912b"></script>
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;padding:16px;background:#17161a;color:#F0EAD9;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+ h1{font-size:15px;margin:0 0 4px}
+ .sub{font-size:11.5px;color:#a49d93;margin:0 0 14px;max-width:1400px;line-height:1.5}
+ .cardrow{margin-bottom:22px}
+ .cardhead{font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;letter-spacing:.08em;
+           text-transform:uppercase;color:#F0EAD9;margin:0 0 2px}
+ .cardnote{font-size:11px;color:#a49d93;margin-bottom:9px}
+ .cols{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));max-width:1500px}
+ .oh{font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;
+     text-transform:uppercase;color:#E0A93A;margin:0 0 3px}
+ .ow{color:#a49d93;font-size:10.5px;line-height:1.45;margin-bottom:8px;min-height:30px}
+ .panel{background:#F0EAD9;border-radius:14px;padding:14px 16px;color:#2b2924}
+ .lbl{font-family:'Archivo',sans-serif;font-weight:800;font-size:9px;letter-spacing:.13em;
+      text-transform:uppercase;color:#8a7c4e;margin:0 0 6px}
+ .rule{height:1px;background:rgba(0,0,0,0.10);margin:14px 0}
+ .none{font-size:11px;color:#8a8276;font-style:italic}
+ /* ---- SHIPPED, copied from card.html ---- */
+ #glChips{display:flex;flex-wrap:wrap;gap:7px}
+ .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;
+       display:inline-flex;align-items:center;gap:6px}
+ .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
+ .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
+ .chip.gold.career{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);
+   box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
+ #glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+   border-radius:18px;color:#fff;display:inline-flex;align-items:center}
+ #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443)}
+ #glChips .chtag-stage{background:linear-gradient(90deg,#2F8290,#1B5563)}
+ #glChips .chtag-prestige-gen{background:linear-gradient(90deg,#8E7CFF,#5B43E8)}
+ /* cabinet, 6e0a122 CURRENT: plain small-caps heading */
+ .cabname{display:flex;align-items:center;gap:5px;font-family:'Archivo',sans-serif;
+   font-weight:800;font-size:11px;letter-spacing:0.045em;text-transform:uppercase;
+   color:#5a4410;margin-bottom:5px}
+ .cabname .vvm{width:13px;height:13px;flex-shrink:0}
+ /* cabinet, HELD gold pill */
+ #cabChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+   border-radius:18px;color:#fff;display:inline-flex;align-items:center}
+ #cabChips .chtag.chtag-cab{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);color:#5a4410;
+   box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
+ #cabChips .chtag.chtag-cab .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
+ #cabChips .cabsh .chtag{margin-bottom:6px}
+ .cabsh{margin-bottom:11px}
+ .cabyrs{padding-left:16px;border-left:2px solid rgba(224,169,58,0.5)}
+ .caby{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:#2b2924;
+   font-variant-numeric:tabular-nums;line-height:1.55}
+ .cabyrs.two{column-count:2;column-gap:18px}
+</style>
+<h1>The Wonder Tags carve-out , this season in the glance strip, earlier seasons in the cabinet</h1>
+<p class="sub">Real honours, read from the database. Team legs (UCL, League Champion) computed the way
+<code>teamHonoursFor</code> computes them, from the club on the card in that season.
+Glance honour chips use the shipped <code>.chip.gold</code>; the cabinet pill is the held
+<code>.chtag-cab</code>.</p>
+<div id="host"></div>
+<script>
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var M=function(t){ return (window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''; };
+var META={ballon_dor:{l:"Ballon d'Or",s:"Ballon d'Or",t:1},
+          ucl_winner:{l:'UCL Winner',s:'UCL',t:3},
+          league_champion:{l:'League Champion',s:'Champion',t:4},
+          player_of_season:{l:'Player of the Season',s:'POTS',t:5},
+          golden_boot:{l:'Golden Boot',s:'Golden Boot',t:6}};
+var CARDS=[
+ {id:131585,name:'Haaland 22/23',note:'Manchester City, PL, rt 95, card 131585. Four honours won in 22/23, one from an earlier season.',
+  year:2022,
+  prestige:'<span class="chtag chtag-prestige-gen">Generational</span>',
+  tags:'<span class="chtag chtag-att">Goal Machine</span><span class="chtag chtag-stage">Peak</span>',
+  hon:[{t:'ucl_winner',y:2022},{t:'league_champion',y:2022},{t:'player_of_season',y:2022},
+       {t:'golden_boot',y:2022},{t:'player_of_season',y:2020}]},
+ {id:132317,name:'Ronaldo 21/22',note:'Manchester United, PL, rt 87, card 132317. Eighteen honours, none of them won in 21/22.',
+  year:2021, prestige:'',
+  tags:'<span class="chtag chtag-att">Goal Machine</span>',
+  hon:[{t:'ballon_dor',y:2012},{t:'ballon_dor',y:2013},{t:'ballon_dor',y:2015},{t:'ballon_dor',y:2016},
+       {t:'ucl_winner',y:2013},{t:'ucl_winner',y:2015},{t:'ucl_winner',y:2016},{t:'ucl_winner',y:2017},
+       {t:'league_champion',y:2011},{t:'league_champion',y:2016},{t:'league_champion',y:2018},{t:'league_champion',y:2019},
+       {t:'player_of_season',y:2013},{t:'player_of_season',y:2018},
+       {t:'golden_boot',y:2010},{t:'golden_boot',y:2013},{t:'golden_boot',y:2014},{t:'golden_boot',y:2020}]}
+];
+function glance(c, seasonOnly){
+  var hs=c.hon.filter(function(h){ return h.y===c.year; });
+  var pills=hs.map(function(h){ return '<span class="chip gold">'+M(h.t)+META[h.t].s+'</span>'; }).join('');
+  var body = pills || '<span class="none">no honour chips on this card</span>';
+  return '<div class="lbl">Glance strip</div><div id="glChips">'+body+c.prestige+c.tags+'</div>';
+}
+function cabinet(c, mode, priorOnly){
+  var src=c.hon.filter(function(h){ return priorOnly ? h.y<c.year : h.y<=c.year; });
+  if(!src.length) return '<div class="lbl">The Cabinet</div><div class="none">nothing to show , the cabinet does not render</div>';
+  var by={}; src.forEach(function(h){ (by[h.t]=by[h.t]||[]).push(h.y); });
+  var keys=Object.keys(by).sort(function(a,b){ return META[a].t-META[b].t; });
+  var h='<div class="lbl">The Cabinet</div><div id="cabChips">';
+  keys.forEach(function(k){
+    var yrs=by[k].slice().sort();
+    var head = (mode==='pill')
+      ? '<span class="chtag chtag-cab">'+M(k)+META[k].l+'</span>'
+      : '<div class="cabname">'+M(k)+META[k].l+'</div>';
+    h+='<div class="cabsh">'+head+'<div class="cabyrs'+(yrs.length>6?' two':'')+'">'
+      +yrs.map(function(y){return '<div class="caby">'+y+'</div>';}).join('')+'</div></div>';
+  });
+  return h+'</div>';
+}
+var STATES=[
+ ['A , current, 6e0a122','Cabinet headings are plain small-caps text. The four 22/23 honours appear in both blocks, softened only by the heading not being a pill.', 'text', false],
+ ['B , held gold pill','The cabinet takes the pill. Same shape, same ink, same words, twice on one card.', 'pill', false],
+ ['C , carve-out','This season stays in the glance strip. Earlier seasons appear only in the cabinet. Each honour renders in exactly one place.', 'pill', true]
+];
+var host=document.getElementById('host');
+var Q=location.search, ONLY=(Q.match(/only=(\d)/)||[])[1], CARD=(Q.match(/card=(\d)/)||[])[1];
+if(ONLY!=null||CARD!=null){ document.querySelector('h1').style.display='none';
+  document.querySelector('.sub').style.display='none'; document.body.style.padding='0'; }
+if(CARD!=null) CARDS=[CARDS[+CARD]];
+if(ONLY!=null) STATES=[STATES[+ONLY]];
+CARDS.forEach(function(c){
+  var row=document.createElement('div'); row.className='cardrow';
+  var cols=STATES.map(function(s){
+    return '<div><div class="oh">'+s[0]+'</div><div class="ow">'+s[1]+'</div><div class="panel">'
+      +glance(c)+'<div class="rule"></div>'+cabinet(c,s[2],s[3])+'</div></div>';
+  }).join('');
+  row.innerHTML='<div class="cardhead">'+c.name+'</div><div class="cardnote">'+c.note+'</div>'
+    +'<div class="cols">'+cols+'</div>';
+  host.appendChild(row);
+});
+</script>

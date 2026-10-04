@@ -1,0 +1,43 @@
+{
+  "batch": 6,
+  "at": "2026-09-14T17:09:37.895Z",
+  "clubSeasons": 50,
+  "resolved": 43,
+  "parsed": 24,
+  "cards": 991,
+  "matched": 353,
+  "held": {
+    "norow": 85,
+    "ambiguous": 27
+  },
+  "written": 353,
+  "skipped": [
+    "TR|2013|Akhisarspor , no page",
+    "TR|2013|Beşiktaş , 3 blocks, held for adjudication",
+    "TR|2013|Fenerbahçe , 3 blocks, held for adjudication",
+    "TR|2013|Galatasaray , 2 blocks, held for adjudication",
+    "TR|2013|Kardemir Karabukspor , no page",
+    "TR|2013|Sivasspor , 5 blocks, held for adjudication",
+    "TR|2013|Trabzonspor , 4 blocks, held for adjudication",
+    "TR|2014|Akhisarspor , no page",
+    "TR|2014|Başakşehir , duplicate numbers in the block",
+    "TR|2014|Fenerbahçe , 3 blocks, held for adjudication",
+    "TR|2014|Galatasaray , 2 blocks, held for adjudication",
+    "TR|2014|Kardemir Karabukspor , no page",
+    "TR|2014|Kasımpaşa , duplicate numbers in the block",
+    "TR|2014|Kayseri Erciyesspor , duplicate numbers in the block",
+    "TR|2014|Mersin Talimyurdu SK , no page",
+    "TR|2015|Akhisarspor , no page",
+    "TR|2015|Ankaraspor , no page",
+    "TR|2015|Başakşehir , no squad block",
+    "TR|2015|Bursaspor , duplicate numbers in the block",
+    "TR|2015|Eskişehirspor , no squad block",
+    "TR|2015|Fenerbahçe , 2 blocks, held for adjudication",
+    "TR|2015|Galatasaray , 2 blocks, held for adjudication",
+    "TR|2015|Gaziantepspor , no squad block",
+    "TR|2015|Gençlerbirliği S.K. , duplicate numbers in the block",
+    "TR|2015|Kasımpaşa , no squad block",
+    "TR|2015|Kayserispor , duplicate numbers in the block"
+  ],
+  "skippedCards": 526
+}

@@ -1,14 +1,53 @@
-name: VVonderXI — Bulk Player Import
+########################################################################################
+# VVonderXI , BULK IMPORT. Manual dispatch only; there is no schedule and must not be.
+#
+# THIS FILE CARRIED THREE SILENT DEFECTS UNTIL 2026-09-21, AND THE FIRST ONE WAS THE ONLY
+# THING KEEPING THE THIRD HARMLESS:
+#
+#   1. `CMD` WAS ASSIGNED TWICE and the second line overwrote the first, so the job named
+#      "Bulk Player Import" ran `import-positions-v2.js` and NEVER `import-players.js`.
+#      Both invocations were dutifully updated by cd80460 when the importers moved out of
+#      api/, which is how a dead line survives a refactor: it still looks maintained.
+#   2. The `dry_run` INPUT WAS NEVER READ. It was offered, chosen, and discarded.
+#   3. `import-players.js` WAS INVOKED WITH NO `--insert-only`, and its default write is an
+#      UPSERT that rewrites every row it touches. SS E records that plainly: "ANY RE-INGEST
+#      IS INSERT-ONLY , the default write is an upsert that REWRITES rows and shifts
+#      existing rt." So repairing (1) alone would have armed a one-button rewrite of ~57,000
+#      cards, and the bug was the guard.
+#
+# SO THE SHAPE HERE IS DELIBERATE: the job is CHOSEN rather than implied, insert-only is the
+# DEFAULT and has to be turned off on purpose, and nothing is assigned twice.
+#
+# THE DEFAULT JOB IS `positions`, WHICH IS WHAT THE BUTTON HAS ACTUALLY BEEN DOING. Pressing
+# it changes nothing about today's behaviour; the players path is simply reachable again.
+########################################################################################
+name: VVonderXI — Bulk Import (players or positions)
 
 on:
   workflow_dispatch:
     inputs:
+      job:
+        description: 'Which importer to run'
+        required: true
+        default: 'positions'
+        type: choice
+        options:
+          - 'positions'
+          - 'players'
       league:
-        description: 'League code (PL, LL, SA, BL, L1, PRT, ERE, BPL)'
+        description: 'League code (PL, LL, SA, BL, L1, PRT, ERE, BPL, TR). Blank = all.'
         required: false
-        default: 'PL'
+        default: ''
+      insert_only:
+        description: 'players only , INSERT-ONLY. "false" rewrites existing rows and moves rt.'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
       dry_run:
-        description: 'Dry run?'
+        description: 'Dry run? (players only , counts, no writes)'
         required: false
         default: 'false'
         type: choice
@@ -18,7 +57,7 @@ on:
 
 jobs:
   import:
-    name: Import Players to Supabase
+    name: Import to Supabase
     runs-on: ubuntu-latest
     timeout-minutes: 360
 
@@ -34,13 +73,33 @@ jobs:
       - name: Install dependencies
         run: npm install dotenv @supabase/supabase-js ws
 
+      # A NON-INSERT-ONLY PLAYER IMPORT REWRITES EVERY ROW IT TOUCHES AND MOVES SCORES.
+      # It is allowed, because a genuine re-ingest needs it, and it announces itself first.
+      - name: Refuse to proceed quietly on a rewriting import
+        if: ${{ github.event.inputs.job == 'players' && github.event.inputs.insert_only == 'false' && github.event.inputs.dry_run == 'false' }}
+        run: |
+          echo "::warning title=Rewriting import::insert_only=false upserts over existing rows."
+          echo "::warning::SS E: any re-ingest is insert-only; the default write shifts existing rt."
+
       - name: Run import
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          JOB: ${{ github.event.inputs.job }}
+          LEAGUE: ${{ github.event.inputs.league }}
+          INSERT_ONLY: ${{ github.event.inputs.insert_only }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          CMD="node scripts/import/import-players.js --league ${{ github.event.inputs.league }}"
-          CMD="node scripts/import/import-positions-v2.js"
-          echo "Running: $CMD"
-          $CMD
+          set -euo pipefail
+          ARGS=""
+          [ -n "$LEAGUE" ] && ARGS="$ARGS --league $LEAGUE"
+          if [ "$JOB" = "players" ]; then
+            [ "$INSERT_ONLY" = "true" ] && ARGS="$ARGS --insert-only"
+            [ "$DRY_RUN" = "true" ]     && ARGS="$ARGS --dry-run"
+            SCRIPT="scripts/import/import-players.js"
+          else
+            SCRIPT="scripts/import/import-positions-v2.js"
+          fi
+          echo "Running: node $SCRIPT$ARGS"
+          node $SCRIPT $ARGS

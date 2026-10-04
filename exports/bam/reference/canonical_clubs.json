@@ -1,0 +1,2364 @@
+{
+  "_what_this_is": "The canonical club vocabulary as VVonderXI holds it. Map to these rather than inventing a third vocabulary.",
+  "generated_at": "2026-09-16T17:27:40.542267+00:00",
+  "through": "2026-09-16",
+  "card_names_count": 331,
+  "teams_table_count": 337,
+  "card_names": [
+    "1. FC Heidenheim",
+    "1. FC Kaiserslautern",
+    "1. FC Köln",
+    "1. FC Nürnberg",
+    "1899 Hoffenheim",
+    "AC Milan",
+    "ADO Den Haag",
+    "AS Eupen",
+    "AS Roma",
+    "AVS",
+    "AZ Alkmaar",
+    "Academica",
+    "Adana Demirspor",
+    "Adanaspor",
+    "Ajaccio",
+    "Ajax",
+    "Akhisarspor",
+    "Alanyaspor",
+    "Alaves",
+    "Almere City FC",
+    "Almeria",
+    "Altay",
+    "Alverca",
+    "Amiens",
+    "Anderlecht",
+    "Angers",
+    "Ankaragücü",
+    "Ankaraspor",
+    "Antalyaspor",
+    "Antwerp",
+    "Arles",
+    "Arminia Bielefeld",
+    "Arouca",
+    "Arsenal",
+    "Aston Villa",
+    "Atalanta",
+    "Athletic Club",
+    "Atletico Madrid",
+    "Auxerre",
+    "Aves",
+    "Balıkesirspor",
+    "Barcelona",
+    "Bari",
+    "Bastia",
+    "Bayer Leverkusen",
+    "Bayern München",
+    "Başakşehir",
+    "Beerschot",
+    "Beerschot VA",
+    "Beira-Mar",
+    "Belenenses",
+    "Benevento",
+    "Benfica",
+    "Beşiktaş",
+    "Birmingham",
+    "Blackburn",
+    "Blackpool",
+    "Boavista",
+    "Bodrum FK",
+    "Bologna",
+    "Bolton",
+    "Bordeaux",
+    "Borussia Dortmund",
+    "Borussia Mönchengladbach",
+    "Bournemouth",
+    "Brentford",
+    "Brescia",
+    "Brighton",
+    "Bucaspor",
+    "Burnley",
+    "Bursaspor",
+    "Cadiz",
+    "Caen",
+    "Cagliari",
+    "Cambuur",
+    "Cardiff",
+    "Carpi",
+    "Casa Pia",
+    "Catania",
+    "Celta Vigo",
+    "Cercle Brugge",
+    "Cesena",
+    "Charleroi",
+    "Chaves",
+    "Chelsea",
+    "Chievo",
+    "Clermont Foot",
+    "Club Brugge KV",
+    "Como",
+    "Cordoba",
+    "Cremonese",
+    "Crotone",
+    "Crystal Palace",
+    "De Graafschap",
+    "Den Bosch",
+    "Dender",
+    "Denizlispor",
+    "Deportivo La Coruna",
+    "Dijon",
+    "Dordrecht",
+    "Eibar",
+    "Eintracht Braunschweig",
+    "Eintracht Frankfurt",
+    "Elazığspor",
+    "Elche",
+    "Emmen",
+    "Empoli",
+    "Erzurumspor FK",
+    "Eskişehirspor",
+    "Espanyol",
+    "Estac Troyes",
+    "Estoril",
+    "Estrela",
+    "Everton",
+    "Evian TG",
+    "Excelsior",
+    "Eyüpspor",
+    "FC Augsburg",
+    "FC Eindhoven",
+    "FC Ingolstadt 04",
+    "FC Porto",
+    "FC Schalke 04",
+    "FC St. Pauli",
+    "FC Volendam",
+    "FSV Mainz 05",
+    "Famalicao",
+    "Farense",
+    "Fatih Karagümrük",
+    "Feirense",
+    "Fenerbahçe",
+    "Feyenoord",
+    "Fiorentina",
+    "Fortuna Düsseldorf",
+    "Fortuna Sittard",
+    "Frosinone",
+    "Fulham",
+    "GIL Vicente",
+    "GO Ahead Eagles",
+    "Galatasaray",
+    "Gazelec FC Ajaccio",
+    "Gaziantep FK",
+    "Gaziantepspor",
+    "Genk",
+    "Genoa",
+    "Gent",
+    "Gençlerbirliği S.K.",
+    "Getafe",
+    "Giresunspor",
+    "Girona",
+    "Granada CF",
+    "Groningen",
+    "Guimaraes",
+    "Guingamp",
+    "Göztepe",
+    "Hamburger SV",
+    "Hannover 96",
+    "Hatayspor",
+    "Heerenveen",
+    "Hellas Verona",
+    "Helmond Sport",
+    "Heracles",
+    "Hertha BSC",
+    "Holstein Kiel",
+    "Huddersfield",
+    "Huesca",
+    "Hull City",
+    "Hércules",
+    "Inter",
+    "Ipswich",
+    "Juventus",
+    "KV Mechelen",
+    "KVC Westerlo",
+    "Kardemir Karabukspor",
+    "Kasımpaşa",
+    "Kayseri Erciyesspor",
+    "Kayserispor",
+    "Kocaelispor",
+    "Konyaspor",
+    "Kortrijk",
+    "Las Palmas",
+    "Lazio",
+    "Le Havre",
+    "Lecce",
+    "Leeds",
+    "Leganes",
+    "Leicester",
+    "Lens",
+    "Levante",
+    "Lierse",
+    "Lille",
+    "Liverpool",
+    "Livorno",
+    "Lokeren",
+    "Lommel United",
+    "Lorient",
+    "Luton",
+    "Lyon",
+    "MVV",
+    "Malaga",
+    "Mallorca",
+    "Manchester City",
+    "Manchester United",
+    "Manisaspor",
+    "Maritimo",
+    "Marseille",
+    "Mersin Talimyurdu SK",
+    "Metz",
+    "Middlesbrough",
+    "Monaco",
+    "Mons",
+    "Montpellier",
+    "Monza",
+    "Moreirense",
+    "NAC Breda",
+    "NEC Nijmegen",
+    "Nacional",
+    "Nancy",
+    "Nantes",
+    "Napoli",
+    "Naval 1893",
+    "Newcastle",
+    "Nice",
+    "Nimes",
+    "Norwich",
+    "Nottingham Forest",
+    "Novara",
+    "OH Leuven",
+    "Olhanense",
+    "Oostende",
+    "Orduspor",
+    "Osasuna",
+    "Oviedo",
+    "PEC Zwolle",
+    "PSV Eindhoven",
+    "Pacos Ferreira",
+    "Palermo",
+    "Paris FC",
+    "Paris Saint Germain",
+    "Parma",
+    "Penafiel",
+    "Pendikspor",
+    "Pescara",
+    "Pisa",
+    "Portimonense",
+    "QPR",
+    "RAAL La Louvière",
+    "RB Leipzig",
+    "RWDM",
+    "Racing Santander",
+    "Rayo Vallecano",
+    "Reading",
+    "Real Betis",
+    "Real Madrid",
+    "Real Sociedad",
+    "Reims",
+    "Rennes",
+    "Rio Ave",
+    "Rizespor",
+    "Robur Siena",
+    "Roda",
+    "Roeselare",
+    "Royal Excel Mouscron",
+    "SC Braga",
+    "SC Freiburg",
+    "SC Paderborn 07",
+    "SK Beveren",
+    "SV Darmstadt 98",
+    "Saint Etienne",
+    "Salernitana",
+    "Sampdoria",
+    "Samsunspor",
+    "Santa Clara",
+    "Sassuolo",
+    "Seraing United",
+    "Sevilla",
+    "Sheffield Utd",
+    "Sivasspor",
+    "Sochaux",
+    "Southampton",
+    "SpVgg Greuther Fürth",
+    "Spal",
+    "Sparta Rotterdam",
+    "Spezia",
+    "Sporting CP",
+    "Sporting Gijon",
+    "St. Pauli II",
+    "St. Truiden",
+    "Stade Brestois 29",
+    "Standard Liege",
+    "Stoke City",
+    "Strasbourg",
+    "Sunderland",
+    "Swansea",
+    "Telstar",
+    "Tondela",
+    "Torino",
+    "Tottenham",
+    "Toulouse",
+    "Trabzonspor",
+    "Twente",
+    "U. Madeira",
+    "Udinese",
+    "Union Berlin",
+    "Union St. Gilloise",
+    "União de Leiria",
+    "Utrecht",
+    "VVV Venlo",
+    "Valencia",
+    "Valenciennes",
+    "Valladolid",
+    "Venezia",
+    "VfB Stuttgart",
+    "VfL Bochum",
+    "VfL Wolfsburg",
+    "Villarreal",
+    "Vitesse",
+    "Vitoria Setubal",
+    "Vizela",
+    "Waalwijk",
+    "Watford",
+    "Werder Bremen",
+    "West Brom",
+    "West Ham",
+    "Wigan",
+    "Willem II",
+    "Wolves",
+    "Yeni Malatyaspor",
+    "Zaragoza",
+    "Zulte Waregem",
+    "Ümraniyespor",
+    "İstanbulspor"
+  ],
+  "teams_table": [
+    {
+      "api_team_id": null,
+      "name": "1. FC Heidenheim",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "1. FC Kaiserslautern",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "1. FC Köln",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "1. FC Nürnberg",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "1899 Hoffenheim",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "AC Milan",
+      "short_name": "AC Milan",
+      "country": "ITA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Academica",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Adana Demirspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Adanaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "ADO Den Haag",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Ajaccio",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Ajax",
+      "short_name": "Ajax",
+      "country": "NED"
+    },
+    {
+      "api_team_id": null,
+      "name": "Akhisarspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Alanyaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Alaves",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Almere City FC",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Almeria",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Altay",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Alverca",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Amiens",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Anderlecht",
+      "short_name": "Anderlecht",
+      "country": "BEL"
+    },
+    {
+      "api_team_id": null,
+      "name": "Angers",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Ankaragücü",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Ankaraspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Antalyaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Antwerp",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Arles",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Arminia Bielefeld",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Arouca",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Arsenal",
+      "short_name": "Arsenal",
+      "country": "ENG"
+    },
+    {
+      "api_team_id": null,
+      "name": "AS Eupen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "AS Roma",
+      "short_name": "Roma",
+      "country": "ITA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Aston Villa",
+      "short_name": "Villa",
+      "country": "ENG"
+    },
+    {
+      "api_team_id": null,
+      "name": "Atalanta",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Athletic Club",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Atletico Madrid",
+      "short_name": "Atletico",
+      "country": "ESP"
+    },
+    {
+      "api_team_id": null,
+      "name": "Auxerre",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Aves",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "AVS",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "AZ Alkmaar",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Balıkesirspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Barcelona",
+      "short_name": "Barca",
+      "country": "ESP"
+    },
+    {
+      "api_team_id": null,
+      "name": "Bari",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Başakşehir",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bastia",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bayer Leverkusen",
+      "short_name": "Leverkusen",
+      "country": "GER"
+    },
+    {
+      "api_team_id": null,
+      "name": "Bayern München",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bayern Munich",
+      "short_name": "Bayern",
+      "country": "GER"
+    },
+    {
+      "api_team_id": null,
+      "name": "Beerschot",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Beerschot VA",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Beira-Mar",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Belenenses",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Benevento",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Benfica",
+      "short_name": "Benfica",
+      "country": "PRT"
+    },
+    {
+      "api_team_id": null,
+      "name": "Beşiktaş",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Birmingham",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Blackburn",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Blackpool",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Boavista",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bodrum FK",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bologna",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bolton",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bordeaux",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Borussia Dortmund",
+      "short_name": "Dortmund",
+      "country": "GER"
+    },
+    {
+      "api_team_id": null,
+      "name": "Borussia Monchengladbach",
+      "short_name": "Gladbach",
+      "country": "GER"
+    },
+    {
+      "api_team_id": null,
+      "name": "Borussia Mönchengladbach",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bournemouth",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Brentford",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Brescia",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Brighton",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bucaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Burnley",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Bursaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cadiz",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Caen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cagliari",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cambuur",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cardiff",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Carpi",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Casa Pia",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Catania",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Celta Vigo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cercle Brugge",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cesena",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Charleroi",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Chaves",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Chelsea",
+      "short_name": "Chelsea",
+      "country": "ENG"
+    },
+    {
+      "api_team_id": null,
+      "name": "Chievo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Clermont Foot",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Club Brugge",
+      "short_name": "Brugge",
+      "country": "BEL"
+    },
+    {
+      "api_team_id": null,
+      "name": "Club Brugge KV",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Como",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cordoba",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Cremonese",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Crotone",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Crystal Palace",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "De Graafschap",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Den Bosch",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Dender",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Denizlispor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Deportivo La Coruna",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Dijon",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Dordrecht",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Eibar",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Eintracht Braunschweig",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Eintracht Frankfurt",
+      "short_name": "Frankfurt",
+      "country": "GER"
+    },
+    {
+      "api_team_id": null,
+      "name": "Elazığspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Elche",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Emmen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Empoli",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Erzurumspor FK",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Eskişehirspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Espanyol",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Estac Troyes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Estoril",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Estrela",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Everton",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Evian TG",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Excelsior",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Eyüpspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Famalicao",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Farense",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Fatih Karagümrük",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC Augsburg",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC Eindhoven",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC Ingolstadt 04",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC Porto",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC Schalke 04",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC St. Pauli",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FC Volendam",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Feirense",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Fenerbahçe",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Feyenoord",
+      "short_name": "Feyenoord",
+      "country": "NED"
+    },
+    {
+      "api_team_id": null,
+      "name": "Fiorentina",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Fortuna Düsseldorf",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Fortuna Sittard",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Frosinone",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "FSV Mainz 05",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Fulham",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Galatasaray",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Gazelec FC Ajaccio",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Gaziantep FK",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Gaziantepspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Gençlerbirliği S.K.",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Genk",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Genoa",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Gent",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Getafe",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "GIL Vicente",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Giresunspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Girona",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "GO Ahead Eagles",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Göztepe",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Granada CF",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Groningen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Guimaraes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Guingamp",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hamburger SV",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hannover 96",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hatayspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Heerenveen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hellas Verona",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Helmond Sport",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Heracles",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hércules",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hertha BSC",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Holstein Kiel",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Huddersfield",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Huesca",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Hull City",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Inter",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Inter Milan",
+      "short_name": "Inter",
+      "country": "ITA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Ipswich",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "İstanbulspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Juventus",
+      "short_name": "Juventus",
+      "country": "ITA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Kardemir Karabukspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Kasımpaşa",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Kayseri Erciyesspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Kayserispor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Kocaelispor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Konyaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Kortrijk",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "KV Mechelen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "KVC Westerlo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Las Palmas",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lazio",
+      "short_name": "Lazio",
+      "country": "ITA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Le Havre",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lecce",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Leeds",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Leganes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Leicester",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lens",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Levante",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lierse",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lille",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Liverpool",
+      "short_name": "Liverpool",
+      "country": "ENG"
+    },
+    {
+      "api_team_id": null,
+      "name": "Livorno",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lokeren",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lommel United",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lorient",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Luton",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Lyon",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Malaga",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Mallorca",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Manchester City",
+      "short_name": "Man City",
+      "country": "ENG"
+    },
+    {
+      "api_team_id": null,
+      "name": "Manchester United",
+      "short_name": "Man Utd",
+      "country": "ENG"
+    },
+    {
+      "api_team_id": null,
+      "name": "Manisaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Maritimo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Marseille",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Mersin Talimyurdu SK",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Metz",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Middlesbrough",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Monaco",
+      "short_name": "Monaco",
+      "country": "FRA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Mons",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Montpellier",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Monza",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Moreirense",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "MVV",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "NAC Breda",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Nacional",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Nancy",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Nantes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Napoli",
+      "short_name": "Napoli",
+      "country": "ITA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Naval 1893",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "NEC Nijmegen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Newcastle",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Nice",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Nimes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Norwich",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Nottingham Forest",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Novara",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "OH Leuven",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Olhanense",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Oostende",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Orduspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Osasuna",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Oviedo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Pacos Ferreira",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Palermo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Paris FC",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Paris Saint Germain",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Paris Saint-Germain",
+      "short_name": "PSG",
+      "country": "FRA"
+    },
+    {
+      "api_team_id": null,
+      "name": "Parma",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "PEC Zwolle",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Penafiel",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Pendikspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Pescara",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Pisa",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Portimonense",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Porto",
+      "short_name": "Porto",
+      "country": "PRT"
+    },
+    {
+      "api_team_id": null,
+      "name": "PSV Eindhoven",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "QPR",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "RAAL La Louvière",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Racing Santander",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Rayo Vallecano",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "RB Leipzig",
+      "short_name": "Leipzig",
+      "country": "GER"
+    },
+    {
+      "api_team_id": null,
+      "name": "Reading",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Real Betis",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Real Madrid",
+      "short_name": "R. Madrid",
+      "country": "ESP"
+    },
+    {
+      "api_team_id": null,
+      "name": "Real Sociedad",
+      "short_name": "R. Sociedad",
+      "country": "ESP"
+    },
+    {
+      "api_team_id": null,
+      "name": "Reims",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Rennes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Rio Ave",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Rizespor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Robur Siena",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Roda",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Roeselare",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Royal Excel Mouscron",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "RWDM",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Saint Etienne",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Salernitana",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sampdoria",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Samsunspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Santa Clara",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sassuolo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "SC Braga",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "SC Freiburg",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "SC Paderborn 07",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Seraing United",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sevilla",
+      "short_name": "Sevilla",
+      "country": "ESP"
+    },
+    {
+      "api_team_id": null,
+      "name": "Sheffield Utd",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sivasspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "SK Beveren",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sochaux",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Southampton",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Spal",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sparta Rotterdam",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Spezia",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sporting CP",
+      "short_name": "Sporting",
+      "country": "PRT"
+    },
+    {
+      "api_team_id": null,
+      "name": "Sporting Gijon",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "SpVgg Greuther Fürth",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "St. Pauli II",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "St. Truiden",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Stade Brestois 29",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Standard Liege",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Stoke City",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Strasbourg",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Sunderland",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "SV Darmstadt 98",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Swansea",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Telstar",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Tondela",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Torino",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Tottenham",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Toulouse",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Trabzonspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Twente",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "U. Madeira",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Udinese",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Ümraniyespor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "União de Leiria",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Union Berlin",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Union St. Gilloise",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Utrecht",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Valencia",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Valenciennes",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Valladolid",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Venezia",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "VfB Stuttgart",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "VfL Bochum",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "VfL Wolfsburg",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Villarreal",
+      "short_name": "Villarreal",
+      "country": "ESP"
+    },
+    {
+      "api_team_id": null,
+      "name": "Vitesse",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Vitoria Setubal",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Vizela",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "VVV Venlo",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Waalwijk",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Watford",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Werder Bremen",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "West Brom",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "West Ham",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Wigan",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Willem II",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Wolves",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Yeni Malatyaspor",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Zaragoza",
+      "short_name": null,
+      "country": null
+    },
+    {
+      "api_team_id": null,
+      "name": "Zulte Waregem",
+      "short_name": null,
+      "country": null
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+<style>
+:root{--cream:#F3EDE0;--gold:#E8B84B;--pink-ink:#F1688E;--ink-soft:#a49d93;--blue:#3B6FB0}
+*{box-sizing:border-box}
+body{margin:0;background:#17140f;color:var(--cream);font-family:Archivo,system-ui,sans-serif;padding:22px 16px 70px}
+h2{font:800 10px Archivo;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:34px 0 3px}
+.sub{font:400 11.5px Inter,system-ui;color:var(--ink-soft);margin:0 0 14px;max-width:760px;line-height:1.55}
+.vfinal{margin:0 0 8px;padding:34px 30px 28px;text-align:center;position:relative;max-width:820px;
+  background:#2A2422;border:1px solid rgba(255,255,255,.09);border-radius:20px}
+.vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  width:168px;height:4px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#E70443,#E8B84B)}
+.vlabel{font:800 10px Archivo;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:11px}
+.vwho{font-family:Archivo;font-weight:800;font-size:30px;line-height:1.2;letter-spacing:-.015em;
+  max-width:660px;margin:0 auto 6px;text-wrap:balance}
+.vsub{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:600;font-size:15px;
+  color:var(--ink-soft);max-width:600px;margin:0 auto 14px;line-height:1.5}
+.vtag{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 14px;
+  font:800 12px Archivo;background:rgba(232,184,75,.16);border:1px solid rgba(232,184,75,.5);color:var(--gold)}
+.vquote{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:600;font-size:17px;
+  line-height:1.55;max-width:620px;margin:16px auto 0}
+.scores{font:800 22px Archivo;margin:4px 0 12px;letter-spacing:-.01em}
+.scores .a{color:var(--pink-ink)} .scores .b{color:var(--blue)} .scores .v{color:var(--ink-soft);font-size:15px;margin:0 8px}
+/* framing C , the two-column ledger */
+.ledger{display:grid;grid-template-columns:1fr auto 1fr;gap:0;max-width:640px;margin:14px auto 0;
+  border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden}
+.led{padding:13px 15px;text-align:left}
+.led.b{text-align:right}
+.led .n{font:800 11px Archivo;letter-spacing:.06em;margin-bottom:6px}
+.led.a .n{color:var(--pink-ink)} .led.b .n{color:var(--blue)}
+.led .f{font:400 12.5px Inter,system-ui;color:rgba(243,237,224,.8);line-height:1.55}
+.ledmid{width:1px;background:rgba(255,255,255,.1)}
+.note{font:400 11.5px Inter,system-ui;color:var(--ink-soft);max-width:600px;margin:12px auto 0;line-height:1.5}
+</style>
+<h2>Now , what ships today</h2>
+<p class="sub">Nani 16/17 (74) against Odegaard 25/26 (67). Seven points apart, margin required 20.52.
+The copy asserts closeness the data does not support.</p>
+<div class="vfinal">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Too close for the Index to separate.</div>
+  <div class="vsub">So close it won't end the argument. Fuel for the next conversation.</div>
+  <span class="vtag">&#128293; The Debate Lives On</span>
+</div>
+
+<h2>A , The Index steps back, the argument does not</h2>
+<p class="sub">Keeps a verdict headline and demotes the Index to a stated limit. The tag stops
+claiming closeness and names what the section actually contains.</p>
+<div class="vfinal">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Odegaard, on creation , but the Index will not call it.</div>
+  <div class="vsub">Seven points apart, and the margin on this pair is twenty. The score cannot
+    separate them. The record can.</div>
+  <span class="vtag">&#9878;&#65039; Decided on the Record</span>
+  <div class="vquote">"...and on those grounds, this one belongs to Odegaard."</div>
+</div>
+
+<h2>B , Name the limit as a measurement, then answer anyway</h2>
+<p class="sub">Leads with the finding rather than the refusal. "Inside the margin" is a fact about
+the number and is stated as one, in its own right, without the word close.</p>
+<div class="vfinal">
+  <div class="vlabel">Inside the margin</div>
+  <div class="scores"><span class="a">74</span><span class="v">and</span><span class="b">67</span></div>
+  <div class="vsub">A seven-point gap on a pair measured to plus or minus twenty. The Index does
+    not separate these two, and says so rather than guessing.</div>
+  <div class="vwho" style="font-size:24px">So the case is made from the record.</div>
+  <span class="vtag">&#128220; The Argument, Not the Number</span>
+  <div class="vquote">"...and on those grounds, this one belongs to Odegaard."</div>
+</div>
+
+<h2>C , Put the two cases side by side and let the reader judge</h2>
+<p class="sub">The most honest to the state and the biggest build. No winner is named at the top;
+the section becomes what each season holds that the other does not.</p>
+<div class="vfinal">
+  <div class="vlabel">The Index cannot separate these</div>
+  <div class="vwho" style="font-size:25px">Two seasons, one argument.</div>
+  <div class="vsub">74 and 67, on a pair measured to plus or minus twenty. What follows carries no
+    margin of error at all.</div>
+  <div class="ledger">
+    <div class="led a"><div class="n">NANI &middot; 16/17</div>
+      <div class="f">A winger's return in a title-chasing side. Twelve goals, nine assists, and a
+        league medal the other card does not hold.</div></div>
+    <div class="ledmid"></div>
+    <div class="led b"><div class="n">ODEGAARD &middot; 25/26</div>
+      <div class="f">The creative axis of a title challenge. Eleven assists, 2.2 key passes per 90,
+        and the captaincy of the side around him.</div></div>
+  </div>
+  <div class="note">The Index has not declined to answer. It has declined to answer with a number
+    it cannot stand behind.</div>
+</div>

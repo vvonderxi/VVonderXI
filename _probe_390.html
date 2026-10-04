@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>390 probe</title>
+<style>body{margin:0;background:#2b2b2b;font:12px/1.4 system-ui;color:#ddd}
+ .lab{padding:6px 10px;font-weight:700}
+ .row{display:flex;gap:18px;padding:0 10px 18px;align-items:flex-start}
+ iframe{width:390px;height:844px;border:1px solid #555;background:#fff;display:block}</style>
+<div class="lab" id="lab">loading</div><div class="row" id="row"></div>
+<script>
+const Q=new URLSearchParams(location.search);
+const page=Q.get('p')||'compare.html';
+const themes=(Q.get('themes')||'dark').split(',');
+document.getElementById('lab').textContent=page+'  ,  '+themes.join(' + ')+'  ,  390x844';
+window.__f={};
+themes.forEach(t=>{
+  const col=document.createElement('div');
+  const h=document.createElement('div'); h.className='lab'; h.textContent=t;
+  const f=document.createElement('iframe'); f.src=page;
+  f.addEventListener('load',()=>{ const d=f.contentDocument;
+    if(t==='light') d.body.classList.add('light'); else d.body.classList.remove('light');
+    window.__f[t]=f; });
+  col.appendChild(h); col.appendChild(f); document.getElementById('row').appendChild(col);
+});
+</script>

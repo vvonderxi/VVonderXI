@@ -1,0 +1,121 @@
+<title>Cabinet years, two treatments</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260912b"></script>
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;padding:16px;background:#17161a;color:#F0EAD9;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+ h1{font-size:15px;margin:0 0 4px}
+ .sub{font-size:11.5px;color:#a49d93;margin:0 0 16px;max-width:1400px;line-height:1.5}
+ .subjhead{font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;letter-spacing:.08em;
+   text-transform:uppercase;margin:0 0 2px}
+ .subjnote{font-size:11px;color:#a49d93;margin-bottom:9px}
+ .subj{margin-bottom:24px}
+ .cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));max-width:1380px}
+ .oh{font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;
+   text-transform:uppercase;color:#E0A93A;margin:0 0 3px}
+ .ow{color:#a49d93;font-size:10.5px;line-height:1.45;margin-bottom:9px;min-height:44px}
+ .panel{background:#F0EAD9;border-radius:14px;padding:15px 17px;color:#2b2924}
+ .sect{font-family:'Archivo',sans-serif;font-weight:800;font-size:12.5px;color:#241f1b}
+ .intro{font-size:11px;color:#5f594e;margin:2px 0 11px}
+ /* ---- SHIPPED ---- */
+ #cabChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;
+   border-radius:18px;color:#fff;display:inline-flex;align-items:center}
+ #cabChips .chtag.chtag-cab{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);color:#5a4410;
+   box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
+ #cabChips .chtag.chtag-cab .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
+ .cabsh{margin-bottom:13px}
+ .cabsh .chtag{margin-bottom:6px}
+ .cabyrs{padding-left:16px;border-left:2px solid rgba(224,169,58,0.5)}
+ /* CURRENT , what ships today */
+ .t0 .caby{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;color:#2b2924;
+   font-variant-numeric:tabular-nums;line-height:1.55}
+ .t0 .cabyrs.two{column-count:2;column-gap:18px}
+ /* TREATMENT 1 , SIZE AND INK ONLY. No new text, no pills. The numeral carries it. */
+ .t1 .caby{font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;color:#241f1b;
+   font-variant-numeric:tabular-nums;line-height:1.5;letter-spacing:.01em}
+ .t1 .cabyrs{border-left-width:3px;border-left-color:rgba(224,169,58,0.62);padding-left:15px}
+ .t1 .cabyrs.two{column-count:2;column-gap:22px}
+ /* TREATMENT 2 , YEAR PLUS A SHORT GLOSS. */
+ .t2 .caby{font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;color:#241f1b;
+   font-variant-numeric:tabular-nums;line-height:1.25}
+ .t2 .cabg{font-family:'Inter',sans-serif;font-weight:400;font-size:11px;color:#6b6558;
+   line-height:1.3;margin-bottom:7px}
+ .t2 .cabyrs.two{column-count:2;column-gap:20px}
+ .t2 .cabrow{break-inside:avoid}
+</style>
+<h1>The years under each pill , two treatments against what ships today</h1>
+<p class="sub">Real honours from the database, including team legs computed from the club on each
+career row. Gloss text is drawn only from fields that actually exist on the honour row:
+<code>goals</code> and <code>league_code</code>, plus the club from the career row for a team leg.
+<code>team_name</code> is null on most individual honours ("club not listed in source"), so it is
+never the gloss on its own.</p>
+<div id="host"></div>
+<script>
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var M=function(t){ return (window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''; };
+var META={ucl_winner:{l:'UCL Winner',t:3},league_champion:{l:'League Champion',t:4},
+          player_of_season:{l:'Player of the Season',t:5},golden_boot:{l:'Golden Boot',t:6}};
+var LG={BL:'Bundesliga',LL:'La Liga',SA:'Serie A',PL:'Premier League'};
+var SUBJ=[
+ {name:'Lewandowski 23/24', note:'Barcelona, rt 88, card 137523. A twelve-year run and an eight-year run, both past the six-year two-column threshold.',
+  hon:[
+   {t:'ucl_winner',y:2019,club:'Bayern München'},
+   {t:'league_champion',y:2010,club:'Borussia Dortmund',lg:'BL'},{t:'league_champion',y:2011,club:'Borussia Dortmund',lg:'BL'},
+   {t:'league_champion',y:2014,club:'Bayern München',lg:'BL'},{t:'league_champion',y:2015,club:'Bayern München',lg:'BL'},
+   {t:'league_champion',y:2016,club:'Bayern München',lg:'BL'},{t:'league_champion',y:2017,club:'Bayern München',lg:'BL'},
+   {t:'league_champion',y:2018,club:'Bayern München',lg:'BL'},{t:'league_champion',y:2019,club:'Bayern München',lg:'BL'},
+   {t:'league_champion',y:2020,club:'Bayern München',lg:'BL'},{t:'league_champion',y:2021,club:'Bayern München',lg:'BL'},
+   {t:'league_champion',y:2022,club:'Barcelona',lg:'LL'},{t:'league_champion',y:2024,club:'Barcelona',lg:'LL'},
+   {t:'player_of_season',y:2019,lg:'BL'},
+   {t:'golden_boot',y:2013,g:20,lg:'BL'},{t:'golden_boot',y:2015,g:30,lg:'BL'},{t:'golden_boot',y:2017,g:29,lg:'BL'},
+   {t:'golden_boot',y:2018,g:22,lg:'BL'},{t:'golden_boot',y:2019,g:34,lg:'BL'},{t:'golden_boot',y:2020,g:41,lg:'BL'},
+   {t:'golden_boot',y:2021,g:35,lg:'BL'},{t:'golden_boot',y:2022,g:23,lg:'LL'}]},
+ {name:'Higuaín 15/16', note:'Napoli, rt 93, card 148701. One honour, one year. The case where a shelf has nothing to stack.',
+  hon:[{t:'golden_boot',y:2015,g:36,lg:'SA'}]}
+];
+function gloss(h){
+  if(h.t==='golden_boot') return h.g+' goals, '+(LG[h.lg]||h.lg);
+  if(h.t==='league_champion') return h.club+', '+(LG[h.lg]||h.lg);
+  if(h.t==='ucl_winner') return h.club;
+  if(h.t==='player_of_season') return (LG[h.lg]||h.lg);
+  return '';
+}
+function cabinet(s, mode){
+  var by={}; s.hon.forEach(function(h){ (by[h.t]=by[h.t]||[]).push(h); });
+  var keys=Object.keys(by).sort(function(a,b){ return META[a].t-META[b].t; });
+  var out='<div class="sect">The Cabinet</div><div class="intro">What he had won by this season.</div><div id="cabChips">';
+  keys.forEach(function(k){
+    var rows=by[k].slice().sort(function(a,b){return a.y-b.y;});
+    var two = rows.length>6 ? ' two':'';
+    var body = rows.map(function(h){
+      if(mode==='t2') return '<div class="cabrow"><div class="caby">'+h.y+'</div><div class="cabg">'+gloss(h)+'</div></div>';
+      return '<div class="caby">'+h.y+'</div>';
+    }).join('');
+    out+='<div class="cabsh"><span class="chtag chtag-cab">'+M(k)+META[k].l+'</span>'
+       + '<div class="cabyrs'+two+'">'+body+'</div></div>';
+  });
+  return out+'</div>';
+}
+var MODES=[
+ ['0 , ships today','Archivo 700 at 12px, ink #2b2924. The years sit at the same weight as body text, so a twelve-year run reads as a list rather than a record.','t0'],
+ ['1 , size and ink only','Archivo 800 at 16px, ink #241f1b, shelf rule 3px. No new text and no pills. The numeral itself carries the weight.','t1'],
+ ['2 , year plus a short gloss','Year at 14px over an 11px Inter gloss drawn from real fields, goals and league, or club for a team leg.','t2']
+];
+var host=document.getElementById('host');
+var Q=location.search, ONLY=(Q.match(/only=(\d)/)||[])[1], SUBJI=(Q.match(/subj=(\d)/)||[])[1];
+if(ONLY!=null||SUBJI!=null){ document.querySelector('h1').style.display='none';
+  document.querySelector('.sub').style.display='none'; document.body.style.padding='0'; }
+var SS = SUBJI!=null ? [SUBJ[+SUBJI]] : SUBJ;
+var MM = ONLY!=null ? [MODES[+ONLY]] : MODES;
+SS.forEach(function(s){
+  var d=document.createElement('div'); d.className='subj';
+  var cols=MM.map(function(m){
+    return '<div><div class="oh">'+m[0]+'</div><div class="ow">'+m[1]+'</div>'
+         + '<div class="panel '+m[2]+'">'+cabinet(s,m[2])+'</div></div>';
+  }).join('');
+  d.innerHTML='<div class="subjhead">'+s.name+'</div><div class="subjnote">'+s.note+'</div>'
+            + '<div class="cols">'+cols+'</div>';
+  host.appendChild(d);
+});
+</script>

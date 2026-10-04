@@ -1,0 +1,58 @@
+ST FIX , SIZING   (read-only, nothing pulled)
+============================================================================
+
+TARGET SET
+  Tier 1 + Tier 2 cards            : 5690
+  of which position_pool = ST      : 2116
+  distinct players in that ST set  : 483
+
+WHAT MUST BE RE-PULLED
+  NOTE: import-positions-v2 is scoped per LEAGUE-SEASON, not per team or player.
+        Covering one ST card means pulling that entire league-season's fixtures.
+  distinct league-seasons containing a target ST card: 141
+  estimated fixtures (teams x (teams-1), derived per league-season, never a constant):
+    total fixtures to pull: 48,914
+    per-league-season range: 240 to 462
+  top 8 league-seasons by fixture cost:
+    ERE|2018     22 teams   462 fixtures  covers 9 ST cards
+    ERE|2017     22 teams   462 fixtures  covers 10 ST cards
+    ERE|2016     22 teams   462 fixtures  covers 6 ST cards
+    ERE|2015     22 teams   462 fixtures  covers 3 ST cards
+    ERE|2013     22 teams   462 fixtures  covers 2 ST cards
+    ERE|2023     21 teams   420 fixtures  covers 11 ST cards
+    ERE|2022     21 teams   420 fixtures  covers 13 ST cards
+    ERE|2021     21 teams   420 fixtures  covers 11 ST cards
+
+API-FOOTBALL CALL COST
+  1 /fixtures call per league-season   : 141
+  1 /fixtures/lineups call per fixture : 48,914
+  TOTAL                                : 49,055 calls
+  cards resolved per call              : 0.043   (23.2 calls per ST card)
+  at the importer's 300ms delay        : ~4 hours of wall time
+
+IS THE RAW GRID RECOVERABLE?
+  player_positions sample: 1000 rows, 769 carry a distribution
+  distribution value keys seen: CB, CDM, CM, GK, LB, LW, RB, RW, ST, UNK
+  -> the distribution stores POST-classification counts (position -> pct).
+     row, col, rowWidth, defRow and fwdRow are NOT stored anywhere. The grid is GONE.
+  no raw-response table exists in the schema; the importer parses and discards.
+
+
+*** BLOCKER FOUND , THE KEY IN .env IS ON THE **FREE** PLAN ***
+  /status reports: plan Free · 0 of 100 requests today · 10 requests/minute
+  /fixtures for PL 2013 returns 0 rows with the error:
+     "Free plans do not have access to this season, try from 2022 to 2024."
+
+  CONSEQUENCE FOR THE ST FIX:
+    seasons the key can reach          : 2022, 2023, 2024 only
+    target ST cards inside that window : 617 of 2116   (29.2%)
+    league-seasons inside the window   : 27 of 141
+    fixtures for those                 : 9,244   -> 9,271 calls
+    at 100 calls/day                   : 93 DAYS for the reachable slice alone
+    the full 49,055-call job           : 491 days, and 70.8% of it is on seasons this key cannot serve at all
+
+  NOTE THE CONTRADICTION WITH THE DOCS: CLAUDE.md section E cites a 75,000-call
+  budget and the ingestion work demonstrably read seasons 2010-2025. That was a
+  PAID plan. Either the key was downgraded, or .env now holds a different key from
+  the one that did the original ingest. Worth establishing before any re-pull is
+  planned , and it also means the current key could NOT repeat the 2010-2021 work.

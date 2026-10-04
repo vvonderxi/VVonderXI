@@ -5,7 +5,52 @@ written and never said what it checks. The handover calls it "the only gate". A 
 enumerated is not a gate. **The merge is a clean FAST-FORWARD, so there is no merge commit and
 no review step: whatever is wrong on the branch becomes production the instant it deploys.**
 
-**RE-MEASURED 2026-08-30. THE BRANCH HAS MOVED AGAIN , THIS PASS NOW COVERS ROUGHLY 25% MORE
+## THE SCOPE, RE-MEASURED 2026-09-13. IT IS FIVE TIMES SMALLER THAN EVERY FIGURE BELOW.
+
+| | **measured 2026-09-13, late** | earlier that day | recorded 2026-08-30 | 2026-08-27 | in SS D |
+|---|---|---|---|---|
+| merge-base | **`32b19dab`** | `32b19dab` | `5bdbadb` | , | , |
+| commits to review | **145** | 119 | 639 | 599 | 517 |
+| files | **77** | 65 | 208 | 186 | 167 |
+| lines | **+13,955 / -853** | +10,833 / -753 | +208,979 / -10,955 | +205,155 / -10,204 | +201,009 / -9,571 |
+| conflicts (`git merge-tree`) | **ZERO**, over 4.0 MB of output | , | , | , | , |
+| files on BIGGER absent from redesign | **ZERO** , the merge deletes nothing | , | , | , | , |
+
+**THE TWO 2026-09-13 COLUMNS ARE THE POINT OF THIS WHOLE SECTION, NOT A BOOKKEEPING DETAIL.**
+They are ONE DAY apart and the figure moved **119 to 145 commits and 65 to 77 files**, because a
+working session kept working. **A scope measured at the start of a pass is already wrong by the
+end of it.** That is why re-measuring is A0 below rather than something you do before opening
+this file , see the note under it.
+**AND THE LATE FIGURE IS FROM LOCAL REFS, HEAD against `origin/vvonderxi_BIGGER`, with six
+commits not yet pushed.** It is the honest number for the tree as it stands and it is NOT the
+number the merge will see. Run A0 in Terminal C after a fetch; do not quote this row.
+
+**WHY EVERY OLDER FIGURE IS WRONG, AND IT IS NOT DRIFT , THEY COUNT WORK THAT IS ALREADY
+MERGED.** `4c8ce8a` (2026-09-06) merged `redesign-compare` into `vvonderxi_BIGGER` and the
+platform crossed then. Every figure above it was measured against a merge-base from BEFORE
+that, so it counts the whole platform a second time. **What remains is 119 commits of drift
+since, not a first crossing of 639.**
+
+**AND THE STALE FIGURE IS ITS OWN REASON THE GATE STAYED SHUT.** A pass scoped at 639 commits,
+208 files and +208,979 lines reads as a multi-day audit that needs a clear run at it, so it
+never gets started, and the number goes stale again while it waits , which is exactly what
+happened three times over. **At 65 files and +10,833 lines it is an afternoon.** An inflated
+scope does not just misdescribe the work, it postpones it, and then the postponement
+re-inflates the number. **Re-measure before reading any figure in this file; it is the
+cheapest thing in the whole pass and it has been wrong every time it was not.**
+
+**THE COMMANDS, so the next re-measure is one paste, Terminal C:**
+
+    BASE=$(git merge-base origin/redesign-compare origin/vvonderxi_BIGGER)
+    git rev-list --count $BASE..origin/redesign-compare          # commits
+    git diff --shortstat $BASE origin/redesign-compare           # files + lines
+    git merge-tree $BASE origin/vvonderxi_BIGGER origin/redesign-compare | grep -c '^<<<<<<<'
+    comm -23 <(git ls-tree -r --name-only origin/vvonderxi_BIGGER|sort) \
+             <(git ls-tree -r --name-only origin/redesign-compare|sort) | wc -l
+
+---
+
+**[SUPERSEDED, KEPT SO THE DRIFT IS LEGIBLE.] RE-MEASURED 2026-08-30. THE BRANCH HAS MOVED AGAIN , THIS PASS NOW COVERS ROUGHLY 25% MORE
 SURFACE THAN WHEN IT WAS WRITTEN, AND THE FIGURES HAVE NOW GONE STALE TWICE:**
 
 | | **measured 2026-08-30** | 2026-08-27 | recorded in §D |
@@ -92,6 +137,31 @@ are avoidable if you know about them.
   - **AND WHERE THE GROUND IS A SOLID COLOUR THE WALKER IS FINE.** The glance-panel failure it
     found was real and confirmed by pixels.
 
+### A0. RE-MEASURE THE SCOPE , THIS IS AN ITEM, NOT A PREREQUISITE
+- **STATUS 2026-09-15: RE-MEASURED, AND THE RECORDED SCOPE IS THREE TIMES TOO BIG.** Against the CURRENT merge-base `32b19dab`: **200 commits, 130 files, +36,080 / -933**. The plan records 599 commits, 186 files, +205,155 / -10,204 from 2026-08-27. **The difference is not drift, it is a different BASE** , the 2026-09-06 merge `4c8ce8a` already absorbed most of that surface, so the base moved forward and the remaining diff shrank. **A session scoping this pass to 599 commits would over-scope by a factor of three.** SS D's instruction "if the figures have moved, the surface has moved" is right, and the movement was DOWNWARD, which is the direction nobody expects.
+
+**It has gone stale THREE TIMES: 517, then 599, then 639, then 119, then 145 , five readings, and
+every one was quoted as current by something.** The reason is structural rather than careless.
+A pass scoped at 639 commits and +208,979 lines reads as a multi-day audit that needs a clear run
+at it, so it waits; while it waits the branch moves; and the number that made it wait is now
+wrong in the other direction too, because most of what it counted had already merged.
+
+**SO RE-MEASURING IS STEP ONE OF THE PASS, PERFORMED AND RECORDED LIKE ANY OTHER ITEM.** Treating
+it as a prerequisite is what produced the stale figures: a prerequisite is something you satisfy
+before you start, and if you never start, you never satisfy it, and nobody notices the gap.
+An item gets run, gets a result, and gets written down.
+
+**HOW TO CHECK:** Terminal C, after `git fetch origin`, run the five commands in the scope section
+above. **WHAT A PASS LOOKS LIKE:** the five numbers are written INTO the table above, in a new
+column, in the same sitting , not read, not compared, WRITTEN. **If conflicts is anything but
+zero, or files-on-BIGGER-absent-from-redesign is anything but zero, STOP.** Neither has ever been
+non-zero and both would mean the merge shape has changed since 2026-09-12, which is a different
+problem from anything else in this file.
+
+**THE CONTROL:** the merge-base must still be `32b19dab`. If it is not, `vvonderxi_BIGGER` has
+received a commit from somewhere else and every other figure in the table is measuring the wrong
+interval. That is a stop, not a note.
+
 ### A1. Every file parses and every declared rule survives
 - **Check:** no syntax error, no silently truncated CSS, every shared module exports what pages expect.
 - **How:** `node scripts/lint-inline.js`
@@ -99,12 +169,15 @@ are avoidable if you know about them.
 
 - **STATUS 2026-08-29: PASS, re-run.** `node scripts/lint-inline.js` returns the exact pass string across all files, including the export assertion that is the load-bearing half.
 ### A2. Cache-token discipline
+- **STATUS 2026-09-15: PASS, AND NO BUMP IS OWED , CHECKED RATHER THAN BUMPED.** The five shipping surfaces all carry **`20260915b`**, and that token was set in **`3da9296`, the same commit that last touched `vv-core.js`**. `git log 3da9296..HEAD -- vv-core.js vv-marks.js` is **empty**, and both files are clean in the working tree. **A bump with no change behind it is not caution, it is churn** , it forces every client to re-download two modules to get bytes they already have.
+- **THE PAIRING HOLDS: card, compare, rankings and playbook carry the same token on BOTH tags; `index.html` carries it on `vv-core.js` only, which is correct** , it does not load `vv-marks.js`.
+- **AND THE GREP RULE EARNED ITS KEEP AGAIN: `grep -l` returns 46 files, of which FIVE ship.** The other 41 are demos, mocks and probes carrying deliberately stale or nonsense tokens (`radar-1`, `harness-2`, `20260823b`). **Any check that reads that list as a surface list, or counts it, is wrong by a factor of nine.**
 - **Check:** `vv-core.js` and `vv-marks.js` carry the SAME `?v=` on all three shipping pages.
 - **How:** `for f in card.html compare.html rankings.html playbook.html; do grep -o 'vv-\(core\|marks\).js?v=[0-9a-z]*' $f; done | sort -u` **(playbook added 2026-08-28 , it loads vv-marks.js and was missing from this check.)**
 - **Pass:** exactly TWO lines, one per file, the SAME token. Today: `20260827g`. **Any third value means a page was missed and one file will be served fresh against a cached copy of the other.** Ignore the gitignored demos and the two `myclub-mock*` files, which reference vv-core only in a comment.
 
 - **STATUS 2026-08-29: PASS, re-run.** Exactly two lines, `vv-core.js?v=20260828c` and `vv-marks.js?v=20260828c`, one distinct token value across card, compare and rankings. **The token is no longer `20260827g` , it moved twice on 2026-08-28 (vv-core for the keeper panel, then vv-marks for `s-gk`).**
-- **AND THE RULE IN §C WAS INCOMPLETE, corrected 2026-08-28: `playbook.html` IS A FOURTH SURFACE LOADING `vv-marks.js`** and was not in the three-page list. It had drifted to its own stale token. It is now bumped with the others; **this item's `for` loop still only checks three pages and should check four.**
+- **AND THE RULE IN §C WAS INCOMPLETE, corrected 2026-08-28: `playbook.html` IS A FOURTH SURFACE LOADING `vv-marks.js`** and was not in the three-page list. It had drifted to its own stale token. It is now bumped with the others; **this item's `for` loop must not carry a hardcoded page list at all , GREP, DO NOT COUNT: drive it from `grep -l 'vv-core.js\|vv-marks.js' *.html`.** The list has grown twice since it was written (playbook 2026-08-28, index 2026-08-29) and a fixed loop silently stops covering whatever was added last.
 ### A3. Verdict tags and the share-only names
 - **Check:** 14 tags, 3 share-only display names, and every share name resolves.
 - **How:** assert every key of `VERDICT_SHARE_NAME` is a real key of `VERDICT_TAGS`, then assert `verdictShareName()` returns the share name when given the KEY, the TAG OBJECT and the NAME, and returns the tag's own name for the other eleven.
@@ -122,6 +195,11 @@ are avoidable if you know about them.
 - **STATUS 2026-08-28: PASS.** Checked on rankings, card, compare and playbook. **39 symbols injected, zero dangling `<use>` refs, zero hollow symbols**, and all 11 section headings resolve including `s-gk`. Positive control: a planted `<use>` at a missing symbol was caught, and bogus keys return falsy.
 - **METHOD NOTE: the first attempt looked for inline `<path>` children and reported "294 painted, 294 empty" on marks that visibly render.** The architecture is `<use>` pointing at `<symbol>`, which is the whole point of the item. Resolve hrefs against the symbol table.
 ### A5. The loader, at every wired size
+- **STATUS 2026-09-15: PASS AT EVERY WIRED SIZE, MEASURED RATHER THAN LOOKED AT.** Sizes found by grep, not from a list: **22 (compare, twice), 40 (card, three), 44 (rankings, index), 48 (card), 64 (compare)**. Each rasterised with the real inks read off the live DOM (cream `rgb(240,234,217)`, pink `rgb(231,4,67)`) against a 256px reference.
+- **STRUCTURE IS IDENTICAL FROM 22px TO 256px.** Ink-run counts along four scanlines read **[2,3,3,3] at every shipped size and at the reference** , the arms stay separate and nothing merges.
+- **THE TWO-TONE SPLIT HOLDS: 46 to 47% cream against 51 to 53% pink at every size, blended pixels under 2.5%.** The colour boundary is what carries the interlock on this mark, and it survives.
+- **AND THIS CLOSES A MEASUREMENT SS C SAYS WAS NEVER TAKEN.** That entry lowered `VV_LOADER_MIN` from 40 to 16 when the mark went two-tone and states plainly that *"the two-tone mark's behaviour at 16px is NOT re-measured here"*. **Measured now: 16px passes both tests, so the floor is correct.** The caveat worth keeping: at 16px the whole mark is **42 solid pixels**, and it is the ONLY size whose run count differs from the reference at any scanline (a rounding artefact at one y, not a structural loss). **The floor is right at the edge rather than comfortably inside it.**
+- **NO CALLER SITS BELOW THE FLOOR, so the clamp never fires in production** , which means the clamp's own correctness rests on unit behaviour alone and is untested by any shipping path.
 - **Check:** the two-tone mark renders as a W, in both themes, at every size actually used.
 - **How:** serve locally; render `VVCore.vvLoader({size:n})` at 64/48/44/40/22/16 in both themes; screenshot.
 - **Pass:** the interlock reads at every size, the base V is visible in both themes, and the pink wipes without the base disappearing. **The base must never vanish , that is the whole design guarantee.**
@@ -218,6 +296,57 @@ are avoidable if you know about them.
 - **How:** run the contrast harness on card, compare, rankings, playbook, vvindex, index, in BOTH themes. **On any SVG, ink is `fill` not `color`, the ground is sibling geometry (hit-test, topmost = last in document order), and a stroke counts toward legibility.**
 - **Pass:** the only failures are the recorded exceptions , card-face chips 2.04 and 2.34, `.prenum` 1.00 by construction, the waiting-box edge 1.88, `.pspot` 3.89. **Anything else is new.**
 
+**[2026-09-21] THE BUTTONS-AND-CHIPS HALF IS RE-RUN ACROSS ALL SIX SURFACES. ONE NEW DEFECT,
+FIXED; EVERYTHING ELSE IS A RECORDED EXCEPTION.** The 2026-09-01 survey grounded self-painting
+controls against their parent, so every button, chip and pill in it was void. Re-measured with
+`_contrast_probe.js`, which composites the CSS (exact for solid and gradient fills) beside the
+pixel harness, which reads the rendered ground (right for text on a gradient or a photo). **Neither
+is the answer everywhere and that is why both exist.**
+
+| surface | measured | new failures |
+|---|---|---|
+| compare | 15 | `.cmp-seasontrigger` in light, **4.30**, FIXED to 4.95 |
+| rankings | 199 | none , the three flags are the card-face chips at their recorded bounds 4.37 / 4.45 / 2.56 |
+| card | 19 | none , `.chtagcell.gold` and `.chip.gold` 4.37, `.ca-compare` 2.16 (bound) |
+| playbook | 65 | none , the only flag is `.pspot` at **exactly 3.89**, the recorded exception |
+| vvindex | 4 controls | none , 5.50 dark / 7.12 light |
+| index | 7 | none |
+
+- **THE GRADIENT CTAs REPORT A BOUND, NOT A READING, AND MUST NOT BE QUOTED AS A FAILURE.**
+  `.settle` / `.ca-compare` score 2.16 against their lightest stop; the glyph band sits on the flat
+  brand-pink section at **4.67**, measured 2026-09-19. A bound is not a reading.
+- **`.pspot` REPRODUCING AT 3.89 IS THE CROSS-CHECK THAT MATTERS**: the CSS probe and the pixel
+  harness reach the same number by different routes, and it is also the harness's own control.
+- **THE ONE FIX, and it is a token calibrated against the wrong ground:** `--ink-soft` is 6.66 on
+  the page's cream but **4.31 on `.matchup`**, which is darker in light, and the trigger's own
+  `rgba(0,0,0,.035)` darkens it again. Pinned to `#565045` there. **The general case is logged in
+  `POST_LAUNCH.md`, not fixed: any `--ink-soft` text on that panel has the same ceiling.**
+- **A BLIND SPOT WORTH KNOWING: a label in `::before` or `::after` is invisible to `textContent`,
+  so vvindex's four controls were skipped until they were measured by hand.** They pass.
+
+**[2026-09-21] CATEGORIES A AND B OF THE PINNED-INK SCAN HAVE LEFT THIS ITEM , they are in
+`POST_LAUNCH.md` under "PINNED-INK CANDIDATES". They are 295 CANDIDATES from a static scan, not
+failures; category C was the decidable one and closed at 0. A14 does not wait on them.**
+
+**[2026-09-21] `span.lgco` IS CLOSED BY CONSTRUCTION RATHER THAN BY MEASUREMENT.** It reads VOID
+under the harness (small text sitting close to its neighbours, so neither ground method is clean),
+and it carried the identical `opacity:.55`-with-no-ink-of-its-own shape as `.lgfoot`, which measured
+**1.19** in light. It now takes a real colour per ground, and the arithmetic is over every stop of
+the page's own gradient, worst case: **6.20 dark, 6.17 light** against a 4.5 bar. **An element that
+cannot be measured can still be given an ink that does not depend on measurement.**
+
+**STATUS 2026-09-19: THE PIXEL HARNESS EXISTS, IS COMMITTED, AND IS `_pixel_audit.js`. THREE THINGS ABOUT IT MUST TRAVEL WITH ANY NUMBER IT PRODUCES.**
+
+- **1. THERE IS NO `.pspot` ON `vvindex.html`, SO THAT SURFACE HAS NO ON-PAGE CONTROL.** Its readings , `h2` 14.31/14.54, `p` 9.81/8.13, `p.lgfoot` 1.19 light , rest on a harness validated on PLAYBOOK, in the same session, on the same build. **That is true and it is weaker than a control on the page itself**, because a per-page fault (a transform, a stacking context, a scroll offset) is exactly what an on-page control catches and a neighbouring one does not. **Written down rather than remembered.** If vvindex is ever re-measured for a decision that matters, put a known element on it first.
+- **2. THE HARNESS VOIDS ON A GLYPH-DOMINATED CROP, AND THAT GUARD EXISTS BECAUSE IT GOT ONE WRONG.** On `.lmed`, an 85x11 label, the most common colour in the crop is the TEXT, so ink and ground INVERTED and it reported **1.97 for an element that measures 6.50**. SS D records the same failure for `.vmono` under the CSS walker, so it is a property of pixel-clustering and not of one instrument. It now takes the ground from BESIDE the element where nothing paints, and voids where the modal cluster holds under half the opaque pixels.
+  - **AND THE FIRST VERSION OF THAT FIX BROKE THE CONTROL, WHICH IS THE WHOLE ARGUMENT FOR RUNNING IT.** Taking the ground from beside the element unconditionally moved `.pspot` from **3.89 to 12.08**, because `.pspot` paints its own pink fill , the colour beside it is the page, not the chip. The beside-sample is valid ONLY where the element and its ancestors paint nothing, which is the same condition that made the backdrop need sampling at all.
+- **3. A VOID IS NOT A PASS AND MUST NEVER BE COUNTED AS ONE.** Two elements are currently unmeasurable and both are recorded with their reason rather than quietly dropped:
+  - **`p.lgfoot` DARK , "no opaque pixels".** The crop contains nothing html2canvas drew. **What it needs: the element rendered against something. It is now fixed anyway** (it carried `opacity:.55` and no ink of its own), so re-measure after the fix rather than treating the void as evidence about the old state.
+  - **`span.lgco` , UNMEASURABLE BY THIS HARNESS, AND THE CAPTURE SCALE WAS NOT THE REASON. TESTED 2026-09-19, NOT ASSUMED.** The earlier note here predicted that raising the scale would clear the absolute floor. **It does not.** `scale` is now a parameter, **the control holds at every value , `.pspot` reads 3.89 at the default, at 3 and at 4** , and `.lgco` still voids at 3 in both themes.
+    - **THE REAL REASON IS GEOMETRY, NOT RESOLUTION.** These labels are small AND sit close to neighbouring content, so neither ground method is clean: the in-crop modal cluster is the GLYPH (the inversion this harness now guards against), and the 10px strip sampled beside the host lands on adjacent text rather than on page. **Measured proof: after `.lgfoot` was fixed to `#5f594e`, the harness reported it at 2.61 with a "ground" of `rgb(90,84,74)` , which is the new INK, not any ground on that page.**
+    - **SO IT IS RECORDED AS UNMEASURABLE WITH ITS REASON, WHICH IS THE INSTRUCTION FOR THIS CASE.** What would settle it is a method this harness does not have , a ground read from the composited page at the glyph's own coordinates rather than from a neighbouring strip. **`.lgco` therefore carries the same `opacity:.55` shape as the `.lgfoot` that measured 1.19 and is NOT known to be safe.**
+    - **AND THE FIXED `.lgfoot` IS CONFIRMED BY ARITHMETIC RATHER THAN BY THE HARNESS: `#5f594e` on vvindex's light page ground computes 5.97.** Stated as a computation, because that is what it is.
+
 **STATUS 2026-08-29: PLAYBOOK DONE, BOTH THEMES. A WORKING INSTRUMENT NOW EXISTS. Five surfaces remain.**
 
 **THE INSTRUMENT, and it took two more corrections beyond the 2026-08-28 method:**
@@ -245,28 +374,92 @@ reproduces at 3.89 on every run) and the results are below.**
 | rankings | 116 | 0 | 0 |
 | index | 14 | 0 | 2 |
 
-**COMPARE IS THE FINDING, AND IT IS NOT A HANDFUL OF ELEMENTS. 49 failures across 19 DISTINCT
-classes in dark**, concentrated on the green `.vsect` panel. Confirmed by two independent methods
-that agree: the muted ink `rgba(243,237,224,0.55-0.58)` lands at **3.1 to 3.3 by CSS arithmetic
-and 3.4 to 4.0 by pixel** against the gradient `rgb(28,96,56)` to `rgb(15,58,34)`. Worst repeat
-offenders: `.vsect-t` section headings x7 at **3.37**, `.vsect-d` descriptions x6 at **3.45**,
-`.h2hlabel` x5 at **2.14**, `.vp-va`/`.vp-vb` Proof values x7 at **2.49** against a 3.0 bar,
-`.h2hbar-nr` x3 at **2.47**, `.ttl` x3 at **2.88**.
-- **`.tjcap` IS THE CLEANEST SINGLE CASE AND IT IS SECTION C'S OWN RULE: an ink pinned to a
-  ground that moves.** The caption's gold `#E8B84B` is FIXED, while `.vsect` is a green gradient
-  in dark and solid cream `rgb(251,248,242)` in light. **Gold on the light panel measures 1.74**,
-  and the pixel method returned 1.74 independently. **Pre-existing; the class and its gold predate
-  the keeper work, which only changed the text inside it.**
-- **The light theme is far healthier (11 failures, 5 classes) because the panel goes cream and
-  most inks flip with it.** The green panel in DARK is where the problem lives.
+**[SUPERSEDED 2026-09-06. THIS BLOCK USED TO RECORD 49 FAILURES ACROSS 19 CLASSES AS THE CURRENT
+STATE, AND DID SO FOR A WEEK AFTER THEY WERE FIXED.** `13c5fc0` (2026-08-29) raised the muted family to alpha 0.80 in one scoped rule the same
+day this table was written, taking dark from **49 failures across 19 classes to 27 across 15**, and
+this document was never updated. It also still said "NOTHING HERE WAS FIXED." **Grep the tree before
+citing a recorded finding: this file said 49 while the fix had been in the branch for a week.**]
+
+**AND THE INSTRUMENT IT CREDITED WAS NEVER COMMITTED.** The status line above credits a pixel
+harness for the playbook run. It is not in the repo, on any branch, in any history , the only
+tracked contrast tool is `_audit.js`. **`_audit.js` returned ZERO failures and 151 unmeasurable on
+compare.html in dark**, because `bgOf()` bailed on any `background-image` ancestor and `.vsect` is a
+gradient, so the whole panel was discarded. That is a false clean on the one surface with known
+failures. **Fixed in `1ddaaa9`** , gradients composited and scored against every stop, element
+opacity folded into the alpha, SVG text read via `fill`, opacity-0 elements skipped. Zero
+unmeasurable now.
+
+**RE-MEASURED 2026-09-06 WITH THE FIXED HARNESS, both themes, 173 elements.** `43290d0` routed the
+remaining hardcoded inks to the token and the gold pair.
+
+| | dark | light |
+|---|---|---|
+| before `13c5fc0` | 49 failures / 19 classes | 11 / 5 |
+| after `13c5fc0` | 27 / 15 | , |
+| after `43290d0` (now) | **18** | **9** |
+
+**WHAT REMAINS, THREE GROUPS, AND ONLY ONE IS A CONTRAST QUESTION:**
+- **A/B IDENTITY COLOURS , ACCEPTED EXCEPTION, RULED 2026-09-06, AND THE BOUNDARY IS THE POINT.**
+  Pink `--pink-ink` `rgb(241,104,142)` means player A and blue `--blue` `rgb(59,111,176)` means
+  player B across the whole compare surface. **CONFIRMED TWICE INDEPENDENTLY** , `13c5fc0` reached
+  the same conclusion in August, before this pass existed, and called it a brand decision rather
+  than a contrast patch. This is not a new ruling; it is the second arrival at the same one.
+  - **COVERED , four classes, worst 1.47:** `.vsname` (nth-child 1 pink / 2 blue), `.vtname.tA/.tB`,
+    `.vproof-head .vp-a/.vp-b`, `.vc-n` via `.vc-a/.vc-b`. **THE REASON IS NOT "identity matters
+    more than contrast". IT IS THAT EVERY ONE OF THESE WRITES THE NAME OUT** , measured on a
+    Messi vs Haaland pair they read "Messi · 11/12 · Barcelona", "Haaland", "Messi", "Haaland".
+    The colour is a tint on text that already identifies the player, the card sits directly above
+    with the same name and score, and column position repeats it again. Nothing is colour-only.
+  - **THIS IS A BOUNDARY, NOT A BLANKET, AND IT ALREADY EXCLUDES TWO THINGS THAT WEAR THE SAME
+    COLOURS. Any element in pink or blue that carries information nothing else carries is NOT
+    covered and is measured normally:**
+    - **`.ttl` IS NOT COVERED AND IS NOT EVEN IDENTITY-CODED. 2.37, 20 elements.** Its pink comes
+      from `.tagrow .tt{color:var(--pink-ink)}` , a tag-title style. **Checked: ZERO of the 20 has
+      a blue variant**, so it does not distinguish A from B at all, and it carries the honour name
+      ("Ballon d'Or", "Golden Boot"), which is the content. **A colour-match heuristic put it in
+      this group; looking at what sets the colour took it out.**
+    - **`.hav` / `.hbv` ARE identity-coded and are STILL NOT COVERED. 1.47 and 2.56.** They are
+      the head-to-head values , measured, 96 against 81 , and the number IS the row's content.
+      These are READ, not recognised, which is exactly what the exception does not cover.
+  - **DEGENERATE CASE WORTH KNOWING: comparing two seasons of the SAME player** (Messi 11/12 vs
+    Messi 14/15) makes `.vtname` read "Messi" on both sides, so the name stops distinguishing and
+    only column position and the season string in `.vsname` do. The exception still holds, but its
+    "the name is written beside it" justification is weaker there. **Do not extend it further on
+    that basis.**
+- **TWO "NOT RECORDED" INDICATORS, DIMMED BY ELEMENT OPACITY , `.h2hlabel` 2.75 dark / 2.51 light
+  (opacity .6) and `.h2hbar-nr` 3.43 / 3.66 (opacity .75).** The ink is correct; the element alpha
+  compounds with it. **This is the same shape as the Proof losing values `13c5fc0` kept at 0.55,
+  except those are 19px/900 and clear the LARGE bar of 3.0, while these are small text against 4.5
+  and cannot clear it at any dimming worth having** , 0.80 undimmed is 4.79, so the budget is spent
+  before dimming starts. **Readable or dimmed, not both. Lucas's call.**
+- **FIVE CHIPS AND PILLS AT 4.20 to 4.37** , `.l` (card-face G/A label), `.mvtag`, `.eflabel`,
+  `.chtagcell.gold`, `#vEdgeTag`. Same family as the card-face chips §C already accepts at 2.04 and
+  2.34 and the `.chtag-att` "Clinical" at 3.88 recorded below. **Rule them together or not at all.**
+- **THE TWO PINK CTAs REPORT 2.16 AND THAT NUMBER IS A BOUND, NOT A READING.** `.settle` and
+  `.vshare-main` are white on `linear-gradient(#E70443,#FF8FA3)`; the harness scores the worst stop,
+  and the glyphs may sit over the dark end. **§C records this exact family being got wrong in BOTH
+  directions. Confirm against rendered pixels before acting.**
+
+**CLOSED BY `43290d0`, measured against the lighter green stop and the light panel's solid
+`rgb(251,248,242)`:** `.vc-sub` 2.43, `small#vradarNote` 2.81, `.vp-l` 3.93, `.vc-x` 4.08, `.vk`
+4.42 all to **4.79**; `.tmeta` 3.38, `.wtsechead` 4.10, `.tjpeak` 4.10 all to **5.47** on `#F3DA88`.
+**Light was where the gold showed:** `.tmeta` **1.59** and `.tjpeak` **1.74** on the cream panel,
+both now 5.90 , and `.tjpeak` was invisible to every previous run because it is SVG.
+
+**`.tjcap` IS THE CLEANEST SINGLE CASE AND IT IS SECTION C'S OWN RULE: an ink pinned to a ground
+that moves.** Fixed in `13c5fc0`; it is now the control this pass validates against, reproducing
+5.47 dark and 5.90 light by two independent methods.
 
 **INDEX, light only: `.tag` 2.65 and `.pk` 2.49, both 19px** , the home-page brand line
 "Every Season Tells a Different Story" with "Story" in pink. Dark is clean.
 
 **RANKINGS IS CLEAN** , 116 elements per theme, zero failures, cards and chrome.
 
-**NOTHING HERE WAS FIXED.** These are findings, and the compare set in particular is a design
-decision about the green panel's muted-ink family rather than a set of one-line patches.
+**[CORRECTED 2026-09-06. THIS LINE READ "NOTHING HERE WAS FIXED" AND WAS FALSE FROM THE DAY IT WAS
+WRITTEN.** `13c5fc0` landed the same day and `43290d0` finished the job; the compare set above is
+re-measured. **CARD, VVINDEX, INDEX AND RANKINGS ARE STILL FINDINGS ONLY AND ARE NOT FIXED** , the
+card-face chips, `.chtag-att` 3.88, and index's `.tag` 2.65 / `.pk` 2.49 all stand. The compare
+muted-ink family was indeed one decision rather than nineteen patches, which is how it was taken.]
 
 **PREVIOUS PROGRESS NOTE, superseded:**
 - **CARD , 20 elements per theme, ONE failure in each and it is the same one:** `.chtag-att`
@@ -329,6 +522,36 @@ instrument that cannot reproduce them is not evidence about anything else on the
 
 - **STATUS 2026-08-28: PASS, measured two ways.** Band populations **12 / 150 / 650**, holding exactly. And read straight out of `pg_get_viewdef`: `percent_rank() OVER (PARTITION BY s.pos ORDER BY s.minutes) AS rel_pct` , the COARSE field, and **no `coalesce(r.pool` anywhere in the view**, so the repartition is genuinely parked rather than half-applied. Viewdef is 12,440 chars and contains `rt_new`, so the engine is intact (§C: under ~2,000 chars means damaged).
 - **NOTE, not a failure: the 80+ band reads 1,406 against the 1,412 recorded in §E.** The three RANK-ANCHORED bands are 95/90/85 and those hold by construction; 1,412 was a modelled figure, not an anchor. Worth a line in §E rather than a re-audit.
+### A19. Prose is set to a readable measure, on every page that carries prose
+
+**WHAT TO CHECK.** That no run of body prose renders wider than about 95 characters a line.
+
+**WHY IT IS AN ITEM AT ALL , IT SHIPPED ONCE AND NOTHING SAW IT.** The VV Index rebuild spliced
+a design drawn for an 860px column into a wrapper still carrying `max-width:1680px` from the page
+it replaced. Contrast passed, horizontal overflow was zero, every count was right, both themes
+rendered, 390 was clean. **The timeline figure measured 1,584px wide and the longest paragraph ran
+about 200 characters a line**, and the only symptom anybody could name was that the page "read as
+an essay" , which was being treated as a word-count problem when most of it was line length.
+
+**HOW TO CHECK.** Serve the page, inject `_measure_audit.js`, call `__vvMeasure()`. It force-opens
+every `<details>` first and restores them after, because a reading taken through a collapsed fold
+is not a reading , the first run of that harness reported 123 characters a line on rects that had
+merged inside a closed fold.
+
+**WHAT A PASS LOOKS LIKE.** Zero runs over 95 characters a line. Between 80 and 95 is a warning and
+a judgement call, not a failure. Headings, pull-quotes and one-line captions are allowed to be wide
+and the harness reports rather than throws.
+
+**THE CONTROL, AND IT IS NOT OPTIONAL.** Set the content wrapper back to its old width and re-run:
+the count must RISE. A harness that reports zero failures and cannot be made to report any is
+indistinguishable from one that does not work. On vvindex that control reads 0 at 916px and 11 at
+1680px.
+
+**DO NOT USE `scrollWidth` FOR THIS.** For wrapping text it reports the content box rather than the
+drawn text and returns the same value for four strings of different length , SS F records that
+exact failure. `Range.getClientRects()` returns one rect per rendered line, which is the only
+direct read available.
+
 ### A18. No secret is reachable from a deployed endpoint
 - **Check:** the BSD credential and base URL surface.
 - **How:** `git grep -ln "BSD_API_KEY\|sports.bzzoiro.com"`
@@ -336,6 +559,72 @@ instrument that cannot reproduce them is not evidence about anything else on the
 
 - **STATUS 2026-08-28: PASS.** `git grep -ln "BSD_API_KEY\|sports.bzzoiro.com"` now returns **FOUR** files, down from thirteen, and every one is a deliberate RECORD rather than a credential: `CLAUDE.md`, `QA_PASS.md`, `migrations/bsd_block_cleanup_2026-08-23/README.md`, and a post-mortem COMMENT at `api/import-players.js:133`. **The three BSD endpoints are gone.** `api/` now holds 15 files. **The key still needs revoking at the provider and removing from Vercel's env , code no longer reading it is not the same as it being dead (C5-adjacent, but a separate credential).**
 ---
+
+
+---
+
+## GROUP A , AUTOMATED HALF RUN 2026-09-13. TEN ITEMS, ALL PASS, THREE INSTRUMENT FAULTS, ONE REAL DEFECT.
+
+**Run on the branch with no domain and no human eye. The nine items NOT run here (A6 to A12, A14)
+need a render, a capture or a human, and the visual sweep is deliberately held until the seven
+items awaiting Lucas land , auditing a tree that is about to change guarantees auditing it twice.**
+
+| item | result |
+|---|---|
+| A0 scope | 145 commits / 77 files / +13,955 / -853, LOCAL refs, 6 unpushed. Re-run in Terminal C after a fetch |
+| A1 parse + rules survive | **PASS**, every file, every declared rule, every inline script |
+| A2 cache tokens | **FAILED, FIXED, RE-PASSED.** See the defect below. Five surfaces, all on `20260913j` |
+| A3 share-only names | **PASS**, 3 of 3 keys map, negative control passes through |
+| A4 marks resolve | **PASS**, zero unresolved `<use>`: playbook 48, rankings 298, card 0, compare 0 |
+| A5 loader floor | **PASS**, `VV_LOADER_MIN` 16; 8 and 12 clamp UP to 16; 16/24/48/64 honoured; default 48 |
+| A13 row namespaces | **PASS**, `.vvrows` on all three surfaces, `.vvrows-season` on card and compare |
+| A15 data baselines | **CAPTURED, not asserted**, see below |
+| A16 GK matview | **PASS**, 76 columns, all 13 required present (saves, goals_conceded, penalties_saved, starts, three stage flags, six honour flags) |
+| A17 position vocabulary | **PASS**, unchanged from SS E: `UNK` 71, coarse `FOR` 36, `card_id < 120000` = 6 |
+| A18 secrets | **PASS**, zero BSD references in deployed code, no service key literal in any tracked file, `.env` untracked |
+
+### THE ONE REAL DEFECT, AND IT WAS AN HOUR OLD
+**A2 returned TEN shipping surfaces instead of five**, five of them carrying no `?v=` token,
+because a comment added that morning named `vv-core.js` while explaining that those pages do not
+load it. **The rule's own escape from a stale list is a grep, and prose about the grep joined it.**
+Fixed in `3160ceb`; promoted to a rule in SS C beside the cache-token entry, because the second
+rewrite hit it again by quoting the grep command as its illustration.
+
+### THREE INSTRUMENT FAULTS, ALL MINE, ALL CAUGHT BY A CONTROL
+Recorded because this file's own rule is to hold the instrument to the same standard as the code.
+- **A3 , I typed `complete_vs_specialist` and `league_strength` from memory.** The real keys are
+  `complete_spec` and `league_tips`. Two correct entries read as broken. **Second time a check
+  written against remembered strings has produced a false failure here** , now a pattern in SS C.
+  Re-run reads the keys OUT of the source, asserts the count is 3, and adds a negative control.
+- **A5 , I passed `vvLoader(8)`, a number, where it takes `{size: 8}`.** Every call silently
+  defaulted to 48 and the clamp looked broken. Same family as A3: an API typed from memory.
+- **AND THE PATTERN ACROSS BOTH IS WORTH MORE THAN EITHER: A FUNCTION THAT ACCEPTS ANYTHING AND
+  FALLS BACK TO A DEFAULT CANNOT TELL YOU THAT YOU CALLED IT WRONG.** It answers confidently and
+  the answer is about a question you did not ask. **Read the signature and the keys from the
+  source before writing any check against them, never from a doc and never from memory.**
+
+### A15 , BASELINES CAPTURED 2026-09-13, AND TWO HAVE DRIFTED FROM WHAT SS C/D RECORD
+These are captures, not assertions. **Two figures no longer match the documents and neither is
+wrong , the documents are stale, which is what capturing is for.**
+
+| | captured | recorded elsewhere |
+|---|---|---|
+| `player_card_mv` rows | **57,055** | 57,055 (SS C, agrees) |
+| scored, rt not null | **53,994** | , |
+| honours rows | **624** | 624 (SS A, agrees) |
+| `h_top_assists` cards | **113** | 113 (SS F, agrees) |
+| stage peak / breakout / standard | **327 / 150 / 413** | **329 / 152 / 413** (SS D, 2026-09-07) |
+| matview columns | **76** | **65** (SS C, after the 2026-08-19 swap) |
+| deployed functions | **2** | **13** (SS C and SS D, repeatedly) |
+
+- **THE STAGE COUNTS MOVED BY TWO AND TWO.** Expected: the flags are computed in the view from
+  career shape, so the 25/26 position corrections that landed on 2026-09-12 move them. **Not a
+  defect. Do not "fix" the 329.**
+- **THE FUNCTION COUNT IS THE ONE TO NOTICE.** `git ls-files 'api/*.js'` returns **`api/analyse.js`
+  and `api/get-seasons.js`, and nothing else.** The seven importers moved out of `api/` and BSD was
+  retired, so the deployed surface is **2, not 13**. SS C's plan-limit reasoning (16 against Hobby's
+  12) describes a tree that no longer exists. **Vercel Pro is still the right call for the
+  commercial-use terms, and the function cap is no longer anywhere near binding.**
 
 # GROUP B , NEEDS THE LIVE DOMAIN, AFTER THE MERGE
 
@@ -405,8 +694,32 @@ deploying:**
 - **THE 308 IS REAL BUT IT IS THE CHEAPER HALF OF THE TRADE.** 97 internal links still use `.html`, so every internal click takes a redirect to the clean path. **The fix is to rewrite the LINKS to extensionless, never to drop `cleanUrls`** , that also makes them agree with `og:url`. Queued, not done. **`search.html` is the one page with a `rel="canonical"`, and it points at `rankings.html`, which disagrees with the extensionless scheme; fold it into the same pass.**
 - **AND NOTE THAT THIS ITEM ALREADY CARRIED THE ANSWER.** The pass line above has said the og:url values are extensionless since it was written. The proposal to drop `cleanUrls` was made without reading it , the same failure as the Vercel function cap, which was also sitting in this file unread.
 
+### B4a. `api/analyse.js` is a public, unauthenticated, billable endpoint , ORIGIN AND RATE LIMIT , LAUNCH-BLOCKING DECISION
+- **Check:** whether a stranger can spend our Anthropic credit, and whether they choose how much per call.
+- **Why this is not paranoia:** it is the **ONLY** deployed serverless function, it sets `Access-Control-Allow-Origin: *`, it has no auth and no rate limit, and `messages`, `system` and `max_tokens` all arrive from the request body and go to Anthropic on our key. Unbounded, that is a general-purpose Claude proxy pointed at our billing.
+- **DONE 2026-09-15, THE CHEAP HALF ONLY:** output ceiling clamped to **2048** tokens (both real callers send 1024 and a hardcoded 1500), input capped at **120,000 chars** with a 413, `messages` shape validated with a 400, and the upstream error text and `err.message` are logged rather than echoed. Control-tested with a mocked upstream: every bound fires, a normal call is unaffected, and a planted secret in an upstream message does not reach the response.
+- **DONE 2026-09-15: THE ORIGIN ALLOWLIST IS IN**, built from the FOUR domains read off the Vercel project (`vvonderxi.com`, `www.vvonderxi.com`, `v-vonder-xi.vercel.app`, `vvonderxi-preview.vercel.app`) plus a wildcard for Vercel's GENERATED per-branch URLs, which are not in the domain list at all. Absent Origin is refused. Control-tested against suffix, scheme and wildcard-prefix near-misses.
+- **DONE 2026-09-15: THE RATE LIMIT IS IN** , 30 new generations per hour per IP, 2 concurrent, on `api_rate_events`. Refusals are recorded in the ledger so the cap can be raised on a query rather than a complaint. 15 of 15 control checks pass, including the concurrency case specifically.
+- **WHAT REMAINS OPEN AND IS NOT CLOSED BY EITHER: DISTRIBUTED ABUSE , SEE B4b.** A pool of addresses gets 30 an hour from each and no per-IP rule can see it.
+- **How:** from a machine that is not the site, `curl -s -X POST https://<domain>/api/analyse -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"say hi"}]}'` and see whether it generates.
+- **Pass:** a request with no `Origin`, or an `Origin` that is not ours, is refused; a burst from one address is throttled. **Until then, treat every deploy of this endpoint as an open Anthropic proxy and price it accordingly.**
+
+### B4b. Anthropic spend cap and alerts , LUCAS, FIVE MINUTES, AND IT IS THE LAST BACKSTOP
+- **[DONE 2026-09-27, AND LUCAS SET IT TIGHTER THAN SPECIFIED: cap $50, alerts at $10 and $25**, against the $100/$20/$50 derived below. Tighter is the right direction for a platform with no traffic yet, and the derivation below still governs where the numbers go when traffic arrives.]
+- **[AND THE CAP IS NOT THE BINDING CONSTRAINT , THE BALANCE IS. LAUNCH RISK, RECORDED 2026-09-27.** The account holds **$32.94 with auto-reload OFF**, so the spend cap at $50 can never be reached: **API requests stop dead when the balance empties.** A live site would lose verdict and notes generation with **no warning to a visitor and no alert to us** , the $10 and $25 alerts fire on SPEND, and the failure happens at a BALANCE the alerts do not watch.
+  - **WHAT A VISITOR SEES WHEN IT HAPPENS:** `api/analyse.js` classifies a failed generate and the front end shows its outage line, so it degrades honestly rather than rendering something false. **That is the good half. The bad half is that it is indistinguishable from a model outage**, so nobody would know to top up.
+  - **THE CHEAP MITIGATIONS, NEITHER BUILT, BOTH Lucas's call:** turn auto-reload ON with a low ceiling, which converts a hard stop into a charge; or treat the balance as the thing to watch and check it before launch day rather than relying on spend alerts that cannot see it.
+  - **AND IT BOUNDS THE PRELOAD DECISION, WHICH IS WHY IT IS RECORDED HERE RATHER THAN ONLY IN A NOTE:** any warming run spends from the same $32.94, so a batch is priced against the balance and not against the cap.]
+- **Check:** that a monthly spend cap and two alerts exist in the Anthropic Console (Settings > Limits).
+- **Why:** the rate limit bounds ONE address. **Nothing in the code sees a DISTRIBUTED client**, and the cap is the only thing that does. Full derivation in `docs/MERGE_READINESS_2026-09-15.md` section 4.
+- **Set:** monthly cap **$100**; alert at **$20**; second alert at **$50**.
+- **The numbers, from the shipped prompts rather than estimated:** a cached verdict is **$0.018** and a cached note **$0.024**; legitimate use measures **$0.14/day, about $4/month**; one abusive IP at the limiter's ceiling is **$17/day**; ten IPs are **$175/day**. So $20 is five times legitimate use and about one day of a single abuser, and $100 is 25x the legitimate month.
+- **Pass:** the cap is set, both alerts are set, and the alert email reaches an address Lucas reads.
+- **EXPECT THE $20 ALERT TO FIRE ON LAUNCH DAY IF THE PLATFORM FINDS AN AUDIENCE. That is the threshold working, not a false alarm** , re-derive at 5x the busiest legitimate day and 25x the legitimate month, and write the new figures into the merge-readiness note in the same change. **A threshold whose derivation is not recorded becomes a number nobody dares touch, which is how alerting gets switched off instead of raised.**
+
 ### B5. Functions still deploy
 - **Check:** the function set survives the merge.
+- **[THE PROBE IN THIS LINE IS STALE AND WOULD REPORT A FALSE FAILURE , CORRECTED 2026-09-27.** `api/get-seasons.js` was DELETED on 2026-09-15, so a 404 from it is now the CORRECT answer and proves nothing. `git ls-files 'api/*.js'` returns **`api/analyse.js` alone**. **The live probe is a POST to `/api/analyse` with an allowed `Origin` and an empty body: its own validator answers `400 {"error":"messages must be a non-empty array"}`, which proves the function executed without generating anything.]**
 - **How:** `curl https://vvonderxi.com/api/get-seasons` with no argument. **`/api/db` IS GONE , deleted 2026-08-31 with `db.json`; do not probe it and do not restore it as a liveness check.**
 - **STATUS 2026-09-06: PASS ON PREVIEW.** `GET /api/get-seasons` with no argument returned **400 `{"error":"api_id required"}`** , the function's own guard, so it executed rather than 404ing. `vercel.json` carries no `functions` block or build override, so a preview builds `api/` identically to production; the branch ships exactly two, `analyse.js` and `get-seasons.js`. **D6 still stands as the post-deploy confirmation.**
 - **Pass:** `{"error":"api_id required"}` with 400 , the function's OWN guard is the proof it executed. **The deployed set is now TWO, `analyse` and `get-seasons`, and only `/api/analyse` has a caller.** **DO NOT probe the importers: `import-*` and `refresh-players` write to the database.**
@@ -418,6 +731,36 @@ deploying:**
 - **THE VERDICT IS TRIGGER-BASED, NOT AUTOMATIC, AND POLLING ON LOAD LOOKS LIKE A FAILURE.** The panel is `display:none` carrying scaffold text until the `.settle` button is clicked. Anyone re-running this who simply watches the page load will record a false failure.
 - **After the click: real prose, no outage line, loader replaced.** 414 characters, opening "Fifty goals to 48, 16 assists apiece, **97 to 96 on the VV Index**." That phrasing is rule A of the naming contract from `351d64f` working on a live deployment rather than only in the file. **One Anthropic call was made and one `verdict_cache` row written** , unavoidable for this item, and cheap because the same commit had already invalidated every cached verdict by fingerprint. **D5 still stands as the post-deploy confirmation.**
 - **Pass:** prose arrives and the panel does not show the outage line. **Vercel holds `ANTHROPIC_API_KEY`; the local `.env` may not, so this CANNOT be verified before deploy.**
+
+---
+
+### GROUP B RE-RUN ON THE PREVIEW, 2026-09-27 , EVERY ITEM THAT COSTS NOTHING IS NOW GREEN
+
+**Run against `https://vvonderxi-preview.vercel.app`, which was first confirmed current rather
+than assumed:** `?v=` token `20260926b` matching local HEAD, `vv-core.js` **byte-identical** to
+the branch (and `origin/vvonderxi_BIGGER` carries zero `notScoredNote`, so it is provably not
+that branch), and the **preview's own publishable key** returns `58066` rows and both halves of
+the 186900 split , so the deployment, the branch and the database are all the live ones.
+
+- **B1 PASS.** Nine pages, nine distinct titles, zero "Intelligence", zero em or en dashes.
+- **B2 PASS.** Every page `og:9 / twitter:5 / description:1`, nine UNIQUE absolute `og:url`.
+- **B3 PASS, and the ASSET HAS CHANGED since the 2026-09-06 pass** , 193,595 bytes against the
+  recorded 346,002. **Dimensions re-read from the PNG header rather than trusted: 1200 x 630.**
+  Somebody re-encoded it; the pass criterion still holds. **A recorded byte count is not a
+  measurement of today's file.**
+- **B4 PASS.** 200 on all eight extensionless paths, 308 on every `.html` form.
+- **B4a PASS, AND THIS IS THE FIRST TIME IT HAS BEEN VERIFIED ON A REAL DEPLOYMENT** rather than
+  against a mocked upstream. Three refusals, all `403 {"error":"origin not allowed"}`: **no Origin
+  header**, a foreign origin, and the SUFFIX near-miss `https://vvonderxi.com.evil.com`. The
+  input bound also fires live: a 120k-char body returns `413 {"error":"prompt too large"}`.
+  **Every one of these costs nothing, because a refusal never reaches Anthropic.**
+- **B5 PASS on the corrected probe** (see the correction on the item itself).
+- **B6 , THE KEY GATE IS SETTLED WITHOUT GENERATING.** The key check runs BEFORE the body is read
+  and returns a distinct 500; we reached a 400 instead, so **`ANTHROPIC_API_KEY` is configured for
+  Preview**. Only the real generation remains, and that one costs money, so it is left for a
+  deliberate run rather than spent on a re-confirmation.
+- **B4b is the one group-B item that is NOT verifiable from here at all** , it is a setting in the
+  Anthropic Console. Lucas, five minutes.
 
 ---
 
@@ -474,6 +817,7 @@ environment, which is itself the reason they are listed.
 
 
 ### C11. Seven deployed importer endpoints are public, unauthenticated and write to the database
+- **[RE-VERIFIED 2026-09-27 AGAINST THE LIVE DEPLOYMENTS, NOT THE RECORD. THE DECISION HELD AND THERE IS NOTHING LEFT TO DECIDE.** `git ls-tree -r` per branch: `redesign-compare` ships **`api/analyse.js` ALONE**; `vvonderxi_BIGGER` ships two (`analyse` + the since-deleted `get-seasons`, which the merge removes); **`coming-soon`, which is what production actually serves, ships NO `api/` directory at all.** Probed live: all seven importer paths plus `auth`, `log`, `db`, `get-seasons`, `refresh-players` and `search-player` return **404 on the preview**, and **`https://vvonderxi.com/api/*` returns 404 for every one of them including `analyse`** , production has zero serverless functions today. **And C11's one genuine residue is closed too: `comparison_log` and `search_log` are BOTH DROPPED**, so the 55 rows are no longer an open question.]**
 - **Found 2026-08-31 while tracing C5. Not covered by any other item, and it is a decision, not a bug report.**
 - **Check:** `import-players`, `import-positions`, `import-positions-v2`, `import-standings`,
   `verify-positions`, `verify-squad-positions`, `apifootball-probe` are tracked, therefore deployed,
@@ -523,6 +867,11 @@ environment, which is itself the reason they are listed.
 
 - **STATUS 2026-08-31: DECIDED AND DONE , `auth.js`, `log.js` and `refresh-players.js` REMOVED.**
   **DEPLOYED FUNCTIONS 6 -> 3** (`analyse`, `db`, `get-seasons`), from 13 at the start of the day.
+  **[CORRECTED 2026-09-06: IT IS 2, NOT 3.** `api/db.js` was deleted later the same day in
+  `fd3adc0`, the commit that added the security headers, so the tree ships `api/analyse.js` and
+  `api/get-seasons.js`. Counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls` , §C
+  records that a disk count over-reports the deployed surface and that this figure has been
+  miscounted before.]
   Full record of what each did and why it went is in `POST_LAUNCH.md` so the accounts stage does not
   rediscover it; recover any of them with `git show cd80460~1:api/<name>.js`.
   **`locker_profiles` was EMPTY, so nothing was orphaned. `comparison_log` (44 rows) and `search_log`
@@ -540,13 +889,68 @@ environment, which is itself the reason they are listed.
   **Vercel Pro is now on; redeploy Ready in 11s, `vvonderxi.com` assigned.** The branch ships
   **13** functions after the BSD retirement , still over Hobby's cap, so **Pro is what makes the
   merge deployable**, not the function reduction.
+  **[SUPERSEDED 2026-09-06, THE CAP HALF ONLY: THE BRANCH SHIPS 2, NOT 13**, after the
+  2026-08-31 sweep removed `auth.js`, `log.js` and `refresh-players.js` and `fd3adc0` removed
+  `db.js`. **So the cap is no longer what makes Pro necessary** , 2 is inside Hobby's 12.
+  **PRO IS STILL A PRE-LAUNCH REQUIREMENT AND THAT HAS NOT CHANGED**, for the OTHER reason §C
+  records: Hobby restricts the plan to non-commercial personal use. The sentence above is kept
+  because it is the correct account of why the build was failing in August; only its forward-
+  looking half is dead.]
 - **How:** the Vercel dashboard.
-- **Pass:** a plan that permits the deployed function count, and **Vercel Pro**, which §C records as a pre-launch requirement because Hobby restricts commercial use. **16 functions deploy and run today , proven by probing the live endpoints , but the plan behind that is not visible from the repo.**
+- **Pass:** a plan that permits the deployed function count, and **Vercel Pro**, which §C records as a pre-launch requirement because Hobby restricts commercial use. **[CORRECTED 2026-09-06: IT IS 2, NOT 16.** The 16 was PRODUCTION's count on 2026-08-30, when `vvonderxi_BIGGER` was still the pre-holding-page platform and was failing to build against Hobby's cap of 12. Production is now the merge (`4c8ce8a`) and ships **`api/analyse.js` and `api/get-seasons.js`** , counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls`. **The plan question the item exists to answer is unchanged and still needs the dashboard**; what changed is that the count is now far below any plan's cap, so the limit cannot be what blocks a deploy. Same stale-count family as C11's 6 -> 3.]**
 
-### C7. OAuth published and `vercel.json` reviewed
-- **Check:** both, before the merge.
+### C7. OAuth published and `vercel.json` reviewed , **CLOSED 2026-09-06**
+- **Check:** both, before the DEPLOY (see the sequencing note below , not before the merge).
 - **How:** provider dashboard and a read of `vercel.json`.
-- **Pass:** OAuth out of test mode; `vercel.json` reviewed. **§D sequencing: these MUST land before the merge, because the merge is production the instant it deploys.**
+- **Pass:** OAuth out of test mode; `vercel.json` reviewed. **BOTH NOW DONE.**
+
+- **[SEQUENCING CORRECTED 2026-09-06] §D READS "MUST land BEFORE the merge/deploy ... (the merge =
+  production the instant it deploys)". THE PARENTHETICAL IS THE REASON AND IT IS NO LONGER TRUE**,
+  so the rule binds at the DEPLOY, not at the merge. Vercel's production branch is `coming-soon`,
+  so `vvonderxi_BIGGER` builds as a PREVIEW and the merge (`4c8ce8a`) deployed nothing , confirmed
+  live, `vvonderxi.com/rankings` returns **404** while the preview returns **200**. **The rule
+  conflated merge and deploy because they used to be ONE event; they are now two, and it binds on
+  the second.** Same correction already applied to Group D's preamble. **So the merge landing first
+  broke no ordering and created no risk. The merged code IS publicly reachable on the preview host,
+  but it was equally reachable there before the merge**, so nothing about exposure changed.
+
+- **STATUS 2026-09-06, `vercel.json` HALF: REVIEWED, PASS.** The merged config is four things:
+  `cleanUrls: true`, `fluid: true`, a 24h `Cache-Control` on `og-image.png`, and three security
+  headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`,
+  `Referrer-Policy: strict-origin-when-cross-origin`). What the read found:
+  - **The catch-all `rewrites` is correctly ABSENT.** Production carries `"/(.*)" -> "/index.html"`
+    for the holding page; a normal merge would have taken production's copy silently and served the
+    holding page on every platform route. C10 assertion 2 exists to catch exactly that.
+  - **`crons` is gone and so is its handler , AN OPEN QUESTION FROM C11 IS CLOSED.** C11 (above,
+    line ~583) notes that `refresh-players.js` was a cron target on production's `vercel.json`
+    while the branch defined none. The cron went in `38f98e5` ("remove the nightly cron for a
+    handler that does nothing") and the handler in the 2026-08-31 sweep. **Nothing in the tree
+    references it.**
+  - **NO `Cache-Control` FOR HTML, AND THAT IS FINE.** Vercel's default was measured, not assumed:
+    `public, max-age=0, must-revalidate` on every HTML route, and it revalidates correctly (correct
+    etag -> 304, deliberately wrong etag -> 200 with the full body as a control).
+  - **[CORRECTED] DEPLOYED FUNCTIONS ARE 2, NOT 3.** C11's status line (above, line ~589) says
+    "6 -> 3 (`analyse`, `db`, `get-seasons`)". `api/db.js` was deleted in `fd3adc0`, the same commit
+    that added the security headers, so the tree ships **`api/analyse.js` and `api/get-seasons.js`**.
+    Counted with `git ls-tree -r vvonderxi_BIGGER -- api/`, never `ls` (§C: a disk count
+    over-reports, and this figure has been miscounted before).
+
+- **DECIDED 2026-09-06: SHIP WITHOUT A CONTENT-SECURITY-POLICY. Post-launch, and it is coupled to a
+  pass that moves inline styles out , not a config line.** There is no `CSP` and no
+  `Permissions-Policy`; HSTS is applied by Vercel on custom domains, so that one is covered.
+  - **THE BLOCKER IS NOT INLINE `<script>`, IT IS INLINE EVENT HANDLERS, AND THE COUNT IS WHY.**
+    Measured across the ten shipping pages: **39 inline `<script>` blocks, 149 `style=` attributes,
+    and 251 `on*=` handlers** (`onclick`, `oninput`, `onerror`, ...). **`script-src` hashes do NOT
+    cover inline event handlers** , those need `unsafe-inline` (or `unsafe-hashes`, which is poorly
+    supported). So a meaningful policy is gated on rewriting 251 handlers, not on hashing 39
+    scripts, and `style-src` needs the 149 `style=` attributes moved out too.
+  - **A CSP WITH `unsafe-inline` ON BOTH DIRECTIVES BUYS ALMOST NOTHING** while reading as a
+    security control in any later audit. **Shipping no policy is more honest than shipping a
+    permissive one**, and this entry is the record so a future session does not add the permissive
+    version thinking it is an improvement.
+  - **WHEN IT IS DONE IT IS ONE PASS, NOT TWO:** move the handlers to `addEventListener` and the
+    `style=` attributes into the sheets, THEN add the policy. Doing the policy first forces
+    `unsafe-inline` and there is no path back from it without the same work.
 
 - **STATUS 2026-08-31, OAuth HALF: PASS, AND IT IS A PASS WITH NOTHING BEHIND IT.** OAuth is
   configured and out of test mode, **Email and Google both enabled**. So this item is satisfied on
@@ -569,10 +973,56 @@ environment, which is itself the reason they are listed.
   earlier report of an anon-read hole was a probe error. See `SILENT_FAILURES.md`: a DENIED select
   under RLS returns `{data:[],error:null}`, so "no error" is not "permitted".
 
-### C8. The two open defects
+### C8. The two open defects , **CLOSED 2026-09-06 ON RE-MEASUREMENT, NOT ON A DECISION**
 - **Check:** decide each before merging.
 - **How:** **(1) "Save image appears to do nothing"** , covered by C1/C2; it may already be fixed by the bounded clipboard change. **(2) The overlaid radar rendering as two narrow spikes** on card and compare , this is NOT a redesign bug, it is the provisional `RADAR_REF` placeholder set, and it is visible on every card.
 - **Pass:** each is fixed, or consciously accepted and recorded as shipping. **The radar one is the more visible of the two and has no fix short of the parked percentile work , decide whether it ships.**
+
+- **[CLOSED 2026-09-06. NEITHER HALF WAS A DECISION, AND THE ITEM WAS ALREADY STALE WHEN IT WAS
+  WRITTEN.** Re-read against the tree rather than decided as worded. Evidence below, not a tick.]
+
+- **(1) IT IS NOT A DEFECT AWAITING A FIX, IT IS A FIX AWAITING CONFIRMATION , FOLDED INTO C1/C2,
+  WHICH ADD NOTHING TO IT AND LOSE NOTHING BY IT.**
+  - **THE DATING SETTLES IT: the bounded-clipboard change `0da9983` IS AN ANCESTOR of `4d8ac72`,
+    the commit that wrote this pass** , both 2026-08-27. So "it may already be fixed by the
+    bounded clipboard change" was hedging about a change already in the tree when the hedge was
+    written. **Check ancestry, not dates: same-day commits tell you nothing by their timestamps.**
+  - **`vvSaveImage` marks feedback at THREE points and the ORDER is the fix:** `mark(' Saving...')`
+    on click, then **`mark(' Saved')` UNCONDITIONALLY on success, BEFORE the clipboard promise
+    resolves** (its own comment: the save already happened, so say so first), then a toast either
+    way with copy that differs on whether the caption copy succeeded. That is the opposite of
+    "appears to do nothing".
+  - **WHAT IS LEFT IS A HUMAN EYE, WHICH IS EXACTLY C1 AND C2.** C2 clicks each control and
+    watches the label, the toast and the download; C1 times the toast at ~3.4s. **C8 adds no check
+    they lack.** Both still need Lucas: C1 records every automated attempt hitting
+    `visibilityState:"hidden"` with timers throttled ~18x, which MANUFACTURES this symptom, and C2
+    records the click tool delivering ZERO events to its own positive control.
+  - **§D still lists this as `[OPEN] BLOCKED ON A HUMAN EYE, NOT ON A FIX`, which is the accurate
+    framing and should stay.** Closing it here does not mean it has been seen working.
+
+- **(2) CLOSED OUTRIGHT , THE NAMED CAUSE NO LONGER EXISTS AND THE "PARKED" WORK SHIPPED.**
+  - **`RADAR_REF`, the placeholder this item blames, IS GONE.** It survives in the tree only inside
+    two comments in `vv-core.js` recording its removal. `RADAR_POOL_REF` replaced it.
+  - **`21204e5` (2026-09-05, an ancestor of the branch) shipped percentile-within-position-pool**,
+    which is the work this item calls parked.
+  - **MEASURED OVER ALL 57,055 CARDS: radars with at most two axes reaching 25/100 fell from
+    10,395 (28.9% of rendered) to 8,625 (24.6%).** The pool gap that WAS the defect is closed ,
+    goalThreat median CB 6 / ST 40 became CB 48 / ST 46.
+  - **"VISIBLE ON EVERY CARD" WAS NEVER TRUE** , 37% of cards suppress the chart entirely under
+    the NR rule. Worth noting because it is the kind of overstatement that makes an item feel
+    urgent.
+  - **AND IT CLOSED A LIVE COMPARE DEFECT THIS ITEM NEVER KNEW ABOUT: 966 keeper cards drew an
+    OUTFIELD pentagon**, because `compare.html` never gated the radar on position while
+    `card.html` always swapped in the keeper panel. The gate now lives in `radarFor`, so every
+    surface inherits it.
+
+- **PRESERVED DELIBERATELY , THE RESIDUAL 24.6% IS CORRECT BEHAVIOUR AND MUST NOT REOPEN THIS
+  ITEM.** A future session measuring radars will find that figure and it looks like the same
+  defect. It is not. Decomposed: **2,930 cards (34% of the remainder) are NR-LIMITED** , only
+  three axes measured, so three strong axes are impossible by construction , and **5,695 (16.3%
+  of rendered) genuinely sit low across four or five MEASURED axes.** In a percentile system a
+  below-average season is SUPPOSED to draw small. **Driving this number toward zero means
+  re-inflating the scale, which is the defect the percentile work removed.** Full record in §D.
 
 ### C9. The corrupt PL 2025/26 block
 - **Check:** whether the remaining rows ship.

@@ -1,0 +1,117 @@
+<meta charset="utf-8"><title>loader hold probe , compare</title>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     THE 250ms HOLD ON THE VERDICT PANEL. Gitignored. Same order-not-duration
+     method as _probe_hold.html, and the same three controls, but compare needs
+     one extra assertion the card does not:
+
+       C4  THE WAIT STATE MUST STILL BE IMMEDIATE. vvSetVerdict's wait branch sets
+           .matchup.waiting, clears .answered, suppresses the tag and hides the
+           unused quote slots. Deferring the CALL would leave a stale verdict on
+           screen and delay the deterministic floor tag, which is real information.
+           So the probe checks `.matchup.waiting` is on BEFORE anything is released.
+
+     requestAnimationFrame is shimmed: loadSlotFromUrl waits on it and this tab is
+     hidden, where rAF never fires, so the deep link would never render at all.
+
+     KNOWN HARNESS ARTEFACT, DIAGNOSED RATHER THAN LEFT AS A MYSTERY. prep() calls
+     loadSlotFromUrl, which schedules its two vvFlipReveal calls behind
+     rAF + setTimeout(220); on this hidden tab that 220ms is throttled to seconds,
+     so both reveals can land AFTER fire(). vvFlipReveal's first statement is
+     vvResetVerdict(), which removes .matchup.waiting and blanks #mvWait. Measured:
+     vvResetVerdict fired exactly TWICE mid-wait, and the class log read
+     `matchup waiting` -> `matchup` -> `matchup` -> `matchup answered`.
+     SO A `waiting:false` READING TAKEN LATE IN A RUN IS THIS, NOT A DEFECT, and it
+     is why C4 is read immediately after fire() rather than after the hold expires.
+     The order assertions are unaffected: they are measured on the three loader
+     hosts, not on the matchup's classes.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<style>
+ html,body{margin:0;background:#0b0a09;color:#F0EAD9;font:12px/1.55 ui-monospace,monospace}
+ #f{width:1280px;height:900px;border:0;position:fixed;left:0;top:0}
+ #out{position:fixed;left:1290px;top:0;right:0;bottom:0;overflow:auto;padding:10px;white-space:pre-wrap}
+</style>
+<iframe id="f" src=""></iframe><pre id="out">ready</pre>
+<script>
+document.getElementById('f').src = '/compare.html?a=141853&b=143526&cb=' + Date.now();
+window.H = (function(){
+  var f=document.getElementById('f'), LOG=[], realFetch=null, gate=null, TIMELINE=[], obs=null;
+  function say(s){ LOG.push(s); document.getElementById('out').textContent=LOG.join('\n'); return s; }
+  function W(){ return f.contentWindow; } function D(){ return f.contentDocument; }
+  function hosts(){ var d=D(); return [
+    d.getElementById('mvWait'),
+    d.querySelector('#verdict .vfinal .vquote'),
+    d.querySelector('#verdict .vstorycol .vsprose') ]; }
+  function tagOf(el){ return el.id || (el.className||'').toString().split(' ')[0]; }
+
+  function watch(){
+    TIMELINE=[];
+    obs=new (W().MutationObserver)(function(recs){
+      recs.forEach(function(r){
+        var el=r.target.nodeType===1?r.target:r.target.parentNode;
+        if(!el) return;
+        var host=hosts().filter(Boolean).filter(function(h){ return h===el||h.contains(el); })[0];
+        if(!host) return;
+        if(r.type==='attributes' && r.attributeName==='data-vvhold'){
+          TIMELINE.push({ev:'hold-'+(host.hasAttribute('data-vvhold')?'on':'off'), id:tagOf(host)});
+        } else {
+          TIMELINE.push({ev:'content', id:tagOf(host),
+                         loader:!!host.querySelector('.vvload,.vwait'),
+                         chars:(host.textContent||'').trim().length});
+        }
+      });
+    });
+    hosts().forEach(function(e){ if(e) obs.observe(e,{attributes:true,attributeFilter:['data-vvhold'],childList:true,characterData:true,subtree:true}); });
+  }
+  function stub(){
+    var w=W(); if(!realFetch) realFetch=w.fetch;
+    var v={ verdict:'The margin is real and it is small.', h2h:'96 against 96.',
+            p1:'One season.\n\nAnd its second paragraph.', p2:'The other.\n\nAnd its second.',
+            who:'Messi', tag:null, winner_card_id:null };
+    w.fetch=function(u,o){
+      if(String(u).indexOf('/api/analyse')>=0){
+        return new Promise(function(res){
+          gate=function(){ res({ ok:true, json:function(){ return Promise.resolve(v); } }); };
+        });
+      }
+      return realFetch.call(w,u,o);
+    };
+    return w.fetch!==realFetch;
+  }
+  return {
+    log:function(){ return LOG.join('\n'); }, timeline:function(){ return TIMELINE; },
+    boot:function(){ var w=W(), d=D();
+      var p={ ready:typeof w.vvGenerateVerdict==='function', hasHold:!!(w.VVCore&&w.VVCore.vvHoldLoader),
+              cards:d.querySelectorAll('.cname').length, revealed:!!(d.getElementById('verdict')||{}).classList
+                && d.getElementById('verdict').classList.contains('show') };
+      say('BOOT '+JSON.stringify(p)); return p; },
+    prep:async function(){ var w=W(), d=D();
+      w.requestAnimationFrame=function(cb){ return setTimeout(function(){ cb(0); },16); };
+      await w.loadSlotFromUrl();
+      for(var i=0;i<20 && d.querySelectorAll('.cname').length<2;i++) await new Promise(function(r){setTimeout(r,200);});
+      d.getElementById('verdict').classList.add('show');
+      return d.querySelectorAll('.cname').length; },
+    cssControl:function(){ var w=W(), d=D();
+      var p=d.createElement('div'); p.textContent='x'; d.body.appendChild(p);
+      var a=w.getComputedStyle(p).visibility; p.setAttribute('data-vvhold','');
+      var b=w.getComputedStyle(p).visibility; p.remove();
+      say('\nC2 CSS  '+a+' -> '+b); return a==='visible'&&b==='hidden'; },
+    arm:function(){ var ok=stub(); watch(); gate=null; say('\nC1 STUB fetch replaced: '+ok); return ok; },
+    fire:function(tag){ say('\n=== '+tag+' ==='); TIMELINE=[]; W().vvGenerateVerdict(); return 'fired'; },
+    /* C4 , the state switch must already have happened, before any release. */
+    stateNow:function(){ var d=D(); var mm=d.querySelector('.matchup');
+      var s={ waiting:!!(mm&&mm.classList.contains('waiting')), answered:!!(mm&&mm.classList.contains('answered')) };
+      say('  C4 state: .matchup.waiting='+s.waiting+'  .answered='+s.answered); return s; },
+    isGated:function(){ return !!gate; }, open:function(){ if(gate){ gate(); return 'resolved'; } return 'no gate'; },
+    report:function(tag){ var t=TIMELINE.slice();
+      var prose=t.filter(function(e){ return e.ev==='content' && !e.loader && e.chars>0; });
+      var off=t.filter(function(e){ return e.ev==='hold-off'; });
+      var visible = off.length>0 && (!prose[0] || t.indexOf(off[0]) < t.indexOf(prose[0]));
+      say('  order: '+t.map(function(e){ return e.ev==='content'?(e.loader?'loader':'prose'):e.ev; }).join(' > '));
+      say('  LOADER WAS VISIBLE: '+(visible?'YES':'NO'));
+      return { tag:tag, loaderVisible:visible, holdOff:off.length,
+               loaderWrites:t.filter(function(e){return e.ev==='content'&&e.loader;}).length, timeline:t }; },
+    disarm:function(){ if(obs) obs.disconnect(); if(realFetch) W().fetch=realFetch; return 'restored'; }
+  };
+})();
+'harness ready';
+</script>

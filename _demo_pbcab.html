@@ -1,0 +1,119 @@
+<title>Playbook cabinet section, two treatments</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260912b"></script>
+<style>
+ *{box-sizing:border-box}
+ :root{--ink-soft:#a49d93;--cream:#F0EAD9;--gold:#E8B84B;--page-1:#1b1617;--teal:#2F8290}
+ body{margin:0;padding:18px;background:#1b1617;color:var(--cream);font-family:'Inter',system-ui,sans-serif}
+ h1{font-family:'Archivo';font-size:15px;margin:0 0 4px}
+ .sub{font-size:11.5px;color:var(--ink-soft);margin:0 0 18px;max-width:1250px;line-height:1.5}
+ .tw{max-width:900px;margin-bottom:30px}
+ .th{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 0 3px}
+ .tn{font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:11px}
+ .sect{border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:18px 20px;background:#201b1c}
+ .label{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold)}
+ .h2{font-family:'Archivo';font-weight:800;font-size:19px;margin:3px 0 6px}
+ .intro{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:16px;max-width:640px}
+ /* ---------- A , THE TIMELINE ---------- */
+ .tl{position:relative;margin:6px 8px 0}
+ .tlrail{position:relative;height:3px;background:rgba(255,255,255,0.13);border-radius:3px;margin:26px 0 0}
+ .tlfill{position:absolute;left:0;top:0;height:3px;border-radius:3px;background:var(--teal)}
+ .tls{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);
+      background:#3a3430;border:2px solid #1b1617}
+ .tls.past{background:var(--teal)}
+ .tls.now{background:var(--gold);width:17px;height:17px;box-shadow:0 0 0 5px rgba(232,184,75,.22)}
+ .tlyr{position:absolute;top:16px;font-family:'Archivo';font-weight:700;font-size:9.5px;color:#6f6a62;transform:translateX(-50%)}
+ .tlyr.now{color:var(--gold);font-size:11px}
+ .tlwon{position:absolute;top:-24px;transform:translateX(-50%);width:20px;height:20px;color:var(--gold);opacity:.95}
+ .tlwon.future{opacity:.18}
+ .tlwon svg,.cabmk svg{width:100%;height:100%;display:block}
+ .cardnote{margin-top:38px;font-size:12px;color:var(--cream);background:rgba(232,184,75,.09);
+   border-left:3px solid var(--gold);padding:9px 13px;border-radius:0 8px 8px 0;max-width:620px}
+ .cabbox{margin-top:16px;background:#F0EAD9;color:#2b2924;border-radius:12px;padding:13px 15px;max-width:400px}
+ .cabh{font-family:'Archivo';font-weight:800;font-size:12px;color:#241f1b}
+ .cabi{font-size:10.5px;color:#5f594e;margin:1px 0 10px}
+ .cabrow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+ .cabmk{width:15px;height:15px;color:#5a4410;flex:0 0 auto}
+ .cabn{font-family:'Archivo';font-weight:800;font-size:11px;color:#241f1b}
+ .caby{font-family:'Archivo';font-weight:800;font-size:14px;color:#241f1b;margin-left:auto;font-variant-numeric:tabular-nums}
+ /* ---------- B , THE PAIR ---------- */
+ .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+ .pcol{background:#201b1c;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:13px}
+ .pcap{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+   color:var(--ink-soft);margin-bottom:9px}
+ .pcol.now .pcap{color:var(--gold)}
+ .minicard{background:linear-gradient(180deg,#2c2824,#211d1a);border-radius:9px;padding:11px 12px;
+   box-shadow:inset 0 0 0 1px rgba(255,255,255,0.07);margin-bottom:11px}
+ .mcy{font-family:'Archivo';font-weight:800;font-size:15px;color:var(--cream)}
+ .mcs{font-family:'Archivo';font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a8276;margin-top:2px}
+ .pnote{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:11px}
+ .arrow{align-self:center;text-align:center;font-size:20px;color:var(--ink-soft)}
+ @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<h1>The Playbook cabinet section , two treatments, rendered as stills</h1>
+<p class="sub">Generic idealised career, no player named, no club. The honour TYPES and their marks
+are real; the years are a worked example attached to nobody. Both are shown here with NO motion at
+all, which is the state a reduced-motion reader and a mid-scroll reader get.</p>
+<div id="host"></div>
+<script>
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var M=function(t){ return (window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''; };
+var YEARS=[2015,2016,2017,2018,2019,2020,2021];
+var WON={2016:['league_champion','League Champion'],2018:['golden_boot','Golden Boot'],2020:['ucl_winner','UCL Winner']};
+var NOW=2019;
+function timeline(){
+  var n=YEARS.length, h='<div class="tl"><div class="tlrail">';
+  var nowI=YEARS.indexOf(NOW);
+  h+='<div class="tlfill" style="width:'+(nowI/(n-1)*100)+'%"></div>';
+  YEARS.forEach(function(y,i){
+    var L=(i/(n-1))*100, cls = y===NOW?'now':(i<nowI?'past':'');
+    if(WON[y]) h+='<div class="tlwon '+(i<=nowI?'':'future')+'" style="left:'+L+'%">'+M(WON[y][0])+'</div>';
+    h+='<div class="tls '+cls+'" style="left:'+L+'%"></div>';
+    h+='<div class="tlyr '+(y===NOW?'now':'')+'" style="left:'+L+'%">'+y+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="cardnote">You are reading the <b>'+NOW+'/'+String(NOW+1).slice(2)+'</b> card. '
+   +'The cabinet below holds everything won <b>up to and including</b> that season , which is why a '
+   +NOW+' card shows a '+(NOW-1)+' trophy. The faded mark at 2020 has not happened yet.</div>';
+  h+=cab();
+  return h+'</div>';
+}
+function cab(upTo){
+  var lim=upTo||NOW;
+  var rows=Object.keys(WON).map(Number).filter(function(y){return y<=lim;}).sort();
+  var h='<div class="cabbox"><div class="cabh">The Cabinet</div><div class="cabi">What he had won by this season.</div>';
+  if(!rows.length) h+='<div style="font-size:11px;color:#8a8276;font-style:italic">nothing yet , the section would not render at all</div>';
+  rows.forEach(function(y){ h+='<div class="cabrow"><span class="cabmk">'+M(WON[y][0])+'</span>'
+    +'<span class="cabn">'+WON[y][1]+'</span><span class="caby">'+y+'</span></div>'; });
+  return h+'</div>';
+}
+function pair(){
+  return '<div class="pair">'
+   +'<div class="pcol"><div class="pcap">The 2017/18 card</div>'
+   +'<div class="minicard"><div class="mcy">2017/18</div><div class="mcs">one season earlier</div></div>'
+   +cab(2017)+'</div>'
+   +'<div class="pcol now"><div class="pcap">The 2019/20 card</div>'
+   +'<div class="minicard"><div class="mcy">2019/20</div><div class="mcs">the card you are reading</div></div>'
+   +cab(2019)+'</div></div>'
+   +'<div class="pnote">Same career, two seasons. The 2019 cabinet holds the <b>2018</b> Golden Boot; '
+   +'the 2017 one cannot, because it had not been won yet. <b>The cabinet is not a list of his honours. '
+   +'It is a list of the honours he had by then.</b></div>';
+}
+var T=[
+ ['A , the timeline','Time is the axis. A playhead sits on the season you are reading, the rail fills behind it, and the trophies won so far sit above it. Animated, the playhead advances and the cabinet fills. Still, the playhead is parked on 2019.',
+  '<div class="label">The silverware, in time</div><div class="h2">Why a 2019 card shows a 2018 trophy</div>'
+  +'<div class="intro">Every card is one season. The cabinet beneath it is not , it is everything won up to that point in the career.</div>'
+  +timeline()],
+ ['B , the pair','No time axis and nothing to advance. Two seasons of the same career side by side, each with its own cabinet, so the difference between them IS the lesson. Static by construction.',
+  '<div class="label">The silverware, in time</div><div class="h2">Why a 2019 card shows a 2018 trophy</div>'
+  +'<div class="intro">Every card is one season. The cabinet beneath it is not , it is everything won up to that point in the career.</div>'
+  +pair()]
+];
+var host=document.getElementById('host');
+var only=(location.search.match(/only=(\d)/)||[])[1];
+(only!=null?[T[+only]]:T).forEach(function(t){
+  var d=document.createElement('div'); d.className='tw';
+  d.innerHTML='<div class="th">'+t[0]+'</div><div class="tn">'+t[1]+'</div><div class="sect">'+t[2]+'</div>';
+  host.appendChild(d);
+});
+</script>

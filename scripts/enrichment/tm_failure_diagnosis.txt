@@ -1,0 +1,77 @@
+1. ALL 24 FAILURES
+
+   type      player               season club                        detail
+   IDENTITY  H. Kane              2324  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  R. Lewandowski       2021  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  Son Heung-Min        2122  Tottenham                  identity not resolved: club 'Tottenham' on n
+   IDENTITY  R. Lewandowski       2122  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  R. Lewandowski       1920  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  R. Lewandowski       1617  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  R. Lewandowski       1516  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  H. Kane              2425  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  R. Lewandowski       1718  Bayern München             identity not resolved: club 'Bayern München'
+   IDENTITY  Son Heung-Min        2324  Tottenham                  identity not resolved: club 'Tottenham' on n
+   PARSE     Mohamed Salah        1920  Liverpool                  ERROR TimeoutError
+   PARSE     E. Hazard            1819  Chelsea                    ERROR TimeoutError
+   PARSE     S. Agüero            1819  Manchester City            ERROR TypeError
+   PARSE     K. Benzema           1819  Real Madrid                ERROR TimeoutError
+   PARSE     Iago Aspas           1819  Celta Vigo                 ERROR TimeoutError
+   PARSE     A. Griezmann         1718  Atletico Madrid            ERROR TimeoutError
+   PARSE     K. Benzema           1516  Real Madrid                ERROR TimeoutError
+   PARSE     R. Lukaku            2021  Inter                      ERROR TypeError
+   PARSE     Cristiano Ronaldo    2021  Juventus                   ERROR TimeoutError
+   PARSE     Kylian Mbappé        2021  Paris Saint Germain        ERROR TimeoutError
+   PARSE     C. Immobile          2122  Lazio                      ERROR TimeoutError
+   PARSE     M. Icardi            1617  Inter                      ERROR TimeoutError
+   PARSE     N. Pépé              1819  Lille                      ERROR TimeoutError
+   PARSE     P. Onuachu           2021  Genk                       ERROR TypeError
+
+   identity 10 · parse 14
+
+3. PARSE FAILURES GROUPED BY CAUSE
+   11  ERROR TimeoutError
+        Mohamed Salah        1920  Liverpool
+        E. Hazard            1819  Chelsea
+        K. Benzema           1819  Real Madrid
+        Iago Aspas           1819  Celta Vigo
+        A. Griezmann         1718  Atletico Madrid
+        K. Benzema           1516  Real Madrid
+    3  ERROR TypeError
+        S. Agüero            1819  Manchester City
+        R. Lukaku            2021  Inter
+        P. Onuachu           2021  Genk
+
+2. IDENTITY FAILURES , SIDE BY SIDE
+   player            our club          matcher token  TM's actual club string   result
+   Lewandowski x6    Bayern München    "München"      "Bayern Munich"           token absent -> FAIL
+   Kane x2           Bayern München    "München"      "Bayern Munich"           token absent -> FAIL
+   Son Heung-Min x2  Tottenham         "Tottenham"    (never reached)           SEARCH returned 0 candidates
+
+   Son is NOT a club problem. Verified live:
+     "Son Heung-Min"  -> 0 candidates     (our stored name, family name first)
+     "Heung-Min Son"  -> 1 candidate      (TM expects given name first)
+     "Son"            -> 10 candidates, first is Alisson  <- first-hit would be catastrophic
+
+4. VERDICT
+   NOT one cause. Four distinct ones:
+     a) CLUB ALIAS      8 cards  Bayern München -> TM "Bayern Munich"; the matcher took the
+                                 longest word ("München") which does not appear at all.
+     b) NAME ORDER      2 cards  Son Heung-Min; TM indexes Korean names given-name-first.
+     c) NETWORK        14 cards  ALL 14 "parse" failures are fetch errors, not parse errors:
+                                 11 TimeoutError + 3 TypeError. Zero reached the parser.
+                                 The run also logged 1x 429. TM was degrading under load.
+     d) MY ABORT LOGIC  , the roll window recorded id:!!picked, and a network exception
+                          leaves picked=null, so all 14 network errors were counted AS
+                          identity failures. That is why it aborted at "19%" when true
+                          identity failure was 10%. The abort was partly spurious.
+
+5. THE FIX IS NOT AN ALIAS MAP
+   230 distinct clubs in the 3,891-card target set. 24 look risky by inspection, but for
+   22 of them the matcher token IS a substring of TM's name (Tottenham c Tottenham Hotspur,
+   Napoli c SSC Napoli). Only TWO genuinely break, covering 128 cards:
+     Bayern München  -> token "München" vs "Bayern Munich"
+     Atletico Madrid -> token "Atletico" vs "Atlético de Madrid" (accent)
+   Simulated against 14 known TM forms: current matcher fails 2, proposed fails 0.
+   PROPOSED: accent-fold both sides, and match on ANY word >=4 chars rather than the
+   longest one. That fixes Bayern (matches "Bayern") and Atletico (folds the accent),
+   and needs no hand-maintained alias list that would rot as club names change.

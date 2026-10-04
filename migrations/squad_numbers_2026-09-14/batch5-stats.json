@@ -1,0 +1,43 @@
+{
+  "batch": 5,
+  "at": "2026-09-14T17:03:59.977Z",
+  "clubSeasons": 50,
+  "resolved": 42,
+  "parsed": 23,
+  "cards": 982,
+  "matched": 338,
+  "held": {
+    "norow": 86,
+    "ambiguous": 17
+  },
+  "written": 337,
+  "skipped": [
+    "TR|2010|Bucaspor , no squad block",
+    "TR|2010|Eskişehirspor , no squad block",
+    "TR|2010|Galatasaray , 2 blocks, held for adjudication",
+    "TR|2010|Gençlerbirliği S.K. , no squad block",
+    "TR|2010|Kardemir Karabukspor , no page",
+    "TR|2010|Manisaspor , no squad block",
+    "TR|2010|Sivasspor , no squad block",
+    "TR|2011|Antalyaspor , no squad block",
+    "TR|2011|Başakşehir , no page",
+    "TR|2011|Bursaspor , no squad block",
+    "TR|2011|Eskişehirspor , no squad block",
+    "TR|2011|Galatasaray , 3 blocks, held for adjudication",
+    "TR|2011|Gaziantepspor , no squad block",
+    "TR|2011|Gençlerbirliği S.K. , no squad block",
+    "TR|2011|Kardemir Karabukspor , no page",
+    "TR|2011|Kayserispor , no squad block",
+    "TR|2011|Manisaspor , no squad block",
+    "TR|2011|Mersin Talimyurdu SK , no page",
+    "TR|2011|Samsunspor , no squad block",
+    "TR|2011|Sivasspor , no squad block",
+    "TR|2011|Trabzonspor , duplicate numbers in the block",
+    "TR|2012|Akhisarspor , no page",
+    "TR|2012|Başakşehir , no page",
+    "TR|2012|Beşiktaş , duplicate numbers in the block",
+    "TR|2012|Galatasaray , 2 blocks, held for adjudication",
+    "TR|2012|Kardemir Karabukspor , no page",
+    "TR|2012|Mersin Talimyurdu SK , no page"
+  ]
+}

@@ -1,0 +1,15 @@
+<title>Compare truncation scan</title>
+<style>body{margin:0;padding:10px;background:#17161a;color:#F0EAD9;font-family:system-ui,sans-serif;font-size:11px}
+.r{display:flex;gap:10px;align-items:flex-start;overflow-x:auto}
+.c{flex:0 0 auto}.l{font-size:10px;color:#E0A93A;font-weight:800;margin-bottom:3px}
+iframe{border:1px solid #33302c;border-radius:6px;display:block;background:#17161a;height:700px}</style>
+<h3 style="font-size:12px;margin:0 0 8px">Compare at six widths , Bruno 25/26 vs Haaland 22/23</h3>
+<div class="r" id="r"></div>
+<script>
+[340,360,375,390,405,420,430].forEach(function(w){
+  var d=document.createElement('div'); d.className='c';
+  d.innerHTML='<div class="l">'+w+'px</div><iframe width="'+w+'" data-w="'+w+
+    '" src="/compare.html?a=130524&b=131585&cb=t'+w+'"></iframe>';
+  document.getElementById('r').appendChild(d);
+});
+</script>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Cabinet , demo</title>
+<!--  Four real cards, the REAL renderer. Entries are live database rows, UNFOLDED; the page
+      runs the shipping VVCore.renderCabinet() over them at load. No key, no network.  -->
+<script src="/vv-marks.js?v=20260912a"></script>
+<script src="/vv-core.js?v=20260912a"></script>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:20px;background:#17161a;color:#F0EAD9;
+       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  h1{font-size:17px;margin:0 0 4px}
+  .sub{color:#a49d93;font-size:12.5px;margin-bottom:18px;line-height:1.5;max-width:760px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));max-width:1400px}
+  .panel{background:#F0EAD9;border-radius:14px;padding:16px 18px 18px;color:#2b2924}
+  .who{font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;margin-bottom:2px}
+  .meta{font-size:11.5px;color:#5f594e;margin-bottom:6px}
+  .rt{display:inline-block;background:#2b2924;color:#F0EAD9;border-radius:5px;padding:1px 6px;font-weight:800;font-size:11px;margin-left:6px}
+  .seclab{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:0.14em;
+          text-transform:uppercase;color:#5f594e;margin:12px 0 7px}
+  .note{margin-top:14px;font-size:11px;color:#5f594e;line-height:1.45;border-top:1px solid rgba(0,0,0,0.12);padding-top:10px}
+  .note a{color:#2b2924}
+  .raw{margin-top:8px;font-size:10.5px;color:#8a8276;line-height:1.5}
+  .empty{font-size:12px;color:#8a8276;font-style:italic}
+  /* the shipping rules, copied from card.html so the demo cannot flatter itself */
+  .cabchips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;
+        font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.01em}
+  .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
+  .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
+  .cabyrs{font-family:'Archivo',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.03em;
+    margin-left:6px;padding-left:6px;border-left:1px solid rgba(90,68,16,0.28);
+    font-variant-numeric:tabular-nums;opacity:0.85}
+</style></head><body>
+<h1>The Cabinet</h1>
+<div class="sub">Four real cards. Same pill treatment as the honour tags, ranked by the Playbook's prestige
+order, multiples carrying their years inside the pill. On the card this is its own foldable section
+immediately after Wonder Tags. No count, and no cap , seven honour types means at most seven pills.</div>
+<div class="grid" id="grid"></div>
+<script>
+var CARDS = [{"card_id": 131911, "name": "Cristiano Ronaldo", "season": "22/23", "club": "Manchester United", "rt": 30, "pos": "ST", "items": [{"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2012}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2013}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2015}, {"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2016}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2010}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2013}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2014}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2020}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2013}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2018}, {"type": "league_champion", "label": "League Champion", "season_year": 2018}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2017}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2015}, {"type": "league_champion", "label": "League Champion", "season_year": 2011}, {"type": "league_champion", "label": "League Champion", "season_year": 2019}, {"type": "league_champion", "label": "League Champion", "season_year": 2016}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2016}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2013}]}, {"card_id": 137567, "name": "L. Modrić", "season": "24/25", "club": "Real Madrid", "rt": 64, "pos": "CM", "items": [{"type": "ballon_dor", "label": "Ballon d'Or", "season_year": 2017}, {"type": "league_champion", "label": "League Champion", "season_year": 2019}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2017}, {"type": "league_champion", "label": "League Champion", "season_year": 2016}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2016}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2015}, {"type": "league_champion", "label": "League Champion", "season_year": 2023}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2023}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2013}, {"type": "league_champion", "label": "League Champion", "season_year": 2021}, {"type": "ucl_winner", "label": "UCL Winner", "season_year": 2021}]}, {"card_id": 161191, "name": "Z. Ibrahimović", "season": "15/16", "club": "Paris Saint Germain", "rt": 93, "pos": "ST", "items": [{"type": "golden_boot", "label": "Golden Boot", "season_year": 2011}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2012}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2013}, {"type": "golden_boot", "label": "Golden Boot", "season_year": 2015}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2010}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2012}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2013}, {"type": "player_of_season", "label": "Player of the Season", "season_year": 2015}, {"type": "league_champion", "label": "League Champion", "season_year": 2014}, {"type": "league_champion", "label": "League Champion", "season_year": 2010}, {"type": "league_champion", "label": "League Champion", "season_year": 2015}, {"type": "league_champion", "label": "League Champion", "season_year": 2012}, {"type": "league_champion", "label": "League Champion", "season_year": 2013}]}, {"card_id": 143927, "name": "S. Agüero", "season": "10/11", "club": "Atletico Madrid", "rt": 86, "pos": "ST", "items": []}];
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var host=document.getElementById('grid');
+CARDS.forEach(function(c){
+  var html=(window.VVCore&&VVCore.renderCabinet)?VVCore.renderCabinet(c.items,{mark:true}):'<b>vv-core did not load</b>';
+  var lines=c.items.length?new Set(c.items.map(function(i){return i.type;})).size:0;
+  var d=document.createElement('div'); d.className='panel';
+  d.innerHTML='<div class="who">'+c.name+'<span class="rt">'+c.rt+'</span></div>'+
+   '<div class="meta">'+c.pos+' &middot; '+c.club+' &middot; '+c.season+'</div>'+
+   (c.items.length?'<div class="seclab">The Cabinet</div><div class="cabchips">'+html+'</div>'
+                  :'<div class="empty">no section renders here at all</div>')+
+   '<div class="note">'+(c.items.length?c.items.length+' entries folded to '+lines+' pills'
+     :'Empty cabinet: the whole foldable section is ABSENT. 85.1% of cards are in this state.')+
+   '<br><a href="/card.html?id='+c.card_id+'">open the live card &rsaquo;</a></div>'+
+   (c.items.length?'<div class="raw">raw: '+c.items.map(function(i){return i.label+' '+i.season_year;}).join(' &middot; ')+'</div>':'');
+  host.appendChild(d);
+});
+</script>
+</body></html>

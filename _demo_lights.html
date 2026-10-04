@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Under the Lights , control plus four stronger options</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b0a09;color:#F5EFE6;font-family:'Inter',system-ui,sans-serif;display:flex;height:100vh;overflow:hidden}
+  #panel{width:380px;flex:none;padding:18px 18px 24px;overflow-y:auto;border-right:1px solid #2a2622;background:#121010}
+  h1{font-size:16px;margin-bottom:6px}
+  .note{font-size:12px;line-height:1.6;color:#a49c90;margin-bottom:14px}
+  .note b{color:#F5EFE6}
+  .opt{border:1px solid #2a2622;border-radius:8px;padding:10px 11px;margin-bottom:9px;cursor:pointer;background:#171413;transition:.15s}
+  .opt:hover{border-color:#4a4340}
+  .opt.on{border-color:#E0A93A;background:#1d1815}
+  .opt h3{font-size:12.5px;margin-bottom:3px;display:flex;justify-content:space-between;align-items:baseline}
+  .opt h3 em{font-style:normal;font-size:10.5px;color:#E0A93A;letter-spacing:.06em}
+  .opt p{font-size:11.5px;line-height:1.5;color:#a49c90}
+  .opt .cost{margin-top:6px;font-family:ui-monospace,monospace;font-size:10.5px;color:#7fd18b}
+  .row{display:flex;gap:8px;margin:12px 0}
+  button{flex:1;font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+         background:#241f1d;color:#F5EFE6;border:1px solid #3a3330;border-radius:6px;padding:9px;cursor:pointer}
+  button.on{background:#E0A93A;color:#2a1d03;border-color:#E0A93A}
+  #out{font-family:ui-monospace,monospace;font-size:10.5px;white-space:pre-wrap;line-height:1.6;
+       background:#171413;padding:10px;border-radius:6px;margin-top:10px;color:#cfc7ba}
+  #stage{flex:1;position:relative;background:#000}
+  #stage iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head><body>
+
+<div id="panel">
+  <h1>Under the Lights</h1>
+  <p class="note">
+    The glow is <b>#cardA::before / #cardB::before</b> , a pink radial ellipse behind each card at
+    <b>blur(36px)</b>, alpha <b>0.30</b> dark and <b>0.20</b> light. Everything below runs on the
+    <b>real compare page</b> in the frame to the right, not a mock, by overriding that one rule.
+  </p>
+  <p class="note">
+    <b>"Frame time" is the wrong unit here and saying so is part of the answer.</b> This is a STATIC
+    background: it paints on load, on resize, and on a theme change, and never again. Nothing
+    animates it, so it costs nothing per frame while a visitor reads. The cost that is real is the
+    one-off <b>blur</b>, and blur scales with <b>area x radius</b>, which is arithmetic rather than a
+    timing run , SEC C records that this harness cannot measure frames at all.
+  </p>
+  <div id="opts"></div>
+  <div class="row">
+    <button id="bDark" class="on">Dark</button>
+    <button id="bLight">Light</button>
+  </div>
+  <div class="row">
+    <button id="bSide">Side by side: off</button>
+  </div>
+  <div id="out">loading the real page…</div>
+</div>
+<!--  compare.html, NOT /compare , the extensionless form is a `cleanUrls` rewrite that only
+      exists on Vercel, so it 404s under a plain local server and the frame comes up empty.
+      The .html form works in BOTH: on the preview it 308s to the clean path.  -->
+<div id="stage"><iframe id="fr" src="compare.html?a=141853&b=141999"></iframe></div>
+
+<script>
+(function(){
+  var out=document.getElementById('out');
+  function say(s){ out.textContent=s; }
+
+  /*  THE FIVE. Each is the FULL replacement rule for the glow, so what you see is exactly what
+      would ship , no additive layering on top of the control.
+      A is the control and is byte-identical to what compare.html serves today.  */
+  var OPTS=[
+    { id:'A', name:'A , control, as it ships', tag:'now',
+      why:'alpha .30, blur 36px, 88% tall. The current effect, here so the others are judged against it rather than against memory.',
+      dark:'radial-gradient(ellipse at center,rgba(255,143,163,0.30),rgba(255,143,163,0.08) 46%,transparent 72%)',
+      light:'radial-gradient(ellipse at center,rgba(255,143,163,0.20),rgba(255,143,163,0.05) 46%,transparent 72%)',
+      blur:36, h:88, top:12, layers:1 },
+
+    { id:'B', name:'B , same light, turned up', tag:'free',
+      why:'Identical geometry, alpha .30 to .52 and the mid stop .08 to .18. Costs exactly the same to paint: same layer, same area, same radius, different colour.',
+      dark:'radial-gradient(ellipse at center,rgba(255,143,163,0.52),rgba(255,143,163,0.18) 46%,transparent 72%)',
+      light:'radial-gradient(ellipse at center,rgba(255,143,163,0.34),rgba(255,143,163,0.11) 46%,transparent 72%)',
+      blur:36, h:88, top:12, layers:1 },
+
+    { id:'C', name:'C , bigger pool of light', tag:'+34% area',
+      why:'Brighter AND taller, 88% to 118%, lifted so the spill reaches the floor under the card. This is the one that reads as a floodlight rather than a halo.',
+      dark:'radial-gradient(ellipse at center,rgba(255,143,163,0.50),rgba(255,143,163,0.16) 44%,transparent 74%)',
+      light:'radial-gradient(ellipse at center,rgba(255,143,163,0.32),rgba(255,143,163,0.10) 44%,transparent 74%)',
+      blur:44, h:118, top:2, layers:1 },
+
+    { id:'D', name:'D , hot core plus halo', tag:'2 layers',
+      why:'A tight bright core inside the wide soft one, which is how a real light behaves. The only option here that adds a SECOND blurred layer, so it is the only one with a real paint cost.',
+      dark:'radial-gradient(ellipse 52% 38% at center,rgba(255,190,205,0.62),transparent 68%),radial-gradient(ellipse at center,rgba(255,143,163,0.38),rgba(255,143,163,0.12) 46%,transparent 74%)',
+      light:'radial-gradient(ellipse 52% 38% at center,rgba(255,190,205,0.40),transparent 68%),radial-gradient(ellipse at center,rgba(255,143,163,0.24),rgba(255,143,163,0.08) 46%,transparent 74%)',
+      blur:40, h:112, top:6, layers:2 },
+
+    { id:'E', name:'E , as bright, no blur filter', tag:'cheapest',
+      why:'Same brightness as C with the blur REMOVED, the falloff carried by extra gradient stops instead. A gradient is painted by the rasteriser; a blur is a separate pass over the whole layer. If cost ever matters, this is the one.',
+      dark:'radial-gradient(ellipse at center,rgba(255,143,163,0.46) 0%,rgba(255,143,163,0.30) 22%,rgba(255,143,163,0.14) 44%,rgba(255,143,163,0.05) 62%,transparent 78%)',
+      light:'radial-gradient(ellipse at center,rgba(255,143,163,0.30) 0%,rgba(255,143,163,0.19) 22%,rgba(255,143,163,0.09) 44%,rgba(255,143,163,0.03) 62%,transparent 78%)',
+      blur:0, h:118, top:2, layers:1 }
+  ];
+
+  var cur='A', light=false, side=false;
+  var fr=document.getElementById('fr');
+
+  function ruleFor(o, isLight){
+    var bg = isLight ? o.light : o.dark;
+    return '#cardA::before,#cardB::before{'
+         + 'background:'+bg+' !important;'
+         + 'filter:'+(o.blur? 'blur('+o.blur+'px)' : 'none')+' !important;'
+         + 'height:'+o.h+'% !important;top:'+o.top+'% !important;}';
+  }
+
+  function apply(){
+    var d=fr.contentDocument; if(!d||!d.body) return;
+    var st=d.getElementById('__lights');
+    if(!st){ st=d.createElement('style'); st.id='__lights'; d.head.appendChild(st); }
+    var o=OPTS.filter(function(x){return x.id===cur;})[0];
+    st.textContent = ruleFor(o, light) +
+      (light ? '' : '') ;
+    d.body.classList.toggle('light', light);
+    measure(o,d);
+    [].forEach.call(document.querySelectorAll('.opt'),function(el){ el.classList.toggle('on', el.dataset.id===cur); });
+    document.getElementById('bDark').classList.toggle('on',!light);
+    document.getElementById('bLight').classList.toggle('on',light);
+  }
+
+  /*  THE COST NUMBER IS AREA x RADIUS x LAYERS, DERIVED FROM THE RENDERED BOX, not a stopwatch.
+      A separable Gaussian is O(area x radius) per pass, so this is the quantity that actually
+      moves, and it can be computed exactly here where a frame time cannot.  */
+  function measure(o,d){
+    var el=d.getElementById('cardA');
+    if(!el){ say('cardA not found yet'); return; }
+    var r=el.getBoundingClientRect();
+    var w=r.width, h=r.height*(o.h/100);
+    var area=w*h;
+    var ctrl=OPTS[0], ch=r.height*(ctrl.h/100), carea=r.width*ch;
+    var cost=area*(o.blur||0)*o.layers, ccost=carea*(ctrl.blur||0)*ctrl.layers;
+    var rel = ccost? (cost/ccost) : 0;
+    var vis=d.visibilityState||document.visibilityState;
+    say(
+      'OPTION '+o.id+'   theme '+(light?'light':'dark')+'\n'+
+      'glow box        '+Math.round(w)+' x '+Math.round(h)+' px   ('+(area/1e6).toFixed(3)+' Mpx)\n'+
+      'blur radius     '+o.blur+'px      blurred layers '+o.layers+'\n'+
+      'relative blur   '+(o.blur? (rel).toFixed(2)+'x the control' : 'NO BLUR PASS AT ALL')+'\n'+
+      '\n'+
+      'WHEN IT IS PAID   once on load, once per resize, once per theme flip.\n'+
+      '                  Nothing animates it, so zero per frame while reading.\n'+
+      'NOT MEASURED HERE frame time. tab reports "'+vis+'", and SEC C records that a\n'+
+      '                  hidden tab clamps timers and freezes transitions, so any\n'+
+      '                  number taken here would be an artefact. Judge motion on a\n'+
+      '                  real device, as item 23 does with its own on-screen meter.'
+    );
+  }
+
+  var box=document.getElementById('opts');
+  OPTS.forEach(function(o){
+    var d=document.createElement('div'); d.className='opt'+(o.id===cur?' on':''); d.dataset.id=o.id;
+    d.innerHTML='<h3>'+o.name+' <em>'+o.tag+'</em></h3><p>'+o.why+'</p>';
+    d.onclick=function(){ cur=o.id; apply(); };
+    box.appendChild(d);
+  });
+  document.getElementById('bDark').onclick=function(){ light=false; apply(); };
+  document.getElementById('bLight').onclick=function(){ light=true; apply(); };
+  document.getElementById('bSide').onclick=function(){
+    side=!side;
+    this.textContent='Side by side: '+(side?'on':'off');
+    this.classList.toggle('on',side);
+    document.getElementById('stage').style.display='flex';
+    var s=document.getElementById('stage');
+    if(side && !document.getElementById('fr2')){
+      var f2=document.createElement('iframe'); f2.id='fr2'; f2.src=fr.src;
+      s.appendChild(f2);
+      f2.addEventListener('load',function(){
+        var d2=f2.contentDocument, st=d2.createElement('style'); st.id='__lights';
+        st.textContent=ruleFor(OPTS[0], light);      // the CONTROL, always, so the pair is a comparison
+        d2.head.appendChild(st); d2.body.classList.toggle('light', light);
+      });
+    } else if(!side){ var f2=document.getElementById('fr2'); if(f2) f2.remove(); }
+  };
+
+  /*  BOTH PATHS, because a listener attached after the frame has already finished never
+      fires and the panel sits on "loading" for ever , which is what it did first.  */
+  fr.addEventListener('load',function(){ setTimeout(apply,2600); });
+  if(fr.contentDocument && fr.contentDocument.readyState==='complete') setTimeout(apply,2600);
+  var _tries=0, _poll=setInterval(function(){
+    var d=fr.contentDocument;
+    if(d && d.getElementById('cardA')){ clearInterval(_poll); apply(); }
+    else if(++_tries>40) { clearInterval(_poll); say('the compare frame never rendered a card , nothing below is valid'); }
+  }, 400);
+})();
+</script>
+</body></html>

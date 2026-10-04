@@ -84,10 +84,71 @@
     'ballon_dor':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.4a9.6 9.6 0 1 0 0 19.2 9.6 9.6 0 0 0 0-19.2Zm0 3.5 2.9 2.1-1.1 3.4h-3.6L9.1 8Z"/></g>',
     'world_cup_winner':  '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 2.2a4.6 4.6 0 0 0 0 9.2 4.6 4.6 0 0 0 0-9.2Zm0 2.2a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8Z"/> <path d="M9.5 11.2h5l-1.1 6.2h2.4v2.3H8.2v-2.3h2.4Z"/> <path d="M6.6 20.2h10.8v1.9H6.6Z"/></g>',
     'ucl_winner':        '<g fill="currentColor"> <path d="M9 2.4h6v6a3 3 0 0 1-6 0Z"/> <path fill-rule="evenodd" d="M9.2 3H7.4a4.8 4.8 0 0 0 0 9.6h1.8v-2.6H7.4a2.2 2.2 0 0 1 0-4.4h1.8Z"/> <path fill-rule="evenodd" d="M14.8 3h1.8a4.8 4.8 0 0 1 0 9.6h-1.8V10h1.8a2.2 2.2 0 0 0 0-4.4h-1.8Z"/> <path d="M10.9 12.4h2.2v5h-2.2Z"/> <path d="M7.6 17.4h8.8v2H7.6Z"/> <path d="M5.6 19.4h12.8v2.2H5.6Z"/></g>',
-    'league_champion':   '<g fill="currentColor"> <path d="M6.2 3.2h11.6v3.4a5.8 5.8 0 0 1-11.6 0Z"/> <path d="M10.8 11.8h2.4v2.4h-2.4Z"/> <path fill-rule="evenodd" d="M8.4 14.2h7.2v7.6H8.4Zm2 2.2v3.2h3.2v-3.2Z"/></g>',
+    /*  A PENNANT, NOT A TROPHY, AND THAT IS THE WHOLE POINT (2026-09-20). It was a bowl on a
+        stem over a plinth, and world_cup_winner is a ring on a stem over a base , two
+        trophies on stems, which is why they were the tightest pair in the set at EVERY size
+        measured: 0.543 at 13px and 0.493 even at 22px, against a set that otherwise sits
+        near 0.49. The chip row is the first surface where the two sit side by side on one
+        line, which is what made it worth fixing rather than recording.
+        SCORED AGAINST ALL ELEVEN MARKS IT CAN APPEAR BESIDE, not just the one it was drawn
+        to escape: the other eight honours plus Generational and Iconic, which share the card
+        face row. Pennant 0.171 against the World Cup and 0.287 worst overall (UCL), both at
+        13px. TWO REJECTED CANDIDATES ARE THE REASON THAT WIDER CHECK EXISTS: a crown scored
+        0.615 against player_of_season and a shield 0.533 against ballon_dor, so each fixed
+        the World Cup pair and moved the collision somewhere else. Judged only against the
+        World Cup, either would have shipped. Demo and the full table: _demo_league_mark.html.
+        IT SHIPS ON 2,872 CARDS, the most common honour in the record.  */
+    'league_champion':   '<g fill="currentColor"> <path d="M4.4 2.2h2.6v19.6H4.4Z"/> <path d="M7.6 3.1 20.4 7.3 7.6 11.5Z"/></g>',
     'player_of_season':  '<g fill="currentColor"> <path d="M12 1.8 15.1 8.5 22.4 9.4 17 14.4 18.5 21.6 12 18 5.5 21.6 7 14.4 1.6 9.4 8.9 8.5Z"/></g>',
     'golden_boot':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M4.2 6.2h4.4v5.1c1.9.3 3.6 1 5.2 2 1.9 1.2 4.2 1.9 6.8 2.1v3.4H4.2Zm2.6 8.9v1.6h2.1v-1.6Z"/></g>',
     'top_assists':       '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.2 1.6a6.6 6.6 0 0 0-2.6 12.7v6.1l3.4 2 3.4-2v-2.4h-2.4v-2.6h2.4v-1.1A6.6 6.6 0 0 0 9.2 1.6Zm0 3.2a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z"/></g>',
+    /*  ── CONTINENTAL TROPHIES , item 15, 2026-09-15 ──────────────────────────────────────
+        BOTH ARE TEAM HONOURS, SO BOTH OBEY THE SET'S DESIGN RULE: footed and vertical, where
+        individual awards are unfooted objects. That rule is what tells a reader at a glance
+        whether a trophy was won by a squad or by a person, and it is measured rather than
+        asserted , see the Playbook comment on the display case.
+        THEY ARE DRAWN AGAINST THE THREE TEAM MARKS THAT ALREADY EXIST, NOT IN ISOLATION,
+        because the collision that matters is between SILHOUETTES at the 16px a pill ships at:
+          world_cup_winner  a GLOBE, ring with a hole, on a tapered stem and a wide base
+          ucl_winner        BIG SIDE EARS, the two outsized handles are the whole signature
+          league_champion   a WIDE SHALLOW BOWL over a boxed plinth with a window
+        So the two new ones take the two silhouettes that family leaves free:
+          euro_winner       a TALL SLIM amphora, small handles high on the shoulder, round foot
+          copa_winner       a SMALL WIDE bowl over a TALL STEPPED plinth , base-dominant, the
+                            inverse of the Euro's body-dominant shape
+        AT 16px THE DISCRIMINATOR IS THE BODY-TO-BASE RATIO, which survives rasterisation when
+        handle detail does not. That is why the pair differ in proportion and not in ornament.  */
+    'euro_winner':       '<g fill="currentColor"> <path d="M10.4 2.2h3.2v11.4a1.6 1.6 0 0 1-3.2 0Z"/> <path fill-rule="evenodd" d="M10.5 3H9.4a2.5 2.5 0 0 0 0 5h1.1V6.6H9.4a1.1 1.1 0 0 1 0-2.2h1.1Z"/> <path fill-rule="evenodd" d="M13.5 3h1.1a2.5 2.5 0 0 1 0 5h-1.1V6.6h1.1a1.1 1.1 0 0 0 0-2.2h-1.1Z"/> <path d="M11.3 15.2h1.4v5.1h-1.4Z"/> <path d="M9.8 20.3h4.4v1.5H9.8Z"/></g>',
+    'copa_winner':       '<g fill="currentColor"> <path d="M9.2 2.4h5.6v2.1a2.8 2.8 0 0 1-5.6 0Z"/> <path d="M11.4 7.6h1.2v2.2h-1.2Z"/> <path fill-rule="evenodd" d="M12 9.4 19.2 22H4.8Zm0 4.6L8.9 19.9h6.2Z"/></g>',
+    /*  ── AFCON , 2026-09-28. SEVEN DRAWINGS WERE MEASURED AND FOUR OF THEM FAILED. ───────
+        A TEAM HONOUR, so it obeys the set's rule , footed and vertical, where the individual
+        awards are unfooted objects.
+        THE FIVE TEAM SILHOUETTES ALREADY TAKEN, on PROPORTION rather than ornament, because
+        handle detail does not survive rasterisation at 16px:
+          world_cup_winner  a GLOBE, ring with a hole, tapered stem, wide base
+          ucl_winner        BIG SIDE EARS, the two outsized handles are the whole signature
+          league_champion   a WIDE SHALLOW BOWL over a boxed plinth with a window
+          euro_winner       a TALL SLIM amphora, small handles high, round foot
+          copa_winner       a SMALL WIDE bowl over a TALL STEPPED plinth, base-dominant
+        ROUND 1 REASONED ABOUT THAT FAMILY AND ALL FOUR DRAWINGS FAILED , a cone, a pierced
+        cup, a ziggurat and a winged cup, scoring 0.466 to 0.627 against a floor of 0.681.
+        WHAT ACTUALLY ANSWERED IT WAS AN OCCUPANCY MAP, not a sixth idea. Mean alpha over the
+        shipped nine on a 12x12 grid shows the set PACKS THE CENTRAL COLUMN and leaves the far
+        left and right edges and the extreme top and bottom rows nearly empty. Round 1 failed
+        because every drawing put its mass exactly where the set already is.
+        SO THIS ONE IS EDGE-WEIGHTED: a broad cup, two blocks out at the far columns, a thin
+        waist through the crowded middle, and a base spanning almost the full width.
+        AND THE REFINEMENT MADE IT WORSE, WHICH IS WHY THE FIRST VERSION SHIPS. Dropping the
+        handles to the waist to get them away from ucl_winner's ears read as sound and
+        measured as the opposite: 0.682 at 16px (clearing by 0.001) and 0.682 at 22px, which
+        FAILS. A third variant failed both. The measurement, not the reasoning, chose this.
+        SCORED , `_mark_pairscore.html`, which rasterises every pair and compares the ALPHA
+        channel, and whose self-test scores a mark against itself (0.000) and against a solid
+        box (0.434) before any result is read:
+          floor among the shipped nine   0.681 at 16px, 0.688 at 22px  (ballon_dor/player_of_season)
+          this mark's worst pair         0.713 at 16px, 0.727 at 22px  (vs ucl_winner, both sizes)
+        Re-run it before adding a tenth mark; the floor moves as the set grows.  */
+    'afcon_winner':      '<g fill="currentColor"> <path d="M2.4 2.4h4.1v4.1H2.4Z"/> <path d="M17.5 2.4h4.1v4.1h-4.1Z"/> <path d="M8.1 2.4h7.8v5.6a3.9 3.9 0 0 1-7.8 0Z"/> <path d="M11.2 12h1.6v5.6h-1.6Z"/> <path d="M2.4 19.6h19.2v2.2H2.4Z"/> </g>',
   };
 
   // Playbook section marks. Keys are the ids in playbook.html.
@@ -100,6 +161,12 @@
     's-wonder':          '<g fill="currentColor"> <path fill-rule="evenodd" d="M9.3 3.6h11.5v16.8H9.3L2.4 12Zm1.5 2.6L5.5 12l5.3 5.8h7.9V6.2Z"/> <circle cx="10.4" cy="12" r="1.9"/></g>',
     's-conf':            '<g fill="currentColor"> <circle cx="4" cy="12" r="2.6"/><circle cx="10" cy="12" r="2.6"/><circle cx="16" cy="12" r="2.6"/> <path fill-rule="evenodd" d="M20.6 9.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm0 1.5a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></g>',
     's-prestige':        '<g fill="currentColor"> <path fill-rule="evenodd" d="M1.4 6.2 6 10.4 12 3.6l6 6.8 4.6-4.2-1.7 9.2H3.1Zm4.2 5.9-1 3.5h13.2l-.7-3.5-3.6 3.3L12 8.9l-2.9 5.4Z"/> <path d="M3.4 17.6h17.2v2.6H3.4Z"/></g>',
+    /*  A CASE WITH SHELVES, NOT A TROPHY , DELIBERATE. The section already has trophies in it,
+        one per honour from the shared HONOURS set, and a trophy in the nav would be a second
+        drawing of the same idea at a different size. "Shelf" is also the vocabulary the code
+        already uses: `.cabsh` is a cabinet shelf and `.cabyrs`'s left rule is described as the
+        shelf edge. Same fill-rule convention as every other section mark.  */
+    's-cabinet':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M3.4 2.6h17.2v18.8H3.4Zm2.6 2.6v13.6h12V5.2Z"/> <path d="M7.2 9.4h9.6v1.6H7.2Z M7.2 14h9.6v1.6H7.2Z"/></g>',
     's-honours':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M12 1.8a6.6 6.6 0 1 0 0 13.2 6.6 6.6 0 0 0 0-13.2Zm0 2.8a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6Z"/> <path d="M7.4 15.4 4.8 22.4l4-1.8 3.2 1.8-1.4-6.2Zm9.2 0-2.2.6 1.6 6.4 1.2-1.8 4 1.2Z"/></g>',
     's-profile':         '<g fill="currentColor"> <path fill-rule="evenodd" d="M2.2 7.2h13.4a5.4 5.4 0 0 1 0 10.8H2.2Zm2.8 2.8v5.2h10.6a2.6 2.6 0 0 0 0-5.2Z"/> <circle cx="17.4" cy="12.6" r="2"/></g>',
     's-verdict':         '<g fill="currentColor"> <path d="M11 2.2h2v19.6h-2Z M3.2 6.6h17.6v2.2H3.2Z"/> <path fill-rule="evenodd" d="M6.2 9.6 9.8 17H2.6Zm0 3.8L4.9 16.4h2.6Z"/> <path fill-rule="evenodd" d="M17.8 9.6 21.4 17h-7.2Zm0 3.8-1.3 3h2.6Z"/></g>',

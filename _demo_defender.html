@@ -1,0 +1,146 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The defender drawing , demo</title>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     THE DEFENDER DRAWING. Replaces the longest paragraph on the VV Index, 96
+     words, which argues that the record counts what a defender DOES far more
+     faithfully than what he PREVENTS.
+
+     THE FONTS AND TOKENS ARE THE TARGET PAGE'S, NOT THIS DEMO'S. The font
+     request is copied verbatim from vvindex.html and the --vi-* tokens are the
+     ones that shipped there, both grounds. A demo that supplies its own values
+     cannot test the page's values, which is the one thing it most needs to do.
+
+     THE DEVICE IS THE RECORD STRIP, NOT THE PITCH. Two identical passages of
+     play, and underneath each one what the record actually wrote. The left
+     strip fills. The right strip is empty. That is the whole argument, and it
+     is made by the emptiness rather than by a caption explaining it.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink-ink:#F1688E;--gold:#E8B84B;
+  --page-1:#1b1617;--page-1-l:#EEF4F6;
+  --vi-ink:rgba(243,237,224,.80);--vi-mut:rgba(243,237,224,.52);
+  --vi-line:rgba(243,237,224,.11);--vi-strong:var(--cream);
+  --vi-gold-num:#E8B84B;--vi-gold-ink:#E8B84B;--vi-panel:rgba(255,255,255,.03)}
+.light{--vi-ink:rgba(28,27,26,.82);--vi-mut:#5f594e;--vi-line:rgba(28,27,26,.14);
+  --vi-strong:var(--charcoal);--vi-gold-num:#A8760F;--vi-gold-ink:#7A5A10;--vi-panel:rgba(0,0,0,.035)}
+*{box-sizing:border-box}
+body{margin:0;background:#0a0908;color:#F0EAD9;font:400 14px/1.6 Inter,system-ui,sans-serif;padding:26px}
+h1{font:800 15px Archivo;letter-spacing:.1em;text-transform:uppercase;color:#8d857a;margin:0 0 4px}
+.note{font-size:12.5px;color:#8d857a;max-width:78ch;margin:0 0 22px}
+.grounds{display:flex;gap:22px;flex-wrap:wrap}
+.gnd{flex:1 1 520px;min-width:360px;border-radius:18px;padding:26px 24px;border:1px solid rgba(255,255,255,.1)}
+.gnd.dark{background:linear-gradient(180deg,#1b1617,#141011);color:var(--cream)}
+.gnd.light{background:linear-gradient(180deg,#EEF4F6,#E9E0D0);color:var(--charcoal)}
+.lab{font:800 10.5px Archivo;letter-spacing:.14em;text-transform:uppercase;color:var(--vi-mut);margin:0 0 16px}
+
+/* ── the figure, in the page's own figure language ───────────────────────── */
+.dfig{border:1px solid var(--vi-line);border-radius:18px;padding:20px 18px 16px;
+  background:linear-gradient(180deg,var(--vi-panel),transparent)}
+.dpair{display:flex;gap:16px;flex-wrap:wrap}
+.dpan{flex:1 1 210px;min-width:0}
+.dpt{font:800 10px Archivo;letter-spacing:.11em;text-transform:uppercase;margin:0 0 8px;color:var(--vi-mut)}
+.dpan svg{display:block;width:100%;height:auto}
+.dcap{font:400 12px/1.55 Inter;color:var(--vi-mut);margin:15px 2px 0}
+.dcap b{font-family:Archivo;font-weight:700;color:var(--vi-strong)}
+
+/* the old paragraph, for the comparison */
+.old{margin-top:22px;padding:16px 18px;border-radius:14px;border:1px dashed var(--vi-line)}
+.old p{margin:0;font:400 14px/1.5 Inter;color:var(--vi-ink)}
+.old .h{font:800 9.5px Archivo;letter-spacing:.12em;text-transform:uppercase;color:var(--vi-mut);margin:0 0 8px}
+</style></head><body>
+
+<h1>The defender drawing</h1>
+<p class="note">Left of each pair: the tackle the record writes down. Right: the same defender, one
+second earlier, and the line underneath is what the record wrote. Both grounds, the page's own
+fonts and tokens. Below each, the 96-word paragraph it replaces.</p>
+
+<div class="grounds">
+<!-- ══ DARK ══ -->
+<div class="gnd dark"><p class="lab">Dark</p>
+<div class="dfig" id="figD"></div>
+<div class="old"><p class="h">what it replaces , 96 words</p><p>The game records what a defender <b>does</b> far more faithfully than what he <b>prevents</b>. The tackle is counted. The run that made the tackle unnecessary is not, and neither is the pass a striker never attempted because the space was gone.<br><br><b>So the best defenders score lower here than their reputation, and we are not going to fix that by inventing a number.</b> Van Dijk sits in the low seventies, and we publish that with the reason rather than quietly moving him. <b>A score that agrees with every reputation is not measuring reputation, it is copying it.</b></p></div>
+</div>
+<!-- ══ LIGHT ══ -->
+<div class="gnd light"><p class="lab">Light</p>
+<div class="dfig" id="figL"></div>
+<div class="old"><p class="h">what it replaces , 96 words</p><p>The game records what a defender <b>does</b> far more faithfully than what he <b>prevents</b>. The tackle is counted. The run that made the tackle unnecessary is not, and neither is the pass a striker never attempted because the space was gone.<br><br><b>So the best defenders score lower here than their reputation, and we are not going to fix that by inventing a number.</b> Van Dijk sits in the low seventies, and we publish that with the reason rather than quietly moving him. <b>A score that agrees with every reputation is not measuring reputation, it is copying it.</b></p></div>
+</div>
+</div>
+
+<script>
+/*  ONE BUILDER, RENDERED TWICE, so the two grounds cannot drift apart. Every colour is
+    a token, so the drawing follows the page rather than carrying its own palette.
+    GEOMETRY NOTE: the two panels are deliberately IDENTICAL except for where the
+    defender stands and what the strip says. If the pitches differed the reader would
+    be comparing two situations instead of one situation recorded two ways.  */
+function panel(o){
+  const atk=o.atk, def=o.def, W=232, H=150;
+  return `
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.alt}">
+    <!-- the lane -->
+    <rect x="1" y="1" width="${W-2}" height="104" rx="10"
+          fill="var(--vi-panel)" stroke="var(--vi-line)"/>
+    <line x1="${W/2}" y1="6" x2="${W/2}" y2="100" stroke="var(--vi-line)" stroke-dasharray="3 5"/>
+    <!-- the goal the attacker is running at -->
+    <path d="M${W-14} 34 v38" stroke="var(--vi-mut)" stroke-width="3" stroke-linecap="round"/>
+    <!-- attacker -->
+    <circle cx="${atk[0]}" cy="${atk[1]}" r="9" fill="var(--pink-ink)"/>
+    <!-- intended ball path -->
+    <path d="${o.ball}" fill="none" stroke="var(--pink-ink)" stroke-width="2.5"
+          stroke-linecap="round" ${o.ballDash?'stroke-dasharray="5 5" opacity=".55"':''}/>
+    ${o.ballHead?`<path d="${o.ballHead}" fill="var(--pink-ink)" ${o.ballDash?'opacity=".55"':''}/>`:''}
+    <!-- defender -->
+    <circle cx="${def[0]}" cy="${def[1]}" r="9" fill="none" stroke="var(--vi-strong)" stroke-width="2.5"/>
+    ${o.mark||''}
+    <!-- ══ THE RECORD STRIP , the whole argument lives here ══ -->
+    <rect x="1" y="116" width="${W-2}" height="32" rx="8"
+          fill="${o.filled?'var(--vi-panel)':'none'}" stroke="var(--vi-line)"
+          ${o.filled?'':'stroke-dasharray="4 5"'}/>
+    ${o.filled
+      ? `<text x="14" y="136" font-family="Archivo" font-weight="800" font-size="12"
+               letter-spacing="1.2" fill="var(--vi-gold-ink)">TACKLE</text>
+         <text x="${W-14}" y="136" text-anchor="end" font-family="Archivo" font-weight="800"
+               font-size="12" fill="var(--vi-gold-ink)">+1</text>`
+      : `<text x="14" y="136" font-family="Archivo" font-weight="800" font-size="12"
+               letter-spacing="1.2" fill="var(--vi-mut)">NOTHING RECORDED</text>`}
+  </svg>`;
+}
+const COUNTED = panel({
+  alt:'A defender meets the ball and wins it. The record writes: tackle, plus one.',
+  atk:[46,66], def:[142,66],
+  ball:'M56 66 H128', ballHead:'M124 61 l10 5 -10 5 z',
+  mark:'<circle cx="135" cy="66" r="17" fill="none" stroke="var(--vi-gold-num)" stroke-width="2.5"/>',
+  filled:true
+});
+/*  THE SECOND PANEL SAYS "NEVER ATTEMPTED", AND THE FIRST DRAWING SAID THE OPPOSITE.
+    It carried a dashed path running PAST the defender to an arrowhead at the goal,
+    which reads as a pass that got through , the exact reverse of the argument. The
+    path now dies at the defender, carries no arrowhead, and fades: the line stops
+    because the pass was never played. Found by looking at it, not by measuring it.  */
+const PREVENTED = panel({
+  alt:'The same defender, standing in the lane a second earlier. The pass is never attempted and the record writes nothing.',
+  atk:[46,66], def:[104,66],
+  ball:'M56 66 H92', ballDash:true,
+  mark:'<path d="M104 96 L104 80" fill="none" stroke="var(--vi-strong)" stroke-width="2.5" '
+      +'stroke-linecap="round" opacity=".45"/>'
+      +'<path d="M100 84 l4 -6 4 6 z" fill="var(--vi-strong)" opacity=".45"/>',
+  filled:false
+});
+const FIG = `
+  <div class="dpair">
+    <div class="dpan"><p class="dpt">He makes the tackle</p>${COUNTED}</div>
+    <div class="dpan"><p class="dpt">He makes it unnecessary</p>${PREVENTED}</div>
+  </div>
+  <p class="dcap">The game records what a defender <b>does</b> far more faithfully than what he
+  <b>prevents</b>, so the best defenders score lower here than their reputation. Van Dijk sits in
+  the low seventies. <b>We publish that with the reason rather than quietly moving him</b> , a score
+  that agrees with every reputation is not measuring reputation, it is copying it.</p>`;
+document.getElementById('figD').innerHTML=FIG;
+document.getElementById('figL').innerHTML=FIG;
+// the new caption's word count, measured rather than claimed
+window.__words = FIG.replace(/<[^>]+>/g,' ').split(/\s+/).filter(w=>/[a-z0-9]/i.test(w)).length;
+</script>
+</body></html>

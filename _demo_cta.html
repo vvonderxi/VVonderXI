@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare CTA , contrast options</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{ --cream:#F0EAD9; --ink:#1C1B1A; }
+  body{margin:0;font-family:Archivo,system-ui,sans-serif;background:#141311;color:var(--cream);padding:28px}
+  body.light{background:#F4EFE2;color:#1C1B1A}
+  h1{font-size:19px;font-weight:900;letter-spacing:.01em;margin:0 0 4px}
+  .lede{font-size:13px;opacity:.75;max-width:70ch;line-height:1.5;margin:0 0 20px}
+  .row{display:flex;flex-wrap:wrap;gap:22px;margin:22px 0 0}
+  .opt{min-width:250px}
+  .cap{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.65;margin:0 0 7px}
+  /* THE REAL CONTROL , 213x53, 16px, weight 900, exactly as compare.html renders it */
+  .settle{width:213px;height:53px;border:0;border-radius:11px;color:#fff;
+          font-family:Archivo,sans-serif;font-size:16px;font-weight:900;letter-spacing:.01em;cursor:pointer;
+          display:flex;align-items:center;justify-content:center}
+  .now{background:linear-gradient(135deg,#E70443,#FF8FA3)}
+  .a  {background:#E70443}
+  .b  {background:linear-gradient(135deg,#E70443,rgb(233,18,77))}
+  .d  {background:linear-gradient(135deg,#E70443 0%,#E70443 85%,#FF8FA3 100%)}
+  .num{font-size:12px;margin:9px 0 0;line-height:1.5}
+  .pass{color:#4ADE80;font-weight:700} body.light .pass{color:#15803D}
+  .fail{color:#FF8FA3;font-weight:700} body.light .fail{color:#AD0332}
+  .note{font-size:12px;opacity:.7;line-height:1.55;max-width:74ch;margin:26px 0 0;border-top:1px solid currentColor;padding-top:14px}
+  button.tog{position:fixed;top:14px;right:14px;font:700 11px Archivo,sans-serif;padding:7px 12px;border-radius:8px;
+             border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+</style></head><body>
+<button class="tog" onclick="document.body.classList.toggle('light')">theme</button>
+<h1>Compare CTA , four options at the real size</h1>
+<p class="lede">16px, weight 900, 213x53 , the exact control from compare.html. <strong>16px bold is NOT WCAG
+large</strong> (that needs 18.66px), so the bar is <strong>4.5</strong>, not 3.0. Ratios are measured across the
+<strong>glyph band only</strong> (t 0.35 to 0.76 of the 135deg gradient line), not the worst stop of the whole
+button , which is why the harness said 2.16 and the honest current reading is 2.77.</p>
+
+<div class="row">
+  <div class="opt"><p class="cap">Current</p><div class="settle now">Compare</div>
+    <p class="num">worst <b>2.77</b> · best 3.91 · <span class="fail">fails 4.5</span></p></div>
+  <div class="opt"><p class="cap">A , flat brand pink</p><div class="settle a">Compare</div>
+    <p class="num">worst <b>4.67</b> · flat · <span class="pass">passes</span><br>gradient gone entirely</p></div>
+  <div class="opt"><p class="cap">B , 90% toward dark</p><div class="settle b">Compare</div>
+    <p class="num">worst <b>4.53</b> · best 4.60 · <span class="pass">passes</span><br>gradient technically present, visually flat</p></div>
+  <div class="opt"><p class="cap">D , stop-shifted</p><div class="settle d">Compare</div>
+    <p class="num">worst <b>4.67</b> · <span class="pass">passes</span><br>full brand gradient still visible in the corner</p></div>
+</div>
+
+<p class="note"><strong>Why C is not here:</strong> shifting the stops to 70% was the obvious version and it
+<strong>fails at 4.34</strong> , the glyph band reaches past the flat section. 85% is the first shift where the whole
+band sits on flat brand pink. <strong>D keeps the light stop</strong>, it just moves it past the text rather than under it.
+<br><br><strong>The ink cannot be changed instead:</strong> white on the dark stop alone is 4.67, which is the ceiling
+this gradient offers. Any lighter pink under white text fails at any size worth using, and raising the type to 19px/900
+only drops the bar to 3.0 while the current band still reads 2.77 at its light end.</p>
+</body></html>

@@ -1,0 +1,103 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Continental trophies , judged as a set</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:#12110f;color:#F3EDE0;padding:26px 22px 70px}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;margin-bottom:5px}
+  .sub{font-size:13.5px;line-height:1.6;color:rgba(243,237,224,.62);max-width:88ch;margin-bottom:20px}
+  .rule{border-left:3px solid #E8B84B;background:rgba(232,184,75,.07);padding:13px 15px;
+    border-radius:0 10px 10px 0;margin-bottom:24px;max-width:92ch;font-size:13px;line-height:1.65;color:rgba(243,237,224,.84)}
+  .rule b{color:#E8B84B}
+  h2{font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;
+     color:rgba(243,237,224,.5);margin:26px 0 10px}
+  .row{display:flex;flex-wrap:wrap;gap:14px}
+  .cell{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:10px;
+    padding:12px 10px 9px;width:118px;text-align:center}
+  .cell.new{border-color:#5ED39E;background:rgba(94,211,158,.09)}
+  .cell .m{display:flex;align-items:center;justify-content:center;height:34px;color:#E8B84B}
+  .cell.ind .m{color:#F3EDE0}
+  .cell .n{font-size:10px;line-height:1.35;color:rgba(243,237,224,.62);margin-top:6px;word-break:break-word}
+  .px16 svg{width:16px;height:16px}
+  .px22 svg{width:22px;height:22px}
+  .px48 svg{width:48px;height:48px}
+  /* the pill, exactly as a card ships it */
+  .pillrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .pill{display:inline-flex;align-items:center;gap:5px;background:#EBDCA8;color:#7e5a10;
+    border-radius:999px;padding:3px 9px 3px 7px;font-family:'Archivo';font-weight:800;font-size:11px}
+  .pill svg{width:13px;height:13px}
+  .light{background:#F0EAD9;border-radius:12px;padding:14px;margin-top:8px}
+  .light .cell{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.12)}
+  .light .cell .m{color:#7e5a10}
+  .light .cell.ind .m{color:#2a2620}
+  .light .cell .n{color:#5f594e}
+</style></head><body>
+
+<h1>Continental trophies , judged as a set</h1>
+<div class="sub">Two new marks against the seven that exist. The green cells are the new ones.</div>
+
+<div class="rule">
+  <b>THE SET'S DESIGN RULE, WHICH BOTH NEW MARKS OBEY:</b> team honours stand <b>footed and
+  vertical</b>; individual awards are <b>unfooted objects</b>. That is what tells a reader
+  whether a trophy was won by a squad or by a person, before they read the label.<br><br>
+  <b>AND THE COLLISION THAT MATTERS IS BETWEEN SILHOUETTES AT 16px</b>, the size a pill ships
+  at. The three existing team marks occupy three shapes , the World Cup a <b>globe and ring</b>,
+  the UCL its <b>big side ears</b>, the League a <b>wide bowl on a boxed plinth</b>. The two new
+  ones take the shapes that family leaves free: the Euro a <b>tall slim body on a small foot</b>,
+  body-dominant; the Copa a <b>small bowl over a triangular plinth</b>, base-dominant and the
+  inverse of it. <b>The discriminator is the body-to-base ratio, which survives rasterisation
+  when handle detail does not.</b><br><br>
+  <b>MEASURED, NOT EYEBALLED , ALL 36 PAIRS RASTERISED AND COMPARED ON THE ALPHA CHANNEL.</b>
+  The bar is not a number I chose: it is <b>the set's own floor</b>, the closest pair that
+  already existed before these two were drawn.<br>
+  <span style="font-family:ui-monospace,monospace;font-size:12px;line-height:1.7;display:block;margin-top:6px">
+  16px &nbsp;existing floor 0.508 (ballon d'or / player of the season) &nbsp;&middot;&nbsp; worst new pair 0.539 &nbsp;&middot;&nbsp; <b>new pairs below the floor: 0</b><br>
+  22px &nbsp;existing floor 0.507 (world cup / league title) &nbsp;&middot;&nbsp; worst new pair 0.564 &nbsp;&middot;&nbsp; <b>new pairs below the floor: 0</b>
+  </span><br>
+  <b>THE FIRST DRAWING FAILED THIS AND WAS REWORKED RATHER THAN SHIPPED.</b> Its five tightest
+  pairs in the whole set all involved the two new marks, the worst at <b>0.409</b> , well under
+  the 0.508 floor , because both were bowls on stacked rectangular bases and so collided with
+  each other AND with the League's plinth. Body-dominant against base-dominant is what fixed it.
+  </div>
+
+<h2>16px , the size the pill actually ships at</h2>
+<div class="row px16" id="r16"></div>
+
+<h2>22px</h2>
+<div class="row px22" id="r22"></div>
+
+<h2>48px , where the drawing is legible, to check it is the same object</h2>
+<div class="row px48" id="r48"></div>
+
+<h2>In the pill, on the card's cream ground</h2>
+<div class="light"><div class="pillrow" id="pills"></div></div>
+
+<h2>On the card's cream ground at 16px , the ground a Cabinet actually uses</h2>
+<div class="light"><div class="row px16" id="rlight"></div></div>
+
+<script src="/vv-marks.js?v=demo-cont"></script>
+<script>
+var TEAM=['world_cup_winner','euro_winner','copa_winner','ucl_winner','league_champion'];
+var IND =['ballon_dor','player_of_season','golden_boot','top_assists'];
+var LABEL={world_cup_winner:'World Cup',euro_winner:'European Champion',copa_winner:'Copa América',
+  ucl_winner:'UCL Champion',league_champion:'League Title',ballon_dor:"Ballon d'Or",
+  player_of_season:'Player of the Season',golden_boot:'Golden Boot',top_assists:'Top Assists'};
+var NEW={euro_winner:1,copa_winner:1};
+function cells(host){
+  var h='';
+  TEAM.concat(IND).forEach(function(k){
+    var ind=IND.indexOf(k)>=0;
+    h+='<div class="cell'+(NEW[k]?' new':'')+(ind?' ind':'')+'">'
+      +'<div class="m">'+(window.VVMarks?VVMarks.honour(k):'')+'</div>'
+      +'<div class="n">'+LABEL[k]+'</div></div>';
+  });
+  document.getElementById(host).innerHTML=h;
+}
+['r16','r22','r48','rlight'].forEach(cells);
+document.getElementById('pills').innerHTML=TEAM.concat(IND).map(function(k){
+  return '<span class="pill">'+(window.VVMarks?VVMarks.honour(k):'')+LABEL[k]+'</span>';
+}).join('');
+if(window.VVMarks&&VVMarks.inject) VVMarks.inject();
+</script>
+</body></html>

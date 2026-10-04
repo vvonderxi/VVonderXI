@@ -1,0 +1,233 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Wonder Tags , colour language demo (injection only)</title>
+<style>
+  body{margin:0;font:13px/1.5 system-ui,sans-serif;background:#22201e;color:#e8e2d6}
+  .bar{position:sticky;top:0;z-index:9;display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+       padding:10px 14px;background:#111;border-bottom:1px solid #333}
+  .grp{display:flex;gap:6px;align-items:center}
+  .grp b{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8a8378;font-weight:800}
+  button{font:600 12px system-ui;background:#2e2b28;color:#ddd;border:1px solid #4a453f;
+         border-radius:6px;padding:5px 10px;cursor:pointer}
+  button.on{background:#E70443;border-color:#E70443;color:#fff}
+  .stage{padding:16px;display:flex;justify-content:center}
+  iframe{border:0;background:#000;box-shadow:0 10px 40px -12px #000;height:1500px}
+  .note{padding:0 16px 14px;color:#a49d93;max-width:1440px;margin:0 auto}
+</style></head><body>
+<div class="bar">
+  <div class="grp"><b>option</b>
+    <button data-o="0" class="on">baseline</button>
+    <button data-o="1">1 pills</button>
+    <button data-o="2">2 name ink</button>
+    <button data-o="3">3 group heads</button>
+    <button data-o="4">4 mark only *</button>
+  </div>
+  <div class="grp"><b>width</b>
+    <button data-w="1440" class="on">1440</button>
+    <button data-w="390">390</button>
+  </div>
+  <div class="grp"><b>theme</b>
+    <button data-t="dark" class="on">dark</button>
+    <button data-t="light">light</button>
+  </div>
+  <div class="grp"><b>card</b>
+    <button data-c="130728" class="on">Salah 24/25</button>
+    <button data-c="143372">Messi 11/12</button>
+  </div>
+  <div class="grp"><b><span id="stat"></span></b></div>
+</div>
+<div class="stage"><iframe id="fr" width="1440"></iframe></div>
+<div class="note" id="note"></div>
+<script>
+var S={o:0,w:1440,t:'dark',c:'130728'};
+var fr=document.getElementById('fr');
+
+/*  OPTION 2 INKS , derived, not eyeballed. Each is its pill's dark stop scaled toward
+    black until it clears 4.5:1 on BOTH .tagrow grounds (dark theme rgba(255,255,255,.03)
+    over --cream = #F0EBDA; light theme rgba(255,255,255,.6) over --cream = #F9F7F0).
+    Ratios dark/light: ATT 4.60/5.12  MID 4.57/5.09  DEF 4.55/5.06
+                       STAGE 6.97/7.76 (pill colour already passes, unchanged)
+                       CROSS 8.15/9.07 (unchanged)  HONOUR 4.51/5.02  GEN 4.62/5.14  */
+var INK={ATT:'#D2043D',MID:'#21784A',DEF:'#3D68B8',STAGE:'#1B5563',CROSS:'#46443F',
+         HONOUR:'#866523',PRESTIGE:'#806529'};
+/* the pill gradients, read for options 1 and 4 by widening the page's own rules where
+   possible; these literals are used ONLY for the mark fill in option 4 (a mark is not
+   text, so it takes the saturated pill colour rather than a darkened ink). */
+var MARKC={ATT:'#E70443',MID:'#2FA968',DEF:'#4A7FE0',STAGE:'#1B5563',CROSS:'#46443F',
+           HONOUR:'#C9922B',PRESTIGE:'#C9922B'};
+
+function famOf(D){
+  var m={};
+  (D.tags||[]).forEach(function(t){ m[t.name]=t.family; });
+  if(D.prestige==='Generational'||D.prestige==='Iconic') m[D.prestige]='PRESTIGE';
+  return m;
+}
+
+function inject(){
+  var w=fr.contentWindow, d=fr.contentDocument;
+  if(!w.D) return false;
+  var D=w.D, fam=famOf(D);
+
+  /*  TRANSITIONS OFF. This tab reports document.visibilityState 'hidden' and a 50ms timer
+      measures 600-1000ms, so CSS transitions are throttled 12-20x (CLAUDE.md SS C). With
+      them live the panel never finishes opening and every geometry read is a lie. Killing
+      them makes the layout settle synchronously; nothing here is a motion demo. */
+  var kill=d.getElementById('vvKill');
+  if(!kill){ kill=d.createElement('style'); kill.id='vvKill';
+    kill.textContent='*{transition:none!important;animation:none!important}'
+      +'.layer.open .layer-b{max-height:none!important}'
+      +'.tagrow .tmore{max-height:0}';
+    d.head.appendChild(kill); }
+
+  /* open Wonder Tags through its own class, and close the rest so the panel is the frame */
+  [].forEach.call(d.querySelectorAll('.layer'),function(L){
+    var t=L.querySelector('.layer-t');
+    L.classList.toggle('open', !!t && t.textContent.trim()==='Wonder Tags');
+  });
+
+  d.body.classList.toggle('light', S.t==='light');
+
+  /*  RESET BY RE-RENDERING, NOT BY UNDOING. Option 3 moves rows between sections and
+      deletes a section; an undo path for that is exactly the kind of block-rewrite whose
+      losses do not show in a diff (CLAUDE.md SS C). The page owns a re-callable renderer,
+      so the reset is one call to it and the DOM is pristine by construction. */
+  var old=d.getElementById('vvOpt'); if(old) old.remove();
+  var stash=d.getElementById('vvStash'); if(stash) stash.remove();
+  if(typeof w.vvApplyHonours==='function') w.vvApplyHonours();
+
+  var st=d.createElement('style'); st.id='vvOpt'; var css='';
+
+  /* tag every row with its family so every option can select on it */
+  [].forEach.call(d.querySelectorAll('#wonderTags .tagrow'),function(r){
+    var n=(r.querySelector('.ttl')||{}).textContent||'';
+    var f=r.classList.contains('honour') ? 'HONOUR' : (fam[n.trim()]||'');
+    if(f) r.setAttribute('data-fam',f);
+    var t=r.querySelector('.ttl'); if(t&&!t.dataset.orig) t.dataset.orig=t.textContent;
+  });
+
+  if(S.o===1){
+    /*  WIDEN THE PAGE'S OWN RULES, DO NOT COPY THEM. CLAUDE.md SS C: comparing or copying
+        CSS by selector has produced three separate defects. Every '#glChips .chtag*' rule
+        gets a '#wonderTags .wtpill*' twin generated from the SAME declaration block, so
+        the pill cannot drift from the strip by construction. */
+    var add=[];
+    [].forEach.call(d.styleSheets,function(sh){
+      var rules; try{ rules=sh.cssRules; }catch(e){ return; }
+      [].forEach.call(rules||[],function(r){
+        if(r.selectorText && r.selectorText.indexOf('#glChips .chtag')===0){
+          add.push(r.selectorText.replace('#glChips .chtag','#wonderTags .wtpill')
+                   +'{'+r.style.cssText+'}');
+        }
+      });
+    });
+    css+=add.join('\n');
+    css+='\n#wonderTags .tt{align-items:center;gap:0}'
+       /* .tagrow .tt .ttl is flex:1 , a pill must not inherit that or it spans the row */
+       + '\n#wonderTags .tt .ttl.wtpill{flex:0 0 auto;font-size:11px;font-weight:800;'
+       + 'padding:5px 11px;border-radius:16px;display:inline-flex;align-items:center;'
+       + 'gap:6px;color:#fff;overflow-wrap:normal}'
+       + '\n#wonderTags .tt .wtpill .vvm{width:12px;height:12px}'
+       + '\n#wonderTags .tt > .vvm{display:none}'   /* the mark moves INSIDE the pill */
+       + '\n#wonderTags .tt .tchev{margin-left:auto}';
+    [].forEach.call(d.querySelectorAll('#wonderTags .tagrow'),function(r){
+      var f=r.getAttribute('data-fam'), t=r.querySelector('.ttl'); if(!t) return;
+      var cls = f==='HONOUR' ? 'wtpill wtpill-gold'
+              : f==='PRESTIGE' ? 'wtpill wtpill-prestige-'+(D.prestige==='Generational'?'gen':'ico')
+              : 'wtpill wtpill-'+String(f).toLowerCase();
+      t.className='ttl '+cls;
+      var mk=r.querySelector('.tt > .vvm');
+      if(mk && !t.querySelector('.vvm')){ t.insertBefore(mk.cloneNode(true), t.firstChild); }
+    });
+    /* the gold honour pill is a .chip rule, not a .chtag one , widen that too */
+    css+='\n#wonderTags .wtpill-gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}';
+  }
+
+  if(S.o===2){
+    Object.keys(INK).forEach(function(f){
+      css+='\n#wonderTags .tagrow[data-fam="'+f+'"] .tt .ttl{color:'+INK[f]+'}'
+         + '\n#wonderTags .tagrow[data-fam="'+f+'"] .tt .vvm{color:'+INK[f]+'}';
+    });
+  }
+
+  if(S.o===3){
+    /*  THE GROUPS DO NOT MATCH THE COLOUR LANGUAGE. SILVERWARE and INDIVIDUAL HONOURS are
+        both gold and their head is ALREADY gold, so on those two this option is a no-op.
+        Every colour the reader has to learn lives inside THE PLAYER, which here holds four
+        families at once. Splitting it is the only way one head can mean one colour, so
+        that is what this renders , and the cost is visible: seven rows, five heads. */
+    var host=d.querySelector('#wonderTags .wtsec:last-child');
+    if(host && (host.querySelector('.wtsechead')||{}).textContent==='THE PLAYER'){
+      var rows=[].slice.call(host.querySelectorAll('.tagrow'));
+      var order=['PRESTIGE','ATT','MID','DEF','CROSS','STAGE'];
+      var LBL={PRESTIGE:'PRESTIGE',ATT:'ATTACKING',MID:'CREATING',DEF:'DEFENDING',
+               CROSS:'DURABILITY',STAGE:'CAREER STAGE'};
+      var stashEl=d.createElement('div'); stashEl.id='vvStash'; stashEl.style.display='none';
+      host.parentNode.appendChild(stashEl);
+      rows.forEach(function(r){ stashEl.appendChild(r); });
+      host.remove();
+      order.forEach(function(f){
+        var mine=[].slice.call(stashEl.querySelectorAll('.tagrow[data-fam="'+f+'"]'));
+        if(!mine.length) return;
+        var sec=d.createElement('div'); sec.className='wtsec wtsec-synth';
+        sec.setAttribute('data-fam',f);
+        var h=d.createElement('div'); h.className='wtsechead'; h.textContent=LBL[f];
+        sec.appendChild(h); mine.forEach(function(r){ sec.appendChild(r); });
+        d.getElementById('wonderTags').appendChild(sec);
+      });
+    }
+    Object.keys(INK).forEach(function(f){
+      css+='\n#wonderTags .wtsec[data-fam="'+f+'"] .wtsechead{color:'+INK[f]+';'
+         + 'border-bottom-color:'+INK[f]+'59}';
+    });
+  }
+
+  if(S.o===4){
+    /*  MARK ONLY. The mark is already shared with the strip (one set since 2026-09-01) and
+        it is not text, so it takes the pill's own saturated colour rather than a darkened
+        ink. The name stays in the row's reading ink. One coloured element per row, no new
+        box, no new type size. */
+    css+='\n#wonderTags .tt .vvm{width:16px;height:16px}';
+    css+='\n#wonderTags .tt .ttl{color:#2a2620}';
+    Object.keys(MARKC).forEach(function(f){
+      css+='\n#wonderTags .tagrow[data-fam="'+f+'"] .tt .vvm{color:'+MARKC[f]+'}';
+    });
+    /* Generational cannot be a hue , its identity is a BLACK ground with gold ink. One row,
+       so it keeps the object rather than being flattened into gold beside the honours. */
+    css+='\n#wonderTags .tagrow[data-fam="PRESTIGE"] .tt .ttl{'
+       + 'background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;'
+       + 'border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:.08em;'
+       + 'text-transform:uppercase;font-size:10.5px;padding:4px 10px;border-radius:14px;'
+       + 'flex:0 0 auto;display:inline-block}';
+    css+='\n#wonderTags .tagrow[data-fam="PRESTIGE"] .tt .vvm{color:#C9922B}';
+  }
+
+  st.textContent=css; d.head.appendChild(st);
+
+  /* report what actually rendered */
+  var fams={}; [].forEach.call(d.querySelectorAll('#wonderTags .tagrow'),function(r){
+    fams[r.getAttribute('data-fam')||'?']=(fams[r.getAttribute('data-fam')||'?']||0)+1; });
+  document.getElementById('stat').textContent =
+    'iw '+w.innerWidth+' | '+(w.matchMedia('(max-width:720px)').matches?'phone':'desk')
+    +' | rows '+JSON.stringify(fams);
+  var heads=[].slice.call(d.querySelectorAll('#wonderTags .wtsechead')).map(function(h){return h.textContent;});
+  document.getElementById('note').textContent='sections: '+heads.join('  /  ');
+  return true;
+}
+
+function load(){
+  fr.width=S.w; fr.style.width=S.w+'px';
+  fr.src='card.html?id='+S.c+'&cb='+Date.now();
+  fr.onload=function(){
+    var n=0,iv=setInterval(function(){ if(inject()||++n>60) clearInterval(iv); },250);
+  };
+}
+document.querySelectorAll('.bar button').forEach(function(b){
+  b.onclick=function(){
+    var k=Object.keys(b.dataset)[0], v=b.dataset[k];
+    b.parentNode.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    S[k]= (k==='o'||k==='w') ? +v : v;
+    if(k==='o'||k==='t'){ inject(); } else { load(); }
+  };
+});
+load();
+</script></body></html>

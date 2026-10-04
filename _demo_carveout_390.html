@@ -1,0 +1,27 @@
+<title>Carve-out at 390</title>
+<style>
+ body{margin:0;padding:14px;background:#17161a;color:#F0EAD9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+ h1{font-size:14px;margin:0 0 10px}
+ h2{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#F0EAD9;margin:14px 0 6px}
+ .rail{display:flex;gap:14px;align-items:flex-start}
+ .cell{width:390px;flex:0 0 390px}
+ .oh{font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#E0A93A;margin:0 0 5px}
+ iframe{width:390px;border:1px solid #33302c;border-radius:8px;background:#F0EAD9;display:block}
+</style>
+<h1>The same three states at 390px , real iframes, innerWidth asserted</h1>
+<div id="host"></div>
+<script>
+var L=['A , current 6e0a122','B , held gold pill','C , carve-out'];
+var CARDS=[['Haaland 22/23',0],['Ronaldo 21/22',1]];
+var host=document.getElementById('host');
+CARDS.forEach(function(c){
+  var h2=document.createElement('h2'); h2.textContent=c[0]; host.appendChild(h2);
+  var rail=document.createElement('div'); rail.className='rail';
+  L.forEach(function(t,i){
+    var d=document.createElement('div'); d.className='cell';
+    d.innerHTML='<div class="oh">'+t+'</div><iframe src="/_demo_carveout.html?card='+c[1]+'&only='+i+'" height="800"></iframe>';
+    rail.appendChild(d);
+  });
+  host.appendChild(rail);
+});
+</script>

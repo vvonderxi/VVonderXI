@@ -87,7 +87,8 @@ async function processLeagueSeason(code,year){
   const fixtures=(fx.response||[]).filter(f=>f.fixture?.status?.short==='FT');
   if(!fixtures.length){console.log(`  – ${code} ${year}: no fixtures`);return;}
 
-  const agg={}; // pid -> {name, counts:{POS:n}}
+  const agg={};      // pid -> {name, counts:{POS:n}, numbers:{}}  , SEASON-WIDE, do not re-key
+  const byTeam={};   // pid|team_id -> club-keyed shirt tallies , the number only
   let done=0, lastRem='?';
   for(const f of fixtures){
     let l; try{ l=await af(`/fixtures/lineups?fixture=${f.fixture.id}`); }catch(e){stats.errors++;continue;}
@@ -112,9 +113,42 @@ async function processLeagueSeason(code,year){
         if(!agg[pl.id])agg[pl.id]={name:pl.name,counts:{},numbers:{}};
         agg[pl.id].counts[pos]=(agg[pl.id].counts[pos]||0)+1;
         if(pl.number!=null) agg[pl.id].numbers[pl.number]=(agg[pl.id].numbers[pl.number]||0)+1;
+        /*  THE SHIRT NUMBER IS TALLIED PER CLUB TOO (2026-09-22). The tally above is
+            season-wide, which is CORRECT for position and appearances , item 26's detector
+            works only because `pp.appearances` spans both clubs of a mid-season move, and SS D
+            records that re-keying this row on team_id is actively harmful. But a season-wide
+            MODAL number belongs to whichever club he started more for, which is how Semenyo's
+            Bournemouth 24 ended up on his Manchester City card. So the number gets its own
+            club-keyed tally and lands on the CARD ROW; everything else stays as it was.  */
+        if(pl.number!=null && team.team && team.team.id!=null){
+          const tk=pl.id+'|'+team.team.id;
+          if(!byTeam[tk]) byTeam[tk]={api:pl.id, team_id:team.team.id, team_name:team.team.name, numbers:{}};
+          byTeam[tk].numbers[pl.number]=(byTeam[tk].numbers[pl.number]||0)+1;
+        }
       }
     }
     done++;
+  }
+
+  /*  CLUB-KEYED NUMBERS -> `player_season_cards.shirt_number`, source `modal_single` where the
+      player-season holds one card and `modal_split` where it holds more. A number already
+      sourced from a squad page (`squadnum`) is NEVER overwritten by a modal one.  */
+  {
+    const rows=Object.values(byTeam).map(v=>{
+      const e=Object.entries(v.numbers).sort((a,b)=>b[1]-a[1]);
+      return e.length?{api:v.api, team_name:v.team_name, n:Number(e[0][0])}:null;
+    }).filter(Boolean);
+    let wrote=0;
+    for(const r of rows){
+      const {data,error}=await supabase.from('player_season_cards')
+        .update({shirt_number:r.n})
+        .eq('api_player_id',r.api).eq('season_year',year).eq('league_code',code).eq('team_name',r.team_name)
+        .or('shirt_number_source.is.null,shirt_number_source.neq.squadnum')
+        .select('id');
+      if(error){stats.errors++;continue;}
+      wrote+=(data||[]).length;
+    }
+    console.log(`  shirt numbers written to card rows: ${wrote} (club-keyed)`);
   }
 
   let n=0;

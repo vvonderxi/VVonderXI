@@ -1,0 +1,82 @@
+{
+ "comparison_log": [
+  {
+   "column": "id",
+   "sample_type": "number"
+  },
+  {
+   "column": "p1_name",
+   "sample_type": "string"
+  },
+  {
+   "column": "p2_name",
+   "sample_type": "string"
+  },
+  {
+   "column": "p1_season",
+   "sample_type": "string"
+  },
+  {
+   "column": "p2_season",
+   "sample_type": "string"
+  },
+  {
+   "column": "p1_vv_score",
+   "sample_type": "number"
+  },
+  {
+   "column": "p2_vv_score",
+   "sample_type": "number"
+  },
+  {
+   "column": "winner_name",
+   "sample_type": "string"
+  },
+  {
+   "column": "margin_band",
+   "sample_type": "string"
+  },
+  {
+   "column": "deciding_factor",
+   "sample_type": "string"
+  },
+  {
+   "column": "mode",
+   "sample_type": "string"
+  },
+  {
+   "column": "session_id",
+   "sample_type": "string"
+  },
+  {
+   "column": "created_at",
+   "sample_type": "string"
+  }
+ ],
+ "search_log": [
+  {
+   "column": "id",
+   "sample_type": "number"
+  },
+  {
+   "column": "query",
+   "sample_type": "string"
+  },
+  {
+   "column": "result_count",
+   "sample_type": "number"
+  },
+  {
+   "column": "source",
+   "sample_type": "string"
+  },
+  {
+   "column": "session_id",
+   "sample_type": "string"
+  },
+  {
+   "column": "created_at",
+   "sample_type": "string"
+  }
+ ]
+}

@@ -1,0 +1,84 @@
+<title>Cabinet years, kill the canyon</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260912c"></script>
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;padding:16px;background:#17161a;color:#F0EAD9;font-family:'Inter',system-ui,sans-serif}
+ h1{font-family:'Archivo';font-size:15px;margin:0 0 4px}
+ .sub{font-size:11.5px;color:#a49d93;margin:0 0 16px;max-width:1300px;line-height:1.5}
+ .subj{margin-bottom:24px}
+ .sh{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px}
+ .cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));max-width:1500px}
+ .oh{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#E0A93A;margin:0 0 3px}
+ .ow{color:#a49d93;font-size:10.5px;line-height:1.45;margin-bottom:8px;min-height:40px}
+ .panel{background:#F0EAD9;border-radius:14px;padding:14px 16px;color:#2b2924}
+ .sect{font-family:'Archivo';font-weight:800;font-size:12.5px;color:#241f1b}
+ .intro{font-size:10.5px;color:#5f594e;margin:1px 0 10px}
+ /* SHIPPED pill */
+ .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;
+   display:inline-flex;align-items:center;background:linear-gradient(135deg,#FAF0CE,#F2DFA4);
+   color:#5a4410;box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55);margin-bottom:6px}
+ .chtag .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
+ .cabsh{margin-bottom:13px}
+ .cabyrs{padding-left:15px;border-left:3px solid rgba(224,169,58,0.62)}
+ .caby{font-family:'Archivo';font-weight:800;font-size:16px;color:#241f1b;
+   font-variant-numeric:tabular-nums;line-height:1.5;letter-spacing:0.01em}
+ /* ---- 0, SHIPS TODAY: CSS columns ---- */
+ .t0 .cabyrs.two{column-count:2;column-width:56px;column-gap:22px}
+ /* ---- 1, FLEX WRAP, packed left, full-width panel ---- */
+ .t1 .cabyrs{display:flex;flex-wrap:wrap;gap:4px 16px}
+ .t1 .caby{line-height:1.35}
+ /* ---- 2, FLEX WRAP + a panel sized to its content ---- */
+ .t2 .panel{max-width:430px}
+ .t2 .cabyrs{display:flex;flex-wrap:wrap;gap:4px 16px}
+ .t2 .caby{line-height:1.35}
+</style>
+<h1>The cabinet years , the canyon, and two replacements</h1>
+<p class="sub">Measured on the live card: the panel is <b>780px</b>, <code>column-count:2</code> makes two
+379px columns, and each holds a 30px year token at its left edge , <b>362px of empty space between
+the two columns of years</b>. No bullets in either replacement: every year already has the gold rule
+to its left.</p>
+<div id="host"></div>
+<script>
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var M=function(t){ return (window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''; };
+var SUBJ=[
+ {n:'Lewandowski 23/24 , a 12-year run and an 8-year run', sh:[
+   ['ucl_winner','UCL Winner',[2019]],
+   ['league_champion','League Champion',[2010,2011,2014,2015,2016,2017,2018,2019,2020,2021,2022,2024]],
+   ['player_of_season','Player of the Season',[2019]],
+   ['golden_boot','Golden Boot',[2013,2015,2017,2018,2019,2020,2021,2022]]]},
+ {n:'Ronaldo , a 4-year run', sh:[
+   ['ballon_dor',"Ballon d'Or",[2012,2013,2015,2016]]]},
+ {n:'Higuaín 15/16 , a single year', sh:[
+   ['league_champion','League Champion',[2011]],
+   ['golden_boot','Golden Boot',[2015]]]}
+];
+function cab(s,mode){
+  var h='<div class="sect">The Cabinet</div><div class="intro">What he had won by this season.</div>';
+  s.sh.forEach(function(r){
+    var two = (mode==='t0' && r[2].length>6) ? ' two' : '';
+    h+='<div class="cabsh"><span class="chtag">'+M(r[0])+r[1]+'</span>'
+      +'<div class="cabyrs'+two+'">'+r[2].map(function(y){return '<div class="caby">'+y+'</div>';}).join('')+'</div></div>';
+  });
+  return h;
+}
+var MODES=[
+ ['0 , ships today','CSS columns. Two equal columns across the whole panel, each holding one 30px token at its left edge.','t0'],
+ ['1 , wrapping flex row','Packed left, 16px column gap, 4px row gap. Years wrap only when they run out of width. Panel stays full width.','t1'],
+ ['2 , flex row + a panel sized to its content','The same row, in a panel capped at 430px. Tests whether the panel width was the real problem and the columns only a symptom.','t2']
+];
+var host=document.getElementById('host');
+var Q=location.search, ONLY=(Q.match(/only=(\d)/)||[])[1], SU=(Q.match(/subj=(\d)/)||[])[1];
+if(ONLY!=null||SU!=null){ document.querySelector('h1').style.display='none';
+  document.querySelector('.sub').style.display='none'; document.body.style.padding='6px'; }
+(SU!=null?[SUBJ[+SU]]:SUBJ).forEach(function(s){
+  var d=document.createElement('div'); d.className='subj';
+  var body=(ONLY!=null?[MODES[+ONLY]]:MODES).map(function(m){
+    return '<div><div class="oh">'+m[0]+'</div><div class="ow">'+m[1]+'</div>'
+      +'<div class="'+m[2]+'"><div class="panel">'+cab(s,m[2])+'</div></div></div>';
+  }).join('');
+  d.innerHTML='<div class="sh">'+s.n+'</div><div class="cols">'+body+'</div>';
+  host.appendChild(d);
+});
+</script>

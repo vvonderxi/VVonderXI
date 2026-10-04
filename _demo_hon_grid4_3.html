@@ -1,0 +1,113 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink-ink:#F1688E;--gold:#E8B84B;--page-2:#141011}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page-2);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 40px}
+.demohdr{padding:54px 0 0;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
+.demoname{font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;letter-spacing:-.02em;margin:10px 0 0}
+.demonote{font-size:13px;line-height:1.65;color:var(--ink-soft);max-width:62ch;margin:12px 0 0}
+.seprule{height:1px;background:rgba(255,255,255,.07);margin:38px 0 0}
+.tail{padding:80px 0 100px}
+/* the shared marks inherit colour and take their size from here */
+.hm svg{display:block;color:var(--gold)}
+@media(max-width:720px){.wrap{padding:0 20px}.demohdr{padding-top:34px}}
+</style>
+<style>
+/*  SHARED CELL, both options. The detail lives INSIDE the cell, so opening one grows its
+    grid row and pushes what follows down. Nothing closes, nothing overlays, and because
+    every cell in a row is a grid item they simply stretch , that is reflow, not a jump.
+    MULTIPLE CELLS OPEN AT ONCE, deliberately. The whole point of leaving the hero panel
+    behind is that reading one honour must not take another off the screen.  */
+.hcell{border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 20px 20px;
+       background:rgba(255,255,255,.02);display:flex;flex-direction:column;align-self:start}
+.hcell .hm{height:64px;display:flex;align-items:flex-end}
+.hcell .hm svg{width:52px;height:52px;color:var(--gold)}
+.hn{font-family:'Bricolage Grotesque';font-weight:700;font-size:19px;letter-spacing:-.02em;
+    color:var(--cream);margin-top:16px;line-height:1.2}
+.ho{font-size:13.5px;line-height:1.6;color:rgba(240,234,217,.7);margin-top:8px}
+.hcareer{font-family:'Archivo';font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+         color:var(--gold);margin-top:10px}
+.hmore{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.04em;color:var(--pink-ink);
+       background:none;border:0;padding:0;margin-top:14px;cursor:pointer;text-align:left;align-self:flex-start}
+.hdet{max-height:0;overflow:hidden;opacity:0;transition:max-height .45s ease,opacity .35s ease}
+.hcell.open .hdet{max-height:520px;opacity:1;margin-top:14px}
+.htd{font-size:13.5px;line-height:1.7;color:rgba(240,234,217,.8)}
+.htd b{color:var(--cream);font-weight:600}
+.hdq{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15px;line-height:1.6;
+     color:var(--cream);margin-top:12px;padding-left:15px;border-left:1px solid rgba(232,184,75,.34)}
+.glab{font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.gsub{font-size:13px;line-height:1.6;color:var(--ink-soft);margin-top:7px;max-width:58ch}
+/*  ONE COLUMN AT 390 AND THAT IS THE ANSWER, NOT A COLLAPSE. Measured: at 375px of content
+    a two-column grid gives each cell about 178px, and the longest label, "Player of the
+    Season", needs 156px at this size before its one-liner is considered , so two columns
+    reintroduces the wrapped-label defect the whole redesign exists to remove. The row list
+    already uses 100% of the width on a phone. Desktop was the problem; this is not.  */
+@media(max-width:720px){
+  .hgrid,.hgrid4,.hgrid3{grid-template-columns:1fr !important}
+  .hcell{padding:18px 16px 16px}
+  .hcell .hm{height:52px}.hcell .hm svg{width:44px;height:44px}
+  .hn{font-size:18px;margin-top:12px}
+}
+/*  OPTION A , 4 THEN 3. The row lengths ARE the grouping: four awards one player can win,
+    three medals a squad collects. The headings still name it, but they are no longer doing
+    the work alone , the shape says it first.
+    WORLD CUP SITS WITH THE TEAM TROPHIES, which is what makes the second row three rather
+    than two. vv-core's own note says it is honestly BOTH , a team trophy that attaches to a
+    whole career , so it is filed by WHO won it and carries a line about WHEN it attaches.
+    Filing it alone as a third group made a one-cell row and implied a third kind of honour.  */
+.hgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px}
+.hgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.greg+.greg{margin-top:52px}
+</style>
+<div class="wrap">
+  <div class="demohdr">Playbook , honours , grid option A</div>
+  <div class="demoname">Four, then three</div>
+  <p class="demonote">The row lengths are the grouping: four awards one player can win, three medals a squad collects. Detail opens inside its own cell, so the row grows and everything below reflows. Nothing closes when something else opens.</p>
+  <div class="seprule"></div>
+  <div id="out"></div>
+  <div class="tail"></div>
+</div>
+<script>
+function render(){
+  function cell(o){
+    return '<div class="hcell" id="c-'+o.k+'"><div class="hm">'+honMark(o.k)+'</div>'
+     + '<div class="hn">'+o.n+'</div><div class="ho">'+o.one+'</div>'
+     + (o.leg==='career'?'<div class="hcareer">Every season of a career</div>':'')
+     + '<button class="hmore" data-k="'+o.k+'">See more &#8250;</button>'
+     + '<div class="hdet"><div class="htd">'+o.td+'</div><div class="hdq">'+o.dq+'</div></div></div>';
+  }
+  var ind=HON.filter(function(o){return o.leg==='player';});
+  var team=HON.filter(function(o){return o.leg!=='player';}).sort(function(a,b){return a.rank-b.rank;});
+  var h='';
+  h+='<div class="greg"><div class="glab">Won by one player</div>'
+   + '<div class="gsub">A jury, a vote or a scoring chart picks a single name. Nobody else can share it.</div>'
+   + '<div class="hgrid4">'+ind.map(cell).join('')+'</div></div>';
+  h+='<div class="greg"><div class="glab">Won by a squad</div>'
+   + '<div class="gsub">A medal every player in the team collects. It says where he was, and who he was with.</div>'
+   + '<div class="hgrid3">'+team.map(cell).join('')+'</div></div>';
+  var out=document.getElementById('out'); out.innerHTML=h;
+  out.addEventListener('click',function(e){
+    var b=e.target.closest('.hmore'); if(!b) return;
+    var c=document.getElementById('c-'+b.getAttribute('data-k'));
+    var open=c.classList.toggle('open');
+    b.innerHTML=open?'See less &#8249;':'See more &#8250;';
+  });
+}
+</script>
+<script src="/vv-marks.js"></script>
+<script src="/_demo_hon_data.js"></script>
+<script>
+  if(window.VVMarks && VVMarks.inject) VVMarks.inject();
+  render();
+  /*  THE MARK SET IS SHARED, SO A MISSING SYMBOL IS A REAL FAILURE, NOT A STYLING SLIP.
+      A <use> pointing at a symbol that is not in the document renders BLANK with no error,
+      which is exactly the silent failure section C records. Count them and say so.  */
+  var unresolved=[...document.querySelectorAll('use')].filter(function(u){
+    var h=(u.getAttribute('href')||u.getAttribute('xlink:href')||'').replace('#','');
+    return h && !document.getElementById(h); }).length;
+  console.log('[demo] honours rendered:', document.querySelectorAll('.hm').length,
+              '| unresolved <use>:', unresolved);
+</script>

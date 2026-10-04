@@ -1,0 +1,118 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chip Row Marks</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260919d"></script>
+<script src="/vv-core.js?v=20260919d"></script>
+<style id="demo">
+ body.dm{margin:0!important;padding:18px 16px 80px!important;display:block!important;height:auto!important;max-width:none!important;font:14px/1.5 Inter,system-ui,sans-serif}
+ .dm-h1{font:800 21px 'Bricolage Grotesque',sans-serif;margin:0 0 6px}
+ .dm-note{max-width:880px;opacity:.85;margin:0 0 8px}
+ .dm-bar{position:sticky;top:0;z-index:9;padding:8px 0;display:flex;gap:10px;background:inherit}
+ .dm-bar button{font:600 13px Inter,sans-serif;padding:8px 14px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+ .dm-lab{font:700 13px Inter,sans-serif;margin:22px 0 2px}
+ .dm-why{font:400 12.5px Inter,sans-serif;opacity:.8;margin:0 0 9px;max-width:880px}
+ .dm-rail{max-width:390px;padding:10px;border:1px dashed rgba(128,128,128,.4);border-radius:10px;display:flex;flex-wrap:wrap;gap:8px}
+ .dm-cap{font:600 11px Inter,sans-serif;opacity:.6;margin:6px 0 0}
+ pre.dm-tab{font:12px/1.45 ui-monospace,Menlo,monospace;background:rgba(128,128,128,.10);padding:12px;border-radius:8px;overflow:auto;max-width:880px}
+ /* THE ICON SLOT THE RENDERER WOULD NEED , 13px, inheriting the chip ink via currentColor */
+ .vvf-chip .vvf-ico{display:inline-flex;width:13px;height:13px;margin-right:6px;vertical-align:-2px;flex:0 0 auto}
+ .vvf-chip .vvf-ico svg{width:100%;height:100%;display:block}
+ .vvf-compact .vvf-chip .vvf-ico{width:12px;height:12px;margin-right:5px}
+</style></head><body class="dm">
+<div class="dm-bar"><button onclick="document.body.classList.toggle('light')">Toggle theme</button></div>
+<h1 class="dm-h1">All nine honour chips , drawn marks against today's emoji</h1>
+<p class="dm-note">The real chips, the real chip CSS (<code>VVFilters.mountStyles</code>), the marks straight from <code>vv-marks.js</code>. Judge the ROW, not the two new chips: the question is whether nine drawn marks hold together and stay apart at 13px, which is smaller than the 16px they were scored at when the set was built.</p>
+<div id="out">building&hellip;</div>
+<h3 class="dm-lab">Pairwise distinctness at chip size</h3>
+<p class="dm-why">Same method as <code>_demo_marks_set.html</code>: rasterise each mark to an alpha grid and score every pair by intersection over union, so only SHAPE counts (the ink is <code>currentColor</code> and identical across the set). <b>Higher means more alike.</b> The set's own recorded floor is <b>0.508 at 16px</b>, the closest pair that existed before the two trophies were added.</p>
+<pre class="dm-tab" id="tab">measuring&hellip;</pre>
+<script>
+const NINE=[
+ ['ballon_dor',"Ballon d'Or",'🥇'],['world_cup_winner','World Cup Winner','🌍'],['ucl_winner','UCL Champion','⭐'],
+ ['league_champion','League Title','🏆'],['player_of_season','Player of the Season','🎖️'],['golden_boot','Golden Boot','👟'],
+ ['top_assists','Top Assists','🅰️'],['euro_winner','European Champion',null],['copa_winner','Copa América Champion',null]
+];
+const RAST=13;                       // CHIP SIZE, not the 16px the set was scored at
+function raster(inner){ return rasterAt(inner, RAST); }
+function rasterAt(inner, RAST){      // lifted from _demo_marks_set.html, size made a parameter
+  return new Promise(res=>{
+    const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="'+RAST+'" height="'+RAST+'"><g color="#000">'+inner+'</g></svg>';
+    const img=new Image();
+    img.onload=()=>{ const c=document.createElement('canvas'); c.width=c.height=RAST;
+      const x=c.getContext('2d'); x.drawImage(img,0,0,RAST,RAST);
+      const d=x.getImageData(0,0,RAST,RAST).data; const a=new Float32Array(RAST*RAST);
+      for(let i=0;i<a.length;i++) a[i]=d[i*4+3]/255; res(a); };
+    img.onerror=()=>res(new Float32Array(RAST*RAST));
+    img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
+  });
+}
+function iou(a,b){ let inter=0,uni=0; for(let i=0;i<a.length;i++){ inter+=Math.min(a[i],b[i]); uni+=Math.max(a[i],b[i]); } return uni?inter/uni:1; }
+function chip(k,label,emoji,useMark,compact){
+  const ico = useMark ? '<span class="vvf-ico">'+VVMarks.honour(k)+'</span>' : '';
+  const lab = (emoji? emoji+' ':'')+label;
+  return '<button type="button" class="vvf-chip" data-vvf-value="'+k+'" aria-pressed="false">'+ico+lab+'</button>';
+}
+function rail(useMark,compact){
+  return '<div class="dm-rail'+(compact?' vvf-compact':'')+'">'
+    + NINE.map(([k,l,e])=>chip(k,l,useMark?null:e,useMark,compact)).join('') + '</div>';
+}
+(async()=>{
+  if(window.VVFilters && VVFilters.mountStyles) VVFilters.mountStyles(document);
+  const t=await (await fetch('/rankings.html?cb='+Date.now())).text();
+  const doc=new DOMParser().parseFromString(t,'text/html');
+  doc.querySelectorAll('style').forEach(s=>{const n=document.createElement('style');n.textContent=s.textContent;document.head.insertBefore(n,document.getElementById('demo'));});
+  if(window.VVMarks && VVMarks.inject) VVMarks.inject();
+  document.getElementById('out').innerHTML =
+      '<div class="dm-lab">Today , seven emoji and two chips with nothing</div>'
+    + '<div class="dm-why">The two continental chips filter correctly; they simply carry no glyph.</div>' + rail(false,false)
+    + '<div class="dm-cap">rankings rail, 13px chips</div>'
+    + '<div class="dm-lab">All nine as drawn marks</div>'
+    + '<div class="dm-why">One visual language for the row, and the pair that emoji cannot separate (a globe for the World Cup and a globe for the Americas) becomes two different trophies.</div>' + rail(true,false)
+    + '<div class="dm-cap">rankings rail, 13px chips</div>'
+    + '<div class="dm-lab">Compact , the card-search rail, 12.5px chips</div>'
+    + '<div class="dm-why">The smallest place these chips ship. Marks go to 12px here.</div>' + rail(true,true)
+    + '<div class="dm-cap">card.html search filters, compact mode</div>';
+  // ---- the measurement
+  const H = VVMarks.raw ? VVMarks.raw('honour') : null;
+  if(!H){ document.getElementById('tab').textContent='VVMarks.raw() unavailable , cannot measure.'; return; }
+  const items = NINE.map(([k])=>({key:k, inner:H[k]})).filter(i=>i.inner);
+  const R = await Promise.all(items.map(i=>raster(i.inner)));
+  const pairs=[];
+  for(let a=0;a<items.length;a++) for(let b=a+1;b<items.length;b++) pairs.push({a:items[a].key,b:items[b].key,v:iou(R[a],R[b])});
+  pairs.sort((x,y)=>y.v-x.v);
+  const worst=pairs[0];
+  let s='marks measured      '+items.length+' of '+NINE.length+(items.length<NINE.length?'   <-- A MARK IS MISSING':'')+'\n'
+      + 'pairs               '+pairs.length+'\n'
+      + 'recorded floor      0.508 at 16px (the set before the two trophies)\n'
+      + 'worst pair at 13px  '+worst.v.toFixed(3)+'   '+worst.a+' / '+worst.b+'\n\n'
+      + 'ten closest pairs at 13px\n';
+  pairs.slice(0,10).forEach(p=>{ s+='  '+p.v.toFixed(3)+'  '+p.a.padEnd(18)+p.b+'\n'; });
+
+  /*  TWO CONTROLS, because a single number at one size decides nothing.
+      1. THE SET WITHOUT THE TWO NEW MARKS. If the worst pair is the same either way, the
+         continental trophies are not what is tight.
+      2. A SIZE SWEEP. The floor on record was taken at 16px; comparing a 13px score to it
+         without checking how the metric moves with size would be comparing two things.  */
+  const SEVEN = NINE.slice(0,7).map(x=>x[0]);
+  async function worstOf(keys, size){
+    const R2 = await Promise.all(keys.map(k=>rasterAt(H[k], size)));
+    let w={v:-1};
+    for(let a=0;a<keys.length;a++) for(let b=a+1;b<keys.length;b++){ const v=iou(R2[a],R2[b]); if(v>w.v) w={v,a:keys[a],b:keys[b]}; }
+    return w;
+  }
+  const nineKeys = items.map(i=>i.key);
+  s+='\ncontrol , does adding the two continental marks change what is tightest?\n';
+  for(const size of [16,13]){
+    const a7=await worstOf(SEVEN,size), a9=await worstOf(nineKeys,size);
+    s+='  '+size+'px   seven originals '+a7.v.toFixed(3)+' ('+a7.a+' / '+a7.b+')\n';
+    s+='         all nine        '+a9.v.toFixed(3)+' ('+a9.a+' / '+a9.b+')'+(a7.v===a9.v?'   <-- identical, so the new pair is not the tight one':'')+'\n';
+  }
+  s+='\nsize sweep , all nine\n';
+  for(const size of [12,13,14,15,16,18,20,22]){ const w=await worstOf(nineKeys,size); s+='  '+String(size).padStart(2)+'px  '+w.v.toFixed(3)+'  '+w.a+' / '+w.b+'\n'; }
+  s+='\nREAD IT THIS WAY: World Cup and League Title are the tightest pair in the set at EVERY\n'
+   +  'size measured, 0.493 even at 22px, so this is a standing property of those two marks and\n'
+   +  'not something chip size creates. It is worse at 13px (0.543), and the chip row is the\n'
+   +  'first place they sit side by side in one line.\n';
+  document.getElementById('tab').textContent=s;
+})();
+</script></body></html>

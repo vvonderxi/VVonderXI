@@ -1,0 +1,536 @@
+card_id,api_player_id,player_name,season,club,current_pool,verified_position,confidence,evidence,source,fetched_at
+130728,306,Mohamed Salah,2425,Liverpool,Winger,Winger,high,"Right Winger 52  (base 52, Winger 100%)",transfermarkt,2026-08-10T20:01:11.032Z
+131585,1100,E. Haaland,2223,Manchester City,ST,ST,high,"Centre-Forward 53  (base 53, ST 100%)",transfermarkt,2026-08-10T20:01:19.484Z
+140068,154,L. Messi,1819,Barcelona,ST,Winger,high,"Right Winger 35, Second Striker 8, Centre-Forward 7  (base 50, Winger 70%)",transfermarkt,2026-08-10T20:01:33.859Z
+140489,154,L. Messi,1718,Barcelona,ST,CAM,high,"Second Striker 33, Right Winger 13, Centre-Forward 8  (base 54, CAM 61%)",transfermarkt,2026-08-10T20:04:10.069Z
+140934,154,L. Messi,1617,Barcelona,Winger,Winger,high,"Right Winger 48, Attacking Midfield 3, Second Striker 1  (base 52, Winger 92%)",transfermarkt,2026-08-10T20:04:41.948Z
+141575,157,L. Suárez,1516,Barcelona,ST,CAM,low,"Attacking Midfield 15, Central Midfield 11, Right Winger 10, Left Winger 2, Centre-Forward 1  (base 39, CAM 38%)",transfermarkt,2026-08-10T20:05:09.744Z
+133614,306,Mohamed Salah,1718,Liverpool,ST,Winger,high,"Right Winger 46, Centre-Forward 5, Attacking Midfield 1  (base 52, Winger 88%)",transfermarkt,2026-08-10T20:05:30.371Z
+139650,154,L. Messi,1920,Barcelona,Winger,Winger,high,"Right Winger 28, Centre-Forward 8, Second Striker 6, Attacking Midfield 2  (base 44, Winger 64%)",transfermarkt,2026-08-10T20:05:55.116Z
+141579,874,Cristiano Ronaldo,1516,Real Madrid,Winger,Winger,high,"Left Winger 36, Centre-Forward 12  (base 48, Winger 75%)",transfermarkt,2026-08-10T20:06:02.599Z
+147022,1863,C. Immobile,1920,Lazio,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-10T20:06:18.760Z
+140669,157,L. Suárez,1718,Barcelona,ST,CAM,high,"Attacking Midfield 25, Central Midfield 10, Left Winger 7, Right Winger 7  (base 49, CAM 51%)",transfermarkt,2026-08-10T20:06:31.417Z
+141117,157,L. Suárez,1617,Barcelona,ST,CAM,medium,"Attacking Midfield 21, Central Midfield 14, Left Winger 5, Right Winger 2  (base 42, CAM 50%)",transfermarkt,2026-08-10T20:06:57.073Z
+141402,154,L. Messi,1516,Barcelona,Winger,Winger,high,"Right Winger 46, Centre-Forward 2, Second Striker 1  (base 49, Winger 94%)",transfermarkt,2026-08-10T20:07:17.378Z
+148701,2297,G. Higuaín,1516,Napoli,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-10T20:07:23.367Z
+161191,51070,Z. Ibrahimović,1516,Paris Saint Germain,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-10T20:09:14.221Z
+131865,184,H. Kane,2223,Tottenham,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-10T20:09:32.551Z
+131969,306,Mohamed Salah,2122,Liverpool,Winger,Winger,high,"Right Winger 51  (base 51, Winger 100%)",transfermarkt,2026-08-10T20:09:51.069Z
+132669,184,H. Kane,2021,Tottenham,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-10T20:10:16.871Z
+133870,184,H. Kane,1718,Tottenham,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-10T20:10:42.554Z
+134288,184,H. Kane,1617,Tottenham,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-10T20:11:04.111Z
+134313,910,A. Sánchez,1617,Arsenal,ST,ST,low,"Centre-Forward 24, Left Winger 17, Attacking Midfield 6, Second Striker 3, Right Winger 1  (base 51, ST 47%)",transfermarkt,2026-08-10T20:12:09.281Z
+139209,154,L. Messi,2021,Barcelona,Winger,ST,high,"Centre-Forward 29, Second Striker 9, Right Winger 8, Attacking Midfield 1  (base 47, ST 62%)",transfermarkt,2026-08-10T20:12:37.874Z
+141441,276,Neymar,1516,Barcelona,Winger,Winger,high,"Left Winger 49  (base 49, Winger 100%)",transfermarkt,2026-08-10T20:12:47.791Z
+146972,874,Cristiano Ronaldo,1920,Juventus,Winger,Winger,high,"Left Winger 26, Centre-Forward 20  (base 46, Winger 57%)",transfermarkt,2026-08-10T20:13:08.086Z
+147130,30463,F. Quagliarella,1819,Sampdoria,ST,ST,high,"Centre-Forward 38, Second Striker 1  (base 39, ST 97%)",transfermarkt,2026-08-10T20:13:26.679Z
+148312,332,D. Mertens,1617,Napoli,Winger,ST,high,"Centre-Forward 33, Left Winger 8, Right Winger 2  (base 43, ST 77%)",transfermarkt,2026-08-10T20:13:40.359Z
+158399,278,Kylian Mbappé,2122,Paris Saint Germain,Winger,ST,high,"Centre-Forward 34, Left Winger 12  (base 46, ST 74%)",transfermarkt,2026-08-10T20:13:48.734Z
+159701,278,Kylian Mbappé,1819,Paris Saint Germain,ST,ST,high,"Centre-Forward 33, Right Winger 8, Left Winger 2  (base 43, ST 77%)",transfermarkt,2026-08-10T20:13:59.451Z
+147879,1863,C. Immobile,1718,Lazio,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-10T20:14:07.386Z
+148277,790,E. Džeko,1617,AS Roma,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-10T20:14:16.980Z
+166706,580,Jonas Gonçalves Oliveira,1718,Benfica,ST,ST,high,"Centre-Forward 23, Second Striker 15, Attacking Midfield 1, Left Winger 1  (base 40, ST 57%)",transfermarkt,2026-08-10T20:14:31.293Z
+167141,1497,B. Dost,1617,Sporting CP,Winger,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-10T20:14:39.896Z
+130730,2864,A. Isak,2425,Newcastle,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-10T20:14:48.470Z
+167490,580,Jonas Gonçalves Oliveira,1516,Benfica,ST,CAM,high,"Second Striker 36, Centre-Forward 8  (base 44, CAM 82%)",transfermarkt,2026-08-10T20:14:55.992Z
+131185,1100,E. Haaland,2324,Manchester City,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-10T20:15:18.175Z
+131296,19366,O. Watkins,2324,Aston Villa,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-10T20:15:31.759Z
+131555,306,Mohamed Salah,2223,Liverpool,Winger,Winger,high,"Right Winger 46, Centre-Forward 4, Second Striker 1  (base 51, Winger 90%)",transfermarkt,2026-08-10T20:15:51.305Z
+133197,306,Mohamed Salah,1819,Liverpool,ST,Winger,high,"Right Winger 35, Centre-Forward 15, Second Striker 2  (base 52, Winger 67%)",transfermarkt,2026-08-10T20:16:04.956Z
+134055,907,R. Lukaku,1617,Everton,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-10T20:16:14.596Z
+134725,18788,J. Vardy,1516,Leicester,ST,ST,high,"Centre-Forward 37, Second Striker 1  (base 38, ST 97%)",transfermarkt,2026-08-10T20:16:25.784Z
+138776,759,K. Benzema,2122,Real Madrid,Winger,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-10T20:16:31.816Z
+140670,874,Cristiano Ronaldo,1718,Real Madrid,ST,ST,high,"Centre-Forward 32, Left Winger 12  (base 44, ST 73%)",transfermarkt,2026-08-10T20:16:43.619Z
+141103,874,Cristiano Ronaldo,1617,Real Madrid,Winger,Winger,high,"Left Winger 34, Centre-Forward 11, Second Striker 1  (base 46, Winger 74%)",transfermarkt,2026-08-10T20:16:56.315Z
+144667,6420,M. Retegui,2425,Atalanta,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-10T20:17:04.443Z
+147099,2495,D. Zapata,1819,Atalanta,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-10T20:17:12.217Z
+147398,874,Cristiano Ronaldo,1819,Juventus,ST,Winger,high,"Left Winger 27, Centre-Forward 12, Second Striker 4  (base 43, Winger 63%)",transfermarkt,2026-08-10T20:17:21.660Z
+147926,30509,A. Belotti,1617,Torino,Winger,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-10T20:17:28.852Z
+154586,1465,P. Aubameyang,1617,Borussia Dortmund,ST,ST,high,"Centre-Forward 45, Left Winger 1  (base 46, ST 98%)",transfermarkt,2026-08-10T20:18:14.477Z
+160760,274,E. Cavani,1617,Paris Saint Germain,Winger,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-10T20:18:33.716Z
+164020,18979,V. Gyökeres,2425,Sporting CP,ST,ST,high,"Centre-Forward 52  (base 52, ST 100%)",transfermarkt,2026-08-10T20:18:39.860Z
+130780,1100,E. Haaland,2425,Manchester City,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-10T20:18:46.519Z
+130855,20589,B. Mbeumo,2425,Brentford,Winger,Winger,high,"Right Winger 33, Centre-Forward 6, Right Midfield 1, Second Striker 1  (base 41, Winger 83%)",transfermarkt,2026-08-10T20:18:58.092Z
+131140,306,Mohamed Salah,2324,Liverpool,Winger,Winger,high,"Right Winger 44  (base 44, Winger 100%)",transfermarkt,2026-08-10T20:19:03.919Z
+132391,306,Mohamed Salah,2021,Liverpool,ST,Winger,high,"Right Winger 47, Centre-Forward 4  (base 51, Winger 92%)",transfermarkt,2026-08-10T20:19:16.323Z
+133101,18788,J. Vardy,1920,Leicester,Winger,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-10T20:20:07.329Z
+133516,1465,P. Aubameyang,1819,Arsenal,ST,ST,high,"Centre-Forward 38, Left Winger 8, Right Winger 5  (base 51, ST 75%)",transfermarkt,2026-08-10T20:20:53.002Z
+133752,642,S. Agüero,1718,Manchester City,Winger,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-10T20:21:10.194Z
+133827,645,R. Sterling,1718,Manchester City,Winger,Winger,high,"Right Winger 27, Left Winger 10, Centre-Forward 7, Attacking Midfield 1  (base 45, Winger 82%)",transfermarkt,2026-08-10T20:21:31.498Z
+134051,54,Diego Costa,1617,Chelsea,Winger,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-10T20:21:51.499Z
+134542,642,S. Agüero,1516,Manchester City,ST,ST,high,"Centre-Forward 42, Second Striker 2  (base 44, ST 95%)",transfermarkt,2026-08-10T20:22:32.641Z
+134697,184,H. Kane,1516,Tottenham,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-10T20:22:37.802Z
+134711,635,R. Mahrez,1516,Leicester,Winger,Winger,high,"Right Winger 35, Attacking Midfield 3  (base 38, Winger 92%)",transfermarkt,2026-08-10T20:22:55.164Z
+137463,278,Kylian Mbappé,2425,Real Madrid,ST,ST,high,"Centre-Forward 57, Left Winger 2  (base 59, ST 97%)",transfermarkt,2026-08-10T20:23:14.053Z
+139225,759,K. Benzema,2021,Real Madrid,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-10T20:23:30.698Z
+139652,759,K. Benzema,1920,Real Madrid,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-10T20:23:44.564Z
+139925,2059,W. Ben Yedder,1819,Sevilla,ST,ST,high,"Centre-Forward 49, Second Striker 5  (base 54, ST 91%)",transfermarkt,2026-08-10T20:24:14.056Z
+140240,157,L. Suárez,1819,Barcelona,ST,CM,high,"Central Midfield 20, Attacking Midfield 8, Left Winger 7, Right Winger 2  (base 37, CM 54%)",transfermarkt,2026-08-10T20:25:38.791Z
+140646,47445,Iago Aspas,1718,Celta Vigo,Winger,Winger,high,"Right Winger 28, Centre-Forward 8, Second Striker 1  (base 37, Winger 76%)",transfermarkt,2026-08-10T20:26:24.793Z
+147424,332,D. Mertens,1819,Napoli,Winger,ST,high,"Centre-Forward 26, Second Striker 18, Left Winger 2, Right Winger 1  (base 47, ST 55%)",transfermarkt,2026-08-10T20:28:09.666Z
+153473,1166,T. Werner,1920,RB Leipzig,ST,ST,high,"Centre-Forward 36, Left Winger 5, Second Striker 4  (base 45, ST 80%)",transfermarkt,2026-08-10T20:28:55.720Z
+154943,1465,P. Aubameyang,1516,Borussia Dortmund,ST,ST,high,"Centre-Forward 45, Right Winger 4  (base 49, ST 92%)",transfermarkt,2026-08-10T20:29:48.432Z
+157546,278,Kylian Mbappé,2324,Paris Saint Germain,ST,ST,high,"Centre-Forward 26, Left Winger 21, Right Winger 1  (base 48, ST 54%)",transfermarkt,2026-08-10T20:30:27.349Z
+157988,278,Kylian Mbappé,2223,Paris Saint Germain,ST,ST,high,"Centre-Forward 38, Left Winger 4  (base 42, ST 90%)",transfermarkt,2026-08-10T20:30:42.162Z
+160335,274,E. Cavani,1718,Paris Saint Germain,ST,ST,high,"Centre-Forward 47, Left Winger 1  (base 48, ST 98%)",transfermarkt,2026-08-10T20:31:44.037Z
+170276,246,L. de Jong,2324,PSV Eindhoven,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-10T20:32:23.377Z
+145668,2780,V. Osimhen,2223,Napoli,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-10T20:32:39.269Z
+147839,216,M. Icardi,1718,Inter,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-10T20:33:48.036Z
+132265,184,H. Kane,2122,Tottenham,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-10T20:35:46.101Z
+131142,2864,A. Isak,2324,Newcastle,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-10T20:36:08.362Z
+151977,184,H. Kane,2324,Bayern München,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T05:36:20.347Z
+152972,521,R. Lewandowski,2021,Bayern München,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T05:36:32.168Z
+132266,186,Son Heung-Min,2122,Tottenham,ST,Winger,high,"Left Winger 32, Centre-Forward 6, Attacking Midfield 5, Right Winger 1  (base 44, Winger 75%)",transfermarkt,2026-08-11T05:36:58.317Z
+152603,521,R. Lewandowski,2122,Bayern München,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-11T05:37:10.190Z
+153358,521,R. Lewandowski,1920,Bayern München,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T05:37:23.542Z
+154477,521,R. Lewandowski,1617,Bayern München,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T05:37:38.554Z
+154840,521,R. Lewandowski,1516,Bayern München,ST,ST,high,"Centre-Forward 51  (base 51, ST 100%)",transfermarkt,2026-08-11T05:38:00.943Z
+132787,306,Mohamed Salah,1920,Liverpool,ST,Winger,high,"Right Winger 43, Centre-Forward 5  (base 48, Winger 90%)",transfermarkt,2026-08-11T05:38:29.611Z
+133289,2296,E. Hazard,1819,Chelsea,ST,Winger,high,"Left Winger 42, Centre-Forward 9  (base 51, Winger 82%)",transfermarkt,2026-08-11T05:38:55.555Z
+133364,642,S. Agüero,1819,Manchester City,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-11T05:39:32.223Z
+140071,759,K. Benzema,1819,Real Madrid,ST,ST,high,"Centre-Forward 52, Left Winger 1  (base 53, ST 98%)",transfermarkt,2026-08-11T05:39:57.273Z
+140211,47445,Iago Aspas,1819,Celta Vigo,ST,ST,high,"Centre-Forward 22, Right Winger 6  (base 28, ST 79%)",transfermarkt,2026-08-11T05:40:19.410Z
+140451,56,A. Griezmann,1718,Atletico Madrid,ST,ST,high,"Centre-Forward 28, Second Striker 20, Right Winger 1  (base 49, ST 57%)",transfermarkt,2026-08-11T05:41:05.015Z
+141405,759,K. Benzema,1516,Real Madrid,ST,ST,high,"Centre-Forward 35  (base 35, ST 100%)",transfermarkt,2026-08-11T05:41:23.516Z
+146475,907,R. Lukaku,2021,Inter,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T05:41:33.224Z
+146545,874,Cristiano Ronaldo,2021,Juventus,Winger,ST,high,"Centre-Forward 43, Left Winger 1  (base 44, ST 98%)",transfermarkt,2026-08-11T05:41:47.075Z
+151601,184,H. Kane,2425,Bayern München,ST,ST,high,"Centre-Forward 51  (base 51, ST 100%)",transfermarkt,2026-08-11T05:41:57.342Z
+154092,521,R. Lewandowski,1718,Bayern München,Winger,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-11T05:42:07.018Z
+158860,278,Kylian Mbappé,2021,Paris Saint Germain,ST,Winger,high,"Centre-Forward 22, Left Winger 20, Right Winger 4, Second Striker 1  (base 47, Winger 51%)",transfermarkt,2026-08-11T05:42:41.129Z
+146146,1863,C. Immobile,2122,Lazio,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T05:42:50.811Z
+148274,216,M. Icardi,1617,Inter,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T05:43:07.234Z
+159993,3246,N. Pépé,1819,Lille,Winger,Winger,high,"Right Winger 39  (base 39, Winger 100%)",transfermarkt,2026-08-11T05:43:26.674Z
+177180,15812,P. Onuachu,2021,Genk,Winger,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T05:43:36.655Z
+131475,186,Son Heung-Min,2324,Tottenham,ST,ST,high,"Centre-Forward 23, Left Winger 13  (base 36, ST 64%)",transfermarkt,2026-08-11T05:43:54.832Z
+131887,19974,I. Toney,2223,Brentford,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T05:44:03.634Z
+132684,186,Son Heung-Min,2021,Tottenham,Winger,Winger,high,"Left Winger 38, Centre-Forward 8, Right Winger 3, Attacking Midfield 1  (base 50, Winger 82%)",transfermarkt,2026-08-11T05:44:28.893Z
+132976,18955,D. Ings,1920,Southampton,ST,CB,high,"Centre-Back 36  (base 36, CB 100%)",transfermarkt,2026-08-11T05:44:45.750Z
+133094,304,S. Mané,1920,Liverpool,Winger,Winger,high,"Left Winger 40, Right Winger 4, Centre-Forward 3  (base 47, Winger 94%)",transfermarkt,2026-08-11T05:45:07.756Z
+133122,1465,P. Aubameyang,1920,Arsenal,ST,Winger,high,"Left Winger 20, Centre-Forward 18, Right Winger 6  (base 44, Winger 59%)",transfermarkt,2026-08-11T05:45:23.930Z
+133415,645,R. Sterling,1819,Manchester City,Winger,Winger,high,"Left Winger 31, Right Winger 17, Attacking Midfield 1, Second Striker 1, Centre-Forward 1  (base 51, Winger 94%)",transfermarkt,2026-08-11T05:45:52.004Z
+133487,304,S. Mané,1819,Liverpool,Winger,Winger,high,"Left Winger 24, Right Winger 15, Centre-Forward 2  (base 41, Winger 95%)",transfermarkt,2026-08-11T05:46:08.848Z
+137909,15811,A. Dovbyk,2324,Girona,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T05:46:28.131Z
+139188,1707,Gerard Moreno,2021,Villarreal,ST,ST,high,"Centre-Forward 28, Right Winger 10, Left Winger 1, Second Striker 1  (base 40, ST 70%)",transfermarkt,2026-08-11T05:46:47.394Z
+141249,47290,Aduriz,1516,Athletic Club,ST,ST,high,"Centre-Forward 51  (base 51, ST 100%)",transfermarkt,2026-08-11T05:46:57.215Z
+141373,56,A. Griezmann,1516,Atletico Madrid,ST,CAM,high,"Second Striker 31, Right Winger 10, Centre-Forward 10, Left Winger 3  (base 54, CAM 57%)",transfermarkt,2026-08-11T05:47:18.882Z
+141521,758,G. Bale,1516,Real Madrid,Winger,Winger,high,"Right Winger 21, Left Winger 4, Second Striker 3, Centre-Forward 2, Attacking Midfield 1  (base 31, Winger 81%)",transfermarkt,2026-08-11T05:47:43.358Z
+144933,217,Lautaro Martínez,2324,Inter,ST,ST,high,"Centre-Forward 39, Second Striker 4  (base 43, ST 91%)",transfermarkt,2026-08-11T05:47:55.829Z
+146377,2493,L. Muriel,2021,Atalanta,ST,ST,high,"Centre-Forward 38, Second Striker 3, Left Winger 2, Right Winger 1  (base 44, ST 86%)",transfermarkt,2026-08-11T05:48:35.814Z
+146737,31060,F. Caputo,1920,Sassuolo,ST,ST,high,"Centre-Forward 35, Left Winger 2  (base 37, ST 95%)",transfermarkt,2026-08-11T05:48:51.828Z
+147479,875,P. Dybala,1718,Juventus,ST,CAM,high,"Second Striker 39, Right Winger 5, Centre-Forward 1  (base 45, CAM 87%)",transfermarkt,2026-08-11T05:50:00.182Z
+148249,2297,G. Higuaín,1617,Juventus,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-11T05:50:11.997Z
+148342,875,P. Dybala,1516,Juventus,ST,CAM,high,"Second Striker 22, Centre-Forward 20  (base 42, CAM 52%)",transfermarkt,2026-08-11T05:50:25.114Z
+151654,21393,S. Guirassy,2324,VfB Stuttgart,ST,ST,high,"Centre-Forward 30  (base 30, ST 100%)",transfermarkt,2026-08-11T05:50:37.339Z
+151692,86,L. Openda,2324,RB Leipzig,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T05:50:48.641Z
+152684,269,C. Nkunku,2122,RB Leipzig,ST,CAM,high,"Second Striker 26, Attacking Midfield 9, Right Winger 6, Left Winger 5, Centre-Forward 5, Right Midfield 1  (base 52, CAM 67%)",transfermarkt,2026-08-11T05:51:31.111Z
+153053,1100,E. Haaland,2021,Borussia Dortmund,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T05:51:42.175Z
+153056,2063,André Silva,2021,Eintracht Frankfurt,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T05:51:51.251Z
+153738,521,R. Lewandowski,1819,Bayern München,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T05:52:00.905Z
+154601,24811,A. Modeste,1617,1. FC Köln,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T05:52:22.655Z
+158255,1467,A. Lacazette,2223,Lyon,ST,ST,high,"Centre-Forward 35, Attacking Midfield 1, Second Striker 1  (base 37, ST 95%)",transfermarkt,2026-08-11T05:52:41.623Z
+158342,2059,W. Ben Yedder,2122,Monaco,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-11T05:52:52.011Z
+159130,667,M. Depay,2021,Lyon,Winger,ST,high,"Centre-Forward 28, Left Winger 7, Second Striker 3, Attacking Midfield 2  (base 40, ST 70%)",transfermarkt,2026-08-11T05:53:12.959Z
+164395,18979,V. Gyökeres,2324,Sporting CP,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-11T05:53:22.101Z
+169775,37784,S. Steijn,2425,Twente,ST,CAM,high,"Attacking Midfield 47  (base 47, CAM 100%)",transfermarkt,2026-08-11T05:53:30.831Z
+172123,246,L. de Jong,1819,PSV Eindhoven,Winger,ST,high,"Centre-Forward 42, Attacking Midfield 1  (base 43, ST 98%)",transfermarkt,2026-08-11T05:53:54.265Z
+173239,246,L. de Jong,1516,PSV Eindhoven,ST,CM,high,"Central Midfield 18, Defensive Midfield 2  (base 20, CM 90%)",transfermarkt,2026-08-11T05:54:06.502Z
+148316,1863,C. Immobile,1617,Lazio,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T05:54:14.139Z
+184296,44355,B. Gomis,1718,Galatasaray,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T05:54:22.428Z
+166765,1497,B. Dost,1718,Sporting CP,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-11T05:54:32.145Z
+130869,20649,Y. Wissa,2425,Brentford,ST,ST,high,"Centre-Forward 37, Attacking Midfield 1  (base 38, ST 97%)",transfermarkt,2026-08-11T05:54:46.895Z
+130914,19366,O. Watkins,2425,Aston Villa,ST,ST,high,"Centre-Forward 52  (base 52, ST 100%)",transfermarkt,2026-08-11T05:54:55.677Z
+130949,18931,C. Wood,2425,Nottingham Forest,ST,FB,low,"Central Midfield 10, Right-Back 8, Defensive Midfield 5, Left-Back 4, Centre-Forward 1  (base 28, FB 43%)",transfermarkt,2026-08-11T05:55:21.936Z
+131129,1460,B. Saka,2324,Arsenal,Winger,Winger,high,"Right Winger 47  (base 47, Winger 100%)",transfermarkt,2026-08-11T05:55:30.935Z
+131546,1460,B. Saka,2223,Arsenal,Winger,Winger,high,"Right Winger 33, Right Midfield 13  (base 46, Winger 100%)",transfermarkt,2026-08-11T05:55:42.982Z
+131735,2939,C. Wilson,2223,Newcastle,ST,ST,high,"Centre-Forward 30  (base 30, ST 100%)",transfermarkt,2026-08-11T05:56:01.367Z
+132632,19134,P. Bamford,2021,Leeds,Winger,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T05:56:10.482Z
+132709,18788,J. Vardy,2021,Leicester,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T05:56:18.924Z
+132866,2887,R. Jiménez,1920,Wolves,Winger,CAM,high,"Attacking Midfield 24, Central Midfield 15, Left Winger 1  (base 40, CAM 60%)",transfermarkt,2026-08-11T05:56:34.135Z
+132922,908,A. Martial,1920,Manchester United,ST,ST,high,"Centre-Forward 46, Left Winger 2  (base 48, ST 96%)",transfermarkt,2026-08-11T05:56:47.174Z
+133030,645,R. Sterling,1920,Manchester City,ST,Winger,high,"Left Winger 42, Centre-Forward 5, Right Winger 3  (base 50, Winger 90%)",transfermarkt,2026-08-11T05:57:02.508Z
+133497,18788,J. Vardy,1819,Leicester,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-11T05:57:10.164Z
+133532,174,C. Eriksen,1819,Tottenham,CDM,CAM,low,"Attacking Midfield 25, Left Midfield 13, Right Midfield 8, Central Midfield 5  (base 51, CAM 49%)",transfermarkt,2026-08-11T05:57:29.398Z
+133675,907,R. Lukaku,1718,Manchester United,Winger,ST,high,"Centre-Forward 51  (base 51, ST 100%)",transfermarkt,2026-08-11T05:57:39.119Z
+134093,51070,Z. Ibrahimović,1617,Manchester United,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T05:57:48.271Z
+134153,642,S. Agüero,1617,Manchester City,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T05:58:06.749Z
+134464,907,R. Lukaku,1516,Everton,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-11T05:58:14.584Z
+137523,521,R. Lewandowski,2425,Barcelona,ST,ST,high,"Centre-Forward 52  (base 52, ST 100%)",transfermarkt,2026-08-11T05:58:23.570Z
+138225,56,A. Griezmann,2223,Atletico Madrid,ST,CAM,low,"Second Striker 19, Centre-Forward 19, Left Winger 5, Attacking Midfield 3, Right Winger 2  (base 48, CAM 46%)",transfermarkt,2026-08-11T05:58:48.787Z
+138409,521,R. Lewandowski,2223,Barcelona,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-11T05:59:00.853Z
+139625,1707,Gerard Moreno,1920,Villarreal,ST,ST,high,"Centre-Forward 20, Right Winger 16  (base 36, ST 56%)",transfermarkt,2026-08-11T05:59:12.405Z
+139818,157,L. Suárez,1920,Barcelona,ST,Winger,medium,"Attacking Midfield 9, Left Winger 9, Central Midfield 6, Right Winger 6  (base 30, Winger 50%)",transfermarkt,2026-08-11T05:59:31.373Z
+140012,56,A. Griezmann,1819,Atletico Madrid,ST,CAM,high,"Second Striker 32, Centre-Forward 14, Attacking Midfield 1, Right Winger 1  (base 48, CAM 69%)",transfermarkt,2026-08-11T05:59:49.683Z
+140675,2617,C. Stuani,1718,Girona,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T05:59:57.460Z
+141544,18833,Lucas Pérez,1516,Deportivo La Coruna,ST,ST,high,"Centre-Forward 28, Second Striker 9  (base 37, ST 76%)",transfermarkt,2026-08-11T06:00:19.819Z
+145362,217,Lautaro Martínez,2223,Inter,ST,ST,high,"Centre-Forward 52, Second Striker 3  (base 55, ST 95%)",transfermarkt,2026-08-11T06:00:31.414Z
+146917,907,R. Lukaku,1920,Inter,ST,ST,high,"Centre-Forward 51  (base 51, ST 100%)",transfermarkt,2026-08-11T06:00:39.332Z
+147558,30463,F. Quagliarella,1718,Sampdoria,ST,ST,high,"Centre-Forward 33, Second Striker 1  (base 34, ST 97%)",transfermarkt,2026-08-11T06:00:50.663Z
+148131,331,L. Insigne,1617,Napoli,Winger,Winger,high,"Left Winger 49  (base 49, Winger 100%)",transfermarkt,2026-08-11T06:00:59.716Z
+148143,30433,P. Gómez,1617,Atalanta,ST,CAM,high,"Second Striker 26, Left Winger 7, Attacking Midfield 4, Centre-Forward 1  (base 38, CAM 79%)",transfermarkt,2026-08-11T06:01:30.988Z
+148218,306,Mohamed Salah,1617,AS Roma,ST,Winger,high,"Right Winger 27, Attacking Midfield 6, Second Striker 3, Centre-Forward 3  (base 39, Winger 69%)",transfermarkt,2026-08-11T06:01:50.030Z
+153438,18,J. Sancho,1920,Borussia Dortmund,Winger,Winger,high,"Right Winger 22, Attacking Midfield 11, Left Winger 11  (base 44, Winger 75%)",transfermarkt,2026-08-11T06:02:06.381Z
+154571,1166,T. Werner,1617,RB Leipzig,ST,ST,high,"Centre-Forward 30, Right Winger 1, Second Striker 1  (base 32, ST 94%)",transfermarkt,2026-08-11T06:02:22.820Z
+154851,522,T. Müller,1516,Bayern München,ST,CAM,high,"Attacking Midfield 24, Right Winger 10, Second Striker 9, Centre-Forward 6  (base 49, CAM 67%)",transfermarkt,2026-08-11T06:02:46.852Z
+158081,154,L. Messi,2223,Paris Saint Germain,ST,CAM,low,"Second Striker 20, Right Winger 19, Centre-Forward 11, Attacking Midfield 5  (base 55, CAM 45%)",transfermarkt,2026-08-11T06:03:07.145Z
+158110,8489,J. David,2223,Lille,ST,UNSURE,low,identity not resolved: club 'Lille' on none of 4 candidate(s),transfermarkt,2026-08-11T06:03:22.800Z
+160245,276,Neymar,1718,Paris Saint Germain,Winger,Winger,high,"Left Winger 30  (base 30, Winger 100%)",transfermarkt,2026-08-11T06:03:31.833Z
+160337,667,M. Depay,1718,Lyon,ST,Winger,high,"Left Winger 37, Centre-Forward 8, Attacking Midfield 1, Second Striker 1  (base 47, Winger 79%)",transfermarkt,2026-08-11T06:03:49.609Z
+160750,1467,A. Lacazette,1617,Lyon,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T06:03:59.395Z
+170226,36798,V. Pavlidis,2324,AZ Alkmaar,ST,ST,high,"Centre-Forward 45, Attacking Midfield 1  (base 46, ST 98%)",transfermarkt,2026-08-11T06:04:17.542Z
+176165,27104,H. Cuypers,2223,Gent,ST,ST,high,"Centre-Forward 50, Attacking Midfield 1, Right Winger 1, Second Striker 1  (base 53, ST 94%)",transfermarkt,2026-08-11T06:04:40.999Z
+133962,644,L. Sané,1718,Manchester City,ST,Winger,high,"Left Winger 44, Right Winger 3, Attacking Midfield 1  (base 48, Winger 98%)",transfermarkt,2026-08-11T06:05:31.485Z
+138076,8492,A. Sørloth,2324,Villarreal,ST,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-11T06:05:46.313Z
+173271,183,V. Janssen,1516,AZ Alkmaar,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T06:06:37.871Z
+185041,26314,M. Gómez,1516,Beşiktaş,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T06:06:52.624Z
+182211,35533,E. Valencia,2223,Fenerbahçe,ST,UNSURE,low,identity not resolved: club 'Fenerbahçe' on none of 4 candidate(s),transfermarkt,2026-08-11T06:07:09.181Z
+130685,1165,Matheus Cunha,2425,Wolves,ST,CAM,high,"Attacking Midfield 13, Second Striker 13, Centre-Forward 6, Left Winger 3, Right Winger 1  (base 36, CAM 72%)",transfermarkt,2026-08-11T06:07:32.475Z
+131160,18883,D. Solanke,2324,Bournemouth,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T06:07:46.384Z
+131206,25927,J. Mateta,2324,Crystal Palace,ST,ST,high,"Centre-Forward 31  (base 31, ST 100%)",transfermarkt,2026-08-11T06:07:58.733Z
+131363,19428,J. Bowen,2324,West Ham,ST,ST,high,"Centre-Forward 23, Right Winger 19, Right Midfield 1  (base 43, ST 53%)",transfermarkt,2026-08-11T06:08:17.656Z
+131847,909,M. Rashford,2223,Manchester United,ST,Winger,high,"Left Winger 32, Centre-Forward 19, Right Winger 4  (base 55, Winger 65%)",transfermarkt,2026-08-11T06:08:49.884Z
+131871,18970,P. Groß,2223,Brighton,CDM,UNSURE,low,identity not resolved: club 'Brighton' on none of 4 candidate(s),transfermarkt,2026-08-11T06:09:07.836Z
+132028,19220,M. Mount,2122,Chelsea,ST,CAM,high,"Attacking Midfield 41, Central Midfield 6, Right Winger 2, Centre-Forward 2, Left Winger 1  (base 52, CAM 79%)",transfermarkt,2026-08-11T06:09:32.291Z
+132317,874,Cristiano Ronaldo,2122,Manchester United,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T06:09:41.013Z
+132789,643,Gabriel Jesus,1920,Manchester City,Winger,ST,high,"Centre-Forward 43, Left Winger 7  (base 50, ST 86%)",transfermarkt,2026-08-11T06:09:53.819Z
+133071,184,H. Kane,1920,Tottenham,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T06:10:02.507Z
+133275,2939,C. Wilson,1819,Bournemouth,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T06:10:21.388Z
+133458,184,H. Kane,1819,Tottenham,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T06:10:30.167Z
+133886,302,Roberto Firmino,1718,Liverpool,Winger,ST,high,"Centre-Forward 47, Left Winger 3, Right Winger 3, Attacking Midfield 1  (base 54, ST 87%)",transfermarkt,2026-08-11T06:10:55.780Z
+133912,18788,J. Vardy,1718,Leicester,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T06:11:11.000Z
+134070,2296,E. Hazard,1617,Chelsea,Winger,CAM,high,"Attacking Midfield 31, Left Winger 7, Centre-Forward 2  (base 40, CAM 78%)",transfermarkt,2026-08-11T06:11:27.689Z
+134255,2795,G. Sigurðsson,1617,Swansea,Winger,Winger,low,"Left Winger 18, Attacking Midfield 16, Centre-Forward 4, Right Winger 1  (base 39, Winger 49%)",transfermarkt,2026-08-11T06:11:45.610Z
+134310,629,K. De Bruyne,1617,Manchester City,CAM,CAM,low,"Attacking Midfield 19, Central Midfield 17, Left Midfield 10, Right Midfield 3  (base 49, CAM 39%)",transfermarkt,2026-08-11T06:12:04.278Z
+134352,147,Philippe Coutinho,1617,Liverpool,Winger,Winger,high,"Left Winger 29, Attacking Midfield 5, Left Midfield 1, Right Winger 1  (base 36, Winger 86%)",transfermarkt,2026-08-11T06:12:23.422Z
+134759,2295,O. Giroud,1516,Arsenal,ST,ST,high,"Centre-Forward 53  (base 53, ST 100%)",transfermarkt,2026-08-11T06:12:32.148Z
+137613,1496,Raphinha,2425,Barcelona,Winger,Winger,high,"Left Winger 45, Right Winger 6, Second Striker 6  (base 57, Winger 89%)",transfermarkt,2026-08-11T06:12:50.951Z
+137963,521,R. Lewandowski,2324,Barcelona,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-11T06:13:01.130Z
+138819,762,Vinícius Júnior,2122,Real Madrid,Winger,Winger,high,"Left Winger 51, Centre-Forward 1  (base 52, Winger 98%)",transfermarkt,2026-08-11T06:13:13.520Z
+139373,47445,Iago Aspas,2021,Celta Vigo,Winger,ST,high,"Centre-Forward 31, Left Winger 1, Second Striker 1  (base 33, ST 94%)",transfermarkt,2026-08-11T06:13:27.759Z
+139378,157,L. Suárez,2021,Atletico Madrid,ST,CAM,high,"Attacking Midfield 12, Central Midfield 7, Left Winger 2, Centre-Forward 1  (base 22, CAM 55%)",transfermarkt,2026-08-11T06:13:47.387Z
+139938,2671,Jaime Mata,1819,Getafe,ST,ST,high,"Centre-Forward 36, Left Winger 2  (base 38, ST 95%)",transfermarkt,2026-08-11T06:14:08.615Z
+140159,47348,Borja Iglesias,1819,Espanyol,ST,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-11T06:14:18.325Z
+140247,2617,C. Stuani,1819,Girona,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T06:14:26.163Z
+140535,1706,C. Bacca,1718,Villarreal,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T06:14:34.660Z
+140617,935,Rodrigo,1718,Valencia,ST,CDM,high,"Defensive Midfield 45, Central Midfield 2  (base 47, CDM 96%)",transfermarkt,2026-08-11T06:14:46.753Z
+140912,56,A. Griezmann,1617,Atletico Madrid,ST,CAM,high,"Second Striker 34, Centre-Forward 17, Right Winger 2  (base 53, CAM 64%)",transfermarkt,2026-08-11T06:15:10.365Z
+140987,276,Neymar,1617,Barcelona,Winger,Winger,high,"Left Winger 44, Attacking Midfield 1  (base 45, Winger 98%)",transfermarkt,2026-08-11T06:15:22.363Z
+141098,47445,Iago Aspas,1617,Celta Vigo,ST,Winger,low,"Right Winger 23, Centre-Forward 22, Second Striker 4  (base 49, Winger 47%)",transfermarkt,2026-08-11T06:15:50.740Z
+141190,47012,Rubén Castro,1516,Real Betis,ST,ST,high,"Centre-Forward 34, Second Striker 5  (base 39, ST 87%)",transfermarkt,2026-08-11T06:16:07.018Z
+145763,217,Lautaro Martínez,2122,Inter,ST,ST,high,"Centre-Forward 42, Second Striker 6  (base 48, ST 88%)",transfermarkt,2026-08-11T06:16:18.804Z
+146174,30415,D. Vlahović,2021,Fiorentina,ST,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-11T06:16:27.417Z
+146668,30537,D. Berardi,1920,Sassuolo,Winger,Winger,high,"Right Winger 29, Second Striker 3  (base 32, Winger 91%)",transfermarkt,2026-08-11T06:16:47.922Z
+147327,333,A. Milik,1819,Napoli,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T06:17:08.764Z
+147812,1859,Luis Alberto,1718,Lazio,Winger,CAM,high,"Second Striker 35, Attacking Midfield 5, Central Midfield 4  (base 44, CAM 91%)",transfermarkt,2026-08-11T06:17:30.670Z
+147874,332,D. Mertens,1718,Napoli,Winger,ST,high,"Centre-Forward 46, Second Striker 1  (base 47, ST 98%)",transfermarkt,2026-08-11T06:17:42.581Z
+148074,330,José Callejón,1617,Napoli,ST,Winger,high,"Right Winger 49  (base 49, Winger 100%)",transfermarkt,2026-08-11T06:17:53.490Z
+151975,26475,D. Undav,2324,VfB Stuttgart,ST,ST,high,"Centre-Forward 21, Second Striker 12  (base 33, ST 64%)",transfermarkt,2026-08-11T06:18:07.018Z
+152480,794,P. Schick,2122,Bayer Leverkusen,ST,ST,high,"Centre-Forward 31  (base 31, ST 100%)",transfermarkt,2026-08-11T06:18:16.700Z
+152686,1100,E. Haaland,2122,Borussia Dortmund,ST,ST,high,"Centre-Forward 30  (base 30, ST 100%)",transfermarkt,2026-08-11T06:18:24.586Z
+153803,18,J. Sancho,1819,Borussia Dortmund,Winger,Winger,high,"Right Winger 33, Left Winger 10  (base 43, Winger 100%)",transfermarkt,2026-08-11T06:18:40.396Z
+153841,1826,S. Haller,1819,Eintracht Frankfurt,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T06:18:49.499Z
+154942,1457,H. Mkhitaryan,1516,Borussia Dortmund,Winger,Winger,high,"Left Winger 23, Right Winger 20, Attacking Midfield 7, Central Midfield 1, Second Striker 1  (base 52, Winger 83%)",transfermarkt,2026-08-11T06:19:23.990Z
+157393,153,O. Dembélé,2425,Paris Saint Germain,Winger,ST,high,"Centre-Forward 26, Right Winger 20  (base 46, ST 57%)",transfermarkt,2026-08-11T06:19:51.662Z
+157436,897,M. Greenwood,2425,Marseille,ST,Winger,low,"Right Winger 16, Second Striker 8, Attacking Midfield 7, Centre-Forward 4  (base 35, Winger 46%)",transfermarkt,2026-08-11T06:20:12.448Z
+158681,666,M. Dembélé,2122,Lyon,ST,ST,high,"Centre-Forward 35  (base 35, ST 100%)",transfermarkt,2026-08-11T06:20:27.996Z
+158799,2059,W. Ben Yedder,2021,Monaco,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T06:20:36.494Z
+172492,2700,A. Jahanbakhsh,1718,AZ Alkmaar,ST,Winger,high,"Right Winger 34, Left Winger 3, Centre-Forward 2  (base 39, Winger 95%)",transfermarkt,2026-08-11T06:20:51.905Z
+172911,2739,Nicolai Mick Jørgensen,1617,Feyenoord,ST,UNSURE,low,identity not resolved: club 'Feyenoord' on none of 0 candidate(s),transfermarkt,2026-08-11T06:20:55.299Z
+173207,333,A. Milik,1516,Ajax,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T06:21:03.802Z
+167612,1374,I. Slimani,1516,Sporting CP,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T06:21:12.297Z
+140705,2615,M. Gómez,1718,Celta Vigo,Winger,UNSURE,low,identity not resolved: club 'Celta Vigo' on none of 4 candidate(s),transfermarkt,2026-08-11T06:21:33.903Z
+146591,1863,C. Immobile,2021,Lazio,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T06:21:43.403Z
+147444,1863,C. Immobile,1819,Lazio,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T06:21:51.461Z
+153899,25416,W. Weghorst,1819,VfL Wolfsburg,Winger,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-11T06:22:00.033Z
+166436,582,H. Seferović,1819,Benfica,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-11T06:22:13.370Z
+181012,2780,V. Osimhen,2425,Galatasaray,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T06:22:22.729Z
+181408,216,M. Icardi,2324,Galatasaray,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T06:22:31.012Z
+183533,8492,A. Sørloth,1920,Trabzonspor,ST,ST,high,"Centre-Forward 49  (base 49, ST 100%)",transfermarkt,2026-08-11T06:22:39.123Z
+187068,877,M. Kean,2425,Fiorentina,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T06:22:51.784Z
+132223,2678,Diogo Jota,2122,Liverpool,Winger,ST,high,"Centre-Forward 28, Left Winger 18, Right Winger 9  (base 55, ST 51%)",transfermarkt,2026-08-11T06:23:17.610Z
+130867,19163,J. Murphy,2425,Newcastle,Winger,Winger,high,"Right Winger 37, Right Midfield 4  (base 41, Winger 100%)",transfermarkt,2026-08-11T06:23:36.446Z
+130967,19428,J. Bowen,2425,West Ham,ST,Winger,low,"Right Winger 16, Centre-Forward 15, Right Midfield 2, Attacking Midfield 2, Second Striker 1  (base 36, Winger 50%)",transfermarkt,2026-08-11T06:24:06.507Z
+131127,978,K. Havertz,2324,Arsenal,ST,CAM,high,"Attacking Midfield 34, Centre-Forward 17  (base 51, CAM 67%)",transfermarkt,2026-08-11T06:24:37.654Z
+131266,138787,A. Gordon,2324,Newcastle,Winger,Winger,high,"Left Winger 39, Centre-Forward 5, Right Winger 3, Attacking Midfield 1  (base 48, Winger 88%)",transfermarkt,2026-08-11T06:25:06.382Z
+131551,127769,Gabriel Martinelli,2223,Arsenal,Winger,Winger,high,"Left Winger 42, Centre-Forward 3  (base 45, Winger 93%)",transfermarkt,2026-08-11T06:25:18.070Z
+131560,18784,J. Maddison,2223,Leicester,Winger,Winger,high,"Attacking Midfield 10, Right Winger 8, Right Midfield 7, Second Striker 2, Central Midfield 1, Left Winger 1  (base 29, Winger 55%)",transfermarkt,2026-08-11T06:25:49.881Z
+131684,19366,O. Watkins,2223,Aston Villa,ST,ST,high,"Centre-Forward 35, Left Winger 2, Right Winger 2  (base 39, ST 90%)",transfermarkt,2026-08-11T06:26:21.904Z
+132424,19187,J. Grealish,2021,Aston Villa,CDM,Winger,high,"Left Winger 19, Attacking Midfield 8  (base 27, Winger 70%)",transfermarkt,2026-08-11T06:26:34.007Z
+132988,642,S. Agüero,1920,Manchester City,ST,ST,high,"Centre-Forward 31  (base 31, ST 100%)",transfermarkt,2026-08-11T06:26:42.025Z
+133053,283,T. Alexander-Arnold,1920,Liverpool,FB,FB,high,"Right-Back 49  (base 49, FB 100%)",transfermarkt,2026-08-11T06:26:49.958Z
+133082,186,Son Heung-Min,1920,Tottenham,Winger,Winger,high,"Left Winger 26, Centre-Forward 10, Right Winger 3, Second Striker 1  (base 40, Winger 73%)",transfermarkt,2026-08-11T06:27:29.540Z
+133085,635,R. Mahrez,1920,Manchester City,ST,Winger,high,"Right Winger 47, Attacking Midfield 1  (base 48, Winger 98%)",transfermarkt,2026-08-11T06:27:46.360Z
+133491,1467,A. Lacazette,1819,Arsenal,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-11T06:27:54.199Z
+133674,634,David Silva,1718,Manchester City,Winger,CM,high,"Central Midfield 24, Attacking Midfield 14, Left Midfield 1, Left Winger 1  (base 40, CM 60%)",transfermarkt,2026-08-11T06:28:12.477Z
+133887,635,R. Mahrez,1718,Leicester,Winger,Winger,high,"Right Winger 39, Attacking Midfield 2  (base 41, Winger 95%)",transfermarkt,2026-08-11T06:28:24.189Z
+134289,186,Son Heung-Min,1617,Tottenham,Winger,Winger,high,"Left Winger 19, Centre-Forward 13, Right Winger 6, Second Striker 5, Left Midfield 1, Attacking Midfield 1  (base 45, Winger 58%)",transfermarkt,2026-08-11T06:28:52.796Z
+134782,172,D. Alli,1516,Tottenham,CAM,CAM,medium,"Attacking Midfield 23, Central Midfield 15, Left Midfield 7, Left Winger 1  (base 46, CAM 50%)",transfermarkt,2026-08-11T06:29:19.837Z
+137543,46746,A. Budimir,2425,Osasuna,ST,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T06:29:28.265Z
+138925,47445,Iago Aspas,2122,Celta Vigo,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-11T06:29:36.382Z
+139146,753,Marcos Llorente,2021,Atletico Madrid,Winger,CAM,low,"Attacking Midfield 17, Central Midfield 14, Right Midfield 11, Second Striker 3  (base 45, CAM 44%)",transfermarkt,2026-08-11T06:29:55.187Z
+139856,47265,Jorge Molina,1819,Getafe,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T06:30:03.659Z
+140616,758,G. Bale,1718,Real Madrid,ST,Winger,high,"Centre-Forward 19, Right Winger 13, Left Winger 7  (base 39, Winger 51%)",transfermarkt,2026-08-11T06:30:21.010Z
+140622,47319,Willian José,1718,Real Sociedad,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T06:30:29.535Z
+140823,47340,P. Piatti,1617,Espanyol,Winger,Winger,high,"Left Winger 30, Right Winger 1  (base 31, Winger 100%)",transfermarkt,2026-08-11T06:30:44.895Z
+141268,933,K. Gameiro,1516,Sevilla,ST,ST,high,"Centre-Forward 40, Second Striker 1  (base 41, ST 98%)",transfermarkt,2026-08-11T06:31:11.111Z
+141551,47370,Borja Bastón,1516,Eibar,ST,ST,high,"Centre-Forward 32  (base 32, ST 100%)",transfermarkt,2026-08-11T06:31:36.248Z
+144776,907,R. Lukaku,2425,Napoli,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T06:31:56.944Z
+145237,2295,O. Giroud,2324,AC Milan,ST,ST,high,"Centre-Forward 60  (base 60, ST 100%)",transfermarkt,2026-08-11T06:32:19.015Z
+145322,22236,Rafael Leão,2223,AC Milan,Winger,Winger,high,"Left Winger 42, Second Striker 6  (base 48, Winger 88%)",transfermarkt,2026-08-11T06:32:36.398Z
+145396,22015,B. Dia,2223,Salernitana,ST,CAM,high,"Attacking Midfield 34, Right Winger 10, Left Winger 1  (base 45, CAM 76%)",transfermarkt,2026-08-11T06:33:11.320Z
+146205,217,Lautaro Martínez,2021,Inter,ST,UNSURE,low,"NETWORK ETIMEDOUT , retryable, card not attempted",transfermarkt,2026-08-11T06:34:02.794Z
+146223,2495,D. Zapata,2021,Atalanta,ST,UNSURE,low,"NETWORK ETIMEDOUT , retryable, card not attempted",transfermarkt,2026-08-11T06:34:20.818Z
+146317,31003,S. Nwankwo,2021,Crotone,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T06:35:08.416Z
+146509,1457,H. Mkhitaryan,2021,AS Roma,ST,CAM,high,"Attacking Midfield 32, Left Winger 6, Second Striker 5, Centre-Forward 2, Right Winger 1  (base 46, CAM 80%)",transfermarkt,2026-08-11T06:36:17.958Z
+146827,30433,P. Gómez,1920,Atalanta,ST,ST,high,"Centre-Forward 21, Left Winger 1  (base 22, ST 95%)",transfermarkt,2026-08-11T06:36:53.174Z
+147193,31060,F. Caputo,1819,Empoli,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T06:37:09.311Z
+147245,30434,J. Iličić,1819,Atalanta,Winger,CAM,high,"Second Striker 15, Attacking Midfield 8, Right Winger 6, Centre-Forward 3  (base 32, CAM 72%)",transfermarkt,2026-08-11T06:37:35.225Z
+147813,2297,G. Higuaín,1718,Juventus,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T06:37:52.280Z
+148742,872,M. Pjanić,1516,AS Roma,CAM,CM,high,"Central Midfield 24, Defensive Midfield 9, Attacking Midfield 6  (base 39, CM 62%)",transfermarkt,2026-08-11T06:38:13.696Z
+151595,19617,M. Olise,2425,Bayern München,Winger,Winger,high,"Right Winger 50, Attacking Midfield 5  (base 55, Winger 91%)",transfermarkt,2026-08-11T06:38:41.767Z
+152311,21104,R. Kolo Muani,2223,Eintracht Frankfurt,ST,ST,high,"Centre-Forward 44, Right Winger 2  (base 46, ST 96%)",transfermarkt,2026-08-11T06:38:56.536Z
+153679,989,K. Volland,1819,Bayer Leverkusen,Winger,ST,high,"Centre-Forward 28, Right Winger 5, Left Winger 4, Second Striker 4  (base 41, ST 68%)",transfermarkt,2026-08-11T06:39:27.658Z
+153793,1828,L. Jović,1819,Eintracht Frankfurt,ST,ST,high,"Centre-Forward 44, Attacking Midfield 3  (base 47, ST 94%)",transfermarkt,2026-08-11T06:39:39.831Z
+153835,726,A. Kramarić,1819,1899 Hoffenheim,ST,CAM,high,"Attacking Midfield 21, Left Winger 7, Centre-Forward 7, Second Striker 2  (base 37, CAM 62%)",transfermarkt,2026-08-11T07:04:36.904Z
+153839,1166,T. Werner,1819,RB Leipzig,ST,UNSURE,low,"NETWORK UND_ERR_CONNECT_TIMEOUT , retryable, card not attempted",transfermarkt,2026-08-11T07:05:36.921Z
+154566,726,A. Kramarić,1617,1899 Hoffenheim,ST,ST,low,"Centre-Forward 17, Attacking Midfield 8, Second Striker 7, Left Winger 4  (base 36, ST 47%)",transfermarkt,2026-08-11T07:06:26.959Z
+154701,25642,Raffael Caetano de Araújo,1516,Borussia Mönchengladbach,ST,ST,high,"Centre-Forward 28, Second Striker 8, Attacking Midfield 1, Left Winger 1  (base 38, ST 74%)",transfermarkt,2026-08-11T07:06:49.256Z
+157860,1465,P. Aubameyang,2324,Marseille,ST,ST,high,"Centre-Forward 37, Left Winger 10, Second Striker 1  (base 48, ST 77%)",transfermarkt,2026-08-11T07:07:11.951Z
+157909,2059,W. Ben Yedder,2223,Monaco,ST,ST,high,"Centre-Forward 36, Second Striker 3  (base 39, ST 92%)",transfermarkt,2026-08-11T07:07:24.668Z
+158153,86,L. Openda,2223,Lens,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T07:07:33.485Z
+158159,162707,E. Wahi,2223,Montpellier,ST,ST,high,"Centre-Forward 27, Right Winger 3, Left Winger 1  (base 31, ST 87%)",transfermarkt,2026-08-11T07:07:49.715Z
+158594,663,M. Terrier,2122,Rennes,Winger,UNSURE,low,identity not resolved: club 'Rennes' on none of 4 candidate(s),transfermarkt,2026-08-11T07:08:05.516Z
+159884,266,Á. Di María,1819,Paris Saint Germain,ST,Winger,high,"Right Winger 16, Left Winger 12, Attacking Midfield 9, Second Striker 6, Left Midfield 2  (base 45, Winger 67%)",transfermarkt,2026-08-11T07:08:28.020Z
+159925,274,E. Cavani,1819,Paris Saint Germain,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T07:08:36.733Z
+166027,572,Pizzi,1920,Benfica,Winger,Winger,high,"Right Midfield 42, Right Winger 9  (base 51, Winger 100%)",transfermarkt,2026-08-11T07:08:50.923Z
+166507,393,M. Marega,1718,FC Porto,ST,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T07:09:27.981Z
+170159,94562,S. Giménez,2324,Feyenoord,ST,CB,high,"Centre-Back 32  (base 32, CB 100%)",transfermarkt,2026-08-11T07:09:50.449Z
+172170,548,H. Ziyech,1819,Ajax,Winger,Winger,high,"Right Winger 44, Attacking Midfield 5  (base 49, Winger 90%)",transfermarkt,2026-08-11T07:10:28.061Z
+172502,37160,S. Berghuis,1718,Feyenoord,ST,Winger,high,"Right Winger 43  (base 43, Winger 100%)",transfermarkt,2026-08-11T07:10:59.246Z
+173273,548,H. Ziyech,1516,Twente,Winger,CAM,high,"Attacking Midfield 31, Right Winger 1, Second Striker 1, Centre-Forward 1  (base 34, CAM 94%)",transfermarkt,2026-08-11T07:11:29.784Z
+176760,26475,D. Undav,2122,Union St. Gilloise,Winger,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T07:11:43.756Z
+177137,48582,R. Holzhauser,2021,Beerschot VA,CAM,CAM,high,"Attacking Midfield 30, Second Striker 3, Central Midfield 1, Centre-Forward 1  (base 35, CAM 94%)",transfermarkt,2026-08-11T07:12:17.173Z
+133191,19194,T. Abraham,1920,Chelsea,ST,ST,high,"Centre-Forward 47  (base 47, ST 100%)",transfermarkt,2026-08-11T07:12:26.044Z
+146989,790,E. Džeko,1920,AS Roma,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T07:12:45.173Z
+146999,30562,J. Galvão,1920,Cagliari,ST,CAM,high,"Second Striker 32, Attacking Midfield 4, Left Winger 1, Centre-Forward 1  (base 38, CAM 95%)",transfermarkt,2026-08-11T07:13:16.067Z
+153143,25416,W. Weghorst,2021,VfL Wolfsburg,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T07:13:30.834Z
+160839,119,R. Falcao,1617,Monaco,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T07:13:55.521Z
+176780,1372,M. Frey,2122,Antwerp,ST,UNSURE,low,identity not resolved: club 'Antwerp' on none of 4 candidate(s),transfermarkt,2026-08-11T07:14:26.957Z
+184040,2006,B. Yılmaz,1718,Trabzonspor,ST,ST,high,"Centre-Forward 22, Left Winger 3  (base 25, ST 88%)",transfermarkt,2026-08-11T07:14:57.919Z
+185071,42432,Samuel Eto'o Fils,1516,Antalyaspor,,ST,high,"Centre-Forward 31, Left Winger 1  (base 32, ST 97%)",transfermarkt,2026-08-11T07:15:20.438Z
+184350,18768,C. Tosun,1617,Beşiktaş,ST,ST,high,"Centre-Forward 41, Right Winger 4, Left Winger 2  (base 47, ST 87%)",transfermarkt,2026-08-11T07:16:00.689Z
+184616,10261,Vágner Love,1617,Alanyaspor,ST,ST,high,"Centre-Forward 28  (base 28, ST 100%)",transfermarkt,2026-08-11T07:16:39.735Z
+187415,21393,S. Guirassy,2425,Borussia Dortmund,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-11T07:16:49.361Z
+132217,645,R. Sterling,2122,Manchester City,Winger,Winger,high,"Left Winger 23, Right Winger 14, Centre-Forward 7, Second Striker 2  (base 46, Winger 80%)",transfermarkt,2026-08-11T07:17:15.328Z
+130754,792,J. Kluivert,2425,Bournemouth,Winger,CAM,high,"Attacking Midfield 32, Left Winger 4  (base 36, CAM 89%)",transfermarkt,2026-08-11T07:17:38.993Z
+130837,1485,Bruno Fernandes,2425,Manchester United,ST,CAM,high,"Attacking Midfield 32, Central Midfield 21, Centre-Forward 3, Left Winger 1  (base 57, CAM 56%)",transfermarkt,2026-08-11T07:17:57.644Z
+130984,2032,J. Strand Larsen,2425,Wolves,ST,UNSURE,low,"NETWORK ETIMEDOUT , retryable, card not attempted",transfermarkt,2026-08-11T07:18:53.918Z
+131058,2489,L. Díaz,2425,Liverpool,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-11T07:19:13.569Z
+131099,1165,Matheus Cunha,2324,Wolves,ST,ST,high,"Centre-Forward 20, Attacking Midfield 7, Second Striker 5, Left Winger 1  (base 33, ST 61%)",transfermarkt,2026-08-11T07:19:40.564Z
+131221,283058,N. Jackson,2324,Chelsea,ST,ST,high,"Centre-Forward 39, Left Winger 3, Second Striker 1  (base 43, ST 91%)",transfermarkt,2026-08-11T07:20:14.599Z
+131285,983,L. Bailey,2324,Aston Villa,Winger,Winger,high,"Right Winger 28, Right Midfield 6, Left Midfield 2, Left Winger 2, Centre-Forward 1  (base 39, Winger 97%)",transfermarkt,2026-08-11T07:20:50.746Z
+131339,47522,Douglas Luiz,2324,Aston Villa,CDM,CM,high,"Central Midfield 39, Defensive Midfield 10  (base 49, CM 80%)",transfermarkt,2026-08-11T07:21:07.490Z
+131454,51617,D. Núñez,2324,Liverpool,ST,ST,high,"Centre-Forward 49, Left Winger 5  (base 54, ST 91%)",transfermarkt,2026-08-11T07:21:39.047Z
+131461,6009,J. Álvarez,2324,Manchester City,ST,CAM,low,"Centre-Forward 24, Second Striker 18, Attacking Midfield 8, Right Winger 2, Left Midfield 1, Left Winger 1  (base 54, CAM 48%)",transfermarkt,2026-08-11T07:22:23.420Z
+132003,19545,R. James,2122,Chelsea,CDM,Winger,high,"Right Midfield 24, Centre-Back 5, Right-Back 5, Defensive Midfield 2, Left Midfield 1  (base 37, Winger 68%)",transfermarkt,2026-08-11T07:23:09.586Z
+132280,304,S. Mané,2122,Liverpool,ST,Winger,high,"Left Winger 30, Centre-Forward 18, Right Winger 3  (base 51, Winger 65%)",transfermarkt,2026-08-11T07:23:57.589Z
+132300,18788,J. Vardy,2122,Leicester,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T07:24:12.637Z
+132468,19366,O. Watkins,2021,Aston Villa,ST,ST,high,"Centre-Forward 39, Left Winger 1  (base 40, ST 98%)",transfermarkt,2026-08-11T07:24:50.497Z
+133257,2887,R. Jiménez,1819,Wolves,ST,CAM,high,"Attacking Midfield 38, Central Midfield 12  (base 50, CAM 76%)",transfermarkt,2026-08-11T07:25:15.643Z
+133472,186,Son Heung-Min,1819,Tottenham,ST,ST,low,"Centre-Forward 24, Left Winger 18, Right Winger 3, Second Striker 2, Attacking Midfield 1  (base 48, ST 50%)",transfermarkt,2026-08-11T07:26:36.585Z
+133473,302,Roberto Firmino,1819,Liverpool,Winger,ST,high,"Centre-Forward 33, Attacking Midfield 8, Second Striker 4, Left Winger 3  (base 48, ST 69%)",transfermarkt,2026-08-11T07:27:10.812Z
+133883,186,Son Heung-Min,1718,Tottenham,Winger,Winger,high,"Left Winger 30, Centre-Forward 7, Second Striker 6, Right Winger 4, Attacking Midfield 2  (base 49, Winger 69%)",transfermarkt,2026-08-11T07:28:13.700Z
+133896,1467,A. Lacazette,1718,Arsenal,ST,ST,high,"Centre-Forward 35, Left Winger 2, Right Winger 1  (base 38, ST 92%)",transfermarkt,2026-08-11T07:28:49.725Z
+134300,304,S. Mané,1617,Liverpool,Winger,Winger,high,"Right Winger 29  (base 29, Winger 100%)",transfermarkt,2026-08-11T07:29:12.816Z
+134316,18788,J. Vardy,1617,Leicester,ST,ST,high,"Centre-Forward 46, Second Striker 1  (base 47, ST 98%)",transfermarkt,2026-08-11T07:29:28.651Z
+134446,54,Diego Costa,1516,Chelsea,ST,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T07:29:39.857Z
+134626,18808,T. Deeney,1516,Watford,ST,ST,high,"Centre-Forward 26, Second Striker 16, Attacking Midfield 1  (base 43, ST 60%)",transfermarkt,2026-08-11T07:30:11.478Z
+134738,12975,O. Ighalo,1516,Watford,,ST,high,"Centre-Forward 40, Second Striker 1  (base 41, ST 98%)",transfermarkt,2026-08-11T07:30:32.897Z
+134752,300,G. Wijnaldum,1516,Newcastle,,Winger,low,"Left Midfield 18, Attacking Midfield 16, Central Midfield 5, Right Midfield 1  (base 40, Winger 48%)",transfermarkt,2026-08-11T07:31:01.756Z
+137791,56,A. Griezmann,2324,Atletico Madrid,ST,ST,low,"Centre-Forward 24, Second Striker 22, Attacking Midfield 1, Right Winger 1  (base 48, ST 50%)",transfermarkt,2026-08-11T07:31:35.820Z
+138323,759,K. Benzema,2223,Real Madrid,ST,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-11T07:31:46.545Z
+139453,47282,Raúl García,1920,Athletic Club,CM,CAM,high,"Attacking Midfield 25, Centre-Forward 16, Right Winger 2  (base 43, CAM 58%)",transfermarkt,2026-08-11T07:33:11.969Z
+139687,1911,L. Ocampos,1920,Sevilla,Winger,Winger,high,"Right Winger 31, Left Winger 13  (base 44, Winger 100%)",transfermarkt,2026-08-11T07:33:27.980Z
+139889,47282,Raúl García,1819,Athletic Club,CDM,CAM,high,"Attacking Midfield 30, Left Winger 2, Right Winger 1, Centre-Forward 1  (base 34, CAM 88%)",transfermarkt,2026-08-11T07:33:54.413Z
+140038,928,Dani Parejo,1819,Valencia,Winger,CM,high,"Central Midfield 54, Defensive Midfield 2  (base 56, CM 96%)",transfermarkt,2026-08-11T07:34:09.244Z
+140853,47392,Pedro León,1617,Eibar,CDM,Winger,high,"Right Winger 38  (base 38, Winger 100%)",transfermarkt,2026-08-11T07:34:19.073Z
+141470,21,Paco Alcácer,1516,Valencia,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T07:34:27.750Z
+141394,42086,Y. El-Arabi,1516,Granada CF,ST,ST,high,"Centre-Forward 31  (base 31, ST 100%)",transfermarkt,2026-08-11T07:34:36.914Z
+144560,30488,R. Orsolini,2425,Bologna,ST,Winger,high,"Right Winger 37, Right Midfield 1  (base 38, Winger 100%)",transfermarkt,2026-08-11T07:34:49.059Z
+144787,17,C. Pulišić,2425,AC Milan,Winger,Winger,high,"Right Winger 27, Attacking Midfield 16, Left Winger 6  (base 49, Winger 67%)",transfermarkt,2026-08-11T07:35:08.141Z
+144795,18767,A. Lookman,2425,Atalanta,ST,CAM,high,"Second Striker 29, Centre-Forward 7, Attacking Midfield 2, Left Winger 2  (base 40, CAM 78%)",transfermarkt,2026-08-11T07:35:52.236Z
+144880,30415,D. Vlahović,2324,Juventus,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T07:36:02.057Z
+144892,875,P. Dybala,2324,AS Roma,ST,CAM,high,"Second Striker 22, Right Winger 12, Left Winger 2, Attacking Midfield 1  (base 37, CAM 62%)",transfermarkt,2026-08-11T07:36:23.429Z
+145200,17,C. Pulišić,2324,AC Milan,Winger,Winger,high,"Right Winger 41, Left Winger 6, Attacking Midfield 3  (base 50, Winger 94%)",transfermarkt,2026-08-11T07:36:40.576Z
+145500,483,K. Kvaratskhelia,2223,Napoli,Winger,Winger,high,"Left Winger 43  (base 43, Winger 100%)",transfermarkt,2026-08-11T07:36:57.702Z
+145742,2763,M. Pašalić,2122,Atalanta,Winger,CAM,high,"Attacking Midfield 26, Central Midfield 8, Left Midfield 4, Defensive Midfield 2, Centre-Forward 2, Second Striker 1  (base 43, CAM 63%)",transfermarkt,2026-08-11T07:37:50.659Z
+146002,1640,H. Çalhanoğlu,2122,Inter,CDM,CM,high,"Central Midfield 44, Attacking Midfield 1  (base 45, CM 98%)",transfermarkt,2026-08-11T07:38:24.353Z
+146449,30422,R. Gosens,2021,Atalanta,CDM,Winger,high,"Left Midfield 40, Left-Back 3, Right Midfield 1  (base 44, Winger 93%)",transfermarkt,2026-08-11T07:38:48.195Z
+146641,30509,A. Belotti,1920,Torino,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T07:39:04.696Z
+146796,30434,J. Iličić,1920,Atalanta,ST,CAM,high,"Second Striker 21, Centre-Forward 9, Attacking Midfield 3, Right Winger 1  (base 34, CAM 71%)",transfermarkt,2026-08-11T07:39:27.970Z
+146819,2493,L. Muriel,1920,Atalanta,ST,ST,high,"Centre-Forward 38, Right Winger 2  (base 40, ST 95%)",transfermarkt,2026-08-11T07:39:40.572Z
+146956,1859,Luis Alberto,1920,Lazio,CAM,CM,high,"Central Midfield 38, Second Striker 1  (base 39, CM 97%)",transfermarkt,2026-08-11T07:40:00.073Z
+147070,30509,A. Belotti,1819,Torino,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T07:40:12.265Z
+147072,30573,L. Pavoletti,1819,Cagliari,ST,ST,high,"Centre-Forward 30, Second Striker 3  (base 33, ST 91%)",transfermarkt,2026-08-11T07:40:24.902Z
+147255,2472,R. De Paul,1819,Udinese,CM,UNSURE,low,"Central Midfield 14, Second Striker 10, Left Midfield 8, Attacking Midfield 4, Left Winger 1  (base 37, CAM 38%)",transfermarkt,2026-08-11T07:40:57.614Z
+147275,30433,P. Gómez,1819,Atalanta,ST,CAM,high,"Attacking Midfield 20, Second Striker 15, Left Winger 6, Centre-Forward 4  (base 45, CAM 78%)",transfermarkt,2026-08-11T07:41:31.750Z
+147288,30879,A. Petagna,1819,Spal,ST,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-11T07:41:46.062Z
+147378,1650,Suso,1819,AC Milan,ST,Winger,high,"Right Winger 38, Right Midfield 1, Attacking Midfield 1, Second Striker 1  (base 41, Winger 95%)",transfermarkt,2026-08-11T07:42:09.996Z
+147652,334,S. Verdi,1718,Bologna,ST,Winger,high,"Right Winger 23, Second Striker 7, Left Winger 4, Attacking Midfield 1  (base 35, Winger 77%)",transfermarkt,2026-08-11T07:42:34.165Z
+147665,30434,J. Iličić,1718,Atalanta,Winger,CAM,high,"Attacking Midfield 11, Second Striker 10, Right Winger 6, Centre-Forward 4  (base 31, CAM 68%)",transfermarkt,2026-08-11T07:43:06.799Z
+148122,205,R. Nainggolan,1617,AS Roma,CDM,CAM,high,"Attacking Midfield 33, Central Midfield 14, Defensive Midfield 1  (base 48, CAM 69%)",transfermarkt,2026-08-11T07:43:29.017Z
+148582,30434,J. Iličić,1516,Fiorentina,,CAM,high,"Attacking Midfield 23, Second Striker 5, Left Winger 1, Centre-Forward 1  (base 30, CAM 93%)",transfermarkt,2026-08-11T07:43:57.427Z
+148588,331,L. Insigne,1516,Napoli,Winger,Winger,high,"Left Winger 37, Attacking Midfield 3, Centre-Forward 2  (base 42, Winger 88%)",transfermarkt,2026-08-11T07:44:25.681Z
+148619,1706,C. Bacca,1516,AC Milan,ST,ST,high,"Centre-Forward 41  (base 41, ST 100%)",transfermarkt,2026-08-11T07:44:34.410Z
+148649,306,Mohamed Salah,1516,AS Roma,Winger,Winger,high,"Right Winger 29, Centre-Forward 4, Second Striker 3, Attacking Midfield 2, Left Winger 2  (base 40, Winger 78%)",transfermarkt,2026-08-11T07:45:14.461Z
+151306,25926,J. Burkardt,2425,FSV Mainz 05,ST,ST,high,"Centre-Forward 29, Second Striker 1  (base 30, ST 97%)",transfermarkt,2026-08-11T07:45:28.710Z
+151399,26256,T. Kleindienst,2425,Borussia Mönchengladbach,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T07:45:37.711Z
+151471,794,P. Schick,2425,Bayer Leverkusen,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T07:45:49.137Z
+151579,81573,Omar Marmoush,2425,Eintracht Frankfurt,ST,ST,high,"Centre-Forward 34, Left Winger 8, Second Striker 7, Attacking Midfield 1, Right Winger 1  (base 51, ST 67%)",transfermarkt,2026-08-11T07:46:32.001Z
+151585,174565,H. Ekitike,2425,Eintracht Frankfurt,ST,ST,high,"Centre-Forward 44, Second Striker 2  (base 46, ST 96%)",transfermarkt,2026-08-11T07:47:05.367Z
+151587,203224,F. Wirtz,2425,Bayer Leverkusen,ST,CAM,high,"Attacking Midfield 40, Second Striker 4, Centre-Forward 1  (base 45, CAM 98%)",transfermarkt,2026-08-11T07:47:39.170Z
+151776,563,Álex Grimaldo,2324,Bayer Leverkusen,Winger,Winger,high,"Left Midfield 44, Left-Back 6, Left Winger 1  (base 51, Winger 88%)",transfermarkt,2026-08-11T07:48:14.986Z
+151785,46930,E. Demirović,2324,FC Augsburg,ST,ST,high,"Centre-Forward 19, Attacking Midfield 8, Left Winger 7  (base 34, ST 56%)",transfermarkt,2026-08-11T07:48:56.052Z
+152738,24811,A. Modeste,2122,1. FC Köln,ST,ST,high,"Centre-Forward 35  (base 35, ST 100%)",transfermarkt,2026-08-11T07:49:14.303Z
+153097,726,A. Kramarić,2021,1899 Hoffenheim,ST,ST,high,"Centre-Forward 19, Second Striker 10, Attacking Midfield 4  (base 33, ST 58%)",transfermarkt,2026-08-11T07:49:38.342Z
+153790,724,I. Belfodil,1819,1899 Hoffenheim,ST,ST,high,"Centre-Forward 22, Right Winger 3, Second Striker 3, Attacking Midfield 1, Left Winger 1  (base 30, ST 73%)",transfermarkt,2026-08-11T07:50:08.868Z
+154083,426,M. Uth,1718,1899 Hoffenheim,ST,Winger,high,"Left Winger 23, Attacking Midfield 11, Right Winger 8  (base 42, Winger 74%)",transfermarkt,2026-08-11T07:50:35.179Z
+154582,516,A. Robben,1617,Bayern München,Winger,Winger,high,"Right Winger 37  (base 37, Winger 100%)",transfermarkt,2026-08-11T07:50:51.506Z
+154613,25329,M. Kruse,1617,Werder Bremen,ST,ST,high,"Centre-Forward 17, Second Striker 6, Right Winger 1  (base 24, ST 71%)",transfermarkt,2026-08-11T07:51:19.986Z
+154931,2886,J. Hernández,1516,Bayer Leverkusen,ST,CM,high,"Central Midfield 28, Defensive Midfield 10  (base 38, CM 74%)",transfermarkt,2026-08-11T07:51:42.136Z
+157282,161904,B. Barcola,2425,Paris Saint Germain,Winger,Winger,high,"Left Winger 44, Right Winger 8, Centre-Forward 2  (base 54, Winger 96%)",transfermarkt,2026-08-11T07:52:21.053Z
+157713,8489,J. David,2324,Lille,ST,UNSURE,low,identity not resolved: club 'Lille' on none of 4 candidate(s),transfermarkt,2026-08-11T07:52:44.429Z
+157846,1467,A. Lacazette,2324,Lyon,ST,ST,high,"Centre-Forward 32  (base 32, ST 100%)",transfermarkt,2026-08-11T07:53:23.545Z
+157948,138835,F. Balogun,2223,Reims,ST,ST,high,"Centre-Forward 37, Left Winger 1  (base 38, ST 97%)",transfermarkt,2026-08-11T07:53:41.218Z
+157991,20535,H. Diallo,2223,Strasbourg,ST,ST,high,"Centre-Forward 32, Right Winger 1  (base 33, ST 97%)",transfermarkt,2026-08-11T07:54:02.027Z
+158702,1912,D. Payet,2122,Marseille,ST,ST,low,"Centre-Forward 19, Attacking Midfield 12, Left Winger 12, Second Striker 2, Right Winger 1  (base 46, ST 41%)",transfermarkt,2026-08-11T07:54:25.742Z
+158806,21592,G. Laborde,2021,Montpellier,ST,Winger,high,"Right Winger 22, Centre-Forward 17, Left Winger 2  (base 41, Winger 59%)",transfermarkt,2026-08-11T07:54:43.667Z
+159044,989,K. Volland,2021,Monaco,ST,ST,low,"Centre-Forward 16, Second Striker 12, Left Winger 6, Right Winger 4, Attacking Midfield 2  (base 40, ST 40%)",transfermarkt,2026-08-11T07:55:15.889Z
+159193,21591,A. Delort,2021,Montpellier,ST,ST,high,"Centre-Forward 33, Right Winger 1  (base 34, ST 97%)",transfermarkt,2026-08-11T07:55:33.145Z
+159234,2059,W. Ben Yedder,1920,Monaco,ST,ST,high,"Centre-Forward 27, Second Striker 4  (base 31, ST 87%)",transfermarkt,2026-08-11T07:55:55.267Z
+159290,278,Kylian Mbappé,1920,Paris Saint Germain,ST,ST,high,"Centre-Forward 24, Left Winger 11, Right Winger 2  (base 37, ST 65%)",transfermarkt,2026-08-11T07:56:34.687Z
+159738,21443,T. Savanier,1819,Nimes,CDM,CM,high,"Central Midfield 17, Defensive Midfield 14, Attacking Midfield 1  (base 32, CM 53%)",transfermarkt,2026-08-11T07:56:49.934Z
+159802,276,Neymar,1819,Paris Saint Germain,ST,CAM,low,"Second Striker 12, Left Winger 11, Centre-Forward 3, Attacking Midfield 2  (base 28, CAM 50%)",transfermarkt,2026-08-11T07:57:12.166Z
+160161,760,M. Díaz,1718,Lyon,Winger,ST,high,"Centre-Forward 40  (base 40, ST 100%)",transfermarkt,2026-08-11T07:57:47.961Z
+160195,1709,K. Toko Ekambi,1718,Angers,ST,ST,high,"Centre-Forward 27, Left Winger 6, Right Winger 2  (base 35, ST 77%)",transfermarkt,2026-08-11T07:58:17.518Z
+160849,44355,B. Gomis,1617,Marseille,Winger,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T07:58:27.618Z
+161181,266,Á. Di María,1516,Paris Saint Germain,Winger,Winger,high,"Right Winger 36, Attacking Midfield 5, Left Winger 5  (base 46, Winger 89%)",transfermarkt,2026-08-11T07:58:54.388Z
+161209,274,E. Cavani,1516,Paris Saint Germain,ST,Winger,high,"Left Winger 34, Centre-Forward 13, Right Winger 2  (base 49, Winger 73%)",transfermarkt,2026-08-11T07:59:14.841Z
+161211,1467,A. Lacazette,1516,Lyon,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T07:59:28.636Z
+165226,51617,D. Núñez,2122,Benfica,ST,ST,high,"Centre-Forward 34, Left Winger 7  (base 41, ST 83%)",transfermarkt,2026-08-11T07:59:41.463Z
+169839,9363,Igor Paixão,2425,Feyenoord,Winger,Winger,high,"Left Winger 39, Attacking Midfield 6, Right Winger 1, Second Striker 1  (base 47, Winger 85%)",transfermarkt,2026-08-11T08:00:01.319Z
+170612,162016,X. Simons,2223,PSV Eindhoven,Winger,Winger,high,"Left Winger 19, Attacking Midfield 17, Right Winger 6, Centre-Forward 5  (base 47, Winger 53%)",transfermarkt,2026-08-11T08:00:21.983Z
+171034,1826,S. Haller,2122,Ajax,Winger,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-11T08:00:32.158Z
+171241,26902,G. Giakoumakis,2021,VVV Venlo,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T08:00:40.649Z
+171420,37160,S. Berghuis,2021,Feyenoord,Winger,Winger,high,"Right Winger 39, Right Midfield 1, Centre-Forward 1  (base 41, Winger 98%)",transfermarkt,2026-08-11T08:00:56.759Z
+172874,48390,R. van Wolfswinkel,1617,Vitesse,Winger,ST,high,"Centre-Forward 37  (base 37, ST 100%)",transfermarkt,2026-08-11T08:01:07.550Z
+173242,1826,S. Haller,1516,Utrecht,,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T08:01:21.066Z
+175622,110153,T. Arokodare,2425,Genk,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T08:01:30.947Z
+175974,110153,T. Arokodare,2324,Genk,ST,ST,high,"Centre-Forward 26  (base 26, ST 100%)",transfermarkt,2026-08-11T08:01:38.726Z
+176516,8918,T. Tissoudali,2122,Gent,ST,ST,high,"Centre-Forward 31, Second Striker 6, Left Winger 5, Attacking Midfield 1  (base 43, ST 72%)",transfermarkt,2026-08-11T08:02:09.774Z
+184681,42432,Samuel Eto'o Fils,1617,Antalyaspor,ST,ST,high,"Centre-Forward 30  (base 30, ST 100%)",transfermarkt,2026-08-11T08:02:17.882Z
+133555,644,L. Sané,1819,Manchester City,Winger,Winger,high,"Left Winger 45, Right Winger 1  (base 46, Winger 100%)",transfermarkt,2026-08-11T08:02:30.220Z
+134398,18881,J. King,1617,Bournemouth,ST,CAM,low,"Centre-Forward 13, Second Striker 12, Right Winger 6, Attacking Midfield 2, Left Winger 2  (base 35, CAM 40%)",transfermarkt,2026-08-11T08:03:10.142Z
+140257,2615,M. Gómez,1819,Celta Vigo,ST,UNSURE,low,"NETWORK UND_ERR_CONNECT_TIMEOUT , retryable, card not attempted",transfermarkt,2026-08-11T08:04:32.653Z
+141167,59,Álvaro Morata,1617,Real Madrid,Winger,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T08:05:30.681Z
+146162,19194,T. Abraham,2122,AS Roma,ST,ST,high,"Centre-Forward 52  (base 52, ST 100%)",transfermarkt,2026-08-11T08:05:57.852Z
+147841,790,E. Džeko,1718,AS Roma,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-11T08:06:15.044Z
+148310,213,K. Baldé,1617,Lazio,Winger,Winger,medium,"Left Winger 12, Second Striker 8, Centre-Forward 4  (base 24, Winger 50%)",transfermarkt,2026-08-11T09:53:29.444Z
+148724,216,M. Icardi,1516,Inter,ST,ST,high,"Centre-Forward 33  (base 33, ST 100%)",transfermarkt,2026-08-11T09:53:50.893Z
+160410,119,R. Falcao,1718,Monaco,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-11T09:55:17.256Z
+161240,2927,M. Batshuayi,1516,Marseille,ST,ST,high,"Centre-Forward 48  (base 48, ST 100%)",transfermarkt,2026-08-11T09:55:39.599Z
+165261,42315,M. Taremi,2122,FC Porto,ST,ST,low,"Centre-Forward 22, Second Striker 21, Left Winger 4  (base 47, ST 47%)",transfermarkt,2026-08-11T09:56:28.896Z
+165646,582,H. Seferović,2021,Benfica,ST,ST,high,"Centre-Forward 40, Second Striker 7  (base 47, ST 85%)",transfermarkt,2026-08-11T09:57:07.169Z
+177845,1945,M. Samatta,1819,Genk,ST,ST,high,"Centre-Forward 47, Second Striker 1  (base 48, ST 98%)",transfermarkt,2026-08-11T09:57:48.166Z
+183559,49860,E. Višća,1819,Başakşehir,CM,Winger,high,"Right Midfield 35, Right Winger 3  (base 38, Winger 100%)",transfermarkt,2026-08-11T09:58:21.205Z
+181842,216,M. Icardi,2223,Galatasaray,ST,ST,high,"Centre-Forward 26  (base 26, ST 100%)",transfermarkt,2026-08-11T09:58:47.393Z
+182168,458,M. Diagne,2223,Fatih Karagümrük,ST,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T10:00:45.255Z
+182199,1648,F. Borini,2223,Fatih Karagümrük,Winger,Winger,high,"Left Winger 25, Centre-Forward 5, Right Winger 1  (base 31, Winger 84%)",transfermarkt,2026-08-11T10:01:42.541Z
+186932,8492,A. Sørloth,2425,Atletico Madrid,ST,ST,high,"Centre-Forward 53  (base 53, ST 100%)",transfermarkt,2026-08-11T10:01:52.386Z
+186937,18906,Ayoze Pérez,2425,Villarreal,ST,ST,high,"Centre-Forward 21, Second Striker 5, Left Winger 1  (base 27, ST 78%)",transfermarkt,2026-08-11T10:02:11.553Z
+130699,19586,E. Eze,2425,Crystal Palace,ST,CAM,high,"Attacking Midfield 39, Left Winger 4  (base 43, CAM 91%)",transfermarkt,2026-08-11T10:02:33.668Z
+132242,283,T. Alexander-Arnold,2122,Liverpool,FB,FB,high,"Right-Back 47  (base 47, FB 100%)",transfermarkt,2026-08-11T10:03:34.682Z
+131113,19586,E. Eze,2324,Crystal Palace,CM,CAM,high,"Attacking Midfield 16, Left Winger 10, Right Winger 1  (base 27, CAM 59%)",transfermarkt,2026-08-11T10:05:18.549Z
+131543,643,Gabriel Jesus,2223,Arsenal,ST,ST,high,"Centre-Forward 29  (base 29, ST 100%)",transfermarkt,2026-08-11T10:07:08.988Z
+131648,18778,H. Barnes,2223,Leicester,Winger,Winger,high,"Left Winger 27, Left Midfield 12  (base 39, Winger 100%)",transfermarkt,2026-08-11T10:07:37.000Z
+132477,18766,D. Calvert-Lewin,2021,Everton,ST,ST,high,"Centre-Forward 39  (base 39, ST 100%)",transfermarkt,2026-08-11T10:08:12.374Z
+132504,2939,C. Wilson,2021,Newcastle,ST,ST,high,"Centre-Forward 28  (base 28, ST 100%)",transfermarkt,2026-08-11T10:08:43.187Z
+132694,304,S. Mané,2021,Liverpool,Winger,Winger,high,"Left Winger 45, Centre-Forward 2, Right Winger 1  (base 48, Winger 96%)",transfermarkt,2026-08-11T10:09:41.217Z
+132785,289,A. Robertson,1920,Liverpool,CB,FB,high,"Left-Back 49  (base 49, FB 100%)",transfermarkt,2026-08-11T10:09:53.320Z
+133449,2461,S. Rondón,1819,Newcastle,Winger,ST,high,"Centre-Forward 39, Left Winger 1  (base 40, ST 98%)",transfermarkt,2026-08-11T10:10:09.500Z
+133617,643,Gabriel Jesus,1718,Manchester City,Winger,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T10:11:56.788Z
+133920,18830,M. Arnautović,1718,West Ham,ST,ST,high,"Centre-Forward 19, Left Winger 10, Right Winger 4  (base 33, ST 58%)",transfermarkt,2026-08-11T10:13:09.574Z
+134182,1758,J. Defoe,1617,Sunderland,ST,ST,high,"Centre-Forward 37, Second Striker 1  (base 38, ST 97%)",transfermarkt,2026-08-11T10:14:40.411Z
+134292,2928,C. Benteke,1617,Crystal Palace,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T10:14:50.938Z
+134309,185,Llorente,1617,Swansea,ST,ST,high,"Centre-Forward 34  (base 34, ST 100%)",transfermarkt,2026-08-11T10:15:03.555Z
+134315,2299,Pedro,1617,Chelsea,Winger,CAM,high,"Attacking Midfield 27, Left Winger 6, Right Winger 3, Right Midfield 2, Left Midfield 2, Centre-Forward 1  (base 41, CAM 66%)",transfermarkt,2026-08-11T10:15:30.017Z
+134443,2287,R. Barkley,1516,Everton,,CAM,high,"Attacking Midfield 34, Central Midfield 10, Left Midfield 2  (base 46, CAM 74%)",transfermarkt,2026-08-11T10:15:44.642Z
+134586,1758,J. Defoe,1516,Sunderland,,ST,high,"Centre-Forward 27, Left Winger 4, Second Striker 2  (base 33, ST 82%)",transfermarkt,2026-08-11T10:16:01.050Z
+134709,302,Roberto Firmino,1516,Liverpool,ST,CAM,high,"Attacking Midfield 17, Second Striker 13, Centre-Forward 11, Right Winger 7, Left Winger 1  (base 49, CAM 61%)",transfermarkt,2026-08-11T10:16:24.234Z
+134720,629,K. De Bruyne,1516,Manchester City,CAM,Winger,high,"Right Midfield 15, Left Midfield 14, Attacking Midfield 14, Left Winger 2  (base 45, Winger 69%)",transfermarkt,2026-08-11T10:16:43.504Z
+134722,910,A. Sánchez,1516,Arsenal,Winger,Winger,high,"Left Winger 29, Right Winger 9, Centre-Forward 3  (base 41, Winger 93%)",transfermarkt,2026-08-11T10:17:06.373Z
+134731,12765,G. Pellè,1516,Southampton,,UNSURE,low,identity not resolved: club 'Southampton' on none of 4 candidate(s),transfermarkt,2026-08-11T10:17:32.759Z
+137582,6009,J. Álvarez,2425,Atletico Madrid,ST,ST,high,"Centre-Forward 54, Left Winger 2, Second Striker 1  (base 57, ST 95%)",transfermarkt,2026-08-11T10:18:03.671Z
+138559,47551,Raúl de Tomás,2122,Espanyol,ST,ST,high,"Centre-Forward 35, Left Winger 1  (base 36, ST 97%)",transfermarkt,2026-08-11T10:18:17.980Z
+139145,56,A. Griezmann,2021,Barcelona,ST,UNSURE,low,"Centre-Forward 20, Left Winger 15, Second Striker 11, Right Winger 5  (base 51, Winger 39%)",transfermarkt,2026-08-11T10:18:51.015Z
+139313,2864,A. Isak,2021,Real Sociedad,ST,ST,high,"Centre-Forward 44  (base 44, ST 100%)",transfermarkt,2026-08-11T10:19:41.970Z
+139635,738,Sergio Ramos,1920,Real Madrid,CB,CB,high,"Centre-Back 44  (base 44, CB 100%)",transfermarkt,2026-08-11T10:20:28.302Z
+139902,47394,Charles,1819,Eibar,ST,UNSURE,low,identity not resolved: club 'Eibar' on none of 4 candidate(s),transfermarkt,2026-08-11T10:21:02.248Z
+140031,47294,I. Williams,1819,Athletic Club,ST,UNSURE,low,no position selector on the season page,transfermarkt,2026-08-11T10:21:06.654Z
+140201,1695,Santi Cazorla,1819,Villarreal,CDM,CM,medium,"Central Midfield 21, Attacking Midfield 11, Left Midfield 7, Left Winger 3, Right Winger 2, Defensive Midfield 1, Right Midfield 1  (base 46, CM 46%)",transfermarkt,2026-08-11T10:21:49.531Z
+140463,1707,Gerard Moreno,1718,Espanyol,ST,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-11T10:22:01.277Z
+140790,47290,Aduriz,1617,Athletic Club,Winger,ST,high,"Centre-Forward 42  (base 42, ST 100%)",transfermarkt,2026-08-11T10:22:55.708Z
+141076,47324,Sandro Ramírez,1617,Malaga,ST,ST,high,"Centre-Forward 29, Left Winger 1, Right Winger 1  (base 31, ST 94%)",transfermarkt,2026-08-11T10:23:50.239Z
+141372,50,Koke,1516,Atletico Madrid,CM,Winger,high,"Left Midfield 27, Central Midfield 17, Right Midfield 7  (base 51, Winger 67%)",transfermarkt,2026-08-11T10:24:06.891Z
+141509,2058,Nolito,1516,Celta Vigo,,Winger,high,"Left Winger 27, Left Midfield 1  (base 28, Winger 100%)",transfermarkt,2026-08-11T10:24:18.469Z
+141569,47445,Iago Aspas,1516,Celta Vigo,,ST,high,"Centre-Forward 26, Right Winger 6, Left Winger 3, Second Striker 3  (base 38, ST 68%)",transfermarkt,2026-08-11T10:24:43.097Z
+144738,21509,M. Thuram,2425,Inter,ST,ST,high,"Centre-Forward 50  (base 50, ST 100%)",transfermarkt,2026-08-11T10:25:01.338Z
+145159,21509,M. Thuram,2324,Inter,ST,ST,high,"Centre-Forward 45  (base 45, ST 100%)",transfermarkt,2026-08-11T10:25:11.725Z
+145855,202,A. Candreva,2122,Sampdoria,CDM,Winger,high,"Right Midfield 21, Central Midfield 9, Right Winger 3, Left Winger 2, Left Midfield 1, Attacking Midfield 1, Second Striker 1  (base 38, Winger 71%)",transfermarkt,2026-08-11T10:26:15.093Z
+145920,331,L. Insigne,2122,Napoli,Winger,Winger,high,"Left Winger 45, Attacking Midfield 2, Left Midfield 1, Centre-Forward 1  (base 49, Winger 94%)",transfermarkt,2026-08-11T10:27:02.392Z
+146740,31737,M. Mancosu,1920,Lecce,CM,CAM,high,"Attacking Midfield 17, Central Midfield 13, Left Winger 2, Second Striker 1  (base 33, CAM 55%)",transfermarkt,2026-08-11T10:27:34.175Z
+146912,30422,R. Gosens,1920,Atalanta,Winger,Winger,high,"Left Midfield 42, Left-Back 1  (base 43, Winger 98%)",transfermarkt,2026-08-11T10:27:59.892Z
+147835,30512,Iago Falqué,1718,Torino,ST,Winger,high,"Right Winger 30, Second Striker 4, Attacking Midfield 2, Right Midfield 1, Left Winger 1  (base 38, Winger 84%)",transfermarkt,2026-08-11T10:30:18.602Z
+148293,2002,A. Ljajić,1617,Torino,CAM,Winger,high,"Left Winger 26, Attacking Midfield 6  (base 32, Winger 81%)",transfermarkt,2026-08-11T10:30:42.213Z
+151791,25313,J. Beste,2324,1. FC Heidenheim,FB,Winger,high,"Left Winger 30, Left Midfield 2  (base 32, Winger 100%)",transfermarkt,2026-08-11T10:30:58.108Z
+151938,203224,F. Wirtz,2324,Bayer Leverkusen,ST,CAM,high,"Attacking Midfield 45, Left Winger 1, Right Winger 1, Centre-Forward 1  (base 48, CAM 94%)",transfermarkt,2026-08-11T10:32:42.959Z
+151967,726,A. Kramarić,2324,1899 Hoffenheim,Winger,CAM,high,"Attacking Midfield 19, Centre-Forward 8, Central Midfield 2, Left Winger 1, Second Striker 1  (base 31, CAM 65%)",transfermarkt,2026-08-11T10:33:18.276Z
+152136,26248,V. Grifo,2223,SC Freiburg,Winger,Winger,high,"Left Winger 43, Attacking Midfield 3  (base 46, Winger 93%)",transfermarkt,2026-08-11T10:34:12.138Z
+153557,1167,Y. Poulsen,1819,RB Leipzig,ST,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-11T10:35:05.516Z
+153705,21,Paco Alcácer,1819,Borussia Dortmund,Winger,ST,high,"Centre-Forward 32  (base 32, ST 100%)",transfermarkt,2026-08-11T10:35:18.824Z
+154740,26307,Daniel Didavi,1516,VfB Stuttgart,,CAM,high,"Attacking Midfield 25, Right Midfield 4, Central Midfield 2, Left Midfield 1, Right Winger 1, Centre-Forward 1  (base 34, CAM 74%)",transfermarkt,2026-08-11T10:35:49.328Z
+158129,276,Neymar,2223,Paris Saint Germain,ST,Winger,low,"Left Winger 14, Attacking Midfield 6, Centre-Forward 5, Second Striker 4  (base 29, Winger 48%)",transfermarkt,2026-08-11T10:38:11.529Z
+159160,2006,B. Yılmaz,2021,Lille,ST,ST,high,"Centre-Forward 32  (base 32, ST 100%)",transfermarkt,2026-08-11T10:38:38.373Z
+160006,21591,A. Delort,1819,Montpellier,ST,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T10:38:50.853Z
+165563,18748,Pote,2021,Sporting CP,ST,Winger,high,"Right Winger 27, Left Winger 4, Second Striker 3, Central Midfield 1, Attacking Midfield 1  (base 36, Winger 86%)",transfermarkt,2026-08-11T10:39:28.782Z
+170243,38750,B. Brobbey,2324,Ajax,ST,ST,high,"Centre-Forward 43  (base 43, ST 100%)",transfermarkt,2026-08-11T10:39:47.249Z
+170655,549,V. Černý,2223,Twente,Winger,Winger,high,"Right Winger 41  (base 41, Winger 100%)",transfermarkt,2026-08-11T10:40:25.642Z
+172027,248,H. Lozano,1819,PSV Eindhoven,Winger,Winger,high,"Right Winger 25, Left Winger 15  (base 40, Winger 100%)",transfermarkt,2026-08-11T10:41:08.072Z
+175347,129126,A. Bertaccini,2425,St. Truiden,ST,Winger,high,"Left Winger 19, Centre-Forward 9, Right Winger 5  (base 33, Winger 73%)",transfermarkt,2026-08-11T10:42:11.049Z
+176944,8493,R. Yaremchuk,2021,Gent,ST,ST,high,"Centre-Forward 39, Second Striker 2, Left Winger 1, Right Winger 1  (base 43, ST 91%)",transfermarkt,2026-08-11T10:42:50.616Z
+177076,8793,T. Henry,2021,OH Leuven,ST,UNSURE,low,identity not resolved: club 'OH Leuven' on none of 4 candidate(s),transfermarkt,2026-08-11T10:43:20.410Z
+134002,59,Álvaro Morata,1718,Chelsea,ST,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T10:45:25.382Z
+134784,554,D. Tadić,1516,Southampton,,Winger,high,"Left Winger 25, Right Winger 8, Attacking Midfield 4  (base 37, Winger 89%)",transfermarkt,2026-08-11T10:46:31.815Z
+164870,42315,M. Taremi,2223,FC Porto,ST,ST,high,"Centre-Forward 32, Second Striker 17, Left Winger 1  (base 50, ST 64%)",transfermarkt,2026-08-11T10:46:49.578Z
+171425,554,D. Tadić,2021,Ajax,Winger,Winger,high,"Left Winger 41, Centre-Forward 8, Attacking Midfield 1, Right Winger 1  (base 51, Winger 82%)",transfermarkt,2026-08-11T10:47:11.658Z
+176386,1944,J. Paintsil,2223,Genk,Winger,Winger,high,"Right Winger 38, Left Winger 1  (base 39, Winger 100%)",transfermarkt,2026-08-11T10:47:22.681Z
+176757,15812,P. Onuachu,2122,Genk,Winger,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T10:47:45.855Z
+183519,49946,P. Cissé,1920,Alanyaspor,Winger,ST,high,"Centre-Forward 38  (base 38, ST 100%)",transfermarkt,2026-08-11T10:48:35.763Z
+184696,49860,E. Višća,1516,Başakşehir,,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T10:50:56.525Z
+181521,790,E. Džeko,2324,Fenerbahçe,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-11T10:52:02.049Z
+183839,50048,V. Muriqi,1819,Rizespor,Winger,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-11T10:52:28.957Z
+139401,47422,Y. En-Nesyri,2021,Sevilla,Winger,ST,high,"Centre-Forward 38, Left Winger 3, Right Winger 1  (base 42, ST 90%)",transfermarkt,2026-08-11T10:53:06.351Z
+132225,18819,M. Antonio,2122,West Ham,ST,CB,high,"Centre-Back 54  (base 54, CB 100%)",transfermarkt,2026-08-11T10:53:34.844Z
+130687,10329,João Pedro,2425,Brighton,ST,ST,high,"Centre-Forward 19, Second Striker 8, Attacking Midfield 2, Left Winger 2  (base 31, ST 61%)",transfermarkt,2026-08-11T10:56:50.191Z
+130800,25927,J. Mateta,2425,Crystal Palace,ST,ST,high,"Centre-Forward 46  (base 46, ST 100%)",transfermarkt,2026-08-11T10:57:15.210Z
+130871,106835,K. Mitoma,2425,Brighton,CM,Winger,high,"Left Winger 33, Left Midfield 3, Attacking Midfield 1  (base 37, Winger 97%)",transfermarkt,2026-08-11T10:57:41.358Z
+131333,18931,C. Wood,2324,Nottingham Forest,ST,Winger,high,"Right Winger 18, Left Winger 9, Centre-Forward 9  (base 36, Winger 75%)",transfermarkt,2026-08-11T10:58:37.659Z
+131386,19617,M. Olise,2324,Crystal Palace,Winger,Winger,high,"Right Winger 17, Centre-Forward 1  (base 18, Winger 94%)",transfermarkt,2026-08-11T11:01:59.184Z
+131528,19586,E. Eze,2223,Crystal Palace,CM,CAM,low,"Attacking Midfield 13, Left Winger 11, Central Midfield 10  (base 34, CAM 38%)",transfermarkt,2026-08-11T11:03:38.928Z
+131883,2825,A. Mitrović,2223,Fulham,ST,ST,high,"Centre-Forward 27  (base 27, ST 100%)",transfermarkt,2026-08-11T11:03:57.236Z
+131966,289,A. Robertson,2122,Liverpool,CB,FB,high,"Left-Back 47  (base 47, FB 100%)",transfermarkt,2026-08-11T11:05:48.602Z
+131983,631,P. Foden,2122,Manchester City,ST,ST,low,"Centre-Forward 19, Left Winger 15, Attacking Midfield 7, Right Winger 2, Central Midfield 1  (base 44, ST 43%)",transfermarkt,2026-08-11T11:10:10.352Z
+132098,2938,J. Ward-Prowse,2122,Southampton,CM,CM,high,"Central Midfield 42  (base 42, CM 100%)",transfermarkt,2026-08-11T11:11:52.023Z
+132281,635,R. Mahrez,2122,Manchester City,ST,Winger,high,"Right Winger 44, Right Midfield 1, Centre-Forward 1  (base 46, Winger 98%)",transfermarkt,2026-08-11T11:12:18.621Z
+132290,19974,I. Toney,2122,Brentford,ST,ST,high,"Centre-Forward 36  (base 36, ST 100%)",transfermarkt,2026-08-11T11:13:55.800Z
+132596,18955,D. Ings,2021,Southampton,ST,UNSURE,low,"NETWORK TimeoutError , retryable, card not attempted",transfermarkt,2026-08-11T11:16:11.825Z
+132626,645,R. Sterling,2021,Manchester City,ST,UNSURE,low,identity not resolved: club 'Manchester City' on none of 0 candidate(s),transfermarkt,2026-08-11T11:19:08.523Z

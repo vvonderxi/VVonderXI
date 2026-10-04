@@ -1,0 +1,116 @@
+=== ANON GRANTS (pg_class.relacl), captured 2026-10-03 ===
+r  _rb3                        anon=arwdDxtm/postgres
+r  _rollback_viewdef_stage2    anon=arwdDxtm/postgres
+r  _verify3                    anon=arwdDxtm/postgres
+r  _verify_stage2              anon=arwdDxtm/postgres
+r  card_scores                 anon=arwdDxtm/postgres
+r  card_scores_pooled          anon=arwdDxtm/postgres
+r  engine_baseline_snapshot    anon=arwdDxtm/postgres
+r  engine_baseline_stage2      anon=arwdDxtm/postgres
+r  engine_baseline_stage3      anon=arwdDxtm/postgres
+r  engine_def_inspect          anon=arwdDxtm/postgres
+r  engine_league_weights       anon=arwdDxtm/postgres
+r  engine_stage2_diff          anon=arwdDxtm/postgres
+r  engine_stage2_pool          anon=arwdDxtm/postgres
+r  engine_stage2_rt            anon=arwdDxtm/postgres
+r  engine_stage3_diff          anon=arwdDxtm/postgres
+r  engine_stage3_lg            anon=arwdDxtm/postgres
+r  engine_stage3_rt            anon=arwdDxtm/postgres
+r  honours                     anon=arwdDxtm/postgres
+r  import_log                  anon=arwdDxtm/postgres
+r  import_progress             anon=arwdDxtm/postgres
+r  league_coefficients         anon=arwdDxtm/postgres
+r  league_depth                anon=arwdDxtm/postgres
+r  league_standings            anon=arwdDxtm/postgres
+r  league_winners              anon=arwdDxtm/postgres
+r  leagues                     anon=arwdDxtm/postgres
+r  locker_profiles             anon=arwdDxtm/postgres
+r  mid_ensemble                anon=arwdDxtm/postgres
+r  mv_pre_20260912             anon=arwdDxtm/postgres
+r  notes_cache                 anon=arwdDxtm/postgres
+m  player_card_mv              anon=arwdDxtm/postgres
+m  player_card_mv_old          anon=arwdDxtm/postgres
+v  player_card_view            anon=arwdDxtm/postgres
+r  player_career_position      anon=arwdDxtm/postgres
+r  player_positions            anon=arwdDxtm/postgres
+r  player_season_cards         anon=arwdDxtm/postgres
+r  player_seasons              anon=arwdDxtm/postgres
+r  players                     anon=arwdDxtm/postgres
+r  position_progress           anon=arwdDxtm/postgres
+r  search_cache                anon=arwdDxtm/postgres
+r  split_transfers             anon=arwdDxtm/postgres
+r  teams                       anon=arwdDxtm/postgres
+r  verdict_cache               anon=arwdDxtm/postgres
+r  vv_final_rankings           anon=arwdDxtm/postgres
+r  waitlist_emails             anon=arwdDxtm/postgres
+
+=== ALL POLICIES ===
+import_log              Public read log               r  roles=PUBLIC  USING=true  CHECK=-
+import_log              Service insert log            a  roles=PUBLIC  USING=-  CHECK=true
+import_log              Service update log            w  roles=PUBLIC  USING=true  CHECK=-
+leagues                 Public read leagues           r  roles=PUBLIC  USING=true  CHECK=-
+leagues                 Service insert leagues        a  roles=PUBLIC  USING=-  CHECK=true
+locker_profiles         service_role_all_locker_profil*  roles=service_role  USING=true  CHECK=true
+locker_profiles         users_read_own_profile        r  roles=authenticated  USING=(auth.uid() = user_id)  CHECK=-
+player_season_cards     Public read cards             r  roles=PUBLIC  USING=true  CHECK=-
+player_season_cards     Service insert cards          a  roles=PUBLIC  USING=-  CHECK=true
+player_season_cards     Service update cards          w  roles=PUBLIC  USING=true  CHECK=-
+player_seasons          Public read seasons           r  roles=PUBLIC  USING=true  CHECK=-
+player_seasons          Service insert seasons        a  roles=PUBLIC  USING=-  CHECK=true
+players                 Public read players           r  roles=PUBLIC  USING=true  CHECK=-
+players                 Service insert players        a  roles=PUBLIC  USING=-  CHECK=true
+players                 Service update players        w  roles=PUBLIC  USING=true  CHECK=-
+search_cache            Public read search            r  roles=PUBLIC  USING=true  CHECK=-
+search_cache            Service insert search         a  roles=PUBLIC  USING=-  CHECK=true
+search_cache            Service update search         w  roles=PUBLIC  USING=true  CHECK=-
+teams                   Public read teams             r  roles=PUBLIC  USING=true  CHECK=-
+teams                   Service insert teams          a  roles=PUBLIC  USING=-  CHECK=true
+teams                   Service update teams          w  roles=PUBLIC  USING=true  CHECK=-
+waitlist_emails         anon_insert_waitlist          a  roles=anon  USING=-  CHECK=true
+
+=== RLS ===
+_rb3                      RLS OFF
+_rollback_viewdef_stage2  RLS OFF
+_verify3                  RLS OFF
+_verify_stage2            RLS OFF
+api_rate_events           RLS ON
+card_scores               RLS ON
+card_scores_pooled        RLS ON
+engine_baseline_snapshot  RLS OFF
+engine_baseline_stage2    RLS OFF
+engine_baseline_stage3    RLS OFF
+engine_def_inspect        RLS OFF
+engine_league_weights     RLS OFF
+engine_stage2_diff        RLS OFF
+engine_stage2_pool        RLS OFF
+engine_stage2_rt          RLS OFF
+engine_stage3_diff        RLS OFF
+engine_stage3_lg          RLS OFF
+engine_stage3_rt          RLS OFF
+honours                   RLS OFF
+import_log                RLS ON
+import_progress           RLS ON
+league_coefficients       RLS ON
+league_depth              RLS ON
+league_standings          RLS ON
+league_winners            RLS ON
+leagues                   RLS ON
+locker_profiles           RLS ON
+mid_ensemble              RLS ON
+mv_pre_20260912           RLS ON
+notes_cache               RLS OFF
+player_card_mv            matview
+player_card_mv_old        matview
+player_card_view          RLS OFF
+player_career_position    RLS ON
+player_positions          RLS ON
+player_season_cards       RLS ON
+player_seasons            RLS ON
+players                   RLS ON
+position_progress         RLS ON
+search_cache              RLS ON
+split_transfers           RLS OFF
+teams                     RLS ON
+verdict_cache             RLS ON
+vv_final_rankings         RLS ON
+waitlist_emails           RLS ON

@@ -1,0 +1,189 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verdict Panel Weight</title>
+<!--  compare.html's own four families and its own .vfinal tokens and rules, copied in. Nothing
+      here introduces a face or a value the target surface does not already load.  -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&family=Fraunces:opsz,wght@9..144,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;
+  --pink-ink:#F1688E;--gold:#E8B84B;--surf-stage:#141011;--surf-hero:#2A2422;
+  --edge-hero:rgba(255,92,122,.30);--vfinal-plate:#1A1614;--vfinal-plate-0:rgba(26,22,20,0);
+  --vvem-ink:#E8B84B;--vvem-wash:transparent}
+body.light,.light{--ink-soft:#5f594e;--gold-ink:#7e5a10;--surf-stage:#EFE8DA;--surf-hero:#FFFFFF;
+  --edge-hero:rgba(255,92,122,.34);--vfinal-plate:#EFE7D6;--vfinal-plate-0:rgba(239,231,214,0);
+  --pink-ink:#AD0332;--vvem-ink:#5C4008;--vvem-wash:#F6E6BC}
+
+/*  LIFTED VERBATIM FROM compare.html , .vfinal and its children. Anything changed for the
+    demo is marked DEMO in a comment. SS C: a demo that supplies its own values cannot test
+    the page's values.  */
+.stage{background:var(--surf-stage);padding:46px 24px 60px;border-radius:18px}
+body.light .stage{background:var(--surf-stage)}
+.vfinal{margin-top:0;padding:38px 34px 32px;text-align:center;position:relative;
+  background:linear-gradient(180deg,var(--vfinal-plate) 0%,var(--vfinal-plate) 58%,var(--vfinal-plate-0) 100%),var(--surf-hero);
+  border:1px solid var(--edge-hero);border-radius:20px;
+  box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)}
+.vfinal:before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  width:168px;height:4px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--pink),var(--gold))}
+.vlabel{font-family:'Archivo';font-weight:900;font-size:19px;letter-spacing:.005em;color:var(--cream);margin-bottom:16px}
+body.light .vlabel{color:var(--charcoal)}
+.vwho{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif;font-weight:600;font-size:30px;
+  line-height:1.2;letter-spacing:-.015em;color:var(--cream);margin-top:14px;max-width:660px;
+  margin-inline:auto;text-wrap:balance}
+body.light .vwho{color:#241f1b}
+.vsplit{height:1px;background:rgba(255,255,255,.12);max-width:220px;margin:26px auto 22px}
+body.light .vsplit{background:rgba(0,0,0,.12)}
+.vquote{font-family:'Fraunces','Bricolage Grotesque',Georgia,serif;font-weight:600;font-style:normal;
+  font-size:16.5px;line-height:1.62;color:var(--cream);max-width:66ch;margin-inline:auto}
+body.light .vquote{color:var(--charcoal)}
+.vquote.pull{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-size:20px;line-height:1.46}
+.vquote2,.vquote3{margin-top:16px}
+.vvem{font-style:normal;font-weight:800;color:var(--vvem-ink)}
+body.light .vvem{background:var(--vvem-wash);border-radius:3px;padding:.05em .16em;margin:0 -.16em}
+/*  THE LIVE EXCLUSION, the thing item 2 is about , compare.html:861  */
+body.light .pull.ships .vvem{background:none;padding:0;margin:0;border-radius:0}
+/*  OPTION C , his stated fallback: keep the wash, drop the gold  */
+body.light .pull.blackink .vvem{color:var(--charcoal)}
+.pull.blackink .vvem{color:var(--cream)}
+
+/* DEMO chrome only */
+body{margin:0;padding:18px 16px 80px;font:14px/1.55 Inter,system-ui,sans-serif;
+  background:#0e0c0b;color:#F0EAD9}
+body.light{background:linear-gradient(180deg,#EAEFF1 0%,#E7EAE0 48%,#E2D9C7 100%);color:#1C1B1A}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font:800 21px 'Bricolage Grotesque',sans-serif;margin:0 0 4px}
+.sub{font:400 13px Inter;color:#8d867c;margin:0 0 14px;max-width:760px}
+bodybody.light .sub{color:#5f594e}
+.bar{position:sticky;top:0;z-index:9;padding:9px 0;margin-bottom:6px;background:inherit;display:flex;gap:9px;flex-wrap:wrap}
+.bar button{font:600 12.5px Inter;padding:7px 13px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+h2{font:800 15.5px 'Bricolage Grotesque',sans-serif;margin:34px 0 3px;padding-top:18px;border-top:1px solid rgba(128,128,128,.28)}
+.why{font:400 12.5px Inter;color:#8d867c;margin:0 0 14px;max-width:760px}
+bodybody.light .why{color:#5f594e}
+.tag{display:inline-block;font:700 10px Archivo;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;margin-bottom:8px;background:rgba(231,4,67,.18);color:#F1688E}
+bodybody.light .tag{background:rgba(173,3,50,.10);color:#AD0332}
+.phone{width:390px;max-width:100%}
+.phone .stage{padding:30px 14px 40px}
+.phone .vfinal{padding:30px 18px 26px;border-radius:16px}
+.phone .vwho{font-size:23px}.phone .vquote{font-size:16.5px}.phone .vquote.pull{font-size:18px}
+.two{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.cap{font:600 11px Archivo;letter-spacing:.08em;text-transform:uppercase;color:#8d867c;margin:0 0 7px}
+bodybody.light .cap{color:#5f594e}
+</style></head><body class="light"><div class="wrap">
+<div class="bar">
+  <button onclick="document.body.classList.toggle('light')">Toggle theme</button>
+  <button onclick="document.querySelectorAll('.phone').forEach(function(e){e.style.display=e.style.display==='none'?'':'none'})">Show / hide the 390 column</button>
+</div>
+<h1>The verdict panel , emphasis, and weight</h1>
+<p class="sub">Real prose: the cached Messi 20/21 against Ronaldo 14/15 verdict, rendered through
+compare.html&#39;s own <code>.vfinal</code> rules and tokens. <b>Nothing here is wired.</b> The panel is
+shown at a desktop width and at 390.</p>
+<h2>Item 2 , the emphasis in the pull quote</h2>
+<p class="why">The cause is not the italic and not the serif. The pull quote is set in <b>Bricolage
+Grotesque italic</b>, not a serif, and an italic run cannot suppress a background. What suppresses it
+is one rule, <code>bodybody.light .vquote.vq-h2h .vvem{background:none;padding:0;margin:0;border-radius:0}</code>,
+added on 2026-09-13 on the premise that the head-to-head is a short single line. Measured on this
+pair the head-to-head is <b>89 words</b> and it is the largest prose on the panel.
+Three readings, at the desktop width and at 390.</p><h3 style="font:800 13.5px Inter;margin:24px 0 2px">A , as it ships</h3><p class="why">Gold ink, no wash, in the pull quote. Wash on the two paragraphs below it. This is the inconsistency.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ships">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ships">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div><h3 style="font:800 13.5px Inter;margin:24px 0 2px">B , the wash restored</h3><p class="why">The exclusion removed. One mechanism across the whole panel.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div><h3 style="font:800 13.5px Inter;margin:24px 0 2px">C , your fallback: ink, not gold</h3><p class="why">The wash kept, the gold dropped to the panel&#39;s own ink. The mark still reads as the same mechanism. <b>This is a light-mode question only</b> , dark carries no wash at all by the 2026-09-21 ruling, so in dark this option is simply cream ink and there is nothing to compare.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull blackink">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull blackink">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div><h2>Item 3 , weight. Three depths.</h2>
+<p class="why"><b>It already has a shadow</b>, so this is a change to the one it has rather than an
+addition: <code>0 30px 56px -26px rgba(0,0,0,.34)</code> plus a 7px pink halo ring. The negative spread
+of 26px pulls almost all of it back under the panel, which is why it reads as printed.
+<b>And there is a constraint to look at while judging these:</b> the panel&#39;s own background is a
+gradient that fades to transparent over its bottom 42 per cent, so any shadow behind the lower half
+is seen <i>through</i> the panel. Watch the bottom edge of each, in both themes.</p><h3 style="font:800 13.5px Inter;margin:24px 0 2px">0 , ships today</h3><p class="why">A 56px blur pulled back 26px, so almost all of it lands under the panel and very little escapes the edge. Plus the pink halo ring, which is a glow rather than a shadow.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="box-shadow:0 30px 56px -26px rgba(0,0,0,.34), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div><h3 style="font:800 13.5px Inter;margin:24px 0 2px">1 , LIFT</h3><p class="why">A tight contact shadow under the edge plus a short mid spread. Reads as a card resting on the surface, barely off it.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="box-shadow:0 2px 5px rgba(0,0,0,.06), 0 14px 30px -10px rgba(0,0,0,.20), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="box-shadow:0 2px 5px rgba(0,0,0,.06), 0 14px 30px -10px rgba(0,0,0,.20), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div><h3 style="font:800 13.5px Inter;margin:24px 0 2px">2 , FLOAT</h3><p class="why">The same two layers, further apart and darker. Reads as held above the page rather than laid on it.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="box-shadow:0 5px 12px rgba(0,0,0,.08), 0 28px 56px -12px rgba(0,0,0,.28), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="box-shadow:0 5px 12px rgba(0,0,0,.08), 0 28px 56px -12px rgba(0,0,0,.28), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div><h3 style="font:800 13.5px Inter;margin:24px 0 2px">3 , STAGE</h3><p class="why">Adds a hairline so the top edge is drawn rather than implied, and a long throw beneath. The most separated of the three, and the one most likely to read as heavy on a phone.</p><div class="two"><div style="flex:1;min-width:520px"><p class="cap">Desktop</p><div class="stage"><div class="vfinal" style="box-shadow:0 8px 18px rgba(0,0,0,.10), 0 48px 96px -18px rgba(0,0,0,.36), 0 0 0 1px rgba(0,0,0,.06), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div><div class="phone"><p class="cap">390</p><div class="stage"><div class="vfinal" style="box-shadow:0 8px 18px rgba(0,0,0,.10), 0 48px 96px -18px rgba(0,0,0,.36), 0 0 0 1px rgba(0,0,0,.06), 0 0 0 7px rgba(255,92,122,.055)">
+  <div class="vlabel">The Verdict</div>
+  <div class="vwho">Ronaldo&#39;s Generational peak clears Messi&#39;s Iconic defiance</div>
+  <div class="vsplit"></div>
+  <div class="vquote pull ">&ldquo;Messi's card is richer in evidence, but Ronaldo's is richer in result. The comparison between a VV 92 Iconic season and a VV 96 Generational one is partly a comparison between two different states of data, and you have to hold that honestly. What we can say with confidence is that <strong class="vvem">Ronaldo's raw output in 2014/15 sits at a different altitude</strong> from Messi's 2020/21 production, even adjusting for the sparser record. Messi was defying institutional collapse at 33; Ronaldo was operating at the peak of his physical life in a squad built to maximise exactly what he did. Both facts are real, and the gap between 48 goals with 16 assists and 30 goals with 9 is not a narrow one.</div>
+  <div class="vquote vquote2">The Index separates them by four points, and the recorded figures explain why. Messi's season was a personal act of will inside a broken club, authenticated by a Ballon d'Or and a Golden Boot, and it carries the full weight of everything the modern data can measure. <strong class="vvem">Ronaldo's 2014/15 output, even sketched only in goals and assists, describes something the system rarely sees</strong>, a winger at 29 producing at the kind of volume that shifts the ceiling rather than meeting it.</div>
+  <div class="vquote vquote3">This is a real but contested edge. Messi's season deserves to stand on its own terms for what it cost him to produce it. Ronaldo's takes the argument on the numbers that matter most.&rdquo;</div>
+</div></div></div></div></div></body></html>

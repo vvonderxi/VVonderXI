@@ -160,6 +160,43 @@ const MODULES = [
   { file: 'vv-core.js',  expect: 'VVCore'  },
   { file: 'vv-marks.js', expect: 'VVMarks' },
 ];
+
+//  ── STRING FLOORS , A TRUNCATED PROMPT IS STILL VALID JAVASCRIPT (added 2026-09-13) ──
+//  The export check above catches a template literal that ends early and leaves the module
+//  UNDEFINED. It cannot catch one that ends early and leaves the module DEFINED but SHORT,
+//  which is what happens when a stray backtick lands inside a long prompt string: the
+//  remainder still parses, `node --check` passes, the export exists, and the model is served
+//  half its instructions.
+//  MEASURED, 2026-09-13: a backtick pair around `won_by` inside VERDICT_SYSTEM cut it from
+//  19,343 characters to 10,782. Nothing in the toolchain objected except the arithmetic.
+//  THESE ARE TRIPWIRES, NOT TARGETS. The floor sits well below the real length and well above
+//  a truncation. If a DELIBERATE edit takes a prompt under its floor, move the floor in the
+//  same commit , that is a decision, and it should look like one in the diff.
+const STRING_FLOORS = [
+  { file: 'api/analyse.js', export: 'VERDICT_SYSTEM',       min: 16000 },   // 21,403 on 2026-09-13
+  { file: 'api/analyse.js', export: 'NOTES_SYSTEM',         min: 22000 },   // 29,267 on 2026-09-13
+  { file: 'api/analyse.js', export: 'VERDICT_SYSTEM_JUDGE', min: 14000 },   // 19,132 on 2026-09-13
+];
+function lintStringFloors(){
+  const out = [];
+  for (const f of STRING_FLOORS) {
+    if (!fs.existsSync(f.file)) continue;
+    const probe = `const m = require(${JSON.stringify(path.resolve(f.file))});` +
+                  `const v = m[${JSON.stringify(f.export)}];` +
+                  `if (typeof v !== 'string') { console.error('NOTSTRING'); process.exit(4); }` +
+                  `process.stdout.write(String(v.length));`;
+    try {
+      const len = Number(execFileSync(process.execPath, ['-e', probe], { stdio: 'pipe' }).toString().trim());
+      if (!(len >= f.min)) out.push({ file: f.file, expect: f.export,
+        error: `is ${len} characters, floor is ${f.min} , a long template literal has almost certainly ended early (a stray backtick inside it). The module still loads and still exports, which is why nothing else catches this.` });
+    } catch (e) {
+      out.push({ file: f.file, expect: f.export, error: e.status === 4
+        ? 'is exported but is not a string'
+        : String(e.stderr || e.message).split('\n').filter(Boolean).slice(0,3).join(' | ').slice(0,200) });
+    }
+  }
+  return out;
+}
 function lintModules(){
   const out = [];
   for (const m of MODULES) {
@@ -179,12 +216,175 @@ function lintModules(){
   return out;
 }
 
+/*  ── THE PRODUCT NAME'S PINK SECOND V ────────────────────────────────────────────────
+    The rule is: in RENDERED PROSE, "VV Score" / "VV Index" / "VV Rankings" is written
+    `V<span class="vvw">V</span> ...`, never as plain "VV". It was thirty-eight hand-typed
+    inline styles before 2026-09-13, which is a rule nobody can change and is how the nav
+    wordmark drifted on two pages (punchlist item 12). This check is what keeps the count
+    from going back up, because the failure is SILENT , a black V where a pink one belongs
+    reads as a font problem, not as a missing span.
+
+    THREE THINGS ARE EXEMPT AND EACH FOR ITS OWN REASON, not one blanket rule:
+      , <meta>, <title> and any attribute. They cannot hold markup at all.
+      , AI prompt strings. VERDICT_VERSION is a fingerprint of the prompt text, so putting a
+        span into a sentence no reader ever sees would regenerate every cached verdict on the
+        platform to change a colour. Those live in vv-core.js and compare.html, inside
+        <script>, which this check already skips.
+      , ESCAPED SINKS. card.html's keeper line and compare's GK_NO_VERDICT_* use textContent
+        on purpose, because the same slot also takes model output; VVFilters' sort and group
+        labels go through VVF_ESC before innerHTML. Switching any of them to raw HTML to win
+        one pink letter reopens an escaping hole. Also inside <script>, also skipped.
+    search.html is listed explicitly: it is a meta-refresh stub with no stylesheet, so a
+    var(--pink-ink) span resolved to nothing and never drew. Plain text there is honest.
+
+    IT ALSO CHECKS THE RULE EXISTS. A page carrying class="vvw" must either load vv-core.js
+    (which supplies .vvw from VV_CARD_CSS) or declare .vvw itself. Six pages load no shared
+    script, so they declare it locally, and without this half the swap would have shipped
+    five unstyled wordmarks that nothing would have reported.  */
+/*  THE FOLLOW ROW EXISTS TWICE ON PURPOSE AND THIS IS WHAT MAKES THAT ACCEPTABLE.
+    `VVCore.socialRowHTML()` is the source; vvindex loads no shared script so it carries a
+    literal copy. A second copy is only tolerable while something fails when the two drift,
+    so: any page carrying a `.vvsoc` or `.drawersoc` row must use the platform handles and
+    the "X/Twitter" wording, and must never print the word "Follow" beside the marks.  */
+/*  THE NOTES CACHE KEY IS PINNED, BECAUSE NOTHING ELSE GUARDS IT , 2026-09-15.
+    `statsHash` in api/analyse.js normalises the TOP LEVEL of the notes payload only, and
+    `vvAIStats` emits nested objects (`recorded` on every card, `keeper` on a goalkeeper).
+    Their key ORDER therefore goes into the cache key verbatim. Reorder either literal and
+    every cached note re-hashes and regenerates , a mass invalidation that costs a model call
+    per card and leaves NOTHING in the diff to explain itself, because reordering keys in an
+    object literal is the most innocent-looking edit there is.
+    A COMMENT SAYING "DO NOT REORDER THESE" WOULD BE A RULE THAT DEPENDS ON SOMEBODY
+    REMEMBERING, WHICH IS THE RULE THAT HAS ALREADY BEEN FORGOTTEN. So the hash of a fixed
+    canonical payload is asserted here instead. If this check fails, the payload shape moved:
+    either restore the order, or update the constant DELIBERATELY, knowing that doing so
+    discards every cached note. It is a tripwire, not a correctness proof , it says the shape
+    changed, never that the change was wrong.  */
+/*  UPDATED ON PURPOSE 2026-09-19, and the asymmetry is the evidence for why.
+    The outfield pin moved and the KEEPER pin did not, because the payload carries
+    `dimensions` under {radar:true} and a keeper's radar is suppressed at source. So the
+    mover was RADAR_POOL_REF, which was repasted that day after the 2026-09-16 assists
+    repair had silently moved every creation breakpoint. That is the stamp working: a note
+    citing "87th percentile for creation" is wrong once the percentile moves, and it SHOULD
+    regenerate. MEASURED COST: 97 of 172 cached notes, the rest unaffected or radar-NR.
+    Only ever change these two values with the reason written down.  */
+const STATS_HASH_PIN = { outfield: '2ca5d8ac83db868c', keeper: '8bd90b9aa47cceaf' };
+function lintCacheStamps(){
+  const out = [];
+  let A, VVCore;
+  try {
+    global.window = global.window || global;
+    require(path.join(__dirname, '..', 'vv-core.js'));
+    VVCore = global.VVCore || global.window.VVCore;
+    A = require(path.join(__dirname, '..', 'api', 'analyse.js'));
+  } catch (e) {
+    return [{ kind: 'CACHE STAMP', file: 'api/analyse.js', error: 'could not load the modules , ' + e.message }];
+  }
+  if (typeof A.statsHash !== 'function' || !VVCore || typeof VVCore.vvAIStats !== 'function')
+    return [{ kind: 'CACHE STAMP', file: 'api/analyse.js', error: 'statsHash or vvAIStats is not exported , the pin cannot be checked' }];
+  const mk = (row, extra) => Object.assign(
+    { player_name: 'Pin Probe', season: 2016, age: 27, club: 'Pin FC', league: 'Premier League',
+      position: 'ST', goals: 11, assists: 4, tags: ['b', 'a'] },
+    extra || {}, VVCore.vvAIStats(row, { radar: true }));
+  const got = {
+    outfield: A.statsHash(mk({ position_pool: 'ST', minutes: 3000, goals: 11, assists: 4, passes_total: 900,
+      passes_key: 60, shots_total: 90, dribbles_success: 30, dribbles_attempts: 60, duels_won: 120,
+      duels_total: 240, penalties_scored: 2, starts: 33, appearances: 34 })),
+    keeper: A.statsHash(mk({ position_pool: 'GK', minutes: 3060, saves: 80, goals_conceded: 30,
+      penalties_saved: 1, starts: 34, appearances: 34 }, { position: 'GK' }))
+  };
+  for (const k of Object.keys(STATS_HASH_PIN)) {
+    if (got[k] !== STATS_HASH_PIN[k]) out.push({ kind: 'CACHE STAMP', file: 'api/analyse.js',
+      expect: k + ' payload',
+      error: 'statsHash moved , ' + STATS_HASH_PIN[k] + ' -> ' + got[k] +
+             '. The notes payload shape changed, so EVERY cached note will regenerate. Restore the ' +
+             'field order, or update STATS_HASH_PIN in this file on purpose.' });
+  }
+  return out;
+}
+
+function lintSocial(file, src){
+  if (!isShipping(file)) return [];
+  if (!/class="(vvsoc|drawersoc)"/.test(src)) return [];
+  const f = [];
+  /*  A PAGE THAT CALLS THE HELPER HAS NO HANDLES IN ITS SOURCE, BY DESIGN , that is the
+      helper working, not a fault. Only the LITERAL copies are checked for drift. */
+  const generated = /socialRowHTML/.test(src);
+  if (!generated && src.includes('x.com/vvonderxi') && !src.includes('on X/Twitter'))
+    f.push({ kind:'SOCIAL', file, error: 'X link is not labelled "X/Twitter" , one letter is not a label, and a screen reader hears only "X"' });
+  if (/class="dsl"|>Follow</.test(src))
+    f.push({ kind:'SOCIAL', file, error: 'the word "Follow" is back beside the marks , the logos carry it' });
+  if (!generated) for (const h of ['instagram.com/vvonderxi', 'x.com/vvonderxi'])
+    if (!src.includes(h)) f.push({ kind:'SOCIAL', file, error: 'follow row is missing ' + h });
+  return f;
+}
+
+const WORDMARK_EXEMPT = new Set(['search.html']);
+/*  DEMOS, PROBES AND MOCKS ARE NOT SHIPPING SURFACES and are skipped , a `_demo_` file is a
+    disposable argument about a design, and failing the build on one would make the check
+    something people turn off rather than something they fix.  */
+const isShipping = f => !/^_/.test(f) && !/-(?:mock|demo)(?:-[A-Za-z0-9]+)?\.html$/.test(f);
+function lintWordmark(file, src){
+  if (WORDMARK_EXEMPT.has(file) || !isShipping(file)) return [];
+  const faults = [];
+  const body = src.slice(Math.max(0, src.indexOf('<body')))
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<style[\s\S]*?<\/style>/g, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, ' ');
+  const plain = body.match(/VV (?:Score|Index|Rankings)/g);
+  if (plain) faults.push({ kind:'WORDMARK', file, error: `${plain.length} plain "${plain[0]}" in rendered prose , use V<span class="vvw">V</span>` });
+  if (src.includes('class="vvw"') && !/\.vvw\s*\{/.test(src) && !src.includes('vv-core.js'))
+    faults.push({ kind:'WORDMARK', file, error: 'uses class="vvw" but neither declares .vvw nor loads vv-core.js , the V renders unstyled' });
+  return faults;
+}
+
 const targets = files.length
   ? files
   : fs.readdirSync(process.cwd()).filter(f => f.endsWith('.html')).sort();
 
 const results = targets.map(lintFile);
-const moduleFaults = lintModules();
+/*  THE MODEL-JSON PARSER EXISTS TWICE ON PURPOSE AND THIS IS WHAT STOPS IT DRIFTING.
+    `VVCore.vvParseModelJSON` serves the browser and the warm script; `parseModelJSON` inside
+    api/analyse.js serves the serverless function, which requires `crypto` and nothing else and
+    must not pull the whole browser module in for eight lines. Two bodies, one behaviour , so
+    the behaviour is pinned rather than trusted to memory.
+    THE LAST TWO CASES MUST STILL THROW. A truncated response has no closing brace, and a parser
+    that got forgiving enough to accept one would be hiding the max_tokens problem instead of
+    reporting it , which is the failure this whole fix was written to stop.  */
+function lintParseModelJSON(){
+  const out = [];
+  let a, b;
+  try {
+    global.window = global.window || global;
+    require(path.join(__dirname, '..', 'vv-core.js'));
+    a = (global.VVCore || global.window.VVCore || {}).vvParseModelJSON;
+    b = require(path.join(__dirname, '..', 'api', 'analyse.js')).parseModelJSON;
+  } catch (e) { return [{ kind: 'PARSE PIN', file: 'api/analyse.js', error: 'could not load both implementations , ' + e.message }]; }
+  const fault = (error) => ({ kind: 'PARSE PIN', file: 'api/analyse.js', error });
+  if (typeof a !== 'function') out.push(fault('VVCore.vvParseModelJSON is not exported'));
+  if (typeof b !== 'function') out.push(fault('api/analyse.js does not export parseModelJSON'));
+  if (out.length) return out;
+  const ok = '{"tag":"the_debate","who":"X edges it"}';
+  const cases = [
+    ['plain',            ok,                                   true],
+    ['fenced',           '```json\n' + ok + '\n```',           true],
+    ['prose prefix',     'I need to compare these.\n\n' + ok,  true],
+    ['prose both sides', 'Thinking.\n' + ok + '\nDone.',       true],
+    ['truncated',        'I need to ' + ok.slice(0, 20),       false],
+    ['no object',        'I cannot answer that.',              false],
+  ];
+  for (const [label, input, shouldParse] of cases) {
+    const run = (fn) => { try { const v = fn(input); return v && v.tag === 'the_debate' ? 'ok' : 'wrong-shape'; } catch (e) { return 'throw'; } };
+    const ra = run(a), rb = run(b);
+    if (ra !== rb) out.push(fault(`the two implementations DISAGREE on "${label}" , vv-core ${ra}, analyse.js ${rb}`));
+    else if ((ra === 'ok') !== shouldParse) out.push(fault(`"${label}" should ${shouldParse ? 'parse' : 'throw'} and both ${ra}`));
+  }
+  return out;
+}
+
+const moduleFaults = lintModules().concat(lintStringFloors()).concat(lintCacheStamps()).concat(lintParseModelJSON())
+  .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))))
+  .concat(targets.flatMap(f => lintSocial(f, fs.readFileSync(f, 'utf8'))));
 const broken = results.filter(r => r.css.faults.length || r.js.length);
 
 if (JSON_OUT) {
@@ -201,11 +401,14 @@ if (JSON_OUT) {
                   (f.kind === 'stray-close-brace' ? '   , the next rule is discarded by the browser' : ''));
     for (const j of r.js) console.log(`      inline script at ${r.file}:${j.line} , ${j.error}`);
   }
+  /*  THE EXPORT NAME IS PART OF THE MESSAGE. api/analyse.js publishes THREE long prompt
+      strings, so "MODULE api/analyse.js , is 10782 characters" does not say which one ended
+      early , and the whole point of this check is to send someone to the right literal.  */
   for (const m of moduleFaults)
-    console.log(`\n  MODULE ${m.file} , ${m.error}`);
+    console.log(`\n  ${m.kind || 'MODULE'} ${m.file}${m.expect ? ' , ' + m.expect : ''} , ${m.error}`);
   console.log(broken.length || moduleFaults.length
-    ? `\n  ${broken.length} file(s) with a structural break, ${moduleFaults.length} module(s) that do not export. A discarded rule does not error at runtime , it just stops applying.`
-    : '\n  All files parse clean, every declared rule survives, every inline script checks, and every shared module exports what it should.');
+    ? `\n  ${broken.length} file(s) with a structural break, ${moduleFaults.length} module or wordmark fault(s). A discarded rule does not error at runtime , it just stops applying.`
+    : '\n  All files parse clean, every declared rule survives, every inline script checks, every shared module exports what it should, and every product name carries its pink V.');
 }
 
 process.exit((broken.length || moduleFaults.length) ? 1 : 0);

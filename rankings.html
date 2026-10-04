@@ -2,12 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- VV PAGE-TRANSITION FLAG , DEMO ONLY, INERT UNLESS SWITCHED ON, AND REMOVABLE WITH ONE COMMAND.
+     Append ?vt=1 to any page to turn cross-document view transitions on for the rest of the
+     browser session; ?vt=0 turns them off. With the flag unset this adds nothing at all to the
+     document. Unsupported browsers ignore the at-rule and get today's hard cut, with no
+     fallback code and no error.
+     Put in by scripts/wire-vt-flag.js; take out with the same script and --off.
+     At the decision this either goes, or the at-rule inside it moves into each page's own CSS
+     and the script around it disappears. -->
+<script>try{var q=new URLSearchParams(location.search);if(q.has('vt')){q.get('vt')==='0'?sessionStorage.removeItem('vvvt'):sessionStorage.setItem('vvvt','1');}if(sessionStorage.getItem('vvvt')){var s=document.createElement('style');s.textContent='@view-transition{navigation:auto}';document.head.appendChild(s);}}catch(e){}</script>
+<!-- /VV PAGE-TRANSITION FLAG -->
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#F4EFE2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <title>VVonderXI , Rankings</title>
@@ -32,6 +43,11 @@
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* RADIUS SCALE , four values, measured 2026-09-28. sm hairline, md small controls and bars,
+   lg panels, pill fully round. 50% is a CIRCLE and is a separate idiom, deliberately not folded in.
+   See scripts/radius-census.js for the mapping and what it declines to touch. */
+:root{--r-sm:3px;--r-md:8px;--r-lg:14px;--r-pill:999px}
+
   :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--row-muted:rgba(243,237,224,0.6);--row-muted-2:rgba(243,237,224,0.55);--row-dim:rgba(243,237,224,0.52)}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
@@ -44,7 +60,7 @@
     display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:var(--r-lg);cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}
   .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}
@@ -63,10 +79,10 @@
   .modetoggle .mt-ic{width:18px;height:18px;transition:opacity .2s}
   .modetoggle:hover{border-color:rgba(255,255,255,.28)} body.light .modetoggle:hover{border-color:rgba(0,0,0,.22)}
   .modetoggle.spin .mt-ic{animation:mtspin .55s cubic-bezier(.4,0,.2,1)}@keyframes mtspin{to{transform:rotate(360deg)}}
-  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:999px;opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:var(--r-pill);opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
-.searchbtn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:20px;padding:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.searchbtn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--cream);border-radius:var(--r-lg);padding:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .searchbtn svg{width:18px;height:18px}
 .searchbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   /* VV shield badge , THEME-AWARE. Dark ground needs a CREAM shield (a dark shield on
@@ -84,18 +100,33 @@
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
   .avatar svg{height:42px;width:auto;display:block}
-  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
 
   /* hero , editorial, lots of air */
-  .hero{padding:30px 48px 6px;max-width:1680px}
+  /*  THE CONTENT COLUMN CENTRES , 2026-10-02, the same decision taken on vvindex in the same
+      commit, which is what SS D's "decide ONE rule for both and apply it together" asked for.
+      This page was internally consistent and lopsided: hero and gridwrap both flush left at
+      1680, leaving 141px dead on the right at 1920 and nothing on the left. It only READ as
+      centred because 1680 is wide enough that the gap is small.
+      THE MEASURE STAYS 1680 AND IS NOT ALIGNED WITH vvindex's 916. A card grid and a reading
+      column want different widths; the shared rule is to centre, never the number.
+      `.topline` is excluded here for the same reason as there , it is edge chrome.
+      AND `width:100%` IS LOAD-BEARING, NOT TIDINESS. `.canvas` is a COLUMN flex container, and
+      an auto inline margin on a flex item DISABLES the default `align-items:stretch`, so the
+      box shrink-to-fits its content instead of filling to `max-width`. Measured without it:
+      the rankings hero collapsed from 1680 to 511 and the grid to 1232, while the margins
+      came out perfectly balanced , so a check that asked "are the two margins equal" returned
+      TRUE on a broken layout. Assert the WIDTH, not the symmetry.
+  */
+  .hero{padding:30px 48px 6px;width:100%;max-width:1680px;margin-inline:auto}
   .hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:46px;line-height:1.02;letter-spacing:-0.02em}
   .hero h1 .b{color:var(--pink-ink)}
   .hero .lede{font-family:'Bricolage Grotesque';font-weight:600;font-size:22px;line-height:1.2;color:rgba(243,237,224,0.9);max-width:620px;margin-top:2px;letter-spacing:-0.01em}
   .hero .lede .b{color:var(--pink-ink)}
 
   /* the rankings grid , generous, never crammed (premium = space) */
-  .gridwrap{padding:30px 48px 60px;max-width:1680px}
-  .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px;margin-bottom:14px}
+  .gridwrap{padding:30px 48px 60px;width:100%;max-width:1680px;margin-inline:auto}
+  .ranksearch{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:11px 14px;margin-bottom:14px}
   .ranksearch svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   .ranksearch input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}
   .ranksearch input::placeholder{color:rgba(243,237,224,0.58)}
@@ -106,6 +137,10 @@
   body.light .ranksearch svg,body.light .ranksearch input::placeholder,body.light .rs-clear{color:var(--ink-soft)}
   body.light .ranksearch input{color:var(--charcoal)}
   body.light .rankempty{color:var(--ink-soft)}
+  /* #cardgrid is a GRID, and the shared empty state carries no column span of its own
+     (card.html mounts it in flow). Without this it renders in column 1 and reads as a
+     narrow stripe at desktop width. The panel supplies its own padding and colour. */
+  #cardgrid .vvf-empty-state{grid-column:1/-1}
   /* ===== Unified rank row (.urow) , shared by List (pillmode) + Compact (compactmode).
      ONE fixed-column grid in both modes -> every column aligns row-to-row (no max-content).
      Only padding / font-size / column-gap differ (Compact = denser). Score = .rmini VV badge. ===== */
@@ -211,8 +246,8 @@
   @media (min-width:1560px){.cardgrid{grid-template-columns:repeat(4,1fr)}}
   #cardgrid{max-height:calc(100vh - 270px);overflow-y:auto;overflow-x:hidden;padding-right:8px;padding-bottom:42px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 36px),transparent 100%)}
   #cardgrid::-webkit-scrollbar{width:6px}
-  #cardgrid::-webkit-scrollbar-track{background:rgba(255,255,255,0.04);border-radius:8px}
-  #cardgrid::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+  #cardgrid::-webkit-scrollbar-track{background:rgba(255,255,255,0.04);border-radius:var(--r-md)}
+  #cardgrid::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:var(--r-md);border:2px solid transparent;background-clip:padding-box}
   #cardgrid::-webkit-scrollbar-thumb:hover{background:rgba(255,92,122,0.8)}
   body.light #cardgrid::-webkit-scrollbar-track{background:rgba(0,0,0,0.04)}
   .cardgrid:not(.pillmode):not(.compactmode) > div{display:flex;justify-content:center;transition:transform .3s cubic-bezier(.4,0,.2,1)}
@@ -242,7 +277,7 @@
      Scale a whole card by changing --cw (card width).
      Everything inside scales proportionally off --cw.
      ============================================================ */
-  .filterrail{position:sticky;top:30px;align-self:start;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:22px 20px;max-height:calc(100vh - 60px);overflow-y:auto}
+  .filterrail{position:sticky;top:30px;align-self:start;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r-lg);padding:22px 20px;max-height:calc(100vh - 60px);overflow-y:auto}
   body.light .filterrail{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
   .fr-title{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
   body.light .fr-title{color:var(--ink-soft)}
@@ -254,7 +289,7 @@
   body.light .fr-count{color:var(--ink-soft)}
   .rankmore-wrap{display:none;justify-content:center;padding:18px 0 4px;grid-column:1/-1;width:100%}
   .rankmore-wrap.show{display:flex}
-  .rankmore{font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.04em;color:rgba(243,237,224,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:10px 22px;cursor:pointer;transition:all .15s}
+  .rankmore{font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.04em;color:rgba(243,237,224,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-pill);padding:10px 22px;cursor:pointer;transition:all .15s}
   .rankmore:hover{color:#fff;border-color:var(--pink-ink);background:rgba(255,92,122,0.12)}
   body.light .rankmore{color:#6a6256;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   body.light .rankmore:hover{color:#111;border-color:var(--pink-ink)}
@@ -271,16 +306,37 @@
   .ranklayout .filterrail{display:none}
   .ranklayout.filters-open .filterrail{display:block}
   .rankfbar{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
+  .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:3px;gap:2px;flex-shrink:0}
   body.light .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   /*  44x44 IS THE TOUCH-TARGET FLOOR. These were 36x30 and sit at y=220 on a 390x844
     screen , the stretch zone , so they were both small and awkward to reach. The ICON
     inside is unchanged; only the hit area grows. */
-  .vseg{width:44px;height:44px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
+  .vseg{width:44px;height:44px;border:none;background:none;border-radius:var(--r-md);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   .vseg.on{background:var(--pink);color:#fff}
   body.light .vseg{color:var(--ink-soft)}
   body.light .vseg.on{color:#fff}
-  .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--ink);background:var(--pillbg);border:1px solid var(--pill-b);border-radius:999px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  /*  --ink, --pillbg AND --pill-b WERE ALL UNDEFINED , THREE ON ONE RULE, FIXED 2026-09-15.
+      An undefined custom property makes the whole declaration invalid at computed-value time,
+      so this button was rendering with NO background (transparent) and NO border (0px none),
+      with its ink inherited rather than set. Measured on the live page before the fix.
+      The values are taken from `.rankmore` above, which is the same control at a lighter
+      weight, rather than invented , and `--cream` is the house dark-ink pattern with a
+      body.light override beneath, because this ground flips with the theme.  */
+  .rankfbtn{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-pill);padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  /*  LIGHT MODE , ADDED 2026-09-19. The base rule pins `color: var(--cream)`, which does NOT
+      flip with the theme while this page's ground DOES, so in light the pill painted cream on
+      cream and MEASURED 1.04 , invisible text on a live surface. SS C's own rule: an ink pinned
+      to a ground that moves. The 2026-09-15 pass fixed a different defect on this same element
+      (three undefined tokens left it with no background and no border) and took `.rankmore`'s
+      VALUES without taking its theme handling , `.rankmore` has had a body.light override all
+      along, two rules above this one.
+      #5f594e reads 5.52 on the pill's own wash (the page cream under rgba(0,0,0,0.04)), against
+      `.rankmore`'s #6a6256 at 4.78. The heavier control is the darker one, which is the
+      hierarchy the dark theme already has.
+      `:not(.on)` IS LOAD-BEARING, NOT TIDINESS. `body.light .rankfbtn` is (0,2,1) and would
+      outrank `.rankfbtn.on` at (0,2,0), repainting the ACTIVE pill's white-on-pink dark , a
+      fix that breaks the state it was not looking at.  */
+  body.light .rankfbtn:not(.on){color:#5f594e;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
   .rankfbtn.on{background:var(--pink);color:#fff;border-color:transparent}
   .rankfbtn .chev{transition:transform .2s}
   .rankfbtn.on .chev{transform:rotate(180deg)}
@@ -296,12 +352,12 @@
      as an ability tag. card.html and compare.html both had it; rankings did not, so
      Ballon d'Or rendered red here and gold on the other two. The mark inherits the ink
      through currentColor, which is why it needs no rule of its own. */
-  .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
+  .vvcard .chtagcell.gold{background:var(--vvfam-hon) !important;color:var(--vvfam-hon-ink)}
   
 
   /* ===== Prestige whole-card treatment (SUB-STEP A: rankings only) ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
-  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #3a3126, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
 
   /* ===================== LIGHT MODE (mirrors dark, colours flip) ===================== */
   body.light{color:var(--charcoal);--ink-soft:#5f594e;--row-muted:#5f5a52;--row-muted-2:#655f54;--row-dim:#6a6256;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
@@ -343,8 +399,12 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   @media (max-width:560px){
     .cardgrid{gap:14px}
   }
-  .crumb .va{color:var(--ink)} .crumb .vb{color:var(--pink-ink)}
-.fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:var(--ink-soft)}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:6px;padding:1px 5px;margin-left:7px}body.light .flsoon{color:var(--ink-soft);border-color:rgba(0,0,0,.16)}
+  /*  `--ink` DOES NOT EXIST , the two-tone VV pair was rendering half-coloured, .vb pink and
+      .va inheriting the crumb's own 0.55 muted cream. CLAUDE.md: the identity is one charcoal
+      V and one pink V, and on a dark ground the charcoal V is cream.  */
+  .crumb .va{color:var(--cream)} .crumb .vb{color:var(--pink-ink)}
+  body.light .crumb .va{color:var(--charcoal)}
+.fhide{display:none!important}.fgroup.expanded .fhide{display:flex!important}.fgroup.expanded .morechip{display:none}.morechip{opacity:.62;font-style:italic}.subgl{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,237,224,0.34);margin:9px 0 5px 2px}body.light .subgl{color:var(--ink-soft)}.fopt.disabled{opacity:.38;pointer-events:none;cursor:not-allowed}.fgroup-disabled .gl{opacity:.5}.flsoon{font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(243,237,224,.4);border:1px solid rgba(243,237,224,.22);border-radius:var(--r-md);padding:1px 5px;margin-left:7px}body.light .flsoon{color:var(--ink-soft);border-color:rgba(0,0,0,.16)}
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
      #E70443: 5.51 page / 6.04 panel / 6.40 white. Bright pink is untouched everywhere else. */
@@ -364,11 +424,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
 
-    <div class="navitem on" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The VV Rankings</span></div>
+    <div class="navitem on" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span class="vvw">V</span> Rankings</span></div>
     <div class="navitem" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div>
     <div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div>
     <div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span class="vvw">V</span> Index</span></div>
 
     <div class="navspacer"></div>
 
@@ -415,8 +475,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906b"></script>
-<script src="/vv-core.js?v=20260906b"></script>
+<script src="/vv-marks.js?v=20261003g"></script>
+<script src="/vv-core.js?v=20261003g"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the
@@ -513,6 +573,20 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   function rankEmptyHTML(){
     if(RANK_STATE==='error') return '<div class="rankempty">Those rankings could not be loaded. Check your connection and try again.</div>';
     if(RANK_STATE!=='ready')  return (window.VVCore && VVCore.vvLoader) ? VVCore.vvLoader({size:44, label:'Loading rankings'}) : '';
+    /*  THE SHARED EMPTY STATE, NOT A LOCAL SENTENCE (2026-10-03). This said "No seasons
+        match your search" whatever had happened , including when nothing was searched and
+        a filter was responsible, and including the one case that is not a miss at all:
+        goalkeepers filtered while the list is ranked by VV Score, which `applyServer`
+        excludes by design. `card.html` has called `VVFilters.emptyStateHTML` for months
+        and rankings, the surface the filters actually live on, carried the hardcoded line.
+        LOOKUP IS DERIVED EXACTLY AS `rankQuery` DERIVES IT , `!!nameQ`, via the same
+        `vvParseSearch`. A different rule here and the panel would explain a filter the
+        query did not apply. */
+    if(window.VVFilters && VVFilters.emptyStateHTML){
+      var _q=(document.getElementById('rankSearch')||{value:''}).value.trim();
+      var _nq=(window.vvParseSearch ? vvParseSearch(_q).nameQ : _q);
+      return VVFilters.emptyStateHTML(fState(), { searching: !!_q, lookup: !!_nq });
+    }
     return '<div class="rankempty">No seasons match your search.</div>';
   }
   /* Show more is gone , infinite scroll replaces the 300 cap (see loadRankings). */
@@ -745,6 +819,31 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
       return;
     }
     FINST=VVFilters.mount(FHOST,{ onChange:function(){ onFiltersChanged(); } });
+    /*  THE HAND-OFF FROM THE HOME PAGE , item 9, 2026-09-16. index.html offers starter pills
+        and does NOT filter in place: it navigates here with `?f=group:value`, and rankings owns
+        the filtering from that point. ONE FILTER IMPLEMENTATION, NOT TWO , a full rail on the
+        home page would be a third consumer of VVFilters to keep in step with this one and the
+        compare picker, and the three would drift.
+        A READER OF index.html MAY TAKE THE HAND-OFF FOR UNFINISHED WORK. It is deliberate: the
+        home page STARTS the query and this page OWNS it.
+        VALUES ARE APPLIED THROUGH applyState, which skips any chip that does not exist rather
+        than trusting the URL , a hand-typed or stale `?f=` must not be able to put this rail
+        into a state its own controls cannot show or undo.  */
+    try{
+      var _f=new URLSearchParams(window.location.search).getAll('f');
+      if(_f.length){
+        var _st=VVFilters.emptyState();
+        _f.forEach(function(pair){
+          var i=pair.indexOf(':'); if(i<1) return;
+          var g=pair.slice(0,i), v=pair.slice(i+1);
+          if(g==='score'){ _st.score.bands.push(v); }
+          else if(Array.isArray(_st[g])){ _st[g].push(v); }
+        });
+        var _r=VVFilters.applyState(FHOST, _st);
+        if(_r.skipped) console.warn('[VV] hand-off: '+_r.skipped+' filter(s) in ?f= match no chip and were ignored.');
+        if(_r.applied) onFiltersChanged();
+      }
+    }catch(e){}
     renderActiveChips();
     refreshFacets();
   })();
@@ -769,7 +868,7 @@ document.getElementById('rankFBtn').addEventListener('click',function(){document
       <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
-      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink-ink)">V</span> Index</span></a>
+      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 </body>

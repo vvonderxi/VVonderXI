@@ -1,0 +1,120 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prestige panel , hierarchy statement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink-ink:#F1688E;--gold:#E8B84B;--green-fill:#5FC98A;--page-2:#141011}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page-2);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+.demohdr{padding:54px 0 0;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
+.demoname{font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;letter-spacing:-.02em;margin:10px 0 0}
+.demonote{font-size:13px;line-height:1.6;color:var(--ink-soft);max-width:62ch;margin:12px 0 0}
+
+/*  THE LADDER, reproduced from playbook.html's real .vvband rules so the two tellings can
+    be judged together. Unchanged , it is the thing that already covers all five.  */
+.ladlab{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:46px 0 14px}
+.vvband{display:flex;flex-direction:column;align-items:stretch;gap:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 22px;margin-bottom:10px}
+.vvband-top{display:flex;align-items:center;gap:16px}
+.vvb{font-family:'Archivo';font-weight:900;font-size:19px;padding:9px 12px;border-radius:11px;min-width:78px;text-align:center;flex-shrink:0}
+.vvb-gen{background:var(--charcoal);color:var(--gold)}
+.vvb-ico{background:var(--gold);color:var(--charcoal)}
+.vvb-wc{background:var(--green-fill);color:var(--charcoal)}
+.vvb-so{background:var(--cream);color:var(--charcoal)}
+.vvb-ac{background:var(--cream-deep);color:var(--charcoal)}
+.vvbl{font-family:'Inter';font-weight:400;font-size:16px;line-height:1.6;color:rgba(243,237,224,0.7)}
+.vvbl b{font-family:'Archivo';font-weight:800;font-size:24px;color:var(--cream)}
+.more{font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.04em;color:var(--pink-ink);margin-top:11px;background:none;border:none;padding:0;align-self:flex-start}
+
+/*  ══ THE SECOND TELLING , A HIERARCHY STATEMENT ═══════════════════════════════════════
+    THE PREMISE: the ladder above already gives all five a threshold, a name, a one-line
+    definition and a fold. These two panels are a SECOND telling, and they only earn it on
+    what the lower three do not have , the quote and the count. So the one-line definition
+    is GONE from here; repeating it was most of the weight. Quote and count only.
+    CREAM GROUND, and it is the only light surface on the page. That IS the hierarchy
+    statement: the ladder is page furniture, this is the exhibit.  */
+.presect{background:var(--cream);border-radius:20px;margin:26px 0 0;padding:56px 54px 50px}
+.preeyebrow{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#7e5a10}
+.prerow{display:grid;grid-template-columns:150px 1fr;gap:46px;align-items:start;margin-top:34px}
+.prerow+.prerow{margin-top:46px;padding-top:46px;border-top:1px solid rgba(28,27,26,0.10)}
+.prerow>:first-child{display:flex;justify-content:center}
+
+/*  CARD FACES , gradients, rims, shadows and monogram inks quoted from BRAND_BRIEF.md S5.
+    THE GOLD RIM IS LOAD BEARING ON CREAM AND WAS NOT ON DARK. Measured: the gold face's
+    top stop #F6DE93 reads 14.20 against the dark page and 1.11 against this cream, so on
+    cream the card's own top half dissolves into the ground. Its #9a6a14 inset rim measures
+    3.93 here and is the only thing drawing the edge. Keep it.
+    THE BLACK FACE STILL CARRIES NO GOLD RIM, which is the holding page's ruling , but the
+    REASON inverts. There it was dropped because beside the gold card the rim read as two
+    golds. Here it is dropped because the black face already separates at 12.03 unaided, and
+    a gold rim on it would be the only gold near the black card, competing with the real
+    gold one. Same instruction, opposite justification.  */
+.vvc{--cw:132px;width:var(--cw);height:calc(var(--cw)*1.397);border-radius:calc(var(--cw)*0.073);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vvc .mono{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:calc(var(--cw)*0.34);letter-spacing:-.02em;line-height:1}
+.vvc.black{background:linear-gradient(158deg,#2c2926,#121010);
+  box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.07),inset 0 0 0 calc(var(--cw)*0.026) rgba(255,255,255,.11),0 24px 60px -20px rgba(0,0,0,.5)}
+.vvc.black .mono{color:#F0EAD9}.vvc.black .mono i{color:#F1688E;font-style:normal}
+.vvc.gold{--cw:112px;background:linear-gradient(158deg,#F6DE93,#DC9E2C);
+  box-shadow:inset 0 0 0 calc(var(--cw)*0.016) rgba(255,255,255,.45),inset 0 0 0 calc(var(--cw)*0.026) #9a6a14,0 24px 60px -20px rgba(120,80,10,.45)}
+.vvc.gold .mono{color:#2b1d05}.vvc.gold .mono i{color:#AD0332;font-style:normal}
+
+.pr-t{font-family:'Archivo';font-weight:900;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:#7e5a10}
+.pr-n{font-family:'Bricolage Grotesque';font-weight:700;font-size:42px;line-height:1.04;letter-spacing:-.03em;color:var(--charcoal);margin:9px 0 0}
+.prerow.sec .pr-n{font-size:33px}
+.pr-q{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:20px;line-height:1.62;letter-spacing:-.012em;color:#3a352e;max-width:44ch;margin:24px 0 0}
+.prerow.sec .pr-q{font-size:18px}
+.pr-c{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5f594e;margin:24px 0 0}
+.tail{padding:70px 0 90px}
+
+@media(max-width:720px){
+  .wrap{padding:0 20px}
+  .demohdr{padding-top:34px}
+  .vvband{padding:14px 16px}
+  .vvb{font-size:15px;min-width:66px;padding:8px 10px}
+  .vvbl{font-size:15px}.vvbl b{font-size:19px}
+  .presect{padding:34px 22px 32px;border-radius:16px;margin-left:-4px;margin-right:-4px}
+  .prerow{grid-template-columns:1fr;gap:22px;margin-top:24px}
+  .prerow>:first-child{justify-content:flex-start}
+  .prerow+.prerow{margin-top:32px;padding-top:32px}
+  .vvc{--cw:104px}.vvc.gold{--cw:88px}
+  .pr-n{font-size:31px}.prerow.sec .pr-n{font-size:26px}
+  .pr-q{font-size:17px;margin-top:18px}.prerow.sec .pr-q{font-size:16px}
+}
+</style>
+<div class="wrap">
+  <div class="demohdr">Playbook , band section , revised premise</div>
+  <div class="demoname">The ladder tells five. The panel tells two.</div>
+  <p class="demonote">The ladder already gives every band a threshold, a name, a one-line definition and a fold. These two earn a second telling only on what the lower three do not have: the quote, and the count. So the one-line definition is gone from the panel, which was most of its weight. Cream ground, because the only light surface on the page is itself the hierarchy statement.</p>
+
+  <div class="ladlab">The ladder, unchanged , all five</div>
+  <div class="vvband"><div class="vvband-top"><div class="vvb vvb-gen">95+</div><div class="vvbl"><b>Generational</b>, the rarest air the game has ever known. The ceiling of the Index.</div></div><button class="more">See more &#8250;</button></div>
+  <div class="vvband"><div class="vvband-top"><div class="vvb vvb-ico">90+</div><div class="vvbl"><b>Iconic</b>, the very best seasons football has produced. Prestige territory.</div></div><button class="more">See more &#8250;</button></div>
+  <div class="vvband"><div class="vvband-top"><div class="vvb vvb-wc">85+</div><div class="vvbl"><b>World Class</b>, a season among the best of its year.</div></div><button class="more">See more &#8250;</button></div>
+  <div class="vvband"><div class="vvband-top"><div class="vvb vvb-so">80+</div><div class="vvbl"><b>Standout</b>, a clear cut above the rest.</div></div><button class="more">See more &#8250;</button></div>
+  <div class="vvband"><div class="vvband-top"><div class="vvb vvb-ac">&le;79</div><div class="vvbl"><b>Accomplished</b>, the honest backbone of the professional game.</div></div><button class="more">See more &#8250;</button></div>
+
+  <section class="presect">
+    <div class="preeyebrow">The rarest air</div>
+
+    <div class="prerow">
+      <div><div class="vvc black"><div class="mono">V<i>V</i></div></div></div>
+      <div>
+        <div class="pr-t">95 and above</div>
+        <h3 class="pr-n">Generational</h3>
+        <p class="pr-q">Once in a generation, the game produces a player who does not merely lead his era but defines it, who bends the limits of what we believed possible and makes them his own. This is not a rating. It is a coronation , reserved for the very few seasons that stand entirely alone.</p>
+        <div class="pr-c">12 seasons, ever</div>
+      </div>
+    </div>
+
+    <div class="prerow sec">
+      <div><div class="vvc gold"><div class="mono">V<i>V</i></div></div></div>
+      <div>
+        <div class="pr-t">90 and above</div>
+        <h3 class="pr-n">Iconic</h3>
+        <p class="pr-q">The year people reach for when the argument begins. A campaign that burned so brightly it earned its place in the permanent memory of the game. The season they will still be talking about long after the final whistle of a career.</p>
+        <div class="pr-c">150 seasons at 90 and above</div>
+      </div>
+    </div>
+  </section>
+  <div class="tail"></div>
+</div>

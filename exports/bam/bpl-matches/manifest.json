@@ -1,0 +1,83 @@
+{
+  "league_id": 144,
+  "slug": "bpl-matches",
+  "format": "football-data.co.uk columns",
+  "retrieved_at": "2026-09-18T19:13:55.083Z",
+  "xg": "NOT SERVED by API-Football; HxG/AxG are empty by design",
+  "seasons": [
+    {
+      "season": 2010,
+      "through": "16/05/2011",
+      "match_count": 266,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2011,
+      "through": "20/05/2012",
+      "match_count": 302,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2012,
+      "through": "26/05/2013",
+      "match_count": 302,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2013,
+      "through": "18/05/2014",
+      "match_count": 299,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2014,
+      "through": "31/05/2015",
+      "match_count": 302,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2015,
+      "through": "29/05/2016",
+      "match_count": 298,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 17
+    },
+    {
+      "season": 2016,
+      "through": "21/05/2017",
+      "match_count": 270,
+      "missing_count": 0,
+      "shots": false,
+      "rows_with_shots": 0
+    },
+    {
+      "season": 2017,
+      "through": "20/05/2018",
+      "match_count": 270,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 128
+    },
+    {
+      "season": 2018,
+      "through": "19/05/2019",
+      "match_count": 270,
+      "missing_count": 0,
+      "shots": true,
+      "rows_with_shots": 140
+    }
+  ],
+  "total_calls": 856,
+  "through": "19/05/2019"
+}

@@ -1,0 +1,26 @@
+{
+  "label": "before",
+  "captured_at": "2026-09-16T19:57:54.732Z",
+  "rows": 57055,
+  "columns": [
+    "card_id",
+    "api_player_id",
+    "player_name",
+    "team_name",
+    "league_code",
+    "season",
+    "season_year",
+    "position",
+    "position_pool",
+    "appearances",
+    "minutes",
+    "goals",
+    "assists",
+    "starts",
+    "rt"
+  ],
+  "rt_md5": "0e27f0bfeaf6a6aa009c3fd317e23900",
+  "rt_null": 3061,
+  "file": "migrations/fusion_split_2026-09-16/before_full.json",
+  "readback": "row-for-row OK"
+}

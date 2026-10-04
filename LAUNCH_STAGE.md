@@ -119,7 +119,7 @@ One session's work benefiting all three surfaces. CLAUDE.md keeps the decisions;
 The component is adopted on rankings, the card overlay and the compare picker, so anything fixed inside `VVFilters` is fixed three times over. That is the reason to do these together rather than surface by surface.
 - **CLEAR ALL IS A BARE LINK. Restyle as a proper pill, consistently placed.** It lives in the component, so one fix covers all three. (Its VISIBILITY was already made consistent on 2026-08-13 , rankings used to hide it until a filter was active and was the odd one out; all three now show it whenever the panel is open.)
 - **AGE FILTER , min/max range mirroring the VV Score slider.** `season_age` is already on the view and already rendered in the rankings rows, so **this is UI only** , no view change, no matview rebuild. The slider machinery (`.vvf-dual`, the two-thumb clamp, `paintRange`) is already generic; it needs a second instance and a `gte`/`lte` pair in `applyServer`.
-- **HONOURS ACTIVATION , BLOCKED, and the block is structural.** PostgREST cannot filter `player_card_mv` by the separate `honours` table, so honour flags have to live ON the matview. That means a **DROP + CREATE** of the object the whole site reads, plus its 8 indexes , see the §C matview trap and `scripts/enrichment/matview_rebuild_plan.md`. The chips already render inert with a "soon" marker, which is deliberate: it teaches the vocabulary before the data exists. **Do not "fix" them by hiding them.**
+- **[UNBLOCKED 2026-09-08 , THE FLAGS ARE ALREADY ON THE MATVIEW. THIS ENTRY SAID "STRUCTURAL" AND IT IS NO LONGER TRUE.] HONOURS ACTIVATION IS NOW UI WORK, NOT A REBUILD.** Verified against `pg_attribute`: `player_card_mv` carries **`h_ballon_dor`, `h_golden_boot`, `h_league_champion`, `h_player_of_season`, `h_top_assists`, `h_ucl_winner`, `h_world_cup_winner`, and `honours_json`**. The original reasoning was right , PostgREST cannot filter the matview by the separate `honours` table, so the flags had to live ON it , and that condition has since been met. **No DROP + CREATE is required to activate these chips.** The chips already render inert with a "soon" marker, which is deliberate: it teaches the vocabulary before the data exists. **Do not "fix" them by hiding them.**
 - **TRAJECTORY GROUP , wired and HIDDEN.** It populates itself the moment Peak / The Standard / Breakout / Renaissance ship and the taxonomy lists them , no code change needed. An empty group is hidden rather than shown as a heading over a blank row, and `g.note` is developer metadata that must never render (it leaked to users once).
 - **ROW CSS INTO vv-core , the one with the highest defect-prevention value, do it FIRST.** `rankRowHTML` lives in vv-core but its **~110 CSS rules live in the PAGE files**: rankings has a copy, `card.html` has a second scoped under `#cardSearch`, and compare has **none**. Move the rules beside the renderer, namespaced, and delete the copies.
   - **THIS DUPLICATION HAS ALREADY CAUSED TWO UNSTYLED-ROW BUGS.** It is why `pkRow` could emit classes nothing styled (§C, 2026-08-13), and why pointing the picker at `rankRowHTML` produced **804px unstyled rows** , `display:block` instead of grid, `.rmini` 518px wide and transparent , rather than being the one-line change it looks like.
@@ -418,7 +418,7 @@ so the platform says one thing about its own boundaries , with its own copy as a
 than an empty box.
 
 **AND IT NAMES THE CAUSE THE REPAIR QUEUE CREATES:** seasons split across two clubs are being merged
-into one card, so older links stop resolving. That is a growing population , §E puts it near 1,600
+into one card, so older links stop resolving. That is a growing population , §E puts it at 1,462 measured
 cards , and this is what a reader will hit.
 
 | id | | |
@@ -498,3 +498,77 @@ wrote.
      - **[DONE 2026-08-29] PAGE-WEIGHT** , the demo markup was never the problem. The two base64 logos duplicated across nine pages are extracted to `assets/spinelogo-{dark,light}.png`; site HTML 2.78 MB -> 0.98 MB.
      - **[DONE 2026-08-29] DEAD-CSS SWEEP** , `.dicon`, `.liblabel`, `.liblede` removed, confirmed zero-reference in markup AND in JS first; **`.libgroup` IS live and was left alone.** The item said TWO dead custom properties; there were FOUR , and **`--pinkglow` died of a missing hyphen: the live token is `--pink-glow`.** A re-scan reports zero declared-but-unreferenced custom properties.
      - **[DONE , VERIFIED 2026-08-30] DELETE `foundations.html`.** Gone from the tree. **It is still named in PRODUCTION's `vercel.json` `builds` array**, harmless only because production still carries the file; the branch's `vercel.json` does not reference it at all.
+
+
+---
+
+## HYGIENE, LOGGED NOT FIXED: `playbook.html` HAS NO `prefers-reduced-motion` SUPPORT AT ALL (found 2026-09-12)
+
+**Measured: 0 occurrences of `prefers-reduced-motion` in `playbook.html`, against 29 `transition`
+declarations and one `@keyframes`.** Three other shipping pages already guard , `card.html`,
+`index.html` and `vvindex.html` , so the playbook is the outlier, not the norm.
+
+**THE PATTERN TO COPY IS ALREADY IN THE TREE, DO NOT INVENT ONE.** `card.html` uses BOTH halves:
+a `@media (prefers-reduced-motion:reduce)` block that keeps opacity and drops transform and blur,
+AND a JS `matchMedia('(prefers-reduced-motion: reduce)')` check that skips the animation and jumps
+straight to the end state. `index.html` has the blunt version, `*{transition:none!important}`.
+
+**DELIBERATELY NOT FIXED IN THE 2026-09-12 PASS.** Sweeping 29 transitions is its own job with its
+own verification, and folding it into a feature commit would make both unreviewable. **The new
+cabinet section carries its own guard**, so this is a pre-existing gap, not one that pass widened.
+
+**WHEN IT IS DONE, IT IS NOT A FIND-AND-REPLACE.** The blunt `*{transition:none!important}` is
+right for a page whose motion is decorative; the playbook's folds and the career arc use transition
+to communicate state change, so those want the opacity-preserving treatment instead. **Judge them
+in two groups, not one.**
+
+
+---
+
+## LEAGUE PILL COUNTS ON TAP , A ROUNDED BAND, NOT AN EXACT NUMBER (logged 2026-09-12, Lucas wants it, NOT BUILT)
+
+**Tapping a league pill should say how much is behind it, as a BAND: "more than 10,000 season
+cards", never "10,347".**
+
+**THE BAND IS THE POINT, NOT A HEDGE.** An exact count is a number that goes stale the moment
+anything is ingested, and this file already records what a written count costs , the
+contrast-exceptions heading, the vvindex band populations, the `.chip.gold.career` census. A band
+stays true across a re-ingest, a backfill and the transfer-halves repair, all of which are queued.
+
+**WHERE THE NUMBER COMES FROM MATTERS AND IS NOT SETTLED.** `player_card_mv` holds 57,055 rows but
+**3,061 have a null rt**, and SS C's own rule is that a null-rt row is not a scored card. So decide
+before building whether the band counts ALL cards in the league or only SCORED ones, and say which
+in the copy. **Do not count with a hardcoded total** , SS C: count the population, never quote it.
+
+**BAND THRESHOLDS ARE A COPY DECISION, NOT AN ENGINEERING ONE.** "More than 10,000" reads well for
+a big league and badly for a small one; BPL and the smaller leagues are a fraction of the PL's
+volume, so a single threshold will either flatter the small leagues or insult them. **Bring the
+thresholds to Lucas with the real per-league counts beside them.**
+
+**SS C SIBLING STATES: the league pills appear on rankings, on the Compare picker and in the filter
+rail. Whatever is decided applies to all of them in one pass, or to none.**
+
+
+---
+
+## SQUAD NUMBERS FOR 2010-2015 , A SEPARATE AND MUCH SMALLER JOB (logged 2026-09-12, NOT BUILT)
+
+**SPLIT OUT DELIBERATELY FROM THE REJECTED CCC BACKFILL** (`POST_LAUNCH.md`) so it is not lost with
+it. The backfill was rejected because twelve stat fields sit at 84 to 90% null and only assists
+feeds rt. **None of that applies to a squad number.**
+
+**WHY THIS ONE IS TRACTABLE WHERE THE OTHER IS NOT:**
+- **It is a ROSTER FACT with a real source.** A squad list for a club-season is published, stable
+  and checkable, which is the kind of claim the position passes returned at HIGH confidence.
+- **IT HAS NO ENGINE EFFECT.** `shirt_number` appears in no scoring expression, so a fill cannot
+  move a score, cannot ripple across a pool, and needs no simulation or snapshot.
+- **The schema already exists.** `player_positions` carries `shirt_number` and holds **320 rows for
+  2010-2015, of which 164 have a null shirt number**.
+
+**THE SIZE, MEASURED: 19,899 of 20,219 cards in the window (98.4%) have NO `player_positions` row
+at all.** So this is mostly INSERT, not UPDATE , which SS C already records for the pre-2016 era,
+and an insert is the safer of the two.
+
+**DO NOT LET IT GROW BACK INTO THE BACKFILL.** The moment a pass is asked for a shirt number AND an
+assist total in the same breath, it inherits the engine problem and the era-gap problem and stops
+being this job. **One field, one source, no scores touched.**

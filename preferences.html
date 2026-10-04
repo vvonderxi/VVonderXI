@@ -2,12 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- VV PAGE-TRANSITION FLAG , DEMO ONLY, INERT UNLESS SWITCHED ON, AND REMOVABLE WITH ONE COMMAND.
+     Append ?vt=1 to any page to turn cross-document view transitions on for the rest of the
+     browser session; ?vt=0 turns them off. With the flag unset this adds nothing at all to the
+     document. Unsupported browsers ignore the at-rule and get today's hard cut, with no
+     fallback code and no error.
+     Put in by scripts/wire-vt-flag.js; take out with the same script and --off.
+     At the decision this either goes, or the at-rule inside it moves into each page's own CSS
+     and the script around it disappears. -->
+<script>try{var q=new URLSearchParams(location.search);if(q.has('vt')){q.get('vt')==='0'?sessionStorage.removeItem('vvvt'):sessionStorage.setItem('vvvt','1');}if(sessionStorage.getItem('vvvt')){var s=document.createElement('style');s.textContent='@view-transition{navigation:auto}';document.head.appendChild(s);}}catch(e){}</script>
+<!-- /VV PAGE-TRANSITION FLAG -->
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#F4EFE2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <title>VVonderXI , Preferences</title>
@@ -32,6 +43,22 @@
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /*  THE PRODUCT NAME'S SECOND V IS PINK, AND IT IS ONE RULE NOW , 2026-09-13. This was
+      thirty-eight hand-typed `style="color:var(--pink-ink)"` spans across eleven files, plus a
+      fifth private copy in compare as `.tjvp`. A rule written thirty-eight times is a rule
+      nobody can change, which is how the nav wordmark drifted on two pages as punchlist item 12.
+      THIS PAGE DECLARES IT LOCALLY BECAUSE IT LOADS NO SHARED SCRIPT. The five surfaces that
+      do take it from VV_CARD_CSS instead. `scripts/lint-inline.js` fails the build if a page
+      contains class="vvw" and neither declares this rule nor loads the shared core , without
+      that check the failure is silent, and a black V where a pink one belongs looks like a
+      font problem rather than a missing rule.
+      AND NEITHER SHARED SCRIPT IS NAMED ANYWHERE IN THIS COMMENT, ON PURPOSE. SS C's cache-token
+      rule finds the surface list by grepping every .html for those two filenames, so writing
+      either one here put five token-less pages into that result and broke the one check the
+      rule depends on. A COMMENT THAT MENTIONS A FILENAME JOINS EVERY GREP FOR IT , which is
+      how this was introduced and caught within the hour, by running the QA pass's own A2.  */
+  .vvw{color:var(--pink-ink)}
+
   :root{--ink-soft:#a49d93;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--club:#DA291C}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100vh}
@@ -366,6 +393,15 @@
   .merow .chev{color:rgba(243,237,224,0.55);font-size:19px;line-height:1}
   .merow.danger .ml{color:#ff7a8a}
   .merow.install .meicon{color:var(--pink,#ff2d78)}
+  /*  INSTALLING STAYS A PHONE AFFORDANCE, the same bound index.html puts on its own install
+      strip. Desktop Chrome and Edge do install web apps, but this row's words , "Add to Home
+      Screen" , are the wrong ones for a desktop ("Install app"), so offering it there is a
+      new surface with its own copy question rather than a free win.
+      `!important` IS LOAD-BEARING AND NOT DECORATION: `vvInstallSync` sets `display:flex` as
+      an INLINE style, and a plain author rule loses to that however specific it is. A plain
+      inline style does lose to author `!important`, which is why this works and why index.html
+      carries the same keyword on the same kind of rule.  */
+  @media (min-width:721px){ .merow.install{display:none !important} }
   .mesw{width:44px;height:26px;border-radius:20px;background:rgba(255,255,255,0.16);position:relative;transition:.2s;flex-shrink:0}
   .mesw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
   .mesw.on{background:var(--pink,#ff2d78)}
@@ -378,6 +414,19 @@
   .iostitle{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;margin-bottom:8px;color:var(--cream)}  /* .iossheet is ALWAYS dark (#16110d), so this must NOT follow the body theme , it was inheriting body.light's charcoal and rendering at 1.09 contrast. .iosbody already sets its own cream. */
   .iosbody{font-family:'Inter';font-size:14.5px;color:rgba(243,237,224,0.72);line-height:1.55}
   .iosbody b{color:#fff}
+  /*  THE PER-BROWSER STEPS IN THE SHEET (2026-10-03). Every colour is a LITERAL and there is
+      NO body.light variant, because .iossheet is always dark (#16110d) , the same reason
+      .iostitle above carries that note. index.html's strip DOES follow the theme, so its
+      equivalents are tokenised; copying those rules here would paint charcoal on charcoal.
+      LITERAL RADIUS TOO: --r-pill is not defined on this page, and an undefined custom
+      property invalidates the whole declaration silently rather than erroring.  */
+  .iosbody .ioshd{font-family:'Archivo';font-weight:800;font-size:13px;color:#F0EAD9;margin-bottom:9px}
+  .iosbody .iost{display:flex;align-items:center;gap:9px;font-size:13.5px;line-height:1.4;margin-top:8px}
+  .iosbody .iost .iosn{flex:none;width:18px;height:18px;border-radius:999px;display:grid;place-items:center;
+    font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(243,237,224,.13);color:#F0EAD9}
+  .iosbody .iost .iosg{flex:none;width:18px;height:18px;display:grid;place-items:center;color:#F0EAD9}
+  .iosbody .iost>span:last-child{flex:1 1 auto;min-width:0}
+  .iosbody .iosnote{margin-top:10px;font-size:11.5px;opacity:.72}
   .iosclose{margin-top:18px;width:100%;padding:13px;border-radius:13px;border:0;background:var(--pink,#ff2d78);color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;cursor:pointer}
   /* daylight */
   body.light .memail,body.light .merow .mv,body.light .merow .chev{color:var(--ink-soft)}
@@ -406,11 +455,11 @@
 <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
 
-    <a class="navitem" href="rankings.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></a>
+    <a class="navitem" href="rankings.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span class="vvw">V</span> Rankings</span></a>
     <a class="navitem" href="compare.html"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></a>
     <a class="navitem soon" href="myclub.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></a>
     <a class="navitem" href="playbook.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></a>
-    <a class="navitem" href="vvindex.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></a>
+    <a class="navitem" href="vvindex.html"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span class="vvw">V</span> Index</span></a>
 
     <div class="navspacer"></div>
 
@@ -442,7 +491,7 @@
       <div class="megroup">
         <div class="meglabel">App</div>
         <div class="mecard">
-          <div class="merow install" id="installRow" onclick="installApp()">
+          <div class="merow install" id="installRow" style="display:none" onclick="installApp()">
             <svg class="meicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M12 17.5v.01"/><path d="M9.5 6.5h5"/></svg><span class="ml">Add to Home Screen</span><span class="mv">Install</span><span class="chev">&#8250;</span>
           </div>
         </div>
@@ -469,7 +518,7 @@
   <div class="iosback" id="iosBack" onclick="closeIos()"></div>
   <div class="iossheet" id="iosSheet">
     <div class="iostitle">Add VVonderXI to your phone</div>
-    <div class="iosbody">Tap the <b>Share</b> icon in your browser bar, then choose <b>Add to Home Screen</b>. VVonderXI opens full screen, just like an app.</div>
+    <div class="iosbody" id="iosBody"></div>
     <button class="iosclose" onclick="closeIos()">Got it</button>
   </div>
 
@@ -477,21 +526,95 @@
       <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
-      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink-ink)">V</span> Index</span></a>
+      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 <button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 
+<!--  vv-a2hs.js , the per-browser Add-to-Home-Screen steps, SHARED WITH index.html. This page
+      loads no other shared module and must not start: the big renderer costs 576 KB and
+      prepends a card stylesheet, for twenty lines of branching. Its ?v= token is paired with
+      the tag in index.html , bump both together or one page is served fresh against a cached
+      copy of the other.
+      THE SHARED RENDERER IS DELIBERATELY NOT NAMED ABOVE. SS C: a comment naming a file joins
+      every grep for that file, and the cache-token rule finds its surfaces by grepping, so
+      saying it here would list this page as one that needs a token it does not have.  -->
+<script src="/vv-a2hs.js?v=20261003a"></script>
+
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);var sw=document.getElementById('meThemeSw');if(sw)sw.classList.toggle('on',document.body.classList.contains('light'));}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();
 function meTheme(sw){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}if(sw)sw.classList.toggle('on');var b=document.querySelector('.modetoggle');if(b)vvSync(b);}
+/*  THE INSTALL ROW WAS BUILT, AND IT COULD NOT WORK ON ANY PLATFORM , FIXED 2026-09-13.
+    THREE FAULTS, AND THE FIRST ONE DISABLED THE OTHER TWO.
+    (1) THERE WAS NO MANIFEST. Not a broken one , none, and no page linked one. Chrome
+        requires an installable manifest before it will fire `beforeinstallprompt`, so
+        `deferredPrompt` was permanently null and the Android path was dead code from the day
+        it was written. `/manifest.webmanifest` now exists and every page links it.
+    (2) SO EVERY TAP FELL THROUGH TO THE iOS SHEET, which tells you to find Safari's Share
+        button. An Android user was being given instructions for a browser they are not using.
+        The fallback is gated on `isiOS()` now, and anything else gets its own line.
+    (3) `isStandalone()` WAS DEFINED AND NEVER CALLED, so the row offered to install the app
+        to someone already inside the installed app. It is called now, and the row hides.
+    THE TWO HELPERS WERE ALREADY HERE AND UNUSED. That is the part worth remembering: the
+    feature looked finished, every piece of it existed, and nothing connected them.  */
 var deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;var r=document.getElementById('installRow');if(r)r.style.display='flex';});
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;vvInstallSync();});
 function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
 function isiOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent);}
-function installApp(){if(deferredPrompt){deferredPrompt.prompt();if(deferredPrompt.userChoice)deferredPrompt.userChoice.finally(function(){deferredPrompt=null;});return;}openIos();}
-function openIos(){document.getElementById('iosBack').classList.add('show');document.getElementById('iosSheet').classList.add('show');}
+/*  ONE FUNCTION DECIDES WHETHER THE ROW EXISTS, and it is called on load AND when Chrome fires,
+    because those arrive in either order.
+    [2026-10-03] IT NOW OFFERS ON EVERY BROWSER, and the old condition is the finding. It read
+    `deferredPrompt || isiOS()`, which is correct ONLY if a real prompt can arrive. It cannot:
+    SS C rules that there is deliberately no service worker, and Chrome's own algorithm behind
+    `beforeinstallprompt` still requires a fetch handler, so the event never fires anywhere.
+    So `deferredPrompt` is permanently null and the whole condition collapsed to `isiOS()` ,
+    the row simply did not exist for any Android, Samsung or desktop reader, while index.html
+    offered all of them manual steps. A row hidden by a condition that can never be true is
+    indistinguishable from a feature nobody built, which is why it survived a second time: the
+    comment above `deferredPrompt` already records the Android path being dead for this exact
+    reason, and the fix made the ROW conditional on the thing that was broken.
+    THE PROMPT BRANCH IN `installApp` STAYS. If a worker is ever added the event resumes and
+    the native sheet is better than instructions , but nothing now DEPENDS on it firing.  */
+/*  THIS DECIDES ONLY THE STANDALONE QUESTION. THE WIDTH IS CSS'S JOB , see the media query
+    beside `.merow.install`, which matches index.html's. It was written here first, in JS with
+    a matchMedia test and a resize listener, and a negative control caught it: widened to
+    1100px the row stayed, and calling this function directly then hid it , so the GATE was
+    right and the LISTENER never fired. CSS has no such failure mode and needs no listener.  */
+function vvInstallSync(){
+  var r=document.getElementById('installRow'); if(!r) return;
+  r.style.display = isStandalone() ? 'none' : 'flex';
+}
+function installApp(){
+  if(deferredPrompt){deferredPrompt.prompt();if(deferredPrompt.userChoice)deferredPrompt.userChoice.finally(function(){deferredPrompt=null;vvInstallSync();});return;}
+  openIos();
+}
+function openIos(){
+  /*  THE COPY IS CHOSEN WHEN THE SHEET OPENS, not written into the markup, because the
+      instructions differ by browser and the old ones named Safari's Share button to everybody.
+      [2026-10-03] IT NOW USES THE SAME FIVE BRANCHES AS THE FRONT DOOR, via vv-a2hs.js. The
+      two generic lines it replaces were true and vague , "your browser's menu" to a Samsung
+      reader whose control is at the BOTTOM RIGHT and reads "Add page to", which index.html
+      has said precisely for weeks. One copy of the labels, because they move between versions.
+      THE FALLBACK IS NOT COSMETIC. If the module fails to load the sheet must still say
+      something, so the old generic pair is kept for that case and nothing else , a sheet that
+      opens empty reads as a broken control.  */
+  var b=document.getElementById('iosBody');
+  if(b){
+    if(window.VVA2HS){
+      var p=VVA2HS.plan();
+      var steps=p.steps.map(function(s,i){ return '<div class="iost"><span class="iosn">'+(i+1)+'</span>'
+        + '<span class="iosg">'+s[0]+'</span><span>'+s[1]+'</span></div>'; }).join('');
+      b.innerHTML='<div class="ioshd">'+p.hd+'</div>'+steps
+        + (p.note?'<div class="iosnote">'+p.note+'</div>':'')
+        + '<div class="iosnote">VVonderXI then opens full screen, just like an app.</div>';
+    } else {
+      b.innerHTML = isiOS()
+        ? 'Tap the <b>Share</b> icon in your browser bar, then choose <b>Add to Home Screen</b>. VVonderXI opens full screen, just like an app.'
+        : 'Open your browser\u2019s menu and choose <b>Install app</b> or <b>Add to Home screen</b>. VVonderXI opens full screen, just like an app.';
+    }
+  }
+  document.getElementById('iosBack').classList.add('show');document.getElementById('iosSheet').classList.add('show');}
 function closeIos(){document.getElementById('iosBack').classList.remove('show');document.getElementById('iosSheet').classList.remove('show');}
-document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);var sw=document.getElementById('meThemeSw');if(sw&&document.body.classList.contains('light'))sw.classList.add('on');if(isStandalone()){var r=document.getElementById('installRow');if(r)r.style.display='none';}});
+document.addEventListener('DOMContentLoaded',function(){vvInstallSync();var b=document.querySelector('.modetoggle');if(b)vvSync(b);var sw=document.getElementById('meThemeSw');if(sw&&document.body.classList.contains('light'))sw.classList.add('on');if(isStandalone()){var r=document.getElementById('installRow');if(r)r.style.display='none';}});
 window.addEventListener('scroll',function(){var t=document.getElementById('totop');if(t)t.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>520);});
 </script>
 

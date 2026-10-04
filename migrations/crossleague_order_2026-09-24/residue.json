@@ -1,0 +1,46 @@
+[
+ {
+  "api_player_id": 113662,
+  "season_year": 2011,
+  "player": "D. Cissé",
+  "clubs": [
+   "QPR (PL)",
+   "Lazio (SA)"
+  ],
+  "why": "player absent from the export",
+  "nearby": []
+ },
+ {
+  "api_player_id": 115094,
+  "season_year": 2010,
+  "player": "Mark van Bommel",
+  "clubs": [
+   "Bayern München (BL)",
+   "AC Milan (SA)"
+  ],
+  "why": "player absent from the export",
+  "nearby": []
+ },
+ {
+  "api_player_id": 115173,
+  "season_year": 2011,
+  "player": "Abdelkader Mohamed Ghezzal",
+  "clubs": [
+   "Cesena (SA)",
+   "Levante (LL)"
+  ],
+  "why": "player absent from the export",
+  "nearby": []
+ },
+ {
+  "api_player_id": 116873,
+  "season_year": 2010,
+  "player": "Simão Pedro Fonseca Sabrosa",
+  "clubs": [
+   "Atletico Madrid (LL)",
+   "Beşiktaş (TR)"
+  ],
+  "why": "player absent from the export",
+  "nearby": []
+ }
+]

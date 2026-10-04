@@ -64,7 +64,7 @@ const LIMIT       = flag('limit', null) ? Number(flag('limit')) : null;
 // read cannot drift, and a prompt edit auto-bumps VERDICT_VERSION on both
 // sides at once (it is a fingerprint of the prompt text).
 const ANALYSE = require(path.join(__dirname, '..', 'api', 'analyse.js'));
-const { MODEL, VERDICT_VERSION, VERDICT_SYSTEM: SYSTEM_PROMPT } = ANALYSE;
+const { MODEL, VERDICT_VERSION, VERDICT_SYSTEM: SYSTEM_PROMPT, verdictVersionFor } = ANALYSE;
 for (const [k, v] of Object.entries({ MODEL, VERDICT_VERSION, SYSTEM_PROMPT })) {
   if (typeof v !== 'string' || !v) {
     console.error(`FATAL: api/analyse.js did not export ${k}. It must export MODEL, VERDICT_VERSION and VERDICT_SYSTEM for this script to mirror production exactly. Refusing to run rather than guess.`);
@@ -139,10 +139,17 @@ async function callClaude(userPrompt, attempt = 0) {
   const data = await resp.json();
   if (!resp.ok) throw new Error((data.error && data.error.message) || ('HTTP ' + resp.status));
   let text = (data.content && data.content[0] && data.content[0].text) || '';
-  text = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
   let verdict;
-  try { verdict = JSON.parse(text); }
-  catch (e) { throw new Error('verdict JSON parse failed'); }
+  /*  THE OLD CATCH THREW AWAY BOTH THE PARSE ERROR AND THE TEXT, so a 29% failure rate on
+      the 2026-10-03 warm run could not be diagnosed at all , it reported the same eight
+      words whatever had happened. SEC C: an error is only as useful as the smallest thing
+      it lets you look at next. `stop_reason` is the decisive one: `max_tokens` means the
+      response was TRUNCATED mid-JSON and the fix is the token ceiling, not the parser.  */
+  try { verdict = VVCore.vvParseModelJSON(text); }   // shared with the live path, see vv-core
+  catch (e) {
+    throw new Error('verdict JSON parse failed , stop_reason=' + (data.stop_reason || '?') +
+      ' len=' + text.length + ' | ' + e.message + ' | tail: ' + JSON.stringify(text.slice(-90)));
+  }
   for (const k of ['p1', 'p2', 'h2h', 'verdict']) {
     if (typeof verdict[k] !== 'string' || !verdict[k].trim()) throw new Error('verdict missing "' + k + '"');
   }
@@ -161,7 +168,7 @@ async function callClaude(userPrompt, attempt = 0) {
 
   // canonical order: A is always the LOWER card_id, so rt_a/rt_b map straight
   // through with no swap , the same trap analyse.js handles via `swapped`.
-  const pairs = [];
+  let pairs = [];   // let, not const , the Path B filter below rebinds it
   for (let i = 0; i < cards.length; i++)
     for (let j = i + 1; j < cards.length; j++)
       pairs.push({ A: cards[i], B: cards[j], key: cards[i].card_id + '-' + cards[j].card_id });
@@ -175,15 +182,36 @@ async function callClaude(userPrompt, attempt = 0) {
     const r = byKey.get(p.key);
     if (!r || !r.verdict || r.model !== MODEL) return false;
     if (r.rt_a == null || r.rt_b == null || r.cache_version == null) return false;   // legacy -> regenerate
-    if (r.cache_version !== VERDICT_VERSION) return false;
+    /*  `p.A` / `p.B`, NOT bare `A` / `B`. The fourth cache_version segment (the value
+        stamp, 2026-09-19) was added here referencing identifiers that belong to the pair
+        LOOP above, not to this function, so every run threw ReferenceError before a single
+        API call , and nobody saw it because SEC D had deferred warming, so the script was
+        never run again. The line directly below already reads `p.A.vv` correctly.
+        The live caller is compare.html, which passes an ARRAY of the two cards.  */
+    if (r.cache_version !== verdictVersionFor(VVCore.vvPayloadRev([p.A, p.B]), false, undefined, VVCore.vvPayloadStats([p.A, p.B]))) return false;
     return r.rt_a === (+p.A.vv || 0) && r.rt_b === (+p.B.vv || 0);
   };
+  /*  ── PATH B PAIRS ARE NOT PRE-WARMABLE FROM HERE , 2026-09-11 ──────────────────────
+      A pair the Index cannot separate is now generated under a DIFFERENT system prompt
+      (VERDICT_SYSTEM_JUDGE, selected by judge:'ai' from compare.html), and therefore under a
+      different cache_version. This script mirrors the ENGINE path: it sends the prohibiting
+      prompt and stamps the base version, so a row it wrote for such a pair would be a
+      PERMANENT MISS , generated, paid for, and never served, which is the exact failure the
+      composed-version note below was written about.
+      SKIPPED RATHER THAN RE-IMPLEMENTED. Warming them properly means sending the other
+      prompt and stamping the other version, and the pairs most worth warming are exactly
+      these, so it is worth doing , but deliberately, with its own flag, not as a silent
+      branch inside a script whose whole design is to mirror the live client exactly.  */
+  const pathB = pairs.filter(p => VVCore.verdictContext(p.A, p.B).separation === 'inside');
+  const pathBKeys = new Set(pathB.map(p => p.key));
+  pairs = pairs.filter(p => !pathBKeys.has(p.key));
   const cachedFresh = pairs.filter(isFresh);
   let todo = pairs.filter(p => !isFresh(p));
   const stale = todo.filter(p => byKey.has(p.key)).length;
   if (LIMIT) todo = todo.slice(0, LIMIT);
 
   console.log(`  pool rt>=${THRESHOLD}: ${cards.length} cards -> ${pairs.length} pairs`);
+  console.log(`  inside the margin, generated live under the Path B prompt (skipped): ${pathB.length}`);
   console.log(`  already cached fresh (skipped): ${cachedFresh.length}`);
   console.log(`  stale/unstamped rows to refresh: ${stale}`);
   console.log(`  to generate: ${todo.length}${LIMIT ? `  (--limit ${LIMIT})` : ''}\n`);
@@ -214,7 +242,14 @@ async function callClaude(userPrompt, attempt = 0) {
         const winnerId = VC.winner === 'A' ? p.A.card_id : (VC.winner === 'B' ? p.B.card_id : null);
         const { error: werr } = await sb.from('verdict_cache').upsert({
           pair_key: p.key, card_id_a: p.A.card_id, card_id_b: p.B.card_id,
-          rt_a: +p.A.vv || 0, rt_b: +p.B.vv || 0, cache_version: VERDICT_VERSION,   // stamped from creation, imported from analyse.js
+          /*  THE SAME COMPOSED VERSION THE LIVE CLIENT ASKS FOR , 2026-09-07. cache_version
+              is now VERDICT_VERSION plus the payload SCHEMA revision, and compare.html sends
+              that second half on every request. Stamping the bare VERDICT_VERSION here would
+              make every row this script writes a PERMANENT MISS , generated, paid for, and
+              never served, with nothing to show for it but the bill. Both halves come from
+              the two modules that own them (analyse.js, vv-core.js) so neither can drift. */
+          rt_a: +p.A.vv || 0, rt_b: +p.B.vv || 0,
+          cache_version: verdictVersionFor(VVCore.vvPayloadRev([p.A, p.B]), false, undefined, VVCore.vvPayloadStats([p.A, p.B])),
           verdict, winner_card_id: winnerId, model: MODEL
         }, { onConflict: 'pair_key', ignoreDuplicates: false });
         if (werr) throw new Error('DB write: ' + werr.message);

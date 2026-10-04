@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Continental Chip Icons</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260919d"></script>
+<script src="/vv-core.js?v=20260919d"></script>
+<style id="demo">
+ body.dm{margin:0!important;padding:18px 16px 70px!important;display:block!important;height:auto!important;max-width:none!important;font:14px/1.5 Inter,system-ui,sans-serif}
+ .dm-h1{font:800 21px 'Bricolage Grotesque',sans-serif;margin:0 0 6px}
+ .dm-note{max-width:860px;opacity:.85;margin:0 0 6px}
+ .dm-bar{position:sticky;top:0;z-index:9;padding:8px 0;display:flex;gap:10px;background:inherit}
+ .dm-bar button{font:600 13px Inter,sans-serif;padding:8px 14px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+ .dm-opt{margin:26px 0 0;max-width:860px}
+ .dm-lab{font:700 13px Inter,sans-serif;margin:0 0 2px}
+ .dm-why{font:400 12.5px Inter,sans-serif;opacity:.8;margin:0 0 10px}
+ .dm-rail{max-width:390px;padding:10px;border:1px dashed rgba(128,128,128,.4);border-radius:10px;display:flex;flex-wrap:wrap;gap:8px}
+ .dm-rail.wide{max-width:760px}
+ .dm-cap{font:600 11px Inter,sans-serif;opacity:.6;margin:6px 0 0}
+ /* the mark option needs an icon slot the chip renderer does not have today */
+ .vvf-chip .cm-ico{display:inline-flex;width:13px;height:13px;margin-right:5px;vertical-align:-2px}
+ .vvf-chip .cm-ico svg{width:100%;height:100%}
+</style></head><body class="dm">
+<div class="dm-bar"><button onclick="document.body.classList.toggle('light')">Toggle theme</button></div>
+<h1 class="dm-h1">Euro and Copa , what goes on the two chips</h1>
+<p class="dm-note">The real filter chips, rankings' own stylesheet, the real markup from <code>vvfChip</code>. All nine honour chips are shown together in every option, because <b>the question is not what each glyph looks like on its own, it is whether it collides with the seven already there</b>: 🥇 Ballon d'Or, 🌍 World Cup, ⭐ UCL, 🏆 League, 🎖️ Player of the Season, 👟 Golden Boot, 🅰️ Top Assists.</p>
+<p class="dm-note">The columns landed on 2026-09-19, so both chips filter today; only the glyph is missing. <b>Nothing here is built.</b></p>
+<div id="out">building&hellip;</div>
+<script>
+const NINE=[
+ ['ballon_dor',"Ballon d'Or",'🥇'],['world_cup_winner','World Cup Winner','🌍'],['ucl_winner','UCL Champion','⭐'],
+ ['league_champion','League Title','🏆'],['player_of_season','Player of the Season','🎖️'],['golden_boot','Golden Boot','👟'],
+ ['top_assists','Top Assists','🅰️'],['euro_winner','European Champion',null],['copa_winner','Copa América Champion',null]
+];
+const OPTIONS=[
+ ['1','Geography, the obvious pair , 🇪🇺 and 🌎',
+  'Reads instantly. <b>But look at it next to the World Cup chip:</b> 🌎 and 🌍 are the same drawing rotated, and at chip size the pair is one glyph twice. That is the collision this option exists to show you, not a recommendation.',
+  {euro_winner:'🇪🇺', copa_winner:'🌎'}],
+ ['2','Away from geography , 🇪🇺 and 🏵️',
+  'The rosette carries no continent and no trophy, so it collides with nothing in the row. It also says less: a reader learns it from the label, not from the glyph.',
+  {euro_winner:'🇪🇺', copa_winner:'🏵️'}],
+ ['3','The drawn marks we already have , no emoji',
+  'Both trophies already exist in <code>vv-marks.js</code> for the card face, and they were scored against every other honour mark when they were added (the tightest pair in the set clears 0.508 at 16px). They inherit the chip ink. <b>This needs a small renderer change:</b> <code>vvfChip</code> builds its label as escaped text, so there is no slot for an SVG today.',
+  null],
+ ['4','Nothing , label only, as it is now',
+  'The row already mixes two shapes, since the position chips carry no glyph either. Costs nothing and teaches nothing.',
+  {}]
+];
+function chip(k,label,emoji,markMode){
+  const ico = markMode ? '<span class="cm-ico">'+(window.VVMarks?VVMarks.honour(k):'')+'</span>' : '';
+  const lab = (emoji? emoji+' ' : '')+label;
+  return '<button type="button" class="vvf-chip" data-vvf-group="honours" data-vvf-value="'+k+'" aria-pressed="false">'+ico+lab+'</button>';
+}
+(async()=>{
+  /*  The chip CSS lives in vv-core (VVF_CSS), not in the page, so mountStyles() is the real
+      stylesheet rather than an approximation of it. rankings' own sheet comes in too, for the
+      ground the rail sits on. Both go BEFORE the demo's own block so the demo can still add
+      the icon slot option 3 needs.  */
+  if(window.VVFilters && VVFilters.mountStyles) VVFilters.mountStyles(document);
+  const t=await (await fetch('/rankings.html?cb='+Date.now())).text();
+  const doc=new DOMParser().parseFromString(t,'text/html');
+  doc.querySelectorAll('style').forEach(s=>{const n=document.createElement('style');n.textContent=s.textContent;document.head.insertBefore(n,document.getElementById('demo'));});
+  if(window.VVMarks && VVMarks.inject) VVMarks.inject();
+  let h='';
+  for(const [n,label,why,map] of OPTIONS){
+    const markMode = map===null;
+    const chips = NINE.map(([k,l,e])=>{
+      const em = markMode ? e : (e || (map[k]||null));
+      return chip(k,l,em,markMode && (k==='euro_winner'||k==='copa_winner'));
+    }).join('');
+    h+='<div class="dm-opt"><div class="dm-lab">Option '+n+' , '+label+'</div><div class="dm-why">'+why+'</div>'
+     + '<div class="dm-rail">'+chips+'</div><div class="dm-cap">at 390, the width the rail actually ships at</div></div>';
+  }
+  document.getElementById('out').innerHTML=h;
+})();
+</script></body></html>

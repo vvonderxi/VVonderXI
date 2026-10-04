@@ -1,0 +1,139 @@
+<title>The Cabinet section, at scale</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="/vv-marks.js?v=20260912e"></script>
+<style>
+ *{box-sizing:border-box}
+ :root{--ink-soft:#a49d93;--cream:#F0EAD9;--gold:#E8B84B;--page-1:#1b1617;--teal:#2F8290;--charcoal:#1C1B1A}
+ body{margin:0;padding:18px;background:#1b1617;color:var(--cream);font-family:'Inter',system-ui,sans-serif}
+ h1{font-family:'Archivo';font-size:15px;margin:0 0 4px}
+ .sub{font-size:11.5px;color:var(--ink-soft);margin:0 0 18px;max-width:1250px;line-height:1.5}
+ .tw{margin-bottom:34px}
+ .th{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 0 3px}
+ .tn{font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;max-width:900px}
+ .sect{border:1px solid rgba(255,255,255,0.09);border-radius:16px;padding:26px 28px;background:#201b1c}
+ .label{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+ .h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:30px;letter-spacing:-.02em;margin:5px 0 8px}
+ .intro{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:30px;max-width:660px}
+ .cap{margin-top:22px;font-size:13.5px;line-height:1.6;color:var(--cream);
+   background:rgba(232,184,75,0.09);border-left:3px solid var(--gold);padding:11px 15px;border-radius:0 9px 9px 0;max-width:700px}
+ /* ================= A , THE POSITIONAL SHELF ================= */
+ .A .stage{position:relative;margin:0 14px}
+ .A .rail{position:relative;height:4px;background:rgba(255,255,255,0.13);border-radius:4px;margin:52px 0 0}
+ .A .fill{position:absolute;left:0;top:0;height:4px;border-radius:4px;background:var(--teal)}
+ .A .stop{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);background:#3a3430;border:2px solid #1b1617}
+ .A .stop.past{background:var(--teal)}
+ .A .stop.now{background:var(--gold);width:20px;height:20px;box-shadow:0 0 0 7px rgba(232,184,75,.20)}
+ .A .yr{position:absolute;top:18px;transform:translateX(-50%);font-family:'Archivo';font-weight:700;
+   font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+ .A .yr.now{color:var(--gold);font-size:13px;font-weight:800}
+ .A .yr.lead{transform:translateX(0)} .A .yr.trail{transform:translateX(-100%)}
+ .A .here{position:absolute;top:-72px;transform:translateX(-50%);white-space:nowrap;font-family:'Archivo';
+   font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+ /* an ENTRY sits under the year it was won , position IS the connector, so no lines */
+ .A .entry{position:absolute;top:44px;transform:translateX(-50%);width:150px;text-align:center}
+ .A .entry .mk{width:30px;height:30px;color:var(--gold);margin:0 auto 7px}
+ .A .entry .mk svg{width:100%;height:100%;display:block}
+ .A .entry .n{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);line-height:1.25}
+ .A .entry .y{font-family:'Archivo';font-weight:800;font-size:26px;color:var(--gold);
+   font-variant-numeric:tabular-nums;line-height:1.1;margin-top:3px}
+ .A .entry.future{opacity:1}
+ .A .entry.future .mk{color:transparent;position:relative}
+ .A .entry.future .mk::after{content:'';position:absolute;inset:2px;border-radius:50%;border:2px dashed var(--ink-soft)}
+ .A .entry.future .n,.A .entry.future .y{color:#6f6a62}
+ .A .axis{display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.10);
+   padding-top:9px;margin-top:200px}
+ .A .axis span{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+ /* ================= B , THE FULL-WIDTH SHELF ================= */
+ .B .stage{position:relative;margin:0 14px}
+ .B .rail{position:relative;height:4px;background:rgba(255,255,255,0.13);border-radius:4px;margin:52px 0 40px}
+ .B .fill{position:absolute;left:0;top:0;height:4px;border-radius:4px;background:var(--teal)}
+ .B .stop{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);background:#3a3430;border:2px solid #1b1617}
+ .B .stop.past{background:var(--teal)} 
+ .B .stop.now{background:var(--gold);width:20px;height:20px;box-shadow:0 0 0 7px rgba(232,184,75,.20)}
+ .B .yr{position:absolute;top:18px;transform:translateX(-50%);font-family:'Archivo';font-weight:700;font-size:11px;color:var(--ink-soft)}
+ .B .yr.now{color:var(--gold);font-size:13px;font-weight:800}
+ .B .yr.lead{transform:translateX(0)} .B .yr.trail{transform:translateX(-100%)}
+ .B .here{position:absolute;top:-40px;transform:translateX(-50%);white-space:nowrap;font-family:'Archivo';
+   font-weight:800;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+ .B .tmk{position:absolute;top:-34px;transform:translateX(-50%);width:26px;height:26px;color:var(--gold)}
+ .B .tmk svg{width:100%;height:100%;display:block}
+ .B .tmk.future{color:transparent}
+ .B .tmk.future::after{content:'';position:absolute;inset:1px;border-radius:50%;border:2px dashed var(--ink-soft)}
+ .B .box{background:var(--cream);color:#2b2924;border-radius:14px;padding:22px 26px}
+ .B .bh{font-family:'Bricolage Grotesque';font-weight:700;font-size:19px;color:#241f1b}
+ .B .bi{font-size:12px;color:#5f594e;margin:2px 0 18px}
+ .B .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px 26px}
+ .B .cell{display:flex;align-items:center;gap:12px}
+ .B .cell .mk{width:26px;height:26px;color:#5a4410;flex:0 0 auto}
+ .B .cell .mk svg{width:100%;height:100%;display:block}
+ .B .cell .n{font-family:'Archivo';font-weight:800;font-size:14px;color:#241f1b;line-height:1.2}
+ .B .cell .y{font-family:'Archivo';font-weight:800;font-size:30px;color:#241f1b;
+   font-variant-numeric:tabular-nums;margin-left:auto;line-height:1}
+ .B .axis{display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.10);padding-top:9px;margin-top:22px}
+ .B .axis span{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+ @media (max-width:520px){
+   .h2{font-size:23px} .intro{font-size:13px;margin-bottom:22px} .sect{padding:18px 16px}
+   .A .entry{width:98px} .A .entry .y{font-size:19px} .A .entry .n{font-size:11px}
+   .A .entry .mk{width:24px;height:24px} .A .axis{margin-top:170px}
+   .B .grid{grid-template-columns:1fr;gap:14px} .B .cell .y{font-size:25px}
+ }
+ @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<h1>The Cabinet as its own section , two treatments at scale</h1>
+<p class="sub">Generic career, no player. Both shown as STILLS with the caption hidden, which is the
+reduced-motion and mid-scroll state. Nothing decorative: no gradients on gradients, no glow, and no
+trophy iconography beyond the shared mark set already on the platform.</p>
+<div id="host"></div>
+<script>
+if (window.VVMarks && VVMarks.inject) { try { VVMarks.inject(); } catch(e){} }
+var M=function(t){ return (window.VVMarks&&VVMarks.honour)?VVMarks.honour(t):''; };
+var YEARS=[2015,2016,2017,2018,2019,2020,2021], NOW=2019;
+var WON={2016:['league_champion','League Title'],2018:['golden_boot','Golden Boot'],2020:['ucl_winner','UCL Champion']};
+function pos(i){ return (i/(YEARS.length-1))*100; }
+function head(){
+  return '<div class="label">The silverware, in time</div>'
+   +'<h2 class="h2">The Cabinet</h2>'
+   +'<div class="intro">Every card is one season. The cabinet beneath it is not , it is everything '
+   +'won up to that point in a career. That is why a 2019 card shows a 2018 trophy.</div>';
+}
+function A(){
+  var nowI=YEARS.indexOf(NOW), h='<div class="stage"><div class="rail"><div class="fill" style="width:'+pos(nowI)+'%"></div>';
+  YEARS.forEach(function(y,i){
+    var L=pos(i), won=WON[y], before=i<=nowI;
+    h+='<div class="stop '+(y===NOW?'now':(i<nowI?'past':''))+'" style="left:'+L+'%"></div>';
+    h+='<div class="yr '+(y===NOW?'now ':'')+(i===0?'lead':(i===YEARS.length-1?'trail':''))+'" style="left:'+L+'%">'+y+'</div>';
+    if(y===NOW) h+='<div class="here" style="left:'+L+'%">This card</div>';
+    if(won) h+='<div class="entry'+(before?'':' future')+'" style="left:'+L+'%">'
+      +'<div class="mk">'+(before?M(won[0]):'')+'</div><div class="n">'+won[1]+'</div><div class="y">'+y+'</div></div>';
+  });
+  return h+'</div><div class="axis"><span>Early career</span><span>Peak years</span><span>Final seasons</span></div></div>';
+}
+function B(){
+  var nowI=YEARS.indexOf(NOW), h='<div class="stage"><div class="rail"><div class="fill" style="width:'+pos(nowI)+'%"></div>';
+  YEARS.forEach(function(y,i){
+    var L=pos(i), won=WON[y], before=i<=nowI;
+    if(won) h+='<div class="tmk'+(before?'':' future')+'" style="left:'+L+'%">'+(before?M(won[0]):'')+'</div>';
+    h+='<div class="stop '+(y===NOW?'now':(i<nowI?'past':''))+'" style="left:'+L+'%"></div>';
+    h+='<div class="yr '+(y===NOW?'now ':'')+(i===0?'lead':(i===YEARS.length-1?'trail':''))+'" style="left:'+L+'%">'+y+'</div>';
+    if(y===NOW) h+='<div class="here" style="left:'+L+'%">This card</div>';
+  });
+  h+='</div><div class="box"><div class="bh">What he had won by this season</div>'
+   +'<div class="bi">Everything up to and including 2019/20.</div><div class="grid">';
+  Object.keys(WON).map(Number).filter(function(y){return y<=NOW;}).sort().forEach(function(y){
+    h+='<div class="cell"><span class="mk">'+M(WON[y][0])+'</span><span class="n">'+WON[y][1]+'</span><span class="y">'+y+'</span></div>';
+  });
+  return h+'</div></div><div class="axis"><span>Early career</span><span>Peak years</span><span>Final seasons</span></div></div>';
+}
+var T=[['A , the positional shelf','Each honour sits UNDER the year it was won, so position is the connector and no lines are needed. The full width is used by construction, because the entries are spread along the axis. Year at 26px.','A',A],
+       ['B , the full-width shelf','The rail keeps its marks; the cabinet below becomes a full-width panel instead of a 430px box, in a responsive grid. Year at 30px, the largest thing in the section after the heading.','B',B]];
+var host=document.getElementById('host');
+var Q=location.search, ONLY=(Q.match(/only=(\d)/)||[])[1];
+if(ONLY!=null){document.querySelector('h1').style.display='none';document.querySelector('.sub').style.display='none';document.body.style.padding='6px';}
+(ONLY!=null?[T[+ONLY]]:T).forEach(function(t){
+  var d=document.createElement('div'); d.className='tw';
+  d.innerHTML='<div class="th">'+t[0]+'</div><div class="tn">'+t[1]+'</div>'
+    +'<div class="sect '+t[2]+'">'+head()+t[3]()
+    +'<div class="cap">This is the 2019/20 card. The cabinet holds everything won up to and including that season, which is why a 2019 card shows a 2018 trophy. The dashed mark ahead of the marker has not been won yet.</div></div>';
+  host.appendChild(d);
+});
+</script>

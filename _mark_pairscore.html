@@ -1,0 +1,178 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Mark pair scorer</title>
+<!--  ══════════════════════════════════════════════════════════════════════════════════
+      MARK PAIR SCORER , the measurement SEC C requires before a mark joins a set.
+
+      THE RULE IT IMPLEMENTS, verbatim from SEC C: "the closest pair that existed BEFORE the
+      addition is the standard the addition must clear", measured "by rasterising all pairs and
+      comparing the ALPHA channel , the silhouette, which is what survives at pill size", and
+      "TEST AT EVERY SIZE THE MARK SHIPS AT, BECAUSE THE RANKING CHANGES" (at 16px the tightest
+      pre-existing pair was the two individual awards; at 22px it was two team trophies).
+
+      IT EXISTS BECAUSE THE TROPHY PASS DID THIS AD HOC AND LEFT NOTHING BEHIND. The recorded
+      floor , 0.508 at 16px, 0.507 at 22px , could not be re-derived without rebuilding the
+      harness, which is the same shape as the separability work that had to re-transcribe the
+      engine twice. This file is checked in so the next mark is scored against a number that
+      can be reproduced rather than quoted.
+
+      WHY ALPHA AND NOT COLOUR: every mark is `fill="currentColor"`, so at pill size two marks
+      differ only in the SHAPE of the region they cover. Comparing the painted colour would
+      score them all identical.
+
+      SELF-TEST FIRST. `__selfTest()` scores a mark against ITSELF (must be 0.000, a perfect
+      match) and against a deliberately different shape (must be large). A scorer that cannot
+      separate a glyph from itself is not evidence about anything else.
+      ══════════════════════════════════════════════════════════════════════════════════  -->
+<style>
+ body{margin:0;background:#12100f;color:#F0EAD9;font:13px/1.55 ui-monospace,Menlo,monospace;padding:22px}
+ h1{font:800 13px system-ui;letter-spacing:.14em;text-transform:uppercase;color:#8d857a;margin:0 0 14px}
+ pre{white-space:pre-wrap;margin:0 0 18px}
+ .strip{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0 22px;align-items:flex-end}
+ .m{text-align:center;color:#8d857a;font-size:10px}
+ .m svg{display:block;margin:0 auto 5px}
+ .ok{color:#7ddba1}.bad{color:#ff8a9c}
+</style></head><body>
+<h1>Mark pair scorer</h1>
+<div class="strip" id="strip"></div>
+<pre id="out">running…</pre>
+<script src="vv-marks.js?v=20260928a"></script>
+<script>
+/*  ── AFCON CANDIDATES. Four drawings, scored together against the shipped nine, because the
+    first one was designed by reasoning about the family and FAILED at 0.545 against a floor of
+    0.681 , too close to the World Cup globe, and invisible by eye. Guessing a second time is
+    the same method that failed; measuring four is the method that answers.
+    Every one obeys the team rule , footed and vertical , and each takes a DIFFERENT lever:
+      A cone        the original: wide rim tapering to a waist, short stem, slab foot
+      B pierced     a cup whose two handles enclose voids, so the silhouette carries HOLES
+      C ziggurat    mass inverted , a small cup on a broad three-tier stack
+      D winged      a shallow cup with the handles swept WIDE and low, a horizontal signature  */
+window.CANDIDATES = {
+  /*  ROUND 3. Round 2 proved the free space is the far edges and the extreme top and bottom
+      rows , the shipped nine pack the central column. All three round-2 drawings cleared, but
+      a score is not a drawing: E read as a funnel and F as an I-beam. G was the only one that
+      READ as a trophy, and it clears at 0.713 / 0.727 against floors of 0.681 / 0.688.
+      G2 keeps G's reading and tries to widen the margin. G's one collision is ucl_winner,
+      whose entire signature is BIG SIDE EARS high on the body , and G's square handles sit at
+      exactly that height. So G2 drops them to the waist and pushes them to the outer columns,
+      which is both further from ucl and further into the space the map says is free.  */
+  'afcon_G':  '<g fill="currentColor"> <path d="M2.4 2.4h4.1v4.1H2.4Z"/> <path d="M17.5 2.4h4.1v4.1h-4.1Z"/> <path d="M8.1 2.4h7.8v5.6a3.9 3.9 0 0 1-7.8 0Z"/> <path d="M11.2 12h1.6v5.6h-1.6Z"/> <path d="M2.4 19.6h19.2v2.2H2.4Z"/> </g>',
+  'afcon_G2': '<g fill="currentColor"> <path d="M7.4 2.3h9.2v6.1a4.6 4.6 0 0 1-9.2 0Z"/> <path d="M1.8 8.6h4.3v3.4H1.8Z"/> <path d="M17.9 8.6h4.3v3.4h-4.3Z"/> <path d="M11.1 13.4h1.8v4.2h-1.8Z"/> <path d="M1.8 19.5h20.4v2.3H1.8Z"/> </g>',
+  'afcon_G3': '<g fill="currentColor"> <path d="M7.2 2.3h9.6v5.4a4.8 4.8 0 0 1-9.6 0Z"/> <path d="M1.6 9.2h4.6v2.8H1.6Z"/> <path d="M17.8 9.2h4.6v2.8h-4.6Z"/> <path d="M11 13.2h2v4.3h-2Z"/> <path d="M6.4 17.7h11.2v1.6H6.4Z"/> <path d="M1.6 19.7h20.8v2.1H1.6Z"/> </g>',
+};
+
+
+</script>
+<script>
+/*  RASTERISE ONE MARK TO AN ALPHA BITMAP AT A GIVEN PIXEL SIZE.
+    The mark is drawn into an <img> from a data: URI, which is the same path html2canvas
+    takes, and then read back off a canvas. `currentColor` is resolved to solid white before
+    serialising , an SVG rendered AS AN IMAGE inherits nothing from the page (SEC C records
+    that a serialised SVG loses everything outside itself), so leaving currentColor unresolved
+    would draw black on black and every pair would score identical.  */
+function raster(inner, px){
+  return new Promise(function(res, rej){
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="'+px+'" height="'+px+'">'
+            + inner.replace(/currentColor/g,'#fff') + '</svg>';
+    var img = new Image();
+    img.onload = function(){
+      var c = document.createElement('canvas'); c.width = px; c.height = px;
+      var x = c.getContext('2d'); x.clearRect(0,0,px,px); x.drawImage(img,0,0,px,px);
+      var d = x.getImageData(0,0,px,px).data, a = new Float32Array(px*px);
+      for (var i=0;i<px*px;i++) a[i] = d[i*4+3]/255;
+      res(a);
+    };
+    img.onerror = function(){ rej(new Error('raster failed')); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+/*  DISTANCE = MEAN ABSOLUTE ALPHA DIFFERENCE, normalised by the mean coverage of the two, so a
+    pair of small glyphs is not flattered by all the empty space around them. Identical marks
+    give 0; the more of one another's silhouette they fail to share, the higher it climbs.  */
+function dist(a,b){
+  var sum=0, cov=0;
+  for (var i=0;i<a.length;i++){ sum += Math.abs(a[i]-b[i]); cov += (a[i]+b[i])/2; }
+  return cov>0 ? sum/cov : 0;
+}
+
+async function scoreSet(keys, marks, px){
+  var bmp = {};
+  for (const k of keys) bmp[k] = await raster(marks[k], px);
+  var pairs = [];
+  for (var i=0;i<keys.length;i++) for (var j=i+1;j<keys.length;j++)
+    pairs.push({ a:keys[i], b:keys[j], d:+dist(bmp[keys[i]],bmp[keys[j]]).toFixed(3) });
+  pairs.sort(function(p,q){ return p.d - q.d; });
+  return pairs;
+}
+
+window.__selfTest = async function(marks){
+  var k = Object.keys(marks)[0];
+  var a = await raster(marks[k], 16);
+  var same = dist(a, a);
+  var box = await raster('<rect x="2" y="2" width="20" height="20" fill="currentColor"/>', 16);
+  var diff = dist(a, box);
+  var lines = ['SELF-TEST',
+    '  a mark against ITSELF        : ' + same.toFixed(3) + (same === 0 ? '  ok (identical)' : '  <-- FAIL, must be 0'),
+    '  that mark against a solid box: ' + diff.toFixed(3) + (diff > 0.3 ? '  ok (separates)' : '  <-- FAIL, cannot separate')];
+  return { ok: same === 0 && diff > 0.3, lines: lines };
+};
+
+(async function(){
+  var out = document.getElementById('out');
+  var marks = (window.VVMarks && VVMarks._sets && VVMarks._sets.honour) || null;
+  if (!marks) {
+    /*  vv-marks does not export its raw sets, so read them out of the SOURCE rather than
+        retyping nine paths into this file , a second copy would drift from the shipped one
+        and this harness would then be scoring marks nobody renders.  */
+    var src = await (await fetch('vv-marks.js?cb=' + Date.now())).text();
+    var i = src.indexOf('var HONOURS'), j = src.indexOf('var SECTIONS');
+    var blk = src.slice(i, j);
+    marks = {};
+    var re = /'([a-z_]+)'\s*:\s*'((?:[^'\\]|\\.)*)'/g, m;
+    while ((m = re.exec(blk))) marks[m[1]] = m[2].replace(/\\'/g, "'").replace(/\\n/g, '');
+  }
+  /*  CANDIDATES are merged in for scoring only. The nine shipped marks are still read from
+      vv-marks.js source, so a candidate is always scored against what actually renders.  */
+  if (window.CANDIDATES) Object.keys(window.CANDIDATES).forEach(function(k){ marks[k] = window.CANDIDATES[k]; });
+  var keys = Object.keys(marks);
+  var st = await window.__selfTest(marks);
+  var lines = st.lines.slice();
+  if (!st.ok) { out.textContent = lines.join('\n') + '\n\nSCORER IS NOT EVIDENCE. Stop.'; return; }
+
+  // render the set so the numbers can be read beside the shapes
+  var strip = document.getElementById('strip');
+  keys.forEach(function(k){
+    var d = document.createElement('div'); d.className = 'm';
+    d.innerHTML = '<svg viewBox="0 0 24 24" width="34" height="34" fill="#F0EAD9">' + marks[k] + '</svg>' + k.replace(/_/g,' ');
+    strip.appendChild(d);
+  });
+
+  for (const px of [16, 22]) {
+    var pairs = await scoreSet(keys, marks, px);
+    lines.push('');
+    lines.push('AT ' + px + 'px , ' + pairs.length + ' pairs, closest first');
+    pairs.slice(0, 6).forEach(function(p){
+      lines.push('   ' + p.d.toFixed(3) + '   ' + p.a + '  vs  ' + p.b);
+    });
+    var cands = Object.keys(window.CANDIDATES || {});
+    var isC = function(k){ return cands.indexOf(k) >= 0; };
+    var floorPairs = pairs.filter(function(p){ return !isC(p.a) && !isC(p.b); });
+    if (cands.length) {
+      var floor = floorPairs[0];
+      lines.push('   ---');
+      lines.push('   FLOOR (closest pair among the SHIPPED marks) : ' + floor.d.toFixed(3) + '  ' + floor.a + ' / ' + floor.b);
+      cands.forEach(function(c){
+        /*  a candidate is scored against the SHIPPED set only , two candidates colliding with
+            each other is meaningless, since only one of them will ever ship.  */
+        var mine = pairs.filter(function(p){ return (p.a === c) !== (p.b === c); })
+                        .filter(function(p){ return !isC(p.a) || !isC(p.b); })
+                        .filter(function(p){ return !(isC(p.a) && isC(p.b)); });
+        var worst = mine[0];
+        lines.push('   ' + c.padEnd(16) + ' worst ' + worst.d.toFixed(3) + ' vs ' + (worst.a === c ? worst.b : worst.a)
+                 + '   ' + (worst.d >= floor.d ? 'CLEARS' : 'fails by ' + (floor.d - worst.d).toFixed(3)));
+      });
+    }
+  }
+  out.textContent = lines.join('\n');
+  window.__scored = true;
+})();
+</script></body></html>

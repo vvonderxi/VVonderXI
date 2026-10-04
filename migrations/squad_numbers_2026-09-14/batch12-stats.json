@@ -1,0 +1,43 @@
+{
+  "batch": 12,
+  "at": "2026-09-14T17:24:54.056Z",
+  "clubSeasons": 50,
+  "resolved": 42,
+  "parsed": 25,
+  "cards": 1034,
+  "matched": 274,
+  "held": {
+    "norow": 207,
+    "ambiguous": 25
+  },
+  "written": 272,
+  "skipped": [
+    "LL|2010|Athletic Club , no squad block",
+    "LL|2010|Atletico Madrid , duplicate numbers in the block",
+    "LL|2010|Barcelona , 3 blocks, held for adjudication",
+    "LL|2010|Deportivo La Coruna , no squad block",
+    "LL|2010|Espanyol , duplicate numbers in the block",
+    "LL|2010|Getafe , no page",
+    "LL|2010|Levante , no page",
+    "LL|2010|Malaga , no page",
+    "LL|2010|Osasuna , no page",
+    "LL|2010|Racing Santander , no page",
+    "LL|2010|Real Madrid , duplicate numbers in the block",
+    "LL|2010|Real Sociedad , duplicate numbers in the block",
+    "LL|2010|Sporting Gijon , 2 blocks, held for adjudication",
+    "LL|2010|Zaragoza , no page",
+    "LL|2011|Athletic Club , duplicate numbers in the block",
+    "LL|2011|Atletico Madrid , 2 blocks, held for adjudication",
+    "LL|2011|Barcelona , 3 blocks, held for adjudication",
+    "LL|2011|Espanyol , no squad block",
+    "LL|2011|Osasuna , no page",
+    "LL|2011|Racing Santander , no page",
+    "LL|2011|Sporting Gijon , 2 blocks, held for adjudication",
+    "LL|2011|Valencia , 3 blocks, held for adjudication",
+    "LL|2012|Athletic Club , duplicate numbers in the block",
+    "LL|2012|Barcelona , parsed, zero cards matched",
+    "LL|2012|Getafe , no squad block",
+    "LL|2012|Granada CF , no squad block"
+  ],
+  "skippedCards": 548
+}

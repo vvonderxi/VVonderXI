@@ -1,0 +1,171 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Keeper ladder , what the 1,920-tick strip becomes</title>
+<style>
+ body{margin:0;background:#1b1718;color:#e8e2d6;font:12px system-ui}
+ .bar{position:sticky;top:0;z-index:9;padding:8px 12px;background:#000;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+ button{font:600 11px system-ui;background:#2e2b28;color:#ddd;border:1px solid #4a453f;border-radius:5px;padding:4px 9px;cursor:pointer}
+ button.on{background:#E70443;border-color:#E70443;color:#fff}
+ .stage{padding:12px;display:flex;justify-content:center}
+ iframe{border:0;background:#000;height:620px}
+ .note{max-width:900px;margin:0 auto;padding:0 16px 20px;color:#a49d93;line-height:1.6}
+</style></head><body>
+<div class="bar">
+ <b style="font-size:10px;letter-spacing:.1em;color:#8a8378">OPTION</b>
+ <button data-o="0" class="on">now</button>
+ <button data-o="A">A bins</button>
+ <button data-o="C">C rate scale</button>
+ <button data-o="D">D figures</button>
+ <button data-o="E">E top-100</button>
+ <b style="font-size:10px;letter-spacing:.1em;color:#8a8378">WIDTH</b>
+ <button data-w="390" class="on">390</button><button data-w="1440">1440</button>
+ <b style="font-size:10px;letter-spacing:.1em;color:#8a8378">THEME</b>
+ <button data-t="dark" class="on">dark</button><button data-t="light">light</button>
+ <span id="stat"></span>
+</div>
+<div class="stage"><iframe id="fr" width="390"></iframe></div>
+<div class="note" id="note"></div>
+<script>
+var S={o:'0',w:390,t:'dark'};
+var fr=document.getElementById('fr');
+
+/*  THE REAL DATA, and nothing here is invented.
+    KEEPER_SAVE_LADDER in vv-core.js is 21 measured ventiles of save rate over the 1,920
+    scoring keeper seasons , index 0 is the worst, index 10 the median, index 20 the best.
+    Its ends reconcile with the copy already on the page: 0.4688 = "Worst 46.9%",
+    0.6867 = "Median 68.7%", 0.8852 = "Best 88.5%".  */
+var VENT=[0.4688,0.5915,0.6154,0.6299,0.6410,0.6484,0.6571,0.6639,0.6721,0.6790,0.6867,
+          0.6928,0.6988,0.7059,0.7113,0.7194,0.7273,0.7364,0.7500,0.7667,0.8852];
+var HIM=0.804, RANK=14, FIELD=1920;
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+function optA(){
+  /* 96 bins of 20 seasons. Same "ranked field" metaphor, ticks that actually have width. */
+  var bins=96, per=FIELD/bins, hit=Math.floor((RANK-1)/per);
+  var sp=''; for(var i=0;i<bins;i++) sp+='<span class="'+(i===hit?'dz-hit':'')+'"></span>';
+  return '<div class="dz-lh">Every keeper season we can measure, ranked by save rate</div>'
+   +'<div class="dz-bins">'+sp+'</div>'
+   +'<div class="dz-ax"><span>Best 88.5%</span><span>Median 68.7%</span><span>Worst 46.9%</span></div>'
+   +'<div class="dz-cap">Each block is 20 seasons. de Gea sits in the first.</div>';
+}
+function optC(){
+  /* The RATE axis rather than the rank axis. Ventile ticks show where the field bunches;
+     de Gea lands inside the picture instead of against the frame. */
+  var lo=VENT[0], hi=VENT[20], span=hi-lo;
+  var t=''; for(var i=0;i<VENT.length;i++){
+    var x=((VENT[i]-lo)/span*100).toFixed(2);
+    t+='<i class="'+(i===10?'dz-med':'')+'" style="left:'+x+'%"></i>';
+  }
+  var hx=((HIM-lo)/span*100).toFixed(2), mx=((VENT[10]-lo)/span*100).toFixed(2);
+  return '<div class="dz-lh">Where his save rate sits in the field</div>'
+   +'<div class="dz-scale">'+t
+     +'<u style="left:'+mx+'%"></u>'
+     +'<b class="dz-him" style="left:'+hx+'%"><em>80.4%</em></b></div>'
+   +'<div class="dz-ax"><span>46.9%</span><span style="margin-left:'+(mx-12)+'%">median 68.7%</span><span>88.5%</span></div>'
+   +'<div class="dz-cap">Each tick is 5% of the 1,920 seasons. They crowd in the middle, which is why 80.4% is 14th.</div>';
+}
+function optD(){
+  /* No field at all , two rates against each other, and the rank as a figure. */
+  var lo=0.40, hi=0.92;
+  var w1=((HIM-lo)/(hi-lo)*100).toFixed(1), w2=((VENT[10]-lo)/(hi-lo)*100).toFixed(1);
+  return '<div class="dz-lh">His save rate against the field</div>'
+   +'<div class="dz-cmp"><div class="dz-cr"><span>de Gea 2017/18</span><i><b style="width:'+w1+'%"></b></i><u>80.4%</u></div>'
+   +'<div class="dz-cr dim"><span>Median keeper season</span><i><b style="width:'+w2+'%"></b></i><u>68.7%</u></div></div>'
+   +'<div class="dz-cap">Best measured 88.5%, worst 46.9%, across 1,920 seasons.</div>';
+}
+function optE(){
+  /* Zoom the top of the field and SAY so. 100 ticks at 3px read; 1,920 never could. */
+  var sp=''; for(var i=1;i<=100;i++) sp+='<span class="'+(i===RANK?'dz-hit':'')+'"></span>';
+  return '<div class="dz-lh">The top 100 of the 1,920 seasons we can measure</div>'
+   +'<div class="dz-bins dz-top100">'+sp+'</div>'
+   +'<div class="dz-ax"><span>1st , 88.5%</span><span>100th</span></div>'
+   +'<div class="dz-cap">The other 1,820 seasons are not drawn. de Gea is the 14th tick.</div>';
+}
+var CSS=''
++'.dz-lh{font-family:Archivo;font-weight:800;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(243,237,224,.55);margin-bottom:14px}'
++'body.light .dz-lh{color:#7a736a}'
++'.dz-bins{display:flex;gap:1px;height:46px;align-items:stretch}'
++'.dz-bins span{flex:1 1 0;background:rgba(243,237,224,.18);border-radius:1px}'
++'body.light .dz-bins span{background:rgba(28,27,26,.15)}'
++'.dz-bins span.dz-hit{background:var(--gold);box-shadow:0 0 0 2px rgba(232,184,75,.35)}'
++'.dz-top100 span{background:rgba(232,184,75,.30)}'
++'body.light .dz-top100 span{background:rgba(176,128,20,.30)}'
++'.dz-scale{position:relative;height:46px;margin:26px 0 0;border-bottom:1px solid rgba(243,237,224,.22)}'
++'body.light .dz-scale{border-bottom-color:rgba(28,27,26,.22)}'
++'.dz-scale i{position:absolute;bottom:0;width:2px;height:16px;background:rgba(243,237,224,.30);transform:translateX(-1px)}'
++'body.light .dz-scale i{background:rgba(28,27,26,.28)}'
++'.dz-scale i.dz-med{height:30px;background:rgba(243,237,224,.55)}'
++'body.light .dz-scale i.dz-med{background:rgba(28,27,26,.5)}'
++'.dz-scale u{position:absolute;bottom:0;width:1px;height:30px;background:transparent}'
++'.dz-scale b.dz-him{position:absolute;bottom:0;width:3px;height:46px;background:var(--gold);transform:translateX(-1px);border-radius:2px}'
++'.dz-scale b.dz-him em{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:5px;font-style:normal;font-family:Archivo;font-weight:900;font-size:13px;color:var(--gold);white-space:nowrap}'
++'.dz-ax{display:flex;justify-content:space-between;margin-top:9px}'
++'.dz-ax span{font-family:Archivo;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,237,224,.45)}'
++'body.light .dz-ax span{color:#7a736a}'
++'.dz-cap{font-family:Inter;font-size:12px;line-height:1.5;color:rgba(243,237,224,.6);margin-top:12px}'
++'body.light .dz-cap{color:#5f594e}'
++'.dz-cmp{display:flex;flex-direction:column;gap:14px;margin-top:4px}'
++'.dz-cr{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}'
++'.dz-cr span{grid-column:1;font-family:Archivo;font-weight:800;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,237,224,.5)}'
++'body.light .dz-cr span{color:#7a736a}'
++'.dz-cr i{grid-column:1;display:block;height:16px;background:rgba(243,237,224,.12);border-radius:3px;overflow:hidden}'
++'body.light .dz-cr i{background:rgba(28,27,26,.10)}'
++'.dz-cr i b{display:block;height:100%;background:var(--gold);border-radius:3px}'
++'.dz-cr.dim i b{background:rgba(243,237,224,.34)}'
++'body.light .dz-cr.dim i b{background:rgba(28,27,26,.30)}'
++'.dz-cr u{grid-column:2;grid-row:2;text-decoration:none;font-family:Archivo;font-weight:900;font-size:22px;color:var(--gold)}'
++'.dz-cr.dim u{color:rgba(243,237,224,.6);font-size:18px}'
++'body.light .dz-cr.dim u{color:#5f594e}';
+
+function apply(){
+  var d=fr.contentDocument,w=fr.contentWindow;
+  if(!d||!d.querySelector('.gk3 .ladder')) return false;
+  if(!d.getElementById('vvKill')){var k=d.createElement('style');k.id='vvKill';
+    k.textContent='*{transition:none!important;animation:none!important}';d.head.appendChild(k);}
+  if(!d.getElementById('dzCss')){var c=d.createElement('style');c.id='dzCss';c.textContent=CSS;d.head.appendChild(c);}
+  d.body.classList.toggle('light',S.t==='light');
+  var lad=d.querySelector('.gk3 .ladder');
+  if(!lad.dataset.orig) lad.dataset.orig=lad.innerHTML;
+  var keep=lad.dataset.orig;
+  if(S.o==='0'){ lad.innerHTML=keep; }
+  else {
+    /* keep the .fcount figures block exactly as it is , only the strip changes */
+    var tmp=d.createElement('div'); tmp.innerHTML=keep;
+    var fcount=tmp.querySelector('.fcount');
+    var body={A:optA,C:optC,D:optD,E:optE}[S.o]();
+    lad.innerHTML=body+(fcount?fcount.outerHTML:'');
+  }
+  var bar=lad.querySelector('.dz-bins span,.dz-scale i,.dz-cr i')||lad.querySelector('.lbar span');
+  var bw=bar?bar.getBoundingClientRect().width:0;
+  document.getElementById('stat').textContent=' iw '+w.innerWidth+' | smallest drawn element '+bw.toFixed(2)+'px';
+  document.getElementById('note').textContent={
+   '0':'NOW: 1,920 flex spans across the bar. Each measures 0.16px at 390, so they blend into one wash and the marker sits 2px from the left , which is where 14th of 1,920 genuinely is.',
+   'A':'A , BINS: 96 blocks of 20 seasons. Keeps the ranked-field metaphor and gives every block real width. de Gea is still in the first block, so the mark is still at the left edge.',
+   'C':'C , RATE SCALE: the axis becomes save rate, not rank. Ticks are the 21 measured ventiles, so the crowding IS the distribution. 80.4% lands about four fifths along, inside the picture rather than against the frame, and the rank stays as a figure below.',
+   'D':'D , FIGURES: no field at all. His rate against the median, as two bars. Legible at any width and says least about rarity.',
+   'E':'E , TOP 100: zooms the top of the field and says so in the heading. 100 ticks read at 3px. Honest only because the omission is stated, and it drops the sense of 1,920.'
+  }[S.o]||'';
+  return true;
+}
+function load(){
+  fr.width=S.w; fr.style.width=S.w+'px';
+  fr.src='playbook.html?cb='+Date.now();
+  fr.onload=function(){
+    var n=0,iv=setInterval(function(){
+      if(apply()){ clearInterval(iv);
+        var d=fr.contentDocument,w=fr.contentWindow;
+        var lad=d.querySelector('.gk3 .ladder');
+        w.scrollTo(0,lad.getBoundingClientRect().top+w.scrollY-40);
+      } else if(++n>60) clearInterval(iv);
+    },250);
+  };
+}
+document.querySelectorAll('.bar button').forEach(function(b){
+  b.onclick=function(){var k=Object.keys(b.dataset)[0];
+    b.parentNode.querySelectorAll('button[data-'+k+']').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on'); S[k]= k==='w'?+b.dataset[k]:b.dataset[k];
+    if(k==='w'){ load(); } else { apply();
+      var d=fr.contentDocument,w=fr.contentWindow,lad=d.querySelector('.gk3 .ladder');
+      w.scrollTo(0,lad.getBoundingClientRect().top+w.scrollY-40); } };
+});
+load();
+</script></body></html>

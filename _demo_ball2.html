@@ -1,0 +1,194 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>League ball , revision demo</title>
+<style>
+:root{--cream:#F3EDE0;--mut:rgba(243,237,224,.55);--ink:rgba(243,237,224,.8);--gold:#E8B84B}
+*{box-sizing:border-box}
+body{margin:0;background:#141210;color:var(--cream);font:400 14px Inter,system-ui,sans-serif;padding:26px 18px 90px}
+h1{font:800 20px Archivo,sans-serif;margin:0 0 4px}
+h2{font:800 15px Archivo,sans-serif;margin:34px 0 4px;color:var(--gold)}
+p.sub{color:var(--mut);font-size:12.5px;line-height:1.6;max-width:760px;margin:0 0 14px}
+.plate{border:1px solid rgba(243,237,224,.12);border-radius:18px;padding:17px 18px 16px;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.hd{font:800 10.5px Archivo;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.top{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-bottom:2px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;flex:1 1 260px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 10px;border-radius:999px;
+  border:1px solid rgba(243,237,224,.15);background:rgba(255,255,255,.035);font:700 12px Archivo;white-space:nowrap;cursor:pointer}
+.chip .f{font-size:15px;line-height:1}
+.chip .pc{font:800 10.5px Archivo;color:var(--gold);font-variant-numeric:tabular-nums}
+.chip.on{border-color:rgba(243,237,224,.45);background:rgba(255,255,255,.09)}
+.chip .sw{width:9px;height:9px;border-radius:3px;flex:none}
+.det{margin-top:13px;padding-top:12px;border-top:1px solid rgba(243,237,224,.09);font-size:12.5px;color:var(--ink);line-height:1.6;min-height:54px}
+.det b{font-family:Archivo;font-weight:700;color:var(--cream)}
+.det .none{color:var(--mut);font-style:italic}
+.cap{font-size:11px;color:var(--mut);margin-top:10px;line-height:1.55}
+
+/* ---- A : the ring, kept, with true league colours ---- */
+.ball{position:relative;width:168px;height:168px;flex:none}
+.ball .ring{position:absolute;inset:0;border-radius:50%;box-shadow:0 14px 30px -14px rgba(0,0,0,.75)}
+.ball .face{position:absolute;inset:12%;border-radius:50%;background:#F7F2E6;box-shadow:inset 0 0 0 2px rgba(20,17,13,.45);overflow:hidden}
+.ball .hit{position:absolute;inset:0;border-radius:50%;cursor:pointer}
+
+/* ---- shared: the drawn football ---- */
+.fb{display:block}
+/* ---- C : the strip ---- */
+.bars{display:grid;gap:6px;flex:1 1 320px;min-width:260px;max-width:460px}
+.bar{display:grid;grid-template-columns:20px 1fr 46px;gap:9px;align-items:center;font:600 11.5px Inter;cursor:pointer}
+.bar .t{height:11px;border-radius:3px;position:relative;background:rgba(255,255,255,.07)}
+.bar .fi{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+.bar .n{font:800 10.5px Archivo;color:var(--mut);text-align:right;font-variant-numeric:tabular-nums}
+.bar.on .n{color:var(--cream)}
+.eqline{position:absolute;top:-3px;bottom:-3px;width:1px;background:rgba(243,237,224,.55)}
+@media (max-width:720px){ .ball{width:132px;height:132px} .top{gap:15px;justify-content:center} }
+</style></head><body>
+
+<h1>The league strip , revision demo</h1>
+<p class="sub">Same three lines of facts in every treatment. What changes is whether the drawing is
+carrying the data or carrying the brand.</p>
+
+<h2>The measurement first, because it decides the rest</h2>
+<p class="sub">The wedges <b>are</b> to scale. Serie A is 44.53&deg;, Belgium is 35.95&deg;, against a perfectly
+equal 40.00&deg; , a 1.239 ratio end to end. But the two extremes sit on opposite sides of the ring and can
+never be compared directly, and <b>the median gap between two neighbouring leagues is 0.88&deg;, which is
+1.14px of arc at 168px and 0.90px at 132px.</b> That is a sub-pixel difference on the only comparison a
+reader can actually make. <b>The chart is to scale and unreadable at the same time. That is the chart
+failing, not the eye.</b></p>
+
+<h2>A , the ring kept, with each league's own colours</h2>
+<p class="sub">True brand colours instead of the arbitrary palette, and a percentage on every chip.
+Note what the real colours do: <b>four of the nine leagues are red</b> (Bundesliga, Belgium, Turkey, and
+La Liga's red-orange) and two are navy (Serie A, Ligue 1). Real colours are <b>less</b> separable than
+invented ones, so colour cannot be the cue here , the flag already is.</p>
+<div class="plate"><div class="hd">The ground we cover</div>
+  <div class="top">
+    <div class="ball"><div class="ring" id="ringA"></div>
+      <div class="face"><svg class="fb" id="fbA" viewBox="0 0 100 100" width="100%" height="100%"></svg></div>
+      <div class="hit" id="hitA"></div></div>
+    <div class="chips" id="chipsA"></div>
+  </div>
+  <div class="det" id="detA"><span class="none">Hover the ring, or a league.</span></div>
+  <div class="cap">The ring is sized by card count. The nine leagues are near-identical in size, so the
+    shape is texture rather than a finding.</div>
+</div>
+
+<h2>B , the object. A football, and the numbers where numbers work</h2>
+<p class="sub">No data ring. A drawn football in the platform's own icon language, and the count and the
+share live on the chip and in the popover, where a reader can actually read them. <b>Nothing is lost:
+the ring never communicated the 1.24 ratio to anybody.</b></p>
+<div class="plate"><div class="hd">The ground we cover</div>
+  <div class="top">
+    <div class="ball"><svg class="fb" id="fbB" viewBox="0 0 100 100" width="100%" height="100%"></svg></div>
+    <div class="chips" id="chipsB"></div>
+  </div>
+  <div class="det" id="detB"><span class="none">Hover a league.</span></div>
+  <div class="cap">Every league here carries more than 5,000 season cards, and no league is more than
+    a fifth larger than any other.</div>
+</div>
+
+<h2>C , the strip. The only treatment where the 1.24 ratio is legible</h2>
+<p class="sub">Length against a common baseline is the one channel that survives a 1.24 ratio, and the
+pale line marks a perfectly equal share, so "they are all the same size" becomes something you can see
+rather than something we assert. The ball stays as the object, small, beside the heading.</p>
+<div class="plate"><div class="hd">The ground we cover
+    <svg class="fb" id="fbC" viewBox="0 0 100 100" width="22" height="22" style="vertical-align:-6px;margin-left:8px"></svg></div>
+  <div class="top"><div class="bars" id="barsC"></div></div>
+  <div class="det" id="detC"><span class="none">Hover a league.</span></div>
+  <div class="cap">The line is an exactly equal ninth. Every bar sits within 2.4% of it.</div>
+</div>
+
+<script>
+var L=[
+ {v:'PL', l:'Premier League',    e:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', cards:6590, clubs:20, all:41, det:'2015/16, partly 2014/15', c:'#3D195B'},
+ {v:'LL', l:'La Liga',           e:'🇪🇸', cards:7032, clubs:20, all:35, det:'2015/16', c:'#E4022B'},
+ {v:'SA', l:'Serie A',           e:'🇮🇹', cards:7057, clubs:20, all:41, det:'2015/16', c:'#003B7A'},
+ {v:'BL', l:'Bundesliga',        e:'🇩🇪', cards:5900, clubs:18, all:33, det:'2015/16', c:'#D20515'},
+ {v:'L1', l:'Ligue 1',           e:'🇫🇷', cards:6569, clubs:20, all:37, det:'2015/16', c:'#091C3E'},
+ {v:'PRT',l:'Primeira Liga',     e:'🇵🇹', cards:6006, clubs:18, all:36, det:'2015/16', c:'#00A94F'},
+ {v:'ERE',l:'Eredivisie',        e:'🇳🇱', cards:5838, clubs:21, all:33, det:'2015/16', c:'#FF6600'},
+ {v:'BPL',l:'Belgian Pro League',e:'🇧🇪', cards:5698, clubs:16, all:30, det:'2020/21', c:'#C8102E'},
+ {v:'TR', l:'Super Lig',         e:'🇹🇷', cards:6365, clubs:18, all:45, det:'2015/16', c:'#E30A17'}
+];
+var TOT=L.reduce(function(a,x){return a+x.cards},0);
+function pct(x){ return (100*x.cards/TOT).toFixed(1); }
+function facts(x){ return '<b>'+x.l+'</b> , <b>'+x.cards.toLocaleString('en-GB')+'</b> season cards, <b>'+
+  pct(x)+'%</b> of the record. <b>'+x.clubs+'</b> clubs a season, <b>'+x.all+'</b> in all since 2010/11. '+
+  'Detailed stats from <b>'+x.det+'</b>.'; }
+
+/*  THE DRAWN FOOTBALL , one centre panel, five rim panels CUT BY THE SILHOUETTE, and the seams
+    that join them. The cut is the part that makes it read as a ball rather than as a badge:
+    a real football's panels run off the edge, they do not float in the middle of a white disc. */
+function pentPath(cx,cy,r,rot){
+  var p=[];
+  for(var i=0;i<5;i++){ var a=(rot+i*72-90)*Math.PI/180; p.push((cx+r*Math.cos(a)).toFixed(2)+','+(cy+r*Math.sin(a)).toFixed(2)); }
+  return 'M'+p.join('L')+'Z';
+}
+function football(id,ink){
+  ink=ink||'#17140f';
+  var s='<defs><clipPath id="cp'+id+'"><circle cx="50" cy="50" r="48"/></clipPath></defs>';
+  s+='<circle cx="50" cy="50" r="48" fill="#F7F2E6" stroke="rgba(20,17,13,.5)" stroke-width="2.5"/>';
+  s+='<g clip-path="url(#cp'+id+')">';
+  // seams first, so panels sit on top
+  for(var k=0;k<5;k++){ var a=(k*72-90)*Math.PI/180;
+    s+='<line x1="'+(50+13*Math.cos(a)).toFixed(2)+'" y1="'+(50+13*Math.sin(a)).toFixed(2)+
+       '" x2="'+(50+52*Math.cos(a)).toFixed(2)+'" y2="'+(50+52*Math.sin(a)).toFixed(2)+
+       '" stroke="rgba(20,17,13,.34)" stroke-width="2.4" stroke-linecap="round"/>'; }
+  // centre panel
+  s+='<path d="'+pentPath(50,50,15,0)+'" fill="'+ink+'"/>';
+  // five rim panels, on the bearings BETWEEN the seams, pushed out so the circle clips them
+  for(var j=0;j<5;j++){ var b=(36+j*72-90)*Math.PI/180, R=45;
+    s+='<path d="'+pentPath(50+R*Math.cos(b),50+R*Math.sin(b),16,36+j*72+180)+'" fill="'+ink+'"/>'; }
+  s+='</g>';
+  return s;
+}
+document.getElementById('fbA').innerHTML=football('A');
+document.getElementById('fbB').innerHTML=football('B');
+document.getElementById('fbC').innerHTML=football('C');
+
+/* A , the ring */
+(function(){
+  var stops=[],ang=0,arcs=[];
+  L.forEach(function(x){ var deg=360*x.cards/TOT,a2=ang+deg;
+    stops.push(x.c+' '+ang.toFixed(2)+'deg '+a2.toFixed(2)+'deg'); arcs.push({v:x.v,a:ang,b:a2}); ang=a2; });
+  document.getElementById('ringA').style.background='conic-gradient('+stops.join(',')+')';
+  var chips=document.getElementById('chipsA');
+  chips.innerHTML=L.map(function(x){ return '<span class="chip" data-lg="'+x.v+'"><span class="sw" style="background:'+x.c+'"></span><span class="f">'+x.e+'</span>'+x.l+' <span class="pc">'+pct(x)+'%</span></span>'; }).join('');
+  function show(v){ var x=L.filter(function(y){return y.v===v})[0]; if(!x)return;
+    document.getElementById('detA').innerHTML=facts(x);
+    [].forEach.call(chips.children,function(c){ c.classList.toggle('on',c.getAttribute('data-lg')===v); }); }
+  var hit=document.getElementById('hitA');
+  function at(e){ var r=hit.getBoundingClientRect(),R=r.width/2;
+    var dx=e.clientX-(r.left+R), dy=e.clientY-(r.top+R), d=Math.sqrt(dx*dx+dy*dy);
+    if(d>R||d<R*0.76) return null;
+    var a=(Math.atan2(dx,-dy)*180/Math.PI+360)%360;
+    for(var i=0;i<arcs.length;i++) if(a>=arcs[i].a&&a<arcs[i].b) return arcs[i].v;
+    return null; }
+  hit.addEventListener('mousemove',function(e){ var v=at(e); hit.style.cursor=v?'pointer':'default'; if(v) show(v); });
+  chips.addEventListener('mouseover',function(e){ var c=e.target.closest('.chip'); if(c) show(c.getAttribute('data-lg')); });
+})();
+
+/* B , chips only */
+(function(){
+  var chips=document.getElementById('chipsB');
+  chips.innerHTML=L.map(function(x){ return '<span class="chip" data-lg="'+x.v+'"><span class="f">'+x.e+'</span>'+x.l+' <span class="pc">'+pct(x)+'%</span></span>'; }).join('');
+  chips.addEventListener('mouseover',function(e){ var c=e.target.closest('.chip'); if(!c)return;
+    var x=L.filter(function(y){return y.v===c.getAttribute('data-lg')})[0];
+    document.getElementById('detB').innerHTML=facts(x);
+    [].forEach.call(chips.children,function(k){k.classList.toggle('on',k===c);}); });
+})();
+
+/* C , the strip */
+(function(){
+  var mx=Math.max.apply(null,L.map(function(x){return x.cards;}));
+  var eq=TOT/9;
+  var bars=document.getElementById('barsC');
+  bars.innerHTML=L.slice().sort(function(a,b){return b.cards-a.cards;}).map(function(x){
+    return '<div class="bar" data-lg="'+x.v+'"><span class="f">'+x.e+'</span>'+
+      '<span class="t"><i class="fi" style="width:'+(100*x.cards/mx).toFixed(1)+'%;background:'+x.c+'"></i>'+
+      '<i class="eqline" style="left:'+(100*eq/mx).toFixed(1)+'%"></i></span>'+
+      '<span class="n">'+pct(x)+'%</span></div>'; }).join('');
+  bars.addEventListener('mouseover',function(e){ var b=e.target.closest('.bar'); if(!b)return;
+    var x=L.filter(function(y){return y.v===b.getAttribute('data-lg')})[0];
+    document.getElementById('detC').innerHTML=facts(x);
+    [].forEach.call(bars.children,function(k){k.classList.toggle('on',k===b);}); });
+})();
+</script></body></html>

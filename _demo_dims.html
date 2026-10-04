@@ -1,0 +1,173 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Five Dimensions , tap to reveal, and whose words</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:#12110f;color:#F3EDE0;padding:26px 20px 70px}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:25px;margin-bottom:6px}
+  .sub{font-size:14px;line-height:1.6;color:rgba(243,237,224,.62);max-width:80ch;margin-bottom:18px}
+  .finding{border-left:3px solid #E8B84B;background:rgba(232,184,75,.07);padding:14px 16px;
+    border-radius:0 10px 10px 0;margin-bottom:26px;max-width:92ch}
+  .finding b{color:#E8B84B}
+  .finding p{font-size:13.5px;line-height:1.65;color:rgba(243,237,224,.82)}
+  .finding p+p{margin-top:9px}
+  .row{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .col{width:430px;flex:0 0 auto}
+  .ch{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.11em;
+    text-transform:uppercase;color:#E8B84B;margin-bottom:5px}
+  .ch.rec{color:#5ED39E}
+  .cd{font-size:12.5px;line-height:1.55;color:rgba(243,237,224,.6);margin-bottom:12px;min-height:74px}
+  .stage{background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.09);
+    border-radius:14px;padding:18px 18px 20px}
+
+  /* the Playbook's own pentagon, copied verbatim so the demo tests the real drawing */
+  .pgsvg{display:block;width:100%;max-width:400px;margin:0 auto}
+  .pgweb{fill:none;stroke:rgba(243,237,224,0.13);stroke-width:1}
+  .pgshape{fill:rgba(255,92,122,0.08);stroke:#E70443;stroke-width:2;stroke-linejoin:round}
+  .pglab{font-family:'Archivo';font-weight:700;font-size:12.5px;fill:rgba(243,237,224,.55);dominant-baseline:middle}
+
+  /* the VV Index interaction grammar, ported */
+  .fd-v{cursor:pointer}
+  .fd-hit{fill:transparent}
+  .fd-dot{fill:#E70443;transition:r .2s}
+  .fd-v[aria-selected="true"] .fd-dot{r:7}
+  .fd-v[aria-selected="true"] .pglab{fill:#F3EDE0}
+  .fd-v:focus{outline:none}
+  .fd-v:focus-visible .fd-hit{stroke:#E8B84B;stroke-width:2}
+  .fd-hint{text-align:center;font-family:'Archivo';font-weight:700;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;color:rgba(243,237,224,.42);margin:4px 0 14px}
+  .fd-panel{border-left:2px solid #E70443;padding:11px 0 11px 14px;min-height:118px}
+  .fd-panel[hidden]{display:none}
+  .fd-lead{font-family:'Bricolage Grotesque';font-weight:700;font-size:15.5px;line-height:1.42}
+  .fd-body{font-size:13px;line-height:1.6;color:rgba(243,237,224,.66);margin-top:7px}
+  .fd-one{font-size:13.5px;line-height:1.6;color:rgba(243,237,224,.78)}
+  .verdict{margin-top:30px;max-width:92ch;font-size:13.5px;line-height:1.7;color:rgba(243,237,224,.8)}
+  .verdict h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;margin:22px 0 7px;color:#F3EDE0}
+  code{font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px}
+</style></head><body>
+
+<h1>Item 7 , the Five Dimensions, tap to reveal</h1>
+<div class="sub">The interaction is settled: it is the VV Index's, ported. The open question is whose WORDS appear when a point is tapped.</div>
+
+<div class="finding">
+  <p><b>THE PLAYBOOK'S PENTAGON HAS NOTHING BEHIND ITS LABELS TODAY.</b> It is a static SVG whose
+  own comment says "no vv-core dependency, no tabs/panels/pulse". The five labels are axis names
+  and nothing more , there is no per-dimension definition anywhere on the page. So this is not
+  "make the existing text tappable"; the text does not exist and has to come from somewhere.</p>
+  <p><b>AND THE SOMEWHERE IS THE PROBLEM, BECAUSE THE VV INDEX ALREADY HAS IT.</b> Its pentagon is
+  already a tab set with five <code>fd-panel</code> blocks, a lead and a body each. Copying them
+  onto the Playbook creates five paragraphs that exist twice, and the file already records that
+  a duplication between these two pages is invisible from either page alone and is only ever
+  found by counting them side by side.</p>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="ch">A , the VV Index copy, ported whole</div>
+    <div class="cd">Lead plus body, verbatim. The richest answer and the fastest to build. It also puts five paragraphs on two pages, which is the duplication the docs warn is undetectable from either page on its own.</div>
+    <div class="stage" id="stageA"></div>
+  </div>
+  <div class="col">
+    <div class="ch rec">B , the Playbook's own register, one line each (recommended)</div>
+    <div class="cd">A dictionary entry, not an essay: what the dimension measures, in one sentence. The Playbook is the page you consult; the VV Index is the page that argues. Same interaction, different job, no duplicated paragraph.</div>
+    <div class="stage" id="stageB"></div>
+  </div>
+</div>
+
+<div class="verdict">
+  <h2>What I land on, and why</h2>
+  <p><b>B.</b> The two pages are not the same kind of document and the file already says so: the
+  Playbook is a dictionary, the VV Index is a proof. A reader on the Playbook has tapped a vertex
+  to find out what "Progression" counts , that is a lookup, and it is answered in a sentence.
+  The VV Index reader is being shown why the measure is defensible, which needs the paragraph.</p>
+  <p><b>The cost of A is not the writing, it is what happens next.</b> Five paragraphs on two
+  pages drift independently, both pages keep reading correctly on their own, and nothing
+  announces the divergence , which is exactly the shape recorded for the coverage-boundary line
+  that silently became a duplicate when the league plate shipped.</p>
+  <h2>What is identical in both</h2>
+  <p>The interaction, the ARIA tab wiring, the keyboard handling and the hint line are the VV
+  Index's, unchanged. That part is a port and should not be re-invented , the question above is
+  only about the copy.</p>
+</div>
+
+<script>
+var PENT = {
+  goal:        {x:200.0, y:60,    lx:200.0, ly:41.0,  anchor:'middle', label:'Goal Threat'},
+  creation:    {x:287.5, y:123.6, lx:305.6, ly:117.7, anchor:'start',  label:'Creation'},
+  progression: {x:254.1, y:226.4, lx:265.2, ly:241.8, anchor:'start',  label:'Progression'},
+  defensive:   {x:145.9, y:226.4, lx:134.8, ly:241.8, anchor:'end',    label:'Defensive'},
+  reliability: {x:112.5, y:123.6, lx:94.4,  ly:117.7, anchor:'end',    label:'Reliability'}
+};
+/* A , lifted verbatim from vvindex.html so the demo shows the real duplication, not a paraphrase */
+var COPY_A = {
+  goal:{lead:'How much a player threatens the goal , shots, conversion, and the danger they carry in the box.',
+    body:'Goal threat is not the same as goals scored. We measure the quality and volume of the chances a player gets into, so a striker who misses chances still reads as a threat, and a midfielder who scores twice from thirty yards does not.'},
+  creation:{lead:'The chances a player makes for others , key passes, assists, and the moments that unlock a defence.',
+    body:'Assists flatter and deceive in equal measure; a player can lay on twenty and create little, or create relentlessly and finish a season with five to show for it. So we look past the finish to the chance itself.'},
+  progression:{lead:'How a player moves the ball and the team up the pitch , carries, line-breaking passes, territory gained.',
+    body:'The least visible dimension and often the one that decides a match. Progression is the work of getting the ball from where it is safe to where it is dangerous.'},
+  defensive:{lead:'The work without the ball , duels, recoveries, interceptions, and the protection a player gives the side.',
+    body:'Measured as a share of what the team had to do, never as a raw count, because a defender in a side under siege will out-tackle a better one in a side that keeps the ball.'},
+  reliability:{lead:'Consistency and availability , minutes played, error rate, and how dependable the season was as a whole.',
+    body:'The dimension nobody celebrates. A player who is there every week is worth more than the same player at half the appearances, and this is where the card says so.'}
+};
+/* B , written for this page: what it counts, in one sentence, in the dictionary register */
+var COPY_B = {
+  goal:        'What a player does to the opposition goal , the chances they get into and what they do with them, not the goals alone.',
+  creation:    'The chances made for someone else, counted at the chance rather than at the finish.',
+  progression: 'Moving the ball from where it is safe to where it is dangerous, by carry or by pass.',
+  defensive:   'The work without the ball, measured as a share of what the team had to do.',
+  reliability: 'How much of the season the player was actually there for, and how steady it was.'
+};
+
+function build(host, mode){
+  var keys=Object.keys(PENT), svg='', panels='';
+  svg += '<svg class="pgsvg" viewBox="0 20 400 240" role="tablist" aria-label="The five dimensions">';
+  svg += '<polygon class="pgweb" points="200 106 243.8 137.8 227.1 189.2 172.9 189.2 156.2 137.8"/>';
+  svg += '<polygon class="pgshape" points="200 60 287.5 123.6 254.1 226.4 145.9 226.4 112.5 123.6"/>';
+  keys.forEach(function(k,i){
+    var p=PENT[k], on=(i===0);
+    svg += '<g class="fd-v" id="'+host+'-v-'+k+'" role="tab" tabindex="'+(on?0:-1)+'" '+
+           'aria-selected="'+on+'" aria-controls="'+host+'-p-'+k+'" data-k="'+k+'">'+
+           '<circle class="fd-hit" cx="'+p.x+'" cy="'+p.y+'" r="26"/>'+
+           '<circle class="fd-dot" cx="'+p.x+'" cy="'+p.y+'" r="'+(on?7:4.5)+'"/>'+
+           '<text class="pglab" x="'+p.lx+'" y="'+p.ly+'" text-anchor="'+p.anchor+'">'+p.label+'</text>'+
+           '</g>';
+    var inner = mode==='A'
+      ? '<div class="fd-lead">'+COPY_A[k].lead+'</div><div class="fd-body">'+COPY_A[k].body+'</div>'
+      : '<div class="fd-one">'+COPY_B[k]+'</div>';
+    panels += '<div class="fd-panel" id="'+host+'-p-'+k+'" role="tabpanel" '+
+              'aria-labelledby="'+host+'-v-'+k+'"'+(on?'':' hidden')+'>'+inner+'</div>';
+  });
+  svg += '</svg>';
+  var el=document.getElementById(host);
+  el.innerHTML = svg + '<div class="fd-hint">Tap each point to read the dimension</div>' + panels;
+
+  function select(k){
+    keys.forEach(function(o){
+      var v=document.getElementById(host+'-v-'+o), p=document.getElementById(host+'-p-'+o);
+      var on=(o===k);
+      v.setAttribute('aria-selected', on); v.setAttribute('tabindex', on?0:-1);
+      v.querySelector('.fd-dot').setAttribute('r', on?7:4.5);
+      p.hidden = !on;
+    });
+  }
+  keys.forEach(function(k,i){
+    var v=document.getElementById(host+'-v-'+k);
+    v.addEventListener('click', function(){ select(k); });
+    v.addEventListener('keydown', function(e){
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); select(k); return; }
+      var d = e.key==='ArrowRight'||e.key==='ArrowDown' ? 1
+            : e.key==='ArrowLeft' ||e.key==='ArrowUp'   ? -1 : 0;
+      if(!d) return;
+      e.preventDefault();
+      var n=keys[(i+d+keys.length)%keys.length];
+      select(n); document.getElementById(host+'-v-'+n).focus();
+    });
+  });
+}
+build('stageA','A');
+build('stageB','B');
+</script>
+</body></html>

@@ -1,0 +1,58 @@
+<!doctype html><html><head><meta charset="utf-8"><title>390 defect probe</title>
+<style>
+ body{margin:0;background:#1b1718;color:#e8e2d6;font:12px system-ui}
+ .bar{position:sticky;top:0;z-index:9;padding:8px 12px;background:#000;display:flex;gap:8px;flex-wrap:wrap}
+ button{font:600 11px system-ui;background:#2e2b28;color:#ddd;border:1px solid #4a453f;border-radius:5px;padding:4px 9px;cursor:pointer}
+ button.on{background:#E70443;border-color:#E70443;color:#fff}
+ .stage{padding:12px;display:flex;justify-content:center}
+ iframe{border:0;width:390px;height:760px;background:#000}
+</style></head><body>
+<div class="bar">
+ <button data-p="playbook.html" class="on">playbook</button>
+ <button data-p="card.html?id=130728">card Salah</button>
+ <button data-p="card.html?id=133614">card Salah 17/18</button>
+ <button data-p="compare.html?a=130728&b=139209">compare</button>
+ <button data-t="dark" class="on">dark</button><button data-t="light">light</button>
+ <span id="stat"></span>
+</div>
+<div class="stage"><iframe id="fr"></iframe></div>
+<script>
+var S={p:'playbook.html',t:'dark'};
+var fr=document.getElementById('fr');
+window.W=null; window.D=null;
+function load(){
+  fr.src=S.p+(S.p.includes('?')?'&':'?')+'cb='+Date.now();
+  fr.onload=function(){
+    var n=0,iv=setInterval(function(){
+      var w=fr.contentWindow,d=fr.contentDocument;
+      if(!d||!d.body){ if(++n>60) clearInterval(iv); return; }
+      /* transitions off: this tab reports visibilityState hidden and a 50ms timer measures
+         600-1000ms, so any transitioned box is mid-animation forever (CLAUDE.md SS C). */
+      if(!d.getElementById('vvKill')){
+        var k=d.createElement('style'); k.id='vvKill';
+        k.textContent='*{transition:none!important;animation:none!important}';
+        d.head.appendChild(k);
+      }
+      d.body.classList.toggle('light', S.t==='light');
+      window.W=w; window.D=d;
+      document.getElementById('stat').textContent =
+        'iw '+w.innerWidth+' | '+(w.matchMedia('(max-width:720px)').matches?'PHONE':'desk')
+        +' | docOverflow '+(d.documentElement.scrollWidth-d.documentElement.clientWidth);
+      clearInterval(iv);
+    },250);
+  };
+}
+document.querySelectorAll('.bar button').forEach(function(b){
+  b.onclick=function(){ var k=Object.keys(b.dataset)[0];
+    b.parentNode.querySelectorAll('button[data-'+k+']').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on'); S[k]=b.dataset[k];
+    if(k==='t'&&window.D){ window.D.body.classList.toggle('light',S.t==='light'); } else load(); };
+});
+/* helper the probe scripts call */
+window.box=function(sel,root){ var e=(root||window.D).querySelector(sel); if(!e) return null;
+  var r=e.getBoundingClientRect(); var cs=(window.W).getComputedStyle(e);
+  return {sel:sel, x:Math.round(r.x), y:Math.round(r.y), w:Math.round(r.width), h:Math.round(r.height),
+          left:Math.round(r.left), right:Math.round(r.right), display:cs.display, pos:cs.position,
+          overflow:cs.overflow, pad:cs.padding, margin:cs.margin}; };
+load();
+</script></body></html>

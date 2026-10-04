@@ -1,0 +1,39 @@
+{
+ "total": 799,
+ "reproduced": 796,
+ "wrongRung": [],
+ "reversed": [],
+ "noPair": [
+  {
+   "key": "43092|2025|TR",
+   "cards": 3,
+   "clubs": "Trabzonspor -> Gaziantep FK"
+  },
+  {
+   "key": "30747|2020|SA",
+   "cards": 3,
+   "clubs": "Sampdoria -> Benevento"
+  },
+  {
+   "key": "47277|2025|LL",
+   "cards": 0,
+   "clubs": "Celta Vigo -> Valencia"
+  }
+ ],
+ "noDecision": [],
+ "dateDiff": [
+  {
+   "key": "717|2025|TR",
+   "stored": "2026-01-12",
+   "ladder": "2026-01-14",
+   "storedSound": true
+  },
+  {
+   "key": "50126|2025|TR",
+   "stored": "2025-12-30",
+   "ladder": "2026-01-02",
+   "storedSound": true
+  }
+ ],
+ "storedOutOfWindow": []
+}

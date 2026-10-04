@@ -1,0 +1,172 @@
+# SQUAD NUMBER BACKFILL , CAPTURE AND BATCH 0 (2026-09-14)
+
+**BATCH 0 PASSED AND THE DATABASE IS BACK TO ITS BEFORE STATE.** One row inserted, the full
+view read back, zero rt movers across all 57,055 cards, row deleted, absence verified.
+`player_positions` is 43,659 rows with 0 NULL positions, exactly as captured.
+
+## WHAT BATCH 0 WAS FOR, AND WHAT IT WAS NOT
+
+It tested the SHAPE OF THE ROW, not the pipeline. The pipeline was measured separately against
+the 2016/17 held-out set , 3,577 numbers we already hold and did not fetch , at **98.9%
+precision**. What had no precedent was the row itself: `player_positions` holds 43,659 rows and
+**not one has a NULL position**, so writing a shirt number without one had never been done.
+
+**THE PREDICTION, read from a fresh viewdef rather than assumed:** the view defines
+`pp."position" AS position_pool`, a DIRECT read with no COALESCE. Pre-2016 cards have no `pp`
+row, so `position_pool` is ALREADY null; inserting a row with a null position leaves it null,
+and the engine partitions on `COALESCE(pool, pos)`, unchanged. **Measured: 0 movers.** The
+prediction held, and it was still worth measuring , SS C records a 351-row write that moved 137
+cards nobody had touched, one of them across a public band.
+
+## FILES
+
+| file | what it is |
+|---|---|
+| `before-summary.json` | counts plus **every existing `player_positions` key**, so an accidental UPDATE is detectable |
+| `before-rt.json` | rt for all 57,055 cards, the diff baseline |
+| `before-pool.json` | `position_pool` for all 57,055, because that is the column the write could plausibly disturb |
+| `batch0-result.json` | the canary run, kept whether it passed or failed |
+| `written.jsonl` | **THE LEDGER. Every row this backfill has written, one JSON object per line, append-only. TRACKED IN GIT , see below.** |
+| `clubseasons-done.json` | resume state: which club-seasons have been attempted, so a re-run does not redo them |
+| `batchN-stats.json` | one per batch, numbered from `batch-index.json` |
+
+**`written.jsonl` IS THE ROLLBACK AND IT MUST TRAVEL WITH THE REPO. DO NOT PRUNE IT AS
+GENERATED OUTPUT , 2026-09-14.** It is the only record of WHICH rows this job created, and
+therefore the only thing that can undo them: the three `before-*.json` captures are a rt
+BASELINE, they say what the scores were, and they cannot tell you which `player_positions`
+rows to delete. Reverting the backfill means replaying this file.
+- **IT LOOKS EXACTLY LIKE DISPOSABLE LOG OUTPUT, WHICH IS WHY THIS PARAGRAPH EXISTS.** A
+  `.jsonl` written by a script, in a migration directory, beside three files the README
+  itself says are deliberately untracked, is the obvious candidate for a tidy-up. It is not
+  one. `batch0-result.json` was already tracked for the same reason.
+- **IT IS ALSO THE RECONCILIATION.** Batch stats were overwritten by a fixed filename for
+  three batches and nobody noticed; the ledger is what proved nothing was lost, because
+  142 + 144 + 146 summed exactly to its 432 lines. **A per-row record survives a
+  summary-level mistake, and that is the argument for keeping it rather than a total.**
+- **IT CONTAINS EN DASHES AND THEY MUST NOT BE SWEPT.** Every row carries the SOURCE PAGE
+  TITLE verbatim, and Wikipedia writes seasons as `2010–11 S.L. Benfica season`. The house
+  no-dash rule governs OUR prose; these are a provenance record of a page that exists under
+  that exact name, and rewriting them would make the ledger disagree with the source it
+  cites. **The em/en-dash sweep in the launch plan must skip this file**, the same way the
+  regex character class in `compare.html` is tooling for the rule rather than a breach of it.
+- **SIZE IS NOT A REASON TO DROP IT.** It is under 100 KB at 432 rows, so the whole 20,063
+  card target would land near 4 MB , large for a repo file and small against losing the
+  ability to undo. If it ever needs to leave git, the replacement has to be something that
+  can still name every written row, not a count of them.
+
+**THE THREE CAPTURE FILES ARE ON DISK AND DELIBERATELY NOT IN GIT , 2.4 MB, and that follows
+the precedent of `positions_2526_2026-09-11` (2.7 MB, 2 files tracked) and
+`bsd_block_cleanup_2026-08-23` (1.9 MB, 2 tracked).** Only this README and `batch0-result.json`
+are versioned. **THE CONSEQUENCE IS REAL AND IS STATED RATHER THAN DISCOVERED: if this working
+copy is lost, the rollback baseline goes with it.** Re-capture before resuming a part-finished
+backfill rather than trusting an older file, because a baseline taken after a batch is not a
+baseline.
+
+**THE CAPTURE WAS READ BACK OFF DISK AND ASSERTED ROW FOR ROW** , 57,055 rt values, 0
+mismatches. A capture that was never verified is one you find out about during the rollback.
+
+**AND THE MATVIEW SNAPSHOT IS A VALID BEFORE, VERIFIED RATHER THAN ASSUMED:** `player_card_view`
+and `player_card_mv` were compared over 1,000 cards and agree exactly, so the captured matview
+rt is the same baseline a live view read produces. That is what makes a single after-read enough.
+
+## THE TARGET
+
+**20,063 cards, 1,018 club-seasons, all pre-2016.** Post-2016 is 99.6% covered already.
+
+Wikipedia coverage was sampled in the target era rather than carried over from 2016/17:
+**2010/11 71% of clubs usable, 2012/13 86%, 2014/15 86%.**
+
+## ROLLBACK
+
+These are INSERTS, so rollback is a delete of an exact key set. Every batch appends the
+`(api_player_id, season_year, league_code)` triples it wrote to `written.jsonl`; deleting those
+triples restores this state. `before-summary.json`'s key list is the control: any key that
+existed BEFORE must never appear in `written.jsonl`.
+
+**A REFRESH IS NOT NEEDED TO UNDO AND IS NEEDED TO SHOW.** `player_positions` feeds the view
+immediately and the matview only on refresh, and SS C records that the refresh cannot be run
+from Claude Code , it is Lucas's lane in the Supabase SQL editor:
+
+    set statement_timeout = '600s'; refresh materialized view player_card_mv;
+
+
+---
+
+# BATCH 1 , WRITTEN 2026-09-14. 142 ROWS, ZERO rt MOVERS.
+
+**THE REAL YIELD IS 14.8%, AND IT IS A FLOOR RATHER THAN A HEADLINE.** 964 cards in scope
+across 50 club-seasons, 143 matched, 142 written (one already had a row). The last measured
+figure before this was 43.4%, from the 2016/17 pilot.
+
+**THE DROP IS THE BATCH ORDER WORKING, NOT THE METHOD FAILING.** Batch 1 is worst-covered
+first: **every club-season in it is Portuguese**, and yesterday's link-and-category check
+already established that `pt.wikipedia` carries club-season pages for the big clubs only ,
+`Primeira Liga de 2010-11` links to three, the category holds three. The skip list says it in
+one column: **Academica, Beira-Mar, Guimaraes, Maritimo, Naval, Olhanense, Pacos Ferreira,
+Portimonense, Rio Ave, Uniao de Leiria, Vitoria Setubal , all "no page".** 20 of 50
+club-seasons resolved, 12 parsed.
+
+**SO 14.8% IS THE NUMBER FOR THE WORST LEAGUE ON THE LIST AND NOT AN ESTIMATE OF THE JOB.**
+Turkey measured 66.7% on tr.wikipedia and the big-five leagues have near-total en coverage.
+**Quoting 14.8% as the project figure would be as wrong as quoting 43.4% was**, in the other
+direction , and the honest position is that neither is known until the leagues with coverage
+have run.
+
+## WHAT WAS WRITTEN
+
+| | |
+|---|---|
+| rows inserted | **142**, all `PRT` |
+| `player_positions` | 43,659 -> **43,801** |
+| rows with a NULL position | 0 -> **142** , the new shape, as designed |
+| **rt movers, FULL read of 57,055** | **0** |
+| held , no row | 78 |
+| held , ambiguous | 21 |
+| held , many blocks | Sporting CP 2010/11, for adjudication |
+| held , duplicate numbers | 0 in this batch |
+
+The full diff was run twice and agreed both times: `mode full compared 57055 MOVERS 0`.
+
+## THE DIFF POLICY FROM BATCH 2
+
+**Full on batch 1, spot after**, because batch 0 measured the row shape as inert across the
+whole database and the residual risk is a WRONG NUMBER, which an rt diff cannot see at all.
+
+**THE SPOT SET IS NOT A SAMPLE, IT IS THE THREE PLACES A RIPPLE COULD COME FROM** , see
+`scripts/squadnum/diff-rt.js`: every card written in the batch; their partition neighbours,
+because the engine's percentiles partition on `COALESCE(pool, pos)`; and **a FIXED global
+control of 1,000 cards** spread across every league and season, which is the only one of the
+three that can catch a route nobody has thought of. The control is fixed rather than re-drawn,
+because a sample that changes every run can hide a persistent mover by never looking twice.
+
+**THE TRIGGER IS ONE MOVER.** Not a threshold and not a percentage: batch 0 established the
+expected value is exactly zero, so any movement means the model of this write is wrong and the
+next read is the full 57,055. **A spot check without a trigger is a ritual.**
+
+
+## A BATCH DIED MID-RUN AND MY OWN OUTPUT FILTER HID THE REASON (2026-09-14)
+
+**BATCH 14 MATCHED 301 CARDS, PRINTED ITS SKIP LINE, AND THEN WROTE NOTHING.** It was run
+through `| grep -E "matched|skipped club-seasons|zero cards matched|WRITTEN"`, a filter built
+out of the lines a SUCCESSFUL batch prints. **So when the run failed, the filter had nothing
+to show and the absence looked like truncated output rather than a fault.** The wrapping
+command still exited 0, because grep had matched earlier lines.
+
+**THE RULE, AND IT IS NOT NEW , IT IS THE MONITOR GUIDANCE APPLIED TO A PIPE: A FILTER BUILT
+FROM SUCCESS SIGNALS CANNOT REPORT A FAILURE, AND SILENCE THEN LOOKS IDENTICAL TO PROGRESS.**
+Before filtering a long-running job, ask what it would emit if it crashed on the next line, and
+widen the pattern until the answer is "something". `tail -25` would have shown it; the clever
+filter did not.
+
+**NOTHING WAS HALF-WRITTEN, AND THAT WAS CHECKED RATHER THAN ASSUMED.** The write is a single
+batched call after the whole batch is matched, so a death before it leaves no partial state ,
+but "should" is not a measurement. Verified three ways: the ledger stood at 3,742 (exactly the
+total after batch 13), `batch-index.json` still read 13, and `batch14-stats.json` did not
+exist. **Then the database itself was scanned**: `player_positions` holds 3,898 pre-2016 rows
+with a shirt number, and the 156 the ledger does not name all carry a POSITION, which this job
+never writes , they are the pre-existing population recorded before batch 0. **Zero untracked
+writes.**
+
+**AND THAT SCAN IS THE CHECK WORTH REPEATING AFTER ANY INTERRUPTED RUN**, because it is the
+only one that tests the DATABASE against the ledger rather than the ledger against itself:
+every row the job created is named, and nothing exists that the ledger cannot account for.

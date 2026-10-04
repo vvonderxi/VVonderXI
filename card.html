@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- VV PAGE-TRANSITION FLAG , DEMO ONLY, INERT UNLESS SWITCHED ON, AND REMOVABLE WITH ONE COMMAND.
+     Append ?vt=1 to any page to turn cross-document view transitions on for the rest of the
+     browser session; ?vt=0 turns them off. With the flag unset this adds nothing at all to the
+     document. Unsupported browsers ignore the at-rule and get today's hard cut, with no
+     fallback code and no error.
+     Put in by scripts/wire-vt-flag.js; take out with the same script and --off.
+     At the decision this either goes, or the at-rule inside it moves into each page's own CSS
+     and the script around it disappears. -->
+<script>try{var q=new URLSearchParams(location.search);if(q.has('vt')){q.get('vt')==='0'?sessionStorage.removeItem('vvvt'):sessionStorage.setItem('vvvt','1');}if(sessionStorage.getItem('vvvt')){var s=document.createElement('style');s.textContent='@view-transition{navigation:auto}';document.head.appendChild(s);}}catch(e){}</script>
+<!-- /VV PAGE-TRANSITION FLAG -->
 <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#F4EFE2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <title>VVonderXI , Player Cards</title>
@@ -31,13 +42,18 @@
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* RADIUS SCALE , four values, measured 2026-09-28. sm hairline, md small controls and bars,
+   lg panels, pill fully round. 50% is a CIRCLE and is a separate idiom, deliberately not folded in.
+   See scripts/radius-census.js for the mapping and what it declines to touch. */
+:root{--r-sm:3px;--r-md:8px;--r-lg:14px;--r-pill:999px}
+
   :root{--ink-soft:#a49d93;--gold-ink:#E8B84B;--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--green:#2E8C5A;--gold:#E8B84B;--blue:#3B6FB0;--panel:#175030;--panel-t:#1C6038;--panel-b:#0F3A22}
   *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100vh}
   body{font-family:'Inter',sans-serif;color:var(--cream);background:radial-gradient(150% 540px at 50% -130px,rgba(255,244,224,.07),transparent 82%),radial-gradient(circle 22px at 12% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(circle 24px at 31% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 26px at 50% -8px,rgba(255,255,255,.92),rgba(255,238,205,.22) 45%,transparent 72%),radial-gradient(circle 24px at 69% -8px,rgba(255,255,255,.88),rgba(255,238,205,.20) 45%,transparent 72%),radial-gradient(circle 22px at 88% -8px,rgba(255,255,255,.80),rgba(255,238,205,.18) 45%,transparent 72%),radial-gradient(6% 640px at 12% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(6% 700px at 31% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(7% 760px at 50% -60px,rgba(255,247,230,.20),transparent 84%),radial-gradient(6% 700px at 69% -60px,rgba(255,247,230,.18),transparent 84%),radial-gradient(6% 640px at 88% -60px,rgba(255,247,230,.16),transparent 84%),radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.16), transparent 60%),linear-gradient(180deg,#1b1617 0%,#141011 50%,#0e0b0c 100%);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;overflow-x:clip}
   .spine{width:84px;flex-shrink:0;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:26px 0;position:sticky;top:0;height:100vh;align-self:flex-start;gap:6px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .spine:hover{width:208px;align-items:flex-start;padding-left:18px}
   .coin{width:40px;height:40px;flex-shrink:0;margin-bottom:30px;margin-left:2px}
-  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:13px;cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
+  .navitem{display:flex;align-items:center;gap:15px;width:calc(100% - 4px);padding:12px;border-radius:var(--r-lg);cursor:pointer;color:rgba(243,237,224,0.58);transition:background .2s,color .2s;white-space:nowrap;overflow:hidden;text-decoration:none}
   .navitem:hover{background:rgba(255,255,255,0.05);color:var(--cream)}.navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
   .navitem svg{width:22px;height:22px;flex-shrink:0}.navitem .lbl{font-family:'Archivo';font-weight:700;font-size:15.5px;opacity:0;transition:opacity .25s}
   .spine:hover .navitem .lbl{opacity:1}.navspacer{flex:1}
@@ -50,7 +66,7 @@
   .seqnav{display:flex;align-items:center;gap:6px}
   .seqnav[hidden]{display:none}
   .seqbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0;
-          border:1px solid rgba(243,237,224,.22);border-radius:999px;background:transparent;
+          border:1px solid rgba(243,237,224,.22);border-radius:var(--r-pill);background:transparent;
           color:var(--cream);cursor:pointer;transition:background .16s,border-color .16s,opacity .16s}
   .seqbtn svg{width:15px;height:15px}
   .seqbtn:hover:not(:disabled){background:rgba(243,237,224,.10);border-color:rgba(243,237,224,.40)}
@@ -68,7 +84,7 @@
   body.nocard .sharebox, body.nocard .watchcta, body.nocard #seasonZone{display:none !important}
   /* the not-found state , plain by design, see vvCardNotFound */
   .cardnf{max-width:520px;margin:40px auto;padding:26px 24px;text-align:left;
-          border:1px dashed rgba(243,237,224,.22);border-radius:16px}
+          border:1px dashed rgba(243,237,224,.22);border-radius:var(--r-lg)}
   body.light .cardnf{border-color:rgba(28,27,26,.20)}
   .cardnf b{display:block;font-family:'Archivo';font-weight:800;font-size:19px;margin-bottom:10px}
   .cardnf p{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 10px}
@@ -78,6 +94,52 @@
   .cardnf-go:hover{text-decoration:underline}
   .seqpos{font-family:'Archivo',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.01em;
           color:var(--ink-soft);white-space:nowrap;min-width:64px;text-align:center}
+  /*  ── THE SEASON STEPPER , BESIDE THE TRIGGER, NOT ON THE CARD FACE (moved 2026-09-14) ──
+      THE TWO CONTROLS DO ONE JOB AND NOW SIT TOGETHER: expand the whole list, or step
+      through it one season at a time. Putting the chevrons on the card's year separated a
+      pair of controls that answer the same question, and it put furniture on the product ,
+      the card face is the thing being looked at, not a place to hang UI.
+      THE GRAMMAR IS UNCHANGED AND STILL THE HORIZONTAL ONE'S: a control on the thing that
+      changes, in the page's own ink. What changed is WHERE the thing that changes is named
+      , the trigger already says "View all 13 seasons", so the season is named there.
+      QUIET BY CONSTRUCTION: it inherits the trigger's own muted ink rather than picking a
+      literal, so it can never be louder than the words beside it, and it follows the theme
+      because THIS ground does flip , the opposite of the card face, where the ink had to be
+      pinned per prestige face. Section C: match the ink to the GROUND.  */
+  /*  A ROW WRAPPER, BECAUSE #seasonZone IS A COLUMN , found rendered, not reasoned.
+      `#seasonZone{display:flex;flex-direction:column}`, so the stepper became its own flex
+      ITEM and stacked underneath the trigger however it was styled inline. `inline-flex` on
+      the child cannot beat the parent's direction. The pair now share one row container and
+      the zone keeps stacking that row above the panel, which is what it is for.  */
+  .seasonhead{display:flex;align-items:center;justify-content:center;gap:2px}
+  .seasonstep{display:inline-flex;align-items:center;gap:2px;margin-left:6px}
+  .seasonstep button{background:none;border:0;padding:0 3px;margin:0;cursor:pointer;
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;line-height:1;
+    color:rgba(243,237,224,0.55);transition:color .16s,transform .16s;
+    -webkit-tap-highlight-color:transparent}
+  .seasonstep button:hover{color:rgba(243,237,224,0.92);transform:translateY(-1px)}
+  .seasonstep button:last-child:hover{transform:translateY(1px)}
+  .seasonstep button[disabled]{opacity:.25;cursor:default;pointer-events:none}
+  /*  ── THE CHEVRONS GET A TALLER TARGET, NOT A 44px ONE, AND THE REASON IS MEASURED ──────
+      They render 17x11 , the second smallest control on the platform , and the audit sweep
+      named them. A transparent pseudo enlarges the reach and paints nothing, the same way
+      `.vvcard .xfm::before` already does for the shirt mark.
+      BUT 44 WIDE IS NOT FREE HERE AND IS NOT TAKEN. Measured on a live card: the two chevrons
+      sit SIDE BY SIDE with a 2px gap and the "View all N seasons" trigger is 8px to the left.
+      A 44px-wide area on each would overlap its sibling by ~25px and eat the trigger, so one
+      chevron would swallow the other's taps , invisibly, which is the exact failure SEC C
+      records for decorative absolutely-positioned elements.
+      VERTICAL IS FREE: the nearest interactive neighbour below is the club pill at 26px, so a
+      43px-tall area clears it. Each chevron also takes 1px into the shared 2px gap, so they
+      meet and never overlap. 17x11 to 19x43 , 4.4x the area, no pixel moved.
+      GETTING THEM TO 44 WIDE NEEDS THE ROW RE-LAID OUT, which moves things a reader can see,
+      so it stays in POST_LAUNCH with the bottom nav.  */
+  .seasonstep button{position:relative}
+  .seasonstep button::after{content:'';position:absolute;left:-1px;right:-1px;top:50%;
+    height:43px;transform:translateY(-50%)}
+  .seasonstep button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:var(--r-sm)}
+  body.light .seasonstep button{color:var(--ink-soft)}
+  body.light .seasonstep button:hover{color:#1C1B1A}
   /* ── PEEK , the phone affordance, replacing the old "‹ swipe ›" text ──────────
      A sliver of the REAL next card at the right edge. The gesture explains itself: a
      card half off-screen is a thing to pull, and nobody has to read anything first.
@@ -107,7 +169,7 @@
   .modetoggle .mt-ic{width:18px;height:18px;transition:opacity .2s}
   .modetoggle:hover{border-color:rgba(255,255,255,.28)} body.light .modetoggle:hover{border-color:rgba(0,0,0,.22)}
   .modetoggle.spin .mt-ic{animation:mtspin .55s cubic-bezier(.4,0,.2,1)}@keyframes mtspin{to{transform:rotate(360deg)}}
-  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:999px;opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+  .mt-label{position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(20,16,17,.92);border:1px solid rgba(255,255,255,.12);padding:5px 10px;border-radius:var(--r-pill);opacity:0;transform:translateY(-5px);pointer-events:none;transition:opacity .28s ease,transform .28s ease;z-index:60;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
   body.light .mt-label{color:var(--charcoal);background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
   .mt-label.show{opacity:1;transform:translateY(0)}
   /* VV shield badge , THEME-AWARE. Dark ground needs a CREAM shield (a dark shield on
@@ -125,7 +187,7 @@
 
   .avatar{height:42px;width:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border-radius:0;padding:0;-webkit-tap-highlight-color:transparent}
   .avatar svg{height:42px;width:auto;display:block}
-  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+  .avatar:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:var(--r-sm)}
   body.light{color:var(--charcoal);--ink-soft:#5f594e;--gold-ink:#7e5a10;background:radial-gradient(900px 500px at 16% -80px, rgba(218,41,28,0.08), transparent 60%),linear-gradient(180deg,#EEF4F6 0%,#ECEFE6 48%,#E9E0D0 100%)}
   body.light .spine{background:rgba(255,255,255,0.5);border-right:1px solid rgba(0,0,0,0.06)}
   body.light .navitem{color:var(--ink-soft)}body.light .navitem:hover{background:rgba(0,0,0,0.04);color:var(--charcoal)}body.light .navitem.on{background:rgba(255,92,122,0.12);color:var(--pink-ink)}
@@ -139,7 +201,7 @@
   .plinth .vvcard{position:relative;z-index:1}
   .plinth .pcap{font-family:'Archivo';font-weight:700;font-size:12px;color:rgba(243,237,224,0.58);text-align:center;max-width:300px;line-height:1.5;position:relative;z-index:1}
   body.light .plinth .pcap{color:var(--ink-soft)}
-  .depth{display:flex;flex-direction:column;gap:0;padding-top:6px;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px -24px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06)}
+  .depth{display:flex;flex-direction:column;gap:0;padding-top:6px;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 16px 40px -24px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06)}
   /* each layer = a cream dashboard panel (so charts/colours read), with a header bar */
   .layer{background:var(--cream);overflow:hidden;color:var(--charcoal)}
   /* .layer is cream in BOTH themes (it IS the physical card), so every text token inside it is
@@ -163,18 +225,31 @@
   .sectitle{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px}
   /* glance image + stats */
   .glancegrid{display:flex;gap:22px;align-items:flex-start}
-  .glanceimg{width:120px;aspect-ratio:200/208;border-radius:14px;overflow:hidden;background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);flex-shrink:0;position:relative}
+  .glanceimg{width:120px;aspect-ratio:200/208;border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(165deg,#3c3c42,#232328 60%,#1a1a1e);flex-shrink:0;position:relative}
   .glanceimg img{width:100%;height:100%;object-fit:cover}
   .glancestats{flex:1;display:flex;flex-direction:column;gap:10px}
   .gstat{display:flex;flex-direction:column;align-items:center;flex:1;gap:2px}
   .gstat .gv{font-family:'Archivo';font-weight:900;font-size:26px;color:var(--charcoal)}
   .gstat .gl{font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft)}
   /* radar + attributes */
+  /*  THE NOTE IS A SIBLING OF THIS BOX, NOT A CHILD OF IT (fixed 2026-09-10).
+      .radarwrap is a flex row, so while #radarNote sat inside it the note became a second
+      flex ITEM: it lined up beside the chart, and the svg was squeezed from its 300-wide
+      viewBox down to 105px at 390. The default preserveAspectRatio then letterboxed the
+      drawing inside a box still 220 tall, which is where the empty space below came from.
+      Measured: moving the note out took the svg 105 -> 300px in the same layout pass.
+      #radarNote's own rule was always written for the position it now has , display:block,
+      margin-top, text-align:center. Nothing about it needed changing; it was in the wrong
+      parent, and the 6px between chart and caption was that margin-top acting as a flex
+      offset rather than a stacking gap.
+      max-width/height:auto on the svg so a narrower phone scales it proportionally instead
+      of reintroducing the same squash below 300px of content box. */
   .radarwrap{display:flex;justify-content:center;margin-bottom:8px}
+  .radarwrap svg{max-width:100%;height:auto}
   .attr{display:flex;align-items:center;gap:12px;margin-bottom:10px}
   .attr .an{font-family:'Archivo';font-weight:700;font-size:12px;width:92px;flex-shrink:0;color:#3a352e}
-  .attr .abar{flex:1;height:10px;border-radius:5px;background:rgba(0,0,0,0.06);overflow:hidden}
-  .attr .abar i{display:block;height:100%;border-radius:5px}
+  .attr .abar{flex:1;height:10px;border-radius:var(--r-sm);background:rgba(0,0,0,0.06);overflow:hidden}
+  .attr .abar i{display:block;height:100%;border-radius:var(--r-sm)}
   .attr .av{font-family:'Archivo';font-weight:900;font-size:14px;width:32px;text-align:right;flex-shrink:0}
   .attrtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
   .attrtop span{font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft)}
@@ -185,11 +260,11 @@
     rule was the survivor. The comment further down this file already says --panel must never
     bleed into card.html , that rule and this panel disagreed until 2026-08-29. Do NOT
     re-consolidate this to var(--panel). */
-  .tjbox{background:#17151a;border-radius:14px;padding:14px 12px 8px;margin-bottom:14px}
+  .tjbox{background:#17151a;border-radius:var(--r-lg);padding:14px 12px 8px;margin-bottom:14px}
   .tjhead{font-family:'Inter';font-weight:500;font-size:14.5px;line-height:1.5;color:rgba(243,237,224,0.95);text-align:center;margin-bottom:12px}
   .tjlegend{display:flex;gap:16px;justify-content:center;margin-bottom:8px}
   .tjlg{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:0.03em;text-transform:uppercase;color:rgba(243,237,224,0.78)}
-  .tjlg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .tjlg i{width:11px;height:11px;border-radius:var(--r-sm);display:inline-block}
   .tjlg i.tjlgline{width:16px;height:0;border-radius:0;border-top:2.4px solid #F0EAD9}
   /* PINK-INK DOES NOT GO ON GREEN. --pink-ink on the Under-the-Lights panel measured 1.27,
      the worst text ratio on the platform. Cream reads at 7.85 on the same ground. The pink
@@ -211,7 +286,13 @@
   /* 0.72, matching .tjyl/.tjyr. This is the SAME green panel and the same 10.5px, and it was
      left at 0.55 when the y-axis was raised , half a fix, which is worse than none because
      the rule looks applied. Measured 3.63 before, 5.04 after. */
-  .tjxl{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  .tjxl,.tjclub{fill:rgba(243,237,224,0.72);font-family:'Archivo';font-weight:700;font-size:10.5px}
+  /*  THE SPLIT-SEASON CLUB LINE , same ink as the year above it, smaller. It renders only
+      under a repeated year. This is a SECOND copy of the rule that also lives in
+      compare.html, which is how every .tj* style on this chart already works , the shared
+      renderer emits the markup and each page supplies the ink for its own ground.  */
+  .tjclub{font-size:8.5px;letter-spacing:.04em;visibility:hidden}
+  .tjclub.tjfit{visibility:visible}
   .tjxlsel{fill:#E70443;font-weight:800}
   .tjsel{fill:rgba(255,92,122,0.10);stroke:rgba(255,92,122,0.32);stroke-width:1}
   .tjline{filter:drop-shadow(0 0 3px rgba(240,234,217,0.35))}
@@ -226,7 +307,7 @@
           font-family:'Archivo';font-weight:900;font-size:9.5px;letter-spacing:0.03em}
   .tjcap{font-family:'Bricolage Grotesque',Georgia,serif;font-style:italic;font-weight:500;font-size:15px;line-height:1.55;color:#E8B84B;text-align:center;margin-top:12px;padding:0 4px}
   /* proof table */
-  .proofexplain{font-family:'Archivo';font-weight:500;font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;background:rgba(0,0,0,0.03);border-radius:10px;padding:11px 13px}
+  .proofexplain{font-family:'Archivo';font-weight:500;font-size:11px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;background:rgba(0,0,0,0.03);border-radius:var(--r-md);padding:11px 13px}
   .proofexplain b{color:#3a352e;font-weight:800}
   .proofrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.07)}
   .proofrow .pl{font-family:'Archivo';font-weight:700;font-size:12px;color:#3a352e}
@@ -239,20 +320,79 @@
   .proofhead .h90{width:42px}
   .proofhead .htot{width:38px}
   .pctn{font-family:'Archivo';font-weight:800;font-size:11px;color:#2E8C5A;width:36px;text-align:right}
-  .pct{width:70px;height:7px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden}
+  .pct{width:70px;height:7px;border-radius:var(--r-sm);background:rgba(0,0,0,0.08);overflow:hidden}
   .pct i{display:block;height:100%}
   /* dark narrative (chronicle / commentator) , stays dark in BOTH modes */
-  .darkbox{background:rgba(255,255,255,0.03);border-radius:14px;padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
+  .darkbox{background:rgba(255,255,255,0.03);border-radius:var(--r-lg);padding:20px 22px}   /* green-sweep: olive --panel-t/b -> standard (green is Compare-only) */
   .darkbox .q{font-family:'Bricolage Grotesque';font-weight:700;font-style:italic;font-size:16px;color:#3a352e;line-height:1.55;white-space:pre-line}
   .darkbox .m{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--gold-ink);margin-top:12px;text-align:right;letter-spacing:0.08em;text-transform:uppercase}
   /* segmented narrative (Chronicle / Commentator) , easier read */
-  .narrative{background:rgba(255,255,255,0.03);border-radius:14px;padding:22px 24px}
+  .narrative{background:rgba(255,255,255,0.03);border-radius:var(--r-lg);padding:22px 24px}
+  /*  EMPHASIS IN AI PROSE , RELATIVE, NEVER ABSOLUTE. The rule is BASE + 100, and it is
+      written out per surface because CSS cannot express "one step up" reliably: `bolder`
+      maps 600 and 700 both to 900 per spec, and 900 is not loaded on Bricolage Grotesque,
+      which is declared 400..800. So each pairing below is the base weight of that surface
+      plus one step, and IF YOU CHANGE A BASE WEIGHT YOU MUST CHANGE ITS EMPHASIS RULE WITH
+      IT , that is the cost of making a relative rule out of absolute declarations.
+      MEASURED, NOT ASSUMED: the prose families are Bricolage Grotesque (400..800) and
+      Archivo (400..900), both variable and both covering the step. Inter is loaded at
+      400/500/600 only and would have failed here, and it is not used by any prose surface.
+      Verified by advance width rather than by the declaration: every pairing below changes
+      the rendered width, so none of it is synthetic bold.
+      COLOUR IS NOT USED. It was considered for the scout report and does not apply there ,
+      scout ink is rgb(58,53,46) at contrast 12.15, effectively full ink, with no headroom to
+      darken. The surface that IS on soft ink is the glance line, which takes the weight step
+      like the rest.  */
+  .vvem{font-weight:700}          /* 600 base , the common case */
+  /*  THE SAME EMPHASIS AS COMPARE, ON THE SAME INK , 2026-09-13, AND THE SURVEY IS THE POINT.
+      All three of this page's prose surfaces run model output through vvEmphasis and all three
+      were deciding separately what emphasis means. Base weights, measured:
+        #scoutBody  , `.darkbox .q`, Bricolage ITALIC 700. Was 800, weight only. The weakest of
+                      the three treatments demoed, on a display face, which is the same defect
+                      compare had.
+        #notesBody  , `.np`, Bricolage ITALIC 600. Took the generic `.vvem{font-weight:700}` ,
+                      a 100-unit step in an italic. Invisible, exactly like compare's.
+        #glDrury    , `.gdrury`, Bricolage ITALIC 800 in pink. Took the SAME generic 700, WHICH
+                      IS LIGHTER THAN ITS OWN BASE. Emphasis there made a phrase less bold than
+                      the line around it. Not invisible , inverted.
+      THE FIRST TWO TAKE THE TREATMENT. Breaking the italic run is the signal and the gold is the
+      reinforcement; both have a base to step up from.
+      THE THIRD TAKES NONE, and that is the `.vwho` decision rather than a new one: the glance
+      drury is ALREADY set apart , one short line, 800, italic, pink , so it is emphasis by
+      construction and anything added inside it can only fight it. Neutralised rather than
+      "fixed" upward.
+      THE INK IS THE PINNED ONE, NOT THE FLIPPING ONE, AND THAT IS THE WHOLE DIFFERENCE FROM
+      COMPARE. These two boxes are cream in BOTH themes , composited grounds rgb(240,235,218)
+      and rgb(249,247,240) , so the theme-aware gold would have landed at 1.54 in dark mode,
+      worse than the weight-only treatment it replaces. `--vvem-ink-fixed` is #7e5a10 and
+      measures 5.82 on both. Section C: match the ink to the ground, not to body.light.  */
+  /*  THE WASH IS SCOPED TO THESE TWO IDS AND NOTHING ELSE ON THE MARKER PATH , 2026-09-13.
+      Both are LONG PROSE inside their folds: the Scout Report runs to two paragraphs and
+      Commentator's Notes to four stanzas. `.np` is the per-stanza wrapper INSIDE #notesBody,
+      so it inherits and needs no rule of its own. Nothing shorter on this page receives it.
+      A THIRD SURFACE TAKES THE WASH BY A DIFFERENT ROUTE , `.chronicle-one`, added
+      2026-09-14. It is NOT a `.vvem` span and must never become one; see its own rule below
+      for why the Chronicle cannot be marked the way these two are.
+      THE INK IS --vvem-ink-fixed AND THE WASH IS --vvem-wash-fixed, because these boxes are
+      #F0EAD9 in BOTH themes , the ink and the wash are pinned to the GROUND, not the theme.
+      See the three-ground token block in vv-core.js for why #7e5a10 rather than the light
+      page's #5C4008: it clears AA on the wash AND still reads as emphasis without it.  */
+  #scoutBody .vvem,#notesBody .vvem{font-style:normal;font-weight:800;color:var(--vvem-ink-fixed);
+    background:var(--vvem-wash-fixed);border-radius:var(--r-sm);padding:.05em .16em;margin:0 -.16em}
+  /*  #glDrury TAKES NO EMPHASIS AT ALL, AND THE `background:none` IS DELIBERATE RATHER THAN
+      REDUNDANT. The rest of this rule speaks only about weight, style and colour, so a wash
+      added to a shared selector later would reach this line and nothing here would say no.
+      That is the never-removed-wait-class shape , a rule that is harmless until something
+      new arrives , and it is cheaper to prevent than to inherit.
+      WHY IT TAKES NONE: its body ink is #5F594E, 5.78 on the cream ground, so the best
+      separation any emphasis can reach while clearing AA is 1.28. A measurement, not taste. */
+  #glDrury .vvem{font-weight:inherit;font-style:inherit;color:inherit;background:none;padding:0;margin:0;border-radius:0}
   .narrative .np{font-family:'Bricolage Grotesque';font-weight:600;font-style:italic;font-size:15.5px;line-height:1.6;color:#3a352e;margin-bottom:14px}
   .narrative .np:last-of-type{margin-bottom:0}
   .narrative .np:first-child{font-size:16.5px}
   .narrative .nm{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-ink);margin-top:16px;text-align:right}
   /* wonder tag rows */
-  .tagrow{background:rgba(255,255,255,0.03);border-radius:13px;padding:14px 16px;margin-bottom:9px}
+  .tagrow{background:rgba(255,255,255,0.03);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:9px}
   body.light .darkbox,body.light .narrative,body.light .tagrow{background:rgba(255,255,255,0.6)}
   /* CLASS 1: these live on the always-cream .layer, so they are dark in BOTH themes now , the
      body.light override corrected the one theme that was already fine. */   /* prose text override , container went light, cream text would be invisible */   /* green-sweep: these had NO light override -> were olive in light too; standard-tone in both modes now */
@@ -266,7 +406,8 @@
       Wonder-Tags rows are the second such surface and used to size the deleted .ti set.
       15px is the size the old .ti shipped at, carried over so nothing moves. */
   .tagrow .tt .vvm{width:15px;height:15px;flex-shrink:0}
-  #glChips .chtag .vvm{width:12px;height:12px;flex-shrink:0;margin-right:5px;vertical-align:-1px}
+  #glChips .chtag .vvm,
+  #wonderTags .tagrow .tt .ttl .vvm{width:12px;height:12px;flex-shrink:0;margin-right:5px;vertical-align:-1px}
   /*  .vvm, NOT .ci , the glance chips and the Wonder-Tags rows moved onto the shared
       VVMarks honour set on 2026-09-01 and HONOUR_ICON was deleted. The sizes are the ones
       the old set shipped at, carried over unchanged so nothing moves. WITHOUT THESE THE
@@ -282,7 +423,7 @@
   .gkcapline[hidden]{display:none}
   /* honour chips (glance / profile) */
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-  .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
+  .chip{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:var(--r-lg);display:inline-flex;align-items:center;gap:6px}
   .chip.gold{background:linear-gradient(135deg,#F0D27A,#E0A93A);color:#5a4410}
   .chip.gold .vvm{width:13px;height:13px;flex-shrink:0;margin-right:4px;vertical-align:-1px}
   /*  CAREER HONOURS READ AS A DIFFERENT KIND OF THING, NOT A DIFFERENT COLOUR. World Cup
@@ -302,11 +443,19 @@
       and needs no per-shape rule. Verified rendered rather than assumed. */
   .chip.prof{background:rgba(255,92,122,0.12);color:#c43a55;border:1px solid rgba(255,92,122,0.3)}
   /* watch CTA */
-  .watchcta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--charcoal);color:var(--cream);border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:4px}
+  .watchcta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--charcoal);color:var(--cream);border-radius:var(--r-lg);padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:4px}
   .watchcta svg{width:16px;height:16px}
   /* The Chronicle CTA is the SAME .watchcta component , only the top margin differs, because
      here it sits under the scoreline inside .narrative rather than as a standalone block. */
   .chron-watch{margin-top:16px}
+  /*  THE SEASON CTA HAD 4px ABOVE IT AND 22px BELOW (fixed 2026-09-10). The 4px is the base
+      .watchcta margin, which is right for the Chronicle variant sitting inline under a
+      scoreline and wrong here, where the same 62px block is the ONLY thing in its panel and
+      sits directly under the lede. Measured at 390: lede ended at y47, pill started at y51.
+      18px, not the Chronicle's 16, because the gap below is the panel's own 22px bottom
+      padding and this is the value that reads level against it rather than a value picked
+      to match a different variant's different job. */
+  .season-watch{margin-top:18px}
   .glancegrid{align-items:flex-start}
   .glancebadge{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;padding-left:20px}
   .glancebadge svg{width:74px;height:86px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.3))}
@@ -330,7 +479,7 @@
   /* tag info: tap-toggle inline reveal (shared handler in vv-core.js). The panel is a
      full-width sibling injected right after the tapped chip, so it can never exceed the
      row width , no floating bubble, no viewport overflow, no touch-stick. */
-  .chiptip{flex-basis:100%;width:100%;box-sizing:border-box;margin:2px 0 3px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:10px;box-shadow:0 10px 24px -12px rgba(0,0,0,.55);animation:chiptipin .16s ease}
+  .chiptip{flex-basis:100%;width:100%;box-sizing:border-box;margin:2px 0 3px;background:#1d1a1b;color:var(--cream);font-family:'Inter';font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:var(--r-md);box-shadow:0 10px 24px -12px rgba(0,0,0,.55);animation:chiptipin .16s ease}
   .chiptip-float{position:fixed;z-index:200;flex-basis:auto;width:auto;max-width:240px;margin:0;pointer-events:none}
   @keyframes chiptipin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
   /* chronicle one-liner above the expanded box */
@@ -343,8 +492,24 @@
      2.40:1 at the gradient top, 2.85:1 at the bottom, against a 4.5 requirement (9.5px is below
      the large-text cutoff, so 3:1 does not apply). --gold gives 8.16:1 / 9.65:1.
      Reading var(--gold) instead of var(--gold-ink) is what takes it out of that override. */
-  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:999px;padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
-  #chronicleLayer .chronicle-one{text-align:center}
+  .chron-rare{font-family:'Archivo';font-weight:800;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:linear-gradient(180deg,#2a2620,#1a1718);border:1px solid rgba(232,184,75,0.55);border-radius:var(--r-pill);padding:3px 10px;margin-left:10px;white-space:nowrap;vertical-align:middle;box-shadow:0 0 0 1px rgba(232,184,75,0.08),0 2px 12px -2px rgba(232,184,75,0.4)}
+  /*  THE CHRONICLE OPENER TAKES NO WASH , BUILT 2026-09-14 AND WITHDRAWN THE SAME DAY.
+      I washed the whole pull-quote when the ask was "the wash should reach the Chronicle",
+      and RENDERED IT IS WRONG for the reason the wash exists: a highlight marks a PHRASE
+      inside long prose so a reader can filter it. The pull-quote is the block's OPENER and
+      is already the emphasised line , large, italic, centred , so washing all 751px of it
+      highlights the one thing nobody needs help finding, and teaches the eye that the wash
+      means nothing in particular.
+      MEASURED ON THE DEPLOYED PREVIEW, WHICH IS THE ONLY PLACE THE AI PROSE EXISTS: seven
+      washed elements on the card, two in the Scout Report, four in Commentator's Notes, and
+      this one. **The six in long prose are 184 to 235px marked phrases; this was the whole
+      line.** That contrast is the argument.
+      IT WAS NOT A STRAY SELECTOR AND THE SEARCH FOR ONE WOULD HAVE FOUND NOTHING , it was
+      a deliberate rule, approved from a description and wrong in the render, which is what
+      Section C means by a visual change not being verified until it is rendered.
+      THE CHRONICLE NOW TAKES NO WASH AT ALL, and that is correct rather than a gap: its
+      narrative is HAND-AUTHORED and carries zero markers, so there is no marked phrase to
+      wash. `.cq` stays as the span the quote is rendered into; only the paint is gone.  */
   #chronicleLayer .narrative .np{text-align:center}
   #chronicleLayer .narrative .nm{text-align:center}
   /* wonder tag expand */
@@ -359,7 +524,68 @@
   .wtsec .wtsechead{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-ink);margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,75,0.28)}
   .wtsec:first-child .wtsechead{margin-top:0}
   .tagrow .tmeta{font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:0.02em;color:var(--gold-ink);margin-top:10px;margin-bottom:2px}
-  .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:22px;padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
+
+  /*  ── WONDER TAGS WEAR THE STRIP'S PILLS (2026-09-10, replacing the mark-only first cut) ──
+      The glance strip above is colour-coded by family and the panel that explains it was one
+      flat pink, so a reader learned a colour and met an explanation that ignored it. The first
+      fix coloured only the MARK and left the text neutral. It was too quiet , the colour did
+      not carry at 16px , so every row now wears the family pill itself.
+
+      THE PILLS ARE FLAT HERE AND A GRADIENT ON THE STRIP, AND THAT IS WHAT MAKES THEM LEGIBLE.
+      Every strip pill is a two-stop gradient, and white text was being measured against the
+      DARK stop only. Against the LIGHT stop, five of the eight fail 4.5 outright:
+        ATT  #FF7A5C -> #E70443   2.56 / 4.67
+        MID  #3FBF7F -> #2FA968   2.34 / 3.00
+        DEF  #5C9DFF -> #4A7FE0   2.72 / 3.89
+        STAGE #2F8290 -> #1B5563  4.45 / 8.31
+        gold #F0D27A -> #E0A93A   6.26 / 4.37   (dark ink, so its dark stop is the hard one)
+      Flattening each pill to its gradient's DARK stop deletes the light stop, and with it the
+      whole problem, for the price of a gradient nobody can see on a 22px pill. ATT, STAGE and
+      CROSS then pass at their EXACT strip colours , the brand pink #E70443 is untouched , and
+      only two families still need a nudge, which is exactly the two that were named:
+        MID   #2FA968 -> #258652   3.00 -> 4.55   (scale 79%)
+        DEF   #4A7FE0 -> #4374CC   3.89 -> 4.56   (scale 91%)
+        gold  ink #5a4410 -> #574210   4.37 -> 4.52   (scale 97%, gradient KEPT, ground untouched)
+      THE STRIP IS DELIBERATELY NOT CHANGED. A strip pill is glanced in a row of eleven; an
+      accordion pill sits on the line a reader is reading. Same object, different duty, and the
+      strip's own rules below are the ones this widens, so the two cannot drift on anything
+      they still share.
+
+      PRESTIGE IS UNTOUCHED AND WAS ALREADY RIGHT , #F3DA88 on near-black measures 10.46 / 13.72
+      and #16120e on gold 13.48 / 10.11. It is also the row that proved the case for the rest.
+
+      GROUNDS. Every ink in this panel is theme-INDEPENDENT (measured: name, prose, head and
+      .layer identical in dark and light); only .tagrow's white overlay flips, 0.03 against
+      0.60. The pills paint their own ground, so the theme cannot reach them at all.
+
+      IF THIS EVER READS AS TOO LOUD, the retreat is the mark-only cut in 5446516, not a third
+      invention.  */
+  #wonderTags .tagrow .tt .ttl{flex:0 0 auto;overflow-wrap:normal;background:var(--vvfam-cross-solid)}
+  #wonderTags .tagrow[data-fam="ATT"]   .tt .ttl{background:var(--vvfam-att-solid)}
+  #wonderTags .tagrow[data-fam="MID"]   .tt .ttl{background:var(--vvfam-mid-solid)}
+  #wonderTags .tagrow[data-fam="DEF"]   .tt .ttl{background:var(--vvfam-def-solid)}
+  #wonderTags .tagrow[data-fam="STAGE"] .tt .ttl{background:var(--vvfam-stage-solid)}
+  /*  and The Standard is engraved here too , the panel is where a reader goes to find out
+      what a tag MEANS, so it is the last place the career tag should look like a season one.
+      Same ink and ground as the glance and the card face; see the note on the glance rule. */
+  /*  THESE VALUES NOW LIVE ONCE, IN vv-core , 2026-09-13. The rules stay here because this
+      sheet is PREPENDED and a page rule of equal weight wins; only the colours moved out. The
+      two that were hand-darkened here, MID and DEF, became the shared tokens rather than the
+      other way round: they measure 4.55 and 4.56 against white where the gradient stops they
+      replaced measure 3.00 and 3.89.  */
+  #wonderTags .tagrow[data-tag="The Standard"] .tt .ttl{
+    background:var(--vvfam-stage-quiet);color:#1B5563;
+    box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
+  #wonderTags .tagrow[data-fam="CROSS"] .tt .ttl{background:var(--vvfam-cross-solid)}
+  /*  The honour pill keeps the strip's gradient because its ground is fine; only the dark ink
+      moves, by 3%. Widening .chip.gold was not an option , the accordion ink differs.  */
+  #wonderTags .tagrow.honour .tt .ttl{background:var(--vvfam-hon);color:#574210}
+  /*  PRESTIGE KEEPS THE OBJECT, and it is the one row that has to. Its identity is a GROUND
+      (near-black under gold ink, or gold under near-black) rather than a hue. The two rules
+      that paint it are the STRIP'S OWN, widened, so it cannot drift from the pill above it.
+      flex:0 0 auto is on the base rule; this only restores the strip's uppercase treatment. */
+  #wonderTags .tagrow[data-fam="PRESTIGE"] .tt .ttl{font-size:10.5px;text-transform:uppercase}
+  .clubpill{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:800;font-size:13px;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);border-radius:var(--r-lg);padding:11px 20px;cursor:pointer;transition:all .2s;position:relative;z-index:1}
   .clubpill:hover{background:rgba(255,255,255,0.1)}
   .clubpill.on{background:rgba(232,184,75,0.16);border-color:rgba(232,184,75,0.5);color:var(--gold)}
   .clubpill .cp-star{font-size:15px}
@@ -367,7 +593,7 @@
   body.light .clubpill.on{background:rgba(232,184,75,0.18);border-color:rgba(232,184,75,0.55);color:var(--gold-ink)}
   .comparepill{text-decoration:none}   /* #111: .clubpill styling on an <a> , kill the anchor underline */
   /* compare-next CTA under watch */
-  .comparecta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--pink);color:#fff;border-radius:13px;padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:10px;box-shadow:0 14px 30px -12px rgba(255,92,122,0.6)}
+  .comparecta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--pink);color:#fff;border-radius:var(--r-lg);padding:16px;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none;margin-top:10px;box-shadow:0 14px 30px -12px rgba(255,92,122,0.6)}
   .comparecta svg{width:16px;height:16px}
   @media (max-width:1040px){.stage{grid-template-columns:1fr;gap:34px;padding:18px 32px 50px;justify-items:center}.plinth{position:static}.depth{width:100%;max-width:580px}.topline{padding:24px 32px 0}}
   @media (max-width:720px){.spine{display:none}.stage{padding:14px 18px 40px}.topline{padding:18px 18px 0}.glancegrid{flex-direction:column}
@@ -398,11 +624,11 @@
     box-shadow:0 26px 50px -22px rgba(0,0,0,0.6), inset 0 0 0 calc(var(--cw)*0.02) var(--cream), inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.55) !important;
     padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A !important;font-family:'Barlow Condensed',sans-serif}   /* Career-Stage (Wonderkid / The Last Dance) , neutral profile tag, NOT the honour gold */
   .vvcard .chtagcell-cross{background:linear-gradient(90deg,#5A5856,#46443F) !important}
-  .vvcard .chtagcell.gold{background:linear-gradient(90deg,#F0D27A,#E0A93A) !important;color:#5a4410}
+  .vvcard .chtagcell.gold{background:var(--vvfam-hon) !important;color:var(--vvfam-hon-ink)}
 
   /* ===== Prestige whole-card treatment ===== */
   /* GENERATIONAL , deep BLACK card, gold ring + gold accents */
-  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #16120e, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
+  body .vvcard.gen{background:radial-gradient(130% 60% at 50% 0%, #2c2824 0%, #16120e 50%, #090706 100%) !important;color:#F0EAD9 !important;box-shadow:0 22px 50px -22px rgba(0,0,0,0.85), inset 0 0 0 calc(var(--cw)*0.02) #3a3126, inset 0 0 0 calc(var(--cw)*0.025) rgba(232,184,75,0.7) !important}
 
   .coin .coinA{fill:var(--cream)}
   body.light .coin .coinA{fill:var(--charcoal)}
@@ -410,6 +636,9 @@
 
   /* Data Confidence footer (bottom of every card) */
   .dataconf{background:none;border:0;padding:0;margin:0}
+  .dc-flag{font-family:'Inter';font-size:12.5px;line-height:1.5;color:#46433c;margin-top:12px;padding:10px 12px;border-radius:var(--r-md);background:rgba(0,0,0,.04);transition:box-shadow .3s}
+  .dc-flag b{font-weight:600;color:#1C1B1A}
+  .dc-flag.flash{box-shadow:0 0 0 2px var(--pink,#E70443)}
   .dc-t{font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:12px}
   body.light .dc-t{color:var(--ink-soft)}
   .dc-row{display:flex;align-items:center;gap:13px}
@@ -422,13 +651,13 @@
   body.light .dc-x{color:var(--charcoal)}
   .dc-note{font-family:'Inter';font-weight:400;font-size:12.5px;line-height:1.5;color:#6a6256;margin-top:12px}
   body:not(.light){color-scheme:dark} body.light{color-scheme:light}
-  .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;margin-right:14px;transition:.15s}
+  .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
   body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   .spinelogo{width:58px;height:27px;margin-bottom:12px;background:url('/assets/spinelogo-dark.png') center/contain no-repeat}
   body.light .spinelogo{background-image:url('/assets/spinelogo-light.png')}
-  .cardshare{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:999px;padding:8px 16px;font-family:'Archivo';font-weight:800;font-size:12.5px;cursor:pointer;margin-right:12px;box-shadow:0 8px 22px -10px rgba(255,92,122,.6);transition:transform .15s}
+  .cardshare{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;border:none;border-radius:var(--r-pill);padding:8px 16px;font-family:'Archivo';font-weight:800;font-size:12.5px;cursor:pointer;margin-right:12px;box-shadow:0 8px 22px -10px rgba(255,92,122,.6);transition:transform .15s}
   .cardshare:hover{transform:translateY(-1px)}
   .cardshare.done span::after{content:' \2713'}
   .glancebadge{align-self:flex-start;margin-top:2px}
@@ -449,14 +678,14 @@
   body.light .vvcard-wait{background:rgba(28,27,26,0.045) !important;border-color:rgba(28,27,26,0.14) !important}
   .gsub.vv-wait,.chips.vv-wait{display:block;min-height:1.1em}
   .gdrury.na{font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;font-size:12.5px;color:var(--ink-soft)}
-  .gdrury.gen{position:relative;min-height:1.2em;border-radius:6px;background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
+  .gdrury.gen{position:relative;min-height:1.2em;border-radius:var(--r-md);background:linear-gradient(90deg,rgba(255,92,122,0.10),rgba(255,92,122,0.20),rgba(255,92,122,0.10));background-size:200% 100%;animation:gdShimmer 1.3s ease-in-out infinite;color:transparent}
   @keyframes gdShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   /* SHARE MODAL */
   .sharemodal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,8,9,.66);backdrop-filter:blur(6px)}
   .sharemodal.on{display:flex}
-  .sharebox{position:relative;width:352px;max-width:94vw;background:#0f0c0d;border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:18px 18px 16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.8)}
+  .sharebox{position:relative;width:352px;max-width:94vw;background:#0f0c0d;border:1px solid rgba(255,255,255,.08);border-radius:var(--r-lg);padding:18px 18px 16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.8)}
   .sb-x{position:absolute;top:12px;right:14px;z-index:3;background:rgba(255,255,255,.08);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer}
-  .sb-card{position:relative;overflow:hidden;border-radius:18px;padding:54px 20px 22px;text-align:center;
+  .sb-card{position:relative;overflow:hidden;border-radius:var(--r-lg);padding:54px 20px 22px;text-align:center;
     background:radial-gradient(140% 320px at 50% -90px,rgba(255,244,224,.12),transparent 76%),
       radial-gradient(circle 14px at 30% -8px,rgba(255,255,255,.85),transparent 70%),
       radial-gradient(circle 16px at 50% -8px,rgba(255,255,255,.92),transparent 70%),
@@ -465,23 +694,23 @@
   .sb-eyebrow{position:absolute;top:16px;left:0;right:0;font-family:'Archivo';font-weight:800;font-size:8px;letter-spacing:.28em;color:rgba(240,234,217,.45)}
   .sb-wm{position:absolute;top:13px;right:16px;font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:#fff}.sb-wm span{color:var(--pink-ink)}
   .sb-vv{font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;color:#fff}.sb-vv .b{color:var(--pink)}.sb-vv em{font-style:normal;color:var(--gold);margin-left:4px}
-  .sb-photo{width:84px;height:84px;margin:12px auto 0;border-radius:14px;background:linear-gradient(160deg,#2a2724,#161412);display:flex;align-items:flex-end;justify-content:center}
+  .sb-photo{width:84px;height:84px;margin:12px auto 0;border-radius:var(--r-lg);background:linear-gradient(160deg,#2a2724,#161412);display:flex;align-items:flex-end;justify-content:center}
   .sb-photo svg{width:50px;height:50px;color:rgba(240,234,217,.22)}
-  .sb-tag{display:inline-block;margin-top:12px;background:linear-gradient(135deg,#2c2926,#171514);border:1px solid rgba(232,184,75,.5);color:var(--cream);font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+  .sb-tag{display:inline-block;margin-top:12px;background:linear-gradient(135deg,#2c2926,#171514);border:1px solid rgba(232,184,75,.5);color:var(--cream);font-family:'Archivo';font-weight:800;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:var(--r-pill)}
   .sb-name{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;color:#fff;margin-top:10px}.sb-name .fl{font-size:13px;vertical-align:-1px}
   .sb-lock{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;color:#fff;margin-top:16px}.sb-lock i{font-style:normal;color:var(--gold)}.sb-lock span{color:var(--pink-ink)}
   .sb-meta{font-family:'Bricolage Grotesque';font-style:italic;font-weight:800;font-size:11px;color:var(--pink-ink);margin-top:5px}
   .sb-slogan{font-family:'Archivo';font-weight:700;font-size:8px;letter-spacing:.18em;color:rgba(240,234,217,.4);margin-top:12px}.sb-slogan span{color:var(--pink-ink)}
   .sb-opts{display:flex;gap:8px;margin-top:14px}
-  .sb-share{width:100%;margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#E70443,#E84867);color:#fff;border:none;border-radius:14px;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.02em;padding:13px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(255,92,122,.65)}
+  .sb-share{width:100%;margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#E70443,#E84867);color:#fff;border:none;border-radius:var(--r-lg);font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:.02em;padding:13px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(255,92,122,.65)}
   .sb-share:hover{filter:brightness(1.05)}
   .sb-hint{text-align:center;font-family:'Inter';font-size:11px;color:rgba(240,234,217,.45);margin-top:8px}
-  .wallpill{display:none;margin:9px auto 0;align-items:center;gap:7px;background:transparent;border:1px solid var(--pink);color:var(--pink-ink);font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.02em;padding:8px 16px;border-radius:999px;cursor:pointer;width:max-content}
+  .wallpill{display:none;margin:9px auto 0;align-items:center;gap:7px;background:transparent;border:1px solid var(--pink);color:var(--pink-ink);font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.02em;padding:8px 16px;border-radius:var(--r-pill);cursor:pointer;width:max-content}
   .wallpill.show{display:inline-flex}
   .wallpill.on{background:var(--pink);color:#fff}
   .wallpill .wp-ic{flex:0 0 auto}
-  .sb-capture{background:#0f0c0d;border-radius:18px;padding:4px 2px 0}
-  .sb-opt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:11.5px;padding:10px 6px;border-radius:12px;cursor:pointer;text-decoration:none;transition:.15s}
+  .sb-capture{background:#0f0c0d;border-radius:var(--r-lg);padding:4px 2px 0}
+  .sb-opt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:11.5px;padding:10px 6px;border-radius:var(--r-lg);cursor:pointer;text-decoration:none;transition:.15s}
   .sb-opt:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
   .sb-opt.ig:hover{color:var(--pink-ink)}
   .bottomnav{display:none}
@@ -502,8 +731,8 @@
   .cardactions{display:flex;flex-direction:column;gap:11px;max-width:560px;margin:26px auto 6px;padding:0 4px}
   .ca-row{display:flex;gap:11px;justify-content:center}
   .ca-row .ca-btn{flex:0 1 auto;min-width:150px}
-  .ca-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 14px;border-radius:15px;font-family:'Archivo';font-weight:800;font-size:14px;cursor:pointer;border:none;text-decoration:none;transition:.15s;flex:1}
-  .ca-compare{background:linear-gradient(135deg,var(--pink),var(--pink-glow));color:#fff;box-shadow:0 14px 30px -14px rgba(255,92,122,.6)}
+  .ca-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 14px;border-radius:var(--r-lg);font-family:'Archivo';font-weight:800;font-size:14px;cursor:pointer;border:none;text-decoration:none;transition:.15s;flex:1}
+  .ca-compare{background:linear-gradient(135deg,var(--pink) 0%,var(--pink) 85%,var(--pink-glow) 100%);color:#fff;box-shadow:0 14px 30px -14px rgba(255,92,122,.6)}
   .ca-share,.ca-top{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--cream)}
   body.light .ca-share,body.light .ca-top{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.12);color:var(--charcoal)}
   .ca-btn:hover{transform:translateY(-1px)}
@@ -524,15 +753,15 @@
   .joinscrim.on{opacity:1;pointer-events:auto}
   .joinsheet{position:fixed;left:0;right:0;bottom:0;z-index:91;background:#fff;border-radius:24px 24px 0 0;transform:translateY(101%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding:8px 24px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -24px 70px -24px rgba(0,0,0,.5);text-align:center;max-width:440px;margin:0 auto}
   .joinsheet.open{transform:translateY(0)}
-  .js-grip{width:38px;height:4px;border-radius:2px;background:rgba(0,0,0,.16);margin:10px auto 18px}
+  .js-grip{width:38px;height:4px;border-radius:var(--r-sm);background:rgba(0,0,0,.16);margin:10px auto 18px}
   .js-star{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#E70443,#FF8FA3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 14px 30px -12px rgba(255,92,122,.6)}
   .js-title{font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:22px;color:#1C1B1A}
   .js-sub{font-size:14px;color:var(--ink-soft);margin:8px 0 20px;line-height:1.5}
-  .js-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:#1C1B1A;cursor:pointer}
+  .js-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:var(--r-lg);border:1px solid rgba(0,0,0,.14);background:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:#1C1B1A;cursor:pointer}
   .js-optin{display:flex;align-items:flex-start;gap:9px;text-align:left;font-size:12.5px;color:var(--ink-soft);margin:14px 2px 2px;cursor:pointer;line-height:1.4}
   .js-optin input{margin-top:1px;width:16px;height:16px;accent-color:#E70443;flex:none}
   .js-later{background:none;border:none;color:var(--ink-soft);font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;padding:14px;cursor:pointer;margin-top:6px}
-  .dc-see{margin-top:12px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:var(--ink,#1C1B1A);background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  .dc-see{margin-top:12px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:#1C1B1A;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.1);border-radius:var(--r-pill);padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
   .dc-see.on{background:var(--pink,#E70443);color:#fff;border-color:transparent}
   .dc-chev{transition:transform .2s} .dc-see.on .dc-chev{transform:rotate(180deg)}
   .dc-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
@@ -565,8 +794,29 @@
   .vvflipinner{position:relative;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}
   .vvflipfront,.vvflipback{-webkit-backface-visibility:hidden;backface-visibility:hidden}
   .vvflipfront{position:relative}
-  .vvflipfront .vvcard{max-width:none}
-  .vvflipback{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}
+  /*  THE CARD KEEPS ITS RESTING BOX THROUGH THE TRANSITION , 2026-09-15. These two rules used
+      to read `max-width:none`, whose comment said "just drop the 92% cap so flip width == wrap".
+      That did make the front match the wrapper, and it did it by MAKING THE CARD BIGGER than it
+      was a frame earlier: measured +8.7% wide, 0% tall, so the card stretched horizontally when
+      the flip began and snapped back when the wrapper was torn down. Reported as the stepper
+      "scaling up then settling".
+      IT IS NOT AN EASING PROBLEM AND NO CURVE CAN REACH IT. The jump happens OUTSIDE the
+      animated interval, at the instant the wrapper is inserted and again when it is removed.
+      The animation itself is clean , transform and opacity only, and deliberately NO
+      will-change, which Section C records as a Safari flattener that breaks preserve-3d.
+      THE FIX IS THE OTHER DIRECTION: keep the resting clamp on the card and bring the BACK FACE
+      down to the clamped width, so front and back agree at the size the card already was.
+      Measured after: 0.00px change on both axes, desktop and at 390, front and back matching.
+      AND IT IS SURFACE-DEPENDENT, WHICH IS THE PART THAT WILL WASTE SOMEBODY'S AFTERNOON:
+      `max-width:92%` is 92% of the PARENT, not of `--cw`. On card.html the slot is wide, so the
+      clamp binds and the jump is real , 26px on a 300px card. On compare's two-up PHONE layout
+      the slot is narrow enough that the clamp never binds at all and the measured jump is ZERO.
+      ANYONE CHASING THIS LATER WILL OPEN COMPARE FIRST, because it is the smaller surface and
+      the obvious place to look, AND THEY WILL FIND NOTHING. Reproduce it on the card page.
+      The 0.92 is the same constant Section C records as the reason the RENDERED card ratio is
+      1.518 rather than 1.397; it is not a new number.  */
+  .vvflipfront .vvcard{max-width:92%}
+  .vvflipback{position:absolute;top:0;left:0;width:calc(var(--cw)*0.92);height:calc(var(--cw)*1.397);transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--cw)*0.073)}
   .vvsheen{position:absolute;inset:0;overflow:hidden;border-radius:calc(var(--cw)*0.073);pointer-events:none;z-index:6}
   .vvsheen i{position:absolute;top:-25%;bottom:-25%;left:-70%;width:48%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-16deg);filter:blur(1px)}
   .vvsheen.go i{animation:vvsheenmove .8s cubic-bezier(.5,0,.5,1)}
@@ -582,12 +832,12 @@
   .vvmono-black .vvmonomark{color:#F0EAD9}
   .vvscalewrap{position:relative;margin:0 auto;transform-origin:center center}
   .vvscalefront{position:relative}
-  .vvscalefront .vvcard{max-width:none}
-  .vvscalecover{position:absolute;top:0;left:0;width:var(--cw);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}
+  .vvscalefront .vvcard{max-width:92%}   /* same rule as the desktop front above , see the note there */
+  .vvscalecover{position:absolute;top:0;left:0;width:calc(var(--cw)*0.92);height:calc(var(--cw)*1.397);display:flex;align-items:center;justify-content:center;opacity:0;z-index:5;pointer-events:none}
   /* season list , shared rankings-style season rows (one player), namespaced .seasonrows. Card sizing: */
   #seasonZone .seasonrows{width:330px;max-width:100%;margin:16px auto 0;animation:seasonIn .18s ease}
   /* ===== .seasonrows shared block (identical in compare.html) ===== */
-  .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
+  .seasonrows{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-lg);overflow:hidden}
   body.light .seasonrows{background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.06)}
 
   
@@ -617,21 +867,110 @@
   body.light .seasontrigger{color:var(--ink-soft)}
   body.light .seasontrigger:hover{color:#1C1B1A}
   /* #108 bottom collapse , footer inside the expanded .seasonrows (long lists only); shared with compare.html */
+  /*  Quiet by construction: it is a footnote to a list, not a warning. Same muted ink as
+      the panel's own secondary text, and it sits INSIDE the panel so it scrolls away with
+      the rows rather than persisting as a banner.  */
+  .seasonnote{padding:9px 13px 11px;font-family:'Inter',sans-serif;font-weight:400;font-size:11px;
+    line-height:1.5;color:rgba(243,237,224,0.42);border-top:1px solid rgba(243,237,224,0.07)}
+  body.light .seasonnote{color:#6d675e;border-top-color:rgba(28,27,26,0.09)}
   .seasoncollapse{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em;color:rgba(243,237,224,0.55);background:none;border:0;border-top:1px solid rgba(255,255,255,0.06);padding:11px;cursor:pointer;transition:color .18s}
   .seasoncollapse:hover{color:rgba(243,237,224,0.9)}
   body.light .seasoncollapse{color:var(--ink-soft);border-top-color:rgba(0,0,0,0.06)}
   body.light .seasoncollapse:hover{color:#1C1B1A}
   #seasonZone{display:flex;flex-direction:column;align-items:center;gap:10px}
+  /*  THE CABINET , VERTICAL SHELVES (treatment A). The honour is a heading and its years
+      stack beneath it, one per line, so ten seasons reads as ten lines and the height carries
+      the weight. Deliberately NOT the pill treatment: a pill puts the years on one line and a
+      serial winner then reads as a run of digits.
+      THE INK IS PINNED, NOT TOKENISED , SS C's rule, and it already bit once here. The panel
+      is cream in BOTH themes, so var(--cream) rendered cream on cream at ratio 1.00 in dark
+      while looking perfect in light. Measured after pinning: name 6.28, year 12.09.  */
+  .cabshelf{display:flex;flex-direction:column;gap:13px}
+  /*  THE GOLD MODIFIER , A FILL ON THE SHARED PILL, NOT A SECOND PILL. Shape, radius,
+      padding and font come from the `.chtag` rule above, which now lists #cabChips beside
+      #glChips and the Wonder Tags rows. Only the fill, the ink and the ring live here.
+      RECONCILED AGAINST THE SHIPPED TOKENS RATHER THAN HARDCODED FROM THE DEMO:
+        fill   , demo #F5E3AE. The platform already has a pale gold, the career chip's
+                 linear-gradient(135deg,#FAF0CE,#F2DFA4), and the demo value sits between its
+                 two stops. Reusing the gradient keeps one pale gold on the card instead of two.
+        ring   , demo 0.5px #D9BE68. A 0.5px border does not render reliably: on a 1x screen it
+                 either snaps to 1px or disappears. The existing treatment is an inset 1px ring
+                 in the gold ink at 55%, which reads as the hairline the demo asks for, so that
+                 is what is used.
+        ink    , demo #4A3B10. Nearest shipped token is #5a4410, the .chip.gold ink, and it is
+                 also what the Wonder Tags honour row uses at #574210. Taking #5a4410 keeps the
+                 cabinet and the glance honour chips on ONE ink.
+        icon   , inherits by construction. VVMarks.honour() is fill="currentColor" and the
+                 shared .vvm sizing is already 13px inside a gold chip.  */
+  /*  THE SHELF RULE IS 3px, NOT 2px, BECAUSE THE YEARS GOT HEAVIER (2026-09-12). A 2px rule
+      beside a 12px numeral reads as a pair; beside a 16px one it reads as a hairline the
+      numerals have outgrown. The two move together or neither does.  */
+  /*  A PACKED ROW, NOT COLUMNS (2026-09-12). `column-count:2` was told to make two columns,
+      not to pack tightly: measured on the live card the panel is 780px, so it made two 379px
+      columns each holding one 30px year at its left edge, stranding 362px between them. Flex
+      wrap packs left and breaks only when it runs out of width.
+      GAP IS 4px DOWN, 16px ACROSS , the across gap has to beat the year's own width clearly
+      or two years read as one number, and 16px against a 30px token does that.  */
+  .cabyrs{padding-left:15px;border-left:3px solid rgba(224,169,58,0.62);
+    display:flex;flex-wrap:wrap;gap:4px 16px}
+  /*  SIZE AND INK ONLY , THE YEAR IS THE RECORD, SO IT CARRIES ITS OWN WEIGHT (2026-09-12).
+      It was Archivo 700 at 12px in #2b2924, the same weight as body text, so a twelve-year run
+      read as a list rather than as a record. Now 800 at 16px in #241f1b.
+      NO PILL ON A YEAR, EVER. A column of pills stops reading as a shelf , the shelf is the
+      heading, the years are what sits on it, and pilling both collapses that distinction.
+      AND NO GLOSS UNDER THE YEAR , demoed and DEFERRED, see docs/CABINET_SPEC_NOTES.md. It
+      doubled the section's height, wrapped half its lines at 390, and had to be built on
+      `team_name`, which is null on most individual honours.  */
+  .caby{font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;color:#241f1b;
+    font-variant-numeric:tabular-nums;line-height:1.35;letter-spacing:0.01em}
   #glChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
-  #glChips .chtag{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:18px;color:#fff;display:inline-flex;align-items:center;position:relative}
+  /*  WIDENED, NOT COPIED (2026-09-10). The Wonder-Tags prestige row wears the same object
+      as the strip's prestige pill, so it reads the SAME declaration block rather than a
+      second copy of the values. SS C records three separate defects from comparing or
+      duplicating CSS by selector; a shared declaration cannot drift by construction.
+      Only the prestige rows take these in the accordion , every other row is plain text
+      with a coloured mark, which is the whole point of the treatment. */
+  #glChips .chtag,
+  #cabChips .chtag,
+  #wonderTags .tagrow .tt .ttl{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 12px;border-radius:var(--r-lg);color:#fff;display:inline-flex;align-items:center;position:relative}
+  #cabChips .chtag.chtag-cab{background:linear-gradient(135deg,#FAF0CE,#F2DFA4);color:#5a4410;
+    box-shadow:inset 0 0 0 1px rgba(90,68,16,0.55)}
+  #cabChips .chtag.chtag-cab .vvm{width:13px;height:13px;flex-shrink:0;margin-right:5px}
+  #cabChips .cabsh .chtag{margin-bottom:6px}
   #glChips .chtag-att{background:linear-gradient(90deg,#FF7A5C,#E70443)}
   #glChips .chtag-mid{background:linear-gradient(90deg,#3FBF7F,#2FA968)}
   #glChips .chtag-def{background:linear-gradient(90deg,#5C9DFF,#4A7FE0)}
   #glChips .chtag-age{background:linear-gradient(90deg,#5A5856,#46443F)}   /* DEAD after the family merge, left in place deliberately */
   #glChips .chtag-stage{background:linear-gradient(90deg,#2F8290,#1B5563)}
+  /*  THE STANDARD IS CAREER-LEGGED, SO IT IS ENGRAVED RATHER THAN FILLED (2026-09-11).
+      SAME RULE AS THE WORLD CUP CHIP, AND FOR THE SAME REASON. It attaches to every season
+      at rt 80+, so Kane carries it on twelve cards and Lewandowski on fifteen; on any one
+      of them a solid pill identical to Peak's reads as a claim about THAT season, which it
+      is not. Peak and Breakout are moments, one card each by construction (cards/player
+      1.00). The Standard is 413 cards across 58 players, 7.12 each. Two of the three stage
+      tags mark a season and the third marks a career, and only the third should look it.
+      ENGRAVED, NOT RECOLOURED. The family teal stays , it is still a career-stage tag , and
+      the distinction is carried on the fill-versus-engrave axis, exactly as .chip.gold.career
+      does for the World Cup. Ink #1B5563 on a pale #D8EAEE ground measures 6.70, against
+      4.45 for white on the solid pill's light stop, so the engraved form is the better
+      contrast of the two. The World Cup's own pair is 8.12 / 6.99, so this sits in the same
+      register.
+      THE SEASON COUNT IS NOT PRINTED, AND THAT IS A DATA LIMIT RATHER THAN A CHOICE. The
+      extent is what the World Cup gets from its year, and "The Standard , 12 seasons" would
+      be the stronger signal, but only the BOOLEAN is stored: player_card_mv carries
+      stage_the_standard and no count, and rankings.html loads no career array at all. Since
+      buildCard is shared, printing it where the career happens to be known would make one
+      card look different on two surfaces, which is the inconsistency this treatment exists
+      to remove. It waits for a stage_standard_seasons column at the shared matview rebuild
+      that SS D already queues four other items behind. */
+  #glChips .chtag-stage[data-tag="The Standard"]{
+    background:linear-gradient(135deg,#E4F1F4,#D8EAEE);color:#1B5563;
+    box-shadow:inset 0 0 0 1px rgba(27,85,99,0.55)}
   #glChips .chtag-cross{background:linear-gradient(90deg,#5A5856,#46443F)}
-  #glChips .chtag-prestige-gen{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
-  #glChips .chtag-prestige-ico{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
+  #glChips .chtag-prestige-gen,
+  #wonderTags .tagrow[data-tag="Generational"] .tt .ttl{background:linear-gradient(90deg,#2c2926,#121010);color:#F3DA88;border:1px solid rgba(232,184,75,0.55);font-weight:900;letter-spacing:0.08em}
+  #glChips .chtag-prestige-ico,
+  #wonderTags .tagrow[data-tag="Iconic"] .tt .ttl{background:linear-gradient(90deg,#F3DA88,#E8B84B);color:#16120e;font-weight:900;letter-spacing:0.08em}
 
   /* CLASS 3 PINK POLICY , bright #E70443 measures 2.0-3.0 on every light surface, so it is
      decorative + dark-mode only. Load-bearing pink TEXT uses --pink-ink on light grounds.
@@ -661,7 +1000,7 @@
   /* GROWS INTO THE TOPLINE GAP. .topline is justify-content:space-between, so the pill
      was pinned to its intrinsic 102px inside a 1569px gap at 1920. flex:1 fills it;
      max-width stops it sprawling on ultrawide. Mobile reverts to icon-only below. */
-  .searchtrigger{flex:1 1 auto;max-width:460px;margin:0 24px;justify-content:flex-start;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px 14px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
+  .searchtrigger{flex:1 1 auto;max-width:460px;margin:0 24px;justify-content:flex-start;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:8px 14px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
   .searchtrigger:hover{background:rgba(255,255,255,0.09)}
   .searchtrigger svg{width:16px;height:16px;flex:none}
   .searchtrigger:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
@@ -729,7 +1068,7 @@
      color:var(--cream)}). Deliberately NOT var(--panel) , that resolves to
      #175030, the Under-the-Lights green, which CLAUDE.md locks to Compare only
      and must never bleed into card.html. */
-  #cardSearch .cs-panel{position:relative;z-index:71;padding:14px;border-radius:18px;
+  #cardSearch .cs-panel{position:relative;z-index:71;padding:14px;border-radius:var(--r-lg);
     background:var(--charcoal);
     border:1.5px solid rgba(255,255,255,.28);box-shadow:0 14px 36px rgba(0,0,0,.5);
     opacity:1;transform:none}
@@ -778,7 +1117,7 @@
   }
 
   /* search bar , mirrors rankings' .ranksearch tokens exactly */
-  #cardSearch .cs-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:11px 14px}
+  #cardSearch .cs-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:11px 14px}
   #cardSearch .cs-bar svg{width:17px;height:17px;color:rgba(243,237,224,0.58);flex-shrink:0}
   #cardSearch .cs-bar input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--cream);font-family:'Inter';font-size:16px}
   #cardSearch .cs-bar input::placeholder{color:rgba(243,237,224,0.58)}
@@ -793,9 +1132,9 @@
   #cardSearch .cs-count{font-family:'Archivo';font-weight:700;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);font-variant-numeric:tabular-nums}
   #cardSearch .cs-hint{font-family:'Inter';font-size:13px;color:rgba(243,237,224,0.58)}
   body.light #cardSearch .cs-count,body.light #cardSearch .cs-hint{color:var(--ink-soft)}
-  #cardSearch .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:3px;gap:2px;flex-shrink:0}
+  #cardSearch .viewseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:3px;gap:2px;flex-shrink:0}
   body.light #cardSearch .viewseg{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
-  #cardSearch .vseg{width:36px;height:30px;border:none;background:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
+  #cardSearch .vseg{width:36px;height:30px;border:none;background:none;border-radius:var(--r-md);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(243,237,224,0.58);transition:background .15s,color .15s}
   #cardSearch .vseg.on{background:var(--pink);color:#fff}
   body.light #cardSearch .vseg{color:var(--ink-soft)}
   body.light #cardSearch .vseg.on{color:#fff}
@@ -805,7 +1144,7 @@
   #cardSearch .cs-rlabel{font-family:'Archivo';font-weight:700;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(243,237,224,0.58);margin-bottom:8px}
   body.light #cardSearch .cs-rlabel{color:var(--ink-soft)}
   #cardSearch .cs-rlist{display:flex;flex-wrap:wrap;gap:8px}
-  #cardSearch .cs-rchip{display:inline-flex;align-items:baseline;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--cream);transition:background .15s,border-color .15s;max-width:100%}
+  #cardSearch .cs-rchip{display:inline-flex;align-items:baseline;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-pill);padding:7px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--cream);transition:background .15s,border-color .15s;max-width:100%}
   #cardSearch .cs-rchip:hover{background:rgba(255,255,255,0.1)}
   #cardSearch .cs-rchip .rn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   #cardSearch .cs-rchip .rs{font-family:'Archivo';font-weight:700;font-size:11px;color:var(--row-muted);font-variant-numeric:tabular-nums;flex:none}
@@ -819,15 +1158,15 @@
      (count, hint, Filters, viewseg), so space-between scattered the pill into the
      middle: neither right-aligned nor centred. The auto margin absorbs the free
      space so count and hint stay left while Filters and the view pills sit right. */
-  #cardSearch .cs-filtbtn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
+  #cardSearch .cs-filtbtn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:7px 11px;color:rgba(243,237,224,0.72);font-family:'Inter';font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
   #cardSearch .cs-filtbtn:hover{background:rgba(255,255,255,0.1)}
   #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
   body.light #cardSearch .cs-filtbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:var(--ink-soft)}
   body.light #cardSearch .cs-filtbtn:hover{background:rgba(0,0,0,0.07)}
   body.light #cardSearch .cs-filtbtn.on{background:var(--pink);border-color:transparent;color:#fff}
-  #cardSearch .cs-fcount{font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(255,255,255,.18);border-radius:999px;padding:1px 5px;min-width:15px;text-align:center}
+  #cardSearch .cs-fcount{font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(255,255,255,.18);border-radius:var(--r-pill);padding:1px 5px;min-width:15px;text-align:center}
   #cardSearch .cs-filtbtn.on .cs-fcount{background:rgba(0,0,0,.22)}
-  #cardSearch .cs-filters{margin:0 0 10px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
+  #cardSearch .cs-filters{margin:0 0 10px;padding:12px 13px;border-radius:var(--r-lg);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
   body.light #cardSearch .cs-filters{background:rgba(0,0,0,0.025);border-color:rgba(0,0,0,0.07)}
   /* Appearance comes from vv-core's .vvf-clear , see the note there. This rule now
      carries POSITION only, which is the one thing that is genuinely per-surface. */
@@ -841,12 +1180,58 @@
   /* the provisional disclosure , the flag has been on every card object and never shown */
   #radarNote{display:block;margin-top:6px;font-family:'Inter';font-size:11px;line-height:1.45;color:var(--ink-soft);text-align:center;padding:0 14px}
   #cardSearch .cs-clearall{margin-top:10px}
-  #cardSearch .vvf-active{margin:0 0 10px}
+  /*  [FIXED 2026-09-29] A STRAY `#cardSearch` SAT ON THIS LINE, BEFORE THIS COMMENT, AND WELDED
+      ITSELF ONTO THE RULE BELOW. A comment is whitespace to the CSS parser, so `#cardSearch`
+      plus a comment plus `.cs-carry` parsed as the DESCENDANT selector `#cardSearch .cs-carry`,
+      which nobody wrote and which no reader of the source can see. It cost two live defects:
+      the rule's specificity became (1,1,0), so the `body.light` override below , written at
+      (0,2,1) and perfectly reasonable against a bare `.cs-carry` , silently lost, and the strip
+      rendered in light mode with the DARK background and CREAM ink (1.12 against its own
+      ground); and `display:flex` defeated the element's own `hidden` attribute, so the offer
+      painted as an empty pink bar across the overlay whenever there was nothing to carry.
+      SEC C already records that a comment is not part of a selector. This is the inverse and
+      the more dangerous direction: a comment BETWEEN two fragments joins them.
+
+      THE CARRY-OVER OFFER , item 7, 2026-09-16. OFFERED, NEVER ASSUMED: moving to another
+      season is a page load, so filters die, and silently restoring them would mean a reader
+      lands on a grid narrowed by a decision they made on a different screen and may not
+      remember. An empty result would then read as broken rather than as filtered , the same
+      reasoning that keeps honours off the home page.  */
+  .cs-carry{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:2px 0 8px;padding:9px 12px;
+    background:rgba(231,4,67,0.07);border:1px solid rgba(231,4,67,0.26);border-radius:var(--r-lg);
+    font-family:'Inter';font-size:13px;color:var(--cream)}
+  /*  AN AUTHOR `display` BEATS THE `hidden` ATTRIBUTE WHATEVER ITS SPECIFICITY, because [hidden]
+      is a USER-AGENT rule and author rules outrank the UA sheet by origin, not by weight. The
+      markup says `<div class="cs-carry" id="csCarry" hidden>` and meant it. Any element that is
+      hidden in markup AND given a display by CSS needs this line, or the markup is decorative.  */
+  .cs-carry[hidden]{display:none}
+  body.light .cs-carry{background:rgba(231,4,67,0.05);border-color:rgba(231,4,67,0.2);color:var(--charcoal)}
+  .cs-carry .cc-t{flex:1 1 220px;min-width:0}
+  .cs-carry .cc-n{font-weight:600}
+  .cs-carry button{font-family:'Archivo';font-weight:800;font-size:11.5px;border-radius:var(--r-pill);
+    padding:6px 13px;cursor:pointer;border:1px solid transparent}
+  .cs-carry .cc-yes{background:var(--pink);color:#fff}
+  .cs-carry .cc-no{background:none;border-color:rgba(255,255,255,0.18);color:var(--ink-soft)}
+  body.light .cs-carry .cc-no{border-color:rgba(0,0,0,0.16)}
+.vvf-active{margin:0 0 10px}
 
   /* results scroll region , the curtain owns the viewport below the bar */
-  #cardSearch .cs-results{max-height:calc(100vh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
+  /*  dvh, NOT vh , 2026-09-10. On iOS Safari vh is the LARGE viewport and does not shrink
+    while the URL bar is showing, so this list was sized for a screen taller than the one
+    the reader has. Measured at 390: the list top sits at 185 and the phone rule below gave
+    it 529px, ending at 714 against a 659px visible area , the last 55px of results were
+    unreachable, and there is no scroll lock on body.searching to stop the page moving
+    under it.
+    THE LIST WILL RESIZE WHEN THE BAR COLLAPSES AND THAT IS CORRECT HERE. dvh tracks, so
+    the list grows into room that has just appeared and every row stays reachable in both
+    states. That is the opposite of the FRACTIONAL vh scrollers logged in SS D (.pkresults,
+    .pkmore, .seasonrows), where a dvh swap would resize a panel mid-gesture for no gain ,
+    a fraction of the large viewport already fits inside the small one, so nothing there is
+    stranded. The rule of thumb the audit produced: viewport-minus-chrome wants dvh, a bare
+    fraction wants to be left alone. */
+#cardSearch .cs-results{max-height:calc(100dvh - 250px);overflow-y:auto;overflow-x:hidden;padding-right:6px;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:rgba(255,92,122,0.3) transparent}
   #cardSearch .cs-results::-webkit-scrollbar{width:6px}
-  #cardSearch .cs-results::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:3px}
+  #cardSearch .cs-results::-webkit-scrollbar-thumb{background:rgba(255,92,122,0.3);border-radius:var(--r-sm)}
   /*  BOTH SPAN THE GRID , copied from rankings.html:103-104, which already had them and
       the overlay never did. #csGrid is a grid in Cards view (two columns on a phone since
       4d95fa0), so a single status child lands in CELL ONE: the loader rendered
@@ -865,7 +1250,7 @@
   @media (max-width:1040px){ #cardSearch{padding:14px 32px 0} }
   @media (max-width:720px){
     #cardSearch{padding:12px 18px 0}
-    #cardSearch .cs-results{max-height:calc(100vh - 216px)}
+    #cardSearch .cs-results{max-height:calc(100dvh - 216px)}   /* see the dvh note on the base rule */
     #cardSearch .cs-meta{margin:10px 0 8px}
     .searchtrigger .stlbl{display:none}
     .searchtrigger{flex:0 0 auto;max-width:none;margin:0 0 0 10px;padding:8px 10px}
@@ -1008,11 +1393,11 @@
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Rankings</span></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='rankings.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><line x1="22" y1="80" x2="22" y2="50"/><line x1="40" y1="80" x2="40" y2="34"/><line x1="58" y1="80" x2="58" y2="44"/><line x1="76" y1="80" x2="76" y2="24"/></svg><span class="lbl">The V<span class="vvw">V</span> Rankings</span></div>
     <div class="navitem on" style="cursor:pointer" onclick="location.href='compare.html'"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M46 16 h8 v66 h-8 z M28 26 L72 26 v6 L28 32 z M32 82 L68 82 v6 L32 88 z"/><path d="M28 30 L15 58 L41 58 Z"/><path d="M72 30 L59 58 L85 58 Z"/></svg><span class="lbl">Compare</span></div>
     <div class="navitem soon" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><rect x="22" y="26" width="44" height="58" rx="6"/><path d="M40 20 L80 30 L70 70" stroke-linecap="round"/></svg><span class="lbl">My Club</span><span class="soontag">Soon</span></div>
     <div class="navitem" style="cursor:pointer" onclick="location.href='playbook.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M50 28 C42 22 30 22 20 26 L20 74 C30 70 42 70 50 76 C58 70 70 70 80 74 L80 26 C70 22 58 22 50 28 Z"/><line x1="50" y1="28" x2="50" y2="76"/></svg><span class="lbl">The Playbook</span></div>
-    <div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span style="color:var(--pink-ink)">V</span> Index</span></div>
+    <div class="navitem" style="cursor:pointer" onclick="location.href='vvindex.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"><path d="M50 20 L80 36 L50 52 L20 36 Z"/><path d="M20 50 L50 66 L80 50"/><path d="M20 64 L50 80 L80 64"/></svg><span class="lbl">The V<span class="vvw">V</span> Index</span></div>
     <div class="navspacer"></div>
     <div class="navitem" style="cursor:pointer" onclick="location.href='myclub.html'"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><circle cx="50" cy="36" r="16"/><path d="M24 80 C24 62 36 56 50 56 C64 56 76 62 76 80"/></svg><span class="lbl">Me</span></div>
   </nav>
@@ -1037,6 +1422,7 @@
           </div>
         </div>
         <div class="cs-filters" id="csFilters" hidden><div id="csFilterHost"></div><button type="button" class="cs-clearall vvf-clear" id="csClearAll" onclick="csClearFilters()">Clear all</button></div>
+        <div class="cs-carry" id="csCarry" hidden></div>
         <div class="vvf-active" id="csActive"></div>
         <div class="cs-recent" id="csRecent" hidden><div class="cs-rlabel">Recent</div><div class="cs-rlist" id="csRecentList"></div></div>
         <div class="cs-results"><div class="cardgrid vvrows" id="csGrid"></div></div>
@@ -1055,8 +1441,12 @@
       </div>
       <div class="depth">
       <div class="layer open"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5 10 6.5 10 6.5-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></div><div class="layer-t">The Glance</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="glancegrid">
+  <!--  FALLBACK C , THE PANEL SITS WHERE THE SCORE SITS. docs/KEEPER_FALLBACK_C_SPEC.md:
+        the save panel "moves to the top of the gated keeper card, occupying the position
+        the score holds on outfield cards". Empty and hidden on every outfield card.  -->
+  <div id="gkTop" hidden></div>
   <div class="glancestats">
-    <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV" data-demo>91</span><span class="gl">V<span style="color:var(--pink-ink)">V</span> Index</span></div><div class="gstat"><span class="gv" id="glGoals" data-demo>10</span><span class="gl" id="glGoalsLabel">Goals</span></div><div class="gstat"><span class="gv" id="glAssists" data-demo>8</span><span class="gl" id="glAssistsLabel">Assists</span></div></div>
+    <div class="gstatrow"><div class="gstat"><span class="gv" id="glVV" data-demo>91</span><span class="gl">V<span class="vvw">V</span> Index</span></div><div class="gstat"><span class="gv" id="glGoals" data-demo>10</span><span class="gl" id="glGoalsLabel">Goals</span></div><div class="gstat"><span class="gv" id="glAssists" data-demo>8</span><span class="gl" id="glAssistsLabel">Assists</span></div></div>
     <!-- deliberately EMPTY, unlike the demo placeholders on the stats/gsub rows:
          a name is identifying, so flashing a real player's name (~165ms, until
          this card's own data lands) would read as the wrong card. min-height on
@@ -1077,7 +1467,7 @@
   </div>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.1"/><path d="M5.7 16c.5-1.6 1.7-2.5 3.3-2.5s2.8.9 3.3 2.5"/><line x1="15" y1="10.2" x2="18.3" y2="10.2"/><line x1="15" y1="13.6" x2="18.3" y2="13.6"/></svg></div><div class="layer-t">The Profile</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="ltext"><b id="profileLead">&nbsp;</b> <span id="profileIntro">The radar shows his shape; the gradient (red to green) tells you where his game lives.</span></div>
-<div class="radarwrap" id="radarBox"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg><small id="radarNote"></small></div>
+<div class="radarwrap" id="radarBox"><svg width="300" height="220" viewBox="0 0 300 220" id="radar"></svg></div><small id="radarNote"></small>
 <div id="gkPanel" hidden></div>
 <div class="attrtop" id="attrTop"><span>Attribute</span><span>/ 100</span></div>
 <div id="attrBars">
@@ -1103,6 +1493,14 @@
   <a class="watchcta chron-watch" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" fill="#fff"><path d="M30 22 L78 50 L30 78 Z"/></svg> <span class="cw-label">Watch this match</span></a>
 </div></div></div></div>
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.7 4.9 4.9 1.7-4.9 1.7L12 16.7l-1.7-4.9L5.4 10l4.9-1.7z"/><path d="M18.6 15l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></div><div class="layer-t">Wonder Tags</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he won, and what he was.</div><div id="wonderTags"></div></div></div></div>
+      <!--  THE CABINET , docs/CABINET_SPEC.md, placed here by a deliberate DEPARTURE from the
+            ruling, which says "glance, not face, not panel". Recorded in
+            docs/CABINET_SPEC_NOTES.md rather than by editing the spec. The reason for the
+            move is sequence: Wonder Tags has just shown what he won THIS season, and the
+            cabinet widens the same subject to what he had won BY then.
+            THE SECTION HIDES ENTIRELY WHEN EMPTY , the ruling's own display rule, and it
+            governs 85.1% of cards, so this layer is absent far more often than present.  -->
+      <div class="layer" id="cabinetLayer" hidden><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12v3a6 6 0 0 1-12 0z"/><path d="M6 6H4.2a2.3 2.3 0 0 0 2.3 3.4"/><path d="M18 6h1.8a2.3 2.3 0 0 1-2.3 3.4"/><line x1="12" y1="13.5" x2="12" y2="17"/><line x1="8.8" y1="19.5" x2="15.2" y2="19.5"/></svg></div><div class="layer-t">The Cabinet</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="wtintro">What he had won by this season.</div><div id="cabChips"></div></div></div></div>
       <div class="layer" id="notesLayer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open'); vvNotesOpen();"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg></div><div class="layer-t">Commentator's Notes</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="narrative">
   <div id="notesBody"></div>
   <div class="nm">Commentator's Notes</div>
@@ -1113,6 +1511,7 @@
       <div class="layer"><div class="layer-h" onclick="this.parentNode.classList.toggle('open')"><div class="layer-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="layer-t">Data Confidence</div><div class="layer-chev">&#8964;</div></div><div class="layer-b"><div class="layer-b-inner"><div class="dataconf">
         <div class="dc-row"><span class="dc-dots" id="dcDots"></span><span class="dc-x" id="dcX">NR</span></div>
         <div class="dc-note">How complete the data behind this card is. It measures the record, not the player.</div>
+        <div id="dcFlags"></div>
         <button class="dc-see" onclick="var d=this.nextElementSibling;var o=d.classList.toggle('show');this.classList.toggle('on');this.querySelector('span').textContent=o?'Hide the breakdown':'See the breakdown';"><span>See the breakdown</span><i class="dc-chev">&#9662;</i></button>
         <div class="dc-detail">
           <div class="dc-note" style="margin-bottom:10px">The dots run from 2 to 5. Every card has verified minutes, the baseline. Goals, assists and the deeper fields below show what else was recorded for that season. NR means not recorded.</div>
@@ -1124,7 +1523,7 @@
         <a class="ca-btn ca-compare" id="compareCta2" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare this player</a>
         <div class="ca-row">
           
-          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300);document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
+          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300,{numberMark:true});document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
           <button class="ca-btn ca-top" onclick="document.querySelectorAll('.layer.open').forEach(function(l){l.classList.remove('open')});window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg> Fold all</button>
         </div>
       </div>
@@ -1133,8 +1532,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20260906b"></script>
-<script src="/vv-core.js?v=20260906b"></script>
+<script src="/vv-marks.js?v=20261003g"></script>
+<script src="/vv-core.js?v=20261003g"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1157,6 +1556,16 @@
       const gkBox=document.getElementById('gkPanel');
       const attrTop=document.getElementById('attrTop'), attrBars=document.getElementById('attrBars');
       const intro=document.getElementById('profileIntro');
+      /*  THE PANEL RENDERS AT THE TOP NOW, into #gkTop. #gkPanel stays in the profile
+          layer and stays EMPTY , removing it is a markup change to a live surface and
+          belongs with the consumer pass, but nothing writes to it any more, so the panel
+          cannot appear twice. The radar suppression below is unchanged and still correct.  */
+      var kTop=document.getElementById('gkTop');
+      if(kp && kTop){
+        var kst=(typeof D!=='undefined'&&D)?D.keeperState:null;   // computed in rowToCard, where the raw row is
+        kTop.innerHTML=VVCore.keeperPanelHTML(kp, kst?{state:kst.state,why:kst.why}:{});
+        kTop.hidden=false;
+      }
       if(kp && gkBox){
         svg.innerHTML=''; svg.style.display='none';
         const n0=document.getElementById('radarNote'); if(n0) n0.textContent='';
@@ -1164,8 +1573,7 @@
         if(attrTop) attrTop.hidden=true;
         if(attrBars) attrBars.hidden=true;
         if(intro) intro.textContent='A goalkeeper is measured on a different set: how often he saved the shots that reached him, against every other keeper we can measure.';
-        gkBox.hidden=false;
-        gkBox.innerHTML=VVCore.keeperPanelHTML(kp);
+        gkBox.hidden=true; gkBox.innerHTML='';   // the panel lives at the top now, not here
         return;
       }
       if(gkBox){ gkBox.hidden=true; gkBox.innerHTML=''; }
@@ -1243,8 +1651,12 @@
   function renderTrajectory(){
     var host=document.getElementById('trajHost'); if(!host) return;
     if(!SEASON_ROWS || !SEASON_ROWS.length){ host.innerHTML=''; return; }        // no seasons -> clear (never leave seed bars)
-    var rows=SEASON_ROWS.slice().reverse().map(function(r){                       // chronological (oldest -> newest)
-      return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), selected:(r.card_id===SEASON_CARDID) };
+    /*  ORDERED, NOT REVERSED. `.reverse()` on a year-DESC array flips the WITHIN-season pair
+        too, which put Semenyo's Manchester City half before the Bournemouth half he left in
+        January. orderSeasonRows takes the club he left first where split_transfers knows,
+        and falls back to appearances then card_id where it does not.  */
+    var rows=VVCore.orderSeasonRows(SEASON_ROWS, SEASON_TX, {oldestFirst:true}).map(function(r){
+      return { season:r.season, goals:r.goals, assists:r.assists, rt:(r.vv===''?null:r.vv), team_name:(r.team_name||r.clubname||''), selected:(r.card_id===SEASON_CARDID) };
     });
     /*  A KEEPER GETS THE SAVE-RATE CHART, NOT THE SHARED ONE. The shared renderer stacks
         goals+assists as bars and plots rt as the line; for a keeper the bars are 0+0 on
@@ -1255,10 +1667,29 @@
       return;
     }
     host.innerHTML = VVCore.renderTrajectory(rows);                              // shared dual-axis renderer (single-season safe)
+    /*  The split-season club labels are emitted hidden and revealed by measurement , see
+        vvTrajFit in vv-core.js. getBBox needs the node laid out, so this runs after the
+        injection and not inside the renderer.  */
+    if(VVCore.vvTrajFit) VVCore.vvTrajFit(host);
   }
   function vvNotesOpen(){ /* editorial loads on card load; nothing to do on open */ }
   var EDITORIAL_FOR = null;
   var EDITORIAL = null;
+  /*  THE PAYLOAD'S DEPENDENCIES, HELD AS ONE PROMISE , 2026-09-08.
+      renderPanels calls vvLoadEditorial SYNCHRONOUSLY, and both honours and the season rows
+      arrive on their own later fetches. So the payload was being built from D.honours while
+      D.honours was still the empty PLACEHOLDER assigned two lines earlier , not a race that
+      sometimes lost, a read that ALWAYS lost. Adding honours to the payload without this
+      would have shipped an empty array on every card and looked like a data gap.
+      IT ALSO FIXES A LIVE ONE. `_kser` reads SEASON_RAW, which loadSeasons fills, and
+      loadSeasons was called AFTER renderPanels , so the keeper save-rate series never
+      reached the payload on a first card load, and DID reach it after a season switch. Two
+      different payloads for one card is two different stats_hash values, so the notes cache
+      could never settle: generate, store, miss, generate again. That is exactly the bill
+      the brief's one-invalidation rule exists to avoid paying twice.
+      NEVER REJECTS. A failed honours fetch must not take the editorial down with it , same
+      rule as the payloadRev stamp: a dependency of the prose may not be able to kill it.  */
+  var EDITORIAL_DEPS = null;
   async function vvLoadEditorial(D){
     if(!D || D.card_id==null) return;
     if(EDITORIAL_FOR === D.card_id){ vvFillEditorial(); return; }
@@ -1284,6 +1715,21 @@
     var sb0=document.getElementById('scoutBody');
     if(sb0) sb0.innerHTML=_wait;
     var sbox0=document.getElementById('scoutBox'); if(sbox0) sbox0.style.display='';
+    /*  HOLD THE LOADER FOR 250ms , see VVCore.vvHoldLoader for why, and note WHICH THREE
+        nodes are held. The panel FRAMES (notesLayer, scoutBox) are revealed immediately and
+        are not held: hiding those would pop two panels into the page 250ms late and reflow
+        everything under them. Only the three loader CONTENTS are held, so the layout is
+        final from the first frame and the mark inside it is what waits.
+        RELEASED IN A `finally` AFTER THE CONTENT IS WRITTEN, never before: releasing first
+        would reveal the loader for one frame on exactly the fast path this exists to clean
+        up. The timer releases it anyway, so a throw cannot strand the panels. */
+    var _relWait = (window.VVCore && VVCore.vvHoldLoader) ? VVCore.vvHoldLoader([gd, nb0, sb0]) : function(){};
+    /*  WAIT FOR THE PAYLOAD'S INPUTS BEFORE BUILDING IT. See EDITORIAL_DEPS above. This
+        costs nothing perceptible: both fetches are ALREADY IN FLIGHT and this call is the
+        longest wait on the site by an order of magnitude, so it is one already-running
+        query folded into a several-second wait, not a new round-trip.  */
+    try{ if(EDITORIAL_DEPS) await EDITORIAL_DEPS; }catch(e){}
+    if(EDITORIAL_FOR !== D.card_id) return;   // a season switch landed while we waited
     try{
       /*  THESE ARE THE NINE CODES THIS DATABASE ACTUALLY USES. The previous map was a
           DIFFERENT PROVIDER'S VOCABULARY (PD, BL1, FL1, DED, PPL, ELC, BSA) and resolved
@@ -1300,8 +1746,14 @@
           THE JOIN IS ON league_id, NOT CODE , the leagues row for the Turkish league has
           code 'TSL' while cards carry 'TR'. Key anything new off the card's league_code,
           which is what this map does; keying off leagues.code silently matches nothing.  */
-      var LEAGUE_NAMES = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga',
-        L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Belgian Pro League', TR:'Super Lig' };
+      /*  [REPLACED BY THE SHARED LOOKUP 2026-09-13.] The block above is the reasoning that
+          produced this map and it is all still true; what changed is that the map itself now
+          lives once, in vv-core, beside the canonical nine. Two private copies in this file
+          was the drift the vv-core note warns about, and the OTHER one had already drifted
+          back to "Jupiler Pro League".  */
+      var _lgName=function(code){
+        return (window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueName)
+          ? VVCore.VVFilters.leagueName(code) : (code||''); };
       /* KEEPER FIGURES ARE ADDED ONLY FOR KEEPERS. The prompt used to tell the model no
          goalkeeping data existed. That was true until the 2026-08-19 matview rebuild and
          false afterwards , but the model still could not see the figures, because THIS
@@ -1320,7 +1772,13 @@
          keeper block naming the 75 cap as a boundary, the missing-field list and the era flag.
          NOTE: this payload is exactly what `stats_hash` fingerprints, so adding fields here
          invalidates every cached note. Intended , and why this lands before any pre-warm. */
-      var _ai = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(D) : {};
+      /*  {radar:true} , THE NOTES PATH ASKS FOR THE DIMENSIONS AND THE VERDICT PATH DOES
+          NOT. This page RENDERS the pentagon and then described it to the model as nothing
+          at all: no percentile, no per-90, no axis. The brief's sharpest line was literally
+          true here. Compare stays without it on purpose , the per-dimension comparison
+          claim that would licence the model to compare two radars is not built, and the
+          brief refuses to let it do that arithmetic unlicensed.  */
+      var _ai = (window.VVCore && VVCore.vvAIStats) ? VVCore.vvAIStats(D, {radar:true}) : {};
       /*  THE KEEPER'S SAVE-RATE SERIES rides along when we have the season rows. No extra
           fetch , SEASON_RAW is already loaded for the trajectory. Absent seasons are null,
           never 0, and the prompt is told what that means. */
@@ -1329,8 +1787,24 @@
       if (_kser) _keeper = Object.assign({}, _keeper || {}, { savePctSeries: _kser });
       var payload = { mode:'notes', cardId:D.card_id, player:Object.assign({
         player_name:D.full, season:D.year, age:D.age, club:D.clubname,
-        league:(LEAGUE_NAMES[D.league]||D.league), position:D.pos,
-        goals:D.goals, assists:D.assists, rt:D.vv,
+        league:_lgName(D.league), position:D.pos,
+        goals:D.goals, assists:D.assists,
+        /*  FALLBACK C , NO rt FOR A KEEPER. The spec's Fable contract lists what the model
+            receives and rt is not on it. Sending it and then telling the prompt to ignore
+            it is the weaker of the two available guarantees; not sending it is the other.
+            Outfielders are unchanged.  */
+        /*  THE BAND TRAVELS WITH THE NUMBER , 2026-09-08. Sending rt alone made the model
+            INVENT the band, and it was wrong every time it tried: a 95 was called World
+            Class twice, Standout once, and "a World Class season by any measure the platform
+            applies" once , three different answers for one number, on a card whose face
+            reads GENERATIONAL. It had no ladder, so it guessed.
+            bandPublic(bandFor(rt)) is the same pair the card face resolves, so prose and
+            card cannot disagree. bandFor alone would NOT do: it emits the engine vocabulary,
+            where 95 is Generational but 92 is "Elite" and 82 "Exceptional" , words no reader
+            has seen. Section C: the public ladder is a display rename over the nine.
+            KEEPERS GET NEITHER, unchanged , they receive no rt, so there is no band. */
+        ...(D.keeper ? {} : { rt: D.vv,
+              band: (window.VVCore && VVCore.bandPublic) ? VVCore.bandPublic(VVCore.bandFor(D.vv)) : null }),
         tags:(Array.isArray(D.tags)?D.tags.map(function(t){return t.name;}):[])
       }, _ai, _keeper) };
       var r = await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -1339,14 +1813,18 @@
       EDITORIAL = { glance:data.glance, scout:data.scout, notes:data.notes };
       vvFillEditorial();
     }catch(e){ vvEditorialFail(); }
+    finally{ _relWait(); }   // after the content on every path, including the outage line
   }
   function vvFillEditorial(){
     if(!EDITORIAL) return;
-    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.classList.remove('na'); gd.textContent='"'+EDITORIAL.glance+'"'; }
+    var gd=document.getElementById('glDrury'); if(gd){ gd.classList.remove('gen'); gd.classList.remove('na'); gd.innerHTML='"'+VVCore.vvEmphasis(EDITORIAL.glance)+'"'; }
     var sb=document.getElementById('scoutBody'); var sbox=document.getElementById('scoutBox');
-    if(sb){ sb.textContent='"'+EDITORIAL.scout+'"'; } if(sbox){ sbox.style.display=''; }
+    if(sb){ sb.innerHTML='"'+VVCore.vvEmphasis(EDITORIAL.scout)+'"'; } if(sbox){ sbox.style.display=''; }
     var nb=document.getElementById('notesBody'); var nl=document.getElementById('notesLayer');
-    if(nb){ nb.innerHTML=EDITORIAL.notes.map(function(s){var d=document.createElement('div');d.className='np';d.textContent=s;return d.outerHTML;}).join(''); }
+    /*  vvEmphasis ESCAPES BEFORE IT PROMOTES, so this is the one path by which model output may
+    become markup. The old line built each stanza with textContent and read outerHTML back,
+    which escaped correctly; the escaping has moved into the helper rather than been dropped. */
+    if(nb){ nb.innerHTML=EDITORIAL.notes.map(function(s){return '<div class="np">'+VVCore.vvEmphasis(s)+'</div>';}).join(''); }
     if(nl){ nl.style.display=''; }
   }
   /* NAME THE GAP. This used to hide the glance line, the scout box and the notes layer and
@@ -1471,13 +1949,26 @@
     vvLoadEditorial(D);
     renderProof(D);
     var set=function(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val==null||val==='')?'NR':val; };
-    set('glVV', D.vv);
+    /*  THE SCORE SLOT IS REMOVED ON A KEEPER CARD, NOT DASHED. Spec: "A dash says a
+        score is missing; the truth is that for keepers, no score exists as a category."
+        set() would print NR, which is the same lie in a different font, so the whole
+        .gstat is taken out of the row rather than emptied.
+        SCOPED TO THE GLANCE. The card FACE, the share image and the compare dropdown
+        still print D.vv , they are the consumer pass, and this card is knowingly
+        inconsistent with itself until that lands. Recorded in the commit message.  */
+    var _vvStat = document.getElementById('glVV');
+    _vvStat = _vvStat ? _vvStat.closest('.gstat') : null;
+    if (D.keeper && _vvStat) { _vvStat.remove(); }
+    else { set('glVV', D.vv); }
     /*  THE CAP LINE. A keeper's radar is all-null, so vvProfileBlurb correctly returns
         nothing , but the FALLBACK said "measured across five dimensions", which is the
         one thing a keeper card is not. Both the lead and the cap line are keeper-aware. */
     var _gk = document.getElementById('glGKCap');
     if(_gk){
-      if(D.keeper){ _gk.textContent='The VV Score does not yet weigh goalkeeping, so keepers are capped at 75.'; _gk.hidden=false; }
+      /*  THE CAP SENTENCE IS RETIRED BY THE SPEC , "The retired sentence , capped at 75
+          , appears nowhere". It explained a number this card no longer shows. What
+          replaces it is the spec's own gated-card sentence.  */
+      if(D.keeper){ _gk.textContent='The VV Score does not rate goalkeeping: save data resolves too little to stand behind a number. This season\'s shot-stopping is shown as recorded, with its uncertainty , and nothing finer is claimed.'; _gk.hidden=false; }
       else { _gk.textContent=''; _gk.hidden=true; }
     }
     var _pl = document.getElementById('profileLead');
@@ -1501,7 +1992,12 @@
       _lab('glGoalsLabel',   'Goals');
       _lab('glAssistsLabel', 'Assists');
     }
-    var LEAGUE_FULL = { PL:'Premier League', LL:'La Liga', SA:'Serie A', BL:'Bundesliga', L1:'Ligue 1', PRT:'Primeira Liga', ERE:'Eredivisie', BPL:'Jupiler Pro League', TR:'Süper Lig' };
+    /*  LEAGUE_FULL IS DELETED, NOT EDITED , 2026-09-13. It said "Jupiler Pro League" and
+        "Süper Lig" where the database and the canonical list say Belgian Pro League and
+        Super Lig, so the glance line and the AI payload named the same competition two ways on
+        one page. The vv-core note lists this map by name as one of the four vocabularies that
+        disagreed on 2026-09-06; it was corrected there and left standing here, which is how it
+        drifted back. One lookup now, from vv-core.  */
     var _gp = (D.appearances!=null) ? (D.appearances + (D.appearances===1 ? ' game' : ' games')) : null;
     /* Meta line order: position · age · club · league · season · GAMES.
        Name identifies; position + age frame what KIND of season it was (a
@@ -1514,7 +2010,7 @@
     var _sub=document.getElementById('glSub');
     if(_sub){
       var _meta=[ posFull(D.pos), ('Age '+(D.age||'NR')), D.clubname,   // FULL name here only , the face pill and dense rows keep the short form
-                  (LEAGUE_FULL[D.league]||D.league), D.year ]
+                  (window.VVCore&&VVCore.VVFilters&&VVCore.VVFilters.leagueName?VVCore.VVFilters.leagueName(D.league):D.league), D.year ]
         .filter(function(x){ return x!=null && x!==''; });
       if(_gp) _meta.push(_gp);   // appearances is non-null on all 57,234 cards
       _sub.textContent='';
@@ -1605,6 +2101,95 @@
       for(var i=1;i<=5;i++){ dots += (i<=c) ? '<i class="on"></i>' : '<i></i>'; }
       dcDots.innerHTML = dots;
     }
+    /*  ITEM 26 , the explanation the shield mark points at. It sits OUTSIDE the breakdown
+        fold because the mark's tap lands here and must not land on a closed box.
+        THE TWO NOTES ARE GATED SEPARATELY (2026-09-22) AND THAT IS THE FIX. They used to share
+        `numberClubUncertain`, and sitting 2 changed that flag from "is this a split" to "is the
+        number inferred" , so 1,499 split halves that gained a SOURCED number silently lost the
+        partial-season disclosure along with the arrows. One flag was answering two questions.
+          shirt-number note , `shirt_number_source === 'modal_split'`. About the NUMBER.
+          partial-season note , the card has a sibling in the same player, season and league.
+                                About the FOOTBALL, and true whatever the number turned out to be.
+        AND THE HEDGES ARE GONE. "If he did move" was right while the move was inferred from an
+        appearance gap; `split_transfers` now carries the date and the direction for 800 of 827
+        pairs, so the note states it. Where there is no row it claims neither, rather than
+        guessing , SS C's rule that an unverified premise is most costly when it argues for
+        saying MORE.  */
+    renderDcFlags();
+  }
+
+  /*  CALLED TWICE, ON PURPOSE. renderPanels paints the card on one round-trip and SEASON_RAW is
+      still in flight then, so the first call can only draw the shirt-number note, which needs
+      nothing but the card's own row. The second runs once the seasons and, for a split, the
+      transfer row have landed. Attaching it to the STATE rather than to one call site is SS C's
+      rule: a behaviour hung on the path in front of you is missing from every other path.  */
+  function renderDcFlags(){
+    if(typeof D==='undefined' || !D) return;
+    /*  THE TRANSFER ROW IS FETCHED HERE, LAZILY, AND ONLY FOR A SPLIT , about 1,657 cards of
+        57,885, so 97% of loads pay nothing, and whether the card IS a split is answered from
+        SEASON_RAW with no request at all. SS E refused a per-card query for the shirt-number
+        FLAG and was right; the flag is a matview column now, and this is the NOTE.
+        IT LIVES IN THE RENDERER RATHER THAN AT A CALL SITE so the season stepper gets it too ,
+        that path re-renders without re-running the load, and a fetch bolted to the load alone
+        would leave a switched season showing the undated wording.  */
+    /*  DC_TRANSFER IS DERIVED, NOT FETCHED. loadSeasons already pulled this player's rows for the
+        season ORDER, and the note wants the same row, so a second query would ask the database a
+        question it has just answered.  */
+    DC_TRANSFER = DC_RAW ? ((SEASON_TX||[]).filter(function(t){
+      return t.season_year===DC_RAW.season_year && t.league_code===DC_RAW.league_code; })[0] || null) : null;
+    var dcFlags = document.getElementById('dcFlags');
+    if(dcFlags){
+      var sibs = (typeof SEASON_RAW !== 'undefined' && SEASON_RAW ? SEASON_RAW : [])
+        .filter(function(r){ return r.card_id !== D.card_id
+                          && r.season_year === D.season_year && r.league_code === D.league_code; });
+      var shirtNote = VVCore.shirtNumberNote(DC_RAW || {}, sibs.map(function(r){ return r.team_name; }));
+      /*  IS THIS CARD SCORED? READ IT OFF THE RAW ROW, NOT OFF `D.vv`. `rowToCard` maps a null rt
+          to the EMPTY STRING for rendering, so `D.vv` cannot distinguish "no score" from a score
+          that failed to render , and an empty string is falsy, which would make a wrong answer
+          look like a correct one.  */
+      var isScored = !!(DC_RAW && DC_RAW.rt != null);
+      /*  WHICH HALF WAS THE WHOLE , GEOMETRY STANDING IN FOR HISTORY, AND THE COMMENT IS THE
+          DISCLOSURE. Nothing on the row records that a card was REDUCED by the fused split, so
+          the largest half is taken as the one that was there before: the split keeps the club the
+          card already named, and 202 of 202 fused cards name their largest block (measured,
+          `scripts/figures/fused-candidates.json`, zero minute ties).
+          THE TIEBREAK IS `card_id` ASCENDING and it is not decoration , an inserted row takes a
+          NEW sequence id, so on a tie the lower id is the pre-existing card. Without it a tie
+          would hand BOTH halves the "used to cover two clubs" claim.  */
+      var splitRows = sibs.map(function(r){ return { card_id: r.card_id, minutes: r.minutes }; })
+                          .concat([{ card_id: D.card_id, minutes: D.minutes }]);
+      splitRows.sort(function(a,b){ return (b.minutes||0) - (a.minutes||0) || (a.card_id||0) - (b.card_id||0); });
+      var wasWhole = splitRows[0].card_id === D.card_id;
+      var partNote = sibs.length ? VVCore.partialSeasonNote({
+        thisClub: D.clubname, thisApps: D.appearances,
+        totalApps: sibs.reduce(function(a,r){ return a + (r.appearances || 0); }, D.appearances || 0),
+        others: sibs.map(function(r){ return r.team_name; }),
+        transfer: DC_TRANSFER,
+        scored: isScored          // drops "and the score" where there is none , see the note
+      }) : null;
+      var nsNote = sibs.length ? VVCore.notScoredNote({
+        scored: isScored, minutes: D.minutes, apps: D.appearances,
+        others: sibs.map(function(r){ return r.team_name; }), wasWhole: wasWhole
+      }) : null;
+      /*  ORDER: the missing SCORE is the loudest absence on the card, so it is answered first.
+          The shirt note is last of the three because it is about the smallest thing on the face.  */
+      dcFlags.innerHTML =
+          (nsNote    ? '<div class="dc-flag" id="dcFlagNotScored">' + nsNote + '</div>' : '')
+        + (partNote  ? '<div class="dc-flag">' + partNote + '</div>' : '')
+        + (shirtNote ? '<div class="dc-flag" id="dcFlagNumber">' + shirtNote + '</div>' : '');
+    }
+    /*  BOTH OF THESE WERE LEFT BEHIND WHEN THIS BLOCK WAS SPLIT OUT OF renderPanels IN
+        06b08e4, AND THE FUNCTION HAS THROWN ON EVERY CARD SINCE. `isKeeper` and `dcFields`
+        are locals of renderPanels, so the line below reached for a name this scope does not
+        have: ReferenceError, unhandled, and every statement AFTER it , the per-field
+        Verified/NR rows , never ran. #dcFields measured EMPTY on an outfield card and on a
+        keeper card alike, while `.dc-note` still read correctly because its text is also
+        hardcoded in the markup, so the panel looked finished and was not.
+        That is SEC C's block-rewrite rule exactly: the diff shows what ARRIVED, never what
+        was left behind. Declared here, from the same source renderPanels reads.  */
+    var dcFields = document.getElementById('dcFields');
+    var isKeeper = Array.isArray(D.confidenceFields)
+      && D.confidenceFields.some(function(f){ return f.group === 'keeper'; });
     var dcNote = document.querySelector('.dc-detail .dc-note');
     if(dcNote){
       // The keeper sentence explains the 4-of-5 ceiling BEFORE anyone wonders why their
@@ -1652,6 +2237,29 @@
         });
       }
     }
+    /*  THE CABINET , season honours stay on the face and in the chips above; this is the
+        "held as of here" half. On the season an honour is won it appears in BOTH by design.
+        SEASON_RAW is the player's own career rows and carries the team half (league champion,
+        UCL), which is keyed on team+season and invisible to the player query. It may not have
+        landed yet, or may be null for a single-season player , the cabinet then renders its
+        player-keyed half and is completed when loadSeasons calls this again.  */
+    var cabLayer = document.getElementById('cabinetLayer');
+    var cabBox = document.getElementById('cabChips');
+    if(cabLayer && cabBox){
+      var items = (D.honours && D.honours.cabinet) || [];
+      if(typeof SEASON_RAW !== 'undefined' && SEASON_RAW && VVCore.cabinetWithTeamLegs){
+        items = VVCore.cabinetWithTeamLegs(items, SEASON_RAW, D.season_year, null);
+      }
+      var html = VVCore.renderCabinet(items, {mark:true});
+      cabBox.innerHTML = html;
+      cabLayer.hidden = !html;            // absence IS the empty state , the whole section goes
+      /*  NO OPEN STATE IS SET HERE, AND THAT IS THE POINT , IT FOLDS CLOSED LIKE EVERY OTHER
+          SECTION. An earlier version defaulted it open when it had content. That was one
+          section behaving differently from its nine neighbours, which teaches the reader that
+          the folds are inconsistent rather than that this one is important. The Glance is the
+          only layer carrying `open` in the markup, and it is the summary. Matching the
+          neighbours means writing nothing: no class, no toggle, no JS.  */
+    }
     var wt = document.getElementById('wonderTags');
     if(wt && typeof TAG_DEFS !== 'undefined'){
       var profileRowsHtml = VVCore.renderProfileTagRows(D.tags, D.prestige);   // shared (card + compare)
@@ -1667,7 +2275,66 @@
   // their cards stay byte-identical. Fail-soft: if vv-marks.js is missing the pills render
   // exactly as before, minus the icon.
   try { VVCore.useCardMarks(true); } catch(e){}
-  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow()); drawRadar(); }
+  /*  WONDER-TAG PILLS , card.html only. Wraps each row title as a pill carrying the mark,
+      so the panel speaks the same colour language as the glance strip above it. compare.html
+      never calls this and keeps the plain shape (green ground, titles pinned neutral).
+      Same fail-soft as the line above: an old vv-core simply has no such function. */
+  try { VVCore.useWonderTagPills(true); } catch(e){}
+  /*  ── WHY THERE IS NO VERTICAL SWIPE, AND WHY WE ARE NOT BUILDING ONE ────────────────
+      SOMEONE WILL PROPOSE IT AGAIN, SO THE REASON IS RECORDED HERE RATHER THAN REDISCOVERED.
+      The hero's touch handler locks an axis mid-gesture and then, at touchend, runs
+      `if(axis!=='x') return;` , a vertical drag is released as a page scroll and never
+      reaches any navigation. That is DELIBERATE and it is a CONFLICT, not a gap.
+      TO PAGE VERTICALLY THE CARD MUST preventDefault FOR THE WHOLE GESTURE, exactly as the
+      horizontal lock already does, because the axis cannot be judged at touchend , by then
+      the scroll has happened and cannot be taken back. On a phone the hero is the largest
+      object on the screen, so holding the whole gesture traps the PAGE'S OWN SCROLL behind
+      it. The horizontal axis can take the entire gesture precisely because the page never
+      scrolls sideways; the vertical axis is competing with the page for the same drag.
+      THE STEPPER BELOW IS THE ANSWER THAT DOES NOT NEED THE GESTURE, which is most of why it
+      was chosen. If a vertical swipe is ever wanted anyway it needs its own ruling on the
+      scroll conflict , the narrow version is "page only when the gesture starts on the card
+      face AND the page is already at scroll top", which is a real rule with real edge cases
+      and a separate decision from this control.  */
+  /*  THE STEPPER IS REBUILT BY renderHero AND CANNOT BE ATTACHED ANYWHERE ELSE. renderHero
+      replaces #heroCard's innerHTML outright, so anything inside it is destroyed on every
+      re-render , theme change, resize, honours arriving. Putting the attach INSIDE
+      renderHero is what makes forgetting it impossible; a caller that has to remember to
+      re-attach will eventually not. The two paths that build the face WITHOUT renderHero ,
+      the first load and vvCardFlip's newHTML , call it explicitly, and both are marked.  */
+  function vvSeasonStepper(){
+    var zone=document.getElementById('seasonZone');
+    var trig=zone && zone.querySelector('.seasontrigger');
+    if(!trig) return;
+    var old=zone.querySelector('.seasonstep'); if(old) old.remove();   // idempotent: never two
+    if(!SEASON_ROWS || SEASON_ROWS.length<2) return;                   // one season is not a sequence
+    var i=-1;
+    for(var k=0;k<SEASON_ROWS.length;k++) if(SEASON_ROWS[k].card_id===SEASON_CARDID){ i=k; break; }
+    if(i<0) return;
+    // SEASON_ROWS is season_year DESCENDING, so UP is the NEWER season and DOWN the older.
+    var newer=(i>0)?SEASON_ROWS[i-1]:null, older=(i<SEASON_ROWS.length-1)?SEASON_ROWS[i+1]:null;
+    function lbl(r,dir){
+      var sl=(window.VVCore&&VVCore.vvSeasonLabel)?VVCore.vvSeasonLabel:function(y){return y;};
+      return r ? (dir+' season, '+sl(r.season_year)) : ('No '+dir.toLowerCase()+' season');
+    }
+    var wrap=document.createElement('span');
+    wrap.className='seasonstep';
+    wrap.innerHTML=
+      '<button type="button" aria-label="'+lbl(newer,'Newer')+'"'+(newer?'':' disabled')+'>&#9650;</button>'+
+      '<button type="button" aria-label="'+lbl(older,'Older')+'"'+(older?'':' disabled')+'>&#9660;</button>';
+    var b=wrap.querySelectorAll('button');
+    /*  stopPropagation KEEPS THE TRIGGER OUT OF IT , the stepper sits INSIDE #seasonZone
+        beside a button that opens the panel, so a bubbling click would step the season and
+        expand the list in one tap. Stepping and expanding are alternatives, not a sequence.  */
+    if(newer) b[0].addEventListener('click', function(e){ e.stopPropagation(); switchSeason(newer.card_id); });
+    if(older) b[1].addEventListener('click', function(e){ e.stopPropagation(); switchSeason(older.card_id); });
+    trig.insertAdjacentElement('afterend', wrap);
+  }
+  /*  renderHero NO LONGER TOUCHES THE STEPPER. It replaces #heroCard's innerHTML, and the
+      stepper now lives in #seasonZone, which renderHero does not own. Leaving the call here
+      would be harmless and misleading , the next reader would look for the control inside
+      the card. It is attached where the SEASON STATE changes instead.  */
+  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow(),{numberMark:true}); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
   // in either direction, and its geometry is measured from the hero's rect.
@@ -1745,24 +2412,39 @@
       vvCardNotFound(id, missing);
       return;
     }
-    D=rowToCard(res.data);
+    D=rowToCard(res.data); DC_RAW=res.data; DC_TRANSFER=null;
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
+    /*  BOTH EDITORIAL INPUTS ARE STARTED BEFORE renderPanels, WHICH IS WHAT MAKES THE
+        PAYLOAD DETERMINISTIC. Starting a promise is synchronous, so the card core still
+        paints on the same tick and "visible on ONE round-trip" is unchanged , what moves
+        is only WHEN the two already-planned fetches are kicked off, from after this line
+        to before it. vvLoadEditorial awaits them; nothing else does.  */
+    var _honP0 = fetchHonours(res.data);
+    var _seaP0 = loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
+    EDITORIAL_DEPS = Promise.all([_honP0.catch(function(){}), _seaP0.catch(function(){})]);
+    /*  THE TRANSFER ROW IS FETCHED ONLY FOR A SPLIT , about 1,657 cards of 57,885, so 97% of
+        loads pay nothing. SS E refused a per-card query for the shirt-number FLAG and was right;
+        the flag is a matview column now, and this is the NOTE, which only a split card renders.
+        Whether the card IS a split is answered from SEASON_RAW with no request at all.  */
+    _seaP0.then(function(){ renderDcFlags(); }).catch(function(){});   // siblings have landed; the renderer does the rest
     renderPanels(D);                         // CARD CORE VISIBLE on ONE round-trip (score/stats/tags/radar/proof)
     // Drop the holding class once real values are in. A state class left on settled content
     // is a small lie about what the element is doing, and the next person to style .vv-wait
     // would be styling live cards without meaning to.
     document.querySelectorAll('.vv-wait').forEach(function(el){ el.classList.remove('vv-wait'); });
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
-    loadSeasons(res.data.api_player_id, res.data.card_id);   // trajectory + season list , non-blocking (already)
     var targetD=D;   // honours fill in WITHOUT blocking the core; guard against a season-switch landing first
     // renderHero re-run too: the card FACE pills come from d.honours.all (buildCard), so the face needs
     // the honours to show its pill , a quick pop-in as they land, exactly the "fill in after" behaviour.
-    fetchHonours(res.data).then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
+    // (the fetch itself is started above, so the editorial payload can await the same promise)
+    _honP0.then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
   }
   // ── Season switcher , swap between a player's seasons from the hero year chip ──
   var SEASON_CARDID=null, SEASON_ROWS=null, SEASON_RAW=null;
+  var DC_RAW=null, DC_TRANSFER=null;   // the raw matview row, and the split_transfers row when this card is a split
+  var SEASON_TX=[];                    // split_transfers for THIS player , one fetch, serves the notes and the order
 
   async function loadSeasons(apiPlayerId, currentCardId){
     SEASON_CARDID=currentCardId; SEASON_ROWS=null; SEASON_RAW=null;
@@ -1779,23 +2461,88 @@
     if(res.error || !res.data || res.data.length<2) return;
     var rows=(res.data||[]).map(rowToCard).filter(Boolean);
     SEASON_ROWS=rows; SEASON_RAW=res.data||[];
+    /*  ONE FETCH PER PLAYER, AND ONLY WHEN A SEASON REPEATS , it serves the partial-season note
+        AND the season order, which used to be two problems and are one question: which club came
+        first. A player with no split never issues it.  */
+    SEASON_TX=[];
+    /*  THE GATE KEYS ON THE YEAR ALONE , it named the league until 2026-09-24 and that made it
+        stale the moment split_transfers gained cross-league rows. A season played in two leagues
+        has two different league codes, so `year|league` never repeats, the fetch never fired, the
+        array was empty and the order fell back , on exactly the 609 seasons the new rows exist to
+        fix. The rows were in the table and nothing asked for them.
+        CLAUDE.md SEC C records this shape twice already: a predicate that governs a behaviour goes
+        stale when the behaviour changes, and it disables its consumers silently.  */
+    var _dupe={}, _needTx=false;
+    (SEASON_RAW||[]).forEach(function(r){ var k=String(r.season_year);
+      if(_dupe[k]) _needTx=true; _dupe[k]=1; });
+    if(_needTx){
+      try{
+        var _tx=await sb.from('split_transfers').select('*').eq('api_player_id',apiPlayerId);
+        SEASON_TX=(_tx && _tx.data) || [];
+      }catch(e){ SEASON_TX=[]; }   // no rows is a STATE: the order falls back and the note drops its date
+    }
+    /*  RE-ORDER SEASON_ROWS ITSELF, so the stepper inherits it rather than carrying its own
+        rule. It is newest-first here, which is what the stepper's "UP is newer" assumes, and
+        the chronological list asks for the same rows the other way round.  */
+    SEASON_ROWS = VVCore.orderSeasonRows(SEASON_ROWS, SEASON_TX);
+    SEASON_RAW  = VVCore.orderSeasonRows(SEASON_RAW,  SEASON_TX);
     /*  CAREER-STAGE TAGS NO LONGER LAND HERE. Peak, Breakout and The Standard are columns
         on player_card_mv now (stage_peak / stage_breakout / stage_the_standard), so
         getVVTags reads them off the row like every other tag and every surface gets them,
         not just this one. The old vvApplyCareerStage injected them into whichever tag row
         happened to be first in the document, with no mark. It is gone; VVCore.careerStageTags
         survives in vv-core.js as the reference implementation the SQL was ported from. */
+    /*  THE CABINET'S TEAM HALF NEEDS THESE ROWS, so re-run the honour-dependent DOM now that
+        they exist. vvApplyHonours is idempotent by design and cheap; without this the cabinet
+        would show only its player-keyed half whenever the career rows lose the race.  */
+    if(typeof vvApplyHonours === 'function') vvApplyHonours();
     renderTrajectory();                    // trajectory chart draws NOW , it does not need honours
-    var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
+    /*  THE STEPPER'S DATA ARRIVES HERE, NOT AT FIRST RENDER. SEASON_ROWS is fetched after
+        the hero is already on screen, so the first renderHero drew a card with no sequence
+        to step through and correctly produced nothing. This is the attach that gives the
+        control its reason to exist. (This line previously read "season switcher lives below
+        the card; no in-card caret" and bound an unused variable , that is now false.)  */
     var zone=document.getElementById('seasonZone');
-    if(zone){ zone.innerHTML='<button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button>'; }
+    if(zone){ zone.innerHTML='<div class="seasonhead"><button class="seasontrigger" onclick="seasonPanelOpen()">View all '+SEASON_ROWS.length+' seasons</button></div>'; }
+    /*  AFTER THE TRIGGER, NEVER BEFORE , the line above REPLACES the zone's innerHTML, so a
+        stepper attached first is wiped by it and the control simply never appears. That is
+        what happened on the first build of this move, and it rendered as "the edit did not
+        land" rather than as an ordering mistake.  */
+    vvSeasonStepper();
     attachHonoursBatch(rows).catch(function(){});   // honour pills for the season list fill in after (non-blocking; mutates rows in place)
   }
+  /*  ── THE MIXED-COLUMN LINE , ONE PER PANEL, NEVER ONE PER CARD ───────────────────────
+      The squad-number backfill fills roughly 43% of the 20,063 cards that have none, so a
+      season panel will show some rows with a number and some without. ON THE CARD FACE a
+      blank shield is fine , a reader meeting one card has no sample to compare it against,
+      and the badge keeps its club colours so it reads as a crest. IN A COLUMN OF FIVE TO
+      TWENTY ROWS it is different: the mix is the first thing visible, and an unexplained
+      mix reads as somebody stopping halfway rather than as a gap in the record.
+      IT SAYS THE RECORD IS INCOMPLETE, NOT THAT WE ARE , the same distinction the Data
+      Confidence panel makes with "what else was recorded for that season. NR means not
+      recorded." The second clause is the load-bearing one: it tells a reader the rows that
+      DO carry a number are better recorded, not luckier.
+      NO ERA IN THE COPY. "Before 2016" is true today and the backfill makes it false, and a
+      line that dates itself needs changing the moment the first batch lands.
+      ONLY WHEN A ROW IS ACTUALLY BLANK. On a complete panel it would be an apology for
+      nothing, and a caveat that shows when there is nothing to caveat teaches readers to
+      stop reading caveats.  */
   function seasonRowsHTML(){
-    return (SEASON_ROWS||[]).map(function(r,idx){
+    var rows=(SEASON_ROWS||[]);
+    var html=rows.map(function(r,idx){
       return rankRowHTML(r, idx, { cap:3, showRank:false, seasonLed:true, active:(r.card_id===SEASON_CARDID),
-        onClick:function(d){ return 'switchSeason('+(d.card_id==null?'':d.card_id)+')'; } });
+        onClick:function(d){ return 'switchSeason('+(d.card_id==null?'':d.card_id)+',true)'; } });
     }).join('');
+    var anyBlank=rows.some(function(r){ return r.shirt_number==null || r.shirt_number===''; });
+    if(anyBlank && rows.length>1){
+      /*  READ FROM THE SHARED STRING, NOT A FOURTH COPY (2026-09-22). This said the number was
+          "missing from the record", which was true while a number belonged to a SEASON. After
+          sitting 2 it belongs to a CLUB and a card, so blank means not found for THAT club ,
+          and a split season can carry a number on one half and not the other, which the old
+          sentence could not express.  */
+      html+='<div class="seasonnote">'+VVCore.SHIRT_SOURCE_NOTE.blank+'</div>';
+    }
+    return html;
   }
   function seasonPanelOpen(){
     if(!SEASON_ROWS) return;
@@ -1893,21 +2640,37 @@
     finally{ el.classList.remove('resolving'); }
   }
 
-  async function switchSeason(cardId){
+  /*  `fromPanel` IS WHY THE FOLD IS NOT UNCONDITIONAL , item 2, 2026-09-14.
+      CHOOSING FROM THE LIST IS THE ACT THAT ENDS THE TASK, so the panel closes itself and
+      the reader is not left scrolling back up to dismiss what they have finished with.
+      BUT THE STEPPER CALLS THE SAME FUNCTION, and someone stepping with the list open has
+      deliberately opened it , closing it under them would punish the one gesture that wants
+      it visible, because the list is what shows where in the career they now are. The panel
+      rows pass the flag; the chevrons do not.  */
+  async function switchSeason(cardId, fromPanel){
     if(cardId===SEASON_CARDID) return;
+    if(fromPanel) seasonPanelClose();   // BEFORE the await , the tap should feel instant
     var sb=vvClient(); if(!sb) return;
     var res=await sb.from('player_card_mv').select('*').eq('card_id', cardId).single();
     if(res.error || !res.data){ console.error('season switch failed:', res.error && res.error.message); return; }
-    D=rowToCard(res.data);
+    D=rowToCard(res.data); DC_RAW=res.data; DC_TRANSFER=null;
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; honours fill in after the flip lands (they don't gate the reveal)
     var _cw=cwNow();   // #109 reveal to the new season: desktop 3D flip / mobile scale-swap, coin = destination tier (D.vv)
     var targetD=D;   // staleness guard: a rapid second switch must not get THIS season's honours
     var _honP=fetchHonours(res.data);   // fire in PARALLEL with the flip, non-blocking
+    /*  THE SWITCH PATH NEEDS THE SAME GUARANTEE. SEASON_RAW is already loaded here (this is
+        a switch, not a first load), so only honours are genuinely outstanding, but the
+        payload must not read a placeholder on this path either.  */
+    EDITORIAL_DEPS = _honP.catch(function(){});
     // honours applied in onDone so they never interrupt the in-flight flip; renderHero re-runs for the
     // card FACE pill (buildCard reads d.honours.all), vvApplyHonours for glance chips + Wonder Tags.
-    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw), cw:_cw, prestige:D.prestige, onDone:function(){
+    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw,{numberMark:true}), cw:_cw, prestige:D.prestige, onDone:function(){
       drawRadar();
+      /*  THE NEW FACE EXISTS ONLY NOW. It must also run BEFORE the honours .then below,
+          because that branch calls renderHero, which re-attaches anyway , but honours can
+          fail or arrive for a season already switched away from, and in either of those
+          cases this is the only attach that happens.  */
       _honP.then(function(h){ if(D!==targetD) return; D.honours=h; renderHero(); vvApplyHonours(); }).catch(function(){});
     } });
     renderPanels(D);
@@ -1923,9 +2686,21 @@
       history.replaceState({cardId:cardId}, '', _u);
     }catch(e){}
     renderTrajectory();
+    /*  THE STEPPER'S LABELS NAME THE ADJACENT SEASONS, so they must be rebuilt whenever the
+        current one moves. SYNCHRONOUS AND HERE, not in the flip's onDone: the zone is not
+        part of the card, so the flip never touches it, and waiting for the animation would
+        leave the chevrons describing the season just left.  */
+    vvSeasonStepper();
     var _sp=document.getElementById('seasonPanel');
     if(_sp){ _sp.innerHTML=seasonRowsHTML(); }   // rebuild rows with the new active season highlighted
-    var yr=document.querySelector('#heroCard .yr'); /* season switcher lives below the card; no in-card caret */
+                                                 // (null when the panel folded on selection , the guard already covers it)
+    /*  NO STEPPER ATTACH HERE, AND THE REASON IS WORTH KEEPING: vvCardFlip IS ASYNCHRONOUS.
+        It swaps `newHTML` inside a setTimeout at the flip's midpoint and replaces the host's
+        innerHTML in a second one, so a synchronous attach at this point binds to the
+        OUTGOING face and is destroyed by the swap a few hundred milliseconds later , a
+        stepper that works on first load and silently vanishes after one season switch.
+        The attach lives in the flip's onDone instead, which is the first moment the new
+        face exists. Same family as Section C's element-that-must-outlive-a-re-render rule.  */
     try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
   /* ══ CARD SEQUENCE , walk the list the visitor arrived from ═══════════════════
@@ -2201,7 +2976,22 @@
         history.replaceState({cardId:id}, '', u);
       }catch(e){}
       window.scrollTo({top:0, behavior:'auto'});
-      await loadCard();                             // full load: a different PLAYER needs its own seasons
+      /*  THE HORIZONTAL AXIS NOW MOVES, AND IT IS THE FLIP'S SIBLING , 2026-09-13. This was a
+          hard cut while switchSeason already animated, which is the inversion worth
+          remembering: the axis that LOOKED finished was the one with nothing in it, because a
+          hard cut has no jank and so reads as restraint rather than as an absence.
+          vvCardSlide shares VV_MOVE_MS and VV_MOVE_EASE with vvCardFlip, so the two axes are
+          one grammar. It also AWAITS loadCard BETWEEN its two halves, so the network round
+          trip is covered by the outgoing motion instead of being added to it , which is why
+          the old card is snapshotted rather than the content swapped under a static frame.
+          REDUCED MOTION FALLS THROUGH TO THE OLD BEHAVIOUR, a hard cut, handled inside the
+          helper so no caller has to remember it.  */
+      var _hero = document.getElementById('heroCard');
+      if(_hero && window.VVCore && VVCore.vvCardSlide){
+        await VVCore.vvCardSlide(_hero, delta, loadCard);
+      } else {
+        await loadCard();                           // full load: a different PLAYER needs its own seasons
+      }
       seqRender();
     } finally { SEQ_BUSY=false; }
   }
@@ -2273,6 +3063,11 @@
   })();
 
   document.addEventListener('click', function(e){
+    /*  ITEM 26 , the shield mark. Handled FIRST and returned from, exactly as .yr is, because
+        the flip below runs for any tap inside #heroCard. A tap is not a swipe (the swipe
+        needs 48px of travel), so the touch handlers above never see it as one.  */
+    var inXf = e.target.closest && e.target.closest('#heroCard .xfm');
+    if(inXf){ e.stopPropagation(); vvOpenNumberNote(); return; }
     var inYr = e.target.closest && e.target.closest('#heroCard .yr');
     if(inYr && SEASON_ROWS){ e.stopPropagation(); seasonPanelOpen(); return; }   // .yr opens the season list (unchanged)
     var panel=document.getElementById('seasonPanel');
@@ -2283,6 +3078,15 @@
     var inCard = e.target.closest && e.target.closest('#heroCard');
     if(inCard && D && _hero && !_hero._flipping){ var _cw=cwNow(); vvCardFlip(_hero, { swap:false, cw:_cw, prestige:D.prestige }); }   // ignore taps mid-flip
   });
+  function vvOpenNumberNote(){
+    var note=document.getElementById('dcFlagNumber'); if(!note) return;
+    var layer=note.closest('.layer'); if(layer && !layer.classList.contains('open')) layer.classList.add('open');
+    setTimeout(function(){
+      note.scrollIntoView({behavior:'smooth', block:'center'});
+      note.classList.remove('flash'); void note.offsetWidth; note.classList.add('flash');
+      setTimeout(function(){ note.classList.remove('flash'); }, 1600);
+    }, 60);
+  }
   loadCard();
   // Sequence resolves in PARALLEL with the card, never gating it: the card is the hero
   // and must paint on its own round-trip, exactly as loadCard's comment says.
@@ -3136,7 +3940,17 @@ function vvWireChronicle(){
   if(!m){ layer.style.display='none'; return; }   /* no moment -> no Chronicle */
   layer.style.display='';
   var sc = layer.querySelector('.chron-score'); if(sc) sc.textContent = m.scoreline + ' \u00b7 ' + m.date + ' \u00b7 ' + m.comp;
-  var q  = layer.querySelector('.chronicle-one'); if(q && m.quote) q.textContent = '\u201c' + m.quote + '\u201d';
+  /*  THE QUOTE GOES INTO AN INNER SPAN SO THE WASH CAN HUG THE WORDS , see `.cq` in the
+      sheet. STILL `textContent`, DELIBERATELY: `SIGNATURE_MOMENTS` is hand-authored, and it
+      stays on the escaping path rather than joining vvEmphasis, which is where untrusted
+      model output arrives. A span is a box for a highlight, not a marker parser.  */
+  var q  = layer.querySelector('.chronicle-one');
+  if(q && m.quote){
+    var cq = document.createElement('span');
+    cq.className = 'cq';
+    cq.textContent = '\u201c' + m.quote + '\u201d';
+    q.replaceChildren(cq);
+  }
   vvWireChronicleWatch(layer, m);
   var nar = layer.querySelector('.narrative');
   if(nar && m.narrative && m.narrative.length){
@@ -3159,7 +3973,7 @@ vvWireChronicle();
       <div class="sb-hint" data-vvshare="hint"></div>
       <div class="sb-opts">
         <button class="sb-opt soc" data-vvshare="social" data-vvshare-name="WhatsApp" onclick="vvShareWhatsApp()" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.54-3.7 8.24-8.25 8.24a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24zm-2.6 3.98c-.14 0-.36.05-.55.26-.19.21-.73.71-.73 1.74s.75 2.02.85 2.16c.11.14 1.47 2.25 3.58 3.16.5.22.89.35 1.19.44.5.16.96.14 1.32.08.4-.06 1.24-.5 1.42-.99.18-.49.18-.9.13-.99-.05-.09-.19-.14-.4-.25-.21-.11-1.24-.61-1.43-.68-.19-.07-.33-.1-.47.11-.14.21-.54.68-.66.82-.12.14-.24.16-.45.05-.21-.11-.88-.32-1.68-1.04-.62-.55-1.04-1.23-1.16-1.44-.12-.21-.01-.32.09-.43.1-.1.21-.24.32-.37.11-.13.14-.21.21-.35.07-.14.04-.26-.02-.37-.05-.11-.47-1.15-.65-1.57-.17-.41-.34-.36-.47-.36z"/></svg></button>
-        <button class="sb-opt soc" data-vvshare="social" data-vvshare-name="X" onclick="vvShareX()" aria-label="X"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
+        <button class="sb-opt soc" data-vvshare="social" data-vvshare-name="X" onclick="vvShareX()" aria-label="Share on X/Twitter"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
         <button class="sb-opt" onclick="vvCopyLink(this)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span> Copy link</span></button>
         <button class="sb-opt" onclick="vvSaveImage(this)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg><span> Save image</span></button>
       </div>
@@ -3170,7 +3984,7 @@ vvWireChronicle();
       <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
-      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span style="color:var(--pink-ink)">V</span> Index</span></a>
+      <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
 
@@ -3206,7 +4020,21 @@ function vvShareText(){
       control the destination's encoding, where a comma would always survive. Verified fine
       on WhatsApp, X and Instagram; if a destination is ever found mangling it, this line
       is the one to revert, NOT the caption.  */
-  return d ? (d.full+' \u00b7 '+d.year+' \u00b7 VV '+d.vv+' on VVonderXI') : 'VVonderXI \u00b7 Compare Careers. Define Legacies.';
+  /*  A KEEPER GETS ITS OWN BRANCH, NOT A DELETED SEGMENT , 2026-09-07. The score is the
+      OBJECT of "on VVonderXI" here, so removing "VV 75" from the middle leaves
+      "David de Gea \u00b7 17/18 \u00b7 on VVonderXI", which is broken English. The keeper
+      branch ends at "\u00b7 VVonderXI" instead. That is the difference between this and
+      vvShareCaption, where the score sits between two separators and can simply go.
+      WHY IT IS HERE AT ALL: this string travels BESIDE the composed image while the caption
+      is rendered INTO it, so stripping only the caption would leave a keeper post showing a
+      blank-scored card, a caption with no score, and post text reading "VV 75 on VVonderXI".
+      Same contradiction, one step further out.
+      GATED ON POSITION VIA VVCore.vvIsGKCard, the same predicate buildCard and the caption
+      use , not on a null rt, which is a data problem and must still show its gap.  */
+  if(!d) return 'VVonderXI \u00b7 Compare Careers. Define Legacies.';
+  var noScore = window.VVCore && VVCore.vvIsGKCard ? VVCore.vvIsGKCard(d) : false;
+  return noScore ? (d.full+' \u00b7 '+d.year+' \u00b7 VVonderXI')
+                 : (d.full+' \u00b7 '+d.year+' \u00b7 VV '+d.vv+' on VVonderXI');
 }
 function vvShareOut(){
   // LINK share only , the IMAGE path is vvShareCard. Kept as its own rung because a link
@@ -3286,7 +4114,10 @@ function vvShareCard(btn){
 }
 
 function vvShareX(){
-  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(vvShareText())+'&url='+encodeURIComponent(vvShareURL()),'_blank','noopener');
+  /* The handle, not the brand word , see VVCore.vvXText. X only: this is the one destination
+     where @vvonderxi is a link rather than text. WhatsApp below keeps the word. */
+  var _t=(window.VVCore&&VVCore.vvXText)?VVCore.vvXText(vvShareText()):vvShareText();
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(_t)+'&url='+encodeURIComponent(vvShareURL()),'_blank','noopener');
 }
 function vvShareWhatsApp(){
   window.open('https://wa.me/?text='+encodeURIComponent(vvShareText()+' '+vvShareURL()),'_blank','noopener');
@@ -3490,11 +4321,63 @@ function csSyncFilterUI(st){
   var bar=document.getElementById('csActive');
   if(bar) bar.innerHTML=VVFilters.renderActive(st);
   var n=(st.score.bands||[]).length + (st.score.lo!=null||st.score.hi!=null?1:0)
-      + ['league','position','profile','stage','trajectory'].reduce(function(a,k){ return a+(st[k]||[]).length; },0);
+      /*  `honours` was missing here too , the same stale-list bug as VVFilters.isActive,
+          recorded in CLAUDE.md. The badge undercounted an honours filter as zero.  */
+      + ['league','position','honours','profile','stage','trajectory'].reduce(function(a,k){ return a+(st[k]||[]).length; },0);
   var c=document.getElementById('csFCount');
   if(c) c.textContent = n ? String(n) : '';
   var b=document.getElementById('csFiltBtn');
   if(b && !document.getElementById('csFilters').hidden) b.classList.add('on');
+}
+/*  STASHED ON THE WAY OUT, OFFERED ON THE WAY IN , item 7, 2026-09-16.
+    sessionStorage is the right scope on purpose: it survives a same-tab navigation, which is
+    exactly what "moving between seasons" is, and dies with the tab. localStorage would carry a
+    filter set across days and offer it to someone who had forgotten building it.
+    beforeunload rather than a click handler on the results, because EVERY way out of this page
+    loses the filters , a result, the back button, a typed URL , and a handler bound to one of
+    them is the code-path mistake this file has already recorded three times.  */
+var CS_CARRY_KEY='vvCardSearchFilters';
+function csStashFilters(){
+  try{
+    if(!window.VVFilters || !CSF_HOST) return;
+    var st=VVFilters.readState(CSF_HOST);
+    if(VVFilters.isActive(st)) sessionStorage.setItem(CS_CARRY_KEY, JSON.stringify(st));
+  }catch(e){}
+}
+window.addEventListener('beforeunload', csStashFilters);
+function csCarryDismiss(){
+  try{ sessionStorage.removeItem(CS_CARRY_KEY); }catch(e){}
+  var el=document.getElementById('csCarry'); if(el) el.hidden=true;
+}
+function csCarryAccept(){
+  var el=document.getElementById('csCarry');
+  try{
+    var raw=sessionStorage.getItem(CS_CARRY_KEY);
+    if(raw && window.VVFilters && CSF_HOST){
+      var r=VVFilters.applyState(CSF_HOST, JSON.parse(raw));
+      /*  SAY SO WHEN SOMETHING DID NOT FIT. The card search mounts COMPACT and renders fewer
+          groups than rankings, so a carried filter can have no chip here. Applying it
+          invisibly would leave a grid narrowed by something the reader cannot see or undo.  */
+      if(r && r.skipped) console.warn('[VV] carry-over: '+r.skipped+' filter(s) have no control on this surface and were not applied.');
+    }
+  }catch(e){}
+  csCarryDismiss();
+  csOnFilters();
+}
+function csCarryOffer(){
+  var el=document.getElementById('csCarry'); if(!el || !window.VVFilters) return;
+  var st=null;
+  try{ var raw=sessionStorage.getItem(CS_CARRY_KEY); if(raw) st=JSON.parse(raw); }catch(e){}
+  if(!st || !VVFilters.isActive(st)) return;
+  /*  NAME THEM, DO NOT COUNT THEM. "Keep the 6 filters" says nothing about whether those
+      filters still make sense on this season; "band Iconic, 2 leagues, position CB" lets the
+      reader decide, which is the entire point of offering rather than assuming.  */
+  var sum=VVFilters.summarise(st, 3);
+  el.innerHTML='<span class="cc-t">Keep your filters , <span class="cc-n">'+
+    String(sum.text).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>?</span>'+
+    '<button type="button" class="cc-yes" onclick="csCarryAccept()">Keep</button>'+
+    '<button type="button" class="cc-no" onclick="csCarryDismiss()">Start fresh</button>';
+  el.hidden=false;
 }
 (function csMountFilters(){
   CSF_HOST=document.getElementById('csFilterHost');
@@ -3511,16 +4394,24 @@ function csSyncFilterUI(st){
     csOnFilters();
   });
   csSyncFilterUI();
+  csCarryOffer();
 })();
 
 function csBuildQ(sb,withSeason,nameQ,seasonYear){
+   /*  FALLBACK C , THE BROWSE/LOOKUP SPLIT. docs/KEEPER_FALLBACK_C_SPEC.md: "A keeper row
+       in an rt list is a release blocker." With NO name query this is a browse of the top 50
+       by rt , an rt list , so keepers are excluded. WITH a name query it is a lookup and the
+       rt order merely ranks the matches, so they are not.
+       THE FIRST VERSION EXCLUDED UNCONDITIONALLY AND TESTING CAUGHT IT: searching a keeper
+       by name returned "No seasons match your search", which is false of a card that exists.  */
   var q=sb.from('player_card_mv').select('*')
           .order('rt',{ascending:false,nullsFirst:false})
           .limit(nameQ ? VVCore.SEARCH_CEIL : 50);
   if(nameQ){ var sf=tokenAndFilter(nameQ); if(sf) q=q.or(sf); }
+  else { q=q.neq('position','GK'); }        // browse = an rt list, see the note above
   if(withSeason && seasonYear!=null) q=q.eq('season_year',seasonYear);
   var st=csFState();
-  if(st) q=VVFilters.applyServer(q, st, {}).query;   // server half; the client half runs in csRun
+  if(st) q=VVFilters.applyServer(q, st, { lookup: !!nameQ }).query;   // server half; the client half runs in csRun. lookup: a named search is not an rt list
   return q;
 }
 async function csRun(){

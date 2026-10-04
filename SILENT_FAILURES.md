@@ -13,7 +13,7 @@ closed history were already spent as levers, so the room had to come from §C. S
 moved; their headline sentences stayed behind, unchanged, so §C still reads top to bottom as a
 complete list of rules.
 
-**TWO MORE WERE ADDED ON 2026-08-23 and the file is now NINETEEN.** The split is not a one-off
+**[DO NOT PUT A NUMBER HERE AGAIN. THIS HEADING SAID "NINETEEN" ON 2026-08-23 AND THE FILE HAS GROWN SINCE WITHOUT THE NUMBER MOVING , count with `grep -c '^\*\*[A-Z]'` instead.]** Entries were added on 2026-08-23 and again on 2026-09-12. The split is not a one-off
 archive , it is where this class of evidence lives from now on, so a new silent failure is written
 here with its headline in §C, rather than growing §C again. The 2026-08-16 note below describes
 that original move and is left as written.
@@ -126,6 +126,15 @@ A patch script searched for `done.map(r => r[0]+...` while the file actually con
 Research tools return `player_name` + `season`, because that is what a human reads. **That pair is NOT unique.** Resolving it against the mv surfaced three live collisions in a 55-row batch, i.e. a rate high enough that it WILL happen again on any future research pass:
 - **`J. Rodríguez`** = **FIVE players, not three. CORRECTED 2026-08-21** by counting `players` directly rather than counting what one batch happened to surface: **api 517, 2616, 2979, 19169, 415155.** The originals named here were **api517 James Rodríguez** (Real Madrid / Bayern, rt 80-81), **api19169 Jay Rodriguez** (West Brom, rt 14-65) and **api2616** (LL). **The count was understated because it was derived from a 55-row batch, so it measured that batch and not the table.** A collision count that is too low weakens the very rule it exists to justify, and the rule is the identity contract every research write depends on.
 - **`João Mário`** = **api206** (Benfica, 17g, rt80) AND **api41734** (FC Porto, a full-back, rt56).
+
+**[EXTENDED 2026-09-12. THE RULE ABOVE IS WRITTEN ENTIRELY ABOUT WRITES , "matching research output on it would have WRITTEN the wrong player's card" , AND IT BITES READS TOO. THE READ CASE IS WORSE.]**
+Measuring the narrowest career-arc span, `ilike '%Eriksen%'` against `player_card_mv` returned **20 career rows for what was treated as one player**. It is two: **api 174 (C. Eriksen, 18 scored cards)** and **api 56296 (N. Frederiksen, 2)**. The substring match caught a name that merely CONTAINS the target.
+
+**WHY THE READ CASE IS THE MORE DANGEROUS OF THE TWO, AND IT IS THE OPPOSITE OF WHAT YOU WOULD EXPECT.** A bad write is loud eventually , a wrong position on a famous card gets noticed, and the diff is inspectable. **A bad read produces a number that is simply a little off.** Twenty rows instead of eighteen moved the measured span from 23.5% to 21.1% and the career length from 18 to 20. **Both are plausible. Neither trips any check.** A two-row discrepancy is exactly the size a reader waves through, and it would have been quoted into a rule entry as a measurement.
+
+**WHAT CAUGHT IT was not suspicion of the number, it was re-running the query grouped by `api_player_id` out of habit.** That is the whole remedy: **group or filter by `api_player_id`, never by a name, even for a throwaway measurement** , and if a name must be used to FIND the id, print the distinct id count and assert it is 1 before using the rows.
+
+**AND NOTE THE ASYMMETRY IN HOW THE TWO FAILURES SURFACE.** The write case has a victim you can name. The read case has only a slightly wrong number in a document, which then becomes the premise for the next decision. **`CLAUDE.md` carries this rule in its write-only form; the read case is recorded here.**
 - **`Nenê`** = **api9970** (PSG, rt 85-89) AND **api41138** (Cagliari, rt 30-58).
 
 ---
@@ -209,6 +218,127 @@ The theme-contrast harness (`_audit.js`, tracked) reads `backgroundColor` and re
 - **So "eight of ten pages report zero failures" means ZERO OF WHAT COULD BE MEASURED.** It is not a clean bill for card.html, compare.html, rankings.html, myclub.html or playbook.html.
 - **STATUS OF THOSE FIVE PAGES: PENDING USER VISUAL VERIFICATION.** A visual-pass checklist was handed to Lucas on 2026-08-08 for his real device , card faces in BOTH themes (surname, flag, sub-line, season, VV score, shirt watermark, stat labels, tag chips), deliberately including a **yellow/gold club** and a **white/light club**, since a light gradient under light text is where this breaks. **Do NOT record these pages as contrast-clean until he confirms by eye.**
 - **This is the same blind spot that hid the contact page's "Got a question?" eyebrow** , an inline-styled element at ratio 1.00 that the sweep dropped silently and that was only found because it was named by hand. A high unmeasurable count is a REASON TO LOOK, not a reason to move on.
+
+---
+
+## A LOADING CLASS APPLIED IN MARKUP AND NEVER REMOVED IS INVISIBLE UNTIL SOMETHING ADDS AN ELEMENT CHILD, THEN IT IS A LAYOUT DEFECT (found and fixed 2026-09-13)
+
+**THE SHAPE, WHICH IS THE REUSABLE PART.** A class that sets `display:flex` (or grid) is put on a
+container in the STATIC MARKUP to lay out a loading state, and the render path that later fills that
+container with real content never takes it off. **While the content is ONE TEXT NODE this is
+completely invisible** , a flex container wraps a bare text run in a single anonymous item, which
+lays out exactly like normal text. **The moment anything adds an ELEMENT child, the text splits into
+separate anonymous flex items and renders as columns.**
+
+**THE INSTANCE.** `.vquote-wait` and `.vsprose-wait` in `compare.html` share one rule:
+`color:var(--ink-soft) !important; font-style:normal; display:flex; align-items:center; gap:8px`.
+Applied at markup lines 1152/1156/1224, read at 1891 to inject the loader, **removed nowhere.**
+When `vvEmphasis` began emitting `<strong class="vvem">`, every affected paragraph became
+`text` + `<strong>` + `text` = THREE flex items in a row. Measured on the rendered page: items at
+**x687 w293, x991 w67, x1067 w236** , one sentence across three columns with the emphasised phrase
+marooned in the middle and the remainder starting mid-clause in the third.
+
+**IT WAS FIVE SLOTS, NOT THE ONE THAT WAS REPORTED.** The verdict pull-quote plus **all four Story
+paragraphs**, because `vvSetStory` builds extra paragraphs with `first.cloneNode(false)`, **which
+copies the class list**, so every paragraph inherited the wait class from the one above it.
+
+**AND THE SECOND SYMPTOM IS THE ONE NOBODY REPORTED FOR MONTHS: THE SAME RULE ALSO PINS THE LOADING
+VOICE.** Those five paragraphs rendered in `--ink-soft` grey and upright instead of cream italic ,
+the platform's prose showing in its own placeholder styling. **It looked deliberate, so it was never
+questioned.** A defect that renders as a plausible design choice has no reporter.
+
+**THE FIX IS TO MAKE THE CLASS STATEFUL, NOT TO DELETE IT.** It has a real job: `display:flex` is
+what sets the loader mark beside its label. So the wait branch now ADDS it and the content branch
+REMOVES it, in both `vvSetVerdict` and `vvSetStory`, and the clone is stripped explicitly as well as
+being cloned from an already-stripped source. **Verified round-trip:** content to wait to content,
+with zero wait classes left and the loader intact in the wait state.
+
+### THE AUDIT , NO OTHER INSTANCE ON THE PLATFORM, AND THE DISTINGUISHING TEST IS NOT THE NAME
+
+Every other loading class was checked. **`.srwait` (index.html), `.vvcard-wait` (card.html) and
+`.vwait`/`.vwaitlab` (compare.html) all set flex and are all never removed , AND NONE OF THEM IS
+THIS DEFECT.** A grep for "added once, removed never" flags all three and is the wrong test.
+
+**THE TEST IS WHETHER THE CLASS SITS ON A CONTAINER THAT SURVIVES THE STATE CHANGE.**
+- **Disposable markup, SAFE:** the class is created as part of the wait content and destroyed with
+  it. `index.html:515` builds `<div class="srwait">` inside the string it passes to `open()`;
+  `card.html:1981` writes `<div class="vvcard vvcard-wait">` into `heroCard.innerHTML`;
+  `compare.html:2277` builds `<span class="vwait">` inside `vvWaitHTML`. **Each is replaced
+  wholesale when real content arrives, so "never removed" is irrelevant , the element is gone.**
+- **Persistent container, THE DEFECT:** the class sits in the page's static markup on the element
+  whose `innerHTML` is later overwritten. Only `.vquote-wait` and `.vsprose-wait` were this.
+
+**A RENDERED CHECK THAT GENERALISES BEYOND THE NAMING, since a future one may not be called `-wait`:
+enumerate every element that computes to flex or grid, holds a run of text, and has no block-level
+element children.** Run over the verdict and the arena after the fix it returns **NONE**. That test
+does not care what the class is called, which is the point , the first version of this investigation
+went looking for `column-count` and for a multi-column layout, and **compare.html has neither.**
+
+**RELATED AND NOT THE SAME: `.glancestats` on the card is `display:flex` and CONTAINS `#glDrury`,
+which carries emphasised prose , and it is FINE.** The split only happens when the element holding
+the text runs is itself flex. `#glDrury` is a block and is one flex item; its own text lays out
+normally inside it. **Checked on the rendered card: `#glDrury`, `#scoutBody` and `#notesBody` are
+all `display:block`.**
+
+---
+
+## `scrollWidth` REPORTS "FITS" FOR TEXT THAT WRAPS, BECAUSE WRAPPING GROWS HEIGHT RATHER THAN WIDTH (2026-09-12)
+
+**THE CHECK THAT LOOKS RIGHT AND IS BLIND.** Asked whether a longer pill label clips, the obvious
+test is `el.scrollWidth > el.clientWidth`. On a `white-space: normal` element **that comparison is
+answering a different question**: if the text does not fit, it WRAPS, the element grows taller, and
+`scrollWidth` stays equal to `clientWidth`. **The test returns "fits" for every string you give it.**
+
+**MEASURED: it returned `scrollWidth === clientWidth === 63` for `"Top Assists"`, `"Top Assists, 15"`,
+`"Top Assists, 20"` AND the deliberately absurd `"Top Assists, 100"`.** Four strings of visibly
+different length, one answer. **That uniformity is the tell** , the same shape as SS C's rule that a
+perfect agreement rate is an UNDISCRIMINATING result rather than strong evidence.
+
+**THE CORRECT INSTRUMENT IS `Range.getClientRects()` ON THE TEXT NODE.** It returns **one rectangle
+per LINE BOX**, so wrapping is visible as a count, and the first rect's `right` edge gives the true
+laid-out width:
+
+    const rg = document.createRange(); rg.selectNodeContents(textNode);
+    const rects = [...rg.getClientRects()];      // rects.length > 1  =>  IT WRAPPED
+    rects[0].right > cell.getBoundingClientRect().right   // => it overflowed
+
+Measured that way: one line box in every case, cell height constant at 11.69px, and
+`"Top Assists, 20"` ending 6.96px clear of the cell edge. **The conclusion happened to be the same,
+which is exactly why this is dangerous , the blind instrument agreed with the right one here and
+would not have next time.**
+
+**AND CHECK THE ELEMENT YOU THINK YOU ARE MEASURING.** A first pass measured `.chtag`, the ROW
+container, rather than `.chtagcell`, the pill, and reported the pill width as equal to the whole
+card. A second pass measured a card rendering a SINGLE pill, where the row spans and nothing is
+constrained , **the two-up slot is only exercised when two pills are present**, so a one-pill card
+cannot test it at all.
+
+**THIS IS THE THIRD MEASUREMENT INSTRUMENT IN ONE DAY THAT REPORTED THE WRONG ANSWER CONFIDENTLY**,
+after the `range()` pagination that duplicated rows while reporting a clean pull, and the
+`assist`-matching detector that read **"Assistant referees"** as an assists table. **The pattern is
+one thing: each was a plausible proxy for the question, and none was the question.**
+
+---
+
+## A SINGLE-PAGE APP RETURNS HTTP 200 FOR EVERY PATH, INCLUDING PATHS IT WILL SILENTLY REDIRECT AWAY FROM (2026-09-12)
+
+**`fetch()` CANNOT VALIDATE A ROUTE ON AN SPA, AND NAVIGATION AND FETCH DISAGREE IN OPPOSITE
+DIRECTIONS.** Probing an external stats site for an assists leaderboard:
+- **`fetch('/stats/top/players/assists/2011-12')` returned 200** with a generic title, on every
+  season tried, which reads as "the route exists for all of them".
+- **NAVIGATING to the same URL landed on `/stats/top/players/goals/2011-12`**, title
+  *"Goals - 2011-12"*. The server hands out the same shell for any path and the CLIENT router
+  decides where you actually end up.
+
+**SO A SCRAPE THAT TRUSTED THE 200 WOULD HAVE RECORDED THE GOALS LEADER AS THE ASSISTS LEADER**,
+with no error anywhere , for the Premier League 2011/12 that is van Persie 30 instead of
+David Silva 15, and it would have looked entirely plausible.
+
+**THE CONTROL THAT SETTLED IT, AND IT INVERTED THE FIRST CONCLUSION.** The redirect first looked
+like "the archive has no assists before some season". Testing a RECENT season showed **2024-25
+redirected too**, so the season was never the variable , **the slug was simply wrong.** The real
+one is `goal-assists`, found by reading the site's own UI instead of guessing a fourth time.
+**When a URL guess fails, stop guessing and read the application's own navigation.**
 
 ---
 
@@ -507,3 +637,59 @@ assume that setting it worked , the same shape as every other instrument fault h
 instrument.** Four faults were found in this one, each after the previous fix, and the fourth was
 found only because a reported number (1.06 on a red button) looked implausible enough to hand-check.
 **Hand-check the implausible ones. The plausible wrong answers are the ones that ship.**
+
+
+---
+
+**A GENERATOR THAT WRITES TO A BARE RELATIVE PATH REPORTS SUCCESS AND PUTS THE FILE WHEREVER THE CWD HAPPENED TO BE (2026-09-12). THE SHIPPED TABLE WAS NEVER TOUCHED AND NOTHING SAID SO.**
+
+**`scripts/separability/gen_margin_table.js` ended in `fs.writeFileSync('vv-margin.js', out)`.** Its own header comment says it generates `/vv-margin.js`, the repo-root file `compare.html` loads, and the run order in `scripts/separability/README.md` is written to be executed from inside that directory. So the documented way to run it was the way that put the output in the wrong place.
+
+**IT PRINTED `wrote vv-margin.js`, WHICH IS TRUE AND USELESS.** The message names a relative path, so it is correct in every directory and identifies none of them. The run also printed a plausible card count, a plausible id span, `clamped: 0` and a plausible byte size , every downstream sanity figure was right, because the table itself was computed correctly. Only its destination was wrong.
+
+**WHAT CAUGHT IT WAS A TIMESTAMP, NOT A CHECK.** `ls -la vv-margin.js` at the repo root still read `sep 9 18:54` after a successful regeneration on 2026-09-12. **Nothing in the pipeline compares the file it wrote to the file the site loads**, so had the timestamp not been glanced at, the margin gate would have gone on serving the pre-refresh table while the session recorded the table as regenerated , and the next reader would have inherited "regenerated" as a fact.
+
+**THIS IS THE SAME FAMILY AS THE `.replace()` NO-OP AND THE SUCCESS-BEFORE-RESOLVE RULES, IN ITS SECOND FORM: the work was done, correctly, and delivered nowhere.** A no-op leaves the target unchanged and says nothing; this leaves the target unchanged and says "wrote".
+
+**FIXED IN THE GENERATOR, NOT IN THE RUNBOOK.** It now resolves `path.join(__dirname, '..', '..', 'vv-margin.js')` and prints the absolute path it actually wrote. **A runbook instruction to `cd` first is not a fix** , it puts the invariant in prose, where the next person does not read it, and the failure is silent when they do not.
+
+**THE CONTROL THAT PROVES IT, and it proves two things at once:** re-running from `scripts/separability/` now rewrites the repo-root file and leaves no stray beside the script, and the result is **byte-identical (md5 `62a5eb88...`) to the copy already there** , so the path is fixed AND the table is reproducible from the same inputs.
+
+**GENERALISE IT: any script whose product is a file another surface loads must write an ABSOLUTE path derived from `__dirname`, and must print the path it wrote.** Grep the other generators for the same shape before trusting them , `scripts/gen-radar-ref.js` writes to `/tmp` and is then pasted by hand, which has the opposite risk and is already recorded.
+
+
+---
+
+**A DEMO HARNESS THAT DOES NOT LOAD THE PAGE'S WEBFONTS IS MEASURING A DIFFERENT PAGE, AND IT FAILS IN THE DIRECTION THAT LOOKS SAFE (2026-09-12).**
+
+**THE RULE, IN ITS SHARPER FORM, AND THIS ONE SUPERSEDES THE BLANKET VERSION BELOW: THE BOUNDARY IS WHAT IS BEING MEASURED, NOT WHETHER THE PAGE IS A DEMO.**
+- **FONT-INDEPENDENT, measure freely:** counts (shelves, years, pills, rows), colours, and computed styles. A typeface cannot move any of them.
+- **FONT-DEPENDENT, the real fonts must be loaded first:** anything resting on TEXT ADVANCE , wrapping, column fit, truncation, clipping, overflow, a pill's or chip's width, and any height that follows from a line count.
+**The same applies to a real page measured before its fonts have loaded, which is why this is not a rule about demos.**
+
+**KEEP THE BLANKET RULE AS THE SAFE DEFAULT: ANY DEMO USED FOR A LAYOUT DECISION LOADS THE PAGE'S REAL FONTS AND AWAITS `document.fonts.ready` BEFORE MEASURING.** It costs one `<link>` and one `await`, and it removes the need to judge which half of the boundary you are on while you are mid-measurement. Declaring `font-family:'Inter'` is not loading it. Without the `<link>`, the browser falls through the stack to the system sans and reports confident numbers for a typeface that will never ship.
+
+**MEASURED, ON A DECISION THAT WAS ABOUT TO BE MADE.** A cabinet demo asked whether a gloss line fits beside a year in a two-column shelf at 390px. The harness set `font-family:'Inter'` and loaded nothing. **First pass: 0 of 20 glosses wrap. With Archivo and Inter actually loaded and `document.fonts.ready` awaited: 10 of 20 wrap.** The same string measures **163.3px in Inter against 154.5px in the fallback, 5.7% wider**, and the column is 178px, so the difference lands exactly on the wrap boundary.
+
+**THE DIRECTION IS THE DANGEROUS PART. The fallback was NARROWER, so the harness under-reported the problem** , it said the layout fits when it does not. A harness that exaggerated would be caught by the first screenshot; one that flatters gets approved.
+
+**AND `document.fonts.check()` LIES BEFORE A LOAD IS REQUESTED.** On a page whose text already uses Archivo, `check('800 11px Archivo')` still returned **false** until `document.fonts.load(...)` was called explicitly. **So `check()` alone is not the assertion** , call `load()` for each family and weight you care about, THEN `ready`, THEN check. A probe span measured against a known fallback is the positive control: if Inter and sans-serif return the same width, the font did not load.
+
+**THE EXPOSURE WAS AUDITED THE SAME DAY, because the rule is worthless without knowing what it invalidates. THE LIST IS HERE SO THE NEXT PERSON HITS IT BEFORE THE BUG.**
+
+**NINE HARNESSES SET A PAGE FONT FAMILY AND NEVER LOAD IT. NOT FIXED, DELIBERATELY , they are fine for counts and colours, and only a text-advance measurement makes them wrong:**
+
+        _demo_agefilter.html      _demo_gktraj.html     _demo_radar.html
+        _demo_cabinet.html        _demo_ladder.html     _demo_share.html
+        _demo_cabyears.html       _demo_mobilec.html    _demo_gkcard.html
+
+**Before measuring anything font-dependent in one of those, add the `<link>` and await `ready` , or do not trust the number.**
+
+**THREE MORE LOOK IDENTICAL TO THE FAULT AND MUST NOT BE "FIXED": `_demo_cabvstags_390`, `_demo_cabyears2_390`, `_demo_carveout_390`.** They are **iframe-only shells**. The fonts come from the framed page, not from the shell, and their own `font-family` declarations style nothing but a label. **Adding a font link to a shell fixes nothing and makes the audit read as clean when the framed page may not be.** The test is whether the harness renders the subject itself or frames another page that does.
+
+**COUNT IT, DO NOT QUOTE IT.** The figure was briefly reported as seven, by subtracting the two harnesses repaired that day from nine , but those two were repaired BEFORE the audit ran and were never in the nine. The command is
+`grep -L fonts.googleapis.com _demo_*.html | xargs grep -lE "font-family:[^;]*(Archivo|Inter|Bricolage|Barlow)"`, then separate the shells by hand.
+
+**TWO OF THE DAY'S OWN HARNESSES WERE AMONG THE FONTLESS AND BOTH WERE RE-MEASURED RATHER THAN ASSUMED SAFE.** `_demo_cabvstags` (which decided the gold pill) and `_demo_carveout` (which rejected the carve-out). **Every figure quoted from them survived**, because they were COUNTS , shelves, years, pills , and a colour, none of which a typeface can move. The panel heights re-measured identical at 858 and 631.
+
+**SO THE SHARPENED RULE IS ABOUT WHAT IS BEING MEASURED, NOT ABOUT EVERY DEMO: a count, a colour or a computed style is font-independent; anything that depends on TEXT ADVANCE , wrapping, clipping, column fit, truncation, a pill's width , is not.** The cabinet gloss failed because it was long text in a narrow column, sitting on the wrap boundary, which is precisely where typeface metrics decide. **When a measurement is near a wrap or overflow boundary, the fonts are load-bearing and nothing else about the harness matters.**

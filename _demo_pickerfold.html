@@ -1,0 +1,93 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Picker fold at 390x667 , measured, not modelled</title>
+<style>
+ :root{--cream:#F0EAD9;--muted:#a49d93;--pink:#E70443;--pink-ink:#F1688E;--ok:#4ea86b}
+ *{margin:0;padding:0;box-sizing:border-box}
+ body{background:#14100f;color:var(--cream);font:14px/1.55 Inter,system-ui;padding:24px 16px 70px}
+ .wrap{max-width:1040px;margin:0 auto}
+ h1{font-size:23px;font-weight:800;margin-bottom:3px}
+ .sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+ h2{font-size:17px;font-weight:800;margin:28px 0 6px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)}
+ .note{font-size:13px;color:var(--muted);border-left:2px solid var(--pink);padding-left:11px;margin:10px 0}
+ b{color:#fff;font-weight:600}
+ table{border-collapse:collapse;margin:12px 0;font-size:13px;width:100%}
+ th,td{text-align:left;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.09)}
+ th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+ .good{color:var(--ok);font-weight:600}.bad{color:var(--pink-ink);font-weight:600}
+ .row{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px}
+ .phone{width:210px}
+ .cap{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+ .screen{width:210px;height:359px;border:1px solid rgba(255,255,255,.2);border-radius:10px;
+   position:relative;background:#1a1614;overflow:hidden}
+ .screen i{position:absolute;left:0;right:0;font-size:9px;font-style:normal;padding:2px 5px}
+ .chrome{background:rgba(255,255,255,.05);color:var(--muted)}
+ .rail{background:rgba(231,4,67,.16);color:var(--pink-ink);border-top:1px solid rgba(231,4,67,.35)}
+ .res{background:rgba(78,168,107,.17);color:var(--ok);border-top:1px solid rgba(78,168,107,.4)}
+ .scale{font-size:11px;color:var(--muted);margin-top:5px}
+</style></head><body><div class="wrap">
+
+<h1>Picker fold at 390 x 667</h1>
+<div class="sub">Measured in a single iframe on the live <b>compare.html</b>, viewport asserted from inside
+(innerWidth 390, innerHeight 667, both phone queries matching) before any reading was taken. Not modelled.</div>
+
+<div class="note"><b>The premise was wrong in two ways, and the second one matters.</b>
+The panel does not open below the fold , it is <b>position:fixed and bottom-anchored</b> at y=667, growing
+upward. And in its <b>default state the picker is fine</b>: results render 347px tall and <b>fully visible</b>.
+<b>The defect appears only when the filters are opened</b>, which costs 255px of results.</div>
+
+<h2>What was measured</h2>
+<table>
+<tr><th>state</th><th>panel top</th><th>panel height</th><th>results top</th><th>results visible</th></tr>
+<tr><td>Default, filters closed</td><td>152</td><td>515</td><td>313</td><td class="good">347 of 347</td></tr>
+<tr><td>Filters open (today)</td><td>147</td><td>520</td><td>575</td><td class="bad">92 of 347</td></tr>
+<tr><td>Filters open, rail capped 200px</td><td>147</td><td>520</td><td>551</td><td>116 of 347</td></tr>
+<tr><td>Filters open, rail capped 140px</td><td>147</td><td>520</td><td>491</td><td class="good">176 of 347</td></tr>
+</table>
+
+<div class="note">The rail's <b>content</b> is 1,310px across 8 groups and 58 chips, but it is already
+internally bounded , it contributes about <b>321px</b> to the panel's flow, not 1,310. That is why capping it
+at 200px buys only 24px and capping at 140px buys 84px. <b>An earlier note assumed the rail pushes results
+down by its full height. It does not.</b></div>
+
+<h2>The three options, against that geometry</h2>
+<div class="row">
+ <div class="phone"><div class="cap">A , today, filters open</div>
+  <div class="screen">
+   <i class="chrome" style="top:0;height:57px">page chrome + slot</i>
+   <i class="chrome" style="top:57px;height:16px">search</i>
+   <i class="chrome" style="top:73px;height:16px">filters bar</i>
+   <i class="rail" style="top:89px;height:141px">filter rail (321px of flow)</i>
+   <i class="res" style="top:230px;height:129px">results , 92px visible</i>
+  </div><div class="scale">results start 82% of the way down the panel</div></div>
+
+ <div class="phone"><div class="cap">B , rail capped 140px + scroll</div>
+  <div class="screen">
+   <i class="chrome" style="top:0;height:57px">page chrome + slot</i>
+   <i class="chrome" style="top:57px;height:16px">search</i>
+   <i class="chrome" style="top:73px;height:16px">filters bar</i>
+   <i class="rail" style="top:89px;height:75px">rail, bounded, scrolls</i>
+   <i class="res" style="top:164px;height:195px">results , 176px visible</i>
+  </div><div class="scale">+84px of results. One declaration.</div></div>
+
+ <div class="phone"><div class="cap">C , overlay with Apply</div>
+  <div class="screen">
+   <i class="chrome" style="top:0;height:57px">page chrome + slot</i>
+   <i class="rail" style="top:57px;height:270px">filters take the screen</i>
+   <i class="chrome" style="top:327px;height:32px">Apply / Cancel</i>
+  </div><div class="scale">results hidden entirely while filtering</div></div>
+</div>
+
+<h2>Recommendation</h2>
+<div class="note"><b>B, capped at 140px, and nothing else.</b> It is one declaration in the phone media query,
+it introduces no mode and no new control, and it recovers 84 of the 255px the filters cost. <b>C is rejected</b>
+, it adds a mode and an Apply step to fix a state the reader is only in briefly, and it hides the results
+completely while they choose.
+<br><br><b>And the honest bound: B does not fully fix it.</b> Results go from 92px to 176px of 347. The
+remaining cost is the panel being bottom-anchored to a 667px viewport with 106px of chrome above the rail.
+Getting beyond 176 means changing the panel's anchoring, which is a rework of the flow and is not what was asked for.</div>
+
+<div class="note"><b>Placement rule, from CLAUDE.md SS C:</b> a media query adds no specificity. The block goes
+<b>last</b> in the sheet, and the fix is verified by reading the <b>computed value</b>, never by confirming the
+query matched. That has bitten three times in one session before.</div>
+
+</div></body></html>

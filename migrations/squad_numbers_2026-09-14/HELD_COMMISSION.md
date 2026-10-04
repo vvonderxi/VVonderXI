@@ -1,0 +1,219 @@
+# THE HELD SET , THE SECOND PASS, SCOPED (opened 2026-09-14, live while batches run)
+
+**THIS IS A COMMISSION, NOT A RESIDUE.** Every club-season the automated backfill refuses
+lands in `held.jsonl` with its reason and its card count. When the batches finish, this file
+is the whole of the next job's scope, and it is written as a scope rather than reconstructed
+from terminal output later.
+
+**THE LEDGER IS `held.jsonl`, APPEND-ONLY, ONE OBJECT PER CLUB-SEASON.** Same discipline as
+`written.jsonl` and for the same reason: a stats file gets overwritten, an append-only ledger
+does not. Fields: `key` (league|year|club), `reason`, `cards`, `title`, `wiki`, `batch`.
+
+## STATE , RUN `node scripts/squadnum/held-report.js`, DO NOT READ A TABLE FROM HERE
+
+**THE TABLE THAT USED TO SIT HERE IS DELETED RATHER THAN UPDATED.** It was accurate for one
+batch and stale by the next, which is the failure this directory has now recorded three times.
+`held-report.js` counts the ledger, names the owner per reason, and carries the reconciliation.
+
+**THE RECONCILIATION IS THE POINT AND IT HAS ALREADY EARNED ITSELF.** It asserts that every
+attempted club-season is either in `held.jsonl` or produced rows in `written.jsonl`. At batch 7
+it reported **a GAP OF 2**, and the gap was real: **a club-season can PARSE CLEANLY AND MATCH
+NOTHING**, which is a third outcome neither ledger modelled. `ERE|2010|ADO Den Haag` and
+`ERE|2010|Heerenveen` had sat in neither. They are now a reason of their own.
+- **IT ROUTES DIFFERENTLY FROM EVERYTHING ELSE HERE, WHICH IS WHY IT MATTERS.** The page was
+  found, the block was found, the roster parsed , what failed was NAME MATCHING on every card
+  in the club-season. That points at a naming convention our matcher does not handle, not at a
+  source gap. **It is the matcher's problem and it is not Fable's.**
+- **AND IT IS THE ARGUMENT FOR THE CHECK RATHER THAN FOR THE FIX.** Nothing was wrong with the
+  data and nothing would ever have complained; the two club-seasons would simply have been
+  absent from the commission, and the next pass would have inherited a scope quietly short by
+  however many of these accumulate over 1,018.
+
+**AND THE CLUB-SEASON LEDGER UNDERSTATES THE HELD POPULATION BY DESIGN , SAY BOTH NUMBERS.**
+`held.jsonl` is keyed by club-season, so a card held INSIDE a club-season that otherwise
+succeeded , its name matched no row, or matched ambiguously , never reaches it. That is **411
+more cards across batches 3 to 7 alone** (347 no-row, 64 ambiguous), and it is a FLOOR because
+batches 1 and 2 lost their stats. The report prints both figures; quoting only the club-season
+total under-reports what is actually unfilled.
+
+**THE 77 UNRECORDED ARE A SELF-INFLICTED HOLE AND ARE NAMED AS ONE.** Batches 1 and 2 ran
+before per-batch stats existed, and their skip lists were overwritten by a fixed filename.
+The club-seasons are recoverable , they are the entries in `clubseasons-done.json` that
+produced no row in `written.jsonl` , but the REASON is not, and reason is what routes them.
+**They need a read-only re-probe before the commission is handed over**, or a fifth of the
+next job arrives unsorted. `probe-dupes.js` is the pattern: resolve, parse, classify, write
+nothing.
+
+## THE DUPLICATE-NUMBER SKIP IS REFUSING CORRECT PAGES , MEASURED, NOT SUSPECTED
+
+**ALL 14 WERE RE-FETCHED AND READ (`probe-dupes.js`, `dupes-probe.json`). TWELVE ARE THE
+BENFICA SHAPE AND THE OTHER TWO ARE TOO , ZERO ARE THE KAYSERISPOR SHAPE.**
+
+- **THE BENFICA SHAPE IS REAL DATA:** a shirt freed in January is reissued, so two genuine
+  squad members share one number on a SEASON roster. Trabzonspor 2011 `#28 Ondrej Celustka |
+  Olcan Adin`; Besiktas 2012 `#7 Dentinho | Ricardo Quaresma`; Standard Liege 2014 `#11
+  Jonathan Viera | Jiloan Hamad`. Rosters run 22 to 37 with one to three numbers repeating.
+- **THE KAYSERISPOR SHAPE , the parser reading a fixture table , DOES NOT APPEAR HERE.** Its
+  signature is names that are not names (dates, scores, opponents) and most numbers repeating
+  rather than one or two. Every one of the 14 passed `looksLikeNames`.
+- **THE TWO THE CLASSIFIER CALLED UNCLEAR ARE ALSO REAL, read row by row:**
+  **Gent 2012/13** is 38 rows of genuine Belgian footballers grouped by position with six
+  repeats , the Benfica shape at a bigger club with heavier January turnover, and the
+  classifier's `repeatedCount <= 3` bar was simply too tight. **Lierse 2013/14** is 13 real
+  players with one repeat; nothing is wrong with the rows, the BLOCK IS SHORT, which is a
+  different defect and a conservative one (a player missing from the block is held as
+  "no row", never written wrongly).
+
+**AND THE DEEPER POINT: A REPEATED NUMBER CANNOT HARM THE MATCH IN THE FIRST PLACE.**
+`matchOne` matches a card on the PLAYER NAME and then reads that row's number. Two rows
+sharing `#21` under different names resolve independently and both are correct , Hazurov
+wore it, then Saidi did. The skip is guarding the number column against a collision that the
+matching never consults.
+
+**PROPOSED, NOT DONE , IT IS A WRITE-PATH CHANGE AND THE BATCHES ARE STILL RUNNING.** Replace
+the blanket duplicate skip with the extraction test the probe already implements: refuse when
+`looksLikeNames` fails, or when more than half the distinct numbers repeat (the fixture-table
+signature), and otherwise proceed. **Worth 289 cards on the 250 club-seasons seen so far**, and
+roughly four times that if the rate holds to 1,018. Changing it mid-backfill would put two
+sources of change in one write, which is the rule this job has followed since batch 0.
+
+## THREE ROUTES, NOT TWO , THE HELD SET DOES NOT SPLIT INTO "OURS" AND "FABLE'S"
+
+**THE OBVIOUS SPLIT IS A BINARY AND IT IS WRONG.** A held club-season is not either a research
+question or a parser bug; there is a third kind that is neither, and it is the one carrying a
+live risk. Route every reason to one of these three, and note that the third is the smallest
+by count and the most consequential.
+
+**ROUTE 1 , FABLE. ADJUDICATION, AND ONLY ADJUDICATION.** The multi-block pages: a page
+carrying two to five squad blocks, where something has to decide WHICH is the league season's
+roster. That is a judgement about football and about page structure, it cannot be made
+deterministically, and it is precisely what a model is for. Commission it as "pick the block,
+give your evidence", never as "read the numbers".
+
+**ROUTE 2 , THE MATCHER AND THE EXTRACTOR. OURS, AND MOSTLY MECHANICAL.** "No squad block" is
+a page shape the extractor does not know. The per-card holds inside otherwise-successful
+club-seasons , the no-row and ambiguous counts , are name-matching, and the strict three-clause
+rule is deliberately conservative there. Both are fixable in code, both are cheap, and neither
+needs an external source.
+
+**ROUTE 3 , THE ZERO-MATCH GUARD. NEITHER, AND IT MUST NOT BE HANDED TO EITHER.** A club-season
+that parsed cleanly and matched nothing. **It looks like Route 2 and it is not**, because the
+fix that Route 2 suggests , loosen the matcher until the cards fill , is the one action that
+destroys it. See the entry in this file below and the invariant in `CLAUDE.md` SS C. **Anything
+in this route is READ BY A HUMAN before anything is changed**, and the correct outcome is
+sometimes that the cards stay empty.
+
+**AND "NO PAGE" IS A FOURTH THING THAT IS NOT A ROUTE AT ALL** , the season article does not
+exist in any edition, the Portugal finding governs, and no amount of effort on our side or
+Fable's produces one. Those cards want a different source or no fill.
+
+## WHAT IS GENUINELY FABLE'S
+
+**The multi-block cases: 19 club-seasons, 389 cards.** A page carrying two to four squad blocks
+needs a judgement about which is the league season's roster, which is exactly the adjudication
+a model is for and exactly what a deterministic parser should not guess. **"No squad block"
+(29 club-seasons, 572 cards) is a parser question first** , it may be a page structure the
+extractor does not know, and that is cheaper to fix than to adjudicate.
+
+**"No page" is nobody's job.** The Portugal finding governs: for those clubs the season article
+was never written, in any edition, and searching harder cannot produce a page that does not
+exist. Those cards want a different source or no fill at all.
+
+---
+
+## THE ZERO-MATCH CATEGORY , OURS, AND IT IS A SAFETY SIGNAL RATHER THAN A DEFECT TO FIX
+
+**COUNT FIRST: 3 club-seasons in the 350 with surviving stats , a handful, not dozens.**
+`ERE|2010|ADO Den Haag`, `ERE|2010|Heerenveen`, `ERE|2012|Heerenveen`. Batches 1 and 2 cannot
+be separated, because their skip lists were clobbered. **So it is not a naming convention
+bleeding across a league, and it does not need fixing before the second pass.**
+
+**AND THE COUNT IS THE LEAST INTERESTING THING ABOUT IT. IT IS NOT A NAMING PROBLEM AT ALL ,
+IT IS THE ONLY THING THAT CAUGHT A STATISTICS TABLE BEING READ AS A SQUAD.**
+
+**HEERENVEEN , THE PARSER LANDED ON A TOP-SCORERS TABLE.** Eight rows, numbers 1, 2, 4, 5, 6,
+7, 9, 11, and names like `Assaidi Väyrynen`, `Janmaat Elm`, `Grindheim Đuričić` , TWO PLAYERS
+TIED ON A COUNT, SHARING ONE CELL. Those numbers are goal tallies, not shirts. Bas Dost on
+"#1" is the top scorer, not the goalkeeper.
+- **EVERY EXISTING GUARD WAS BLIND TO IT.** The duplicate-number check passes, because ranks
+  are distinct by construction. `looksLikeNames` passes, because two capitalised surnames look
+  exactly like a name. The club guard passes, because it IS Heerenveen's page.
+- **NOTHING WAS WRITTEN, AND THAT WAS LUCK RATHER THAN DESIGN.** Not one of our 19 cards
+  matched its 8 mangled rows, so the club-season produced nothing. **Had a single name matched
+  , our `B. Dost` against its bare `Dost` , we would have written shirt #1 for Bas Dost, a
+  goal rank, silently, and it would have looked entirely plausible on the card.**
+
+**ADO DEN HAAG IS A DIFFERENT FAULT WITH THE SAME SYMPTOM:** 11 rows carrying plausible shirt
+numbers (7, 9, 10, 13, 14, 16, 17, 19, 20, 23, 40) but ELEVEN PLAYERS WE DO NOT HOLD , Soltani,
+Milic, Knopper, Ignacio , against our 15 cards. A partial or wrong block, not a stats table.
+**Two causes, one signal.**
+
+### THE DETECTOR I TRIED DOES NOT WORK, AND THE MEASUREMENT IS WORTH MORE THAN THE IDEA
+
+The obvious guard is a shape test on the NUMBERS: a rank table reads 1, 2, 3, 4, 5, dense and
+low; a real squad is sparse and spread across 1 to 99. **Measured across all 117 written
+club-seasons, it does not separate them.**
+- **Real squads: density (count / highest number) runs min 0.09, median 0.23, p95 0.65, MAX 0.74.**
+- **The Heerenveen rank table: 0.73 , BELOW the densest real squad we have written.**
+- The densest is `RKC Waalwijk in het seizoen 2011/12` at 0.74, and it was FETCHED AND READ
+  ROW BY ROW to be sure: 23 real Dutch players, Jeroen Zoet the keeper on #1, numbers 1 to 24.
+  **Small Dutch clubs genuinely number densely**, so the premise behind the test is false for
+  the Eredivisie, which is exactly where the rank table lives.
+- **THE FIRST VERSION OF THIS TEST REPORTED "0 SUSPECT CLUB-SEASONS" AND THAT WAS NOT
+  EVIDENCE** , a positive control showed it MISSED its own motivating case, at 0.73 against a
+  0.75 bar. **A guard that never fires is indistinguishable from one that does not work**, and
+  only the control separated them.
+
+### SO THE ROUTE IS: KEEP THE SIGNAL, DO NOT FIX IT AWAY
+
+**`parsed, zero cards matched` is now a first-class reason in `held.jsonl`**, carrying the
+roster size and a sample of both name lists so a human can see the mismatch without re-fetching.
+It fired again on its first live batch, `ERE|2012|Heerenveen` in batch 8, which is what
+confirms this is a PAGE STRUCTURE and not a one-off.
+- **IT IS OURS, NOT FABLE'S.** The page was found, the block was found, the roster parsed. No
+  adjudication is needed; what is needed is an extractor that can tell a squad table from a
+  scorers table, and that is a parser question.
+- **DO NOT "FIX" IT BY LOOSENING THE MATCHER TO GET THOSE CARDS FILLED.** The zero is the
+  alarm. A looser matcher against the Heerenveen block writes goal ranks into the shirt column
+  on cards that currently stay honestly empty.
+
+
+---
+
+## THE BACKFILL IS FINISHED , FINAL STATE, 2026-09-14
+
+**1,018 OF 1,018 CLUB-SEASONS ATTEMPTED. 5,993 ROWS WRITTEN AND LIVE.** The matview was
+refreshed in one pass at the end: pre-2016 cards carrying a squad number went from **156 to
+6,149**, which is the 156 that predated this job plus exactly the 5,993 in the ledger. Sampled
+across the whole run rather than the newest batch , Benfica 2010 from batch 1 through Swansea
+2015 from batch 21 , **15 of 15 agree with the ledger**.
+
+**COVERAGE OF THE PRE-2016 TARGET WENT FROM 0.8% TO 30.4%. 14,070 CARDS REMAIN UNFILLED**, and
+that number is the honest headline: the automated pass took the third of the target that a
+deterministic parser can take, and the rest is the commission below.
+
+**SPOT DIFFS RETURNED 0 MOVERS ON ALL TWENTY-ONE BATCHES**, the largest across 5,771 cards. The
+trigger was ONE mover and it never fired, which is what batch 0 predicted from the view
+definition rather than from hope: `position_pool` reads `pp."position"` directly with no
+COALESCE, so a row carrying a null position leaves an already-null pool null.
+
+### THE THREE ROUTES, SIZED
+
+| route | reasons | club-seasons | cards |
+|---|---|---|---|
+| **1. Fable , adjudication only** | 2, 3, 4, 5 blocks | 200 | 4,015 |
+| **2. Ours , parser and matcher** | no squad block, plus 1,529+ per-card holds | 147 | 2,665 + 1,529 |
+| **3. Neither , read by a human first** | parsed, zero cards matched | 10 | 192 |
+| *not a route* | no page | 85 | 1,700 |
+| *ours, and self-inflicted* | UNRECORDED, batches 1 and 2 | 77 | 1,542 |
+| *nobody , the skip is wrong* | duplicate numbers | 121 | **2,406** |
+
+**THE LARGEST SINGLE RECOVERABLE POPULATION IS THE DUPLICATE-NUMBER SKIP, 2,406 CARDS, AND IT
+NEEDS NO RESEARCH AT ALL , THE GUARD IS SIMPLY WRONG.** All 14 sampled were the Benfica shape,
+a January reissue, and a repeated number cannot harm a match that keys on the NAME. It is the
+cheapest 2,406 cards available and it is a write-path change, which is why it was not made
+while batches were running.
+
+**THE 1,529 PER-CARD HOLDS ARE A FLOOR AND THE REAL FIGURE IS UNKNOWABLE**, because batches 1
+and 2 lost their stats. Re-probing the 77 UNRECORDED club-seasons is the first thing the second
+pass should do, since a fifth of its scope currently arrives unsorted.

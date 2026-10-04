@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Auba order</title>
+<style>body{margin:0;background:#3a3a3a;font:12px Inter,system-ui,sans-serif;color:#eee;padding:8px}
+ iframe{width:620px;height:520px;border:0;background:#fff}
+ .cap{font:700 11px Archivo,sans-serif;letter-spacing:.05em;margin:0 0 5px;white-space:pre-wrap;max-width:620px}</style>
+</head><body>
+<p class="cap" id="c1">CARD , AUBAMEYANG 2021/22 , loading</p><iframe id="f1"></iframe>
+<script>
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{
+ const f=document.getElementById('f1'), cap=document.getElementById('c1');
+ await new Promise(r=>{ f.onload=r; f.src='/card.html?id=132319&cb='+Date.now(); });
+ const d=f.contentDocument, w=f.contentWindow;
+ let t=Date.now(); while(Date.now()-t<25000){ if(d.querySelector('#trajHost .tjsvg')) break; await sleep(200); }
+ const host=d.getElementById('trajHost');
+ const lay=host?host.closest('.layer'):null; if(lay) lay.classList.add('open');
+ if(host) host.scrollIntoView({block:'center'});
+ await sleep(800);
+ const years=[...d.querySelectorAll('#trajHost .tjxl')].map(x=>x.textContent);
+ const clubs=[...d.querySelectorAll('#trajHost .tjclub.tjfit')].map(x=>x.textContent);
+ const emitted=[...d.querySelectorAll('#trajHost .tjclub')].map(x=>x.textContent);
+ /*  THE SEASON PANEL IS THE OTHER CONSUMER OF THE SAME ORDER , read it too, or this verifies
+     one surface and assumes the rest.  */
+ const panel=[...d.querySelectorAll('#seasonRows .urow, .seasonrows .urow')].map(r=>(r.textContent||'').replace(/\s+/g,' ').trim().slice(0,46));
+ cap.textContent = 'CARD AUBAMEYANG 2021/22 (card 132319)\n'
+   + ' axis years : '+years.join(' ')+'\n'
+   + ' club labels emitted : '+(emitted.join(' / ')||'(none)')+'\n'
+   + ' club labels SHOWN   : '+(clubs.join(' / ')||'(none , suppressed, 17-season chart)')+'\n'
+   + ' season panel rows   : '+(panel.slice(0,4).join('  ||  ')||'(not open)');
+ document.title='READY';
+})();
+</script></body></html>

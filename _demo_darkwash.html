@@ -1,0 +1,81 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Emphasis in dark , the wash that was never defined</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#F0EAD9;--muted:#a49d93;--pink:#E70443;--pink-ink:#F1688E;--gold:#E8B84B}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#14100f;color:var(--cream);font-family:'Inter',sans-serif;padding:24px 18px 70px;line-height:1.6}
+  .wrap{max-width:940px;margin:0 auto}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:25px;margin-bottom:5px}
+  h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;margin:30px 0 6px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1)}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:10px}
+  .note{font-size:13.5px;color:var(--muted);border-left:2px solid var(--pink);padding-left:12px;margin:12px 0}
+  b{color:#fff;font-weight:600}
+  code{font-family:ui-monospace,monospace;font-size:12.5px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+  /* the two REAL grounds, read off the live page */
+  .g{padding:18px 20px;border-radius:14px;margin:10px 0;font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;line-height:1.65}
+  .g.charcoal{background:rgb(42,36,34);color:var(--cream)}
+  .g.green{background:linear-gradient(rgb(28,96,56),rgb(15,58,34));color:rgba(243,237,224,.92)}
+  .lab{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:14px 0 2px}
+  em.x{font-style:normal;font-weight:800;color:var(--gold)}
+  em.w{font-style:normal;font-weight:800;color:var(--gold);border-radius:3px;padding:.05em .16em;margin:0 -.16em}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+  th,td{text-align:left;padding:6px 9px;border-bottom:1px solid rgba(255,255,255,.09)}
+  th{font-family:'Archivo';font-weight:800;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .pass{color:#7ddba4}.fail{color:#ff8fa3}
+  .ask{background:rgba(231,4,67,.09);border:1px solid rgba(231,4,67,.3);border-radius:12px;padding:13px 15px;margin-top:14px;font-size:14px}
+</style></head><body><div class="wrap">
+
+<h1>The wash isn't missing from the verdict. It was never defined for dark at all.</h1>
+<div class="sub"><code>--vvem-wash</code> exists only under <code>body.light</code>, and the rule that applies it is also gated on <code>body.light</code>. In dark, emphasis is gold ink and nothing else, on every prose surface, on both pages.</div>
+
+<div class="note"><b>And there are two grounds, not one</b> , read off the live page, not the stylesheet. The verdict quote sits on solid <code>rgb(42,36,34)</code>. The story prose sits on the Under-the-Lights <b>green gradient</b>, <code>rgb(28,96,56) → rgb(15,58,34)</code>. <b>One wash value cannot serve both.</b> There is already precedent for splitting: <code>--vvem-ink</code> carries two values, and its own comment says that is "because the ground moves, not because the theme does".</div>
+
+<h2>Today , ink only</h2>
+<div class="lab">verdict quote , solid charcoal</div>
+<div class="g charcoal">Nine <em class="x">non-penalty strikes</em> in a season where the team scored fifty-one, and the two that mattered came in the same eleven minutes at Anfield.</div>
+<div class="lab">story prose , green gradient</div>
+<div class="g green">He arrived as a <em class="x">converted winger</em> and left as the reference point for the position, which is not a thing that happens twice in one career.</div>
+
+<h2>Proposed , a wash per ground</h2>
+<div class="lab">A , warm charcoal lift <span style="font-family:ui-monospace">#3A3026</span></div>
+<div class="g charcoal">Nine <em class="w" style="background:#3A3026">non-penalty strikes</em> in a season where the team scored fifty-one, and the two that mattered came in the same eleven minutes at Anfield.</div>
+<div class="lab">B , deeper lift <span style="font-family:ui-monospace">#43371F</span></div>
+<div class="g charcoal">Nine <em class="w" style="background:#43371F">non-penalty strikes</em> in a season where the team scored fifty-one, and the two that mattered came in the same eleven minutes at Anfield.</div>
+<div class="lab">C , on the green, a darkened green <span style="font-family:ui-monospace">#0C3A21</span></div>
+<div class="g green">He arrived as a <em class="w" style="background:#0C3A21">converted winger</em> and left as the reference point for the position, which is not a thing that happens twice in one career.</div>
+<div class="lab">D , on the green, a warm tint <span style="font-family:ui-monospace">#194A2E</span></div>
+<div class="g green">He arrived as a <em class="w" style="background:#194A2E">converted winger</em> and left as the reference point for the position, which is not a thing that happens twice in one career.</div>
+
+<h2>Measured, not judged by eye</h2>
+<div class="sub">Gold <code>#E8B84B</code> against each candidate, computed in this page. The bar for body text is 4.5.</div>
+<table id="t"><tr><th>ground / wash</th><th class="n">contrast</th><th>verdict</th><th class="n">wash vs its ground</th></tr></table>
+<div class="note"><b>The second column is the one that decides it.</b> A wash that clears 4.5 against the ink but sits 1.05 from the ground around it is invisible , it reads as no wash at all, which is where we are now. It has to separate from BOTH.</div>
+
+<div class="ask"><b>Pick one per ground</b>, or say the wash is wrong for dark and the answer is a heavier ink. My reading: <b>A on the charcoal and D on the green</b> , both lift enough to read as a marked phrase without becoming a highlighter, and both keep the gold comfortably over the bar.</div>
+
+<script>
+ const L=c=>{const s=c.map(v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4)});return 0.2126*s[0]+0.7152*s[1]+0.0722*s[2]};
+ const R=(a,b)=>{const l1=L(a),l2=L(b);return ((Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05))};
+ const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+ const GOLD=hex('#E8B84B');
+ const rows=[
+   ['charcoal , no wash (today)','#2A2422','#2A2422'],
+   ['charcoal , A #3A3026','#3A3026','#2A2422'],
+   ['charcoal , B #43371F','#43371F','#2A2422'],
+   ['green , no wash (today)','#143C22','#143C22'],
+   ['green , C #0C3A21','#0C3A21','#143C22'],
+   ['green , D #194A2E','#194A2E','#143C22'],
+ ];
+ const t=document.getElementById('t');
+ rows.forEach(([n,wash,grd])=>{
+   const ink=R(GOLD,hex(wash)), sep=R(hex(wash),hex(grd));
+   const tr=document.createElement('tr');
+   tr.innerHTML='<td>'+n+'</td><td class="n">'+ink.toFixed(2)+'</td>'
+     +'<td class="'+(ink>=4.5?'pass':'fail')+'">'+(ink>=4.5?'clears 4.5':'under 4.5')+'</td>'
+     +'<td class="n">'+(sep===1?'—':sep.toFixed(2))+'</td>';
+   t.appendChild(tr);
+ });
+</script>
+</div></body></html>

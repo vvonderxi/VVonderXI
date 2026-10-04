@@ -1,0 +1,49 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emphasis , ink against wash</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800;900&family=Inter:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F0EAD9;--charcoal:#1C1B1A;--mut:rgba(243,237,224,.52);
+  --surf-hero:#2A2422;--gold:#E8B84B;--wash:rgba(232,184,75,.18);--washink:#E8B84B}
+.light{--surf-hero:#FFFFFF;--mut:#5f594e;--gold:#9A6B00;--wash:#F6E6BC;--washink:#5c4008}
+*{box-sizing:border-box}
+body{margin:0;background:#141210;color:var(--cream);font:400 15px Inter,system-ui,sans-serif;padding:30px 18px 80px}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font:900 21px Archivo;margin:0 0 6px}
+p.sub{color:var(--mut);font-size:12.5px;line-height:1.6;max-width:80ch;margin:0 0 20px}
+p.sub b{color:var(--cream);font-family:Archivo;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.col h2{font:800 11px Archivo;letter-spacing:.12em;text-transform:uppercase;color:#E8B84B;margin:0 0 6px}
+.col .n{font:400 11.5px/1.5 Inter;color:var(--mut);margin:0 0 12px;min-height:44px}
+.stage{border-radius:16px;padding:16px;margin-bottom:14px;background:#141011}
+.stage.light{background:#EFE8DA}
+.gnd{background:var(--surf-hero);border-radius:14px;padding:20px 18px;text-align:center}
+.lbl{font:800 10px Archivo;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:9px;display:block}
+.vquote{font-family:'Bricolage Grotesque';font-style:italic;font-weight:600;font-size:18.5px;
+  line-height:1.6;color:var(--cream);margin:0}
+.light .vquote{color:var(--charcoal)}
+/* A , ink only, what ships now */
+.A .vvem{font-style:normal;font-weight:800;color:var(--gold)}
+/* B , the wash: ink on its own pale ground */
+.B .vvem{font-style:normal;font-weight:800;color:var(--washink);
+  background:var(--wash);border-radius:5px;padding:1px 6px;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone}
+</style></head><body><div class="wrap">
+<h1>Emphasis , ink alone against ink on a wash</h1>
+<p class="sub">A is what ships now, with the light gold already lifted to <b>#9A6B00</b>. B separates by
+GROUND instead: the phrase sits on its own pale gold, so both inks stay high-contrast and the ratio
+wall stops binding. Measured , <b>light: ink on wash 7.74</b> against 4.69 for ink on white;
+<b>dark: 7.13</b>. The wash itself is 1.24 against the page, which is all it needs: a wash is SEEN,
+not READ.</p>
+<div class="grid" id="g"></div>
+<script>
+var Q='The record gives this to Ronaldo, but **eleven goals to seven** is narrower than the tally suggests, and **a dribble success rate of 70 percent** says the other man was doing something else entirely.';
+function em(s){return s.replace(/\*\*([^*\n]{1,120}?)\*\*/g,'<strong class="vvem">$1</strong>');}
+document.getElementById('g').innerHTML=[['A','Ink only , shipping now'],['B','Ink on a wash']].map(function(t){
+  return '<div class="col '+t[0]+'"><h2>'+t[0]+' , '+t[1]+'</h2>'+
+    '<div class="n">'+(t[0]==='A'?'Colour and the upright cut do all the work. In light the gold must clear 4.5 on white, which caps how bright it can be.':'The ink no longer sits on the page ground, so it is free of that cap. The phrase reads as marked rather than merely coloured.')+'</div>'+
+    ['','light'].map(function(m){return '<div class="stage '+m+'"><div class="gnd"><span class="lbl">The Verdict</span><p class="vquote">&ldquo;'+em(Q)+'&rdquo;</p></div></div>';}).join('')+
+    '</div>';
+}).join('');
+</script></div></body></html>

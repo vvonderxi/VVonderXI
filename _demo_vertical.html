@@ -1,0 +1,153 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vertical , the season axis has no gesture and no cue</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:#12110f;color:#F3EDE0;padding:26px 20px 70px}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:25px;margin-bottom:6px}
+  .sub{font-size:14px;line-height:1.6;color:rgba(243,237,224,.62);max-width:78ch;margin-bottom:18px}
+  .finding{border-left:3px solid #E70443;background:rgba(231,4,67,.07);padding:14px 16px;
+    border-radius:0 10px 10px 0;margin-bottom:26px;max-width:92ch}
+  .finding b{color:#F1688E}
+  .finding p{font-size:13.5px;line-height:1.65;color:rgba(243,237,224,.82)}
+  .finding p+p{margin-top:9px}
+  .row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .col{width:390px;flex:0 0 auto}
+  .ch{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.11em;
+    text-transform:uppercase;color:#E8B84B;margin-bottom:5px}
+  .ch.rec{color:#5ED39E}
+  .cd{font-size:12.5px;line-height:1.55;color:rgba(243,237,224,.6);margin-bottom:10px;min-height:72px}
+  .frame{position:relative;width:390px;height:660px;border-radius:14px;overflow:hidden;
+    border:1px solid rgba(255,255,255,.14);background:#000}
+  iframe{width:390px;height:660px;border:0;display:block}
+  .verdict{margin-top:30px;max-width:92ch;font-size:13.5px;line-height:1.7;color:rgba(243,237,224,.8)}
+  .verdict h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;margin:22px 0 7px;color:#F3EDE0}
+  .verdict li{margin:5px 0 0 18px}
+  code{font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px}
+</style></head><body>
+
+<h1>Item 2 , the vertical cue</h1>
+<div class="sub">Three cues on the real card, at 390. Judge the CUE, not the card.</div>
+
+<div class="finding">
+  <p><b>THE PREMISE NEEDS CORRECTING BEFORE THE CUE IS CHOSEN: THERE IS NO VERTICAL SWIPE TO AFFORD.</b>
+  The card's touch handler locks an axis during the gesture and then, at <code>touchend</code>,
+  runs <code>if(axis!=='x') return;</code> , a vertical drag is abandoned as a page scroll and
+  never reaches any navigation. Seasons change only by tapping a row in the "View all N seasons"
+  panel. So the reason the vertical swipe was never discovered is that it does not exist.</p>
+  <p><b>AND THE MISSING GESTURE IS NOT AN OVERSIGHT, IT IS A CONFLICT.</b> To page vertically the
+  card must call <code>preventDefault</code> for the whole gesture, exactly as the horizontal
+  lock already does. On a phone the card fills most of the screen, so that traps the page's own
+  scroll behind the largest object on it. The horizontal axis can take the whole gesture because
+  the page never scrolls sideways. The vertical axis cannot.</p>
+  <p><b>WHICH IS WHY THE CUE IS NOT A MIRROR OF THE PEEK.</b> The peek works by cutting a card off
+  at a frame edge, and there is no vertical frame edge to cut against , only the page continuing
+  underneath. B below draws that mirror so the failure is visible rather than argued.</p>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="ch rec">A , the year becomes the control (recommended)</div>
+    <div class="cd">The season is what changes, so the season is what carries the control. Chevrons in the horizontal arrows' weight and ink, on the card's own year. Discoverable at rest, no gesture required, no scroll trapped.</div>
+    <div class="frame"><iframe data-cue="a" src="card.html?id=130728"></iframe></div>
+  </div>
+  <div class="col">
+    <div class="ch">B , the literal mirror, a vertical peek</div>
+    <div class="cd">A sliver of the next season's card below the hero, the peek rotated 90 degrees. Shown because it is the obvious answer: it reads as a rendering fault rather than an affordance, and it promises a drag the page will steal.</div>
+    <div class="frame"><iframe data-cue="b" src="card.html?id=130728"></iframe></div>
+  </div>
+  <div class="col">
+    <div class="ch">C , a season rail beside the card</div>
+    <div class="cd">One tick per season down the card's edge, the current one filled. Says how many seasons exist and where this one sits, which the year alone cannot. Costs a strip of width the card does not have at 390.</div>
+    <div class="frame"><iframe data-cue="c" src="card.html?id=130728"></iframe></div>
+  </div>
+</div>
+
+<div class="verdict">
+  <h2>What I land on, and why</h2>
+  <p><b>A.</b> The horizontal cue's grammar is not "show a cut edge" , that is its mechanism. Its
+  grammar is <i>put a control on the thing that moves, in the page's own ink</i>: arrows flank the
+  card because the card is what changes. On the vertical axis the thing that changes is the
+  season, and the season is already printed on the card face. Putting the chevrons there says the
+  same sentence on the other axis, and it is the only one of the three that works with no gesture
+  at all , which matters, because the gesture is the part that conflicts with page scroll.</p>
+  <p><b>B fails on its own terms.</b> A peek needs a frame edge to be cut off by. The card's
+  bottom edge has the page behind it, not a frame, so the sliver reads as a second card that has
+  half-loaded. It also advertises precisely the drag that the scroll conflict makes unwise.</p>
+  <p><b>C is the honest runner-up</b> and says more than A does , it discloses the number of
+  seasons. It is rejected at 390 on width: the rail either eats the card's own width or sits over
+  it, and the card is already measured as crowded below <code>--cw</code> 190.</p>
+  <h2>The decision A still leaves open</h2>
+  <p>A works whether or not the vertical swipe is ever built. If you do want the gesture too, it
+  needs its own ruling on the scroll conflict, and there is a narrow version that avoids it: page
+  vertically only when the gesture starts ON the card face and the page is already at scroll top.
+  That is a real rule with real edge cases, and it is a separate decision from this cue.</p>
+</div>
+
+<script>
+/*  EACH FRAME GETS ONE CUE, INJECTED INTO THE REAL PAGE , no mock card, so what is judged is
+    the cue against the shipping card rather than against a drawing of it. The card is left
+    entirely alone; every cue is added, nothing existing is restyled.  */
+var CUE = {
+  a: function(d, w){
+    var yr = d.querySelector('#heroCard .yr'); if(!yr) return 'no .yr';
+    var wrap = d.createElement('div');
+    wrap.style.cssText='position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);'+
+      'display:flex;flex-direction:column;gap:2px;line-height:1';
+    wrap.innerHTML =
+      '<span style="font:900 11px Archivo;color:rgba(243,237,224,.62)">&#9650;</span>'+
+      '<span style="font:900 11px Archivo;color:rgba(243,237,224,.62)">&#9660;</span>';
+    yr.style.position='relative';
+    yr.appendChild(wrap);
+    return 'ok';
+  },
+  b: function(d, w){
+    var hero = d.getElementById('heroCard'); if(!hero) return 'no hero';
+    var card = hero.querySelector('.vvcard'); if(!card) return 'no .vvcard';
+    var r = card.getBoundingClientRect();
+    var peek = d.createElement('div');
+    peek.style.cssText='position:absolute;left:50%;transform:translateX(-50%);width:'+Math.round(r.width)+
+      'px;height:34px;overflow:hidden;opacity:.5;filter:saturate(.75);pointer-events:none;z-index:0;'+
+      'top:'+Math.round(hero.offsetTop+r.height+4)+'px';
+    var clone = card.cloneNode(true);
+    clone.style.cssText += ';margin:0';
+    peek.appendChild(clone);
+    hero.parentNode.style.position='relative';
+    hero.parentNode.appendChild(peek);
+    return 'ok';
+  },
+  c: function(d, w){
+    var hero = d.getElementById('heroCard'); if(!hero) return 'no hero';
+    var card = hero.querySelector('.vvcard'); if(!card) return 'no .vvcard';
+    var r = card.getBoundingClientRect();
+    var rail = d.createElement('div');
+    /*  INSIDE the card's right gutter, not outside it , the first placement put the rail at
+        the card edge + 12px and most of it fell off a 390 frame, which would have had Lucas
+        judging C on a clipping artefact rather than on the idea. It now sits in the margin
+        the card already leaves, which is also the honest test of whether that margin is
+        wide enough to hold it.  */
+    rail.style.cssText='position:absolute;top:'+Math.round(hero.offsetTop+r.height*0.18)+'px;'+
+      'left:calc(50% + '+Math.round(r.width/2+5)+'px);display:flex;flex-direction:column;gap:7px;z-index:3;align-items:flex-start';
+    var n=13, cur=0, h='';
+    for(var i=0;i<n;i++) h += '<i style="display:block;width:'+(i===cur?14:9)+'px;height:2px;border-radius:2px;'+
+      'background:'+(i===cur?'#E8B84B':'rgba(243,237,224,.28)')+'"></i>';
+    rail.innerHTML=h;
+    hero.parentNode.style.position='relative';
+    hero.parentNode.appendChild(rail);
+    return 'ok';
+  }
+};
+document.querySelectorAll('iframe[data-cue]').forEach(function(f){
+  f.addEventListener('load', function(){
+    setTimeout(function(){
+      try{
+        var d=f.contentDocument, w=f.contentWindow;
+        var r=CUE[f.getAttribute('data-cue')](d,w);
+        console.log('[cue '+f.getAttribute('data-cue')+']', r);
+      }catch(e){ console.warn('[cue '+f.getAttribute('data-cue')+'] failed', e); }
+    }, 2600);
+  });
+});
+</script>
+</body></html>

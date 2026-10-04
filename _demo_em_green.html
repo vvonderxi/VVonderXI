@@ -1,0 +1,196 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emphasis , gold, green, wash (demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Inter:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:400 15px/1.6 Inter,system-ui,sans-serif;background:#0f0d0c;color:#F3EDE0}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 20px 80px}
+h1{font:900 26px/1.15 Archivo;letter-spacing:-.02em;margin:0 0 6px}
+.sub{font:400 14px/1.55 Inter;color:rgba(243,237,224,.6);margin:0 0 4px;max-width:74ch}
+.rule{font:400 13px/1.6 Inter;color:rgba(243,237,224,.52);margin:14px 0 0;max-width:74ch;
+  border-left:2px solid rgba(232,184,75,.5);padding:2px 0 2px 13px}
+.rule b{color:#E8B84B;font-weight:700}
+
+h2{font:800 11.5px Archivo;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(243,237,224,.45);margin:40px 0 12px}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+
+.cell{border-radius:16px;overflow:hidden;border:1px solid rgba(243,237,224,.12)}
+.cellh{font:800 10.5px Archivo;letter-spacing:.09em;text-transform:uppercase;padding:9px 14px;
+  display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.cellh .m{font-weight:600;letter-spacing:.02em;text-transform:none;opacity:.72}
+.pane{padding:20px 20px 22px}
+
+/* ── the two grounds, exactly as the product paints them ───────────────────── */
+.dark  .cellh{background:#221f1c;color:rgba(243,237,224,.72)}
+.dark  .pane{background:linear-gradient(180deg,#1c3a2b,#15281f)}
+.light .cellh{background:#EFE8DA;color:#5f594e}
+.light .pane{background:#FBF8F2}
+
+/* body prose , compare's .vsprose, both themes, verbatim values */
+.pr{font-family:'Bricolage Grotesque',Archivo,serif;font-weight:600;font-style:italic;
+  font-size:16px;line-height:1.62;margin:0}
+.pr + .pr{margin-top:.7em}
+.dark  .pr{color:rgba(243,237,224,0.92)}
+.light .pr{color:#33302a}
+
+/* emphasis , the shipping rule, with the ink swapped per cell */
+.pr em{font-style:normal;font-weight:800;font-family:'Bricolage Grotesque',Archivo,serif}
+
+.dark  .gold em{color:#E8B84B}
+.light .gold em{color:#9A6B00}
+.dark  .green em{color:#E8B84B}
+.light .green em{color:#2B8354}
+
+/*  THE WASH VALUES ARE _demo_wash.html's, VERBATIM, AND THE LIGHT INK IS NOT #9A6B00.
+    On a wash the ink is free to go darker, because the WASH is now carrying the signal that
+    this run is emphasised. #5C4008 on white would read as near-black and fail as emphasis on
+    its own; on a gold wash it reads as emphasis because the wash says so, not the ink.  */
+.wash em{border-radius:4px;padding:.06em .3em;margin:0 -.06em}
+.dark  .wash em{color:#E8B84B;background:rgba(232,184,75,.18)}
+.light .wash em{color:#5C4008;background:#F6E6BC}
+
+.ms{margin:11px 0 0;font:400 11.5px/1.5 Inter;font-style:normal}
+.dark  .ms{color:rgba(243,237,224,.40)}
+.light .ms{color:#6d675e}
+.ms b{font-weight:700}
+.pass{color:#4FBF84}.fail{color:#FF7D97}
+.light .pass{color:#1F6F45}.light .fail{color:#AD0332}
+
+.note{margin:22px 0 0;padding:18px 20px;border-radius:14px;border:1px solid rgba(243,237,224,.13);
+  background:rgba(255,255,255,.035);font:400 13.5px/1.62 Inter;color:rgba(243,237,224,.76);max-width:78ch}
+.note h3{font:800 11.5px Archivo;letter-spacing:.1em;text-transform:uppercase;margin:0 0 9px;color:#E8B84B}
+.note h3.stop{color:#FF7D97}
+.note p{margin:0 0 9px}.note p:last-child{margin:0}
+.note b{color:#F3EDE0;font-weight:700}
+.note code{font:600 12.5px ui-monospace,Menlo,monospace;color:#E8B84B}
+table{border-collapse:collapse;margin:10px 0 2px;font:400 12.5px Inter}
+th,td{text-align:left;padding:5px 16px 5px 0;border-bottom:1px solid rgba(243,237,224,.1)}
+th{font:700 10.5px Archivo;letter-spacing:.07em;text-transform:uppercase;color:rgba(243,237,224,.5)}
+td.n{font-variant-numeric:tabular-nums}
+</style></head><body><div class="wrap">
+
+<h1>Light-mode emphasis , gold against green, and both against the wash</h1>
+<p class="sub">Item 20f. Every cell is the real <code>.vsprose</code> stack: Bricolage 600 italic at
+16px, emphasis at 800 upright, on the grounds the product actually paints.</p>
+
+<p class="rule"><b>The finding to read first: on light, hue cannot help you.</b> The body ink is
+13.15 against white, so separation from it is always 13.15 divided by contrast on white. The two
+things we want are <b>reciprocal</b>. At the AA floor of 4.5 the best possible separation from the
+body ink is <b>2.92, for any colour that exists</b>. Gold at 4.69 gets 2.80. There is 0.12 of
+headroom in the entire colour space. That is why cell 2 is a different colour and identical
+numbers, and why the wash is the only thing that moves.</p>
+
+<h2>1 , Gold, the landed value</h2>
+<div class="grid">
+  <div class="cell dark"><div class="cellh"><span>Dark</span><span class="m">#E8B84B</span></div>
+    <div class="pane gold">
+      <p class="pr">He arrived as a runner and left as a metronome. <em>Fifteen assists</em> from a
+      position that is not supposed to produce them, and he did it in a team that finished fourth.</p>
+      <p class="pr">The season is not a peak. It is the <em>hinge</em> the rest of the career turns on.</p>
+      <p class="ms">on the green panel <b class="pass">10.51</b> &nbsp;·&nbsp; against body ink <b>1.34</b></p>
+    </div></div>
+  <div class="cell light"><div class="cellh"><span>Light</span><span class="m">#9A6B00</span></div>
+    <div class="pane gold">
+      <p class="pr">He arrived as a runner and left as a metronome. <em>Fifteen assists</em> from a
+      position that is not supposed to produce them, and he did it in a team that finished fourth.</p>
+      <p class="pr">The season is not a peak. It is the <em>hinge</em> the rest of the career turns on.</p>
+      <p class="ms">on ground <b class="pass">4.69</b> on white, <b>4.42</b> on this panel &nbsp;·&nbsp; against body ink <b>2.80</b></p>
+    </div></div>
+</div>
+
+<h2>2 , Green at gold's exact luminance</h2>
+<div class="grid">
+  <div class="cell dark"><div class="cellh"><span>Dark</span><span class="m">#E8B84B , unchanged</span></div>
+    <div class="pane green">
+      <p class="pr">He arrived as a runner and left as a metronome. <em>Fifteen assists</em> from a
+      position that is not supposed to produce them, and he did it in a team that finished fourth.</p>
+      <p class="pr">The season is not a peak. It is the <em>hinge</em> the rest of the career turns on.</p>
+      <p class="ms">gold kept for dark, as proposed</p>
+    </div></div>
+  <div class="cell light"><div class="cellh"><span>Light</span><span class="m">#2B8354</span></div>
+    <div class="pane green">
+      <p class="pr">He arrived as a runner and left as a metronome. <em>Fifteen assists</em> from a
+      position that is not supposed to produce them, and he did it in a team that finished fourth.</p>
+      <p class="pr">The season is not a peak. It is the <em>hinge</em> the rest of the career turns on.</p>
+      <p class="ms">on ground <b class="pass">4.42</b> &nbsp;·&nbsp; against body ink <b>2.80</b> &nbsp;·&nbsp; <b>identical to gold, to two decimals, measured in this page</b></p>
+    </div></div>
+</div>
+
+<h2>3 , The wash, both themes</h2>
+<div class="grid">
+  <div class="cell dark"><div class="cellh"><span>Dark</span><span class="m">#E8B84B on gold .18</span></div>
+    <div class="pane wash">
+      <p class="pr">He arrived as a runner and left as a metronome. <em>Fifteen assists</em> from a
+      position that is not supposed to produce them, and he did it in a team that finished fourth.</p>
+      <p class="pr">The season is not a peak. It is the <em>hinge</em> the rest of the career turns on.</p>
+      <p class="ms">ink on wash <b>7.45</b> &nbsp;·&nbsp; wash against panel <b>1.41</b> &nbsp;·&nbsp; <b>ink-only dark is 10.51, so the wash COSTS contrast here</b></p>
+    </div></div>
+  <div class="cell light"><div class="cellh"><span>Light</span><span class="m">#5C4008 on #F6E6BC</span></div>
+    <div class="pane wash">
+      <p class="pr">He arrived as a runner and left as a metronome. <em>Fifteen assists</em> from a
+      position that is not supposed to produce them, and he did it in a team that finished fourth.</p>
+      <p class="pr">The season is not a peak. It is the <em>hinge</em> the rest of the career turns on.</p>
+      <p class="ms">ink on wash <b class="pass">7.74</b> &nbsp;·&nbsp; wash against panel <b>1.17</b> &nbsp;·&nbsp; <b>ink-only light is 4.42 on this panel</b></p>
+    </div></div>
+</div>
+
+<div class="note">
+  <h3>The numbers, side by side</h3>
+  <table>
+    <tr><th>candidate</th><th>on white</th><th>on #FBF8F2</th><th>on the card's cream</th><th>vs body ink</th></tr>
+    <tr><td>#9A6B00 gold, landed</td><td class="n">4.69</td><td class="n">4.42</td><td class="n">3.90</td><td class="n">2.80</td></tr>
+    <tr><td>#7e5a10 gold, previous</td><td class="n">6.26</td><td class="n">5.90</td><td class="n">5.21</td><td class="n">2.10</td></tr>
+    <tr><td>#2E8C5A , the platform green as it stands</td><td class="n fail">4.19</td><td class="n">3.95</td><td class="n">3.48</td><td class="n">3.14</td></tr>
+    <tr><td>#2B8354 , that green at gold's luminance</td><td class="n">4.69</td><td class="n">4.42</td><td class="n">3.90</td><td class="n">2.80</td></tr>
+  </table>
+  <p>The platform green as it stands <b class="fail">fails AA at 4.19</b>. Darkening it to pass
+  costs exactly the separation it gained, because of the reciprocal above. There is no green that
+  escapes the wall and no gold either.</p>
+</div>
+
+<div class="note">
+  <h3 class="stop">Before aesthetics: CLAUDE.md settles this one</h3>
+  <p><b>Under-the-Lights green is Compare-only by locked rule</b> , "Compare headings and finding
+  boxes. Standard tone everywhere else, do NOT bleed the green into card, rankings, playbook."</p>
+  <p>Emphasis is not a Compare feature. <code>.vvem</code> renders on the card's Scout Report and
+  Commentator's Notes as well. <b>So green emphasis is precisely the bleed that rule exists to
+  prevent</b>, and it would arrive on the card by a route the rule did not anticipate rather than
+  by anyone deciding to put it there.</p>
+  <p>Two supporting points, in case the rule is ever revisited. <b>Green next to green:</b>
+  Compare's finding boxes are green panels, so green emphasis inside and beside them loses the
+  thing emphasis is for. <b>The link question:</b> the platform's only coloured inline ink on light
+  is <code>--pink-ink #AD0332</code> and there is no blue inline text anywhere, so nothing here
+  trains a reader to read colour as a link. Green reads as valid or correct, which is its own
+  problem on a page making claims. Gold reads as neither, because gold is already the emphasis
+  colour in dark and the light value is continuous with something the reader has met.</p>
+</div>
+
+<div class="note">
+  <h3>What I would take</h3>
+  <p><b>Keep gold on light. The wash helps in light and hurts in dark, and I had that wrong.</b>
+  Measured in this page rather than quoted: light ink-on-wash is <b>7.74</b> against <b>4.42</b>
+  ink-only on the same panel, a real gain. <b>Dark ink-on-wash is 7.45 against 10.51 ink-only, so
+  in dark the wash COSTS contrast.</b> An earlier note of mine put dark at 7.13 and light at 7.74
+  as though they were the same treatment winning twice. They are not.</p>
+  <p>And the light gain is not the wall being beaten, it is the wall being sidestepped. The wash
+  cell's ink is <b>#5C4008</b>, not #9A6B00 , far darker than anything that could work as emphasis
+  on white, where it would read as near-black. The proof is in the same row: that ink measures
+  <b>1.37 against the body ink</b>, which is to say it is very nearly the same darkness as the
+  text around it and would be invisible as emphasis on its own. It works here because <b>the wash
+  carries the signal and the ink no longer has to</b>. That is the real argument for a wash, and it is
+  stronger than the contrast number: emphasis stops being a thing you READ and becomes a thing
+  you SEE, which is why wash-against-page at 1.24 is correct rather than a failure.</p>
+  <p><b>So the wash is a two-theme decision, not one treatment.</b> If it is taken, dark keeps
+  ink-only and light takes the wash, or dark takes a wash tuned to gain rather than lose. Do not
+  take one wash for both on the strength of the light cell.</p>
+  <p>The thing the numbers cannot settle: the wash gives every marked run a visible block, so a
+  paragraph with four marks reads as striped. Cells 3 carry two marks each, the low end of what
+  rule 4 asks for. Look at density, not at the ratio.</p>
+</div>
+
+</div></body></html>

@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Page transitions , three options</title>
+<!--  ══════════════════════════════════════════════════════════════════════════════════════
+      PAGE TRANSITIONS , DEMO ONLY. Lucas's item 8 of ten, unbuilt. Nothing here ships.
+
+      IT NAVIGATES FOR REAL, and that is the whole reason this is two pages in one file rather
+      than one page faking it. Option C is a CROSS-DOCUMENT transition: the browser has to
+      unload one document and load the next for it to happen at all, so a demo that swaps a
+      div would be showing something else and calling it the same. `?p=1` and `?p=2` are real
+      navigations to the same file.
+
+      THE FONTS AND TOKENS ARE THE PLATFORM'S, not this demo's , SEC C records that a demo
+      supplying its own values cannot test the page's values, and that a demo introducing a
+      face the target does not load is proposing two changes while naming one.
+
+      WHAT THIS CANNOT SHOW, SAID PLAINLY: how a transition FEELS on a mid-range phone over a
+      real network. Every option below is measured here on localhost with a warm cache, where
+      a page load is a few milliseconds and a transition is therefore the whole experience.
+      On a cold 4G load the page is slower than any of these curves and the transition is a
+      smaller part of it. Judge the shape here; judge the feel on a device.
+      ══════════════════════════════════════════════════════════════════════════════════════  -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+ :root{--cream:#F0EAD9;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--gold:#E8B84B;
+   --page:#16140f;--panel:rgba(255,255,255,.035);--line:rgba(243,237,224,.12);
+   --ink:rgba(243,237,224,.82);--mut:rgba(243,237,224,.52)}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--page);color:var(--cream);
+   font:400 15px/1.6 Inter,system-ui,sans-serif;padding:26px 30px 70px}
+ h1{font:800 12px Archivo;letter-spacing:.15em;text-transform:uppercase;color:var(--mut);margin:0 0 6px}
+ .lede{font:400 14px/1.6 Inter;color:var(--mut);max-width:74ch;margin:0 0 20px}
+ .bar{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px;align-items:center}
+ .opt{font:800 11px Archivo;letter-spacing:.07em;text-transform:uppercase;padding:9px 15px;
+   border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);
+   cursor:pointer;text-decoration:none}
+ .opt.on{background:var(--pink);border-color:var(--pink);color:#fff}
+ .go{font:800 12px Archivo;letter-spacing:.06em;text-transform:uppercase;padding:11px 20px;
+   border-radius:999px;border:0;background:var(--cream);color:var(--charcoal);cursor:pointer;text-decoration:none}
+ .stage{border:1px solid var(--line);border-radius:18px;padding:24px 26px;background:var(--panel);max-width:900px}
+ .pagetag{font:900 34px/1 Archivo;letter-spacing:-.02em;margin:0 0 4px}
+ .pagetag b{color:var(--pink-ink)}
+ .sub{font:400 13.5px Inter;color:var(--mut);margin:0 0 20px}
+ .row{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+ .cardish{width:150px;height:210px;border-radius:14px;background:linear-gradient(180deg,#2c2824,#211d1a);
+   border:1px solid rgba(243,237,224,.10);display:flex;flex-direction:column;justify-content:space-between;
+   padding:12px;box-shadow:0 22px 50px -22px rgba(0,0,0,.85)}
+ .cardish .n{font:900 30px/1 Archivo;color:var(--cream)}
+ .cardish .who{font:800 13px Archivo;letter-spacing:.02em;color:var(--cream)}
+ .cardish .who small{display:block;font:700 9px Archivo;letter-spacing:.09em;color:var(--mut);margin-top:3px}
+ table{border-collapse:collapse;font:400 13px Inter;color:var(--ink);margin-top:20px}
+ td,th{border-bottom:1px solid var(--line);padding:7px 16px 7px 0;text-align:left;vertical-align:top}
+ th{font:800 10px Archivo;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+ code{font:12px ui-monospace,Menlo,monospace;color:var(--gold)}
+ .note{font:400 13px/1.6 Inter;color:var(--mut);max-width:78ch;margin:18px 0 0}
+ .note b{color:var(--cream);font-family:Archivo;font-weight:700}
+
+ /*  ── OPTION B , ENTRY RISE. CSS ONLY, NO JS, NO LINK INTERCEPTION. The new page's own
+     content lifts into place on load. It cannot animate the EXIT (the old document is gone
+     before this runs), so it reads as arrival rather than as a journey.  */
+ /*  KEYED OFF <html data-mode>, SET IN THE HEAD , not off a body class set after parse.
+     See the note in the head script: that difference is the whole reason B looked broken.  */
+ [data-mode="rise"] .stage{animation:riseIn .42s cubic-bezier(.22,.7,.3,1) both}
+ [data-mode="rise"] .bar{animation:riseIn .42s cubic-bezier(.22,.7,.3,1) both;animation-delay:.04s}
+ @keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+ @media (prefers-reduced-motion:reduce){ [data-mode="rise"] .stage,[data-mode="rise"] .bar{animation:none} }
+
+ /*  ── OPTION C , CROSS-DOCUMENT VIEW TRANSITION. Two lines of CSS, zero JS, zero bytes of
+     library. The browser captures the old page, loads the new one and cross-fades between
+     them itself. Unsupported browsers ignore the at-rule entirely and get today's hard cut,
+     which is why it carries no fallback code.  */
+ body.vt{}
+</style>
+<script>
+ /*  THE MODE CLASS IS SET HERE, IN THE HEAD, AND THE FIRST VERSION OF THIS DEMO SET IT AT THE
+     BOTTOM OF THE BODY. THAT WAS A REAL FAULT AND IT UNDERSTATED OPTION B BADLY.
+     Measured on the broken version: at `load` the 420ms animation was already 83ms in and the
+     stage was at 0.563 opacity, so the page could paint at FULL opacity, snap to zero when the
+     class arrived, and rise from halfway. What that reads as is a FLICKER, not a rise.
+     An entry animation driven by a class JavaScript adds after parse races the first paint.
+     In the shipping form there is no class and no JS , the rule sits in the stylesheet and
+     applies at parse time , so the head is where the demo has to set it to be honest.
+
+     The at-rule has to be present in the OLD document and the NEW one for a cross-document
+     transition to fire, which is why it is injected here too rather than sitting in the
+     stylesheet: that is a property of the demo's mode SWITCH, not of how it would ship.  */
+ (function(){
+   var m = new URLSearchParams(location.search).get('m') || 'none';
+   document.documentElement.setAttribute('data-mode', m);
+   if (m === 'vt') {
+     var st = document.createElement('style');
+     st.textContent = '@view-transition { navigation: auto }';
+     document.documentElement.appendChild(st);
+   }
+ })();
+</script>
+</head><body>
+<h1>Page transitions , three options, real navigations</h1>
+<p class="lede">Pick a mode, then press <b>Go to the other page</b>. Each press is a genuine
+document navigation to this same file with a different <code>?p=</code>, so what you see is what
+the option would actually do between two pages of the platform.</p>
+
+<div class="bar" id="bar"></div>
+
+<div class="stage" id="stage">
+  <div class="pagetag" id="ptag">Page <b>one</b></div>
+  <div class="sub" id="psub">Standing in for a real surface. The cards are here so a transition has something with weight to move.</div>
+  <div class="row" id="row"></div>
+  <a class="go" id="go" href="#">Go to the other page &#8594;</a>
+
+  <table>
+    <tr><th>Option</th><th>What it does</th><th>Weight</th><th>Risk</th></tr>
+    <tr><td><b>A , today</b></td><td>Hard cut. The old page vanishes, the new one appears.</td><td>0</td><td>None. It is the baseline.</td></tr>
+    <tr><td><b>B , entry rise</b></td><td>The arriving page's content lifts 10px and fades in over 420ms. No exit animation , the old document is already gone.</td><td><code>~320 bytes</code> of CSS, no JS</td><td>Lowest. No link interception, so the back button, middle-click and modifier-click are untouched. Fires on EVERY load, including a card page that is already running its own reveal.</td></tr>
+    <tr><td><b>C , view transition</b></td><td>The browser cross-fades the whole document, old to new, itself.</td><td><code>2 lines</code> of CSS, no JS, no library</td><td>Browser support. Unsupported browsers get today's hard cut with no fallback code and no error. Can be scoped so named elements morph between pages.</td></tr>
+  </table>
+
+  <p class="note" id="support"></p>
+  <p class="note"><b>What this demo cannot show.</b> How any of it feels on a mid-range phone
+  over a real network. On localhost with a warm cache the load is a few milliseconds, so the
+  transition IS the experience; on a cold connection the page is slower than every curve here
+  and the transition is a smaller part of it. Judge the shape here, the feel on a device.</p>
+</div>
+
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var m = q.get('m') || 'none', p = q.get('p') === '2' ? 2 : 1;
+  /*  No class is set here on purpose , the mode already lives on <html data-mode>, applied in
+      the head. Setting it from down here is exactly the fault that made B look broken.  */
+
+  var MODES = [['none','A , today'],['rise','B , entry rise'],['vt','C , view transition']];
+  document.getElementById('bar').innerHTML = MODES.map(function(o){
+    return '<a class="opt' + (o[0]===m?' on':'') + '" href="?m=' + o[0] + '&p=' + p + '">' + o[1] + '</a>';
+  }).join('');
+
+  document.getElementById('ptag').innerHTML = 'Page <b>' + (p===1?'one':'two') + '</b>';
+  document.getElementById('go').href = '?m=' + m + '&p=' + (p===1?2:1);
+
+  /*  The two pages differ so the eye has something to track across the change , identical
+      pages would make every option look like nothing happened.  */
+  var A=[['97','MESSI','11/12 · BARCELONA'],['96','RONALDO','11/12 · REAL MADRID'],['95','HAALAND','22/23 · MAN CITY']];
+  var B=[['94','SALAH','17/18 · LIVERPOOL'],['93','LEWANDOWSKI','20/21 · BAYERN'],['92','MBAPPE','18/19 · PSG']];
+  document.getElementById('row').innerHTML = (p===1?A:B).map(function(c){
+    return '<div class="cardish"><div class="n">'+c[0]+'</div><div class="who">'+c[1]+'<small>'+c[2]+'</small></div></div>';
+  }).join('');
+
+  /*  SAY WHETHER THE BROWSER YOU ARE LOOKING IN CAN DO OPTION C AT ALL, rather than letting a
+      silent no-op read as "the option does nothing".  */
+  var sup = (typeof document.startViewTransition === 'function');
+  var cross = (window.CSSViewTransitionRule !== undefined) || CSS.supports('view-transition-name','none');
+  document.getElementById('support').innerHTML =
+    '<b>In this browser:</b> same-document view transitions ' + (sup?'ARE':'are NOT') +
+    ' supported, and the cross-document at-rule ' + (cross?'IS':'is NOT') + ' recognised. ' +
+    (m==='vt' && !cross ? 'So option C is showing you option A right now , which is exactly how it degrades.' : '');
+})();
+</script>
+</body></html>

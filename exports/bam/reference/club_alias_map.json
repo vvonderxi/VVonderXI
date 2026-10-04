@@ -1,0 +1,249 @@
+{
+  "_what_this_is": "Maps league_standings.team_name (ASCII-folded) to VVonderXI canonical club names. DERIVED from live data 2026-09-16, not transcribed.",
+  "_what_this_is_not": "NOT a map from BAM's names or any bookmaker's names. Left side is OUR standings table's vocabulary.",
+  "generated_at": "2026-09-16T17:27:40.542267+00:00",
+  "through": "2026-09-16",
+  "standings_names_total": 338,
+  "exact_match_no_alias_needed": 305,
+  "alias_entries": 33,
+  "by_confidence": {
+    "confirmed": 19,
+    "mechanical": 11,
+    "ambiguous": 1,
+    "unresolved": 1,
+    "likely": 1
+  },
+  "aliases": [
+    {
+      "standings_name": "1.FC Köln",
+      "canonical_name": "1. FC Köln",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "whitespace only"
+    },
+    {
+      "standings_name": "Akhisar Belediye",
+      "canonical_name": "Akhisarspor",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "Akhisar Belediyespor = Akhisarspor"
+    },
+    {
+      "standings_name": "Ankaragucu",
+      "canonical_name": "Ankaragücü",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "BB Bodrumspor",
+      "canonical_name": "Bodrum FK",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "Bodrumspor renamed Bodrum FK"
+    },
+    {
+      "standings_name": "Bayern Munich",
+      "canonical_name": "Bayern München",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "English exonym"
+    },
+    {
+      "standings_name": "Beerschot Wilrijk",
+      "canonical_name": null,
+      "method": "hand",
+      "confidence": "ambiguous",
+      "note": "OUR vocabulary holds BOTH \"Beerschot\" and \"Beerschot VA\", 0.003 apart. Our duplication, not theirs"
+    },
+    {
+      "standings_name": "Besiktas",
+      "canonical_name": "Beşiktaş",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Borussia Monchengladbach",
+      "canonical_name": "Borussia Mönchengladbach",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Erzurum BB",
+      "canonical_name": "Erzurumspor FK",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "Büyükşehir Belediye Erzurumspor"
+    },
+    {
+      "standings_name": "FC Heidenheim",
+      "canonical_name": "1. FC Heidenheim",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "drops the \"1.\""
+    },
+    {
+      "standings_name": "FC Kaiserslautern",
+      "canonical_name": "1. FC Kaiserslautern",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "drops the \"1.\""
+    },
+    {
+      "standings_name": "FC Koln",
+      "canonical_name": "1. FC Köln",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "English/ASCII rendering, drops the \"1.\""
+    },
+    {
+      "standings_name": "FC Nurnberg",
+      "canonical_name": "1. FC Nürnberg",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "ASCII + drops the \"1.\""
+    },
+    {
+      "standings_name": "Fenerbahce",
+      "canonical_name": "Fenerbahçe",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Fortuna Dusseldorf",
+      "canonical_name": "Fortuna Düsseldorf",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Gazişehir Gaziantep",
+      "canonical_name": "Gaziantep FK",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "renamed 2019. WARNING: Gaziantepspor is a DIFFERENT club and is 0.018 behind on string distance"
+    },
+    {
+      "standings_name": "Genclerbirligi",
+      "canonical_name": "Gençlerbirliği S.K.",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "Turkish diacritics + suffix"
+    },
+    {
+      "standings_name": "Genclerbirliği",
+      "canonical_name": "Gençlerbirliği S.K.",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "partial diacritics + suffix"
+    },
+    {
+      "standings_name": "Goztepe",
+      "canonical_name": "Göztepe",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Hertha Berlin",
+      "canonical_name": "Hertha BSC",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "same club, English name"
+    },
+    {
+      "standings_name": "Istanbul Basaksehir",
+      "canonical_name": "Başakşehir",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "same club, our name drops \"Istanbul\""
+    },
+    {
+      "standings_name": "Kasimpasa",
+      "canonical_name": "Kasımpaşa",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "dotless-i and s-cedilla"
+    },
+    {
+      "standings_name": "Kasımpasa",
+      "canonical_name": "Kasımpaşa",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "LE Havre",
+      "canonical_name": "Le Havre",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Mersin İdman Yurdu",
+      "canonical_name": null,
+      "method": "hand",
+      "confidence": "unresolved",
+      "note": "only Mersin candidate is \"Mersin Talimyurdu SK\"; İdman Yurdu vs Talimyurdu not verified. HELD"
+    },
+    {
+      "standings_name": "Naval 1º de Maio",
+      "canonical_name": "Naval 1893",
+      "method": "hand",
+      "confidence": "likely",
+      "note": "Associação Naval 1º de Maio; ratio only 0.538"
+    },
+    {
+      "standings_name": "Osmanlıspor",
+      "canonical_name": "Ankaraspor",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "same club, renamed; recorded in DATA_DEFECTS.md"
+    },
+    {
+      "standings_name": "SpVgg Greuther Furth",
+      "canonical_name": "SpVgg Greuther Fürth",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Verona",
+      "canonical_name": "Hellas Verona",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "Serie A Verona is Hellas Verona"
+    },
+    {
+      "standings_name": "VfL BOCHUM",
+      "canonical_name": "VfL Bochum",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Vfl Bochum",
+      "canonical_name": "VfL Bochum",
+      "method": "ascii_fold",
+      "confidence": "mechanical",
+      "note": "resolves by unaccent+lowercase alone"
+    },
+    {
+      "standings_name": "Waasland-beveren",
+      "canonical_name": "SK Beveren",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "renamed; recorded in DATA_DEFECTS.md"
+    },
+    {
+      "standings_name": "İstanbul Basaksehir",
+      "canonical_name": "Başakşehir",
+      "method": "hand",
+      "confidence": "confirmed",
+      "note": "same club, our name drops \"Istanbul\""
+    }
+  ]
+}
