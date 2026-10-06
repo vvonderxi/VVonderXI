@@ -653,6 +653,19 @@
   body:not(.light){color-scheme:dark} body.light{color-scheme:light}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
+  /*  ── A TALLER TARGET, NOT A BIGGER BUTTON , MEASURED AT 390 (2026-10-04) ──────────────
+      It renders 55x26 on a phone, so the deficient dimension is HEIGHT and only height. The
+      transparent pseudo is the pattern already documented on the card's season chevrons
+      (`.seasonstep button::after`): it enlarges the reach and paints nothing, so no pixel a
+      reader can see moves.
+      VERTICAL IS FREE AND THAT WAS CHECKED, NOT ASSUMED , SEC C records two chevrons 2px
+      apart swallowing each other's taps, which is what happens when this is done by eye.
+      Measured on the rendered page at 390: NO interactive neighbour overlaps it above, and
+      the nearest one below is 73px away, so a 44px-tall area collides with nothing.
+      WIDTH IS ALREADY PAST 44 (55px), so it is left alone , widening it would reach toward
+      the crumb beside it for no gain.  */
+  .backbtn{position:relative}
+  .backbtn::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
   body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   .spinelogo{width:58px;height:27px;margin-bottom:12px;background:url('/assets/spinelogo-dark.png') center/contain no-repeat}
@@ -720,7 +733,11 @@
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink-ink)}
+    /*  THE LIGHT RULE ABOVE IS (0,2,1) AND OUTRANKED THE BARE .on AT (0,2,0), so in light mode the
+        active tab rendered the same grey as the rest. The second selector here is what beats it.
+        The Home glyph is the locked two-tone lockup, the same two paths the loader draws ,
+        change them there and here together, never one alone.  */
+    .bn-item.on,body.light .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   .clubpill.cp-hint{animation:sclubhint .4s}
@@ -1523,7 +1540,7 @@
         <a class="ca-btn ca-compare" id="compareCta2" href="compare.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> Compare this player</a>
         <div class="ca-row">
           
-          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300,{numberMark:true});document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
+          <button class="ca-btn ca-share" onclick="document.getElementById('shareCard').innerHTML=buildCard(D,300,{numberMark:true,eagerPhoto:true});document.getElementById('sharemodal').classList.add('on')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg> Share</button>
           <button class="ca-btn ca-top" onclick="document.querySelectorAll('.layer.open').forEach(function(l){l.classList.remove('open')});window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg> Fold all</button>
         </div>
       </div>
@@ -1532,8 +1549,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261003g"></script>
-<script src="/vv-core.js?v=20261003g"></script>
+<script src="/vv-marks.js?v=20261004a"></script>
+<script src="/vv-core.js?v=20261004a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2334,7 +2351,7 @@
       stepper now lives in #seasonZone, which renderHero does not own. Leaving the call here
       would be harmless and misleading , the next reader would look for the control inside
       the card. It is attached where the SEASON STATE changes instead.  */
-  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow(),{numberMark:true}); drawRadar(); }
+  function renderHero(){ document.getElementById('heroCard').innerHTML=buildCard(D,cwNow(),{numberMark:true,eagerPhoto:true}); drawRadar(); }
   var vvHeroRZ;
   // The peek is re-evaluated on resize too: a width change can cross the phone breakpoint
   // in either direction, and its geometry is measured from the hero's rect.
@@ -2665,7 +2682,7 @@
     EDITORIAL_DEPS = _honP.catch(function(){});
     // honours applied in onDone so they never interrupt the in-flight flip; renderHero re-runs for the
     // card FACE pill (buildCard reads d.honours.all), vvApplyHonours for glance chips + Wonder Tags.
-    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw,{numberMark:true}), cw:_cw, prestige:D.prestige, onDone:function(){
+    vvCardFlip(document.getElementById('heroCard'), { swap:true, newHTML:buildCard(D,_cw,{numberMark:true,eagerPhoto:true}), cw:_cw, prestige:D.prestige, onDone:function(){
       drawRadar();
       /*  THE NEW FACE EXISTS ONLY NOW. It must also run BEFORE the honours .then below,
           because that branch calls renderHero, which re-attaches anyway , but honours can
@@ -3981,7 +3998,7 @@ vvWireChronicle();
   </div>
 
   <nav class="bottomnav">
-      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
+      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M1 4.89 L5.16 4.89 L8.36 11.45 L10.59 6.7 L13.83 6.7 L8.34 19.11 Z" fill="currentColor"/><path d="M23 4.89 L18.84 4.89 L15.64 11.45 L13.41 6.7 L10.17 6.7 L15.66 19.11 Z" style="fill:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
       <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>

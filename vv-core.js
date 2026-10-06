@@ -561,7 +561,7 @@
         <div class="yr">${d.year}</div>
         ${gkFace ? '' : `<div class="ctr"><div class="n">${d.vv}</div><div class="vv"><span class="a">V</span><span class="b">V</span></div></div>`}
       </div>
-      <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
+      <div class="cimg">${d.photo ? `<img class="cphoto" src="${d.photo}" alt="" loading="${opts.eagerPhoto ? 'eager' : 'lazy'}" decoding="async" onerror="this.style.display='none';this.parentNode.classList.add('no-photo')">` : ''}<svg viewBox="0 0 100 104" class="silh" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="s${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="1" stop-color="rgba(255,255,255,0.08)"/></linearGradient></defs><circle cx="50" cy="34" r="20" fill="url(#s${uid})"/><path d="M50 58 C28 58 14 74 12 96 C12 100 14 104 18 104 L82 104 C86 104 88 100 88 96 C86 74 72 58 50 58 Z" fill="url(#s${uid})"/></svg></div>
       ${prestige}${tag}
       ${(function(){
         /*  A KEEPER DOES NOT GET GOALS AND ASSISTS. "0 goals, NR assists" is true and
@@ -2292,9 +2292,19 @@
            + ' the V<span class="vvw">V</span> Index needs. The figures here are this club\'s alone.';
     }
     if (o.apps == null) return null;   // note A names the matches; without them it has no sentence
+    /*  THE SHORTFALL CLAUSE WAS ATTACHED TO THE MATCHES, NOT THE MINUTES (fixed 2026-10-04).
+        It read "He played 7 matches for this club that season, short of the 300 minutes the VV
+        Index needs" , so the 300 modified "7 matches", comparing a match count to a minute
+        floor. The `wasWhole` sibling fifteen lines up already gets this right ("the season is
+        253 minutes, short of the 300 the VV Index needs"), so this is the two branches agreeing
+        rather than a new sentence.
+        `o.minutes` IS AVAILABLE HERE , the guard above returns null when it is absent or at or
+        above the floor, so reaching this line means a real figure under 300. Naming it is what
+        gives the clause something true to hang on.  */
     return '<b>Not scored.</b> He played ' + o.apps + ' match' + (o.apps === 1 ? '' : 'es')
-         + ' for this club that season, short of the ' + SCORE_MIN_MINUTES
-         + ' minutes the V<span class="vvw">V</span> Index needs before it will score a season. '
+         + ' for this club that season, ' + o.minutes + ' minutes in all, short of the '
+         + SCORE_MIN_MINUTES
+         + ' the V<span class="vvw">V</span> Index needs before it will score a season. '
          + 'The figures here are his; the score is not missing, it was never earned over a '
          + 'sample this small.';
   }
@@ -5595,7 +5605,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     eye_test:         { name:'The Eye Test Deceives',        emoji:'👁️', kind:'context', blurb:'The numbers disagree with the gut. One looks better; the other scores higher.', drury:'Your eyes told you one thing. The data, quietly, tells you another. Sometimes the truth hides in the spaces the highlight reel forgets.', trigger:'fewer-goals player has the higher rt' },
     complete_spec:    { name:'Complete Package vs Specialist',emoji:'🧩', kind:'context', blurb:'One balanced across every dimension, the other a peak in a single craft.', drury:'One could do everything. The other did one thing better than anyone alive. Is it better to be complete, or to be unforgettable?', trigger:'close gap + one even radar, one spiky' },
     // age (deterministic , approved 2026-07-17)
-    prodigy:          { name:"The Prodigy's Edge",           emoji:'🌟', kind:'age', blurb:'A young season stands with or above an established one, and doing it this early is the rarer feat.', drury:'To command this stage at nineteen, the years ahead should frighten us all.', trigger:'rt gap <= 3 AND younger <= 21 AND >= 4 years younger' },
+    prodigy:          { name:"The Prodigy's Edge",           emoji:'🌟', kind:'age', blurb:'A young season stands with or above an established one, and doing it this early is the rarer feat.', drury:'Command this stage at nineteen, and the years ahead should frighten us all.', trigger:'rt gap <= 3 AND younger <= 21 AND >= 4 years younger' },
     ascendant:        { name:'The Ascendant',                emoji:'📈', kind:'age', blurb:'A near-tie where the younger player is still climbing, the finished portrait against the one still being painted.', drury:'One is the finished portrait; the other still being painted, and already this good.', trigger:'rt gap <= 2 AND >= 5-year gap favouring youth AND younger > 21' },
     twilight:         { name:'Twilight Brilliance',          emoji:'🌅', kind:'age', blurb:'A veteran matches a prime player; age has not dimmed him.', drury:'They said the legs would fade. The refusal does not fade.', trigger:'rt gap <= 3 AND older >= 33 AND >= 5 years older' },
   };
@@ -7805,6 +7815,18 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     const imgs = Array.prototype.slice.call(node.querySelectorAll('img'))
                       .filter(function(im){ return !im.complete; });
     if (!imgs.length) return Promise.resolve();
+    /*  A LAZY IMAGE ON THIS STAGE WOULD NEVER LOAD, SO THE WAIT BELOW WOULD TIME OUT AND THE
+        CAPTURE WOULD SHIP A BLANK PHOTO (2026-10-04, added with `loading="lazy"` on .cphoto).
+        The share stage is parked OFF TO THE LEFT rather than hidden , see the note on the
+        renderer below , so it is permanently outside the viewport, which is precisely the
+        condition under which a lazy image is never fetched. The 4s bound then expires and
+        html2canvas draws what is there, which is nothing.
+        FORCING EAGER HERE RATHER THAN AT EVERY CALL SITE IS DELIBERATE. SS C: attach a
+        behaviour to the STATE it depends on, not to the path that happens to be in front of
+        you. The state is "this image must be present before we rasterise", and every capture
+        route passes through this function by construction, so a route added later cannot
+        forget. Setting `loading` from lazy to eager starts a fetch that has not begun.  */
+    imgs.forEach(function(im){ if (im.loading === 'lazy') im.loading = 'eager'; });
     return Promise.all(imgs.map(function(im){
       return new Promise(function(res){
         //  A bounded wait, for the same reason vvCopyText has one: a request that never

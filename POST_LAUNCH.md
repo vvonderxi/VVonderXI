@@ -116,6 +116,42 @@ Nothing in here is launch-blocking. That is the definition of the section, not a
 
 **DO NOT SPOT-FIX IT.** SS E's 2026-09-11 ruling is explicit: hand-patching the top of a systemic position defect spends untouched cards' band positions to move a handful , the dry run put 9 cards across band lines to correct 13. **The same reasoning applies here, and more so, because `sig = def_share_pct` makes the defensive pools the ones where a pool change moves rt most.** It belongs with the position work, not ahead of it.
 
+## THE CARD'S OWN INFERRED-SHIRT MARK IS HARD TO FIND AT 390 , AND THE PLAYBOOK IS NOT THE PLACE TO FIX IT (measured 2026-10-04, NOT built)
+
+**LUCAS, 2026-10-04: "Leave the arrows. The explainer is faithful to the card, and changing only
+the copy would make it lie about the thing it teaches."** Logged here as its own item rather than
+folded into the Playbook change it was found during.
+
+**THE MEASUREMENT, AND IT IS THE WHOLE ITEM.** On a real flagged card , Trossard 22/23, Arsenal,
+`/card.html?id=131548`, at `--cw` 330 , the mark under the shield renders **19.8 x 19.8 px in
+`rgb(28,27,26)`**, from `.vvcard .xfm svg{width:max(12px,calc(var(--cw)*0.06))}`. The Playbook's
+explainer panel draws **20.0 x 20.0 in the same ink**. **They match to within 0.2px, so the
+explainer is a faithful reproduction and the legibility complaint is about the CARD.**
+
+**THAT IS WHY ONLY THE EXPLAINER WAS TEMPTING AND WHY IT WOULD HAVE BEEN WRONG.** Enlarging or
+tinting the panel's arrows is a one-line change to a page nobody has to live with, and it buys a
+legible diagram of a mark that does not look like that. SS C already records the shape under the
+demo rules: a surface that renders differently from the thing it describes is proposing something
+that cannot exist, and here it would have been worse than a demo, because the panel's entire job
+is to teach a reader what to look for on the card.
+
+**WHAT MAKES IT HARD TO FIND IS SIZE AND ISOLATION, NOT CONTRAST.** `rgb(28,27,26)` on the plain
+card face is a strong ratio; the mark is simply 20px, thinly stroked, sitting alone under a 58x67
+shield with no label. **Do not reach for a colour change first** , and note the ink is already
+per-face (`.vvcard.gen .xfm` and `.vvcard.iconic .xfm` override it), so any colour move is three
+grounds, not one, which is SS C's card-face rule.
+
+**SCOPE IF IT IS EVER TAKEN UP.** It is a CARD-FACE change: `vv-core.js` `.xfm`, which reaches the
+card hero, the season flip and the card-page share image (the three `numberMark` call sites), plus
+the Playbook panel following it so the two stay matched. **It needs all three faces rendered and
+Lucas's eye, like any other card-face change**, and it is worth pairing with the 44px tap-target
+sweep above, since the mark's effective target is already 57.8 x 19.8.
+
+**AND THE POPULATION IS SMALL AND ENTIRELY IN THE TAIL, WHICH IS AN ARGUMENT ABOUT PRIORITY RATHER
+THAN ABOUT CORRECTNESS.** Measured 2026-10-04: **442 cards carry `shirt_number_source = modal_split`
+and NOT ONE is at rt 80 or above.** A reader meets this mark rarely, and never on the cards the
+platform leads with.
+
 ## TAP TARGETS UNDER 44px , PLATFORM-WIDE, MEASURED 2026-09-27, NOT BUILT (item 8's sweep)
 
 **HELD BY LUCAS ON 2026-09-27: "logged, not now. It is nine live surfaces and a visual change,

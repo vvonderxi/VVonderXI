@@ -330,7 +330,21 @@ function lintWordmark(file, src){
     .replace(/<script[\s\S]*?<\/script>/g, '')
     .replace(/<style[\s\S]*?<\/style>/g, '')
     .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<[^>]+>/g, ' ');
+    .replace(/<[^>]+>/g, ' ')
+    /*  COLLAPSING WHITESPACE IS WHAT MAKES THIS CHECK WORK AT ALL, AND WITHOUT IT THE CHECK
+        COULD ONLY EVER CATCH BARE TEXT (hole found 2026-10-04, after it passed vvindex's h1).
+        Stripping a tag leaves a SPACE, so `<span class="b">VV</span> Index` became
+        `VV  Index` with two spaces and the single-space pattern below missed it , while
+        plain `VV Index` matched. So the one defect shape that actually ships, a wordmark
+        that IS wrapped in a span and styles the wrong V, was invisible to it, and the
+        reassuring summary line was printed over a page with both Vs pink.
+        AND THE COLLAPSE IS ALSO WHAT KEEPS THE CORRECT FORM PASSING, by construction rather
+        than by luck: the right form puts a tag boundary BETWEEN the two Vs, so it reduces to
+        `V V Index` and can never match. Wrong-span and no-span both reduce to `VV Index`.
+        CONTROL, run both ways rather than read: with vvindex's h1 as `<span class="b">VV</span>`
+        it reports `1 plain "VV Index"` and exits 1; with `V<span class="b">V</span>` it passes.
+        The whole platform passes with the collapse in, so that h1 was the only instance. */
+    .replace(/\s+/g, ' ');
   const plain = body.match(/VV (?:Score|Index|Rankings)/g);
   if (plain) faults.push({ kind:'WORDMARK', file, error: `${plain.length} plain "${plain[0]}" in rendered prose , use V<span class="vvw">V</span>` });
   if (src.includes('class="vvw"') && !/\.vvw\s*\{/.test(src) && !src.includes('vv-core.js'))

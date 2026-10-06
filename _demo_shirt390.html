@@ -1,0 +1,87 @@
+<!doctype html><meta charset="utf-8"><title>Shirt numbers at 390</title>
+<!--  THE PLAYBOOK'S OWN STYLESHEET IS FETCHED, NOT RETYPED (SS C: a demo supplying its own
+      tokens cannot test the page's). Each column is a 390px IFRAME-FREE render inside a
+      390px box, so widths and wrapping are the real thing at the real measure.  -->
+<style>
+ body{margin:0;background:#141210;font-family:'Inter',sans-serif}
+ .wrap{display:flex;gap:16px;padding:14px;align-items:flex-start}
+ .col{width:390px;flex:0 0 390px}
+ .lab{font:11px/1.6 ui-monospace,monospace;color:#9a938a;padding:0 0 8px;letter-spacing:.06em}
+ .lab b{color:#F1688E;letter-spacing:0;font-size:12px}
+ .pane{background:#FBF8F2;border-radius:10px;padding:14px 16px 16px}
+</style>
+<div class="wrap" id="root">loading…</div>
+<script>
+(async()=>{
+ const html=await (await fetch('/playbook.html')).text();
+ const css=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+ const fonts=[...html.matchAll(/<link[^>]+fonts\.googleapis[^>]*>/g)].map(m=>m[0]).join('\n');
+ document.head.insertAdjacentHTML('beforeend',fonts);
+ const st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+ document.body.classList.add('light');
+
+ /* the real shield + arrow markup, lifted verbatim from the page's own renderer */
+ const shield = n => '<svg class="shsh" viewBox="0 0 100 116" aria-hidden="true">'
+  + '<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="#2A2724"/>'
+  + '<path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" fill="none" '
+  + 'stroke="rgba(240,234,217,0.45)" stroke-width="6" stroke-linejoin="round" '
+  + 'transform="translate(50 58) scale(0.84) translate(-50 -58)"/>'
+  + '<text x="50" y="58" font-family="Archivo, sans-serif" font-weight="900" font-size="46" '
+  + 'fill="#F0EAD9" text-anchor="middle" dominant-baseline="central">'+n+'</text></svg>';
+ const AR = c => '<svg class="shsp-arrows'+(c||'')+'" viewBox="0 0 16 16" fill="none" '
+  + 'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" '
+  + 'aria-hidden="true"><path d="M2.5 5.5h9M9 3l2.5 2.5L9 8"/><path d="M13.5 10.5h-9M7 8l-2.5 2.5L7 13"/></svg>';
+
+ const L={squadnum:'Sourced', modal_single:'One club that season', modal_split:'Inferred'};
+ const N={squadnum:"Read off that club's own squad table for that season.",
+          modal_single:'One club all season, so no question.',
+          modal_split:"He moved mid-season, so it may be either club's."};
+
+ function cell(k,flagged,arrowClass){
+   return '<div class="shsp'+(flagged?' flagged':'')+'">'
+     + '<div class="shsp-fig'+(flagged?'':' none')+'">'+shield(9)+(flagged?AR(arrowClass):'')+'</div>'
+     + '<div class="shsp-l">'+L[k]+'</div><p class="shsp-t">'+N[k]+'</p></div>';
+ }
+ function panel(arrowClass){
+   return '<div class="shspec">'
+   + '<div class="shgrp"><div class="shgrp-l">Certain</div>'
+   +   '<div class="shgrp-note">Two routes. One mark, because a card cannot tell them apart.</div>'
+   +   '<div class="shgrp-row">'+cell('squadnum',false)+cell('modal_single',false)+'</div></div>'
+   + '<div class="shgrp flagged"><div class="shgrp-l">In doubt</div>'
+   +   '<div class="shgrp-note">One route, and the card says so.</div>'
+   +   '<div class="shgrp-row">'+cell('modal_split',true,arrowClass)+'</div></div>'
+   + '</div>';
+ }
+
+ document.getElementById('root').innerHTML =
+    '<div class="col"><div class="lab"><b>TODAY</b><br>shield hard left, 92px dead to its right;<br>text wraps at 150px in a 263px row</div><div class="pane v0">'+panel()+'</div></div>'
+  + '<div class="col"><div class="lab"><b>OPTION 1 , CENTRED</b><br>cell goes full width, shield centred,<br>text uses the whole measure. arrows at card size.</div><div class="pane v1">'+panel()+'</div></div>'
+  + '<div class="col"><div class="lab"><b>OPTION 2 , SIDE BY SIDE</b><br>shield beside its own words.<br>closes the space by using it.</div><div class="pane v2">'+panel()+'</div></div>'
+  + '<div class="col"><div class="lab"><b>OPTION 1 + GOLD ARROWS</b><br>as option 1, arrows take the flag colour<br>(NOTE: card draws them charcoal)</div><div class="pane v3">'+panel(' gold')+'</div></div>';
+
+ const own=document.createElement('style');
+ own.textContent=`
+  /* OPTION 1 , CENTRED: the cell takes the full row, contents centre, text gets the measure */
+  .v1 .shsp{flex:1 1 100%;max-width:none;align-items:center;text-align:center}
+  .v1 .shsp-l,.v1 .shsp-t{text-align:center}
+  .v1 .shsp-t{max-width:30ch;margin-inline:auto}
+  .v1 .shgrp-row{gap:26px}
+  /* OPTION 2 , SIDE BY SIDE: shield left at its natural size, words fill the rest */
+  .v2 .shsp{flex:1 1 100%;max-width:none;display:grid;grid-template-columns:58px 1fr;
+    column-gap:14px;row-gap:2px;align-items:start}
+  .v2 .shsp-fig{grid-row:1/3;min-height:0;padding:2px 0 0}
+  .v2 .shsp-fig.none{padding-bottom:0}
+  .v2 .shsp-l{align-self:end;margin:0}
+  .v2 .shsp-t{margin:0}
+  .v2 .shgrp-row{gap:18px}
+  /* OPTION 1 + GOLD */
+  .v3 .shsp{flex:1 1 100%;max-width:none;align-items:center;text-align:center}
+  .v3 .shsp-l,.v3 .shsp-t{text-align:center}
+  .v3 .shsp-t{max-width:30ch;margin-inline:auto}
+  .v3 .shgrp-row{gap:26px}
+  .shsp-arrows.gold{color:#7a5c12;width:26px;height:26px}
+ `;
+ document.head.appendChild(own);
+ window.__ready=true;
+})();
+</script>

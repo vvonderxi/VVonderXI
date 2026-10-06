@@ -382,7 +382,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink-ink)}
+    /*  THE LIGHT RULE ABOVE IS (0,2,1) AND OUTRANKED THE BARE .on AT (0,2,0), so in light mode the
+        active tab rendered the same grey as the rest. The second selector here is what beats it.
+        The Home glyph is the locked two-tone lockup, the same two paths the loader draws ,
+        change them there and here together, never one alone.  */
+    .bn-item.on,body.light .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   @media (max-width:720px){
@@ -475,8 +479,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261003g"></script>
-<script src="/vv-core.js?v=20261003g"></script>
+<script src="/vv-marks.js?v=20261004a"></script>
+<script src="/vv-core.js?v=20261004a"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the
@@ -865,7 +869,7 @@ document.getElementById('rankFBtn').addEventListener('click',function(){document
 </script>
 
   <nav class="bottomnav">
-      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
+      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M1 4.89 L5.16 4.89 L8.36 11.45 L10.59 6.7 L13.83 6.7 L8.34 19.11 Z" fill="currentColor"/><path d="M23 4.89 L18.84 4.89 L15.64 11.45 L13.41 6.7 L10.17 6.7 L15.66 19.11 Z" style="fill:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
       <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>

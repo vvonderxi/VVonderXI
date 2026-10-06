@@ -716,6 +716,14 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   body.light .favstar.on{color:var(--gold);background:rgba(232,184,75,0.18)}
   .addclub{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--pink-ink);border:1.5px solid rgba(255,92,122,0.55);border-radius:var(--r-lg);padding:12px 16px;font-family:'Archivo';font-weight:800;font-size:13px;cursor:pointer;box-shadow:none;transition:background .15s}
   .addclub:hover{filter:brightness(1.06)}
+  /*  ── SAME TREATMENT, SAME REASON, TIGHTER CLEARANCE , MEASURED AT 390 (2026-10-04) ────
+      It renders 162x31, so again height is the only deficient dimension. Measured on the
+      rendered page: 10px of clear space above (to the card slot) and 53px below (to the
+      suggestions block), so the 6.5px this takes on each side fits inside the gap and
+      reaches no neighbour's box. The card slot above is itself a very large target, so even
+      the 3.5px that remains between them is not a boundary anyone has to hit.  */
+  .addclub{position:relative}
+  .addclub::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
   /* numbers + trajectory side by side */
   .vnumwrap{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
   @media (max-width:760px){.vnumwrap{grid-template-columns:minmax(0,1fr);gap:20px}}
@@ -1110,7 +1118,11 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink-ink)}
+    /*  THE LIGHT RULE ABOVE IS (0,2,1) AND OUTRANKED THE BARE .on AT (0,2,0), so in light mode the
+        active tab rendered the same grey as the rest. The second selector here is what beats it.
+        The Home glyph is the locked two-tone lockup, the same two paths the loader draws ,
+        change them there and here together, never one alone.  */
+    .bn-item.on,body.light .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   /* #109 mobile flip fix: removed the html,body overflow-x:hidden clip , on iOS it flattened the card flip's preserve-3d (back face culled). Horizontal drift is now contained on .verdict/.vafter (below the cards), keeping .matchup clip-free. */
@@ -1550,6 +1562,19 @@ body.light .pkmsub{color:var(--ink-soft)}
 .pkmrow{display:flex;flex-wrap:wrap;gap:7px}
   .backbtn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;margin-right:14px;transition:.15s}
   .backbtn:hover{border-color:var(--pink-ink);color:var(--pink-ink)}
+  /*  ── A TALLER TARGET, NOT A BIGGER BUTTON , MEASURED AT 390 (2026-10-04) ──────────────
+      It renders 55x26 on a phone, so the deficient dimension is HEIGHT and only height. The
+      transparent pseudo is the pattern already documented on the card's season chevrons
+      (`.seasonstep button::after`): it enlarges the reach and paints nothing, so no pixel a
+      reader can see moves.
+      VERTICAL IS FREE AND THAT WAS CHECKED, NOT ASSUMED , SEC C records two chevrons 2px
+      apart swallowing each other's taps, which is what happens when this is done by eye.
+      Measured on the rendered page at 390: NO interactive neighbour overlaps it above, and
+      the nearest one below is 73px away, so a 44px-tall area collides with nothing.
+      WIDTH IS ALREADY PAST 44 (55px), so it is left alone , widening it would reach toward
+      the crumb beside it for no gain.  */
+  .backbtn{position:relative}
+  .backbtn::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
   body.light .backbtn{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.14);color:var(--charcoal)}
   body.light .backbtn:hover{color:var(--pink-ink);border-color:var(--pink-ink)}
   @media (max-width:720px){.backbtn{padding:6px 10px;font-size:11px;margin-right:8px}}
@@ -1873,13 +1898,13 @@ body.light .pkmsub{color:var(--ink-soft)}
     </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261003g"></script>
+<script src="/vv-marks.js?v=20261004a"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20261003g"></script>
+<script src="/vv-core.js?v=20261004a"></script>
 <script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
@@ -1899,7 +1924,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   function vvSizeCards(){/*  FIRST CALL MEASURES, LATER CALLS REUSE. The mid-flip hazard is in RE-measuring, not in
     measuring once at init when the layout is settled and nothing is animating.  */
     if(_cwVal===null) cwMeasure();
-    var cw=cwNow();var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();vvEnsureSeasonFolds();}
+    var cw=cwNow();var m=document.querySelector('.matchup');if(m)m.style.setProperty('--cw',cw+'px');var ca=document.getElementById('cardA'),cb=document.getElementById('cardB');ca.innerHTML=CMP_A?buildCard(CMP_A,cw,{eagerPhoto:true}):vvEmptySlot('A',cw);ca.classList.toggle('empty',!CMP_A);cb.innerHTML=CMP_B?buildCard(CMP_B,cw,{eagerPhoto:true}):vvEmptySlot('B',cw);cb.classList.toggle('empty',!CMP_B);vvUpdateCompareGate();vvUpdateSeeLinks();vvEnsureSeasonFolds();}
   /*  THE SEASON FOLD BELONGS TO THE STATE "this slot holds a card", NOT TO ONE CODE PATH ,
       2026-09-15. vvLoadSlotSeasons was called from exactly TWO places, both inside
       vvFlipReveal, so a card that arrived through the pick-or-change path got a season control
@@ -4385,7 +4410,7 @@ function vvJoin(){
   <button class="vv-totop" id="vvToTop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
   <script>(function(){var b=document.getElementById('vvToTop');if(!b)return;var on=function(){b.classList.toggle('show',(window.scrollY||window.pageYOffset)>400);};window.addEventListener('scroll',on,{passive:true});on();})();</script>
   <nav class="bottomnav">
-      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
+      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M1 4.89 L5.16 4.89 L8.36 11.45 L10.59 6.7 L13.83 6.7 L8.34 19.11 Z" fill="currentColor"/><path d="M23 4.89 L18.84 4.89 L15.64 11.45 L13.41 6.7 L10.17 6.7 L15.66 19.11 Z" style="fill:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
       <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>

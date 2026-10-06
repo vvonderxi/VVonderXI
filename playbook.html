@@ -1659,7 +1659,11 @@
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink-ink)}
+    /*  THE LIGHT RULE ABOVE IS (0,2,1) AND OUTRANKED THE BARE .on AT (0,2,0), so in light mode the
+        active tab rendered the same grey as the rest. The second selector here is what beats it.
+        The Home glyph is the locked two-tone lockup, the same two paths the loader draws ,
+        change them there and here together, never one alone.  */
+    .bn-item.on,body.light .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   @media (max-width:720px){
@@ -1787,75 +1791,19 @@
       <div class="vvceiling"><b>The bands are named levels, not precise cuts.</b> A season near a band edge could sit either side of it. The number is measured more finely than the names divide it, so a band is the neighbourhood a season is in, not a line it cleared.</div>
       <div class="vvstory"><div class="vvstory-d">The V<span class="vvw">V</span> Score is <b>not a popularity contest</b>, and <b>not a sum of trophies</b>. It measures a single season's output, weighed against the standard of its position and the strength of its stage. A striker is asked for goals; a playmaker, for creation; a defender, for control, <b>each judged against their own kind</b>. Then the league is accounted for, because <b>thirty goals in the strongest division is not thirty goals in a gentler one</b>. What remains is a single, defensible figure, the closest thing the game has to a <b>common currency</b>, so any two seasons, separated by decades or borders, can finally be set on the same table and asked the only question that matters: <b>who was greater?</b></div></div>
     
-      <!--  THE WALK. Its 21 figures are generated , playbook.html was added to
-            apply-figures.js TARGETS in the same change, because a page that is not
-            scanned turns a generated figure into a hardcoded number on arrival.  -->
-      <div class="wk">
-    <div class="wkhead">
-      <div class="wkwho"><span data-fig="walk_player">Mohamed Salah</span>
-        <small><span data-fig="walk_season">24/25</span> &#183; read against other
-        <span data-fig="walk_pool">Winger</span> seasons</small></div>
-      <div class="wkin">
-        <div><b><span data-fig="walk_goals">29</span></b>goals</div>
-        <div><b><span data-fig="walk_assists">18</span></b>assists</div>
-        <div><b><span data-fig="walk_minutes">3,377</span></b>minutes</div>
-      </div>
-    </div>
-
-    <div class="wkstep"><div class="wkn">1</div>
-      <div class="wkl">Output becomes one figure , each assist at <b>0.7</b>, a fifth off each of his
-        <span data-fig="walk_pens">9</span> penalties.</div>
-      <div class="wkv"><span data-fig="walk_gaw">39.62</span><small>output</small></div></div>
-
-    <div class="wkstep"><div class="wkn">2</div>
-      <div class="wkl">Divided by minutes, not matches, so <b>a half season and a full one become
-        comparable.</b></div>
-      <div class="wkv"><span data-fig="walk_gaw90">1.056</span><small>per 90</small></div></div>
-
-    <div class="wkstep"><div class="wkn">3</div>
-      <div class="wkl">Then ranked twice , <b>once among wingers</b>, once against every outfielder.
-        <div class="wkpair">
-          <div class="wkp"><span><span data-fig="walk_pool">Winger</span> pool</span>
-            <b><span data-fig="walk_pct_pool_rate">99.1</span> rate &#183;
-               <span data-fig="walk_pct_pool_vol">99.9</span> volume</b></div>
-          <div class="wkp"><span>Every outfielder</span>
-            <b><span data-fig="walk_pct_all_rate">99.6</span> rate &#183;
-               <span data-fig="walk_pct_all_vol">100</span> volume</b></div>
-        </div>
-      </div>
-      <div class="wkv wkarrow">&#8595;</div></div>
-
-    <div class="wkstep"><div class="wkn">4</div>
-      <div class="wkl">Blended, pool first, with the <b>raw size</b> of the output beside it ,
-        <span data-fig="walk_rank_term">64.7</span> for rank,
-        <span data-fig="walk_vol_term">68.2</span> for volume.</div>
-      <div class="wkv"><span data-fig="walk_perf">132.9</span><small>performance</small></div></div>
-
-    <div class="wkstep"><div class="wkn">5</div>
-      <div class="wkl">Availability is added, on a curve that <b>stops rewarding minutes long before
-        the last one.</b></div>
-      <div class="wkv">+&#8201;<span data-fig="walk_avail">27</span><small>availability</small></div></div>
-
-    <div class="wkstep"><div class="wkn">6</div>
-      <div class="wkl">And the league is weighted , <b>not by reputation, but from players who moved
-        between them.</b> The Premier League is the baseline.</div>
-      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">1</span><small>league</small></div></div>
-
-    <div class="wkstep"><div class="wkn">7</div>
-      <div class="wkl">Which assembles to one figure, on a scale nobody sees.</div>
-      <div class="wkv"><span data-fig="walk_b">120</span><small>assembled</small></div></div>
-
-    <div class="wkout">
-      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
-        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
-      <div class="wkrt"><span data-fig="walk_rt">95</span></div>
-    </div>
-  </div>
-      <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
-  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
-  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
-  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
-  shown beside the score, never inside it.</p>
+      <!--  THE WALK MOVED TO vvindex.html ON 2026-10-04 AND THIS LINE IS WHAT REPLACES IT.
+            It came here on 2026-10-02 as SEVEN COMPUTATIONAL STEPS, and that was right: method
+            belongs in the dictionary and the VV Index is a proof. It is now THREE, chosen so a
+            reader finishes on a surprise rather than on an arithmetic, which makes it an
+            ARGUMENT and not a definition , so the reason that brought it here no longer
+            describes the thing. The rationale was not re-read when the walk was rewritten,
+            which is the stale-governing-statement shape SS C records.
+            WHAT THIS SECTION KEEPS IS THE PROSE ACCOUNT: `.vvnote` above still says how a
+            score is built, in words, and the five bands, the ceiling notes and the story are
+            untouched. What it loses is the one NUMERIC demonstration, and this points at it.
+            IT MIRRORS vvindex's OWN POINTER, which now sends method here. Each page points at
+            the half the other owns; if either moves, change both or they lie about each other. -->
+      <p class="wkptr">One season, scored step by step, is on <a href="vvindex.html">the V<span class="vvw">V</span> Index</a>.</p>
     </section><section class="section" id="s-dim" data-nav="The 5 Dimensions">
       <div class="label">The Foundation</div>
       <h2 class="h2"><span class="se">&#128376;&#65039;</span> The Five Dimensions</h2>
@@ -1890,8 +1838,22 @@
     </div>
   </div>
   <div class="ceil">
-    <div class="ceilh">Every keeper is capped at <em>75</em>.</div>
-    <div class="ceilb">The V<span class="vvw">V</span> Index does not yet weigh goalkeeping, so no save rate can move the number. The fourteenth best save season we hold scores the same as the thousandth, and de Gea's 17/18 is that fourteenth. The cap is stated on the card, because a number that cannot move should say it cannot move.</div>
+    <!--  THIS BLOCK CONTRADICTED THE SECTION'S OWN OPENING SENTENCE, AND ONE CLAUSE OF IT WAS
+          SIMPLY FALSE (fixed 2026-10-04). The intro 4KB above reads "A keeper carries no VV
+          Score at all"; this said "Every keeper is capped at 75" and "The cap is stated on the
+          card". A keeper cannot both carry no score and be capped at one, and the cap sentence
+          was RETIRED by Fallback C , `86cd73a` took the score off the card face, `3f7fe9d` out
+          of the share caption, and card.html carries the comment saying so.
+          THE CAP IS STILL REAL IN THE ENGINE and that is why this is a rewrite rather than a
+          deletion: the GK branch of player_card_view does clamp at 75, 949 keeper cards sit on
+          it, and 891 of those genuinely exceed it before clamping. What a reader never sees is
+          the number. So the block now says what the Index CANNOT do, which is the point it was
+          always making, instead of describing a figure the card no longer shows.
+          AND THE DE GEA POINT SURVIVES INTACT , it is the strongest sentence here, and it is
+          true for the right reason: SS C records that the keeper formula is minutes and league
+          and contains no goalkeeping term at all.  -->
+    <div class="ceilh">The Index cannot yet weigh a <em>save</em>.</div>
+    <div class="ceilb">The figure it could compute for a keeper is built from minutes and league strength alone, so nothing he does in his own six-yard box would move it. The fourteenth best save season we hold would score the same as the thousandth, and de Gea's 17/18 is that fourteenth. Rather than publish a number that cannot move, the card shows none.</div>
   </div>
   <div class="after">Every one of those marks is the same size, and that is not a design choice.</div>
   <div class="aftersub">We record whether a shot was saved, never how hard it was. A tap-in in the six-yard box and a thirty-yard flying save both count one. The score cannot weigh them, so the card says so rather than implying a precision it does not have.</div>
@@ -1936,7 +1898,16 @@
       <h2 class="h2"><span class="se">&#128202;</span> What "percentile" means</h2>
       <div class="pctbox">
         <div class="t">A measure of rarity, not just volume.</div>
-        <div class="b">When a card says a player is in the <b>95th percentile</b> for creation, it means only <b>5 in 100</b> players in their position and league created more that season. It ranks them against their real peers, in their real context.</div>
+        <!--  "AND LEAGUE" IS THE ONE COPY TRAP SS C NAMES BY NAME, AND THIS WAS THE ONLY SURFACE
+              STILL FALLING INTO IT (fixed 2026-10-04). The engine's percentiles are GLOBAL and
+              cross-league, so the pool is every season in that position across the whole record.
+              card.html already ships "a percentile against other ST seasons we can measure, not
+              an absolute rate" and compare.html "a percentile within that player's own position
+              pool" , the page that DEFINES the word was the one adding a league it does not use.
+              The closing sentence went with it: "against their real peers, in their real
+              context" restated the clause before it without adding anything, so the concrete
+              payoff takes its place instead.  -->
+        <div class="b">When a card says a player is in the <b>95th percentile</b> for creation, it means only <b>5 in 100</b> seasons in his own position pool created more. The pool spans every league in the record, so a centre-back is measured against centre-backs and never against forwards.</div>
         <div class="pctbar"><i></i><b class="tick"></b><span>95th</span></div>
       </div>
     </section><section class="section" id="s-conf" data-nav="Data Confidence">
@@ -1964,14 +1935,14 @@
       </div>
     </div>
   </div>
-<script src="/vv-marks.js?v=20261003g"></script>
+<script src="/vv-marks.js?v=20261004a"></script>
 <!--  vv-core is loaded for TAG_DEFS: the career arc reads its copy from there rather than
       keeping a second transcription. Verified before adding it , playbook has ZERO
       [data-tip] elements so vv-core's tooltip handler binds nothing, and none of its 94
       exported globals collides with a playbook top-level name. Shares vv-marks' ?v= token
       by the section C rule: bump BOTH tags together or one is served fresh against a
       cached copy of the other. -->
-<script src="/vv-core.js?v=20261003g"></script>
+<script src="/vv-core.js?v=20261004a"></script>
 <script>
   /*  Built from the shared list rather than transcribed. Fails closed: no vv-core, no strip.  */
   (function(){
@@ -2106,7 +2077,7 @@
       colour were never here , they are inline styles on the .arcmk buttons. */
   var ARC_STAGES = {"wonderkid": {"n": "Wonderkid", "e": "🌱", "live": true}, "breakout": {"n": "Breakout", "e": "", "live": true}, "peak": {"n": "Peak", "e": "", "live": true}, "standard": {"n": "The Standard", "e": "", "live": true}, "lastdance": {"n": "The Last Dance", "e": "🌅", "live": true}};
   var VSPEC = [{"n":"A Masterclass","e":"🏅","td":"One card so far ahead it stops being a contest and becomes a demonstration.","dq":"\"This was not a comparison. It was a lesson. One season stood and the other could only watch, and there is no shame in that, for you cannot teach what this player simply was.\""},{"n":"Bragging Rights Settled","e":"🏆","td":"A clear, shareable result. The kind you send to the group chat.","dq":"\"Screenshot it. Send it. Let it speak for itself. Some verdicts are made to be shared, and this is one of them.\""},{"n":"A Clear Edge","e":"⚖️","td":"The margin is real but not huge: one season clearly shades the other.","dq":"\"Not a landslide. Not a rout. But when you weigh the two, the scales tip, and they tip with conviction.\""},{"n":"VAR close call","e":"📺","td":"Close enough to send it to the screen. Settled by the finest of margins.","dq":"\"A breath. A heartbeat. The width of a coat of paint. To separate these two feels almost unkind, and yet a verdict must be given, and by the very finest of margins, it is.\""},{"n":"Photo Finish","e":"📸","td":"Near-identical scores, but one nicks it at the line.","dq":"\"They crossed the line together, or so it seemed. Only the closest look, the finest measure, could tell them apart. And by a fraction, one was first.\""},{"n":"The Debate Lives On","e":"🔥","td":"So close it won't end the argument. Fuel for the next conversation.","dq":"\"There will be no peace tonight. The numbers have spoken, and still the argument burns, in the pubs, the group chats, the playgrounds. Some debates were never meant to end.\""}];
-  var VREST = [{"n":"Different Worlds","e":"🌍","td":"They win on totally different things, a creator against a finisher. Both elite, in their own lane.","dq":"\"To compare them is almost to miss the point. One paints, the other scores. One builds the cathedral, the other places the final stone. They are not rivals. They are different answers to the same beautiful question.\"","sh":"tilt"},{"n":"Class Across Eras","e":"🕰️","td":"A cross-generation matchup where both players transcend their time.","dq":"\"Years apart, yet cut from the same cloth. Greatness does not belong to a decade. It echoes across them, and here, two echoes meet.\"","sh":"offset"},{"n":"League Strength Tips It","e":"🌐","td":"Genuinely close on output, but the stronger league or era decides it.","dq":"\"On paper, almost nothing between them. But football is not played on paper. One did it against the very best, week after week, and that, in the end, is the difference.\"","sh":"lean"},{"n":"The Eye Test Deceives","e":"👁️","td":"The numbers disagree with the gut. One looks better; the other scores higher.","dq":"\"Your eyes told you one thing. The data, quietly, tells you another. And sometimes, the truth is hiding in the spaces the highlight reel forgets.\"","sh":"flip"},{"n":"Complete Package vs Specialist","e":"🧩","td":"One balanced across every dimension, the other a peak in a single craft.","dq":"\"One could do everything. The other did one thing better than anyone alive. And so we ask the oldest question in football: is it better to be complete, or to be unforgettable?\"","sh":"tilt"},{"n":"The Prodigy's Edge","e":"🌟","td":"A young season stands with or above an established one, and doing it this early is the rarer feat.","dq":"\"To command this stage at nineteen, the years ahead should frighten us all.\"","sh":"offset"},{"n":"The Ascendant","e":"📈","td":"A near-tie where the younger player is still climbing, the finished portrait against the one still being painted.","dq":"\"One is the finished portrait; the other still being painted, and already this good.\"","sh":"offset"},{"n":"Twilight Brilliance","e":"🌅","td":"A veteran matches a prime player; age has not dimmed him.","dq":"\"They said the legs would fade. The refusal does not fade.\"","sh":"offset"}];
+  var VREST = [{"n":"Different Worlds","e":"🌍","td":"They win on totally different things, a creator against a finisher. Both elite, in their own lane.","dq":"\"To compare them is almost to miss the point. One paints, the other scores. One builds the cathedral, the other places the final stone. They are not rivals. They are different answers to the same beautiful question.\"","sh":"tilt"},{"n":"Class Across Eras","e":"🕰️","td":"A cross-generation matchup where both players transcend their time.","dq":"\"Years apart, yet cut from the same cloth. Greatness does not belong to a decade. It echoes across them, and here, two echoes meet.\"","sh":"offset"},{"n":"League Strength Tips It","e":"🌐","td":"Genuinely close on output, but the stronger league or era decides it.","dq":"\"On paper, almost nothing between them. But football is not played on paper. One did it against the very best, week after week, and that, in the end, is the difference.\"","sh":"lean"},{"n":"The Eye Test Deceives","e":"👁️","td":"The numbers disagree with the gut. One looks better; the other scores higher.","dq":"\"Your eyes told you one thing. The data, quietly, tells you another. And sometimes, the truth is hiding in the spaces the highlight reel forgets.\"","sh":"flip"},{"n":"Complete Package vs Specialist","e":"🧩","td":"One balanced across every dimension, the other a peak in a single craft.","dq":"\"One could do everything. The other did one thing better than anyone alive. And so we ask the oldest question in football: is it better to be complete, or to be unforgettable?\"","sh":"tilt"},{"n":"The Prodigy's Edge","e":"🌟","td":"A young season stands with or above an established one, and doing it this early is the rarer feat.","dq":"\"Command this stage at nineteen, and the years ahead should frighten us all.\"","sh":"offset"},{"n":"The Ascendant","e":"📈","td":"A near-tie where the younger player is still climbing, the finished portrait against the one still being painted.","dq":"\"One is the finished portrait; the other still being painted, and already this good.\"","sh":"offset"},{"n":"Twilight Brilliance","e":"🌅","td":"A veteran matches a prime player; age has not dimmed him.","dq":"\"They said the legs would fade. The refusal does not fade.\"","sh":"offset"}];
   /* ONE ICON RESOLVER for every data-driven row. Prefers the shared mark and falls back to
      whatever emoji the record already carried, so a name with no mark yet keeps its icon
      instead of rendering bare. THAT FALLBACK IS LOAD-BEARING TODAY: the fourteen VERDICT
@@ -2125,7 +2096,7 @@
   }
 
   /* the cabinet , same expand-in-place model as the arc and the pitch */
-  var HON_COPY = {"Ballon d'Or": {"td": "Named the <b>single best player in the world</b> that year. Football's most prestigious individual prize.", "dq": "\"The highest honour the game can bestow on one man. Not a team's triumph, but a singular coronation, the season the whole of football looked up and agreed: above all others, this one.\""}, "League Title": {"td": "A <b>champion</b>. Part of the team that won the league that season.", "dq": "\"In the end, the only number that never fades: champions. Form is temporary. This is forever.\""}, "UCL Champion": {"td": "Lifted the <b>Champions League</b>, the grandest prize in club football.", "dq": "\"Under the brightest lights, on the grandest stage. He did not shrink. He rose.\""}, "Player of the Season": {"td": "Voted the <b>standout individual</b> of the entire campaign.", "dq": "\"When the votes were counted, one name stood above the rest. Across ten long months, no one shone brighter.\""}, "Golden Boot": {"td": "Led the league for <b>goals</b> that season. The sharpest shooter of them all.", "dq": "\"Goal after goal after goal, until the boot itself turned to gold. The oldest honour in the game, earned the only way it can be.\""}, "Top Assists": {"td": "Led the league for <b>assists</b> that season. The supreme provider.", "dq": "\"He did not always take the glory. He made it, time and again, with the pass that mattered.\""}, "World Cup Winner": {"td": "A world champion. The prize every player covets most. It is a season honour like the others, on the year it was won, and it appears in the Cabinet of every later card with that year against it."}, "European Champion": {"td": "Champion of Europe with his country. The <b>European Championship</b> is the hardest tournament to win outside the World Cup , no easy group, no distant qualifier, only neighbours who know exactly how you play.", "dq": "\"A continent settles it every four years, and you have to beat the best of it back to back.\"", "leg": "Won with the national team, dated to the year it was won."}, "Copa América Champion": {"td": "Champion of South America. The <b>Copa América</b> is the oldest international tournament in the game, played in front of crowds who have been arguing about it for a hundred years.", "dq": "\"The oldest prize there is, and the one that carries the most history per match.\"", "leg": "Won with the national team, dated to the year it was won."}, "AFCON Champion": {"td": "Champion of Africa. The <b>Africa Cup of Nations</b> falls in the middle of the European season, so winning it costs a player half a campaign at his club , and he goes anyway.", "dq": "\"Every other continental title is won in the summer, when nothing else is being asked. This one is won in January, against your own club's wishes, and you come home to a shirt somebody else has been wearing.\"", "leg": "Won with the national team, dated to the year it was won."}};
+  var HON_COPY = {"Ballon d'Or": {"td": "Named the <b>single best player in the world</b> that year. Football's most prestigious individual prize.", "dq": "\"The highest honour the game can bestow on one man. Not a team's triumph, but a singular coronation, the season the whole of football looked up and agreed: above all others, this one.\""}, "League Title": {"td": "A <b>champion</b>. Part of the team that won the league that season.", "dq": "\"In the end, the only number that never fades: champions. Form is temporary. This is forever.\""}, "UCL Champion": {"td": "Lifted the <b>Champions League</b>, the grandest prize in club football.", "dq": "\"Under the brightest lights, on the grandest stage. He did not shrink. He rose.\""}, "Player of the Season": {"td": "Voted the <b>standout individual</b> of the entire campaign.", "dq": "\"When the votes were counted, one name stood above the rest. Across ten long months, no one shone brighter.\""}, "Golden Boot": {"td": "Led the league for <b>goals</b> that season. The sharpest shooter of them all.", "dq": "\"Goal after goal after goal, until the boot itself turned to gold. The oldest honour in the game, earned the only way it can be.\""}, "Top Assists": {"td": "Led the league for <b>assists</b> that season. The supreme provider.", "dq": "\"He did not always take the glory. He made it, time and again, with the pass that mattered.\""}, "World Cup Winner": {"td": "A world champion. The prize every player covets most. It is a season honour like the others, on the year it was won, and it appears in the Cabinet of every later card with that year against it."}, "European Champion": {"td": "Champion of Europe with his country. The <b>European Championship</b> is the hardest tournament to win outside the World Cup , no easy group, no distant qualifier, only neighbours who know exactly how you play.", "dq": "\"A continent settles it every four years, and you have to beat the best of it back to back.\"", "leg": "Won with the national team, dated to the year it was won."}, "Copa América Champion": {"td": "Champion of South America. The <b>Copa América</b> is the oldest international tournament in the game, played in front of crowds who have been arguing about it for a hundred years.", "dq": "\"The oldest prize there is, and the one that carries the most history per match.\"", "leg": "Won with the national team, dated to the year it was won."}, "AFCON Champion": {"td": "Champion of Africa. The <b>Africa Cup of Nations</b> falls in the middle of the European season, so winning it costs a player half a campaign at his club , and he goes anyway.", "dq": "\"Every other continental title is won in the summer, when nothing else is being asked. This one is won in January, against your own club's wishes, and you come back to a season that did not wait for you.\"", "leg": "Won with the national team, dated to the year it was won."}};
   /*  HON_TIER IS GONE. It labelled the retired hero panel's eyebrow ("The individual
       summit", "Team honours", "League awards"), a THIRD grouping on top of the leg the
       data carries and the order HON_RANK sets. The grid states the leg per cell instead.  */
@@ -2506,7 +2477,12 @@
   /* TAG_COPY , lifted VERBATIM from the .td and .drury of the text groups this pitch replaced
      (git 1c9805c~1), never retyped, so no wording can drift from what the page already said. */
   var TAG_COPY = {"Goal Machine":{"e":"⚽","td":"Goals by the season, not the handful. Volume that bends a table.","dq":"\"Some players score. This one scores, and scores, and scores again, until the goal becomes less an event than a habit. A season measured in the simplest, cruellest currency the game knows, and there was always more of it to come.\""},"Clinical":{"e":"🔫","td":"Cold, efficient finishing. Rarely wastes a chance.","dq":"\"There is a coldness to it, a certainty. Where others hesitate, he has already decided. The chance arrives, the net ripples, and all season long the story barely changes. Ruthless, and quietly so.\""},"Provider":{"e":"🅰️","td":"The pass before the goal. Assists at a rate few can match.","dq":"\"He does not need his name on the scoresheet to have written the story. The vision, the weight, the moment of generosity that turns a teammate into a hero. A season spent handing out goals like gifts.\""},"Poacher":{"e":"🦊","td":"Lives in the box, lives for the goal. A natural finisher.","dq":"\"He does not build the move. He does not need to. He waits, in the spaces no one else sees, for the half-yard and the half-second, and then he is gone, and the net is rippling. A predator, patient and merciless.\""},"The Winger":{"e":"&#128168;","td":"Drifts wide, cuts in, beats his man for fun.","dq":"\"Give him the touchline and a defender to torment, and watch the old magic unfold. The drop of the shoulder, the burst of pace, the moment the full-back is left grasping at shadows. Football's purest thrill: a winger in full flight.\""},"Playmaker":{"e":"🪄","td":"The creative hub. Unlocks defences with vision and weight of pass.","dq":"\"He sees the pass a moment before anyone else, and plays it a moment before they expect. The defence is unlocked not by force but by imagination. Where others see a wall, he sees a door.\""},"Maestro":{"e":"🎩","td":"The conductor of a team's attack. Vision, control, and the passes others don't see.","dq":"\"He does not run the game. He composes it. Every pass a note, every movement a phrase, the rhythm of an entire team bending to his tempo. You do not watch a Maestro. You listen to him.\""},"Regista":{"e":"🎻","td":"Dictates tempo from deep, sprays passes across the pitch.","dq":"\"From the quietest part of the pitch, he runs the loudest game. A glance, a touch, and the ball travels forty yards to feet. He does not chase the spotlight. He bends the whole match to his rhythm and lets others dance in it.\""},"The Dribbler":{"e":"✨","td":"Beats his man and keeps the ball. Carries it where others lose it.","dq":"\"Others give the ball away when the pitch gets crowded. He keeps it. Surrounded, hounded, doubled up on, he lowers his head and goes, and the tighter the space, the more alive he seems. A footballer who treats a crowd as an invitation.\""},"Ball-Playing CB":{"e":"&#129462;","td":"Defends first, but starts attacks with the ball at his feet.","dq":"\"The defender who is also the architect. He wins the ball, and then he does the harder thing, he uses it. A season of quelling danger at one end and igniting it at the other, all from the foundations of the team.\""}};
-  var POS_GK_NOTE = "Goalkeeper data is not yet significant enough to score fairly (planned for a future version). GK cards are capped and carry no profile tags.";
+  /*  THREE THINGS WRONG IN ONE SENTENCE (fixed 2026-10-04). "significant" was the wrong word
+      entirely , the issue is COMPLETENESS, not statistical significance. "GK cards are capped"
+      describes a number the card no longer shows, so it contradicted this page's own keeper
+      intro the same way the ceiling block did. And the parenthetical roadmap note was a
+      different register from every other line of copy on the platform.  */
+  var POS_GK_NOTE = "Goalkeeper data is not yet complete enough to score fairly, so a keeper's card carries no VV Score and no profile tags.";
   function pchEsc(v){ return String(v).replace(/[&<>"]/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function pchSelect(pos){
@@ -2728,7 +2704,7 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
 </script>
 
   <nav class="bottomnav">
-      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
+      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M1 4.89 L5.16 4.89 L8.36 11.45 L10.59 6.7 L13.83 6.7 L8.34 19.11 Z" fill="currentColor"/><path d="M23 4.89 L18.84 4.89 L15.64 11.45 L13.41 6.7 L10.17 6.7 L15.66 19.11 Z" style="fill:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
       <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>
@@ -2821,52 +2797,12 @@ window.addEventListener('scroll',function(){var t=document.getElementById('totop
  .shsp.flagged .shsp-l{color:#7a5c12}
  body.light .shsp-t{color:#3a352e}
 
-/*  THE SCORING WALK , MOVED HERE FROM vvindex.html ON 2026-10-02.
-    IT IS METHOD, AND THE VV INDEX IS A PROOF. SEC E already rules that this page is the
-    dictionary and that one a proof, so seven computational steps belong here. Nothing was
-    deleted in the move; vvindex now carries a single pointer line.
-    ITS SIX TOKENS ARE SCOPED TO `.wk` RATHER THAN ADDED GLOBALLY. They are vvindex's own
-    (--vi-line, --vi-mut, --vi-ink, --vi-panel, --vi-strong, --vi-gold-num) and this page
-    defines none of them. Declaring them on the block keeps the walk self-contained and leaves
-    the Playbook's namespace untouched , SEC C: a token defined for one ground is not a token,
-    so BOTH grounds are declared here, not just the one that was looked at.  */
-.wk{--vi-gold-num:#E8B84B;--vi-ink:rgba(243,237,224,.80);--vi-line:rgba(243,237,224,.11);
-    --vi-mut:rgba(243,237,224,.52);--vi-panel:rgba(255,255,255,.03);--vi-strong:var(--cream)}
-body.light .wk{--vi-gold-num:#A8760F;--vi-ink:rgba(28,27,26,.82);--vi-line:rgba(28,27,26,.14);
-    --vi-mut:#5f594e;--vi-panel:rgba(0,0,0,.035);--vi-strong:var(--charcoal)}
-  .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
-  .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
-  .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
-    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
-  .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
-    padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
-  .wkwho{font:800 clamp(17px,2.4vw,20px)/1.2 'Archivo';letter-spacing:-.01em}
-  .wkwho small{display:block;font:700 10px 'Archivo';letter-spacing:.12em;text-transform:uppercase;
-    color:var(--vi-mut);margin-top:5px}
-  .wkin{display:flex;gap:16px;flex-wrap:wrap;font:700 11px 'Archivo';letter-spacing:.06em;
-    text-transform:uppercase;color:var(--vi-mut)}
-  .wkin b{display:block;font:900 17px/1 'Archivo';color:var(--vi-strong);letter-spacing:-.01em;margin-bottom:3px}
-  .wkstep{display:grid;grid-template-columns:20px 1fr auto;gap:13px;align-items:baseline;
-    padding:13px 0;border-bottom:1px solid var(--vi-line)}
-  .wkstep:last-of-type{border-bottom:0}
-  .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
-  .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
-  .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
-  .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
-    color:var(--vi-mut);margin-top:4px}
-  .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
-  .wkp{border:1px solid var(--vi-line);border-radius:var(--r-md);padding:8px 10px}
-  .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
-  .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
-  .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
-    padding-top:16px;border-top:1px solid var(--vi-line)}
-  .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
-  .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
-    .wkv{grid-column:2;text-align:left;margin-top:6px}
-    .wkhead{display:block}
-    .wkarrow{display:none}
-    .wkout{align-items:flex-end}
+  /*  THE POINTER THE WALK LEFT BEHIND. It takes the section's own body measure and the muted
+      ink rather than inventing a treatment, because it is a sentence in the flow and not a
+      callout , a bordered box here would claim more attention than the walk itself did.  */
+  .wkptr{font:400 14px/1.6 'Inter';color:var(--ink-soft);max-width:660px;margin:18px auto 0}
+  .wkptr a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+
 </style>
 <script>
 /*  RENDERED FROM THE SHARED STRINGS , see the comment at #s-conf. If VVCore is not loaded the

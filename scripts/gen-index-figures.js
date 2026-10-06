@@ -405,7 +405,18 @@ async function main() {
   const bAll = E.out.map(x => RT.bFor(x, E));
   const anchors = RT.anchorsOf(bAll);
 
-  const WALK_NAME = 'Mohamed Salah', WALK_YEAR = 2024;
+  /*  THE SUBJECT IS A DECISION, NOT A CONVENIENCE , CHANGED FROM SALAH 24/25 ON 2026-10-04.
+      Salah is Premier League, and the Premier League is the engine's baseline, so his league
+      weight is exactly 1.000 and the walk's last step displayed "x 1" , a step that states a
+      real and unusual property of this platform (league strength is MEASURED, from players
+      who moved, not assigned by reputation) and then demonstrated nothing at all.
+      Mbappe 21/22 is Ligue 1, measured at 0.7958 for that season, so the step finally shows
+      its own point. He also has 28 goals AND 17 assists, so the opening step , that goals and
+      assists become one figure , is visible in the inputs; Kane 17/18 was the other candidate
+      and his 2 assists would have hidden it.
+      THE NAME MUST MATCH THE STORED STRING EXACTLY, accent included, or the guard below
+      throws rather than quietly walking a different season.  */
+  const WALK_NAME = 'Kylian Mbappé', WALK_YEAR = 2021;
   const wi = E.out.findIndex(x => x.name === WALK_NAME && x.season_year === WALK_YEAR && x.minutes > 3000);
   if (wi < 0) throw new Error(`the scoring walk needs ${WALK_NAME} ${WALK_YEAR} and did not find it`);
   const W = E.out[wi], wb = bAll[wi], wrt = RT.rtFrom(wb, anchors);
@@ -451,6 +462,15 @@ async function main() {
   w1('walk_anchors', [anchors.b85, anchors.b90, anchors.b95].map(v => v.toFixed(1)).join(','),
      'the ladder anchors at 85, 90 and 95', 'the 650th, 150th and 12th highest figure in the record');
   w1('walk_pool', W.pool, 'the position pool he is read against', 'player_card_mv.position_pool');
+  /*  THE LEAGUE'S NAME, so step 3 can say which one rather than "his league". The engine's
+      output object does NOT carry league_code (rt_reimpl.js drops it after computing the
+      weight), so it is read back off the card row by card_id and resolved through the SAME
+      `lgName` guard as the elite table above , which throws rather than printing a bare code,
+      and which exists because the `leagues` table says TSL where every card says TR.  */
+  const wRow = engCards.find(c => c.card_id === W.card_id);
+  if (!wRow) throw new Error('the walk card vanished from engCards , cannot name its league');
+  w1('walk_league', lgName(wRow.league_code), 'the league that season was played in',
+     'player_card_mv.league_code, named through vv-core\'s canonical map');
 
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))

@@ -57,6 +57,12 @@
 !/vv-core.js
 !/vv-marks.js
 !/vv-margin.js
+# vv-a2hs.js joined on 2026-10-03 and was MISSED here until 2026-10-04 , it would have 404'd
+# on the deployed site and nowhere locally, because the dev server serves everything. It fails
+# CLOSED by design (both callers guard on `window.VVA2HS`), so the symptom would have been the
+# Add-to-Home-Screen strip silently never appearing on index.html or preferences.html rather
+# than an error anybody would report. Verified by simulating this file with git check-ignore.
+!/vv-a2hs.js
 
 # ── icons, manifest and the social image ──────────────────────────────────
 # icon-512 and icon-maskable-512 are referenced by the MANIFEST rather than by

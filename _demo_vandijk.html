@@ -1,0 +1,114 @@
+<!doctype html><meta charset="utf-8"><title>Van Dijk block , three layouts</title>
+<!--  THE PAGE'S OWN STYLESHEET IS FETCHED, NOT RETYPED. SS C: a demo that supplies its own
+      tokens cannot test the page's tokens, and one set in fonts the target does not ship is
+      asking approval for something that cannot exist. Everything below renders in vvindex's
+      real CSS, real fonts and real --vi-* tokens; each variant adds ONLY its own overrides. -->
+<style>
+ body{margin:0;font-family:'Inter',sans-serif;background:#141210;color:#ddd}
+ .lab{font:11px/1.5 ui-monospace,monospace;color:#9a938a;padding:14px 18px 0;letter-spacing:.08em;text-transform:uppercase}
+ .lab b{color:#F1688E;font-size:13px;letter-spacing:0}
+ .lab i{color:#7fb37f;font-style:normal}
+ .stage{padding:8px 0 26px;display:flex;justify-content:center}
+ /* RENAMED , vvindex declares its own .inner (4 rules) and was restyling the demo
+    frame. A demo that imports a page's stylesheet inherits its class namespace too. */
+ .dmo-inner{max-width:820px;margin-inline:auto}
+ hr{border:0;border-top:1px solid #2a2724;margin:0}
+</style>
+<div id="root">loading vvindex.html's stylesheet…</div>
+<script>
+(async()=>{
+ const html = await (await fetch('/vvindex.html')).text();
+ // take EVERY <style> block the page declares, in order
+ const css = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+ const fonts = [...html.matchAll(/<link[^>]+fonts\.googleapis[^>]*>/g)].map(m=>m[0]).join('\n');
+ document.head.insertAdjacentHTML('beforeend', fonts);
+ const st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+ document.body.classList.add('light');   // the page ships light by default here
+ /*  vvindex's own `body` is `display:flex` (its spine sits beside the content), so the demo
+     root became a flex ITEM and shrank to its content instead of filling the window , the
+     same class of surprise as the .inner collision above. Importing a page's stylesheet
+     means inheriting its layout rules on the elements you share with it, not only its
+     class names. Reset it for the demo frame only. */
+ document.body.style.display='block';
+
+ const CARD = '<img src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" '
+   + 'alt="Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72.">';
+ const STAND = 'Some of these the Index cannot do. Some it will not. Every one is on the card it affects.';
+ const CAP = 'Virgil van Dijk, Liverpool 2018/19. One card, and the evidence for three of the panels '
+   + 'below. He scores <b>72</b>, because the record counts what a defender does and not what he '
+   + 'prevents. He is a <b>centre&#8209;back</b>, and not one of them reaches the top band. And he '
+   + 'carries a <b>Champions League and a Player of the Season</b> beside that 72, because no honour '
+   + 'moves a score.';
+ const CAP_SHORT = 'Virgil van Dijk, Liverpool 2018/19. He scores <b>72</b>, he is a '
+   + '<b>centre&#8209;back</b>, and he carries two honours beside that 72. Each one is a panel below.';
+
+ function stage(id, label, note, body){
+   return '<hr><div class="lab"><b>'+label+'</b> &nbsp;'+note+'</div>'
+        + '<div class="stage '+id+'"><div class="dmo-inner">'+body+'</div></div>';
+ }
+
+ /* ── TODAY ─────────────────────────────────────────────────────────── */
+ const today = '<div class="vi-lims-top"><p class="vi-lims-s">'+STAND+'</p>'
+   + '<figure class="vi-lims-card">'+CARD+'<figcaption class="vi-lims-cap">'+CAP+'</figcaption></figure></div>';
+
+ /* ── A , REBALANCE ─────────────────────────────────────────────────── */
+ const A = '<div class="vi-lims-top vA"><div class="vA-col">'
+   + '<p class="vi-lims-s">'+STAND+'</p>'
+   + '<p class="vi-lims-cap vA-cap">'+CAP+'</p></div>'
+   + '<figure class="vi-lims-card">'+CARD+'</figure></div>';
+
+ /* ── B , PANEL ─────────────────────────────────────────────────────── */
+ const B = '<div class="vi-lims-top vB"><div class="vA-col">'
+   + '<p class="vi-lims-s">'+STAND+'</p>'
+   + '<p class="vi-lims-cap vA-cap">'+CAP+'</p></div>'
+   + '<figure class="vi-lims-card">'+CARD+'</figure></div>';
+
+ /* ── C , HERO ──────────────────────────────────────────────────────── */
+ const C = '<div class="vi-lims-top vC"><div class="vA-col">'
+   + '<p class="vC-h">'+STAND+'</p>'
+   + '<p class="vi-lims-cap vA-cap">'+CAP_SHORT+'</p></div>'
+   + '<figure class="vi-lims-card">'+CARD+'</figure></div>';
+
+ document.getElementById('root').innerHTML =
+    stage('s0','TODAY','2-line sentence in a 436px column , 89% dead vertical, card 165px wide', today)
+  + stage('s1','A , REBALANCE','caption moves left, card grows 250 &rarr; 360px. no panel.', A)
+  + stage('s2','B , PANEL','as A, on the section\'s own panel treatment (same as the .vl blocks below)', B)
+  + stage('s3','C , HERO','card leads at 440px; standfirst becomes a subheading; caption trimmed', C);
+
+ const own=document.createElement('style');
+ own.textContent = `
+  /* A , REBALANCE */
+  .vA{align-items:center;gap:38px}
+  .vA .vA-col{flex:1 1 auto;min-width:0}
+  .vA .vi-lims-s{margin:0 0 12px}
+  .vA .vA-cap{max-width:46ch;margin:0}
+  .vA .vi-lims-card img{height:360px}
+  /* B , PANEL , values read off .vl at runtime, not retyped */
+  .vB{align-items:center;gap:30px;border-radius:14px;padding:20px 22px}
+  .vB .vA-col{flex:1 1 auto;min-width:0}
+  .vB .vi-lims-s{margin:0 0 12px}
+  .vB .vA-cap{max-width:44ch;margin:0}
+  .vB .vi-lims-card img{height:340px}
+  /* C , HERO */
+  .vC{align-items:center;gap:40px}
+  .vC .vA-col{flex:1 1 auto;min-width:0}
+  .vC .vC-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;
+    line-height:1.18;letter-spacing:-.015em;margin:0 0 14px;color:var(--vi-strong)}
+  .vC .vA-cap{max-width:42ch;margin:0}
+  .vC .vi-lims-card img{height:440px}
+ `;
+ document.head.appendChild(own);
+
+ /* B borrows the live .vl treatment rather than guessing it */
+ const probe=document.createElement('div'); probe.className='vl';
+ probe.style.cssText='position:absolute;visibility:hidden'; document.body.appendChild(probe);
+ const v=getComputedStyle(probe);
+ document.querySelectorAll('.vB').forEach(e=>{
+   e.style.background=v.backgroundColor;
+   e.style.border=v.borderTopWidth+' solid '+v.borderTopColor;
+   e.style.borderRadius=v.borderTopLeftRadius;
+ });
+ probe.remove();
+ window.__ready=true;
+})();
+</script>

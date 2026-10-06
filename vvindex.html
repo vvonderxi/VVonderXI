@@ -173,7 +173,7 @@
   /*  THE THESIS TAKES WEIGHT AND AIR, NOT A FOURTH SIZE. Same 28px as the triad, 500 -> 800,
       muted -> full ink. The hero already carries a 44px h1 and a 22px pink tag; a fourth size
       flattens the hierarchy rather than deepening it.
-      AND IT IS NOT PINK, DELIBERATELY. The `VV` in the h1 and the whole hero-tag already
+      AND IT IS NOT PINK, DELIBERATELY. The second V in the h1 and the whole hero-tag already
       spend the page's pink, so a third pink element would make the thesis one of three
       instead of the one. Weight is what is left, and weight is enough.  */
   .hero .vh-thesis{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
@@ -437,7 +437,11 @@
     body.light .bottomnav{background:rgba(248,244,236,.95);border-top-color:rgba(0,0,0,.08)}
     .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(240,234,217,.5);font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.02em}
     body.light .bn-item{color:var(--ink-soft)}
-    .bn-item.on{color:var(--pink-ink)}
+    /*  THE LIGHT RULE ABOVE IS (0,2,1) AND OUTRANKED THE BARE .on AT (0,2,0), so in light mode the
+        active tab rendered the same grey as the rest. The second selector here is what beats it.
+        The Home glyph is the locked two-tone lockup, the same two paths the loader draws ,
+        change them there and here together, never one alone.  */
+    .bn-item.on,body.light .bn-item.on{color:var(--pink-ink)}
     .bn-item svg{width:21px;height:21px}
   }
   @media (max-width:720px){
@@ -727,6 +731,119 @@
     padding:15px 17px;border:1px solid var(--vi-line);border-radius:var(--r-lg);background:var(--vi-panel)}
   .vi-pp b{font-family:'Archivo';font-weight:900;font-size:26px;line-height:1;color:var(--vi-strong);display:block;margin-bottom:7px}
   @media (max-width:720px){ .vi-proofpair{grid-template-columns:1fr} }
+/*  THE SCORING WALK , BACK ON THIS PAGE 2026-10-04.
+    IT WENT TO THE PLAYBOOK ON 2026-10-02 AND THAT WAS RIGHT AT THE TIME. It was SEVEN
+    computational steps then , 0.7 per assist, a fifth off each penalty, four percentiles, the
+    blend split into its terms , and SEC E rules that the Playbook is the dictionary and this
+    page is a proof, so method belonged there.
+    IT IS THREE STEPS NOW, CHOSEN BY SURPRISE RATHER THAN BY COMPLETENESS, with every weighting
+    and intermediate figure removed. That is an ARGUMENT, not a definition, and this is the page
+    that argues. The thing that moved is not the thing that moved back; the rationale was simply
+    never re-read when the walk was rewritten two days later.
+    ITS SIX TOKENS ARE NO LONGER DECLARED ON THE BLOCK. They are this page's own
+    (--vi-line, --vi-mut, --vi-ink, --vi-panel, --vi-strong, --vi-gold-num), declared globally
+    above for both grounds, so the scoped copies the Playbook needed are redundant here and
+    were dropped rather than carried along as a second source.  */
+  .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
+  .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
+    background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
+  .wkhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding-bottom:14px;border-bottom:1px solid var(--vi-line)}
+  .wkwho{font:800 clamp(17px,2.4vw,20px)/1.2 'Archivo';letter-spacing:-.01em}
+  .wkwho small{display:block;font:700 10px 'Archivo';letter-spacing:.12em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:5px}
+  .wkin{display:flex;gap:16px;flex-wrap:wrap;font:700 11px 'Archivo';letter-spacing:.06em;
+    text-transform:uppercase;color:var(--vi-mut)}
+  .wkin b{display:block;font:900 17px/1 'Archivo';color:var(--vi-strong);letter-spacing:-.01em;margin-bottom:3px}
+  .wkstep{display:grid;grid-template-columns:20px 1fr auto;gap:13px;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid var(--vi-line)}
+  .wkstep:last-of-type{border-bottom:0}
+  .wkn{font:800 10px 'Archivo';color:var(--vi-mut);text-align:right;padding-top:3px}
+  .wkl{font:400 14.5px/1.5 'Inter';color:var(--vi-ink)}
+  .wkl b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  /*  THE GAP, THE RULE AND THE TITLE. `.wkintro` carries the same token block as `.wk` (see
+      the selector above) so `--vi-line` resolves here too; without that the hairline would
+      silently draw in whatever the page's own line colour happens to be, or in nothing.
+      The label/heading pair deliberately reuses the page's `.label` + heading idiom at a
+      smaller size, because this is a sub-head inside a section rather than a section of its
+      own, and a full 34px `.h2` would claim to be one.  */
+  .wkintro{max-width:660px;margin:38px auto 16px;padding-top:28px;
+    border-top:1px solid var(--vi-line)}
+  .wk-label{font-family:'Archivo';font-weight:700;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--vi-mut);margin-bottom:7px}
+  .wk-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;
+    line-height:1.15;letter-spacing:-.012em;color:var(--vi-strong);margin:0}
+  /*  RED IS A SECOND DEVICE, NOT A LOUDER FIRST ONE. `b` above is Archivo in the strong ink
+      and marks the STRUCTURE of a step; this marks the one thing in it a reader does not
+      expect. It stays in Inter at 600 so the two never read as the same emphasis wearing two
+      colours , if this also went Archivo-700 the step would just be bold twice.
+      --pink-ink is already per-theme on this page (#F1688E dark, #AD0332 light), so it needs
+      no override of its own and cannot drift from the wordmark's pink.  */
+  .wkl .hi{color:var(--pink-ink);font-weight:600}
+  .wkv{font:900 19px/1 'Archivo';color:var(--vi-strong);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .wkv small{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;
+    color:var(--vi-mut);margin-top:4px}
+  .wkpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 0}
+  .wkp{border:1px solid var(--vi-line);border-radius:var(--r-md);padding:8px 10px}
+  .wkp > span{display:block;font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
+  .wkp b{font:900 15px 'Archivo';color:var(--vi-strong)}
+  .wkout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;
+    padding-top:16px;border-top:1px solid var(--vi-line)}
+  .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
+  .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
+  /*  THE PHONE LAYOUT GETS ITS QUERY BACK , FIXED 2026-10-04. These four were INDENTED as
+      though they sat in `@media (max-width:720px)` and no such query existed: read from the
+      CSSOM rather than the source, every one reported TOP LEVEL, and `matchMedia` found no
+      query touching .wkv/.wkhead/.wkarrow/.wkout at all. So the walk rendered its PHONE
+      layout at EVERY width , the value dropped under each step instead of sitting in column
+      3, and `.wkhead` was block rather than flex. Measured before, at innerWidth 1920:
+      `.wkstep` computed `20px 572px 0px`, the third column collapsed because nothing was
+      ever placed in it. The desktop layout the grid was written for had never shipped.
+      AN UNCLOSED @media WOULD NOT HAVE PRODUCED THIS, which is worth keeping: CSS
+      auto-closes at EOF, so the rules would still have been inside the query. There was
+      simply no query, and the indentation was the only surviving evidence of the intent.
+      POSITION IS WHAT MAKES THE WRAP WORK, NOT THE QUERY. SS C: a media query adds NO
+      specificity, so these only win below 720 because they sit AFTER the base rules they
+      override. Keep them here, at the end of the walk's block. Moving them above `.wkv` or
+      `.wkhead` would silently restore the desktop layout on a phone.  */
+  @media (max-width:720px){
+    .wkv{grid-column:2;text-align:left;margin-top:6px}
+    .wkhead{display:block}
+    .wkarrow{display:none}
+    .wkout{align-items:flex-end}
+  }
+
+  /*  ── SHIRT NUMBERS AT PHONE WIDTH , 2026-10-04 ─────────────────────────────────────
+      MEASURED BEFORE, at 390: the cell is `flex:0 1 150px` inside a 263px row, so each
+      shield sat hard left with 92px of nothing to its right, and the prose wrapped at
+      150px into three cramped lines. Centring the cell was the first instinct and it was
+      measured too: it balances the dead space instead of closing it, and costs HEIGHT ,
+      771px against today's 611px. Laying the shield BESIDE its own words closes the gap by
+      using it and comes out at 432px, 29% SHORTER than today, with the prose on a 256px
+      measure. On a phone that trade beats symmetry.
+      THIS BLOCK IS LAST IN THE SHEET ON PURPOSE. The rules it overrides are top-level, so
+      they apply at every width; SS C records that a media query adds NO specificity, so the
+      only thing making these win is their position. Do not move them above `.shsp`.
+      THE ARROWS ARE DELIBERATELY UNTOUCHED, and that is a finding rather than an omission:
+      measured on a real flagged card (Trossard 22/23, --cw 330) the card's own mark is
+      19.8x19.8 in rgb(28,27,26), and this explainer draws 20.0x20.0 in the same ink. They
+      match. Enlarging or tinting only the explainer would make it misrepresent the thing it
+      exists to teach. That the mark is hard to find at all is true of the CARD, and it is
+      logged as its own item in POST_LAUNCH.md.  */
+  @media (max-width:720px){
+    .shsp{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:14px;row-gap:3px;
+      align-items:start;flex:1 1 100%;max-width:none}
+    .shsp-fig{grid-row:1/3;min-height:0;padding:2px 0 0}
+    .shsp-fig.none{padding-bottom:0}
+    /*  THE TWO-LINE LABEL RESERVE IS DROPPED HERE AND KEPT EVERYWHERE ELSE. It exists so
+        that specimens sitting SIDE BY SIDE start their prose at the same height (the FAULT 2
+        note above). Stacked one per row, there is nothing to align to and the reserve is
+        just dead space in the layout that was rebuilt to remove it.  */
+    .shsp-l{min-height:0;display:block;margin:0}
+    .shsp-t{margin:0}
+    .shgrp-row{gap:18px}
+  }
   .vi-method-ptr{font-family:'Inter';font-size:13.5px;line-height:1.6;color:var(--vi-mut);
     margin:26px 0 10px;padding-top:16px;border-top:1px solid var(--vi-line);max-width:62ch}
   .vi-method-ptr a{color:inherit;text-decoration:underline;text-underline-offset:2px}
@@ -798,30 +915,57 @@
       the face is --cw x 1.397 and the width is clamped by max-width:92%, so reading 1.397
       off the CSS and sizing an image with it is wrong , this sizes from the capture's own
       912x1383 instead).  */
-  /*  CENTRED, NOT TOP-ALIGNED. The standfirst is two lines and the card is 250px, so
-      flex-start left ~210px of dead column under the text , the same ragged hole this
-      section's grid was just fixed for. Centring splits it above and below, which reads as
-      the card being set beside the sentence rather than hung off its first line.  */
-  .vi-lims-top{display:flex;gap:30px;align-items:center;margin:0 0 20px}
-  .vi-lims-top .vi-lims-s{margin:0;flex:1 1 auto}
-  .vi-lims-card{margin:0;flex:0 0 auto;line-height:0}
-  /*  THE CAPTION IS THE WIDTH OF THE CARD AND NOT OF THE ROW, so it reads as belonging to
-      the image rather than as another column of body copy beside it. line-height is reset
-      because .vi-lims-card sets 0 for the image's sake.  */
-  .vi-lims-cap{font-family:'Inter';font-size:12.5px;line-height:1.55;color:var(--ink-soft);
-    margin:12px 0 0;max-width:34ch;text-align:left}
+  /*  [REPLACED 2026-10-04. The rule that stood here centred the card against the standfirst
+      and that was a fix to the SYMPTOM. The cause was where the text was.]
+      MEASURED BEFORE, at 1440: the row is 820x436 and the standfirst is TWO LINES, 47px ,
+      so 89% of the left column was empty, and it was the WIDER column, 64% against the
+      card's 33%. The card rendered 165px wide, NARROWER THAN ITS OWN CAPTION'S COLUMN,
+      because the figure was sized by the caption's 34ch and not by the image.
+      SO THE TEXT MASS WAS IN THE WRONG COLUMN. The caption is 174px of copy and it was in
+      the narrow side; the sentence was 47px and it had the wide one. Moving the caption
+      left closes the hole from 89% to 49% and lets the card grow 165 -> 224px, and neither
+      of those needed a bigger image , only the copy going where the space already was.
+      IT IS A GRID AND NOT FLEX SO THE FIGCAPTION CAN STAY A FIGCAPTION. Grid areas reach
+      DIRECT children only, so the <figure> itself has to be the grid; the caption is then
+      its last child, which is where the spec wants it and keeps the image described.  */
+  /*  FOUR ROWS, AND THE TWO EMPTY ONES ARE THE WHOLE POINT. The first build used two rows
+      and the two texts were shoved to opposite ends of the panel: the card spans both, the
+      card is taller than the text, so the leftover height was split BETWEEN the standfirst
+      and the caption and opened a gap of ~85px where 12 was intended. `align-items:center`
+      centres each row's content inside its own row; it cannot keep two rows together.
+      So the slack is given to a `1fr` above and below the pair instead, and the two text
+      rows stay `auto` , adjacent, 12px apart, and centred AS A BLOCK against the card.  */
+  .vi-lims-top{display:grid;grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:1fr auto auto 1fr;
+    grid-template-areas:". card" "stand card" "cap card" ". card";
+    column-gap:30px;row-gap:0;align-items:center;margin:0 0 20px}
+  .vi-lims-top .vi-lims-s{grid-area:stand;margin:0 0 12px;max-width:46ch}
+  /*  THE CAPTION IS NOW BODY COPY IN THE TEXT COLUMN, not a label under a picture, so it
+      takes a reading measure rather than the image's width.  */
+  .vi-lims-cap{grid-area:cap;font-family:'Inter';font-size:12.5px;line-height:1.55;
+    color:var(--ink-soft);margin:0;max-width:44ch;text-align:left}
   .vi-lims-cap b{color:var(--cream);font-weight:600}
   body.light .vi-lims-cap b{color:var(--charcoal)}
-  .vi-lims-card img{height:250px;width:auto;max-width:100%;border-radius:var(--r-lg);
-    box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
+  .vi-lims-img{grid-area:card;display:block;height:340px;width:auto;max-width:100%;
+    border-radius:var(--r-lg);box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
   @media (max-width:720px){
-    .vi-lims-top{flex-direction:column;gap:18px;align-items:center}
-    .vi-lims-top .vi-lims-s{order:-1}
-    .vi-lims-card img{height:auto;width:232px}
+    /*  ONE COLUMN, AND THE CARD SITS BETWEEN THE TWO TEXTS rather than above both: the
+        standfirst introduces it and the caption reads it, which is the order the words are
+        written in and the only order that works once they are stacked.  */
+    .vi-lims-top{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;
+      grid-template-areas:"stand" "card" "cap";row-gap:16px;justify-items:center}
+    .vi-lims-top .vi-lims-s{margin:0}
+    .vi-lims-img{height:auto;width:232px}
     .vi-lims-cap{max-width:300px;margin-inline:auto}
   }
   .vl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;grid-auto-flow:row dense}
-  .vl{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
+  /*  THE VAN DIJK EXHIBIT SHARES THIS RULE RATHER THAN RESTATING IT, so the panel and the
+      eight blocks below cannot drift apart , one source for the ground, the hairline, the
+      radius and the padding. It is the BASE .vl and deliberately NOT .vl.kchoice, whose
+      gold border is that one panel's accent and would borrow a meaning the exhibit has
+      no claim to. (The demo this was approved from picked up the kchoice gold by querying
+      the first .vl on the page; the neutral border is what ships.)  */
+  .vl,.vi-lims-top{background:rgba(255,255,255,.035);border:1px solid rgba(243,237,224,.10);border-radius:var(--r-lg);padding:17px 19px 18px}
   .vl-n{font-family:'Archivo',sans-serif;font-weight:900;font-size:42px;line-height:1;letter-spacing:-.02em;color:var(--cream);display:block}
   .vl-n small{display:block;font-family:'Archivo';font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
   .vl.nofig .vl-n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;line-height:1.25;letter-spacing:-.005em}
@@ -853,7 +997,7 @@
   body.light .vl.kchoice{border-color:rgba(168,118,15,.32)}
   body.light .vl.kchoice .vl-n{color:var(--vi-gold-num)}
   body.light .vi-lims-h{color:var(--charcoal)}
-  body.light .vl{background:rgba(255,255,255,.62);border-color:rgba(28,27,26,.10)}
+  body.light .vl,body.light .vi-lims-top{background:rgba(255,255,255,.62);border-color:rgba(28,27,26,.10)}
   body.light .vl-n{color:var(--charcoal)}
   body.light .vl-c{color:var(--charcoal)}
   @media (max-width:720px){ .vl-grid{grid-template-columns:1fr} .vi-lims-h{font-size:23px} }
@@ -918,15 +1062,21 @@
   </nav>
   <div class="canvas">
     <div class="topline"><div class="crumb">V<span class="vvw">V</span> Index</div><div class="topactions"><span class="mt-wrap"><button class="modetoggle" onclick="vvMode(this)" aria-label="Switch theme"><svg class="mt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/></svg></button><span class="mt-label" id="mtLabel"></span></span><div class="avatar" role="button" tabindex="0" aria-label="Account and preferences" onclick="location.href='preferences.html'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='preferences.html'}"><svg viewBox="0 0 100 116" aria-hidden="true" focusable="false"><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-b" fill="#1C1B1A"/><path d="M50 4 L92 18 L92 60 C92 88 72 104 50 112 C28 104 8 88 8 60 L8 18 Z" class="vvsh-e" fill="none" stroke="#F0EAD9" stroke-opacity="0.5" stroke-width="6" stroke-linejoin="round" transform="translate(50 58) scale(0.84) translate(-50 -58)"/><text x="50" y="54" font-family="'Bricolage Grotesque'" font-weight="800" font-size="38" text-anchor="middle" dominant-baseline="central"><tspan class="vvsh-v" fill="#F0EAD9">V</tspan><tspan fill="#E70443">V</tspan></text></svg></div></div></div>
-    <div class="hero"><h1>The <span class="b">VV</span> Index.</h1><div class="hero-tag">One number for a season, so any two can be argued about on the same terms</div><div class="vh-cap">Across nine leagues and sixteen years</div><div class="vh-beats"><span>No favourites,</span><span>no nostalgia,</span><span>no hiding place.</span></div><div class="vh-thesis">Only what was earned.</div></div>
+    <div class="hero"><h1>The V<span class="b">V</span> Index.</h1><div class="hero-tag">One number for a season, so any two can be argued about on the same terms</div><div class="vh-cap">Across nine leagues and sixteen years</div><div class="vh-beats"><span>No favourites,</span><span>no nostalgia,</span><span>no hiding place.</span></div><div class="vh-thesis">Only what was earned.</div></div>
     <div class="idxwrap">
 
   <div class="vi-pq vi-bleed">
     <span class="n"><span data-fig="ballon_dor_top_three_bands">13</span> of <span data-fig="ballon_dor_seasons">14</span></span>
     <p class="t">Ballon d&#8217;Or seasons the Index puts in its top three bands.</p>
+    <!--  TWO FIXES IN ONE SENTENCE, 2026-10-04. The tail "and 10 of the fourteen at 90" had NO
+          VERB. And the clause before it , "and a Ballon d'Or adds nothing at all" , is entailed
+          by the sentence it follows, since a Ballon d'Or is an honour: it was the one genuine
+          state-it-then-restate-it shape on the platform, in the most prominent paragraph on the
+          page. Deleted rather than reworded; the first clause already says it, and the panel's
+          own subject makes the specific case obvious.  -->
     <p class="s">It has never seen an award. No honour, team or individual, adds a single point to a
-      V<span class="vvw">V</span> Score, and a Ballon d&#8217;Or adds nothing at all. They land there anyway, and
-      <span data-fig="ballon_dor_iconic_or_better">10</span> of the fourteen at 90.</p>
+      V<span class="vvw">V</span> Score. They land there anyway, and
+      <span data-fig="ballon_dor_iconic_or_better">10</span> of the fourteen reach 90.</p>
   </div>
   <!--  THE PROOF'S TWO COMPANIONS, MOVED UP HERE 2026-10-02 FROM THE OLD SPINE.
         THE MISS SITS IMMEDIATELY UNDER THE HIT, ON PURPOSE. "13 of 14" invites one question ,
@@ -937,9 +1087,107 @@
         "the one the Index misses" and two would make it false.  -->
   <div class="vi-proofpair">
     <p class="vi-pp"><b><span data-fig="ballon_dor_in_top_twelve">3</span></b> of them sit inside the twelve highest-scoring seasons in the entire record, and nothing was tuned to put them there.</p>
-    <p class="vi-pp miss"><b><span data-fig="ballon_dor_miss_score">70</span></b> is the fourteenth , <span data-fig="ballon_dor_miss_player">Luka Modric</span>&rsquo;s 2017/18, the season that won the Ballon d&rsquo;Or and the one the Index misses. That award leaned heavily on a third straight Champions League, which is a team outcome the Index refuses to count, and the Index under-reads deep midfielders: it sees the pass completed, not the position taken that made the pass available. One of those is a choice. The other is a limit.</p>
+    <!--  THE FIGURE IS A BLOCK, SO THE PROSE UNDER IT HAS TO BE A SENTENCE , REWRITTEN 2026-10-04.
+           `.vi-pp b` is 26px and `display:block`, so the number stands alone and the copy begins on
+           the next line. This one began "is the fourteenth", a fragment hanging off a figure whose
+           unit had never been named: nothing above it says 70 is a SCORE, and the 14 it pointed at
+           was two paragraphs up. A reader met a bare number and a dangling verb.
+           THE SIBLING WORKS BECAUSE "of them" POINTS BACKWARDS AT SOMETHING ADJACENT. There is no
+           such referent here, so the first clause now names the number instead of leaning on one.
+           AND THE EXPLANATION IS ONE CLAUSE, NOT THREE. "under-reads deep midfielders: it sees the
+           pass completed, not the position taken that made the pass available" was the right idea
+           said twice; the concrete half survives and the abstract half is gone.  -->
+    <p class="vi-pp miss"><b><span data-fig="ballon_dor_miss_score">70</span></b>The score the Index gives <span data-fig="ballon_dor_miss_player">Luka Modric</span>&rsquo;s 2017/18, the one Ballon d&rsquo;Or season it misses. That award leaned on a third straight Champions League, which the Index refuses to count, and deep midfielders are the shape it reads least well: it counts the pass completed, not the position that made it possible. One of those is a choice. The other is a limit.</p>
   </div>
 
+
+      <!--  THE WALK. Its figures are generated, and this page was already an apply-figures
+            TARGET, so nothing had to be added for it on arrival.
+            WHY IT SITS HERE, between the proof and the limits: the page has just claimed 13 of
+            14 and shown a card as evidence. "Here is exactly how one season got its number" is
+            the next honest beat, and it has to come BEFORE "what it will not tell you" , the
+            limits are only meaningful once a reader knows what is being limited.
+            IT HAS A TITLE AND A GAP SINCE 2026-10-04. It used to butt straight onto the
+            Under-the-Lights prose above, so a reader fell out of an argument into a worked
+            example with nothing marking the change of voice , no rule, no label, no heading.
+            The label/heading pair is the page's own idiom, borrowed rather than invented.  -->
+      <div class="wkintro">
+        <div class="wk-label">Worked example</div>
+        <h3 class="wk-h">How a season becomes a number</h3>
+      </div>
+      <div class="wk">
+    <div class="wkhead">
+      <div class="wkwho"><span data-fig="walk_player">Kylian Mbappé</span>
+        <small><span data-fig="walk_season">21/22</span> &#183; read against other
+        <span data-fig="walk_pool">Winger</span> seasons</small></div>
+      <div class="wkin">
+        <div><b><span data-fig="walk_goals">28</span></b>goals</div>
+        <div><b><span data-fig="walk_assists">17</span></b>assists</div>
+        <div><b><span data-fig="walk_minutes">3,032</span></b>minutes</div>
+      </div>
+    </div>
+
+    <!--  THREE STEPS, AND THEY ARE CHOSEN BY SURPRISE RATHER THAN BY COMPLETENESS , 2026-10-04.
+          This was seven steps, then four. Four was still a method: it told a reader that goals
+          outweigh assists, that a penalty counts for less, that rates beat totals and that
+          availability saturates , all of which are either obvious or inferable, and none of
+          which anybody finishes reading and repeats to a friend.
+          WHAT IS LEFT IS THE PART NOBODY GUESSES. That a season is ranked inside its own
+          position rather than against all football, and that league strength is COMPUTED from
+          players who moved between leagues rather than assigned by reputation. The outcome
+          block carries the third: the bands are ranks, not thresholds.
+          THE CUT LINES ARE NOT A LOSS OF RIGOUR. Every figure still exists in
+          index-figures.json beside the query that produced it, so the chain is auditable; what
+          changed is what the page ASSERTS at a reader. A walk that explains everything
+          explains nothing, because nobody reaches the end of it.
+          RED CARRIES THE SURPRISE AND BOLD CARRIES THE STRUCTURE , two devices, not one. The
+          lead clause of each step is `b` (Archivo, the strong ink) and the one unexpected
+          phrase is `.hi` (Inter, --pink-ink). Everything-in-bold is what this replaced, and it
+          flattens a step into one grey weight where the eye has nothing to land on.  -->
+    <div class="wkstep"><div class="wkn">1</div>
+      <!--  THE COPY HAS TO NAME THE WEIGHTING OR THE NUMBER BESIDE IT CANNOT BE RECONCILED
+            (fixed 2026-10-04). It read "his goals and assists become a single number", which
+            invites the obvious sum: 28 and 17 over 3,032 minutes is 1.336 per 90. The figure
+            says 1.158, because `gaw` is `goals - 0.22*min(pens, goals) + 0.7*assists` , an
+            assist is 0.7 of a goal and a penalty is 0.78 of one. A reader who does the
+            arithmetic the old sentence invited got a different answer and had nothing to
+            reconcile it against, which is worse on a page whose whole argument is auditability.
+            AND THE WEIGHTING IS THE SURPRISE, so it takes the `.hi` ink rather than a footnote.
+            Mbappé's four penalties make the discount live on this very card, so the clause is
+            describing what the number in front of the reader actually did.
+            THE LEAD NO LONGER SAYS "per minute" BESIDE A CHIP READING "per 90" , the principle
+            is a rate over minutes, the unit is per 90, and stating the first as a unit put two
+            different ones four inches apart.  -->
+      <div class="wkl"><b>One figure, measured by the minute.</b> Goals and assists become a
+        single number , though <span class="hi">an assist counts for less than a goal, and a
+        penalty for less than a goal from open play</span> , divided by minutes on the pitch
+        rather than matches played.</div>
+      <div class="wkv"><span data-fig="walk_gaw90">1.158</span><small>per 90</small></div></div>
+
+    <div class="wkstep"><div class="wkn">2</div>
+      <div class="wkl"><b>Then ranked against his own kind.</b> Not against every footballer:
+        <span class="hi">against every other <span data-fig="walk_pool">Winger</span> season in
+        the record</span>.</div>
+      <div class="wkv"><span data-fig="walk_pct_pool_rate">99.4</span><small>percentile</small></div></div>
+
+    <div class="wkstep"><div class="wkn">3</div>
+      <div class="wkl"><b>And the league is weighed by who left it.</b>
+        <span data-fig="walk_league">Ligue 1</span> is not marked down by reputation. Its weight
+        is computed <span class="hi">from players who moved between leagues</span>, and what
+        happened to them when they did.</div>
+      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">0.796</span><small>league</small></div></div>
+
+    <div class="wkout">
+      <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
+        650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
+      <div class="wkrt"><span data-fig="walk_rt">92</span></div>
+    </div>
+  </div>
+      <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly
+  that, <b>on the same basis</b> , which is why a 2011 season and a 2025 one can be set against each
+  other at all. Minutes, output, position, league, and <b>nothing else , not even the five
+  dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
+  shown beside the score, never inside it.</p>
 
   <section class="vi-lims">
     <h2 class="vi-lims-h">What it will not tell you</h2>
@@ -965,11 +1213,15 @@
           IT IS THE FIFTH EMBEDDED SNAPSHOT ON THE PLATFORM. `scripts/check-card-image.js`
           is what stops it going stale in silence: it fingerprints the card face and queries
           the card's live figures. Run it after anything that moves either.  -->
-    <div class="vi-lims-top">
+    <!--  THE <figure> IS THE GRID ITSELF , 2026-10-04. The caption moved into the TEXT
+          column (see the rule), and grid areas only reach DIRECT children, so the inner
+          figure wrapper is gone and this one carries the layout. The figcaption stays the
+          figure's last child, which is what the spec asks and what keeps the image
+          described rather than leaving it a bare img with the words floating beside it.  -->
+    <figure class="vi-lims-top">
       <p class="vi-lims-s">Some of these the Index cannot do. Some it will not. Every one is on the card it affects.</p>
-      <figure class="vi-lims-card">
-        <img src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" loading="lazy" decoding="async"
-             alt="A VVonderXI card: Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72, carrying Champions League and Player of the Season tags.">
+      <img class="vi-lims-img" src="assets/vvcard-vandijk-1819.webp" width="912" height="1383" loading="lazy" decoding="async"
+           alt="A VVonderXI card: Virgil van Dijk, Liverpool 2018/19, centre-back, VV Score 72, carrying Champions League and Player of the Season tags.">
         <!--  THE CAPTION CARRIES THE ARGUMENT, OR THE CARD IS DECORATION , 2026-10-03.
               The reasoning for THIS card was written in the comment above and nowhere a reader
               could see it, so the figure had no caption at all. Lucas looked at it and asked why
@@ -980,9 +1232,8 @@
               IT DOES NOT SAY "three of the eight" , a count of a list that grows is a promise
               the caption cannot keep, which is the lesson this file records against the
               contrast-exceptions heading.  -->
-        <figcaption class="vi-lims-cap">Virgil van Dijk, Liverpool 2018/19. One card, and the evidence for three of the panels below. He scores <b>72</b>, because the record counts what a defender does and not what he prevents. He is a <b>centre&#8209;back</b>, and not one of them reaches the top band. And he carries a <b>Champions League and a Player of the Season</b> beside that 72, because no honour moves a score.</figcaption>
-      </figure>
-    </div>
+        <figcaption class="vi-lims-cap">Virgil van Dijk, Liverpool 2018/19. One card, and the evidence for three of the panels below. He scores <b>72</b>, because the record counts what a defender does and not what he prevents. He is a <b>centre&#8209;back</b>, and no centre&#8209;back reaches the top band. And he carries a <b>Champions League and a Player of the Season</b> beside that 72, because no honour moves a score.</figcaption>
+    </figure>
     <div class="vl-grid">
       <div class="vl kchoice"><span class="vl-k">A choice</span><span class="vl-n"><span data-fig="honours_total">913</span><small>honours, none of which move a score</small></span>
         <p class="vl-c">League titles, Champions Leagues, Ballons d&rsquo;Or, Golden Boots. Not one moves a score by a point.</p>
@@ -1014,7 +1265,13 @@
           </div>
           <div class="vi-tl-ends"><span>2010/11</span><span>2025/26</span></div>
           <div class="vi-tl-key">
-            <div class="vi-segkey"><i class="sq e"></i><span><b>To 2015/16</b> , goals, assists and minutes.</span></div>
+            <!--  BOTH KEYS CLAIMED 2015/16, SO THE SEASON APPEARED ON BOTH SIDES OF ITS OWN
+                  BOUNDARY (fixed 2026-10-04). These are the phone-only labels for the two track
+                  segments: `vi-tl-early` runs from the 2010/11 end to the 33.3% mark, and that
+                  mark IS 2015/16 (`data-k="all"`, "every other league"), which the full segment
+                  starts at. So the early segment ends the season before , 2014/15. The desktop
+                  labels inside the track carry no year, so only these two were wrong.  -->
+            <div class="vi-segkey"><i class="sq e"></i><span><b>To 2014/15</b> , goals, assists and minutes.</span></div>
             <div class="vi-segkey"><i class="sq f"></i><span><b>From 2015/16</b> , shots, passes, duels and dribbles as well.</span></div>
           </div>
           <p class="vi-figcap" id="tlNote">Every league runs the whole way. <b>The detail does not.</b> A season before its league&#8217;s mark is scored on goals, assists and minutes, and the card says so rather than filling the gap.</p>
@@ -1072,13 +1329,25 @@
     <div class="vi-mrow">
       <div class="vi-m">
         <span class="vi-mn"><span data-fig="generational_seasons">12</span></span>
-        <p class="vi-mc">Seasons reach Generational. Ever , out of <b><span data-fig="cards_total">58,066</span></b> in the record.</p>
+        <p class="vi-mc">Seasons reach Generational , out of <b><span data-fig="cards_total">58,066</span></b> in the record.</p>
         <p class="vi-mw">The band edges are fixed by rank, so that number does not drift as the record grows.</p>
       </div>
       <div class="vi-m vi-still">
         <span class="vi-mn"><span data-fig="elite_pairs_inside_margin">97</span>%</span>
-        <p class="vi-mc">It tells you when it cannot tell you. Every score carries a measured margin of error, and where two seasons fall inside it the Index says so instead of picking one.</p>
-        <p class="vi-mw">At the very top it can split hairs. Further down it will not pretend to.</p>
+        <!--  THE DENOMINATOR WAS MISSING AND THE PULL LINE WAS BACKWARDS, 2026-10-04.
+              The caption never said what the 97 was 97% OF, while both sibling panels attach
+              theirs explicitly ("12 Seasons reach Generational", "70% Of the 650 seasons at 85
+              or better..."), so this one read as a dropped clause. The figure is
+              `elite_pairs_inside_margin`: of every unordered pair of scored cards at rt >= 80,
+              the share whose gap falls INSIDE 1.96 * sqrt(se_a^2 + se_b^2) , the same test the
+              live Compare gate applies.
+              AND THE OLD TAIL SAID THE OPPOSITE OF THE NUMBER ABOVE IT. "At the very top it can
+              split hairs" sat under a figure stating that 97% of elite pairings cannot be split
+              at all. SS C's separability finding agrees with the number and not the sentence:
+              only Generational against Iconic clears the strict bar, at 2.26 pooled SEs, while
+              Iconic/World Class (0.94) and World Class/Standout (0.72) do not.  -->
+        <p class="vi-mc">Of every pair of seasons at 80 or better, the share the Index refuses to separate. Each score carries a measured margin of error, and where two seasons fall inside it the Index says so instead of picking one.</p>
+        <p class="vi-mw">The best seasons are bunched most tightly of all, so near the top it declines most often.</p>
       </div>
       <div class="vi-m">
         <span class="vi-mn"><span data-fig="elite_outside_pl_share">70</span>%</span>
@@ -1094,7 +1363,11 @@
         is not what this page sells. Nothing is lost: the walk and the keeper no-score
         sentence MOVED to the Playbook in the same change and were verified rendered there
         first, and four of the six were already on it. One line, no heading, no section.  -->
-  <p class="vi-method-ptr">The method , how a score is built, what each dimension measures, how keepers are read , is on <a href="playbook.html">the Playbook</a>.</p>
+  <!--  "how a score is built" LEFT THIS SENTENCE ON 2026-10-04, because the walk above now
+        does exactly that on this page. Leaving the clause would have pointed a reader at the
+        Playbook for something sitting four screens up. The dimensions and the keepers really
+        are over there, so the rest stands.  -->
+  <p class="vi-method-ptr">The rest of the method , what each dimension measures, how keepers are read, every tag and honour , is on <a href="playbook.html">the Playbook</a>.</p>
 
 
   
@@ -1131,7 +1404,7 @@
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>';var moon='<g transform="translate(24,0) scale(-1,1)"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}(function(){var _b=document.querySelector('.modetoggle');if(_b)vvSync(_b);})();document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});</script>
 
   <nav class="bottomnav">
-      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 L7 17 L11 6" stroke="currentColor"/><path d="M13 6 L17 17 L21 6" style="stroke:var(--pink)"/></svg><span>Home</span></a>
+      <a href="index.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M1 4.89 L5.16 4.89 L8.36 11.45 L10.59 6.7 L13.83 6.7 L8.34 19.11 Z" fill="currentColor"/><path d="M23 4.89 L18.84 4.89 L15.64 11.45 L13.41 6.7 L10.17 6.7 L15.66 19.11 Z" style="fill:var(--pink)"/></svg><span>Home</span></a>
       <a href="rankings.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="10" y1="20" x2="10" y2="8"/><line x1="15" y1="20" x2="15" y2="11"/><line x1="20" y1="20" x2="20" y2="5"/></svg><span>Rankings</span></a>
       <a href="compare.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg><span>Compare</span></a>
       <a href="vvindex.html" class="bn-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>
