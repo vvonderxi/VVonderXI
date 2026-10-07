@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04",
+  "generated": "2026-10-07",
   "source": "player_card_mv",
   "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
   "figures": [
@@ -169,6 +169,13 @@
       "value": "Kylian Mbappé",
       "claim": "the season the walk follows",
       "definition": "chosen for a recognisable, unambiguous attacking season",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_card_id",
+      "value": 158399,
+      "claim": "the card the walk links to",
+      "definition": "player_card_mv.card_id, asserted equal to WALK_CARD_ID",
       "query": "scripts/separability/rt_reimpl.js, run over the live matview"
     },
     {
