@@ -792,6 +792,14 @@
     padding-top:16px;border-top:1px solid var(--vi-line)}
   .wkoutl{font:400 14px/1.45 'Inter';color:var(--vi-mut);max-width:40ch}
   .wkrt{font:900 clamp(44px,8vw,62px)/0.9 'Archivo';color:var(--vi-gold-num);letter-spacing:-.03em}
+  /*  the 92's caption-link: the `.wkv small` idiom, underlined because it goes somewhere.
+      The padding is the tap target; the negative bottom margin gives most of it back so the
+      outcome row does not grow by a full 44px for an 11px line.  */
+  .wk-open{display:block;text-align:right;font:700 11px/1 'Archivo';letter-spacing:.09em;text-transform:uppercase;
+    color:var(--vi-mut);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;
+    margin:4px 0 -14px;padding:10px 0 23px;white-space:nowrap}
+  .wkrt{text-align:right}
+  .wk-open:hover,.wk-open:focus-visible{color:var(--vi-strong)}
   /*  THE PHONE LAYOUT GETS ITS QUERY BACK , FIXED 2026-10-04. These four were INDENTED as
       though they sat in `@media (max-width:720px)` and no such query existed: read from the
       CSSOM rather than the source, every one reported TOP LEVEL, and `matchMedia` found no
@@ -1180,7 +1188,16 @@
     <div class="wkout">
       <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
         650th-best season ever recorded, 90 the 150th, and 95 the 12th.</div>
-      <div class="wkrt"><span data-fig="walk_rt">92</span></div>
+      <!--  THE LINK IS THE 92's LABEL, 2026-10-07. Every other number in the walk carries a
+            small caption under it (per 90, percentile, league); the outcome did not, and this
+            is it. It replaces a proposed card image, which was refused: a card here would be
+            the SUBJECT of the walk rather than evidence for it, and its face carries four chips
+            the closing line says the score ignores. The live card cannot drift from the walk;
+            a raster of it would.
+            THE ID IS TYPED HERE AND ASSERTED BY THE FIGURES GENERATOR (WALK_CARD_ID), so if
+            the walk ever follows a different season the generator throws and names this
+            line, instead of the link quietly opening somebody else.  -->
+      <div class="wkrt"><span data-fig="walk_rt">92</span><a class="wk-open" href="card.html?id=158399">Open his card</a></div>
     </div>
   </div>
       <p class="wkafter"><span data-fig="cards_scored">54,416</span> seasons have been through exactly

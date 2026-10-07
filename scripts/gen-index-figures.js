@@ -417,9 +417,18 @@ async function main() {
       THE NAME MUST MATCH THE STORED STRING EXACTLY, accent included, or the guard below
       throws rather than quietly walking a different season.  */
   const WALK_NAME = 'Kylian Mbappé', WALK_YEAR = 2021;
+  /*  THE PAGE LINKS TO THIS CARD BY ID, IN AN href THAT apply-figures DOES NOT REWRITE
+      (2026-10-07, vvindex.html, "Open his card" under the walk's 92). So the id lives here
+      beside the season it belongs to, and the run throws if the walk's season resolves to a
+      different card , otherwise changing WALK_NAME or WALK_YEAR would leave a link that opens
+      somebody else, with every figure around it correct.  */
+  const WALK_CARD_ID = 158399;
   const wi = E.out.findIndex(x => x.name === WALK_NAME && x.season_year === WALK_YEAR && x.minutes > 3000);
   if (wi < 0) throw new Error(`the scoring walk needs ${WALK_NAME} ${WALK_YEAR} and did not find it`);
   const W = E.out[wi], wb = bAll[wi], wrt = RT.rtFrom(wb, anchors);
+  if (W.card_id !== WALK_CARD_ID)
+    throw new Error(`walk card is ${W.card_id} but vvindex.html links card.html?id=${WALK_CARD_ID} , ` +
+                    'change the href and WALK_CARD_ID together');
   if (wrt !== W.rt_stored)
     throw new Error(`walk mismatch: re-implementation says ${wrt}, the database says ${W.rt_stored} , ` +
                     'the transcription has drifted and the walk would publish a wrong chain');
@@ -434,6 +443,7 @@ async function main() {
 
   const w1 = (k, v, claim, def) => add(k, v, claim, def, 'scripts/separability/rt_reimpl.js, run over the live matview');
   w1('walk_player', W.name, 'the season the walk follows', 'chosen for a recognisable, unambiguous attacking season');
+  w1('walk_card_id', W.card_id, 'the card the walk links to', 'player_card_mv.card_id, asserted equal to WALK_CARD_ID');
   w1('walk_season', String(W.season_year).slice(2) + '/' + String(W.season_year + 1).slice(2), 'its season label', 'derived');
   w1('walk_goals', W.goals, 'goals', 'player_card_mv.goals');
   w1('walk_assists', W.assists, 'assists', 'player_card_mv.assists');
