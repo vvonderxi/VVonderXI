@@ -6,10 +6,21 @@ ITSELF STANDS AND IS NOW BUILT AS `LAUNCH_EMAIL.html` + `LAUNCH_EMAIL.txt` BESID
   `v=DMARC1; p=none; rua=mailto:dmarc@vvonderxi.com; fo=1; adkim=r; aspf=r`. SPF is unchanged
   at one record, `v=spf1 include:spf.improvmx.com ~all`. **`dmarc@vvonderxi.com` must exist as
   an ImprovMX alias or the reports go nowhere** , not verified.
-- **THE ESP IS RESEND, AND ITS `include:` DOES NOT GO INTO THE APEX SPF.** Resend's envelope
-  sender (Return-Path) is `send.vvonderxi.com`, which carries its OWN SPF record; the apex SPF
-  is never touched, so the "exactly one SPF record" hazard this file warns about cannot arise.
-  Step 1 of THE ORDER ("SPF tightened to -all only AFTER the ESP is in it") is therefore moot:
+- **THE ESP IS RESEND, AND NOTHING OF ITS GOES INTO THE APEX SPF.** The domain was added on
+  2026-10-08 (apex `vvonderxi.com`, region eu-west-1, Return-Path `send`) and Resend printed
+  THREE records, read off the dashboard rather than predicted , **an earlier note here and in
+  chat said "MX send + TXT send with an amazonses include", which is Resend's OLD scheme and is
+  WRONG for this account**: the return path is now two CNAMEs to Resend's own hosts, so there is
+  no SPF record to add anywhere and the apex SPF is never touched.
+      TXT    resend._domainkey   p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCttQyRyZw10iTofjeRiqjzOzgC9BmjDil6NP/E2W8nbhJpgANHcM8UUnTeNBgnKCsbixb1HvBGHrnRfgRLH4cgdBg8NZDACynZez74wp02NgFzsLpWNnMdYbFLFyl2aw9wvWb4uVoIocssonkxO6qfLoSuhmZvruYBdldeg/CSXwIDAQAB
+      CNAME  rsend               rsend-euw1.forge.rmta.net
+      CNAME  send                send.forge.rmta.net
+  **Resend ALSO prints an "Enable Receiving" MX record (`@` -> inbound-smtp.eu-west-1.amazonaws.com,
+  priority 9). DO NOT ADD IT.** Receiving is ImprovMX's job and that record sits on the same
+  name as the ImprovMX MX pair; the Receiving toggle on the domain page is OFF and stays off.
+  Click tracking is NOT configured on this domain (Configuration tab reads "configure a custom
+  tracking subdomain", none set), so links go out as the real URLs; do not press Configure.
+  Step 1 of THE ORDER ("SPF tightened to -all only AFTER the ESP is in it") is moot:
   tightening the apex to `-all` is an anti-spoofing decision independent of sending.
 - **THE COUNT IS 54,416, THE SCORED FIGURE , DECIDED BY LUCAS 2026-10-08.** The draft's
   58,066 is every season the platform HOLDS (`player_season_cards`); after a line about scoring
