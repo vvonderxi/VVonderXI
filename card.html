@@ -1410,6 +1410,10 @@
   #cardSearch .cardgrid .vvcard{cursor:pointer}
   @media (max-width:560px){ #cardSearch .cardgrid{gap:14px} }
 </style>
+<!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
+     loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
+<script>window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="light">
 <script>(function(){try{var f=localStorage.getItem('vvCardFace');if(f==='silhouette')document.body.classList.remove('show-photos');else document.body.classList.add('show-photos');}catch(e){}})();</script>
@@ -2436,6 +2440,9 @@
       return;
     }
     D=rowToCard(res.data); DC_RAW=res.data; DC_TRANSFER=null;
+    /* Analytics: one event per card that actually loaded (not per season step). The property is
+       the card_id, a public season key, never a visitor identifier. */
+    if(typeof window.va==='function'){ try{ window.va('event',{ name:'card_viewed', data:{ player:String(id) } }); }catch(e){} }
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
@@ -3143,6 +3150,7 @@ async function vvNotify(){
       body:JSON.stringify({email:e, source:VV_SAVE_SOURCE})
     });
     ok = r.ok || r.status===409;
+    if(ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:VV_SAVE_SOURCE } }); }catch(e){} } }   // analytics: counts the action, repeat or fresh; unique leads are counted in the table itself
   }catch(_){ ok=false; }
   btn.disabled=false; btn.textContent="Notify me";
   if(ok){ document.getElementById("joinForm").style.display="none"; err.style.display="none"; document.getElementById("joinThanks").style.display="block"; }
@@ -4483,6 +4491,9 @@ async function csRun(){
     res=await csBuildQ(sb,false,nameQ,seasonYear); miss=seasonYear;
   }
   if(seq!==CS.seq) return;                   // a newer keystroke already won
+  /* Analytics: one event per search that actually RAN and won the race, never per keystroke,
+     and only for a named search (the empty browse is a list, not a search). One property. */
+  if(nameQ){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'search_performed', data:{ query:String(nameQ).slice(0,80) } }); }catch(e){} } }
   var hint=document.getElementById('csHint');
   if(res.error){ CS.state='error'; csRender();
                  console.error('card search failed:',res.error.message); return; }

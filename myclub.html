@@ -533,6 +533,10 @@
   .mcpanel .mcfine{color:#5f594e}
   body:not(.light) .mcpanel .mcfine{color:rgba(240,234,217,.62)}
 </style>
+<!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
+     loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
+<script>window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="light">
 <script>(function(){try{var f=localStorage.getItem('vvCardFace');if(f==='silhouette')document.body.classList.remove('show-photos');else document.body.classList.add('show-photos');}catch(e){}})();</script>
@@ -953,6 +957,7 @@
         body:JSON.stringify({email:e, source:'My Club waitlist'})
       });
       ok = r.ok || r.status===409;          // 409 = already on the list, which is success
+      if(ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:'My Club waitlist' } }); }catch(e){} } }   // analytics: counts the action, repeat or fresh; unique leads are counted in the table itself
     }catch(_){ ok=false; }
     btn.disabled=false; btn.textContent='Notify me';
     if(ok){
