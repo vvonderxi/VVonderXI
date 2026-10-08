@@ -1,7 +1,12 @@
 # THE LAUNCH EMAIL , DRAFTED 2026-10-03, NOT SENT AND NOT SENDABLE YET
 
-**[CORRECTED 2026-10-08. THE DEPENDENCIES SECTION BELOW IS STALE IN FOUR PLACES; THE DRAFT
-ITSELF STANDS AND IS NOW BUILT AS `LAUNCH_EMAIL.html` + `LAUNCH_EMAIL.txt` BESIDE THIS FILE.]**
+**[REWORKED 2026-10-08. THE DRAFT BELOW IS SUPERSEDED BY `LAUNCH_EMAIL.html` + `LAUNCH_EMAIL.txt`
+BESIDE THIS FILE: Lucas judged it bland and chose, from two candidates, the version that leads
+with "Messi 11/12 or Ronaldo 14/15?", a pink pill "See the verdict" opening that warm pairing,
+"See the VV Rankings" as the secondary, the apology paragraph cut, and hierarchy built from the
+platform's type system on mail-safe stacks. The reasoning below still holds for what was KEPT:
+54,416, the three-beat line, the tagline, the reply-to-remove footer. The dependencies section
+is stale in four places, corrected here.]**
 - **DMARC IS PUBLISHED.** Measured 2026-10-08 from the authoritative nameservers:
   `v=DMARC1; p=none; rua=mailto:dmarc@vvonderxi.com; fo=1; adkim=r; aspf=r`. SPF is unchanged
   at one record, `v=spf1 include:spf.improvmx.com ~all`. **`dmarc@vvonderxi.com` must exist as
