@@ -774,9 +774,15 @@
   .js-star{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#E70443,#FF8FA3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 14px 30px -12px rgba(255,92,122,.6)}
   .js-title{font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:22px;color:#1C1B1A}
   .js-sub{font-size:14px;color:var(--ink-soft);margin:8px 0 20px;line-height:1.5}
-  .js-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:var(--r-lg);border:1px solid rgba(0,0,0,.14);background:#fff;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:#1C1B1A;cursor:pointer}
-  .js-optin{display:flex;align-items:flex-start;gap:9px;text-align:left;font-size:12.5px;color:var(--ink-soft);margin:14px 2px 2px;cursor:pointer;line-height:1.4}
-  .js-optin input{margin-top:1px;width:16px;height:16px;accent-color:#E70443;flex:none}
+  .js-form{display:flex;gap:8px;margin-top:2px}
+  .js-form input{flex:1;min-width:0;padding:12px 14px;font-size:14px;font-family:'Inter';border-radius:11px;border:1px solid rgba(0,0,0,.14);background:#fff;color:#1C1B1A;outline:none}
+  .js-form input:focus{border-color:#E70443}
+  .js-form input::placeholder{color:#8a8276}
+  .js-form button{font-family:'Archivo';font-weight:800;font-size:12px;letter-spacing:.05em;padding:12px 18px;border:0;border-radius:11px;background:#E70443;color:#fff;cursor:pointer}
+  .js-form button:disabled{opacity:.6;cursor:default}
+  .js-err{display:none;margin-top:10px;font-size:12.5px;line-height:1.45;color:#AD0332;text-align:left}
+  .js-thanks{display:none;font-size:14px;line-height:1.6;color:#3a352e;padding:6px 0 2px}
+  .js-fine{margin-top:12px;font-size:11.5px;color:#8a8276}
   .js-later{background:none;border:none;color:var(--ink-soft);font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;padding:14px;cursor:pointer;margin-top:6px}
   .dc-see{margin-top:12px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:#1C1B1A;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.1);border-radius:var(--r-pill);padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
   .dc-see.on{background:var(--pink,#E70443);color:#fff;border-color:transparent}
@@ -1003,7 +1009,7 @@
   /* #2E8C5A measured 3.48 on the cream .layer; #1F6B41 = 5.31 */
   .dc-line .dc-stat.ok{color:#1F6B41}
   /* the join sheet is white in BOTH themes, so these are theme-independent */
-  .joinsheet #joinSub, .joinsheet .js-optin, .joinsheet .js-later{color:#5f594e}
+  .joinsheet #joinSub, .joinsheet .js-later{color:#5f594e}
   /* The share-capture card is rgb(15,12,13) in BOTH themes (it is an export surface, not a page
      surface), so its pink text needs the DARK tint regardless of theme , the mirror image of the
      .layer case, where a cream-in-both-themes surface needs the LIGHT tint. */
@@ -1451,7 +1457,7 @@
         <div id="heroCard"></div>
         <div class="seqpeek" id="seqPeek" hidden aria-hidden="true"><div class="seqpeek-in" id="seqPeekIn"></div></div>
         <div id="seasonZone"></div>
-        <button class="clubpill" onclick="vvTrySave('Saving cards is coming, once accounts are live.', function(){ toggleClub(document.querySelector('.clubpill')); })"><span class="cp-star">&#9734;</span> <span class="cp-txt">Add to my club</span></button>
+        <button class="clubpill" onclick="vvTrySave('Saving cards is coming, once accounts are live.', 'Save a player', function(){ toggleClub(document.querySelector('.clubpill')); })"><span class="cp-star">&#9734;</span> <span class="cp-txt">Add to my club</span></button>
         <a class="clubpill comparepill" id="compareCta3" href="compare.html"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 6h12"/><path d="M6 6 3 13h6z"/><path d="M18 6 15 13h6z"/></svg> <span>Compare this player</span></a>
         <button class="wallpill" id="wallPill" onclick="vvWallToggle(this)"><svg class="wp-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-4 4 3 3-2 6 4"/><circle cx="8.6" cy="9" r="1.3"/></svg> <span class="wp-txt">Add to my wall</span></button>
         <div class="pcap">Tap any layer to go deeper , from the glance to the full story.</div>
@@ -1653,7 +1659,7 @@
     }
   function vvWallPaint(btn){ var t=btn.querySelector('.wp-txt'); if(t) t.textContent=btn.classList.contains('on')?'On your wall':'Add to my wall'; }
   function vvWallSync(){ var c=document.querySelector('.clubpill'); var w=document.getElementById('wallPill'); if(!c||!w) return; if(c.classList.contains('on')){ w.classList.add('show'); } else { w.classList.remove('show'); w.classList.remove('on'); vvWallPaint(w); } }
-  function vvWallToggle(btn){ vvTrySave('The wall is coming: your poster of cards, once accounts are live.', function(){ btn.classList.toggle('on'); vvWallPaint(btn); }); }
+  function vvWallToggle(btn){ vvTrySave('The wall is coming: your poster of cards, once accounts are live.', 'Save to the wall', function(){ btn.classList.toggle('on'); vvWallPaint(btn); }); }
   function clubPaint(btn){ var on=btn.classList.contains('on'); btn.querySelector('.cp-txt').textContent=on?'In your club':'Add to my club'; btn.querySelector('.cp-star').innerHTML=on?'★':'☆'; btn.title=on?'Double-click to remove':'Add to my club'; try{vvWallSync();}catch(e){} }
   function clubAdd(btn){ if(!btn.classList.contains('on')){ btn.classList.add('on'); clubPaint(btn);} else { btn.classList.add('cp-hint'); setTimeout(function(){btn.classList.remove('cp-hint');},420);} }
   function clubRemove(btn){ if(btn.classList.contains('on')){ btn.classList.remove('on'); clubPaint(btn);} }
@@ -3111,17 +3117,36 @@
 </script>
 <script>function vvMode(b){document.body.classList.toggle('light');try{localStorage.setItem('vvTheme',document.body.classList.contains('light')?'light':'dark');}catch(e){}vvSync(b);vvFlash(b);}function vvSync(b){var L=document.body.classList.contains('light');var ic=b.querySelector('.mt-ic');var sun='<circle cx=\"12\" cy=\"12\" r=\"4.3\"/><path d=\"M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4\"/>';var moon='<g transform=\"translate(24,0) scale(-1,1)\"><path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/></g>';if(ic)ic.innerHTML=L?moon:sun;b.setAttribute('aria-label',L?'Switch to Under the Lights':'Switch to Daylight');}function vvFlash(b){var L=document.body.classList.contains('light');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');var lab=document.getElementById('mtLabel');if(!lab)return;lab.textContent=L?'Daylight':'Under the Lights';lab.classList.add('show');clearTimeout(window._mtT);window._mtT=setTimeout(function(){lab.classList.remove('show');},1150);}document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.modetoggle');if(b)vvSync(b);});
 var VV_MEMBER=false;
-function vvTrySave(ctx,onMember){ if(VV_MEMBER){ if(typeof onMember==="function")onMember(); return; } document.getElementById("joinSub").textContent=ctx||"Accounts are not live yet, so nothing can be saved. This is where it will live."; document.getElementById("joinSheet").classList.add("open"); document.getElementById("joinScrim").classList.add("on"); }
+var VV_SAVE_SOURCE="Save a player";
+/*  vvTrySave(ctx, source, onMember): ctx is the sentence under the title, source is the
+    waitlist_emails.source value naming what the reader was trying to do. onMember is the
+    real action, for the day VV_MEMBER is ever true. */
+function vvTrySave(ctx,source,onMember){ if(VV_MEMBER){ if(typeof onMember==="function")onMember(); return; }
+  document.getElementById("joinSub").textContent=ctx||"Accounts are not live yet, so nothing can be saved. This is where it will live.";
+  VV_SAVE_SOURCE=source||"Save a player";
+  document.getElementById("joinForm").style.display="flex"; document.getElementById("joinErr").style.display="none"; document.getElementById("joinThanks").style.display="none";
+  document.getElementById("joinSheet").classList.add("open"); document.getElementById("joinScrim").classList.add("on"); }
 function closeJoin(){ document.getElementById("joinSheet").classList.remove("open"); document.getElementById("joinScrim").classList.remove("on"); }
-function vvJoin(){
-  var optIn=document.getElementById("vvOptIn")?document.getElementById("vvOptIn").checked:false;
-  try{ localStorage.setItem("vv_marketing_optin", optIn?"1":"0"); }catch(e){}
-  /* PRODUCTION (Supabase + Google):
-     await supabase.auth.signInWithOAuth({ provider:"google",
-       options:{ redirectTo: location.origin+"/myclub.html",
-                 queryParams:{ prompt:"select_account" } } });
-     then in vvxiHandleGoogleReturn(): upsert profiles{ id:user.id, email, full_name, marketing_opt_in:optIn } */
-  location.href="myclub.html";
+/*  Same write as My Club's and I Wonder's forms: a direct anon insert, 409 is success (already on
+    the list), and on failure the address stays in the box. */
+async function vvNotify(){
+  var el=document.getElementById("joinEmail"); var e=el.value.trim();
+  if(!e||e.indexOf("@")<1){ el.focus(); return; }
+  var btn=document.querySelector("#joinForm button"), err=document.getElementById("joinErr");
+  err.style.display="none"; btn.disabled=true; btn.textContent="Sending...";
+  var ok=false;
+  try{
+    var r=await fetch("https://krqthvroetbxgnvwwjar.supabase.co/rest/v1/waitlist_emails",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":"sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp",
+               "Authorization":"Bearer sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp","Prefer":"return=minimal"},
+      body:JSON.stringify({email:e, source:VV_SAVE_SOURCE})
+    });
+    ok = r.ok || r.status===409;
+  }catch(_){ ok=false; }
+  btn.disabled=false; btn.textContent="Notify me";
+  if(ok){ document.getElementById("joinForm").style.display="none"; err.style.display="none"; document.getElementById("joinThanks").style.display="block"; }
+  else { err.style.display="block"; }
 }
 
 /* ===== VV Chronicle , signature moments (plug your dataset in here) =====
@@ -4011,8 +4036,19 @@ vvWireChronicle();
   <div class="js-star"><svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 21.4l1.4-6.8L2.2 9.6l6.9-.6z"/></svg></div>
   <div class="js-title">Saving is coming soon</div>
   <div class="js-sub" id="joinSub">Accounts are not live yet, so nothing can be saved. This is where it will live.</div>
-  <button class="js-google" onclick="vvJoin()"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38z"/></svg> See what is coming</button>
-  <label class="js-optin"><input type="checkbox" id="vvOptIn" checked> When accounts launch, keep me posted on new features and big match cards.</label>
+  <!--  THE SHEET IS A WAITLIST, ON THE MY CLUB PATTERN , 2026-10-08. It used to carry a Google G
+        and "See what is coming", a June sign-in mock relabelled when accounts were parked, which
+        read as Google sign-in and was a link dressed as a button. The pre-ticked opt-in that
+        wrote to localStorage and was read by nothing is gone with it. The source value names the
+        INTENT ("Save a player", "Save a verdict", "Save to the wall"), set by the caller, so a
+        reader who wanted to save something is told apart from one who found the My Club page.  -->
+  <div class="js-form" id="joinForm">
+    <input type="email" id="joinEmail" placeholder="you@email.com" aria-label="Email address" autocomplete="email">
+    <button type="button" onclick="vvNotify()">Notify me</button>
+  </div>
+  <div class="js-err" id="joinErr">That did not send. Your address is still above , try again, or reach us on Instagram.</div>
+  <div class="js-thanks" id="joinThanks">&#10003; You're on the list. We'll tell you the moment saving opens.</div>
+  <div class="js-fine">No account needed yet. One email, nothing else.</div>
   <button class="js-later" onclick="closeJoin()">Maybe later</button>
 </div>
 
