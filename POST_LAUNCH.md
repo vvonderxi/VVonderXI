@@ -1796,3 +1796,94 @@ argues for PUBLISHING something.
 **WHAT WOULD CHANGE THE RULING, so this is revisitable rather than closed:** if the strip ever carries fewer items, or gains horizontal room, the density argument weakens and the size should be re-derived from the room rather than kept out of habit. **Re-measure the strip's per-item width before raising anything** , the figures above are true at 390 on the layout as it stands on 2026-09-28.
 
 **DO NOT read this as a general licence for small type.** The platform's floor on the card face is 7.5px and nothing there renders below it. These sit outside that surface, under a named constraint, with a recorded contrast figure.
+
+---
+
+# THE LOGO IN THE GMAIL AVATAR , BIMI, AND WHAT IT COSTS (logged 2026-10-08, NOT started)
+
+**The launch test arrived with Gmail's generic letter avatar. The only supported way to put the
+VV mark there is BIMI, and in Gmail BIMI needs a paid certificate.** There is no DNS-only or
+free route for Gmail. A Google Account created on `hello@vvonderxi.com` with a profile photo can
+show to SOME recipients in SOME views; it is not documented behaviour and must not be planned on.
+
+**FOUR STEPS, IN ORDER, AND THE FIRST ONE IS THE REAL GATE:**
+1. **DMARC must be at enforcement.** BIMI requires `p=quarantine` or `p=reject` at 100%. That
+   move is its OWN item, logged directly below, and does not wait for BIMI: it is free and it is
+   the actual security benefit.
+2. **The logo as SVG Tiny Portable/Secure** (the BIMI profile: square, solid background, no
+   scripts, no external refs). Free, an hour, from the existing mark.
+3. **A certificate, the paid part.** Gmail accepts either:
+   - **VMC (Verified Mark Certificate)** , requires a REGISTERED trademark for the mark. No
+     trademark is filed today, so this is a trademark application first (Benelux/BOIP or
+     EUIPO, months to register), then the certificate.
+   - **CMC (Common Mark Certificate)** , no trademark needed, but the logo must have been in
+     public use for at least 12 months, evidenced. The platform has not existed publicly for 12
+     months, so this is not available until roughly a year after launch.
+   - **Either certificate is an annual fee in the order of USD 1,000 to 1,500** from a CA such as
+     DigiCert or Entrust. Price is from memory, not a quote , **get a quote before deciding.**
+4. **One TXT record:** `default._bimi.vvonderxi.com  v=BIMI1; l=<https svg url>; a=<https pem url>`.
+
+**THE HONEST RECOMMENDATION:** not worth it at this list size. Do step 1 anyway, because DMARC
+enforcement is anti-spoofing value on its own; revisit 2 to 4 when the list is large enough
+that the avatar plausibly moves opens, or a year after launch when a CMC becomes possible
+without a trademark.
+
+---
+
+# DMARC FROM p=none TO p=quarantine , ITS OWN ITEM, NOT A BIMI STEP (logged 2026-10-08)
+
+**Free, and the real security benefit: at `p=none` anyone can send mail claiming to be
+`@vvonderxi.com` and receivers are told to deliver it anyway.** Kept separate from BIMI on
+purpose, because tying it to a certificate nobody will buy this year would park it forever.
+
+**THE ALIAS EXISTS , VERIFIED 2026-10-08 IN THE IMPROVMX DASHBOARD:** `dmarc@vvonderxi.com`
+forwards to Lucas's Gmail, domain Active. **No report has arrived yet and that is expected, not a
+fault: an aggregate report is only generated when a receiver gets mail CLAIMING to be from the
+domain, and the 2026-10-08 test send was the first mail the domain ever sent.** Google's report
+for that day should arrive within about 24 hours, from `noreply-dmarc-support@google.com`, subject
+`Report domain: vvonderxi.com Submitter: google.com`, an XML file inside a `.zip` or `.gz`.
+
+**ONE CORRECTION TO THE TRIGGER AS FIRST STATED: IMPROVMX WILL NOT APPEAR AS A SENDER.** On the
+free plan it only forwards mail IN; "Email Sending" is its paid tier and is not on. Mail it
+forwards to Lucas keeps the ORIGINAL sender's domain, which is that domain's DMARC, not ours. **So
+the only legitimate sender of `@vvonderxi.com` mail today is Resend**, and once the signup webhook
+ships it is still Resend. Anything else in a report is either spoofing or a sender we forgot.
+
+## WHAT TO LOOK FOR IN EACH REPORT, SO IT IS NOT READ BLIND
+Each `<record>` is one sending IP and how many messages it sent. For each one:
+
+    <source_ip>          where it came from. Resend sends from Amazon SES ranges; a whois on the
+                         IP reads Amazon.
+    <count>              how many messages.
+    <policy_evaluated>
+      <dkim>pass</dkim>  THE ONE THAT MATTERS. DMARC passes if EITHER of these two says pass.
+      <spf>pass</spf>
+    <identifiers>
+      <header_from>vvonderxi.com</header_from>
+    <auth_results>
+      <dkim><domain>vvonderxi.com</domain><result>pass</result>      Resend's signature
+      <spf><domain>send.vvonderxi.com</domain><result>pass</result>  Resend's return path
+
+**THREE SHAPES, AND WHAT EACH MEANS:**
+- **dkim pass and spf pass, Amazon IP** , Resend, working. This is every row we expect.
+- **dkim pass, spf FAIL, a non-Amazon IP** , our mail forwarded on by a recipient's own
+  forwarder. Harmless: DKIM survives forwarding and DMARC still passes. Expect a few.
+- **dkim FAIL and spf FAIL** , somebody sending as us, or a legitimate sender we have not
+  aligned. **Read the IP before moving.** If it is a service we use, align it first; if it is
+  unknown, that is exactly the mail quarantine exists to catch.
+
+## THE TRIGGER
+**Move when the reports cover at least one real send to more than one receiver (the launch email
+counts; Gmail and Outlook each report separately) AND, over one to two weeks of them, every row
+with a meaningful count shows `policy_evaluated` dkim or spf as pass.** A week with no sends
+produces no reports and does not count toward the window.
+
+## THE MOVE
+In Squarespace, Custom Records, edit the existing `_dmarc` TXT (do not add a second one):
+
+    v=DMARC1; p=quarantine; pct=100; rua=mailto:dmarc@vvonderxi.com; fo=1; adkim=r; aspf=r
+
+Then `dig +short TXT _dmarc.vvonderxi.com` must return that line, and ONLY that line. Keep reading
+reports; after a further month clean, `p=reject` is the end state, and it is also what BIMI wants.
+**The 2026-09-01 lesson applies: Squarespace's Email Security toggle manages SPF and DMARC as a
+pair and switching it off removed both. Edit the custom record; do not touch the toggle.**
