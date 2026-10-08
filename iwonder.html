@@ -319,7 +319,7 @@
         body:JSON.stringify({email:e, source:'I Wonder waitlist'})
       });
       ok = r.ok || r.status===409;          // 409 = already on the list, which is success
-      if(r.ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:'I Wonder waitlist' } }); }catch(e){} } }   // analytics: fresh rows only, a repeat is not a signup
+      if(ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:'I Wonder waitlist' } }); }catch(e){} } }   // analytics: counts the action, repeat or fresh; unique leads are counted in the table itself
     }catch(_){ ok=false; }
     btn.disabled=false; btn.textContent='Notify me';
     if(ok){

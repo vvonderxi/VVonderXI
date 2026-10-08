@@ -4429,7 +4429,7 @@ async function vvNotify(){
       body:JSON.stringify({email:e, source:VV_SAVE_SOURCE})
     });
     ok = r.ok || r.status===409;
-    if(r.ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:VV_SAVE_SOURCE } }); }catch(e){} } }   // analytics: fresh rows only, a repeat is not a signup
+    if(ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:VV_SAVE_SOURCE } }); }catch(e){} } }   // analytics: counts the action, repeat or fresh; unique leads are counted in the table itself
   }catch(_){ ok=false; }
   btn.disabled=false; btn.textContent="Notify me";
   if(ok){ document.getElementById("joinForm").style.display="none"; err.style.display="none"; document.getElementById("joinThanks").style.display="block"; }
