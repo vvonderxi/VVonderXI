@@ -86,6 +86,13 @@
 # Kept because the platform reads it from the deployment: it carries the
 # headers block and `fluid`, and excluding it silently drops both.
 !/vercel.json
+# THE DEPENDENCY MANIFEST HAS TO SHIP OR THE FUNCTION DOES NOT , 2026-10-08. Without these two
+# Vercel has nothing to install, so api/analyse.js dies on `require('@supabase/supabase-js')`.
+# Previews hid it for five days by restoring an old build cache that still held node_modules;
+# the first production build had no cache, and every verdict and note on the live site failed.
+# Neither file holds anything private: two dependency names and their resolved versions.
+!/package.json
+!/package-lock.json
 
 # ── and the api files that were already excluded, still excluded ──────────
 # `!/api` above re-includes the whole directory, so the original denylist has
