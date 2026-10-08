@@ -1,5 +1,44 @@
 # THE LAUNCH EMAIL , DRAFTED 2026-10-03, NOT SENT AND NOT SENDABLE YET
 
+**[REWORKED 2026-10-08. THE DRAFT BELOW IS SUPERSEDED BY `LAUNCH_EMAIL.html` + `LAUNCH_EMAIL.txt`
+BESIDE THIS FILE: Lucas judged it bland and chose, from two candidates, the version that leads
+with "Messi 11/12 or Ronaldo 14/15?", a pink pill "See the verdict" opening that warm pairing,
+"See the VV Rankings" as the secondary, the apology paragraph cut, and hierarchy built from the
+platform's type system on mail-safe stacks. The reasoning below still holds for what was KEPT:
+54,416, the three-beat line, the tagline, the reply-to-remove footer. The dependencies section
+is stale in four places, corrected here.]**
+- **DMARC IS PUBLISHED.** Measured 2026-10-08 from the authoritative nameservers:
+  `v=DMARC1; p=none; rua=mailto:dmarc@vvonderxi.com; fo=1; adkim=r; aspf=r`. SPF is unchanged
+  at one record, `v=spf1 include:spf.improvmx.com ~all`. **`dmarc@vvonderxi.com` must exist as
+  an ImprovMX alias or the reports go nowhere** , not verified.
+- **THE ESP IS RESEND, AND NOTHING OF ITS GOES INTO THE APEX SPF.** The domain was added on
+  2026-10-08 (apex `vvonderxi.com`, region eu-west-1, Return-Path `send`) and Resend printed
+  THREE records, read off the dashboard rather than predicted , **an earlier note here and in
+  chat said "MX send + TXT send with an amazonses include", which is Resend's OLD scheme and is
+  WRONG for this account**: the return path is now two CNAMEs to Resend's own hosts, so there is
+  no SPF record to add anywhere and the apex SPF is never touched.
+      TXT    resend._domainkey   p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCttQyRyZw10iTofjeRiqjzOzgC9BmjDil6NP/E2W8nbhJpgANHcM8UUnTeNBgnKCsbixb1HvBGHrnRfgRLH4cgdBg8NZDACynZez74wp02NgFzsLpWNnMdYbFLFyl2aw9wvWb4uVoIocssonkxO6qfLoSuhmZvruYBdldeg/CSXwIDAQAB
+      CNAME  rsend               rsend-euw1.forge.rmta.net
+      CNAME  send                send.forge.rmta.net
+  **Resend ALSO prints an "Enable Receiving" MX record (`@` -> inbound-smtp.eu-west-1.amazonaws.com,
+  priority 9). DO NOT ADD IT.** Receiving is ImprovMX's job and that record sits on the same
+  name as the ImprovMX MX pair; the Receiving toggle on the domain page is OFF and stays off.
+  Click tracking is NOT configured on this domain (Configuration tab reads "configure a custom
+  tracking subdomain", none set), so links go out as the real URLs; do not press Configure.
+  Step 1 of THE ORDER ("SPF tightened to -all only AFTER the ESP is in it") is moot:
+  tightening the apex to `-all` is an anti-spoofing decision independent of sending.
+- **THE COUNT IS 54,416, THE SCORED FIGURE , DECIDED BY LUCAS 2026-10-08.** The draft's
+  58,066 is every season the platform HOLDS (`player_season_cards`); after a line about scoring
+  it reads as 58,066 scores, which the platform has not measured. `cards_scored` in
+  index-figures.json is the figure, and the HTML and the text part carry it. Re-derive on the
+  day with `node scripts/gen-index-figures.js`.
+- **THE LIST IS FOUR DELIVERABLE ADDRESSES, NOT FIVE, AND ONE OF THE FOUR IS LUCAS'S OWN.**
+  Five rows; one ends `@outlook` with no TLD; row 1 is the owner's Gmail. So the outside
+  audience is three people. The "BCC would do" line is superseded by the Resend decision.
+- **SEND AFTER THE PRODUCTION FLIP, NOT BEFORE.** Both links resolve through `cleanUrls` on
+  the platform; while `coming-soon` is live its rewrite sends `/rankings` and `/compare` to
+  the holding page.
+
 **This is the second email, not the first.** `POST_LAUNCH.md` holds the WELCOME email,
 drafted 2026-09-02 and also never sent, whose closing line is *"The next time you hear from
 us, the doors will be open."* **That sentence is a promise this email keeps**, and it is the
@@ -24,7 +63,7 @@ a holding page. The draft is written for that, not for a reader who has been hea
 
     Every season since 2010, across nine leagues,
     scored on what was recorded and nothing else.
-    58,066 of them.                        [heavier]
+    54,416 of them.                        [heavier]   <- was 58,066, see the correction above
 
     No favourites, no nostalgia, no hiding place.
     Only what was earned.
