@@ -1796,3 +1796,36 @@ argues for PUBLISHING something.
 **WHAT WOULD CHANGE THE RULING, so this is revisitable rather than closed:** if the strip ever carries fewer items, or gains horizontal room, the density argument weakens and the size should be re-derived from the room rather than kept out of habit. **Re-measure the strip's per-item width before raising anything** , the figures above are true at 390 on the layout as it stands on 2026-09-28.
 
 **DO NOT read this as a general licence for small type.** The platform's floor on the card face is 7.5px and nothing there renders below it. These sit outside that surface, under a named constraint, with a recorded contrast figure.
+
+---
+
+# THE LOGO IN THE GMAIL AVATAR , BIMI, AND WHAT IT COSTS (logged 2026-10-08, NOT started)
+
+**The launch test arrived with Gmail's generic letter avatar. The only supported way to put the
+VV mark there is BIMI, and in Gmail BIMI needs a paid certificate.** There is no DNS-only or
+free route for Gmail. A Google Account created on `hello@vvonderxi.com` with a profile photo can
+show to SOME recipients in SOME views; it is not documented behaviour and must not be planned on.
+
+**FOUR STEPS, IN ORDER, AND THE FIRST ONE IS THE REAL GATE:**
+1. **DMARC must be at enforcement.** Today it is `p=none` (published 2026-10-07). BIMI requires
+   `p=quarantine` or `p=reject` at 100%. Move only after the `rua` reports to
+   `dmarc@vvonderxi.com` show every legitimate sender passing , Resend aligned via
+   `send.vvonderxi.com`, nothing else sending. **Check the `dmarc@` alias exists in ImprovMX
+   first, or there are no reports to read.** Free; weeks, not hours.
+2. **The logo as SVG Tiny Portable/Secure** (the BIMI profile: square, solid background, no
+   scripts, no external refs). Free, an hour, from the existing mark.
+3. **A certificate, the paid part.** Gmail accepts either:
+   - **VMC (Verified Mark Certificate)** , requires a REGISTERED trademark for the mark. No
+     trademark is filed today, so this is a trademark application first (Benelux/BOIP or
+     EUIPO, months to register), then the certificate.
+   - **CMC (Common Mark Certificate)** , no trademark needed, but the logo must have been in
+     public use for at least 12 months, evidenced. The platform has not existed publicly for 12
+     months, so this is not available until roughly a year after launch.
+   - **Either certificate is an annual fee in the order of USD 1,000 to 1,500** from a CA such as
+     DigiCert or Entrust. Price is from memory, not a quote , **get a quote before deciding.**
+4. **One TXT record:** `default._bimi.vvonderxi.com  v=BIMI1; l=<https svg url>; a=<https pem url>`.
+
+**THE HONEST RECOMMENDATION:** not worth it at this list size. Do step 1 anyway, because DMARC
+enforcement is anti-spoofing value on its own; revisit 2 to 4 when the list is large enough
+that the avatar plausibly moves opens, or a year after launch when a CMC becomes possible
+without a trademark.
