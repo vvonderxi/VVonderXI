@@ -205,7 +205,11 @@
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
   /* .tryit was still on the rejected #E70443 (4.07) , move it onto the established token */
   body.light .iwchip .tryit{color:var(--pink-ink)}
-</style></head><body class="light">
+</style><!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
+     loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
+<script>window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head><body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">
     <div class="spinelogo" style="cursor:pointer" onclick="location.href='index.html'"></div>
@@ -315,6 +319,7 @@
         body:JSON.stringify({email:e, source:'I Wonder waitlist'})
       });
       ok = r.ok || r.status===409;          // 409 = already on the list, which is success
+      if(r.ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:'I Wonder waitlist' } }); }catch(e){} } }   // analytics: fresh rows only, a repeat is not a signup
     }catch(_){ ok=false; }
     btn.disabled=false; btn.textContent='Notify me';
     if(ok){

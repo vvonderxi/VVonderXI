@@ -1747,6 +1747,10 @@ body.light .pkmsub{color:var(--ink-soft)}
     .pkpanel .vvf{max-height:140px;overflow-y:auto;overscroll-behavior:contain}
   }
 </style>
+<!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
+     loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
+<script>window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="light">
 <script>(function(){try{var f=localStorage.getItem('vvCardFace');if(f==='silhouette')document.body.classList.remove('show-photos');else document.body.classList.add('show-photos');}catch(e){}})();</script>
@@ -4425,6 +4429,7 @@ async function vvNotify(){
       body:JSON.stringify({email:e, source:VV_SAVE_SOURCE})
     });
     ok = r.ok || r.status===409;
+    if(r.ok){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'email_signup', data:{ source:VV_SAVE_SOURCE } }); }catch(e){} } }   // analytics: fresh rows only, a repeat is not a signup
   }catch(_){ ok=false; }
   btn.disabled=false; btn.textContent="Notify me";
   if(ok){ document.getElementById("joinForm").style.display="none"; err.style.display="none"; document.getElementById("joinThanks").style.display="block"; }

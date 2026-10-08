@@ -1055,7 +1055,11 @@
   .totop{position:fixed;right:18px;bottom:88px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(255,92,122,.6);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:60}
   .totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
   @media (min-width:721px){ .totop{bottom:28px} }
-</style></head>
+</style><!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
+     loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
+<script>window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
 <body class="light">
 <script>(function(){try{var t=localStorage.getItem('vvTheme');if(t==='light')document.body.classList.add('light');else if(t==='dark')document.body.classList.remove('light');}catch(e){}})();</script>
   <nav class="spine">
