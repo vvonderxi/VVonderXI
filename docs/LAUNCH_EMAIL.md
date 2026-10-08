@@ -11,11 +11,11 @@ ITSELF STANDS AND IS NOW BUILT AS `LAUNCH_EMAIL.html` + `LAUNCH_EMAIL.txt` BESID
   is never touched, so the "exactly one SPF record" hazard this file warns about cannot arise.
   Step 1 of THE ORDER ("SPF tightened to -all only AFTER the ESP is in it") is therefore moot:
   tightening the apex to `-all` is an anti-spoofing decision independent of sending.
-- **"SCORED ... 58,066 OF THEM" CONFLATES TWO COUNTS.** 58,066 is every season the platform
-  HOLDS (`player_season_cards`, measured 2026-10-08). The seasons carrying a VV Score are
-  **54,416** (`cards_scored`, index-figures.json). The built HTML keeps 58,066 with "scored on
-  what was recorded" , defensible as "scored on that basis" , but if the word has to be literal
-  the line is "54,416 of them". Lucas's call; re-derive either on the day.
+- **THE COUNT IS 54,416, THE SCORED FIGURE , DECIDED BY LUCAS 2026-10-08.** The draft's
+  58,066 is every season the platform HOLDS (`player_season_cards`); after a line about scoring
+  it reads as 58,066 scores, which the platform has not measured. `cards_scored` in
+  index-figures.json is the figure, and the HTML and the text part carry it. Re-derive on the
+  day with `node scripts/gen-index-figures.js`.
 - **THE LIST IS FOUR DELIVERABLE ADDRESSES, NOT FIVE, AND ONE OF THE FOUR IS LUCAS'S OWN.**
   Five rows; one ends `@outlook` with no TLD; row 1 is the owner's Gmail. So the outside
   audience is three people. The "BCC would do" line is superseded by the Resend decision.
@@ -47,7 +47,7 @@ a holding page. The draft is written for that, not for a reader who has been hea
 
     Every season since 2010, across nine leagues,
     scored on what was recorded and nothing else.
-    58,066 of them.                        [heavier]
+    54,416 of them.                        [heavier]   <- was 58,066, see the correction above
 
     No favourites, no nostalgia, no hiding place.
     Only what was earned.
