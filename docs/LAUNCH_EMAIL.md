@@ -1,5 +1,28 @@
 # THE LAUNCH EMAIL , DRAFTED 2026-10-03, NOT SENT AND NOT SENDABLE YET
 
+**[CORRECTED 2026-10-08. THE DEPENDENCIES SECTION BELOW IS STALE IN FOUR PLACES; THE DRAFT
+ITSELF STANDS AND IS NOW BUILT AS `LAUNCH_EMAIL.html` + `LAUNCH_EMAIL.txt` BESIDE THIS FILE.]**
+- **DMARC IS PUBLISHED.** Measured 2026-10-08 from the authoritative nameservers:
+  `v=DMARC1; p=none; rua=mailto:dmarc@vvonderxi.com; fo=1; adkim=r; aspf=r`. SPF is unchanged
+  at one record, `v=spf1 include:spf.improvmx.com ~all`. **`dmarc@vvonderxi.com` must exist as
+  an ImprovMX alias or the reports go nowhere** , not verified.
+- **THE ESP IS RESEND, AND ITS `include:` DOES NOT GO INTO THE APEX SPF.** Resend's envelope
+  sender (Return-Path) is `send.vvonderxi.com`, which carries its OWN SPF record; the apex SPF
+  is never touched, so the "exactly one SPF record" hazard this file warns about cannot arise.
+  Step 1 of THE ORDER ("SPF tightened to -all only AFTER the ESP is in it") is therefore moot:
+  tightening the apex to `-all` is an anti-spoofing decision independent of sending.
+- **"SCORED ... 58,066 OF THEM" CONFLATES TWO COUNTS.** 58,066 is every season the platform
+  HOLDS (`player_season_cards`, measured 2026-10-08). The seasons carrying a VV Score are
+  **54,416** (`cards_scored`, index-figures.json). The built HTML keeps 58,066 with "scored on
+  what was recorded" , defensible as "scored on that basis" , but if the word has to be literal
+  the line is "54,416 of them". Lucas's call; re-derive either on the day.
+- **THE LIST IS FOUR DELIVERABLE ADDRESSES, NOT FIVE, AND ONE OF THE FOUR IS LUCAS'S OWN.**
+  Five rows; one ends `@outlook` with no TLD; row 1 is the owner's Gmail. So the outside
+  audience is three people. The "BCC would do" line is superseded by the Resend decision.
+- **SEND AFTER THE PRODUCTION FLIP, NOT BEFORE.** Both links resolve through `cleanUrls` on
+  the platform; while `coming-soon` is live its rewrite sends `/rankings` and `/compare` to
+  the holding page.
+
 **This is the second email, not the first.** `POST_LAUNCH.md` holds the WELCOME email,
 drafted 2026-09-02 and also never sent, whose closing line is *"The next time you hear from
 us, the doors will be open."* **That sentence is a promise this email keeps**, and it is the
