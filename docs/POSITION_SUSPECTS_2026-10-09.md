@@ -58,3 +58,20 @@ The 50 highest-rated cards whose own season stats look more like another positio
 | 48 | [Raúl García](https://vvonderxi.com/card?id=140343) | 17/18 La Liga | Athletic Club | 83 | CDM | ST | tackles 0.27/90 low for a CDM; passes 16.76/90 low for a CDM; shots 2.70/90 high for a CDM |  |
 | 49 | [W. Weghorst](https://vvonderxi.com/card?id=172544) | 17/18 Eredivisie | AZ Alkmaar | 83 | Winger | ST | tackles 0.07/90 low for a Winger; goals 0.59/90 high for a Winger; shots 3.75/90 high for a Winger |  |
 | 50 | [P. Onuachu](https://vvonderxi.com/card?id=176757) | 21/22 Belgian Pro League | Genk | 83 | Winger | ST | goals 0.72/90 high for a Winger; shots 3.64/90 high for a Winger; tackles 0.55/90 low for a Winger |  |
+
+## Researched by Claude, 9 October 2026 (sources free and public; Transfermarkt's match detail and FBref were not used)
+
+Transfermarkt's per-season detail sits behind a consent banner whose only free option accepts advertising tracking, and FBref serves a bot check. The owner declined the first, and the second is not bypassed. So these calls rest on Wikipedia, Transfermarkt's free profile, the season's own rates, and which LINE of the provider's team sheet the player was listed in (lineup_slots). Before 2022/23 the order inside a line is unreliable, so the line is evidence and the side is not.
+
+| # | Card | Labelled | Call | Confidence | Evidence |
+|---|---|---|---|---|---|
+| 1 | Mertens 16/17 Napoli | Winger | ST | High | Wikipedia: after Higuain's sale and Milik's injury he took a central role in Napoli's attack; front line in 28 of 28 starts |
+| 7 | Cristiano Ronaldo 16/17 Real Madrid | Winger | ST | Medium | Wikipedia: from 2017 Zidane used him as a free-roaming centre-forward, and this season straddles the change; front line 27 of 29; the locked rule sends a goal-scoring ambiguous forward to ST |
+| 48 | Raul Garcia 17/18 Athletic | CDM | CAM | Medium-low | Transfermarkt career position Attacking Midfield; an attacker's rates (shots 2.70/90, tackles 0.27/90); CDM is clearly wrong, the exact line less so |
+| 23 | Raul Garcia 18/19 Athletic | CDM | CAM | Medium-low | Same evidence; shots 3.07/90, goals 0.34/90 |
+| 40 | Akbaba 17/18 Alanyaspor | CM | CAM | Medium | Line behind the striker in 29 of 32 starts, mostly 4-2-3-1; goals 0.44/90, shots 3.14/90 |
+
+### Unresolved, and what would settle them
+
+- **27, Raul Garcia 19/20 Athletic, labelled CM.** Genuinely split between CAM and ST: 18 starts in the line behind the striker, 12 in the front line, 15 league goals, and a cited Mundo Deportivo piece (5 November 2019) saying Athletic played better with a false nine. **Settled by** a per-match position source for that season: Transfermarkt's match line-ups, or Opta-derived positions such as FBref's, read for all 33 starts and counted.
+- **41, Linssen 17/18 Vitesse, labelled Winger.** Wikipedia calls him "a forward or winger"; he was in the front line in 32 of 37 starts, but before 2022/23 the provider's grid cannot tell the wing from the centre. **Settled by** the same per-match source, or a match report sample naming where Vitesse's front three lined up.
