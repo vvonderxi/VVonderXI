@@ -1,0 +1,1197 @@
+[
+ {
+  "card_id": 130871,
+  "name": "K. Mitoma",
+  "team": "Brighton",
+  "season_year": 2024,
+  "league_code": "PL",
+  "api_player_id": 106835,
+  "pool_now": "CM",
+  "rt_now": 84,
+  "target": "Winger",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 106835,
+   "season_year": 2024,
+   "league_code": "PL",
+   "position": "CM",
+   "appearances": 28,
+   "updated_at": "2026-06-12T05:54:02.429649+00:00",
+   "distribution": {
+    "CM": 61,
+    "LW": 36,
+    "ST": 4
+   },
+   "shirt_number": 22
+  },
+  "cards_on_key": [
+   130871
+  ]
+ },
+ {
+  "card_id": 131113,
+  "name": "E. Eze",
+  "team": "Crystal Palace",
+  "season_year": 2023,
+  "league_code": "PL",
+  "api_player_id": 19586,
+  "pool_now": "CM",
+  "rt_now": 85,
+  "target": "CAM",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 19586,
+   "season_year": 2023,
+   "league_code": "PL",
+   "position": "CM",
+   "appearances": 24,
+   "updated_at": "2026-06-12T05:57:18.915296+00:00",
+   "distribution": {
+    "CM": 50,
+    "LW": 13,
+    "RW": 8,
+    "ST": 29
+   },
+   "shirt_number": 10
+  },
+  "cards_on_key": [
+   131113
+  ]
+ },
+ {
+  "card_id": 132424,
+  "name": "J. Grealish",
+  "team": "Aston Villa",
+  "season_year": 2020,
+  "league_code": "PL",
+  "api_player_id": 19187,
+  "pool_now": "CDM",
+  "rt_now": 86,
+  "target": "CAM",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 19187,
+   "season_year": 2020,
+   "league_code": "PL",
+   "position": "CDM",
+   "appearances": 24,
+   "updated_at": "2026-06-12T06:07:46.270907+00:00",
+   "distribution": {
+    "CM": 8,
+    "LW": 21,
+    "RW": 13,
+    "CDM": 58
+   },
+   "shirt_number": 10
+  },
+  "cards_on_key": [
+   132424
+  ]
+ },
+ {
+  "card_id": 132632,
+  "name": "P. Bamford",
+  "team": "Leeds",
+  "season_year": 2020,
+  "league_code": "PL",
+  "api_player_id": 19134,
+  "pool_now": "Winger",
+  "rt_now": 88,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 19134,
+   "season_year": 2020,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 37,
+   "updated_at": "2026-06-12T06:07:44.079918+00:00",
+   "distribution": {
+    "LW": 57,
+    "ST": 43
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   132632
+  ]
+ },
+ {
+  "card_id": 132789,
+  "name": "Gabriel Jesus",
+  "team": "Manchester City",
+  "season_year": 2019,
+  "league_code": "PL",
+  "api_player_id": 643,
+  "pool_now": "Winger",
+  "rt_now": 87,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 643,
+   "season_year": 2019,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 21,
+   "updated_at": "2026-06-12T06:10:35.717218+00:00",
+   "distribution": {
+    "LW": 71,
+    "ST": 29
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   132789
+  ]
+ },
+ {
+  "card_id": 132866,
+  "name": "R. Jiménez",
+  "team": "Wolves",
+  "season_year": 2019,
+  "league_code": "PL",
+  "api_player_id": 2887,
+  "pool_now": "Winger",
+  "rt_now": 88,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 2887,
+   "season_year": 2019,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 37,
+   "updated_at": "2026-06-12T06:10:46.84552+00:00",
+   "distribution": {
+    "LW": 14,
+    "RW": 51,
+    "ST": 35
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   132866
+  ]
+ },
+ {
+  "card_id": 133101,
+  "name": "J. Vardy",
+  "team": "Leicester",
+  "season_year": 2019,
+  "league_code": "PL",
+  "api_player_id": 18788,
+  "pool_now": "Winger",
+  "rt_now": 90,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 18788,
+   "season_year": 2019,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 34,
+   "updated_at": "2026-06-12T06:10:52.637531+00:00",
+   "distribution": {
+    "LW": 50,
+    "RW": 3,
+    "ST": 47
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   133101
+  ]
+ },
+ {
+  "card_id": 133449,
+  "name": "S. Rondón",
+  "team": "Newcastle",
+  "season_year": 2018,
+  "league_code": "PL",
+  "api_player_id": 2461,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 2461,
+   "season_year": 2018,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 30,
+   "updated_at": "2026-06-12T06:14:03.665431+00:00",
+   "distribution": {
+    "LW": 67,
+    "ST": 33
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   133449
+  ]
+ },
+ {
+  "card_id": 133675,
+  "name": "R. Lukaku",
+  "team": "Manchester United",
+  "season_year": 2017,
+  "league_code": "PL",
+  "api_player_id": 907,
+  "pool_now": "Winger",
+  "rt_now": 88,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 907,
+   "season_year": 2017,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 33,
+   "updated_at": "2026-06-12T06:17:19.198706+00:00",
+   "distribution": {
+    "LW": 61,
+    "ST": 39
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   133675
+  ]
+ },
+ {
+  "card_id": 133752,
+  "name": "S. Agüero",
+  "team": "Manchester City",
+  "season_year": 2017,
+  "league_code": "PL",
+  "api_player_id": 642,
+  "pool_now": "Winger",
+  "rt_now": 90,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 642,
+   "season_year": 2017,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 22,
+   "updated_at": "2026-06-12T06:17:16.638165+00:00",
+   "distribution": {
+    "LW": 77,
+    "ST": 23
+   },
+   "shirt_number": 10
+  },
+  "cards_on_key": [
+   133752
+  ]
+ },
+ {
+  "card_id": 134051,
+  "name": "Diego Costa",
+  "team": "Chelsea",
+  "season_year": 2016,
+  "league_code": "PL",
+  "api_player_id": 54,
+  "pool_now": "Winger",
+  "rt_now": 90,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 54,
+   "season_year": 2016,
+   "league_code": "PL",
+   "position": "Winger",
+   "appearances": 35,
+   "updated_at": "2026-06-12T06:20:29.897299+00:00",
+   "distribution": {
+    "LW": 57,
+    "ST": 43
+   },
+   "shirt_number": 19
+  },
+  "cards_on_key": [
+   134051
+  ]
+ },
+ {
+  "card_id": 139401,
+  "name": "Y. En-Nesyri",
+  "team": "Sevilla",
+  "season_year": 2020,
+  "league_code": "LL",
+  "api_player_id": 47422,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 47422,
+   "season_year": 2020,
+   "league_code": "LL",
+   "position": "Winger",
+   "appearances": 23,
+   "updated_at": "2026-06-12T06:44:16.247081+00:00",
+   "distribution": {
+    "LW": 96,
+    "ST": 4
+   },
+   "shirt_number": 15
+  },
+  "cards_on_key": [
+   139401
+  ]
+ },
+ {
+  "card_id": 139889,
+  "name": "Raúl García",
+  "team": "Athletic Club",
+  "season_year": 2018,
+  "league_code": "LL",
+  "api_player_id": 47282,
+  "pool_now": "CDM",
+  "rt_now": 85,
+  "target": "CM",
+  "source": "researched 2026-10-09",
+  "pp_before": {
+   "api_player_id": 47282,
+   "season_year": 2018,
+   "league_code": "LL",
+   "position": "CDM",
+   "appearances": 27,
+   "updated_at": "2026-06-12T06:50:52.17498+00:00",
+   "distribution": {
+    "CM": 4,
+    "LW": 4,
+    "CDM": 93
+   },
+   "shirt_number": 22
+  },
+  "cards_on_key": [
+   139889
+  ]
+ },
+ {
+  "card_id": 140343,
+  "name": "Raúl García",
+  "team": "Athletic Club",
+  "season_year": 2017,
+  "league_code": "LL",
+  "api_player_id": 47282,
+  "pool_now": "CDM",
+  "rt_now": 83,
+  "target": "CM",
+  "source": "researched 2026-10-09",
+  "pp_before": {
+   "api_player_id": 47282,
+   "season_year": 2017,
+   "league_code": "LL",
+   "position": "CDM",
+   "appearances": 30,
+   "updated_at": "2026-06-12T06:54:24.503449+00:00",
+   "distribution": {
+    "CM": 3,
+    "CDM": 97
+   },
+   "shirt_number": 22
+  },
+  "cards_on_key": [
+   140343
+  ]
+ },
+ {
+  "card_id": 140705,
+  "name": "M. Gómez",
+  "team": "Celta Vigo",
+  "season_year": 2017,
+  "league_code": "LL",
+  "api_player_id": 2615,
+  "pool_now": "Winger",
+  "rt_now": 88,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 2615,
+   "season_year": 2017,
+   "league_code": "LL",
+   "position": "Winger",
+   "appearances": 35,
+   "updated_at": "2026-06-12T06:54:06.777506+00:00",
+   "distribution": {
+    "LW": 60,
+    "ST": 40
+   },
+   "shirt_number": 7
+  },
+  "cards_on_key": [
+   140705
+  ]
+ },
+ {
+  "card_id": 140853,
+  "name": "Pedro León",
+  "team": "Eibar",
+  "season_year": 2016,
+  "league_code": "LL",
+  "api_player_id": 47392,
+  "pool_now": "CDM",
+  "rt_now": 85,
+  "target": "Winger",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 47392,
+   "season_year": 2016,
+   "league_code": "LL",
+   "position": "CDM",
+   "appearances": 34,
+   "updated_at": "2026-06-12T06:57:57.693836+00:00",
+   "distribution": {
+    "CM": 24,
+    "RW": 15,
+    "CDM": 62
+   },
+   "shirt_number": 21
+  },
+  "cards_on_key": [
+   140853
+  ]
+ },
+ {
+  "card_id": 141103,
+  "name": "Cristiano Ronaldo",
+  "team": "Real Madrid",
+  "season_year": 2016,
+  "league_code": "LL",
+  "api_player_id": 874,
+  "pool_now": "Winger",
+  "rt_now": 90,
+  "target": "ST",
+  "source": "researched 2026-10-09",
+  "pp_before": {
+   "api_player_id": 874,
+   "season_year": 2016,
+   "league_code": "LL",
+   "position": "Winger",
+   "appearances": 29,
+   "updated_at": "2026-06-12T06:57:24.594169+00:00",
+   "distribution": {
+    "RW": 62,
+    "ST": 38
+   },
+   "shirt_number": 7
+  },
+  "cards_on_key": [
+   141103
+  ]
+ },
+ {
+  "card_id": 141167,
+  "name": "Álvaro Morata",
+  "team": "Real Madrid",
+  "season_year": 2016,
+  "league_code": "LL",
+  "api_player_id": 59,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 59,
+   "season_year": 2016,
+   "league_code": "LL",
+   "position": "Winger",
+   "appearances": 14,
+   "updated_at": "2026-06-12T06:57:19.45909+00:00",
+   "distribution": {
+    "LW": 64,
+    "ST": 36
+   },
+   "shirt_number": 21
+  },
+  "cards_on_key": [
+   141167
+  ]
+ },
+ {
+  "card_id": 145855,
+  "name": "A. Candreva",
+  "team": "Sampdoria",
+  "season_year": 2021,
+  "league_code": "SA",
+  "api_player_id": 202,
+  "pool_now": "CDM",
+  "rt_now": 85,
+  "target": "Winger",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 202,
+   "season_year": 2021,
+   "league_code": "SA",
+   "position": "CDM",
+   "appearances": 36,
+   "updated_at": "2026-06-12T07:17:01.754816+00:00",
+   "distribution": {
+    "CM": 31,
+    "RW": 14,
+    "ST": 6,
+    "CDM": 50
+   },
+   "shirt_number": 87
+  },
+  "cards_on_key": [
+   145855
+  ]
+ },
+ {
+  "card_id": 146545,
+  "name": "Cristiano Ronaldo",
+  "team": "Juventus",
+  "season_year": 2020,
+  "league_code": "SA",
+  "api_player_id": 874,
+  "pool_now": "Winger",
+  "rt_now": 90,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 874,
+   "season_year": 2020,
+   "league_code": "SA",
+   "position": "Winger",
+   "appearances": 31,
+   "updated_at": "2026-06-12T07:20:33.711415+00:00",
+   "distribution": {
+    "LW": 61,
+    "ST": 39
+   },
+   "shirt_number": 7
+  },
+  "cards_on_key": [
+   146545
+  ]
+ },
+ {
+  "card_id": 146972,
+  "name": "Cristiano Ronaldo",
+  "team": "Juventus",
+  "season_year": 2019,
+  "league_code": "SA",
+  "api_player_id": 874,
+  "pool_now": "Winger",
+  "rt_now": 91,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 874,
+   "season_year": 2019,
+   "league_code": "SA",
+   "position": "Winger",
+   "appearances": 33,
+   "updated_at": "2026-06-12T07:23:59.025342+00:00",
+   "distribution": {
+    "LW": 52,
+    "ST": 48
+   },
+   "shirt_number": 7
+  },
+  "cards_on_key": [
+   146972
+  ]
+ },
+ {
+  "card_id": 147255,
+  "name": "R. De Paul",
+  "team": "Udinese",
+  "season_year": 2018,
+  "league_code": "SA",
+  "api_player_id": 2472,
+  "pool_now": "CM",
+  "rt_now": 85,
+  "target": "CAM",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 2472,
+   "season_year": 2018,
+   "league_code": "SA",
+   "position": "CM",
+   "appearances": 36,
+   "updated_at": "2026-06-12T07:27:28.308482+00:00",
+   "distribution": {
+    "CM": 64,
+    "LW": 25,
+    "CDM": 11
+   },
+   "shirt_number": 10
+  },
+  "cards_on_key": [
+   147255
+  ]
+ },
+ {
+  "card_id": 147874,
+  "name": "D. Mertens",
+  "team": "Napoli",
+  "season_year": 2017,
+  "league_code": "SA",
+  "api_player_id": 332,
+  "pool_now": "Winger",
+  "rt_now": 87,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 332,
+   "season_year": 2017,
+   "league_code": "SA",
+   "position": "Winger",
+   "appearances": 35,
+   "updated_at": "2026-06-12T07:30:39.903796+00:00",
+   "distribution": {
+    "RW": 94,
+    "ST": 6
+   },
+   "shirt_number": 14
+  },
+  "cards_on_key": [
+   147874
+  ]
+ },
+ {
+  "card_id": 147926,
+  "name": "A. Belotti",
+  "team": "Torino",
+  "season_year": 2016,
+  "league_code": "SA",
+  "api_player_id": 30509,
+  "pool_now": "Winger",
+  "rt_now": 91,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 30509,
+   "season_year": 2016,
+   "league_code": "SA",
+   "position": "Winger",
+   "appearances": 34,
+   "updated_at": "2026-06-12T07:34:24.019847+00:00",
+   "distribution": {
+    "LW": 76,
+    "ST": 24
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   147926
+  ]
+ },
+ {
+  "card_id": 148312,
+  "name": "D. Mertens",
+  "team": "Napoli",
+  "season_year": 2016,
+  "league_code": "SA",
+  "api_player_id": 332,
+  "pool_now": "Winger",
+  "rt_now": 92,
+  "target": "ST",
+  "source": "researched 2026-10-09",
+  "pp_before": {
+   "api_player_id": 332,
+   "season_year": 2016,
+   "league_code": "SA",
+   "position": "Winger",
+   "appearances": 28,
+   "updated_at": "2026-06-12T07:34:02.593726+00:00",
+   "distribution": {
+    "RW": 96,
+    "ST": 4
+   },
+   "shirt_number": 14
+  },
+  "cards_on_key": [
+   148312
+  ]
+ },
+ {
+  "card_id": 153705,
+  "name": "Paco Alcácer",
+  "team": "Borussia Dortmund",
+  "season_year": 2018,
+  "league_code": "BL",
+  "api_player_id": 21,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 21,
+   "season_year": 2018,
+   "league_code": "BL",
+   "position": "Winger",
+   "appearances": 11,
+   "updated_at": "2026-06-12T07:59:06.760694+00:00",
+   "distribution": {
+    "LW": 55,
+    "ST": 45
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   153705
+  ]
+ },
+ {
+  "card_id": 153899,
+  "name": "W. Weghorst",
+  "team": "VfL Wolfsburg",
+  "season_year": 2018,
+  "league_code": "BL",
+  "api_player_id": 25416,
+  "pool_now": "Winger",
+  "rt_now": 87,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 25416,
+   "season_year": 2018,
+   "league_code": "BL",
+   "position": "Winger",
+   "appearances": 33,
+   "updated_at": "2026-06-12T07:59:35.186367+00:00",
+   "distribution": {
+    "LW": 55,
+    "ST": 45
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   153899
+  ]
+ },
+ {
+  "card_id": 154092,
+  "name": "R. Lewandowski",
+  "team": "Bayern München",
+  "season_year": 2017,
+  "league_code": "BL",
+  "api_player_id": 521,
+  "pool_now": "Winger",
+  "rt_now": 90,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 521,
+   "season_year": 2017,
+   "league_code": "BL",
+   "position": "Winger",
+   "appearances": 24,
+   "updated_at": "2026-06-12T08:02:03.749363+00:00",
+   "distribution": {
+    "LW": 63,
+    "ST": 38
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   154092
+  ]
+ },
+ {
+  "card_id": 160161,
+  "name": "M. Díaz",
+  "team": "Lyon",
+  "season_year": 2017,
+  "league_code": "L1",
+  "api_player_id": 760,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 760,
+   "season_year": 2017,
+   "league_code": "L1",
+   "position": "Winger",
+   "appearances": 30,
+   "updated_at": "2026-06-12T08:35:07.505418+00:00",
+   "distribution": {
+    "LW": 53,
+    "RW": 3,
+    "ST": 43
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   160161
+  ]
+ },
+ {
+  "card_id": 160286,
+  "name": "A. Pléa",
+  "team": "Nice",
+  "season_year": 2017,
+  "league_code": "L1",
+  "api_player_id": 25646,
+  "pool_now": "Winger",
+  "rt_now": 84,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 25646,
+   "season_year": 2017,
+   "league_code": "L1",
+   "position": "Winger",
+   "appearances": 34,
+   "updated_at": "2026-06-12T08:35:43.600345+00:00",
+   "distribution": {
+    "LW": 62,
+    "ST": 38
+   },
+   "shirt_number": 14
+  },
+  "cards_on_key": [
+   160286
+  ]
+ },
+ {
+  "card_id": 160760,
+  "name": "E. Cavani",
+  "team": "Paris Saint Germain",
+  "season_year": 2016,
+  "league_code": "L1",
+  "api_player_id": 274,
+  "pool_now": "Winger",
+  "rt_now": 91,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 274,
+   "season_year": 2016,
+   "league_code": "L1",
+   "position": "Winger",
+   "appearances": 35,
+   "updated_at": "2026-06-12T08:38:27.744361+00:00",
+   "distribution": {
+    "LW": 89,
+    "ST": 11
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   160760
+  ]
+ },
+ {
+  "card_id": 171034,
+  "name": "S. Haller",
+  "team": "Ajax",
+  "season_year": 2021,
+  "league_code": "ERE",
+  "api_player_id": 1826,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 1826,
+   "season_year": 2021,
+   "league_code": "ERE",
+   "position": "Winger",
+   "appearances": 31,
+   "updated_at": "2026-06-12T09:26:55.695305+00:00",
+   "distribution": {
+    "LW": 58,
+    "ST": 42
+   },
+   "shirt_number": 22
+  },
+  "cards_on_key": [
+   171034
+  ]
+ },
+ {
+  "card_id": 172123,
+  "name": "L. de Jong",
+  "team": "PSV Eindhoven",
+  "season_year": 2018,
+  "league_code": "ERE",
+  "api_player_id": 246,
+  "pool_now": "Winger",
+  "rt_now": 89,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 246,
+   "season_year": 2018,
+   "league_code": "ERE",
+   "position": "Winger",
+   "appearances": 33,
+   "updated_at": "2026-06-12T09:35:04.083179+00:00",
+   "distribution": {
+    "CM": 3,
+    "LW": 6,
+    "RW": 91
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   172123
+  ]
+ },
+ {
+  "card_id": 172544,
+  "name": "W. Weghorst",
+  "team": "AZ Alkmaar",
+  "season_year": 2017,
+  "league_code": "ERE",
+  "api_player_id": 25416,
+  "pool_now": "Winger",
+  "rt_now": 83,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 25416,
+   "season_year": 2017,
+   "league_code": "ERE",
+   "position": "Winger",
+   "appearances": 31,
+   "updated_at": "2026-06-12T09:38:00.678682+00:00",
+   "distribution": {
+    "LW": 52,
+    "ST": 48
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   172544
+  ]
+ },
+ {
+  "card_id": 172874,
+  "name": "R. van Wolfswinkel",
+  "team": "Vitesse",
+  "season_year": 2016,
+  "league_code": "ERE",
+  "api_player_id": 48390,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 48390,
+   "season_year": 2016,
+   "league_code": "ERE",
+   "position": "Winger",
+   "appearances": 32,
+   "updated_at": "2026-06-12T09:41:13.737373+00:00",
+   "distribution": {
+    "RW": 59,
+    "ST": 41
+   },
+   "shirt_number": 13
+  },
+  "cards_on_key": [
+   172874
+  ]
+ },
+ {
+  "card_id": 176757,
+  "name": "P. Onuachu",
+  "team": "Genk",
+  "season_year": 2021,
+  "league_code": "BPL",
+  "api_player_id": 15812,
+  "pool_now": "Winger",
+  "rt_now": 83,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 15812,
+   "season_year": 2021,
+   "league_code": "BPL",
+   "position": "Winger",
+   "appearances": 30,
+   "updated_at": "2026-06-12T09:57:39.542795+00:00",
+   "distribution": {
+    "LW": 3,
+    "RW": 50,
+    "ST": 47
+   },
+   "shirt_number": 18
+  },
+  "cards_on_key": [
+   176757
+  ]
+ },
+ {
+  "card_id": 177180,
+  "name": "P. Onuachu",
+  "team": "Genk",
+  "season_year": 2020,
+  "league_code": "BPL",
+  "api_player_id": 15812,
+  "pool_now": "Winger",
+  "rt_now": 89,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 15812,
+   "season_year": 2020,
+   "league_code": "BPL",
+   "position": "Winger",
+   "appearances": 35,
+   "updated_at": "2026-06-12T10:00:54.6254+00:00",
+   "distribution": {
+    "LW": 14,
+    "RW": 54,
+    "ST": 31
+   },
+   "shirt_number": 18
+  },
+  "cards_on_key": [
+   177180
+  ]
+ },
+ {
+  "card_id": 183519,
+  "name": "P. Cissé",
+  "team": "Alanyaspor",
+  "season_year": 2019,
+  "league_code": "TR",
+  "api_player_id": 49946,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 49946,
+   "season_year": 2019,
+   "league_code": "TR",
+   "position": "Winger",
+   "appearances": 30,
+   "updated_at": "2026-06-12T10:35:24.363369+00:00",
+   "distribution": {
+    "LW": 87,
+    "ST": 13
+   },
+   "shirt_number": 9
+  },
+  "cards_on_key": [
+   183519
+  ]
+ },
+ {
+  "card_id": 183559,
+  "name": "E. Višća",
+  "team": "Başakşehir",
+  "season_year": 2018,
+  "league_code": "TR",
+  "api_player_id": 49860,
+  "pool_now": "CM",
+  "rt_now": 85,
+  "target": "Winger",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 49860,
+   "season_year": 2018,
+   "league_code": "TR",
+   "position": "CM",
+   "appearances": 34,
+   "updated_at": "2026-06-12T10:38:06.689574+00:00",
+   "distribution": {
+    "CM": 68,
+    "LW": 18,
+    "CAM": 15
+   },
+   "shirt_number": 7
+  },
+  "cards_on_key": [
+   183559
+  ]
+ },
+ {
+  "card_id": 183839,
+  "name": "V. Muriqi",
+  "team": "Rizespor",
+  "season_year": 2018,
+  "league_code": "TR",
+  "api_player_id": 50048,
+  "pool_now": "Winger",
+  "rt_now": 85,
+  "target": "ST",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 50048,
+   "season_year": 2018,
+   "league_code": "TR",
+   "position": "Winger",
+   "appearances": 33,
+   "updated_at": "2026-06-12T10:38:18.607966+00:00",
+   "distribution": {
+    "LW": 76,
+    "ST": 24
+   },
+   "shirt_number": 94
+  },
+  "cards_on_key": [
+   183839
+  ]
+ },
+ {
+  "card_id": 183952,
+  "name": "E. Višća",
+  "team": "Başakşehir",
+  "season_year": 2017,
+  "league_code": "TR",
+  "api_player_id": 49860,
+  "pool_now": "CM",
+  "rt_now": 84,
+  "target": "Winger",
+  "source": "checked by the owner 2026-10-09",
+  "pp_before": {
+   "api_player_id": 49860,
+   "season_year": 2017,
+   "league_code": "TR",
+   "position": "CM",
+   "appearances": 32,
+   "updated_at": "2026-06-12T10:40:58.828966+00:00",
+   "distribution": {
+    "CM": 47,
+    "LW": 9,
+    "CAM": 44
+   },
+   "shirt_number": 7
+  },
+  "cards_on_key": [
+   183952
+  ]
+ },
+ {
+  "card_id": 183958,
+  "name": "E. Akbaba",
+  "team": "Alanyaspor",
+  "season_year": 2017,
+  "league_code": "TR",
+  "api_player_id": 443,
+  "pool_now": "CM",
+  "rt_now": 84,
+  "target": "CAM",
+  "source": "researched 2026-10-09",
+  "pp_before": {
+   "api_player_id": 443,
+   "season_year": 2017,
+   "league_code": "TR",
+   "position": "CM",
+   "appearances": 32,
+   "updated_at": "2026-06-12T10:40:41.167949+00:00",
+   "distribution": {
+    "CM": 75,
+    "LW": 3,
+    "CAM": 22
+   },
+   "shirt_number": 10
+  },
+  "cards_on_key": [
+   183958
+  ]
+ }
+]
