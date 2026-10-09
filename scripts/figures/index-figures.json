@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07",
+  "generated": "2026-10-09",
   "source": "player_card_mv",
   "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
   "figures": [
@@ -47,7 +47,7 @@
     },
     {
       "key": "cards_on_a_band_edge",
-      "value": 878,
+      "value": 877,
       "claim": "seasons within a single point of a band edge",
       "definition": "rt in [b-1, b] for each public band edge 95, 90, 85, 80",
       "query": "select count(*) from player_card_mv where (rt between 94 and 95) or (rt between 89 and 90) or (rt between 84 and 85) or (rt between 79 and 80)"
