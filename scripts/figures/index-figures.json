@@ -47,7 +47,7 @@
     },
     {
       "key": "cards_on_a_band_edge",
-      "value": 877,
+      "value": 874,
       "claim": "seasons within a single point of a band edge",
       "definition": "rt in [b-1, b] for each public band edge 95, 90, 85, 80",
       "query": "select count(*) from player_card_mv where (rt between 94 and 95) or (rt between 89 and 90) or (rt between 84 and 85) or (rt between 79 and 80)"
@@ -131,7 +131,7 @@
     },
     {
       "key": "elite_pairs_counted",
-      "value": 993345,
+      "value": 990528,
       "claim": "pairings the figure above is computed over",
       "definition": "unordered pairs of rt >= 80 cards carrying a standard error",
       "query": "derived"
@@ -145,14 +145,14 @@
     },
     {
       "key": "elite_league_counts",
-      "value": "196,117,101,83,61,36,21,18,17",
+      "value": "195,114,102,83,62,38,19,19,18",
       "claim": "their counts, in the same order",
       "definition": "same query",
       "query": "as above"
     },
     {
       "key": "elite_league_min",
-      "value": 17,
+      "value": 18,
       "claim": "the smallest number of seasons at 85 or better any one league holds",
       "definition": "min of elite_league_counts. The floor is what makes the 70 per cent meaningful , a share can hide a long tail of ones and a floor cannot",
       "query": "derived from the same query as elite_league_counts"
@@ -229,7 +229,7 @@
     },
     {
       "key": "walk_pct_pool_rate",
-      "value": 99.4,
+      "value": 99.5,
       "claim": "his rate, ranked inside his position pool",
       "definition": "percent_rank of gaw90 within pool",
       "query": "scripts/separability/rt_reimpl.js, run over the live matview"
@@ -271,7 +271,7 @@
     },
     {
       "key": "walk_perf",
-      "value": 131.9,
+      "value": 132,
       "claim": "the performance number",
       "definition": "rank term plus volume term",
       "query": "scripts/separability/rt_reimpl.js, run over the live matview"
@@ -306,7 +306,7 @@
     },
     {
       "key": "walk_anchors",
-      "value": "85.6,98.9,120.0",
+      "value": "85.5,99.0,120.0",
       "claim": "the ladder anchors at 85, 90 and 95",
       "definition": "the 650th, 150th and 12th highest figure in the record",
       "query": "scripts/separability/rt_reimpl.js, run over the live matview"
