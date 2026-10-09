@@ -3220,6 +3220,27 @@
    *  Uses the anon key + RLS only , the service key never reaches the browser.
    * ════════════════════════════════════════════════════════════════════ */
   let _client = null;
+  /*  vvBeacon(kind, key) , ONE ROW IN public.vv_events, fire and forget (2026-10-09).
+      Three kinds only, enforced by a CHECK on the table: 'compare' (pair key), 'card' (card_id),
+      'search_miss' (the query, when a search returned nothing). anon may INSERT and nothing
+      else, so nothing written here can be read back from a browser.
+      fetch with keepalive rather than navigator.sendBeacon: sendBeacon cannot set the apikey
+      and Authorization headers the API requires, and keepalive gives the same survive-the-unload
+      guarantee. Every failure is swallowed , an analytics row must never cost a visitor a thing.  */
+  function vvBeacon(kind, key){
+    try{
+      var cfg = root.VV_PUBLIC || {};
+      if(!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY || typeof fetch !== 'function') return;
+      key = String(key == null ? '' : key).trim().slice(0, 120);
+      if(!key) return;
+      fetch(cfg.SUPABASE_URL + '/rest/v1/vv_events', {
+        method:'POST', keepalive:true,
+        headers:{ 'Content-Type':'application/json', 'apikey':cfg.SUPABASE_ANON_KEY,
+                  'Authorization':'Bearer ' + cfg.SUPABASE_ANON_KEY, 'Prefer':'return=minimal' },
+        body: JSON.stringify({ kind: kind, key: key })
+      }).catch(function(){});
+    }catch(e){}
+  }
   function vvClient(){
     if(_client) return _client;
     const cfg = root.VV_PUBLIC || {};
@@ -8176,7 +8197,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
     }).catch(function(){ return fallbackLink(); });
   }
 
-  const api = { inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
+  const api = { vvBeacon, inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
