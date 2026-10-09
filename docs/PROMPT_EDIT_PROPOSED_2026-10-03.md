@@ -93,6 +93,8 @@ keep missing it.
 
 ---
 
+**[SECTION 1 APPLIED 2026-10-09, both diffs, on Lucas's instruction once live traffic made 66 contradicting verdicts worth more than the warm cache. Field names written as "who" in double quotes, not backticks, because the prompt is a template literal. Versions moved: Path A v3-9bf2be0f to v3-d2986f92, Path B v3-ddd9c19c to v3-9a7cbfe1, notes v3-279c6350 to v3-28bfe954. Discarded: 660 notes, 102 verdicts, regenerated on view. Re-measure the five figures in the table below once tie rows exist on the new base.]**
+
 ## 1. THE TIE STATE CROWNS A WINNER IN PROSE , MEASURED AT n=69, AND THE ORIGINAL DIAGNOSIS HERE WAS THE WRONG HALF OF IT
 
 **[REWRITTEN 2026-10-04 ON A MEASUREMENT. THE SECTION THIS REPLACES CALLED IT A SCORE LEAK AND
