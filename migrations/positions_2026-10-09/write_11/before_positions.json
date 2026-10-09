@@ -1,0 +1,304 @@
+[
+ {
+  "card_id": 131966,
+  "name": "A. Robertson",
+  "team": "Liverpool",
+  "season_year": 2021,
+  "league_code": "PL",
+  "api_player_id": 289,
+  "pool_now": "CB",
+  "rt_now": 83,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 289,
+   "season_year": 2021,
+   "league_code": "PL",
+   "position": "CB",
+   "appearances": 29,
+   "updated_at": "2026-06-12T06:03:49.035404+00:00",
+   "distribution": {
+    "CB": 100
+   },
+   "shirt_number": 26
+  },
+  "cards_on_key": [
+   131966
+  ]
+ },
+ {
+  "card_id": 132785,
+  "name": "A. Robertson",
+  "team": "Liverpool",
+  "season_year": 2019,
+  "league_code": "PL",
+  "api_player_id": 289,
+  "pool_now": "CB",
+  "rt_now": 84,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 289,
+   "season_year": 2019,
+   "league_code": "PL",
+   "position": "CB",
+   "appearances": 34,
+   "updated_at": "2026-06-12T06:10:32.299465+00:00",
+   "distribution": {
+    "CB": 100
+   },
+   "shirt_number": 26
+  },
+  "cards_on_key": [
+   132785
+  ]
+ },
+ {
+  "card_id": 133195,
+  "name": "A. Robertson",
+  "team": "Liverpool",
+  "season_year": 2018,
+  "league_code": "PL",
+  "api_player_id": 289,
+  "pool_now": "CB",
+  "rt_now": 79,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 289,
+   "season_year": 2018,
+   "league_code": "PL",
+   "position": "CB",
+   "appearances": 36,
+   "updated_at": "2026-06-12T06:13:53.12963+00:00",
+   "distribution": {
+    "CB": 97,
+    "LB": 3
+   },
+   "shirt_number": 26
+  },
+  "cards_on_key": [
+   133195
+  ]
+ },
+ {
+  "card_id": 133289,
+  "name": "E. Hazard",
+  "team": "Chelsea",
+  "season_year": 2018,
+  "league_code": "PL",
+  "api_player_id": 2296,
+  "pool_now": "ST",
+  "rt_now": 90,
+  "target": "Winger",
+  "pp_before": {
+   "api_player_id": 2296,
+   "season_year": 2018,
+   "league_code": "PL",
+   "position": "ST",
+   "appearances": 32,
+   "updated_at": "2026-06-12T06:14:03.076924+00:00",
+   "distribution": {
+    "LW": 9,
+    "RW": 13,
+    "ST": 78
+   },
+   "shirt_number": 10
+  },
+  "cards_on_key": [
+   133289
+  ]
+ },
+ {
+  "card_id": 133612,
+  "name": "A. Robertson",
+  "team": "Liverpool",
+  "season_year": 2017,
+  "league_code": "PL",
+  "api_player_id": 289,
+  "pool_now": "CB",
+  "rt_now": 71,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 289,
+   "season_year": 2017,
+   "league_code": "PL",
+   "position": "CB",
+   "appearances": 22,
+   "updated_at": "2026-06-12T06:17:12.995151+00:00",
+   "distribution": {
+    "CB": 91,
+    "LB": 5,
+    "CDM": 5
+   },
+   "shirt_number": 26
+  },
+  "cards_on_key": [
+   133612
+  ]
+ },
+ {
+  "card_id": 134012,
+  "name": "A. Robertson",
+  "team": "Hull City",
+  "season_year": 2016,
+  "league_code": "PL",
+  "api_player_id": 289,
+  "pool_now": "CB",
+  "rt_now": 62,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 289,
+   "season_year": 2016,
+   "league_code": "PL",
+   "position": "CB",
+   "appearances": 31,
+   "updated_at": "2026-06-12T06:20:32.961984+00:00",
+   "distribution": {
+    "CB": 52,
+    "LB": 23,
+    "RW": 23,
+    "CDM": 3
+   },
+   "shirt_number": 3
+  },
+  "cards_on_key": [
+   134012
+  ]
+ },
+ {
+  "card_id": 139256,
+  "name": "Marcelo",
+  "team": "Real Madrid",
+  "season_year": 2020,
+  "league_code": "LL",
+  "api_player_id": 743,
+  "pool_now": "CB",
+  "rt_now": 55,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 743,
+   "season_year": 2020,
+   "league_code": "LL",
+   "position": "CB",
+   "appearances": 12,
+   "updated_at": "2026-06-12T06:43:44.259775+00:00",
+   "distribution": {
+    "CB": 42,
+    "RB": 33,
+    "CDM": 25
+   },
+   "shirt_number": 12
+  },
+  "cards_on_key": [
+   139256
+  ]
+ },
+ {
+  "card_id": 140118,
+  "name": "Marcelo",
+  "team": "Real Madrid",
+  "season_year": 2018,
+  "league_code": "LL",
+  "api_player_id": 743,
+  "pool_now": "CB",
+  "rt_now": 67,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 743,
+   "season_year": 2018,
+   "league_code": "LL",
+   "position": "CB",
+   "appearances": 21,
+   "updated_at": "2026-06-12T06:50:34.159023+00:00",
+   "distribution": {
+    "CB": 71,
+    "RB": 29
+   },
+   "shirt_number": 12
+  },
+  "cards_on_key": [
+   140118
+  ]
+ },
+ {
+  "card_id": 140552,
+  "name": "Marcelo",
+  "team": "Real Madrid",
+  "season_year": 2017,
+  "league_code": "LL",
+  "api_player_id": 743,
+  "pool_now": "CB",
+  "rt_now": 76,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 743,
+   "season_year": 2017,
+   "league_code": "LL",
+   "position": "CB",
+   "appearances": 26,
+   "updated_at": "2026-06-12T06:53:56.344191+00:00",
+   "distribution": {
+    "CB": 65,
+    "RB": 35
+   },
+   "shirt_number": 12
+  },
+  "cards_on_key": [
+   140552
+  ]
+ },
+ {
+  "card_id": 140989,
+  "name": "Marcelo",
+  "team": "Real Madrid",
+  "season_year": 2016,
+  "league_code": "LL",
+  "api_player_id": 743,
+  "pool_now": "CB",
+  "rt_now": 78,
+  "target": "FB",
+  "pp_before": {
+   "api_player_id": 743,
+   "season_year": 2016,
+   "league_code": "LL",
+   "position": "CB",
+   "appearances": 26,
+   "updated_at": "2026-06-12T06:57:23.252055+00:00",
+   "distribution": {
+    "CB": 85,
+    "RB": 15
+   },
+   "shirt_number": 12
+  },
+  "cards_on_key": [
+   140989
+  ]
+ },
+ {
+  "card_id": 187007,
+  "name": "D. Doué",
+  "team": "Paris Saint Germain",
+  "season_year": 2024,
+  "league_code": "L1",
+  "api_player_id": 343027,
+  "pool_now": "CM",
+  "rt_now": 74,
+  "target": "Winger",
+  "pp_before": {
+   "api_player_id": 343027,
+   "season_year": 2024,
+   "league_code": "L1",
+   "position": "CM",
+   "appearances": 18,
+   "updated_at": "2026-06-12T08:13:11.513646+00:00",
+   "distribution": {
+    "CM": 56,
+    "LW": 11,
+    "RW": 22,
+    "ST": 11
+   },
+   "shirt_number": 14
+  },
+  "cards_on_key": [
+   187007
+  ]
+ }
+]

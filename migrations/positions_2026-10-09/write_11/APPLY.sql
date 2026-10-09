@@ -1,0 +1,3 @@
+-- The 11 checked position corrections (2026-10-09). One statement: all or nothing. Guarded on the
+-- current value, so it cannot overwrite a row that changed since the before-capture.
+update public.player_positions p set position=v.tgt, updated_at=now() from (values (289,2021,'PL','FB','CB'),(289,2019,'PL','FB','CB'),(289,2018,'PL','FB','CB'),(2296,2018,'PL','Winger','ST'),(289,2017,'PL','FB','CB'),(289,2016,'PL','FB','CB'),(743,2020,'LL','FB','CB'),(743,2018,'LL','FB','CB'),(743,2017,'LL','FB','CB'),(743,2016,'LL','FB','CB'),(343027,2024,'L1','Winger','CM')) v(api,yr,lg,tgt,was) where p.api_player_id=v.api and p.season_year=v.yr and p.league_code=v.lg and p.position=v.was;

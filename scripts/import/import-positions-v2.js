@@ -151,8 +151,20 @@ async function processLeagueSeason(code,year){
     console.log(`  shirt numbers written to card rows: ${wrote} (club-keyed)`);
   }
 
-  let n=0;
+  /*  A HAND-VERIFIED POSITION ALWAYS WINS (2026-10-09). public.position_overrides holds research
+      answers and checked corrections; this importer used to upsert over them, so any re-run silently
+      undid the research. Overridden keys are now skipped outright: their position, distribution and
+      appearances stay exactly as they are.  */
+  const overridden=new Set();
+  for(let o=0;;o+=1000){
+    const {data,error}=await supabase.from('position_overrides').select('api_player_id').eq('season_year',year).eq('league_code',code).order('api_player_id').range(o,o+999);
+    if(error) throw new Error('cannot read position_overrides, refusing to write positions: '+error.message);
+    data.forEach(r=>overridden.add(String(r.api_player_id)));
+    if(data.length<1000) break;
+  }
+  let n=0, kept=0;
   for(const [pid,info] of Object.entries(agg)){
+    if(overridden.has(String(pid))){ kept++; continue; }
     const entries=Object.entries(info.counts).sort((a,b)=>b[1]-a[1]);
     const apps=entries.reduce((s,e)=>s+e[1],0);
     const best=entries[0];   // undefined when EVERY appearance was unclassifiable
@@ -168,7 +180,7 @@ async function processLeagueSeason(code,year){
     if(error){stats.errors++;}else{stats.rows++;n++;}
   }
   await supabase.from('position_progress').upsert({league_code:code,season_year:year,done:true},{onConflict:'league_code,season_year'});
-  console.log(`  ✅ ${code} ${year}: ${n} players, ${done} fixtures (quota left: ${lastRem})`);
+  console.log(`  ✅ ${code} ${year}: ${n} players, ${kept} kept by override, ${done} fixtures (quota left: ${lastRem})`);
 }
 
 (async()=>{
