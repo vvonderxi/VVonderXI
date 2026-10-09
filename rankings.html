@@ -489,8 +489,8 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261009e"></script>
-<script src="/vv-core.js?v=20261009e"></script>
+<script src="/vv-marks.js?v=20261009f"></script>
+<script src="/vv-core.js?v=20261009f"></script>
 <script>
   /* Opening a card RECORDS THE LIST IT CAME FROM, so the card page can walk it.
      The query is stored, never the ids , see the VVSeq note in vv-core. idx is the
@@ -596,8 +596,11 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
         LOOKUP IS DERIVED EXACTLY AS `rankQuery` DERIVES IT , `!!nameQ`, via the same
         `vvParseSearch`. A different rule here and the panel would explain a filter the
         query did not apply. */
+    var _aq=(document.getElementById('rankSearch')||{value:''}).value.trim();
+    var _ab=(window.VVCore && VVCore.vvAbsent) ? VVCore.vvAbsent(_aq) : null;   // a player we cannot card, said so
+    if(_ab) return '<div class="rankempty"><b>'+_ab.head+'</b> '+_ab.body+'</div>';
     if(window.VVFilters && VVFilters.emptyStateHTML){
-      var _q=(document.getElementById('rankSearch')||{value:''}).value.trim();
+      var _q=_aq;
       var _nq=(window.vvParseSearch ? vvParseSearch(_q).nameQ : _q);
       return VVFilters.emptyStateHTML(fState(), { searching: !!_q, lookup: !!_nq });
     }

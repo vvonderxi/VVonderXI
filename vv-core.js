@@ -5951,6 +5951,35 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var s=y-1;                                  // ending year -> starting year
     return (s>=2010 && s<=2025) ? s : null;     // "10" -> 2009, outside the data, dropped
   }
+  /*  PLAYERS WE CANNOT CARD, AND SAY SO (2026-10-09). The data provider holds no season
+      statistics for these five in the seasons we cover, so no re-import can recover them
+      (INGESTION_RECOVERY.md, source-absent legends). A visitor who searches for one used
+      to get the generic empty state, which reads as "we never heard of him". Each name
+      here was CHECKED ABSENT from `players` and `player_season_cards` on 2026-10-09; add
+      a name only after the same check, never from memory. Matching needs the surname and
+      allows only tokens of the full name, so "rooney" and "wayne rooney" match and
+      "rooney 2014" matches on its name part, while "jake rooney" does not.
+      Returns {name, head, body} or null; each surface renders it in its own style.  */
+  var VV_ABSENT = [
+    { name:'Wayne Rooney',    surname:'rooney'  },
+    { name:'Steven Gerrard',  surname:'gerrard' },
+    { name:'Frank Lampard',   surname:'lampard' },
+    { name:'Vincent Kompany', surname:'kompany' },
+    { name:'Dirk Kuyt',       surname:'kuyt'    }
+  ];
+  function vvAbsent(q){
+    var nq = vvParseSearch(q||'').nameQ || '';
+    var toks = vvNorm(nq).split(/[^a-z0-9]+/).filter(Boolean);
+    if(!toks.length) return null;
+    for(var i=0;i<VV_ABSENT.length;i++){
+      var a=VV_ABSENT[i], full=vvNorm(a.name).split(/\s+/);
+      if(toks.indexOf(a.surname)<0) continue;
+      if(!toks.every(function(t){ return full.indexOf(t)>=0; })) continue;
+      return { name:a.name, head:'No card for '+a.name+'.',
+        body:'The VV Index only scores what is recorded, and our data provider has no season figures for him in the years we cover. We do not fill gaps by hand.' };
+    }
+    return null;
+  }
   function vvParseSearch(q){
     var raw=(q==null?'':String(q)).trim();
     if(!raw) return { nameQ:'', seasonYear:null };
@@ -8218,7 +8247,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   }
 
   const api = { vvBeacon, inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
-                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
+                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvAbsent, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
                 bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
