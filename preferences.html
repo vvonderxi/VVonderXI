@@ -446,6 +446,13 @@
   /* white on #E70443 is 2.97; these labels are 12px bold so they need 4.5. #E70443 = 5.61. */
   .iossheet .iosclose{background:#E70443}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  /*  THE SITE FOOTER: About, Contact, Privacy, Terms on every page (2026-10-09). A privacy
+      policy nobody can reach from the page in front of them does not count as having one.  */
+  .vvlegal{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 20px;padding:26px 16px 22px;font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .vvlegal a{color:rgba(243,237,224,0.62);text-decoration:none;padding:8px 2px}
+  .vvlegal a:hover,.vvlegal a[aria-current]{color:#F1688E}
+  body.light .vvlegal a{color:#5f594e}
+  body.light .vvlegal a:hover,body.light .vvlegal a[aria-current]{color:#AD0332}
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -517,6 +524,7 @@
         </div>
       </div>
     </div>
+    <footer class="vvlegal" aria-label="About and legal"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></footer>
   </div>
 
   <div class="iosback" id="iosBack" onclick="closeIos()"></div>

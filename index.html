@@ -410,6 +410,13 @@
   /* white on #E70443 is 2.97; these labels are 12px bold so they need 4.5. #E70443 = 5.61. */
   .search .go{background:#E70443}
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
+  /*  THE SITE FOOTER: About, Contact, Privacy, Terms on every page (2026-10-09). A privacy
+      policy nobody can reach from the page in front of them does not count as having one.  */
+  .vvlegal{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 20px;padding:6px 16px 0;font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .vvlegal a{color:rgba(243,237,224,0.62);text-decoration:none;padding:8px 2px}
+  .vvlegal a:hover,.vvlegal a[aria-current]{color:#F1688E}
+  body.light .vvlegal a{color:#5f594e}
+  body.light .vvlegal a:hover,body.light .vvlegal a[aria-current]{color:#AD0332}
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -473,6 +480,7 @@
 
   <footer class="foot">
     <div class="fl">The Football Legacy Platform</div>
+    <nav class="vvlegal" aria-label="About and legal"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav>
   </footer>
 
   <div class="menu" id="menu">
@@ -928,6 +936,17 @@
       Every browser now has true steps of its own, so the strip shows on its own schedule and
       the platform is the only thing that changes.  */
   setTimeout(function(){ el.classList.add('show'); }, 1200);
+
+  /*  THE STRIP SITS OVER THE FOOTER, WHICH SINCE 2026-10-09 CARRIES THE ABOUT AND LEGAL LINKS.
+      While it shows, the footer is padded by the strip's own measured height, so those links stay
+      reachable instead of sitting under a fixed panel until it is dismissed. Tied to the STATE
+      (the class) rather than to the two lines that set it, so any path that shows or hides the
+      strip is covered. Its height varies by browser, which is why it is measured, not typed.  */
+  (function(){ var ft=document.querySelector('.foot'); if(!ft||!window.MutationObserver) return;
+    function sync(){ ft.style.paddingBottom = el.classList.contains('show') ? (el.offsetHeight+24)+'px' : ''; }
+    new MutationObserver(sync).observe(el,{attributes:true,attributeFilter:['class']});
+    if(window.ResizeObserver) new ResizeObserver(sync).observe(el);
+    window.addEventListener('resize',sync); })();
 
   document.getElementById('a2hsNo').onclick=function(){ el.classList.remove('show'); set(K,'no'); };
 
