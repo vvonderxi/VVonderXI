@@ -545,7 +545,7 @@
 
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-core.js?v=20261004a"></script>
+<script src="/vv-core.js?v=20261009a"></script>
 <!--  vv-a2hs.js , the per-browser Add-to-Home-Screen steps. SHARED WITH preferences.html,
       which is why they are no longer inline here: the labels move between browser versions
       and two copies means a correction lands in one of them. It carries its own ?v= token
@@ -874,7 +874,7 @@
       var data = res.data || [];
       var more = data.length > LIMIT;
       data = data.slice(0, LIMIT);
-      if(!data.length){ empty(q); return; }
+      if(!data.length){ if(nameQ && window.VVCore && VVCore.vvBeacon) VVCore.vvBeacon('search_miss', nameQ); empty(q); return; }   // vv_events: searched, nothing exists
       // the shared relevance re-rank , exact > prefix > word-start > mid-string, then rt
       data = C.rankBySearch(data, nameQ, function(r){
         return (r.player_name || '') + ' ' + (r.player_name_norm || '');

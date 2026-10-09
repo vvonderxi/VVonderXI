@@ -1549,8 +1549,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261004a"></script>
-<script src="/vv-core.js?v=20261004a"></script>
+<script src="/vv-marks.js?v=20261009a"></script>
+<script src="/vv-core.js?v=20261009a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -2433,6 +2433,7 @@
     /* Analytics: one event per card that actually loaded (not per season step). The property is
        the card_id, a public season key, never a visitor identifier. */
     if(typeof window.va==='function'){ try{ window.va('event',{ name:'card_viewed', data:{ player:String(id) } }); }catch(e){} }
+    if(window.VVCore && VVCore.vvBeacon) VVCore.vvBeacon('card', String(id));   // vv_events: the same moment, kept in our own table
     vvSetDocTitle(D);                         // tab/bookmark only; static <title> is what crawlers read
     D.honours = (typeof emptyHonours==='function') ? emptyHonours() : {season:[],career:[],groups:{},all:[],count:0,has:false};   // placeholder; real honours fill in below (they don't gate the core)
     renderHero();                            // hero + radar from the live card
@@ -4492,6 +4493,7 @@ async function csRun(){
   var stNow=csFState();
   CS.rows=rows.map(rowToCard).filter(stNow ? VVFilters.clientPredicate(stNow) : function(){ return true; });
   CS.loaded=true; CS.state='ready';        // only now does the panel know anything about results
+  if(nameQ && !(res.data||[]).length){ if(window.VVCore && VVCore.vvBeacon) VVCore.vvBeacon('search_miss', nameQ); }   // vv_events: searched, nothing exists
   csSyncFilterUI(stNow);
   hint.textContent = (miss!=null) ? ('No '+VVCore.vvSeasonLabel(miss)+' season for that search , showing all') : '';
   csRender();
