@@ -3233,8 +3233,15 @@
       fetch with keepalive rather than navigator.sendBeacon: sendBeacon cannot set the apikey
       and Authorization headers the API requires, and keepalive gives the same survive-the-unload
       guarantee. Every failure is swallowed , an analytics row must never cost a visitor a thing.  */
+  /*  PRODUCTION ONLY (2026-10-09). The table had no way to tell a visitor from a test: local demo
+      pages and preview deploys load the same pages and wrote to the same production table, and on
+      the first day 40-odd of 50 rows were demo iframes. Events now record ONLY on the live domain.
+      Localhost, 127.0.0.1 and every *.vercel.app preview write nothing , which is what makes the
+      owner queries count visitors rather than us.  */
+  var VV_EVENT_HOSTS = { 'vvonderxi.com':1, 'www.vvonderxi.com':1 };
   function vvBeacon(kind, key){
     try{
+      if(!root.location || !VV_EVENT_HOSTS[root.location.hostname]) return;
       var cfg = root.VV_PUBLIC || {};
       if(!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY || typeof fetch !== 'function') return;
       key = String(key == null ? '' : key).trim().slice(0, 120);
