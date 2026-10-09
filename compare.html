@@ -1914,6 +1914,29 @@ body.light .pkmsub{color:var(--ink-soft)}
 <script src="/vv-margin.js?v=20260912b"></script>
 <script src="/vv-core.js?v=20261009d"></script>
 <script>
+/*  COMPARE FUNNEL (2026-10-09). Seventeen visits reached Compare on launch day and the event table
+    recorded no comparison, with nothing to say where they stopped. Each step a visit reaches is now
+    one row, kind 'cmp_step', key '<visit code>|<step>'. The visit code is six random bytes made on
+    page load and held in this closure only: never written to storage, never reused, never sent
+    anywhere but this table, and gone when the page closes. The privacy policy says so.
+    A step is recorded once per visit, so a visitor who opens a picker ten times is one row.
+    Steps: arrive:<empty|query|one|pair>:<phone|desktop>, open:<A|B>:<auto|user>,
+    search:<hit|miss>, suggested, pick:<A|B>, press, verdict:<shown|keeper|rate-limit|...>.
+    The beacon writes only on the live domain (the shared module's host list).  */
+(function(){
+  var id='';
+  try{ var b=new Uint8Array(6); crypto.getRandomValues(b); for(var i=0;i<b.length;i++) id+=('0'+b[i].toString(16)).slice(-2); }
+  catch(e){ id=Math.random().toString(16).slice(2,14); }
+  var seen={};
+  window.vvStepAuto=false;
+  window.vvStep=function(stage, detail){
+    var k=String(stage)+(detail!=null&&detail!==''?':'+detail:'');
+    if(seen[k]) return; seen[k]=1;
+    try{ if(window.VVCore && VVCore.vvBeacon) VVCore.vvBeacon('cmp_step', id+'|'+k); }catch(e){}
+  };
+})();
+</script>
+<script>
   let CMP_A={year:'03/04', club1:'#EF0107', number:14, pos:'ST', vv:93, flag:'\u{1F1EB}\u{1F1F7}', surname:'Henry', full:'Thierry Henry', clubname:'Arsenal', age:'26', goals:30, assists:7, tag:'\u{1F451} Iconic'};
   let CMP_B={year:'22/23', club1:'#6CABDD', club2:'#ffffff', number:9, pos:'ST', vv:90, flag:'\u{1F1F3}\u{1F1F4}', surname:'Haaland', full:'Erling Haaland', clubname:'Man City', age:'22', goals:36, assists:8, tag:'\u{1F45F} Golden Boot'};
   // CARD-FACE MARKS , the third and last surface. All three now opt in, so a card face
@@ -2246,7 +2269,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var miss = !pair[0] && aTxt ? {slot:'A',txt:aTxt} : (!pair[1] && bTxt ? {slot:'B',txt:bTxt} : null);
     if(miss){
       setTimeout(function(){
-        openPicker(miss.slot);
+        window.vvStepAuto=true; openPicker(miss.slot); window.vvStepAuto=false;
         var i=document.getElementById('pkSearch_'+miss.slot);   // per-slot now
         if(i){ i.value=miss.txt; loadPool(miss.slot); }
       }, CMP_A||CMP_B ? 700 : 60);
@@ -2451,8 +2474,12 @@ body.light .pkmsub{color:var(--ink-soft)}
   Promise.resolve()
     .then(function(){ return loadSlotFromUrl(); })
     .then(function(){ return loadFromQuery(); })   // ?q= from the home versus search; ?a=/?b= canonical
-    .then(function(){ setTimeout(pkSyncSlots, 260); })
-    .catch(function(e){ console.error("compare url load failed:", e && e.message); setTimeout(pkSyncSlots, 260); });
+    .then(function(){ vvStepArrive(); setTimeout(pkSyncSlots, 260); })
+    .catch(function(e){ console.error("compare url load failed:", e && e.message); vvStepArrive(); setTimeout(pkSyncSlots, 260); });
+  function vvStepArrive(){
+    var n=(CMP_A?1:0)+(CMP_B?1:0), q=/[?&]q=/.test(location.search);
+    window.vvStep('arrive', (n===2?'pair':n===1?'one':(q?'query':'empty'))+':'+(pkIsNarrow()?'phone':'desktop'));
+  }
 
   // ===== Compare picker (design; live player resolution + AI verdict are plumbing) =====
   function pkKey(p){return (p.surname+p.year).replace(/[^a-z0-9]/gi,'').toLowerCase();}
@@ -2577,6 +2604,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       cards turning over at once reads as a glitch rather than a reveal. */
   function sugPick(i){
     var r=SUG_ROWS[i]; if(!r) return;
+    window.vvStep('suggested');
     CMP_A=r.A; CMP_B=r.B;
     try{ pkPushRecent(r.A); pkPushRecent(r.B); }catch(e){}
     var host=document.getElementById('cmpSug'); if(host){ host.classList.remove('on'); }
@@ -2593,7 +2621,9 @@ body.light .pkmsub{color:var(--ink-soft)}
 
   function pkSyncSlots(){
     if (pkIsNarrow()) { sugMaybe(); return; }
+    window.vvStepAuto=true;
     ["A","B"].forEach(function(sl){ if(!pkFilled(sl) && !PK[sl].open) openPicker(sl); });
+    window.vvStepAuto=false;
   }
   /*  THE SHEET'S SCRIM, mobile only. Created once, on demand, so desktop never carries it.
       Tapping it closes whichever panel is open , a sheet with no way out but a small x is
@@ -2685,6 +2715,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       panel.innerHTML=pkPanelHTML(slot);
       PK[slot].open=true;
       PK[slot].miss=null;
+      window.vvStep('open', slot+':'+(window.vvStepAuto?'auto':'user'));
       panel.classList.add('open');
       var side=panel.closest('.side'); if(side) side.classList.add('picking');
       pkScrim(true);                                   // mobile sheet only; a no-op on desktop
@@ -2754,6 +2785,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     var p=null; for(var i=0;i<pool.length;i++){ if(pkKey(pool[i])===k){p=pool[i];break;} }
     if(!p) return;
     if(slot==='A') CMP_A=p; else CMP_B=p;
+    window.vvStep('pick', slot);
     pkPushRecent(p);
     closePicker(slot);                                  // this panel collapses, the other stays
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
@@ -2843,6 +2875,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(!res.error && seasonYear!=null && nameQ && (res.data||[]).length===0){ res=await buildPoolQ(false); PK[slot].miss=seasonYear; }
     if(res.error){ console.error('compare picker load failed:', res.error.message); return; }
     PK[slot].pool=(res.data||[]).map(rowToCard);
+    if(nameQ) window.vvStep('search', PK[slot].pool.length ? 'hit' : 'miss');   // the outcome, never the text
     renderPicker(slot);
   }
   function vvFoldVerdict(){
@@ -3906,7 +3939,7 @@ body.light .pkmsub{color:var(--ink-soft)}
         THE SCORE LINE IS ABSENT, NOT SUBSTITUTED , the same ruling as the card face,
         where nothing replaced the number and the corner was left blank.  */
     var _gkA = VVCore.vvIsGKCard(CMP_A), _gkB = VVCore.vvIsGKCard(CMP_B);
-    if(_gkA || _gkB){ vvSetNoVerdict(_gkA && _gkB); return; }
+    if(_gkA || _gkB){ window.vvStep('verdict','keeper'); vvSetNoVerdict(_gkA && _gkB); return; }
     vvShareAffordance(true);   // restore , a previous pairing may have hidden it
     var va=+CMP_A.vv||0, vb=+CMP_B.vv||0;
     var VC=VVCore.verdictContext(CMP_A,CMP_B), TAGS=VVCore.VERDICT_TAGS;
@@ -4219,6 +4252,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             result: OUT.floorTag is VC.floorTag, and the floor was the first key offered.  */
         var chosen=(v.tag&&VC.contextHints.indexOf(v.tag)>=0)?v.tag:OUT.floorTag;
         vvSetVerdict(v.verdict||'',v.h2h||'',OUT.winner,va,vb,OUT,TAGS[chosen],v.who);
+        window.vvStep('verdict','shown');
         _vHold();          // after the prose, so a cached pair never shows the loader at all
       })
       .catch(function(e){
@@ -4277,6 +4311,7 @@ body.light .pkmsub{color:var(--ink-soft)}
             pairing is the verdict that failed to arrive.  */
         VV_OUTCOME=VC; vvSetWinner(VC.winner);
         vvSetStory(nameA,nameB,'',''); vvSetVerdict(msg,'',winner,va,vb,VC,TAGS[VC.floorTag],null,true);
+        window.vvStep('verdict', String(_kind||'failed').slice(0,24));
         _vHold();          // and after the outage line, which is content too
       });
   }
@@ -4391,6 +4426,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     vvSetConfidence(serA&&serA.length,serB&&serB.length);
   }
   document.querySelector('.settle').addEventListener('click',function(){
+    window.vvStep('press');
     var m=document.querySelector('.matchup'); if(m && CMP_A && CMP_B) m.classList.add('settled');
     setTimeout(function(){ vvRenderVerdictPanels(); },60);
     vvGenerateVerdict();
