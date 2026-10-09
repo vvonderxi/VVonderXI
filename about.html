@@ -31,7 +31,7 @@
 <meta name="twitter:title" content="VVonderXI , About">
 <meta name="twitter:description" content="What VVonderXI is: one score out of 100 for every player season, comparable across leagues and eras.">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/vv-fonts.css">
 <style>
   
   .vvw{color:var(--pink-ink)}
@@ -227,6 +227,11 @@
   body.light .legal a{color:#AD0332}
   .legal .lead{font-family:'Archivo';font-weight:600;font-size:18px;line-height:1.5;color:inherit}
   @media (min-width:721px){ .legal{padding:22px 0 0;max-width:62ch} .legal-wrap{padding:10px 48px 40px;max-width:1080px} }
+  /*  OPTICAL SIZE PINNED AT 14 ON THIS PAGE (2026-10-09). It used to load Google's STATIC Bricolage
+      instance, which is the variable font frozen at opsz 14. The self-hosted file is the full variable
+      font: left on auto it narrows the headline by 4 to 6.5%, and turned off it falls to the font's own
+      default of 96, narrower still. Measured: opsz 14 reproduces the old headline width exactly.  */
+  body{font-variation-settings:'opsz' 14}
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -257,8 +262,9 @@
 
   <div class="hero"><h1>About</h1></div>
   <article class="legal">
-    <p class="lead">VVonderXI scores every player season in Europe's top nine leagues out of 100.</p>
-    <p>One number per season. Comparable across leagues, and across decades.</p>
+    <p class="lead">VVonderXI gives a score out of 100 to player seasons in nine European leagues: the Premier League, La Liga, Serie A, the Bundesliga, Ligue 1, the Eredivisie, the Primeira Liga, the Belgian Pro League and the Süper Lig.</p>
+    <p>It covers league seasons from 2010/11 onwards, for every player with at least 300 league minutes in the season. A small number of players are missing because our data provider does not carry them. Goalkeepers are listed but not scored, because the model does not yet measure goalkeeping.</p>
+    <p>One number per season. Comparable across leagues, and across eras.</p>
     <p>Football has never been short of numbers. What it has lacked is a way to put a season in the Eredivisie next to a season in La Liga and have the comparison mean something. Goals do not travel between leagues. Minutes do not travel between eras. A rating out of 10 resets every week and forgets everything.</p>
     <p>The V<span class="vvw">V</span> Index is the model. The V<span class="vvw">V</span> Score is what it returns, one number for one season, built from the same components whichever league the season happened in.</p>
     <p>Scores sit in five bands. Accomplished, Standout, World Class, Iconic, and Generational. Very few seasons reach the top of that range, which is the point of having it.</p>

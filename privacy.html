@@ -31,7 +31,7 @@
 <meta name="twitter:title" content="VVonderXI , Privacy">
 <meta name="twitter:description" content="What VVonderXI collects, why, who processes it, how long it is kept and your rights.">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/vv-fonts.css">
 <style>
   
   .vvw{color:var(--pink-ink)}
@@ -227,6 +227,11 @@
   body.light .legal a{color:#AD0332}
   .legal .lead{font-family:'Archivo';font-weight:600;font-size:18px;line-height:1.5;color:inherit}
   @media (min-width:721px){ .legal{padding:22px 0 0;max-width:62ch} .legal-wrap{padding:10px 48px 40px;max-width:1080px} }
+  /*  OPTICAL SIZE PINNED AT 14 ON THIS PAGE (2026-10-09). It used to load Google's STATIC Bricolage
+      instance, which is the variable font frozen at opsz 14. The self-hosted file is the full variable
+      font: left on auto it narrows the headline by 4 to 6.5%, and turned off it falls to the font's own
+      default of 96, narrower still. Measured: opsz 14 reproduces the old headline width exactly.  */
+  body{font-variation-settings:'opsz' 14}
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -269,18 +274,20 @@
     <p>Run from Ghent, Belgium. Contact <a href="mailto:hello@vvonderxi.com">hello@vvonderxi.com</a>. We are the data controller for the information described here.</p>
     <h2>What we collect</h2>
     <p><em>If you join a waitlist.</em> Your email address, and which list you joined. That is all. We do not ask for a name and we do not buy or sell lists.</p>
-    <p><em>If you just visit.</em> Aggregate usage data through Vercel Web Analytics. This is cookieless. It records page views and a small number of events, such as that a search ran or a card was opened, along with the season or player involved. It does not record who you are, does not follow you between sites, and does not build a profile of you.</p>
-    <p><em>Search terms.</em> When you search, the term is recorded as part of the usage data above, truncated and not tied to any identifier.</p>
+    <p><em>If you just visit.</em> Page views through Vercel Web Analytics. This is cookieless. It counts which pages are viewed, with the referring site, the country and the type of device, and it does not record who you are, does not follow you between sites, and does not build a profile of you.</p>
+    <p><em>Our own event records.</em> We also record three kinds of event in our own database, which is hosted by Supabase: that a card was opened, and which one; that two seasons were compared, and which pair; and the text of a search that found nothing, cut to 120 characters. Searches that find something are not recorded. Each record holds only that and the time. No IP address or other identifier is stored with it. We delete these records after 90 days.</p>
+    <p><em>If you ask for an AI-written comparison or card note.</em> The first time a comparison or a card note is written, we store your IP address, the time and the kind of request. We use it only to limit how many of these one address can request, 30 an hour and 2 at once, so that nobody can run up the cost of the service. We delete these records after 24 hours.</p>
     <h2>What we do not collect</h2>
     <p>No advertising cookies. No tracking pixels from third party ad networks. No cross site tracking. We do not sell data to anyone, ever.</p>
     <h2>Why we are allowed to hold it</h2>
-    <p>Waitlist emails are held on the basis of your consent, given when you submitted the form. Usage data is held on the basis of legitimate interest in understanding whether the site works, and is collected in a form that cannot identify you.</p>
+    <p>Waitlist emails are held on the basis of your consent, given when you submitted the form. Page views and event records are held on the basis of legitimate interest in understanding whether the site works, and are collected in a form that cannot identify you. IP addresses held for rate limiting are held on the basis of legitimate interest in preventing abuse of the service, for 24 hours.</p>
     <h2>Who else sees it</h2>
-    <p>Supabase stores the waitlist. Vercel hosts the site and provides the usage analytics. Resend sends any email we send you. Each is a processor acting on our instructions. Nobody else receives your data.</p>
+    <p>Supabase stores the waitlist, the event records and the rate-limit records. Vercel hosts the site and provides the page view analytics. Resend sends any email we send you. Each is a processor acting on our instructions.</p>
+    <p>Loading a page also fetches a script library from jsDelivr and player photos from media.api-sports.io, the image server of our football data provider. Saving or sharing an image also fetches a script from cdnjs, run by Cloudflare. As with any file your browser requests, each of these receives your IP address and basic browser details when it serves the file. We send them nothing else. They are not our processors, and their own privacy policies apply.</p>
     <h2>How long we keep it</h2>
     <p>Waitlist emails until you ask us to remove them, or until the list is no longer in use. Usage data for as long as the analytics provider retains it.</p>
     <h2>Your rights</h2>
-    <p>You can ask for a copy of what we hold, ask us to correct it, or ask us to delete it. Email <a href="mailto:hello@vvonderxi.com">hello@vvonderxi.com</a> and we will act within 30 days. Every email we send carries an unsubscribe link. You can also complain to the Belgian Data Protection Authority.</p>
+    <p>You can ask for a copy of what we hold, ask us to correct it, or ask us to delete it. Email <a href="mailto:hello@vvonderxi.com">hello@vvonderxi.com</a> and we will act within 30 days. You can stop any email from us by replying with "unsubscribe", or with your mail app's unsubscribe button where it shows one. You can also complain to the Belgian Data Protection Authority.</p>
     <h2>Changes</h2>
     <p>If this policy changes materially we will update the date above and, where it affects you, say so by email.</p>
   </article>

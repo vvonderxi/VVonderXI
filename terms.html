@@ -31,7 +31,7 @@
 <meta name="twitter:title" content="VVonderXI , Terms">
 <meta name="twitter:description" content="The terms of use for VVonderXI, a football statistics site. Not a betting or prediction service.">
 <meta name="twitter:image" content="https://vvonderxi.com/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/vv-fonts.css">
 <style>
   
   .vvw{color:var(--pink-ink)}
@@ -227,6 +227,11 @@
   body.light .legal a{color:#AD0332}
   .legal .lead{font-family:'Archivo';font-weight:600;font-size:18px;line-height:1.5;color:inherit}
   @media (min-width:721px){ .legal{padding:22px 0 0;max-width:62ch} .legal-wrap{padding:10px 48px 40px;max-width:1080px} }
+  /*  OPTICAL SIZE PINNED AT 14 ON THIS PAGE (2026-10-09). It used to load Google's STATIC Bricolage
+      instance, which is the variable font frozen at opsz 14. The self-hosted file is the full variable
+      font: left on auto it narrows the headline by 4 to 6.5%, and turned off it falls to the font's own
+      default of 96, narrower still. Measured: opsz 14 reproduces the old headline width exactly.  */
+  body{font-variation-settings:'opsz' 14}
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
