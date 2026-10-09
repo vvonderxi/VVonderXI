@@ -1399,6 +1399,12 @@
   #cardSearch .cardgrid:not(.pillmode):not(.compactmode) > div:hover{transform:translateY(-8px)}
   #cardSearch .cardgrid .vvcard{cursor:pointer}
   @media (max-width:560px){ #cardSearch .cardgrid{gap:14px} }
+  /*  BACK TO TOP, COPIED FROM THE PLAYBOOK VERBATIM (2026-10-09). The card page runs to 2.3
+      screens at 390 with every section folded and further with them open. It sits at z 60, under
+      the search overlay (70) and the save sheet (90), exactly as on the Playbook.  */
+  .totop{position:fixed;right:18px;bottom:88px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(255,92,122,.6);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:60}
+  .totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+  @media (min-width:721px){ .totop{bottom:28px} }
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -4567,5 +4573,7 @@ function csRender(){
   });
 })();
 </script>
+<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<script>window.addEventListener('scroll',function(){var t=document.getElementById('totop');if(t)t.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>520);});</script>
 </body>
 </html>
