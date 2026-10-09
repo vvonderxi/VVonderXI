@@ -2155,7 +2155,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   window.addEventListener('resize',function(){ cwMeasure(); vvSizeCards(); });
   vvWatchVerdictSeen();
 
-  // ── Back control (same pattern as card.html) ──
+  // ── Back control: the platform's one back pattern; card, iWonder, Contact and Preferences copy it ──
   function vvBack(){var inApp=false;try{inApp=document.referrer&&new URL(document.referrer).origin===location.origin;}catch(e){}if(inApp&&history.length>1)history.back();else location.href='rankings.html';}
 
   // ── Deep-link: ?a=<card_id> -> Slot A, ?b=<card_id> -> Slot B (no param -> empty slots) ──
