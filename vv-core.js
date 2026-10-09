@@ -462,6 +462,12 @@
   function buildCard(d, cw, opts){
     opts = opts || {};
     const flag = d.flag ? `<span class="cflag">${d.flag}</span> ` : '';
+    /*  THE SURNAME IS CENTRED ON THE CARD, NOT THE FLAG-PLUS-SURNAME PAIR (2026-10-09). The flag
+        sat in the centred line, so the surname landed half a flag-plus-gap right of centre on
+        every card that has one (15px at --cw 260). A hidden COPY of the same flag balances it:
+        the same glyph on every platform, so the widths match exactly. It may shrink to nothing,
+        so a surname that barely fits falls back to the old layout instead of overflowing.  */
+    const flagBal = d.flag ? `<span class="cflag cflag-bal" aria-hidden="true">${d.flag}</span>` : '';
     const full = d.full ? `<div class="full">${d.full}</div>` : '';
     // ── Tag pills (Tag Model v1.1) , built via the shared renderTagPills helper
     //    (ordering / slice / family-class all live there). tags present but empty
@@ -579,7 +585,7 @@
                '<div class="col"><div class="v">' + (pair[1][0] == null ? 'NR' : pair[1][0]) +
                '</div><div class="l">' + pair[1][1] + '</div></div></div>';
       })()}
-      <div class="cname"><div class="nm${longName}">${flag}${d.surname}</div>${full}<div class="sub">${[d.clubname, posDisplay(d.pos), d.age].filter(x=>x!=null&&x!=='').join(' &middot; ')}</div></div>
+      <div class="cname"><div class="nm${longName}">${flag}${d.surname}${flagBal}</div>${full}<div class="sub">${[d.clubname, posDisplay(d.pos), d.age].filter(x=>x!=null&&x!=='').join(' &middot; ')}</div></div>
     </div>`;
   }
 
@@ -3617,7 +3623,13 @@
       an override map consulted on a miss, and everything else shares its own name.
       SO A NEW HONOUR TYPE NOW NEEDS NOTHING HERE. It gets its HONOUR_META label automatically,
       and only earns an entry below if that label is too long for a chip.  */
-  const HONOUR_CHIP_SHORT = { world_cup_winner:'World Cup', player_of_season:'POTS' };
+  /*  THREE MORE, 2026-10-09: the continental labels WRAPPED. Measured in a real card-face chip,
+      "European Champion" and "Copa America Champion" wrap at EVERY rendered width (--cw 145 to
+      326) and "AFCON Champion" at 145; a wrapped chip grows its row ~13px and pushes the G/A and
+      the name down, past the bottom rim at 145. The short forms name the COMPETITION, as "World
+      Cup" already does. Nothing else in the honour vocabulary or TAG_DEFS wraps at any width.  */
+  const HONOUR_CHIP_SHORT = { world_cup_winner:'World Cup', player_of_season:'POTS',
+                              copa_winner:'Copa Am\u00e9rica', euro_winner:'Euro', afcon_winner:'AFCON' };
   const HONOUR_CHIP_LABEL = Object.keys(HONOUR_META).reduce(function(m,k){
     m[k] = HONOUR_CHIP_SHORT[k] || HONOUR_META[k].label || k; return m;
   }, {});
@@ -4697,6 +4709,7 @@ body.show-photos .vvcard .cimg:not(.no-photo) .silh{display:none}
 .vvcard .cname .nm{width:100%;font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:calc(var(--cw)*0.135);line-height:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--cw)*0.03);white-space:nowrap}
 .vvcard .cname .nm.long{font-size:calc(var(--cw)*0.09)}
 .vvcard .cname .nm .cflag{font-size:calc(var(--cw)*0.07)}
+.vvcard .cname .nm .cflag-bal{visibility:hidden;flex:0 1 auto;min-width:0;overflow:hidden}
 .vvcard .cname .full{display:none}
 /*  THE INK IS PINNED TO THE CARD'S GROUND, NOT TO THE THEME , MEASURED 2026-09-01.
     This read var(--ink-soft), which FLIPS with the theme: #a49d93 in dark, #5f594e in
