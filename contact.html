@@ -53,7 +53,7 @@
   :root{--cream:#F0EAD9;--cream-deep:#E2D8C4;--charcoal:#1C1B1A;--pink:#E70443;--pink-ink:#F1688E;--pink-glow:#FF8FA3;--gold:#E8B84B;--green:#2E8C5A;--blue:#3B6FB0}
   *{box-sizing:border-box;margin:0;padding:0}
   /*  THE 412px COLUMN IS THE PHONE LAYOUT, AND UNTIL 2026-10-08 IT WAS THE ONLY LAYOUT.
-      Lucas measured it at 1900: a phone sheet centred on a desktop canvas, the bottom bar
+      The owner measured it at 1900: a phone sheet centred on a desktop canvas, the bottom bar
       showing, the back chevron in the middle of the screen, half the page empty. The other
       three thin pages (iwonder, myclub, preferences) already carry the platform frame , rail,
       topline, bottom bar gated at 720 , so this page now takes the same frame ABOVE 720 and
@@ -87,7 +87,7 @@
       THE SPINE IS NOT ADDED, AND THAT IS DELIBERATE RATHER THAN LAZY. This page's body is
       `max-width:412px; margin:0 auto` at EVERY viewport , it is a phone-shaped sheet, not a
       platform page, and a rail cannot sit beside a centred 412px column without redesigning the
-      page. That is a decision for Lucas, not something to smuggle into a nav fix. The bottom bar
+      page. That is a decision for the owner, not something to smuggle into a nav fix. The bottom bar
       is fixed-position and needs no layout at all, so it goes in on the same media rule it uses
       everywhere else, and the chevron gets its fallback.  */
     /*  [SUPERSEDED 2026-10-08 , the page has the rail now, so the bar is gated at 720 like

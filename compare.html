@@ -465,7 +465,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
 .vfinal{margin-top:38px;padding:38px 34px 32px;text-align:center;position:relative;
   background:linear-gradient(180deg,var(--vfinal-plate) 0%,var(--vfinal-plate) 58%,var(--vfinal-plate-0) 100%),var(--surf-hero);
   border:1px solid var(--edge-hero);border-radius:var(--r-lg);
-  /*  STAGE , the panel is lifted off the page rather than printed on it, 2026-09-22, Lucas's
+  /*  STAGE , the panel is lifted off the page rather than printed on it, 2026-09-22, the owner's
       pick from three depths rendered on real prose in both themes at 390 and desktop.
       IT REPLACES A SHADOW, IT DOES NOT ADD ONE. The old value was
       `0 30px 56px -26px rgba(0,0,0,.34)`: a 56px blur pulled back 26px, so almost all of it
@@ -489,7 +489,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
     top of it. And it was unique , that gradient appears nowhere else in compare.html,
     card.html or vv-core.js , so no visual family breaks with it.
     WHAT IT BOUGHT, SO THE TRADE IS ON THE RECORD: the payoff panel was the only one carrying
-    a brand mark on its edge, which said "this is the answer" before a word was read. Lucas's
+    a brand mark on its edge, which said "this is the answer" before a word was read. The owner's
     call: the verdict should not open on a contrasting colour, and the ring already draws the
     edge. Do not reinstate it without that conversation.  */
   /* the unavailable state , plain, muted, not a quotation (see vvSetVerdict's `plain`) */
@@ -590,7 +590,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   /* under-the-lights glow behind each player card (pops on dark) */
   #cardA,#cardB{position:relative;display:flex;justify-content:center;width:100%}
   /*  ── UNDER THE LIGHTS, OPTION C , CHOSEN FROM `_demo_lights.html`, SHIPPED 2026-10-03 ────
-      Five options were rendered against the real matchup and Lucas picked C: brighter AND
+      Five options were rendered against the real matchup and the owner picked C: brighter AND
       taller, 88% to 118%, lifted from top 12% to 2% so the spill reaches the floor under the
       card. The demo's own words for why: "this is the one that reads as a floodlight rather
       than a halo". The gradients below are copied from that file verbatim rather than
@@ -904,7 +904,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       that has never appeared on screen is the same shape as the wait class that was applied in
       markup and never removed , it reads as settled, and it is not doing anything.
       WHAT WAS SHIPPING INSTEAD: `.vvem{font-weight:700}` against a 600 italic base. A 100-unit
-      step in a display italic, same colour, same size. Lucas reported "no bold" and he was right
+      step in a display italic, same colour, same size. The owner reported "no bold" and was right
       , it is there, and it cannot be seen.
       THE UPRIGHT CUT DOES AS MUCH WORK AS THE COLOUR, which is why 800-in-black would not have
       been enough and why the rule someone designed here was right. The body is ITALIC: breaking
@@ -922,7 +922,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       themes for nothing, and a zero-alpha background still creates a painted box the capture
       has to draw. Dark keeps ink alone, measured: the wash COSTS it contrast, 7.45 against
       10.51. Reasoning in full beside --vvem-ink in vv-core.js.  */
-  /*  THE WASH HUGS THE PHRASE , .16em, NOT .3em, 2026-09-13. Lucas read the block as
+  /*  THE WASH HUGS THE PHRASE , .16em, NOT .3em, 2026-09-13. The owner read the block as
       carrying whitespace inside the highlight, and it was not whitespace: measured, no marker
       in 101 across the live caches has a space inside its asterisks, and the rendered box was
       exactly 9.6px wider than its text on a 16px line , my own 4.8px-a-side padding. At .3em
@@ -935,7 +935,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
   /*  [THE h2h WASH EXCLUSION IS DELETED , 2026-09-22. ITS PREMISE EXPIRED; IT WAS NOT WRONG.
       DO NOT RE-ADD IT ON THE OLD REASONING, WHICH IS WHY THAT REASONING IS RECORDED HERE.]
       The rule was `body.light .vquote.vq-h2h .vvem{background:none;padding:0;margin:0;
-      border-radius:0}`, ruled by Lucas on 2026-09-13 on a measured premise: the wash belongs
+      border-radius:0}`, ruled by the owner on 2026-09-13 on a measured premise: the wash belongs
       on prose that runs to paragraphs, and h2h was one of the truly short single-line fields
       `api/analyse.js` rule 6 names, measured at 0.82 marked phrases per pair against the
       Story's 2.00. `.vwho` and `#glDrury` are excluded for the same reason and STAY excluded.
@@ -945,7 +945,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
       excluded it no longer describes it.
       THE DEFECT IT LEFT WAS ONE MECHANISM WEARING TWO APPEARANCES IN ONE PANEL: gold ink with
       no wash in the pull quote, gold ink WITH the wash in the two paragraphs directly beneath
-      it. Reported by Lucas as an inconsistency, and it was.
+      it. Reported by the owner as an inconsistency, and it was.
       IF h2h EVER STOPS BEING THE PULL QUOTE, re-read this before deciding anything , the
       exclusion becomes correct again the moment the field is short again.  */
   /* Placed after every .vsprose rule AND marked important: `body.light .vsprose` is (0,2,0)
@@ -1183,7 +1183,7 @@ body.light .mvstrip .mvscore .lo{color:var(--charcoal);opacity:.78}
      THE A/B IDENTITY COLOURS ARE NOT HERE AND MUST NOT BE ADDED. Pink rgb(241,104,142) and
      blue rgb(59,111,176) carry WHICH PLAYER a value belongs to across this whole surface, so
      changing them changes what a player is here. That is a brand decision, recorded as one,
-     and it is Lucas's. 30 of the remaining failures are that family.  */
+     and it is the owner's. 30 of the remaining failures are that family.  */
   .vsect .vp-l, .vsect .vc-x, .vsect .vk, .vsect .vc-sub,
   .vsect .h2hbar-nr, .vsect small#vradarNote{ color:var(--vs-muted) }
   .vsect .tmeta, .vsect .wtsechead{ color:#F3DA88 }
@@ -3040,7 +3040,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
 
   function vvVerdictShare(btn){
-    // The LEDGER goes out as an image , that is the composition Lucas chose for the wide
+    // The LEDGER goes out as an image , that is the composition the owner chose for the wide
     // frame, and a link alone is useless on Instagram. 1200x675 because the ledger is
     // designed wide: the pair sits left and the verdict block fills the right half, which
     // was the open question the mocks were built to answer.
@@ -3269,7 +3269,7 @@ body.light .pkmsub{color:var(--ink-soft)}
 
     /*  AN ALL-FIVE BRANCH WAS WRITTEN HERE AND DELETED BEFORE IT SHIPPED, because it CANNOT
         FIRE and a branch that never runs is indistinguishable from one that does not work.
-        Lucas asked for the no-head-to-head case to get one sentence in the keeper branch's
+        The owner asked for the no-head-to-head case to get one sentence in the keeper branch's
         register, and it is the right instinct , it is simply already unreachable:
           `reliability` is `min(100, (minutes||0)/(38*90)*100)`, so it is a NUMBER on every
           scored card and never null. The fifth dimension is therefore always measured on
@@ -4078,7 +4078,7 @@ body.light .pkmsub{color:var(--ink-soft)}
         branch is the new one.  */
     var winNote;
     if(VC.separation==='tie'){
-      /*  "IDENTICAL SCORES" WAS THE PROSE ASSERTING SOMETHING THE ENGINE DID NOT SAY , Lucas,
+      /*  "IDENTICAL SCORES" WAS THE PROSE ASSERTING SOMETHING THE ENGINE DID NOT SAY , the owner,
           2026-09-27. Equal rt is equal DISPLAY, not an equal season. Measured on Messi 14/15
           against Ronaldo 14/15, both stored 96: the underlying figures are 134.594 and 138.556,
           which map to 96.361 and 96.730, and the engine FLOORS rather than rounds, so Ronaldo

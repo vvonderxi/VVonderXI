@@ -843,7 +843,7 @@ module.exports = async (req, res) => {
         WHAT NOW BOUNDS THIS ENDPOINT, IN ORDER: the origin allowlist (stops another website's
         browsers, never a script), the per-IP rate limit (30/hour, 2 concurrent), the global
         ceiling (300/hour across all callers), and the three per-call bounds below. The hard
-        stop on the balance is the provider's own spend cap, QA_PASS B4b, which is Lucas's.
+        stop on the balance is the provider's own spend cap, QA_PASS B4b, which is the owner's.
         WHAT IS BOUNDED HERE: the output ceiling (the caller no longer picks the bill), the
         input size, and the message shape. Both real callers are unaffected , compare.html
         sends max_tokens 1024 and the notes branch hardcodes 1500.  */

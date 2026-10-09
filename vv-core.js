@@ -3364,7 +3364,7 @@
         tournaments for a ceiling near 1,000 cards, FOUR of which provably yield zero because
         not one player of that nationality holds a card here. See
         docs/CONTINENTAL_HONOURS_SCOPE.md , that is a completeness-against-effort call with
-        numbers under it, and it is Lucas's to make.
+        numbers under it, and it is the owner's to make.
         `group:'Career'` PUTS THEM ON THE SAME SHELF AS THE WORLD CUP, WHICH IS THE RIGHT
         SHELF AND THE WRONG WORD , this object already mixes two axes and says so above.
         Nothing about the BEHAVIOUR is career-wide: the honour matches its own season like
@@ -3590,7 +3590,7 @@
       The rankings ROWS do not clip at all , `.rtag` is `overflow:visible` and the pill grows to
       its text, so the constraint there is the row, and at 390 the row measured ZERO overflow
       before and after the swap.
-      WHAT DID NOT CHANGE, AND WHY. `player_of_season` stays POTS by Lucas's call.
+      WHAT DID NOT CHANGE, AND WHY. `player_of_season` stays POTS by the owner's call.
       `world_cup_winner` stays "World Cup" because nothing longer fits: "World Cup Winner" is
       43.8 against 37.96, and even "World Champion" is 38.8 and misses. It is the only honour
       left whose label does not say what was done, and it is an open copy decision, NOT an
@@ -4456,7 +4456,7 @@
   --vvfam-hon-solid:#E0A93A;
   --vvfam-stage-quiet:linear-gradient(135deg,#E4F1F4,#D8EAEE)}
 /*  THE LIGHT-MODE EMPHASIS IS #9A6B00, NOT #7e5a10 , 2026-09-13, and the reason inverts the
-    obvious fix. Lucas: the bold reads well in dark and weakly in light. Measured, the CONTRAST
+    obvious fix. The owner: the bold reads well in dark and weakly in light. Measured, the CONTRAST
     is not the problem , gold against the body ink is 2.75 in light and 1.53 in dark, so light
     already separates BETTER by ratio. What differs is DIRECTION and CHROMA: in dark the gold
     sits darker than a cream body and advances as colour; in light #7e5a10 sits LIGHTER than a
@@ -5902,7 +5902,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
           STILL OPEN AND NOT A BUG: "ronaldo" returns Ronaldo Pena(40) above Cristiano
           Ronaldo(96), because Ronaldo is that player's genuine FIRST name and so takes
           tier 1 honestly. Ranking a surname match above a first-name match is a product
-          decision about relevance, not a defect, and it is Lucas's.  */
+          decision about relevance, not a defect, and it is the owner's.  */
       else if(hay.indexOf(t)===0 && (hay.length===t.length || hay.charAt(t.length)===' ')) r=1;   // FIRST WORD, whole
       else if((' '+hay+' ').indexOf(' '+t+' ')>=0) r=2;  // token IS a complete word (exact surname beats surname-prefix)
       else if((' '+hay).indexOf(' '+t)>=0) r=3;          // a word starts with token
@@ -7429,7 +7429,7 @@ body.light .vvload{color:#1A1917}
     SHIPPED AT SH_TYPE.verdict 0.052, UNCHANGED. The POST_LAUNCH entry records the decision as
     "the ORIGINAL size (0.060, 41px)", and 0.052 is what the file has shipped since 2026-09-07
     , twenty days BEFORE that decision , so 0.060 is a slip in the write-up rather than a size
-    anybody chose. Ruled by Lucas 2026-10-03: unchanged means what the page does today.
+    anybody chose. Ruled by the owner 2026-10-03: unchanged means what the page does today.
     CONSEQUENCE, STATED RATHER THAN BURIED: 35px in the file is 8.8px in a 300px feed tile,
     not the 10.3px the entry quotes. The trade is the same trade and the number is smaller.  */
 .sf-verdict{line-height:1.42;font-family:'Fraunces',Georgia,serif;font-weight:600}
@@ -7667,7 +7667,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   /*  ── ITEM 10 , THE EMPHASISED PHRASE IS STRUCTURAL, NOT CHOSEN (built 2026-10-03) ──────
       THE WINNER'S SURNAME, derived from spec.winner and the card's own name through the same
       surnameOf() the rest of the platform uses. NOTHING READS THE SENTENCE. Two routes were
-      refused by Lucas and both refusals are the reason this one exists: a PROMPT EDIT to make
+      refused by the owner and both refusals are the reason this one exists: a PROMPT EDIT to make
       the model mark it (every cached verdict rebuilds for a coloured phrase), and a HEURISTIC
       that picks a phrase ("we do not invent emphasis the writer did not choose").
       MEASURED OVER EVERY CACHED VERDICT WITH A DECIDED WINNER, n=72:
