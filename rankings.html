@@ -408,6 +408,14 @@ body.light .searchbtn{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);c
   body:not(.light) .soontag{color:var(--gold)}   /* darkened for cream; bright gold is correct on charcoal */
   /* residual: white on bright pink was 2.97 at 12px bold */
   .gl .flsoon{color:rgba(243,237,224,.58)}
+  /*  BACK TO TOP, COPIED FROM THE PLAYBOOK (2026-10-09). Rankings is the longest scroll on the
+      platform and was the one long page without it. ONE ADAPTATION, AND IT IS WHY THE LISTENER
+      BELOW IS NOT THE PLAYBOOK'S: above 720 the page barely scrolls and #cardgrid scrolls inside
+      its own box (measured at 1440: page 944px, grid 13,276px in a 590px box), so a window-only
+      listener would never show the button on desktop. It watches both and resets both.  */
+  .totop{position:fixed;right:18px;bottom:88px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(255,92,122,.6);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:60}
+  .totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+  @media (min-width:721px){ .totop{bottom:28px} }
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -870,5 +878,12 @@ document.getElementById('rankFBtn').addEventListener('click',function(){document
       <a href="vvindex.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 13l9 5 9-5"/></svg><span>V<span class="vvw">V</span> Index</span></a>
       <a href="playbook.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v18h5.5A1.5 1.5 0 0 0 20 19.5z"/></svg><span>Playbook</span></a>
     </nav>
+<button class="totop" id="totop" onclick="vvToTop()" aria-label="Back to top"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<script>
+function vvToTop(){ window.scrollTo({top:0,behavior:'smooth'}); var g=document.getElementById('cardgrid'); if(g) g.scrollTo({top:0,behavior:'smooth'}); }
+(function(){ var g=document.getElementById('cardgrid');
+  function on(){ var t=document.getElementById('totop'); if(!t) return; var y=(window.scrollY||document.documentElement.scrollTop), gy=g?g.scrollTop:0; t.classList.toggle('show', Math.max(y,gy)>520); }
+  window.addEventListener('scroll',on,{passive:true}); if(g) g.addEventListener('scroll',on,{passive:true}); })();
+</script>
 </body>
 </html>
