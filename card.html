@@ -1721,6 +1721,26 @@
       NEVER REJECTS. A failed honours fetch must not take the editorial down with it , same
       rule as the payloadRev stamp: a dependency of the prose may not be able to kill it.  */
   var EDITORIAL_DEPS = null;
+  /*  SEASON STEPPING MUST NOT TRIP OUR OWN LIMITER (2026-10-10). Every season step called this,
+      every call that missed the cache started a ~15s generation, and api/analyse allows two
+      concurrent generations per address. A visitor stepping through a career on 2026-10-09 was
+      refused 12 times in two minutes, and the seasons they stopped on showed the outage line.
+      THREE RULES, each closing a different part of it:
+      (1) SETTLE. After the first card a page shows, wait NOTES_SETTLE_MS on a season before
+          asking. Measured on that visit: steps came 1 to 2 seconds apart, so 1200ms drops the
+          one-second flicks and costs 1.2s on a season the reader actually stops on (the loader
+          is already up, and a cold generation takes ~15s, so it is under a tenth of the wait).
+          The FIRST card of a page never waits , that is the reader who came for this card.
+      (2) AT MOST TWO IN FLIGHT FROM THIS PAGE, the limiter's own number. A queued request
+          re-checks that its card is still on screen when a slot frees and gives up if not, so
+          seasons flicked past never reach the model at all.
+      (3) ONE RETRY AFTER A 429, after its Retry-After. A 429 is refused BEFORE the model is
+          called and nothing is cached, so a retry cannot double-generate; if another tab
+          finished this card meanwhile, the retry is a cache hit.
+      AND THE STALE-ANSWER GUARD: a response is written only if its card is still the one on
+      screen. Before this, A's late answer could land on B, and A's refusal could blank B.  */
+  var NOTES_SETTLE_MS = 1200, EDITORIAL_FIRST = true, EDITORIAL_LIVE = new Set();
+  function _edSleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
   async function vvLoadEditorial(D){
     if(!D || D.card_id==null) return;
     if(EDITORIAL_FOR === D.card_id){ vvFillEditorial(); return; }
@@ -1761,6 +1781,12 @@
         query folded into a several-second wait, not a new round-trip.  */
     try{ if(EDITORIAL_DEPS) await EDITORIAL_DEPS; }catch(e){}
     if(EDITORIAL_FOR !== D.card_id) return;   // a season switch landed while we waited
+    if(!EDITORIAL_FIRST){ await _edSleep(NOTES_SETTLE_MS); if(EDITORIAL_FOR !== D.card_id) return; }   // rule (1)
+    EDITORIAL_FIRST = false;
+    while(EDITORIAL_LIVE.size >= 2){                                                                    // rule (2)
+      try{ await Promise.race(Array.from(EDITORIAL_LIVE)); }catch(e){}
+      if(EDITORIAL_FOR !== D.card_id) return;
+    }
     try{
       /*  THESE ARE THE NINE CODES THIS DATABASE ACTUALLY USES. The previous map was a
           DIFFERENT PROVIDER'S VOCABULARY (PD, BL1, FL1, DED, PPL, ELC, BSA) and resolved
@@ -1838,12 +1864,26 @@
               band: (window.VVCore && VVCore.bandPublic) ? VVCore.bandPublic(VVCore.bandFor(D.vv)) : null }),
         tags:(Array.isArray(D.tags)?D.tags.map(function(t){return t.name;}):[])
       }, _ai, _keeper) };
-      var r = await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      var data = await r.json();
+      var r, data;
+      for(var _try=0; ; _try++){
+        var _p = fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+          .then(function(res){ return res.json().catch(function(){ return null; }).then(function(j){ return {res:res, j:j}; }); });
+        EDITORIAL_LIVE.add(_p);
+        var _out; try{ _out = await _p; } finally { EDITORIAL_LIVE.delete(_p); }
+        r = _out.res; data = _out.j;
+        if(r.status === 429 && _try === 0){                                                             // rule (3)
+          var _ra = parseInt(r.headers.get('Retry-After'), 10);
+          await _edSleep(Math.min(35000, (isFinite(_ra) && _ra > 0 ? _ra : 30) * 1000));
+          if(EDITORIAL_FOR !== D.card_id) return;
+          continue;
+        }
+        break;
+      }
+      if(EDITORIAL_FOR !== D.card_id) return;   // the stale-answer guard: this card is no longer on screen
       if(!r.ok || !data || typeof data.glance!=='string' || typeof data.scout!=='string' || !Array.isArray(data.notes)){ vvEditorialFail(); return; }
       EDITORIAL = { glance:data.glance, scout:data.scout, notes:data.notes };
       vvFillEditorial();
-    }catch(e){ vvEditorialFail(); }
+    }catch(e){ if(EDITORIAL_FOR === D.card_id) vvEditorialFail(); }   // a stale failure must not blank the current card
     finally{ _relWait(); }   // after the content on every path, including the outage line
   }
   function vvFillEditorial(){
