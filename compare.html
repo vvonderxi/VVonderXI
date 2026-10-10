@@ -2492,6 +2492,19 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(AUTO_VERDICT_PAIRS.indexOf(Math.min(a,b) + '-' + Math.max(a,b)) < 0) return;
     var s = document.querySelector('.settle'); if(!s) return;
     window.vvStepAuto = true; s.click(); window.vvStepAuto = false;
+    /*  AND TAKE THEM TO IT. vvSettleTap's note rejects auto-scrolling on settle because a reader
+        who has just picked two cards may want another look at them. That reason does not hold
+        here: this visitor saw both cards on the homepage and tapped "See the verdict", so the
+        verdict is what they asked for. Scoped to this path only; a manual press is unchanged.
+        AN INSTANT JUMP, NOT A SMOOTH ONE: the page has only just loaded, so there is nothing to
+        travel past, and a smooth scroll is frame-driven and could not be verified in a hidden
+        tab. It waits for the panel to be shown (polled, up to 3s) rather than guessing a delay.  */
+    var _tries = 0;
+    (function jump(){
+      var v = document.getElementById('verdict');
+      if(v && v.classList.contains('show')){ v.scrollIntoView({block:'start'}); return; }
+      if(++_tries < 30) setTimeout(jump, 100);
+    })();
   }
   function vvStepArrive(){
     var n=(CMP_A?1:0)+(CMP_B?1:0), q=/[?&]q=/.test(location.search);
