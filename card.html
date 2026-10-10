@@ -1563,8 +1563,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261009f"></script>
-<script src="/vv-core.js?v=20261009f"></script>
+<script src="/vv-marks.js?v=20261010a"></script>
+<script src="/vv-core.js?v=20261010a"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -3018,7 +3018,7 @@
       d.innerHTML=VVFilters.emptyStateHTML({score:{bands:[]}},{searching:true});
       var el=d.querySelector('.vvf-es-scope'); if(el) scope=el.innerHTML;
     }catch(e){}
-    if(!scope) scope='VVonderXI scores nine leagues from 2010 onward. If a player or a season is not in that set, no card exists for it.';
+    if(!scope) scope=(window.VVCore && VVCore.VV_SCOPE_LINE) || 'VVonderXI covers nine leagues from the 2010/11 season on.';
     var head = noId ? 'No card in this link.'
              : missing ? 'That card is not here.' : 'This card could not be loaded.';
     var body = noId
@@ -4567,6 +4567,7 @@ function csEmptyHTML(){
   if(CS.state==='error') return '<div class="rankempty">Search failed. Check your connection and try again.</div>';
   if(CS.state!=='ready') return (window.VVCore && VVCore.vvLoader)
     ? VVCore.vvLoader({size:40, label:(CS.q?'Searching':'Loading seasons')}) : '';
+  if(CS.q && window.VVFilters && VVFilters.emptyStateHTML) return VVFilters.emptyStateHTML({score:{bands:[]}},{searching:true});   // the boundary on every empty search
   return '<div class="rankempty">'+(CS.q?'No seasons match your search.':'Type to search, or browse the top seasons.')+'</div>';
 }
 function csRender(){

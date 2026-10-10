@@ -5960,6 +5960,23 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       allows only tokens of the full name, so "rooney" and "wayne rooney" match and
       "rooney 2014" matches on its name part, while "jake rooney" does not.
       Returns {name, head, body} or null; each surface renders it in its own style.  */
+  /*  THE BOUNDARY, ONCE, SHOWN ON EVERY SEARCH THAT FINDS NOTHING (owner-approved 2026-10-10).
+      The 300-minute clause stays: it is the real reason for Thierry Henry, who DID play inside
+      the record (Arsenal on loan, Premier League 2011/12) and fell short of the floor. A date
+      rule such as "before 2010" would be wrong for him, and for David Beckham, who HAS a card
+      (Paris Saint-Germain 2012/13, card 162409, 312 minutes, clearing the floor by twelve).  */
+  var VV_SCOPE_LINE = 'VVonderXI covers nine leagues from the 2010/11 season on: the Premier League, La Liga, '+
+    'Serie A, the Bundesliga, Ligue 1, the Primeira Liga, the Eredivisie, the Belgian Pro League and the Super Lig. '+
+    'A season counts once a player reaches 300 minutes in it. Anyone whose seasons fall outside that has no card.';
+  /*  TWO REASONS, TWO SENTENCES, AND THEY MUST NOT BE MERGED. VV_ABSENT: we cover the seasons
+      and the provider has no figures. VV_OUTSIDE: we do not cover where or when he played, or he
+      played too little of it. Each name is CHECKED to hold no card before it is added , Henry
+      and Maradona 2026-10-10 (the "T. Henry" in `players` is Thomas Henry, a different player). COUNTER-EXAMPLE ON RECORD: Beckham is deliberately on neither
+      list, because he has a card; any rule that would have caught him is the wrong rule.  */
+  var VV_OUTSIDE = [
+    { name:'Thierry Henry',  surname:'henry'    },
+    { name:'Diego Maradona', surname:'maradona' }
+  ];
   var VV_ABSENT = [
     { name:'Wayne Rooney',    surname:'rooney'  },
     { name:'Steven Gerrard',  surname:'gerrard' },
@@ -5971,12 +5988,17 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
     var nq = vvParseSearch(q||'').nameQ || '';
     var toks = vvNorm(nq).split(/[^a-z0-9]+/).filter(Boolean);
     if(!toks.length) return null;
-    for(var i=0;i<VV_ABSENT.length;i++){
-      var a=VV_ABSENT[i], full=vvNorm(a.name).split(/\s+/);
-      if(toks.indexOf(a.surname)<0) continue;
-      if(!toks.every(function(t){ return full.indexOf(t)>=0; })) continue;
-      return { name:a.name, head:'No card for '+a.name+'.',
-        body:'The VV Index only scores what is recorded, and our data provider has no season figures for him in the years we cover. We do not fill gaps by hand.' };
+    var lists = [
+      [VV_ABSENT,  'provider', 'The VV Index only scores what is recorded, and our data provider has no season figures for him in the years we cover. We do not fill gaps by hand.'],
+      [VV_OUTSIDE, 'outside',  'VVonderXI covers nine leagues from 2010/11, and a season needs 300 minutes to count. None of his seasons meets both.']
+    ];
+    for(var L=0;L<lists.length;L++){
+      for(var i=0;i<lists[L][0].length;i++){
+        var a=lists[L][0][i], full=vvNorm(a.name).split(/\s+/);
+        if(toks.indexOf(a.surname)<0) continue;
+        if(!toks.every(function(t){ return full.indexOf(t)>=0; })) continue;
+        return { name:a.name, kind:lists[L][1], head:'No card for '+a.name+'.', body:lists[L][2] };
+      }
     }
     return null;
   }
@@ -6768,10 +6790,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
        seasons match" reads as a broken site unless the boundary is stated.
        SHOWN ONLY FOR A SEARCH. A visitor who is filtering is already inside the dataset, and
        the clause list is the better answer there. */
-    var scope = opts.searching
-      ? '<span class="vvf-es-scope">VVonderXI scores nine leagues from 2010 onward. '+
-        'If a player or a season is not in that set, no card exists for it.</span>'
-      : '';
+    var scope = opts.searching ? '<span class="vvf-es-scope">'+VVF_ESC(VV_SCOPE_LINE)+'</span>' : '';
     if(!parts.length) return '<div class="vvf-empty-state">'+VVF_ESC(head)+scope+'</div>';
     return '<div class="vvf-empty-state">'+VVF_ESC(head)+
       '<span class="vvf-es-why">All of these have to be true at once , '+
@@ -8247,7 +8266,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   }
 
   const api = { vvBeacon, inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
-                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvAbsent, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
+                vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvAbsent, VV_SCOPE_LINE, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
                 bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
