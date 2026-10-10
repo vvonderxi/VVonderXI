@@ -277,69 +277,6 @@
         display:flex;flex-direction:column}
   /*  Muted until touched, like the nav items above it: a follow ask is an invitation, not a
       destination, and it must not out-shout the five places the drawer exists to send you.  */
-  /*  THE ADD-TO-HOME STRIP , 2026-09-13. It is `position:fixed` and that is not a style
-      choice, it is a constraint: section D records this page as THE ONE PAGE MEANT TO BE A
-      SINGLE FIXED SCREEN, intrinsic content 489px, and a defect was fixed in September where
-      86px of dead scroll appeared on an iPhone. Anything added in the FLOW here re-breaks
-      that. Fixed positioning adds nothing to the document height , verified, not assumed.
-      PHONE ONLY, AND NOT ON THE FIRST VISIT. Asking a stranger to install something before
-      they have seen it is the ask that trains people to dismiss asks. It waits for a second
-      visit, and once dismissed it does not come back.  */
-  .a2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));
-    z-index:90;display:none;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-lg);
-    background:rgba(26,23,21,.96);border:1px solid rgba(243,237,224,.16);
-    box-shadow:0 18px 40px -16px rgba(0,0,0,.8);backdrop-filter:blur(8px)}
-  body.light .a2hs{background:rgba(255,253,247,.97);border-color:rgba(28,27,26,.14)}
-  .a2hs.show{display:flex}
-  .a2hs .ico{width:30px;height:30px;border-radius:var(--r-md);flex:none}
-  .a2hs .txt{flex:1;min-width:0;font-family:'Inter';font-size:12.5px;line-height:1.4;
-    color:rgba(243,237,224,.82)}
-  body.light .a2hs .txt{color:#3a352e}
-  /*  SCOPED TO THE HEADING (2026-09-21). This was `.a2hs .txt b`, written when the only bold
-      in the strip WAS the heading. The per-browser steps put a bold word inside a sentence
-      ("Tap <b>Share</b>, in the bar at the bottom") and display:block broke every one of them
-      onto its own line , three lines for one instruction, with the bold word stranded.  */
-  .a2hs .txt b.hd{font-family:'Archivo';font-weight:800;display:block;font-size:13px;color:var(--cream)}
-  body.light .a2hs .txt b.hd{color:var(--charcoal)}
-  .a2hs .add{flex:none;font-family:'Archivo';font-weight:800;font-size:11.5px;letter-spacing:.04em;
-    text-transform:uppercase;padding:9px 14px;border-radius:var(--r-pill);border:none;cursor:pointer;
-    background:linear-gradient(135deg,#FF5C7A,#E70443);color:#fff}
-  .a2hs .no{flex:none;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;
-    padding:4px 2px;color:rgba(243,237,224,.42)}
-  body.light .a2hs .no{color:#8a8276}
-  /*  THE PER-BROWSER STEPS (2026-09-21). No service worker means no native prompt anywhere
-      (SS C), so every browser gets its own true steps instead of one wrong set.
-      THE POSITION CAPTION IS ITS OWN LINE, NOT A LEGEND ON THE BAR. The first version placed
-      it absolutely over the mock's dashed edge with background:inherit, which inherits a
-      TRANSPARENT background, so the line ran straight through the words. A caption under the
-      bar cannot collide at any width or for any of the three spot positions.  */
-  .a2hs.steps{align-items:flex-start}
-  .a2hs .ss{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-  .a2hs .st{display:flex;align-items:center;gap:9px;font-size:12.5px;line-height:1.35}
-  .a2hs .st .n{flex:none;width:18px;height:18px;border-radius:var(--r-pill);display:grid;place-items:center;
-    font-family:'Archivo';font-weight:800;font-size:10px;background:rgba(243,237,224,.13);color:var(--cream)}
-  body.light .a2hs .st .n{background:rgba(28,27,26,.09);color:var(--charcoal)}
-  .a2hs .st .gl{flex:none;width:18px;height:18px;display:grid;place-items:center}
-  /*  THE TEXT FILLS ITS ROW. As a default flex item it sized to its own content and wrapped
-      early , at 390 that broke "Tap Share, in the bar at the bottom" across three lines with
-      the bold word alone on one. flex:1 with min-width:0 gives it the row's real width.  */
-  .a2hs .st>span:last-child{flex:1 1 auto;min-width:0}
-  .a2hs .st b{font-weight:700;color:var(--cream)}
-  body.light .a2hs .st b{color:var(--charcoal)}
-  .a2hs .mock{margin-top:10px}
-  .a2hs .mockbar{height:30px;border-radius:var(--r-md);border:1px dashed rgba(243,237,224,.22);
-    display:flex;align-items:center;gap:6px;padding:0 7px}
-  body.light .a2hs .mockbar{border-color:rgba(28,27,26,.2)}
-  .a2hs .mockbar .fill{flex:1;height:16px;border-radius:var(--r-pill);background:rgba(243,237,224,.09)}
-  body.light .a2hs .mockbar .fill{background:rgba(28,27,26,.07)}
-  .a2hs .mockbar .spot{flex:none;width:20px;height:20px;display:grid;place-items:center;border-radius:var(--r-md);
-    background:rgba(231,4,67,.20);outline:1.5px solid #E70443}
-  .a2hs .mockcap{margin-top:5px;font-family:'Archivo';font-weight:700;font-size:9.5px;letter-spacing:.05em;
-    text-transform:uppercase;color:#F1688E}
-  body.light .a2hs .mockcap{color:#AD0332}
-  .a2hs .mockcap.c{text-align:center} .a2hs .mockcap.r{text-align:right}
-  .a2hs .note{margin-top:8px;font-size:11.5px;opacity:.72}
-  @media (min-width:721px){ .a2hs{display:none !important} }
   .drawersoc{display:flex;align-items:center;gap:14px;padding:14px 16px 2px;margin-top:2px;
     border-top:1px solid rgba(243,237,224,.10)}
   body.light .drawersoc{border-top-color:rgba(28,27,26,.12)}
@@ -559,12 +496,6 @@
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/vv-core.js?v=20261010a"></script>
-<!--  vv-a2hs.js , the per-browser Add-to-Home-Screen steps. SHARED WITH preferences.html,
-      which is why they are no longer inline here: the labels move between browser versions
-      and two copies means a correction lands in one of them. It carries its own ?v= token
-      (there is no build step and nothing bumps it for you), so bump this tag AND the one in
-      preferences.html together, or one page is served fresh against a cached copy.  -->
-<script src="/vv-a2hs.js?v=20261003a"></script>
 <script>
   // rotating placeholder examples
   /*  EVERY SUGGESTION IS A PROMISE THE SEARCH HAS TO HONOUR, AND TWO OF THESE WERE NOT.
@@ -969,109 +900,7 @@
   };
 })();
 </script>
-<div class="a2hs" id="a2hs" role="dialog" aria-label="Add VVonderXI to your home screen">
-  <img class="ico" src="/icon-192.png" alt="">
-  <div class="txt" id="a2hsTxt"><b class="hd">Keep VVonderXI one tap away</b>Add it to your home screen. It opens full screen, like an app.</div>
-  <button class="add" id="a2hsAdd" type="button">Add</button>
-  <button class="no" id="a2hsNo" type="button" aria-label="Not now">&times;</button>
-</div>
-<script>
-/*  THE PROMPT LIVES HERE RATHER THAN ON THE PLAYBOOK, and the reason is who it is for: a
-    reader inside the Playbook has already committed, while someone landing on a phone for the
-    second time is exactly the person who would use a home-screen icon and will never go
-    looking for the setting. Preferences keeps its own row for anyone who does go looking.
-    EVERY localStorage READ AND WRITE IS WRAPPED. A private window, cleared site data, or a
-    browser set to block storage all throw on ACCESS, not on read, so an unguarded call takes
-    the whole script with it , and this script sits on the front door.  */
-(function(){
-  var el=document.getElementById('a2hs'); if(!el) return;
-  /*  NO MODULE, NO STRIP. The steps live in vv-a2hs.js now, so if that request fails the Add
-      button would render and then throw on the tap , a visible control that does nothing,
-      which is worse than no offer at all. Failing closed is right here precisely because the
-      strip is an invitation rather than something the reader came for.
-      CONTROL-TESTED 2026-10-03 by planting the fault rather than reading the line: the page
-      was fetched, the module's script tag stripped (47 bytes), and the result run in an
-      `<iframe srcdoc>` , NOT `document.write`, which reuses the current window so globals
-      survive and a "load without X" test measures the page it was launched from. With the
-      module genuinely absent (asserted, not assumed) the strip stayed `display:none` and
-      never took `.show`. Two loads, because the strip is gated on `visits >= 2` below.  */
-  if(!window.VVA2HS) return;
-  var K='vvA2HS';
-  function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-  function set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-  function standalone(){ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true; }
-  function iOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent); }
-
-  if(standalone()) return;                      // already installed , nothing to offer
-  if(get(K)==='no') return;                     // dismissed once, and once is enough
-  /*  A VISIT IS A SESSION, NOT A PAGE LOAD (2026-10-10). This counted homepage loads, so a
-      first-time visitor who went home, card, back home saw the strip on that back-tap, inside
-      their first visit. sessionStorage marks the session once, so the strip waits for a
-      genuinely later visit.  */
-  var visits=parseInt(get(K+'v')||'0',10);
-  var _seen=false; try{ _seen = sessionStorage.getItem(K+'s')==='1'; sessionStorage.setItem(K+'s','1'); }catch(e){}
-  if(!_seen){ visits+=1; set(K+'v',String(visits)); }
-  if(visits<2) return;                          // not on a stranger's first screen
-
-  /*  NO WAITING ON beforeinstallprompt, AND THAT IS THE POINT (2026-09-21). There is
-      deliberately no service worker (SS C), and Chrome's own blog says the algorithm behind
-      that event still requires a fetch handler, so it never fires here. The old code showed
-      the strip only if the event arrived or the reader was on iOS, which meant Android saw
-      NOTHING , an offer gated on an event that cannot happen.
-      Every browser now has true steps of its own, so the strip shows on its own schedule and
-      the platform is the only thing that changes.  */
-  setTimeout(function(){ el.classList.add('show'); }, 1200);
-
-  /*  THE STRIP SITS OVER THE FOOTER, WHICH SINCE 2026-10-09 CARRIES THE ABOUT AND LEGAL LINKS.
-      While it shows, the footer is padded by the strip's own measured height, so those links stay
-      reachable instead of sitting under a fixed panel until it is dismissed. Tied to the STATE
-      (the class) rather than to the two lines that set it, so any path that shows or hides the
-      strip is covered. Its height varies by browser, which is why it is measured, not typed.  */
-  (function(){ var ft=document.querySelector('.foot'); if(!ft||!window.MutationObserver) return;
-    function sync(){ ft.style.paddingBottom = el.classList.contains('show') ? (el.offsetHeight+24)+'px' : ''; }
-    new MutationObserver(sync).observe(el,{attributes:true,attributeFilter:['class']});
-    if(window.ResizeObserver) new ResizeObserver(sync).observe(el);
-    window.addEventListener('resize',sync); })();
-
-  document.getElementById('a2hsNo').onclick=function(){ el.classList.remove('show'); set(K,'no'); };
-
-  /*  THE FIVE PER-BROWSER CASES MOVED TO vv-a2hs.js ON 2026-10-03, because preferences.html
-      now needs the same steps and SS C rules that a second consumer turns the `__a2hs` seam
-      into a real export. The labels drift between browser versions, so one copy only.
-      WHAT STAYS HERE IS PRESENTATION: the phone mockup and the strip's own markup. `plan()`
-      returns a `hint` descriptor and this page draws it; preferences.html draws a line.  */
-  function mock(pos,glyph,label){
-    var fill='<span class="fill"></span>', spot='<span class="spot">'+glyph+'</span>';
-    var inner = pos==='centre' ? fill+spot+fill : fill+spot;   // centre for Safari, right otherwise
-    return '<div class="mock"><div class="mockbar">'+inner+'</div>'
-         + '<div class="mockcap '+(pos==='centre'?'c':'r')+'">'+label+'</div></div>';
-  }
-  function renderSteps(p){
-    var steps=p.steps.map(function(s,i){ return '<div class="st"><span class="n">'+(i+1)+'</span>'
-      + '<span class="gl">'+s[0]+'</span><span>'+s[1]+'</span></div>'; }).join('');
-    /*  THE MOCKUP IS BUILT HERE FROM `p.hint`, not handed over as HTML by `plan()`. The
-        module returns a descriptor, so the same branching can serve a bottom sheet that
-        has no room for a phone drawing.  */
-    var h=p.hint, drawn = h ? mock(h.pos, h.glyph, h.label) : '';
-    document.getElementById('a2hsTxt').innerHTML='<b class="hd">'+p.hd+'</b><div class="ss">'+steps+'</div>'
-      + (p.note?'<div class="note">'+p.note+'</div>':'') + drawn;
-    el.classList.add('steps','show');
-  }
-  /*  A TEST SEAM, and a deliberate one: the case is chosen from a user-agent string captured at
-      load, so the five branches cannot be checked by driving the page normally , which is how
-      the old Android path shipped broken and unseen. This lets a probe render each case on the
-      REAL page rather than on a copy of it, which SS C prefers to reasoning about markup.
-      `plan` now comes from vv-a2hs.js and is a real export , it is re-exposed here only so a
-      probe can reach the PAIR in one place, which is what made the A14 pass possible.  */
-  function plan(ua){ return VVA2HS.plan(ua); }
-  window.__a2hs={ plan:plan, render:renderSteps };
-  document.getElementById('a2hsAdd').onclick=function(){
-    renderSteps(plan());
-    this.style.display='none';
-    /*  THE STRIP STAYS UNTIL DISMISSED, because the reader has to leave it on screen while
-        they use the browser's own menu. Same reason as the original iOS path.  */
-  };
-})();
-</script>
+<!--  NO INSTALL STRIP ON THE FRONT DOOR (owner's decision 2026-10-11). It lives in vv-a2hs.js as mount()
+      and appears only on the VV Index and the Playbook, after the reader has scrolled.  -->
 </body>
 </html>
