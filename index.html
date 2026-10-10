@@ -415,6 +415,33 @@
   .vvlegal a:hover,.vvlegal a[aria-current]{color:#F1688E}
   body.light .vvlegal a{color:#5f594e}
   body.light .vvlegal a:hover,body.light .vvlegal a[aria-current]{color:#AD0332}
+
+  /*  THE COLD-ARRIVAL BLOCK (2026-10-10). Sized so the definition, the pair, the button and the
+      search all sit on the first screen at 390x844 and 360x780 (measured at both, both themes).
+      THE CARD IS BUILT THE WAY COMPARE BUILDS IT: laid out at --cw 143 and drawn at 92% of that
+      (132 wide), so it keeps the shipped 1.518 height-to-width ratio and the face's content has
+      the room it is designed for. Drawn at a bare 1.397 the club line ran 7px past the inner
+      rim, measured; Compare's own 162-drawn-at-149 read +3.2 by the same measure.
+      The slots reserve the cards' height before the query lands, so nothing jumps.  */
+  .argue{width:min(620px,92vw);margin:0 auto 16px;text-align:center;--cream-deep:#E6DCC4}
+  .argue .adef{font-family:'Inter';font-weight:600;font-size:14.5px;line-height:1.4;margin:0 0 6px;color:var(--ink)}
+  .argue .adef b{color:var(--pink-ink);font-weight:700}
+  .argue .aq{font-family:'Bricolage Grotesque';font-weight:700;font-size:17px;margin:0 0 10px;color:var(--ink)}
+  .argue .acards{display:flex;justify-content:center;align-items:center;gap:8px;text-decoration:none;color:inherit}
+  .argue .aslot{--cw:143px;width:var(--cw);height:calc(var(--cw)*1.397);display:flex;justify-content:center}
+  .argue .avs{font-family:'Archivo';font-weight:900;font-size:13px;color:var(--pink)}
+  .argue .vvcard{--cw:143px;position:relative;width:var(--cw);max-width:92%;height:calc(var(--cw)*1.397);box-sizing:border-box;display:flex;flex-direction:column;border-radius:calc(var(--cw)*0.073);
+    background:radial-gradient(130% 60% at 50% 0%, #F7F2E6 0%, var(--cream) 48%, var(--cream-deep) 100%);
+    box-shadow:0 18px 36px -20px rgba(0,0,0,0.6), inset 0 0 0 calc(var(--cw)*0.02) var(--cream), inset 0 0 0 calc(var(--cw)*0.025) rgba(28,27,26,0.55);
+    padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A;font-family:'Barlow Condensed',sans-serif;text-align:left}
+  .argue .acta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:12px;padding:0 22px;border-radius:999px;
+    background:#E70443;color:#fff;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none}
+  .argue.fail .acards{display:none}
+  .hero.searching .argue{display:none}
+  @media(max-width:560px){
+    .hero .logo{width:42vw;margin-bottom:8px}
+    .hero .tag{margin-bottom:14px;font-size:14px}
+  }
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
@@ -446,6 +473,20 @@
     <img class="logo l" alt="VVonderXI" src="/assets/spinelogo-light.png" width="760" height="340">
     <div class="tag">Every Season Tells a Different <span class="pk">Story</span></div>
 
+    <!--  THE COLD ARRIVAL'S FIRST ANSWER (2026-10-10). A paid campaign sent 79 people here and the
+          page showed a logo, a tagline and a box asking them to name a footballer. This block
+          says what the number is and shows the one thing only this site does, with two real
+          cards from the database. The pair is Compare's first suggested matchup, so it rides
+          the warm-cache practice that already covers those three pairs. The link goes to Compare
+          with both cards loaded; the paid verdict stays behind Compare's own button, by design.  -->
+    <section class="argue" aria-label="Who had the better season?">
+      <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
+      <p class="aq">Who had the better season?</p>
+      <a class="acards" href="compare.html?a=143372&amp;b=141999" data-pair="143372-141999" aria-label="Messi 2011/12 against Ronaldo 2014/15">
+        <span class="aslot" id="argA"></span><span class="avs">VS</span><span class="aslot" id="argB"></span>
+      </a>
+      <a class="acta" href="compare.html?a=143372&amp;b=141999" data-pair="143372-141999">Compare them</a>
+    </section>
     <div class="searchwrap">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -608,6 +649,22 @@
   }
 
   var sb = window.supabase.createClient(P.SUPABASE_URL, P.SUPABASE_ANON_KEY);
+
+  /*  FILL THE COLD-ARRIVAL PAIR. One query, two rows, from the matview. A failure hides the
+      cards and keeps the question and the button, which still lead somewhere true.  */
+  (function(){
+    var box = document.querySelector('.argue'); if(!box) return;
+    try{ var f = localStorage.getItem('vvCardFace'); if(f !== 'silhouette') document.body.classList.add('show-photos'); }catch(e){ document.body.classList.add('show-photos'); }
+    box.querySelectorAll('a[data-pair]').forEach(function(a){ a.addEventListener('click', function(){
+      if(typeof window.va === 'function'){ try{ window.va('event', { name:'home_pair_opened', data:{ pair:a.dataset.pair } }); }catch(e){} } }); });
+    sb.from('player_card_mv').select('*').in('card_id', [143372, 141999]).then(function(res){
+      var rows = (res && res.data) || [];
+      var a = rows.find(function(r){ return r.card_id === 143372; }), b = rows.find(function(r){ return r.card_id === 141999; });
+      if(res.error || !a || !b || !C.buildCard || !C.rowToCard){ box.classList.add('fail'); return; }
+      document.getElementById('argA').innerHTML = C.buildCard(C.rowToCard(a), 143);
+      document.getElementById('argB').innerHTML = C.buildCard(C.rowToCard(b), 143);
+    }, function(){ box.classList.add('fail'); });
+  })();
 
   var input = document.getElementById('q');
   /*  THE WHOLE BAR IS THE TARGET (2026-10-10). The bar is 58px tall and the input inside it
