@@ -105,3 +105,6 @@ exports/bam/player/**/*.csv
 # BAM match backfill , CSVs regenerable bulk data, meta sidecars tracked.
 exports/bam/*-matches/**/*.csv
 exports/bam/*-matches/*.csv
+
+# Local owner reports (scripts/traffic-report.js). Never committed, never deployed.
+_local/
