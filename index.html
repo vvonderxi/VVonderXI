@@ -136,7 +136,7 @@
 
   /* search */
   .searchwrap{width:min(620px,92vw);position:relative}
-  .search{display:flex;align-items:center;gap:13px;width:100%;
+  .search{display:flex;align-items:center;gap:13px;width:100%;cursor:text;
           background:var(--field);border:1.5px solid var(--field-b);
           border-radius:var(--r-pill);padding:0 22px;height:62px;
           box-shadow:0 10px 40px -18px rgba(0,0,0,.5);transition:.2s}
@@ -449,7 +449,7 @@
     <div class="searchwrap">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input id="q" type="text" autocomplete="off" role="combobox" aria-expanded="false"
+        <input id="q" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-expanded="false"
                aria-controls="srPanel" aria-autocomplete="list"
                placeholder='Try "Messi vs Bellingham"'>
         <button class="go">Search</button>
@@ -610,6 +610,12 @@
   var sb = window.supabase.createClient(P.SUPABASE_URL, P.SUPABASE_ANON_KEY);
 
   var input = document.getElementById('q');
+  /*  THE WHOLE BAR IS THE TARGET (2026-10-10). The bar is 58px tall and the input inside it
+      20px, so a tap on the bar above or below the text did nothing: two thirds of what looks
+      like the search box was dead. A tap anywhere on the bar now focuses the input; the
+      Search button keeps its own job.  */
+  (function(){ var bar = input && input.closest('.search');
+    if(bar) bar.addEventListener('click', function(e){ if(!e.target.closest('.go')) input.focus(); }); })();
   var panel = document.getElementById('srPanel');
 
   /* (1) DEBOUNCE. 180ms , long enough to swallow a fast typist's whole word,
@@ -787,8 +793,22 @@
     if(all) all.classList.toggle('on', cursor === rows.length);
   }
 
+  /*  THE HOMEPAGE SEARCH WAS INVISIBLE TO ANALYTICS (2026-10-10). `search_performed` fired
+      only from the card page's search box, so a paid campaign reported "2 of 79 searched"
+      while the hero search on the landing page could not be counted at all.
+      ONCE PER PAGE LOAD, not per keystroke: the live search settles on every typing pause,
+      so firing each time would count "mes", "mess", "messi" as three searches. Vercel's
+      visitor count is what answers "how many searched"; `page:'home'` separates it from the
+      card page's box, which still fires per search. `search_result_opened` is the payoff
+      step: the visitor chose a result.  */
+  var _homeSearched = false;
+  function homeSearchEvent(q, n){
+    if(_homeSearched || typeof window.va !== 'function') return; _homeSearched = true;
+    try{ window.va('event', { name:'search_performed', data:{ page:'home', query:String(q).slice(0,80), results:n } }); }catch(e){}
+  }
   function go(i){
     var r = rows[i]; if(!r) return;
+    if(typeof window.va === 'function'){ try{ window.va('event', { name:'search_result_opened', data:{ page:'home', rank:i+1 } }); }catch(e){} }
     location.href = 'card.html?id=' + r.card_id;
   }
   function goAll(){
@@ -847,6 +867,7 @@
       var data = res.data || [];
       var more = data.length > LIMIT;
       data = data.slice(0, LIMIT);
+      homeSearchEvent(nameQ || q, data.length);
       if(!data.length){ if(nameQ && window.VVCore && VVCore.vvBeacon) VVCore.vvBeacon('search_miss', nameQ); empty(q); return; }   // vv_events: searched, nothing exists
       // the shared relevance re-rank , exact > prefix > word-start > mid-string, then rt
       data = C.rankBySearch(data, nameQ, function(r){
@@ -925,7 +946,13 @@
 
   if(standalone()) return;                      // already installed , nothing to offer
   if(get(K)==='no') return;                     // dismissed once, and once is enough
-  var visits=parseInt(get(K+'v')||'0',10)+1; set(K+'v',String(visits));
+  /*  A VISIT IS A SESSION, NOT A PAGE LOAD (2026-10-10). This counted homepage loads, so a
+      first-time visitor who went home, card, back home saw the strip on that back-tap, inside
+      their first visit. sessionStorage marks the session once, so the strip waits for a
+      genuinely later visit.  */
+  var visits=parseInt(get(K+'v')||'0',10);
+  var _seen=false; try{ _seen = sessionStorage.getItem(K+'s')==='1'; sessionStorage.setItem(K+'s','1'); }catch(e){}
+  if(!_seen){ visits+=1; set(K+'v',String(visits)); }
   if(visits<2) return;                          // not on a stranger's first screen
 
   /*  NO WAITING ON beforeinstallprompt, AND THAT IS THE POINT (2026-09-21). There is
