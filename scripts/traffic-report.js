@@ -135,7 +135,7 @@ function daily(days, series) {                   // stacked columns per day
     ['Searched', s => has(s, /^search:/)],
     ['Picked a first player', s => has(s, /^pick:/) || s.has('suggested') || has(s, /^arrive:(one|pair)/)],
     ['Had both players', s => (s.has('pick:A') && s.has('pick:B')) || s.has('suggested') || has(s, /^arrive:pair/) || (has(s, /^arrive:one/) && has(s, /^pick:/))],
-    ['Pressed Compare', s => s.has('press')],
+    ['Pressed Compare, or arrived from the homepage verdict link', s => has(s, /^press/)],
     ['Saw a verdict', s => has(s, /^verdict:(shown|keeper)/)],
   ];
   const funnel = steps.map(([label, f], i) => ({ label, value: V.filter(f).length, cls: i === steps.length - 1 ? 'bp' : 'b' }));
