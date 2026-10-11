@@ -1,5 +1,13 @@
 # FIGURES THAT LEAVE THE PLATFORM , A LEDGER, STARTED 2026-10-08
 
+> **BEFORE ANY CREATIVE WITH A PLAYER'S FACE (added 2026-10-11).** A named player's current
+> face in a PAID advert is a different case from the same face on our own site: an advert
+> can read as the player endorsing the product. The provider's image terms (API-Football,
+> where every card photo comes from) have never been checked, and neither has the player's
+> or club's image rights. Clear both before a paid ad with a face goes out. The photos are
+> also current headshots, not from the season on the card. Full note: `BRAND_BRIEF.md`
+> section 11.
+
 A number drawn into an image is a snapshot with no check. `data-fig` spans, `apply-figures`
 and `check-card-image.js` all read the repository; a PNG rendered elsewhere and posted to a
 timeline is reachable by none of them, and unlike the four embedded snapshots in `CLAUDE.md`
