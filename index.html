@@ -405,6 +405,30 @@
     .hero .logo{width:42vw;margin-bottom:8px}
     .hero .tag{margin-bottom:14px;font-size:14px}
   }
+  /*  THE PAIR'S SIZE IS SET HERE, NOT IN THE SCRIPT (2026-10-11). buildCard stamps --cw:143px
+      inline on each card; an author !important beats an inline normal value, so one variable
+      governs the slot, the card and the empty-slot outline, and it follows a resize.
+      THE TWO LIMITS ARE DIFFERENT ON EACH SIDE OF 720, AND THAT IS THE WHOLE DESIGN:
+      DESKTOP IS HEIGHT-BOUND. The search box must stay on the first screen, so the card takes
+      the height left after everything else, (100vh - 502px) / 1.397, where 502 is the rest of
+      the stack down to the search box plus 24px of air, measured with the logo at 260.
+      Narrowing the logo from 380 is what buys the room: it is 54px of height on a page that
+      is out of height, and the logo was the largest thing on a page whose point is the cards.
+      Also capped by the width (two cards, two gaps and the "vs" inside the search box's width)
+      and at 300.
+      PHONE IS WIDTH-BOUND. Two cards plus the "vs" already fill the column, so the card takes
+      what the width allows, (92vw - 34px) / 2, at most 162. A smaller logo buys height a phone
+      card cannot use, so the phone logo is unchanged.
+      SHORT SCREENS HOLD AT 143: below 620px tall (the X in-app browser measured at about 560)
+      the search box has under 40px to spare.  */
+  .argue{--acw:143px}
+  .argue .aslot,.argue .vvcard{--cw:var(--acw) !important}
+  @media (min-width:721px){
+    .logo{width:min(260px,64vw)}
+    .argue{--acw:clamp(143px, min(calc((100vh - 502px) / 1.397), calc((min(620px, 92vw) - 34px) / 2)), 300px)}
+  }
+  @media (max-width:720px){ .argue{--acw:clamp(143px, calc((92vw - 34px) / 2), 162px)} }
+  @media (max-width:720px) and (max-height:620px){ .argue{--acw:143px} }
 </style>
 <!-- Vercel Web Analytics, static form: the queue shim keeps an event fired before the script
      loads, and the script itself is served by Vercel only when Analytics is on for the project. -->
