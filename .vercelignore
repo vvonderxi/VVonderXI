@@ -55,8 +55,6 @@
 !/about.html
 !/privacy.html
 !/terms.html
-# vh.html: a one-off viewport diagnostic for the X in-app browser (2026-10-11). Delete with the file.
-!/vh.html
 
 # ── shared modules ────────────────────────────────────────────────────────
 !/vv-core.js
