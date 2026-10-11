@@ -373,6 +373,15 @@
     padding:calc(var(--cw)*0.055) calc(var(--cw)*0.07);color:#1C1B1A;font-family:'Barlow Condensed',sans-serif;text-align:left}
   .argue .acta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:12px;padding:0 22px;border-radius:999px;
     background:#E70443;color:#fff;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none}
+  /*  AN EMPTY SLOT DRAWS THE CARD'S OUTLINE (2026-10-11). The cards arrive after the shared
+      script and one query, which on a slow mobile connection is a second or more, and two blank
+      card-sized gaps read as a broken hero. The outline is the card's own drawn size (92% of
+      the slot, the same rounding), so when the card lands it fills the shape already there.
+      Keyed on :empty, so it needs no script and goes the moment a card is written in.  */
+  .argue .aslot{position:relative}
+  .argue .aslot:empty::before{content:"";position:absolute;top:0;bottom:0;left:4%;right:4%;
+    border:1.5px solid rgba(240,234,217,.16);border-radius:calc(var(--cw)*0.073);background:rgba(240,234,217,.03)}
+  body.light .argue .aslot:empty::before{border-color:rgba(28,27,26,.14);background:rgba(28,27,26,.025)}
   .argue.fail .acards{display:none}
   .hero.searching .argue{display:none}
   /*  SHORT SCREENS ARE THE REAL VIEWING CONDITION, NOT AN EDGE CASE (owner, 2026-10-11).
