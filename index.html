@@ -375,6 +375,23 @@
     background:#E70443;color:#fff;font-family:'Archivo';font-weight:800;font-size:14px;text-decoration:none}
   .argue.fail .acards{display:none}
   .hero.searching .argue{display:none}
+  /*  SHORT SCREENS ARE THE REAL VIEWING CONDITION, NOT AN EDGE CASE (owner, 2026-10-11).
+      91% of traffic is mobile and much of it arrives inside an in-app browser (X measured at
+      roughly two thirds of 844 visible). Keyed on the viewport's HEIGHT, which is what the page
+      is actually given, so a full browser is untouched and a shrunk one compacts.
+      What gives way, in order of what matters least to a cold arrival: the header's padding,
+      the tagline (the definition line below already says what the site is), the logo's size,
+      and the gaps. The pair and the search box keep their size.  */
+  @media (max-width:720px) and (max-height:700px){
+    .top{padding:6px 16px}
+    .hero{padding-top:2px}
+    .hero .tag{display:none}
+    .hero .logo{width:32vw;margin-bottom:6px}
+    .argue{margin-bottom:10px}
+    .argue .adef{margin-bottom:4px}
+    .argue .aq{margin-bottom:6px;font-size:16px}
+    .argue .acta{margin-top:8px}
+  }
   @media(max-width:560px){
     .hero .logo{width:42vw;margin-bottom:8px}
     .hero .tag{margin-bottom:14px;font-size:14px}
