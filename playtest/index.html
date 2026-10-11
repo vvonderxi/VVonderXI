@@ -609,6 +609,47 @@ button,.board,.card{touch-action:manipulation}
   .smini .smc{width:49px; height:69px} .smini .smc .card.vvc{transform:scale(.4)}
   .summary .sduel{display:none}
 }
+/* ===== FOCUS LAYOUT (2026-10-11) ===== */
+.board q,.board > span{display:none}
+.sres .sout{font-family:var(--display); font-weight:800; font-size:26px; line-height:1; color:#F0EAD9}
+.sres.me .sout{color:var(--gold)} .sres.them .sout{color:var(--pink-t)}
+.sres b.vchip{font-size:12px !important; padding:1px 8px; align-self:flex-start}
+.stamp b{display:block; font-size:1em; line-height:1} .stamp small{display:block; font-size:.36em; margin-top:6px; opacity:.85; letter-spacing:0}
+.skiphint{position:absolute; top:8px; right:10px; z-index:7; font-family:var(--label); font-size:12px; color:rgba(240,234,217,.7); background:rgba(0,0,0,.35); padding:3px 9px; border-radius:999px; pointer-events:none}
+.skiphint[hidden]{display:none}
+.tip{display:flex; align-items:center; gap:10px; background:var(--charcoal); color:#F0EAD9; border-left:4px solid var(--gold); border-radius:10px; padding:8px 10px; font-size:14px; line-height:1.3}
+.tip[hidden]{display:none} .tip span{flex:1} .tip .btn{color:#F0EAD9; border-color:rgba(240,234,217,.45); padding:4px 10px; font-size:13px; flex:none}
+.card.vvc .vstat span{display:none}
+body.focus-cards .stage{flex:0 0 auto; height:64px; min-height:0}
+body.focus-cards #live,body.focus-cards .boards,body.focus-cards .engline,body.focus-cards .duelbar{display:none !important}
+body.focus-cards #momentTitle{top:50%; transform:translateY(-50%)} body.focus-cards #momentTitle small{display:none}
+body.focus-cards .handwrap{flex:1 1 auto; display:flex; align-items:center}
+body.focus-cards .hand{height:auto; width:100%; flex-wrap:wrap; justify-content:center; gap:10px; padding:6px 0}
+body.focus-cards .hand .card.vvc{width:150px; height:212px; margin:0; transform:none !important}
+body.focus-cards .hand .card.vvc .vart{width:84px; height:74px}
+body.focus-cards .hand .card.vvc .vname{font-size:15px}
+body.focus-cards .hand .card.vvc .vstat b{font-size:30px}
+@media (max-width:700px){
+  .board b{font-size:14px !important} button.board em{font-size:14px} button.board i{font-size:12px}
+  .stage .engline{font-size:13px} .stage .duelbar{font-size:12px} .sres span,.summary .scons{font-size:12.5px} .summary .snav .btn{font-size:14px}
+  #turn span{font-size:14px} .scoreboard .side .who{font-size:13px}
+  #lpDots .lpd:not(.duel) text.nm{display:none}
+  .tip{font-size:13px; padding:7px 9px}
+  body.focus-cards .stage{height:44px}
+  body.focus-cards #momentTitle{font-size:16px}
+  body.focus-cards .hand{gap:7px; padding:4px 0}
+  body.focus-cards .hand .card.vvc{width:calc((100vw - 52px) / 3); height:calc((100vw - 52px) / 3 * 1.4); padding:7px 6px 6px; border-width:2px}
+  body.focus-cards .hand .card.vvc .vshield{width:16px; height:20px; font-size:9px; padding-top:3px}
+  body.focus-cards .hand .card.vvc .vvv b{font-size:18px}
+  body.focus-cards .hand .card.vvc .vart{width:62px; height:54px; margin:3px auto}
+  body.focus-cards .hand .card.vvc .vname{font-size:13px; -webkit-line-clamp:2}
+  body.focus-cards .hand .card.vvc .vstat b{font-size:28px}
+  body.focus-cards .handwrap{align-items:flex-start}
+  .sres .sout{font-size:22px}
+}
+body.settled .engline,body.settled .duelbar,body.settled #momentTitle small{display:none !important}
+.smini .card.vvc .vmeta,.smini .card.vvc .vvv i,.smini .card.vvc .vtag{display:none !important}
+@media (max-width:700px){ .hand .card.vvc .vshield{font-size:0} body.focus-cards .hand .card.vvc .vshield{font-size:9px} .smini .card.vvc .vseason{display:none !important} }
 /* playtest */
 .settings .deck,.settings label[for="deckFile"],.settings #demoDeck{display:none}
 .endbtns{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
@@ -661,14 +702,16 @@ button,.board,.card{touch-action:manipulation}
       <div class="duelbar" id="duelbar" hidden></div>
       <div class="reveal" id="revealPane" hidden></div>
       <div class="stamp" id="stamp" role="status"></div>
+      <div class="skiphint" id="skipHint" hidden>Tap to skip</div>
     </section>
     <div class="actionbar" id="actionbar">
       <div class="abhead"><div id="turn" data-side="play" aria-live="polite"></div><ol class="phases" id="phases" aria-label="Steps of this turn"></ol></div>
+      <div class="tip" id="tip" hidden role="status"><span></span><button class="btn" type="button">Got it</button></div>
       <div class="panel"><div id="moments" hidden></div><div class="overlay" id="effects" hidden></div><div class="summary" id="summary" hidden></div></div>
     </div>
     <div class="handwrap" id="handWrap"><div class="hand" id="hand" aria-label="Your squad"></div></div>
   </main>
-  <aside class="feed" aria-label="Commentary"><h3>Commentary <label class="fast keyl"><input type="checkbox" id="keyOnly"> Key moments only</label></h3><ol id="log" aria-live="polite"></ol></aside>
+  <aside class="feed" aria-label="Commentary"><h3>Commentary <label class="fast keyl"><input type="checkbox" id="keyOnly" checked> Key moments only</label></h3><ol id="log" aria-live="polite"></ol></aside>
 </div>
 <div hidden><span id="myRole"></span><span id="oppRole"></span><p id="stateLine"></p><p id="prompt"></p><div id="ballMark"></div><span id="benchPile"><b id="bench"></b></span></div>
 
@@ -815,7 +858,8 @@ let showFaces = (() => { try { return localStorage.getItem('vvduels-faces') !== 
 let subOpen = false, paused = false, lastLockId = null, captainMode = false, newIds = new Set(), subMode = false, subPick = new Set();
 let offered = [], struck = null, turnLog = [], lastDuel = null;
 let deck, ctx, ai, cpu, state, legacy, speed = 1, busy = false, rounds = [];
-const wait = ms => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 120) : ms * speed));
+let skipping = false;
+const wait = ms => new Promise(r => setTimeout(r, reduce || skipping ? Math.min(ms, 80) : ms * speed));
 
 function loadDeck(d) {
   deck = d;
@@ -958,6 +1002,9 @@ function setTurn(side, text) {
   t.innerHTML = side === 'me' ? `<b>Your move</b><span>${text}</span>` : side === 'them' ? `<b>Their move</b><span>${text}<i class="dots"><i></i><i></i><i></i></i></span>` : `<b>Kick-off</b><span>${text}</span>`;
   $('#hand').classList.toggle('waiting', side !== 'me');
   $('#handWrap').dataset.turn = side; $('#stage').dataset.turn = side;
+  document.body.classList.toggle('focus-cards', side === 'me' && !!state && ['SELECT', 'EFFECT', 'CAPTAIN'].includes(state.phase));
+  if (side === 'me') skipping = false;
+  if ($('#skipHint')) $('#skipHint').hidden = side !== 'play';
 }
 
 /* ---------------- moments panel ---------------- */
@@ -986,7 +1033,8 @@ function showMoments(mode) {
     const act = acts.find(a => a.category === cat);
     const best = Math.max(...state.players[ME].hand.map(id => statOf(id, cat, myR)));
     const aF = STAT_NAME[fieldFor(cat, 'attack')], dF = STAT_NAME[fieldFor(cat, 'defence')];
-    const btn = el('button', 'board', `<b>${C.label}</b><q>${MOMENT_LINE[cat] || ''}</q><span>${aF === dF ? aF + ', both sides' : 'Attack: ' + aF + '<br>Defend: ' + dF}</span><em>Your best: ${Math.round(best)}</em><i>${mode === 'ban' ? '&#10005; Strike off' : 'Attack here'}</i>`);
+    const btn = el('button', 'board', `<b>${C.label}</b><em>Your best: ${Math.round(best)}</em><i>${mode === 'ban' ? '&#10005; Strike off' : 'Attack here'}</i>`);
+    btn.title = aF === dF ? aF + ', both sides' : 'Attack: ' + aF + ', defend: ' + dF;
     btn.dataset.cat = cat; btn.onclick = () => humanAct(act); b.append(btn);
   }
   box.append(el('div', 'subbar', '')); showSubPanel();
@@ -1060,8 +1108,26 @@ async function showReveal(rv, cmp) {
     w.append(cardFace(rv.cards[p], { cat: rv.category, role: r })); return w; };
   pane.append(side('A'), el('b', 'rvvs', 'v'), side('B'));
   pane.classList.remove('out'); pane.hidden = false; fitNames(pane);
-  await wait(2100);
+  await wait(1500);
   pane.classList.add('out'); await wait(320); pane.hidden = true; pane.innerHTML = '';
+}
+const TIPS = {
+  ban: 'You defend this turn. Cross off the moment where their attackers would hurt you most.',
+  pick: 'You attack. Pick the moment where your cards show the biggest numbers.',
+  play: 'Bigger number wins. You do not always need your best card, a small win still counts.',
+  result: 'A win sends your card to your Legacy, a big win sends a teammate too. First to empty their hand wins.',
+};
+function tip(key) {
+  let seen = {}; try { seen = JSON.parse(localStorage.getItem('vvduels-tips') || '{}'); } catch { }
+  const t = $('#tip'); if (!t || seen[key]) { if (t && !t.hidden && t.dataset.key !== key) t.hidden = true; return; }
+  t.dataset.key = key; t.querySelector('span').textContent = TIPS[key]; t.hidden = false;
+  seen[key] = 1; try { localStorage.setItem('vvduels-tips', JSON.stringify(seen)); } catch { }
+  t.querySelector('button').onclick = () => { t.hidden = true; };
+}
+function outcomeOf(vd) {
+  if (!vd.crowns) return 'No decision';
+  const big = vd.severity >= 3;
+  return vd.winner === ME ? (big ? 'Big win' : 'You win') : (big ? 'They win big' : 'They win');
 }
 async function playDuel(ev) {
   const { REVEAL: rv, COMPARISON: cmp, VERDICT: vd } = ev;
@@ -1072,14 +1138,15 @@ async function playDuel(ev) {
   await showReveal(rv, cmp);
   await lpDuel(rv, cmp, vd);
   const name = VERDICT_NAME[vd.verdictTagKey] || vd.verdictId;
+  const outcome = outcomeOf(vd);
   const marg = Math.round(cmp.difference);
   cm(!vd.crowns ? `Margin ${marg}: <b>${name}</b>. Too close to separate, so nobody wins the moment and both seasons go home.`
     : `Margin ${marg}: <b>${name}</b>. ${who(vd.winner, true)} win the moment${vd.picks > 1 ? ' and choose two rewards' : vd.availableEffects.length > 1 ? ' and choose a reward' : ''}.`, vd.winner === ME ? 'me verdict' : vd.winner === CPU ? 'them verdict' : 'verdict');
   const st = $('#stamp');
-  st.textContent = name;
+  st.innerHTML = `<b>${outcome}</b><small>${name}</small>`;
   st.className = `stamp show sev${vd.severity} ${vd.winner === ME ? 'mine' : vd.winner === CPU ? 'theirs' : ''} ${VERDICT_CLASS[vd.verdictTagKey] || ''}`;
   $('#stage').classList.add(`sev${vd.severity}`);
-  await wait(1500 + vd.severity * 250);
+  await wait(1200 + vd.severity * 150);
   st.className = 'stamp'; $('#stage').classList.remove('sev0', 'sev1', 'sev2', 'sev3', 'sev4');
   rounds.push({ round: state.round });
 }
@@ -1335,7 +1402,7 @@ async function lpDuel(rv, cmp, vd) {
   $('#lpDots').classList.add('dueling'); [gA, gD].forEach(g => g.classList.add('duel'));
   const aVal = Math.round(attP === 'A' ? cmp.aValue : cmp.bValue), dVal = Math.round(attP === 'A' ? cmp.bValue : cmp.aValue);
   const bar = $('#duelbar');
-  bar.innerHTML = `<div class="dl"><b>${aC.name}</b> ${attP === ME ? '(you)' : '(them)'} <span>${STAT_NAME[fieldFor(rv.category, 'attack')]} ${aVal}</span></div><div class="track"><div class="fillA" id="fillA"></div></div><div class="dr"><span>${STAT_NAME[fieldFor(rv.category, 'defence')]} ${dVal}</span> <b>${dC.name}</b> ${defP === ME ? '(you)' : '(them)'}</div>`;
+  bar.innerHTML = `<div class="dl"><b>${aC.name}</b> ${attP === ME ? '(you)' : '(them)'} <span>${aVal}</span></div><div class="track"><div class="fillA" id="fillA"></div></div><div class="dr"><span>${dVal}</span> <b>${dC.name}</b> ${defP === ME ? '(you)' : '(them)'}</div>`;
   bar.hidden = false; bar.dataset.att = attP === ME ? 'me' : 'them';
   lpPlace(gA, mirror(steps[0].a), 700); lpPlace(gD, mirror(steps[0].d), 700); lpPlace(LP.ball, mirror(steps[0].b), 700);
   await wait(760);
@@ -1350,7 +1417,7 @@ async function lpDuel(rv, cmp, vd) {
     if (out === 'att' && i === steps.length - 1) { gA.classList.add('hot'); gD.classList.add('cold'); }
     if (out === 'def' && i === steps.length - 1) { gD.classList.add('hot'); gA.classList.add('cold'); }
     if (st.fx === 'goal') $('#stage').classList.add('goalflash');
-    await wait(st.ms + 450);
+    await wait(Math.round(st.ms * 0.55) + 150);
   }
 }
 function lpReset() {
@@ -1368,17 +1435,17 @@ function showSummary(final) {
   const name = VERDICT_NAME[vd.verdictTagKey] || vd.verdictId;
   const side = p => { const r = cmp.attacker === p ? 'attack' : 'defence'; const v = Math.round(p === 'A' ? cmp.aValue : cmp.bValue);
     return `<span class="${vd.winner === p ? 'w' : ''}">${p === ME ? 'You' : 'Them'}: <b>${card(rv.cards[p]).name}</b> ${v} ${STAT_NAME[fieldFor(rv.category, r)]} <small>(VV ${card(rv.cards[p]).rt})</small></span>`; };
-  const res = !vd.crowns ? 'No decision' : vd.winner === ME ? 'You win the moment' : 'They win the moment';
-  box.innerHTML = `<div class="sres ${vd.winner === ME ? 'me' : vd.winner === CPU ? 'them' : ''}"><b class="vchip ${VERDICT_CLASS[vd.verdictTagKey] || ''}">${name}</b><span>${res}, margin ${Math.round(cmp.difference)}</span></div>
-    <div class="sduel">${side('A')} <em>v</em> ${side('B')}</div>
+  const res = !vd.crowns ? 'Both seasons go home' : vd.severity >= 3 ? 'A teammate walks in too' : 'One season walks into the Legacy';
+  box.innerHTML = `<div class="sres ${vd.winner === ME ? 'me' : vd.winner === CPU ? 'them' : ''}"><strong class="sout">${outcomeOf(vd)}</strong><b class="vchip ${VERDICT_CLASS[vd.verdictTagKey] || ''}">${name}</b><span>${res}</span></div>
     <ul class="scons">${turnLog.map(t => `<li>${t}</li>`).join('')}</ul>
     <div class="snav"><button class="btn primary" id="sNext"><span class="sprog"></span>${final ? 'See the result' : 'Next turn'}</button><button class="btn" id="sPause">${paused ? 'Auto on' : 'Pause'}</button></div>`;
   const mini = el('div', 'smini');
   for (const p of ['A', 'B']) { const r = cmp.attacker === p ? 'attack' : 'defence'; const w = el('div', `smc ${vd.winner === p ? 'won' : ''}`); w.append(cardFace(rv.cards[p], { cat: rv.category, role: r })); mini.append(w); if (p === 'A') mini.append(el('b', 'smvs', 'v')); }
   box.prepend(mini); fitNames(mini);
-  box.hidden = false; setTurn('play', 'the turn is settled');
+  box.hidden = false; document.body.classList.add('settled'); setTurn('play', 'the turn is settled');
+  skipping = false; $('#skipHint').hidden = true; tip('result');
   const btn = box.querySelector('#sNext'); btn.focus({ preventScroll: true });
-  return new Promise(res => { let auto; const go = () => { clearTimeout(auto); box.hidden = true; box.innerHTML = ''; res(); };
+  return new Promise(res => { let auto; const go = () => { clearTimeout(auto); box.hidden = true; box.innerHTML = ''; document.body.classList.remove('settled'); res(); };
     const ms = 2200, prog = box.querySelector('.sprog');
     if (speed >= 1) box.querySelector('#sPause').hidden = true;
     const arm = () => { clearTimeout(auto); if (paused || final || speed >= 1) { prog.style.transition = 'none'; prog.style.width = '0'; return; }
@@ -1422,8 +1489,8 @@ async function direct(events) {
     if (e.type === 'CATEGORY_CHOSEN' && e.by === ME) hideMoments();
     if (e.type === 'CARD_LOCKED') lpLock(e.player);
     if (e.type === 'CATEGORY_OPTIONS') { lpBoards(e.options, null, null); lpZone(null); }
-    if (e.type === 'CATEGORY_BANNED') { lpBoards(offered, struck, null); await wait(500); }
-    if (e.type === 'CATEGORY_CHOSEN') { lpBoards(offered, struck, e.category); lpZone(e.category, state.active); setMoment(e.category); await wait(600); }
+    if (e.type === 'CATEGORY_BANNED') { lpBoards(offered, struck, null); await wait(350); }
+    if (e.type === 'CATEGORY_CHOSEN') { lpBoards(offered, struck, e.category); lpZone(e.category, state.active); setMoment(e.category); await wait(400); }
     if (e.type === 'SUB_USED' && e.player === CPU && e.sub === 'SWAP') await lpOppSwap(e.count);
     if (e.type === 'SUB_USED' && e.player === ME && e.sub === 'FORCED') await lpOppSwap(1);
     if (e.type === 'REVEAL') turnLog = [];
@@ -1446,6 +1513,7 @@ async function direct(events) {
 function trackNew(before) { const now = state.players[ME].hand; now.forEach(id => { if (!before.includes(id)) newIds.add(id); }); }
 async function humanAct(action) {
   if (busy) return; busy = true;
+  if ($('#tip') && !$('#tip').hidden && action.type !== 'USE_SUB') $('#tip').hidden = true;
   const before = state.players[ME].hand.slice();
   if (action.type === 'LOCK_CARD') lastLockId = action.cardId;
   subMode = false; subOpen = false; subPick.clear(); clearTargets();
@@ -1520,15 +1588,15 @@ async function loopInner() {
       setTurn('them', state.phase === 'CAPTAIN' ? 'naming their Captain in secret' : state.phase === 'BAN' ? 'striking one moment off' : state.phase === 'CATEGORY' ? 'picking the moment' : state.phase === 'SELECT' ? 'choosing their season' : 'choosing their reward');
       say('');
       setPhase(state.phase === 'CAPTAIN' ? 'captain' : state.phase === 'BAN' ? 'ban' : state.phase === 'CATEGORY' ? 'pick' : state.phase === 'SELECT' ? 'play' : 'reveal');
-      if (state.phase === 'BAN' || state.phase === 'CATEGORY') { showMoments('view'); await wait(900); } else await wait(450);
+      if (state.phase === 'BAN' || state.phase === 'CATEGORY') { showMoments('view'); await wait(550); } else await wait(250);
       if (state.phase === 'CAPTAIN') clearTargets();
       try { await cpuAct(); } finally { busy = false; }
       continue;
     }
     if (state.phase === 'CAPTAIN') { hideMoments(); setTurn('me', 'Captain mode: tap the season you want as your Captain. It can only go into your Legacy last, so choose one you trust to finish.'); askTarget(null, id => humanAct({ type: 'NAME_CAPTAIN', player: ME, cardId: id })); }
-    else if (state.phase === 'BAN') { setPhase('ban'); showMoments('ban'); setTurn('me', 'You defend. Strike off the moment you least want to face.'); say(''); }
-    else if (state.phase === 'CATEGORY') { setPhase('pick'); showMoments('pick'); setTurn('me', 'You attack. Pick the moment on the pitch.'); say(''); }
-    else if (state.phase === 'SELECT') { setPhase('play'); const r = role(ME); setTurn('me', `${r === 'attack' ? 'Attack' : 'Defend'} with ${STAT_NAME[fieldFor(state.category, r)]}: tap a card.`); say(''); setMoment(state.category); }
+    else if (state.phase === 'BAN') { setPhase('ban'); showMoments('ban'); setTurn('me', 'You defend. Strike off the moment you least want to face.'); say(''); tip('ban'); }
+    else if (state.phase === 'CATEGORY') { setPhase('pick'); showMoments('pick'); setTurn('me', 'You attack. Pick a moment.'); say(''); tip('pick'); }
+    else if (state.phase === 'SELECT') { setPhase('play'); const r = role(ME); setTurn('me', `${CATEGORIES[state.category].label}: tap a card. Highest number wins.`); say(''); setMoment(state.category); tip('play'); }
     else if (state.phase === 'EFFECT') { setTurn('me', 'You won the moment. Choose your reward.'); showEffects(); }
     return;
   }
@@ -1587,7 +1655,9 @@ $('#fb form').onsubmit = async e => {
   } catch (err) { console.warn(err); f.querySelector('.fberr').hidden = false; }
   btn.disabled = false; btn.textContent = 'Send feedback';
 };
+$('#stage').addEventListener('click', () => { if ($('#stage').dataset.turn === 'play' && !$('#sNext')) skipping = true; });
 $('#logBtn').onclick = () => { document.body.classList.toggle('showlog'); $('#logBtn').textContent = document.body.classList.contains('showlog') ? 'Close log' : 'Log'; const f = $('.feed'); f.scrollTop = f.scrollHeight; };
+$('#log').classList.add('keyonly');
 $('#keyOnly').onchange = e => $('#log').classList.toggle('keyonly', e.target.checked);
 $('#rulesBtn').onclick = () => $('#rules').showModal();
 $('#rulesClose').onclick = () => $('#rules').close();
