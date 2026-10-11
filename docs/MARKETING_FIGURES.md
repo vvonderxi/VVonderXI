@@ -61,3 +61,22 @@ because the stored second colour is white; the card does not draw that white hal
 **RE-RUN BEFORE PUBLISHING, one command, Terminal A:**
 `node -e "require('dotenv').config();const{createClient}=require('@supabase/supabase-js');createClient(process.env.SUPABASE_URL,process.env.SUPABASE_SERVICE_KEY).from('player_card_mv').select('card_id,rt,shirt_number,shirt_number_source,primary_colour,secondary_colour').in('card_id',[143372,141999,131585,135556,152972,151977,130728,158399]).then(r=>console.table(r.data))"`
 If any value differs from the table, the asset is re-rendered, not this file edited.
+
+## Card images for creative: use the export, not a re-drawing (2026-10-11)
+
+`node scripts/card-export.js <card_id> <width_px>` writes `_local/cards/card-<id>-<width>.png`, a
+transparent PNG of the card from the shipping card page, in the installed Chrome, with the real
+database row. It is not a third renderer, so it cannot drift from the product; the Python renderer
+can be retired.
+
+**IT IS THE CARD PAGE'S CARD, SPECIFICALLY.** The card's outer frame is styled in each page, and the
+six page-level copies differ by a hairline. An export is card.html's hero card. Do not present it as
+the rankings or Compare card.
+
+**THREE THINGS TO KNOW BEFORE PRINTING ONE:**
+- **The photo is the player's current headshot, not one from that season.** Mbappé's 2021/22 PSG card
+  shows him in a Real Madrid shirt. The site shows the same; the export is faithful to it.
+- **The corners carry the card's own drop shadow,** at most 9% opacity. It is part of the card on the
+  page, and the same style property draws the rim, so it stays.
+- **Every figure on the card is live.** Re-export after any data change rather than reusing an old PNG,
+  and log the figures here as for any other asset.
