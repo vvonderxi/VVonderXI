@@ -2485,7 +2485,10 @@ body.light .pkmsub{color:var(--ink-soft)}
       most three generations per edit and nothing while they are warm.
       IF SUG_PAIRS CHANGES, CHANGE THIS LIST IN THE SAME COMMIT, or the front door's button
       lands on a page that waits for a press it promised to skip.  */
-  var AUTO_VERDICT_PAIRS = ['141999-143372', '131585-152972', '133095-141575'];
+  /*  The first three are SUG_PAIRS; the rest are the homepage's rotating pairs (index.html PAIRS,
+      2026-10-11). All are re-warmed after every prompt edit.  */
+  var AUTO_VERDICT_PAIRS = ['141999-143372', '131585-152972', '133095-141575',
+                            '131585-135556', '151977-152972', '131182-137957'];
   function vvAutoVerdict(){
     if(!/[?&]go=1(&|$)/.test(location.search) || !CMP_A || !CMP_B) return;
     var a = +(CMP_A.id || CMP_A.card_id), b = +(CMP_B.id || CMP_B.card_id);

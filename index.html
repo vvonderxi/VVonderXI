@@ -437,7 +437,7 @@
     <section class="argue" aria-label="Who had the better season?">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
-      <a class="acards" href="compare.html?a=143372&amp;b=141999&amp;go=1" data-pair="143372-141999" aria-label="Messi 2011/12 against Ronaldo 2014/15">
+      <a class="acards" href="compare.html?a=143372&amp;b=141999&amp;go=1" data-pair="143372-141999" aria-label="Who had the better season?">
         <span class="aslot" id="argA"></span><span class="avs">VS</span><span class="aslot" id="argB"></span>
       </a>
       <a class="acta" href="compare.html?a=143372&amp;b=141999&amp;go=1" data-pair="143372-141999">See the verdict</a>
@@ -606,10 +606,23 @@
     try{ var f = localStorage.getItem('vvCardFace'); if(f !== 'silhouette') document.body.classList.add('show-photos'); }catch(e){ document.body.classList.add('show-photos'); }
     box.querySelectorAll('a[data-pair]').forEach(function(a){ a.addEventListener('click', function(){
       if(typeof window.va === 'function'){ try{ window.va('event', { name:'home_pair_opened', data:{ pair:a.dataset.pair } }); }catch(e){} } }); });
-    sb.from('player_card_mv').select('*').in('card_id', [143372, 141999]).then(function(res){
+    /*  FOUR ARGUMENTS, ONE PER VISIT (owner's choice 2026-10-11). Each is close enough that the
+        verdict, not the number, is the answer: A the one everyone has; B two record Premier
+        League scoring seasons nine years apart, the platform's own claim; C an exact tie, the
+        engine refusing to separate; E a holding midfielder against a 10 in the same season.
+        EVERY PAIR HERE MUST ALSO BE IN COMPARE'S AUTO_VERDICT_PAIRS AND IN THE RE-WARM LIST, or
+        "See the verdict" lands on a page that waits, or on a cold 20-second generation.
+        The markup carries pair A, so a failed script still shows a working link.  */
+    var PAIRS = [[143372, 141999], [131585, 135556], [152972, 151977], [131182, 137957]];
+    var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
+    var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
+    box.querySelectorAll('a[data-pair]').forEach(function(a){ a.setAttribute('href', url); a.dataset.pair = key; });
+    sb.from('player_card_mv').select('*').in('card_id', P).then(function(res){
       var rows = (res && res.data) || [];
-      var a = rows.find(function(r){ return r.card_id === 143372; }), b = rows.find(function(r){ return r.card_id === 141999; });
+      var a = rows.find(function(r){ return r.card_id === P[0]; }), b = rows.find(function(r){ return r.card_id === P[1]; });
       if(res.error || !a || !b || !C.buildCard || !C.rowToCard){ box.classList.add('fail'); return; }
+      var yr = function(r){ var y=+r.season_year; return y + '/' + String(y+1).slice(2); };
+      var ac = box.querySelector('.acards'); if(ac) ac.setAttribute('aria-label', a.player_name + ' ' + yr(a) + ' against ' + b.player_name + ' ' + yr(b));
       document.getElementById('argA').innerHTML = C.buildCard(C.rowToCard(a), 143);
       document.getElementById('argB').innerHTML = C.buildCard(C.rowToCard(b), 143);
     }, function(){ box.classList.add('fail'); });
