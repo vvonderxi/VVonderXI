@@ -424,6 +424,14 @@
   .argue{--acw:143px}
   .argue .aslot,.argue .vvcard{--cw:var(--acw) !important}
   @media (min-width:721px){
+    /*  THE PAGE STARTS AT THE LOGO, NOT UNDER A HEADER ROW (2026-10-11). The header carries only
+        the theme button and My Club, at the right edge, and in flow it pushed the whole stack
+        down 74px. Floated into the corner it costs the logo nothing (the two never share a
+        column at any width over 720) and lifts everything by 86px with the padding change.
+        The card formula below is unchanged, so the cards keep their size and the gain lands
+        under the search box: the four links clear the fold and the footer starts below it.  */
+    .top{position:absolute;top:0;left:0;right:0}
+    .hero{padding-top:12px}
     .logo{width:min(260px,64vw)}
     .argue{--acw:clamp(143px, min(calc((100vh - 502px) / 1.397), calc((min(620px, 92vw) - 34px) / 2)), 300px)}
   }
