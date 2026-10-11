@@ -2276,6 +2276,7 @@ body.light .pkmsub{color:var(--ink-soft)}
     }
     return true;
   }
+  var SLOT_REVEALED = Promise.resolve();
   async function loadSlotFromUrl(){
     var ids; try{ ids=new URLSearchParams(window.location.search); }catch(e){ return; }
     var a=ids.get('a'), b=ids.get('b'); if(!a && !b) return;
@@ -2285,10 +2286,17 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(_pair[1]) CMP_B=_pair[1];
     var m=document.querySelector('.matchup'); var cw=cwNow(); if(m)m.style.setProperty('--cw',cw+'px');
     vvSizeCards();
-    requestAnimationFrame(function(){ setTimeout(function(){
+    /*  SLOT_REVEALED RESOLVES ONCE THE CARDS ARE DRAWN, NOT WHEN THEY ARE FETCHED (2026-10-11).
+        vvFlipReveal calls vvResetVerdict, so anything that presses Compare must come AFTER it.
+        The one-tap auto-run pressed as soon as this function returned, a frame and 220ms
+        before the draw, and the draw then un-pressed it: the visitor landed on COMPARE unpressed.
+        It passed every hidden-tab test because a hidden tab runs no animation frames, so the
+        draw (and the reset) only happened when the tab was brought to the front.  */
+    SLOT_REVEALED = new Promise(function(done){ requestAnimationFrame(function(){ setTimeout(function(){
       if(CMP_A) vvFlipReveal('A', CMP_A, cw);
       if(CMP_B) vvFlipReveal('B', CMP_B, cw);
-    }, 220); });
+      done();
+    }, 220); }); });
     /*  A DEEP LINK RENDERS THE PANELS NOW, WITHOUT GENERATING ANYTHING. They land in the
         #verdict block, which is display:none until the button reveals it, so this changes
         nothing a visitor sees , it removes the fetch-and-draw delay AFTER the click, and it
@@ -2493,6 +2501,9 @@ body.light .pkmsub{color:var(--ink-soft)}
     if(!/[?&]go=1(&|$)/.test(location.search) || !CMP_A || !CMP_B) return;
     var a = +(CMP_A.id || CMP_A.card_id), b = +(CMP_B.id || CMP_B.card_id);
     if(AUTO_VERDICT_PAIRS.indexOf(Math.min(a,b) + '-' + Math.max(a,b)) < 0) return;
+    SLOT_REVEALED.then(vvAutoPress);
+  }
+  function vvAutoPress(){
     var s = document.querySelector('.settle'); if(!s) return;
     window.vvStepAuto = true; s.click(); window.vvStepAuto = false;
     /*  AND TAKE THEM TO IT. vvSettleTap's note rejects auto-scrolling on settle because a reader
