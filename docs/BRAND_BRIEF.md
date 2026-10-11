@@ -398,3 +398,37 @@ share-image renderer and the card disagree, the renderer is shimmed, never the c
   emoji set left on the platform.
 - **The holding page is what vvonderxi.com currently serves.** Production's Vercel branch
   is `coming-soon`, not the platform branch. The platform's own pages are not public yet.
+
+## 11. Retired: "Avoid real player faces" (retired 2026-10-11)
+
+**The rule.** The Google Doc "VVonderXI Master Brand, Product & Marketing Strategy"
+(written 2026-06-14) lists under Creative Direction, Avoid: *"Real player faces, Club
+logos, Licensed kits, Generic football imagery"*. The first item is retired. It is why
+marketing's card renderer draws a dark block where the face goes.
+
+**When the product stopped following it, and why.** Two weeks after the rule was written:
+on 2026-06-28 (`d562d9d`) the card started showing the player's headshot, and the same day
+(`2af7fb3`) a "Player faces" setting was added, ON by default, with a silhouette fallback.
+Every card on the live site carries a face unless the visitor turns it off. A card is
+recognised by its face before its number, and the product chose that.
+
+**So build marketing assets to the product, not to the old rule.** The way to get a card
+image is `node scripts/card-export.js <card_id> <width>` (see `MARKETING_FIGURES.md`), which
+draws the real card, face included, rather than a re-drawing of it.
+
+**WHAT THIS DOES NOT SETTLE, AND IT MUST TRAVEL WITH THE RETIREMENT:**
+- **The photos are not period photos.** The provider holds ONE current headshot per
+  player, the same image for every season (checked 2026-10-11: Messi's 2011, 2014 and 2024
+  records all return the same file). So Messi 11/12 wears an Inter Miami shirt. Any asset
+  showing a face shows today's face on a past season.
+- **The rights question was never answered.** The card contract left "API-Football image
+  terms" as an open item and it was never closed. Showing a face on our own site and
+  putting a named player's face in a paid advert are different uses, and the second is the
+  one most likely to need permission that nobody has asked for. Check before an ad with a
+  face goes out.
+- **Club logos and licensed kits stay on the avoid list.** Only the faces line is retired.
+  Note that a headshot usually shows a kit, which is part of why the rights question above
+  matters.
+
+The Google Doc itself still carries the line. Edit it there to point here, or delete it,
+so the two sources agree.
