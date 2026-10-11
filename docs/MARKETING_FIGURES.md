@@ -48,6 +48,12 @@ the number may be either club's), and none of the eight is. It is also not `squa
 off the club's squad table: the platform labels that "Sourced" and this "One club that season". All
 eight are fine to print as the number he wore; none of them is a verified squad-list entry.
 
+**THE DARK INK ON MAN CITY IS CORRECT, CHECKED 2026-10-11 RATHER THAN ASSUMED.** The stored and drawn
+fill is sky blue #6CABDD (the card's luma 0.62, light), so `inkFor` picks the dark #1C1B1A: contrast
+6.97 against the fill, where white would be 2.47. The other solid shields are deep colours and take
+white: Liverpool #C8102E at 5.88, Bayern #DC052D at 5.12. PSG's primary is #004170, the same navy as
+the left half of Mbappé's split shield.
+
 **FOR THE CREATIVE: Real Madrid has one stored colour (white).** The card draws a solid white shield
 with a dark number, so on a light background it needs an edge. Five of the eight shields are solid
 because the stored second colour is white; the card does not draw that white half.
