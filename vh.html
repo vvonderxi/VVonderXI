@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Viewport Check</title>
+<!--  DIAGNOSTIC, NOT A PRODUCT PAGE (2026-10-11). Opened once in the X in-app browser to settle
+      whether X SHRINKS the page's viewport (a page can measure and adapt) or DRAWS OVER it (no
+      page can). The pink bar is pinned to bottom:0 of the page's own viewport: if it is readable
+      above X's toolbar, the viewport was shrunk. Reads nothing, writes nothing, sends nothing.
+      Delete it once the question is answered.  -->
+<style>
+  html,body{margin:0;background:#16140F;color:#F0EAD9;font:16px/1.45 system-ui,-apple-system,sans-serif}
+  .wrap{padding:20px 18px 120px}
+  h1{font-size:20px;margin:0 0 14px}
+  .n{font:800 34px/1.1 system-ui,sans-serif;color:#F1688E}
+  .row{margin:0 0 14px}.row small{display:block;opacity:.7;font-size:13px}
+  .ua{font-size:11px;opacity:.6;word-break:break-all;margin-top:18px}
+  .bottom{position:fixed;left:0;right:0;bottom:0;background:#E70443;color:#fff;font-weight:800;text-align:center;padding:12px 10px calc(12px + env(safe-area-inset-bottom,0px))}
+  .probe{position:absolute;top:0;left:-10px;width:1px;visibility:hidden}
+  .lvh{height:100lvh}.svh{height:100svh}.dvh{height:100dvh}
+</style></head><body>
+<div class="probe lvh" id="lvh"></div><div class="probe svh" id="svh"></div><div class="probe dvh" id="dvh"></div>
+<div class="wrap">
+  <h1>VVonderXI viewport check</h1>
+  <div class="row"><div class="n" id="ih">.</div><small>visible height the page is given (innerHeight)</small></div>
+  <div class="row"><div class="n" id="vv">.</div><small>visual viewport height</small></div>
+  <div class="row"><div class="n" id="sh">.</div><small>whole screen height</small></div>
+  <div class="row"><div id="units">.</div><small>100lvh / 100svh / 100dvh</small></div>
+  <div class="row"><div id="w">.</div><small>width, pixel ratio</small></div>
+  <p>Look at the bottom of your screen. If the pink bar is fully readable above X's toolbar, X shrinks the page and the homepage can adapt to it. If the bar is hidden or cut off, X draws over the page.</p>
+  <p>A screenshot of this page answers it.</p>
+  <div class="ua" id="ua"></div>
+</div>
+<div class="bottom">BOTTOM OF THE PAGE: can you read this?</div>
+<script>
+  function h(id){ return Math.round(document.getElementById(id).getBoundingClientRect().height); }
+  function draw(){
+    document.getElementById('ih').textContent = window.innerHeight + ' px';
+    document.getElementById('vv').textContent = (window.visualViewport ? Math.round(window.visualViewport.height) : 'n/a') + ' px';
+    document.getElementById('sh').textContent = screen.height + ' px';
+    document.getElementById('units').textContent = h('lvh') + ' / ' + h('svh') + ' / ' + h('dvh');
+    document.getElementById('w').textContent = window.innerWidth + ' px wide, ' + (window.devicePixelRatio || 1) + 'x';
+    document.getElementById('ua').textContent = navigator.userAgent;
+  }
+  draw(); window.addEventListener('resize', draw);
+  if(window.visualViewport) window.visualViewport.addEventListener('resize', draw);
+</script>
+</body></html>
