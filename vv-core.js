@@ -5628,7 +5628,7 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
         SEVEN-POINT gap on a pair whose margin is 20.52. They are not close. The Index cannot
         resolve them, which is a different sentence, and the copy now says the one that is true.
         Same class of error as a band claiming a reproducibility it cannot deliver (SS E).  */
-    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:'A real gap, but smaller than the error on the scores. The argument is still open.', drury:'There will be no peace tonight. The number could not part them, and so the argument burns on. Some debates were never meant to end.', trigger:'inside the margin, and the record did not decide it either' },
+    the_debate:       { name:'The Debate Lives On',          emoji:'🔥', kind:'ladder', blurb:'The score cannot separate these two, and the record did not either. The argument is still open.', drury:'There will be no peace tonight. The number could not part them, and so the argument burns on. Some debates were never meant to end.', trigger:'inside the margin, and the record did not decide it either' },
     /*  DECIDED ON THE RECORD , the state that had no tag of its own and borrowed one that
         contradicted it. An inside pair the MODEL judged used to floor on `photo_finish`,
         whose blurb reads "near-identical scores" , printed beside a headline saying the
