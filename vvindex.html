@@ -751,7 +751,21 @@
   .lw-lims{margin:0;padding-left:18px;font:400 14px/1.55 'Inter';color:var(--vi-ink)}
   .lw-lims li{margin:8px 0}
   .lw-lims b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
-  @media (max-width:560px){ .lw-tab{font-size:13px} .lw-tab th,.lw-tab td{padding:8px 5px} }
+  .lw-p + .lw-note{margin-top:10px}
+  .lw-sm{display:none}
+  .lw-tab td:nth-child(3){white-space:nowrap}
+  /*  PHONE (2026-10-12): at 390 the column is 294px, and with the long headings every range
+      wrapped onto two lines and "Trim to the base figure" stacked four deep. Short headings
+      and single-line ranges keep each row one line; only the longest league names still wrap.  */
+  @media (max-width:560px){
+    .lw-lg{display:none} .lw-sm{display:inline}
+    .lw-tab{font-size:12.5px}
+    .lw-tab th,.lw-tab td{padding:8px 4px}
+    .lw-tab thead th{letter-spacing:.06em}
+    .lw-tab th:first-child,.lw-tab td:first-child{padding-left:0}
+    .lw-tab .lw-tier{padding-right:0}
+  }
+  @media (max-width:380px){ .lw-tab{font-size:11.5px} .lw-tab th,.lw-tab td{padding:8px 3px} .lw-tab thead th{font-size:9.5px;letter-spacing:.03em} }
   .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
   .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
     background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
@@ -1249,8 +1263,12 @@
       read from, by the percentage in the table. Near the top the score ladder is compressed, so the
       final number moves by less than that. A defender's attacking bonus is scaled by the weight
       more steeply.</p>
+    <p class="lw-note">The tiers are separate: each gap between them held in at least 96 of 100
+      resamples. Inside a tier the order is not, which is why each tier is listed alphabetically.
+      The engine uses a weight for each season, built from the five seasons around it; this table
+      shows each league across the whole record.</p>
     <div class="lw-wrap"><table class="lw-tab">
-      <thead><tr><th scope="col">League</th><th scope="col">Weight</th><th scope="col">Likely range</th><th scope="col">Trim to the base figure</th><th scope="col">Tier</th></tr></thead>
+      <thead><tr><th scope="col">League</th><th scope="col">Weight</th><th scope="col"><span class="lw-lg">Likely range</span><span class="lw-sm">Range</span></th><th scope="col"><span class="lw-lg">Trim to the base figure</span><span class="lw-sm">Trim</span></th><th scope="col">Tier</th></tr></thead>
       <tbody>
           <tr class="lw-t"><th scope="row">Premier League</th><td><span data-fig="lw_pl">1.00</span></td><td>the reference</td><td><span data-fig="lw_pl_trim">0</span>%</td><td class="lw-tier">1</td></tr>
           <tr class="lw-t"><th scope="row">La Liga</th><td><span data-fig="lw_ll">0.88</span></td><td>0.80 to 1.00</td><td><span data-fig="lw_ll_trim">4</span>%</td><td class="lw-tier" rowspan="2">2</td></tr>
@@ -1263,10 +1281,6 @@
           <tr><th scope="row">Süper Lig</th><td><span data-fig="lw_tr">0.64</span></td><td>0.58 to 0.73</td><td><span data-fig="lw_tr_trim">13</span>%</td></tr>
       </tbody>
     </table></div>
-    <p class="lw-note">The tiers are separate: each gap between them held in at least 96 of 100
-      resamples. Inside a tier the order is not, which is why each tier is listed alphabetically.
-      The engine uses a weight for each season, built from the five seasons around it; this table
-      shows each league across the whole record.</p>
     <h4 class="lw-h4">What it cannot see</h4>
     <ul class="lw-lims">
       <li><b>Measured through attacking output.</b> A move shows up in goals and assists, so that
