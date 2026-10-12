@@ -753,6 +753,24 @@ async function rlEnd(id) {
   catch (e) { console.error('[vv] rate limit: slot not closed, it will expire in ' + RL_STALE_MIN + 'min:', e && e.message); }
 }
 
+/*  CLOSE THE SLOT BEFORE THE RESPONSE LEAVES, NOT AFTER (2026-10-12). The finally that called
+    rlEnd ran AFTER res.json, and Vercel stops the function once the response is sent (SS C:
+    writes go before the response). Measured on the live site the day it was found: 4 of 4
+    finished generations left finished_at null, so RL_CONCURRENT counted every generation of the
+    last 90 seconds as still running, and a reader's third new comparison inside that window got
+    a 429. The 2026-10-04 note blamed the 35% leak on navigation and dead functions; it was this.
+    So res.json is wrapped once per slot: the close is awaited, THEN the body is sent. The finally
+    stays as the backstop for a path that throws before any response, and the flag stops a
+    second close.  */
+function rlCloseOnSend(res, id) {
+  if (!id) return;
+  const send = res.json.bind(res);
+  res.json = async function (body) {
+    if (!res._vvSlotClosed) { res._vvSlotClosed = true; await rlEnd(id); }
+    return send(body);
+  };
+}
+
 module.exports = async (req, res) => {
   /*  Fire the model probe WITHOUT awaiting it. It must never add latency to a
       request, and its answer is for the LOG, not for this response , the
@@ -1001,6 +1019,7 @@ module.exports = async (req, res) => {
           ? 'the platform is at its hourly generation ceiling, try again shortly'
           : 'hourly generation limit reached for this connection' });
       }
+      rlCloseOnSend(res, _rl.id);   // the slot closes before the response leaves , see the function
       try {
         const nResp = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
@@ -1039,7 +1058,7 @@ module.exports = async (req, res) => {
           } catch (e) { /* non-fatal */ }
         }
         return res.json({ glance: parsed.glance, scout: parsed.scout, notes: parsed.notes, cached: false });
-      } finally { await rlEnd(_rl.id); }
+      } finally { if (!res._vvSlotClosed) await rlEnd(_rl.id); }
     }
 
     /*  THE LIMIT IS TAKEN HERE, AFTER THE CACHE LOOKUP, AND THAT PLACEMENT IS THE DESIGN.
@@ -1059,6 +1078,7 @@ module.exports = async (req, res) => {
         ? 'the platform is at its hourly generation ceiling, try again shortly'
         : 'hourly generation limit reached for this connection' });
     }
+    rlCloseOnSend(res, _rl.id);   // the slot closes before the response leaves , see the function
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -1144,7 +1164,7 @@ module.exports = async (req, res) => {
         }, { onConflict: 'pair_key', ignoreDuplicates: false });
       } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
       return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
-    } finally { await rlEnd(_rl.id); }
+    } finally { if (!res._vvSlotClosed) await rlEnd(_rl.id); }
   } catch (err) {
     /*  LOG THE DETAIL, RETURN A GENERIC MESSAGE. `err.message` on a public endpoint hands a
         stranger whatever the failure happened to say , Supabase table and column names, a
