@@ -1245,9 +1245,12 @@
     <p class="lw-p">Each league's weight is measured from players who moved between two of our
       nine leagues in consecutive seasons, with at least 900 minutes on each side, and how their
       goals and assists per 90 changed when they did. The Premier League is the reference at 1.00.
-      The weight trims a season's base score; it never multiplies it.</p>
+      The weight is softened before it touches a season: it trims the base figure the score is
+      read from, by the percentage in the table. Near the top the score ladder is compressed, so the
+      final number moves by less than that. A defender's attacking bonus is scaled by the weight
+      more steeply.</p>
     <div class="lw-wrap"><table class="lw-tab">
-      <thead><tr><th scope="col">League</th><th scope="col">Weight</th><th scope="col">Likely range</th><th scope="col">Trim to a score</th><th scope="col">Tier</th></tr></thead>
+      <thead><tr><th scope="col">League</th><th scope="col">Weight</th><th scope="col">Likely range</th><th scope="col">Trim to the base figure</th><th scope="col">Tier</th></tr></thead>
       <tbody>
           <tr class="lw-t"><th scope="row">Premier League</th><td><span data-fig="lw_pl">1.00</span></td><td>the reference</td><td><span data-fig="lw_pl_trim">0</span>%</td><td class="lw-tier">1</td></tr>
           <tr class="lw-t"><th scope="row">La Liga</th><td><span data-fig="lw_ll">0.88</span></td><td>0.80 to 1.00</td><td><span data-fig="lw_ll_trim">4</span>%</td><td class="lw-tier" rowspan="2">2</td></tr>
