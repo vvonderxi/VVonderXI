@@ -482,6 +482,43 @@ async function main() {
   w1('walk_league', lgName(wRow.league_code), 'the league that season was played in',
      'player_card_mv.league_code, named through vv-core\'s canonical map');
 
+  /*  THE WEIGHT IS NOT THE EFFECT , ADDED 2026-10-12, AFTER THE WALK OVERSTATED IT THREE TIMES.
+      The step showed "x 0.796" from the day it shipped. The engine never multiplies a score by
+      the weight: it multiplies the base figure by 1 - (1 - weight) * 0.35, which for 0.796 is
+      0.93, a trim of about 7%, not 20%. Both are published now, each from the engine. And the
+      honest measure of what the league does to THIS season is to score it again with the
+      weight at 1, re-anchoring the ladder with that one figure swapped, which is what the
+      "would score 94" line reads.  */
+  const wFactor = 1 - (1 - W.wt) * 0.35;
+  w1('walk_factor', +wFactor.toFixed(2), 'what the league weight does to his base figure', '1 - (1 - weight) * 0.35');
+  w1('walk_trim_pct', Math.round((1 - wFactor) * 100), 'that factor as a percentage trim', 'round(100 * (1 - factor))');
+  const wPlB = RT.bFor(Object.assign({}, W, { wt: 1 }), E);
+  const bSwap = bAll.slice(); bSwap[wi] = wPlB;
+  const wRtPl = RT.rtFrom(wPlB, RT.anchorsOf(bSwap));
+  if (!(wRtPl >= wrt)) throw new Error(`the Premier League re-score (${wRtPl}) came out below the real one (${wrt}) , the counterfactual is broken`);
+  w1('walk_rt_pl', wRtPl, 'the same season scored with a league weight of 1', 'bFor with wt = 1, ladder re-anchored with that figure swapped in');
+
+  /*  THE LEAGUE TABLE, PUBLISHED AS TIERS , 2026-10-12. The current-season row of each league,
+      which is its all-years value (tier "pooled-fill" in engine_league_weights). The TIERS and
+      the RANGES are a dated measurement from scripts/engine/league_strength_audit.js (1,000
+      resamples of the transfers) and are written in the page; the weights and trims here are
+      live. THE GUARD: if the live weights stop separating the tiers the page was written for,
+      this throws rather than publishing a table whose groupings the numbers contradict.  */
+  const LW_YEAR = 2025;
+  const LW_TIERS = [['PL'], ['LL', 'SA'], ['BL', 'L1'], ['BPL', 'ERE', 'PRT', 'TR']];
+  const lw = {};
+  for (const r of engW) if (r.season_year === LW_YEAR) lw[r.league_code] = +r.weight;
+  for (const t of LW_TIERS) for (const c of t) if (lw[c] == null) throw new Error(`no ${LW_YEAR} league weight for ${c}`);
+  for (let i = 0; i < LW_TIERS.length - 1; i++) {
+    const lo = Math.min(...LW_TIERS[i].map(c => lw[c])), hi = Math.max(...LW_TIERS[i + 1].map(c => lw[c]));
+    if (!(lo > hi)) throw new Error(`league tiers ${i + 1} and ${i + 2} no longer separate (${lo} vs ${hi}) , re-run the audit before publishing the table`);
+  }
+  for (const t of LW_TIERS) for (const c of t) {
+    const k = 'lw_' + c.toLowerCase(), f = 1 - (1 - lw[c]) * 0.35;
+    add(k, lw[c].toFixed(2), lgName(c) + ' league weight, current season', 'engine_league_weights, season ' + LW_YEAR, 'engine_league_weights');
+    add(k + '_trim', Math.round((1 - f) * 100), lgName(c) + ' trim to a base score, percent', 'round(100 * (1 - weight) * 0.35)', 'engine_league_weights');
+  }
+
   const BANDS = { top3: 85, iconic: 90, gen: 95 };
   const bd = (await pageAll('honours', 'honour_type,season_year,api_player_id,player_name'))
     .filter(r => r.honour_type === 'ballon_dor' && r.api_player_id != null);

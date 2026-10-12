@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-09",
+  "generated": "2026-10-12",
   "source": "player_card_mv",
   "note": "LIVE figures only. Event figures and structural constants are deliberately absent , see the header of scripts/gen-index-figures.js.",
   "figures": [
@@ -324,6 +324,153 @@
       "claim": "the league that season was played in",
       "definition": "player_card_mv.league_code, named through vv-core's canonical map",
       "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_factor",
+      "value": 0.93,
+      "claim": "what the league weight does to his base figure",
+      "definition": "1 - (1 - weight) * 0.35",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_trim_pct",
+      "value": 7,
+      "claim": "that factor as a percentage trim",
+      "definition": "round(100 * (1 - factor))",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "walk_rt_pl",
+      "value": 94,
+      "claim": "the same season scored with a league weight of 1",
+      "definition": "bFor with wt = 1, ladder re-anchored with that figure swapped in",
+      "query": "scripts/separability/rt_reimpl.js, run over the live matview"
+    },
+    {
+      "key": "lw_pl",
+      "value": "1.00",
+      "claim": "Premier League league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_pl_trim",
+      "value": 0,
+      "claim": "Premier League trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_ll",
+      "value": "0.88",
+      "claim": "La Liga league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_ll_trim",
+      "value": 4,
+      "claim": "La Liga trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_sa",
+      "value": "0.88",
+      "claim": "Serie A league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_sa_trim",
+      "value": 4,
+      "claim": "Serie A trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_bl",
+      "value": "0.79",
+      "claim": "Bundesliga league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_bl_trim",
+      "value": 7,
+      "claim": "Bundesliga trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_l1",
+      "value": "0.77",
+      "claim": "Ligue 1 league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_l1_trim",
+      "value": 8,
+      "claim": "Ligue 1 trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_bpl",
+      "value": "0.60",
+      "claim": "Belgian Pro League league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_bpl_trim",
+      "value": 14,
+      "claim": "Belgian Pro League trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_ere",
+      "value": "0.63",
+      "claim": "Eredivisie league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_ere_trim",
+      "value": 13,
+      "claim": "Eredivisie trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_prt",
+      "value": "0.58",
+      "claim": "Primeira Liga league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_prt_trim",
+      "value": 15,
+      "claim": "Primeira Liga trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_tr",
+      "value": "0.64",
+      "claim": "Super Lig league weight, current season",
+      "definition": "engine_league_weights, season 2025",
+      "query": "engine_league_weights"
+    },
+    {
+      "key": "lw_tr_trim",
+      "value": 13,
+      "claim": "Super Lig trim to a base score, percent",
+      "definition": "round(100 * (1 - weight) * 0.35)",
+      "query": "engine_league_weights"
     },
     {
       "key": "ballon_dor_seasons",

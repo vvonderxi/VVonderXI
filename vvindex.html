@@ -735,6 +735,23 @@
     above for both grounds, so the scoped copies the Playbook needed are redundant here and
     were dropped rather than carried along as a second source.  */
   .wkafter{font:400 14px/1.6 'Inter';color:var(--vi-mut);max-width:660px;margin:16px auto 0}
+  /*  THE LEAGUE TABLE , 2026-10-12. Same column as the walk, same tokens, nothing new to
+      theme: every ink here is a --vi- token that already flips in body.light.  */
+  .lw{max-width:660px;margin:38px auto 0;padding-top:28px;border-top:1px solid var(--vi-line)}
+  .lw-p,.lw-note{font:400 14px/1.6 'Inter';color:var(--vi-ink);margin:10px 0 0}
+  .lw-note{color:var(--vi-mut)}
+  .lw-wrap{overflow-x:auto;margin-top:16px}
+  .lw-tab{width:100%;border-collapse:collapse;font:400 14px/1.35 'Inter';color:var(--vi-ink)}
+  .lw-tab th,.lw-tab td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--vi-line);font-variant-numeric:tabular-nums}
+  .lw-tab thead th{font:700 10px 'Archivo';letter-spacing:.09em;text-transform:uppercase;color:var(--vi-mut)}
+  .lw-tab tbody th{font-weight:600;color:var(--vi-strong)}
+  .lw-tab tr.lw-t > *{border-top:1px solid var(--vi-mut)}
+  .lw-tab .lw-tier{font:900 17px 'Archivo';color:var(--vi-strong);text-align:center;vertical-align:middle}
+  .lw-h4{font:800 15px 'Archivo';color:var(--vi-strong);margin:24px 0 6px}
+  .lw-lims{margin:0;padding-left:18px;font:400 14px/1.55 'Inter';color:var(--vi-ink)}
+  .lw-lims li{margin:8px 0}
+  .lw-lims b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
+  @media (max-width:560px){ .lw-tab{font-size:13px} .lw-tab th,.lw-tab td{padding:8px 5px} }
   .wkafter b{font-family:'Archivo';font-weight:700;color:var(--vi-strong)}
   .wk{border:1px solid var(--vi-line);border-radius:var(--r-lg);padding:22px 20px 18px;
     background:linear-gradient(180deg,var(--vi-panel),transparent);max-width:660px;margin-inline:auto}
@@ -1180,11 +1197,18 @@
       <div class="wkv"><span data-fig="walk_pct_pool_rate">99.5</span><small>percentile</small></div></div>
 
     <div class="wkstep"><div class="wkn">3</div>
+      <!--  THE WEIGHT IS NOT THE EFFECT , REWRITTEN 2026-10-12. This step showed "x 0.796" from
+            the day it shipped, and the engine has never multiplied a score by the weight: it
+            applies 1 - (1 - weight) * 0.35, about 0.93 here, so the step overstated the league's
+            effect by three times on the page that exists to explain the method. Both numbers now
+            come from the generator, and so does the re-score at a weight of 1.  -->
       <div class="wkl"><b>And the league is weighed by who left it.</b>
-        <span data-fig="walk_league">Ligue 1</span> is not marked down by reputation. Its weight
-        is computed <span class="hi">from players who moved between leagues</span>, and what
-        happened to them when they did.</div>
-      <div class="wkv">&#215;&#8201;<span data-fig="walk_weight">0.796</span><small>league</small></div></div>
+        <span data-fig="walk_league">Ligue 1</span> is not marked down by reputation. Its weight,
+        <span data-fig="walk_weight">0.796</span>, is computed <span class="hi">from players who
+        moved between leagues</span> and what happened to them when they did. It enters the score
+        softened, as a trim of about <span data-fig="walk_trim_pct">7</span>%. Played in the
+        Premier League, the same season would score <span data-fig="walk_rt_pl">94</span>.</div>
+      <div class="wkv">&#215;&#8201;<span data-fig="walk_factor">0.93</span><small>league</small></div></div>
 
     <div class="wkout">
       <div class="wkoutl"><b>The last step is a ladder of ranks, not thresholds.</b> 85 is the
@@ -1206,6 +1230,62 @@
   other at all. Minutes, output, position, league, and <b>nothing else , not even the five
   dimensions drawn on a player&#8217;s card.</b> That radar is a second reading of the same season,
   shown beside the score, never inside it.</p>
+
+  <!--  HOW THE LEAGUE IS WEIGHED , 2026-10-12. FOUR TIERS, NOT NINE PLACES, AND THAT IS A
+        MEASUREMENT RATHER THAN MODESTY. Resampling the transfers 1,000 times
+        (scripts/engine/league_strength_audit.js) separates the tiers in at least 96 of 100 runs
+        and does NOT separate the leagues inside them: Serie A over La Liga held in 53, a coin
+        flip. So each tier is listed ALPHABETICALLY, and an order inside it must never be
+        printed. The weights and trims are live figures; the ranges and the tiers are that
+        dated audit, and the figures generator throws if the live weights stop separating the
+        tiers. THE LIMITS LIST IS THE POINT OF THE SECTION, not the numbers above it.  -->
+  <section class="lw">
+    <div class="wk-label">How the league is weighed</div>
+    <h3 class="wk-h">Four tiers, not nine places</h3>
+    <p class="lw-p">Each league's weight is measured from players who moved between two of our
+      nine leagues in consecutive seasons, with at least 900 minutes on each side, and how their
+      goals and assists per 90 changed when they did. The Premier League is the reference at 1.00.
+      The weight trims a season's base score; it never multiplies it.</p>
+    <div class="lw-wrap"><table class="lw-tab">
+      <thead><tr><th scope="col">League</th><th scope="col">Weight</th><th scope="col">Likely range</th><th scope="col">Trim to a score</th><th scope="col">Tier</th></tr></thead>
+      <tbody>
+          <tr class="lw-t"><th scope="row">Premier League</th><td><span data-fig="lw_pl">1.00</span></td><td>the reference</td><td><span data-fig="lw_pl_trim">0</span>%</td><td class="lw-tier">1</td></tr>
+          <tr class="lw-t"><th scope="row">La Liga</th><td><span data-fig="lw_ll">0.88</span></td><td>0.80 to 1.00</td><td><span data-fig="lw_ll_trim">4</span>%</td><td class="lw-tier" rowspan="2">2</td></tr>
+          <tr><th scope="row">Serie A</th><td><span data-fig="lw_sa">0.88</span></td><td>0.82 to 0.99</td><td><span data-fig="lw_sa_trim">4</span>%</td></tr>
+          <tr class="lw-t"><th scope="row">Bundesliga</th><td><span data-fig="lw_bl">0.79</span></td><td>0.73 to 0.90</td><td><span data-fig="lw_bl_trim">7</span>%</td><td class="lw-tier" rowspan="2">3</td></tr>
+          <tr><th scope="row">Ligue 1</th><td><span data-fig="lw_l1">0.77</span></td><td>0.70 to 0.85</td><td><span data-fig="lw_l1_trim">8</span>%</td></tr>
+          <tr class="lw-t"><th scope="row">Belgian Pro League</th><td><span data-fig="lw_bpl">0.60</span></td><td>0.55 to 0.71</td><td><span data-fig="lw_bpl_trim">14</span>%</td><td class="lw-tier" rowspan="4">4</td></tr>
+          <tr><th scope="row">Eredivisie</th><td><span data-fig="lw_ere">0.63</span></td><td>0.56 to 0.72</td><td><span data-fig="lw_ere_trim">13</span>%</td></tr>
+          <tr><th scope="row">Primeira Liga</th><td><span data-fig="lw_prt">0.58</span></td><td>0.51 to 0.68</td><td><span data-fig="lw_prt_trim">15</span>%</td></tr>
+          <tr><th scope="row">Süper Lig</th><td><span data-fig="lw_tr">0.64</span></td><td>0.58 to 0.73</td><td><span data-fig="lw_tr_trim">13</span>%</td></tr>
+      </tbody>
+    </table></div>
+    <p class="lw-note">The tiers are separate: each gap between them held in at least 96 of 100
+      resamples. Inside a tier the order is not, which is why each tier is listed alphabetically.
+      The engine uses a weight for each season, built from the five seasons around it; this table
+      shows each league across the whole record.</p>
+    <h4 class="lw-h4">What it cannot see</h4>
+    <ul class="lw-lims">
+      <li><b>Measured through attacking output.</b> A move shows up in goals and assists, so that
+        is what we measure. Defenders and goalkeepers carry weights learned from attackers.</li>
+      <li><b>A move is more than a change of league.</b> A player who joins a bigger club gets
+        better teammates and more of the ball, and nothing here can tell that apart from the
+        league itself.</li>
+      <li><b>Movers are not a random sample.</b> Clubs buy players after good seasons, and some of
+        that form fades whatever league they join. Taking medians and counting moves in both
+        directions reduces this. It does not remove it.</li>
+      <li><b>Only moves between our nine leagues count.</b> 991 on the latest count, from 135
+        touching Belgium to 323 touching the Premier League.</li>
+      <li><b>One setting is judgement.</b> High-scoring leagues inflate everyone's output, so each
+        league's scoring rate is partly corrected for. How much, a factor of 0.5, was chosen by
+        comparing alternatives, not measured.</li>
+      <li><b>It is relative.</b> It says how the leagues compare with each other, not whether
+        football as a whole got stronger.</li>
+      <li><b>It was built once, in July 2026, and has not been recomputed since.</b> The current
+        season uses each league's long-run value. Rebuilt on today's data, no weight moved by more
+        than 0.06.</li>
+    </ul>
+  </section>
 
   <section class="vi-lims">
     <h2 class="vi-lims-h">What it will not tell you</h2>
