@@ -4538,11 +4538,14 @@ async function csRun(){
   if(seq!==CS.seq) return;                   // a newer keystroke already won
   /* Analytics: one event per search that actually RAN and won the race, never per keystroke,
      and only for a named search (the empty browse is a list, not a search). One property. */
-  if(nameQ){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'search_performed', data:{ query:String(nameQ).slice(0,80) } }); }catch(e){} } }
   var hint=document.getElementById('csHint');
   if(res.error){ CS.state='error'; csRender();
                  console.error('card search failed:',res.error.message); return; }
   var rows=res.data||[];
+  /*  THE COUNT, NEVER THE WORDS (2026-10-12): this sent the typed text to Vercel, undeclared
+      on the privacy page. Now one property, how many results the search found, read after
+      the error check so a failed query is not counted as an empty one.  */
+  if(nameQ){ if(typeof window.va==='function'){ try{ window.va('event',{ name:'search_performed', data:{ page:'card', results:rows.length } }); }catch(e){} } }
   if(nameQ) rows=VVCore.rankBySearch(rows,nameQ,function(r){ return (r.player_name||'')+' '+(r.player_name_norm||''); });
   var stNow=csFState();
   CS.rows=rows.map(rowToCard).filter(stNow ? VVFilters.clientPredicate(stNow) : function(){ return true; });

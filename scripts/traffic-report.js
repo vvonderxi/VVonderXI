@@ -87,6 +87,26 @@ function daily(days, series) {                   // stacked columns per day
     all('waitlist_emails', 'source,created_at', q => q.order('id')),
   ]);
 
+  /*  RETENTION, CHECKED RATHER THAN TRUSTED (2026-10-12). privacy.html promises two deletions:
+      rate-limit rows (which hold IP addresses) after 24 hours, event rows after 90 days. An
+      hourly pg_cron job does both (migrations/retention_2026-10-09). Nothing else would notice
+      if it stopped, so the report reads the OLDEST row of each table and the job itself, and
+      prints a failure where a reader cannot miss it. The slack (an extra 2 hours on each) is
+      the job's own hourly cadence plus a margin, not tolerance for a broken job.  */
+  const oldest = async (t, col) => { const r = await sb.from(t).select(col).order(col, { ascending: true }).limit(1);
+    if (r.error) throw new Error(t + ': ' + r.error.message); return r.data[0] ? r.data[0][col] : null; };
+  const ageH = t => t ? (Date.now() - Date.parse(t)) / 36e5 : 0;
+  const [evOld, rlOld] = await Promise.all([oldest('vv_events', 'created_at'), oldest('api_rate_events', 'started_at')]);
+  const job = await sb.rpc('exec_sql', { sql: "select (('x'||(select count(*) from cron.job where jobname='vv_retention_hourly' and active)::text))::int" })
+    .then(r => { const m = ((r.error && r.error.message) || '').match(/"x(\d+)"/); return m ? +m[1] : null; });
+  const RET = [
+    { what: 'Event rows (promise: deleted after 90 days)', age: ageH(evOld) / 24, unit: 'days', ok: ageH(evOld) <= 90 * 24 + 2 },
+    { what: 'Rate-limit rows with IP addresses (promise: deleted after 24 hours)', age: ageH(rlOld), unit: 'hours', ok: ageH(rlOld) <= 26 },
+    { what: 'The hourly deletion job is scheduled and active', age: job, unit: 'job', ok: job === 1 },
+  ];
+  const retFail = RET.filter(r => !r.ok);
+  RET.forEach(r => console.log((r.ok ? '  retention ok   ' : '  RETENTION FAIL ') + r.what + (r.unit === 'job' ? ' : ' + (r.age === 1 ? 'yes' : 'NO') : ' : oldest ' + r.age.toFixed(1) + ' ' + r.unit)));
+
   // names for every card the page mentions, read from the matview, never the view (SS C)
   const ids = new Set();
   ev.forEach(e => { if (e.kind === 'card') ids.add(+e.key); if (e.kind === 'compare') e.key.split('-').forEach(x => ids.add(+x)); });
@@ -235,9 +255,11 @@ ${table(['Pair', 'First generated'], verdicts.sort((a, b) => a.created_at < b.cr
   ])}
 <p class="note">${addrs.size} address${addrs.size === 1 ? '' : 'es'} in the last 24 hours. Costs are estimates at cold rates (24h $${cost24.toFixed(2)}, since launch $${costFlip.toFixed(2)}); the Anthropic console is the bill. "Since launch" counts a pair or card only the first time it was ever generated, so regenerations after a prompt change are missing from it.</p></div>
 </div>
+<div class="panel"><h2>Privacy</h2><h3>Retention ${retFail.length ? '<span style="color:#c62828">FAILING , the privacy page is not being kept</span>' : 'is being kept'}</h3>${table(['Promise', 'Now', ''], RET.map(r => [esc(r.what), r.unit === 'job' ? (r.age === 1 ? 'scheduled' : 'MISSING') : r.age.toFixed(1) + ' ' + r.unit + ' oldest', r.ok ? 'ok' : '<b style="color:#c62828">FAIL</b>']))}</div>
 <div class="panel"><h2>Waitlist</h2><h3>Signups by source</h3>${table(['Source', 'Signups', 'Latest'], Object.entries(bySource).map(([k, v]) => [esc(k), v.n, esc(v.last.slice(0, 10))]))}</div>
 </div></body></html>`;
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
   fs.writeFileSync(OUT, html);
   console.log('wrote', path.relative(process.cwd(), OUT), '| events', ev.length, '| compare visits', V.length, '| cards named', C.size);
+  if (retFail.length) { console.error('RETENTION FAILING: ' + retFail.map(r => r.what).join('; ')); process.exitCode = 2; }
 })().catch(e => { console.error('traffic report failed:', e.message); process.exit(1); });

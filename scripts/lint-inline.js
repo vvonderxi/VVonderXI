@@ -396,7 +396,18 @@ function lintParseModelJSON(){
   return out;
 }
 
-const moduleFaults = lintModules().concat(lintStringFloors()).concat(lintCacheStamps()).concat(lintParseModelJSON())
+/*  EVERY FIELD THE CODE SENDS IS DECLARED ON THE PRIVACY PAGE (2026-10-12). Runs the
+    standalone check so a commit that adds an undeclared analytics field fails the same lint
+    every commit already runs, which is what would have caught the search text sent to Vercel
+    on 2026-10-11. Its control set lives in its own header.  */
+function lintPrivacyFields(){
+  const { spawnSync } = require('child_process');
+  const r = spawnSync(process.execPath, [require('path').join(__dirname, 'check-privacy-fields.js')], { encoding: 'utf8' });
+  if (r.status === 0) return [];
+  const lines = (r.stdout || '').split('\n').filter(l => /FAIL  /.test(l)).map(l => l.trim());
+  return [{ kind: 'PRIVACY', file: 'privacy.html', error: (lines.join(' | ') || (r.stderr || 'check-privacy-fields.js failed').trim()) }];
+}
+const moduleFaults = lintModules().concat(lintStringFloors()).concat(lintCacheStamps()).concat(lintParseModelJSON()).concat(lintPrivacyFields())
   .concat(targets.flatMap(f => lintWordmark(f, fs.readFileSync(f, 'utf8'))))
   .concat(targets.flatMap(f => lintSocial(f, fs.readFileSync(f, 'utf8'))));
 const broken = results.filter(r => r.css.faults.length || r.js.length);

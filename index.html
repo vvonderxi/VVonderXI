@@ -875,7 +875,11 @@
   var _homeSearched = false;
   function homeSearchEvent(q, n){
     if(_homeSearched || typeof window.va !== 'function') return; _homeSearched = true;
-    try{ window.va('event', { name:'search_performed', data:{ page:'home', query:String(q).slice(0,80), results:n } }); }catch(e){}
+    /*  THE COUNT, NEVER THE WORDS (2026-10-12). This sent the typed text to Vercel, which the
+        privacy page did not declare. We have never used a search term for anything; the one
+        that matters, a search that found nothing, is already in our own table (search_miss)
+        and already disclosed. scripts/check-privacy-fields.js fails if a field comes back.  */
+    try{ window.va('event', { name:'search_performed', data:{ page:'home', results:n } }); }catch(e){}
   }
   function go(i){
     var r = rows[i]; if(!r) return;
