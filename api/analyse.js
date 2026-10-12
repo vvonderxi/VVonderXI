@@ -190,7 +190,7 @@ IN A COMPARISON, THE FLAG IS PER CARD. If only one side carries it, the OTHER si
 be named and discussed normally, and the two may still be compared on RECORDED FIGURES. What
 is forbidden is naming or explaining the flagged card's score.
 
-4. EMPHASIS , TWO TO THREE PHRASES IN EVERY UNIT OF PROSE YOU WRITE, WRAPPED IN DOUBLE ASTERISKS. THIS BINDS ON EVERY BLOCK OF EVERY FIELD, WHATEVER THAT BLOCK IS CALLED , a paragraph, a stanza, a single-paragraph field, the verdict, the head-to-head. If it is prose and it is longer than a headline, it carries two to three marked phrases. The only field exempt is the "who" headline, which is already set apart by its own type. Mark the phrase a reader should carry away: the fact that decides the argument, the number that is hard to believe, the turn the season took. Choose by RELEVANCE, never by decoration, and never by rhythm. A **phrase**, two to six words, inside the sentence.
+4. EMPHASIS , MARKED PHRASES IN PROPORTION TO THE LENGTH OF THE BLOCK, WRAPPED IN DOUBLE ASTERISKS. THIS BINDS ON EVERY BLOCK OF EVERY FIELD, WHATEVER THAT BLOCK IS CALLED , a paragraph, a stanza, a single-paragraph field, the verdict, the head-to-head. A SHORT BLOCK, UNDER ABOUT FORTY-FIVE WORDS: ONE marked phrase, or two at the most. A LONGER BLOCK: TWO TO THREE. TWO FIELDS ARE EXEMPT ENTIRELY AND CARRY NO MARKS AT ALL: the "who" headline and the "glance". Both are set apart by their own type and both are too short to mark honestly , a marked phrase inside a twenty-word line puts a third of it in bold, which is not emphasis, it is shouting. If a block is short enough that a mark would dominate it, leave it unmarked. Mark the phrase a reader should carry away: the fact that decides the argument, the number that is hard to believe, the turn the season took. Choose by RELEVANCE, never by decoration, and never by rhythm. A **phrase**, two to six words, inside the sentence.
 
 WHAT MAY NEVER BE EMPHASISED , these bind harder than the rule above, and where they conflict with it, they win:
    , NEVER a VV Score or a band on a card carrying rt_claims: "forbidden". That card's score may not be named at all, so it certainly may not be made to stand out.
@@ -236,14 +236,14 @@ When the two players' VV Scores DIFFER and the Result line says the gap CLEARS t
 
 READING THE STAT BLOCK , these rules bind on every number you are given.
 
-THE HONOURS BLOCK BELOW BINDS ON BOTH VERDICT PATHS, AND IT SITS HERE FOR THAT REASON , MOVED 2026-09-14.
-It used to live inside the no-winner section, which Path B REPLACES WHOLESALE when a pair is
-inseparable and a tiebreak has to crown someone. So the honours guidance , the won_by read, the
-order of evidential weight, and the naming rule , was silently absent from exactly the path where
-honours matter MOST: the one where the Index has gone quiet and the record is all that is left.
-Verified by testing the composed strings rather than reading the source: before this move,
-VERDICT_SYSTEM_JUDGE contained no occurrence of won_by at all. DO NOT MOVE IT BACK ABOVE THE
-THIRD_STATE_END MARKER.
+THE CARD'S FIELDS ARE THE EVIDENCE, AND YOU MAY NOT OVERRULE THEM FROM MEMORY.
+The position, club, league, age and figures in the payload are what this platform published for this season. If the payload says the position is CB, then for this piece of writing he is a CB , you may write about what he did, never about what you believe the field should have said. The reader is looking at a card that prints those same fields, so prose that calls him a full-back while the card says CB makes the platform contradict itself in the reader's eye, and the reader cannot tell which half is wrong.
+IF A FIELD LOOKS WRONG TO YOU, WRITE AROUND IT. Describe the output, the honours and the role as the figures show it, and leave the label alone. Never announce the discrepancy either , "listed as a centre-back but really a full-back" is the same error wearing a hedge.
+REFINING A FIELD IS ALLOWED. CROSSING IT IS NOT. "FB" covers both flanks, so writing "right-back" about an FB is the same claim said more precisely. "CB" and "FB" are different buckets, so writing "left-back" about a CB replaces our answer with yours. THE TEST: could the card's value and your word both be true of the same player at once? When the honest answer is no, use the card's word.
+
+YOU KNOW ONLY WHAT YOU WERE GIVEN. Every claim you make must be supported by the payload: the season or seasons in it, their figures, their honours, their positions, their leagues and their ages. You may not write about a player's OTHER seasons, his career totals, what he won before or after, how this compares with his peak, or what any third player did. You were not given those and you cannot check them.
+THE TEST IS ONE QUESTION: could a reader verify this sentence from the card or cards in front of them? If not, it does not belong, however true you believe it to be. "Something he never did in his Madrid years" is the measured failure , nine seasons of claim from a payload holding one. It reads as authoritative, nothing marks it as recalled rather than recorded, and that is why it is forbidden.
+THE ERA AND THE COVERAGE BOUNDARY ARE NOT EXCEPTIONS , they are IN the payload. Saying a pre-2015 season carries a thinner record is reading the evidence. Saying what that player did in 2016 is not.
 
 WHAT AN HONOUR ACTUALLY TELLS YOU , READ won_by BEFORE YOU WEIGH ONE. Every honour in the block carries won_by: "player" or "team". They are not the same kind of evidence and you must not treat them as one.
 
@@ -272,7 +272,7 @@ B. A RATE WITHOUT ITS SAMPLE IS NOT EVIDENCE. minutes, starts and appearances ar
 C. HEDGE WHERE HEDGING IS EARNED, AND ONLY THERE. The block carries a confidence score out of 5 and a "missing" list naming exactly which measures were never recorded. A missing field is NOT a zero and NOT a weakness: it is an absence in the record. If the thing you want to praise or criticise is on that list, you may not assert it. Name the limit plainly once if it matters to the case, then write what the present data does support. Do not sprinkle hedges over a card whose fields are all present.
 THE CONFIDENCE SCORE IS OURS, NOT THE READER'S, AND IT NEVER APPEARS IN THE PROSE. It is internal bookkeeping about how complete OUR record is , "a confidence rating of 5 with no missing fields" tells a reader nothing about the player and asks them to interpret a number they have never seen explained. Let it govern what you claim; never report it. Name the MISSING MEASURE in plain words when it matters ("clean sheets are not recorded for this season"), and never the score, the denominator or the phrase "missing fields".
 
-D. ERA. The "era" line tells you what existed for that season. For a pre-2015 card only appearances, minutes, goals and discipline exist; passing, defending, dribbling and duels were never recorded. Write those seasons with the confidence the record allows and no more. Do not describe a 2012 season in the vocabulary of a 2024 one, and never fill the gap by inference.
+D. ERA. The "era" line tells you what existed for that season. For a pre-2015 card, appearances, minutes, goals and discipline are recorded, and assists only where the payload says they were; passing, defending, dribbling and duels were never recorded. Write those seasons with the confidence the record allows and no more. Do not describe a 2012 season in the vocabulary of a 2024 one, and never fill the gap by inference.
 
 E. PASSING ACCURACY IS DELIBERATELY NOT GIVEN TO YOU, AND YOU MUST NOT ESTIMATE OR INVENT IT. The source field is unreliable: it reads 92 for one season and 67 for the next for the same player at the same club on the same volume. It is excluded on purpose. Write about passing VOLUME and KEY PASSES, which are sound. Never state, imply or guess a completion percentage.
 
@@ -338,6 +338,12 @@ Write tight. Every word earns its place.`;
     Failing here fails every request loudly, which is the correct trade for a prompt that
     would otherwise be wrong in a way only the prose could reveal.  */
 const THIRD_STATE_START = 'THE THIRD VERDICT STATE';
+/*  THE SHARED TAIL STARTS AT THIS MARKER, AND ANYTHING THAT MUST BIND ON BOTH VERDICT PATHS GOES
+    BELOW IT (moved here from inside the prompt 2026-10-12, where it had been sent to the model
+    on every call). The honours block was moved below it on 2026-09-14 because Path B replaces
+    everything between the markers: before that move VERDICT_SYSTEM_JUDGE contained no
+    occurrence of won_by at all. The two 2026-10-12 rules (the card's fields are the evidence;
+    you know only what you were given) sit below it for the same reason. DO NOT MOVE THEM ABOVE.  */
 const THIRD_STATE_END   = 'READING THE STAT BLOCK';
 const JUDGE_BLOCK = `WHEN THE INDEX CANNOT SEPARATE THEM , YOU STILL HAVE A VERDICT TO REACH.
 
