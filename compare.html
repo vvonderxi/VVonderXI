@@ -4275,6 +4275,20 @@ body.light .pkmsub{color:var(--ink-soft)}
           if(!data) { var e2=new Error('empty body'); e2.vvStatus=resp.status; throw e2; }
           return data; }); })
       .then(function(data){
+        /*  HELD , the checking pass in api/analyse.js found a claim the two cards do not support,
+            so the prose is not served (owner's ruling 2026-10-12: the result and no prose, never
+            prose with a note). The engine's answer stands; on a Path B pairing that means no
+            crown, because the held verdict's pick was the only thing that could have decided it.
+            Same rendering as an outage, with its own line, because it is not an outage.  */
+        if(data && data.held){
+          var OUTh=VVCore.vvApplyVerdictOutcome(VC, data.winner_card_id, CMP_A, CMP_B);
+          VV_OUTCOME=OUTh; vvSetWinner(OUTh.winner);
+          vvSetStory(nameA,nameB,'','');
+          vvSetVerdict('There is no written verdict for this pair.','',OUTh.winner,va,vb,OUTh,TAGS[OUTh.floorTag],null,true);
+          window.vvStep('verdict','held');
+          _vHold();
+          return;
+        }
         var v;
         if(data && data.verdict){ v=data.verdict; }                       // normalized (cache hit or freshly cached)
         /*  vvParseModelJSON, not a bare JSON.parse , the model intermittently writes reasoning

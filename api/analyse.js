@@ -753,6 +753,71 @@ async function rlEnd(id) {
   catch (e) { console.error('[vv] rate limit: slot not closed, it will expire in ' + RL_STALE_MIN + 'min:', e && e.message); }
 }
 
+/*  ── THE CHECKING PASS: A SECOND MODEL READS EACH NEW VERDICT AGAINST ITS EVIDENCE (2026-10-12) ──
+    WHY. The prompt already says the cards are the evidence and the model knows only what it was
+    given (a585770). On the first day of that rule, Salah 24/25 v Mbappe 21/22 was generated twice
+    and both times asserted things neither card holds: Ligue 1 "not a serious test", "scouted him
+    for a decade", "one of the tightest title races in years". A rule in the prompt lowers the
+    rate; it does not stop it, and the lint can only see shapes, never a false fact.
+    WHAT IT DOES. After a verdict is generated and parsed, a cheaper model gets two things: the
+    exact user message the writer received (the evidence) and the prose. It lists every factual
+    claim the evidence does not contain. ANY listed claim HOLDS the verdict (owner's ruling): the
+    prose is never served, the reader gets the deterministic result and no prose, and the row is
+    stored with `_held` so a person can read what was flagged. A Path B pairing that is held has
+    no winner, because the model's pick was the only thing that could have decided it.
+    IT FAILS CLOSED AND UNCACHED. If the check itself errors, the verdict is held for that view
+    and nothing is written, so the next view tries again. Prose we could not check is prose we
+    cannot stand behind.
+    IT IS SWITCHED BY `VV_VERDICT_CHECK=on` IN THE ENVIRONMENT, off by default, so the code can
+    ship before it is calibrated: `scripts/calibrate-verdict-check.js` runs this same function
+    over cached verdicts and must hold the two Salah v Mbappe rolls (the positive control) without
+    holding most of the rest. It is a model checking a model: it will miss some invented claims
+    and wrongly flag some true ones. The calibration measures both before it is turned on.
+    SCOPE: new verdicts only. A custom system prompt is not checked (no live caller sends one).
+    Notes are not checked yet.  */
+const CHECK_MODEL = 'claude-haiku-4-5-20251001';
+const CHECK_SYSTEM = `You check a football verdict against the evidence it was written from. You do not judge whether the verdict is well written or whether you agree with it. You find factual claims that the evidence does not support.
+
+You receive EVIDENCE, the exact message the writer was given about two player seasons, and VERDICT, the prose the writer produced.
+
+A claim is SUPPORTED when it is stated in the evidence, is plain arithmetic on figures in the evidence, or is an opinion, comparison or judgement that rests only on facts in the evidence ("the more complete season", "the harder thing to have done" when the evidence gives a league weight that says so).
+
+A claim is UNSUPPORTED when it states a fact the evidence does not contain. Examples of the kind:
+- events, results, title races, trophies or awards not listed in the evidence
+- other seasons, earlier or later clubs, transfers, career history, "never did", "went on to"
+- records and firsts ("no precedent", "first player to")
+- what opponents, managers or team-mates did ("defences that had scouted him")
+- the quality or difficulty of a league or season stated more strongly than the evidence's own figures ("not a serious test", "never going to push him")
+- ages, positions, minutes or numbers that differ from the evidence
+
+Football vocabulary, describing what a statistic measures, and restating the evidence in other words are not claims to flag. If you are unsure whether the evidence contains a fact, flag it.
+
+Reply with JSON only, no other text: {"unsupported":[{"quote":"the exact words from the verdict","why":"what the evidence lacks, in one short sentence"}]}. Use an empty array when every factual claim is supported.`;
+
+function verdictProse(v) {
+  return ['who', 'p1', 'p2', 'h2h', 'verdict'].filter(k => v && typeof v[k] === 'string' && v[k].trim())
+    .map(k => k.toUpperCase() + ': ' + v[k]).join('\n\n');
+}
+
+/*  Returns { ok:true, unsupported:[...] } or { ok:false, error }. Never throws.  */
+async function checkVerdictSupport(evidence, verdict) {
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: CHECK_MODEL, max_tokens: 1024, temperature: 0, system: CHECK_SYSTEM,
+        messages: [{ role: 'user', content: 'EVIDENCE:\n' + evidence + '\n\nVERDICT:\n' + verdictProse(verdict) }] })
+    });
+    const d = await r.json();
+    if (!r.ok) return { ok: false, error: 'check upstream ' + r.status };
+    const out = parseModelJSON((d && d.content && d.content[0] && d.content[0].text) || '');
+    if (!out || !Array.isArray(out.unsupported)) return { ok: false, error: 'check shape invalid' };
+    const unsupported = out.unsupported.filter(x => x && typeof x.quote === 'string' && x.quote.trim())
+      .map(x => ({ quote: String(x.quote).slice(0, 300), why: String(x.why || '').slice(0, 300) }));
+    return { ok: true, unsupported };
+  } catch (e) { return { ok: false, error: 'check threw: ' + (e && e.message) }; }
+}
+
 /*  CLOSE THE SLOT BEFORE THE RESPONSE LEAVES, NOT AFTER (2026-10-12). The finally that called
     rlEnd ran AFTER res.json, and Vercel stops the function once the response is sent (SS C:
     writes go before the response). Measured on the live site the day it was found: 4 of 4
@@ -955,6 +1020,8 @@ module.exports = async (req, res) => {
         const staleVersion = !!row && row.cache_version !== verdictVersionFor(payloadRev, aiJudge, customSystem, statsRev);
         const staleScore = !!row && haveRt && (row.rt_a !== rtLo || row.rt_b !== rtHi);
         if (row && row.model === MODEL && row.verdict && !unstamped && !staleVersion && !staleScore) {
+          // a held verdict is served as held: the result, never the prose (see CHECK_SYSTEM)
+          if (row.verdict._held) return res.json({ held: true, winner_card_id: row.winner_card_id, cached: true });
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
           return res.json({ verdict: out, winner_card_id: row.winner_card_id, cached: true });
         }
@@ -1127,6 +1194,20 @@ module.exports = async (req, res) => {
       const winnerCheck = checkProseWinner({ who: verdict && verdict.who, surnameA: surnameA, surnameB: surnameB,
                                              modelWinner: verdict && verdict.winner, idA: cardIdA, idB: cardIdB });
       if (verdict && 'winner' in verdict) delete verdict.winner;   // internal key, never rendered, never cached
+      /*  THE CHECKING PASS, BEFORE ANYTHING IS CACHED OR SENT. A held verdict keeps no model-made
+          decision: on Path B the winner was the model's pick, so it goes; on Path A the winner is
+          the engine's and stays.  */
+      let held = null;
+      if (process.env.VV_VERDICT_CHECK === 'on' && !customSystem) {
+        const evidence = messages.map(m => typeof m.content === 'string' ? m.content : JSON.stringify(m.content)).join('\n\n');
+        const chk = await checkVerdictSupport(evidence, verdict);
+        if (!chk.ok) {
+          console.error('[vv] verdict check FAILED, holding uncached , ' + chk.error + ' pair=' + pairKey);
+          return res.json({ held: true, winner_card_id: aiJudge ? null : winnerId, cached: false });
+        }
+        if (chk.unsupported.length) held = { flags: chk.unsupported, checker: CHECK_MODEL, at: new Date().toISOString() };
+      }
+      const servedWinner = (held && aiJudge) ? null : winnerId;
       const canonical = swapped ? swapVerdict(verdict) : verdict;   // store p1<->loId, p2<->hiId
       /*  STORED INSIDE THE EXISTING jsonb, NOT AS A NEW COLUMN , no migration, and it travels
           with the row it describes. Underscore-prefixed because it is OUR annotation and not
@@ -1140,7 +1221,7 @@ module.exports = async (req, res) => {
           card ids is the kind of difference that is invisible until something starts reading
           it. This writes the annotation and leaves the returned verdict untouched.
           IT CARRIES CARD IDS, not "A"/"B", so the swap cannot invert its meaning.  */
-      const stored = Object.assign({}, canonical, { _winner_check: winnerCheck });
+      const stored = Object.assign({}, canonical, held ? { _winner_check: winnerCheck, _held: held } : { _winner_check: winnerCheck });
       /*  A ROW WE CANNOT STAMP IS A ROW WE CAN NEVER SERVE, SO DO NOT WRITE ONE , 2026-09-15.
           The read treats `rt_a == null` as UNSTAMPED and misses on it, by design, so a row
           written with a null rt is unreadable BY CONSTRUCTION: it costs a write, occupies the
@@ -1160,9 +1241,10 @@ module.exports = async (req, res) => {
         if (stampable) await sb.from('verdict_cache').upsert({
           pair_key: pairKey, card_id_a: loId, card_id_b: hiId,
           rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersionFor(payloadRev, aiJudge, customSystem, statsRev),   // stamps
-          verdict: stored, winner_card_id: winnerId, model: MODEL
+          verdict: stored, winner_card_id: servedWinner, model: MODEL
         }, { onConflict: 'pair_key', ignoreDuplicates: false });
       } catch (e) { /* cache write failed -> non-fatal, still return the verdict */ }
+      if (held) return res.json({ held: true, winner_card_id: servedWinner, cached: false });
       return res.json({ verdict: verdict, winner_card_id: winnerId, cached: false });
     } finally { if (!res._vvSlotClosed) await rlEnd(_rl.id); }
   } catch (err) {
@@ -1184,6 +1266,8 @@ module.exports = async (req, res) => {
 module.exports.probeModel      = probeModel;
 module.exports.isModelMissing  = isModelMissing;
 module.exports.MODEL           = MODEL;
+module.exports.checkVerdictSupport = checkVerdictSupport;
+module.exports.CHECK_MODEL     = CHECK_MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
 module.exports.VERDICT_SYSTEM_JUDGE = VERDICT_SYSTEM_JUDGE;
 module.exports.resolveWinnerId = resolveWinnerId;

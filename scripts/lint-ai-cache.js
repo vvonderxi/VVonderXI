@@ -18,6 +18,7 @@
  *    dimension     "<Name> dimension" where Name is not one of the five.
  *    dash          an em or en dash (house rule: none, anywhere).
  *    glance-mark   a ** marked phrase in a note's glance line (exempt from emphasis since a585770).
+ *  HELD rows (the checking pass) are skipped by the rules and listed under READ with their flags.
  *  READ FLAGS (never fail, listed for a person): phrases that usually mean a claim beyond the
  *  payload , another season, a career, a later or earlier year. A pattern cannot tell a recalled
  *  fact from a supported one; only reading can, which is the honest limit of this script.
@@ -67,7 +68,11 @@ async function all(table, cols) {
 
   for (const r of V) {
     const b = base(r.cache_version), path = b === CUR.A ? 'A' : b === CUR.B ? 'B' : 'old', cur = path !== 'old';
-    t(b, 'rows'); const o = parse(r.verdict), S = strs(o), all = S.map(x => x[1]).join(' \n ');
+    t(b, 'rows'); const o = parse(r.verdict);
+    /*  HELD rows (the checking pass, api/analyse.js) are never served, so the rules do not apply
+        to their prose; they are counted and listed for a person to read what was flagged.  */
+    if (o && o._held) { t(b, 'held'); if (cur) read.push(`HELD verdict ${r.pair_key}: ` + o._held.flags.map(f => '"' + f.quote.slice(0, 70) + '"').join('; ')); continue; }
+    const S = strs(o), all = S.map(x => x[1]).join(' \n ');
     const hit = (rule, detail) => { t(b, rule); if (cur) hard.push(`${rule.padEnd(12)} verdict ${r.pair_key} [${b}] ${detail}`); };
     if (r.rt_a != null && r.rt_a === r.rt_b) {
       const m = all.match(WIN);
@@ -98,7 +103,7 @@ async function all(table, cols) {
   const ri = process.argv.indexOf('--read');
   if (ri > 0) {
     const n = +process.argv[ri + 1] || 10, pick = (arr, k) => arr.sort(() => Math.random() - 0.5).slice(0, k);
-    const cv = V.filter(r => [CUR.A, CUR.B].includes(base(r.cache_version))), cn = N.filter(r => base(r.cache_version) === CUR.N);
+    const cv = V.filter(r => [CUR.A, CUR.B].includes(base(r.cache_version)) && !parse(r.verdict)._held), cn = N.filter(r => base(r.cache_version) === CUR.N);
     console.log(`WEEKLY READ , ${Math.min(n, cv.length)} of ${cv.length} current verdicts, ${Math.min(n, cn.length)} of ${cn.length} current notes. Read each against the two cards it is about.\n`);
     for (const r of pick(cv, n)) { console.log(`=== verdict ${r.pair_key}  rt ${r.rt_a} v ${r.rt_b}  [${base(r.cache_version) === CUR.B ? 'Path B, inside the margin' : 'Path A'}]`); strs(parse(r.verdict)).forEach(([k, v]) => console.log(`  ${k}: ${v}`)); console.log(); }
     for (const r of pick(cn, n)) { console.log(`=== note ${r.card_id}`); strs(parse(r.notes)).forEach(([k, v]) => console.log(`  ${k}: ${v}`)); console.log(); }
