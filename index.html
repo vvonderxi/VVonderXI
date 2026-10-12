@@ -659,13 +659,18 @@
         93 v 92; leagues swapped 93 v 94. The league is two of the three points, not the decision,
         and the pair sits INSIDE the margin, so its verdict is the record-judged one. The pair
         stays: it shows the Index refusing to separate what it cannot separate.]
+        [D OFF THE ROTATION 2026-10-12, owner's decision. On the new prompt its verdict was
+        generated twice and both times asserted things neither card holds: "the league decides
+        it", Ligue 1 "not a serious test" / "never going to push him", "scouted him for a decade",
+        "one of the tightest title races in years". Three pairs until the model stops inventing
+        context for this one; it stays in compare's AUTO_VERDICT_PAIRS so an old link still works.]
         D REPLACED Rodri v Bellingham (2026-10-11): a second exact tie was one too many.
         NEXT IN LINE IF THE ROTATION GOES TO FIVE: Palmer 23/24 v Foden 23/24, [131220, 131183],
         91 v 90, inside the margin, not yet warmed.
         EVERY PAIR HERE MUST ALSO BE IN COMPARE'S AUTO_VERDICT_PAIRS AND IN THE RE-WARM LIST, or
         "See the verdict" lands on a page that waits, or on a cold 20-second generation.
         The markup carries pair A, so a failed script still shows a working link.  */
-    var PAIRS = [[143372, 141999], [131585, 135556], [152972, 151977], [130728, 158399]];
+    var PAIRS = [[143372, 141999], [131585, 135556], [152972, 151977]];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
     box.querySelectorAll('a[data-pair]').forEach(function(a){ a.setAttribute('href', url); a.dataset.pair = key; });
