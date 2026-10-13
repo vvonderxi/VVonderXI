@@ -430,7 +430,16 @@
         column at any width over 720) and lifts everything by 86px with the padding change.
         The card formula below is unchanged, so the cards keep their size and the gain lands
         under the search box: the four links clear the fold and the footer starts below it.  */
-    .top{position:absolute;top:0;left:0;right:0}
+    .top{position:absolute;top:0;left:0;right:0;z-index:3;pointer-events:none}
+    .top .topacts{pointer-events:auto}
+    /*  [FIXED 2026-10-13] THE FLOAT LEFT BOTH BUTTONS DEAD FOR TWO DAYS. `.top`, `.hero` and
+        `.foot` share `position:relative; z-index:2` (line ~103), and at equal z-index the LATER
+        element paints on top. In flow the two never overlapped; out of flow, `.hero` starts at
+        the top of the page and its box covered the theme button and My Club at every hit point,
+        while both still rendered perfectly. Found by hit-testing (elementFromPoint returned
+        main.hero on all five points of both buttons), not by looking. So the row sits one layer
+        up, and the bar itself passes clicks through so its empty width cannot do to the hero
+        what the hero did to it.  */
     .hero{padding-top:12px}
     .logo{width:min(260px,64vw)}
     .argue{--acw:clamp(143px, min(calc((100vh - 502px) / 1.397), calc((min(620px, 92vw) - 34px) / 2)), 300px)}
