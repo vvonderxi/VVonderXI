@@ -96,11 +96,19 @@
       + '<button class="no" id="a2hsNo" type="button" aria-label="Not now">&times;</button>';
     document.body.appendChild(el);
     var nav=document.querySelector(opts.nav || '.bottomnav'), padWas=document.body.style.paddingBottom;
+    /*  THE BACK-TO-TOP BUTTON SAT UNDER THIS STRIP (found 2026-10-13 by check-controls.js on the
+        VV Index and the Playbook at 390): both are fixed to the bottom right and the strip is
+        z-index 90 against 60. It is lifted here, in place(), because every state change of the
+        strip (shown, steps opened, dismissed, resized) passes through place(), so no path can
+        leave it covered; it returns to its own stylesheet value the moment the strip goes.  */
+    var totop=document.getElementById('totop'), totopWas=totop ? totop.style.bottom : '';
     function place(){
       var r = nav ? nav.getBoundingClientRect() : null;
       var above = (r && r.height && getComputedStyle(nav).display!=='none') ? Math.max(0, window.innerHeight - r.top) : 0;
       el.style.bottom = (above + 10) + 'px';
-      document.body.style.paddingBottom = el.classList.contains('show') ? (el.offsetHeight + above + 24) + 'px' : padWas;
+      var on = el.classList.contains('show');
+      document.body.style.paddingBottom = on ? (el.offsetHeight + above + 24) + 'px' : padWas;
+      if(totop) totop.style.bottom = on ? (above + 10 + el.offsetHeight + 12) + 'px' : totopWas;
     }
     function show(){ el.classList.add('show'); place(); }
     var armed=false;
