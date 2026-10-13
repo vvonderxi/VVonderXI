@@ -7,14 +7,14 @@ the league's effect by three times. Every defect found that week had one shape: 
 erroring nothing, and wrong. This map is the class, so the next instance is found by looking
 rather than by a stranger.
 
-**Before 2026-10-12, six of these seven areas had nothing checking them at all.** The only one
+**Before 2026-10-12, six of the seven areas mapped that day had nothing checking them at all.** The only one
 with any check was numbers drawn into images, and that check was a ledger run by hand.
 
 The figures here are dated measurements. Re-derive before quoting them.
 
 ---
 
-## THE SEVEN AREAS
+## THE AREAS (seven mapped 2026-10-12, an eighth added 2026-10-13; count the ### headings, do not quote a number)
 
 ### 1. Sentences on the site that describe what the engine does
 - **Size (measured 2026-10-12):** 142 sentences on the VV Index, Playbook and card page.
@@ -80,6 +80,25 @@ The figures here are dated measurements. Re-derive before quoting them.
 - **What would cover it, cheaply:** an inventory script listing env variables, scheduled jobs,
   flags and event names, compared against the docs. Not built.
 
+### 8. Controls in states the click check cannot reach (added 2026-10-13)
+`scripts/check-controls.js` hit-tests every visible control on every shipping page, full length,
+at desktop and phone. **Do not read the script and assume clicks are covered. It sees each page
+only as it loads.** What it cannot see, in the words used when it was built:
+- **States you only reach by using the page.** An open filter sheet, a shown verdict, an expanded
+  panel, an open menu, a chosen card. A control that is covered only in one of those states
+  passes the sweep. (The back-to-top button under the install strip was caught only because the
+  strip appears on scroll, which the sweep happens to do.)
+- **A click that arrives but does nothing,** for example a broken handler. The sweep proves the
+  click reaches the control, never that the control acts. Catching that means clicking for real
+  and reading the page's state afterwards, feature by feature, as was done for the homepage theme
+  button and My Club on 2026-10-13.
+- **Real phones, Safari especially.** Headless Chrome only.
+- **What covers it today:** nothing automatic. The pre-push pass is the script, then about a
+  minute clicking through the handful of controls the change touched and confirming each does
+  what it should. **What would cover it, cheaply:** a list of named states per page (open the
+  rankings filter sheet, settle a compare pair, open each fold) driven through the page's own
+  functions, with the same hit-test run in each. Not built.
+
 ### Already covered, leave alone
 - VV Index figures: `gen-index-figures.js` then `apply-figures.js --check` (regenerate first).
 - Share and search descriptions say "more than 50,000", which cannot go stale.
@@ -100,7 +119,7 @@ The figures here are dated measurements. Re-derive before quoting them.
 | When | Run |
 |---|---|
 | Every commit | `node scripts/lint-inline.js` (includes the privacy field check) |
-| Before every push that touches a page | `node scripts/check-controls.js` , every visible control on every shipping page must receive its clicks (added 2026-10-13 after the homepage header went dead for two days) |
+| Before every push that touches a page | `node scripts/check-controls.js` , every visible control on every shipping page must receive its clicks (added 2026-10-13 after the homepage header went dead for two days). **Page-as-loaded only: open sheets, shown verdicts and expanded panels are NOT checked (area 8)**, so click through the controls the change touched as well |
 | Every engine change, same session | re-read the dependent sentences (claims register once built) |
 | Weekly | `node scripts/lint-ai-cache.js` and `node scripts/lint-ai-cache.js --read 10`, and read them |
 | Before any paid campaign | full pass of the VV Index, Playbook and card page; the marketing ledger re-run |
