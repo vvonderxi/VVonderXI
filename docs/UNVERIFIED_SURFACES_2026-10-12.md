@@ -100,6 +100,7 @@ The figures here are dated measurements. Re-derive before quoting them.
 | When | Run |
 |---|---|
 | Every commit | `node scripts/lint-inline.js` (includes the privacy field check) |
+| Before every push that touches a page | `node scripts/check-controls.js` , every visible control on every shipping page must receive its clicks (added 2026-10-13 after the homepage header went dead for two days) |
 | Every engine change, same session | re-read the dependent sentences (claims register once built) |
 | Weekly | `node scripts/lint-ai-cache.js` and `node scripts/lint-ai-cache.js --read 10`, and read them |
 | Before any paid campaign | full pass of the VV Index, Playbook and card page; the marketing ledger re-run |
