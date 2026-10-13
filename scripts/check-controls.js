@@ -3,6 +3,7 @@
  *
  *    node scripts/check-controls.js                         every shipping page, 1440x900 and 390x844
  *    node scripts/check-controls.js index.html '[[1366,768]]'  one page, chosen sizes
+ *    VV_BASE=https://vvonderxi.com node scripts/check-controls.js   the DEPLOYED site, not the local tree
  *
  *  WHY. On 2026-10-11 c80752c floated the homepage header to save 86px. The theme button and My
  *  Club kept rendering perfectly and stopped responding: `main.hero` sat on top of them at equal
@@ -26,7 +27,7 @@
  *  as loaded, at the sizes given, in Chrome.
  */
 const fs=require('fs'),path=require('path'),http=require('http'),os=require('os'),{spawn}=require('child_process');
-const ROOT=path.join(__dirname,'..');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const ROOT=path.join(__dirname,'..');const BASE=(process.env.VV_BASE||'').replace(/\/$/,'');if(BASE)console.log('LIVE RUN against '+BASE+' (the local tree is not served)');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const TY={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.png':'image/png','.svg':'image/svg+xml','.woff2':'font/woff2','.json':'application/json','.webmanifest':'application/manifest+json'};
 const PAGES=(process.argv[2]||'index.html,rankings.html,card.html?id=130728,compare.html?a=143372&b=141999,compare.html,vvindex.html,playbook.html,iwonder.html,contact.html,preferences.html,myclub.html,privacy.html').split(',');const SIZES=JSON.parse(process.argv[3]||'[[1440,900],[390,844]]');let FAILS=0;
 async function cdp(u){const ws=new WebSocket(u);let id=0;const w=new Map();await new Promise((a,b)=>{ws.onopen=a;ws.onerror=b});ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.id&&w.has(m.id)){const x=w.get(m.id);w.delete(m.id);m.error?x.rej(new Error(m.error.message)):x.res(m.result)}};const send=(m,p={})=>new Promise((res,rej)=>{const i=++id;w.set(i,{res,rej});ws.send(JSON.stringify({id:i,method:m,params:p}))});const ev=async x=>{const r=await send('Runtime.evaluate',{expression:x,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+JSON.stringify(r.exceptionDetails.exception&&r.exceptionDetails.exception.description));return r.result.value};return{send,ev}}
@@ -43,7 +44,7 @@ const prof=fs.mkdtempSync(path.join(os.tmpdir(),'hit-'));const ch=spawn('/usr/bi
 try{let dp;for(let i=0;i<100&&!dp;i++){await sleep(100);const f=path.join(prof,'DevToolsActivePort');if(fs.existsSync(f))dp=fs.readFileSync(f,'utf8').split('\n')[0]}
 const t=await(await fetch(`http://127.0.0.1:${dp}/json/new?about:blank`,{method:'PUT'})).json();const p=await cdp(t.webSocketDebuggerUrl);await p.send('Page.enable');
 for(const pg of PAGES)for(const [W,H] of SIZES){await p.send('Emulation.setDeviceMetricsOverride',{width:W,height:H,deviceScaleFactor:1,mobile:W<=720});
-await p.send('Page.navigate',{url:`http://127.0.0.1:${srv.address().port}/${pg}`});await sleep(3500);
+await p.send('Page.navigate',{url:`${BASE||'http://127.0.0.1:'+srv.address().port}/${pg}`});await sleep(3500);
 const ok=await p.ev(`innerWidth+'x'+innerHeight+' '+document.readyState`);const sh=await p.ev('document.documentElement.scrollHeight');let tot=0;const cov=new Map();
 for(let y=0;y<sh;y+=Math.round(H*0.8)){await p.ev(`window.scrollTo(0,${y});1`);await sleep(250);const r=await p.ev(PROBE);tot+=r.checked;r.covered.forEach(c=>{const k=c.el+'|'+c.label;if(!cov.has(k))cov.set(k,Object.assign({atScroll:y},c))})}
 FAILS+=cov.size;console.log(`${cov.size?'FAIL':'ok  '}  ${pg} @${W}x${H}  page ${sh}px, ${tot} control readings, ${cov.size} covered`);[...cov.values()].forEach(c=>console.log('   ',JSON.stringify(c)));}}

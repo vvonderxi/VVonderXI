@@ -120,6 +120,7 @@ only as it loads.** What it cannot see, in the words used when it was built:
 |---|---|
 | Every commit | `node scripts/lint-inline.js` (includes the privacy field check) |
 | Before every push that touches a page | `node scripts/check-controls.js` , every visible control on every shipping page must receive its clicks (added 2026-10-13 after the homepage header went dead for two days). **Page-as-loaded only: open sheets, shown verdicts and expanded panels are NOT checked (area 8)**, so click through the controls the change touched as well |
+| After every push, Terminal C | `node scripts/check-deployed.js` , the live site must serve HEAD byte for byte; waits up to 4 minutes, then fails naming every file that differs (added 2026-10-13 after two pushes reached GitHub and never built). Then `VV_BASE=https://vvonderxi.com node scripts/check-controls.js` to hit-test the deployed pages, not the local tree |
 | Every engine change, same session | re-read the dependent sentences (claims register once built) |
 | Weekly | `node scripts/lint-ai-cache.js` and `node scripts/lint-ai-cache.js --read 10`, and read them |
 | Before any paid campaign | full pass of the VV Index, Playbook and card page; the marketing ledger re-run |
