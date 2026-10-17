@@ -3510,6 +3510,13 @@ body.light .pkmsub{color:var(--ink-soft)}
       first.innerHTML=VVCore.vvEmphasis(paras[0]); var ref=first;
       for(var j=1;j<paras.length;j++){ var d=first.cloneNode(false); d.classList.remove('vsprose-wait'); d.innerHTML=VVCore.vvEmphasis(paras[j]); ref.parentNode.insertBefore(d,ref.nextSibling); ref=d; } }
     fill(cols[0],'sdot-a',nameA,proseA); fill(cols[1],'sdot-b',nameB,proseB);
+    /*  NO PROSE, NO STORY PANEL (2026-10-17). Decided by the STATE, not the path: whatever
+        brought us here (prose switched off, a held pair, an outage) the panel promises "the two
+        seasons in their own words", and with no words it showed two bare names. Shown again
+        the moment either side has prose or a wait is in progress.  */
+    var _box=document.querySelector('#verdict .vstory');
+    if(_box){ var _has=!!opts.wait || !!String(proseA==null?'':proseA).trim() || !!String(proseB==null?'':proseB).trim();
+              _box.style.display=_has?'':'none'; }
   }
   /*  ONE PLACE THAT CROWNS A CARD, AND IT TAKES THE SIDE IT IS GIVEN.
       This was three inline lines inside vvGenerateVerdict, run once, before the request ,
@@ -3528,6 +3535,10 @@ body.light .pkmsub{color:var(--ink-soft)}
   /* `plain` renders the text as a STATUS LINE rather than a pull-quote: no quotation marks,
      no italic display face. A service outage is not something the platform said, and dressing
      it as a quote is the same error as the card's fallback wearing the Drury italic. */
+  /*  THE LINE A PAIR WITHOUT PROSE CARRIES (2026-10-17, owner's wording). It replaced "There is
+      no written verdict for this pair.", which read as a failure, and this is the normal state
+      while VV_PROSE is off.  */
+  var NO_PROSE_LINE = 'No written opinion here, by choice. The score, the tag and the evidence below are the verdict.';
   function vvSetVerdict(verdict,h2h,winner,va,vb,VC,tagObj,whoLine,plain,opts){
     opts=opts||{};
     /*  ONE STATE SWITCH FOR THE WHOLE PRE-ANSWER PANEL , 2026-09-13. `waiting` and
@@ -4296,7 +4307,7 @@ body.light .pkmsub{color:var(--ink-soft)}
           var OUTh=VVCore.vvApplyVerdictOutcome(VC, data.winner_card_id, CMP_A, CMP_B);
           VV_OUTCOME=OUTh; vvSetWinner(OUTh.winner);
           vvSetStory(nameA,nameB,'','');
-          vvSetVerdict('There is no written verdict for this pair.','',OUTh.winner,va,vb,OUTh,TAGS[OUTh.floorTag],null,true);
+          vvSetVerdict(NO_PROSE_LINE,'',OUTh.winner,va,vb,OUTh,TAGS[OUTh.floorTag],null,true);
           window.vvStep('verdict','held');
           _vHold();
           return;

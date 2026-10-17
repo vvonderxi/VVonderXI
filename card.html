@@ -1880,6 +1880,7 @@
         break;
       }
       if(EDITORIAL_FOR !== D.card_id) return;   // the stale-answer guard: this card is no longer on screen
+      if(r.ok && data && data.off){ vvEditorialOff(); return; }   // prose switched off: a choice, not a failure
       if(!r.ok || !data || typeof data.glance!=='string' || typeof data.scout!=='string' || !Array.isArray(data.notes)){ vvEditorialFail(); return; }
       EDITORIAL = { glance:data.glance, scout:data.scout, notes:data.notes };
       vvFillEditorial();
@@ -1908,6 +1909,18 @@
      describes a service that is down, and it should read as temporary because it is.
      One statement, not three: the scout box and notes layer stay hidden rather than each
      repeating the same sentence. */
+  /*  PROSE OFF (2026-10-17). The endpoint answers { off: true } while VV_PROSE is not on. Unlike
+      vvEditorialFail this writes NO sentence: the glance line, the Scout Report and the Notes
+      fold are removed outright, because nothing went wrong and an apology would say it had.
+      Everything else on the card is the platform's own and stays.  */
+  function vvEditorialOff(){
+    EDITORIAL=null;
+    var gd=document.getElementById('glDrury'); if(gd){ gd.textContent=''; gd.style.display='none'; }
+    var nbO=document.getElementById('notesBody'); if(nbO) nbO.textContent='';
+    var sbO=document.getElementById('scoutBody'); if(sbO) sbO.textContent='';
+    var sbox=document.getElementById('scoutBox'); if(sbox){ sbox.style.display='none'; }
+    var nl=document.getElementById('notesLayer'); if(nl){ nl.style.display='none'; }
+  }
   function vvEditorialFail(){
     EDITORIAL=null;
     var gd=document.getElementById('glDrury');

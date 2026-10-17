@@ -919,6 +919,23 @@ module.exports = async (req, res) => {
     return res.status(403).json({ error: 'origin not allowed' });
   }
 
+  /*  THE PROSE SWITCH, OFF BY DEFAULT (2026-10-17, owner's decision). ALL model prose stops here:
+      the Compare verdict, and on the card the glance line, the Commentator's Notes and the Scout
+      Report. Every verdict read against its cards failed (nine of nine, kinds in
+      migrations/verdict_hold_2026-10-17/), and three cards' notes read the same day carried claims
+      their cards do not hold. Nothing is generated, nothing is billed, and cached prose is not
+      served either: off means no model sentence reaches a reader.
+      The answer is a deliberate state, not an error, and each page renders it as one. A verdict
+      request gets the held shape Compare already understands (winner null: off the margin the
+      page keeps the engine's winner, inside it nobody is crowned). A notes request gets
+      { off: true }, which card.html hides rather than apologising for.
+      TO TURN PROSE BACK ON: set VV_PROSE=on in the Vercel project and redeploy. Decide it on a
+      re-read sample that passes, not on a fix that should work.  */
+  if (process.env.VV_PROSE !== 'on') {
+    const isNotes = !!(req.body && req.body.mode === 'notes');
+    return res.json(isNotes ? { off: true } : { held: true, off: true, winner_card_id: null, cached: true });
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
   }
