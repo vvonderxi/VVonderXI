@@ -775,6 +775,16 @@ async function rlEnd(id) {
     and wrongly flag some true ones. The calibration measures both before it is turned on.
     SCOPE: new verdicts only. A custom system prompt is not checked (no live caller sends one).
     Notes are not checked yet.  */
+const HELD_PAIRS = new Set([
+  '141999-143372',  // Messi 11/12 v Ronaldo 14/15       Compare suggestion
+  '131585-152972',  // Haaland 22/23 v Lewandowski 20/21 Compare suggestion
+  '133095-141575',  // De Bruyne 19/20 v Suarez 15/16    Compare suggestion
+  '131585-135556',  // Haaland 22/23 v Suarez 13/14      retired homepage pair, old links
+  '151977-152972',  // Kane 23/24 v Lewandowski 20/21    retired homepage pair
+  '130728-158399',  // Salah 24/25 v Mbappe 21/22        retired homepage pair
+  '131183-137957',  // Foden 23/24 v Bellingham 23/24    retired homepage pair
+  '131129-131220',  // Saka 23/24 v Palmer 23/24         retired homepage pair
+]);
 const CHECK_MODEL = 'claude-haiku-4-5-20251001';
 const CHECK_SYSTEM = `You check a football verdict against the evidence it was written from. You do not judge whether the verdict is well written or whether you agree with it. You find factual claims that the evidence does not support.
 
@@ -999,6 +1009,16 @@ module.exports = async (req, res) => {
       sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
       loId = Math.min(_a, _b); hiId = Math.max(_a, _b);
       pairKey = loId + '-' + hiId;
+      /*  PAIRS THAT GET NO PROSE, BEFORE THE CACHE, THE RATE LIMIT OR THE MODEL (2026-10-17, owner's
+          decision). Every verdict read against its cards has failed (eight of eight, record in
+          migrations/verdict_hold_2026-10-17/). These are the pairs the platform LINKS to (Compare's
+          suggestions, the homepage rotation, old &go=1 links), so they answer with the result and no
+          prose, exactly as a checker-held verdict does. Deleting the rows would not do this: the
+          next view regenerates, and two of the eight rows are on a retired prompt and regenerate
+          anyway. winner_card_id is null: off the margin the page ignores it, and inside the margin
+          the model's pick was the only thing that could have crowned.
+          TO RELEASE A PAIR: take it out of this list once its verdict has been read and passed.  */
+      if (HELD_PAIRS.has(pairKey)) return res.json({ held: true, winner_card_id: null, cached: true });
       swapped = (_a !== loId);   // requester's A is the HIGHER id -> their order is swapped vs canonical
       // Live scores, mapped from the requester's slot order into CANONICAL lo/hi
       // order , the same swap the verdict payload goes through. Getting this

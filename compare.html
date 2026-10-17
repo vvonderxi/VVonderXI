@@ -2574,11 +2574,14 @@ body.light .pkmsub{color:var(--ink-soft)}
       comparison is FOR. Each pair is resolved against real rows before it renders and is
       DROPPED if either side does not resolve, so a renamed or missing season leaves a
       shorter list rather than a dead row. Fewer than two resolve, the block stays hidden. */
-  var SUG_PAIRS=[
-    {a:['Messi','11/12'],   b:['Ronaldo','14/15'],     why:'The argument that will not end.'},
-    {a:['Haaland','22/23'], b:['Lewandowski','20/21'], why:'Two ways to lead a line.'},
-    {a:['Suarez','15/16'],  b:['De Bruyne','19/20'],   why:'The scorer against the supplier.'}
-  ];
+  /*  EMPTIED 2026-10-17, owner's decision. All three verdicts were read against their cards and
+      failed, and the endpoint now holds these pairs (HELD_PAIRS in api/analyse.js), so a suggestion
+      would land on "There is no written verdict for this pair." The block hides itself with fewer
+      than two rows. The three were:
+        Messi 11/12 v Ronaldo 14/15        'The argument that will not end.'
+        Haaland 22/23 v Lewandowski 20/21  'Two ways to lead a line.'
+        Suarez 15/16 v De Bruyne 19/20     'The scorer against the supplier.'  */
+  var SUG_PAIRS=[];
   /*  EVERY PAIR ABOVE WAS RESOLVED AGAINST LIVE ROWS BEFORE IT WAS WRITTEN DOWN, and the
       first draft did not survive that check: it opened with Henry 03/04, which CANNOT exist
       , the dataset starts at 2010 , and paired Modric, whose stored name carries a diacritic
@@ -2599,6 +2602,7 @@ body.light .pkmsub{color:var(--ink-soft)}
   }
   async function sugLoad(){
     if(SUG_DONE) return; SUG_DONE=true;
+    if(!SUG_PAIRS.length) return;   // nothing to suggest: no query, no block
     var host=document.getElementById('cmpSug'); if(!host) return;
     // both spellings, because ilike does not fold accents server-side
     var names=['Suárez']; SUG_PAIRS.forEach(function(pr){ names.push(pr.a[0], pr.b[0]); });
