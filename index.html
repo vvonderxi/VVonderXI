@@ -480,17 +480,17 @@
     <!--  THE COLD ARRIVAL'S FIRST ANSWER (2026-10-10). A paid campaign sent 79 people here and the
           page showed a logo, a tagline and a box asking them to name a footballer. This block
           says what the number is and shows the one thing only this site does, with two real
-          cards from the database. The pair is Compare's first suggested matchup, so it rides
-          the warm-cache practice that already covers those three pairs. The link goes to Compare
+          cards from the database. [From 2026-10-17 the fallback pair is Bellingham 23/24 v
+          Foden 23/24, the first of the homepage rotation, and it must be warmed like the rest.] The link goes to Compare
           with both cards loaded and &go=1, which Compare honours for its three suggested pairs only,
           so "See the verdict" delivers one in a single tap (owner's decision 2026-10-10).  -->
     <section class="argue" aria-label="Who had the better season?">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
-      <a class="acards" href="compare.html?a=143372&amp;b=141999&amp;go=1" data-pair="143372-141999" aria-label="Who had the better season?">
+      <a class="acards" href="compare.html?a=137957&amp;b=131183&amp;go=1" data-pair="131183-137957" aria-label="Who had the better season?">
         <span class="aslot" id="argA"></span><span class="avs">VS</span><span class="aslot" id="argB"></span>
       </a>
-      <a class="acta" href="compare.html?a=143372&amp;b=141999&amp;go=1" data-pair="143372-141999">See the verdict</a>
+      <a class="acta" href="compare.html?a=137957&amp;b=131183&amp;go=1" data-pair="131183-137957">See the verdict</a>
     </section>
     <div class="searchwrap">
       <div class="search">
@@ -676,10 +676,19 @@
         D REPLACED Rodri v Bellingham (2026-10-11): a second exact tie was one too many.
         NEXT IN LINE IF THE ROTATION GOES TO FIVE: Palmer 23/24 v Foden 23/24, [131220, 131183],
         91 v 90, inside the margin, not yet warmed.
+        [ROTATION RESET 2026-10-17, owner's decision: EVERY PAIR HERE IS POST-2022 WITH FULL STAT
+        COVERAGE AND INSIDE THE MARGIN. A (Messi 11/12 v Ronaldo 14/15) and B (Haaland 22/23 v
+        Suarez 13/14) are OFF: Messi, Ronaldo and Suarez are all pre-2015, so shots, key passes and
+        dribbles exist for none of them, and the front door was showing the thinnest version of our
+        own data. Bellingham 23/24 v Foden 23/24 [137957, 131183] is IN: 87 v 90, gap 3 against a
+        margin of 6.43. C (Lewandowski v Kane) stays. A third pair is being chosen. Rodri v
+        Vinicius was refused: Rodri's role cannot reach a winger's score on this engine, and
+        Vinicius 23/24 is stored as ST. The old pairs stay in compare's AUTO_VERDICT_PAIRS so an
+        old link still works.]
         EVERY PAIR HERE MUST ALSO BE IN COMPARE'S AUTO_VERDICT_PAIRS AND IN THE RE-WARM LIST, or
         "See the verdict" lands on a page that waits, or on a cold 20-second generation.
         The markup carries pair A, so a failed script still shows a working link.  */
-    var PAIRS = [[143372, 141999], [131585, 135556], [152972, 151977]];
+    var PAIRS = [[137957, 131183], [152972, 151977]];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
     box.querySelectorAll('a[data-pair]').forEach(function(a){ a.setAttribute('href', url); a.dataset.pair = key; });
