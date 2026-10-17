@@ -991,7 +991,10 @@ module.exports = async (req, res) => {
         not carry: whether either season is a goalkeeper. compare.html sends it only for an
         OUTFIELD pair the Index did not separate. Absent or anything else means the prohibiting
         prompt and the caller's own winner , the gate defaults closed.  */
-    const aiJudge = (judge === 'ai');
+    /*  PATH B OFF AT THE SERVER TOO (2026-10-17, draft): a client that still sends judge:'ai', a
+        stale tab or an old copy of compare.html, gets the prohibiting prompt and no model crown.
+        Was: const aiJudge = (judge === 'ai');  */
+    const aiJudge = false && (judge === 'ai');
 
     // ── Verdict self-cache (server-side, service key). Active only when both
     //    card ids are present + numeric; otherwise this stays a generic proxy. ──

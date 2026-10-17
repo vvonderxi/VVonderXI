@@ -4023,7 +4023,14 @@ body.light .pkmsub{color:var(--ink-soft)}
         later edit silently breaks.
         TIE IS NOT PATH B. An exact tie is two identical numbers, not a gap smaller than the
         error, and the page already has the honest sentence for it.  */
-    var _aiJudge = (VC.separation==='inside') && !_gkA && !_gkB;
+    /*  [PATH B IS OFF, 2026-10-17, DRAFT FOR THE OWNER'S READ. KIND 3: a crown the cards contradict.]
+        Every Path B verdict read against its cards was a model choosing a winner the engine had
+        just declined to choose, and two of them chose against the cards (Foden over Bellingham's
+        three honours to two; Lewandowski over Haaland's four to two). Inside the margin nobody
+        crowns now: the inside pair goes to the prohibiting prompt and the engine's no-winner
+        answer stands. The old line, kept so it can come back by deliberate edit:
+          var _aiJudge = (VC.separation==='inside') && !_gkA && !_gkB;  */
+    var _aiJudge = false;
     var nameA=CMP_A.surname+' · '+CMP_A.year+' · '+CMP_A.clubname;
     var nameB=CMP_B.surname+' · '+CMP_B.year+' · '+CMP_B.clubname;
     /* "Reading the seasons", plural , this wait is weighing TWO of them, unlike the card. */
@@ -4316,7 +4323,18 @@ body.light .pkmsub{color:var(--ink-soft)}
             rather than from the gap. On every non-Path-B pairing this is the identical
             result: OUT.floorTag is VC.floorTag, and the floor was the first key offered.  */
         var chosen=(v.tag&&VC.contextHints.indexOf(v.tag)>=0)?v.tag:OUT.floorTag;
-        vvSetVerdict(v.verdict||'',v.h2h||'',OUT.winner,va,vb,OUT,TAGS[chosen],v.who);
+        /*  [NO CROWN, NO MODEL CONCLUSION, 2026-10-17, DRAFT. KIND 4: prose that contradicts its
+            own headline.] Where nothing is crowned (a tie, or inside the margin now that Path B is
+            off) the model's headline and closing paragraph are not shown, and the page writes its
+            own: the same deterministic lines a held pair gets. Measured over the 81 stamped
+            no-crown rows: winner language sits in the headline on 58 and the closing paragraph on
+            26, and in head to head ONLY alongside one of those two (0 rows on its own). Both
+            measured instances live here (Palmer v Saka, Haaland v Suarez 13/14). Head to head and
+            the two Story paragraphs still render, and are each about the comparison or one
+            player. A phrase list was tested as the alternative and found both failures only by
+            matching the wrong sentence, so the conclusion is removed rather than policed.  */
+        var _noCrown = !(OUT.winner==='A' || OUT.winner==='B');
+        vvSetVerdict(_noCrown ? '' : (v.verdict||''), v.h2h||'', OUT.winner,va,vb,OUT,TAGS[chosen], _noCrown ? null : v.who);
         window.vvStep('verdict','shown');
         _vHold();          // after the prose, so a cached pair never shows the loader at all
       })
