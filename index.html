@@ -681,14 +681,14 @@
         Suarez 13/14) are OFF: Messi, Ronaldo and Suarez are all pre-2015, so shots, key passes and
         dribbles exist for none of them, and the front door was showing the thinnest version of our
         own data. Bellingham 23/24 v Foden 23/24 [137957, 131183] is IN: 87 v 90, gap 3 against a
-        margin of 6.43. C (Lewandowski v Kane) stays. A third pair is being chosen. Rodri v
+        margin of 6.43. C (Lewandowski v Kane) stays. Palmer 23/24 v Saka 23/24 [131220, 131129] is IN as the third: 91 v 88, gap 3 against a margin of 6.52, both Winger. Rodri v
         Vinicius was refused: Rodri's role cannot reach a winger's score on this engine, and
         Vinicius 23/24 is stored as ST. The old pairs stay in compare's AUTO_VERDICT_PAIRS so an
         old link still works.]
         EVERY PAIR HERE MUST ALSO BE IN COMPARE'S AUTO_VERDICT_PAIRS AND IN THE RE-WARM LIST, or
         "See the verdict" lands on a page that waits, or on a cold 20-second generation.
         The markup carries pair A, so a failed script still shows a working link.  */
-    var PAIRS = [[137957, 131183], [152972, 151977]];
+    var PAIRS = [[137957, 131183], [152972, 151977], [131220, 131129]];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
     box.querySelectorAll('a[data-pair]').forEach(function(a){ a.setAttribute('href', url); a.dataset.pair = key; });
