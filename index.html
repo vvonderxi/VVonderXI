@@ -480,17 +480,17 @@
     <!--  THE COLD ARRIVAL'S FIRST ANSWER (2026-10-10). A paid campaign sent 79 people here and the
           page showed a logo, a tagline and a box asking them to name a footballer. This block
           says what the number is and shows the one thing only this site does, with two real
-          cards from the database. [From 2026-10-17 the fallback pair is Bellingham 23/24 v
-          Foden 23/24, the first of the homepage rotation, and it must be warmed like the rest.] The link goes to Compare
+          cards from the database. [From 2026-10-17 the fallback pair is Lewandowski 20/21 v
+          Kane 23/24, the only pair left in the homepage rotation, and it must be warmed like the rest.] The link goes to Compare
           with both cards loaded and &go=1, which Compare honours for its three suggested pairs only,
           so "See the verdict" delivers one in a single tap (owner's decision 2026-10-10).  -->
     <section class="argue" aria-label="Who had the better season?">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
-      <a class="acards" href="compare.html?a=137957&amp;b=131183&amp;go=1" data-pair="131183-137957" aria-label="Who had the better season?">
+      <a class="acards" href="compare.html?a=152972&amp;b=151977&amp;go=1" data-pair="151977-152972" aria-label="Who had the better season?">
         <span class="aslot" id="argA"></span><span class="avs">VS</span><span class="aslot" id="argB"></span>
       </a>
-      <a class="acta" href="compare.html?a=137957&amp;b=131183&amp;go=1" data-pair="131183-137957">See the verdict</a>
+      <a class="acta" href="compare.html?a=152972&amp;b=151977&amp;go=1" data-pair="151977-152972">See the verdict</a>
     </section>
     <div class="searchwrap">
       <div class="search">
@@ -688,8 +688,15 @@
         EVERY PAIR HERE MUST ALSO BE IN COMPARE'S AUTO_VERDICT_PAIRS AND IN THE RE-WARM LIST, or
         "See the verdict" lands on a page that waits, or on a cold 20-second generation.
         The markup carries pair A, so a failed script still shows a working link.  */
-    var PAIRS = [[137957, 131183], [152972, 151977], [131220, 131129]];
+    /*  [BOTH NEW PAIRS OFF 2026-10-17, owner's decision, the same day they went in. Their verdicts
+        were read against their cards and both failed: Bellingham v Foden crowned Foden on "more"
+        while Bellingham's card holds more honours and leads three of five dimensions; Palmer v Saka
+        stated Palmer arrived in January (he signed on 1 September 2023), claimed percentiles its
+        cards contradict, and picked a winner its own headline said the record could not. ONE PAIR
+        UNTIL THE VERDICT CHECK IS CALIBRATED. If it fails too, PAIRS goes empty and the block hides.]  */
+    var PAIRS = [[152972, 151977]];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
+    if(!P){ box.style.display = 'none'; return; }  /* zero pairs: the search box is the front door */
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
     box.querySelectorAll('a[data-pair]').forEach(function(a){ a.setAttribute('href', url); a.dataset.pair = key; });
     sb.from('player_card_mv').select('*').in('card_id', P).then(function(res){
