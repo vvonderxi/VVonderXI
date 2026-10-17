@@ -484,7 +484,7 @@
           Kane 23/24, the only pair left in the homepage rotation, and it must be warmed like the rest.] The link goes to Compare
           with both cards loaded and &go=1, which Compare honours for its three suggested pairs only,
           so "See the verdict" delivers one in a single tap (owner's decision 2026-10-10).  -->
-    <section class="argue" aria-label="Who had the better season?">
+    <section class="argue" aria-label="Who had the better season?" style="display:none">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
       <a class="acards" href="compare.html?a=152972&amp;b=151977&amp;go=1" data-pair="151977-152972" aria-label="Who had the better season?">
@@ -693,8 +693,15 @@
         while Bellingham's card holds more honours and leads three of five dimensions; Palmer v Saka
         stated Palmer arrived in January (he signed on 1 September 2023), claimed percentiles its
         cards contradict, and picked a winner its own headline said the record could not. ONE PAIR
-        UNTIL THE VERDICT CHECK IS CALIBRATED. If it fails too, PAIRS goes empty and the block hides.]  */
-    var PAIRS = [[152972, 151977]];
+        UNTIL THE VERDICT CHECK IS CALIBRATED. If it fails too, PAIRS goes empty and the block hides.]
+        [ZERO PAIRS 2026-10-17, owner's decision, hours later. Lewandowski v Kane was read against
+        its cards too. Every figure checks, it crowns nobody and its headline agrees with its close,
+        but it rests on what neither card holds: a "record" Golden Boot, Kane's "debut" season and
+        "foreign league", and a trophyless career "in a side worthy of him". All true of football,
+        none on the cards. Four of four read verdicts failed, so the front door is the search box.
+        The section ships with display:none in the markup as well, so a failed script cannot show a
+        pair either. TO RESTORE: add a pair here AND remove the inline display:none on .argue.]  */
+    var PAIRS = [];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     if(!P){ box.style.display = 'none'; return; }  /* zero pairs: the search box is the front door */
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
