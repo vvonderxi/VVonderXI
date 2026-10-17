@@ -66,7 +66,8 @@ const TARGETS=process.argv.includes('--only')
     DELETE THIS ENTRY THE MOMENT ANY data-fig LANDS ON THE PLAYBOOK AGAIN , the file stays in
     TARGETS so the "carries figures but is NOT in TARGETS" guard keeps watching it, and this
     line is the only thing stopping a legitimately empty page reading as a failure.  */
-const UNWIRED={ 'playbook.html': 'the scoring walk moved to vvindex.html on 2026-10-04 and took every generated figure with it' };
+/*  THE PLAYBOOK ENTRY WAS DELETED 2026-10-17: the position limits put data-fig spans back on it.  */
+const UNWIRED={};
 
 const doc=JSON.parse(fs.readFileSync(FIG,'utf8'));
 const byKey={}; for(const f of doc.figures) byKey[f.key]=f;

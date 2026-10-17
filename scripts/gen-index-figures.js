@@ -179,6 +179,45 @@ async function main() {
       'are 14 FWD and 1 MID, which is what makes a published zero sayable rather than merely true of what we can see',
       `select count(*) from ${MV} where rt >= 85 and position_pool = 'CB'`);
 
+  /*  THE POSITION LIMITS, ADDED 2026-10-17 FOR THE PLAYBOOK. Owner's rule: every figure in that
+      copy is generated, because a hand-typed number is how the Ligue 1 worked example stayed
+      wrong for weeks. Three of these also GUARD A SENTENCE THAT CARRIES NO NUMBER ("no
+      centre-back season has reached 85", "all of them full-backs", "no holding midfielder has
+      reached 90"), so they throw rather than publish a figure under words it falsifies.  */
+  add('elite_seasons', eliteTotal, 'seasons at 85 or better, ever',
+      'rt >= 85. Anchor-pinned at 650 and asserted above',
+      `select count(*) from ${MV} where rt >= 85`);
+  const eliteFB = await head(q => q.gte('rt', 85).eq('position_pool', 'FB'));
+  const eliteDef = eliteCB + eliteFB;
+  if (eliteDef !== eliteFB)
+    throw new Error(`${eliteCB} centre-back(s) now sit at 85+ , "all of them full-backs" and every "no centre-back reached 85" sentence are false`);
+  add('elite_defenders', eliteDef, 'defender seasons among the 650 at 85 or better, all full-backs',
+      'position_pool in (CB, FB) and rt >= 85; the 15 unpooled top-band cards are checked for DEF above',
+      `select count(*) from ${MV} where rt >= 85 and position_pool in ('CB','FB')`);
+  const cbBest = await sb.from(MV).select('rt').eq('position_pool', 'CB').not('rt', 'is', null)
+    .order('rt', { ascending: false, nullsFirst: false }).limit(1);
+  if (cbBest.error) throw new Error(cbBest.error.message);
+  const cbBestRt = cbBest.data[0].rt;
+  if (cbBestRt >= 85) throw new Error(`a centre-back season now scores ${cbBestRt} , "no centre-back season has reached 85" is false`);
+  add('cb_best_rt', cbBestRt, 'the best centre-back season on record',
+      'max(rt) where position_pool = CB',
+      `select max(rt) from ${MV} where position_pool = 'CB'`);
+  /*  A COUNT AT 90, NEVER A "BEST CDM" FIGURE, AND THAT IS DELIBERATE. The highest CDM card is
+      Eriksen 18/19 at 88, an attacking midfielder stored as CDM (CLAUDE.md SS D, position
+      accuracy), and the next are Gross and Fabregas, also attackers. A "best holding midfielder"
+      number would publish a mislabelled card as the ceiling of the role. Do not "improve" this
+      into one until the CDM pool has been through the position-accuracy session.  */
+  const iconic = await head(q => q.gte('rt', 90));
+  if (iconic !== 150) throw new Error(`the 90+ band holds ${iconic}, not the anchor-pinned 150`);
+  add('iconic_seasons', iconic, 'seasons at 90 or better, ever',
+      'rt >= 90. Anchor-pinned at 150',
+      `select count(*) from ${MV} where rt >= 90`);
+  const cdmIconic = await head(q => q.gte('rt', 90).eq('position_pool', 'CDM'));
+  if (cdmIconic !== 0) throw new Error(`${cdmIconic} CDM season(s) now sit at 90+ , "no holding midfielder has reached 90" is false`);
+  add('cdm_iconic', cdmIconic, 'holding-midfielder seasons at 90 or better',
+      'position_pool = CDM and rt >= 90',
+      `select count(*) from ${MV} where rt >= 90 and position_pool = 'CDM'`);
+
   /*  KEEPERS ARE READ ON A DIFFERENT MEASURE, AND THE FIGURE IS THE PLAIN COUNT. A first
       version counted keepers with no rt and would have been FALSE: Fallback C removed the
       keeper score from the CARD FACE and the share caption, NOT from the column, so 3,734 of
