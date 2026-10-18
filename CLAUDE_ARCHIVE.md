@@ -510,3 +510,47 @@ Split out 2026-08-11 because this file had reached 87% of the 150k truncation li
 
 **NEXT / OPEN:** `s-gk` has no mark in `vv-marks.js` and renders its glove emoji through the `pbMarks` fallback. **§C is still the mass at ~36% and the next pass will have to reach into §D (25%) or §E (16%)** , §C's remaining bulk is rules, and rules cannot move.
 
+## RETIRED CLAIMS, MOVED FROM `RULES.md` AND `CLAUDE.md` ON 2026-10-18 (split piece 2)
+
+**Each block below was a superseded or withdrawn claim sitting beside its correction. Before it moved, every fact in it that is still true was searched for in its destination, and the four found nowhere else were promoted first: age never enters rt; a rule that loses to another needs the conflict removed; honours stay in the notes payload; both search surfaces centre. Moved word for word.**
+
+### From `RULES.md`
+
+- **[SUPERSEDED, KEPT FOR THE RULE IT STATES ABOUT WHERE AGE MAY LIVE] AGE-AS-TIEBREAKER IS BOUNDED:** only when rt gap <=2 AND age diff >=4y, and the YOUNGER card wins. **NEVER at gap >=3.** **Age lives in the VERDICT layer ONLY , it does NOT add points and does NOT enter rt, and THAT half is still binding.**
+
+### From `RULES.md`
+
+**[HISTORY , THE ENGINE THAT RAN UNTIL 2026-09-08] `sig` RENORMALISED ONTO ONE FACET WHEN `duel_quality_pct` WAS NULL, AND THAT WAS CORRECT.**  **, full record in `docs/BLEND_SPLIT_AUDIT.md`**
+- **`0.55*ds + 0.45*COALESCE(dq, ds)` COLLAPSES TO `1.00*ds` EXACTLY.** With one facet unmeasured, the honest move is to use the other at full weight rather than score the absence. **Nothing is counted twice** , an earlier note in this session called it a "double-count" and that was wrong; the weight is REDISTRIBUTED. The only genuine defect is that the COALESCE DISGUISES it, so a reader of the view sees a two-facet blend where 329 cards get a one-facet measure.
+- **`duel_quality_pct IS NULL` IS ALREADY THE MARKER, ON THE MATVIEW, TODAY , NO COLUMN AND NO REBUILD NEEDED.** Any consumer can already tell a one-facet card from a two-facet one. **329 cards, 2.1% of the defensive pool** (CB 170, FB 113, CDM 46), and the facet is missing because **159 have no `duels_total` at all and 168 sit under the view's `duels_total >= 20` gate. Only TWO are a real zero.**
+- **THE OBVIOUS FIX IS A DISASTER AND IS MEASURED, SO NOBODY PROPOSES IT AGAIN.** Nulling `sig` so the floor falls to 0 moves **306 of the 329 cards, median 27.07 points of `b`, maximum 44.41** , and every one sits at rt 38 to 70, BELOW the 80 knee where `rt = round(b)`, so a card at 52 falls to about 25. **It punishes 327 cards for a missing field**, which is this file's own first principle inverted (NR for missing data, never 0) and the same defect class as `goals_conceded` zero-filled on outfielders.
+- **MAKING THE EXPRESSION EXPLICIT IS VERIFIED IDENTICAL on every row (1e-12) and is DEFERRED ON PURPOSE.** It changes no score, so it buys clarity and nothing else, against the real risk that `CREATE OR REPLACE VIEW` has silently destroyed this view's body before. **It waits for a commit that changes a NUMBER** , floor_bound, the percentile columns, whatever opens the view next , and rides in that edit rather than earning its own.
+
+### From `RULES.md`
+
+**[SUPERSEDED, KEPT FOR THE ONE THING IT GOT RIGHT: IT IDENTIFIED LINE 304 AS THE CAUSE.] (1) THE THIRD STATE LEAKED A VV SCORE, AND THE CAUSE IS A CONTRADICTION INSIDE THE SYSTEM PROMPT RATHER THAN A MISSING RULE.** On Messi 14/15 against Messi 12/13 (96 against 96) paragraph 2 opened **"Both scores read 96."**
+- **THE RULE IS PRESENT AND EXPLICIT** , third-state rule 2: *"NEITHER VV SCORE AND NEITHER BAND APPEARS IN YOUR OUTPUT."* So nothing was forgotten.
+- **AND THE FIELD SPEC FOR `who` CONTRADICTS IT UNCONDITIONALLY** , *"Name the winner and include BOTH VV Scores as passed."* On a third-state pairing the two sentences cannot both be obeyed. **The model split them: a compliant headline ("Two seasons. No verdict.") followed by the score in the prose.** That is the worst of the three possible outcomes, because it reads as compliance until the second paragraph.
+- **SO THE FIX IS TO MAKE THE FIELD SPEC STATE-AWARE, NOT TO RESTATE THE PROHIBITION LOUDER.** A rule that loses to another rule is not a rule that needs emphasis; it needs the conflict removed. **The same shape as the splice: a value computed from one thing while a different thing is used.**
+- **AND IT MUST FORBID THE PARAPHRASE TOO** , "level on ninety-six", "both in the mid-nineties", "separated by a single point" are the identical disclosure in words, and a check that greps for digits passes all three.
+
+### From `RULES.md`
+
+**[THE ORIGINAL CLAIM, KEPT FOR ITS REASONING ABOUT WHAT WOULD HAVE BEEN TRUE] THE NOTES PAYLOAD IS DECIDED BY A RACE (found 2026-10-03, WRONG).**
+- **`card.html` FETCHES HONOURS ASYNCHRONOUSLY AND ASSIGNS `D.honours` WHEN THEY LAND**, while the notes payload is built on its own schedule. `vvAIStats` emits an `honours` key only when the card has any. **So whether that key is in the payload depends on which network call wins**, and `stats_hash` fingerprints the payload.
+- **THE EVIDENCE IS THAT THE STORED ROWS DISAGREE WITH EACH OTHER.** Rebuilding the payload offline and comparing against `notes_cache` matched **16 of 25 WITHOUT honours and 9 of 25 WITH**. **Neither is 25**, which is only possible if some stored rows carry the key and some do not.
+- **THE COST IS SPURIOUS REGENERATION AND UNRELIABLE CACHE HITS** , a card whose note was written on the slow path re-generates on the fast one, and vice versa, for ever, at a model call each time. **It is invisible because a regenerated note looks exactly like a cached one.**
+- **DO NOT "FIX" IT BY DROPPING HONOURS FROM THE PAYLOAD.** The honours are real signal the prose cites. The fix is to make the notes request WAIT for the honours promise it already has a handle on, so the payload is deterministic , and that write invalidates every cached note once, deliberately, which is the cheaper of the two bills.
+- **AND IT IS WHY `scripts/prewarm_notes.js` REFUSES TO SPEND UNTIL ITS PAYLOAD IS PROVEN.** It rebuilds the object for cards that already hold a cached note and compares its `statsHash` against the stored value, because a one-key difference makes every row it writes a **permanent miss** , generated, paid for, never served. That check caught the missing `honours` key, and then caught this race. **A warm script that cannot prove its payload is a way to spend money on rows nothing will ever read.**
+
+### From `CLAUDE.md`
+
+**[THE ORIGINAL CLAIM, FALSE SINCE SOME POINT BEFORE 2026-10-04] `rankings.html` `.gridwrap` is LEFT-ALIGNED with no auto margins** (`max-width:1680px`, `margin:0`), measured at 1920: x84 -> right 1764, leaving **141px dead on the right**. It only READS as centred because 1680 is wide enough that the gap is small. `card.html`'s search overlay was worse at `max-width:1320px` (501px dead) and has now been set to **1680 + `margin-inline:auto`**, so the two surfaces no longer match: card centres, rankings does not.
+- **DELIBERATELY NOT FIXED IN rankings.html** , it is a live surface and this is a visual change to the main grid, so it belongs with the Compare/rankings filter redesign rather than a drive-by edit.
+- When that stage runs, decide ONE rule for both (centre, or left-align at a shared max-width) and apply it to `.gridwrap` and `#cardSearch` together. Cross-ref the IMPROVEMENTS BATCH filter item in `LAUNCH_STAGE.md`.
+
+### From `CLAUDE.md`
+
+- **[THE ORIGINAL ENTRY, KEPT FOR ITS REASONING] `api/log.js` IS A DEPLOYED PUBLIC ENDPOINT THAT WRITES SESSION-LINKED COMPARISON RECORDS, AND NOTHING ON THE BRANCH CALLS IT ANY MORE (found 2026-08-29, read-only, NOT removed).** It inserts into `comparison_log` , `session_id` plus both player names, both seasons, both scores, the winner and the deciding factor , and into `search_log` (`session_id` + the query). **Grep of every shipping `.html` finds NO caller on this branch**, and the row timestamps agree: last comparison write **2026-06-30**, last search write **2026-06-11**, 43 and 11 rows.
+  - **THIS IS THE SAME SHAPE AS `api/search-player.js`, WHICH IS WHY IT IS LOGGED HERE RATHER THAN IGNORED** , an orphaned public write endpoint that outlived its caller. **The difference is that it writes to its own log tables and not to `players`, so it is NOT a corruption path.** What it is, is a session-linked personal-data surface with no product behind it.
+  - **DECIDE BEFORE LAUNCH: delete it, or keep it and say so.** Keeping a live endpoint that records what a visitor compared, when no feature reads it, is a privacy surface nobody chose. **Deleting it also drops the deployed function count by one.** Not urgent, not corrupting; a deliberate decision, like the BSD one.
