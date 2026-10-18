@@ -554,3 +554,492 @@ Split out 2026-08-11 because this file had reached 87% of the 150k truncation li
 - **[THE ORIGINAL ENTRY, KEPT FOR ITS REASONING] `api/log.js` IS A DEPLOYED PUBLIC ENDPOINT THAT WRITES SESSION-LINKED COMPARISON RECORDS, AND NOTHING ON THE BRANCH CALLS IT ANY MORE (found 2026-08-29, read-only, NOT removed).** It inserts into `comparison_log` , `session_id` plus both player names, both seasons, both scores, the winner and the deciding factor , and into `search_log` (`session_id` + the query). **Grep of every shipping `.html` finds NO caller on this branch**, and the row timestamps agree: last comparison write **2026-06-30**, last search write **2026-06-11**, 43 and 11 rows.
   - **THIS IS THE SAME SHAPE AS `api/search-player.js`, WHICH IS WHY IT IS LOGGED HERE RATHER THAN IGNORED** , an orphaned public write endpoint that outlived its caller. **The difference is that it writes to its own log tables and not to `players`, so it is NOT a corruption path.** What it is, is a session-linked personal-data surface with no product behind it.
   - **DECIDE BEFORE LAUNCH: delete it, or keep it and say so.** Keeping a live endpoint that records what a visitor compared, when no feature reads it, is a privacy surface nobody chose. **Deleting it also drops the deployed function count by one.** Not urgent, not corrupting; a deliberate decision, like the BSD one.
+
+## RELOCATED FROM `CLAUDE.md` §F ON 2026-10-18 (split piece 3a): THE ENTRIES DATED 2026-08-28 TO 2026-10-08, WORD FOR WORD
+
+**Their open items were carried into `CLAUDE.md` §D first, and every rule they say is "in §C" was found in `RULES.md` before the move.**
+
+### 2026-10-08 | Contact's desktop, the email shipped, Resend verified, the save sheet rebuilt, and a load test before the flip
+
+**Commits `8228cb6` to `ce9b29b` plus the drafts.** `git log` is the record; this keeps what it cannot say.
+
+**1. THE LOAD TEST, AND WHAT IT FOUND.** 50 simulated visitors for 62 seconds, 5,196 requests at 83 a second, built from the pages' OWN query builders (`VVSeq.query`, `tokenAndFilter`) and the URLs captured off the live card and rankings pages. **Zero platform errors on 5,037 of them.** Latency under that load: p50 100 to 290 ms per shape, **p95 0.7 to 2.4 s**, the trigram name search the slowest (`rank.search` p95 1.8 s, its head count p95 2.4 s) against about 60 to 550 ms alone. **Two of 288 search counts returned 500 under load** and could not be reproduced in a burst of 40; the page degrades to a null total and still renders rows. **One 503 on the rankings head count was seen on a single real page load** before any test; alone it answers in 240 to 455 ms. The 159 `400`s in the table were MY query, not the platform's: I keyed `split_transfers` on `card_id` and the pages key it on `api_player_id`. **An instrument fault in a load table reads exactly like a platform fault, and the fix is to replay the page's shape, never a guess at it.**
+- **THE DUPLICATE-GENERATION RACE IS REAL, MEASURED ON ONE UNCACHED PAIR WITH THREE TABS FIRING THE PAGE'S OWN `vvGenerateVerdict()` WITHIN 1.7 SECONDS.** Tabs A and B BOTH generated (two model calls, 19 and 20 s, two different headlines for the same pair), tab C got **429, "Too many verdicts at once. Press Compare again in a moment."**, and its retry 60 s later came back from cache in 4 s carrying B's prose, the last writer. Ledger: two `verdict` rows and one `refused:concurrent`; `verdict_cache` +1. **So the concurrency limit works and is what three people behind one NAT would meet, and the cost of the race is one duplicated generation per simultaneous first request, not corruption.** A per-pair lock would close it; at this traffic it is not worth a dependency. Cost of the run: two cold verdicts, about $0.08.
+- **WHAT COULD NOT BE SIMULATED, STATED:** real browsers in parallel (hidden tabs throttle timers 17x), more than one source address, the 30-an-hour cap (deliberately skipped at $1.10), and uncached notes on card open.
+
+**2. THE OTHER WORK OF THE DAY, ONE LINE EACH.** Contact took the platform frame above 720 with its phone column byte-identical. The launch email was reworked as a brand would, chosen from two, then cut to one with the subject "The doors are open" and three links, the home link written as what the front door is. Resend verified `vvonderxi.com` on two CNAMEs and a DKIM TXT (my predicted MX-plus-SPF was Resend's old scheme and is withdrawn); the inbound MX it also offers was NOT added. The save sheet lost its Google G and its pre-ticked opt-in that wrote to localStorage and was read by nothing, and became a waitlist with three intent sources. The signup confirmation is drafted, one template, one varying sentence. The post-flip queue is written in SS D in order.
+
+**NEXT / OPEN:** Lucas flips. Then the queue: launch send, signup webhook plus confirmation, the dashboard, the lint assertion.
+
+### 2026-10-07 | No card on the worked example, a link under the 92 instead, and the evidence-or-subject rule
+
+**1. THE WORKED EXAMPLE DOES NOT GET MBAPPÉ'S CARD, BY DECISION, AND THE REASON IS NOW A §C RULE.** Costed before anything was built: a second raster and a second drift check, +370px on a 1,072px block at 390 (34%), and a gold Iconic face printing its own 92 beside the walk's gold 92. The deciding argument was none of those: the card would be the walk's SUBJECT, not evidence, and its four chips contradict the closing line that says the score ignores them. Rule in §C, "A CARD ON A PAGE IS EITHER EVIDENCE OR SUBJECT".
+
+**2. WHAT SHIPPED INSTEAD IS THE 92's CAPTION , "Open his card", `card.html?id=158399`.** Every other number in the walk carried a small label and the outcome did not. Measured: 44px tap target, hit-tested at three points in both themes and at 390 and 700; contrast 5.03 dark / 5.97 light; block height 1,072 to 1,113 at 390 and 471 to 500 at desktop, all of it the right column widening to the link's 100px and the left prose re-wrapping.
+- **THE ID IS TYPED IN AN href THAT `apply-figures` CANNOT REWRITE, SO THE GENERATOR ASSERTS IT.** `WALK_CARD_ID` sits beside `WALK_NAME` / `WALK_YEAR` in `gen-index-figures.js` and the run throws if the walk's season resolves to a different card. Run with `--write`: passes, and `walk_card_id` is now in the JSON beside its derivation. `apply-figures` reports 0 rewritten.
+- **ONE LAYOUT FAULT CAUGHT BY MEASUREMENT, NOT BY EYE: as `inline-block` the link sat BESIDE the 92 on desktop** (gap to the number's bottom read -28px) and under it only at 390, where the column was too narrow for both. `display:block` with `text-align:right` on the column fixed both widths.
+- **AND A HARNESS FAULT WORTH ONE LINE: `elementFromPoint` on the link returned the bottom nav**, because `scrollIntoView({block:'end'})` parked the outcome row under the fixed nav. The real page pads the body for the nav; the probe did not scroll past it. **Centre the target in the viewport before hit-testing anything near a fixed bar.**
+
+**NEXT / OPEN:** Lucas flips. Nothing today moved a prompt fingerprint or a database row.
+
+### 2026-10-06 | The Home mark becomes the lockup, and the control for the demo found a dead active tab
+
+**1. THE BOTTOM NAV'S HOME GLYPH IS NOW THE LOCKED TWO-TONE LOCKUP, ON ALL NINE PAGES THAT CARRY THE NAV.** It was two separate stroked Vs with a gap, under 10px tall, and read as two letters. It is now the loader's own two paths, filled, left V on the tab ink and right V on brand pink. Lucas picked it from a rendered demo of four treatments at 390 (`_demo_homemark.html`, untracked). **The avatar shield was refused on measurement, not taste:** the only filled block in a row of outlines, its VV about 7px tall, and it already sits top right on every phone screen pointing at preferences.
+- **THE GEOMETRY IS NOW IN TEN PLACES , the shared module and nine pages.** Asserted byte-equal to the module's two constants on the day (9 of 9). **Nothing enforces it afterwards.** A comment beside each copy says to change them together; that is a rule that depends on remembering, and it is recorded here as owed a lint assertion rather than as solved.
+
+**2. IN LIGHT MODE ON A PHONE THE ACTIVE TAB WAS NOT HIGHLIGHTED, ON EVERY PAGE THAT HAS ONE, AND NOBODY HAD REPORTED IT.** `body.light .bn-item` is (0,2,1) and outranked `.bn-item.on` at (0,2,0), so the active tab computed `rgb(95,89,78)`, identical to its neighbours, on rankings, card, compare, playbook and vvindex. Dark was always correct, which is the positive control. Arrived in `5a83528` with the contrast token. Fixed by adding `body.light .bn-item.on` to the same rule; active now reads `rgb(173,3,50)` in light on all five, measured in a 390 frame with `matchMedia` and `innerWidth` asserted.
+- **IT IS SS C'S THEME-OVERRIDE RULE RUNNING THE OTHER WAY.** That entry is about a theme override that LOSES to a heavier base rule. Here the theme rule WON, over a state class it was never meant to touch. **Adding `body.light` to a base rule raises it above every unprefixed state rule on the same element**, so a theme fix can silently delete a state. Check `.on`, `.open`, `.active` siblings whenever a `body.light` variant of a base rule is written.
+- **AND IT WAS FOUND ONLY BECAUSE THE DEMO WAS MEASURED AGAINST THE LIVE PAGE.** The demo copied the nav rules with `body.light` retargeted to a wrapper class, which lowered the specificity and FIXED the defect inside the demo. A control comparing demo against the real page at 390 disagreed on one colour, and that was the finding. **A demo that retargets a selector has changed its weight** , the same family as a demo supplying its own tokens.
+- **IT ALSO CHANGED WHAT THE HOME DECISION MEANT.** With no active tab showing, Home's pink V was the loudest thing in the light row and read as the active tab. The mark was chosen against the row as it now behaves.
+
+**3. TWO STATUS LINES IN THIS FILE WERE STALE AT SESSION START, BOTH IN THE DIRECTION SS D WARNS ABOUT.** The progress bar says the post-split matview refresh is outstanding: `player_card_mv`, `player_card_view` and `player_season_cards` all count **58,066**, the expected figure, so it has run (row counts only; the scores hash was not re-run). And 2026-10-04's NEXT says the three suggested matchups are cold: all three hold rows on the current Path B base with matching rt, and Lucas confirmed them warm on the preview on 2026-10-06.
+- **MY OFFLINE STAMP REBUILD FOR THOSE THREE WAS VOID AND IS RECORDED AS VOID.** It returned zero honours for Messi 11/12, so it could not match and proved nothing either way. Third instance of the offline builder missing honours; the page load was the instrument.
+
+**NEXT / OPEN:** Lucas merges and flips. **The Anthropic balance is still the launch risk** , $32.94 recorded on 09-27 before roughly $9 of warming, auto-reload off, and no alert watches a balance. Owed after the flip: a lint assertion tying the nine nav copies to the module's lockup constants.
+
+### 2026-10-04 | A pre-flip pass, and the two biggest findings were both invisible to a disk audit
+
+**Commits `f5d011f` onward.** `git log` is the record; this keeps what it cannot say.
+
+**1. THE FIGURES CHECKER COULD NOT SEE ITS OWN FIGURE.** `apply-figures` matched keys as
+`([a-z_]+)`, no digits, so `data-fig="walk_gaw90"` matched nothing and the run printed
+**"31 figures, 0 drifted"** while the page published **1.056** against a generated **1.158**.
+**Third fault in that one regex**, after the greedy quantifier and the tag anchor, and all
+three shrank what it could reach while reporting clean. Rule in SS C.
+
+**2. AND THE COPY AROUND THAT NUMBER PROMISED A SUM IT DOES NOT COMPUTE.** "His goals and
+assists become a single number" invites 1.336; `gaw` discounts assists to 0.7 and penalties to
+0.78. **The number was right, the sentence was wrong, and the checker could not see either.**
+
+**3. EIGHT COPY DEFECTS, EVERY ONE FOUND BY READING RENDERED PROSE.** The Playbook said a
+keeper carries no score and, 4KB later, that every keeper is capped at 75 and the cap is stated
+on the card , a sentence Fallback C retired. The VV Index had a clause with no verb, a 97%
+with no denominator whose pull line claimed the opposite of the figure above it, 2015/16 on
+both sides of its own boundary, and a "them" with no antecedent. **No sweep on this platform
+can see any of them**: every page laid out perfectly throughout.
+
+**4. ~1.1 MB OF EAGER THIRD-PARTY HEADSHOTS ON THE DEFAULT RANKINGS VIEW** , 100 images,
+mean 22.8 KB, almost all below the fold, **invisible to a disk-based audit because they are
+cross-origin.** More than the 1.8 MB the 2026-08-29 page-weight extraction removed, put back
+by one surface. Now lazy at the single choke point.
+**AND IT WOULD HAVE SHIPPED A BLANK SHARE POSTER:** the capture stage is parked off to the
+LEFT rather than hidden, which is exactly the condition under which a lazy image is never
+fetched, so `vvSettleImages`' 4s bound would have expired and html2canvas drawn nothing.
+Forced eager there rather than at each call site , the state every capture passes through.
+
+**5. THE TIE VERDICT FINDING, AND I RANKED IT WRONG TWICE BEFORE MEASURING IT PROPERLY.**
+91% of tie verdicts crown a winner in prose beside a chip reading "The Debate Lives On".
+**First I called it a documented non-defect; then the day's first must-fix; it is neither.**
+`applyVerdictOutcome` returns early on `tie`, so **no card is ever badged** , control-tested
+with `inside` as the positive. Prose only, and the fix is a system-prompt edit that would
+discard 655 warm notes, so it is staged rather than applied. Full record in SS C and in
+`docs/PROMPT_EDIT_PROPOSED_2026-10-03.md`, whose section 1 was rewritten: it had aimed its fix
+at the `inside` state, measured at **0 of 19** failures, and would have missed this entirely.
+
+**6. TWO OF MY OWN FINDINGS WITHDRAWN.** The "unnamed search input" was a false positive , the
+inputs are `<label>`-wrapped or carry a placeholder, and my name check read only
+`aria-label||title||textContent||placeholder`. And my images pass was **under-measured**: it
+loaded pages with no query string, and `rankings.html` persists its view in `localStorage`
+where List and Compact ship **zero raster**, so it measured a platform with almost no images.
+
+**NEXT / OPEN:** **The spend cap (QA B4b) is the only thing that bounds the bill** , the global
+300/hr ceiling permits **$312/day** against a recorded **$32.94** balance, so the ceiling does
+not protect it. All three suggested matchups on compare's empty state are **cold**, and the
+verdict cache holds **88** live-hittable pairs. The share poster enlarges a 150px headshot
+**3.65x** and no larger source exists , a product call. Nothing today moved a prompt
+fingerprint, so no cached row was discarded.
+
+### 2026-09-26/27 | Sitting 3, and three times the instrument was the thing that was wrong
+
+**Commits `5597739` to `23f0db2`.** `git log` is the record; this entry keeps what it cannot say.
+
+**1. THE TWO NOT-SCORED NOTES SHIPPED BEFORE THE RUN, WHICH WAS THE CONDITION.** 44 reduced
+cards and ~200 inserted halves must not sit blank waiting for a second pass. `notScoredNote`
+in vv-core, two variants, because a card that never had a score and a card that LOST one are
+different events. **A contradiction that only rendering found: `partialSeasonNote` asserted
+"the figures AND THE SCORE cover that share only" on a card whose score had just been removed,
+in the box directly above a note explaining there is no score.** Fixed opt-in, so every
+existing caller renders byte-identically. **And the approved copy said "two clubs" where six
+of the 202 hold three** , caught by counting the population rather than by reading the note.
+
+**2. SITTING 3 RAN: 181 split, 181 inserted, 20 held, 0 failed.** Full record in SS E.
+
+**3. THE MATVIEW WAS OUT OF STEP AND A CORRECT REFRESH WAS THE CAUSE.** Refreshed 18:12:58;
+the canary rollback landed 18:19:58. **Seven minutes.** It photographed a base table that
+still held the canary. **The verification that followed read `player_card_view`, which is
+computed on READ and therefore always agrees with the base table , the one check that can
+never fail.** The drift check in SS C came out of this and has now fired on both sides: 0/true
+after the rollback refresh, **and `-181`/false the next morning, which is how we learned the
+post-run refresh had not been run at all.**
+
+**4. THE UNIQUE KEY IS FOUR COLUMNS, NOT THREE**, found because the canary's insert succeeded
+where the recorded key says it cannot. Four entries marked. **Nothing about the 841 halved
+cards is re-scoped on it.**
+
+**5. THREE INSTRUMENT FAULTS, ALL MINE, ALL CAUGHT BEFORE A WRITE.** `league_id` is OUR key
+and the canary had the provider's HARDCODED, so the first run held all 197 with "provider now
+returns 0 blocks" , **a message that reads as the source having changed rather than as my own
+tool being wrong.** 23 Turkish cards carry a null `league_id` and say `TR` where the leagues
+table says `TSL`. And the `--limit 1` control is the only reason either was found: **an empty
+capture directory was the sole evidence the first run had done nothing.**
+**A guard that holds everything looks exactly like caution.**
+
+**6. A NARROW ESCAPE WORTH KEEPING.** I recorded failing to capture a pre-run rt snapshot. The
+matview had not been refreshed, so it still HELD that state , dumped to disk, md5 reproduces
+(`a918ff3b...`). **A stale matview is a liability for reading and an asset for recovery, and
+only until somebody refreshes.**
+
+**NEXT / OPEN:** **The post-run refresh is outstanding**, so the site still serves the pre-split
+state , correct and consistent, just old. Run it, then the drift check; expect **58,066 rows**
+and `06bf3e41820b92d6b2f4e5fd4c93ea63`. **Six cards unscored by a NULL rather than the floor are
+LOGGED AND DEFERRED to after launch by Lucas** , do not patch a zero we cannot prove. **Next
+from Claude is item 8, the full audit sweep, and nothing before it**; the preview URL, QA groups
+B/C/D, the six punchlist reviews, the comparisons, the spend cap and the old API key are Lucas's.
+
+### 2026-09-19 | A day of claims that had no derivation behind them, and the tools that now supply one
+
+**Routing: `docs/HANDOVER_2026-09-19.md` is the entry point; it REPLACES 09-17 rather than patching it.** 30 commits, `44cd234` to `573df0a` (counted with `git log --oneline 44cd234^..573df0a | wc -l`). `git log` is the record; this entry keeps what the log cannot say.
+
+**1. WHAT CLOSED.** The matview sitting ran (`dce5ed7`): 87 columns, rt md5 unchanged, and **the outage measured for the first time at ~42s**, the indexes being the expensive half. Step 5 is closed on all three items; the rotation was done 2026-08-31 and two documents said otherwise for nineteen days (`272f69c`). BAM is delivered on both halves for the platform's nine leagues and is **0 of 14 on the brief**, and its data is gitignored, so a clone holds manifests and no CSVs.
+
+**2. WHAT SHIPPED.** A14's pixel harness (`_pixel_audit.js`) with `.pspot` 3.89 as its standing control, three pinned-ink defects fixed, `.lgco` recorded unmeasurable with its reason. The compare verdict panel: centred, a fading plate, Fraunces upright at 66 KB, coverage bars below three shared dimensions. `RADAR_POOL_REF` repasted after three stale days. A value stamp on `verdict_cache`. **Item 26** (`573df0a`): a mark under the shield on 477 cards, opt-in, with two conditional notes.
+
+**3. THE PATTERN, AND IT IS ONE PATTERN: EVERY WRONG CLAIM TODAY WAS A NUMBER OR A STATUS WITH NO DERIVATION BEHIND IT.** The punchlist read 15 of 25 against 35 rows; a README said "generated" with no generator; a plan line said Step 5 was open after it closed; my own correction of that line read C7 and not C5 and repeated the error; I quoted "94 of 108" for a set of 94. **Each was fixed by attaching a derivation** , the awk in the punchlist header, `gen-readme.js`, the QA item cited by letter, a count re-run before writing. The failure shapes are written out in the handover SS "failure shapes"; the one to carry forward is that a status line which is not re-derived when its subject changes becomes an instruction to redo finished work.
+
+**4. INSTRUMENT FAULTS, MINE:** an impact check compared OLD with OLD because the snapshot was not exported (caught by a control asserting the two blocks differ); a real click aimed before any screenshot had fixed the coordinate frame landed on the card face and reported a flip; a capture on a hidden tab timed out the evaluator and had nevertheless finished. **Each was caught by a control that had to change, which is the only reason the second reading was trusted.**
+
+**NEXT / OPEN:** Lucas: item 26 on `/card.html?id=131548` [CORRECTED 2026-10-04 , it read 134303, and that card no longer carries the mark: the squad-number backfill sourced West Ham's own table for it, so it is `squadnum` #23 now and correctly unflagged], the old API-Football key being dead (C5's open half), B4b's spend cap, the Eredivisie overlap, the Vercel flip. Mine: punchlist 36 (the BAM club-name check reads false on 93 of 94 completed seasons; six with real unplayed names unexamined), `.pghint` and the continental chip glyphs as demos, and whether the story and scout prose take Fraunces. **Item 25 stays gated.**
+
+### 2026-09-15 | The most-audited file on the platform was an open Anthropic proxy
+
+**1. THE ENDPOINT TOOK `messages`, `system` AND `max_tokens` FROM THE REQUEST BODY AND SENT THEM
+TO ANTHROPIC ON OUR KEY**, with `Access-Control-Allow-Origin: *`, no auth and no rate limit. **The
+caller chose what each call cost.** Not a broken code path , every line did what it said , which
+is why no behavioural sweep found it. **It survived because every prior review asked whether the
+file WORKED**: the cache stamps, the A/B swap, the winner check and the prompt splice were all
+audited hard and repeatedly, and every one is a question about correctness for a caller we trust.
+**Nobody asked what an untrusted caller could do with the same three fields.** A file can be the
+most-audited on the platform and unexamined in one direction.
+Now bounded (2048 output tokens, 120k input chars, message shape), behind an **origin allowlist**
+built from the FOUR domains read off the Vercel project plus a wildcard for Vercel's GENERATED
+branch URLs, which are not in the domain list at all , and behind a **rate limit**, 30 new
+generations per hour per IP and 2 concurrent, on one Supabase table rather than a new vendor.
+**Each states its own limit in the code**: the allowlist stops another WEBSITE, not a script;
+the limiter stops one ADDRESS, not a pool; and the cache is doing most of the defence, since the
+check runs after the cache lookup so nothing repeated is ever billed.
+
+**2. A CACHE VERSION COULD DESCRIBE A PROMPT THAT DID NOT WRITE IT , THE SAME SHAPE AS THE PATH B
+SPLICE.** `customSystem` overrode the prompt while the stamp was picked from the `judge` FLAG, so
+a row could be written by a prompt nobody has seen and stamped as ours, then served to every later
+visitor for that pair. Fixed by fingerprinting the function's RETURN VALUE, so the two cannot
+disagree by construction. **Zero rows regenerate , all three versions byte-identical, asserted.**
+`VERDICT_VERSION_JUDGE` is now exported: there are THREE prompts and the module announced two.
+
+**3. ITEM 25 IS WITHDRAWN AND MUST BE RETAKEN FROM SCRATCH.** The verdict figures were taken over
+"every row on a v3 prompt", which spans **FIVE prompt bases including Path B** , a mixture with
+no named composition. The NOTES figures survive that (notes versions carry no payloadRev, so an
+exact match IS a base match) **but fall for a better reason: the pre-edit baseline MOVED, 1.08 to
+1.30, as its own population kept filling.** So 1.08-to-0.88 read flat and 1.30-to-0.88 is a DROP
+of 0.42 , the edit may have made marking WORSE. **1.53 pooled SEs, under the 1.96 bar, so it is a
+signed direction at a sample size that cannot carry a verdict.** The gate is now explicit: both
+bases must stop moving, and the current Path A prompt has ZERO rows.
+
+**4. THE BASELINE ERROR, THREE TIMES IN ONE DAY, AND THE REPETITION IS THE FINDING.** The stale
+0.43 measured a cache mid-refill; the 1.08 measured a base still filling; the cache-health counts
+measured a population half of which could never participate (194 of 366 notes rows were orphans
+that the read path treats as a MISS). **Each time the number was right about the rows it saw and
+wrong about what those rows were.** Before quoting any figure over a cache, ask what fraction of
+the denominator is ELIGIBLE to be counted, not merely what fraction has arrived.
+
+**5. THE DEPLOYED SURFACE IS ONE FUNCTION.** `api/log.js` was already gone (SS E described it as
+live, and the same entry's BSD claim was stale too). `api/get-seasons.js` was deleted , and it had
+**no caller in any `.html` in the entire history of any branch**, so it was stillborn rather than
+orphaned. It was fixed hours before it was deleted and **both the record and the migration README
+say so**, because a later reader finding `034b91e` must not conclude it was in use. It had been
+asserting a recorded **0** for assists on **31,040 rows, 54.8% of the database**, from a
+machine-readable endpoint.
+
+**6. FIVE UNDEFINED CSS VARIABLES, ALL LIVE, AND `var(--ink)` ALREADY HAD ITS OWN RULE HERE.**
+Rankings' visible "Filters" button carried THREE on one rule , measured live as
+`background: rgba(0,0,0,0)` and `border: 0px none`, so the pill had no background and no border.
+**A per-file scan reported 22 and the real count is 5** , `vv-core` consumes tokens the PAGES
+define, the same shape as the dead-export scan that accused `VVSeq` , and one flag was PROSE, the
+comment about this exact trap.
+
+**7. DATA REMOVED, ALL CAPTURED AND VERIFIED FIRST:** 194 orphan notes rows, and the
+`comparison_log` / `search_log` tables, whose 43 pairings across 33 sessions now live in
+`migrations/orphan_endpoints_2026-09-15/`. Both verified by a read-back that ERRORS rather than
+returning empty, since an empty read cannot tell "dropped" from "unreadable".
+
+**INSTRUMENT FAULTS, ALL MINE:** replacing `global.fetch` made the limiter's own ledger reads hang
+on the same latch as the model call (supabase-js uses fetch); latching two calls while keeping one
+resolver, where a never-resolved promise is not an open handle so node exited silently reporting
+success; `grep -c` counting LINES not occurrences, which made a correct doc look stale; and
+**`pkill -f <pattern>` matching the shell running it, twice.**
+
+**NEXT / OPEN:** **`docs/MERGE_READINESS_2026-09-15.md` leads with the thing this repo would
+otherwise mislead a reader about , none of today's protections are live, because production
+tracks `coming-soon`.** The one gap with a cost attached is **distributed abuse**, which nothing
+in the code can see: **QA_PASS B4b**, five minutes in the Anthropic console, cap $100 and alerts
+at $20 and $50, derived from a cached verdict at $0.018 and legitimate use at $4 a month.
+**QA A14, the platform contrast re-run, is the only sweep left and is deliberately its own
+session.** Item 26's SITTING.sql, item 22's PDF, item 25's measurement and the blank-shield
+question are all Lucas's.
+
+### 2026-09-12 | The assists honour was a maximum over three cards, and the fix was deletion
+
+**1. `top_assists` WAS COMPUTED FROM A COLUMN THAT IS 99%+ NULL BEFORE 2015, AND EVERY INTERNAL
+CHECK PASSED IT.** Van Persie held the PL 2011/12 assists honour on **9**, the maximum of **three**
+populated cards in a **390-card** league-season. **Eleven rows deleted**, rollback captures in
+`migrations/top_assists_sparse_2026-09-12/`. The write path (`top_assists_write.js`) lost its
+`MIN = 9` floor for a **`MIN_COVERAGE = 0.25`** gate, stopped reading null as zero, and now carries
+every tied player rather than one. `honours` ends at **624**, `top_assists` at **113 of 144**.
+
+**2. THE FINDING WITH THE LONGEST REACH , A FILL PRIORITISED BY PROMINENCE MAKES EVERY COMPUTED
+EXTREMUM LOOK CORRECT.** The pre-2015 assists that DO exist were filled for marquee cards only ,
+**117 cards, median rt 88, 89.7% at rt >= 85, against a population median of 42.** So the maximum
+over the populated set was a star **by construction**, and the false honours landed on Messi, Van
+Persie, Suarez, Giroud and Nene. **A sparse maximum over a random sample looks obviously wrong and
+gets caught. Over a sample selected for fame it looks exactly like the right answer**, which is why
+this survived from July to September. **This applies to any selective fill of any field.**
+
+**3. THE ASSISTS BACKFILL IS CLOSED PERMANENTLY, ON ONE STRUCTURAL FACT: THE PERCENTILE POOLS CARRY
+NO `season_year`.** Eleven `PARTITION BY` clauses in the live view, not one of them partitioning by
+season. **So every pool mixes 2010 with 2025 and ANY era-bounded fill is a PARTIAL fill of every
+pool** , measured at **3.1x to 8.3x worse per card than a complete one**, with the same imputed
+value giving a median gain of 0 under a full fill and **+7** under the narrowed variant. Real scope
+is **31,040 cards across 2,422 of 2,740 club-seasons, 88% of the database.** Both narrowed variants
+rejected. **Do not re-propose a subset.**
+**[SCOPE CORRECTED 2026-09-16, AND THE STRUCTURAL ARGUMENT SURVIVES WHILE THE FIGURE DOES NOT.]**
+**The 31,040 counts every NULL assist as a gap. 11,015 of them are KNOWN ZEROS** , the importer
+wrote a zero-assist season as NULL until 2023, see SS E. **The genuine gap is 20,025 cards, and
+only 3,661 of those are 2015 or later; 16,364 are pre-2015.** So the recorded scope overstates
+the absence by **35.5%**. **WHAT STILL HOLDS: the partitioning fact.** The pools carry no
+`season_year`, so an era-bounded fill is still a partial fill of every pool, and that reasoning
+is untouched by what the nulls mean. **WHAT DOES NOT: any argument that rests on the SIZE of the
+gap**, including the sense that the 2015+ era is substantially unfilled , it is 3,661 cards, not
+tens of thousands.
+
+**4. "WHO WON THE ASSIST CROWN" IS NOT A SINGLE FACT INDEPENDENT OF WHO IS COUNTING, AND THAT IS
+WHAT CLOSED PHASE 2 , NOT THE 71% HOLD RATE.** Transfermarkt is **equal or higher than the official
+record on 5 of 5** disagreements, never lower; a recording error scatters both ways and this does
+not. **And the rule cannot be NAMED**, which is worse than an alternative definition: Transfermarkt
+publishes none anywhere reachable, and its own guide explains why , assists are entered per match
+by **volunteer scouts** and aggregated automatically. **There is no offset to apply because there is
+no rule.** Late in the session a **second provider showed the same signature**: worldfootball gives
+Gerrard 14 / Suarez 13 on PL 2013/14 against the official 13 / 12, **+1 on both, a level shift not
+a re-ordering.** Two providers agreeing with each other and disagreeing with the official record in
+one direction are **NOT two independent reads**. **DO NOT apply a -1 correction** , LL 2010/11 is
++3. **This scope does NOT leak into shirt numbers or positions**, which are roster facts with one
+answer; an assist is a judgement about who touched the ball before a goal.
+
+**5. FOUR ROWS WERE SOURCED AND WRITTEN, FROM TWO RUNS, AND THE AUDIT WAS WORTH MORE THAN THE ROWS.**
+Phase 1 wrote 2 of 7 (**71% hold rate**); a 45-row external report yielded **2 more from 11 nominal
+CONFIRMEDs**. All four carry `source = sourced_leader_only_verified`. The three things that killed
+the rest, in order of cost:
+- **CARD RESOLUTION IS A PRECONDITION, NOT A FINAL CHECK.** Named and verified: **Nani PL 2010/11,
+  Juan Mata PL 2012/13, Hakim Ziyech ERE 2014/15 have NO CARD.** **The 300-minute importer floor
+  explains none of the three** , their squads carry 14 to 21 cards down to **313 minutes**, and
+  each of the three played far more than players who did get one. They are **source-absent
+  individuals**, the Rooney/Gerrard class, and a re-ingest will not recover them. A league-season
+  whose leader has no card is **CLOSED, not held**.
+- **ONE LINEAGE WEARING TWO NAMES.** The confirmation bar is **lineage, not source count**.
+  **AN AWARD NAMED FOR A METRIC IS NOT THE METRIC** , the report cited the PL Playmaker award as
+  evidence for the assists TABLE. The award IS given for most assists, which is exactly why the
+  conflation is invisible, but it is adjudicated from one provider's count, so award-plus-archive
+  is one reading twice. **Golden Boot is not the goals table.**
+- **A `CONFIRMED` LABEL CONTRADICTED BY THE ROW'S OWN NOTES.** The evidence governs, not the column.
+
+**6. A REFRESH RUN FOR ONE JOB LANDS EVERY PENDING WRITE, AND NOTHING ANNOUNCES IT.** The refreshes
+run for the honours work carried the **eight 25/26 position corrections** with them , they had been
+recorded as pending in two documents and are now **live, 8 of 8 verified**. The owed diff is done:
+**113 rt movers (predicted 116), 6 band crossings (predicted 6), median |delta| 1, max 3.**
+**`pool_change_sim.js` is trustworthy on COUNTS and not on NAMES** , it got all four RECLASSIFIED
+crossings exactly right by card and value, and named the wrong two UNTOUCHED ripple cards (predicted
+Vardy 16/17 and Alcacer 18/19; actual **Perisic 16/17 and Lacazette 23/24**, all four 84 -> 85).
+Which of several tied neighbours re-ranks is not stable. **Same shape as SS C's CDM rule: predict
+the direction, never the number, and for a ripple, never the card.**
+
+**INSTRUMENTS THAT LIED, FOUR IN ONE DAY, EACH CAUGHT BY A CONTROL:** `range()` pagination **without
+`ORDER BY`** reported 49.5% of club-seasons carrying a duplicate name against a real **0.10%**;
+`scrollWidth` reported "fits" for wrapping text, returning **63 for four strings of different
+length** (`Range.getClientRects()` is correct); an SPA returned **200 for a path it redirects away
+from**, which would have recorded Van Persie's 30 GOALS as an assists total; and reading a
+Transfermarkt column **by position** gave Drogba 33 assists and turned Silva's AGE into his assist
+count (fixed by keying on the `vorlagen` sort key and reading direct children). **Also: I audited
+the read-only staging twin instead of the write path and claimed 19 players held no honour they had
+earned. False , `top_assists_write.js` already writes every tied player.** An audit of the twin is
+not an audit of the write path.
+
+**7. TWO DIFFERENT QUANTITIES BOTH CAME OUT AS 113 TODAY AND I CONFLATED THEM IN A HANDOVER LINE.
+THE COINCIDENCE IS THE WARNING.** **113 cards carry `h_top_assists`** after the honours writes, and
+**113 cards moved rt** from the POSITION batch measured against `before.json`. They share nothing
+but the number. **Honours are DISPLAY-ONLY and cannot move a score** , read off a fresh
+`pg_get_viewdef` (17,766 chars): `rt_new` is fully computed by line 156, the `hon_rows` and `hon`
+CTEs begin after it, and `hon` is consumed only by a `LEFT JOIN` feeding `honours_json` and the
+seven `h_*` flags. **Zero honours references appear anywhere before `rt_new` is defined.**
+**So today's honour writes moved ZERO scores**, and a NEXT line reading "113 cards' rt has moved"
+as a reason to regenerate was wrong twice over , wrong about the cause, and wrong that anything
+was owed. **When two figures match, check they are the same QUANTITY before reasoning from the
+match** , the same family as SS C's two-fields-for-one-concept rule.
+
+**NEXT / OPEN:** **NO REGENERATION IS OWED, AND THIS LINE PREVIOUSLY SAID THE OPPOSITE.**
+`RADAR_POOL_REF` and the margin table were regenerated after the MORNING refresh, in **`4a9c502`**
+(11:01), which also bumped the `?v=` token on all five shipping surfaces. **Nothing has moved rt
+since**, verified three ways: `RADAR_POOL_REF` regenerated into `/tmp` is **BYTE-IDENTICAL** to the
+committed block (5,154 chars both sides, built from per-90 rates over 25,901 cards, so any write to
+goals, assists, minutes or pools would have moved a breakpoint); the viewdef proof above; and
+**zero rows written to `player_season_cards` or `player_positions` today**, with
+`write_assists_ccc.js` reporting `filled 0 / already-had 28`. **Re-run them when something actually
+moves rt, not on a schedule.** **Squad numbers (variant
+A) is BLOCKED on one unanswered product question and Lucas has said to stop asking** , the blank
+shield decision; he will bring it. The `top_assists` sourcing job has **33 of 46 league-seasons
+left** and its spec now carries a SS 0 and a SS 10 that did not exist this morning; **commission
+card resolution FIRST on any next external pass** , roughly a fifth of the Fable report's effort
+went into seasons that could never have produced a row.
+
+### 2026-09-05 | The radar was one denominator for eight pools, and the doc named the wrong axes
+
+**1. SCALING IS NOW PERCENTILE WITHIN POSITION POOL.** The four fixed `RADAR_REF` constants
+served all eight pools at once, so an axis central to one position and irrelevant to another
+was divided by the same number. **Measured over all 57,055 cards: goalThreat had a median of
+6 for CB and 40 for ST on that one denominator**, while defensive ran the other way, 41 to 21.
+No value of a shared constant could have fixed either , it moves both together. After:
+**CB 48 / ST 46**, every pool near 50 on every axis by construction. Radars with at most two
+axes reaching 25/100 fell **10,395 (28.9% of rendered) to 8,625 (24.6%)**.
+
+**2. THE REMAINING 24.6% IS NOT THE SAME DEFECT AND MUST NOT BE DRIVEN TO ZERO.** 2,930 of
+them (34%) measure only three axes, so three strong axes are impossible by construction ,
+that is the NR rule working. The other **5,695 (16.3% of rendered) genuinely sit low across
+four or five measured axes**, and in a percentile system a below-average season is SUPPOSED
+to draw small. Re-inflating this number means re-inflating the scale.
+
+**3. `RADAR_POOL_REF` IS AN EMBEDDED SNAPSHOT AND NOTHING WARNS YOU WHEN IT GOES STALE.**
+**`scripts/gen-radar-ref.js` regenerates it** , 21 breakpoints per axis per pool, built from
+25,901 cards of 900+ minutes. **REGENERATE IT AFTER THE TRANSFER-HALVES REPAIR AND AFTER ANY
+POSITION BACKFILL**, both of which are queued: the repair moves 968 material cards' per-90
+rates in BOTH directions, and a backfill moves cards between pools, which changes the
+distribution they are scored against AND the one they leave.
+**[2026-09-15: ALL THREE SNAPSHOTS NOW HAVE A GENERATOR, AND THE KEEPER LADDER'S WAS THE ONE MISSING.]** `RADAR_POOL_REF` has had `gen-radar-ref.js` since it shipped and the index figures got `gen-index-figures.js` at item 24, but **`KEEPER_SAVE_LADDER` had none** , checking it for drift meant reconstructing the three gates out of `keeperScore` by hand and reimplementing the percentile, which is exactly the check that never gets run. **A hazard documented for three things and checkable for two is documented for two.** `scripts/gen-keeper-ladder.js` closes it, **reads the gates out of `vv-core.js` rather than retyping them** (so a moved gate cannot produce phantom drift), and reports against a 0.005 bar , half a point of save percentage, below which the difference is percentile interpolation rather than the population moving.
+- **BOTH WERE VERIFIED CURRENT ON 2026-09-15, AFTER A DAY THAT WROTE 7,928 SHIRT NUMBERS AND 180 HONOURS.** `RADAR_POOL_REF` regenerated BYTE-IDENTICAL, 5,174 chars both sides. The keeper pool is still exactly **n=1,920** with **max drift 0.0003**. Unchanged is the correct answer , both writes are display data , and it demonstrates the backfill's rt-neutrality independently of the 22 spot diffs.
+
+**THIS IS THE SECOND SNAPSHOT OF ITS KIND ON THE PLATFORM. `KEEPER_SAVE_LADDER` IS THE
+FIRST, AND IT CARRIES THE IDENTICAL HAZARD.** Two is a class, not a coincidence , when a
+future session runs a population-moving write, BOTH have to be regenerated in that pass, and
+neither will complain if they are not.
+**THE SEMANTICS ARE FRACTION STRICTLY BELOW, WHICH IS WHAT POSTGRES `percent_rank` RETURNS**,
+chosen so the eventual swap to real matview columns moves nobody's radar. Mid-rank would have
+shifted every card on the day the columns landed and read as a regression.
+
+**4. A LIVE COMPARE DEFECT, FIXED IN THE SAME PASS: 966 KEEPER CARDS DREW AN OUTFIELD RADAR.**
+`card.html` always swapped in the keeper panel; **`compare.html` never gated on position at
+all**, and `vvComputeSpokes` only asks that both sides measured an axis. GK pool medians say
+what it looked like: goalThreat 0, creation 3, defensive 2. **Percentile scaling would have
+made this worse**, turning a visibly empty chart into a confident one built out of nothing.
+The gate is now in `radarFor` itself so every surface inherits it, and **`raw` goes null too,
+not just `scaled`, because `raw` is what the AI prompt cites.**
+
+**5. THREE SURFACES CARRIED COPY THE CHANGE MADE FALSE, AND ONLY ONE SELF-HEALED.**
+`card.html`'s note was gated on `radar.provisional` and went blank on its own.
+**`compare.html`'s was set UNCONDITIONALLY, so it would have told visitors the dimensions are
+"not percentiles" on the day they became percentiles** , nothing would ever have switched it
+off. `playbook.html` asserted in prose that the caps were still provisional. **A scaling
+change is a COPY change, and the copy does not track the code.** Compare also gained the
+sentence that case needs: each card is scored against its own pool, so a centre-back and a
+striker can both show a full defensive spoke without contradiction.
+
+**6. §C AND §D HAD THE SYMPTOM BACKWARDS FOR MONTHS.** They recorded *"Creation, Progression
+and Defensive read ~0"*. Measured, those were the **healthiest** axes at 40, 36 and 38;
+**goalThreat, at 13, was the collapsed one.** A session acting on that entry would have gone
+to fix the three axes that were working. Both entries corrected, and §D CLOSED rather than
+only corrected , left as `[OPEN]` it would have sent the next session to rebuild shipped work.
+
+**VERIFIED, RENDERED AND MEASURED:** the live card note reads "Each dimension is a percentile
+against other ST seasons we can measure, not an absolute rate" (§C's copy trap forbids "in
+the league", and it does not say it). `node --check` plus a require-and-assert-export on
+vv-core; `lint-inline` clean. **The highest-risk failure is the two `poolKeyFor` copies
+diverging, so it was tested directly: 0 differences across all 57,055 rows, and a planted
+divergence produced 856**, so the harness can see drift. Token bumped to `20260905k` on all
+five shipping surfaces, found by `grep -l` rather than the count written in the rule.
+
+**NEXT / OPEN:** **The three unused denominators are deliberately NOT done.** `shots_total`,
+`dribbles_attempts` and `duels_total` are on the matview and well populated 2015+ (87.7% /
+89.2% / 93.3%), so the radar plots successes as rates and **never accuracy**. Adding them
+changes what the five dimensions MEAN , Playbook copy, the AI prompt payload, and every
+cached verdict, since the version is a fingerprint of the prompt. **`passes_accuracy` is the
+fourth and is NOT usable**, see §E. Ruled a separate decision, with the numbers already
+measured. **The Proof percentile columns still need the shared matview sitting; the radar no
+longer waits on them.**
+
+### 2026-09-01 | The truncation limit was measured, and it does not exist
+
+**1. THE "150k TRUNCATION LIMIT" IS NOT REAL. THE CAP IS 4 MiB AND THE BEHAVIOUR IS SKIP, NOT
+TRUNCATE.** Read from the Claude Code binary's own memory loader: `Rce = 4194304`, with
+`[CLAUDE.md] skipping <path>: not a regular file or exceeds 4194304 byte limit`. **This file is at
+3.3% of it.** Corroborated empirically , at 143,645 bytes it reached the model complete.
+**SUPERSEDES the 2026-08-31 NEXT line below, which says this file is at ~97% of a 150k limit and
+"1.4 KB from silent truncation". That was true of a number nobody had checked and false of the
+software.** The real pressure is the performance advisory, whose floor is 40,000 chars, and this
+file has been over that since long before anyone started counting. Rule at the top of this file;
+method and provenance in `DOC_MAINTENANCE.md`.
+
+**2. NINE RELIEF PASSES, AN ESCALATION TO "BINDING CONSTRAINT" AND ONE RULING COMPRESSED MID-WRITE
+ALL RAN AGAINST A PHANTOM.** The 150k entered on 2026-08-03 by calling 133,449 bytes "88%" , the
+percentage was assumed and the limit back-derived. **§C already says an unverified premise is most
+costly when it argues for REMOVING something. It argued for removals for a month; the check cost
+one session.**
+
+**3. THE CARD FACE NOW CLEARS AA EVERYWHERE, and the defect that started it was invisible to the
+old survey.** The sub-line sat at **1.90 in dark mode on every plain card on every surface** because
+`var(--ink-soft)` flips and the card face does not. Fixed with pinned literals on all three faces
+plus a `max(11.5px, ...)` floor; the iconic pink V is an ACCEPTED exception (no pink clears 4.5 on
+gold). **The 2026-08-23 contrast survey is VOID** , the re-run found FOUR instrument faults, three
+producing false failures and one, grounding a self-painting element against its parent, producing
+false PASSES. A fifth (the theme not actually applying) is fixed by asserting it after the wait.
+
+**4. COMPARE IS TWO-UP ON A PHONE and the picker is a fixed sheet.** Slot B went from 0 pixels
+visible to fully above the fold; page height 2190 -> 844. The empty state carries three suggested
+matchups, each resolved against live rows and dropped if either side misses , which caught a pair
+that cannot exist (Henry 03/04, before the 2010 dataset) and one whose diacritic an ilike misses.
+
+**NEXT / OPEN:** **The pre-merge queue is empty.** Remaining survey failures are accepted
+exceptions only. **The four structural shapes for this file stand as a judgement call, not a
+deadline** , the strongest is now retiring rules into tooling, because it reduces what must be READ
+each session, which is the cost that actually exists.
+
+### 2026-08-31 | Four share-poster items, and the squad number was shipping in Times
+
+**1. THE SQUAD NUMBER RENDERED SERIF IN EVERY SHARED IMAGE AND THE LIVE CARD WAS NEVER WRONG.**
+A webfont does not load inside a captured SVG. Rule in §C, full measurement and method in
+`SILENT_FAILURES.md`. Fixed with `VVCore.vvShimShieldNumbers`, the third capture-time shim.
+
+**2. THE POSTER'S BOTTOM-LINE WORDMARK MATCHES THE LOGO ASSET** , the two-tone rule was scoped to
+`.sf-cap`, so `.sf-tag` drew its second V in `currentColor` and one image showed the mark two ways.
+Scoped to `.sf-vv2` itself now, so a third placement cannot regress it.
+
+**3. THE CORNER MARK IS THE REAL ASSET AND THE FALLBACK IS NOW WIRED.** `shBrandText` was described
+as "not dead code" while nothing called it , the same unearned claim this file keeps recording. It
+is an `onerror` fallback now, tested by taking the asset off the server, and `vvSettleImages` waits
+for the image so it runs BEFORE html2canvas clones the DOM. Verified warm and cold, both grounds.
+
+**4. THE FRAME IS NOT CLIPPING THE CAPTION , MEASURED IN THE PNG, ALL FOUR FORMATS.** Clearance
+below the tagline: **x 25.9, igf 41.3, igs 41.3, dl 38.5**, and zero bright pixels below the
+tagline box. A clipped bottom line on X is X's compose preview, downstream of us. **Any 16:9 crop
+of the 4:5 igf frame keeps y 371 to 979 while the caption starts at 1189 , it removes the WHOLE
+bottom block, not one line.**
+
+**INSTRUMENT FAULT WORTH KEEPING: monkey-patching an exported `VVCore.*` function does NOT reach
+`vvRenderShareImage`, which calls the module-local binding.** Two negative controls came back
+byte-identical to the positive case and only the identical byte count showed it. **To break a
+module-internal path, break the input on disk, not the export.** (The other fault, SVG `<style>`
+being document-scoped, is in `SILENT_FAILURES.md`.)
+
+**VERIFIED:** DOM restored byte-for-byte after eight consecutive captures; `vvAuditCaptureSupport`
+still reports only the accepted shield `drop-shadow`, so no new divergence (QA A6, now five).
+
+**NEXT / OPEN:** **`CLAUDE.md` IS AT ~97% OF THE 150k TRUNCATION LIMIT, PAST ITS OWN 90% TRIGGER
+AND THE HIGHEST IT HAS BEEN** , it was already at 95.8% before this session's rule and log entry.
+Truncation is silent and this file is read first every session. **`CLAUDE_ARCHIVE.md` is at 83% and
+cannot absorb much, so the next pass needs its destination decided BEFORE it starts.** Archiving
+the two older §F entries buys only 7.6 KB and spends the archive's last headroom; §F is 7% of the
+file, so it cannot pay. This is the most urgent doc-side item.
