@@ -168,8 +168,10 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
 - Kind 4: where nothing is crowned, the model's headline and closing paragraph are not shown; the
   page writes its own (`8ece91f`). Over 81 stored no-crown rows the winner language sat in those
   two fields (58 and 26) and never in head to head alone.
-- `HELD_PAIRS`: the eight pairs the site has ever linked to answer held regardless of the switch
-  (`1576399`). Homepage rotation zero pairs, Compare suggestions empty. Rows backed up at
+- `HELD_PAIRS`: every pair the site has ever linked (eight on 2026-10-17, ten from 2026-10-19, when
+  the homepage got four pairs back as cards with no prose) answers held regardless of the switch
+  (`1576399`). Homepage rotation zero pairs until 2026-10-19 (now four, mixed: two separated, one
+  inside the margin, one tie), Compare suggestions empty. Rows backed up at
   `migrations/verdict_hold_2026-10-17/before_verdict_cache.json`.
 
 **Before prose comes back on, in this order:**

@@ -780,10 +780,12 @@ const HELD_PAIRS = new Set([
   '131585-152972',  // Haaland 22/23 v Lewandowski 20/21 Compare suggestion
   '133095-141575',  // De Bruyne 19/20 v Suarez 15/16    Compare suggestion
   '131585-135556',  // Haaland 22/23 v Suarez 13/14      retired homepage pair, old links
-  '151977-152972',  // Kane 23/24 v Lewandowski 20/21    retired homepage pair
+  '151977-152972',  // Kane 23/24 v Lewandowski 20/21    homepage pair (back from 2026-10-19, no prose)
   '130728-158399',  // Salah 24/25 v Mbappe 21/22        retired homepage pair
-  '131183-137957',  // Foden 23/24 v Bellingham 23/24    retired homepage pair
+  '131183-137957',  // Foden 23/24 v Bellingham 23/24    homepage pair (back from 2026-10-19, no prose)
   '131129-131220',  // Saka 23/24 v Palmer 23/24         retired homepage pair
+  '130728-157393',  // Salah 24/25 v Dembele 24/25       homepage pair from 2026-10-19
+  '131585-164395',  // Haaland 22/23 v Gyokeres 23/24    homepage pair from 2026-10-19
 ]);
 const CHECK_MODEL = 'claude-haiku-4-5-20251001';
 const CHECK_SYSTEM = `You check a football verdict against the evidence it was written from. You do not judge whether the verdict is well written or whether you agree with it. You find factual claims that the evidence does not support.
