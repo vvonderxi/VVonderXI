@@ -1043,3 +1043,11 @@ Truncation is silent and this file is read first every session. **`CLAUDE_ARCHIV
 cannot absorb much, so the next pass needs its destination decided BEFORE it starts.** Archiving
 the two older §F entries buys only 7.6 KB and spends the archive's last headroom; §F is 7% of the
 file, so it cannot pay. This is the most urgent doc-side item.
+
+## RELOCATED FROM `CLAUDE.md` §D ON 2026-10-18 (split piece 3b): CLOSED, WORD FOR WORD
+
+### [CLOSED 2026-10-04 , IT WAS ALREADY FIXED AND THIS ENTRY SENT A SESSION TO DO IT AGAIN.] CONTENT-COLUMN CENTRING
+**`rankings.html:128` reads `.gridwrap{padding:30px 48px 60px;width:100%;max-width:1680px;margin-inline:auto}` , the auto margin this entry says is absent has been there for some time.** Measured on the rendered page at **1920**: `.gridwrap` spans 155..1835 inside a canvas of 84..1905, so **margin-left and margin-right both compute to 70.5px and it is centred** (71px clear either side, asserted rather than eyeballed). At 1440 the margins compute to 0 because the container is narrower than the 1680 cap, so there is nothing to distribute , which is correct, and is why a reading taken only at 1440 looks like the old defect.
+- **THE COST WAS A FULL ROUND TRIP: it was quoted to Lucas as a one-line quick win, approved, and then found done.** Same shape SS D keeps producing , the plan line was not updated when the work closed, so it became an instruction to redo finished work. **Third instance in two days**, after Step 5's three items and the wait state directly below.
+- **AND THE MEASUREMENT IS THE LESSON, NOT THE FIX: `margin-inline:auto` RESOLVING TO 0px IS NOT EVIDENCE IT IS MISSING.** An auto margin distributes only the space a `max-width` leaves over. **Read it at a width where the cap actually binds**, or the correct code reads exactly like the bug.
+- **BOTH SURFACES NOW CENTRE THE SAME WAY:** `card.html` `#cardSearch` is also `max-width:1680px;margin-inline:auto` (read 2026-10-18). The original left-aligned claim is in `CLAUDE_ARCHIVE.md`, "RETIRED CLAIMS" (2026-10-18).

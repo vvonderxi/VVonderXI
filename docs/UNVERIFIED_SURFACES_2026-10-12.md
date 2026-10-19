@@ -178,6 +178,10 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    report a number PER KIND. One number is a number about kind 1.
 3. Regenerate a sample (not the twelve; fresh pairs and cards) and read it against the cards.
    Prose comes back on when that sample passes, not when the code is merged.
+4. A watch on the Anthropic balance (QA_PASS B4b). Nothing watches it, and the hourly ceiling
+   allows about $312 a day. Live the whole time prose was on; added 2026-10-18.
+5. A decision on the race where two simultaneous first requests for one uncached pair both
+   generate (measured 2026-10-08). Same; added 2026-10-18.
 
 **A cost fact the next session will meet:** on 2026-10-17 the notes cache held 731 rows and only
 6 were on the current prompt. Every prompt edit makes the rest stale, so while prose was on,
