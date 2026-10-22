@@ -807,6 +807,12 @@ Football vocabulary, describing what a statistic measures, and restating the evi
 
 Reply with JSON only, no other text: {"unsupported":[{"quote":"the exact words from the verdict","why":"what the evidence lacks, in one short sentence"}]}. Use an empty array when every factual claim is supported.`;
 
+/*  THE NOTES WRITER'S USER MESSAGE, IN ONE PLACE (2026-10-22), so the calibration scorer judges notes
+    against the exact text the writer receives instead of a second copy of this string.  */
+function notesUserMessage(player) {
+  return 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2);
+}
+
 function verdictProse(v) {
   return ['who', 'p1', 'p2', 'h2h', 'verdict'].filter(k => v && typeof v[k] === 'string' && v[k].trim())
     .map(k => k.toUpperCase() + ': ' + v[k]).join('\n\n');
@@ -1110,7 +1116,7 @@ module.exports = async (req, res) => {
       }
 
 
-      const notesMessages = [{ role: 'user', content: 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2) }];
+      const notesMessages = [{ role: 'user', content: notesUserMessage(player) }];
 
       /*  THE LIMIT IS TAKEN HERE, AFTER THE CACHE LOOKUP, AND THAT PLACEMENT IS THE DESIGN.
           A cache hit has already returned above, so it is never counted and never billed , the
@@ -1310,6 +1316,8 @@ module.exports.probeModel      = probeModel;
 module.exports.isModelMissing  = isModelMissing;
 module.exports.MODEL           = MODEL;
 module.exports.checkVerdictSupport = checkVerdictSupport;
+module.exports.notesUserMessage = notesUserMessage;
+module.exports.verdictProse = verdictProse;
 module.exports.CHECK_MODEL     = CHECK_MODEL;
 module.exports.VERDICT_SYSTEM  = VERDICT_SYSTEM;
 module.exports.VERDICT_SYSTEM_JUDGE = VERDICT_SYSTEM_JUDGE;

@@ -161,6 +161,15 @@ and the notes prompt alike. **The figures were almost always right. The failure 
    **THE PRICE, PAID KNOWINGLY: "nine from the spot, thirteen from open play" was one of the better
    lines the writer produced, and it goes with penalties. Penalties are not free to re-add: put them
    on the page first, then in the payload, never the other way round.**
+   **CHECK WHAT THE PAGE SENDS, NOT WHAT THE SHARED CODE RETURNS (2026-10-22).** The first audit of
+   the rule checked the shared builder (vvAIStats) and passed, while card.html was adding its own
+   keeper block on top of it and still sent `starts` for every keeper. It is the second time a check
+   of the pipeline missed something the page itself added. `node scripts/calibration/capture.js
+   --audit` now reads the request each page actually sends, in headless Chrome, and looks for every
+   number in it on the rendered pages. Control: on the code before the cut (`51465af`) it reports
+   dribbles, duels, penalties, starts and passes per 90 on 11 of 12 items. Its limit: a number that
+   equals a number the page shows for another reason passes (Lammens' starts 32 equal his 32
+   appearances).
 3. **A crown the card's own honours and dimensions contradict.** Foden over Bellingham "because
    what was recorded for Foden was more" (Bellingham: three honours to two, leads three of five
    dimensions); Suarez over De Bruyne on "individual honours two-to-one" (it is two each).

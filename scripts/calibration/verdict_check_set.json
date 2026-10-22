@@ -1,0 +1,591 @@
+{
+ "what": "Calibration set for the verdict and notes checker, built 2026-10-22 from the twelve readings in area 9 of docs/UNVERIFIED_SURFACES_2026-10-12.md and approved line by line by Lucas. Prose is snapshotted here because the live cache rows will be overwritten when prose returns. \"flag\" = the checker must flag it (kind 1 to 4); \"leave\" = it must not (a flag there is a false hold); \"report_only\" = a fault outside the four kinds, reported and not scored.",
+ "items": [
+  {
+   "id": "palmer-saka",
+   "type": "verdict",
+   "cards": [
+    131220,
+    131129
+   ],
+   "written_by": "Path B v3-4a1dd3f5",
+   "prose": {
+    "who": "Two elite wingers, one lane each. The record cannot separate them cleanly.",
+    "p1": "Bukayo Saka's 23/24 season was built on a different architecture. Sixteen goals, eight assists, 2,933 minutes, 35 starts, never absent. His Defensive dimension at 3.12 per 90 is the number that separates him structurally from almost any other winger in the division, a function of Arsenal's high-press and his own relentlessness in the channels. **His key pass rate of 2.8 per 90 was the highest of these two cards**, and his Creation dimension reflects a player who is involved in build-up at a volume and consistency that a team actually shapes its shape around.\n\nThe Iron Man tag is not decoration here. Saka's 35 starts out of 35 appearances, 315 more minutes than Palmer across the season, means every rate he produced was sustained, not spiked. That durability is its own kind of evidence.",
+    "p2": "Cole Palmer arrived at Chelsea as a January acquisition and, within months, had rewritten what a 21-year-old could mean to a Premier League club in crisis. His 22 goals and 11 assists across 2,618 minutes were not accumulated against fringe opposition in a comfortable system. They came in a Chelsea side searching for coherence, which made him not just a contributor but the axis everything else rotated around.\n\nThe tags Breakout and Peak sitting together on the same card tell you something important: this was not a gradual emergence. **He arrived and he dominated.** A conversion rate of roughly one goal every three and a half shots, nine from the spot included, still leaves thirteen from open play in a side that was often creating for him alone. His per-90 Goal Threat led the two cards here, and his Progression figure sits inside a breath of the 90th percentile bar for his position pool.",
+    "h2h": "What the recorded figures actually show is two players doing different jobs at an elite level inside the same league and the same calendar year. **Palmer's output was more concentrated in goals**, 22 to 16, and his Goal Threat per 90 was the sharper instrument. Saka's Defensive return, his Creation rate, his volume of duels won across twice the sample of Palmer's duel count, and his six additional starts build a picture of a player the platform cannot ignore across any of the five dimensions. Palmer's season was a revelation; Saka's was a continuation of something already established, but executed at a level that challenged the very best.",
+    "verdict": "The case for Palmer rests on the rarer thing: a 21-year-old, in his first full season for a new club, carrying a dysfunctional side to 22 goals while producing numbers that clear the 90th percentile bar for his pool. The case for Saka rests on everything around the goals, the minutes that never wavered, the Defensive output a winger should not produce, the Creation rate that actually exceeded Palmer's, and the duels that pile up when you play 35 times in the highest-pressure system in England.\n\nBut Palmer's season was, in the end, the rarer event, a Breakout and a Peak at the same time, at the age of 21, with no established team beneath him. Saka's excellence had a structure holding it. **Palmer's had nothing but himself.**"
+   },
+   "flag": [
+    {
+     "quote": "a January acquisition",
+     "kind": 1,
+     "why": "false and not on the card: Palmer joined on 1 September 2023"
+    },
+    {
+     "quote": "a Premier League club in crisis",
+     "kind": 1,
+     "why": "a claim about Chelsea no card holds"
+    },
+    {
+     "quote": "a function of Arsenal's high-press",
+     "kind": 1,
+     "why": "a claim about Arsenal's system, not on the card"
+    },
+    {
+     "quote": "in his first full season for a new club",
+     "kind": 1,
+     "why": "career history; the card shows one season"
+    },
+    {
+     "quote": "Saka's was a continuation of something already established",
+     "kind": 1,
+     "why": "other seasons; there is one Saka card"
+    },
+    {
+     "quote": "never absent",
+     "kind": 1,
+     "why": "the card shows 2,933 of 3,420 possible minutes"
+    },
+    {
+     "quote": "his Progression figure sits inside a breath of the 90th percentile bar",
+     "kind": 2,
+     "why": "the page shows 81"
+    },
+    {
+     "quote": "separates him structurally from almost any other winger in the division",
+     "kind": 2,
+     "why": "the page shows Defensive at 72"
+    },
+    {
+     "quote": "Palmer's had nothing but himself",
+     "kind": 4,
+     "why": "crowns Palmer under a headline saying the record cannot separate them"
+    },
+    {
+     "quote": "His Defensive dimension at 3.12 per 90",
+     "kind": 2,
+     "why": "a raw figure no page shows (row 47)"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "Sixteen goals, eight assists, 2,933 minutes",
+     "why": "Saka 16 goals, 8 assists, 2,933 minutes, all on his card (replaces N2)",
+     "type": "figure"
+    },
+    {
+     "quote": "His 22 goals and 11 assists across 2,618 minutes",
+     "why": "all three on the card",
+     "type": "figure"
+    },
+    {
+     "quote": "315 more minutes than Palmer",
+     "why": "arithmetic on the two cards",
+     "type": "figure"
+    },
+    {
+     "quote": "Palmer's output was more concentrated in goals",
+     "why": "22 goals to 16, Saka higher on Creation (95 v 94)",
+     "type": "judgement J1"
+    }
+   ],
+   "report_only": []
+  },
+  {
+   "id": "bellingham-foden",
+   "type": "verdict",
+   "cards": [
+    137957,
+    131183
+   ],
+   "written_by": "Path B v3-4a1dd3f5",
+   "prose": {
+    "who": "Foden's fuller record edges a rivalry the number refused to settle",
+    "p1": "Phil Foden's 2023/24 was the season a player who had spent years being described as ready finally proved it on every available measure. At twenty-three, his Peak tag carries the weight of confirmation rather than prophecy.\n\nNineteen goals and eight assists from a winger position, **2.3 key passes per ninety across thirty-five starts**, and a Premier League Player of the Season award that an entire country's voters had to choose from a field that included some of the world's best. The efficiency gap matters: Foden needed sixty-four shots to reach nineteen. Bellingham needed forty-nine.",
+    "p2": "Jude Bellingham arrived at Real Madrid at twenty years old and immediately played like the club had been waiting for him. A Wonderkid tag that season was almost an understatement: this was not a promising debut, it was a dominant one.\n\nNineteen goals from a central attacking midfielder at the Bernabéu, **nineteen goals with just forty-nine shots**, is a finishing rate that most strikers do not approach. La Liga's Player of the Season, chosen individually, was the verdict of an entire league on what it had watched.",
+    "h2h": "The finishing numbers are where this comparison sharpens. Bellingham converted from a volume that a natural striker would envy; Foden's tally was assembled on more attempts and from a position with clearer licence to shoot. But Foden's Creation dimension was higher, his key pass rate was higher, his Reliability score was higher, and **he did it over five hundred more minutes** and without a single penalty. The Premier League Player of the Season is an individual award decided by peers and voters who had watched Foden every week for thirty-seven appearances. That is not nothing.\n\nWhat Bellingham did was rarer by position. A CAM producing nineteen goals from forty-nine shots, winning La Liga's individual player prize at twenty, at the hardest club in the world to justify a place at: the scarcity of that achievement does not disappear just because Foden's overall output was fuller.",
+    "verdict": "The record puts Foden ahead, and the reason is specific: a higher creative output, more minutes of sustained evidence, and an individual award from the world's most-watched league, all without a penalty to soften the goal tally. He was the more complete player across the full season the platform has recorded.\n\nBellingham's age and his shooting efficiency leave an argument that does not quite close, the sense that something rarer was happening at the Bernabéu. But a season is judged on what was recorded, and what was recorded for Foden was more, and more of it."
+   },
+   "flag": [
+    {
+     "quote": "what was recorded for Foden was more, and more of it",
+     "kind": 3,
+     "why": "Bellingham holds three honours to two and leads three of five dimensions"
+    },
+    {
+     "quote": "the world's most-watched league",
+     "kind": 1,
+     "why": "a world claim on neither card"
+    },
+    {
+     "quote": "at the hardest club in the world to justify a place at",
+     "kind": 1,
+     "why": "world knowledge"
+    },
+    {
+     "quote": "a finishing rate that most strikers do not approach",
+     "kind": 1,
+     "why": "a comparison with strikers neither card holds"
+    },
+    {
+     "quote": "2.3 key passes per ninety",
+     "kind": 2,
+     "why": "Foden is a Winger and his card does not print key passes (row 48)"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "Nineteen goals and eight assists from a winger position",
+     "why": "Foden 19 and 8, pool Winger, all on his card (replaces N4)",
+     "type": "figure"
+    },
+    {
+     "quote": "Foden needed sixty-four shots to reach nineteen",
+     "why": "19 goals from 64 shots; a Winger card prints both",
+     "type": "figure"
+    },
+    {
+     "quote": "he did it over five hundred more minutes",
+     "why": "the minutes differ by 550, both on the cards",
+     "type": "figure"
+    }
+   ],
+   "report_only": []
+  },
+  {
+   "id": "lewandowski-kane",
+   "type": "verdict",
+   "cards": [
+    152972,
+    151977
+   ],
+   "written_by": "Path A v3-b31aa83d",
+   "prose": {
+    "who": "One record, one debut. Two ways to win the Bundesliga Golden Boot.",
+    "p1": "Kane arrived at Bayern in 2023/24 as a 30-year-old striker carrying no trophy and a career's worth of questions about whether he had ever played in a side worthy of him. He answered some of them by scoring 36 Bundesliga goals from 109 shots across 32 full starts, taking the **Golden Boot** in 2023 in his debut German season, and registering 8 assists alongside it. The deeper number is his Reliability figure of 83.2, which is measurably higher than Lewandowski's 72 across this comparison, a sign that he sustained his output across more of the available minutes.\n\nThe Clinical and Poacher tags both sit on this card, and there is a distinction worth drawing between them. Poacher describes a player who lives inside the penalty area and waits for the moment; Clinical describes what he does when it arrives. Kane, with 31 non-spot goals from 104 attempts, earns both on the evidence. His 2,844 minutes, compared to Lewandowski's 2,463, also means the denominator on every per-90 figure is substantially larger.",
+    "p2": "Lewandowski's 2020/21 season arrived at an age when strikers are supposed to be rounding off, not redefining. He was 32, carrying a **Goal Machine** tag that had stopped being a description and become a verdict, and he scored 41 Bundesliga goals from 116 shots in 2,463 minutes. That conversion rate, 33 penalty-free goals from 108 non-spot attempts, belonged to a man at the absolute crest of his physical and technical intelligence.\n\nThe Golden Boot that year was not ordinary. It came labelled \"record\", meaning he did not merely win it, he pushed the competition into territory it had not occupied before. The **Peak** and The Standard tags sitting side by side here are an unusual combination: one names a summit, the other says the summit was not an accident but the product of years of accumulated excellence. At 32, those two things coexisting is its own argument.",
+    "h2h": "What separates these two seasons is not the scoreline but the texture. **Lewandowski's Goal Threat per 90 of 2.24 against Kane's 1.78** is the sharpest recorded gap between them: the Pole was simply more dangerous per unit of football, and the penalty-adjusted conversion figures hold that finding. Kane's counter-argument is volume and breadth. He played 381 more minutes, started four more games, contributed one more assist, and his Reliability figure sits eleven points higher. One season was a shorter, more concentrated burst of lethality. The other was a longer, slightly more distributed one.",
+    "verdict": "The record gives each season something the other cannot claim. Lewandowski holds the rarer rate, the record-breaking Golden Boot, and the Peak designation at an age when peaks are closing, not opening. Kane holds the fuller sample, the superior Reliability, and the meaning of arriving in a foreign league at 30 and producing this volume in a debut season.\n\nThese are two different answers to the same question about what a striker can be at the highest level of European club football, and the Index, looking at both, cannot choose between them."
+   },
+   "flag": [
+    {
+     "quote": "One record, one debut",
+     "kind": 1,
+     "why": "no record flag on the honour; debut is not on the card"
+    },
+    {
+     "quote": "arriving in a foreign league at 30",
+     "kind": 1,
+     "why": "career history"
+    },
+    {
+     "quote": "in a debut season",
+     "kind": 1,
+     "why": "career history"
+    },
+    {
+     "quote": "whether he had ever played in a side worthy of him",
+     "kind": 1,
+     "why": "invented career narrative"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "36 Bundesliga goals from 109 shots",
+     "why": "Kane is ST; his card prints both",
+     "type": "figure"
+    },
+    {
+     "quote": "41 Bundesliga goals from 116 shots in 2,463 minutes",
+     "why": "Lewandowski is ST; his card prints all three",
+     "type": "figure"
+    },
+    {
+     "quote": "Kane holds the fuller sample, the superior Reliability",
+     "why": "381 more minutes, Reliability 83 v 72 on the page",
+     "type": "judgement J2"
+    },
+    {
+     "quote": "One season was a shorter, more concentrated burst of lethality. The other was a longer, slightly more distributed one.",
+     "why": "minutes and the Goal Threat percentile, both on the page",
+     "type": "judgement J3"
+    }
+   ],
+   "report_only": []
+  },
+  {
+   "id": "messi-ronaldo",
+   "type": "verdict",
+   "cards": [
+    143372,
+    141999
+   ],
+   "written_by": "Path B v3-4a1dd3f5",
+   "prose": {
+    "who": "Messi 11/12 edges it: three individual honours, 50 goals, at 24",
+    "p1": "Real Madrid, 2014/15. Ronaldo at 29, playing as a Winger in Ancelotti's system, produced 48 goals and 16 assists across 35 starts. The Golden Boot for 2014 is the individual stamp the season carries, and it sits legitimately beside those numbers.\n\nThe Reliability dimension placed him at **90.6 per 90**, the one dimension the record can speak to for this era, and 3,099 minutes across a full season tells you this was no cameo. At 29, this was a player choosing volume over nothing, executing it across every week of the year.",
+    "p2": "Barcelona, 2011/12. The season that made the argument feel almost unfair. Messi scored **50 goals in La Liga**, a figure that sat so far outside the previous boundaries of the position that even the system recording it seemed uncertain how to file it.\n\nThe Ballon d'Or, the Player of the Season, the Golden Boot for most goals in a single La Liga campaign: all individual, all his. At 24, this was not the arrival of a great player. It was the announcement of a ceiling nobody else had reached.",
+    "h2h": "Two goals separate these seasons in output. Sixteen assists each. The individual honours tell you more: Messi holds three individual awards from this campaign, Ronaldo one, and the strongest of them, the Ballon d'Or, is the clearest signal the record carries. Both seasons are pre-2015, so shots, key passes and dribbles exist for neither, and **neither can be separated on process, only on outcome**. The outcome favours Messi by the thinnest of margins: more goals, more individual recognition, and five years younger while doing it.",
+    "verdict": "The record does not separate these seasons easily, and that is the honest reading of it. But the Ballon d'Or is a fact, not a preference, and it was awarded for this specific season's work. Two goals more, **three individual honours to one**, and at 24 against 29: the career stage adds a dimension the raw output alone cannot.\n\nMessi's 2011/12 is the season the football world used as its measuring stick for the years that followed. That is not memory speaking. That is what the awards column says."
+   },
+   "flag": [
+    {
+     "quote": "Ancelotti's system",
+     "kind": 1,
+     "why": "a manager, not on the card"
+    },
+    {
+     "quote": "the season the football world used as its measuring stick",
+     "kind": 1,
+     "why": "world reception"
+    },
+    {
+     "quote": "The Reliability dimension placed him at **90.6 per 90**",
+     "kind": 2,
+     "why": "Reliability is a share of the season and the page shows a percentile"
+    }
+   ],
+   "leave": [],
+   "report_only": []
+  },
+  {
+   "id": "haaland-lewandowski",
+   "type": "verdict",
+   "cards": [
+    131585,
+    152972
+   ],
+   "written_by": "retired v3-9a7cbfe1",
+   "prose": {
+    "who": "Lewandowski at 32, rewriting history the numbers almost could not hold.",
+    "p1": "Erling Haaland arrived at Manchester City in the summer of 2022 and did something that had never been done before: **36 Premier League goals** in a single season, breaking the record that had stood since the division's founding year. He was 22. The tag Goal Machine exists for seasons like this one, and the tag The Standard exists because this was not a flash of form but the opening statement of a sustained argument.\n\nThe shooting numbers underneath the total matter. **107 shots, 36 goals**, a conversion rate that sits well above anything his position pool normally produces. Seven from the spot, which is honest accounting, but 29 from open play at that efficiency is not luck. It is a striker who knows, at every moment, exactly where the ball is going.",
+    "p2": "Robert Lewandowski in 2020/21 was 32 years old and **scored 41 goals in 29 appearances**, breaking Gerd Müller's 49-year-old Bundesliga record. A record that had survived every generation of striker who had tried to reach it. At an age when most forwards are managing their bodies across a season, Lewandowski was rewriting what the position could produce at its outer limit.\n\nHis numbers across every dimension are higher in this season than Haaland's: **more shots, more goals, more key passes**, more duels, higher progression. The Bundesliga pool bar sits at the same level as the Premier League pool for passes, and his figures clear it by a wider margin. He also did it in fewer minutes, 2,463 against 2,776, which makes the per-90 rates even more pronounced.",
+    "h2h": "The case for Haaland rests on the Premier League, which is the harder league, and on the individual honour that is the stronger of the two: his Golden Boot came with a record attached, and his Player of the Season award was voted by his peers and the league itself. The case for Lewandowski rests on the volume of output, the age at which he produced it, and the Müller record, which was not a statistical landmark but a cultural one. **Forty-one goals in 29 starts** at 32 is defiance of a kind that the sport rarely records. The question is whether league weight and individual recognition outweigh pure output and the human improbability of the feat.",
+    "verdict": "The Premier League discount is real but it has a limit, and this is where it meets that limit. Haaland's Player of the Season sits above Lewandowski's Golden Boot in evidential weight because it names him the best player in the division, not just the most prolific scorer. But the age argument runs the other direction with equal force, and it runs further: **a 32-year-old breaking a 49-year-old record** by that margin, in that many appearances, is a thing that happens once in a generation and may not happen again.\n\nThe record falls to Lewandowski on the thing that cannot be adjusted for league or era: what he did at his age, against the history of his own sport, is a more improbable piece of football than a 22-year-old at peak physical power breaking a scoring record in his first season. This one goes to Lewandowski."
+   },
+   "flag": [
+    {
+     "quote": "breaking Gerd Müller's 49-year-old Bundesliga record",
+     "kind": 1,
+     "why": "a record claim; the card holds no records"
+    },
+    {
+     "quote": "arrived at Manchester City in the summer of 2022",
+     "kind": 1,
+     "why": "a transfer, not on the card"
+    },
+    {
+     "quote": "His numbers across every dimension are higher",
+     "kind": 2,
+     "why": "Haaland leads Reliability"
+    },
+    {
+     "quote": "This one goes to Lewandowski.",
+     "kind": 3,
+     "why": "Haaland holds four honours to two and leads Reliability"
+    }
+   ],
+   "leave": [],
+   "report_only": []
+  },
+  {
+   "id": "suarez-debruyne",
+   "type": "verdict",
+   "cards": [
+    141575,
+    133095
+   ],
+   "written_by": "retired v3-9a7cbfe1",
+   "prose": {
+    "who": "Suárez edges it: two individual awards, 40 goals, the fuller case",
+    "p1": "De Bruyne's 2019/20 in the Premier League was built on a different architecture entirely. **61.3 passes per 90**, against a pool bar of 50.2 at the 90th percentile, tells you he was operating at a passing volume that his own position pool barely reaches at its upper limit. The Playmaker and Maestro tags describe the same thing from two angles: this was the season he conducted Manchester City's attack with a completeness his previous campaigns had only approached.\n\n**20 assists** is a figure that won him the Premier League Player of the Season, an individual award naming him the best player in England that year across the entire division. His key passes per 90 of 4.4 sit in a different register to almost any midfielder in the Premier League era. At 28, the same age as Suárez across the river of the comparison, this was also Peak De Bruyne, and the Provider tag confirms it was sustained.",
+    "p2": "Barcelona's 2015/16 season asked Suárez to be the centre of gravity for the best attacking trio in the sport's recent history, and he answered with **40 goals and 16 assists** across 35 starts. The Goal Machine tag earns its place here: this was not a striker opportunistically accumulating, it was a player bending a La Liga title race through sheer, sustained output.\n\nThree goals from the spot means 37 from open play and set-piece situations requiring his movement and finishing. His Golden Boot that season was a league-wide individual verdict on who had scored the most, and his Top Assists award confirmed that the volume came without sacrificing the pass. At 28, this was Peak Suárez, and the record confirms it.",
+    "h2h": "The record sets two different kinds of elite season against each other. Suárez produced **individual honours at the top of the goals table**: Golden Boot, Top Assists, 40 goals. De Bruyne produced an individual Player of the Season award in the Premier League, **20 assists, and passing volume his position pool cannot match even at its 90th percentile**. Both carry the same career-stage tags, both played 28-year-old seasons with full records and full minutes. The difference is in what each season asks you to value: the most complete goalscoring season in La Liga that year, or the most creative single season a central midfielder produced in England's top division in the modern era.",
+    "verdict": "The case for Suárez rests on a number that closed the argument in real time: 40 goals in La Liga, individually awarded the Golden Boot and Top Assists in the same season, is a simultaneous claim on both ends of the final third that no midfielder can replicate by design. De Bruyne's passing architecture and his Player of the Season are real, and his creation numbers sit above what his own position pool reaches at its elite threshold, but the individual honours here go to Suárez two-to-one, and the goalscoring volume carries the kind of weight that does not disappear under positional adjustment.\n\nIn a pairing this close, it is the Golden Boot that tips it. A league-wide individual award naming him the top scorer, in a season he also led assists, is the kind of evidence that asks you to look hard at the other side before deciding it is enough. It was enough."
+   },
+   "flag": [
+    {
+     "quote": "the individual honours here go to Suárez two-to-one",
+     "kind": 3,
+     "why": "two each: De Bruyne holds Player of the Season and Top Assists"
+    },
+    {
+     "quote": "the best attacking trio in the sport's recent history",
+     "kind": 1,
+     "why": "team-mates and world judgement"
+    },
+    {
+     "quote": "bending a La Liga title race",
+     "kind": 1,
+     "why": "a title race, not on the card"
+    }
+   ],
+   "leave": [],
+   "report_only": []
+  },
+  {
+   "id": "haaland-suarez",
+   "type": "verdict",
+   "cards": [
+    131585,
+    135556
+   ],
+   "written_by": "Path B v3-4a1dd3f5",
+   "prose": {
+    "who": "Two seasons the number cannot split. The argument is about what a striker owes a game.",
+    "p1": "Haaland's 2022/23 season at Manchester City carried a weight of record that few English seasons have ever imposed. **Thirty-six Premier League goals**, the most in the competition's history, from 34 starts and 2,776 minutes: a rate of production so sustained it stopped feeling like a hot streak and started feeling like a structural fact about the league. The Golden Boot and the Premier League Player of the Season confirm that this was the individual judgement of his peers and the voting public, not a reading of circumstance.\n\nHis per-90 Goal Threat of 1.75 sits at a level the position pool rarely reaches, and the 107 shots behind it show volume as much as efficiency. Seven of the 36 came from the spot, which is worth naming honestly. The 29 goals from open play and headers still represent a season the Premier League had not seen before. Tagged Goal Machine, Clinical, and Poacher: all three earned in the same campaign.",
+    "p2": "Suárez at Liverpool in 2013/14 produced 31 goals and 12 assists in 33 starts. That combined output across a single Premier League season, from a striker on a team that finished second, is the kind of figure that stops arguments before they start. The PFA Players' Player of the Year and the Golden Boot confirm the individual verdict: his peers looked around the league and chose him.\n\nThe record for this season is thin by the standards of the modern data era. Shots, key passes, dribbles, passing volume, defensive duels: none are recorded. What remains is raw output and minutes, and even in that stripped-back form the number is striking. Twelve assists from a centre-forward, confirmed, means he was both a finisher and the pass before the goal in the same campaign. Tagged Goal Machine, Provider, and Iron Man: a complete attacking season measured, unavoidably, through a narrower lens.",
+    "h2h": "The asymmetry in the record is the central problem here. Haaland's season is documented at full depth: shots, dribbles, duels, key passes, all present. **Suárez's season exists only in its raw outputs**, the goals and the assists and the minutes, which means comparing the engines underneath these two seasons is not possible, and pretending otherwise would be dishonest. What the record does carry is this: Haaland's individual honour, the Premier League Player of the Season, is the same competition's own judgement on the same individual standard. Suárez's PFA award is, if anything, stronger in kind, because it came from the players themselves. His 12 assists against Haaland's 8 is the clearest place the record puts one above the other in terms of range, and that combined return of 43 goal contributions from 33 starts has rarely been matched in the Premier League.",
+    "verdict": "The record favours Haaland on volume at a single output: 36 goals against 31, and a shots record that shows it was not luck. But Suárez's season was broader, and the 12 assists from a striker who also led the Golden Boot race is the detail that resists the simplest reading of these two campaigns.\n\nIn the end, the individual honours sit level, the minutes are comparable, and the one dimension where this can be settled without inventing a preference is range of contribution. **Suárez did more kinds of damage**, and across 33 starts, that is enough."
+   },
+   "flag": [
+    {
+     "quote": "Suárez did more kinds of damage",
+     "kind": 4,
+     "why": "picks Suárez under \"Two seasons the number cannot split\""
+    },
+    {
+     "quote": "The PFA Players' Player of the Year",
+     "kind": 1,
+     "why": "the card says Player of the Season"
+    },
+    {
+     "quote": "a team that finished second",
+     "kind": 1,
+     "why": "league position, not on the card"
+    }
+   ],
+   "leave": [],
+   "report_only": []
+  },
+  {
+   "id": "salah-mbappe-roll1",
+   "type": "verdict",
+   "cards": [
+    130728,
+    158399
+   ],
+   "written_by": "Path B, 2026-10-12, deleted from the cache",
+   "prose": {
+    "who": "The Premier League's weight tips it: Salah's age-32 masterwork prevails",
+    "p1": "Salah at 32 did something that usually only younger men are forgiven for believing in: he produced the most complete season of his career. Every minute of every Premier League game, **29 goals and 18 assists**, the Golden Boot and the Top Assists award in the same campaign, a Player of the Season the division awarded him by consensus.\n\nThe tag Peak matters here. This was not maintenance, not the dignified output of a fading force. His Creation dimension ran at 2.67 key passes per 90, his Goal Threat at 1.26, and he held both across all 38 starts. At an age when most wide forwards are narrowing their game, he widened his.",
+    "p2": "Mbappé's 2021/22 was what a Ligue 1 season looks like when a player is operating several levels above its ceiling. Twenty-eight goals, 17 assists, a Progression rate of 4.09 per 90 that sits in territory most wingers never visit. His dribble volume, **111 completed from 204 attempts**, was not efficiency by a narrow margin but raw dominance over a full season.\n\nThe Standard tag is warranted and honest. The UNFP Player of the Year, the Golden Boot, Top Assists: he swept the individual awards as completely as Salah did. The question is what the competition around him was, and that question does not go away.",
+    "h2h": "Salah's season was built against the best defensive league in the world, played at maximum availability, and delivered the triple crown of individual awards at 32. Mbappé's numbers are bigger in places, the Progression rate especially, but Ligue 1 in 2022 was not a serious test of a player at his level, and a **shot volume of 123 for 28 goals** tells you something about the resistance he faced. Salah converted 29 from 104, with nine penalties subtracted still leaving 20 from open play at a higher conversion rate, against defences that had scouted him for a decade.",
+    "verdict": "The league is the argument, and the league decides it. Mbappé's individual honours match Salah's exactly, his athleticism was extraordinary, and the Progression numbers are a genuine wonder. But producing those figures in Ligue 1 at 23 is a different ask from **producing their equivalent in the Premier League at 32**, and the record does not let you pretend otherwise.\n\nSalah's season is the rarer thing: a player at an age when the game usually starts taking back, giving more than he ever had before."
+   },
+   "flag": [
+    {
+     "quote": "Ligue 1 in 2022 was not a serious test",
+     "kind": 1,
+     "why": "overstates the league weight the card gives"
+    },
+    {
+     "quote": "defences that had scouted him for a decade",
+     "kind": 1,
+     "why": "opponents; invented"
+    },
+    {
+     "quote": "the league decides it",
+     "kind": 1,
+     "why": "false: the league is two of three points, measured"
+    }
+   ],
+   "leave": [],
+   "report_only": []
+  },
+  {
+   "id": "salah-mbappe-roll2",
+   "type": "verdict",
+   "cards": [
+    130728,
+    158399
+   ],
+   "written_by": "Path B v3-4a1dd3f5",
+   "prose": {
+    "who": "Salah sweeps the Premier League's individual awards at 32 — the harder frontier decides it",
+    "p1": "At 32, Salah carried Liverpool to the title and claimed **every individual prize the Premier League awards in a single season**: Player of the Season, Golden Boot, Top Assists. That treble has no precedent in the modern era of the award.\n\nThe numbers behind it are almost unreasonable. Twenty-nine goals from 104 shots, with nine from the spot means 20 from open play and set-pieces in 38 starts, a conversion rate that speaks to precision rather than volume. Eighteen assists alongside them. His Creation per 90 of 2.67 clears the pool's 90th-percentile bar for his position by a distance. A winger at 32, producing at the ceiling of what the position allows across a full 38-game season, is not a story about age defying expectation. It is a story about a player reaching the absolute height of his craft at the moment it was supposed to be behind him.",
+    "p2": "Mbappé at 23 in that final PSG season before Madrid was something different in kind: a force of nature moving at angles opponents could not anticipate. Twenty-eight goals from 123 shots, four from the spot, and a Progression dimension of 4.09 per 90 that sits in a category most wingers never enter. He attempted 204 dribbles and completed 111. The ball did not slow him down; it accelerated him.\n\nThe UNFP Ligue 1 Player of the Year, the Golden Boot, Top Assists: he swept the individual prizes in his own league that season, as Salah did in his. Seventeen assists from 34 starts in a league he was far beyond is the paradox at the heart of this card. The creation output, **2.33 key passes per 90 alongside that carrying volume**, belongs to a different player profile than the one the goals column suggests. He was both things at once.",
+    "h2h": "The honours are a mirror: both swept their league's individual awards in the same single season, so the individual prize argument cancels out. What does not cancel is context. Mbappé played 34 starts in Ligue 1 at 23 against a competition that was never going to push him to his limit; Salah played 38 starts in the Premier League at 32 against a field that produced one of the tightest title races in years. The same output, weighted for the audience it was produced against, does not weigh the same. **Salah's numbers were earned at the harder frontier**, across more minutes, at an age when the frontier usually retreats.",
+    "verdict": "The individual honours are level. The positions are the same. The outputs, line by line, are close enough that the Index cannot separate them. But where this verdict lands is on the league and the age together: Salah produced a statistically superior season by most individual measures, in a harder competition, across more football, at 32. Mbappé's carrying and dribbling volume is the one figure that has no equivalent on the other card, and it matters.\n\nBut a full Premier League season swept clean of individual honours, in the year it was supposed to be one too late, settles this. **The league and the age together** make Salah's the harder thing to have done."
+   },
+   "flag": [
+    {
+     "quote": "a competition that was never going to push him to his limit",
+     "kind": 1,
+     "why": "overstates the league weight"
+    },
+    {
+     "quote": "one of the tightest title races in years",
+     "kind": 1,
+     "why": "a title race, not on the card"
+    }
+   ],
+   "leave": [],
+   "report_only": []
+  },
+  {
+   "id": "notes-tresoldi",
+   "type": "notes",
+   "cards": [
+    175162
+   ],
+   "written_by": "notes v3-a0185f4f",
+   "prose": {
+    "glance": "Nineteen goals, a Golden Boot, and he is still twenty-one: the Belgian Pro League just watched a striker announce himself to the continent.",
+    "scout": "Tresoldi's 25/26 season at Club Brugge is not the beginning of a story, it is the loudest chapter so far. **Nineteen goals from 29 starts** in a competitive European league, with a Golden Boot beside his name before his twenty-second birthday, tells you something about readiness that no development loan or youth metric can.\n\nDeny it if you want, but the Wonderkid tag exists precisely for seasons like this. The future is not arriving. It has arrived, and it is wearing Brugge colours.",
+    "notes": [
+     "Club Brugge's 25/26 title season had a name on the scoresheet more often than any other in the Belgian Pro League. Tresoldi, twenty-one years old, walked away with the **Golden Boot** and left nothing ambiguous about who drove the attack.",
+     "Forty appearances, 2507 minutes, not a full season but enough of one. He was the focal point every time he stepped onto the pitch, the striker his teammates pointed their passing lanes toward, the player opponents built their defensive shapes to contain.",
+     "The dimensions tell you what kind of striker he is. His Goal Threat sits at the **90th percentile of his position pool**, the number that justifies the Golden Boot in the language of the Index. Creation at the 71st percentile shows he contributes beyond finishing. The Wonderkid tag earns its place here: nineteen goals, five assists, 78 shots, 18 successful dribbles from 33 attempts, and a duels record of 152 won from 300 that tells you he competes hard for every inch.",
+     "Some strikers find their league. The great ones make it look narrow. At twenty-one, Tresoldi has done enough to make Brugge feel like a platform rather than a ceiling."
+    ]
+   },
+   "flag": [
+    {
+     "quote": "the player opponents built their defensive shapes to contain",
+     "kind": 1,
+     "why": "opponents; invented"
+    },
+    {
+     "quote": "Nineteen goals from 29 starts",
+     "kind": 1,
+     "why": "40 appearances; starts are on no page and goals are not credited to starts"
+    },
+    {
+     "quote": "announce himself to the continent",
+     "kind": 1,
+     "why": "world reception"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "Nineteen goals, a Golden Boot",
+     "why": "19 goals and the Golden Boot honour on his card (replaces N7)",
+     "type": "figure"
+    },
+    {
+     "quote": "His Goal Threat sits at the **90th percentile of his position pool**",
+     "why": "his radar is drawn from 90",
+     "type": "figure"
+    },
+    {
+     "quote": "Creation at the 71st percentile",
+     "why": "drawn from 71",
+     "type": "figure"
+    },
+    {
+     "quote": "Creation at the 71st percentile shows he contributes beyond finishing.",
+     "why": "Creation 71 beside Goal Threat 90",
+     "type": "judgement J4"
+    }
+   ],
+   "report_only": []
+  },
+  {
+   "id": "notes-messi",
+   "type": "notes",
+   "cards": [
+    143372
+   ],
+   "written_by": "notes v3-a0185f4f",
+   "prose": {
+    "glance": "Fifty goals in a single La Liga season, and still he found sixteen assists: the number that ends arguments.",
+    "scout": "At 24, Messi produced a season that bent the record books into shapes they have not recovered from since. The Golden Boot for the most goals in a single La Liga campaign. The Ballon d'Or. La Liga's own Player of the Season. Three individual honours in one breath, each one naming him the finest at something, the best alive at something else.\n\nTo deny this season is to deny arithmetic. **Fifty goals and sixteen assists** from 37 appearances, which is to say he scored or set up a goal every 49 minutes of football he played. That is not a statistic. That is a condition.",
+    "notes": [
+     "Fifty goals. Say it plainly before you dress it in anything. In a league that has produced more elite strikers than almost any other in the sport's history, no one had scored fifty in a single La Liga season before this night, this year, this version of Lionel Messi at 24.",
+     "Barcelona were already one of the great club sides of the modern era, and Messi existed inside that system the way a river exists inside a landscape, shaping it even as it shaped him. The Goal Machine tag earns its name here not as decoration but as the closest English has to what he actually was: a man for whom goals were not a product of effort but of inevitability.",
+     "The Provider tag sits beside Goal Machine on this card, and it should. Sixteen assists alongside fifty goals is the detail that separates astonishment from something closer to disbelief. Iron Man confirms what the minutes show: **3,267 minutes across 37 appearances**, a full season carried, nothing missed that mattered. The Standard and Peak together name what the VV Index records as a Generational season, a 97, the kind of number the system almost never produces.",
+     "Some seasons in football are remembered. This one is referenced, the way a longitude is referenced, the way a fixed point is used to locate everything else. Where were you in relation to it? That is how this season lives."
+    ]
+   },
+   "flag": [
+    {
+     "quote": "no one had scored fifty in a single La Liga season before",
+     "kind": 1,
+     "why": "a record claim"
+    },
+    {
+     "quote": "one of the great club sides of the modern era",
+     "kind": 1,
+     "why": "a claim about the team"
+    },
+    {
+     "quote": "bent the record books into shapes they have not recovered from since",
+     "kind": 1,
+     "why": "a record claim about later seasons"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "Fifty goals and sixteen assists",
+     "why": "50 and 16 on his card (replaces N8)",
+     "type": "figure"
+    },
+    {
+     "quote": "he scored or set up a goal every 49 minutes",
+     "why": "3,267 minutes over 66 goals and assists",
+     "type": "figure"
+    },
+    {
+     "quote": "3,267 minutes across 37 appearances",
+     "why": "on the card",
+     "type": "figure"
+    }
+   ],
+   "report_only": []
+  },
+  {
+   "id": "notes-lammens",
+   "type": "notes",
+   "cards": [
+    130645
+   ],
+   "written_by": "notes v3-a0185f4f",
+   "prose": {
+    "glance": "Seventy-nine saves, thirty-two starts, a first full Premier League campaign at twenty-three, and the number that matters most is still the one we cannot settle.",
+    "scout": "Lammens arrived at Old Trafford as a young keeper asked to hold a position that has rarely felt settled in recent years. Thirty-two starts across a Premier League season, every minute accounted for, is not a cameo or a trial run. It is a statement of trust from a club that has not always extended it easily.\n\nWhat the record gives us is honest and incomplete in the right measure. He faced 118 shots, derived from saves and goals conceded, stopped 79, and conceded 39. The platform makes no further claim, because one season of shots is not enough to make one confidently, and that restraint is its own kind of precision.",
+    "notes": [
+     "Thirty-two Premier League starts at twenty-three, at Manchester United, in the same year the campaign produced a save rate of 66.9 per cent, plus or minus 4.3 points. That is the full record and it is worth reading twice: a 23-year-old keeping goal in the Premier League, starting every game he was available for, is not an ordinary thing.",
+     "The savePctSeries shows 77.5 in each of the two seasons before this one, and 66.9 here. The standard error on a season's save rate sits at roughly six points, which means the gap between those figures is real but not comfortably decisive. The same keeper, a harder season, a different team in front of him, or some combination of all three. The record does not separate them and nor should we.",
+     "His percentile placement sits somewhere between the 14th and 71st among the keeper pool, a band that wide is a signal in itself: 118 shots faced is enough to measure, not enough to place precisely. Clean sheets are not recorded for this season. What is recorded is 79 saves across a full campaign, and a goalkeeper who started every appearance his club gave him.",
+     "Twenty-three years old, Old Trafford, thirty-two times. Whatever the number finally settles at, he was there."
+    ]
+   },
+   "flag": [
+    {
+     "quote": "arrived at Old Trafford",
+     "kind": 1,
+     "why": "a transfer, not on the card"
+    },
+    {
+     "quote": "a position that has rarely felt settled in recent years",
+     "kind": 1,
+     "why": "club history"
+    },
+    {
+     "quote": "a first full Premier League campaign",
+     "kind": 1,
+     "why": "career history"
+    },
+    {
+     "quote": "starting every game he was available for",
+     "kind": 1,
+     "why": "32 starts in 38; availability is not on the card"
+    },
+    {
+     "quote": "sits at roughly six points",
+     "kind": 4,
+     "why": "the same text gave the error as plus or minus 4.3"
+    }
+   ],
+   "leave": [],
+   "report_only": [
+    {
+     "quote": "The savePctSeries shows",
+     "why": "an internal field name in the prose: reported, not scored (row 49)"
+    }
+   ]
+  }
+ ]
+}

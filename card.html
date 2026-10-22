@@ -1821,12 +1821,15 @@
          and invalidate all of them. Keepers only, so outfield payloads stay byte-identical.
          Nulls go as-is , the prompt reads null as unknown, never as zero. */
       var _keeper = (D.pos === 'GK')
-        ? { saves:D.saves, goals_conceded:D.goals_conceded, penalties_saved:D.penalties_saved, starts:D.starts }
+        ? { saves:D.saves, goals_conceded:D.goals_conceded, penalties_saved:D.penalties_saved }   /* no starts: no page prints them (2026-10-22) */
         : {};
       /* THE ENRICHED BLOCK comes from VVCore.vvAIStats, the SAME builder compare uses, so the
-         model cannot see two different pictures of one card. Passing volume and key passes per
-         90 with the pool bar for that position, the minutes/starts/appearances denominator, the
-         keeper block naming the 75 cap as a boundary, the missing-field list and the era flag.
+         model cannot see two different pictures of one card. Since 2026-10-22 it carries only
+         figures the reader can check (the minutes and appearances, the Proof stats this card
+         prints, the dimension percentiles, the missing-field list and the era flag). THE BLOCKS
+         THIS PAGE ADDS ITSELF ARE HELD TO THE SAME RULE: the keeper figures above are the three
+         the keeper panel prints, and `node scripts/calibration/capture.js --audit` checks the
+         request this page actually sends against the rendered page.
          NOTE: this payload is exactly what `stats_hash` fingerprints, so adding fields here
          invalidates every cached note. Intended , and why this lands before any pre-warm. */
       /*  {radar:true} , THE NOTES PATH ASKS FOR THE DIMENSIONS AND THE VERDICT PATH DOES
