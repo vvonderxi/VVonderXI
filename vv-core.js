@@ -1223,10 +1223,13 @@
         'not its placement. Write about the recorded figures instead.';
     }
 
+    /*  NO POSITION CUT-OFFS (removed 2026-10-22, owner's decision). pool_passes_per90_p80 and
+        _p90 were the tag engine's bars for a raw rate, and no card or comparison ever shows them.
+        THE RULE: THE WRITER SEES WHAT THE READER SEES. A number the page never shows is one the
+        model quotes as if it were on the page; "inside a breath of the 90th percentile bar" on
+        a card reading 81 came from exactly this. The pool name stays: the card prints it.  */
     if (th){
       out.pool = pool;
-      out.pool_passes_per90_p80 = th.passes90_p80 != null ? th.passes90_p80 : null;
-      out.pool_passes_per90_p90 = th.passes90_p90 != null ? th.passes90_p90 : null;
     }
     /*  ══ FALLBACK C , WHAT THE MODEL RECEIVES ABOUT A KEEPER ═══════════════════════════
         docs/KEEPER_FALLBACK_C_SPEC.md: "Fable receives recorded figures, band, evidence
@@ -1353,12 +1356,18 @@
         opposite of the whole design.  */
     if (opts && opts.radar){
       var _rd = row.radar || radarFor(row);
-      if (_rd && !_rd.suppressed && _rd.scaled){
+      /*  NOT GATED ON `suppressed` (2026-10-22). A suppressed radar draws no chart, but the card
+          prints the values it does hold ("96 Reliability" on Messi 11/12), so the writer gets
+          those values too. A KEEPER is excluded by name: its radar can carry a Reliability value, and
+          the keeper card shows the keeper panel instead, never the dimensions (measured on the lint's
+          keeper fixture, whose stamp moved when this gate first came off).  */
+      if (_rd && _rd.scaled && !isGK(row)){   /* a keeper card shows the keeper panel, never the dimensions */
         var _vals = {};
         ['goalThreat','creation','progression','defensive'].forEach(function(k){
           if (_rd.scaled[k] == null) return;              // NR stays absent, never zero
-          _vals[k] = { per90: (_rd.raw && _rd.raw[k] != null) ? _rd.raw[k] : null,
-                       percentile_in_pool: _rd.scaled[k] };
+          /*  THE PERCENTILE ONLY (2026-10-22). The raw per-90 behind it is not on the card, so
+              it is not in the payload: the writer sees what the reader sees (kind 2, area 9).  */
+          _vals[k] = { percentile_in_pool: _rd.scaled[k] };
         });
         if (_rd.scaled.reliability != null)
           _vals.reliability = { pct_of_full_season: _rd.scaled.reliability };

@@ -139,6 +139,18 @@ and the notes prompt alike. **The figures were almost always right. The failure 
    almost any other winger" at 72; "his numbers across every dimension are higher" when the other
    card leads Reliability. **ROOT CAUSE: the writer is sent RAW per-90 dimensions, never the
    percentiles the reader sees.** It is writing about numbers it cannot see.
+   **[CORRECTED 2026-10-22: THAT WAS COMPARE'S WRITER ONLY.** Compare sent `radar per90:` raw
+   values plus each position's p80/p90 cut-off for passes, none of which any page shows. The card's
+   notes writer already received the percentile the card shows, with the raw per-90 beside it, and
+   the three notes failed on kind 1, not kind 2. Fixed for both on 2026-10-22: both writers get the
+   percentiles the page draws, and neither gets raw dimension values or cut-offs.**]**
+   **THE RULE IS "WHAT THE READER SEES ON THIS PAGE", NOT "WHAT THE DATABASE HOLDS" (2026-10-22).**
+   The first version of the fix nearly made a new kind-2 source: on Haaland 22/23 v Suarez 13/14 the
+   head to head draws only Reliability (it shows a dimension only when both seasons have it), and the
+   fix still sent Haaland's other four percentiles, numbers no reader of that page sees. The next
+   person fixing a writer payload will reach for "send everything we have", and that is exactly
+   wrong: every figure the writer gets must be on the page the prose sits on. Compare's line now
+   reads the page's own RADAR_OK, so it cannot carry a dimension the head to head did not draw.
 3. **A crown the card's own honours and dimensions contradict.** Foden over Bellingham "because
    what was recorded for Foden was more" (Bellingham: three honours to two, leads three of five
    dimensions); Suarez over De Bruyne on "individual honours two-to-one" (it is two each).
@@ -176,6 +188,7 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
 
 **Before prose comes back on, in this order:**
 1. Kind 2: send the writer the percentiles the card shows, and give the checker the same.
+   [DONE 2026-10-22, see the correction under kind 2 above. Verified offline, no generation.]
 2. Rewrite the calibration set from these twelve, the quoted sentences labelled by kind, and
    report a number PER KIND. One number is a number about kind 1.
 3. Regenerate a sample (not the twelve; fresh pairs and cards) and read it against the cards.

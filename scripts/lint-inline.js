@@ -267,7 +267,9 @@ function lintModules(){
     citing "87th percentile for creation" is wrong once the percentile moves, and it SHOULD
     regenerate. MEASURED COST: 97 of 172 cached notes, the rest unaffected or radar-NR.
     Only ever change these two values with the reason written down.  */
-const STATS_HASH_PIN = { outfield: '2ca5d8ac83db868c', keeper: '8bd90b9aa47cceaf' };
+/*  Re-pinned 2026-10-22 on purpose: the position cut-offs and the raw per-90 beside each dimension
+    left the payload (the writer sees what the reader sees, kind 2). Prose is off, so nothing regenerates.  */
+const STATS_HASH_PIN = { outfield: '4c004931270a5ab3', keeper: '486f5efd8c5f5b64' };
 function lintCacheStamps(){
   const out = [];
   let A, VVCore;

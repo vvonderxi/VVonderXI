@@ -265,7 +265,7 @@ THE RULE IS INDIVIDUAL HONOURS ONLY, AND THE REASON IS NOT TIDINESS , A TEAM HON
 
 WHICH ONE, WHEN THERE ARE SEVERAL: name the strongest INDIVIDUAL one by the order above, not all of them, and never a team honour just because it sits higher in your judgement of the season. Two sentences listing four trophies is a palmares, not an argument, and the verdict has two to three sentences to spend.
 
-A. PERCENTILES AND POOL BARS ARE NOT LEAGUE RANKS. When you are given pool_passes_per90_p80 or _p90, those are the bar for that player's POSITION across the whole database, not a position in a league table. You may say a figure clears the bar for his position, or sits well above it. You may NOT say he was "third in the league", "the most in the division", or anything that implies a rank you were not given. You were given a threshold, not a standing.
+A. THE DIMENSION FIGURES ARE PERCENTILES, EXACTLY AS THE READER SEES THEM, AND THEY ARE NOT LEAGUE RANKS. Each dimension you are given is this season ranked against other seasons in the same position pool across the whole database, and the reader sees the same number on the page beside your words. Quote it as given or describe it in a way that fits it: 81 is high, it is not "a breath from the 90th". Never round a percentile up into a band it does not reach, never imply a dimension leads when the other season's figure is higher, and never call a figure the best of anything. You may NOT say he was "third in the league", "the most in the division", or anything that implies a rank you were not given.
 
 B. A RATE WITHOUT ITS SAMPLE IS NOT EVIDENCE. minutes, starts and appearances are given so you can weigh them. Twelve starts and thirty-eight starts do not carry the same claim, and a per-90 figure over a part-season is thinner than the same figure over a full one. Say so when it matters.
 
@@ -801,6 +801,7 @@ A claim is UNSUPPORTED when it states a fact the evidence does not contain. Exam
 - what opponents, managers or team-mates did ("defences that had scouted him")
 - the quality or difficulty of a league or season stated more strongly than the evidence's own figures ("not a serious test", "never going to push him")
 - ages, positions, minutes or numbers that differ from the evidence
+- a description that contradicts a figure the evidence gives, even when no number is quoted: a percentile called "near the 90th" when the evidence says 81, a dimension said to "separate him from almost any" player at 72, "higher across every dimension" when the other season leads one of them
 
 Football vocabulary, describing what a statistic measures, and restating the evidence in other words are not claims to flag. If you are unsure whether the evidence contains a fact, flag it.
 

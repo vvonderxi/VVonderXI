@@ -1906,13 +1906,13 @@ body.light .pkmsub{color:var(--ink-soft)}
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261013a"></script>
+<script src="/vv-marks.js?v=20261022a"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20261013a"></script>
+<script src="/vv-core.js?v=20261022a"></script>
 <script>
 /*  COMPARE FUNNEL (2026-10-09). Seventeen visits reached Compare on launch day and the event table
     recorded no comparison, with nothing to say where they stopped. Each step a visit reaches is now
@@ -4074,12 +4074,28 @@ body.light .pkmsub{color:var(--ink-soft)}
         up-ranked per CONTEXT > AGE > LADDER.  */
     var eligKeys=_aiJudge ? VC.contextHints.slice()
                           : [VC.floorTag].concat(VC.contextHints.filter(function(k){return k!==VC.floorTag;}));
-    function rad(c){ var r=(c.radar&&c.radar.raw)||{}; function n(x){return x==null?'-':x;} return 'GoalThreat '+n(r.goalThreat)+', Creation '+n(r.creation)+', Progression '+n(r.progression)+', Defensive '+n(r.defensive)+', Reliability '+n(r.reliability); }
+    /*  THE WRITER SEES WHAT THE READER SEES (2026-10-22, kind 2 in area 9). This line sent the RAW
+        per-90 radar values, which no surface shows, while the reader looks at percentiles in the
+        head to head; the prose then contradicted the page ("inside a breath of the 90th
+        percentile" on a card reading 81). It now sends the same numbers the head to head draws:
+        each dimension as a percentile against the pool, and Reliability as a share of a season.  */
+    /*  EXACTLY THE AXES THE HEAD TO HEAD DRAWS, read from the page's own RADAR_OK (measured
+        2026-10-22). The head to head shows a dimension only when BOTH seasons have it, so on
+        Haaland 22/23 v Suarez 13/14 it draws Reliability alone; sending Haaland's other four would
+        hand the writer numbers no reader of this page sees. A pre-2015 card suppresses the chart
+        and still shows Reliability (Messi 11/12 96), so `suppressed` is not the test either.  */
+    function rad(c){ var R=c.radar, s=R&&R.scaled;
+      var keys=['goalThreat','creation','progression','defensive','reliability'], names=['Goal Threat','Creation','Progression','Defensive','Reliability'];
+      var shown=keys.map(function(k,i){ return s && s[k]!=null && (typeof RADAR_OK==='undefined' || !RADAR_OK || RADAR_OK[i]); });
+      if(!shown.some(Boolean)) return 'none shown (the head to head draws a dimension only when both seasons have it)';
+      var parts=[]; keys.forEach(function(k,i){ if(!shown[i]) return; parts.push(names[i]+' '+(k==='reliability'? s[k]+'% of a full season' : s[k])); });
+      return 'as the head to head shows them, percentile against other '+(R.pool||'comparable')+' seasons except Reliability: '+parts.join(', ')
+        +(shown.every(Boolean)?'':' (the other dimensions are not shown, because the other season lacks them)'); }
     /* THE SAME ENRICHED BLOCK THE CARD SENDS, via VVCore.vvAIStats, so one card cannot look
        like two different players across two surfaces. Serialised compactly because this is a
        prompt line, not JSON. passes_accuracy is deliberately absent , see the prompt rule. */
     function aiBlock(c, pre){ var a=pre||((window.VVCore&&VVCore.vvAIStats)?VVCore.vvAIStats(c):{}); var b=[];
-      if(a.passes_per90!=null) b.push('passes/90 '+a.passes_per90+(a.pool_passes_per90_p80!=null?' (pool p80 '+a.pool_passes_per90_p80+', p90 '+a.pool_passes_per90_p90+')':''));
+      if(a.passes_per90!=null) b.push('passes/90 '+a.passes_per90);   /* no position cut-offs: the page never shows them (2026-10-22) */
       if(a.key_passes_per90!=null) b.push('key passes/90 '+a.key_passes_per90);
       /*  DENOMINATORS AS BOUND PAIRS , FACTS, STATED AND NEVER GRADED. Written as "X of Y"
           so the pair cannot be split by the serialiser and arrive as two loose numbers.
@@ -4161,7 +4177,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       return c.surname+' ('+(c.full||c.surname)+'), '+c.year+', '+c.clubname+' ['+(_lgc||'')+'], pos '+c.pos
            +', age '+(c.season_age!=null?c.season_age:'NR')+(wk?' [WONDERKID]':'')
            +', VV '+_vv+(c.vv!=null&&c.vv!==''&&VVCore.bandPublic?' ('+VVCore.bandPublic(VVCore.bandFor(c.vv))+' band)':'')
-           +', '+_goals+' '+_assists+'; radar per90: '+rad(c)+aiBlock(c, _a); }
+           +', '+_goals+' '+_assists+'; dimensions: '+rad(c)+aiBlock(c, _a); }
     /*  ONE SPEC PER STATE, AND THEY NO LONGER OVERLAP. The `who` instruction used to send the
         "THERE IS NO WINNER TO NAME" paragraph AND the "Name the winner" paragraph in the same
         prompt on every unseparated pairing , a conditional prepend followed by an
