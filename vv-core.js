@@ -1162,6 +1162,25 @@
     return out.some(o => o.savePct != null) ? out : null;
   }
 
+  /*  WHAT THE CARD'S PROOF PANEL SHOWS, PER POSITION, AND THE ONE LIST THE WRITERS READ (moved here
+      from card.html 2026-10-22). The card prints three stats per position, per 90 and as a total;
+      the writer may state a per-position figure only when the card it belongs to prints it.
+      THE RULE (Lucas, 2026-10-22): THE WRITER MUST NOT STATE A NUMBER THE READER CANNOT CHECK. A figure
+      on either card or on Compare is fair; a figure that exists only in the payload is not. One list
+      serves the page and the writer, so the two cannot drift: change a row here and both move.  */
+  var PROOF_DIMS = {
+    goal:   { rows:[ ['Goals','goals'], ['Shots on target','shots_on'], ['Shots','shots_total'] ] },
+    create: { rows:[ ['Assists','assists'], ['Key passes','passes_key'], ['Shots on target','shots_on'] ] },
+    def:    { rows:[ ['Tackles','tackles_total'], ['Interceptions','interceptions'], ['Blocks','tackles_blocks'] ] }
+  };
+  // position pool -> set. Unknown pools fall to 'create', exactly as the card renders them.
+  var POOL_DIM = { ST:'goal', Winger:'goal', CAM:'create', CM:'create', CDM:'def', FB:'def', CB:'def', GK:'def' };
+  function proofFieldsFor(row){
+    if (!row || isGK(row) || row.keeper) return [];          // a keeper card shows no Proof panel
+    var p = row.position_pool || row.pos || null;
+    return PROOF_DIMS[POOL_DIM[p] || 'create'].rows.map(function(r){ return r[1]; });
+  }
+
   function vvAIStats(row, opts){
     if (!row) return {};
     const pool = row.position_pool || null;
@@ -1169,11 +1188,15 @@
     const mins = row.minutes;
     const out = {
       minutes: mins != null ? mins : null,
-      starts: row.starts != null ? row.starts : null,
-      appearances: row.appearances != null ? row.appearances : null,
-      passes_per90: aiPer90(row.passes_total, mins),
-      key_passes_per90: aiPer90(row.passes_key, mins)
+      appearances: row.appearances != null ? row.appearances : null
     };
+    /*  ONLY FIGURES THE READER CAN CHECK (2026-10-22, see PROOF_DIMS above). Starts, passes per 90,
+        dribbles, duels and penalty goals appear on no card and no comparison, so they are not sent.
+        THE PRICE, PAID KNOWINGLY: "nine from the spot, thirteen from open play" was one of the better
+        lines the writer produced, and it goes with penalties. Do not re-add a field here without first
+        putting it on the page; area 9 of docs/UNVERIFIED_SURFACES_2026-10-12.md records why.  */
+    var _shown = proofFieldsFor(row);
+    if (_shown.indexOf('passes_key') >= 0) out.key_passes_per90 = aiPer90(row.passes_key, mins);
     // the bar for HIS position, so a number can be read as high or low without a league rank
     /*  ── THE rt CLAIMS LICENCE , POSITION-KEYED, INTERIM ──────────────────────────
         MEASURED 2026-09-07 by reproducing player_card_view's own formula on all 50,269
@@ -1250,7 +1273,6 @@
         shots_faced_derived: (row.saves != null && row.goals_conceded != null) ? row.saves + row.goals_conceded : null,
         penalties_saved: row.penalties_saved != null ? row.penalties_saved : null,
         penalties_saved_note: 'a count with no denominator: we do not know how many he faced',
-        starts: row.starts != null ? row.starts : null,
         evidence_status: kst ? kst.state : null,       // measured | below_floor | unrecorded
         save_rate_pct: (ks && ks.eligible) ? +(100 * ks.savePct).toFixed(1) : null,
         save_rate_se_pp: (ks && ks.eligible) ? +ks.seP.toFixed(1) : null,
@@ -1270,12 +1292,8 @@
         `goals` is already on the payload from BOTH callers, so only its partner is added
         here , sending it twice would put one number in two places and invite them to
         disagree.  */
-    out.shots_total       = row.shots_total       != null ? row.shots_total       : null;
-    out.dribbles_success  = row.dribbles_success  != null ? row.dribbles_success  : null;
-    out.dribbles_attempts = row.dribbles_attempts != null ? row.dribbles_attempts : null;
-    out.duels_won         = row.duels_won         != null ? row.duels_won         : null;
-    out.duels_total       = row.duels_total       != null ? row.duels_total       : null;
-    out.penalties_scored  = row.penalties_scored  != null ? row.penalties_scored  : null;
+    if (_shown.indexOf('shots_total') >= 0)
+      out.shots_total = row.shots_total != null ? row.shots_total : null;
 
     /*  ══ THE CLAIMS BLOCK , HONOURS ════════════════════════════════════════════════════
         Asserted outright, because the platform already asserted them: these are the same
@@ -8278,7 +8296,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvAbsent, VV_SCOPE_LINE, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
                 FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
-                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, vvClient,
+                bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, PROOF_DIMS, POOL_DIM, proofFieldsFor, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,
                 attachHonoursBatch, shapeHonoursForCard, renderHonourPillsCompact, emptyHonours,

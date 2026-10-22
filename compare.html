@@ -1906,13 +1906,13 @@ body.light .pkmsub{color:var(--ink-soft)}
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261022a"></script>
+<script src="/vv-marks.js?v=20261022b"></script>
 <!--  vv-margin.js , the per-card rt standard error the margin gate reads. COMPARE ONLY:
       it is 82 KB and no other surface asks whether two seasons can be separated.
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20261022a"></script>
+<script src="/vv-core.js?v=20261022b"></script>
 <script>
 /*  COMPARE FUNNEL (2026-10-09). Seventeen visits reached Compare on launch day and the event table
     recorded no comparison, with nothing to say where they stopped. Each step a visit reaches is now
@@ -4095,7 +4095,9 @@ body.light .pkmsub{color:var(--ink-soft)}
        like two different players across two surfaces. Serialised compactly because this is a
        prompt line, not JSON. passes_accuracy is deliberately absent , see the prompt rule. */
     function aiBlock(c, pre){ var a=pre||((window.VVCore&&VVCore.vvAIStats)?VVCore.vvAIStats(c):{}); var b=[];
-      if(a.passes_per90!=null) b.push('passes/90 '+a.passes_per90);   /* no position cut-offs: the page never shows them (2026-10-22) */
+      /*  ONLY FIGURES THE READER CAN CHECK (2026-10-22). vvAIStats now sends key passes and total shots
+          only for the positions whose card prints them, and no passes per 90, dribbles, duels,
+          penalty goals or starts, because no page prints those.  */
       if(a.key_passes_per90!=null) b.push('key passes/90 '+a.key_passes_per90);
       /*  DENOMINATORS AS BOUND PAIRS , FACTS, STATED AND NEVER GRADED. Written as "X of Y"
           so the pair cannot be split by the serialiser and arrive as two loose numbers.
@@ -4106,9 +4108,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       /*  SAME GUARD AS line() , the pair is dropped when goals were never recorded, rather
           than printing "goals 0 of 41 shots" for a card that has no goals figure at all.  */
       if(a.shots_total!=null && c.goals!=null && (a.recorded?a.recorded.goals!==false:true)) b.push('goals '+c.goals+' of '+a.shots_total+' shots');
-      if(a.dribbles_success!=null && a.dribbles_attempts!=null) b.push('dribbles '+a.dribbles_success+' of '+a.dribbles_attempts);
-      if(a.duels_won!=null && a.duels_total!=null) b.push('duels won '+a.duels_won+' of '+a.duels_total);
-      if(a.penalties_scored!=null && c.goals!=null && (a.recorded?a.recorded.goals!==false:true)) b.push('of those goals, '+a.penalties_scored+' from the spot');
+
       /*  HONOURS , THE CLAIMS BLOCK. Asserted outright: the platform already asserted them
           on the card face. won_by keeps a team title from being written as a personal one,
           and leg keeps a 2018 World Cup from being read as something he won in this
@@ -4121,7 +4121,7 @@ body.light .pkmsub{color:var(--ink-soft)}
           so the model guessed at what they sound like. This is the platform's own one-line
           definition, the same text the Playbook shows.  */
       if(a.tag_glosses&&a.tag_glosses.length) b.push('TAG MEANINGS: '+a.tag_glosses.map(function(g){ return g.tag+' = '+g.means; }).join(' | '));
-      if(a.minutes!=null) b.push(a.minutes+' min'+(a.starts!=null?' / '+a.starts+' starts':'')+(a.appearances!=null?' / '+a.appearances+' apps':''));
+      if(a.minutes!=null) b.push(a.minutes+' min'+(a.appearances!=null?' / '+a.appearances+' apps':''));   /* no starts: no page prints them */
       /*  FALLBACK C , THE KEEPER LINE CARRIES THE BAND AND THE LIMIT, NEVER THE CAP.
           This used to end "rt CAPPED at 75 , a platform measurement boundary", which named a
           number the platform no longer stands behind. vvAIStats no longer emits those fields.

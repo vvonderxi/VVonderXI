@@ -151,6 +151,16 @@ and the notes prompt alike. **The figures were almost always right. The failure 
    person fixing a writer payload will reach for "send everything we have", and that is exactly
    wrong: every figure the writer gets must be on the page the prose sits on. Compare's line now
    reads the page's own RADAR_OK, so it cannot carry a dimension the head to head did not draw.
+   **THE RULE, AS LUCAS SET IT ON 2026-10-22: THE WRITER MUST NOT STATE A NUMBER THE READER CANNOT
+   CHECK.** A figure on either card or on Compare is fair; a figure that exists only in the payload
+   is not. Audited the same day by searching every rendered page for every number in the message:
+   starts, passes per 90, dribbles, duels and penalty goals were on no page, so they are cut; key
+   passes and total shots are sent only for the positions whose card prints them. The card's
+   per-position list (PROOF_DIMS) moved into the shared module so the page and the writers read one
+   list. "Nineteen goals from 29 starts" on Tresoldi came from a starts figure no page shows.
+   **THE PRICE, PAID KNOWINGLY: "nine from the spot, thirteen from open play" was one of the better
+   lines the writer produced, and it goes with penalties. Penalties are not free to re-add: put them
+   on the page first, then in the payload, never the other way round.**
 3. **A crown the card's own honours and dimensions contradict.** Foden over Bellingham "because
    what was recorded for Foden was more" (Bellingham: three honours to two, leads three of five
    dimensions); Suarez over De Bruyne on "individual honours two-to-one" (it is two each).
@@ -197,6 +207,12 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    allows about $312 a day. Live the whole time prose was on; added 2026-10-18.
 5. A decision on the race where two simultaneous first requests for one uncached pair both
    generate (measured 2026-10-08). Same; added 2026-10-18.
+6. When the fresh sample in step 3 is generated, take ONE FAIR CROWN from a separated pair and add
+   it to the calibration as a supported judgement (Lucas, 2026-10-22). None of the twelve is a
+   separated pair crowned fairly, so the set cannot yet test that a checker leaves a fair crown alone.
+7. Any warm, of the sample or after the switch, runs through Anthropic's Message Batches API: half
+   price on top of the prompt-cache discount, and the warm is the single biggest AI line (about $9
+   on 2026-10-03). The warm scripts call the Messages API directly today. Added 2026-10-22.
 
 **A cost fact the next session will meet:** on 2026-10-17 the notes cache held 731 rows and only
 6 were on the current prompt. Every prompt edit makes the rest stale, so while prose was on,

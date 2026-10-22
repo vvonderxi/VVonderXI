@@ -269,7 +269,9 @@ function lintModules(){
     Only ever change these two values with the reason written down.  */
 /*  Re-pinned 2026-10-22 on purpose: the position cut-offs and the raw per-90 beside each dimension
     left the payload (the writer sees what the reader sees, kind 2). Prose is off, so nothing regenerates.  */
-const STATS_HASH_PIN = { outfield: '4c004931270a5ab3', keeper: '486f5efd8c5f5b64' };
+/*  Re-pinned again 2026-10-22, same day: starts, passes per 90, dribbles, duels and penalty goals left the
+    payload, and key passes and total shots go only where the card prints them (the reader-can-check rule).  */
+const STATS_HASH_PIN = { outfield: 'd92a9a619ade8cc8', keeper: '48f6e5e8bdfbd330' };
 function lintCacheStamps(){
   const out = [];
   let A, VVCore;

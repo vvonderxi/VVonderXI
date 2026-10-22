@@ -1563,8 +1563,8 @@
   </div>
 <script>window.VV_PUBLIC = { SUPABASE_URL: "https://krqthvroetbxgnvwwjar.supabase.co", SUPABASE_ANON_KEY: "sb_publishable_kQLTYxHeUvR_7AqPDPdXlA_nR8dwINp" };</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/vv-marks.js?v=20261022a"></script>
-<script src="/vv-core.js?v=20261022a"></script>
+<script src="/vv-marks.js?v=20261022b"></script>
+<script src="/vv-core.js?v=20261022b"></script>
 <script>
     /*  THE RADAR NOW HONOURS NR. Three states, and the middle one is the point:
         , radar.suppressed  : three or more axes never measured. NO CHART , the numbers are
@@ -1977,14 +1977,11 @@
   //    Mirrors compare.html's vvSetProof (per-90 from raw/minutes). PERCENTILE COLUMN
   //    DEFERRED , it needs the parked engine position-percentile work, so .pctn is blanked
   //    and the .pct bar hidden (DOM kept so it can be re-enabled without markup churn).
-  var PROOF_DIMS = {
-    goal:   { rows:[ ['Goals','goals'], ['Shots on target','shots_on'], ['Shots','shots_total'] ] },
-    create: { rows:[ ['Assists','assists'], ['Key passes','passes_key'], ['Shots on target','shots_on'] ] },
-    def:    { rows:[ ['Tackles','tackles_total'], ['Interceptions','interceptions'], ['Blocks','tackles_blocks'] ] },
-  };
-  // position pool -> dimension. GK has no populated attacking/defensive per-90 (keeper stats
-  // pending), so it takes the defensive set and degrades to NR rather than showing a wrong lens.
-  var POOL_DIM = { ST:'goal', Winger:'goal', CAM:'create', CM:'create', CDM:'def', FB:'def', CB:'def', GK:'def' };
+  /*  THE PROOF MAP LIVES IN THE SHARED MODULE (2026-10-22), because the AI writers read the same list
+      to decide which per-position figures they may state: one list, so the page and the writer
+      cannot drift. Edit it there, never here.  */
+  var PROOF_DIMS = VVCore.PROOF_DIMS;
+  var POOL_DIM = VVCore.POOL_DIM;
   function renderProof(D){
     var layer=document.getElementById('proofLayer'); if(!layer||!D) return;
 
