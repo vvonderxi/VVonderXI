@@ -2522,7 +2522,7 @@
     // is a small lie about what the element is doing, and the next person to style .vv-wait
     // would be styling live cards without meaning to.
     document.querySelectorAll('.vv-wait').forEach(function(el){ el.classList.remove('vv-wait'); });
-    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
+    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.card_id, res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
     var targetD=D;   // honours fill in WITHOUT blocking the core; guard against a season-switch landing first
     // renderHero re-run too: the card FACE pills come from d.honours.all (buildCard), so the face needs
     // the honours to show its pill , a quick pop-in as they land, exactly the "fill in after" behaviour.
@@ -2789,7 +2789,7 @@
         stepper that works on first load and silently vanishes after one season switch.
         The attach lives in the flip's onDone instead, which is the first moment the new
         face exists. Same family as Section C's element-that-must-outlive-a-re-render rule.  */
-    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
+    try{ CARD_PLAYER=vvResolveChronicleKey(res.data.card_id, res.data.api_player_id, res.data.season) || '__none__'; vvWireChronicle(); }catch(e){}
   }
   /* ══ CARD SEQUENCE , walk the list the visitor arrived from ═══════════════════
      The sequence is the RESULT SET of the query rankings was showing, re-derived here
@@ -3520,10 +3520,10 @@ var SIGNATURE_MOMENTS = {
   },
   "erling-haaland-2223": {
     scoreline: "Manchester City 3-0 West Ham", date: "3 May 2023", comp: "Premier League", opponent: "West Ham",
-    quote: "Thirty-five goals in a single season, a record twenty-eight years old, broken by a debutant with games to spare.",
+    quote: "Thirty-six goals in a single season, a record twenty-eight years old, broken by a debutant with games to spare.",
     narrative: [
       "Cole and Shearer set the mark in the league's infancy, across forty-two games. For twenty-eight years it held.",
-      "Haaland needed only his first season, and only thirty-one appearances. Grealish slipped him through, and he dinked it home for number thirty-five.",
+      "Haaland needed only his first season, and only thirty-one appearances. Grealish slipped him through, and he dinked home the goal that broke it.",
       "His teammates lined up a guard of honour. The Premier League had never seen scoring like it."
     ]
   },
@@ -3604,7 +3604,7 @@ var SIGNATURE_MOMENTS = {
     quote: "On the day Anfield reclaimed its throne, the King cut inside, scored, and turned to the Kop for a selfie.",
     narrative: [
       "Liverpool needed a single point. They took all three, and the title, in a 5-1 storm against Tottenham.",
-      "Mohamed Salah, in a season of 28 goals and 18 assists, capped the coronation himself , cutting in, firing low, then grabbing a fan's phone for a selfie before the adoring Kop.",
+      "Mohamed Salah, in a season of 29 goals and 18 assists, capped the coronation himself , cutting in, firing low, then grabbing a fan's phone for a selfie before the adoring Kop.",
       "It was a first in-person title celebration in thirty-five years, and the league's most relentless force stood at the heart of it."
     ]
   },
@@ -3898,7 +3898,7 @@ function vvNorm(s){
   return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
     .toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 }
-/* CHRONICLE_MAP , keyed on api_player_id + season, NOT on display name.
+/* CHRONICLE_MAP , keyed on card_id (since 2026-10-23, see CHRONICLE_INDEX), NOT on display name.
    WHY (measured 2026-08-16): the old name+season index put THREE Chronicles on the wrong
    player's card, because a display name is not a key (§C). Confirmed by api_player_id,
    nationality and date of birth:
@@ -3918,83 +3918,90 @@ function vvNorm(s){
    resolve, which is exactly what happened before. Do not "fix" this by adding a name fallback:
    the name fallback is the bug. */
 var CHRONICLE_MAP = [
-  { api:115353, season:"1112", key:"alessandro-del-piero-1112" },
-  { api:1485, season:"2324", key:"bruno-fernandes-2324" },
-  { api:1863, season:"1920", key:"ciro-immobile-1920" },
-  { api:874, season:"1011", key:"cristiano-ronaldo-1011" },
-  { api:874, season:"1112", key:"cristiano-ronaldo-1112" },
-  { api:874, season:"1415", key:"cristiano-ronaldo-1415" },
-  { api:554, season:"1819", key:"dusan-tadic-1819" },
-  { api:2296, season:"1415", key:"eden-hazard-1415" },
-  { api:274, season:"1718", key:"edinson-cavani-1718" },
-  { api:1100, season:"1920", key:"erling-haaland-1920" },
-  { api:1100, season:"2223", key:"erling-haaland-2223" },
-  { api:41585, season:"2223", key:"goncalo-ramos-2223" },
-  { api:2297, season:"1516", key:"gonzalo-higuain-1516" },
-  { api:78, season:"2122", key:"hans-vanaken-2122" },
-  { api:184, season:"1617", key:"harry-kane-1617" },
-  { api:184, season:"2324", key:"harry-kane-2324" },
-  { api:12705, season:"1011", key:"hulk-1011" },
-  { api:18788, season:"1516", key:"jamie-vardy-1516" },
-  { api:129718, season:"2324", key:"jude-bellingham-2324" },
-  { api:629, season:"1920", key:"kevin-de-bruyne-1920" },
-  { api:278, season:"1819", key:"kylian-mbappe-1819" },
-  { api:278, season:"2324", key:"kylian-mbappe-2324" },
-  { api:154, season:"1112", key:"lionel-messi-1112" },
-  { api:154, season:"1415", key:"lionel-messi-1415" },
-  { api:154, season:"1617", key:"lionel-messi-1617" },
-  { api:157, season:"1314", key:"luis-suarez-1314" },
-  { api:157, season:"1516", key:"luis-suarez-1516" },
-  { api:157, season:"2021", key:"luis-suarez-2021" },
-  { api:30817, season:"1617", key:"lukasz-teodorczyk-1617" },
-  { api:26314, season:"1516", key:"mario-gomez-1516" },
-  { api:216, season:"2223", key:"mauro-icardi-2223" },
-  { api:667, season:"1415", key:"memphis-depay-1415" },
-  { api:306, season:"1718", key:"mohamed-salah-1718" },
-  { api:306, season:"2425", key:"mohamed-salah-2425" },
-  { api:61981, season:"1314", key:"moussa-sow-1314" },
-  { api:2295, season:"2122", key:"olivier-giroud-2122" },
-  { api:15812, season:"2021", key:"paul-onuachu-2021" },
-  { api:41111, season:"2021", key:"paulinho-2021" },
-  { api:635, season:"1516", key:"riyad-mahrez-1516" },
-  { api:521, season:"1516", key:"robert-lewandowski-1516" },
-  { api:521, season:"2021", key:"robert-lewandowski-2021" },
-  { api:37162, season:"1112", key:"robin-van-persie-1112" },
-  { api:37162, season:"1213", key:"robin-van-persie-1213" },
-  { api:907, season:"2021", key:"romelu-lukaku-2021" },
-  { api:642, season:"1112", key:"sergio-aguero-1112" },
-  { api:186, season:"2122", key:"son-heung-min-2122" },
-  { api:2780, season:"2223", key:"victor-osimhen-2223" },
-  { api:51070, season:"1516", key:"zlatan-ibrahimovic-1516" },
-  { api:114472, season:"1011", key:"alex-de-souza-1011" },
-  { api:44355, season:"1718", key:"bafetimbi-gomis-1718" },
-  { api:113639, season:"1011", key:"dimitar-berbatov-1011" },
-  { api:332, season:"1617", key:"dries-mertens-1617" },
-  { api:274, season:"1011", key:"edinson-cavani-1011" },
-  { api:203224, season:"2324", key:"florian-wirtz-2324" },
-  { api:515, season:"1819", key:"franck-ribery-1819" },
-  { api:758, season:"1213", key:"gareth-bale-1213" },
-  { api:184, season:"2223", key:"harry-kane-2223" },
-  { api:154, season:"1011", key:"lionel-messi-1011" },
-  { api:154, season:"1213", key:"lionel-messi-1213" },
-  { api:154, season:"1718", key:"lionel-messi-1718" },
-  { api:154, season:"1819", key:"lionel-messi-1819" },
-  { api:154, season:"2021", key:"lionel-messi-2021" },
-  { api:115068, season:"1213", key:"miroslav-klose-1213" },
-  { api:49946, season:"1112", key:"papiss-cisse-1112" },
-  { api:119, season:"1213", key:"radamel-falcao-1213" },
-  { api:521, season:"1112", key:"robert-lewandowski-1112" },
-  { api:642, season:"1516", key:"sergio-aguero-1516" },
-  { api:642, season:"2021", key:"sergio-aguero-2021" },
-  { api:186, season:"1920", key:"son-heung-min-1920" },
+  { api:115353, season:"1112", card:150158, key:"alessandro-del-piero-1112" },
+  { api:1485, season:"2324", card:131237, key:"bruno-fernandes-2324" },
+  { api:1863, season:"1920", card:147022, key:"ciro-immobile-1920" },
+  { api:874, season:"1011", card:143953, key:"cristiano-ronaldo-1011" },
+  { api:874, season:"1112", card:143526, key:"cristiano-ronaldo-1112" },
+  { api:874, season:"1415", card:141999, key:"cristiano-ronaldo-1415" },
+  { api:554, season:"1819", card:172141, key:"dusan-tadic-1819" },
+  { api:2296, season:"1415", card:134880, key:"eden-hazard-1415" },
+  { api:274, season:"1718", card:160335, key:"edinson-cavani-1718" },
+  { api:1100, season:"1920", card:153428, key:"erling-haaland-1920" },
+  { api:1100, season:"2223", card:131585, key:"erling-haaland-2223" },
+  { api:41585, season:"2223", card:164599, key:"goncalo-ramos-2223" },
+  { api:2297, season:"1516", card:148701, key:"gonzalo-higuain-1516" },
+  { api:78, season:"2122", card:176597, key:"hans-vanaken-2122" },
+  { api:184, season:"1617", card:134288, key:"harry-kane-1617" },
+  { api:184, season:"2324", card:151977, key:"harry-kane-2324" },
+  { api:12705, season:"1011", card:169111, key:"hulk-1011" },
+  { api:18788, season:"1516", card:134725, key:"jamie-vardy-1516" },
+  { api:129718, season:"2324", card:137957, key:"jude-bellingham-2324" },
+  { api:629, season:"1920", card:133095, key:"kevin-de-bruyne-1920" },
+  { api:278, season:"1819", card:159701, key:"kylian-mbappe-1819" },
+  { api:278, season:"2324", card:157546, key:"kylian-mbappe-2324" },
+  { api:154, season:"1112", card:143372, key:"lionel-messi-1112" },
+  { api:154, season:"1415", card:141853, key:"lionel-messi-1415" },
+  { api:154, season:"1617", card:140934, key:"lionel-messi-1617" },
+  { api:157, season:"1314", card:135556, key:"luis-suarez-1314" },
+  { api:157, season:"1516", card:141575, key:"luis-suarez-1516" },
+  { api:157, season:"2021", card:139378, key:"luis-suarez-2021" },
+  { api:30817, season:"1617", card:178488, key:"lukasz-teodorczyk-1617" },
+  { api:26314, season:"1516", card:185041, key:"mario-gomez-1516" },
+  { api:216, season:"2223", card:181842, key:"mauro-icardi-2223" },
+  { api:667, season:"1415", card:173594, key:"memphis-depay-1415" },
+  { api:306, season:"1718", card:133614, key:"mohamed-salah-1718" },
+  { api:306, season:"2425", card:130728, key:"mohamed-salah-2425" },
+  { api:61981, season:"1314", card:185504, key:"moussa-sow-1314" },
+  { api:2295, season:"2122", card:146103, key:"olivier-giroud-2122" },
+  { api:15812, season:"2021", card:177180, key:"paul-onuachu-2021" },
+  { api:41111, season:"2021", card:165404, key:"paulinho-2021" },
+  { api:635, season:"1516", card:134711, key:"riyad-mahrez-1516" },
+  { api:521, season:"1516", card:154840, key:"robert-lewandowski-1516" },
+  { api:521, season:"2021", card:152972, key:"robert-lewandowski-2021" },
+  { api:37162, season:"1112", card:136348, key:"robin-van-persie-1112" },
+  { api:37162, season:"1213", card:135966, key:"robin-van-persie-1213" },
+  { api:907, season:"2021", card:146475, key:"romelu-lukaku-2021" },
+  { api:642, season:"1112", card:136138, key:"sergio-aguero-1112" },
+  { api:186, season:"2122", card:132266, key:"son-heung-min-2122" },
+  { api:2780, season:"2223", card:145668, key:"victor-osimhen-2223" },
+  { api:51070, season:"1516", card:161191, key:"zlatan-ibrahimovic-1516" },
+  { api:114472, season:"1011", card:186765, key:"alex-de-souza-1011" },
+  { api:44355, season:"1718", card:184296, key:"bafetimbi-gomis-1718" },
+  { api:113639, season:"1011", card:136542, key:"dimitar-berbatov-1011" },
+  { api:332, season:"1617", card:148312, key:"dries-mertens-1617" },
+  { api:274, season:"1011", card:150846, key:"edinson-cavani-1011" },
+  { api:203224, season:"2324", card:151938, key:"florian-wirtz-2324" },
+  { api:515, season:"1819", card:153880, key:"franck-ribery-1819" },
+  { api:758, season:"1213", card:135738, key:"gareth-bale-1213" },
+  { api:184, season:"2223", card:131865, key:"harry-kane-2223" },
+  { api:154, season:"1011", card:143808, key:"lionel-messi-1011" },
+  { api:154, season:"1213", card:142695, key:"lionel-messi-1213" },
+  { api:154, season:"1718", card:140489, key:"lionel-messi-1718" },
+  { api:154, season:"1819", card:140068, key:"lionel-messi-1819" },
+  { api:154, season:"2021", card:139209, key:"lionel-messi-2021" },
+  { api:115068, season:"1213", card:149949, key:"miroslav-klose-1213" },
+  { api:49946, season:"1112", card:136344, key:"papiss-cisse-1112" },
+  { api:119, season:"1213", card:142834, key:"radamel-falcao-1213" },
+  { api:521, season:"1112", card:156294, key:"robert-lewandowski-1112" },
+  { api:642, season:"1516", card:134542, key:"sergio-aguero-1516" },
+  { api:642, season:"2021", card:132590, key:"sergio-aguero-2021" },
+  { api:186, season:"1920", card:133082, key:"son-heung-min-1920" },
 ];
+/*  KEYED ON card_id SINCE 2026-10-23, api AND season KEPT AS A CROSS-CHECK. api + season is not
+    one card: a player who moves mid-season has two, and Cisse's Newcastle night (13 goals in 14)
+    rendered on his Freiburg 11/12 card too (9 in 17). card_id is the player-season key the site
+    already links by (RULES.md), so a row names the ONE card its moment is about, and a card whose
+    api or season disagrees with its row shows nothing. A row without a card resolves nowhere:
+    fail closed. `node scripts/calibration/chronicle_figures.js` reads every row against its card. */
 var CHRONICLE_INDEX = {};
-CHRONICLE_MAP.forEach(function(r){ CHRONICLE_INDEX[String(r.api) + '|' + r.season] = r.key; });
-/* Takes api_player_id, never a name. Returns null for anything unrecognised, which is what
+CHRONICLE_MAP.forEach(function(r){ if(r.card != null) CHRONICLE_INDEX[String(r.card)] = r; });
+/* Takes the card's own ids, never a name. Returns null for anything unrecognised, which is what
    hides the section. */
-function vvResolveChronicleKey(apiId, season){
-  if(apiId == null) return null;
-  return CHRONICLE_INDEX[String(apiId) + '|' + (season||'')] || null;
+function vvResolveChronicleKey(cardId, apiId, season){
+  var r = cardId == null ? null : CHRONICLE_INDEX[String(cardId)];
+  if(!r || String(r.api) !== String(apiId) || r.season !== String(season||'')) return null;
+  return r.key;
 }
 (function(){
   try {

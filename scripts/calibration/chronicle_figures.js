@@ -7,7 +7,7 @@
  *  its card. Salah 24/25's said 28 goals on a card that says 29. The checkers treat the Chronicle as
  *  page text a reader can check, so a wrong line there would let prose that repeats it pass.
  *
- *  For every row of CHRONICLE_MAP: every card of that player and season is rendered from this repo
+ *  For every row of CHRONICLE_MAP: the row's own card (keyed on card_id since 2026-10-23) is rendered from this repo
  *  in headless Chrome (capture.js's server and browser, every fold open), the moment's own words
  *  (quote and narrative; the scoreline and date line is left out, that is the hand pass) are the
  *  prose, and the rest of the rendered card plus the request the card sends is the page. The number
@@ -16,7 +16,8 @@
  *  A flag here means "a figure the card does not show", which is two different things: a season
  *  figure the card CONTRADICTS (Salah's 28), or a match or part-season figure ("a hat-trick",
  *  "twelve in his first nine games") the card was never going to hold. The script cannot tell them
- *  apart; read every flag. Exits 1 if any moment fails to render.
+ *  apart; read every flag. The player's other cards that season are opened too and must show no
+ *  Chronicle. Exits 1 if any moment fails to render or shows on the wrong card.
  */
 const fs = require('fs'), path = require('path'), os = require('os');
 const { spawn } = require('child_process');
@@ -56,8 +57,18 @@ const ROOT = path.join(__dirname, '..', '..');
       const states = extractNumbers(prose).length;
       const { data, error } = await db.from('player_card_mv').select('card_id').eq('api_player_id', row.api).eq('season', row.season);
       if (error) throw new Error(error.message);
-      if (!data.length) { console.log(`${row.key}  NO CARD for api ${row.api} season ${row.season}`); out.push({ key: row.key, cards: [], rendered: false }); failed++; continue; }
-      for (const { card_id } of data) {
+      if (!data.some(d => d.card_id === row.card)) { console.log(`${row.key}  card ${row.card} IS NOT api ${row.api} season ${row.season}`); out.push({ key: row.key, card_id: row.card, rendered: false }); failed++; continue; }
+      // the same player's other cards that season must show nothing (Cisse's Freiburg card showed his Newcastle night)
+      for (const { card_id } of data.filter(d => d.card_id !== row.card)) {
+        await p.send('Page.navigate', { url: `http://127.0.0.1:${port}/card.html?id=${card_id}` });
+        let shown = null;
+        for (let i = 0; i < 120 && shown == null; i++) { await sleep(250); shown = await p.ev(`window.D && window.D.card_id === ${card_id} ? (function(){ var l=document.getElementById('chronicleLayer'); return !!(l && l.style.display!=='none'); })() : null`).catch(() => null); }
+        await sleep(1500);
+        shown = await p.ev(`(function(){ var l=document.getElementById('chronicleLayer'); return !!(l && l.style.display!=='none'); })()`).catch(() => null);
+        console.log(`${row.key}  other card ${card_id}  ${shown === false ? 'shows no Chronicle, right' : 'SHOWS THE CHRONICLE, WRONG CARD'}`);
+        if (shown !== false) failed++;
+      }
+      for (const card_id of [row.card]) {
         await p.send('Page.navigate', { url: `http://127.0.0.1:${port}/card.html?id=${card_id}` });
         let body = null;
         for (let i = 0; i < 120 && !body; i++) { await sleep(250); body = await p.ev(`(window.__vvCaptured||[]).filter(function(b){return b && b.mode==='notes';})[0] || null`).catch(() => null); }
