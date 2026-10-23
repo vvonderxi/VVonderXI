@@ -1,5 +1,5 @@
 {
- "what": "Calibration set for the verdict and notes checker, built 2026-10-22 from the twelve readings in area 9 of docs/UNVERIFIED_SURFACES_2026-10-12.md and approved line by line by Lucas; corrected 2026-10-23 after the first run, from a full re-read of all twelve and of every card as it renders (Chronicle, honour copy and tag copy included), also approved line by line. Prose is snapshotted here because the live cache rows will be overwritten when prose returns. \"flag\" = the checker must flag it; \"leave\" = it must not (a flag there is a false hold); \"report_only\" = reported, not scored. KINDS: 1 a world fact no page the reader sees states; 2 a figure that contradicts the page, or that no page shows; 3 a crown the cards' own honours and dimensions contradict; 3b a crown where the page itself says the Index cannot separate the pair (a different fault from 3, fixed differently); 4 prose that contradicts its own headline or its own paragraph; 5 a paragraph printed under the wrong player's name. \"The page\" is everything the reader sees: Compare, both cards, the Chronicle, the honour and tag copy, not the writer's payload. confidence C or J marks rows Lucas was asked to read as confident or as judgement calls.",
+ "what": "Calibration set for the verdict and notes checker, built 2026-10-22 from the twelve readings in area 9 of docs/UNVERIFIED_SURFACES_2026-10-12.md and approved line by line by Lucas; corrected 2026-10-23 after the first run, from a full re-read of all twelve and of every card as it renders (Chronicle, honour copy and tag copy included), also approved line by line. Prose is snapshotted here because the live cache rows will be overwritten when prose returns. \"flag\" = the checker must flag it; \"leave\" = it must not (a flag there is a false hold); \"report_only\" = reported, not scored. KINDS: 1 a world fact no page the reader sees states; 2 a figure that contradicts the page, or that no page shows; 3 a crown the cards' own honours and dimensions contradict; 3b a crown where the page itself says the Index cannot separate the pair (a different fault from 3, fixed differently); 4 prose that contradicts its own headline or its own paragraph; 5 a paragraph printed under the wrong player's name. \"The page\" is everything the reader sees: Compare, both cards, the Chronicle, the honour and tag copy, not the writer's payload. NARROWED 2026-10-23 (Lucas): the Chronicle counts as evidence for its FIGURES only, which have been read against their cards (area 10); its records, years, scorelines, opponents, debuts and arrivals have not, so a sentence resting on them is kind 1. confidence C or J marks rows Lucas was asked to read as confident or as judgement calls.",
  "items": [
   {
    "id": "palmer-saka",
@@ -393,6 +393,20 @@
      "why": "rests on the shots no page shows",
      "confidence": "J",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "Jude Bellingham arrived at Real Madrid at twenty years old",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Bellingham's Chronicle: \"He had arrived as a promise\", age 20 on the card",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "this was not a promising debut, it was a dominant one",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Bellingham's Chronicle: \"A debut Clasico... Jude Bellingham conquered it\"",
+     "confidence": "J",
+     "changed": "2026-10-23"
     }
    ],
    "leave": [
@@ -410,20 +424,6 @@
      "quote": "he did it over five hundred more minutes",
      "why": "the minutes differ by 550, both on the cards",
      "type": "figure"
-    },
-    {
-     "quote": "Jude Bellingham arrived at Real Madrid at twenty years old",
-     "why": "Bellingham's Chronicle: \"He had arrived as a promise\", age 20 on the card",
-     "type": "card text",
-     "confidence": "C",
-     "added": "2026-10-23"
-    },
-    {
-     "quote": "this was not a promising debut, it was a dominant one",
-     "why": "Bellingham's Chronicle: \"A debut Clasico... Jude Bellingham conquered it\"",
-     "type": "card text",
-     "confidence": "J",
-     "added": "2026-10-23"
     },
     {
      "quote": "decided by peers and voters who had watched Foden every week",
@@ -532,6 +532,34 @@
      "why": "starts; the page shows 32 v 29 appearances, three",
      "confidence": "C",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "One record, one debut",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Lewandowski's Chronicle (the record) and Kane's (\"a new Bundesliga life\") (was kind 1: no record flag on the honour; debut is not on the card)",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "arriving in a foreign league at 30",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Kane's Chronicle: \"taken to Germany\", age 30 on the card (was kind 1: career history)",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "in a debut season",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\" (was kind 1: career history)",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "in his debut German season",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\"",
+     "confidence": "C",
+     "changed": "2026-10-23"
     }
    ],
    "leave": [
@@ -554,34 +582,6 @@
      "quote": "One season was a shorter, more concentrated burst of lethality. The other was a longer, slightly more distributed one.",
      "why": "minutes and the Goal Threat percentile, both on the page",
      "type": "judgement J3"
-    },
-    {
-     "quote": "One record, one debut",
-     "why": "Lewandowski's Chronicle (the record) and Kane's (\"a new Bundesliga life\") (was kind 1: no record flag on the honour; debut is not on the card)",
-     "type": "card text",
-     "confidence": "C",
-     "changed": "2026-10-23"
-    },
-    {
-     "quote": "arriving in a foreign league at 30",
-     "why": "Kane's Chronicle: \"taken to Germany\", age 30 on the card (was kind 1: career history)",
-     "type": "card text",
-     "confidence": "C",
-     "changed": "2026-10-23"
-    },
-    {
-     "quote": "in a debut season",
-     "why": "Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\" (was kind 1: career history)",
-     "type": "card text",
-     "confidence": "C",
-     "changed": "2026-10-23"
-    },
-    {
-     "quote": "in his debut German season",
-     "why": "Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\"",
-     "type": "card text",
-     "confidence": "C",
-     "added": "2026-10-23"
     },
     {
      "quote": "He played 381 more minutes",
@@ -695,16 +695,16 @@
      "confidence": "C",
      "added": "2026-10-23",
      "found_by": "code crown read, first key run"
+    },
+    {
+     "quote": "It was the announcement of a ceiling nobody else had reached",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Messi's Chronicle: \"he scored fifty in the league, a figure no one has matched\"",
+     "confidence": "C",
+     "changed": "2026-10-23"
     }
    ],
    "leave": [
-    {
-     "quote": "It was the announcement of a ceiling nobody else had reached",
-     "why": "Messi's Chronicle: \"he scored fifty in the league, a figure no one has matched\"",
-     "type": "card text",
-     "confidence": "C",
-     "added": "2026-10-23"
-    },
     {
      "quote": "Two goals separate these seasons in output. Sixteen assists each.",
      "why": "figures",
@@ -837,40 +837,40 @@
      "confidence": "C",
      "added": "2026-10-23",
      "found_by": "code number check, first run"
-    }
-   ],
-   "leave": [
+    },
     {
      "quote": "breaking Gerd Müller's 49-year-old Bundesliga record",
-     "why": "Lewandowski's Chronicle: \"For forty-nine years Gerd Muller's 40 stood\" (was kind 1: a record claim; the card holds no records)",
-     "type": "card text",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Lewandowski's Chronicle: \"For forty-nine years Gerd Muller's 40 stood\" (was kind 1: a record claim; the card holds no records)",
      "confidence": "C",
      "changed": "2026-10-23"
     },
     {
      "quote": "A record that had survived every generation of striker who had tried to reach it",
-     "why": "Lewandowski's Chronicle: \"the number no striker could reach\"",
-     "type": "card text",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Lewandowski's Chronicle: \"the number no striker could reach\"",
      "confidence": "J",
-     "added": "2026-10-23"
-    },
-    {
-     "quote": "his Player of the Season award was voted by his peers and the league itself",
-     "why": "the Player of the Season copy on the card",
-     "type": "card text",
-     "confidence": "C",
-     "added": "2026-10-23"
+     "changed": "2026-10-23"
     },
     {
      "quote": "a 32-year-old breaking a 49-year-old record",
-     "why": "Lewandowski's Chronicle: \"For forty-nine years Gerd Muller's 40 stood\"",
-     "type": "card text",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Lewandowski's Chronicle: \"For forty-nine years Gerd Muller's 40 stood\"",
      "confidence": "C",
-     "added": "2026-10-23"
+     "changed": "2026-10-23"
     },
     {
      "quote": "breaking a scoring record in his first season",
-     "why": "Haaland's Chronicle: \"Haaland needed only his first season\"",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Haaland's Chronicle: \"Haaland needed only his first season\"",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "his Player of the Season award was voted by his peers and the league itself",
+     "why": "the Player of the Season copy on the card",
      "type": "card text",
      "confidence": "C",
      "added": "2026-10-23"
@@ -1017,16 +1017,16 @@
      "why": "the page reads 2 v 2: a wrong figure as well as a wrong crown",
      "confidence": "C",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "bending a La Liga title race",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Suarez 15/16 Chronicle: \"the title in the balance... Madrid one point behind\" (was kind 1: a title race, not on the card)",
+     "confidence": "C",
+     "changed": "2026-10-23"
     }
    ],
    "leave": [
-    {
-     "quote": "bending a La Liga title race",
-     "why": "Suarez 15/16 Chronicle: \"the title in the balance... Madrid one point behind\" (was kind 1: a title race, not on the card)",
-     "type": "card text",
-     "confidence": "C",
-     "changed": "2026-10-23"
-    },
     {
      "quote": "his creation numbers sit above what his own position pool reaches at its elite threshold",
      "why": "Creation 97th percentile is above the 90th",
@@ -1114,23 +1114,23 @@
      "confidence": "C",
      "added": "2026-10-23",
      "found_by": "code number check, first run"
-    }
-   ],
-   "leave": [
+    },
     {
      "quote": "The PFA Players' Player of the Year",
-     "why": "Suarez 13/14 Chronicle: \"every Player of the Year award going\"; the PFA name itself is not printed (was kind 1: the card says Player of the Season)",
-     "type": "card text",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Suarez 13/14 Chronicle: \"every Player of the Year award going\"; the PFA name itself is not printed (was kind 1: the card says Player of the Season)",
      "confidence": "J",
      "changed": "2026-10-23"
     },
     {
      "quote": "a team that finished second",
-     "why": "Suarez 13/14 Chronicle: \"carried Liverpool to the brink of the title\" (was kind 1: league position, not on the card)",
-     "type": "card text",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Suarez 13/14 Chronicle: \"carried Liverpool to the brink of the title\" (was kind 1: league position, not on the card)",
      "confidence": "J",
      "changed": "2026-10-23"
-    },
+    }
+   ],
+   "leave": [
     {
      "quote": "the individual judgement of his peers and the voting public",
      "why": "the Player of the Season copy on the card",
@@ -1598,6 +1598,20 @@
      "why": "how rare a 97 is is not on the card",
      "confidence": "J",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "no one had scored fifty in a single La Liga season before",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Messi's Chronicle: \"a figure no one has matched\" (was kind 1: a record claim)",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "bent the record books into shapes they have not recovered from since",
+     "kind": 1,
+     "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Messi's Chronicle: \"a figure no one has matched\" (was kind 1: a record claim about later seasons)",
+     "confidence": "J",
+     "changed": "2026-10-23"
     }
    ],
    "leave": [
@@ -1615,20 +1629,6 @@
      "quote": "3,267 minutes across 37 appearances",
      "why": "on the card",
      "type": "figure"
-    },
-    {
-     "quote": "no one had scored fifty in a single La Liga season before",
-     "why": "Messi's Chronicle: \"a figure no one has matched\" (was kind 1: a record claim)",
-     "type": "card text",
-     "confidence": "C",
-     "changed": "2026-10-23"
-    },
-    {
-     "quote": "bent the record books into shapes they have not recovered from since",
-     "why": "Messi's Chronicle: \"a figure no one has matched\" (was kind 1: a record claim about later seasons)",
-     "type": "card text",
-     "confidence": "J",
-     "changed": "2026-10-23"
     }
    ],
    "report_only": []

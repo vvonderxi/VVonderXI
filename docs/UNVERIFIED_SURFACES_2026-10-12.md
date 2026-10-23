@@ -142,7 +142,14 @@ and the notes prompt alike. **The figures were almost always right. The failure 
    Man, "never misses a game". By the rule a reader can check those, so they are not kind 1. **Kind
    1 is a world fact that no page the reader sees states: Compare, both cards, the Chronicle, the
    honour copy and the tag copy.** Ten of the original 36 kind 1 labels, among them the Muller
-   example above, are "leave" in the corrected set.**]**
+   example above, are "leave" in the corrected set.*
+   **[NARROWED THE SAME DAY (Lucas, 2026-10-23): THE CHRONICLE COUNTS FOR ITS FIGURES ONLY.** Its
+   figures were read against their cards (area 10); its records, the years they stood, scorelines,
+   opponents, debuts and arrivals were not, and they are most of its text. **Kind 1 is a world fact
+   no page states, where the Chronicle states only figures:** "breaking Muller's 49-year-old record"
+   is kind 1 again although Lewandowski's Chronicle says it. 16 leave rows that rested on Chronicle
+   history moved back to kind 1; the set is now 88 kind 1 and 38 leave. Honour and tag copy still
+   count in full.]**
 2. **Claims that contradict the card's own percentiles.** "His Progression figure sits inside a
    breath of the 90th percentile bar" on a card reading 81; Saka's defending "separates him from
    almost any other winger" at 72; "his numbers across every dimension are higher" when the other
@@ -322,6 +329,13 @@ assists, games, points and the like; counted by pattern, so a floor rather than 
     says 36. The same on-the-day count as Salah's, but the narrative says so ("number thirty-five").
   - **Every other season figure agrees with its card** (Kane 16/17's 29, Messi 11/12's fifty, Gomis
     17/18's 29th; Gomis's 28 and Messi's 232 are the old records they broke).
+- **FIXED 2026-10-23 (`ffc6f24`):** Salah 24/25 reads 29; Haaland 22/23 reads Thirty-six, and its
+  "number thirty-five" became "the goal that broke it"; the map is keyed on card_id, so Cisse's
+  Freiburg card shows nothing (the pass opens every other card of a mapped player-season to prove it).
+- **THE RULE THAT FOLLOWS (Lucas, 2026-10-23): THE CHRONICLE IS CHECKABLE EVIDENCE FOR ITS FIGURES
+  ONLY.** Records, years, scorelines and opponents are not checked, so prose resting on them is kind
+  1 (area 9's kind 1 definition, and the set's own `what`). It widens when a hand pass against a
+  source covers them, not before.
 - **WHAT THIS MEANS FOR THE CHECKERS:** the Chronicle's season figures are sound enough to keep as
   evidence, with two cards fixed. **Its history is not checked at all, and it is most of the text:**
   the records, the years they stood, the scorelines and dates. The kind 1 rule leaves a sentence
