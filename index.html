@@ -485,7 +485,7 @@
           with both cards loaded and &go=1, which Compare honours for its three suggested pairs only,
           so one tap runs the comparison (owner's decision 2026-10-10). [Since 2026-10-19 the button reads
           "See the full comparison": prose is off, so there is no written verdict to promise.]  -->
-    <section class="argue" aria-label="Who had the better season?">
+    <section class="argue" aria-label="Who had the better season?" style="display:none">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
       <a class="acards" href="compare.html?a=152972&amp;b=151977&amp;go=1" data-pair="151977-152972" aria-label="Who had the better season?">
@@ -717,8 +717,12 @@
         for old links). Only Salah 24/25 and Haaland 22/23 can anchor a pair that clears the margin
         by 1.3x among 2022+ cards; a 25/26 card is refused because a season still being played can
         slip inside the margin while it is on the front door. Every pair here must be in compare's
-        AUTO_VERDICT_PAIRS and the endpoint's HELD_PAIRS.]  */
-    var PAIRS = [[137957, 131183], [152972, 151977], [130728, 157393], [131585, 164395]];
+        AUTO_VERDICT_PAIRS and the endpoint's HELD_PAIRS.]
+        [OFF AGAIN, 2026-10-23, owner's decision: back to the 10-17 state, the search box and the
+        buttons beneath it. PAIRS empty AND display:none on .argue in the markup. The four pairs
+        stay in compare's AUTO_VERDICT_PAIRS and the endpoint's HELD_PAIRS for old links. TO
+        RESTORE: add pairs here AND remove the inline display:none on .argue.]  */
+    var PAIRS = [];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     if(!P){ box.style.display = 'none'; return; }  /* zero pairs: the search box is the front door */
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
