@@ -134,6 +134,15 @@ and the notes prompt alike. **The figures were almost always right. The failure 
    Boot), league and club narratives ("a Premier League club in crisis", "the best attacking trio
    in the sport's recent history"), career history ("a first full Premier League campaign").
    Often TRUE of football. Never on the card.
+   **[CORRECTED 2026-10-23: "NEVER ON THE CARD" WAS WRONG FOR ANYTHING THE CHRONICLE STATES.** The
+   readings checked the figures and the honours, not everything the card renders. Lewandowski's
+   card says "For forty-nine years Gerd Muller's 40 stood as Bundesliga gospel"; Haaland's, "Haaland
+   needed only his first season"; Messi's, "a figure no one has matched"; Kane's, "a new Bundesliga
+   life"; the Player of the Season copy, "the honour his peers and the watching game give"; Iron
+   Man, "never misses a game". By the rule a reader can check those, so they are not kind 1. **Kind
+   1 is a world fact that no page the reader sees states: Compare, both cards, the Chronicle, the
+   honour copy and the tag copy.** Ten of the original 36 kind 1 labels, among them the Muller
+   example above, are "leave" in the corrected set.**]**
 2. **Claims that contradict the card's own percentiles.** "His Progression figure sits inside a
    breath of the 90th percentile bar" on a card reading 81; Saka's defending "separates him from
    almost any other winger" at 72; "his numbers across every dimension are higher" when the other
@@ -210,6 +219,36 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    [DONE 2026-10-22, see the correction under kind 2 above. Verified offline, no generation.]
 2. Rewrite the calibration set from these twelve, the quoted sentences labelled by kind, and
    report a number PER KIND. One number is a number about kind 1.
+   **[RUN 2026-10-23, THE SHIPPING CHECKER AGAINST THE LABELLED SET: kind 1 caught 8 of 36, kind 2
+   4 of 6, kind 3 0 of 3, kind 4 2 of 3; 1 false hold of 18 ("over five hundred more minutes", for
+   a gap of 550), no judgement held, J3 left alone.** Two runs, identical sentence for sentence:
+   the checker runs at temperature 0, so they are one measurement, not two. Results in
+   `_local/verdict-check/score_2026-10-23T08-35-36-104Z.json`.
+   **KIND 1 IS THE HEADLINE, NOT KIND 3.** Kind 3 at zero was predicted. Kind 1 was the one kind
+   this checker existed to catch, and it catches under a quarter: **the checker we nearly switched
+   on would have caught one invented fact in five.** It flags 1 to 5 sentences per piece however
+   many fail; Palmer v Saka had 13 labelled and it found 5.
+   **THE LABELLED SET WAS WRONG TOO.** The checker made 25 flags that matched no label; about 21
+   were real failures the set did not hold (among them "Messi edges it" and "Suarez edges it" on
+   pairs the page says it cannot separate), and about 4 were the checker's errors ("381 more
+   minutes", plain arithmetic). A calibration is only as good as its labels, and these were built
+   from readings done by hand under time pressure. A full re-read of all twelve on 2026-10-23 found
+   more than the 21: 147 rows were added and approved line by line, then 27 changed after every card
+   was rendered and read in full (the Chronicle correction under kind 1). The corrected set: 159 to
+   flag (kind 1 72, kind 2 65, kind 3 9, kind 3b 6, kind 4 6, kind 5 1), 54 to leave (24 figures,
+   7 judgements, 23 card text). New kinds: **3b**, a crown where the page itself says the Index
+   cannot separate the pair (a different fault from 3, fixed differently), and **5**, a paragraph
+   printed under the wrong player's name (Messi v Ronaldo: p1 is about Ronaldo and sits under
+   Messi; a reader sees it at once and nothing else covers it). The set records its own detection
+   limit: starts that equal appearances pass any check that looks only for the number.
+   **THE CHECKER READS THE WRITER'S PAYLOAD, NOT THE PAGE, AND THAT IS THE SAME FAULT JUST FIXED IN
+   THE WRITER (Lucas, 2026-10-23).** The payload has no Chronicle and no honour or tag copy, so a
+   checker reading it would flag "breaking Muller's 49-year-old record" though the card states it:
+   it would hold good prose. Every check built from here (parts 2 and 3 of the rewrite first) takes
+   its evidence from the RENDERED PAGE: payload plus Chronicle plus honour and tag copy.
+   **DECIDED (Lucas, 2026-10-23): arithmetic, and "does this crown agree with the honours and the
+   page's result", are code questions, and go to code even if the rest of the rewrite
+   disappoints.** Code repeats exactly; a model does not.]**
 3. Regenerate a sample (not the twelve; fresh pairs and cards) and read it against the cards.
    Prose comes back on when that sample passes, not when the code is merged.
 4. A watch on the Anthropic balance (QA_PASS B4b). Nothing watches it, and the hourly ceiling

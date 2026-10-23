@@ -1,5 +1,5 @@
 {
- "what": "Calibration set for the verdict and notes checker, built 2026-10-22 from the twelve readings in area 9 of docs/UNVERIFIED_SURFACES_2026-10-12.md and approved line by line by Lucas. Prose is snapshotted here because the live cache rows will be overwritten when prose returns. \"flag\" = the checker must flag it (kind 1 to 4); \"leave\" = it must not (a flag there is a false hold); \"report_only\" = a fault outside the four kinds, reported and not scored.",
+ "what": "Calibration set for the verdict and notes checker, built 2026-10-22 from the twelve readings in area 9 of docs/UNVERIFIED_SURFACES_2026-10-12.md and approved line by line by Lucas; corrected 2026-10-23 after the first run, from a full re-read of all twelve and of every card as it renders (Chronicle, honour copy and tag copy included), also approved line by line. Prose is snapshotted here because the live cache rows will be overwritten when prose returns. \"flag\" = the checker must flag it; \"leave\" = it must not (a flag there is a false hold); \"report_only\" = reported, not scored. KINDS: 1 a world fact no page the reader sees states; 2 a figure that contradicts the page, or that no page shows; 3 a crown the cards' own honours and dimensions contradict; 3b a crown where the page itself says the Index cannot separate the pair (a different fault from 3, fixed differently); 4 prose that contradicts its own headline or its own paragraph; 5 a paragraph printed under the wrong player's name. \"The page\" is everything the reader sees: Compare, both cards, the Chronicle, the honour and tag copy, not the writer's payload. confidence C or J marks rows Lucas was asked to read as confident or as judgement calls.",
  "items": [
   {
    "id": "palmer-saka",
@@ -43,11 +43,6 @@
      "why": "other seasons; there is one Saka card"
     },
     {
-     "quote": "never absent",
-     "kind": 1,
-     "why": "the card shows 2,933 of 3,420 possible minutes"
-    },
-    {
      "quote": "his Progression figure sits inside a breath of the 90th percentile bar",
      "kind": 2,
      "why": "the page shows 81"
@@ -66,6 +61,125 @@
      "quote": "His Defensive dimension at 3.12 per 90",
      "kind": 2,
      "why": "a raw figure no page shows (row 47)"
+    },
+    {
+     "quote": "35 starts",
+     "kind": 2,
+     "why": "starts are on no page; Saka's card shows 35 appearances",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "His key pass rate of 2.8 per 90 was the highest of these two cards",
+     "kind": 2,
+     "why": "a Winger card prints no key passes (the Foden row-48 precedent)",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a team actually shapes its shape around",
+     "kind": 1,
+     "why": "a claim about how Arsenal is built",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Saka's 35 starts out of 35 appearances",
+     "kind": 2,
+     "why": "starts again",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "were not accumulated against fringe opposition in a comfortable system",
+     "kind": 1,
+     "why": "opposition and system, not on the card",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "They came in a Chelsea side searching for coherence",
+     "kind": 1,
+     "why": "club narrative",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "nine from the spot included, still leaves thirteen from open play",
+     "kind": 2,
+     "why": "penalties are on no page",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "in a side that was often creating for him alone",
+     "kind": 1,
+     "why": "club narrative",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his volume of duels won across twice the sample of Palmer's duel count",
+     "kind": 2,
+     "why": "duels are on no page",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his six additional starts",
+     "kind": 2,
+     "why": "starts; the page shows 35 v 33 appearances, two more",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "carrying a dysfunctional side to 22 goals",
+     "kind": 1,
+     "why": "club narrative",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the Defensive output a winger should not produce",
+     "kind": 2,
+     "why": "72nd percentile: 28% of wingers produce more",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the duels that pile up",
+     "kind": 2,
+     "why": "duels",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the highest-pressure system in England",
+     "kind": 1,
+     "why": "league and club narrative",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "But Palmer's season was, in the end, the rarer event",
+     "kind": 4,
+     "why": "a crown under the headline \"The record cannot separate them cleanly\"; same failure as the labelled \"nothing but himself\"",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "with no established team beneath him",
+     "kind": 1,
+     "why": "club narrative",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Saka's excellence had a structure holding it",
+     "kind": 1,
+     "why": "club narrative, softer",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
    "leave": [
@@ -88,6 +202,41 @@
      "quote": "Palmer's output was more concentrated in goals",
      "why": "22 goals to 16, Saka higher on Creation (95 v 94)",
      "type": "judgement J1"
+    },
+    {
+     "quote": "never absent",
+     "why": "Saka's Iron Man copy on the card: \"never misses a game\" (was kind 1: the card shows 2,933 of 3,420 possible minutes)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "the minutes that never wavered",
+     "why": "Saka's Iron Man copy on the card: \"never misses a game... every week, every minute\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "His per-90 Goal Threat led the two cards here",
+     "why": "figure: Goal Threat 96 v 91",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the Creation rate that actually exceeded Palmer's",
+     "why": "figure: Creation 95 v 94",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "roughly one goal every three and a half shots",
+     "why": "arithmetic: 76 shots / 22 goals = 3.45",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
    "report_only": []
@@ -132,6 +281,118 @@
      "quote": "2.3 key passes per ninety",
      "kind": 2,
      "why": "Foden is a Winger and his card does not print key passes (row 48)"
+    },
+    {
+     "quote": "Foden's fuller record edges a rivalry the number refused to settle",
+     "kind": "3b",
+     "why": "a crown where the page says no winner (see 3b below)",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a player who had spent years being described as ready",
+     "kind": 1,
+     "why": "career history",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "finally proved it on every available measure",
+     "kind": 2,
+     "why": "Defensive 23rd percentile",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "across thirty-five starts",
+     "kind": 2,
+     "why": "starts; the card shows 37 appearances",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "an entire country's voters had to choose from a field that included some of the world's best",
+     "kind": 1,
+     "why": "who votes, and the field",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Bellingham needed forty-nine.",
+     "kind": 2,
+     "why": "a CAM card prints no total shots (why J2 was swapped)",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "nineteen goals with just forty-nine shots",
+     "kind": 2,
+     "why": "CAM, no total shots",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Bellingham converted from a volume that a natural striker would envy",
+     "kind": 2,
+     "why": "rests on the shots no page shows",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "from a position with clearer licence to shoot",
+     "kind": 1,
+     "why": "a claim about the role",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his key pass rate was higher",
+     "kind": 2,
+     "why": "Foden's Winger card prints no key passes",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "and without a single penalty",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "A CAM producing nineteen goals from forty-nine shots",
+     "kind": 2,
+     "why": "CAM, no total shots",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "The record puts Foden ahead",
+     "kind": 3,
+     "why": "the same crown as the labelled kind 3",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "all without a penalty to soften the goal tally",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "He was the more complete player across the full season the platform has recorded",
+     "kind": 3,
+     "why": "same crown; Bellingham leads three of five dimensions",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his shooting efficiency",
+     "kind": 2,
+     "why": "rests on the shots no page shows",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
    "leave": [
@@ -149,6 +410,27 @@
      "quote": "he did it over five hundred more minutes",
      "why": "the minutes differ by 550, both on the cards",
      "type": "figure"
+    },
+    {
+     "quote": "Jude Bellingham arrived at Real Madrid at twenty years old",
+     "why": "Bellingham's Chronicle: \"He had arrived as a promise\", age 20 on the card",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "this was not a promising debut, it was a dominant one",
+     "why": "Bellingham's Chronicle: \"A debut Clasico... Jude Bellingham conquered it\"",
+     "type": "card text",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "decided by peers and voters who had watched Foden every week",
+     "why": "the Player of the Season copy on the card: \"the honour his peers and the watching game give\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
    "report_only": []
@@ -170,24 +452,86 @@
    },
    "flag": [
     {
-     "quote": "One record, one debut",
-     "kind": 1,
-     "why": "no record flag on the honour; debut is not on the card"
-    },
-    {
-     "quote": "arriving in a foreign league at 30",
-     "kind": 1,
-     "why": "career history"
-    },
-    {
-     "quote": "in a debut season",
-     "kind": 1,
-     "why": "career history"
-    },
-    {
      "quote": "whether he had ever played in a side worthy of him",
      "kind": 1,
      "why": "invented career narrative"
+    },
+    {
+     "quote": "carrying no trophy",
+     "kind": 1,
+     "why": "trophy history; his arrival is on the card (Chronicle), this is not",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "across 32 full starts",
+     "kind": 2,
+     "why": "starts; equals his 32 appearances, so a reader sees a match",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his Reliability figure of 83.2",
+     "kind": 2,
+     "why": "the page prints 83%",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "with 31 non-spot goals from 104 attempts",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "an age when strikers are supposed to be rounding off",
+     "kind": 1,
+     "why": "general football claim",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "33 penalty-free goals from 108 non-spot attempts",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "are an unusual combination",
+     "kind": 1,
+     "why": "a rarity claim about tags",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Lewandowski's Goal Threat per 90 of 2.24 against Kane's 1.78",
+     "kind": 2,
+     "why": "raw per-90; the page prints 97 v 97",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the Pole was simply more dangerous per unit of football",
+     "kind": 2,
+     "why": "the page prints Goal Threat 97 v 97",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the penalty-adjusted conversion figures hold that finding",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "started four more games",
+     "kind": 2,
+     "why": "starts; the page shows 32 v 29 appearances, three",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
    "leave": [
@@ -210,6 +554,62 @@
      "quote": "One season was a shorter, more concentrated burst of lethality. The other was a longer, slightly more distributed one.",
      "why": "minutes and the Goal Threat percentile, both on the page",
      "type": "judgement J3"
+    },
+    {
+     "quote": "One record, one debut",
+     "why": "Lewandowski's Chronicle (the record) and Kane's (\"a new Bundesliga life\") (was kind 1: no record flag on the honour; debut is not on the card)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "arriving in a foreign league at 30",
+     "why": "Kane's Chronicle: \"taken to Germany\", age 30 on the card (was kind 1: career history)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "in a debut season",
+     "why": "Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\" (was kind 1: career history)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "in his debut German season",
+     "why": "Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "He played 381 more minutes",
+     "why": "arithmetic: 2,844 - 2,463 (the checker flagged it)",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his Reliability figure sits eleven points higher",
+     "why": "arithmetic: 83 - 72",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "contributed one more assist",
+     "why": "figure: 8 v 7",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "The Golden Boot that year was not ordinary. It came labelled \"record\"",
+     "why": "the card's honour says record (the checker flagged it)",
+     "type": "judgement",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
    "report_only": []
@@ -244,9 +644,66 @@
      "quote": "The Reliability dimension placed him at **90.6 per 90**",
      "kind": 2,
      "why": "Reliability is a share of the season and the page shows a percentile"
+    },
+    {
+     "quote": "Messi 11/12 edges it",
+     "kind": "3b",
+     "why": "a crown where the page says no winner (3b)",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "across 35 starts",
+     "kind": 2,
+     "why": "starts; equals his 35 appearances",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "even the system recording it seemed uncertain how to file it",
+     "kind": 1,
+     "why": "invented, and \"the previous boundaries of the position\" is a history claim",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "The outcome favours Messi by the thinnest of margins",
+     "kind": "3b",
+     "why": "a crown where the page says no winner (3b)",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Real Madrid, 2014/15.",
+     "kind": 5,
+     "why": "the paragraph sits under the wrong name: p1 is Player A (Messi) and compare.html prints p1 under A, so this paragraph about Ronaldo reads as Messi's",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
-   "leave": [],
+   "leave": [
+    {
+     "quote": "It was the announcement of a ceiling nobody else had reached",
+     "why": "Messi's Chronicle: \"he scored fifty in the league, a figure no one has matched\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Two goals separate these seasons in output. Sixteen assists each.",
+     "why": "figures",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Messi holds three individual awards from this campaign, Ronaldo one",
+     "why": "figures from the honours",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    }
+   ],
    "report_only": []
   },
   {
@@ -266,11 +723,6 @@
    },
    "flag": [
     {
-     "quote": "breaking Gerd Müller's 49-year-old Bundesliga record",
-     "kind": 1,
-     "why": "a record claim; the card holds no records"
-    },
-    {
      "quote": "arrived at Manchester City in the summer of 2022",
      "kind": 1,
      "why": "a transfer, not on the card"
@@ -284,9 +736,122 @@
      "quote": "This one goes to Lewandowski.",
      "kind": 3,
      "why": "Haaland holds four honours to two and leads Reliability"
+    },
+    {
+     "quote": "breaking the record that had stood since the division's founding year",
+     "kind": 1,
+     "why": "the card says \"the league's infancy... twenty-eight years\", not the founding year",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a conversion rate that sits well above anything his position pool normally produces",
+     "kind": 1,
+     "why": "no pool conversion on any page",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Seven from the spot",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "At an age when most forwards are managing their bodies",
+     "kind": 1,
+     "why": "general football claim",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "more key passes, more duels",
+     "kind": 2,
+     "why": "an ST card prints no key passes; duels on no page",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "The Bundesliga pool bar sits at the same level as the Premier League pool for passes",
+     "kind": 2,
+     "why": "cut-offs are on no page",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the Premier League, which is the harder league",
+     "kind": 1,
+     "why": "league strength is not in the evidence, and Compare does not print it for a pair",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the Müller record, which was not a statistical landmark but a cultural one",
+     "kind": 1,
+     "why": "record history",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Forty-one goals in 29 starts",
+     "kind": 2,
+     "why": "starts; equals his 29 appearances",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "is a thing that happens once in a generation",
+     "kind": 1,
+     "why": "rarity claim",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "The record falls to Lewandowski",
+     "kind": 3,
+     "why": "the same crown as the labelled kind 3",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
-   "leave": [],
+   "leave": [
+    {
+     "quote": "breaking Gerd Müller's 49-year-old Bundesliga record",
+     "why": "Lewandowski's Chronicle: \"For forty-nine years Gerd Muller's 40 stood\" (was kind 1: a record claim; the card holds no records)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "A record that had survived every generation of striker who had tried to reach it",
+     "why": "Lewandowski's Chronicle: \"the number no striker could reach\"",
+     "type": "card text",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his Player of the Season award was voted by his peers and the league itself",
+     "why": "the Player of the Season copy on the card",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a 32-year-old breaking a 49-year-old record",
+     "why": "Lewandowski's Chronicle: \"For forty-nine years Gerd Muller's 40 stood\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "breaking a scoring record in his first season",
+     "why": "Haaland's Chronicle: \"Haaland needed only his first season\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    }
+   ],
    "report_only": []
   },
   {
@@ -316,12 +881,113 @@
      "why": "team-mates and world judgement"
     },
     {
-     "quote": "bending a La Liga title race",
+     "quote": "Suárez edges it: two individual awards, 40 goals, the fuller case",
+     "kind": 3,
+     "why": "a crown on honours that are two each",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "61.3 passes per 90, against a pool bar of 50.2 at the 90th percentile",
+     "kind": 2,
+     "why": "passes per 90 and cut-offs are on no page",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a passing volume that his own position pool barely reaches at its upper limit",
+     "kind": 2,
+     "why": "same",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "with a completeness his previous campaigns had only approached",
      "kind": 1,
-     "why": "a title race, not on the card"
+     "why": "career history",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "20 assists is a figure that won him the Premier League Player of the Season",
+     "kind": 1,
+     "why": "why the award was given",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "sit in a different register to almost any midfielder in the Premier League era",
+     "kind": 1,
+     "why": "an era comparison; Creation 97 carries part of it",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "40 goals and 16 assists across 35 starts",
+     "kind": 2,
+     "why": "starts; equals his 35 appearances",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Three goals from the spot means 37 from open play",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "passing volume his position pool cannot match even at its 90th percentile",
+     "kind": 2,
+     "why": "cut-offs",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "with full records and full minutes",
+     "kind": 2,
+     "why": "Reliability 92% and 82%",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the most creative single season a central midfielder produced in England's top division in the modern era",
+     "kind": 1,
+     "why": "the card has Henry's assists record, not a central-midfielder claim",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "The case for Suárez rests on a number that closed the argument in real time",
+     "kind": 3,
+     "why": "same crown",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "it is the Golden Boot that tips it",
+     "kind": 3,
+     "why": "same crown",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
-   "leave": [],
+   "leave": [
+    {
+     "quote": "bending a La Liga title race",
+     "why": "Suarez 15/16 Chronicle: \"the title in the balance... Madrid one point behind\" (was kind 1: a title race, not on the card)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "his creation numbers sit above what his own position pool reaches at its elite threshold",
+     "why": "Creation 97th percentile is above the 90th",
+     "type": "judgement",
+     "confidence": "J",
+     "added": "2026-10-23"
+    }
+   ],
    "report_only": []
   },
   {
@@ -346,17 +1012,99 @@
      "why": "picks Suárez under \"Two seasons the number cannot split\""
     },
     {
-     "quote": "The PFA Players' Player of the Year",
+     "quote": "from 34 starts",
+     "kind": 2,
+     "why": "starts; the card shows 36 appearances",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "His per-90 Goal Threat of 1.75 sits at a level the position pool rarely reaches",
+     "kind": 2,
+     "why": "this head to head draws only Reliability",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Seven of the 36 came from the spot",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "in 33 starts",
+     "kind": 2,
+     "why": "starts; equals his 33 appearances",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "because it came from the players themselves",
      "kind": 1,
-     "why": "the card says Player of the Season"
+     "why": "same",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "has rarely been matched in the Premier League",
+     "kind": 1,
+     "why": "history claim",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "But Suárez's season was broader",
+     "kind": 4,
+     "why": "the setup of the labelled \"more kinds of damage\" crown",
+     "confidence": "C",
+     "added": "2026-10-23"
+    }
+   ],
+   "leave": [
+    {
+     "quote": "The PFA Players' Player of the Year",
+     "why": "Suarez 13/14 Chronicle: \"every Player of the Year award going\"; the PFA name itself is not printed (was kind 1: the card says Player of the Season)",
+     "type": "card text",
+     "confidence": "J",
+     "changed": "2026-10-23"
     },
     {
      "quote": "a team that finished second",
-     "kind": 1,
-     "why": "league position, not on the card"
+     "why": "Suarez 13/14 Chronicle: \"carried Liverpool to the brink of the title\" (was kind 1: league position, not on the card)",
+     "type": "card text",
+     "confidence": "J",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "the individual judgement of his peers and the voting public",
+     "why": "the Player of the Season copy on the card",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "his peers looked around the league and chose him",
+     "why": "the Player of the Season copy on Suarez's card",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the 12 assists from a striker who also led the Golden Boot race",
+     "why": "he won the 2013 Golden Boot (the checker flagged it)",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the individual honours sit level",
+     "why": "two player honours each",
+     "type": "figure",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
-   "leave": [],
    "report_only": []
   },
   {
@@ -389,9 +1137,108 @@
      "quote": "the league decides it",
      "kind": 1,
      "why": "false: the league is two of three points, measured"
+    },
+    {
+     "quote": "The Premier League's weight tips it: Salah's age-32 masterwork prevails",
+     "kind": "3b",
+     "why": "a crown where the page says no winner (3b)",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a Player of the Season the division awarded him by consensus",
+     "kind": 1,
+     "why": "how it was voted",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "His Creation dimension ran at 2.67 key passes per 90, his Goal Threat at 1.26",
+     "kind": 2,
+     "why": "raw per-90; a Winger card prints no key passes",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "he held both across all 38 starts",
+     "kind": 2,
+     "why": "starts; equals his 38 appearances",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "At an age when most wide forwards are narrowing their game",
+     "kind": 1,
+     "why": "general football claim",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "operating several levels above its ceiling",
+     "kind": 1,
+     "why": "league quality",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a Progression rate of 4.09 per 90",
+     "kind": 2,
+     "why": "raw per-90",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "111 completed from 204 attempts",
+     "kind": 2,
+     "why": "dribbles",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the best defensive league in the world",
+     "kind": 1,
+     "why": "league quality",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "tells you something about the resistance he faced",
+     "kind": 1,
+     "why": "league quality",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "with nine penalties subtracted still leaving 20 from open play",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Salah's season is the rarer thing",
+     "kind": "3b",
+     "why": "a crown where the page says no winner (3b)",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
-   "leave": [],
+   "leave": [
+    {
+     "quote": "Every minute of every Premier League game",
+     "why": "Salah's Iron Man copy on the card: \"every week, every minute\"",
+     "type": "card text",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "he produced the most complete season of his career",
+     "why": "the Peak tag's own gloss says \"the best season of his career\"",
+     "type": "judgement",
+     "confidence": "J",
+     "added": "2026-10-23"
+    }
+   ],
    "report_only": []
   },
   {
@@ -419,6 +1266,118 @@
      "quote": "one of the tightest title races in years",
      "kind": 1,
      "why": "a title race, not on the card"
+    },
+    {
+     "quote": "the harder frontier decides it",
+     "kind": "3b",
+     "why": "a crown where the page says no winner (3b)",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "every individual prize the Premier League awards in a single season",
+     "kind": 1,
+     "why": "what the league awards",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "That treble has no precedent in the modern era of the award.",
+     "kind": 1,
+     "why": "history claim",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "with nine from the spot means 20 from open play",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "His Creation per 90 of 2.67",
+     "kind": 2,
+     "why": "raw per-90",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "in that final PSG season before Madrid",
+     "kind": 1,
+     "why": "transfer",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "moving at angles opponents could not anticipate",
+     "kind": 1,
+     "why": "what opponents could do",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "four from the spot",
+     "kind": 2,
+     "why": "penalties",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a Progression dimension of 4.09 per 90",
+     "kind": 2,
+     "why": "raw per-90",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "He attempted 204 dribbles and completed 111.",
+     "kind": 2,
+     "why": "dribbles",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Seventeen assists from 34 starts",
+     "kind": 2,
+     "why": "starts; the card shows 35 appearances",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "in a league he was far beyond",
+     "kind": 1,
+     "why": "league quality",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "2.33 key passes per 90",
+     "kind": 2,
+     "why": "a Winger card prints no key passes",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Mbappé played 34 starts in Ligue 1",
+     "kind": 2,
+     "why": "starts",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "Mbappé's carrying and dribbling volume is the one figure that has no equivalent on the other card",
+     "kind": 2,
+     "why": "dribbles are on neither card",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "settles this",
+     "kind": 4,
+     "why": "the same paragraph says the Index cannot separate them; contradicts itself, not the headline",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
    "leave": [],
@@ -449,13 +1408,56 @@
     },
     {
      "quote": "Nineteen goals from 29 starts",
-     "kind": 1,
-     "why": "40 appearances; starts are on no page and goals are not credited to starts"
+     "kind": 2,
+     "why": "starts are on no page (no card in the set prints the word); was kind 1",
+     "changed": "2026-10-23"
     },
     {
      "quote": "announce himself to the continent",
      "kind": 1,
      "why": "world reception"
+    },
+    {
+     "quote": "is not the beginning of a story, it is the loudest chapter so far",
+     "kind": 1,
+     "why": "career history",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "readiness that no development loan or youth metric can",
+     "kind": 1,
+     "why": "invented contrast",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "left nothing ambiguous about who drove the attack",
+     "kind": 1,
+     "why": "team narrative",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "He was the focal point every time he stepped onto the pitch, the striker his teammates pointed their passing lanes toward",
+     "kind": 1,
+     "why": "team narrative",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "18 successful dribbles from 33 attempts",
+     "kind": 2,
+     "why": "dribbles",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a duels record of 152 won from 300",
+     "kind": 2,
+     "why": "duels",
+     "confidence": "C",
+     "added": "2026-10-23"
     }
    ],
    "leave": [
@@ -501,19 +1503,30 @@
    },
    "flag": [
     {
-     "quote": "no one had scored fifty in a single La Liga season before",
-     "kind": 1,
-     "why": "a record claim"
-    },
-    {
      "quote": "one of the great club sides of the modern era",
      "kind": 1,
      "why": "a claim about the team"
     },
     {
-     "quote": "bent the record books into shapes they have not recovered from since",
+     "quote": "In a league that has produced more elite strikers than almost any other in the sport's history",
      "kind": 1,
-     "why": "a record claim about later seasons"
+     "why": "league history",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the way a river exists inside a landscape, shaping it even as it shaped him",
+     "kind": 1,
+     "why": "a claim about the team, in a metaphor",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "the kind of number the system almost never produces",
+     "kind": 1,
+     "why": "how rare a 97 is is not on the card",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
    "leave": [
@@ -531,6 +1544,20 @@
      "quote": "3,267 minutes across 37 appearances",
      "why": "on the card",
      "type": "figure"
+    },
+    {
+     "quote": "no one had scored fifty in a single La Liga season before",
+     "why": "Messi's Chronicle: \"a figure no one has matched\" (was kind 1: a record claim)",
+     "type": "card text",
+     "confidence": "C",
+     "changed": "2026-10-23"
+    },
+    {
+     "quote": "bent the record books into shapes they have not recovered from since",
+     "why": "Messi's Chronicle: \"a figure no one has matched\" (was kind 1: a record claim about later seasons)",
+     "type": "card text",
+     "confidence": "J",
+     "changed": "2026-10-23"
     }
    ],
    "report_only": []
@@ -577,6 +1604,34 @@
      "quote": "sits at roughly six points",
      "kind": 4,
      "why": "the same text gave the error as plus or minus 4.3"
+    },
+    {
+     "quote": "thirty-two starts",
+     "kind": 2,
+     "why": "starts; equals his 32 appearances (the audit's own limit case)",
+     "confidence": "J",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a statement of trust from a club that has not always extended it easily",
+     "kind": 1,
+     "why": "club history",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a goalkeeper who started every appearance his club gave him",
+     "kind": 1,
+     "why": "same claim as the labelled \"every game he was available for\"",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "a different team in front of him",
+     "kind": 1,
+     "why": "team narrative",
+     "confidence": "J",
+     "added": "2026-10-23"
     }
    ],
    "leave": [],
@@ -587,5 +1642,8 @@
     }
    ]
   }
+ ],
+ "detection_limits": [
+  "STARTS THAT EQUAL APPEARANCES (2026-10-23). No page prints starts, so every \"N starts\" is kind 2. Where N happens to equal the appearances the card prints (Lewandowski 29, Kane 32, Suarez 13/14 33, Suarez 15/16 35, Ronaldo 35, Salah 38, Lammens 32), a reader sees a matching number and a number search finds it on the page, so a check that looks only for the number passes it. Catching these takes a rule on the word \"starts\", not on the number. capture.js --audit has the same limit (area 9)."
  ]
 }

@@ -10,14 +10,15 @@
  *  TODAY, and matches what the checker flags to the labels.
  *
  *  WHAT IT REPORTS, AND NEVER AS ONE NUMBER (area 9: one number is a number about kind 1):
- *    - per kind 1 to 4: caught of total, as counts. Kinds 3 and 4 have three examples each.
- *    - false holds: flags that land on a "leave" sentence, split into figures and judgements.
+ *    - per kind (1, 2, 3, 3b, 4, 5; defined in the set's "what"): caught of total, as counts.
+ *    - false holds: flags that land on a "leave" sentence, split into figures, judgements and card
+ *      text (a claim the rendered card states, in the Chronicle or the honour and tag copy).
  *    - unlabelled flags: listed in full, to be read by a person, counted neither way.
  *    - report_only: whether the leaked field name was flagged.
  *    - run to run: every row is shown per run, so a sentence caught once in two is visible.
  *  It writes nothing to the database. Results go to _local/verdict-check/score_<time>.json.
  *
- *  MATCHING. A flag matches a labelled sentence when, after lowercasing and stripping markdown and
+ *  MATCHING. A flag scores every flag label it covers (the sentence rule, below). A flag matches a labelled sentence when, after lowercasing and stripping markdown and
  *  punctuation, either contains the other, or the flag covers at least 60% of the label's words.
  *  --selftest proves the matcher before any money is spent: a fake checker that flags exactly the
  *  "flag" sentences must score every kind complete with no false hold, and one that flags exactly
@@ -59,28 +60,42 @@ function fit(flag, quote) {
   if (f.includes(q) || q.includes(f)) return 2 + Math.min(f.length, q.length) / Math.max(f.length, q.length) * 0.99;
   return 1;
 }
+/*  SENTENCE RULE (Lucas, 2026-10-23). A flag can cover more than one label: "Sixteen goals, eight
+    assists, 2,933 minutes, 35 starts, never absent" holds a leave figure and a kind 2 together, and a
+    checker that flags the sentence has flagged the starts. So a flag scores EVERY flag label it covers,
+    and is a false hold only when it covers no flag label, charged to the leave label it fits best.  */
+const KINDS = [1, 2, 3, '3b', 4, 5];
 function scoreRun(flagsById) {
-  const kinds = { 1: [0, 0], 2: [0, 0], 3: [0, 0], 4: [0, 0] }, rows = [], falseHolds = [], unlabelled = [], reportOnly = [];
+  const kinds = {}, rows = [], falseHolds = [], unlabelled = [], reportOnly = [];
+  KINDS.forEach(k => kinds[k] = [0, 0]);
   for (const it of SET.items) {
     const flags = flagsById[it.id] || [];
     const labels = [].concat(it.flag.map(l => ({ cls: 'flag', l })), it.leave.map(l => ({ cls: 'leave', l })), it.report_only.map(l => ({ cls: 'report', l })));
-    const owner = flags.map(f => { let best = -1, bi = -1; labels.forEach((x, i) => { const v = fit(f.quote, x.l.quote); if (v > best) { best = v; bi = i; } }); return best >= 0 ? bi : -1; });
-    labels.forEach((x, i) => {
-      const fi = owner.indexOf(i), hit = fi >= 0;
-      if (x.cls === 'flag') { kinds[x.l.kind][1]++; if (hit) kinds[x.l.kind][0]++; rows.push({ item: it.id, kind: x.l.kind, quote: x.l.quote, caught: hit }); }
-      else if (x.cls === 'leave') { if (hit) falseHolds.push({ item: it.id, type: x.l.type, quote: x.l.quote, flag: flags[fi].quote, why: flags[fi].why }); }
-      else reportOnly.push({ item: it.id, quote: x.l.quote, flagged: hit });
+    const hit = labels.map(() => null);
+    flags.forEach(f => {
+      const cov = labels.map((x, i) => ({ i, v: fit(f.quote, x.l.quote) })).filter(c => c.v >= 0);
+      const fl = cov.filter(c => labels[c.i].cls === 'flag');
+      const pick = cls => cov.filter(c => labels[c.i].cls === cls).sort((a, b) => b.v - a.v)[0];
+      if (fl.length) fl.forEach(c => { hit[c.i] = hit[c.i] || f; });
+      else if (pick('leave')) { const c = pick('leave'); hit[c.i] = hit[c.i] || f; }
+      else if (pick('report')) { const c = pick('report'); hit[c.i] = hit[c.i] || f; }
+      else unlabelled.push({ item: it.id, quote: f.quote, why: f.why });
     });
-    flags.forEach((f, i) => { if (owner[i] < 0) unlabelled.push({ item: it.id, quote: f.quote, why: f.why }); });
+    labels.forEach((x, i) => {
+      const f = hit[i];
+      if (x.cls === 'flag') { kinds[x.l.kind][1]++; if (f) kinds[x.l.kind][0]++; rows.push({ item: it.id, kind: x.l.kind, quote: x.l.quote, caught: !!f }); }
+      else if (x.cls === 'leave') { if (f) falseHolds.push({ item: it.id, type: x.l.type, quote: x.l.quote, flag: f.quote, why: f.why }); }
+      else reportOnly.push({ item: it.id, quote: x.l.quote, flagged: !!f });
+    });
   }
   const leaveN = SET.items.reduce((a, it) => a + it.leave.length, 0);
   return { kinds, rows, falseHolds, leaveN, unlabelled, reportOnly };
 }
 function print(label, s) {
   console.log(`\n=== ${label}`);
-  for (const k of [1, 2, 3, 4]) console.log(`  kind ${k}: caught ${s.kinds[k][0]} of ${s.kinds[k][1]}`);
-  const fj = s.falseHolds.filter(x => /judgement/.test(x.type)).length;
-  console.log(`  false holds: ${s.falseHolds.length} of ${s.leaveN} leave sentences (${s.falseHolds.length - fj} figures, ${fj} judgements)`);
+  for (const k of KINDS) console.log(`  kind ${k}: caught ${s.kinds[k][0]} of ${s.kinds[k][1]}`);
+  const ty = t => s.falseHolds.filter(x => t.test(x.type)).length;
+  console.log(`  false holds: ${s.falseHolds.length} of ${s.leaveN} leave sentences (${ty(/^figure/)} figures, ${ty(/judgement/)} judgements, ${ty(/card text/)} card text)`);
   s.falseHolds.forEach(x => console.log(`    FALSE HOLD [${x.item}, ${x.type}] "${x.quote.slice(0, 90)}" , checker said: ${x.why || ''}`));
   s.rows.filter(r => !r.caught).forEach(r => console.log(`    missed [${r.item}, kind ${r.kind}] "${r.quote.slice(0, 90)}"`));
   console.log(`  unlabelled flags (read each by hand): ${s.unlabelled.length}`);
@@ -93,12 +108,15 @@ function print(label, s) {
     const good = {}, bad = {};
     for (const it of SET.items) { good[it.id] = it.flag.map(l => ({ quote: l.quote, why: 'planted' })); bad[it.id] = it.leave.map(n => ({ quote: n.quote, why: 'planted' })); }
     const g = scoreRun(good), b = scoreRun(bad);
-    const gOk = [1, 2, 3, 4].every(k => g.kinds[k][0] === g.kinds[k][1]) && g.falseHolds.length === 0 && g.unlabelled.length === 0;
-    const bOk = [1, 2, 3, 4].every(k => b.kinds[k][0] === 0) && b.falseHolds.length === b.leaveN && b.unlabelled.length === 0;
+    const gOk = KINDS.every(k => g.kinds[k][0] === g.kinds[k][1]) && g.falseHolds.length === 0 && g.unlabelled.length === 0;
+    const bOk = KINDS.every(k => b.kinds[k][0] === 0) && b.falseHolds.length === b.leaveN && b.unlabelled.length === 0;
+    /*  C, the sentence rule: one flag on a whole sentence that holds a leave figure and a kind 2.  */
+    const c = scoreRun({ 'palmer-saka': [{ quote: 'Sixteen goals, eight assists, 2,933 minutes, 35 starts, never absent.', why: 'planted' }] });
+    const cOk = c.rows.some(r => r.quote === '35 starts' && r.caught) && c.falseHolds.length === 0 && c.unlabelled.length === 0;
     print('SELFTEST A: a checker that flags exactly the flag sentences', g);
     print('SELFTEST B: a checker that flags exactly the leave sentences', b);
-    console.log(`\nSELFTEST ${gOk && bOk ? 'PASS' : 'FAIL'}: A ${gOk ? 'scored every kind complete with no false hold' : 'WRONG'}, B ${bOk ? 'caught nothing and held every leave sentence' : 'WRONG'}`);
-    process.exit(gOk && bOk ? 0 : 1);
+    console.log(`\nSELFTEST ${gOk && bOk && cOk ? 'PASS' : 'FAIL'}: A ${gOk ? 'scored every kind complete with no false hold' : 'WRONG'}, B ${bOk ? 'caught nothing and held every leave sentence' : 'WRONG'}, C ${cOk ? 'a flag on a mixed sentence scored its kind 2 and held nothing' : 'WRONG'}`);
+    process.exit(gOk && bOk && cOk ? 0 : 1);
   }
   if (!process.env.ANTHROPIC_API_KEY) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
   if (!fs.existsSync(EVF)) { console.error('no evidence: run node scripts/calibration/capture.js --audit first'); process.exit(2); }
