@@ -127,6 +127,17 @@ Each session appends: date | chat/task | what was done | status | anything the n
 **WHERE THE LOG STARTS. The surviving log begins at 2026-10-09.** Everything dated **2026-10-08 and earlier** lives in `CLAUDE_ARCHIVE.md` (the 2026-08-28 to 2026-10-08 entries were relocated on 2026-10-18, their open items carried into §D first), and July 2026 is one file further back, in `CLAUDE_ARCHIVE_2026-07.md`. **You do not need either file to resume** , every load-bearing fact was promoted into §C, §D or §E before the entry moved.
 - **THE 2026-08-21 PASS PROMOTED THREE THINGS OUT FIRST, and one of them proves why the check is not optional.** The 2026-08-19 entry stated that the `information_schema`-is-blind-to-matview-grants finding "is now in §C". **It was not** , the sentence recorded an intention that was never executed, and archiving the entry would have destroyed the only copy. It is now genuinely in §C, beside the matview frozen-column trap. **Do not trust an entry's own claim that it has been promoted; grep for the fact.** Also promoted: the unresolved Neuer editorial failure and the `UNK 2` pool hole, both into §E.
 
+### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
+
+**Prose stays off throughout. Commits `ab6aca8` to `55129fe`, plus this entry.**
+- **THE SHIPPING CHECKER, ONE KEY RUN:** kind 1 8 of 36, "one invented fact in five". The labels were wrong too; the set was re-read, every card rendered, and is now kind 1 88, kind 2 69, kind 3 10, 3b 9, kind 4 7, kind 5 1, leave 38. Detail in area 9.
+- **PARTS 2 AND 3 IN CODE** (`scripts/calibration/prose_checks.js`, `score.js --code`), reading the RENDERED page: kind 2 57 of 69, 0 false holds, identical across runs. Crown read (Haiku decides who a sentence argues for, code decides against the page): kind 3 6 of 9, 3b 3 of 6, kind 4 4 of 6. **The crown prompt now carries the writer's banned list ("edges it"); NOT YET RE-RUN, first thing next session with the key.** Not wired into the endpoint (§D 0).
+- **THE CHRONICLE, FIGURES READ** (`chronicle_figures.js`, area 10): Salah 24/25 and Haaland 22/23 fixed to their cards' figures, the map keyed on card_id after Cisse's Newcastle moment showed on his Freiburg card (`ffc6f24`). **The Chronicle counts as evidence for its figures only**; its history is unchecked.
+- **HOMEPAGE PAIRS OFF AGAIN** (`84a8b00`, owner's decision): search box and buttons, as 10-17.
+- **THE KEY:** in only for the runs, out at the end; it expires end of November.
+
+**NEXT:** the "edges" re-run; then kind 1, which nothing catches (the options were put to Lucas at the end of this session; his decision is not recorded yet, so ask).
+
 ### 2026-10-09 to 2026-10-17 | Nine days live, none of them logged here, and a file that said nothing was live
 
 **WRITTEN ON 2026-10-17, AFTER THE FACT, FROM `git log` AND THE SESSION TRANSCRIPTS. NO SESSION IN THIS WINDOW APPENDED TO §F, AND EVERY ONE STARTED FROM A FILE SAYING PRODUCTION TRACKED `coming-soon`.** About 80 commits, `fdf836e` to `92cea50`; `git log` is the record and this keeps what it cannot say. Where a day's reasoning is not recoverable from the commits and transcripts it is left out rather than reconstructed.
