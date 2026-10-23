@@ -248,7 +248,17 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    its evidence from the RENDERED PAGE: payload plus Chronicle plus honour and tag copy.
    **DECIDED (Lucas, 2026-10-23): arithmetic, and "does this crown agree with the honours and the
    page's result", are code questions, and go to code even if the rest of the rewrite
-   disappoints.** Code repeats exactly; a model does not.]**
+   disappoints.** Code repeats exactly; a model does not.
+   **MEASURED, NOT A PRINCIPLE (2026-10-23, `b0e9025`).** The number check in code
+   (`scripts/calibration/prose_checks.js`, `score.js --code`) catches kind 2 **57 of 68 with 0
+   false holds of 54**, and gave byte-identical output on three runs (54 of 65 on the set it first
+   ran against; it found three more real kind 2 failures the re-read had missed, now labelled).
+   The model checker (Haiku 4.5, temperature 0) caught kind 2 **4 of 6, with a false hold on plain
+   arithmetic**: "381 more minutes" and "over five hundred more minutes" are true sums of the two
+   cards and it held them. The two were scored on different sets (6 labels then, 68 now) because
+   the set was corrected between the runs; the model checker was not re-run on the corrected set.
+   What code still misses: 9 comparisons with no number ("his numbers across every dimension are
+   higher"), and 2 numbers that happen to appear elsewhere on the page.]**
 3. Regenerate a sample (not the twelve; fresh pairs and cards) and read it against the cards.
    Prose comes back on when that sample passes, not when the code is merged.
 4. A watch on the Anthropic balance (QA_PASS B4b). Nothing watches it, and the hourly ceiling
@@ -266,6 +276,24 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
 6 were on the current prompt. Every prompt edit makes the rest stale, so while prose was on,
 almost every card opened generated fresh, unread notes. The switch stopped that; turning it back
 on restarts it.
+
+### 10. The Chronicle, read against the card it sits on (added 2026-10-23). UNMEASURED
+The Chronicle is a hand-written moment per player-season, hardcoded in `card.html` and rendered
+on the card as "The Chronicle". **72 moments are written; 69 are reachable from a card** (each
+keyed to one player and season); 3 (`dirk-kuyt-1617`, `vincent-kompany-1819`, `wayne-rooney-1011`)
+have no key row and render nowhere. **49 of the 72 state a season or match figure** (goals,
+assists, games, points and the like; counted by pattern, so a floor rather than an exact count).
+- **Nothing has ever read one against its own card.** No document, script or log records a check;
+  each was written per card and shipped. The one read so far was by accident: Salah 24/25 says "a
+  season of 28 goals" and the card says 29, and 29 is right (CLAUDE.md §D, with its check). That is
+  one error in the one moment read for figures.
+- **Why it matters more now:** the calibration's kind 1 rule treats what the Chronicle states as
+  page text a reader can check, and the checkers build their evidence from it. A wrong Chronicle
+  line is therefore not only a live error; it would make a checker pass prose that repeats it.
+- **What covers it today:** nothing. **What would cover it:** for each of the 69, every figure the
+  moment states read against the card's own figures (the same number binding `prose_checks.js`
+  does, run with the Chronicle as the prose and the rest of the card as the page), then the
+  remaining world facts (dates, scorelines, opponents) read by hand against a source. Not built.
 
 ### Already covered, leave alone
 - VV Index figures: `gen-index-figures.js` then `apply-figures.js --check` (regenerate first).

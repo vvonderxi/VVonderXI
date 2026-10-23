@@ -813,6 +813,14 @@
      "why": "the same crown as the labelled kind 3",
      "confidence": "C",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "but 29 from open play at that efficiency is not luck",
+     "kind": 2,
+     "why": "open-play goals: no page splits goals by penalty, so the figure is one the reader cannot check",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code number check, first run"
     }
    ],
    "leave": [
@@ -1059,6 +1067,14 @@
      "why": "the setup of the labelled \"more kinds of damage\" crown",
      "confidence": "C",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "The 29 goals from open play and headers",
+     "kind": 2,
+     "why": "open-play goals: no page splits goals by penalty, so the figure is one the reader cannot check",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code number check, first run"
     }
    ],
    "leave": [
@@ -1221,6 +1237,14 @@
      "why": "a crown where the page says no winner (3b)",
      "confidence": "J",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "His dribble volume",
+     "kind": 2,
+     "why": "dribbles: no card or Compare shows them",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code number check, first run"
     }
    ],
    "leave": [
