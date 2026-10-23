@@ -258,7 +258,19 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    cards and it held them. The two were scored on different sets (6 labels then, 68 now) because
    the set was corrected between the runs; the model checker was not re-run on the corrected set.
    What code still misses: 9 comparisons with no number ("his numbers across every dimension are
-   higher"), and 2 numbers that happen to appear elsewhere on the page.]**
+   higher"), and 2 numbers that happen to appear elsewhere on the page.
+   **THE CROWN READ, FIRST KEY RUN (2026-10-23).** Haiku reads who each sentence argues for and
+   whether it crowns; code decides against the page. Kind 3 6 of 9, 3b 3 of 6, kind 4 4 of 6, 0
+   false holds, flags byte-identical over two runs. Its three 3b misses were all "edges" wording
+   ("Messi 11/12 edges it"), **the exact phrase the writer's prompt bans first as its counter-example
+   for ties, and the crown reader did not recognise it as a crown.** The crown prompt now carries the
+   writer's banned list word for word; not yet re-run.
+   **A TOOL HAS NOW FOUND, THREE TIMES, WHAT A HAND READING MISSED (Lucas, 2026-10-23).** The
+   `--audit` found card.html still sending starts in its keeper block; the number check found three
+   kind 2 failures two hand re-reads missed; the crown read found five more (three 3b crowns on pairs
+   the page cannot separate, among them "It was enough.", plus a kind 3 and a kind 4). **The lesson
+   is not that the readings were sloppy: reading prose by hand does not scale and was never going
+   to.** Hand reading labels a set; tools check prose.]**
 3. Regenerate a sample (not the twelve; fresh pairs and cards) and read it against the cards.
    Prose comes back on when that sample passes, not when the code is merged.
 4. A watch on the Anthropic balance (QA_PASS B4b). Nothing watches it, and the hourly ceiling
@@ -277,7 +289,7 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
 almost every card opened generated fresh, unread notes. The switch stopped that; turning it back
 on restarts it.
 
-### 10. The Chronicle, read against the card it sits on (added 2026-10-23). UNMEASURED
+### 10. The Chronicle, read against the card it sits on (added 2026-10-23). FIGURES MEASURED, HISTORY NOT
 The Chronicle is a hand-written moment per player-season, hardcoded in `card.html` and rendered
 on the card as "The Chronicle". **72 moments are written; 69 are reachable from a card** (each
 keyed to one player and season); 3 (`dirk-kuyt-1617`, `vincent-kompany-1819`, `wayne-rooney-1011`)
@@ -293,7 +305,27 @@ assists, games, points and the like; counted by pattern, so a floor rather than 
 - **What covers it today:** nothing. **What would cover it:** for each of the 69, every figure the
   moment states read against the card's own figures (the same number binding `prose_checks.js`
   does, run with the Chronicle as the prose and the rest of the card as the page), then the
-  remaining world facts (dates, scorelines, opponents) read by hand against a source. Not built.
+  remaining world facts (dates, scorelines, opponents) read by hand against a source. The figure half is
+  built (below); the hand half is not.
+- **THE FIGURE PASS, 2026-10-23 (`node scripts/calibration/chronicle_figures.js`, no key).** Every
+  map row's cards rendered from the repo, the moment's quote and narrative checked by the
+  `prose_checks.js` number binding against the rest of the card. **70 cards rendered, 0 failed**
+  (69 moments; one shows on two cards). 67 state a number; 60 state one the card does not show,
+  and **almost all of those are match or history figures the card was never going to hold** ("five
+  goals in nine minutes", "for forty-nine years", "Jimmy Greaves scored 266"). Read by hand, every
+  flag, for a season figure the card contradicts:
+  - **Salah 24/25:** "a season of 28 goals", card 29. Known, §D.
+  - **Cisse 11/12, A SECOND LIVE ERROR:** the Newcastle moment ("Thirteen goals in fourteen games")
+    also renders on his Freiburg 11/12 card (card 156405, 9 goals in 17). The map keys on player and
+    season, so a player who moved mid-season gets the moment on both cards. §D.
+  - **Haaland 22/23, judgement:** "Thirty-five goals in a single season, a record" on a card that
+    says 36. The same on-the-day count as Salah's, but the narrative says so ("number thirty-five").
+  - **Every other season figure agrees with its card** (Kane 16/17's 29, Messi 11/12's fifty, Gomis
+    17/18's 29th; Gomis's 28 and Messi's 232 are the old records they broke).
+- **WHAT THIS MEANS FOR THE CHECKERS:** the Chronicle's season figures are sound enough to keep as
+  evidence, with two cards fixed. **Its history is not checked at all, and it is most of the text:**
+  the records, the years they stood, the scorelines and dates. The kind 1 rule leaves a sentence
+  alone when the Chronicle states it, so an unchecked record there still decides a label.
 
 ### Already covered, leave alone
 - VV Index figures: `gen-index-figures.js` then `apply-figures.js --check` (regenerate first).

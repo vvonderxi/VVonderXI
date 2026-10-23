@@ -63,6 +63,10 @@ const INTERCEPT = `(function(){ var f = window.fetch; window.__vvCaptured = [];
       return Promise.resolve(new Response(JSON.stringify(notes ? { off: true } : { held: true, off: true, winner_card_id: null, cached: true }), { status: 200, headers: { 'Content-Type': 'application/json' } })); }
     return f.apply(this, arguments); }; })();`;
 
+/*  EVERY FOLD OPEN, THE WONDER TAGS INCLUDED (.tagrow, 2026-10-23): the honour and tag copy
+    live there, and the first version opened only details and .layer.  */
+const OPEN_ALL = `(function(){ document.querySelectorAll('details').forEach(function(x){x.open=true;}); document.querySelectorAll('.layer,.tagrow').forEach(function(x){x.classList.add('open');}); return document.body.innerText; })()`;
+
 /*  The data part of a verdict message: the two player lines, which carry every figure. The rest of
     the message is instruction text, whose numbers ("max ~14 words") are not claims about anyone.  */
 function dataLines(ev) { return ev.split('\n').filter(l => /; dimensions: /.test(l)).join('\n'); }
@@ -75,7 +79,8 @@ function auditNumbers(data, pages) {
   return [...new Set(out)];
 }
 
-(async () => {
+module.exports = { serve, cdp, sleep, INTERCEPT, OPEN_ALL, CHROME };
+if (require.main === module) (async () => {
   const srv = await serve(), port = srv.address().port;
   const prof = fs.mkdtempSync(path.join(os.tmpdir(), 'vvcal-'));
   const ch = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--no-first-run', `--user-data-dir=${prof}`, 'about:blank'], { stdio: 'ignore' });
@@ -87,9 +92,6 @@ function auditNumbers(data, pages) {
     const p = await cdp(t.webSocketDebuggerUrl);
     await p.send('Page.enable'); await p.send('Page.addScriptToEvaluateOnNewDocument', { source: INTERCEPT });
     await p.send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
-    /*  EVERY FOLD OPEN, THE WONDER TAGS INCLUDED (.tagrow, 2026-10-23): the honour and tag copy
-        live there, and the first version opened only details and .layer.  */
-    const OPEN_ALL = `(function(){ document.querySelectorAll('details').forEach(function(x){x.open=true;}); document.querySelectorAll('.layer,.tagrow').forEach(function(x){x.classList.add('open');}); return document.body.innerText; })()`;
     const pageText = async url => {
       await p.send('Page.navigate', { url });
       for (let i = 0; i < 120; i++) { await sleep(250); const ok = await p.ev(`!!(window.D || (window.CMP_A && window.CMP_B))`).catch(() => false); if (ok) break; }

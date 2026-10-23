@@ -679,6 +679,22 @@
      "why": "the paragraph sits under the wrong name: p1 is Player A (Messi) and compare.html prints p1 under A, so this paragraph about Ronaldo reads as Messi's",
      "confidence": "C",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "and at 24 against 29: the career stage adds a dimension the raw output alone cannot",
+     "kind": "3b",
+     "why": "a crown for Messi where the page says the Index cannot separate them",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code crown read, first key run"
+    },
+    {
+     "quote": "and at 24 against 29: the career stage adds a dimension the raw output alone cannot",
+     "kind": 4,
+     "why": "a crown under a headline that crowns nobody",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code crown read, first key run"
     }
    ],
    "leave": [
@@ -976,6 +992,29 @@
      "quote": "it is the Golden Boot that tips it",
      "kind": 3,
      "why": "same crown",
+     "confidence": "C",
+     "added": "2026-10-23"
+    },
+    {
+     "quote": "It was enough.",
+     "kind": "3b",
+     "why": "a crown for Suárez where the page says the Index cannot separate them",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code crown read, first key run"
+    },
+    {
+     "quote": "It was enough.",
+     "kind": 3,
+     "why": "Suárez leads neither the honours (2 v 2) nor the dimensions the page draws (2 v 3)",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code crown read, first key run"
+    },
+    {
+     "quote": "the individual honours here go to Suárez two-to-one",
+     "kind": 2,
+     "why": "the page reads 2 v 2: a wrong figure as well as a wrong crown",
      "confidence": "C",
      "added": "2026-10-23"
     }
@@ -1402,6 +1441,14 @@
      "why": "the same paragraph says the Index cannot separate them; contradicts itself, not the headline",
      "confidence": "J",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "make Salah's the harder thing to have done",
+     "kind": "3b",
+     "why": "a crown for Salah where the page says the Index cannot separate them",
+     "confidence": "C",
+     "added": "2026-10-23",
+     "found_by": "code crown read, first key run"
     }
    ],
    "leave": [],

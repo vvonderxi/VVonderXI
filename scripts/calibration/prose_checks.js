@@ -260,6 +260,7 @@ const CROWN_SYSTEM = `You read a comparison of two football player-seasons, sent
 
 favours: "A" or "B" when the sentence argues that player's season is better, stronger, rarer, harder or more complete, in whole or on the point it makes; "none" when it describes, balances or argues for neither.
 crown: true ONLY when the sentence settles the comparison as a whole for one player: names him the winner, says he edges it, takes it, prevails, that his season was the better or rarer or harder one overall, or that the matter is settled or tipped in his favour. A point in one player's favour that leaves the whole open is not a crown. A sentence saying the two cannot be separated is not a crown.
+These are ALWAYS crowns, however softly or narrowly put, including "by the thinnest of margins": "edges it", "edges" the rivalry or the comparison, "shades it", "just ahead", "the better of the two", "takes it", "wins the argument", "if pushed", "on balance", "favours" him overall, "tips it", "settles this", and every near variant. A narrow win is still a win.
 
 Reply with JSON only: {"reads":[{"n":1,"favours":"A","crown":false}, ...]} with one entry per sentence, in order.`;
 async function readCrowns(sentences, nameA, nameB) {
