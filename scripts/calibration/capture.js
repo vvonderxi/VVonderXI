@@ -15,6 +15,8 @@
  *  for its notes on load, and the endpoint's notesUserMessage turns that payload into the message.
  *
  *  Every item must capture, or the run exits 1: a calibration over a partial set is a different set.
+ *  Each item also keeps the rendered text of its pages (entry.page), every fold open: the checks in
+ *  prose_checks.js take their evidence from what the reader sees, not from the writer's payload.
  *
  *  --audit ALSO CHECKS THE RULE "THE WRITER MUST NOT STATE A NUMBER THE READER CANNOT CHECK" ON THE
  *  REQUEST THE PAGE ACTUALLY SENDS (added 2026-10-22, after a check of the shared builder alone missed
@@ -85,11 +87,14 @@ function auditNumbers(data, pages) {
     const p = await cdp(t.webSocketDebuggerUrl);
     await p.send('Page.enable'); await p.send('Page.addScriptToEvaluateOnNewDocument', { source: INTERCEPT });
     await p.send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    /*  EVERY FOLD OPEN, THE WONDER TAGS INCLUDED (.tagrow, 2026-10-23): the honour and tag copy
+        live there, and the first version opened only details and .layer.  */
+    const OPEN_ALL = `(function(){ document.querySelectorAll('details').forEach(function(x){x.open=true;}); document.querySelectorAll('.layer,.tagrow').forEach(function(x){x.classList.add('open');}); return document.body.innerText; })()`;
     const pageText = async url => {
       await p.send('Page.navigate', { url });
       for (let i = 0; i < 120; i++) { await sleep(250); const ok = await p.ev(`!!(window.D || (window.CMP_A && window.CMP_B))`).catch(() => false); if (ok) break; }
       await sleep(3500);
-      return p.ev(`(function(){ document.querySelectorAll('details').forEach(function(x){x.open=true;}); document.querySelectorAll('.layer').forEach(function(x){x.classList.add('open');}); return document.body.innerText; })()`);
+      return p.ev(OPEN_ALL);
     };
     for (const it of SET.items) {
       let body = null;
@@ -113,10 +118,27 @@ function auditNumbers(data, pages) {
         ? body.messages.map(m => typeof m.content === 'string' ? m.content : JSON.stringify(m.content)).join('\n\n')
         : A.notesUserMessage(body.player || {});
       const entry = { id: it.id, captured: true, evidence, chars: evidence.length };
+      /*  THE RENDERED PAGE, SAVED FOR EVERY ITEM (2026-10-23). The checks read this, not the payload:
+          the payload has no Chronicle and no honour or tag copy, so a check reading it holds good
+          prose (area 9). For a verdict, Compare as the reader sees it with prose off, then each card.  */
+      /*  Compare is read once its verdict panel has rendered the engine's own answer (the request
+          is captured before the answer comes back, so reading at once gets the pickers only).  */
+      let cmp = null;
+      if (it.type === 'verdict') {
+        /*  The panel is built hidden and shown when the reader taps the settle control (vvSettleTap);
+            on some pairs the first tap only starts the request, so it is tapped again, as a reader would.  */
+        for (let i = 0; i < 80; i++) {
+          await sleep(250);
+          await p.ev(`(function(){ var v=document.getElementById('verdict'), s=document.querySelector('.settle'); if(v && !v.classList.contains('show') && s && !s.disabled) s.click(); })()`).catch(() => {});
+          const t = await p.ev(OPEN_ALL).catch(() => '');
+          if (/No written opinion here/.test(t)) { await sleep(500); cmp = await p.ev(OPEN_ALL); break; }
+        }
+        if (!cmp) { console.log(`${it.id}  COMPARE NEVER SHOWED ITS ANSWER`); out.push({ id: it.id, captured: false }); continue; }
+      }
+      entry.page = { compare: cmp, cards: {} };
+      for (const c of it.cards) entry.page.cards[c] = await pageText(`http://127.0.0.1:${port}/card.html?id=${c}`);
       if (AUDIT) {
-        let pages = '';
-        if (it.type === 'verdict') pages += await p.ev(`(function(){ document.querySelectorAll('details').forEach(function(x){x.open=true;}); document.querySelectorAll('.layer').forEach(function(x){x.classList.add('open');}); return document.body.innerText; })()`);
-        for (const c of it.cards) pages += '\n' + await pageText(`http://127.0.0.1:${port}/card.html?id=${c}`);
+        const pages = [entry.page.compare || ''].concat(Object.values(entry.page.cards)).join('\n');
         entry.unchecked = auditNumbers(it.type === 'verdict' ? dataLines(evidence) : JSON.stringify(body.player || {}), pages);
       }
       out.push(entry);

@@ -4,6 +4,8 @@
  *    node scripts/calibration/capture.js --audit     first: today's evidence, no key needed
  *    node scripts/calibration/score.js --selftest     the scorer's own control, no key needed
  *    node scripts/calibration/score.js [--runs N]     the run: needs ANTHROPIC_API_KEY in .env, for this run only
+ *    node scripts/calibration/score.js --code [--selftest]   parts 2 and 3 of the rewrite (prose_checks.js):
+ *        numbers need no key; the crown read needs one and is skipped without it
  *
  *  It runs the SHIPPING checker (api/analyse.js checkVerdictSupport, required, not copied) over the
  *  twelve stored pieces of prose in verdict_check_set.json, each against the message its page sends
@@ -103,7 +105,67 @@ function print(label, s) {
   s.reportOnly.forEach(x => console.log(`  report only [${x.item}] "${x.quote}": ${x.flagged ? 'flagged' : 'not flagged'}`));
 }
 
+/*  --code: PARTS 2 AND 3 OF THE REWRITE, CODE NOT A MODEL (prose_checks.js), scored on the same set.
+    Numbers need no key. Crowns need one model step (who each sentence argues for, and whether it is a
+    crown); without a key that step is skipped and said so, and --selftest proves the code half.  */
+const CODE = process.argv.includes('--code');
+const PC = require('./prose_checks.js');
+const proseText = it => Object.values(proseFor(it)).join('\n\n');
+/*  The side each crowned item crowns, for the crown selftest only (read from the prose by hand).  */
+const CROWNED = { 'palmer-saka': 'A', 'bellingham-foden': 'B', 'messi-ronaldo': 'A', 'haaland-lewandowski': 'B', 'suarez-debruyne': 'A', 'haaland-suarez': 'B', 'salah-mbappe-roll1': 'A', 'salah-mbappe-roll2': 'A' };
+function fixtureReads(it) {
+  const sents = PC.splitSentences(it.prose, it.type), crowns = it.flag.filter(l => [3, '3b', 4].includes(l.kind)).map(l => norm(l.quote));
+  return { sents, reads: sents.map(x => ({ n: x.n, favours: CROWNED[it.id] || 'none', crown: crowns.some(q => norm(x.sentence).includes(q) || q.includes(norm(x.sentence))) })) };
+}
+
 (async () => {
+  if (SELFTEST && CODE) {
+    const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
+    let ok = true;
+    /*  D: every sentence holding a crown label, read as a crown for the side it crowns, must be flagged.  */
+    for (const it of SET.items.filter(x => CROWNED[x.id])) {
+      const ev = EV.items.find(x => x.id === it.id), { sents, reads } = fixtureReads(it), c = PC.checkCrowns(sents, reads, ev);
+      const want = reads.filter(r => r.crown).length, got = new Set(c.flags.map(f => f.quote)).size;
+      console.log(`  D ${it.id}: ${got} of ${want} crown sentences flagged; page "${c.result && c.result.line}"; player honours A ${c.honours.A} v B ${c.honours.B}, dimension leads ${c.leads.A} v ${c.leads.B}; kinds ${[...new Set(c.flags.map(f => f.kind))].join(', ')}`);
+      if (got !== want || !want) ok = false;
+    }
+    /*  E, THE FAIR-CROWN CONTROL: the same Salah v Mbappe evidence with the page naming Salah, and a
+        headline crowning Salah. Salah leads three dimensions to one, honours level. Nothing may flag.  */
+    const it = SET.items.find(x => x.id === 'salah-mbappe-roll1'), ev0 = EV.items.find(x => x.id === it.id);
+    const ev = Object.assign({}, ev0, { page: Object.assign({}, ev0.page, { compare: ev0.page.compare.replace(/The Verdict\n[^\n]*/, 'The Verdict\nSalah wins it clearly') }) });
+    const sents = [{ field: 'who', n: 1, sentence: 'Salah takes it.' }, { field: 'verdict', n: 2, sentence: 'Salah\'s is the stronger season.' }];
+    const e = PC.checkCrowns(sents, [{ n: 1, favours: 'A', crown: true }, { n: 2, favours: 'A', crown: true }], ev);
+    console.log(`  E fair crown: ${e.flags.length} flags (page "${e.result.line}")`); if (e.flags.length) { ok = false; e.flags.forEach(f => console.log('    ' + f.why)); }
+    /*  F: the same fair crown for the OTHER side must be flagged 3b (the page names Salah).  */
+    const f = PC.checkCrowns(sents, [{ n: 1, favours: 'B', crown: true }, { n: 2, favours: 'B', crown: true }], ev);
+    const fOk = f.flags.some(x => x.kind === '3b'); console.log(`  F crown for the side the page did not name: ${fOk ? 'flagged 3b' : 'NOT FLAGGED'}`); if (!fOk) ok = false;
+    console.log(`\nCODE SELFTEST ${ok ? 'PASS' : 'FAIL'}`);
+    process.exit(ok ? 0 : 1);
+  }
+  if (CODE) {
+    const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
+    const flagsById = {}, unbound = {}, crownNote = process.env.ANTHROPIC_API_KEY ? null : 'no ANTHROPIC_API_KEY: the crown read was skipped, so this scores the number check alone';
+    for (const it of SET.items) {
+      const ev = EV.items.find(x => x.id === it.id);
+      if (!ev || !ev.page) { console.error(it.id + ': no rendered page in the evidence, run capture.js first'); process.exit(2); }
+      const r = PC.checkNumbers(proseText(it), ev);
+      flagsById[it.id] = r.flags.concat(PC.checkMeasures(proseText(it), ev)); unbound[it.id] = r.unbound.length;
+      if (!crownNote && it.type === 'verdict') {
+        const sents = PC.splitSentences(it.prose, it.type), sides = PC.pageFigures(ev).sides;
+        const cr = await PC.readCrowns(sents, sides[0].surname, sides[1].surname);
+        if (!cr.ok) { console.error(it.id + ': ' + cr.error); process.exit(1); }
+        flagsById[it.id] = flagsById[it.id].concat(PC.checkCrowns(sents, cr.reads, ev).flags);
+      }
+    }
+    const s = scoreRun(flagsById);
+    print('CODE CHECKS' + (crownNote ? ' (numbers only)' : ' (numbers and crowns)'), s);
+    if (crownNote) console.log('  ' + crownNote);
+    console.log(`  numbers with no unit beside them, found somewhere on the page and passed WEAKLY: ${Object.values(unbound).reduce((a, b) => a + b, 0)}`);
+    const f = path.join(ROOT, '_local', 'verdict-check', 'code_' + new Date().toISOString().replace(/[:.]/g, '-') + '.json');
+    fs.writeFileSync(f, JSON.stringify({ evidence_captured_at: EV.captured_at, flagsById, score: s }, null, 1));
+    console.log(`\nwritten to ${path.relative(ROOT, f)}`);
+    return;
+  }
   if (SELFTEST) {
     const good = {}, bad = {};
     for (const it of SET.items) { good[it.id] = it.flag.map(l => ({ quote: l.quote, why: 'planted' })); bad[it.id] = it.leave.map(n => ({ quote: n.quote, why: 'planted' })); }
