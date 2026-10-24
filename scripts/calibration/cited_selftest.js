@@ -211,6 +211,15 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('tools repair: "over N appearances" with N nowhere on the page still flags', PC2.checkNumbers(`Mbappé scored two more goals over ${rb} appearances.`, ev2('benzema2122-mbappe2223')).flags.length === 1);
   expect('tools repair: a count of dimensions above the page total flags, one within it does not', PC2.checkNumbers('He led in six attributes.', ev2('notes-osimhen2223')).flags.length === 1 && PC2.checkNumbers('He led in three attributes.', ev2('notes-osimhen2223')).flags.length === 0);
   expect('tools repair: "Reliability rated at 39 out of 100" binds to Reliability, not to an age', PC2.extractNumbers('with his Reliability rated at 39 out of 100')[0].unit === 'reliability' && PC2.extractNumbers('Salah at 29 led the line')[0].unit === 'years');
+  // the Cabinet joins the fact list (Lucas, 2026-10-24)
+  const sp = C.verdictFacts(require('../../_local/verdict-check/fresh2_evidence.json').items.find(x => x.id === 'suarez1617-payet2122'));
+  const cabB = sp.facts.find(f => f.side === 'B' && /Cabinet/.test(f.text)), cabA = sp.facts.filter(f => f.side === 'A' && /Cabinet/.test(f.text)), honA2 = sp.facts.find(f => f.side === 'A' && /^Honour/.test(f.text));
+  expect('cabinet: Payet\'s career Top Assists is a fact the writer can cite', !!cabB && /Top Assists \(2017\), won by him/.test(cabB.text) && C.factKind(cabB.text) === 'cabinet');
+  const jcab = await C.judgeDraft(sp, { p2: [ok('Payet holds an honour in his cabinet, the Top Assists of 2017.', [cabB.id]), ok('Payet holds no honour at all.', ['B1'])] }, narrow);
+  expect('cabinet: "honour" citing a Cabinet fact passes the honour binding', jcab.units[0].kept);
+  expect('cabinet: "honour" citing neither an honour nor a Cabinet fact is still deleted', jcab.units[1].why.some(w => /says honour without citing an honour fact/.test(w)));
+  expect('cabinet: "six honours" may be the Cabinet\'s count', cabA.length === 6 && C.numbersOk('Six honours sit in his cabinet by this season.', cabA.map(f => f.text).join('\n'), cabA, sp.facts).length === 0 && C.numbersOk('Nine honours sit in his cabinet.', cabA.map(f => f.text).join('\n'), cabA, sp.facts).join() === 'Nine');
+  expect('cabinet: the writer is told what a Cabinet fact is', /A CABINET FACT is what he had won BY this season/.test(C.writerSystem(sp)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

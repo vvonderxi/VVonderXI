@@ -1912,7 +1912,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20261024a"></script>
+<script src="/vv-core.js?v=20261024b"></script>
 <script>
 /*  COMPARE FUNNEL (2026-10-09). Seventeen visits reached Compare on launch day and the event table
     recorded no comparison, with nothing to say where they stopped. Each step a visit reaches is now
@@ -4120,6 +4120,10 @@ body.light .pkmsub{color:var(--ink-soft)}
       if(a.honours&&a.honours.length) b.push('HONOURS: '+a.honours.map(function(h){
         return h.honour+(h.year!=null?' '+h.year:'')+' ('+h.won_by+(h.leg==='career'?', career honour, NOT won in this season':'')+')'
              +(h.context?' , '+h.context:''); }).join('; '));
+      /*  THE CABINET, what he had won by this season, as the card prints it (2026-10-24). Years are not
+          audited as numbers (capture.js skips four-digit years), and the Compare page does not print the
+          cabinet today: it is on each card, one tap away. Area 9 records that gap.  */
+      if(a.cabinet&&a.cabinet.length) b.push('CABINET: '+a.cabinet.map(function(h){ return h.honour+(h.year!=null?' '+h.year:'')+' ('+h.won_by+')'; }).join('; '));
       if(a.career_stage&&a.career_stage.length) b.push('CAREER STAGE: '+a.career_stage.join(', '));
       /*  TAG GLOSSES , the tag names were already in the prompt with no meaning attached,
           so the model guessed at what they sound like. This is the platform's own one-line

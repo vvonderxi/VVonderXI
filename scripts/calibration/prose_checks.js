@@ -139,7 +139,7 @@ function pageFigures(ev) {
   const sides = [];
   if (/Card data:\n/.test(ev.evidence)) {
     const P = JSON.parse(ev.evidence.split('Card data:\n')[1]);
-    const s = { goals: P.goals, assists: P.assists, minutes: P.minutes, apps: P.appearances, age: +P.age, shots: P.shots_total, pct: [], rel: null, kp90: P.key_passes_per90, honours: (P.honours || []).length, playerHonours: (P.honours || []).filter(h => h.won_by === 'player').length, tags: (P.tag_glosses || []).length, dims: {} };
+    const s = { goals: P.goals, assists: P.assists, minutes: P.minutes, apps: P.appearances, age: +P.age, shots: P.shots_total, pct: [], rel: null, kp90: P.key_passes_per90, honours: (P.honours || []).length, playerHonours: (P.honours || []).filter(h => h.won_by === 'player').length, cabinet: (P.cabinet || []).length, tags: (P.tag_glosses || []).length, dims: {} };
     const vals = (P.dimensions && P.dimensions.values) || {};
     for (const [k, x] of Object.entries(vals)) { if (x.percentile_in_pool != null) { s.pct.push(x.percentile_in_pool); s.dims[k] = x.percentile_in_pool; } if (x.pct_of_full_season != null) s.rel = x.pct_of_full_season; }
     if (P.keeper) { const K = P.keeper; add('saves', K.saves); add('shots', K.shots_faced_derived); add('pct', K.save_rate_pct); add('points', K.save_rate_se_pp); (K.percentile_band || []).forEach(x => add('percentile', x)); add('pct', K.pool_median_pct); }
@@ -154,9 +154,11 @@ function pageFigures(ev) {
       s.tags = T ? T.split(' | ').length : 0;
       for (const d of ['Goal Threat', 'Creation', 'Progression', 'Defensive']) { const x = g(new RegExp(d + ' (\\d+)')); if (x != null) { s.pct.push(x); s.dims[d] = x; } }
       if (s.rel != null) s.dims.Reliability = s.rel;
-      const H = (l.match(/HONOURS: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || [])[1] || '';
+      const H = (l.match(/HONOURS: (.*?); (?:CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || [])[1] || '';
       const hs = H ? H.split(/; (?=[A-Z])/) : [];
       s.honours = hs.length; s.playerHonours = hs.filter(h => /\(player/.test(h)).length;
+      const CB = (l.match(/CABINET: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || [])[1] || '';
+      s.cabinet = CB ? CB.split(/; (?=[A-Z])/).length : 0;   // "N honours" may be the Cabinet's count too (2026-10-24)
       add('score', g(/VV (\d+)/));
       sides.push(s);
     }
@@ -165,7 +167,7 @@ function pageFigures(ev) {
     add('goals', s.goals); add('assists', s.assists); add('minutes', s.minutes); add('apps', s.apps); add('years', s.age);
     add('shots', s.shots); add('per90', s.kp90); s.pct.forEach(x => { add('percentile', x); add('dimension', x); });
     if (s.rel != null) { add('reliability', s.rel); add('pct', s.rel); add('dimension', s.rel); }
-    add('contributions', (s.goals || 0) + (s.assists || 0)); add('honours', s.playerHonours); add('honours', s.honours);
+    add('contributions', (s.goals || 0) + (s.assists || 0)); add('honours', s.playerHonours); add('honours', s.honours); if (s.cabinet) add('honours', s.cabinet);
     add('tags', s.tags);   // A COUNT THE PAGE CAN VERIFY IS CHECKED AGAINST THE PAGE (Lucas, 2026-10-24): the tag count comes from the request, which the capture audits against the rendered page
   }
   // the rendered page: a number beside a unit word counts for that unit; every number counts as "on the page"

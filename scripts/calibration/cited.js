@@ -43,6 +43,12 @@ function honourFact(label, wonBy) {
   const who = wonBy === 'team' ? 'won with his team' : 'won by him';
   return `Honour this season: ${label}, ${who}` + (line ? `. The card says: "${line}"` : '');
 }
+/*  A CABINET LINE IS WHAT HE HAD WON BY THIS SEASON, NOT THIS SEASON'S HONOUR (Lucas, 2026-10-24: "add Cabinet
+    lines to the fact list rather than restricting 'only' claims; giving the writer the page's own content is
+    the move that keeps working"). The year is the one the card prints beside the shelf.  */
+function cabinetFact(name, label, year, wonBy) {
+  return `${name}'s Cabinet, what he had won by this season: ${label}${year ? ' (' + year + ')' : ''}, ${wonBy === 'team' ? 'won with his team' : 'won by him'}`;
+}
 function ord(n) { n = +n; const t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
 function tagFact(tag, means) { return `Tag: ${tag}. The card says: "${means}"`; }
 /*  THE BAND ONLY WHEN THE PAGE PRINTS IT (Lucas, 2026-10-24). The first fresh-sample run shipped one
@@ -87,10 +93,15 @@ function sideFacts(line, P) {
   if (shots != null) F.push(`${surname}: ${goals} goals from ${shots} shots`);
   const kp = g(/key passes\/90 ([\d.]+)/);
   if (kp != null) F.push(`${surname}: ${Number(kp).toFixed(2)} key passes per 90 minutes`);
-  const H = g(/HONOURS: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
+  const H = g(/HONOURS: (.*?); (?:CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
   for (const h of (H ? H.split(/; (?=[A-Z])/) : [])) {
     const m = h.match(/^(.+?) \d{4} \((player|team)\)/);
     if (m) F.push(honourFact(m[1], m[2]));
+  }
+  const CB = g(/CABINET: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
+  for (const h of (CB ? CB.split(/; (?=[A-Z])/) : [])) {
+    const m = h.match(/^(.+?)(?: (\d{4}))? \((player|team)\)$/);
+    if (m) F.push(cabinetFact(surname, m[1], m[2], m[3]));
   }
   const T = g(/TAG MEANINGS: (.*?); \d+ min/) || '';
   for (const t of (T ? T.split(' | ') : [])) { const i = t.indexOf(' = '); if (i > 0) F.push(tagFact(t.slice(0, i), t.slice(i + 3))); }
@@ -125,6 +136,7 @@ function notesFacts(player) {
   if (P.shots_total != null) F.push(`${nm}: ${P.goals} goals from ${P.shots_total} shots`);
   if (P.key_passes_per90 != null) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
   for (const h of (P.honours || [])) F.push(honourFact(h.honour, h.won_by));
+  for (const h of (P.cabinet || [])) F.push(cabinetFact(nm, h.honour, h.year, h.won_by));
   for (const t of (P.tag_glosses || [])) F.push(tagFact(t.tag, t.means));
   if (/^pre-2015/.test(P.era || '')) F.push(`${nm}'s season is from before 2015: only appearances, minutes, goals and assists were recorded; every other measure is absent, not zero`);
   return { type: 'notes', names: { A: nm }, facts: F.map((t, i) => ({ id: 'A' + (i + 1), side: 'A', text: t })), result: null, winner: null, keeper: !!P.keeper || P.position === 'GK' };
@@ -142,7 +154,7 @@ EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before 
 THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE. No image, no flourish, no "a season for the ages", no "a season apart in class": the result as P1 gives it, and one figure or one honour, in plain words. The glance line on a card is the same: one fact, plainly. THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
-A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours.
+A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one.
 
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
 
@@ -274,7 +286,7 @@ const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area))\b/i;
     cited in all and how many per side. Everything else stays strict: the same run's rule caught
     "seven percentile points higher" for a gap of 11, an uncited 3221 minutes, an age no fact holds,
     and "six goals were left in matches he did not start", and it keeps catching them.  */
-const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this season/], ['tag', /^Tag: /], ['score', /'s VV Score: /],
+const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this season/], ['cabinet', /'s Cabinet, what he had won by this season: /], ['tag', /^Tag: /], ['score', /'s VV Score: /],
   ['dimension', /'s (?:Goal Threat|Creation|Progression|Defensive): /], ['reliability', /'s Reliability: /], ['shots', / goals from \d+ shots$/],
   ['keypasses', / key passes per 90 minutes$/], ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
 function factKind(text) { const k = KINDS.find(([, re]) => re.test(text)); return k ? k[0] : 'other'; }
@@ -300,6 +312,9 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
       small totals let most small counts through. A number the sentence attaches to tags or honours must be
       that kind's total, sum or difference, and nothing else.  */
   const BOUND = { tags: 'tag', honours: 'honour' };
+  /*  "N HONOURS" MAY ALSO BE THE CABINET'S COUNT (2026-10-24): both the season's honours and the Cabinet are
+      honours the page prints, so a count bound to the word may equal either kind's total.  */
+  if (kindSet.cabinet) { kindSet.honour = new Set([...(kindSet.honour || []), ...kindSet.cabinet]); }
   /*  A COUNT OF DIMENSIONS MAY BE ANY NUMBER UP TO THE TOTAL THE CARD PRINTS (Lucas, 2026-10-24, after the six
       runs: the count rule was the second deleter, 58 of 88 number deletions in sample 1's first two runs, and
       some were true subsets, "three dimensions at the 96th or above" citing three of four). Every card prints
@@ -347,7 +362,7 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     /*  "HONOUR" BINDS TO AN HONOUR FACT, "TAG" TO A TAG FACT (Lucas, 2026-10-24). De Bruyne v Pogba shipped Peak
         called an honour; no rule saw it, and the fact list knows which kind each is.  */
     const kinds = new Set(citedFacts.map(f => factKind(f.text)));
-    if (/\bhonours?\b/i.test(u.s) && !kinds.has('honour')) why.push('says honour without citing an honour fact');
+    if (/\bhonours?\b/i.test(u.s) && !kinds.has('honour') && !kinds.has('cabinet')) why.push('says honour without citing an honour fact');   // a Cabinet fact is an honour too (2026-10-24)
     if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
     u.code = why.slice();
     if (!why.length) {

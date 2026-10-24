@@ -1332,6 +1332,18 @@
       _push(_hon.season, 'season');
       _push(_hon.career, 'career');
       if (_hl.length) out.honours = _hl;
+      /*  THE CABINET TRAVELS TOO (Lucas, 2026-10-24). The card prints "What he had won by this season" and the
+          writer did not know it: a cited sentence said "only Suárez holds an honour" while Payet's Cabinet
+          printed a Top Assists from 2017. The player-keyed half of the cabinet (what fetchHonours shaped;
+          the team legs the card adds from SEASON_RAW are not here, so the payload is a subset of the page,
+          never more). Label, the year as the cabinet prints it, and who won it.  */
+      var _cab = [];
+      (_hon.cabinet || []).forEach(function(h){
+        if (!h || !h.label) return;
+        _cab.push({ honour: h.label, year: h.season_year != null ? h.season_year : null,
+                    won_by: ((HONOUR_META[h.type] || {}).wonBy) || (h.group === 'Team' ? 'team' : 'player') });
+      });
+      if (_cab.length) out.cabinet = _cab;
     }
 
     /*  ══ THE CLAIMS BLOCK , CAREER STAGE ═══════════════════════════════════════════════

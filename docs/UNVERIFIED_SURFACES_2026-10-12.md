@@ -618,6 +618,30 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    self-test 89. **One new shape for Lucas: Payet's Cabinet prints a career Top Assists while a cited sentence says
    "only Suárez holds an honour"; the Cabinet is outside the fact list, as the Chronicle is.** The full record is
    in `docs/PROSE_CASE_2026-10-24.md`, last section. **Both runs again when the cap is raised.**
+   **LUCAS'S READING THE SAME NIGHT: the confirming runs are unmet, not failed; sample 2's 6 of 6 with hole 0 of
+   112 stands; notes untested, so the gate holds. The cap is left to stand, verified in anger (QA_PASS B4b).**
+   **WHAT ELSE THE PAGE PRINTS THAT THE FACT LIST DOES NOT KNOW (Lucas's question; answered in
+   `docs/PAGE_FACTS_2026-10-24.md`, a code read of both pages block by block, no key).** In: identity, score and
+   band when printed, totals, the five attributes, shots total and key passes per 90 by pool, this season's
+   honours and tags with their one-liners, the result line, the era line. Out by decision: other seasons, the
+   Chronicle, the long copy, keeper figures. **Out as gaps:** the Proof panel's per-90 rates and goal conversion
+   on both pages and the whole defender Proof panel (tackles, interceptions, blocks: a defender pair writes with
+   no Proof figures at all); the verdict tag name and the share caption that repeats it; the band's one-liner and
+   the archetype blurb; Data Confidence; the career-stage chips. And a second naming error on the page itself:
+   the Compare radar legend calls Reliability "Availability" (§D).
+   **THE CABINET JOINS THE FACT LIST (Lucas: "add Cabinet lines to the fact list rather than restricting 'only'
+   claims. Restricting the writer's language is the move that keeps costing us; giving it the page's own content
+   is the one that keeps working").** `vvAIStats` now carries `cabinet` (the player-keyed half fetchHonours
+   shapes; the team legs the card adds from the career rows are not in it, so the payload stays a subset of the
+   page); the Compare line gains `CABINET: Top Assists 2017 (player); ...` between HONOURS and CAREER STAGE; the
+   card payload gets it through `_ai` after the honours fetch (`EDITORIAL_DEPS` waits for it); `cabinetFact`
+   states "X's Cabinet, what he had won by this season: Top Assists (2017), won by him"; the "honour" word binds
+   to an Honour or a Cabinet fact; "N honours" may equal the Cabinet's count; the writer is told a Cabinet fact
+   is what he had won BY this season and never to write that a player holds no honour when a Cabinet fact holds
+   one. Years are not audited as numbers, so the capture audit stays clean (re-captured both samples, 0 unchecked
+   numbers). Self-test 94. **The gap the other way, for Lucas: the Compare page prints no Cabinet** (it is on each
+   card, one tap away), so under the 10-22 rule either Accolades gains a Cabinet row or the verdict fact list
+   drops the Cabinet lines and the notes list keeps them. Untested in a run until the cap lifts.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
