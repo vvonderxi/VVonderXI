@@ -642,6 +642,19 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    numbers). Self-test 94. **The gap the other way, for Lucas: the Compare page prints no Cabinet** (it is on each
    card, one tap away), so under the 10-22 rule either Accolades gains a Cabinet row or the verdict fact list
    drops the Cabinet lines and the notes list keeps them. Untested in a run until the cap lifts.
+   **LUCAS'S DECISIONS ON THE INVENTORY (the same night; all built, no key):** the Cabinet lines are DROPPED from
+   the verdict fact list and kept for notes (the Compare page does not print the Cabinet; changing the page to
+   suit the writer is backwards); **the Proof panel joins the fact list on both sides, as each page prints it**,
+   because Rodri v Rice shipped with no tackles, interceptions or blocks and read well enough to be missed twice
+   (`vvAIStats.proof_rows` for the card's pool rows, total and per 90 at two decimals; `proof_compare` for the
+   comparison's goals, assists and shots on target per 90 and goal conversion at its own decimals; each page
+   sends only what it prints; one fact per figure; NR stated as not recorded; the tools bind tackles,
+   interceptions and blocks); the radar legend fixed (Availability to Reliability, §D); the band one-liner, the
+   archetype blurb and Data Confidence OUT, DECIDED. Token `20261024c`, both samples re-captured with 0
+   unchecked numbers, self-test 101. **Two things the per-page rule exposes, recorded in
+   `docs/PAGE_FACTS_2026-10-24.md` and not changed:** on Compare a CDM pair still has no tackles, because the
+   Compare Proof panel prints attacking rows for every pool; and the Compare line has carried key passes per 90
+   and the shots total since 10-22, which the Compare page does not print.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

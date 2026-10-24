@@ -1299,6 +1299,26 @@
         disagree.  */
     if (_shown.indexOf('shots_total') >= 0)
       out.shots_total = row.shots_total != null ? row.shots_total : null;
+    /*  THE PROOF PANEL TRAVELS, AS EACH PAGE PRINTS IT (Lucas, 2026-10-24: "the writer is blind to the half of
+        the page a CDM comparison is about"; Rodri v Rice shipped with no tackles, interceptions or blocks).
+        `proof_rows` is the CARD's panel: the pool's three rows, total and per 90 at two decimals, exactly
+        renderProof's arithmetic (null stays null, the card prints NR). `proof_compare` is the COMPARISON's
+        panel: goals, assists and shots on target per 90 and goal conversion, at the decimals vvSetProof
+        prints (two, two, one, a whole percent). The two differ because the pages differ, and the rule is
+        per page: a figure the reader of THAT page cannot see is not sent for it. Keepers get neither, as
+        they get no panel.  */
+    if (!isGK(row) && !row.keeper) {
+      var _m = (mins != null && mins > 0) ? mins : null;
+      var _p90 = function(v){ return (v == null || _m == null) ? null : Math.round((v / (_m / 90)) * 100) / 100; };
+      out.proof_rows = (PROOF_DIMS[POOL_DIM[pool || row.pos] || 'create'].rows).map(function(r){
+        var raw = row[r[1]]; return { label: r[0], total: raw != null ? raw : null, per90: _p90(raw) };
+      });
+      out.proof_compare = {
+        goals_per90: _p90(row.goals), assists_per90: _p90(row.assists),
+        shots_on_per90: (row.shots_on == null || _m == null) ? null : Math.round((row.shots_on / (_m / 90)) * 10) / 10,
+        goal_conversion_pct: (row.shots_total == null || row.shots_total <= 0 || row.goals == null) ? null : Math.round(row.goals / row.shots_total * 100)
+      };
+    }
 
     /*  ══ THE CLAIMS BLOCK , HONOURS ════════════════════════════════════════════════════
         Asserted outright, because the platform already asserted them: these are the same

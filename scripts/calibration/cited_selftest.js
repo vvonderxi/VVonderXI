@@ -211,15 +211,31 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('tools repair: "over N appearances" with N nowhere on the page still flags', PC2.checkNumbers(`Mbappé scored two more goals over ${rb} appearances.`, ev2('benzema2122-mbappe2223')).flags.length === 1);
   expect('tools repair: a count of dimensions above the page total flags, one within it does not', PC2.checkNumbers('He led in six attributes.', ev2('notes-osimhen2223')).flags.length === 1 && PC2.checkNumbers('He led in three attributes.', ev2('notes-osimhen2223')).flags.length === 0);
   expect('tools repair: "Reliability rated at 39 out of 100" binds to Reliability, not to an age', PC2.extractNumbers('with his Reliability rated at 39 out of 100')[0].unit === 'reliability' && PC2.extractNumbers('Salah at 29 led the line')[0].unit === 'years');
-  // the Cabinet joins the fact list (Lucas, 2026-10-24)
+  // the Cabinet joins the NOTES fact list and stays out of the verdict's (Lucas, 2026-10-24: the Compare page does not print it)
   const sp = C.verdictFacts(require('../../_local/verdict-check/fresh2_evidence.json').items.find(x => x.id === 'suarez1617-payet2122'));
-  const cabB = sp.facts.find(f => f.side === 'B' && /Cabinet/.test(f.text)), cabA = sp.facts.filter(f => f.side === 'A' && /Cabinet/.test(f.text)), honA2 = sp.facts.find(f => f.side === 'A' && /^Honour/.test(f.text));
-  expect('cabinet: Payet\'s career Top Assists is a fact the writer can cite', !!cabB && /Top Assists \(2017\), won by him/.test(cabB.text) && C.factKind(cabB.text) === 'cabinet');
-  const jcab = await C.judgeDraft(sp, { p2: [ok('Payet holds an honour in his cabinet, the Top Assists of 2017.', [cabB.id]), ok('Payet holds no honour at all.', ['B1'])] }, narrow);
+  expect('cabinet: a comparison carries no Cabinet facts', !sp.facts.some(f => /Cabinet/.test(f.text)));
+  const osiEv = EV.items.find(x => x.id === 'notes-osimhen2223'), osiP = JSON.parse(osiEv.evidence.split('Card data:\n')[1]);
+  const np = C.notesFacts(Object.assign({}, osiP, { cabinet: [{ honour: 'Golden Boot', year: 2022, won_by: 'player' }, { honour: 'League Title', year: 2017, won_by: 'team' }, { honour: 'Top Assists', year: 2019, won_by: 'player' }] }));
+  const cabs = np.facts.filter(f => /Cabinet/.test(f.text));
+  expect('cabinet: a card states what he had won by this season, with the year and who won it', cabs.length === 3 && /Cabinet, what he had won by this season: League Title \(2017\), won with his team/.test(cabs[1].text) && C.factKind(cabs[0].text) === 'cabinet');
+  const jcab = await C.judgeDraft(np, { scout: [ok('He holds an honour in his cabinet from 2019, the Top Assists.', [cabs[2].id]), ok('He holds no honour at all.', ['A1'])] }, narrow);
   expect('cabinet: "honour" citing a Cabinet fact passes the honour binding', jcab.units[0].kept);
   expect('cabinet: "honour" citing neither an honour nor a Cabinet fact is still deleted', jcab.units[1].why.some(w => /says honour without citing an honour fact/.test(w)));
-  expect('cabinet: "six honours" may be the Cabinet\'s count', cabA.length === 6 && C.numbersOk('Six honours sit in his cabinet by this season.', cabA.map(f => f.text).join('\n'), cabA, sp.facts).length === 0 && C.numbersOk('Nine honours sit in his cabinet.', cabA.map(f => f.text).join('\n'), cabA, sp.facts).join() === 'Nine');
-  expect('cabinet: the writer is told what a Cabinet fact is', /A CABINET FACT is what he had won BY this season/.test(C.writerSystem(sp)));
+  expect('cabinet: "three honours" may be the Cabinet\'s count', C.numbersOk('Three honours sit in his cabinet by this season.', cabs.map(f => f.text).join('\n'), cabs, np.facts).length === 0 && C.numbersOk('Nine honours sit in his cabinet.', cabs.map(f => f.text).join('\n'), cabs, np.facts).join() === 'Nine');
+  expect('cabinet: the writer is told what a Cabinet fact is', /A CABINET FACT is what he had won BY this season/.test(C.writerSystem(np)));
+  // the Proof panel joins the fact list, as each page prints it (Lucas, 2026-10-24)
+  const rrp = C.verdictFacts(EV.items.find(x => x.id === 'rodri2324-rice2324'));
+  const g90 = rrp.facts.find(f => f.side === 'A' && / goals per 90 minutes$/.test(f.text)), cv = rrp.facts.find(f => f.side === 'A' && /goal conversion \d+%/.test(f.text));
+  expect('proof (comparison): goals, assists and shots on target per 90 and goal conversion are facts, as THE PROOF prints them', !!g90 && !!cv && rrp.facts.filter(f => f.side === 'A' && / per 90 minutes$/.test(f.text)).length === 3 && C.factKind(g90.text) === 'proof' && C.factKind(cv.text) === 'conversion');
+  const gv = g90.text.match(/: ([\d.]+) goals/)[1];
+  expect('proof (comparison): the printed per-90 figure passes and an invented one is deleted', C.numbersOk(`Rodri scores ${gv} goals per 90.`, g90.text, [g90], rrp.facts).length === 0 && C.numbersOk('Rodri scores 1.37 goals per 90.', g90.text, [g90], rrp.facts).join() === '1.37');
+  const osiN = C.notesFacts(osiP), tk = osiN.facts.filter(f => / in all, [\d.]+ per 90 minutes$| not recorded this season /.test(f.text));
+  expect('proof (card): the pool\'s three rows are facts with total and per 90', tk.length === 3 && osiP.proof_rows && osiP.proof_rows.length === 3);
+  const defP = Object.assign({}, osiP, { position: 'CDM', proof_rows: [{ label: 'Tackles', total: 71, per90: 2.18 }, { label: 'Interceptions', total: 40, per90: 1.23 }, { label: 'Blocks', total: null, per90: null }] });
+  const dn = C.notesFacts(defP), tkF = dn.facts.find(f => /71 tackles in all, 2.18 per 90 minutes$/.test(f.text)), blF = dn.facts.find(f => /blocks not recorded this season/.test(f.text));
+  expect('proof (card): a defender\'s tackles, interceptions and blocks are facts, NR stated as not recorded', !!tkF && !!blF);
+  expect('proof (card): "71 tackles" citing the row passes; "80 tackles" is deleted', C.numbersOk('He made 71 tackles in all.', tkF.text, [tkF], dn.facts).length === 0 && C.numbersOk('He made 80 tackles in all.', tkF.text, [tkF], dn.facts).join() === '80');
+  expect('tools: tackles, interceptions and blocks are units the number check binds', PC2.extractNumbers('71 tackles and 40 interceptions and 9 blocks').map(x => x.unit).join(',') === 'tackles,interceptions,blocks');
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

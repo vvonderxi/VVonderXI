@@ -98,10 +98,17 @@ function sideFacts(line, P) {
     const m = h.match(/^(.+?) \d{4} \((player|team)\)/);
     if (m) F.push(honourFact(m[1], m[2]));
   }
-  const CB = g(/CABINET: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
-  for (const h of (CB ? CB.split(/; (?=[A-Z])/) : [])) {
-    const m = h.match(/^(.+?)(?: (\d{4}))? \((player|team)\)$/);
-    if (m) F.push(cabinetFact(surname, m[1], m[2], m[3]));
+  /*  NO CABINET FACTS ON A COMPARISON (Lucas, 2026-10-24): the Compare page does not print the Cabinet, so a
+      verdict's reader cannot check it. The card's notes keep them (notesFacts).  */
+  /*  THE COMPARISON'S PROOF PANEL (2026-10-24): goals, assists and shots on target per 90, and goal conversion,
+      exactly as THE PROOF prints them on the Compare page. One fact per figure so a citation is precise.  */
+  const PR = g(/PROOF per 90: (.*?); goal conversion (NR|\d+%)/);
+  if (PR) {
+    const v = k => (PR.match(new RegExp(k + ' (NR|[\\d.]+)')) || [])[1];
+    const row = (k, label) => { const x = v(k); if (x && x !== 'NR') F.push(`${surname}: ${x} ${label} per 90 minutes`); else if (x === 'NR') F.push(`${surname}: ${label} per 90 not recorded this season (the page prints NR)`); };
+    row('goals', 'goals'); row('assists', 'assists'); row('shots on target', 'shots on target');
+    const cv = g(/goal conversion (NR|\d+%)/);
+    if (cv && cv !== 'NR') F.push(`${surname}: goal conversion ${cv}, goals as a share of shots`);
   }
   const T = g(/TAG MEANINGS: (.*?); \d+ min/) || '';
   for (const t of (T ? T.split(' | ') : [])) { const i = t.indexOf(' = '); if (i > 0) F.push(tagFact(t.slice(0, i), t.slice(i + 3))); }
@@ -137,6 +144,13 @@ function notesFacts(player) {
   if (P.key_passes_per90 != null) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
   for (const h of (P.honours || [])) F.push(honourFact(h.honour, h.won_by));
   for (const h of (P.cabinet || [])) F.push(cabinetFact(nm, h.honour, h.year, h.won_by));
+  /*  THE CARD'S PROOF PANEL (2026-10-24): the pool's three rows, total and per 90, as renderProof prints them.
+      A defender's card is tackles, interceptions and blocks, and the writer had none of it.  */
+  for (const r of (P.proof_rows || [])) {
+    const label = String(r.label || '').toLowerCase();
+    if (r.total == null && r.per90 == null) F.push(`${nm}: ${label} not recorded this season (the card prints NR)`);
+    else F.push(`${nm}: ${r.total != null ? r.total : 'NR'} ${label} in all, ${r.per90 != null ? Number(r.per90).toFixed(2) : 'NR'} per 90 minutes`);
+  }
   for (const t of (P.tag_glosses || [])) F.push(tagFact(t.tag, t.means));
   if (/^pre-2015/.test(P.era || '')) F.push(`${nm}'s season is from before 2015: only appearances, minutes, goals and assists were recorded; every other measure is absent, not zero`);
   return { type: 'notes', names: { A: nm }, facts: F.map((t, i) => ({ id: 'A' + (i + 1), side: 'A', text: t })), result: null, winner: null, keeper: !!P.keeper || P.position === 'GK' };
@@ -155,6 +169,8 @@ THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE. No image, no fl
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
 A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one.
+
+THE PROOF PANEL IS IN THE FACTS, as the page prints it: on a comparison, goals, assists and shots on target per 90 and goal conversion; on a card, the three rows of the player's position (a defender's tackles, interceptions and blocks). Quote them at the decimals given; "not recorded" means the page prints NR, and you may say so.
 
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
 
@@ -288,7 +304,8 @@ const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area))\b/i;
     and "six goals were left in matches he did not start", and it keeps catching them.  */
 const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this season/], ['cabinet', /'s Cabinet, what he had won by this season: /], ['tag', /^Tag: /], ['score', /'s VV Score: /],
   ['dimension', /'s (?:Goal Threat|Creation|Progression|Defensive): /], ['reliability', /'s Reliability: /], ['shots', / goals from \d+ shots$/],
-  ['keypasses', / key passes per 90 minutes$/], ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
+  ['keypasses', / key passes per 90 minutes$/], ['proof', / per 90 minutes$| not recorded this season /], ['conversion', /: goal conversion \d+%/],
+  ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
 function factKind(text) { const k = KINDS.find(([, re]) => re.test(text)); return k ? k[0] : 'other'; }
 function numbersOk(sentence, citedText, citedFacts, allFacts) {
   const vals = new Set();
