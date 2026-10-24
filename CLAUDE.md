@@ -152,7 +152,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 - **LUCAS READ ALL FOUR LISTS AND DECIDED (evening): the comparison is recorded in area 9 explicitly, seven invented facts a piece on 10-17 against a hole of 0 in 490 shipped sentences on the final rules.** Four changes built, self-test 88: **notes keep the share rule and fix the form** (scout and closing stanza ask for figures and card copy only); **the headline states the result and one cited fact, nothing more** (every regeneration followed a flourish); **dimension subset counts allowed up to the total** (five attributes print on every card and a reader can count any subset; tags and honours vary per card and stay exact, the asymmetry written down in area 9); **the tools' arithmetic repaired** (the twelve flags were four mechanics; 12 to 0 on the four clean runs, five invention controls still flag; the loss recorded). **Then one confirming run of each sample. If the hole holds at zero and notes ship, the case for `VV_PROSE` on for VERDICTS ONLY is written for Lucas; nothing is turned on by a session.**
 
-**NEXT (Lucas):** read the confirming runs and the written case; decide on `VV_PROSE` for verdicts only. Notes stay off until they ship twice.
+- **THE CASE FOR `VV_PROSE` ON, VERDICTS ONLY, IS WRITTEN: `docs/PROSE_CASE_2026-10-24.md`.** First line: the switch today ships the OLD writer, since `api/analyse.js` still calls it and the cited writer is in no serving path. The port (fact list from the request, P1 from the printed result line instead of separation instructions, which is kind 3's mechanism, the pipeline in the function, a three-valued switch, proof through the endpoint) is described and NOT started. Cost at today's traffic: 45 comparisons in 30 days at about $0.10 a piece.
+
+**NEXT (Lucas):** read the confirming runs and the written case; decide on the port. Nothing is on. Notes stay off until they ship twice.
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 

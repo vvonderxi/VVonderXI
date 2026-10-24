@@ -605,6 +605,9 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    case for `VV_PROSE` on for VERDICTS ONLY is written for Lucas to decide: what is still unchecked, what
    the first week costs, and what would make him turn it off again. Notes stay off until they ship twice.
    Nothing is turned on by a session; Lucas decides.**
+   **THE CASE IS WRITTEN: `docs/PROSE_CASE_2026-10-24.md`. Its first line: `VV_PROSE=on` today ships the OLD
+   writer, because `api/analyse.js` still calls it and the cited writer is in no serving path; the port is
+   described there and NOT started (Lucas, 2026-10-24).**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
