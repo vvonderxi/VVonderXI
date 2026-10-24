@@ -493,6 +493,23 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    - **THE LISTS FOR LUCAS:** `_local/verdict-check/fresh_run3_lists.md` (sample 1 run 3: 14 flags, 89
      unflagged), `fresh2_run1_lists.md` (sample 2 run 1: 3 flags, 46 unflagged) and `fresh2_run2_lists.md`
      (sample 2 run 2: 0 flags, 13 unflagged).
+   **LUCAS READ THE THREE LISTS (2026-10-24): "The crown rule is done, 1 in 138 on six crowned pairs settles
+   it." FOUR CHANGES, THEN TWO RUNS OF EACH SAMPLE, BECAUSE 4 OF 6 THEN 1 OF 6 ON IDENTICAL RULES IS THE
+   MEASUREMENT HE NOW WORKS FROM: ONE RUN OF SIX TELLS HIM NOTHING** (`af53442`, self-test 73 cases):
+   1. **THE CLUB HOLE, CLOSED.** All four misses on the final rules were a true club name without its
+      citation. The club and league live in the identity fact, so a sentence naming either must cite the
+      identity fact that holds it (either side's when team-mates share a club), or it goes. The writer is
+      told. The last kind 1 residue with a shape, closed like the other two.
+   2. **RAISE THE ASK, DO NOT LOWER THE FLOOR.** Verdict and head-to-head minimums stay at two; the writer
+      is asked for 4 to 5 sentences a paragraph instead of 2 to 3, and 3 to 4 for the notes closing stanza.
+      A paragraph asked for 2 and given 1 dies on one deletion; asked for 4 it survives. That, not the
+      notes format, is why 0 of 4 notes shipped. `max_tokens` 2500 to 4000.
+   3. **SONNET'S TAG AND HONOUR COUNTS DROPPED FROM THE TOOLS.** It counted GENERATIONAL as a tag and
+      honours as tags, most of the 14 flags on sample 1 run 3. Code counts exactly. The judge is told not
+      to count, and a count claim is dropped in code whatever it says (`isCountClaim`).
+   4. **"HONOUR" BINDS TO AN HONOUR FACT, "TAG" TO A TAG FACT.** Peak called an honour (De Bruyne v Pogba)
+      was a real fault no rule saw; the fact list knows which kind each is.
+   The four runs follow, below.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
