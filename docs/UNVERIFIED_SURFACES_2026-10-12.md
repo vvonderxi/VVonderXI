@@ -460,6 +460,39 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
      (accepted limit, in the self-test: a subset count that happens to equal a difference of totals passes);
      and on a separated pair the headline must name the winner or the piece regenerates. The writer's
      instructions say both.
+   **THE THIRD KEY SESSION, 2026-10-24 13:24 TO 13:42 UTC: SAMPLE 2 TWICE, SAMPLE 1 A THIRD TIME, ABOUT $4.80
+   IN ALL, PLUS $0.30 LOST TO A KEY THAT WENT INVALID MID-RUN (`authentication_error`, three pieces in; the
+   two 13:24 run files record that failure as no prose and are not results).**
+   - **SAMPLE 2, SIX SEPARATED PAIRS, RUN 1 (13:30): 4 of 6 shipped**, 49 sentences, 3 tool flags, **hole 1 of
+     49** ("Marseille" uncited). **THE CROWN RULE DELETED ONE SENTENCE IN 138** on six crowned pairs, against 46
+     in 333 on run 1 of sample 1. Every shipped headline names the winner. **Two pieces died on a bug:**
+     rule B rejected "Ibrahimović wins it outright" twice because `\b` is not a word boundary after "ć"
+     (fixed, `nameRe`, Unicode letter boundaries, also in the one-sided crown guard). And the narrow check
+     deleted "Three honours sit on his card" for citing two of three while the count rule had allowed the
+     page's total; it is now told each side's honour and tag totals (`countsLine`).
+   - **SAMPLE 2, RUN 2 (13:42, after those two fixes): 1 of 6 shipped** (Ibrahimović v Lacazette, 13
+     sentences, 0 flags, hole 0). 169 written, 40 deleted (34 narrow check). **Eleven of twelve attempts
+     were rejected for structure: a verdict or head-to-head paragraph down to one sentence, or a deleted
+     headline, or more than a quarter gone.** Same rules, same pairs, twenty minutes apart: 4 of 6, then 1
+     of 6. **A single run of six is a weak measurement; the writer's variance at its default temperature
+     and a two-sentence paragraph's fragility decide more than the rules do.** Across both runs: 62
+     shipped sentences, 3 tool flags, hole 1 of 62.
+   - **SAMPLE 1, RUN 3 (13:38): 8 of 8 VERDICTS SHIPPED, 0 OF 4 NOTES.** 250 written, 55 deleted (48 narrow
+     check, 7 numbers, no crown deletion). 100 shipped sentences, 14 tool flags, **hole 1 of 100** ("Arsenal"
+     uncited). **The notes format is structurally failing:** every notes piece died on a stanza under two
+     sentences (notes4, the closing line, is asked for 2 to 3 and gets 1 to 2; one deletion kills it). That is
+     a format decision (a one-sentence closing stanza, or fewer stanzas), not a writer fault; Lucas decides.
+     **The count rule leaked on small numbers, found by the tools:** "five tags" passed because The Standard's
+     copy says "Five seasons" and "four tags" because every card has four dimensions; eight such counts
+     shipped and the tools flagged them. **Fixed: a count attached to tags or honours must be that kind's
+     total, sum or difference, nothing else** (`c89938d`, self-test 60 cases). The tools' tag counts no
+     longer take stray page numbers.
+   - **THE HOLE ACROSS EVERYTHING SHIPPED TODAY ON THE FINAL RULES: 2 of 162 sentences, both an uncited club
+     that the identity fact holds** (Arsenal, Marseille). The cited writer's residual kind 1 on these
+     samples is a true club name without its citation; nothing invented.
+   - **THE LISTS FOR LUCAS:** `_local/verdict-check/fresh_run3_lists.md` (sample 1 run 3: 14 flags, 89
+     unflagged), `fresh2_run1_lists.md` (sample 2 run 1: 3 flags, 46 unflagged) and `fresh2_run2_lists.md`
+     (sample 2 run 2: 0 flags, 13 unflagged).
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

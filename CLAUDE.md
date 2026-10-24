@@ -142,7 +142,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 - **LUCAS READ BOTH LISTS: "the first time this layer has produced something I would publish."** The hole stays 2 of 134 (my two hand-read candidates were cleared by the citation record); one quality residue no rule catches ("an availability that never watered"). **Both closable rules built** (a count must match the page's total; a separated pair's headline must name the winner), **the sample's tools repaired** (code flags on run 2's prose 21 to 11, one false left), self-test 49 cases. All in area 9.
 
-**NEXT:** the key in, then sample 2 (six separated pairs) and the sample 1 re-run, tools first then Lucas.
+- **THE RUNS (13:24 to 13:42 UTC, about $4.80; a key went invalid mid-run and cost $0.30, the 13:24 files are not results):** sample 2 run 1 **4 of 6 shipped**, the crown rule deleting 1 sentence in 138 on six crowned pairs (it deleted 46 in 333 this morning); two pieces lost to a word-boundary bug on "Ibrahimović" (fixed, `nameRe`) and to the narrow check undoing the count rule (fixed, `countsLine`). Sample 2 run 2, after the fixes, **1 of 6**: eleven of twelve attempts rejected for structure, same rules twenty minutes apart. Sample 1 run 3: **8 of 8 verdicts, 0 of 4 notes** (every notes piece dies on a stanza under two sentences: a format decision for Lucas). **The hole on today's final rules: 2 of 162 shipped sentences, both an uncited true club.** The count rule leaked on small numbers ("five tags" via The Standard's copy, "four tags" via four dimensions); fixed, bound to its kind, self-test 60. Lists in `_local/verdict-check/fresh_run3_lists.md`, `fresh2_run1_lists.md`, `fresh2_run2_lists.md`. Area 9 has it all.
+
+**NEXT (Lucas):** read the three lists; decide the notes format (a one-sentence closing stanza or fewer stanzas) and whether the verdict and head-to-head minimums stay at two; then one more run of each sample, since a run of six swings from 4 to 1 on the same rules.
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 
