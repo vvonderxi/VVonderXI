@@ -140,7 +140,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 - **AFTER RUN 2, BUILT THE SAME AFTERNOON (Lucas):** sample 2, six pairs the Index separates (`fresh_sample2.json`, `sample.js --sample`; only Winger and ST pairs separate at known names, no midfield or defender pair clears its margin); key passes per 90 at the card's two decimals (`aiPer90`, vv-core token bumped to `20261024a` on the five shipping surfaces); Reliability sent as the page prints it, the "% of a full season" gloss gone from the Compare request line and the card payload note; **the dimension caption calling Reliability a percentile logged in §D as a live page error with its check.** The three real faults that shipped are judged in area 9: two closable by code (a count must match the page's total; a separated pair's headline must name the winner), one residue. Self-test 36 cases.
 
-**NEXT (Lucas):** read the run 2 lists (`_local/verdict-check/fresh_run2_lists.md`); say whether to build the two closable rules; then run sample 2 and re-run sample 1 with the key in, tools first then Lucas.
+- **LUCAS READ BOTH LISTS: "the first time this layer has produced something I would publish."** The hole stays 2 of 134 (my two hand-read candidates were cleared by the citation record); one quality residue no rule catches ("an availability that never watered"). **Both closable rules built** (a count must match the page's total; a separated pair's headline must name the winner), **the sample's tools repaired** (code flags on run 2's prose 21 to 11, one false left), self-test 49 cases. All in area 9.
+
+**NEXT:** the key in, then sample 2 (six separated pairs) and the sample 1 re-run, tools first then Lucas.
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 

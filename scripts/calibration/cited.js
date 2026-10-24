@@ -137,7 +137,9 @@ const WRITER_SYSTEM = `You are the VVonderXI voice: thirty years of watching foo
 EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before anyone reads it:
 - any sentence that cites nothing, or an id that is not in the list;
 - any sentence that states anything its cited facts do not contain;
-- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count of the cited facts of one kind ("four honours", citing four honour facts).
+- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count that equals how many facts of one kind a player's card holds in the list ("four honours", when the list holds four honour facts for him; "two honours he does not", when one holds four and the other two).
+
+THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
@@ -160,7 +162,7 @@ const NOTES_FORMAT = `{"glance": [one sentence, the essence of the season],
  "notes": [[2 to 3 sentences], [2 to 3], [2 to 3], [2 to 3]]}   four stanzas: the essence, the honours and tags, the figures as evidence, a closing line`;
 function writerSystem(pack) {
   const rule = pack.type === 'notes' ? 'This is a single season: there is no comparison and no crown.'
-    : pack.winner ? `P1 names ${pack.names[pack.winner]} as the winner: you may name ${pack.names[pack.winner]}, and only ${pack.names[pack.winner]}, as the winner, as clearly as P1 does.`
+    : pack.winner ? `P1 names ${pack.names[pack.winner]} as the winner: you may name ${pack.names[pack.winner]}, and only ${pack.names[pack.winner]}, as the winner, as clearly as P1 does. The headline MUST name ${pack.names[pack.winner]}.`
     : `P1 says the Index cannot separate these two: NO sentence may name, imply or lean towards a winner. Banned outright: ${BANNED_CROWNS}, and every near variant. Say what each season holds that the other does not.`;
   return WRITER_SYSTEM.replace('${\'{CROWN_RULE}\'}', rule).replace('{CROWN_RULE}', rule).replace('{FORMAT}', pack.type === 'notes' ? NOTES_FORMAT : VERDICT_FORMAT);
 }
@@ -238,15 +240,22 @@ const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this se
   ['dimension', /'s (?:Goal Threat|Creation|Progression|Defensive): /], ['reliability', /'s Reliability: /], ['shots', / goals from \d+ shots$/],
   ['keypasses', / key passes per 90 minutes$/], ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
 function factKind(text) { const k = KINDS.find(([, re]) => re.test(text)); return k ? k[0] : 'other'; }
-function numbersOk(sentence, citedText, citedFacts) {
+function numbersOk(sentence, citedText, citedFacts, allFacts) {
   const vals = new Set();
   for (const x of PC.extractNumbers(citedText)) vals.add(x.value);
   (String(citedText).replace(/(\d),(\d{3})/g, '$1$2').match(/\d+(?:\.\d+)?/g) || []).forEach(n => vals.add(+n));
   const base = [...vals];
   for (const a of base) for (const b of base) { vals.add(Math.abs(a - b)); vals.add(a + b); }
-  const counts = {};
-  for (const f of citedFacts || []) { const k = factKind(f.text); counts[k] = (counts[k] || 0) + 1; const ks = k + '/' + (f.side || 'P'); counts[ks] = (counts[ks] || 0) + 1; }
-  Object.values(counts).forEach(c => vals.add(c));
+  /*  THE COUNT IS THE PAGE'S TOTAL, NOT THE CITED SUBSET (Lucas, 2026-10-24, after run 2). "Three tags to go
+      with it" on a four-tag card shipped because the sentence cited three of the four; a reader counts
+      four. So a count must equal a kind's total in the fact LIST for a side (what the page shows), or a sum
+      or difference of the two sides' totals ("two honours Salah does not": 4 against 2). A true subset
+      count ("two of his tags speak to durability") is deleted, the accepted price of plain prose.  */
+  const per = {};
+  for (const f of allFacts || citedFacts || []) { const k = factKind(f.text) + '/' + (f.side || 'P'); per[k] = (per[k] || 0) + 1; }
+  const byKind = {};
+  for (const [k, c] of Object.entries(per)) { const kind = k.split('/')[0]; (byKind[kind] = byKind[kind] || []).push(c); vals.add(c); }
+  for (const cs of Object.values(byKind)) for (const a of cs) for (const b of cs) { vals.add(a + b); vals.add(Math.abs(a - b)); }
   const bad = PC.extractNumbers(sentence).filter(x => !vals.has(x.value)).map(x => x.raw);
   return bad;
 }
@@ -270,7 +279,7 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     if (pack.type === 'verdict' && u.field === 'p1' && !u.cite.some(c => c[0] === 'A')) why.push('a Player A paragraph citing no A fact');
     if (pack.type === 'verdict' && u.field === 'p2' && !u.cite.some(c => c[0] === 'B')) why.push('a Player B paragraph citing no B fact');
     const citedFacts = pack.facts.filter(f => u.cite.includes(f.id)), citedText = citedFacts.map(f => f.text).join('\n');
-    const bad = numbersOk(u.s, citedText, citedFacts);
+    const bad = numbersOk(u.s, citedText, citedFacts, pack.facts);
     if (bad.length) why.push('numbers not in the cited facts: ' + bad.join(', '));
     if (MEASURE.test(u.s) && !MEASURE.test(citedText)) why.push('names a measure no card prints');
     u.code = why.slice();
@@ -293,6 +302,14 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
   const reasons = [];
   const head = pack.type === 'verdict' ? 'who' : 'glance';
   if (!units.some(u => u.field === head && u.kept)) reasons.push('the headline was deleted');
+  /*  ON A SEPARATED PAIR THE HEADLINE NAMES THE WINNER (Lucas, 2026-10-24, after run 2). Messi v Neymar
+      shipped "one clear winner" above a verdict that crowned Messi: a kind 4 shape by the letter, the
+      headline and the body disagreeing on what the page decided. Exact and cheap: the winner's surname
+      must appear in a kept headline sentence, or the piece goes to regeneration.  */
+  else if (pack.type === 'verdict' && pack.winner) {
+    const nm = pack.names[pack.winner], re = new RegExp('\\b' + nm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    if (!units.some(u => u.field === head && u.kept && re.test(u.s))) reasons.push(`the headline does not name ${nm}, whom the page crowns`);
+  }
   const paras = [...new Set(units.filter(u => u.para !== head).map(u => u.para))];
   const expected = pack.type === 'verdict' ? ['p1', 'p2', 'h2h', 'verdict'] : ['scout', 'notes1', 'notes2', 'notes3', 'notes4'];
   for (const p of expected) { const k = units.filter(u => u.para === p && u.kept).length; if (k < 2) reasons.push(`${p} has ${k} sentence${k === 1 ? '' : 's'} left`); }

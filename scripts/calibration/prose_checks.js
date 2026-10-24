@@ -45,7 +45,8 @@ function unitOf(w, next) {
   if (/^goals?$/.test(w)) return 'goals';
   if (/^assists?$/.test(w)) return 'assists';
   if (/^minutes?$/.test(w)) return 'minutes';
-  if (/^(appearances?|apps|times)$/.test(w)) return 'apps';
+  if (/^(appearances?|apps|times|games?|matches)$/.test(w)) return 'apps';
+  if (/^tags?$/.test(w)) return 'tags';
   if (/^(shots?|attempts)$/.test(w)) return 'shots';
   if (/^saves?$/.test(w)) return 'saves';
   if (/^percentile/.test(w)) return 'percentile';
@@ -115,7 +116,7 @@ function extractNumbers(text) {
     }
     if (!unit) {
       const bw = back.slice(-4);
-      if (/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) unit = 'years';
+      if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) unit = 'years';   // "Iconic at 91" is a score, not an age
       else if (bw.some(w => DIM.test(w))) unit = bw.some(w => /^(reliability|availability)$/.test(w)) ? 'reliability' : 'dimension';
       else for (let q = bw.length - 1; q >= 0 && !unit; q--) unit = unitOf(bw[q], bw[q + 1]);
     }
@@ -134,7 +135,7 @@ function pageFigures(ev) {
   const sides = [];
   if (/Card data:\n/.test(ev.evidence)) {
     const P = JSON.parse(ev.evidence.split('Card data:\n')[1]);
-    const s = { goals: P.goals, assists: P.assists, minutes: P.minutes, apps: P.appearances, age: +P.age, shots: P.shots_total, pct: [], rel: null, kp90: P.key_passes_per90, honours: (P.honours || []).length, playerHonours: (P.honours || []).filter(h => h.won_by === 'player').length, dims: {} };
+    const s = { goals: P.goals, assists: P.assists, minutes: P.minutes, apps: P.appearances, age: +P.age, shots: P.shots_total, pct: [], rel: null, kp90: P.key_passes_per90, honours: (P.honours || []).length, playerHonours: (P.honours || []).filter(h => h.won_by === 'player').length, tags: (P.tag_glosses || []).length, dims: {} };
     const vals = (P.dimensions && P.dimensions.values) || {};
     for (const [k, x] of Object.entries(vals)) { if (x.percentile_in_pool != null) { s.pct.push(x.percentile_in_pool); s.dims[k] = x.percentile_in_pool; } if (x.pct_of_full_season != null) s.rel = x.pct_of_full_season; }
     if (P.keeper) { const K = P.keeper; add('saves', K.saves); add('shots', K.shots_faced_derived); add('pct', K.save_rate_pct); add('points', K.save_rate_se_pp); (K.percentile_band || []).forEach(x => add('percentile', x)); add('pct', K.pool_median_pct); }
@@ -144,7 +145,9 @@ function pageFigures(ev) {
   } else {
     for (const l of ev.evidence.split('\n').filter(x => /^Player [AB]:/.test(x))) {
       const g = re => { const m = l.match(re); return m ? +m[1] : null; };
-      const s = { side: l[7], surname: (l.match(/^Player [AB]: ([^(]+?) \(/) || [])[1], goals: g(/, (\d+) goals \d+ assists/), assists: g(/ goals (\d+) assists/), minutes: g(/(\d+) min \//), apps: g(/min \/ (\d+) apps/), age: g(/, age (\d+)/), shots: g(/goals \d+ of (\d+) shots/), kp90: g(/key passes\/90 ([\d.]+)/), rel: g(/Reliability (\d+)% of a full season/), pct: [], dims: {} };
+      const s = { side: l[7], surname: (l.match(/^Player [AB]: ([^(]+?) \(/) || [])[1], goals: g(/, (\d+) goals \d+ assists/), assists: g(/ goals (\d+) assists/), minutes: g(/(\d+) min \//), apps: g(/min \/ (\d+) apps/), age: g(/, age (\d+)/), shots: g(/goals \d+ of (\d+) shots/), kp90: g(/key passes\/90 ([\d.]+)/), rel: g(/Reliability (\d+)/), pct: [], dims: {} };
+      const T = (l.match(/TAG MEANINGS: (.*?); \d+ min/) || [])[1] || '';
+      s.tags = T ? T.split(' | ').length : 0;
       for (const d of ['Goal Threat', 'Creation', 'Progression', 'Defensive']) { const x = g(new RegExp(d + ' (\\d+)')); if (x != null) { s.pct.push(x); s.dims[d] = x; } }
       if (s.rel != null) s.dims.Reliability = s.rel;
       const H = (l.match(/HONOURS: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || [])[1] || '';
@@ -159,6 +162,7 @@ function pageFigures(ev) {
     add('shots', s.shots); add('per90', s.kp90); s.pct.forEach(x => { add('percentile', x); add('dimension', x); });
     if (s.rel != null) { add('reliability', s.rel); add('pct', s.rel); add('dimension', s.rel); }
     add('contributions', (s.goals || 0) + (s.assists || 0)); add('honours', s.playerHonours); add('honours', s.honours);
+    add('tags', s.tags);   // A COUNT THE PAGE CAN VERIFY IS CHECKED AGAINST THE PAGE (Lucas, 2026-10-24): the tag count comes from the request, which the capture audits against the rendered page
   }
   // the rendered page: a number beside a unit word counts for that unit; every number counts as "on the page"
   const pageText = [ev.page && ev.page.compare || ''].concat(Object.values((ev.page && ev.page.cards) || {})).join('\n');
@@ -179,7 +183,7 @@ function near(v, set, qual) {
 function derived(F, unit) {
   const base = [...(F[unit] || [])], out = new Set(base);
   for (const a of base) for (const b of base) { out.add(Math.abs(a - b)); out.add(a + b); }
-  if (unit === 'points') for (const u of ['percentile', 'reliability']) { const xs = [...(F[u] || [])]; for (const a of xs) for (const b of xs) out.add(Math.abs(a - b)); }
+  if (unit === 'points') for (const u of ['percentile', 'reliability', 'score']) { const xs = [...(F[u] || [])]; xs.forEach(x => out.add(x)); for (const a of xs) for (const b of xs) out.add(Math.abs(a - b)); }   // "one point above Messi's 96", "separated by two points" (2026-10-24)
   if (unit === 'years') { const xs = [...(F.years || [])]; for (const a of xs) for (const b of xs) out.add(Math.abs(a - b)); }
   if (unit === 'minutes' || unit === 'shots') {   // "every 49 minutes", "one goal every three and a half shots"
     const num = [...(F[unit] || [])], den = [...(F.goals || []), ...(F.assists || []), ...(F.contributions || [])];
@@ -188,15 +192,20 @@ function derived(F, unit) {
   return out;
 }
 
+/*  A TAG NAME IS NOT A MEASURE (Lucas, 2026-10-24). "The Dribbler" was flagged four times in run 2 as the
+    dribbles measure no page prints; the tag is on the page and the sentence was quoting it. Tag names
+    that contain a measure word are blanked before either check reads the prose.  */
+const TAG_NAMES = /\bThe Dribbler\b/gi;
+function stripTagNames(prose) { return String(prose).replace(TAG_NAMES, 'that tag'); }
 function checkNumbers(prose, ev) {
   const { F, onPage } = pageFigures(ev), flags = [], unbound = [];
-  for (const n of extractNumbers(prose)) {
+  for (const n of extractNumbers(stripTagNames(prose))) {
     const why = (u, more) => ({ quote: n.clause, why: `"${n.raw}" ${more}`, kind: 2, check: 'numbers', unit: u });
     if (NO_SOURCE[n.unit]) {
       if (!(F[n.unit] && F[n.unit].has(n.value))) flags.push(why(n.unit, `is a number of ${NO_SOURCE[n.unit]}, which no page shows`));
       continue;
     }
-    if (n.unit && n.unit !== 'honours') {
+    if (n.unit && n.unit !== 'honours' && n.unit !== 'tags') {
       const set = derived(F, n.unit);
       if (!set.size) { flags.push(why(n.unit, `is a figure of a kind (${n.unit}) no page shows for this pair`)); continue; }
       const ok = n.qualifier ? near(n.value, set, n.qualifier) : (set.has(n.value) || (n.unit === 'shots' || n.unit === 'minutes') && near(n.value, set, null) && !Number.isInteger(n.value));
@@ -204,6 +213,7 @@ function checkNumbers(prose, ev) {
       continue;
     }
     if (n.unit === 'honours') { if (!derived(F, 'honours').has(n.value)) flags.push(why('honours', 'matches no honours count on the page')); continue; }
+    if (n.unit === 'tags') { if (!derived(F, 'tags').has(n.value)) flags.push(why('tags', `matches no tag count on the page (${[...(F.tags || [])].join(', ') || 'none'}), nor a sum or difference of two`)); continue; }
     if (onPage.has(n.value) || (n.qualifier && near(n.value, onPage, n.qualifier))) unbound.push({ raw: n.raw, clause: n.clause });
     else flags.push(why(null, 'is a number that appears nowhere on the page'));
   }
@@ -228,7 +238,7 @@ const COVERAGE = /\b(none|neither|not recorded|no record|absent|exists?|present|
 function checkMeasures(prose, ev) {
   const keeper = /"keeper":/.test(ev.evidence), flags = [];
   const pageText = [ev.page && ev.page.compare || ''].concat(Object.values((ev.page && ev.page.cards) || {})).join('\n') + '\n' + ev.evidence;
-  const text = clean(prose).replace(/([A-Za-z])-(?=[A-Za-z])/g, '$1 ');
+  const text = clean(stripTagNames(prose)).replace(/([A-Za-z])-(?=[A-Za-z])/g, '$1 ');
   for (const sent of (text.match(/(?:\d\.\d|[^.!?])+[.!?]*/g) || [])) {
     const coverage = COVERAGE.test(sent);
     for (const cl of (sent.match(/(?:\d[.,]\d|[^;,:])+/g) || [])) {

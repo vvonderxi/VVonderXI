@@ -432,8 +432,34 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    **THE SAMPLE'S OWN TOOLS NEED THREE REPAIRS BEFORE THE NEXT READ, or Lucas reads 16 false flags
    again:** "The Dribbler" is a tag name, not the dribbles measure; a count of tags or honours should be
    checked against the page's own count, which the page check can make; and the unit binding for "points"
-   and "VV" should accept a VV Score and a percentile. Not done; listed so the next session does not
-   rediscover them.
+   and "VV" should accept a VV Score and a percentile.
+   **[DONE THE SAME AFTERNOON (Lucas, 2026-10-24), plus his fourth: a count the page can verify is checked
+   against the page, not guessed at.** `prose_checks.js`: "The Dribbler" blanked as a tag name before either
+   check; a `tags` unit whose page count comes from the request (audited against the rendered page), checked
+   like honours; "points" accepts a VV Score, a percentile or a Reliability value and any difference of two;
+   "at 91" is an age only between 14 and 45; "games" and "matches" are appearances; the Reliability regex
+   follows the request's new shape. **Re-run over run 2's shipped prose: code flags 21 to 11, and of the 11,
+   one is still false ("those two tags", a subset reference), seven are the one-decimal key passes now fixed
+   at source, three are real.** The sentence judge's one wrong flag ("a shared trio") is the model's and
+   stays.]**
+   **LUCAS'S READ OF RUN 2 (2026-10-24): "The unflagged prose is good. Rodri v Rice and De Bruyne v Pogba
+   read like someone who knows football and is being careful, and quoting the card's own tag copy works.
+   That is the first time this layer has produced something I would publish."** Recorded because it is the
+   first such verdict in the record, and because the method, tools first then Lucas, produced it.
+   - **THE HOLE STAYS 2 OF 134.** My hand read of the unflagged list raised two more candidates ("two Iconic
+     seasons, one club" on Kane v Son; "Hamšík at 29"), the same uncited-identity shape as Barcelona and
+     Liverpool. **The citation record cleared both: each sentence cited the identity fact.** A reading finds
+     candidates; the record decides. The method worked in the unexpected direction once, and then the
+     record corrected the reader, which is also the method.
+   - **A QUALITY RESIDUE, SEPARATE FROM THE HOLE (Lucas): "an availability that never watered" (Rodri v
+     Rice) is garbled, true to its facts, and no rule catches it.** Prose can be true and still not
+     publishable, and nothing measures that but a person. It is why the unflagged list is read, not only
+     the flags.
+   - **BOTH CLOSABLE RULES BUILT (`cited.js`, self-test 49 cases):** a count must equal a kind's total in
+     the fact list for a side, or a sum or difference of the two sides' totals, never the cited subset
+     (accepted limit, in the self-test: a subset count that happens to equal a difference of totals passes);
+     and on a separated pair the headline must name the winner or the piece regenerates. The writer's
+     instructions say both.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

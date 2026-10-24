@@ -101,6 +101,39 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('fix 5: no fact says "of a full season" (the League Title copy says "across a full season", and that is the card\'s own text)', !kpF.some(t => /of a full season/i.test(t)) && !rodri.facts.some(f => /of a full season/i.test(f.text)) && !pack.facts.some(f => /of a full season/i.test(f.text)));
   expect('fix 5: the Compare line parses with or without the old gloss', rodri.facts.some(f => /^Rodri's Reliability: \d+ out of 100$/.test(f.text)));
   expect('fix 5: the number rule still binds the Reliability figure', (await C.judgeDraft(pack, { p1: [ok(`Messi played ${pack.facts.find(f => /^Messi's Reliability/.test(f.text)).text.match(/: (\d+)/)[1]} of 100 on Reliability.`, [pack.facts.find(f => /^Messi's Reliability/.test(f.text)).id])] }, narrow)).units[0].kept);
+  // The two closable rules (Lucas, 2026-10-24, after run 2).
+  const tagsBig = tagsA.length >= tagsB.length ? tagsA : tagsB, sideBig = tagsA.length >= tagsB.length ? 'Messi' : 'Neymar';
+  expect('rule A: the fair pack has a side with three or more tags', tagsBig.length >= 3);
+  // a subset count is deleted unless that number is some kind's page total, or a sum or difference of two sides' totals (then it is checkable by accident)
+  const totals = {}; for (const f of pack.facts) { const k = C.factKind(f.text) + '/' + (f.side || 'P'); totals[k] = (totals[k] || 0) + 1; }
+  const allowed = new Set(Object.values(totals)); const byK = {}; for (const [k, c] of Object.entries(totals)) (byK[k.split('/')[0]] = byK[k.split('/')[0]] || []).push(c);
+  for (const cs of Object.values(byK)) for (const a of cs) for (const b of cs) { allowed.add(a + b); allowed.add(Math.abs(a - b)); }
+  const sub = tagsBig.length - 1, subOk = sub >= 2 && !allowed.has(sub);
+  const j7 = await C.judgeDraft(pack, { p1: [
+    ok(`${sideBig} carries ${WORD[sub]} tags that speak to volume.`, tagsBig.slice(0, sub)),
+    ok(`${sideBig} carries ${WORD[tagsBig.length]} tags.`, tagsBig.slice(0, 2)),
+    ok(`Messi holds ${WORD[Math.abs(hon.length - pack.facts.filter(f => f.side === 'B' && /^Honour/.test(f.text)).length)]} honours Neymar does not.`, hon),
+  ] }, narrow);
+  expect('rule A: a count of a true subset of the cited tags is deleted (the page shows more)' + (subOk ? '' : ' [skipped: the subset size is itself a page total]'), subOk ? j7.units[0].why.some(w => /numbers not in the cited facts/.test(w)) : true);
+  expect('rule A: the page\'s own tag total is kept even when fewer tag facts are cited', j7.units[1].kept);
+  expect('rule A: the difference between the two sides\' honour totals is kept', j7.units[2].kept);
+  // the same rule on synthetic facts, so it is exercised whatever the live pack's totals happen to be (no digits in the fact text)
+  const tagF = (side, n) => Array.from({ length: n }, (_, i) => ({ id: side + (i + 2), side, text: `Tag: ${side === 'A' ? 'Alpha' : 'Beta'} ${'abcdef'[i]}. The card says: "copy"` }));
+  const idF = [{ id: 'A1', side: 'A', text: 'X (X), 20/21 season, C, L, ST, age 25' }, { id: 'B1', side: 'B', text: 'Y (Y), 20/21 season, C, L, ST, age 26' }];
+  const synth0 = idF.concat(tagF('A', 4)), cite3 = tagF('A', 4).slice(0, 3), txt3 = cite3.map(f => f.text).join('\n');
+  expect('rule A (synthetic): "three tags" citing three of four is deleted', C.numbersOk('X carries three tags.', txt3, cite3, synth0).includes('three'));
+  expect('rule A (synthetic): "four tags" citing three of four is kept, the page total', !C.numbersOk('X carries four tags.', txt3, cite3, synth0).length);
+  expect('rule A (synthetic): "six tags" is deleted', C.numbersOk('X carries six tags.', txt3, cite3, synth0).includes('six'));
+  const synth1 = idF.concat(tagF('A', 4), tagF('B', 1));
+  expect('rule A (synthetic): "three more tags than Y" is kept, a difference of totals (4 against 1)', !C.numbersOk('X carries three more tags than Y.', txt3, cite3, synth1).length);
+  expect('rule A (synthetic): "five tags between them" is kept, a sum of totals', !C.numbersOk('Five tags between them.', txt3, cite3, synth1).length);
+  expect('rule A (synthetic): the accepted limit: "three tags" passes when three is also the difference of totals', !C.numbersOk('X carries three tags.', txt3, cite3, synth1).length);
+  const j8 = await C.judgeDraft(pack, { who: [ok('One clear winner, 95 to 87.', ['P1', 'A2', 'B2'])] }, narrow);
+  expect('rule B: on a separated pair a headline that does not name the winner rejects the piece', j8.reasons.some(r => /headline does not name Messi/.test(r)));
+  const j9 = await C.judgeDraft(pack, { who: [ok('Messi wins it clearly, 95 to 87.', ['P1', 'A2', 'B2'])] }, narrow);
+  expect('rule B: a headline naming the winner passes that rule', !j9.reasons.some(r => /headline does not name/.test(r)));
+  const j10 = await C.judgeDraft(tie, { who: [ok('Kane and Heung-Min, two Iconic seasons.', ['A2', 'B2'])] }, narrow);
+  expect('rule B: on a tie the headline need name nobody', !j10.reasons.some(r => /headline does not name/.test(r)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();
