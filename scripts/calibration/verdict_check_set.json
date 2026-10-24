@@ -180,6 +180,14 @@
      "why": "club narrative, softer",
      "confidence": "J",
      "added": "2026-10-23"
+    },
+    {
+     "quote": "He arrived and he dominated.",
+     "kind": 1,
+     "why": "an arrival, career history not on the page",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
     }
    ],
    "leave": [
@@ -560,6 +568,29 @@
      "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Kane's Chronicle: \"a new Bundesliga life\", \"his first nine games\"",
      "confidence": "C",
      "changed": "2026-10-23"
+    },
+    {
+     "quote": "he pushed the competition into territory it had not occupied before",
+     "kind": 1,
+     "why": "a record claim; on the page only the Chronicle says record, and the Chronicle counts for figures only",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
+    },
+    {
+     "quote": "the record-breaking Golden Boot",
+     "kind": 1,
+     "why": "the same: the honour on the page does not say record; only the Chronicle and the writer payload do",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
+    },
+    {
+     "quote": "The Golden Boot that year was not ordinary. It came labelled \"record\"",
+     "kind": 1,
+     "why": "the rendered honour does not say record; only the writer payload (\"Golden Boot 2020 (player), record\") and the Chronicle do (was leave: the card's honour says record (the checker flagged it))",
+     "confidence": "C",
+     "changed": "2026-10-24"
     }
    ],
    "leave": [
@@ -602,13 +633,6 @@
      "why": "figure: 8 v 7",
      "type": "figure",
      "confidence": "C",
-     "added": "2026-10-23"
-    },
-    {
-     "quote": "The Golden Boot that year was not ordinary. It came labelled \"record\"",
-     "why": "the card's honour says record (the checker flagged it)",
-     "type": "judgement",
-     "confidence": "J",
      "added": "2026-10-23"
     }
    ],
@@ -702,6 +726,14 @@
      "why": "Chronicle history is not checkable evidence (narrowed 2026-10-23); was leave: Messi's Chronicle: \"he scored fifty in the league, a figure no one has matched\"",
      "confidence": "C",
      "changed": "2026-10-23"
+    },
+    {
+     "quote": "The Golden Boot for 2014",
+     "kind": 1,
+     "why": "the card is 14/15; a 2014 Golden Boot belongs to another season in the Cabinet",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
     }
    ],
    "leave": [
@@ -1284,6 +1316,22 @@
      "confidence": "C",
      "added": "2026-10-23",
      "found_by": "code number check, first run"
+    },
+    {
+     "quote": "The UNFP Player of the Year",
+     "kind": 1,
+     "why": "the page says Player of the Season; the awarding body is not on it",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
+    },
+    {
+     "quote": "producing those figures in Ligue 1 at 23 is a different ask from producing their equivalent in the Premier League at 32",
+     "kind": 1,
+     "why": "league difficulty, not on the page",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
     }
    ],
    "leave": [
@@ -1449,6 +1497,22 @@
      "confidence": "C",
      "added": "2026-10-23",
      "found_by": "code crown read, first key run"
+    },
+    {
+     "quote": "The UNFP Ligue 1 Player of the Year",
+     "kind": 1,
+     "why": "the same",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
+    },
+    {
+     "quote": "in a harder competition",
+     "kind": 1,
+     "why": "league difficulty, not on the page",
+     "confidence": "C",
+     "added": "2026-10-24",
+     "found_by": "every sentence judged alone, Sonnet and Haiku"
     }
    ],
    "leave": [],

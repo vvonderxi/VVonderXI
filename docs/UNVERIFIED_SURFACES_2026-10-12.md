@@ -271,19 +271,34 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    false holds, flags byte-identical over two runs. Its three 3b misses were all "edges" wording
    ("Messi 11/12 edges it"), **the exact phrase the writer's prompt bans first as its counter-example
    for ties, and the crown reader did not recognise it as a crown.** The crown prompt now carries the
-   writer's banned list word for word; not yet re-run.
+   writer's banned list word for word.
+   **RE-RUN 2026-10-24: NO NET GAIN. THE PROMPT CHANGE MOVED WHICH CROWNS THE MODEL SEES, NOT HOW
+   MANY.** It caught "Messi 11/12 edges it" and "favours Messi by the thinnest of margins" and lost
+   "at 24 against 29: the career stage adds a dimension..." and "make Salah's the harder thing to
+   have done", both caught the run before (3b 6 of 9 both times; kind 4 5 of 7 to 4 of 7). **This is
+   evidence for keeping crowns in code and treating the model's crown reading as the unreliable
+   half (Lucas, 2026-10-24):** the rules that decide a crown against the page are exact; which
+   sentences the model calls crowns shifts with any wording change.
    **A TOOL HAS NOW FOUND, THREE TIMES, WHAT A HAND READING MISSED (Lucas, 2026-10-23).** The
    `--audit` found card.html still sending starts in its keeper block; the number check found three
    kind 2 failures two hand re-reads missed; the crown read found five more (three 3b crowns on pairs
    the page cannot separate, among them "It was enough.", plus a kind 3 and a kind 4). **The lesson
    is not that the readings were sloppy: reading prose by hand does not scale and was never going
    to.** Hand reading labels a set; tools check prose.]**
-   **KIND 1: DETECTION CANNOT CLOSE IT, AND THAT IS THE ARITHMETIC (Lucas, 2026-10-23).** The set
-   holds 88 kind 1 failures across 12 pieces, about 7 per piece. A checker that catches 95% of them,
-   sentence by sentence, still misses at least one in a piece with probability 1 - 0.95^7, about
-   30%: **three pieces in ten ship with an invented fact.** The shipping checker catches one in
-   five. **Do not reach for a better checker as the answer; this calculation is why.** The writer
-   has to stop producing them.
+   **KIND 1: DETECTION CANNOT CLOSE IT. MEASURED 2026-10-24, NOT ESTIMATED.** Every sentence judged
+   alone against the rendered page (option 2, `score.js --sentences`, `ad9dfb3`): Sonnet 4.6 catches
+   kind 1 62 of 88, Haiku 4.5 58 of 88, against the shipping checker's 8. That is about 70% per
+   sentence. The twelve pieces hold about 7 kind 1 failures each, so a piece ships with at least one
+   uncaught with probability 1 - 0.7^7, about 92%. **At the best per-sentence detection we have,
+   nine pieces in ten would ship an invention.** (The 2026-10-23 estimate assumed a 95% checker and
+   got three in ten; the measured checker is far below that.) **Do not reach for a better checker
+   as the answer; this calculation is why.** The writer has to stop producing them.
+   Option 2's other findings: Sonnet held 1 of 38 leave sentences (Foden's Player of the Season
+   copy) and its 6 extra flags were all real; Haiku held none, but about 12 of its 20 extra flags
+   were opinion lines the set does not label, so its precision is worse than its score. Sonnet is
+   the model for option 1's narrow check (Lucas). 8 real kind 1 failures the two models found are
+   now labelled (the UNFP award name twice, "in a harder competition", "He arrived and he
+   dominated.", among them).
    **THE PLAN, DECIDED 2026-10-23, IN ORDER:** (a) the "edges" re-run of the crown read; (b) option
    2, measure: every sentence judged on its own, Haiku against Sonnet, one key run, to learn how much
    of the one in five was the checker skimming; (c) option 1, prevent: the writer gets the page as a
