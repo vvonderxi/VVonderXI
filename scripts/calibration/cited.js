@@ -89,10 +89,9 @@ function sideFacts(line, P) {
   }
   const rel = g(/Reliability (\d+)/);
   if (rel != null) F.push(reliabilityFact(surname, rel));
-  const shots = g(/goals \d+ of (\d+) shots/);
-  if (shots != null) F.push(`${surname}: ${goals} goals from ${shots} shots`);
-  const kp = g(/key passes\/90 ([\d.]+)/);
-  if (kp != null) F.push(`${surname}: ${Number(kp).toFixed(2)} key passes per 90 minutes`);
+  /*  NO SHOTS TOTAL AND NO KEY PASSES PER 90 ON A COMPARISON (Lucas, 2026-10-24): the Compare page prints
+      neither, so the line no longer carries them, and a verdict's reader could not have checked them since
+      10-22. The fact list follows the page, never the other way round. The card's notes keep both.  */
   const H = g(/HONOURS: (.*?); (?:CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
   for (const h of (H ? H.split(/; (?=[A-Z])/) : [])) {
     const m = h.match(/^(.+?) \d{4} \((player|team)\)/);

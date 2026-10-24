@@ -4102,7 +4102,10 @@ body.light .pkmsub{color:var(--ink-soft)}
       /*  ONLY FIGURES THE READER CAN CHECK (2026-10-22). vvAIStats now sends key passes and total shots
           only for the positions whose card prints them, and no passes per 90, dribbles, duels,
           penalty goals or starts, because no page prints those.  */
-      if(a.key_passes_per90!=null) b.push('key passes/90 '+a.key_passes_per90);
+      /*  KEY PASSES PER 90 AND THE SHOTS TOTAL ARE NOT SENT FROM THIS PAGE (Lucas, 2026-10-24). This page prints
+          neither (its Proof panel is per 90 and conversion; the shots total and key passes are on the card), so
+          since 10-22 they were figures a verdict's reader could not check. THE RULE: the fact list follows the
+          page, never the other way round. The card still sends both for its notes, where they are printed.  */
       /*  DENOMINATORS AS BOUND PAIRS , FACTS, STATED AND NEVER GRADED. Written as "X of Y"
           so the pair cannot be split by the serialiser and arrive as two loose numbers.
           A HALF-PAIR IS NOT SENT. Where the denominator is null the whole pair is dropped
@@ -4111,7 +4114,8 @@ body.light .pkmsub{color:var(--ink-soft)}
           successes without the attempts.  */
       /*  SAME GUARD AS line() , the pair is dropped when goals were never recorded, rather
           than printing "goals 0 of 41 shots" for a card that has no goals figure at all.  */
-      if(a.shots_total!=null && c.goals!=null && (a.recorded?a.recorded.goals!==false:true)) b.push('goals '+c.goals+' of '+a.shots_total+' shots');
+      /*  'goals X of Y shots' left this line with key passes above, same rule; the comparison prints conversion
+          instead, and that is in PROOF per 90 below.  */
 
       /*  HONOURS , THE CLAIMS BLOCK. Asserted outright: the platform already asserted them
           on the card face. won_by keeps a team title from being written as a personal one,

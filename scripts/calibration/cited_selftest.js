@@ -236,6 +236,10 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('proof (card): a defender\'s tackles, interceptions and blocks are facts, NR stated as not recorded', !!tkF && !!blF);
   expect('proof (card): "71 tackles" citing the row passes; "80 tackles" is deleted', C.numbersOk('He made 71 tackles in all.', tkF.text, [tkF], dn.facts).length === 0 && C.numbersOk('He made 80 tackles in all.', tkF.text, [tkF], dn.facts).join() === '80');
   expect('tools: tackles, interceptions and blocks are units the number check binds', PC2.extractNumbers('71 tackles and 40 interceptions and 9 blocks').map(x => x.unit).join(',') === 'tackles,interceptions,blocks');
+  // the per-page rule, closed (Lucas, 2026-10-24): a comparison carries no shots total and no key passes per 90, which the Compare page does not print; the card keeps both
+  const dbp = C.verdictFacts(EV.items.find(x => x.id === 'debruyne1718-pogba1819'));
+  expect('per-page rule: a comparison carries no key passes per 90 and no shots total', !dbp.facts.some(f => / key passes per 90 minutes$| goals from \d+ shots$/.test(f.text)) && dbp.facts.some(f => / goals per 90 minutes$/.test(f.text)));
+  expect('per-page rule: the card keeps shots total and key passes per 90 for its notes', osiN.facts.some(f => / goals from \d+ shots$/.test(f.text)) && kpF.some(t => / key passes per 90 minutes$/.test(t)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

@@ -655,6 +655,14 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    `docs/PAGE_FACTS_2026-10-24.md` and not changed:** on Compare a CDM pair still has no tackles, because the
    Compare Proof panel prints attacking rows for every pool; and the Compare line has carried key passes per 90
    and the shots total since 10-22, which the Compare page does not print.
+   **BOTH DECIDED THE SAME NIGHT, AS CONSEQUENCES OF THE PER-PAGE RULE (Lucas: "the fact list follows the page,
+   never the other way round"; the third time this week the fix was to give the writer the page rather than
+   bend either one).** Key passes per 90 and the shots total are OFF the verdict fact list and off the Compare
+   request line, uncheckable by a verdict's reader since 10-22 ("a rule with convenient exceptions is not one");
+   the card's notes keep both. A CDM pair on Compare therefore writes with no defensive figures, which is correct
+   and honest under the rule; the fault is the Compare Proof panel printing attacking rows to a defender pair,
+   logged in §D as a page error, not a payload fix, so that when the panel prints per-pool rows the facts follow.
+   Both samples re-captured, audit clean. Nothing runs until the cap lifts.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
