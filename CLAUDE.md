@@ -136,7 +136,7 @@ Each session appends: date | chat/task | what was done | status | anything the n
 - **HOMEPAGE PAIRS OFF AGAIN** (`84a8b00`, owner's decision): search box and buttons, as 10-17.
 - **THE KEY:** in only for the runs, out at the end; it expires end of November.
 
-**NEXT, IN ORDER (Lucas):** the "edges" re-run; option 2 (every sentence judged alone, Haiku v Sonnet, one key run); then option 1 (the writer cites a numbered fact for every sentence, uncited sentences dropped), judged on a fresh sample read by hand. Option 5, prose back with a known kind 1 rate, is off permanently. All in area 9.
+**NEXT, IN ORDER (Lucas):** the "edges" re-run; option 2 (every sentence judged alone, Haiku v Sonnet, one key run); then option 1 (the writer cites a numbered fact for every sentence, uncited sentences dropped), judged on a fresh sample read TOOLS FIRST, THEN LUCAS: every check run, and he reads both the flags and every unflagged sentence (the method, area 9). Option 5, prose back with a known kind 1 rate, is off permanently. All in area 9.
 
 ### 2026-10-09 to 2026-10-17 | Nine days live, none of them logged here, and a file that said nothing was live
 

@@ -290,7 +290,12 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    numbered fact list and tags every sentence with the facts it rests on, code drops any sentence
    with no tag or a tag that does not exist, and a narrow model check asks only whether each
    sentence's cited facts support it (the hole left: a real fact stretched, a Golden Boot written up
-   as "a record"). Option 1 is judged on a FRESH sample read by hand, not on the twelve.
+   as "a record"). Option 1 is judged on a FRESH sample, not on the twelve.
+   **THE METHOD FOR READING ANY FRESH SAMPLE (Lucas, 2026-10-24; the method, not a preference): TOOLS
+   FIRST, THEN LUCAS.** Run every check over the sample and give Lucas two lists: the flags, and
+   every sentence nothing flagged. He reads both: the flags to confirm they are real, the unflagged
+   to find what the tools cannot see. Hand reading alone missed eight failures the tools found on
+   2026-10-23; tools alone cannot see what they were not built for.
    **IF OPTION 1 CANNOT GET A FRESH SAMPLE THROUGH, THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
