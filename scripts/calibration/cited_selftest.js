@@ -178,6 +178,38 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('format drift: a bare-string headline is read as a sentence (deleted for citing nothing, not as empty)', jf.units[0].s.startsWith('Kane and') && jf.units[0].why.includes('cites nothing') && !jf.units[0].why.includes('empty'));
   expect('format drift: an inline [A1, A3] tail becomes the citation and leaves the sentence', jf.units[1].s === 'Kane scored his goals for Tottenham.' && jf.units[1].cite.join(',') === 'A1,A3' && jf.units[1].kept);
   expect('format: the headline is specified as an object with a cite', /"who": \[\{"s":/.test(C.VERDICT_FORMAT) && /"glance": \[\{"s":/.test(C.NOTES_FORMAT));
+  // the four decisions after the six runs (Lucas, 2026-10-24)
+  const dimQ = ['Goal Threat', 'Creation', 'Progression', 'Defensive'].map((d, i) => ({ id: 'A' + (i + 2), side: 'A', text: `Osimhen's ${d}: 90th percentile among ST seasons` })).concat([{ id: 'A6', side: 'A', text: 'Osimhen\'s Reliability: 80 out of 100' }]);
+  const tagQ4 = ['Finisher', 'Poacher', 'Workhorse', 'Iron Man'].map((t, i) => ({ id: 'A' + (i + 7), side: 'A', text: `Tag: ${t}, meaning what the card says` }));
+  const allQ = dimQ.concat(tagQ4);
+  const ct = dimQ.map(f => f.text).join('\n');
+  expect('dimension counts: "three dimensions" citing four of them passes (a subset up to the total)', C.numbersOk('He sits in the 90s in three dimensions.', ct, dimQ, allQ).length === 0);
+  expect('dimension counts: "five attributes" passes (four dimensions and Reliability)', C.numbersOk('All five attributes are on the card.', ct, dimQ, allQ).length === 0);
+  expect('dimension counts: "six dimensions" on a single card is deleted', C.numbersOk('He leads in six dimensions.', ct, dimQ, allQ).join() === 'six');
+  expect('dimension counts: tags stay exact, "three tags" on a four-tag card is still deleted', C.numbersOk('Three tags sit on his card.', tagQ4.map(f => f.text).join('\n'), tagQ4, allQ).join() === 'Three');
+  expect('dimension counts: "four tags" on a four-tag card passes', C.numbersOk('Four tags sit on his card.', tagQ4.map(f => f.text).join('\n'), tagQ4, allQ).length === 0);
+  expect('notes form: the scout and the closing stanza ask for figures and card copy only, and "cost to deny" is gone', (C.NOTES_FORMAT.match(/FIGURES AND CARD COPY ONLY/g) || []).length === 2 && !/cost to deny/.test(C.NOTES_FORMAT));
+  expect('headline instruction: the result and one cited fact, nothing more, in the system prompt and the format', /THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE/.test(C.writerSystem(pack)) && /the result and one cited fact, nothing more/.test(C.VERDICT_FORMAT));
+  // the tools' cross-unit repair: the twelve flags on the four clean runs were all true numbers; a number the page does not print still flags
+  const fs2 = require('fs'), evPath2 = __dirname + '/../../_local/verdict-check/fresh2_evidence.json';
+  const E2 = fs2.existsSync(evPath2) ? require(evPath2) : { items: [] };
+  const ev2 = id => EV.items.find(x => x.id === id) || E2.items.find(x => x.id === id);
+  const twelve = [
+    ['ronaldo1516-sancho2021', 'Ronaldo scored 35 goals to Sancho\'s 8, a gap of 27.'], ['ibrahimovic1516-lacazette2425', 'Ibrahimović\'s 38 goals exceed Lacazette\'s 15 by 23.'],
+    ['ibrahimovic1516-lacazette2425', 'He was described as elite not once but for years across five seasons at the top level.'], ['messi1920-candreva2122', 'Messi\'s 25 goals against Candreva\'s 7 is a gap of 18.'],
+    ['messi1920-candreva2122', 'Candreva played more, and his 36 appearances against Messi\'s 33 underline the point.'], ['benzema2122-mbappe2223', 'Mbappé reached a total of two more goals than Benzema over two more appearances.'],
+    ['rodri2324-rice2324', 'Rodri scored more, while Rodri\'s 8 goals in 35 appearances compares to Rice\'s 7 in 38.'], ['rodri2324-rice2324', 'Rodri logged 2938 minutes across 35.'],
+    ['notes-osimhen2223', 'Four assists alongside those 26 goals across 32 appearances give a combined goal involvement of 30 in a single Serie A season.'], ['bruno2021-hazard1819', 'The Standard calls him elite not once but for years across five top level seasons.'],
+    ['debruyne1718-pogba1819', 'De Bruyne created more, and his 3.24 key passes per 90 minutes outpace Pogba\'s 1.64.'], ['notes-watkins2324', 'Add 13 assists to those 19 goals and the combined figure of 32 direct goal involvements across 3221 minutes makes the case on its own.'],
+  ].filter(([id]) => ev2(id));
+  const stillFlagged = twelve.filter(([id, s]) => PC2.checkNumbers(s, ev2(id)).flags.length);
+  expect(`tools repair: the twelve true clauses raise no flag (${twelve.length} checkable here)`, twelve.length >= 8 && stillFlagged.length === 0);
+  const offPage = id => { const op = PC2.pageFigures(ev2(id)).onPage; for (let v = 51; v < 400; v++) if (!op.has(v) && v !== 90) return v; };
+  const rr = offPage('rodri2324-rice2324'), rb = offPage('benzema2122-mbappe2223');
+  expect('tools repair: a difference the sentence does not support still flags', PC2.checkNumbers(`Rodri scored 8 goals to Rice's 7, a gap of ${rr}.`, ev2('rodri2324-rice2324')).flags.length === 1);
+  expect('tools repair: a back-bound number the page does not print still flags', PC2.checkNumbers(`Rodri logged 2938 minutes across ${rr}.`, ev2('rodri2324-rice2324')).flags.length === 1);
+  expect('tools repair: "over N appearances" with N nowhere on the page still flags', PC2.checkNumbers(`Mbappé scored two more goals over ${rb} appearances.`, ev2('benzema2122-mbappe2223')).flags.length === 1);
+  expect('tools repair: a count of dimensions above the page total flags, one within it does not', PC2.checkNumbers('He led in six attributes.', ev2('notes-osimhen2223')).flags.length === 1 && PC2.checkNumbers('He led in three attributes.', ev2('notes-osimhen2223')).flags.length === 0);
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

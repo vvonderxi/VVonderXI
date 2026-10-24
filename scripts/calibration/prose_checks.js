@@ -41,12 +41,13 @@ function unitOf(w, next) {
   if (/^(spot|penalty|penalties|non)$/.test(w) || (w === 'open' && next === 'play')) return 'penalties';
   if (/^dribbl/.test(w)) return 'dribbles';
   if (/^duels?$/.test(w)) return 'duels';
-  if (w === 'goal' && /^contribution/.test(next || '')) return 'contributions';
+  if (w === 'goal' && /^(contribution|involvement)/.test(next || '')) return 'contributions';
   if (/^goals?$/.test(w)) return 'goals';
   if (/^assists?$/.test(w)) return 'assists';
   if (/^minutes?$/.test(w)) return 'minutes';
   if (/^(appearances?|apps|times|games?|matches)$/.test(w)) return 'apps';
   if (/^tags?$/.test(w)) return 'tags';
+  if (/^(dimensions?|measures?|attributes?|metrics?|pillars?)$/.test(w)) return 'dimensions';
   if (/^(shots?|attempts)$/.test(w)) return 'shots';
   if (/^saves?$/.test(w)) return 'saves';
   if (/^percentile/.test(w)) return 'percentile';
@@ -107,22 +108,25 @@ function extractNumbers(text) {
       if (w === 'per' && /^(90|ninety)$/.test(ahead[q + 1] || '')) { unit = ahead.slice(0, q).some(x => /^pass/.test(x)) && !ahead.slice(0, q).includes('key') ? 'passes90' : 'per90'; break; }
       if (w === 'year' && ahead[q + 1] === 'old') { unit = 'years'; break; }
       unit = unitOf(w, ahead[q + 1]);
+      if (unit === 'points' && q > 1) unit = null;   // "33 underline the point" is not 33 points (2026-10-24)
     }
+    let bind = unit ? 'ahead' : null;
     if (unit === 'shots' && back.concat(ahead).some(w => /^dribbl/.test(w))) unit = 'dribbles';
     if (unit === 'shots' && back.concat(ahead).some(w => /^(non|spot|penalty)$/.test(w))) unit = 'penalties';
     if (!unit || unit === 'goals' || unit === 'shots') {
       const win = back.slice(-6).concat(ahead.slice(0, 6));
-      for (let q = 0; q < win.length; q++) { const u = unitOf(win[q], win[q + 1]); if (u && NO_SOURCE[u]) { unit = u; break; } }
+      for (let q = 0; q < win.length; q++) { const u = unitOf(win[q], win[q + 1]); if (u && NO_SOURCE[u]) { unit = u; bind = 'window'; break; } }
     }
     if (!unit) {
       const bw = back.slice(-4);
-      if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) unit = 'years';   // "Iconic at 91" is a score, not an age
-      else if (bw.some(w => DIM.test(w))) unit = bw.some(w => /^(reliability|availability)$/.test(w)) ? 'reliability' : 'dimension';
-      else for (let q = bw.length - 1; q >= 0 && !unit; q--) unit = unitOf(bw[q], bw[q + 1]);
+      if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) { unit = 'years'; bind = 'age'; }   // "Iconic at 91" is a score, not an age
+      else if (bw.some(w => DIM.test(w))) { unit = bw.some(w => /^(reliability|availability)$/.test(w)) ? 'reliability' : 'dimension'; bind = 'dim'; }
+      else { for (let q = bw.length - 1; q >= 0 && !unit; q--) unit = unitOf(bw[q], bw[q + 1]); if (unit) bind = 'back'; }
     }
     if (ordinal && unit !== 'percentile') { k = j; continue; }                    // the 41st goal
-    const qual = (back.slice(-2).join(' ').match(/(over|more than|almost|nearly|roughly|about|around|some|under|close to)$/) || [])[1] || null;
-    out.push({ value: v, raw: t.slice(tk.i, toks[j].end), unit, qualifier: qual, clause });
+    let qual = (back.slice(-2).join(' ').match(/(over|more than|almost|nearly|roughly|about|around|some|under|close to)$/) || [])[1] || null;
+    if (qual === 'over' && /^(more|fewer|extra|additional|less)$/.test(ahead[0] || '')) qual = null;   // "over two more appearances" is a span (2026-10-24)
+    out.push({ value: v, raw: t.slice(tk.i, toks[j].end), unit, qualifier: qual, clause, bind });
     k = j;
   }
   return out;
@@ -197,25 +201,62 @@ function derived(F, unit) {
     that contain a measure word are blanked before either check reads the prose.  */
 const TAG_NAMES = /\bThe Dribbler\b/gi;
 function stripTagNames(prose) { return String(prose).replace(TAG_NAMES, 'that tag'); }
+/*  THE CROSS-UNIT REPAIR (Lucas, 2026-10-24: "ten of twelve flags are one fault and it is making me distrust
+    the list"). The twelve flags on the four clean runs of both samples were all true numbers: a bare
+    difference with no unit word ("a gap of 27", 35 goals against 8); a number bound BACKWARDS to the
+    previous clause's unit word ("Rice's 7 in 38" read as 7 appearances, "2938 minutes across 35" as 35
+    minutes, "per 90 minutes outpace Pogba's 1.64" as 1.64 minutes); "goal involvement" not read as
+    contributions; "over two more appearances" read as the qualifier "over 2". So, in order: an exact
+    figure of the bound unit always passes, qualifier or not; a number whose unit came from the BACK scan,
+    the weakest binding, passes if it is an exact figure of ANY unit on the page or a number the page
+    prints; and a number in a clause with an arithmetic word (gap, by, more, fewer, combined, total,
+    apart, margin, add, between) passes if it is a sum or difference of two OTHER numbers stated in the
+    same sentence, whatever unit it was bound to (the writer did the arithmetic on figures it stated; a
+    union of every unit's sums and differences was tried first and let "a gap of 40" through, because
+    the percentiles alone make almost any number under 100). The accepted loss: a back-bound number that is a true figure stated
+    as the wrong unit ("7 appearances" when 7 is his goals) is no longer a code flag; the sentence judge,
+    which reads the page, is what sees that shape now.  */
+const ARITH = /\b(gap|by|more|fewer|less|extra|combined|total|together|sum|difference|apart|margin|add(?:ed|s)?|plus|between|separat(?:e|es|ed|ing)|clear of|ahead of|behind|short of)\b/i;
+function sentencesOf(text) { return clean(text).replace(/(\d)\.(\d)/g, '$1\u0000$2').match(/[^.!?]+(?:[.!?]+["']?|$)/g) || []; }
 function checkNumbers(prose, ev) {
-  const { F, onPage } = pageFigures(ev), flags = [], unbound = [];
-  for (const n of extractNumbers(stripTagNames(prose))) {
+  const { F, onPage, sides } = pageFigures(ev), flags = [], unbound = [];
+  const nums = [];
+  for (const sent of sentencesOf(stripTagNames(prose))) {
+    const xs = extractNumbers(sent.replace(/\u0000/g, '.'));
+    for (const n of xs) {
+      const others = xs.filter(o => o !== n).map(o => o.value), stated = new Set();
+      for (const a of others) for (const b of others) if (a !== b || others.filter(v => v === a).length > 1) { stated.add(Math.round((a + b) * 100) / 100); stated.add(Math.round(Math.abs(a - b) * 100) / 100); }
+      nums.push(Object.assign(n, { stated }));
+    }
+  }
+  for (const n of nums) {
     const why = (u, more) => ({ quote: n.clause, why: `"${n.raw}" ${more}`, kind: 2, check: 'numbers', unit: u });
+    const rescue = () => (n.bind === 'back' && onPage.has(n.value)) || (ARITH.test(n.clause) && n.stated.has(n.value));
     if (NO_SOURCE[n.unit]) {
       if (!(F[n.unit] && F[n.unit].has(n.value))) flags.push(why(n.unit, `is a number of ${NO_SOURCE[n.unit]}, which no page shows`));
       continue;
     }
+    /*  A COUNT OF DIMENSIONS MAY BE ANY NUMBER UP TO THE TOTAL THE PAGE PRINTS (Lucas, 2026-10-24): every card
+        prints the same five attributes, four dimensions and Reliability, and a reader can count any subset.
+        Tags and honours vary per card, so those counts stay exact (the page's total only). The asymmetry is
+        deliberate: a fixed visible set can be subset by eye; a variable one cannot be checked without the total.  */
+    if (n.unit === 'dimensions') {
+      const total = sides.reduce((t, s) => t + Object.keys(s.dims || {}).length, 0);
+      if (!(n.value >= 1 && n.value <= total)) flags.push(why('dimensions', `is a count of dimensions above the ${total} the page prints`));
+      continue;
+    }
     if (n.unit && n.unit !== 'honours' && n.unit !== 'tags') {
       const set = derived(F, n.unit);
-      if (!set.size) { flags.push(why(n.unit, `is a figure of a kind (${n.unit}) no page shows for this pair`)); continue; }
-      const ok = n.qualifier ? near(n.value, set, n.qualifier) : (set.has(n.value) || (n.unit === 'shots' || n.unit === 'minutes') && near(n.value, set, null) && !Number.isInteger(n.value));
-      if (!ok) flags.push(why(n.unit, `matches no ${n.unit} figure on the page (${[...(F[n.unit] || [])].join(', ') || 'none'}), nor a sum or difference of two`));
+      if (!set.size) { if (!rescue()) flags.push(why(n.unit, `is a figure of a kind (${n.unit}) no page shows for this pair`)); else unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
+      const ok = set.has(n.value) || (n.qualifier ? near(n.value, set, n.qualifier) : (n.unit === 'shots' || n.unit === 'minutes') && near(n.value, set, null) && !Number.isInteger(n.value));
+      if (!ok) { if (rescue()) unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); else flags.push(why(n.unit, `matches no ${n.unit} figure on the page (${[...(F[n.unit] || [])].join(', ') || 'none'}), nor a sum or difference of two`)); }
       continue;
     }
     if (n.unit === 'honours') { if (!derived(F, 'honours').has(n.value)) flags.push(why('honours', 'matches no honours count on the page')); continue; }
     if (n.unit === 'tags') { if (!derived(F, 'tags').has(n.value)) flags.push(why('tags', `matches no tag count on the page (${[...(F.tags || [])].join(', ') || 'none'}), nor a sum or difference of two`)); continue; }
     if (onPage.has(n.value) || (n.qualifier && near(n.value, onPage, n.qualifier))) unbound.push({ raw: n.raw, clause: n.clause });
-    else flags.push(why(null, 'is a number that appears nowhere on the page'));
+    else if (ARITH.test(n.clause) && n.stated.has(n.value)) unbound.push({ raw: n.raw, clause: n.clause, crossUnit: 'arithmetic' });   // "a gap of 27", 35 goals against 8 in the same sentence
+    else flags.push(why(null, 'is a number that appears nowhere on the page, nor is it a sum or difference of two figures stated in the sentence'));
   }
   return { flags, unbound };
 }

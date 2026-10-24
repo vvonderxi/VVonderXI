@@ -137,9 +137,9 @@ const WRITER_SYSTEM = `You are the VVonderXI voice: thirty years of watching foo
 EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before anyone reads it:
 - any sentence that cites nothing, or an id that is not in the list;
 - any sentence that states anything its cited facts do not contain;
-- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count that equals how many facts of one kind a player's card holds in the list ("four honours", when the list holds four honour facts for him; "two honours he does not", when one holds four and the other two).
+- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count that equals how many facts of one kind a player's card holds in the list ("four honours", when the list holds four honour facts for him; "two honours he does not", when one holds four and the other two). A count of dimensions or attributes may be any number up to the total the card prints ("three dimensions in the 90s" is fine; the card prints four dimensions and Reliability, five attributes); a count of tags or honours must be the card's whole total, never a subset.
 
-THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
+THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE. No image, no flourish, no "a season for the ages", no "a season apart in class": the result as P1 gives it, and one figure or one honour, in plain words. The glance line on a card is the same: one fact, plainly. THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
 A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours.
@@ -163,14 +163,22 @@ Never use em or en dashes; use a spaced comma. British spelling.`;
     ["The Index cannot split Rodri and Rice..."], which parsed as an empty sentence citing nothing: the
     headline was deleted and the piece rejected, five of sample 1's fourteen no-prose outcomes. The spec now
     shows the object, and judgeDraft reads a bare string as a sentence with no citation rather than as empty.  */
-const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 words", "cite": ["P1", "A2", "B2"]}],
+/*  THE HEADLINE INSTRUCTION (Lucas, 2026-10-24, after the six runs): every regeneration in six runs followed a
+    headline the narrow check deleted for a flourish ("a season for the ages", "a season apart in class").
+    The headline states the result and one cited fact, nothing more; the glance line the same.  */
+const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 words: the result and one cited fact, nothing more", "cite": ["P1", "A2", "B2"]}],
  "p1": [4 to 5 sentences about Player A, citing A facts],
  "p2": [4 to 5 sentences about Player B, citing B facts],
  "h2h": [4 to 5 sentences setting the two against each other],
  "verdict": [4 to 5 sentences, the last one quotable]}`;
-const NOTES_FORMAT = `{"glance": [{"s": "one sentence, the essence of the season", "cite": ["A2", "A3"]}],
- "scout": [4 to 5 sentences: where the season sits on its own figures, and what it would cost to deny it],
- "notes": [[4 to 5 sentences], [4 to 5], [4 to 5], [3 to 4]]}   four stanzas: the essence, the honours and tags, the figures as evidence, a closing stanza`;
+/*  THE NOTES FORM, FIXED; THE SHARE RULE KEPT (Lucas, 2026-10-24, after the six runs: notes 2 of 8, every
+    rejection the share rule). "What it would cost to deny it" asked for judgement, and judgement has no
+    fact id: the narrow check deleted about a third of every notes piece. The share rule is not relaxed,
+    it is what stops a gutted piece shipping and notes need it more than verdicts. The scout and the
+    closing stanza now ask for figures and the card's own copy only.  */
+const NOTES_FORMAT = `{"glance": [{"s": "one sentence, one fact of the season, plainly", "cite": ["A2", "A3"]}],
+ "scout": [4 to 5 sentences, FIGURES AND CARD COPY ONLY: each sentence states a figure from the facts or quotes the meaning the card gives an honour or tag; no judgement, no verdict on the season, nothing a fact id cannot carry],
+ "notes": [[4 to 5 sentences], [4 to 5], [4 to 5], [3 to 4]]}   four stanzas: the figures that define the season; the honours and tags, in the card's own words; the dimensions and Reliability as evidence; a closing stanza of 3 to 4 sentences that is FIGURES AND CARD COPY ONLY, restating the two or three figures the season rests on, no judgement and no flourish`;
 function writerSystem(pack) {
   const rule = pack.type === 'notes' ? 'This is a single season: there is no comparison and no crown.'
     : pack.winner ? `P1 names ${pack.names[pack.winner]} as the winner: you may name ${pack.names[pack.winner]}, and only ${pack.names[pack.winner]}, as the winner, as clearly as P1 does. The headline MUST name ${pack.names[pack.winner]}.`
@@ -292,7 +300,15 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
       small totals let most small counts through. A number the sentence attaches to tags or honours must be
       that kind's total, sum or difference, and nothing else.  */
   const BOUND = { tags: 'tag', honours: 'honour' };
-  const bad = PC.extractNumbers(sentence).filter(x => BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
+  /*  A COUNT OF DIMENSIONS MAY BE ANY NUMBER UP TO THE TOTAL THE CARD PRINTS (Lucas, 2026-10-24, after the six
+      runs: the count rule was the second deleter, 58 of 88 number deletions in sample 1's first two runs, and
+      some were true subsets, "three dimensions at the 96th or above" citing three of four). Every card prints
+      the same five attributes, four dimensions and Reliability, so a reader can count any subset by eye.
+      Tags and honours vary per card and a subset cannot be checked without the total, so those stay exact.
+      The asymmetry is deliberate: a fixed visible set may be subset, a variable one may not.  */
+  const dimTotal = (per['dimension/A'] || 0) + (per['dimension/B'] || 0) + (per['reliability/A'] || 0) + (per['reliability/B'] || 0);
+  const bad = PC.extractNumbers(sentence).filter(x => x.unit === 'dimensions' ? !(x.value >= 1 && x.value <= dimTotal)
+    : BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
   return bad;
 }
 async function judgeDraft(pack, draft, narrow = narrowCheck) {

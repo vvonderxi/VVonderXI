@@ -556,6 +556,55 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    16), NOTES 2 OF 8; 490 SHIPPED SENTENCES; HOLE 0 OF 490; 12 TOOL FLAGS, 10 OF THEM THE SAME TOOL FAULT.**
    The two lists for each run: `_local/verdict-check/sample_1_run_3_final_lists.md` (4 flags, 162 unflagged),
    `sample_1_run_4_final_lists.md` (3 flags, 138 unflagged), and the two sample 2 files above.
+   **THE COMPARISON THE WHOLE DECISION RESTS ON (Lucas, 2026-10-24, recorded explicitly at his instruction):
+   on the morning of 2026-10-17 the twelve pieces of shipped prose, read sentence by sentence against their
+   cards, held 88 invented world facts, about SEVEN A PIECE (kind 1 of the calibration set, re-read and
+   relabelled 2026-10-23). On the evening of 2026-10-24, the cited writer on its final rules shipped 490
+   sentences across six runs on twenty different pairs and cards, and the count of sentences stating a fact
+   the page does not hold is ZERO.** The two figures are not measured in the same unit (facts per piece
+   against sentences; the twelve were counted by Lucas and me on 2026-10-17 and 10-23, the 490 by the tools
+   first and then Lucas reading every unflagged sentence of all four lists), and the 490 were read on the
+   same day's rules by the same reader who built them. It is still the measurement: a writer that cannot
+   state what it cannot cite, with code deleting what it states anyway, went from seven inventions a piece
+   to none in 490 sentences.
+   **THE FOUR DECISIONS AFTER THE SIX RUNS (Lucas, 2026-10-24, all built the same evening; self-test 76 to 88):**
+   - **NOTES: THE FORM IS FIXED, THE SHARE RULE IS KEPT.** Not relaxed: it is what stops a gutted piece
+     shipping, and notes need it more than verdicts, not less. The fault was the form inviting sentences
+     that cannot be cited ("what it would cost to deny it" asks for judgement, and judgement has no fact
+     id). The scout and the closing stanza now ask for FIGURES AND CARD COPY ONLY; the glance line asks
+     for one fact, plainly (`NOTES_FORMAT` in `cited.js`).
+   - **THE HEADLINE INSTRUCTION: YES.** The headline states the result and one cited fact, nothing more;
+     no image, no flourish; the glance line the same. Every regeneration in six runs followed a headline
+     flourish. In the system prompt and in the `who` line of the format.
+   - **DIMENSION SUBSET COUNTS: ALLOWED, UP TO THE TOTAL.** A count attached to dimensions, measures,
+     attributes, metrics or pillars may be any number from one up to the total the page prints (four
+     dimensions and Reliability, five attributes a card, ten on a pair). Tags and honours stay exact: the
+     page's whole total, or a sum or difference of the two sides' totals, never a subset. **THE ASYMMETRY,
+     WRITTEN DOWN WITH ITS REASON:** every card prints the same five attributes, so a reader can count any
+     subset of them by eye and check "three dimensions in the 90s" against the card; tags and honours vary
+     per card, so a subset count ("three tags") cannot be checked without knowing the total, and the only
+     count a reader can verify is the whole. In `numbersOk` (`cited.js`) and in `checkNumbers`
+     (`prose_checks.js`), the same rule on both sides.
+   - **THE TOOLS' ARITHMETIC: REPAIRED.** The twelve flags on the four clean runs were run through the
+     extractor against their own evidence and are four mechanics, not one: a bare difference with no unit
+     word ("a gap of 27"); a number bound BACKWARDS to the previous clause's unit word ("Rice's 7 in 38" as
+     7 appearances, "2938 minutes across 35" as 35 minutes, "per 90 minutes outpace Pogba's 1.64" as 1.64
+     minutes); "goal involvement" not read as goal contributions; and "over two more appearances" read as
+     the qualifier "over 2". The repair, in order: an exact figure of the bound unit always passes,
+     qualifier or not; a number whose unit came from the back scan, the weakest binding, is treated as an
+     unbound number (it passes if the page prints it); and a number in a clause with an arithmetic word
+     (gap, by, more, fewer, combined, total, apart, margin, add, between) passes if it is a sum or
+     difference of two OTHER numbers stated in the same sentence. **A union of every unit's sums and
+     differences was tried first and let "a gap of 40" through, because the percentiles alone make almost
+     any number under 100; the same-sentence rule is what held.** Result on the four clean runs' shipped
+     prose: 12 number flags to 0, and five controls with numbers the page does not print all still flag.
+     **The accepted loss, recorded:** a back-bound number that is a true figure stated as the wrong unit
+     ("7 appearances" when 7 is his goals) is no longer a code flag; the sentence judge, which reads the
+     page, is what sees that shape now.
+   **NEXT: one confirming run of each sample on all four. If the hole holds at zero and notes ship, the
+   case for `VV_PROSE` on for VERDICTS ONLY is written for Lucas to decide: what is still unchecked, what
+   the first week costs, and what would make him turn it off again. Notes stay off until they ship twice.
+   Nothing is turned on by a session; Lucas decides.**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
