@@ -173,6 +173,11 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   const PC2 = require('./prose_checks.js');
   expect('judge counts dropped: "seven player tags" is a count claim', PC2.isCountClaim('The page shows seven player tags, not six') && PC2.isCountClaim('Benzema holds four honours to Mbappé\'s three') && PC2.isCountClaim('tags: 5'));
   expect('judge counts dropped: a non-count claim is kept', !PC2.isCountClaim('the Iconic season that defined an era') && !PC2.isCountClaim('Premier League'));
+  // format drift (2026-10-24, the four final runs): a bare-string headline, and citations written inline
+  const jf = await C.judgeDraft(tie, { who: ['Kane and Heung-Min: two Iconic seasons the Index cannot split.'], p1: [ok('Kane scored his goals for Tottenham. [A1, A3]', [])] }, narrow);
+  expect('format drift: a bare-string headline is read as a sentence (deleted for citing nothing, not as empty)', jf.units[0].s.startsWith('Kane and') && jf.units[0].why.includes('cites nothing') && !jf.units[0].why.includes('empty'));
+  expect('format drift: an inline [A1, A3] tail becomes the citation and leaves the sentence', jf.units[1].s === 'Kane scored his goals for Tottenham.' && jf.units[1].cite.join(',') === 'A1,A3' && jf.units[1].kept);
+  expect('format: the headline is specified as an object with a cite', /"who": \[\{"s":/.test(C.VERDICT_FORMAT) && /"glance": \[\{"s":/.test(C.NOTES_FORMAT));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

@@ -158,12 +158,17 @@ Never use em or en dashes; use a spaced comma. British spelling.`;
     paragraph asked for 2 to 3 sentences and given 2 dies on one deletion; asked for 4 to 5 it survives.
     Eleven of twelve sample 2 attempts and all four notes pieces were rejected for a paragraph or stanza
     under two. The minimum of two is unchanged.  */
-const VERDICT_FORMAT = `{"who": [one sentence, a headline of at most 14 words],
+/*  THE HEADLINE IS AN OBJECT LIKE EVERY OTHER SENTENCE (2026-10-24, the four final runs). "[one sentence, a
+    headline]" read as a bare string, and on three tie pairs in both runs the writer returned
+    ["The Index cannot split Rodri and Rice..."], which parsed as an empty sentence citing nothing: the
+    headline was deleted and the piece rejected, five of sample 1's fourteen no-prose outcomes. The spec now
+    shows the object, and judgeDraft reads a bare string as a sentence with no citation rather than as empty.  */
+const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 words", "cite": ["P1", "A2", "B2"]}],
  "p1": [4 to 5 sentences about Player A, citing A facts],
  "p2": [4 to 5 sentences about Player B, citing B facts],
  "h2h": [4 to 5 sentences setting the two against each other],
  "verdict": [4 to 5 sentences, the last one quotable]}`;
-const NOTES_FORMAT = `{"glance": [one sentence, the essence of the season],
+const NOTES_FORMAT = `{"glance": [{"s": "one sentence, the essence of the season", "cite": ["A2", "A3"]}],
  "scout": [4 to 5 sentences: where the season sits on its own figures, and what it would cost to deny it],
  "notes": [[4 to 5 sentences], [4 to 5], [4 to 5], [3 to 4]]}   four stanzas: the essence, the honours and tags, the figures as evidence, a closing stanza`;
 function writerSystem(pack) {
@@ -296,12 +301,15 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
   const units = [];   // { field, para, s, cite, new_paragraph }
   for (const f of fields) {
     const v = draft[f];
-    if (f === 'notes') (Array.isArray(v) ? v : []).forEach((st, k) => (Array.isArray(st) ? st : []).forEach(x => units.push({ field: f, para: 'notes' + (k + 1), ...x })));
-    else (Array.isArray(v) ? v : []).forEach(x => units.push({ field: f, para: f, ...x }));
+    const asUnit = x => typeof x === 'string' ? { s: x, cite: [] } : (x && typeof x === 'object' ? x : { s: '', cite: [] });   // a bare string is a sentence with no citation, not an empty sentence
+    if (f === 'notes') (Array.isArray(v) ? v : []).forEach((st, k) => (Array.isArray(st) ? st : []).forEach(x => units.push({ field: f, para: 'notes' + (k + 1), ...asUnit(x) })));
+    else (Array.isArray(v) ? v : []).forEach(x => units.push({ field: f, para: f, ...asUnit(x) }));
   }
   const usage = [];
   await Promise.all(units.map(async u => {
     u.s = String(u.s || '').trim(); u.cite = Array.isArray(u.cite) ? u.cite.map(String) : [];
+    const tail = u.s.match(/\s*\[((?:[ABP]\d+)(?:\s*,\s*[ABP]\d+)*)\]\s*$/);   // "... [A1, A2]" written inline: take the ids, drop the tail
+    if (tail) { u.s = u.s.slice(0, tail.index).trim(); for (const id of tail[1].split(/\s*,\s*/)) if (!u.cite.includes(id)) u.cite.push(id); }
     const why = [];
     if (!u.s) why.push('empty');
     if (!u.cite.length) why.push('cites nothing');
