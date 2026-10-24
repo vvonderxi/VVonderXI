@@ -73,6 +73,17 @@ function report(run) {
   const by = o => run.items.filter(r => r.outcome === o).length;
   L.push(`Shipped first time: ${by('shipped')}. Shipped on regeneration: ${by('shipped-on-regeneration')}. No prose: ${by('no-prose')}. Of ${run.items.length}.`);
   L.push(`Cost: writer and narrow check about $${run.cost_write.toFixed(2)}, the tools about $${(run.cost_tools || 0).toFixed(2)}.`, '');
+  // worth reading, not only defensible (Lucas, 2026-10-24): sentences written against sentences left, per paragraph
+  L.push('## Written against survived (the last attempt; a pass with four of twelve left is not prose anyone wants)', '',
+    '| piece | outcome | written | survived | per paragraph, left of written |', '|---|---|---|---|---|');
+  for (const r of run.items) {
+    const a = [...r.attempts].reverse().find(x => !x.error);
+    if (!a) { L.push(`| ${r.id} | ${r.outcome} | writer failed | | |`); continue; }
+    const paras = [...new Set(a.units.map(u => u.para))];
+    const per = paras.map(p => { const us = a.units.filter(u => u.para === p); return `${p} ${us.filter(u => u.kept).length}/${us.length}`; }).join(', ');
+    L.push(`| ${r.id} | ${r.outcome}${r.attempts.length > 1 ? ` (attempt ${a.attempt})` : ''} | ${a.total} | ${a.total - a.dropped} | ${per} |`);
+  }
+  L.push('');
   for (const r of run.items) {
     L.push(`## ${r.id}: ${r.outcome.toUpperCase()}` + (r.result ? `  (page: "${r.result}")` : ''));
     r.attempts.forEach(a => {
