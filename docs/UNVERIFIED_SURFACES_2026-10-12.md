@@ -374,7 +374,36 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    stubbed back in: 119 drops become 66, and 8 of 12 pieces ship instead of 1.** Optimistic by
    construction: 27 sentences the old code rules deleted before Sonnet saw them are assumed clean, and the
    replayed crown answers are the old prompt's. The self-test holds 30 planted cases (`cited_selftest.js`),
-   16 of them for these three fixes. Second run: below, when made.
+   16 of them for these three fixes.
+   **THE SECOND RUN, SAME SAMPLE, 2026-10-24 12:30 UTC (`_local/verdict-check/fresh_2026-10-24T12-30-25-218Z.md`):
+   10 OF 12 SHIPPED (8 first time, 2 on regeneration), 2 NO PROSE (Osimhen and Berardi notes), $2.05.**
+   223 sentences written, 28 deleted (20 narrow check, 7 numbers, 1 narrow check failed to answer); the
+   crown rule deleted nothing. 134 sentences shipped; the tools flagged 28 of them. **Read flag by
+   flag, the shipped prose is cleaner than the flag count says, and the flags point three ways:**
+   - **THE HOLE, COUNTED: 2 of 134 shipped sentences carry a fact no cited fact holds** ("Barcelona",
+     "Liverpool", both true from the identity fact the sentence did not cite). That is the residual
+     kind 1 of the cited writer on this sample: real facts, uncited, that Sonnet lets through.
+   - **The fact list carries two numbers the page does not print, the same class as the band:** (1) key
+     passes per 90 to ONE decimal (2.4, 3.2, 1.6, 2.8) where the card prints TWO (2.36, 3.24, 1.64); the
+     request builder rounds to one (`aiPer90`, vv-core.js) and the card does not. Six flags. (2)
+     Reliability as "he played 89% of a full season", where the card prints "Reliability · 89" under
+     "ATTRIBUTE / 100" with the caption "Each dimension is a percentile against other CM seasons", and
+     Sonnet flagged every "% of a full season" (four flags) as a meaning the page never states. The figure
+     IS the share of a full season (`pct_of_full_season`), so the card's caption misdescribes Reliability
+     (area 1) and the fact list asserts a meaning the reader cannot see. Both are decisions for Lucas,
+     not writer faults.
+   - **The sample's own tools over-flag, and that costs reading time:** the page number check binds
+     units too tightly ("one point above Messi's 96", "Iconic at 91", "38 games", "two points"), names
+     the tag "The Dribbler" as the dribbles measure (four flags), counts tags and honours it cannot see
+     ("six tags" on a six-tag card), and Sonnet's "a shared trio of league honours" is wrong (both cards
+     hold League Title, Player of the Season and Golden Boot). About 16 of the 28 flags.
+   - **Real faults that shipped, found by the tools:** Watkins "three tags to go with it" on a four-tag
+     card (the sentence cited three of the four, so the count rule allowed it: the one side effect of fix
+     2 seen so far); Hamsik "three separate percentile readings above the 91st mark" at 95, 95 and 91;
+     and the Messi v Neymar headline "one clear winner" that does not name him while the verdict does.
+   **Tie-heavy again: the same seven of eight pairs, by construction of the sample.** Separated pairs go
+   into the sample before the crown rule is judged, as decided. **Lucas's read of both lists, the flags
+   and the 106 unflagged sentences, is the next step; the method stands.**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
