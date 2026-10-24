@@ -166,6 +166,40 @@ function fixtureReads(it) {
     console.log(`\nwritten to ${path.relative(ROOT, f)}`);
     return;
   }
+  /*  --sentences [--model haiku|sonnet]: OPTION 2, every sentence judged alone against the rendered
+      page (prose_checks.js judgeSentence). A flag is the whole sentence, so it scores every label in
+      it (the sentence rule) and is a false hold only when the sentence holds no flag label.  */
+  if (process.argv.includes('--sentences')) {
+    if (!process.env.ANTHROPIC_API_KEY) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
+    const mi = process.argv.indexOf('--model'), model = mi > 0 ? process.argv[mi + 1] : 'haiku';
+    if (!PC.JUDGE_MODELS[model]) { console.error('--model must be one of ' + Object.keys(PC.JUDGE_MODELS).join(', ')); process.exit(2); }
+    const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
+    const flagsById = {}, verdicts = {}, errors = [], use = { input_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 0 };
+    for (const it of SET.items) {
+      const ev = EV.items.find(x => x.id === it.id);
+      if (!ev || !ev.page) { console.error(it.id + ': no rendered page in the evidence, run capture.js first'); process.exit(2); }
+      const page = PC.judgePage(ev), sents = PC.splitSentences(it.prose, it.type);
+      const tally = r => { if (r.usage) for (const k of Object.keys(use)) use[k] += r.usage[k] || 0; return r; };
+      const first = tally(await PC.judgeSentence(page, sents[0].sentence, model));   // writes the cache once
+      const rest = [];
+      for (let i = 1; i < sents.length; i += 6) rest.push(...await Promise.all(sents.slice(i, i + 6).map(s => PC.judgeSentence(page, s.sentence, model).then(tally))));
+      const res = [first].concat(rest);
+      verdicts[it.id] = sents.map((s, i) => ({ n: s.n, sentence: s.sentence, ...res[i], usage: undefined }));
+      res.forEach((r, i) => { if (!r.ok) errors.push(it.id + ' #' + sents[i].n + ': ' + r.error); });
+      flagsById[it.id] = sents.filter((s, i) => res[i].ok && res[i].unsupported).map((s, i) => ({ quote: s.sentence, why: (res[sents.indexOf(s)].claim + ' , ' + res[sents.indexOf(s)].why) }));
+      console.log(`${it.id}: ${sents.length} sentences, ${flagsById[it.id].length} flagged`);
+    }
+    const s = scoreRun(flagsById);
+    print(`EVERY SENTENCE JUDGED ALONE (${model}, ${PC.JUDGE_MODELS[model]})`, s);
+    if (errors.length) console.log(`  ERRORS (${errors.length}), the run is incomplete:\n    ` + errors.join('\n    '));
+    const P = model === 'haiku' ? [1, 1.25, 0.1, 5] : [3, 3.75, 0.3, 15];   // $ per million: input, cache write, cache read, output
+    const cost = (use.input_tokens * P[0] + use.cache_creation_input_tokens * P[1] + use.cache_read_input_tokens * P[2] + use.output_tokens * P[3]) / 1e6;
+    console.log(`  tokens: ${JSON.stringify(use)}, about $${cost.toFixed(2)}`);
+    const f = path.join(ROOT, '_local', 'verdict-check', `sentences_${model}_` + new Date().toISOString().replace(/[:.]/g, '-') + '.json');
+    fs.writeFileSync(f, JSON.stringify({ evidence_captured_at: EV.captured_at, model: PC.JUDGE_MODELS[model], verdicts, flagsById, score: s, errors, usage: use }, null, 1));
+    console.log(`\nwritten to ${path.relative(ROOT, f)}`);
+    process.exit(errors.length ? 1 : 0);
+  }
   if (SELFTEST) {
     const good = {}, bad = {};
     for (const it of SET.items) { good[it.id] = it.flag.map(l => ({ quote: l.quote, why: 'planted' })); bad[it.id] = it.leave.map(n => ({ quote: n.quote, why: 'planted' })); }

@@ -248,7 +248,8 @@ function splitSentences(prose, type) {
   const out = [];
   for (const f of fields) {
     const txt = Array.isArray(prose[f]) ? prose[f].join('\n\n') : (prose[f] || '');
-    (clean(txt).match(/[^.!?]+(?:[.!?]+["']?|$)/g) || []).map(s => s.trim()).filter(Boolean).forEach(s => out.push({ field: f, n: out.length + 1, sentence: s }));
+    // a decimal point is not a sentence end: "4.09 per 90" was split into "4." and "09 per 90" (found 2026-10-24)
+    (clean(txt).replace(/(\d)\.(\d)/g, '$1\u0000$2').match(/[^.!?]+(?:[.!?]+["']?|$)/g) || []).map(s => s.replace(/\u0000/g, '.').trim()).filter(Boolean).forEach(s => out.push({ field: f, n: out.length + 1, sentence: s }));
   }
   return out;
 }
@@ -308,4 +309,56 @@ function checkCrowns(sentences, reads, ev) {
   return { flags, result: R, honours: { A: by.A.playerHonours, B: by.B.playerHonours }, leads: { A: leads('A'), B: leads('B') } };
 }
 
-module.exports = { extractNumbers, pageFigures, checkNumbers, checkMeasures, splitSentences, readCrowns, checkCrowns, pageResult, CROWN_SYSTEM };
+/*  OPTION 2 OF THE KIND 1 PLAN: EVERY SENTENCE JUDGED ALONE (2026-10-24, area 9). The shipping checker
+    read a whole piece and flagged 1 to 5 sentences however many failed; this asks one question per
+    sentence, against the rendered page, so no sentence can be skipped. It measures how much of the
+    one in five was skimming. It cannot close kind 1 (area 9's arithmetic); it decides what option
+    1's narrow check is built from. The page is sent once per piece and cached; each sentence is a
+    small call on top. The Chronicle is marked as evidence for its figures only (Lucas, 2026-10-23).  */
+const JUDGE_MODELS = { haiku: 'claude-haiku-4-5-20251001', sonnet: 'claude-sonnet-4-6' };
+const JUDGE_SYSTEM = `You check ONE sentence of football writing against THE PAGE, which is everything the reader can see about the players: the comparison screen and each player's card, with every section open.
+
+Answer one question: does the sentence state a fact about the world that THE PAGE does not state?
+
+A world fact is anything that happened or is so outside these figures: transfers and arrivals, debuts, earlier or later seasons and clubs, career history, records and firsts, title races and league positions, what a club, team-mate, manager, opponent or league was like, a match, a date, an award not shown on the page. True of football does not make it supported; only THE PAGE does.
+
+NOT a world fact, never flag these: opinion, judgement, comparison or emphasis resting on what the page shows ("the more complete season", "a remarkable return"); restating the page in other words; plain arithmetic on the page's figures; the meaning the page itself gives an honour or tag.
+
+THE CHRONICLE (marked on the page) counts as support for its FIGURES only. Its records, the years they stood, scorelines, opponents, debuts and arrivals are NOT support: a sentence resting on them is a world fact the page does not state.
+
+Reply with JSON only: {"unsupported": true or false, "claim": "the exact words of the unsupported fact, or empty", "why": "a few words"}.`;
+function markChronicle(text) {
+  return String(text).replace(/The Chronicle ✶ SIGNATURE MOMENT\n⌄\n([\s\S]*?)\nWonder Tags/g,
+    (m, body) => '[THE CHRONICLE, SUPPORT FOR ITS FIGURES ONLY]\n' + body + '\n[END OF THE CHRONICLE]\nWonder Tags');
+}
+function judgePage(ev) {
+  const parts = [];
+  if (ev.page.compare) parts.push('=== THE COMPARISON SCREEN ===\n' + ev.page.compare);
+  for (const [id, t] of Object.entries(ev.page.cards || {})) parts.push('=== CARD ' + id + ' ===\n' + markChronicle(t));
+  return parts.join('\n\n');
+}
+async function judgeSentence(page, sentence, model) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: JUDGE_MODELS[model], max_tokens: 800, temperature: 0, system: JUDGE_SYSTEM,
+          messages: [{ role: 'user', content: [
+            { type: 'text', text: 'THE PAGE:\n' + page, cache_control: { type: 'ephemeral' } },
+            { type: 'text', text: 'THE SENTENCE:\n' + sentence } ] }] }) });
+      if (r.status === 429 || r.status >= 500) { await new Promise(x => setTimeout(x, 2000 * (attempt + 1))); continue; }
+      const d = await r.json();
+      if (!r.ok) return { ok: false, error: 'judge upstream ' + r.status };
+      const txt = ((d.content && d.content[0] && d.content[0].text) || '').replace(/^```(?:json)?\s*|\s*```$/g, '');
+      // the first complete JSON object; Sonnet sometimes adds a line of comment after it
+      const st = txt.indexOf('{'); let dep = 0, end = -1, q = false;
+      for (let i = st; st >= 0 && i < txt.length; i++) { const c = txt[i]; if (c === '"' && txt[i - 1] !== '\\') q = !q; else if (!q && c === '{') dep++; else if (!q && c === '}' && --dep === 0) { end = i; break; } }
+      if (end < 0) throw new Error('no complete JSON object (stop: ' + d.stop_reason + ')');
+      const o = JSON.parse(txt.slice(st, end + 1));
+      return { ok: true, unsupported: o.unsupported === true, claim: String(o.claim || ''), why: String(o.why || ''), usage: d.usage };
+    } catch (e) { if (attempt === 4) return { ok: false, error: 'judge threw: ' + e.message }; }
+  }
+  return { ok: false, error: 'judge: upstream busy after 5 tries' };
+}
+
+module.exports = { extractNumbers, pageFigures, checkNumbers, checkMeasures, splitSentences, readCrowns, checkCrowns, pageResult, CROWN_SYSTEM, JUDGE_MODELS, judgePage, judgeSentence };
