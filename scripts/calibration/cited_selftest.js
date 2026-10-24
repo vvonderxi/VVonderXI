@@ -153,6 +153,26 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('bound: "three tags" is deleted though three dimensions could be cited', C.numbersOk('X carries three tags.', t2, c2, synth2).includes('three'));
   expect('bound: "five seasons at the top level" stays, the copy\'s own number', !C.numbersOk('Five seasons at the top level, the card says.', t2, c2, synth2).length);
   expect('bound: "two honours" is deleted when the card holds none', C.numbersOk('X holds two honours.', t2, c2, synth2).includes('two'));
+  // the four changes after the three lists (Lucas, 2026-10-24)
+  const jc = await C.judgeDraft(pack, { p1: [ok('Messi scored his goals for Barcelona.', ['A3']), ok('Messi scored his goals for Barcelona.', ['A1', 'A3']), ok('Messi scored 37 goals in La Liga.', ['A3'])],
+    p2: [ok('Neymar played for Barcelona too.', ['B3']), ok('Neymar played for Barcelona too.', ['B1'])] }, narrow);
+  expect('club hole: a club named without the identity fact is deleted', jc.units[0].why.some(w => /names Barcelona without citing A1/.test(w)));
+  expect('club hole: the same sentence citing A1 is kept', jc.units[1].kept);
+  expect('club hole: a league named without the identity fact is deleted', jc.units[2].why.some(w => /names La Liga without citing A1/.test(w)));
+  expect('club hole: team-mates share a club, so either identity fact satisfies it', jc.units[3].why.some(w => /without citing A1 or B1/.test(w)) && jc.units[4].kept);
+  const jd = await C.judgeDraft(zp, { p2: [ok('Lacazette played for Lyon.', ['A1', 'B1']), ok('Lacazette played for Lyon.', ['B1']), ok('Lacazette played for Lyon.', ['A1'])] }, narrow);
+  expect('club hole: a club held by one side binds to that side\'s fact only', jd.units[1].kept && jd.units[2].why.some(w => /names Lyon without citing B1,/.test(w)));
+  const honA = pack.facts.find(f => f.side === 'A' && /^Honour/.test(f.text)), tagA = pack.facts.find(f => f.side === 'A' && /^Tag/.test(f.text));
+  const jh = await C.judgeDraft(pack, { p1: [ok('The Peak honour sits on his card.', [tagA.id]), ok('Two honours sit on his card.', [honA.id]), ok('The tag speaks for itself.', [honA.id]), ok('The tag speaks for itself.', [tagA.id])] }, narrow);
+  expect('honour binds: "honour" citing only a tag fact is deleted', jh.units[0].why.some(w => /says honour without citing an honour fact/.test(w)));
+  expect('honour binds: "honours" citing an honour fact passes that rule', !jh.units[1].why.some(w => /says honour/.test(w)));
+  expect('tag binds: "tag" citing only an honour fact is deleted', jh.units[2].why.some(w => /says tag without citing a tag fact/.test(w)));
+  expect('tag binds: "tag" citing a tag fact passes', jh.units[3].kept);
+  expect('raise the ask: verdict paragraphs ask for 4 to 5', (C.VERDICT_FORMAT.match(/4 to 5/g) || []).length === 4);
+  expect('raise the ask: notes stanzas ask for 4 to 5 and the closing stanza 3 to 4', /\[\[4 to 5 sentences\], \[4 to 5\], \[4 to 5\], \[3 to 4\]\]/.test(C.NOTES_FORMAT));
+  const PC2 = require('./prose_checks.js');
+  expect('judge counts dropped: "seven player tags" is a count claim', PC2.isCountClaim('The page shows seven player tags, not six') && PC2.isCountClaim('Benzema holds four honours to Mbappé\'s three') && PC2.isCountClaim('tags: 5'));
+  expect('judge counts dropped: a non-count claim is kept', !PC2.isCountClaim('the Iconic season that defined an era') && !PC2.isCountClaim('Premier League'));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

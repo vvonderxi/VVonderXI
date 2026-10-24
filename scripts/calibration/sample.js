@@ -62,7 +62,7 @@ async function tools(run) {
       res.forEach((j, k) => {
         if (j.usage) for (const key of Object.keys(judgeUse)) judgeUse[key] += j.usage[key] || 0;
         if (!j.ok) add(sents[i + k].sentence, 'sentence judge (Sonnet)', 'failed to answer: ' + j.error);
-        else if (j.unsupported) add(sents[i + k].sentence, 'sentence judge (Sonnet)', j.claim + ' , ' + j.why);
+        else if (j.unsupported && !PC.isCountClaim(j.claim)) add(sents[i + k].sentence, 'sentence judge (Sonnet)', j.claim + ' , ' + j.why);   // code counts tags and honours; the model's counts are dropped (2026-10-24)
       });
     }
     const norm = t => String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();

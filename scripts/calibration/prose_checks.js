@@ -332,11 +332,16 @@ Answer one question: does the sentence state a fact about the world that THE PAG
 
 A world fact is anything that happened or is so outside these figures: transfers and arrivals, debuts, earlier or later seasons and clubs, career history, records and firsts, title races and league positions, what a club, team-mate, manager, opponent or league was like, a match, a date, an award not shown on the page. True of football does not make it supported; only THE PAGE does.
 
-NOT a world fact, never flag these: opinion, judgement, comparison or emphasis resting on what the page shows ("the more complete season", "a remarkable return"); restating the page in other words; plain arithmetic on the page's figures; the meaning the page itself gives an honour or tag.
+NOT a world fact, never flag these: opinion, judgement, comparison or emphasis resting on what the page shows ("the more complete season", "a remarkable return"); restating the page in other words; plain arithmetic on the page's figures; the meaning the page itself gives an honour or tag; HOW MANY tags or honours a card holds (code counts those exactly; you do not).
 
 THE CHRONICLE (marked on the page) counts as support for its FIGURES only. Its records, the years they stood, scorelines, opponents, debuts and arrivals are NOT support: a sentence resting on them is a world fact the page does not state.
 
 Reply with JSON only: {"unsupported": true or false, "claim": "the exact words of the unsupported fact, or empty", "why": "a few words"}.`;
+/*  CODE COUNTS, THE MODEL DOES NOT (Lucas, 2026-10-24). Sonnet counted GENERATIONAL as a tag and honours as
+    tags, which was most of the 14 flags on sample 1 run 3. A judge flag whose claim is a count of tags or
+    honours is dropped here whatever the prompt said.  */
+const COUNT_CLAIM = /\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\b[^.]{0,40}\b(tags?|honours?)\b|\b(tags?|honours?)\b[^.]{0,12}\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\b/i;
+function isCountClaim(claim) { return COUNT_CLAIM.test(String(claim || '')); }
 function markChronicle(text) {
   return String(text).replace(/The Chronicle ✶ SIGNATURE MOMENT\n⌄\n([\s\S]*?)\nWonder Tags/g,
     (m, body) => '[THE CHRONICLE, SUPPORT FOR ITS FIGURES ONLY]\n' + body + '\n[END OF THE CHRONICLE]\nWonder Tags');
@@ -371,4 +376,4 @@ async function judgeSentence(page, sentence, model) {
   return { ok: false, error: 'judge: upstream busy after 5 tries' };
 }
 
-module.exports = { extractNumbers, pageFigures, checkNumbers, checkMeasures, splitSentences, readCrowns, checkCrowns, pageResult, CROWN_SYSTEM, JUDGE_MODELS, judgePage, judgeSentence };
+module.exports = { isCountClaim, extractNumbers, pageFigures, checkNumbers, checkMeasures, splitSentences, readCrowns, checkCrowns, pageResult, CROWN_SYSTEM, JUDGE_MODELS, judgePage, judgeSentence };

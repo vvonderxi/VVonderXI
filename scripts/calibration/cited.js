@@ -142,6 +142,8 @@ EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before 
 THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
+A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours.
+
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
 
 YOU MAY NOT state anything the facts do not hold, however true of football: transfers, arrivals or debuts; other seasons, earlier or later clubs, career history; records and firsts; title races, league positions, trophies or awards not in the facts, or a fuller name for an award than the facts give; how strong or difficult a league, team, club or opponent was; managers, team-mates, matches, dates or moments; how a player plays, moves or looks.
@@ -152,14 +154,18 @@ FORMAT. Reply with JSON only, no markdown. Each field is a list of sentences, ea
 {FORMAT}
 
 Never use em or en dashes; use a spaced comma. British spelling.`;
+/*  RAISE THE ASK, DO NOT LOWER THE FLOOR (Lucas, 2026-10-24, after sample 2 run 2 and sample 1 run 3). A
+    paragraph asked for 2 to 3 sentences and given 2 dies on one deletion; asked for 4 to 5 it survives.
+    Eleven of twelve sample 2 attempts and all four notes pieces were rejected for a paragraph or stanza
+    under two. The minimum of two is unchanged.  */
 const VERDICT_FORMAT = `{"who": [one sentence, a headline of at most 14 words],
- "p1": [3 to 4 sentences about Player A, citing A facts],
- "p2": [3 to 4 sentences about Player B, citing B facts],
- "h2h": [2 to 3 sentences setting the two against each other],
- "verdict": [2 to 3 sentences, the last one quotable]}`;
+ "p1": [4 to 5 sentences about Player A, citing A facts],
+ "p2": [4 to 5 sentences about Player B, citing B facts],
+ "h2h": [4 to 5 sentences setting the two against each other],
+ "verdict": [4 to 5 sentences, the last one quotable]}`;
 const NOTES_FORMAT = `{"glance": [one sentence, the essence of the season],
- "scout": [2 to 4 sentences: where the season sits on its own figures, and what it would cost to deny it],
- "notes": [[2 to 3 sentences], [2 to 3], [2 to 3], [2 to 3]]}   four stanzas: the essence, the honours and tags, the figures as evidence, a closing line`;
+ "scout": [4 to 5 sentences: where the season sits on its own figures, and what it would cost to deny it],
+ "notes": [[4 to 5 sentences], [4 to 5], [4 to 5], [3 to 4]]}   four stanzas: the essence, the honours and tags, the figures as evidence, a closing stanza`;
 function writerSystem(pack) {
   const rule = pack.type === 'notes' ? 'This is a single season: there is no comparison and no crown.'
     : pack.winner ? `P1 names ${pack.names[pack.winner]} as the winner: you may name ${pack.names[pack.winner]}, and only ${pack.names[pack.winner]}, as the winner, as clearly as P1 does. The headline MUST name ${pack.names[pack.winner]}.`
@@ -217,6 +223,12 @@ async function narrowCheck(pack, sentence, cites) {
 }
 
 /* ---------- THE DROP RULE (code) ---------- */
+function identityFacts(pack) {
+  return pack.facts.filter(f => /, age \d+$/.test(f.text)).map(f => {
+    const m = f.text.match(/^(.*?), \d\d\/\d\d season, (.*?), (.*?), ([A-Za-z]+), age (\d+)$/);
+    return m ? { id: f.id, side: f.side, club: m[2], league: m[3], age: m[5] } : { id: f.id, side: f.side };
+  });
+}
 /*  THE CODE RULE DECIDES A CROWN; THE MODEL'S READING IS ADVISORY (Lucas, 2026-10-24). The first
     fresh-sample run deleted 46 sentences as crowns and, read one by one, almost none declared an
     overall winner: "Rice holds a clear lead in that pillar", "Rodri holds the Ballon d'Or, absent from
@@ -301,6 +313,18 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     const bad = numbersOk(u.s, citedText, citedFacts, pack.facts);
     if (bad.length) why.push('numbers not in the cited facts: ' + bad.join(', '));
     if (MEASURE.test(u.s) && !MEASURE.test(citedText)) why.push('names a measure no card prints');
+    /*  THE CLUB HOLE, CLOSED (Lucas, 2026-10-24). Every miss across both samples on the final rules was a true
+        club name in a sentence that did not cite the identity fact holding it (Barcelona, Liverpool, Arsenal,
+        Marseille): the narrow check cannot see what is not cited. The club and league live in the identity
+        fact, so a sentence naming either must cite that side's identity fact or it goes.  */
+    const idfs = identityFacts(pack), named = new Map();   // name -> the identity fact ids that hold it (two team-mates share a club)
+    for (const idf of idfs) for (const x of [idf.club, idf.league]) if (x && nameRe(x).test(u.s)) named.set(x, (named.get(x) || []).concat(idf.id));
+    for (const [x, ids] of named) if (!ids.some(id => u.cite.includes(id))) why.push(`names ${x} without citing ${ids.join(' or ')}, the fact that holds it`);
+    /*  "HONOUR" BINDS TO AN HONOUR FACT, "TAG" TO A TAG FACT (Lucas, 2026-10-24). De Bruyne v Pogba shipped Peak
+        called an honour; no rule saw it, and the fact list knows which kind each is.  */
+    const kinds = new Set(citedFacts.map(f => factKind(f.text)));
+    if (/\bhonours?\b/i.test(u.s) && !kinds.has('honour')) why.push('says honour without citing an honour fact');
+    if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
     u.code = why.slice();
     if (!why.length) {
       const n = await narrow(pack, u.s, u.cite);
@@ -349,7 +373,7 @@ async function runPiece(pack) {
   const attempts = [], usage = [];
   if (pack.keeper) return { prose: null, outcome: 'no-prose', why: 'keepers are not covered by the cited writer yet', attempts };
   for (let a = 1; a <= 2; a++) {
-    const w = await callModel(WRITER_MODEL, writerSystem(pack), factsText(pack), 2500);
+    const w = await callModel(WRITER_MODEL, writerSystem(pack), factsText(pack), 4000);   // 4 to 5 sentences a paragraph needs the room
     if (w.usage) usage.push({ model: WRITER_MODEL, ...w.usage });
     if (!w.ok) { attempts.push({ attempt: a, error: w.error }); continue; }
     const j = await judgeDraft(pack, w.json);
@@ -360,4 +384,4 @@ async function runPiece(pack) {
   return { prose: null, outcome: 'no-prose', why: 'rejected twice', attempts, usage };
 }
 
-module.exports = { verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
