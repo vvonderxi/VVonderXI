@@ -167,7 +167,7 @@ function pageFigures(ev) {
   // the rendered page: a number beside a unit word counts for that unit; every number counts as "on the page"
   const pageText = [ev.page && ev.page.compare || ''].concat(Object.values((ev.page && ev.page.cards) || {})).join('\n');
   const onPage = new Set();
-  for (const x of extractNumbers(pageText)) { onPage.add(x.value); if (x.unit) add(x.unit, x.value); }
+  for (const x of extractNumbers(pageText)) { onPage.add(x.value); if (x.unit && x.unit !== 'tags' && x.unit !== 'honours') add(x.unit, x.value); }   // counts come from the audited request only, not from numbers that happen to sit near "tags" on the page
   (clean(pageText).match(/\d+(?:\.\d+)?/g) || []).forEach(n => onPage.add(+n));
   return { F, onPage, sides };
 }

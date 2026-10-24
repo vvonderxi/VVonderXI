@@ -268,8 +268,14 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
   for (const f of allFacts || citedFacts || []) { const k = factKind(f.text) + '/' + (f.side || 'P'); per[k] = (per[k] || 0) + 1; }
   const byKind = {};
   for (const [k, c] of Object.entries(per)) { const kind = k.split('/')[0]; (byKind[kind] = byKind[kind] || []).push(c); vals.add(c); }
-  for (const cs of Object.values(byKind)) for (const a of cs) for (const b of cs) { vals.add(a + b); vals.add(Math.abs(a - b)); }
-  const bad = PC.extractNumbers(sentence).filter(x => !vals.has(x.value)).map(x => x.raw);
+  const kindSet = {};
+  for (const [kind, cs] of Object.entries(byKind)) { const S = new Set(cs); for (const a of cs) for (const b of cs) { S.add(a + b); S.add(Math.abs(a - b)); } kindSet[kind] = S; S.forEach(v => vals.add(v)); }
+  /*  A COUNT IS BOUND TO ITS KIND (2026-10-24, sample 1 run 3). "Five tags" passed because The Standard's copy
+      says "Five seasons", and "four tags" because every card has four dimensions: the union of every kind's
+      small totals let most small counts through. A number the sentence attaches to tags or honours must be
+      that kind's total, sum or difference, and nothing else.  */
+  const BOUND = { tags: 'tag', honours: 'honour' };
+  const bad = PC.extractNumbers(sentence).filter(x => BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
   return bad;
 }
 async function judgeDraft(pack, draft, narrow = narrowCheck) {

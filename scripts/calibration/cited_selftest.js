@@ -143,6 +143,16 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('diacritics: rule B accepts a headline naming Ibrahimović', !jz.reasons.some(r => /headline does not name/.test(r)));
   expect('diacritics: the one-sided crown guard sees "Lacazette" named in a sentence citing only A', C.engagesBothSides(zp, { cite: ['A1'], s: 'Ibrahimović did more than Lacazette.' }) && !C.engagesBothSides(zp, { cite: ['A1'], s: 'Ibrahimović did plenty.' }));
   expect('counts line: the narrow check is told each side\'s honour and tag totals', /Ibrahimović's card holds 0 honours and 3 tags in all/.test(C.countsLine(zp)) && /Lacazette's card holds 0 honours and 0 tags/.test(C.countsLine(zp)));
+  // a count is bound to its kind (2026-10-24, sample 1 run 3)
+  const dimF = ['Goal Threat', 'Creation', 'Progression', 'Defensive'].map((d, i) => ({ id: 'A' + (10 + i), side: 'A', text: `X's ${d}: 90th percentile among ST seasons` }));
+  const stdF = { id: 'A20', side: 'A', text: 'Tag: The Standard. The card says: "Elite not once but for years. Five seasons at the top level."' };
+  const synth2 = idF.concat(tagF('A', 3), dimF, [stdF]);   // X holds four tags in all (three plus The Standard), four dimensions, a copy that says Five
+  const c2 = [stdF], t2 = stdF.text;
+  expect('bound: "five tags" is deleted though The Standard\'s copy says Five', C.numbersOk('X carries five tags.', t2, c2, synth2).includes('five'));
+  expect('bound: "four tags" is kept, the real total (not because there are four dimensions)', !C.numbersOk('X carries four tags.', t2, c2, synth2).length);
+  expect('bound: "three tags" is deleted though three dimensions could be cited', C.numbersOk('X carries three tags.', t2, c2, synth2).includes('three'));
+  expect('bound: "five seasons at the top level" stays, the copy\'s own number', !C.numbersOk('Five seasons at the top level, the card says.', t2, c2, synth2).length);
+  expect('bound: "two honours" is deleted when the card holds none', C.numbersOk('X holds two honours.', t2, c2, synth2).includes('two'));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();
