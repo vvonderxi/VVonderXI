@@ -403,7 +403,37 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
      and the Messi v Neymar headline "one clear winner" that does not name him while the verdict does.
    **Tie-heavy again: the same seven of eight pairs, by construction of the sample.** Separated pairs go
    into the sample before the crown rule is judged, as decided. **Lucas's read of both lists, the flags
-   and the 106 unflagged sentences, is the next step; the method stands.**
+   and the 109 unflagged sentences (106 was a miscount), is the next step; the method stands.** The two
+   lists as one file: `_local/verdict-check/fresh_run2_lists.md`.
+   **AFTER RUN 2 (Lucas, 2026-10-24), FOUR THINGS BUILT, PROSE STILL OFF:**
+   - **SAMPLE 2, SIX SEPARATED PAIRS (`fresh_sample2.json`, `sample.js --sample`).** Found by searching every
+     top card (rt 88+, big five leagues, 2015+) against every lower card of a known name, same position
+     pool, for a gap clearing the pair's own margin (`vv-margin.js`) by at least 0.8, re-asserted when the
+     file was written. **Only Winger and ST pairs separate at these names; no midfield or defender pairing
+     cleared its margin**, the 2026-09-09 SE finding seen again. All six are masterclass gaps (10 to 16);
+     no bragging-rights pair cleared by more than 0.1, so the 7 to 9 band is untested.
+   - **KEY PASSES PER 90 AT THE CARD'S TWO DECIMALS** (`aiPer90`, vv-core.js, token bumped on the five
+     shipping surfaces; the fact list prints `toFixed(2)`).
+   - **RELIABILITY AS THE PAGE PRINTS IT:** the Compare request line drops "% of a full season"
+     (`compare.html`), the card payload's note no longer calls it a share of a season (`vv-core.js`), and the
+     fact reads "Reliability: 89 out of 100". **The caption that calls every dimension a percentile is a
+     live page error on card and Compare, logged in CLAUDE.md §D with its check (area 1).**
+   - **THE THREE REAL FAULTS THAT SHIPPED, JUDGED (rule gap or residue):** (1) Watkins "three tags" on a
+     four-tag card: **a rule gap, closable in code**: a count of one kind should equal that kind's total in
+     the fact list for a side (the page's total), or a sum or difference of the two sides' totals; the
+     cited subset's own count would no longer qualify. "Four honours" and "two honours Salah does not"
+     (4 against 2) still pass; a true subset count ("two of his tags speak to durability") would go, the
+     accepted price. (2) Hamsik "three readings above the 91st mark" at 95, 95 and 91: **residue**; it is an
+     inclusive-language slip the narrow check should have read (91 is not above 91) and no code rule worth
+     its false holds catches it; Lucas reads for it. (3) The Messi v Neymar headline "one clear winner"
+     that does not name him while the verdict does: **a rule gap, closable in code**: on a separated pair
+     the headline must contain the winner's surname or the piece is rejected to regeneration. Neither
+     closable rule is built yet; Lucas decides.
+   **THE SAMPLE'S OWN TOOLS NEED THREE REPAIRS BEFORE THE NEXT READ, or Lucas reads 16 false flags
+   again:** "The Dribbler" is a tag name, not the dribbles measure; a count of tags or honours should be
+   checked against the page's own count, which the page check can make; and the unit binding for "points"
+   and "VV" should accept a VV Score and a percentile. Not done; listed so the next session does not
+   rediscover them.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

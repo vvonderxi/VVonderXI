@@ -1144,9 +1144,14 @@
       that looks alive. The first version of this shipped rounded values and produced
       unrounded ones, which is how it was caught. Same defect family as two fields for one
       concept: one name, two meanings, no error.  */
+  /*  TWO DECIMALS, THE CARD'S OWN PRECISION (Lucas, 2026-10-24). card.html prints every per-90 with
+      toFixed(2) (Key passes 2.36) and this sent 2.4, so the writer stated a number the page contradicts:
+      the same class as the band, found by the sample's page check on run 2 (area 9). The rule is the
+      2026-10-22 one: the writer must not state a number the reader cannot check. A change here changes
+      every writer payload, so the vv-core cache token was bumped on every shipping surface with it.  */
   function aiPer90(v, mins){
     if (v == null || !mins || mins <= 0) return null;
-    return Math.round((v / (mins / 90)) * 10) / 10;
+    return Math.round((v / (mins / 90)) * 100) / 100;
   }
   /*  THE KEEPER'S SAVE-RATE SERIES, for the model. It costs no extra fetch , the caller
       already holds the season rows , and it lands in the same change as the career arc so
@@ -1394,7 +1399,7 @@
             pool: _rd.pool || null,
             note: 'percentile_in_pool is this season ranked against other ' +
                   (_rd.pool || 'comparable') + ' seasons we can measure, not a rate and not a league rank. ' +
-                  'reliability is not a percentile: it is minutes played as a share of a full season.',
+                  'reliability is printed on the card as an attribute out of 100; state it as the card prints it, never as a share of a season.',
             values: _vals
           };
       }

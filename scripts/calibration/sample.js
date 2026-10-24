@@ -8,6 +8,8 @@
  *                                                   else no prose), then EVERY check runs over what ships ->
  *                                                   _local/verdict-check/fresh_<time>.json and fresh_<time>.md
  *    node scripts/calibration/sample.js --tools <fresh_<time>.json>   re-run the checks on a saved run
+ *    --sample scripts/calibration/fresh_sample2.json   any of the above on another sample file; the evidence and
+ *                                                   run files take the sample's tag (fresh_sample2 -> fresh2_...)
  *
  *  THE METHOD (Lucas, 2026-10-24): every check runs over the shipped prose (the number and measure
  *  checks and the crown rules in code, the model's crown read, and every sentence judged alone by Sonnet
@@ -19,8 +21,11 @@ const fs = require('fs'), path = require('path');
 require('dotenv').config({ quiet: true });
 const C = require('./cited.js'), PC = require('./prose_checks.js');
 const ROOT = path.join(__dirname, '..', '..'), DIR = path.join(ROOT, '_local', 'verdict-check');
-const SAMPLE = JSON.parse(fs.readFileSync(path.join(__dirname, 'fresh_sample.json'), 'utf8'));
-const EVF = path.join(DIR, 'fresh_evidence.json');
+const _si = process.argv.indexOf('--sample');
+const SAMPLE_FILE = _si > 0 ? path.resolve(process.argv[_si + 1]) : path.join(__dirname, 'fresh_sample.json');
+const TAG = path.basename(SAMPLE_FILE).replace(/\.json$/, '').replace(/^fresh_sample/, 'fresh');   // fresh_sample -> fresh, fresh_sample2 -> fresh2
+const SAMPLE = JSON.parse(fs.readFileSync(SAMPLE_FILE, 'utf8'));
+const EVF = path.join(DIR, `${TAG}_evidence.json`);
 const stamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 const PRICE = { 'claude-sonnet-4-6': [3, 3.75, 0.3, 15] };
 function cost(usage) {
@@ -69,7 +74,7 @@ async function tools(run) {
 }
 
 function report(run) {
-  const L = [`# Fresh sample, option 1 (cited writer), ${run.at}`, ''];
+  const L = [`# ${run.sample || 'Fresh sample'}, option 1 (cited writer), ${run.at}`, ''];
   const by = o => run.items.filter(r => r.outcome === o).length;
   L.push(`Shipped first time: ${by('shipped')}. Shipped on regeneration: ${by('shipped-on-regeneration')}. No prose: ${by('no-prose')}. Of ${run.items.length}.`);
   L.push(`Cost: writer and narrow check about $${run.cost_write.toFixed(2)}, the tools about $${(run.cost_tools || 0).toFixed(2)}.`, '');
@@ -125,7 +130,7 @@ function report(run) {
     return;
   }
   const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
-  const run = { at: new Date().toISOString(), evidence_captured_at: EV.captured_at, writer: C.WRITER_MODEL, check: C.CHECK_MODEL, items: [] };
+  const run = { at: new Date().toISOString(), sample: path.basename(SAMPLE_FILE), evidence_captured_at: EV.captured_at, writer: C.WRITER_MODEL, check: C.CHECK_MODEL, items: [] };
   const usage = [];
   for (const it of SAMPLE.items) {
     const ev = EV.items.find(x => x.id === it.id);
@@ -139,7 +144,7 @@ function report(run) {
   run.cost_write = cost(usage);
   console.log(`\nwriter and narrow check: about $${run.cost_write.toFixed(2)}. Now every check over what shipped:\n`);
   await tools(run); run.cost_tools = cost([run.tools_usage]);
-  const f = path.join(DIR, `fresh_${stamp()}.json`);
+  const f = path.join(DIR, `${TAG}_${stamp()}.json`);
   fs.writeFileSync(f, JSON.stringify(run, null, 1)); fs.writeFileSync(f.replace(/\.json$/, '.md'), report(run));
   console.log(`\ntools: about $${run.cost_tools.toFixed(2)}\n-> ${path.relative(ROOT, f)}\n-> ${path.relative(ROOT, f.replace(/\.json$/, '.md'))}`);
 })().catch(e => { console.error('sample failed:', e.stack || e.message); process.exit(1); });

@@ -54,6 +54,12 @@ function tagFact(tag, means) { return `Tag: ${tag}. The card says: "${means}"`; 
     page prints. That was the 2026-10-22 rule, "the writer must not state a number the reader cannot
     check", broken inside the thing enforcing it. The request's own band (P.band, "(X band)" on the
     Player line) is ignored here for the same reason: it is sent for every score.  */
+/*  RELIABILITY AND KEY PASSES AS THE CARD PRINTS THEM (Lucas, 2026-10-24; area 9, run 2). The fact said
+    "he played 89% of a full season" and the card prints "Reliability 89" under ATTRIBUTE / 100 with no
+    such gloss; Sonnet flagged every one against the page. Key passes per 90 came at one decimal and the
+    card prints two (toFixed(2)), so the fact prints two as well. Same rule as scoreFact: a fact states
+    what the reader can find on the page, in the form the page gives it.  */
+function reliabilityFact(name, v) { return `${name}'s Reliability: ${v} out of 100`; }
 function scoreFact(name, rt) {
   const pr = V.prestigeFor(V.bandFor(+rt));
   return `${name}'s VV Score: ${rt}` + (pr ? `, and the card marks the season ${pr}` : '');
@@ -75,12 +81,12 @@ function sideFacts(line, P) {
     const x = g(new RegExp(d + ' (\\d+)'));
     if (x != null) F.push(`${surname}'s ${d}: ${ord(x)} percentile among ${pos} seasons`);
   }
-  const rel = g(/Reliability (\d+)% of a full season/);
-  if (rel != null) F.push(`${surname}'s Reliability: he played ${rel}% of a full season`);
+  const rel = g(/Reliability (\d+)/);
+  if (rel != null) F.push(reliabilityFact(surname, rel));
   const shots = g(/goals \d+ of (\d+) shots/);
   if (shots != null) F.push(`${surname}: ${goals} goals from ${shots} shots`);
   const kp = g(/key passes\/90 ([\d.]+)/);
-  if (kp != null) F.push(`${surname}: ${kp} key passes per 90 minutes`);
+  if (kp != null) F.push(`${surname}: ${Number(kp).toFixed(2)} key passes per 90 minutes`);
   const H = g(/HONOURS: (.*?); (?:CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
   for (const h of (H ? H.split(/; (?=[A-Z])/) : [])) {
     const m = h.match(/^(.+?) \d{4} \((player|team)\)/);
@@ -114,10 +120,10 @@ function notesFacts(player) {
   const vals = (P.dimensions && P.dimensions.values) || {}, NAMES = { goalThreat: 'Goal Threat', creation: 'Creation', progression: 'Progression', defensive: 'Defensive' };
   for (const [k, x] of Object.entries(vals)) {
     if (x.percentile_in_pool != null) F.push(`${nm}'s ${NAMES[k] || k}: ${ord(x.percentile_in_pool)} percentile among ${P.pool} seasons`);
-    if (x.pct_of_full_season != null) F.push(`${nm}'s Reliability: he played ${x.pct_of_full_season}% of a full season`);
+    if (x.pct_of_full_season != null) F.push(reliabilityFact(nm, x.pct_of_full_season));
   }
   if (P.shots_total != null) F.push(`${nm}: ${P.goals} goals from ${P.shots_total} shots`);
-  if (P.key_passes_per90 != null) F.push(`${nm}: ${P.key_passes_per90} key passes per 90 minutes`);
+  if (P.key_passes_per90 != null) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
   for (const h of (P.honours || [])) F.push(honourFact(h.honour, h.won_by));
   for (const t of (P.tag_glosses || [])) F.push(tagFact(t.tag, t.means));
   if (/^pre-2015/.test(P.era || '')) F.push(`${nm}'s season is from before 2015: only appearances, minutes, goals and assists were recorded; every other measure is absent, not zero`);
@@ -318,4 +324,4 @@ async function runPiece(pack) {
   return { prose: null, outcome: 'no-prose', why: 'rejected twice', attempts, usage };
 }
 
-module.exports = { verdictFacts, notesFacts, scoreFact, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { verdictFacts, notesFacts, scoreFact, reliabilityFact, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };

@@ -92,6 +92,15 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('fix 3: notes ignore the request band for an 87', !C.notesFacts(stubPlayer(87, 'World Class')).facts.some(f => /World Class|band/i.test(f.text)));
   expect('fix 3: notes mark a 90 Iconic', C.notesFacts(stubPlayer(90, 'Iconic')).facts.some(f => /VV Score: 90, and the card marks the season Iconic/.test(f.text)));
   expect('fix 3: notes print no band word for a 90 beyond the prestige word', !C.notesFacts(stubPlayer(90, 'Iconic')).facts.some(f => /\bband\b/i.test(f.text)));
+  // Fixes 4 and 5 (Lucas, 2026-10-24, after run 2): key passes at the card's two decimals; Reliability as the card prints it.
+  const kpP = Object.assign(stubPlayer(90, 'Iconic'), { key_passes_per90: 2.36, dimensions: { values: { reliability: { pct_of_full_season: 89 } } } });
+  const kpF = C.notesFacts(kpP).facts.map(f => f.text);
+  expect('fix 4: key passes per 90 keep two decimals (2.36 as the card prints it)', kpF.some(t => /: 2\.36 key passes per 90 minutes$/.test(t)));
+  expect('fix 4: a one-decimal figure is printed as the card would (0.30, not 0.3)', C.notesFacts(Object.assign(stubPlayer(90, 'Iconic'), { key_passes_per90: 0.3 })).facts.some(f => /: 0\.30 key passes/.test(f.text)));
+  expect('fix 5: Reliability reads as the card prints it, out of 100', kpF.some(t => t === "X's Reliability: 89 out of 100"));
+  expect('fix 5: no fact says "of a full season" (the League Title copy says "across a full season", and that is the card\'s own text)', !kpF.some(t => /of a full season/i.test(t)) && !rodri.facts.some(f => /of a full season/i.test(f.text)) && !pack.facts.some(f => /of a full season/i.test(f.text)));
+  expect('fix 5: the Compare line parses with or without the old gloss', rodri.facts.some(f => /^Rodri's Reliability: \d+ out of 100$/.test(f.text)));
+  expect('fix 5: the number rule still binds the Reliability figure', (await C.judgeDraft(pack, { p1: [ok(`Messi played ${pack.facts.find(f => /^Messi's Reliability/.test(f.text)).text.match(/: (\d+)/)[1]} of 100 on Reliability.`, [pack.facts.find(f => /^Messi's Reliability/.test(f.text)).id])] }, narrow)).units[0].kept);
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

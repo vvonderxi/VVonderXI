@@ -1,0 +1,59 @@
+{
+ "what": "Sample 2 for option 1 (2026-10-24, Lucas): six comparisons the Index SEPARATES, none from the twelve or from sample 1, because sample 1 came out seven ties of eight and the crown rule, the one that deleted 46 sentences wrongly in run 1, had never been tested on a crowned pair. Chosen by searching every top card (rt 88+, big five leagues, 2015+) against every lower card of a known name, same position pool, for a gap that clears the pair's own margin (vv-margin.js, 1.96 pooled SE) by at least 0.8; separation re-asserted when this file was written. Only Winger and ST pairs separate at these names: no midfield or defender pairing cleared its margin, which is the SE finding of 2026-09-09 seen again. All six are masterclass gaps (10+); no bragging-rights pair cleared by more than 0.1. Read tools first, then Lucas.",
+ "items": [
+  {
+   "id": "messi1920-candreva2122",
+   "type": "verdict",
+   "cards": [
+    139650,
+    145855
+   ],
+   "note": "Messi 19/20 v Candreva 21/22, Winger; expected separated, 94 v 79, gap 15 against a margin of 8.31, the page should crown the first"
+  },
+  {
+   "id": "ronaldo1516-sancho2021",
+   "type": "verdict",
+   "cards": [
+    141579,
+    153064
+   ],
+   "note": "Ronaldo 15/16 v Sancho 20/21, Winger; expected separated, 94 v 78, gap 16 against a margin of 10.93, the page should crown the first"
+  },
+  {
+   "id": "salah2122-neymar1920",
+   "type": "verdict",
+   "cards": [
+    131969,
+    159395
+   ],
+   "note": "Salah 21/22 v Neymar 19/20, Winger; expected separated, 92 v 81, gap 11 against a margin of 9.18, the page should crown the first"
+  },
+  {
+   "id": "suarez1617-payet2122",
+   "type": "verdict",
+   "cards": [
+    141117,
+    158702
+   ],
+   "note": "Suarez 16/17 v Payet 21/22, ST; expected separated, 93 v 81, gap 12 against a margin of 10.93, the page should crown the first"
+  },
+  {
+   "id": "ibrahimovic1516-lacazette2425",
+   "type": "verdict",
+   "cards": [
+    161191,
+    157469
+   ],
+   "note": "Ibrahimovic 15/16 v Lacazette 24/25, ST; expected separated, 93 v 78, gap 15 against a margin of 12.55, the page should crown the first"
+  },
+  {
+   "id": "kane1617-mertens2021",
+   "type": "verdict",
+   "cards": [
+    134288,
+    146568
+   ],
+   "note": "Kane 16/17 v Mertens 20/21, ST; expected separated, 92 v 79, gap 13 against a margin of 12.17, the page should crown the first"
+  }
+ ]
+}

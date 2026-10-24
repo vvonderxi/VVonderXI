@@ -1912,7 +1912,7 @@ body.light .pkmsub{color:var(--ink-soft)}
       Loaded BEFORE vv-core, though verdictContext reads window.VVMargin lazily at call
       time rather than at load, so the order is for readers and not a dependency.  -->
 <script src="/vv-margin.js?v=20260912b"></script>
-<script src="/vv-core.js?v=20261022b"></script>
+<script src="/vv-core.js?v=20261024a"></script>
 <script>
 /*  COMPARE FUNNEL (2026-10-09). Seventeen visits reached Compare on launch day and the event table
     recorded no comparison, with nothing to say where they stopped. Each step a visit reaches is now
@@ -4088,7 +4088,11 @@ body.light .pkmsub{color:var(--ink-soft)}
       var keys=['goalThreat','creation','progression','defensive','reliability'], names=['Goal Threat','Creation','Progression','Defensive','Reliability'];
       var shown=keys.map(function(k,i){ return s && s[k]!=null && (typeof RADAR_OK==='undefined' || !RADAR_OK || RADAR_OK[i]); });
       if(!shown.some(Boolean)) return 'none shown (the head to head draws a dimension only when both seasons have it)';
-      var parts=[]; keys.forEach(function(k,i){ if(!shown[i]) return; parts.push(names[i]+' '+(k==='reliability'? s[k]+'% of a full season' : s[k])); });
+      /*  RELIABILITY AS THE PAGE PRINTS IT (Lucas, 2026-10-24). This sent "Reliability 90% of a full
+          season"; the head to head prints "RELIABILITY 90 88" and the card prints it under ATTRIBUTE / 100,
+          and no page says "of a full season". Sonnet flagged every such line in the fresh sample as a
+          meaning the page never states (area 9, run 2). The number is unchanged; only the gloss goes.  */
+      var parts=[]; keys.forEach(function(k,i){ if(!shown[i]) return; parts.push(names[i]+' '+s[k]); });
       return 'as the head to head shows them, percentile against other '+(R.pool||'comparable')+' seasons except Reliability: '+parts.join(', ')
         +(shown.every(Boolean)?'':' (the other dimensions are not shown, because the other season lacks them)'); }
     /* THE SAME ENRICHED BLOCK THE CARD SENDS, via VVCore.vvAIStats, so one card cannot look
