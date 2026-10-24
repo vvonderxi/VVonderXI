@@ -509,7 +509,38 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
       to count, and a count claim is dropped in code whatever it says (`isCountClaim`).
    4. **"HONOUR" BINDS TO AN HONOUR FACT, "TAG" TO A TAG FACT.** Peak called an honour (De Bruyne v Pogba)
       was a real fault no rule saw; the fact list knows which kind each is.
-   The four runs follow, below.
+   **THE FOUR RUNS, 18:16 TO 18:38 UTC, $6.80, NO KEY FAILURE.**
+   - **SAMPLE 2 (SIX SEPARATED PAIRS): 5 OF 6, THEN 6 OF 6.** 191 shipped sentences, 5 tool flags, **hole 0 of
+     191**. The crown rule deleted 10 sentences in 397 across the two runs, all "a crown that does not cite
+     the result", which is the rule as designed. Three regenerations in each run, every one from a headline
+     the narrow check deleted for a flourish ("a season for the ages", "a season apart in class", "still
+     sets the standard") or from more than a quarter gone. The headline is where the writer puts voice and
+     where one deletion costs the piece; an instruction that the headline states the result and a cited fact,
+     nothing more, would cut most regenerations. Not changed; Lucas decides.
+   - **SAMPLE 1: 5 OF 12, THEN 5 OF 12, AND FIVE OF THE FOURTEEN NO-PROSE OUTCOMES WERE A FORMAT DRIFT OF MINE.**
+     On three tie pairs in both runs (Immobile v Lewandowski, Benzema v Mbappé, Rodri v Rice) the writer
+     returned the headline as a bare string, `["The Index cannot split Rodri and Rice..."]`, where every other
+     sentence is `{"s", "cite"}`; the spec said "one sentence, a headline" and invited it. It parsed as an
+     empty sentence citing nothing, the headline was deleted, and the piece rejected. **Fixed (`8057360`): the
+     spec shows the object, a bare string is read as a sentence with no citation, and an inline "[A1, A2]"
+     tail becomes the citation. Sample 1 is being run twice more on the fix; its two runs above are not the
+     measurement.** Of what did ship: 177 sentences, 7 tool flags, **hole 0 of 177**. The notes shipped 1 of 8.
+   - **THE HOLE ACROSS ALL FOUR RUNS: 0 OF 368 SHIPPED SENTENCES.** The club rule fired twice and the
+     honour and tag binding fourteen times, all deletions, none shipped. On these samples the cited writer's
+     residual kind 1 is now zero by the hole's definition (a fact the identity fact holds, uncited).
+   - **THE COUNT RULE IS NOW THE SECOND DELETER, AND MOST OF IT IS COUNT WORDS.** Sample 1: 88 number
+     deletions, 58 of them a count word (two to six). Some are the writer miscounting ("Four tags sit on his
+     card" on a five-tag card, listing four); some are true subsets the rule now forbids ("three dimensions
+     at the 96th or above", citing three of four). **A proposal, not done: allow a count up to the total for
+     dimensions, which are a fixed visible set of four a reader can count; keep tags and honours exact.**
+   - **THE TOOLS OVER-FLAG CROSS-UNIT ARITHMETIC.** About 10 of the 12 tool flags are true sums or
+     differences bound to the wrong unit: "a gap of 18" for 25 goals against 7, "exceed by 23" for 38
+     against 15, "a combined goal involvement of 32" for 19 and 13, "six more goals than assists" for 18
+     and 12. Two are real ("six more goals" for 18 against 16; Pogba's exclusive tags miscounted by the
+     writer, caught by Sonnet). Repair, not done: accept a bound number that is a sum or difference of any
+     two page figures when the clause carries an arithmetic word (more, fewer, gap, exceed, combined, by).
+   - **LISTS:** `_local/verdict-check/sample_2_run_1_final_lists.md` (3 flags, 90 unflagged),
+     `sample_2_run_2_final_lists.md` (2 flags, 101 unflagged); sample 1's two clean runs to follow.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

@@ -146,7 +146,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 - **LUCAS READ THE THREE LISTS: the crown rule is done (1 in 138 on six crowned pairs).** Four changes (`af53442`, self-test 73): the club hole closed (a club or league named must cite the identity fact that holds it); the ask raised to 4 to 5 sentences a paragraph with the minimum of two unchanged (a paragraph given 2 dies on one deletion; that, not the notes format, is why 0 of 4 notes shipped); Sonnet's tag and honour counts dropped from the tools (code counts exactly); honour binds to an Honour fact and tag to a Tag fact. **Then both samples run twice each, about $10, because 4 of 6 then 1 of 6 on identical rules means one run of six is noise.** Results in area 9 when done.
 
-**NEXT:** the four runs' results, two lists each, tools first then Lucas.
+- **THE FOUR RUNS (18:16 to 18:38 UTC, $6.80):** sample 2 **5 of 6 then 6 of 6, hole 0 of 191**; sample 1 5 of 12 twice, but five of the fourteen no-prose outcomes were a format drift of mine (the headline returned as a bare string on three tie pairs, parsed as empty; fixed `8057360`, sample 1 re-running twice). **Hole across all four runs 0 of 368 shipped sentences.** The count rule is now the second deleter (58 of 88 number deletions in sample 1 are count words; a proposal in area 9 to allow dimension subsets); the tools over-flag cross-unit arithmetic (about 10 of 12 flags; repair proposed in area 9). The three regenerations a run in sample 2 all come from a headline flourish the narrow check deletes.
+
+**NEXT:** sample 1's two clean runs; then Lucas reads the four lists and decides the three proposals (headline instruction, dimension subset counts, the tools' arithmetic).
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 
