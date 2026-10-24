@@ -148,7 +148,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 - **THE FOUR RUNS (18:16 to 18:38 UTC, $6.80):** sample 2 **5 of 6 then 6 of 6, hole 0 of 191**; sample 1 5 of 12 twice, but five of the fourteen no-prose outcomes were a format drift of mine (the headline returned as a bare string on three tie pairs, parsed as empty; fixed `8057360`, sample 1 re-running twice). **Hole across all four runs 0 of 368 shipped sentences.** The count rule is now the second deleter (58 of 88 number deletions in sample 1 are count words; a proposal in area 9 to allow dimension subsets); the tools over-flag cross-unit arithmetic (about 10 of 12 flags; repair proposed in area 9). The three regenerations a run in sample 2 all come from a headline flourish the narrow check deletes.
 
-**NEXT:** sample 1's two clean runs; then Lucas reads the four lists and decides the three proposals (headline instruction, dimension subset counts, the tools' arithmetic).
+- **SAMPLE 1'S TWO CLEAN RUNS (headline fix, $4.97): 9 of 12 then 8 of 12; verdicts 8 of 8 and 7 of 8, notes 1 of 4 twice; hole 0 of 299; all 7 tool flags false, one shape (cross-unit arithmetic binding).** **On the final rules across six runs: verdicts 26 of 28, notes 2 of 8, hole 0 of 490 shipped sentences.** The notes die on the share rule (the narrow check deletes about a third of a notes piece, the form invites judgement); a notes-shaped decision is needed. Four list files in `_local/verdict-check/sample_*_final_lists.md`.
+
+**NEXT (Lucas):** read the four lists; decide the notes (relax the share rule for notes, or ask the scout and closing stanza for figures and card copy only), the headline instruction, dimension subset counts, and the tools' arithmetic repair. The key is out after this session's runs.
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 

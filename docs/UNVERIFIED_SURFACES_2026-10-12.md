@@ -540,7 +540,22 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
      writer, caught by Sonnet). Repair, not done: accept a bound number that is a sum or difference of any
      two page figures when the clause carries an arithmetic word (more, fewer, gap, exceed, combined, by).
    - **LISTS:** `_local/verdict-check/sample_2_run_1_final_lists.md` (3 flags, 90 unflagged),
-     `sample_2_run_2_final_lists.md` (2 flags, 101 unflagged); sample 1's two clean runs to follow.
+     `sample_2_run_2_final_lists.md` (2 flags, 101 unflagged).
+   - **SAMPLE 1, THE TWO CLEAN RUNS ON THE HEADLINE FIX (18:52 to 19:12 UTC, $4.97): 9 OF 12, THEN 8 OF 12.**
+     Verdicts 8 of 8 then 7 of 8; notes 1 of 4 then 1 of 4. 299 shipped sentences, 7 tool flags, **hole 0 of
+     299**. No empty headline. **Every one of the 7 tool flags is false, and all the same shape: a true sum or
+     difference, or a number next to another unit's word, bound to the wrong unit** ("two more goals over two
+     more appearances", "7 in 38", "a combined figure of 32", "1.64" read as minutes, "five top level
+     seasons"). The sample's tools now have one defect left and it is that binding; the repair proposed
+     above stands. **What still fails is the notes: every notes rejection is "more than a quarter deleted"
+     with the closing stanza under two.** The narrow check deletes about a third of a notes piece (the
+     form invites judgement: "what it would cost to deny it"), so a 21-sentence piece loses 6 to 12 and
+     dies on the share rule however long the ask. A notes-shaped decision is needed: either the share rule
+     relaxes for notes, or the scout and closing stanza are asked for figures and card copy only.
+   **THE SIX RUNS TOGETHER, ON THE FINAL RULES: VERDICTS 26 OF 28 SHIPPED (sample 2 11 of 12, sample 1 15 of
+   16), NOTES 2 OF 8; 490 SHIPPED SENTENCES; HOLE 0 OF 490; 12 TOOL FLAGS, 10 OF THEM THE SAME TOOL FAULT.**
+   The two lists for each run: `_local/verdict-check/sample_1_run_3_final_lists.md` (4 flags, 162 unflagged),
+   `sample_1_run_4_final_lists.md` (3 flags, 138 unflagged), and the two sample 2 files above.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
