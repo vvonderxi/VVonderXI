@@ -330,6 +330,51 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    (`fresh_sample.json`: 8 comparisons and 4 cards, none from the twelve, Messi 16/17 v Neymar 16/17
    the fair crown) measures it, tools first then Lucas. **If the hole is not small enough, we are at
    code-written prose or no prose, and that is learned from the sample, not argued.**
+   **THE FIRST FRESH-SAMPLE RUN, 2026-10-24 12:13 UTC (`_local/verdict-check/fresh_2026-10-24T12-13-42-675Z.md`):
+   11 OF 12 PIECES WENT TO NO PROSE, ONE SHIPPED (Rodri v Rice, on regeneration), $1.01.** 333 sentences
+   written over 24 attempts, 119 deleted: 46 by the crown rule, 40 by the number rule, 33 by the narrow
+   check. Regeneration rescued 1 of 12. Read drop by drop, two of the three rules were misfiring:
+   - **The crown rule deleted sentences that crown nothing.** The narrow check called any sentence that
+     favours one side a crown ("Rice holds a clear lead in that pillar", "Rodri holds the Ballon d'Or,
+     absent from Rice's card", "Immobile's VV Score of 93 places him in the Iconic band") and code deleted
+     it against the page. On the one fair-crown pair nine plain descriptive sentences died for "a crown
+     that does not cite the result"; on the seven tied pairs 38 died, and almost none declared a winner.
+     **THIS IS THE THIRD TIME THE MODEL'S CROWN READING HAS BEEN THE UNRELIABLE HALF** (the 10-23 "edges"
+     misses, the 10-24 re-run that moved which crowns it saw, and this), now with a delete behind it.
+     **FIXED (Lucas, 2026-10-24): a crown is an overall-winner sentence and nothing else, and THE CODE
+     RULE DECIDES.** The narrow check's question now defines a crown as the better season taken whole,
+     with the non-examples (a lead in one measure, an honour the other lacks, a band or score as a
+     figure, a one-season sentence). And code acts on the reading only where the sentence can be a
+     comparison at all: it cites a fact from both sides or P1, or names the other player
+     (`engagesBothSides`). A one-sided sentence is never deleted as a crown whatever the model said.
+   - **The number rule deleted counts of the facts the sentence cited.** "Four honours on a single card"
+     citing four honour facts, "two Golden Boot seasons", "six identical tags", "two World Class CDMs":
+     about half of the 40. A reader checks a count by counting. **FIXED: a count of the cited facts of one
+     kind, in all or per side, is allowed; everything else stays strict** (the same rule caught "seven
+     percentile points higher" and "three points above" for a gap of 11, an uncited 3221 minutes, an age
+     no fact holds, and "six goals were left in matches he did not start", and keeps catching them).
+   - **The narrow check was mostly right.** Its 33 deletions are genuine kind 1 or filler: "Thirty goals"
+     on a 26-goal card, "Sassuolo", "the highest available", "the harder version of the achievement", a
+     run of superlatives. Two false deletions, both a sentence quoting the card's own tag or honour copy.
+     **THE HOLE, SEEN WORKING AS DESCRIBED: it passed "Manchester City" and "Arsenal" in the shipped piece
+     and "Napoli" in one Osimhen attempt when no cited fact held the club** (the identity fact holds it,
+     and the sentence did not cite it). A real fact, uncited, that Sonnet lets through. **That count is
+     the number to watch on the next run.**
+   - **The shipped piece's only two flags were the fact list's fault, not the writer's.** The sentence
+     judge flagged "World Class band" twice as not on the page, and it was right: the rendered Compare and
+     both cards print no band word for World Class. The card face prints a prestige chip for Generational
+     and Iconic only (`prestigeFor`, `renderPrestige`) and no page prints any other band name, yet the
+     fact list gave the writer the band for every score. **The 10-22 rule, broken inside the thing
+     enforcing it. FIXED: the score fact carries the band exactly when the page prints it, in the word it
+     prints (`scoreFact`); the request's own band field is ignored.**
+   **The sample was tie-heavy: seven of eight pairs came out "cannot separate" on the page, so the run
+   barely tested the crown case.** If the next run is also tie-heavy, separated pairs go into the sample
+   before the crown rule is judged.
+   **Offline replay of the 24 saved drafts through the fixed rules, each sentence's saved narrow answer
+   stubbed back in: 119 drops become 66, and 8 of 12 pieces ship instead of 1.** Optimistic by
+   construction: 27 sentences the old code rules deleted before Sonnet saw them are assumed clean, and the
+   replayed crown answers are the old prompt's. The self-test holds 30 planted cases (`cited_selftest.js`),
+   16 of them for these three fixes. Second run: below, when made.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

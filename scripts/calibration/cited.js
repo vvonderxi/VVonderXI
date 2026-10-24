@@ -45,6 +45,19 @@ function honourFact(label, wonBy) {
 }
 function ord(n) { n = +n; const t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
 function tagFact(tag, means) { return `Tag: ${tag}. The card says: "${means}"`; }
+/*  THE BAND ONLY WHEN THE PAGE PRINTS IT (Lucas, 2026-10-24). The first fresh-sample run shipped one
+    piece, Rodri v Rice, and the sentence judge's only two flags were "World Class band": the fact list
+    had told the writer the band for every score, and the rendered Compare and both cards print no
+    band word at all for World Class. The card face prints a prestige chip (renderPrestige) for
+    Generational and Iconic ONLY (prestigeFor), and the pages print no other band name anywhere. So
+    the fact carries the band exactly when prestigeFor says the page prints it, and in the word the
+    page prints. That was the 2026-10-22 rule, "the writer must not state a number the reader cannot
+    check", broken inside the thing enforcing it. The request's own band (P.band, "(X band)" on the
+    Player line) is ignored here for the same reason: it is sent for every score.  */
+function scoreFact(name, rt) {
+  const pr = V.prestigeFor(V.bandFor(+rt));
+  return `${name}'s VV Score: ${rt}` + (pr ? `, and the card marks the season ${pr}` : '');
+}
 
 // A comparison: the two "Player A/B:" lines Compare sends, and its rendered result line.
 function sideFacts(line, P) {
@@ -52,11 +65,11 @@ function sideFacts(line, P) {
   const g = re => { const m = line.match(re); return m ? m[1] : null; };
   const surname = g(/^Player [AB]: ([^(]+?) \(/), short = g(/^Player [AB]: [^(]+\(([^)]+)\)/);
   const season = g(/\), (\d\d\/\d\d), /), club = g(/\d\d\/\d\d, ([^\[]+?) \[/), league = g(/\[([^\]]+)\]/);
-  const pos = g(/pos ([A-Za-z]+)/), age = g(/, age (\d+)/), vv = g(/VV (\d+)/), band = g(/VV \d+ \(([^)]+) band\)/);
+  const pos = g(/pos ([A-Za-z]+)/), age = g(/, age (\d+)/), vv = g(/VV (\d+)/);
   const goals = g(/, (\d+) goals \d+ assists/), assists = g(/ goals (\d+) assists/);
   const min = g(/(\d+) min \//), apps = g(/min \/ (\d+) apps/);
   F.push(`${surname} (${short}), ${season} season, ${club}, ${league}, ${pos}, age ${age}`);
-  if (vv) F.push(`${surname}'s VV Score: ${vv}` + (band ? ` (${band} band)` : ''));
+  if (vv) F.push(scoreFact(surname, vv));
   F.push(`${surname}: ${goals} goals and ${assists} assists in ${min} minutes over ${apps} appearances`);
   for (const d of ['Goal Threat', 'Creation', 'Progression', 'Defensive']) {
     const x = g(new RegExp(d + ' (\\d+)'));
@@ -96,7 +109,7 @@ function verdictFacts(ev) {
 function notesFacts(player) {
   const P = player, F = [], nm = P.player_name;
   F.push(`${nm}, ${P.season} season, ${P.club}, ${P.league}, ${P.position}, age ${P.age}`);
-  if (P.rt != null) F.push(`${nm}'s VV Score: ${P.rt}` + (P.band ? ` (${P.band} band)` : ''));
+  if (P.rt != null) F.push(scoreFact(nm, P.rt));   // P.band is ignored on purpose: see scoreFact
   F.push(`${nm}: ${P.goals} goals and ${P.assists} assists in ${P.minutes} minutes over ${P.appearances} appearances`);
   const vals = (P.dimensions && P.dimensions.values) || {}, NAMES = { goalThreat: 'Goal Threat', creation: 'Creation', progression: 'Progression', defensive: 'Defensive' };
   for (const [k, x] of Object.entries(vals)) {
@@ -118,14 +131,14 @@ const WRITER_SYSTEM = `You are the VVonderXI voice: thirty years of watching foo
 EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before anyone reads it:
 - any sentence that cites nothing, or an id that is not in the list;
 - any sentence that states anything its cited facts do not contain;
-- any number that is not in the cited facts, or a plain sum or difference of two of them.
+- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count of the cited facts of one kind ("four honours", citing four honour facts).
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
 
 YOU MAY NOT state anything the facts do not hold, however true of football: transfers, arrivals or debuts; other seasons, earlier or later clubs, career history; records and firsts; title races, league positions, trophies or awards not in the facts, or a fuller name for an award than the facts give; how strong or difficult a league, team, club or opponent was; managers, team-mates, matches, dates or moments; how a player plays, moves or looks.
 
-CROWNS. A sentence that names, implies or leans towards an overall winner of the comparison is a crown. ${'{CROWN_RULE}'} A crown must cite P1.
+CROWNS. A sentence that names, implies or leans towards an overall winner of the comparison, the better season taken whole, is a crown. A lead in one measure, an honour or tag the other does not hold, or a higher figure stated as a figure is NOT a crown and may be written on any pair. ${'{CROWN_RULE}'} A crown must cite P1.
 
 FORMAT. Reply with JSON only, no markdown. Each field is a list of sentences, each {"s": "the sentence", "cite": ["A3","B2"]}; add "new_paragraph": true to start a new paragraph inside a field.
 {FORMAT}
@@ -175,7 +188,7 @@ async function callModel(model, system, user, max_tokens, temperature) {
 const NARROW_SYSTEM = `You check ONE sentence of football writing against the FACTS it cites, and nothing else. You do not know anything about football beyond these facts; treat anything else as unknown.
 
 1. supported: does everything the sentence STATES follow from the cited facts? Opinion, judgement, comparison or emphasis resting only on the cited facts is fine ("the more complete season", "eleven more goals"). A fact stretched beyond what the cited facts say is NOT supported: "record-breaking" from "the league's top scorer"; a fuller or different award name than the fact gives; how hard a league or opponent was; anything about other seasons, clubs, matches, dates, careers or how a player plays.
-2. crown: does the sentence name, imply or lean towards one player as the overall winner of the comparison? "A", "B" or "none". Narrow or soft wins count ("edges it", "by the thinnest of margins", "the harder thing to have done"). A point in one player's favour that leaves the whole open is "none".
+2. crown: does the sentence declare one player the OVERALL winner of the comparison, the better season taken whole? "A", "B" or "none". Narrow or soft overall wins count ("edges it", "by the thinnest of margins", "the harder thing to have done", "the more complete season"). NOT a crown, answer "none": a lead in one measure ("the higher Creation", "a clear lead in that pillar"), an honour or tag one holds and the other does not, a band or a score stated as a figure, a strength or weakness, a sentence about one player's season alone. Those are "none" even when they favour one side plainly.
 
 Reply with JSON only: {"supported": true or false, "unsupported": "the exact words that go beyond the facts, or empty", "crown": "A" or "B" or "none"}`;
 async function narrowCheck(pack, sentence, cites) {
@@ -187,13 +200,47 @@ async function narrowCheck(pack, sentence, cites) {
 }
 
 /* ---------- THE DROP RULE (code) ---------- */
+/*  THE CODE RULE DECIDES A CROWN; THE MODEL'S READING IS ADVISORY (Lucas, 2026-10-24). The first
+    fresh-sample run deleted 46 sentences as crowns and, read one by one, almost none declared an
+    overall winner: "Rice holds a clear lead in that pillar", "Rodri holds the Ballon d'Or, absent from
+    Rice's card", "Immobile's VV Score of 93 places him in the Iconic band". The narrow check called any
+    sentence that favours one side a crown. It is the third time the model's crown reading has been the
+    unreliable half (area 9: the 10-23 "edges" misses, the 10-24 re-run that moved which crowns it saw,
+    and this). So: a crown is an overall-winner sentence and nothing else (the narrow check's question
+    now says so, with the non-examples), AND code only acts on the reading where the sentence can be a
+    comparison at all: it cites a fact from both sides or P1, or it names the other player. A sentence
+    about one season alone, citing one side, cannot crown and is never deleted as one, whatever the
+    model said. The deletion itself was always code's: against the page's result, never the model's.  */
+function engagesBothSides(pack, u) {
+  if (pack.type !== 'verdict') return false;
+  const sides = new Set(u.cite.map(c => c[0]));
+  if (sides.has('P') || (sides.has('A') && sides.has('B'))) return true;
+  const other = sides.has('A') ? pack.names.B : sides.has('B') ? pack.names.A : null;
+  return other ? new RegExp('\\b' + other.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(u.s) : true;
+}
 const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area))\b/i;
-function numbersOk(sentence, citedText) {
+/*  A COUNT OF THE CITED FACTS OF ONE KIND IS A NUMBER THE READER CAN CHECK (Lucas, 2026-10-24).
+    The first fresh-sample run deleted 40 sentences for a number not in the cited facts, and about
+    half were counts of the facts the sentence itself cited: "four honours on a single card" citing
+    four honour facts, "two Golden Boot seasons", "six identical tags", "two World Class CDMs". A
+    reader checks a count by counting on the page. So the allowed values also include, for each kind
+    of fact cited (honour, tag, dimension, identity, score, and so on), how many of that kind are
+    cited in all and how many per side. Everything else stays strict: the same run's rule caught
+    "seven percentile points higher" for a gap of 11, an uncited 3221 minutes, an age no fact holds,
+    and "six goals were left in matches he did not start", and it keeps catching them.  */
+const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this season/], ['tag', /^Tag: /], ['score', /'s VV Score: /],
+  ['dimension', /'s (?:Goal Threat|Creation|Progression|Defensive): /], ['reliability', /'s Reliability: /], ['shots', / goals from \d+ shots$/],
+  ['keypasses', / key passes per 90 minutes$/], ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
+function factKind(text) { const k = KINDS.find(([, re]) => re.test(text)); return k ? k[0] : 'other'; }
+function numbersOk(sentence, citedText, citedFacts) {
   const vals = new Set();
   for (const x of PC.extractNumbers(citedText)) vals.add(x.value);
   (String(citedText).replace(/(\d),(\d{3})/g, '$1$2').match(/\d+(?:\.\d+)?/g) || []).forEach(n => vals.add(+n));
   const base = [...vals];
   for (const a of base) for (const b of base) { vals.add(Math.abs(a - b)); vals.add(a + b); }
+  const counts = {};
+  for (const f of citedFacts || []) { const k = factKind(f.text); counts[k] = (counts[k] || 0) + 1; const ks = k + '/' + (f.side || 'P'); counts[ks] = (counts[ks] || 0) + 1; }
+  Object.values(counts).forEach(c => vals.add(c));
   const bad = PC.extractNumbers(sentence).filter(x => !vals.has(x.value)).map(x => x.raw);
   return bad;
 }
@@ -216,8 +263,8 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     if (unknown.length) why.push('cites ids that do not exist: ' + unknown.join(', '));
     if (pack.type === 'verdict' && u.field === 'p1' && !u.cite.some(c => c[0] === 'A')) why.push('a Player A paragraph citing no A fact');
     if (pack.type === 'verdict' && u.field === 'p2' && !u.cite.some(c => c[0] === 'B')) why.push('a Player B paragraph citing no B fact');
-    const citedText = pack.facts.filter(f => u.cite.includes(f.id)).map(f => f.text).join('\n');
-    const bad = numbersOk(u.s, citedText);
+    const citedFacts = pack.facts.filter(f => u.cite.includes(f.id)), citedText = citedFacts.map(f => f.text).join('\n');
+    const bad = numbersOk(u.s, citedText, citedFacts);
     if (bad.length) why.push('numbers not in the cited facts: ' + bad.join(', '));
     if (MEASURE.test(u.s) && !MEASURE.test(citedText)) why.push('names a measure no card prints');
     u.code = why.slice();
@@ -227,7 +274,7 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
       else {
         usage.push(n.usage); u.narrow = { supported: n.supported, unsupported: n.unsupported, crown: n.crown };
         if (!n.supported) why.push('narrow check: not supported by its cited facts: ' + n.unsupported);
-        if (n.crown !== 'none') {
+        if (n.crown !== 'none' && engagesBothSides(pack, u)) {
           if (!pack.winner) why.push('a crown where the page cannot separate the pair');
           else if (n.crown !== pack.winner) why.push('a crown for the side the page does not name');
           else if (!u.cite.includes('P1')) why.push('a crown that does not cite the result');
@@ -271,4 +318,4 @@ async function runPiece(pack) {
   return { prose: null, outcome: 'no-prose', why: 'rejected twice', attempts, usage };
 }
 
-module.exports = { verdictFacts, notesFacts, writerSystem, factsText, runPiece, judgeDraft, numbersOk, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { verdictFacts, notesFacts, scoreFact, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
