@@ -278,6 +278,25 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    the page cannot separate, among them "It was enough.", plus a kind 3 and a kind 4). **The lesson
    is not that the readings were sloppy: reading prose by hand does not scale and was never going
    to.** Hand reading labels a set; tools check prose.]**
+   **KIND 1: DETECTION CANNOT CLOSE IT, AND THAT IS THE ARITHMETIC (Lucas, 2026-10-23).** The set
+   holds 88 kind 1 failures across 12 pieces, about 7 per piece. A checker that catches 95% of them,
+   sentence by sentence, still misses at least one in a piece with probability 1 - 0.95^7, about
+   30%: **three pieces in ten ship with an invented fact.** The shipping checker catches one in
+   five. **Do not reach for a better checker as the answer; this calculation is why.** The writer
+   has to stop producing them.
+   **THE PLAN, DECIDED 2026-10-23, IN ORDER:** (a) the "edges" re-run of the crown read; (b) option
+   2, measure: every sentence judged on its own, Haiku against Sonnet, one key run, to learn how much
+   of the one in five was the checker skimming; (c) option 1, prevent: the writer gets the page as a
+   numbered fact list and tags every sentence with the facts it rests on, code drops any sentence
+   with no tag or a tag that does not exist, and a narrow model check asks only whether each
+   sentence's cited facts support it (the hole left: a real fact stretched, a Golden Boot written up
+   as "a record"). Option 1 is judged on a FRESH sample read by hand, not on the twelve.
+   **IF OPTION 1 CANNOT GET A FRESH SAMPLE THROUGH, THE CHOICE IS CODE-WRITTEN PROSE (the model only
+   orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
+   **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
+   2026-10-23).** The whole pitch is that everything on this site is checkable, and kind 1 is the
+   failure a fan spots. Shipping prose with a known invention rate contradicts the product. Do not
+   reopen it.
 3. Regenerate a sample (not the twelve; fresh pairs and cards) and read it against the cards.
    Prose comes back on when that sample passes, not when the code is merged.
 4. A watch on the Anthropic balance (QA_PASS B4b). Nothing watches it, and the hourly ceiling
