@@ -199,9 +199,18 @@ const NARROW_SYSTEM = `You check ONE sentence of football writing against the FA
 2. crown: does the sentence declare one player the OVERALL winner of the comparison, the better season taken whole? "A", "B" or "none". Narrow or soft overall wins count ("edges it", "by the thinnest of margins", "the harder thing to have done", "the more complete season"). NOT a crown, answer "none": a lead in one measure ("the higher Creation", "a clear lead in that pillar"), an honour or tag one holds and the other does not, a band or a score stated as a figure, a strength or weakness, a sentence about one player's season alone. Those are "none" even when they favour one side plainly.
 
 Reply with JSON only: {"supported": true or false, "unsupported": "the exact words that go beyond the facts, or empty", "crown": "A" or "B" or "none"}`;
+/*  THE NARROW CHECK IS TOLD THE PAGE'S COUNTS (2026-10-24, sample 2). "Three honours sit on his card" cited
+    two of Ronaldo's three honour facts: the code rule allowed three (the page's total) and the narrow check,
+    seeing two facts, deleted it. One line of totals per side, built by code, keeps the two rules in step.  */
+function countsLine(pack) {
+  const per = {};
+  for (const s of Object.keys(pack.names || {})) per[s] = { honour: 0, tag: 0 };   // a side with nothing still gets its line
+  for (const f of pack.facts) { const k = factKind(f.text); if (k !== 'honour' && k !== 'tag') continue; const s = f.side || 'P'; per[s] = per[s] || { honour: 0, tag: 0 }; per[s][k]++; }
+  return Object.entries(per).map(([s, c]) => `${pack.names[s] || s}'s card holds ${c.honour} honour${c.honour === 1 ? '' : 's'} and ${c.tag} tag${c.tag === 1 ? '' : 's'} in all (a count of these is correct even when the sentence cites only some)`).join('. ') + '.';
+}
 async function narrowCheck(pack, sentence, cites) {
   const facts = pack.facts.filter(f => cites.includes(f.id)).map(f => f.id + '  ' + f.text).join('\n');
-  const head = pack.type === 'verdict' ? `Player A is ${pack.names.A}. Player B is ${pack.names.B}.\n\n` : `This is a single season of ${pack.names.A}; there is no comparison, so crown is "none".\n\n`;
+  const head = (pack.type === 'verdict' ? `Player A is ${pack.names.A}. Player B is ${pack.names.B}.\n` : `This is a single season of ${pack.names.A}; there is no comparison, so crown is "none".\n`) + countsLine(pack) + '\n\n';
   const r = await callModel(CHECK_MODEL, NARROW_SYSTEM, head + 'CITED FACTS:\n' + facts + '\n\nTHE SENTENCE:\n' + sentence, 400, 0);
   if (!r.ok) return r;
   return { ok: true, supported: r.json.supported === true, unsupported: String(r.json.unsupported || ''), crown: ['A', 'B'].includes(r.json.crown) ? r.json.crown : 'none', usage: r.usage };
@@ -219,12 +228,16 @@ async function narrowCheck(pack, sentence, cites) {
     comparison at all: it cites a fact from both sides or P1, or it names the other player. A sentence
     about one season alone, citing one side, cannot crown and is never deleted as one, whatever the
     model said. The deletion itself was always code's: against the page's result, never the model's.  */
+/*  A NAME WITH A DIACRITIC HAS NO ASCII WORD BOUNDARY (2026-10-24, sample 2). \bIbrahimović\b never
+    matches: "ć" is not \w, so the boundary after it is not there. Rule B rejected "Ibrahimović wins it
+    outright" twice for not naming him. Letters and digits in any script are the boundary instead.  */
+function nameRe(name) { return new RegExp('(?<![\\p{L}\\p{N}])' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\p{L}\\p{N}])', 'iu'); }
 function engagesBothSides(pack, u) {
   if (pack.type !== 'verdict') return false;
   const sides = new Set(u.cite.map(c => c[0]));
   if (sides.has('P') || (sides.has('A') && sides.has('B'))) return true;
   const other = sides.has('A') ? pack.names.B : sides.has('B') ? pack.names.A : null;
-  return other ? new RegExp('\\b' + other.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(u.s) : true;
+  return other ? nameRe(other).test(u.s) : true;
 }
 const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area))\b/i;
 /*  A COUNT OF THE CITED FACTS OF ONE KIND IS A NUMBER THE READER CAN CHECK (Lucas, 2026-10-24).
@@ -307,7 +320,7 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
       headline and the body disagreeing on what the page decided. Exact and cheap: the winner's surname
       must appear in a kept headline sentence, or the piece goes to regeneration.  */
   else if (pack.type === 'verdict' && pack.winner) {
-    const nm = pack.names[pack.winner], re = new RegExp('\\b' + nm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    const nm = pack.names[pack.winner], re = nameRe(nm);
     if (!units.some(u => u.field === head && u.kept && re.test(u.s))) reasons.push(`the headline does not name ${nm}, whom the page crowns`);
   }
   const paras = [...new Set(units.filter(u => u.para !== head).map(u => u.para))];
@@ -341,4 +354,4 @@ async function runPiece(pack) {
   return { prose: null, outcome: 'no-prose', why: 'rejected twice', attempts, usage };
 }
 
-module.exports = { verdictFacts, notesFacts, scoreFact, reliabilityFact, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };

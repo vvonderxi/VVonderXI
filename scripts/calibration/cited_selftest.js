@@ -134,6 +134,15 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('rule B: a headline naming the winner passes that rule', !j9.reasons.some(r => /headline does not name/.test(r)));
   const j10 = await C.judgeDraft(tie, { who: [ok('Kane and Heung-Min, two Iconic seasons.', ['A2', 'B2'])] }, narrow);
   expect('rule B: on a tie the headline need name nobody', !j10.reasons.some(r => /headline does not name/.test(r)));
+  // names with diacritics (2026-10-24, sample 2): the boundary must be Unicode-aware, and the narrow check is told the counts
+  expect('diacritics: "Ibrahimović wins it outright" names Ibrahimović', C.nameRe('Ibrahimović').test('Ibrahimović wins it outright, 93 to 78.'));
+  expect('diacritics: "Suárez" is found before a comma', C.nameRe('Suárez').test('Payet trails Suárez, 81 to 93.'));
+  expect('diacritics: "Müller" is not found inside "Müllers"', !C.nameRe('Müller').test('the Müllers of this world'));
+  const zp = { type: 'verdict', names: { A: 'Ibrahimović', B: 'Lacazette' }, winner: 'A', facts: [{ id: 'A1', side: 'A', text: 'Ibrahimović (Z. Ibrahimović), 15/16 season, PSG, Ligue 1, ST, age 34' }, { id: 'B1', side: 'B', text: 'Lacazette (A. Lacazette), 24/25 season, Lyon, Ligue 1, ST, age 33' }, { id: 'P1', side: null, text: 'The page\'s own result: "Ibrahimović wins it outright , 93 to 78"' }].concat(tagF('A', 3)) };
+  const jz = await C.judgeDraft(zp, { who: [ok('Ibrahimović wins it outright, 93 to 78.', ['P1'])] }, narrow);
+  expect('diacritics: rule B accepts a headline naming Ibrahimović', !jz.reasons.some(r => /headline does not name/.test(r)));
+  expect('diacritics: the one-sided crown guard sees "Lacazette" named in a sentence citing only A', C.engagesBothSides(zp, { cite: ['A1'], s: 'Ibrahimović did more than Lacazette.' }) && !C.engagesBothSides(zp, { cite: ['A1'], s: 'Ibrahimović did plenty.' }));
+  expect('counts line: the narrow check is told each side\'s honour and tag totals', /Ibrahimović's card holds 0 honours and 3 tags in all/.test(C.countsLine(zp)) && /Lacazette's card holds 0 honours and 0 tags/.test(C.countsLine(zp)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();
