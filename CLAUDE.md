@@ -154,7 +154,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 
 - **THE CASE FOR `VV_PROSE` ON, VERDICTS ONLY, IS WRITTEN: `docs/PROSE_CASE_2026-10-24.md`.** First line: the switch today ships the OLD writer, since `api/analyse.js` still calls it and the cited writer is in no serving path. The port (fact list from the request, P1 from the printed result line instead of separation instructions, which is kind 3's mechanism, the pipeline in the function, a three-valued switch, proof through the endpoint) is described and NOT started. Cost at today's traffic: 45 comparisons in 30 days at about $0.10 a piece.
 
-**NEXT (Lucas):** read the confirming runs and the written case; decide on the port. Nothing is on. Notes stay off until they ship twice.
+- **THE CONFIRMING RUNS WERE CUT SHORT BY THE ACCOUNT'S MONTHLY SPEND CAP** (the B4b cap, verified by its own 400 error: access returns 2026-11-01 unless Lucas raises it). Sample 2's writer finished, 6 of 6, hole 0 of 112 by code, 80 sentences judged, 2 real flags; sample 1 verdicts 6 of 8 (one lost to the cap), notes never ran. Headline instruction worked, dimension rule did not misfire, tools' repair held (one new false shape fixed, self-test 89). New shape for Lucas: the Cabinet is page content outside the fact list (Payet's career Top Assists against "only Suárez holds an honour"). Record in the case document, last section. **The key is still in `.env`.**
+
+**NEXT (Lucas):** take the key out, or raise the cap and say so; both samples run again on the four decisions; read the lists and the case; decide on the port. Nothing is on. Notes stay off until they ship twice.
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 

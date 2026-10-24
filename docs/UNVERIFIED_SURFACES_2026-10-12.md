@@ -608,6 +608,16 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    **THE CASE IS WRITTEN: `docs/PROSE_CASE_2026-10-24.md`. Its first line: `VV_PROSE=on` today ships the OLD
    writer, because `api/analyse.js` still calls it and the cited writer is in no serving path; the port is
    described there and NOT started (Lucas, 2026-10-24).**
+   **THE CONFIRMING RUNS (20:27 UTC) WERE CUT SHORT BY THE ANTHROPIC ACCOUNT'S MONTHLY SPEND CAP** (`400: You have
+   reached your specified API usage limits. You will regain access on 2026-11-01`): the B4b cap exists and fires,
+   verified by the error itself. Sample 2's writer finished, **6 of 6 shipped, hole 0 of 112 by code, 80 of 112
+   sentences judged, 2 real flags**; sample 1 got 6 of 8 verdicts (one lost to the cap) and **no notes at all**, so
+   the notes form is untested. The headline instruction worked (all eight headlines state the result and one fact;
+   regenerations 2 in six from 3); the dimension rule did not misfire (every count deletion was a tag or honour
+   count); the tools' repair held, and one new false shape ("rated at 39 out of 100" read as an age) was fixed,
+   self-test 89. **One new shape for Lucas: Payet's Cabinet prints a career Top Assists while a cited sentence says
+   "only Suárez holds an honour"; the Cabinet is outside the fact list, as the Chronicle is.** The full record is
+   in `docs/PROSE_CASE_2026-10-24.md`, last section. **Both runs again when the cap is raised.**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

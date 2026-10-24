@@ -119,8 +119,8 @@ function extractNumbers(text) {
     }
     if (!unit) {
       const bw = back.slice(-4);
-      if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) { unit = 'years'; bind = 'age'; }   // "Iconic at 91" is a score, not an age
-      else if (bw.some(w => DIM.test(w))) { unit = bw.some(w => /^(reliability|availability)$/.test(w)) ? 'reliability' : 'dimension'; bind = 'dim'; }
+      if (bw.some(w => DIM.test(w))) { unit = bw.some(w => /^(reliability|availability)$/.test(w)) ? 'reliability' : 'dimension'; bind = 'dim'; }   // before the age rule: "Reliability rated at 39" is not an age (2026-10-24, the confirming run)
+      else if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) { unit = 'years'; bind = 'age'; }   // "Iconic at 91" is a score, not an age
       else { for (let q = bw.length - 1; q >= 0 && !unit; q--) unit = unitOf(bw[q], bw[q + 1]); if (unit) bind = 'back'; }
     }
     if (ordinal && unit !== 'percentile') { k = j; continue; }                    // the 41st goal

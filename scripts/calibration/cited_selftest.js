@@ -210,6 +210,7 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('tools repair: a back-bound number the page does not print still flags', PC2.checkNumbers(`Rodri logged 2938 minutes across ${rr}.`, ev2('rodri2324-rice2324')).flags.length === 1);
   expect('tools repair: "over N appearances" with N nowhere on the page still flags', PC2.checkNumbers(`Mbappé scored two more goals over ${rb} appearances.`, ev2('benzema2122-mbappe2223')).flags.length === 1);
   expect('tools repair: a count of dimensions above the page total flags, one within it does not', PC2.checkNumbers('He led in six attributes.', ev2('notes-osimhen2223')).flags.length === 1 && PC2.checkNumbers('He led in three attributes.', ev2('notes-osimhen2223')).flags.length === 0);
+  expect('tools repair: "Reliability rated at 39 out of 100" binds to Reliability, not to an age', PC2.extractNumbers('with his Reliability rated at 39 out of 100')[0].unit === 'reliability' && PC2.extractNumbers('Salah at 29 led the line')[0].unit === 'years');
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

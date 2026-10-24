@@ -49,6 +49,24 @@ Two things cost more than traffic. **A prompt edit makes every cached verdict st
 
 Do not flip now; it would ship the old writer. Approve the port with the proof step, then flip for verdicts only after both samples pass through the endpoint. Notes stay off until they ship twice.
 
-## Confirming runs on the four decisions (appended when they land)
+## Confirming runs on the four decisions (20:27 UTC, both cut short by the Anthropic spend cap)
 
-Pending at the time of writing.
+**The account's monthly spend cap fired during both runs:** every model call after about 20:35 UTC returned `400 invalid_request_error: You have reached your specified API usage limits. You will regain access on 2026-11-01 at 00:00 UTC.` That is the cap QA_PASS B4b asks for (Console, Settings > Limits), which no session could verify from here; it exists and it fires, which is the one good thing the cap did tonight. Nothing more can run until Lucas raises it or 1 November. The key was still in `.env` when the runs started (Lucas had said it was out); it is still there.
+
+| | Sample 2 (six separated pairs) | Sample 1 (eight pairs, four cards) |
+|---|---|---|
+| Writer | complete: **6 of 6 shipped**, 2 on regeneration | verdicts 6 of 8 (Rodri v Rice lost to the cap, 17 of 20 narrow checks failed; Benzema v Mbappé a real rejection, headline then share rule); **the four notes never ran** (writer failed on the cap twice each) |
+| Shipped sentences | 112 | 110 (verdicts only) |
+| Code hole (club or league named without its fact) | 0 of 112 | 0 of 110 |
+| Tools | 80 of 112 sentences judged before the cap; **2 real flags**, 1 false; 33 unjudged | none ran |
+| Lists | `_local/verdict-check/sample_2_run_3_confirm_lists.md` (the 33 "failed to answer" entries are unjudged sentences, not flags) | `sample_1_run_5_confirm_lists.md` (unjudged throughout) |
+
+**What the partial evidence says about the four decisions:**
+- **Headline instruction: worked.** All eight sample 2 headlines state the result and one fact ("Salah wins it outright, 92 to 81, with the Golden Boot to his name"). One was deleted (a league named without its fact), against three flourish deletions a run before. Regenerations 2 in six, from 3.
+- **Dimension subsets: no misfire.** Every count deletion in both runs is a tag or honour count the writer got wrong or subset ("five tags" on a six-tag card), which must stay exact; no dimension count was deleted.
+- **Notes form: untested.** The cap took all four notes pieces before the writer answered.
+- **Tools' repair: held.** No cross-unit arithmetic flag in 80 judged sentences. One new false shape found and fixed the same night ("Reliability rated at 39 out of 100" bound to an age; the dimension word now wins over the "at N" rule; self-test 89).
+
+**The one real read for Lucas, a new shape:** Suárez v Payet, "only Suárez holds an honour, the Top Assists award". True of the season (Payet 21/22 has no honour fact) and the sentence cites it correctly. But Payet's card prints The Cabinet, "What he had won by this season: Top Assists, 2017", and a reader sees a Top Assists on both cards. The Cabinet is page content outside the fact list, as the Chronicle is. Decision: add Cabinet lines to the fact list (so "only X holds an honour" can be checked against it), or forbid "only" and "no honour" claims unless the sentence says "this season". Not a hole, nothing invented; a page-agreement shape.
+
+**So the confirming runs do not confirm.** Sample 2's writer result (6 of 6, hole 0 of 112 by code) is the one clean figure. The condition for this case, "the hole holds at zero and notes ship", is unmet on evidence, not failed: it needs the two runs again once the cap is raised, and that is also when Lucas reads the lists.
