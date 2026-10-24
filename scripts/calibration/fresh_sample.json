@@ -1,0 +1,17 @@
+{
+ "what": "The fresh sample for option 1 of the kind 1 plan (2026-10-24, Lucas): 8 comparisons and 4 card notes, none from the twelve, one separated pair crowned fairly (Messi 16/17 v Neymar 16/17, same club and season, 95 v 87). Outfield only; the cited writer does not cover keepers yet. Read tools first, then Lucas: every check runs over what ships, and he reads the flags and every unflagged sentence.",
+ "items": [
+  { "id": "messi1617-neymar1617", "type": "verdict", "cards": [140934, 140987], "note": "expected separated: the fair crown" },
+  { "id": "messi1718-salah1718", "type": "verdict", "cards": [140489, 133614] },
+  { "id": "kane2021-son2122", "type": "verdict", "cards": [132669, 132266] },
+  { "id": "immobile1920-lewandowski1920", "type": "verdict", "cards": [147022, 153358] },
+  { "id": "benzema2122-mbappe2223", "type": "verdict", "cards": [138776, 157988] },
+  { "id": "bruno2021-hazard1819", "type": "verdict", "cards": [132427, 133289] },
+  { "id": "debruyne1718-pogba1819", "type": "verdict", "cards": [133902, 133538] },
+  { "id": "rodri2324-rice2324", "type": "verdict", "cards": [131182, 131110] },
+  { "id": "notes-osimhen2223", "type": "notes", "cards": [145668] },
+  { "id": "notes-watkins2324", "type": "notes", "cards": [131296] },
+  { "id": "notes-hamsik1617", "type": "notes", "cards": [148331] },
+  { "id": "notes-berardi1920", "type": "notes", "cards": [146668] }
+ ]
+}

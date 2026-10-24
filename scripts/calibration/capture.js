@@ -79,8 +79,11 @@ function auditNumbers(data, pages) {
   return [...new Set(out)];
 }
 
-module.exports = { serve, cdp, sleep, INTERCEPT, OPEN_ALL, CHROME };
-if (require.main === module) (async () => {
+/*  CAPTURE ANY LIST OF ITEMS, NOT ONLY THE TWELVE (2026-10-24): the fresh sample for option 1 uses the
+    same capture, so the facts its writer gets and the page its checks read come from the same render.
+    Each item is { id, type: 'verdict'|'notes', cards: [...] }; resolves to the entries.  */
+async function captureItems(items, opts = {}) {
+  const audit = !!opts.audit;
   const srv = await serve(), port = srv.address().port;
   const prof = fs.mkdtempSync(path.join(os.tmpdir(), 'vvcal-'));
   const ch = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--no-first-run', `--user-data-dir=${prof}`, 'about:blank'], { stdio: 'ignore' });
@@ -98,7 +101,7 @@ if (require.main === module) (async () => {
       await sleep(3500);
       return p.ev(OPEN_ALL);
     };
-    for (const it of SET.items) {
+    for (const it of items) {
       let body = null;
       if (it.type === 'verdict') {
         await p.send('Page.navigate', { url: `http://127.0.0.1:${port}/compare.html?a=${it.cards[0]}&b=${it.cards[1]}` });
@@ -120,6 +123,7 @@ if (require.main === module) (async () => {
         ? body.messages.map(m => typeof m.content === 'string' ? m.content : JSON.stringify(m.content)).join('\n\n')
         : A.notesUserMessage(body.player || {});
       const entry = { id: it.id, captured: true, evidence, chars: evidence.length };
+      if (it.type !== 'verdict') entry.player = body.player || {};   // the structured card, for the cited writer's fact list
       /*  THE RENDERED PAGE, SAVED FOR EVERY ITEM (2026-10-23). The checks read this, not the payload:
           the payload has no Chronicle and no honour or tag copy, so a check reading it holds good
           prose (area 9). For a verdict, Compare as the reader sees it with prose off, then each card.  */
@@ -139,15 +143,21 @@ if (require.main === module) (async () => {
       }
       entry.page = { compare: cmp, cards: {} };
       for (const c of it.cards) entry.page.cards[c] = await pageText(`http://127.0.0.1:${port}/card.html?id=${c}`);
-      if (AUDIT) {
+      if (audit) {
         const pages = [entry.page.compare || ''].concat(Object.values(entry.page.cards)).join('\n');
         entry.unchecked = auditNumbers(it.type === 'verdict' ? dataLines(evidence) : JSON.stringify(body.player || {}), pages);
       }
       out.push(entry);
-      console.log(`${it.id}  captured, ${evidence.length} chars` + (AUDIT ? `, ${entry.unchecked.length ? 'NOT ON ANY PAGE: ' + entry.unchecked.join('; ') : 'every number found on the pages'}` : ''));
+      console.log(`${it.id}  captured, ${evidence.length} chars` + (audit ? `, ${entry.unchecked.length ? 'NOT ON ANY PAGE: ' + entry.unchecked.join('; ') : 'every number found on the pages'}` : ''));
     }
     p.close();
   } finally { ch.kill(); srv.close(); }
+  return out;
+}
+
+module.exports = { serve, cdp, sleep, INTERCEPT, OPEN_ALL, CHROME, captureItems };
+if (require.main === module) (async () => {
+  const out = await captureItems(SET.items, { audit: AUDIT });
   fs.mkdirSync(path.dirname(OUT), { recursive: true }); fs.writeFileSync(OUT, JSON.stringify({ captured_at: new Date().toISOString(), items: out }, null, 1));
   const miss = out.filter(x => !x.captured).length;
   console.log(`\n${out.length - miss} of ${out.length} captured -> ${path.relative(ROOT, OUT)}`);

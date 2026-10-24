@@ -311,7 +311,26 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    every sentence nothing flagged. He reads both: the flags to confirm they are real, the unflagged
    to find what the tools cannot see. Hand reading alone missed eight failures the tools found on
    2026-10-23; tools alone cannot see what they were not built for.
-   **IF OPTION 1 CANNOT GET A FRESH SAMPLE THROUGH, THE CHOICE IS CODE-WRITTEN PROSE (the model only
+   **OPTION 1 AS DECIDED AND BUILT (Lucas, 2026-10-24; `scripts/calibration/cited.js`).** The fact
+   list is built by code from the request plus the honour and tag copy in `vv-core.js`, with honour
+   years left out (a "Golden Boot for 2014" on a 14/15 card was one of the failures); **the Chronicle
+   is out entirely.** Every sentence cites fact ids; code deletes a sentence that cites nothing or an
+   unknown id, a player paragraph citing none of his facts, a number not in its cited facts (or a sum
+   or difference of two), a measure no card prints, or a crown that is not the page's or does not cite
+   it. **All filler goes, no exemption: plainer prose that is entirely checkable is the product.** Then
+   Sonnet sees only the sentence and its cited facts; a sentence that goes beyond them is deleted,
+   never rewritten. A piece is rejected whole if its headline goes, a paragraph (verdict field, scout,
+   stanza) falls below two sentences, or more than a quarter goes; one regeneration, then **NO PROSE,
+   WHICH IS THE DEFAULT AND NOT AN ERROR**: the page shows today's "No written opinion here, by choice."
+   On day one most pieces may land there, and the site must look deliberate while that is true.
+   Keepers go straight to no prose until the writer covers them. Offline proof:
+   `cited_selftest.js` (14 planted cases).
+   **THE HOLE THAT REMAINS (2026-10-24): WHAT THE NARROW CHECK MISSES STILL SHIPS.** A real fact,
+   stretched, that Sonnet passes against its cited facts is the residual kind 1. The fresh sample
+   (`fresh_sample.json`: 8 comparisons and 4 cards, none from the twelve, Messi 16/17 v Neymar 16/17
+   the fair crown) measures it, tools first then Lucas. **If the hole is not small enough, we are at
+   code-written prose or no prose, and that is learned from the sample, not argued.**
+ THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
    2026-10-23).** The whole pitch is that everything on this site is checkable, and kind 1 is the
