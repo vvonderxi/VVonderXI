@@ -213,7 +213,7 @@ function near(v, set, qual) {
 function derived(F, unit) {
   const base = [...(F[unit] || [])], out = new Set(base);
   for (const a of base) for (const b of base) { out.add(Math.abs(a - b)); out.add(a + b); }
-  if (unit === 'points') for (const u of ['percentile', 'reliability', 'score']) { const xs = [...(F[u] || [])]; xs.forEach(x => out.add(x)); for (const a of xs) for (const b of xs) out.add(Math.abs(a - b)); }   // "one point above Messi's 96", "separated by two points" (2026-10-24)
+  if (unit === 'points') for (const u of ['percentile', 'reliability', 'score', 'pct']) {   // 'pct' since 2026-10-25: "seven points higher" between two conversion percentages const xs = [...(F[u] || [])]; xs.forEach(x => out.add(x)); for (const a of xs) for (const b of xs) out.add(Math.abs(a - b)); }   // "one point above Messi's 96", "separated by two points" (2026-10-24)
   if (unit === 'years') { const xs = [...(F.years || [])]; for (const a of xs) for (const b of xs) out.add(Math.abs(a - b)); }
   if (unit === 'minutes' || unit === 'shots') {   // "every 49 minutes", "one goal every three and a half shots"
     const num = [...(F[unit] || [])], den = [...(F.goals || []), ...(F.assists || []), ...(F.contributions || [])];

@@ -679,6 +679,9 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    are in it) and, on the second attempt, tag counts off by the career-stage tags because the writer never saw the
    totals (now the first line of its facts). Both closed; pass 2 runs on the closed rules; the two-clean-runs count
    for notes starts there. Lists: `_local/verdict-check/fresh_endpoint_pass_1_lists.md`, `fresh2_endpoint_pass_1_lists.md`.**
+   **PASS 2 ON THE CLOSED RULES: 18 OF 18 SHIPPED (notes 4 of 4), 349 sentences, no server-side death, 8 tool flags
+   none a false fact on my reading. The table and the reading are in `docs/PROSE_CASE_2026-10-24.md`. The decision
+   on `verdicts` in Production is Lucas's; notes need a second clean pass by his gate.**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,

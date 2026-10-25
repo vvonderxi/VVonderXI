@@ -60,6 +60,25 @@ Built as specced in section 1, with one correction to the spec: the shared funct
 - **Checks:** `node scripts/calibration/cited_selftest.js` (107 cases, including the port's entry and the shared result line); `node scripts/lint-inline.js` (re-pinned to the cited prompts and the new payload hash); the smoke test with a stub key reached the writer on all 18 requests and refused a wrong line, missing lines, and notes under `verdicts`.
 - **Known and left:** `scripts/rl_control.js` has not driven the handler since the 10-17 switch (it never sets `VV_PROSE`); `scripts/calibrate-verdict-check.js` is retired in its header.
 
+## THE PROOF RUNS THROUGH THE PREVIEW DEPLOYMENT (2026-10-25)
+
+Both samples were posted to the branch preview with `sample.js --endpoint`, the exact request the page sends, and the tools ran over what came back.
+
+| | Pass 1 (08:17 UTC, before the closures) | Pass 2 (09:19 UTC, closed rules) |
+|---|---|---|
+| Sample 2, six separated pairs | 6 of 6 shipped, 114 sentences | 6 of 6, 111 sentences |
+| Sample 1, eight pairs | verdicts 5 of 8 | 8 of 8 |
+| Sample 1, four cards | notes 2 of 4 | 4 of 4 |
+| Seconds a piece in the function | 20 to 53 | 17 to 56 |
+| Tool flags | 14 (13 the tools' own, 1 real: "as P1 states") | 8 (none real on my reading, below) |
+| Server-side deaths | 5, all "the headline was deleted" | 0 |
+
+**Pass 1's five deaths were one repeated cause, closed before pass 2:** a league named in the headline without the identity fact (the example citation steered the writer to P1, A2 and B2) and, on the second attempt, tag counts off by Peak and The Standard because the writer never saw the totals. Both are in `cited.js` now (the headline cites A1 and B1; the totals open the writer's facts). The real flag, a fact id in prose, is a writer rule.
+
+**Pass 2's eight flags, read:** three are the tools (a conversion difference called "points", "at 39 out of 100" read as an age, two rates sharing one "per 90"), all fixed and self-tested the same morning; three are the Sonnet judge counting honours as tags or missing a per-90 figure that the Compare Proof prints; one is the judge misreading "the Ballon d'Or and the UCL sit in his cabinet from this season" (both are this season's honours on Accolades; the word "cabinet" is the writer's, and a reader of the card's Cabinet block could stumble on it: a wording residue for Lucas, not a false fact); one, "0.92 goals and 0.16 assists per 90", is the fixed shape. The hole as defined (a club or league named without its citation) cannot be counted by citation on an endpoint run, but the club rule runs server-side on every sentence; 63 of pass 2's 349 shipped sentences name a club or league and every one was cited or it would not have shipped.
+
+**What this does and does not say.** On the closed rules the serving path shipped 18 of 18, notes 4 of 4, inside the function's time, through the real request and the real cache, with the tools finding nothing I read as a false fact. It is one pass on the closed rules (notes need a second, by Lucas's gate), and the lists are his to read: `_local/verdict-check/fresh_endpoint_pass_2_lists.md` (238 sentences) and `fresh2_endpoint_pass_2_lists.md` (111). The switch is off in Production.
+
 ## Confirming runs on the four decisions (20:27 UTC, both cut short by the Anthropic spend cap)
 
 **The account's monthly spend cap fired during both runs:** every model call after about 20:35 UTC returned `400 invalid_request_error: You have reached your specified API usage limits. You will regain access on 2026-11-01 at 00:00 UTC.` That is the cap QA_PASS B4b asks for (Console, Settings > Limits), which no session could verify from here; it exists and it fires, which is the one good thing the cap did tonight. Nothing more can run until Lucas raises it or 1 November. The key was still in `.env` when the runs started (Lucas had said it was out); it is still there.
