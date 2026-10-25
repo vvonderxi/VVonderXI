@@ -260,6 +260,7 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('tools: "landed at 39 out of 100" is Reliability; "0.42 goals and 0.35 assists per 90" are two rates', PC2.extractNumbers('his Reliability landed at 39 out of 100')[0].unit === 'reliability' && PC2.extractNumbers('at 0.42 goals and 0.35 assists per 90 minutes').map(x => x.unit).join() === 'per90,per90' && PC2.extractNumbers('scored 29 goals and 13 assists')[0].unit === 'goals');
   const jcb = await C.judgeDraft(pack, { p1: [ok('The Golden Boot sits in his cabinet from this season.', [honA.id]), ok('The Golden Boot is this season\'s honour.', [honA.id])] }, narrow);
   expect('cabinet word: on a comparison "cabinet" is deleted; the same honour without the word passes', jcb.units[0].why.some(w => /says cabinet without citing a Cabinet fact/.test(w)) && !jcb.units[1].why.some(w => /cabinet/.test(w)) && jcab.units[0].kept);
+  expect('tools (pass 3): "at 33 percent" is a share, "shots on target 55 times" are shots, "four point to" is not points', PC2.extractNumbers('his goal conversion stands at 33 percent')[0].unit === 'pct' && PC2.extractNumbers('He placed his shots on target 55 times')[0].unit === 'shots' && PC2.extractNumbers('six tags in all against Kane\'s four point to a sharper edge').map(x => x.unit).join() === 'tags,' && PC2.extractNumbers('two points above Messi')[0].unit === 'points');
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

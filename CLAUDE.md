@@ -194,7 +194,9 @@ Each session appends: date | chat/task | what was done | status | anything the n
 - **THE COUNT FILTER AUDITED: 139 count-claim sentences re-judged, 9 unsupported, all 9 the judge's own error, zero true catches hidden** (area 9). **THE BAND CHIP LOGGED IN §D AS A PAGE ERROR** with its check: every count the judge got wrong came from it; third naming or display error this week found by prose work.
 - **THE CHAIN AUDITED FOR GREEN-WHILE-FAILING (Lucas: "a check that cannot fail is not a check", now in RULES.md §C).** The scripts' own exits were right; the holes were the invocations (a self-test piped into grep) and the absence of a gate. Built: `.githooks/pre-commit` (analyse.js loads, self-test passes, lint-inline clean; a missing evidence file fails rather than skips; `git config core.hooksPath .githooks` once per clone); `sample.js --capture --audit` exits 1 on unchecked numbers and `--endpoint` on a failed request; `check-deployed.js` probes the function and refuses a crash.
 
-**NEXT:** pass 3 at 10:21 UTC, tools, lists, to Lucas; then his decision on `VV_PROSE=verdicts` in Production; pass 4 carries the cabinet rule and the count record.
+- **PASS 3 ON THE PASS-2 BUILD, NOTHING CHANGED: 18 OF 18 AGAIN, 357 sentences, 19 to 34 seconds, 7 flags, none real on my reading** (three tools shapes fixed after the pass, self-test 115; one count word misbound; one Haiku crown read; one judge pedantry). **Across passes 2 and 3 on the closed rules: 36 of 36, 706 sentences, 0 invented facts found.** **THE BEFORE-AND-AFTER IS WRITTEN, before the decision, in `docs/PROSE_CASE_2026-10-24.md` ("BEFORE AND AFTER, IN ONE PLACE"):** 17 October's twelve pieces (222 labelled claims, 88 invented, zero of twelve passing) against today's serving path, same four kinds, the six caveats stated.
+
+**NEXT (Lucas):** read the pass 2 and pass 3 lists and the before-and-after; decide `VV_PROSE=verdicts` in Production. Pass 4 carries the cabinet rule and the count record if he wants them measured first.
 
 ### 2026-10-23 | Calibration run, the set corrected, the number and crown checks in code, the Chronicle read, homepage pairs off
 

@@ -129,6 +129,11 @@ function extractNumbers(text) {
       const win = back.slice(-6).concat(ahead.slice(0, 6));
       for (let q = 0; q < win.length; q++) { const u = unitOf(win[q], win[q + 1]); if (u && NO_SOURCE[u]) { unit = u; bind = 'window'; break; } }
     }
+    /*  PASS 3 SHAPES (2026-10-25): "at 33 percent" is a share, not an age; "his shots on target 55 times" is shots on
+        target, not appearances; "Kane's four point to a sharper" is a verb, not Index points.  */
+    if (/^(percent|per|%)$/.test(ahead[0] || '') && (ahead[0] !== 'per' || ahead[1] === 'cent')) unit = 'pct';
+    if (unit === 'apps' && ahead[0] === 'times' && back.slice(-4).some(w => /^(shots?|target)$/.test(w))) unit = 'shots';
+    if (unit === 'points' && ahead[0] === 'point' && v !== 1) { unit = null; bind = null; }
     if (!unit) {
       const bw = back.slice(-4);
       /*  "goals per 90 of 0.53": the per-90 pattern BEHIND the number (2026-10-25).  */
