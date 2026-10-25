@@ -172,9 +172,9 @@ const WRITER_SYSTEM = `You are the VVonderXI voice: thirty years of watching foo
 EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before anyone reads it:
 - any sentence that cites nothing, or an id that is not in the list;
 - any sentence that states anything its cited facts do not contain;
-- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count that equals how many facts of one kind a player's card holds in the list ("four honours", when the list holds four honour facts for him; "two honours he does not", when one holds four and the other two). A count of dimensions or attributes may be any number up to the total the card prints ("three dimensions in the 90s" is fine; the card prints four dimensions and Reliability, five attributes); a count of tags or honours must be the card's whole total, never a subset.
+- any number that is not in the cited facts, or a plain sum or difference of two of them, or a count that equals how many facts of one kind a player's card holds in the list ("four honours", when the list holds four honour facts for him; "two honours he does not", when one holds four and the other two). THE TOTALS ARE GIVEN TO YOU at the top of the facts ("X's card holds 2 honours and 6 tags in all"): a count of tags or honours must be that total, and Peak, The Standard, Breakout and Wonderkid ARE tags and are in it. A count of dimensions or attributes may be any number up to the total the card prints ("three dimensions in the 90s" is fine; the card prints four dimensions and Reliability, five attributes); a count of tags or honours must be the card's whole total, never a subset.
 
-THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE. No image, no flourish, no "a season for the ages", no "a season apart in class": the result as P1 gives it, and one figure or one honour, in plain words. The glance line on a card is the same: one fact, plainly. THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
+THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE. No image, no flourish, no "a season for the ages", no "a season apart in class": the result as P1 gives it, and one figure or one honour, in plain words. The glance line on a card is the same: one fact, plainly. THE HEADLINE OBEYS EVERY RULE BELOW LIKE ANY SENTENCE: if it names a club, a league, a position or an age it must cite A1 (and B1), and the whole piece is thrown away when the headline is deleted, so cite A1 and B1 in it as a matter of course. THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
 A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one.
@@ -203,7 +203,11 @@ Never use em or en dashes; use a spaced comma. British spelling.`;
 /*  THE HEADLINE INSTRUCTION (Lucas, 2026-10-24, after the six runs): every regeneration in six runs followed a
     headline the narrow check deleted for a flourish ("a season for the ages", "a season apart in class").
     The headline states the result and one cited fact, nothing more; the glance line the same.  */
-const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 words: the result and one cited fact, nothing more", "cite": ["P1", "A2", "B2"]}],
+/*  THE HEADLINE CITES THE IDENTITY FACTS (2026-10-25, pass 1 of the proof runs: 5 of 18 pieces died on "the headline
+    was deleted", and the repeated cause was a league named in the headline, "Premier League CDMs", "in Serie A", with
+    the example citation steering the writer to P1, A2 and B2 only, so the club rule deleted it). A1 and B1 are in
+    the example now, and the writer is told the headline obeys the club rule like any sentence.  */
+const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 words: the result and one cited fact, nothing more", "cite": ["P1", "A1", "B1", "A2", "B2"]}],
  "p1": [4 to 5 sentences about Player A, citing A facts],
  "p2": [4 to 5 sentences about Player B, citing B facts],
  "h2h": [4 to 5 sentences setting the two against each other],
@@ -213,7 +217,7 @@ const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 w
     fact id: the narrow check deleted about a third of every notes piece. The share rule is not relaxed,
     it is what stops a gutted piece shipping and notes need it more than verdicts. The scout and the
     closing stanza now ask for figures and the card's own copy only.  */
-const NOTES_FORMAT = `{"glance": [{"s": "one sentence, one fact of the season, plainly", "cite": ["A2", "A3"]}],
+const NOTES_FORMAT = `{"glance": [{"s": "one sentence, one fact of the season, plainly", "cite": ["A1", "A2", "A3"]}],
  "scout": [4 to 5 sentences, FIGURES AND CARD COPY ONLY: each sentence states a figure from the facts or quotes the meaning the card gives an honour or tag; no judgement, no verdict on the season, nothing a fact id cannot carry],
  "notes": [[4 to 5 sentences], [4 to 5], [4 to 5], [3 to 4]]}   four stanzas: the figures that define the season; the honours and tags, in the card's own words; the dimensions and Reliability as evidence; a closing stanza of 3 to 4 sentences that is FIGURES AND CARD COPY ONLY, restating the two or three figures the season rests on, no judgement and no flourish`;
 function writerSystem(pack) {
@@ -223,7 +227,10 @@ function writerSystem(pack) {
   return WRITER_SYSTEM.replace('${\'{CROWN_RULE}\'}', rule).replace('{CROWN_RULE}', rule).replace('{FORMAT}', pack.type === 'notes' ? NOTES_FORMAT : VERDICT_FORMAT);
 }
 function factsText(pack) {
-  const head = pack.type === 'verdict' ? `Player A is ${pack.names.A}. Player B is ${pack.names.B}.\n\n` : '';
+  /*  THE WRITER SEES THE TOTALS (2026-10-25, pass 1 of the proof runs): "Five tags" over a list of six names, "four
+      tags" beside Peak, on every second attempt; the counts line had gone to the narrow check and never to the
+      writer, and it does not count Peak or The Standard as tags. Now it is the first line of its facts.  */
+  const head = (pack.type === 'verdict' ? `Player A is ${pack.names.A}. Player B is ${pack.names.B}.\n` : '') + countsLine(pack) + '\n\n';
   return head + 'FACTS:\n' + pack.facts.map(f => f.id + '  ' + f.text).join('\n');
 }
 

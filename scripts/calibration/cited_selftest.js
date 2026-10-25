@@ -248,6 +248,9 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   const V2 = require('../../vv-core.js');
   expect('port: the result line is one function for the page and the server', V2.vvResultLine({ ladder: 'bragging_rights' }, { surname: 'Kane', vv: 92 }, { surname: 'Mertens', vv: 79 }, 'A') === 'Kane wins it clearly , 92 to 79' && V2.vvResultLine({ separation: 'inside' }, {}, {}, 'tie') === 'The Index cannot separate these two.');
   expect('port: the captured request carries the printed result line and no instructions', !!(dbEv.body && typeof dbEv.body.resultLine === 'string') && !/Result:|Tone:|VERDICT TAG/.test(dbEv.evidence));
+  // pass 1 of the proof runs (2026-10-25): the headline cites the identity facts; the writer sees the totals
+  expect('headline: the format example cites A1 and B1 on a comparison and A1 on a card', /"cite": \["P1", "A1", "B1", "A2", "B2"\]/.test(C.VERDICT_FORMAT) && /"cite": \["A1", "A2", "A3"\]/.test(C.NOTES_FORMAT) && /THE HEADLINE OBEYS EVERY RULE BELOW/.test(C.writerSystem(pack)));
+  expect('totals: the writer\'s facts open with each card\'s honour and tag totals', /card holds \d+ honours? and \d+ tags? in all/.test(C.factsText(pack).split('FACTS:')[0]) && /card holds \d+ honours? and \d+ tags? in all/.test(C.factsText(np).split('FACTS:')[0]));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();
